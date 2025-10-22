@@ -8,8 +8,10 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Text rendering support, equivalent to @c javax.microedition.lcdui.Text .
+ * Text rendering support, equivalent
+ * to @code{.java} javax.microedition.lcdui.Text @endcode .
  * 
+ * @file
  * @since 2024/06/25
  */
 

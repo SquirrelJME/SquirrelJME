@@ -10,6 +10,7 @@
 /**
  * Graphics drawing operations.
  * 
+ * @file
  * @since 2023/11/24
  */
 
@@ -50,7 +51,7 @@ typedef struct sjme_gfx_graphics sjme_gfx_graphics;
  * 
  * @param framebuffer The framebuffer to get the graphics from.
  * @param inOutGraphics The output graphics to initialize into.
- * @param pixelFormat The @c sjme_gfx_pixelFormat used for the draw.
+ * @param pixelFormat The @link sjme_gfx_pixelFormat @endlink used for the draw.
  * @param bufferWidth The buffer width, this is the scanline width of the
  * buffer.
  * @param bufferHeight The buffer height.
@@ -62,7 +63,7 @@ typedef struct sjme_gfx_graphics sjme_gfx_graphics;
  * @param surfaceY Starting surface Y coordinate.
  * @param surfaceWidth Surface width.
  * @param surfaceHeight Surface height.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns @link SJME_JNI_TRUE @endlink on success.
  * @since 2023/11/24
  */
 typedef sjme_jboolean (*sjme_gfx_getGraphics)(

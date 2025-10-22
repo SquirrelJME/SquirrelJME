@@ -10,6 +10,7 @@
 /**
  * Front end bindings.
  * 
+ * @file
  * @since 2024/09/04
  */
 

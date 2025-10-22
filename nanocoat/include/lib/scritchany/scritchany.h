@@ -10,6 +10,7 @@
 /**
  * Any ScritchAny API.
  * 
+ * @file
  * @since 2025/05/11
  */
 
@@ -47,7 +48,7 @@ extern "C"
 #define SJME_SCRITCHANY_DYLIB_SYMBOL_PREFIX(area) \
 	SJME_TOKEN_PASTE3_PP(sjme_scritch, SJME_TOKEN(area), _dylibApi)
 
-/** The symbol to use with @c sjme_scritchany_dylibApiFunc . */
+/** The symbol to use with @link sjme_scritchany_dylibApiFunc @endlink . */
 #define SJME_SCRITCHANY_DYLIB_SYMBOL(area, x) \
 	SJME_TOKEN_PASTE_PP(SJME_SCRITCHANY_DYLIB_SYMBOL_PREFIX(area), x)
 

@@ -10,6 +10,7 @@
 /**
  * SquirrelJME NanoCoat Virtual Machine Header Definitions.
  * 
+ * @file
  * @since 2023/07/25
  */
 
@@ -157,7 +158,7 @@ typedef enum sjme_nvm_structType
 	/** Unknown. */
 	SJME_NVM_STRUCT_UNKNOWN,
 
-	/** Array instance. */
+	/** Array instance, @link sjme_jarray @endlink. */
 	SJME_NVM_STRUCT_ARRAY_INSTANCE,
 
 	/** A Jar package instance pointer object. */
@@ -280,10 +281,10 @@ typedef sjme_nvm_commonBase* sjme_nvm_common;
 /** Cast to pointer to object. */
 #define SJME_AS_JCLASSP(x) ((sjme_jclass*)(x))
 
-/** Casts pointer to a @c sjme_jstring . */
+/** Casts pointer to a @link sjme_jstring @endlink . */
 #define SJME_AS_JSTRING(p) ((sjme_jstring)(p))
 
-/** Casts pointer to a pointer to a @c sjme_jstring . */
+/** Casts pointer to a pointer to a @link sjme_jstring @endlink . */
 #define SJME_AS_JSTRINGP(p) ((sjme_jstring*)(p))
 
 /** As a member ID. */
@@ -351,7 +352,8 @@ typedef sjme_nvm_threadBase* sjme_nvm_thread;
  * 
  * @param frame The frame this is garbage collecting in.
  * @param gcWhat what is being garbage collected?
- * @return Returns @c SJME_JNI_TRUE if garbage collection should continue.
+ * @return Returns @link SJME_JNI_TRUE @endlink if garbage collection should
+ * continue.
  * @since 2023/11/17
  */
 typedef sjme_jboolean (*sjme_nvm_stateHookGcFunc)(
@@ -460,7 +462,7 @@ typedef sjme_jdwpBase* sjme_jdwp;
 typedef struct sjme_nvm_vmClass_loaderBase sjme_nvm_vmClass_loaderBase;
 
 /**
- * Virtual machine equivalent to Java's @c ClassLoader .
+ * Virtual machine equivalent to Java's @code{.java} ClassLoader @endcode .
  * 
  * @since 2024/09/08
  */
@@ -663,7 +665,7 @@ struct sjme_nvm_stateBase
 	/** The thread schedule. */
 	sjme_nvm_threadSchedule* schedule;
 	
-	/** The state @c sjme_nvm_terminateLevel ? */
+	/** The state @link sjme_nvm_terminateLevel @endlink ? */
 	sjme_atomic(sjme_jint) terminating;
 
 	/** The initial task configuration. */

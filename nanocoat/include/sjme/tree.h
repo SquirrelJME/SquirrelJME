@@ -13,6 +13,7 @@
  * The algorithm is derived from Robert Sedgewick's (of Princeton University)
  * 2008 variant of Red-Black Trees called Left Leaning Red-Black Trees.
  * 
+ * @file
  * @since 2024/01/03
  */
 
@@ -216,7 +217,7 @@ extern "C" {
 			valueType, valueNumPointerStars), \
 		type, numPointerStars)
 
-/** A tree of @c sjme_jint . */
+/** A tree of @link sjme_jint @endlink . */
 SJME_TREE_DECLARE(sjme_jint, 0);
 
 /*--------------------------------------------------------------------------*/

@@ -36,11 +36,11 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-/** Maps a @c sjme_jboolean to @c gboolean . */
+/** Maps a @link sjme_jboolean @endlink to @c gboolean . */
 #define SJME_JBOOLEAN_TO_GBOOLEAN(b) \
 	((b) == SJME_JNI_FALSE ? FALSE : TRUE)
 
-/** Maps a @c gboolean to @c sjme_jboolean . */
+/** Maps a @c gboolean to @link sjme_jboolean @endlink . */
 #define GBOOLEAN_TO_SJME_JBOOLEAN(b) \
 	((b) == FALSE ? SJME_JNI_FALSE : SJME_JNI_TRUE)
 	

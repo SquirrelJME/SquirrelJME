@@ -12,7 +12,7 @@
 #include "lib/scritchui/win32/win32Intern.h"
 
 /**
- * Passed to @c sjme_scritchui_win32_displayQuery to fill in screen
+ * Passed to @link sjme_scritchui_win32_displayQuery @endlink to fill in screen
  * information.
  * 
  * @sincer 2024/08/05

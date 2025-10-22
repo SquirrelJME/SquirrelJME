@@ -10,6 +10,7 @@
 /**
  * Native Shelf Abstraction (NAL).
  * 
+ * @file
  * @since 2023/07/29
  */
 
@@ -82,7 +83,8 @@ typedef sjme_errorCode (*sjme_nal_fileOpenFunc)(
  * @param buf The output buffer.
  * @param bufLen The length of the buffer to store within.
  * @param env The environment variable to lookup.
- * @return Any resultant error code. Will return @c SJME_ERROR_NO_SUCH_ELEMENT
+ * @return Any resultant error code. Will
+ * return @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
  * if there is no environment variable with the given name.
  * @since 2023/08/05
  */

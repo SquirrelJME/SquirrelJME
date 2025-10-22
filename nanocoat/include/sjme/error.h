@@ -10,6 +10,7 @@
 /**
  * Error codes.
  * 
+ * @file
  * @since 2024/08/09
  */
 
@@ -579,11 +580,13 @@ sjme_errorCode sjme_error_also(
 	sjme_errorCode error, sjme_errorCode expression);
 
 /**
- * Similar to @c sjme_error_also except this allows multiple error expressions
- * to be passed until the final is done via @c sjme_error_alsoVEnd() .
+ * Similar to @link sjme_error_also @endlink except this allows multiple error
+ * expressions to be passed until the final is done via
+ * @link sjme_error_alsoVEnd() @endlink.
  * 
  * @param error The current error state.
- * @param ... All of the expressions, ends on @c sjme_error_alsoVEnd() .
+ * @param ... All of the expressions, ends
+ * on @link sjme_error_alsoVEnd() @endlink.
  * @return The resultant error code.
  * @since 2024/01/18
  */
@@ -591,7 +594,7 @@ sjme_errorCode sjme_error_alsoV(
 	sjme_errorCode error, ...);
 
 /**
- * The end expression for @c sjme_error_alsoV() .
+ * The end expression for @link sjme_error_alsoV() .
  * 
  * @return The ending sequence for error codes.
  * @since 2024/01/18 
@@ -621,7 +624,7 @@ sjme_errorCode sjme_error_default(
  * Determines the default error code to use.
  *
  * @param error The error code.
- * @param otherwise The other error code rather than @c SJME_ERROR_UNKNOWN.
+ * @param otherwise The other error code rather than @link SJME_ERROR_UNKNOWN.
  * @return Either @c error or @c otherwise if the former is not valid.
  * @since 2023/12/29
  */

@@ -10,6 +10,7 @@
 /**
  * Atomic read/write support.
  * 
+ * @file
  * @since 2024/01/08
  */
 
@@ -192,31 +193,31 @@ extern "C" {
 
 #endif
 
-/** Atomic @c sjme_jint. */
+/** Atomic @link sjme_jint. */
 SJME_ATOMIC_DECLARE(sjme_jint, 0);
 
-/** Atomic @c sjme_juint. */
+/** Atomic @link sjme_juint. */
 SJME_ATOMIC_DECLARE(sjme_juint, 0);
 
-/** Atomic @c sjme_lpstr. */
+/** Atomic @link sjme_lpstr. */
 SJME_ATOMIC_DECLARE(sjme_lpstr, 0);
 
-/** Atomic @c sjme_lpcstr. */
+/** Atomic @link sjme_lpcstr. */
 SJME_ATOMIC_DECLARE(sjme_lpcstr, 0);
 
-/** Atomic @c sjme_pointer. */
+/** Atomic @link sjme_pointer. */
 SJME_ATOMIC_DECLARE(sjme_pointer, 0);
 
 /** Atomic pointer declaration. */
 SJME_ATOMIC_DECLARE(sjme_intPointer , 0);
 
-/** Atomic @c sjme_jobject. */
+/** Atomic @link sjme_jobject. */
 SJME_ATOMIC_DECLARE(sjme_jobject, 0);
 
-/** Atomic @c sjme_jclass. */
+/** Atomic @link sjme_jclass. */
 SJME_ATOMIC_DECLARE(sjme_jclass, 0);
 
-/** Atomic @c sjme_charSeq. */
+/** Atomic @link sjme_charSeq. */
 SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
 
 /**
@@ -298,8 +299,8 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
  * @param ref The atomic reference.
  * @param cmp The value to compare against.
  * @param set The value to set, if the existing value is the given value.
- * @return If the value matched then @c SJME_JNI_TRUE and the new value will
- * be set, otherwise @c SJME_JNI_FALSE and there are no changes.
+ * @return If the value matched then @link SJME_JNI_TRUE @endlink and the new value will
+ * be set, otherwise @link SJME_JNI_FALSE @endlink and there are no changes.
  * @since 2025/10/02
  */
 #define sjme_atomic_cs(type, ref, cmp, set) \
@@ -349,8 +350,8 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
  * @param ref The atomic pointer reference.
  * @param cmp The value to compare against.
  * @param set The value to set, if the existing value is the given value.
- * @return If the value matched then @c SJME_JNI_TRUE and the new value will
- * be set, otherwise @c SJME_JNI_FALSE and there are no changes.
+ * @return If the value matched then @link SJME_JNI_TRUE @endlink and the new value will
+ * be set, otherwise @link SJME_JNI_FALSE @endlink and there are no changes.
  * @since 2025/10/02
  */
 #define sjme_atomic_pcs(ref, cmp, set) \

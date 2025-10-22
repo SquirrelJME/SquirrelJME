@@ -9,8 +9,8 @@
 
 /*****************************************************************************
  * Core dumps utilize the CBOR format and dump the entirety of the
- * virtual machine state structure @c sjme_nvm to a stream. This is useful
- * for debugging the state of the virtual machine.
+ * virtual machine state structure @link sjme_nvm @endlink to a stream.
+ * This is useful for debugging the state of the virtual machine.
  *
  * Such created dumps can be reloaded and restored to a running virtual
  * machine potentially.

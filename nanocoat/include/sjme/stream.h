@@ -10,7 +10,7 @@
 /**
  * Stream support.
  *
- * @file stream.h
+ * @file
  * @since 2023/12/30
  */
 
@@ -377,7 +377,7 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 
 /**
  * Provides an input stream to read data from a seekable, note that
- * unlike @c sjme_seekable_regionLock there is no locking
+ * unlike @link sjme_seekable_regionLock @endlink there is no locking
  * involved and as such there may be a performance penalty or otherwise.
  *
  * @param seekable The seekable to access.
@@ -541,10 +541,11 @@ typedef struct sjme_stream_resultByteArray
 	sjme_jint length;
 
 	/**
-	 * If this is set to @c SJME_JNI_TRUE , then the close handler for
-	 * the byte array will free the memory contained in the buffer. To prevent
-	 * it from being freed, this should return @c SJME_JNI_FALSE in which case
-	 * the @c optResult value will be written to with the final buffer.
+	 * If this is set to @link SJME_JNI_TRUE @endlink , then the close handler
+	 * for the byte array will free the memory contained in the buffer. To
+	 * prevent it from being freed, this should
+	 * return @link SJME_JNI_FALSE @endlink in which case
+	 * the @a optResult value will be written to with the final buffer.
 	 */
 	sjme_jboolean free;
 
@@ -600,22 +601,22 @@ SJME_DATA_OUTPUT_PROTOTYPE(sjme_juint, UInteger);
  */
 typedef struct sjme_stream_outputDataFunctions
 {
-	/** Writes a @c sjme_jbyte . */
+	/** Writes a @link sjme_jbyte @endlink . */
 	SJME_DATA_OUTPUT_TYPE(sjme_jbyte, Byte);
 	
-	/** Writes a @c sjme_jubyte . */
+	/** Writes a @link sjme_jubyte @endlink . */
 	SJME_DATA_OUTPUT_TYPE(sjme_jubyte, UByte);
 	
-	/** Writes a @c sjme_jshort . */
+	/** Writes a @link sjme_jshort @endlink . */
 	SJME_DATA_OUTPUT_TYPE(sjme_jshort, Short);
 	
-	/** Writes a @c sjme_jchar . */
+	/** Writes a @link sjme_jchar @endlink . */
 	SJME_DATA_OUTPUT_TYPE(sjme_jchar, Character);
 	
-	/** Writes a @c sjme_jint . */
+	/** Writes a @link sjme_jint @endlink . */
 	SJME_DATA_OUTPUT_TYPE(sjme_jint, Integer);
 	
-	/** Writes a @c sjme_juint . */
+	/** Writes a @link sjme_juint @endlink . */
 	SJME_DATA_OUTPUT_TYPE(sjme_juint, UInteger);
 } sjme_stream_outputDataFunctions;
 
@@ -732,7 +733,7 @@ sjme_errorCode sjme_stream_outputOpenMemory(
 
 /**
  * Provides an output stream to write data to a seekable, note that
- * unlike @c sjme_seekable_regionLock there is no locking
+ * unlike @link sjme_seekable_regionLock @endlink there is no locking
  * involved and as such there may be a performance penalty or otherwise.
  *
  * @param seekable The seekable to access.

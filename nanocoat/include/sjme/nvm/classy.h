@@ -10,6 +10,7 @@
 /**
  * Handling of classes.
  * 
+ * @file
  * @since 2024/01/01
  */
 
@@ -102,7 +103,8 @@ SJME_LIST_DECLARE(sjme_nvm_class_info, 0);
 typedef struct sjme_nvm_class_poolInfoCore sjme_nvm_class_poolInfoCore;
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_CLASS which represents a class or interface.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_CLASS @endlink which represents a class
+ * or interface.
  *
  * @since 2024/01/04
  */
@@ -129,7 +131,7 @@ typedef sjme_nvm_class_poolInfoBase* sjme_nvm_class_poolInfo;
  */
 SJME_LIST_DECLARE(sjme_nvm_class_methodInfo, 0);
 
-/** The basic type of @c sjme_nvm_class_methodInfo . */
+/** The basic type of @link sjme_nvm_class_methodInfo @endlink . */
 #define SJME_TYPEOF_BASIC_sjme_nvm_class_methodInfo \
 	SJME_BASIC_TYPE_ID_OBJECT
 
@@ -154,7 +156,7 @@ typedef sjme_nvm_class_fieldInfoBase* sjme_nvm_class_fieldInfo;
  */
 SJME_LIST_DECLARE(sjme_nvm_class_fieldInfo, 0);
 
-/** The basic type of @c sjme_nvm_class_fieldInfo . */
+/** The basic type of @link sjme_nvm_class_fieldInfo @endlink . */
 #define SJME_TYPEOF_BASIC_sjme_nvm_class_fieldInfo \
 	SJME_BASIC_TYPE_ID_OBJECT
 
@@ -178,7 +180,7 @@ typedef struct sjme_nvm_class_exceptionHandler
 /** A list of exceptions. */
 SJME_LIST_DECLARE(sjme_nvm_class_exceptionHandler, 0);
 
-/** The basic type of @c sjme_nvm_class_exceptionHandler . */
+/** The basic type of @link sjme_nvm_class_exceptionHandler @endlink . */
 #define SJME_TYPEOF_BASIC_sjme_nvm_class_exceptionHandler \
 	SJME_BASIC_TYPE_ID_OBJECT
 
@@ -414,7 +416,7 @@ struct sjme_nvm_class_poolEntryClass
 };
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_DOUBLE which represents a double constant.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_DOUBLE @endlink which represents a double constant.
  *
  * @since 2024/01/04
  */
@@ -428,7 +430,7 @@ typedef struct sjme_nvm_class_poolEntryDouble
 } sjme_nvm_class_poolEntryDouble;
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE which represents a name and type
+ * A @link SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE @endlink which represents a name and type
  * of member without the class.
  *
  * @since 2024/01/04
@@ -439,19 +441,19 @@ typedef struct sjme_nvm_class_poolEntryNameAndType
 /** Pool class entries are not pointers. */
 #define SJME_TYPEOF_IS_POINTER_sjme_nvm_class_poolEntryClass 0
 
-/** Atomic pointer to a @c sjme_nvm_class_poolEntryClass . */
+/** Atomic pointer to a @link sjme_nvm_class_poolEntryClass @endlink . */
 SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryClass, 1);
 
 /** Pool name and type entries are not pointers. */
 #define SJME_TYPEOF_IS_POINTER_sjme_nvm_class_poolEntryNameAndType 0
 
-/** Atomic pointer to a @c sjme_nvm_class_poolEntryNameAndType . */
+/** Atomic pointer to a @link sjme_nvm_class_poolEntryNameAndType @endlink . */
 SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryNameAndType, 1);
 	
 /**
- * Either @c SJME_NVM_CLASS_POOL_TYPE_FIELD ,
- * @c SJME_NVM_CLASS_POOL_TYPE_METHOD ,
- * or @c SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD which represents a reference
+ * Either @link SJME_NVM_CLASS_POOL_TYPE_FIELD @endlink ,
+ * @link SJME_NVM_CLASS_POOL_TYPE_METHOD @endlink ,
+ * or @link SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD @endlink which represents a reference
  * to a class member.
  *
  * @since 2024/01/04
@@ -481,7 +483,7 @@ typedef struct sjme_nvm_class_poolEntryMember
 } sjme_nvm_class_poolEntryMember;
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_FLOAT which represents a float constant.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_FLOAT @endlink which represents a float constant.
  *
  * @since 2024/01/04
  */
@@ -495,7 +497,7 @@ typedef struct sjme_nvm_class_poolEntryFloat
 } sjme_nvm_class_poolEntryFloat;
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_INTEGER which represents an integer constant.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_INTEGER @endlink which represents an integer constant.
  *
  * @since 2024/01/04
  */
@@ -509,7 +511,7 @@ typedef struct sjme_nvm_class_poolEntryInteger
 } sjme_nvm_class_poolEntryInteger;
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_LONG which represents a long constant.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_LONG @endlink which represents a long constant.
  *
  * @since 2024/01/04
  */
@@ -523,7 +525,7 @@ typedef struct sjme_nvm_class_poolEntryLong
 } sjme_nvm_class_poolEntryLong;
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_STRING which represents a string constant.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_STRING @endlink which represents a string constant.
  * 
  * @since 2024/09/20
  */
@@ -561,7 +563,7 @@ struct sjme_nvm_class_poolEntryNameAndType
 };
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_UTF which is a modified UTF-8 entry.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_UTF @endlink which is a modified UTF-8 entry.
  *
  * @since 2024/01/04
  */
@@ -896,7 +898,7 @@ typedef struct sjme_nvm_class_parseAttributeHandler
 } sjme_nvm_class_parseAttributeHandler;
 
 /**
- * Calculates the @c sjme_javaTypeId for the given method descriptor.
+ * Calculates the @link sjme_javaTypeId @endlink for the given method descriptor.
  * 
  * @param allocPool The allocation pool to use for @c outArgT .
  * @param typeDesc The input method descriptor.
@@ -943,7 +945,7 @@ sjme_errorCode sjme_nvm_class_descriptorMethodSlots(
 	sjme_attrOutNotNull sjme_jint* outRvSlots);
 	
 /**
- * Determines the @c sjme_javaTypeId or @c sjme_basicTypeId type for the
+ * Determines the @link sjme_javaTypeId @endlink or @link sjme_basicTypeId @endlink type for the
  * given descriptor.
  * 
  * @param desc The input descriptor. 

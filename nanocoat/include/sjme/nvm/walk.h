@@ -10,6 +10,7 @@
 /**
  * Serialized walkers.
  * 
+ * @file
  * @since 2025/06/21
  */
 
@@ -45,176 +46,182 @@ typedef enum sjme_nvm_walk_pseudoType
 	/** Allocation pool. */
 	SJME_NVM_WALK_PSEUDO_ALLOC_POOL = -2,
 
-	/** @c sjme_nvm_bootParam . */
+	/** @link sjme_nvm_bootParam @endlink . */
 	SJME_NVM_WALK_PSEUDO_BOOT_PARAM = -3,
 
-	/** @c sjme_nvm_stateHooks . */
+	/** @link sjme_nvm_stateHooks @endlink . */
 	SJME_NVM_WALK_PSEUDO_STATE_HOOKS = -4,
 
-	/** @c sjme_nal . */
+	/** @link sjme_nal @endlink . */
 	SJME_NVM_WALK_PSEUDO_NAL = -5,
 
-	/** @c sjme_atomic_ types. */
+	/** @link sjme_atomic_ @endlink types. */
 	SJME_NVM_WALK_PSEUDO_ATOMIC = -6,
 
-	/** @c sjme_nvm_mle_threadModel . */
+	/** @link sjme_nvm_mle_threadModel @endlink . */
 	SJME_NVM_WALK_PSEUDO_MLE_THREAD_MODEL = -7,
 
-	/** @c sjme_nvm_threadSchedule . */
+	/** @link sjme_nvm_threadSchedule @endlink . */
 	SJME_NVM_WALK_PSEUDO_THREAD_SCHEDULE = -8,
 
-	/** @c sjme_closeableBase . */
+	/** @link sjme_closeableBase @endlink . */
 	SJME_NVM_WALK_PSEUDO_CLOSEABLE = -9,
 
-	/** @c sjme_nvm_structType . */
+	/** @link sjme_nvm_structType @endlink . */
 	SJME_NVM_WALK_PSEUDO_NVM_STRUCT_TYPE = -10,
 
 	/** A Primitive type. */
 	SJME_NVM_WALK_PSEUDO_PRIMITIVE = -11,
 
-	/** @c sjme_frontEnd . */
+	/** @link sjme_frontEnd @endlink . */
 	SJME_NVM_WALK_PSEUDO_FRONT_END = -12,
 
-	/** @c sjme_thread_spinLock . */
+	/** @link sjme_thread_spinLock @endlink . */
 	SJME_NVM_WALK_PSEUDO_SPIN_LOCK = -13,
 
-	/** @c sjme_closeable_closeHandlerFunc . */
+	/** @link sjme_closeable_closeHandlerFunc @endlink . */
 	SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER = -14,
 
-	/** @c sjme_list_... . */
+	/** @link sjme_list_... . */
 	SJME_NVM_WALK_PSEUDO_LIST = -15,
 
-	/** @c sjme_frontEndWrapper . */
+	/** @link sjme_frontEndWrapper @endlink . */
 	SJME_NVM_WALK_PSEUDO_FRONT_END_WRAPPER = -16,
 
-	/** @c sjme_frontEndData . */
+	/** @link sjme_frontEndData @endlink . */
 	SJME_NVM_WALK_PSEUDO_FRONT_END_DATA = -17,
 
-	/** @c sjme_frontEnd_bindType . */
+	/** @link sjme_frontEnd_bindType @endlink . */
 	SJME_NVM_WALK_PSEUDO_BIND_TYPE = -18,
 
-	/** @c sjme_lpstr . */
+	/** @link sjme_lpstr @endlink . */
 	SJME_NVM_WALK_PSEUDO_LPSTR = -19,
 
-	/** @c sjme_nvm_task_statusType . */
+	/** @link sjme_nvm_task_statusType @endlink . */
 	SJME_NVM_WALK_PSEUDO_TASK_STATUS_TYPE = -20,
 
 	/** Fixed size array . */
 	SJME_NVM_WALK_PSEUDO_FIXED_ARRAY = -21,
 
-	/** @c sjme_javaTypeId . */
+	/** @link sjme_javaTypeId @endlink . */
 	SJME_NVM_WALK_PSEUDO_JAVA_TYPE_ID = -22,
 
 	/** A @c union . */
 	SJME_NVM_WALK_PSEUDO_UNION = -23,
 
-	/** @c sjme_nvm_task_globals . */ 
+	/** @link sjme_nvm_task_globals @endlink . */ 
 	SJME_NVM_WALK_PSEUDO_TASK_GLOBALS = -24,
 
 	/** Plain pointer. */
 	SJME_NVM_WALK_PSEUDO_POINTER = -25,
 
-	/** @c sjme_nvm_rom_suiteFunctions . */
+	/** @link sjme_nvm_rom_suiteFunctions @endlink . */
 	SJME_NVM_WALK_PSEUDO_SUITE_FUNCTIONS = -26,
 
-	/** @c sjme_nvm_rom_libraryFunctions . */
+	/** @link sjme_nvm_rom_libraryFunctions @endlink . */
 	SJME_NVM_WALK_PSEUDO_LIBRARY_FUNCTIONS = -27,
 
-	/** @c sjme_thread_rwLock . */
+	/** @link sjme_thread_rwLock @endlink . */
 	SJME_NVM_WALK_PSEUDO_RW_LOCK = -28,
 
-	/** @c sjme_nvm_task_taskNewConfig . */
+	/** @link sjme_nvm_task_taskNewConfig @endlink . */
 	SJME_NVM_WALK_PSEUDO_INIT_TASK_CONFIG = -29,
 
-	/** @c sjme_nvm_bootBelayType . */
+	/** @link sjme_nvm_bootBelayType @endlink . */
 	SJME_NVM_WALK_PSEUDO_BOOT_BELAY_TYPE = -30,
 
-	/** @c sjme_nvm_bootClutterLevel . */
+	/** @link sjme_nvm_bootClutterLevel @endlink . */
 	SJME_NVM_WALK_PSEUDO_CLUTTER_LEVEL = -31,
 
-	/** @c sjme_random . */
+	/** @link sjme_random @endlink . */
 	SJME_NVM_WALK_PSEUDO_RANDOM = -32,
 
-	/** @c sjme_basicTypeId . */
+	/** @link sjme_basicTypeId @endlink . */
 	SJME_NVM_WALK_PSEUDO_BASIC_TYPE_ID = -33,
 
-	/** @c sjme_nvm_rawArrayValues . */
+	/** @link sjme_nvm_rawArrayValues @endlink . */
 	SJME_NVM_WALK_PSEUDO_RAW_ARRAY_VALUES = -34,
 
 	/** Unspecified stored binary data . */
 	SJME_NVM_WALK_PSEUDO_UNSPECIFIED_BINARY = -35,
 
-	/** @c sjme_nvm_threadSubSchedule . */
+	/** @link sjme_nvm_threadSubSchedule @endlink . */
 	SJME_NVM_WALK_PSEUDO_THREAD_SUB_SCHEDULE = -36,
 
-	/** @c sjme_nvm_task_pipeRedirectType . */
+	/** @link sjme_nvm_task_pipeRedirectType @endlink . */
 	SJME_NVM_WALK_PSEUDO_TASK_PIPE_REDIRECT_TYPE = -37,
 
-	/** @c sjme_nvm_class_version . */
+	/** @link sjme_nvm_class_version @endlink . */
 	SJME_NVM_WALK_PSEUDO_CLASS_VERSION = -38,
 
-	/** @c sjme_nvm_class_classFlags . */
+	/** @link sjme_nvm_class_classFlags @endlink . */
 	SJME_NVM_WALK_PSEUDO_CLASS_FLAGS = -39,
 
-	/** @c sjme_nvm_class_poolEntry . */
+	/** @link sjme_nvm_class_poolEntry @endlink . */
 	SJME_NVM_WALK_PSEUDO_POOL_ENTRY = -40,
 
-	/** @c sjme_nvm_class_accessFlags . */
+	/** @link sjme_nvm_class_accessFlags @endlink . */
 	SJME_NVM_WALK_PSEUDO_CLASS_FLAGS_ACCESS = -41,
 
-	/** @c sjme_charSeq . */
+	/** @link sjme_charSeq @endlink . */
 	SJME_NVM_WALK_PSEUDO_CHAR_SEQ = -42,
 
 	/** Phantom back reference . */
 	SJME_NVM_WALK_PSEUDO_PHANTOM = -43,
 
-	/** @c sjme_nvm_jclass_fields . */
+	/** @link sjme_nvm_jclass_fields @endlink . */
 	SJME_NVM_WALK_PSEUDO_CLASS_FIELDS = -44,
 
-	/** @c sjme_nvm_jclass_methods . */
+	/** @link sjme_nvm_jclass_methods @endlink . */
 	SJME_NVM_WALK_PSEUDO_CLASS_METHODS = -45,
 
-	/** @c sjme_nvm_jfieldAccessFunc . */
+	/** @link sjme_nvm_jfieldAccessFunc @endlink . */
 	SJME_NVM_WALK_PSEUDO_FIELD_ACCESSOR_FUNC = -46,
 
 	/** Technically nothing. */
 	SJME_NVM_WALK_PSEUDO_POOL_TYPE_NULL = -47,
 
-	/** @c sjme_nvm_class_poolEntryUtf . */
+	/** @link sjme_nvm_class_poolEntryUtf @endlink . */
 	SJME_NVM_WALK_PSEUDO_POOL_TYPE_UTF = -48,
 
-	/** @c sjme_nvm_class_poolEntryInteger . */
+	/** @link sjme_nvm_class_poolEntryInteger @endlink . */
 	SJME_NVM_WALK_PSEUDO_POOL_TYPE_INTEGER = -49,
 
-	/** @c sjme_nvm_class_poolEntryFloat . */
+	/** @link sjme_nvm_class_poolEntryFloat @endlink . */
 	SJME_NVM_WALK_PSEUDO_POOL_TYPE_FLOAT = -50,
 
-	/** @c sjme_nvm_class_poolEntryLong . */
+	/** @link sjme_nvm_class_poolEntryLong @endlink . */
 	SJME_NVM_WALK_PSEUDO_POOL_TYPE_LONG = -51,
 
-	/** @c sjme_nvm_class_poolEntryDouble . */
+	/** @link sjme_nvm_class_poolEntryDouble @endlink . */
 	SJME_NVM_WALK_PSEUDO_POOL_TYPE_DOUBLE = -52,
 
-	/** @c sjme_nvm_class_poolEntryClass . */
+	/** @link sjme_nvm_class_poolEntryClass @endlink . */
 	SJME_NVM_WALK_PSEUDO_POOL_TYPE_CLASS = -53,
 
-	/** @c sjme_nvm_class_poolEntryString . */
+	/** @link sjme_nvm_class_poolEntryString @endlink . */
 	SJME_NVM_WALK_PSEUDO_POOL_TYPE_STRING = -54,
 
-	/** @c sjme_nvm_class_poolEntryMember . */
+	/** @link sjme_nvm_class_poolEntryMember @endlink . */
 	SJME_NVM_WALK_PSEUDO_POOL_TYPE_MEMBER = -55,
 
-	/** @c sjme_nvm_class_poolEntryNameAndType . */
+	/** @link sjme_nvm_class_poolEntryNameAndType @endlink . */
 	SJME_NVM_WALK_PSEUDO_POOL_TYPE_NAME_AND_TYPE = -56,
 
-	/** @c sjme_jmemberIDBase . */
+	/** @link sjme_jmemberIDBase @endlink . */
 	SJME_NVM_WALK_PSEUDO_MEMBER_ID = -57,
 
-	/** @c sjme_nvm_class_methodFlags . */
+	/** @link sjme_nvm_class_methodFlags @endlink . */
 	SJME_NVM_WALK_PSEUDO_METHOD_FLAGS = -58,
 
-	/** @c sjme_nvm_class_methodInfoBits . */
+	/** @link sjme_nvm_class_methodInfoBits @endlink . */
 	SJME_NVM_WALK_PSEUDO_METHOD_INFO_BITS = -59,
+
+	/** @link sjme_nvm_class_fieldFlags @endlink */
+	SJME_NVM_WALK_PSEUDO_FIELD_FLAGS = -60,
+
+	/** @link sjme_extendedTypeId @endlink */
+	SJME_NVM_WALK_PSEUDO_EXTENDED_TYPE_ID = -61,
 } sjme_nvm_walk_pseudoType;
 
 /**
@@ -478,7 +485,7 @@ struct sjme_nvm_walk_step
 
 	/**
 	 * Custom step logic setup for walking. If the step function
-	 * returns @c SJME_ERROR_WALK_SKIP_CUSTOM_DEFAULT then the default
+	 * returns @link SJME_ERROR_WALK_SKIP_CUSTOM_DEFAULT @endlink then the default
 	 * walk will not be performed, this assumes that the step handler
 	 * called the appropriate handler function.
 	 */

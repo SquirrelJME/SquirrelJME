@@ -10,6 +10,7 @@
 /**
  * String pool.
  * 
+ * @file
  * @since 2024/09/14
  */
 

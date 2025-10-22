@@ -12,7 +12,8 @@
  *
  * The majority of this header is to simplify the system specific macros
  * and definitions and unify them so they are far easier to use.
- * 
+ *
+ * @file
  * @since 2023/07/27
  */
 
@@ -1061,7 +1062,7 @@ extern "C" {
 	#pragma warning(disable: 4114)
 #endif
 
-/** Bitfield count for @c sjme_jboolean . */
+/** Bitfield count for @link sjme_jboolean @endlink . */
 #define sjme_booleanBit 2
 
 /* Clang is completely broken with FLT_ROUNDS. */ 
@@ -1137,7 +1138,7 @@ extern "C" {
 	#define sjme_sm(dot, val) val
 #endif
 
-/** Bitfield count for @c sjme_jboolean . */
+/** Bitfield count for @link sjme_jboolean @endlink . */
 #define sjme_booleanBit 2
 
 /* Clang is completely broken with FLT_ROUNDS. */ 

@@ -10,6 +10,7 @@
 /**
  * A structure instance which can be closed.
  * 
+ * @file
  * @since 2024/08/12
  */
 

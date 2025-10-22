@@ -10,6 +10,7 @@
 /**
  * Access checking.
  * 
+ * @file
  * @since 2025/06/19
  */
 

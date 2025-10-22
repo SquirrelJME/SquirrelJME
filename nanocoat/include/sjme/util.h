@@ -10,6 +10,7 @@
 /**
  * Utilities.
  * 
+ * @file
  * @since 2023/07/26
  */
 
@@ -54,8 +55,8 @@ typedef sjme_jint (*sjme_tree_findHash)(void* what);
  * 
  * @param tree The tree to search in.
  * @param what What to being searched for in the tree.
- * @param hash The hash generated from @c sjme_tree_findHash .
- * @param withIndex Compare @c hash and @c what against the given tree.
+ * @param hash The hash generated from @link sjme_tree_findHash @endlink .
+ * @param withIndex Compare @a hash and @a what against the given tree.
  * @return A negative value if lower, zero if equal, or a positive value if
  * greater.
  * @since 2023/07/26
@@ -75,8 +76,8 @@ typedef struct sjme_random
 } sjme_random;
 
 /**
- * Tree finding functions, used with @c sjme_tree_find to determine how to
- * search through a given tree.
+ * Tree finding functions, used with @link sjme_tree_find @endlink to
+ * determine how to search through a given tree.
  * 
  * @since 2023/07/26
  */
@@ -110,7 +111,7 @@ sjme_jint sjme_compare_null(
  * @param outRandom The random state to initialize. 
  * @param seedHi The high seed value.
  * @param seedLo The low seed value.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns @link SJME_JNI_TRUE @endlink on success.
  * @since 2023/12/02
  */
 sjme_errorCode sjme_random_init(
@@ -123,7 +124,7 @@ sjme_errorCode sjme_random_init(
  * 
  * @param outRandom The random state to initialize. 
  * @param seed The seed value.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns @link SJME_JNI_TRUE @endlink on success.
  * @since 2023/12/02
  */
 sjme_errorCode sjme_random_initL(
@@ -135,7 +136,7 @@ sjme_errorCode sjme_random_initL(
  * 
  * @param random The random state.
  * @param outValue The output value.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns @link SJME_JNI_TRUE @endlink on success.
  * @since 2023/12/02
  */
 sjme_errorCode sjme_random_nextInt(
@@ -158,7 +159,7 @@ sjme_jint sjme_random_nextIntR(
  * @param random The random state.
  * @param outValue The output value.
  * @param maxValue The maximum exclusive value.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns @link SJME_JNI_TRUE @endlink on success.
  * @since 2023/12/02
  */
 sjme_errorCode sjme_random_nextIntMax(
@@ -178,7 +179,7 @@ sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index);
 
 /**
  * Compares two strings up to the given number of characters each, nulls are
- * in the same order as @c sjme_compare_null() .
+ * in the same order as @link sjme_compare_null() @endlink .
  * 
  * @param aString A string. 
  * @param aLen A length.

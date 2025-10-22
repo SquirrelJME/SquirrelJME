@@ -10,6 +10,7 @@
 /**
  * Main ScritchAudio header.
  * 
+ * @file
  * @since 2025/05/07
  */
 
@@ -432,11 +433,11 @@ typedef sjme_errorCode (*sjme_scritchaudio_sourceRenderFunc)(
  * @param inStream The stream to attach to or detach from.
  * @param outSource The resultant source.
  * @param renderFunc The render function to use.
- * @param inFormat The audio format to use, @c -1 means to use the system
+ * @param inFormat The audio format to use, @a -1 means to use the system
  * preferred format.
- * @param inRate The rate to use, @c -1 means to use the system preferred
+ * @param inRate The rate to use, @a -1 means to use the system preferred
  * rate.
- * @param inChannels The number of channels to use, @c -1 means to use the
+ * @param inChannels The number of channels to use, @a -1 means to use the
  * system preferred channels.
  * @param initFrontEnd The front end used for the renderer.
  * @return Any resultant error, if any.
@@ -837,7 +838,7 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchaudio_dylibApiFunc)(
 #define SJME_SCRITCHAUDIO_DYLIB_SYMBOL_PREFIX \
 	SJME_SCRITCHANY_DYLIB_SYMBOL_PREFIX(audio)
 
-/** The symbol to use with @c sjme_scritchaudio_dylibApiFunc . */
+/** The symbol to use with @link sjme_scritchaudio_dylibApiFunc @endlink . */
 #define SJME_SCRITCHAUDIO_DYLIB_SYMBOL(x) \
 	SJME_SCRITCHANY_DYLIB_SYMBOL(audio, x)
 

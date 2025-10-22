@@ -10,6 +10,7 @@
 /**
  * Classes as they appear to the runtime virtual machine.
  * 
+ * @file
  * @since 2024/09/08
  */
 
@@ -184,7 +185,7 @@ struct sjme_jfieldIDBase
 	sjme_extendedTypeId extendedType;
 
 	/** The class type of this field. */
-	sjme_jclass objectType;
+	sjme_phantom(sjme_jclass) objectType;
 
 	/** The field flags. */
 	sjme_nvm_class_fieldFlags flags;
@@ -344,7 +345,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
  * @param canAssignTo Can @c fromClass be assigned to this class?
  * @param fromClass The class to check if this can be assigned to.
  * @return Any resultant error code, if any, will return
- * error @c SJME_ERROR_CLASS_CAST if this is not assignable.
+ * error @link SJME_ERROR_CLASS_CAST @endlink if this is not assignable.
  * @since 2025/02/16
  */
 sjme_errorCode sjme_nvm_vmClass_isAssignableFrom(

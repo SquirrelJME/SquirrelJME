@@ -29,7 +29,7 @@ const sjme_mock_configSet configTaskSpawn =
 };
 
 /**
- * Tests spawning of tasks with @c sjme_nvm_task_taskNew .
+ * Tests spawning of tasks with @link sjme_nvm_task_taskNew @endlink .
  *
  * @since 2023/11/29
  */

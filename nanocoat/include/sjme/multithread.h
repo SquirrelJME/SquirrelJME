@@ -10,6 +10,7 @@
 /**
  * Multithreaded support.
  * 
+ * @file
  * @since 2023/12/16
  */
 
@@ -167,7 +168,7 @@ SJME_ATOMIC_DECLARE(sjme_thread, 0);
 /**
  * Main thread function type.
  * 
- * @param anything Passed from @c sjme_thread_new .
+ * @param anything Passed from @link sjme_thread_new @endlink .
  * @return Thread resultant value.
  * @since 2024/04/16
  */

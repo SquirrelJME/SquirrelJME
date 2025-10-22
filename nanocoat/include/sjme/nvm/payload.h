@@ -11,6 +11,7 @@
  * Static SquirrelJME payload setup, can be used at compile time to set some
  * initial boot settings and otherwise embedded into the image.
  * 
+ * @file
  * @since 2023/07/27
  */
 

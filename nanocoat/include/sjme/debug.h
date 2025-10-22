@@ -10,6 +10,7 @@
 /**
  * Debugging helpers.
  * 
+ * @file
  * @since 2023/07/27
  */
 
@@ -238,7 +239,8 @@ void sjme_todoR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * Potentially debug aborts.
  *
  * @param error The emitted error.
- * @return If an abort was triggered, then @c SJME_JNI_TRUE is called.
+ * @return If an abort was triggered, then @link SJME_JNI_TRUE @endlink is
+ * called.
  * @since 2023/12/21
  */
 sjme_jboolean sjme_debug_abort(sjme_errorCode error);
@@ -295,7 +297,7 @@ sjme_errorCode sjme_error_fatalR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * Allows for optional debug abort when unimplemented code is hit.
  *
  * @param context Any value.
- * @return Always @c SJME_ERROR_NOT_IMPLEMENTED .
+ * @return Always @link SJME_ERROR_NOT_IMPLEMENTED @endlink .
  * @since 2024/07/30
  */
 sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
@@ -305,7 +307,7 @@ sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * Allows for optional debug abort when unimplemented code is hit.
  *
  * @param context Any value.
- * @return Always @c SJME_ERROR_NOT_IMPLEMENTED .
+ * @return Always @link SJME_ERROR_NOT_IMPLEMENTED @endlink .
  * @since 2024/07/30
  */
 #define sjme_error_notImplemented(context) \
@@ -317,7 +319,7 @@ sjme_errorCode sjme_error_notImplementedR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  *
  * @param allocPool The pool the allocation was within, if applicable.
  * @param context Any value.
- * @return Always @c SJME_ERROR_OUT_OF_MEMORY .
+ * @return Always @link SJME_ERROR_OUT_OF_MEMORY @endlink .
  * @since 2024/08/15
  */
 sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
@@ -329,7 +331,7 @@ sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  *
  * @param allocPool The pool the allocation was within, if applicable.
  * @param context Any value.
- * @return Always @c SJME_ERROR_OUT_OF_MEMORY .
+ * @return Always @link SJME_ERROR_OUT_OF_MEMORY @endlink .
  * @since 2024/08/15
  */
 #define sjme_error_outOfMemory(allocPool, context) \
@@ -340,8 +342,9 @@ sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
  * Handles specific debug abort scenarios.
  *
  * @param error The emitted error code.
- * @return Return @c SJME_JNI_TRUE if it was handled and abort should be
- * cancelled, otherwise @c SJME_JNI_FALSE will continue aborting.
+ * @return Return @link SJME_JNI_TRUE @endlink if it was handled and abort
+ * should be cancelled, otherwise @link SJME_JNI_FALSE @endlink will
+ * continue aborting.
  * @since 2023/12/21
  */
 typedef sjme_jboolean (*sjme_debug_abortHandlerFunc)(sjme_errorCode error);
@@ -350,7 +353,7 @@ typedef sjme_jboolean (*sjme_debug_abortHandlerFunc)(sjme_errorCode error);
  * Handler for specific debug exit scenarios.
  *
  * @param exitCode The exit code.
- * @return Return @c SJME_JNI_TRUE if it was handled.
+ * @return Return @link SJME_JNI_TRUE @endlink if it was handled.
  * @since 2023/12/21
  */
 typedef sjme_jboolean (*sjme_debug_exitHandlerFunc)(int exitCode);
@@ -360,8 +363,8 @@ typedef sjme_jboolean (*sjme_debug_exitHandlerFunc)(int exitCode);
  * 
  * @param fullMessage The message to emit. 
  * @param partMessage Partial message, without any prepend.
- * @return Return @c SJME_JNI_TRUE if the message is handled, otherwise
- * a standard @c fprintf to @c stderr will be used.
+ * @return Return @link SJME_JNI_TRUE @endlink if the message is handled,
+ * otherwise a standard @c fprintf() to @c stderr will be used.
  * @since 2023/12/05 
  */
 typedef sjme_jboolean (*sjme_debug_messageHandlerFunc)(sjme_lpcstr fullMessage,

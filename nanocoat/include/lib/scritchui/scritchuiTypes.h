@@ -10,6 +10,7 @@
 /**
  * Internal ScritchUI types.
  * 
+ * @file
  * @since 2024/04/02
  */
 
@@ -326,10 +327,13 @@ struct sjme_scritchui_uiMenuItemBase
 	/** Menu parent. */
 	sjme_scritchui_uiMenuHasParentBase parent;
 	
-	/** The accelerator key @c sjme_scritchinput_key , if any. */
+	/** The accelerator key @link sjme_scritchinput_key @endlink , if any. */
 	sjme_jint accelKey;
 	
-	/** The accelerator modifiers @c sjme_scritchinput_modifier , if any. */
+	/**
+	 * The accelerator modifiers @link sjme_scritchinput_modifier @endlink ,
+	 * if any.
+	 */
 	sjme_jint accelMod;
 	
 	/** Some windowing systems need some ID to be specified. */

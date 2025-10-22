@@ -10,6 +10,7 @@
 /**
  * Virtual machine booting.
  * 
+ * @file
  * @since 2023/07/29
  */
 
@@ -212,8 +213,8 @@ sjme_errorCode sjme_nvm_destroy(
  * @param param The output parameters. 
  * @param argc The argument count.
  * @param argv The arguments.
- * @return Any resultant error, if any. Returns @c SJME_ERROR_EXIT if the
- * parsing should just exit.
+ * @return Any resultant error, if any.
+ * Returns @link SJME_ERROR_EXIT @endlink if the parsing should just exit.
  * @since 2024/08/08
  */
 sjme_errorCode sjme_nvm_parseCommandLine(

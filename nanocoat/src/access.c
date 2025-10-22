@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+/** @include{doc} "sjme/nvm/access.h" */
 #include "sjme/nvm/access.h"
 
 sjme_errorCode sjme_nvm_access_checkCompatibleField(
@@ -33,7 +34,8 @@ sjme_errorCode sjme_nvm_access_checkCompatibleField(
 		/* If this is not assignable, then something is wrong. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
 			contextThread,
-			fieldId->objectType, checkValue->v.l->isClass)))
+			sjme_atomic_g(sjme_jclass, &fieldId->objectType),
+			checkValue->v.l->isClass)))
 		{
 			if (error == SJME_ERROR_CLASS_CAST)
 				return SJME_ERROR_CLASS_CHANGED;

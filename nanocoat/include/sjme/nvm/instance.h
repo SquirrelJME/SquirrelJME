@@ -10,6 +10,7 @@
 /**
  * Instances of objects.
  * 
+ * @file
  * @since 2024/09/08
  */
 
@@ -388,7 +389,7 @@ struct sjme_jweakBase
 };
 
 /**
- * Returns the size for @c sjme_nvm_fieldValues for the given number of
+ * Returns the size for @link sjme_nvm_fieldValues @endlink for the given number of
  * values.
  * 
  * @param extendedType The Java type to use.

@@ -10,6 +10,7 @@
 /**
  * ROM related structures, this replicates what is in @c JarPackageShelf.
  * 
+ * @file
  * @since 2023/12/12
  */
 

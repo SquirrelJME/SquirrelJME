@@ -10,6 +10,7 @@
 /**
  * Bit streams, used to read data at the bit level rather than byte level.
  * 
+ * @file
  * @since 2024/08/25
  */
 
@@ -233,7 +234,7 @@ sjme_errorCode sjme_bitStream_inputOpenMemory(
 	sjme_attrInPositive sjme_jint length);
 
 /**
- * Opens a bit stream which reads from the given @c sjme_stream_input .
+ * Opens a bit stream which reads from the given @link sjme_stream_input @endlink .
  * 
  * @param allocPool The pool to allocate within.
  * @param resultStream The resultant stream.

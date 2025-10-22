@@ -10,6 +10,7 @@
 /**
  * ScritchUI Library Header.
  * 
+ * @file
  * @since 2024/03/27
  */
 
@@ -681,7 +682,8 @@ typedef sjme_errorCode (*sjme_scritchui_activateListenerFunc)(
  * 
  * @param inState The input state.
  * @param inWindow The window being closed.
- * @return Any resultant error, @c SJME_ERROR_CANCEL_WINDOW_CLOSE is handled
+ * @return Any resultant error, @link SJME_ERROR_CANCEL_WINDOW_CLOSE @endlink
+ * is handled
  * specifically in that it will not be treated as an error however normal
  * application exit will not happen.
  * @since 2024/05/13
@@ -789,8 +791,8 @@ typedef sjme_errorCode (*sjme_scritchui_sizeSuggestListenerFunc)(
 
 /**
  * Listener that is called before and after the state within a component
- * has changed, when @c isAfterUpdate is @c SJME_JNI_FALSE then the component
- * is about to be updated.
+ * has changed, when @c isAfterUpdate is @link SJME_JNI_FALSE @endlink then
+ * the component is about to be updated.
  * 
  * @param inState The input state.
  * @param inComponent The component where this event occurred.
@@ -1326,7 +1328,7 @@ typedef sjme_errorCode (*sjme_scritchui_fontListFunc)(
  * @param inState The UI state.
  * @param outPencil The resultant pencil.
  * @param outWeakPencil The weak reference to the pencil.
- * @param pf The @c sjme_gfx_pixelFormat used for the draw.
+ * @param pf The @link sjme_gfx_pixelFormat @endlink used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
  * @param inLockFuncs The locking functions to use for buffer access.
@@ -2226,7 +2228,7 @@ struct sjme_scritchui_stateBase
 	/** The loop queue for manual event loops. */
 	sjme_alignPointer sjme_scritchui_loopQueue loopQueue;
 
-	/** Platform flags (@c sjme_scritchui_lafPlatformFlag ). */
+	/** Platform flags (@link sjme_scritchui_lafPlatformFlag @endlink ). */
 	sjme_jint platformFlags;
 };
 
@@ -2266,7 +2268,7 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchui_dylibApiFunc)(
 #define SJME_SCRITCHUI_DYLIB_SYMBOL_PREFIX \
 	SJME_SCRITCHANY_DYLIB_SYMBOL_PREFIX(ui)
 
-/** The symbol to use with @c sjme_scritchui_dylibApiFunc . */
+/** The symbol to use with @link sjme_scritchui_dylibApiFunc @endlink . */
 #define SJME_SCRITCHUI_DYLIB_SYMBOL(x) \
 	SJME_SCRITCHANY_DYLIB_SYMBOL(ui, x)
 

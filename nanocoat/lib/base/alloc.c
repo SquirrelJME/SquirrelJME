@@ -42,7 +42,7 @@
  * @param pool The pool this is in.
  * @param atLink The link to print info for.
  * @param trigger The trigger for the failure.
- * @return Always @c SJME_JNI_TRUE .
+ * @return Always @link SJME_JNI_TRUE @endlink .
  * @since 2023/12/29
  */
 static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
@@ -91,7 +91,7 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
  * @param pool The pool this is in.
  * @param atLink The link to print info for.
  * @param trigger The trigger for the failure.
- * @return Always @c SJME_JNI_TRUE .
+ * @return Always @link SJME_JNI_TRUE @endlink .
  * @since 2023/12/29
  */
 #define sjme_alloc_corruptFail(pool, atLink, trigger) SJME_JNI_TRUE

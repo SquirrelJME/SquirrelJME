@@ -10,6 +10,7 @@
 /**
  * Used to determine allocation sizes.
  * 
+ * @file
  * @since 2023/12/14
  */
 
@@ -35,7 +36,7 @@ typedef enum sjme_alloc_sizeOfId
 	/** Unknown. */
 	SJME_ALLOC_SIZEOF_UNKNOWN = 0,
 
-	/** @c sjme_nvm_rom_suiteFunctions . */
+	/** @link sjme_nvm_rom_suiteFunctions @endlink . */
 	SJME_ALLOC_SIZEOF_ROM_SUITE_FUNCTIONS = 1,
 	
 	/** Virtual machine boot configuration. */

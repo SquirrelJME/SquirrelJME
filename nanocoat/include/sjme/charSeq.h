@@ -10,6 +10,7 @@
 /**
  * Character sequences.
  * 
+ * @file
  * @since 2024/06/26
  */
 
@@ -83,7 +84,7 @@ typedef struct sjme_charSeq_functions
 } sjme_charSeq_functions;
 
 /**
- * The type of character encoding used in @c sjme_charSeq .
+ * The type of character encoding used in @link sjme_charSeq @endlink .
  *
  * @since 2025/03/07
  */
@@ -309,7 +310,7 @@ sjme_errorCode sjme_charSeq_equals(
  * @param aSeq The sequence to check.
  * @param bSeq The char sequence to check for equality against.
  * @return Returns whether it matches, note that if there is an error
- * then @c SJME_JNI_FALSE will be returned and the error will be hidden.
+ * then @link SJME_JNI_FALSE @endlink will be returned and the error will be hidden.
  * @since 2024/11/09
  */
 sjme_jboolean sjme_charSeq_equalsR(
@@ -336,7 +337,7 @@ sjme_errorCode sjme_charSeq_equalsUtf(
  * @param aSeq The sequence to check.
  * @param bUtf The UTF sequence to check for equality against.
  * @return Returns whether it matches, note that if there is an error
- * then @c SJME_JNI_FALSE will be returned and the error will be hidden.
+ * then @link SJME_JNI_FALSE @endlink will be returned and the error will be hidden.
  * @since 2024/08/08 
  */
 sjme_jboolean sjme_charSeq_equalsUtfR(
@@ -354,7 +355,8 @@ sjme_errorCode sjme_charSeq_free(
 	sjme_attrInNotNull sjme_charSeq seq);
 
 /**
- * Hashes the given string in accordance to Java's @c String.hashCode() .
+ * Hashes the given string in accordance to
+ * Java's @code{.java} String.hashCode() @endcode .
  * 
  * @param inSeq The sequence to hash.
  * @param outHash The resultant hash code.
@@ -366,7 +368,8 @@ sjme_errorCode sjme_charSeq_hash(
 	sjme_attrOutNotNull sjme_jint* outHash);
 
 /**
- * Hashes the given string in accordance to Java's @c String.hashCode() , note
+ * Hashes the given string in accordance to
+ * Java's @code{.java} String.hashCode() @endcode , note
  * that this will any errors that occur.
  * 
  * @param inSeq The sequence to hash.
@@ -545,7 +548,7 @@ sjme_errorCode sjme_charSeq_startsWithUtf(
  * @param inSeq The sequence to check.
  * @param startsWithUtf The UTF sequence to check the start for.
  * @return Returns whether it matches, note that if there is an error
- * then @c SJME_JNI_FALSE will be returned and the error will be hidden.
+ * then @link SJME_JNI_FALSE @endlink will be returned and the error will be hidden.
  * @since 2024/08/08 
  */
 sjme_jboolean sjme_charSeq_startsWithUtfR(
@@ -553,10 +556,10 @@ sjme_jboolean sjme_charSeq_startsWithUtfR(
 	sjme_attrInNotNull sjme_lpcstr startsWithUtf);
 	
 /**
- * Returns a temporary @c sjme_lpcstr over the character sequence.
+ * Returns a temporary @link sjme_lpcstr @endlink over the character sequence.
  * 
  * @param inSeq The input sequence.
- * @return The temporary @c sjme_lpcstr .
+ * @return The temporary @link sjme_lpcstr @endlink .
  * @since 2025/03/07
  */
 sjme_lpcstr sjme_charSeq_tempUtf(

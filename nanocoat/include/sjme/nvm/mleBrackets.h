@@ -10,6 +10,7 @@
 /**
  * MLE Bracket instance types.
  * 
+ * @file
  * @since 2025/02/23
  */
 
@@ -44,15 +45,15 @@ typedef struct sjme_jbracketJarPackageBase sjme_jbracketJarPackageBase;
  */
 typedef sjme_jbracketJarPackageBase* sjme_jbracketJarPackage;
 	
-/** Basic @c sjme_jbracketJarPackage type identifier. */
+/** Basic @link sjme_jbracketJarPackage @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jbracketJarPackage \
 	SJME_TYPEOF_BASIC_sjme_jobject
 
-/** Java @c sjme_jbracketJarPackage type identifier. */
+/** Java @link sjme_jbracketJarPackage @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jbracketJarPackage \
 	SJME_TYPEOF_JAVA_sjme_jobject
 
-/** Is a pointer for @c sjme_jbracketJarPackage ? */
+/** Is a pointer for @link sjme_jbracketJarPackage @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jbracketJarPackage \
 	SJME_TYPEOF_IS_POINTER_sjme_jobject
 
@@ -70,13 +71,13 @@ typedef struct sjme_jbracketTraceBase sjme_jbracketTraceBase;
  */
 typedef sjme_jbracketTraceBase* sjme_jbracketTrace;
 	
-/** Basic @c sjme_jbracketTrace type identifier. */
+/** Basic @link sjme_jbracketTrace @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jbracketTrace SJME_TYPEOF_BASIC_sjme_jobject
 
-/** Java @c sjme_jbracketTrace type identifier. */
+/** Java @link sjme_jbracketTrace @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jbracketTrace SJME_TYPEOF_JAVA_sjme_jobject
 
-/** Is a pointer for @c sjme_jbracketTrace ? */
+/** Is a pointer for @link sjme_jbracketTrace @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jbracketTrace \
 	SJME_TYPEOF_IS_POINTER_sjme_jobject
 
@@ -97,13 +98,13 @@ typedef struct sjme_jbracketPipeBase sjme_jbracketPipeBase;
  */
 typedef sjme_jbracketPipeBase* sjme_jbracketPipe;
 	
-/** Basic @c sjme_jbracketPipe type identifier. */
+/** Basic @link sjme_jbracketPipe @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jbracketPipe SJME_TYPEOF_BASIC_sjme_jobject
 
-/** Java @c sjme_jbracketPipe type identifier. */
+/** Java @link sjme_jbracketPipe @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jbracketPipe SJME_TYPEOF_JAVA_sjme_jobject
 
-/** Is a pointer for @c sjme_jbracketPipe ? */
+/** Is a pointer for @link sjme_jbracketPipe @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jbracketPipe \
 	SJME_TYPEOF_IS_POINTER_sjme_jobject
 	

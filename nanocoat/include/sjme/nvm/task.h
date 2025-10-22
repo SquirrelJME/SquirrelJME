@@ -10,6 +10,7 @@
 /**
  * Tasks support.
  * 
+ * @file
  * @since 2023/07/29
  */
 
@@ -161,8 +162,9 @@ typedef struct sjme_frame_frameStacks sjme_frame_frameStacks;
  * anything.
  * @param stackPush If the condition should push any value to the stack,
  * then this should be set to a value other than void.
- * @return Any resultant error, if any, @c SJME_ERROR_NOT_MATCHED means
- * that the condition has not been met yet.
+ * @return Any resultant error, if
+ * any, @link SJME_ERROR_NOT_MATCHED @endlink means that the condition has not
+ * been met yet.
  * @since 2025/10/02
  */
 typedef sjme_errorCode (*sjme_nvm_frame_conditionFunc)(
@@ -543,7 +545,7 @@ typedef struct sjme_nvm_task_globals
 	/** The default accessor for fields. */
 	sjme_nvm_jfieldAccessFunc accessor;
 
-	/** Cached @c sjme_jbracketJarPackage for libraries. */
+	/** Cached @link sjme_jbracketJarPackage @endlink for libraries. */
 	sjme_list(sjme_jbracketJarPackage)* jarBrackets;
 	
 	/** The main thread. */
@@ -591,7 +593,7 @@ struct sjme_nvm_taskBase
 	/** The current task status. */
 	sjme_nvm_task_statusType status;
 
-	/** Task @c sjme_nvm_terminateLevel level. */
+	/** Task @link sjme_nvm_terminateLevel @endlink level. */
 	sjme_atomic(sjme_jint) terminate;
 
 	/** The number of threads based on the count. */
@@ -633,7 +635,7 @@ struct sjme_nvm_threadBase
 	/** The owning task. */
 	sjme_phantom(sjme_nvm_task) inTask;
 
-	/** The @c sjme_nvm_thread_startType of the thread. */
+	/** The @link sjme_nvm_thread_startType @endlink of the thread. */
 	sjme_atomic(sjme_jint) start;
 	
 	/** The current thread status. */
@@ -663,7 +665,7 @@ struct sjme_nvm_threadBase
 	/** The stack information for the entire thread. */
 	sjme_frame_threadStacks stack;
 
-	/** What is the @c sjme_nvm_threadScheduleMode of this thread? */
+	/** What is the @link sjme_nvm_threadScheduleMode @endlink of this thread? */
 	sjme_atomic(sjme_jint) scheduleMode;
 
 	/** A @c Throwable which has been thrown. */
@@ -904,7 +906,7 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
  * Peeks a single value from the top of the stack.
  * 
  * @param inFrame The frame to pop from.
- * @param typeId The type ID to pop, if this is @c SJME_NUM_JAVA_TYPE_IDS
+ * @param typeId The type ID to pop, if this is @link SJME_NUM_JAVA_TYPE_IDS
  * then this will disregard the type.
  * @param outValue The resultant value.
  * @param copiedElsewhere Is this value copied elsewhere? That is if this is
@@ -1322,7 +1324,7 @@ sjme_errorCode sjme_nvm_task_threadInterrupt(
  * @param inThread The thread to check if interrupted.
  * @param clear If the interrupt signal should be cleared.
  * @return Any resultant error, if any, interrupted threads
- * will be @c SJME_ERROR_INTERRUPTED.
+ * will be @link SJME_ERROR_INTERRUPTED.
  * @since 2025/10/02
  */
 sjme_errorCode sjme_nvm_task_threadInterruptCheck(

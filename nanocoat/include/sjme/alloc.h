@@ -10,6 +10,7 @@
 /**
  * SquirrelJME allocator.
  * 
+ * @file
  * @since 2023/11/18
  */
 
@@ -96,9 +97,7 @@ typedef struct sjme_alloc_weakBase* sjme_alloc_weak;
  * @param isWeakFree Was this called because the underlying weak was
  * un-referenced?
  * @param isBlockFree Was this called because the underlying block was freed?
- * @return Any resultant error code. If this function
- * returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the weak reference reaches
- * zero references, then it will not be freed.
+ * @return Any resultant error code.
  * @since 2024/07/02
  */
 typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
@@ -347,8 +346,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
  * @param allocPool The pool to allocate within.
  * @param size The number of bytes to allocate.
  * @param inEnqueue The optional function to call when this reference is
- * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
- * weak reference count is zero, then the weak reference will not be freed.
+ * enqueued. 
  * @param outAddr The output address.
  * @param outWeak The resultant weak reference.
  * @return Returns an error code.
@@ -519,8 +517,7 @@ sjme_jint sjme_alloc_weakRefLeftR(
  * @param addr The address to reference.
  * @param outWeak The resultant weak reference for the type.
  * @param inEnqueue The optional function to call when this reference is
- * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
- * weak reference count is zero, then the weak reference will not be freed.
+ * enqueued. 
  * @param inEnqueueData Optional data to pass to @c inEnqueue .
  * @return Any resultant error, if any.
  * @since 2024/07/01
@@ -552,8 +549,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakRefE)(
  * @param pool The pool to allocate within.
  * @param size The number of bytes to allocate.
  * @param inEnqueue The optional function to call when this reference is
- * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
- * weak reference count is zero, then the weak reference will not be freed.
+ * enqueued.
  * @param outAddr The output address.
  * @param outWeak The resultant weak reference.
  * @return Returns an error code.
@@ -665,8 +661,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakRefE)(
  * @param addr The address to reference.
  * @param outWeak The resultant weak reference for the type.
  * @param inEnqueue The optional function to call when this reference is
- * enqueued. If this function returns @c SJME_ERROR_ENQUEUE_KEEP_WEAK and the
- * weak reference count is zero, then the weak reference will not be freed.
+ * enqueued.
  * @param inEnqueueData Optional data to pass to @c inEnqueue .
  * @return Any resultant error, if any.
  * @since 2024/07/01
@@ -681,7 +676,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakRefE)(
  * Frees memory.
  * 
  * @param addr The memory to free. 
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns @link SJME_JNI_TRUE @endlink on success.
  * @since 2023/11/19
  */
 sjme_errorCode sjme_alloc_free(
@@ -701,8 +696,8 @@ sjme_errorCode sjme_alloc_getLink(
 
 /**
  * Gets the pointer pointed to by the given weak reference, if this returns
- * the value @c NULL then @c sjme_alloc_weakDelete should be called to
- * remove any stale weak references.
+ * the value @c NULL then @link sjme_alloc_weakDelete @endlink should be
+ * called to remove any stale weak references.
  * 
  * @param inWeak The weak reference to get from.
  * @param outPointer The pointer to the referenced memory, if it has been

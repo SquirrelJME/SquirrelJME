@@ -284,7 +284,7 @@ typedef struct sjme_mock_configWorkData sjme_mock_configWorkData;
  * 
  * @param inState The input state.
  * @param inCurrent The current run item for the mock.
- * @return Returns @c SJME_JNI_TRUE when successful.
+ * @return Returns @link SJME_JNI_TRUE @endlink when successful.
  * @since 2023/11/11
  */
 typedef sjme_jboolean (*sjme_mock_configFunc)(
@@ -294,7 +294,7 @@ typedef sjme_jboolean (*sjme_mock_configFunc)(
 /**
  * Represents an mock initialization function.
  * 
- * @return Will return @c SJME_JNI_TRUE when successful.
+ * @return Will return @link SJME_JNI_TRUE @endlink when successful.
  * @since 2023/11/03
  */
 typedef sjme_jboolean (*sjme_mock_doFunc)(
@@ -329,7 +329,7 @@ typedef struct sjme_mock_configSet
  * @param inState The input state.
  * @param inSet The set to act on.
  * @param special Special value, optional.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns @link SJME_JNI_TRUE @endlink on success.
  * @since 2023/1/111
  */
 sjme_jboolean sjme_mock_act(
@@ -367,7 +367,7 @@ sjme_jboolean sjme_mock_doNvmFrame(
  * 
  * @param inState The input state.
  * @param inData The input data.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns @link SJME_JNI_TRUE @endlink on success.
  * @since 2023/11/17 
  */
 sjme_jboolean sjme_mock_doNvmObject(

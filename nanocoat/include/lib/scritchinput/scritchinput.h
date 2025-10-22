@@ -10,6 +10,7 @@
 /**
  * Scritch Input Library.
  * 
+ * @file
  * @since 2024/05/01
  */
 
@@ -416,10 +417,13 @@ typedef struct sjme_scritchinput_eventDataUnknown
  */
 typedef struct sjme_scritchinput_eventDataKey
 {
-	/** Unicode key core or @c sjme_scritchinput_key . */
+	/** Unicode key core or @link sjme_scritchinput_key @endlink . */
 	sjme_jint code;
 	
-	/** The modifiers held down, from @c sjme_scritchinput_modifier . */
+	/**
+	 * The modifiers held down,
+	 * from @link sjme_scritchinput_modifier @endlink .
+	 */
 	sjme_jint modifiers;
 } sjme_scritchinput_eventDataKey;
 
@@ -428,7 +432,10 @@ typedef struct sjme_scritchinput_eventDataMouseButton
 	/** The buttons being pressed. */
 	sjme_jint buttonMask;
 	
-	/** The modifiers held down, from @c sjme_scritchinput_modifier . */
+	/**
+	 * The modifiers held down, from
+	 * @link sjme_scritchinput_modifier @endlink .
+	 */
 	sjme_jint modifiers;
 	
 	/** The X coordinate. */
@@ -446,7 +453,10 @@ typedef struct sjme_scritchinput_eventDataMouseMotion
 	/** The buttons being pressed. */
 	sjme_jint buttonMask;
 	
-	/** The modifiers held down, from @c sjme_scritchinput_modifier . */
+	/**
+	 * The modifiers held down,
+	 * from @link sjme_scritchinput_modifier @endlink .
+	 */
 	sjme_jint modifiers;
 	
 	/** The X coordinate. */
