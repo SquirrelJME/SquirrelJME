@@ -78,6 +78,9 @@ MACRO_EXPANSION = YES
 JAVADOC_AUTOBRIEF = YES
 QT_AUTOBRIEF = YES
 
+# These headers should not be documented
+EXCLUDE_PATTERN += */scritchuiImpl.h
+
 # Everything starts with sjme_, which not ignoring this would make the
 # index system pretty pointless
 IGNORE_PREFIX += sjme_nvm_ SJME_NVM_
@@ -88,8 +91,27 @@ IGNORE_PREFIX += sjme_scritchpen_ SJME_SCRITCHPEN_
 IGNORE_PREFIX += sjme_scritchany_ SJME_SCRITCHANY_
 IGNORE_PREFIX += sjme_ SJME_
 
+# Ignore these symbols as they are internal
+EXCLUDE_SYMBOLS += sjme_scritchpen_serialData_*
+EXCLUDE_SYMBOLS += sjme_scritchui_serialData_*
+EXCLUDE_SYMBOLS += sjme_scritchui_serialDataUnion
+
+# Do not bother documenting pseudo types and defines that build them
+EXCLUDE_SYMBOLS += sjme_list_sjme_* sjme_atomic_sjme_*
+EXCLUDE_SYMBOLS += SJME_TYPEOF_JAVA_*
+EXCLUDE_SYMBOLS += SJME_TYPEOF_BASIC_*
+EXCLUDE_SYMBOLS += SJME_TYPEOF_IS_POINTER_*
+
+# Typedefs are used heavily
+TYPEDEF_HIDES_STRUCT = YES
+INLINE_SIMPLE_STRUCTS = YES
+
 # Clang with SquirrelJME is kinda broken with Doxygen
 CLANG_ASSISTED_PARSING = NO
+
+# Make enums actually readable
+ENUM_VALUES_PER_LINE = 0
+SHOW_ENUM_VALUES = YES
 
 # Be very verbose
 WARNINGS = YES
@@ -110,4 +132,11 @@ DOT_IMAGE_FORMAT = YES
 
 # UML is easier to read than whatever Doxygen decided to use for graphs
 UML_LOOK = YES
+
+# Have a bigger, but simpler, index
+ALPHABETICAL_INDEX = YES
+GENERATE_TREEVIEW = NO
+PAGE_OUTLINE_PANEL = NO
+FULL_SIDEBAR = NO
+HTML_INDEX_NUM_ENTRIES = 9999
 
