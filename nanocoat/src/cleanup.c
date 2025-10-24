@@ -20,43 +20,41 @@
 	sjme_errorCode error; \
 	sjme_pointer temp
 
-#define SJME_CHARSEQ_DELETE(ptr) \
-	do { if ((ptr) != NULL) \
+#define SJME_CLEANUP_OP(get, set, op) \
+	do { get; if ((temp) != NULL) \
 	{ \
-		temp = (ptr); \
-		(ptr) = NULL; \
-		if (sjme_error_is(error = sjme_charSeq_delete(temp))) \
+		set; \
+		if (sjme_error_is(error = op)) \
 			return sjme_error_default(error); \
 	} } while (0)
+
+#define SJME_CHARSEQ_DELETE(ptr) \
+	SJME_CLEANUP_OP(temp = (ptr), \
+		(ptr) = NULL, \
+		sjme_charSeq_delete(temp))
 
 #define SJME_SIMPLE_CLOSE(ptr) \
-	do { if ((ptr) != NULL) \
-	{ \
-		temp = (ptr); \
-		(ptr) = NULL; \
-		if (sjme_error_is(error = sjme_closeable_close(\
-			SJME_AS_CLOSEABLE(temp)))) \
-			return sjme_error_default(error); \
-	} } while (0)
+	SJME_CLEANUP_OP(temp = (ptr), \
+		(ptr) = NULL, \
+		sjme_closeable_close(SJME_AS_CLOSEABLE(temp)))
+
+#define SJME_COUNT_DOWN_ATOMIC_NAT(type, numPointerStars, ptr) \
+	SJME_CLEANUP_OP(temp = sjme_atomic_gP(type, numPointerStars, (ptr)), \
+		sjme_atomic_sP(type, numPointerStars, (ptr), NULL), \
+		sjme_nvm_instance_countDown(temp))
+
+#define SJME_SIMPLE_CLOSE_ATOMIC_NAT(type, numPointerStars, ptr) \
+	SJME_CLEANUP_OP(temp = sjme_atomic_gP(type, numPointerStars, (ptr)), \
+		sjme_atomic_sP(type, numPointerStars, (ptr), NULL), \
+		sjme_closeable_close(SJME_AS_CLOSEABLE(temp)))
 
 #define SJME_SIMPLE_CLOSE_ATOMIC(type, numPointerStars, ptr) \
-	do { temp = sjme_atomic_gP(type, numPointerStars, &(ptr)); \
-	if (temp != NULL) \
-	{ \
-		sjme_atomic_sP(type, numPointerStars, &(ptr), NULL); \
-		if (sjme_error_is(error = sjme_closeable_close(\
-			SJME_AS_CLOSEABLE(temp)))) \
-			return sjme_error_default(error); \
-	} } while (0)
+	SJME_SIMPLE_CLOSE_ATOMIC_NAT(type, numPointerStars, &(ptr))
 
 #define SJME_SIMPLE_FREE(ptr) \
-	do { if ((ptr) != NULL) \
-	{ \
-		temp = (sjme_pointer)(ptr); \
-		(ptr) = NULL; \
-		if (sjme_error_is(error = sjme_alloc_free(temp))) \
-			return sjme_error_default(error); \
-	} } while (0)
+	SJME_CLEANUP_OP(temp = (sjme_pointer)(ptr), \
+		(ptr) = NULL, \
+		sjme_alloc_free(temp))
 
 #define SJME_FLAGGED_FREE(free, ptr) \
 	do { if ((free) && (ptr) != NULL) \
@@ -75,7 +73,7 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
 	sjme_attrInNotNull sjme_nvm_walk_state* at)
 {
-	sjme_errorCode error;
+	SJME_CLEANUP_DECL;
 	
 	if (root == NULL || at == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -129,12 +127,8 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 				SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
 		{
 			/* Count down. */
-			if (sjme_error_is(error = sjme_nvm_instance_countDown(
-				sjme_atomic_g(sjme_jobject, at->valueP.atomicObject))))
-				return sjme_error_default(error);
-
-			/* Clear the actual pointer. */
-			sjme_atomic_s(sjme_jobject, at->valueP.atomicObject, NULL);
+			SJME_COUNT_DOWN_ATOMIC_NAT(sjme_pointer, 0,
+				at->valueP.atomicPointer);
 		}
 
 		/* Any structure type can be closed, if not an object. */
@@ -146,13 +140,8 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 			!sjme_nvm_isAR(*at->valueP.pointer,
 				SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
 		{
-			/* Close it. */
-			if (sjme_error_is(error = sjme_closeable_close(
-				*at->valueP.pointer)))
-				return sjme_error_default(error);
-			
-			/* Clear the actual pointer. */
-			sjme_atomic_s(sjme_jobject, at->valueP.atomicObject, NULL);
+			SJME_SIMPLE_CLOSE_ATOMIC_NAT(sjme_pointer, 0,
+				at->valueP.atomicPointer);
 		}
 	}
 

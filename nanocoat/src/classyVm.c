@@ -1115,6 +1115,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		inClass->object.isClass = inClass;
 	else
 	{
+		/* Locate the class type. */
 		if (sjme_error_is(error = sjme_nvm_task_commonClass(contextThread,
 			SJME_NVM_TASK_COMMON_CLASS_CLASS, &inClass->object.isClass,
 			SJME_JNI_FALSE)) ||
@@ -1294,6 +1295,18 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			contextThread, inClass)))
 			goto fail_initStatics;
 	
+	/* Count up super class. */
+	if (superClass != NULL)
+		if (sjme_error_is(error = sjme_alloc_weakRef(superClass, NULL)))
+			goto fail_countSuper;
+	
+	/* Count up reference to the java.lang.Class */
+	/* instance, assuming this is not that instance. */
+	if (inClass->object.isClass != inClass)
+		if (sjme_error_is(error = sjme_alloc_weakRef(inClass->object.isClass,
+			NULL)))
+			goto fail_countClassObject;
+	
 	/* Set as initialized now. */
 	if (!sjme_atomic_cs(sjme_jint, &inClass->isInitialized,
 		SJME_VM_CLASS_INIT_LOAD_CURRENT,
@@ -1347,6 +1360,8 @@ fail_super:
 		&inClass->object.common.lock, NULL);
 	
 fail_markDone:
+fail_countClassObject:
+fail_countSuper:
 fail_initStatics:
 fail_initClassType:
 fail_badState:

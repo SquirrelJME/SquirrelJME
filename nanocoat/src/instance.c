@@ -146,7 +146,8 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 #if defined(SJME_CONFIG_DEBUG_GC)
 	/* Debug. */
 	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
-		"GC DN-1: %p (%s) %d -> %d",
+		"GC DN-1: %d:%p (%s) %d -> %d",
+		object->common.type,
 		object, 
 		(object->isClass != NULL ?
 			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),
@@ -194,7 +195,8 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 #if defined(SJME_CONFIG_DEBUG_GC)
 	/* Debug. */
 	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
-		"GC UP+1: %p (%s) %d -> %d",
+		"GC UP+1: %d:%p (%s) %d -> %d",
+		object->common.type,
 		object,
 		(object->isClass != NULL ?
 			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),

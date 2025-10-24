@@ -222,6 +222,9 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @link sjme_extendedTypeId @endlink */
 	SJME_NVM_WALK_PSEUDO_EXTENDED_TYPE_ID = -61,
+
+	/** @link sjme_nvm_class_fieldConstVal @endlink . */
+	SJME_NVM_WALK_PSEUDO_FIELD_CONST_VAL = -62,
 } sjme_nvm_walk_pseudoType;
 
 /**
@@ -345,6 +348,9 @@ typedef union sjme_nvm_walk_pointer
 
 	/** Atomic integer. */
 	sjme_atomic(sjme_jint)* atomicInt;
+
+	/** Atomic pointer. */
+	sjme_atomic(sjme_pointer)* atomicPointer;
 
 	/** Atomic object. */
 	sjme_atomic(sjme_jobject)* atomicObject;
