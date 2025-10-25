@@ -1687,6 +1687,7 @@ sjme_errorCode sjme_alloc_poolDump(
 	sjme_attrInValue sjme_jboolean onlyUsed)
 {
 	sjme_alloc_link rover;
+	sjme_jint idType;
 
 	if (allocPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1700,10 +1701,13 @@ sjme_errorCode sjme_alloc_poolDump(
 			continue;
 		
 		/* Print link information. */
-		sjme_messageR(NULL, -1, NULL,
-			SJME_JNI_TRUE,
-			"Link %08p: %s %dB in %s (%s:%d)",
-				rover,
+		idType = -1;
+		if (allocPool->pointerIdType != NULL &&
+			rover->space == SJME_ALLOC_POOL_SPACE_USED)
+			idType = allocPool->pointerIdType((sjme_pointer*)&rover->block[0]);
+		sjme_messageB(
+			"Link %d:%p: %s %dB in %s (%s:%d)",
+				idType, &rover->block[0],
 				(rover->space == SJME_ALLOC_POOL_SPACE_USED ? "USED" : "FREE"),
 				rover->blockSize,
 				rover->debugFunction,

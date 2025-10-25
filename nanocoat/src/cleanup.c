@@ -820,3 +820,23 @@ sjme_jboolean sjme_nvm_isAR(
 	return result;
 }
 
+sjme_nvm_structType sjme_nvm_typeOf(
+	sjme_attrInNullable sjme_pointer inWhat)
+{
+	sjme_alloc_weak weak;
+	sjme_nvm_common common;
+
+	/* Null is invalid. */
+	if (inWhat == NULL)
+		return SJME_NVM_STRUCT_UNKNOWN;
+	
+	/* All NVM objects are weakly referenced. */
+	weak = NULL;
+	if (sjme_error_is(sjme_alloc_weakRefGet(inWhat, &weak)) || weak == NULL)
+		return SJME_NVM_STRUCT_UNKNOWN;
+
+	/* Return the type of instance this is. */
+	common = inWhat;
+	return common->type;
+}
+

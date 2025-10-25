@@ -87,6 +87,16 @@ sjme_errorCode sjme_nvm_isA(
 sjme_jboolean sjme_nvm_isAR(
 	sjme_attrInNullable sjme_pointer inWhat,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType);
+
+/**
+ * Returns the type of the given pointer.
+ * 
+ * @param inWhat What to get the type of.
+ * @return The type of the given pointer.
+ * @since 2025/10/24
+ */
+sjme_nvm_structType sjme_nvm_typeOf(
+	sjme_attrInNullable sjme_pointer inWhat);
 	
 /*--------------------------------------------------------------------------*/
 

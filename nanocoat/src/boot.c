@@ -173,6 +173,21 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 	return SJME_ERROR_NONE;
 }
 
+#if defined(SJME_CONFIG_DEBUG)
+static sjme_jint sjme_nvm_pointerId(
+	sjme_attrInNotNull sjme_pointer p)
+{
+	sjme_nvm_structType typeId;
+
+	/* Try our best to ensure the type is valid. */
+	typeId = sjme_nvm_typeOf(p);
+	if (typeId > SJME_NVM_STRUCT_UNKNOWN &&
+		typeId < SJME_NVM_NUM_STRUCT)
+		return typeId;
+	return -1;
+}
+#endif
+
 static sjme_errorCode sjme_nvm_printHelp(
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrInNotNull sjme_nal_stdOFunc helpOut,
@@ -461,6 +476,12 @@ sjme_errorCode sjme_nvm_boot(
 			bootParamCopy->jdwpAddress,
 			bootParamCopy->jdwpPort)) || result->jdwp == NULL)
 			sjme_message("Failed to establish JDWP connection: %d", error);
+#endif
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* If debugging, set the pointer ID type. */
+	if (allocPool->pointerIdType == NULL)
+		allocPool->pointerIdType = sjme_nvm_pointerId;
 #endif
 	
 	/* Return newly created VM. */

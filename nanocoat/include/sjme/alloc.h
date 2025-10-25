@@ -205,6 +205,16 @@ struct sjme_alloc_linkBase
 #define SJME_ALLOC_POOL_MAGIC INT32_C(0x4C6F6C21)
 
 /**
+ * Returns the ID type of the given pointer.
+ *
+ * @param p The pointer to get the ID type of.
+ * @return The ID type of the pointer.
+ * @since 2025/10/24
+ */
+typedef sjme_jint (*sjme_alloc_pointerIdTypeFunc)(
+	sjme_attrInNotNull sjme_pointer p);
+
+/**
  * Structure which stores the pooled memory allocator.
  * 
  * @since 2023/11/18
@@ -219,6 +229,9 @@ struct sjme_alloc_poolBase
 
 	/** The size of the allocation pool. */
 	sjme_jint size;
+
+	/** Used when debugging to identify the pointer type used. */
+	sjme_alloc_pointerIdTypeFunc pointerIdType;
 	
 	/** Whole pool spin lock. */
 	sjme_alignPointer sjme_thread_spinLock spinLock;
