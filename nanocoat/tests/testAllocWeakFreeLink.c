@@ -72,7 +72,8 @@ SJME_TEST_DECLARE(testAllocWeakFreeLink)
 		"Enqueue was not called?");
 	
 	/* Reading invalid memory, but the weak should be cleared. */
-	sjme_unit_notEqualP(test, link->weak, weak,
+	sjme_unit_notEqualP(test,
+		sjme_atomic_g(sjme_alloc_weak, &link->weak), weak,
 		"Weak ref in link not cleared?");
 	
 	/* The weak ref should still have a count. */

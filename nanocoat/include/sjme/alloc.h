@@ -86,6 +86,12 @@ typedef enum sjme_alloc_linkFlag
  * @since 2024/07/01
  */
 typedef struct sjme_alloc_weakBase* sjme_alloc_weak;
+	
+/** Weak links are pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_alloc_weak 1
+
+/** Atomic weak link. */
+SJME_ATOMIC_DECLARE(sjme_alloc_weak, 0);
 
 /**
  * This is called when a weak reference has been freed or is about to be
@@ -161,7 +167,7 @@ struct sjme_alloc_linkBase
 	sjme_atomic(sjme_alloc_link) freeNext;
 	
 	/** The weak reference this is attached to. */
-	sjme_alloc_weak weak;
+	sjme_atomic(sjme_alloc_weak) weak;
 	
 	/** The allocation size of the link, @code{allocSize <= blockSize}. */
 	sjme_jint allocSize;

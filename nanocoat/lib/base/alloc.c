@@ -70,7 +70,7 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 		sjme_message("link->space: NUM");
 	else
 		sjme_message("link->space: %d", (int)atLink->space);
-	sjme_message("link->weak: %p", (void*)atLink->weak);
+	sjme_message("link->weak: %p", sjme_atomic_pg(&atLink->weak));
 	sjme_message("link->freePrev: %p", sjme_atomic_pg(&atLink->freePrev));
 	sjme_message("link->freeNext: %p", sjme_atomic_pg(&atLink->freeNext));
 	sjme_message("link->allocSize: %d", (int)atLink->allocSize);
@@ -988,7 +988,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 	}
 	
 	/* If there is a weak reference, clear it. */
-	weak = link->weak;
+	weak = sjme_atomic_g(sjme_alloc_weak, &link->weak);
 	if (weak != NULL)
 	{
 		/* If we are already in this, do not free as we will corrupt */
@@ -1014,7 +1014,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 			goto fail_enqueue;
 		
 		/* Clear weak reference data. */
-		link->weak = NULL;
+		sjme_atomic_psNull(&link->weak);
 		sjme_atomic_psNull(&weak->link);
 		sjme_atomic_psNull(&weak->pointer);
 	}
@@ -1125,7 +1125,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
 		return sjme_error_default(error);
 	
 	/* If there is a weak reference, then we cannot touch this. */
-	if (link->weak != NULL)
+	if (sjme_atomic_g(sjme_alloc_weak, &link->weak) != NULL)
 		return SJME_ERROR_WEAK_REFERENCE_ATTACHED;
 
 	/* Pointless operation. */
@@ -1268,7 +1268,7 @@ sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakDelete)(
 			goto fail_enqueue;
 		
 		/* Clear any weak reference details. */
-		link->weak = NULL;
+		sjme_atomic_psNull(&link->weak);
 		sjme_atomic_psNull(&weak->link);
 		sjme_atomic_psNull(&weak->pointer);
 		
@@ -1355,7 +1355,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 		return sjme_error_default(error);
 	
 	/* Is there already a weak reference? */
-	result = link->weak;
+	result = sjme_atomic_g(sjme_alloc_weak, &link->weak);
 	if (result != NULL)
 	{
 		/* Enqueue can be set, but not overwritten. */
@@ -1393,6 +1393,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	}
 	
 	/* We need to allocate the link. */
+	result = NULL;
 #if defined(SJME_CONFIG_DEBUG)
 	if (sjme_error_is(error = sjme_allocR(link->pool, sizeof(*result),
 		(sjme_pointer*)&result, file, line, func)))
@@ -1411,7 +1412,7 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	sjme_atomic_s(sjme_jint, &result->count, 0);
 	
 	/* Join link back to this. */
-	link->weak = result;
+	sjme_atomic_s(sjme_alloc_weak, &link->weak, result);
 	
 	/* Debug. */
 #if defined(SJME_CONFIG_DEBUG_ALLOC)
@@ -1525,7 +1526,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakRefE)(
 		return sjme_error_default(error);
 	
 	/* No weak reference here? */
-	if (link->weak == NULL)
+	if (sjme_atomic_g(sjme_alloc_weak, &link->weak) == NULL)
 		return SJME_ERROR_NOT_WEAK_REFERENCE;
 		
 	/* Take ownership of lock. */
@@ -1589,7 +1590,7 @@ sjme_errorCode sjme_alloc_weakRefGet(
 	/* No weak reference here? Or it changed to something else? */
 	/* Also check if de-referencing would exceed the pool bounds. */
 	/* Or otherwise not marked valid. */
-	weak = link->weak;
+	weak = sjme_atomic_g(sjme_alloc_weak, &link->weak);
 	weakAddr = (sjme_intPointer)weak;
 	if (weak == NULL || weakAddr < ((sjme_intPointer)pool) ||
 		weakAddr >= (((sjme_intPointer)pool) + pool->size) ||
@@ -1647,6 +1648,7 @@ sjme_jint sjme_alloc_weakRefLeftR(
 	sjme_attrInNotNull sjme_pointer addr)
 {
 	sjme_alloc_weak weak;
+	sjme_jint result;
 	
 	/* Null is an implicit negative count. */
 	if (addr == NULL)
@@ -1658,7 +1660,10 @@ sjme_jint sjme_alloc_weakRefLeftR(
 		return -1;
 
 	/* Return the count. */
-	return sjme_atomic_g(sjme_jint, &weak->count);
+	result = sjme_atomic_g(sjme_jint, &weak->count);
+	if (result < 0)
+		return INT32_MIN;
+	return result;
 }
 
 #if defined(SJME_CONFIG_DEBUG)
@@ -1688,7 +1693,7 @@ sjme_errorCode sjme_alloc_poolDump(
 			idType = allocPool->pointerIdType((sjme_pointer*)&rover->block[0]);
 		weakLeft = sjme_alloc_weakRefLeftR((sjme_pointer*)&rover->block[0]);
 		
-		if (weakLeft > 0)
+		if (weakLeft >= 0 && weakLeft != INT32_MIN)
 			sjme_messageB(
 				"Link %d:%p [W%d]: %s %dB in %s (%s:%d)",
 					idType, &rover->block[0], weakLeft,

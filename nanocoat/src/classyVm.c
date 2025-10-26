@@ -507,6 +507,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 		
 		/* Store bind. */
 		result->elements[i] = bind;
+
+		/* Count up bind. */
+		if (sjme_error_is(error = sjme_alloc_weakRef(bind, NULL)))
+			goto fail_countBind;
 			
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
@@ -526,7 +530,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	/* Success! */
 	*outList = result;
 	return SJME_ERROR_NONE;
-	
+
+fail_countBind:
 fail_initBind:
 fail_noIndex:
 fail_allocResult:
@@ -969,10 +974,9 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	/* Initialize structure. */
 	result->isClasses = isClasses;
 	
-	/* Is now being used, so count up. */
-	if (sjme_error_is(error = sjme_nvm_instance_countUp(
-		SJME_AS_JOBJECT(result))))
-		goto fail_countUp;
+	/* Count up isClasses, since it is being referenced now. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(isClasses, NULL)))
+		goto fail_countIsClasses;
 	
 	/* Set class type ID. */
 	switch (sjme_charSeq_charAtR(binaryName, 0))
@@ -1047,7 +1051,7 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 
 fail_hash:
 fail_badType:
-fail_countUp:
+fail_countIsClasses:
 fail_allocIsClasses:
 	if (result != NULL)
 		sjme_alloc_free(isClasses);
@@ -2057,6 +2061,10 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadF(
 		&classes->elements[freeSlot],
 		contextThread, fieldName)) || maybe == NULL)
 		goto fail_loadClass;
+
+	/* Count up the loaded class since it is now in the free slot. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(maybe, NULL)))
+		goto fail_countClass;
 	
 	/* Release the write lock. */
 	if (sjme_error_is(error = sjme_thread_rwLockReleaseWrite(
@@ -2080,6 +2088,7 @@ skip_foundClass:
 	*outClass = maybe;
 	return SJME_ERROR_NONE;
 	
+fail_countClass:
 fail_loadClass:
 fail_releaseRead:
 fail_growList:

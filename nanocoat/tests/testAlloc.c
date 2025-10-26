@@ -125,7 +125,9 @@ SJME_TEST_DECLARE(testAlloc)
 		"Allocation size of free block mismatched?");
 	
 	/* There should be no weak link. */
-	sjme_unit_equalP(test, link->weak, NULL, "Weak link is set?");
+	sjme_unit_equalP(test,
+		sjme_atomic_g(sjme_alloc_weak, &link->weak), NULL,
+		"Weak link is set?");
 	
 	/* The fixed links should be unchanged. */
 	sjme_unit_equalP(test,

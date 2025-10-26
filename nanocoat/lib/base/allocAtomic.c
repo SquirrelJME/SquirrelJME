@@ -10,4 +10,6 @@
 #include "sjme/alloc.h"
 #include "sjme/atomicImpl.h"
 
+SJME_ATOMIC_FUNCTION(sjme_alloc_weak, 0)
+
 SJME_ATOMIC_FUNCTION(sjme_alloc_link, 0)

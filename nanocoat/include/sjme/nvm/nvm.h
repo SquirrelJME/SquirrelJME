@@ -251,7 +251,6 @@ typedef struct sjme_nvm_stateHooks
 	sjme_nvm_stateHookNativeCallFunc nativeCall;
 } sjme_nvm_stateHooks;
 	
-
 struct sjme_nvm_commonBase
 {
 	/** Closeable for this NanoCoat object. */

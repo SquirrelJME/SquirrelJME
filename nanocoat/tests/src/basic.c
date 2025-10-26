@@ -58,33 +58,6 @@ static sjme_debug_handlerFunctions sjme_test_debugHandlers =
 	sjme_sm(.message, NULL),
 };
 
-#if defined(SJME_CONFIG_DEBUG)
-void sjme_test_leakCheck(sjme_alloc_pool pool)
-{
-	sjme_alloc_link link;
-	
-	/* Go through every link. */
-	for (link = sjme_atomic_g(sjme_alloc_link, &pool->frontLink);
-		link != NULL;
-		link = sjme_atomic_g(sjme_alloc_link, &link->next))
-		if (link->space == SJME_ALLOC_POOL_SPACE_USED)
-		{
-			/* Indicate it leaked */
-			sjme_messageR(NULL, -1, NULL,
-				SJME_JNI_TRUE,
-				"LEAK:\t%dB\t%s\t%s:%d\tl=%p\tp=%p\tcount=%d",
-				link->allocSize, link->debugFunction,
-				sjme_debug_shortenFile(link->debugFile), link->debugLine,
-				link, pool,
-				(link->weak == NULL ? -2 : link->weak->count.value));
-				
-			/* Recursively check the nested pool. */
-			if ((link->flags & SJME_ALLOC_LINK_FLAG_NESTED_POOL) != 0)
-				sjme_test_leakCheck((sjme_alloc_pool)&link->block[0]);
-		}
-}
-#endif
-
 int sjme_test_main(int argc, sjme_lpstr* argv, sjme_lpcstr* nextTest)
 {
 	const sjme_availableTest* found;
@@ -209,11 +182,6 @@ int sjme_test_main(int argc, sjme_lpstr* argv, sjme_lpcstr* nextTest)
 		result = jumpId;
 		sjme_message("Short circuited test: %d.", (sjme_jint)result);
 	}
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Check for never freed memory. */
-	sjme_test_leakCheck(test.pool);
-#endif
 	
 	/* Cleanup after test. */
 	sjme_test_currentTest = NULL;

@@ -52,7 +52,8 @@ SJME_TEST_DECLARE(testAllocWeakRef)
 		"Weak pointer not allocated pointer?");
 	sjme_unit_equalP(test, sjme_atomic_pg(&weak->link), link,
 		"Weak pointer not allocated link?");
-	sjme_unit_equalP(test, link->weak, weak,
+	sjme_unit_equalP(test,
+		sjme_atomic_g(sjme_alloc_weak, &link->weak), weak,
 		"Link weak not allocated weak?");
 	
 	/* These should not be set. */

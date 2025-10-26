@@ -871,7 +871,7 @@ sjme_errorCode sjme_scritchui_core_intern_initCommon(
 				SJME_ERROR_INVALID_LINK);
 		
 		/* Must be weak referenced. */
-		if (link->weak == NULL)
+		if (sjme_atomic_g(sjme_alloc_weak, &link->weak) == NULL)
 			return SJME_ERROR_NOT_WEAK_REFERENCE;
 		
 		/* Type must be valid. */
