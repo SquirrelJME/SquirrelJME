@@ -10,6 +10,8 @@
 #include "sjme/atomicImpl.h"
 #include "sjme/nvm/mleBrackets.h"
 #include "sjme/nvm/nvm.h"
+#include "sjme/nvm/task.h"
+#include "sjme/nvm/classy.h"
 
 SJME_ATOMIC_FUNCTION(sjme_jbracketTrace, 0)
 
@@ -32,3 +34,9 @@ SJME_ATOMIC_FUNCTION(sjme_nvm_vmClass_loader, 0)
 SJME_ATOMIC_FUNCTION(sjme_nvm_class_poolEntryClass, 1)
 
 SJME_ATOMIC_FUNCTION(sjme_nvm_class_poolEntryNameAndType, 1)
+
+SJME_ATOMIC_FUNCTION(sjme_nvm_threadScheduleMode, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_nvm_thread_startType, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_nvm_thread_statusType, 0)

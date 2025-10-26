@@ -293,6 +293,9 @@ typedef enum sjme_nvm_threadScheduleMode
 	SJME_NVM_THREAD_NUM_SCHEDULE_MODE = 3,
 } sjme_nvm_threadScheduleMode;
 
+/** Atomic thread schedule mode. */
+SJME_ATOMIC_DECLARE(sjme_nvm_threadScheduleMode, 0);
+
 /**
  * Sub-schedule for thread scheduling.
  *

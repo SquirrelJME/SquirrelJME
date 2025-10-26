@@ -215,7 +215,8 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		}
 		
 		/* Thread has entered a sleeping state? */
-		if (inThread->status != SJME_NVM_THREAD_STATUS_RUNNING)
+		if (sjme_atomic_g(sjme_nvm_thread_statusType,
+			&inThread->status) != SJME_NVM_THREAD_STATUS_RUNNING)
 			break;
 		
 		/* Tick down. */

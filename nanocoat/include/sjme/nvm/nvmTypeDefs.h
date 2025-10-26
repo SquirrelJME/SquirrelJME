@@ -207,6 +207,7 @@ typedef sjme_nvm_rom_suiteBase* sjme_nvm_rom_suite;
  * @since 2023/12/17
  */
 typedef struct sjme_nvm_taskBase sjme_nvm_taskBase;
+	
 /**
  * Structure for a single task.
  *
@@ -411,6 +412,15 @@ typedef struct sjme_nvm_class_exceptionHandler sjme_nvm_class_exceptionHandler;
 
 /** Pool name and type entries are not pointers. */
 #define SJME_TYPEOF_IS_POINTER_sjme_nvm_class_poolEntryNameAndType 0
+
+/** sjme_nvm_threadScheduleMode is not a pointer. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_threadScheduleMode 0
+
+/** sjme_nvm_thread_startType is not a pointer. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_thread_startType 0
+
+/** sjme_nvm_thread_statusType is not a pointer. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_thread_statusType 0
 	
 #pragma endregion(TypeOfSpecifiers)
 #pragma region(AtomicsAndLists)

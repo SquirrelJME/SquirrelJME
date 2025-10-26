@@ -98,6 +98,9 @@ typedef enum sjme_nvm_thread_startType
 	/** The number of thread start types. */
 	SJME_NVM_NUM_THREAD_START_TYPES = 5,
 } sjme_nvm_thread_startType;
+
+/** Atomic sjme_nvm_thread_startType . */
+SJME_ATOMIC_DECLARE(sjme_nvm_thread_startType, 0);
 	
 /**
  * The type of thread status this is.
@@ -119,6 +122,9 @@ typedef enum sjme_nvm_thread_statusType
 	SJME_NVM_THREAD_NUM_STATUS_TYPES
 } sjme_nvm_thread_statusType;
 
+/** Atomic sjme_nvm_thread_statusType . */
+SJME_ATOMIC_DECLARE(sjme_nvm_thread_statusType, 0);
+	
 /**
  * Interned task strings.
  *
@@ -624,6 +630,28 @@ struct sjme_nvm_taskBase
 	sjme_jboolean isMain;
 };
 
+/**
+ * Thread flags.
+ *
+ * @since 2025/10/26
+ */
+typedef enum sjme_nvm_thread_flags
+{
+	/** Is this a daemon thread? */
+	SJME_NVM_THREAD_IS_DAEMON = INT32_C(0x00000001),
+} sjme_nvm_thread_flags;
+	
+/**
+ * Checks if the given thread flag is set.
+ * 
+ * @param bits The flag bits to check.
+ * @param flag The thread flag to check.
+ * @return If the flag is set.
+ * @since 2025/10/26
+ */
+#define SJME_NVM_THREAD_CHECK(bits, flag) \
+	(((bits) & SJME_TOKEN_PASTE_PP(SJME_NVM_THREAD_, flag)) != 0)
+
 struct sjme_nvm_threadBase
 {
 	/** The base object for the thread. */
@@ -636,10 +664,10 @@ struct sjme_nvm_threadBase
 	sjme_phantom(sjme_nvm_task) inTask;
 
 	/** The @link sjme_nvm_thread_startType @endlink of the thread. */
-	sjme_atomic(sjme_jint) start;
+	sjme_atomic(sjme_nvm_thread_startType) start;
 	
 	/** The current thread status. */
-	sjme_nvm_thread_statusType status;
+	sjme_atomic(sjme_nvm_thread_statusType) status;
 	
 	/** The wrapper in the front end. */
 	sjme_frontEnd frontEnd;
@@ -652,9 +680,6 @@ struct sjme_nvm_threadBase
 
 	/** Is this the main thread? */
 	sjme_jboolean isMain;
-
-	/** The @c java.lang.Thread this is bound to. */
-	sjme_jobject vmObject;
 	
 	/** The number of valid frames. */
 	sjme_jint numFrames;
@@ -665,8 +690,8 @@ struct sjme_nvm_threadBase
 	/** The stack information for the entire thread. */
 	sjme_frame_threadStacks stack;
 
-	/** What is the @link sjme_nvm_threadScheduleMode @endlink of this thread? */
-	sjme_atomic(sjme_jint) scheduleMode;
+	/** The @link sjme_nvm_threadScheduleMode @endlink of this thread? */
+	sjme_atomic(sjme_nvm_threadScheduleMode) scheduleMode;
 
 	/** A @c Throwable which has been thrown. */
 	sjme_atomic(sjme_jobject) tossed;
@@ -678,11 +703,7 @@ struct sjme_nvm_threadBase
 	sjme_atomic(sjme_jint) interrupted;
 
 	/** Thread specific flags. */
-	struct
-	{
-		/** Is this a daemon thread? */
-		sjme_jboolean isDaemon : sjme_booleanBit;
-	} flags;
+	sjme_nvm_thread_flags flags;
 };
 
 /**

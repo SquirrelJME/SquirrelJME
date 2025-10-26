@@ -695,7 +695,7 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	if (topIndex == 0)
 	{
 		/* Set as finishing. */
-		sjme_atomic_cs(sjme_jint, &inThread->start,
+		sjme_atomic_cs(sjme_nvm_thread_startType, &inThread->start,
 			SJME_NVM_THREAD_START_STANDARD,
 			SJME_NVM_THREAD_START_FINISHING);
 
@@ -799,7 +799,8 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	result->stack.storageLen = SJME_NVM_THREAD_STACK_SIZE;
 	
 	/* All new threads are considered initially sleeping. */
-	result->status = SJME_NVM_THREAD_STATUS_SLEEPING;
+	sjme_atomic_s(sjme_nvm_thread_statusType, &result->status,
+		SJME_NVM_THREAD_STATUS_SLEEPING);
 	
 	/* Soft load the thread class. */
 	if (sjme_error_is(error = sjme_nvm_task_commonClass(result,
@@ -889,13 +890,14 @@ sjme_errorCode sjme_nvm_task_threadStart(
 		return SJME_ERROR_INVALID_THREAD_STATE;
 
 	/* Threads can only be started once! */
-	if (!sjme_atomic_cs(sjme_jint, &inThread->start,
+	if (!sjme_atomic_cs(sjme_nvm_thread_startType, &inThread->start,
 		SJME_NVM_THREAD_START_NEVER,
 		SJME_NVM_THREAD_START_STANDARD))
 		return SJME_ERROR_INVALID_THREAD_STATE;
 
 	/* Set to be in the run state. */
-	inThread->status = SJME_NVM_THREAD_STATUS_RUNNING;
+	sjme_atomic_s(sjme_nvm_thread_statusType, &inThread->status,
+		SJME_NVM_THREAD_STATUS_RUNNING);
 
 	/* Schedule the thread for execution. */
 	if (sjme_error_is(error = sjme_nvm_task_taskScheduleIn(SJME_T_S(inThread),

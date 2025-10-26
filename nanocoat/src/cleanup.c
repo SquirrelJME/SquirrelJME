@@ -364,6 +364,21 @@ static sjme_errorCode sjme_nvm_cleanup_postClass(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postString(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_jstring string;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	string = (sjme_jstring)closeable;
+	if (string == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postClassInfo(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -435,8 +450,15 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 
 	/* Class specific cleanup? */
 	if (object->common.type == SJME_NVM_STRUCT_CLASS_INSTANCE)
+	{
 		if (sjme_error_is(error = sjme_nvm_cleanup_postClass(closeable)))
 			return sjme_error_default(error);
+	}
+	else if (object->common.type == SJME_NVM_STRUCT_STRING_INSTANCE)
+	{
+		if (sjme_error_is(error = sjme_nvm_cleanup_postString(closeable)))
+			return sjme_error_default(error);
+	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -657,6 +679,83 @@ static sjme_errorCode sjme_nvm_cleanup_postStringPoolString(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postTask(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_nvm_task task;
+	sjme_list(sjme_nvm_thread)* threads;
+	sjme_list(sjme_jstring)* mainArgs;
+	sjme_list(sjme_jbracketJarPackage)* jarBrackets;
+	sjme_nvm_task_globals* globals;
+	sjme_jint i, n;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	task = (sjme_nvm_task)closeable;
+	if (task == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cleanup threads. */
+	threads = task->threads;
+	if (threads != NULL)
+	{
+		/* Free each thread. */
+		for (n = threads->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(threads->elements[i]);
+		
+		/* Free list. */
+		SJME_SIMPLE_FREE(task->threads);
+	}
+
+	/* Lock globals. */
+	globals = &task->globals;
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&globals->lock)))
+		goto fail_lockGlobals;
+
+	/* Close each standard pipe. */
+	for (i = 0; i < SJME_NVM_MLE_NUM_STD_PIPES; i++)
+		SJME_SIMPLE_CLOSE(globals->stdPipes[i]);
+
+	/* Close each cached Jar bracket. */
+	jarBrackets = globals->jarBrackets;
+	if (jarBrackets != NULL)
+	{
+		/* Close each item. */
+		for (n = jarBrackets->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(jarBrackets->elements[i]);
+		
+		/* Free the list. */
+		SJME_SIMPLE_FREE(jarBrackets);
+	}
+
+	/* Close main arguments. */
+	mainArgs = globals->mainArgs;
+	if (mainArgs != NULL)
+	{
+		/* Free each argument. */
+		for (n = mainArgs->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(mainArgs->elements[i]);
+		
+		/* Free list. */
+		SJME_SIMPLE_FREE(globals->mainArgs);
+	}
+
+	/* Clear each common class. */
+	for (i = 0; i < SJME_NVM_TASK_NUM_COMMON_CLASS; i++)
+		SJME_SIMPLE_CLOSE_ATOMIC_NAT(sjme_jclass, 0,
+			&globals->commonClasses[i]);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_lockGlobals:
+	/* Clear lock before failing. */
+	sjme_thread_spinLockRelease(&task->globals.lock, NULL);
+
+	/* Fail. */
+	return sjme_error_default(error);
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postTaskStrings(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -826,6 +925,10 @@ sjme_errorCode sjme_nvm_allocR(
 
 		case SJME_NVM_STRUCT_STRING_POOL_STRING:
 			postClose = sjme_nvm_cleanup_postStringPoolString;
+			break;
+
+		case SJME_NVM_STRUCT_TASK:
+			postClose = sjme_nvm_cleanup_postTask;
 			break;
 
 		case SJME_NVM_STRUCT_TASK_STRINGS:

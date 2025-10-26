@@ -240,6 +240,18 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @link sjme_nvm_class_fieldConstVal @endlink with non-object . */
 	SJME_NVM_WALK_PSEUDO_FIELD_CONST_VAL_NUMBER = -67,
+
+	/** @link sjme_nvm_thread_startType @endlink . */
+	SJME_NVM_WALK_PSEUDO_THREAD_START_TYPE = -68,
+
+	/** @link sjme_nvm_thread_statusType @endlink . */
+	SJME_NVM_WALK_PSEUDO_THREAD_STATUS_TYPE = -69,
+
+	/** @link sjme_frame_threadStacks @endlink . */
+	SJME_NVM_WALK_PSEUDO_THREAD_STACKS = -70,
+
+	/** @link sjme_nvm_threadScheduleMode @endlink . */
+	SJME_NVM_WALK_PSEUDO_THREAD_SCHEDULE_MODE = -71,
 } sjme_nvm_walk_pseudoType;
 
 /**

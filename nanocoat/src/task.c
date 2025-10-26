@@ -56,7 +56,8 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* No change in schedule state? */
-	wasMode = sjme_atomic_g(sjme_jint, &inThread->scheduleMode);
+	wasMode = sjme_atomic_g(sjme_nvm_threadScheduleMode,
+		&inThread->scheduleMode);
 	if (wasMode == modeTo)
 		return SJME_ERROR_NONE;
 
@@ -76,7 +77,8 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 			if (fromOrder->elements[i] == inThread)
 			{
 				/* Set the schedule to undefined as it is not in one. */
-				sjme_atomic_s(sjme_jint, &inThread->scheduleMode,
+				sjme_atomic_s(sjme_nvm_threadScheduleMode,
+					&inThread->scheduleMode,
 					SJME_NVM_THREAD_UNDEFINED_SCHEDULE);
 				fromOrder->elements[i] = NULL;
 
@@ -108,7 +110,8 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 		toSub->order = toOrder;
 
 	/* Mark the thread as being scheduled in the given target. */
-	sjme_atomic_s(sjme_jint, &inThread->scheduleMode, modeTo);
+	sjme_atomic_s(sjme_nvm_threadScheduleMode,
+		&inThread->scheduleMode, modeTo);
 
 	/* Success! */
 skip_noPlace:
@@ -945,7 +948,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleDelete(
 		return SJME_ERROR_NONE;
 
 	/* Ignore if already deleted. */
-	if (sjme_atomic_g(sjme_jint, &inThread->scheduleMode) ==
+	if (sjme_atomic_g(sjme_nvm_threadScheduleMode, &inThread->scheduleMode) ==
 		SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
 		return SJME_ERROR_NONE;
 
@@ -994,7 +997,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleIn(
 		return SJME_ERROR_NONE;
 
 	/* Ignore if already scheduled. */
-	if (sjme_atomic_g(sjme_jint, &inThread->scheduleMode) ==
+	if (sjme_atomic_g(sjme_nvm_threadScheduleMode, &inThread->scheduleMode) ==
 			SJME_NVM_THREAD_SCHEDULED)
 		return SJME_ERROR_NONE;
 
@@ -1159,8 +1162,8 @@ sjme_errorCode sjme_nvm_task_taskScheduleOut(
 		return SJME_ERROR_NONE;
 
 	/* Ignore if already unscheduled. */
-	if (sjme_atomic_g(sjme_jint, &inThread->scheduleMode) ==
-		SJME_NVM_THREAD_UNSCHEDULED)
+	if (sjme_atomic_g(sjme_nvm_threadScheduleMode, &inThread->scheduleMode) ==
+			SJME_NVM_THREAD_UNSCHEDULED)
 		return SJME_ERROR_NONE;
 
 	/* Lock schedule. */
@@ -1202,7 +1205,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleYes(
 	
 	/* If this is a callback thread, only consider if it has at least */
 	/* one actively running frame. */
-	start = sjme_atomic_g(sjme_jint, &inThread->start);
+	start = sjme_atomic_g(sjme_nvm_thread_startType, &inThread->start);
 	if (start == SJME_NVM_THREAD_START_CALLBACK)
 	{
 		if (inThread->numFrames > 0)
@@ -1217,7 +1220,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleYes(
 	else if (start == SJME_NVM_THREAD_START_FINISHING)
 	{
 		/* Mark as finished. */
-		sjme_atomic_cs(sjme_jint, &inThread->start,
+		sjme_atomic_cs(sjme_nvm_thread_startType, &inThread->start,
 			SJME_NVM_THREAD_START_FINISHING,
 			SJME_NVM_THREAD_START_FINISHED);
 
@@ -1237,7 +1240,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleYes(
 			&inTask->numThreads[SJME_NVM_THREAD_COUNT_ALL], -1);
 
 		/* Non-daemon or daemon thread? */
-		if (inThread->flags.isDaemon)
+		if (SJME_NVM_THREAD_CHECK(inThread->flags, IS_DAEMON))
 			sjme_atomic_ga(sjme_jint, 
 				&inTask->numThreads[SJME_NVM_THREAD_COUNT_DAEMON], -1);
 		else
