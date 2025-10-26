@@ -332,9 +332,13 @@ sjme_errorCode sjme_nvm_task_commonClass(
 
 	/* Cache for later. */
 	sjme_atomic_cs(sjme_jclass, 
-		&sjme_atomic_g(sjme_nvm_task, &contextThread->inTask)
-		->globals.commonClasses[commonId],
+		&sjme_atomic_g(sjme_nvm_task,
+			&contextThread->inTask)->globals.commonClasses[commonId],
 		NULL, result);
+
+	/* Count up since it is stored here now. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
+		return sjme_error_default(error);
 
 	/* Success! */
 	*outClass = result;

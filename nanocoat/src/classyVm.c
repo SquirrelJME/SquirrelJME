@@ -1304,6 +1304,13 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	if (superClass != NULL)
 		if (sjme_error_is(error = sjme_alloc_weakRef(superClass, NULL)))
 			goto fail_countSuper;
+
+	/* Count up interfaces. */
+	if (interfaces != NULL)
+		for (i = 0, n = interfaces->length; i < n; i++)
+			if (sjme_error_is(error = sjme_alloc_weakRef(
+				interfaces->elements[i], NULL)))
+				goto fail_countInterface;
 	
 	/* Count up reference to the java.lang.Class */
 	/* instance, assuming this is not that instance. */
@@ -1366,6 +1373,7 @@ fail_super:
 	
 fail_markDone:
 fail_countClassObject:
+fail_countInterface:
 fail_countSuper:
 fail_initStatics:
 fail_initClassType:
