@@ -318,7 +318,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	inClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
 		inLoader, &inClass, contextThread,
-		thisInfo->inClass->name->seq, SJME_JNI_FALSE)) ||
+		sjme_atomic_g(sjme_nvm_class_info,
+			&thisInfo->inClass)->name->seq, SJME_JNI_FALSE)) ||
 		inClass == NULL)
 		goto fail_contextClass;
 	sjme_atomic_s(sjme_jclass, &result->member.inClass, inClass);
@@ -385,8 +386,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		{
 			/* Not in same package, skip. */
 			if (!sjme_charSeq_equalsR(
-					found->inClass->inPackage->seq,
-					thisInfo->inClass->inPackage->seq))
+					sjme_atomic_g(sjme_nvm_class_info,
+						&found->inClass)->inPackage->seq,
+					sjme_atomic_g(sjme_nvm_class_info,
+						&thisInfo->inClass)->inPackage->seq))
 				continue;
 		}
 		
@@ -509,10 +512,12 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 		/* Debug. */
 		sjme_message("Bound `%s` %s.%s:%s -> %s.%s:%s",
 			sjme_charSeq_tempUtf(inClass->binaryName),
-			sjme_charSeq_tempUtf(methodInfo->inClass->name->seq),
+			sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
+				&methodInfo->inClass)->name->seq),
 			sjme_charSeq_tempUtf(methodInfo->name->seq),
 			sjme_charSeq_tempUtf(methodInfo->type->seq),
-			sjme_charSeq_tempUtf(bind->info[1]->inClass->name->seq),
+			sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
+				&bind->info[1]->inClass)->name->seq),
 			sjme_charSeq_tempUtf(bind->info[1]->name->seq),
 			sjme_charSeq_tempUtf(bind->info[1]->type->seq));
 #endif

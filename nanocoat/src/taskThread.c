@@ -364,7 +364,8 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_atomic_s(sjme_nvm_thread, &result->inThread, inThread);
 	sjme_atomic_s(sjme_nvm_task, &result->inTask, SJME_T_K(inThread));
 	result->inCode = targetInfo->code;
-	result->pool = targetInfo->code->inMethod->inClass->pool;
+	result->pool = sjme_atomic_g(sjme_nvm_class_info,
+		&targetInfo->code->inMethod->inClass)->pool;
 
 	/* If static, refer to the class, otherwise refer to the instance. */
 	if (SJME_NVM_ACC_IS(inMethod->flags, STATIC))
@@ -441,7 +442,8 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	
 	/* Emit. */
 	sjme_messageB("ENTER %s.%s %s: (%s)",
-		sjme_charSeq_tempUtf(targetInfo->inClass->name->seq),
+		sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
+			&targetInfo->inClass)->name->seq),
 		sjme_charSeq_tempUtf(targetInfo->name->seq),
 		sjme_charSeq_tempUtf(targetInfo->type->seq),
 		argBuf);

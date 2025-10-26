@@ -538,7 +538,7 @@ sjme_errorCode sjme_list_replaceR(
 	if (oldList == NULL)
 		return sjme_list_allocR(allocPool, inNewLength, inOutList,
 			elementSize, elementOffset, pointerCheck
-			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL);
+			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
 
 	/* Allocate new list as a copy. */
 	newList = NULL;

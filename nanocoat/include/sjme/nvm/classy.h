@@ -94,6 +94,13 @@ typedef sjme_nvm_class_infoBase* sjme_nvm_class_info;
  * @since 2024/10/19
  */
 SJME_LIST_DECLARE(sjme_nvm_class_info, 0);
+	
+
+/** Pool name and type entries are not pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_class_info 1
+
+/** Atomic pointer to a @link sjme_nvm_class_info @endlink . */
+SJME_ATOMIC_DECLARE(sjme_nvm_class_info, 0);
 
 /**
  * Opaque constant pool information.
@@ -797,7 +804,7 @@ struct sjme_nvm_class_methodInfoBase
 	sjme_jshort typedIndex;
 	
 	/** The class this is in. */
-	sjme_nvm_class_info inClass;
+	sjme_phantom(sjme_nvm_class_info) inClass;
 
 	/** Bits to assist in quicker method determinations. */
 	sjme_nvm_class_methodInfoBits bits;

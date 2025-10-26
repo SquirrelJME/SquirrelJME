@@ -51,7 +51,8 @@ static sjme_errorCode sjme_test_nano_nativeCall(
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Is this the correct class and method? */
-	if (!sjme_charSeq_equalsUtfR(methodInfo->inClass->name->seq,
+	if (!sjme_charSeq_equalsUtfR(sjme_atomic_g(sjme_nvm_class_info,
+		&methodInfo->inClass)->name->seq,
 			"cc/squirreljme/nanocoat/mle/NanoTestShelf") ||
 		!sjme_charSeq_equalsUtfR(methodInfo->name->seq,
 			"result"))

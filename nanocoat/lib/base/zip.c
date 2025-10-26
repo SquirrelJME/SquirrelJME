@@ -99,6 +99,7 @@ static sjme_errorCode sjme_zip_close(
 {
 	sjme_errorCode error;
 	sjme_zip zip;
+	sjme_seekable seekable;
 	
 	zip = (sjme_zip)closeable;
 	if (zip == NULL)
@@ -114,12 +115,11 @@ static sjme_errorCode sjme_zip_close(
 		return sjme_error_default(error);
 	
 	/* Close the seekable. */
-	if (sjme_error_is(error = sjme_closeable_close(
-		SJME_AS_CLOSEABLE(zip->seekable))))
-		goto fail_seekableClose;
-	
-	/* Invalidate it. */
+	seekable = zip->seekable;
 	zip->seekable = NULL;
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(seekable))))
+		goto fail_seekableClose;
 		
 	/* Release the lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(&zip->lock,

@@ -172,7 +172,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 				error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
 			{
 				sjme_message("Missing MLE: %s.%s %s",
-					sjme_charSeq_tempUtf(target->inClass->name->seq),
+					sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
+						&target->inClass)->name->seq),
 					sjme_charSeq_tempUtf(target->name->seq),
 					sjme_charSeq_tempUtf(target->type->seq));
 				
@@ -187,7 +188,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 				sjme_nvm_task_threadEmit(SJME_F_T(inFrame),
 					SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_LINKAGE_ERROR,
 					NULL, "LINK %s.%s %s",
-					sjme_charSeq_tempUtf(target->inClass->name->seq),
+					sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
+						&target->inClass)->name->seq),
 					sjme_charSeq_tempUtf(target->name->seq),
 					sjme_charSeq_tempUtf(target->type->seq));
 			}

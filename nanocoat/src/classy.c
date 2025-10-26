@@ -1506,7 +1506,8 @@ sjme_errorCode sjme_nvm_class_parse(
 			goto fail_refMethod;
 		
 		/* Link back. */
-		methods->elements[i]->inClass = result;
+		sjme_atomic_s(sjme_nvm_class_info, &methods->elements[i]->inClass,
+			result);
 	}
 	
 	/* Determine the indexes of all methods. */

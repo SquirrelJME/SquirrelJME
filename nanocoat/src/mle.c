@@ -66,7 +66,8 @@ sjme_errorCode sjme_mle_mleCall(
 	
 	/* Look for the shelf. */
 	for (major = sjme_nvm_mleShelves; major->className != NULL; major++)
-		if (sjme_charSeq_equalsUtfR(methodInfo->inClass->name->seq,
+		if (sjme_charSeq_equalsUtfR(sjme_atomic_g(sjme_nvm_class_info,
+			&methodInfo->inClass)->name->seq,
 			major->className))
 			return sjme_mle_mleCallShelf(inFrame, major,
 				methodInfo->name->seq,

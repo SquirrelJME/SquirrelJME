@@ -317,6 +317,61 @@ static sjme_errorCode sjme_nvm_cleanup_postClass(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postClassInfo(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_nvm_class_info info;
+	sjme_list(sjme_nvm_stringPool_string)* interfaceNames;
+	sjme_list(sjme_nvm_class_fieldInfo)* fields;
+	sjme_list(sjme_nvm_class_methodInfo)* methods;
+	sjme_jint i, n;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	info = (sjme_nvm_class_info)closeable;
+	if (info == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Close interface names. */
+	interfaceNames = info->interfaceNames;
+	if (interfaceNames != NULL)
+	{
+		/* Close items. */
+		for (n = interfaceNames->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(interfaceNames->elements[i]);
+
+		/* Free list. */
+		SJME_SIMPLE_FREE(info->interfaceNames);
+	}
+
+	/* Close fields. */
+	fields = info->fields;
+	if (fields != NULL)
+	{
+		/* Close items. */
+		for (n = fields->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(fields->elements[i]);
+
+		/* Free list. */
+		SJME_SIMPLE_FREE(info->fields);
+	}
+
+	/* Close methods. */
+	methods = info->methods;
+	if (methods != NULL)
+	{
+		/* Close items. */
+		for (n = methods->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(methods->elements[i]);
+
+		/* Free list. */
+		SJME_SIMPLE_FREE(info->methods);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postObject(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -690,6 +745,10 @@ sjme_errorCode sjme_nvm_allocR(
 	postClose = NULL;
 	switch (inType)
 	{
+		case SJME_NVM_STRUCT_CLASS_INFO:
+			postClose = sjme_nvm_cleanup_postClassInfo;
+			break;
+			
 		case SJME_NVM_STRUCT_IS_CLASSES:
 			postClose = sjme_nvm_cleanup_postIsClasses;
 			break;

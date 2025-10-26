@@ -48,11 +48,9 @@ static sjme_errorCode sjme_nvm_rom_zipLibraryClose(
 		return SJME_ERROR_NONE;
 	
 	/* Close it. */
+	inLibrary->handle = NULL;
 	if (sjme_error_is(error = sjme_closeable_close(SJME_AS_CLOSEABLE(zip))))
 		return sjme_error_default(error);
-	
-	/* Remove reference to it. */
-	inLibrary->handle = NULL;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
