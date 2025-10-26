@@ -345,7 +345,8 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 
 	/* Must be returning the same type. */
 	desire = sjme_nvm_byteCode_returnTypes[id - 172];
-	if (inFrame->inCode->inMethod->argR != desire)
+	if (sjme_atomic_g(sjme_nvm_class_methodInfo,
+		&inFrame->inCode->inMethod)->argR != desire)
 		return sjme_error_vmError(inFrame, SJME_ERROR_WRONG_RETURN_TYPE);
 
 	/* If not returning void, pop value to return onto the parent stack. */

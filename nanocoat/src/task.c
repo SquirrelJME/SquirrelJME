@@ -388,7 +388,7 @@ sjme_errorCode sjme_nvm_task_stackTraceStep(
 	/*  |- .whatever:(Lboop;)V @0h (:181 INVOKEINTERFACE@15) */
 	traceState->nowCode = atCode;
 	traceState->nowMethod = (traceState->nowCode != NULL ?
-		atCode->inMethod : NULL);
+		sjme_atomic_g(sjme_nvm_class_methodInfo, &atCode->inMethod) : NULL);
 	traceState->pc = atPc;
 	traceState->instructionId = (atIv != 0 ? atIv :
 		(traceState->nowCode != NULL && traceState->pc >= 0 &&

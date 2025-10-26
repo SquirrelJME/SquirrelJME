@@ -365,7 +365,8 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_atomic_s(sjme_nvm_task, &result->inTask, SJME_T_K(inThread));
 	result->inCode = targetInfo->code;
 	result->pool = sjme_atomic_g(sjme_nvm_class_info,
-		&targetInfo->code->inMethod->inClass)->pool;
+		&sjme_atomic_g(sjme_nvm_class_methodInfo,
+			&targetInfo->code->inMethod)->inClass)->pool;
 
 	/* If static, refer to the class, otherwise refer to the instance. */
 	if (SJME_NVM_ACC_IS(inMethod->flags, STATIC))

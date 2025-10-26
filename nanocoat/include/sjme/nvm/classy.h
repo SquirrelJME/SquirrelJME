@@ -840,7 +840,7 @@ struct sjme_nvm_class_codeInfoBase
 	sjme_nvm_commonBase common;
 	
 	/** The method which contains this code. */
-	sjme_nvm_class_methodInfo inMethod;
+	sjme_phantom(sjme_nvm_class_methodInfo) inMethod;
 	
 	/** Maximum per specific type. */
 	sjme_nvm_class_codePerType perType[SJME_NVM_CODE_INFO_NUM_TYPE_IDS];

@@ -434,12 +434,12 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(
 		(sjme_nvm)allocPool,
-		sizeof(*result), SJME_NVM_STRUCT_CODE,
+		sizeof(*result), SJME_NVM_STRUCT_CODE_INFO,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 	
 	/* In this method! */
-	result->inMethod = methodInfo;
+	sjme_atomic_s(sjme_nvm_class_methodInfo, &result->inMethod, methodInfo);
 	
 	/* Read in max stack and locals. */
 	maxStack = -1;

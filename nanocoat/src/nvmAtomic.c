@@ -17,6 +17,8 @@ SJME_ATOMIC_FUNCTION(sjme_nvm, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_nvm_class_info, 0)
 
+SJME_ATOMIC_FUNCTION(sjme_nvm_class_methodInfo, 0)
+
 SJME_ATOMIC_FUNCTION(sjme_nvm_frame, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_nvm_rom_library, 0)

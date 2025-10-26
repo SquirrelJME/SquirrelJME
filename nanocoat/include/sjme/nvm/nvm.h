@@ -147,6 +147,12 @@ typedef struct sjme_nvm_class_methodInfoBase sjme_nvm_class_methodInfoBase;
  * @since 2024/01/03
  */
 typedef sjme_nvm_class_methodInfoBase* sjme_nvm_class_methodInfo;
+
+/** sjme_nvm_class_methodInfo is a pointer. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_class_methodInfo 1
+
+/** Atomic @link sjme_nvm_class_methodInfo @endlink . */
+SJME_ATOMIC_DECLARE(sjme_nvm_class_methodInfo, 0);
 	
 /**
  * The type of structure a type is.
@@ -177,7 +183,7 @@ typedef enum sjme_nvm_structType
 	SJME_NVM_STRUCT_CLASS_INSTANCE,
 	
 	/** Method code. */
-	SJME_NVM_STRUCT_CODE,
+	SJME_NVM_STRUCT_CODE_INFO,
 
 	/** Field identifier. */
 	SJME_NVM_STRUCT_FIELD_ID,
