@@ -505,9 +505,13 @@ sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
 sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v)
 {
+#if SJME_CONFIG_HAS_GCC_BUILTIN(popcount)
+	return __builtin_popcount(v);
+#else
 	v = v - ((v >> 1) & UINT32_C(0x55555555));
 	v = (v & UINT32_C(0x33333333)) + ((v >> 2) & UINT32_C(0x33333333));
 	return ((v + (v >> 4) & UINT32_C(0xF0F0F0F)) * UINT32_C(0x1010101)) >> 24;
+#endif
 }
 
 sjme_juint sjme_util_intHighestOneBit(

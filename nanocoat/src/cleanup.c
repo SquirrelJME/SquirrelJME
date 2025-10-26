@@ -56,6 +56,11 @@
 		(ptr) = NULL, \
 		sjme_alloc_free(temp))
 
+#define SJME_SIMPLE_FREE_ATOMIC(type, numPointerStars, ptr) \
+	SJME_CLEANUP_OP(temp = sjme_atomic_gP(type, numPointerStars, (ptr)), \
+		sjme_atomic_sP(type, numPointerStars, (ptr), NULL), \
+		sjme_alloc_free(temp))
+
 #define SJME_FLAGGED_FREE(free, ptr) \
 	do { if ((free) && (ptr) != NULL) \
 	{ \
@@ -218,6 +223,33 @@ fail_walk:
 	return sjme_error_default(error);
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postCodeInfo(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_nvm_class_codeInfo info;
+	sjme_jint i;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	info = (sjme_nvm_class_codeInfo)closeable;
+	if (info == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Free the per type info local map. */
+	SJME_SIMPLE_FREE_ATOMIC(sjme_pointer, 0, &info->localMapBase);
+	for (i = 0; i < SJME_NVM_CODE_INFO_NUM_TYPE_IDS; i++)
+		info->perType[i].localMap = NULL;
+
+	/* Free exception list. */
+	SJME_SIMPLE_FREE(info->exceptions);
+
+	/* Free the byte code. */
+	SJME_SIMPLE_FREE(info->rawCode);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postIsClasses(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -232,6 +264,21 @@ static sjme_errorCode sjme_nvm_cleanup_postIsClasses(
 	/* Free the class list, every class here is phantom regardless. */
 	SJME_SIMPLE_FREE(isClasses->classes);
 
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_cleanup_postMethodInfo(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_nvm_class_methodInfo methodInfo;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	methodInfo = (sjme_nvm_class_methodInfo)closeable;
+	if (methodInfo == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -748,9 +795,17 @@ sjme_errorCode sjme_nvm_allocR(
 		case SJME_NVM_STRUCT_CLASS_INFO:
 			postClose = sjme_nvm_cleanup_postClassInfo;
 			break;
+
+		case SJME_NVM_STRUCT_CODE_INFO:
+			postClose = sjme_nvm_cleanup_postCodeInfo;
+			break;
 			
 		case SJME_NVM_STRUCT_IS_CLASSES:
 			postClose = sjme_nvm_cleanup_postIsClasses;
+			break;
+
+		case SJME_NVM_STRUCT_METHOD_INFO:
+			postClose = sjme_nvm_cleanup_postMethodInfo;
 			break;
 		
 		case SJME_NVM_STRUCT_ROM_LIBRARY:

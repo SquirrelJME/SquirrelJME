@@ -1286,6 +1286,30 @@ extern "C" {
 	/** Networking not supported. */
 	#define SJME_CONFIG_NETWORK_NONE
 #endif
+
+#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	#if defined(__has_builtin)
+		/** Is the specified GCC built-in available? */
+		#define SJME_CONFIG_HAS_GCC_BUILTIN(x) __has_builtin(__builtin_##x)
+	#else
+		/** Is the specified GCC built-in available? */
+		#define SJME_CONFIG_HAS_GCC_BUILTIN(x) 0
+	#endif
+#else
+	/** Is the specified GCC built-in available? */
+	#define SJME_CONFIG_HAS_GCC_BUILTIN(x) 0
+#endif
+
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/* Include the intrinsics header. */
+	#include <intrin.h>
+	
+	/** Is the specified MSVC intrinsic available? */
+	#define SJME_CONFIG_HAS_MSVC_INTRINSIC(x) defined(x)
+#else
+	/** Is the specified MSVC intrinsic available? */
+	#define SJME_CONFIG_HAS_MSVC_INTRINSIC(x) 0
+#endif
 	
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"

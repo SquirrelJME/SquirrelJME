@@ -67,112 +67,7 @@ typedef enum sjme_nvm_class_instanceType
 	SJME_NVM_CLASS_NUM_INSTANCE_TYPE = 2,
 } sjme_nvm_class_instanceType;
 
-/**
- * Core class information structure.
- *
- * @since 2024/01/01
- */
-typedef struct sjme_nvm_class_infoCore sjme_nvm_class_infoCore;
-
-/**
- * Opaque class information structure.
- *
- * @since 2024/01/01
- */
-typedef struct sjme_nvm_class_infoBase sjme_nvm_class_infoBase;
-
-/**
- * Opaque class information structure.
- *
- * @since 2024/01/01
- */
-typedef sjme_nvm_class_infoBase* sjme_nvm_class_info;
-
-/**
- * List of class information.
- * 
- * @since 2024/10/19
- */
-SJME_LIST_DECLARE(sjme_nvm_class_info, 0);
-	
-
-/** Pool name and type entries are not pointers. */
-#define SJME_TYPEOF_IS_POINTER_sjme_nvm_class_info 1
-
-/** Atomic pointer to a @link sjme_nvm_class_info @endlink . */
-SJME_ATOMIC_DECLARE(sjme_nvm_class_info, 0);
-
-/**
- * Opaque constant pool information.
- * 
- * @since 2024/09/13
- */
-typedef struct sjme_nvm_class_poolInfoCore sjme_nvm_class_poolInfoCore;
-
-/**
- * A @link SJME_NVM_CLASS_POOL_TYPE_CLASS @endlink which represents a class
- * or interface.
- *
- * @since 2024/01/04
- */
-typedef struct sjme_nvm_class_poolEntryClass sjme_nvm_class_poolEntryClass;
-
-/**
- * Opaque constant pool information.
- * 
- * @since 2024/09/13
- */
-typedef struct sjme_nvm_class_poolInfoBase sjme_nvm_class_poolInfoBase;
-
-/**
- * Opaque constant pool information.
- * 
- * @since 2024/09/13
- */
-typedef sjme_nvm_class_poolInfoBase* sjme_nvm_class_poolInfo;
-
-/**
- * Method list.
- *
- * @since 2024/01/03
- */
-SJME_LIST_DECLARE(sjme_nvm_class_methodInfo, 0);
-
-/** The basic type of @link sjme_nvm_class_methodInfo @endlink . */
-#define SJME_TYPEOF_BASIC_sjme_nvm_class_methodInfo \
-	SJME_BASIC_TYPE_ID_OBJECT
-
-/**
- * Base field information structure.
- *
- * @since 2024/01/03
- */
-typedef struct sjme_nvm_class_fieldInfoBase sjme_nvm_class_fieldInfoBase;
-
-/**
- * Opaque field information structure.
- *
- * @since 2024/01/03
- */
-typedef sjme_nvm_class_fieldInfoBase* sjme_nvm_class_fieldInfo;
-
-/**
- * Field list.
- *
- * @since 2024/01/03
- */
-SJME_LIST_DECLARE(sjme_nvm_class_fieldInfo, 0);
-
-/** The basic type of @link sjme_nvm_class_fieldInfo @endlink . */
-#define SJME_TYPEOF_BASIC_sjme_nvm_class_fieldInfo \
-	SJME_BASIC_TYPE_ID_OBJECT
-
-/**
- * Exception handling information.
- *
- * @since 2024/01/03
- */
-typedef struct sjme_nvm_class_exceptionHandler
+struct sjme_nvm_class_exceptionHandler
 {
 	/** The range of the exception where it applies. */
 	sjme_rangeShort range;
@@ -181,29 +76,11 @@ typedef struct sjme_nvm_class_exceptionHandler
 	sjme_jshort handlerPc;
 
 	/** The type that this catches. */
-	sjme_nvm_class_poolEntryClass* handles;
-} sjme_nvm_class_exceptionHandler;
+	sjme_phantomP(sjme_nvm_class_poolEntryClass, 1) handles;
+};
 
 /** A list of exceptions. */
 SJME_LIST_DECLARE(sjme_nvm_class_exceptionHandler, 0);
-
-/** The basic type of @link sjme_nvm_class_exceptionHandler @endlink . */
-#define SJME_TYPEOF_BASIC_sjme_nvm_class_exceptionHandler \
-	SJME_BASIC_TYPE_ID_OBJECT
-
-/**
- * Method code information structure.
- *
- * @since 2024/01/03
- */
-typedef struct sjme_nvm_class_codeInfoBase sjme_nvm_class_codeInfoBase;
-
-/**
- * Opaque method code structure.
- *
- * @since 2024/01/03
- */
-typedef sjme_nvm_class_codeInfoBase* sjme_nvm_class_codeInfo;
 
 /**
  * Checks if the given ACC flag is set.
@@ -435,27 +312,6 @@ typedef struct sjme_nvm_class_poolEntryDouble
 	/** The constant value. */
 	sjme_align64 sjme_jdouble value;
 } sjme_nvm_class_poolEntryDouble;
-
-/**
- * A @link SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE @endlink which represents a name and type
- * of member without the class.
- *
- * @since 2024/01/04
- */
-typedef struct sjme_nvm_class_poolEntryNameAndType
-	sjme_nvm_class_poolEntryNameAndType;
-
-/** Pool class entries are not pointers. */
-#define SJME_TYPEOF_IS_POINTER_sjme_nvm_class_poolEntryClass 0
-
-/** Atomic pointer to a @link sjme_nvm_class_poolEntryClass @endlink . */
-SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryClass, 1);
-
-/** Pool name and type entries are not pointers. */
-#define SJME_TYPEOF_IS_POINTER_sjme_nvm_class_poolEntryNameAndType 0
-
-/** Atomic pointer to a @link sjme_nvm_class_poolEntryNameAndType @endlink . */
-SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryNameAndType, 1);
 	
 /**
  * Either @link SJME_NVM_CLASS_POOL_TYPE_FIELD @endlink ,
@@ -841,6 +697,9 @@ struct sjme_nvm_class_codeInfoBase
 	
 	/** The method which contains this code. */
 	sjme_phantom(sjme_nvm_class_methodInfo) inMethod;
+
+	/** The base for the local map, for later freeing. */
+	sjme_atomic(sjme_pointer) localMapBase;
 	
 	/** Maximum per specific type. */
 	sjme_nvm_class_codePerType perType[SJME_NVM_CODE_INFO_NUM_TYPE_IDS];

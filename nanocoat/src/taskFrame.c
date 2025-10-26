@@ -182,7 +182,8 @@ sjme_errorCode sjme_nvm_task_frameHandler(
 		checkClass = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(loader,
 			&checkClass, SJME_F_T(inFrame),
-			handler->handles->descriptor->seq,
+			sjme_atomic_gP(sjme_nvm_class_poolEntryClass, 1,
+				&handler->handles)->descriptor->seq,
 			SJME_JNI_TRUE)) || checkClass == NULL)
 			return sjme_error_vmError(inFrame, error);
 		

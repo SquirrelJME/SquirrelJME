@@ -234,6 +234,12 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @link sjme_byteCode @endlink . */
 	SJME_NVM_WALK_PSEUDO_BYTE_CODE = -65,
+
+	/** @link sjme_nvm_class_fieldConstVal @endlink with object . */
+	SJME_NVM_WALK_PSEUDO_FIELD_CONST_VAL_STRING = -66,
+
+	/** @link sjme_nvm_class_fieldConstVal @endlink with non-object . */
+	SJME_NVM_WALK_PSEUDO_FIELD_CONST_VAL_NUMBER = -67,
 } sjme_nvm_walk_pseudoType;
 
 /**

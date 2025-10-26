@@ -419,6 +419,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	sjme_nvm_class_exceptionHandler* except;
 	sjme_nvm_class_codePerType* perType;
 	sjme_jshort* localMap;
+	sjme_nvm_class_poolEntryClass* handles;
 	
 	methodInfo = context;
 	if (allocPool == NULL || inConstPool == NULL || inStringPool == NULL ||
@@ -457,6 +458,9 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		sizeof(*localMap) * ((maxLocals * SJME_NUM_JAVA_TYPE_IDS) + 1),
 		(sjme_pointer)&localMap)) || localMap == NULL)
 		goto fail_allocLocalMap;
+
+	/* Store full local map reference. */
+	sjme_atomic_s(sjme_pointer, &result->localMapBase, localMap);
 	
 	/* Set. */
 	result->perType[SJME_NVM_CODE_INFO_ALL_TYPES].stack = maxStack;
@@ -549,13 +553,15 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 				goto fail_exceptShorts;
 			
 			/* Read in handler class. */
-			except->handles = NULL;
+			handles = NULL;
 			if (sjme_error_is(error = sjme_nvm_class_readPoolRefIndex(
 				attrStream, inConstPool,
 				SJME_NVM_CLASS_POOL_TYPE_CLASS,
 				SJME_JNI_TRUE,
-				(sjme_nvm_class_poolEntry**)&except->handles)))
+				(sjme_nvm_class_poolEntry**)&handles)))
 				goto fail_exceptHandles;
+			sjme_atomic_sP(sjme_nvm_class_poolEntryClass, 1,
+				&except->handles, handles);
 		}
 	}
 	

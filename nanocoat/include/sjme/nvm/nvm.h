@@ -25,6 +25,7 @@
 #include "sjme/list.h"
 #include "sjme/atomic.h"
 #include "sjme/native.h"
+#include "sjme/nvm/nvmTypeDefs.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -36,24 +37,7 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-
-/**
- * Program counter address.
- * 
- * @since 2023/07/25
- */
-typedef sjme_jint sjme_pcAddr;
-
-/**
- * Static linkage type.
- * 
- * @since 2023/07/25
- */
-typedef sjme_jint sjme_staticLinkageType;
-
-/** Single byte code storage type. */
-typedef sjme_jubyte sjme_byteCode;
-
+	
 typedef union sjme_anyData
 {
 	/** Integer. */
@@ -74,85 +58,6 @@ typedef struct sjme_any
 	/** Data stored within. */
 	sjme_anyData data;
 } sjme_any;
-
-/**
- * Represents an identifier to an interface.
- * 
- * @since 2025/03/26
- */
-typedef struct sjme_jinterfaceIDBase sjme_jinterfaceIDBase;
-
-/**
- * Represents an identifier to an interface.
- * 
- * @since 2025/03/26
- */
-typedef sjme_jinterfaceIDBase* sjme_jinterfaceID;
-
-/**
- * Represents an identifier to a member.
- * 
- * @since 2025/02/26
- */
-typedef struct sjme_jmemberIDBase sjme_jmemberIDBase;
-
-/**
- * Represents an identifier to a member.
- * 
- * @since 2025/02/26
- */
-typedef sjme_jmemberIDBase* sjme_jmemberID;
-
-/**
- * Represents an identifier to a method.
- * 
- * @since 2024/10/19
- */
-typedef struct sjme_jmethodIDBase sjme_jmethodIDBase;
-
-/**
- * Represents an identifier to a method.
- * 
- * @since 2024/10/19
- */
-typedef sjme_jmethodIDBase* sjme_jmethodID;
-
-/**
- * Represents an identifier to a field.
- * 
- * @since 2025/02/26
- */
-typedef struct sjme_jfieldIDBase sjme_jfieldIDBase;
-
-/**
- * Represents an identifier to a field.
- * 
- * @since 2025/02/26
- */
-typedef sjme_jfieldIDBase* sjme_jfieldID;
-
-/** List of fields. */
-SJME_LIST_DECLARE(sjme_jfieldID, 0);
-	
-/**
- * Core method information structure.
- *
- * @since 2024/01/03
- */
-typedef struct sjme_nvm_class_methodInfoBase sjme_nvm_class_methodInfoBase;
-
-/**
- * Opaque method information structure.
- *
- * @since 2024/01/03
- */
-typedef sjme_nvm_class_methodInfoBase* sjme_nvm_class_methodInfo;
-
-/** sjme_nvm_class_methodInfo is a pointer. */
-#define SJME_TYPEOF_IS_POINTER_sjme_nvm_class_methodInfo 1
-
-/** Atomic @link sjme_nvm_class_methodInfo @endlink . */
-SJME_ATOMIC_DECLARE(sjme_nvm_class_methodInfo, 0);
 	
 /**
  * The type of structure a type is.
@@ -255,20 +160,6 @@ typedef enum sjme_nvm_structType
 	SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE = SJME_NVM_NUM_STRUCT + 3
 } sjme_nvm_structType;
 
-/**
- * Common data structure between all NanoCoat types.
- * 
- * @since 2024/08/09
- */
-typedef struct sjme_nvm_commonBase sjme_nvm_commonBase;
-
-/**
- * Common data structure pointer.
- * 
- * @since 2024/08/10
- */
-typedef sjme_nvm_commonBase* sjme_nvm_common;
-
 /** Cast to array. */
 #define SJME_AS_JARRAY(x) ((sjme_jarray)(x))
 
@@ -310,48 +201,6 @@ typedef sjme_nvm_commonBase* sjme_nvm_common;
 
 /** Cast to common pointer type. */
 #define SJME_AS_NVM_COMMONP(x) ((sjme_nvm_common*)(x))
-
-/**
- * Represents the virtual machine state.
- * 
- * @since 2023/08/08
- */
-typedef struct sjme_nvm_stateBase sjme_nvm_stateBase;
-
-/**
- * Represents the virtual machine state.
- * 
- * @since 2023/07/28
- */
-typedef sjme_nvm_stateBase* sjme_nvm;
-
-/**
- * Frame of execution within a thread.
- * 
- * @since 2023/08/08
- */
-typedef struct sjme_nvm_frameBase sjme_nvm_frameBase;
-
-/**
- * Frame of execution within a thread.
- * 
- * @since 2023/07/25
- */
-typedef sjme_nvm_frameBase* sjme_nvm_frame;
-
-/**
- * Base structure for virtual machine threads.
- * 
- * @since 2024/08/08
- */
-typedef struct sjme_nvm_threadBase sjme_nvm_threadBase;
-
-/**
- * A thread within SquirrelJME.
- * 
- * @since 2024/08/08
- */
-typedef sjme_nvm_threadBase* sjme_nvm_thread;
 
 /**
  * Hook for garbage collection detection and/or cancel capability.
@@ -401,111 +250,7 @@ typedef struct sjme_nvm_stateHooks
 	/** Perform a native call. */
 	sjme_nvm_stateHookNativeCallFunc nativeCall;
 } sjme_nvm_stateHooks;
-
-/**
- * Boot parameters for NanoCoat.
- *
- * @since 2023/07/27
- */
-typedef struct sjme_nvm_bootParam sjme_nvm_bootParam;
-
-/**
- * Standard Suite structure.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_nvm_rom_suiteBase sjme_nvm_rom_suiteBase;
-
-/**
- * Opaque suite structure type.
- *
- * @since 2023/12/22
- */
-typedef sjme_nvm_rom_suiteBase* sjme_nvm_rom_suite;
-
-/**
- * Structure for a single task.
- *
- * @since 2023/12/17
- */
-typedef struct sjme_nvm_taskBase sjme_nvm_taskBase;
-/**
- * Structure for a single task.
- *
- * @since 2023/12/17
- */
-typedef sjme_nvm_taskBase* sjme_nvm_task;
 	
-/** List of tasks. */
-SJME_LIST_DECLARE(sjme_nvm_task, 0);
-	
-/**
- * The configuration that stores the information needed for starting the task.
- *
- * @since 2023/12/17
- */
-typedef struct sjme_nvm_task_taskNewConfig sjme_nvm_task_taskNewConfig;
-	
-/**
- * JDWP state structure.
- *
- * @since 2025/09/07
- */
-typedef struct sjme_jdwpBase sjme_jdwpBase;
-
-/**
- * JDWP state structure.
- *
- * @since 2025/09/07
- */
-typedef sjme_jdwpBase* sjme_jdwp;
-
-/**
- * Base structure for the class loader.
- * 
- * @since 2024/09/08
- */
-typedef struct sjme_nvm_vmClass_loaderBase sjme_nvm_vmClass_loaderBase;
-
-/**
- * Virtual machine equivalent to Java's @code{.java} ClassLoader @endcode .
- * 
- * @since 2024/09/08
- */
-typedef sjme_nvm_vmClass_loaderBase* sjme_nvm_vmClass_loader;
-
-/** List of threads. */
-SJME_LIST_DECLARE(sjme_nvm_thread, 0);
-
-/** NVM threads are pointers. */
-#define SJME_TYPEOF_IS_POINTER_sjme_nvm_thread 1
-
-/** Atomic NVM thread. */
-SJME_ATOMIC_DECLARE(sjme_nvm_thread, 0);
-
-/** NVM states are pointers. */
-#define SJME_TYPEOF_IS_POINTER_sjme_nvm 1
-
-/** Atomic NVM State. */
-SJME_ATOMIC_DECLARE(sjme_nvm, 0);
-
-/** NVM tasks are pointers. */
-#define SJME_TYPEOF_IS_POINTER_sjme_nvm_task 1
-
-/** Atomic NVM task. */
-SJME_ATOMIC_DECLARE(sjme_nvm_task, 0);
-
-/** NVM frames are pointers. */
-#define SJME_TYPEOF_IS_POINTER_sjme_nvm_frame 1
-
-/** Atomic NVM frame. */
-SJME_ATOMIC_DECLARE(sjme_nvm_frame, 0);
-
-/** Class loaders are pointers. */
-#define SJME_TYPEOF_IS_POINTER_sjme_nvm_vmClass_loader 1
-
-/** Atomic class loader. */
-SJME_ATOMIC_DECLARE(sjme_nvm_vmClass_loader, 0);
 
 struct sjme_nvm_commonBase
 {
@@ -689,39 +434,6 @@ struct sjme_nvm_stateBase
 	/** Main task reference. */
 	sjme_phantom(sjme_nvm_task) phantomMainTask;
 };
-
-/**
- * Specifies how the PC address should be adjusted.
- *
- * @since 2025/01/11
- */
-typedef struct sjme_nvm_byteCode_pcNew sjme_nvm_byteCode_pcNew;
-
-/**
- * Standard ROM library structure.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_nvm_rom_libraryBase sjme_nvm_rom_libraryBase;
-
-/**
- * Standard ROM library structure.
- *
- * @since 2023/12/12
- */
-typedef sjme_nvm_rom_libraryBase* sjme_nvm_rom_library;
-
-/** List of ROM libraries. */
-SJME_LIST_DECLARE(sjme_nvm_rom_library, 0);
-
-/** The type ID of ROM libraries. */
-#define SJME_TYPEOF_BASIC_sjme_nvm_rom_library SJME_BASIC_TYPE_ID_OBJECT
-
-/** ROM libraries are pointers. */
-#define SJME_TYPEOF_IS_POINTER_sjme_nvm_rom_library 1
-
-/** Atomic ROM library reference. */
-SJME_ATOMIC_DECLARE(sjme_nvm_rom_library, 0);
 
 /** Type size multiplier. */
 extern const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS];
