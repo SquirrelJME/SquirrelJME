@@ -1208,25 +1208,6 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
 #endif
 }
 
-sjme_jint sjme_alloc_weakCount(
-	sjme_attrInNullable sjme_pointer addr)
-{
-	sjme_alloc_weak weak;
-	
-	/* If there is nothing, there will not be a count. */
-	if (addr == NULL)
-		return -1;
-
-	/* Obtain the weak here, if it is even one. */
-	weak = NULL;
-	if (sjme_error_is(sjme_alloc_weakRefGet(addr, &weak)) ||
-		weak == NULL)
-		return -1;
-
-	/* Return the count. */
-	return sjme_atomic_g(sjme_jint, &weak->count);
-}
-
 sjme_errorCode sjme_noOptimize SJME_DEBUG_IDENTIFIER(sjme_alloc_weakDelete)(
 	sjme_attrInOutNotNull sjme_alloc_weak* inOutWeak
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)

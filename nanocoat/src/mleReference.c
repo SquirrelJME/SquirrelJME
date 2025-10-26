@@ -102,7 +102,7 @@ SJME_NVM_MLE_FUNCTION_DECL(weakGet)
 	if (pointer == NULL ||
 		!sjme_nvm_isAR(pointer, SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE) ||
 		(pointer != NULL && pointer->identityHash != pointerId) ||
-		sjme_alloc_weakCount(pointer) <= 0)
+		sjme_alloc_weakRefLeftR(pointer) <= 0)
 	{
 		/* If the pointer is still set, however we determined the object is */
 		/* now invalid we can push this to the reference queue if it has */

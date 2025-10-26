@@ -486,7 +486,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
  * @return The count of the weak, or @c -1 if it is not weak.
  * @since 2025/09/06
  */
-sjme_jint sjme_alloc_weakCount(
+sjme_jint sjme_alloc_weakRefLeftR(
 	sjme_attrInNullable sjme_pointer addr);
 	
 /**
@@ -512,16 +512,6 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakDelete)(
 sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakUnRef)(
 	sjme_attrInNotNull sjme_pointer addr
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
-
-/**
- * Returns the number of weak references to this that are left.
- * 
- * @param addr The address to check.
- * @return The number of references left.
- * @since 2025/07/10
- */
-sjme_jint sjme_alloc_weakRefLeftR(
-	sjme_attrInNotNull sjme_pointer addr);
 	
 /**
  * Creates or returns a weak reference to the given block. If the reference
