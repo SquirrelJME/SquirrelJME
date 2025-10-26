@@ -618,17 +618,14 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 			adjustMain[i] = '/';
 
 	/* Setup string for main class. */
+	/* Counting does not need to be done because these are both */
+	/* intern strings and when pushed to the stack they get counted. */
 	inTask->globals.mainClassName = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
 		mainThread, &inTask->globals.mainClassName, SJME_JNI_TRUE,
 		adjustMain)) ||
 		inTask->globals.mainClassName == NULL)
 		goto fail_mainClassString;
-
-	/* Count up main class string. */
-	if (sjme_error_is(error = sjme_nvm_instance_countUp(
-		SJME_AS_JOBJECT(inTask->globals.mainClassName))))
-		goto fail_countMainClassString;
 
 	/* Setup strings for main arguments. */
 	argStrings = NULL;
@@ -645,16 +642,13 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 		for (i = 0; i < n; i++)
 		{
 			/* Create string. */
+			/* Counting does not need to be done because these are both */
+			/* intern strings and when pushed to the stack they get counted. */
 			if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
 				mainThread, &argStrings->elements[i], SJME_JNI_TRUE,
 				initConfigCopy->mainArgs->elements[i])) ||
 				argStrings->elements[i] == NULL)
 				goto fail_mainArgsString;
-			
-			/* Count up string. */
-			if (sjme_error_is(error = sjme_nvm_instance_countUp(
-				SJME_AS_JOBJECT(argStrings->elements[i]))))
-				goto fail_countMainArgString;
 		}
 	}
 		
