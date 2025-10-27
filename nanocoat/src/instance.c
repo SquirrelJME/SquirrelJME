@@ -83,8 +83,9 @@ sjme_errorCode sjme_nvm_instance_countBalanceR(
 			sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
 				"GC LV~0: %p (%s) %d == %d",
 				oldV, 
-				(oldV->isClass != NULL ?
-					sjme_charSeq_tempUtf(oldV->isClass->binaryName) :
+				(sjme_atomic_g(sjme_jclass, &oldV->isClass) != NULL ?
+					sjme_charSeq_tempUtf(
+					sjme_atomic_g(sjme_jclass, &oldV->isClass)->binaryName) :
 					"?"),
 				sjme_atomic_g(sjme_jint, &weak->count),
 				sjme_atomic_g(sjme_jint, &weak->count));
@@ -151,8 +152,10 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 		"GC DN-1: %d:%p (%s) %d -> %d",
 		typeOf,
 		object, 
-		(object->isClass != NULL ?
-			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),
+		(sjme_atomic_g(sjme_jclass, &object->isClass) != NULL ?
+			sjme_charSeq_tempUtf(
+				sjme_atomic_g(sjme_jclass,
+					&object->isClass)->binaryName) : "?"),
 		oldCount,
 		sjme_atomic_g(sjme_jint, &weak->count));
 #endif
@@ -200,8 +203,9 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 		"GC UP+1: %d:%p (%s) %d -> %d",
 		object->common.type,
 		object,
-		(object->isClass != NULL ?
-			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),
+		(sjme_atomic_g(sjme_jclass, &object->isClass) != NULL ?
+			sjme_charSeq_tempUtf(sjme_atomic_g(sjme_jclass,
+				&object->isClass)->binaryName) : "?"),
 		oldCount,
 		sjme_atomic_g(sjme_jint, &weak->count));
 #endif
@@ -234,7 +238,8 @@ sjme_errorCode sjme_nvm_instance_defaultInit(
 	/* Locate the default constructor. */
 	defaultCon = NULL;
 	if (sjme_error_is(sjme_nvm_vmClass_methodIDByNameTypeU(
-		inObject->isClass, contextThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
+		sjme_atomic_g(sjme_jclass, &inObject->isClass),
+		contextThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_JNI_TRUE, "<init>", inDesc,
 		&defaultCon)) || defaultCon == NULL)
 		return SJME_ERROR_MLE_CALL;
@@ -810,15 +815,9 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 		allocSize, inType,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		return sjme_error_vmError(contextThread, error);
-
-	/* The object refers to the class now, so make sure the class */
-	/* does not get GCed. */
-	if (sjme_error_is(error = sjme_nvm_instance_countUp(
-		SJME_AS_JOBJECT(inClass))))
-		return sjme_error_vmError(contextThread, error);
 	
 	/* Setup object. */
-	result->isClass = inClass;
+	sjme_atomic_s(sjme_jclass, &result->isClass, sjme_weakUp(inClass));
 	result->identityHash = sjme_nvm_instance_calcIdentityHash(
 		SJME_T_K(contextThread), result);
 	

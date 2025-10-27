@@ -105,11 +105,18 @@
 		SJME_NVM_WALK_PSEUDO_ATOMIC, -1, NULL), \
 	subDef
 
-/** Walk step an atomic pointer. */
+/** Walk step a phantom atomic pointer. */
 #define SJME_WS_PHANTOM(memberName, subDef) \
 	SJME_WS_FULL(memberName, \
 		SJME_JNI_TRUE, SJME_NUM_JAVA_TYPE_IDS, \
 		SJME_NVM_WALK_PSEUDO_PHANTOM, -1, NULL), \
+	subDef
+
+/** Walk step a non-cyclic atomic pointer. */
+#define SJME_WS_NON_CYCLIC(memberName, subDef) \
+	SJME_WS_FULL(memberName, \
+		SJME_JNI_TRUE, SJME_NUM_JAVA_TYPE_IDS, \
+		SJME_NVM_WALK_PSEUDO_NON_CYCLIC, -1, NULL), \
 	subDef
 
 /** Walk step a list value (value). */
@@ -553,7 +560,8 @@ SJME_WALK_END();
 SJME_WALK_BEGIN(SJME_NVM_STRUCT_OBJECT_INSTANCE)
 	SJME_WS_NORM_V(common, SJME_NVM_WALK_PSEUDO_COMMON),
 	SJME_WS_JAVA_V(identityHash, SJME_JAVA_TYPE_ID_INTEGER),
-	SJME_WS_NORM_P(isClass, SJME_NVM_STRUCT_CLASS_INSTANCE),
+	SJME_WS_NON_CYCLIC(isClass,
+		SJME_WS_NORM_P(isClass, SJME_NVM_STRUCT_CLASS_INSTANCE)),
 	SJME_WS_ATOMIC(monitorCount,
 		SJME_WS_JAVA_V(monitorCount, SJME_JAVA_TYPE_ID_INTEGER)),
 	SJME_WS_ATOMIC(special,
@@ -847,6 +855,7 @@ static const sjme_nvm_walk_pseudoType sjme_nvm_walk_pseudoOnly[] =
 	SJME_NVM_WALK_PSEUDO_METHOD_INFO_BITS,
 	SJME_NVM_WALK_PSEUDO_MLE_THREAD_MODEL,
 	SJME_NVM_WALK_PSEUDO_NAL,
+	SJME_NVM_WALK_PSEUDO_NON_CYCLIC,
 	SJME_NVM_WALK_PSEUDO_NVM_STRUCT_TYPE,
 	SJME_NVM_WALK_PSEUDO_PHANTOM,
 	SJME_NVM_WALK_PSEUDO_POINTER,

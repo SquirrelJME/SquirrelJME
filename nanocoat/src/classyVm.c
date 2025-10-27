@@ -1065,6 +1065,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_extendedTypeId extendedType;
 	sjme_jmethodID staticInit;
 	sjme_nvm_frame ignoreFrame;
+	sjme_jclass classType;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1100,15 +1101,17 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	
 	/* This is always set to the @c Class type. */
 	if (sjme_charSeq_equalsUtfR(inClass->binaryName, "Ljava/lang/Class;"))
-		inClass->object.isClass = inClass;
+		sjme_atomic_s(sjme_jclass, &inClass->object.isClass, inClass);
 	else
 	{
 		/* Locate the class type. */
+		classType = NULL;
 		if (sjme_error_is(error = sjme_nvm_task_commonClass(contextThread,
-			SJME_NVM_TASK_COMMON_CLASS_CLASS, &inClass->object.isClass,
-			SJME_JNI_FALSE)) ||
-			inClass->object.isClass == NULL)
+			SJME_NVM_TASK_COMMON_CLASS_CLASS, &classType,
+			SJME_JNI_FALSE)) || classType == NULL)
 			goto fail_findClassType;
+		sjme_atomic_s(sjme_jclass, &inClass->object.isClass,
+			sjme_weakUp(classType));
 	}
 
 	/* Set the identity hash. */
@@ -1298,7 +1301,8 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	if (sjme_charSeq_equalsUtfR(inClass->binaryName,
 		"Ljava/lang/Object;"))
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
-			inClass->object.isClass, contextThread)))
+			sjme_atomic_g(sjme_jclass, &inClass->object.isClass),
+			contextThread)))
 			goto fail_initClassType;
 
 	/* Locate the static initializer. */

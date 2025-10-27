@@ -38,7 +38,9 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
 		SJME_F_T(inFrame), SJME_AS_JARRAYP(&clone),
 		sjme_atomic_g(sjme_jclass, 
-			&array->object.isClass->componentType), length)) || clone == NULL)
+			&sjme_atomic_g(sjme_jclass,
+				&array->object.isClass)->componentType), length)) ||
+				clone == NULL)
 		goto fail_alloc;
 
 	/* Copy all values over. */

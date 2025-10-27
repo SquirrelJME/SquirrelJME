@@ -113,7 +113,7 @@ struct sjme_jobjectBase
 	sjme_jint identityHash;
 	
 	/** The current class that this is. */
-	sjme_jclass isClass;
+	sjme_nonCyclic(sjme_jclass) isClass;
 
 	/** The monitor of monitor counts. */
 	sjme_atomic(sjme_jint) monitorCount;
@@ -694,7 +694,7 @@ sjme_errorCode sjme_nvm_instance_objectNewNU(
 
 /** The object class. */
 #define SJME_O_C(obj) \
-	((obj)->isClass)
+	(sjme_atomic_g(sjme_jclass, &((obj)->isClass)))
 
 /** The array object class. */
 #define SJME_AO_C(arr) \

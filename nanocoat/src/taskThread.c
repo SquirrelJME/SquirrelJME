@@ -745,6 +745,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	sjme_nvm inState;
 	sjme_jint freeSlot, i, n;
 	sjme_pointer storage;
+	sjme_jclass threadType;
 	
 	if (inTask == NULL || outThread == NULL || threadName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -803,11 +804,14 @@ sjme_errorCode sjme_nvm_task_threadNew(
 		SJME_NVM_THREAD_STATUS_SLEEPING);
 	
 	/* Soft load the thread class. */
+	threadType = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_commonClass(result,
-		SJME_NVM_TASK_COMMON_CLASS_THREAD, &result->object.isClass,
-		SJME_JNI_FALSE)) ||
-		result->object.isClass == NULL)
+		SJME_NVM_TASK_COMMON_CLASS_THREAD,
+		&threadType,
+		SJME_JNI_FALSE)) || threadType == NULL)
 		goto fail_loadThreadClass;
+	sjme_atomic_s(sjme_jclass, &result->object.isClass,
+		sjme_weakUp(threadType));
 	
 	/* All threads have an initial frame within java.lang.__Start__. */
 	firstFrame = NULL;

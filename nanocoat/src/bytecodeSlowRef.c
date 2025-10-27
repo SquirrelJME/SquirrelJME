@@ -116,7 +116,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			/* Lookup again. */
 			virtualId = NULL;
 			if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
-				instance->isClass, SJME_F_T(inFrame),
+				sjme_atomic_g(sjme_jclass, &instance->isClass),
+				SJME_F_T(inFrame),
 				SJME_NVM_CLASS_MEMBER_INSTANCE,
 				SJME_JNI_TRUE,
 				methodId->member.name->seq,
@@ -1401,10 +1402,12 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	/* Make sure the array is actually valid. */
 	arrayType = sjme_nvm_byteCode_xArrayType[id - 46];
 	componentType = sjme_atomic_g(sjme_jclass, 
-		&array->object.isClass->componentType);
+		&sjme_atomic_g(sjme_jclass,
+			&array->object.isClass)->componentType);
 	if (array == NULL || componentType == NULL ||
 		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		!array->object.isClass->info->isArray ||
+		!sjme_atomic_g(sjme_jclass,
+			&array->object.isClass)->info->isArray ||
 		componentType == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 

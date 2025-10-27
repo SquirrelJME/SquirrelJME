@@ -252,6 +252,9 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @link sjme_nvm_threadScheduleMode @endlink . */
 	SJME_NVM_WALK_PSEUDO_THREAD_SCHEDULE_MODE = -71,
+
+	/** Non-cyclic atomic reference. */
+	SJME_NVM_WALK_PSEUDO_NON_CYCLIC = -72,
 } sjme_nvm_walk_pseudoType;
 
 /**

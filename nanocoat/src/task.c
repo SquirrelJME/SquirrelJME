@@ -467,7 +467,8 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	throwableClass = sjme_nvm_task_commonClassR(contextThread,
 			SJME_NVM_TASK_COMMON_CLASS_THROWABLE);
 	if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(contextThread,
-		throwableClass, inThrowable->object.isClass)))
+		throwableClass,
+		sjme_atomic_g(sjme_jclass, &inThrowable->object.isClass))))
 		return sjme_error_mask(error, SJME_ERROR_CLASS_CAST);
 
 	/* Locate the message field, if at all possible... */
@@ -505,7 +506,8 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 				{
 					sjme_emitB("EXCEPTION %s: %s",
 						sjme_charSeq_tempUtf(
-							inThrowable->object.isClass->binaryName),
+							sjme_atomic_g(sjme_jclass,
+								&inThrowable->object.isClass)->binaryName),
 						sjme_charSeq_tempUtf(messageSeq));
 					printedMessage = SJME_JNI_TRUE;
 				}
@@ -517,7 +519,8 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	if (!printedMessage)
 		sjme_emitB("EXCEPTION %s: <NO MESSAGE>",
 			sjme_charSeq_tempUtf(
-				inThrowable->object.isClass->binaryName));
+				sjme_atomic_g(sjme_jclass,
+					&inThrowable->object.isClass)->binaryName));
 
 	/* There may be trace points in this. */
 	pointArray = (sjme_jarray)sjme_atomic_g(sjme_intPointer, 

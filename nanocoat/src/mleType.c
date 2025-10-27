@@ -239,7 +239,7 @@ SJME_NVM_MLE_FUNCTION_DECL(objectType)
 	
 	/* This is rather simple, just getting the class of the object. */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
-	argR->v.l = SJME_AS_JOBJECT(object->isClass);
+	argR->v.l = SJME_AS_JOBJECT(sjme_atomic_g(sjme_jclass, &object->isClass));
 	return SJME_ERROR_NONE;
 }
 

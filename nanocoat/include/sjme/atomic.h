@@ -185,6 +185,9 @@ extern "C" {
 	typedef SJME_ATOMIC_NAME(type, numPointerStars) \
 		SJME_TOKEN_PASTE_PP(SJME_ATOMIC_NAME(type, numPointerStars), \
 		_phantom); \
+	typedef SJME_ATOMIC_NAME(type, numPointerStars) \
+		SJME_TOKEN_PASTE_PP(SJME_ATOMIC_NAME(type, numPointerStars), \
+		_nonCyclic); \
 	SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars)
 
 #else
@@ -238,6 +241,7 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
 	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _phantom)
 
 /**
+ * Phantom pointer reference.
  * 
  * @param type The type to reference.
  * @param numPointerStars The number of pointer stars.
@@ -246,8 +250,28 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
 #define sjme_phantomP(type, numPointerStars) \
 	SJME_TOKEN_PASTE4_PP(sjme_atomic_, type, \
 		SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars), _phantom)
+
+/**
+ * Non-cyclic atomic reference.
+ *
+ * @param type The type to reference.
+ * @since 2025/10/27
+ */
+#define sjme_nonCyclic(type) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _nonCyclic)
+
+/**
+ * Non-cyclic pointer reference.
+ * 
+ * @param type The type to reference.
+ * @param numPointerStars The number of pointer stars.
+ * @since 2025/10/27
+ */
+#define sjme_nonCyclicP(type, numPointerStars) \
+	SJME_TOKEN_PASTE4_PP(sjme_atomic_, type, \
+		SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars), _nonCyclic)
 	
-	
+
 /**
  * Chain gets from two atomic values which are in a structure with each
  * other.

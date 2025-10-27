@@ -896,7 +896,8 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 			tempObject = treadValue->l;
 
 			/* Object is gone? */
-			if (tempObject != NULL && (tempObject->isClass == NULL))
+			if (tempObject != NULL && (sjme_atomic_g(sjme_jclass,
+				&tempObject->isClass) == NULL))
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_OBJECT_GONE);
 			
