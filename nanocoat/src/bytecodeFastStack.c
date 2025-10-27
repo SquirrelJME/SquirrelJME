@@ -54,13 +54,13 @@ SJME_NVM_BYTECODE_FAST(DupX1Wide)
 
 	/* Push them back, duplicate the first popped item. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&b)))
+		&commit, &b)))
 		return sjme_error_vmError(inFrame, error);
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&a)))
+		&commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&b)))
+		&commit, &b)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Commit GC. */

@@ -287,6 +287,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_nvm_frame result;
 	sjme_jboolean isStatic;
 	sjme_jvalueTyped* argVParam;
+	sjme_nvm_frame_gcCommit commit;
 #if defined(SJME_CONFIG_DEBUG)
 #define ARG_BUF_SIZE 128
 	sjme_jint argBufLen;
@@ -383,6 +384,9 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	else
 		sjme_atomic_s(sjme_nvm_frame, &result->parent,
 			inThread->frames->elements[inThread->numFrames - 1]);
+
+	/* Setup commit. */
+	memset(&commit, 0, sizeof(commit));
 	
 	/* Setup initial locals, which are copied in from arguments. */
 	if (argV != NULL)
@@ -390,7 +394,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		{
 			/* Set local value. */
 			if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
-				result, dx, &argV[i])))
+				result, &commit, dx, &argV[i])))
 				return sjme_error_vmError(inThread, error);
 			
 			/* Move wide values up twice. */
@@ -398,6 +402,10 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 				argV[i].t == SJME_JAVA_TYPE_ID_DOUBLE)
 				dx++;
 		}
+	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(result, &commit)))
+		return sjme_error_vmError(result, error);
 	
 	/* Set frame as active. */
 	inThread->numFrames++;
@@ -658,6 +666,7 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	sjme_nvm_frame topFrame;
 	sjme_jint topIndex;
 	sjme_nvm_frameBase blank;
+	sjme_nvm_frame_gcCommit commit;
 	sjme_jobject uncaught;
 	
 	if (inThread == NULL)
@@ -667,15 +676,24 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	topIndex = inThread->numFrames - 1;
 	if (topIndex <= -1)
 		return SJME_ERROR_INVALID_THREAD_STATE;
+
+	/* Setup commit. */
+	memset(&commit, 0, sizeof(commit));
 	
 	/* Clear the stack. */
 	topFrame = inThread->frames->elements[topIndex];
-	if (sjme_error_is(error = sjme_nvm_task_frameStackClear(topFrame)))
+	if (sjme_error_is(error = sjme_nvm_task_frameStackClear(topFrame,
+		&commit)))
 		return sjme_error_vmError(inThread, error);
 
 	/* Clear locals as well. */
-	if (sjme_error_is(error = sjme_nvm_task_frameLocalClear(topFrame)))
+	if (sjme_error_is(error = sjme_nvm_task_frameLocalClear(topFrame,
+		&commit)))
 		return sjme_error_vmError(inThread, error);
+	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(topFrame, &commit)))
+		return sjme_error_vmError(topFrame, error);
 
 	/* Make the top-most frame  not exist. */
 	inThread->numFrames = topIndex;

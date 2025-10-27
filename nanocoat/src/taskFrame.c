@@ -242,14 +242,15 @@ sjme_errorCode sjme_nvm_task_frameLocalAddr(
 }
 
 sjme_errorCode sjme_nvm_task_frameLocalClear(
-	sjme_attrInNotNull sjme_nvm_frame inFrame)
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit)
 {
 	sjme_errorCode error;
 	sjme_frame_frameStack* stack;
 	sjme_jint index;
 	sjme_jvalueTyped temp;
 	
-	if (inFrame == NULL)
+	if (inFrame == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Go through and clear out all object locals. */
@@ -312,6 +313,7 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 
 sjme_errorCode sjme_nvm_task_frameLocalPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInValue sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint localIndex)
 {
@@ -328,11 +330,12 @@ sjme_errorCode sjme_nvm_task_frameLocalPush(
 		return sjme_error_vmError(inFrame, error);
 
 	/* Forward to stack. */
-	return sjme_nvm_task_frameStackPush(inFrame, &tempValue);
+	return sjme_nvm_task_frameStackPush(inFrame, commit, &tempValue);
 }
 
 sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint localIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue)
 {
@@ -342,7 +345,7 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	sjme_jint mappedSlot;
 	sjme_frame_frameStacks* stack;
 	
-	if (inFrame == NULL || inValue == NULL)
+	if (inFrame == NULL || commit == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inValue->t < 0 || inValue->t >= SJME_NUM_JAVA_TYPE_IDS)
@@ -444,19 +447,18 @@ fail_notMatched:
 }
 
 sjme_errorCode sjme_nvm_task_frameStackClear(
-	sjme_attrInNotNull sjme_nvm_frame inFrame)
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit)
 {
 	sjme_errorCode error;
 	sjme_jvalueTyped temp;
 	sjme_frame_frameStacks* stack;
-	sjme_nvm_frame_gcCommit commit;
 	
-	if (inFrame == NULL)
+	if (inFrame == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Keep draining the stack until nothing is left. */
 	stack = &inFrame->stack;
-	memset(&commit, 0, sizeof(commit));
 	while (stack->orderTop - stack->orderFront)
 	{
 		/* Peek top value. */
@@ -467,13 +469,9 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 
 		/* Pop it. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			temp.t, &commit, &temp)))
+			temp.t, commit, &temp)))
 			return sjme_error_vmError(inFrame, error);
 	}
-
-	/* Commit GC. */
-	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
-		return sjme_error_vmError(inFrame, error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -615,6 +613,7 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
 
 sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue)
 {
 	sjme_frame_frameStacks* stack;
@@ -622,7 +621,7 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_jint pushCount, at;
 	sjme_jboolean isWide;
 	
-	if (inFrame == NULL || inValue == NULL)
+	if (inFrame == NULL || commit == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Will the stack overflow? */
@@ -652,6 +651,7 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 
 sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_nvm_stringPool_string inClassName)
 {
 	sjme_errorCode error;
@@ -670,11 +670,12 @@ sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
 	
 	/* Push value. */
 	value.t = SJME_JAVA_TYPE_ID_OBJECT;
-	return sjme_nvm_task_frameStackPush(inFrame, &value);
+	return sjme_nvm_task_frameStackPush(inFrame, commit, &value);
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_nvm_stringPool_string inString)
 {
 	sjme_errorCode error;
@@ -697,7 +698,7 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push value. */
-	return sjme_nvm_task_frameStackPush(inFrame, &value);
+	return sjme_nvm_task_frameStackPush(inFrame, commit, &value);
 }
 
 sjme_errorCode sjme_nvm_task_frameStackTop(

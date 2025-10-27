@@ -67,6 +67,7 @@ SJME_NVM_BYTECODE_SLOW(XLoad)
 {
 	sjme_jint index;
 	sjme_javaTypeId type;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Depends on the wideness. */
@@ -85,8 +86,13 @@ SJME_NVM_BYTECODE_SLOW(XLoad)
 
 	/* Push copy of the local to the stack. */
 	type = sjme_nvm_byteCode_xLoadType[id - 21];
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalPush(
-		inFrame, type, index)))
+		inFrame, &commit, type, index)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -97,13 +103,19 @@ SJME_NVM_BYTECODE_SLOW(XLoadZ)
 {
 	sjme_jint index;
 	sjme_javaTypeId type;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Push copy of the local to the stack. */
 	index = ((id - 26) & 3);
 	type = sjme_nvm_byteCode_xLoadType[(id - 26) >> 2];
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalPush(
-		inFrame, type, index)))
+		inFrame, &commit, type, index)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -142,7 +154,7 @@ SJME_NVM_BYTECODE_SLOW(XStore)
 	
 	/* Set local. */
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
-		inFrame, index, &popped)))
+		inFrame, &commit, index, &popped)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -172,7 +184,7 @@ SJME_NVM_BYTECODE_SLOW(XStoreZ)
 	/* Set local. */
 	index = ((id - 59) & 3);
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
-		inFrame, index, &popped)))
+		inFrame, &commit, index, &popped)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */

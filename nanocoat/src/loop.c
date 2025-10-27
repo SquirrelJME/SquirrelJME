@@ -144,6 +144,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_nvm_task inTask;
 	sjme_nvm inState;
 	sjme_jdwp jdwp;
+	sjme_nvm_frame_gcCommit commit;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -347,8 +348,9 @@ skip_thrown:
 				sjme_atomic_s(sjme_jint, &inThread->tossedLevel, -1);
 
 				/* Clear the stack. */
+				memset(&commit, 0, sizeof(commit));
 				if (sjme_error_is(error = sjme_nvm_task_frameStackClear(
-					currentFrame)))
+					currentFrame, &commit)))
 					goto fail_any;
 
 				/* Push the exception to the stack. */
@@ -356,13 +358,18 @@ skip_thrown:
 				push.t = SJME_JAVA_TYPE_ID_OBJECT;
 				push.v.l = tossed;
 				if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-					currentFrame, &push)))
+					currentFrame, &commit, &push)))
 					goto fail_any;
 
 				/* Lower the count as it is now on the stack and now gone */
 				/* from tossed. */
 				if (sjme_error_is(error = sjme_nvm_instance_countDown(tossed)))
 					goto fail_any;
+				
+				/* Commit GC. */
+				if (sjme_error_is(error = sjme_nvm_task_frameCommit(
+					currentFrame, &commit)))
+					return sjme_error_vmError(currentFrame, error);
 			}
 
 			/* If not handled, pop the frame so we put the exception onto */

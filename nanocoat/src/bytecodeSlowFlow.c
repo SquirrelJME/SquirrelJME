@@ -365,7 +365,8 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 
 		/* Push onto the parent stack. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-			sjme_atomic_g(sjme_nvm_frame, &inFrame->parent), &result)))
+			sjme_atomic_g(sjme_nvm_frame, &inFrame->parent),
+			&commit, &result)))
 			return sjme_error_vmError(inFrame, error);
 	}
 

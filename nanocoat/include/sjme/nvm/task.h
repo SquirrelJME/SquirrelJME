@@ -843,11 +843,13 @@ sjme_errorCode sjme_nvm_task_frameLocalAddr(
  * Clears the entire set of locals for a frame.
  * 
  * @param inFrame The frame to clear.
+ * @param commit The GC commit.
  * @return Any resultant error, if any.
  * @since 2025/07/10
  */
 sjme_errorCode sjme_nvm_task_frameLocalClear(
-	sjme_attrInNotNull sjme_nvm_frame inFrame);
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit);
 
 /**
  * Returns the value of a local variable.
@@ -869,6 +871,7 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
  * Pushes the specified local to the stack.
  * 
  * @param inFrame The frame to push the local to the stack from.
+ * @param commit The GC commit.
  * @param typeId The type of local to push.
  * @param localIndex The index of the local.
  * @return Any resultant error, if any.
@@ -876,6 +879,7 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
  */
 sjme_errorCode sjme_nvm_task_frameLocalPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInValue sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint localIndex);
 	
@@ -884,6 +888,7 @@ sjme_errorCode sjme_nvm_task_frameLocalPush(
  * index, which is the same as the Java index.
  * 
  * @param inFrame The frame to set the value in.
+ * @param commit The GC commit.
  * @param localIndex The local index to set.
  * @param inValue The value to set.
  * @return Any resultant error, if any.
@@ -891,6 +896,7 @@ sjme_errorCode sjme_nvm_task_frameLocalPush(
  */
 sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint localIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue);
 	
@@ -920,11 +926,13 @@ sjme_errorCode sjme_nvm_task_framePool(
  * Clears the entire stack for a frame.
  * 
  * @param inFrame The frame to clear.
+ * @param commit The GC commit.
  * @return Any resultant error, if any.
  * @since 2025/06/29
  */
 sjme_errorCode sjme_nvm_task_frameStackClear(
-	sjme_attrInNotNull sjme_nvm_frame inFrame);
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit);
 	
 /**
  * Peeks a single value from the top of the stack.
@@ -987,36 +995,42 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
  * Pushes the given value to the stack.
  * 
  * @param inFrame The frame to push to.
+ * @param commit The GC commit.
  * @param inValue The value being pushed.
  * @return Any resultant error, if any.
  * @since 2025/01/11
  */
 sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue);
 	
 /**
  * Pushes the given class, named by the pool string, to the stack.
  * 
  * @param inFrame The frame to push to.
+ * @param commit The GC commit.
  * @param inClassName The name of the class to push.
  * @return Any resultant error, if any.
  * @since 2025/01/11
  */
 sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_nvm_stringPool_string inClassName);
 	
 /**
  * Pushes the given string pool string to the stack.
  * 
- * @param inFrame The frame to push into the stack for. 
+ * @param inFrame The frame to push into the stack for.
+ * @param commit The GC commit.
  * @param inString The string value being pushed.
  * @return Any resultant error, if any.
  * @since 2025/01/11
  */
 sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_nvm_stringPool_string inString);
 
 /**

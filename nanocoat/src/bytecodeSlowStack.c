@@ -15,10 +15,12 @@
 SJME_NVM_BYTECODE_SLOW(Dup)
 {
 	sjme_jvalueTyped top;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* What is at the top of the stack? */
 	memset(&top, 0, sizeof(top));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
 		0, &top, SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, error);
@@ -29,7 +31,12 @@ SJME_NVM_BYTECODE_SLOW(Dup)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Push a copy of it. */
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame, &top)))
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&commit, &top)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -55,13 +62,13 @@ SJME_NVM_BYTECODE_SLOW(DupX1)
 
 	/* Push them back, duplicate the first popped item. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&b)))
+		&commit, &b)))
 		return sjme_error_vmError(inFrame, error);
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&a)))
+		&commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&b)))
+		&commit, &b)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -254,10 +261,10 @@ SJME_NVM_BYTECODE_SLOW(Swap)
 
 	/* Push them back, but in swapped order. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&b)))
+		&commit, &b)))
 		return sjme_error_vmError(inFrame, error);
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&a)))
+		&commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */

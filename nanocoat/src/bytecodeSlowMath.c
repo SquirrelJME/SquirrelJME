@@ -81,7 +81,7 @@ SJME_NVM_BYTECODE_SLOW(CastDoubleToX)
 
 	/* Push to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&out)))
+		&commit, &out)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -140,7 +140,7 @@ SJME_NVM_BYTECODE_SLOW(CastFloatToX)
 
 	/* Push to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&out)))
+		&commit, &out)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -220,7 +220,7 @@ SJME_NVM_BYTECODE_SLOW(CastIntToX)
 
 	/* Push to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&out)))
+		&commit, &out)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -279,7 +279,7 @@ SJME_NVM_BYTECODE_SLOW(CastLongToX)
 
 	/* Push to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&out)))
+		&commit, &out)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -327,7 +327,7 @@ SJME_NVM_BYTECODE_SLOW(CompareDouble)
 	/* Push the result. */
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&result)))
+		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -375,7 +375,7 @@ SJME_NVM_BYTECODE_SLOW(CompareFloat)
 	/* Push the result. */
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&result)))
+		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -413,7 +413,7 @@ SJME_NVM_BYTECODE_SLOW(CompareLong)
 	/* Push the result. */
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&result)))
+		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -479,7 +479,7 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 	/* Push the result. */
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&result)))
+		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -545,7 +545,7 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 	/* Push the result. */
 	result.t = SJME_JAVA_TYPE_ID_LONG;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&result)))
+		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -607,7 +607,7 @@ SJME_NVM_BYTECODE_SLOW(MathDouble)
 	/* Push the result. */
 	result.t = SJME_JAVA_TYPE_ID_DOUBLE;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&result)))
+		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -669,7 +669,7 @@ SJME_NVM_BYTECODE_SLOW(MathFloat)
 	/* Push the result. */
 	result.t = SJME_JAVA_TYPE_ID_FLOAT;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&result)))
+		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -727,7 +727,7 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 	/* Push the result. */
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&result)))
+		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -785,7 +785,7 @@ SJME_NVM_BYTECODE_SLOW(MathLong)
 	/* Push the result. */
 	result.t = SJME_JAVA_TYPE_ID_LONG;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&result)))
+		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -832,7 +832,8 @@ SJME_NVM_BYTECODE_SLOW(MathNegateInt)
 	value.v.i = -value.v.i;
 
 	/* Push it back to the stack. */
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame, &value)))
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&commit, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
@@ -859,7 +860,8 @@ SJME_NVM_BYTECODE_SLOW(MathNegateLong)
 	value.v.j.full = -value.v.j.full;
 
 	/* Push it back to the stack. */
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame, &value)))
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+		&commit, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */

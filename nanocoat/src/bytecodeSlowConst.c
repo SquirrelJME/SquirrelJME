@@ -16,13 +16,14 @@
 
 static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
 	sjme_attrInNotNull sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_class_poolEntry* entry)
 {
 	sjme_jvalueTyped value;
 	
-	if (inFrame == NULL || entry == NULL)
+	if (inFrame == NULL || entry == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* What happens, depends on the type. */
@@ -33,33 +34,33 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 			value.t = SJME_JAVA_TYPE_ID_INTEGER;
 			value.v.i = entry->constInteger.value;
 			return sjme_nvm_task_frameStackPush(
-				inFrame, &value);
+				inFrame, commit, &value);
 		
 		case SJME_NVM_CLASS_POOL_TYPE_LONG:
 			value.t = SJME_JAVA_TYPE_ID_LONG;
 			value.v.j = entry->constLong.value;
 			return sjme_nvm_task_frameStackPush(
-				inFrame, &value);
+				inFrame, commit, &value);
 		
 		case SJME_NVM_CLASS_POOL_TYPE_FLOAT:
 			value.t = SJME_JAVA_TYPE_ID_FLOAT;
 			value.v.f = entry->constFloat.value;
 			return sjme_nvm_task_frameStackPush(
-				inFrame, &value);
+				inFrame, commit, &value);
 		
 		case SJME_NVM_CLASS_POOL_TYPE_DOUBLE:
 			value.t = SJME_JAVA_TYPE_ID_DOUBLE;
 			value.v.d = entry->constDouble.value;
 			return sjme_nvm_task_frameStackPush(
-				inFrame, &value);
+				inFrame, commit, &value);
 
 		case SJME_NVM_CLASS_POOL_TYPE_CLASS:
 			return sjme_nvm_task_frameStackPushClassPD(
-				inFrame, SJME_P_C_N(entry));
+				inFrame, commit, SJME_P_C_N(entry));
 		
 		case SJME_NVM_CLASS_POOL_TYPE_STRING:
 			return sjme_nvm_task_frameStackPushStringP(
-				inFrame, entry->utf.utf);
+				inFrame, commit, entry->utf.utf);
 		
 		/* Invalid type. */
 		default:
@@ -71,6 +72,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 SJME_NVM_BYTECODE_SLOW(AConstNull)
 {
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
@@ -79,8 +81,13 @@ SJME_NVM_BYTECODE_SLOW(AConstNull)
 	value.v.l = NULL;
 
 	/* Push to stack. */
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-		inFrame, &value)))
+		inFrame, &commit, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -90,6 +97,7 @@ SJME_NVM_BYTECODE_SLOW(AConstNull)
 SJME_NVM_BYTECODE_SLOW(BIPush)
 {
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
@@ -100,8 +108,13 @@ SJME_NVM_BYTECODE_SLOW(BIPush)
 		value.v.i |= INT32_C(0xFFFFFF00);
 
 	/* Push to stack. */
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-		inFrame, &value)))
+		inFrame, &commit, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -111,6 +124,7 @@ SJME_NVM_BYTECODE_SLOW(BIPush)
 SJME_NVM_BYTECODE_SLOW(DConstZ)
 {
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
@@ -122,8 +136,13 @@ SJME_NVM_BYTECODE_SLOW(DConstZ)
 		value.v.d.bits.hi = UINT32_C(0x3FF00000);
 
 	/* Push to stack. */
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-		inFrame, &value)))
+		inFrame, &commit, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -133,6 +152,7 @@ SJME_NVM_BYTECODE_SLOW(DConstZ)
 SJME_NVM_BYTECODE_SLOW(FConstZ)
 {
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
@@ -146,8 +166,13 @@ SJME_NVM_BYTECODE_SLOW(FConstZ)
 		value.v.f.bits = INT32_C(1073741824);
 
 	/* Push to stack. */
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-		inFrame, &value)))
+		inFrame, &commit, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -157,6 +182,7 @@ SJME_NVM_BYTECODE_SLOW(FConstZ)
 SJME_NVM_BYTECODE_SLOW(IConstM)
 {
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
@@ -165,8 +191,13 @@ SJME_NVM_BYTECODE_SLOW(IConstM)
 	value.v.i = (-1) + (id - 2);
 
 	/* Push to stack. */
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-		inFrame, &value)))
+		inFrame, &commit, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -176,6 +207,7 @@ SJME_NVM_BYTECODE_SLOW(IConstM)
 SJME_NVM_BYTECODE_SLOW(LConstZ)
 {
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
@@ -184,8 +216,13 @@ SJME_NVM_BYTECODE_SLOW(LConstZ)
 	value.v.j.part.lo = id - 9;
 
 	/* Push to stack. */
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-		inFrame, &value)))
+		inFrame, &commit, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
@@ -196,6 +233,7 @@ SJME_NVM_BYTECODE_SLOW(Ldc)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in pool value. */
@@ -210,8 +248,13 @@ SJME_NVM_BYTECODE_SLOW(Ldc)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Forward to common handler. */
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame,
-		id, relRawCode, entry)))
+		&commit, id, relRawCode, entry)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Success? */
@@ -222,6 +265,7 @@ SJME_NVM_BYTECODE_SLOW(LdcW)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in pool value. */
@@ -236,8 +280,13 @@ SJME_NVM_BYTECODE_SLOW(LdcW)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Forward to common handler. */
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame,
-		id, relRawCode, entry)))
+		&commit, id, relRawCode, entry)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Success? */
@@ -248,6 +297,7 @@ SJME_NVM_BYTECODE_SLOW(LdcWTwo)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in pool value. */
@@ -260,8 +310,13 @@ SJME_NVM_BYTECODE_SLOW(LdcWTwo)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Forward to common handler. */
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame,
-		id, relRawCode, entry)))
+		&commit, id, relRawCode, entry)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Success? */
@@ -271,6 +326,7 @@ SJME_NVM_BYTECODE_SLOW(LdcWTwo)
 SJME_NVM_BYTECODE_SLOW(SIPush)
 {
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Setup value to push. */
@@ -281,8 +337,13 @@ SJME_NVM_BYTECODE_SLOW(SIPush)
 		value.v.i |= INT32_C(0xFFFF0000);
 
 	/* Push to stack. */
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-		inFrame, &value)))
+		inFrame, &commit, &value)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
