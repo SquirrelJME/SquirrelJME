@@ -731,6 +731,27 @@ sjme_errorCode sjme_alloc_weakGetPointer(
 	(sjme_alloc_weakRefE((addr), (outWeak), NULL, NULL))
 
 /**
+ * Inline weak count up.
+ *
+ * @param type The type of the weak reference.
+ * @param addr The address to count up.
+ * @return Always @c addr .
+ * @since 2025/10/26
+ */
+#define sjme_weakUpR(type, addr) \
+	((type)sjme_weakUp((sjme_pointer)(addr)))
+
+/**
+ * Inline weak count up.
+ * 
+ * @param addr The address to count up.
+ * @return Always @c addr .
+ * @since 2025/10/26
+ */
+sjme_pointer sjme_weakUp(
+	sjme_attrInNullable sjme_pointer addr);
+	
+/**
  * Obtains a weak reference without incrementation or creation.
  * 
  * @param addr The address to get the weak pointer of.

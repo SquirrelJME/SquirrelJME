@@ -1548,6 +1548,26 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakRefE)(
 	return error;
 }
 
+sjme_pointer sjme_weakUp(
+	sjme_attrInNullable sjme_pointer addr)
+{
+	sjme_alloc_weak weak;
+	sjme_errorCode error;
+
+	/* Propagate null, do not count. */
+	if (addr == NULL)
+		return NULL;
+
+	/* Count up. */
+	weak = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakRef(addr, &weak)) ||
+		weak == NULL)
+		sjme_die("sjme_weakUp(%p): %d", addr, error);
+
+	/* Return self. */
+	return addr;
+}
+
 sjme_errorCode sjme_alloc_weakRefGet(
 	sjme_attrInNotNull sjme_pointer addr,
 	sjme_attrOutNullable sjme_alloc_weak* outWeak)

@@ -125,24 +125,17 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 		&dupFileName, fileName)) ||
 		dupFileName == NULL)
 		goto fail_dupName;
-	
-	/* Reference for keeping. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(maybe, NULL)))
-		goto fail_countUp;
 
 	/* The library this came from. */
-	sjme_atomic_s(sjme_nvm_rom_library, &maybe->library, inLibrary);
-
-	/* Count up library. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(inLibrary, NULL)))
-		goto fail_countLibrary;
+	sjme_atomic_s(sjme_nvm_rom_library, &maybe->library,
+		sjme_weakUpR(sjme_nvm_rom_library, inLibrary));
 	
 	/* File name is needed for caching. */
 	maybe->fileName = dupFileName;
 	maybe->fileNameHash = sjme_string_hash(dupFileName);
 	
 	/* Store info in for later caching. */
-	classInfos->elements[freeSlot] = maybe;
+	classInfos->elements[freeSlot] = sjme_weakUpR(sjme_nvm_class_info, maybe);
 	
 	/* Release the write lock. */
 	if (sjme_error_is(error = sjme_thread_rwLockReleaseWrite(
@@ -259,7 +252,7 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 	result->functions = inFunctions;
 	result->rwLock.read = &result->common.lock;
 	result->classInfos = classInfos;
-	result->stringPool = stringPool;
+	result->stringPool = sjme_weakUpR(sjme_nvm_stringPool, stringPool);
 	
 	/* Copy front end? */
 	if (copyFrontEnd != NULL)
@@ -275,10 +268,6 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 	if (sjme_error_is(error = sjme_alloc_strdup(allocPool,
 		(sjme_lpstr*)&result->name, libName)))
 		goto fail_strdup;
-
-	/* Count up string pool. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(stringPool, NULL)))
-		goto fail_countUp;
 	
 	/* Success! */
 	*outLibrary = result;

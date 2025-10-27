@@ -162,12 +162,8 @@ sjme_errorCode sjme_nvm_task_bracketJarPackage(
 			goto fail_newBracket;
 
 		/* Set details. */
-		result->library = inLibrary;
+		result->library = sjme_weakUpR(sjme_nvm_rom_library, inLibrary);
 
-		/* Count up library. */
-		if (sjme_error_is(error = sjme_alloc_weakRef(inLibrary, NULL)))
-			goto fail_countUp;
-		
 		/* Cache it into the list. */
 		if (sjme_error_is(error = sjme_list_injectGrow(
 			SJME_T_S(contextThread)->allocPool, SJME_NVM_TASK_JAR_GROW,
@@ -334,11 +330,7 @@ sjme_errorCode sjme_nvm_task_commonClass(
 	sjme_atomic_cs(sjme_jclass, 
 		&sjme_atomic_g(sjme_nvm_task,
 			&contextThread->inTask)->globals.commonClasses[commonId],
-		NULL, result);
-
-	/* Count up since it is stored here now. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
-		return sjme_error_default(error);
+		NULL, sjme_weakUpR(sjme_jclass, result));
 
 	/* Success! */
 	*outClass = result;
@@ -823,10 +815,10 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	
 	/* Refer to owning state and set identifier. */
 	sjme_atomic_s(sjme_nvm, &result->inState, inState);
-	result->classLoader = classLoader;
+	result->classLoader = sjme_weakUpR(sjme_nvm_vmClass_loader, classLoader);
 	result->id = 1 + sjme_atomic_ga(sjme_jint, 
 		&inState->nextTaskId, 1);
-	result->strings = strings;
+	result->strings = sjme_weakUpR(sjme_nvm_taskStrings, strings);
 	result->initConfig = initConfigCopy;
 
 	/* Initialize identity hashcode generator. */
@@ -867,11 +859,6 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	
 	/* Add to the running task count. */
 	sjme_atomic_ga(sjme_jint, &inState->numRunningTasks, 1);
-
-	/* Refer to the classloader as we are using it, before we enter main */
-	/* as weird stuff can happen if not. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(classLoader, NULL)))
-		goto fail_countLoader;
 
 	/* Not belaying main start? Then start the main thread. */
 	if ((initConfigCopy->belay & SJME_NVM_BOOT_BELAY_MAIN) == 0)

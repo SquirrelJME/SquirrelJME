@@ -184,18 +184,20 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 			goto fail_allocId;
 
 		/* Store into the result. */
-		result->elements[at++] = id;
+		result->elements[at++] = sjme_weakUpR(sjme_jfieldID, id);
 
 		/* Set ID info. */
-		id->info = field;
+		id->info = sjme_weakUpR(sjme_nvm_class_fieldInfo, field);
 		id->javaType = field->javaType;
 		id->basicType = field->basicType;
 		id->extendedType = field->extendedType;
 		id->flags = field->flags;
 		id->member.idHash = field->idHash;
 		sjme_atomic_s(sjme_jclass, &id->member.inClass, inClass);
-		id->member.name = field->name;
-		id->member.type = field->type;
+		id->member.name = sjme_weakUpR(sjme_nvm_stringPool_string,
+			field->name);
+		id->member.type = sjme_weakUpR(sjme_nvm_stringPool_string,
+			field->type);
 
 		/* Objects get a wider type multiplier for their check value. */
 		extendedType = field->extendedType;
@@ -220,16 +222,6 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 				goto fail_findFieldClass;
 			sjme_atomic_s(sjme_jclass, &id->objectType, objectType);
 		}
-		
-		/* Count up references. */
-		if (sjme_error_is(error = sjme_alloc_weakRef(id, NULL)))
-			goto fail_countUp;
-		if (sjme_error_is(error = sjme_alloc_weakRef(field, NULL)))
-			goto fail_countUp;
-		if (sjme_error_is(error = sjme_alloc_weakRef(id->member.name, NULL)))
-			goto fail_countUp;
-		if (sjme_error_is(error = sjme_alloc_weakRef(id->member.type, NULL)))
-			goto fail_countUp;
 	}
 
 	/* Success! */
@@ -513,11 +505,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 			return SJME_ERROR_ILLEGAL_STATE;
 		
 		/* Store bind. */
-		result->elements[i] = bind;
-
-		/* Count up bind. */
-		if (sjme_error_is(error = sjme_alloc_weakRef(bind, NULL)))
-			goto fail_countBind;
+		result->elements[i] = sjme_weakUpR(sjme_jmethodID, bind);
 			
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
@@ -644,14 +632,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	
 	/* Synthesize info for arrays. */
 	info->version = SJME_NVM_CLASS_CLDC_1_8;
-	info->name = thisName;
-	info->superName = superName;
+	info->name = sjme_weakUpR(sjme_nvm_stringPool_string, thisName);
+	info->superName = sjme_weakUpR(sjme_nvm_stringPool_string, superName);
 	info->flags = SJME_NVM_ACC_PUBLIC | SJME_NVM_ACC_FINAL |
 		SJME_NVM_ACC_SYNTHETIC;
 	info->isArray = SJME_JNI_TRUE;
 
 	/* Set synthetic class info. */
-	inClass->info = info;
+	inClass->info = sjme_weakUpR(sjme_nvm_class_info, info);
 
 	/* Determine component type class name. */
 	memset(componentTypeName, 0, sizeof(componentTypeName));
@@ -669,21 +657,13 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 
 	/* Set component type, and tha phantom back link for quicker lookup. */
 	sjme_atomic_cs(sjme_jclass, &inClass->componentType,
-		NULL, componentType);
+		NULL, sjme_weakUpR(sjme_jclass, componentType));
 	sjme_atomic_pcs(&componentType->phantomArrayType,
 		NULL, inClass);
 
 	/* Set dimension count to be one higher than the component type. */
 	sjme_atomic_s(sjme_jint, &inClass->numDimensions,
 		sjme_atomic_g(sjme_jint, &componentType->numDimensions) + 1);
-
-	/* Count up references. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(thisName, NULL)))
-		return sjme_error_default(error);
-	if (sjme_error_is(error = sjme_alloc_weakRef(superName, NULL)))
-		return sjme_error_default(error);
-	if (sjme_error_is(error = sjme_alloc_weakRef(componentType, NULL)))
-		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -724,17 +704,13 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
 	/* Synthesize info for primitive types. */
 	/* Magically, they have no super class! */
 	info->version = SJME_NVM_CLASS_CLDC_1_8;
-	info->name = thisName;
+	info->name = sjme_weakUpR(sjme_nvm_stringPool_string, thisName);
 	info->superName = NULL;
 	info->flags = SJME_NVM_ACC_PUBLIC | SJME_NVM_ACC_FINAL |
 		SJME_NVM_ACC_SYNTHETIC;
 
 	/* Set synthetic class info. */
-	inClass->info = info;
-	
-	/* Count up references. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(thisName, NULL)))
-		return sjme_error_default(error);
+	inClass->info = sjme_weakUpR(sjme_nvm_class_info, info);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -979,11 +955,7 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 		goto fail_allocIsClasses;
 	
 	/* Initialize structure. */
-	result->isClasses = isClasses;
-	
-	/* Count up isClasses, since it is being referenced now. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(isClasses, NULL)))
-		goto fail_countIsClasses;
+	result->isClasses = sjme_weakUpR(sjme_nvm_isClasses, isClasses);
 	
 	/* Set class type ID. */
 	switch (sjme_charSeq_charAtR(binaryName, 0))
@@ -1172,7 +1144,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		
 		/* Set superclass. */
 		sjme_atomic_s(sjme_jclass, &inClass->superClass,
-			superClass);
+			sjme_weakUpR(sjme_jclass, superClass));
 	}
 	
 	/* If there are interfaces, they need to be found as well. */
@@ -1201,7 +1173,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 				goto fail_findInterface;
 			
 			/* Set superclass. */
-			interfaces->elements[i] = interface;
+			interfaces->elements[i] = sjme_weakUpR(sjme_jclass, interface);
 		}
 	}
 	
