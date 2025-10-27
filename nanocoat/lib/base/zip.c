@@ -617,11 +617,7 @@ sjme_errorCode sjme_zip_openSeekable(
 	result->logicalCentralDirPos = logicalCentralDirPos;
 	result->endCentralDirPos = endCentralDirPos;
 	result->archiveStartPos = archiveStartPos;
-	result->seekable = inSeekable;
-	
-	/* Count the seekable up, since we are using it. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(inSeekable, NULL)))
-		return sjme_error_default(error);
+	result->seekable = sjme_weakUpR(sjme_seekable, inSeekable);
 	
 	/* Success! */
 	*outZip = result;

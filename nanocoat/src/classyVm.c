@@ -1022,7 +1022,7 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	sjme_atomic_s(sjme_jint, &result->isInitialized, autoLoad);
 	
 	/* Store into the output slot immediately for recursive loading. */
-	*outSlot = result;
+	*outSlot = sjme_weakUpR(sjme_jclass, result);
 	
 	/* Success! */
 	*outClass = result;
@@ -1282,18 +1282,6 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitFieldStatics(
 			contextThread, inClass)))
 			goto fail_initStatics;
-	
-	/* Count up super class. */
-	if (superClass != NULL)
-		if (sjme_error_is(error = sjme_alloc_weakRef(superClass, NULL)))
-			goto fail_countSuper;
-
-	/* Count up interfaces. */
-	if (interfaces != NULL)
-		for (i = 0, n = interfaces->length; i < n; i++)
-			if (sjme_error_is(error = sjme_alloc_weakRef(
-				interfaces->elements[i], NULL)))
-				goto fail_countInterface;
 	
 	/* Set as initialized now. */
 	if (!sjme_atomic_cs(sjme_jint, &inClass->isInitialized,
@@ -2031,10 +2019,6 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadF(
 		&classes->elements[freeSlot],
 		contextThread, fieldName)) || maybe == NULL)
 		goto fail_loadClass;
-
-	/* Count up the loaded class since it is now in the free slot. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(maybe, NULL)))
-		goto fail_countClass;
 	
 	/* Release the write lock. */
 	if (sjme_error_is(error = sjme_thread_rwLockReleaseWrite(
@@ -2266,16 +2250,12 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	result->inState = inState;
 	result->classPath = dup;
 	result->classes = classes;
-	result->nullStrings = nullStrings;
-
-	/* Count up null string set. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(nullStrings, NULL)))
-		goto fail_countUp;
+	result->nullStrings = sjme_weakUpR(sjme_nvm_stringPool, nullStrings);
 
 	/* Count up all libraries as they are being used. */
 	for (n = dup->length, i = 0; i < n; i++)
-		if (sjme_error_is(error = sjme_alloc_weakRef(dup->elements[i], NULL)))
-			goto fail_countUp;
+		dup->elements[i] = sjme_weakUpR(sjme_nvm_rom_library,
+			dup->elements[i]);
 	
 	/* Success! */
 	*outLoader = result;

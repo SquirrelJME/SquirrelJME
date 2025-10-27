@@ -118,12 +118,6 @@ sjme_errorCode sjme_nvm_rom_suiteLibraries(
 
 	/* Store it within the cache. */
 	inSuite->libraries = result;
-
-	/* Since we are referring to all the libraries, count each one up. */
-	for (n = result->length, i = 0; i < n; i++)
-		if (sjme_error_is(error = sjme_alloc_weakRef(result->elements[i],
-			NULL)))
-			goto fail_countUp;
 	
 	/* All of these must be valid libraries. */
 	for (i = 0, n = result->length; i < n; i++)

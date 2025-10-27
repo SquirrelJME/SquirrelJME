@@ -1232,7 +1232,9 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_nvm_class_fieldInfo field;
 	sjme_nvm_class_methodInfo method;
 	sjme_lpstr packageName;
-	sjme_cchar runtimeName[MAX_RUNTIME_NAME];
+	sjme_cchar runtimeNameRaw[MAX_RUNTIME_NAME];
+	sjme_nvm_stringPool_string inPackage;
+	sjme_nvm_stringPool_string runtimeName;
 	
 	if (allocPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
@@ -1299,9 +1301,7 @@ sjme_errorCode sjme_nvm_class_parse(
 		goto fail_parsePool;
 	
 	/* We are using this, so count it up. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(pool, NULL)))
-		goto fail_countPool;
-	result->pool = pool;
+	result->pool = sjme_weakUpR(sjme_nvm_class_poolInfo, pool);
 	
 	/* Read in flags. */
 	if (sjme_error_is(error = sjme_nvm_class_classFlagsParse(
@@ -1317,10 +1317,8 @@ sjme_errorCode sjme_nvm_class_parse(
 		goto fail_readThisName;
 	
 	/* Reference it. */
-	result->name = SJME_P_C_N(thisName);
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->name, NULL)))
-		goto fail_refThisName;
+	result->name = sjme_weakUpR(sjme_nvm_stringPool_string,
+		SJME_P_C_N(thisName));
 		
 	/* Locate the last slash character in the binary name. */
 	lastSlash = result->name->seq->length - 1;
@@ -1348,42 +1346,35 @@ sjme_errorCode sjme_nvm_class_parse(
 		goto fail_inPackage;
 	
 	/* Locate string for package name. */
-	result->inPackage = NULL;
+	inPackage = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
-		inStringPool, &result->inPackage, packageName, 0, lastSlash)) ||
+		inStringPool, &inPackage, packageName, 0, lastSlash)) ||
 		result->inPackage == NULL)
 		goto fail_inPackage;
-	
-	/* Reference it. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->inPackage, NULL)))
-		goto fail_refPackage;
+	result->inPackage = sjme_weakUpR(sjme_nvm_stringPool_string, inPackage);
 
 	/* Translate to the name as it would appear at runtime. */
-	memset(runtimeName, 0, sizeof(runtimeName));
+	memset(runtimeNameRaw, 0, sizeof(runtimeNameRaw));
 	if (sjme_error_is(error = sjme_charSeq_dupToU(result->name->seq,
-		0, runtimeName, 0, MAX_RUNTIME_NAME - 1,
+		0, runtimeNameRaw, 0, MAX_RUNTIME_NAME - 1,
 		-1)))
 		goto fail_dupName;
-	runtimeName[MAX_RUNTIME_NAME - 1] = 0;
+	runtimeNameRaw[MAX_RUNTIME_NAME - 1] = 0;
 	
 	for (i = 0; i < MAX_RUNTIME_NAME; i++)
-		if (runtimeName[i] == '/')
-			runtimeName[i] = '.';
-		else if (runtimeName[i] == '\0')
+		if (runtimeNameRaw[i] == '/')
+			runtimeNameRaw[i] = '.';
+		else if (runtimeNameRaw[i] == '\0')
 			break;
 
 	/* Lookup the runtime string. */
-	result->runtimeName = NULL;
+	runtimeName = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
-		inStringPool, &result->runtimeName, runtimeName, 0, -1)) ||
+		inStringPool, &runtimeName, runtimeNameRaw, 0, -1)) ||
 		result->runtimeName == NULL)
 		goto fail_inRuntimeName;
-	
-	/* Reference it. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->runtimeName, NULL)))
-		goto fail_refRuntimeName;
+	result->runtimeName = sjme_weakUpR(sjme_nvm_stringPool_string,
+		runtimeName);
 	
 	/* Read in super name. */
 	superName = NULL;
@@ -1395,12 +1386,8 @@ sjme_errorCode sjme_nvm_class_parse(
 	
 	/* Reference it, if valid. */
 	if (superName != NULL)
-	{
-		result->superName = SJME_P_C_N(superName);
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			result->superName, NULL)))
-			goto fail_refSuperName;
-	}
+		result->superName = sjme_weakUpR(sjme_nvm_stringPool_string,
+			SJME_P_C_N(superName));
 	
 	/* How many interfaces are there? */
 	interfaceCount = -1;
@@ -1429,10 +1416,8 @@ sjme_errorCode sjme_nvm_class_parse(
 			goto fail_readThisName;
 		
 		/* Reference it. */
-		interfaceNames->elements[i] = SJME_P_C_N(interfaceName);
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			interfaceNames->elements[i], NULL)))
-			goto fail_refThisName;
+		interfaceNames->elements[i] = sjme_weakUpR(sjme_nvm_stringPool_string,
+			SJME_P_C_N(interfaceName));
 	}
 	
 	/* Read in field count. */

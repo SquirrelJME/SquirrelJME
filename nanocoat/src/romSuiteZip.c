@@ -365,7 +365,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteListLibraries(
 			goto fail_loadLibrary;
 		
 		/* Use it! */
-		result->elements[i] = lib;
+		result->elements[i] = sjme_weakUpR(sjme_nvm_rom_library, lib);
 	}
 	
 	/* We no longer need the names. */

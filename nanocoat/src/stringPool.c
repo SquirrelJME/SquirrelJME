@@ -159,13 +159,9 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 			result->seq == NULL)
 			goto fail_initSeq;
 		
-		/* Count up as the pool itself references it. */
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			result, NULL)))
-			goto fail_countUp;
-		
 		/* Store it into the pool. */
-		strings->elements[firstFree] = result;
+		strings->elements[firstFree] = sjme_weakUpR(sjme_nvm_stringPool_string,
+			result);
 	}
 	
 	/* Release the lock. */
