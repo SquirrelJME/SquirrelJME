@@ -92,7 +92,7 @@ typedef enum sjme_nvm_walk_pseudoType
 	SJME_NVM_WALK_PSEUDO_FRONT_END_DATA = -17,
 
 	/** @link sjme_frontEnd_bindType @endlink . */
-	SJME_NVM_WALK_PSEUDO_BIND_TYPE = -18,
+	SJME_NVM_WALK_PSEUDO_FRONT_END_BIND_TYPE = -18,
 
 	/** @link sjme_lpstr @endlink . */
 	SJME_NVM_WALK_PSEUDO_LPSTR = -19,

@@ -1235,6 +1235,8 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_cchar runtimeNameRaw[MAX_RUNTIME_NAME];
 	sjme_nvm_stringPool_string inPackage;
 	sjme_nvm_stringPool_string runtimeName;
+	sjme_nvm_class_methodInfo parsedMethod;
+	sjme_nvm_class_fieldInfo parsedField;
 	
 	if (allocPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
@@ -1349,7 +1351,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	inPackage = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
 		inStringPool, &inPackage, packageName, 0, lastSlash)) ||
-		result->inPackage == NULL)
+		inPackage == NULL)
 		goto fail_inPackage;
 	result->inPackage = sjme_weakUpR(sjme_nvm_stringPool_string, inPackage);
 
@@ -1371,7 +1373,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	runtimeName = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
 		inStringPool, &runtimeName, runtimeNameRaw, 0, -1)) ||
-		result->runtimeName == NULL)
+		runtimeName == NULL)
 		goto fail_inRuntimeName;
 	result->runtimeName = sjme_weakUpR(sjme_nvm_stringPool_string,
 		runtimeName);
@@ -1437,16 +1439,12 @@ sjme_errorCode sjme_nvm_class_parse(
 	for (i = 0; i < fieldCount; i++)
 	{
 		/* Parse each field. */
+		parsedField = NULL;
 		if (sjme_error_is(error = sjme_nvm_class_parseField(
 			allocPool, inStream, result->pool, inStringPool,
-			&fields->elements[i])) ||
-			fields->elements[i] == NULL)
+			&parsedField)) || parsedField == NULL)
 			goto fail_parseField;
-		
-		/* We are referencing this. */
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			fields->elements[i], NULL)))
-			goto fail_refField;
+		fields->elements[i] = sjme_weakUp(parsedField);
 	}
 	
 	/* Determine the indexes of all fields. */
@@ -1485,16 +1483,12 @@ sjme_errorCode sjme_nvm_class_parse(
 	for (i = 0; i < methodCount; i++)
 	{
 		/* Parse each method. */
+		parsedMethod = NULL;
 		if (sjme_error_is(error = sjme_nvm_class_parseMethod(
 			allocPool, inStream, result->pool, inStringPool,
-			&methods->elements[i])) ||
-			methods->elements[i] == NULL)
+			&parsedMethod)) || parsedMethod == NULL)
 			goto fail_parseMethod;
-		
-		/* Reference as we are using this. */
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			methods->elements[i], NULL)))
-			goto fail_refMethod;
+		methods->elements[i] = sjme_weakUp(parsedMethod);
 		
 		/* Link back. */
 		sjme_atomic_s(sjme_nvm_class_info, &methods->elements[i]->inClass,

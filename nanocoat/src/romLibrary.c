@@ -107,10 +107,11 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 		goto fail_openRc;
 	
 	/* Parse class information. */
+	maybe = NULL;
 	if (sjme_error_is(error = sjme_nvm_class_parse(
 		inLibrary->allocPool,
 		stream, inLibrary->stringPool,
-		&maybe)))
+		&maybe)) || maybe == NULL)
 		goto fail_parseClass;
 	
 	/* Can close the stream now. */
@@ -152,8 +153,6 @@ skip_foundInfo:
 	*outClassInfo = maybe;
 	return SJME_ERROR_NONE;
 
-fail_countLibrary:
-fail_countUp:
 fail_dupName:
 	if (dupFileName != NULL)
 	{
