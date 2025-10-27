@@ -1682,6 +1682,10 @@ sjme_errorCode sjme_alloc_poolDump(
 	for (rover = sjme_atomic_g(sjme_alloc_link, &allocPool->frontLink);
 		rover != NULL; rover = sjme_atomic_g(sjme_alloc_link, &rover->next))
 	{
+		/* Check corruption. */
+		if (sjme_alloc_checkCorruption(allocPool, rover))
+			sjme_messageB("CORRUPTED LINK! %p", rover);
+		
 		/* Only care about used space? */
 		if (onlyUsed && rover->space != SJME_ALLOC_POOL_SPACE_USED)
 			continue;
@@ -1693,7 +1697,7 @@ sjme_errorCode sjme_alloc_poolDump(
 			idType = allocPool->pointerIdType((sjme_pointer*)&rover->block[0]);
 		weakLeft = sjme_alloc_weakRefLeftR((sjme_pointer*)&rover->block[0]);
 		
-		if (weakLeft >= 0 && weakLeft != INT32_MIN)
+		if (weakLeft >= 0 || weakLeft == INT32_MIN)
 			sjme_messageB(
 				"Link %d:%p [W%d]: %s %dB in %s (%s:%d)",
 					idType, &rover->block[0], weakLeft,

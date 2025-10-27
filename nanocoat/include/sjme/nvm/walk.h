@@ -385,6 +385,12 @@ typedef union sjme_nvm_walk_pointer
 	/** Closeable. */
 	sjme_closeableBase* closeable;
 
+	/** Common NVM structure. */
+	sjme_nvm_common nvmCommon;
+
+	/** Common NVM structure. */
+	sjme_atomic(sjme_nvm_common)* atomicNvmCommon;
+
 	/** ROM library. */
 	sjme_nvm_rom_library romLibrary;
 

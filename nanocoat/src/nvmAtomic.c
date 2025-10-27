@@ -17,6 +17,8 @@ SJME_ATOMIC_FUNCTION(sjme_jbracketTrace, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_nvm, 0)
 
+SJME_ATOMIC_FUNCTION(sjme_nvm_common, 0)
+
 SJME_ATOMIC_FUNCTION(sjme_nvm_class_info, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_nvm_class_methodInfo, 0)

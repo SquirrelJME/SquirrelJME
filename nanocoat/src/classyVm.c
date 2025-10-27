@@ -2298,6 +2298,10 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	result->classes = classes;
 	result->nullStrings = nullStrings;
 
+	/* Count up null string set. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(nullStrings, NULL)))
+		goto fail_countUp;
+
 	/* Count up all libraries as they are being used. */
 	for (n = dup->length, i = 0; i < n; i++)
 		if (sjme_error_is(error = sjme_alloc_weakRef(dup->elements[i], NULL)))

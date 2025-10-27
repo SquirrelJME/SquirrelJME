@@ -78,6 +78,7 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
 	sjme_attrInNotNull sjme_nvm_walk_state* at)
 {
+	sjme_nvm_common common;
 	SJME_CLEANUP_DECL;
 	
 	if (root == NULL || at == NULL)
@@ -119,34 +120,38 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 	/* Pre-stage sub-structure recursive cleanup? */
 	else if (at->stage == SJME_NVM_WALK_STAGE_PRE && at->index != INT32_MIN &&
 		at->index != INT32_MAX && at->index >= 0)
-	{
-		/* Only clean up objects if they are not ourselves, otherwise we */
-		/* will end up garbage collecting too early. Objects get counted */
-		/* down accordingly. Naturally NVM structures are always positive */
-		/* type identifiers. */
-		if (at->typeId.i > SJME_NVM_STRUCT_UNKNOWN &&
-			at->valueP.value != at->baseStruct.value &&
-			!at->isPhantom &&
-			*at->valueP.pointer != NULL &&
-			sjme_nvm_isAR(*at->valueP.pointer,
-				SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
+	{		
+		/* Potentially eligible NVM structure that can be cleaned? */
+		/* Never clean phantom pointers, as those often point back to a */
+		/* parent structure. */
+		/* We also cannot handle non-pointer types, or wrapped types. */
+		if (!at->isPhantom && at->isPointer && at->variantStep == NULL &&
+			at->typeId.i > SJME_NVM_STRUCT_UNKNOWN)
 		{
-			/* Count down. */
-			SJME_COUNT_DOWN_ATOMIC_NAT(sjme_pointer, 0,
-				at->valueP.atomicPointer);
-		}
+			/* Skip base struct operations. */
+			if (at->valueP.value == at->baseStruct.value)
+				return SJME_ERROR_NONE;
+			
+			/* Recover the common item. */
+			common = sjme_atomic_g(sjme_nvm_common,
+				at->valueP.atomicNvmCommon);
+			
+			/* Count down any object types. */
+			if (common != NULL && sjme_nvm_isAR(common,
+				SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
+			{
+				/* Count down. */
+				SJME_COUNT_DOWN_ATOMIC_NAT(sjme_jobject, 0,
+					at->valueP.atomicObject);
+			}
 
-		/* Any structure type can be closed, if not an object. */
-		/* And it is not phantom (points back to a parent). */
-		else if (at->typeId.i > SJME_NVM_STRUCT_UNKNOWN &&
-			!at->isPhantom &&
-			*at->valueP.pointer != NULL &&
-			at->valueP.value != at->baseStruct.value &&
-			!sjme_nvm_isAR(*at->valueP.pointer,
-				SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
-		{
-			SJME_SIMPLE_CLOSE_ATOMIC_NAT(sjme_pointer, 0,
-				at->valueP.atomicPointer);
+			/* Close anything else. */
+			else if (common != NULL)
+			{
+				/* Normal close. */
+				SJME_SIMPLE_CLOSE_ATOMIC_NAT(sjme_nvm_common, 0,
+					at->valueP.atomicNvmCommon);
+			}
 		}
 	}
 

@@ -377,6 +377,9 @@ typedef struct sjme_nvm_class_exceptionHandler sjme_nvm_class_exceptionHandler;
 /** NVM states are pointers. */
 #define SJME_TYPEOF_IS_POINTER_sjme_nvm 1
 
+/** NVM common types are pointers. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_common 1
+
 /** NVM tasks are pointers. */
 #define SJME_TYPEOF_IS_POINTER_sjme_nvm_task 1
 
@@ -442,6 +445,9 @@ SJME_ATOMIC_DECLARE(sjme_nvm_thread, 0);
 
 /** Atomic NVM State. */
 SJME_ATOMIC_DECLARE(sjme_nvm, 0);
+
+/** Atomic NVM Common. */
+SJME_ATOMIC_DECLARE(sjme_nvm_common, 0);
 
 /** Atomic NVM task. */
 SJME_ATOMIC_DECLARE(sjme_nvm_task, 0);

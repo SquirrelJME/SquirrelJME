@@ -275,12 +275,16 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 	if (sjme_error_is(error = sjme_alloc_strdup(allocPool,
 		(sjme_lpstr*)&result->name, libName)))
 		goto fail_strdup;
+
+	/* Count up string pool. */
+	if (sjme_error_is(error = sjme_alloc_weakRef(stringPool, NULL)))
+		goto fail_countUp;
 	
 	/* Success! */
 	*outLibrary = result;
 	return SJME_ERROR_NONE;
 
-fail_refUp:
+fail_countUp:
 fail_strdup:
 fail_init:
 fail_commonInit:
