@@ -452,9 +452,6 @@ typedef enum sjme_nvm_task_commonClassId
 {
 	/** Null class. */
 	SJME_NVM_TASK_COMMON_CLASS_NULL,
-	
-	/** @c java.lang.Class . */
-	SJME_NVM_TASK_COMMON_CLASS_CLASS,
 
 	/** @c java.lang.ClassCastException. */
 	SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_CLASS_CAST,
@@ -464,9 +461,6 @@ typedef enum sjme_nvm_task_commonClassId
 
 	/** @c cc.squirreljme.jvm.mle.brackets.JarPackageBracket . */
 	SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE,
-	
-	/** @c java.lang.Object . */
-	SJME_NVM_TASK_COMMON_CLASS_OBJECT,
 
 	/** @c cc.squirreljme.jvm.mle.brackets.PipeBracket . */
 	SJME_NVM_TASK_COMMON_CLASS_PIPE,
@@ -506,18 +500,27 @@ typedef enum sjme_nvm_task_commonClassId
 
 	/** @c java.lang.ref.WeakReference . */
 	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK,
-	
-	/** @c java.lang.String . */
-	SJME_NVM_TASK_COMMON_CLASS_STRING,
 
-	/** @c java.lang.Thread . */
-	SJME_NVM_TASK_COMMON_CLASS_THREAD,
+	/** @c cc.squirreljme.jvm.mle.brackets.TracePointBracket . */
+	SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT,
+
+	/** The start of very important classes. */
+	SJME_NVM_TASK_COMMON_CLASS_VERY_IMPORTANT,
 
 	/** @c java.lang.Throwable . */
 	SJME_NVM_TASK_COMMON_CLASS_THROWABLE,
 
-	/** @c cc.squirreljme.jvm.mle.brackets.TracePointBracket . */
-	SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT,
+	/** @c java.lang.Thread . */
+	SJME_NVM_TASK_COMMON_CLASS_THREAD,
+	
+	/** @c java.lang.String . */
+	SJME_NVM_TASK_COMMON_CLASS_STRING,
+	
+	/** @c java.lang.Class . */
+	SJME_NVM_TASK_COMMON_CLASS_CLASS,
+	
+	/** @c java.lang.Object . */
+	SJME_NVM_TASK_COMMON_CLASS_OBJECT,
 
 	/** The number of common classes. */
 	SJME_NVM_TASK_NUM_COMMON_CLASS

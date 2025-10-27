@@ -205,6 +205,7 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		return SJME_ERROR_NONE;
 
 	if (commonId <= SJME_NVM_TASK_COMMON_CLASS_NULL ||
+		commonId == SJME_NVM_TASK_COMMON_CLASS_VERY_IMPORTANT ||
 		commonId >= SJME_NVM_TASK_NUM_COMMON_CLASS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
@@ -348,6 +349,7 @@ sjme_jclass sjme_nvm_task_commonClassR(
 		return NULL;
 
 	if (commonId <= SJME_NVM_TASK_COMMON_CLASS_NULL ||
+		commonId == SJME_NVM_TASK_COMMON_CLASS_VERY_IMPORTANT || 
 		commonId >= SJME_NVM_TASK_NUM_COMMON_CLASS)
 		return NULL;
 

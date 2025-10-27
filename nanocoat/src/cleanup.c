@@ -690,6 +690,7 @@ static sjme_errorCode sjme_nvm_cleanup_postTask(
 	sjme_list(sjme_jbracketJarPackage)* jarBrackets;
 	sjme_nvm_task_globals* globals;
 	sjme_jint i, n;
+	sjme_jclass nukeClass;
 	SJME_CLEANUP_DECL;
 	
 	/* Recover. */
@@ -744,12 +745,41 @@ static sjme_errorCode sjme_nvm_cleanup_postTask(
 
 	/* Clear each common class. */
 	for (i = 0; i < SJME_NVM_TASK_NUM_COMMON_CLASS; i++)
+	{
+		/* Try basic close on the class. */
+		nukeClass = sjme_atomic_g(sjme_jclass, &globals->commonClasses[i]);
 		SJME_SIMPLE_CLOSE_ATOMIC_NAT(sjme_jclass, 0,
 			&globals->commonClasses[i]);
+
+		/* The very important classes are ones which are very hard to */
+		/* garbage collect as everything uses them. */
+		/* Or nothing was ever used. */
+		if (i < SJME_NVM_TASK_COMMON_CLASS_VERY_IMPORTANT ||
+			nukeClass == NULL)
+			continue;
+
+		/* Ignore if freed. */
+		if (nukeClass == NULL || !sjme_nvm_isAR(nukeClass,
+			SJME_NVM_STRUCT_CLASS_INSTANCE))
+			continue;
+		
+		/* Count down until it is destroyed (and still a class). */
+		while (sjme_alloc_weakRefLeftR(nukeClass) >= 0 &&
+			sjme_nvm_isAR(nukeClass, SJME_NVM_STRUCT_CLASS_INSTANCE))
+			if (sjme_error_is(error = sjme_nvm_instance_countDown(
+				SJME_AS_JOBJECT(nukeClass))))
+				goto fail_nukeClass;
+	}
+
+	/* Unlock globals. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(&globals->lock,
+		NULL)))
+		return sjme_error_default(error);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
-	
+
+fail_nukeClass:
 fail_lockGlobals:
 	/* Clear lock before failing. */
 	sjme_thread_spinLockRelease(&task->globals.lock, NULL);
