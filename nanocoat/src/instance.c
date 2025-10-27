@@ -119,6 +119,7 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 	sjme_errorCode error;
 #if defined(SJME_CONFIG_DEBUG_GC)
 	sjme_jint oldCount;
+	sjme_nvm_structType typeOf;
 #endif
 	
 	if (object == NULL)
@@ -136,6 +137,7 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 #if defined(SJME_CONFIG_DEBUG_GC)
 	/* Get old count for debugging. */
 	oldCount = sjme_atomic_g(sjme_jint, &weak->count);
+	typeOf = object->common.type;
 #endif
 
 	/* Reduce the count on this. */
@@ -147,7 +149,7 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 	/* Debug. */
 	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
 		"GC DN-1: %d:%p (%s) %d -> %d",
-		object->common.type,
+		typeOf,
 		object, 
 		(object->isClass != NULL ?
 			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),

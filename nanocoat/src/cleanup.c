@@ -449,9 +449,6 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 	object = (sjme_jobject)closeable;
 	if (object == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Clear reference to class. */
-	SJME_SIMPLE_CLOSE(object->isClass);
 
 	/* Class specific cleanup? */
 	if (object->common.type == SJME_NVM_STRUCT_CLASS_INSTANCE)

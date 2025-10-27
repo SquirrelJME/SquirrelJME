@@ -222,14 +222,21 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 		}
 		
 		/* Count up references. */
-		sjme_alloc_weakRef(field, NULL);
-		sjme_alloc_weakRef(id->member.name, NULL);
-		sjme_alloc_weakRef(id->member.type, NULL);
+		if (sjme_error_is(error = sjme_alloc_weakRef(id, NULL)))
+			goto fail_countUp;
+		if (sjme_error_is(error = sjme_alloc_weakRef(field, NULL)))
+			goto fail_countUp;
+		if (sjme_error_is(error = sjme_alloc_weakRef(id->member.name, NULL)))
+			goto fail_countUp;
+		if (sjme_error_is(error = sjme_alloc_weakRef(id->member.type, NULL)))
+			goto fail_countUp;
 	}
 
 	/* Success! */
 	*outList = result;
 	return SJME_ERROR_NONE;
+	
+fail_countUp:
 fail_findFieldClass:
 fail_allocId:
 	if (result != NULL)
@@ -1316,13 +1323,6 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 				interfaces->elements[i], NULL)))
 				goto fail_countInterface;
 	
-	/* Count up reference to the java.lang.Class */
-	/* instance, assuming this is not that instance. */
-	if (inClass->object.isClass != inClass)
-		if (sjme_error_is(error = sjme_alloc_weakRef(inClass->object.isClass,
-			NULL)))
-			goto fail_countClassObject;
-	
 	/* Set as initialized now. */
 	if (!sjme_atomic_cs(sjme_jint, &inClass->isInitialized,
 		SJME_VM_CLASS_INIT_LOAD_CURRENT,
@@ -1370,13 +1370,11 @@ skip_doubleCalled:
 	
 fail_bindFields:
 fail_bindMethods:
-fail_initFieldValues:
 fail_super:
 	sjme_thread_spinLockRelease(
 		&inClass->object.common.lock, NULL);
 	
 fail_markDone:
-fail_countClassObject:
 fail_countInterface:
 fail_countSuper:
 fail_initStatics:
