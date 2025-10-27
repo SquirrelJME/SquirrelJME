@@ -766,9 +766,18 @@ static sjme_errorCode sjme_nvm_cleanup_postTask(
 		/* Count down until it is destroyed (and still a class). */
 		while (sjme_alloc_weakRefLeftR(nukeClass) >= 0 &&
 			sjme_nvm_isAR(nukeClass, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		{
+#if defined(SJME_CONFIG_DEBUG_GC)
+			sjme_message("Force GC: %d:%p (%s)",
+				nukeClass->object.common.type, nukeClass,
+				sjme_charSeq_tempUtf(nukeClass->binaryName));
+#endif
+			
+			/* Count it down. */
 			if (sjme_error_is(error = sjme_nvm_instance_countDown(
 				SJME_AS_JOBJECT(nukeClass))))
 				goto fail_nukeClass;
+		}
 	}
 
 	/* Unlock globals. */
