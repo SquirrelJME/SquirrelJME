@@ -941,16 +941,13 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
  * @param typeId The type ID to pop, if this is @link SJME_NUM_JAVA_TYPE_IDS
  * then this will disregard the type.
  * @param outValue The resultant value.
- * @param copiedElsewhere Is this value copied elsewhere? That is if this is
- * true, then this will be reference counted.
  * @return Any resultant error, if any.
  * @since 2025/02/17
  */
 sjme_errorCode sjme_nvm_task_frameStackPeek(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere);
+	sjme_attrInNotNull sjme_jvalueTyped* outValue);
 
 /**
  * Pops a value from the top of the stack.
@@ -974,7 +971,6 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
  * typed values.
  * 
  * @param inFrame The frame to pop from.
- * @param copiedElsewhere Are these values copied elsewhere?
  * @param commit The commit to the garbage collector when the value is no
  * longer needed.
  * @param argC The number of values to pop.
@@ -985,7 +981,6 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
  */
 sjme_errorCode sjme_nvm_task_frameStackPopA(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInValue sjme_jboolean copiedElsewhere,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNullBuf(argC) sjme_javaTypeId* argT,
@@ -1039,16 +1034,13 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
  * @param inFrame The frame to get the top of.
  * @param depth The depth from the stack top.
  * @param outValue The resultant value.
- * @param copiedElsewhere Is this value copied elsewhere? That is if this is
- * true, then this will be reference counted.
  * @return Any resultant error, if any.
  * @since 2025/02/24
  */
 sjme_errorCode sjme_nvm_task_frameStackTop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint depth,
-	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere);
+	sjme_attrOutNotNull sjme_jvalueTyped* outValue);
 
 /**
  * Returns the direct address to a tread value.
@@ -1094,6 +1086,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
  * which is placed within its own frame set.
  * 
  * @param inFrame The frame to set the value in.
+ * @param commit The GC commit.
  * @param typeIndex The type index to set.
  * @param inValue The value to set.
  * @param oldValue The old value that was in this tread slot.
@@ -1102,6 +1095,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
  */
 sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue,
 	sjme_attrOutNotNull sjme_jvalueTyped* oldValue);

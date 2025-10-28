@@ -257,19 +257,11 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
 	stack = &inFrame->stack.stack[SJME_JAVA_TYPE_ID_OBJECT];
 	for (index = 0; index < stack->front; index++)
 	{
-		/* Read value here. */
+		/* Blank value here. */
 		memset(&temp, 0, sizeof(temp));
-		if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
-			inFrame, SJME_JAVA_TYPE_ID_OBJECT, index, &temp,
-			SJME_JNI_TRUE)))
-			return sjme_error_vmError(inFrame, error);
-		
-		/* Skip nulls. */
-		if (temp.v.l == NULL)
-			continue;
-		
-		/* Count down. */
-		if (sjme_error_is(error = sjme_nvm_instance_countDown(temp.v.l)))
+		temp.t = SJME_JAVA_TYPE_ID_OBJECT;
+		if (sjme_error_is(error = sjme_nvm_task_frameTreadSetT(
+			inFrame, commit, index, &temp, NULL)))
 			return sjme_error_vmError(inFrame, error);
 	}
 
@@ -368,7 +360,7 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 
 	/* Set tread value. */
 	if (sjme_error_is(error = sjme_nvm_task_frameTreadSetT(inFrame,
-		mappedSlot, inValue, NULL)))
+		commit, mappedSlot, inValue, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Replace order info. */
@@ -464,7 +456,7 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 		/* Peek top value. */
 		memset(&temp, 0, sizeof(temp));
 		if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-			0, &temp, SJME_JNI_FALSE)))
+			0, &temp)))
 			return sjme_error_vmError(inFrame, error);
 
 		/* Pop it. */
@@ -480,8 +472,7 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 sjme_errorCode sjme_nvm_task_frameStackPeek(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere)
+	sjme_attrInNotNull sjme_jvalueTyped* outValue)
 {
 	sjme_errorCode error;
 	sjme_jvalueTyped temp;
@@ -489,7 +480,7 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
 	/* Peek top value. */
 	memset(&temp, 0, sizeof(temp));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-		0, &temp, copiedElsewhere)))
+		0, &temp)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must be the same type. */
@@ -586,7 +577,6 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 
 sjme_errorCode sjme_nvm_task_frameStackPopA(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInValue sjme_jboolean copiedElsewhere,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNullBuf(argC) sjme_javaTypeId* argT,
@@ -646,7 +636,7 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	
 	/* Forward call. */
 	return sjme_nvm_task_frameTreadSetT(inFrame,
-		at, inValue, NULL);
+		commit, at, inValue, NULL);
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
@@ -704,8 +694,7 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 sjme_errorCode sjme_nvm_task_frameStackTop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint depth,
-	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere)
+	sjme_attrOutNotNull sjme_jvalueTyped* outValue)
 {
 	sjme_errorCode error;
 	sjme_frame_frameStacks* stack;
@@ -749,12 +738,6 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 		stack->stack[readType].top - sub[readType],
 		&temp, SJME_JNI_FALSE)))
 		return sjme_error_vmError(inFrame, error);
-	
-	/* If copied elsewhere, count object up. */
-	if (copiedElsewhere && readType == SJME_JAVA_TYPE_ID_OBJECT &&
-		temp.v.l != NULL)
-		if (sjme_error_is(error = sjme_nvm_instance_countUp(temp.v.l)))
-			return sjme_error_default(error);
 	
 	/* Success! */
 	memmove(outValue, &temp, sizeof(*outValue));
@@ -930,6 +913,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 
 sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint typeIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue,
 	sjme_attrOutNotNull sjme_jvalueTyped* oldValue)
@@ -939,7 +923,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_jint* treadCheck;
 	sjme_javaTypeId typeId;
 	
-	if (inFrame == NULL || inValue == NULL)
+	if (inFrame == NULL || inValue == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	typeId = inValue->t;
@@ -994,14 +978,15 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 					*treadCheck != treadValue->l->identityHash))
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_OBJECT_MISMATCHED);
-			
-			/* Balance counts. */
-			if (sjme_error_is(error = sjme_nvm_instance_countBalance(
-				treadValue->l, inValue->v.l)))
+
+			/* Commit old value, if there is one. */
+			if (treadValue->l != NULL)
+				if (sjme_error_is(error = sjme_nvm_task_frameCommitPush(
+					inFrame, commit, treadValue->l)))
 				return sjme_error_vmError(inFrame, error);
 			
-			/* Set. */
-			treadValue->l = inValue->v.l;
+			/* Set, counting up the new value. */
+			treadValue->l = sjme_weakUp(inValue->v.l);
 			if (inValue->v.l == NULL)
 				*treadCheck = 0;
 			else

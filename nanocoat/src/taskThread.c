@@ -842,12 +842,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 		goto fail_enterFrame;
 	
 	/* Store thread for future referencing. */
-	inTask->threads->elements[freeSlot] = result;
-	
-	/* We want to count up the thread, so it does not get GCed! */
-	if (sjme_error_is(error = sjme_nvm_instance_countUp(
-		SJME_AS_JOBJECT(result))))
-		return sjme_error_vmError(inTask, error);
+	inTask->threads->elements[freeSlot] = sjme_weakUp(result);
 
 	/* Increase task thread count, for both all and normal. Normal gets */
 	/* an add because a thread gets daemon being set later. */

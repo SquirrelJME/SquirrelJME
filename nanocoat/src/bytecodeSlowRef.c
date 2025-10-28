@@ -78,8 +78,8 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	argVParam = (!isStatic ? &argV[1] : argV);
 	if (target->argC != 0)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(
-			inFrame, SJME_JNI_FALSE,
-			commit, target->argC, target->argT, argVParam)))
+			inFrame, commit,
+			target->argC, target->argT, argVParam)))
 			return sjme_error_vmError(inFrame, error);
 
 	/* Pop instance. */
@@ -385,7 +385,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	/* Pop object from the stack. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPeek(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, &value, SJME_JNI_FALSE)))
+		SJME_JAVA_TYPE_ID_OBJECT, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Debug. */
@@ -667,7 +667,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 	/* Read in the reference. */
 	memset(&depthRef, 0, sizeof(depthRef));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame, depth - 1,
-		&depthRef, SJME_JNI_FALSE)))
+		&depthRef)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* It must be an object type. */
@@ -758,7 +758,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	memset(&rawOnThis, 0, sizeof(rawOnThis));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
 		entry->member.staticArgSlots,
-		&rawOnThis, SJME_JNI_FALSE)))
+		&rawOnThis)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* The instance object to call onto, cannot be null. */
@@ -1232,7 +1232,7 @@ SJME_NVM_BYTECODE_SLOW(NewArrayMulti)
 
 	/* Pop all dimensions at once. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(inFrame,
-		SJME_JNI_TRUE, NULL, dims, argT, argV)))
+		NULL, dims, argT, argV)))
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Recursively allocate sub-dimensions. */
