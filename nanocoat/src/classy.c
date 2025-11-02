@@ -257,12 +257,8 @@ static sjme_errorCode sjme_nvm_class_fieldAttrConstantValue(
 	else if (item->type == SJME_NVM_CLASS_POOL_TYPE_STRING)
 	{
 		fieldInfo->constVal.type = SJME_JAVA_TYPE_ID_OBJECT;
-		fieldInfo->constVal.value.string = item->constString.value;
-		
-		/* Count up as we are using it. */
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			fieldInfo->constVal.value.string, NULL)))
-			return sjme_error_default(error);
+		fieldInfo->constVal.value.string =
+			sjme_weakUp(item->constString.value);
 	}
 	
 	/* Invalid! */
@@ -579,9 +575,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		goto fail_allocCode;
 	
 	/* Make sure the code is referenced. */	
-	methodInfo->code = result;
-	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
-		goto fail_refCode;
+	methodInfo->code = sjme_weakUp(result);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -1787,9 +1781,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 #endif
 				
 				/* Store and count up entry as we are using it now. */
-				entry->utf.utf = utf;
-				if (sjme_error_is(error = sjme_alloc_weakRef(utf, NULL)))
-					goto fail_readItem;
+				entry->utf.utf = sjme_weakUp(utf);
 				break;
 			
 			default:
@@ -1836,10 +1828,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Refer to it and count up, since we are using it. */
-				SJME_P_C_N(entry) = target->utf.utf;
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					SJME_P_C_N(entry), NULL)))
-					goto fail_initItem;
+				SJME_P_C_N(entry) = sjme_weakUp(target->utf.utf);
 				break;
 				
 				/* Member reference. */
@@ -1901,10 +1890,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Set name. */
-				entry->nameAndType.name = target->utf.utf;
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					entry->nameAndType.name, NULL)))
-					goto fail_initItem;
+				entry->nameAndType.name = sjme_weakUp(target->utf.utf);
 				
 				/* Needs to be UTF. */
 				target = &entries->elements[
@@ -1916,10 +1902,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Set descriptor. */
-				entry->nameAndType.descriptor = target->utf.utf;
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					entry->nameAndType.descriptor, NULL)))
-					goto fail_initItem;
+				entry->nameAndType.descriptor = sjme_weakUp(target->utf.utf);
 				break;
 				
 				/* Constant string. */
@@ -1940,10 +1923,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Refer to it and count up, since we are using it. */
-				entry->constString.value = target->utf.utf;
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					entry->constString.value, NULL)))
-					goto fail_initItem;
+				entry->constString.value = sjme_weakUp(target->utf.utf);
 				break;
 			
 			default:
@@ -2047,10 +2027,7 @@ sjme_errorCode sjme_nvm_class_parseField(
 		goto fail_readName;
 	
 	/* Reference it. */
-	result->name = name->utf.utf;
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->name, NULL)))
-		goto fail_refName;
+	result->name = sjme_weakUp(name->utf.utf);
 		
 	/* Read in type. */
 	type = NULL;
@@ -2061,10 +2038,7 @@ sjme_errorCode sjme_nvm_class_parseField(
 		goto fail_readType;
 	
 	/* Reference it. */
-	result->type = type->utf.utf;
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->type, NULL)))
-		goto fail_refType;
+	result->type = sjme_weakUp(type->utf.utf);
 		
 	/* Parse attributes. */
 	if (sjme_error_is(error = sjme_nvm_class_parseAttributes(
@@ -2141,10 +2115,7 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 		goto fail_readName;
 	
 	/* Reference it. */
-	result->name = name->utf.utf;
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->name, NULL)))
-		goto fail_refName;
+	result->name = sjme_weakUp(name->utf.utf);
 		
 	/* Read in type. */
 	type = NULL;
@@ -2155,10 +2126,7 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 		goto fail_readType;
 	
 	/* Reference it. */
-	result->type = type->utf.utf;
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->type, NULL)))
-		goto fail_refType;
+	result->type = sjme_weakUp(type->utf.utf);
 		
 	/* Parse attributes. */
 	if (sjme_error_is(error = sjme_nvm_class_parseAttributes(

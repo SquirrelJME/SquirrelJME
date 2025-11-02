@@ -202,7 +202,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 					SJME_NVM_TERMINATE_COMPLETE);
 
 				/* Reduce the running task count. */
-				/* This might be the final thread to reduce this to zero. */
+				/* This might be the final thread so reduce this to zero. */
 				if ((sjme_atomic_ga(sjme_jint, &inState->numRunningTasks,
 					-1) - 1) <= 0)
 				{

@@ -72,7 +72,7 @@ sjme_errorCode sjme_nvm_task_frameCommit(
 }
 
 sjme_errorCode sjme_nvm_task_frameCommitPush(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNullable sjme_nvm_frame contextFrame,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jobject pushObject)
 {
@@ -81,7 +81,7 @@ sjme_errorCode sjme_nvm_task_frameCommitPush(
 	sjme_nvm_frame_gcCommit* freeCommit;
 	sjme_jint i, freeIndex;
 	
-	if (inFrame == NULL || commit == NULL || pushObject == NULL)
+	if (commit == NULL || pushObject == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* For direct adding quickly. */
@@ -119,10 +119,10 @@ sjme_errorCode sjme_nvm_task_frameCommitPush(
 
 	/* Allocate a new commit. */
 	freeCommit = NULL;
-	if (sjme_error_is(error = sjme_alloc(SJME_F_S(inFrame)->allocPool,
+	if (sjme_error_is(error = sjme_alloc(SJME_F_S(contextFrame)->allocPool,
 		sizeof(*freeCommit), (sjme_pointer*)&freeCommit)) ||
 		freeCommit == NULL)
-		return sjme_error_vmError(inFrame, error);
+		return sjme_error_vmError(contextFrame, error);
 
 	/* This is dynamically allocated! */
 	freeCommit->isDynamic = SJME_JNI_TRUE;

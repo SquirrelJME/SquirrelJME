@@ -254,13 +254,6 @@ struct sjme_frame_frameStacks
 /** The number of items to store in a current GC commit. */
 #define SJME_NVM_FRAME_NUM_GC_COMMIT 4
 
-/**
- * Garbage collection commit for stack popping and otherwise.
- *
- * @since 2025/07/20
- */
-typedef struct sjme_nvm_frame_gcCommit sjme_nvm_frame_gcCommit;
-
 struct sjme_nvm_frame_gcCommit
 {
 	/** The objects waiting to be garbage collected. */
@@ -796,14 +789,14 @@ sjme_errorCode sjme_nvm_task_frameCommit(
 /**
  * Pushes an object to be commited for later garbage collection.
  * 
- * @param inFrame The frame to push the commit within.
+ * @param contextFrame The frame to push the commit within.
  * @param commit The commit to push into.
  * @param pushObject The object to be pushed.
  * @return Any resultant error, if any.
  * @since 2025/09/06
  */
 sjme_errorCode sjme_nvm_task_frameCommitPush(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNullable sjme_nvm_frame contextFrame,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jobject pushObject);
 

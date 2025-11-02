@@ -288,6 +288,27 @@ static sjme_errorCode sjme_nvm_cleanup_postMethodInfo(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postArray(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_jarray array;
+	sjme_jint i, n;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	array = (sjme_jarray)closeable;
+	if (array == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Only objects need to be GCed. */
+	if (array->type == SJME_JAVA_TYPE_ID_OBJECT)
+		for (n = array->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(array->e.l[i]);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postClass(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -451,7 +472,12 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Class specific cleanup? */
-	if (object->common.type == SJME_NVM_STRUCT_CLASS_INSTANCE)
+	if (object->common.type == SJME_NVM_STRUCT_ARRAY_INSTANCE)
+	{
+		if (sjme_error_is(error = sjme_nvm_cleanup_postArray(closeable)))
+			return sjme_error_default(error);
+	}
+	else if (object->common.type == SJME_NVM_STRUCT_CLASS_INSTANCE)
 	{
 		if (sjme_error_is(error = sjme_nvm_cleanup_postClass(closeable)))
 			return sjme_error_default(error);

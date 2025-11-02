@@ -364,6 +364,13 @@ typedef struct sjme_nvm_class_poolEntryNameAndType
  * @since 2024/01/03
  */
 typedef struct sjme_nvm_class_exceptionHandler sjme_nvm_class_exceptionHandler;
+	
+/**
+ * Garbage collection commit for stack popping and otherwise.
+ *
+ * @since 2025/07/20
+ */
+typedef struct sjme_nvm_frame_gcCommit sjme_nvm_frame_gcCommit;
 
 #pragma endregion(NvmTypeDefs)
 #pragma region(TypeOfSpecifiers)

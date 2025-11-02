@@ -1175,7 +1175,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 				interface == NULL)
 				goto fail_findInterface;
 			
-			/* Set superclass. */
+			/* Set interfaces. */
 			interfaces->elements[i] = sjme_weakUpR(sjme_jclass, interface);
 		}
 	}
@@ -2035,7 +2035,7 @@ skip_foundClass:
 		&inLoader->rwLock, NULL)))
 		goto fail_releaseRead;
 		
-	/* From this point implicitly initialize as it is being requested. */
+	/* From this point implicitly initialize if it is being requested. */
 	if (doInit && sjme_atomic_g(sjme_jint, 
 		&maybe->isLoaded) == SJME_VM_CLASS_INIT_LOAD_NEVER)
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(

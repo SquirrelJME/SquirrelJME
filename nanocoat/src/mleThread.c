@@ -188,10 +188,10 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 			SJME_NVM_TASK_COMMON_CLASS_STRING), n)))
 		return sjme_error_vmError(inFrame, error);
 
-	/* Fill in actual arguments. */
+	/* Fill in array arguments, directly. */
 	for (i = 0; i < n; i++)
-		mainArgs->e.l[i] =
-			SJME_AS_JOBJECT(task->globals.mainArgs->elements[i]);
+		mainArgs->e.l[i] = sjme_weakUpR(sjme_jobject,
+			task->globals.mainArgs->elements[i]);
 	
 	/* Setup arguments. */
 	memset(mainArgV, 0, sizeof(mainArgV));

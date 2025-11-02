@@ -540,7 +540,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	/* Read/write promotion. */
 	if (sjme_error_is(error = sjme_nvm_instance_fieldAccessStack(
 		SJME_F_T(inFrame),
-		fieldId, instance.v.l, &result, isPut)))
+		&commit, fieldId, instance.v.l, &result, isPut)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push result to the stack. */
@@ -1356,7 +1356,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	/* the class this field truly exists in. */
 	if (sjme_error_is(error = sjme_nvm_instance_fieldAccessStack(
 		SJME_F_T(inFrame),
-		fieldId, SJME_AS_JOBJECT(sjme_atomic_g(sjme_jclass,
+		&commit, fieldId, SJME_AS_JOBJECT(sjme_atomic_g(sjme_jclass,
 			&fieldId->member.inClass)), &value, isPut)))
 		return sjme_error_vmError(inFrame, error);
 	
@@ -1624,13 +1624,14 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 			break;
 			
 		case SJME_JAVA_TYPE_ID_OBJECT:
-			/* Balance the reference count. */
-			if (sjme_error_is(error = sjme_nvm_instance_countBalance(
-				array->e.l[index], popValue.v.l)))
-				return sjme_error_vmError(inFrame, error);
-
-			/* Set new value. */
-			array->e.l[index] = popValue.v.l;
+			/* If there is an old value here, commit it. */
+			if (array->e.l[index] != NULL)
+				if (sjme_error_is(error = sjme_nvm_task_frameCommitPush(
+					inFrame, &commit, array->e.l[index])))
+					return sjme_error_vmError(inFrame, error);
+			
+			/* Set new value, count it up as the array now uses it. */
+			array->e.l[index] = sjme_weakUp(popValue.v.l);
 			break;
 
 		default:

@@ -587,6 +587,7 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	sjme_jint i, n;
 	const sjme_nvm_task_taskNewConfig* initConfigCopy;
 	sjme_list(sjme_jstring)* argStrings;
+	sjme_jstring argString;
 	
 	if (inTask == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -645,19 +646,19 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 		/* Setup strings for each argument. */
 		for (i = 0; i < n; i++)
 		{
-			/* Create string. */
-			/* Counting does not need to be done because these are both */
-			/* intern strings and when pushed to the stack they get counted. */
+			/* Intern argument string. */
+			argString = NULL;
 			if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
-				mainThread, &argStrings->elements[i], SJME_JNI_TRUE,
+				mainThread, &argString, SJME_JNI_TRUE,
 				initConfigCopy->mainArgs->elements[i])) ||
-				argStrings->elements[i] == NULL)
+				argString == NULL)
 				goto fail_mainArgsString;
+			argStrings->elements[i] = sjme_weakUp(argString);
 		}
 	}
 		
 	/* Set argument strings. */
-	inTask->globals.mainArgs = argStrings;
+	inTask->globals.mainArgs = sjme_weakUp(argStrings);
 	
 	/* The main thread of any task is always implicitly started. */
 	if (sjme_error_is(error = sjme_nvm_task_threadStart(mainThread)))

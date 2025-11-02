@@ -917,8 +917,8 @@ sjme_errorCode sjme_nvm_task_threadStart(
 		SJME_NVM_THREAD_STATUS_RUNNING);
 
 	/* Schedule the thread for execution. */
-	if (sjme_error_is(error = sjme_nvm_task_taskScheduleIn(SJME_T_S(inThread),
-		inThread)))
+	if (sjme_error_is(error = sjme_nvm_task_taskScheduleIn(
+		SJME_T_S(inThread), inThread)))
 		return sjme_error_default(error);
 
 	/* Success! */

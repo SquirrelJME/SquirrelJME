@@ -53,65 +53,6 @@ sjme_jint sjme_nvm_instance_calcIdentityHash(
 #endif
 }
 
-sjme_errorCode sjme_nvm_instance_countBalanceR(
-	sjme_attrInNullable sjme_jobject oldV,
-	sjme_attrInNullable sjme_jobject newV
-	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
-{
-	sjme_errorCode error;
-#if defined(SJME_CONFIG_DEBUG_GC)
-	sjme_alloc_weak weak;
-#endif
-
-	/* If these are the same, do nothing. */
-	if (oldV == newV)
-	{
-		/* Must be a valid object. */
-		if (oldV != NULL)
-			if (!sjme_nvm_isAR(oldV,
-				SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
-				return SJME_ERROR_INVALID_OBJECT;
-		
-#if defined(SJME_CONFIG_DEBUG_GC)
-		if (oldV != NULL)
-		{
-			/* Recover the weak reference to get the count. */
-			if (sjme_error_is(error = sjme_alloc_weakRefGet(oldV, &weak)))
-				return sjme_error_default(error);
-				
-			/* Debug. */
-			sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
-				"GC LV~0: %p (%s) %d == %d",
-				oldV, 
-				(sjme_atomic_g(sjme_jclass, &oldV->isClass) != NULL ?
-					sjme_charSeq_tempUtf(
-					sjme_atomic_g(sjme_jclass, &oldV->isClass)->binaryName) :
-					"?"),
-				sjme_atomic_g(sjme_jint, &weak->count),
-				sjme_atomic_g(sjme_jint, &weak->count));
-		}
-#endif
-
-		/* Nothing to be done! */
-		return SJME_ERROR_NONE;
-	}
-
-	/* Count down old value? */
-	if (oldV != NULL)
-		if (sjme_error_is(error = sjme_nvm_instance_countDownR(oldV
-			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)))
-			return sjme_error_default(error);
-
-	/* Count up new value? */
-	if (newV != NULL)
-		if (sjme_error_is(error = sjme_nvm_instance_countUpR(newV
-			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)))
-			return sjme_error_default(error);
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
 sjme_errorCode sjme_nvm_instance_countDownR(
 	sjme_attrInNotNull sjme_jobject object
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
@@ -437,6 +378,7 @@ sjme_errorCode sjme_nvm_instance_initFieldsChunk(
 
 sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jfieldID fieldId,
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jvalueTyped* stackType,
@@ -446,7 +388,8 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	sjme_nvm_rawFieldValue* direct;
 	sjme_nvm_jfieldAccessFunc accessor;
 
-	if (contextThread == NULL || fieldId == NULL || stackType == NULL)
+	if (contextThread == NULL || commit == NULL || fieldId == NULL ||
+		stackType == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (instance == NULL)
@@ -478,13 +421,14 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 		
 		if (isPut)
 		{
-			/* Balance garbage count. */
-			if (sjme_error_is(error = sjme_nvm_instance_countBalance(
-				direct->l.p, stackType->v.l)))
+			/* Commit the old value to the GC. */
+			if (direct->l.p != NULL)
+				if (sjme_error_is(error = sjme_nvm_task_frameCommitPush(
+					NULL, commit, direct->l.p)))
 				return sjme_error_default(error);
 			
 			/* Put in the new value. */
-			direct->l.p = stackType->v.l;
+			direct->l.p = sjme_weakUp(stackType->v.l);
 
 			/* Set new check value. */
 			if (stackType->v.l == NULL)
