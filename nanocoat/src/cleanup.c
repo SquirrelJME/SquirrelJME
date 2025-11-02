@@ -858,6 +858,7 @@ static sjme_errorCode sjme_nvm_cleanup_postVmClassLoader(
 	sjme_nvm_vmClass_loader classLoader;
 	sjme_list(sjme_nvm_rom_library)* classPath;
 	sjme_list(sjme_jclass)* classes;
+	sjme_jclass single;
 	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
 	
@@ -870,9 +871,20 @@ static sjme_errorCode sjme_nvm_cleanup_postVmClassLoader(
 	classes = classLoader->classes;
 	if (classes != NULL)
 	{
-		/* Close each class. */
+		/* Forcefully close each class. */
 		for (n = classes->length, i = 0; i < n; i++)
+		{
+			/* Keep a reference before closing, so we can check counts. */
+			single = classes->elements[i];
 			SJME_SIMPLE_CLOSE(classes->elements[i]);
+			
+			/* Forcefully count down the class to clean it up. */
+			while (sjme_alloc_weakRefLeftR(single) >= 0 &&
+				sjme_nvm_isAR(single, SJME_NVM_STRUCT_CLASS_INSTANCE))
+				if (sjme_error_is(error = sjme_nvm_instance_countDown(
+					SJME_AS_JOBJECT(single))))
+					return sjme_error_default(error);
+		}
 		
 		/* Free class list. */
 		SJME_SIMPLE_FREE(classLoader->classes);
