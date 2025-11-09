@@ -408,6 +408,9 @@ static sjme_errorCode sjme_nvm_cleanup_postClass(
 	/* Cleanup any remaining manual allocations. */
 	SJME_CHARSEQ_DELETE(classy->binaryName);
 
+	/* Free the static chunk, which contains field storage. */
+	SJME_SIMPLE_FREE(classy->staticChunk);
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
