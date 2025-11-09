@@ -105,7 +105,7 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 		switch ((at->variantStep != NULL ? at->variantStep->typeId.i :
 			at->typeId.i))
 		{
-#if defined(SJME_CONFIG_BROKEN_CODE)
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 				/* The constant pool and pool entries are fine to do a */
 				/* normal walk since they mostly are constant or point */
 				/* to string pool strings. */
@@ -559,7 +559,7 @@ static sjme_errorCode sjme_nvm_cleanup_postPool(
 			switch (entry->type)
 			{
 					/* UTF entries. */
-				case SJME_CHAR_SEQ_TYPE_UTF:
+				case SJME_NVM_CLASS_POOL_TYPE_UTF:
 					SJME_SIMPLE_CLOSE(entry->utf.utf);
 					break;
 

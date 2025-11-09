@@ -12,7 +12,6 @@
 
 #include <sjme/nvm/jdwp.h>
 
-#include "sjme/nvm/allocSizeOf.h"
 #include "sjme/nvm/boot.h"
 #include "sjme/debug.h"
 #include "sjme/nvm/nvm.h"

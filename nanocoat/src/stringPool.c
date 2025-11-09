@@ -148,16 +148,6 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 		if (sjme_error_is(error = sjme_charSeq_dup(inStringPool->allocPool,
 			&result->seq, inSeq)) || result->seq == NULL)
 			goto fail_dupSeq;
-
-		/* Setup back reference to this sequence. */
-		memset(&frontEnd, 0, sizeof(frontEnd));
-		frontEnd.wrapper = result;
-		
-		/* Setup string sequence. */
-		if (sjme_error_is(error = sjme_charSeq_dup(
-			inStringPool->allocPool, &result->seq, inSeq)) ||
-			result->seq == NULL)
-			goto fail_initSeq;
 		
 		/* Store it into the pool. */
 		strings->elements[firstFree] = sjme_weakUpR(sjme_nvm_stringPool_string,
