@@ -33,6 +33,11 @@
 		(ptr) = NULL, \
 		sjme_charSeq_delete(temp))
 
+#define SJME_CHARSEQ_DELETE_ATOMIC(ptr) \
+	SJME_CLEANUP_OP(temp = sjme_atomic_gP(sjme_charSeq, 0, (ptr)), \
+		sjme_atomic_sP(sjme_charSeq, 0, (ptr), NULL), \
+		sjme_charSeq_delete(temp))
+
 #define SJME_SIMPLE_CLOSE(ptr) \
 	SJME_CLEANUP_OP(temp = (ptr), \
 		(ptr) = NULL, \
@@ -100,12 +105,26 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 		switch ((at->variantStep != NULL ? at->variantStep->typeId.i :
 			at->typeId.i))
 		{
+#if defined(SJME_CONFIG_BROKEN_CODE)
 				/* The constant pool and pool entries are fine to do a */
 				/* normal walk since they mostly are constant or point */
 				/* to string pool strings. */
 			case SJME_NVM_STRUCT_POOL:
 			case SJME_NVM_WALK_PSEUDO_POOL_ENTRY:
+			case SJME_NVM_WALK_PSEUDO_POOL_TYPE_CLASS:
+			case SJME_NVM_WALK_PSEUDO_POOL_TYPE_DOUBLE:
+			case SJME_NVM_WALK_PSEUDO_POOL_TYPE_FLOAT:
+			case SJME_NVM_WALK_PSEUDO_POOL_TYPE_INTEGER:
+			case SJME_NVM_WALK_PSEUDO_POOL_TYPE_LONG:
+			case SJME_NVM_WALK_PSEUDO_POOL_TYPE_MEMBER:
+			case SJME_NVM_WALK_PSEUDO_POOL_TYPE_NAME_AND_TYPE:
+			case SJME_NVM_WALK_PSEUDO_POOL_TYPE_STRING:
+			case SJME_NVM_WALK_PSEUDO_POOL_TYPE_UTF:
+				/* However, if these are phantom reference, do not clean. */
+				if (at->isPhantom)
+					at->noDive = SJME_JNI_TRUE;
 				break;
+#endif
 			
 				/* Do not dive by default. */
 			default:
@@ -394,12 +413,35 @@ static sjme_errorCode sjme_nvm_cleanup_postString(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_jstring string;
+	sjme_nvm_stringPool_string poolString;
 	SJME_CLEANUP_DECL;
 	
 	/* Recover. */
 	string = (sjme_jstring)closeable;
 	if (string == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Strings have one of two possible states, either they use a character */
+	/* sequence from a string pool or they are dynamically allocated. */
+	poolString = sjme_atomic_g(sjme_nvm_stringPool_string,
+		&string->poolString);
+	if (poolString != NULL)
+	{
+		/* Destroy reference to normal sequence, so if this ever runs again */
+		/* it will never get freed. */
+		sjme_atomic_s(sjme_charSeq, &string->seq, NULL);
+
+		/* Close the pool string reference. */
+		SJME_SIMPLE_CLOSE_ATOMIC(sjme_nvm_stringPool_string, 0,
+			string->poolString);
+	}
+
+	/* This is a normal sequence allocation. */
+	else
+	{
+		/* Delete the character sequence. */
+		SJME_CHARSEQ_DELETE_ATOMIC(&string->seq);
+	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -488,6 +530,65 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 			return sjme_error_default(error);
 	}
 	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_cleanup_postPool(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_nvm_class_poolInfo pool;
+	sjme_list(sjme_nvm_class_poolEntry)* entries;
+	sjme_nvm_class_poolEntry* entry;
+	sjme_jint i, n;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	pool = (sjme_nvm_class_poolInfo)closeable;
+	if (pool == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cleanup any pool entries. */
+	entries = pool->pool;
+	if (entries != NULL)
+	{
+		/* Cleanup any sub-entry. */
+		for (n = entries->length, i = 0; i < n; i++)
+		{
+			entry = &entries->elements[i];
+			switch (entry->type)
+			{
+					/* UTF entries. */
+				case SJME_CHAR_SEQ_TYPE_UTF:
+					SJME_SIMPLE_CLOSE(entry->utf.utf);
+					break;
+
+					/* Class reference. */
+				case SJME_NVM_CLASS_POOL_TYPE_CLASS:
+					SJME_SIMPLE_CLOSE(entry->classRef.descriptor);
+					break;
+
+					/* Name and type. */
+				case SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE:
+					SJME_SIMPLE_CLOSE(entry->nameAndType.name);
+					SJME_SIMPLE_CLOSE(entry->nameAndType.descriptor);
+					break;
+
+					/* String. */
+				case SJME_NVM_CLASS_POOL_TYPE_STRING:
+					SJME_SIMPLE_CLOSE(entry->constString.value);
+					break;
+
+					/* No special cleanup needed. */
+				default:
+					break;
+			}
+		}
+		
+		/* Free the final list. */
+		SJME_SIMPLE_FREE(pool->pool);
+	}
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -984,6 +1085,10 @@ sjme_errorCode sjme_nvm_allocR(
 
 		case SJME_NVM_STRUCT_METHOD_INFO:
 			postClose = sjme_nvm_cleanup_postMethodInfo;
+			break;
+
+		case SJME_NVM_STRUCT_POOL:
+			postClose = sjme_nvm_cleanup_postPool;
 			break;
 		
 		case SJME_NVM_STRUCT_ROM_LIBRARY:

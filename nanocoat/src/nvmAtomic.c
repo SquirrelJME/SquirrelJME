@@ -42,3 +42,5 @@ SJME_ATOMIC_FUNCTION(sjme_nvm_threadScheduleMode, 0)
 SJME_ATOMIC_FUNCTION(sjme_nvm_thread_startType, 0)
 
 SJME_ATOMIC_FUNCTION(sjme_nvm_thread_statusType, 0)
+
+SJME_ATOMIC_FUNCTION(sjme_nvm_stringPool_string, 0)

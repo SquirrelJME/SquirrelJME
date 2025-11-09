@@ -1828,7 +1828,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Refer to it and count up, since we are using it. */
-				SJME_P_C_N(entry) = sjme_weakUp(target->utf.utf);
+				entry->classRef.descriptor = sjme_weakUp(target->utf.utf);
 				break;
 				
 				/* Member reference. */

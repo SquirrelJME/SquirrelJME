@@ -341,8 +341,11 @@ struct sjme_jstringBase
 	/** All strings are objects. */
 	sjme_jobjectBase object;
 
+	/** The string pool this refers to, if this happens to be one. */
+	sjme_phantom(sjme_nvm_stringPool_string) poolString;
+
 	/** The sequence of characters which make up the string. */
-	sjme_atomic(sjme_charSeq) seq;
+	sjme_phantom(sjme_charSeq) seq;
 
 	/** Intern based information. */
 	struct

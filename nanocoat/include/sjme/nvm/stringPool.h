@@ -34,34 +34,6 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/**
- * Represents a pool of strings.
- * 
- * @since 2024/09/14
- */
-typedef struct sjme_nvm_stringPoolBase sjme_nvm_stringPoolBase;
-
-/**
- * Represents a pool of strings.
- * 
- * @since 2024/09/14
- */
-typedef sjme_nvm_stringPoolBase* sjme_nvm_stringPool;
-
-/**
- * Represents a single pooled string.
- * 
- * @since 2024/09/14
- */
-typedef struct sjme_nvm_stringPool_stringBase sjme_nvm_stringPool_stringBase;
-
-/**
- * Represents a single pooled string.
- * 
- * @since 2024/09/14
- */
-typedef sjme_nvm_stringPool_stringBase* sjme_nvm_stringPool_string;
-
 /** A list of string pool strings. */
 SJME_LIST_DECLARE(sjme_nvm_stringPool_string, 0);
 

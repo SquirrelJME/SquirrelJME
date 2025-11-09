@@ -290,7 +290,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 	argR->v.l = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
 		SJME_F_T(inFrame),
-		SJME_AS_JSTRINGP(&argR->v.l), intern, &seq) ||
+		SJME_AS_JSTRINGP(&argR->v.l), intern, NULL, &seq) ||
 		argR->v.l == NULL))
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
@@ -324,7 +324,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 	argR->v.l = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
 		SJME_F_T(inFrame),
-		SJME_AS_JSTRINGP(&argR->v.l), intern, seq) ||
+		SJME_AS_JSTRINGP(&argR->v.l), intern, NULL, seq) ||
 		argR->v.l == NULL))
 		return sjme_error_default(error);
 

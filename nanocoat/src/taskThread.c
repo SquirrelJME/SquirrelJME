@@ -929,6 +929,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jstring* outString,
 	sjme_attrInValue sjme_jboolean isIntern,
+	sjme_attrInNullable sjme_nvm_stringPool_string refString,
 	sjme_attrInNotNull sjme_charSeq inSeq)
 {
 #define SJME_INTERN_GROW 32
@@ -942,6 +943,10 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	
 	if (inThread == NULL || outString == NULL || inSeq == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Passed reference string, but it is the wrong one? */
+	if (refString != NULL && refString->seq != inSeq)
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Calculate the hash/length of the string. */
 	hash = 0;
@@ -1006,17 +1011,31 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	result->object.identityHash = hash;
 	result->intern.hashCode = hash;
 	result->intern.length = length;
-	
-	/* Duplicate the sequence. */
-	strSeq = NULL;
-	if (sjme_error_is(error = sjme_charSeq_dup(
-		SJME_F_S(inThread)->allocPool, &strSeq, inSeq)) || strSeq == NULL)
-		goto fail_dupSeq;
 
-	/* Set sequence. */
-	if (!sjme_atomic_cs(sjme_charSeq, &result->seq,
-		NULL, strSeq))
-		goto fail_collided;
+	/* Comes from a string pool string? */
+	if (refString != NULL)
+	{
+		/* Set sequence from pool string. */
+		sjme_atomic_cs(sjme_nvm_stringPool_string, &result->poolString,
+			NULL, sjme_weakUp(refString));
+		sjme_atomic_cs(sjme_charSeq, &result->seq,
+			NULL, refString->seq);
+	}
+
+	/* Otherwise, comes from a sequence directly. */
+	else
+	{
+		/* Duplicate the sequence. */
+		strSeq = NULL;
+		if (sjme_error_is(error = sjme_charSeq_dup(
+			SJME_F_S(inThread)->allocPool, &strSeq, inSeq)) || strSeq == NULL)
+			goto fail_dupSeq;
+
+		/* Set. */
+		if (!sjme_atomic_cs(sjme_charSeq, &result->seq,
+			NULL, strSeq))
+			goto fail_collided;
+	}
 	
 	/* Final intern setup. */
 	if (isIntern)
@@ -1088,7 +1107,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfP(
 
 	/* Forward implementation. */
 	return sjme_nvm_task_threadStringValueOfCS(inThread,
-		outString, SJME_JNI_TRUE, inPool->seq);
+		outString, SJME_JNI_TRUE, inPool, inPool->seq);
 }
 
 sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
@@ -1111,5 +1130,5 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
 
 	/* Forward implementation. */
 	return sjme_nvm_task_threadStringValueOfCS(inThread,
-		outString, isIntern, &tempSeq);
+		outString, isIntern, NULL, &tempSeq);
 }

@@ -683,10 +683,6 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 		value.v.l == NULL)
 		return sjme_error_vmError(inFrame, error);
 
-	/* Count up string. */
-	if (sjme_error_is(error = sjme_nvm_instance_countUp(value.v.l)))
-		return sjme_error_vmError(inFrame, error);
-
 	/* Push value. */
 	return sjme_nvm_task_frameStackPush(inFrame, commit, &value);
 }

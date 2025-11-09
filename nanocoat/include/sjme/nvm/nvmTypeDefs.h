@@ -372,6 +372,34 @@ typedef struct sjme_nvm_class_exceptionHandler sjme_nvm_class_exceptionHandler;
  */
 typedef struct sjme_nvm_frame_gcCommit sjme_nvm_frame_gcCommit;
 
+/**
+ * Represents a pool of strings.
+ * 
+ * @since 2024/09/14
+ */
+typedef struct sjme_nvm_stringPoolBase sjme_nvm_stringPoolBase;
+
+/**
+ * Represents a pool of strings.
+ * 
+ * @since 2024/09/14
+ */
+typedef sjme_nvm_stringPoolBase* sjme_nvm_stringPool;
+
+/**
+ * Represents a single pooled string.
+ * 
+ * @since 2024/09/14
+ */
+typedef struct sjme_nvm_stringPool_stringBase sjme_nvm_stringPool_stringBase;
+
+/**
+ * Represents a single pooled string.
+ * 
+ * @since 2024/09/14
+ */
+typedef sjme_nvm_stringPool_stringBase* sjme_nvm_stringPool_string;
+	
 #pragma endregion(NvmTypeDefs)
 #pragma region(TypeOfSpecifiers)
 	
@@ -431,6 +459,9 @@ typedef struct sjme_nvm_frame_gcCommit sjme_nvm_frame_gcCommit;
 
 /** sjme_nvm_thread_statusType is not a pointer. */
 #define SJME_TYPEOF_IS_POINTER_sjme_nvm_thread_statusType 0
+
+/** sjme_nvm_stringPool_string is a pointer. */
+#define SJME_TYPEOF_IS_POINTER_sjme_nvm_stringPool_string 1
 	
 #pragma endregion(TypeOfSpecifiers)
 #pragma region(AtomicsAndLists)
@@ -485,6 +516,9 @@ SJME_ATOMIC_DECLARE(sjme_nvm_class_info, 0);
 	
 /** Method list. */
 SJME_LIST_DECLARE(sjme_nvm_class_methodInfo, 0);
+	
+/** Atomic string pool string reference. */
+SJME_ATOMIC_DECLARE(sjme_nvm_stringPool_string, 0);
 
 /** Atomic pointer to a @link sjme_nvm_class_poolEntryNameAndType @endlink . */
 SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryNameAndType, 1);

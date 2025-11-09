@@ -1400,6 +1400,7 @@ sjme_errorCode sjme_nvm_task_threadStart(
  * initialization.
  * @param outString The resultant string object.
  * @param isIntern Should this be interned?
+ * @param refString The referring string pool string, if applicable.
  * @param inSeq The input sequence.
  * @return Any resultant error, if any.
  * @since 2025/01/25
@@ -1408,6 +1409,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jstring* outString,
 	sjme_attrInValue sjme_jboolean isIntern,
+	sjme_attrInNullable sjme_nvm_stringPool_string refString,
 	sjme_attrInNotNull sjme_charSeq inSeq);
 	
 /**
