@@ -356,24 +356,25 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		return sjme_error_vmError(inThread, error);
 
 	/* Set frame details, needed for local set. */
-	result->inClass = sjme_atomic_g(sjme_jclass, &inMethod->member.inClass);
+	result->inClass = sjme_weakUp(sjme_atomic_g(sjme_jclass,
+		&inMethod->member.inClass));
 	result->id = sjme_atomic_ga(sjme_jint, 
 		&SJME_T_K(inThread)->nextFrameId, 1) + 1;
 	result->index = inThread->numFrames;
-	result->inMethod = inMethod;
+	result->inMethod = sjme_weakUp(inMethod);
 	sjme_atomic_s(sjme_nvm, &result->inState, SJME_F_S(inThread));
 	sjme_atomic_s(sjme_nvm_thread, &result->inThread, inThread);
 	sjme_atomic_s(sjme_nvm_task, &result->inTask, SJME_T_K(inThread));
-	result->inCode = targetInfo->code;
+	result->inCode = sjme_weakUp(targetInfo->code);
 	result->pool = sjme_atomic_g(sjme_nvm_class_info,
 		&sjme_atomic_g(sjme_nvm_class_methodInfo,
 			&targetInfo->code->inMethod)->inClass)->pool;
 
 	/* If static, refer to the class, otherwise refer to the instance. */
 	if (SJME_NVM_ACC_IS(inMethod->flags, STATIC))
-		result->instance = SJME_AS_JOBJECT(result->inClass);
+		result->instance = sjme_weakUp(SJME_AS_JOBJECT(result->inClass));
 	else if (argV != NULL)
-		result->instance = argV[0].v.l;
+		result->instance = sjme_weakUp(argV[0].v.l);
 
 	/* Used for final field setting. */
 	result->flags |= (targetInfo->bits & SJME_NVM_CLASS_INIT_ANY);
@@ -693,6 +694,25 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	
 	/* Commit GC. */
 	if (sjme_error_is(error = sjme_nvm_task_frameCommit(topFrame, &commit)))
+		return sjme_error_vmError(topFrame, error);
+
+	/* Clear reference to current class. */
+	if (sjme_error_is(error = sjme_nvm_instance_countDown(
+		SJME_AS_JOBJECT(topFrame->inClass))))
+		return sjme_error_vmError(topFrame, error);
+
+	/* Clear reference to bytecode. */
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(topFrame->inCode))))
+		return sjme_error_vmError(topFrame, error);
+
+	/* Clear reference to used method. */
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(topFrame->inMethod))))
+		return sjme_error_vmError(topFrame, error);
+
+	/* Count down reference to object/class instance. */
+	if (sjme_error_is(error = sjme_nvm_instance_countDown(topFrame->instance)))
 		return sjme_error_vmError(topFrame, error);
 
 	/* Make the top-most frame  not exist. */

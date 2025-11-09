@@ -302,6 +302,36 @@ static sjme_errorCode sjme_nvm_cleanup_postIsClasses(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postFrame(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_nvm_frame frame;
+	sjme_jbracketTrace trace;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	frame = (sjme_nvm_frame)closeable;
+	if (frame == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Clear any left-over object/class/method references. */
+	SJME_SIMPLE_CLOSE(frame->inClass);
+	SJME_SIMPLE_CLOSE(frame->inMethod);
+	SJME_SIMPLE_CLOSE(frame->pool);
+	SJME_SIMPLE_CLOSE(frame->inCode);
+	SJME_SIMPLE_CLOSE(frame->instance);
+
+	/* Even though the trace point is a phantom, we want to try clearing it */
+	/* as it can be made by the debugger or stack traces. */
+	trace = sjme_atomic_g(sjme_jbracketTrace, &frame->phantomTracePoint);
+	if (sjme_nvm_isAR(trace, SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE))
+		SJME_SIMPLE_CLOSE_ATOMIC(sjme_jbracketTrace, 0,
+			frame->phantomTracePoint);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postMethodInfo(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -463,6 +493,41 @@ static sjme_errorCode sjme_nvm_cleanup_postString(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postThread(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_nvm_thread thread;
+	sjme_jint i, n;
+	sjme_list_sjme_nvm_frame* frames;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	thread = (sjme_nvm_thread)closeable;
+	if (thread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Clear all frames. */
+	frames = thread->frames;
+	if (frames != NULL)
+	{
+		/* Close any allocated frames. */
+		for (n = frames->length, i = 0; i < n; i++)
+			SJME_SIMPLE_CLOSE(frames->elements[i]);
+		
+		/* Free frame list. */
+		SJME_SIMPLE_FREE(thread->frames);
+	}
+
+	/* Free stack storage. */
+	SJME_SIMPLE_FREE(thread->stack.storage);
+
+	/* Free tossed object, if any. */
+	SJME_SIMPLE_CLOSE_ATOMIC(sjme_jobject, 0, thread->tossed);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postClassInfo(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -546,6 +611,11 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 	else if (object->common.type == SJME_NVM_STRUCT_STRING_INSTANCE)
 	{
 		if (sjme_error_is(error = sjme_nvm_cleanup_postString(closeable)))
+			return sjme_error_default(error);
+	}
+	else if (object->common.type == SJME_NVM_STRUCT_THREAD_INSTANCE)
+	{
+		if (sjme_error_is(error = sjme_nvm_cleanup_postThread(closeable)))
 			return sjme_error_default(error);
 	}
 	
@@ -708,6 +778,7 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 	sjme_nvm_task_taskNewConfig* initTask;
 	sjme_list(sjme_nvm_task)* tasks;
 	sjme_list_sjme_nvm_rom_library* classPath;
+	sjme_nvm_threadSchedule* schedule;
 	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
 
@@ -726,6 +797,18 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 		
 		/* Free tasks. */
 		SJME_SIMPLE_FREE(inState->tasks);
+	}
+
+	/* Cleanup schedules. */
+	schedule = inState->schedule;
+	if (schedule != NULL)
+	{
+		/* Go through each model. */
+		for (i = 0; i < SJME_NVM_THREAD_NUM_SCHEDULE_MODE; i++)
+			SJME_SIMPLE_FREE(schedule->mode[i].order);
+		
+		/* Free the schedule data. */
+		SJME_SIMPLE_FREE(inState->schedule);
 	}
 
 	/* Boot parameters? */
@@ -1108,6 +1191,10 @@ sjme_errorCode sjme_nvm_allocR(
 			
 		case SJME_NVM_STRUCT_IS_CLASSES:
 			postClose = sjme_nvm_cleanup_postIsClasses;
+			break;
+
+		case SJME_NVM_STRUCT_FRAME:
+			postClose = sjme_nvm_cleanup_postFrame;
 			break;
 
 		case SJME_NVM_STRUCT_METHOD_INFO:

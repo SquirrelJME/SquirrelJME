@@ -255,6 +255,21 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** Non-cyclic atomic reference. */
 	SJME_NVM_WALK_PSEUDO_NON_CYCLIC = -72,
+
+	/** @link sjme_pcAddr @endlink . */
+	SJME_NVM_WALK_PSEUDO_PC_ADDR = -73,
+
+	/** @link sjme_frame_frameStacks @endlink . */
+	SJME_NVM_WALK_PSEUDO_FRAME_STACKS = -74,
+
+	/** @link sjme_nvm_frame_conditionFunc @endlink . */
+	SJME_NVM_WALK_PSEUDO_CONDITION_FUNCTION = -75,
+
+	/** @link sjme_nvm_frame_stateFlags @endlink . */
+	SJME_NVM_WALK_PSEUDO_FRAME_FLAGS = -76,
+
+	/** @link sjme_frame_frameStack @endlink . */
+	SJME_NVM_WALK_PSEUDO_FRAME_STACK = -77,
 } sjme_nvm_walk_pseudoType;
 
 /**

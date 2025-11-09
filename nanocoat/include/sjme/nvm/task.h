@@ -241,7 +241,10 @@ struct sjme_frame_frameStacks
 	/** The order of the stack. */
 	sjme_javaTypeId* order;
 
-	/** The front of the stack, anything before this are local variables. */
+	/**
+	 * The front of the stack, anything before the "front" are local
+	 * variables.
+	 */
 	sjme_jint orderFront;
 
 	/** The top of the order stack. */
