@@ -67,8 +67,14 @@ struct sjme_nvm_bootParam
 	/** The boot suite to use. */
 	sjme_nvm_rom_suite bootSuite;
 
+	/** Should the boot suite be freed? */
+	sjme_jboolean freeBootSuite;
+
 	/** The suite to use for the library set. */
 	sjme_nvm_rom_suite librarySuite;
+
+	/** Free the library set? */
+	sjme_jboolean freeLibrarySuite;
 
 	/** The class path for main by library IDs. */
 	const sjme_list(sjme_jint)* mainClassPathById;

@@ -96,6 +96,7 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 	
 	/* The free slot might have been taken by something else if we got */
 	/* unlucky in the lock cycle. */
+	freeSlot = -1;
 	if (sjme_error_is(error = sjme_listUtil_findFree(
 		SJME_AS_LIST_POINTER(classInfos), &freeSlot)))
 		goto fail_findFree;
@@ -134,6 +135,13 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 	/* File name is needed for caching. */
 	maybe->fileName = dupFileName;
 	maybe->fileNameHash = sjme_string_hash(dupFileName);
+
+	/* Need to grow the list? */
+	if (freeSlot < 0)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
 	
 	/* Store info in for later caching. */
 	classInfos->elements[freeSlot] = sjme_weakUpR(sjme_nvm_class_info, maybe);

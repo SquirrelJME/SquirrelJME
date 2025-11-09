@@ -46,6 +46,15 @@ static sjme_errorCode sjme_nvm_rom_zipLibraryClose(
 	zip = inLibrary->handle;
 	if (zip == NULL)
 		return SJME_ERROR_NONE;
+
+	/* Does the prefix need to be freed? */
+	if (inLibrary->prefix != NULL)
+	{
+		if (sjme_error_is(error = sjme_alloc_free(
+			(sjme_pointer)inLibrary->prefix)))
+			return sjme_error_default(error);
+		inLibrary->prefix = NULL;
+	}
 	
 	/* Close it. */
 	inLibrary->handle = NULL;

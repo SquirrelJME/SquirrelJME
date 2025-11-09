@@ -282,7 +282,7 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_errorCode error;
 	sjme_nvm result;
 	sjme_nvm_rom_suite mergeSuites[FIXED_SUITE_COUNT];
-	sjme_jint numMergeSuites;
+	sjme_jint numMergeSuites, i, n;
 	sjme_nvm_task_taskNewConfig* initTaskConfig;
 	const sjme_nvm_bootParam* bootParamCopy;
 	sjme_nvm_task initTask;
@@ -436,6 +436,10 @@ sjme_errorCode sjme_nvm_boot(
 
 		goto fail_badClassPath;
 	}
+	
+	/* Count up all classpath entries as we are using them now. */
+	for (n = classPath->length, i = 0; i < n; i++)
+		sjme_weakUp(classPath->elements[i]);
 
 	/* Allocate the task scheduler, if applicable. */
 	if (result->threadModel != SJME_NVM_MLE_THREAD_MULTI)

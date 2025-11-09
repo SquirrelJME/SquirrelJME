@@ -207,6 +207,7 @@ int main(int argc, sjme_lpstr* argv)
 	memset(&bootParam, 0, sizeof(bootParam));
 	bootParam.nal = &sjme_nal_test;
 	bootParam.bootSuite = bootSuite;
+	bootParam.freeBootSuite = SJME_JNI_TRUE;
 	bootParam.mainClass = argv[4];
 	bootParam.mainClassPathByName = (const sjme_list(sjme_lpcstr)*)classpath;
 	bootParam.freeMainClassPathByName = SJME_JNI_TRUE;

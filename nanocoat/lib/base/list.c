@@ -546,7 +546,7 @@ sjme_errorCode sjme_list_replaceR(
 		oldList, &newList, elementSize,
 		elementOffset, pointerCheck
 		SJME_DEBUG_ONLY_COMMA
-		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)) || newList == NULL)
+		SJME_DEBUG_FILE_LINE_COPY)) || newList == NULL)
 		return sjme_error_default(error);
 
 	/* Set new list and free old one. */

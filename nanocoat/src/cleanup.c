@@ -66,6 +66,16 @@
 		sjme_atomic_sP(type, numPointerStars, (ptr), NULL), \
 		sjme_alloc_free(temp))
 
+#define SJME_FLAGGED_CLOSE(free, ptr) \
+	do { if ((free) && (ptr) != NULL) \
+	{ \
+		temp = (sjme_pointer)(ptr); \
+		(ptr) = NULL; \
+		if (sjme_error_is(error = sjme_closeable_close(\
+			SJME_AS_CLOSEABLE(temp)))) \
+			return sjme_error_default(error); \
+	} } while (0)
+
 #define SJME_FLAGGED_FREE(free, ptr) \
 	do { if ((free) && (ptr) != NULL) \
 	{ \
@@ -105,7 +115,7 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 		switch ((at->variantStep != NULL ? at->variantStep->typeId.i :
 			at->typeId.i))
 		{
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
+#if defined(SJME_CONFIG_CODE_SHOULD_WORK)
 				/* The constant pool and pool entries are fine to do a */
 				/* normal walk since they mostly are constant or point */
 				/* to string pool strings. */
@@ -503,6 +513,9 @@ static sjme_errorCode sjme_nvm_cleanup_postClassInfo(
 		/* Free list. */
 		SJME_SIMPLE_FREE(info->methods);
 	}
+
+	/* Class file name. */
+	SJME_SIMPLE_FREE(info->fileName);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -694,6 +707,7 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 	sjme_nvm_bootParam* bootParam;
 	sjme_nvm_task_taskNewConfig* initTask;
 	sjme_list(sjme_nvm_task)* tasks;
+	sjme_list_sjme_nvm_rom_library* classPath;
 	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
 
@@ -718,6 +732,13 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 	bootParam = (sjme_nvm_bootParam*)inState->bootParamCopy;
 	if (bootParam != NULL)
 	{
+		/* Boot suite and library. */
+		SJME_FLAGGED_CLOSE(bootParam->freeBootSuite,
+			bootParam->bootSuite);
+		SJME_FLAGGED_CLOSE(bootParam->freeLibrarySuite,
+			bootParam->librarySuite);
+		
+		/* Main application. */
 		SJME_FLAGGED_FREE(bootParam->freeMainClassPathById,
 			bootParam->mainClassPathById);
 		SJME_FLAGGED_FREE(bootParam->freeMainClassPathByName,
@@ -737,8 +758,19 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 	initTask = (sjme_nvm_task_taskNewConfig*)inState->initTaskConfig;
 	if (initTask != NULL)
 	{
+		/* Clear the initial task classpath. */
+		classPath = initTask->classPath;
+		if (classPath != NULL)
+		{
+			/* Close each classpath entry. */
+			for (n = classPath->length, i = 0; i < n; i++)
+				SJME_SIMPLE_CLOSE(classPath->elements[i]);
+			
+			/* Clear the final list. */
+			SJME_SIMPLE_FREE(initTask->classPath);
+		}
+
 		/* The other fields are direct references to bootParamCopy. */
-		/* initTask->classPath */
 		/* initTask->sysProps */
 		/* initTask->mainArgs */
 		
@@ -828,6 +860,9 @@ static sjme_errorCode sjme_nvm_cleanup_postTask(
 		/* Free list. */
 		SJME_SIMPLE_FREE(task->threads);
 	}
+
+	/* Free the init config copy. */
+	SJME_SIMPLE_FREE(task->initConfig);
 
 	/* Lock globals. */
 	globals = &task->globals;

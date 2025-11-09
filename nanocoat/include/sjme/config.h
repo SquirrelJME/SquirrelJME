@@ -1310,6 +1310,9 @@ extern "C" {
 	/** Is the specified MSVC intrinsic available? */
 	#define SJME_CONFIG_HAS_MSVC_INTRINSIC(x) 0
 #endif
+
+/** Include code that should work. */
+#define SJME_CONFIG_CODE_SHOULD_WORK 1
 	
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"
