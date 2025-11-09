@@ -520,6 +520,9 @@ SJME_LIST_DECLARE(sjme_nvm_class_methodInfo, 0);
 /** Atomic string pool string reference. */
 SJME_ATOMIC_DECLARE(sjme_nvm_stringPool_string, 0);
 
+/** List of phantom string pool strings. */
+SJME_LIST_DECLARE(sjme_phantom(sjme_nvm_stringPool_string), 0);
+
 /** Atomic pointer to a @link sjme_nvm_class_poolEntryNameAndType @endlink . */
 SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryNameAndType, 1);
 	

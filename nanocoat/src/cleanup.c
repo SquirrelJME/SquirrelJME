@@ -139,7 +139,7 @@ static sjme_errorCode sjme_nvm_cleanup_walkStep(
 	/* Pre-stage sub-structure recursive cleanup? */
 	else if (at->stage == SJME_NVM_WALK_STAGE_PRE && at->index != INT32_MIN &&
 		at->index != INT32_MAX && at->index >= 0)
-	{		
+	{
 		/* Potentially eligible NVM structure that can be cleaned? */
 		/* Never clean phantom pointers, as those often point back to a */
 		/* parent structure. */
@@ -302,6 +302,9 @@ static sjme_errorCode sjme_nvm_cleanup_postMethodInfo(
 	methodInfo = (sjme_nvm_class_methodInfo)closeable;
 	if (methodInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Method arguments. */
+	SJME_SIMPLE_FREE(methodInfo->argT);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -750,8 +753,7 @@ static sjme_errorCode sjme_nvm_cleanup_postStringPool(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_nvm_stringPool pool;
-	sjme_list(sjme_nvm_stringPool_string)* strings;
-	sjme_nvm_stringPool_string string;
+	sjme_list(sjme_phantom(sjme_nvm_stringPool_string))* strings;
 	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
 
@@ -759,21 +761,15 @@ static sjme_errorCode sjme_nvm_cleanup_postStringPool(
 	pool = (sjme_nvm_stringPool)closeable;
 	if (pool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
+	
 	/* Clear any strings. */
 	strings = pool->strings;
 	if (strings != NULL)
 	{
+		/* Close each string. */
 		for (n = strings->length, i = 0; i < n; i++)
-		{
-			/* Skip any blank slots. */
-			string = strings->elements[i];
-			if (string == NULL)
-				continue;
-
-			/* Close each string. */
-			SJME_SIMPLE_CLOSE(strings->elements[i]);
-		}
+			SJME_SIMPLE_CLOSE_ATOMIC(sjme_nvm_stringPool_string, 0,
+				strings->elements[i]);
 
 		/* Free list. */
 		SJME_SIMPLE_FREE(pool->strings);
@@ -786,9 +782,8 @@ static sjme_errorCode sjme_nvm_cleanup_postStringPool(
 static sjme_errorCode sjme_nvm_cleanup_postStringPoolString(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
-	sjme_errorCode error;
-	sjme_charSeq seq;
 	sjme_nvm_stringPool_string string;
+	SJME_CLEANUP_DECL;
 	
 	/* Recover. */
 	string = (sjme_nvm_stringPool_string)closeable;
@@ -796,13 +791,7 @@ static sjme_errorCode sjme_nvm_cleanup_postStringPoolString(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Delete the character sequence. */
-	seq = string->seq;
-	if (seq != NULL)
-	{
-		string->seq = NULL;
-		if (sjme_error_is(error = sjme_charSeq_delete(seq)))
-			return sjme_error_default(error);
-	}
+	SJME_CHARSEQ_DELETE(string->seq);
 
 	/* Success! */
 	return SJME_ERROR_NONE;

@@ -46,7 +46,7 @@ struct sjme_nvm_stringPoolBase
 	sjme_alloc_pool allocPool;
 	
 	/** Strings which are in the pool. */
-	sjme_list(sjme_nvm_stringPool_string)* strings;
+	sjme_list(sjme_phantom(sjme_nvm_stringPool_string))* strings;
 };
 
 struct sjme_nvm_stringPool_stringBase

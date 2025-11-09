@@ -13,8 +13,11 @@
 #include "sjme/nvm/cleanup.h"
 #include "sjme/util.h"
 
+/** The initial size of the string pool. */
+#define SJME_STRING_POOL_INIT 32
+
 /** The amount the size of the string pool should grow. */
-#define SJME_STRING_POOL_GROW 256
+#define SJME_STRING_POOL_GROW 16
 
 sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
@@ -24,13 +27,10 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
-	sjme_jint hash, i, n, firstFree, length;
-	sjme_list(sjme_nvm_stringPool_string)* strings;
-	sjme_list(sjme_nvm_stringPool_string)* oldStrings;
+	sjme_jint i, n, firstFree;
+	sjme_list(sjme_phantom(sjme_nvm_stringPool_string))* strings;
 	sjme_nvm_stringPool_string result;
 	sjme_nvm_stringPool_string possible;
-	sjme_alloc_weak weak;
-	sjme_frontEnd frontEnd;
 	
 	if (inStringPool == NULL || inSeq == NULL || outString == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -43,117 +43,99 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 		&inStringPool->common.lock)))
 		return sjme_error_default(error);
 
-	/* Calculate length of string. */
-	length = -1;
-	if (sjme_error_is(error = sjme_charSeq_length(inSeq, &length)) ||
-		length < 0)
-		return sjme_error_default(error);
-	
-	/* Calculate hash of string. */
-	hash = 0;
-	if (sjme_error_is(error = sjme_charSeq_hash(inSeq, &hash)))
-		return sjme_error_default(error);
+	/* Set later on. */
+	result = NULL;
 	
 	/* Try to locate the string first. */
 	strings = inStringPool->strings;
 	firstFree = -1;
-	result = NULL;
 	for (i = 0, n = strings->length; i < n; i++)
 	{
 		/* There might be an element here. */
-		possible = strings->elements[i];
-		
-		/* Check to see if this no longer exists in the pool. */
-		weak = NULL;
-		if (possible != NULL)
-			if (sjme_error_is(error = sjme_alloc_weakRefGet(possible,
-				&weak)))
-			{
-				/* Not a valid error here. */
-				if (error != SJME_ERROR_NOT_WEAK_REFERENCE)
-					goto fail_corruptPossible;
-			}
-		
-		/* Is a weak reference but does not actually point to the string? */
-		/* If so then this was freed! */
-		if (weak != NULL && sjme_atomic_pg(&weak->pointer) != possible)
+		possible = sjme_atomic_g(sjme_nvm_stringPool_string,
+			&strings->elements[i]);
+
+		/* Is this no longer valid? */
+		if (!sjme_nvm_isAR(possible,
+			SJME_NVM_STRUCT_STRING_POOL_STRING))
 		{
-			strings->elements[i] = NULL;
-			possible = NULL;
+			/* This is considered a free slot. */
+			if (firstFree < 0)
+				firstFree = i;
+			
+			/* Wipe reference. */
+			sjme_atomic_cs(sjme_nvm_stringPool_string,
+				&strings->elements[i], possible, NULL);
+			continue;
 		}
-		
-		/* Is this a filled slot? */
+
+		/* Consider empty slots as free */
 		if (possible == NULL)
 		{
-			/* We can put a new string here. */
 			if (firstFree < 0)
 				firstFree = i;
 			continue;
 		}
-
+		
 		/* Check for the same sequence. */
 		if (!sjme_charSeq_equalsR(possible->seq, inSeq))
 			continue;
 
 		/* This is the one! */
 		result = possible;
-		break;
+		goto skip_foundString;
 	}
-	
-	/* String is not in the pool. */
-	if (result == NULL)
+
+	/* Increase the pool size? */
+	if (firstFree < 0)
 	{
-		/* Need to make the pool bigger? */
-		if (firstFree < 0)
-		{
-			/* First free is always at the end. */
-			firstFree = strings->length;
-			
-			/* Reallocate the list. */
-			oldStrings = strings;
-			if (sjme_error_is(error = sjme_list_copy(inStringPool->allocPool,
-				strings->length + SJME_STRING_POOL_GROW, strings,
-				&strings, sjme_nvm_stringPool_string, 0)) || strings == NULL)
-				goto fail_growList;
-			
-			/* Set new list. */
-			inStringPool->strings = strings;
-			
-			/* Clear old list. */
-			if (sjme_error_is(error = sjme_alloc_free(oldStrings)))
-				goto fail_freeOld;
-			oldStrings = NULL;
-		}
-		
-		/* Allocate new result to store in the slot. */
-		result = NULL;
-#if defined(SJME_CONFIG_DEBUG)
-		if (sjme_error_is(error = sjme_nvm_allocR(
-			(sjme_nvm)inStringPool->allocPool,
-			sizeof(*result), 
-			SJME_NVM_STRUCT_STRING_POOL_STRING,
-			SJME_AS_NVM_COMMONP(&result), file, line, func)) ||
-			result == NULL)
-#else
-		if (sjme_error_is(error = sjme_nvm_alloc(
-			(sjme_nvm)inStringPool->allocPool,
-			sizeof(*result),
-			SJME_NVM_STRUCT_STRING_POOL_STRING,
-			SJME_AS_NVM_COMMONP(&result))) || result == NULL)
-#endif
-			goto fail_stringAlloc;
-		
-		/* Make copy of the sequence. */
-		result->seq = NULL;
-		if (sjme_error_is(error = sjme_charSeq_dup(inStringPool->allocPool,
-			&result->seq, inSeq)) || result->seq == NULL)
-			goto fail_dupSeq;
-		
-		/* Store it into the pool. */
-		strings->elements[firstFree] = sjme_weakUpR(sjme_nvm_stringPool_string,
-			result);
+		/* First free is always at the end. */
+		firstFree = strings->length;
+
+		/* Grow the list. */
+		if (sjme_error_is(error = sjme_list_replace(
+			inStringPool->allocPool,
+			strings->length + SJME_STRING_POOL_GROW,
+			&inStringPool->strings,
+			sjme_phantom(sjme_nvm_stringPool_string), 0)))
+			goto fail_growList;
+		strings = inStringPool->strings;
 	}
 	
+	/* Allocate new result to store in the slot. */
+	result = NULL;
+#if defined(SJME_CONFIG_DEBUG)
+	if (sjme_error_is(error = sjme_nvm_allocR(
+		(sjme_nvm)inStringPool->allocPool,
+		sizeof(*result), 
+		SJME_NVM_STRUCT_STRING_POOL_STRING,
+		SJME_AS_NVM_COMMONP(&result), file, line, func)) ||
+		result == NULL)
+#else
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		(sjme_nvm)inStringPool->allocPool,
+		sizeof(*result),
+		SJME_NVM_STRUCT_STRING_POOL_STRING,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
+#endif
+		goto fail_stringAlloc;
+	
+	/* Make copy of the sequence. */
+	result->seq = NULL;
+	if (sjme_error_is(error = sjme_charSeq_dup(inStringPool->allocPool,
+		&result->seq, inSeq)) || result->seq == NULL)
+		goto fail_dupSeq;
+	
+	/* Store it into the pool. */
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
+	sjme_atomic_s(sjme_nvm_stringPool_string,
+		&strings->elements[firstFree], sjme_weakUp(result));
+#else
+	sjme_atomic_s(sjme_nvm_stringPool_string,
+		&strings->elements[firstFree], result);
+#endif
+	
+skip_foundString:
 	/* Release the lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&inStringPool->common.lock, NULL)))
@@ -163,9 +145,6 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 	*outString = result;
 	return SJME_ERROR_NONE;
 
-fail_countUp:
-fail_initSeq:
-fail_initCommon:
 fail_dupSeq:
 	if (result != NULL && result->seq != NULL)
 	{
@@ -175,9 +154,7 @@ fail_dupSeq:
 fail_stringAlloc:
 	if (result != NULL)
 		sjme_alloc_free(result);
-fail_freeOld:
 fail_growList:
-fail_corruptPossible:
 fail_releaseLock:
 	/* Unlock before failing. */
 	sjme_thread_spinLockRelease(&inStringPool->common.lock,
@@ -274,7 +251,7 @@ sjme_errorCode sjme_nvm_stringPool_new(
 {
 	sjme_errorCode error;
 	sjme_nvm_stringPool result;
-	sjme_list(sjme_nvm_stringPool_string)* strings;
+	sjme_list(sjme_phantom(sjme_nvm_stringPool_string))* strings;
 	
 	if (allocPool == NULL || outStringPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -282,8 +259,9 @@ sjme_errorCode sjme_nvm_stringPool_new(
 	/* Make sure we have the memory to store the buffer. */
 	strings = NULL;
 	if (sjme_error_is(error = sjme_list_alloc(
-		allocPool, SJME_STRING_POOL_GROW,
-		&strings, sjme_nvm_stringPool_string, 0)) || strings == NULL)
+		allocPool, SJME_STRING_POOL_INIT,
+		&strings, sjme_phantom(sjme_nvm_stringPool_string), 0)) ||
+		strings == NULL)
 		goto fail_allocList;
 	
 	/* Allocate result. */
@@ -302,7 +280,6 @@ sjme_errorCode sjme_nvm_stringPool_new(
 	*outStringPool = result;
 	return SJME_ERROR_NONE;
 	
-fail_initCommon:
 fail_allocResult:
 	if (result != NULL)
 		sjme_alloc_free(result);

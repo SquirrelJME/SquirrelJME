@@ -1428,6 +1428,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 			goto fail_initSpecific;
 	}
 
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/* Allocate base for is-classes. */
 	isClasses = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(
@@ -1439,6 +1440,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 
 	/* Setup base is-classes. */
 	inClass->isClasses = isClasses;
+#endif
 	
 	/* Set as done! */
 	sjme_atomic_cs(sjme_jint, &inClass->isLoaded,
