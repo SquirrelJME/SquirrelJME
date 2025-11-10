@@ -17,8 +17,8 @@
 #ifndef SJME_C_STRINGPOOL_H
 #define SJME_C_STRINGPOOL_H
 
-#include "sjme/charSeq.h"
 #include "sjme/nvm/nvm.h"
+#include "sjme/charSeq.h"
 #include "sjme/stream.h"
 #include "sjme/list.h"
 
@@ -164,9 +164,23 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
  * @return Any resultant error, if any,
  * @since 2024/09/14
  */
-sjme_errorCode sjme_nvm_stringPool_new(
+sjme_errorCode sjme_nvm_stringPool_newR(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_nvm_stringPool* outStringPool);
+	sjme_attrOutNotNull sjme_nvm_stringPool* outStringPool
+	SJME_DEBUG_ONLY_COMMA
+	SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Creates a new string pool for managing constant strings.
+ * 
+ * @param allocPool The pool to allocate within.
+ * @param outStringPool The resultant string pool.
+ * @return Any resultant error, if any,
+ * @since 2024/09/14
+ */
+#define sjme_nvm_stringPool_new(allocPool, outStringPool) \
+	(sjme_nvm_stringPool_newR((allocPool), (outStringPool) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /*--------------------------------------------------------------------------*/
 

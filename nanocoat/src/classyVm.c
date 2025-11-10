@@ -327,8 +327,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	result->member.idHash = thisInfo->idHash;
 	
 	/* The names always get set. */
-	SJME_M_N(result) = thisInfo->name;
-	SJME_M_T(result) = thisInfo->type;
+	result->member.name = sjme_weakUp(thisInfo->name);
+	result->member.type = sjme_weakUp(thisInfo->type);
 
 	/* Also copy flags and bits. */
 	result->flags = thisInfo->flags;
@@ -611,29 +611,29 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	allocPool = SJME_F_S(contextThread)->allocPool;
 	strings = classLoader->nullStrings;
 
-	/* Lookup self name. */
-	thisName = NULL;
-	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeq(
-		strings, &thisName, inClass->binaryName, 0)) || thisName == NULL)
-		return sjme_error_vmError(contextThread, error);
-
-	/* The super class is always Object. */
-	superName = NULL;
-	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
-		strings, &superName, "java/lang/Object", 0, -1)) || superName == NULL)
-		return sjme_error_vmError(contextThread, error);
-
 	/* Allocate synthetic result. */
 	info = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(inState,
 		sizeof(*info), SJME_NVM_STRUCT_CLASS_INFO,
 		SJME_AS_NVM_COMMONP(&info))) || info == NULL)
 		return sjme_error_outOfMemory(allocPool, sizeof(*info));
+
+	/* Lookup self name. */
+	thisName = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeq(
+		strings, &thisName, inClass->binaryName, 0)) || thisName == NULL)
+		return sjme_error_vmError(contextThread, error);
+	info->name = sjme_weakUpR(sjme_nvm_stringPool_string, thisName);
+
+	/* The super class is always Object. */
+	superName = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
+		strings, &superName, "java/lang/Object", 0, -1)) || superName == NULL)
+		return sjme_error_vmError(contextThread, error);
+	info->superName = sjme_weakUpR(sjme_nvm_stringPool_string, superName);
 	
 	/* Synthesize info for arrays. */
 	info->version = SJME_NVM_CLASS_CLDC_1_8;
-	info->name = sjme_weakUpR(sjme_nvm_stringPool_string, thisName);
-	info->superName = sjme_weakUpR(sjme_nvm_stringPool_string, superName);
 	info->flags = SJME_NVM_ACC_PUBLIC | SJME_NVM_ACC_FINAL |
 		SJME_NVM_ACC_SYNTHETIC;
 	info->isArray = SJME_JNI_TRUE;
@@ -688,23 +688,23 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
 	allocPool = SJME_F_S(contextThread)->allocPool;
 	strings = classLoader->nullStrings;
 
-	/* Lookup self name. */
-	thisName = NULL;
-	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeq(
-		strings, &thisName, inClass->binaryName, 0)) || thisName == NULL)
-		return sjme_error_vmError(contextThread, error);
-
 	/* Allocate synthetic result. */
 	info = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(inState,
 		sizeof(*info), SJME_NVM_STRUCT_CLASS_INFO,
 		SJME_AS_NVM_COMMONP(&info))) || info == NULL)
 		return sjme_error_outOfMemory(allocPool, sizeof(*info));
+
+	/* Lookup self name. */
+	thisName = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeq(
+		strings, &thisName, inClass->binaryName, 0)) || thisName == NULL)
+		return sjme_error_vmError(contextThread, error);
+	info->name = sjme_weakUpR(sjme_nvm_stringPool_string, thisName);
 	
 	/* Synthesize info for primitive types. */
 	/* Magically, they have no super class! */
 	info->version = SJME_NVM_CLASS_CLDC_1_8;
-	info->name = sjme_weakUpR(sjme_nvm_stringPool_string, thisName);
 	info->superName = NULL;
 	info->flags = SJME_NVM_ACC_PUBLIC | SJME_NVM_ACC_FINAL |
 		SJME_NVM_ACC_SYNTHETIC;

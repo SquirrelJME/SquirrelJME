@@ -199,6 +199,25 @@ sjme_errorCode sjme_list_allocR(
 		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
+ * Allocates the given list without setting any of the values.
+ *
+ * @param allocPool The pool to allocate within.
+ * @param inLength The list length.
+ * @param outList The resultant list.
+ * @param type The list type.
+ * @param numPointerStars The number of pointer stars.
+ * @return Any error state.
+ * @since 2023/12/17
+ */
+#define sjme_list_allocD(allocPool, inLength, outList, type, numPointerStars) \
+	sjme_list_allocR((allocPool), (inLength), \
+		(sjme_pointer*)(outList), \
+		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
+		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars), \
+		sizeof(**(outList)) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_FILE_LINE_COPY)
+
+/**
  * Allocates a given list generically.
  *
  * @param allocPool The pool to allocate within.

@@ -104,20 +104,13 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 	
 	/* Allocate new result to store in the slot. */
 	result = NULL;
-#if defined(SJME_CONFIG_DEBUG)
 	if (sjme_error_is(error = sjme_nvm_allocR(
 		(sjme_nvm)inStringPool->allocPool,
 		sizeof(*result), 
 		SJME_NVM_STRUCT_STRING_POOL_STRING,
-		SJME_AS_NVM_COMMONP(&result), file, line, func)) ||
+		SJME_AS_NVM_COMMONP(&result)
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) ||
 		result == NULL)
-#else
-	if (sjme_error_is(error = sjme_nvm_alloc(
-		(sjme_nvm)inStringPool->allocPool,
-		sizeof(*result),
-		SJME_NVM_STRUCT_STRING_POOL_STRING,
-		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
-#endif
 		goto fail_stringAlloc;
 	
 	/* Make copy of the sequence. */
@@ -126,14 +119,10 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 		&result->seq, inSeq)) || result->seq == NULL)
 		goto fail_dupSeq;
 	
-	/* Store it into the pool. */
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	sjme_atomic_s(sjme_nvm_stringPool_string,
-		&strings->elements[firstFree], sjme_weakUp(result));
-#else
+	/* Store it into the pool, all strings are phantom references so that */
+	/* they can be cleaned up. */
 	sjme_atomic_s(sjme_nvm_stringPool_string,
 		&strings->elements[firstFree], result);
-#endif
 	
 skip_foundString:
 	/* Release the lock. */
@@ -245,9 +234,11 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
 		&seq, 0);
 }
 
-sjme_errorCode sjme_nvm_stringPool_new(
+sjme_errorCode sjme_nvm_stringPool_newR(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_nvm_stringPool* outStringPool)
+	sjme_attrOutNotNull sjme_nvm_stringPool* outStringPool
+	SJME_DEBUG_ONLY_COMMA
+	SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	sjme_nvm_stringPool result;
@@ -258,7 +249,7 @@ sjme_errorCode sjme_nvm_stringPool_new(
 	
 	/* Make sure we have the memory to store the buffer. */
 	strings = NULL;
-	if (sjme_error_is(error = sjme_list_alloc(
+	if (sjme_error_is(error = sjme_list_allocD(
 		allocPool, SJME_STRING_POOL_INIT,
 		&strings, sjme_phantom(sjme_nvm_stringPool_string), 0)) ||
 		strings == NULL)
@@ -266,10 +257,11 @@ sjme_errorCode sjme_nvm_stringPool_new(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(
+	if (sjme_error_is(error = sjme_nvm_allocR(
 		(sjme_nvm)allocPool,
 		sizeof(*result), SJME_NVM_STRUCT_STRING_POOL,
-		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
+		SJME_AS_NVM_COMMONP(&result)
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) || result == NULL)
 		goto fail_allocResult;
 	
 	/* Setup fields. */
