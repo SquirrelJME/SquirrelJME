@@ -179,6 +179,16 @@ typedef sjme_errorCode (*sjme_nvm_rom_libraryResourceStreamFunc)(
 	sjme_attrInNotNull sjme_lpcstr resourceName);
 
 /**
+ * Special handling for any closing that needs to be performed for a suite.
+ *
+ * @param inSuite The suite to be closed.
+ * @return Any resultant error, if any.
+ * @since 2025/11/09
+ */
+typedef sjme_errorCode (*sjme_nvm_rom_suiteCloseFunc)(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite);
+
+/**
  * Obtains the default launch parameters from the given suite.
  * 
  * @param allocPool The pool to allocate within.
@@ -265,6 +275,9 @@ struct sjme_nvm_rom_libraryFunctions
 
 struct sjme_nvm_rom_suiteFunctions
 {
+	/** Close the suite. */
+	sjme_nvm_rom_suiteCloseFunc close;
+	
 	/** Optional default launch parameters. */
 	sjme_nvm_rom_suiteDefaultLaunchFunc defaultLaunch;
 	

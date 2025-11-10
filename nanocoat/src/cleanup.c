@@ -696,11 +696,6 @@ static sjme_errorCode sjme_nvm_cleanup_postRomLibrary(
 	if (library == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Call main close on the library. */
-	if (library->functions != NULL && library->functions->close != NULL)
-		if (sjme_error_is(error = library->functions->close(library)))
-			return sjme_error_default(error);
-
 	/* Close any class information. */
 	classInfos = library->classInfos;
 	if (classInfos != NULL)
@@ -722,11 +717,15 @@ static sjme_errorCode sjme_nvm_cleanup_postRomLibrary(
 	}
 
 	/* Free other allocated fields. */
-	SJME_SIMPLE_FREE(library->prefix);
 	SJME_SIMPLE_FREE(library->name);
 
 	/* Stop referring to the string pool. */
 	SJME_SIMPLE_CLOSE(library->stringPool);
+
+	/* Call main close on the library. */
+	if (library->functions != NULL && library->functions->close != NULL)
+		if (sjme_error_is(error = library->functions->close(library)))
+			return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -750,21 +749,18 @@ static sjme_errorCode sjme_nvm_cleanup_postRomSuite(
 	libraries = suite->libraries;
 	if (libraries != NULL)
 	{
-		/* Close each library item. */
-		for (i = 0, n = libraries->length; i < n; i++)
-		{
-			/* Ignore blank libraries. */
-			library = libraries->elements[i];
-			if (library == NULL)
-				continue;
-
-			/* Close the library. */
+		/* Close each library. */
+		for (n = libraries->length, i = 0; i < n; i++)
 			SJME_SIMPLE_CLOSE(libraries->elements[i]);
-		}
 		
 		/* Free list. */
 		SJME_SIMPLE_FREE(suite->libraries);
 	}
+
+	/* Call main close on the suite. */
+	if (suite->functions != NULL && suite->functions->close != NULL)
+		if (sjme_error_is(error = suite->functions->close(suite)))
+			return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;

@@ -129,8 +129,7 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 		goto fail_dupName;
 
 	/* The library this came from. */
-	sjme_atomic_s(sjme_nvm_rom_library, &maybe->library,
-		sjme_weakUpR(sjme_nvm_rom_library, inLibrary));
+	sjme_atomic_s(sjme_nvm_rom_library, &maybe->library, inLibrary);
 	
 	/* File name is needed for caching. */
 	maybe->fileName = dupFileName;
