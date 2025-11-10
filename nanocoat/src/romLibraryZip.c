@@ -42,11 +42,6 @@ static sjme_errorCode sjme_nvm_rom_zipLibraryClose(
 	if (inLibrary == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Recover zip, ignore if already closed. */
-	zip = inLibrary->handle;
-	if (zip == NULL)
-		return SJME_ERROR_NONE;
-
 	/* Does the prefix need to be freed? */
 	if (inLibrary->prefix != NULL)
 	{
@@ -56,10 +51,10 @@ static sjme_errorCode sjme_nvm_rom_zipLibraryClose(
 		inLibrary->prefix = NULL;
 	}
 	
-	/* Close it. */
-	inLibrary->handle = NULL;
-	if (sjme_error_is(error = sjme_closeable_close(SJME_AS_CLOSEABLE(zip))))
+	/* Close the handle to the Zip. */
+	if (sjme_error_is(error = sjme_closeable_close(inLibrary->handle)))
 		return sjme_error_default(error);
+	inLibrary->handle = NULL;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -77,7 +72,7 @@ static sjme_errorCode sjme_nvm_rom_zipLibraryInit(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Remember handle to the Zip for accessing later. */
-	inLibrary->handle = init->zip;
+	inLibrary->handle = sjme_weakUp(init->zip);
 
 	/* Setup prefix, if there is one. */
 	if (init->prefix != NULL)
@@ -224,10 +219,6 @@ sjme_errorCode sjme_nvm_rom_libraryFromZip(
 		&sjme_nvm_rom_zipLibraryFunctions, NULL)) ||
 		result == NULL)
 		goto fail_libraryNew;
-	
-	/* Count up Zip, since we are using it now. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(zip, NULL)))
-		goto fail_refUp;
 	
 	/* Success! */
 	*outLibrary = result;

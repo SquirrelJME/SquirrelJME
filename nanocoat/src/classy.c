@@ -1295,8 +1295,6 @@ sjme_errorCode sjme_nvm_class_parse(
 	if (sjme_error_is(error = sjme_nvm_class_parseConstantPool(
 		allocPool, inStream, inStringPool, &pool)) || pool == NULL)
 		goto fail_parsePool;
-	
-	/* We are using this, so count it up. */
 	result->pool = sjme_weakUpR(sjme_nvm_class_poolInfo, pool);
 	
 	/* Read in flags. */

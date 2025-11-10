@@ -46,6 +46,23 @@
 #define SJME_NVM_ROM_SUITES_LIST_DEBUG \
 	SJME_NVM_ROM_PREFIX_DEBUG "/" SJME_NVM_ROM_SUITES_LIST
 
+static sjme_errorCode sjme_nvm_rom_zipSuiteClose(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite)
+{
+	sjme_errorCode error;
+	
+	if (inSuite == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Close the handle to the Zip. */
+	if (sjme_error_is(error = sjme_closeable_close(inSuite->handle)))
+		return sjme_error_default(error);
+	inSuite->handle = NULL;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
@@ -202,7 +219,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteInit(
 	
 	/* Set handle, which is the Zip itself. */
 	zip = data;
-	inSuite->handle = zip;
+	inSuite->handle = sjme_weakUp(zip);
 
 	/* By default, assume both exist unless otherwise determined. */
 	noRelease = SJME_JNI_FALSE;
@@ -416,6 +433,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteLoadLibrary()
 /** Functions for Zip based suites. */
 static sjme_nvm_rom_suiteFunctions sjme_nvm_rom_zipSuiteFunctions =
 {
+	sjme_sm(.close, sjme_nvm_rom_zipSuiteClose),
 	sjme_sm(.defaultLaunch, sjme_nvm_rom_zipSuiteDefaultLaunch),
 	sjme_sm(.init, sjme_nvm_rom_zipSuiteInit),
 	sjme_sm(.libraryId, sjme_nvm_rom_zipSuiteLibraryId),
@@ -450,10 +468,6 @@ sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
 		NULL)) ||
 		result == NULL)
 		goto fail_suiteNew;
-	
-	/* Count up Zip as we are using it. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(zip, NULL)))
-		goto fail_refUp;
 	
 	/* Success! */
 	*outSuite = result;

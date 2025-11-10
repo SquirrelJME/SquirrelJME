@@ -137,7 +137,6 @@ sjme_errorCode sjme_nvm_rom_suiteLibraries(
 	return SJME_ERROR_NONE;
 
 fail_missingLib:
-fail_countUp:
 fail_list:
 	/* Release lock before failing. */
 	if (sjme_error_is(sjme_thread_spinLockRelease(

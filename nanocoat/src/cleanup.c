@@ -332,6 +332,39 @@ static sjme_errorCode sjme_nvm_cleanup_postFrame(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postMemberId(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_jmemberID id;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	id = (sjme_jmemberID)closeable;
+	if (id == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cleanup name and type. */
+	SJME_SIMPLE_CLOSE(id->name);
+	SJME_SIMPLE_CLOSE(id->type);
+
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_cleanup_postMethodId(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_jmethodID id;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	id = (sjme_jmethodID)closeable;
+	if (id == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Free base member details. */
+	return sjme_nvm_cleanup_postMemberId(closeable);
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postMethodInfo(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -1191,6 +1224,10 @@ sjme_errorCode sjme_nvm_allocR(
 
 		case SJME_NVM_STRUCT_FRAME:
 			postClose = sjme_nvm_cleanup_postFrame;
+			break;
+
+		case SJME_NVM_STRUCT_METHOD_ID:
+			postClose = sjme_nvm_cleanup_postMethodId;
 			break;
 
 		case SJME_NVM_STRUCT_METHOD_INFO:
