@@ -206,7 +206,7 @@ struct sjme_nvm_vmClass_loaderBase
 	sjme_nvm_commonBase common;
 	
 	/** The state this loader is within. */
-	sjme_nvm inState;
+	sjme_phantom(sjme_nvm) inState;
 	
 	/** Read/write lock. */
 	sjme_thread_rwLock rwLock;

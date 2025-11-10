@@ -463,7 +463,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 	/* Allocate result. */
 	result = NULL;
 	n = inClass->methods[instanceType].count;
-	if (sjme_error_is(error = sjme_list_alloc(inLoader->inState->allocPool,
+	if (sjme_error_is(error = sjme_list_alloc(
+		sjme_atomic_g(sjme_nvm, &inLoader->inState)->allocPool,
 		n, &result, sjme_jmethodID, 0)) || result == NULL)
 		goto fail_allocResult;
 
@@ -495,7 +496,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 		/* Perform the binding. */
 		bind = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitMethodBind(
-			inLoader, inLoader->inState, inClass, superClass,
+			inLoader, sjme_atomic_g(sjme_nvm, &inLoader->inState),
+			inClass, superClass,
 			instanceType, i, methodInfo,
 			contextThread, &bind)) || bind == NULL)
 			goto fail_initBind;
@@ -932,7 +934,7 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* We allocate within this pool. */
-	allocPool = inLoader->inState->allocPool;
+	allocPool = sjme_atomic_g(sjme_nvm, &inLoader->inState)->allocPool;
 
 	/* Duplicate binary name. */
 	dupName = NULL;
@@ -942,14 +944,16 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	
 	/* Allocate resultant class. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inLoader->inState,
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		sjme_atomic_g(sjme_nvm, &inLoader->inState),
 		sizeof(*result), SJME_NVM_STRUCT_CLASS_INSTANCE,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 	
 	/* Allocate class instance of check storage. */
 	isClasses = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inLoader->inState,
+	if (sjme_error_is(error = sjme_nvm_alloc(
+		sjme_atomic_g(sjme_nvm, &inLoader->inState),
 		sizeof(*isClasses), SJME_NVM_STRUCT_IS_CLASSES,
 		SJME_AS_NVM_COMMONP(&isClasses))) || isClasses == NULL)
 		goto fail_allocIsClasses;
@@ -2009,7 +2013,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadF(
 		
 		/* Grow the list. */
 		if (sjme_error_is(error = sjme_list_replace(
-			inLoader->inState->allocPool,
+			sjme_atomic_g(sjme_nvm, &inLoader->inState)->allocPool,
 			classes->length + SJME_VM_CLASS_GROW_LEN,
 			&classes, sjme_jclass, 0)) || classes == NULL)
 			goto fail_growList;
@@ -2200,12 +2204,20 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	
 	if (inState == NULL || outLoader == NULL || classPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Allocate result. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(inState,
+		sizeof(*result), SJME_NVM_STRUCT_VM_CLASS_LOADER,
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
+		goto fail_alloc; 
 
 	/* Allocate string pool for anything not coming from libraries. */
 	nullStrings = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_new(inState->allocPool,
 		&nullStrings)) || nullStrings == NULL)
 		goto fail_allocStrings;
+	result->nullStrings = sjme_weakUpR(sjme_nvm_stringPool, nullStrings);
 	
 	/* Duplicate list. */
 	dup = NULL;
@@ -2244,19 +2256,11 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 		SJME_VM_CLASS_GROW_LEN, &classes, sjme_jclass, 0)) || classes == NULL)
 		goto fail_classesList;
 	
-	/* Allocate result. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inState,
-		sizeof(*result), SJME_NVM_STRUCT_VM_CLASS_LOADER,
-		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
-		goto fail_alloc; 
-	
 	/* Setup fields. */
 	result->rwLock.read = &result->common.lock;
-	result->inState = inState;
+	sjme_atomic_s(sjme_nvm, &result->inState, inState);
 	result->classPath = dup;
 	result->classes = classes;
-	result->nullStrings = sjme_weakUpR(sjme_nvm_stringPool, nullStrings);
 
 	/* Count up all libraries as they are being used. */
 	for (n = dup->length, i = 0; i < n; i++)
@@ -2268,9 +2272,6 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	return SJME_ERROR_NONE;
 
 fail_countUp:
-fail_alloc:
-	if (result != NULL)
-		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 fail_classesList:
 	if (classes != NULL)
 		sjme_alloc_free(classes);
@@ -2282,6 +2283,9 @@ fail_dupList:
 fail_allocStrings:
 	if (nullStrings != NULL)
 		sjme_alloc_free(nullStrings);
+fail_alloc:
+	if (result != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 	
 	return sjme_error_vmError(NULL, error);
 }

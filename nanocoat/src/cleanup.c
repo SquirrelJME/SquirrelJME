@@ -1145,9 +1145,6 @@ static sjme_errorCode sjme_nvm_cleanup_postVmClassLoader(
 	/* Cleanup null strings. */
 	SJME_SIMPLE_CLOSE(classLoader->nullStrings);
 
-	/* Stop referring to the state. */
-	SJME_SIMPLE_CLOSE(classLoader->inState);
-
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
