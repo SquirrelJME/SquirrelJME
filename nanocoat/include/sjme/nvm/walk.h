@@ -492,6 +492,9 @@ struct sjme_nvm_walk_state
 	/** Step that refers to an array, list, or multi-variant type. */
 	const sjme_nvm_walk_step* variantStep;
 
+	/** The number of variant steps. */
+	sjme_jint numVariantSteps;
+
 	/** Data pointer. */
 	sjme_pointer data;
 

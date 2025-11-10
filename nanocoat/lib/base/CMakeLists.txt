@@ -27,6 +27,10 @@ squirreljme_multilib_add_library(Base
 	listUtil.c
 	multithread.c
 	native.c
+	nativeNone.c
+	nativePosix.c
+	nativeStdC.c
+	nativeWin32.c
 	path.c
 	seekable.c
 	seekableMemory.c

@@ -30,9 +30,11 @@ static sjme_errorCode sjme_seekable_closeHandler(
 			&seekable->implState)))
 			return sjme_error_default(error);
 
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/* Deallocate self. */
 	if (sjme_error_is(error = sjme_alloc_free(seekable)))
 		return sjme_error_default(error);
+#endif
 	
 	/* Success!. */
 	return SJME_ERROR_NONE;
@@ -61,7 +63,6 @@ sjme_errorCode sjme_seekable_open(
 	result = NULL;
 	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_seekable_closeHandler,
-		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
 	

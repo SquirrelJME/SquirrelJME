@@ -302,6 +302,39 @@ static sjme_errorCode sjme_nvm_cleanup_postIsClasses(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postMemberId(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_jmemberID id;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	id = (sjme_jmemberID)closeable;
+	if (id == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cleanup name and type. */
+	SJME_SIMPLE_CLOSE(id->name);
+	SJME_SIMPLE_CLOSE(id->type);
+
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_cleanup_postFieldId(
+	sjme_attrInNotNull sjme_closeable closeable)
+{
+	sjme_jfieldID id;
+	SJME_CLEANUP_DECL;
+	
+	/* Recover. */
+	id = (sjme_jfieldID)closeable;
+	if (id == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Free base member details. */
+	return sjme_nvm_cleanup_postMemberId(closeable);
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postFrame(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -332,34 +365,21 @@ static sjme_errorCode sjme_nvm_cleanup_postFrame(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_cleanup_postMemberId(
-	sjme_attrInNotNull sjme_closeable closeable)
-{
-	sjme_jmemberID id;
-	SJME_CLEANUP_DECL;
-	
-	/* Recover. */
-	id = (sjme_jmemberID)closeable;
-	if (id == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Cleanup name and type. */
-	SJME_SIMPLE_CLOSE(id->name);
-	SJME_SIMPLE_CLOSE(id->type);
-
-	return SJME_ERROR_NONE;
-}
-
 static sjme_errorCode sjme_nvm_cleanup_postMethodId(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_jmethodID id;
+	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
 	
 	/* Recover. */
 	id = (sjme_jmethodID)closeable;
 	if (id == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Close referred to method information. */
+	for (i = 0; i < SJME_NVM_NUM_METHOD_CALL_TYPE; i++)
+		SJME_SIMPLE_CLOSE(id->info[i]);
 
 	/* Free base member details. */
 	return sjme_nvm_cleanup_postMemberId(closeable);
@@ -861,6 +881,9 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 			bootParam->mainArgs);
 		SJME_FLAGGED_FREE(bootParam->freeSysProps,
 			bootParam->sysProps);
+
+		/* Close an extra handle? */
+		SJME_SIMPLE_CLOSE(bootParam->extraCloseHandle);
 		
 		/* Free the outer structure. */
 		SJME_SIMPLE_FREE(inState->bootParamCopy);
@@ -913,10 +936,12 @@ static sjme_errorCode sjme_nvm_cleanup_postStringPool(
 	strings = pool->strings;
 	if (strings != NULL)
 	{
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 		/* Close each string. */
 		for (n = strings->length, i = 0; i < n; i++)
 			SJME_SIMPLE_CLOSE_ATOMIC(sjme_nvm_stringPool_string, 0,
 				strings->elements[i]);
+#endif
 
 		/* Free list. */
 		SJME_SIMPLE_FREE(pool->strings);
@@ -1219,6 +1244,10 @@ sjme_errorCode sjme_nvm_allocR(
 			postClose = sjme_nvm_cleanup_postIsClasses;
 			break;
 
+		case SJME_NVM_STRUCT_FIELD_ID:
+			postClose = sjme_nvm_cleanup_postFieldId;
+			break;
+
 		case SJME_NVM_STRUCT_FRAME:
 			postClose = sjme_nvm_cleanup_postFrame;
 			break;
@@ -1278,7 +1307,7 @@ sjme_errorCode sjme_nvm_allocR(
 	result = NULL;
 #if defined(SJME_CONFIG_DEBUG)
 	if (sjme_error_is(error = sjme_closeable_allocR(allocPool,
-		allocSize, sjme_nvm_cleanup_close, SJME_JNI_TRUE,
+		allocSize, sjme_nvm_cleanup_close,
 		SJME_AS_CLOSEABLEP(&result), file, line, func)) ||
 		result == NULL)
 #else

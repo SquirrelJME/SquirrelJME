@@ -78,6 +78,9 @@ typedef enum sjme_alloc_linkFlag
 {
 	/** Nested allocation pool. */
 	SJME_ALLOC_LINK_FLAG_NESTED_POOL = 1,
+
+	/** Weakly referenced. */
+	SJME_ALLOC_LINK_WEAK = 2,
 } sjme_alloc_linkFlag;
 
 /**
@@ -233,6 +236,9 @@ struct sjme_alloc_poolBase
 	/** The front end wrapped type. */
 	sjme_frontEnd frontEnd;
 
+	/** The raw size of the allocation pool. */
+	sjme_jint rawSize;
+
 	/** The size of the allocation pool. */
 	sjme_jint size;
 
@@ -350,7 +356,7 @@ sjme_errorCode sjme_alloc_poolSpaceTotalSize(
  * @return Returns an error code.
  * @since 2023/11/19
  */
-sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
+sjme_errorCode sjme_allocR(
 	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull sjme_pointer* outAddr
@@ -371,7 +377,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc)(
  * @return Returns an error code.
  * @since 2024/07/08
  */
-sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
+sjme_errorCode sjme_alloc_weakNewR(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
@@ -389,7 +395,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakNew)(
  * @return Returns an error code.
  * @since 2023/12/13
  */
-sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(
+sjme_errorCode sjme_alloc_copyR(
 	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrOutNotNull sjme_pointer* outAddr,
@@ -409,7 +415,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copy)(
  * @return Returns an error code.
  * @since 2024/08/09
  */
-sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copyWeak)(
+sjme_errorCode sjme_alloc_copyWeakR(
 	sjme_attrInNotNull sjme_alloc_pool pool,
 	sjme_attrInPositiveNonZero sjme_jint size,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
@@ -429,7 +435,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_copyWeak)(
  * @return Any resultant error.
  * @since 2023/12/22
  */
-sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_format)(
+sjme_errorCode sjme_alloc_formatR(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_lpstr* outString,
 	SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL SJME_DEBUG_ONLY_COMMA
@@ -465,7 +471,7 @@ sjme_errorCode sjme_alloc_grow(
  * @return Returns an error code.
  * @since 2023/11/28
  */
-sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
+sjme_errorCode sjme_alloc_reallocR(
 	sjme_attrInOutNotNull sjme_pointer* inOutAddr,
 	sjme_attrInPositive sjme_jint newSize
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
@@ -479,7 +485,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_realloc)(
  * @return Any resultant error, if any.
  * @since 2024/07/21
  */
-sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_strdup)(
+sjme_errorCode sjme_alloc_strdupR(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_lpstr* outString,
 	sjme_attrInNotNull sjme_lpcstr stringToCopy
@@ -504,7 +510,7 @@ sjme_jint sjme_alloc_weakRefLeftR(
  * @return Any resultant error, if any.
  * @since 2024/07/01
  */
-sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakDelete)(
+sjme_errorCode sjme_alloc_weakDeleteR(
 	sjme_attrInOutNotNull sjme_alloc_weak* inOutWeak
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
@@ -515,7 +521,7 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakDelete)(
  * @return Any resultant error, if any.
  * @since 2024/08/14
  */
-sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakUnRef)(
+sjme_errorCode sjme_alloc_weakUnRefR(
 	sjme_attrInNotNull sjme_pointer addr
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 	
@@ -531,14 +537,12 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakUnRef)(
  * @return Any resultant error, if any.
  * @since 2024/07/01
  */
-sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakRefE)(
+sjme_errorCode sjme_alloc_weakRefER(
 	sjme_attrInNotNull sjme_pointer addr,
 	sjme_attrOutNullable sjme_alloc_weak* outWeak,
 	sjme_attrInNullable sjme_alloc_weakEnqueueFunc inEnqueue,
 	sjme_attrInNullable sjme_pointer inEnqueueData
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
-
-#if defined(SJME_CONFIG_DEBUG)
 
 /**
  * Allocates memory within the given pool.
@@ -678,8 +682,6 @@ sjme_errorCode SJME_DEBUG_IDENTIFIER(sjme_alloc_weakRefE)(
 #define sjme_alloc_weakRefE(addr, outWeak, inEnqueue, inEnqueueData) \
     sjme_alloc_weakRefER((addr), (outWeak), (inEnqueue), (inEnqueueData), \
     SJME_DEBUG_FILE_LINE_FUNC)
-
-#endif
 
 /**
  * Frees memory.

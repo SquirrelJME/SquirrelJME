@@ -213,6 +213,7 @@ int main(int argc, sjme_lpstr* argv)
 	bootParam.freeMainClassPathByName = SJME_JNI_TRUE;
 	bootParam.mainArgs = (const sjme_list(sjme_lpcstr)*)mainArgs;
 	bootParam.freeMainArgs = SJME_JNI_TRUE;
+	bootParam.extraCloseHandle = SJME_AS_CLOSEABLE(bootSeek);
 
 	/* Hooks specifically for NanoTest. */
 	bootParam.hooks = &sjme_test_nano_hooks;

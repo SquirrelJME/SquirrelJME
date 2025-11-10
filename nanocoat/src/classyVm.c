@@ -342,8 +342,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		SJME_NVM_ACC_IS(thisInfo->flags, STATIC))
 	{
 		/* Just to self always. */
-		result->info[SJME_NVM_CALL_NON_VIRTUAL] = thisInfo;
-		result->info[SJME_NVM_CALL_VIRTUAL] = thisInfo;
+		result->info[SJME_NVM_CALL_NON_VIRTUAL] = sjme_weakUp(thisInfo);
+		result->info[SJME_NVM_CALL_VIRTUAL] = sjme_weakUp(thisInfo);
 		result->info[SJME_NVM_CALL_SUPER] = NULL;
 		
 		/* This is now successful. */
@@ -413,9 +413,9 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 	
 	/* Non-virtual is always to self. */
 	/* Otherwise virtual and super-virtual is the last scan. */
-	result->info[SJME_NVM_CALL_NON_VIRTUAL] = thisInfo;
-	result->info[SJME_NVM_CALL_VIRTUAL] = thisScan;
-	result->info[SJME_NVM_CALL_SUPER] = lastScan;
+	result->info[SJME_NVM_CALL_NON_VIRTUAL] = sjme_weakUp(thisInfo);
+	result->info[SJME_NVM_CALL_VIRTUAL] = sjme_weakUp(thisScan);
+	result->info[SJME_NVM_CALL_SUPER] = sjme_weakUp(lastScan);
 	
 	/* Success! */
 skip_success:

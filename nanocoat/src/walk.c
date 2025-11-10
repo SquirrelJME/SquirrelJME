@@ -264,7 +264,6 @@ static sjme_errorCode sjme_nvm_walk_customPoolEntries(
 SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_CLOSEABLE)
 	SJME_WS_ATOMIC(isClosed,
 		SJME_WS_JAVA_V(isClosed, SJME_JAVA_TYPE_ID_INTEGER)),
-	SJME_WS_JAVA_V(refCounting, SJME_BASIC_TYPE_ID_BOOLEAN),
 	SJME_WS_NORM_P(closeHandler,
 		SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER),
 SJME_WALK_END();
@@ -314,20 +313,32 @@ SJME_WALK_END();
 #define SJME_WALK_CURRENT sjme_nvm_bootParam
 SJME_WALK_BEGIN(SJME_NVM_WALK_PSEUDO_BOOT_PARAM)
 	SJME_WS_NORM_P(bootSuite, SJME_NVM_STRUCT_ROM_SUITE),
+	SJME_WS_JAVA_V(freeBootSuite, SJME_BASIC_TYPE_ID_BOOLEAN),
 	SJME_WS_NORM_P(librarySuite, SJME_NVM_STRUCT_ROM_SUITE),
+	SJME_WS_JAVA_V(freeLibrarySuite, SJME_BASIC_TYPE_ID_BOOLEAN),
 	SJME_WS_LIST_P(mainClassPathById,
 		SJME_WS_JAVA_V(mainClassPathById, SJME_JAVA_TYPE_ID_INTEGER)),
+	SJME_WS_JAVA_V(freeMainClassPathById, SJME_BASIC_TYPE_ID_BOOLEAN),
 	SJME_WS_LIST_P(mainClassPathByName,
 		SJME_WS_NORM_P(mainClassPathByName, SJME_NVM_WALK_PSEUDO_LPSTR)),
+	SJME_WS_JAVA_V(freeMainClassPathByName, SJME_BASIC_TYPE_ID_BOOLEAN),
 	SJME_WS_NORM_P(mainClass, SJME_NVM_WALK_PSEUDO_LPSTR),
 	SJME_WS_LIST_P(mainArgs,
 		SJME_WS_NORM_V(mainArgs, SJME_NVM_WALK_PSEUDO_LPSTR)),
+	SJME_WS_JAVA_V(freeMainArgs, SJME_BASIC_TYPE_ID_BOOLEAN),
 	SJME_WS_LIST_P(sysProps,
 		SJME_WS_NORM_V(sysProps, SJME_NVM_WALK_PSEUDO_LPSTR)),
+	SJME_WS_JAVA_V(freeSysProps, SJME_BASIC_TYPE_ID_BOOLEAN),
 	SJME_WS_NORM_V(belay, SJME_NVM_WALK_PSEUDO_BOOT_BELAY_TYPE),
 	SJME_WS_JAVA_V(launcherFallback, SJME_BASIC_TYPE_ID_BOOLEAN),
 	SJME_WS_NORM_V(clutterLevel, SJME_NVM_WALK_PSEUDO_CLUTTER_LEVEL),
 	SJME_WS_JAVA_V(noOptimize, SJME_BASIC_TYPE_ID_BOOLEAN),
+	SJME_WS_JAVA_V(jdwpListening, SJME_BASIC_TYPE_ID_BOOLEAN),
+	SJME_WS_NORM_P(jdwpAddress, SJME_NVM_WALK_PSEUDO_LPSTR),
+	SJME_WS_JAVA_V(jdwpPort, SJME_JAVA_TYPE_ID_INTEGER),
+	SJME_WS_NORM_P(hooks, SJME_NVM_WALK_PSEUDO_STATE_HOOKS),
+	SJME_WS_NORM_P(hookData, SJME_NVM_WALK_PSEUDO_POINTER),
+	SJME_WS_NORM_P(extraCloseHandle, SJME_NVM_WALK_PSEUDO_CLOSEABLE),
 SJME_WALK_END();
 #undef SJME_WALK_CURRENT
 
@@ -1390,22 +1401,24 @@ static sjme_errorCode sjme_nvm_walk_doStruct(
 		subStep.isPointer = currentStep->isPointer;
 		subStep.inStep = currentStep;
 		
-		/* Is this a variant? That is an array or list. */
-		if (subStep.typeId.i == SJME_NVM_WALK_PSEUDO_FIXED_ARRAY ||
-			subStep.typeId.i == SJME_NVM_WALK_PSEUDO_LIST ||
-			subStep.typeId.i == SJME_NVM_WALK_PSEUDO_PHANTOM ||
-			subStep.typeId.i == SJME_NVM_WALK_PSEUDO_ATOMIC)
+		/* Keep counting variants. */
+		subStep.variantStep = NULL;
+		subStep.numVariantSteps = 0;
+		while (currentStep[subStep.numVariantSteps].typeId.i ==
+				SJME_NVM_WALK_PSEUDO_FIXED_ARRAY ||
+			currentStep[subStep.numVariantSteps].typeId.i ==
+				SJME_NVM_WALK_PSEUDO_LIST ||
+			currentStep[subStep.numVariantSteps].typeId.i ==
+				SJME_NVM_WALK_PSEUDO_PHANTOM ||
+			currentStep[subStep.numVariantSteps].typeId.i ==
+				SJME_NVM_WALK_PSEUDO_ATOMIC)
 		{
-			stepAdd = 2;
-			subStep.variantStep = (currentStep + 1);
+			subStep.variantStep = &currentStep[subStep.numVariantSteps];
+			subStep.numVariantSteps++;
 		}
 
-		/* Not a variant. */
-		else
-		{
-			stepAdd = 1;
-			subStep.variantStep = NULL;
-		}
+		/* Skip all variants, if any. */
+		stepAdd = subStep.numVariantSteps + 1;
 		
 		/* Walk on this item. */
 		if (sjme_error_is(error = sjme_nvm_walk_doItem(root, at,

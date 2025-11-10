@@ -111,7 +111,6 @@ sjme_errorCode sjme_stream_inputOpen(
 	result = NULL;
 	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_stream_inputClose,
-		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
 	
@@ -489,7 +488,6 @@ sjme_errorCode sjme_stream_outputOpen(
 	result = NULL;
 	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_stream_outputClose,
-		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
 	

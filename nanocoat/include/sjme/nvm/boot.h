@@ -132,6 +132,9 @@ struct sjme_nvm_bootParam
 
 	/** Optional hook data. */
 	sjme_pointer hookData;
+
+	/** An extra handle to close on destruction. */
+	sjme_closeable extraCloseHandle;
 };
 
 /**
