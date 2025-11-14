@@ -7,6 +7,17 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: System and architecture mappings
 
+# Virtual Machines which are available
+list(APPEND SQUIRRELJME_JVM_MAP
+	"Hosted!hosted"
+	"SpringCoat!springcoat"
+	"NanoCoat!nanocoat")
+
+# Clutter levels which are available
+list(APPEND SQUIRRELJME_CLUTTER_MAP
+	"Release!release"
+	"Debug!debug")
+
 # Architecture mappings
 list(APPEND SQUIRRELJME_ARCH_MAP
 	"i386!ia32"
@@ -58,3 +69,14 @@ list(APPEND SQUIRRELJME_SYSTEM_MAP
 	"darwin!macosx"
 	"3ds!3ds")
 
+# Unmap from mapping fields
+function(squirreljme_unmap destVar index source)
+	# Convert to actual list
+	string(REPLACE "!" ";" sourceList "${source}")
+
+	# Extract the index
+	list(GET sourceList ${index} destResult)
+
+	# Return it
+	set(${destVar} "${destResult}" PARENT_SCOPE)
+endfunction()

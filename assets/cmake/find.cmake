@@ -10,6 +10,9 @@
 # Architecture/system mappings
 squirreljme_include("system-map.cmake")
 
+# Find Java
+squirreljme_include("find-java.cmake")
+
 # Find GCC
 squirreljme_include("find-gcc.cmake")
 

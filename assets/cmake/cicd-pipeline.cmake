@@ -67,3 +67,7 @@ endif()
 
 # Note the environment
 message(STATUS "CI/CD Environment: ${SQUIRRELJME_CICD}")
+
+# Registers the target on the CI/CD pipeline
+function(squirreljme_cicd_register targetName)
+endfunction()
