@@ -41,6 +41,8 @@ define_property(TARGET PROPERTY SQUIRRELJME_GRADLE_BUILD
 	BRIEF_DOCS "Is this a Gradle build?")
 define_property(TARGET PROPERTY SQUIRRELJME_TEST_RESULTS_DIR
 	BRIEF_DOCS "Directory where test results are stored.")
+define_property(TARGET PROPERTY SQUIRRELJME_STANDALONE_JAR_PATH
+	BRIEF_DOCS "Path where the Standalone Jar is placed.")
 
 # Only possible when Java is available
 if(SQUIRRELJME_HAS_JAVA)
@@ -58,14 +60,6 @@ if(SQUIRRELJME_HAS_JAVA)
 		# Extract arguments for the call
 		list(SUBLIST ARGV 1 -1 gradleArgs)
 
-		# Determine test result directory to use
-		set(testResultsDir "${CMAKE_BINARY_DIR}/gradle/tests/${targetName}")
-		file(MAKE_DIRECTORY "${testResultsDir}")
-
-		# Native is needed for Gradle
-		file(TO_NATIVE_PATH "${testResultsDir}"
-			testResultsDirNative)
-
 		# Now declare the target
 		add_custom_target(${targetName}
 			COMMAND "${SQUIRRELJME_GRADLE_EXECUTABLE}"
@@ -74,8 +68,6 @@ if(SQUIRRELJME_HAS_JAVA)
 				--parallel
 				--no-daemon
 				--stacktrace
-				"-Dsquirreljme.test.dir=${testResultsDirNative}"
-				"-Psquirreljme.test.dir=${testResultsDirNative}"
 				"${gradleArgs}"
 			COMMAND_EXPAND_LISTS
 			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

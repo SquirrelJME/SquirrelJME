@@ -36,9 +36,23 @@ foreach(jvm IN LISTS SQUIRRELJME_JVM_MAP)
 				"Tests for ${jvmNoun} (${clutterNoun}) -> "
 				"test${jvmNoun}${clutterNoun}")
 
+			# Determine test result directory to use
+			set(testResultsDir "${CMAKE_BINARY_DIR}/tests/${targetName}")
+			file(MAKE_DIRECTORY "${testResultsDir}")
+
+			# Native is needed for Gradle
+			file(TO_NATIVE_PATH "${testResultsDir}"
+				testResultsDirNative)
+
 			# Setup testing through Gradle
 			squirreljme_add_gradle_target(${targetName}
+				"-Dsquirreljme.test.dir=${testResultsDirNative}"
+				"-Psquirreljme.test.dir=${testResultsDirNative}"
 				"test${jvmNoun}${clutterNoun}")
+
+			# Set some SquirrelJME specific properties
+			set_target_properties(${targetName} PROPERTIES
+				SQUIRRELJME_TEST_RESULTS_DIR "${testResultsDir}")
 
 			# Register this task with CI/CD
 			squirreljme_cicd_register(${targetName})
