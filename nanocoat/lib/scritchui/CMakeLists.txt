@@ -100,7 +100,6 @@ endif()
 # GTK2?
 squirreljme_include("find-gtk2.cmake")
 
-option(SQUIRRELJME_ENABLE_GUI_GTK2 "Enable GTK2 GUI" ON)
 if(SQUIRRELJME_ENABLE_GUI_GTK2)
 	squirreljme_scritchui_build(GTK2_FOUND gtk2 GTK2)
 endif()

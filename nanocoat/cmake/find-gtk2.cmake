@@ -9,6 +9,7 @@
 # Common find support
 squirreljme_include("find.cmake")
 
+# Already known to be not valid?
 # Check pkg-config first
 if(PKG_CONFIG_FOUND)
 	pkg_check_modules(GTK2 gtk+-2.0)
@@ -19,3 +20,38 @@ if(NOT GTK2_FOUND)
 	# Sets GTK2_INCLUDE_DIRS and GTK2_LIBRARIES
 	find_package(GTK2 2.0 COMPONENTS gtk)
 endif()
+
+# Additional checks for GTK2
+if(GTK2_FOUND)
+	# Can we actually compile with GTK2?
+	try_compile(SQUIRRELJME_GTK2_VALID
+		"${CMAKE_CURRENT_BINARY_DIR}"
+		SOURCES "${CMAKE_CURRENT_LIST_DIR}/tryGtk2.c"
+		CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
+			"-DLINK_DIRECTORIES=${GTK2_LIBRARY_DIRS}"
+			"-DINCLUDE_DIRECTORIES=${GTK2_INCLUDE_DIRS}"
+		LINK_LIBRARIES "${GTK2_LIBRARIES}"
+		OUTPUT_VARIABLE SQUIRRELJME_GTK2_VALID_DEBUG)
+
+	# Does this work?
+	if(SQUIRRELJME_GTK2_VALID)
+		# Note it
+		message(STATUS "GTK2: Detected and linkable")
+
+		# Enable it by default
+		set(SQUIRRELJME_ENABLE_GUI_GTK2_DEFAULT YES)
+	else()
+		# Note it
+		message(STATUS "GTK2 Detected, does not link!")
+
+		# Enable it by default
+		set(SQUIRRELJME_ENABLE_GUI_GTK2_DEFAULT NO)
+
+		# Make it so GTK2 was not found
+		unset(GTK2_FOUND CACHE)
+	endif()
+endif()
+
+# Enable GTK2 ScritchUI?
+option(SQUIRRELJME_ENABLE_GUI_GTK2 "Enable ScritchUI GTK2"
+	"${SQUIRRELJME_ENABLE_GUI_GTK2_DEFAULT}")
