@@ -63,9 +63,10 @@ add_library(libEmulatorBase SHARED
 target_include_directories(libEmulatorBase PUBLIC
 	"headers"
 	"${nanocoatIncludePath}"
-	${JNI_INCLUDE_DIRS}
-	${JAVA_INCLUDE_PATH}
-	${JAVA_INCLUDE_PATH2})
+	"${JNI_INCLUDE_DIRS}"
+	"${JAVA_INCLUDE_PATH}"
+	"${JAVA_INCLUDE_PATH2}"
+	"${SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR}")
 
 # Libraries for the build
 get_filename_component(nanocoatLibPath
@@ -76,7 +77,7 @@ target_link_directories(libEmulatorBase PUBLIC
 	"${nanocoatLibPath}"
 	"${SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR}")
 target_link_libraries(libEmulatorBase PUBLIC
-	"BaseStatic" "${JAVA_JVM_LIBRARY}")
+	"BaseStatic" "jvm")
 
 # It is easier to find this when it is in the build root
 squirreljme_target_binary_output(libEmulatorBase "${CMAKE_BINARY_DIR}")

@@ -93,6 +93,10 @@ squirreljme_target_binary_name(SquirrelJME
 
 # Really only matters for dynamic libraries
 if(SQUIRRELJME_ENABLE_DYLIB)
+	# Output the dynamic library to where it should be
+	squirreljme_target_binary_output(libJvmDyLib
+		"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+
 	# Exports for Windows, etc.
 	squirreljme_target_shared_library_exports(libJvmDyLib)
 
@@ -103,7 +107,7 @@ if(SQUIRRELJME_ENABLE_DYLIB)
 	elseif(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
 		set(jvmOutDir "${SQUIRRELJME_BINARY_OUTPUT_DIR}")
 	else()
-		set(jvmOutDir "${CMAKE_CURRENT_BINARY_DIR}")
+		set(jvmOutDir "${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 	endif()
 
 	# Names of the original and new libraries...

@@ -64,6 +64,7 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 	# Configure CMake build for NanoCoat Core
 	execute_process(COMMAND "${CMAKE_COMMAND}"
 		"-DCMAKE_C_COMPILER=${compilerExe}"
+		"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${coreOut}"
 		"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${coreOut}"
 		"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${coreOut}"
 		"-B" "${coreBuild}"
@@ -95,7 +96,8 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		add_custom_target(standaloneNatives_${systemNormal}_${archNormal}
 			COMMAND "${CMAKE_COMMAND}"
 				"--build" "${coreBuild}"
-				"--target" "BaseStatic" "libJvm" "ScritchUI" "ScritchAudio"
+				"--target" "BaseStatic" "libJvmDyLib"
+					"ScritchUI" "ScritchAudio"
 			COMMAND "${CMAKE_COMMAND}"
 				"--build" "${emulatorBuild}"
 				"--target" "libEmulatorBase"

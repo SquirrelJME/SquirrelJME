@@ -12,6 +12,9 @@
 # This is a reasonable version to base off
 cmake_minimum_required(VERSION 3.13)
 
+# To Emily and Near...
+include("${CMAKE_SOURCE_DIR}/nanocoat/cmake/i-miss-you.cmake")
+
 # Easier includes
 include("${CMAKE_SOURCE_DIR}/assets/cmake/easier-includes.cmake"
 	NO_POLICY_SCOPE)
