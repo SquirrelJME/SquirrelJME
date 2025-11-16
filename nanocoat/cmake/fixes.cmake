@@ -125,51 +125,84 @@ endmacro()
 # directories since .DLL files are output there and not where shared libraries
 # go??? No idea really.
 macro(squirreljme_target_binary_output target where)
-	set_target_properties(${target} PROPERTIES
-		RUNTIME_OUTPUT_DIRECTORY "${where}"
-		LIBRARY_OUTPUT_DIRECTORY "${where}"
-		ARCHIVE_OUTPUT_DIRECTORY "${where}")
+	# The target location can be overridden, generally through the pipeline
+	# build system
+	if(DEFINED ENV{SQUIRRELJME_BINARY_OUTPUT_DIR})
+		set(actualWhere "$ENV{SQUIRRELJME_BINARY_OUTPUT_DIR}")
+	elseif(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
+		set(actualWhere "${SQUIRRELJME_BINARY_OUTPUT_DIR}")
+	else()
+		set(actualWhere "${where}")
+	endif()
 
+	# Set properties for all binary types
+	set_target_properties(${target} PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY "${actualWhere}"
+		LIBRARY_OUTPUT_DIRECTORY "${actualWhere}"
+		ARCHIVE_OUTPUT_DIRECTORY "${actualWhere}")
+
+	# Some generators have multiple configuration types
 	foreach(outputConfig ${CMAKE_CONFIGURATION_TYPES})
+		# Configuration types are always capitalized
 		string(TOUPPER "${outputConfig}" outputConfig)
 
+		# Set properties for all binary types
 		set_target_properties(${target} PROPERTIES
-			RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${where}"
-			LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${where}"
-			ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${where}")
+			RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${actualWhere}"
+			LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${actualWhere}"
+			ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${actualWhere}")
 	endforeach()
 endmacro()
 
 # Generate exports, mostly for Windows
 macro(squirreljme_target_shared_library_exports target)
-	# If there is a config used, just use the first one
+	# The target location can be overridden, generally through the pipeline
+	# build system
+	if(DEFINED ENV{SQUIRRELJME_BINARY_OUTPUT_DIR})
+		set(actualWhere "$ENV{SQUIRRELJME_BINARY_OUTPUT_DIR}")
+	elseif(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
+		set(actualWhere "${SQUIRRELJME_BINARY_OUTPUT_DIR}")
+	else()
+		# If there is a config used, just use the first one
+		if(NOT "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
+			list(GET CMAKE_CONFIGURATION_TYPES 0 firstConfig)
+
+			get_target_property(actualWhere
+				${target} RUNTIME_OUTPUT_DIRECTORY_${firstConfig})
+		endif()
+
+		# If not specified, use whatever was used
+		if(NOT actualWhere)
+			get_target_property(actualWhere
+				${target} RUNTIME_OUTPUT_DIRECTORY)
+		endif()
+
+		# If not set, use the default location that CMake uses
+		if(NOT actualWhere)
+			set(actualWhere "${CMAKE_CURRENT_BINARY_DIR}")
+		endif()
+	endif()
+
+	# If there is a config used, just use the first one, we need to know
+	# the binary name for the IMPLIB
 	if(NOT "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
 		list(GET CMAKE_CONFIGURATION_TYPES 0 firstConfig)
 
-		get_target_property(squirreljme_dylib_output_dir
-			${target} RUNTIME_OUTPUT_DIRECTORY_${firstConfig})
 		get_target_property(squirreljme_dylib_output_name
 			${target} RUNTIME_OUTPUT_NAME_${firstConfig})
 	endif()
 
-	if(NOT squirreljme_dylib_output_dir)
-		get_target_property(squirreljme_dylib_output_dir
-			${target} RUNTIME_OUTPUT_DIRECTORY)
-	endif()
+	# If no configuration is used, then use the normal output name
 	if(NOT squirreljme_dylib_output_name)
 		get_target_property(squirreljme_dylib_output_name
 			${target} RUNTIME_OUTPUT_NAME)
 	endif()
 
-	# If not set, use the default
-	if(NOT squirreljme_dylib_output_dir)
-		set(squirreljme_dylib_output_dir
-			"${CMAKE_CURRENT_BINARY_DIR}")
-	endif()
-
+	# MSVC requires that the implementation library also be specified otherwise
+	# nothing will be able to properly link against the library
 	if(MSVC)
 		target_link_options(${target} PRIVATE
-			"/IMPLIB:${squirreljme_dylib_output_dir}/${squirreljme_dylib_output_name}.lib")
+			"/IMPLIB:${actualWhere}/${squirreljme_dylib_output_name}.lib")
 	endif()
 endmacro()
 

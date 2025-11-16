@@ -45,8 +45,8 @@ foreach(systemMap IN LISTS SQUIRRELJME_SYSTEM_MAP)
 			# Add to the system of available compilers
 			list(APPEND SQUIRRELJME_GCC_COMPILERS
 				"${GCC_${systemNormal}_${archNormal}_EXECUTABLE}")
-			list(APPEND SQUIRRELJME_GCC_MAP
-				"${systemNormal}!${archNormal}")
+			list(APPEND SQUIRRELJME_COMPILER_MAP
+				"gcc!${systemNormal}!${archNormal}")
 
 			# Note it, if found
 			message(STATUS "GCC ${systemNormal}/${archNormal}: "
@@ -59,5 +59,3 @@ endforeach()
 # this needs to be re-run
 set(SQUIRRELJME_GCC_COMPILERS "${SQUIRRELJME_GCC_COMPILERS}"
 	CACHE STRING "Available GCC compilers")
-set(SQUIRRELJME_GCC_MAP "${SQUIRRELJME_GCC_MAP}"
-	CACHE STRING "Available GCC mappings")

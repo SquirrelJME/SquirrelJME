@@ -18,3 +18,7 @@ squirreljme_include("find-gcc.cmake")
 
 # Find MSVC
 squirreljme_include("find-msvc.cmake")
+
+# Store the compiler mappings into the cache so reloads do not break
+set(SQUIRRELJME_COMPILER_MAP "${SQUIRRELJME_COMPILER_MAP}"
+	CACHE STRING "Available compiler mappings")
