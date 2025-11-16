@@ -15,9 +15,7 @@
 	#include <windows.h>
 #endif
 
-#include <jni.h>
-#include <jvm.h>
-
+#include "frontend/libjvm/commonJniJvm.h"
 #include "frontend/libjvm/internals.h"
 #include "sjme/alloc.h"
 #include "sjme/nvm/boot.h"

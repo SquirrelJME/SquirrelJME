@@ -46,11 +46,7 @@ add_dependencies(SquirrelJME
 
 # If using official JNI/JVM headers we need this definition to be set
 squirreljme_multilib_target_compile_definitions(libJvm PRIVATE
-	_JNI_IMPLEMENTATION_=1)
-squirreljme_multilib_target_compile_definitions(libJvm PRIVATE
 	SJME_JNI_IMPLEMENTATION=1)
-target_compile_definitions(SquirrelJME PRIVATE
-	_JNI_IMPLEMENTATION_=1)
 target_compile_definitions(SquirrelJME PRIVATE
 	SJME_JNI_IMPLEMENTATION=1)
 
@@ -60,15 +56,17 @@ squirreljme_multilib_target_include_directories(libJvm PRIVATE
 target_include_directories(SquirrelJME PRIVATE
 	"${CMAKE_SOURCE_DIR}/include")
 squirreljme_multilib_target_include_directories(libJvm SYSTEM PRIVATE
-	${JNI_INCLUDE_DIRS}
-	${JAVA_INCLUDE_PATH}
-	${JAVA_INCLUDE_PATH2}
-	${JVM_INCLUDE_DIRS})
+	"${JNI_INCLUDE_DIRS}"
+	"${JAVA_INCLUDE_PATH}"
+	"${JAVA_INCLUDE_PATH2}"
+	"${JVM_INCLUDE_DIRS}"
+	"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
 target_include_directories(SquirrelJME SYSTEM PRIVATE
-	${JNI_INCLUDE_DIRS}
-	${JAVA_INCLUDE_PATH}
-	${JAVA_INCLUDE_PATH2}
-	${JVM_INCLUDE_DIRS})
+	"${JNI_INCLUDE_DIRS}"
+	"${JAVA_INCLUDE_PATH}"
+	"${JAVA_INCLUDE_PATH2}"
+	"${JVM_INCLUDE_DIRS}"
+	"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
 
 # Libraries needed to be linked with for the DyLib to function
 squirreljme_multilib_target_link_libraries(libJvm PUBLIC
@@ -93,10 +91,33 @@ squirreljme_multilib_target_binary_name(libJvm
 squirreljme_target_binary_name(SquirrelJME
 	"squirreljme")
 
-# Exports for Windows, etc.
+# Really only matters for dynamic libraries
 if(SQUIRRELJME_ENABLE_DYLIB)
+	# Exports for Windows, etc.
 	squirreljme_target_shared_library_exports(libJvmDyLib)
+
+	# The target location can be overridden, generally through the pipeline
+	# build system
+	if(DEFINED ENV{SQUIRRELJME_BINARY_OUTPUT_DIR})
+		set(jvmOutDir "$ENV{SQUIRRELJME_BINARY_OUTPUT_DIR}")
+	elseif(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
+		set(jvmOutDir "${SQUIRRELJME_BINARY_OUTPUT_DIR}")
+	else()
+		set(jvmOutDir "${CMAKE_CURRENT_BINARY_DIR}")
+	endif()
+
+	# Names of the original and new libraries...
+	set(SQUIRRELJME_LIBSQUIRRELJME_NAME
+		"${CMAKE_SHARED_LIBRARY_PREFIX}squirreljme${CMAKE_SHARED_LIBRARY_SUFFIX}")
+	set(SQUIRRELJME_LIBJVM_NAME
+		"${CMAKE_SHARED_LIBRARY_PREFIX}jvm${CMAKE_SHARED_LIBRARY_SUFFIX}")
+
+	# And the resultant library copy itself...
+	add_custom_command(TARGET libJvmDyLib
+		POST_BUILD
+		COMMAND "${CMAKE_COMMAND}" "-E" "copy"
+			"${jvmOutDir}/${SQUIRRELJME_LIBSQUIRRELJME_NAME}"
+			"${jvmOutDir}/${SQUIRRELJME_LIBJVM_NAME}"
+		BYPRODUCTS "${jvmOutDir}/${SQUIRRELJME_LIBJVM_NAME}"
+		COMMENT "Copying libsquirreljme to libjvm...")
 endif()
-
-
-

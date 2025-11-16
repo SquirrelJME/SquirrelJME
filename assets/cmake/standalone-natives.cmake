@@ -9,6 +9,8 @@
 # and NanoCoat, these are for later repackaging
 
 # Directory where the natives are placed
+define_property(TARGET PROPERTY SQUIRRELJME_CORE_NATIVE_PATH
+	BRIEF_DOCS "Path where core natives are placed.")
 define_property(TARGET PROPERTY SQUIRRELJME_EMULATOR_NATIVE_PATH
 	BRIEF_DOCS "Path where emulator natives are placed.")
 
@@ -23,17 +25,27 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 	message(STATUS "Checking compiler ${compilerType} "
 		"${systemNormal}/${archNormal}...")
 
-	# Where should the native build root be?
+	# Where should NanoCoat core place its binaries?
 	file(TO_CMAKE_PATH
-		"${CMAKE_BINARY_DIR}/nativeBuild/${systemNormal}/${archNormal}/"
-		buildDir)
-	file(MAKE_DIRECTORY "${buildDir}")
+		"${CMAKE_BINARY_DIR}/coreBuild/${systemNormal}/${archNormal}/"
+		coreBuild)
+	file(TO_CMAKE_PATH
+		"${CMAKE_BINARY_DIR}/core/${systemNormal}/${archNormal}/"
+		coreOut)
 
-	# Where should the natives actually be placed?
+	# Where should libEmulatorBase place its binaries?
 	file(TO_CMAKE_PATH
-		"${CMAKE_BINARY_DIR}/natives/${systemNormal}/${archNormal}/"
-		nativesDir)
-	file(MAKE_DIRECTORY "${nativesDir}")
+		"${CMAKE_BINARY_DIR}/emulatorBuild/${systemNormal}/${archNormal}/"
+		emulatorBuild)
+	file(TO_CMAKE_PATH
+		"${CMAKE_BINARY_DIR}/emulator/${systemNormal}/${archNormal}/"
+		emulatorOut)
+
+	# Make sure all directories exist
+	file(MAKE_DIRECTORY "${coreBuild}")
+	file(MAKE_DIRECTORY "${coreOut}")
+	file(MAKE_DIRECTORY "${emulatorBuild}")
+	file(MAKE_DIRECTORY "${emulatorOut}")
 
 	# Is this a GCC compiler?
 	if("${compilerType}" STREQUAL "gcc")
@@ -49,17 +61,32 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		continue()
 	endif()
 
-	# Configure CMake build for the compiler
+	# Configure CMake build for NanoCoat Core
 	execute_process(COMMAND "${CMAKE_COMMAND}"
 		"-DCMAKE_C_COMPILER=${compilerExe}"
-		"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${nativesDir}"
-		"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${nativesDir}"
-		"-B" "${buildDir}"
-		"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
-		RESULT_VARIABLE nestedResult)
+		"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${coreOut}"
+		"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${coreOut}"
+		"-B" "${coreBuild}"
+		"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
+		RESULT_VARIABLE coreResult)
+
+	# Configure CMake build for libEmulatorBase
+	if("${coreResult}" EQUAL "0")
+		execute_process(COMMAND "${CMAKE_COMMAND}"
+			"-DCMAKE_C_COMPILER=${compilerExe}"
+			"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${coreOut}"
+			"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${emulatorOut}"
+			"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${emulatorOut}"
+			"-B" "${emulatorBuild}"
+			"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
+			RESULT_VARIABLE emulatorResult)
+	else()
+		set(emulatorResult "1")
+	endif()
 
 	# Was this successful?
-	if("${nestedResult}" EQUAL "0")
+	if("${coreResult}" EQUAL "0" AND
+		"${emulatorResult}" EQUAL "0")
 		# Note that it was
 		message(STATUS "Emulator Native ${systemNormal}/${archNormal} -> "
 			"standaloneNatives_${systemNormal}_${archNormal}")
@@ -67,14 +94,19 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		# Add target which builds the natives
 		add_custom_target(standaloneNatives_${systemNormal}_${archNormal}
 			COMMAND "${CMAKE_COMMAND}"
-				"--build" "${buildDir}"
+				"--build" "${coreBuild}"
+				"--target" "BaseStatic" "libJvm" "ScritchUI" "ScritchAudio"
+			COMMAND "${CMAKE_COMMAND}"
+				"--build" "${emulatorBuild}"
 				"--target" "libEmulatorBase"
 			COMMAND_EXPAND_LISTS)
 
 		# Set the emulator native path
 		set_target_properties(standaloneNatives_${systemNormal}_${archNormal}
 			PROPERTIES
-			SQUIRRELJME_EMULATOR_NATIVE_PATH "${nativesDir}"
-			ADDITIONAL_CLEAN_FILES "${buildDir};${nativesDir}")
+			SQUIRRELJME_CORE_NATIVE_PATH "${emulatorOut}"
+			SQUIRRELJME_EMULATOR_NATIVE_PATH "${emulatorOut}"
+			ADDITIONAL_CLEAN_FILES
+				"${coreBuild};${coreOut};${emulatorBuild};${emulatorOut}")
 	endif()
 endforeach()

@@ -7,30 +7,26 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "frontend/libjvm/commonJniJvm.h"
+/**
+ * Selects the JVM header to use.
+ * 
+ * @since 2025/10/22
+ */
 
-jlong JNICALL JVM_CurrentTimeMillis(JNIEnv* env, jclass ignored)
-{
-	sjme_todo("Impl?");
-}
+#ifndef SJME_C_SQUIRRELJME_USEJVM_H
+#define SJME_C_SQUIRRELJME_USEJVM_H
 
-jlong JNICALL JVM_NanoTime(JNIEnv* env, jclass ignored)
-{
-	sjme_todo("Impl?");
-}
+#if defined(SJME_CONFIG_USE_OWN_JNI)
+	#include "sjme/jvm/jvm.h"
+#else
+	/* Need to map implementation defines? */
+	#if defined(SJME_JNI_IMPLEMENTATION)
+		#if !defined(_JNI_IMPLEMENTATION_)
+				#define _JNI_IMPLEMENTATION_
+		#endif
+	#endif
+	
+	#include <jvm.h>
+#endif
 
-void JNICALL JVM_ArrayCopy(JNIEnv* env,
-	jclass ignored,
-	jobject src,
-	jint src_pos,
-	jobject dst,
-	jint dst_pos,
-	jint length)
-{
-	sjme_todo("Impl?");
-}
-
-jobject JNICALL JVM_InitProperties(JNIEnv* env, jobject p)
-{
-	sjme_todo("Impl?");
-}
+#endif /* SJME_C_SQUIRRELJME_USEJVM_H */
