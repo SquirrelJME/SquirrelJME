@@ -13,6 +13,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 
@@ -24,6 +27,27 @@ import org.gradle.api.Task;
 public class CMakeBuildTaskAction
 	implements Action<Task>
 {
+	/** Arguments to additionally pass to the configure step. */
+	private final String[] _cmakeArgs;
+	
+	/**
+	 * Initializes the CMake task action.
+	 *
+	 * @param __cmakeArgs The extra arguments to pass to CMake during
+	 * the configure stage.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/11/15
+	 */
+	public CMakeBuildTaskAction(List<String> __cmakeArgs)
+		throws NullPointerException
+	{
+		if (__cmakeArgs == null)
+			throw new NullPointerException("NARG");
+		
+		// Copy the arguments down
+		this._cmakeArgs = __cmakeArgs.toArray(new String[__cmakeArgs.size()]);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2024/03/15
@@ -45,7 +69,7 @@ public class CMakeBuildTaskAction
 			{
 				// Do we need to configure?
 				if (CMakeUtils.configureNeeded(from))
-					CMakeUtils.configure(from);
+					CMakeUtils.configure(from, this._cmakeArgs);
 				
 				// Run normal CMake build
 				CMakeUtils.cmakeExecute(from.cmakeBuild, __task.getLogger(),

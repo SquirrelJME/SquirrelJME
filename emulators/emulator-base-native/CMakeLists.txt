@@ -69,28 +69,17 @@ target_include_directories(libEmulatorBase PUBLIC
 
 # Libraries for the build
 get_filename_component(nanocoatLibPath
-	"${CMAKE_SOURCE_DIR}/../emulator-base/build/cmake-libsNativeUI"
+	"${CMAKE_SOURCE_DIR}/../emulator-base/build/cmake-libNativeUI"
 	ABSOLUTE)
 message(STATUS "NanoCoat lib is: ${nanocoatLibPath}")
 target_link_directories(libEmulatorBase PUBLIC
-	"${nanocoatLibPath}")
+	"${nanocoatLibPath}"
+	"${SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR}")
 target_link_libraries(libEmulatorBase PUBLIC
 	"BaseStatic" "${JAVA_JVM_LIBRARY}")
 
 # It is easier to find this when it is in the build root
-set_target_properties(libEmulatorBase PROPERTIES
-	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
-
-foreach(outputConfig ${CMAKE_CONFIGURATION_TYPES})
-	string(TOUPPER "${outputConfig}" outputConfig)
-
-	set_target_properties(libEmulatorBase PROPERTIES
-		RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
-		LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
-		ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}")
-endforeach()
+squirreljme_target_binary_output(libEmulatorBase "${CMAKE_BINARY_DIR}")
 
 # Use a more basic name for the library
 set_target_properties(libEmulatorBase PROPERTIES

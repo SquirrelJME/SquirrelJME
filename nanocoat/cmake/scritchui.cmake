@@ -10,13 +10,13 @@
 # Enables a Scritch library
 macro(squirreljme_scritchany_enable area capArea)
 	# Delete the old list
-	file(REMOVE "${CMAKE_BINARY_DIR}/libsquirreljme-scritch${area}.list")
+	file(REMOVE "${SQUIRRELJME_SCRITCHLIST_DIR}/libsquirreljme-scritch${area}.list")
 
 	# Make sure a blank file exists at least
 	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12")
-		file(TOUCH "${CMAKE_BINARY_DIR}/libsquirreljme-scritch${area}.list")
+		file(TOUCH "${SQUIRRELJME_SCRITCHLIST_DIR}/libsquirreljme-scritch${area}.list")
 	else()
-		file(WRITE "${CMAKE_BINARY_DIR}/libsquirreljme-scritch${area}.list" "")
+		file(WRITE "${SQUIRRELJME_SCRITCHLIST_DIR}/libsquirreljme-scritch${area}.list" "")
 	endif()
 
 	# Add collection target
@@ -25,7 +25,7 @@ macro(squirreljme_scritchany_enable area capArea)
 		"${SQUIRRELJME_DYLIB_OUTPUT_DIR}/libsquirreljme-scritch${area}.zip"
 			"--format=zip" "--"
 		"$<TARGET_PROPERTY:Scritch${capArea}CollectZip,sjmeLibraries>"
-		"${CMAKE_BINARY_DIR}/libsquirreljme-scritch${area}.list"
+		"${SQUIRRELJME_SCRITCHLIST_DIR}/libsquirreljme-scritch${area}.list"
 		WORKING_DIRECTORY "${SQUIRRELJME_DYLIB_OUTPUT_DIR}"
 		BYPRODUCTS "${SQUIRRELJME_DYLIB_OUTPUT_DIR}/libsquirreljme-scritch${area}.zip"
 		COMMENT "Collects all Scritch${capArea} outputs into one single Zip."
@@ -41,12 +41,16 @@ macro(squirreljme_scritchany_build area capArea ifVar subDir targetBase)
 		# Include sub-directory for the build
 		add_subdirectory(${subDir})
 
+		# Make all ScritchArea depend on this
+		add_dependencies(Scritch${capArea}
+			Scritch${capArea}${targetBase})
+
 		# Make ZIP collection depend on this
 		add_dependencies(Scritch${capArea}CollectZip
 			Scritch${capArea}${targetBase})
 
 		# Include the target into the collection list
-		file(APPEND "${CMAKE_BINARY_DIR}/libsquirreljme-scritch${area}.list"
+		file(APPEND "${SQUIRRELJME_SCRITCHLIST_DIR}/libsquirreljme-scritch${area}.list"
 			"${targetBase}")
 
 		# What is the library called?

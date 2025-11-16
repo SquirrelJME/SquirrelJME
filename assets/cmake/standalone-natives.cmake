@@ -53,6 +53,7 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 	execute_process(COMMAND "${CMAKE_COMMAND}"
 		"-DCMAKE_C_COMPILER=${compilerExe}"
 		"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${nativesDir}"
+		"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${nativesDir}"
 		"-B" "${buildDir}"
 		"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
 		RESULT_VARIABLE nestedResult)
