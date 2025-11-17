@@ -267,6 +267,13 @@ macro(squirreljme_try_compile noun target source cdef)
 	endif()
 endmacro()
 
+# Do not set SONAME for a target
+macro(squirreljme_no_soname target)
+	set_target_properties(${target} PROPERTIES
+		NO_SONAME YES
+		NO_SYSTEM_FROM_IMPORTED YES)
+endmacro()
+
 # Find headers
 include(CheckIncludeFile)
 

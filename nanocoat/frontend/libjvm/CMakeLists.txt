@@ -97,6 +97,10 @@ if(SQUIRRELJME_ENABLE_DYLIB)
 	squirreljme_target_binary_output(libJvmDyLib
 		"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
+	# Do not set a SONAME for libjvm library as it could be either
+	# libsquirreljme or libjvm, and this would break any kind of interop
+	squirreljme_no_soname(libJvmDyLib)
+
 	# Exports for Windows, etc.
 	squirreljme_target_shared_library_exports(libJvmDyLib)
 
