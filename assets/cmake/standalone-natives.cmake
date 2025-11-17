@@ -21,9 +21,9 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 	squirreljme_unmap(systemNormal 1 "${compilerMap}")
 	squirreljme_unmap(archNormal 2 "${compilerMap}")
 
-	# Debug
-	message(STATUS "Checking compiler ${compilerType} "
-		"${systemNormal}/${archNormal}...")
+	# Progress indication
+	message(STATUS "Looking at "
+		"${systemNormal}/${archNormal} (${compilerType})...")
 
 	# Where should NanoCoat core place its binaries?
 	file(TO_CMAKE_PATH
@@ -55,16 +55,19 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		# Where is the GCC executable?
 		set(compilerExe "${GCC_${systemNormal}_${archNormal}_EXECUTABLE}")
 
-		squirreljme_gcc_defines(boop "${compilerExe}")
-
 	# Unknown
 	else()
 		# Warn that this is not yet handled
-		message(WARNING "Unsupported compiler ${compilerType}...")
+		message(WARNING "Unsupported compiler ${compilerType} for target "
+			"${systemNormal}/${archNormal}!")
 
 		# Skip it
 		continue()
 	endif()
+
+	# Progress indication
+	message(STATUS "Configuring NanoCoat Core "
+		"${systemNormal}/${archNormal} (${compilerType})...")
 
 	# Configure CMake build for NanoCoat Core
 	execute_process(COMMAND "${CMAKE_COMMAND}"
@@ -75,11 +78,16 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		"-B" "${coreBuild}"
 		"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
 		RESULT_VARIABLE coreResult
-		OUTPUT_FILE "${CMAKE_BINARY_DIR}/ruleName.core.out"
-		ERROR_FILE "${CMAKE_BINARY_DIR}/ruleName.core.err")
+		OUTPUT_FILE "${CMAKE_BINARY_DIR}/${ruleName}.core.out"
+		ERROR_FILE "${CMAKE_BINARY_DIR}/${ruleName}.core.err")
 
 	# Configure CMake build for libEmulatorBase
 	if("${coreResult}" EQUAL "0")
+		# Progress indication
+		message(STATUS "Configuring libEmulatorBase "
+			"${systemNormal}/${archNormal} (${compilerType})...")
+
+		# Now do the configure
 		execute_process(COMMAND "${CMAKE_COMMAND}"
 			"-DCMAKE_C_COMPILER=${compilerExe}"
 			"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${coreOut}"
@@ -88,8 +96,8 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 			"-B" "${emulatorBuild}"
 			"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
 			RESULT_VARIABLE emulatorResult
-			OUTPUT_FILE "${CMAKE_BINARY_DIR}/ruleName.emulator.out"
-			ERROR_FILE "${CMAKE_BINARY_DIR}/ruleName.emulator.err")
+			OUTPUT_FILE "${CMAKE_BINARY_DIR}/${ruleName}.emulator.out"
+			ERROR_FILE "${CMAKE_BINARY_DIR}/${ruleName}.emulator.err")
 	else()
 		set(emulatorResult "1")
 	endif()
@@ -97,10 +105,6 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 	# Was this successful?
 	if("${coreResult}" EQUAL "0" AND
 		"${emulatorResult}" EQUAL "0")
-		# Note that it was
-		message(STATUS "Emulator Native ${systemNormal}/${archNormal} -> "
-			"${ruleName}")
-
 		# Add target which builds the natives
 		add_custom_target(${ruleName}
 			COMMAND "${CMAKE_COMMAND}"
@@ -112,18 +116,27 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 				"--target" "libEmulatorBase"
 			COMMAND_EXPAND_LISTS)
 
+		# Add note for the rule that was generated
+		message(STATUS "Standalone Native "
+			"${systemNormal}/${archNormal} (${compilerType}) -> ${ruleName}")
+
 		# Add this rule to the standalone set
 		list(APPEND SQUIRRELJME_STANDALONE_NATIVE_RULES
-			"standaloneNatives_${systemNormal}_${archNormal}")
+			"${ruleName}")
 
 		# Set the emulator native path
-		set_target_properties(standaloneNatives_${systemNormal}_${archNormal}
+		set_target_properties(${ruleName}
 			PROPERTIES
-			SQUIRRELJME_CORE_NATIVE_PATH "${emulatorOut}"
+			SQUIRRELJME_CORE_NATIVE_PATH "${coreOut}"
 			SQUIRRELJME_EMULATOR_NATIVE_PATH "${emulatorOut}"
 			SQUIRRELJME_SYSTEM "${systemNormal}"
 			SQUIRRELJME_ARCH "${archNormal}"
 			ADDITIONAL_CLEAN_FILES
 				"${coreBuild};${coreOut};${emulatorBuild};${emulatorOut}")
+	else()
+		# Progress indication
+		message(STATUS "Failed to configure "
+			"${systemNormal}/${archNormal} (${compilerType}): "
+			"${coreResult} ${emulatorResult}!")
 	endif()
 endforeach()

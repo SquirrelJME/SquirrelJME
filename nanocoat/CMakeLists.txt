@@ -46,21 +46,6 @@ endif()
 # Include system map identifications
 squirreljme_include("system-map.cmake")
 
-# Try to identify the platform as defined by SquirrelJME since we may not
-# be able to actually compile and run any executables. This should be a more
-# reliable way of determining the target system.
-squirreljme_identify_by_current(SQUIRRELJME_SYSTEM SQUIRRELJME_ARCH)
-squirreljme_identify_by_cmake(SQUIRRELJME_HOST_SYSTEM SQUIRRELJME_HOST_ARCH
-	"${CMAKE_HOST_SYSTEM_NAME}" "${CMAKE_HOST_SYSTEM_PROCESSOR}")
-message(STATUS "Detected Target System: "
-	"${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
-message(STATUS "Detected Host System: "
-	"${SQUIRRELJME_HOST_SYSTEM}/${SQUIRRELJME_HOST_ARCH}")
-
-# Used for all builds to identify the system
-add_compile_definitions(SQUIRRELJME_SYSTEM=${SQUIRRELJME_SYSTEM})
-add_compile_definitions(SQUIRRELJME_ARCH=${SQUIRRELJME_ARCH})
-
 # CMake Utilities, compiled and used during build
 squirreljme_include("utils.cmake")
 
@@ -91,7 +76,7 @@ squirreljme_include("jni.cmake")
 squirreljme_include("doxygen.cmake")
 
 # Threading and atomics
-squirreljme_include("threads.cmake")
+squirreljme_include("find-threads.cmake")
 
 # To Emily and Near...
 squirreljme_include("i-miss-you.cmake")

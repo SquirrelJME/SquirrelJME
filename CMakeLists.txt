@@ -19,9 +19,6 @@ include("${CMAKE_SOURCE_DIR}/assets/cmake/easier-includes.cmake"
 # To Emily and Near...
 squirreljme_include_nanocoat("i-miss-you.cmake")
 
-# Environment and everything else
-squirreljme_include("environment-depends.cmake")
-
 # A project must be declared
 # Specifying languages here with no languages means that we do not want to
 # check for any languages, by default C/C++ are enabled which we do not
@@ -29,6 +26,12 @@ squirreljme_include("environment-depends.cmake")
 project(SquirrelJMEBuild
 	HOMEPAGE_URL https://squirreljme.cc/
 	LANGUAGES)
+
+# Include system mappings
+squirreljme_include_nanocoat("system-map.cmake")
+
+# Environment and everything else
+squirreljme_include("environment-depends.cmake")
 
 # CI/CD Pipelines
 squirreljme_include("cicd-pipeline.cmake")

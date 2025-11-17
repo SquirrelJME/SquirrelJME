@@ -13,19 +13,20 @@ cmake_minimum_required(VERSION 3.5)
 project(libEmulatorBase
     LANGUAGES C)
 
+# Non-optional include from NanoCoat
+macro(squirreljme_include_nanocoat what)
+	include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/${what}"
+		NO_POLICY_SCOPE)
+endmacro()
+
 # Support bases
-include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/cmake-patch.cmake"
-	NO_POLICY_SCOPE)
-include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/pre-fixes.cmake"
-    NO_POLICY_SCOPE)
-include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/utils.cmake"
-    NO_POLICY_SCOPE)
-include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/fixes.cmake"
-    NO_POLICY_SCOPE)
-include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/jni.cmake"
-    NO_POLICY_SCOPE)
-include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/threads.cmake"
-    NO_POLICY_SCOPE)
+squirreljme_include_nanocoat("cmake-patch.cmake")
+squirreljme_include_nanocoat("pre-fixes.cmake")
+squirreljme_include_nanocoat("system-map.cmake")
+squirreljme_include_nanocoat("utils.cmake")
+squirreljme_include_nanocoat("fixes.cmake")
+squirreljme_include_nanocoat("jni.cmake")
+squirreljme_include_nanocoat("find-threads.cmake")
 
 # Where is NanoCoat?
 get_filename_component(nanocoatIncludePath

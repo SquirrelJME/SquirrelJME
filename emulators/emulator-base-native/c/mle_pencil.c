@@ -278,7 +278,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawXRGB32Region)
 
 	/* Forward. */
 	if (sjme_error_is(error = p->api->drawXRGB32Region(p,
-		elem, off, (*env)->GetArrayLength(env, data), scanLen,
+		(sjme_jint*)elem, off, (*env)->GetArrayLength(env, data), scanLen,
 		alpha, xSrc, ySrc, wSrc, hSrc, trans,
 		xDest, yDest, anchor, wDest, hDest,
 		origImgWidth, origImgHeight)))

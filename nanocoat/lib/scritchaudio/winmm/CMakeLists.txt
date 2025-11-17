@@ -32,7 +32,7 @@ target_include_directories(ScritchAudioWinMM PUBLIC
 
 # Windows Multimedia Library is needed here
 target_link_libraries(ScritchAudioWinMM PUBLIC
-	"winmm.lib")
+	"winmm${SQUIRRELJME_WIN_LIB_SUFFIX}")
 
 # ScritchAudio requires a normalized library name
 squirreljme_target_binary_name(ScritchAudioWinMM

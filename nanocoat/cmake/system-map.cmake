@@ -159,6 +159,8 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		"__WIN32__" IN_LIST defines OR
 		"__WINDOWS__" IN_LIST defines)
 		set(hasSystem "windows")
+	else()
+		set(hasSystem "unknown")
 	endif()
 
 	## Determine architecture
@@ -179,8 +181,8 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 			"__ppc64__" IN_LIST defines OR
 			"__PPC64__" IN_LIST defines OR
 			"_ARCH_PPC64" IN_LIST defines OR
-			"_LP64" IN_LIST defines OR OR
-			"__LP64__" IN_LIST defines OR)
+			"_LP64" IN_LIST defines OR
+			"__LP64__" IN_LIST defines)
 			if("__BIG_ENDIAN__" IN_LIST defines)
 				set(hasArch "powerpc64b")
 			else()
@@ -217,6 +219,8 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		"__INTEL__" IN_LIST defines OR
 		"__I86__" IN_LIST defines)
 		set(hasArch "ia32")
+	else()
+		set(hasArch "unknown")
 	endif()
 
 	# Make sure the parent scope has the value
@@ -245,63 +249,66 @@ function(squirreljme_identify_by_cmake outSystem outArch inSystem inArch)
 	elseif("${inSystem}" STREQUAL "Windows" OR
 		"${inSystem}" STREQUAL "WindowsStore")
 		set(hasSystem "windows")
+	else()
+		set(hasSystem "unknown")
 	endif()
 
 	# Architecture
-	if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "AMD64" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "EM64T" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86-64" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "amd64")
+	if("${inArch}" STREQUAL "AMD64" OR
+		"${inArch}" STREQUAL "EM64T" OR
+		"${inArch}" STREQUAL "x86_64" OR
+		"${inArch}" STREQUAL "x86-64" OR
+		"${inArch}" STREQUAL "amd64")
 		set(hasArch "amd64")
-	elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "armv6k" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "arm32" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "armel" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "armbe" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "arm" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "armv5l" OR
-		"${SQUIRRELJME_CHECK_CDEF_3DS}" GREATER_EQUAL 0)
+	elseif("${inArch}" STREQUAL "armv6k" OR
+		"${inArch}" STREQUAL "arm32" OR
+		"${inArch}" STREQUAL "armel" OR
+		"${inArch}" STREQUAL "armbe" OR
+		"${inArch}" STREQUAL "arm" OR
+		"${inArch}" STREQUAL "armv5l")
 		set(hasArch "arm32")
-	elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "arm64" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "aarch64" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "aarch64_be")
+	elseif("${inArch}" STREQUAL "arm64" OR
+		"${inArch}" STREQUAL "aarch64" OR
+		"${inArch}" STREQUAL "aarch64_be")
 		set(hasArch "arm64")
-	elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "i286" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "I86" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "ia16")
+	elseif("${inArch}" STREQUAL "i286" OR
+		"${inArch}" STREQUAL "I86" OR
+		"${inArch}" STREQUAL "ia16")
 		set(hasArch "ia16")
-	elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "i386" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "i486" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "i586" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "i686" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "X86" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "ia32")
+	elseif("${inArch}" STREQUAL "i386" OR
+		"${inArch}" STREQUAL "i486" OR
+		"${inArch}" STREQUAL "i586" OR
+		"${inArch}" STREQUAL "i686" OR
+		"${inArch}" STREQUAL "X86" OR
+		"${inArch}" STREQUAL "x86" OR
+		"${inArch}" STREQUAL "ia32")
 		set(hasArch "ia32")
-	elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "IA64" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "ia64" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "Itanium" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "Itanic")
+	elseif("${inArch}" STREQUAL "IA64" OR
+		"${inArch}" STREQUAL "ia64" OR
+		"${inArch}" STREQUAL "Itanium" OR
+		"${inArch}" STREQUAL "Itanic")
 		set(hasArch "ia64")
-	elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "mips" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "mipseb" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "mips32" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "mips32eb")
+	elseif("${inArch}" STREQUAL "mips" OR
+		"${inArch}" STREQUAL "mipseb" OR
+		"${inArch}" STREQUAL "mips32" OR
+		"${inArch}" STREQUAL "mips32eb")
 		set(hasArch "mips32b")
-	elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "mips64" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "mips64eb")
+	elseif("${inArch}" STREQUAL "mips64" OR
+		"${inArch}" STREQUAL "mips64eb")
 		set(hasArch "mips64b")
-	elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "mipsel" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "mips32el")
+	elseif("${inArch}" STREQUAL "mipsel" OR
+		"${inArch}" STREQUAL "mips32el")
 		set(hasArch "mips32l")
-	elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "mips64el" OR)
+	elseif("${inArch}" STREQUAL "mips64el")
 		set(hasArch "mips64l")
-	elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "ppc" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "powerpc")
+	elseif("${inArch}" STREQUAL "ppc" OR
+		"${inArch}" STREQUAL "powerpc")
 		set(hasArch "powerpc32b")
-	elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "ppc64" OR
-		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "powerpc64")
+	elseif("${inArch}" STREQUAL "ppc64" OR
+		"${inArch}" STREQUAL "powerpc64")
 		set(hasArch "powerpc64b")
+	else()
+		set(hasArch "unknown")
 	endif()
 
 	# Make sure the parent scope has the value
@@ -329,9 +336,18 @@ function(squirreljme_identify_by_current outSystem outArch)
 	set(hasSystem "")
 	set(hasArch "")
 
-	# Is this GCC or GCC-like?
+	# Name-likes
 	string(FIND "${CMAKE_C_COMPILER}" "gcc" hasGccInName)
-	if(CMAKE_COMPILER_IS_GNUCC OR
+
+	# Unconfigured environment?
+	if("${CMAKE_C_COMPILER_ID}" STREQUAL "" AND
+		"${CMAKE_SYSTEM_NAME}" STREQUAL "" AND
+		"${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "")
+		set(hasSystem "none")
+		set(hasArch "none")
+
+	# Is this GCC or GCC-like?
+	elseif(CMAKE_COMPILER_IS_GNUCC OR
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" OR
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" OR
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "AppleClang" OR
@@ -365,3 +381,41 @@ function(squirreljme_identify_by_current outSystem outArch)
 	set(${outSystem} "${hasSystem}" PARENT_SCOPE)
 	set(${outArch} "${hasArch}" PARENT_SCOPE)
 endfunction()
+
+# Try to identify the platform as defined by SquirrelJME since we may not
+# be able to actually compile and run any executables. This should be a more
+# reliable way of determining the target system.
+squirreljme_identify_by_current(SQUIRRELJME_SYSTEM SQUIRRELJME_ARCH)
+message(STATUS "Detected Target System: "
+	"${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
+
+# Then also detect the host system that we are on as well
+squirreljme_identify_by_cmake(SQUIRRELJME_HOST_SYSTEM SQUIRRELJME_HOST_ARCH
+	"${CMAKE_HOST_SYSTEM_NAME}" "${CMAKE_HOST_SYSTEM_PROCESSOR}")
+message(STATUS "Detected Host System: "
+	"${SQUIRRELJME_HOST_SYSTEM}/${SQUIRRELJME_HOST_ARCH}")
+
+# Used for all builds to identify the system
+add_compile_definitions(SQUIRRELJME_SYSTEM=${SQUIRRELJME_SYSTEM})
+add_compile_definitions(SQUIRRELJME_ARCH=${SQUIRRELJME_ARCH})
+
+# When compiling with mingw-w64, it is possible that CMake gets this wrong!
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+	# For EXEs
+	set(CMAKE_EXECUTABLE_SUFFIX ".exe" CACHE STRING "" FORCE)
+	set(CMAKE_EXECUTABLE_SUFFIX_ASM "${CMAKE_EXECUTABLE_SUFFIX}"
+		CACHE STRING "" FORCE)
+	set(CMAKE_EXECUTABLE_SUFFIX_C "${CMAKE_EXECUTABLE_SUFFIX}"
+		CACHE STRING "" FORCE)
+	set(CMAKE_EXECUTABLE_SUFFIX_CXX "${CMAKE_EXECUTABLE_SUFFIX}"
+		CACHE STRING "" FORCE)
+
+	# Ditto for DLLs
+	set(CMAKE_SHARED_LIBRARY_SUFFIX ".dll" CACHE STRING "" FORCE)
+	set(CMAKE_SHARED_LIBRARY_SUFFIX_ASM "${CMAKE_SHARED_LIBRARY_SUFFIX}"
+		CACHE STRING "" FORCE)
+	set(CMAKE_SHARED_LIBRARY_SUFFIX_C "${CMAKE_SHARED_LIBRARY_SUFFIX}"
+		CACHE STRING "" FORCE)
+	set(CMAKE_SHARED_LIBRARY_SUFFIX_CXX "${CMAKE_SHARED_LIBRARY_SUFFIX}"
+		CACHE STRING "" FORCE)
+endif()

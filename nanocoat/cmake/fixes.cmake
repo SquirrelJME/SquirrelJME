@@ -360,3 +360,11 @@ macro(squirreljme_target_link_libraries_required target)
 			"${CMAKE_THREAD_LIBS_INIT}")
 	endif()
 endmacro()
+
+# Do not use .lib suffix for Windows libraries for mingw32/mingw-w64
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" AND
+	NOT (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX))
+	set(SQUIRRELJME_WIN_LIB_SUFFIX ".lib")
+else()
+	set(SQUIRRELJME_WIN_LIB_SUFFIX "")
+endif()
