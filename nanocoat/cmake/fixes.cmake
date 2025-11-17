@@ -13,6 +13,12 @@
 # Needed for C compiler checks
 include(CheckCCompilerFlag)
 
+# Do not install with RPATH, CMake does relinking in build/install which
+# we do not want as we give away whatever executes and such
+set(CMAKE_SKIP_RPATH YES)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH NO)
+set(CMAKE_SKIP_INSTALL_RPATH YES)
+
 # Cross-compiling the build?
 if(NOT "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}" OR
 	NOT "${CMAKE_HOST_SYSTEM_PROCESSOR}" STREQUAL "${CMAKE_SYSTEM_PROCESSOR}")
@@ -346,5 +352,11 @@ macro(squirreljme_target_link_libraries_required target)
 	if(SQUIRRELJME_LIBM)
 		target_link_libraries(${target} PRIVATE
 			"${SQUIRRELJME_LIBM}")
+	endif()
+
+	# Thread library?
+	if(DEFINED CMAKE_THREAD_LIBS_INIT)
+		target_link_libraries(${target} PRIVATE
+			"${CMAKE_THREAD_LIBS_INIT}")
 	endif()
 endmacro()

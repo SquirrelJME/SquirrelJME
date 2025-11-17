@@ -51,4 +51,11 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 	# The base Jar exists in some fashion, so the actual fully packaged
 	# Standalone Jar with all natives also exists
 	set(SQUIRRELJME_HAS_STANDALONE_JAR YES)
+
+	# Where is the actual standalone Jar placed?
+	set(outputPath "${CMAKE_BINARY_DIR}/standalone/standalone.jar")
+
+	# Setup target to combine everything into a single Jar
+	add_custom_target(standaloneJar
+		DEPENDS "${SQUIRRELJME_STANDALONE_NATIVE_RULES}")
 endif()

@@ -43,6 +43,15 @@ Virtual Machine for embedded and Internet of Things devices."
 		LANGUAGES C)
 endif()
 
+# Include system map identifications
+squirreljme_include("system-map.cmake")
+
+# Try to identify the platform as defined by SquirrelJME since we may not
+# be able to actually compile and run any executables. This should be a more
+# reliable way of determining the target system.
+squirreljme_identify_by_current(SQUIRRELJME_SYSTEM SQUIRRELJME_ARCH)
+message(STATUS "Target System: ${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
+
 # CMake Utilities, compiled and used during build
 squirreljme_include("utils.cmake")
 

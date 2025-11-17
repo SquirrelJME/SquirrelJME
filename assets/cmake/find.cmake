@@ -8,7 +8,7 @@
 # DESCRIPTION: Finding of various things
 
 # Architecture/system mappings
-squirreljme_include("system-map.cmake")
+squirreljme_include_nanocoat("system-map.cmake")
 
 # Find Java
 squirreljme_include("find-java.cmake")

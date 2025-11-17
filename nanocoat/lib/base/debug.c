@@ -74,7 +74,7 @@ sjme_jboolean sjme_debug_abort(sjme_errorCode error)
 		/* When running tests without a debugger this will pop up about 1000 */
 		/* dialogs saying the program aborted, so only abort on debugging. */
 		if (!IsDebuggerPresent())
-			return;
+			return SJME_JNI_FALSE;
 
 #if defined(SJME_CONFIG_DEBUG) && \
 	!(defined(__MINGW32__) || defined(__MINGW64__))

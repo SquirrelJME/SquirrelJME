@@ -171,7 +171,7 @@ if(SQUIRRELJME_HOST_JNI_VALID AND SQUIRRELJME_HOST_JNI_MD_VALID)
 else()
 	# Determine include headers to use
 	if(EXISTS "${JAVA_HOME}/../include/jni.h")
-		if(WIN32)
+		if(WIN32 OR "${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
 			set(JNI_INCLUDE_DIRS
 				"${JAVA_HOME}/../include"
 				"${JAVA_HOME}/../include/win32")

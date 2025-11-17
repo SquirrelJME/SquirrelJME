@@ -47,10 +47,15 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 	file(MAKE_DIRECTORY "${emulatorBuild}")
 	file(MAKE_DIRECTORY "${emulatorOut}")
 
+	# Name of the rule
+	set(ruleName "standaloneNatives_${systemNormal}_${archNormal}")
+
 	# Is this a GCC compiler?
 	if("${compilerType}" STREQUAL "gcc")
 		# Where is the GCC executable?
 		set(compilerExe "${GCC_${systemNormal}_${archNormal}_EXECUTABLE}")
+
+		squirreljme_gcc_defines(boop "${compilerExe}")
 
 	# Unknown
 	else()
@@ -69,7 +74,9 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${coreOut}"
 		"-B" "${coreBuild}"
 		"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
-		RESULT_VARIABLE coreResult)
+		RESULT_VARIABLE coreResult
+		OUTPUT_FILE "${CMAKE_BINARY_DIR}/ruleName.core.out"
+		ERROR_FILE "${CMAKE_BINARY_DIR}/ruleName.core.err")
 
 	# Configure CMake build for libEmulatorBase
 	if("${coreResult}" EQUAL "0")
@@ -80,7 +87,9 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 			"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${emulatorOut}"
 			"-B" "${emulatorBuild}"
 			"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
-			RESULT_VARIABLE emulatorResult)
+			RESULT_VARIABLE emulatorResult
+			OUTPUT_FILE "${CMAKE_BINARY_DIR}/ruleName.emulator.out"
+			ERROR_FILE "${CMAKE_BINARY_DIR}/ruleName.emulator.err")
 	else()
 		set(emulatorResult "1")
 	endif()
@@ -90,10 +99,10 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		"${emulatorResult}" EQUAL "0")
 		# Note that it was
 		message(STATUS "Emulator Native ${systemNormal}/${archNormal} -> "
-			"standaloneNatives_${systemNormal}_${archNormal}")
+			"${ruleName}")
 
 		# Add target which builds the natives
-		add_custom_target(standaloneNatives_${systemNormal}_${archNormal}
+		add_custom_target(${ruleName}
 			COMMAND "${CMAKE_COMMAND}"
 				"--build" "${coreBuild}"
 				"--target" "BaseStatic" "libJvmDyLib"
@@ -103,11 +112,17 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 				"--target" "libEmulatorBase"
 			COMMAND_EXPAND_LISTS)
 
+		# Add this rule to the standalone set
+		list(APPEND SQUIRRELJME_STANDALONE_NATIVE_RULES
+			"standaloneNatives_${systemNormal}_${archNormal}")
+
 		# Set the emulator native path
 		set_target_properties(standaloneNatives_${systemNormal}_${archNormal}
 			PROPERTIES
 			SQUIRRELJME_CORE_NATIVE_PATH "${emulatorOut}"
 			SQUIRRELJME_EMULATOR_NATIVE_PATH "${emulatorOut}"
+			SQUIRRELJME_SYSTEM "${systemNormal}"
+			SQUIRRELJME_ARCH "${archNormal}"
 			ADDITIONAL_CLEAN_FILES
 				"${coreBuild};${coreOut};${emulatorBuild};${emulatorOut}")
 	endif()
