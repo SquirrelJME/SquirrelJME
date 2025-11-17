@@ -58,7 +58,7 @@ Provider<CMakeBuildTask> libNanoCoatCore = tasks.register(
 	CMakeBuildTask.class,
 	rootProject.getProjectDir().toPath().resolve("nanocoat"),
 	"",
-	["BaseStatic", "libJvm", "ScritchUI", "ScritchAudio"],
+	["BaseStatic", "libJvmDyLib", "ScritchUI", "ScritchAudio"],
 	dylibArgs(dylibBase, "core"))
 
 // Add additional output directories
