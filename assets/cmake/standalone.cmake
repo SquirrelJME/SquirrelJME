@@ -96,11 +96,12 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 		add_custom_command(TARGET standaloneJar
 			POST_BUILD
 			COMMAND "${CMAKE_COMMAND}" "-E"
-				"make_directory" "${workPath}/${systemNormal}/${archNormal}"
+				"make_directory"
+				"${workPath}/natives/${systemNormal}/${archNormal}"
 			COMMAND "${CMAKE_COMMAND}" "-E"
 				"copy_directory"
 				"${coreNativePath}/" "${emulatorNativePath}/"
-				"${workPath}/${systemNormal}/${archNormal}"
+				"${workPath}/natives/${systemNormal}/${archNormal}"
 			COMMENT "Embedding ${systemNormal}/${archNormal}...")
 	endforeach()
 
