@@ -299,6 +299,60 @@ public class VMCompactLibraryTaskAction
 	@Override
 	public void execute(Task __task)
 	{
+		// It is possible for ProGuard to run out of memory
+		try
+		{
+			// Try to run normally
+			this.__execute(__task);
+		}
+		
+		// ProGuard has actually run out of memory
+		catch (OutOfMemoryError __oom)
+		{
+			// Double-GC to force it to run, hopefully since we did have an
+			// actual out of memory event
+			Runtime.getRuntime().gc();
+			System.gc();
+			
+			// Get the task being worked on
+			VMCompactLibraryTask compactTask = (VMCompactLibraryTask)__task;
+			
+			// Where are we reading/writing to/from?
+			Path inputJarPath = compactTask.inputBaseJarPath().get();
+			Path outputJarPath = compactTask.outputJarPath().get();
+			Path outputMapPath = compactTask.outputMapPath().get();
+			
+			// Could fail
+			try
+			{
+				// Copy the input to the output
+				Files.copy(inputJarPath, outputJarPath,
+					StandardCopyOption.REPLACE_EXISTING);
+				
+				// Initialize a blank mapping file
+				Files.write(outputMapPath, new byte[0],
+					StandardOpenOption.CREATE, StandardOpenOption.WRITE,
+					StandardOpenOption.TRUNCATE_EXISTING);
+			}
+			
+			// Just forward out write failures
+			catch (IOException __e)
+			{
+				throw new RuntimeException(__e.getMessage(), __e);
+			}
+		}
+	}
+	
+	/**
+	 * The actual execution of the ask.
+	 * 
+	 * @param __task The task being executed.
+	 * @throws OutOfMemoryError If this ran out of memory.
+	 * @since 2023/02/01
+	 */
+	private void __execute(Task __task)
+		throws OutOfMemoryError
+	{
 		VMCompactLibraryTask compactTask = (VMCompactLibraryTask)__task;
 		
 		// Where are we reading/writing to/from?
