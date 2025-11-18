@@ -7,14 +7,6 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Platform flags
 
-# Is this cross compiled?
-if (NOT "${SQUIRRELJME_HOST_SYSTEM}" STREQUAL "${SQUIRRELJME_SYSTEM}" OR
-	NOT "${SQUIRRELJME_HOST_ARCH}" STREQUAL "${SQUIRRELJME_ARCH}")
-	set(SQUIRRELJME_IS_CROSS_COMPILE YES)
-else()
-	set(SQUIRRELJME_IS_CROSS_COMPILE NO)
-endif()
-
 # It's a UNIX system! I know this!
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "bsd" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "linux" OR

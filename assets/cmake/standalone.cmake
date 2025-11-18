@@ -55,7 +55,7 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 
 	# Where is the actual standalone Jar placed?
 	set(inputJar "${SQUIRRELJME_STANDALONE_JAR_BASE_PATH}")
-	set(outputDir "${CMAKE_BINARY_DIR}/standalone/")
+	set(outputDir "${CMAKE_BINARY_DIR}/standalone")
 	set(outputJar "${outputDir}/standalone.jar")
 	set(workPath "${CMAKE_BINARY_DIR}/standaloneWork")
 

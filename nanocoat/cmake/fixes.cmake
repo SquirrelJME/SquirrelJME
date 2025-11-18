@@ -19,15 +19,6 @@ set(CMAKE_SKIP_RPATH YES)
 set(CMAKE_BUILD_WITH_INSTALL_RPATH NO)
 set(CMAKE_SKIP_INSTALL_RPATH YES)
 
-# Cross-compiling the build?
-if(NOT "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}" OR
-	NOT "${CMAKE_HOST_SYSTEM_PROCESSOR}" STREQUAL "${CMAKE_SYSTEM_PROCESSOR}")
-	message(STATUS "Performing cross-build as "
-		"${CMAKE_HOST_SYSTEM_NAME}/"
-		"${CMAKE_HOST_SYSTEM_PROCESSOR} is not "
-		"${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}.")
-endif()
-
 # LibRetro build for emscripten can never be static
 if(SQUIRRELJME_IS_LIBRETRO)
 	if(EMSCRIPTEN)
@@ -272,6 +263,23 @@ macro(squirreljme_no_soname target)
 	set_target_properties(${target} PROPERTIES
 		NO_SONAME YES
 		NO_SYSTEM_FROM_IMPORTED YES)
+endmacro()
+
+# Used to remove any NOTFOUNDs from variables
+macro(squirreljme_notfound_strip var)
+	unset(${var}-NOTFOUND)
+	unset(${var}-NOTFOUND CACHE)
+
+	if (${var} MATCHES "-NOTFOUND$")
+		unset(${var})
+		unset(${var} CACHE)
+	endif()
+
+	if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.13")
+		if("$CACHE{${var}}" MATCHES "-NOTFOUND$")
+			unset(${var} CACHE)
+		endif()
+	endif()
 endmacro()
 
 # Find headers

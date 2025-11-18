@@ -70,7 +70,7 @@ squirreljme_include("apple.cmake")
 squirreljme_include("hardening.cmake")
 
 # Is the system JNI available?
-squirreljme_include("jni.cmake")
+squirreljme_include("find-jni.cmake")
 
 # Doxygen
 squirreljme_include("doxygen.cmake")

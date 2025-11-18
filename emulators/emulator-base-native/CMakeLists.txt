@@ -25,7 +25,7 @@ squirreljme_include_nanocoat("pre-fixes.cmake")
 squirreljme_include_nanocoat("system-map.cmake")
 squirreljme_include_nanocoat("utils.cmake")
 squirreljme_include_nanocoat("fixes.cmake")
-squirreljme_include_nanocoat("jni.cmake")
+squirreljme_include_nanocoat("find-jni.cmake")
 squirreljme_include_nanocoat("find-threads.cmake")
 
 # Where is NanoCoat?
@@ -64,9 +64,8 @@ add_library(libEmulatorBase SHARED
 target_include_directories(libEmulatorBase PUBLIC
 	"headers"
 	"${nanocoatIncludePath}"
-	"${JNI_INCLUDE_DIRS}"
-	"${JAVA_INCLUDE_PATH}"
-	"${JAVA_INCLUDE_PATH2}"
+	"${SQUIRRELJME_JAVA_JNI_INCLUDE}"
+	"${SQUIRRELJME_JAVA_JVM_INCLUDE}"
 	"${SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR}")
 
 # Libraries for the build
