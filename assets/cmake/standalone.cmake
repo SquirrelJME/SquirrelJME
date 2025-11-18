@@ -24,23 +24,23 @@ else(SQUIRRELJME_HAS_JAVA)
 	set(SQUIRRELJME_HAS_STANDALONE_JAR_BASE YES)
 
 	# The built Jar has to go somewhere
-	set(outputPath "${CMAKE_BINARY_DIR}/standaloneBase/standalone.jar")
-	set(SQUIRRELJME_STANDALONE_JAR_BASE_PATH "${outputPath}")
+	set(outputBaseJar "${CMAKE_BINARY_DIR}/standaloneBase/standalone.jar")
+	set(SQUIRRELJME_STANDALONE_JAR_BASE_PATH "${outputBaseJar}")
 
 	# Native is needed for Gradle
-	file(TO_NATIVE_PATH "${outputPath}"
-		outputPathNative)
+	file(TO_NATIVE_PATH "${outputBaseJar}"
+		outputBaseJarNative)
 
 	# Add rule to build the Standalone Jar
 	squirreljme_add_gradle_target(standaloneJarBase
-		"-Dsquirreljme.standalone.path=${outputPathNative}"
-		"-Psquirreljme.standalone.path=${outputPathNative}"
+		"-Dsquirreljme.standalone.path=${outputBaseJarNative}"
+		"-Psquirreljme.standalone.path=${outputBaseJarNative}"
 		":emulators:standalone:shadowJar")
 
 	# Set some SquirrelJME specific properties
 	set_target_properties(${targetName} PROPERTIES
-		ADDITIONAL_CLEAN_FILES "${outputPath}"
-		SQUIRRELJME_STANDALONE_JAR_PATH "${outputPath}")
+		ADDITIONAL_CLEAN_FILES "${outputBaseJar}"
+		SQUIRRELJME_STANDALONE_JAR_PATH "${outputBaseJar}")
 
 	# Register CI/CD Task
 	squirreljme_cicd_register(standaloneJarBase)
@@ -55,7 +55,8 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 
 	# Where is the actual standalone Jar placed?
 	set(inputJar "${SQUIRRELJME_STANDALONE_JAR_BASE_PATH}")
-	set(outputJar "${CMAKE_BINARY_DIR}/standalone/standalone.jar")
+	set(outputDir "${CMAKE_BINARY_DIR}/standalone/")
+	set(outputJar "${outputDir}/standalone.jar")
 	set(workPath "${CMAKE_BINARY_DIR}/standaloneWork")
 
 	# Setup target to combine everything into a single Jar, older CMake does
@@ -109,8 +110,10 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 	add_custom_command(TARGET standaloneJar
 		POST_BUILD
 		COMMAND "${CMAKE_COMMAND}" "-E"
-			"tar" "c" "${outputPath}" "--format=zip" "--" "."
-		BYPRODUCTS "${outputPath}"
+			"make_directory" "${outputDir}"
+		COMMAND "${CMAKE_COMMAND}" "-E"
+			"tar" "c" "${outputJar}" "--format=zip" "--" "."
+		BYPRODUCTS "${outputJar}"
 		WORKING_DIRECTORY "${workPath}"
 		COMMENT "Finalizing ${outputJar}...")
 endif()
