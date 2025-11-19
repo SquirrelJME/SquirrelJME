@@ -18,11 +18,13 @@ list(APPEND SQUIRRELJME_JVM_MAP
 	"Hosted!hosted"
 	"SpringCoat!springcoat"
 	"NanoCoat!nanocoat")
+list(SORT SQUIRRELJME_JVM_MAP)
 
 # Clutter levels which are available
 list(APPEND SQUIRRELJME_CLUTTER_MAP
 	"Release!release"
 	"Debug!debug")
+list(SORT SQUIRRELJME_CLUTTER_MAP)
 
 # Architecture mappings (SquirrelJME!gcc)
 list(APPEND SQUIRRELJME_ARCH_MAP
@@ -48,6 +50,7 @@ list(APPEND SQUIRRELJME_ARCH_MAP
 	"powerpc32l!powerpcle"
 	"powerpc64b!powerpc64"
 	"powerpc64l!powerpc64le")
+list(SORT SQUIRRELJME_ARCH_MAP)
 
 # System mappings (SquirrelJME!gcc)
 list(APPEND SQUIRRELJME_SYSTEM_MAP
@@ -74,6 +77,7 @@ list(APPEND SQUIRRELJME_SYSTEM_MAP
 	"macosx!macosx"
 	"macosx!darwin"
 	"3ds!3ds")
+list(SORT SQUIRRELJME_SYSTEM_MAP)
 
 # Unmap from mapping fields
 function(squirreljme_unmap destVar index source)

@@ -55,6 +55,10 @@ foreach(systemMap IN LISTS SQUIRRELJME_SYSTEM_MAP)
 	endforeach()
 endforeach()
 
+# Make sure the lists are sorted to keep them consistent
+list(SORT SQUIRRELJME_GCC_COMPILERS)
+list(SORT SQUIRRELJME_COMPILER_MAP)
+
 # Store the set of GCC compilers into the cache, so that it is never lost if
 # this needs to be re-run
 set(SQUIRRELJME_GCC_COMPILERS "${SQUIRRELJME_GCC_COMPILERS}"

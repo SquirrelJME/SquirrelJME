@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="10.0.9" transformSequenceNumber="10">
+<install4j version="10.0.7" transformSequenceNumber="10">
   <directoryPresets config="." />
   <application name="SquirrelJME" applicationId="5232-9992-4953-4137" mediaDir="./build/install4j/out" compression="9" lzmaCompression="true" pack200Compression="true" shortName="squirreljme" publisher="Stephanie Gawroriski" publisherWeb="https://squirreljme.cc/" version="0.3.0_0" allPathsRelative="true" backupOnSave="true" autoSave="true" macVolumeId="b44c0629f58949ee" javaMinVersion="1.8.0_452" javaMaxVersion="11">
     <variables>
@@ -1252,11 +1252,14 @@ return true;</property>
     <linuxDeb name="Debian AMD64" id="130" mediaFileName="${compiler:sys.shortName}_linux-amd64_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="amd64">
       <jreBundle usePack200="true" />
     </linuxDeb>
-    <linuxDeb name="Debian ARM" id="143" mediaFileName="${compiler:sys.shortName}_linux-arm_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="armel">
+    <linuxDeb name="Debian ARM32" id="143" mediaFileName="${compiler:sys.shortName}_linux-arm_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="armel">
       <jreBundle usePack200="true" platform="linux-arm" />
     </linuxDeb>
-    <linuxDeb name="Debian AARCH64" id="146" mediaFileName="${compiler:sys.shortName}_linux-aarch64_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="aarch64">
+    <linuxDeb name="Debian ARM64" id="146" mediaFileName="${compiler:sys.shortName}_linux-aarch64_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="aarch64">
       <jreBundle usePack200="true" platform="linux-aarch64" />
+    </linuxDeb>
+    <linuxDeb name="Debian IA32" id="148" mediaFileName="${compiler:sys.shortName}_linux-i386_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="i386">
+      <jreBundle usePack200="true" />
     </linuxDeb>
   </mediaSets>
   <buildIds>

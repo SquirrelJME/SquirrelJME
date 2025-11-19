@@ -69,6 +69,7 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 		DEPENDS standaloneJarBase
 			"${SQUIRRELJME_STANDALONE_NATIVE_RULES}")
 	add_custom_command(TARGET standaloneJar
+		POST_BUILD
 		COMMAND "${CMAKE_COMMAND}" "-E"
 			"tar" "x" "${inputJar}" "--format=zip"
 		WORKING_DIRECTORY "${workPath}")
@@ -92,6 +93,10 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 			SQUIRRELJME_SYSTEM)
 		get_target_property(archNormal ${rule}
 			SQUIRRELJME_ARCH)
+
+		# Remember which actual natives were put in
+		list(APPEND SQUIRRELJME_STANDALONE_NATIVES_AVAILABLE
+			"${systemNormal}!${archNormal}")
 
 		# Add the natives to the Standalone Jar
 		add_custom_command(TARGET standaloneJar
@@ -117,3 +122,8 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 		WORKING_DIRECTORY "${workPath}"
 		COMMENT "Finalizing ${outputJar}...")
 endif()
+
+# Cache the available natives
+set(SQUIRRELJME_STANDALONE_NATIVES_AVAILABLE
+	"${SQUIRRELJME_STANDALONE_NATIVES_AVAILABLE}"
+	CACHE STRING "Available Standalone Natives")

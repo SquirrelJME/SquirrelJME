@@ -23,17 +23,9 @@ find_program(Git_EXECUTABLE
 find_program(Flatpak_EXECUTABLE
 	NAMES flatpak)
 
-# Locate Install4J
-find_program(Install4J_EXECUTABLE
-	NAMES install4j)
-find_program(Install4JC_EXECUTABLE
-	NAMES install4jc)
-
 # Print results of everything that was found
 message(STATUS "OCI       : ${OCI_EXECUTABLE}")
 message(STATUS "Fossil    : ${Fossil_EXECUTABLE}")
 message(STATUS "Git       : ${Git_EXECUTABLE}")
 message(STATUS "Flatpak   : ${Flatpak_EXECUTABLE}")
-message(STATUS "install4j : ${Install4J_EXECUTABLE}")
-message(STATUS "install4jc: ${Install4JC_EXECUTABLE}")
 

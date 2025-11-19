@@ -30,8 +30,22 @@ project(SquirrelJMEBuild
 # Include system mappings
 squirreljme_include_nanocoat("system-map.cmake")
 
+# Version number for SquirrelJME
+squirreljme_include_nanocoat("identify-squirreljme-version.cmake")
+
 # Environment and everything else
 squirreljme_include("environment-depends.cmake")
+
+# Include a specified file such as a configuration?
+if(DEFINED $ENV{SQUIRRELJME_PIPELINE_CONFIG})
+	message(STATUS "Including pipeline configuration...")
+
+	include("$ENV{SQUIRRELJME_PIPELINE_CONFIG}")
+elseif(DEFINED SQUIRRELJME_PIPELINE_CONFIG)
+	message(STATUS "Including pipeline configuration...")
+
+	include("${SQUIRRELJME_PIPELINE_CONFIG}")
+endif()
 
 # CI/CD Pipelines
 squirreljme_include("cicd-pipeline.cmake")
@@ -51,8 +65,14 @@ squirreljme_include("nanocoat-runtime.cmake")
 # Building standalone
 squirreljme_include("standalone.cmake")
 
+# Creation of the Install4J Installers and Portables
+squirreljme_include("install4j.cmake")
+
 # Updating the Fossil site, uploading everything to it, where possible
 squirreljme_include("fossil-site.cmake")
+
+# Exporting of pipeline rules to build and setup CI/CD files
+squirreljme_include("pipeline-export.cmake")
 
 # build_linux_aarch64_natives
 # build_linux_aarch64_standalone_flatpak

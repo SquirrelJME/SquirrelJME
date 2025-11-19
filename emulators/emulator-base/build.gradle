@@ -97,20 +97,15 @@ TaskProvider<Zip> archiveNatives = tasks.register('archiveNatives', Zip.class) {
 		return "natives-" + (String)rootProject.squirreljmeSystemDash
 	}))
 	
+	// The sources
 	from project.provider({ ->
 		return fileTree(dylibPath(dylibBase, "emulator")).getElements()
 	})
 	from project.provider({ ->
 		return fileTree(dylibPath(dylibBase, "core")).getElements()
 	})
-
-	/*from project.provider({ ->
-		zipTree(libNativeUI.get().cmakeOutFile.toFile())
-			.getElements() })
-	from project.provider({ ->
-		zipTree(libNativeAudio.get().cmakeOutFile.toFile())
-			.getElements() })*/
 	
+	// Where it is going
 	into project.provider({ ->
 		return "/natives/" + (String)rootProject.squirreljmeSystemSlash + "/"
 	})

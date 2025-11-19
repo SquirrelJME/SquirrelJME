@@ -306,9 +306,27 @@ public class VMCompactLibraryTaskAction
 			this.__execute(__task);
 		}
 		
-		// ProGuard has actually run out of memory
-		catch (OutOfMemoryError __oom)
+		// ProGuard has actually run out of memory, note that it
+		// erroneously wraps it in RuntimeException as well
+		catch (RuntimeException|OutOfMemoryError __oom)
 		{
+			// We need to find if this was ever thrown up the exception tree
+			// as ProGuard wraps errors when it should not
+			Throwable found = null;
+			if (__oom instanceof OutOfMemoryError)
+				found = __oom;
+			else if (__oom instanceof RuntimeException)
+				do
+				{
+					found = (found == null ? __oom.getCause() :
+						found.getCause());
+				} while (found != null &&
+					!(found instanceof OutOfMemoryError));
+			
+			// Did not find an out of memory error?
+			if (!(found instanceof OutOfMemoryError))
+				throw __oom;
+			
 			// Double-GC to force it to run, hopefully since we did have an
 			// actual out of memory event
 			Runtime.getRuntime().gc();
