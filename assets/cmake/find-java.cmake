@@ -43,6 +43,12 @@ define_property(TARGET PROPERTY SQUIRRELJME_TEST_RESULTS_DIR
 	BRIEF_DOCS "Directory where test results are stored.")
 define_property(TARGET PROPERTY SQUIRRELJME_STANDALONE_JAR_PATH
 	BRIEF_DOCS "Path where the Standalone Jar is placed.")
+define_property(TARGET PROPERTY SQUIRRELJME_NANOCOAT_ROM_PATH
+	BRIEF_DOCS "Path where the NanoCoat ROM is placed.")
+define_property(TARGET PROPERTY SQUIRRELJME_TEST_LEVEL
+	BRIEF_DOCS "The test level of the target.")
+define_property(TARGET PROPERTY SQUIRRELJME_CLUTTER_LEVEL
+	BRIEF_DOCS "The clutter level of the target.")
 
 # Only possible when Java is available
 if(SQUIRRELJME_HAS_JAVA)
@@ -63,11 +69,11 @@ if(SQUIRRELJME_HAS_JAVA)
 		# Now declare the target
 		add_custom_target(${targetName}
 			COMMAND "${SQUIRRELJME_GRADLE_EXECUTABLE}"
-				--console plain
-				--continue
-				--parallel
-				--no-daemon
-				--stacktrace
+				"--console" "plain"
+				"--continue"
+				"--parallel"
+				"--no-daemon"
+				"--stacktrace"
 				"${gradleArgs}"
 			COMMAND_EXPAND_LISTS
 			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

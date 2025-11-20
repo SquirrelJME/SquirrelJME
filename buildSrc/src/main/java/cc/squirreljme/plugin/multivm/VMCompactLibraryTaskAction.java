@@ -252,6 +252,11 @@ public class VMCompactLibraryTaskAction
 		{
 			// Do not optimize here, we want to keep everything around
 			"-dontoptimize",
+			"-dontshrink",
+			
+			// Tests can break things in specific ways that ProGuard does
+			// not like much
+			"-dontwarn",
 			
 			// This keeps everything about tests but will use pre-existing
 			// mappings and otherwise if we are using obfuscated classes

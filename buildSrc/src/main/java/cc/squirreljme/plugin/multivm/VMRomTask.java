@@ -11,6 +11,7 @@ package cc.squirreljme.plugin.multivm;
 
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.inject.Inject;
 import lombok.Getter;
 import org.gradle.api.DefaultTask;
@@ -78,10 +79,19 @@ public class VMRomTask
 	 */
 	public final Provider<Path> outputPath()
 	{
-		return this.getProject().provider(() -> VMHelpers.cacheDir(
-			this.getProject(), this.classifier).get()
-			.resolve(this.classifier.getVmType()
-				.outputRomName(this.classifier.getSourceSet(),
-					this.classifier.getBangletVariant())));
+		return this.getProject().provider(() ->
+			{
+				// Use alternative output location?
+				String alt = System.getProperty("squirreljme.rom.path");
+				if (alt != null && !alt.isEmpty())
+					return Paths.get(alt).toAbsolutePath().normalize();
+				
+				// Use default location
+				return VMHelpers.cacheDir(this.getProject(),
+					this.classifier).get()
+					.resolve(this.classifier.getVmType()
+						.outputRomName(this.classifier.getSourceSet(),
+							this.classifier.getBangletVariant()));
+			});
 	}
 }

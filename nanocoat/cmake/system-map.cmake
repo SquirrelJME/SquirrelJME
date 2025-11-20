@@ -22,9 +22,15 @@ list(SORT SQUIRRELJME_JVM_MAP)
 
 # Clutter levels which are available
 list(APPEND SQUIRRELJME_CLUTTER_MAP
-	"Release!release"
-	"Debug!debug")
+	"Release!release!fast"
+	"Debug!debug!slow")
 list(SORT SQUIRRELJME_CLUTTER_MAP)
+
+# Testing level
+list(APPEND SQUIRRELJME_TEST_LEVEL_MAP
+	"!"
+	"Test!test")
+list(SORT SQUIRRELJME_TEST_LEVEL_MAP)
 
 # Architecture mappings (SquirrelJME!gcc)
 list(APPEND SQUIRRELJME_ARCH_MAP

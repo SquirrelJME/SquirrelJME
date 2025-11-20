@@ -12,6 +12,10 @@
 # This is a reasonable version to base off
 cmake_minimum_required(VERSION 3.13)
 
+# Disable parallelism since Java building can run out of memory on a number
+# of systems, so for job stability it is best to do that here
+set(CMAKE_BUILD_PARALLEL_LEVEL 1)
+
 # Easier includes
 include("${CMAKE_SOURCE_DIR}/assets/cmake/easier-includes.cmake"
 	NO_POLICY_SCOPE)

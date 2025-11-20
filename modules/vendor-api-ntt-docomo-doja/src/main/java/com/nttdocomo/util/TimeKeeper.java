@@ -9,15 +9,23 @@
 
 package com.nttdocomo.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public interface TimeKeeper
 {
+	@Api
 	void dispose();
 	
+	@Api
 	int getMinTimeInterval();
 	
+	@Api
 	int getResolution();
 	
+	@Api
 	void start();
 	
+	@Api
 	void stop();
 }
