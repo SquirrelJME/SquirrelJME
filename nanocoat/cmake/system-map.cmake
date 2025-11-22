@@ -52,10 +52,14 @@ list(APPEND SQUIRRELJME_ARCH_MAP
 	"amd64!em64t"
 	"mips32b!mips"
 	"mips32l!mipsel"
-	"mips32b!mips64"
-	"mips32l!mips64el"
+	"mips64b!mips64"
+	"mips64l!mips64el"
+	"mips32b6!mipsisa32r6"
+	"mips32l6!mipsisa32r6el"
+	"mips64b6!mipsisa64r6"
+	"mips64l6!mipsisa64r6el"
 	"riscv64!riscv64"
-	"arm64!aarch64"
+	"arm64l!aarch64"
 	"powerpc32b!powerpc"
 	"powerpc32l!powerpcle"
 	"powerpc64b!powerpc64"
@@ -196,7 +200,9 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 			"__PPC64__" IN_LIST defines OR
 			"_ARCH_PPC64" IN_LIST defines OR
 			"_LP64" IN_LIST defines OR
-			"__LP64__" IN_LIST defines)
+			"__LP64__" IN_LIST defines OR
+			"_LLP64" IN_LIST defines OR
+			"__LLP64__" IN_LIST defines)
 			if("__BIG_ENDIAN__" IN_LIST defines)
 				set(hasArch "powerpc64b")
 			else()
@@ -210,6 +216,49 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 				set(hasArch "powerpc32b")
 			else()
 				set(hasArch "powerpc32l")
+			endif()
+		endif()
+	elseif("_MIPS_ARCH_MIPS32R6" IN_LIST defines)
+		if("MIPSEB" IN_LIST defines OR
+			"_MIPSEB" IN_LIST defines OR
+			"__MIPSEB" IN_LIST defines OR
+			"__MIPSEB__" IN_LIST defines OR)
+			set(hasArch "mips32b6")
+		else()
+			set(hasArch "mips32l6")
+		endif()
+	elseif("_MIPS_ARCH_MIPS64R6" IN_LIST defines)
+		if("MIPSEB" IN_LIST defines OR
+			"_MIPSEB" IN_LIST defines OR
+			"__MIPSEB" IN_LIST defines OR
+			"__MIPSEB__" IN_LIST defines OR)
+			set(hasArch "mips64b6")
+		else()
+			set(hasArch "mips64l6")
+		endif()
+	elseif("__mips__" IN_LIST defines OR
+		"__mips" IN_LIST defines OR
+		"__MIPS__" IN_LIST defines)
+		if("_LP64" IN_LIST defines OR
+			"__LP64__" IN_LIST defines OR
+			"_LLP64" IN_LIST defines OR
+			"__LLP64__" IN_LIST defines)
+			if("MIPSEB" IN_LIST defines OR
+				"_MIPSEB" IN_LIST defines OR
+				"__MIPSEB" IN_LIST defines OR
+				"__MIPSEB__" IN_LIST defines OR)
+				set(hasArch "mips64b")
+			else()
+				set(hasArch "mips64l")
+			endif()
+		else()
+			if("MIPSEB" IN_LIST defines OR
+				"_MIPSEB" IN_LIST defines OR
+				"__MIPSEB" IN_LIST defines OR
+				"__MIPSEB__" IN_LIST defines OR)
+				set(hasArch "mips32b")
+			else()
+				set(hasArch "mips32l")
 			endif()
 		endif()
 	elseif("_M_I86" IN_LIST defines)
@@ -233,6 +282,26 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		"__INTEL__" IN_LIST defines OR
 		"__I86__" IN_LIST defines)
 		set(hasArch "ia32")
+	elseif("__AARCH64_SIMD__" IN_LIST defines OR
+		"__aarch64__" IN_LIST defines OR
+		"__arm64" IN_LIST defines OR
+		"__arm64__" IN_LIST defines OR
+		"_M_ARM64" IN_LIST defines)
+		if("__AARCH64EB__" IN_LIST defines OR
+			"__BIG_ENDIAN__" IN_LIST defines)
+			set(hasArch "arm64b")
+		else()
+			set(hasArch "arm64l")
+		endif()
+	elseif("__arm__" IN_LIST defines
+		"__arm32" IN_LIST defines OR
+		"__arm32__" IN_LIST defines OR
+		"_M_ARM" IN_LIST defines)
+		if("__BIG_ENDIAN__" IN_LIST defines)
+			set(hasArch "arm32b")
+		else()
+			set(hasArch "arm32l")
+		endif()
 	else()
 		set(hasArch "unknown")
 	endif()
@@ -280,11 +349,19 @@ function(squirreljme_identify_by_cmake outSystem outArch inSystem inArch)
 		"${inArch}" STREQUAL "armbe" OR
 		"${inArch}" STREQUAL "arm" OR
 		"${inArch}" STREQUAL "armv5l")
-		set(hasArch "arm32")
+		if("${inArch}" STREQUAL "armbe")
+			set(hasArch "arm32b")
+		else()
+			set(hasArch "arm32l")
+		endif()
 	elseif("${inArch}" STREQUAL "arm64" OR
 		"${inArch}" STREQUAL "aarch64" OR
 		"${inArch}" STREQUAL "aarch64_be")
-		set(hasArch "arm64")
+		if("${inArch}" STREQUAL "aarch64_be")
+			set(hasArch "arm64b")
+		else()
+			set(hasArch "arm64l")
+		endif()
 	elseif("${inArch}" STREQUAL "i286" OR
 		"${inArch}" STREQUAL "I86" OR
 		"${inArch}" STREQUAL "ia16")

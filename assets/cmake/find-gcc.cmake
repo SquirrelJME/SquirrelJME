@@ -42,24 +42,36 @@ foreach(systemMap IN LISTS SQUIRRELJME_SYSTEM_MAP)
 
 		# If found, we want to store it somewhere
 		if(GCC_${systemNormal}_${archNormal}_EXECUTABLE)
-			# Add to the system of available compilers
-			list(APPEND SQUIRRELJME_GCC_COMPILERS
-				"${GCC_${systemNormal}_${archNormal}_EXECUTABLE}")
-			list(APPEND SQUIRRELJME_COMPILER_MAP
-				"gcc!${systemNormal}!${archNormal}")
-
-			# Note it, if found
-			message(STATUS "GCC ${systemNormal}/${archNormal}: "
+			squirreljme_compiler_register(gcc
+				"${systemNormal}" "${archNormal}"
 				"${GCC_${systemNormal}_${archNormal}_EXECUTABLE}")
 		endif()
 	endforeach()
 endforeach()
 
-# Make sure the lists are sorted to keep them consistent
-list(SORT SQUIRRELJME_GCC_COMPILERS)
-list(SORT SQUIRRELJME_COMPILER_MAP)
+# Is there a default GCC?
+find_program(DEFAULT_GCC_EXECUTABLE
+	NAMES "gcc")
+if(DEFAULT_GCC_EXECUTABLE)
+	# Determine the system/arch of that GCC
+	squirreljme_identify_by_gcc(defaultGccSystem defaultGccArch
+		"${DEFAULT_GCC_EXECUTABLE}")
 
-# Store the set of GCC compilers into the cache, so that it is never lost if
-# this needs to be re-run
-set(SQUIRRELJME_GCC_COMPILERS "${SQUIRRELJME_GCC_COMPILERS}"
-	CACHE STRING "Available GCC compilers")
+	# Is the compiler a detected system?
+	if(NOT "${defaultGccSystem}" STREQUAL "unknown" AND
+		NOT "${defaultGccArch}" STREQUAL "unknown" AND
+		NOT "${defaultGccSystem}" STREQUAL "" AND
+		NOT "${defaultGccArch}" STREQUAL "")
+		# Has the system never been added yet?
+		list(FIND SQUIRRELJME_COMPILER_MAP
+			"${defaultGccSystem}!${defaultGccArch}"
+			hasDefaultGcc)
+
+		# If not, then we should add it
+		if(NOT "${hasDefaultGcc}" GREATER_EQUAL "0")
+			squirreljme_compiler_register(gcc
+				"${defaultGccSystem}" "${defaultGccArch}"
+				"${DEFAULT_GCC_EXECUTABLE}")
+		endif()
+	endif()
+endif()
