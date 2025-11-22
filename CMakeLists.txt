@@ -72,6 +72,15 @@ squirreljme_include("standalone.cmake")
 # Creation of the Install4J Installers and Portables
 squirreljme_include("install4j.cmake")
 
+# Building of the Linux Flatpak
+# Disabled because Flatpak requires the following:
+# - After the Flatpak is built, it needs to be installed before it is bundled
+# - The runtimes change too often and disappear
+# - Annoying deprecation warnings
+# - For a proper Flatpak build you cannot have the internet or any network
+#   access, thus Gradle is rather impossible without hacks
+#squirreljme_include("flatpak.cmake")
+
 # Updating the Fossil site, uploading everything to it, where possible
 squirreljme_include("fossil-site.cmake")
 

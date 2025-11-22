@@ -122,7 +122,8 @@ if(Fossil_EXECUTABLE)
 			endforeach()
 
 		# Simply only single binaries
-		elseif("${uploadHow}" STREQUAL "rom" OR
+		elseif("${uploadHow}" STREQUAL "flatpak" OR
+			"${uploadHow}" STREQUAL "rom" OR
 			"${uploadHow}" STREQUAL "source" OR
 			"${uploadHow}" STREQUAL "standalone")
 			# Add to the upload

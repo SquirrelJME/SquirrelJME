@@ -19,13 +19,8 @@ find_program(Fossil_EXECUTABLE
 find_program(Git_EXECUTABLE
 	NAMES git)
 
-# Locate Flatpak
-find_program(Flatpak_EXECUTABLE
-	NAMES flatpak)
-
 # Print results of everything that was found
 message(STATUS "OCI       : ${OCI_EXECUTABLE}")
 message(STATUS "Fossil    : ${Fossil_EXECUTABLE}")
 message(STATUS "Git       : ${Git_EXECUTABLE}")
-message(STATUS "Flatpak   : ${Flatpak_EXECUTABLE}")
 
