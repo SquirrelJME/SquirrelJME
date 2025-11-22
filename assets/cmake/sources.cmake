@@ -9,7 +9,7 @@
 
 # Where shall the sources be placed?
 set(archiveDir "${CMAKE_BINARY_DIR}")
-set(archiveBase "squirreljme-${SQUIRRELJME_VERSION}")
+set(archiveBase "squirreljme-${SQUIRRELJME_VERSION}-src")
 set(zipPath "${archiveDir}/${archiveBase}.zip")
 set(tgzPath "${archiveDir}/${archiveBase}.tgz")
 
