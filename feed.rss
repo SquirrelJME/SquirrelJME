@@ -17,8 +17,22 @@
 		rel="self" />
 
 	<!-- Update these accordingly! -->
-	<pubDate>Thu, 04 Sep 2025 20:00 EDT</pubDate>
-	<lastBuildDate>Thu, 04 Sep 2025 20:00 EDT</lastBuildDate>
+	<pubDate>Sat, 22 Nov 2025 17:00 EST</pubDate>
+	<lastBuildDate>Sat, 22 Nov 2025 17:00 EST</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">74c4dc1e-40b5-4753-8ce6-1b7c38d4d54d</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20251122_1700.mkd</link>
+		<pubDate>Sat, 22 Nov 2025 17:00 EST</pubDate>
+
+		<title>Dropping Flatpak Support</title>
+		<description>SquirrelJME will no longer be building Flatpaks, keeping them up to date,
+nor showing them on the download page. The build process for Flatpaks is just
+too limiting and the experience as a whole is just a pain.
+
+For existing Flatpak users, it is recommended that you switch to either
+the _Standalone_ or _Install4J_ installer version.</description>
+	</item>
 
 	<item>
 		<guid isPermaLink="false">bbfac411-6381-41b3-b0d0-618ed3ef1a4a</guid>
