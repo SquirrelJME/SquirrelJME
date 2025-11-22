@@ -126,6 +126,7 @@ if(SQUIRRELJME_ENABLE_DYLIB)
 		COMMAND "${CMAKE_COMMAND}" "-E" "copy"
 			"${jvmOutDir}/${SQUIRRELJME_LIBSQUIRRELJME_NAME}"
 			"${jvmOutDir}/${SQUIRRELJME_LIBJVM_NAME}"
+		SOURCES "${jvmOutDir}/${SQUIRRELJME_LIBSQUIRRELJME_NAME}"
 		BYPRODUCTS "${jvmOutDir}/${SQUIRRELJME_LIBJVM_NAME}"
 		COMMENT "Copying libsquirreljme to libjvm...")
 endif()

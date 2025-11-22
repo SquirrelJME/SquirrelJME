@@ -9,18 +9,70 @@
 
 # Macro to add a specific compiler
 macro(squirreljme_compiler_register type system arch compilerExe)
-	# Set compiler executable
-	set(SQUIRRELJME_COMPILER_${systemNormal}_${archNormal}_EXECUTABLE
-		"${compilerExe}")
+	# Do not replace an existing compiler map
+	set(compilerMap "${system}!${arch}")
+	if("${compilerMap}" IN_LIST SQUIRRELJME_COMPILER_MAP)
+		message(STATUS "Not adding another compiler for ${system}/${arch}!")
+	else()
+		# Note it
+		message(STATUS "Compiler ${type} ${system}/${arch}: "
+			"${compilerExe}")
 
-	# Add to the list of available compilers
-	list(APPEND SQUIRRELJME_COMPILERS "${compilerExe}")
-	list(APPEND SQUIRRELJME_COMPILER_MAP
-		"${system}!${arch}")
+		# Set compiler executable
+		set(SQUIRRELJME_COMPILER_${systemNormal}_${archNormal}_EXECUTABLE
+			"${compilerExe}")
 
-	# Note it
-	message(STATUS "Compiler ${type} ${system}/${arch}: "
-		"${compilerExe}")
+		# Add to the list of available compilers
+		list(APPEND SQUIRRELJME_COMPILERS "${compilerExe}")
+		list(APPEND SQUIRRELJME_COMPILER_MAP
+			"${system}!${arch}")
+	endif()
+endmacro()
+
+# Probe a compiler manually
+macro(squirreljme_compiler_probe compilerExe)
+	# Indicate that we are going to probe it...
+	message(STATUS "Probing compiler ${compilerExe}...")
+
+	# We need some kind of pseudo-compilerId, no security is needed here
+	# and we do not need too long of a hash
+	string(SHA1 compilerId "${compilerExe}")
+	string(SUBSTRING "${compilerId}" 0 16 compilerId)
+
+	# Setup directory where temporary configuration is placed
+	file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/probe-${compilerId}" probeDir)
+	file(MAKE_DIRECTORY "${probeDir}")
+
+	# Try configuring NanoCoat and seeing what happens
+	execute_process(COMMAND "${CMAKE_COMMAND}"
+		"-DCMAKE_C_COMPILER=${compilerExe}"
+		"-B" "${probeDir}"
+		"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
+		RESULT_VARIABLE probeResult
+		OUTPUT_FILE "${CMAKE_BINARY_DIR}/probe-${compilerId}.out"
+		ERROR_FILE "${CMAKE_BINARY_DIR}/probe-${compilerId}.err")
+
+	# Did it pass? And do the system/arch files exist?
+	if("${probeResult}" EQUAL "0" AND
+		EXISTS "${probeDir}/system.tgt" AND
+		EXISTS "${probeDir}/arch__.tgt")
+		# Read in architecture and target
+		file(READ "${probeDir}/system.tgt" systemProbed)
+		file(READ "${probeDir}/arch__.tgt" archProbed)
+
+		# Make sure there is no whitespace
+		string(STRIP "${systemProbed}" systemProbed)
+		string(STRIP "${archProbed}" archProbed)
+
+		# Are these actually valid?
+		if(NOT "${systemProbed}" STREQUAL "unknown" AND
+			NOT "${archProbed}" STREQUAL "unknown" AND
+			NOT "${systemProbed}" STREQUAL "" AND
+			NOT "${archProbed}" STREQUAL "")
+			squirreljme_compiler_register(probed
+				"${systemProbed}" "${archProbed}" "${compilerExe}")
+		endif()
+	endif()
 endmacro()
 
 # Find Java

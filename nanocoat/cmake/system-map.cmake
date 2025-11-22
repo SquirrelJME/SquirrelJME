@@ -90,7 +90,9 @@ list(APPEND SQUIRRELJME_SYSTEM_MAP
 	"emscripten!emscripten"
 	"macosx!macosx"
 	"macosx!darwin"
-	"3ds!3ds")
+	"3ds!3ds"
+	"windowsce!wince-cegcc"
+	"palmos!palmos")
 list(SORT SQUIRRELJME_SYSTEM_MAP)
 
 # Unmap from mapping fields
@@ -529,3 +531,7 @@ if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
 	set(CMAKE_SHARED_LIBRARY_SUFFIX_CXX "${CMAKE_SHARED_LIBRARY_SUFFIX}"
 		CACHE STRING "" FORCE)
 endif()
+
+# Write the target system details into the build root
+file(WRITE "${CMAKE_BINARY_DIR}/system.tgt" "${SQUIRRELJME_SYSTEM}")
+file(WRITE "${CMAKE_BINARY_DIR}/arch__.tgt" "${SQUIRRELJME_ARCH}")
