@@ -5,13 +5,20 @@
 # SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Building of the Flatpak package on Linux
-# Not supported because
-# - After the Flatpak is built, it needs to be installed before it is bundled
-# - The runtimes change too often and disappear
-# - Annoying deprecation warnings
+# DESCRIPTION: Building of the Flatpak package on Linux, not supported:
+# - After the Flatpak is built, it needs to be installed before it is bundled.
+# - The runtimes change too often and just disappear, the Eclipse group is
+#   seriously keeping Java 8 under LTS and that is 11 years old, you can keep
+#   LTS releases of ancient Ubuntu around as developers like myself are who
+#   they are for.
+# - Annoying deprecation warnings which confuse users.
 # - For a proper Flatpak build you cannot have the internet or any network
-#   access, thus Gradle is rather impossible without hacks
+#   access, thus Gradle is rather impossible without hacking it to be in
+#   offline mode with pre-downloaded dependencies and an alternative cache.
+# - Since SquirrelJME does not have a Java compiler built-in, yet(!) although
+#   I do plan to eventually write one because of insanity, it is not possible
+#   to have a completely independent self-contained build.
+# - Lack of support for the Fossil DVCS.
 
 # Locate Flatpak
 find_program(Flatpak_EXECUTABLE
