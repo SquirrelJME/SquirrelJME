@@ -222,7 +222,7 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		if("MIPSEB" IN_LIST defines OR
 			"_MIPSEB" IN_LIST defines OR
 			"__MIPSEB" IN_LIST defines OR
-			"__MIPSEB__" IN_LIST defines OR)
+			"__MIPSEB__" IN_LIST defines)
 			set(hasArch "mips32b6")
 		else()
 			set(hasArch "mips32l6")
@@ -231,7 +231,7 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		if("MIPSEB" IN_LIST defines OR
 			"_MIPSEB" IN_LIST defines OR
 			"__MIPSEB" IN_LIST defines OR
-			"__MIPSEB__" IN_LIST defines OR)
+			"__MIPSEB__" IN_LIST defines)
 			set(hasArch "mips64b6")
 		else()
 			set(hasArch "mips64l6")
@@ -246,7 +246,7 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 			if("MIPSEB" IN_LIST defines OR
 				"_MIPSEB" IN_LIST defines OR
 				"__MIPSEB" IN_LIST defines OR
-				"__MIPSEB__" IN_LIST defines OR)
+				"__MIPSEB__" IN_LIST defines)
 				set(hasArch "mips64b")
 			else()
 				set(hasArch "mips64l")
@@ -255,7 +255,7 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 			if("MIPSEB" IN_LIST defines OR
 				"_MIPSEB" IN_LIST defines OR
 				"__MIPSEB" IN_LIST defines OR
-				"__MIPSEB__" IN_LIST defines OR)
+				"__MIPSEB__" IN_LIST defines)
 				set(hasArch "mips32b")
 			else()
 				set(hasArch "mips32l")
@@ -293,7 +293,7 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		else()
 			set(hasArch "arm64l")
 		endif()
-	elseif("__arm__" IN_LIST defines
+	elseif("__arm__" IN_LIST defines OR
 		"__arm32" IN_LIST defines OR
 		"__arm32__" IN_LIST defines OR
 		"_M_ARM" IN_LIST defines)
@@ -302,6 +302,8 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		else()
 			set(hasArch "arm32l")
 		endif()
+	elseif("__riscv" IN_LIST defines)
+		set(hasArch "riscv64")
 	else()
 		set(hasArch "unknown")
 	endif()

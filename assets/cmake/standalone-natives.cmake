@@ -22,7 +22,7 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 
 	# Progress indication
 	message(STATUS "Looking at "
-		"${systemNormal}/${archNormal} (${compilerType})...")
+		"${systemNormal}/${archNormal}...")
 
 	# Where should NanoCoat core place its binaries?
 	file(TO_CMAKE_PATH
