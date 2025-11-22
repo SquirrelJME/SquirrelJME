@@ -7,16 +7,37 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Identify SquirrelJME version
 
+# Which version file to use?
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/../../squirreljme-version")
+	set(SQUIRRELJME_VERSION_FILE
+		"${CMAKE_CURRENT_LIST_DIR}/../../squirreljme-version")
+elseif(EXISTS "${CMAKE_SOURCE_DIR}/squirreljme-version")
+	set(SQUIRRELJME_VERSION_FILE
+		"${CMAKE_SOURCE_DIR}/squirreljme-version")
+endif()
+
 # Load version number
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/squirreljme-version"
+file(STRINGS "${SQUIRRELJME_VERSION_FILE}"
 	SQUIRRELJME_VERSION LIMIT_COUNT 1)
-message(STATUS
-	"Building for SquirrelJME ${SQUIRRELJME_VERSION}!")
+string(REPLACE "." ";" SQUIRRELJME_VERSION_LIST "${SQUIRRELJME_VERSION}")
+
+# Is the version considered stable or unstable?
+list(GET SQUIRRELJME_VERSION_LIST 1 midVersion)
+math(EXPR midVersion "${midVersion} % 2")
+if("${midVersion}" EQUAL "0")
+	set(SQUIRRELJME_VERSION_STABILITY "stable")
+else()
+	set(SQUIRRELJME_VERSION_STABILITY "unstable")
+endif()
+unset(midVersion)
 
 # Make Windows compatible version
 set(SQUIRRELJME_VERSION_WINDOWS "${SQUIRRELJME_VERSION}.0")
 string(REGEX REPLACE "\\." "," SQUIRRELJME_VERSION_WINDOWS_RC
 	"${SQUIRRELJME_VERSION_WINDOWS}")
+
+# Setup underscore version for Install4J
+string(REPLACE "." "_" SQUIRRELJME_VERSION_UNDER "${SQUIRRELJME_VERSION}")
 
 # Put down the configure time
 string(TIMESTAMP SQUIRRELJME_VERSION_ID_TIME "%Y-%m-%dT%H:%M:%SZ" UTC)
@@ -56,7 +77,6 @@ if("${fossilInfoResult}" EQUAL "0" AND
 
 			# Extract ID
 			set(SQUIRRELJME_VERSION_ID_FOSSIL "${right}")
-			set(SQUIRRELJME_VERSION_ID "fossil:${right}")
 		endif()
 	endforeach()
 
@@ -65,7 +85,6 @@ elseif(EXISTS "${CMAKE_CURRENT_LIST_DIR}/../../manifest.uuid" AND
 	NOT IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/../../manifest.uuid")
 	file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/../../manifest.uuid"
 		SQUIRRELJME_VERSION_ID_FOSSIL LIMIT_COUNT 1)
-	set(SQUIRRELJME_VERSION_ID "fossil:${SQUIRRELJME_VERSION_ID_FOSSIL}")
 
 	# Fossil root is assumed to be here
 	set(SQUIRRELJME_FOSSIL_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../")
@@ -78,17 +97,23 @@ else()
 		OUTPUT_VARIABLE SQUIRRELJME_VERSION_ID_GIT
 		ERROR_VARIABLE SQUIRRELJME_VERSION_GIT_ERROR
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-	if("${SQUIRRELJME_VERSION_ID_GIT_CODE}" EQUAL 0)
-		set(SQUIRRELJME_VERSION_ID "git:${SQUIRRELJME_VERSION_ID_GIT}")
-	else()
-		# Otherwise use a basic timestamp
-		set(SQUIRRELJME_VERSION_ID "unknown:${SQUIRRELJME_VERSION_ID_TIME}")
-	endif()
 endif()
 
-# Show ID version
+# Which version ID to use? Prefer Fossil first
+if(DEFINED SQUIRRELJME_VERSION_ID_FOSSIL)
+	set(SQUIRRELJME_VERSION_ID "fossil:${SQUIRRELJME_VERSION_ID_FOSSIL}")
+elseif(DEFINED SQUIRRELJME_VERSION_ID_GIT)
+	set(SQUIRRELJME_VERSION_ID "git:${SQUIRRELJME_VERSION_ID_GIT}")
+else()
+	set(SQUIRRELJME_VERSION_ID "date:${SQUIRRELJME_VERSION_ID_TIME}")
+endif()
+
+# Give full details on what is being built
+message(STATUS
+	"Building for SquirrelJME ${SQUIRRELJME_VERSION}!")
 message(STATUS
 	"Version ID: ${SQUIRRELJME_VERSION_ID}")
 message(STATUS
 	"Build ID (if any): ${SQUIRRELJME_VERSION_BUILD}")
+message(STATUS
+	"Stability: ${SQUIRRELJME_VERSION_STABILITY}")

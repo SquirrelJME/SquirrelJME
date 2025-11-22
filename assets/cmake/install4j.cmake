@@ -21,10 +21,46 @@ option(SQUIRRELJME_INSTALL4J_BUNDLE
 
 # Builds Install4J executables for every OS on-top of the standalone
 if(Install4JC_EXECUTABLE)
+	# Where are the installers placed?
+	set(SQUIRRELJME_INSTALL4J_OUT_DIR "${CMAKE_BINARY_DIR}/install4j")
+
+	# Macro to make adding installers nad installers by ID much easier
+	macro(squirreljme_install4j_register mediaId generatedPath)
+		# Add to full media ID list
+		list(APPEND SQUIRRELJME_INSTALL4J_IDS "${mediaId}")
+
+		# What is the base path?
+		if(SQUIRRELJME_INSTALL4J_BUNDLE)
+			set(basePath "${SQUIRRELJME_INSTALL4J_OUT_DIR}")
+		else()
+			set(basePath "${SQUIRRELJME_INSTALL4J_OUT_DIR}/${mediaId}")
+		endif()
+
+		# Set installer files
+		list(APPEND SQUIRRELJME_INSTALL4J_ID${mediaId}_FILES
+			"${basePath}/${generatedPath}")
+		list(APPEND SQUIRRELJME_INSTALL4J_ID${mediaId}_FILES
+			"${basePath}/updates.xml")
+
+		# Add to all/bundle files
+		list(APPEND SQUIRRELJME_INSTALL4J_BUNDLE_FILES
+			"${SQUIRRELJME_INSTALL4J_ID${mediaId}_FILES}")
+
+		# Cleanup lists
+		## IDs
+		list(REMOVE_DUPLICATES SQUIRRELJME_INSTALL4J_IDS)
+		list(SORT SQUIRRELJME_INSTALL4J_IDS)
+		## ID files
+		list(REMOVE_DUPLICATES SQUIRRELJME_INSTALL4J_ID${mediaId}_FILES)
+		list(SORT SQUIRRELJME_INSTALL4J_ID${mediaId}_FILES)
+		## Bundle files
+		list(REMOVE_DUPLICATES SQUIRRELJME_INSTALL4J_BUNDLE_FILES)
+		list(SORT SQUIRRELJME_INSTALL4J_BUNDLE_FILES)
+	endmacro()
+
 	# Install4J identifies each media specifically by its ID, there is the
 	# media type however this would build them all for each type and I have
 	# setup multiple ones that share the same media type
-	unset(mediaIds)
 	foreach(nativeMap IN LISTS SQUIRRELJME_STANDALONE_NATIVES_AVAILABLE)
 		# Which System and architecture?
 		squirreljme_unmap(systemNormal 0 "${nativeMap}")
@@ -35,66 +71,73 @@ if(Install4JC_EXECUTABLE)
 			("${archNormal}" STREQUAL "ia32" OR
 			"${archNormal}" STREQUAL "amd64"))
 			# Installer
-			list(APPEND mediaIds "28")
+			squirreljme_install4j_register(28
+				"squirreljme_windows-x64_${SQUIRRELJME_VERSION_UNDER}.exe")
 
 			# Portable
-			list(APPEND mediaIds "128")
+			squirreljme_install4j_register(128
+				"squirreljme_windows-x64_${SQUIRRELJME_VERSION_UNDER}.zip")
 
 		# Debian Package and Generic Linux RPM
 		elseif("${systemNormal}" STREQUAL "linux" AND
 			("${archNormal}" STREQUAL "ia32" OR
 			"${archNormal}" STREQUAL "amd64"))
 			# Generic RPM, which should have both
-			list(APPEND mediaIds "129")
+			squirreljme_install4j_register(129
+				"squirreljme_linux_${SQUIRRELJME_VERSION_UNDER}.rpm")
 
 			# Debian packages
 			if("${archNormal}" STREQUAL "ia32")
-				list(APPEND mediaIds "148")
+				squirreljme_install4j_register(148
+					"squirreljme_linux-i386_${SQUIRRELJME_VERSION_UNDER}.deb")
 			else()
-				list(APPEND mediaIds "130")
+				squirreljme_install4j_register(130
+					"squirreljme_linux-amd64_${SQUIRRELJME_VERSION_UNDER}.deb")
 			endif()
 
 		# Debian ARM32 Package
 		elseif("${systemNormal}" STREQUAL "linux" AND
 			"${archNormal}" STREQUAL "arm32")
-			list(APPEND mediaIds "143")
+			squirreljme_install4j_register(143
+				"squirreljme_linux-armel_${SQUIRRELJME_VERSION_UNDER}.deb")
 
 		# Debian ARM64 Package
 		elseif("${systemNormal}" STREQUAL "linux" AND
 			"${archNormal}" STREQUAL "arm64")
-			list(APPEND mediaIds "146")
+			squirreljme_install4j_register(146
+				"squirreljme_linux-aarch64_${SQUIRRELJME_VERSION_UNDER}.deb")
 
 		# Solaris 64-bit Package
 		elseif("${systemNormal}" STREQUAL "solaris" AND
 			"${archNormal}" STREQUAL "amd64")
-			list(APPEND mediaIds "31")
+			squirreljme_install4j_register(31
+				"squirreljme_solaris-amd64_${SQUIRRELJME_VERSION_UNDER}.sh")
 
 		# macOS Universal (hopefully) folder
 		elseif("${systemNormal}" STREQUAL "macosx" AND
 			("${archNormal}" STREQUAL "powerpc" OR
 			"${archNormal}" STREQUAL "ia32" OR
 			"${archNormal}" STREQUAL "amd64"))
-			list(APPEND mediaIds "32")
+			squirreljme_install4j_register(32
+				"squirreljme_macos_${SQUIRRELJME_VERSION_UNDER}.dmg")
 		endif()
 	endforeach()
 
-	# Remove duplicates, just in case
-	list(REMOVE_DUPLICATES mediaIds)
-	list(SORT mediaIds)
+	# Determine standaloneJar path
+	get_target_property(standalonePath standaloneJar SQUIRRELJME_OUTPUT_PATH)
+	file(TO_NATIVE_PATH "${standalonePath}" standalonePathNative)
 
 	# Build all installers at once
 	if(SQUIRRELJME_INSTALL4J_BUNDLE)
-		# Place the output installers somewhere
-		set(mediaOutDir "${CMAKE_BINARY_DIR}/install4j/bundle")
-
 		# Setup rule to build all at once
-		string(REPLACE ";" "," mediaIdsComma "${mediaIds}")
+		string(REPLACE ";" "," mediaIdsComma "${SQUIRRELJME_INSTALL4J_IDS}")
 		add_custom_target(install4j
 			COMMAND "${CMAKE_COMMAND}" "-E"
-				"make_directory" "${mediaOutDir}"
+				"make_directory" "${SQUIRRELJME_INSTALL4J_OUT_DIR}"
 			COMMAND "${Install4JC_EXECUTABLE}"
+				"-D" "squirreljme.standalone.path=${standalonePathNative}"
 				"-r" "${SQUIRRELJME_VERSION}"
-				"-d" "${mediaOutDir}"
+				"-d" "${SQUIRRELJME_INSTALL4J_OUT_DIR}"
 				"-b" "${mediaIdsComma}"
 				"${CMAKE_SOURCE_DIR}/squirreljme.install4j"
 			DEPENDS standaloneJar
@@ -104,7 +147,7 @@ if(Install4JC_EXECUTABLE)
 
 		# Properties for uploading later
 		set_target_properties(install4j PROPERTIES
-			SQUIRRELJME_OUTPUT_PATH "${mediaOutDir}"
+			SQUIRRELJME_OUTPUT_PATH "${SQUIRRELJME_INSTALL4J_BUNDLE_FILES}"
 			SQUIRRELJME_OUTPUT_TYPE "install4j")
 
 		# These get uploaded into Fossil
@@ -118,15 +161,16 @@ if(Install4JC_EXECUTABLE)
 
 		# Setup rules to build each specific media individually, as it is
 		# easier to see where things go wrong
-		foreach(mediaId IN LISTS mediaIds)
+		foreach(mediaId IN LISTS SQUIRRELJME_INSTALL4J_IDS)
 			# Place the output installer somewhere
-			set(mediaOutDir "${CMAKE_BINARY_DIR}/install4j/${mediaId}")
+			set(mediaOutDir "${SQUIRRELJME_INSTALL4J_OUT_DIR}/${mediaId}")
 
 			# Setup rule to build the installer
 			add_custom_target(install4j_${mediaId}
 				COMMAND "${CMAKE_COMMAND}" "-E"
 					"make_directory" "${mediaOutDir}"
 				COMMAND "${Install4JC_EXECUTABLE}"
+					"-D" "squirreljme.standalone.path=${standalonePathNative}"
 					"-r" "${SQUIRRELJME_VERSION}"
 					"-d" "${mediaOutDir}"
 					"-b" "${mediaId}"
@@ -141,7 +185,8 @@ if(Install4JC_EXECUTABLE)
 
 			# Properties for uploading later
 			set_target_properties(install4j_${mediaId} PROPERTIES
-				SQUIRRELJME_OUTPUT_PATH "${mediaOutDir}"
+				SQUIRRELJME_OUTPUT_PATH
+					"${SQUIRRELJME_INSTALL4J_ID${mediaId}_FILES}"
 				SQUIRRELJME_OUTPUT_TYPE "install4j")
 
 			# These get uploaded into Fossil

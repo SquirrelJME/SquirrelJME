@@ -32,11 +32,11 @@ if(SQUIRRELJME_HAS_JAVA)
 			set(romDir "${CMAKE_BINARY_DIR}")
 			if("${testLow}" STREQUAL "")
 				file(TO_CMAKE_PATH
-					"${romDir}/squirreljme-${speedLow}.jar"
+				"${romDir}/squirreljme-${SQUIRRELJME_VERSION}-${speedLow}.jar"
 					romPath)
 			else()
 				file(TO_CMAKE_PATH
-					"${romDir}/squirreljme-${speedLow}-${testLow}.jar"
+	"${romDir}/squirreljme-${SQUIRRELJME_VERSION}-${speedLow}-${testLow}.jar"
 					romPath)
 				endif()
 			file(TO_NATIVE_PATH "${romPath}" romPathNative)

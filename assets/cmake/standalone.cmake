@@ -24,7 +24,7 @@ else(SQUIRRELJME_HAS_JAVA)
 	set(SQUIRRELJME_HAS_STANDALONE_JAR_BASE YES)
 
 	# The built Jar has to go somewhere
-	set(outputBaseJar "${CMAKE_BINARY_DIR}/standaloneBase/standalone.jar")
+	set(outputBaseJar "${CMAKE_BINARY_DIR}/standaloneBase/standalone-base.jar")
 	set(SQUIRRELJME_STANDALONE_JAR_BASE_PATH "${outputBaseJar}")
 
 	# Native is needed for Gradle
@@ -38,7 +38,7 @@ else(SQUIRRELJME_HAS_JAVA)
 		":emulators:standalone:shadowJar")
 
 	# Set some SquirrelJME specific properties
-	set_target_properties(${targetName} PROPERTIES
+	set_target_properties(standaloneJarBase PROPERTIES
 		ADDITIONAL_CLEAN_FILES "${outputBaseJar}"
 		SQUIRRELJME_OUTPUT_PATH "${outputBaseJar}")
 
@@ -56,7 +56,8 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 	# Where is the actual standalone Jar placed?
 	set(inputJar "${SQUIRRELJME_STANDALONE_JAR_BASE_PATH}")
 	set(outputDir "${CMAKE_BINARY_DIR}/standalone")
-	set(outputJar "${outputDir}/standalone.jar")
+	set(outputJar
+		"${outputDir}/squirreljme-standalone-${SQUIRRELJME_VERSION}.jar")
 	set(workPath "${CMAKE_BINARY_DIR}/standaloneWork")
 
 	# Setup target to combine everything into a single Jar, older CMake does
@@ -77,8 +78,8 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 	# Set properties to be later used by CI/CD, also set cleanup to be the
 	# working directory and the Jar
 	set_target_properties(standaloneJar PROPERTIES
-		ADDITIONAL_CLEAN_FILES "${outputJar}"
-		SQUIRRELJME_OUTPUT_PATH "${workPath};${outputJar}"
+		ADDITIONAL_CLEAN_FILES "${workPath};${outputJar}"
+		SQUIRRELJME_OUTPUT_PATH "${outputJar}"
 		SQUIRRELJME_OUTPUT_TYPE "standalone")
 
 	# Go through all all natives and package them inside the Standalone Jar
