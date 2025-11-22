@@ -23,12 +23,52 @@ string(TIMESTAMP SQUIRRELJME_VERSION_ID_TIME "%Y-%m-%dT%H:%M:%SZ" UTC)
 message(STATUS
 	"Configure time is ${SQUIRRELJME_VERSION_ID_TIME}.")
 
+# Does `fossil info` work?
+execute_process(COMMAND "fossil" "info" "-v"
+	OUTPUT_FILE "${CMAKE_BINARY_DIR}/fossil.info"
+	RESULT_VARIABLE fossilInfoResult)
+if("${fossilInfoResult}" EQUAL "0" AND
+	EXISTS "${CMAKE_BINARY_DIR}/fossil.info")
+	# Handle each info item
+	file(STRINGS "${CMAKE_BINARY_DIR}/fossil.info" fossilInfoOutput
+		NO_HEX_CONVERSION)
+	foreach(fossilInfo IN LISTS fossilInfoOutput)
+		# Split into left and right, trim any whitespace
+		string(FIND "${fossilInfo}" ":" colonDx)
+		string(SUBSTRING "${fossilInfo}" 0 ${colonDx} left)
+		string(STRIP "${left}" left)
+		if(${colonDx} GREATER_EQUAL 0)
+			math(EXPR colonDx "${colonDx} + 1")
+			string(SUBSTRING "${fossilInfo}" ${colonDx} -1 right)
+			string(STRIP "${right}" right)
+		else()
+			set(right "")
+		endif()
+
+		# Which information is being parsed?
+		if("${left}" STREQUAL "local-root")
+			file(TO_CMAKE_PATH "${right}" SQUIRRELJME_FOSSIL_ROOT)
+		elseif("${left}" STREQUAL "checkout")
+			# Only the first value matters on the right side
+			string(REPLACE " " ";" right "${right}")
+			list(GET right 0 right)
+			string(STRIP "${right}" right)
+
+			# Extract ID
+			set(SQUIRRELJME_VERSION_ID_FOSSIL "${right}")
+			set(SQUIRRELJME_VERSION_ID "fossil:${right}")
+		endif()
+	endforeach()
+
 # Load Fossil manifest, if possible
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../manifest.uuid" AND
-	NOT IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../manifest.uuid")
-	file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/../manifest.uuid"
+elseif(EXISTS "${CMAKE_CURRENT_LIST_DIR}/../../manifest.uuid" AND
+	NOT IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/../../manifest.uuid")
+	file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/../../manifest.uuid"
 		SQUIRRELJME_VERSION_ID_FOSSIL LIMIT_COUNT 1)
 	set(SQUIRRELJME_VERSION_ID "fossil:${SQUIRRELJME_VERSION_ID_FOSSIL}")
+
+	# Fossil root is assumed to be here
+	set(SQUIRRELJME_FOSSIL_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../")
 else()
 	# Try to get version from Git Commit
 	execute_process(COMMAND git rev-parse HEAD

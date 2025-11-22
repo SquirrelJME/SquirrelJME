@@ -6,3 +6,7 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Fossil site updates such as documentation and otherwise
+
+# Only possible if Fossil exists
+if(Fossil_EXECUTABLE)
+endif()

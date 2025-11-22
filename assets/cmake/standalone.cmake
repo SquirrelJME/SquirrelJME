@@ -40,7 +40,7 @@ else(SQUIRRELJME_HAS_JAVA)
 	# Set some SquirrelJME specific properties
 	set_target_properties(${targetName} PROPERTIES
 		ADDITIONAL_CLEAN_FILES "${outputBaseJar}"
-		SQUIRRELJME_STANDALONE_JAR_PATH "${outputBaseJar}")
+		SQUIRRELJME_OUTPUT_PATH "${outputBaseJar}")
 
 	# Register CI/CD Task
 	squirreljme_cicd_register(standaloneJarBase)
@@ -78,7 +78,8 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 	# working directory and the Jar
 	set_target_properties(standaloneJar PROPERTIES
 		ADDITIONAL_CLEAN_FILES "${outputJar}"
-		SQUIRRELJME_STANDALONE_JAR_PATH "${workPath};${outputJar}")
+		SQUIRRELJME_OUTPUT_PATH "${workPath};${outputJar}"
+		SQUIRRELJME_OUTPUT_TYPE "standalone")
 
 	# Go through all all natives and package them inside the Standalone Jar
 	foreach(rule IN LISTS SQUIRRELJME_STANDALONE_NATIVE_RULES)
@@ -121,6 +122,10 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 		BYPRODUCTS "${outputJar}"
 		WORKING_DIRECTORY "${workPath}"
 		COMMENT "Finalizing ${outputJar}...")
+
+	# These get uploaded into Fossil
+	list(APPEND SQUIRRELJME_UPLOAD_TARGETS
+		standaloneJar)
 endif()
 
 # Cache the available natives

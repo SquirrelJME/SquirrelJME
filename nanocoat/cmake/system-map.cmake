@@ -12,6 +12,10 @@ define_property(TARGET PROPERTY SQUIRRELJME_SYSTEM
 	BRIEF_DOCS "The target SquirrelJME system.")
 define_property(TARGET PROPERTY SQUIRRELJME_ARCH
 	BRIEF_DOCS "The target SquirrelJME architecture.")
+define_property(TARGET PROPERTY SQUIRRELJME_TEST_LEVEL
+	BRIEF_DOCS "The test level of the target.")
+define_property(TARGET PROPERTY SQUIRRELJME_CLUTTER_LEVEL
+	BRIEF_DOCS "The clutter level of the target.")
 
 # Virtual Machines which are available
 list(APPEND SQUIRRELJME_JVM_MAP

@@ -20,6 +20,9 @@ set(CMAKE_BUILD_PARALLEL_LEVEL 1)
 include("${CMAKE_SOURCE_DIR}/assets/cmake/easier-includes.cmake"
 	NO_POLICY_SCOPE)
 
+# Version number for SquirrelJME
+squirreljme_include_nanocoat("identify-squirreljme-version.cmake")
+
 # To Emily and Near...
 squirreljme_include_nanocoat("i-miss-you.cmake")
 
@@ -33,9 +36,6 @@ project(SquirrelJMEBuild
 
 # Include system mappings
 squirreljme_include_nanocoat("system-map.cmake")
-
-# Version number for SquirrelJME
-squirreljme_include_nanocoat("identify-squirreljme-version.cmake")
 
 # Environment and everything else
 squirreljme_include("environment-depends.cmake")

@@ -102,6 +102,15 @@ if(Install4JC_EXECUTABLE)
 			BYPRODUCTS "${mediaOutDir}"
 			SOURCES "${CMAKE_SOURCE_DIR}/squirreljme.install4j")
 
+		# Properties for uploading later
+		set_target_properties(install4j PROPERTIES
+			SQUIRRELJME_OUTPUT_PATH "${mediaOutDir}"
+			SQUIRRELJME_OUTPUT_TYPE "install4j")
+
+		# These get uploaded into Fossil
+		list(APPEND SQUIRRELJME_UPLOAD_TARGETS
+			install4j)
+
 	# Individual rules for each system
 	else()
 		# Pseudo all Install4J targets
@@ -129,6 +138,15 @@ if(Install4JC_EXECUTABLE)
 
 			# Have the all-install4j depend on this
 			add_dependencies(install4j install4j_${mediaId})
+
+			# Properties for uploading later
+			set_target_properties(install4j_${mediaId} PROPERTIES
+				SQUIRRELJME_OUTPUT_PATH "${mediaOutDir}"
+				SQUIRRELJME_OUTPUT_TYPE "install4j")
+
+			# These get uploaded into Fossil
+			list(APPEND SQUIRRELJME_UPLOAD_TARGETS
+				install4j_${mediaId})
 		endforeach()
 	endif()
 endif()

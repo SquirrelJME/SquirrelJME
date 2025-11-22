@@ -52,10 +52,15 @@ if(SQUIRRELJME_HAS_JAVA)
 
 			# Set target information
 			set_target_properties(${targetName} PROPERTIES
-				SQUIRRELJME_NANOCOAT_ROM_PATH "${romPath}"
+				SQUIRRELJME_OUTPUT_PATH "${romPath}"
+				SQUIRRELJME_OUTPUT_TYPE "rom"
 				SQUIRRELJME_TEST_LEVEL "${testNoun}"
 				SQUIRRELJME_CLUTTER_LEVEL "${clutterNoun}"
 				ADDITIONAL_CLEAN_FILES "${romPath}")
+
+				# These get uploaded into Fossil
+				list(APPEND SQUIRRELJME_UPLOAD_TARGETS
+					${targetName})
 		endforeach()
 	endforeach()
 endif()
