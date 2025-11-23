@@ -64,27 +64,27 @@ endmacro()
 # Returns the arguments used for CMake
 # The output format is not nice due to execute_process() not taking
 # the parameter COMMAND_EXPAND_LISTS sadly.
-macro(squirreljme_compiler_cmake_args outVa outVb outVc outVb system arch)
+macro(squirreljme_compiler_cmake_args outVa outVb outVc outVd system arch)
 	# Generator Specified
 	if("${SQUIRRELJME_COMPILER_${system}_${arch}_TYPE}"
 		STREQUAL "generator")
-		set(${va} "-G")
-		set(${vb} "${SQUIRRELJME_COMPILER_${system}_${arch}_GENERATOR}")
+		set(${outVa} "-G")
+		set(${outVb} "${SQUIRRELJME_COMPILER_${system}_${arch}_GENERATOR}")
 
 		if("${SQUIRRELJME_COMPILER_${system}_${arch}_PLATFORM}"
 			STREQUAL "none")
-			set(${vc} "-DXXSJMEVCXX=1")
-			set(${vd} "-DXXSJMEVDXX=1")
+			set(${outVc} "-DXXSJMEVCXX=1")
+			set(${outVd} "-DXXSJMEVDXX=1")
 		else()
-			set(${vc} "-A")
-			set(${vd} "${SQUIRRELJME_COMPILER_${system}_${arch}_PLATFORM}")
+			set(${outVc} "-A")
+			set(${outVd} "${SQUIRRELJME_COMPILER_${system}_${arch}_PLATFORM}")
 		endif()
 	else()
-		set(${va}
+		set(${outVa}
 	"-DCMAKE_C_COMPILER=${SQUIRRELJME_COMPILER_${system}_${arch}_EXECUTABLE}")
-		set(${vb} "-DXXSJMEVBXX=1")
-		set(${vc} "-DXXSJMEVCXX=1")
-		set(${vd} "-DXXSJMEVDXX=1")
+		set(${outVb} "-DXXSJMEVBXX=1")
+		set(${outVc} "-DXXSJMEVCXX=1")
+		set(${outVd} "-DXXSJMEVDXX=1")
 	endif()
 endmacro()
 

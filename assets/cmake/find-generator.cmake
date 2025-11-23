@@ -12,21 +12,30 @@
 
 # Possible CMake Generators
 list(APPEND SQUIRRELJME_CMAKE_GENERATORS
-	"Xcode"
-	"Green Hills MULTI"
-	"Visual Studio 6"
-	"Visual Studio 7"
-	"Visual Studio 7 .NET 2003"
-	"Visual Studio 8 2005"
-	"Visual Studio 9 2008"
-	"Visual Studio 10 2010"
-	"Visual Studio 11 2012"
-	"Visual Studio 12 2013"
-	"Visual Studio 14 2015"
-	"Visual Studio 15 2017"
-	"Visual Studio 16 2019"
-	"Visual Studio 17 2022"
-	"Visual Studio 18 2026")
+	"Green Hills MULTI")
+
+# Add Windows based generators
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+	list(APPEND SQUIRRELJME_CMAKE_GENERATORS
+		"Visual Studio 6"
+		"Visual Studio 7"
+		"Visual Studio 7 .NET 2003"
+		"Visual Studio 8 2005"
+		"Visual Studio 9 2008"
+		"Visual Studio 10 2010"
+		"Visual Studio 11 2012"
+		"Visual Studio 12 2013"
+		"Visual Studio 14 2015"
+		"Visual Studio 15 2017"
+		"Visual Studio 16 2019"
+		"Visual Studio 17 2022"
+		"Visual Studio 18 2026")
+
+# macOS based generators
+elseif("${SQUIRRELJME_SYSTEM}" STREQUAL "macosx")
+	list(APPEND SQUIRRELJME_CMAKE_GENERATORS
+		"Xcode")
+endif()
 
 # Platforms to be passed to the generators
 list(APPEND SQUIRRELJME_CMAKE_PLATFORMS
