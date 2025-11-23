@@ -198,8 +198,10 @@ macro(squirreljme_target_shared_library_exports target)
 	# MSVC requires that the implementation library also be specified otherwise
 	# nothing will be able to properly link against the library
 	if(MSVC)
+		set(impLibPath
+			"${actualWhere}/${squirreljme_dylib_output_name}.lib")
 		target_link_options(${target} PRIVATE
-			"/IMPLIB:${actualWhere}/${squirreljme_dylib_output_name}.lib")
+			"/IMPLIB:${impLibPath}")
 	endif()
 endmacro()
 

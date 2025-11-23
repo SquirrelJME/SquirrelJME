@@ -461,6 +461,16 @@ function(squirreljme_identify_by_current outSystem outArch)
 	else()
 		squirreljme_identify_by_cmake(hasSystem hasArch
 			"${CMAKE_SYSTEM_NAME}" "${CMAKE_SYSTEM_PROCESSOR}")
+
+		# If the system is Windows, CMake reports the incorrect architecture
+		# for the target system... *faceclaw*
+		if("${hasSystem}" STREQUAL "windows")
+			if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "Win32")
+				set(hasSystem "ia32")
+			elseif("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "x64")
+				set(hasSystem "amd64")
+			endif()
+		endif()
 	endif()
 
 	# If blank, set to unknown

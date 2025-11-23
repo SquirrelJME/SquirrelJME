@@ -49,22 +49,23 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 	# Name of the rule
 	set(ruleName "standaloneNatives_${systemNormal}_${archNormal}")
 
-	# Get compiler executable to use
-	set(compilerExe
-		"${SQUIRRELJME_COMPILER_${systemNormal}_${archNormal}_EXECUTABLE}")
-
 	# Progress indication
 	message(STATUS "Configuring NanoCoat Core "
-		"${systemNormal}/${archNormal} (${compilerExe})...")
+		"${systemNormal}/${archNormal}...")
+
+	# Which arguments to use?
+	unset(ccArgs)
+	squirreljme_compiler_cmake_args(ccArgs "${systemNormal}" "${archNormal}")
 
 	# Configure CMake build for NanoCoat Core
 	execute_process(COMMAND "${CMAKE_COMMAND}"
-		"-DCMAKE_C_COMPILER=${compilerExe}"
+		"${ccArgs}"
 		"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${coreOut}"
 		"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${coreOut}"
 		"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${coreOut}"
 		"-B" "${coreBuild}"
 		"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
+		COMMAND_EXPAND_LISTS
 		RESULT_VARIABLE coreResult
 		OUTPUT_FILE "${CMAKE_BINARY_DIR}/${ruleName}.core.out"
 		ERROR_FILE "${CMAKE_BINARY_DIR}/${ruleName}.core.err")
@@ -73,16 +74,17 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 	if("${coreResult}" EQUAL "0")
 		# Progress indication
 		message(STATUS "Configuring libEmulatorBase "
-			"${systemNormal}/${archNormal} (${compilerExe})...")
+			"${systemNormal}/${archNormal}...")
 
 		# Now do the configure
 		execute_process(COMMAND "${CMAKE_COMMAND}"
-			"-DCMAKE_C_COMPILER=${compilerExe}"
+			"${ccArgs}"
 			"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${coreOut}"
 			"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${emulatorOut}"
 			"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${emulatorOut}"
 			"-B" "${emulatorBuild}"
 			"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
+			COMMAND_EXPAND_LISTS
 			RESULT_VARIABLE emulatorResult
 			OUTPUT_FILE "${CMAKE_BINARY_DIR}/${ruleName}.emulator.out"
 			ERROR_FILE "${CMAKE_BINARY_DIR}/${ruleName}.emulator.err")
@@ -106,7 +108,7 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 
 		# Add note for the rule that was generated
 		message(STATUS "Standalone Native "
-			"${systemNormal}/${archNormal} (${compilerExe}) -> ${ruleName}")
+			"${systemNormal}/${archNormal} -> ${ruleName}")
 
 		# Add this rule to the standalone set
 		list(APPEND SQUIRRELJME_STANDALONE_NATIVE_RULES
@@ -124,7 +126,7 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 	else()
 		# Progress indication
 		message(STATUS "Failed to configure "
-			"${systemNormal}/${archNormal} (${compilerExe}): "
+			"${systemNormal}/${archNormal}: "
 			"${coreResult} ${emulatorResult}!")
 	endif()
 endforeach()

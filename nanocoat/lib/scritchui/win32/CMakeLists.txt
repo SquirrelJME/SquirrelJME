@@ -8,9 +8,9 @@
 
 # Declare base library
 add_library(ScritchUIWin32 SHARED
-	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_CORE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_FB_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>
 	win32Component.c
 	win32Container.c
 	win32Core.c
@@ -27,10 +27,7 @@ add_library(ScritchUIWin32 SHARED
 	win32Window.c)
 
 # Always make it PIC
-if(SQUIRRELJME_ENABLE_FPIC)
-	set_property(TARGET ScritchUIWin32
-		PROPERTY POSITION_INDEPENDENT_CODE ON)
-endif()
+squirreljme_always_fpic(ScritchUIWin32)
 
 # Include main headers
 target_include_directories(ScritchUIWin32 PUBLIC

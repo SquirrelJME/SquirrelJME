@@ -7,18 +7,50 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Finding of various things
 
-# Macro to add a specific compiler
-macro(squirreljme_compiler_register type system arch compilerExe)
+# Macro to add a specific compiler by its generator/platform
+macro(squirreljme_compiler_by_generator system arch generator platform)
 	# Do not replace an existing compiler map
 	set(compilerMap "${system}!${arch}")
 	if("${compilerMap}" IN_LIST SQUIRRELJME_COMPILER_MAP)
 		message(STATUS "Not adding another compiler for ${system}/${arch}!")
+
+	# Otherwise add and register it!
 	else()
 		# Note it
-		message(STATUS "Compiler ${type} ${system}/${arch}: "
+		message(STATUS "Compiler for ${system}/${arch}: "
+			"-G ${generator} -A ${platform}")
+
+		# Set compiler executable
+		set(SQUIRRELJME_COMPILER_${systemNormal}_${archNormal}_TYPE
+			"generator")
+		set(SQUIRRELJME_COMPILER_${systemNormal}_${archNormal}_GENERATOR
+			"${generator}")
+		set(SQUIRRELJME_COMPILER_${systemNormal}_${archNormal}_PLATFORM
+			"${platform}")
+
+		# Add to the list of available compilers
+		list(APPEND SQUIRRELJME_GENERATORS "${generator}!${platform}")
+		list(APPEND SQUIRRELJME_COMPILER_MAP
+			"${system}!${arch}")
+	endif()
+endmacro()
+
+# Macro to add a specific compiler by its executable
+macro(squirreljme_compiler_by_exe system arch compilerExe)
+	# Do not replace an existing compiler map
+	set(compilerMap "${system}!${arch}")
+	if("${compilerMap}" IN_LIST SQUIRRELJME_COMPILER_MAP)
+		message(STATUS "Not adding another compiler for ${system}/${arch}!")
+
+	# Otherwise add and register it!
+	else()
+		# Note it
+		message(STATUS "Compiler for ${system}/${arch}: "
 			"${compilerExe}")
 
 		# Set compiler executable
+		set(SQUIRRELJME_COMPILER_${systemNormal}_${archNormal}_TYPE
+			"exe")
 		set(SQUIRRELJME_COMPILER_${systemNormal}_${archNormal}_EXECUTABLE
 			"${compilerExe}")
 
@@ -29,59 +61,28 @@ macro(squirreljme_compiler_register type system arch compilerExe)
 	endif()
 endmacro()
 
-# Probe a compiler manually
-macro(squirreljme_compiler_probe result compilerExe)
-	# Indicate that we are going to probe it...
-	message(STATUS "Probing compiler ${compilerExe}...")
+# Returns the arguments used for CMake
+macro(squirreljme_compiler_cmake_args outArgs system arch)
+	unset(result)
 
-	# We need some kind of pseudo-compilerId, no security is needed here
-	# and we do not need too long of a hash
-	string(SHA1 compilerId "${compilerExe}")
-	string(SUBSTRING "${compilerId}" 0 16 compilerId)
+	# Executable Specified
+	if("${SQUIRRELJME_COMPILER_${system}_${arch}_TYPE}"
+		STREQUAL "exe")
+		list(APPEND result
+	"-DCMAKE_C_COMPILER=${SQUIRRELJME_COMPILER_${system}_${arch}_EXECUTABLE}")
 
-	# Setup directory where temporary configuration is placed
-	file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/probe-${compilerId}" probeDir)
-	file(MAKE_DIRECTORY "${probeDir}")
-
-	# Try configuring NanoCoat and seeing what happens
-	execute_process(COMMAND "${CMAKE_COMMAND}"
-		"-DCMAKE_C_COMPILER=${compilerExe}"
-		"-B" "${probeDir}"
-		"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
-		RESULT_VARIABLE probeResult
-		OUTPUT_FILE "${CMAKE_BINARY_DIR}/probe-${compilerId}.out"
-		ERROR_FILE "${CMAKE_BINARY_DIR}/probe-${compilerId}.err")
-
-	# Did it pass? And do the system/arch files exist?
-	if("${probeResult}" EQUAL "0" AND
-		EXISTS "${probeDir}/system.tgt" AND
-		EXISTS "${probeDir}/arch__.tgt")
-		# Read in architecture and target
-		file(READ "${probeDir}/system.tgt" systemProbed)
-		file(READ "${probeDir}/arch__.tgt" archProbed)
-
-		# Make sure there is no whitespace
-		string(STRIP "${systemProbed}" systemProbed)
-		string(STRIP "${archProbed}" archProbed)
-
-		# Are these actually valid?
-		if(NOT "${systemProbed}" STREQUAL "unknown" AND
-			NOT "${archProbed}" STREQUAL "unknown" AND
-			NOT "${systemProbed}" STREQUAL "" AND
-			NOT "${archProbed}" STREQUAL "")
-			squirreljme_compiler_register(probed
-				"${systemProbed}" "${archProbed}" "${compilerExe}")
-
-			# Probed a compiler
-			set(${result} YES)
-		else()
-			# Failed to probe
-			set(${result} NO)
-		endif()
-	else()
-		# Failed to probe
-		set(${result} NO)
+	# Generator Specified
+	elseif("${SQUIRRELJME_COMPILER_${system}_${arch}_TYPE}"
+		STREQUAL "generator")
+		list(APPEND result
+			"-G"
+			"${SQUIRRELJME_COMPILER_${system}_${arch}_GENERATOR}"
+			"-A"
+			"${SQUIRRELJME_COMPILER_${system}_${arch}_PLATFORM}")
 	endif()
+
+	# Make sure the output is set
+	set(${outArgs} "${result}")
 endmacro()
 
 # Find Java
@@ -90,8 +91,8 @@ squirreljme_include("find-java.cmake")
 # Find GCC
 squirreljme_include("find-gcc.cmake")
 
-# Find MSVC
-squirreljme_include("find-msvc.cmake")
+# Find by CMake Generators
+squirreljme_include("find-generator.cmake")
 
 # Make sure the lists are sorted to keep them consistent
 list(SORT SQUIRRELJME_COMPILERS)

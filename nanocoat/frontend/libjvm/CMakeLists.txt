@@ -8,10 +8,10 @@
 
 # Define library
 squirreljme_multilib_add_library(libJvm
-	$<TARGET_OBJECTS:BasePIC>
-	$<TARGET_OBJECTS:CorePIC>
-	$<TARGET_OBJECTS:ScritchUICorePIC>
-	$<TARGET_OBJECTS:ScritchUIFBPIC>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Core_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>
 	niInit.c
 	vmArray.c
 	vmCompiler.c
@@ -91,6 +91,13 @@ squirreljme_multilib_target_binary_name(libJvm
 squirreljme_target_binary_name(SquirrelJME
 	"squirreljme")
 
+# Ninja building on Windows has a problem when there is a DLL and a static
+# library for the JVM
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+	squirreljme_target_binary_name(libJvmStatic
+		"squirreljmes")
+endif()
+
 # Really only matters for dynamic libraries
 if(SQUIRRELJME_ENABLE_DYLIB)
 	# Output the dynamic library to where it should be
@@ -121,12 +128,10 @@ if(SQUIRRELJME_ENABLE_DYLIB)
 		"${CMAKE_SHARED_LIBRARY_PREFIX}jvm${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
 	# And the resultant library copy itself...
-	add_custom_command(TARGET libJvmDyLib
-		POST_BUILD
+	add_custom_command(TARGET libJvmDyLib POST_BUILD
 		COMMAND "${CMAKE_COMMAND}" "-E" "copy"
 			"${jvmOutDir}/${SQUIRRELJME_LIBSQUIRRELJME_NAME}"
 			"${jvmOutDir}/${SQUIRRELJME_LIBJVM_NAME}"
-		SOURCES "${jvmOutDir}/${SQUIRRELJME_LIBSQUIRRELJME_NAME}"
 		BYPRODUCTS "${jvmOutDir}/${SQUIRRELJME_LIBJVM_NAME}"
 		COMMENT "Copying libsquirreljme to libjvm...")
 endif()

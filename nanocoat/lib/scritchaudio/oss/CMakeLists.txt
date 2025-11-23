@@ -8,19 +8,16 @@
 
 # Declare base library
 add_library(ScritchAudioOSS SHARED
-	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHAUDIO_CORE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHAUDIO_SOFTMIX_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchAudioCore_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchAudioSoftMix_FPIC}>
 	ossCore.c
 	ossLoop.c
 	ossMidi.c
 	ossStream.c)
 
 # Always make it PIC
-if(SQUIRRELJME_ENABLE_FPIC)
-	set_property(TARGET ScritchAudioOSS
-		PROPERTY POSITION_INDEPENDENT_CODE ON)
-endif()
+squirreljme_always_fpic(ScritchAudioOSS)
 
 # The file where the include lives
 target_compile_definitions(ScritchAudioOSS PUBLIC

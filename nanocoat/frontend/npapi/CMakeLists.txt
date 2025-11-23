@@ -7,19 +7,16 @@
 # ---------------------------------------------------------------------------
 
 add_library(npapi SHARED
-	$<TARGET_OBJECTS:BasePIC>
-	$<TARGET_OBJECTS:CorePIC>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Core_FPIC}>
 	plugin.c)
 
 # The base SquirrelJME core needs to be built first
 add_dependencies(npapi
-	CorePIC)
+	${SQUIRRELJME_LIB_Core_FPIC})
 
 # Always make this position independent
-if(SQUIRRELJME_ENABLE_FPIC)
-	set_property(TARGET npapi
-		PROPERTY POSITION_INDEPENDENT_CODE ON)
-endif()
+squirreljme_always_fpic(npapi)
 
 # We need to find all of the includes and such
 target_include_directories(npapi PUBLIC

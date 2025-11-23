@@ -42,7 +42,7 @@ foreach(systemMap IN LISTS SQUIRRELJME_SYSTEM_MAP)
 
 		# If found, we want to store it somewhere
 		if(GCC_${systemNormal}_${archNormal}_EXECUTABLE)
-			squirreljme_compiler_register(gcc
+			squirreljme_compiler_by_exe(
 				"${systemNormal}" "${archNormal}"
 				"${GCC_${systemNormal}_${archNormal}_EXECUTABLE}")
 		endif()
@@ -69,7 +69,7 @@ if(DEFAULT_GCC_EXECUTABLE)
 
 		# If not, then we should add it
 		if(NOT "${hasDefaultGcc}" GREATER_EQUAL "0")
-			squirreljme_compiler_register(gcc
+			squirreljme_compiler_by_exe(
 				"${defaultGccSystem}" "${defaultGccArch}"
 				"${DEFAULT_GCC_EXECUTABLE}")
 		endif()

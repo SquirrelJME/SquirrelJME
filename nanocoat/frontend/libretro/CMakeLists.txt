@@ -10,29 +10,41 @@
 if(LIBRETRO_REALLY_STATIC)
 	set(libRetroIsStatic ON)
 	set(libRetroBuildType STATIC)
-	set(libRetroCore Core)
-	set(libRetroBaseObjects $<TARGET_OBJECTS:Base>)
-	set(libRetroCoreObjects $<TARGET_OBJECTS:Core>)
-	set(scritchUiCoreObjects $<TARGET_OBJECTS:ScritchUICore>)
-	set(scritchUiFramebufferObjects $<TARGET_OBJECTS:ScritchUIFB>)
-	set(scritchUiPureObjects $<TARGET_OBJECTS:ScritchUIPure>)
+	set(libRetroCore ${SQUIRRELJME_LIB_Core_STATIC})
+	set(libRetroBaseObjects
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_STATIC}>)
+	set(libRetroCoreObjects
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Core_STATIC}>)
+	set(scritchUiCoreObjects
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_STATIC}>)
+	set(scritchUiFramebufferObjects
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_STATIC}>)
+	set(scritchUiPureObjects
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIPure_STATIC}>)
 else()
 	set(libRetroIsStatic OFF)
 	set(libRetroBuildType SHARED)
-	set(libRetroCore CorePIC)
-	set(libRetroBaseObjects $<TARGET_OBJECTS:BasePIC>)
-	set(libRetroCoreObjects $<TARGET_OBJECTS:CorePIC>)
-	set(scritchUiCoreObjects $<TARGET_OBJECTS:ScritchUICorePIC>)
-	set(scritchUiFramebufferObjects $<TARGET_OBJECTS:ScritchUIFBPIC>)
-	set(scritchUiPureObjects $<TARGET_OBJECTS:ScritchUIPurePIC>)
+	set(libRetroCore ${SQUIRRELJME_LIB_Core_FPIC})
+	set(libRetroBaseObjects
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>)
+	set(libRetroCoreObjects
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Core_FPIC}>)
+	set(scritchUiCoreObjects
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>)
+	set(scritchUiFramebufferObjects
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>)
+	set(scritchUiPureObjects
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIPure_FPIC}>)
 endif()
 
 # Include tests with the build as well?
 if(SQUIRRELJME_IS_DEBUG AND SQUIRRELJME_ENABLE_TESTING)
-	if(LIBRETRO_REALLY_STATIC)
-		set(libRetroTestObjects $<TARGET_OBJECTS:BasicTestLib>)
+	if(LIBRETRO_REALLY_STATIC OR NOT SQUIRRELJME_ENABLE_FPIC)
+		set(libRetroTestObjects
+			$<TARGET_OBJECTS:BasicTestLib>)
 	else()
-		set(libRetroTestObjects $<TARGET_OBJECTS:BasicTestLibPIC>)
+		set(libRetroTestObjects
+			$<TARGET_OBJECTS:BasicTestLibPIC>)
 	endif()
 else()
 	set(libRetroTestObjects)
@@ -59,8 +71,7 @@ add_library(squirreljme_libretro ${libRetroBuildType}
 
 # Make this PIC if not static
 if(NOT libRetroIsStatic)
-	set_property(TARGET squirreljme_libretro
-		PROPERTY POSITION_INDEPENDENT_CODE ON)
+	squirreljme_always_fpic(squirreljme_libretro)
 endif()
 
 # The base SquirrelJME core needs to be built
