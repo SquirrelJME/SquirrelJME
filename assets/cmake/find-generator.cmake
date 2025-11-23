@@ -15,7 +15,7 @@ list(APPEND SQUIRRELJME_CMAKE_GENERATORS
 	"Green Hills MULTI")
 
 # Add Windows based generators
-if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+if("${SQUIRRELJME_HOST_SYSTEM}" STREQUAL "windows")
 	list(APPEND SQUIRRELJME_CMAKE_GENERATORS
 		"Visual Studio 6"
 		"Visual Studio 7"
@@ -32,7 +32,7 @@ if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
 		"Visual Studio 18 2026")
 
 # macOS based generators
-elseif("${SQUIRRELJME_SYSTEM}" STREQUAL "macosx")
+elseif("${SQUIRRELJME_HOST_SYSTEM}" STREQUAL "macosx")
 	list(APPEND SQUIRRELJME_CMAKE_GENERATORS
 		"Xcode")
 endif()
