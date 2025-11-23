@@ -40,10 +40,8 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		"${CMAKE_BINARY_DIR}/emulator/${systemNormal}/${archNormal}/"
 		emulatorOut)
 
-	# Make sure all directories exist
-	file(MAKE_DIRECTORY "${coreBuild}")
+	# Make sure the output directories exist
 	file(MAKE_DIRECTORY "${coreOut}")
-	file(MAKE_DIRECTORY "${emulatorBuild}")
 	file(MAKE_DIRECTORY "${emulatorOut}")
 
 	# Name of the rule
@@ -62,16 +60,21 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		"${systemNormal}" "${archNormal}")
 
 	# Configure CMake build for NanoCoat Core
-	execute_process(COMMAND "${CMAKE_COMMAND}"
-		"${va}" "${vb}" "${vc}" "${vd}"
-		"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${coreOut}"
-		"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${coreOut}"
-		"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${coreOut}"
-		"-B" "${coreBuild}"
-		"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
-		RESULT_VARIABLE coreResult
-		OUTPUT_FILE "${CMAKE_BINARY_DIR}/${ruleName}.core.out"
-		ERROR_FILE "${CMAKE_BINARY_DIR}/${ruleName}.core.err")
+	if(EXISTS "${coreBuild}/CMakeCache.txt")
+		set(coreResult 0)
+	else()
+		file(MAKE_DIRECTORY "${coreBuild}")
+		execute_process(COMMAND "${CMAKE_COMMAND}"
+			"${va}" "${vb}" "${vc}" "${vd}"
+			"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${coreOut}"
+			"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${coreOut}"
+			"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${coreOut}"
+			"-B" "${coreBuild}"
+			"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
+			RESULT_VARIABLE coreResult
+			OUTPUT_FILE "${CMAKE_BINARY_DIR}/${ruleName}.core.out"
+			ERROR_FILE "${CMAKE_BINARY_DIR}/${ruleName}.core.err")
+	endif()
 
 	# Configure CMake build for libEmulatorBase
 	if("${coreResult}" EQUAL "0")
@@ -79,17 +82,22 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		message(STATUS "Configuring libEmulatorBase "
 			"${systemNormal}/${archNormal}...")
 
-		# Now do the configure
-		execute_process(COMMAND "${CMAKE_COMMAND}"
-			"${va}" "${vb}" "${vc}" "${vd}"
-			"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${coreOut}"
-			"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${emulatorOut}"
-			"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${emulatorOut}"
-			"-B" "${emulatorBuild}"
-			"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
-			RESULT_VARIABLE emulatorResult
-			OUTPUT_FILE "${CMAKE_BINARY_DIR}/${ruleName}.emulator.out"
-			ERROR_FILE "${CMAKE_BINARY_DIR}/${ruleName}.emulator.err")
+		# Now do the configure for emulator-base
+		if(EXISTS "${emulatorBuild}/CMakeCache.txt")
+			set(emulatorResult 0)
+		else()
+			file(MAKE_DIRECTORY "${emulatorBuild}")
+			execute_process(COMMAND "${CMAKE_COMMAND}"
+				"${va}" "${vb}" "${vc}" "${vd}"
+				"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${coreOut}"
+				"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${emulatorOut}"
+				"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${emulatorOut}"
+				"-B" "${emulatorBuild}"
+				"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
+				RESULT_VARIABLE emulatorResult
+				OUTPUT_FILE "${CMAKE_BINARY_DIR}/${ruleName}.emulator.out"
+				ERROR_FILE "${CMAKE_BINARY_DIR}/${ruleName}.emulator.err")
+		endif()
 	else()
 		set(emulatorResult "1")
 	endif()
