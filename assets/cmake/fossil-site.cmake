@@ -91,8 +91,8 @@ if(Fossil_EXECUTABLE)
 			COMMAND "${CMAKE_COMMAND}" "-E" "echo" "${Fossil_EXECUTABLE}"
 				"uv" "add" "${uvDateNative}"
 					"--as" "${toPath}.mkd"
-			COMMAND_EXPAND_LISTS
-			COMMENT "Uploading ${toPath}...")
+			COMMENT "Uploading ${toPath}..."
+			COMMAND_EXPAND_LISTS)
 	endmacro()
 
 	# Depend and upload all results of upload based targets

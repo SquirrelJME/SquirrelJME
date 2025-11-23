@@ -141,9 +141,9 @@ if(Install4JC_EXECUTABLE)
 				"-b" "${mediaIdsComma}"
 				"${CMAKE_SOURCE_DIR}/squirreljme.install4j"
 			DEPENDS standaloneJar
-			COMMAND_EXPAND_LISTS
 			BYPRODUCTS "${mediaOutDir}"
-			SOURCES "${CMAKE_SOURCE_DIR}/squirreljme.install4j")
+			SOURCES "${CMAKE_SOURCE_DIR}/squirreljme.install4j"
+			COMMAND_EXPAND_LISTS)
 
 		# Properties for uploading later
 		set_target_properties(install4j PROPERTIES
@@ -176,9 +176,9 @@ if(Install4JC_EXECUTABLE)
 					"-b" "${mediaId}"
 					"${CMAKE_SOURCE_DIR}/squirreljme.install4j"
 				DEPENDS standaloneJar
-				COMMAND_EXPAND_LISTS
 				BYPRODUCTS "${mediaOutDir}"
-				SOURCES "${CMAKE_SOURCE_DIR}/squirreljme.install4j")
+				SOURCES "${CMAKE_SOURCE_DIR}/squirreljme.install4j"
+				COMMAND_EXPAND_LISTS)
 
 			# Have the all-install4j depend on this
 			add_dependencies(install4j install4j_${mediaId})

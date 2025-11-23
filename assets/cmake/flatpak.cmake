@@ -50,9 +50,9 @@ if(Flatpak_EXECUTABLE AND FlatpakBuilder_EXECUTABLE)
 			"build-bundle"
 			"${bundlePath}"
 			"cc.squirreljme.SquirrelJME"
-		COMMAND_EXPAND_LISTS
 		DEPENDS standaloneJar
-		SOURCES "${CMAKE_SOURCE_DIR}/cc.squirreljme.SquirrelJME.yml")
+		SOURCES "${CMAKE_SOURCE_DIR}/cc.squirreljme.SquirrelJME.yml"
+		COMMAND_EXPAND_LISTS)
 
 	# Set properties for the target
 	set_target_properties(flatpakBundle PROPERTIES

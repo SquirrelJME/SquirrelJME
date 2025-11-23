@@ -32,7 +32,7 @@ endif()
 add_custom_target(pipelineExportCMake
 	COMMAND "${CMAKE_COMMAND}" "-E"
 		"tar" "cf" "${zipOut}" "--format=zip" "--" "${pipelineFiles}"
-	COMMAND_EXPAND_LISTS
 	BYPRODUCTS "${zipOut}"
 	SOURCES "${pipelineFiles}"
-	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+	COMMAND_EXPAND_LISTS)

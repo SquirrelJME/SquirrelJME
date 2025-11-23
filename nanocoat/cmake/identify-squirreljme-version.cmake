@@ -7,18 +7,12 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Identify SquirrelJME version
 
-# Which version file to use?
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/../../squirreljme-version")
-	set(SQUIRRELJME_VERSION_FILE
-		"${CMAKE_CURRENT_LIST_DIR}/../../squirreljme-version")
-elseif(EXISTS "${CMAKE_SOURCE_DIR}/squirreljme-version")
-	set(SQUIRRELJME_VERSION_FILE
-		"${CMAKE_SOURCE_DIR}/squirreljme-version")
+# Need to include squirreljme-version?
+if(NOT DEFINED SQUIRRELJME_VERSION)
+	squirreljme_include_nanocoat("identify-squirreljme-version-file.cmake")
 endif()
 
-# Load version number
-file(STRINGS "${SQUIRRELJME_VERSION_FILE}"
-	SQUIRRELJME_VERSION LIMIT_COUNT 1)
+# Convert to list form for version parts
 string(REPLACE "." ";" SQUIRRELJME_VERSION_LIST "${SQUIRRELJME_VERSION}")
 
 # Is the version considered stable or unstable?

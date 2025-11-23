@@ -37,7 +37,7 @@ list(APPEND SQUIRRELJME_CMAKE_PLATFORMS_GREEN
 	"86")
 list(APPEND SQUIRRELJME_CMAKE_PLATFORMS_MSVC
 	"Win32"
-	"x64"
+	"X64"
 	"ARM"
 	"ARM64")
 
@@ -64,23 +64,26 @@ foreach(generator IN LISTS SQUIRRELJME_CMAKE_GENERATORS)
 			"${CMAKE_BINARY_DIR}/gen-check/${dirName}" checkDir)
 		file(MAKE_DIRECTORY "${checkDir}")
 
-		# Is the architecture used?
-		unset(archArgs)
-		if(NOT "${platform}" STREQUAL "none")
-			list(APPEND archArgs "-A" "${platform}")
-		endif()
-
 		# Check to see if we can configure for this platform
 		message(STATUS "Checking CMake Generator ${generator}/${platform}...")
-		execute_process(COMMAND "${CMAKE_COMMAND}"
-			"-G" "${generator}"
-			"${archArgs}"
-			"-B" "${checkDir}"
-			"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
-			COMMAND_EXPAND_LISTS
-			RESULT_VARIABLE checkResult
-			OUTPUT_FILE "${checkDir}.out"
-			ERROR_FILE "${checkDir}.err")
+		if("${platform}" STREQUAL "none")
+			execute_process(COMMAND "${CMAKE_COMMAND}"
+				"-G" "${generator}"
+				"-B" "${checkDir}"
+				"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
+				RESULT_VARIABLE checkResult
+				OUTPUT_FILE "${checkDir}.out"
+				ERROR_FILE "${checkDir}.err")
+		else()
+			execute_process(COMMAND "${CMAKE_COMMAND}"
+				"-G" "${generator}"
+				"-A" "${platform}"
+				"-B" "${checkDir}"
+				"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
+				RESULT_VARIABLE checkResult
+				OUTPUT_FILE "${checkDir}.out"
+				ERROR_FILE "${checkDir}.err")
+		endif()
 
 		# Successfully configured? With a valid system?
 		if("${checkResult}" EQUAL "0" AND

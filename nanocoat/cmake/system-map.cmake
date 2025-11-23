@@ -453,23 +453,67 @@ function(squirreljme_identify_by_current outSystem outArch)
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "XLClang" OR
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "IBMClang" OR
 		"${hasGccInName}" GREATER_EQUAL "0")
+		message(STATUS "Identifying compiler via GCC...")
 		squirreljme_identify_by_gcc(hasSystem hasArch
 			"${CMAKE_C_COMPILER}")
 
 	# Hope CMake has enough information about the target to determine what
 	# it actually is
 	else()
-		squirreljme_identify_by_cmake(hasSystem hasArch
-			"${CMAKE_SYSTEM_NAME}" "${CMAKE_SYSTEM_PROCESSOR}")
+		# This sadly is more complicated due to issues with CMake and
+		# Visual Studio oddities
+		message(STATUS "Identifying compiler via CMake variables...")
 
 		# If the system is Windows, CMake reports the incorrect architecture
-		# for the target system... *faceclaw*
-		if("${hasSystem}" STREQUAL "windows")
-			if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "Win32")
-				set(hasSystem "ia32")
-			elseif("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "x64")
-				set(hasSystem "amd64")
+		# for the target system for MSVC... *faceclaw*
+		string(FIND "${CMAKE_C_COMPILER}" "cl.exe" isMsvc)
+		if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" AND
+			"${isMsvc}" GREATER_EQUAL "0")
+			# If either are blank, we will have to run the compiler to
+			# figure out the target system. This is the case for Ninja.
+			if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "" OR
+				"${CMAKE_GENERATOR_PLATFORM}" STREQUAL "")
+				# Get help for the compiler
+				execute_process(COMMAND "${CMAKE_C_COMPILER}" "/?"
+					OUTPUT_FILE "${CMAKE_BINARY_DIR}/cl.out"
+					ERROR_FILE "${CMAKE_BINARY_DIR}/cl.err")
+
+				# Only care for the first line
+				file(STRINGS "${CMAKE_BINARY_DIR}/cl.err" clLine
+					LIMIT_COUNT 1)
+				message(STATUS "Trying to identify MSVC with: ${clLine}")
+
+				# Which words appear?
+				string(FIND "${clLine}" "for x86" isMsvcIa32)
+				string(FIND "${clLine}" "for x64" isMsvcAmd64)
+				string(FIND "${clLine}" "for ARM" isMsvcArm)
+				if("${isMsvcArm}" GREATER_EQUAL "0")
+					set(hasSystem "windows")
+					set(hasArch "arm32l")
+				elseif("${isMsvcAmd64}" GREATER_EQUAL "0")
+					set(hasSystem "windows")
+					set(hasArch "amd64")
+				else()
+					set(hasSystem "windows")
+					set(hasArch "ia32")
+				endif()
+
+			# 32-bit Windows
+			elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "Win32" OR
+				"${CMAKE_GENERATOR_PLATFORM}" STREQUAL "Win32")
+				set(hasSystem "windows")
+				set(hasArch "ia32")
+
+			# Otherwise, assume 64-bit
+			else()
+				set(hasSystem "windows")
+				set(hasArch "amd64")
 			endif()
+
+		# Use standard CMake variables defined after project()
+		else()
+			squirreljme_identify_by_cmake(hasSystem hasArch
+				"${CMAKE_SYSTEM_NAME}" "${CMAKE_SYSTEM_PROCESSOR}")
 		endif()
 	endif()
 

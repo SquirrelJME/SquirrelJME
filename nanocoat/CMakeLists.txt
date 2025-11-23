@@ -20,14 +20,8 @@ endif()
 # Easier includes
 include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
 
-# Determine version information
-squirreljme_include("identify-squirreljme-version.cmake")
-
-# Soft patching of CMake for older version support
-squirreljme_include("cmake-patch.cmake")
-
-# Fixes and otherwise for compatibility
-squirreljme_include("pre-fixes.cmake")
+# Determine version information from the base file
+squirreljme_include("identify-squirreljme-version-file.cmake")
 
 # Define project
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
@@ -42,6 +36,15 @@ Virtual Machine for embedded and Internet of Things devices."
 		HOMEPAGE_URL https://squirreljme.cc/
 		LANGUAGES C)
 endif()
+
+# Determine version information
+squirreljme_include("identify-squirreljme-version.cmake")
+
+# Soft patching of CMake for older version support
+squirreljme_include("cmake-patch.cmake")
+
+# Fixes and otherwise for compatibility
+squirreljme_include("pre-fixes.cmake")
 
 # Include system map identifications
 squirreljme_include("system-map.cmake")

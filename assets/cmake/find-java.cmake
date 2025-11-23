@@ -71,8 +71,8 @@ if(SQUIRRELJME_HAS_JAVA)
 				"--no-daemon"
 				"--stacktrace"
 				"${gradleArgs}"
-			COMMAND_EXPAND_LISTS
-			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+			COMMAND_EXPAND_LISTS)
 
 			# Set some SquirrelJME specific properties
 			set_target_properties(${targetName} PROPERTIES

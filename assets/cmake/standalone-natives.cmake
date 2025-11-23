@@ -54,18 +54,20 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		"${systemNormal}/${archNormal}...")
 
 	# Which arguments to use?
-	unset(ccArgs)
-	squirreljme_compiler_cmake_args(ccArgs "${systemNormal}" "${archNormal}")
+	unset(va)
+	unset(vb)
+	unset(vc)
+	unset(vd)
+	squirreljme_compiler_cmake_args(va vb vc vd "${systemNormal}" "${archNormal}")
 
 	# Configure CMake build for NanoCoat Core
 	execute_process(COMMAND "${CMAKE_COMMAND}"
-		"${ccArgs}"
+		"${va}" "${vb}" "${vc}" "${vd}"
 		"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${coreOut}"
 		"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${coreOut}"
 		"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${coreOut}"
 		"-B" "${coreBuild}"
 		"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
-		COMMAND_EXPAND_LISTS
 		RESULT_VARIABLE coreResult
 		OUTPUT_FILE "${CMAKE_BINARY_DIR}/${ruleName}.core.out"
 		ERROR_FILE "${CMAKE_BINARY_DIR}/${ruleName}.core.err")
@@ -84,7 +86,6 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 			"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${emulatorOut}"
 			"-B" "${emulatorBuild}"
 			"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
-			COMMAND_EXPAND_LISTS
 			RESULT_VARIABLE emulatorResult
 			OUTPUT_FILE "${CMAKE_BINARY_DIR}/${ruleName}.emulator.out"
 			ERROR_FILE "${CMAKE_BINARY_DIR}/${ruleName}.emulator.err")
