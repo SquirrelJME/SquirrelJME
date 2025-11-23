@@ -73,7 +73,7 @@ macro(squirreljme_compiler_cmake_args outVa outVb outVc outVd system arch)
 
 		if("${SQUIRRELJME_COMPILER_${system}_${arch}_PLATFORM}"
 			STREQUAL "none")
-			set(${outVc} "-DXXSJMEVCXX=1")
+			set(${outVc} "-DXXSJMEVCACXX=1")
 			set(${outVd} "-DXXSJMEVDXX=1")
 		else()
 			set(${outVc} "-A")
@@ -103,9 +103,9 @@ list(SORT SQUIRRELJME_COMPILER_MAP)
 
 # Store the set of compilers into the cache, so that it is never lost if
 # this needs to be re-run
-set(SQUIRRELJME_COMPILERS "${SQUIRRELJME_COMPILERS}"
-	CACHE STRING "Available compilers")
+#set(SQUIRRELJME_COMPILERS "${SQUIRRELJME_COMPILERS}"
+#	CACHE STRING "Available compilers")
 
 # Store the compiler mappings into the cache so reloads do not break
-set(SQUIRRELJME_COMPILER_MAP "${SQUIRRELJME_COMPILER_MAP}"
-	CACHE STRING "Available compiler mappings")
+#set(SQUIRRELJME_COMPILER_MAP "${SQUIRRELJME_COMPILER_MAP}"
+#	CACHE STRING "Available compiler mappings")

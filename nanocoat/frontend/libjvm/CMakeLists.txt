@@ -122,16 +122,28 @@ if(SQUIRRELJME_ENABLE_DYLIB)
 	endif()
 
 	# Names of the original and new libraries...
-	set(SQUIRRELJME_LIBSQUIRRELJME_NAME
-		"${CMAKE_SHARED_LIBRARY_PREFIX}squirreljme${CMAKE_SHARED_LIBRARY_SUFFIX}")
-	set(SQUIRRELJME_LIBJVM_NAME
-		"${CMAKE_SHARED_LIBRARY_PREFIX}jvm${CMAKE_SHARED_LIBRARY_SUFFIX}")
+	set(libSjmeOut
+		"${jvmOutDir}/${CMAKE_SHARED_LIBRARY_PREFIX}squirreljme")
+	set(libJvmOut
+		"${jvmOutDir}/${CMAKE_SHARED_LIBRARY_PREFIX}jvm")
 
 	# And the resultant library copy itself...
 	add_custom_command(TARGET libJvmDyLib POST_BUILD
 		COMMAND "${CMAKE_COMMAND}" "-E" "copy"
-			"${jvmOutDir}/${SQUIRRELJME_LIBSQUIRRELJME_NAME}"
-			"${jvmOutDir}/${SQUIRRELJME_LIBJVM_NAME}"
-		BYPRODUCTS "${jvmOutDir}/${SQUIRRELJME_LIBJVM_NAME}"
+			"${libSjmeOut}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+			"${libJvmOut}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+		BYPRODUCTS
+			"${libJvmOut}${CMAKE_SHARED_LIBRARY_SUFFIX}"
 		COMMENT "Copying libsquirreljme to libjvm...")
+
+	# If on Windows, we need to copy the implib as well
+	if(SQUIRRELJME_HAS_IMPLIB)
+		add_custom_command(TARGET libJvmDyLib POST_BUILD
+			COMMAND "${CMAKE_COMMAND}" "-E" "copy"
+				"${libSjmeOut}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+				"${libJvmOut}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+			BYPRODUCTS
+				"${libJvmOut}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+			COMMENT "Copying libsquirreljme to libjvm (implib)...")
+	endif()
 endif()

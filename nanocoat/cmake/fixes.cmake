@@ -59,6 +59,13 @@ endif()
 #	set(SQUIRRELJME_ENABLE_TESTING OFF)
 #endif()
 
+# Are implibs used?
+if(MSVC AND "${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+	set(SQUIRRELJME_HAS_IMPLIB YES)
+else()
+	set(SQUIRRELJME_HAS_IMPLIB NO)
+endif()
+
 # CMake 3.13 added many things!
 if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 	# Disable CPacking
@@ -197,7 +204,7 @@ macro(squirreljme_target_shared_library_exports target)
 
 	# MSVC requires that the implementation library also be specified otherwise
 	# nothing will be able to properly link against the library
-	if(MSVC)
+	if(SQUIRRELJME_HAS_IMPLIB)
 		set(impLibPath
 			"${actualWhere}/${squirreljme_dylib_output_name}.lib")
 		target_link_options(${target} PRIVATE
