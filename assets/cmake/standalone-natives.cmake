@@ -58,7 +58,8 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 	unset(vb)
 	unset(vc)
 	unset(vd)
-	squirreljme_compiler_cmake_args(va vb vc vd "${systemNormal}" "${archNormal}")
+	squirreljme_compiler_cmake_args(va vb vc vd
+		"${systemNormal}" "${archNormal}")
 
 	# Configure CMake build for NanoCoat Core
 	execute_process(COMMAND "${CMAKE_COMMAND}"

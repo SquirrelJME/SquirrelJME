@@ -70,7 +70,8 @@ macro(squirreljme_compiler_cmake_args outVa outVb outVc outVb system arch)
 	# Executable Specified
 	if("${SQUIRRELJME_COMPILER_${system}_${arch}_TYPE}"
 		STREQUAL "exe")
-		set(${va} "-DCMAKE_C_COMPILER=${SQUIRRELJME_COMPILER_${system}_${arch}_EXECUTABLE}")
+		set(${va}
+	"-DCMAKE_C_COMPILER=${SQUIRRELJME_COMPILER_${system}_${arch}_EXECUTABLE}")
 		set(${vb} "-DXXSJMEVBXX=1")
 		set(${vc} "-DXXSJMEVCXX=1")
 		set(${vd} "-DXXSJMEVDXX=1")
