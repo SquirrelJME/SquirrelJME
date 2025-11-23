@@ -10,9 +10,11 @@
 
 # Directory where the natives are placed
 define_property(TARGET PROPERTY SQUIRRELJME_CORE_NATIVE_PATH
-	BRIEF_DOCS "Path where core natives are placed.")
+	BRIEF_DOCS "Path where core natives are placed."
+	FULL_DOCS "Path where core natives are placed.")
 define_property(TARGET PROPERTY SQUIRRELJME_EMULATOR_NATIVE_PATH
-	BRIEF_DOCS "Path where emulator natives are placed.")
+	BRIEF_DOCS "Path where emulator natives are placed."
+	FULL_DOCS "Path where emulator natives are placed.")
 
 # Build natives for every known compiler on the system
 foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
