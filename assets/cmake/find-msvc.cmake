@@ -29,16 +29,30 @@ list(REMOVE_DUPLICATES SQUIRRELJME_PROGRAM_FILES)
 macro(squirreljme_msvc_check_inner binPath hostArch targetArch)
 	# Request the command line options to see if we can actually run it, if
 	# we cannot then it might be for another architecture
+	# If a previous target was successfully added, skip
 	file(TO_CMAKE_PATH "${binPath}/cl.exe" clExe)
-	execute_process(COMMAND "${clExe}"
-		OUTPUT_VARIABLE helpOutput
-		ERROR_VARIABLE helpError
-		RESULT_VARIABLE helpResult)
+	if(NOT "${targetArch}" IN_LIST SQUIRRELJME_MSVC_ARCH_EVICT)
+		execute_process(COMMAND "${clExe}"
+			OUTPUT_VARIABLE helpOutput
+			ERROR_VARIABLE helpError
+			RESULT_VARIABLE helpResult)
+	else()
+		set(helpResult 1)
+	endif()
 
 	# It does run, we need to test it, however it is hard to tell what some
 	# targets actually are until we try to compile for it and run things
 	if("${helpResult}" EQUAL "0")
-		squirreljme_compiler_probe("${clExe}")
+		# Probe the compiler
+		unset(msvcProbe)
+		squirreljme_compiler_probe(msvcProbe "${clExe}")
+
+		# If it was successfully probed, evict the target architecture so
+		# we just skip it
+		if(msvcProbe)
+			list(APPEND SQUIRRELJME_MSVC_ARCH_EVICT
+				"${targetArch}")
+		endif()
 	endif()
 endmacro()
 

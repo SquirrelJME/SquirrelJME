@@ -30,7 +30,7 @@ macro(squirreljme_compiler_register type system arch compilerExe)
 endmacro()
 
 # Probe a compiler manually
-macro(squirreljme_compiler_probe compilerExe)
+macro(squirreljme_compiler_probe result compilerExe)
 	# Indicate that we are going to probe it...
 	message(STATUS "Probing compiler ${compilerExe}...")
 
@@ -71,7 +71,16 @@ macro(squirreljme_compiler_probe compilerExe)
 			NOT "${archProbed}" STREQUAL "")
 			squirreljme_compiler_register(probed
 				"${systemProbed}" "${archProbed}" "${compilerExe}")
+
+			# Probed a compiler
+			set(${result} YES)
+		else()
+			# Failed to probe
+			set(${result} NO)
 		endif()
+	else()
+		# Failed to probe
+		set(${result} NO)
 	endif()
 endmacro()
 
