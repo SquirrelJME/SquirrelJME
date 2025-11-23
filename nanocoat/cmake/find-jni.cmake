@@ -12,8 +12,29 @@ include(CheckIncludeFile)
 
 # If not cross compiled, try using the system's JVM implementation
 if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
-	# Use standard JNI search
-	find_package(JNI QUIET)
+	# Notice
+	message(STATUS "Checking if CMake's FindJNI() is broken...")
+
+	# Use standard JNI search from CMake, however it is very possible that it
+	# is broken if your CMake is old enough and your environment is not
+	# configured correctly
+	file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/check-find-jni")
+	execute_process(COMMAND "${CMAKE_COMMAND}"
+		"${CMAKE_CURRENT_LIST_DIR}/find-jni"
+		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/check-find-jni"
+		RESULT_VARIABLE jniConfigureResult)
+
+	# Only if it is valid should it be used
+	if("${jniConfigureResult}" EQUAL "0")
+		# Notice!
+		message(STATUS "CMake FindJNI() operational, using that!")
+
+		# Actually use it
+		find_package(JNI QUIET)
+	else()
+		# Otherwise indicate brokenness
+		message(STATUS "CMake's FindJNI() is actually broken...")
+	endif()
 
 	# Found something?
 	if(JNI_FOUND)
@@ -49,6 +70,10 @@ if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 			set(SQUIRRELJME_HAS_JAVA_JVM YES)
 		endif()
 	endif()
+
+# Otherwise emit a notice due to cross-compile
+else()
+	message(STATUS "Not using the system JNI due to cross-compilation!")
 endif()
 
 # If JNI was not found, use our own
