@@ -61,6 +61,12 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 	squirreljme_compiler_cmake_args(va vb vc vd
 		"${systemNormal}" "${archNormal}")
 
+	# Cleanup
+	file(REMOVE_RECURSE "${coreOut}"
+		"${ruleName}.core.out" "${ruleName}.core.err"
+		"${emulatorOut}"
+		"${ruleName}.emulator.out" "${ruleName}.emulator.err")
+
 	# Configure CMake build for NanoCoat Core
 	execute_process(COMMAND "${CMAKE_COMMAND}"
 		"${va}" "${vb}" "${vc}" "${vd}"
@@ -81,7 +87,7 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 
 		# Now do the configure
 		execute_process(COMMAND "${CMAKE_COMMAND}"
-			"${ccArgs}"
+			"${va}" "${vb}" "${vc}" "${vd}"
 			"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${coreOut}"
 			"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${emulatorOut}"
 			"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${emulatorOut}"

@@ -65,19 +65,8 @@ endmacro()
 # The output format is not nice due to execute_process() not taking
 # the parameter COMMAND_EXPAND_LISTS sadly.
 macro(squirreljme_compiler_cmake_args outVa outVb outVc outVb system arch)
-	unset(result)
-
-	# Executable Specified
-	if("${SQUIRRELJME_COMPILER_${system}_${arch}_TYPE}"
-		STREQUAL "exe")
-		set(${va}
-	"-DCMAKE_C_COMPILER=${SQUIRRELJME_COMPILER_${system}_${arch}_EXECUTABLE}")
-		set(${vb} "-DXXSJMEVBXX=1")
-		set(${vc} "-DXXSJMEVCXX=1")
-		set(${vd} "-DXXSJMEVDXX=1")
-
 	# Generator Specified
-	elseif("${SQUIRRELJME_COMPILER_${system}_${arch}_TYPE}"
+	if("${SQUIRRELJME_COMPILER_${system}_${arch}_TYPE}"
 		STREQUAL "generator")
 		set(${va} "-G")
 		set(${vb} "${SQUIRRELJME_COMPILER_${system}_${arch}_GENERATOR}")
@@ -90,10 +79,13 @@ macro(squirreljme_compiler_cmake_args outVa outVb outVc outVb system arch)
 			set(${vc} "-A")
 			set(${vd} "${SQUIRRELJME_COMPILER_${system}_${arch}_PLATFORM}")
 		endif()
+	else()
+		set(${va}
+	"-DCMAKE_C_COMPILER=${SQUIRRELJME_COMPILER_${system}_${arch}_EXECUTABLE}")
+		set(${vb} "-DXXSJMEVBXX=1")
+		set(${vc} "-DXXSJMEVCXX=1")
+		set(${vd} "-DXXSJMEVDXX=1")
 	endif()
-
-	# Make sure the output is set
-	set(${outArgs} "${result}")
 endmacro()
 
 # Find Java
