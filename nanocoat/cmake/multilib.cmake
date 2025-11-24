@@ -7,6 +7,23 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Multiple library declarations and otherwise
 
+# Correct Paths
+## Emulator base import directory
+if(DEFINED SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR)
+	file(TO_CMAKE_PATH "${SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR}"
+		SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR)
+endif()
+## Dynamic library output
+if(DEFINED SQUIRRELJME_DYLIB_OUTPUT_DIR)
+	file(TO_CMAKE_PATH "${SQUIRRELJME_DYLIB_OUTPUT_DIR}"
+		SQUIRRELJME_DYLIB_OUTPUT_DIR)
+endif()
+## Binary output
+if(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
+	file(TO_CMAKE_PATH "${SQUIRRELJME_BINARY_OUTPUT_DIR}"
+		SQUIRRELJME_BINARY_OUTPUT_DIR)
+endif()
+
 # Add static library
 macro(squirreljme_multilib_add_static_library libBase)
 	# Load in source files

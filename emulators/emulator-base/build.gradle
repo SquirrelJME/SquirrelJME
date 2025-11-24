@@ -35,7 +35,7 @@ static java.nio.file.Path dylibPath(java.nio.file.Path __dylibBase, String __suf
 }
 
 static List<String> dylibArgs(java.nio.file.Path __dylibBase, String __suffix) {
-	return [
+	return [	
 		"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${dylibPath(__dylibBase, "core")}".toString(),
 		"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${dylibPath(__dylibBase, __suffix)}".toString(),
 		"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${dylibPath(__dylibBase, __suffix)}".toString()

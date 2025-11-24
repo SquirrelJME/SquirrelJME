@@ -87,16 +87,13 @@ squirreljme_target_binary_output(SquirrelJME
 
 # Specify name for the JVM library
 squirreljme_multilib_target_binary_name(libJvm
-	"squirreljme")
+	"jvm")
 squirreljme_target_binary_name(SquirrelJME
 	"squirreljme")
 
-# Ninja building on Windows has a problem when there is a DLL and a static
-# library for the JVM
-if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
-	squirreljme_target_binary_name(libJvmStatic
-		"squirreljmes")
-endif()
+# It is fine to have the static library be a completely different name
+squirreljme_target_binary_name(libJvmStatic
+	"squirreljme")
 
 # Really only matters for dynamic libraries
 if(SQUIRRELJME_ENABLE_DYLIB)
@@ -106,44 +103,8 @@ if(SQUIRRELJME_ENABLE_DYLIB)
 
 	# Do not set a SONAME for libjvm library as it could be either
 	# libsquirreljme or libjvm, and this would break any kind of interop
-	squirreljme_no_soname(libJvmDyLib)
+	#squirreljme_no_soname(libJvmDyLib)
 
 	# Exports for Windows, etc.
 	squirreljme_target_shared_library_exports(libJvmDyLib)
-
-	# The target location can be overridden, generally through the pipeline
-	# build system
-	if(DEFINED ENV{SQUIRRELJME_BINARY_OUTPUT_DIR})
-		set(jvmOutDir "$ENV{SQUIRRELJME_BINARY_OUTPUT_DIR}")
-	elseif(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
-		set(jvmOutDir "${SQUIRRELJME_BINARY_OUTPUT_DIR}")
-	else()
-		set(jvmOutDir "${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
-	endif()
-
-	# Names of the original and new libraries...
-	set(libSjmeOut
-		"${jvmOutDir}/${CMAKE_SHARED_LIBRARY_PREFIX}squirreljme")
-	set(libJvmOut
-		"${jvmOutDir}/${CMAKE_SHARED_LIBRARY_PREFIX}jvm")
-
-	# And the resultant library copy itself...
-	add_custom_command(TARGET libJvmDyLib POST_BUILD
-		COMMAND "${CMAKE_COMMAND}" "-E" "copy"
-			"${libSjmeOut}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-			"${libJvmOut}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-		BYPRODUCTS
-			"${libJvmOut}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-		COMMENT "Copying libsquirreljme to libjvm...")
-
-	# If on Windows, we need to copy the implib as well
-	if(SQUIRRELJME_HAS_IMPLIB)
-		add_custom_command(TARGET libJvmDyLib POST_BUILD
-			COMMAND "${CMAKE_COMMAND}" "-E" "copy"
-				"${libSjmeOut}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-				"${libJvmOut}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-			BYPRODUCTS
-				"${libJvmOut}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-			COMMENT "Copying libsquirreljme to libjvm (implib)...")
-	endif()
 endif()

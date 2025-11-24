@@ -20,7 +20,8 @@ if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 	# configured correctly
 	file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/check-find-jni")
 	execute_process(COMMAND "${CMAKE_COMMAND}"
-		"${CMAKE_CURRENT_LIST_DIR}/find-jni"
+			"-DJAVA_HOME=${JAVA_HOME}"
+			"${CMAKE_CURRENT_LIST_DIR}/find-jni"
 		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/check-find-jni"
 		RESULT_VARIABLE jniConfigureResult)
 
