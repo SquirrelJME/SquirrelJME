@@ -33,55 +33,52 @@ macro(squirreljme_scritchany_enable area capArea)
 endmacro()
 
 # Used to build SOs into lists
-macro(squirreljme_scritchany_build area capArea ifVar subDir targetBase)
-	if(${ifVar})
-		# Notice!
-		message(STATUS "Scritch${capArea}: Enabling ${targetBase}!")
+macro(squirreljme_scritchany_build area capArea subDir targetBase)
+	# Notice!
+	message(STATUS "Scritch${capArea}: Enabling ${targetBase}!")
 
-		# Include sub-directory for the build
-		add_subdirectory(${subDir})
+	# Include sub-directory for the build
+	add_subdirectory(${subDir})
 
-		# Make all ScritchArea depend on this
-		add_dependencies(Scritch${capArea}
-			Scritch${capArea}${targetBase})
+	# Make all ScritchArea depend on this
+	add_dependencies(Scritch${capArea}
+		Scritch${capArea}${targetBase})
 
-		# Make ZIP collection depend on this
-		add_dependencies(Scritch${capArea}CollectZip
-			Scritch${capArea}${targetBase})
+	# Make ZIP collection depend on this
+	add_dependencies(Scritch${capArea}CollectZip
+		Scritch${capArea}${targetBase})
 
-		# Include the target into the collection list
-		file(APPEND "${SQUIRRELJME_SCRITCHLIST_DIR}/libsquirreljme-scritch${area}.list"
-			"${targetBase}")
+	# Include the target into the collection list
+	file(APPEND
+		"${SQUIRRELJME_SCRITCHLIST_DIR}/libsquirreljme-scritch${area}.list"
+		"${targetBase}")
 
-		# What is the library called?
-		get_target_property(libraryName Scritch${capArea}${targetBase}
-			LIBRARY_OUTPUT_NAME)
-		set(libraryName
-			"${CMAKE_SHARED_LIBRARY_PREFIX}${libraryName}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+	# What is the library called?
+	get_target_property(libraryName Scritch${capArea}${targetBase}
+		LIBRARY_OUTPUT_NAME)
+	set(libraryName
+		"${CMAKE_SHARED_LIBRARY_PREFIX}${libraryName}${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
-		# Add target library paths
-		get_target_property(targetLibs
-			Scritch${capArea}CollectZip sjmeLibraries)
-		if(targetLibs)
-			list(APPEND targetLibs "${libraryName}")
-		else()
-			set(targetLibs "${libraryName}")
-		endif()
-		set_target_properties(Scritch${capArea}CollectZip
-			PROPERTIES sjmeLibraries "${targetLibs}")
+	# Add target library paths
+	get_target_property(targetLibs
+		Scritch${capArea}CollectZip sjmeLibraries)
+	if(targetLibs)
+		list(APPEND targetLibs "${libraryName}")
 	else()
-		message("Scritch${capArea}: ${targetBase} not available...")
+		set(targetLibs "${libraryName}")
 	endif()
+	set_target_properties(Scritch${capArea}CollectZip
+		PROPERTIES sjmeLibraries "${targetLibs}")
 endmacro()
 
 # Macro for more easily declaring ScritchUI sub-projects
-macro(squirreljme_scritchui_build ifVar subDir targetBase)
+macro(squirreljme_scritchui_build subDir targetBase)
 	squirreljme_scritchany_build(ui UI
-		${ifVar} ${subDir} ${targetBase})
+		${subDir} ${targetBase})
 endmacro()
 
 # Macro for more easily declaring ScritchAudio sub-projects
-macro(squirreljme_scritchaudio_build ifVar subDir targetBase)
+macro(squirreljme_scritchaudio_build subDir targetBase)
 	squirreljme_scritchany_build(audio Audio
-		${ifVar} ${subDir} ${targetBase})
+		${subDir} ${targetBase})
 endmacro()

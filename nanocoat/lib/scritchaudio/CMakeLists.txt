@@ -30,14 +30,21 @@ add_subdirectory(softmix)
 # Open Sound System
 squirreljme_include("find-oss.cmake")
 
-option(SQUIRRELJME_ENABLE_AUDIO_OSS "Enable OSS Audio" ON)
+if(OSS_FOUND)
+	set(SQUIRRELJME_ENABLE_AUDIO_OSS_DEFAULT YES)
+else()
+	set(SQUIRRELJME_ENABLE_AUDIO_OSS_DEFAULT NO)
+endif()
+
+option(SQUIRRELJME_ENABLE_AUDIO_OSS "Enable OSS Audio"
+	${SQUIRRELJME_ENABLE_AUDIO_OSS_DEFAULT})
 if(SQUIRRELJME_ENABLE_AUDIO_OSS)
-	squirreljme_scritchaudio_build(OSS_FOUND oss OSS)
+	squirreljme_scritchaudio_build(oss OSS)
 endif()
 
 # Windows Media System
 option(SQUIRRELJME_ENABLE_AUDIO_WINMM "Enable WinMM Audio"
-	${SQUIRRELJME_IS_WINDOWS})
+	${SQUIRRELJME_ON_IF_WIN32})
 if(SQUIRRELJME_ENABLE_AUDIO_WINMM)
-	squirreljme_scritchaudio_build(SQUIRRELJME_IS_WINDOWS winmm WinMM)
+	squirreljme_scritchaudio_build(winmm WinMM)
 endif()
