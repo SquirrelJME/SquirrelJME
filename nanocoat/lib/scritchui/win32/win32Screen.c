@@ -55,7 +55,7 @@ static BOOL CALLBACK sjme_scritchui_win32_displayQuery(
 	/* Get information on this monitor. */
 	memset(&monitor, 0, sizeof(monitor));
 	monitor.cbSize = sizeof(monitor);
-	if (0 == GetMonitorInfo(hMonitor, &monitor))
+	if (0 == GetMonitorInfo(hMonitor, (LPMONITORINFO)&monitor))
 	{
 		info->error = info->inState->implIntern->getLastError(
 			info->inState, SJME_ERROR_NATIVE_WIDGET_FAILURE);

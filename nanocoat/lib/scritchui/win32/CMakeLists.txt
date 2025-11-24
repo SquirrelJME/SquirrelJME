@@ -39,5 +39,10 @@ squirreljme_target_binary_name(ScritchUIWin32
 squirreljme_target_binary_output(ScritchUIWin32
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
+# Required libraries
+squirreljme_target_link_libraries_required(ScritchUIWin32)
+target_link_libraries(ScritchUIWin32
+	"gdi32")
+
 # Generate exports
 squirreljme_target_shared_library_exports(ScritchUIWin32)
