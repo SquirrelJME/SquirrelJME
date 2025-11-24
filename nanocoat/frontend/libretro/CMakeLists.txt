@@ -10,17 +10,17 @@
 if(LIBRETRO_REALLY_STATIC)
 	set(libRetroIsStatic ON)
 	set(libRetroBuildType STATIC)
-	set(libRetroCore ${SQUIRRELJME_LIB_Core_STATIC})
+	set(libRetroCore ${SQUIRRELJME_LIB_Core_FIXED})
 	set(libRetroBaseObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_STATIC}>)
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FIXED}>)
 	set(libRetroCoreObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Core_STATIC}>)
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Core_FIXED}>)
 	set(scritchUiCoreObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_STATIC}>)
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FIXED}>)
 	set(scritchUiFramebufferObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_STATIC}>)
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FIXED}>)
 	set(scritchUiPureObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIPure_STATIC}>)
+		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIPure_FIXED}>)
 else()
 	set(libRetroIsStatic OFF)
 	set(libRetroBuildType SHARED)

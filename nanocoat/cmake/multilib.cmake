@@ -64,11 +64,15 @@ macro(squirreljme_multilib_add_static_library libBase)
 	if(SQUIRRELJME_ENABLE_FPIC)
 		set(SQUIRRELJME_LIB_${libBase}_STATIC ${libBase}Static
 			CACHE STRING "Static ${libBase} Target" FORCE)
+		set(SQUIRRELJME_LIB_${libBase}_FIXED ${libBase}
+			CACHE STRING "Non-FPIC ${libBase} Target" FORCE)
 		set(SQUIRRELJME_LIB_${libBase}_FPIC ${libBase}PIC
 			CACHE STRING "FPIC ${libBase} Target" FORCE)
 	else()
 		set(SQUIRRELJME_LIB_${libBase}_STATIC ${libBase}Static
 			CACHE STRING "Static ${libBase} Target" FORCE)
+		set(SQUIRRELJME_LIB_${libBase}_FIXED ${libBase}
+			CACHE STRING "Non-FPIC ${libBase} Target" FORCE)
 		set(SQUIRRELJME_LIB_${libBase}_FPIC ${libBase}
 			CACHE STRING "FPIC ${libBase} Target" FORCE)
 	endif()

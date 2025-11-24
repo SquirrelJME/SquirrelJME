@@ -113,11 +113,20 @@ endfunction()
 
 # Grab GCC defines from GCC compiler
 function(squirreljme_defines_gcc gccDefines gccExe)
+	# Where does the main test source exist?
+	if(EXISTS "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/tryMain.c")
+		set(gccMainSource "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/tryMain.c")
+	elseif(EXISTS "${CMAKE_SOURCE_DIR}/cmake/tryMain.c")
+		set(gccMainSource "${CMAKE_SOURCE_DIR}/cmake/tryMain.c")
+	else()
+		set(gccMainSource "${CMAKE_SOURCE_DIR}/nanocoat/cmake/tryMain.c")
+	endif()
+
 	# Run the compiler and request all the preprocessor defines
 	set(gccOutput "")
 	execute_process(
-		COMMAND "${gccExe}" "-E" "-dM"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/tryMain.c"
+		COMMAND "${gccExe}"
+			"-E" "-dM" "${CMAKE_C_FLAGS}" "${gccMainSource}"
 		OUTPUT_VARIABLE gccOutputRaw
 		RESULT_VARIABLE gccResult
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -152,13 +161,40 @@ endfunction()
 function(squirreljme_identify_by_defines_list outSystem outArch defines)
 	# This is based on what is found in the define list
 	## Determine system
+	### RETROARCH/EMBEDDED SHOULD BE FIRST! ###
 	if("__ANDROID__" IN_LIST defines OR
 		"__ANDROID_API__" IN_LIST defines)
 		set(hasSystem "android")
-	elseif("__APPLE__" IN_LIST defines AND "__MACH__" IN_LIST defines)
-		set(hasSystem "macosx")
 	elseif("_3DS" IN_LIST defines)
 		set(hasSystem "3ds")
+	elseif("GEKKO" IN_LIST defines AND
+		"HW_DOL" IN_LIST defines)
+		set(hasSystem "gamecube")
+	elseif("GEKKO" IN_LIST defines AND
+		"HW_RVL" IN_LIST defines)
+		if("WIIU" IN_LIST defines)
+			set(hasSystem "wiiu")
+		else()
+			set(hasSystem "wii")
+		endif()
+	elseif("PS2" IN_LIST defines)
+		set(hasSystem "playstation2")
+	elseif("PSP" IN_LIST defines)
+		set(hasSystem "psp")
+	elseif("HAVE_LIBNX" IN_LIST defines)
+		set(hasSystem "switch")
+	elseif("IOS" IN_LIST defines)
+		set(hasSystem "ios")
+	###########################################
+	elseif("__APPLE__" IN_LIST defines)
+		if("TARGET_IPHONE_SIMULATOR" IN_LIST defines OR
+			"TARGET_OS_IPHONE" IN_LIST defines)
+			set(hasSystem "ios")
+		elseif("__MACH__" IN_LIST defines)
+			set(hasSystem "macosx")
+		else()
+			set(hasSystem "macintosh")
+		endif()
 	elseif("BSD" IN_LIST defines OR
 		"__FreeBSD__"  IN_LIST defines OR
 		"__NetBSD__"  IN_LIST defines OR
@@ -171,7 +207,8 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 	elseif("MSDOS" IN_LIST defines OR
 		"__MSDOS__" IN_LIST defines OR
 		"_MSDOS" IN_LIST defines OR
-		"__DOS__" IN_LIST defines)
+		"__DOS__" IN_LIST defines OR
+		"__DJGPP__" IN_LIST defines)
 		set(hasSystem "dos")
 	elseif("EMSCRIPTEN" IN_LIST defines OR
 		"__EMSCRIPTEN__" IN_LIST defines)
@@ -305,7 +342,8 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 	elseif("__arm__" IN_LIST defines OR
 		"__arm32" IN_LIST defines OR
 		"__arm32__" IN_LIST defines OR
-		"_M_ARM" IN_LIST defines)
+		"_M_ARM" IN_LIST defines OR
+		"ARM11" IN_LIST defines)
 		if("__BIG_ENDIAN__" IN_LIST defines)
 			set(hasArch "arm32b")
 		else()
@@ -313,6 +351,9 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		endif()
 	elseif("__riscv" IN_LIST defines)
 		set(hasArch "riscv64")
+	elseif("EMSCRIPTEN" IN_LIST defines OR
+		"__EMSCRIPTEN__" IN_LIST defines)
+		set(hasSystem "emscripten")
 	else()
 		set(hasArch "unknown")
 	endif()
@@ -439,7 +480,8 @@ function(squirreljme_identify_by_current outSystem outArch)
 	set(hasArch "")
 
 	# Name-likes
-	string(FIND "${CMAKE_C_COMPILER}" "gcc" hasGccInName)
+	string(FIND "${CMAKE_C_COMPILER}" "gcc" isGcc)
+	string(FIND "${CMAKE_C_COMPILER}" "cl.exe" isMsvc)
 
 	# Unconfigured environment?
 	if("${CMAKE_C_COMPILER_ID}" STREQUAL "" AND
@@ -459,21 +501,24 @@ function(squirreljme_identify_by_current outSystem outArch)
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "TIClang" OR
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "XLClang" OR
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "IBMClang" OR
-		"${hasGccInName}" GREATER_EQUAL "0")
+		"${isGcc}" GREATER_EQUAL "0")
 		message(STATUS "Identifying compiler via GCC...")
 		squirreljme_identify_by_gcc(hasSystem hasArch
 			"${CMAKE_C_COMPILER}")
+	endif()
 
 	# Hope CMake has enough information about the target to determine what
 	# it actually is
-	else()
+	if("${hasSystem}" STREQUAL "" OR
+		"${hasArch}" STREQUAL "" OR
+		"${hasSystem}" STREQUAL "unknown" OR
+		"${hasArch}" STREQUAL "unknown")
 		# This sadly is more complicated due to issues with CMake and
 		# Visual Studio oddities
 		message(STATUS "Identifying compiler via CMake variables...")
 
 		# If the system is Windows, CMake reports the incorrect architecture
 		# for the target system for MSVC... *faceclaw*
-		string(FIND "${CMAKE_C_COMPILER}" "cl.exe" isMsvc)
 		if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows" AND
 			"${isMsvc}" GREATER_EQUAL "0")
 			# If either are blank, we will have to run the compiler to
