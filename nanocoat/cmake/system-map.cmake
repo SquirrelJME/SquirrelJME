@@ -655,3 +655,13 @@ endif()
 # Write the target system details into the build root
 file(WRITE "${CMAKE_BINARY_DIR}/system.tgt" "${SQUIRRELJME_SYSTEM}")
 file(WRITE "${CMAKE_BINARY_DIR}/arch__.tgt" "${SQUIRRELJME_ARCH}")
+
+# On by default if on Win32?
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "windowsce")
+	set(SQUIRRELJME_ON_IF_WIN32 ON)
+	set(SQUIRRELJME_OFF_IF_WIN32 OFF)
+else()
+	set(SQUIRRELJME_ON_IF_WIN32 OFF)
+	set(SQUIRRELJME_OFF_IF_WIN32 ON)
+endif()
