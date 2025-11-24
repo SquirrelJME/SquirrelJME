@@ -20,11 +20,12 @@ set(CMAKE_BUILD_PARALLEL_LEVEL 1)
 include("${CMAKE_SOURCE_DIR}/assets/cmake/easier-includes.cmake"
 	NO_POLICY_SCOPE)
 
-# Version number for SquirrelJME
-squirreljme_include_nanocoat("identify-squirreljme-version.cmake")
+# Force the build system to always be unconfigured
+set(SQUIRRELJME_SYSTEM "none")
+set(SQUIRRELJME_ARCH "none")
 
-# To Emily and Near...
-squirreljme_include_nanocoat("i-miss-you.cmake")
+# Version number for SquirrelJME
+squirreljme_include_nanocoat("identify-squirreljme-version-file.cmake")
 
 # A project must be declared
 # Specifying languages here with no languages means that we do not want to
@@ -33,6 +34,12 @@ squirreljme_include_nanocoat("i-miss-you.cmake")
 project(SquirrelJMEBuild
 	HOMEPAGE_URL https://squirreljme.cc/
 	LANGUAGES)
+
+# Version number for SquirrelJME
+squirreljme_include_nanocoat("identify-squirreljme-version.cmake")
+
+# To Emily and Near...
+squirreljme_include_nanocoat("i-miss-you.cmake")
 
 # Include system mappings
 squirreljme_include_nanocoat("system-map.cmake")

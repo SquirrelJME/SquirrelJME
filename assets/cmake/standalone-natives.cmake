@@ -61,8 +61,17 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 	squirreljme_compiler_cmake_args(va vb vc vd
 		"${systemNormal}" "${archNormal}")
 
+	# Possibly broken configure?
+	if(EXISTS "${coreBuild}/CMakeCache.txt" AND
+		(NOT EXISTS "${coreBuild}/arch__.tgt" OR
+		NOT EXISTS "${coreBuild}/system.tgt"))
+		file(REMOVE_RECURSE "${coreBuild}")
+	endif()
+
 	# Configure CMake build for NanoCoat Core
-	if(EXISTS "${coreBuild}/CMakeCache.txt")
+	if(EXISTS "${coreBuild}/CMakeCache.txt" AND
+		EXISTS "${coreBuild}/arch__.tgt" AND
+		EXISTS "${coreBuild}/system.tgt")
 		set(coreResult 0)
 	else()
 		file(MAKE_DIRECTORY "${coreBuild}")
@@ -84,8 +93,17 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		message(STATUS "Configuring libEmulatorBase "
 			"${systemNormal}/${archNormal}...")
 
+		# Possibly broken configure?
+		if(EXISTS "${emulatorBuild}/CMakeCache.txt" AND
+			(NOT EXISTS "${emulatorBuild}/arch__.tgt" OR
+			NOT EXISTS "${emulatorBuild}/system.tgt"))
+			file(REMOVE_RECURSE "${emulatorBuild}")
+		endif()
+
 		# Now do the configure for emulator-base
-		if(EXISTS "${emulatorBuild}/CMakeCache.txt")
+		if(EXISTS "${emulatorBuild}/CMakeCache.txt" AND
+			EXISTS "${emulatorBuild}/arch__.tgt" AND
+			EXISTS "${emulatorBuild}/system.tgt")
 			set(emulatorResult 0)
 		else()
 			file(MAKE_DIRECTORY "${emulatorBuild}")

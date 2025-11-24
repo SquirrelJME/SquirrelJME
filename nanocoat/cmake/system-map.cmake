@@ -115,18 +115,24 @@ endfunction()
 function(squirreljme_defines_gcc gccDefines gccExe)
 	# Where does the main test source exist?
 	if(EXISTS "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/tryMain.c")
-		set(gccMainSource "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/tryMain.c")
+		file(TO_NATIVE_PATH
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/tryMain.c"
+			gccMainSource)
 	elseif(EXISTS "${CMAKE_SOURCE_DIR}/cmake/tryMain.c")
-		set(gccMainSource "${CMAKE_SOURCE_DIR}/cmake/tryMain.c")
+		file(TO_NATIVE_PATH
+			"${CMAKE_SOURCE_DIR}/cmake/tryMain.c"
+			gccMainSource)
 	else()
-		set(gccMainSource "${CMAKE_SOURCE_DIR}/nanocoat/cmake/tryMain.c")
+		file(TO_NATIVE_PATH
+			"${CMAKE_SOURCE_DIR}/nanocoat/cmake/tryMain.c"
+			gccMainSource)
 	endif()
 
 	# Run the compiler and request all the preprocessor defines
-	set(gccOutput "")
+	unset(gccOutputRaw)
 	execute_process(
 		COMMAND "${gccExe}"
-			"-E" "-dM" "${CMAKE_C_FLAGS}" "${gccMainSource}"
+			"-E" "-dM" ${CMAKE_C_FLAGS} "${gccMainSource}"
 		OUTPUT_VARIABLE gccOutputRaw
 		RESULT_VARIABLE gccResult
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -586,9 +592,19 @@ endfunction()
 # Try to identify the platform as defined by SquirrelJME since we may not
 # be able to actually compile and run any executables. This should be a more
 # reliable way of determining the target system.
-squirreljme_identify_by_current(SQUIRRELJME_SYSTEM SQUIRRELJME_ARCH)
-message(STATUS "Detected Target System: "
-	"${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
+if(NOT DEFINED SQUIRRELJME_SYSTEM OR
+	NOT DEFINED SQUIRRELJME_ARCH)
+	# Try to detect the current system
+	squirreljme_identify_by_current(SQUIRRELJME_SYSTEM SQUIRRELJME_ARCH)
+
+	# Emit detection message
+	message(STATUS "Detected Target System: "
+		"${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
+else()
+	# This was forced!
+	message(STATUS "Forced Target System: "
+		"${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
+endif()
 
 # Then also detect the host system that we are on as well
 squirreljme_identify_by_cmake(SQUIRRELJME_HOST_SYSTEM SQUIRRELJME_HOST_ARCH

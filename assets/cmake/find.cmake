@@ -100,12 +100,3 @@ squirreljme_include("find-generator.cmake")
 # Make sure the lists are sorted to keep them consistent
 list(SORT SQUIRRELJME_COMPILERS)
 list(SORT SQUIRRELJME_COMPILER_MAP)
-
-# Store the set of compilers into the cache, so that it is never lost if
-# this needs to be re-run
-#set(SQUIRRELJME_COMPILERS "${SQUIRRELJME_COMPILERS}"
-#	CACHE STRING "Available compilers")
-
-# Store the compiler mappings into the cache so reloads do not break
-#set(SQUIRRELJME_COMPILER_MAP "${SQUIRRELJME_COMPILER_MAP}"
-#	CACHE STRING "Available compiler mappings")
