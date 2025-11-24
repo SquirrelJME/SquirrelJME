@@ -97,13 +97,13 @@ if(Install4JC_EXECUTABLE)
 
 		# Debian ARM32 Package
 		elseif("${systemNormal}" STREQUAL "linux" AND
-			"${archNormal}" STREQUAL "arm32")
+			"${archNormal}" STREQUAL "arm32l")
 			squirreljme_install4j_register(143
 				"squirreljme_linux-armel_${SQUIRRELJME_VERSION_UNDER}.deb")
 
 		# Debian ARM64 Package
 		elseif("${systemNormal}" STREQUAL "linux" AND
-			"${archNormal}" STREQUAL "arm64")
+			"${archNormal}" STREQUAL "arm64l")
 			squirreljme_install4j_register(146
 				"squirreljme_linux-aarch64_${SQUIRRELJME_VERSION_UNDER}.deb")
 
@@ -117,7 +117,8 @@ if(Install4JC_EXECUTABLE)
 		elseif("${systemNormal}" STREQUAL "macosx" AND
 			("${archNormal}" STREQUAL "powerpc" OR
 			"${archNormal}" STREQUAL "ia32" OR
-			"${archNormal}" STREQUAL "amd64"))
+			"${archNormal}" STREQUAL "amd64" OR
+			"${archNormal}" STREQUAL "arm64l"))
 			squirreljme_install4j_register(32
 				"squirreljme_macos_${SQUIRRELJME_VERSION_UNDER}.dmg")
 		endif()
