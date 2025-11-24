@@ -1,0 +1,24 @@
+# Dropping Flatpak Support
+
+SquirrelJME will no longer be building Flatpaks, keeping them up to date,
+nor showing them on the download page. The build process for Flatpaks is just
+too limiting and the experience as a whole is just a pain.
+
+For existing Flatpak users, it is recommended that you switch to either
+the _Standalone_ or _Install4J_ installer version.
+
+If you are interested in the reasons, they are outlined as below:
+
+ * After the Flatpak is built, it needs to be installed before it is bundled.
+ * The runtimes change too often and just disappear, the Eclipse group is
+   seriously keeping Java 8 under LTS and that is 11 years old, you can keep
+   LTS releases of ancient Ubuntu around as developers like myself are who
+   they are for.
+ * Annoying deprecation warnings which confuse users.
+ * For a proper Flatpak build you cannot have the internet or any network
+   access, thus Gradle is rather impossible without hacking it to be in
+   offline mode with pre-downloaded dependencies and an alternative cache.
+ * Since SquirrelJME does not have a Java compiler built-in, yet(!) although
+   I do plan to eventually write one because of insanity, it is not possible
+   to have a completely independent self-contained build.
+ * Lack of support for the Fossil DVCS.

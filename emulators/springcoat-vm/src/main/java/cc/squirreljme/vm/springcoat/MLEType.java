@@ -182,8 +182,12 @@ public enum MLEType
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return new JarPackageObject(__thread.machine,
-				MLEObjects.type(__args[0]).inJar());
+			SpringClass baseType = MLEObjects.type(__args[0]);
+			
+			if (baseType.inJar() != null)
+				return new JarPackageObject(__thread.machine,
+					baseType.inJar());
+			return SpringNullObject.NULL;
 		}
 	},
 	

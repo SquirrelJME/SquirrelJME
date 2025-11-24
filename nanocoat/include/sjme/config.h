@@ -970,10 +970,7 @@ extern "C" {
 	#define sjme_alignPointer
 #endif
 
-#if defined(SJME_CONFIG_HAS_C23)
-	/** Packed enumeration. */
-	#define sjme_attrPackedEnumByte(name) name : sjme_jbyte
-#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Packed enumeration. */
 	#define sjme_attrPackedEnumByte(name) __attribute__((packed)) name
 #else

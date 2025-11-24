@@ -121,7 +121,11 @@ public class DylibWindowInterface
 	public boolean windowIsVisible(ScritchWindowBracket __window)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__window == null)
+			throw new MLECallError("NARG");
+		
+		return NativeScritchDylib.__windowIsVisible(this.dyLib._stateP,
+			((DylibWindowObject)__window).objectPointer());
 	}
 	
 	/**

@@ -579,20 +579,14 @@ public abstract class Displayable
 	 */
 	final boolean __isShown()
 	{
-		throw Debugging.todo();
-		/*
 		// If there is no display then this cannot possibly be shown
-		Display display = this._display;
+		Display display = this.__getCurrentDisplay();
 		if (display == null)
 			return false;
 		
-		// When checking if shown, actually probe the current form on the
-		// display as another task may have taken the display from us
-		UIBackend backend = this.__backend();
-		return backend.equals(this.__state(__DisplayableState__.class)._uiForm,
-			backend.displayCurrent(display._uiDisplay));
-			
-		 */
+		// Otherwise, only if the display is visible is this visible
+		return this.__state().scritchApi().window()
+			.windowIsVisible(display.__state().scritchWindow());
 	}
 	
 	/**
