@@ -7,24 +7,6 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Platform flags
 
-# It's a UNIX system! I know this!
-if("${SQUIRRELJME_SYSTEM}" STREQUAL "bsd" OR
-	"${SQUIRRELJME_SYSTEM}" STREQUAL "linux" OR
-	"${SQUIRRELJME_SYSTEM}" STREQUAL "macosx" OR
-	"${SQUIRRELJME_SYSTEM}" STREQUAL "cygwin")
-	set(SQUIRRELJME_IS_UNIX YES)
-else()
-	set(SQUIRRELJME_IS_UNIX NO)
-endif()
-
-# It's a Windows system?
-if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" OR
-	SQUIRRELJME_SYSTEM STREQUAL "windowsce")
-	set(SQUIRRELJME_IS_WINDOWS YES)
-else()
-	set(SQUIRRELJME_IS_WINDOWS NO)
-endif()
-
 # Is this RetroArch? Any kind of RetroArch build?
 if(RETROARCH OR ENV{RETROARCH} OR
 	LIBRETRO_STATIC OR ENV{LIBRETRO_STATIC} OR

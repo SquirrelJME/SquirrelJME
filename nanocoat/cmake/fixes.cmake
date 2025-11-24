@@ -370,20 +370,32 @@ squirreljme_try_compile("sjme_threadLocal"
 find_library(SQUIRRELJME_LIBM m)
 message(STATUS "libm: ${SQUIRRELJME_LIBM}")
 
-# Link against required libraries
-macro(squirreljme_target_link_libraries_required target)
-	# Math library?
-	if(SQUIRRELJME_LIBM)
-		target_link_libraries(${target} PRIVATE
-			"${SQUIRRELJME_LIBM}")
-	endif()
+# Build required libraries into a list, as you may only call
+# target_link_libraries() once!
+unset(SQUIRRELJME_REQUIRED_LIBS)
+## Math
+if(SQUIRRELJME_LIBM)
+	list(APPEND SQUIRRELJME_REQUIRED_LIBS
+		"${SQUIRRELJME_LIBM}")
+endif()
+## Threads
+if(DEFINED CMAKE_THREAD_LIBS_INIT)
+	list(APPEND SQUIRRELJME_REQUIRED_LIBS
+		"${CMAKE_THREAD_LIBS_INIT}")
+endif()
 
-	# Thread library?
-	if(DEFINED CMAKE_THREAD_LIBS_INIT)
+# Link against required libraries
+function(squirreljme_target_link_libraries_required target)
+	# Add all of the previous required libs
+	if("${ARGN}" STREQUAL "")
 		target_link_libraries(${target} PRIVATE
-			"${CMAKE_THREAD_LIBS_INIT}")
+			"${SQUIRRELJME_REQUIRED_LIBS}")
+	else()
+		target_link_libraries(${target} PRIVATE
+			"${SQUIRRELJME_REQUIRED_LIBS}"
+			"${ARGN}")
 	endif()
-endmacro()
+endfunction()
 
 # Do not use .lib suffix for Windows libraries for mingw32/mingw-w64
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" AND

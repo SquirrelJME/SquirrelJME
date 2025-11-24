@@ -157,7 +157,16 @@ extern "C" {
 #endif
 
 /* The current operating system. */
-#if defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
+#if defined(SJME_CONFIG_IDENT_OS_WINE) || defined(__WINE__)
+	/** Windows through Wine. */
+	#define SJME_CONFIG_HAS_OS_WINDOWS_WINE
+	
+	/** Using Windows 32-bit (via Wine). */
+	#define SJME_CONFIG_HAS_OS_WINDOWS_32
+		
+		/** Windows is available (via Wine). */
+	#define SJME_CONFIG_HAS_OS_WINDOWS 32
+#elif defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
 	/** Emscripten (WASM). */
 	#define SJME_CONFIG_HAS_OS_EMSCRIPTEN
 #elif defined(SJME_CONFIG_IDENT_OS_GAMECUBE) || \

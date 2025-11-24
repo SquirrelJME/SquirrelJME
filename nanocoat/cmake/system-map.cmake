@@ -191,6 +191,9 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		set(hasSystem "switch")
 	elseif("IOS" IN_LIST defines)
 		set(hasSystem "ios")
+	###### PSEUDO SYSTEM/COMPILER TARGETS #####
+	elseif("__WINE__" IN_LIST defines)
+		set(hasSystem "wine")
 	###########################################
 	elseif("__APPLE__" IN_LIST defines)
 		if("TARGET_IPHONE_SIMULATOR" IN_LIST defines OR
@@ -612,6 +615,30 @@ squirreljme_identify_by_cmake(SQUIRRELJME_HOST_SYSTEM SQUIRRELJME_HOST_ARCH
 message(STATUS "Detected Host System: "
 	"${SQUIRRELJME_HOST_SYSTEM}/${SQUIRRELJME_HOST_ARCH}")
 
+# It's a Windows system?
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "windowsce" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "wine")
+	set(SQUIRRELJME_IS_WINDOWS YES)
+else()
+	set(SQUIRRELJME_IS_WINDOWS NO)
+endif()
+
+# It's a UNIX system! I know this!
+if(NOT SQUIRRELJME_IS_WINDOWS AND
+	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "3ds" AND
+	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "dos" AND
+	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "gamecube" AND
+	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "macintosh" AND
+	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "palmos" AND
+	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "switch" AND
+	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "wii" AND
+	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "wiiu")
+	set(SQUIRRELJME_IS_UNIX YES)
+else()
+	set(SQUIRRELJME_IS_UNIX NO)
+endif()
+
 # Is this on Android?
 if(ANDROID OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "android" OR
@@ -686,8 +713,7 @@ file(WRITE "${CMAKE_BINARY_DIR}/system.tgt" "${SQUIRRELJME_SYSTEM}")
 file(WRITE "${CMAKE_BINARY_DIR}/arch__.tgt" "${SQUIRRELJME_ARCH}")
 
 # On by default if on Win32?
-if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" OR
-	"${SQUIRRELJME_SYSTEM}" STREQUAL "windowsce")
+if(SQUIRRELJME_IS_WINDOWS)
 	set(SQUIRRELJME_ON_IF_WIN32 ON)
 	set(SQUIRRELJME_OFF_IF_WIN32 OFF)
 else()
