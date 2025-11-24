@@ -638,6 +638,19 @@ endif()
 add_compile_definitions(SQUIRRELJME_SYSTEM=${SQUIRRELJME_SYSTEM})
 add_compile_definitions(SQUIRRELJME_ARCH=${SQUIRRELJME_ARCH})
 
+# Add fixed identifier for the target system/arch, which can be used in
+# special cases as needed
+string(MAKE_C_IDENTIFIER "SJME_CONFIG_IDENT_OS_${SQUIRRELJME_SYSTEM}"
+	SJME_CONFIG_IDENT_OS)
+string(MAKE_C_IDENTIFIER "SJME_CONFIG_IDENT_ARCH_${SQUIRRELJME_ARCH}"
+	SJME_CONFIG_IDENT_ARCH)
+string(TOUPPER "${SJME_CONFIG_IDENT_OS}" SJME_CONFIG_IDENT_OS)
+string(TOUPPER "${SJME_CONFIG_IDENT_ARCH}" SJME_CONFIG_IDENT_ARCH)
+add_compile_definitions(SJME_CONFIG_IDENT_OS=${SJME_CONFIG_IDENT_OS})
+add_compile_definitions(SJME_CONFIG_IDENT_ARCH=${SJME_CONFIG_IDENT_ARCH})
+add_compile_definitions(${SJME_CONFIG_IDENT_OS}=1)
+add_compile_definitions(${SJME_CONFIG_IDENT_ARCH}=1)
+
 # When compiling with mingw-w64, it is possible that CMake gets this wrong!
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
 	# For EXEs

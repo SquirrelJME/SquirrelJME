@@ -26,6 +26,9 @@ if(Install4JC_EXECUTABLE)
 
 	# Macro to make adding installers nad installers by ID much easier
 	macro(squirreljme_install4j_register mediaId generatedPath)
+		# Notice
+		message(STATUS "Install4J Media ${mediaId} -> ${generatedPath}")
+
 		# Add to full media ID list
 		list(APPEND SQUIRRELJME_INSTALL4J_IDS "${mediaId}")
 
