@@ -127,4 +127,7 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 	# These get uploaded into Fossil
 	list(APPEND SQUIRRELJME_UPLOAD_TARGETS
 		standaloneJar)
+
+	# Register to CI/CD
+	squirreljme_cicd_register(standaloneJar)
 endif()

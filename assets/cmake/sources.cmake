@@ -68,6 +68,9 @@ if(Fossil_EXECUTABLE OR Git_EXECUTABLE)
 	list(APPEND SQUIRRELJME_UPLOAD_TARGETS
 		sourceZip sourceTgz)
 
+	# Register to CI/CD
+	squirreljme_cicd_register(sourceZip sourceTgz)
+
 	# Output where the binaries were placed
 	set_target_properties(sourceZip PROPERTIES
 		SQUIRRELJME_OUTPUT_PATH "${zipPath}"

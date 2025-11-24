@@ -109,6 +109,9 @@ if(Fossil_EXECUTABLE)
 		# Depend on the target for upload
 		add_dependencies(fossilUpload ${uploadTarget})
 
+		# Register to CI/CD
+		squirreljme_cicd_register(fossilUpload)
+
 		# List based
 		if("${uploadHow}" STREQUAL "install4j")
 			foreach(item IN LISTS uploadWhat)

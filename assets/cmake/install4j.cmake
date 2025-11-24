@@ -158,6 +158,9 @@ if(Install4JC_EXECUTABLE)
 		list(APPEND SQUIRRELJME_UPLOAD_TARGETS
 			install4j)
 
+		# Register to CI/CD
+		squirreljme_cicd_register(install4j)
+
 	# Individual rules for each system
 	else()
 		# Pseudo all Install4J targets
@@ -196,6 +199,9 @@ if(Install4JC_EXECUTABLE)
 			# These get uploaded into Fossil
 			list(APPEND SQUIRRELJME_UPLOAD_TARGETS
 				install4j_${mediaId})
+
+			# Register to CI/CD
+			squirreljme_cicd_register(install4j_${mediaId})
 		endforeach()
 	endif()
 endif()

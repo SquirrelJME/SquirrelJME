@@ -144,6 +144,9 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		list(APPEND SQUIRRELJME_STANDALONE_NATIVE_RULES
 			"${ruleName}")
 
+		# Register to CI/CD
+		squirreljme_cicd_register(${ruleName})
+
 		# Set the emulator native path
 		set_target_properties(${ruleName}
 			PROPERTIES

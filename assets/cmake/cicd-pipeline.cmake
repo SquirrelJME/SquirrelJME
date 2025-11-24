@@ -69,5 +69,13 @@ endif()
 message(STATUS "CI/CD Environment: ${SQUIRRELJME_CICD}")
 
 # Registers the target on the CI/CD pipeline
-function(squirreljme_cicd_register targetName)
+function(squirreljme_cicd_register)
+	# Add to the list
+	list(APPEND SQUIRRELJME_CICD_TARGETS ${ARGN})
+	list(REMOVE_DUPLICATES SQUIRRELJME_CICD_TARGETS)
+	list(SORT SQUIRRELJME_CICD_TARGETS)
+
+	# Force a cache-rewrite, only way to have a global unfortunately
+	set(SQUIRRELJME_CICD_TARGETS "${SQUIRRELJME_CICD_TARGETS}"
+		CACHE STRING "CI/CD Targets" FORCE)
 endfunction()
