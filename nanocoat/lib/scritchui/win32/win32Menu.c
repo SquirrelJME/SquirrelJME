@@ -122,7 +122,7 @@ sjme_errorCode sjme_scritchui_win32_menuNew(
 {
 	/* Exactly the same as menu bars. */
 	return sjme_scritchui_win32_menuBarNew(inState,
-		SJME_SUI_CAST_MENU_BAR(inMenu), ignored);
+		(void*)inMenu, ignored);
 }
 
 sjme_errorCode sjme_scritchui_win32_menuRemove(
