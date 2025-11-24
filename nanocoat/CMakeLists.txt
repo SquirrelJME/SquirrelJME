@@ -131,10 +131,9 @@ if(SQUIRRELJME_IS_DEBUG)
 endif()
 
 # Valgrind Support on UNIX OSes, if debugging is enabled
-if(ANDROID OR SQUIRRELJME_IS_UNIX)
-	if(SQUIRRELJME_IS_DEBUG)
-		squirreljme_include("valgrind.cmake")
-	endif()
+if(NOT SQUIRRELJME_IS_ANDROID AND
+	SQUIRRELJME_IS_UNIX AND SQUIRRELJME_IS_DEBUG)
+	squirreljme_include("valgrind.cmake")
 endif()
 
 # Where should dynamic libraries go when output?

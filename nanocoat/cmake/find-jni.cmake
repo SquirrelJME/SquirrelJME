@@ -53,9 +53,16 @@ if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 
 		# Were there actual JNI headers?
 		if(SQUIRRELJME_HAS_NATIVE_JNI)
+			# Strip NOTFOUND
+			squirreljme_notfound_strip(JNI_INCLUDE_DIRS)
+			squirreljme_notfound_strip(JAVA_INCLUDE_PATH)
+			squirreljme_notfound_strip(JAVA_INCLUDE_PATH2)
+
 			# Set include
-			set(SQUIRRELJME_JAVA_JNI_INCLUDE
-				"${JNI_INCLUDE_DIRS};${JAVA_INCLUDE_PATH};${JAVA_INCLUDE_PATH2}")
+			list(APPEND SQUIRRELJME_JAVA_JNI_INCLUDE
+				"${JNI_INCLUDE_DIRS}"
+				"${JAVA_INCLUDE_PATH}"
+				"${JAVA_INCLUDE_PATH2}")
 
 			# Say that we do have it
 			set(SQUIRRELJME_HAS_JAVA_JNI YES)
@@ -63,9 +70,16 @@ if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 
 		# Were there actual JVM headers?
 		if(SQUIRRELJME_HAS_NATIVE_JVM)
+			# Strip NOTFOUND
+			squirreljme_notfound_strip(JNI_INCLUDE_DIRS)
+			squirreljme_notfound_strip(JAVA_INCLUDE_PATH)
+			squirreljme_notfound_strip(JAVA_INCLUDE_PATH2)
+
 			# Set include
-			set(SQUIRRELJME_JAVA_JVM_INCLUDE
-				"${JNI_INCLUDE_DIRS};${JAVA_INCLUDE_PATH};${JAVA_INCLUDE_PATH2}")
+			list(APPEND SQUIRRELJME_JAVA_JVM_INCLUDE
+				"${JNI_INCLUDE_DIRS}"
+				"${JAVA_INCLUDE_PATH}"
+				"${JAVA_INCLUDE_PATH2}")
 
 			# Say that we do have it
 			set(SQUIRRELJME_HAS_JAVA_JVM YES)

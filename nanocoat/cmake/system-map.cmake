@@ -152,7 +152,10 @@ endfunction()
 function(squirreljme_identify_by_defines_list outSystem outArch defines)
 	# This is based on what is found in the define list
 	## Determine system
-	if("__APPLE__" IN_LIST defines AND "__MACH__" IN_LIST defines)
+	if("__ANDROID__" IN_LIST defines OR
+		"__ANDROID_API__" IN_LIST defines)
+		set(hasSystem "android")
+	elseif("__APPLE__" IN_LIST defines AND "__MACH__" IN_LIST defines)
 		set(hasSystem "macosx")
 	elseif("_3DS" IN_LIST defines)
 		set(hasSystem "3ds")
@@ -548,9 +551,23 @@ squirreljme_identify_by_cmake(SQUIRRELJME_HOST_SYSTEM SQUIRRELJME_HOST_ARCH
 message(STATUS "Detected Host System: "
 	"${SQUIRRELJME_HOST_SYSTEM}/${SQUIRRELJME_HOST_ARCH}")
 
+# Is this on Android?
+if(ANDROID OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "android" OR
+	(DEFINED ANDROID_PLATFORM AND ANDROID_PLATFORM) OR
+	(DEFINED ANDROID_ABI AND ANDROID_ABI))
+	set(SQUIRRELJME_IS_ANDROID YES)
+else()
+	set(SQUIRRELJME_IS_ANDROID NO)
+endif()
+
 # Is this cross compiled?
+# If this is targeting Android, always treat as cross-compiled even if we
+# are running on Android due to all of the pseudo-Linux based systems
+# available on the platform
 if (NOT "${SQUIRRELJME_HOST_SYSTEM}" STREQUAL "${SQUIRRELJME_SYSTEM}" OR
-	NOT "${SQUIRRELJME_HOST_ARCH}" STREQUAL "${SQUIRRELJME_ARCH}")
+	NOT "${SQUIRRELJME_HOST_ARCH}" STREQUAL "${SQUIRRELJME_ARCH}" OR
+	SQUIRRELJME_IS_ANDROID)
 	set(SQUIRRELJME_IS_CROSS_COMPILE YES)
 else()
 	set(SQUIRRELJME_IS_CROSS_COMPILE NO)

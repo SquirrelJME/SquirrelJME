@@ -79,7 +79,7 @@ add_dependencies(squirreljme_libretro
 	${libRetroCore})
 
 # Name must be specifically set for RetroArch for it to work properly
-if(ANDROID OR (DEFINED ANDROID_PLATFORM AND ANDROID_PLATFORM))
+if(SQUIRRELJME_IS_ANDROID)
 	squirreljme_target_binary_name(squirreljme_libretro
 		"squirreljme_libretro_android")
 else()

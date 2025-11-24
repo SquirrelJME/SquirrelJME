@@ -56,16 +56,12 @@ squirreljme_multilib_target_include_directories(libJvm PRIVATE
 target_include_directories(SquirrelJME PRIVATE
 	"${CMAKE_SOURCE_DIR}/include")
 squirreljme_multilib_target_include_directories(libJvm SYSTEM PRIVATE
-	"${JNI_INCLUDE_DIRS}"
-	"${JAVA_INCLUDE_PATH}"
-	"${JAVA_INCLUDE_PATH2}"
-	"${JVM_INCLUDE_DIRS}"
+	"${SQUIRRELJME_JAVA_JNI_INCLUDE}"
+	"${SQUIRRELJME_JAVA_JVM_INCLUDE}"
 	"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
 target_include_directories(SquirrelJME SYSTEM PRIVATE
-	"${JNI_INCLUDE_DIRS}"
-	"${JAVA_INCLUDE_PATH}"
-	"${JAVA_INCLUDE_PATH2}"
-	"${JVM_INCLUDE_DIRS}"
+	"${SQUIRRELJME_JAVA_JNI_INCLUDE}"
+	"${SQUIRRELJME_JAVA_JVM_INCLUDE}"
 	"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
 
 # Libraries needed to be linked with for the DyLib to function

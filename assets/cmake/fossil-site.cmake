@@ -85,10 +85,10 @@ if(Fossil_EXECUTABLE)
 
 		# Add in the upload command
 		add_custom_command(TARGET ${target} POST_BUILD
-			COMMAND "${CMAKE_COMMAND}" "-E" "echo" "${Fossil_EXECUTABLE}"
+			COMMAND "${Fossil_EXECUTABLE}"
 				"uv" "add" "${fromPathNative}"
 					"--as" "${toPath}"
-			COMMAND "${CMAKE_COMMAND}" "-E" "echo" "${Fossil_EXECUTABLE}"
+			COMMAND "${Fossil_EXECUTABLE}"
 				"uv" "add" "${uvDateNative}"
 					"--as" "${toPath}.mkd"
 			COMMENT "Uploading ${toPath}..."
