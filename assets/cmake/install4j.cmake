@@ -131,6 +131,10 @@ if(Install4JC_EXECUTABLE)
 	get_target_property(standalonePath standaloneJar SQUIRRELJME_OUTPUT_PATH)
 	file(TO_NATIVE_PATH "${standalonePath}" standalonePathNative)
 
+	# Determine source path
+	get_target_property(sourcePath sourceZip SQUIRRELJME_OUTPUT_PATH)
+	file(TO_NATIVE_PATH "${sourcePath}" sourcePathNative)
+
 	# Build all installers at once
 	if(SQUIRRELJME_INSTALL4J_BUNDLE)
 		# Setup rule to build all at once
@@ -139,12 +143,13 @@ if(Install4JC_EXECUTABLE)
 			COMMAND "${CMAKE_COMMAND}" "-E"
 				"make_directory" "${SQUIRRELJME_INSTALL4J_OUT_DIR}"
 			COMMAND "${Install4JC_EXECUTABLE}"
-				"-D" "squirreljme.standalone.path=${standalonePathNative}"
+				"-D" "squirreljme.standalone.path=${sourcePathNative}"
+				"-D" "squirreljme.source.path=${sourcePathNative}"
 				"-r" "${SQUIRRELJME_VERSION}"
 				"-d" "${SQUIRRELJME_INSTALL4J_OUT_DIR}"
 				"-b" "${mediaIdsComma}"
 				"${CMAKE_SOURCE_DIR}/squirreljme.install4j"
-			DEPENDS standaloneJar
+			DEPENDS standaloneJar sourceZip
 			BYPRODUCTS "${mediaOutDir}"
 			SOURCES "${CMAKE_SOURCE_DIR}/squirreljme.install4j"
 			COMMAND_EXPAND_LISTS)
@@ -178,11 +183,12 @@ if(Install4JC_EXECUTABLE)
 					"make_directory" "${mediaOutDir}"
 				COMMAND "${Install4JC_EXECUTABLE}"
 					"-D" "squirreljme.standalone.path=${standalonePathNative}"
+					"-D" "squirreljme.source.path=${sourcePathNative}"
 					"-r" "${SQUIRRELJME_VERSION}"
 					"-d" "${mediaOutDir}"
 					"-b" "${mediaId}"
 					"${CMAKE_SOURCE_DIR}/squirreljme.install4j"
-				DEPENDS standaloneJar
+				DEPENDS standaloneJar sourceZip
 				BYPRODUCTS "${mediaOutDir}"
 				SOURCES "${CMAKE_SOURCE_DIR}/squirreljme.install4j"
 				COMMAND_EXPAND_LISTS)
