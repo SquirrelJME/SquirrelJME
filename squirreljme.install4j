@@ -22,6 +22,7 @@
       <fileEntry mountPoint="26" file="./assets/doc/supported-formats.mkd" />
       <fileEntry mountPoint="26" file="./assets/doc/usage-standalone.mkd" />
       <variableEntry mountPoint="26" overwriteMode="0" fileMode="755" overrideFileMode="true" name="squirreljme.standalone.path" />
+      <variableEntry mountPoint="26" name="squirreljme.source.path" />
     </entries>
   </files>
   <launchers>

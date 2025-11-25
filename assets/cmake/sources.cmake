@@ -23,6 +23,7 @@ if(Fossil_EXECUTABLE)
 			"${SQUIRRELJME_VERSION_ID_FOSSIL}" "${zipPath}"
 			"--name" "${archiveBase}"
 		BYPRODUCTS "${zipPath}"
+		COMMENT "Archiving Zip Source..."
 		COMMAND_EXPAND_LISTS)
 
 	# Tarball
@@ -33,6 +34,7 @@ if(Fossil_EXECUTABLE)
 			"${SQUIRRELJME_VERSION_ID_FOSSIL}" "${tgzPath}"
 			"--name" "${archiveBase}"
 		BYPRODUCTS "${tgzPath}"
+		COMMENT "Archiving Tarball Source..."
 		COMMAND_EXPAND_LISTS)
 
 # Otherwise Git
@@ -47,6 +49,7 @@ elseif(Git_EXECUTABLE)
 			"-o" "${zipPath}"
 			"${SQUIRRELJME_VERSION_ID_GIT}"
 		BYPRODUCTS "${zipPath}"
+		COMMENT "Archiving Zip Source..."
 		COMMAND_EXPAND_LISTS)
 
 	# Tarball
@@ -59,6 +62,7 @@ elseif(Git_EXECUTABLE)
 			"-o" "${tgzPath}"
 			"${SQUIRRELJME_VERSION_ID_GIT}"
 		BYPRODUCTS "${tgzPath}"
+		COMMENT "Archiving Tarball Source..."
 		COMMAND_EXPAND_LISTS)
 endif()
 

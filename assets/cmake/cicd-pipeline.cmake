@@ -70,6 +70,26 @@ message(STATUS "CI/CD Environment: ${SQUIRRELJME_CICD}")
 
 # Registers the target on the CI/CD pipeline
 function(squirreljme_cicd_register)
+	# Add pre-build and post-build scripts
+	foreach(target IN LISTS ARGN)
+		# Add pre-build
+		add_custom_target(${target}PreBuild
+			COMMAND "${CMAKE_COMMAND}"
+				"-D" "SQUIRRELJME_TARGET=${target}"
+				"-P"
+				"${CMAKE_CURRENT_LIST_DIR}/cicd-pipeline-job-prebuild.cmake"
+			COMMENT "Pre-build ${target}...")
+		add_dependencies(${target} ${target}PreBuild)
+
+		# Add post-build
+		add_custom_command(TARGET ${target} POST_BUILD
+			COMMAND "${CMAKE_COMMAND}"
+				"-D" "SQUIRRELJME_TARGET=${target}"
+				"-P"
+				"${CMAKE_CURRENT_LIST_DIR}/cicd-pipeline-job-postbuild.cmake"
+			COMMENT "Post-build ${target}...")
+	endforeach()
+
 	# Add to the list
 	list(APPEND SQUIRRELJME_CICD_TARGETS ${ARGN})
 	list(REMOVE_DUPLICATES SQUIRRELJME_CICD_TARGETS)

@@ -71,6 +71,9 @@ if(Fossil_EXECUTABLE)
 	# Add pseudo target for uploading
 	add_custom_target(fossilUpload)
 
+	# Register to CI/CD
+	squirreljme_cicd_register(fossilUpload)
+
 	# This macro makes it much easier to actually upload to the destination
 	# since it is used in many locations
 	# fromPath is usually the binary
@@ -108,9 +111,6 @@ if(Fossil_EXECUTABLE)
 
 		# Depend on the target for upload
 		add_dependencies(fossilUpload ${uploadTarget})
-
-		# Register to CI/CD
-		squirreljme_cicd_register(fossilUpload)
 
 		# List based
 		if("${uploadHow}" STREQUAL "install4j")
