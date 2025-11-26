@@ -53,7 +53,7 @@ Only the following character encodings are supported:
 
 Note that UTF codepoints above U+FFFF are not fully supported and are not
 available in Java ME. Surrogate pairs in UTF-16 will be encoded in UTF-8 as
-six bytes. Additionally when decoding, if a sequence that is above U+FFFF is
+six bytes. Additionally, when decoding, if a sequence that is above U+FFFF is
 read then it will decode to the replacement character. This may cause a loss of
 or mutation of data when processing files.
 
@@ -62,3 +62,74 @@ See:
  * <https://unicode.org/faq/utf_bom.html#utf8-4>
  * <https://www.unicode.org/reports/tr26/>
 
+## ScritchUI Graphics Serialization
+
+All graphics operations in ScritchUI are serialized and any draw operations
+are hard forced to occur in the graphics drawing thread. Unlike traditional
+APIs for operating systems where this is intended to be done by the developer,
+SquirrelJME forces this paradigm to be used. This generally fixes and
+stabilizes software that performs locking and/or game logic
+in `Canvas.paint()` methods, or similar.
+
+This allows software such as _Gradius NEO_ on DoJa to run, and for the
+framerate of _Ratchet and Clank_ on MIDP to be stable and not run absurdly
+fast.
+
+## Configuration/Platform Version Differences
+
+SquirrelJME will auto-detect the version of the configuration and platform
+from the manifest or a set of other indicators. This is used to determine the
+version of said specific standard or device that software is made for. Without
+this, the subtle changes that occur due to breaking API updates will cause
+software to change behavior.
+
+### MEEP/MIDP Version Differences
+
+ * _>= 3.0_: The `Canvas` by default is wiped with a background color by
+   default unless `setPaintMode()` changes this, previously no implicit
+   clearing was performed and all pixels must be drawn. Otherwise, an
+   effect caused the "hall-of-mirrors" would occur, a type of smearing.
+ * _< 3.0_: The alpha channel is not supported, therefor the
+   method `Graphics.setAlphaColor()` will always set the color to be
+   fully opaque.
+ * _< 8.0_: `RecordStore` does not support IDs that are recycled and as
+   such all new records will always have a higher value ID regardless.
+   MEEP 8 however, recycles old IDs as records no longer need to be accessed
+   by IDs but may be accessed by named aliases.
+
+### DoJa Version Differences 
+
+ * _>= 5.0_: Adds support for looped MLDs and emits `AUDIO_LOOPED`, otherwise
+   they will not be emitted at all. The `END_EVENT` is considered to be the 
+   looping point. Otherwise, if there is no end event and the media reaches
+   the end, or DoJa is not new enough, `AUDIO_COMPLETE` will be emitted.
+   * If `EVENT_LOOP` is hit, the MLD will jump to position zero.
+ * _< 2.0_: `AudioPresenter` priority does not exist, thus all new sounds will
+   always replace the already playing sound.
+ * _< 3.0_: `AudioPresenter` does not support setting the volume level, thus
+   all volume will be at _100%_.
+ * _>= 3.0_: `AudioPresenter.setSound()` requires that any set sounds be
+   `use()`ed first, otherwise it will fail.
+ * _< 3.0_: `AudioPresenter` only supports a single sound at once, therefor
+   SquirrelJME's dynamic port cycling will not take effect and always
+   choose the first port.
+ * _< 3.5_: `AudioPresenter` supports multiple ports, however when requesting
+   the default port it will always a non-specific default port to mimic the
+   behavior of _< 3.0_.
+ * _< 4.0_: The alpha channel and alpha blending does not exist and all
+   values will be stripped and forced to be fully opaque regardless of their
+   input values or drawing mode.
+ * _< 4.0_: Due to the lack of alpha channel and alpha blending, the values
+   returned by `Graphics.getColorOfName()` and `Graphics.getColorOfRGB()`
+   will always return with the uppermost bits set to zero. This must be
+   considered as fully-opaque as normally a value of zero means
+   fully-transparent,
+ * _>= 2.0_: Disposing of graphics is supported, which frees associated
+   resources accordingly.
+ * _< 3.0_: Application suspension is not supported, thus the
+   in-the-background multitasking that is provided by MIDP 3 will always
+   result it in being reported as not supported. However, SquirrelJME will
+   still be able to background tasks, despite the application being unable
+   to receive those events nor determine if it is. This may cause performance
+   issues if an application continues executing when it should not be doing
+   more work than usual when a user is not using it.
