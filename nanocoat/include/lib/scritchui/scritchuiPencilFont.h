@@ -10,6 +10,7 @@
 /**
  * ScritchUI Pencil fonts.
  * 
+ * @file
  * @since 2024/05/17
  */
 
@@ -91,11 +92,11 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricCharValidFunc)(
 	sjme_attrOutNotNull sjme_jboolean* outValid);
 
 /**
- * Returns the @c sjme_scritchui_pencilFontFace of a font. 
+ * Returns the @link sjme_scritchui_pencilFontFace @endlink of a font. 
  *
  * @param inFont The font to request from.
  * @param outFace The font face, any flag
- * from @c sjme_scritchui_pencilFontFace .
+ * from @link sjme_scritchui_pencilFontFace @endlink .
  * @return Any resultant error, if any.
  * @since 2024/05/17
  */
@@ -120,7 +121,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontNameFunc)(
  *
  * @param inFont The style of the font to request.
  * @param outStyle The font style, will be flags
- * from @c sjme_scritchui_pencilFontStyle .
+ * from @link sjme_scritchui_pencilFontStyle @endlink .
  * @return Any resultant error, if any.
  * @since 2024/05/17
  */

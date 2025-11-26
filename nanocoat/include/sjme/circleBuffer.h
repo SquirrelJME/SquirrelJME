@@ -8,8 +8,9 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * Circular buffer, also known as a round robin.
+ * Circular buffer, also known as a round-robin.
  * 
+ * @file
  * @since 2024/08/25
  */
 

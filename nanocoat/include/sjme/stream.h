@@ -10,7 +10,7 @@
 /**
  * Stream support.
  *
- * @file stream.h
+ * @file
  * @since 2023/12/30
  */
 
@@ -72,6 +72,9 @@ typedef struct sjme_stream_handle
 {
 	/** Pointer. */
 	sjme_pointer p;
+
+	/** Integer based value. */
+	sjme_intPointer i;
 
 	/** Function handle. */
 	sjme_undefinedFunction f;
@@ -374,7 +377,7 @@ sjme_errorCode sjme_stream_inputOpenMemory(
 
 /**
  * Provides an input stream to read data from a seekable, note that
- * unlike @c sjme_seekable_regionLock there is no locking
+ * unlike @link sjme_seekable_regionLock @endlink there is no locking
  * involved and as such there may be a performance penalty or otherwise.
  *
  * @param seekable The seekable to access.
@@ -538,10 +541,11 @@ typedef struct sjme_stream_resultByteArray
 	sjme_jint length;
 
 	/**
-	 * If this is set to @c SJME_JNI_TRUE , then the close handler for
-	 * the byte array will free the memory contained in the buffer. To prevent
-	 * it from being freed, this should return @c SJME_JNI_FALSE in which case
-	 * the @c optResult value will be written to with the final buffer.
+	 * If this is set to @link SJME_JNI_TRUE @endlink , then the close handler
+	 * for the byte array will free the memory contained in the buffer. To
+	 * prevent it from being freed, this should
+	 * return @link SJME_JNI_FALSE @endlink in which case
+	 * the @a optResult value will be written to with the final buffer.
 	 */
 	sjme_jboolean free;
 
@@ -597,22 +601,22 @@ SJME_DATA_OUTPUT_PROTOTYPE(sjme_juint, UInteger);
  */
 typedef struct sjme_stream_outputDataFunctions
 {
-	/** Writes a @c sjme_jbyte . */
+	/** Writes a @link sjme_jbyte @endlink . */
 	SJME_DATA_OUTPUT_TYPE(sjme_jbyte, Byte);
 	
-	/** Writes a @c sjme_jubyte . */
+	/** Writes a @link sjme_jubyte @endlink . */
 	SJME_DATA_OUTPUT_TYPE(sjme_jubyte, UByte);
 	
-	/** Writes a @c sjme_jshort . */
+	/** Writes a @link sjme_jshort @endlink . */
 	SJME_DATA_OUTPUT_TYPE(sjme_jshort, Short);
 	
-	/** Writes a @c sjme_jchar . */
+	/** Writes a @link sjme_jchar @endlink . */
 	SJME_DATA_OUTPUT_TYPE(sjme_jchar, Character);
 	
-	/** Writes a @c sjme_jint . */
+	/** Writes a @link sjme_jint @endlink . */
 	SJME_DATA_OUTPUT_TYPE(sjme_jint, Integer);
 	
-	/** Writes a @c sjme_juint . */
+	/** Writes a @link sjme_juint @endlink . */
 	SJME_DATA_OUTPUT_TYPE(sjme_juint, UInteger);
 } sjme_stream_outputDataFunctions;
 
@@ -729,7 +733,7 @@ sjme_errorCode sjme_stream_outputOpenMemory(
 
 /**
  * Provides an output stream to write data to a seekable, note that
- * unlike @c sjme_seekable_regionLock there is no locking
+ * unlike @link sjme_seekable_regionLock @endlink there is no locking
  * involved and as such there may be a performance penalty or otherwise.
  *
  * @param seekable The seekable to access.
@@ -831,6 +835,33 @@ sjme_errorCode sjme_stream_outputWriteValueJ(
 	sjme_attrInNotNull sjme_stream_output outStream,
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS) sjme_basicTypeId typeId,
 	...);
+
+#if !defined(SJME_CONFIG_NETWORK_NONE)
+
+/**
+ * Binds and opens a stream to the given TCP/UDP remote host somewhere on
+ * a network. 
+ * 
+ * @param allocPool The allocation pool to use.
+ * @param netIn The stream for reading input data from the remote host.
+ * @param netOut The stream for writing output data to the remote host.
+ * @param isUdp Should this be a UDP connection?
+ * @param listening Is this listening for a connection?
+ * @param address The address to connect to or to bind to.
+ * @param port The port to connect to or to bind to.
+ * @return Any resultant error, if any.
+ * @since 2025/09/07
+ */
+sjme_errorCode sjme_stream_biOpenTcpUdp(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNullable sjme_stream_input* netIn,
+	sjme_attrOutNullable sjme_stream_output* netOut,
+	sjme_attrInValue sjme_jboolean isUdp,
+	sjme_attrInValue sjme_jboolean listening,
+	sjme_attrInNullable sjme_lpcstr address,
+	sjme_attrInRange(0, 65535) sjme_jint port);
+
+#endif
 
 /*--------------------------------------------------------------------------*/
 

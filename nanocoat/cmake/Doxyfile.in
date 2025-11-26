@@ -1,28 +1,149 @@
-DOXYFILE_ENCODING     = UTF-8
-PROJECT_NAME          = SquirrelJME
-PROJECT_BRIEF         = SquirrelJME is a Java ME 8 Virtual Machine.
-INPUT                 = @CMAKE_CURRENT_SOURCE_DIR@/
-OUTPUT_DIRECTORY      = @CMAKE_CURRENT_BINARY_DIR@/docs/
-OUTPUT_LANGUAGE       = English
-EXTRACT_ALL           = YES
-EXTENSION_MAPPING     = c=C h=C
-INCLUDE_PATH          = @CMAKE_SOURCE_DIR@/include
-FILE_PATTERNS         = *.c
-INCLUDE_FILE_PATTERNS = *.h
-TAB_SIZE              = 4
-ALPHABETICAL_INDEX    = YES
-IGNORE_PREFIX         = sjme_
-CLASS_GRAPH           = NO
-INTERNAL_DOCS         = YES
-JAVADOC_AUTOBRIEF     = YES
-JAVADOC_BANNER        = NO
-ENABLE_PREPROCESSING  = YES
-EXTRACT_PRIVATE       = YES
-EXTRACT_PRIV_VIRTUAL  = YES
-EXTRACT_STATIC        = YES
-EXTRACT_LOCAL_CLASSES = YES
-SHOW_HEADERFILE       = YES
-SHOW_INCLUDE_FILES    = YES
-FORCE_LOCAL_INCLUDES  = YES
-SEARCH_INCLUDES       = YES
-SKIP_FUNCTION_MACROS  = NO
+# ---------------------------------------------------------------------------
+# SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the Mozilla Public License Version 2.0.
+# See license.mkd for licensing and copyright information.
+# ---------------------------------------------------------------------------
+# DESCRIPTION: Doxygen configuration
+
+# Project Information
+PROJECT_NAME = SquirrelJME
+PROJECT_NUMBER = @CMAKE_PROJECT_VERSION@
+PROJECT_BRIEF = SquirrelJME is a Java ME 8 Virtual Machine.
+
+DOCSET_FEEDNAME = SquirrelJME
+DOCSET_FEEDURL = https://squirreljme.cc/
+DOCSET_BUNDLE_ID = cc.squirreljme.squirreljme
+DOCSET_PUBLISHER_ID = cc.squirreljme
+DOCSET_PUBLISHER_NAME = Stephanie Gawroriski
+
+# Input/Output for CMake, note all documentation is in header files and
+# not sources as Doxygen assumes
+INPUT = @CMAKE_SOURCE_DIR@/include
+OUTPUT_DIRECTORY = @CMAKE_BINARY_DIR@/docs/
+INCLUDE_PATH = @CMAKE_SOURCE_DIR@/include
+EXAMPLE_PATH = @CMAKE_SOURCE_DIR@/include
+EXCLUDE = @CMAKE_SOURCE_DIR@/include/3rdparty
+FILE_PATTERNS = *.h
+
+# Look everywhere! This is disabled by default!
+RECURSIVE = YES
+EXTRACT_ALL = NO
+EXTRACT_PRIVATE = NO
+EXTRACT_STATIC = NO
+INTERNAL_DOCS = NO
+
+# We like everything!
+GENERATE_HTML = YES
+
+# We like everything! Although it is a bit wasteful to do.
+GENERATE_DOCSET = NO
+GENERATE_HTMLHELP = NO
+GENERATE_QHP = NO
+GENERATE_ECLIPSEHELP = NO
+GENERATE_MAN = NO
+GENERATE_DOCBOOK = NO
+
+# LaTe, unfortunately it is rather broken
+GENERATE_LATEX = NO
+COMPACT_LATEX = YES
+PAPER_TYPE = letter
+LATEX_BATCHMODE = YES
+
+# Human Language
+DOXYFILE_ENCODING = UTF-8
+OUTPUT_LANGUAGE = English
+
+# Markdown is sometimes used in documentation
+MARKDOWN_SUPPORT = YES
+
+# I do not like fancy HTML stuff
+HTML_COPY_CLIPBOARD = NO
+HTML_DYNAMIC_MENUS = NO
+HTML_DYNAMIC_SECTIONS = NO
+HTML_CODE_FOLDING = NO
+SEARCHENGINE = NO
+SERVER_BASED_SEARCH = NO
+EXTERNAL_SEARCH = NO
+HTML_COLORSTYLE = LIGHT
+
+# Do not need cookies for the user
+HTML_PROJECT_COOKIE = NO
+
+# Makes things a bit easier
+FULL_PATH_NAMES = NO
+
+# Programming Language
+TAB_SIZE = 4
+OPTIMIZE_OUTPUT_FOR_C = YES
+
+# Macros are heavily used
+MACRO_EXPANSION = YES
+
+# Use the same behavior as JavaDoc
+JAVADOC_AUTOBRIEF = YES
+QT_AUTOBRIEF = YES
+
+# These headers should not be documented
+EXCLUDE_PATTERN += */scritchuiImpl.h
+
+# Everything starts with sjme_, which not ignoring this would make the
+# index system pretty pointless
+IGNORE_PREFIX += sjme_nvm_ SJME_NVM_
+IGNORE_PREFIX += sjme_scritchaudio_ SJME_SCRITCHAUDIO_
+IGNORE_PREFIX += sjme_scritchinput_ SJME_SCRITCHINPUT_
+IGNORE_PREFIX += sjme_scritchui_ SJME_SCRITCHUI_
+IGNORE_PREFIX += sjme_scritchpen_ SJME_SCRITCHPEN_
+IGNORE_PREFIX += sjme_scritchany_ SJME_SCRITCHANY_
+IGNORE_PREFIX += sjme_ SJME_
+
+# Ignore these symbols as they are internal
+EXCLUDE_SYMBOLS += sjme_scritchpen_serialData_*
+EXCLUDE_SYMBOLS += sjme_scritchui_serialData_*
+EXCLUDE_SYMBOLS += sjme_scritchui_serialDataUnion
+
+# Do not bother documenting pseudo types and defines that build them
+EXCLUDE_SYMBOLS += sjme_list_sjme_* sjme_atomic_sjme_*
+EXCLUDE_SYMBOLS += SJME_TYPEOF_JAVA_*
+EXCLUDE_SYMBOLS += SJME_TYPEOF_BASIC_*
+EXCLUDE_SYMBOLS += SJME_TYPEOF_IS_POINTER_*
+
+# Typedefs are used heavily
+TYPEDEF_HIDES_STRUCT = YES
+INLINE_SIMPLE_STRUCTS = YES
+
+# Clang with SquirrelJME is kinda broken with Doxygen
+CLANG_ASSISTED_PARSING = NO
+
+# Make enums actually readable
+ENUM_VALUES_PER_LINE = 0
+SHOW_ENUM_VALUES = YES
+
+# Be very verbose
+WARNINGS = YES
+
+# Do not include sources, these are just headers
+SOURCE_BROWSER = NO
+INLINE_SOURCES = NO
+VERBATIM_HEADERS = NO
+
+# Do not show documentation for stuff inside
+HIDE_IN_BODY_DOCS = YES
+
+# The graphs are just too huge to be of any use
+HAVE_DOT = NO
+
+# Force DOT to be SVG, PNGs just do not work
+DOT_IMAGE_FORMAT = YES
+
+# UML is easier to read than whatever Doxygen decided to use for graphs
+UML_LOOK = YES
+
+# Have a bigger, but simpler, index
+ALPHABETICAL_INDEX = YES
+GENERATE_TREEVIEW = NO
+PAGE_OUTLINE_PANEL = NO
+FULL_SIDEBAR = NO
+HTML_INDEX_NUM_ENTRIES = 9999
+

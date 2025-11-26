@@ -10,6 +10,7 @@
 /**
  * SQF Font Structure.
  * 
+ * @file
  * @since 2024/06/10
  */
 

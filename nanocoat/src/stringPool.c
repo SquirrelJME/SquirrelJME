@@ -76,7 +76,7 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 		
 		/* Is a weak reference but does not actually point to the string? */
 		/* If so then this was freed! */
-		if (weak != NULL && weak->pointer != possible)
+		if (weak != NULL && sjme_atomic_pg(&weak->pointer) != possible)
 		{
 			strings->elements[i] = NULL;
 			possible = NULL;

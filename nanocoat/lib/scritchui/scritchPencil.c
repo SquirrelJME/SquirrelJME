@@ -56,7 +56,7 @@ sjme_errorCode sjme_scritchpen_core_lock(
 			return sjme_error_default(error);
 		
 		/* Obtain the buffer if we need to. */
-		if (sjme_atomic_sjme_jint_getAdd(&state->count, 1) == 0)
+		if (sjme_atomic_ga(sjme_jint, &state->count, 1) == 0)
 			if (sjme_error_is(error = g->lock->lock(g)))
 				return sjme_error_default(error);
 	}
@@ -85,9 +85,9 @@ sjme_errorCode sjme_scritchpen_core_lockRelease(
 		state = &g->lockState;
 		
 		/* Forward if release is needed. */
-		if (sjme_atomic_sjme_jint_getAdd(&state->count, -1) <= 1)
+		if (sjme_atomic_ga(sjme_jint, &state->count, -1) <= 1)
 		{
-			sjme_atomic_sjme_jint_set(&state->count, 0);
+			sjme_atomic_s(sjme_jint, &state->count, 0);
 			if (sjme_error_is(error = g->lock->lockRelease(g)))
 				return sjme_error_default(error);
 		}

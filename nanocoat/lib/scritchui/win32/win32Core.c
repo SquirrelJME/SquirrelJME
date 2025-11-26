@@ -156,7 +156,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
 	sjme_message("Void Window: %p", voidWindow);
 	
 	/* Before we go into the main loop, signal it is ready. */
-	sjme_atomic_sjme_jint_set(&state->loopThreadReady, 1);
+	sjme_atomic_s(sjme_jint, &state->loopThreadReady, 1);
 	
 	/* Message loop. */
 	terminated = SJME_JNI_FALSE;

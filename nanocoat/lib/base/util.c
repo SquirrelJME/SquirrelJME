@@ -505,9 +505,13 @@ sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
 sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v)
 {
+#if SJME_CONFIG_HAS_GCC_BUILTIN(popcount)
+	return __builtin_popcount(v);
+#else
 	v = v - ((v >> 1) & UINT32_C(0x55555555));
 	v = (v & UINT32_C(0x33333333)) + ((v >> 2) & UINT32_C(0x33333333));
 	return ((v + (v >> 4) & UINT32_C(0xF0F0F0F)) * UINT32_C(0x1010101)) >> 24;
+#endif
 }
 
 sjme_juint sjme_util_intHighestOneBit(
@@ -661,12 +665,12 @@ sjme_errorCode sjme_util_lpstrTrimEnd(
 const sjme_jshort* sjme_util_memUnaligned16(void* addr)
 {
 	sjme_threadLocal(sjme_jshort, temp[SJME_UTIL_UNALIGNED_16_FILL]);
-	sjme_threadLocal(sjme_atomic_sjme_jint, fill);
+	sjme_threadLocal(sjme_atomic(sjme_jint), fill);
 	sjme_jshort* into;
 	sjme_jubyte* bytes;
 
 	/* Map in. */
-	into = &temp[sjme_atomic_sjme_jint_getAdd(&fill, 1) &
+	into = &temp[sjme_atomic_ga(sjme_jint, &fill, 1) &
 		(SJME_UTIL_UNALIGNED_16_FILL - 1)];
 	bytes = addr;
 #if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
@@ -691,12 +695,12 @@ const sjme_jshort* sjme_util_memUnaligned16(void* addr)
 const sjme_jint* sjme_util_memUnaligned32(void* addr)
 {
 	sjme_threadLocal(sjme_jint, temp[SJME_UTIL_UNALIGNED_32_FILL]);
-	sjme_threadLocal(sjme_atomic_sjme_jint, fill);
+	sjme_threadLocal(sjme_atomic(sjme_jint), fill);
 	sjme_jint* into;
 	sjme_jushort* shorts;
 
 	/* Map in. */
-	into = &temp[sjme_atomic_sjme_jint_getAdd(&fill, 1) &
+	into = &temp[sjme_atomic_ga(sjme_jint, &fill, 1) &
 		(SJME_UTIL_UNALIGNED_32_FILL - 1)];
 	shorts = addr;
 #if defined(SJME_CONFIG_HAS_BIG_ENDIAN)

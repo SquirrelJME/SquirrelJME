@@ -231,7 +231,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 		sjme_atomic_barrier();
 		
 		/* Read it in. */
-		topState = sjme_atomic_sjme_pointer_get(
+		topState = sjme_atomic_g(sjme_pointer, 
 			&wrappedState->topState);
 	}
 	
@@ -246,7 +246,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	sjme_message("Marking framebuffer as ready!");
 	
 	/* Mark as ready so initialization continues and gets finished. */
-	sjme_atomic_sjme_jint_set(&topState->loopThreadReady, 1);
+	sjme_atomic_s(sjme_jint, &topState->loopThreadReady, 1);
 	
 	/* Success! */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
@@ -347,7 +347,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 			state, wrappedState);
 		
 		/* Link together. */
-		sjme_atomic_sjme_pointer_set(&wrappedState->topState,
+		sjme_atomic_s(sjme_pointer, &wrappedState->topState,
 			state);
 		
 		/* Barrier here for wrapped init. */
@@ -370,10 +370,10 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	if (state->loopThread == SJME_THREAD_NULL ||
 		(currentThread != SJME_THREAD_NULL &&
 			state->loopThread == currentThread))
-		sjme_atomic_sjme_jint_set(&state->loopThreadReady, 1);
+		sjme_atomic_s(sjme_jint, &state->loopThreadReady, 1);
 	else
 	{
-		while (0 == sjme_atomic_sjme_jint_get(&state->loopThreadReady))
+		while (0 == sjme_atomic_g(sjme_jint, &state->loopThreadReady))
 		{
 			sjme_atomic_barrier();
 			sjme_thread_yield();

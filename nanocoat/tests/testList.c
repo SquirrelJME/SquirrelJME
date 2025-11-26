@@ -26,9 +26,9 @@ static const sjme_jint testListElems[5] = {1, 2, 3, 4, 5};
  */
 SJME_TEST_DECLARE(testList)
 {
-	sjme_list_sjme_jintPP* ppList;
-	sjme_list_sjme_jint* varList;
-	sjme_list_sjme_jint* arrayList;
+	sjme_list(sjme_jintPP)* ppList;
+	sjme_list(sjme_jint)* varList;
+	sjme_list(sjme_jint)* arrayList;
 	sjme_alloc_link link;
 	sjme_jint i;
 

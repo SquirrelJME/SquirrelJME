@@ -31,7 +31,7 @@ SJME_TEST_DECLARE(testAllocWeakRefRef)
 		return sjme_unit_fail(test, "Failed to allocate weak?");
 	
 	/* Reference count should be one. */
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 1,
+	sjme_unit_equalI(test, sjme_atomic_g(sjme_jint, &weak->count), 1,
 		"Reference count not one?");
 	
 	/* Reference again. */
@@ -45,7 +45,7 @@ SJME_TEST_DECLARE(testAllocWeakRefRef)
 		"Weak references not the same?");
 	
 	/* Reference count should be two. */
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 2,
+	sjme_unit_equalI(test, sjme_atomic_g(sjme_jint, &weak->count), 2,
 		"Reference count not two?");
 	
 	/* Success! */

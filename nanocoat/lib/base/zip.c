@@ -99,13 +99,14 @@ static sjme_errorCode sjme_zip_close(
 {
 	sjme_errorCode error;
 	sjme_zip zip;
+	sjme_seekable seekable;
 	
 	zip = (sjme_zip)closeable;
 	if (zip == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_ZIP)
 	sjme_message("Zip close %p", zip);
 #endif
 	
@@ -114,12 +115,11 @@ static sjme_errorCode sjme_zip_close(
 		return sjme_error_default(error);
 	
 	/* Close the seekable. */
-	if (sjme_error_is(error = sjme_closeable_close(
-		SJME_AS_CLOSEABLE(zip->seekable))))
-		goto fail_seekableClose;
-	
-	/* Invalidate it. */
+	seekable = zip->seekable;
 	zip->seekable = NULL;
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(seekable))))
+		goto fail_seekableClose;
 		
 	/* Release the lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(&zip->lock,
@@ -284,7 +284,7 @@ sjme_errorCode sjme_zip_entryRead(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_ZIP)
 	sjme_message("Open Zip entry: %s",
 		inEntry->name);
 #endif
@@ -319,7 +319,7 @@ sjme_errorCode sjme_zip_entryRead(
 	actualDataPos = localHeaderPos + SJME_ZIP_LOCAL_LENGTH +
 		lens[0] + lens[1];
 
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_ZIP)
 	/* Debug. */
 	sjme_message("Lens: %d %d", lens[0], lens[1]);
 	sjme_message("Entry data at %d", actualDataPos);
@@ -602,12 +602,13 @@ sjme_errorCode sjme_zip_openSeekable(
 	result = NULL;
 	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_zip_close,
-		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
-	
+
+#if defined(SJME_CONFIG_DEBUG_ZIP)
 	/* Debug. */
 	sjme_message("Zip starts at %d", archiveStartPos);
+#endif
 	
 	/* Store info. */
 	result->allocPool = allocPool;
@@ -615,11 +616,7 @@ sjme_errorCode sjme_zip_openSeekable(
 	result->logicalCentralDirPos = logicalCentralDirPos;
 	result->endCentralDirPos = endCentralDirPos;
 	result->archiveStartPos = archiveStartPos;
-	result->seekable = inSeekable;
-	
-	/* Count the seekable up, since we are using it. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(inSeekable, NULL)))
-		return sjme_error_default(error);
+	result->seekable = sjme_weakUpR(sjme_seekable, inSeekable);
 	
 	/* Success! */
 	*outZip = result;

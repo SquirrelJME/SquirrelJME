@@ -119,9 +119,9 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	}
 
 	/* Use a "sleeping" rate so if manually polling the CPU does not burn. */
-	sjme_atomic_sjme_jint_set(&result->pollDelayMillis,
+	sjme_atomic_s(sjme_jint, &result->pollDelayMillis,
 		SJME_SCRITCHAUDIO_SLEEP_RATE_MS);
-	sjme_atomic_sjme_jint_set(&result->pollDelayNanos,
+	sjme_atomic_s(sjme_jint, &result->pollDelayNanos,
 		SJME_SCRITCHAUDIO_SLEEP_RATE_NS);
 
 	/* Copy front end data. */
@@ -133,7 +133,7 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	{
 		/* Bind each other. */
 		result->wrappedState = wrappedStated;
-		sjme_atomic_sjme_pointer_set(&wrappedStated->topState, result);
+		sjme_atomic_s(sjme_pointer, &wrappedStated->topState, result);
 
 		/* Take the wrapped state's thread information, if applicable. */
 		result->loopThread = wrappedStated->loopThread;
@@ -145,7 +145,7 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 		goto fail_apiInit;
 
 	/* Mark loop thread as ready. */
-	sjme_atomic_sjme_jint_set(&result->loopThreadReady, 1);
+	sjme_atomic_s(sjme_jint, &result->loopThreadReady, 1);
 
 	/* Only create the stream when this is the higher level layer. */
 	if (isHigher)

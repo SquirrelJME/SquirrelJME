@@ -63,7 +63,7 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 	sjme_scritchaudio inState, sourceState;
 	sjme_scritchaudio_stream inStream, wrappedStream, sourceStream;
 	sjme_scritchaudio_source source;
-	sjme_list_sjme_scritchaudio_source* sources;
+	sjme_list(sjme_scritchaudio_source)* sources;
 	sjme_scritchaudio_renderInfo sourceInfo;
 	sjme_jint i, n;
 	
@@ -72,7 +72,7 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Recover the top level state. */
-	inState = sjme_atomic_sjme_pointer_get(&wrappedState->topState);
+	inState = sjme_atomic_g(sjme_pointer, &wrappedState->topState);
 	if (inState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 

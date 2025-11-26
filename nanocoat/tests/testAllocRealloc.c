@@ -70,7 +70,7 @@ SJME_TEST_DECLARE(testAllocRealloc)
 		newLen = (j == 0 ? SMALL_SIZE : LARGE_SIZE);
 
 		/* Get the next link. */
-		oldNext = link->next;
+		oldNext = sjme_atomic_g(sjme_alloc_link, &link->next);
 
 		/* Reallocate to the small size. */
 		oldBlockP = block;
@@ -87,16 +87,21 @@ SJME_TEST_DECLARE(testAllocRealloc)
 			"Allocation size unchanged or incorrect?");
 
 		/* The next link should have changed position. */
-		sjme_unit_notEqualP(test, link->next, oldNext,
+		sjme_unit_notEqualP(test, sjme_atomic_pg(&link->next), oldNext,
 			"Next link did not move?");
-		sjme_unit_equalP(test, link->next, &link->block[link->blockSize],
+		sjme_unit_equalP(test, sjme_atomic_pg(&link->next),
+			&link->block[link->blockSize],
 			"Next link did not shift over?");
 
 		/* The next's next's link should still be the back link, as */
 		/* it should have been merged. */
-		sjme_unit_equalP(test, link->next->next, pool->backLink,
+		sjme_unit_equalP(test,
+			sjme_atomic_chainGetGet(sjme_alloc_link, &link->next, ->next),
+			sjme_atomic_pg(&pool->backLink),
 			"Next next is not the back link?");
-		sjme_unit_equalP(test, link->next, pool->backLink->prev,
+		sjme_unit_equalP(test,
+			sjme_atomic_pg(&link->next),
+			sjme_atomic_chainGetGet(sjme_alloc_link, &pool->backLink, ->prev),
 			"Backlink previous is not the next block?");
 	}
 

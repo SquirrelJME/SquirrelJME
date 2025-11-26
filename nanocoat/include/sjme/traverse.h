@@ -10,6 +10,7 @@
 /**
  * Binary bit based traversal tree.
  * 
+ * @file
  * @since 2024/09/01
  */
 

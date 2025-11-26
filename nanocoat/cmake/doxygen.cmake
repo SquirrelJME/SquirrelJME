@@ -12,26 +12,22 @@ find_package(Doxygen)
 
 # Did we find it?
 if(DOXYGEN_FOUND)
-	function(squirreljme_doxygen target)
-		# Configure Doxygen inputs and outputs
-		configure_file("${CMAKE_SOURCE_DIR}/cmake/Doxyfile.in"
-			"${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")
+	# Configure Doxygen inputs and outputs
+	configure_file("${CMAKE_SOURCE_DIR}/cmake/Doxyfile.in"
+		"${CMAKE_BINARY_DIR}/Doxyfile")
 
-		# Add target to build all the documentation
-		add_custom_target(${target}Doxygen
-			COMMAND "${DOXYGEN_EXECUTABLE}"
-				"${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
-			DEPENDS ${target}
-			SOURCES "${CMAKE_SOURCE_DIR}/cmake/Doxyfile.in"
-				"${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
-			BYPRODUCTS "@CMAKE_CURRENT_BINARY_DIR@/docs/")
+	# Add target to build all the documentation
+	add_custom_target(Doxygen
+		COMMAND "${DOXYGEN_EXECUTABLE}"
+			"${CMAKE_BINARY_DIR}/Doxyfile"
+		DEPENDS ${target}
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+		SOURCES "${CMAKE_SOURCE_DIR}/cmake/Doxyfile.in"
+			"${CMAKE_BINARY_DIR}/Doxyfile"
+		BYPRODUCTS "${CMAKE_BINARY_DIR}/docs/")
 
-		# Do not run this by default
-		set_target_properties(${target}Doxygen PROPERTIES
-			EXCLUDE_FROM_ALL TRUE
-			EXCLUDE_FROM_DEFAULT_BUILD TRUE)
-	endfunction()
-else()
-	function(squirreljme_doxygen target)
-	endfunction()
+	# Do not run this by default
+	set_target_properties(Doxygen PROPERTIES
+		EXCLUDE_FROM_ALL TRUE
+		EXCLUDE_FROM_DEFAULT_BUILD TRUE)
 endif()

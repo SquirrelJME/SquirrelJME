@@ -18,13 +18,13 @@
 
 static sjme_errorCode sjme_scritchui_fromCache(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
 	sjme_attrOutNullable sjme_jint* outMaxFonts)
 {
 	sjme_errorCode error;
 	sjme_jint limit, i, n;
-	sjme_list_sjme_scritchui_pencilFont* fontCache;
+	sjme_list(sjme_scritchui_pencilFont)* fontCache;
 	
 	if (inState == NULL || outFonts == NULL || outValid == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -645,7 +645,7 @@ sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(
 	
 	/* If we are using a top level state, grab the font from there so */
 	/* that we have a consistent default to use. */
-	topState = sjme_atomic_sjme_pointer_get(&inState->topState);
+	topState = sjme_atomic_g(sjme_pointer, &inState->topState);
 	if (topState != NULL)
 		return topState->api->fontBuiltin(topState, outFont);
 	
@@ -695,13 +695,13 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 
 sjme_errorCode sjme_scritchui_core_fontList(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
 	sjme_attrOutNullable sjme_jint* outMaxFonts)
 {
 	sjme_errorCode error;
 	sjme_jint limit, i, n;
-	sjme_list_sjme_scritchui_pencilFont* fontCache;
+	sjme_list(sjme_scritchui_pencilFont)* fontCache;
 	
 	if (inState == NULL || outFonts == NULL || outValid == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

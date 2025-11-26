@@ -11,6 +11,7 @@
  * Various list utilities, this is mostly to reduce the amount of duplicate
  * code which also has the benefit of reducing the program size.
  * 
+ * @file
  * @since 2024/09/06
  */
 
@@ -45,7 +46,7 @@ extern "C"
  * @since 2024/10/26
  */
 typedef sjme_errorCode (*sjme_listUtil_findItemCompareFunc)(
-	sjme_attrInNotNull sjme_list_sjme_pointer* inList,
+	sjme_attrInNotNull sjme_list(sjme_pointer)* inList,
 	sjme_attrInPositive sjme_jint checkIndex,
 	sjme_attrInNotNull sjme_pointer checkP,
 	sjme_attrInValue sjme_jint againstI,
@@ -62,7 +63,7 @@ typedef sjme_errorCode (*sjme_listUtil_findItemCompareFunc)(
  */
 sjme_errorCode sjme_listUtil_binListInt(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_list_sjme_jint** outList,
+	sjme_attrOutNotNull sjme_list(sjme_jint)** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream);
 
 /**
@@ -76,7 +77,7 @@ sjme_errorCode sjme_listUtil_binListInt(
  */
 sjme_errorCode sjme_listUtil_binListUtf(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream);
 
 /**
@@ -88,7 +89,7 @@ sjme_errorCode sjme_listUtil_binListUtf(
  * @since 2024/10/26
  */
 sjme_errorCode sjme_listUtil_findFree(
-	sjme_attrInNotNull sjme_list_sjme_pointer* inList,
+	sjme_attrInNotNull sjme_list(sjme_pointer)* inList,
 	sjme_attrOutNotNull sjme_jint* outFreeSlot);
 
 /**
@@ -109,7 +110,7 @@ sjme_errorCode sjme_listUtil_findFree(
  * @since 2024/10/26
  */
 sjme_errorCode sjme_listUtil_findItemWeak(
-	sjme_attrInNotNull sjme_list_sjme_pointer* inList,
+	sjme_attrInNotNull sjme_list(sjme_pointer)* inList,
 	sjme_attrOutNotNull sjme_jint* outFreeSlot,
 	sjme_attrOutNotNull sjme_pointer* outFound,
 	sjme_attrInNotNull sjme_listUtil_findItemCompareFunc compareFunc,

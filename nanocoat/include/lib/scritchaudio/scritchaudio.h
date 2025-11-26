@@ -10,6 +10,7 @@
 /**
  * Main ScritchAudio header.
  * 
+ * @file
  * @since 2025/05/07
  */
 
@@ -405,7 +406,7 @@ typedef sjme_errorCode (*sjme_scritchaudio_peerConnectFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchaudio_queryMidiPortsFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInOutNotNull sjme_list_sjme_scritchaudio_midiPort* inOutPorts,
+	sjme_attrInOutNotNull sjme_list(sjme_scritchaudio_midiPort)* inOutPorts,
 	sjme_attrOutNotNull sjme_jint* outNumPorts);
 
 /**
@@ -432,11 +433,11 @@ typedef sjme_errorCode (*sjme_scritchaudio_sourceRenderFunc)(
  * @param inStream The stream to attach to or detach from.
  * @param outSource The resultant source.
  * @param renderFunc The render function to use.
- * @param inFormat The audio format to use, @c -1 means to use the system
+ * @param inFormat The audio format to use, @a -1 means to use the system
  * preferred format.
- * @param inRate The rate to use, @c -1 means to use the system preferred
+ * @param inRate The rate to use, @a -1 means to use the system preferred
  * rate.
- * @param inChannels The number of channels to use, @c -1 means to use the
+ * @param inChannels The number of channels to use, @a -1 means to use the
  * system preferred channels.
  * @param initFrontEnd The front end used for the renderer.
  * @return Any resultant error, if any.
@@ -666,22 +667,22 @@ struct sjme_scritchaudioBase
 	sjme_thread_id loopThreadId;
 
 	/** The loop thread is ready. */
-	sjme_atomic_sjme_jint loopThreadReady;
+	sjme_atomic(sjme_jint) loopThreadReady;
 	
 	/** Wrapped ScritchAudio state, if this is a wrapper. */
 	sjme_scritchaudio wrappedState;
 	
 	/** Reference to the owning state. */
-	sjme_alignPointer sjme_atomic_sjme_pointer topState;
+	sjme_alignPointer sjme_atomic(sjme_pointer) topState;
 
 	/** Bugs. */
 	sjme_scritchaudio_bugs bugs;
 
 	/** The delay between manual polls (Millis). */
-	sjme_atomic_sjme_jint pollDelayMillis;
+	sjme_atomic(sjme_jint) pollDelayMillis;
 
 	/** The delay between manual polls (Nanos). */
-	sjme_atomic_sjme_jint pollDelayNanos;
+	sjme_atomic(sjme_jint) pollDelayNanos;
 
 	/** The output audio stream. */
 	sjme_scritchaudio_stream stream;
@@ -731,10 +732,10 @@ struct sjme_scritchaudio_connectionBase
 	sjme_scritchaudio_peerNoneFunc noPeers;
 
 	/** The connections this is connected to. */
-	sjme_list_sjme_scritchaudio_connection* peers;
+	sjme_list(sjme_scritchaudio_connection)* peers;
 
 	/** Is this disconnecting? */
-	sjme_atomic_sjme_jint disconnecting;
+	sjme_atomic(sjme_jint) disconnecting;
 };
 
 struct sjme_scritchaudio_streamBase
@@ -752,7 +753,7 @@ struct sjme_scritchaudio_streamBase
 	sjme_scritchaudio_channels channels;
 
 	/** The sources attached to this stream. */
-	sjme_list_sjme_scritchaudio_source* sources;
+	sjme_list(sjme_scritchaudio_source)* sources;
 
 	/** Stream data. */
 	struct
@@ -837,7 +838,7 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchaudio_dylibApiFunc)(
 #define SJME_SCRITCHAUDIO_DYLIB_SYMBOL_PREFIX \
 	SJME_SCRITCHANY_DYLIB_SYMBOL_PREFIX(audio)
 
-/** The symbol to use with @c sjme_scritchaudio_dylibApiFunc . */
+/** The symbol to use with @link sjme_scritchaudio_dylibApiFunc @endlink . */
 #define SJME_SCRITCHAUDIO_DYLIB_SYMBOL(x) \
 	SJME_SCRITCHANY_DYLIB_SYMBOL(audio, x)
 

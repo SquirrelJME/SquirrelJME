@@ -52,7 +52,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_softmix_poll(
 		inState->bindAudioThread(inState);
 	
 	/* Set the loop as ready. */
-	sjme_atomic_sjme_jint_set(&inState->loopThreadReady, 1);
+	sjme_atomic_s(sjme_jint, &inState->loopThreadReady, 1);
 	
 	/* Enter threading loop. */
 	nal = inState->nal;
@@ -60,7 +60,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_softmix_poll(
 	{
 		/* Keep everything at millisecond accuracy. Thus round up nanos */
 		/* to millis by carrying. */
-		nanoSum += sjme_atomic_sjme_jint_get(&inState->pollDelayNanos);
+		nanoSum += sjme_atomic_g(sjme_jint, &inState->pollDelayNanos);
 		if (nanoSum >= 1000000)
 		{
 			milliCarry++;
@@ -68,7 +68,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_softmix_poll(
 		}
 
 		/* What is the millisecond time for this cycle? */
-		milliTime = sjme_atomic_sjme_jint_get(&inState->pollDelayMillis);
+		milliTime = sjme_atomic_g(sjme_jint, &inState->pollDelayMillis);
 
 		/* What time did this loop enter? */
 		nal->nanoTime(&enterTime);
@@ -140,7 +140,7 @@ sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 
 		/* Await loop ready. */
 		sjme_atomic_barrier();
-		while (sjme_atomic_sjme_jint_get(&inState->loopThreadReady) == 0)
+		while (sjme_atomic_g(sjme_jint, &inState->loopThreadReady) == 0)
 		{
 			sjme_atomic_barrier();
 			sjme_thread_yield();

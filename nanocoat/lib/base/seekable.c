@@ -16,6 +16,7 @@
 static sjme_errorCode sjme_seekable_closeHandler(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
+	sjme_errorCode error;
 	sjme_seekable seekable;
 	
 	/* Recover seekable. */
@@ -25,10 +26,17 @@ static sjme_errorCode sjme_seekable_closeHandler(
 	
 	/* Forward to close handler. */
 	if (seekable->functions->close != NULL)
-		return seekable->functions->close(seekable,
-			&seekable->implState);
+		if (sjme_error_is(error = seekable->functions->close(seekable,
+			&seekable->implState)))
+			return sjme_error_default(error);
+
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
+	/* Deallocate self. */
+	if (sjme_error_is(error = sjme_alloc_free(seekable)))
+		return sjme_error_default(error);
+#endif
 	
-	/* No handler, just success. */
+	/* Success!. */
 	return SJME_ERROR_NONE;
 }
 
@@ -55,7 +63,6 @@ sjme_errorCode sjme_seekable_open(
 	result = NULL;
 	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_seekable_closeHandler,
-		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		return sjme_error_default(error);
 	
@@ -67,7 +74,7 @@ sjme_errorCode sjme_seekable_open(
 			copyFrontEnd);
 
 	/* Set default size cache. */
-	sjme_atomic_sjme_jint_set(&result->cachedSize, -1);
+	sjme_atomic_s(sjme_jint, &result->cachedSize, -1);
 	
 	/* Initialize. */
 	if (sjme_error_is(error = result->functions->init(result,
@@ -237,7 +244,7 @@ sjme_errorCode sjme_seekable_size(
 	if (!seekable->implState.flags.volatileSize)
 	{
 		/* Check the cache. */
-		size = sjme_atomic_sjme_jint_get(&seekable->cachedSize);
+		size = sjme_atomic_g(sjme_jint, &seekable->cachedSize);
 		if (size >= 0)
 		{
 			*outSize = size;
@@ -256,7 +263,7 @@ sjme_errorCode sjme_seekable_size(
 
 	/* Store the cached size. */
 	if (!seekable->implState.flags.volatileSize && size >= 0)
-		sjme_atomic_sjme_jint_set(&seekable->cachedSize, size);
+		sjme_atomic_s(sjme_jint, &seekable->cachedSize, size);
 	
 	/* Release lock. */
 	if (sjme_error_is(sjme_thread_spinLockRelease(&seekable->lock,

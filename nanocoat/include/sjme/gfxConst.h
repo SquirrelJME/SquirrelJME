@@ -10,6 +10,7 @@
 /**
  * Graphics constants.
  * 
+ * @file
  * @since 2024/04/06
  */
 

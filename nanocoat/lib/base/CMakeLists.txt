@@ -9,6 +9,7 @@
 # Declare Base library
 squirreljme_multilib_add_library(Base
 	alloc.c
+	allocAtomic.c
 	atomic.c
 	bitStream.c
 	cbor.c
@@ -26,6 +27,10 @@ squirreljme_multilib_add_library(Base
 	listUtil.c
 	multithread.c
 	native.c
+	nativeNone.c
+	nativePosix.c
+	nativeStdC.c
+	nativeWin32.c
 	path.c
 	seekable.c
 	seekableMemory.c
@@ -36,6 +41,7 @@ squirreljme_multilib_add_library(Base
 	streamMemory.c
 	streamSeekable.c
 	streamStdIo.c
+	streamTcpUdp.c
 	traverse.c
 	tree.c
 	util.c

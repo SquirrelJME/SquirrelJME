@@ -116,7 +116,7 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	sjme_message("GTK Main Loop...");
 	
 	/* Before we go into the main loop, signal it is ready. */
-	sjme_atomic_sjme_jint_set(&state->loopThreadReady, 1);
+	sjme_atomic_s(sjme_jint, &state->loopThreadReady, 1);
 	
 	/* Run main loop. */
 	gtk_main();

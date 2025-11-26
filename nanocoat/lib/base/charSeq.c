@@ -133,6 +133,43 @@ sjme_jchar sjme_charSeq_charAtR(
 	}
 }
 
+sjme_errorCode sjme_charSeq_delete(
+	sjme_attrInNotNull sjme_charSeq seq)
+{
+	sjme_errorCode error;
+	
+	if (seq == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Depends on the type. */
+	switch (seq->type)
+	{
+			/* Nothing special needs to be done for these. */
+		case SJME_CHAR_SEQ_TYPE_NARROW:
+		case SJME_CHAR_SEQ_TYPE_WIDE:
+		case SJME_CHAR_SEQ_TYPE_UTF:
+			break;
+
+			/* Handle deletion, if it is needed. */
+		case SJME_CHAR_SEQ_TYPE_FUNCTION:
+			if (seq->data.function.impl->delete != NULL)
+				if (sjme_error_is(error = seq->data.function.impl->delete(
+					seq)))
+					return sjme_error_default(error);
+
+			/* These types cannot be freed! */
+		default:
+		case SJME_CHAR_SEQ_TYPE_NULL:
+		case SJME_CHAR_SEQ_TYPE_FUNCTION_STATIC:
+		case SJME_CHAR_SEQ_TYPE_UTF_STATIC:
+		case SJME_CHAR_SEQ_TYPE_WIDE_STATIC:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+
+	/* Self free! */
+	return sjme_alloc_free(seq);
+}
+
 sjme_errorCode sjme_charSeq_dup(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_charSeq* destCopy,
@@ -448,7 +485,7 @@ sjme_errorCode sjme_charSeq_hash(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Does the hash need to be calculated? */
-	result = sjme_atomic_sjme_jint_get(&inSeq->hash);
+	result = sjme_atomic_g(sjme_jint, &inSeq->hash);
 	if (result == 0)
 	{
 		/* Calculate the hashCode(), the JavaDoc gives the following formula:
@@ -465,7 +502,7 @@ sjme_errorCode sjme_charSeq_hash(
 		}
 
 		/* Store hash. */
-		sjme_atomic_sjme_jint_compareSet(&inSeq->hash, 0, result);
+		sjme_atomic_cs(sjme_jint, &inSeq->hash, 0, result);
 	}
 
 	/* The hash is always precalculated. */

@@ -10,6 +10,7 @@
 /**
  * ScritchUI Pencil Drawing.
  * 
+ * @file
  * @since 2024/05/01
  */
 
@@ -580,8 +581,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillTriangleFunc)(
  * 
  * @param g The pencil to lock.
  * @return Any resultant error, if any. Return the specific
- * error code @c SJME_ERROR_RESOURCE_NOT_FOUND if the resource backing the
- * pencil is no longer available.
+ * error code @link SJME_ERROR_RESOURCE_NOT_FOUND @endlink if the resource
+ * backing the pencil is no longer available.
  * @since 2024/07/08
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilLockFunc)(
@@ -601,8 +602,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilLockReleaseFunc)(
  * Maps a color to or from a raw color.
  * 
  * @param g The pencil to operate within.
- * @param fromRaw If @c SJME_JNI_TRUE the input color is considered to be
- * a raw pixel.
+ * @param fromRaw If @link SJME_JNI_TRUE @endlink the input color is
+ * considered to be a raw pixel.
  * @param inRgbOrRaw The input value to map.
  * @param outColor The resultant full color set.
  * @return Any resultant error.
@@ -1156,7 +1157,7 @@ extern const sjme_scritchui_pencilBitLineFunc
  * @param inState The state this is under.
  * @param outPencil The resultant pencil.
  * @param outWeakPencil The output weak reference to the pencil.
- * @param pf The @c sjme_gfx_pixelFormat used for the draw.
+ * @param pf The @link sjme_gfx_pixelFormat @endlink used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
  * @param inLockFuncs The locking functions to use for buffer access.
@@ -1194,7 +1195,7 @@ sjme_errorCode sjme_scritchpen_initBuffer(
  * 
  * @param inOutPencil The input and output pencil.
  * @param inState The input ScritchUI state.
- * @param pf The @c sjme_gfx_pixelFormat used for the draw.
+ * @param pf The @link sjme_gfx_pixelFormat @endlink used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
  * @param inLockFuncs The locking functions to use for buffer access.

@@ -90,7 +90,7 @@ static const testString testStrings[NUM_STRINGS] =
 
 /**
  * Tests the decoding of characters within modified-UTF style strings, using
- * the function @c sjme_string_decodeChar .
+ * the function @link sjme_string_decodeChar @endlink .
  *
  * @since 2023/12/25
  */

@@ -10,6 +10,7 @@
 /**
  * Pseudo font of which slightly modifies an existing font.
  * 
+ * @file
  * @since 2024/06/15
  */
 

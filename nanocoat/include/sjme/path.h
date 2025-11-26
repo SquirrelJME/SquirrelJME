@@ -10,6 +10,7 @@
 /**
  * Path handling abstraction.
  * 
+ * @file
  * @since 2024/08/09
  */
 
@@ -95,7 +96,7 @@ extern "C"
  * @param outBase The pointer to the path base.
  * @param outLen The length of the path name.
  * @param outIsRoot Is this the root directory?
- * @return Any resultant error, if any. Returns @c SJME_ERROR_NO_SUCH_ELEMENT
+ * @return Any resultant error, if any. Returns @link SJME_ERROR_NO_SUCH_ELEMENT
  * if the root component was requested and there was none.
  * @since 2024/08/10
  */
@@ -122,7 +123,7 @@ sjme_errorCode sjme_path_getName(
  * @param outCount The number of name components, exclusive to all the
  * other arguments.
  * @param outIsRoot Is this the root directory?
- * @return Any resultant error, if any. Returns @c SJME_ERROR_NO_SUCH_ELEMENT
+ * @return Any resultant error, if any. Returns @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
  * if the root component was requested and there was none.
  * @since 2024/08/10
  */
