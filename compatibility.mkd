@@ -88,14 +88,15 @@ software to change behavior.
  * _>= 3.0_: The `Canvas` by default is wiped with a background color by
    default unless `setPaintMode()` changes this, previously no implicit
    clearing was performed and all pixels must be drawn. Otherwise, an
-   effect caused the "hall-of-mirrors" would occur, a type of smearing.
+   effect called the "hall-of-mirrors" would occur, a type of smearing.
  * _< 3.0_: The alpha channel is not supported, therefor the
    method `Graphics.setAlphaColor()` will always set the color to be
-   fully opaque.
+   fully opaque. Accordingly, `Graphics.getAlpha()` and related will always
+   have the alpha channel always set to be fully-opaque.
  * _< 8.0_: `RecordStore` does not support IDs that are recycled and as
    such all new records will always have a higher value ID regardless.
    MEEP 8 however, recycles old IDs as records no longer need to be accessed
-   by IDs but may be accessed by named aliases.
+   purely by IDs, as there are named aliases and tags.
 
 ### DoJa Version Differences 
 
@@ -103,7 +104,7 @@ software to change behavior.
    they will not be emitted at all. The `END_EVENT` is considered to be the 
    looping point. Otherwise, if there is no end event and the media reaches
    the end, or DoJa is not new enough, `AUDIO_COMPLETE` will be emitted.
-   * If `EVENT_LOOP` is hit, the MLD will jump to position zero.
+   If `EVENT_LOOP` is hit, the MLD will jump to position zero.
  * _< 2.0_: `AudioPresenter` priority does not exist, thus all new sounds will
    always replace the already playing sound.
  * _< 3.0_: `AudioPresenter` does not support setting the volume level, thus
@@ -123,13 +124,25 @@ software to change behavior.
    returned by `Graphics.getColorOfName()` and `Graphics.getColorOfRGB()`
    will always return with the uppermost bits set to zero. This must be
    considered as fully-opaque as normally a value of zero means
-   fully-transparent,
+   fully-transparent. Otherwise, the values returned will have their
+   uppermost bits set to one. 
  * _>= 2.0_: Disposing of graphics is supported, which frees associated
    resources accordingly.
  * _< 3.0_: Application suspension is not supported, thus the
    in-the-background multitasking that is provided by MIDP 3 will always
    result it in being reported as not supported. However, SquirrelJME will
    still be able to background tasks, despite the application being unable
-   to receive those events nor determine if it is. This may cause performance
-   issues if an application continues executing when it should not be doing
-   more work than usual when a user is not using it.
+   to receive those events nor determine if it is running in the background.
+   This may cause performance issues if an application continues executing
+   when it should not be doing more work than usual while the user is not
+   using it.
+
+## Configuration Settings That May Be Used For Compatibility
+
+These settings may be used for compatibility purposes if needed:
+
+ * `cc.squirreljme.frame=WxH` -- Set the default resolution of SquirrelJME.
+   * This should be used if SquirrelJME is unable to determine the actual
+     resolution that an application should use and there otherwise are
+     graphical glitches or other anomalies due to this.
+
