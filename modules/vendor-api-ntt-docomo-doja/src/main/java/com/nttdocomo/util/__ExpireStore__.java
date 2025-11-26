@@ -9,6 +9,7 @@
 
 package com.nttdocomo.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 
 /**
@@ -16,6 +17,7 @@ import java.lang.ref.Reference;
  *
  * @since 2024/12/05
  */
+@SquirrelJMEVendorApi
 final class __ExpireStore__
 	implements Runnable
 {
@@ -23,6 +25,7 @@ final class __ExpireStore__
 	private final Reference<Timer> _owner;
 	
 	/** The current timer listener. */
+	@SquirrelJMEVendorApi
 	volatile TimerListener _listener;
 	
 	/**
@@ -32,6 +35,7 @@ final class __ExpireStore__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/12/05
 	 */
+	@SquirrelJMEVendorApi
 	__ExpireStore__(Reference<Timer> __owner)
 		throws NullPointerException
 	{
@@ -66,6 +70,7 @@ final class __ExpireStore__
 	 * @param __listener The lister to call on expiration.
 	 * @since 2024/12/05
 	 */
+	@SquirrelJMEVendorApi
 	void __set(TimerListener __listener)
 	{
 		synchronized (this)

@@ -4,7 +4,6 @@ plugins {
 
 repositories {
 	mavenCentral()
-	jcenter()
 	
 	maven {
 		url = uri("https://plugins.gradle.org/m2/")
@@ -12,6 +11,10 @@ repositories {
 }
 
 dependencies {
+	// Lombok for simpler getters/setters
+	implementation 'org.projectlombok:lombok:1.18.36'
+	annotationProcessor 'org.projectlombok:lombok:1.18.36'
+	
 	implementation gradleApi()
 
 	// Jasmin Sable (Java byte code assembler)
@@ -20,10 +23,6 @@ dependencies {
 	// ProGuard, minification
 	implementation "com.guardsquare:proguard-base:7.6.1"
 	implementation "com.guardsquare:proguard-core:9.1.8"
-	
-	// Lombok for simpler getters/setters
-	implementation 'org.projectlombok:lombok:1.18.36'
-	annotationProcessor 'org.projectlombok:lombok:1.18.36'
 	
 	// Country codes, this is the last version supporting Java 8
 	implementation 'org.iban4j:iban4j:3.2.7-RELEASE'

@@ -516,16 +516,18 @@ public class VMTestTaskAction
 		// Can we directly refer to the emulator library already?
 		Path emuLib = VMHelpers.findEmulatorLib(__task.getProject());
 		if (emuLib != null && Files.exists(emuLib))
-			sysProps.put("squirreljme.emulator.libpath", emuLib.toString());
+			sysProps.put("squirreljme.emulator.libpath",
+				emuLib.toString());
 		
 		// Setup parameters and build
-		return builder
-			.sysProps(sysProps)
-			.emuLib(new SerializedPath(emuLib))
+		SuiteRunParameters.SuiteRunParametersBuilder params =
+			builder.sysProps(sysProps)
 			.uniqueId(UUID.randomUUID().toString())
-			.classPath(SerializedPath.boxPaths(VMHelpers.runClassPath(
-				__task, __classifier, true)))
-			.build();
+			.classPath(SerializedPath.boxPaths(
+				VMHelpers.runClassPath(__task, __classifier, true)));
+		if (emuLib != null)
+			return params.emuLib(new SerializedPath(emuLib)).build();
+		return params.build();
 	}
 	
 	/**

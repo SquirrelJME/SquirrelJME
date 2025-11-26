@@ -819,14 +819,18 @@ public abstract class Canvas
 	/**
 	 * Sets the painting mode of the canvas.
 	 *
-	 * If transparent mode is enabled ({@code false}), then the implementation
+	 * If transparent mode (which is the default on MIDP 2 and below) is
+	 * enabled ({@code false}), then the implementation
 	 * (not the end developer) will fill the background with a suitable color
 	 * or image (which is unspecified).
 	 *
-	 * If opaque mode (which is the default) is enabled then it will be
-	 * assumed that {@link #repaint()} will cover every pixel and
+	 * If opaque mode (which is the default on MIDP 3) is enabled then it
+	 * will be assumed that {@link #repaint()} will cover every pixel and
 	 * as such it will not be required for the background to be cleared or
 	 * initialized.
+	 * 
+	 * Note that this is in relation to the current clipping rectangle for
+	 * the paint operation and does not consider pixels outside of it.
 	 *
 	 * @param __opaque If {@code true} then opaque mode is enabled.
 	 * @since 2017/02/12

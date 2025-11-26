@@ -74,7 +74,7 @@ set(SQUIRRELJME_SCRITCHUI_COLLECT_LIBS)
 option(SQUIRRELJME_ENABLE_GUI_WIN32 "Enable Win32 GUI"
 	${SQUIRRELJME_ON_IF_WIN32})
 if(SQUIRRELJME_ENABLE_GUI_WIN32)
-	squirreljme_scritchui_build(WIN32 win32 Win32)
+	squirreljme_scritchui_build(win32 Win32)
 endif()
 
 # Motif?
@@ -83,7 +83,7 @@ if(SQUIRRELJME_ENABLE_GUI_DEVELOPER)
 
 	option(SQUIRRELJME_ENABLE_GUI_MOTIF "Enable Motif GUI" ON)
 	if(SQUIRRELJME_ENABLE_GUI_MOTIF)
-		squirreljme_scritchui_build(MOTIF_FOUND motif Motif)
+		squirreljme_scritchui_build(motif Motif)
 	endif()
 endif()
 
@@ -93,16 +93,15 @@ if(SQUIRRELJME_ENABLE_GUI_DEVELOPER)
 
 	option(SQUIRRELJME_ENABLE_GUI_X11 "Enable X11 GUI" ON)
 	if(SQUIRRELJME_ENABLE_GUI_X11)
-		squirreljme_scritchui_build(X11_FOUND x11 X11)
+		squirreljme_scritchui_build(x11 X11)
 	endif()
 endif()
 
 # GTK2?
 squirreljme_include("find-gtk2.cmake")
 
-option(SQUIRRELJME_ENABLE_GUI_GTK2 "Enable GTK2 GUI" ON)
 if(SQUIRRELJME_ENABLE_GUI_GTK2)
-	squirreljme_scritchui_build(GTK2_FOUND gtk2 GTK2)
+	squirreljme_scritchui_build(gtk2 GTK2)
 endif()
 
 # GTK3?
@@ -111,6 +110,6 @@ if(SQUIRRELJME_ENABLE_GUI_DEVELOPER)
 
 	option(SQUIRRELJME_ENABLE_GUI_GTK3 "Enable GTK3 GUI" OFF)
 	if(SQUIRRELJME_ENABLE_GUI_GTK3)
-		squirreljme_scritchui_build(GTK3_FOUND gtk3 GTK3)
+		squirreljme_scritchui_build(gtk3 GTK3)
 	endif()
 endif()

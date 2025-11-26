@@ -11,9 +11,9 @@ squirreljme_include("find-x11.cmake")
 
 # Declare base library
 add_library(ScritchUIX11 SHARED
-	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_CORE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_FB_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>
 	x11Component.c
 	x11Container.c
 	x11Core.c
@@ -30,10 +30,7 @@ add_library(ScritchUIX11 SHARED
 	x11Window.c)
 
 # Always make it PIC
-if(SQUIRRELJME_ENABLE_FPIC)
-	set_property(TARGET ScritchUIX11
-		PROPERTY POSITION_INDEPENDENT_CODE ON)
-endif()
+squirreljme_always_fpic(ScritchUIX11)
 
 # Include main headers
 target_include_directories(ScritchUIX11 PUBLIC

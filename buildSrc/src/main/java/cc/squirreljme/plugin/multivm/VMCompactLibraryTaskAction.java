@@ -252,6 +252,11 @@ public class VMCompactLibraryTaskAction
 		{
 			// Do not optimize here, we want to keep everything around
 			"-dontoptimize",
+			"-dontshrink",
+			
+			// Tests can break things in specific ways that ProGuard does
+			// not like much
+			"-dontwarn",
 			
 			// This keeps everything about tests but will use pre-existing
 			// mappings and otherwise if we are using obfuscated classes
@@ -298,6 +303,78 @@ public class VMCompactLibraryTaskAction
 	 */
 	@Override
 	public void execute(Task __task)
+	{
+		// It is possible for ProGuard to run out of memory
+		try
+		{
+			// Try to run normally
+			this.__execute(__task);
+		}
+		
+		// ProGuard has actually run out of memory, note that it
+		// erroneously wraps it in RuntimeException as well
+		catch (RuntimeException|OutOfMemoryError __oom)
+		{
+			// We need to find if this was ever thrown up the exception tree
+			// as ProGuard wraps errors when it should not
+			Throwable found = null;
+			if (__oom instanceof OutOfMemoryError)
+				found = __oom;
+			else if (__oom instanceof RuntimeException)
+				do
+				{
+					found = (found == null ? __oom.getCause() :
+						found.getCause());
+				} while (found != null &&
+					!(found instanceof OutOfMemoryError));
+			
+			// Did not find an out of memory error?
+			if (!(found instanceof OutOfMemoryError))
+				throw __oom;
+			
+			// Double-GC to force it to run, hopefully since we did have an
+			// actual out of memory event
+			Runtime.getRuntime().gc();
+			System.gc();
+			
+			// Get the task being worked on
+			VMCompactLibraryTask compactTask = (VMCompactLibraryTask)__task;
+			
+			// Where are we reading/writing to/from?
+			Path inputJarPath = compactTask.inputBaseJarPath().get();
+			Path outputJarPath = compactTask.outputJarPath().get();
+			Path outputMapPath = compactTask.outputMapPath().get();
+			
+			// Could fail
+			try
+			{
+				// Copy the input to the output
+				Files.copy(inputJarPath, outputJarPath,
+					StandardCopyOption.REPLACE_EXISTING);
+				
+				// Initialize a blank mapping file
+				Files.write(outputMapPath, new byte[0],
+					StandardOpenOption.CREATE, StandardOpenOption.WRITE,
+					StandardOpenOption.TRUNCATE_EXISTING);
+			}
+			
+			// Just forward out write failures
+			catch (IOException __e)
+			{
+				throw new RuntimeException(__e.getMessage(), __e);
+			}
+		}
+	}
+	
+	/**
+	 * The actual execution of the ask.
+	 * 
+	 * @param __task The task being executed.
+	 * @throws OutOfMemoryError If this ran out of memory.
+	 * @since 2023/02/01
+	 */
+	private void __execute(Task __task)
+		throws OutOfMemoryError
 	{
 		VMCompactLibraryTask compactTask = (VMCompactLibraryTask)__task;
 		

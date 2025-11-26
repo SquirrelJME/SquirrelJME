@@ -13,6 +13,12 @@ macro(squirreljme_include what)
 		NO_POLICY_SCOPE)
 endmacro()
 
+# Non-optional include (NanoCoat)
+macro(squirreljme_include_nanocoat what)
+	include("${CMAKE_SOURCE_DIR}/cmake/${what}"
+		NO_POLICY_SCOPE)
+endmacro()
+
 # Optional include
 macro(squirreljme_include_optional what)
 	include("${CMAKE_SOURCE_DIR}/cmake/${what}"

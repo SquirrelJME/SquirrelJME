@@ -11,9 +11,9 @@ squirreljme_include("find-motif.cmake")
 
 # Declare base library
 add_library(ScritchUIMotif SHARED
-	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_CORE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_FB_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>
 	motifComponent.c
 	motifContainer.c
 	motifCore.c
@@ -30,10 +30,7 @@ add_library(ScritchUIMotif SHARED
 	motifWindow.c)
 
 # Always make it PIC
-if(SQUIRRELJME_ENABLE_FPIC)
-	set_property(TARGET ScritchUIMotif
-		PROPERTY POSITION_INDEPENDENT_CODE ON)
-endif()
+squirreljme_always_fpic(ScritchUIMotif)
 
 # Include main headers
 target_include_directories(ScritchUIMotif PUBLIC

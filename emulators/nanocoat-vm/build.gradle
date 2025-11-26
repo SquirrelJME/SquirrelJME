@@ -30,7 +30,8 @@ Provider<CMakeBuildTask> libNativeNanoCoat = tasks.register(
 	(org.gradle.internal.os.OperatingSystem.current() ==
 		org.gradle.internal.os.OperatingSystem.WINDOWS ?
 		"squirreljme.exe" : "squirreljme"),
-	["SquirrelJME"])
+	["SquirrelJME"],
+	[])
 
 libNativeNanoCoat.configure { taskIsh ->
 	// Get source root for extra dependency checking
