@@ -9,6 +9,7 @@
 
 package com.nttdocomo.util;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.util.TimerTask;
 
@@ -17,6 +18,7 @@ import java.util.TimerTask;
  *
  * @since 2024/12/05
  */
+@SquirrelJMEVendorApi
 final class __ExpireListener__
 	extends TimerTask
 {
@@ -30,6 +32,7 @@ final class __ExpireListener__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/12/05
 	 */
+	@SquirrelJMEVendorApi
 	__ExpireListener__(__ExpireStore__ __expire)
 		throws NullPointerException
 	{

@@ -411,9 +411,41 @@ public final class CMakeUtils
 	 *
 	 * @param __task The task to configure.
 	 * @throws IOException If it could not be configured.
-	 * @since 2024/04/08
+	 * @since 2025/11/15
 	 */
 	public static void configure(CMakeBuildTask __task)
+		throws IOException
+	{
+		CMakeUtils.configure(__task, new String[0]);
+	}
+	
+	/**
+	 * Configures the CMake task.
+	 *
+	 * @param __task The task to configure.
+	 * @param __args Extra configure arguments.
+	 * @throws IOException If it could not be configured.
+	 * @since 2025/11/15
+	 */
+	public static void configure(CMakeBuildTask __task, List<String> __args)
+		throws IOException
+	{
+		if (__args != null)
+			CMakeUtils.configure(__task,
+				__args.toArray(new String[__args.size()]));
+		else
+			CMakeUtils.configure(__task, new String[0]);
+	}
+	
+	/**
+	 * Configures the CMake task.
+	 *
+	 * @param __task The task to configure.
+	 * @param __args Extra configure arguments.
+	 * @throws IOException If it could not be configured.
+	 * @since 2024/04/08
+	 */
+	public static void configure(CMakeBuildTask __task, String... __args)
 		throws IOException
 	{
 		Path cmakeBuild = __task.cmakeBuild;
@@ -433,13 +465,16 @@ public final class CMakeUtils
 		Path javaHome = Paths.get(System.getProperty("java.home"))
 			.toAbsolutePath();
 		
+		// Fill in base arguments
+		List<String> fullArgs = new ArrayList<>();
+		if (__args != null)
+			fullArgs.addAll(Arrays.asList(__args));
+		
 		// Configure CMake first before we continue with anything
 		// Note that newer CMake has a better means of specifying the path
 		if (version != null && version.compareTo(
 			VersionNumber.parse("3.13")) >= 0)
-			CMakeUtils.cmakeExecute(__task.cmakeBuild, __task.getLogger(),
-				"configure",
-				__task.getProject().getBuildDir().toPath(),
+			fullArgs.addAll(Arrays.asList(
 				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
 				"-DSQUIRRELJME_GRADLE=YES",
 				String.format("-DSQUIRRELJME_VERSION_BUILD=%s",
@@ -449,21 +484,25 @@ public final class CMakeUtils
 				CMakeUtils.generatorPlatform(false),
 				CMakeUtils.generatorPlatform(true),
 				"-S", cmakeSource.toAbsolutePath().toString(),
-				"-B", cmakeBuild.toAbsolutePath().toString());
+				"-B", cmakeBuild.toAbsolutePath().toString()));
 		
 		// Otherwise fallback to the old method which is a bit more tricky
 		// as we need to set our working directory accordingly
 		else
-			CMakeUtils.cmakeExecute(__task.cmakeBuild, __task.getLogger(),
-				"configure",
-				__task.getProject().getBuildDir().toPath(),
+			fullArgs.addAll(Arrays.asList(
 				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
 				"-DSQUIRRELJME_GRADLE=YES",
 				String.format("-DJAVA_HOME=%s",
 					javaHome),
 				CMakeUtils.generatorPlatform(false),
 				CMakeUtils.generatorPlatform(true),
-				cmakeSource.toAbsolutePath().toString());
+				cmakeSource.toAbsolutePath().toString()));
+		
+		// Execute CMake
+		CMakeUtils.cmakeExecute(__task.cmakeBuild, __task.getLogger(),
+			"configure",
+			__task.getProject().getBuildDir().toPath(),
+			fullArgs.toArray(new String[fullArgs.size()]));
 	}
 	
 	/**

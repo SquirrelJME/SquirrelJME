@@ -11,9 +11,9 @@ squirreljme_include("find-gtk2.cmake")
 
 # Declare base library
 add_library(ScritchUIGTK2 SHARED
-	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_CORE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_FB_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>
 	gtk2Component.c
 	gtk2Container.c
 	gtk2Core.c
@@ -30,10 +30,7 @@ add_library(ScritchUIGTK2 SHARED
 	gtk2Window.c)
 
 # Always make it PIC
-if(SQUIRRELJME_ENABLE_FPIC)
-	set_property(TARGET ScritchUIGTK2
-		PROPERTY POSITION_INDEPENDENT_CODE ON)
-endif()
+squirreljme_always_fpic(ScritchUIGTK2)
 
 # Include main headers
 target_include_directories(ScritchUIGTK2 PUBLIC

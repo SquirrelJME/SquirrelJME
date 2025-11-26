@@ -9,6 +9,8 @@
 
 package com.nttdocomo.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import com.nttdocomo.ui.Canvas;
 import com.nttdocomo.ui.ShortTimer;
 import com.nttdocomo.ui.UIException;
@@ -27,6 +29,7 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  * @see java.util.Timer
  * @since 2022/10/10
  */
+@Api
 public final class Timer
 	implements TimeKeeper
 {
@@ -39,6 +42,7 @@ public final class Timer
 		1;
 	
 	/** The expiration store to use. */
+	@SquirrelJMEVendorApi
 	final __ExpireStore__ _expire;
 	
 	/** The current interval, in milliseconds. */
@@ -46,6 +50,7 @@ public final class Timer
 		Timer._MIN_TIME_INTERVAL;
 	
 	/** Does this timer repeat? */
+	@SquirrelJMEVendorApi
 	volatile boolean _repeats;
 	
 	/** Has this been disposed? */
@@ -59,6 +64,7 @@ public final class Timer
 	 * 
 	 * @since 2022/10/10
 	 */
+	@Api
 	public Timer()
 	{
 		this._expire = new __ExpireStore__(
@@ -110,6 +116,7 @@ public final class Timer
 	 * @param __listener The listener to set.
 	 * @since 2022/10/10
 	 */
+	@Api
 	public void setListener(TimerListener __listener)
 	{
 		// Set for any later occurring expirations
@@ -123,6 +130,7 @@ public final class Timer
 	 * @throws UIException If the timer has already been started.
 	 * @since 2022/10/10
 	 */
+	@Api
 	public void setRepeat(boolean __repeat)
 		throws UIException
 	{
@@ -145,6 +153,7 @@ public final class Timer
 	 * @throws UIException If the timer has already been started.
 	 * @since 2022/10/10
 	 */
+	@Api
 	public void setTime(int __interval)
 		throws IllegalArgumentException, UIException
 	{

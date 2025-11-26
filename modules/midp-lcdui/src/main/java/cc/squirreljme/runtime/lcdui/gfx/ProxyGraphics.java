@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -23,10 +24,12 @@ import javax.microedition.lcdui.Text;
  * @see ProxyGraphicsTarget
  * @since 2022/02/25
  */
+@SquirrelJMEVendorApi
 public final class ProxyGraphics
 	extends Graphics
 {
 	/** The target graphics to draw into. */
+	@SquirrelJMEVendorApi
 	protected final ProxyGraphicsTarget target;
 	
 	/** The current alpha color. */
@@ -68,6 +71,7 @@ public final class ProxyGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/25
 	 */
+	@SquirrelJMEVendorApi
 	public ProxyGraphics(ProxyGraphicsTarget __target, int __width,
 		int __height)
 		throws NullPointerException
@@ -634,6 +638,18 @@ public final class ProxyGraphics
 		
 		// Set
 		this._strokeStyle = __style;
+	}
+	
+	/**
+	 * Returns the target holder for this {@link ProxyGraphics}.
+	 *
+	 * @return The target holder for this {@link ProxyGraphics}.
+	 * @since 2025/11/25
+	 */
+	@SquirrelJMEVendorApi
+	public ProxyGraphicsTarget target()
+	{
+		return this.target;
 	}
 	
 	/**

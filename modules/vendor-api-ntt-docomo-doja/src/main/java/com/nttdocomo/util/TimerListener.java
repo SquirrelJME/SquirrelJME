@@ -9,6 +9,7 @@
 
 package com.nttdocomo.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.EventListener;
 
 /**
@@ -16,6 +17,7 @@ import java.util.EventListener;
  * 
  * @since 2022/10/10
  */
+@Api
 public interface TimerListener
 	extends EventListener
 {
@@ -25,5 +27,6 @@ public interface TimerListener
 	 * @param __source The source timer.
 	 * @since 2022/10/10
 	 */
+	@Api
 	void timerExpired(Timer __source);
 }

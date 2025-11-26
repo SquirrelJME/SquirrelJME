@@ -158,27 +158,42 @@ extern "C" {
 #endif
 
 /* The current operating system. */
-#if defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
+#if defined(SJME_CONFIG_IDENT_OS_WINE) || defined(__WINE__)
+	/** Windows through Wine. */
+	#define SJME_CONFIG_HAS_OS_WINDOWS_WINE
+	
+	/** Using Windows 32-bit (via Wine). */
+	#define SJME_CONFIG_HAS_OS_WINDOWS_32
+		
+		/** Windows is available (via Wine). */
+	#define SJME_CONFIG_HAS_OS_WINDOWS 32
+#elif defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
 	/** Emscripten (WASM). */
 	#define SJME_CONFIG_HAS_OS_EMSCRIPTEN
-#elif defined(GEKKO)
-	#if defined(WIIU)
-		/** Nintendo Wii U is available. */
-		#define SJME_CONFIG_HAS_OS_NINTENDO_WIIU
-	#else
-		/** Nintendo Wii is available. */
-		#define SJME_CONFIG_HAS_OS_NINTENDO_WII
-	#endif
-#elif defined(__3DS__) || defined(_3DS)
+#elif defined(SJME_CONFIG_IDENT_OS_GAMECUBE) || \
+	(defined(GEKKO) && defined(HW_DOL))
+	/** Nintendo GameCube is available. */
+	#define SJME_CONFIG_HAS_OS_NINTENDO_GAMECUBE
+#elif defined(SJME_CONFIG_IDENT_OS_WIIU) || \
+	(defined(GEKKO) && defined(HW_RVL) && defined(WIIU))
+	/** Nintendo Wii U is available. */
+	#define SJME_CONFIG_HAS_OS_NINTENDO_WIIU
+#elif defined(SJME_CONFIG_IDENT_OS_WII) || \
+	(defined(GEKKO) && defined(HW_RVL) && !defined(WIIU))
+	/** Nintendo Wii is available. */
+	#define SJME_CONFIG_HAS_OS_NINTENDO_WII
+#elif defined(__3DS__) || defined(_3DS) || defined(SJME_CONFIG_IDENT_OS_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_OS_NINTENDO_3DS
-#elif defined(PS2) || defined(_EE) || defined(_IOP) || defined(__PS2__)
+#elif defined(PS2) || defined(_EE) || defined(_IOP) || defined(__PS2__) || \
+	defined(SJME_CONFIG_IDENT_OS_PLAYSTATION2)
 	/** Sony PlayStation 2. */
 	#define SJME_CONFIG_HAS_OS_SONY_PS2
 #elif defined(SDCC) || defined(__SDCC)
 	/** Baremetal system. */
 	#define SJME_CONFIG_HAS_OS_BAREMETAL
-#elif defined(__ANDROID__) || defined(__ANDROID_API__)
+#elif defined(__ANDROID__) || defined(__ANDROID_API__) || \
+	defined(SJME_CONFIG_IDENT_OS_ANDROID)
 	/** Android is available. */
 	#define SJME_CONFIG_HAS_OS_ANDROID
 #elif defined(__linux__) || defined(linux) || defined(__linux)
@@ -1310,6 +1325,13 @@ extern "C" {
 
 /** Include code that should work. */
 #define SJME_CONFIG_CODE_SHOULD_WORK 1
+	
+/* Windows header needs to be included everywhere effectively. */
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	#define WIN32_LEAN_AND_MEAN 1
+	
+	#include <windows.h>
+#endif
 	
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"

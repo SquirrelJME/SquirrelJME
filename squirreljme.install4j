@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="10.0.9" transformSequenceNumber="10">
-  <directoryPresets config="." />
+<install4j version="10.0.7" transformSequenceNumber="10">
+  <directoryPresets config="./build/install4j/in/squirreljme-standalone-0.3.0-linux-amd64.jar" />
   <application name="SquirrelJME" applicationId="5232-9992-4953-4137" mediaDir="./build/install4j/out" compression="9" lzmaCompression="true" pack200Compression="true" shortName="squirreljme" publisher="Stephanie Gawroriski" publisherWeb="https://squirreljme.cc/" version="0.3.0_0" allPathsRelative="true" backupOnSave="true" autoSave="true" macVolumeId="b44c0629f58949ee" javaMinVersion="1.8.0_452" javaMaxVersion="11">
     <variables>
       <variable name="squirreljme.installer_version" value="0_3_0" description="Installer version string." />
+      <variable name="squirreljme.standalone.path" value="./build/install4j/in/squirreljme-standalone.jar" description="Input path for the build (default)." />
     </variables>
     <jreBundles jdkProviderId="Adoptium" release="8/latest" />
   </application>
-  <files defaultFileMode="755">
+  <files missingFilesStrategy="error" defaultFileMode="755">
     <mountPoints>
       <mountPoint id="26" />
     </mountPoints>
@@ -20,7 +21,8 @@
       <fileEntry mountPoint="26" file="./credits.mkd" />
       <fileEntry mountPoint="26" file="./assets/doc/supported-formats.mkd" />
       <fileEntry mountPoint="26" file="./assets/doc/usage-standalone.mkd" />
-      <dirEntry mountPoint="26" file="./build/install4j/in" fileMode="755" overrideFileMode="true" subDirectory="libs" excludeSuffixes="*.png" overrideDirMode="true" />
+      <variableEntry mountPoint="26" overwriteMode="0" fileMode="755" overrideFileMode="true" name="squirreljme.standalone.path" />
+      <variableEntry mountPoint="26" name="squirreljme.source.path" />
     </entries>
   </files>
   <launchers>
@@ -1252,11 +1254,14 @@ return true;</property>
     <linuxDeb name="Debian AMD64" id="130" mediaFileName="${compiler:sys.shortName}_linux-amd64_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="amd64">
       <jreBundle usePack200="true" />
     </linuxDeb>
-    <linuxDeb name="Debian ARM" id="143" mediaFileName="${compiler:sys.shortName}_linux-arm_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="armel">
+    <linuxDeb name="Debian ARM32" id="143" mediaFileName="${compiler:sys.shortName}_linux-arm_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="armel">
       <jreBundle usePack200="true" platform="linux-arm" />
     </linuxDeb>
-    <linuxDeb name="Debian AARCH64" id="146" mediaFileName="${compiler:sys.shortName}_linux-aarch64_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="aarch64">
+    <linuxDeb name="Debian ARM64" id="146" mediaFileName="${compiler:sys.shortName}_linux-aarch64_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="aarch64">
       <jreBundle usePack200="true" platform="linux-aarch64" />
+    </linuxDeb>
+    <linuxDeb name="Debian IA32" id="148" mediaFileName="${compiler:sys.shortName}_linux-i386_${compiler:squirreljme.installer_version}" dependencies="osspd? libgtk2.0-0? gnustep-gui-runtime?" description="SquirrelJME is a Java ME 8 Virtual Machine for embedded and Internet of Things devices, it also is a platform for the Software Preservation of mobile Java ME devices. This includes Japanese Keitai software as well! It has the ultimate goal of being 99.9% compatible with the Java ME standard." maintainerEmail="xer@multiphasicapps.net" architectureSet="true" architecture="i386">
+      <jreBundle usePack200="true" />
     </linuxDeb>
   </mediaSets>
   <buildIds>

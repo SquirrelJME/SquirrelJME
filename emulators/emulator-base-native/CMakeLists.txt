@@ -13,19 +13,20 @@ cmake_minimum_required(VERSION 3.5)
 project(libEmulatorBase
     LANGUAGES C)
 
+# Non-optional include from NanoCoat
+macro(squirreljme_include_nanocoat what)
+	include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/${what}"
+		NO_POLICY_SCOPE)
+endmacro()
+
 # Support bases
-include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/cmake-patch.cmake"
-	NO_POLICY_SCOPE)
-include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/pre-fixes.cmake"
-    NO_POLICY_SCOPE)
-include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/utils.cmake"
-    NO_POLICY_SCOPE)
-include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/fixes.cmake"
-    NO_POLICY_SCOPE)
-include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/jni.cmake"
-    NO_POLICY_SCOPE)
-include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/threads.cmake"
-    NO_POLICY_SCOPE)
+squirreljme_include_nanocoat("cmake-patch.cmake")
+squirreljme_include_nanocoat("pre-fixes.cmake")
+squirreljme_include_nanocoat("system-map.cmake")
+squirreljme_include_nanocoat("utils.cmake")
+squirreljme_include_nanocoat("fixes.cmake")
+squirreljme_include_nanocoat("find-jni.cmake")
+squirreljme_include_nanocoat("find-threads.cmake")
 
 # Where is NanoCoat?
 get_filename_component(nanocoatIncludePath
@@ -63,34 +64,23 @@ add_library(libEmulatorBase SHARED
 target_include_directories(libEmulatorBase PUBLIC
 	"headers"
 	"${nanocoatIncludePath}"
-	${JNI_INCLUDE_DIRS}
-	${JAVA_INCLUDE_PATH}
-	${JAVA_INCLUDE_PATH2})
+	"${SQUIRRELJME_JAVA_JNI_INCLUDE}"
+	"${SQUIRRELJME_JAVA_JVM_INCLUDE}"
+	"${SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR}")
 
 # Libraries for the build
 get_filename_component(nanocoatLibPath
-	"${CMAKE_SOURCE_DIR}/../emulator-base/build/cmake-libsNativeUI"
+	"${CMAKE_SOURCE_DIR}/../emulator-base/build/cmake-libNativeUI"
 	ABSOLUTE)
 message(STATUS "NanoCoat lib is: ${nanocoatLibPath}")
 target_link_directories(libEmulatorBase PUBLIC
-	"${nanocoatLibPath}")
+	"${nanocoatLibPath}"
+	"${SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR}")
 target_link_libraries(libEmulatorBase PUBLIC
-	"BaseStatic" "${JAVA_JVM_LIBRARY}")
+	"BaseStatic" "jvm")
 
 # It is easier to find this when it is in the build root
-set_target_properties(libEmulatorBase PROPERTIES
-	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
-
-foreach(outputConfig ${CMAKE_CONFIGURATION_TYPES})
-	string(TOUPPER "${outputConfig}" outputConfig)
-
-	set_target_properties(libEmulatorBase PROPERTIES
-		RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
-		LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}"
-		ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${CMAKE_BINARY_DIR}")
-endforeach()
+squirreljme_target_binary_output(libEmulatorBase "${CMAKE_BINARY_DIR}")
 
 # Use a more basic name for the library
 set_target_properties(libEmulatorBase PROPERTIES

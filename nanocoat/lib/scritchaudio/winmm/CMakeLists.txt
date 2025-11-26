@@ -8,19 +8,16 @@
 
 # Declare base library
 add_library(ScritchAudioWinMM SHARED
-	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHAUDIO_CORE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHAUDIO_SOFTMIX_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchAudioCore_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchAudioSoftMix_FPIC}>
 	winmmCore.c
 	winmmLoop.c
 	winmmMidi.c
 	winmmStream.c)
 
 # Always make it PIC
-if(SQUIRRELJME_ENABLE_FPIC)
-	set_property(TARGET ScritchAudioWinMM
-		PROPERTY POSITION_INDEPENDENT_CODE ON)
-endif()
+squirreljme_always_fpic(ScritchAudioWinMM)
 
 # The file where the include lives
 target_compile_definitions(ScritchAudioWinMM PUBLIC
@@ -32,7 +29,7 @@ target_include_directories(ScritchAudioWinMM PUBLIC
 
 # Windows Multimedia Library is needed here
 target_link_libraries(ScritchAudioWinMM PUBLIC
-	"winmm.lib")
+	"winmm${SQUIRRELJME_WIN_LIB_SUFFIX}")
 
 # ScritchAudio requires a normalized library name
 squirreljme_target_binary_name(ScritchAudioWinMM

@@ -91,7 +91,7 @@ sjme_errorCode sjme_nal_test_stdErr(
 	if (buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (off < 0 || len < 0 || (buf + len) < 0)
+	if (off < 0 || len < 0 || ((sjme_intPointer)buf + len) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	fwrite(SJME_POINTER_OFFSET(buf, off), 1, len, stdout);

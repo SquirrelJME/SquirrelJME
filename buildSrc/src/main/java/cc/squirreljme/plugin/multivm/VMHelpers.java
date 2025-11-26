@@ -1723,8 +1723,18 @@ public final class VMHelpers
 		if (__project == null || __classifier == null)
 			throw new NullPointerException("NARG");
 		
-		return __project.provider(() -> VMHelpers.cacheDir(__project,
-			__classifier).get().resolve("junit"));
+		return __project.provider(() -> {
+				// Alternative location specified? This is used for example
+				// by the automated CMake pipeline build
+				String altString = System.getProperty("squirreljme.test.dir");
+				if (altString != null && !altString.isEmpty())
+					return Paths.get(altString).toAbsolutePath()
+						.resolve(__project.getName()).normalize();
+				
+				// Use default location
+				return VMHelpers.cacheDir(__project,
+					__classifier).get().resolve("junit");
+			});
 	}
 	
 	/**

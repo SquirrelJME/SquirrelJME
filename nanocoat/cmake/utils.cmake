@@ -42,7 +42,6 @@ macro(squirreljme_util var what)
 endmacro()
 
 # If we are on Windows, we do want to pass our generator
-message(STATUS "CMake Generator Platform: ${CMAKE_GENERATOR_PLATFORM}")
 if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Windows")
 	unset(SQUIRRELJME_SWITCH_CMAKE_GENERATOR_PLATFORM_UNSET)
 	set(SQUIRRELJME_SWITCH_CMAKE_GENERATOR_PLATFORM_SET

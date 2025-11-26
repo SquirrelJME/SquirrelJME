@@ -7,6 +7,23 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Multiple library declarations and otherwise
 
+# Correct Paths
+## Emulator base import directory
+if(DEFINED SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR)
+	file(TO_CMAKE_PATH "${SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR}"
+		SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR)
+endif()
+## Dynamic library output
+if(DEFINED SQUIRRELJME_DYLIB_OUTPUT_DIR)
+	file(TO_CMAKE_PATH "${SQUIRRELJME_DYLIB_OUTPUT_DIR}"
+		SQUIRRELJME_DYLIB_OUTPUT_DIR)
+endif()
+## Binary output
+if(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
+	file(TO_CMAKE_PATH "${SQUIRRELJME_BINARY_OUTPUT_DIR}"
+		SQUIRRELJME_BINARY_OUTPUT_DIR)
+endif()
+
 # Add static library
 macro(squirreljme_multilib_add_static_library libBase)
 	# Load in source files
@@ -40,6 +57,24 @@ macro(squirreljme_multilib_add_static_library libBase)
 	if(SQUIRRELJME_ENABLE_FPIC)
 		set_property(TARGET ${libBase}Static
 			PROPERTY POSITION_INDEPENDENT_CODE ON)
+	endif()
+
+	# Use FPIC objects for a given target or not?
+	# Unfortunately, for these to be truly global these must be in the cache
+	if(SQUIRRELJME_ENABLE_FPIC)
+		set(SQUIRRELJME_LIB_${libBase}_STATIC ${libBase}Static
+			CACHE STRING "Static ${libBase} Target" FORCE)
+		set(SQUIRRELJME_LIB_${libBase}_FIXED ${libBase}
+			CACHE STRING "Non-FPIC ${libBase} Target" FORCE)
+		set(SQUIRRELJME_LIB_${libBase}_FPIC ${libBase}PIC
+			CACHE STRING "FPIC ${libBase} Target" FORCE)
+	else()
+		set(SQUIRRELJME_LIB_${libBase}_STATIC ${libBase}Static
+			CACHE STRING "Static ${libBase} Target" FORCE)
+		set(SQUIRRELJME_LIB_${libBase}_FIXED ${libBase}
+			CACHE STRING "Non-FPIC ${libBase} Target" FORCE)
+		set(SQUIRRELJME_LIB_${libBase}_FPIC ${libBase}
+			CACHE STRING "FPIC ${libBase} Target" FORCE)
 	endif()
 endmacro()
 
@@ -253,7 +288,7 @@ macro(squirreljme_multilib_add_dependency libBase dependOn)
 	# Only link for the dynamic library
 	if(SQUIRRELJME_ENABLE_DYLIB)
 		add_dependencies(${libBase}DyLib
-			${dependOn}PIC)
+			${SQUIRRELJME_LIB_${dependOn}_FPIC})
 	endif()
 endmacro()
 
@@ -266,12 +301,12 @@ macro(squirreljme_multilib_static_add_multilib_dependency libBase dependOn)
 	# PIC?
 	if(SQUIRRELJME_ENABLE_FPIC)
 		add_dependencies(${libBase}PIC
-			${dependOn}PIC)
+			${SQUIRRELJME_LIB_${dependOn}_FPIC})
 	endif()
 
 	# Static Library
 	add_dependencies(${libBase}Static
-		${dependOn}Static)
+		${SQUIRRELJME_LIB_${dependOn}_STATIC})
 endmacro()
 
 # Add dependency on multi-lib binaries
@@ -284,3 +319,12 @@ macro(squirreljme_multilib_add_multilib_dependency libBase dependOn)
 			${dependOn}DyLib)
 	endif()
 endmacro()
+
+# Make a target always FPIC
+function(squirreljme_always_fpic target)
+	if(SQUIRRELJME_ENABLE_FPIC)
+		set_target_properties(${target} PROPERTIES
+			POSITION_INDEPENDENT_CODE ON)
+	endif()
+endfunction()
+

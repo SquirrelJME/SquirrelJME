@@ -121,7 +121,8 @@ sjme_errorCode sjme_scritchui_win32_menuNew(
 	sjme_attrInNullable sjme_pointer ignored)
 {
 	/* Exactly the same as menu bars. */
-	return sjme_scritchui_win32_menuBarNew(inState, inMenu, ignored);
+	return sjme_scritchui_win32_menuBarNew(inState,
+		(void*)inMenu, ignored);
 }
 
 sjme_errorCode sjme_scritchui_win32_menuRemove(

@@ -13,14 +13,11 @@
 # Needed for C compiler checks
 include(CheckCCompilerFlag)
 
-# Cross-compiling the build?
-if(NOT "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "${CMAKE_SYSTEM_NAME}" OR
-	NOT "${CMAKE_HOST_SYSTEM_PROCESSOR}" STREQUAL "${CMAKE_SYSTEM_PROCESSOR}")
-	message(STATUS "Performing cross-build as "
-		"${CMAKE_HOST_SYSTEM_NAME}/"
-		"${CMAKE_HOST_SYSTEM_PROCESSOR} is not "
-		"${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}.")
-endif()
+# Do not install with RPATH, CMake does relinking in build/install which
+# we do not want as we give away whatever executes and such
+set(CMAKE_SKIP_RPATH YES)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH NO)
+set(CMAKE_SKIP_INSTALL_RPATH YES)
 
 # LibRetro build for emscripten can never be static
 if(SQUIRRELJME_IS_LIBRETRO)
@@ -61,6 +58,13 @@ endif()
 #	# Different host, assume we cannot run the target code
 #	set(SQUIRRELJME_ENABLE_TESTING OFF)
 #endif()
+
+# Are implibs used?
+if(MSVC AND "${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+	set(SQUIRRELJME_HAS_IMPLIB YES)
+else()
+	set(SQUIRRELJME_HAS_IMPLIB NO)
+endif()
 
 # CMake 3.13 added many things!
 if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
@@ -125,51 +129,86 @@ endmacro()
 # directories since .DLL files are output there and not where shared libraries
 # go??? No idea really.
 macro(squirreljme_target_binary_output target where)
-	set_target_properties(${target} PROPERTIES
-		RUNTIME_OUTPUT_DIRECTORY "${where}"
-		LIBRARY_OUTPUT_DIRECTORY "${where}"
-		ARCHIVE_OUTPUT_DIRECTORY "${where}")
+	# The target location can be overridden, generally through the pipeline
+	# build system
+	if(DEFINED ENV{SQUIRRELJME_BINARY_OUTPUT_DIR})
+		set(actualWhere "$ENV{SQUIRRELJME_BINARY_OUTPUT_DIR}")
+	elseif(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
+		set(actualWhere "${SQUIRRELJME_BINARY_OUTPUT_DIR}")
+	else()
+		set(actualWhere "${where}")
+	endif()
 
+	# Set properties for all binary types
+	set_target_properties(${target} PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY "${actualWhere}"
+		LIBRARY_OUTPUT_DIRECTORY "${actualWhere}"
+		ARCHIVE_OUTPUT_DIRECTORY "${actualWhere}")
+
+	# Some generators have multiple configuration types
 	foreach(outputConfig ${CMAKE_CONFIGURATION_TYPES})
+		# Configuration types are always capitalized
 		string(TOUPPER "${outputConfig}" outputConfig)
 
+		# Set properties for all binary types
 		set_target_properties(${target} PROPERTIES
-			RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${where}"
-			LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${where}"
-			ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${where}")
+			RUNTIME_OUTPUT_DIRECTORY_${outputConfig} "${actualWhere}"
+			LIBRARY_OUTPUT_DIRECTORY_${outputConfig} "${actualWhere}"
+			ARCHIVE_OUTPUT_DIRECTORY_${outputConfig} "${actualWhere}")
 	endforeach()
 endmacro()
 
 # Generate exports, mostly for Windows
 macro(squirreljme_target_shared_library_exports target)
-	# If there is a config used, just use the first one
+	# The target location can be overridden, generally through the pipeline
+	# build system
+	if(DEFINED ENV{SQUIRRELJME_BINARY_OUTPUT_DIR})
+		set(actualWhere "$ENV{SQUIRRELJME_BINARY_OUTPUT_DIR}")
+	elseif(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
+		set(actualWhere "${SQUIRRELJME_BINARY_OUTPUT_DIR}")
+	else()
+		# If there is a config used, just use the first one
+		if(NOT "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
+			list(GET CMAKE_CONFIGURATION_TYPES 0 firstConfig)
+
+			get_target_property(actualWhere
+				${target} RUNTIME_OUTPUT_DIRECTORY_${firstConfig})
+		endif()
+
+		# If not specified, use whatever was used
+		if(NOT actualWhere)
+			get_target_property(actualWhere
+				${target} RUNTIME_OUTPUT_DIRECTORY)
+		endif()
+
+		# If not set, use the default location that CMake uses
+		if(NOT actualWhere)
+			set(actualWhere "${CMAKE_CURRENT_BINARY_DIR}")
+		endif()
+	endif()
+
+	# If there is a config used, just use the first one, we need to know
+	# the binary name for the IMPLIB
 	if(NOT "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
 		list(GET CMAKE_CONFIGURATION_TYPES 0 firstConfig)
 
-		get_target_property(squirreljme_dylib_output_dir
-			${target} RUNTIME_OUTPUT_DIRECTORY_${firstConfig})
 		get_target_property(squirreljme_dylib_output_name
 			${target} RUNTIME_OUTPUT_NAME_${firstConfig})
 	endif()
 
-	if(NOT squirreljme_dylib_output_dir)
-		get_target_property(squirreljme_dylib_output_dir
-			${target} RUNTIME_OUTPUT_DIRECTORY)
-	endif()
+	# If no configuration is used, then use the normal output name
 	if(NOT squirreljme_dylib_output_name)
 		get_target_property(squirreljme_dylib_output_name
 			${target} RUNTIME_OUTPUT_NAME)
 	endif()
 
-	# If not set, use the default
-	if(NOT squirreljme_dylib_output_dir)
-		set(squirreljme_dylib_output_dir
-			"${CMAKE_CURRENT_BINARY_DIR}")
-	endif()
-
-	if(MSVC)
+	# MSVC requires that the implementation library also be specified otherwise
+	# nothing will be able to properly link against the library
+	if(SQUIRRELJME_HAS_IMPLIB)
+		set(impLibPath
+			"${actualWhere}/${squirreljme_dylib_output_name}.lib")
 		target_link_options(${target} PRIVATE
-			"/IMPLIB:${squirreljme_dylib_output_dir}/${squirreljme_dylib_output_name}.lib")
+			"/IMPLIB:${impLibPath}")
 	endif()
 endmacro()
 
@@ -225,6 +264,30 @@ macro(squirreljme_try_compile noun target source cdef)
 	if(NOT ${target})
 		add_compile_definitions(
 			${cdef}=1)
+	endif()
+endmacro()
+
+# Do not set SONAME for a target
+macro(squirreljme_no_soname target)
+	set_target_properties(${target} PROPERTIES
+		NO_SONAME YES
+		NO_SYSTEM_FROM_IMPORTED YES)
+endmacro()
+
+# Used to remove any NOTFOUNDs from variables
+macro(squirreljme_notfound_strip var)
+	unset(${var}-NOTFOUND)
+	unset(${var}-NOTFOUND CACHE)
+
+	if (${var} MATCHES "-NOTFOUND$")
+		unset(${var})
+		unset(${var} CACHE)
+	endif()
+
+	if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.13")
+		if("$CACHE{${var}}" MATCHES "-NOTFOUND$")
+			unset(${var} CACHE)
+		endif()
 	endif()
 endmacro()
 
@@ -313,11 +376,37 @@ squirreljme_try_compile("sjme_threadLocal"
 find_library(SQUIRRELJME_LIBM m)
 message(STATUS "libm: ${SQUIRRELJME_LIBM}")
 
+# Build required libraries into a list, as you may only call
+# target_link_libraries() once!
+unset(SQUIRRELJME_REQUIRED_LIBS)
+## Math
+if(SQUIRRELJME_LIBM)
+	list(APPEND SQUIRRELJME_REQUIRED_LIBS
+		"${SQUIRRELJME_LIBM}")
+endif()
+## Threads
+if(DEFINED CMAKE_THREAD_LIBS_INIT)
+	list(APPEND SQUIRRELJME_REQUIRED_LIBS
+		"${CMAKE_THREAD_LIBS_INIT}")
+endif()
+
 # Link against required libraries
-macro(squirreljme_target_link_libraries_required target)
-	# Math library?
-	if(SQUIRRELJME_LIBM)
+function(squirreljme_target_link_libraries_required target)
+	# Add all of the previous required libs
+	if("${ARGN}" STREQUAL "")
 		target_link_libraries(${target} PRIVATE
-			"${SQUIRRELJME_LIBM}")
+			"${SQUIRRELJME_REQUIRED_LIBS}")
+	else()
+		target_link_libraries(${target} PRIVATE
+			"${SQUIRRELJME_REQUIRED_LIBS}"
+			"${ARGN}")
 	endif()
-endmacro()
+endfunction()
+
+# Do not use .lib suffix for Windows libraries for mingw32/mingw-w64
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" AND
+	NOT (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX))
+	set(SQUIRRELJME_WIN_LIB_SUFFIX ".lib")
+else()
+	set(SQUIRRELJME_WIN_LIB_SUFFIX "")
+endif()
