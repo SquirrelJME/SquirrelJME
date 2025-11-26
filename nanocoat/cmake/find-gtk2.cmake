@@ -44,7 +44,7 @@ if(GTK2_FOUND)
 		# Note it
 		message(STATUS "GTK2 Detected, does not link!")
 
-		# Enable it by default
+		# Disable it by default, since it is broken
 		set(SQUIRRELJME_ENABLE_GUI_GTK2_DEFAULT NO)
 
 		# Make it so GTK2 was not found
