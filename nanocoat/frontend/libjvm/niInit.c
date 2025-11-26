@@ -8,16 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/config.h"
-
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	#define WIN32_LEAN_AND_MEAN 1
-	
-	#include <windows.h>
-#endif
-
-#include <sjme/jvm/use/useJni.h>
-#include <sjme/jvm/use/useJvm.h>
-
+#include "frontend/libjvm/commonJniJvm.h"
 #include "frontend/libjvm/internals.h"
 #include "sjme/alloc.h"
 #include "sjme/nvm/boot.h"
