@@ -327,6 +327,28 @@ typedef sjme_errorCode (*sjme_scritchui_pencilCopyAreaFunc)(
 	sjme_attrInValue sjme_jint anchor);
 
 /**
+ * Draws an arc with adjustable angles in hardware.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @param w The width.
+ * @param h The height.
+ * @param startAngle The starting angle of the arc
+ * @param arcAngle The arc angle to be drawn
+ * @return An error on @c NULL arguments.
+ * @since 2025/11/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawArcFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInValue sjme_jint startAngle,
+	sjme_attrInValue sjme_jint arcAngle);
+
+/**
  * Draws the given character.
  *
  * @param g The hardware graphics to draw with.
@@ -443,6 +465,28 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawRectFunc)(
 	sjme_attrInPositive sjme_jint h);
 
 /**
+ * Draws a rectangle with rounded borders in hardware.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @param w The width.
+ * @param h The height.
+ * @param arcWidth The width of the border rounding
+ * @param arcHeight The height of the border rounding
+ * @return An error on @c NULL arguments.
+ * @since 2025/11/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawRoundRectFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInPositive sjme_jint arcWidth,
+	sjme_attrInPositive sjme_jint arcHeight);
+
+/**
  * Draws the given substring.
  *
  * @param g The hardware graphics to draw with.
@@ -465,29 +509,6 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawSubstringFunc)(
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor);
-
-/**
- * Draws a triangle using the current color.
- *
- * @param g The graphics to use for drawing.
- * @param x1 First X coordinate.
- * @param y1 First Y coordinate.
- * @param x2 Second X coordinate.
- * @param y2 Second Y coordinate.
- * @param x3 Third X coordinate.
- * @param y3 Third Y coordinate.
- * @return An error if no graphics were specified or the graphics does
- * not actually support the given operation.
- * @since 2024/05/17
- */
-typedef sjme_errorCode (*sjme_scritchui_pencilDrawTriangleFunc)(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint x1,
-	sjme_attrInValue sjme_jint y1,
-	sjme_attrInValue sjme_jint x2,
-	sjme_attrInValue sjme_jint y2,
-	sjme_attrInValue sjme_jint x3,
-	sjme_attrInValue sjme_jint y3);
 
 /**
  * Draws a region of 32-bit RGB data into the target.
@@ -535,6 +556,50 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawXRGB32RegionFunc)(
 	sjme_attrInPositive sjme_jint origImgHeight);
 
 /**
+ * Fills an arc with adjustable angles in hardware.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @param w The width.
+ * @param h The height.
+ * @param startAngle The starting angle of the arc
+ * @param arcAngle The arc angle to be drawn
+ * @return An error on @c NULL arguments.
+ * @since 2025/11/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFillArcFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInValue sjme_jint startAngle,
+	sjme_attrInValue sjme_jint arcAngle);
+
+	/**
+	* Draws a filled polygon in hardware with the specified set of x,y
+	* coordinates. Reading begins from the x/yOffset for each array, and moves
+	* up to nPoints positions
+	* 
+	* @param g The hardware graphics to draw with.
+	* @param xPoints An array containing all available X vertex coordinates
+	* @param xOffset The offset from which xPoints will begin being read from
+	* @param yPoints An array containing all available Y vertex coordinates
+	* @param yOffset The offset from which yPoints will begin being read from
+	* @param nPoints How many points should be used to construct the polygon.
+	* @return An error on @c NULL arguments.
+	* @since 2024/05/01
+	*/
+	typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonFunc)(
+		sjme_attrInNotNull sjme_scritchui_pencil g,
+		sjme_attrInNotNull sjme_jint* xPoints,
+		sjme_attrInPositive sjme_jint xOffset,
+		sjme_attrInNotNull sjme_jint* yPoints,
+		sjme_attrInPositive sjme_jint yOffset,
+		sjme_attrInPositive sjme_jint nPoints);
+
+/**
  * Performs rectangular fill in hardware.
  * 
  * @param g The hardware graphics to draw with.
@@ -551,6 +616,28 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillRectFunc)(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h);
+
+/**
+ * Performs rectangular fill with rounded borders in hardware.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @param w The width.
+ * @param h The height.
+ * @param arcWidth The width of the border rounding
+ * @param arcHeight The height of the border rounding
+ * @return An error on @c NULL arguments.
+ * @since 2025/11/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFillRoundRectFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInPositive sjme_jint arcWidth,
+	sjme_attrInPositive sjme_jint arcHeight);
 
 /**
  * Draws a filled triangle using the current color, the lines which make
@@ -1099,7 +1186,10 @@ typedef struct sjme_scritchui_pencilFunctions
 	
 	/** @c CopyArea . */
 	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
-	
+
+	/** @c DrawArc . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawArc, drawArc);
+
 	/** @c DrawChar . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawChar, drawChar);
 	
@@ -1114,25 +1204,34 @@ typedef struct sjme_scritchui_pencilFunctions
 	
 	/** @c DrawRect . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawRect, drawRect);
-	
+
+	/** @c DrawRoundRect . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawRoundRect, drawRoundRect);
+
 	/** @c DrawPixel . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixel);
 	
 	/** @c DrawSubstring . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawSubstring, drawSubstring);
 	
-	/** @c DrawTriangle . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawTriangle, drawTriangle);
-	
 	/** @c DrawXRGB32Region . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawXRGB32Region, drawXRGB32Region);
-	
+
+	/** @c FillArc . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillArc, fillArc);
+
+	/** @c FillPolygon . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillPolygon, fillPolygon);
+
 	/** @c FillRect . */
 	SJME_SCRITCHUI_QUICK_PENCIL(FillRect, fillRect);
+
+	/** @c FillRoundRect . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillRoundRect, fillRoundRect);
 	
 	/** @c FillTriangle . */
 	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle, fillTriangle);
-	
+
 	/** @c MapColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
 	
@@ -1172,6 +1271,9 @@ typedef struct sjme_scritchui_pencilFunctions
  */
 typedef struct sjme_scritchui_pencilPrimFunctions
 {
+	/** @c DrawArc . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawArc, drawArc);
+
 	/** @c DrawHoriz . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawHoriz, drawHoriz);
 	
@@ -1180,7 +1282,22 @@ typedef struct sjme_scritchui_pencilPrimFunctions
 	
 	/** @c DrawPixel . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixel);
+
+	/** @c DrawRect . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawRect, drawRect);
+
+	/** @c FillArc . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillArc, fillArc);
 	
+	/** @c FillPolygon . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillPolygon, fillPolygon);
+
+	/** @c FillRect . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillRect, fillRect);
+
+	/** @c FillTriangle . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle, fillTriangle);
+
 	/** @c MapColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
 	

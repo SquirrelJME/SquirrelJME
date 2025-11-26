@@ -74,6 +74,46 @@ public enum MLEPencil
 			}
 		}
 	},
+
+	/**
+	 * {@link PencilShelf#hardwareDrawArc(PencilBracket, int, int, int, int,
+	 * int, int)}.
+	 */
+	HARDWARE_Draw_ARC("hardwareDrawArc:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;IIIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/11/25
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				PencilShelf.hardwareFillArc(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[5]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[6]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
+		}
+	},
 	
 	/**
 	 * {@link PencilShelf#hardwareDrawChars(PencilBracket, char[], int, int,
@@ -287,6 +327,85 @@ public enum MLEPencil
 		}
 	},
 	
+
+	/**
+	 * {@link PencilShelf#hardwareFillArc(PencilBracket, int, int, int, int,
+	 * int, int)}.
+	 */
+	HARDWARE_FILL_ARC("hardwareFillArc:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;IIIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/11/25
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				PencilShelf.hardwareFillArc(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[5]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[6]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
+		}
+	},
+
+	/**
+	 * {@link PencilShelf#hardwareFillPolygon(PencilBracket, int[], int, int[],
+	 * int, int)}.
+	 */
+	HARDWARE_FILL_POLYGON("hardwareFillPolygon:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;[II[III)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/11/25
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				PencilShelf.hardwareFillPolygon(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						int[].class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						int[].class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[5]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
+		}
+	},
+	
 	/**
 	 * {@link PencilShelf#hardwareFillRect(PencilBracket, int, int, int, int)}.
 	 */
@@ -313,6 +432,46 @@ public enum MLEPencil
 						Integer.class, __args[3]),
 					SpringVisObject.asNative(__thread,
 						Integer.class, __args[4]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
+		}
+	},
+
+	/**
+	 * {@link PencilShelf#hardwareFillRoundRect(PencilBracket, int, int, int,
+	 * int, int, int)}.
+	 */
+	HARDWARE_FILL_ROUND_RECT("hardwareFillRoundRect:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;IIIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/11/25
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				PencilShelf.hardwareFillRoundRect(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[5]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[6]));
 				return null;
 			}
 			catch (MLECallError __e)

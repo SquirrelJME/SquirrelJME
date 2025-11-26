@@ -123,8 +123,7 @@ public final class PencilShelf
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
-		int __startAngle,
-		int __arcAngle)
+		int __startAngle, int __arcAngle)
 		throws MLECallError;
 	
 	/**

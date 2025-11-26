@@ -40,6 +40,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #if defined(SJME_CONFIG_HAS_STDINT)
 	#include <stdint.h>
