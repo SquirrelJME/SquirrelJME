@@ -30,7 +30,7 @@
 
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	#include <pthread.h>
-	#include <errno.h>
+	#include <signal.h>
 #endif
 
 #include "sjme/stdTypes.h"

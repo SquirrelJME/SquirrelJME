@@ -7,167 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <time.h>
-#include <string.h>
-
 #include "sjme/config.h"
 #include "sjme/multithread.h"
-
-#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
-	#include <signal.h>
-#endif
-
-#if defined(SJME_CONFIG_HAS_OS_LINUX)
-	#include <sched.h>
-#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_VERSION_8)
-		#include <processthreadsapi.h>
-	#endif
-	
-	#include <windows.h>
-#endif
-
+#include "sjme/native.h"
 #include "sjme/debug.h"
-
-#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
-/** The only available thread. */
-static const sjme_thread sjme_singleCurrent;
-#endif
-
-#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
-static void sjme_thread_pthreadResume(int signalId)
-{
-	/* No longer handle the signal, otherwise an infinite loop occurs. */
-	signal(signalId, SIG_IGN);
-}
-#endif
-
-sjme_errorCode sjme_thread_current(
-	sjme_attrInOutNotNull sjme_thread* outThread)
-{
-	sjme_thread result;
-	
-	if (outThread == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* Clear. */
-	result = SJME_THREAD_NULL;
-		
-#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
-	/* Query. */
-	result = pthread_self();
-	if (result == 0 || result == SJME_THREAD_NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-#elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	/* Query the current thread ID, the main thread might be zero. */
-	result = SJME_THREAD_BUMP(GetCurrentThreadId());
-#elif defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
-	/* Threading is not supported, so always refer to a virtual ID. */
-	result = sjme_singleCurrent;
-#else
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
-	
-	/* Use given result. */
-	*outThread = result;
-	return SJME_ERROR_NONE;
-}
-
-sjme_jboolean sjme_thread_equal(
-	sjme_attrInNullable sjme_thread aThread,
-	sjme_attrInNullable sjme_thread bThread)
-{
-#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
-#elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
-#endif
-	
-	if ((aThread == SJME_THREAD_NULL) != (bThread == SJME_THREAD_NULL))
-		return SJME_JNI_FALSE;
-	
-	else if (aThread == SJME_THREAD_NULL && bThread == SJME_THREAD_NULL)
-		return SJME_JNI_TRUE;
-	
-#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
-	return pthread_equal(aThread, bThread);
-#elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	/* To prevent handle exhaustion, threads are identified solely by their */
-	/* identifier. */
-	return aThread == bThread;
-#else
-	return aThread == bThread;
-#endif
-}
-
-sjme_errorCode sjme_thread_new(
-	sjme_attrInOutNotNull sjme_thread* outThread,
-	sjme_attrInNullable sjme_thread_id* outThreadId,
-	sjme_attrInNotNull sjme_thread_mainFunc inMain,
-	sjme_attrInNullable sjme_thread_parameter anything)
-{
-#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
-	static sjme_jboolean signalInit;
-#elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
-#endif
-	sjme_thread result;
-	sjme_thread_id threadId;
-
-	if (outThread == NULL || inMain == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* Clear first. */
-	result = SJME_THREAD_NULL;
-	threadId = 0;
-
-	/* Emit barrier. */
-	sjme_atomic_barrier();
-	sjme_thread_yield();
-	sjme_atomic_barrier();
-
-#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
-	/* If the signal handler was not yet setup, then set it up. */
-	if (!signalInit)
-	{
-		/* Register the signal handler. */
-		signal(SIGUSR1, sjme_thread_pthreadResume);
-		
-		/* Is now setup. */
-		signalInit = SJME_JNI_TRUE;
-	}
-	
-	/* Setup new thread. */
-	if (0 != pthread_create(&result, NULL,
-		inMain, anything))
-		return SJME_ERROR_CANNOT_CREATE;
-	threadId = (sjme_thread_id)result;
-#elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	/* Setup new thread. */
-	result = SJME_THREAD_NULL;
-	threadId = (sjme_thread_id)CreateThread(NULL, 0,
-		(LPTHREAD_START_ROUTINE)inMain,
-		anything, 0, &result);
-	if (threadId == 0 || result == SJME_THREAD_NULL)
-	{
-		SetLastError(0);
-		return SJME_ERROR_CANNOT_CREATE;
-	}
-
-	/* Windows requires thread bumping. */
-	result = SJME_THREAD_BUMP(result);
-#elif defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
-	/* Threading not supported. */
-	return SJME_ERROR_CANNOT_CREATE;
-#else
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
-	
-	/* Success! */
-	*outThread = result;
-	if (outThreadId != NULL)
-		*outThreadId = threadId;
-	return SJME_ERROR_NONE;
-}
 
 sjme_errorCode sjme_thread_rwLockGrabRead(
 	sjme_attrInNotNull sjme_thread_rwLock* inLock)
@@ -440,74 +283,19 @@ sjme_errorCode sjme_thread_spinLockRelease(
 void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
 	sjme_attrInPositive sjme_jint nanos)
 {
-#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	LARGE_INTEGER baseTime;
-#elif defined(SJME_CONFIG_HAS_OS_POSIX)
-	struct timespec request;
-	sjme_jint seconds, mod;
-#endif
-	
-	/* Yield instead. */
-	if (millis <= 0 && nanos <= 0)
-	{
-		sjme_thread_yield();
-		return;
-	}
-	
-#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	/* Sleep for the given number of milliseconds. */
-	if (millis > 0)
-		Sleep(millis);
-
-	/* Burn the CPU to consume the nanoseconds. */
-	QueryPerformanceCounter(&baseTime);
-	while (nanos > 0)
-		nanos = 0; /* TODO */
-	
-#elif defined(SJME_CONFIG_HAS_OS_POSIX)
-	/* Calculate seconds. */
-	seconds = millis / 1000;
-	mod = millis % 1000;
-
-	/* Sleep for the given amount of time. */
-	request.tv_sec = seconds;
-	request.tv_nsec = nanos + (mod * 1000000);
-	nanosleep(&request, NULL);
-	
-#else
-#endif
-}
-
-sjme_errorCode sjme_thread_wake(
-	sjme_attrInNotNull sjme_thread inThread)
-{
-	if (inThread == SJME_THREAD_NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
-#elif defined(SJME_CONFIG_HAS_OS_POSIX)
-	/* Send the user signal to the thread, to force wake it. */
-	pthread_kill(inThread, SIGUSR1);
-#else
-	/* No native support. */
-	return SJME_ERROR_NONE;
-#endif
+	/* Fallback to NAL handler, if available. */
+	if (sjme_nal_default.threadSleep != NULL)
+		sjme_nal_default.threadSleep(millis, nanos);
 }
 
 void sjme_thread_yield(void)
 {
-#if defined(SJME_CONFIG_HAS_OS_LINUX)
-	sched_yield();
-#elif defined(SJME_CONFIG_HAS_THREADS_PTHREAD_MACOS)
-	/* macOS has none. */
-#elif defined(SJME_CONFIG_HAS_THREADS_PTHREAD_BSD)
-	pthread_yield();
-#elif defined(SJME_CONFIG_HAS_THREADS_WIN32)
-#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_NT_4)
-	if (!SwitchToThread())
-		SetLastError(0);
+#if defined(SJME_CONFIG_HAS_THREADS_LIBRARY_YIELD)
+	/* Has library based yield? */
+	sjme_thread_yieldImpl();
 #else
-	Sleep(0);
-#endif
+	/* Fallback to NAL handler, if available. */
+	if (sjme_nal_default.threadYield != NULL)
+		sjme_nal_default.threadYield();
 #endif
 }

@@ -49,3 +49,51 @@ sjme_errorCode sjme_nal_default_nanoTime(
 
 #endif
 #pragma endregion(nanotime)
+
+#pragma region(threadSleep)
+#if (SJME_CONFIG_NAL_THREAD_SLEEP == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
+
+sjme_errorCode sjme_nal_default_threadSleep(
+	sjme_attrInPositive sjme_jint millis,
+	sjme_attrInPositive sjme_jint nanos)
+{
+	LARGE_INTEGER baseTime;
+	
+	/* Yield instead. */
+	if (millis <= 0 && nanos <= 0)
+		return sjme_nal_default_threadYield();
+		
+	/* Sleep for the given number of milliseconds. */
+	if (millis > 0)
+		Sleep(millis);
+
+	/* Burn the CPU to consume the nanoseconds. */
+	QueryPerformanceCounter(&baseTime);
+	while (nanos > 0)
+		nanos = 0; /* TODO */
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(threadSleep)
+
+#pragma region(threadYield)
+#if (SJME_CONFIG_NAL_THREAD_YIELD == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
+	
+sjme_errorCode sjme_nal_default_threadYield(void)
+{
+#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_NT_4)
+	if (!SwitchToThread())
+		SetLastError(0);
+#else
+	Sleep(0);
+#endif
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(threadYield)

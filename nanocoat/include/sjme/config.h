@@ -933,11 +933,13 @@ extern "C" {
 /* DOS: Threading not supported. */
 /* Nintendo 3DS: devkitPro has broken/unimplemented pthreads. */
 /* Or if proper multithreaded volatiles are not supported. */
-#if defined(SJME_CONFIG_HAS_OS_PC_DOS) || \
-	defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
-	defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
-	/** Single threaded only. */
-	#define SJME_CONFIG_ONLY_THREAD_SINGLE
+#if !defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	#if defined(SJME_CONFIG_HAS_OS_PC_DOS) || \
+		defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
+		defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
+		/** Single threaded only. */
+		#define SJME_CONFIG_ONLY_THREAD_SINGLE
+	#endif
 #endif
 
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS_16)
