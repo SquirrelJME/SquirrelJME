@@ -7,13 +7,22 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Threading and atomics support
 
-# For compatibility for Windows, do not use pthreads even if available
-find_package(Threads)
-if(WIN32)
+# On Windows do not use pthreads at all as it has its own threading system
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+	# Notice
+	message(STATUS "Forcing Win32 Threads")
+
+	# Force this
 	add_compile_definitions(SJME_CONFIG_HAS_THREADS=1)
 	add_compile_definitions(SJME_CONFIG_HAS_THREADS_WIN32=1)
-elseif(Threads_FOUND)
-	if(CMAKE_USE_PTHREADS_INIT)
+
+# Otherwise, try to detect the threading mechanism
+else()
+	# Locate system threads
+	find_package(Threads)
+
+	# Were threads found?
+	if(Threads_FOUND AND CMAKE_USE_PTHREADS_INIT)
 		# Does pthread actually exist?
 		try_compile(SQUIRRELJME_PTHREADS_TRY_VALID
 			"${CMAKE_CURRENT_BINARY_DIR}"

@@ -168,6 +168,8 @@
 
 #define FORWARD_DESC___windowContentMinimumSize "(" \
 	DESC_LONG DESC_LONG DESC_INTEGER DESC_INTEGER ")" DESC_VOID
+#define FORWARD_DESC___windowIsVisible \
+	DESC_METHOD(DESC_BOOLEAN, DESC_LONG DESC_LONG)
 #define FORWARD_DESC___windowManagerType "(" \
 	DESC_LONG ")" DESC_INTEGER
 #define FORWARD_DESC___windowNew "(" \
@@ -2660,6 +2662,29 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		sjme_jni_throwMLECallError(env, error);
 }
 
+JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__windowIsVisible)(JNIEnv* env, jclass classy, jlong stateP,
+	jlong windowP)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiWindow window;
+
+	if (stateP == 0 || windowP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return JNI_FALSE;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	window = (sjme_scritchui_uiWindow)windowP;
+
+	/* Is this known to be visible? */
+	return window->component.state.isVisible ||
+		window->component.state.isUserVisible;
+}
+
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__windowManagerType)(JNIEnv* env, jclass classy, jlong stateP)
 {
@@ -2871,6 +2896,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __viewSetViewListener),
 	FORWARD_list(NativeScritchDylib, __weakDelete),
 	FORWARD_list(NativeScritchDylib, __windowContentMinimumSize),
+	FORWARD_list(NativeScritchDylib, __windowIsVisible),
 	FORWARD_list(NativeScritchDylib, __windowManagerType),
 	FORWARD_list(NativeScritchDylib, __windowNew),
 	FORWARD_list(NativeScritchDylib, __windowSetCloseListener),

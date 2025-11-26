@@ -16,6 +16,8 @@
 #ifndef SJME_C_WIN32INTERN_H
 #define SJME_C_WIN32INTERN_H
 
+#include "sjme/config.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED

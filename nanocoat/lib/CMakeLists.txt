@@ -9,22 +9,24 @@
 # The SquirrelJME base library is added in the base root project and not
 # by this one
 
-if(SQUIRRELJME_ENABLE_FPIC)
-	set(SQUIRRELJME_BASE_LIB BasePIC)
-	set(SQUIRRELJME_SCRITCHAUDIO_CORE_LIB ScritchAudioCorePIC)
-	set(SQUIRRELJME_SCRITCHAUDIO_SOFTMIX_LIB ScritchAudioSoftMixPIC)
-	set(SQUIRRELJME_SCRITCHUI_CORE_LIB ScritchUICorePIC)
-	set(SQUIRRELJME_SCRITCHUI_FB_LIB ScritchUIFBPIC)
+# Directory where ScritchUI/ScritchAudio lists should be placed
+if(DEFINED ENV{SQUIRRELJME_BINARY_OUTPUT_DIR})
+	set(SQUIRRELJME_SCRITCHLIST_DIR
+		"$ENV{SQUIRRELJME_BINARY_OUTPUT_DIR}")
+elseif(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
+	set(SQUIRRELJME_SCRITCHLIST_DIR
+		"${SQUIRRELJME_BINARY_OUTPUT_DIR}")
 else()
-	set(SQUIRRELJME_BASE_LIB Base)
-	set(SQUIRRELJME_SCRITCHAUDIO_CORE_LIB ScritchAudioCore)
-	set(SQUIRRELJME_SCRITCHAUDIO_SOFTMIX_LIB ScritchAudioSoftMix)
-	set(SQUIRRELJME_SCRITCHUI_CORE_LIB ScritchUICore)
-	set(SQUIRRELJME_SCRITCHUI_FB_LIB ScritchUIFB)
+	set(SQUIRRELJME_SCRITCHLIST_DIR
+		"${CMAKE_BINARY_DIR}")
 endif()
 
 # Third party support libraries that come from outside SquirrelJME
 add_subdirectory(3rdparty)
+
+# Pseudo ScritchAudio and ScritchUI targets
+add_custom_target(ScritchAudio)
+add_custom_target(ScritchUI)
 
 # ScritchUI and related
 add_subdirectory(scritchaudio)

@@ -20,14 +20,8 @@ endif()
 # Easier includes
 include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
 
-# Determine version information
-squirreljme_include("identify-squirreljme-version.cmake")
-
-# Soft patching of CMake for older version support
-squirreljme_include("cmake-patch.cmake")
-
-# Fixes and otherwise for compatibility
-squirreljme_include("pre-fixes.cmake")
+# Determine version information from the base file
+squirreljme_include("identify-squirreljme-version-file.cmake")
 
 # Define project
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
@@ -43,6 +37,18 @@ Virtual Machine for embedded and Internet of Things devices."
 		LANGUAGES C)
 endif()
 
+# Determine version information
+squirreljme_include("identify-squirreljme-version.cmake")
+
+# Soft patching of CMake for older version support
+squirreljme_include("cmake-patch.cmake")
+
+# Fixes and otherwise for compatibility
+squirreljme_include("pre-fixes.cmake")
+
+# Include system map identifications
+squirreljme_include("system-map.cmake")
+
 # CMake Utilities, compiled and used during build
 squirreljme_include("utils.cmake")
 
@@ -57,10 +63,6 @@ if(SQUIRRELJME_IS_APPLE_OR_GNUSTEP_DESKTOP)
 	enable_language(OBJC)
 endif()
 
-# Use for all builds
-add_compile_definitions(SJME_CONFIG_BUILD_ARCH=${SQUIRRELJME_ARCH})
-add_compile_definitions(SJME_CONFIG_BUILD_PLATFORM=${SQUIRRELJME_PLATFORM})
-
 # Win32 Options
 squirreljme_include("win32.cmake")
 
@@ -71,13 +73,13 @@ squirreljme_include("apple.cmake")
 squirreljme_include("hardening.cmake")
 
 # Is the system JNI available?
-squirreljme_include("jni.cmake")
+squirreljme_include("find-jni.cmake")
 
 # Doxygen
 squirreljme_include("doxygen.cmake")
 
 # Threading and atomics
-squirreljme_include("threads.cmake")
+squirreljme_include("find-threads.cmake")
 
 # To Emily and Near...
 squirreljme_include("i-miss-you.cmake")
@@ -129,10 +131,9 @@ if(SQUIRRELJME_IS_DEBUG)
 endif()
 
 # Valgrind Support on UNIX OSes, if debugging is enabled
-if(ANDROID OR SQUIRRELJME_IS_UNIX)
-	if(SQUIRRELJME_IS_DEBUG)
-		squirreljme_include("valgrind.cmake")
-	endif()
+if(NOT SQUIRRELJME_IS_ANDROID AND
+	SQUIRRELJME_IS_UNIX AND SQUIRRELJME_IS_DEBUG)
+	squirreljme_include("valgrind.cmake")
 endif()
 
 # Where should dynamic libraries go when output?

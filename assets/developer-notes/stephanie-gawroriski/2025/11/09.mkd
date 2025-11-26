@@ -1,0 +1,9 @@
+# 2025/11/09
+
+## 16:13
+
+Okay so string pools when loading in new strings definitely had some very
+buggy code. I must have written the code when tired or in a bad mental state.
+For example I was setting up a front-end that was ending up not being used,
+also I was duplicating the string allocation. So definitely doing a good
+refactor of `sjme_nvm_stringPool_locateSeqR()`.

@@ -1,0 +1,10 @@
+# 2025/11/24
+
+## 11:51
+
+Okay so, everything in the build pipeline has been recreated through CMake
+with a bunch of fixes accordingly, naturally. Now I need to essentially have
+an export of the pipeline to various CI/CD platforms. I suppose first since
+the majority of them are all Docker based, I should have a local Docker setup
+that is capable of running all of the various build steps as a kind of
+local pipeline of sorts. This should get me most of the way, hopefully.

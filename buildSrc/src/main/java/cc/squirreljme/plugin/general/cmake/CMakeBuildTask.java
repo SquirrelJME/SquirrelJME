@@ -45,16 +45,18 @@ public class CMakeBuildTask
 	 * Initializes the build task.
 	 *
 	 * @param __source The project source directory.
+	 * @param __cmakeArgs Extra CMake arguments, for defines.
 	 * @param __outputFile The output file we want, this is optional.
 	 * @param __rules The rules to execute.
 	 * @since 2024/03/15
 	 */
 	@Inject
 	public CMakeBuildTask(Path __source, String __outputFile,
-		List<String> __rules)
+		List<String> __rules, List<String> __cmakeArgs)
 		throws NullPointerException
 	{
-		if (__source == null || __rules == null || __rules.isEmpty())
+		if (__source == null || __rules == null || __rules.isEmpty() ||
+			__cmakeArgs == null)
 			throw new NullPointerException("NARG");
 		
 		__rules = new ArrayList<>(__rules);
@@ -97,7 +99,7 @@ public class CMakeBuildTask
 			this.getProject().getTasks().named("clean"));
 		
 		// Build action
-		CMakeBuildTaskAction action = new CMakeBuildTaskAction();
+		CMakeBuildTaskAction action = new CMakeBuildTaskAction(__cmakeArgs);
 		
 		// Check if out of date
 		this.getOutputs().upToDateWhen(new CMakeUpToDateWhen());

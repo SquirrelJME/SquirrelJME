@@ -138,17 +138,31 @@
 	#if SJME_CONFIG_HAS_POINTER == 64
 		#define SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
 			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
-				InterlockedExchangeAdd, InterlockedExchangeAdd64)
+				InterlockedExchangeAdd, InterlockedExchangeAdd)
 
-		#define SJME_ATOMIC_WIN32_S(type, numPointerStars) \
-			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
-				InterlockedExchange, InterlockedExchange64)
-		
-		#define SJME_ATOMIC_WIN32_X(type, numPointerStars) \
-			SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
-				InterlockedCompareExchange, InterlockedCompareExchange64)
+		#if defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
+			#define SJME_ATOMIC_WIN32_S(type, numPointerStars) \
+				SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
+					InterlockedExchange, InterlockedExchangePointer)
 
-		#define SJME_ATOMIC_WIN32_POINTER LONG64
+			#define SJME_ATOMIC_WIN32_X(type, numPointerStars) \
+				SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
+					InterlockedCompareExchange, \
+					InterlockedCompareExchangePointer)
+
+			#define SJME_ATOMIC_WIN32_POINTER void*
+		#else
+			#define SJME_ATOMIC_WIN32_S(type, numPointerStars) \
+				SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
+					InterlockedExchange, InterlockedExchange64)
+
+			#define SJME_ATOMIC_WIN32_X(type, numPointerStars) \
+				SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
+					InterlockedCompareExchange, InterlockedCompareExchange64)
+
+			#define SJME_ATOMIC_WIN32_POINTER LONG64
+		#endif
+
 	#else
 		#define SJME_ATOMIC_WIN32_IA(type, numPointerStars) \
 			InterlockedExchangeAdd
@@ -266,12 +280,14 @@
 
 #include "sjme/multithread.h"
 
-#define SJME_ATOMIC_FUNCTION_GET(type, numPointerStars) \
-	SJME_ATOMIC_PROTOTYPE_GET(type, numPointerStars) \
-	{ \
-		return SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, _getAdd) \
-			(atomic, 0); \
-	}
+#if !defined(SJME_ATOMIC_FUNCTION_GET)
+	#define SJME_ATOMIC_FUNCTION_GET(type, numPointerStars) \
+		SJME_ATOMIC_PROTOTYPE_GET(type, numPointerStars) \
+		{ \
+			return SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, _getAdd) \
+				(atomic, 0); \
+		}
+#endif
 
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */

@@ -1,0 +1,31 @@
+# 2025/10/12
+
+## 17:15
+
+I am finding that the structure walking code that I wrote is working well
+for garbage collecting and such. I am still getting garbage collection
+working, however it is a very useful debugging tool to exactly see what needs
+to be cleaned up still or anything that has too little references to it.
+
+## 17:25
+
+Especially when it comes to phantom back references. For example, ROM libraries
+have all the `classinfo` that they hold and those have a reference back to
+the library. So since everything is reference counted, there cannot be a
+permanently counted back and forward link since nothing would ever be freed
+ever.
+
+## 19:59
+
+Okay, so the next thing I need to do is essentially have a specific cleanup for
+class info, so that it cleans up fields and methods. That is pretty much
+the majority of what seems to remain, as I see many constant pool and method
+related information. Once that is all cleared out, the rest should hopefully
+be trivial I hope. But then after that, for the initial "NOP" test, which is
+not completely a NOP test as it does have to call the expectation but it does
+at least call NOP at least, there should be nothing remaining in memory as
+I want a completely clean slate on exit. Then once that is done, I can move
+on to writing NanoTests for every single instruction. It will be tedious but
+I will be able to check behavior and make sure the correct GC behavior is
+happening as well. This should be good in the long run. Then naturally slowly
+walking will get more and more structure data, which is tedious to write.

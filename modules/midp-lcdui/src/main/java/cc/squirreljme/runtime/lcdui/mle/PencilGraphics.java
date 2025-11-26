@@ -213,12 +213,15 @@ public final class PencilGraphics
 	public void close()
 		throws IOException
 	{
-		// Do nothing if closed
-		if (this._isClosed)
-			return;
-		
-		// Always set as closed before actually closing
-		this._isClosed = true;
+		synchronized (this)
+		{
+			// Do nothing if closed
+			if (this._isClosed)
+				return;
+			
+			// Always set as closed before actually closing
+			this._isClosed = true;
+		}
 		
 		// Close the graphics internally
 		try
@@ -921,6 +924,27 @@ public final class PencilGraphics
 			return 0;
 		
 		return PencilShelf.hardwareTranslateXY(this.hardware, true);
+	}
+	
+	/**
+	 * Returns the {@link PencilBracket} that this graphics is currently using
+	 * so that it may be directly used with {@link PencilShelf}.
+	 *
+	 * @return The direct {@link PencilBracket}.
+	 * @throws IllegalStateException If this graphics instance is closed.
+	 * @since 2025/11/25
+	 */
+	@SquirrelJMEVendorApi
+	public PencilBracket pencil()
+		throws IllegalStateException
+	{
+		synchronized (this)
+		{
+			if (this._isClosed)
+				throw new IllegalStateException();
+			
+			return this.hardware;
+		}
 	}
 	
 	/**

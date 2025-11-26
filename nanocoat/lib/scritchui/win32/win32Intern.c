@@ -876,7 +876,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_SHOWWINDOW(
 		
 		/* Let ScritchUI determine this. */
 		return inState->intern->updateVisibleWindow(
-			inState, inComponent,
+			inState, SJME_SUI_CAST_WINDOW(inComponent),
 			wParam != FALSE);
 	}
 	

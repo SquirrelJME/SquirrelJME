@@ -1,8 +1,10 @@
 import cc.squirreljme.plugin.general.CollateResourceJarsTask
 import cc.squirreljme.plugin.multivm.*
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 import java.nio.file.Files
+import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 import java.nio.file.StandardOpenOption
 import java.util.zip.ZipEntry
@@ -196,17 +198,36 @@ shadowJar {
 	// Always SquirrelJME
 	archiveBaseName.set("squirreljme-standalone")
 	
+	// Allow the resultant archive to be replaced
+	destinationDirectory.fileProvider(project.provider({ ->
+		String alt = System.getProperty("squirreljme.standalone.path")
+
+		if (alt != null && !alt.isEmpty()) {
+			return Paths.get(alt).toAbsolutePath().normalize()
+				.getParent().toFile()
+		} else {
+			return project.buildDir.toPath().resolve("libs").toFile()
+		}
+	}) as Provider<File>)
+	
+	archiveFileName.set(project.provider({ ->
+		String alt = System.getProperty("squirreljme.standalone.path")
+
+		if (alt != null && !alt.isEmpty()) {
+			return Paths.get(alt).toAbsolutePath().normalize()
+				.getFileName().toString()
+		} else {
+			return String.format("squirreljme-standalone-%s-%s.jar",
+				rootProject.version.toString(),
+				(String)rootProject.squirreljmeSystemDash)
+		}
+	}) as Provider<String>)
+	
 	// Always merge service files, otherwise multiple VMs will just not work
 	mergeServiceFiles()
 	
 	// Inherit all files
 	duplicatesStrategy = DuplicatesStrategy.INHERIT
-	
-	// Set the suffix of the JAR to be the OS name and arch, since there is
-	// a dynamic library within for it
-	archiveClassifier.set(project.provider({ ->
-			return (String)rootProject.squirreljmeSystemDash
-		}))
 	
 	// Include the SpringCoat ROMs
 	from zipTree(romRelease.get().outputs.files.singleFile).getAsFileTree()

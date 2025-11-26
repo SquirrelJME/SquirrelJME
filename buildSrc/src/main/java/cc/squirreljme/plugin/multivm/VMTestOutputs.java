@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 import org.gradle.api.Project;
 
 /**
- * This calculates all of the test outputs for a given test, so that it can
+ * This calculates all the test outputs for a given test, so that it can
  * be used to determine if it should run or run again.
  *
  * @since 2020/09/06

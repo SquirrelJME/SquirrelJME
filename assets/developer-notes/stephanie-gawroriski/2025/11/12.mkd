@@ -1,0 +1,9 @@
+# 2025/11/12
+
+## 19:09
+
+Have discovered that Windows builds are broken as the standalone only contains
+Linux natives, so I am going to write an agnostic pipeline platform for
+building SquirrelJME. I do want to eventually migrate away from CircleCI but
+I am not sure where. I also want to be able to run all of the pipeline tasks
+locally as well.

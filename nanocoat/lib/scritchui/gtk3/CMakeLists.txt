@@ -11,9 +11,9 @@ squirreljme_include("find-gtk3.cmake")
 
 # Declare base library
 add_library(ScritchUIGTK3 SHARED
-	$<TARGET_OBJECTS:${SQUIRRELJME_BASE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_CORE_LIB}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_SCRITCHUI_FB_LIB}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>
 	gtk3Component.c
 	gtk3Container.c
 	gtk3Core.c
@@ -30,10 +30,7 @@ add_library(ScritchUIGTK3 SHARED
 	gtk3Window.c)
 
 # Always make it PIC
-if(SQUIRRELJME_ENABLE_FPIC)
-	set_property(TARGET ScritchUIGTK3
-		PROPERTY POSITION_INDEPENDENT_CODE ON)
-endif()
+squirreljme_always_fpic(ScritchUIGTK3)
 
 # Include main headers
 target_include_directories(ScritchUIGTK3 PUBLIC

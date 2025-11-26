@@ -1,0 +1,6 @@
+# 2025/10/26
+
+## 00:49
+
+I wonder if there would be a more efficient way to make `SJME_TYPEOF_IS_POINTER_`
+not require definitions everywhere.

@@ -8,10 +8,10 @@
 
 # Define library
 squirreljme_multilib_add_library(libJvm
-	$<TARGET_OBJECTS:BasePIC>
-	$<TARGET_OBJECTS:CorePIC>
-	$<TARGET_OBJECTS:ScritchUICorePIC>
-	$<TARGET_OBJECTS:ScritchUIFBPIC>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Core_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>
 	niInit.c
 	vmArray.c
 	vmCompiler.c
@@ -46,11 +46,7 @@ add_dependencies(SquirrelJME
 
 # If using official JNI/JVM headers we need this definition to be set
 squirreljme_multilib_target_compile_definitions(libJvm PRIVATE
-	_JNI_IMPLEMENTATION_=1)
-squirreljme_multilib_target_compile_definitions(libJvm PRIVATE
 	SJME_JNI_IMPLEMENTATION=1)
-target_compile_definitions(SquirrelJME PRIVATE
-	_JNI_IMPLEMENTATION_=1)
 target_compile_definitions(SquirrelJME PRIVATE
 	SJME_JNI_IMPLEMENTATION=1)
 
@@ -60,15 +56,13 @@ squirreljme_multilib_target_include_directories(libJvm PRIVATE
 target_include_directories(SquirrelJME PRIVATE
 	"${CMAKE_SOURCE_DIR}/include")
 squirreljme_multilib_target_include_directories(libJvm SYSTEM PRIVATE
-	${JNI_INCLUDE_DIRS}
-	${JAVA_INCLUDE_PATH}
-	${JAVA_INCLUDE_PATH2}
-	${JVM_INCLUDE_DIRS})
+	"${SQUIRRELJME_JAVA_JNI_INCLUDE}"
+	"${SQUIRRELJME_JAVA_JVM_INCLUDE}"
+	"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
 target_include_directories(SquirrelJME SYSTEM PRIVATE
-	${JNI_INCLUDE_DIRS}
-	${JAVA_INCLUDE_PATH}
-	${JAVA_INCLUDE_PATH2}
-	${JVM_INCLUDE_DIRS})
+	"${SQUIRRELJME_JAVA_JNI_INCLUDE}"
+	"${SQUIRRELJME_JAVA_JVM_INCLUDE}"
+	"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
 
 # Libraries needed to be linked with for the DyLib to function
 squirreljme_multilib_target_link_libraries(libJvm PUBLIC
@@ -89,14 +83,24 @@ squirreljme_target_binary_output(SquirrelJME
 
 # Specify name for the JVM library
 squirreljme_multilib_target_binary_name(libJvm
-	"squirreljme")
+	"jvm")
 squirreljme_target_binary_name(SquirrelJME
 	"squirreljme")
 
-# Exports for Windows, etc.
+# It is fine to have the static library be a completely different name
+squirreljme_target_binary_name(libJvmStatic
+	"squirreljme")
+
+# Really only matters for dynamic libraries
 if(SQUIRRELJME_ENABLE_DYLIB)
+	# Output the dynamic library to where it should be
+	squirreljme_target_binary_output(libJvmDyLib
+		"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+
+	# Do not set a SONAME for libjvm library as it could be either
+	# libsquirreljme or libjvm, and this would break any kind of interop
+	#squirreljme_no_soname(libJvmDyLib)
+
+	# Exports for Windows, etc.
 	squirreljme_target_shared_library_exports(libJvmDyLib)
 endif()
-
-
-

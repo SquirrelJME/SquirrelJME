@@ -720,6 +720,18 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Checks whether the given window is visible.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __windowP The window pointer.
+	 * @return If the window is visible.
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/10/14
+	 */
+	static native boolean __windowIsVisible(long __stateP, long __windowP)
+		throws MLECallError;
+	
+	/**
 	 * Returns the {@link ScritchWindowManagerType}.
 	 *
 	 * @param __stateP The state pointer.
