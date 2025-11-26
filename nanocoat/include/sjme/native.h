@@ -125,7 +125,27 @@ typedef sjme_errorCode (*sjme_nal_stdOFunc)(
 	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
 	sjme_attrInPositive sjme_jint off,
 	sjme_attrInPositiveNonZero sjme_jint len);
-
+	
+/**
+ * Sleeps for the given time duration.
+ * 
+ * @param millis The number of milliseconds to sleep for.
+ * @param nanos The number of nanoseconds to sleep for.
+ * @return Any resultant error, if any.
+ * @since 2025/11/26
+ */
+typedef sjme_errorCode (*sjme_nal_threadSleepFunc)(
+	sjme_attrInPositive sjme_jint millis,
+	sjme_attrInPositive sjme_jint nanos);
+	
+/**
+ * Yields execution.
+ * 
+ * @return Any resultant error, if any.
+ * @since 2025/11/26
+ */
+typedef sjme_errorCode (*sjme_nal_threadYieldFunc)(void);
+	
 /**
  * Contains the needed function calls to perform calls to standard streams.
  *
@@ -164,6 +184,12 @@ typedef struct sjme_nal
 	
 	/** Get the current monotonic nanosecond time. */
 	sjme_nal_nanoTimeFunc nanoTime;
+	
+	/** Sleep the current thread. */
+	sjme_nal_threadSleepFunc threadSleep;
+	
+	/** Yield the current thread. */
+	sjme_nal_threadYieldFunc threadYield;
 
 	/** Standard input/output pipes. */
 	sjme_nal_stdIo stdIo[SJME_NVM_MLE_NUM_STD_PIPES];

@@ -45,6 +45,9 @@ extern "C"
 /** Use Windows 32-bit implementation. */
 #define SJME_CONFIG_NAL_IMPLEMENT_WIN32 3
 
+/** Use Linux implementation. */
+#define SJME_CONFIG_NAL_IMPLEMENT_LINUX 4
+
 #if !defined(SJME_CONFIG_NAL_GETENV)
 	#if defined(SJME_CONFIG_HAS_C89)
 		/** Use Standard C getenv implementation. */
@@ -76,6 +79,26 @@ extern "C"
 	#endif
 #endif
 
+#if !defined(SJME_CONFIG_NAL_THREAD_SLEEP)
+	#if defined(SJME_CONFIG_HAS_OS_POSIX)
+		/** Use POSIX implementation of thread sleep. */
+		#define SJME_CONFIG_NAL_THREAD_SLEEP SJME_CONFIG_NAL_IMPLEMENT_POSIX
+	#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
+		/** Use Windows implementation of thread sleep. */
+		#define SJME_CONFIG_NAL_THREAD_SLEEP SJME_CONFIG_NAL_IMPLEMENT_WIN32
+	#endif
+#endif
+
+#if !defined(SJME_CONFIG_NAL_THREAD_YIELD)
+	#if defined(SJME_CONFIG_HAS_OS_LINUX)
+		/** Use Linux implementation of thread yield. */
+		#define SJME_CONFIG_NAL_THREAD_YIELD SJME_CONFIG_NAL_IMPLEMENT_LINUX
+	#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
+		/** Use Windows implementation of thread yield. */
+		#define SJME_CONFIG_NAL_THREAD_YIELD SJME_CONFIG_NAL_IMPLEMENT_WIN32
+	#endif
+#endif
+
 #pragma region(none)
 
 #if !defined(SJME_CONFIG_NAL_GETENV)
@@ -98,12 +121,24 @@ extern "C"
 	#define SJME_CONFIG_NAL_SEEKABLE SJME_CONFIG_NAL_IMPLEMENT_NONE
 #endif
 
+#if !defined(SJME_CONFIG_NAL_THREAD_SLEEP)
+	/** Not implemented. */
+	#define SJME_CONFIG_NAL_THREAD_SLEEP SJME_CONFIG_NAL_IMPLEMENT_NONE
+#endif
+
+#if !defined(SJME_CONFIG_NAL_THREAD_YIELD)
+	/** Not implemented. */
+	#define SJME_CONFIG_NAL_THREAD_YIELD SJME_CONFIG_NAL_IMPLEMENT_NONE
+#endif
+
 #pragma endregion(none)
 
 #if (SJME_CONFIG_NAL_GETENV == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
 	(SJME_CONFIG_NAL_NANOTIME == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
+	(SJME_CONFIG_NAL_PIPE == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
 	(SJME_CONFIG_NAL_SEEKABLE == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
-	(SJME_CONFIG_NAL_PIPE == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
+	(SJME_CONFIG_NAL_THREAD_SLEEP == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
+	(SJME_CONFIG_NAL_THREAD_YIELD == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
 	/** Has any Windows 32-bit implementation. */
 	#define SJME_CONFIG_NAL_HAS_ANY_WIN32
 #endif
@@ -135,6 +170,12 @@ sjme_errorCode sjme_nal_default_stdOut(
 	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
 	sjme_attrInPositive sjme_jint off,
 	sjme_attrInPositiveNonZero sjme_jint len);
+	
+sjme_errorCode sjme_nal_default_threadSleep(
+	sjme_attrInPositive sjme_jint millis,
+	sjme_attrInPositive sjme_jint nanos);
+	
+sjme_errorCode sjme_nal_default_threadYield(void);
 
 /*--------------------------------------------------------------------------*/
 

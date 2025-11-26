@@ -111,3 +111,27 @@ sjme_errorCode sjme_nal_default_stdOut(
 
 #endif
 #pragma endregion(pipe)
+
+#pragma region(threadSleep)
+#if (SJME_CONFIG_NAL_THREAD_SLEEP == SJME_CONFIG_NAL_IMPLEMENT_NONE)
+
+sjme_errorCode sjme_nal_default_threadSleep(
+	sjme_attrInPositive sjme_jint millis,
+	sjme_attrInPositive sjme_jint nanos)
+{
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(threadSleep)
+
+#pragma region(threadYield)
+#if (SJME_CONFIG_NAL_THREAD_YIELD == SJME_CONFIG_NAL_IMPLEMENT_NONE)
+	
+sjme_errorCode sjme_nal_default_threadYield(void)
+{
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(threadYield)

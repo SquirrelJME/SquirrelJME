@@ -7,14 +7,23 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "lib/scritchaudio/scritchaudioIntern.h"
-#include "lib/scritchaudio/winmm/winmmIntern.h"
+#include "sjme/config.h"
+#include "sjme/intern/nal.h"
 
-sjme_errorCode sjme_scritchaudio_winmm_queryMidiPorts(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInOutNotNull sjme_list(sjme_scritchaudio_midiPort)* inOutPorts,
-	sjme_attrOutNotNull sjme_jint* outNumPorts)
+#if (SJME_CONFIG_NAL_THREAD_YIELD == SJME_CONFIG_NAL_IMPLEMENT_LINUX)
+	#include <sched.h>
+#endif
+
+#pragma region(threadYield)
+#if (SJME_CONFIG_NAL_THREAD_YIELD == SJME_CONFIG_NAL_IMPLEMENT_LINUX)
+	
+sjme_errorCode sjme_nal_default_threadYield(void)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Just tell the schedular to yield. */
+	sched_yield();
+	
+	return SJME_ERROR_NONE;
 }
+
+#endif
+#pragma endregion(threadYield)

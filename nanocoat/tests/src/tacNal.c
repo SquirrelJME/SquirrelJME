@@ -12,6 +12,8 @@
 
 #include "test.h"
 
+#include "sjme/intern/nal.h"
+
 #define TAC_BUF_SIZE 2048
 
 static const sjme_cchar tacBuf[TAC_BUF_SIZE];
@@ -113,6 +115,8 @@ const sjme_nal sjme_nal_test =
 	.fileOpen = sjme_nal_test_fileOpen,
 	.getEnv = sjme_nal_test_getEnv,
 	.nanoTime = sjme_nal_test_nanoTime,
+	.threadSleep = sjme_nal_default_threadSleep,
+	.threadYield = sjme_nal_default_threadYield,
 	{
 		{
 		},

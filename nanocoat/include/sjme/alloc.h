@@ -554,7 +554,8 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @since 2023/11/19
  */
 #define sjme_alloc(pool, size, outAddr) \
-	sjme_allocR((pool), (size), (outAddr), SJME_DEBUG_FILE_LINE_FUNC)
+	sjme_allocR((pool), (size), (outAddr) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Allocates a weak reference within the given pool.
@@ -571,7 +572,8 @@ sjme_errorCode sjme_alloc_weakRefER(
 #define sjme_alloc_weakNew(pool, size, inEnqueue, \
 		outAddr, outWeak) \
 	sjme_alloc_weakNewR((pool), (size), (inEnqueue), \
-		(outAddr), (outWeak), SJME_DEBUG_FILE_LINE_FUNC)
+		(outAddr), (outWeak) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Allocates a copy of the given data.
@@ -584,8 +586,8 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @since 2023/12/13
  */
 #define sjme_alloc_copy(pool, size, outAddr, inAddr) \
-	sjme_alloc_copyR((pool), (size), (outAddr), (inAddr), \
-		SJME_DEBUG_FILE_LINE_FUNC)
+	sjme_alloc_copyR((pool), (size), (outAddr), (inAddr) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Allocates a copy of the given data as a weak reference.
@@ -603,7 +605,8 @@ sjme_errorCode sjme_alloc_weakRefER(
 #define sjme_alloc_copyWeak(pool, size, inEnqueue, inEnqueueData, \
 	outAddr, inAddr, outWeak) \
 	sjme_alloc_copyWeakR((pool), (size), (inEnqueue), (inEnqueueData), \
-	(outAddr), (inAddr), (outWeak), SJME_DEBUG_FILE_LINE_FUNC)
+	(outAddr), (inAddr), (outWeak) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Allocates a formatted string.
@@ -616,7 +619,8 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @since 2023/12/22
  */
 #define sjme_alloc_format(allocPool, outString, ...) \
-	sjme_alloc_formatR((allocPool), (outString), SJME_DEBUG_FILE_LINE_FUNC, \
+	sjme_alloc_formatR((allocPool), (outString) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL, \
 		__VA_ARGS__)
 
 /**
@@ -630,7 +634,8 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @since 2023/11/28
  */
 #define sjme_alloc_realloc(inOutAddr, newSize) \
-	sjme_alloc_reallocR((inOutAddr), (newSize), SJME_DEBUG_FILE_LINE_FUNC)
+	sjme_alloc_reallocR((inOutAddr), (newSize) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Allocates a copy of the given C character sequence.
@@ -642,8 +647,8 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @since 2024/07/21
  */
 #define sjme_alloc_strdup(allocPool, outString, stringToCopy) \
-	sjme_alloc_strdupR((allocPool), (outString), (stringToCopy), \
-	SJME_DEBUG_FILE_LINE_FUNC)
+	sjme_alloc_strdupR((allocPool), (outString), (stringToCopy) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Deletes a weak reference by un-counting it, if the count reaches zero
@@ -655,7 +660,8 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @since 2024/07/01
  */
 #define sjme_alloc_weakDelete(inOutWeak) \
-	sjme_alloc_weakDeleteR((inOutWeak), SJME_DEBUG_FILE_LINE_FUNC)
+	sjme_alloc_weakDeleteR((inOutWeak) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Un-references a weak pointer.
@@ -665,7 +671,8 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @since 2024/08/14
  */
 #define sjme_alloc_weakUnRef(addr) \
-	sjme_alloc_weakUnRefR((addr), SJME_DEBUG_FILE_LINE_FUNC)
+	sjme_alloc_weakUnRefR((addr) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Creates or returns a weak reference to the given block. If the reference
@@ -680,8 +687,8 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @since 2024/07/01
  */
 #define sjme_alloc_weakRefE(addr, outWeak, inEnqueue, inEnqueueData) \
-    sjme_alloc_weakRefER((addr), (outWeak), (inEnqueue), (inEnqueueData), \
-    SJME_DEBUG_FILE_LINE_FUNC)
+    sjme_alloc_weakRefER((addr), (outWeak), (inEnqueue), (inEnqueueData) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
 
 /**
  * Frees memory.

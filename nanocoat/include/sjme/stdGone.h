@@ -58,6 +58,10 @@
 	#include <malloc.h>
 #endif
 
+#if !defined(SJME_CONFIG_HAS_NO_ERRNO)
+	#include <errno.h>
+#endif
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED

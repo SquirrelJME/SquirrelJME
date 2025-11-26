@@ -10,10 +10,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#if !defined(SJME_CONFIG_HAS_NO_ERRNO)
-	#include <errno.h>
-#endif
-
 #include "sjme/config.h"
 #include "sjme/native.h"
 #include "sjme/intern/nal.h"
@@ -24,6 +20,8 @@ const sjme_nal sjme_nal_default =
 	sjme_sm(.fileOpen, sjme_nal_default_fileOpen),
 	sjme_sm(.getEnv, sjme_nal_default_getEnv),
 	sjme_sm(.nanoTime, sjme_nal_default_nanoTime),
+	sjme_sm(.threadSleep, sjme_nal_default_threadSleep),
+	sjme_sm(.threadYield, sjme_nal_default_threadYield),
 	{
 		{
 			sjme_sm(.close, NULL),
