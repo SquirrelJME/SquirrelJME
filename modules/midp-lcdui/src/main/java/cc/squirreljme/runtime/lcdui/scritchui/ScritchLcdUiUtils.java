@@ -75,7 +75,7 @@ public final class ScritchLcdUiUtils
 		{
 			Display firstDisplay = Display.getDisplays(0)[0];
 			if (__height)
-				return firstDisplay.getWidth();
+				return firstDisplay.getHeight();
 			return firstDisplay.getWidth();
 		}
 	}
