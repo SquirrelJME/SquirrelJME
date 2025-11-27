@@ -16,6 +16,6 @@
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	bipush 0
-	ireturn
+	invokestatic cc/squirreljme/nanocoat/mle/NanoTestShelf/todo()V
+	return
 .end method

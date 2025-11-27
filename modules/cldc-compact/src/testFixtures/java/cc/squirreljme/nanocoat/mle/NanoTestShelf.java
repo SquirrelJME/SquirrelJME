@@ -80,4 +80,12 @@ public final class NanoTestShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native void result(String __v);
+	
+	/**
+	 * This test needs to be written.
+	 *
+	 * @since 2025/11/26
+	 */
+	@SquirrelJMEVendorApi
+	public static native void todo();
 }

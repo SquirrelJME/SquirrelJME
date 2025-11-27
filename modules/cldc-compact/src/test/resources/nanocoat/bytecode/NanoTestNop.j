@@ -7,7 +7,7 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public nanocoat/bytecode/NanoTestByteCodeNop
+.class public nanocoat/bytecode/NanoTestNop
 .super java/lang/Object
 
 .field public static final "EXPECTED_VOID" I = 0
