@@ -18,7 +18,6 @@
 #include "sjme/fixed.h"
 
 static void sjme_scritchpen_core_clipLeftTop(
-	sjme_jint dim,
 	sjme_jint clipAt,
 	sjme_jint* zSrc,
 	sjme_jint* zDest,
@@ -131,7 +130,7 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	sjme_errorCode error;
 	sjme_scritchui_pencilMatrix m;
 	sjme_fixed wx, zy, wxBase, zyMajor;
-	sjme_jint dx, dy, iwx, izy, at;
+	sjme_jint dx, dy, iwx, izy, at, temp;
 	sjme_jint* srcRgb;
 	sjme_jint srcRgbBytes, srcAlphaMask;
 	sjme_jboolean srcAlpha, mulAlpha;
@@ -161,13 +160,103 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	
 	/* Translate base coordinates. */
 	sjme_scritchpen_coreUtil_applyTranslate(g, &xDest, &yDest);
-	
+
 	/* We are now doing the transforming and drawing ourselves. */
 	/* Calculate transformation matrix. */
 	memset(&m, 0, sizeof(m));
 	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyRotateScale(
 		&m, trans, wSrc, hSrc, wDest, hDest)))
 		return sjme_error_default(error);
+
+
+	/**
+	 * Now we need to adjust the source and destination areas to account for
+	 * the transformed image, otherwise we'll read from an incorrect area, and
+	 * draw to another wrong area.
+	 */
+
+	/**
+	 * Whenever we receive a transformation that alters the width and height
+	 * the image, the first adjustment we have to do is update the source and
+	 * destination width/height accordingly (makes source/dest width and height
+	 * usage more consistent on further adjustments and clipping).
+	 *
+	 * Once a case is matched, the adjustments are done and the code skips
+	 * directly to the anchoring setup, saving unnecessary if checks,
+	 * especially for the more common cases like TRANS_MIRROR.
+	 */
+	if(trans == SJME_SCRITCHUI_TRANS_ROT90 ||
+		trans == SJME_SCRITCHUI_TRANS_ROT270 ||
+		trans == SJME_SCRITCHUI_TRANS_MIRROR_ROT90 ||
+		trans == SJME_SCRITCHUI_TRANS_MIRROR_ROT270)
+	{
+		temp = hSrc;
+		hSrc = wSrc;
+		wSrc = temp;
+
+		temp = hDest;
+		hDest = wDest;
+		wDest = temp;
+	}
+
+	/* Mirrored horizontally */
+	if (trans == SJME_SCRITCHUI_TRANS_MIRROR)
+	{
+		xSrc = scanLen - xSrc - wSrc + 1;
+		goto anchor_setup;
+	}
+
+	/* Mirrored vertically */
+	if (trans == SJME_SCRITCHUI_TRANS_MIRROR_ROT180)
+	{
+		ySrc = (dataLen / scanLen) - ySrc - hSrc + 1;
+		goto anchor_setup;
+	}
+
+	/* Was rotated 90 degrees clockwise. BROKEN */
+	if (trans == SJME_SCRITCHUI_TRANS_ROT90)
+	{
+		temp = xSrc;
+		xSrc = (dataLen / scanLen) - ySrc - wSrc + 1;
+		ySrc = temp;
+		goto anchor_setup;
+	}
+
+	/* Was mirrored horizontally and rotated 90 degrees clockwise.*/
+	if(trans == SJME_SCRITCHUI_TRANS_MIRROR_ROT90)
+	{
+		temp = ySrc;
+		ySrc = scanLen - xSrc - hSrc + 1;
+		xSrc = (dataLen / scanLen) - temp - wSrc + 1;
+		goto anchor_setup;
+	}
+
+	/* Was rotated 180 degrees clockwise. */
+	if (trans == SJME_SCRITCHUI_TRANS_ROT180)
+	{
+		xSrc = scanLen - xSrc - wSrc + 1;
+		ySrc = (dataLen / scanLen) - ySrc - hSrc + 1;
+		goto anchor_setup;
+	}
+
+	/* Was rotated 270 degrees clockwise */
+	if(trans == SJME_SCRITCHUI_TRANS_ROT270)
+	{
+		temp = ySrc;
+		ySrc = scanLen - xSrc - hSrc + 1;
+		xSrc = temp;
+		goto anchor_setup;
+	}
+
+	/* Was mirrored horizontally and rotated 270 degrees clockwise */
+	if(trans == SJME_SCRITCHUI_TRANS_MIRROR_ROT270)
+	{
+		temp = xSrc;
+		xSrc = ySrc;
+		ySrc = temp;
+	}
+
+anchor_setup:
 	
 	/* Anchor to target coordinates after scaling, because we need */
 	/* to know what our target scale is. */
@@ -179,19 +268,17 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	
 	/* Get clipping information. */
 	clipLine = &g->state.clipLine;
-	
+
 	/* Clip left X and top Y. */
-	sjme_scritchpen_core_clipLeftTop(g->width, clipLine->s.x,
-		&xSrc, &xDest, &m.tw);
-	sjme_scritchpen_core_clipLeftTop(g->height, clipLine->s.y,
-		&ySrc, &yDest, &m.th);
+	sjme_scritchpen_core_clipLeftTop(clipLine->s.x, &xSrc, &xDest, &m.tw);
+	sjme_scritchpen_core_clipLeftTop(clipLine->s.y, &ySrc, &yDest, &m.th);
 	
 	/* Clip right X and bottom Y. */
 	sjme_scritchpen_core_clipRightBottom(g->width, clipLine->e.x,
 		&xSrc, &xDest, &m.tw);
 	sjme_scritchpen_core_clipRightBottom(g->height, clipLine->e.y,
 		&ySrc, &yDest, &m.th);
-	
+
 	/* Not actually drawing anything? */
 	if (m.tw <= 0 || m.th <= 0)
 		goto skip_noDraw;
