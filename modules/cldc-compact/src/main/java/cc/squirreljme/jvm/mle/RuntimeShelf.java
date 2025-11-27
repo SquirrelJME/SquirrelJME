@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
 import cc.squirreljme.jvm.mle.constants.ByteOrderType;
+import cc.squirreljme.jvm.mle.constants.CompatibilityId;
 import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.jvm.mle.constants.PhoneModelType;
@@ -19,7 +20,6 @@ import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Blocking;
@@ -65,6 +65,17 @@ public final class RuntimeShelf
 	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ByteOrderType.class)
 	public static native int byteOrder();
+	
+	/**
+	 * Checks whether the given compatibility flag is set.
+	 *
+	 * @param __flag The flag to check.
+	 * @return If the flag is set or not.
+	 * @since 2025/11/27
+	 */
+	@SquirrelJMEVendorApi
+	public static native boolean compatibilityId(
+		@MagicConstant(valuesFromClass = CompatibilityId.class) int __flag);
 	
 	/**
 	 * Returns the current time in milliseconds since UTC.

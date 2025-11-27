@@ -42,6 +42,7 @@ java {
 	compileTestJava.options.debugOptions = compileJava.options.debugOptions
 	
 	javadoc.options.tags = [ "squirreljme.property",
+		"squirreljme.compatibility",
 		"squirreljme.env",
 		"squirreljme.error",
 		"squirreljme.syscallparam",

@@ -19,6 +19,7 @@ import cc.squirreljme.plugin.util.JavaExecSpecFiller;
 import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -212,8 +213,21 @@ public class VMRunTaskDetached
 				// Use our terminal and pipes for the output
 				builder.inheritIO();
 				
-				// Working directory in the build directory
-				builder.directory(this._workDir.toFile());
+				// Working directory is in the build directory
+				Path workDir = this._workDir;
+				builder.directory(workDir.toFile());
+				
+				// You can run the task in an entire clean state before the
+				// build directory exists, so create it if missing
+				if (!Files.isDirectory(workDir))
+					try
+					{
+						Files.createDirectories(workDir);
+					}
+					catch (IOException ignored)
+					{
+						// Not so critical, this may end up working or not
+					}
 				
 				// Start the debugger
 				try

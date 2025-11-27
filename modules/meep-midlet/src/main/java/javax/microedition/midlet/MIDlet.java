@@ -12,7 +12,9 @@ package javax.microedition.midlet;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.constants.CompatibilityId;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -283,15 +285,17 @@ public abstract class MIDlet
 	 * connection type is not supported.
 	 * @since 2020/07/02
 	 */
+	@SuppressWarnings("RedundantThrows")
 	@Api
 	public final boolean platformRequest(String __url)
 		throws Exception
 	{
 		// Games from Konami require this to return true even though that means
-		// the application should terminate after this point. This is handled
-		// and does not thrown an exception on bad requests.
-		// Returning false here will cause the games to not work.
-		if ("hjoja".equals(__url))
+		// the application should terminate after this point, which the demo
+		// does not. This is handled and does not throw an exception on bad
+		// requests. Returning false here will cause the games to not work.
+		if (RuntimeShelf.compatibilityId(CompatibilityId.KONAMI_DEMO_CHECK) &&
+			"hjoja".equals(__url))
 			return true;
 		
 		// Debug
