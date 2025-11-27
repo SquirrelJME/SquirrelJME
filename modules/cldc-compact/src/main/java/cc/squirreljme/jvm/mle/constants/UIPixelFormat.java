@@ -104,8 +104,38 @@ public interface UIPixelFormat
 	byte BYTE3_BGR888 =
 		16;
 	
+	/** 65536 Colors ({@code short} ), alpha enabled. */
+	@SquirrelJMEVendorApi
+	byte SHORT_INDEXED65536A = 
+		17;
+	
+	/** 256 Colors ({@code byte} ), alpha enabled. */
+	@SquirrelJMEVendorApi
+	byte BYTE_INDEXED256A = 
+		18;
+	
+	/** Packed 16 colors (4-bit), alpha enabled. (packed {@code byte} ) */
+	@SquirrelJMEVendorApi
+	byte PACKED_INDEXED4A = 
+		19;
+	
+	/** Packed 4 Colors (2-bit), alpha enabled. (packed {@code byte} ) */
+	@SquirrelJMEVendorApi
+	byte PACKED_INDEXED2A = 
+		20;
+	
+	/** Packed 2 colors (1-bit), alpha enabled. (packed {@code byte} ) */
+	@SquirrelJMEVendorApi
+	byte PACKED_INDEXED1A = 
+		21;
+	
+	/** 16-bit RGB444. ({@code short} ). */
+	@SquirrelJMEVendorApi
+	byte SHORT_RGB444 =
+		22;
+	
 	/** The number of pixel formats. */
 	@SquirrelJMEVendorApi
 	byte NUM_PIXEL_FORMATS =
-		17;
+		23;
 }

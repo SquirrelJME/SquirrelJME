@@ -267,28 +267,37 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB444:
 		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
 		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
 		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
 			result = inPixels * 2;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
 			result = inPixels;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
 			result = (inPixels >> 1) + (inPixels & 1);
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
 			result = (inPixels >> 2) + ((inPixels >> 1) & 1);
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
 			result = (inPixels >> 3) + ((inPixels >> 2) & 1);
 			break;
+
+		default:
+			return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	}
 	
 	/* Make sure what was calculated did not overflow. */
@@ -363,6 +372,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB444:
 		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
 		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
@@ -372,13 +382,17 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
 			sb = SJME_POINTER_OFFSET(inRaw, inRawOff);
 			limit = inRawLen;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
 			sjme_todo("Impl?");
 			break;
 		

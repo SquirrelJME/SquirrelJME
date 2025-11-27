@@ -261,6 +261,27 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte1(
 
 #include "scritchPencilTemplate.c"
 
+sjme_jboolean sjme_scritchpen_hasAlpha(
+	sjme_attrInValue sjme_gfx_pixelFormat pf)
+{
+	switch (pf)
+	{
+		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
+			return SJME_JNI_TRUE;
+		
+		default:
+			return SJME_JNI_FALSE;
+	}
+}
+
 sjme_errorCode sjme_scritchpen_initBuffer(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,

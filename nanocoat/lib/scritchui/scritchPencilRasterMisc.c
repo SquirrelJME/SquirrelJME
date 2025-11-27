@@ -24,9 +24,11 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 {
 	sjme_jint v, aa, rr, gg, bb, ii;
 	sjme_jint i, numCol, d, bestCol, bestColScore, thisColScore;
-	sjme_jint pargb, prr, pgg, pbb;
+	sjme_jint thisAlphaScore, bestAlphaScore;
+	sjme_jint pargb, paa, prr, pgg, pbb;
 	sjme_jint mrr, mgg, mbb;
 	const sjme_jint* colors;
+	sjme_jboolean alphaIndexed;
 
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -46,8 +48,14 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 	numCol = g->palette.numColors;
 	if (g->palette.colors != NULL && numCol > 0)
 	{
-		/* Clear alpha. */
-		d = argb & 0xFFFFFF;
+		/* Does this set of indexed colors consider alpha? */
+		alphaIndexed =
+			(g->pixelFormat >= SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A &&
+			g->pixelFormat <= SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A);
+		if (alphaIndexed)
+			d = argb;
+		else
+			d = argb & 0xFFFFFF;
 		
 		/* Determine the most important color channel. */
 		mrr = (rr >= gg && rr >= bb ? 1 : 2);
@@ -57,6 +65,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 		/* Start with a horrible color score. */
 		bestCol = 0;
 		bestColScore = 134217728;
+		bestAlphaScore = 256;
 		
 		/* Find exact color match? */
 		colors = g->palette.colors;
@@ -70,7 +79,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 				break;
 			}
 			
-			/* Get original RGB value. */
+			/* Get original ARGB value. */
 			prr = (pargb >> 16) & 0xFF;
 			pgg = (pargb >> 8) & 0xFF;
 			pbb = (pargb) & 0xFF;
@@ -81,6 +90,25 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 				(abs(pbb - bb) * mbb);
 			if (thisColScore < bestColScore)
 			{
+				/* If alpha is being used, try to find the color with the */
+				/* closest alpha match. */
+				if (alphaIndexed)
+				{
+					/* Calculate the score of this alpha color. */
+					paa = (pargb >> 24) & 0xFF;
+					thisAlphaScore = abs(paa - aa);
+
+					/* If the alpha score is worse, even though the color is */
+					/* better, this might end up being a color that does */
+					/* not match the desired alpha value. */
+					if (thisAlphaScore > bestAlphaScore)
+						continue;
+
+					/* Consider the new alpha score. */
+					bestAlphaScore = thisAlphaScore;
+				}
+
+				/* Use this color (and best alpha, if selected). */
 				bestCol = i;
 				bestColScore = thisColScore;
 			}
@@ -133,6 +161,12 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 				((bb >> 4) & 0xF);
 			break;
 		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB444:
+			v = (((rr >> 4) & 0xF) << 8) |
+				(((gg >> 4) & 0xF) << 4) |
+				((bb >> 4) & 0xF);
+			break;
+		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
 			v = (((rr >> 3) & 0x1F) << 11) |
 				(((gg >> 2) & 0x3F) << 5) |
@@ -153,22 +187,27 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
 			v = ii & 0xFFFF;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
 			v = ii & 0xFF;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
 			v = ii & 0xF;
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
 			v = ii & 0x3;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
 			v = ii & 0x1;
 			break;
 	}
@@ -261,6 +300,16 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
 			aa = ((v >> 12) & 0xF);
 			aa |= aa << 4;
+			rr = ((v >> 8) & 0xF);
+			rr |= rr << 4;
+			gg = ((v >> 4) & 0xF);
+			gg |= gg << 4;
+			bb = ((v) & 0xF);
+			bb |= bb << 4;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB444:
+			aa = 0xFF;
 			rr = ((v >> 8) & 0xF);
 			rr |= rr << 4;
 			gg = ((v >> 4) & 0xF);

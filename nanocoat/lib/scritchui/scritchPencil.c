@@ -251,26 +251,32 @@ sjme_errorCode sjme_scritchpen_initStatic(
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB444:
 		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
 		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
 		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
 			result.bitsPerPixel = 16;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
 			result.bitsPerPixel = 8;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
 			result.bitsPerPixel = 4;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
 			result.bitsPerPixel = 2;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
 			result.bitsPerPixel = 1;
 			break;
 	}
@@ -285,11 +291,8 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	/* Is there an alpha channel? */
 	/* Note that alpha can only be supported if we can read the underlying */
 	/* pixel data. */
-	result.hasAlpha = (pf == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
-		pf == SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444 ||
-		pf == SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555 ||
-		pf == SJME_GFX_PIXEL_FORMAT_INT_BGRA8888 ? SJME_JNI_TRUE :
-		SJME_JNI_FALSE) && (result.impl->rawScanGet != NULL);
+	result.hasAlpha = (sjme_scritchpen_hasAlpha(pf) &&
+		(result.impl->rawScanGet != NULL));
 	
 	/* Copy in front end? */
 	if (copyFrontEnd != NULL)

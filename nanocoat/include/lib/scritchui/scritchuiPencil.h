@@ -1152,6 +1152,16 @@ extern const sjme_scritchui_pencilBitLineFunc
 	sjme_scritchui_pencilBitLines[256];
 
 /**
+ * Returns whether the given pixel format uses an alpha channel. 
+ * 
+ * @param pf The pixel format to check.
+ * @return If the pixel format uses an alpha channel.
+ * @since 2025/11/27
+ */
+sjme_jboolean sjme_scritchpen_hasAlpha(
+	sjme_attrInValue sjme_gfx_pixelFormat pf);
+	
+/**
  * Creates a hardware reference bracket to the native hardware graphics.
  * 
  * @param inState The state this is under.
