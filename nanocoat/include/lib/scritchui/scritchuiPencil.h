@@ -716,6 +716,35 @@ typedef sjme_errorCode (*sjme_scritchui_pencilPfScanToPfFunc)(
 	sjme_attrInPositive sjme_jint srcRawOff,
 	sjme_attrInNegativeOnePositive sjme_jint srcRawLen,
 	sjme_attrInPositive sjme_jint inNumPixels);
+
+/**
+ * Maps a pixel format from one scan format to RGB.
+ *
+ * @param g The graphics context this is operating under.
+ * @param destRgb The destination RGB buffer.
+ * @param destRgbOff The destination offset into the buffer in RGB bytes.
+ * @param destRgbLen The destination length of the buffer in RGB bytes, if
+ * this is @code -1 @endcode then this is determined by @a inNumPixels .
+ * @param srcPf The source pixel format.
+ * @param srcRawOff The source offset into the buffer in raw bytes.
+ * @param srcRawLen The source length of the buffer in raw bytes, if
+ * this is @code -1 @endcode then this is determined by the pixel format
+ * and @a inNumPixels .
+ * @param src The source buffer.
+ * @param inNumPixels The number of pixels to copy.
+ * @return Any resultant error, if any.
+ * @since 2025/11/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilPfScanToRgbFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_jint* destRgb,
+	sjme_attrInPositive sjme_jint destRgbOff,
+	sjme_attrInNegativeOnePositive sjme_jint destRgbLen,
+	sjme_attrInValue sjme_gfx_pixelFormat srcPf,
+	sjme_attrInNotNull sjme_pointer src,
+	sjme_attrInPositive sjme_jint srcRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint srcRawLen,
+	sjme_attrInPositive sjme_jint inNumPixels);
 	
 /**
  * Fills a buffer with the given value. 
@@ -863,6 +892,35 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanPutFunc)(
 	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue);
 
 /**
+ * Maps a pixel format from one scan format to RGB.
+ *
+ * @param g The graphics context this is operating under.
+ * @param destPf The destination pixel format.
+ * @param dest The destination buffer.
+ * @param destRawOff The destination offset into the buffer in raw bytes.
+ * @param destRawLen The destination length of the buffer in raw bytes, if
+ * this is @code -1 @endcode then this is determined by the pixel format
+ * and @a inNumPixels .
+ * @param srcRgb The source RGB buffer
+ * @param srcRgbOff The source offset into the buffer in RGB bytes.
+ * @param srcRgbLen The source length of the buffer in RGB bytes, if
+ * this is @code -1 @endcode then this is determined by @a inNumPixels .
+ * @param inNumPixels The number of pixels to copy.
+ * @return Any resultant error, if any.
+ * @since 2025/11/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanToPfFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat destPf,
+	sjme_attrInNotNull sjme_pointer dest,
+	sjme_attrInPositive sjme_jint destRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint destRawLen,
+	sjme_attrInNotNull sjme_jint* srcRgb,
+	sjme_attrInPositive sjme_jint srcRgbOff,
+	sjme_attrInNegativeOnePositive sjme_jint srcRgbLen,
+	sjme_attrInPositive sjme_jint inNumPixels);
+	
+/**
  * Maps a raw scanline from raw RGB data.
  * 
  * @param g The graphics to operate within.
@@ -875,7 +933,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanPutFunc)(
  * @return Any resultant error, if any.
  * @since 2024/07/09
  */
-typedef sjme_errorCode (*sjme_scritchui_pencilRgbToRawScanFunc)(
+typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanToRawFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) sjme_pointer outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -1149,6 +1207,9 @@ struct sjme_scritchui_pencilUtilFunctions
 	/** @c PfScanToPf . */
 	SJME_SCRITCHUI_QUICK_PENCIL(PfScanToPf, pfScanToPf);
 	
+	/** @c PfScanToRgb . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanToRgb, pfScanToRgb);
+	
 	/** @c RawScanToRgb . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanToRgb, rawScanToRgb);
 	
@@ -1161,8 +1222,11 @@ struct sjme_scritchui_pencilUtilFunctions
 	/** @c RgbScanPut . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RgbScanPut, rgbScanPut);
 	
-	/** @c RgbToRawScan . */
-	SJME_SCRITCHUI_QUICK_PENCIL(RgbToRawScan, rgbToRawScan);
+	/** @c RgbScanToPf . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RgbScanToPf, rgbScanToPf);
+	
+	/** @c RgbScanToRaw . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RgbScanToRaw, rgbScanToRaw);
 };
 
 /**

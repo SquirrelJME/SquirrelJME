@@ -17,6 +17,51 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
+static sjme_errorCode sjme_scritchpen_coreUtil_calcLen(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat destPf,
+	sjme_attrInPositive sjme_jint destRawOff,
+	sjme_attrInNotNull sjme_jint* destRawLen,
+	sjme_attrInValue sjme_gfx_pixelFormat srcPf,
+	sjme_attrInPositive sjme_jint srcRawOff,
+	sjme_attrInNotNull sjme_jint* srcRawLen,
+	sjme_attrInPositive sjme_jint inNumPixels)
+{
+	sjme_errorCode error;
+
+	if (g == NULL || destRawLen == NULL || srcRawLen == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Destination. */
+	if ((*destRawLen) < 0)
+	{
+		/* Calculate base. */
+		if (sjme_error_is(error = sjme_scritchpen_coreUtil_pfScanBytes(
+			g, destPf, inNumPixels, -1,
+			destRawLen, NULL)) || (*destRawLen) < 0)
+			return sjme_error_default(error);
+
+		/* Add in offset, as it is implied. */
+		(*destRawLen) += destRawOff;
+	}
+
+	/* Source. */
+	if ((*srcRawLen) < 0)
+	{
+		if (sjme_error_is(error = sjme_scritchpen_coreUtil_pfScanBytes(
+			g, srcPf, inNumPixels, -1,
+			srcRawLen, NULL)) || (*srcRawLen) < 0)
+			return sjme_error_default(error);
+
+		/* Calculate base. */
+		/* Add in offset, as it is implied. */
+		(*srcRawLen) += srcRawOff;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchpen_corePrim_rawScanFillInt(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
@@ -600,8 +645,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 	sjme_attrInPositive sjme_jint inNumPixels)
 {
 	sjme_errorCode error;
-	sjme_jint destBytes, srcBytes;
-	sjme_jint rgbBytes;
+	sjme_jint destBytes, srcBytes, rgbBytes;
 	sjme_jint* rgbScan;
 	
 	if (g == NULL || dest == NULL || src == NULL)
@@ -619,31 +663,12 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
 
 	/* Calculate actual lengths from input values and offset? */
-	/* Destination. */
-	if (destRawLen < 0)
-	{
-		/* Calculate base. */
-		if (sjme_error_is(error = sjme_scritchpen_coreUtil_pfScanBytes(
-			g, destPf, inNumPixels, -1,
-			&destRawLen, NULL)) || destRawLen < 0)
+	if (destRawLen < 0 || srcRawLen < 0)
+		if (sjme_error_is(error = sjme_scritchpen_coreUtil_calcLen(g,
+			destPf, destRawOff, &destRawLen,
+			srcPf, srcRawOff, &srcRawLen,
+			inNumPixels)))
 			return sjme_error_default(error);
-
-		/* Add in offset, as it is implied. */
-		destRawLen += destRawOff;
-	}
-
-	/* Source. */
-	if (srcRawLen < 0)
-	{
-		if (sjme_error_is(error = sjme_scritchpen_coreUtil_pfScanBytes(
-			g, srcPf, inNumPixels, -1,
-			&srcRawLen, NULL)) || srcRawLen < 0)
-			return sjme_error_default(error);
-
-		/* Calculate base. */
-		/* Add in offset, as it is implied. */
-		srcRawLen += srcRawOff;
-	}
 
 	/* Determine destination bytes. */
 	destBytes = -1;
@@ -681,30 +706,133 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 
 	/* Setup buffer to map the raw scan to RGB, which will then be mapped */
 	/* back to the pixel format. */
-	sjme_todo("Impl?");
+	/* Determine buffer size. */
+	rgbBytes = -1;
+	if (sjme_error_is(error = g->util->pfScanBytes(g,
+		SJME_GFX_PIXEL_FORMAT_INT_ARGB8888, inNumPixels,
+		-1, &rgbBytes, NULL)) || rgbBytes < 0)
+		return sjme_error_default(error);
+
+	/* Allocate buffer. */
+	rgbScan = sjme_alloca(rgbBytes);
+	if (rgbScan == NULL)
+		return sjme_error_outOfMemory(NULL, rgbBytes);
+
+	/* Clear. */
+	memset(rgbScan, 0, rgbBytes);
 
 	/* Run conversion from the source to RGB. */
-	/* sjme_scritchpen_coreUtil_rawScanToRgb */
-	sjme_todo("Impl?");
+	if (sjme_error_is(error = g->util->pfScanToRgb(g,
+		rgbScan, 0, rgbBytes,
+		srcPf, src, srcRawOff, srcRawLen,
+		inNumPixels)))
+		goto fail_convert;
+	
+	/* Run conversion back from RGB to the destination. */
+	if (sjme_error_is(error = g->util->rgbScanToPf(g,
+		destPf, dest, destRawOff, destRawLen,
+		rgbScan, 0, rgbBytes,
+		inNumPixels)))
+		goto fail_convert;
 
-	/* Run conversion from the RGB to the destination. */
-	/* sjme_scritchpen_coreUtil_rgbToRawScan */
-	sjme_todo("Impl?");
+	/* Cleanup. */
+	sjme_alloca_free(rgbScan);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+
+fail_convert:
+	if (rgbScan != NULL)
+		sjme_alloca_free(rgbScan);
+	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
+sjme_errorCode sjme_scritchpen_coreUtil_pfScanToRgb(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNullBuf(outRgbLen) sjme_jint* outRgb,
-	sjme_attrInPositive sjme_jint outRgbOff,
-	sjme_attrInPositive sjme_jint outRgbLen,
-	sjme_attrOutNotNullBuf(inRawLen) sjme_cpointer inRaw,
-	sjme_attrInPositive sjme_jint inRawOff,
-	sjme_attrInPositive sjme_jint inRawLen)
+	sjme_attrInNotNull sjme_jint* destRgb,
+	sjme_attrInPositive sjme_jint destRgbOff,
+	sjme_attrInNegativeOnePositive sjme_jint destRgbLen,
+	sjme_attrInValue sjme_gfx_pixelFormat srcPf,
+	sjme_attrInNotNull sjme_pointer src,
+	sjme_attrInPositive sjme_jint srcRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint srcRawLen,
+	sjme_attrInPositive sjme_jint inNumPixels)
 {
 	sjme_errorCode error;
+	sjme_jint destBytes, srcBytes, dpp, spp;
+	sjme_jboolean srcAlpha;
+	sjme_gfx_pixelFormat destPf;
+
+	if (g == NULL || destRgb == NULL || src == NULL)
+		return SJME_ERROR_NONE;
+
+	/* Does the source have alpha? */
+	srcAlpha = sjme_scritchpen_hasAlpha(srcPf);
+	destPf = (srcAlpha ? SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 :
+		SJME_GFX_PIXEL_FORMAT_INT_RGB888);
+
+	/* If this was directly called and the source/destination have the */
+	/* same pixel format, then pfScanToPf() will perform the memmove(). */
+	if (destPf == srcPf)
+		return g->util->pfScanToPf(g,
+			destPf, destRgb, destRgbOff,
+			destRgbLen, srcPf, src, srcRawOff, srcRawLen,
+			inNumPixels);
+	
+	if (destRgbOff < 0 || srcRawOff < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	if (inNumPixels < 0)
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+
+	/* Calculate actual lengths from input values and offset? */
+	if (destRgbLen < 0 || srcRawLen < 0)
+		if (sjme_error_is(error = sjme_scritchpen_coreUtil_calcLen(g,
+			destPf, destRgbOff, &destRgbLen,
+			srcPf, srcRawOff, &srcRawLen,
+			inNumPixels)))
+			return sjme_error_default(error);
+
+	/* Determine destination bytes. */
+	destBytes = -1;
+	if (sjme_error_is(error = g->util->pfScanBytes(g, destPf,
+		inNumPixels, -1, &destBytes, NULL)) ||
+		destBytes < 0)
+		return sjme_error_default(error);
+
+	/* Determine source bytes. */
+	srcBytes = -1;
+	if (sjme_error_is(error = g->util->pfScanBytes(g, srcPf,
+		inNumPixels, -1, &srcBytes, NULL)) ||
+		srcBytes < 0)
+		return sjme_error_default(error);
+
+	/* Double check bounds and overflow. */
+	if ((destRgbOff + destBytes) < 0 ||
+		(destRgbOff + destBytes) > destRgbLen ||
+		(srcRawOff + srcBytes) < 0 ||
+		(srcRawOff + srcBytes) > srcRawLen)
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+
+	/* Determine the number of bits that need to be gone through, this is */
+	/* done through bits so we can handle every single format as needed. */
+	/* sjme_bitStream_input could have been reused, however it is more */
+	/* intended for files. */
+	/* For the destination... */
+	dpp = -1;
+	if (sjme_error_is(error = g->util->pfScanBits(g, destPf,
+		1, -1, &dpp, NULL)) || dpp < 0)
+		return sjme_error_default(error);
+		
+	/* For the source... */
+	spp = -1;
+	if (sjme_error_is(error = g->util->pfScanBits(g, srcPf,
+		1, -1, &spp, NULL)) || spp < 0)
+		return sjme_error_default(error);
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	sjme_juint destAlphaMask;
 	sjme_jint limit, i, t, mulShift, j;
 	const sjme_jint* si;
@@ -866,6 +994,45 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	if (sjme_error_is(error))
 		return sjme_error_default(error);
 	return SJME_ERROR_NONE;
+#endif
+}
+
+sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNullBuf(outRgbLen) sjme_jint* outRgb,
+	sjme_attrInPositive sjme_jint outRgbOff,
+	sjme_attrInPositive sjme_jint outRgbLen,
+	sjme_attrOutNotNullBuf(inRawLen) sjme_cpointer inRaw,
+	sjme_attrInPositive sjme_jint inRawOff,
+	sjme_attrInPositive sjme_jint inRawLen)
+{
+	sjme_errorCode error;
+	sjme_jint check;
+	sjme_jint outRgbOffBytes, outRgbLenBytes, limitBytes;
+	
+	if (g == NULL || outRgb == NULL || inRaw == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (outRgbOff < 0 || outRgbLen < 0 || (outRgbOff + outRgbLen) < 0 ||
+		inRawOff < 0 || inRawLen < 0 || (inRawOff + inRawLen) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* For compatibility, need to calculate the RGB bytes and limit. */
+	outRgbOffBytes = outRgbOff * 4;
+	outRgbLenBytes = outRgbLen * 4;
+
+	/* Calculate the number of requested pixels from the raw scan. */
+	check = -1;
+	if (sjme_error_is(error = g->util->pfScanBytes(g, g->pixelFormat,
+		(outRgbLen - outRgbOff), inRawLen - inRawOff,
+		&check, &limitBytes)) || check < 0)
+		return sjme_error_default(error);
+	
+	/* Forward to generic PF. */
+	return g->util->pfScanToRgb(g, 
+		outRgb, outRgbOffBytes, outRgbLenBytes,
+		g->pixelFormat, (void*)inRaw, inRawOff, inRawLen,
+		limitBytes / g->bytesPerPixel);
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_rgbScanFill(
@@ -979,7 +1146,22 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 		mulAlpha, mulAlphaValue);
 }
 
-sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
+sjme_errorCode sjme_scritchpen_coreUtil_rgbScanToPf(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat destPf,
+	sjme_attrInNotNull sjme_pointer dest,
+	sjme_attrInPositive sjme_jint destRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint destRawLen,
+	sjme_attrInNotNull sjme_jint* srcRgb,
+	sjme_attrInPositive sjme_jint srcRgbOff,
+	sjme_attrInNegativeOnePositive sjme_jint srcRgbLen,
+	sjme_attrInPositive sjme_jint inNumPixels)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_scritchpen_coreUtil_rgbScanToRaw(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,

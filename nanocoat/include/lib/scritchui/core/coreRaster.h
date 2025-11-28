@@ -191,24 +191,17 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 	sjme_attrInPositive sjme_jint srcRawOff,
 	sjme_attrInNegativeOnePositive sjme_jint srcRawLen,
 	sjme_attrInPositive sjme_jint inNumPixels);
-	
-sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNullBuf(outRgbLen) sjme_jint* outRgb,
-	sjme_attrInPositive sjme_jint outRgbOff,
-	sjme_attrInPositive sjme_jint outRgbLen,
-	sjme_attrOutNotNullBuf(inRawLen) sjme_cpointer inRaw,
-	sjme_attrInPositive sjme_jint inRawOff,
-	sjme_attrInPositive sjme_jint inRawLen);
 
-sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(
+sjme_errorCode sjme_scritchpen_coreUtil_pfScanToRgb(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
-	sjme_attrInPositive sjme_jint outRawOff,
-	sjme_attrInPositive sjme_jint outRawLen,
-	sjme_attrInNotNullBuf(rgbLen) const sjme_jint* inRgb,
-	sjme_attrInPositive sjme_jint inRgbOff,
-	sjme_attrInPositive sjme_jint inRgbLen);
+	sjme_attrInNotNull sjme_jint* destRgb,
+	sjme_attrInPositive sjme_jint destRgbOff,
+	sjme_attrInNegativeOnePositive sjme_jint destRgbLen,
+	sjme_attrInValue sjme_gfx_pixelFormat srcPf,
+	sjme_attrInNotNull sjme_pointer src,
+	sjme_attrInPositive sjme_jint srcRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint srcRawLen,
+	sjme_attrInPositive sjme_jint inNumPixels);
 	
 sjme_errorCode sjme_scritchpen_coreUtil_rgbScanFill(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -233,6 +226,35 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 	sjme_attrInValue sjme_jboolean srcAlpha,
 	sjme_attrInValue sjme_jboolean mulAlpha,
 	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue);
+
+sjme_errorCode sjme_scritchpen_coreUtil_rgbScanToPf(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat destPf,
+	sjme_attrInNotNull sjme_pointer dest,
+	sjme_attrInPositive sjme_jint destRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint destRawLen,
+	sjme_attrInNotNull sjme_jint* srcRgb,
+	sjme_attrInPositive sjme_jint srcRgbOff,
+	sjme_attrInNegativeOnePositive sjme_jint srcRgbLen,
+	sjme_attrInPositive sjme_jint inNumPixels);
+	
+sjme_errorCode sjme_scritchpen_coreUtil_rgbScanToRaw(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrOutNotNullBuf(rawLen) void* outRaw,
+	sjme_attrInPositive sjme_jint outRawOff,
+	sjme_attrInPositive sjme_jint outRawLen,
+	sjme_attrInNotNullBuf(rgbLen) const sjme_jint* inRgb,
+	sjme_attrInPositive sjme_jint inRgbOff,
+	sjme_attrInPositive sjme_jint inRgbLen);
+	
+sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNullBuf(outRgbLen) sjme_jint* outRgb,
+	sjme_attrInPositive sjme_jint outRgbOff,
+	sjme_attrInPositive sjme_jint outRgbLen,
+	sjme_attrOutNotNullBuf(inRawLen) sjme_cpointer inRaw,
+	sjme_attrInPositive sjme_jint inRawOff,
+	sjme_attrInPositive sjme_jint inRawLen);
 
 /*--------------------------------------------------------------------------*/
 	
