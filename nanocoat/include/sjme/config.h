@@ -347,9 +347,13 @@ extern "C" {
 #if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
 	!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
 	/** Defined by the system? */
-	#if !defined(SJME_CONFIG_HAS_BIG_ENDIAN)
+	#if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && !defined(__LITTLE_ENDIAN__)
 		#if defined(__BYTE_ORDER__) && \
 			(__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+			/** The system is big endian. */ 
+			#define SJME_CONFIG_HAS_BIG_ENDIAN
+		#elif defined(__BIG_ENDIAN__)
+			/** The system is big endian. */
 			#define SJME_CONFIG_HAS_BIG_ENDIAN
 		#endif
 	#endif
@@ -357,6 +361,7 @@ extern "C" {
 	/** Just set little endian if no endianess was defined */
 	#if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
 		!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+			/** The system is little endian. */
 		#define SJME_CONFIG_HAS_LITTLE_ENDIAN
 	#endif
 

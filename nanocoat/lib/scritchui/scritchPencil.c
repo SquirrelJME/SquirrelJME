@@ -167,11 +167,17 @@ static const sjme_scritchui_pencilUtilFunctions
 	sjme_sm(.applyAnchor, sjme_scritchpen_coreUtil_applyAnchor),
 	sjme_sm(.applyRotateScale, sjme_scritchpen_coreUtil_applyRotateScale),
 	sjme_sm(.applyTranslate, sjme_scritchpen_coreUtil_applyTranslate),
-	sjme_sm(.rawScanBytes, sjme_scritchpen_coreUtil_rawScanBytes),
+	sjme_sm(.pfScanGet, sjme_scritchpen_coreUtil_pfScanGet),
+	sjme_sm(.pfScanPut, sjme_scritchpen_coreUtil_pfScanPut),
+	sjme_sm(.pfScanBits, sjme_scritchpen_coreUtil_pfScanBits),
+	sjme_sm(.pfScanBytes, sjme_scritchpen_coreUtil_pfScanBytes),
+	sjme_sm(.pfScanToPf, sjme_scritchpen_coreUtil_pfScanToPf),
+	sjme_sm(.pfScanToRgb, sjme_scritchpen_coreUtil_pfScanToRgb),
 	sjme_sm(.rgbScanFill, sjme_scritchpen_coreUtil_rgbScanFill),
 	sjme_sm(.rgbScanGet, sjme_scritchpen_coreUtil_rgbScanGet),
 	sjme_sm(.rgbScanPut, sjme_scritchpen_coreUtil_rgbScanPut),
-	sjme_sm(.rgbToRawScan, sjme_scritchpen_coreUtil_rgbToRawScan),
+	sjme_sm(.rgbScanToPf, sjme_scritchpen_coreUtil_rgbScanToPf),
+	sjme_sm(.rgbScanToRaw, sjme_scritchpen_coreUtil_rgbScanToRaw),
 	sjme_sm(.rawScanToRgb, sjme_scritchpen_coreUtil_rawScanToRgb),
 };
 
@@ -190,6 +196,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
 	sjme_attrInNullable const sjme_frontEndBindable* copyFrontEnd)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilBase result;
 	
 	if (inPencil == NULL || inFunctions == NULL || defaultFont == NULL ||
@@ -232,54 +239,19 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	result.forceTranslate.x = tx;
 	result.forceTranslate.y = ty;
 	
-	/* Determine bits per pixel. */
-	result.bitsPerPixel = -1;
-	switch (pf)
-	{
-		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
-		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
-		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
-		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
-		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
-		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
-			result.bitsPerPixel = 32;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
-		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
-			result.bitsPerPixel = 24;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
-		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB444:
-		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
-		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
-		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
-		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
-		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
-			result.bitsPerPixel = 16;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
-		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
-			result.bitsPerPixel = 8;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
-			result.bitsPerPixel = 4;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
-			result.bitsPerPixel = 2;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
-			result.bitsPerPixel = 1;
-			break;
-	}
+	/* Determine bits and bytes per pixel. */
+	result.bytesPerPixel = -1;
+	result.bytesPerPixel = -1;
+	if (sjme_error_is(error = result.util->pfScanBits(&result, pf,
+		1, -1,
+		&result.bitsPerPixel, NULL)) ||
+		result.bitsPerPixel <= 0)
+		goto fail_determineBpp;
+	if (sjme_error_is(error = result.util->pfScanBytes(&result, pf,
+		1, -1,
+		&result.bytesPerPixel, NULL)) ||
+		result.bytesPerPixel <= 0)
+		goto fail_determineBpp;
 	
 	/* Determine raw scan line length. */
 	result.scanLenBytes = (result.scanLenPixels * result.bitsPerPixel) / 8;
@@ -318,11 +290,6 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	else
 		result.prim.mapColor = sjme_scritchpen_corePrim_mapColor;
 	
-	/* Determine bytes per pixel. */
-	result.util->rawScanBytes(&result,
-		1, 0,
-		&result.bytesPerPixel, NULL);
-	
 	/* Basic filling of raw value. */
 	if (result.bytesPerPixel == 4)
 		result.prim.rawScanFill = sjme_scritchpen_corePrim_rawScanFillInt;
@@ -337,6 +304,9 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	/* Success! Copy back. */
 	memmove(inPencil, &result, sizeof(result));
 	return SJME_ERROR_NONE;
+
+fail_determineBpp:
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchpen_core_hardwareGraphics(

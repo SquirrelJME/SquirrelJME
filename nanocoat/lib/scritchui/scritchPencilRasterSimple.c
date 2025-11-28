@@ -70,21 +70,38 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	/* Allocate buffer. */
 	rgbScan = sjme_alloca(sizeof(*rgbScan) * w);
 	if (rgbScan == NULL)
-		return sjme_error_outOfMemory(NULL, w);
+	{
+		error = sjme_error_outOfMemory(NULL, w);
+		goto fail_alloca;
+	}
 	
 	/* Fill RGB buffer. */
 	memset(rgbScan, 0, sizeof(*rgbScan) * w);
 	if (sjme_error_is(error = g->util->rgbScanFill(g,
 		rgbScan, 0, w,
 		g->state.color.argb)))
-		return sjme_error_default(error);
+		goto fail_rgbScanFill;
 	
 	/* Put onto image, we do not multiply alpha as the alpha in source */
 	/* is already the correct alpha value and this is not an image. */
-	return g->util->rgbScanPut(g, x, y,
+	if (sjme_error_is(error = g->util->rgbScanPut(g, x, y,
 		rgbScan, w,
 		g->state.applyAlpha,
-		SJME_JNI_FALSE, 0);
+		SJME_JNI_FALSE, 0)))
+		goto fail_rgbScanPut;
+
+	/* Cleanup. */
+	sjme_alloca_free(rgbScan);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_rgbScanPut:
+fail_rgbScanFill:
+fail_alloca:
+	if (rgbScan != NULL)
+		sjme_alloca_free(rgbScan);
+	return sjme_error_default(error);
 }
 
 /** Clipping above. */

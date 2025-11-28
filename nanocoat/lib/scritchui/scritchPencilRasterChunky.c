@@ -202,15 +202,17 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	/* Setup input and output RGB buffers. */
 	srcRgb = sjme_alloca(srcRgbBytes);
 	if (srcRgb == NULL)
-		return sjme_error_defaultOr(error,
-			sjme_error_outOfMemory(NULL, srcRgbBytes));
+	{
+		error = sjme_error_outOfMemory(NULL, srcRgbBytes);
+		goto fail_alloca;
+	}
 	
 	/* Clear buffers. */
 	memset(srcRgb, 0, srcRgbBytes);
 	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
-		return sjme_error_default(error);
+		goto fail_lock;
 	
 	/* Do we draw with alpha? */
 	srcAlpha = alpha;
@@ -257,21 +259,26 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 			xDest, yDest + dy,
 			srcRgb, m.tw,
 			srcAlpha, mulAlpha, mulAlphaVal)))
-			goto fail_any;
+			goto fail_anyInLock;
 	}
 	
 	/* Release lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
+		goto fail_unlock;
 		
 skip_noDraw:
 	/* Success! */
 	return SJME_ERROR_NONE;
 	
-fail_any:
+fail_anyInLock:
 	/* Need to release the lock? */
 	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
-	
+
+fail_unlock:
+fail_lock:
+fail_alloca:
+	if (srcRgb != NULL)
+		sjme_alloca_free(srcRgb);
 	return sjme_error_default(error);
 }

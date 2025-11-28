@@ -314,7 +314,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 		inCodepoint,
 		src, 0, scanLen,
 		ch, &origOffX, &origOffY)))
-		return sjme_error_default(error);
+		goto fail_renderBitmap;
 	
 	/* Target desired pixel size. */
 	th = inFont->cache.pixelSize;
@@ -348,6 +348,12 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+	
+fail_renderBitmap:
+	if (src != NULL)
+		sjme_alloca_free(src);
+
+	return sjme_error_default(error);
 }
 
 /** Functions for basic font support. */

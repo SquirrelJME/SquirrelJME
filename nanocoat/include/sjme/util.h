@@ -411,6 +411,19 @@ sjme_juint sjme_util_intLeadingZeroesU(
  * @param sh The shift amount, positive is left shift and negative is right
  * shift.
  * @return The resultant shifted value.
+ * @since 2025/11/28
+ */
+sjme_jint sjme_util_intOverShift(
+	sjme_attrInValue sjme_jint v,
+	sjme_attrInRange(-32, 32) sjme_jint sh);
+	
+/**
+ * Allows for shifting left/right by 32 for certain CPUs.
+ * 
+ * @param v The value to shift.
+ * @param sh The shift amount, positive is left shift and negative is right
+ * shift.
+ * @return The resultant shifted value.
  * @since 2024/08/29
  */
 sjme_juint sjme_util_intOverShiftU(
@@ -503,6 +516,16 @@ const sjme_jshort* sjme_util_memUnaligned16(void* addr);
  */
 const sjme_jint* sjme_util_memUnaligned32(void* addr);
 	
+/**
+ * Writes to an address in an unaligned way.
+ *
+ * @param addr The address to access.
+ * @param v The value to write.
+ * @return The written value.
+ * @since 2025/11/28
+ */
+sjme_jint* sjme_util_memUnaligned32W(void* addr, sjme_jint v);
+	
 #else
 	
 /**
@@ -514,6 +537,16 @@ const sjme_jint* sjme_util_memUnaligned32(void* addr);
  * @since 2025/03/02
  */
 #define sjme_util_memUnaligned32(addr) ((const sjme_jint*)(addr))
+
+/**
+ * Writes to an address in an unaligned way.
+ *
+ * @param addr The address to access.
+ * @param v The value to write.
+ * @return The written value.
+ * @since 2025/11/28
+ */
+#define sjme_util_memUnaligned32W(addr, v) (*((sjme_jint*)(addr)) = (v))
 	
 #endif
 

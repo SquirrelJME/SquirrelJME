@@ -155,6 +155,7 @@ static sjme_errorCode sjme_scritchui_win32_pencilRawScanPutPure(
 	bitmap = sjme_alloca(bmpLen);
 	if (bitmap == NULL)
 		return sjme_error_outOfMemory(NULL, bmpLen);
+	
 	memset(bitmap, 0, bmpLen);
 	
 	/* Setup bitmap for the scan. */
@@ -183,11 +184,23 @@ static sjme_errorCode sjme_scritchui_win32_pencilRawScanPutPure(
 		bitmap,
 		DIB_RGB_COLORS,
 		SRCCOPY))
-		return inState->implIntern->getLastError(inState,
-			SJME_ERROR_NATIVE_WIDGET_FAILURE);
+	{
+		error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
+		goto fail_stretchBits;
+	}
+
+	/* Cleanup. */
+	sjme_alloca_free(bitmap);
 	
 	/* Success? */
 	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+	
+fail_stretchBits:
+	if (bitmap != NULL)
+		sjme_alloca_free(bitmap);
+	
+	return inState->implIntern->getLastError(inState,
+		sjme_error_default(error));
 }
 
 static sjme_errorCode sjme_scritchui_win32_pencilSetAlphaColor(
