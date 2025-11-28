@@ -967,24 +967,16 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanGet(
 	if (x < 0 || y < 0 || inNumPixels < 0 ||
 		ex < 0 || ex > g->width || rgbBytes < 0)
 	{
-#if 1 || defined(SJME_CONFIG_DEBUG)
-		sjme_message("rgbScanGet(%p, %d, %d, %p, %d) != [%d, %d]",
-			g, x, y, destRgb, inNumPixels,
-			g->width, g->height);
-#endif
-		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+		error = SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+		goto fail_scanCheck;
 	}
 	
 	/* How much data is to be read? */
 	rawScanBytes = (inNumPixels * g->bitsPerPixel) / 8;
 	if (rawScanBytes < 0)
 	{
-#if 1 || defined(SJME_CONFIG_DEBUG)
-		sjme_message("rgbScanGet(%p, %d, %d, %p, %d) != [%d, %d]",
-			g, x, y, destRgb, inNumPixels,
-			g->width, g->height);
-#endif
-		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+		error = SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+		goto fail_scanCheck;
 	}
 	
 	/* Allocate. */
@@ -1004,6 +996,14 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanGet(
 	return g->util->rawScanToRgb(g,
 		destRgb, 0, inNumPixels,
 		rawScan, 0, rawScanBytes);
+
+fail_scanCheck:
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message("rgbScanGet(%p, %d, %d, %p, %d) != [%d, %d]",
+		g, x, y, destRgb, inNumPixels,
+		g->width, g->height);
+#endif
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
