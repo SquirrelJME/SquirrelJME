@@ -755,29 +755,20 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 		dn < limitDpp && sn < limitSpp;
 		dn += dpp, sn += spp, dl += dpp, sl += spp)
 	{
-		/* If the shift is higher than the highest indexed bit value, but */
-		/* also shorter than the largest bit reads, consume. */
-#define SJME_PF_BITS 16
-#define SJME_PF_BYTES 2
-#define SJME_PF_CONSUME(zx, zl) \
-		if (zl > SJME_PF_BITS) \
+		/* Consume bytes to move the shift down so that we can read full */
+		/* values. */
+#define SJME_PF_CONSUME(zx, zl, bits, bytes) \
+		if (zl >= bits) \
 		{ \
-			zx = SJME_POINTER_OFFSET(zx, SJME_PF_BYTES); \
-			zl -= SJME_PF_BITS; \
+			zx = SJME_POINTER_OFFSET(zx, bytes); \
+			zl -= bits; \
 		}
 
-		SJME_PF_CONSUME(dx, dl)
-		SJME_PF_CONSUME(sx, sl)
-#undef SJME_PF_BITS
-#undef SJME_PF_BYTES
+		SJME_PF_CONSUME(dx, dl, 24, 3)
+		SJME_PF_CONSUME(dx, dl, 8, 1)
+		SJME_PF_CONSUME(sx, sl, 24, 3)
+		SJME_PF_CONSUME(sx, sl, 8, 1)
 #undef SJME_PF_CONSUME
-
-#if 0
-		/* Debug. */
-		sjme_emitB("(%p << %d [%d, %d]) ~> (%p << %d [%d, %d])",
-			dx, dl, dn, limitDpp,
-			sx, sl, sn, limitSpp);
-#endif
 		
 		/* Read from the source scan. */
 		/* Read in initial bits. */
