@@ -287,14 +287,51 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanGet(
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
 {
+	sjme_errorCode error;
+	sjme_pointer temp;
+	sjme_jint tempLen;
+	
 	if (g == NULL || dest == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (pf < 0 || pf >= SJME_NUM_GFX_PIXEL_FORMATS)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* How many bytes does the raw format need? */
+	tempLen = -1;
+	if (sjme_error_is(error = g->util->pfScanBytes(g, g->pixelFormat,
+		inNumPixels, -1, &tempLen, NULL)) ||
+		tempLen < -1)
+		return sjme_error_default(error);
+
+	/* Allocate buffer to store the raw scan. */
+	temp = sjme_alloca(tempLen);
+	if (temp == NULL)
+		return sjme_error_outOfMemory(NULL, tempLen);
+
+	/* Read in the raw scan. */
+	if (sjme_error_is(error = g->prim.rawScanGet(g, x, y,
+		temp, tempLen, inNumPixels)))
+		goto fail_scanGet;
+
+	/* Convert raw scan to the given pixel format. */
+	if (sjme_error_is(error = g->util->pfScanToPf(g,
+		pf, dest, 0, inDataLen,
+		g->pixelFormat, temp, 0, tempLen,
+		inNumPixels)))
+		goto fail_scanConvert;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Cleanup. */
+	sjme_alloca_free(tempLen);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_scanConvert:
+fail_scanGet:
+	if (temp != NULL)
+		sjme_alloca_free(temp);
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
