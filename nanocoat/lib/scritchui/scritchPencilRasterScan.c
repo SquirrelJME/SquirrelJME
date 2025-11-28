@@ -322,7 +322,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanGet(
 		goto fail_scanConvert;
 	
 	/* Cleanup. */
-	sjme_alloca_free(tempLen);
+	sjme_alloca_free(temp);
 
 	/* Success! */
 	return SJME_ERROR_NONE;

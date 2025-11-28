@@ -75,7 +75,7 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	cH = 0;
 	if (sjme_error_is(error = inState->apiInThread->componentSize(inState,
 		inComponent, &cW, &cH)))
-		return sjme_error_default(error);
+		goto fail_componentSize;
 	
 	/* Draw each list entry. */
 	dlAt = &dlFull[0];
@@ -94,7 +94,7 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		fontHeight = 0;
 		if (sjme_error_is(error = useFont->api->metricPixelSize(
 			useFont, &fontHeight)))
-			return sjme_error_default(error);
+			goto fail_metric;
 		
 		/* Box this is drawn on top of. */
 		dlAt->type = SJME_SCRITCHUI_FB_DL_TYPE_BOX;
@@ -144,9 +144,23 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	}
 	
 	/* Render display list in the component window. */
-	return inState->implIntern->renderInScroll(inState,
+	if (sjme_error_is(error = inState->implIntern->renderInScroll(inState,
 		inComponent, g, dlFull, dlCount, NULL,
-		NULL, NULL);
+		NULL, NULL)))
+		goto fail_render;
+
+	/* Cleanup. */
+	sjme_alloca_free(dlFull);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_render:
+fail_metric:
+fail_componentSize:
+	if (dlFull != NULL)
+		sjme_alloca_free(dlFull);
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_fb_list_lightActivate(
