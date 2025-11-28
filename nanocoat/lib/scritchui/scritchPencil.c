@@ -243,11 +243,13 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	result.bytesPerPixel = -1;
 	if (sjme_error_is(error = result.util->pfScanBits(&result, pf,
 		1, -1,
-		&result.bytesPerPixel, NULL)))
+		&result.bitsPerPixel, NULL)) ||
+		result.bitsPerPixel <= 0)
 		goto fail_determineBpp;
 	if (sjme_error_is(error = result.util->pfScanBytes(&result, pf,
 		1, -1,
-		&result.bytesPerPixel, NULL)))
+		&result.bytesPerPixel, NULL)) ||
+		result.bytesPerPixel <= 0)
 		goto fail_determineBpp;
 	
 	/* Determine raw scan line length. */

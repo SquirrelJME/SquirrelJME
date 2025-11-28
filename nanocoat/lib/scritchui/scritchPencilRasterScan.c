@@ -306,7 +306,10 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 	if (x < 0 || y < 0 || inNumPixels < 0 ||
 		ex < 0 || ex > g->width ||
 		(mulAlpha && (mulAlphaValue < 0 || mulAlphaValue > 255)))
+	{
+		sjme_message("SCAN OOB: 1");
 		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+	}
 
 	/* May be dynamically allocated. */
 	rsScan = NULL;
@@ -322,6 +325,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 		inNumPixels, -1, &pfBytes, NULL)) ||
 		pfBytes < 0)
 	{
+		sjme_message("SCAN OOB: 2");
 		error = sjme_error_defaultOr(error, SJME_ERROR_SCAN_OUT_OF_BOUNDS);
 		goto fail_oob;
 	}
@@ -332,6 +336,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 		inNumPixels, -1, &rsBytes, NULL)) ||
 		rsBytes < 0)
 	{
+		sjme_message("SCAN OOB: 3");
 		error = sjme_error_defaultOr(error, SJME_ERROR_SCAN_OUT_OF_BOUNDS);
 		goto fail_oob;
 	}
@@ -663,7 +668,10 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	if (inNumPixels < 0)
+	{
+		sjme_message("SCAN OOB: 4");
 		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+	}
 
 	/* Calculate actual lengths from input values and offset? */
 	if (destRawLen < 0 || srcRawLen < 0)
@@ -692,7 +700,10 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 		(destRawOff + destBytes) > destRawLen ||
 		(srcRawOff + srcBytes) < 0 ||
 		(srcRawOff + srcBytes) > srcRawLen)
+	{
+		sjme_message("SCAN OOB: 5");
 		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+	}
 
 	/* Limit the number of bytes that can be copied/converted. */
 	limitBytes = (destBytes < srcBytes ? destBytes : srcBytes);
@@ -873,7 +884,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanGet(
 	if (x < 0 || y < 0 || inNumPixels < 0 ||
 		ex < 0 || ex > g->width || rgbBytes < 0)
 	{
-#if defined(SJME_CONFIG_DEBUG)
+#if 1 || defined(SJME_CONFIG_DEBUG)
 		sjme_message("rgbScanGet(%p, %d, %d, %p, %d) != [%d, %d]",
 			g, x, y, destRgb, inNumPixels,
 			g->width, g->height);
@@ -885,7 +896,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanGet(
 	rawScanBytes = (inNumPixels * g->bitsPerPixel) / 8;
 	if (rawScanBytes < 0)
 	{
-#if defined(SJME_CONFIG_DEBUG)
+#if 1 || defined(SJME_CONFIG_DEBUG)
 		sjme_message("rgbScanGet(%p, %d, %d, %p, %d) != [%d, %d]",
 			g, x, y, destRgb, inNumPixels,
 			g->width, g->height);

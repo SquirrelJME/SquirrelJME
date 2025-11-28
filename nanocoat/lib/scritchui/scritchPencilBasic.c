@@ -34,7 +34,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 		inDataLen < 0 || inNumPixels < 0 ||
 		(x + inNumPixels) < 0 || (x + inNumPixels) > g->width)
 	{
-#if defined(SJME_CONFIG_DEBUG)
+#if 1 || defined(SJME_CONFIG_DEBUG)
 		sjme_message("basicRawScanGet(%p, %d, %d, %p, %d, %d) != [%d, %d]",
 			g, x, y, outData, inDataLen, inNumPixels,
 			g->width, g->height);
@@ -96,7 +96,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 		(targetI + srcRawLen) < 0 ||
 		(targetI + srcRawLen) > g->lockState.baseLimitBytes)
 	{
-#if defined(SJME_CONFIG_DEBUG)
+#if 1 || defined(SJME_CONFIG_DEBUG)
 		sjme_message(
 			"basicRawScanPutPure(%p, %d, %d, %p, %d, %d) != [%d, %d]"
 				" of blb=%d; ti=%d; slb=%d; bpp=%d",
