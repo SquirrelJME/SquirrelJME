@@ -316,7 +316,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 
 	/* Does the source have an alpha channel? */
 	srcAlpha = sjme_scritchpen_hasAlpha(pf);
-	blendPf = (srcAlpha ? SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 :
+	blendPf = (srcAlpha && mulAlpha ? SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 :
 		SJME_GFX_PIXEL_FORMAT_INT_RGB888);
 	
 	/* We cannot access a region outside the image bounds. */
@@ -742,8 +742,8 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
 
 	/* Calculate mask bit. */
-	dm = dpp - 1;
-	sm = spp - 1;
+	dm = sjme_util_intOverShift(1, dpp) - 1;
+	sm = sjme_util_intOverShift(1, spp) - 1;
 
 	/* Setup base of scan, from the offset accordingly. */
 	dx = SJME_POINTER_OFFSET(dest, destRawOff);
@@ -783,8 +783,8 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 		/* Read in initial bits. */
 		vv.v = *sjme_util_memUnaligned32(sx);
 
-		/* Left shift down and mask. */
-		vv.v = (vv.v >> sl) & sm;
+		/* Shift down and mask. */
+		vv.v = sjme_util_intOverShift(vv.v, -sl) & sm;
 		
 		/* Map PF to RGB */
 		sjme_scritchpen_corePrim_mapColorPfToRgb(g, srcPf, vv.v, &vv);
@@ -796,8 +796,8 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 		rw = *sjme_util_memUnaligned32(dx);
 		
 		/* Blit in the resultant value. */
-		rw &= (~(dm << dl));
-		rw |= ((vv.v & dm) << dl);
+		rw &= ~(sjme_util_intOverShift(dm, dl));
+		rw |= sjme_util_intOverShift((vv.v & dm), dl);
 		
 		/* Write the value back in. */
 		sjme_util_memUnaligned32W(dx, rw);

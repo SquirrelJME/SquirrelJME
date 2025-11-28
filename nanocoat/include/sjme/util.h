@@ -411,6 +411,19 @@ sjme_juint sjme_util_intLeadingZeroesU(
  * @param sh The shift amount, positive is left shift and negative is right
  * shift.
  * @return The resultant shifted value.
+ * @since 2025/11/28
+ */
+sjme_jint sjme_util_intOverShift(
+	sjme_attrInValue sjme_jint v,
+	sjme_attrInRange(-32, 32) sjme_jint sh);
+	
+/**
+ * Allows for shifting left/right by 32 for certain CPUs.
+ * 
+ * @param v The value to shift.
+ * @param sh The shift amount, positive is left shift and negative is right
+ * shift.
+ * @return The resultant shifted value.
  * @since 2024/08/29
  */
 sjme_juint sjme_util_intOverShiftU(
