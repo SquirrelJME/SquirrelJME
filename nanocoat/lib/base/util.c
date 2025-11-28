@@ -715,4 +715,10 @@ const sjme_jint* sjme_util_memUnaligned32(void* addr)
 	return into;
 }
 
+sjme_jint* sjme_util_memUnaligned32W(void* addr, sjme_jint v)
+{
+	sjme_todo("Impl?");
+	return v;
+}
+
 #endif

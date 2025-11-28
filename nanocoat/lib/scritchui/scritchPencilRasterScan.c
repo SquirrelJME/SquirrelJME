@@ -292,6 +292,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 	sjme_jint ex, rsBytes, pfBytes, blendBytes;
 	sjme_pointer rsScan;
 	sjme_jboolean srcAlpha;
+	sjme_gfx_pixelFormat blendPf;
 	sjme_jint* blendDest;
 	sjme_jint* blendSrc;
 	
@@ -306,10 +307,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 	if (x < 0 || y < 0 || inNumPixels < 0 ||
 		ex < 0 || ex > g->width ||
 		(mulAlpha && (mulAlphaValue < 0 || mulAlphaValue > 255)))
-	{
-		sjme_message("SCAN OOB: 1");
 		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
-	}
 
 	/* May be dynamically allocated. */
 	rsScan = NULL;
@@ -318,6 +316,8 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 
 	/* Does the source have an alpha channel? */
 	srcAlpha = sjme_scritchpen_hasAlpha(pf);
+	blendPf = (srcAlpha ? SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 :
+		SJME_GFX_PIXEL_FORMAT_INT_RGB888);
 	
 	/* We cannot access a region outside the image bounds. */
 	pfBytes = -1;
@@ -325,7 +325,6 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 		inNumPixels, -1, &pfBytes, NULL)) ||
 		pfBytes < 0)
 	{
-		sjme_message("SCAN OOB: 2");
 		error = sjme_error_defaultOr(error, SJME_ERROR_SCAN_OUT_OF_BOUNDS);
 		goto fail_oob;
 	}
@@ -336,7 +335,6 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 		inNumPixels, -1, &rsBytes, NULL)) ||
 		rsBytes < 0)
 	{
-		sjme_message("SCAN OOB: 3");
 		error = sjme_error_defaultOr(error, SJME_ERROR_SCAN_OUT_OF_BOUNDS);
 		goto fail_oob;
 	}
@@ -356,8 +354,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 		/* the RGB data from the scan as actual RGB data. */
 		/* First we need the actual bytes to store the RGB data. */
 		blendBytes = -1;
-		if (sjme_error_is(error = g->util->pfScanBytes(g,
-			SJME_GFX_PIXEL_FORMAT_INT_ARGB8888,
+		if (sjme_error_is(error = g->util->pfScanBytes(g, blendPf,
 			inNumPixels, -1, &blendBytes, NULL)) ||
 			blendBytes < 0)
 			goto fail_oob;
@@ -383,10 +380,8 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 		/* Also need to do the same for the source scan, it has to be in */
 		/* RGB format regardless. */
 		if (sjme_error_is(error = g->util->pfScanToPf(g,
-			SJME_GFX_PIXEL_FORMAT_INT_ARGB8888,
-			blendSrc, 0, blendBytes,
-			pf,
-			(void*)src, 0, pfBytes,
+			blendPf, blendSrc, 0, blendBytes,
+			pf, (void*)src, 0, pfBytes,
 			inNumPixels)))
 			goto fail_srcBlendMap;
 
@@ -401,8 +396,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 		if (sjme_error_is(error = g->util->pfScanToPf(g,
 			g->pixelFormat,
 			rsScan, 0, rsBytes,
-			SJME_GFX_PIXEL_FORMAT_INT_ARGB8888,
-			blendDest, 0, blendBytes,
+			blendPf, blendDest, 0, blendBytes,
 			inNumPixels)))
 			goto fail_destMapBlend;
 	}
@@ -651,10 +645,12 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 {
 	sjme_errorCode error;
 	sjme_jint destBytes, srcBytes, limitBytes;
-	sjme_jint limitDpp, limitSpp, dpp, spp, dn, sn, dl, sl;
+	sjme_jint destNumPixels, srcNumPixels, limitNumPixels;
+	sjme_jint limitDpp, limitSpp, dpp, spp, dn, sn, dl, sl, dm, sm;
 	sjme_scritchui_pencilColor vv;
 	sjme_juint* dx;
 	sjme_juint* sx;
+	sjme_juint rw;
 	
 	if (g == NULL || dest == NULL || src == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -668,10 +664,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	if (inNumPixels < 0)
-	{
-		sjme_message("SCAN OOB: 4");
 		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
-	}
 
 	/* Calculate actual lengths from input values and offset? */
 	if (destRawLen < 0 || srcRawLen < 0)
@@ -700,10 +693,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 		(destRawOff + destBytes) > destRawLen ||
 		(srcRawOff + srcBytes) < 0 ||
 		(srcRawOff + srcBytes) > srcRawLen)
-	{
-		sjme_message("SCAN OOB: 5");
 		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
-	}
 
 	/* Limit the number of bytes that can be copied/converted. */
 	limitBytes = (destBytes < srcBytes ? destBytes : srcBytes);
@@ -738,33 +728,79 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 		return sjme_error_default(error);
 
 	/* Calculate both the limit for dpp and spp. */
-	limitDpp = limitBytes * dpp;
-	limitSpp = limitBytes * spp;
+	destNumPixels = ((destRawLen - destRawOff) * 8) / dpp;
+	srcNumPixels = ((srcRawLen - srcRawOff) * 8) / spp;
+	limitNumPixels = (destNumPixels < srcNumPixels ? destNumPixels :
+		srcNumPixels);
+
+	/* Convert these back to bit values. */
+	limitDpp = limitNumPixels * dpp;
+	limitSpp = limitNumPixels * spp;
+
+	/* Sanity check. */
+	if (destNumPixels < 0 || srcNumPixels < 0 || limitDpp < 0 || limitSpp < 0)
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+
+	/* Calculate mask bit. */
+	dm = dpp - 1;
+	sm = spp - 1;
 
 	/* Setup base of scan, from the offset accordingly. */
 	dx = SJME_POINTER_OFFSET(dest, destRawOff);
 	sx = SJME_POINTER_OFFSET(src, srcRawOff);
-
-	/* Start at a shift of zero. */
-	dl = 0;
-	sl = 0;
-
+	
 	/* Run through the scan, counting up bits accordingly. */
 	memset(&vv, 0, sizeof(vv));
-	for (dn = 0, sn = 0;
+	for (dn = 0, sn = 0, dl = 0, sl = 0;
 		dn < limitDpp && sn < limitSpp;
-		dn += dpp, sn += spp)
+		dn += dpp, sn += spp, dl += dpp, sl += spp)
 	{
+		/* If the shift is higher than the highest indexed bit value, but */
+		/* also shorter than the largest bit reads, consume. */
+#define SJME_PF_BITS 16
+#define SJME_PF_BYTES 2
+#define SJME_PF_CONSUME(zx, zl) \
+		if (zl > SJME_PF_BITS) \
+		{ \
+			zx = SJME_POINTER_OFFSET(zx, SJME_PF_BYTES); \
+			zl -= SJME_PF_BITS; \
+		}
+
+		SJME_PF_CONSUME(dx, dl)
+		SJME_PF_CONSUME(sx, sl)
+#undef SJME_PF_BITS
+#undef SJME_PF_BYTES
+#undef SJME_PF_CONSUME
+
+#if 0
+		/* Debug. */
+		sjme_emitB("(%p << %d [%d, %d]) ~> (%p << %d [%d, %d])",
+			dx, dl, dn, limitDpp,
+			sx, sl, sn, limitSpp);
+#endif
+		
 		/* Read from the source scan. */
-		vv.v = 0;
+		/* Read in initial bits. */
+		vv.v = *sjme_util_memUnaligned32(sx);
+
+		/* Left shift down and mask. */
+		vv.v = (vv.v >> sl) & sm;
 		
 		/* Map PF to RGB */
-		sjme_scritchpen_corePrim_mapColorPfToRgb(g, destPf, vv.v, &vv);
+		sjme_scritchpen_corePrim_mapColorPfToRgb(g, srcPf, vv.v, &vv);
 
 		/* Then back again. */
-		sjme_scritchpen_corePrim_mapColorRgbToPf(g, srcPf, vv.argb, &vv);
+		sjme_scritchpen_corePrim_mapColorRgbToPf(g, destPf, vv.argb, &vv);
 
-		/* Write to the destination scan. */
+		/* Read destination to mask in. */
+		rw = *sjme_util_memUnaligned32(dx);
+		
+		/* Blit in the resultant value. */
+		rw &= (~(dm << dl));
+		rw |= ((vv.v & dm) << dl);
+		
+		/* Write the value back in. */
+		sjme_util_memUnaligned32W(dx, rw);
 	}
 
 	/* Success! */
