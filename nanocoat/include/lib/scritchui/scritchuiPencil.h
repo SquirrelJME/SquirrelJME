@@ -915,7 +915,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanToPfFunc)(
 	sjme_attrInNotNull sjme_pointer dest,
 	sjme_attrInPositive sjme_jint destRawOff,
 	sjme_attrInNegativeOnePositive sjme_jint destRawLen,
-	sjme_attrInNotNull sjme_jint* srcRgb,
+	sjme_attrInNotNull const sjme_jint* srcRgb,
 	sjme_attrInPositive sjme_jint srcRgbOff,
 	sjme_attrInNegativeOnePositive sjme_jint srcRgbLen,
 	sjme_attrInPositive sjme_jint inNumPixels);

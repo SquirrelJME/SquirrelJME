@@ -49,6 +49,18 @@ sjme_errorCode sjme_scritchpen_corePrim_drawPixel(
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
 
+sjme_errorCode sjme_scritchpen_corePrim_mapColor(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jboolean fromRaw,
+	sjme_attrInValue sjme_jint inRgbOrRaw,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
+	
+sjme_errorCode sjme_scritchpen_corePrim_mapColorPfToRgb(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInValue sjme_jint v,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
+
 sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb,
@@ -58,11 +70,11 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint v,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
-
-sjme_errorCode sjme_scritchpen_corePrim_mapColor(
+	
+sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jboolean fromRaw,
-	sjme_attrInValue sjme_jint inRgbOrRaw,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInValue sjme_jint argb,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
 
 sjme_errorCode sjme_scritchpen_corePrim_rawScanFillInt(
@@ -233,7 +245,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanToPf(
 	sjme_attrInNotNull sjme_pointer dest,
 	sjme_attrInPositive sjme_jint destRawOff,
 	sjme_attrInNegativeOnePositive sjme_jint destRawLen,
-	sjme_attrInNotNull sjme_jint* srcRgb,
+	sjme_attrInNotNull const sjme_jint* srcRgb,
 	sjme_attrInPositive sjme_jint srcRgbOff,
 	sjme_attrInNegativeOnePositive sjme_jint srcRgbLen,
 	sjme_attrInPositive sjme_jint inNumPixels);

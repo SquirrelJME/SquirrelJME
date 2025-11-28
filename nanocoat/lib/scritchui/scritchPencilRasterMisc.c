@@ -17,8 +17,180 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
+sjme_errorCode sjme_scritchpen_corePrim_mapColor(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jboolean fromRaw,
+	sjme_attrInValue sjme_jint inRgbOrRaw,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+{
+	if (g == NULL || outColor == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Otherwise, use our own color mapping code. */
+	if (fromRaw)
+		return sjme_scritchpen_corePrim_mapColorFromRaw(g,
+			inRgbOrRaw, outColor);
+	return sjme_scritchpen_corePrim_mapColorFromRGB(g,
+		inRgbOrRaw, outColor);
+}
+	
+sjme_errorCode sjme_scritchpen_corePrim_mapColorPfToRgb(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInValue sjme_jint v,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+{
+	sjme_jint numCol, aa, rr, gg, bb, argb;
+	
+	if (g == NULL || outColor == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If there is a palette, try using it to get a color. */
+	numCol = g->palette.numColors;
+	if (g->palette.colors != NULL && numCol > 0)
+	{
+		if (v > 0 && v < numCol)
+			return sjme_scritchpen_corePrim_mapColorFromRGB(g,
+				g->palette.colors[v], outColor);
+		
+		/* Invalid color, render to black or close to it. */
+		return sjme_scritchpen_corePrim_mapColorFromRGB(g,
+			0, outColor);
+	}
+	
+	/* Initial map to black. */
+	aa = 0;
+	rr = 0;
+	gg = 0;
+	bb = 0;
+	
+	/* Recover raw pixel color. */
+	switch (pf)
+	{
+		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
+			aa = (v >> 24) & 0xFF;
+			rr = (v >> 16) & 0xFF;
+			gg = (v >> 8) & 0xFF;
+			bb = (v) & 0xFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
+			aa = (v) & 0xFF;
+			rr = (v >> 8) & 0xFF;
+			gg = (v >> 16) & 0xFF;
+			bb = (v >> 24) & 0xFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
+			aa = 0xFF;
+			rr = (v >> 8) & 0xFF;
+			gg = (v >> 16) & 0xFF;
+			bb = (v >> 24) & 0xFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
+			aa = 0xFF;
+			rr = (v) & 0xFF;
+			gg = (v >> 8) & 0xFF;
+			bb = (v >> 16) & 0xFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
+			aa = 0xFF;
+			rr = (v >> 16) & 0xFF;
+			gg = (v >> 8) & 0xFF;
+			bb = (v) & 0xFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
+			aa = 0xFF;
+			rr = (v >> 24) & 0xFF;
+			gg = (v >> 16) & 0xFF;
+			bb = (v >> 8) & 0xFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+			aa = ((v >> 12) & 0xF);
+			aa |= aa << 4;
+			rr = ((v >> 8) & 0xF);
+			rr |= rr << 4;
+			gg = ((v >> 4) & 0xF);
+			gg |= gg << 4;
+			bb = ((v) & 0xF);
+			bb |= bb << 4;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB444:
+			aa = 0xFF;
+			rr = ((v >> 8) & 0xF);
+			rr |= rr << 4;
+			gg = ((v >> 4) & 0xF);
+			gg |= gg << 4;
+			bb = ((v) & 0xF);
+			bb |= bb << 4;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
+			aa = 0xFF;
+			rr = ((v >> 11) & 0x1F) << 3;
+			gg = ((v >> 4) & 0x3F) << 2;
+			bb = ((v) & 0x1F) << 3;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
+			aa = 0xFF;
+			rr = ((v >> 10) & 0x1F) << 3;
+			gg = ((v >> 5) & 0x1F) << 3;
+			bb = ((v) & 0x1F) << 3;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
+			sjme_todo("Impl?");
+			v = (((aa >> 7) & 0x1) << 15) |
+				(((bb >> 3) & 0x1F) << 10) |
+				(((gg >> 3) & 0x1F) << 5) |
+				((rr >> 3) & 0x1F);
+			break;
+		
+		default:
+			return sjme_error_notImplemented(0);
+	}
+	
+	/* Map back to normalize. */
+	argb = (aa << 24) | (rr << 16) | (gg << 8) | bb;
+	outColor->argb = argb;
+	return sjme_scritchpen_corePrim_mapColorFromRGB(g, argb, outColor);
+}
+
 sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint argb,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+{
+	if (g == NULL || outColor == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	return sjme_scritchpen_corePrim_mapColorRgbToPf(g, g->pixelFormat,
+		argb, outColor);
+}
+
+sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint v,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+{
+	if (g == NULL || outColor == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	return sjme_scritchpen_corePrim_mapColorPfToRgb(
+		g, g->pixelFormat, v, outColor);
+}
+	
+sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInValue sjme_jint argb,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
 {
@@ -120,7 +292,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 	}
 	
 	/* Determine raw pixel color. */
-	switch (g->pixelFormat)
+	switch (pf)
 	{
 		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
 			v = argb;
@@ -210,6 +382,9 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
 			v = ii & 0x1;
 			break;
+
+		default:
+			return sjme_error_notImplemented(0);
 	}
 		
 	/* Store raw colors. */
@@ -219,152 +394,6 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint v,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
-{
-	sjme_jint numCol, aa, rr, gg, bb, argb;
-	
-	if (g == NULL || outColor == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* If there is a palette, try using it to get a color. */
-	numCol = g->palette.numColors;
-	if (g->palette.colors != NULL && numCol > 0)
-	{
-		if (v > 0 && v < numCol)
-			return sjme_scritchpen_corePrim_mapColorFromRGB(g,
-				g->palette.colors[v], outColor);
-		
-		/* Invalid color, render to black or close to it. */
-		return sjme_scritchpen_corePrim_mapColorFromRGB(g,
-			0, outColor);
-	}
-	
-	/* Initial map to black. */
-	aa = 0;
-	rr = 0;
-	gg = 0;
-	bb = 0;
-	
-	/* Recover raw pixel color. */
-	switch (g->pixelFormat)
-	{
-		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
-			aa = (v >> 24) & 0xFF;
-			rr = (v >> 16) & 0xFF;
-			gg = (v >> 8) & 0xFF;
-			bb = (v) & 0xFF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
-			aa = (v) & 0xFF;
-			rr = (v >> 8) & 0xFF;
-			gg = (v >> 16) & 0xFF;
-			bb = (v >> 24) & 0xFF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
-			aa = 0xFF;
-			rr = (v >> 8) & 0xFF;
-			gg = (v >> 16) & 0xFF;
-			bb = (v >> 24) & 0xFF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
-		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
-			aa = 0xFF;
-			rr = (v) & 0xFF;
-			gg = (v >> 8) & 0xFF;
-			bb = (v >> 16) & 0xFF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
-		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
-			aa = 0xFF;
-			rr = (v >> 16) & 0xFF;
-			gg = (v >> 8) & 0xFF;
-			bb = (v) & 0xFF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
-			aa = 0xFF;
-			rr = (v >> 24) & 0xFF;
-			gg = (v >> 16) & 0xFF;
-			bb = (v >> 8) & 0xFF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
-			aa = ((v >> 12) & 0xF);
-			aa |= aa << 4;
-			rr = ((v >> 8) & 0xF);
-			rr |= rr << 4;
-			gg = ((v >> 4) & 0xF);
-			gg |= gg << 4;
-			bb = ((v) & 0xF);
-			bb |= bb << 4;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB444:
-			aa = 0xFF;
-			rr = ((v >> 8) & 0xF);
-			rr |= rr << 4;
-			gg = ((v >> 4) & 0xF);
-			gg |= gg << 4;
-			bb = ((v) & 0xF);
-			bb |= bb << 4;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
-			aa = 0xFF;
-			rr = ((v >> 11) & 0x1F) << 3;
-			gg = ((v >> 4) & 0x3F) << 2;
-			bb = ((v) & 0x1F) << 3;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
-			aa = 0xFF;
-			rr = ((v >> 10) & 0x1F) << 3;
-			gg = ((v >> 5) & 0x1F) << 3;
-			bb = ((v) & 0x1F) << 3;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
-			sjme_todo("Impl?");
-			v = (((aa >> 7) & 0x1) << 15) |
-				(((bb >> 3) & 0x1F) << 10) |
-				(((gg >> 3) & 0x1F) << 5) |
-				((rr >> 3) & 0x1F);
-			break;
-		
-		default:
-			return sjme_error_notImplemented(0);
-	}
-	
-	/* Map back to normalize. */
-	argb = (aa << 24) | (rr << 16) | (gg << 8) | bb;
-	outColor->argb = argb;
-	return sjme_scritchpen_corePrim_mapColorFromRGB(g, argb, outColor);
-}
-
-sjme_errorCode sjme_scritchpen_corePrim_mapColor(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jboolean fromRaw,
-	sjme_attrInValue sjme_jint inRgbOrRaw,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
-{
-	if (g == NULL || outColor == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Otherwise, use our own color mapping code. */
-	if (fromRaw)
-		return sjme_scritchpen_corePrim_mapColorFromRaw(g,
-			inRgbOrRaw, outColor);
-	return sjme_scritchpen_corePrim_mapColorFromRGB(g,
-		inRgbOrRaw, outColor);
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
