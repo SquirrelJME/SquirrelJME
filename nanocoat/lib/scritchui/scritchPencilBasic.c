@@ -49,7 +49,8 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 	/* Determine the number of pixels to be drawn. */
 	pixelBytes = -1;
 	limit = -1;
-	if (sjme_error_is(error = g->util->rawScanBytes(g,
+	if (sjme_error_is(error = g->util->pfScanBytes(g,
+		g->pixelFormat,
 		inNumPixels, inDataLen,
 		&pixelBytes, &limit)) ||
 		pixelBytes < 0 || limit < 0)

@@ -233,8 +233,187 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
+sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInNotNullBuf(inLen) sjme_cpointer src,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean mulAlpha,
+	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue)
+{
+	sjme_errorCode error;
+	sjme_jint ex, rsBytes, pfBytes, blendBytes;
+	sjme_pointer rsScan;
+	sjme_jboolean srcAlpha;
+	sjme_jint* blendDest;
+	sjme_jint* blendSrc;
+	
+	if (g == NULL || src == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (pf < 0 || pf >= SJME_NUM_GFX_PIXEL_FORMATS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Get right edge. */
+	ex = x + inNumPixels;
+	if (x < 0 || y < 0 || inNumPixels < 0 ||
+		ex < 0 || ex > g->width ||
+		(mulAlpha && (mulAlphaValue < 0 || mulAlphaValue > 255)))
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+
+	/* May be dynamically allocated. */
+	rsScan = NULL;
+	blendDest = NULL;
+	blendSrc = NULL;
+
+	/* Does the source have an alpha channel? */
+	srcAlpha = sjme_scritchpen_hasAlpha(pf);
+	
+	/* We cannot access a region outside the image bounds. */
+	pfBytes = -1;
+	if (sjme_error_is(error = g->util->pfScanBytes(g, pf,
+		inNumPixels, -1, &pfBytes, NULL)) ||
+		pfBytes < 0)
+	{
+#if defined(SJME_CONFIG_DEBUG)
+		sjme_message("pfScanPut(%p, %d, %d, %d, %p, %d, %d, %d) != [%d, %d]",
+			g, pf, x, y, src, inNumPixels, mulAlpha, mulAlphaValue,
+			g->width, g->height);
+#endif
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+	}
+	
+	/* How much data is to be written? */
+	rsBytes = -1;
+	if (sjme_error_is(error = g->util->pfScanBytes(g, g->pixelFormat,
+		inNumPixels, -1, &rsBytes, NULL)) ||
+		rsBytes < 0)
+	{
+#if defined(SJME_CONFIG_DEBUG)
+		sjme_message("pfScanPut(%p, %d, %d, %d, %p, %d, %d, %d) != [%d, %d]",
+			g, pf, x, y, inNumPixels, mulAlpha, mulAlphaValue,
+			g->width, g->height);
+#endif
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+	}
+	
+	/* Allocate raw scan data. */
+	rsScan = sjme_alloca(rsBytes);
+	if (rsScan == NULL)
+		return sjme_error_outOfMemory(NULL, rsBytes);
+	
+	/* Clear. */
+	memset(rsScan, 0, rsBytes);
+	
+	/* Do we need to alpha blend? */
+	if (srcAlpha || mulAlpha)
+	{
+		/* Because we need to do alpha channel blending, we need to read in */
+		/* the RGB data from the scan as actual RGB data. */
+		/* First we need the actual bytes to store the RGB data. */
+		blendBytes = -1;
+		if (sjme_error_is(error = g->util->pfScanBytes(g,
+			SJME_GFX_PIXEL_FORMAT_INT_ARGB8888,
+			inNumPixels, -1, &blendBytes, NULL)) ||
+			blendBytes < 0)
+			return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+
+		/* Allocate both source and destination RGB buffers, for blending. */
+		/* This is needed because we need a temporary buffer and also the */
+		/* source and destination pixel formats might not even match. */
+		blendDest = sjme_alloca(blendBytes);
+		blendSrc = sjme_alloca(blendBytes);
+		if (blendDest == NULL || blendSrc == NULL)
+			goto fail_allocBlends;
+
+		/* Need to clear both. */
+		memset(blendDest, 0, pfBytes);
+		memset(blendSrc, 0, pfBytes);
+
+		/* Load in the destination data as RGB, this needs to be blended */
+		/* onto. */
+		if (sjme_error_is(error = g->util->rgbScanGet(g,
+			x, y, blendDest, inNumPixels)))
+			goto fail_scanGet;
+
+		/* Also need to do the same for the source scan, it has to be in */
+		/* RGB format regardless. */
+		if (sjme_error_is(error = g->util->pfScanToPf(g,
+			SJME_GFX_PIXEL_FORMAT_INT_ARGB8888,
+			blendSrc, blendBytes, -1,
+			pf,
+			(void*)src, pfBytes, -1,
+			inNumPixels)))
+			goto fail_srcBlendMap;
+
+		/* Perform the actual blending operation, in full RGB. */
+		if (sjme_error_is(error = g->util->blendRGBInto(g,
+			g->hasAlpha, srcAlpha,
+			mulAlpha, mulAlphaValue,
+			blendDest, blendSrc, inNumPixels)))
+			goto fail_blendInto;
+
+		/* Map from RGB to the format that the raw scan is using. */
+		if (sjme_error_is(error = g->util->pfScanToPf(g,
+			g->pixelFormat,
+			rsScan, rsBytes, -1,
+			SJME_GFX_PIXEL_FORMAT_INT_ARGB8888,
+			blendDest, blendBytes, -1,
+			inNumPixels)))
+			goto fail_destMapBlend;
+	}
+
+	/* Map from PF to raw pixels. */
+	else
+	{
+		/* Map from the given PF to raw pixels. */
+		if (sjme_error_is(error = g->util->pfScanToPf(g,
+			g->pixelFormat,
+			rsScan, rsBytes, -1,
+			pf,
+			src, pfBytes, -1,
+			inNumPixels)))
+			goto fail_destMapBlend;
+	}
+	
+	/* Write direct image data. */
+	if (sjme_error_is(error = g->prim.rawScanPutPure(g, x, y,
+		rsScan, rsBytes, inNumPixels)))
+		goto fail_putPure;
+
+	/* Cleanup, as always. */
+	if (blendDest != NULL)
+		sjme_alloca_free(blendDest);
+	if (blendSrc != NULL)
+		sjme_alloca_free(blendSrc);
+	if (rsScan != NULL)
+		sjme_alloca_free(rsScan);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_srcBlendMap:
+fail_destMapBlend:
+fail_blendInto:
+fail_scanGet:
+fail_allocBlends:
+fail_putPure:
+fail_mapToRaw:
+	if (blendDest != NULL)
+		sjme_alloca_free(blendDest);
+	if (blendSrc != NULL)
+		sjme_alloca_free(blendSrc);
+	if (rsScan != NULL)
+		sjme_alloca_free(rsScan);
+	
+	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_scritchpen_coreUtil_pfScanBytes(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
 	sjme_attrInPositiveNonZero sjme_jint inBytes,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes,
@@ -244,13 +423,16 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 	
 	if (g == NULL || outBytes == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (pf < 0 || pf >= SJME_NUM_GFX_PIXEL_FORMATS)
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	if (inPixels < 0 || (outLimit != NULL && inBytes < 0))
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Depends on the pixel format. */
 	result = -1;
-	switch (g->pixelFormat)
+	switch (pf)
 	{
 		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
 		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
@@ -316,6 +498,84 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
 	
 	/* Success! */
 	*outBytes = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat destPf,
+	sjme_attrInNotNull sjme_pointer dest,
+	sjme_attrInPositive sjme_jint destRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint destRawLen,
+	sjme_attrInValue sjme_gfx_pixelFormat srcPf,
+	sjme_attrInNotNull sjme_pointer src,
+	sjme_attrInPositive sjme_jint srcRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint srcRawLen,
+	sjme_attrInPositive sjme_jint inNumPixels)
+{
+	sjme_errorCode error;
+	sjme_jint rgbBytes;
+	sjme_jint* rgbScan;
+	
+	if (g == NULL || dest == NULL || src == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (destPf < 0 || destPf >= SJME_NUM_GFX_PIXEL_FORMATS ||
+		srcPf < 0 || srcPf >= SJME_NUM_GFX_PIXEL_FORMATS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (destRawOff < 0 || srcRawOff < 0 ||
+		destRawLen < -1 || srcRawLen < -1)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	if (inNumPixels < 0)
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+
+	/* Calculate actual lengths from input values? */
+	/* Destination. */
+	if (destRawLen < 0)
+		if (sjme_error_is(error = sjme_scritchpen_coreUtil_pfScanBytes(
+			g, destPf, inNumPixels, -1,
+			&destRawLen, NULL)) || destRawLen < 0)
+			return sjme_error_default(error);
+
+	/* Source. */
+	if (srcRawLen < 0)
+		if (sjme_error_is(error = sjme_scritchpen_coreUtil_pfScanBytes(
+			g, destPf, inNumPixels, -1,
+			&srcRawLen, NULL)) || srcRawLen < 0)
+			return sjme_error_default(error);
+
+	/* Double check bounds. */
+	if ((destRawOff + destRawLen) < 0 || (srcRawOff + srcRawLen) < 0)
+		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+
+	/* If the pixel format is the same, we can short circuit and just copy */
+	/* the data directly. */
+	if (destPf == srcPf)
+	{
+		/* Direct move over. */
+		memmove(SJME_POINTER_OFFSET(dest, destRawOff),
+			SJME_POINTER_OFFSET(src, srcRawOff),
+			(destRawLen < srcRawLen ? destRawLen : srcRawLen));
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+
+	/* Setup buffer to map the raw scan to RGB, which will then be mapped */
+	/* back to the pixel format. */
+	sjme_todo("Impl?");
+
+	/* Run conversion from the source to RGB. */
+	/* sjme_scritchpen_coreUtil_rawScanToRgb */
+	sjme_todo("Impl?");
+
+	/* Run conversion from the RGB to the destination. */
+	/* sjme_scritchpen_coreUtil_rgbToRawScan */
+	sjme_todo("Impl?");
+
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -587,86 +847,16 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 	sjme_attrInValue sjme_jboolean mulAlpha,
 	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue)
 {
-	sjme_errorCode error;
-	sjme_jint ex, rawScanBytes, rgbBytes;
-	void* rawScan;
-	sjme_jint* destRgb;
-	
 	if (g == NULL || srcRgb == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* We cannot access a region outside the image bounds. */
-	ex = x + inNumPixels;
-	rgbBytes = inNumPixels * sizeof(*destRgb);
-	if (x < 0 || y < 0 || inNumPixels < 0 ||
-		ex < 0 || ex > g->width || rgbBytes < 0 ||
-		(mulAlpha && (mulAlphaValue < 0 || mulAlphaValue > 255)))
-	{
-#if defined(SJME_CONFIG_DEBUG)
-		sjme_message("rgbScanPut(%p, %d, %d, %p, %d, %d, %d, %d) != [%d, %d]",
-			g, x, y, srcRgb, inNumPixels, srcAlpha, mulAlpha, mulAlphaValue,
-			g->width, g->height);
-#endif
-		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
-	}
-	
-	/* How much data is to be written? */
-	rawScanBytes = (inNumPixels * g->bitsPerPixel) / 8;
-	if (rawScanBytes < 0)
-	{
-#if defined(SJME_CONFIG_DEBUG)
-		sjme_message("rgbScanPut(%p, %d, %d, %p, %d, %d, %d, %d) != [%d, %d]",
-			g, x, y, srcRgb, inNumPixels, srcAlpha, mulAlpha, mulAlphaValue,
-			g->width, g->height);
-#endif
-		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
-	}
-	
-	/* Do we need to alpha blend? */
-	if (srcAlpha || mulAlpha)
-	{
-		/* Allocate dest RGB data. */
-		destRgb = sjme_alloca(rgbBytes);
-		if (destRgb == NULL)
-			return sjme_error_outOfMemory(NULL, rgbBytes);
-		
-		/* Clear. */
-		memset(destRgb, 0, rgbBytes);
-		
-		/* Load in RGB data from image, which might be lossy. */
-		if (sjme_error_is(error = g->util->rgbScanGet(g,
-			x, y, destRgb, inNumPixels)))
-			return sjme_error_default(error);
-		
-		/* Perform blending. */
-		if (sjme_error_is(error = g->util->blendRGBInto(g,
-			g->hasAlpha, srcAlpha,
-			mulAlpha, mulAlphaValue,
-			destRgb, srcRgb, inNumPixels)))
-			return sjme_error_default(error);
-		
-		/* The destination becomes the new source. */
-		srcRgb = destRgb;
-	}
-	
-	/* Allocate raw scan data. */
-	rawScan = sjme_alloca(rawScanBytes);
-	if (rawScan == NULL)
-		return sjme_error_outOfMemory(NULL, rawScanBytes);
-	
-	/* Clear. */
-	memset(rawScan, 0, rawScanBytes);
-	
-	/* Map from RGB to raw pixels. */
-	if (sjme_error_is(error = g->util->rgbToRawScan(g,
-		rawScan, 0, rawScanBytes,
-		srcRgb, 0, inNumPixels)))
-		return sjme_error_default(error);
-	
-	/* Write direct image data. */
-	return g->prim.rawScanPutPure(g,
+
+	/* Forward to generic format scan put. */
+	return g->util->pfScanPut(g,
+		(srcAlpha ? SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 :
+			SJME_GFX_PIXEL_FORMAT_INT_RGB888),
 		x, y,
-		rawScan, rawScanBytes, inNumPixels);
+		srcRgb, inNumPixels,
+		mulAlpha, mulAlphaValue);
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_rgbToRawScan(

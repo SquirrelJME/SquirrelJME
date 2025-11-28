@@ -167,7 +167,9 @@ static const sjme_scritchui_pencilUtilFunctions
 	sjme_sm(.applyAnchor, sjme_scritchpen_coreUtil_applyAnchor),
 	sjme_sm(.applyRotateScale, sjme_scritchpen_coreUtil_applyRotateScale),
 	sjme_sm(.applyTranslate, sjme_scritchpen_coreUtil_applyTranslate),
-	sjme_sm(.rawScanBytes, sjme_scritchpen_coreUtil_rawScanBytes),
+	sjme_sm(.pfScanPut, sjme_scritchpen_coreUtil_pfScanPut),
+	sjme_sm(.pfScanBytes, sjme_scritchpen_coreUtil_pfScanBytes),
+	sjme_sm(.pfScanToPf, sjme_scritchpen_coreUtil_pfScanToPf),
 	sjme_sm(.rgbScanFill, sjme_scritchpen_coreUtil_rgbScanFill),
 	sjme_sm(.rgbScanGet, sjme_scritchpen_coreUtil_rgbScanGet),
 	sjme_sm(.rgbScanPut, sjme_scritchpen_coreUtil_rgbScanPut),
@@ -319,7 +321,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 		result.prim.mapColor = sjme_scritchpen_corePrim_mapColor;
 	
 	/* Determine bytes per pixel. */
-	result.util->rawScanBytes(&result,
+	result.util->pfScanBytes(&result, pf,
 		1, 0,
 		&result.bytesPerPixel, NULL);
 	

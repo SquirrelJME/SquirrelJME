@@ -616,11 +616,38 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapColorFunc)(
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
 
 /**
- * Maps a the number of bytes needed to represent the specified number of
- * pixels in the raw buffer.
+ * Writes specific pixel format data to a single scanline at the given
+ * position. 
+ * 
+ * @param g The graphics to write to.
+ * @param pf The pixel format to write.
+ * @param x The X coordinate to access.
+ * @param y The Y coordinate to access.
+ * @param src Source data to write.
+ * @param inNumPixels The number of pixels to read.
+ * @param mulAlpha Should alpha values in the input buffer be multiplied by
+ * the current alpha value? That is the buffer has significant alpha values.
+ * @param mulAlphaValue The value to multiply with.
+ * @return Any resultant error code.
+ * @since 2025/11/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilPfScanPutFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInNotNullBuf(inLen) sjme_cpointer src,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean mulAlpha,
+	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue);
+
+/**
+ * Maps the number of bytes needed to represent the specified number of
+ * pixels in a buffer for the given pixel format.
  * 
  * @param g The pencil to operate with.
- * @param inPixel The number of pixels to map.
+ * @param pf The pixel format to map.
+ * @param inPixels The number of pixels to map.
  * @param inBytes The number of bytes to use for limit calculation.
  * @param outBytes The number of bytes used to represent the raw pixel data.
  * @param outLimit Optional output value for the smaller of @c outBytes
@@ -628,13 +655,46 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapColorFunc)(
  * @return Any resultant error.
  * @since 2024/07/09
  */
-typedef sjme_errorCode (*sjme_scritchui_pencilRawScanBytesFunc)(
+typedef sjme_errorCode (*sjme_scritchui_pencilPfScanBytesFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
 	sjme_attrInPositiveNonZero sjme_jint inBytes,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes,
 	sjme_attrOutNullable sjme_attrOutPositiveNonZero sjme_jint* outLimit);
 
+/**
+ * Maps a pixel format from one scan format to another.
+ *
+ * @param g The graphics context this is operating under.
+ * @param destPf The destination pixel format.
+ * @param dest The destination buffer.
+ * @param destRawOff The destination offset into the buffer in raw bytes.
+ * @param destRawLen The destination length of the buffer in raw bytes, if
+ * this is @code -1 @endcode then this is determined by the pixel format
+ * and @a inNumPixels .
+ * @param srcPf The source pixel format.
+ * @param srcRawOff The source offset into the buffer in raw bytes.
+ * @param srcRawLen The source length of the buffer in raw bytes, if
+ * this is @code -1 @endcode then this is determined by the pixel format
+ * and @a inNumPixels .
+ * @param src The source buffer.
+ * @param inNumPixels The number of pixels to copy.
+ * @return Any resultant error, if any.
+ * @since 2025/11/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilPfScanToPfFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat destPf,
+	sjme_attrInNotNull sjme_pointer dest,
+	sjme_attrInPositive sjme_jint destRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint destRawLen,
+	sjme_attrInValue sjme_gfx_pixelFormat srcPf,
+	sjme_attrInNotNull sjme_pointer src,
+	sjme_attrInPositive sjme_jint srcRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint srcRawLen,
+	sjme_attrInPositive sjme_jint inNumPixels);
+	
 /**
  * Fills a buffer with the given value. 
  * 
@@ -756,7 +816,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanGetFunc)(
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
 
 /**
- * Writes raw data to a single scanline at the given position. 
+ * Writes RGB data to a single scanline at the given position. 
  * 
  * @param g The graphics to write to.
  * @param x The X coordinate to access.
@@ -1055,8 +1115,14 @@ struct sjme_scritchui_pencilUtilFunctions
 	/** @c BlendRGBInto . */
 	SJME_SCRITCHUI_QUICK_PENCIL(BlendRGBInto, blendRGBInto);
 	
-	/** @c RawScanBytes . */
-	SJME_SCRITCHUI_QUICK_PENCIL(RawScanBytes, rawScanBytes);
+	/** @c PfScanPut . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanPut, pfScanPut);
+	
+	/** @c PfScanBytes . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanBytes, pfScanBytes);
+	
+	/** @c PfScanToPf . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanToPf, pfScanToPf);
 	
 	/** @c RawScanToRgb . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanToRgb, rawScanToRgb);

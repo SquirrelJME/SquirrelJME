@@ -153,13 +153,36 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	sjme_attrInNotNullBuf(numPixels) sjme_jint* dest,
 	sjme_attrInNotNullBuf(numPixels) const sjme_jint* src,
 	sjme_attrInPositive sjme_jint numPixels);
-
-sjme_errorCode sjme_scritchpen_coreUtil_rawScanBytes(
+	
+sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInNotNullBuf(inLen) sjme_cpointer src,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean mulAlpha,
+	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue);
+
+sjme_errorCode sjme_scritchpen_coreUtil_pfScanBytes(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
 	sjme_attrInPositiveNonZero sjme_jint inBytes,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes,
 	sjme_attrOutNullable sjme_attrOutPositiveNonZero sjme_jint* outLimit);
+	
+sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat destPf,
+	sjme_attrInNotNull sjme_pointer dest,
+	sjme_attrInPositive sjme_jint destRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint destRawLen,
+	sjme_attrInValue sjme_gfx_pixelFormat srcPf,
+	sjme_attrInNotNull sjme_pointer src,
+	sjme_attrInPositive sjme_jint srcRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint srcRawLen,
+	sjme_attrInPositive sjme_jint inNumPixels);
 	
 sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
