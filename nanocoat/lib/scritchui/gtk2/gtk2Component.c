@@ -97,11 +97,15 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 	/* Setup pencil for drawing. */
 	pencil = &paint->pencil;
 	memset(pencil, 0, sizeof(*pencil));
-	if (sjme_error_is(error = sjme_scritchpen_initStatic(pencil,
+	if (sjme_error_is(sjme_scritchpen_initStatic(pencil,
 		inState,
 		&sjme_scritchui_gtk2_pencilFunctions,
 		NULL, NULL,
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+		SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888,
+#else
 		SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888,
+#endif
 		0, 0, w, h, w,
 		defaultFont, &frontEnd)))
 		return FALSE;

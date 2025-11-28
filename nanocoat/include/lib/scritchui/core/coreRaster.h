@@ -165,6 +165,15 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	sjme_attrInNotNullBuf(numPixels) sjme_jint* dest,
 	sjme_attrInNotNullBuf(numPixels) const sjme_jint* src,
 	sjme_attrInPositive sjme_jint numPixels);
+
+sjme_errorCode sjme_scritchpen_coreUtil_pfScanGet(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrOutNotNullBuf(inDataLen) sjme_pointer dest,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
 	
 sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

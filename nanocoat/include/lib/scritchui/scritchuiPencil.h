@@ -616,6 +616,28 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapColorFunc)(
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
 
 /**
+ * Reads the given pixel format from a single scanline at the given position. 
+ * 
+ * @param g The graphics to read from.
+ * @param pf The pixel format to read as.
+ * @param x The X coordinate to access.
+ * @param y The Y coordinate to access.
+ * @param dest The resultant pixel data.
+ * @param inDataLen Length of the data buffer.
+ * @param inNumPixels The number of pixels to read.
+ * @return Any resultant error code.
+ * @since 2025/11/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilPfScanGetFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrOutNotNullBuf(inDataLen) sjme_pointer dest,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
+	
+/**
  * Writes specific pixel format data to a single scanline at the given
  * position. 
  * 
@@ -1194,6 +1216,9 @@ struct sjme_scritchui_pencilUtilFunctions
 	
 	/** @c BlendRGBInto . */
 	SJME_SCRITCHUI_QUICK_PENCIL(BlendRGBInto, blendRGBInto);
+	
+	/** @c PfScanGet . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanGet, pfScanGet);
 	
 	/** @c PfScanPut . */
 	SJME_SCRITCHUI_QUICK_PENCIL(PfScanPut, pfScanPut);

@@ -278,6 +278,25 @@ sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchpen_coreUtil_pfScanGet(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrOutNotNullBuf(inDataLen) sjme_pointer dest,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels)
+{
+	if (g == NULL || dest == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (pf < 0 || pf >= SJME_NUM_GFX_PIXEL_FORMATS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,

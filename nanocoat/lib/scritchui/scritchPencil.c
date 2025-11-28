@@ -167,6 +167,7 @@ static const sjme_scritchui_pencilUtilFunctions
 	sjme_sm(.applyAnchor, sjme_scritchpen_coreUtil_applyAnchor),
 	sjme_sm(.applyRotateScale, sjme_scritchpen_coreUtil_applyRotateScale),
 	sjme_sm(.applyTranslate, sjme_scritchpen_coreUtil_applyTranslate),
+	sjme_sm(.pfScanGet, sjme_scritchpen_coreUtil_pfScanGet),
 	sjme_sm(.pfScanPut, sjme_scritchpen_coreUtil_pfScanPut),
 	sjme_sm(.pfScanBits, sjme_scritchpen_coreUtil_pfScanBits),
 	sjme_sm(.pfScanBytes, sjme_scritchpen_coreUtil_pfScanBytes),
