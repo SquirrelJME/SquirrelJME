@@ -449,7 +449,6 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 {
 	sjme_scritchui_pencilMatrix result;
 	sjme_fixed scaleX, scaleY, temp;
-	sjme_jint xform;
 	
 	if (outMatrix == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -461,57 +460,113 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 	scaleX = sjme_fixed_fraction(wSrc, wDest);
 	scaleY = sjme_fixed_fraction(hSrc, hDest);
 	
-	/* This is simple enough to calculate, is just the destination. */
-	result.tw = wDest;
-	result.th = hDest;
-	
-	/* Determine the transformation functions to use. There are just three */
-	/* primitive transformation functions: flip horizontally, then */
-	/* flip vertically, then rotate 90 degrees clockwise. This handles */
-	/* every transformation which fill every single bit. */
-	switch (inTrans)
+	/**
+	 * This is simple enough to calculate, it's just the destination but with
+	 * its width and height swapped if we're handling any 90 or 270 transform
+	 * variation.
+	 */
+	if(inTrans == SJME_SCRITCHUI_TRANS_ROT90 ||
+		inTrans == SJME_SCRITCHUI_TRANS_ROT270 ||
+		inTrans == SJME_SCRITCHUI_TRANS_MIRROR_ROT90 ||
+		inTrans == SJME_SCRITCHUI_TRANS_MIRROR_ROT270)
 	{
-		/* These bits represent the stuff to do! == 0b9VH; */
-		case SJME_SCRITCHUI_TRANS_NONE:				xform = 0; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR:			xform = 1; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:	xform = 2; break;
-		case SJME_SCRITCHUI_TRANS_ROT180:			xform = 3; break;
-		case SJME_SCRITCHUI_TRANS_ROT90:			xform = 4; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 5; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 6; break;
-		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 7; break;
-		/* These bits represent the stuff to do! == 0b9VH; */
-
-		default:
-			return sjme_error_notImplemented(0);
+		result.tw = hDest;
+		result.th = wDest;
 	}
+	else
+	{
+		result.tw = wDest;
+		result.th = hDest;
+	}
+
+	/**
+	 * Determine the transformation function to use.
+	 *
+	 * Once a case is matched, the transformation is done and the code skips
+	 * directly to applying it to the output, saving unnecessary if checks,
+	 * especially for the more common cases like TRANS_MIRROR.
+	 */
 	
 	/* Start with this. */
 	result.x.wx = scaleX;
 	result.y.zy = scaleY;
 	
 	/* Mirror horizontally? */
-	if ((xform & 1) != 0)
+	if (inTrans == SJME_SCRITCHUI_TRANS_MIRROR)
+	{
 		result.x.wx = -result.x.wx;
-		
+		goto send_to_out;
+	}
+
 	/* Mirror vertically? */
-	if ((xform & 2) != 0)
+	if (inTrans == SJME_SCRITCHUI_TRANS_MIRROR_ROT180)
+	{
 		result.y.zy = -result.y.zy;
-		
+		goto send_to_out;
+	}
+
 	/* Rotate 90 degrees clockwise */
 	/* Thanks to jercos for helping out with the matrix math! */
 	/* The math here has been simplified to remove constants and otherwise. */
-	if ((xform & 4) != 0)
+	if (inTrans == SJME_SCRITCHUI_TRANS_ROT90)
 	{
 		temp = result.x.wx;
 		result.x.wx = result.x.zy;
 		result.x.zy = -temp;
-		
+
 		temp = result.y.wx;
 		result.y.wx = result.y.zy;
 		result.y.zy = -temp;
+		goto send_to_out;
 	}
-	
+
+	/* Mirror horizontally and rotate 90 degrees clockwise */
+	if(inTrans == SJME_SCRITCHUI_TRANS_MIRROR_ROT90)
+	{
+		temp = result.x.wx;
+		result.x.wx = -result.x.zy;
+		result.x.zy = -temp;
+
+		temp = result.y.wx;
+		result.y.wx = -result.y.zy;
+		result.y.zy = -temp;
+		goto send_to_out;
+	}
+
+	/* Rotate 180 degrees clockwise. Essentially a hor + vert mirror. */
+	if (inTrans == SJME_SCRITCHUI_TRANS_ROT180)
+	{
+		result.x.wx = -result.x.wx;
+		result.y.zy = -result.y.zy;
+		goto send_to_out;
+	}
+
+	/* Rotate 270 degrees clockwise (A.K.A. 90 degrees counter-clockwise). */
+	if(inTrans == SJME_SCRITCHUI_TRANS_ROT270)
+	{
+		temp = result.x.wx;
+		result.x.wx = -result.x.zy;
+		result.x.zy = temp;
+
+		temp = result.y.wx;
+		result.y.wx = -result.y.zy;
+		result.y.zy = temp;
+		goto send_to_out;
+	}
+
+	/* Mirror horizontally and rotate 270 degrees clockwise */
+	if(inTrans == SJME_SCRITCHUI_TRANS_MIRROR_ROT270)
+	{
+		temp = result.x.wx;
+		result.x.wx = result.x.zy;
+		result.x.zy = temp;
+
+		temp = result.y.wx;
+		result.y.wx = result.y.zy;
+		result.y.zy = temp;
+	}
+
+send_to_out:
 	/* Success! */
 	memmove(outMatrix, &result, sizeof(result));
 	return SJME_ERROR_NONE;
