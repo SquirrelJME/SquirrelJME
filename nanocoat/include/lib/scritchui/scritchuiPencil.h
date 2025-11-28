@@ -642,6 +642,28 @@ typedef sjme_errorCode (*sjme_scritchui_pencilPfScanPutFunc)(
 	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue);
 
 /**
+ * Maps the number of bits needed to represent the specified number of
+ * pixels in a buffer for the given pixel format.
+ * 
+ * @param g The pencil to operate with.
+ * @param pf The pixel format to map.
+ * @param inPixels The number of pixels to map.
+ * @param inBits The number of bits to use for limit calculation.
+ * @param outBits The number of bits used to represent the raw pixel data.
+ * @param outLimit Optional output value for the smaller of @c outBytes
+ * and @c inBytes .
+ * @return Any resultant error.
+ * @since 2025/11/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilPfScanBitsFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositiveNonZero sjme_jint inPixels,
+	sjme_attrInPositiveNonZero sjme_jint inBits,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBits,
+	sjme_attrOutNullable sjme_attrOutPositiveNonZero sjme_jint* outLimit);
+
+/**
  * Maps the number of bytes needed to represent the specified number of
  * pixels in a buffer for the given pixel format.
  * 
@@ -1117,6 +1139,9 @@ struct sjme_scritchui_pencilUtilFunctions
 	
 	/** @c PfScanPut . */
 	SJME_SCRITCHUI_QUICK_PENCIL(PfScanPut, pfScanPut);
+	
+	/** @c PfScanBits . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanBits, pfScanBits);
 	
 	/** @c PfScanBytes . */
 	SJME_SCRITCHUI_QUICK_PENCIL(PfScanBytes, pfScanBytes);

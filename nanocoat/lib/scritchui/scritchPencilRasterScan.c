@@ -277,12 +277,8 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 		inNumPixels, -1, &pfBytes, NULL)) ||
 		pfBytes < 0)
 	{
-#if defined(SJME_CONFIG_DEBUG)
-		sjme_message("pfScanPut(%p, %d, %d, %d, %p, %d, %d, %d) != [%d, %d]",
-			g, pf, x, y, src, inNumPixels, mulAlpha, mulAlphaValue,
-			g->width, g->height);
-#endif
-		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+		error = sjme_error_defaultOr(error, SJME_ERROR_SCAN_OUT_OF_BOUNDS);
+		goto fail_oob;
 	}
 	
 	/* How much data is to be written? */
@@ -291,12 +287,8 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 		inNumPixels, -1, &rsBytes, NULL)) ||
 		rsBytes < 0)
 	{
-#if defined(SJME_CONFIG_DEBUG)
-		sjme_message("pfScanPut(%p, %d, %d, %d, %p, %d, %d, %d) != [%d, %d]",
-			g, pf, x, y, inNumPixels, mulAlpha, mulAlphaValue,
-			g->width, g->height);
-#endif
-		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+		error = sjme_error_defaultOr(error, SJME_ERROR_SCAN_OUT_OF_BOUNDS);
+		goto fail_oob;
 	}
 	
 	/* Allocate raw scan data. */
@@ -318,7 +310,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 			SJME_GFX_PIXEL_FORMAT_INT_ARGB8888,
 			inNumPixels, -1, &blendBytes, NULL)) ||
 			blendBytes < 0)
-			return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+			goto fail_oob;
 
 		/* Allocate both source and destination RGB buffers, for blending. */
 		/* This is needed because we need a temporary buffer and also the */
@@ -329,8 +321,8 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 			goto fail_allocBlends;
 
 		/* Need to clear both. */
-		memset(blendDest, 0, pfBytes);
-		memset(blendSrc, 0, pfBytes);
+		memset(blendDest, 0, blendBytes);
+		memset(blendSrc, 0, blendBytes);
 
 		/* Load in the destination data as RGB, this needs to be blended */
 		/* onto. */
@@ -342,9 +334,9 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 		/* RGB format regardless. */
 		if (sjme_error_is(error = g->util->pfScanToPf(g,
 			SJME_GFX_PIXEL_FORMAT_INT_ARGB8888,
-			blendSrc, blendBytes, -1,
+			blendSrc, 0, blendBytes,
 			pf,
-			(void*)src, pfBytes, -1,
+			(void*)src, 0, pfBytes,
 			inNumPixels)))
 			goto fail_srcBlendMap;
 
@@ -358,9 +350,9 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 		/* Map from RGB to the format that the raw scan is using. */
 		if (sjme_error_is(error = g->util->pfScanToPf(g,
 			g->pixelFormat,
-			rsScan, rsBytes, -1,
+			rsScan, 0, rsBytes,
 			SJME_GFX_PIXEL_FORMAT_INT_ARGB8888,
-			blendDest, blendBytes, -1,
+			blendDest, 0, blendBytes,
 			inNumPixels)))
 			goto fail_destMapBlend;
 	}
@@ -371,9 +363,9 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 		/* Map from the given PF to raw pixels. */
 		if (sjme_error_is(error = g->util->pfScanToPf(g,
 			g->pixelFormat,
-			rsScan, rsBytes, -1,
+			rsScan, 0, rsBytes,
 			pf,
-			src, pfBytes, -1,
+			(void*)src, 0, pfBytes,
 			inNumPixels)))
 			goto fail_destMapBlend;
 	}
@@ -394,6 +386,12 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 	/* Success! */
 	return SJME_ERROR_NONE;
 
+fail_oob:
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message("pfScanPut(%p, %d, %d, %d, %p, %d, %d, %d) != [%d, %d]",
+		g, pf, x, y, inNumPixels, mulAlpha, mulAlphaValue,
+		g->width, g->height);
+#endif
 fail_srcBlendMap:
 fail_destMapBlend:
 fail_blendInto:
@@ -409,6 +407,95 @@ fail_mapToRaw:
 		sjme_alloca_free(rsScan);
 	
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_scritchpen_coreUtil_pfScanBits(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositiveNonZero sjme_jint inPixels,
+	sjme_attrInPositiveNonZero sjme_jint inBits,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBits,
+	sjme_attrOutNullable sjme_attrOutPositiveNonZero sjme_jint* outLimit)
+{
+	sjme_jint result;
+	
+	if (g == NULL || outBits == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (pf < 0 || pf >= SJME_NUM_GFX_PIXEL_FORMATS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (inPixels < 0 || (outLimit != NULL && inBits < 0))
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Depends on the pixel format. */
+	switch (pf)
+	{
+		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
+		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
+			result = inPixels * 32;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
+			result = inPixels * 24;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB444:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
+			result = inPixels * 16;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
+			result = inPixels * 8;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
+			result = inPixels * 4;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
+			result = inPixels * 2;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
+			result = inPixels * 1;
+			break;
+
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	/* Make sure what was calculated did not overflow. */
+	if (result < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Calculate smaller value? */
+	if (outLimit != NULL)
+	{
+		/* Use the smaller of the two. */
+		if (result < inBits)
+			*outLimit = inBits;
+		else
+			*outLimit = result;
+	}
+	
+	/* Success! */
+	*outBits = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_pfScanBytes(
@@ -431,7 +518,6 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanBytes(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Depends on the pixel format. */
-	result = -1;
 	switch (pf)
 	{
 		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
@@ -479,7 +565,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanBytes(
 			break;
 
 		default:
-			return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+			return SJME_ERROR_INVALID_ARGUMENT;
 	}
 	
 	/* Make sure what was calculated did not overflow. */
@@ -514,6 +600,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 	sjme_attrInPositive sjme_jint inNumPixels)
 {
 	sjme_errorCode error;
+	sjme_jint destBytes, srcBytes;
 	sjme_jint rgbBytes;
 	sjme_jint* rgbScan;
 	
@@ -531,23 +618,52 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 	if (inNumPixels < 0)
 		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
 
-	/* Calculate actual lengths from input values? */
+	/* Calculate actual lengths from input values and offset? */
 	/* Destination. */
 	if (destRawLen < 0)
+	{
+		/* Calculate base. */
 		if (sjme_error_is(error = sjme_scritchpen_coreUtil_pfScanBytes(
 			g, destPf, inNumPixels, -1,
 			&destRawLen, NULL)) || destRawLen < 0)
 			return sjme_error_default(error);
 
+		/* Add in offset, as it is implied. */
+		destRawLen += destRawOff;
+	}
+
 	/* Source. */
 	if (srcRawLen < 0)
+	{
 		if (sjme_error_is(error = sjme_scritchpen_coreUtil_pfScanBytes(
-			g, destPf, inNumPixels, -1,
+			g, srcPf, inNumPixels, -1,
 			&srcRawLen, NULL)) || srcRawLen < 0)
 			return sjme_error_default(error);
 
-	/* Double check bounds. */
-	if ((destRawOff + destRawLen) < 0 || (srcRawOff + srcRawLen) < 0)
+		/* Calculate base. */
+		/* Add in offset, as it is implied. */
+		srcRawLen += srcRawOff;
+	}
+
+	/* Determine destination bytes. */
+	destBytes = -1;
+	if (sjme_error_is(error = g->util->pfScanBytes(g, destPf,
+		inNumPixels, -1, &destBytes, NULL)) ||
+		destBytes < 0)
+		return sjme_error_default(error);
+
+	/* Determine source bytes. */
+	srcBytes = -1;
+	if (sjme_error_is(error = g->util->pfScanBytes(g, srcPf,
+		inNumPixels, -1, &srcBytes, NULL)) ||
+		srcBytes < 0)
+		return sjme_error_default(error);
+
+	/* Double check bounds and overflow. */
+	if ((destRawOff + destBytes) < 0 ||
+		(destRawOff + destBytes) > destRawLen ||
+		(srcRawOff + srcBytes) < 0 ||
+		(srcRawOff + srcBytes) > srcRawLen)
 		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
 
 	/* If the pixel format is the same, we can short circuit and just copy */
@@ -557,7 +673,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 		/* Direct move over. */
 		memmove(SJME_POINTER_OFFSET(dest, destRawOff),
 			SJME_POINTER_OFFSET(src, srcRawOff),
-			(destRawLen < srcRawLen ? destRawLen : srcRawLen));
+			(destBytes < srcBytes ? destBytes : srcBytes));
 		
 		/* Success! */
 		return SJME_ERROR_NONE;
@@ -849,6 +965,10 @@ sjme_errorCode sjme_scritchpen_coreUtil_rgbScanPut(
 {
 	if (g == NULL || srcRgb == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Missing implementation? */
+	if (g->util->pfScanPut == NULL)
+		return sjme_error_notImplemented(0);
 
 	/* Forward to generic format scan put. */
 	return g->util->pfScanPut(g,

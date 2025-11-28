@@ -71,6 +71,11 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	rgbScan = sjme_alloca(sizeof(*rgbScan) * w);
 	if (rgbScan == NULL)
 		return sjme_error_outOfMemory(NULL, w);
+
+	/* Missing implementation? */
+	if (g->util->rgbScanFill == NULL ||
+		g->util->rgbScanPut == NULL)
+		return sjme_error_notImplemented(0);
 	
 	/* Fill RGB buffer. */
 	memset(rgbScan, 0, sizeof(*rgbScan) * w);

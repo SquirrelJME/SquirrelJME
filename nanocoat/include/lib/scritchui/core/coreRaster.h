@@ -163,6 +163,14 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
 	sjme_attrInValue sjme_jboolean mulAlpha,
 	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue);
+	
+sjme_errorCode sjme_scritchpen_coreUtil_pfScanBits(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositiveNonZero sjme_jint inPixels,
+	sjme_attrInPositiveNonZero sjme_jint inBits,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBits,
+	sjme_attrOutNullable sjme_attrOutPositiveNonZero sjme_jint* outLimit);
 
 sjme_errorCode sjme_scritchpen_coreUtil_pfScanBytes(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
