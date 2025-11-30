@@ -19,10 +19,67 @@ message(STATUS "install4jc: ${Install4JC_EXECUTABLE}")
 option(SQUIRRELJME_INSTALL4J_BUNDLE
 	"Build all Install4J installers as a single bundle." YES)
 
+# Utilities used to convert icons
+find_program(convert_EXECUTABLE
+	NAMES "convert")
+
 # Builds Install4J executables for every OS on-top of the standalone
-if(Install4JC_EXECUTABLE)
+if(Install4JC_EXECUTABLE AND (convert_EXECUTABLE))
 	# Where are the installers placed?
 	set(SQUIRRELJME_INSTALL4J_OUT_DIR "${CMAKE_BINARY_DIR}/install4j")
+
+	# Input icons
+	list(APPEND SQUIRRELJME_ICONS
+		"head_8x8.xpm"
+		"head_16x16.xpm"
+		"head_24x24.xpm"
+		"head_32x32.xpm"
+		"head_48x48.xpm"
+		"head_64x64.xpm"
+		"head_128x128.xpm")
+
+	# Convert icons, make sure output exists first
+	add_custom_target(install4jIcons)
+
+	# Add target for each icon version
+	foreach(xpmIcon IN LISTS SQUIRRELJME_ICONS)
+		# Replace XPM
+		string(REPLACE ".xpm" ".png" pngIcon "${xpmIcon}")
+
+		# Notice
+		message(STATUS "Convert icon ${xpmIcon} -> ${pngIcon}")
+
+		# Input
+		file(TO_CMAKE_PATH
+			"${CMAKE_SOURCE_DIR}/assets/mascot/${xpmIcon}"
+			inIcon)
+		file(TO_NATIVE_PATH
+			"${inIcon}"
+			inIconNative)
+
+		# Output
+		file(TO_CMAKE_PATH
+			"${CMAKE_BINARY_DIR}/icons/${pngIcon}"
+			outIcon)
+		file(TO_NATIVE_PATH
+			"${outIcon}"
+			outIconNative)
+
+		# Add command
+		if(convert_EXECUTABLE)
+			add_custom_target(install4jIcons${xpmIcon}
+				COMMAND "${CMAKE_COMMAND}" "-E" "make_directory"
+					"${CMAKE_BINARY_DIR}/icons"
+				COMMAND "${convert_EXECUTABLE}"
+					"${inIconNative}" "${outIconNative}"
+				COMMENT "Converting ${xpmIcon} -> ${pngIcon}"
+				SOURCES "${inIcon}"
+				BYPRODUCTS "${outIcon}")
+		endif()
+
+		# All icons depend on this
+		add_dependencies(install4jIcons install4jIcons${xpmIcon})
+	endforeach()
 
 	# Macro to make adding installers nad installers by ID much easier
 	macro(squirreljme_install4j_register mediaId generatedPath)
@@ -147,6 +204,10 @@ if(Install4JC_EXECUTABLE)
 	get_target_property(sourcePath sourceZip SQUIRRELJME_OUTPUT_PATH)
 	file(TO_NATIVE_PATH "${sourcePath}" sourcePathNative)
 
+	# Determine icon path
+	file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/icons" iconPath)
+	file(TO_NATIVE_PATH "${iconPath}" iconPathNative)
+
 	# Build all installers at once
 	if(SQUIRRELJME_INSTALL4J_BUNDLE)
 		# Setup rule to build all at once
@@ -157,11 +218,12 @@ if(Install4JC_EXECUTABLE)
 			COMMAND "${Install4JC_EXECUTABLE}"
 				"-D" "squirreljme.standalone.path=${standalonePathNative}"
 				"-D" "squirreljme.source.path=${sourcePathNative}"
+				"-D" "squirreljme.icon.path=${iconPathNative}"
 				"-r" "${SQUIRRELJME_VERSION}"
 				"-d" "${SQUIRRELJME_INSTALL4J_OUT_DIR}"
 				"-b" "${mediaIdsComma}"
 				"${CMAKE_SOURCE_DIR}/squirreljme.install4j"
-			DEPENDS standaloneJar sourceZip
+			DEPENDS standaloneJar sourceZip install4jIcons
 			BYPRODUCTS "${mediaOutDir}"
 			SOURCES "${CMAKE_SOURCE_DIR}/squirreljme.install4j"
 			COMMAND_EXPAND_LISTS)
@@ -196,11 +258,12 @@ if(Install4JC_EXECUTABLE)
 				COMMAND "${Install4JC_EXECUTABLE}"
 					"-D" "squirreljme.standalone.path=${standalonePathNative}"
 					"-D" "squirreljme.source.path=${sourcePathNative}"
+					"-D" "squirreljme.icon.path=${iconPathNative}"
 					"-r" "${SQUIRRELJME_VERSION}"
 					"-d" "${mediaOutDir}"
 					"-b" "${mediaId}"
 					"${CMAKE_SOURCE_DIR}/squirreljme.install4j"
-				DEPENDS standaloneJar sourceZip
+				DEPENDS standaloneJar sourceZip install4jIcons
 				BYPRODUCTS "${mediaOutDir}"
 				SOURCES "${CMAKE_SOURCE_DIR}/squirreljme.install4j"
 				COMMAND_EXPAND_LISTS)
