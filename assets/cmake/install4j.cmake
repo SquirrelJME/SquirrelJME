@@ -155,7 +155,7 @@ if(Install4JC_EXECUTABLE)
 			COMMAND "${CMAKE_COMMAND}" "-E"
 				"make_directory" "${SQUIRRELJME_INSTALL4J_OUT_DIR}"
 			COMMAND "${Install4JC_EXECUTABLE}"
-				"-D" "squirreljme.standalone.path=${sourcePathNative}"
+				"-D" "squirreljme.standalone.path=${standalonePathNative}"
 				"-D" "squirreljme.source.path=${sourcePathNative}"
 				"-r" "${SQUIRRELJME_VERSION}"
 				"-d" "${SQUIRRELJME_INSTALL4J_OUT_DIR}"

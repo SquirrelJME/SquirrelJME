@@ -240,13 +240,13 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	result.forceTranslate.y = ty;
 	
 	/* Determine bits and bytes per pixel. */
-	result.bytesPerPixel = -1;
-	result.bytesPerPixel = -1;
+	result.bitsPerPixel = -1;
 	if (sjme_error_is(error = result.util->pfScanBits(&result, pf,
 		1, -1,
 		&result.bitsPerPixel, NULL)) ||
 		result.bitsPerPixel <= 0)
 		goto fail_determineBpp;
+	result.bytesPerPixel = -1;
 	if (sjme_error_is(error = result.util->pfScanBytes(&result, pf,
 		1, -1,
 		&result.bytesPerPixel, NULL)) ||
@@ -254,7 +254,14 @@ sjme_errorCode sjme_scritchpen_initStatic(
 		goto fail_determineBpp;
 	
 	/* Determine raw scan line length. */
-	result.scanLenBytes = (result.scanLenPixels * result.bitsPerPixel) / 8;
+	/* Note that the scanline length needs to be ceil() to a full byte. */
+	result.scanLenBits = (sjme_jint)sjme_util_alignTo(
+		result.scanLenPixels * result.bitsPerPixel, 8);
+	result.scanLenBytes = result.scanLenBits / 8;
+
+	/* Overflowed? */
+	if (result.scanLenBits <= 0 || result.scanLenBytes <= 0)
+		goto fail_determineBpp;
 	
 	/* Copy lock front end source? */
 	if (inLockFuncs != NULL && inLockFrontEndCopy != NULL)
