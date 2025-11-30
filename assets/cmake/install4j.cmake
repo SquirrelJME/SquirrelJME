@@ -59,6 +59,18 @@ if(Install4JC_EXECUTABLE)
 		## Bundle files
 		list(REMOVE_DUPLICATES SQUIRRELJME_INSTALL4J_BUNDLE_FILES)
 		list(SORT SQUIRRELJME_INSTALL4J_BUNDLE_FILES)
+
+		# Need to force set this into the cache in order to make them
+		# truly global unfortunately
+		set(SQUIRRELJME_INSTALL4J_IDS
+			"${SQUIRRELJME_INSTALL4J_IDS}"
+			CACHE STRING "" FORCE)
+		set(SQUIRRELJME_INSTALL4J_ID${mediaId}_FILES
+			"${SQUIRRELJME_INSTALL4J_ID${mediaId}_FILES}"
+			CACHE STRING "" FORCE)
+		set(SQUIRRELJME_INSTALL4J_BUNDLE_FILES
+			"${SQUIRRELJME_INSTALL4J_BUNDLE_FILES}"
+			CACHE STRING "" FORCE)
 	endmacro()
 
 	# Install4J identifies each media specifically by its ID, there is the
