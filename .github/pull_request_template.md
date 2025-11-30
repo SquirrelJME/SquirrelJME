@@ -8,7 +8,7 @@ In order to make a contribution, you must agree to the contributor agreement:
 You grant Stephanie Gawroriski an irrevocable license that:
 
  1. That you own the contributing work.
- 2. Grants a patent license, as per the GNU GPLv3.
+ 2. Is to your knowledge not encumbered by any patents.
  3. Granting Stephanie Gawroriski permission to redistribute, sell, lease,
     modify, transform, translate, and relicense the specified works. This
     is to simplify the licensing of the project and permit it to be
@@ -18,6 +18,7 @@ You grant Stephanie Gawroriski an irrevocable license that:
     contributions to this project.
  5. Have pledged to follow the Code of Conduct.
  6. Have read and understand the Ettiquite.
+ 7. Understand that the code will be placed under the MPLv2.
 ```
 
 Choose one of the following:
