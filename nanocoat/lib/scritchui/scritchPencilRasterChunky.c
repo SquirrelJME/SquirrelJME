@@ -86,6 +86,7 @@ sjme_errorCode sjme_scritchpen_core_copyArea(
 	sjme_errorCode error;
 	sjme_jint tmpSx, tmpSy, scanlineSize;
 	sjme_cpointer copiedArea;
+	sjme_jint y;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -93,6 +94,25 @@ sjme_errorCode sjme_scritchpen_core_copyArea(
 	/* The source rectangle must always be in bounds. */
 	if (sx < 0 || sx < 0 || sx + w > g->width || sy + h > g->height)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/**
+	 * The destination area on the other hand, can extend beyond the context
+	 * bounds, we just don't copy whatever's outside.
+	 */
+	if (dx < 0)
+	{
+		w += dx;
+		dx = 0;
+	}
+	if (dy < 0)
+	{
+		h += dy;
+		dy = 0;
+	}
+	if(dx + w > g->width)
+		w = g->width - dx;
+	if(dy + h > g->height)
+		h = g->height - dy;
 
 	/* Drawing nothing? */
 	if (w <= 0 || h <= 0)
@@ -117,7 +137,7 @@ sjme_errorCode sjme_scritchpen_core_copyArea(
 	 * image. We can get away with just figuring out the native image format,
 	 * and then go straight to copying from there.
 	 */
-	scanlineSize = (w * g->bitsPerPixel) / 8;
+	g->util->pfScanBytes(g, g->pixelFormat, w, -1, &scanlineSize, NULL);
 	copiedArea = sjme_alloca(scanlineSize * h);
 	if (copiedArea == NULL)
 		return sjme_error_defaultOr(error,
@@ -125,11 +145,9 @@ sjme_errorCode sjme_scritchpen_core_copyArea(
 	
 	memset(copiedArea, 0, scanlineSize * h);
 
-	for(int y = 0; y < h; y++)
-	{
+	for(y = 0; y < h; y++)
 		error |= g->prim.rawScanGet(g, sx, sy + y,
-			(copiedArea + y * scanlineSize), scanlineSize, w);
-	}
+			(copiedArea + (y * scanlineSize)), scanlineSize, w);
 
 	sjme_scritchpen_coreUtil_applyTranslate(g, &tmpSx, &tmpSy);
 
@@ -142,38 +160,13 @@ sjme_errorCode sjme_scritchpen_core_copyArea(
 	sjme_scritchpen_coreUtil_applyTranslate(g, &dx, &dy);
 
 	/**
-	 * The destination area on the other hand, can extend beyond the context
-	 * bounds, we just don't copy whatever's outside.
-	 */
-	if (dx < 0)
-	{
-		w += dx;
-		dx = 0;
-	}
-	if (dy < 0)
-	{
-		h += dy;
-		dy = 0;
-	}
-	if(dx + w > g->width)
-		w = g->width - dx;
-	if(dy + h > g->height)
-		h = g->height - dy;
-
-	/* Drawing nothing? */
-	if (w <= 0 || h <= 0)
-		goto nodraw;
-
-	/**
 	 * Copy the source region into the destination. Note that copyArea is only
 	 * used for mutable images, which only contain opaque pixels as per MIDP 2.
 	 * Thus, no alpha handling is needed.
 	 */
-	for(int y = 0; y < h; y++)
-	{
+	for(y = 0; y < h; y++)
 		error |= g->prim.rawScanPutPure(g, dx, dy + y,
-			(copiedArea + y * scanlineSize), scanlineSize, w);
-	}
+			(copiedArea + (y * scanlineSize)), scanlineSize, w);
 
 nodraw:
 	sjme_alloca_free(copiedArea);
