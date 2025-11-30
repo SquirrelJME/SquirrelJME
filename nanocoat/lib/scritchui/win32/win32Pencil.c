@@ -135,6 +135,7 @@ static sjme_errorCode sjme_scritchui_win32_pencilRawScanPutPure(
 	sjme_attrInPositiveNonZero sjme_jint srcRawLen,
 	sjme_attrInPositiveNonZero sjme_jint srcNumPixels)
 {
+	sjme_errorCode error;
 	sjme_scritchui inState;
 	HWND hWnd;
 	HDC hDc;
