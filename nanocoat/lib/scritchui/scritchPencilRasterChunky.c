@@ -84,27 +84,127 @@ sjme_errorCode sjme_scritchpen_core_copyArea(
 	sjme_attrInValue sjme_jint anchor)
 {
 	sjme_errorCode error;
+	sjme_jint scanlineBytes, copiedBytes;
+	sjme_pointer copiedArea, areaP;
+	sjme_jint y, zy;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* The source rectangle must always be in bounds. */
+	if (sx < 0 || sy < 0 || sx + w < 0 || sy + h < 0 ||
+		sx + w > g->width || sy + h > g->height)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* The destination area on the other hand, can extend beyond the context */
+	/* bounds, we just don't copy whatever's outside. */
+	if (dx < 0)
+	{
+		w += dx;
+		dx = 0;
+	}
+	
+	if (dy < 0)
+	{
+		h += dy;
+		dy = 0;
+	}
+
+	/* Clip to within bounds. */
+	if (dx + w > g->width)
+		w = g->width - dx;
+	if (dy + h > g->height)
+		h = g->height - dy;
+
+	/* Drawing nothing? */
+	if (w <= 0 || h <= 0)
+		return SJME_ERROR_NONE;
+
+	/* Translate base coordinates. */
+	sjme_scritchpen_coreUtil_applyTranslate(g, &sx, &sy);
+	sjme_scritchpen_coreUtil_applyTranslate(g, &dx, &dy);
+
+	/* Apply anchor to the destination area. */
+	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(anchor,
+		dx, dy, w, h, 0, &dx, &dy)))
+		return sjme_error_default(error);
+
+	/* Make sure the scanline does not overflow. */
+	scanlineBytes = -1;
+	if (sjme_error_is(error = g->util->pfScanBytes(g, g->pixelFormat,
+		w, -1, &scanlineBytes, NULL)) ||
+		scanlineBytes < 0)
+		goto fail_scanBytes;
+
+	/* And additionally ensure the entire temporary buffer does not overflow */
+	/* as well. */
+	copiedBytes = scanlineBytes * h;
+	if (copiedBytes < 0)
+	{
+		error = SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+		goto fail_scanOverflow;
+	}
+
+	/* Allocate temporary buffer as the copy must be an "atomic" operation. */
+	copiedArea = sjme_alloca(copiedBytes);
+	if (copiedArea == NULL)
+	{
+		error = sjme_error_outOfMemory(NULL, copiedBytes);
+		goto fail_alloca;
+	}
+
+	/* Clear. */
+	memset(copiedArea, 0, copiedBytes);
 	
 	/* Need to lock? */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
+
+	/* A neat property here is that we don't need to worry about format */
+	/* conversion, as the data is being copied between regions of the same */
+	/* image. We can get away with just figuring out the native image */
+	/* format, and then go straight to copying from there. */
+	error = SJME_ERROR_NONE;
+	for(y = 0, zy = sy, areaP = copiedArea; y < h;
+		y++, zy++, areaP = SJME_POINTER_OFFSET(areaP, scanlineBytes))
+		error |= g->prim.rawScanGet(g, sx, zy,
+			areaP, scanlineBytes, w);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Now start moving to the destination in order to copy into it. */
 	
+	/* Copy the source region into the destination. Note that copyArea is */
+	/* only used for mutable images, which only contain opaque pixels as per */
+	/* MIDP 2. Thus, no alpha handling is needed. */
+	/* This is also the case for MIDP 3, no alpha blending is performed. */
+	for(y = 0, zy = dy, areaP = copiedArea; y < h;
+		y++, areaP = SJME_POINTER_OFFSET(areaP, scanlineBytes))
+		error |= g->prim.rawScanPutPure(g, dx, zy,
+			areaP, scanlineBytes, w);
+
+	/* Failed? */
+	if (sjme_error_is(error))
+		goto fail_readWrite;
+
+	/* Cleanup. */
+	sjme_alloca_free(copiedArea);
+
 	/* Release lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
-	return sjme_error_notImplemented(0);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_readWrite:
+	/* Unlock before fail */
+	sjme_scritchpen_core_lockRelease(g);
 	
-fail_any:
-	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
+fail_alloca:
+	if (copiedArea != NULL)
+		sjme_alloca_free(copiedArea);
 	
+fail_scanBytes:
+fail_scanOverflow:
 	return sjme_error_default(error);
 }
 
