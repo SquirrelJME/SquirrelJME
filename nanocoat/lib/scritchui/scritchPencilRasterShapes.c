@@ -262,9 +262,8 @@ sjme_errorCode sjme_scritchpen_corePrim_fillPolygon(
 	sjme_errorCode error;
 	sjme_scritchui_pencilDrawHorizFunc drawHoriz;
 	sjme_jint ymin = INT32_MAX, ymax = INT32_MIN, intersectionCount = 0;
-	sjme_jint xStart, xEnd, temp, dy, i, j, y;
+	sjme_jint xStart, xEnd, temp, dy, i, j, y, ix;
 	sjme_jint intersections[nPoints];
-	sjme_jlongNative ix;
 	sjme_scritchui_line* clipLine;
 
 	if (g == NULL)
@@ -316,12 +315,10 @@ sjme_errorCode sjme_scritchpen_corePrim_fillPolygon(
 				dy = yPoints[j + yOffset] - yPoints[i + yOffset];
 				if (dy != 0)
 				{
-					ix = (sjme_jlongNative) xPoints[i + xOffset] * dy +
-						(y - yPoints[i + yOffset]) *
-						(sjme_jlongNative) (xPoints[j + xOffset] -
-						xPoints[i + xOffset]);
+					ix = xPoints[i + xOffset] * dy + (y - yPoints[i + yOffset])
+					* (xPoints[j + xOffset] - xPoints[i + xOffset]);
 					ix /= dy;
-					intersections[intersectionCount++] = (sjme_jint) ix;
+					intersections[intersectionCount++] = ix;
 				}
 			}
 		}
