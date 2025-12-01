@@ -245,6 +245,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c drawPixel . */
 	SJME_SCRITCHUI_SERIAL_PEN_DRAW_PIXEL,
 
+	/** @c drawPolyline . */
+	SJME_SCRITCHUI_SERIAL_PEN_DRAW_POLYLINE,
+
 	/** @c drawRect . */
 	SJME_SCRITCHUI_SERIAL_PEN_DRAW_RECT,
 
@@ -253,6 +256,9 @@ typedef enum sjme_scritchui_serialType
 
 	/** @c drawSubstring . */
 	SJME_SCRITCHUI_SERIAL_PEN_DRAW_SUBSTRING,
+
+	/** @c drawTriangle . */
+	SJME_SCRITCHUI_SERIAL_PEN_DRAW_TRIANGLE,
 	
 	/** @c drawXRGB32Region . */
 	SJME_SCRITCHUI_SERIAL_PEN_DRAW_XRGB32REGION,
@@ -647,7 +653,6 @@ SDP_STRUCT_DEF(drawHoriz,
 	SDX_VAR(sjme_jint, y);
 	SDX_VAR(sjme_jint, w););
 
-
 SDP_STRUCT_DEF(drawLine,
 	SDX_VAR(sjme_scritchui_pencil, g);
 	SDX_VAR(sjme_jint, x1);
@@ -659,6 +664,14 @@ SDP_STRUCT_DEF(drawPixel,
 	SDX_VAR(sjme_scritchui_pencil, g);
 	SDX_VAR(sjme_jint, x);
 	SDX_VAR(sjme_jint, y););
+
+SDP_STRUCT_DEF(drawPolyline,
+	SDX_VAR(sjme_scritchui_pencil, g);
+	SDX_VARP(sjme_jint, xPoints);
+	SDX_VAR(sjme_jint, xOffset);
+	SDX_VARP(sjme_jint, yPoints);
+	SDX_VAR(sjme_jint, yOffset);
+	SDX_VAR(sjme_jint, nPoints););
 
 SDP_STRUCT_DEF(drawRect,
 	SDX_VAR(sjme_scritchui_pencil, g);
@@ -684,6 +697,15 @@ SDP_STRUCT_DEF(drawSubstring,
 	SDX_VAR(sjme_jint, x);
 	SDX_VAR(sjme_jint, y);
 	SDX_VAR(sjme_jint, anchor););
+
+SDP_STRUCT_DEF(drawTriangle,
+	SDX_VAR(sjme_scritchui_pencil, g);
+	SDX_VAR(sjme_jint, x1);
+	SDX_VAR(sjme_jint, y1);
+	SDX_VAR(sjme_jint, x2);
+	SDX_VAR(sjme_jint, y2);
+	SDX_VAR(sjme_jint, x3);
+	SDX_VAR(sjme_jint, y3););
 
 SDP_STRUCT_DEF(drawXRGB32Region,
 	SDX_VAR(sjme_scritchui_pencil, g);
@@ -887,7 +909,9 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDP_DEF(drawChars);
 	SJME_SCRITCHUI_SDP_DEF(drawLine);
 	SJME_SCRITCHUI_SDP_DEF(drawPixel);
+	SJME_SCRITCHUI_SDP_DEF(drawPolyline);
 	SJME_SCRITCHUI_SDP_DEF(drawSubstring);
+	SJME_SCRITCHUI_SDP_DEF(drawTriangle);
 	SJME_SCRITCHUI_SDP_DEF(drawXRGB32Region);
 	SJME_SCRITCHUI_SDP_DEF(fillArc);
 	SJME_SCRITCHUI_SDP_DEF(fillPolygon);
@@ -1306,6 +1330,14 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawPixel(
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
 
+sjme_errorCode sjme_scritchpen_coreSerial_drawPolyline(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_jint* xPoints,
+	sjme_attrInPositive sjme_jint xOffset,
+	sjme_attrInNotNull sjme_jint* yPoints,
+	sjme_attrInPositive sjme_jint yOffset,
+	sjme_attrInPositive sjme_jint nPoints);
+
 sjme_errorCode sjme_scritchpen_coreSerial_drawRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -1330,6 +1362,15 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawSubstring(
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor);
+
+sjme_errorCode sjme_scritchpen_coreSerial_drawTriangle(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x1,
+	sjme_attrInValue sjme_jint y1,
+	sjme_attrInValue sjme_jint x2,
+	sjme_attrInValue sjme_jint y2,
+	sjme_attrInValue sjme_jint x3,
+	sjme_attrInValue sjme_jint y3);
 
 sjme_errorCode sjme_scritchpen_coreSerial_drawXRGB32Region(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

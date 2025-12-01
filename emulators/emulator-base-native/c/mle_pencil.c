@@ -36,9 +36,15 @@
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareDrawPixel "(" \
 	DESC_PENCIL DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawPolyline "(" \
+	DESC_PENCIL DESC_ARRAY(DESC_INT) DESC_INT DESC_ARRAY(DESC_INT) DESC_INT \
+	DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareDrawRect "(" \
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareDrawRoundRect "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawTriangle "(" \
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
 	DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareDrawSubstring "(" \
@@ -220,6 +226,27 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawPixel)
 		sjme_jni_throwMLECallError(env, error);
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawPolyline)
+	(JNIEnv* env, jclass classy, jobject g, jintArray xPoints, jint xOffset,
+		jintArray yPoints, jint yOffset, jint nPoints)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawPolyline(p, (sjme_jint*)xPoints,
+		xOffset, (sjme_jint*)yPoints, yOffset, nPoints)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRect)
 	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h)
 {
@@ -257,6 +284,26 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRoundRect)
 	/* Forward. */
 	if (sjme_error_is(error = p->api->drawRoundRect(p, x, y, w, h, arcWidth,
 			arcHeight)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawTriangle)
+	(JNIEnv* env, jclass classy, jobject g, jint x1, jint y1, jint x2, jint y2,
+	jint x3, jint y3)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawTriangle(p, x1, y1, x2, y2, x3, y3)))
 		sjme_jni_throwMLECallError(env, error);
 }
 
@@ -634,11 +681,14 @@ static const JNINativeMethod mlePencilMethods[] =
 	FORWARD_list(PencilShelf, hardwareDrawHoriz),
 	FORWARD_list(PencilShelf, hardwareDrawLine),
 	FORWARD_list(PencilShelf, hardwareDrawPixel),
+	FORWARD_list(PencilShelf, hardwareDrawPolyline),
 	FORWARD_list(PencilShelf, hardwareDrawRect),
 	FORWARD_list(PencilShelf, hardwareDrawRoundRect),
+	FORWARD_list(PencilShelf, hardwareDrawTriangle),
 	FORWARD_list(PencilShelf, hardwareDrawSubstring),
 	FORWARD_list(PencilShelf, hardwareDrawXRGB32Region),
 	FORWARD_list(PencilShelf, hardwareFillArc),
+	FORWARD_list(PencilShelf, hardwareFillPolygon),
 	FORWARD_list(PencilShelf, hardwareFillRect),
 	FORWARD_list(PencilShelf, hardwareFillRoundRect),
 	FORWARD_list(PencilShelf, hardwareFillTriangle),

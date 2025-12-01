@@ -17,6 +17,10 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	#define SJME_ANGLE_RAD 0.017453292f
+#endif
+
 sjme_errorCode sjme_scritchpen_corePrim_drawArc(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -26,16 +30,16 @@ sjme_errorCode sjme_scritchpen_corePrim_drawArc(
 	sjme_attrInValue sjme_jint startAngle,
 	sjme_attrInValue sjme_jint arcAngle)
 {
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
 	sjme_errorCode error;
-	sjme_jint yz, yze;
-	float centerX, centerY, radiusX, radiusY, startAngleRad, endAngleRad,
-		angle;
-	int steps, innerX, innerY, firstFillX, lastFillX, firstFillY, lastFillY;
+	float centerX, centerY, radiusX, radiusY, startAngleRad, endAngleRad;
+	float angle;
+	sjme_jint steps, innerX, innerY, firstFillX, lastFillX, firstFillY, i;
+	sjme_jint lastFillY;
 	sjme_jboolean dot, dotFlip;
 	sjme_scritchui_line* clipLine;
 	sjme_scritchui_pencilDrawPixelFunc drawPixel;
 
-	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -53,7 +57,6 @@ sjme_errorCode sjme_scritchpen_corePrim_drawArc(
 	arcAngle = -arcAngle;
 	startAngle = -startAngle;
 	
-
 	/**
 	 * This works similarly to Bresenham's midpoint circle algorithm. "steps" 
 	 * dictates how many iterations are used to draw the circle. A bigger value
@@ -65,45 +68,51 @@ sjme_errorCode sjme_scritchpen_corePrim_drawArc(
 	 * hitting as few pixels as possible.
 	 */
 
-	centerX = x + w / 2.0f;
-	centerY = y + h / 2.0f;
-	radiusX = w / 2.0f;
-	radiusY = h / 2.0f;
-	startAngleRad = startAngle * 0.017453292f;
-	endAngleRad = ((startAngle + arcAngle) * 0.017453292f) 
-	- startAngleRad;
-	steps = fabs(arcAngle * ((w + h) / 2.0f) / 50.0f);
+	centerX = (x + w / 2.0f);
+	centerY = (y + h / 2.0f);
+	radiusX = (w / 2.0f);
+	radiusY = (h / 2.0f);
+	startAngleRad = (startAngle * SJME_ANGLE_RAD);
+	endAngleRad = ((startAngle + arcAngle) * SJME_ANGLE_RAD) -
+		startAngleRad;
+	steps = abs(arcAngle * ((w + h) / 2.0f) / 50.0f);
 	innerX, innerY;
-
-	firstFillX = lastFillX = firstFillY = lastFillY = -1;
 	
-	for (int i = 0; i < steps; i++) 
+	firstFillX = round(centerX + radiusX * cos(startAngleRad));
+	firstFillY = round(centerY + radiusY * sin(startAngleRad));
+	lastFillX = -1;
+	lastFillY = -1;
+
+	/* Make sure we're not drawing out of bounds. */
+	if(firstFillX >= clipLine->s.x || firstFillX < clipLine->e.x ||
+		firstFillY >= clipLine->s.y || firstFillY < clipLine->e.y)
 	{
-		float angle = startAngleRad + (i * endAngleRad / steps);
+		/* If style is DOTTED, rendering will paint and skip pixels 1 by 1. */
+		if (dot)
+			error |= drawPixel(g, firstFillX, firstFillY);
+		dot ^= dotFlip;
+	}
+	
+	/* First pixel was alread drawn (if not OOB), so start from step 1. */
+	for (i = 1; i < steps; i++) 
+	{
+		angle = startAngleRad + ((i * endAngleRad) / steps);
 		
-		int innerX = round((centerX) + radiusX * cos(angle));
-		int innerY = round((centerY) + radiusY * sin(angle));
+		innerX = round(centerX + radiusX * cos(angle));
+		innerY = round(centerY + radiusY * sin(angle));
 		
-		/* Make sure we're not drawing out of bounds. */
-		if(innerX < clipLine->s.x || innerX >= clipLine->e.x
-			|| innerY < clipLine->s.y || innerY >= clipLine->e.y)
+		if(innerX < clipLine->s.x || innerX >= clipLine->e.x ||
+			innerY < clipLine->s.y || innerY >= clipLine->e.y)
 			continue;
 
 		/* We cannot paint the same pixel more than once (breaks alpha) */
 		if((lastFillX == innerX && lastFillY == innerY) || 
 			(firstFillX == innerX && firstFillY == innerY)) 
 			continue;
-
-		if(i == 0) 
-		{ 
-			firstFillY = innerY; 
-			firstFillX = innerX; 
-		}
 		
 		lastFillX = innerX;
 		lastFillY = innerY;
 
-		/* If style is DOTTED, rendering will paint and skip pixels 1 by 1. */
 		if (dot)
 			error |= drawPixel(g, innerX, innerY);
 		dot ^= dotFlip;
@@ -119,6 +128,10 @@ sjme_errorCode sjme_scritchpen_corePrim_drawArc(
 fail_any:
 	
 	return sjme_error_default(error);
+#else
+	sjme_todo("Fixed Point DrawArc Impl?");
+	return sjme_error_notImplemented(0);
+#endif
 }
 
 sjme_errorCode sjme_scritchpen_corePrim_fillArc(
@@ -130,16 +143,16 @@ sjme_errorCode sjme_scritchpen_corePrim_fillArc(
 	sjme_attrInValue sjme_jint startAngle,
 	sjme_attrInValue sjme_jint arcAngle)
 {
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
 	sjme_errorCode error;
 	sjme_scritchui_pencilDrawHorizFunc drawHoriz;
-	sjme_jint yz, yze, steps, innerX, innerY;
-	sjme_jboolean hasAlpha = 0;
-	float centerX, centerY, radiusX, radiusY, startAngleRad, endAngleRad,
-		maxRad, angle;
-	sjme_jboolean *filledPixels = NULL;
+	sjme_jint steps, innerX, innerY, filledZ, i, j, allocSize;
+	sjme_jboolean hasAlpha = SJME_JNI_FALSE;
+	float centerX, centerY, radiusX, radiusY, startAngleRad, endAngleRad;
+	float maxRad, angle;
+	sjme_jboolean* filledPixels;
 	sjme_scritchui_line* clipLine;
 	sjme_scritchui_pencilDrawPixelFunc drawPixel;
-
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -159,63 +172,43 @@ sjme_errorCode sjme_scritchpen_corePrim_fillArc(
 
 	/** 
 	 * Only allocate the alpha buffer if the color isn't opaque. Noticeably
-	 * improves performance for opaque arcs.
-	 *
-	 * TODO: This can be optimized to take 1/8 of the usual memory size by
-	 * manipulating each bit of the boolean array below, as a _Bool variable
-	 * is often at least one whole byte in size.
+	 * improves performance for opaque arcs. 8 pixels of information are packed
+	 * in a single boolean/byte, noticeably reducing memory usage.
 	 */
 	if(hasAlpha)
 	{
-		filledPixels = (sjme_jboolean *) sjme_alloca((w * h) *
-			sizeof(sjme_jboolean));
+		/* We add 1 to the allocation size just so ceil() isn't needed */
+		allocSize = (w * h) + 1;
+		filledPixels = (sjme_jboolean *) sjme_alloca(allocSize);
 		if (filledPixels == NULL)
 		{
-			error = sjme_error_outOfMemory(NULL, (w * h) *
-				sizeof(sjme_jboolean));
+			error = sjme_error_outOfMemory(NULL, allocSize);
 			goto fail_any;
 		}
-		memset(filledPixels, 0, (w * h) * sizeof(sjme_jboolean));
+		memset(filledPixels, 0, allocSize);
 	}
-
-	/**
-	 * This is just drawArc's Bresenham midpoint circle algorithm modified to 
-	 * draw arcs from the center to the edge and check if a pixel was already
-	 * painted before. Works great but is slow on larger transparent arcs.
-	 * Trying to use a scanline approach could result in better performance due
-	 * to the simpler checks (just go from yMax to yMin while making sure a y 
-	 * position is never used twice) but doesn't seem to work right in some
-	 * edge cases (negative angles, too wide/narrow arc angles, etc) so this
-	 * one, albeit slow, is what we'll be going with at the moment.
-	 * 
-	 * At least it has the upside of generating far more stable arcs that fully
-	 * match their outline compared to Java AWT's algorithm.
-	 * 
-	 * TODO: Optimize this later
-	 */ 
 	
 	centerX = x + w / 2.0f;
 	centerY = y + h / 2.0f;
 	radiusX = w / 2.0f;
 	radiusY = h / 2.0f;
-	startAngleRad = startAngle * 0.017453292f;
-	endAngleRad = ((startAngle + arcAngle) * 0.017453292f) 
-	- startAngleRad;
+	startAngleRad = startAngle * SJME_ANGLE_RAD;
+	endAngleRad = ((startAngle + arcAngle) * SJME_ANGLE_RAD) - startAngleRad;
 
 	maxRad = radiusX > radiusY ? radiusX : radiusY;
 
-	steps = fabs(arcAngle * ((w + h) / 2.0f) / 50.0f);
+	steps = abs(arcAngle * ((w + h) / 2.0f) / 50.0f);
 	innerX, innerY;
 
-	for(int i = 0; i < steps; i++) 
+	for(i = 0; i < steps; i++) 
 	{
 		angle = startAngleRad + (i * endAngleRad / steps);
 
-		for(int j = 0; j < maxRad; j++) 
+		for(j = 0; j < maxRad; j++) 
 		{
 			innerX = round(centerX + radiusX * cos(angle) * (j / maxRad));
 			innerY = round(centerY + radiusY * sin(angle) * (j / maxRad));
-
+			filledZ = ((innerY-y) * w + innerX-x);
 			/*
 			 * Make sure we're not drawing out of bounds. Or accessing the
 			 * alpha buffer at an invalid position with innerX-x or innerY-y
@@ -229,10 +222,11 @@ sjme_errorCode sjme_scritchpen_corePrim_fillArc(
 			 * Only draw if opaque, or if the alpha buffer is not yet filled
 			 * for the current position.
 			 */
-			if(hasAlpha ? !*(filledPixels + ((innerY-y) * w + innerX-x)) : 1)
+			if(hasAlpha ? (filledPixels[filledZ >> 3] &
+				(1 << (7 - filledZ & 7))) : SJME_JNI_TRUE)
 			{
 				if(hasAlpha)
-					*(filledPixels + ((innerY-y) * w + innerX-x)) = 1;
+					filledPixels[filledZ >> 3] |= (1 << (7 - filledZ & 7));
 				error |= drawPixel(g, innerX, innerY);
 			}
 		}
@@ -251,22 +245,26 @@ sjme_errorCode sjme_scritchpen_corePrim_fillArc(
 fail_any:
 	
 	return sjme_error_default(error);
+#else
+	sjme_todo("Fixed Point fillArc Impl?");
+	return sjme_error_notImplemented(0);
+#endif
 }
 
 sjme_errorCode sjme_scritchpen_corePrim_fillPolygon(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint xPoints[],
+	sjme_attrInNotNull sjme_jint* xPoints,
 	sjme_attrInPositive sjme_jint xOffset,
-	sjme_attrInValue sjme_jint yPoints[],
+	sjme_attrInNotNull sjme_jint* yPoints,
 	sjme_attrInPositive sjme_jint yOffset,
 	sjme_attrInPositive sjme_jint nPoints)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilDrawHorizFunc drawHoriz;
-	int ymin = 2147483647, ymax = -2147483648, intersectionCount = 0, xStart,
-	xEnd, temp, dy, j;
-	int intersections[nPoints];
-	long ix;
+	sjme_jint ymin = INT32_MAX, ymax = INT32_MIN, intersectionCount = 0;
+	sjme_jint xStart, xEnd, temp, dy, i, j, y;
+	sjme_jint intersections[nPoints];
+	sjme_jlongNative ix;
 	sjme_scritchui_line* clipLine;
 
 	if (g == NULL)
@@ -291,10 +289,12 @@ sjme_errorCode sjme_scritchpen_corePrim_fillPolygon(
 	 * intersections by increasing X coordinate, then fill from top to bottom.
 	 */
 
-	for (int i = 0; i < nPoints; i++) 
+	for (i = 0; i < nPoints; i++) 
 	{
-		if (yPoints[i+yOffset] < ymin) { ymin = yPoints[i+yOffset]; }
-		if (yPoints[i+yOffset] > ymax) { ymax = yPoints[i+yOffset]; }
+		if (yPoints[i+yOffset] < ymin) 
+			ymin = yPoints[i+yOffset];
+		if (yPoints[i+yOffset] > ymax) 
+			ymax = yPoints[i+yOffset];
 	}
 
 	/* Clip ymin and ymax to the screen area if any vertex is outside */
@@ -304,10 +304,10 @@ sjme_errorCode sjme_scritchpen_corePrim_fillPolygon(
 	if(ymax + g->state.translateReal.y >= clipLine->e.y) 
 		ymax = clipLine->e.y - g->state.translateReal.y;
 
-	for (int y = ymin; y < ymax; y++)
+	for (y = ymin; y < ymax; y++)
 	{
 		intersectionCount = 0;
-		for (int i = 0; i < nPoints; i++)
+		for (i = 0; i < nPoints; i++)
 		{
 			j = (i + 1) % nPoints;
 			if ((yPoints[i + yOffset] <= y && yPoints[j + yOffset] > y) ||
@@ -316,18 +316,19 @@ sjme_errorCode sjme_scritchpen_corePrim_fillPolygon(
 				dy = yPoints[j + yOffset] - yPoints[i + yOffset];
 				if (dy != 0)
 				{
-					ix = (long) xPoints[i + xOffset] * dy + (y - yPoints[i +
-							yOffset]) * (long) (xPoints[j + xOffset] -
-							xPoints[i + xOffset]);
+					ix = (sjme_jlongNative) xPoints[i + xOffset] * dy +
+						(y - yPoints[i + yOffset]) *
+						(sjme_jlongNative) (xPoints[j + xOffset] -
+						xPoints[i + xOffset]);
 					ix /= dy;
-					intersections[intersectionCount++] = (int) ix;
+					intersections[intersectionCount++] = (sjme_jint) ix;
 				}
 			}
 		}
 
-		for (int i = 0; i < intersectionCount - 1; i++)
+		for (i = 0; i < intersectionCount - 1; i++)
 		{
-			for (int j = 0; j < intersectionCount - 1 - i; j++)
+			for (j = 0; j < intersectionCount - 1 - i; j++)
 			{
 				if (intersections[j] > intersections[j + 1])
 				{
@@ -338,15 +339,15 @@ sjme_errorCode sjme_scritchpen_corePrim_fillPolygon(
 			}
 		}
 
-		for (int i = 0; i < intersectionCount; i += 2)
+		for (i = 0; i < intersectionCount; i += 2)
 		{
 			if (i + 1 < intersectionCount)
 			{
-				xStart = fmax(intersections[i], clipLine->s.x);
-				xEnd = fmin(intersections[i + 1], clipLine->e.x);
+				xStart = max(intersections[i], clipLine->s.x);
+				xEnd = min(intersections[i + 1], clipLine->e.x);
 				/* Start > End is an invalid area we can just skip */
 				if(xEnd > xStart)
-					if (sjme_error_is(error = drawHoriz(g, xStart, y,
+					if (sjme_error_is(error |= drawHoriz(g, xStart, y,
 						xEnd-xStart)))
 						break;
 			}
@@ -471,15 +472,15 @@ sjme_errorCode sjme_scritchpen_corePrim_fillRect(
 	error = SJME_ERROR_NONE;
 	drawHoriz = g->prim.drawHoriz;
 	for (yz = y, yze = y + h; yz < yze; yz++)
-		if (sjme_error_is(error = drawHoriz(g, x, yz, w)))
+		if (sjme_error_is(error |= drawHoriz(g, x, yz, w)))
 			break;
 	
 	/* Failed? */
 	if (sjme_error_is(error))
-		goto fail_any;
-		
-	/* Success? */
-	return error;
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 	
 fail_any:
 	
@@ -502,7 +503,11 @@ sjme_errorCode sjme_scritchpen_core_drawArc(
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+	
+	/* Nothing to draw? */
+	if (w <= 0 || h <= 0)
+		return SJME_ERROR_NONE;
+
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
@@ -513,8 +518,69 @@ sjme_errorCode sjme_scritchpen_core_drawArc(
 	/* Use primitives otherwise. */
 	error = SJME_ERROR_NONE;
 	drawArc = g->prim.drawArc;
-	error |= drawArc(g, x, y, w, h, startAngle, arcAngle);
+	if (sjme_error_is(error |= g->prim.drawArc(g, x, y, w, h,
+		startAngle, arcAngle)))
+		goto fail_any;
+		
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
+		return sjme_error_default(error);
 	
+	/* Success? */
+	return error;
+	
+fail_any:
+	/* Release lock before failing */
+	sjme_scritchpen_core_lockRelease(g);
+	
+	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_scritchpen_core_drawPolyline(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_jint* xPoints,
+	sjme_attrInPositive sjme_jint xOffset,
+	sjme_attrInNotNull sjme_jint* yPoints,
+	sjme_attrInPositive sjme_jint yOffset,
+	sjme_attrInPositive sjme_jint nPoints)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencilDrawLineFunc drawLine;
+	sjme_jint i;
+
+	if (g == NULL || xPoints == NULL || yPoints == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if(xOffset < 0 || yOffset < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		
+	/* Lock. */
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
+		return sjme_error_default(error);
+
+	for(i = 0; i < nPoints; i++) 
+	{
+		sjme_scritchpen_coreUtil_applyTranslate(g, &xPoints[xOffset+i],
+			&yPoints[yOffset+1]);
+	}
+
+	error = SJME_ERROR_NONE;
+	
+	/** 
+	 * Drawing a polyline means basically drawing the edges (lines) between
+	 * each pair of vertices that compose said polyline.
+	 */ 
+	drawLine = g->prim.drawLine;
+	for(int i=0; i < nPoints; i++)
+	{
+		if(i == nPoints-1) 
+			drawLine(g, xPoints[xOffset+i], yPoints[yOffset+i],
+				xPoints[xOffset], yPoints[yOffset]);
+		else 
+			drawLine(g, xPoints[xOffset+i], yPoints[yOffset+i],
+				xPoints[xOffset+i+1], yPoints[yOffset+i+1]);
+	}
+
 	/* Failed? */
 	if (sjme_error_is(error))
 		goto fail_any;
@@ -546,6 +612,10 @@ sjme_errorCode sjme_scritchpen_core_drawRect(
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Nothing to draw? */
+	if (w < 0 || h < 0)
+		return SJME_ERROR_NONE;
 		
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
@@ -554,19 +624,10 @@ sjme_errorCode sjme_scritchpen_core_drawRect(
 	/* Transform. */
 	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
 	
-	/* Cap width and height to 1 always. */
-	if (w <= 0)
-		w = 1;
-	if (h <= 0)
-		h = 1;
-	
 	/* Use primitives otherwise. */
 	error = SJME_ERROR_NONE;
 	drawRect = g->prim.drawRect;
-	error |= drawRect(g, x, y, w, h);
-	
-	/* Failed? */
-	if (sjme_error_is(error))
+	if (sjme_error_is(error |= g->prim.drawRect(g, x, y, w, h)))
 		goto fail_any;
 		
 	/* Release lock. */
@@ -599,25 +660,33 @@ sjme_errorCode sjme_scritchpen_core_drawRoundRect(
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+	
+	/* Nothing to draw? */
+	if (w <= 0 || h <= 0)
+		return SJME_ERROR_NONE;
+
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
-	arcWidth = fabs(arcWidth);
-	arcHeight = fabs(arcHeight);
+	arcWidth = abs(arcWidth);
+	arcHeight = abs(arcHeight);
 
 	/**
 	 * We'll be doing only even arc widths and heights, otherwise the borders
 	 * will look off due to fractional rounding (java's AWT Graphics do allow
 	 * for odd width/heights though)
 	 */
-	if(arcWidth  %2 != 0) { arcWidth++; }
-	if(arcHeight %2 != 0) { arcHeight++; }
+	if(arcWidth  %2 != 0)
+		arcWidth++;
+	if(arcHeight %2 != 0)
+		arcHeight++;
 	
 	/* The arcs cannot be larger then the rect's width/height*/
-	if(arcWidth >= w) { arcWidth = w-1; }
-	if(arcHeight >= h) { arcHeight = h-1; }
+	if(arcWidth >= w)
+		arcWidth = w-1;
+	if(arcHeight >= h)
+		arcHeight = h-1;
 
 	/* Pre-calculate coordinates. */
 	xw = x + w;
@@ -675,6 +744,50 @@ fail_any:
 	return sjme_error_default(error);
 }
 
+sjme_errorCode sjme_scritchpen_core_drawTriangle(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x1,
+	sjme_attrInValue sjme_jint y1,
+	sjme_attrInValue sjme_jint x2,
+	sjme_attrInValue sjme_jint y2,
+	sjme_attrInValue sjme_jint x3,
+	sjme_attrInValue sjme_jint y3)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencilDrawLineFunc drawLine;
+
+	if (g == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Lock. */
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
+		return sjme_error_default(error);
+
+	error = SJME_ERROR_NONE;
+	
+	/** Raster the triangle's outline by drawing lines between its vertices */
+	drawLine = g->prim.drawLine;
+	error |= drawLine(g, x1, y1, x2, y2);
+	error |= drawLine(g, x2, y2, x3, y3);
+	error |= drawLine(g, x3, y3, x1, y1);
+
+	/* Failed? */
+	if (sjme_error_is(error))
+		goto fail_any;
+		
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+	/* Success? */
+	return error;
+	
+fail_any:
+	/* Release lock before failing */
+	sjme_scritchpen_core_lockRelease(g);
+	
+	return sjme_error_default(error);
+}
 
 
 sjme_errorCode sjme_scritchpen_core_fillArc(
@@ -692,6 +805,9 @@ sjme_errorCode sjme_scritchpen_core_fillArc(
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if(w <= 0 || h <= 0)
+		return SJME_ERROR_NONE;
 		
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
@@ -725,25 +841,31 @@ fail_any:
 
 sjme_errorCode sjme_scritchpen_core_fillPolygon(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint xPoints[],
+	sjme_attrInNotNull sjme_jint* xPoints,
 	sjme_attrInPositive sjme_jint xOffset,
-	sjme_attrInValue sjme_jint yPoints[],
+	sjme_attrInNotNull sjme_jint* yPoints,
 	sjme_attrInPositive sjme_jint yOffset,
 	sjme_attrInPositive sjme_jint nPoints)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFillPolygonFunc fillPolygon;
-	sjme_jint yz, yze;
+	sjme_jint i;
 
-	if (g == NULL)
+	if (g == NULL || xPoints == NULL || yPoints == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
+	
+	if(xOffset < 0 || yOffset < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
-	/* Transform. TODO: This */
-	//sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
+	for(i = 0; i < nPoints; i++) 
+	{
+		sjme_scritchpen_coreUtil_applyTranslate(g, &xPoints[xOffset+i],
+			&yPoints[yOffset+1]);
+	}
 	
 	/* Use primitives otherwise. */
 	error = SJME_ERROR_NONE;
@@ -781,6 +903,10 @@ sjme_errorCode sjme_scritchpen_core_fillRect(
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Nothing to draw? */
+	if (w <= 0 || h <= 0)
+		return SJME_ERROR_NONE;
 		
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
@@ -788,12 +914,6 @@ sjme_errorCode sjme_scritchpen_core_fillRect(
 	
 	/* Transform. */
 	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
-	
-	/* Cap width and height to 1 always. */
-	if (w <= 0)
-		w = 1;
-	if (h <= 0)
-		h = 1;
 	
 	/* Use primitives otherwise. */
 	error = SJME_ERROR_NONE;
@@ -834,25 +954,33 @@ sjme_errorCode sjme_scritchpen_core_fillRoundRect(
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Nothing to draw? */
+	if (w <= 0 || h <= 0)
+		return SJME_ERROR_NONE;
 		
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
-	arcWidth = fabs(arcWidth);
-	arcHeight = fabs(arcHeight);
+	arcWidth = abs(arcWidth);
+	arcHeight = abs(arcHeight);
 
 	/**
 	 * We'll be doing only even arc widths and heights, otherwise the borders
 	 * will look off due to fractional rounding (java's AWT Graphics do allow
 	 * for odd width/heights though)
 	 */
-	if(arcWidth  %2 != 0) { arcWidth++; }
-	if(arcHeight %2 != 0) { arcHeight++; }
+	if(arcWidth  %2 != 0)
+		arcWidth++;
+	if(arcHeight %2 != 0)
+		arcHeight++;
 	
 	/* The arcs cannot be larger than the rect's width/height*/
-	if(arcWidth >= w) { arcWidth = w-1; }
-	if(arcHeight >= h) { arcHeight = h-1; }
+	if(arcWidth >= w)
+		arcWidth = w-1;
+	if(arcHeight >= h)
+		arcHeight = h-1;
 	
 	/* Pre-calculate coordinates. */
 	xw = x + w;

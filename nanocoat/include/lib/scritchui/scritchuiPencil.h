@@ -440,6 +440,28 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawPixelFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
+
+/**
+* Draws a polyline in hardware with the specified set of x,y coordinates.
+* Reading begins from the x/yOffset for each array, and moves up to nPoints
+* positions.
+* 
+* @param g The hardware graphics to draw with.
+* @param xPoints An array containing all available X vertex coordinates
+* @param xOffset The offset from which xPoints will begin being read from
+* @param yPoints An array containing all available Y vertex coordinates
+* @param yOffset The offset from which yPoints will begin being read from
+* @param nPoints How many points should be used to construct the polygon.
+* @return An error on @c NULL arguments.
+* @since 2025/11/30
+*/
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawPolylineFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_jint* xPoints,
+	sjme_attrInPositive sjme_jint xOffset,
+	sjme_attrInNotNull sjme_jint* yPoints,
+	sjme_attrInPositive sjme_jint yOffset,
+	sjme_attrInPositive sjme_jint nPoints);
 	
 /**
  * Draws the outline of the given rectangle using the current color and
@@ -511,6 +533,29 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawSubstringFunc)(
 	sjme_attrInValue sjme_jint anchor);
 
 /**
+ * Draws a triangle using the current color.
+ *
+ * @param g The graphics to use for drawing.
+ * @param x1 First X coordinate.
+ * @param y1 First Y coordinate.
+ * @param x2 Second X coordinate.
+ * @param y2 Second Y coordinate.
+ * @param x3 Third X coordinate.
+ * @param y3 Third Y coordinate.
+ * @return An error if no graphics were specified or the graphics does
+ * not actually support the given operation.
+ * @since 2024/05/17
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawTriangleFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x1,
+	sjme_attrInValue sjme_jint y1,
+	sjme_attrInValue sjme_jint x2,
+	sjme_attrInValue sjme_jint y2,
+	sjme_attrInValue sjme_jint x3,
+	sjme_attrInValue sjme_jint y3);
+
+/**
  * Draws a region of 32-bit RGB data into the target.
  *
  * @param g The hardware graphics to draw with.
@@ -577,27 +622,27 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillArcFunc)(
 	sjme_attrInValue sjme_jint startAngle,
 	sjme_attrInValue sjme_jint arcAngle);
 
-	/**
-	* Draws a filled polygon in hardware with the specified set of x,y
-	* coordinates. Reading begins from the x/yOffset for each array, and moves
-	* up to nPoints positions
-	* 
-	* @param g The hardware graphics to draw with.
-	* @param xPoints An array containing all available X vertex coordinates
-	* @param xOffset The offset from which xPoints will begin being read from
-	* @param yPoints An array containing all available Y vertex coordinates
-	* @param yOffset The offset from which yPoints will begin being read from
-	* @param nPoints How many points should be used to construct the polygon.
-	* @return An error on @c NULL arguments.
-	* @since 2024/05/01
-	*/
-	typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonFunc)(
-		sjme_attrInNotNull sjme_scritchui_pencil g,
-		sjme_attrInNotNull sjme_jint* xPoints,
-		sjme_attrInPositive sjme_jint xOffset,
-		sjme_attrInNotNull sjme_jint* yPoints,
-		sjme_attrInPositive sjme_jint yOffset,
-		sjme_attrInPositive sjme_jint nPoints);
+/**
+* Draws a filled polygon in hardware with the specified set of x,y
+* coordinates. Reading begins from the x/yOffset for each array, and moves
+* up to nPoints positions
+* 
+* @param g The hardware graphics to draw with.
+* @param xPoints An array containing all available X vertex coordinates
+* @param xOffset The offset from which xPoints will begin being read from
+* @param yPoints An array containing all available Y vertex coordinates
+* @param yOffset The offset from which yPoints will begin being read from
+* @param nPoints How many points should be used to construct the polygon.
+* @return An error on @c NULL arguments.
+* @since 2025/11/25
+*/
+typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_jint* xPoints,
+	sjme_attrInPositive sjme_jint xOffset,
+	sjme_attrInNotNull sjme_jint* yPoints,
+	sjme_attrInPositive sjme_jint yOffset,
+	sjme_attrInPositive sjme_jint nPoints);
 
 /**
  * Performs rectangular fill in hardware.
@@ -1210,9 +1255,15 @@ typedef struct sjme_scritchui_pencilFunctions
 
 	/** @c DrawPixel . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixel);
+
+	/** @c DrawPolyline . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawPolyline, drawPolyline);
 	
 	/** @c DrawSubstring . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawSubstring, drawSubstring);
+
+	/** @c DrawTriangle . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawTriangle, drawTriangle);
 	
 	/** @c DrawXRGB32Region . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawXRGB32Region, drawXRGB32Region);

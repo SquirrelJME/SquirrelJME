@@ -356,28 +356,6 @@ sjme_errorCode sjme_scritchpen_core_drawArc(
 	sjme_attrInValue sjme_jint startAngle,
 	sjme_attrInValue sjme_jint arcAngle);
 
-sjme_errorCode sjme_scritchpen_core_drawHoriz(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y,
-	sjme_attrInValue sjme_jint w);
-
-sjme_errorCode sjme_scritchpen_core_drawRect(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y,
-	sjme_attrInPositive sjme_jint w,
-	sjme_attrInPositive sjme_jint h);
-
-sjme_errorCode sjme_scritchpen_core_drawRoundRect(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y,
-	sjme_attrInPositive sjme_jint w,
-	sjme_attrInPositive sjme_jint h,
-	sjme_attrInPositive sjme_jint arcWidth,
-	sjme_attrInPositive sjme_jint arcHeight);
-
 sjme_errorCode sjme_scritchpen_core_drawChar(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInPositive sjme_jint c,
@@ -395,6 +373,12 @@ sjme_errorCode sjme_scritchpen_core_drawChars(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor);
 
+sjme_errorCode sjme_scritchpen_core_drawHoriz(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInValue sjme_jint w);
+
 sjme_errorCode sjme_scritchpen_core_drawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
@@ -406,6 +390,30 @@ sjme_errorCode sjme_scritchpen_core_drawPixel(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
+
+sjme_errorCode sjme_scritchpen_core_drawPolyline(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_jint* xPoints,
+	sjme_attrInPositive sjme_jint xOffset,
+	sjme_attrInNotNull sjme_jint* yPoints,
+	sjme_attrInPositive sjme_jint yOffset,
+	sjme_attrInPositive sjme_jint nPoints);
+
+sjme_errorCode sjme_scritchpen_core_drawRect(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h);
+
+sjme_errorCode sjme_scritchpen_core_drawRoundRect(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInPositive sjme_jint arcWidth,
+	sjme_attrInPositive sjme_jint arcHeight);
 	
 sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -415,6 +423,15 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInValue sjme_jint anchor);
+
+sjme_errorCode sjme_scritchpen_core_drawTriangle(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x1,
+	sjme_attrInValue sjme_jint y1,
+	sjme_attrInValue sjme_jint x2,
+	sjme_attrInValue sjme_jint y2,
+	sjme_attrInValue sjme_jint x3,
+	sjme_attrInValue sjme_jint y3);
 
 sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

@@ -661,6 +661,15 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->drawPixel.x,
 		as->drawPixel.y));
 
+	SJME_SDP_CASE(drawPolyline,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_POLYLINE,
+		(as->drawPolyline.g,
+		as->drawPolyline.xPoints,
+		as->drawPolyline.xOffset,
+		as->drawPolyline.yPoints,
+		as->drawPolyline.yOffset,
+		as->drawPolyline.nPoints));
+
 	SJME_SDP_CASE(drawSubstring,
 		SJME_SCRITCHUI_SERIAL_PEN_DRAW_SUBSTRING,
 		(as->drawSubstring.g,
@@ -670,6 +679,16 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->drawSubstring.x,
 		as->drawSubstring.y,
 		as->drawSubstring.anchor));
+
+	SJME_SDP_CASE(drawTriangle,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_TRIANGLE,
+		(as->drawTriangle.g,
+		as->drawTriangle.x1,
+		as->drawTriangle.y1,
+		as->drawTriangle.x2,
+		as->drawTriangle.y2,
+		as->drawTriangle.x3,
+		as->drawTriangle.y3));
 
 	SJME_SDP_CASE(drawXRGB32Region,
 		SJME_SCRITCHUI_SERIAL_PEN_DRAW_XRGB32REGION,
@@ -1877,6 +1896,29 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawPixel(
 	SJME_SDX_WAIT;
 }
 
+sjme_errorCode sjme_scritchpen_coreSerial_drawPolyline(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_jint* xPoints,
+	sjme_attrInPositive sjme_jint xOffset,
+	sjme_attrInNotNull sjme_jint* yPoints,
+	sjme_attrInPositive sjme_jint yOffset,
+	sjme_attrInPositive sjme_jint nPoints)
+{
+	SJME_SDP_CHUNK(drawPolyline,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_POLYGON,
+		(g, xPoints, xOffset, yPoints, yOffset, nPoints));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(xPoints);
+	SJME_SDX_PASS(xOffset);
+	SJME_SDX_PASS(yPoints);
+	SJME_SDX_PASS(yOffset);
+	SJME_SDX_PASS(nPoints);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
 sjme_errorCode sjme_scritchpen_coreSerial_drawRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -1943,6 +1985,31 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawSubstring(
 	SJME_SDX_PASS(x);
 	SJME_SDX_PASS(y);
 	SJME_SDX_PASS(anchor);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchpen_coreSerial_drawTriangle(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x1,
+	sjme_attrInValue sjme_jint y1,
+	sjme_attrInValue sjme_jint x2,
+	sjme_attrInValue sjme_jint y2,
+	sjme_attrInValue sjme_jint x3,
+	sjme_attrInValue sjme_jint y3)
+{
+	SJME_SDP_CHUNK(drawTriangle,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_TRIANGLE,
+		(g, x1, y1, x2, y2, x3, y3));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x1);
+	SJME_SDX_PASS(y1);
+	SJME_SDX_PASS(x2);
+	SJME_SDX_PASS(y2);
+	SJME_SDX_PASS(x3);
+	SJME_SDX_PASS(y3);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;
