@@ -168,95 +168,14 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 		&m, trans, wSrc, hSrc, wDest, hDest)))
 		return sjme_error_default(error);
 
-
 	/**
 	 * Now we need to adjust the source and destination areas to account for
 	 * the transformed image, otherwise we'll read from an incorrect area, and
 	 * draw to another wrong area.
 	 */
-
-	/**
-	 * Whenever we receive a transformation that alters the width and height
-	 * the image, the first adjustment we have to do is update the source and
-	 * destination width/height accordingly (makes source/dest width and height
-	 * usage more consistent on further adjustments and clipping).
-	 *
-	 * Once a case is matched, the adjustments are done and the code skips
-	 * directly to the anchoring setup, saving unnecessary if checks,
-	 * especially for the more common cases like TRANS_MIRROR.
-	 */
-	if(trans == SJME_SCRITCHUI_TRANS_ROT90 ||
-		trans == SJME_SCRITCHUI_TRANS_ROT270 ||
-		trans == SJME_SCRITCHUI_TRANS_MIRROR_ROT90 ||
-		trans == SJME_SCRITCHUI_TRANS_MIRROR_ROT270)
-	{
-		temp = hSrc;
-		hSrc = wSrc;
-		wSrc = temp;
-
-		temp = hDest;
-		hDest = wDest;
-		wDest = temp;
-	}
-
-	/* Mirrored horizontally */
-	if (trans == SJME_SCRITCHUI_TRANS_MIRROR)
-	{
-		xSrc = scanLen - xSrc - wSrc + 1;
-		goto anchor_setup;
-	}
-
-	/* Mirrored vertically */
-	if (trans == SJME_SCRITCHUI_TRANS_MIRROR_ROT180)
-	{
-		ySrc = (dataLen / scanLen) - ySrc - hSrc + 1;
-		goto anchor_setup;
-	}
-
-	/* Was rotated 90 degrees clockwise. BROKEN */
-	if (trans == SJME_SCRITCHUI_TRANS_ROT90)
-	{
-		temp = xSrc;
-		xSrc = (dataLen / scanLen) - ySrc - wSrc + 1;
-		ySrc = temp;
-		goto anchor_setup;
-	}
-
-	/* Was mirrored horizontally and rotated 90 degrees clockwise.*/
-	if(trans == SJME_SCRITCHUI_TRANS_MIRROR_ROT90)
-	{
-		temp = ySrc;
-		ySrc = scanLen - xSrc - hSrc + 1;
-		xSrc = (dataLen / scanLen) - temp - wSrc + 1;
-		goto anchor_setup;
-	}
-
-	/* Was rotated 180 degrees clockwise. */
-	if (trans == SJME_SCRITCHUI_TRANS_ROT180)
-	{
-		xSrc = scanLen - xSrc - wSrc + 1;
-		ySrc = (dataLen / scanLen) - ySrc - hSrc + 1;
-		goto anchor_setup;
-	}
-
-	/* Was rotated 270 degrees clockwise */
-	if(trans == SJME_SCRITCHUI_TRANS_ROT270)
-	{
-		temp = ySrc;
-		ySrc = scanLen - xSrc - hSrc + 1;
-		xSrc = temp;
-		goto anchor_setup;
-	}
-
-	/* Was mirrored horizontally and rotated 270 degrees clockwise */
-	if(trans == SJME_SCRITCHUI_TRANS_MIRROR_ROT270)
-	{
-		temp = xSrc;
-		xSrc = ySrc;
-		ySrc = temp;
-	}
-
-anchor_setup:
+	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyCoordinateAdj(
+		trans, &xSrc, &ySrc, &wSrc, &hSrc, scanLen, (dataLen / scanLen))))
+		return sjme_error_default(error);
 	
 	/* Anchor to target coordinates after scaling, because we need */
 	/* to know what our target scale is. */
