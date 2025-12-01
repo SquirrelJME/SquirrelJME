@@ -45,7 +45,6 @@ squirreljme_multilib_add_library(Base
 	streamMemory.c
 	streamSeekable.c
 	streamStdIo.c
-	streamTcpUdp.c
 	traverse.c
 	tree.c
 	util.c
