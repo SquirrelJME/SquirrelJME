@@ -415,7 +415,8 @@ sjme_errorCode sjme_scritchpen_core_drawHoriz(
 		return SJME_ERROR_NONE;
 		
 	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x, &y)))
+		return sjme_error_default(error);
 	
 	/* Need to lock? */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
@@ -456,14 +457,16 @@ sjme_errorCode sjme_scritchpen_core_drawLine(
 	if (y1 == y2)
 		return g->apiInThread->drawHoriz(g, x1, y1,
 			(x2 < x1 ? x1 - x2 : x2 - x1));
+		
+	/* Transform. */
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x1, &y1)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x2, &y2)))
+		return sjme_error_default(error);
 	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
-		
-	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x1, &y1);
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x2, &y2);
 	
 	/* Use primitive. */
 	if (sjme_error_is(error = g->prim.drawLine(g, x1, y1, x2, y2)))
@@ -495,7 +498,8 @@ sjme_errorCode sjme_scritchpen_core_drawPixel(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x, &y)))
+		return sjme_error_default(error);
 	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))

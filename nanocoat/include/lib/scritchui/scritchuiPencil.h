@@ -225,9 +225,32 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyAnchorFunc)(
 	sjme_attrOutNotNull sjme_jint* outY);
 
 /**
+ * Applies coordinate adjustments based on the provided transformation, so
+ * that subsequent region manipulations are using the correct coordinates.
+ * 
+ * @param inTrans The transformation type.
+ * @param x The source region x position.
+ * @param y The source region y position.
+ * @param w The source region width.
+ * @param h The source region height.
+ * @param h The source height.
+ * @param dataWidth The width of the entire data/image.
+ * @param dataHeight The height of the entire data/image.
+ * @since 2025/12/01
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilApplyCoordinateAdjFunc)(
+	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
+	sjme_attrInOutNotNull sjme_jint* x,
+	sjme_attrInOutNotNull sjme_jint* y,
+	sjme_attrInOutNotNull sjme_jint* w,
+	sjme_attrInOutNotNull sjme_jint* h,
+	sjme_attrInPositive sjme_jint dataWidth,
+	sjme_attrInPositive sjme_jint dataHeight);
+
+/**
  * Applies rotation and scaling.
  * 
- * @param outMatrix The resultant matrix.
+ * @param adjMatrix The resultant matrix.
  * @param inTrans The translation to use.
  * @param wSrc The source width.
  * @param hSrc The source height.
@@ -237,7 +260,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyAnchorFunc)(
  * @since 2024/07/12
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilApplyRotateScaleFunc)(
-	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
+	sjme_attrInOutNotNull sjme_scritchui_pencilMatrix* adjMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,
 	sjme_attrInPositive sjme_jint hSrc,
@@ -1208,6 +1231,9 @@ struct sjme_scritchui_pencilUtilFunctions
 	/** @c ApplyAnchor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(ApplyAnchor, applyAnchor);
 	
+	/** @c ApplyCoordinateAdj . */
+	SJME_SCRITCHUI_QUICK_PENCIL(ApplyCoordinateAdj, applyCoordinateAdj);
+
 	/** @c ApplyRotateScale . */
 	SJME_SCRITCHUI_QUICK_PENCIL(ApplyRotateScale, applyRotateScale);
 	
