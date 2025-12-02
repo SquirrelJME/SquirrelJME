@@ -90,6 +90,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanGet(
 	rawPix = gdk_pixbuf_get_pixels(pix);
 	if (rawPix != NULL)
 		memmove(outData, rawPix, inDataLen);
+
+	/* Cleanup */
+	g_object_unref(pix);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -126,6 +129,9 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilRawScanPutPure(
 	gdk_pixbuf_render_to_drawable(pix, drawable, gc,
 		0, 0, x, y, srcNumPixels, 1,
 		GDK_RGB_DITHER_NONE, 0, 0);
+
+	/* Cleanup */
+	g_object_unref(pix);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

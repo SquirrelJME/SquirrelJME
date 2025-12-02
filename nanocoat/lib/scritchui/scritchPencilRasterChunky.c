@@ -361,6 +361,9 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 			srcAlpha, mulAlpha, mulAlphaVal)))
 			goto fail_anyInLock;
 	}
+
+	/* Cleanup. */
+	sjme_alloca_free(srcRgb);
 	
 	/* Release lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
