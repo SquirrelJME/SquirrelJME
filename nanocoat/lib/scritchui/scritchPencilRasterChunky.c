@@ -120,8 +120,10 @@ sjme_errorCode sjme_scritchpen_core_copyArea(
 		return SJME_ERROR_NONE;
 
 	/* Translate base coordinates. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &sx, &sy);
-	sjme_scritchpen_coreUtil_applyTranslate(g, &dx, &dy);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &sx, &sy)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &dx, &dy)))
+		return sjme_error_default(error);
 
 	/* Apply anchor to the destination area. */
 	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(anchor,
@@ -230,7 +232,7 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	sjme_errorCode error;
 	sjme_scritchui_pencilMatrix m;
 	sjme_fixed wx, zy, wxBase, zyMajor;
-	sjme_jint dx, dy, iwx, izy, at, temp;
+	sjme_jint dx, dy, iwx, izy, at;
 	sjme_jint* srcRgb;
 	sjme_jint srcRgbBytes, srcAlphaMask;
 	sjme_jboolean srcAlpha, mulAlpha;
@@ -259,7 +261,9 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 		return SJME_ERROR_NONE;
 	
 	/* Translate base coordinates. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &xDest, &yDest);
+	if (sjme_error_is(error = g->util->applyTranslate(g,
+		&xDest, &yDest)))
+		return sjme_error_default(error);
 
 	/* We are now doing the transforming and drawing ourselves. */
 	/* Calculate transformation matrix. */
@@ -267,14 +271,13 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyRotateScale(
 		&m, trans, wSrc, hSrc, wDest, hDest)))
 		return sjme_error_default(error);
-
-	/**
-	 * Now we need to adjust the source and destination areas to account for
-	 * the transformed image, otherwise we'll read from an incorrect area, and
-	 * draw to another wrong area.
-	 */
+	
+	/* Now we need to adjust the source and destination areas to account for */
+	/* the transformed image, otherwise we'll read from an incorrect area, */
+	/* and draw to another wrong area. */
 	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyCoordinateAdj(
-		trans, &xSrc, &ySrc, &wSrc, &hSrc, scanLen, (dataLen / scanLen))))
+		trans, &xSrc, &ySrc, &wSrc, &hSrc, scanLen,
+		(dataLen / scanLen))))
 		return sjme_error_default(error);
 	
 	/* Anchor to target coordinates after scaling, because we need */

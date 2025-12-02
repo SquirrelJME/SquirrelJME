@@ -135,57 +135,23 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
 	sjme_attrOutNotNull sjme_jint* outX,
 	sjme_attrOutNotNull sjme_jint* outY);
 
-/**
- * Applies coordinate adjustments based on the provided transformation, so
- * that subsequent region manipulations are using the correct coordinates.
- * 
- * @param inTrans The transformation type.
- * @param x The source region x position.
- * @param y The source region y position.
- * @param w The source region width.
- * @param h The source region height.
- * @param h The source height.
- * @param dataWidth The width of the entire data/image.
- * @param dataHeight The height of the entire data/image.
- * @since 2025/12/01
- */
 sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
-	sjme_attrInValue sjme_jint* x,
-	sjme_attrInValue sjme_jint* y,
-	sjme_attrInPositive sjme_jint* w,
-	sjme_attrInPositive sjme_jint* h,
+	sjme_attrInOutNotNull sjme_jint* x,
+	sjme_attrInOutNotNull sjme_jint* y,
+	sjme_attrInOutNotNull sjme_jint* w,
+	sjme_attrInOutNotNull sjme_jint* h,
 	sjme_attrInPositive sjme_jint dataWidth,
 	sjme_attrInPositive sjme_jint dataHeight);
 
-/**
- * Applies rotation and scaling.
- * 
- * @param outMatrix The resultant matrix.
- * @param inTrans The translation to use.
- * @param wSrc The source width.
- * @param hSrc The source height.
- * @param wDest The destination width.
- * @param hDest The destination height.
- * @return Any resultant error, if any.
- * @since 2024/07/12
- */
 sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
-	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
+	sjme_attrInOutNotNull sjme_scritchui_pencilMatrix* adjMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,
 	sjme_attrInPositive sjme_jint hSrc,
 	sjme_attrInPositive sjme_jint wDest,
 	sjme_attrInPositive sjme_jint hDest);
 	
-/**
- * Translates coordinates.
- * 
- * @param g The graphics to transform via. 
- * @param x The X coordinate.
- * @param y The Y coordinate.
- * @since 2024/05/17
- */
 sjme_errorCode sjme_scritchpen_coreUtil_applyTranslate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInOutNotNull sjme_jint* x,

@@ -441,10 +441,10 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
 
 sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
-	sjme_attrInValue sjme_jint* x,
-	sjme_attrInValue sjme_jint* y,
-	sjme_attrInPositive sjme_jint* w,
-	sjme_attrInPositive sjme_jint* h,
+	sjme_attrInOutNotNull sjme_jint* x,
+	sjme_attrInOutNotNull sjme_jint* y,
+	sjme_attrInOutNotNull sjme_jint* w,
+	sjme_attrInOutNotNull sjme_jint* h,
 	sjme_attrInPositive sjme_jint dataWidth,
 	sjme_attrInPositive sjme_jint dataHeight)
 {
@@ -452,6 +452,9 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	
 	if (x == NULL || y == NULL || w == NULL || h == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (dataWidth < 0 || dataHeight < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Determine the transformation function to use. */
 	switch (inTrans)
@@ -472,13 +475,11 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 			return sjme_error_notImplemented(0);
 	}
 	
-	/**
-	 * Whenever we receive a transformation that alters the width and height
-	 * the image, the first adjustment we have to do is update the source and
-	 * destination width/height accordingly (makes source/dest width and height
-	 * usage more consistent on further adjustments and clipping).
-	 */
-	if(xform & 4 || xform & 8 || xform & 16 || xform & 32)
+	/* Whenever we receive a transformation that alters the width and height */
+	/* the image, the first adjustment we have to do is update the source */
+	/* and destination width/height accordingly (makes source/dest width and */
+	/* height usage more consistent on further adjustments and clipping). */
+	if ((xform & 4) || (xform & 8) || (xform & 16) || (xform & 32))
 	{
 		temp = *h;
 		*h = *w;
@@ -531,7 +532,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
-	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
+	sjme_attrInOutNotNull sjme_scritchui_pencilMatrix* adjMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,
 	sjme_attrInPositive sjme_jint hSrc,
@@ -540,13 +541,13 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 {
 	sjme_jint temp, xform;
 	
-	if (outMatrix == NULL)
+	if (adjMatrix == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Determine the transformation function to use. */
 	switch (inTrans)
 	{
-		/* These bits represent the stuff to do! == 0b9VH; */
+		/* These bits represent the stuff to do! == 0bLR9VH; */
 		case SJME_SCRITCHUI_TRANS_NONE:				xform = 0; break;
 		case SJME_SCRITCHUI_TRANS_MIRROR:			xform = 1; break;
 		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:	xform = 2; break;
@@ -556,7 +557,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 8; break;
 		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 16; break;
 		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 32; break;
-		/* These bits represent the stuff to do! == 0b9VH; */
+		/* These bits represent the stuff to do! == 0bLR9VH; */
 
 		default:
 			return sjme_error_notImplemented(0);
@@ -569,75 +570,75 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 	 */
 	if(xform & 4 || xform & 8 || xform & 16 || xform & 32)
 	{
-		outMatrix->tw = hDest;
-		outMatrix->th = wDest;
+		adjMatrix->tw = hDest;
+		adjMatrix->th = wDest;
 	}
 	else
 	{
-		outMatrix->tw = wDest;
-		outMatrix->th = hDest;
+		adjMatrix->tw = wDest;
+		adjMatrix->th = hDest;
 	}
 	
 	/* Base the matrix x, y step calculations from the scaling values. */
-	outMatrix->x.wx = sjme_fixed_fraction(wSrc, wDest);
-	outMatrix->y.zy = sjme_fixed_fraction(hSrc, hDest);
+	adjMatrix->x.wx = sjme_fixed_fraction(wSrc, wDest);
+	adjMatrix->y.zy = sjme_fixed_fraction(hSrc, hDest);
 	
 	/* Mirror horizontally? */
 	if (xform & 1)
-		outMatrix->x.wx = -outMatrix->x.wx;
+		adjMatrix->x.wx = -adjMatrix->x.wx;
 
 	/* Mirror vertically? */
 	if (xform & 2)
-		outMatrix->y.zy = -outMatrix->y.zy;
+		adjMatrix->y.zy = -adjMatrix->y.zy;
 
 	/* Rotate 90 degrees clockwise */
 	/* Thanks to jercos for helping out with the matrix math! */
 	/* The math here has been simplified to remove constants and otherwise. */
 	if (xform & 4)
 	{
-		temp = outMatrix->x.wx;
-		outMatrix->x.wx = outMatrix->x.zy;
-		outMatrix->x.zy = -temp;
+		temp = adjMatrix->x.wx;
+		adjMatrix->x.wx = adjMatrix->x.zy;
+		adjMatrix->x.zy = -temp;
 
-		temp = outMatrix->y.wx;
-		outMatrix->y.wx = outMatrix->y.zy;
-		outMatrix->y.zy = -temp;
+		temp = adjMatrix->y.wx;
+		adjMatrix->y.wx = adjMatrix->y.zy;
+		adjMatrix->y.zy = -temp;
 	}
 
 	/* Mirror horizontally and rotate 90 degrees clockwise */
-	if(xform & 8)
+	if (xform & 8)
 	{
-		temp = outMatrix->x.wx;
-		outMatrix->x.wx = -outMatrix->x.zy;
-		outMatrix->x.zy = -temp;
+		temp = adjMatrix->x.wx;
+		adjMatrix->x.wx = -adjMatrix->x.zy;
+		adjMatrix->x.zy = -temp;
 
-		temp = outMatrix->y.wx;
-		outMatrix->y.wx = -outMatrix->y.zy;
-		outMatrix->y.zy = -temp;
+		temp = adjMatrix->y.wx;
+		adjMatrix->y.wx = -adjMatrix->y.zy;
+		adjMatrix->y.zy = -temp;
 	}
 
 	/* Mirror horizontally and rotate 270 degrees clockwise */
-	if(xform & 16)
+	if (xform & 16)
 	{
-		temp = outMatrix->x.wx;
-		outMatrix->x.wx = outMatrix->x.zy;
-		outMatrix->x.zy = temp;
+		temp = adjMatrix->x.wx;
+		adjMatrix->x.wx = adjMatrix->x.zy;
+		adjMatrix->x.zy = temp;
 
-		temp = outMatrix->y.wx;
-		outMatrix->y.wx = outMatrix->y.zy;
-		outMatrix->y.zy = temp;
+		temp = adjMatrix->y.wx;
+		adjMatrix->y.wx = adjMatrix->y.zy;
+		adjMatrix->y.zy = temp;
 	}
 
 	/* Rotate 270 degrees clockwise (A.K.A. 90 degrees counter-clockwise). */
-	if(xform & 32)
+	if (xform & 32)
 	{
-		temp = outMatrix->x.wx;
-		outMatrix->x.wx = -outMatrix->x.zy;
-		outMatrix->x.zy = temp;
+		temp = adjMatrix->x.wx;
+		adjMatrix->x.wx = -adjMatrix->x.zy;
+		adjMatrix->x.zy = temp;
 
-		temp = outMatrix->y.wx;
-		outMatrix->y.wx = -outMatrix->y.zy;
-		outMatrix->y.zy = temp;
+		temp = adjMatrix->y.wx;
+		adjMatrix->y.wx = -adjMatrix->y.zy;
+		adjMatrix->y.zy = temp;
 	}
 
 	/* Success! */
@@ -741,6 +742,7 @@ sjme_errorCode sjme_scritchpen_core_setClip(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
+	sjme_errorCode error;
 	sjme_scritchui_rect* rect;
 	sjme_scritchui_line* line;
 	sjme_jint ex, ey;
@@ -749,7 +751,8 @@ sjme_errorCode sjme_scritchpen_core_setClip(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Translate coordinates. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x, &y)))
+		return sjme_error_default(error);
 	
 	/* Minimum bounds. */
 	if (w <= 0)

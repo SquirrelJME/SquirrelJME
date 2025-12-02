@@ -240,17 +240,17 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyAnchorFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilApplyCoordinateAdjFunc)(
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
-	sjme_attrInValue sjme_jint* x,
-	sjme_attrInValue sjme_jint* y,
-	sjme_attrInPositive sjme_jint* w,
-	sjme_attrInPositive sjme_jint* h,
+	sjme_attrInOutNotNull sjme_jint* x,
+	sjme_attrInOutNotNull sjme_jint* y,
+	sjme_attrInOutNotNull sjme_jint* w,
+	sjme_attrInOutNotNull sjme_jint* h,
 	sjme_attrInPositive sjme_jint dataWidth,
 	sjme_attrInPositive sjme_jint dataHeight);
 
 /**
  * Applies rotation and scaling.
  * 
- * @param outMatrix The resultant matrix.
+ * @param adjMatrix The resultant matrix.
  * @param inTrans The translation to use.
  * @param wSrc The source width.
  * @param hSrc The source height.
@@ -260,7 +260,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyCoordinateAdjFunc)(
  * @since 2024/07/12
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilApplyRotateScaleFunc)(
-	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
+	sjme_attrInOutNotNull sjme_scritchui_pencilMatrix* adjMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,
 	sjme_attrInPositive sjme_jint hSrc,

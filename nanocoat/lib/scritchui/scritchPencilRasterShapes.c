@@ -33,13 +33,14 @@ sjme_errorCode sjme_scritchpen_core_drawRect(
 	/* Nothing to draw? */
 	if (w <= 0 || h <= 0)
 		return SJME_ERROR_NONE;
+		
+	/* Transform. */
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x, &y)))
+		return sjme_error_default(error);
 	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
-		
-	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
 	
 	/* Pre-calculate coordinates. */
 	xw = x + w;
@@ -88,14 +89,17 @@ sjme_errorCode sjme_scritchpen_core_drawTriangle(
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
+	/* Transform. */
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x1, &y1)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x2, &y2)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x3, &y3)))
+		return sjme_error_default(error);
+		
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
-		
-	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x1, &y1);
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x2, &y2);
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x3, &y3);
 	
 	/* Clear error state. */
 	error = SJME_ERROR_NONE;
@@ -136,13 +140,14 @@ sjme_errorCode sjme_scritchpen_core_fillRect(
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Transform. */
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x, &y)))
+		return sjme_error_default(error);
 		
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
-	
-	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
 	
 	/* Cap width and height to 1 always. */
 	if (w <= 0)
