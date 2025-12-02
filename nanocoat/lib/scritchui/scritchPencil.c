@@ -165,6 +165,7 @@ static const sjme_scritchui_pencilUtilFunctions
 {
 	sjme_sm(.blendRGBInto, sjme_scritchpen_coreUtil_blendRGBInto),
 	sjme_sm(.applyAnchor, sjme_scritchpen_coreUtil_applyAnchor),
+	sjme_sm(.applyCoordinateAdj, sjme_scritchpen_coreUtil_applyCoordinateAdj),
 	sjme_sm(.applyRotateScale, sjme_scritchpen_coreUtil_applyRotateScale),
 	sjme_sm(.applyTranslate, sjme_scritchpen_coreUtil_applyTranslate),
 	sjme_sm(.pfScanGet, sjme_scritchpen_coreUtil_pfScanGet),

@@ -18,7 +18,6 @@
 #include "sjme/fixed.h"
 
 static void sjme_scritchpen_core_clipLeftTop(
-	sjme_jint dim,
 	sjme_jint clipAt,
 	sjme_jint* zSrc,
 	sjme_jint* zDest,
@@ -231,7 +230,7 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	sjme_errorCode error;
 	sjme_scritchui_pencilMatrix m;
 	sjme_fixed wx, zy, wxBase, zyMajor;
-	sjme_jint dx, dy, iwx, izy, at;
+	sjme_jint dx, dy, iwx, izy, at, temp;
 	sjme_jint* srcRgb;
 	sjme_jint srcRgbBytes, srcAlphaMask;
 	sjme_jboolean srcAlpha, mulAlpha;
@@ -261,12 +260,21 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	
 	/* Translate base coordinates. */
 	sjme_scritchpen_coreUtil_applyTranslate(g, &xDest, &yDest);
-	
+
 	/* We are now doing the transforming and drawing ourselves. */
 	/* Calculate transformation matrix. */
 	memset(&m, 0, sizeof(m));
 	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyRotateScale(
 		&m, trans, wSrc, hSrc, wDest, hDest)))
+		return sjme_error_default(error);
+
+	/**
+	 * Now we need to adjust the source and destination areas to account for
+	 * the transformed image, otherwise we'll read from an incorrect area, and
+	 * draw to another wrong area.
+	 */
+	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyCoordinateAdj(
+		trans, &xSrc, &ySrc, &wSrc, &hSrc, scanLen, (dataLen / scanLen))))
 		return sjme_error_default(error);
 	
 	/* Anchor to target coordinates after scaling, because we need */
@@ -279,19 +287,17 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	
 	/* Get clipping information. */
 	clipLine = &g->state.clipLine;
-	
+
 	/* Clip left X and top Y. */
-	sjme_scritchpen_core_clipLeftTop(g->width, clipLine->s.x,
-		&xSrc, &xDest, &m.tw);
-	sjme_scritchpen_core_clipLeftTop(g->height, clipLine->s.y,
-		&ySrc, &yDest, &m.th);
+	sjme_scritchpen_core_clipLeftTop(clipLine->s.x, &xSrc, &xDest, &m.tw);
+	sjme_scritchpen_core_clipLeftTop(clipLine->s.y, &ySrc, &yDest, &m.th);
 	
 	/* Clip right X and bottom Y. */
 	sjme_scritchpen_core_clipRightBottom(g->width, clipLine->e.x,
 		&xSrc, &xDest, &m.tw);
 	sjme_scritchpen_core_clipRightBottom(g->height, clipLine->e.y,
 		&ySrc, &yDest, &m.th);
-	
+
 	/* Not actually drawing anything? */
 	if (m.tw <= 0 || m.th <= 0)
 		goto skip_noDraw;

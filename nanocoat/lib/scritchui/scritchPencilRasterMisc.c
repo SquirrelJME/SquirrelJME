@@ -439,6 +439,97 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
+	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
+	sjme_attrInValue sjme_jint* x,
+	sjme_attrInValue sjme_jint* y,
+	sjme_attrInPositive sjme_jint* w,
+	sjme_attrInPositive sjme_jint* h,
+	sjme_attrInPositive sjme_jint dataWidth,
+	sjme_attrInPositive sjme_jint dataHeight)
+{
+	sjme_jint temp, xform;
+	
+	if (x == NULL || y == NULL || w == NULL || h == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Determine the transformation function to use. */
+	switch (inTrans)
+	{
+		/* These bits represent the stuff to do! == 0b9VH; */
+		case SJME_SCRITCHUI_TRANS_NONE:				xform = 0; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR:			xform = 1; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:	xform = 2; break;
+		/* TRANS_ROT180 is basically a mix of the two above */
+		case SJME_SCRITCHUI_TRANS_ROT180:			xform = 3; break;
+		case SJME_SCRITCHUI_TRANS_ROT90:			xform = 4; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 8; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 16; break;
+		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 32; break;
+		/* These bits represent the stuff to do! == 0b9VH; */
+
+		default:
+			return sjme_error_notImplemented(0);
+	}
+	
+	/**
+	 * Whenever we receive a transformation that alters the width and height
+	 * the image, the first adjustment we have to do is update the source and
+	 * destination width/height accordingly (makes source/dest width and height
+	 * usage more consistent on further adjustments and clipping).
+	 */
+	if(xform & 4 || xform & 8 || xform & 16 || xform & 32)
+	{
+		temp = *h;
+		*h = *w;
+		*w = temp;
+	}
+
+	/* Mirrored horizontally */
+	if (xform & 1)
+		*x = dataWidth - *x - *w + 1;
+
+	/* Mirrored vertically */
+	if (xform & 2)
+		*y = dataHeight - *y - *h + 1;
+	
+
+	/* Was rotated 90 degrees clockwise. */
+	if (xform & 4)
+	{
+		temp = *x;
+		*x = dataHeight - *y - *w + 1;
+		*y = temp;
+	}
+
+	/* Was mirrored horizontally and rotated 90 degrees clockwise.*/
+	if(xform & 8)
+	{
+		temp = *y;
+		*y = dataWidth - *x - *h + 1;
+		*x = dataHeight - temp - *w + 1;
+	}
+
+	/* Was mirrored horizontally and rotated 270 degrees clockwise */
+	if(xform & 16)
+	{
+		temp = *x;
+		*x = *y;
+		*y = temp;
+	}
+
+	/* Was rotated 270 degrees clockwise */
+	if(xform & 32)
+	{
+		temp = *y;
+		*y = dataWidth - *x - *h + 1;
+		*x = temp;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
@@ -447,73 +538,109 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 	sjme_attrInPositive sjme_jint wDest,
 	sjme_attrInPositive sjme_jint hDest)
 {
-	sjme_scritchui_pencilMatrix result;
-	sjme_fixed scaleX, scaleY, temp;
-	sjme_jint xform;
+	sjme_jint temp, xform;
 	
 	if (outMatrix == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Initialize. */
-	memset(&result, 0, sizeof(result));
-	
-	/* Perform total image scaling first. */
-	scaleX = sjme_fixed_fraction(wSrc, wDest);
-	scaleY = sjme_fixed_fraction(hSrc, hDest);
-	
-	/* This is simple enough to calculate, is just the destination. */
-	result.tw = wDest;
-	result.th = hDest;
-	
-	/* Determine the transformation functions to use. There are just three */
-	/* primitive transformation functions: flip horizontally, then */
-	/* flip vertically, then rotate 90 degrees clockwise. This handles */
-	/* every transformation which fill every single bit. */
+
+	/* Determine the transformation function to use. */
 	switch (inTrans)
 	{
 		/* These bits represent the stuff to do! == 0b9VH; */
 		case SJME_SCRITCHUI_TRANS_NONE:				xform = 0; break;
 		case SJME_SCRITCHUI_TRANS_MIRROR:			xform = 1; break;
 		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:	xform = 2; break;
+		/* TRANS_ROT180 is basically a mix of the two above */
 		case SJME_SCRITCHUI_TRANS_ROT180:			xform = 3; break;
 		case SJME_SCRITCHUI_TRANS_ROT90:			xform = 4; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 5; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 6; break;
-		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 7; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 8; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 16; break;
+		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 32; break;
 		/* These bits represent the stuff to do! == 0b9VH; */
 
 		default:
 			return sjme_error_notImplemented(0);
 	}
+
+	/**
+	 * This is simple enough to calculate, it's just the destination but with
+	 * its width and height swapped if we're handling any 90 or 270 transform
+	 * variation.
+	 */
+	if(xform & 4 || xform & 8 || xform & 16 || xform & 32)
+	{
+		outMatrix->tw = hDest;
+		outMatrix->th = wDest;
+	}
+	else
+	{
+		outMatrix->tw = wDest;
+		outMatrix->th = hDest;
+	}
 	
-	/* Start with this. */
-	result.x.wx = scaleX;
-	result.y.zy = scaleY;
+	/* Base the matrix x, y step calculations from the scaling values. */
+	outMatrix->x.wx = sjme_fixed_fraction(wSrc, wDest);
+	outMatrix->y.zy = sjme_fixed_fraction(hSrc, hDest);
 	
 	/* Mirror horizontally? */
-	if ((xform & 1) != 0)
-		result.x.wx = -result.x.wx;
-		
+	if (xform & 1)
+		outMatrix->x.wx = -outMatrix->x.wx;
+
 	/* Mirror vertically? */
-	if ((xform & 2) != 0)
-		result.y.zy = -result.y.zy;
-		
+	if (xform & 2)
+		outMatrix->y.zy = -outMatrix->y.zy;
+
 	/* Rotate 90 degrees clockwise */
 	/* Thanks to jercos for helping out with the matrix math! */
 	/* The math here has been simplified to remove constants and otherwise. */
-	if ((xform & 4) != 0)
+	if (xform & 4)
 	{
-		temp = result.x.wx;
-		result.x.wx = result.x.zy;
-		result.x.zy = -temp;
-		
-		temp = result.y.wx;
-		result.y.wx = result.y.zy;
-		result.y.zy = -temp;
+		temp = outMatrix->x.wx;
+		outMatrix->x.wx = outMatrix->x.zy;
+		outMatrix->x.zy = -temp;
+
+		temp = outMatrix->y.wx;
+		outMatrix->y.wx = outMatrix->y.zy;
+		outMatrix->y.zy = -temp;
 	}
-	
+
+	/* Mirror horizontally and rotate 90 degrees clockwise */
+	if(xform & 8)
+	{
+		temp = outMatrix->x.wx;
+		outMatrix->x.wx = -outMatrix->x.zy;
+		outMatrix->x.zy = -temp;
+
+		temp = outMatrix->y.wx;
+		outMatrix->y.wx = -outMatrix->y.zy;
+		outMatrix->y.zy = -temp;
+	}
+
+	/* Mirror horizontally and rotate 270 degrees clockwise */
+	if(xform & 16)
+	{
+		temp = outMatrix->x.wx;
+		outMatrix->x.wx = outMatrix->x.zy;
+		outMatrix->x.zy = temp;
+
+		temp = outMatrix->y.wx;
+		outMatrix->y.wx = outMatrix->y.zy;
+		outMatrix->y.zy = temp;
+	}
+
+	/* Rotate 270 degrees clockwise (A.K.A. 90 degrees counter-clockwise). */
+	if(xform & 32)
+	{
+		temp = outMatrix->x.wx;
+		outMatrix->x.wx = -outMatrix->x.zy;
+		outMatrix->x.zy = temp;
+
+		temp = outMatrix->y.wx;
+		outMatrix->y.wx = -outMatrix->y.zy;
+		outMatrix->y.zy = temp;
+	}
+
 	/* Success! */
-	memmove(outMatrix, &result, sizeof(result));
 	return SJME_ERROR_NONE;
 }
 
