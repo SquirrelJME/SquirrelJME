@@ -113,3 +113,10 @@ if(SQUIRRELJME_ENABLE_GUI_DEVELOPER)
 		squirreljme_scritchui_build(gtk3 GTK3)
 	endif()
 endif()
+
+# Tk?
+squirreljme_include("find-tk.cmake")
+
+if(SQUIRRELJME_ENABLE_GUI_TK)
+	squirreljme_scritchui_build(tk Tk)
+endif()

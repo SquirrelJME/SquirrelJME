@@ -17,6 +17,9 @@ endif()
 
 # Otherwise, fallback to CMake detection
 if(NOT GTK2_FOUND)
+	# Clear found from the cache
+	squirreljme_notfound_strip(GTK2_FOUND)
+
 	# Sets GTK2_INCLUDE_DIRS and GTK2_LIBRARIES
 	find_package(GTK2 2.0 COMPONENTS gtk)
 endif()
@@ -48,7 +51,7 @@ if(GTK2_FOUND)
 		set(SQUIRRELJME_ENABLE_GUI_GTK2_DEFAULT NO)
 
 		# Make it so GTK2 was not found
-		unset(GTK2_FOUND CACHE)
+		squirreljme_notfound_strip(GTK2_FOUND)
 	endif()
 endif()
 
