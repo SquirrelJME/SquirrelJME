@@ -19,10 +19,16 @@ You grant Stephanie Gawroriski an irrevocable license that:
  5. Have pledged to follow the Code of Conduct.
  6. Have read and understand the Ettiquite.
  7. Understand that the code will be placed under the MPLv2.
+ 8. Have not used LLMs and/or GenAIs.
+    a. This includes but is not limited to: ChatGPT, Claude, Copilot,
+       Cursor, Junie.
 ```
 
 Choose one of the following:
 
+ * By keeping this specific option, I have shown that I have not bothered to
+   even read nor care about the agreement nor follow its instructions; and
+   that this pull/merge request should be disregarded.
  * I decline to accept the contributor agreement and wish to seek an
    alternative agreement.
  * I accept the contributor agreement.
@@ -32,6 +38,9 @@ Choose one of the following:
 
 Additionally, choose one of the following:
 
+ * By keeping this specific option, I have shown that I have not bothered to
+   even read nor care about the agreement nor follow its instructions; and
+   that this pull/merge request should be disregarded.
  * I decline to accept that SquirrelJME uses Fossil for its source control
    management and I do not understand that my pull request will be merged
    via patch in Fossil instead of via GitHub.
