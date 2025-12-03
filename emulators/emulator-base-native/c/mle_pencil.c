@@ -127,7 +127,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareCopyArea)
 		return;
 	}
 
-	sjme_todo("Impl?");
+	/* Forward. */
+	if (sjme_error_is(error = p->api->copyArea(p, sx, sy, w, h, dw, dh,
+		anchor)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawArc)

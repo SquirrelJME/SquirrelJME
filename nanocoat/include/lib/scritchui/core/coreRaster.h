@@ -184,22 +184,23 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
 	sjme_attrOutNotNull sjme_jint* outX,
 	sjme_attrOutNotNull sjme_jint* outY);
 
+sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
+	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
+	sjme_attrInOutNotNull sjme_jint* x,
+	sjme_attrInOutNotNull sjme_jint* y,
+	sjme_attrInOutNotNull sjme_jint* w,
+	sjme_attrInOutNotNull sjme_jint* h,
+	sjme_attrInPositive sjme_jint dataWidth,
+	sjme_attrInPositive sjme_jint dataHeight);
+
 sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
-	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
+	sjme_attrInOutNotNull sjme_scritchui_pencilMatrix* adjMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,
 	sjme_attrInPositive sjme_jint hSrc,
 	sjme_attrInPositive sjme_jint wDest,
 	sjme_attrInPositive sjme_jint hDest);
 	
-/**
- * Translates coordinates.
- * 
- * @param g The graphics to transform via. 
- * @param x The X coordinate.
- * @param y The Y coordinate.
- * @since 2024/05/17
- */
 sjme_errorCode sjme_scritchpen_coreUtil_applyTranslate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInOutNotNull sjme_jint* x,

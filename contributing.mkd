@@ -169,6 +169,10 @@ is clean room!
 	    contributions to this project.
 	 5. Have pledged to follow the Code of Conduct.
 	 6. Have read and understand the Ettiquite.
+	 7. Understand that the code will be placed under the MPLv2.
+	 8. Have not used LLMs and/or GenAIs.
+	    a. This includes but is not limited to: ChatGPT, Claude, Copilot,
+	       Cursor, Junie.
 
 ## Committing and Submitting Changes
 

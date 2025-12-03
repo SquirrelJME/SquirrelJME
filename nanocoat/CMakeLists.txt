@@ -19,7 +19,8 @@ endif()
 
 # Default to release if no build type is specified
 if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE "Release" CACHE FORCE)
+	set(CMAKE_BUILD_TYPE "Release"
+		CACHE STRING "" FORCE)
 endif()
 
 # Easier includes

@@ -1285,27 +1285,6 @@ extern "C" {
 	#endif
 #endif
 
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
-	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE)
-	/** Use Windows networking. */
-	#define SJME_CONFIG_NETWORK_WINDOWS
-#elif !defined(SJME_CONFIG_HAS_NO_SYS_SOCKET_H) || \
-	defined(SJME_CONFIG_HAS_SYS_SOCKET_H)
-	/** Use POSIX networking. */
-	#define SJME_CONFIG_NETWORK_POSIX
-	
-	#if SJME_CONFIG_POSIX_VERSION_LEAST(SJME_CONFIG_POSIX_VERSION_2001)
-		/** Use POSIX 2001 networking. */
-		#define SJME_CONFIG_NETWORK_POSIX_2001
-	#else
-		/** Use Old POSIX networking. */
-		#define SJME_CONFIG_NETWORK_POSIX_OLD
-	#endif
-#else
-	/** Networking not supported. */
-	#define SJME_CONFIG_NETWORK_NONE
-#endif
-
 #if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	#if defined(__has_builtin)
 		/** Is the specified GCC built-in available? */

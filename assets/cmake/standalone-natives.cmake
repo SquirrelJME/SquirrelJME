@@ -161,5 +161,17 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		message(STATUS "Failed to configure "
 			"${systemNormal}/${archNormal}: "
 			"${coreResult} ${emulatorResult}!")
+
+		# Core?
+		if(EXISTS "${CMAKE_BINARY_DIR}/${ruleName}.core.err")
+			file(STRINGS "${CMAKE_BINARY_DIR}/${ruleName}.core.err" coreErr)
+			message(WARNING ${coreErr})
+		endif()
+
+		# Emulator?
+		if(EXISTS "${CMAKE_BINARY_DIR}/${ruleName}.emulator.err")
+			file(STRINGS "${CMAKE_BINARY_DIR}/${ruleName}.emulator.err" emuErr)
+			message(WARNING ${emuErr})
+		endif()
 	endif()
 endforeach()
