@@ -942,7 +942,11 @@ extern "C" {
 	#if defined(SJME_CONFIG_HAS_OS_PC_DOS) || \
 		defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
 		defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
-		/** Single threaded only. */
+		/** Single threaded only (system does not support threads). */
+		#define SJME_CONFIG_ONLY_THREAD_SINGLE
+	#elif !defined(SJME_CONFIG_HAS_THREADS_PTHREAD) && \
+		!defined(SJME_CONFIG_HAS_THREADS_WIN32)
+		/** Single threaded only (no other implementations). */
 		#define SJME_CONFIG_ONLY_THREAD_SINGLE
 	#endif
 #endif
@@ -1007,13 +1011,21 @@ extern "C" {
 	/** Packed structure. */
 	#define sjme_packed
 #endif
-	
-#if defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
-	defined(SJME_CONFIG_HAS_OS_NINTENDO_WIIU) || \
-    defined(SJME_CONFIG_HAS_OS_NINTENDO_WII) || \
-    defined(SJME_CONFIG_HAS_OS_BAREMETAL)
-	/* Disable errno support. */
-	#define SJME_CONFIG_HAS_NO_ERRNO 1
+
+#if !defined(SJME_CONFIG_HAS_NO_ERRNO_H) && \
+	!defined(SJME_CONFIG_HAS_ERRNO_H)
+	#if defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
+		defined(SJME_CONFIG_HAS_OS_NINTENDO_WIIU) || \
+		defined(SJME_CONFIG_HAS_OS_NINTENDO_WII) || \
+		defined(SJME_CONFIG_HAS_OS_BAREMETAL)
+		/* Disable errno support. */
+		#define SJME_CONFIG_HAS_NO_ERRNO_H 1
+	#endif
+#endif
+
+#if !defined(SJME_CONFIG_HAS_ERRNO_H) && !defined(SJME_CONFIG_HAS_NO_ERRNO_H)
+	/** errno.h was not checked, assumed to not be available? */
+	#define SJME_CONFIG_HAS_NO_ERRNO_H
 #endif
 
 #if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
@@ -1213,25 +1225,6 @@ extern "C" {
 	defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	/** Use a minimal amount of memory. */
 	#define SJME_CONFIG_HAS_LOW_MEMORY
-#endif
-
-/* Multi-threading is not possible if this is set. */
-#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
-	#if defined(SJME_CONFIG_HAS_THREADS_FALLBACK)
-		#undef SJME_CONFIG_HAS_THREADS_FALLBACK
-	#endif
-
-	#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
-		#undef SJME_CONFIG_HAS_THREADS_PTHREAD
-	#endif
-
-	#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
-		#undef SJME_CONFIG_HAS_THREADS_WIN32
-	#endif
-
-	#if defined(SJME_CONFIG_HAS_THREADS_ATOMIC)
-		#undef SJME_CONFIG_HAS_THREADS_ATOMIC
-	#endif
 #endif
 
 /* More verbosity? */

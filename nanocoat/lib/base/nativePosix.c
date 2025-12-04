@@ -17,11 +17,17 @@
 	(SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_POSIX_OLD)
 	#include <sys/socket.h>
 	#include <sys/types.h>
-	#include <sys/ioctl.h>
 	#include <netdb.h>
 	#include <unistd.h>
 	#include <fcntl.h>
-	#include <poll.h>
+	
+	#if defined(SJME_CONFIG_HAS_SYS_IOCTL_H)
+		#include <sys/ioctl.h>
+	#endif
+
+	#if defined(SJME_CONFIG_HAS_POLL_H)
+		#include <poll.h>
+	#endif
 
 	#if defined(SJME_CONFIG_HAS_OS_LINUX) || \
 		defined(SJME_CONFIG_HAS_OS_BSD)
@@ -74,6 +80,7 @@ static sjme_errorCode sjme_stream_inputNetAvailable(
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail)
 {
+#if defined(SJME_CONFIG_HAS_POLL_H)
 	int rfd, avail;
 	struct pollfd fds;
 	
@@ -109,6 +116,14 @@ static sjme_errorCode sjme_stream_inputNetAvailable(
 	/* Success! */
 	*outAvail = avail;
 	return SJME_ERROR_NONE;
+#else
+	if (stream == NULL || inImplState == NULL || outAvail == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* This is not possible to determine without support for poll(). */
+	*outAvail = 0;
+	return SJME_ERROR_NONE;
+#endif
 }
 
 static sjme_errorCode sjme_stream_inputNetClose(
@@ -167,7 +182,7 @@ static sjme_errorCode sjme_stream_inputNetRead(
 	if (rc < 0)
 	{
 		/* This may occur if the socket is non-blocking. */
-		if (errno == EAGAIN)
+		if (sjme_nal_errno(errno) == SJME_ERROR_TRY_AGAIN)
 			rc = 0;
 		else
 			return sjme_nal_errno(errno);
@@ -214,38 +229,44 @@ static sjme_errorCode sjme_stream_outputNetFlush(
 	if (rfd < 0)
 		return SJME_ERROR_IO_EXCEPTION;
 
+#if defined(SJME_CONFIG_HAS_FDATASYNC)
 	/* Sync the data. */
 	if (fdatasync(rfd) < 0)
 	{
 		/* Flushing might not be supported for this. */
-		if (errno != EINVAL)
+		if (sjme_nal_errno(errno) != SJME_ERROR_INVALID_ARGUMENT)
 			return sjme_nal_errno(errno);
+	}
 
-		/* On Linux and BSD we can force TCP No Delay as a flush, which */
-		/* is very hackish. */
+	/* Otherwise, this did actually work! */
+	else
+		return SJME_ERROR_NONE;
+#endif
+
+	/* On Linux and BSD we can force TCP No Delay as a flush, which */
+	/* is very hackish. */
 #if defined(SJME_CONFIG_HAS_OS_LINUX) || \
 	defined(SJME_CONFIG_HAS_OS_BSD)
-		/* This only works on the core socket. */
-		sfd = inImplState->handle.i;
-		
-		/* Perform the rather hackish flush. */
-		opt = 0;
-		optLen = sizeof(opt);
-		if (getsockopt(sfd, IPPROTO_TCP,
-			TCP_NODELAY, (char*)&opt, &optLen) >= 0)
-		{
-			/* Turn it on. */
-			opt = 1;
-			setsockopt(sfd, IPPROTO_TCP, TCP_NODELAY,
-				(char*)&opt, sizeof(opt));
+	/* This only works on the core socket. */
+	sfd = inImplState->handle.i;
+	
+	/* Perform the rather hackish flush. */
+	opt = 0;
+	optLen = sizeof(opt);
+	if (getsockopt(sfd, IPPROTO_TCP,
+		TCP_NODELAY, (char*)&opt, &optLen) >= 0)
+	{
+		/* Turn it on. */
+		opt = 1;
+		setsockopt(sfd, IPPROTO_TCP, TCP_NODELAY,
+			(char*)&opt, sizeof(opt));
 
-			/* Then turn it off. */
-			opt = 0;
-			setsockopt(sfd, IPPROTO_TCP, TCP_NODELAY,
-				(char*)&opt, sizeof(opt));
-		}
-#endif
+		/* Then turn it off. */
+		opt = 0;
+		setsockopt(sfd, IPPROTO_TCP, TCP_NODELAY,
+			(char*)&opt, sizeof(opt));
 	}
+#endif
 
 	/* Success! */
 	return SJME_ERROR_NONE;

@@ -45,19 +45,25 @@ const sjme_nal sjme_nal_default =
 	},
 };
 
-#if !defined(SJME_CONFIG_HAS_NO_ERRNO)
+#if defined(SJME_CONFIG_HAS_ERRNO_H)
 sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 {
 	switch (errNum)
 	{
-		case EIO:
-			return SJME_ERROR_IO_EXCEPTION;
-		
-		case ENOENT:
-			return SJME_ERROR_FILE_NOT_FOUND;
+		case EAGAIN:
+			return SJME_ERROR_TRY_AGAIN;
 
 		case ECONNREFUSED:
 			return SJME_ERROR_CONNECTION_REFUSED;
+			
+		case EIO:
+			return SJME_ERROR_IO_EXCEPTION;
+
+		case EINVAL:
+			return SJME_ERROR_INVALID_ARGUMENT;
+		
+		case ENOENT:
+			return SJME_ERROR_FILE_NOT_FOUND;
 
 		default:
 			return SJME_ERROR_UNKNOWN;

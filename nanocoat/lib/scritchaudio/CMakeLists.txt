@@ -30,7 +30,9 @@ add_subdirectory(softmix)
 # Open Sound System
 squirreljme_include("find-oss.cmake")
 
-if(OSS_FOUND)
+# Note OSS depends on ioctl to work, so if the system happens to lack ioctl
+# support then we cannot have OSS audio
+if(OSS_FOUND AND SJME_CONFIG_HAS_SYS_IOCTL_H)
 	set(SQUIRRELJME_ENABLE_AUDIO_OSS_DEFAULT YES)
 else()
 	set(SQUIRRELJME_ENABLE_AUDIO_OSS_DEFAULT NO)
