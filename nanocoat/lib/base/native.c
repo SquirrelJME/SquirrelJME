@@ -53,8 +53,11 @@ sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 		case EAGAIN:
 			return SJME_ERROR_TRY_AGAIN;
 
+#if defined(ECONNREFUSED)
+			/* Not available on all platforms. */
 		case ECONNREFUSED:
 			return SJME_ERROR_CONNECTION_REFUSED;
+#endif
 			
 		case EIO:
 			return SJME_ERROR_IO_EXCEPTION;

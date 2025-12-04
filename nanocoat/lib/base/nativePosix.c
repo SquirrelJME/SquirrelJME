@@ -20,6 +20,10 @@
 	#include <netdb.h>
 	#include <unistd.h>
 	#include <fcntl.h>
+
+	#if defined(SJME_CONFIG_HAS_NETINET_IN_H)
+		#include <netinet/in.h>
+	#endif
 	
 	#if defined(SJME_CONFIG_HAS_SYS_IOCTL_H)
 		#include <sys/ioctl.h>

@@ -346,6 +346,14 @@ else()
 	add_compile_definitions(SJME_CONFIG_HAS_SYS_SOCKET_H=1)
 endif()
 
+# netinet/in.h available?
+CHECK_INCLUDE_FILE("netinet/in.h" SJME_CONFIG_HAS_NETINET_IN_H)
+if(NOT SJME_CONFIG_HAS_NETINET_IN_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_NETINET_IN_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_NETINET_IN_H=1)
+endif()
+
 # sys/ioctl.h available?
 CHECK_INCLUDE_FILE("sys/ioctl.h" SJME_CONFIG_HAS_SYS_IOCTL_H)
 if(NOT SJME_CONFIG_HAS_SYS_IOCTL_H)
@@ -389,7 +397,9 @@ squirreljme_try_compile("fdatasync()"
 	SJME_CONFIG_HAS_FDATASYNC
 	"tryFDataSync"
 	SJME_CONFIG_HAS_NO_FDATASYNC)
-if(SJME_CONFIG_HAS_FDATASYNC)
+if(NOT SJME_CONFIG_HAS_NO_FDATASYNC)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_FDATASYNC=1)
+elseif(SJME_CONFIG_HAS_FDATASYNC)
 	add_compile_definitions(SJME_CONFIG_HAS_FDATASYNC=1)
 endif()
 

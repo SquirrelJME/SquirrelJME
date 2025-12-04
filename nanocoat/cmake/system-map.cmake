@@ -132,7 +132,7 @@ function(squirreljme_defines_gcc gccDefines gccExe)
 	unset(gccOutputRaw)
 	execute_process(
 		COMMAND "${gccExe}"
-			"-E" "-dM" ${CMAKE_C_FLAGS} "${gccMainSource}"
+			"-E" "-dM" ${CMAKE_C_FLAGS} ${CFLAGS} "${gccMainSource}"
 		OUTPUT_VARIABLE gccOutputRaw
 		RESULT_VARIABLE gccResult
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
