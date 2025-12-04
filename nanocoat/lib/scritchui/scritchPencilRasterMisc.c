@@ -504,7 +504,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	}
 
 	/* Was mirrored horizontally and rotated 90 degrees clockwise.*/
-	if(xform & 8)
+	if (xform & 8)
 	{
 		temp = *y;
 		*y = dataWidth - *x - *h + 1;
@@ -512,7 +512,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	}
 
 	/* Was mirrored horizontally and rotated 270 degrees clockwise */
-	if(xform & 16)
+	if (xform & 16)
 	{
 		temp = *x;
 		*x = *y;
@@ -520,7 +520,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	}
 
 	/* Was rotated 270 degrees clockwise */
-	if(xform & 32)
+	if (xform & 32)
 	{
 		temp = *y;
 		*y = dataWidth - *x - *h + 1;
@@ -568,7 +568,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 	 * its width and height swapped if we're handling any 90 or 270 transform
 	 * variation.
 	 */
-	if(xform & 4 || xform & 8 || xform & 16 || xform & 32)
+	if (xform & 4 || xform & 8 || xform & 16 || xform & 32)
 	{
 		adjMatrix->tw = hDest;
 		adjMatrix->th = wDest;

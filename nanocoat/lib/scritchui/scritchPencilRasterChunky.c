@@ -166,7 +166,7 @@ sjme_errorCode sjme_scritchpen_core_copyArea(
 	/* image. We can get away with just figuring out the native image */
 	/* format, and then go straight to copying from there. */
 	error = SJME_ERROR_NONE;
-	for(y = 0, zy = sy, areaP = copiedArea; y < h;
+	for (y = 0, zy = sy, areaP = copiedArea; y < h;
 		y++, zy++, areaP = SJME_POINTER_OFFSET(areaP, scanlineBytes))
 		error |= g->prim.rawScanGet(g, sx, zy,
 			areaP, scanlineBytes, w);
@@ -177,7 +177,7 @@ sjme_errorCode sjme_scritchpen_core_copyArea(
 	/* only used for mutable images, which only contain opaque pixels as per */
 	/* MIDP 2. Thus, no alpha handling is needed. */
 	/* This is also the case for MIDP 3, no alpha blending is performed. */
-	for(y = 0, zy = dy, areaP = copiedArea; y < h;
+	for (y = 0, zy = dy, areaP = copiedArea; y < h;
 		y++, areaP = SJME_POINTER_OFFSET(areaP, scanlineBytes))
 		error |= g->prim.rawScanPutPure(g, dx, zy,
 			areaP, scanlineBytes, w);

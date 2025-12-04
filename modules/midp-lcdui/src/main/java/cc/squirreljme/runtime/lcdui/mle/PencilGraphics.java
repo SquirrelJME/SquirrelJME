@@ -277,7 +277,17 @@ public final class PencilGraphics
 		if (this._isClosed)
 			return;
 		
-		throw Debugging.todo();
+		try
+		{
+			PencilShelf.hardwareDrawArc(this.hardware, __x, __y, __w, __h,
+				__startAngle, __arcAngle);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -565,7 +575,18 @@ public final class PencilGraphics
 		if (this._isClosed)
 			return;
 		
-		throw Debugging.todo();
+		// Forward to hardware
+		try
+		{
+			PencilShelf.hardwareDrawRoundRect(this.hardware, __x, __y, __w,
+				__h, __arcWidth, __arcHeight);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -655,7 +676,17 @@ public final class PencilGraphics
 		if (this._isClosed)
 			return;
 		
-		throw Debugging.todo();
+		try
+		{
+			PencilShelf.hardwareFillArc(this.hardware, __x, __y, __w, __h,
+				__startAngle, __arcAngle);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**
@@ -696,7 +727,18 @@ public final class PencilGraphics
 		if (this._isClosed)
 			return;
 		
-		throw Debugging.todo();
+		// Forward to hardware
+		try
+		{
+			PencilShelf.hardwareFillRoundRect(this.hardware, __x, __y, __w,
+				__h, __arcWidth, __arcHeight);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 	
 	/**

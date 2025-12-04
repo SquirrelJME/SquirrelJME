@@ -107,16 +107,22 @@ static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 {
 	sjme_sm(.close, sjme_scritchpen_core_close),
 	sjme_sm(.copyArea, sjme_scritchpen_core_copyArea),
+	sjme_sm(.drawArc, sjme_scritchpen_core_drawArc),
 	sjme_sm(.drawChar, sjme_scritchpen_core_drawChar),
 	sjme_sm(.drawChars, sjme_scritchpen_core_drawChars),
 	sjme_sm(.drawHoriz, sjme_scritchpen_core_drawHoriz),
 	sjme_sm(.drawLine, sjme_scritchpen_core_drawLine),
 	sjme_sm(.drawPixel, sjme_scritchpen_core_drawPixel),
+	sjme_sm(.drawPolyline, sjme_scritchpen_core_drawPolyline),
 	sjme_sm(.drawRect, sjme_scritchpen_core_drawRect),
-	sjme_sm(.drawSubstring, sjme_scritchpen_core_drawSubstring),
+	sjme_sm(.drawRoundRect, sjme_scritchpen_core_drawRoundRect),
 	sjme_sm(.drawTriangle, sjme_scritchpen_core_drawTriangle),
+	sjme_sm(.drawSubstring, sjme_scritchpen_core_drawSubstring),
 	sjme_sm(.drawXRGB32Region, sjme_scritchpen_core_drawXRGB32Region),
+	sjme_sm(.fillArc, sjme_scritchpen_core_fillArc),
+	sjme_sm(.fillPolygon, sjme_scritchpen_core_fillPolygon),
 	sjme_sm(.fillRect, sjme_scritchpen_core_fillRect),
+	sjme_sm(.fillRoundRect, sjme_scritchpen_core_fillRoundRect),
 	sjme_sm(.fillTriangle, sjme_scritchpen_core_fillTriangle),
 	sjme_sm(.mapColor, sjme_scritchpen_core_mapColor),
 	sjme_sm(.setAlphaColor, sjme_scritchpen_core_setAlphaColor),
@@ -136,16 +142,22 @@ static const sjme_scritchui_pencilFunctions
 {
 	sjme_sm(.close, sjme_scritchpen_core_close),
 	sjme_sm(.copyArea, sjme_scritchpen_coreSerial_copyArea),
+	sjme_sm(.drawArc, sjme_scritchpen_coreSerial_drawArc),
 	sjme_sm(.drawChar, sjme_scritchpen_coreSerial_drawChar),
 	sjme_sm(.drawChars, sjme_scritchpen_coreSerial_drawChars),
 	sjme_sm(.drawHoriz, sjme_scritchpen_coreSerial_drawHoriz),
 	sjme_sm(.drawLine, sjme_scritchpen_coreSerial_drawLine),
 	sjme_sm(.drawPixel, sjme_scritchpen_coreSerial_drawPixel),
+	sjme_sm(.drawPolyline, sjme_scritchpen_coreSerial_drawPolyline),
 	sjme_sm(.drawRect, sjme_scritchpen_coreSerial_drawRect),
+	sjme_sm(.drawRoundRect, sjme_scritchpen_coreSerial_drawRoundRect),
 	sjme_sm(.drawSubstring, sjme_scritchpen_coreSerial_drawSubstring),
 	sjme_sm(.drawTriangle, sjme_scritchpen_coreSerial_drawTriangle),
 	sjme_sm(.drawXRGB32Region, sjme_scritchpen_coreSerial_drawXRGB32Region),
+	sjme_sm(.fillArc, sjme_scritchpen_coreSerial_fillArc),
+	sjme_sm(.fillPolygon, sjme_scritchpen_coreSerial_fillPolygon),
 	sjme_sm(.fillRect, sjme_scritchpen_coreSerial_fillRect),
+	sjme_sm(.fillRoundRect, sjme_scritchpen_coreSerial_fillRoundRect),
 	sjme_sm(.fillTriangle, sjme_scritchpen_coreSerial_fillTriangle),
 	sjme_sm(.mapColor, sjme_scritchpen_coreSerial_mapColor),
 	sjme_sm(.setAlphaColor, sjme_scritchpen_coreSerial_setAlphaColor),
@@ -282,9 +294,15 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	result.prim.rawScanPutPure = result.impl->rawScanPutPure;
 	
 	/* These are always handled by us unless supported by hardware. */
+	result.prim.drawArc = sjme_scritchpen_corePrim_drawArc;
 	result.prim.drawHoriz = sjme_scritchpen_corePrim_drawHoriz;
 	result.prim.drawLine = sjme_scritchpen_corePrim_drawLine;
 	result.prim.drawPixel = sjme_scritchpen_corePrim_drawPixel;
+	result.prim.drawRect = sjme_scritchpen_corePrim_drawRect;
+	result.prim.fillArc = sjme_scritchpen_corePrim_fillArc;
+	result.prim.fillPolygon = sjme_scritchpen_corePrim_fillPolygon;
+	result.prim.fillRect = sjme_scritchpen_corePrim_fillRect;
+	result.prim.fillTriangle = sjme_scritchpen_corePrim_fillTriangle;
 	
 	/* Raw scan get. */
 	if (result.impl->rawScanGet != NULL)

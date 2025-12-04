@@ -17,6 +17,7 @@ is used, refer to that for library bring-ins.
        * Memory leak fixes.
      * Core Library:
        * `copyArea()` implementation.
+       * Polygon and arc drawing implementations.
        * Fixes and additions to rotation/scaling translations.
  * _"crystalct"_
    * RatufaCoat updates related to LibRetro:
