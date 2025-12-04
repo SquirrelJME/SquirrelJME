@@ -664,9 +664,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	SJME_SDP_CASE(drawPolyline,
 		SJME_SCRITCHUI_SERIAL_PEN_DRAW_POLYLINE,
 		(as->drawPolyline.g,
-		as->drawPolyline.xPoints,
+		as->drawPolyline.inXPoints,
 		as->drawPolyline.xOffset,
-		as->drawPolyline.yPoints,
+		as->drawPolyline.inYPoints,
 		as->drawPolyline.yOffset,
 		as->drawPolyline.nPoints));
 
@@ -724,9 +724,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	SJME_SDP_CASE(fillPolygon,
 		SJME_SCRITCHUI_SERIAL_PEN_FILL_POLYGON,
 		(as->fillPolygon.g,
-		as->fillPolygon.xPoints,
+		as->fillPolygon.inXPoints,
 		as->fillPolygon.xOffset,
-		as->fillPolygon.yPoints,
+		as->fillPolygon.inYPoints,
 		as->fillPolygon.yOffset,
 		as->fillPolygon.nPoints));
 
@@ -1906,12 +1906,13 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawPolyline(
 {
 	SJME_SDP_CHUNK(drawPolyline,
 		SJME_SCRITCHUI_SERIAL_PEN_FILL_POLYGON,
-		(g, xPoints, xOffset, yPoints, yOffset, nPoints));
+		(g, inXPoints, xOffset,
+			inYPoints, yOffset, nPoints));
 		
 	SJME_SDX_PASS(g);
-	SJME_SDX_PASS(xPoints);
+	SJME_SDX_PASS(inXPoints);
 	SJME_SDX_PASS(xOffset);
-	SJME_SDX_PASS(yPoints);
+	SJME_SDX_PASS(inYPoints);
 	SJME_SDX_PASS(yOffset);
 	SJME_SDX_PASS(nPoints);
 	
@@ -2099,12 +2100,13 @@ sjme_errorCode sjme_scritchpen_coreSerial_fillPolygon(
 {
 	SJME_SDP_CHUNK(fillPolygon,
 		SJME_SCRITCHUI_SERIAL_PEN_FILL_POLYGON,
-		(g, xPoints, xOffset, yPoints, yOffset, nPoints));
+		(g, inXPoints, xOffset,
+			inYPoints, yOffset, nPoints));
 		
 	SJME_SDX_PASS(g);
-	SJME_SDX_PASS(xPoints);
+	SJME_SDX_PASS(inXPoints);
 	SJME_SDX_PASS(xOffset);
-	SJME_SDX_PASS(yPoints);
+	SJME_SDX_PASS(inYPoints);
 	SJME_SDX_PASS(yOffset);
 	SJME_SDX_PASS(nPoints);
 	

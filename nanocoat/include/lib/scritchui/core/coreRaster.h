@@ -259,7 +259,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 	sjme_attrInPositive sjme_jint destRawOff,
 	sjme_attrInNegativeOnePositive sjme_jint destRawLen,
 	sjme_attrInValue sjme_gfx_pixelFormat srcPf,
-	sjme_attrInNotNull sjme_pointer src,
+	sjme_attrInNotNull sjme_cpointer src,
 	sjme_attrInPositive sjme_jint srcRawOff,
 	sjme_attrInNegativeOnePositive sjme_jint srcRawLen,
 	sjme_attrInPositive sjme_jint inNumPixels);

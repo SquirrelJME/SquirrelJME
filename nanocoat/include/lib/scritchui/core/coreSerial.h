@@ -667,9 +667,9 @@ SDP_STRUCT_DEF(drawPixel,
 
 SDP_STRUCT_DEF(drawPolyline,
 	SDX_VAR(sjme_scritchui_pencil, g);
-	SDX_VARP(sjme_jint, xPoints);
+	SDX_VARP(const sjme_jint, inXPoints);
 	SDX_VAR(sjme_jint, xOffset);
-	SDX_VARP(sjme_jint, yPoints);
+	SDX_VARP(const sjme_jint, inYPoints);
 	SDX_VAR(sjme_jint, yOffset);
 	SDX_VAR(sjme_jint, nPoints););
 
@@ -738,9 +738,9 @@ SDP_STRUCT_DEF(fillArc,
 
 SDP_STRUCT_DEF(fillPolygon,
 	SDX_VAR(sjme_scritchui_pencil, g);
-	SDX_VARP(sjme_jint, xPoints);
+	SDX_VARP(const sjme_jint, inXPoints);
 	SDX_VAR(sjme_jint, xOffset);
-	SDX_VARP(sjme_jint, yPoints);
+	SDX_VARP(const sjme_jint, inYPoints);
 	SDX_VAR(sjme_jint, yOffset);
 	SDX_VAR(sjme_jint, nPoints););
 
