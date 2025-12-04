@@ -1898,9 +1898,9 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawPixel(
 
 sjme_errorCode sjme_scritchpen_coreSerial_drawPolyline(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_jint* xPoints,
+	sjme_attrInNotNull const sjme_jint* inXPoints,
 	sjme_attrInPositive sjme_jint xOffset,
-	sjme_attrInNotNull sjme_jint* yPoints,
+	sjme_attrInNotNull const sjme_jint* inYPoints,
 	sjme_attrInPositive sjme_jint yOffset,
 	sjme_attrInPositive sjme_jint nPoints)
 {
@@ -2091,9 +2091,9 @@ sjme_errorCode sjme_scritchpen_coreSerial_fillArc(
 
 sjme_errorCode sjme_scritchpen_coreSerial_fillPolygon(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_jint* xPoints,
+	sjme_attrInNotNull const sjme_jint* inXPoints,
 	sjme_attrInPositive sjme_jint xOffset,
-	sjme_attrInNotNull sjme_jint* yPoints,
+	sjme_attrInNotNull const sjme_jint* inYPoints,
 	sjme_attrInPositive sjme_jint yOffset,
 	sjme_attrInPositive sjme_jint nPoints)
 {

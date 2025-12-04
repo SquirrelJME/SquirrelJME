@@ -39,7 +39,7 @@ extern "C" {
  * @return The minimum of two values.
  * @since 2025/11/30
  */
-#define min(a,b) ((a < b) ? a : b)
+#define sjme_min(a, b) (((a) < (b)) ? (a) : (b))
 
 /**
  * Returns the maximum of two values.
@@ -49,7 +49,7 @@ extern "C" {
  * @return The maximum of two values.
  * @since 2025/11/30
  */
-#define max(a,b) ((a > b) ? a : b)
+#define sjme_max(a, b) (((a) > (b)) ? (a) : (b))
 
 /**
  * Function for returning the number of entries within a tree.

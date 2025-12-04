@@ -465,24 +465,24 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawPixelFunc)(
 	sjme_attrInValue sjme_jint y);
 
 /**
-* Draws a polyline in hardware with the specified set of x,y coordinates.
-* Reading begins from the x/yOffset for each array, and moves up to nPoints
-* positions.
-* 
-* @param g The hardware graphics to draw with.
-* @param xPoints An array containing all available X vertex coordinates
-* @param xOffset The offset from which xPoints will begin being read from
-* @param yPoints An array containing all available Y vertex coordinates
-* @param yOffset The offset from which yPoints will begin being read from
-* @param nPoints How many points should be used to construct the polygon.
-* @return An error on @c NULL arguments.
-* @since 2025/11/30
-*/
+ * Draws a polyline in hardware with the specified set of x,y coordinates.
+ * Reading begins from the x/yOffset for each array, and moves up to nPoints
+ * positions.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param inXPoints An array containing all available X vertex coordinates
+ * @param xOffset The offset from which xPoints will begin being read from
+ * @param inYPoints An array containing all available Y vertex coordinates
+ * @param yOffset The offset from which yPoints will begin being read from
+ * @param nPoints How many points should be used to construct the polygon.
+ * @return An error on @c NULL arguments.
+ * @since 2025/11/30
+ */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawPolylineFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_jint* xPoints,
+	sjme_attrInNotNull const sjme_jint* inXPoints,
 	sjme_attrInPositive sjme_jint xOffset,
-	sjme_attrInNotNull sjme_jint* yPoints,
+	sjme_attrInNotNull const sjme_jint* inYPoints,
 	sjme_attrInPositive sjme_jint yOffset,
 	sjme_attrInPositive sjme_jint nPoints);
 	
@@ -646,26 +646,55 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillArcFunc)(
 	sjme_attrInValue sjme_jint arcAngle);
 
 /**
-* Draws a filled polygon in hardware with the specified set of x,y
-* coordinates. Reading begins from the x/yOffset for each array, and moves
-* up to nPoints positions
-* 
-* @param g The hardware graphics to draw with.
-* @param xPoints An array containing all available X vertex coordinates
-* @param xOffset The offset from which xPoints will begin being read from
-* @param yPoints An array containing all available Y vertex coordinates
-* @param yOffset The offset from which yPoints will begin being read from
-* @param nPoints How many points should be used to construct the polygon.
-* @return An error on @c NULL arguments.
-* @since 2025/11/25
-*/
+ * Draws a filled polygon in hardware with the specified set
+ * of @code [x, y] @endcode coordinates. Reading begins from
+ * the @a x / @a yOffset for each array, and moves up to @a nPoints positions.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param inXPoints An array containing all available X vertex coordinates
+ * @param xOffset The offset from which xPoints will begin being read from
+ * @param inYPoints An array containing all available Y vertex coordinates
+ * @param yOffset The offset from which yPoints will begin being read from
+ * @param nPoints How many points should be used to construct the polygon.
+ * @return If any argument is @c NULL or if the offset and/or number of
+ * points is not valid.
+ * @since 2025/11/25
+ */
 typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_jint* xPoints,
+	sjme_attrInNotNull const sjme_jint* inXPoints,
 	sjme_attrInPositive sjme_jint xOffset,
-	sjme_attrInNotNull sjme_jint* yPoints,
+	sjme_attrInNotNull const sjme_jint* inYPoints,
 	sjme_attrInPositive sjme_jint yOffset,
 	sjme_attrInPositive sjme_jint nPoints);
+
+/**
+ * Draws a filled polygon in hardware with the specified set
+ * of @code [x, y] @endcode coordinates. Reading begins from
+ * the @a x / @a yOffset for each array, and moves up to @a nPoints positions.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param inXPoints An array containing all available X vertex coordinates
+ * @param xOffset The offset from which xPoints will begin being read from
+ * @param inYPoints An array containing all available Y vertex coordinates
+ * @param yOffset The offset from which yPoints will begin being read from
+ * @param nPoints How many points should be used to construct the polygon.
+ * @param safePoints If @link SJME_JNI_TRUE @endlink then the passed
+ * points are considered to be safely used in calculations and will be
+ * modified, this must be set to @link SJME_JNI_FALSE @endlink when the
+ * input coordinates cannot be modified.
+ * @return If any argument is @c NULL or if the offset and/or number of
+ * points is not valid.
+ * @since 2025/12/04
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonPrimFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull const sjme_jint* inXPoints,
+	sjme_attrInPositive sjme_jint xOffset,
+	sjme_attrInNotNull const sjme_jint* inYPoints,
+	sjme_attrInPositive sjme_jint yOffset,
+	sjme_attrInPositive sjme_jint nPoints,
+	sjme_attrInValue sjme_jboolean safePoints);
 
 /**
  * Performs rectangular fill in hardware.
@@ -1364,7 +1393,7 @@ typedef struct sjme_scritchui_pencilPrimFunctions
 	SJME_SCRITCHUI_QUICK_PENCIL(FillArc, fillArc);
 	
 	/** @c FillPolygon . */
-	SJME_SCRITCHUI_QUICK_PENCIL(FillPolygon, fillPolygon);
+	SJME_SCRITCHUI_QUICK_PENCIL(FillPolygonPrim, fillPolygon);
 
 	/** @c FillRect . */
 	SJME_SCRITCHUI_QUICK_PENCIL(FillRect, fillRect);
