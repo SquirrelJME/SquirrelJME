@@ -77,7 +77,7 @@ function(squirreljme_cicd_register)
 			COMMAND "${CMAKE_COMMAND}"
 				"-D" "SQUIRRELJME_TARGET=${target}"
 				"-P"
-				"${CMAKE_CURRENT_LIST_DIR}/cicd-pipeline-job-prebuild.cmake"
+				"${CMAKE_CURRENT_LIST_DIR}/scripts/cicd-pipeline-job-prebuild.cmake"
 			COMMENT "Pre-build ${target}...")
 		add_dependencies(${target} ${target}PreBuild)
 
@@ -86,7 +86,7 @@ function(squirreljme_cicd_register)
 			COMMAND "${CMAKE_COMMAND}"
 				"-D" "SQUIRRELJME_TARGET=${target}"
 				"-P"
-				"${CMAKE_CURRENT_LIST_DIR}/cicd-pipeline-job-postbuild.cmake"
+				"${CMAKE_CURRENT_LIST_DIR}/scripts/cicd-pipeline-job-postbuild.cmake"
 			COMMENT "Post-build ${target}...")
 	endforeach()
 
