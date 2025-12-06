@@ -1555,6 +1555,16 @@ extern const sjme_scritchui_pencilBitLineFunc
 	sjme_scritchui_pencilBitLines[256];
 
 /**
+ * Returns whether the given pixel format is indexed with a palette. 
+ * 
+ * @param pf The pixel format to check.
+ * @return If the pixel format is indexed.
+ * @since 2025/12/06
+ */
+sjme_jboolean sjme_scritchpen_isIndexed(
+	sjme_attrInValue sjme_gfx_pixelFormat pf);
+
+/**
  * Returns whether the given pixel format uses an alpha channel. 
  * 
  * @param pf The pixel format to check.
