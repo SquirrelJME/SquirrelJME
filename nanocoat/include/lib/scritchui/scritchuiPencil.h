@@ -225,9 +225,32 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyAnchorFunc)(
 	sjme_attrOutNotNull sjme_jint* outY);
 
 /**
+ * Applies coordinate adjustments based on the provided transformation, so
+ * that subsequent region manipulations are using the correct coordinates.
+ * 
+ * @param inTrans The transformation type.
+ * @param x The source region x position.
+ * @param y The source region y position.
+ * @param w The source region width.
+ * @param h The source region height.
+ * @param h The source height.
+ * @param dataWidth The width of the entire data/image.
+ * @param dataHeight The height of the entire data/image.
+ * @since 2025/12/01
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilApplyCoordinateAdjFunc)(
+	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
+	sjme_attrInOutNotNull sjme_jint* x,
+	sjme_attrInOutNotNull sjme_jint* y,
+	sjme_attrInOutNotNull sjme_jint* w,
+	sjme_attrInOutNotNull sjme_jint* h,
+	sjme_attrInPositive sjme_jint dataWidth,
+	sjme_attrInPositive sjme_jint dataHeight);
+
+/**
  * Applies rotation and scaling.
  * 
- * @param outMatrix The resultant matrix.
+ * @param adjMatrix The resultant matrix.
  * @param inTrans The translation to use.
  * @param wSrc The source width.
  * @param hSrc The source height.
@@ -237,7 +260,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyAnchorFunc)(
  * @since 2024/07/12
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilApplyRotateScaleFunc)(
-	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
+	sjme_attrInOutNotNull sjme_scritchui_pencilMatrix* adjMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,
 	sjme_attrInPositive sjme_jint hSrc,
@@ -325,6 +348,28 @@ typedef sjme_errorCode (*sjme_scritchui_pencilCopyAreaFunc)(
 	sjme_attrInValue sjme_jint dx,
 	sjme_attrInValue sjme_jint dy,
 	sjme_attrInValue sjme_jint anchor);
+
+/**
+ * Draws an arc with adjustable angles in hardware.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @param w The width.
+ * @param h The height.
+ * @param startAngle The starting angle of the arc
+ * @param arcAngle The arc angle to be drawn
+ * @return An error on @c NULL arguments.
+ * @since 2025/11/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawArcFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInValue sjme_jint startAngle,
+	sjme_attrInValue sjme_jint arcAngle);
 
 /**
  * Draws the given character.
@@ -418,6 +463,28 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawPixelFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
+
+/**
+ * Draws a polyline in hardware with the specified set of x,y coordinates.
+ * Reading begins from the x/yOffset for each array, and moves up to nPoints
+ * positions.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param inXPoints An array containing all available X vertex coordinates
+ * @param xOffset The offset from which xPoints will begin being read from
+ * @param inYPoints An array containing all available Y vertex coordinates
+ * @param yOffset The offset from which yPoints will begin being read from
+ * @param nPoints How many points should be used to construct the polygon.
+ * @return An error on @c NULL arguments.
+ * @since 2025/11/30
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawPolylineFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull const sjme_jint* inXPoints,
+	sjme_attrInPositive sjme_jint xOffset,
+	sjme_attrInNotNull const sjme_jint* inYPoints,
+	sjme_attrInPositive sjme_jint yOffset,
+	sjme_attrInPositive sjme_jint nPoints);
 	
 /**
  * Draws the outline of the given rectangle using the current color and
@@ -441,6 +508,28 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawRectFunc)(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h);
+
+/**
+ * Draws a rectangle with rounded borders in hardware.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @param w The width.
+ * @param h The height.
+ * @param arcWidth The width of the border rounding
+ * @param arcHeight The height of the border rounding
+ * @return An error on @c NULL arguments.
+ * @since 2025/11/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawRoundRectFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInPositive sjme_jint arcWidth,
+	sjme_attrInPositive sjme_jint arcHeight);
 
 /**
  * Draws the given substring.
@@ -535,6 +624,79 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawXRGB32RegionFunc)(
 	sjme_attrInPositive sjme_jint origImgHeight);
 
 /**
+ * Fills an arc with adjustable angles in hardware.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @param w The width.
+ * @param h The height.
+ * @param startAngle The starting angle of the arc
+ * @param arcAngle The arc angle to be drawn
+ * @return An error on @c NULL arguments.
+ * @since 2025/11/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFillArcFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInValue sjme_jint startAngle,
+	sjme_attrInValue sjme_jint arcAngle);
+
+/**
+ * Draws a filled polygon in hardware with the specified set
+ * of @code [x, y] @endcode coordinates. Reading begins from
+ * the @a x / @a yOffset for each array, and moves up to @a nPoints positions.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param inXPoints An array containing all available X vertex coordinates
+ * @param xOffset The offset from which xPoints will begin being read from
+ * @param inYPoints An array containing all available Y vertex coordinates
+ * @param yOffset The offset from which yPoints will begin being read from
+ * @param nPoints How many points should be used to construct the polygon.
+ * @return If any argument is @c NULL or if the offset and/or number of
+ * points is not valid.
+ * @since 2025/11/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull const sjme_jint* inXPoints,
+	sjme_attrInPositive sjme_jint xOffset,
+	sjme_attrInNotNull const sjme_jint* inYPoints,
+	sjme_attrInPositive sjme_jint yOffset,
+	sjme_attrInPositive sjme_jint nPoints);
+
+/**
+ * Draws a filled polygon in hardware with the specified set
+ * of @code [x, y] @endcode coordinates. Reading begins from
+ * the @a x / @a yOffset for each array, and moves up to @a nPoints positions.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param inXPoints An array containing all available X vertex coordinates
+ * @param xOffset The offset from which xPoints will begin being read from
+ * @param inYPoints An array containing all available Y vertex coordinates
+ * @param yOffset The offset from which yPoints will begin being read from
+ * @param nPoints How many points should be used to construct the polygon.
+ * @param safePoints If @link SJME_JNI_TRUE @endlink then the passed
+ * points are considered to be safely used in calculations and will be
+ * modified, this must be set to @link SJME_JNI_FALSE @endlink when the
+ * input coordinates cannot be modified.
+ * @return If any argument is @c NULL or if the offset and/or number of
+ * points is not valid.
+ * @since 2025/12/04
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonPrimFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull const sjme_jint* inXPoints,
+	sjme_attrInPositive sjme_jint xOffset,
+	sjme_attrInNotNull const sjme_jint* inYPoints,
+	sjme_attrInPositive sjme_jint yOffset,
+	sjme_attrInPositive sjme_jint nPoints,
+	sjme_attrInValue sjme_jboolean safePoints);
+
+/**
  * Performs rectangular fill in hardware.
  * 
  * @param g The hardware graphics to draw with.
@@ -551,6 +713,28 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillRectFunc)(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h);
+
+/**
+ * Performs rectangular fill with rounded borders in hardware.
+ * 
+ * @param g The hardware graphics to draw with.
+ * @param x The X coordinate.
+ * @param y The Y coordinate.
+ * @param w The width.
+ * @param h The height.
+ * @param arcWidth The width of the border rounding
+ * @param arcHeight The height of the border rounding
+ * @return An error on @c NULL arguments.
+ * @since 2025/11/25
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilFillRoundRectFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInPositive sjme_jint arcWidth,
+	sjme_attrInPositive sjme_jint arcHeight);
 
 /**
  * Draws a filled triangle using the current color, the lines which make
@@ -616,11 +800,82 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapColorFunc)(
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
 
 /**
- * Maps a the number of bytes needed to represent the specified number of
- * pixels in the raw buffer.
+ * Reads the given pixel format from a single scanline at the given position. 
+ * 
+ * @param g The graphics to read from.
+ * @param pf The pixel format to read as.
+ * @param x The X coordinate to access.
+ * @param y The Y coordinate to access.
+ * @param dest The resultant pixel data.
+ * @param inDataLen Length of the data buffer.
+ * @param inNumPixels The number of pixels to read.
+ * @return Any resultant error code.
+ * @since 2025/11/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilPfScanGetFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrOutNotNullBuf(inDataLen) sjme_pointer dest,
+	sjme_attrInPositiveNonZero sjme_jint inDataLen,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
+	
+/**
+ * Writes specific pixel format data to a single scanline at the given
+ * position. 
+ * 
+ * @param g The graphics to write to.
+ * @param pf The pixel format to write.
+ * @param x The X coordinate to access.
+ * @param y The Y coordinate to access.
+ * @param src Source data to write.
+ * @param inNumPixels The number of pixels to read.
+ * @param mulAlpha Should alpha values in the input buffer be multiplied by
+ * the current alpha value? That is the buffer has significant alpha values.
+ * @param mulAlphaValue The value to multiply with.
+ * @return Any resultant error code.
+ * @since 2025/11/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilPfScanPutFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositive sjme_jint x,
+	sjme_attrInPositive sjme_jint y,
+	sjme_attrInNotNullBuf(inLen) sjme_cpointer src,
+	sjme_attrInPositiveNonZero sjme_jint inNumPixels,
+	sjme_attrInValue sjme_jboolean mulAlpha,
+	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue);
+
+/**
+ * Maps the number of bits needed to represent the specified number of
+ * pixels in a buffer for the given pixel format.
  * 
  * @param g The pencil to operate with.
- * @param inPixel The number of pixels to map.
+ * @param pf The pixel format to map.
+ * @param inPixels The number of pixels to map.
+ * @param inBits The number of bits to use for limit calculation.
+ * @param outBits The number of bits used to represent the raw pixel data.
+ * @param outLimit Optional output value for the smaller of @c outBytes
+ * and @c inBytes .
+ * @return Any resultant error.
+ * @since 2025/11/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilPfScanBitsFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositiveNonZero sjme_jint inPixels,
+	sjme_attrInPositiveNonZero sjme_jint inBits,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBits,
+	sjme_attrOutNullable sjme_attrOutPositiveNonZero sjme_jint* outLimit);
+
+/**
+ * Maps the number of bytes needed to represent the specified number of
+ * pixels in a buffer for the given pixel format.
+ * 
+ * @param g The pencil to operate with.
+ * @param pf The pixel format to map.
+ * @param inPixels The number of pixels to map.
  * @param inBytes The number of bytes to use for limit calculation.
  * @param outBytes The number of bytes used to represent the raw pixel data.
  * @param outLimit Optional output value for the smaller of @c outBytes
@@ -628,13 +883,75 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapColorFunc)(
  * @return Any resultant error.
  * @since 2024/07/09
  */
-typedef sjme_errorCode (*sjme_scritchui_pencilRawScanBytesFunc)(
+typedef sjme_errorCode (*sjme_scritchui_pencilPfScanBytesFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInPositiveNonZero sjme_jint inPixels,
 	sjme_attrInPositiveNonZero sjme_jint inBytes,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outBytes,
 	sjme_attrOutNullable sjme_attrOutPositiveNonZero sjme_jint* outLimit);
 
+/**
+ * Maps a pixel format from one scan format to another.
+ *
+ * @param g The graphics context this is operating under.
+ * @param destPf The destination pixel format.
+ * @param dest The destination buffer.
+ * @param destRawOff The destination offset into the buffer in raw bytes.
+ * @param destRawLen The destination length of the buffer in raw bytes, if
+ * this is @code -1 @endcode then this is determined by the pixel format
+ * and @a inNumPixels .
+ * @param srcPf The source pixel format.
+ * @param srcRawOff The source offset into the buffer in raw bytes.
+ * @param srcRawLen The source length of the buffer in raw bytes, if
+ * this is @code -1 @endcode then this is determined by the pixel format
+ * and @a inNumPixels .
+ * @param src The source buffer.
+ * @param inNumPixels The number of pixels to copy.
+ * @return Any resultant error, if any.
+ * @since 2025/11/27
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilPfScanToPfFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat destPf,
+	sjme_attrInNotNull sjme_pointer dest,
+	sjme_attrInPositive sjme_jint destRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint destRawLen,
+	sjme_attrInValue sjme_gfx_pixelFormat srcPf,
+	sjme_attrInNotNull sjme_cpointer src,
+	sjme_attrInPositive sjme_jint srcRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint srcRawLen,
+	sjme_attrInPositive sjme_jint inNumPixels);
+
+/**
+ * Maps a pixel format from one scan format to RGB.
+ *
+ * @param g The graphics context this is operating under.
+ * @param destRgb The destination RGB buffer.
+ * @param destRgbOff The destination offset into the buffer in RGB bytes.
+ * @param destRgbLen The destination length of the buffer in RGB bytes, if
+ * this is @code -1 @endcode then this is determined by @a inNumPixels .
+ * @param srcPf The source pixel format.
+ * @param srcRawOff The source offset into the buffer in raw bytes.
+ * @param srcRawLen The source length of the buffer in raw bytes, if
+ * this is @code -1 @endcode then this is determined by the pixel format
+ * and @a inNumPixels .
+ * @param src The source buffer.
+ * @param inNumPixels The number of pixels to copy.
+ * @return Any resultant error, if any.
+ * @since 2025/11/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilPfScanToRgbFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_jint* destRgb,
+	sjme_attrInPositive sjme_jint destRgbOff,
+	sjme_attrInNegativeOnePositive sjme_jint destRgbLen,
+	sjme_attrInValue sjme_gfx_pixelFormat srcPf,
+	sjme_attrInNotNull sjme_pointer src,
+	sjme_attrInPositive sjme_jint srcRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint srcRawLen,
+	sjme_attrInPositive sjme_jint inNumPixels);
+	
 /**
  * Fills a buffer with the given value. 
  * 
@@ -756,7 +1073,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanGetFunc)(
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
 
 /**
- * Writes raw data to a single scanline at the given position. 
+ * Writes RGB data to a single scanline at the given position. 
  * 
  * @param g The graphics to write to.
  * @param x The X coordinate to access.
@@ -781,6 +1098,35 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanPutFunc)(
 	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue);
 
 /**
+ * Maps a pixel format from one scan format to RGB.
+ *
+ * @param g The graphics context this is operating under.
+ * @param destPf The destination pixel format.
+ * @param dest The destination buffer.
+ * @param destRawOff The destination offset into the buffer in raw bytes.
+ * @param destRawLen The destination length of the buffer in raw bytes, if
+ * this is @code -1 @endcode then this is determined by the pixel format
+ * and @a inNumPixels .
+ * @param srcRgb The source RGB buffer
+ * @param srcRgbOff The source offset into the buffer in RGB bytes.
+ * @param srcRgbLen The source length of the buffer in RGB bytes, if
+ * this is @code -1 @endcode then this is determined by @a inNumPixels .
+ * @param inNumPixels The number of pixels to copy.
+ * @return Any resultant error, if any.
+ * @since 2025/11/28
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanToPfFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat destPf,
+	sjme_attrInNotNull sjme_pointer dest,
+	sjme_attrInPositive sjme_jint destRawOff,
+	sjme_attrInNegativeOnePositive sjme_jint destRawLen,
+	sjme_attrInNotNull const sjme_jint* srcRgb,
+	sjme_attrInPositive sjme_jint srcRgbOff,
+	sjme_attrInNegativeOnePositive sjme_jint srcRgbLen,
+	sjme_attrInPositive sjme_jint inNumPixels);
+	
+/**
  * Maps a raw scanline from raw RGB data.
  * 
  * @param g The graphics to operate within.
@@ -793,7 +1139,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanPutFunc)(
  * @return Any resultant error, if any.
  * @since 2024/07/09
  */
-typedef sjme_errorCode (*sjme_scritchui_pencilRgbToRawScanFunc)(
+typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanToRawFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrOutNotNullBuf(rawLen) sjme_pointer outRaw,
 	sjme_attrInPositive sjme_jint outRawOff,
@@ -937,7 +1283,10 @@ typedef struct sjme_scritchui_pencilFunctions
 	
 	/** @c CopyArea . */
 	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
-	
+
+	/** @c DrawArc . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawArc, drawArc);
+
 	/** @c DrawChar . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawChar, drawChar);
 	
@@ -952,25 +1301,40 @@ typedef struct sjme_scritchui_pencilFunctions
 	
 	/** @c DrawRect . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawRect, drawRect);
-	
+
+	/** @c DrawRoundRect . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawRoundRect, drawRoundRect);
+
 	/** @c DrawPixel . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixel);
+
+	/** @c DrawPolyline . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawPolyline, drawPolyline);
 	
 	/** @c DrawSubstring . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawSubstring, drawSubstring);
-	
+
 	/** @c DrawTriangle . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawTriangle, drawTriangle);
 	
 	/** @c DrawXRGB32Region . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawXRGB32Region, drawXRGB32Region);
-	
+
+	/** @c FillArc . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillArc, fillArc);
+
+	/** @c FillPolygon . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillPolygon, fillPolygon);
+
 	/** @c FillRect . */
 	SJME_SCRITCHUI_QUICK_PENCIL(FillRect, fillRect);
+
+	/** @c FillRoundRect . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillRoundRect, fillRoundRect);
 	
 	/** @c FillTriangle . */
 	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle, fillTriangle);
-	
+
 	/** @c MapColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
 	
@@ -1010,6 +1374,9 @@ typedef struct sjme_scritchui_pencilFunctions
  */
 typedef struct sjme_scritchui_pencilPrimFunctions
 {
+	/** @c DrawArc . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawArc, drawArc);
+
 	/** @c DrawHoriz . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawHoriz, drawHoriz);
 	
@@ -1018,7 +1385,22 @@ typedef struct sjme_scritchui_pencilPrimFunctions
 	
 	/** @c DrawPixel . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixel);
+
+	/** @c DrawRect . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawRect, drawRect);
+
+	/** @c FillArc . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillArc, fillArc);
 	
+	/** @c FillPolygon . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillPolygonPrim, fillPolygon);
+
+	/** @c FillRect . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillRect, fillRect);
+
+	/** @c FillTriangle . */
+	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle, fillTriangle);
+
 	/** @c MapColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
 	
@@ -1046,6 +1428,9 @@ struct sjme_scritchui_pencilUtilFunctions
 	/** @c ApplyAnchor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(ApplyAnchor, applyAnchor);
 	
+	/** @c ApplyCoordinateAdj . */
+	SJME_SCRITCHUI_QUICK_PENCIL(ApplyCoordinateAdj, applyCoordinateAdj);
+
 	/** @c ApplyRotateScale . */
 	SJME_SCRITCHUI_QUICK_PENCIL(ApplyRotateScale, applyRotateScale);
 	
@@ -1055,8 +1440,23 @@ struct sjme_scritchui_pencilUtilFunctions
 	/** @c BlendRGBInto . */
 	SJME_SCRITCHUI_QUICK_PENCIL(BlendRGBInto, blendRGBInto);
 	
-	/** @c RawScanBytes . */
-	SJME_SCRITCHUI_QUICK_PENCIL(RawScanBytes, rawScanBytes);
+	/** @c PfScanGet . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanGet, pfScanGet);
+	
+	/** @c PfScanPut . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanPut, pfScanPut);
+	
+	/** @c PfScanBits . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanBits, pfScanBits);
+	
+	/** @c PfScanBytes . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanBytes, pfScanBytes);
+	
+	/** @c PfScanToPf . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanToPf, pfScanToPf);
+	
+	/** @c PfScanToRgb . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanToRgb, pfScanToRgb);
 	
 	/** @c RawScanToRgb . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanToRgb, rawScanToRgb);
@@ -1070,8 +1470,11 @@ struct sjme_scritchui_pencilUtilFunctions
 	/** @c RgbScanPut . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RgbScanPut, rgbScanPut);
 	
-	/** @c RgbToRawScan . */
-	SJME_SCRITCHUI_QUICK_PENCIL(RgbToRawScan, rgbToRawScan);
+	/** @c RgbScanToPf . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RgbScanToPf, rgbScanToPf);
+	
+	/** @c RgbScanToRaw . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RgbScanToRaw, rgbScanToRaw);
 };
 
 /**
@@ -1151,6 +1554,16 @@ typedef sjme_errorCode (*sjme_scritchui_pencilBitLineFunc)(
 extern const sjme_scritchui_pencilBitLineFunc
 	sjme_scritchui_pencilBitLines[256];
 
+/**
+ * Returns whether the given pixel format uses an alpha channel. 
+ * 
+ * @param pf The pixel format to check.
+ * @return If the pixel format uses an alpha channel.
+ * @since 2025/11/27
+ */
+sjme_jboolean sjme_scritchpen_hasAlpha(
+	sjme_attrInValue sjme_gfx_pixelFormat pf);
+	
 /**
  * Creates a hardware reference bracket to the native hardware graphics.
  * 

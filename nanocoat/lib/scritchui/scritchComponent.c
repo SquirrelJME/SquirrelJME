@@ -513,7 +513,7 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 	/* Not implemented? */
 	if (inState->impl->componentRepaint == NULL)
 		return sjme_error_notImplemented(0);
-		
+	
 	/* Only certain types are paintable, ignore if requested. */
 	paint = NULL;
 	if (sjme_error_is(error = inState->intern->getPaintable(inState,
@@ -523,7 +523,6 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 		if (error != SJME_ERROR_INVALID_ARGUMENT)
 			return sjme_error_default(error);
 
-#if 1
 		/* If this is a container, repaint all children. */
 		container = NULL;
 		if (sjme_error_is(error = inState->intern->getContainer(inState,
@@ -553,12 +552,19 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 					x, y, width, height)))
 				{
 					if (error != SJME_ERROR_INVALID_ARGUMENT)
-						return sjme_error_default(error);
+						goto fail_subRepaint;
 				}
-#endif
+
+		/* Cleanup. */
+		sjme_alloca_free(subComponents);
 		
 		/* Success! */
 		return SJME_ERROR_NONE;
+		
+fail_subRepaint:
+		if (subComponents != NULL)
+			sjme_alloca_free(subComponents);
+		return sjme_error_default(error);
 	}
 	
 	/* Rather than failing, just normalize. */

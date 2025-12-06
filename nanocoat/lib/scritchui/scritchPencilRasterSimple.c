@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/util.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
@@ -70,21 +68,38 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	/* Allocate buffer. */
 	rgbScan = sjme_alloca(sizeof(*rgbScan) * w);
 	if (rgbScan == NULL)
-		return sjme_error_outOfMemory(NULL, w);
+	{
+		error = sjme_error_outOfMemory(NULL, w);
+		goto fail_alloca;
+	}
 	
 	/* Fill RGB buffer. */
 	memset(rgbScan, 0, sizeof(*rgbScan) * w);
 	if (sjme_error_is(error = g->util->rgbScanFill(g,
 		rgbScan, 0, w,
 		g->state.color.argb)))
-		return sjme_error_default(error);
+		goto fail_rgbScanFill;
 	
 	/* Put onto image, we do not multiply alpha as the alpha in source */
 	/* is already the correct alpha value and this is not an image. */
-	return g->util->rgbScanPut(g, x, y,
+	if (sjme_error_is(error = g->util->rgbScanPut(g, x, y,
 		rgbScan, w,
 		g->state.applyAlpha,
-		SJME_JNI_FALSE, 0);
+		SJME_JNI_FALSE, 0)))
+		goto fail_rgbScanPut;
+
+	/* Cleanup. */
+	sjme_alloca_free(rgbScan);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_rgbScanPut:
+fail_rgbScanFill:
+fail_alloca:
+	if (rgbScan != NULL)
+		sjme_alloca_free(rgbScan);
+	return sjme_error_default(error);
 }
 
 /** Clipping above. */
@@ -398,7 +413,8 @@ sjme_errorCode sjme_scritchpen_core_drawHoriz(
 		return SJME_ERROR_NONE;
 		
 	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x, &y)))
+		return sjme_error_default(error);
 	
 	/* Need to lock? */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
@@ -439,14 +455,16 @@ sjme_errorCode sjme_scritchpen_core_drawLine(
 	if (y1 == y2)
 		return g->apiInThread->drawHoriz(g, x1, y1,
 			(x2 < x1 ? x1 - x2 : x2 - x1));
+		
+	/* Transform. */
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x1, &y1)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x2, &y2)))
+		return sjme_error_default(error);
 	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
-		
-	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x1, &y1);
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x2, &y2);
 	
 	/* Use primitive. */
 	if (sjme_error_is(error = g->prim.drawLine(g, x1, y1, x2, y2)))
@@ -478,7 +496,8 @@ sjme_errorCode sjme_scritchpen_core_drawPixel(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x, &y)))
+		return sjme_error_default(error);
 	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))

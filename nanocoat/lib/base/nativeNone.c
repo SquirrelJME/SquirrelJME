@@ -112,6 +112,31 @@ sjme_errorCode sjme_nal_default_stdOut(
 #endif
 #pragma endregion(pipe)
 
+#pragma region(tcpUdp)
+#if (SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_NONE)
+
+sjme_errorCode sjme_nal_default_tcpUdp(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNullable sjme_stream_input* netIn,
+	sjme_attrOutNullable sjme_stream_output* netOut,
+	sjme_attrInValue sjme_jboolean isUdp,
+	sjme_attrInValue sjme_jboolean listening,
+	sjme_attrInNullable sjme_lpcstr address,
+	sjme_attrInRange(0, 65535) sjme_jint port)
+{
+	if (allocPool == NULL || (netIn == NULL && netOut == NULL) ||
+		(!listening && address == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (port < 1 || port > 65535)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	return sjme_error_notImplemented(0);
+}
+
+#endif
+#pragma endregion(tcpUdp)
+
 #pragma region(threadSleep)
 #if (SJME_CONFIG_NAL_THREAD_SLEEP == SJME_CONFIG_NAL_IMPLEMENT_NONE)
 

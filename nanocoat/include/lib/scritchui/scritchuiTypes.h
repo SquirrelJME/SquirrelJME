@@ -112,6 +112,9 @@ struct sjme_scritchui_pencilBase
 	/** The scanline length, in pixels. */
 	sjme_jint scanLenPixels;
 	
+	/** The scan line length, in bits. */
+	sjme_jint scanLenBits;
+	
 	/** The scan line length, in bytes. */
 	sjme_jint scanLenBytes;
 	

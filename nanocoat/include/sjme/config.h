@@ -347,9 +347,13 @@ extern "C" {
 #if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
 	!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
 	/** Defined by the system? */
-	#if !defined(SJME_CONFIG_HAS_BIG_ENDIAN)
+	#if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && !defined(__LITTLE_ENDIAN__)
 		#if defined(__BYTE_ORDER__) && \
 			(__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+			/** The system is big endian. */ 
+			#define SJME_CONFIG_HAS_BIG_ENDIAN
+		#elif defined(__BIG_ENDIAN__)
+			/** The system is big endian. */
 			#define SJME_CONFIG_HAS_BIG_ENDIAN
 		#endif
 	#endif
@@ -357,6 +361,7 @@ extern "C" {
 	/** Just set little endian if no endianess was defined */
 	#if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
 		!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+			/** The system is little endian. */
 		#define SJME_CONFIG_HAS_LITTLE_ENDIAN
 	#endif
 
@@ -937,7 +942,11 @@ extern "C" {
 	#if defined(SJME_CONFIG_HAS_OS_PC_DOS) || \
 		defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
 		defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
-		/** Single threaded only. */
+		/** Single threaded only (system does not support threads). */
+		#define SJME_CONFIG_ONLY_THREAD_SINGLE
+	#elif !defined(SJME_CONFIG_HAS_THREADS_PTHREAD) && \
+		!defined(SJME_CONFIG_HAS_THREADS_WIN32)
+		/** Single threaded only (no other implementations). */
 		#define SJME_CONFIG_ONLY_THREAD_SINGLE
 	#endif
 #endif
@@ -1002,13 +1011,21 @@ extern "C" {
 	/** Packed structure. */
 	#define sjme_packed
 #endif
-	
-#if defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
-	defined(SJME_CONFIG_HAS_OS_NINTENDO_WIIU) || \
-    defined(SJME_CONFIG_HAS_OS_NINTENDO_WII) || \
-    defined(SJME_CONFIG_HAS_OS_BAREMETAL)
-	/* Disable errno support. */
-	#define SJME_CONFIG_HAS_NO_ERRNO 1
+
+#if !defined(SJME_CONFIG_HAS_NO_ERRNO_H) && \
+	!defined(SJME_CONFIG_HAS_ERRNO_H)
+	#if defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
+		defined(SJME_CONFIG_HAS_OS_NINTENDO_WIIU) || \
+		defined(SJME_CONFIG_HAS_OS_NINTENDO_WII) || \
+		defined(SJME_CONFIG_HAS_OS_BAREMETAL)
+		/* Disable errno support. */
+		#define SJME_CONFIG_HAS_NO_ERRNO_H 1
+	#endif
+#endif
+
+#if !defined(SJME_CONFIG_HAS_ERRNO_H) && !defined(SJME_CONFIG_HAS_NO_ERRNO_H)
+	/** errno.h was not checked, assumed to not be available? */
+	#define SJME_CONFIG_HAS_NO_ERRNO_H
 #endif
 
 #if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
@@ -1210,25 +1227,6 @@ extern "C" {
 	#define SJME_CONFIG_HAS_LOW_MEMORY
 #endif
 
-/* Multi-threading is not possible if this is set. */
-#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
-	#if defined(SJME_CONFIG_HAS_THREADS_FALLBACK)
-		#undef SJME_CONFIG_HAS_THREADS_FALLBACK
-	#endif
-
-	#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
-		#undef SJME_CONFIG_HAS_THREADS_PTHREAD
-	#endif
-
-	#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
-		#undef SJME_CONFIG_HAS_THREADS_WIN32
-	#endif
-
-	#if defined(SJME_CONFIG_HAS_THREADS_ATOMIC)
-		#undef SJME_CONFIG_HAS_THREADS_ATOMIC
-	#endif
-#endif
-
 /* More verbosity? */
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	#if !defined(SJME_CONFIG_DEBUG_BYTECODES)
@@ -1278,27 +1276,6 @@ extern "C" {
 		/** Debug Zip files. */
 		#define SJME_CONFIG_DEBUG_ZIP
 	#endif
-#endif
-
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
-	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE)
-	/** Use Windows networking. */
-	#define SJME_CONFIG_NETWORK_WINDOWS
-#elif !defined(SJME_CONFIG_HAS_NO_SYS_SOCKET_H) || \
-	defined(SJME_CONFIG_HAS_SYS_SOCKET_H)
-	/** Use POSIX networking. */
-	#define SJME_CONFIG_NETWORK_POSIX
-	
-	#if SJME_CONFIG_POSIX_VERSION_LEAST(SJME_CONFIG_POSIX_VERSION_2001)
-		/** Use POSIX 2001 networking. */
-		#define SJME_CONFIG_NETWORK_POSIX_2001
-	#else
-		/** Use Old POSIX networking. */
-		#define SJME_CONFIG_NETWORK_POSIX_OLD
-	#endif
-#else
-	/** Networking not supported. */
-	#define SJME_CONFIG_NETWORK_NONE
 #endif
 
 #if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)

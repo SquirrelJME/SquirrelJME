@@ -342,12 +342,65 @@ endif()
 CHECK_INCLUDE_FILE("sys/socket.h" SJME_CONFIG_HAS_SYS_SOCKET_H)
 if(NOT SJME_CONFIG_HAS_SYS_SOCKET_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_SYS_SOCKET_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_SYS_SOCKET_H=1)
+endif()
+
+# netinet/in.h available?
+CHECK_INCLUDE_FILE("netinet/in.h" SJME_CONFIG_HAS_NETINET_IN_H)
+if(NOT SJME_CONFIG_HAS_NETINET_IN_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_NETINET_IN_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_NETINET_IN_H=1)
+endif()
+
+# sys/ioctl.h available?
+CHECK_INCLUDE_FILE("sys/ioctl.h" SJME_CONFIG_HAS_SYS_IOCTL_H)
+if(NOT SJME_CONFIG_HAS_SYS_IOCTL_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_SYS_IOCTL_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_SYS_IOCTL_H=1)
+endif()
+
+# stropts.h available?
+CHECK_INCLUDE_FILE("stropts.h" SJME_CONFIG_HAS_STROPTS_H)
+if(NOT SJME_CONFIG_HAS_STROPTS_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_STROPTS_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_STROPTS_H=1)
+endif()
+
+# errno.h available?
+CHECK_INCLUDE_FILE("errno.h" SJME_CONFIG_HAS_ERRNO_H)
+if(NOT SJME_CONFIG_HAS_ERRNO_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_ERRNO_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_ERRNO_H=1)
+endif()
+
+# poll.h available?
+CHECK_INCLUDE_FILE("poll.h" SJME_CONFIG_HAS_POLL_H)
+if(NOT SJME_CONFIG_HAS_POLL_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_POLL_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_POLL_H=1)
 endif()
 
 # Is the SDK version header information available?
 CHECK_INCLUDE_FILE("sdkddkver.h" WIN32_SDKDDKVER_INCLUDE)
 if(WIN32_SDKDDKVER_INCLUDE)
 	add_compile_definitions(SJME_CONFIG_HAS_SDKDDKVER_H=1)
+endif()
+
+# snprintf() available?
+squirreljme_try_compile("fdatasync()"
+	SJME_CONFIG_HAS_FDATASYNC
+	"tryFDataSync"
+	SJME_CONFIG_HAS_NO_FDATASYNC)
+if(NOT SJME_CONFIG_HAS_NO_FDATASYNC)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_FDATASYNC=1)
+elseif(SJME_CONFIG_HAS_FDATASYNC)
+	add_compile_definitions(SJME_CONFIG_HAS_FDATASYNC=1)
 endif()
 
 # snprintf() available?

@@ -17,10 +17,12 @@
 #ifndef SJME_C_NATIVE_H
 #define SJME_C_NATIVE_H
 
-#include "nvm/mleConst.h"
 #include "sjme/stdTypes.h"
+#include "nvm/mleConst.h"
 #include "sjme/error.h"
 #include "sjme/seekable.h"
+#include "sjme/stream.h"
+#include "sjme/nativeTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -105,26 +107,27 @@ typedef sjme_errorCode (*sjme_nal_nanoTimeFunc)(
 	sjme_attrOutNotNull sjme_jlong* result);
 
 /**
- * Flushes the given output stream.
- *
- * @return Any resultant error.
- * @since 2025/03/03
- */
-typedef sjme_errorCode (*sjme_nal_stdIoFlush)(void);
-	
-/**
- * Writes data to a standard output type stream.
- *
- * @param buf The data buffer to write.
- * @param off The offset into the buffer.
- * @param len The number of bytes to write.
+ * Binds and opens a stream to the given TCP/UDP remote host somewhere on
+ * a network. 
+ * 
+ * @param allocPool The allocation pool to use.
+ * @param netIn The stream for reading input data from the remote host.
+ * @param netOut The stream for writing output data to the remote host.
+ * @param isUdp Should this be a UDP connection?
+ * @param listening Is this listening for a connection?
+ * @param address The address to connect to or to bind to.
+ * @param port The port to connect to or to bind to.
  * @return Any resultant error, if any.
- * @since 2025/02/25
+ * @since 2025/09/07
  */
-typedef sjme_errorCode (*sjme_nal_stdOFunc)(
-	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
-	sjme_attrInPositive sjme_jint off,
-	sjme_attrInPositiveNonZero sjme_jint len);
+typedef sjme_errorCode (*sjme_nal_tcpUdpFunc)(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNullable sjme_stream_input* netIn,
+	sjme_attrOutNullable sjme_stream_output* netOut,
+	sjme_attrInValue sjme_jboolean isUdp,
+	sjme_attrInValue sjme_jboolean listening,
+	sjme_attrInNullable sjme_lpcstr address,
+	sjme_attrInRange(0, 65535) sjme_jint port);
 	
 /**
  * Sleeps for the given time duration.
@@ -147,26 +150,6 @@ typedef sjme_errorCode (*sjme_nal_threadSleepFunc)(
 typedef sjme_errorCode (*sjme_nal_threadYieldFunc)(void);
 	
 /**
- * Contains the needed function calls to perform calls to standard streams.
- *
- * @since 2025/03/03
- */
-typedef struct sjme_nal_stdIo
-{
-	/** Close function. */
-	sjme_jboolean (*close)(void);
-	
-	/** Reads from the input. */
-	sjme_jboolean (*in)(void);
-
-	/** Writes to the output. */
-	sjme_nal_stdOFunc out;
-
-	/** Flushes the output stream. */
-	sjme_nal_stdIoFlush flush;
-} sjme_nal_stdIo;
-	
-/**
  * Native Abstraction Layer functions.
  * 
  * @since 2023/07/29
@@ -184,6 +167,9 @@ typedef struct sjme_nal
 	
 	/** Get the current monotonic nanosecond time. */
 	sjme_nal_nanoTimeFunc nanoTime;
+
+	/** Opens a network socket. */
+	sjme_nal_tcpUdpFunc tcpUdp;
 	
 	/** Sleep the current thread. */
 	sjme_nal_threadSleepFunc threadSleep;
@@ -198,7 +184,7 @@ typedef struct sjme_nal
 /** Default native abstraction layer. */
 extern const sjme_nal sjme_nal_default;
 
-#if !defined(SJME_CONFIG_HAS_NO_ERRNO)
+#if !defined(SJME_CONFIG_HAS_NO_ERRNO_H)
 
 /**
  * Maps @c errno to a SquirrelJME error.

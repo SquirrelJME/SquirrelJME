@@ -538,6 +538,25 @@ sjme_juint sjme_util_intLeadingZeroesU(
 	return sjme_util_intBitCountU(~v);
 }
 
+sjme_jint sjme_util_intOverShift(
+	sjme_attrInValue sjme_jint v,
+	sjme_attrInRange(-32, 32) sjme_jint sh)
+{
+	/* Shifting to the right all the way, smears the highest bit. */
+	if (sh <= -32)
+		return ((v & INT32_C(0x80000000)) ?
+			INT32_C(0xFFFFFFFF) : INT32_C(0));
+
+	/* Shifting all the way to the left results in zero. */
+	if (sh >= 32)
+		return 0;
+	
+	/* Otherwise the shifted amount. */
+	if (sh < 0)
+		return v >> (-sh);
+	return v << sh;
+}
+
 sjme_juint sjme_util_intOverShiftU(
 	sjme_attrInValue sjme_juint v,
 	sjme_attrInRange(-32, 32) sjme_jint sh)
@@ -713,6 +732,12 @@ const sjme_jint* sjme_util_memUnaligned32(void* addr)
 
 	/* Return address of temporary. */
 	return into;
+}
+
+sjme_jint* sjme_util_memUnaligned32W(void* addr, sjme_jint v)
+{
+	sjme_todo("Impl?");
+	return NULL;
 }
 
 #endif

@@ -5,6 +5,7 @@
     <variables>
       <variable name="squirreljme.installer_version" value="0_3_0" description="Installer version string." />
       <variable name="squirreljme.standalone.path" value="./build/install4j/in/squirreljme-standalone.jar" description="Input path for the build (default)." />
+      <variable name="squirreljme.icon.path" value="./build/install4j/in/" />
     </variables>
     <jreBundles jdkProviderId="Adoptium" release="8/latest" />
   </application>
@@ -43,13 +44,13 @@
 #-Dcc.squirreljme.scale=(multiplier|WxH)</content>
       </vmOptionsFile>
       <iconImageFiles>
-        <file path="./build/install4j/in/head_8x8.png" />
-        <file path="./build/install4j/in/head_16x16.png" />
-        <file path="./build/install4j/in/head_24x24.png" />
-        <file path="./build/install4j/in/head_32x32.png" />
-        <file path="./build/install4j/in/head_48x48.png" />
-        <file path="./build/install4j/in/head_64x64.png" />
-        <file path="./build/install4j/in/head_128x128.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_8x8.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_16x16.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_24x24.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_32x32.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_48x48.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_64x64.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_128x128.png" />
       </iconImageFiles>
     </launcher>
     <launcher name="squirreljme-debugger" id="124" menuName="SquirrelJME Debugger" customMacBundleIdentifier="true" macBundleIdentifier="cc.squirreljme" swtApp="true" addMacApplicationCategory="true" macApplicationCategory="public.app-category.utilities" checkUpdater="true">
@@ -69,13 +70,13 @@
 #-Dcc.squirreljme.scale=(multiplier|WxH)</content>
       </vmOptionsFile>
       <iconImageFiles>
-        <file path="./build/install4j/in/head_8x8.png" />
-        <file path="./build/install4j/in/head_16x16.png" />
-        <file path="./build/install4j/in/head_24x24.png" />
-        <file path="./build/install4j/in/head_32x32.png" />
-        <file path="./build/install4j/in/head_48x48.png" />
-        <file path="./build/install4j/in/head_64x64.png" />
-        <file path="./build/install4j/in/head_128x128.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_8x8.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_16x16.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_24x24.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_32x32.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_48x48.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_64x64.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_128x128.png" />
       </iconImageFiles>
     </launcher>
     <launcher name="squirreljme-hosted" id="127" menuName="SquirrelJME (Hosted)" customMacBundleIdentifier="true" macBundleIdentifier="cc.squirreljme" swtApp="true" addMacApplicationCategory="true" macApplicationCategory="public.app-category.utilities" checkUpdater="true" updateExecutionMode="unattended">
@@ -95,13 +96,13 @@
 #-Dcc.squirreljme.scale=(multiplier|WxH)</content>
       </vmOptionsFile>
       <iconImageFiles>
-        <file path="./build/install4j/in/head_8x8.png" />
-        <file path="./build/install4j/in/head_16x16.png" />
-        <file path="./build/install4j/in/head_24x24.png" />
-        <file path="./build/install4j/in/head_32x32.png" />
-        <file path="./build/install4j/in/head_48x48.png" />
-        <file path="./build/install4j/in/head_64x64.png" />
-        <file path="./build/install4j/in/head_128x128.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_8x8.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_16x16.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_24x24.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_32x32.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_48x48.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_64x64.png" />
+        <file path="${compiler:squirreljme.icon.path}/head_128x128.png" />
       </iconImageFiles>
     </launcher>
   </launchers>

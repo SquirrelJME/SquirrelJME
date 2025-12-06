@@ -123,8 +123,7 @@ public final class PencilShelf
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
-		int __startAngle,
-		int __arcAngle)
+		int __startAngle, int __arcAngle)
 		throws MLECallError;
 	
 	/**
@@ -254,7 +253,7 @@ public final class PencilShelf
 	 * @param __arcHeight The vertical diameter of the arc on the corners.
 	 * @throws MLECallError If the pencil is invalid; or if the requested
 	 * round rectangle is not valid.
-	 * @since 2024/07/14
+	 * @since 2025/11/30
 	 */
 	@SquirrelJMEVendorApi
 	public static native void hardwareDrawRoundRect(@NotNull PencilBracket __g,
@@ -286,6 +285,26 @@ public final class PencilShelf
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o, 
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l,
 		int __x, int __y, int __anchor)
+		throws MLECallError;
+
+	/**
+	 * Draws a triangle using the current color, the lines which make
+	 * up the triangle are included in the filled area.
+	 *
+	 * @param __g The graphics to use for drawing.
+	 * @param __x1 First X coordinate.
+	 * @param __y1 First Y coordinate.
+	 * @param __x2 Second X coordinate.
+	 * @param __y2 Second Y coordinate.
+	 * @param __x3 Third X coordinate.
+	 * @param __y3 Third Y coordinate.
+	 * @throws MLECallError If no graphics were specified or the graphics does
+	 * not actually support the given operation.
+	 * @since 2025/11/30
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawTriangle(@NotNull PencilBracket __g,
+		int __x1, int __y1, int __x2, int __y2, int __x3, int __y3)
 		throws MLECallError;
 	
 	/**
@@ -371,7 +390,7 @@ public final class PencilShelf
 	 * @param __n The number of sides to draw.
 	 * @throws MLECallError If the graphics is not valid; if the sides
 	 * are not valid; or if the values are out of bounds of the array.
-	 * @since 2024/07/14
+	 * @since 2025/11/30
 	 */
 	@SquirrelJMEVendorApi
 	public static native void hardwareFillPolygon(@NotNull PencilBracket __g,
@@ -404,6 +423,9 @@ public final class PencilShelf
 	 * Draws a filled round rectangle in the same manner
 	 * as {@link #hardwareDrawRoundRect(PencilBracket, int, int, int, int,
 	 * int, int)} 
+	 * 
+	 * Unlike {@link #hardwareDrawRoundRect(PencilBracket, int, int, int, int,
+	 * int, int)}, the width and height are not increased by a single pixel.
 	 *
 	 * @param __g The graphics to use.
 	 * @param __x The X coordinate.
@@ -414,7 +436,7 @@ public final class PencilShelf
 	 * @param __arcHeight The height of the arc at each corner.
 	 * @throws MLECallError If the graphics is not valid; or the requested
 	 * round rectangle is not valid.
-	 * @since 2024/07/14
+	 * @since 2025/11/30
 	 */
 	@Api
 	public static native void hardwareFillRoundRect(@NotNull PencilBracket __g,
