@@ -20,6 +20,7 @@ const sjme_nal sjme_nal_default =
 	sjme_sm(.fileOpen, sjme_nal_default_fileOpen),
 	sjme_sm(.getEnv, sjme_nal_default_getEnv),
 	sjme_sm(.nanoTime, sjme_nal_default_nanoTime),
+	sjme_sm(.tcpUdp, sjme_nal_default_tcpUdp),
 	sjme_sm(.threadSleep, sjme_nal_default_threadSleep),
 	sjme_sm(.threadYield, sjme_nal_default_threadYield),
 	{
@@ -44,19 +45,28 @@ const sjme_nal sjme_nal_default =
 	},
 };
 
-#if !defined(SJME_CONFIG_HAS_NO_ERRNO)
+#if defined(SJME_CONFIG_HAS_ERRNO_H)
 sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 {
 	switch (errNum)
 	{
+		case EAGAIN:
+			return SJME_ERROR_TRY_AGAIN;
+
+#if defined(ECONNREFUSED)
+			/* Not available on all platforms. */
+		case ECONNREFUSED:
+			return SJME_ERROR_CONNECTION_REFUSED;
+#endif
+			
 		case EIO:
 			return SJME_ERROR_IO_EXCEPTION;
+
+		case EINVAL:
+			return SJME_ERROR_INVALID_ARGUMENT;
 		
 		case ENOENT:
 			return SJME_ERROR_FILE_NOT_FOUND;
-
-		case ECONNREFUSED:
-			return SJME_ERROR_CONNECTION_REFUSED;
 
 		default:
 			return SJME_ERROR_UNKNOWN;

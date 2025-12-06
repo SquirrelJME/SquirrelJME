@@ -38,8 +38,17 @@
 #define FORWARD_CLASS "cc/squirreljme/jvm/mle/RuntimeShelf"
 #define FORWARD_NATIVE_CLASS RUNTIME_CLASSNAME
 
+#define FORWARD_DESC_compatibilityId \
+	DESC_METHOD(DESC_BOOLEAN, DESC_INT)
 #define FORWARD_DESC_browseLocal \
 	DESC_METHOD(DESC_VOID, DESC_BOOLEAN DESC_STRING)
+
+JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(Runtime, compatibilityId)
+	(JNIEnv* env, jclass classy, jint id)
+{
+	/* For now everything returns false. */
+	return JNI_FALSE;
+}
 
 FORWARD_IMPL_VOID(Runtime, browseLocal,
 	FORWARD_IMPL_args(jboolean create, jstring path),
@@ -169,6 +178,7 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(
 static const JNINativeMethod mleRuntimeMethods[] =
 {
 	FORWARD_list(Runtime, browseLocal),
+	FORWARD_list(Runtime, compatibilityId),
 	{"garbageCollect", "()V", (void*)Impl_mle_RuntimeShelf_garbageCollect},
 	{"lineEnding", "()I", (void*)Impl_mle_RuntimeShelf_lineEnding},
 	{"memoryProfile", RUNTIME_MEMORYPROFILE_DESC, (void*)Impl_mle_RuntimeShelf_memoryProfile},

@@ -34,12 +34,8 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 		inDataLen < 0 || inNumPixels < 0 ||
 		(x + inNumPixels) < 0 || (x + inNumPixels) > g->width)
 	{
-#if defined(SJME_CONFIG_DEBUG)
-		sjme_message("basicRawScanGet(%p, %d, %d, %p, %d, %d) != [%d, %d]",
-			g, x, y, outData, inDataLen, inNumPixels,
-			g->width, g->height);
-#endif
-		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+		error = SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+		goto fail_scanCheck;
 	}
 	
 	/* Buffer not locked? */
@@ -49,7 +45,8 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 	/* Determine the number of pixels to be drawn. */
 	pixelBytes = -1;
 	limit = -1;
-	if (sjme_error_is(error = g->util->rawScanBytes(g,
+	if (sjme_error_is(error = g->util->pfScanBytes(g,
+		g->pixelFormat,
 		inNumPixels, inDataLen,
 		&pixelBytes, &limit)) ||
 		pixelBytes < 0 || limit < 0)
@@ -66,6 +63,14 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+	
+fail_scanCheck:
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message("basicRawScanGet(%p, %d, %d, %p, %d, %d) != [%d, %d]",
+		g, x, y, outData, inDataLen, inNumPixels,
+		g->width, g->height);
+#endif
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
@@ -95,16 +100,8 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 		(targetI + srcRawLen) < 0 ||
 		(targetI + srcRawLen) > g->lockState.baseLimitBytes)
 	{
-#if defined(SJME_CONFIG_DEBUG)
-		sjme_message(
-			"basicRawScanPutPure(%p, %d, %d, %p, %d, %d) != [%d, %d]"
-				" of blb=%d; ti=%d; slb=%d; bpp=%d",
-			g, x, y, srcRaw, srcRawLen, srcNumPixels,
-			g->width, g->height,
-			g->lockState.baseLimitBytes,
-			targetI, g->scanLenBytes, g->bitsPerPixel);
-#endif
-		return SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+		error = SJME_ERROR_SCAN_OUT_OF_BOUNDS;
+		goto fail_scanCheck;
 	}
 	
 	/* Copy over the buffer directly. */
@@ -113,6 +110,18 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+	
+fail_scanCheck:
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message(
+		"basicRawScanPutPure(%p, %d, %d, %p, %d, %d) != [%d, %d]"
+			" of blb=%d; ti=%d; slb=%d; bpp=%d",
+		g, x, y, srcRaw, srcRawLen, srcNumPixels,
+		g->width, g->height,
+		g->lockState.baseLimitBytes,
+		targetI, g->scanLenBytes, g->bitsPerPixel);
+#endif
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_scritchui_basicRawScanGet_sjme_jbyte24(
@@ -260,6 +269,49 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte1(
 #define pencilPixelMask 0x1
 
 #include "scritchPencilTemplate.c"
+
+sjme_jboolean sjme_scritchpen_isIndexed(
+	sjme_attrInValue sjme_gfx_pixelFormat pf)
+{
+	switch (pf)
+	{
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
+			return SJME_JNI_TRUE;
+		
+		default:
+			return SJME_JNI_FALSE;
+	}
+}
+
+sjme_jboolean sjme_scritchpen_hasAlpha(
+	sjme_attrInValue sjme_gfx_pixelFormat pf)
+{
+	switch (pf)
+	{
+		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
+			return SJME_JNI_TRUE;
+		
+		default:
+			return SJME_JNI_FALSE;
+	}
+}
 
 sjme_errorCode sjme_scritchpen_initBuffer(
 	sjme_attrInNotNull sjme_scritchui inState,

@@ -98,6 +98,7 @@ subprojects {
 		// Copy to JavaDoc
 		javadoc.options.source = "1.7"
 		javadoc.options.tags = [ "squirreljme.property",
+			"squirreljme.compatibility",
 			"squirreljme.env",
 			"squirreljme.error",
 			"squirreljme.syscallparam",

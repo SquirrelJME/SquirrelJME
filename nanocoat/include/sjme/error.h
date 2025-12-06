@@ -562,9 +562,12 @@ typedef enum sjme_errorCode
 
 	/** Skip default walk action after custom step is performed. */
 	SJME_ERROR_WALK_SKIP_CUSTOM_DEFAULT = -173,
+
+	/** Try the operation again. */
+	SJME_ERROR_TRY_AGAIN = -174,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -174,
+	SJME_NUM_ERROR_CODES = -175,
 } sjme_errorCode;
 
 /**

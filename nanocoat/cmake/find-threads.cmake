@@ -7,8 +7,17 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Threading and atomics support
 
+# These platforms do not support any kind of threading
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "dos" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "3ds" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "playstation2")
+	message(STATUS "Threads not supported!")
+
+	# Only a single thread is possible
+	add_compile_definitions(SJME_CONFIG_ONLY_THREAD_SINGLE=1)
+
 # On Windows do not use pthreads at all as it has its own threading system
-if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+elseif("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
 	# Notice
 	message(STATUS "Forcing Win32 Threads")
 

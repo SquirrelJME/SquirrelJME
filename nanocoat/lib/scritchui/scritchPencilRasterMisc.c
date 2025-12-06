@@ -17,186 +17,42 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
+sjme_errorCode sjme_scritchpen_corePrim_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint argb,
+	sjme_attrInValue sjme_jboolean fromRaw,
+	sjme_attrInValue sjme_jint inRgbOrRaw,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
 {
-	sjme_jint v, aa, rr, gg, bb, ii;
-	sjme_jint i, numCol, d, bestCol, bestColScore, thisColScore;
-	sjme_jint pargb, prr, pgg, pbb;
-	sjme_jint mrr, mgg, mbb;
-	const sjme_jint* colors;
-
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* Set base color properties. */
-	aa = (argb >> 24) & 0xFF;
-	outColor->a = aa;
-	rr = (argb >> 16) & 0xFF;
-	outColor->r = rr;
-	gg = (argb >> 8) & 0xFF;
-	outColor->g = gg;
-	bb = (argb) & 0xFF;
-	outColor->b = bb;
 	
-	/* Find closest indexed color. */
-	ii = -1;
-	numCol = g->palette.numColors;
-	if (g->palette.colors != NULL && numCol > 0)
-	{
-		/* Clear alpha. */
-		d = argb & 0xFFFFFF;
-		
-		/* Determine the most important color channel. */
-		mrr = (rr >= gg && rr >= bb ? 1 : 2);
-		mgg = (gg >= rr && gg >= bb ? 1 : 2);
-		mbb = (bb >= rr && bb >= gg ? 1 : 2);
-		
-		/* Start with a horrible color score. */
-		bestCol = 0;
-		bestColScore = 134217728;
-		
-		/* Find exact color match? */
-		colors = g->palette.colors;
-		for (i = 0; i < numCol; i++)
-		{
-			/* Exact match? */
-			pargb = colors[i] & 0xFFFFFF;
-			if (d == pargb)
-			{
-				ii = i;
-				break;
-			}
-			
-			/* Get original RGB value. */
-			prr = (pargb >> 16) & 0xFF;
-			pgg = (pargb >> 8) & 0xFF;
-			pbb = (pargb) & 0xFF;
-			
-			/* Calculate this color score, use if it is better. */
-			thisColScore = (abs(prr - rr) * mrr) +
-				(abs(pgg - gg) * mgg) +
-				(abs(pbb - bb) * mbb);
-			if (thisColScore < bestColScore)
-			{
-				bestCol = i;
-				bestColScore = thisColScore;
-			}
-		}
-		
-		/* If no exact color was found, use the best scoring one. */ 
-		if (ii < 0)
-			ii = bestCol;
-	}
-	
-	/* Determine raw pixel color. */
-	switch (g->pixelFormat)
-	{
-		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
-			v = argb;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
-			v = (bb << 24) | (gg << 16) | (rr << 8) | aa;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
-			v = (bb << 24) | (gg << 16) | (rr << 8) | 0xFF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
-			v = 0xFF000000 | (bb << 16) | (gg << 8) | (rr);
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
-			v = (rr << 24) | (gg << 16) | (bb << 8) | 0xFF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
-			v = argb | 0xFF000000;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
-			v = (rr << 16) | (gg << 8) | bb;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
-			v = (rr) | (gg << 8) | (bb << 16);
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
-			v = (((aa >> 4) & 0xF) << 12) |
-				(((rr >> 4) & 0xF) << 8) |
-				(((gg >> 4) & 0xF) << 4) |
-				((bb >> 4) & 0xF);
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
-			v = (((rr >> 3) & 0x1F) << 11) |
-				(((gg >> 2) & 0x3F) << 5) |
-				((bb >> 3) & 0x1F);
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
-			v = (((rr >> 3) & 0x1F) << 10) |
-				(((gg >> 3) & 0x1F) << 5) |
-				((bb >> 3) & 0x1F);
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
-			v = (((aa >> 7) & 0x1) << 15) |
-				(((bb >> 3) & 0x1F) << 10) |
-				(((gg >> 3) & 0x1F) << 5) |
-				((rr >> 3) & 0x1F);
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
-			v = ii & 0xFFFF;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
-			v = ii & 0xFF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
-			v = ii & 0xF;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
-			v = ii & 0x3;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
-			v = ii & 0x1;
-			break;
-	}
-		
-	/* Store raw colors. */
-	outColor->i = ii;
-	outColor->v = v;
-	outColor->argb = argb;
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* Otherwise, use our own color mapping code. */
+	if (fromRaw)
+		return sjme_scritchpen_corePrim_mapColorFromRaw(g,
+			inRgbOrRaw, outColor);
+	return sjme_scritchpen_corePrim_mapColorFromRGB(g,
+		inRgbOrRaw, outColor);
 }
-
-sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
+	
+sjme_errorCode sjme_scritchpen_corePrim_mapColorPfToRgb(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInValue sjme_jint v,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
 {
 	sjme_jint numCol, aa, rr, gg, bb, argb;
+	sjme_jboolean isIndexed;
 	
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* If there is a palette, try using it to get a color. */
+	/* Note this requires a palette from the graphics context to be valid. */
 	numCol = g->palette.numColors;
-	if (g->palette.colors != NULL && numCol > 0)
+	isIndexed = sjme_scritchpen_isIndexed(pf);
+	if (isIndexed || (g->palette.colors != NULL && numCol > 0))
 	{
-		if (v > 0 && v < numCol)
+		if (g->palette.colors != NULL && v >= 0 && v < numCol)
 			return sjme_scritchpen_corePrim_mapColorFromRGB(g,
 				g->palette.colors[v], outColor);
 		
@@ -212,7 +68,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 	bb = 0;
 	
 	/* Recover raw pixel color. */
-	switch (g->pixelFormat)
+	switch (pf)
 	{
 		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
 			aa = (v >> 24) & 0xFF;
@@ -269,6 +125,16 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 			bb |= bb << 4;
 			break;
 		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB444:
+			aa = 0xFF;
+			rr = ((v >> 8) & 0xF);
+			rr |= rr << 4;
+			gg = ((v >> 4) & 0xF);
+			gg |= gg << 4;
+			bb = ((v) & 0xF);
+			bb |= bb << 4;
+			break;
+		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
 			aa = 0xFF;
 			rr = ((v >> 11) & 0x1F) << 3;
@@ -301,21 +167,239 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 	return sjme_scritchpen_corePrim_mapColorFromRGB(g, argb, outColor);
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_mapColor(
+sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jboolean fromRaw,
-	sjme_attrInValue sjme_jint inRgbOrRaw,
+	sjme_attrInValue sjme_jint argb,
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
 {
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Otherwise, use our own color mapping code. */
-	if (fromRaw)
-		return sjme_scritchpen_corePrim_mapColorFromRaw(g,
-			inRgbOrRaw, outColor);
-	return sjme_scritchpen_corePrim_mapColorFromRGB(g,
-		inRgbOrRaw, outColor);
+	return sjme_scritchpen_corePrim_mapColorRgbToPf(g, g->pixelFormat,
+		argb, outColor);
+}
+
+sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint v,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+{
+	if (g == NULL || outColor == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	return sjme_scritchpen_corePrim_mapColorPfToRgb(
+		g, g->pixelFormat, v, outColor);
+}
+	
+sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInValue sjme_jint argb,
+	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+{
+	sjme_jint v, aa, rr, gg, bb, ii;
+	sjme_jint i, numCol, d, bestCol, bestColScore, thisColScore;
+	sjme_jint thisAlphaScore, bestAlphaScore;
+	sjme_jint pargb, paa, prr, pgg, pbb;
+	sjme_jint mrr, mgg, mbb;
+	const sjme_jint* colors;
+	sjme_jboolean alphaIndexed, isIndexed;
+
+	if (g == NULL || outColor == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+		
+	/* Set base color properties. */
+	aa = (argb >> 24) & 0xFF;
+	outColor->a = aa;
+	rr = (argb >> 16) & 0xFF;
+	outColor->r = rr;
+	gg = (argb >> 8) & 0xFF;
+	outColor->g = gg;
+	bb = (argb) & 0xFF;
+	outColor->b = bb;
+	
+	/* Find closest indexed color. */
+	ii = -1;
+	numCol = g->palette.numColors;
+	isIndexed = sjme_scritchpen_isIndexed(pf);
+	if (isIndexed && (g->palette.colors == NULL || numCol <= 0))
+		ii = 0;
+	else if (isIndexed || (g->palette.colors != NULL && numCol > 0))
+	{
+		/* Does this set of indexed colors consider alpha? */
+		alphaIndexed =
+			(g->pixelFormat >= SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A &&
+			g->pixelFormat <= SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A);
+		if (alphaIndexed)
+			d = argb;
+		else
+			d = argb & 0xFFFFFF;
+		
+		/* Determine the most important color channel. */
+		mrr = (rr >= gg && rr >= bb ? 1 : 2);
+		mgg = (gg >= rr && gg >= bb ? 1 : 2);
+		mbb = (bb >= rr && bb >= gg ? 1 : 2);
+		
+		/* Start with a horrible color score. */
+		bestCol = 0;
+		bestColScore = 134217728;
+		bestAlphaScore = 256;
+		
+		/* Find exact color match? */
+		colors = g->palette.colors;
+		for (i = 0; i < numCol && g->palette.colors; i++)
+		{
+			/* Exact match? */
+			pargb = colors[i];
+			if (d == pargb)
+			{
+				ii = i;
+				break;
+			}
+			
+			/* Get original ARGB value. */
+			prr = (pargb >> 16) & 0xFF;
+			pgg = (pargb >> 8) & 0xFF;
+			pbb = (pargb) & 0xFF;
+			
+			/* Calculate this color score, use if it is better. */
+			thisColScore = (abs(prr - rr) * mrr) +
+				(abs(pgg - gg) * mgg) +
+				(abs(pbb - bb) * mbb);
+			if (thisColScore < bestColScore)
+			{
+				/* If alpha is being used, try to find the color with the */
+				/* closest alpha match. */
+				if (alphaIndexed)
+				{
+					/* Calculate the score of this alpha color. */
+					paa = (pargb >> 24) & 0xFF;
+					thisAlphaScore = abs(paa - aa);
+
+					/* If the alpha score is worse, even though the color is */
+					/* better, this might end up being a color that does */
+					/* not match the desired alpha value. */
+					if (thisAlphaScore > bestAlphaScore)
+						continue;
+
+					/* Consider the new alpha score. */
+					bestAlphaScore = thisAlphaScore;
+				}
+
+				/* Use this color (and best alpha, if selected). */
+				bestCol = i;
+				bestColScore = thisColScore;
+			}
+		}
+		
+		/* If no exact color was found, use the best scoring one. */ 
+		if (ii < 0)
+			ii = bestCol;
+	}
+	
+	/* Determine raw pixel color. */
+	switch (pf)
+	{
+		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
+			v = argb;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
+			v = (bb << 24) | (gg << 16) | (rr << 8) | aa;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
+			v = (bb << 24) | (gg << 16) | (rr << 8) | 0xFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
+			v = 0xFF000000 | (bb << 16) | (gg << 8) | (rr);
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
+			v = (rr << 24) | (gg << 16) | (bb << 8) | 0xFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
+			v = argb | 0xFF000000;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
+			v = (rr << 16) | (gg << 8) | bb;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
+			v = (rr) | (gg << 8) | (bb << 16);
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
+			v = (((aa >> 4) & 0xF) << 12) |
+				(((rr >> 4) & 0xF) << 8) |
+				(((gg >> 4) & 0xF) << 4) |
+				((bb >> 4) & 0xF);
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB444:
+			v = (((rr >> 4) & 0xF) << 8) |
+				(((gg >> 4) & 0xF) << 4) |
+				((bb >> 4) & 0xF);
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
+			v = (((rr >> 3) & 0x1F) << 11) |
+				(((gg >> 2) & 0x3F) << 5) |
+				((bb >> 3) & 0x1F);
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
+			v = (((rr >> 3) & 0x1F) << 10) |
+				(((gg >> 3) & 0x1F) << 5) |
+				((bb >> 3) & 0x1F);
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
+			v = (((aa >> 7) & 0x1) << 15) |
+				(((bb >> 3) & 0x1F) << 10) |
+				(((gg >> 3) & 0x1F) << 5) |
+				((rr >> 3) & 0x1F);
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
+			v = ii & 0xFFFF;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
+			v = ii & 0xFF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
+			v = ii & 0xF;
+			break;
+		
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
+			v = ii & 0x3;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
+			v = ii & 0x1;
+			break;
+
+		default:
+			return sjme_error_notImplemented(0);
+	}
+		
+	/* Store raw colors. */
+	outColor->i = ii;
+	outColor->v = v;
+	outColor->argb = argb;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
@@ -361,81 +445,209 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
-	sjme_attrOutNotNull sjme_scritchui_pencilMatrix* outMatrix,
+sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
-	sjme_attrInPositive sjme_jint wSrc,
-	sjme_attrInPositive sjme_jint hSrc,
-	sjme_attrInPositive sjme_jint wDest,
-	sjme_attrInPositive sjme_jint hDest)
+	sjme_attrInOutNotNull sjme_jint* x,
+	sjme_attrInOutNotNull sjme_jint* y,
+	sjme_attrInOutNotNull sjme_jint* w,
+	sjme_attrInOutNotNull sjme_jint* h,
+	sjme_attrInPositive sjme_jint dataWidth,
+	sjme_attrInPositive sjme_jint dataHeight)
 {
-	sjme_scritchui_pencilMatrix result;
-	sjme_fixed scaleX, scaleY, temp;
-	sjme_jint xform;
+	sjme_jint temp, xform;
 	
-	if (outMatrix == NULL)
+	if (x == NULL || y == NULL || w == NULL || h == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Initialize. */
-	memset(&result, 0, sizeof(result));
-	
-	/* Perform total image scaling first. */
-	scaleX = sjme_fixed_fraction(wSrc, wDest);
-	scaleY = sjme_fixed_fraction(hSrc, hDest);
-	
-	/* This is simple enough to calculate, is just the destination. */
-	result.tw = wDest;
-	result.th = hDest;
-	
-	/* Determine the transformation functions to use. There are just three */
-	/* primitive transformation functions: flip horizontally, then */
-	/* flip vertically, then rotate 90 degrees clockwise. This handles */
-	/* every transformation which fill every single bit. */
+
+	if (dataWidth < 0 || dataHeight < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Determine the transformation function to use. */
 	switch (inTrans)
 	{
 		/* These bits represent the stuff to do! == 0b9VH; */
 		case SJME_SCRITCHUI_TRANS_NONE:				xform = 0; break;
 		case SJME_SCRITCHUI_TRANS_MIRROR:			xform = 1; break;
 		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:	xform = 2; break;
+		/* TRANS_ROT180 is basically a mix of the two above */
 		case SJME_SCRITCHUI_TRANS_ROT180:			xform = 3; break;
 		case SJME_SCRITCHUI_TRANS_ROT90:			xform = 4; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 5; break;
-		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 6; break;
-		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 7; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 8; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 16; break;
+		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 32; break;
 		/* These bits represent the stuff to do! == 0b9VH; */
 
 		default:
 			return sjme_error_notImplemented(0);
 	}
 	
-	/* Start with this. */
-	result.x.wx = scaleX;
-	result.y.zy = scaleY;
+	/* Whenever we receive a transformation that alters the width and height */
+	/* the image, the first adjustment we have to do is update the source */
+	/* and destination width/height accordingly (makes source/dest width and */
+	/* height usage more consistent on further adjustments and clipping). */
+	if ((xform & 4) || (xform & 8) || (xform & 16) || (xform & 32))
+	{
+		temp = *h;
+		*h = *w;
+		*w = temp;
+	}
+
+	/* Mirrored horizontally */
+	if (xform & 1)
+		*x = dataWidth - *x - *w + 1;
+
+	/* Mirrored vertically */
+	if (xform & 2)
+		*y = dataHeight - *y - *h + 1;
+	
+
+	/* Was rotated 90 degrees clockwise. */
+	if (xform & 4)
+	{
+		temp = *x;
+		*x = dataHeight - *y - *w + 1;
+		*y = temp;
+	}
+
+	/* Was mirrored horizontally and rotated 90 degrees clockwise.*/
+	if (xform & 8)
+	{
+		temp = *y;
+		*y = dataWidth - *x - *h + 1;
+		*x = dataHeight - temp - *w + 1;
+	}
+
+	/* Was mirrored horizontally and rotated 270 degrees clockwise */
+	if (xform & 16)
+	{
+		temp = *x;
+		*x = *y;
+		*y = temp;
+	}
+
+	/* Was rotated 270 degrees clockwise */
+	if (xform & 32)
+	{
+		temp = *y;
+		*y = dataWidth - *x - *h + 1;
+		*x = temp;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
+	sjme_attrInOutNotNull sjme_scritchui_pencilMatrix* adjMatrix,
+	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest)
+{
+	sjme_jint temp, xform;
+	
+	if (adjMatrix == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Determine the transformation function to use. */
+	switch (inTrans)
+	{
+		/* These bits represent the stuff to do! == 0bLR9VH; */
+		case SJME_SCRITCHUI_TRANS_NONE:				xform = 0; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR:			xform = 1; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT180:	xform = 2; break;
+		/* TRANS_ROT180 is basically a mix of the two above */
+		case SJME_SCRITCHUI_TRANS_ROT180:			xform = 3; break;
+		case SJME_SCRITCHUI_TRANS_ROT90:			xform = 4; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT90:		xform = 8; break;
+		case SJME_SCRITCHUI_TRANS_MIRROR_ROT270:	xform = 16; break;
+		case SJME_SCRITCHUI_TRANS_ROT270:			xform = 32; break;
+		/* These bits represent the stuff to do! == 0bLR9VH; */
+
+		default:
+			return sjme_error_notImplemented(0);
+	}
+
+	/**
+	 * This is simple enough to calculate, it's just the destination but with
+	 * its width and height swapped if we're handling any 90 or 270 transform
+	 * variation.
+	 */
+	if (xform & 4 || xform & 8 || xform & 16 || xform & 32)
+	{
+		adjMatrix->tw = hDest;
+		adjMatrix->th = wDest;
+	}
+	else
+	{
+		adjMatrix->tw = wDest;
+		adjMatrix->th = hDest;
+	}
+	
+	/* Base the matrix x, y step calculations from the scaling values. */
+	adjMatrix->x.wx = sjme_fixed_fraction(wSrc, wDest);
+	adjMatrix->y.zy = sjme_fixed_fraction(hSrc, hDest);
 	
 	/* Mirror horizontally? */
-	if ((xform & 1) != 0)
-		result.x.wx = -result.x.wx;
-		
+	if (xform & 1)
+		adjMatrix->x.wx = -adjMatrix->x.wx;
+
 	/* Mirror vertically? */
-	if ((xform & 2) != 0)
-		result.y.zy = -result.y.zy;
-		
+	if (xform & 2)
+		adjMatrix->y.zy = -adjMatrix->y.zy;
+
 	/* Rotate 90 degrees clockwise */
 	/* Thanks to jercos for helping out with the matrix math! */
 	/* The math here has been simplified to remove constants and otherwise. */
-	if ((xform & 4) != 0)
+	if (xform & 4)
 	{
-		temp = result.x.wx;
-		result.x.wx = result.x.zy;
-		result.x.zy = -temp;
-		
-		temp = result.y.wx;
-		result.y.wx = result.y.zy;
-		result.y.zy = -temp;
+		temp = adjMatrix->x.wx;
+		adjMatrix->x.wx = adjMatrix->x.zy;
+		adjMatrix->x.zy = -temp;
+
+		temp = adjMatrix->y.wx;
+		adjMatrix->y.wx = adjMatrix->y.zy;
+		adjMatrix->y.zy = -temp;
 	}
-	
+
+	/* Mirror horizontally and rotate 90 degrees clockwise */
+	if (xform & 8)
+	{
+		temp = adjMatrix->x.wx;
+		adjMatrix->x.wx = -adjMatrix->x.zy;
+		adjMatrix->x.zy = -temp;
+
+		temp = adjMatrix->y.wx;
+		adjMatrix->y.wx = -adjMatrix->y.zy;
+		adjMatrix->y.zy = -temp;
+	}
+
+	/* Mirror horizontally and rotate 270 degrees clockwise */
+	if (xform & 16)
+	{
+		temp = adjMatrix->x.wx;
+		adjMatrix->x.wx = adjMatrix->x.zy;
+		adjMatrix->x.zy = temp;
+
+		temp = adjMatrix->y.wx;
+		adjMatrix->y.wx = adjMatrix->y.zy;
+		adjMatrix->y.zy = temp;
+	}
+
+	/* Rotate 270 degrees clockwise (A.K.A. 90 degrees counter-clockwise). */
+	if (xform & 32)
+	{
+		temp = adjMatrix->x.wx;
+		adjMatrix->x.wx = -adjMatrix->x.zy;
+		adjMatrix->x.zy = temp;
+
+		temp = adjMatrix->y.wx;
+		adjMatrix->y.wx = -adjMatrix->y.zy;
+		adjMatrix->y.zy = temp;
+	}
+
 	/* Success! */
-	memmove(outMatrix, &result, sizeof(result));
 	return SJME_ERROR_NONE;
 }
 
@@ -536,6 +748,7 @@ sjme_errorCode sjme_scritchpen_core_setClip(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h)
 {
+	sjme_errorCode error;
 	sjme_scritchui_rect* rect;
 	sjme_scritchui_line* line;
 	sjme_jint ex, ey;
@@ -544,7 +757,8 @@ sjme_errorCode sjme_scritchpen_core_setClip(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Translate coordinates. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x, &y)))
+		return sjme_error_default(error);
 	
 	/* Minimum bounds. */
 	if (w <= 0)

@@ -53,6 +53,7 @@ static sjme_errorCode sjme_inflate_bitFill(
 	buffer = sjme_alloca(avail);
 	if (buffer == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
+	
 	memset(buffer, 0, avail);
 	
 	/* Read everything in as much as possible. */

@@ -11,6 +11,14 @@ is used, refer to that for library bring-ins.
    * RatufaCoat updates related to LibRetro:
      * Android Updates.
      * Mingw cross compilation.
+ * _"AShiningRay"_ 
+   * ScritchUI:
+     * GTK2 Interface:
+       * Memory leak fixes.
+     * Core Library:
+       * `copyArea()` implementation.
+       * Polygon and arc drawing implementations.
+       * Fixes and additions to rotation/scaling translations.
  * _"crystalct"_
    * RatufaCoat updates related to LibRetro:
      * PS3 Toolchain updates.

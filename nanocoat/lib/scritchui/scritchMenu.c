@@ -498,13 +498,21 @@ sjme_errorCode sjme_scritchui_intern_menuItemActivateById(
 		
 		/* Fail? */
 		else if (sjme_error_is(error))
-			return sjme_error_default(error);
+			goto fail_iterate;
 		
 		/* We found the menu item. */
-		else
-			break;
+		break;
 	}
+
+	/* Cleanup. */
+	sjme_alloca_free(children);
 	
 	/* Nothing left to check. */
 	return SJME_ERROR_NONE;
+	
+fail_iterate:
+	if (children != NULL)
+		sjme_alloca_free(children);
+	
+	return sjme_error_default(error);
 }
