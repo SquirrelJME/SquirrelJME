@@ -178,7 +178,7 @@ sjme_errorCode sjme_scritchpen_core_copyArea(
 	/* MIDP 2. Thus, no alpha handling is needed. */
 	/* This is also the case for MIDP 3, no alpha blending is performed. */
 	for (y = 0, zy = dy, areaP = copiedArea; y < h;
-		y++, areaP = SJME_POINTER_OFFSET(areaP, scanlineBytes))
+		y++, zy++, areaP = SJME_POINTER_OFFSET(areaP, scanlineBytes))
 		error |= g->prim.rawScanPutPure(g, dx, zy,
 			areaP, scanlineBytes, w);
 
