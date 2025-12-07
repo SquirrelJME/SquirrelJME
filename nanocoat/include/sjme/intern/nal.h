@@ -35,22 +35,22 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /** Not implemented. */
-#define SJME_CONFIG_NAL_IMPLEMENT_NONE 0
+#define SJME_CONFIG_NAL_IMPLEMENT_NONE 1
 
 /** Use NAL Standard C implementation. */
-#define SJME_CONFIG_NAL_IMPLEMENT_STDC 1
+#define SJME_CONFIG_NAL_IMPLEMENT_STDC 2
 
 /** Use NAL POSIX implementation. */
-#define SJME_CONFIG_NAL_IMPLEMENT_POSIX 2
+#define SJME_CONFIG_NAL_IMPLEMENT_POSIX 3
 
 /** Use Windows 32-bit implementation. */
-#define SJME_CONFIG_NAL_IMPLEMENT_WIN32 3
+#define SJME_CONFIG_NAL_IMPLEMENT_WIN32 4
 
 /** Use Linux implementation. */
-#define SJME_CONFIG_NAL_IMPLEMENT_LINUX 4
+#define SJME_CONFIG_NAL_IMPLEMENT_LINUX 5
 
 /** Use Older POSIX implementation. */
-#define SJME_CONFIG_NAL_IMPLEMENT_POSIX_OLD 5
+#define SJME_CONFIG_NAL_IMPLEMENT_POSIX_OLD 6
 
 #if !defined(SJME_CONFIG_NAL_GETENV)
 	#if defined(SJME_CONFIG_HAS_C89)
