@@ -191,6 +191,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	/* Setup window. */
 	inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET] = gtkWindow;
 	inWindow->component.common.handle[SJME_SUI_GTK2_H_WINTABLE] = gtkTable;
+
+	/* Since the table will soon be referenced, we do not want to lose it. */
+	g_object_ref(gtkTable);
 	
 	/* The table needs to be in the window. */
 	gtk_container_add(GTK_CONTAINER(gtkWindow),
@@ -292,6 +295,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
 			
 		/* Clear state. */
 		inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBAR] = NULL;
+
+		/* Do not care for this menu bar anymore. */
+		g_object_unref(gtkExistingBar);
 	}
 	
 	/* Place into the table at the top. */
@@ -310,6 +316,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
 		
 		/* Remember this bar for future changes. */
 		inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBAR] = gtkMenuBar;
+		
+		/* Reference the bar as it is being used. */
+		g_object_ref(gtkMenuBar);
 	}
 	
 	/* Success? */

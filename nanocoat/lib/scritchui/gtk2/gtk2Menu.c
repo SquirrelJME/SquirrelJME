@@ -52,6 +52,9 @@ sjme_errorCode sjme_scritchui_gtk2_menuBarNew(
 	/* Store handle for later. */
 	inMenuBar->menuKind.common
 		.handle[SJME_SUI_GTK2_H_WIDGET] = widget;
+
+	/* Do not lose the menu bar. */
+	g_object_ref(widget);
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -150,6 +153,10 @@ sjme_errorCode sjme_scritchui_gtk2_menuNew(
 	inMenu->menuKind.common
 		.handle[SJME_SUI_GTK2_H_WIDGET] = menuWidget;
 	inMenu->menuKind.common.handle[SJME_SUI_GTK2_H_TOP_WIDGET] = itemLike;
+
+	/* Do not lose the item nor the menu. */
+	g_object_ref(menuWidget);
+	g_object_ref(itemLike);
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
