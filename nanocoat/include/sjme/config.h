@@ -21,6 +21,7 @@
 #define SJME_C_CONFIG_H
 
 #include <stddef.h>
+#include <stdlib.h>
 
 /* Floating point header, determines if software floats should be used. */
 #if !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
