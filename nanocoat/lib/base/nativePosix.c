@@ -10,7 +10,8 @@
 #include "sjme/util.h"
 #include "sjme/intern/nal.h"
 
-#if (SJME_CONFIG_NAL_NANOTIME == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+#if (SJME_CONFIG_NAL_NANOTIME == SJME_CONFIG_NAL_IMPLEMENT_POSIX) || \
+	(SJME_CONFIG_NAL_THREAD_SLEEP == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
 	#include <time.h>
 #endif
 
