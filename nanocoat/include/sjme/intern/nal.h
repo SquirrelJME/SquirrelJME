@@ -105,7 +105,10 @@ extern "C"
 #endif
 
 #if !defined(SJME_CONFIG_NAL_THREAD_SLEEP)
-	#if defined(SJME_CONFIG_HAS_OS_POSIX)
+	#if defined(SJME_CONFIG_IDENT_OS_WIIU)
+		/** Use fallback none implementation of thread sleep. */
+		#define SJME_CONFIG_NAL_THREAD_SLEEP SJME_CONFIG_NAL_IMPLEMENT_NONE
+	#elif defined(SJME_CONFIG_HAS_OS_POSIX)
 		/** Use POSIX implementation of thread sleep. */
 		#define SJME_CONFIG_NAL_THREAD_SLEEP SJME_CONFIG_NAL_IMPLEMENT_POSIX
 	#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)

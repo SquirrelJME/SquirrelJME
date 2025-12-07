@@ -137,6 +137,16 @@ function(squirreljme_defines_gcc gccDefines gccExe)
 		RESULT_VARIABLE gccResult
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
+	# Try again, but with no passed flags
+	if(NOT "${gccResult}" EQUAL "0")
+		execute_process(
+			COMMAND "${gccExe}"
+				"-E" "-dM" "${gccMainSource}"
+			OUTPUT_VARIABLE gccOutputRaw
+			RESULT_VARIABLE gccResult
+			OUTPUT_STRIP_TRAILING_WHITESPACE)
+	endif()
+
 	# Did this actually work?
 	set(gccOutDefines)
 	if("${gccResult}" EQUAL "0")
