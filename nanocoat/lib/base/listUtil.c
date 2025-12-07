@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/listUtil.h"
 
 sjme_errorCode sjme_listUtil_binListInt(

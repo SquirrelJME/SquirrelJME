@@ -7,9 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-#include <stdio.h>
-
 #include "sjme/config.h"
 #include "sjme/native.h"
 #include "sjme/intern/nal.h"

@@ -7,9 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdio.h>
-#include <string.h>
-
 #include "sjme/nvm/rom.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"

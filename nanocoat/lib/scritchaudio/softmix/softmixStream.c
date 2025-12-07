@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchaudio/softmix/softmixIntern.h"
 #include "sjme/fixed.h"
 

@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/list.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"

@@ -8,8 +8,6 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/util.h"
-#include <string.h>
-
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"

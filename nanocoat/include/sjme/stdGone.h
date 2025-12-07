@@ -63,6 +63,10 @@
 	#include <errno.h>
 #endif
 
+#if defined(SJME_MEMIO_ATOMIC_C11)
+	#include <stdatomic.h>
+#endif
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED

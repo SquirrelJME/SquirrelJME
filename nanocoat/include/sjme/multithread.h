@@ -20,14 +20,6 @@
 #include "sjme/config.h"
 #include "sjme/error.h"
 
-#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	#define WIN32_LEAN_AND_MEAN 1
-
-	#include <windows.h>
-
-	#undef WIN32_LEAN_AND_MEAN
-#endif
-
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	#include <pthread.h>
 	#include <signal.h>

@@ -16,11 +16,9 @@
 #ifndef SJME_C_WINMMINTERN_H
 #define SJME_C_WINMMINTERN_H
 
+#include "sjme/config.h"
 #include "lib/scritchaudio/winmm/winmm.h"
 
-#define WIN32_LEAN_AND_MEAN 1
-
-#include <windows.h>
 #include <mmsystem.h>
 
 #if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_XP)

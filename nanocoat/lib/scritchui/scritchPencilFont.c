@@ -7,9 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiPencilFontPseudo.h"

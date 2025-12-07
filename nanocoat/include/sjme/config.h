@@ -22,6 +22,7 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <setjmp.h>
 
 /* Floating point header, determines if software floats should be used. */
 #if !defined(SJME_CONFIG_HAS_NO_FLOAT_H)

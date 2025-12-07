@@ -7,9 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <stdio.h>
-#include <string.h>
-
 #include "sjme/nvm/classyVm.h"
 #include "sjme/listUtil.h"
 #include "sjme/nvm/cleanup.h"
