@@ -185,6 +185,9 @@ extern "C" {
 #elif defined(__3DS__) || defined(_3DS) || defined(SJME_CONFIG_IDENT_OS_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_OS_NINTENDO_3DS
+#elif defined(PSP) || defined(SJME_CONFIG_IDENT_OS_PSP)
+	/** Sony PSP. */
+	#define SJME_CONFIG_HAS_OS_SONY_PSP
 #elif defined(PS2) || defined(_EE) || defined(_IOP) || defined(__PS2__) || \
 	defined(SJME_CONFIG_IDENT_OS_PLAYSTATION2)
 	/** Sony PlayStation 2. */
