@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/util.h"
 #include "sjme/intern/nal.h"
 
 #if (SJME_CONFIG_NAL_NANOTIME == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
@@ -84,7 +85,7 @@ static sjme_errorCode sjme_stream_inputNetAvailable(
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail)
 {
-#if defined(SJME_CONFIG_HAS_POLL_H)
+#if defined(SJME_CONFIG_HAS_POLL_H) && defined(FIONREAD)
 	int rfd, avail;
 	struct pollfd fds;
 	
@@ -499,7 +500,7 @@ fail_connect:
 		memmove(&posixAddress.sin_addr,
 			posixHost->h_addr, posixHost->h_length);
 	posixAddress.sin_family = AF_INET;
-	posixAddress.sin_port = htons(port);
+	posixAddress.sin_port = sjme_big_ushort(port);
 	
 	/* Open the appropriate socket. */
 	sfd = socket(posixAddress.sin_family,
