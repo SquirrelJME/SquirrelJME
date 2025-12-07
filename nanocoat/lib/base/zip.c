@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/zip.h"
 #include "sjme/debug.h"
 #include "sjme/path.h"

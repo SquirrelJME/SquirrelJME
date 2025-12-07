@@ -17,8 +17,6 @@
 #ifndef SJME_C_STDTYPES_H
 #define SJME_C_STDTYPES_H
 
-#include <stdlib.h>
-
 #include "sjme/config.h"
 
 /* Anti-C++. */

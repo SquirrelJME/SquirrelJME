@@ -76,6 +76,9 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	/* Store information. */
 	inPanel->component.common.handle[SJME_SUI_GTK2_H_WIDGET] = fixed;
 	inPanel->component.common.handle[SJME_SUI_GTK2_H_TOP_WIDGET] = eventBox;
+
+	/* Do not lose the event box. */
+	g_object_ref(eventBox);
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

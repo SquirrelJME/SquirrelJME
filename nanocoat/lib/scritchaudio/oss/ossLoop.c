@@ -6,10 +6,11 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
-
-#include <string.h>
 #include <unistd.h>
-#include <sys/ioctl.h>
+
+#if defined(SJME_CONFIG_HAS_SYS_IOCTL_H)
+	#include <sys/ioctl.h>
+#endif
 
 #include "lib/scritchaudio/scritchaudioIntern.h"
 #include "lib/scritchaudio/oss/ossIntern.h"

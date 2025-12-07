@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/nvm/boot.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/nvmFunc.h"

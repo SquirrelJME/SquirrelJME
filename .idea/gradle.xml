@@ -30,7 +30,6 @@
             <option value="$PROJECT_DIR$/modules/csv" />
             <option value="$PROJECT_DIR$/modules/debug-jdwp" />
             <option value="$PROJECT_DIR$/modules/debug-jdwp-vm-host" />
-            <option value="$PROJECT_DIR$/modules/demo-hello" />
             <option value="$PROJECT_DIR$/modules/dio" />
             <option value="$PROJECT_DIR$/modules/dio-adc" />
             <option value="$PROJECT_DIR$/modules/dio-atcmd" />
@@ -47,8 +46,6 @@
             <option value="$PROJECT_DIR$/modules/dio-watchdog" />
             <option value="$PROJECT_DIR$/modules/gcf" />
             <option value="$PROJECT_DIR$/modules/io-file" />
-            <option value="$PROJECT_DIR$/modules/launcher" />
-            <option value="$PROJECT_DIR$/modules/lcdui-demo" />
             <option value="$PROJECT_DIR$/modules/m3g" />
             <option value="$PROJECT_DIR$/modules/markdown-writer" />
             <option value="$PROJECT_DIR$/modules/media-api" />
@@ -68,9 +65,11 @@
             <option value="$PROJECT_DIR$/modules/midp-lcdui" />
             <option value="$PROJECT_DIR$/modules/profile-meep" />
             <option value="$PROJECT_DIR$/modules/scritch-ui" />
-            <option value="$PROJECT_DIR$/modules/squirrel-quarrel" />
-            <option value="$PROJECT_DIR$/modules/std-apps-core" />
-            <option value="$PROJECT_DIR$/modules/std-apps-core-lcdui" />
+            <option value="$PROJECT_DIR$/modules/system-app-demo-hello" />
+            <option value="$PROJECT_DIR$/modules/system-app-demo-lcdui" />
+            <option value="$PROJECT_DIR$/modules/system-app-demo-squirrel-quarrel" />
+            <option value="$PROJECT_DIR$/modules/system-app-device-info" />
+            <option value="$PROJECT_DIR$/modules/system-app-launcher" />
             <option value="$PROJECT_DIR$/modules/tac" />
             <option value="$PROJECT_DIR$/modules/tango-icon-theme" />
             <option value="$PROJECT_DIR$/modules/tool-classfile" />

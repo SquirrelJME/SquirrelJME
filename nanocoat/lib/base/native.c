@@ -7,9 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-#include <stdio.h>
-
 #include "sjme/config.h"
 #include "sjme/native.h"
 #include "sjme/intern/nal.h"
@@ -45,19 +42,28 @@ const sjme_nal sjme_nal_default =
 	},
 };
 
-#if !defined(SJME_CONFIG_HAS_NO_ERRNO)
+#if defined(SJME_CONFIG_HAS_ERRNO_H)
 sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 {
 	switch (errNum)
 	{
+		case EAGAIN:
+			return SJME_ERROR_TRY_AGAIN;
+
+#if defined(ECONNREFUSED)
+			/* Not available on all platforms. */
+		case ECONNREFUSED:
+			return SJME_ERROR_CONNECTION_REFUSED;
+#endif
+			
 		case EIO:
 			return SJME_ERROR_IO_EXCEPTION;
+
+		case EINVAL:
+			return SJME_ERROR_INVALID_ARGUMENT;
 		
 		case ENOENT:
 			return SJME_ERROR_FILE_NOT_FOUND;
-
-		case ECONNREFUSED:
-			return SJME_ERROR_CONNECTION_REFUSED;
 
 		default:
 			return SJME_ERROR_UNKNOWN;

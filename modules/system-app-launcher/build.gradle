@@ -38,8 +38,8 @@ squirreljme
 	
 	// Optional dependencies for testing, so that these two projects appear
 	// on the list of applications
-	optionalDependenciesTest += project(':modules:demo-hello')
-	optionalDependenciesTest += project(':modules:lcdui-demo')
+	optionalDependenciesTest += project(':modules:system-app-demo-hello')
+	optionalDependenciesTest += project(':modules:system-app-demo-lcdui')
 }
 
 jar {

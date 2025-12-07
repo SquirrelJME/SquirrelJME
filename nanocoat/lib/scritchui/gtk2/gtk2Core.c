@@ -83,6 +83,7 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	sjme_scritchui state;
+	GtkAccelGroup* accelGroup;
 	int argc;
 	char** argv;
 	
@@ -105,7 +106,11 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	gtk_init(&argc, &argv);
 	
 	/* Accelerator group, needed for menus. */
-	state->common.handle[SJME_SUI_GTK2_H_ACCELG] = gtk_accel_group_new();
+	accelGroup = gtk_accel_group_new();
+	state->common.handle[SJME_SUI_GTK2_H_ACCELG] = accelGroup;
+	
+	/* Make sure the accelerator group does not just disappear. */
+	g_object_ref(accelGroup);
 	
 	/* Need to call thread specific initializer? */
 	/* Usually this is for binding a thread to a JavaVM. */

@@ -40,6 +40,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #if defined(SJME_CONFIG_HAS_STDINT)
 	#include <stdint.h>
@@ -58,8 +59,12 @@
 	#include <malloc.h>
 #endif
 
-#if !defined(SJME_CONFIG_HAS_NO_ERRNO)
+#if defined(SJME_CONFIG_HAS_ERRNO_H)
 	#include <errno.h>
+#endif
+
+#if defined(SJME_MEMIO_ATOMIC_C11)
+	#include <stdatomic.h>
 #endif
 
 /* Anti-C++. */

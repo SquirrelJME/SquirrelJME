@@ -16,18 +16,22 @@ import org.intellij.lang.annotations.MagicConstant;
 @SuppressWarnings("UnusedReturnValue")
 public interface Choice
 {
+	/** There only is exactly a single element selected at once. */
 	@Api
 	int EXCLUSIVE =
 		1;
 	
+	/** When a command is initiated, the selected element is that command. */
 	@Api
 	int IMPLICIT =
 		3;
 	
+	/** Multiple elements may be selected at one time. */
 	@Api
 	int MULTIPLE =
 		2;
 	
+	/** Similar to {@link #EXCLUSIVE}, except non-selected items are hidden. */
 	@Api
 	int POPUP =
 		4;

@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/util.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
@@ -41,15 +39,18 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorPfToRgb(
 	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
 {
 	sjme_jint numCol, aa, rr, gg, bb, argb;
+	sjme_jboolean isIndexed;
 	
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* If there is a palette, try using it to get a color. */
+	/* Note this requires a palette from the graphics context to be valid. */
 	numCol = g->palette.numColors;
-	if (g->palette.colors != NULL && numCol > 0)
+	isIndexed = sjme_scritchpen_isIndexed(pf);
+	if (isIndexed || (g->palette.colors != NULL && numCol > 0))
 	{
-		if (v > 0 && v < numCol)
+		if (g->palette.colors != NULL && v >= 0 && v < numCol)
 			return sjme_scritchpen_corePrim_mapColorFromRGB(g,
 				g->palette.colors[v], outColor);
 		
@@ -200,7 +201,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 	sjme_jint pargb, paa, prr, pgg, pbb;
 	sjme_jint mrr, mgg, mbb;
 	const sjme_jint* colors;
-	sjme_jboolean alphaIndexed;
+	sjme_jboolean alphaIndexed, isIndexed;
 
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -218,7 +219,10 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 	/* Find closest indexed color. */
 	ii = -1;
 	numCol = g->palette.numColors;
-	if (g->palette.colors != NULL && numCol > 0)
+	isIndexed = sjme_scritchpen_isIndexed(pf);
+	if (isIndexed && (g->palette.colors == NULL || numCol <= 0))
+		ii = 0;
+	else if (isIndexed || (g->palette.colors != NULL && numCol > 0))
 	{
 		/* Does this set of indexed colors consider alpha? */
 		alphaIndexed =
@@ -241,10 +245,10 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 		
 		/* Find exact color match? */
 		colors = g->palette.colors;
-		for (i = 0; i < numCol; i++)
+		for (i = 0; i < numCol && g->palette.colors; i++)
 		{
 			/* Exact match? */
-			pargb = colors[i] & 0xFFFFFF;
+			pargb = colors[i];
 			if (d == pargb)
 			{
 				ii = i;
@@ -504,7 +508,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	}
 
 	/* Was mirrored horizontally and rotated 90 degrees clockwise.*/
-	if(xform & 8)
+	if (xform & 8)
 	{
 		temp = *y;
 		*y = dataWidth - *x - *h + 1;
@@ -512,7 +516,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	}
 
 	/* Was mirrored horizontally and rotated 270 degrees clockwise */
-	if(xform & 16)
+	if (xform & 16)
 	{
 		temp = *x;
 		*x = *y;
@@ -520,7 +524,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	}
 
 	/* Was rotated 270 degrees clockwise */
-	if(xform & 32)
+	if (xform & 32)
 	{
 		temp = *y;
 		*y = dataWidth - *x - *h + 1;
@@ -568,7 +572,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
 	 * its width and height swapped if we're handling any 90 or 270 transform
 	 * variation.
 	 */
-	if(xform & 4 || xform & 8 || xform & 16 || xform & 32)
+	if (xform & 4 || xform & 8 || xform & 16 || xform & 32)
 	{
 		adjMatrix->tw = hDest;
 		adjMatrix->th = wDest;

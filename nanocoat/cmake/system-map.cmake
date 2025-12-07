@@ -132,10 +132,20 @@ function(squirreljme_defines_gcc gccDefines gccExe)
 	unset(gccOutputRaw)
 	execute_process(
 		COMMAND "${gccExe}"
-			"-E" "-dM" ${CMAKE_C_FLAGS} "${gccMainSource}"
+			"-E" "-dM" ${CMAKE_C_FLAGS} ${CFLAGS} "${gccMainSource}"
 		OUTPUT_VARIABLE gccOutputRaw
 		RESULT_VARIABLE gccResult
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+	# Try again, but with no passed flags
+	if(NOT "${gccResult}" EQUAL "0")
+		execute_process(
+			COMMAND "${gccExe}"
+				"-E" "-dM" "${gccMainSource}"
+			OUTPUT_VARIABLE gccOutputRaw
+			RESULT_VARIABLE gccResult
+			OUTPUT_STRIP_TRAILING_WHITESPACE)
+	endif()
 
 	# Did this actually work?
 	set(gccOutDefines)
@@ -173,15 +183,15 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		set(hasSystem "android")
 	elseif("_3DS" IN_LIST defines)
 		set(hasSystem "3ds")
-	elseif("GEKKO" IN_LIST defines AND
-		"HW_DOL" IN_LIST defines)
-		set(hasSystem "gamecube")
-	elseif("GEKKO" IN_LIST defines AND
-		"HW_RVL" IN_LIST defines)
-		if("WIIU" IN_LIST defines)
-			set(hasSystem "wiiu")
+	elseif("GEKKO" IN_LIST defines)
+		if("HW_RVL" IN_LIST defines)
+			if("WIIU" IN_LIST defines)
+				set(hasSystem "wiiu")
+			else()
+				set(hasSystem "wii")
+			endif()
 		else()
-			set(hasSystem "wii")
+			set(hasSystem "gamecube")
 		endif()
 	elseif("PS2" IN_LIST defines)
 		set(hasSystem "playstation2")

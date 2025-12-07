@@ -102,7 +102,7 @@ public class VMFullSuiteTaskAction
 		Collection<Path> classPath = new LinkedHashSet<>();
 		classPath.addAll(Arrays
 			.asList(VMHelpers.runClassPath((VMExecutableTask)root.project(
-				":modules:launcher").getTasks().getByName(TaskInitialization
+				":modules:system-app-launcher").getTasks().getByName(TaskInitialization
 					.task("lib", withMain)),
 				withMain)));
 		

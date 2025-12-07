@@ -9,9 +9,11 @@
 
 #include "sjme/config.h"
 
-#if defined(SJME_CONFIG_HAS_OS_LINUX)
+#if defined(SJME_CONFIG_HAS_SYS_IOCTL_H)
 	#include <sys/ioctl.h>
-#else
+#endif
+
+#if defined(SJME_CONFIG_HAS_STROPTS_H)
 	#include <stropts.h>
 #endif
 

@@ -32,6 +32,26 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Returns the minimum of two values.
+ * 
+ * @param a The first value.
+ * @param b The first value.
+ * @return The minimum of two values.
+ * @since 2025/11/30
+ */
+#define sjme_min(a, b) (((a) < (b)) ? (a) : (b))
+
+/**
+ * Returns the maximum of two values.
+ * 
+ * @param a The first value.
+ * @param b The first value.
+ * @return The maximum of two values.
+ * @since 2025/11/30
+ */
+#define sjme_max(a, b) (((a) > (b)) ? (a) : (b))
+
+/**
  * Function for returning the number of entries within a tree.
  * 
  * @param in The tree to get the size of.
