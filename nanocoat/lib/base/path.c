@@ -12,42 +12,212 @@
 
 typedef struct sjme_path_defaultPathEnv
 {
-	/** Home environment variable. */
-	sjme_lpcstr homeEnv;
+	/** The type of directory this matches. */
+	sjme_nvm_defaultDirectoryType type;
+	
+	/** Variable to base from. */
+	sjme_lpcstr env;
 
-	/** Relative to home path. */
-	sjme_lpcstr homeRel;
+	/** Relative path from that variable. */
+	sjme_lpcstr envRel;
 
-	/** System environment variable. */
-	sjme_lpcstr sysEnv;
+	/** Allow starting with tilde to mean the user home directory. */
+	sjme_jboolean tildeHome;
+} sjme_path_pathEnv;
 
-	/** System path. */
-	sjme_lpcstr sysPath;
-} sjme_path_defaultPathEnv;
-
-static const sjme_path_defaultPathEnv sjme_path_envDefaults[
-	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE] =
+static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 {
-#if defined(SJME_CONFIG_HAS_OS_POSIX)
-	{NULL, NULL, NULL, NULL},
-	{"XDG_CACHE_HOME", ".cache",
-		NULL, NULL},
-	{"XDG_CONFIG_HOME", ".config",
-		NULL, NULL},
-	{"XDG_DATA_HOME", ".local/share",
-		NULL, NULL},
-	{"XDG_STATE_HOME", ".local/state",
-		NULL, NULL},
-	{"SQUIRRELJME_LIB_JVM", NULL,
-		NULL, "/lib/squirreljme/natives"},
-#else
-	{NULL, NULL, NULL, NULL},
-	{NULL, NULL, NULL, NULL},
-	{NULL, NULL, NULL, NULL},
-	{NULL, NULL, NULL, NULL},
-	{NULL, NULL, NULL, NULL},
-	{NULL, NULL, NULL, NULL},
+	/* Overrides which take priority first. */
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CACHE,
+		"SQUIRRELJME_CACHE_HOME",
+		"",
+		SJME_JNI_TRUE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CONFIG,
+		"SQUIRRELJME_CONFIG_HOME",
+		"",
+		SJME_JNI_TRUE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_DATA,
+		"SQUIRRELJME_DATA_HOME",
+		"",
+		SJME_JNI_TRUE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_STATE,
+		"SQUIRRELJME_STATE_HOME",
+		"",
+		SJME_JNI_TRUE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
+		"SQUIRRELJME_LIB_JVM",
+		"",
+		SJME_JNI_TRUE
+	},
+
+	/* Multiple class path location lookup. */
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_1,
+		"SQUIRRELJME_CLASSPATH",
+		"",
+		SJME_JNI_FALSE,
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_2,
+		"SQUIRRELJME_JAVA_HOME",
+		"lib",
+		SJME_JNI_FALSE,
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_3,
+		"SQUIRRELJME_JAVA_HOME",
+		"jre/lib",
+		SJME_JNI_FALSE,
+	},
+
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE)
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CACHE,
+		"LOCALAPPDATA",
+		"squirreljme/cache",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CACHE,
+		"APPDATA",
+		"squirreljme/cache",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CACHE,
+		"PROGRAMDATA",
+		"squirreljme/cache",
+		SJME_JNI_FALSE
+	},
+	
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CONFIG,
+		"APPDATA",
+		"squirreljme/config",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CONFIG,
+		"PROGRAMDATA",
+		"squirreljme/config",
+		SJME_JNI_FALSE
+	},
+	
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_DATA,
+		"APPDATA",
+		"squirreljme/data",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_DATA,
+		"PROGRAMDATA",
+		"squirreljme/data",
+		SJME_JNI_FALSE
+	},
+	
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_STATE,
+		"LOCALAPPDATA",
+		"squirreljme/data",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_STATE,
+		"APPDATA",
+		"squirreljme/data",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_STATE,
+		"PROGRAMDATA",
+		"squirreljme/data",
+		SJME_JNI_FALSE
+	},
+
+	/* Natives just stay in Program Data. */
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
+		"PROGRAMDATA",
+		"squirreljme/natives",
+		SJME_JNI_FALSE
+	},
 #endif
+	
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
+	/* XDG Directories. */
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CACHE,
+		"XDG_CACHE_HOME",
+		"squirreljme",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CONFIG,
+		"XDG_CONFIG_HOME",
+		"squirreljme",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_DATA,
+		"XDG_DATA_HOME",
+		"squirreljme",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_STATE,
+		"XDG_STATE_HOME",
+		"squirreljme",
+		SJME_JNI_FALSE
+	},
+
+	/* Directories based off HOME. */
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CACHE,
+		"HOME",
+		".cache/squirreljme",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_CONFIG,
+		"HOME",
+		".config/squirreljme",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_DATA,
+		"HOME",
+		".local/share/squirreljme",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_STATE,
+		"HOME",
+		".local/state/squirreljme",
+		SJME_JNI_FALSE
+	},
+
+	/* Generic library directory. */
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
+		NULL,
+		"/lib/squirreljme/natives",
+		SJME_JNI_FALSE
+	},
+#endif
+
+	/* End. */
+	{-1, NULL, NULL},
 };
 
 sjme_errorCode sjme_path_default(
@@ -56,6 +226,13 @@ sjme_errorCode sjme_path_default(
 	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
 	sjme_attrInPositiveNonZero sjme_jint outPathLen)
 {
+	sjme_errorCode error;
+	sjme_jint i;
+	const sjme_path_pathEnv* lookup;
+	sjme_lpcstr lastEnv;
+	sjme_cchar envValue[SJME_MAX_PATH];
+	sjme_cchar buildPath[SJME_MAX_PATH];
+	
 	if (outPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -65,13 +242,74 @@ sjme_errorCode sjme_path_default(
 
 	if (outPathLen < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Use a default NAL instead? */
+	if (nal == NULL)
+		nal = &sjme_nal_default;
+
+	/* Go through each default to locate paths accordingly. */
+	lastEnv = NULL;
+	error = SJME_ERROR_NONE;
+	for (i = 0;; i++)
+	{
+		/* Go through the lookup set. */
+		lookup = &sjme_path_pathEnvLookup[i];
+		if (lookup->type <= 0 ||
+			(lookup->env == NULL && lookup->envRel == NULL))
+			break;
+
+		/* Is this the wrong type? */
+		if (lookup->type != type)
+			continue;
+
+		/* Lookup uses no defined environment variable. */
+		if (lookup->env == NULL)
+		{
+			/* Clear these, as they are both not valid. */
+			lastEnv = NULL;
+			memset(envValue, 0, sizeof(envValue));
+		}
+		
+		/* Lookup the environment value, if it has changed. */
+		else if (lastEnv == NULL || 0 != strcmp(lastEnv, lookup->env))
+		{
+			/* Get it from the system. */
+			memset(envValue, 0, sizeof(envValue));
+			if (nal->getEnv == NULL ||
+				sjme_error_is(error = nal->getEnv(
+					envValue, SJME_MAX_PATH - 1, lookup->env)))
+			{
+				/* No env set, so ignore this lookup. */
+				if (error == SJME_ERROR_NO_SUCH_ELEMENT)
+					continue;
+
+				/* Fail. */
+				return sjme_error_default(error);
+			}
+			
+			/* Cached for later. */
+			lastEnv = lookup->env;
+		}
+
+		/* Need to rebuild the path, so start by clearing it. */
+		memset(buildPath, 0, sizeof(buildPath));
+
+		/* Replace start with the user home directory? */
+		if (lookup->env != NULL && lookup->tildeHome && envValue[0] == '~')
+			if (sjme_error_is(error = sjme_path_userHome(buildPath,
+				SJME_MAX_PATH - 1)))
+				return sjme_error_default(error);
+		
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* The path is not defined at all. */
+	return SJME_ERROR_PATH_NOT_DEFINED;
 }
 
 sjme_errorCode sjme_path_getName(
-	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
 	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrInNegativeOnePositive sjme_jint inName,
 	sjme_attrOutNullable sjme_lpcstr* outBase,
@@ -90,7 +328,7 @@ sjme_errorCode sjme_path_getName(
 }
 
 sjme_errorCode sjme_path_getNameF(
-	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
 	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrInNegativeOnePositive sjme_jint inName,
 	sjme_attrOutNullable sjme_lpcstr* outBase,
@@ -332,7 +570,7 @@ sjme_errorCode sjme_path_getNameF(
 }
 
 sjme_errorCode sjme_path_getNameCount(
-	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
 	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* outCount)
 {
@@ -359,7 +597,7 @@ sjme_errorCode sjme_path_getNameCount(
 }
 
 sjme_errorCode sjme_path_hasRoot(
-	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
 	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrOutNotNull sjme_jboolean* hasRoot)
 {
@@ -396,7 +634,7 @@ sjme_errorCode sjme_path_hasRoot(
 }
 
 sjme_errorCode sjme_path_resolveAppend(
-	sjme_attrOutNotNull sjme_lpstr outPath,
+	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
 	sjme_attrInPositiveNonZero sjme_jint outPathLen,
 	sjme_attrInNotNull sjme_lpcstr subPath,
 	sjme_attrInPositiveNonZero sjme_jint subPathLen)
@@ -569,4 +807,12 @@ sjme_errorCode sjme_path_resolveAppend(
 	outLen = strlen(result) + 1;
 	memmove(outPath, result, sizeof(*result) * outLen);
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_path_userHome(
+	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
+	sjme_attrInPositiveNonZero sjme_jint outPathLen)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }

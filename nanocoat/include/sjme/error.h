@@ -565,9 +565,12 @@ typedef enum sjme_errorCode
 
 	/** Try the operation again. */
 	SJME_ERROR_TRY_AGAIN = -174,
+
+	/** The requested path is not defined. */
+	SJME_ERROR_PATH_NOT_DEFINED = -175,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -175,
+	SJME_NUM_ERROR_CODES = -176,
 } sjme_errorCode;
 
 /**

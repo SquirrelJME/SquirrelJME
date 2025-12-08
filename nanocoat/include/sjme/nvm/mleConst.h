@@ -202,6 +202,15 @@ typedef enum sjme_nvm_defaultDirectoryType
 	/** The native library directory. */
 	SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
 	
+	/** First classpath lookup. */
+	SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_1,
+	
+	/** Second classpath lookup. */
+	SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_2,
+	
+	/** Third classpath lookup. */
+	SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_3,
+	
 	/** The number of default directory types. */
 	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE
 } sjme_nvm_defaultDirectoryType;

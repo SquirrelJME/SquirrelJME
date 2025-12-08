@@ -97,6 +97,8 @@ extern "C"
  * @param outPath The output path.
  * @param outPathLen The length of the output path.
  * @return Any resultant error, if any.
+ * Returns @link SJME_ERROR_PATH_NOT_DEFINED @endlink if the requested
+ * directory is not defined.
  * @since 2025/12/07
  */
 sjme_errorCode sjme_path_default(
@@ -116,12 +118,13 @@ sjme_errorCode sjme_path_default(
  * @param outBase The pointer to the path base.
  * @param outLen The length of the path name.
  * @param outIsRoot Is this the root directory?
- * @return Any resultant error, if any. Returns @link SJME_ERROR_NO_SUCH_ELEMENT
+ * @return Any resultant error, if any.
+ * Returns @link SJME_ERROR_NO_SUCH_ELEMENT
  * if the root component was requested and there was none.
  * @since 2024/08/10
  */
 sjme_errorCode sjme_path_getName(
-	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
 	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrInNegativeOnePositive sjme_jint inName,
 	sjme_attrOutNullable sjme_lpcstr* outBase,
@@ -149,7 +152,7 @@ sjme_errorCode sjme_path_getName(
  * @since 2024/08/10
  */
 sjme_errorCode sjme_path_getNameF(
-	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
 	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrInNegativeOnePositive sjme_jint inName,
 	sjme_attrOutNullable sjme_lpcstr* outBase,
@@ -170,7 +173,7 @@ sjme_errorCode sjme_path_getNameF(
  * @since 2024/08/10
  */
 sjme_errorCode sjme_path_getNameCount(
-	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
 	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* outCount); 
 
@@ -184,7 +187,7 @@ sjme_errorCode sjme_path_getNameCount(
  * @since 2024/08/10 
  */
 sjme_errorCode sjme_path_hasRoot(
-	sjme_attrInNotNull sjme_lpcstr inPath,
+	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
 	sjme_attrInPositive sjme_jint inPathLen,
 	sjme_attrOutNotNull sjme_jboolean* hasRoot);
 
@@ -200,11 +203,23 @@ sjme_errorCode sjme_path_hasRoot(
  * @since 2024/08/09
  */
 sjme_errorCode sjme_path_resolveAppend(
-	sjme_attrOutNotNull sjme_lpstr outPath,
+	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
 	sjme_attrInPositiveNonZero sjme_jint outPathLen,
 	sjme_attrInNotNull sjme_lpcstr subPath,
 	sjme_attrInPositiveNonZero sjme_jint subPathLen);
 
+/**
+ * Returns the user's home directory.
+ * 
+ * @param outPath The output path.
+ * @param outPathLen The length of the output path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/08
+ */
+sjme_errorCode sjme_path_userHome(
+	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
+	sjme_attrInPositiveNonZero sjme_jint outPathLen);
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
