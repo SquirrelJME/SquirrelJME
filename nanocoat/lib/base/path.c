@@ -221,13 +221,14 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 };
 
 sjme_errorCode sjme_path_default(
-	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
 	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrInNegativeOnePositive sjme_jint index,
+	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
 	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
 	sjme_attrInPositiveNonZero sjme_jint outPathLen)
 {
 	sjme_errorCode error;
-	sjme_jint i;
+	sjme_jint i, vi;
 	const sjme_path_pathEnv* lookup;
 	sjme_lpcstr lastEnv;
 	sjme_cchar envValue[SJME_MAX_PATH];
@@ -240,6 +241,9 @@ sjme_errorCode sjme_path_default(
 		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
+	if (index < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
 	if (outPathLen < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
@@ -250,7 +254,7 @@ sjme_errorCode sjme_path_default(
 	/* Go through each default to locate paths accordingly. */
 	lastEnv = NULL;
 	error = SJME_ERROR_NONE;
-	for (i = 0;; i++)
+	for (i = 0, vi = 0;; i++)
 	{
 		/* Go through the lookup set. */
 		lookup = &sjme_path_pathEnvLookup[i];
@@ -261,6 +265,11 @@ sjme_errorCode sjme_path_default(
 		/* Is this the wrong type? */
 		if (lookup->type != type)
 			continue;
+
+		/* Wanting a specific index? */
+		if (index >= 0)
+			if (index != (vi++))
+				continue;
 
 		/* Lookup uses no defined environment variable. */
 		if (lookup->env == NULL)
@@ -281,7 +290,13 @@ sjme_errorCode sjme_path_default(
 			{
 				/* No env set, so ignore this lookup. */
 				if (error == SJME_ERROR_NO_SUCH_ELEMENT)
+				{
+					/* If looking for a specific index? Stop. */
+					if (index >= 0)
+						break;
+					
 					continue;
+				}
 
 				/* Fail. */
 				return sjme_error_default(error);
@@ -813,6 +828,12 @@ sjme_errorCode sjme_path_userHome(
 	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
 	sjme_attrInPositiveNonZero sjme_jint outPathLen)
 {
+	if (outPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outPathLen < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

@@ -12,7 +12,6 @@
 
 static sjme_errorCode sjme_dylib_attemptOpen(
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNullable sjme_lpcstr libRoot,
 	sjme_attrInNotNull sjme_lpcstr dylibName,
 	sjme_attrOutNotNull sjme_dylib* outLib)
 {
@@ -23,60 +22,8 @@ static sjme_errorCode sjme_dylib_attemptOpen(
 	return sjme_error_notImplemented(0);
 }
 
-static sjme_errorCode sjme_dylib_attemptOpenDelve(
-	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNullable sjme_lpcstr libRoot,
-	sjme_attrInNotNull sjme_lpcstr dylibName,
-	sjme_attrOutNotNull sjme_dylib* outLib)
-{
-	sjme_dylib result;
-	sjme_errorCode error, derived;
-	sjme_cchar libJvmDir[SJME_MAX_PATH];
-	
-	if (nal == NULL || dylibName == NULL || outLib == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Default to some undefined error. */
-	error = SJME_ERROR_UNKNOWN;
-	derived = SJME_ERROR_UNKNOWN;
-
-	/* No known library yet. */
-	result = NULL;
-
-	/* Prefer specified root first. */
-	if (result == NULL || libRoot != NULL)
-		if (sjme_error_is(error = sjme_dylib_attemptOpen(nal, libRoot,
-			dylibName, &result)) || result == NULL)
-			derived = sjme_error_defaultOr(error, derived);
-
-	/* Look in the environment variable for SquirrelJME. */
-	if (result == NULL)
-	{
-		/* Grab from the environment. */
-		memset(libJvmDir, 0, sizeof(libJvmDir));
-		if (sjme_error_is(error = nal->getEnv(libJvmDir,
-			SJME_MAX_PATH - 1, "SQUIRRELJME_LIB_JVM")))
-		{
-			if (error != SJME_ERROR_NO_SUCH_ELEMENT)
-				derived = sjme_error_defaultOr(error, derived);
-		}
-	}
-	
-	
-	/* Was an actual library found? */
-	if (result != NULL)
-	{
-		*outLib = result;
-		return SJME_ERROR_NONE;
-	}
-
-	/* Everything failed. */
-	return sjme_error_default(derived);
-}
-
 static sjme_errorCode sjme_dylib_openExtraScritchAudio(
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNullable sjme_lpcstr libRoot,
 	sjme_attrInRange(0, SJME_DYLIB_NUM_EXTRA_FAMILY)
 		sjme_dylib_extraFamily family,
 	sjme_attrInNullable sjme_lpcstr subComponent,
@@ -91,7 +38,6 @@ static sjme_errorCode sjme_dylib_openExtraScritchAudio(
 
 static sjme_errorCode sjme_dylib_openExtraScritchUI(
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNullable sjme_lpcstr libRoot,
 	sjme_attrInRange(0, SJME_DYLIB_NUM_EXTRA_FAMILY)
 		sjme_dylib_extraFamily family,
 	sjme_attrInNullable sjme_lpcstr subComponent,
@@ -106,7 +52,6 @@ static sjme_errorCode sjme_dylib_openExtraScritchUI(
 
 sjme_errorCode sjme_dylib_openExtra(
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNullable sjme_lpcstr libRoot,
 	sjme_attrInRange(0, SJME_DYLIB_NUM_EXTRA_FAMILY)
 		sjme_dylib_extraFamily family,
 	sjme_attrInNullable sjme_lpcstr subComponent,
@@ -126,11 +71,11 @@ sjme_errorCode sjme_dylib_openExtra(
 	switch (family)
 	{
 		case SJME_DYLIB_EXTRA_FAMILY_SCRITCHUI:
-			return sjme_dylib_openExtraScritchUI(nal, libRoot,
+			return sjme_dylib_openExtraScritchUI(nal,
 				family, subComponent, outLib);
 
 		case SJME_DYLIB_EXTRA_FAMILY_SCRITCHAUDIO:
-			return sjme_dylib_openExtraScritchAudio(nal, libRoot,
+			return sjme_dylib_openExtraScritchAudio(nal,
 				family, subComponent, outLib);
 		
 		default:

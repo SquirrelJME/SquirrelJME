@@ -91,9 +91,11 @@ extern "C"
 /**
  * Returns a default system path.
  * 
- * @param type The type of path to obtain.
  * @param nal The native abstraction layer to use, if this is not specified
  * then the default is used.
+ * @param type The type of path to obtain.
+ * @param index The index of the path to use, if @c -1 then only the valid
+ * possible match is used.
  * @param outPath The output path.
  * @param outPathLen The length of the output path.
  * @return Any resultant error, if any.
@@ -102,8 +104,9 @@ extern "C"
  * @since 2025/12/07
  */
 sjme_errorCode sjme_path_default(
-	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
 	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrInNegativeOnePositive sjme_jint index,
+	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
 	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
 	sjme_attrInPositiveNonZero sjme_jint outPathLen);
 
