@@ -11,21 +11,20 @@ add_library(ScritchUITk SHARED
 	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
 	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>
 	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>
-#	tkComponent.c
-#	tkContainer.c
-#	tkCore.c
-#	tkIntern.c
-#	tkLabel.c
-#	tkLaf.c
-#	tkLoop.c
-#	tkMenu.c
-#	tkPanel.c
-#	tkPencil.c
-#	tkScreen.c
-#	tkScrollPanel.c
-#	tkView.c
-#	tkWindow.c
-)
+	tkComponent.c
+	tkContainer.c
+	tkCore.c
+	tkIntern.c
+	tkLabel.c
+	tkLaf.c
+	tkLoop.c
+	tkMenu.c
+	tkPanel.c
+	tkPencil.c
+	tkScreen.c
+	tkScrollPanel.c
+	tkView.c
+	tkWindow.c)
 
 # Always make it PIC
 squirreljme_always_fpic(ScritchUITk)
