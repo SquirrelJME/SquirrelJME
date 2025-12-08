@@ -623,7 +623,7 @@ sjme_errorCode sjme_nvm_defaultDir(
 			return sjme_error_default(error);
 		
 		/* Get home variable instead, to add onto. */
-		memset(work, 0, sizeof(work));
+		memset(work, 0, limit);
 		if (sjme_error_is(error = nal->getEnv(
 			work, limit - 1, "HOME")))
 			return sjme_error_default(error);

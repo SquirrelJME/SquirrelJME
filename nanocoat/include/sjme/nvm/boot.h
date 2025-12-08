@@ -32,34 +32,6 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-
-/**
- * The type of default directory used.
- * 
- * This is the same as @c cc.squirreljme.runtime.cldc.full.SystemPathProvider .
- * 
- * @since 2024/08/09
- */
-typedef enum sjme_nvm_defaultDirectoryType
-{
-	/** Unknown. */
-	SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN,
-	
-	/** The cache directory. */
-	SJME_NVM_DEFAULT_DIRECTORY_CACHE,
-	
-	/** The config directory. */
-	SJME_NVM_DEFAULT_DIRECTORY_CONFIG,
-	
-	/** The data directory. */
-	SJME_NVM_DEFAULT_DIRECTORY_DATA,
-	
-	/** The state directory. */
-	SJME_NVM_DEFAULT_DIRECTORY_STATE,
-	
-	/** The number of default directory types. */
-	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE
-} sjme_nvm_defaultDirectoryType;
 	
 struct sjme_nvm_bootParam
 {

@@ -20,6 +20,8 @@
 #include "sjme/config.h"
 #include "sjme/error.h"
 #include "sjme/stdTypes.h"
+#include "sjme/nvm/mleConst.h"
+#include "sjme/native.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -44,7 +46,8 @@ extern "C"
 	#define SJME_PATH_SHORT
 #endif
 
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || defined(SJME_CONFIG_HAS_OS_MACOS_CLASSIC)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_OS_MACOS_CLASSIC)
 	/** Separator for PATH and classpath. */
 	#define SJME_CONFIG_PATH_SEPARATOR ";"
 #else
@@ -86,6 +89,23 @@ extern "C"
 #endif
 
 /**
+ * Returns a default system path.
+ * 
+ * @param type The type of path to obtain.
+ * @param nal The native abstraction layer to use, if this is not specified
+ * then the default is used.
+ * @param outPath The output path.
+ * @param outPathLen The length of the output path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/07
+ */
+sjme_errorCode sjme_path_default(
+	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
+	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
+	sjme_attrInPositiveNonZero sjme_jint outPathLen);
+
+/**
  * Gets the given name at the given index, usage is more basic than the
  * full version.
  * 
@@ -123,7 +143,8 @@ sjme_errorCode sjme_path_getName(
  * @param outCount The number of name components, exclusive to all the
  * other arguments.
  * @param outIsRoot Is this the root directory?
- * @return Any resultant error, if any. Returns @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
+ * @return Any resultant error, if any.
+ * Returns @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
  * if the root component was requested and there was none.
  * @since 2024/08/10
  */

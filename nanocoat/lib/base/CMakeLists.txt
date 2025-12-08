@@ -19,6 +19,7 @@ squirreljme_multilib_add_library(Base
 	comparator.c
 	debug.c
 	dylib.c
+	dylibExtra.c
 	error.c
 	fixed.c
 	frontEnd.c

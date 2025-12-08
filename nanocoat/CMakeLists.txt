@@ -190,3 +190,6 @@ add_subdirectory(frontend)
 
 # Directory where the ROM compiled sources exist
 add_subdirectory(rom)
+
+# General applications
+add_subdirectory(apps)

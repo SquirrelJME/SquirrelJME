@@ -10,6 +10,66 @@
 #include "sjme/path.h"
 #include "sjme/debug.h"
 
+typedef struct sjme_path_defaultPathEnv
+{
+	/** Home environment variable. */
+	sjme_lpcstr homeEnv;
+
+	/** Relative to home path. */
+	sjme_lpcstr homeRel;
+
+	/** System environment variable. */
+	sjme_lpcstr sysEnv;
+
+	/** System path. */
+	sjme_lpcstr sysPath;
+} sjme_path_defaultPathEnv;
+
+static const sjme_path_defaultPathEnv sjme_path_envDefaults[
+	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE] =
+{
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
+	{NULL, NULL, NULL, NULL},
+	{"XDG_CACHE_HOME", ".cache",
+		NULL, NULL},
+	{"XDG_CONFIG_HOME", ".config",
+		NULL, NULL},
+	{"XDG_DATA_HOME", ".local/share",
+		NULL, NULL},
+	{"XDG_STATE_HOME", ".local/state",
+		NULL, NULL},
+	{"SQUIRRELJME_LIB_JVM", NULL,
+		NULL, "/lib/squirreljme/natives"},
+#else
+	{NULL, NULL, NULL, NULL},
+	{NULL, NULL, NULL, NULL},
+	{NULL, NULL, NULL, NULL},
+	{NULL, NULL, NULL, NULL},
+	{NULL, NULL, NULL, NULL},
+	{NULL, NULL, NULL, NULL},
+#endif
+};
+
+sjme_errorCode sjme_path_default(
+	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
+	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
+	sjme_attrInPositiveNonZero sjme_jint outPathLen)
+{
+	if (outPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (type <= SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN ||
+		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (outPathLen < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_path_getName(
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrInPositive sjme_jint inPathLen,

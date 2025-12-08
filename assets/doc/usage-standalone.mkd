@@ -185,6 +185,10 @@ SquirrelJME will automatically add to the classpath from:
  * `$SQUIRRELJME_JAVA_HOME/jre/lib/`
  * `{Data}/lib/`
 
+SquirrelJME will look for native libraries in:
+
+ * `$SQUIRRELJME_LIB_JVM`
+
 ## Common Issues
 
 ***STANDALONE ISSUE?:*** Try running with either or both of
