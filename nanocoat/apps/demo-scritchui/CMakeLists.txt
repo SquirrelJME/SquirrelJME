@@ -8,6 +8,7 @@
 
 # Setup base executable
 add_executable(AppDemoScritchUI
+	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
 	main.c)
 
 # Include main headers
@@ -16,4 +17,5 @@ target_include_directories(AppDemoScritchUI PUBLIC
 
 # Depend on all ScritchUI targets
 add_dependencies(AppDemoScritchUI
+	${SQUIRRELJME_LIB_Base_FPIC}
 	ScritchUI)

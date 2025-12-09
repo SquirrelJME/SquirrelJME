@@ -220,17 +220,141 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 	{-1, NULL, NULL},
 };
 
+sjme_errorCode sjme_path_getName(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath,
+	sjme_attrInPositive sjme_jint nameDx)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_getNameF(
+	sjme_attrOutNotNull sjme_jint* outFLimit,
+	sjme_attrOutNotNull sjme_lpcstr* outFStr,
+	sjme_attrInNotNull const sjme_path* inPath,
+	sjme_attrInPositive sjme_jint nameDx)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_getParent(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_getRoot(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_normalize(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_parse(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull sjme_lpcstr strPath)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_parseF(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull sjme_attrFormatArg sjme_lpcstr format,
+	...)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_resolve(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath,
+	...)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_resolveSibling(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath,
+	...)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_subPath(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath,
+	sjme_attrInPositive sjme_jint beginDx,
+	sjme_attrInPositive sjme_jint endDx)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+#if 0
+sjme_errorCode sjme_path_baseName(
+	sjme_attrInOutNotNullBuf(inOutPathLen) sjme_lpstr inOutPath,
+	sjme_attrInPositive sjme_jint inOutPathLen)
+{
+	sjme_errorCode error;
+	sjme_jint nameCount;
+	sjme_jboolean isRoot;
+	sjme_cchar result[SJME_MAX_PATH];
+	sjme_jint resultLen;
+	
+	if (inOutPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inOutPathLen < 0 || SJME_POINTER_OVERFLOW(inOutPath, inOutPathLen))
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* How many names does this path actually have? */
+	nameCount = -1;
+	if (sjme_error_is(error = sjme_path_getNameCount(inOutPath, inOutPathLen,
+		&nameCount)) || nameCount < 0)
+		return sjme_error_default(error);
+
+	/* If there are no names, then the base name is just blank. */
+	if (nameCount == 0)
+	{
+		memset(inOutPath, 0, sizeof(*inOutPath) * inOutPathLen);
+		return SJME_ERROR_NONE;
+	}
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_path_default(
 	sjme_attrInNullable const sjme_nal* nal,
 	sjme_attrInNegativeOnePositive sjme_jint index,
 	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
 	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
+	sjme_attrInPositive sjme_jint outPathOff,
 	sjme_attrInPositiveNonZero sjme_jint outPathLen)
 {
 	sjme_errorCode error;
-	sjme_jint i, vi;
+	sjme_jint i, vi, outLen;
 	const sjme_path_pathEnv* lookup;
-	sjme_lpcstr lastEnv;
+	sjme_lpcstr lastEnv, subResolve;
+	sjme_jboolean isDirSep;
 	sjme_cchar envValue[SJME_MAX_PATH];
 	sjme_cchar buildPath[SJME_MAX_PATH];
 	
@@ -244,7 +368,8 @@ sjme_errorCode sjme_path_default(
 	if (index < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	if (outPathLen < 0)
+	if (outPathLen < 0 || outPathOff < 0 ||
+		SJME_POINTER_OVERFLOW(outPath, outPathOff + outPathLen))
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	/* Use a default NAL instead? */
@@ -279,7 +404,7 @@ sjme_errorCode sjme_path_default(
 			memset(envValue, 0, sizeof(envValue));
 		}
 		
-		/* Lookup the environment value, if it has changed. */
+		/* Lookup the environment variable, if it has changed. */
 		else if (lastEnv == NULL || 0 != strcmp(lastEnv, lookup->env))
 		{
 			/* Get it from the system. */
@@ -301,6 +426,12 @@ sjme_errorCode sjme_path_default(
 				/* Fail. */
 				return sjme_error_default(error);
 			}
+
+			/* Normalize the path so that it is not wonky in any way. */
+			if (sjme_error_is(error = sjme_path_normalize(
+				envValue, 0, SJME_MAX_PATH - 1,
+				SJME_JNI_TRUE)))
+				return sjme_error_default(error);
 			
 			/* Cached for later. */
 			lastEnv = lookup->env;
@@ -310,13 +441,56 @@ sjme_errorCode sjme_path_default(
 		memset(buildPath, 0, sizeof(buildPath));
 
 		/* Replace start with the user home directory? */
+		subResolve = envValue;
 		if (lookup->env != NULL && lookup->tildeHome && envValue[0] == '~')
-			if (sjme_error_is(error = sjme_path_userHome(buildPath,
-				SJME_MAX_PATH - 1)))
+		{
+			/* Is there a directory seperator following the home tilde? */
+			isDirSep = SJME_JNI_FALSE;
+			if (sjme_error_is(error = sjme_path_isDirectorySep(
+				envValue, 0, SJME_MAX_PATH - 1,
+				&isDirSep, &subResolve)))
 				return sjme_error_default(error);
+
+			/* Only if there is a directory seperator, or if the path points */
+			/* to the actual user home directory is it considered valid. */
+			if (isDirSep || envValue[1] == '\0')
+				if (sjme_error_is(error = sjme_path_userHome(buildPath,
+					SJME_MAX_PATH - 1)))
+					return sjme_error_default(error);
+		}
+
+		/* Resolve the adjacent path onto this. */
+		if (lookup->envRel != NULL)
+		{
+			/* Perform path resolution. */
+			if (sjme_error_is(error = sjme_path_resolveAppend(
+				buildPath, SJME_MAX_PATH - 1,
+				lookup->envRel, strlen(lookup->envRel))))
+				return sjme_error_default(error);
+		}
 		
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Ensure the path is normalized, it must also be absolute. */
+		if (sjme_error_is(error = sjme_path_normalize(
+			buildPath, 0, SJME_MAX_PATH - 1,
+			SJME_JNI_TRUE)))
+			return sjme_error_default(error);
+
+		/* Make sure the target path can actually fit. */
+		outLen = strlen(buildPath);
+		if (outLen > outPathLen ||
+			SJME_POINTER_OVERFLOW(outPath, outPathOff + outLen))
+			return SJME_ERROR_PATH_TOO_LONG;
+
+		/* Copy it over. */
+		memmove(SJME_POINTER_OFFSET(outPath, outPathOff),
+			buildPath, sizeof(*buildPath) * outLen);
+
+		/* Make sure it ends in NUL. */
+		if (outPathOff + (outLen - 1) < outPathLen)
+			outPath[outPathOff + (outLen - 1)] = '\0';
+
+		/* Success! */
+		return SJME_ERROR_NONE;
 	}
 
 	/* The path is not defined at all. */
@@ -611,6 +785,114 @@ sjme_errorCode sjme_path_getNameCount(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_path_isDirectory(
+	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
+	sjme_attrInPositive sjme_jint inPathLen,
+	sjme_attrOutNotNull sjme_jboolean* isDirectory)
+{
+	sjme_errorCode error;
+	sjme_jint subLen, nameCount;
+	sjme_jboolean hasDirSep, hasRoot;
+	
+	if (inPath == NULL || isDirectory == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inPathLen < 0 || SJME_POINTER_OVERFLOW(inPath, inPathLen))
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Perform simple check to see if the path ends with a directory */
+	/* separator. */
+	subLen = strlen(inPath);
+	if (subLen > inPathLen)
+		subLen = inPathLen;
+
+	/* Is this specific character a directory separator? */
+	hasDirSep = SJME_JNI_FALSE;
+	if (sjme_error_is(error = sjme_path_isDirectorySep(inPath,
+		subLen - 1, inPathLen, &hasDirSep, NULL)))
+		return sjme_error_default(error);
+	
+	/* If the last character is a directory separator, then one is */
+	/* indicated. */
+	if (hasDirSep)
+	{
+		*isDirectory = SJME_JNI_TRUE;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Otherwise, the final check that needs to be done is to make sure */
+	/* the given path does not have a root component as that may not */
+	/* always end in a directory separator. */
+	nameCount = -1;
+	hasRoot = SJME_JNI_FALSE;
+	if (sjme_error_is(error = sjme_path_getNameCount(inPath, inPathLen,
+		&nameCount)) || nameCount < 0)
+		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_path_hasRoot(inPath, inPathLen,
+		&hasRoot)))
+		return sjme_error_default(error);
+
+	/* If there are one or no names and there is a root, then this must */
+	/* be a directory. */
+	if (hasRoot && nameCount <= 1)
+		*isDirectory = SJME_JNI_FALSE;
+
+	/* Otherwise, not considered to be a directory. */
+	else
+		*isDirectory = SJME_JNI_FALSE;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_path_isDirectorySep(
+	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
+	sjme_attrInPositive sjme_jint inPathOff,
+	sjme_attrInPositive sjme_jint inPathLen,
+	sjme_attrOutNotNull sjme_jboolean* isDirectory,
+	sjme_attrOutNullable sjme_lpcstr* outFollowing)
+{
+	sjme_lpcstr readBase;
+	sjme_jboolean hasDirSep;
+	sjme_jint followCount;
+	
+	if (inPath == NULL || isDirectory == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inPathOff < 0 || inPathLen < 0 || (inPathOff + inPathLen) < 0 ||
+		SJME_POINTER_OVERFLOW(inPath, inPathOff + inPathLen))
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Read in the character at the offset. */
+	readBase = SJME_POINTER_OFFSET(inPath, inPathOff);
+
+#if SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_UNIX
+	/* Unix slash? */
+	hasDirSep = (*readBase == '/');
+	followCount = 1;
+#elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_DOS
+	/* DOS allows multiple slashes. */
+	hasDirSep = (*readBase == '/' || *readBase == '\\');
+	followCount = 1;
+#elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_MACOS_CLASSIC
+	/* macOS classic uses colons. */
+	hasDirSep = (*readBase == ':');
+	followCount = 1;
+#else
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#endif
+
+	/* Returning the following character? */
+	if (outFollowing != NULL)
+		*outFollowing = SJME_POINTER_OFFSET(readBase,
+			(hasDirSep ? followCount : 0));
+
+	/* Is a directory seperator used? */
+	*isDirectory = hasDirSep;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_path_hasRoot(
 	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
 	sjme_attrInPositive sjme_jint inPathLen,
@@ -648,10 +930,27 @@ sjme_errorCode sjme_path_hasRoot(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_path_normalize(
+	sjme_attrInOutNotNullBuf(inOutPathLen) sjme_lpstr inOutPath,
+	sjme_attrInPositive sjme_jint inOutPathOff,
+	sjme_attrInPositive sjme_jint inOutPathLen,
+	sjme_attrInValue sjme_jboolean requireAbsolute)
+{
+	if (inOutPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inOutPathLen < 0 || inOutPathOff < 0 ||
+		SJME_POINTER_OVERFLOW(inOutPath, inOutPathOff + inOutPathLen))
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_path_resolveAppend(
-	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
-	sjme_attrInPositiveNonZero sjme_jint outPathLen,
-	sjme_attrInNotNull sjme_lpcstr subPath,
+	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr inOutPath,
+	sjme_attrInPositiveNonZero sjme_jint inOutPathLen,
+	sjme_attrInNotNullBuf(subPathLen) sjme_lpcstr subPath,
 	sjme_attrInPositiveNonZero sjme_jint subPathLen)
 {
 	sjme_errorCode error;
@@ -662,10 +961,10 @@ sjme_errorCode sjme_path_resolveAppend(
 	sjme_lpcstr subBase;
 	sjme_jint subBaseLen, sepLen;
 	
-	if (outPath == NULL || subPath == NULL)
+	if (inOutPath == NULL || subPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (outPathLen <= 0 || subPathLen < 0)
+	if (inOutPathLen <= 0 || subPathLen < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Nothing to do? */
@@ -673,7 +972,7 @@ sjme_errorCode sjme_path_resolveAppend(
 		return SJME_ERROR_NONE;
 	
 	/* Need to check how many characters to potentially add. */
-	outLen = strlen(outPath);
+	outLen = strlen(inOutPath);
 	subLen = strlen(subPath);
 	
 	/* Special? */
@@ -690,7 +989,7 @@ sjme_errorCode sjme_path_resolveAppend(
 	
 	/* Pre-determine if this will overflow. */
 	if (outLen < 0 || subLen < 0 || (outLen + subLen) < 0 ||
-		(outLen + subLen) + 1 > outPathLen)
+		(outLen + subLen) + 1 > inOutPathLen)
 		return SJME_ERROR_PATH_TOO_LONG;
 	
 	/* How many names does the sub-path have? */
@@ -704,12 +1003,12 @@ sjme_errorCode sjme_path_resolveAppend(
 		return SJME_ERROR_NONE;
 	
 	/* Setup result for no-overwrite operation. */
-	resultBytes = sizeof(*result) * (outPathLen + 2);
+	resultBytes = sizeof(*result) * (inOutPathLen + 2);
 	result = sjme_alloca(resultBytes);
 	if (result == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
 	memset(result, 0, resultBytes);
-	memmove(result, outPath, sizeof(*result) * outLen);
+	memmove(result, inOutPath, sizeof(*result) * outLen);
 	
 	/* Multiple names? */
 	if (subNames > 1)
@@ -743,7 +1042,7 @@ sjme_errorCode sjme_path_resolveAppend(
 #endif
 				
 				/* Copy over. */
-				memset(result, 0, sizeof(*result) * outPathLen);
+				memset(result, 0, sizeof(*result) * inOutPathLen);
 				memmove(result, subBase,
 					sizeof(*result) * subBaseLen);
 				
@@ -752,7 +1051,7 @@ sjme_errorCode sjme_path_resolveAppend(
 			
 			/* Append individual path. */
 			if (sjme_error_is(error = sjme_path_resolveAppend(result,
-				outPathLen, subBase, subBaseLen)))
+				inOutPathLen, subBase, subBaseLen)))
 				return sjme_error_default(error);
 			
 			/* Recalculate output length. */
@@ -814,13 +1113,13 @@ sjme_errorCode sjme_path_resolveAppend(
 	/* Debug. */
 #if defined(SJME_CONFIG_DEBUG)
 	sjme_message("resolve(%.*s, %.*s) -> %.*s",
-		outPathLen, outPath, subPathLen, subPath,
+		inOutPathLen, inOutPath, subPathLen, subPath,
 			(int)strlen(result), result);
 #endif
 	
 	/* Success! Copy resultant path. */
 	outLen = strlen(result) + 1;
-	memmove(outPath, result, sizeof(*result) * outLen);
+	memmove(inOutPath, result, sizeof(*result) * outLen);
 	return SJME_ERROR_NONE;
 }
 
@@ -837,3 +1136,4 @@ sjme_errorCode sjme_path_userHome(
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+#endif

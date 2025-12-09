@@ -41,6 +41,42 @@ extern "C"
 /** The maximum path length in SquirrelJME. */
 #define SJME_MAX_PATH 1024
 
+/**
+ * The maximum path depth in SquirrelJME, this should be able to store the
+ * most reasonable amount of names.
+ *
+ * On my current Debian system, /var has:
+ * @code
+ *      1 /
+ *     12 //
+ *    193 ///
+ *    225 ////
+ *    181 /////
+ *    371 //////
+ *    133 ///////
+ *    238 ////////
+ *    655 /////////
+ *    992 //////////
+ *   2238 ///////////
+ *   4128 ////////////
+ *   6868 /////////////
+ *   5679 //////////////
+ *   5504 ///////////////
+ *   3693 ////////////////
+ *   1663 /////////////////
+ *   1131 //////////////////
+ *    740 ///////////////////
+ *    209 ////////////////////
+ *    100 /////////////////////
+ *     40 //////////////////////
+ *     23 ///////////////////////
+ *     19 ////////////////////////
+ *      1 /////////////////////////
+ *      1 ////////////////////////// <-- 26
+ * @endcode
+ */
+#define SJME_MAX_PATH_DEPTH 32
+
 #if defined(SJME_CONFIG_HAS_OS_PC_DOS)
 	/** Short paths. */
 	#define SJME_PATH_SHORT
@@ -89,6 +125,198 @@ extern "C"
 #endif
 
 /**
+ * Flags that may be associated with a path.
+ *
+ * @since 2025/12/09
+ */
+typedef enum sjme_path_flags
+{
+	/** Does this path represent a directory? */
+	SJME_PATH_IS_DIRECTORY = INT32_C(0x01),
+
+	/** Does this path have a root component? This makes a path absolute. */
+	SJME_PATH_HAS_ROOT = INT32_C(0x02),
+
+	/** Is this path relative? */
+	SJME_PATH_IS_RELATIVE = INT32_C(0x04),
+} sjme_path_flags;
+	
+/**
+ * Generic file system path.
+ *
+ * @since 2025/12/09
+ */
+typedef struct sjme_path
+{
+	/** The characters which make up the path. */
+	sjme_cchar chars[SJME_MAX_PATH];
+
+	/** The flags for this path. */
+	sjme_jint flags;
+	
+	/** The names within this path. */ 
+	sjme_jint nameCount;
+
+	/** The offsets for each path name. */
+	sjme_jushort names[SJME_MAX_PATH_DEPTH];
+} sjme_path;
+
+/**
+ * Gets the specific name index for the given path.
+ * 
+ * @param outPath The output path.
+ * @param inPath The input path.
+ * @param nameDx The specified name index to obtain.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_getName(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath,
+	sjme_attrInPositive sjme_jint nameDx);
+
+/**
+ * Gets the specific name index for the given path to be used with
+ * any @code printf("%.*s") @endcode style statement.
+ * 
+ * @param outFLimit The limit to the number of characters.
+ * @param outFStr The base pointer.
+ * @param inPath The input path.
+ * @param nameDx The specified name index to obtain.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_getNameF(
+	sjme_attrOutNotNull sjme_jint* outFLimit,
+	sjme_attrOutNotNull sjme_lpcstr* outFStr,
+	sjme_attrInNotNull const sjme_path* inPath,
+	sjme_attrInPositive sjme_jint nameDx);
+
+/**
+ * Gets the parent of the current path, up to the root component.
+ * 
+ * @param outPath The output path.
+ * @param inPath The input path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_getParent(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath);
+
+/**
+ * Gets the root component of the path, if any.
+ * 
+ * @param outPath The output path.
+ * @param inPath The input path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_getRoot(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath);
+
+/**
+ * Normalizes the given path.
+ * 
+ * @param outPath The output path.
+ * @param inPath The input path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_normalize(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath);
+
+/**
+ * Parses the given path.
+ * 
+ * @param outPath The output path.
+ * @param strPath The string based path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_parse(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull sjme_lpcstr strPath);
+
+/**
+ * Parses the given path with format specifiers.
+ * 
+ * @param outPath The output path.
+ * @param format The format specifier to use for the path.
+ * @param ... The format values.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_parseF(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull sjme_attrFormatArg sjme_lpcstr format,
+	...) sjme_attrFormatOuter(1, 2);
+	
+/**
+ * Resolves the input path against the given path, the resultant path will
+ * be in a subdirectory unless @c ... is absolute.
+ * 
+ * @param outPath The output path.
+ * @param inPath The input path.
+ * @param ... The @code const sjme_path* @endcode to resolve against,
+ * must end in @c NULL .
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_resolve(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath,
+	...);
+
+/**
+ * Resolves the input path against the given path, the resultant path will
+ * be in the same directory unless @c ... is absolute.
+ * 
+ * @param outPath The output path.
+ * @param inPath The input path.
+ * @param ... The @code const sjme_path* @endcode to resolve against,
+ * must end in @c NULL .
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_resolveSibling(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath,
+	...);
+	
+/**
+ * Returns the sub-path of the given path with the specified name indexes.
+ * 
+ * @param outPath The output path.
+ * @param inPath The input path.
+ * @param beginDx The beginning index, inclusive.
+ * @param endDx The ending index, exclusive.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_subPath(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath,
+	sjme_attrInPositive sjme_jint beginDx,
+	sjme_attrInPositive sjme_jint endDx);
+	
+#if 0
+/**
+ * Calculates and returns the base name of the path, removing any and all
+ * directory components.
+ * 
+ * @param inOutPath The input/output path.
+ * @param inOutPathLen The length of the input/output path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_baseName(
+	sjme_attrInOutNotNullBuf(inOutPathLen) sjme_lpstr inOutPath,
+	sjme_attrInPositive sjme_jint inOutPathLen);
+	
+/**
  * Returns a default system path.
  * 
  * @param nal The native abstraction layer to use, if this is not specified
@@ -97,6 +325,7 @@ extern "C"
  * @param index The index of the path to use, if @c -1 then only the valid
  * possible match is used.
  * @param outPath The output path.
+ * @param outPathOff The offset into the output path.
  * @param outPathLen The length of the output path.
  * @return Any resultant error, if any.
  * Returns @link SJME_ERROR_PATH_NOT_DEFINED @endlink if the requested
@@ -108,6 +337,7 @@ sjme_errorCode sjme_path_default(
 	sjme_attrInNegativeOnePositive sjme_jint index,
 	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
 	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
+	sjme_attrInPositive sjme_jint outPathOff,
 	sjme_attrInPositiveNonZero sjme_jint outPathLen);
 
 /**
@@ -178,8 +408,43 @@ sjme_errorCode sjme_path_getNameF(
 sjme_errorCode sjme_path_getNameCount(
 	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
 	sjme_attrInPositive sjme_jint inPathLen,
-	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* outCount); 
+	sjme_attrOutNotNull sjme_attrOutPositive sjme_jint* outCount);
 
+/**
+ * Checks whether the given path is a directory or not.
+ * 
+ * @param inPath The input path.
+ * @param inPathLen The input path length.
+ * @param isDirectory The result of whether this is a directory or not.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_isDirectory(
+	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
+	sjme_attrInPositive sjme_jint inPathLen,
+	sjme_attrOutNotNull sjme_jboolean* isDirectory);
+
+/**
+ * Checks whether the given path and offset is a directory separator or not.
+ * 
+ * @param inPath The input path.
+ * @param inPathOff The offset into the path.
+ * @param inPathLen The input path length.
+ * @param isDirectory The result of whether this is a directory separator or
+ * not.
+ * @param outFollowing Optional output pointer for the following path
+ * components of the directory separator, if this is a path separator. If it
+ * is not then it will be the read character.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_isDirectorySep(
+	sjme_attrInNotNullBuf(inPathLen) sjme_lpcstr inPath,
+	sjme_attrInPositive sjme_jint inPathOff,
+	sjme_attrInPositive sjme_jint inPathLen,
+	sjme_attrOutNotNull sjme_jboolean* isDirectory,
+	sjme_attrOutNullable sjme_lpcstr* outFollowing);
+	
 /**
  * Returns whether the given path as a root.
  * 
@@ -195,10 +460,27 @@ sjme_errorCode sjme_path_hasRoot(
 	sjme_attrOutNotNull sjme_jboolean* hasRoot);
 
 /**
+ * Normalizes the given path, removing any relative components.
+ * 
+ * @param inOutPath The input/output path.
+ * @param inOutPathOff The offset into the input/output path.
+ * @param inOutPathLen The length of the input/output path.
+ * @param requireAbsolute If @link SJME_JNI_TRUE @endlink then the resultant
+ * path must be an absolute path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_normalize(
+	sjme_attrInOutNotNullBuf(inOutPathLen) sjme_lpstr inOutPath,
+	sjme_attrInPositive sjme_jint inOutPathOff,
+	sjme_attrInPositive sjme_jint inOutPathLen,
+	sjme_attrInValue sjme_jboolean requireAbsolute);
+	
+/**
  * Resolves the given path onto the given path buffer.
  * 
- * @param outPath The resultant path to be modified.
- * @param outPathLen The size of the path buffer.
+ * @param inOutPath The resultant path to be modified.
+ * @param inOutPathLen The size of the path buffer.
  * @param subPath The sub-path to resolve against.
  * @param subPathLen The sub-path length, if @c INT32_MAX this means all
  * of it.
@@ -206,9 +488,9 @@ sjme_errorCode sjme_path_hasRoot(
  * @since 2024/08/09
  */
 sjme_errorCode sjme_path_resolveAppend(
-	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
-	sjme_attrInPositiveNonZero sjme_jint outPathLen,
-	sjme_attrInNotNull sjme_lpcstr subPath,
+	sjme_attrInOutNotNullBuf(outPathLen) sjme_lpstr inOutPath,
+	sjme_attrInPositiveNonZero sjme_jint inOutPathLen,
+	sjme_attrInNotNullBuf(subPathLen) sjme_lpcstr subPath,
 	sjme_attrInPositiveNonZero sjme_jint subPathLen);
 
 /**
@@ -222,6 +504,7 @@ sjme_errorCode sjme_path_resolveAppend(
 sjme_errorCode sjme_path_userHome(
 	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
 	sjme_attrInPositiveNonZero sjme_jint outPathLen);
+#endif
 	
 /*--------------------------------------------------------------------------*/
 

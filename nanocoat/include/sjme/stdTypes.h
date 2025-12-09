@@ -425,6 +425,11 @@ typedef intptr_t sjme_intPointer;
 #define SJME_POINTER_OFFSET(base, off) \
 	(sjme_pointer)(((sjme_intPointer)(base)) + ((sjme_intPointer)(off)))
 
+/** Determines if a pointer overflows. */
+#define SJME_POINTER_OVERFLOW(base, off) \
+	((sjme_intPointer)SJME_POINTER_OFFSET((base), (off)) < \
+		(sjme_intPointer)(base))
+
 #if defined(SJME_CONFIG_HAS_POINTER64)
 	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_jpointer
 #else
