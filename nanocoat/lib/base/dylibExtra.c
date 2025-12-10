@@ -38,36 +38,25 @@ static const sjme_lpcstr sjme_dylib_extraUi[] =
 	NULL,
 };
 
-static sjme_errorCode sjme_dylib_attemptOpen(
-	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNotNull sjme_lpcstr dylibName,
-	sjme_attrOutNotNull sjme_dylib* outLib)
-{
-	if (nal == NULL || dylibName == NULL || outLib == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
 static sjme_errorCode sjme_dylib_openExtraScritchAny(
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInRange(0, SJME_DYLIB_NUM_EXTRA_FAMILY)
-		sjme_dylib_extraFamily family,
 	sjme_attrInNullable sjme_lpcstr subComponent,
 	sjme_attrOutNotNull sjme_dylib* outLib,
 	sjme_attrInNotNull const sjme_lpcstr* order)
 {
+#define TEMP_SIZE 128
 	sjme_errorCode error;
 	sjme_jint i;
 	sjme_lpcstr orderComponent;
-	sjme_cchar tryPath[SJME_MAX_PATH];
-	sjme_cchar dylibName[SJME_MAX_PATH];
+	sjme_path tryPath;
+	sjme_cchar tempName[TEMP_SIZE];
+	sjme_dylib result;
 	
 	if (nal == NULL || outLib == NULL || order == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Go through all components, use the passed component, if any. */
+	result = NULL;
 	for (i = (subComponent != NULL ? -1 : 0);; i++)
 	{
 		/* Stop when all possible components have been checked. */
@@ -76,25 +65,48 @@ static sjme_errorCode sjme_dylib_openExtraScritchAny(
 			break;
 
 		/* Determine base path to use. */
-		memset(tryPath, 0, sizeof(tryPath));
-		if (sjme_error_is(error = sjme_path_default(nal, -1,
-			SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
-			tryPath, 0, SJME_MAX_PATH - 1)))
+		memset(&tryPath, 0, sizeof(tryPath));
+		if (sjme_error_is(error = sjme_path_default(nal,
+			&tryPath, SJME_NVM_DEFAULT_DIRECTORY_NATIVES, -1)))
 			return sjme_error_default(error);
 
 		/* Determine dynamic library name. */
-		memset(dylibName, 0, sizeof(dylibName));
+		memset(tempName, 0, sizeof(tempName));
 		if (sjme_error_is(error = sjme_dylib_name(
 			"squirreljme-scritch", orderComponent,
-			dylibName, SJME_MAX_PATH - 1)))
+			tempName, TEMP_SIZE - 1)))
 			return sjme_error_default(error);
-		
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		tempName[TEMP_SIZE - 1] = '\0';
+
+		/* Resolve from this path. */
+		if (sjme_error_is(error = sjme_path_resolveS(&tryPath, tempName)))
+			return sjme_error_default(error);
+
+		/* Attempt loading the library. */
+		if (sjme_error_is(error = sjme_dylib_open(tryPath.chars, &result)) ||
+			result == NULL)
+		{
+			if (error != SJME_ERROR_COULD_NOT_LOAD_LIBRARY)
+				return sjme_error_default(error);
+
+			/* Try again. */
+			continue;
+		}
+
+		/* A library was found, so stop. */
+		break;
 	}
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Was a library found? */
+	if (result != NULL)
+	{
+		*outLib = result;
+		return SJME_ERROR_NONE;
+	}
+
+	/* No library was found. */
+	return SJME_ERROR_COULD_NOT_LOAD_LIBRARY;
+#undef TEMP_SIZE
 }
 
 sjme_errorCode sjme_dylib_openExtra(
@@ -104,6 +116,9 @@ sjme_errorCode sjme_dylib_openExtra(
 	sjme_attrInNullable sjme_lpcstr subComponent,
 	sjme_attrOutNotNull sjme_dylib* outLib)
 {
+	sjme_jint i, n;
+	sjme_cchar at;
+	
 	if (outLib == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -114,17 +129,27 @@ sjme_errorCode sjme_dylib_openExtra(
 	if (nal == NULL)
 		nal = &sjme_nal_default;
 
+	/* If a subcomponent is passed, make sure it does not have a wonky */
+	/* set of characters. */
+	if (subComponent != NULL)
+		for (n = strlen(subComponent), i = 0; i < n; i++)
+		{
+			at = subComponent[i];
+			if (at == '\\' || at == '/' || at == ':' || at <= ' ')
+				return SJME_ERROR_INVALID_ARGUMENT;
+		}
+
 	/* Which family type to load? */
 	switch (family)
 	{
 		case SJME_DYLIB_EXTRA_FAMILY_SCRITCHUI:
 			return sjme_dylib_openExtraScritchAny(nal,
-				family, subComponent, outLib,
+				subComponent, outLib,
 				&sjme_dylib_extraUi[0]);
 
 		case SJME_DYLIB_EXTRA_FAMILY_SCRITCHAUDIO:
 			return sjme_dylib_openExtraScritchAny(nal,
-				family, subComponent, outLib,
+				subComponent, outLib,
 				&sjme_dylib_extraAudio[0]);
 		
 		default:

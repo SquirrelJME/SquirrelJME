@@ -162,6 +162,25 @@ typedef struct sjme_path
 } sjme_path;
 
 /**
+ * Returns a default system path.
+ * 
+ * @param nal The native abstraction layer to use, if this is not specified
+ * then the default is used.
+ * @param outPath The output path.
+ * Returns @link SJME_ERROR_PATH_NOT_DEFINED @endlink if the requested
+ * directory is not defined.
+ * @param type The type of path to obtain.
+ * @param index The index of the path to use, if @c -1 then only the valid
+ * possible match is used.
+ * @since 2025/12/07
+ */
+sjme_errorCode sjme_path_default(
+	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
+	sjme_attrInNegativeOnePositive sjme_jint index);
+
+/**
  * Gets the specific name index for the given path.
  * 
  * @param outPath The output path.
@@ -256,6 +275,20 @@ sjme_errorCode sjme_path_parseF(
 	
 /**
  * Resolves the input path against the given path, the resultant path will
+ * be in a subdirectory unless @c subPath is absolute.
+ * 
+ * @param outPath The output path.
+ * @param inPath The input path.
+ * subPath The path to resolve against, must end in @c NULL .
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_resolveS(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull sjme_lpcstr inPath);
+	
+/**
+ * Resolves the input path against the given path, the resultant path will
  * be in a subdirectory unless @c ... is absolute.
  * 
  * @param outPath The output path.
@@ -265,7 +298,7 @@ sjme_errorCode sjme_path_parseF(
  * @return Any resultant error, if any.
  * @since 2025/12/09
  */
-sjme_errorCode sjme_path_resolve(
+sjme_errorCode sjme_path_resolveV(
 	sjme_attrOutNotNull sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath,
 	...);
@@ -281,7 +314,7 @@ sjme_errorCode sjme_path_resolve(
  * @return Any resultant error, if any.
  * @since 2025/12/09
  */
-sjme_errorCode sjme_path_resolveSibling(
+sjme_errorCode sjme_path_resolveSiblingV(
 	sjme_attrOutNotNull sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath,
 	...);
@@ -315,30 +348,6 @@ sjme_errorCode sjme_path_subPath(
 sjme_errorCode sjme_path_baseName(
 	sjme_attrInOutNotNullBuf(inOutPathLen) sjme_lpstr inOutPath,
 	sjme_attrInPositive sjme_jint inOutPathLen);
-	
-/**
- * Returns a default system path.
- * 
- * @param nal The native abstraction layer to use, if this is not specified
- * then the default is used.
- * @param type The type of path to obtain.
- * @param index The index of the path to use, if @c -1 then only the valid
- * possible match is used.
- * @param outPath The output path.
- * @param outPathOff The offset into the output path.
- * @param outPathLen The length of the output path.
- * @return Any resultant error, if any.
- * Returns @link SJME_ERROR_PATH_NOT_DEFINED @endlink if the requested
- * directory is not defined.
- * @since 2025/12/07
- */
-sjme_errorCode sjme_path_default(
-	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNegativeOnePositive sjme_jint index,
-	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
-	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
-	sjme_attrInPositive sjme_jint outPathOff,
-	sjme_attrInPositiveNonZero sjme_jint outPathLen);
 
 /**
  * Gets the given name at the given index, usage is more basic than the

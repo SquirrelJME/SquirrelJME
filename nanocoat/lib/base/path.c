@@ -220,6 +220,30 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 	{-1, NULL, NULL},
 };
 
+sjme_errorCode sjme_path_default(
+	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
+	sjme_attrInNegativeOnePositive sjme_jint index)
+{
+	if (outPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (type <= SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN ||
+		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (index < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Use a default NAL? */
+	if (nal == NULL)
+		nal = &sjme_nal_default;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_path_getName(
 	sjme_attrOutNotNull sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath,
@@ -280,7 +304,15 @@ sjme_errorCode sjme_path_parseF(
 	return sjme_error_notImplemented(0);
 }
 
-sjme_errorCode sjme_path_resolve(
+sjme_errorCode sjme_path_resolveS(
+	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrInNotNull sjme_lpcstr inPath)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_resolveV(
 	sjme_attrOutNotNull sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath,
 	...)
@@ -289,7 +321,7 @@ sjme_errorCode sjme_path_resolve(
 	return sjme_error_notImplemented(0);
 }
 
-sjme_errorCode sjme_path_resolveSibling(
+sjme_errorCode sjme_path_resolveSiblingV(
 	sjme_attrOutNotNull sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath,
 	...)
