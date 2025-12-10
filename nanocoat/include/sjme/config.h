@@ -854,6 +854,16 @@ extern "C" {
 	#define sjme_attrArtificial
 #endif
 
+#if !defined(sjme_attrOutModify)
+	/** Modifies the output. */
+	#define sjme_attrOutModify
+#endif
+
+#if !defined(sjme_attrOutOverwrite)
+	/** Overwrites the output. */
+	#define sjme_attrOutOverwrite
+#endif
+
 #if !defined(sjme_alloca)
 	/** Allocate on the stack. */
 	#define sjme_alloca(size) alloca((size))

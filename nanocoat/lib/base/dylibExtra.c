@@ -136,7 +136,7 @@ sjme_errorCode sjme_dylib_openExtra(
 		{
 			at = subComponent[i];
 			if (at == '\\' || at == '/' || at == ':' || at <= ' ')
-				return SJME_ERROR_INVALID_ARGUMENT;
+				return SJME_ERROR_SECURITY_EXCEPTION;
 		}
 
 	/* Which family type to load? */

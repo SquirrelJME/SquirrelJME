@@ -220,12 +220,142 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 	{-1, NULL, NULL},
 };
 
+sjme_errorCode sjme_path_check(
+	sjme_attrInNotNull const sjme_path* path)
+{
+	sjme_jint length, nameCount, i, beginDx, endDx, lastDx;
+	
+	if (path == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Must be zero! */
+	if (path->zero != 0)
+		return SJME_ERROR_MEMORY_CORRUPTION;
+
+	/* Invalid flags set? */
+	if ((path->flags & (~SJME_PATH_ALL_FLAGS)) != 0)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Path cannot have a root and be relative. */
+	if ((path->flags & (SJME_PATH_HAS_ROOT | SJME_PATH_IS_RELATIVE)) ==
+		(SJME_PATH_HAS_ROOT | SJME_PATH_IS_RELATIVE))
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Length not valid? */
+	length = path->length;
+	if (length < 0 || length > SJME_MAX_PATH)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Final character of the path is not NUL? */
+	if (length < SJME_MAX_PATH && path->chars[length] != '\0')
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Name count out of range? */
+	nameCount = path->nameCount;
+	if (nameCount < 0 || nameCount > SJME_MAX_PATH_DEPTH)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Check that all name indexes are valid. */
+	lastDx = 0;
+	for (i = 0; i < nameCount; i++)
+	{
+		/* Get the start and the end of the name. */
+		beginDx = path->names[i];
+		endDx = path->names[i + 1];
+
+		/* Make sure the bounds are valid. */
+		if (beginDx < 0 || endDx < 0 ||
+			beginDx >= SJME_MAX_PATH || endDx > SJME_MAX_PATH ||
+			beginDx >= endDx || beginDx != lastDx)
+			return SJME_ERROR_ILLEGAL_STATE;
+
+		/* The next name must start at the end of this one, or the length */
+		/* of this path must meet the same condition. */
+		lastDx = endDx;
+	}
+
+	/* Last name index must match the length. */
+	if (lastDx != length)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Valid path! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_path_checkDenormal(
+	sjme_attrInNotNull const sjme_path* path,
+	sjme_attrInValue sjme_jboolean requireAbsolute)
+{
+	sjme_errorCode error;
+	sjme_jint i, n, len;
+	sjme_lpcstr str;
+	sjme_jboolean dotDotOkay;
+
+	if (path == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (sjme_error_is(error = sjme_path_check(path)))
+		return sjme_error_default(error);
+
+	/* If requiring absolute paths, then this must have a root and not be */
+	/* a relative path. */
+	if (requireAbsolute && (path->flags & (SJME_PATH_IS_RELATIVE |
+		SJME_PATH_HAS_ROOT)) != SJME_PATH_HAS_ROOT)
+		return SJME_ERROR_PATH_NOT_ABSOLUTE;
+
+	/* Check each name for relative components. */
+	dotDotOkay = SJME_JNI_TRUE;
+	for (n = path->nameCount, i = 0; i < n; i++)
+	{
+		/* Get the name at this index. */
+		len = -1;
+		str = NULL;
+		if (sjme_error_is(error = sjme_path_getNameF(&len, &str,
+			path, i)) || len < 0 || str == NULL)
+			return sjme_error_default(error);
+
+		/* Dot stays in the current directory. */
+		if ((len == 1 && !strcmp(".", str)) ||
+			(len == 2 && !strcmp("./", str)))
+			return SJME_ERROR_PATH_NOT_ABSOLUTE;
+
+		/* Dot-dot goes up a directory. */
+		else if ((len == 2 && !strcmp("..", str)) ||
+			(len == 3 && !strcmp("../", str)))
+		{
+			/* A dot-dot should not occur here as it is not at the very */
+			/* start of a relative path! */
+			/* If a path starts with dot-dot and we want an absolute path */
+			/* then we already know this is bad. */
+			if (!dotDotOkay || requireAbsolute)
+				return SJME_ERROR_PATH_NOT_ABSOLUTE;
+		}
+
+		/* Any other path case means dot-dot is no longer valid. This is the */
+		/* case when normalized relative paths are passed which are in */
+		/* the form of ../cute/squirrels and denormalized are in */
+		/* the form of ../cute/../squirrels . */
+		else
+			dotDotOkay = SJME_JNI_FALSE;
+	}
+
+	/* Path is okay! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_path_default(
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
 	sjme_attrInNegativeOnePositive sjme_jint index)
 {
+	sjme_errorCode error;
+	sjme_jint i, vi;
+	const sjme_path_pathEnv* lookup;
+	sjme_lpcstr lastEnv;
+	sjme_jboolean lastTilde;
+	sjme_path envPath, buildPath;
+	
 	if (outPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -239,103 +369,352 @@ sjme_errorCode sjme_path_default(
 	/* Use a default NAL? */
 	if (nal == NULL)
 		nal = &sjme_nal_default;
+
+	/* Clear temporary paths. */
+	memset(&envPath, 0, sizeof(envPath));
+	memset(&buildPath, 0, sizeof(buildPath));
+	
+	/* Go through each default to locate paths accordingly. */
+	lastEnv = NULL;
+	lastTilde = SJME_JNI_FALSE;
+	error = SJME_ERROR_NONE;
+	for (i = 0, vi = 0;; i++)
+	{
+		/* Go through the lookup set. */
+		lookup = &sjme_path_pathEnvLookup[i];
+		if (lookup->type <= 0 ||
+			(lookup->env == NULL && lookup->envRel == NULL))
+			break;
+
+		/* Is this the wrong type? */
+		if (lookup->type != type)
+			continue;
+
+		/* Wanting a specific index? */
+		if (index >= 0)
+			if (index != (vi++))
+				continue;
+
+		/* Lookup uses no defined environment variable. */
+		if (lookup->env == NULL)
+		{
+			/* Clear these, as they are both not valid. */
+			lastEnv = NULL;
+			lastTilde = SJME_JNI_FALSE;
+			memset(&envPath, 0, sizeof(envPath));
+		}
+		
+		/* Lookup the environment variable, if it has changed. */
+		else if (lastEnv == NULL || lastTilde != lookup->tildeHome ||
+			0 != strcmp(lastEnv, lookup->env))
+		{
+			/* Get it from the system. */
+			memset(&buildPath, 0, sizeof(buildPath));
+			if (nal->getEnv == NULL ||
+				sjme_error_is(error = nal->getEnv(
+					buildPath.chars, SJME_MAX_PATH - 1, lookup->env)))
+			{
+				/* No env set, so ignore this lookup. */
+				if (error == SJME_ERROR_NO_SUCH_ELEMENT)
+				{
+					/* If looking for a specific index? Stop. */
+					if (index >= 0)
+						break;
+
+					/* Skip looking at this path. */
+					continue;
+				}
+
+				/* Fail. */
+				return sjme_error_default(error);
+			}
+
+			/* Replace with the user home directory? */
+			memset(&envPath, 0, sizeof(envPath));
+			if (buildPath.chars[0] == '~' && (buildPath.chars[1] == '\0' ||
+				buildPath.chars[1] == '/'))
+			{
+				/* Grab the home directory. */
+				if (sjme_error_is(error = sjme_path_userHome(&envPath)))
+					return sjme_error_default(error);
+
+				/* Append the resolved path, if not NUL. */
+				if (buildPath.chars[1] == '/')
+					if (sjme_error_is(error = sjme_path_resolveS(&envPath,
+						&buildPath.chars[2])))
+						return sjme_error_default(error);
+			}
+
+			/* Normal parse. */
+			else
+			{
+				/* Parse the path. */
+				if (sjme_error_is(error = sjme_path_parse(&envPath,
+					buildPath.chars)))
+					return sjme_error_default(error);
+			}
+
+			/* The path must be absolute and normalized. */
+			if (sjme_error_is(error = sjme_path_checkDenormal(&envPath,
+				SJME_JNI_TRUE)))
+				return sjme_error_default(error);
+			
+			/* Cached for later. */
+			lastEnv = lookup->env;
+			lastTilde = lookup->tildeHome;
+		}
+
+		/* Need to rebuild the path, so start by clearing it. */
+		memset(&buildPath, 0, sizeof(buildPath));
+		
+		/* Resolve the adjacent path onto this. */
+		if (lookup->envRel != NULL)
+			if (sjme_error_is(error = sjme_path_resolveS(
+				&buildPath, lookup->envRel)))
+				return sjme_error_default(error);
+		
+		/* The path must be absolute and normalized. */
+		if (sjme_error_is(error = sjme_path_checkDenormal(&buildPath,
+			SJME_JNI_TRUE)))
+			return sjme_error_default(error);
+		
+		/* Success! */
+		memmove(outPath, &buildPath, sizeof(buildPath));
+		return SJME_ERROR_NONE;
+	}
+
+	/* The path is not defined at all. */
+	return SJME_ERROR_PATH_NOT_DEFINED;
+}
+
+sjme_errorCode sjme_path_getName(
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath,
+	sjme_attrInPositive sjme_jint nameDx)
+{
+	sjme_errorCode error;
+	
+	if (outPath == NULL || inPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (nameDx < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	if (sjme_error_is(error = sjme_path_check(inPath)))
+		return sjme_error_default(error);
+
+	if (nameDx >= inPath->nameCount)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
-sjme_errorCode sjme_path_getName(
-	sjme_attrOutNotNull sjme_path* outPath,
-	sjme_attrInNotNull const sjme_path* inPath,
-	sjme_attrInPositive sjme_jint nameDx)
-{
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
 sjme_errorCode sjme_path_getNameF(
-	sjme_attrOutNotNull sjme_jint* outFLimit,
-	sjme_attrOutNotNull sjme_lpcstr* outFStr,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_jint* outFLimit,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_lpcstr* outFStr,
 	sjme_attrInNotNull const sjme_path* inPath,
 	sjme_attrInPositive sjme_jint nameDx)
 {
+	sjme_errorCode error;
+
+	if (outFLimit == NULL || outFStr == NULL || inPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (nameDx < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	if (sjme_error_is(error = sjme_path_check(inPath)))
+		return sjme_error_default(error);
+
+	if (nameDx >= inPath->nameCount)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_path_getParent(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath)
 {
+	sjme_errorCode error;
+
+	if (outPath == NULL || inPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (sjme_error_is(error = sjme_path_check(inPath)))
+		return sjme_error_default(error);
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_path_getRoot(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath)
 {
+	sjme_errorCode error;
+
+	if (outPath == NULL || inPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (sjme_error_is(error = sjme_path_check(inPath)))
+		return sjme_error_default(error);
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_path_normalize(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath)
 {
+	sjme_errorCode error;
+
+	if (outPath == NULL || inPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (sjme_error_is(error = sjme_path_check(inPath)))
+		return sjme_error_default(error);
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_path_parse(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull sjme_lpcstr strPath)
 {
+	sjme_errorCode error;
+
+	if (outPath == NULL || strPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_path_parseF(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull sjme_attrFormatArg sjme_lpcstr format,
 	...)
 {
+	sjme_errorCode error;
+
+	if (outPath == NULL || format == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_resolveP(
+	sjme_attrOutNotNull sjme_attrOutModify sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath)
+{
+	sjme_errorCode error;
+
+	if (outPath == NULL || inPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (sjme_error_is(error = sjme_path_check(outPath)))
+		return sjme_error_default(error);
+
+	if (sjme_error_is(error = sjme_path_check(inPath)))
+		return sjme_error_default(error);
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_path_resolveS(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutModify sjme_path* outPath,
 	sjme_attrInNotNull sjme_lpcstr inPath)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_path parsed;
+
+	if (outPath == NULL || inPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (sjme_error_is(error = sjme_path_check(outPath)))
+		return sjme_error_default(error);
+
+	/* Parse the input path first. */
+	memset(&parsed, 0, sizeof(parsed));
+	if (sjme_error_is(error = sjme_path_parse(&parsed, inPath)))
+		return sjme_error_default(error);
+
+	/* Then forward to the normal path resolution. */
+	return sjme_path_resolveP(outPath, &parsed);
 }
 
 sjme_errorCode sjme_path_resolveV(
-	sjme_attrOutNotNull sjme_path* outPath,
-	sjme_attrInNotNull const sjme_path* inPath,
+	sjme_attrOutNotNull sjme_attrOutModify sjme_path* outPath,
 	...)
 {
+	sjme_errorCode error;
+
+	if (outPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (sjme_error_is(error = sjme_path_check(outPath)))
+		return sjme_error_default(error);
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
-sjme_errorCode sjme_path_resolveSiblingV(
-	sjme_attrOutNotNull sjme_path* outPath,
-	sjme_attrInNotNull const sjme_path* inPath,
-	...)
+sjme_errorCode sjme_path_resolveSibling(
+	sjme_attrOutNotNull sjme_attrOutModify sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath)
 {
+	sjme_errorCode error;
+
+	if (outPath == NULL || inPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (sjme_error_is(error = sjme_path_check(outPath)))
+		return sjme_error_default(error);
+
+	if (sjme_error_is(error = sjme_path_check(inPath)))
+		return sjme_error_default(error);
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_path_subPath(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath,
 	sjme_attrInPositive sjme_jint beginDx,
 	sjme_attrInPositive sjme_jint endDx)
 {
+	sjme_errorCode error;
+
+	if (outPath == NULL || inPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (beginDx < 0 || endDx < 0 || endDx < beginDx)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	if (sjme_error_is(error = sjme_path_check(inPath)))
+		return sjme_error_default(error);
+
+	if (beginDx >= inPath->nameCount || endDx >= inPath->nameCount)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_userHome(
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath)
+{
+	if (outPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

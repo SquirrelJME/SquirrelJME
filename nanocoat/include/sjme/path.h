@@ -137,8 +137,12 @@ typedef enum sjme_path_flags
 	/** Does this path have a root component? This makes a path absolute. */
 	SJME_PATH_HAS_ROOT = INT32_C(0x02),
 
-	/** Is this path relative? */
+	/** Is this path relative? That is there is no root */
 	SJME_PATH_IS_RELATIVE = INT32_C(0x04),
+
+	/** All path flags. */
+	SJME_PATH_ALL_FLAGS = SJME_PATH_IS_DIRECTORY |
+		SJME_PATH_HAS_ROOT | SJME_PATH_IS_RELATIVE,
 } sjme_path_flags;
 	
 /**
@@ -151,15 +155,47 @@ typedef struct sjme_path
 	/** The characters which make up the path. */
 	sjme_cchar chars[SJME_MAX_PATH];
 
+	/** Must always be zero. */
+	sjme_jint zero;
+
 	/** The flags for this path. */
 	sjme_jint flags;
+
+	/** The length of the entire path. */
+	sjme_jushort length;
 	
 	/** The names within this path. */ 
-	sjme_jint nameCount;
+	sjme_jushort nameCount;
 
-	/** The offsets for each path name. */
-	sjme_jushort names[SJME_MAX_PATH_DEPTH];
+	/**
+	 * The offsets for each path name. Every name that prefaces the last name
+	 * shall end in a directory separator.
+	 */
+	sjme_jushort names[SJME_MAX_PATH_DEPTH + 1];
 } sjme_path;
+
+/**
+ * Checks if the given path is valid.
+ * 
+ * @param path The path to check.
+ * @return Any resultant error, if any.
+ * @since 2025/12/10
+ */
+sjme_errorCode sjme_path_check(
+	sjme_attrInNotNull const sjme_path* path);
+
+/**
+ * Checks if the given path is denormalized.
+ * 
+ * @param path The path to check.
+ * @param requireAbsolute Require that the input path be absolute, if it is
+ * not an absolute path then this will fail.
+ * @return Any resultant error, if any.
+ * @since 2025/12/10
+ */
+sjme_errorCode sjme_path_checkDenormal(
+	sjme_attrInNotNull const sjme_path* path,
+	sjme_attrInValue sjme_jboolean requireAbsolute);
 
 /**
  * Returns a default system path.
@@ -176,7 +212,7 @@ typedef struct sjme_path
  */
 sjme_errorCode sjme_path_default(
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
 	sjme_attrInNegativeOnePositive sjme_jint index);
 
@@ -190,7 +226,7 @@ sjme_errorCode sjme_path_default(
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_getName(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath,
 	sjme_attrInPositive sjme_jint nameDx);
 
@@ -206,8 +242,8 @@ sjme_errorCode sjme_path_getName(
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_getNameF(
-	sjme_attrOutNotNull sjme_jint* outFLimit,
-	sjme_attrOutNotNull sjme_lpcstr* outFStr,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_jint* outFLimit,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_lpcstr* outFStr,
 	sjme_attrInNotNull const sjme_path* inPath,
 	sjme_attrInPositive sjme_jint nameDx);
 
@@ -220,7 +256,7 @@ sjme_errorCode sjme_path_getNameF(
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_getParent(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath);
 
 /**
@@ -232,11 +268,12 @@ sjme_errorCode sjme_path_getParent(
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_getRoot(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath);
 
 /**
- * Normalizes the given path.
+ * Normalizes the given path, this removes all relative components where
+ * possible.
  * 
  * @param outPath The output path.
  * @param inPath The input path.
@@ -244,7 +281,7 @@ sjme_errorCode sjme_path_getRoot(
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_normalize(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath);
 
 /**
@@ -256,7 +293,7 @@ sjme_errorCode sjme_path_normalize(
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_parse(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull sjme_lpcstr strPath);
 
 /**
@@ -269,13 +306,28 @@ sjme_errorCode sjme_path_parse(
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_parseF(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull sjme_attrFormatArg sjme_lpcstr format,
 	...) sjme_attrFormatOuter(1, 2);
 	
 /**
  * Resolves the input path against the given path, the resultant path will
- * be in a subdirectory unless @c subPath is absolute.
+ * be in a subdirectory unless @a inPath is absolute.
+ * 
+ * @param outPath The output path.
+ * @param inPath The input path to resolve against.
+ * @return Any resultant error, if any.
+ * @since 2025/12/09
+ */
+sjme_errorCode sjme_path_resolveP(
+	sjme_attrOutNotNull sjme_attrOutModify sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath);
+	
+/**
+ * Resolves the input path against the given path, the resultant path will
+ * be in a subdirectory unless @c subPath is absolute. This is the same
+ * as calling @link sjme_path_parse() @endlink and then resolving against
+ * the parsed path.
  * 
  * @param outPath The output path.
  * @param inPath The input path.
@@ -284,23 +336,24 @@ sjme_errorCode sjme_path_parseF(
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_resolveS(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutModify sjme_path* outPath,
 	sjme_attrInNotNull sjme_lpcstr inPath);
 	
 /**
  * Resolves the input path against the given path, the resultant path will
- * be in a subdirectory unless @c ... is absolute.
+ * be in a subdirectory unless @c ... is absolute. Passing multiple paths is
+ * the same as calling @link sjme_path_resolveP() @endlink multiple times
+ * except in a single inline operation. The last passed pointer must always
+ * be @c NULL so that the end of the paths is known.
  * 
  * @param outPath The output path.
- * @param inPath The input path.
  * @param ... The @code const sjme_path* @endcode to resolve against,
  * must end in @c NULL .
  * @return Any resultant error, if any.
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_resolveV(
-	sjme_attrOutNotNull sjme_path* outPath,
-	sjme_attrInNotNull const sjme_path* inPath,
+	sjme_attrOutNotNull sjme_attrOutModify sjme_path* outPath,
 	...);
 
 /**
@@ -309,15 +362,12 @@ sjme_errorCode sjme_path_resolveV(
  * 
  * @param outPath The output path.
  * @param inPath The input path.
- * @param ... The @code const sjme_path* @endcode to resolve against,
- * must end in @c NULL .
  * @return Any resultant error, if any.
  * @since 2025/12/09
  */
-sjme_errorCode sjme_path_resolveSiblingV(
-	sjme_attrOutNotNull sjme_path* outPath,
-	sjme_attrInNotNull const sjme_path* inPath,
-	...);
+sjme_errorCode sjme_path_resolveSibling(
+	sjme_attrOutNotNull sjme_attrOutModify sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath);
 	
 /**
  * Returns the sub-path of the given path with the specified name indexes.
@@ -330,10 +380,20 @@ sjme_errorCode sjme_path_resolveSiblingV(
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_subPath(
-	sjme_attrOutNotNull sjme_path* outPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath,
 	sjme_attrInPositive sjme_jint beginDx,
 	sjme_attrInPositive sjme_jint endDx);
+
+/**
+ * Obtains the user's home directory.
+ * 
+ * @param outPath The output path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/10
+ */
+sjme_errorCode sjme_path_userHome(
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath);
 	
 #if 0
 /**
