@@ -100,7 +100,14 @@ extern "C"
 /** UNIX path style. */
 #define SJME_CONFIG_PATH_STYLE_UNIX 3
 
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || defined(SJME_CONFIG_HAS_OS_PC_DOS)
+/** Windows path style. */
+#define SJME_CONFIG_PATH_STYLE_WINDOWS 4
+
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE)
+	/** Path style in use. */
+	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_WINDOWS
+#elif defined(SJME_CONFIG_HAS_OS_PC_DOS)
 	/** Path style in use. */
 	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_DOS
 #elif defined(SJME_CONFIG_HAS_OS_MACOS_CLASSIC)
@@ -111,12 +118,26 @@ extern "C"
 	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_UNIX
 #endif
 
-#if SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_DOS
+/* Windows or DOS path style? */
+#define SJME_CONFIG_PATH_STYLE_IS_DOS_OR_WINDOWS \
+	(SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_DOS || \
+	SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_WINDOWS)
+
+#if SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_WINDOWS
 	/** Separator for file paths. */
 	#define SJME_CONFIG_FILE_SEPARATOR '\\'
 	
 	/** Alternative separator for file paths. */
 	#define SJME_CONFIG_FILE_SEPARATOR_ALT '/'
+#elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_DOS
+	/** Separator for file paths. */
+	#define SJME_CONFIG_FILE_SEPARATOR '\\'
+	
+	/** Alternative separator for file paths. */
+	#define SJME_CONFIG_FILE_SEPARATOR_ALT '\\'
+
+	/** DOS uses uppercase filenames. */
+	#define SJME_CONFIG_PATH_STYLE_IS_UPPERCASE
 #elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_MACOS_CLASSIC
 	/** Separator for file paths. */
 	#define SJME_CONFIG_FILE_SEPARATOR ':'
@@ -304,6 +325,7 @@ sjme_errorCode sjme_path_normalize(
  * "C:\\aa" -> "C:\a"
  * "C:/hello" -> "C:\hello"
  * "\\hello\world//maybe" -> "\\hello\world\maybe"
+ * "c:\\okay" -> "C:\OKAY" (DOS)
  * @endcode
  * 
  * @param outPath The output path.
