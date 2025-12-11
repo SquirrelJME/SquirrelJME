@@ -10,6 +10,17 @@
 #include "sjme/path.h"
 #include "sjme/debug.h"
 
+#if defined(SJME_CONFIG_HAS_OS_PC_DOS)
+	/** No concept of user home exists in DOS. */
+	#define SJME_PATH_PSEUDO_HOME "C:\\SQUIRREL.JME"
+#elif defined(SJME_CONFIG_HAS_OS_PALMOS)
+	/** No concept of user home exists in PalmOS. */
+	#define SJME_PATH_PSEUDO_HOME "0:/PALM/SquirrelJME/"
+
+	/** Paths cannot be relative in PalmOS. */
+	#define SJME_PATH_NO_RELATIVE
+#endif
+
 typedef struct sjme_path_defaultPathEnv
 {
 	/** The type of directory this matches. */
@@ -279,6 +290,13 @@ sjme_errorCode sjme_path_check(
 	/* always start at zero. */
 	if (lastDx != length || path->names[0] != 0)
 		return SJME_ERROR_ILLEGAL_STATE;
+
+#if defined(SJME_PATH_NO_RELATIVE)
+	/* Special case, if an operating system does not support any form */
+	/* of relative paths then make sure denormal paths are never used. */
+	if (sjme_error_is(error = sjme_path_checkDenormal(path, SJME_JNI_TRUE)))
+		return sjme_error_default(error);
+#endif
 
 	/* Valid path! */
 	return SJME_ERROR_NONE;
@@ -1005,10 +1023,16 @@ sjme_errorCode sjme_path_userHome(
 	if (outPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+#if defined(SJME_PATH_PSEUDO_HOME)
+	/* The operating system has no concept of a home directory, so choose an */
+	/* arbitrary one. */
+	return sjme_path_resolveS(outPath, SJME_PATH_PSEUDO_HOME);
+#else
 	/* Use a default NAL? */
 	if (nal == NULL)
 		nal = &sjme_nal_default;
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#endif
 }
