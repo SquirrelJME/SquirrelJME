@@ -587,12 +587,208 @@ sjme_errorCode sjme_path_parse(
 	sjme_attrInNotNull sjme_lpcstr strPath)
 {
 	sjme_errorCode error;
+	sjme_path working;
+	sjme_cchar c;
+	sjme_jint strLen, bp, ep, nameAt, i, n;
 
 	if (outPath == NULL || strPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Clear working path. */
+	memset(&working, 0, sizeof(working));
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+#if SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_UNIX
+	/* At the very start, if we have three or more slashes then we just use */
+	/* the last one. It is simplest to do it here. */
+	strLen = strlen(strPath);
+	if (strLen >= 3 && strPath[0] == '/' &&
+		strPath[1] == '/' && strPath[2] == '/')
+		do
+		{
+			strPath = &strPath[1];
+		} while (strPath[0] == '/' && strPath[1] == '/');
+#endif
+
+	/* Make sure the path is not too long. */
+	strLen = strlen(strPath);
+	if (strLen > SJME_MAX_PATH)
+		return SJME_ERROR_PATH_TOO_LONG;
+
+	/* Copy it over to act as the base path. */
+	memmove(&working.chars[0], strPath, sizeof(*strPath) * strLen);
+
+	/* Build out the set of names, which are effectively each and every */
+	/* directory. */
+	nameAt = 0;
+	for (bp = 0, ep = 0; ep < strLen + 1; ep++)
+	{
+		/* Too many names? */
+		if (nameAt == SJME_MAX_PATH_DEPTH)
+			return SJME_ERROR_PATH_TOO_DEEP;
+		
+		/* Is this a directory separator? Or NUL? */
+		c = working.chars[ep];
+		if (c == SJME_CONFIG_FILE_SEPARATOR ||
+			c == SJME_CONFIG_FILE_SEPARATOR_ALT ||
+			c == '\0')
+		{
+			working.names[nameAt++] = bp;
+			working.names[nameAt] = ep + 1;
+			bp = ep + 1;
+		}
+	}
+	
+	/* Too many names? */
+	if (nameAt > SJME_MAX_PATH_DEPTH)
+		return SJME_ERROR_PATH_TOO_DEEP;
+
+	/* The "final" name is the string length. */
+	working.names[nameAt] = strLen;
+	working.length = strLen;
+	working.nameCount = nameAt;
+
+	/* Is this path a directory? */
+	c = working.chars[strLen - 1];
+	if (c == SJME_CONFIG_FILE_SEPARATOR ||
+		c == SJME_CONFIG_FILE_SEPARATOR_ALT)
+		working.flags |= SJME_PATH_IS_DIRECTORY;
+
+#if SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_DOS
+	/* Cannot start with a UNIX root. */
+	if (working.chars[0] == '/')
+		return SJME_ERROR_PATH_NOT_VALID;
+
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	/* There cannot be awkward UNC paths in Windows */
+	if ((working.chars[0] == '\\' && working.chars[1] == '/') ||
+		(working.chars[0] == '/' && working.chars[1] == '\\'))
+		return SJME_ERROR_PATH_NOT_VALID;
+#endif
+#endif
+
+	/* Determine if this has a root component. */
+#if SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_DOS
+	c = working.chars[0];
+	if (strLen >= 2 && (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') &&
+		working.chars[1] == ':')
+	{
+		/* Slash or NUL must follow the root. */
+		c = working.chars[2];
+		if (c != SJME_CONFIG_FILE_SEPARATOR &&
+			c != SJME_CONFIG_FILE_SEPARATOR_ALT &&
+			c != '\0')
+			return SJME_ERROR_PATH_NOT_VALID;
+		
+		/* Valid! */
+		working.flags |= SJME_PATH_HAS_ROOT;
+	}
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	/* Handle UNC paths on Windows as an alternative. */
+	else if (strLen >= 2 && (working.chars[0] == SJME_CONFIG_FILE_SEPARATOR
+		&& working.chars[1] == SJME_CONFIG_FILE_SEPARATOR)
+	{
+		/* UNC paths cannot be \\\ or \\/. */
+		if (working.chars[2] == SJME_CONFIG_FILE_SEPARATOR ||
+			working.chars[2] == SJME_CONFIG_FILE_SEPARATOR_ALT)
+			return SJME_ERROR_PATH_NOT_VALID;
+		
+		/* Shift down. */
+		memmove(&working.names[1], &working.names[2],
+			sizeof(working.names[0]) *
+			(SJME_MAX_PATH_DEPTH - working.nameCount));
+		working.nameCount--;
+
+		/* Make sure the last name is cleared. */
+		working.names[SJME_MAX_PATH_DEPTH] = 0;
+		
+		/* Valid! */
+		working.flags |= SJME_PATH_HAS_ROOT;
+	}
+#endif
+#elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_UNIX
+	if ((strLen >= 2 && working.chars[0] == '/' && working.chars[1] == '/') ||
+		(strLen >= 1 && working.chars[0] == '/'))
+	{
+		/* Double slash characters must always be considered a single */
+		/* component to be POSIX compatible. */
+		if (working.chars[1] == '/')
+		{
+			/* Shift down. */
+			memmove(&working.names[1], &working.names[2],
+				sizeof(working.names[0]) *
+				(SJME_MAX_PATH_DEPTH - working.nameCount));
+			working.nameCount--;
+
+			/* Make sure the last name is cleared. */
+			working.names[SJME_MAX_PATH_DEPTH] = 0;
+		}
+		
+		/* Valid! */
+		working.flags |= SJME_PATH_HAS_ROOT;
+	}
+#else
+	#error Unknown native path style.
+#endif
+
+	/* Remove empty names so that /cute//squirrels becomes /cute/squirrels. */
+	for (nameAt = working.nameCount - 1; nameAt >= 0; nameAt--)
+	{
+		/* Get both sides of the name. */
+		bp = working.names[nameAt];
+		ep = working.names[nameAt + 1];
+
+		/* If the name is a single character and only consists of the path */
+		/* component, strip it. */
+		c = working.chars[bp];
+		if (ep == bp + 1 && (c == SJME_CONFIG_FILE_SEPARATOR ||
+			c == SJME_CONFIG_FILE_SEPARATOR_ALT))
+		{
+#if (SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_UNIX) || \
+	(SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_DOS && \
+		defined(SJME_CONFIG_HAS_OS_WINDOWS))
+			/* Do not actually strip the root component on UNIX. */
+			/* On Windows, do not strip out the UNC root. */
+			if (nameAt == 0)
+				break;
+#endif
+			
+			/* Shift entire path down. */
+			memmove(&working.chars[bp], &working.chars[bp + 1],
+				SJME_MAX_PATH - bp);
+			
+			/* Shift names down. */
+			memmove(&working.names[nameAt], &working.names[nameAt + 1],
+				sizeof(working.names[0]) *
+				(SJME_MAX_PATH_DEPTH - working.nameCount));
+			working.nameCount--;
+
+			/* Make sure the last name is cleared. */
+			working.names[SJME_MAX_PATH_DEPTH] = 0;
+
+			/* Make sure all indexes post shift get decremented. */
+			for (i = nameAt; i <= working.nameCount; i++)
+				working.names[i]--;
+
+			/* Length gets cut down by one as well. */
+			working.length--;
+		}
+	}
+	
+#if SJME_CONFIG_FILE_SEPARATOR != SJME_CONFIG_FILE_SEPARATOR_ALT 
+	/* If the alternative path character is actually different, then */
+	/* force everything to be the primary path character. */
+	for (n = working.length, i = 0; i < n; i++)
+		if (working.chars[i] == SJME_CONFIG_FILE_SEPARATOR_ALT)
+			working.chars[i] = SJME_CONFIG_FILE_SEPARATOR;
+#endif
+
+	/* Make sure resultant working path is valid. */
+	if (sjme_error_is(error = sjme_path_check(&working)))
+		return sjme_error_default(error);
+
+	/* Copy out! */
+	memmove(outPath, &working, sizeof(*outPath));
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_path_parseF(

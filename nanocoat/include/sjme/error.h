@@ -574,9 +574,15 @@ typedef enum sjme_errorCode
 
 	/* Path is not absolute. */
 	SJME_ERROR_PATH_NOT_ABSOLUTE = -177,
+
+	/** Path is too deep. */
+	SJME_ERROR_PATH_TOO_DEEP = -178,
+
+	/** Path is not valid. */
+	SJME_ERROR_PATH_NOT_VALID = -179,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -178,
+	SJME_NUM_ERROR_CODES = -180,
 } sjme_errorCode;
 
 /**

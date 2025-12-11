@@ -113,13 +113,22 @@ extern "C"
 
 #if SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_DOS
 	/** Separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR "\\"
+	#define SJME_CONFIG_FILE_SEPARATOR '\\'
+	
+	/** Alternative separator for file paths. */
+	#define SJME_CONFIG_FILE_SEPARATOR_ALT '/'
 #elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_MACOS_CLASSIC
 	/** Separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR ":"
+	#define SJME_CONFIG_FILE_SEPARATOR ':'
+	
+	/** Alternative separator for file paths. */
+	#define SJME_CONFIG_FILE_SEPARATOR_ALT ':'
 #elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_UNIX
 	/** Separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR "/"
+	#define SJME_CONFIG_FILE_SEPARATOR '/'
+	
+	/** Alternative separator for file paths. */
+	#define SJME_CONFIG_FILE_SEPARATOR_ALT '/'
 #else
 	#error Unknown native path style.
 #endif
@@ -286,6 +295,16 @@ sjme_errorCode sjme_path_normalize(
 
 /**
  * Parses the given path.
+ *
+ * Path parsing performs basic standardization of paths:
+ * @code
+ * "//////aa/////bb////cc" -> "/a/b/c"
+ * "//aa/////bb////cc" -> "//a/b/c"
+ * "a//b" -> "a/b"
+ * "C:\\aa" -> "C:\a"
+ * "C:/hello" -> "C:\hello"
+ * "\\hello\world//maybe" -> "\\hello\world\maybe"
+ * @endcode
  * 
  * @param outPath The output path.
  * @param strPath The string based path.
