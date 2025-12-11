@@ -437,7 +437,7 @@ sjme_errorCode sjme_path_default(
 				buildPath.chars[1] == '/'))
 			{
 				/* Grab the home directory. */
-				if (sjme_error_is(error = sjme_path_userHome(&envPath)))
+				if (sjme_error_is(error = sjme_path_userHome(nal, &envPath)))
 					return sjme_error_default(error);
 
 				/* Append the resolved path, if not NUL. */
@@ -999,10 +999,15 @@ sjme_errorCode sjme_path_subPath(
 }
 
 sjme_errorCode sjme_path_userHome(
+	sjme_attrInNullable const sjme_nal* nal,
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath)
 {
 	if (outPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Use a default NAL? */
+	if (nal == NULL)
+		nal = &sjme_nal_default;
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
