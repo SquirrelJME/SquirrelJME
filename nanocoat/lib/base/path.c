@@ -266,7 +266,8 @@ sjme_errorCode sjme_path_check(
 		/* Make sure the bounds are valid. */
 		if (beginDx < 0 || endDx < 0 ||
 			beginDx >= SJME_MAX_PATH || endDx > SJME_MAX_PATH ||
-			beginDx >= endDx || beginDx != lastDx)
+			((beginDx != 0 || endDx != 0) && beginDx >= endDx) ||
+			beginDx != lastDx)
 			return SJME_ERROR_ILLEGAL_STATE;
 
 		/* The next name must start at the end of this one, or the length */
@@ -465,8 +466,13 @@ sjme_errorCode sjme_path_default(
 			lastTilde = lookup->tildeHome;
 		}
 
-		/* Need to rebuild the path, so start by clearing it. */
+		/* Need to rebuild the path, so start by clearing it and using */
+		/* the new base path. */
 		memset(&buildPath, 0, sizeof(buildPath));
+		if (lastEnv != NULL)
+			if (sjme_error_is(error = sjme_path_resolveP(
+				&buildPath, &envPath)))
+				return sjme_error_default(error);
 		
 		/* Resolve the adjacent path onto this. */
 		if (lookup->envRel != NULL)
@@ -851,8 +857,13 @@ sjme_errorCode sjme_path_resolveP(
 	if (sjme_error_is(error = sjme_path_check(inPath)))
 		return sjme_error_default(error);
 
+	/* If the input path is a blank path, this does nothing. */
+	if (inPath->length == 0)
+		return SJME_ERROR_NONE;
+
 	/* If the path is absolute then just use the absolute path. */
-	if ((inPath->flags & SJME_PATH_HAS_ROOT) != 0)
+	/* Or if the output path is a blank path. */
+	if ((inPath->flags & SJME_PATH_HAS_ROOT) != 0 || outPath->length == 0)
 	{
 		memmove(outPath, inPath, sizeof(*outPath));
 		return SJME_ERROR_NONE;
