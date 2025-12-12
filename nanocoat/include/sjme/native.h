@@ -53,6 +53,14 @@ typedef enum sjme_nal_openMode
 } sjme_nal_openMode;
 	
 /**
+ * Represents a specific style of paths which are compatible with each other
+ * but not with other styles.
+ *
+ * @since 2025/12/11
+ */
+typedef struct sjme_path_style sjme_path_style;
+	
+/**
  * Returns the current time in milliseconds as per the Java
  * method @c System::currentTimeMillis() .
  * 
@@ -106,6 +114,16 @@ typedef sjme_errorCode (*sjme_nal_getEnvFunc)(
 typedef sjme_errorCode (*sjme_nal_nanoTimeFunc)(
 	sjme_attrOutNotNull sjme_jlong* result);
 
+/**
+ * Returns the path style that the current system uses.
+ *
+ * @param outStyle The output path style.
+ * @return Any resultant error, if any.
+ * @since 2025/12/11
+ */
+typedef sjme_errorCode (*sjme_nal_pathStyleFunc)(
+	sjme_attrOutNotNull const sjme_path_style** outStyle);
+	
 /**
  * Binds and opens a stream to the given TCP/UDP remote host somewhere on
  * a network. 
@@ -167,6 +185,9 @@ typedef struct sjme_nal
 	
 	/** Get the current monotonic nanosecond time. */
 	sjme_nal_nanoTimeFunc nanoTime;
+
+	/** Returns the system path style. */
+	sjme_nal_pathStyleFunc pathStyle;
 
 	/** Opens a network socket. */
 	sjme_nal_tcpUdpFunc tcpUdp;

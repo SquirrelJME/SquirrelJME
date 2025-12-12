@@ -9,6 +9,7 @@
 
 #include "sjme/config.h"
 #include "sjme/intern/nal.h"
+#include "sjme/path.h"
 
 #pragma region(getenv)
 #if (SJME_CONFIG_NAL_GETENV == SJME_CONFIG_NAL_IMPLEMENT_NONE)
@@ -66,6 +67,26 @@ sjme_errorCode sjme_nal_default_fileOpen(
 
 #endif
 #pragma endregion(seekable)
+
+#pragma region(pathStyle)
+#if (SJME_CONFIG_NAL_PATH_STYLE == SJME_CONFIG_NAL_IMPLEMENT_NONE)
+
+sjme_errorCode sjme_nal_default_pathStyle(
+	sjme_attrOutNotNull const sjme_path_style** outStyle)
+{
+	if (outStyle == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+#if defined(SJME_CONFIG_HAS_OS_PC_DOS)
+	*outStyle = &sjme_path_styles[SJME_PATH_STYLE_DOS];
+#else
+	*outStyle = &sjme_path_styles[SJME_PATH_STYLE_NONE];
+#endif
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(pathStyle)
 
 #pragma region(pipe)
 #if (SJME_CONFIG_NAL_PIPE == SJME_CONFIG_NAL_IMPLEMENT_NONE)

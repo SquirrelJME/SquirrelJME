@@ -177,7 +177,7 @@ typedef struct sjme_path sjme_path;
  * @return Any resultant error, if any.
  * @since 2025/12/11
  */
-typedef sjme_errorCode (*sjme_path_familyParseFunc)(
+typedef sjme_errorCode (*sjme_path_styleParseFunc)(
 	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* workPath,
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_jint* outFLimit,
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_lpcstr* outFStr,
@@ -190,19 +190,13 @@ typedef sjme_errorCode (*sjme_path_familyParseFunc)(
  * @return Any resultant error, if any.
  * @since 2025/12/11
  */
-typedef sjme_errorCode (*sjme_path_familyPathFunc)(
+typedef sjme_errorCode (*sjme_path_stylePathFunc)(
 	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* path);
 
-/**
- * Represents a specific family of paths which are compatible with each other
- * but not with other families,
- *
- * @since 2025/12/11
- */
-typedef struct sjme_path_family
+struct sjme_path_style
 {
 	/** Family specific check for validity. */
-	sjme_path_familyPathFunc check;
+	sjme_path_stylePathFunc check;
 	
 	/**
 	 * Parses the root component of the path.
@@ -210,7 +204,7 @@ typedef struct sjme_path_family
 	 * If there is no root then @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
 	 * shall be returned to indicate this.
 	 */
-	sjme_path_familyParseFunc parseRoot;
+	sjme_path_styleParseFunc parseRoot;
 
 	/**
 	 * Parses the next name of the path.
@@ -218,17 +212,17 @@ typedef struct sjme_path_family
 	 * If no more names remain, then @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
 	 * shall be returned to indicate this.
 	 */
-	sjme_path_familyParseFunc parseName;
+	sjme_path_styleParseFunc parseName;
 
 	/** Finalization stage for path parsing, perform any final processing. */
-	sjme_path_familyPathFunc parseFinalize;
+	sjme_path_stylePathFunc parseFinalize;
 	
 	/** The primary and alternative directory separator. */
 	sjme_lpcstr dirSep[2];
 
 	/** The path separator. */
 	sjme_lpcstr pathSep;
-} sjme_path_family;
+};
 
 /**
  * Flags that may be associated with a path.
@@ -251,6 +245,32 @@ typedef enum sjme_path_flags
 		SJME_PATH_HAS_ROOT | SJME_PATH_IS_RELATIVE,
 } sjme_path_flags;
 
+/**
+ * The specific type of path style to use.
+ *
+ * @since 2025/12/11
+ */
+typedef enum sjme_path_styleType
+{
+	/** None path style, all paths are not valid. */
+	SJME_PATH_STYLE_NONE = 0,
+
+	/** POSIX paths. */
+	SJME_PATH_STYLE_POSIX = 1,
+
+	/** DOS paths. */
+	SJME_PATH_STYLE_DOS = 2,
+
+	/** VFAT paths, DOS with less restrictions. */
+	SJME_PATH_STYLE_VFAT = 3,
+
+	/** Windows paths, VFAT + UNC. */
+	SJME_PATH_STYLE_WINDOWS = 4,
+	
+	/** The number of path styles. */
+	SJME_NUM_PATH_STYLES,
+} sjme_path_styleType;
+
 struct sjme_path
 {
 	/** The characters which make up the path. */
@@ -263,7 +283,7 @@ struct sjme_path
 	sjme_jint flags;
 
 	/** The path family, this determines how paths are parsed and handled. */
-	const sjme_path_family* family;
+	const sjme_path_style* family;
 
 	/** The length of the entire path. */
 	sjme_jushort length;
@@ -389,7 +409,7 @@ sjme_errorCode sjme_path_normalize(
 	sjme_attrInNotNull const sjme_path* inPath);
 
 /**
- * Parses the given path.
+ * Parses the given path using the default path style provider.
  *
  * Path parsing performs basic standardization of paths:
  * @code
@@ -412,7 +432,8 @@ sjme_errorCode sjme_path_parse(
 	sjme_attrInNotNull sjme_lpcstr strPath);
 
 /**
- * Parses the given path with format specifiers.
+ * Parses the given path with format specifiers using the default path
+ * style provider.
  * 
  * @param outPath The output path.
  * @param format The format specifier to use for the path.
@@ -424,6 +445,20 @@ sjme_errorCode sjme_path_parseF(
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull sjme_attrFormatArg sjme_lpcstr format,
 	...) sjme_attrFormatOuter(1, 2);
+
+/**
+ * Parses the given path using the specified style provider.
+ *
+ * @param style The style to use for the path.
+ * @param outPath The output path.
+ * @param strPath The string based path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/11
+ */
+sjme_errorCode sjme_path_parseY(
+	sjme_attrInValue sjme_path_styleType style,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
+	sjme_attrInNotNull sjme_lpcstr strPath);
 	
 /**
  * Resolves the input path against the given path, the resultant path will
@@ -512,6 +547,9 @@ sjme_errorCode sjme_path_subPath(
 sjme_errorCode sjme_path_userHome(
 	sjme_attrInNullable const sjme_nal* nal,
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath);
+
+/** The available path styles. */
+extern const sjme_path_style sjme_path_styles[SJME_NUM_PATH_STYLES];
 	
 /*--------------------------------------------------------------------------*/
 

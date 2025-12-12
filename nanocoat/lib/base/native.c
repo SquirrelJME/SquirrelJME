@@ -17,6 +17,7 @@ const sjme_nal sjme_nal_default =
 	sjme_sm(.fileOpen, sjme_nal_default_fileOpen),
 	sjme_sm(.getEnv, sjme_nal_default_getEnv),
 	sjme_sm(.nanoTime, sjme_nal_default_nanoTime),
+	sjme_sm(.pathStyle, sjme_nal_default_pathStyle),
 	sjme_sm(.tcpUdp, sjme_nal_default_tcpUdp),
 	sjme_sm(.threadSleep, sjme_nal_default_threadSleep),
 	sjme_sm(.threadYield, sjme_nal_default_threadYield),

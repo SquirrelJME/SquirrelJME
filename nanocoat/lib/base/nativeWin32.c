@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/intern/nal.h"
+#include "sjme/path.h"
 
 #if defined(SJME_CONFIG_NAL_HAS_ANY_WIN32)
 	#define WIN32_LEAN_AND_MEAN 1
@@ -53,6 +54,28 @@ sjme_errorCode sjme_nal_default_nanoTime(
 
 #endif
 #pragma endregion(nanotime)
+
+#pragma region(pathStyle)
+#if (SJME_CONFIG_NAL_PATH_STYLE == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
+
+sjme_errorCode sjme_nal_default_pathStyle(
+	sjme_attrOutNotNull const sjme_path_style** outStyle)
+{
+	if (outStyle == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS_16)
+	*outStyle = &sjme_path_styles[SJME_PATH_STYLE_DOS];
+#elif defined(SJME_CONFIG_HAS_OS_WINDOWS_CE)
+	*outStyle = &sjme_path_styles[SJME_PATH_STYLE_VFAT];
+#else
+	*outStyle = &sjme_path_styles[SJME_PATH_STYLE_WINDOWS];
+#endif
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(pathStyle)
 
 #pragma region(tcpUdp)
 #if (SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_WIN32)

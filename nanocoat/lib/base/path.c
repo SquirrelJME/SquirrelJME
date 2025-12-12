@@ -935,6 +935,21 @@ sjme_errorCode sjme_path_resolveP(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_path_parseY(
+	sjme_attrInValue sjme_path_styleType style,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
+	sjme_attrInNotNull sjme_lpcstr strPath)
+{
+	if (outPath == NULL || strPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (style < 0 || style >= SJME_NUM_PATH_STYLES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_path_resolveS(
 	sjme_attrOutNotNull sjme_attrOutModify sjme_path* outPath,
 	sjme_attrInNotNull sjme_lpcstr inPath)
