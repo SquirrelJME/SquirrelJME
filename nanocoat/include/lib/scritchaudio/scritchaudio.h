@@ -821,6 +821,10 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchaudio_dylibApiFunc)(
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
 	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread,
 	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
+
+/** The default API entry export method. */
+extern const sjme_scritchaudio_dylibApiFunc 
+	sjme_scritchaudio_dylibApiExport;
 	
 /** The base name for the ScritchAudio dynamic library. */
 #define SJME_SCRITCHAUDIO_DYLIB_NAME_BASE \

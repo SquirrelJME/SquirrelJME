@@ -16,8 +16,8 @@ add_library(ScritchAudioOSS SHARED
 	ossMidi.c
 	ossStream.c)
 
-# Always make it PIC
-squirreljme_always_fpic(ScritchAudioOSS)
+# Standard properties for dynamic libraries
+squirreljme_dylib_standard_properties(ScritchAudioOSS)
 
 # The file where the include lives
 target_compile_definitions(ScritchAudioOSS PUBLIC

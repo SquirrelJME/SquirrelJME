@@ -2252,6 +2252,9 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchui_dylibApiFunc)(
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
 	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
 
+/** The default API entry export method. */
+extern const sjme_scritchui_dylibApiFunc sjme_scritchui_dylibApiExport;
+
 /** The base name for the ScritchUI dynamic library. */
 #define SJME_SCRITCHUI_DYLIB_NAME_BASE \
 	SJME_SCRITCHANY_DYLIB_NAME_BASE(ui)

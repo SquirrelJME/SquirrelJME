@@ -29,8 +29,8 @@ add_library(ScritchUIGTK2 SHARED
 	gtk2View.c
 	gtk2Window.c)
 
-# Always make it PIC
-squirreljme_always_fpic(ScritchUIGTK2)
+# Standard properties for dynamic libraries
+squirreljme_dylib_standard_properties(ScritchUIGTK2)
 
 # Include main headers
 target_include_directories(ScritchUIGTK2 PUBLIC

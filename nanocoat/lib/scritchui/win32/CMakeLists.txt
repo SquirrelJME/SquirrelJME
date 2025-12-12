@@ -26,8 +26,8 @@ add_library(ScritchUIWin32 SHARED
 	win32View.c
 	win32Window.c)
 
-# Always make it PIC
-squirreljme_always_fpic(ScritchUIWin32)
+# Standard properties for dynamic libraries
+squirreljme_dylib_standard_properties(ScritchUIWin32)
 
 # Include main headers
 target_include_directories(ScritchUIWin32 PUBLIC
