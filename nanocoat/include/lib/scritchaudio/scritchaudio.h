@@ -833,7 +833,8 @@ extern const sjme_scritchaudio_dylibApiFunc
 #if defined(SJME_CONFIG_MULTILIB_IS_DYLIB)
 	/** Set the value for the default dynamic library export. */
 	#define SJME_SCRITCHAUDIO_DYLIB_API_EXPORT_SET(x) \
-		const sjme_scritchui_dylibApiFunc SJME_SCRITCHAUDIO_DYLIB_API_EXPORT \
+		const sjme_scritchaudio_dylibApiFunc \
+			SJME_SCRITCHAUDIO_DYLIB_API_EXPORT \
 			sjme_attrExport = \
 			SJME_SCRITCHAUDIO_DYLIB_SYMBOL(x);
 #else

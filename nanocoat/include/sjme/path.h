@@ -153,6 +153,82 @@ extern "C"
 #else
 	#error Unknown native path style.
 #endif
+	
+/**
+ * Generic file system path.
+ *
+ * @since 2025/12/09
+ */
+typedef struct sjme_path sjme_path;
+
+/**
+ * Parses the given path, how this is handled along with the result depends
+ * on the implementation function. If any input path is determined to be
+ * not valid then the appropriate error shall be returned.
+ * 
+ * @param workPath The current working path for processing.
+ * @param outFLimit The limit to the number of characters.
+ * @param outFStr The base pointer, if this is set to a non-@c NULL pointer
+ * then @a outFLimit must also be valid and the parser will append the
+ * given string to the working path.
+ * @param walkPath The input path being processed, when a piece of the path
+ * has been processed accordingly this shall increment the pointer
+ * accordingly.
+ * @return Any resultant error, if any.
+ * @since 2025/12/11
+ */
+typedef sjme_errorCode (*sjme_path_familyParseFunc)(
+	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* workPath,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_jint* outFLimit,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_lpcstr* outFStr,
+	sjme_attrInOutNotNull sjme_lpcstr* walkPath);
+
+/**
+ * Function for taking a single path.
+ *
+ * @param path The path being looked at.
+ * @return Any resultant error, if any.
+ * @since 2025/12/11
+ */
+typedef sjme_errorCode (*sjme_path_familyPathFunc)(
+	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* path);
+
+/**
+ * Represents a specific family of paths which are compatible with each other
+ * but not with other families,
+ *
+ * @since 2025/12/11
+ */
+typedef struct sjme_path_family
+{
+	/** Family specific check for validity. */
+	sjme_path_familyPathFunc check;
+	
+	/**
+	 * Parses the root component of the path.
+	 *
+	 * If there is no root then @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
+	 * shall be returned to indicate this.
+	 */
+	sjme_path_familyParseFunc parseRoot;
+
+	/**
+	 * Parses the next name of the path.
+	 *
+	 * If no more names remain, then @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
+	 * shall be returned to indicate this.
+	 */
+	sjme_path_familyParseFunc parseName;
+
+	/** Finalization stage for path parsing, perform any final processing. */
+	sjme_path_familyPathFunc parseFinalize;
+	
+	/** The primary and alternative directory separator. */
+	sjme_lpcstr dirSep[2];
+
+	/** The path separator. */
+	sjme_lpcstr pathSep;
+} sjme_path_family;
 
 /**
  * Flags that may be associated with a path.
@@ -174,13 +250,8 @@ typedef enum sjme_path_flags
 	SJME_PATH_ALL_FLAGS = SJME_PATH_IS_DIRECTORY |
 		SJME_PATH_HAS_ROOT | SJME_PATH_IS_RELATIVE,
 } sjme_path_flags;
-	
-/**
- * Generic file system path.
- *
- * @since 2025/12/09
- */
-typedef struct sjme_path
+
+struct sjme_path
 {
 	/** The characters which make up the path. */
 	sjme_cchar chars[SJME_MAX_PATH];
@@ -190,6 +261,9 @@ typedef struct sjme_path
 
 	/** The flags for this path. */
 	sjme_jint flags;
+
+	/** The path family, this determines how paths are parsed and handled. */
+	const sjme_path_family* family;
 
 	/** The length of the entire path. */
 	sjme_jushort length;
@@ -202,7 +276,7 @@ typedef struct sjme_path
 	 * shall end in a directory separator.
 	 */
 	sjme_jushort names[SJME_MAX_PATH_DEPTH + 1];
-} sjme_path;
+};
 
 /**
  * Checks if the given path is valid.
