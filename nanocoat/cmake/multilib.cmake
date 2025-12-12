@@ -90,7 +90,7 @@ endfunction()
 # Add definitions for shared library builds
 function(squirreljme_dylib_standard_properties target)
 	target_compile_definitions(${target} PRIVATE
-		"SJME_MULTILIB_IS_DYLIB=1")
+		"SJME_CONFIG_MULTILIB_IS_DYLIB=1")
 
 	# Always try to enable FPIC for dynamic libraries
 	squirreljme_always_fpic(${target})

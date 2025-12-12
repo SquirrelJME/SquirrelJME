@@ -24,27 +24,33 @@ int main(int argc, char** argv)
 #define SYM_MAX 48
 	sjme_errorCode error;
 	sjme_dylib lib;
-	sjme_scritchui_dylibApiFunc apiInit;
-	sjme_cchar apiInitSym[SYM_MAX];
+	sjme_scritchui_dylibApiFunc* apiInit;
 
 	/* Load the ScritchUI library. */
 	lib = NULL;
 	if (sjme_error_is(error = sjme_dylib_openExtra(NULL,
 		SJME_DYLIB_EXTRA_FAMILY_SCRITCHUI, NULL, &lib)) || lib == NULL)
-		goto fail_any;
+		goto fail_openDyLib;
 
-#if 0
-	/* Resolve name to load in. */
-	memset(apiInitSym, 0, sizeof(apiInitSym));
-	snprintf(apiInitSym, SYM_MAX - 1, "%s%s",
-		SJME_TOKEN_STRING_PP(SJME_SCRITCHAUDIO_DYLIB_SYMBOL_PREFIX),
-		nameChars);
-	apiInitSym[SYM_MAX - 1] = 0;
-#endif
+	/* Grab the API initializer from the library. */
+	apiInit = NULL;
+	if (sjme_error_is(error = sjme_dylib_lookup(lib,
+		SJME_TOKEN_STRING_PP(SJME_SCRITCHUI_DYLIB_API_EXPORT),
+		(sjme_pointer*)&apiInit)) || apiInit == NULL)
+		goto fail_lookupInit;
+
+	/* Initialize ScritchUI from the pointer. */
+	if (sjme_error_is(error = (*apiInit)(NULL, NULL, NULL, NULL, NULL)))
+		goto fail_initUi;
 	
 	return 0;
+
+fail_initUi:
+fail_lookupInit:
+	if (lib != NULL)
+		sjme_dylib_close(lib);
 	
-fail_any:
+fail_openDyLib:
 	sjme_emitB("Error: %d", error);
 	return EXIT_FAILURE;
 #undef SYM_MAX

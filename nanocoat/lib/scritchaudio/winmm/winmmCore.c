@@ -49,6 +49,8 @@ sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(winmm)(
 	return SJME_ERROR_NONE;
 }
 
+SJME_SCRITCHAUDIO_DYLIB_API_EXPORT_SET(winmm)
+
 sjme_errorCode sjme_scritchaudio_winmm_apiInit(
 	sjme_attrInNotNull sjme_scritchaudio inState)
 {
