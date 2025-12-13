@@ -37,6 +37,7 @@ squirreljme_multilib_add_library(Base
 	nativeStdC.c
 	nativeWin32.c
 	path.c
+	pathStyles.c
 	seekable.c
 	seekableMemory.c
 	stdGone.c

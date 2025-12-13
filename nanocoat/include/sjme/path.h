@@ -166,7 +166,7 @@ typedef struct sjme_path sjme_path;
  * on the implementation function. If any input path is determined to be
  * not valid then the appropriate error shall be returned.
  * 
- * @param workPath The current working path for processing.
+ * @param path The current working path for processing.
  * @param outFLimit The limit to the number of characters.
  * @param outFStr The base pointer, if this is set to a non-@c NULL pointer
  * then @a outFLimit must also be valid and the parser will append the
@@ -178,7 +178,7 @@ typedef struct sjme_path sjme_path;
  * @since 2025/12/11
  */
 typedef sjme_errorCode (*sjme_path_styleParseFunc)(
-	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* workPath,
+	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* path,
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_jint* outFLimit,
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_lpcstr* outFStr,
 	sjme_attrInOutNotNull sjme_lpcstr* walkPath);
@@ -193,57 +193,19 @@ typedef sjme_errorCode (*sjme_path_styleParseFunc)(
 typedef sjme_errorCode (*sjme_path_stylePathFunc)(
 	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* path);
 
-struct sjme_path_style
-{
-	/** Family specific check for validity. */
-	sjme_path_stylePathFunc check;
-	
-	/**
-	 * Parses the root component of the path.
-	 *
-	 * If there is no root then @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
-	 * shall be returned to indicate this.
-	 */
-	sjme_path_styleParseFunc parseRoot;
-
-	/**
-	 * Parses the next name of the path.
-	 *
-	 * If no more names remain, then @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
-	 * shall be returned to indicate this.
-	 */
-	sjme_path_styleParseFunc parseName;
-
-	/** Finalization stage for path parsing, perform any final processing. */
-	sjme_path_stylePathFunc parseFinalize;
-	
-	/** The primary and alternative directory separator. */
-	sjme_lpcstr dirSep[2];
-
-	/** The path separator. */
-	sjme_lpcstr pathSep;
-};
-
 /**
- * Flags that may be associated with a path.
+ * Dot specifier for paths.
  *
- * @since 2025/12/09
+ * @since 2015/12/12
  */
-typedef enum sjme_path_flags
+typedef struct sjme_path_styleDot
 {
-	/** Does this path represent a directory? */
-	SJME_PATH_IS_DIRECTORY = INT32_C(0x01),
+	/** The number of characters. */
+	sjme_jubyte len;
 
-	/** Does this path have a root component? This makes a path absolute. */
-	SJME_PATH_HAS_ROOT = INT32_C(0x02),
-
-	/** Is this path relative? That is there is no root */
-	SJME_PATH_IS_RELATIVE = INT32_C(0x04),
-
-	/** All path flags. */
-	SJME_PATH_ALL_FLAGS = SJME_PATH_IS_DIRECTORY |
-		SJME_PATH_HAS_ROOT | SJME_PATH_IS_RELATIVE,
-} sjme_path_flags;
+	/** The characters which make up the path. */
+	sjme_lpcstr str;
+} sjme_path_styleDot;
 
 /**
  * The specific type of path style to use.
@@ -271,6 +233,70 @@ typedef enum sjme_path_styleType
 	SJME_NUM_PATH_STYLES,
 } sjme_path_styleType;
 
+struct sjme_path_style
+{
+	/** The style type of this path, this is self referencing. */
+	sjme_path_styleType type;
+	
+	/** Family specific check for validity. */
+	sjme_path_stylePathFunc check;
+	
+	/**
+	 * Parses the root component of the path.
+	 *
+	 * If there is no root then @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
+	 * shall be returned to indicate this.
+	 */
+	sjme_path_styleParseFunc parseRoot;
+
+	/**
+	 * Parses the next name of the path.
+	 *
+	 * If no more names remain, then @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
+	 * shall be returned to indicate this.
+	 */
+	sjme_path_styleParseFunc parseName;
+
+	/** Finalization stage for path parsing, perform any final processing. */
+	sjme_path_stylePathFunc parseFinalize;
+	
+	/** The primary and alternative directory separator. */
+	sjme_lpcstr dirSep[2];
+
+	/** The path separator. */
+	sjme_lpcstr pathSep;
+
+	/** Does this style not support relative paths? */
+	sjme_jboolean requireAbsolute;
+
+	/** Current directory dot style. */
+	sjme_path_styleDot dot[2];
+
+	/** Parent directory dot style. */
+	sjme_path_styleDot dotDot[2];
+};
+
+/**
+ * Flags that may be associated with a path.
+ *
+ * @since 2025/12/09
+ */
+typedef enum sjme_path_flags
+{
+	/** Does this path represent a directory? */
+	SJME_PATH_IS_DIRECTORY = INT32_C(0x01),
+
+	/** Does this path have a root component? This makes a path absolute. */
+	SJME_PATH_HAS_ROOT = INT32_C(0x02),
+
+	/** Is this path relative? That is there is no root */
+	SJME_PATH_IS_RELATIVE = INT32_C(0x04),
+
+	/** All path flags. */
+	SJME_PATH_ALL_FLAGS = SJME_PATH_IS_DIRECTORY |
+		SJME_PATH_HAS_ROOT | SJME_PATH_IS_RELATIVE,
+} sjme_path_flags;
+
 struct sjme_path
 {
 	/** The characters which make up the path. */
@@ -282,8 +308,8 @@ struct sjme_path
 	/** The flags for this path. */
 	sjme_jint flags;
 
-	/** The path family, this determines how paths are parsed and handled. */
-	const sjme_path_style* family;
+	/** The path style, this determines how paths are parsed and handled. */
+	const sjme_path_style* style;
 
 	/** The length of the entire path. */
 	sjme_jushort length;

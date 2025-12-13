@@ -234,6 +234,7 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 sjme_errorCode sjme_path_check(
 	sjme_attrInNotNull const sjme_path* path)
 {
+	sjme_errorCode error;
 	sjme_jint length, nameCount, i, beginDx, endDx, lastDx;
 	
 	if (path == NULL)
@@ -242,6 +243,10 @@ sjme_errorCode sjme_path_check(
 	/* Must be zero! */
 	if (path->zero != 0)
 		return SJME_ERROR_MEMORY_CORRUPTION;
+
+	/* A style must be specified. */
+	if (path->style == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Invalid flags set? */
 	if ((path->flags & (~SJME_PATH_ALL_FLAGS)) != 0)
@@ -290,13 +295,13 @@ sjme_errorCode sjme_path_check(
 	/* always start at zero. */
 	if (lastDx != length || path->names[0] != 0)
 		return SJME_ERROR_ILLEGAL_STATE;
-
-#if defined(SJME_PATH_NO_RELATIVE)
+	
 	/* Special case, if an operating system does not support any form */
 	/* of relative paths then make sure denormal paths are never used. */
-	if (sjme_error_is(error = sjme_path_checkDenormal(path, SJME_JNI_TRUE)))
-		return sjme_error_default(error);
-#endif
+	if (path->style->requireAbsolute)
+		if (sjme_error_is(error = sjme_path_checkDenormal(path,
+			SJME_JNI_TRUE)))
+			return sjme_error_default(error);
 
 	/* Valid path! */
 	return SJME_ERROR_NONE;
@@ -310,6 +315,8 @@ sjme_errorCode sjme_path_checkDenormal(
 	sjme_jint i, n, len;
 	sjme_lpcstr str;
 	sjme_jboolean dotDotOkay;
+	const sjme_path_styleDot(*dot)[2];
+	const sjme_path_styleDot(*dotDot)[2];
 
 	if (path == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -323,6 +330,10 @@ sjme_errorCode sjme_path_checkDenormal(
 		SJME_PATH_HAS_ROOT)) != SJME_PATH_HAS_ROOT)
 		return SJME_ERROR_PATH_NOT_ABSOLUTE;
 
+	/* Get dot and dot dot styles. */
+	dot = &path->style->dot;
+	dotDot = &path->style->dotDot;
+
 	/* Check each name for relative components. */
 	dotDotOkay = SJME_JNI_TRUE;
 	for (n = path->nameCount, i = 0; i < n; i++)
@@ -335,13 +346,17 @@ sjme_errorCode sjme_path_checkDenormal(
 			return sjme_error_default(error);
 
 		/* Dot stays in the current directory. */
-		if ((len == 1 && !strcmp(".", str)) ||
-			(len == 2 && !strcmp("./", str)))
+		if ((len == (*dot)[0].len &&
+				!strncmp((*dot)[0].str, str, len)) ||
+			(len == (*dot)[1].len &&
+				!strncmp((*dot)[1].str, str, len)))
 			return SJME_ERROR_PATH_NOT_ABSOLUTE;
 
 		/* Dot-dot goes up a directory. */
-		else if ((len == 2 && !strcmp("..", str)) ||
-			(len == 3 && !strcmp("../", str)))
+		else if ((len == (*dotDot)[0].len &&
+				!strncmp((*dotDot)[0].str, str, len)) ||
+			(len == (*dotDot)[1].len &&
+				!strncmp((*dotDot)[1].str, str, len)))
 		{
 			/* A dot-dot should not occur here as it is not at the very */
 			/* start of a relative path! */
