@@ -629,13 +629,138 @@ sjme_errorCode sjme_path_parse(
 	sjme_attrInNotNull sjme_lpcstr strPath)
 {
 	sjme_errorCode error;
-	sjme_path working;
-	sjme_cchar c;
-	sjme_jint strLen, bp, ep, nameAt, i, n;
+	const sjme_path_style* style;
 
 	if (outPath == NULL || strPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Get the style as determined by NAL. */
+	style = NULL;
+	if (sjme_nal_default.pathStyle != NULL &&
+		sjme_error_is(error = sjme_nal_default.pathStyle(&style)))
+		return sjme_error_default(error);
+
+	/* Forward parse, fallback to none. */
+	return sjme_path_parseYP((style != NULL ? style :
+		&sjme_path_styles[SJME_PATH_STYLE_NONE]), outPath, strPath);
+}
+
+sjme_errorCode sjme_path_parseF(
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
+	sjme_attrInNotNull sjme_attrFormatArg sjme_lpcstr format,
+	...)
+{
+	sjme_errorCode error;
+
+	if (outPath == NULL || format == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_path_resolveP(
+	sjme_attrOutNotNull sjme_attrOutModify sjme_path* outPath,
+	sjme_attrInNotNull const sjme_path* inPath)
+{
+	sjme_errorCode error;
+	sjme_path result;
+	sjme_jint newLength, newCount;
+
+	if (outPath == NULL || inPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (sjme_error_is(error = sjme_path_check(inPath)))
+		return sjme_error_default(error);
+
+	/* If the input path is a blank path, this does nothing. */
+	if (inPath->length == 0)
+		return SJME_ERROR_NONE;
+
+	/* If the path is absolute then just use the absolute path. */
+	/* Or if the output path is a blank path. */
+	if ((inPath->flags & SJME_PATH_HAS_ROOT) != 0 || outPath->length == 0)
+	{
+		memmove(outPath, inPath, sizeof(*outPath));
+		return SJME_ERROR_NONE;
+	}
+
+	/* Make a defensive copy of the output path. */
+	memmove(&result, outPath, sizeof(*outPath));
+	if (sjme_error_is(error = sjme_path_check(&result)))
+		return sjme_error_default(error);
+
+	/* If there is no separator at the end, one must be added. */
+	if (result.chars[result.length - 1] != SJME_CONFIG_FILE_SEPARATOR)
+	{
+		/* Make sure this does not overflow the path. */
+		if (result.length >= SJME_MAX_PATH)
+			return SJME_ERROR_PATH_TOO_LONG;
+		
+		/* Add in the new character. */
+		result.chars[result.length++] = SJME_CONFIG_FILE_SEPARATOR;
+		result.names[result.nameCount] = result.length;
+	}
+
+	/* Calculate size of the new path. */
+	newLength = result.length + inPath->length;
+	newCount = result.nameCount + inPath->nameCount;
+	if (newLength < 0 || newLength > SJME_MAX_PATH)
+		return SJME_ERROR_PATH_TOO_LONG;
+	else if (newCount < 0 || newCount > SJME_MAX_PATH_DEPTH)
+		return SJME_ERROR_PATH_TOO_DEEP;
+
+	/* Copy entire path segment over. */
+	memmove(&result.chars[result.length], &inPath->chars[0],
+		sizeof(result.chars[0]) * inPath->length);
+
+	/* Copy names over. */
+	memmove(&result.names[result.nameCount], &inPath->names[0],
+		sizeof(result.names[0]) * (inPath->nameCount + 1));
+
+	/* Offset names accordingly. */
+	while (result.nameCount <= newCount)
+		result.names[result.nameCount++] += result.length;
+	result.nameCount = newCount;
+	result.length = newLength;
+
+	/* Make sure the final path is valid. */
+	if (sjme_error_is(error = sjme_path_check(&result)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	memmove(outPath, &result, sizeof(*outPath));
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_path_parseY(
+	sjme_attrInValue sjme_path_styleType style,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
+	sjme_attrInNotNull sjme_lpcstr strPath)
+{
+	if (outPath == NULL || strPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (style < 0 || style >= SJME_NUM_PATH_STYLES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	return sjme_path_parseYP(&sjme_path_styles[style],
+		outPath, strPath);
+}
+
+sjme_errorCode sjme_path_parseYP(
+	sjme_attrInValue const sjme_path_style* style,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
+	sjme_attrInNotNull sjme_lpcstr strPath)
+{
+	sjme_errorCode error;
+	sjme_path working;
+	sjme_cchar c;
+	sjme_jint strLen, bp, ep, nameAt, i, n;
+	
+	if (style == NULL || outPath == NULL || strPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	/* Clear working path. */
 	memset(&working, 0, sizeof(working));
 	
@@ -860,109 +985,6 @@ sjme_errorCode sjme_path_parse(
 	/* Copy out! */
 	memmove(outPath, &working, sizeof(*outPath));
 	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_path_parseF(
-	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
-	sjme_attrInNotNull sjme_attrFormatArg sjme_lpcstr format,
-	...)
-{
-	sjme_errorCode error;
-
-	if (outPath == NULL || format == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-sjme_errorCode sjme_path_resolveP(
-	sjme_attrOutNotNull sjme_attrOutModify sjme_path* outPath,
-	sjme_attrInNotNull const sjme_path* inPath)
-{
-	sjme_errorCode error;
-	sjme_path result;
-	sjme_jint newLength, newCount;
-
-	if (outPath == NULL || inPath == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (sjme_error_is(error = sjme_path_check(inPath)))
-		return sjme_error_default(error);
-
-	/* If the input path is a blank path, this does nothing. */
-	if (inPath->length == 0)
-		return SJME_ERROR_NONE;
-
-	/* If the path is absolute then just use the absolute path. */
-	/* Or if the output path is a blank path. */
-	if ((inPath->flags & SJME_PATH_HAS_ROOT) != 0 || outPath->length == 0)
-	{
-		memmove(outPath, inPath, sizeof(*outPath));
-		return SJME_ERROR_NONE;
-	}
-
-	/* Make a defensive copy of the output path. */
-	memmove(&result, outPath, sizeof(*outPath));
-	if (sjme_error_is(error = sjme_path_check(&result)))
-		return sjme_error_default(error);
-
-	/* If there is no separator at the end, one must be added. */
-	if (result.chars[result.length - 1] != SJME_CONFIG_FILE_SEPARATOR)
-	{
-		/* Make sure this does not overflow the path. */
-		if (result.length >= SJME_MAX_PATH)
-			return SJME_ERROR_PATH_TOO_LONG;
-		
-		/* Add in the new character. */
-		result.chars[result.length++] = SJME_CONFIG_FILE_SEPARATOR;
-		result.names[result.nameCount] = result.length;
-	}
-
-	/* Calculate size of the new path. */
-	newLength = result.length + inPath->length;
-	newCount = result.nameCount + inPath->nameCount;
-	if (newLength < 0 || newLength > SJME_MAX_PATH)
-		return SJME_ERROR_PATH_TOO_LONG;
-	else if (newCount < 0 || newCount > SJME_MAX_PATH_DEPTH)
-		return SJME_ERROR_PATH_TOO_DEEP;
-
-	/* Copy entire path segment over. */
-	memmove(&result.chars[result.length], &inPath->chars[0],
-		sizeof(result.chars[0]) * inPath->length);
-
-	/* Copy names over. */
-	memmove(&result.names[result.nameCount], &inPath->names[0],
-		sizeof(result.names[0]) * (inPath->nameCount + 1));
-
-	/* Offset names accordingly. */
-	while (result.nameCount <= newCount)
-		result.names[result.nameCount++] += result.length;
-	result.nameCount = newCount;
-	result.length = newLength;
-
-	/* Make sure the final path is valid. */
-	if (sjme_error_is(error = sjme_path_check(&result)))
-		return sjme_error_default(error);
-
-	/* Success! */
-	memmove(outPath, &result, sizeof(*outPath));
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_path_parseY(
-	sjme_attrInValue sjme_path_styleType style,
-	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
-	sjme_attrInNotNull sjme_lpcstr strPath)
-{
-	if (outPath == NULL || strPath == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (style < 0 || style >= SJME_NUM_PATH_STYLES)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_path_resolveS(

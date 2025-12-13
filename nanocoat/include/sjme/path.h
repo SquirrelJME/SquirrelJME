@@ -485,6 +485,20 @@ sjme_errorCode sjme_path_parseY(
 	sjme_attrInValue sjme_path_styleType style,
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull sjme_lpcstr strPath);
+
+/**
+ * Parses the given path using the specified style provider.
+ *
+ * @param style The style to use for the path.
+ * @param outPath The output path.
+ * @param strPath The string based path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/13
+ */
+sjme_errorCode sjme_path_parseYP(
+	sjme_attrInValue const sjme_path_style* style,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
+	sjme_attrInNotNull sjme_lpcstr strPath);
 	
 /**
  * Resolves the input path against the given path, the resultant path will
