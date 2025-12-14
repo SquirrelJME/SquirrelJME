@@ -348,6 +348,20 @@ sjme_errorCode sjme_path_checkDenormal(
 	sjme_attrInValue sjme_jboolean requireAbsolute);
 
 /**
+ * Checks if the string has a valid directory separator.
+ * 
+ * @param path The input path.
+ * @param string The string to check.
+ * @return Any resultant error, if any. Will
+ * be @link SJME_ERROR_NO_SUCH_ELEMENT @endlink if there is no directory
+ * seperator.
+ * @since 2025/12/13
+ */
+sjme_errorCode sjme_path_checkDirSep(
+	sjme_attrInNotNull const sjme_path* path,
+	sjme_attrInNotNull sjme_lpcstr string);
+
+/**
  * Returns a default system path.
  * 
  * @param nal The native abstraction layer to use, if this is not specified
