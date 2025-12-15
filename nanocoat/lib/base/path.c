@@ -231,13 +231,61 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 	{-1, NULL, NULL},
 };
 
+static sjme_errorCode sjme_path_append(
+	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* path,
+	sjme_attrInPositiveNonZero sjme_jint len,
+	sjme_attrInNotNull sjme_lpcstr str)
+{
+	sjme_jint newLen;
+	
+	if (path == NULL || str == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (len < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Path would end up being too long? */
+	newLen = path->length + len;
+	if (newLen > SJME_MAX_PATH)
+		return SJME_ERROR_PATH_TOO_LONG;
+	
+	/* Copy all bytes directly. */
+	memmove(&path->chars[path->length], str,
+		sizeof(path->chars[0]) * len);
+	
+	/* Shift up lengths. */
+	path->length = newLen;
+	path->names[path->nameCount] = newLen;
+	
+	sjme_message("[%d/%d]: %s <- %.*s",
+		path->length, path->nameCount, path->chars,
+		len, str);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_path_appendName(
 	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* path,
 	sjme_attrInPositiveNonZero sjme_jint len,
 	sjme_attrInNotNull sjme_lpcstr str)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (path == NULL || str == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (len < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Path would exceed depth limit? */
+	if (path->nameCount >= SJME_MAX_PATH_DEPTH)
+		return SJME_ERROR_PATH_TOO_DEEP;
+	
+	/* The name after the last name is really just the length of the path, */
+	/* so add that at the end. */
+	path->names[++path->nameCount] = path->length;
+	
+	/* Continue to append, since it appends to the last name. */
+	return sjme_path_append(path, len, str);
 }
 
 sjme_errorCode sjme_path_check(
@@ -324,8 +372,8 @@ sjme_errorCode sjme_path_checkDenormal(
 	sjme_jint i, n, len;
 	sjme_lpcstr str;
 	sjme_jboolean dotDotOkay;
-	const sjme_path_styleDot(*dot)[2];
-	const sjme_path_styleDot(*dotDot)[2];
+	const sjme_path_styleSub(*dot)[2];
+	const sjme_path_styleSub(*dotDot)[2];
 
 	if (path == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -356,16 +404,16 @@ sjme_errorCode sjme_path_checkDenormal(
 
 		/* Dot stays in the current directory. */
 		if ((len == (*dot)[0].len &&
-				!strncmp((*dot)[0].str, str, len)) ||
+				0 == strncmp((*dot)[0].str, str, len)) ||
 			(len == (*dot)[1].len &&
-				!strncmp((*dot)[1].str, str, len)))
+				0 == strncmp((*dot)[1].str, str, len)))
 			return SJME_ERROR_PATH_NOT_ABSOLUTE;
 
 		/* Dot-dot goes up a directory. */
 		else if ((len == (*dotDot)[0].len &&
-				!strncmp((*dotDot)[0].str, str, len)) ||
+				0 == strncmp((*dotDot)[0].str, str, len)) ||
 			(len == (*dotDot)[1].len &&
-				!strncmp((*dotDot)[1].str, str, len)))
+				0 == strncmp((*dotDot)[1].str, str, len)))
 		{
 			/* A dot-dot should not occur here as it is not at the very */
 			/* start of a relative path! */
@@ -389,13 +437,35 @@ sjme_errorCode sjme_path_checkDenormal(
 
 sjme_errorCode sjme_path_checkDirSep(
 	sjme_attrInNotNull const sjme_path* path,
-	sjme_attrInNotNull sjme_lpcstr string)
+	sjme_attrInNotNull sjme_lpcstr string,
+	sjme_attrInValue sjme_jboolean noAlt)
 {
+	const sjme_path_style* style;
+	sjme_jint strLen;
+	
 	if (path == NULL || string == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* There must be a valid style. */
+	style = path->style;
+	if (style == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Matches the first separator? */
+	strLen = strlen(string);
+	if (style->dirSep[0].len > 0 && strLen >= style->dirSep[0].len &&
+		0 == strncmp(style->dirSep[0].str, string,
+			style->dirSep[0].len))
+		return SJME_ERROR_NONE;
+	
+	/* Matches the second separator? */
+	if (!noAlt && style->dirSep[1].len > 0 && strLen >= style->dirSep[1].len &&
+		0 == strncmp(style->dirSep[1].str, string,
+			style->dirSep[1].len))
+		return SJME_ERROR_NONE;
+	
+	/* Not found. */
+	return SJME_ERROR_NO_SUCH_ELEMENT;
 }
 
 sjme_errorCode sjme_path_default(
@@ -700,17 +770,23 @@ sjme_errorCode sjme_path_parseYP(
 	sjme_attrInNotNull sjme_lpcstr strPath)
 {
 	sjme_errorCode error;
-	sjme_path working;
+	sjme_path result;
 	sjme_jint strLen, len;
 	sjme_lpcstr walkAt, str, lastChar;
 	sjme_cchar walkBuf[SJME_MAX_PATH + 1];
-#if 0
-	sjme_cchar c;
-	sjme_jint strLen, bp, ep, nameAt, i, n;
-#endif
 	
 	if (style == NULL || outPath == NULL || strPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Sanity check on the various lengths. */
+	if ((style->dirSep[0].len != -1 && style->dirSep[0].len != 1) ||
+		(style->dirSep[1].len != -1 && style->dirSep[1].len != 1) ||
+		(style->pathSep.len != 1) ||
+		(style->dot[0].len != -1 && style->dot[0].len != 1) ||
+		(style->dot[1].len != -1 && style->dot[1].len != 1) ||
+		(style->dotDot[0].len != -1 && style->dotDot[0].len != 1) ||
+		(style->dotDot[1].len != -1 && style->dotDot[1].len != 1))
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Make sure the path is not too long to start with. */
 	strLen = strlen(strPath);
@@ -723,13 +799,13 @@ sjme_errorCode sjme_path_parseYP(
 	walkAt = &walkBuf[0];
 	
 	/* Setup initial base path. */
-	memset(&working, 0, sizeof(working));
-	working.style = style;
+	memset(&result, 0, sizeof(result));
+	result.style = style;
 	
 	/* Determine if this path has a root component. */
 	len = -1;
 	str = NULL;
-	if (sjme_error_is(error = working.style->parseRoot(&working,
+	if (sjme_error_is(error = result.style->parseRoot(&result,
 		&len, &str, &walkAt)))
 		if (error != SJME_ERROR_NO_SUCH_ELEMENT)
 			return sjme_error_default(error);
@@ -738,10 +814,10 @@ sjme_errorCode sjme_path_parseYP(
 	if (len > 0 && str != NULL)
 	{
 		/* Has a root. */
-		working.flags |= SJME_PATH_HAS_ROOT;
+		result.flags |= SJME_PATH_HAS_ROOT;
 		
 		/* Append the name. */
-		if (sjme_error_is(error = sjme_path_appendName(&working,
+		if (sjme_error_is(error = sjme_path_appendName(&result,
 			len, str)))
 			return sjme_error_default(error);
 	}
@@ -752,7 +828,7 @@ sjme_errorCode sjme_path_parseYP(
 		/* Parse the next name. */
 		len = -1;
 		str = NULL;
-		if (sjme_error_is(error = working.style->parseRoot(&working,
+		if (sjme_error_is(error = result.style->parseName(&result,
 			&len, &str, &walkAt)))
 		{
 			if (error != SJME_ERROR_NO_SUCH_ELEMENT)
@@ -762,30 +838,44 @@ sjme_errorCode sjme_path_parseYP(
 			break;
 		}
 		
+		/* If there is no separator at the end, one must be added. */
+		if (sjme_error_is(error = sjme_path_checkDirSep(&result,
+			&result.chars[result.length - 1], SJME_JNI_TRUE)))
+		{
+			if (error != SJME_ERROR_NO_SUCH_ELEMENT)
+				return sjme_error_default(error);
+			
+			/* Add in the primary path separator. */
+			if (sjme_error_is(error = sjme_path_append(&result,
+				result.style->dirSep[0].len,
+				result.style->dirSep[0].str)))
+				return sjme_error_default(error);
+		}
+		
 		/* Append the name. */
-		if (sjme_error_is(error = sjme_path_appendName(&working,
+		if (sjme_error_is(error = sjme_path_appendName(&result,
 			len, str)))
 			return sjme_error_default(error);
 	}
 	
 	/* If the path has no root, then it is relative. */
-	if ((working.flags & SJME_PATH_HAS_ROOT) != 0)
-		working.flags |= SJME_PATH_IS_RELATIVE;
+	if ((result.flags & SJME_PATH_HAS_ROOT) == 0)
+		result.flags |= SJME_PATH_IS_RELATIVE;
 	
 	/* If this has a root and only has the root component, consider this a */
 	/* directory. */
-	if ((working.nameCount <= 1 &&
-		(working.flags & SJME_PATH_HAS_ROOT) != 0))
-		working.flags |= SJME_PATH_IS_DIRECTORY;
+	if ((result.nameCount <= 1 &&
+		(result.flags & SJME_PATH_HAS_ROOT) != 0))
+		result.flags |= SJME_PATH_IS_DIRECTORY;
 	
 	/* If the last name contains a slash then consider this a directory. */
-	if (working.nameCount >= 1)
+	if (result.nameCount >= 1)
 	{
 		/* Look at the last character. */
-		lastChar = &working.chars[working.names[working.nameCount] - 1];
+		lastChar = &result.chars[result.names[result.nameCount] - 1];
 		if (!sjme_error_is(error = sjme_path_checkDirSep(
-			&working, lastChar)))
-			working.flags |= SJME_PATH_IS_DIRECTORY;
+			&result, lastChar, SJME_JNI_FALSE)))
+			result.flags |= SJME_PATH_IS_DIRECTORY;
 		
 		/* Some other error? */
 		else if (error != SJME_ERROR_NO_SUCH_ELEMENT)
@@ -793,15 +883,15 @@ sjme_errorCode sjme_path_parseYP(
 	}
 	
 	/* Finalize the path. */
-	if (sjme_error_is(error = working.style->parseFinalize(&working)))
+	if (sjme_error_is(error = result.style->parseFinalize(&result)))
 		return sjme_error_default(error);
 	
 	/* The resultant path should be valid. */
-	if (sjme_error_is(error = sjme_path_check(&working)))
+	if (sjme_error_is(error = sjme_path_check(&result)))
 		return sjme_error_default(error);
 	
 	/* Success! */
-	memmove(outPath, &working, sizeof(*outPath));
+	memmove(outPath, &result, sizeof(*outPath));
 	return SJME_ERROR_NONE;
 	
 #if 0
@@ -823,7 +913,7 @@ sjme_errorCode sjme_path_parseYP(
 		return SJME_ERROR_PATH_TOO_LONG;
 
 	/* Copy it over to act as the base path. */
-	memmove(&working.chars[0], strPath, sizeof(*strPath) * strLen);
+	memmove(&result.chars[0], strPath, sizeof(*strPath) * strLen);
 
 #if SJME_CONFIG_PATH_STYLE_IS_DOS_OR_WINDOWS || \
 	defined(SJME_CONFIG_PATH_STYLE_IS_UPPERCASE)
@@ -831,7 +921,7 @@ sjme_errorCode sjme_path_parseYP(
 	/* Or perform case normalization. */
 	for (i = 0; i < strLen; i++)
 	{
-		c = working.chars[i];
+		c = result.chars[i];
 
 #if SJME_CONFIG_PATH_STYLE_IS_DOS_OR_WINDOWS
 		/* These are always invalid on DOS/Windows. */
@@ -850,7 +940,7 @@ sjme_errorCode sjme_path_parseYP(
 #if defined(SJME_CONFIG_PATH_STYLE_IS_UPPERCASE)
 		/* Force uppercase? */
 		if (c >= 'a' && c <= 'z')
-			working.chars[i] = 'A' + (c - 'a');
+			result.chars[i] = 'A' + (c - 'a');
 #endif
 	}
 #endif
@@ -865,13 +955,13 @@ sjme_errorCode sjme_path_parseYP(
 			return SJME_ERROR_PATH_TOO_DEEP;
 		
 		/* Is this a directory separator? Or NUL? */
-		c = working.chars[ep];
+		c = result.chars[ep];
 		if (c == SJME_CONFIG_FILE_SEPARATOR ||
 			c == SJME_CONFIG_FILE_SEPARATOR_ALT ||
 			c == '\0')
 		{
-			working.names[nameAt++] = bp;
-			working.names[nameAt] = ep + 1;
+			result.names[nameAt++] = bp;
+			result.names[nameAt] = ep + 1;
 			bp = ep + 1;
 		}
 	}
@@ -881,26 +971,26 @@ sjme_errorCode sjme_path_parseYP(
 		return SJME_ERROR_PATH_TOO_DEEP;
 
 	/* The "final" name is the string length. */
-	working.names[nameAt] = strLen;
-	working.length = strLen;
-	working.nameCount = nameAt;
+	result.names[nameAt] = strLen;
+	result.length = strLen;
+	result.nameCount = nameAt;
 
 	/* Is this path a directory? */
-	c = working.chars[strLen - 1];
+	c = result.chars[strLen - 1];
 	if (c == SJME_CONFIG_FILE_SEPARATOR ||
 		c == SJME_CONFIG_FILE_SEPARATOR_ALT)
-		working.flags |= SJME_PATH_IS_DIRECTORY;
+		result.flags |= SJME_PATH_IS_DIRECTORY;
 
 #if SJME_CONFIG_PATH_STYLE_IS_DOS_OR_WINDOWS
 	/* Cannot start with a UNIX root. */
-	if (working.chars[0] == '/')
+	if (result.chars[0] == '/')
 		return SJME_ERROR_PATH_NOT_VALID;
 #endif
 
 #if SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_WINDOWS
 	/* There cannot be awkward UNC paths in Windows */
-	if ((working.chars[0] == '\\' && working.chars[1] == '/') ||
-		(working.chars[0] == '/' && working.chars[1] == '\\'))
+	if ((result.chars[0] == '\\' && result.chars[1] == '/') ||
+		(result.chars[0] == '/' && result.chars[1] == '\\'))
 		return SJME_ERROR_PATH_NOT_VALID;
 #endif
 
@@ -908,40 +998,40 @@ sjme_errorCode sjme_path_parseYP(
 	sjme_todo("Impl?");
 #if SJME_CONFIG_PATH_STYLE_IS_DOS_OR_WINDOWS
 #elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_UNIX
-	if ((strLen >= 2 && working.chars[0] == '/' && working.chars[1] == '/') ||
-		(strLen >= 1 && working.chars[0] == '/'))
+	if ((strLen >= 2 && result.chars[0] == '/' && result.chars[1] == '/') ||
+		(strLen >= 1 && result.chars[0] == '/'))
 	{
 		/* Double slash characters must always be considered a single */
 		/* component to be POSIX compatible. */
-		if (working.chars[1] == '/')
+		if (result.chars[1] == '/')
 		{
 			/* Shift down. */
-			memmove(&working.names[1], &working.names[2],
-				sizeof(working.names[0]) *
-				(SJME_MAX_PATH_DEPTH - working.nameCount));
-			working.nameCount--;
+			memmove(&result.names[1], &result.names[2],
+				sizeof(result.names[0]) *
+				(SJME_MAX_PATH_DEPTH - result.nameCount));
+			result.nameCount--;
 
 			/* Make sure the last name is cleared. */
-			working.names[SJME_MAX_PATH_DEPTH] = 0;
+			result.names[SJME_MAX_PATH_DEPTH] = 0;
 		}
 		
 		/* Valid! */
-		working.flags |= SJME_PATH_HAS_ROOT;
+		result.flags |= SJME_PATH_HAS_ROOT;
 	}
 #else
 	#error Unknown native path style.
 #endif
 
 	/* Remove empty names so that /cute//squirrels becomes /cute/squirrels. */
-	for (nameAt = working.nameCount - 1; nameAt >= 0; nameAt--)
+	for (nameAt = result.nameCount - 1; nameAt >= 0; nameAt--)
 	{
 		/* Get both sides of the name. */
-		bp = working.names[nameAt];
-		ep = working.names[nameAt + 1];
+		bp = result.names[nameAt];
+		ep = result.names[nameAt + 1];
 
 		/* If the name is a single character and only consists of the path */
 		/* component, strip it. */
-		c = working.chars[bp];
+		c = result.chars[bp];
 		if (ep == bp + 1 && (c == SJME_CONFIG_FILE_SEPARATOR ||
 			c == SJME_CONFIG_FILE_SEPARATOR_ALT))
 		{
@@ -954,41 +1044,41 @@ sjme_errorCode sjme_path_parseYP(
 #endif
 			
 			/* Shift entire path down. */
-			memmove(&working.chars[bp], &working.chars[bp + 1],
+			memmove(&result.chars[bp], &result.chars[bp + 1],
 				SJME_MAX_PATH - bp);
 			
 			/* Shift names down. */
-			memmove(&working.names[nameAt], &working.names[nameAt + 1],
-				sizeof(working.names[0]) *
-				(SJME_MAX_PATH_DEPTH - working.nameCount));
-			working.nameCount--;
+			memmove(&result.names[nameAt], &result.names[nameAt + 1],
+				sizeof(result.names[0]) *
+				(SJME_MAX_PATH_DEPTH - result.nameCount));
+			result.nameCount--;
 
 			/* Make sure the last name is cleared. */
-			working.names[SJME_MAX_PATH_DEPTH] = 0;
+			result.names[SJME_MAX_PATH_DEPTH] = 0;
 
 			/* Make sure all indexes post shift get decremented. */
-			for (i = nameAt; i <= working.nameCount; i++)
-				working.names[i]--;
+			for (i = nameAt; i <= result.nameCount; i++)
+				result.names[i]--;
 
 			/* Length gets cut down by one as well. */
-			working.length--;
+			result.length--;
 		}
 	}
 	
 #if SJME_CONFIG_FILE_SEPARATOR != SJME_CONFIG_FILE_SEPARATOR_ALT 
 	/* If the alternative path character is actually different, then */
 	/* force everything to be the primary path character. */
-	for (n = working.length, i = 0; i < n; i++)
-		if (working.chars[i] == SJME_CONFIG_FILE_SEPARATOR_ALT)
-			working.chars[i] = SJME_CONFIG_FILE_SEPARATOR;
+	for (n = result.length, i = 0; i < n; i++)
+		if (result.chars[i] == SJME_CONFIG_FILE_SEPARATOR_ALT)
+			result.chars[i] = SJME_CONFIG_FILE_SEPARATOR;
 #endif
 
 	/* Make sure resultant working path is valid. */
-	if (sjme_error_is(error = sjme_path_check(&working)))
+	if (sjme_error_is(error = sjme_path_check(&result)))
 		return sjme_error_default(error);
 
 	/* Copy out! */
-	memmove(outPath, &working, sizeof(*outPath));
+	memmove(outPath, &result, sizeof(*outPath));
 	return SJME_ERROR_NONE;
 #endif
 }
@@ -1025,15 +1115,17 @@ sjme_errorCode sjme_path_resolveP(
 		return sjme_error_default(error);
 
 	/* If there is no separator at the end, one must be added. */
-	if (result.chars[result.length - 1] != SJME_CONFIG_FILE_SEPARATOR)
+	if (sjme_error_is(error = sjme_path_checkDirSep(&result,
+		&result.chars[result.length - 1], SJME_JNI_TRUE)))
 	{
-		/* Make sure this does not overflow the path. */
-		if (result.length >= SJME_MAX_PATH)
-			return SJME_ERROR_PATH_TOO_LONG;
+		if (error != SJME_ERROR_NO_SUCH_ELEMENT)
+			return sjme_error_default(error);
 		
-		/* Add in the new character. */
-		result.chars[result.length++] = SJME_CONFIG_FILE_SEPARATOR;
-		result.names[result.nameCount] = result.length;
+		/* Add in the primary path separator. */
+		if (sjme_error_is(error = sjme_path_append(&result,
+			result.style->dirSep[0].len,
+			result.style->dirSep[0].str)))
+			return sjme_error_default(error);
 	}
 
 	/* Calculate size of the new path. */

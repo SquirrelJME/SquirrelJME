@@ -11,6 +11,12 @@
 #include "sjme/debug.h"
 #include "sjme/util.h"
 
+/** Directory seperator declaration. */
+#define sjme_ds(a, b) {a, b}
+
+/** Dot style declaration. */
+#define sjme_fs(a, b, c, d) {{a, b}, {c, d}}
+
 static sjme_errorCode sjme_path_dos_check(
 	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* path)
 {
@@ -43,6 +49,7 @@ static sjme_errorCode sjme_path_dos_parseRoot(
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_lpcstr* outFStr,
 	sjme_attrInOutNotNull sjme_lpcstr* walkPath)
 {
+	sjme_errorCode error;
 	sjme_jint strLen;
 	sjme_cchar c, d, e;
 	
@@ -63,12 +70,10 @@ static sjme_errorCode sjme_path_dos_parseRoot(
 		e = (*walkPath)[2];
 		
 		/* This is a UNC path. */
-		if (c == SJME_CONFIG_FILE_SEPARATOR &&
-			d == SJME_CONFIG_FILE_SEPARATOR)
+		if (c == '\\' && d == '\\')
 		{
 			/* The third character cannot be NUL or another separator. */
-			if (e == '\0' || e == SJME_CONFIG_FILE_SEPARATOR ||
-				e == SJME_CONFIG_FILE_SEPARATOR_ALT)
+			if (e == '\0' || e == '\\' || e == '/')
 				return SJME_ERROR_PATH_NOT_VALID;
 			
 			/* Consume the root. */
@@ -84,15 +89,15 @@ static sjme_errorCode sjme_path_dos_parseRoot(
 	}
 	
 	/* Cannot start with any slash. */
-	c = (*walkPath)[0];
-	if (c == SJME_CONFIG_FILE_SEPARATOR ||
-		c == SJME_CONFIG_FILE_SEPARATOR_ALT)
-		return SJME_ERROR_PATH_NOT_VALID;
+	error = sjme_path_checkDirSep(path, (*walkPath), SJME_JNI_FALSE);
+	if (error != SJME_ERROR_NO_SUCH_ELEMENT)
+		return sjme_error_defaultOr(error, SJME_ERROR_PATH_NOT_VALID);
 	
 	/* The root is limited to this length, maximum. */
 	strLen = sjme_min(strLen, 3);
 	
 	/* The root must start with a letter. */
+	c = (*walkPath)[0];
 	if (strLen <= 0 || !(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'))
 		return SJME_ERROR_NO_SUCH_ELEMENT;
 	
@@ -101,11 +106,14 @@ static sjme_errorCode sjme_path_dos_parseRoot(
 		return SJME_ERROR_NO_SUCH_ELEMENT;
 	
 	/* The third character must be one of the path separators or NUL. */
-	c = (*walkPath)[2];
-	if (c != SJME_CONFIG_FILE_SEPARATOR &&
-		c != SJME_CONFIG_FILE_SEPARATOR_ALT &&
-		c != '\0')
-		return SJME_ERROR_PATH_NOT_VALID;
+	if ((*walkPath)[2] != '\0')
+		if (sjme_error_is(error = sjme_path_checkDirSep(path,
+			&(*walkPath)[2], SJME_JNI_FALSE)))
+		{
+			if (error == SJME_ERROR_NO_SUCH_ELEMENT)
+				return SJME_ERROR_PATH_NOT_VALID;
+			return sjme_error_default(error);
+		}
 	
 	/* Consume the root. */
 	*outFStr = (*walkPath);
@@ -113,9 +121,14 @@ static sjme_errorCode sjme_path_dos_parseRoot(
 	
 	/* Consume the slash and any redundant slashes. */
 	(*walkPath) = &(*walkPath)[strLen];
-	while ((*walkPath)[0] == SJME_CONFIG_FILE_SEPARATOR ||
-		(*walkPath)[0] == SJME_CONFIG_FILE_SEPARATOR_ALT)
-		(*walkPath)++;
+	for (;;)
+		if (sjme_error_is(error = sjme_path_checkDirSep(path, (*walkPath)++,
+			SJME_JNI_FALSE)))
+		{
+			if (error != SJME_ERROR_NO_SUCH_ELEMENT)
+				return sjme_error_default(error);
+			break;
+		}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -137,12 +150,23 @@ static sjme_errorCode sjme_path_generic_check(
 static sjme_errorCode sjme_path_generic_finalize(
 	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* path)
 {
+	const sjme_path_styleSub* sep;
+	const sjme_path_styleSub* alt;
+	
 	if (path == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (path->style == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
+	/* Is separator conversion even needed? */
+	sep = &path->style->dirSep[0];
+	alt = &path->style->dirSep[1];
+	if (sep->str == NULL || alt->str == NULL ||
+		(sep->len == alt->len && sep->str[0] == alt->str[0]))
+	return SJME_ERROR_NONE;
+	
+	/* Turn all alternative separators into the primary separator. */
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -153,6 +177,9 @@ static sjme_errorCode sjme_path_generic_parseName(
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_lpcstr* outFStr,
 	sjme_attrInOutNotNull sjme_lpcstr* walkPath)
 {
+	sjme_errorCode error;
+	sjme_lpcstr begin, end;
+	
 	if (path == NULL || outFLimit == NULL || outFStr == NULL ||
 		walkPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -160,8 +187,60 @@ static sjme_errorCode sjme_path_generic_parseName(
 	if (path->style == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Start at the current base. */
+	begin = (*walkPath);
+	end = NULL;
+	
+	/* Find the next directory separator. */
+	for (;;)
+	{
+		/* This is not a directory separator. */
+		if (sjme_error_is(error = sjme_path_checkDirSep(path,
+			(*walkPath), SJME_JNI_FALSE)))
+		{
+			/* Some other error. */
+			if (error != SJME_ERROR_NO_SUCH_ELEMENT)
+				return sjme_error_default(error);
+			
+			/* If the end was reached, stop, as this is the first character */
+			/* that follows the separator. */
+			if (end != NULL)
+				break;
+			
+			/* Always explicitly stop at NUL. */
+			if ((*walkPath)[0] == '\0')
+			{
+				end = (*walkPath);
+				break;
+			}
+		}
+		
+		/* This is a directory separator. */
+		else
+		{
+			/* If the end was not set yet, set it to the first separator. */
+			if (end == NULL)
+				end = (*walkPath);
+		}
+			
+		/* Move up to the next character. */
+		(*walkPath)++;
+	}
+	
+	/* If end was never set, it is implicitly the end. */
+	if (end == NULL)
+		end = (*walkPath);
+	
+	/* There is no actual name? */
+	if (end == begin)
+		return SJME_ERROR_NO_SUCH_ELEMENT;
+	
+	/* Give the determined name, with the separator (if any). */
+	*outFLimit = end - begin;
+	*outFStr = begin;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_path_posix_parseRoot(
@@ -170,6 +249,9 @@ static sjme_errorCode sjme_path_posix_parseRoot(
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_lpcstr* outFStr,
 	sjme_attrInOutNotNull sjme_lpcstr* walkPath)
 {
+	sjme_jint strLen;
+	sjme_cchar a, b, c;
+	
 	if (path == NULL || outFLimit == NULL || outFStr == NULL ||
 		walkPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -177,8 +259,46 @@ static sjme_errorCode sjme_path_posix_parseRoot(
 	if (path->style == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Read in the first three characters. */
+	strLen = strlen((*walkPath));
+	a = (strLen >= 1 ? (*walkPath)[0] : '\0');
+	b = (strLen >= 2 ? (*walkPath)[1] : '\0');
+	c = (strLen >= 3 ? (*walkPath)[2] : '\0');
+	
+	/* Double slash root? This is only valid with only two slashes. */
+	/* Ignore with the generic none path style. */
+	if (path->style->type != SJME_PATH_STYLE_NONE &&
+		a == '/' && b == '/' && c != '/')
+	{
+		/* Use the base. */
+		*outFLimit = 2;
+		*outFStr = (*walkPath);
+		
+		/* Bump up by two. */
+		(*walkPath) += 2;
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Otherwise, if this does start with the root component then consume */
+	/* all possible slashes. */
+	if (a == '/')
+	{
+		/* Use the base. */
+		*outFLimit = 1;
+		*outFStr = (*walkPath);
+		
+		/* Eat every slash. */
+		while ((*walkPath)[0] == '/')
+			(*walkPath)++;
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
+	/* No root. */
+	return SJME_ERROR_NO_SUCH_ELEMENT;
 }
 
 static sjme_errorCode sjme_path_vfat_check(
@@ -207,12 +327,6 @@ static sjme_errorCode sjme_path_windows_check(
 	return sjme_error_notImplemented(0);
 }
 
-/** Directory seperator declaration. */
-#define sjme_ds(a, b) {a, b}
-
-/** Dot style declaration. */
-#define sjme_fs(a, b, c, d) {{a, b}, {c, d}}
-
 const sjme_path_style sjme_path_styles[SJME_NUM_PATH_STYLES] =
 {
 	/** @link SJME_PATH_STYLE_NONE @endlink . */
@@ -222,8 +336,8 @@ const sjme_path_style sjme_path_styles[SJME_NUM_PATH_STYLES] =
 		sjme_sm(.parseRoot, sjme_path_posix_parseRoot),
 		sjme_sm(.parseName, sjme_path_generic_parseName),
 		sjme_sm(.parseFinalize, sjme_path_generic_finalize),
-		sjme_sm(.dirSep, sjme_ds("/", "/")),
-		sjme_sm(.pathSep, ":"),
+		sjme_sm(.dirSep, sjme_fs(1, "/", 1, "/")),
+		sjme_sm(.pathSep, sjme_ds(1, ":")),
 		sjme_sm(.requireAbsolute, SJME_JNI_TRUE),
 		sjme_sm(.dot, sjme_fs(-1, "", -1, "")),
 		sjme_sm(.dotDot, sjme_fs(-1, "", -1, "")),
@@ -236,8 +350,8 @@ const sjme_path_style sjme_path_styles[SJME_NUM_PATH_STYLES] =
 		sjme_sm(.parseRoot, sjme_path_posix_parseRoot),
 		sjme_sm(.parseName, sjme_path_generic_parseName),
 		sjme_sm(.parseFinalize, sjme_path_generic_finalize),
-		sjme_sm(.dirSep, sjme_ds("/", "/")),
-		sjme_sm(.pathSep, ":"),
+		sjme_sm(.dirSep, sjme_fs(1, "/", 1, "/")),
+		sjme_sm(.pathSep, sjme_ds(1, ":")),
 		sjme_sm(.requireAbsolute, SJME_JNI_FALSE),
 		sjme_sm(.dot, sjme_fs(1, ".", 2, "./")),
 		sjme_sm(.dotDot, sjme_fs(2, "..", 3, "../")),
@@ -250,8 +364,8 @@ const sjme_path_style sjme_path_styles[SJME_NUM_PATH_STYLES] =
 		sjme_sm(.parseRoot, sjme_path_dos_parseRoot),
 		sjme_sm(.parseName, sjme_path_generic_parseName),
 		sjme_sm(.parseFinalize, sjme_path_dos_finalize),
-		sjme_sm(.dirSep, sjme_ds("\\", "\\")),
-		sjme_sm(.pathSep, ";"),
+		sjme_sm(.dirSep, sjme_fs(1, "\\", 1, "\\")),
+		sjme_sm(.pathSep, sjme_ds(1, ";")),
 		sjme_sm(.requireAbsolute, SJME_JNI_FALSE),
 		sjme_sm(.dot, sjme_fs(1, ".", 2, ".\\")),
 		sjme_sm(.dotDot, sjme_fs(2, "..", 3, "..\\")),
@@ -264,8 +378,8 @@ const sjme_path_style sjme_path_styles[SJME_NUM_PATH_STYLES] =
 		sjme_sm(.parseRoot, sjme_path_dos_parseRoot),
 		sjme_sm(.parseName, sjme_path_generic_parseName),
 		sjme_sm(.parseFinalize, sjme_path_generic_finalize),
-		sjme_sm(.dirSep, sjme_ds("\\", "/")),
-		sjme_sm(.pathSep, ";"),
+		sjme_sm(.dirSep, sjme_fs(1, "\\", 1, "/")),
+		sjme_sm(.pathSep, sjme_ds(1, ";")),
 		sjme_sm(.requireAbsolute, SJME_JNI_FALSE),
 		sjme_sm(.dot, sjme_fs(1, ".", 2, ".\\")),
 		sjme_sm(.dotDot, sjme_fs(2, "..", 3, "..\\")),
@@ -277,8 +391,8 @@ const sjme_path_style sjme_path_styles[SJME_NUM_PATH_STYLES] =
 		sjme_sm(.parseRoot, sjme_path_dos_parseRoot),
 		sjme_sm(.parseName, sjme_path_generic_parseName),
 		sjme_sm(.parseFinalize, sjme_path_generic_finalize),
-		sjme_sm(.dirSep, sjme_ds("\\", "/")),
-		sjme_sm(.pathSep, ";"),
+		sjme_sm(.dirSep, sjme_fs(1, "\\", 1, "/")),
+		sjme_sm(.pathSep, sjme_ds(1, ";")),
 		sjme_sm(.requireAbsolute, SJME_JNI_FALSE),
 		sjme_sm(.dot, sjme_fs(1, ".", 2, ".\\")),
 		sjme_sm(.dotDot, sjme_fs(2, "..", 3, "..\\")),

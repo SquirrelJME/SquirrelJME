@@ -81,78 +81,6 @@ extern "C"
 	/** Short paths. */
 	#define SJME_PATH_SHORT
 #endif
-
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
-	defined(SJME_CONFIG_HAS_OS_MACOS_CLASSIC)
-	/** Separator for PATH and classpath. */
-	#define SJME_CONFIG_PATH_SEPARATOR ";"
-#else
-	/** Separator for PATH and classpath. */
-	#define SJME_CONFIG_PATH_SEPARATOR ":"
-#endif
-
-/** DOS path style. */
-#define SJME_CONFIG_PATH_STYLE_DOS 1
-
-/** Macintosh path style. */
-#define SJME_CONFIG_PATH_STYLE_MACOS_CLASSIC 2
-
-/** UNIX path style. */
-#define SJME_CONFIG_PATH_STYLE_UNIX 3
-
-/** Windows path style. */
-#define SJME_CONFIG_PATH_STYLE_WINDOWS 4
-
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
-	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE)
-	/** Path style in use. */
-	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_WINDOWS
-#elif defined(SJME_CONFIG_HAS_OS_PC_DOS)
-	/** Path style in use. */
-	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_DOS
-#elif defined(SJME_CONFIG_HAS_OS_MACOS_CLASSIC)
-	/** Path style in use. */
-	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_MACOS_CLASSIC
-#else
-	/** Path style in use. */
-	#define SJME_CONFIG_PATH_STYLE SJME_CONFIG_PATH_STYLE_UNIX
-#endif
-
-/* Windows or DOS path style? */
-#define SJME_CONFIG_PATH_STYLE_IS_DOS_OR_WINDOWS \
-	(SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_DOS || \
-	SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_WINDOWS)
-
-#if SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_WINDOWS
-	/** Separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR '\\'
-	
-	/** Alternative separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR_ALT '/'
-#elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_DOS
-	/** Separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR '\\'
-	
-	/** Alternative separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR_ALT '\\'
-
-	/** DOS uses uppercase filenames. */
-	#define SJME_CONFIG_PATH_STYLE_IS_UPPERCASE
-#elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_MACOS_CLASSIC
-	/** Separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR ':'
-	
-	/** Alternative separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR_ALT ':'
-#elif SJME_CONFIG_PATH_STYLE == SJME_CONFIG_PATH_STYLE_UNIX
-	/** Separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR '/'
-	
-	/** Alternative separator for file paths. */
-	#define SJME_CONFIG_FILE_SEPARATOR_ALT '/'
-#else
-	#error Unknown native path style.
-#endif
 	
 /**
  * Generic file system path.
@@ -194,18 +122,18 @@ typedef sjme_errorCode (*sjme_path_stylePathFunc)(
 	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* path);
 
 /**
- * Dot specifier for paths.
+ * Subtring specifier for paths.
  *
  * @since 2015/12/12
  */
-typedef struct sjme_path_styleDot
+typedef struct sjme_path_styleSub
 {
 	/** The number of characters. */
-	sjme_jubyte len;
+	sjme_jbyte len;
 
 	/** The characters which make up the path. */
 	sjme_lpcstr str;
-} sjme_path_styleDot;
+} sjme_path_styleSub;
 
 /**
  * The specific type of path style to use.
@@ -261,19 +189,19 @@ struct sjme_path_style
 	sjme_path_stylePathFunc parseFinalize;
 	
 	/** The primary and alternative directory separator. */
-	sjme_lpcstr dirSep[2];
+	sjme_path_styleSub dirSep[2];
 
 	/** The path separator. */
-	sjme_lpcstr pathSep;
+	sjme_path_styleSub pathSep;
 
 	/** Does this style not support relative paths? */
 	sjme_jboolean requireAbsolute;
 
 	/** Current directory dot style. */
-	sjme_path_styleDot dot[2];
+	sjme_path_styleSub dot[2];
 
 	/** Parent directory dot style. */
-	sjme_path_styleDot dotDot[2];
+	sjme_path_styleSub dotDot[2];
 };
 
 /**
@@ -352,6 +280,7 @@ sjme_errorCode sjme_path_checkDenormal(
  * 
  * @param path The input path.
  * @param string The string to check.
+ * @param noAlt Do not permit the alternative directory separator.
  * @return Any resultant error, if any. Will
  * be @link SJME_ERROR_NO_SUCH_ELEMENT @endlink if there is no directory
  * seperator.
@@ -359,7 +288,8 @@ sjme_errorCode sjme_path_checkDenormal(
  */
 sjme_errorCode sjme_path_checkDirSep(
 	sjme_attrInNotNull const sjme_path* path,
-	sjme_attrInNotNull sjme_lpcstr string);
+	sjme_attrInNotNull sjme_lpcstr string,
+	sjme_attrInValue sjme_jboolean noAlt);
 
 /**
  * Returns a default system path.
