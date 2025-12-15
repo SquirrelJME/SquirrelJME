@@ -143,8 +143,8 @@ static sjme_errorCode sjme_path_generic_check(
 	if (path->style == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Nothing needs to be done here. */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_path_generic_finalize(
@@ -152,6 +152,7 @@ static sjme_errorCode sjme_path_generic_finalize(
 {
 	const sjme_path_styleSub* sep;
 	const sjme_path_styleSub* alt;
+	sjme_jint i, n;
 	
 	if (path == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -164,11 +165,15 @@ static sjme_errorCode sjme_path_generic_finalize(
 	alt = &path->style->dirSep[1];
 	if (sep->str == NULL || alt->str == NULL ||
 		(sep->len == alt->len && sep->str[0] == alt->str[0]))
-	return SJME_ERROR_NONE;
+		return SJME_ERROR_NONE;
 	
 	/* Turn all alternative separators into the primary separator. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	for (n = path->length, i = 0; i < n; i++)
+		if (path->chars[i] == alt->str[0])
+			path->chars[i] = sep->str[0];
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_path_generic_parseName(
