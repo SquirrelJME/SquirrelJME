@@ -80,9 +80,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/debug-jdwp/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/demo-hello/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/demo-hello/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/demo-hello/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/dio-adc/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/dio-adc/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/dio-adc/out" />
@@ -131,12 +128,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/io-file/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/io-file/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/io-file/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/launcher/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/launcher/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/launcher/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/lcdui-demo/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/lcdui-demo/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/lcdui-demo/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/m3g/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/m3g/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/m3g/out" />
@@ -195,15 +186,6 @@
       <excludeFolder url="file://$MODULE_DIR$/../../modules/scritch-ui/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/scritch-ui/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/scritch-ui/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/squirrel-quarrel/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/squirrel-quarrel/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/squirrel-quarrel/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/std-apps-core-lcdui/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/std-apps-core-lcdui/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/std-apps-core-lcdui/out" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/std-apps-core/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/std-apps-core/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/../../modules/std-apps-core/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/tac/.settings" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/tac/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../modules/tac/out" />
@@ -330,6 +312,21 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../utils-dev" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-demo-hello/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-demo-hello/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-demo-hello/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-demo-lcdui/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-demo-lcdui/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-demo-lcdui/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-demo-squirrel-quarrel/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-demo-squirrel-quarrel/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-demo-squirrel-quarrel/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-device-info/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-device-info/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-device-info/out" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-launcher/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-launcher/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../modules/system-app-launcher/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

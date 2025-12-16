@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.DisplayListener;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * Tracker for displays.
@@ -100,6 +102,83 @@ public final class DisplayManager
 			throw new NullPointerException("NARG");
 		
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Locates the given {@link DisplayState} by {@link Display}.
+	 *
+	 * @param __d The display to locate.
+	 * @return The located display.
+	 * @throws NoSuchElementException If the display has never been bound,
+	 * or it possibly has been garbage collected.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/15
+	 */
+	@SquirrelJMEVendorApi
+	public DisplayState locate(Display __d)
+		throws NullPointerException
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		// Get display mappings
+		Map<Integer, DisplayState> map = this._displays;
+		DisplayState[] displays;
+		synchronized (this)
+		{
+			displays = map.values().toArray(new DisplayState[map.size()]);
+		}
+		
+		// Check each display
+		for (DisplayState ds : displays)
+			if (ds != null)
+			{
+				Display maybe = ds.display();
+				if (maybe == __d)
+					return ds;
+			}
+		
+		// Not found
+		throw new NoSuchElementException("NSEE");
+	}
+	
+	/**
+	 * Locates the given {@link DisplayState} by {@link Displayable}, note
+	 * that this is a convenience method.
+	 *
+	 * @param __d The displayable to locate.
+	 * @return The located display.
+	 * @throws NoSuchElementException If the displayable has never been bound,
+	 * is not set to a display, or it possibly has been garbage collected.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/15
+	 */
+	@SquirrelJMEVendorApi
+	public DisplayState locate(Displayable __d)
+		throws NullPointerException
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		// Get display mappings
+		Map<Integer, DisplayState> map = this._displays;
+		DisplayState[] displays;
+		synchronized (this)
+		{
+			displays = map.values().toArray(new DisplayState[map.size()]);
+		}
+		
+		// Check each display
+		for (DisplayState ds : displays)
+			if (ds != null)
+			{
+				Displayable maybe = ds.display().getCurrent();
+				if (maybe == __d)
+					return ds;
+			}
+		
+		// Not found
+		throw new NoSuchElementException("NSEE");
 	}
 	
 	/**

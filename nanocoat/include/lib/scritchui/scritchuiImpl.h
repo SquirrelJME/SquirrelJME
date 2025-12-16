@@ -337,11 +337,11 @@ struct sjme_scritchui_implFunctions
 	/** Creates a new menu item. */
 	SJME_SCRITCHUI_QUICK_IMPL(menuItemNew);
 	
-	/** Removes an item from the menu. */
-	SJME_SCRITCHUI_QUICK_SAME(menuRemove);
-	
 	/** Creates a new menu. */
 	SJME_SCRITCHUI_QUICK_IMPL(menuNew);
+
+	/** Removes an item from the menu. */
+	SJME_SCRITCHUI_QUICK_SAME(menuRemove);
 	
 	/** Enable/disable focus on a panel. */
 	SJME_SCRITCHUI_QUICK_SAME(panelEnableFocus);
