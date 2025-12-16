@@ -295,16 +295,25 @@ public final class DisplayManager
 		if (instance != null)
 			return instance;
 		
-		// Grab from the native system
-		try
+		// Prevent this from being used by different threads
+		synchronized (DisplayManager.class)
 		{
-			instance = new DisplayManager(
-				NativeScritchInterface.nativeInterface());
-			DisplayManager._INSTANCE = instance;
-		}
-		catch (MLECallError __e)
-		{
-			throw new HeadlessDisplayException(__e);
+			// Double-check
+			instance = DisplayManager._INSTANCE;
+			if (instance != null)
+				return instance;
+			
+			// Grab from the native system
+			try
+			{
+				instance = new DisplayManager(
+					NativeScritchInterface.nativeInterface());
+				DisplayManager._INSTANCE = instance;
+			}
+			catch (MLECallError __e)
+			{
+				throw new HeadlessDisplayException(__e);
+			}
 		}
 		
 		// Since we have it now, register idle runner
