@@ -11,10 +11,12 @@ package com.nokia.mid.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.BacklightControl;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
+import cc.squirreljme.runtime.lcdui.scritchui.HeadlessDisplayException;
+import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import javax.microedition.lcdui.Display;
+import javax.microedition.midlet.MIDlet;
 
 /**
  * This is used to utilize special hardware that exists on the device for
@@ -42,8 +44,26 @@ public class DeviceControl
 		if (__ms < 0)
 			throw new IllegalArgumentException("EB2z");
 		
-		/* Nokia UI API has no easy way of getting the current display yet */
-		Debugging.todoNote("Nokia DeviceControl.flashLights()");
+		// Is a midlet being used?
+		MIDlet midlet = ActiveMidlet.optional();
+		if (midlet == null)
+			return;
+		
+		// Obtain the display used by the current midlet.
+		Display display;
+		try
+		{
+			display = Display.getDisplay(midlet);
+			if (display == null)
+				return;
+		}
+		catch (IllegalStateException|HeadlessDisplayException ignored)
+		{
+			return;
+		}
+		
+		// Forward to the new method to use.
+		display.flashBacklight((int)Math.min(Integer.MAX_VALUE, __ms));
 	}
 	
 	/**
@@ -68,6 +88,7 @@ public class DeviceControl
 		if (__lvl < 0 || __lvl > 100)
 			throw new IllegalArgumentException("EB32 " + __lvl);
 		
+		// Set the new level.
 		BacklightControl.setLevel(__lvl);
 	}
 	
