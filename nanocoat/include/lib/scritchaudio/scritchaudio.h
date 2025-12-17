@@ -827,15 +827,14 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchaudio_dylibApiFunc)(
 	sjme_scritchaudio_dylibApiExport
 
 /** The default API entry export method. */
-extern const sjme_scritchaudio_dylibApiFunc 
+extern sjme_attrExport const sjme_scritchaudio_dylibApiFunc
 	SJME_SCRITCHAUDIO_DYLIB_API_EXPORT;
 
 #if defined(SJME_CONFIG_MULTILIB_IS_DYLIB)
 	/** Set the value for the default dynamic library export. */
 	#define SJME_SCRITCHAUDIO_DYLIB_API_EXPORT_SET(x) \
-		const sjme_scritchaudio_dylibApiFunc \
-			SJME_SCRITCHAUDIO_DYLIB_API_EXPORT \
-			sjme_attrExport = \
+		sjme_attrExport const sjme_scritchaudio_dylibApiFunc \
+			SJME_SCRITCHAUDIO_DYLIB_API_EXPORT = \
 			SJME_SCRITCHAUDIO_DYLIB_SYMBOL(x);
 #else
 	/** Set the value for the default dynamic library export. */
