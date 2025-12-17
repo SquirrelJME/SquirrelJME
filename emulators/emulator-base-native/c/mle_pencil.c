@@ -245,9 +245,13 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawPolyline)
 	}
 
 	/* Forward. */
-	if (sjme_error_is(error = p->api->drawPolyline(p, (sjme_jint*)xPoints,
-		xOffset, (sjme_jint*)yPoints, yOffset, nPoints)))
+	if (sjme_error_is(error = p->api->drawPolyline(p, (sjme_jint*)xElements,
+		xOffset, (sjme_jint*)yElements, yOffset, nPoints)))
 		sjme_jni_throwMLECallError(env, error);
+
+	/* Cleanup. */
+	(*env)->ReleaseIntArrayElements(env, xPoints, xElements, 0);
+	(*env)->ReleaseIntArrayElements(env, yPoints, yElements, 0);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRect)
@@ -255,12 +259,33 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRect)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
+	jboolean isCopyX, isCopyY;
+	jint* xElements;
+	jint* yElements;
 
 	/* Recover. */
 	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	isCopyX = JNI_FALSE;
+	xElements = (*env)->GetIntArrayElements(env, xPoints, &isCopyX);
+	if (xElements == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED);
+		return;
+	}
+
+	isCopyY = JNI_FALSE;
+	yElements = (*env)->GetIntArrayElements(env, yPoints, &isCopyY);
+	if (yElements == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED);
 		return;
 	}
 
@@ -432,9 +457,13 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillPolygon)
 	}
 
 	/* Forward. */
-	if (sjme_error_is(error = p->api->fillPolygon(p, (sjme_jint*)xPoints,
-		xOffset, (sjme_jint*)yPoints, yOffset, nPoints)))
+	if (sjme_error_is(error = p->api->fillPolygon(p, (sjme_jint*)xElements,
+		xOffset, (sjme_jint*)yElements, yOffset, nPoints)))
 		sjme_jni_throwMLECallError(env, error);
+
+	/* Cleanup. */
+	(*env)->ReleaseIntArrayElements(env, xPoints, xElements, 0);
+	(*env)->ReleaseIntArrayElements(env, yPoints, yElements, 0);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRect)
@@ -483,12 +512,33 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillTriangle)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
+	jboolean isCopyX, isCopyY;
+	jint* xElements;
+	jint* yElements;
 
 	/* Recover. */
 	p = sjme_jni_recoverPencil(env, g);
 	if (g == NULL || p == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	isCopyX = JNI_FALSE;
+	xElements = (*env)->GetIntArrayElements(env, xPoints, &isCopyX);
+	if (xElements == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED);
+		return;
+	}
+
+	isCopyY = JNI_FALSE;
+	yElements = (*env)->GetIntArrayElements(env, yPoints, &isCopyY);
+	if (yElements == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED);
 		return;
 	}
 
