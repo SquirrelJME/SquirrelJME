@@ -103,9 +103,12 @@ typedef enum sjme_gfx_pixelFormat
 	
 	/** 16-bit RGB444. (@c uint16_t ). */
 	SJME_GFX_PIXEL_FORMAT_SHORT_RGB444 = 22,
+
+	/** 16-bit ARGB1555. (@c uint16_t ) [Nokia]. */
+	SJME_GFX_PIXEL_FORMAT_SHORT_ARGB1555 = 23,
 	
 	/** The number of pixel formats. */
-	SJME_NUM_GFX_PIXEL_FORMATS = 23,
+	SJME_NUM_GFX_PIXEL_FORMATS = 24,
 } sjme_gfx_pixelFormat;
 
 /*--------------------------------------------------------------------------*/
