@@ -16,8 +16,8 @@ add_library(ScritchAudioWinMM SHARED
 	winmmMidi.c
 	winmmStream.c)
 
-# Always make it PIC
-squirreljme_always_fpic(ScritchAudioWinMM)
+# Standard properties for dynamic libraries
+squirreljme_dylib_standard_properties(ScritchAudioWinMM)
 
 # The file where the include lives
 target_compile_definitions(ScritchAudioWinMM PUBLIC

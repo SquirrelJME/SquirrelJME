@@ -565,9 +565,24 @@ typedef enum sjme_errorCode
 
 	/** Try the operation again. */
 	SJME_ERROR_TRY_AGAIN = -174,
+
+	/** The requested path is not defined. */
+	SJME_ERROR_PATH_NOT_DEFINED = -175,
+
+	/** Security has been violated. */
+	SJME_ERROR_SECURITY_EXCEPTION = -176,
+
+	/* Path is not absolute. */
+	SJME_ERROR_PATH_NOT_ABSOLUTE = -177,
+
+	/** Path is too deep. */
+	SJME_ERROR_PATH_TOO_DEEP = -178,
+
+	/** Path is not valid. */
+	SJME_ERROR_PATH_NOT_VALID = -179,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -175,
+	SJME_NUM_ERROR_CODES = -180,
 } sjme_errorCode;
 
 /**

@@ -155,6 +155,8 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(gtk2)(
 	return SJME_ERROR_NONE;
 }
 
+SJME_SCRITCHUI_DYLIB_API_EXPORT_SET(gtk2)
+
 sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState)
 {

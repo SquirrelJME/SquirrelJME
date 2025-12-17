@@ -800,6 +800,12 @@ extern "C" {
 	#define sjme_attrOutNotNullBuf(lenArg) sjme_attrOutNotNull
 #endif
 
+#if !defined(sjme_attrInOutNotNullBuf)
+	/** Input/output to/from buffer. */
+	#define sjme_attrInOutNotNullBuf(lenArg) \
+		sjme_attrInNotNullBuf(lenArg) sjme_attrOutNotNullBuf(lenArg)
+#endif
+
 #if !defined(sjme_attrOutRange)
 	/** Output value range. */
 	#define sjme_attrOutRange(lo, hi)
@@ -846,6 +852,16 @@ extern "C" {
 #if !defined(sjme_attrArtificial)
 	/** Artificial function. */
 	#define sjme_attrArtificial
+#endif
+
+#if !defined(sjme_attrOutModify)
+	/** Modifies the output. */
+	#define sjme_attrOutModify
+#endif
+
+#if !defined(sjme_attrOutOverwrite)
+	/** Overwrites the output. */
+	#define sjme_attrOutOverwrite
 #endif
 
 #if !defined(sjme_alloca)

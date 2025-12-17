@@ -78,6 +78,24 @@ macro(squirreljme_multilib_add_static_library libBase)
 	endif()
 endmacro()
 
+
+# Make a target always FPIC
+function(squirreljme_always_fpic target)
+	if(SQUIRRELJME_ENABLE_FPIC)
+		set_target_properties(${target} PROPERTIES
+			POSITION_INDEPENDENT_CODE ON)
+	endif()
+endfunction()
+
+# Add definitions for shared library builds
+function(squirreljme_dylib_standard_properties target)
+	target_compile_definitions(${target} PRIVATE
+		"SJME_CONFIG_MULTILIB_IS_DYLIB=1")
+
+	# Always try to enable FPIC for dynamic libraries
+	squirreljme_always_fpic(${target})
+endfunction()
+
 # Add multi-lib library
 macro(squirreljme_multilib_add_library libBase)
 	# Bring in statics
@@ -98,11 +116,7 @@ macro(squirreljme_multilib_add_library libBase)
 
 		add_library(${libBase}DyLib SHARED
 			${libBaseSources})
-
-		if(SQUIRRELJME_ENABLE_FPIC)
-			set_property(TARGET ${libBase}DyLib
-				PROPERTY POSITION_INDEPENDENT_CODE ON)
-		endif()
+		squirreljme_dylib_standard_properties(${libBase}DyLib)
 	endif()
 endmacro()
 
@@ -319,12 +333,4 @@ macro(squirreljme_multilib_add_multilib_dependency libBase dependOn)
 			${dependOn}DyLib)
 	endif()
 endmacro()
-
-# Make a target always FPIC
-function(squirreljme_always_fpic target)
-	if(SQUIRRELJME_ENABLE_FPIC)
-		set_target_properties(${target} PROPERTIES
-			POSITION_INDEPENDENT_CODE ON)
-	endif()
-endfunction()
 

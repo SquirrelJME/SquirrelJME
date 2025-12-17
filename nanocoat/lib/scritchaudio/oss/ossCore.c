@@ -50,6 +50,8 @@ sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(oss)(
 	return SJME_ERROR_NONE;
 }
 
+SJME_SCRITCHAUDIO_DYLIB_API_EXPORT_SET(oss)
+
 sjme_errorCode sjme_scritchaudio_oss_apiInit(
 	sjme_attrInNotNull sjme_scritchaudio inState)
 {

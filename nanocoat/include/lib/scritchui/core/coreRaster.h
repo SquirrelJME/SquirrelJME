@@ -31,6 +31,8 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+#pragma region(corePrimitives)
+	
 sjme_errorCode sjme_scritchpen_corePrim_drawArc(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -159,22 +161,12 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanGetNoDest(
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
 
-/*--------------------------------------------------------------------------*/
+#pragma endregion(corePrimitives)
 	
-/**
- * Calculates the anchor position of a box on a point.
- * 
- * @param anchor The anchor point to use.
- * @param x The X coordinate. 
- * @param y The Y coordinate.
- * @param w The width.
- * @param h The height.
- * @param baseline The baseline, if this is a font.
- * @param outX The resultant X coordinate.
- * @param outY The resultant Y coordinate.
- * @return Any resultant error, if any.
- * @since 2024/06/27
- */
+/*--------------------------------------------------------------------------*/
+
+#pragma region(coreUtils)
+	
 sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInValue sjme_jint x,
@@ -328,7 +320,11 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	sjme_attrInPositive sjme_jint inRawOff,
 	sjme_attrInPositive sjme_jint inRawLen);
 
+#pragma endregion(coreUtils)
+	
 /*--------------------------------------------------------------------------*/
+	
+#pragma region(coreImplementations)
 	
 sjme_errorCode sjme_scritchpen_core_lock(
 	sjme_attrInNotNull sjme_scritchui_pencil g);
@@ -542,6 +538,8 @@ sjme_errorCode sjme_scritchpen_core_translate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
+	
+#pragma endregion(coreImplementations)
 	
 /*--------------------------------------------------------------------------*/
 

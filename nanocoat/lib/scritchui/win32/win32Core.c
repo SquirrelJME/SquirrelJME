@@ -201,6 +201,8 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(win32)(
 	return SJME_ERROR_NONE;
 }
 
+SJME_SCRITCHUI_DYLIB_API_EXPORT_SET(win32)
+
 sjme_errorCode sjme_scritchui_win32_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState)
 {
