@@ -133,9 +133,14 @@ public interface UIPixelFormat
 	@SquirrelJMEVendorApi
 	byte SHORT_RGB444 =
 		22;
+
+	/** 16-bit ARGB1555. ({@code short}) [Nokia]. */
+	@SquirrelJMEVendorApi
+	byte SHORT_ARGB1555 =
+		23;
 	
 	/** The number of pixel formats. */
 	@SquirrelJMEVendorApi
 	byte NUM_PIXEL_FORMATS =
-		23;
+		24;
 }

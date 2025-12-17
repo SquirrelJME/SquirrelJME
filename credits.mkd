@@ -12,6 +12,7 @@ is used, refer to that for library bring-ins.
      * Android Updates.
      * Mingw cross compilation.
  * _"AShiningRay"_ 
+   * Nokia Graphics APIs
    * ScritchUI:
      * GTK2 Interface:
        * Memory leak fixes.
