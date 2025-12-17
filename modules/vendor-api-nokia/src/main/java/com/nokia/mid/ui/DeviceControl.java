@@ -10,8 +10,11 @@
 package com.nokia.mid.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.BacklightControl;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
+import javax.microedition.lcdui.Display;
 
 /**
  * This is used to utilize special hardware that exists on the device for
@@ -23,13 +26,15 @@ import cc.squirreljme.runtime.lcdui.mle.Vibration;
 public class DeviceControl
 {
 	/**
-	 * Flashes the LED on the device.
+	 * Flashes the LED on the device. Deprecated since Nokia UI API 1.1 in
+	 * favor of {@link Display#flashBacklight(int)}
 	 *
 	 * @param __ms The number of milliseconds to flash for.
 	 * @throws IllegalArgumentException If the duration is negative.
 	 * @since 2019/10/05
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public static void flashLights(long __ms)
 		throws IllegalArgumentException
 	{
@@ -37,12 +42,8 @@ public class DeviceControl
 		if (__ms < 0)
 			throw new IllegalArgumentException("EB2z");
 		
-		throw Debugging.todo();
-		/*
-		// Blink!
-		Assembly.sysCall(SystemCallIndex.DEVICE_FEEDBACK,
-			DeviceFeedbackType.BLINK_LED, ((__ms > (long)Integer.MAX_VALUE) ?
-				Integer.MAX_VALUE : (int)__ms));*/
+		/* Nokia UI API has no easy way of getting the current display yet */
+		Debugging.todoNote("Nokia DeviceControl.flashLights()");
 	}
 	
 	/**
@@ -67,35 +68,13 @@ public class DeviceControl
 		if (__lvl < 0 || __lvl > 100)
 			throw new IllegalArgumentException("EB32 " + __lvl);
 		
-		throw Debugging.todo();
-		/*
-		// If controlling the backlight is supported, allow it to be changed
-		UIBackend backend = UIBackendFactory.getInstance(true);
-		if (backend.metric(backend.displays()[0],
-			UIMetricType.SUPPORTS_BACKLIGHT_CONTROL) == 0)
-			return;
-		
-		throw Debugging.todo();
-		/*
-		// Get maximum backlight level, stop if it is zero which means the
-		// property is not supported or there is no backlight that can be
-		// controlled
-		throw Debugging.todo();
-		/*
-		int max = Assembly.sysCallV(SystemCallIndex.FRAMEBUFFER,
-			Framebuffer.CONTROL_BACKLIGHT_LEVEL_MAX);
-		if (max == 0)
-			return;
-		
-		// Set the desired level as a percentage of the max
-		int val = (max * __lvl) / 100;
-		Assembly.sysCall(SystemCallIndex.FRAMEBUFFER,
-			Framebuffer.CONTROL_BACKLIGHT_LEVEL_SET,
-			(val < 0 ? 0 : (val > max ? max : val)));*/
+		BacklightControl.setLevel(__lvl);
 	}
 	
 	/**
-	 * Starts vibrating at the given frequency for the given duration.
+	 * Starts vibrating at the given frequency for the given duration. Has
+	 * been deprecated since Nokia UI API 1.1 in favor of
+	 * {@link Display#vibrate(int)}
 	 *
 	 * @param __freq The frequency of the vibration, must be in the range of
 	 * {@code [0, 100]}.
@@ -105,6 +84,7 @@ public class DeviceControl
 	 * @since 2019/10/05
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public static void startVibra(int __freq, long __ms)
 		throws IllegalArgumentException
 	{
@@ -121,11 +101,13 @@ public class DeviceControl
 	}
 	
 	/**
-	 * Stops any vibration that is happening.
+	 * Stops any vibration that is happening. Has been deprecated since
+	 * Nokia UI API 1.1 in favor of {@link Display#vibrate(int)}
 	 *
 	 * @since 2019/10/05
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public static void stopVibra()
 	{
 		Vibration.vibrate(0);
