@@ -148,13 +148,23 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorPfToRgb(
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
-			sjme_todo("Impl?");
-			v = (((aa >> 7) & 0x1) << 15) |
-				(((bb >> 3) & 0x1F) << 10) |
-				(((gg >> 3) & 0x1F) << 5) |
-				((rr >> 3) & 0x1F);
+			aa = ((v >> 15) & 0x01) * 0xFF;
+			bb = (v >> 10) & 0x1F; 
+			bb = (bb << 3) | (bb >> 2);
+			gg = (v >> 5) & 0x1F; 
+			gg = (gg << 3) | (gg >> 2);
+			rr = v & 0x1F;
+			rr = (rr << 3) | (rr >> 2);
 			break;
-		
+
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB1555:
+			aa = ((v >> 15) & 0x01) * 0xFF;
+			rr = (v >> 10) & 0x1F; 
+			rr = (rr << 3) | (rr >> 2);
+			gg = (v >> 5) & 0x1F; 
+			gg = (gg << 3) | (gg >> 2);
+			bb = v & 0x1F;
+			bb = (bb << 3) | (bb >> 2);
 		default:
 			return sjme_error_notImplemented(0);
 	}
@@ -360,6 +370,13 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 				(((bb >> 3) & 0x1F) << 10) |
 				(((gg >> 3) & 0x1F) << 5) |
 				((rr >> 3) & 0x1F);
+			break;
+
+		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB1555:
+			v = (((aa >> 7) & 0x1) << 15) |
+				(((rr >> 3) & 0x1F) << 10) |
+				(((gg >> 3) & 0x1F) << 5) |
+				((bb >> 3) & 0x1F);
 			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
