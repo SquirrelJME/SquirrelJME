@@ -2263,7 +2263,7 @@ extern sjme_attrExport const sjme_scritchui_dylibApiFunc
 #if defined(SJME_CONFIG_MULTILIB_IS_DYLIB)
 	/** Set the value for the default dynamic library export. */
 	#define SJME_SCRITCHUI_DYLIB_API_EXPORT_SET(x) \
-		sjme_attrExport
+		sjme_attrExport \
 		const sjme_scritchui_dylibApiFunc SJME_SCRITCHUI_DYLIB_API_EXPORT = \
 			SJME_SCRITCHUI_DYLIB_SYMBOL(x);
 #else
