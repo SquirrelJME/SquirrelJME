@@ -475,6 +475,10 @@ endif()
 if("${SQUIRRELJME_ARCH}" STREQUAL "ia32" OR
 	"${SQUIRRELJME_ARCH}" STREQUAL "amd64")
 	if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-		add_compile_options("-masm=intel")
+		# Breaks with intel syntax
+		if(NOT VALGRIND_FOUND)
+			add_compile_definitions("SJME_CONFIG_HAS_ASM_INTEL=1")
+			add_compile_options("-masm=intel")
+		endif()
 	endif()
 endif()

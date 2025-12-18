@@ -290,8 +290,8 @@ sjme_errorCode sjme_path_check(
 	if (path->zero != 0)
 		return SJME_ERROR_MEMORY_CORRUPTION;
 
-	/* A style must be specified. */
-	if (path->style == NULL)
+	/* A style must be specified if non-blank. */
+	if (path->length > 0 && path->style == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Invalid flags set? */
@@ -344,7 +344,8 @@ sjme_errorCode sjme_path_check(
 	
 	/* Special case, if an operating system does not support any form */
 	/* of relative paths then make sure denormal paths are never used. */
-	if (path->style->requireAbsolute)
+	/* The style could be NULL if this is a blank path. */
+	if (path->style != NULL && path->style->requireAbsolute)
 		if (sjme_error_is(error = sjme_path_checkDenormal(path,
 			SJME_JNI_TRUE)))
 			return sjme_error_default(error);
@@ -600,6 +601,19 @@ sjme_errorCode sjme_path_default(
 		/* Success! */
 		memmove(outPath, &buildPath, sizeof(buildPath));
 		return SJME_ERROR_NONE;
+	}
+	
+	/* Pseudo final index for the path of the executable. */
+	if (index >= 0 && index == vi)
+	{
+		memset(&envPath, 0, sizeof(envPath));
+		if (nal->execPath != NULL &&
+			sjme_error_is(error = nal->execPath(envPath.chars,
+				SJME_MAX_PATH - 1)))
+			return sjme_error_default(error);
+		
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
 	}
 
 	/* The path is not defined at all. */
@@ -970,16 +984,24 @@ sjme_errorCode sjme_path_resolveS(
 {
 	sjme_errorCode error;
 	sjme_path parsed;
+	const sjme_path_style* style;
 
 	if (outPath == NULL || inPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
+	
 	if (sjme_error_is(error = sjme_path_check(outPath)))
 		return sjme_error_default(error);
-
+	
+	/* This could be a default blank path. */
+	style = outPath->style;
+	if (style == NULL && outPath->length == 0)
+		if (sjme_error_is(error = sjme_nal_default.pathStyle(&style)))
+			return sjme_error_default(error);
+	
 	/* Parse the input path first. */
 	memset(&parsed, 0, sizeof(parsed));
-	if (sjme_error_is(error = sjme_path_parse(&parsed, inPath)))
+	if (sjme_error_is(error = sjme_path_parseYP(style,
+		&parsed, inPath)))
 		return sjme_error_default(error);
 
 	/* Then forward to the normal path resolution. */
