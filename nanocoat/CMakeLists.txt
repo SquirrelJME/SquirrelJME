@@ -18,7 +18,7 @@ else()
 endif()
 
 # Default to release if no build type is specified
-if(NOT CMAKE_BUILD_TYPE)
+if(NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
 	set(CMAKE_BUILD_TYPE "Release"
 		CACHE STRING "" FORCE)
 endif()
@@ -105,6 +105,13 @@ if(SQUIRRELJME_IS_RELEASE)
 		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
 		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 		add_compile_options("/Os")
+	endif()
+elseif(SQUIRRELJME_IS_DEBUG)
+	if(MSVC OR
+		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
+		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+		add_compile_options("/Zi")
+		add_link_options("/DEBUG")
 	endif()
 endif()
 

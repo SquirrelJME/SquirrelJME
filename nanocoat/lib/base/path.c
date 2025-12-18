@@ -10,17 +10,6 @@
 #include "sjme/path.h"
 #include "sjme/debug.h"
 
-#if defined(SJME_CONFIG_HAS_OS_PC_DOS)
-	/** No concept of user home exists in DOS. */
-	#define SJME_PATH_PSEUDO_HOME "C:\\SQUIRREL.JME"
-#elif defined(SJME_CONFIG_HAS_OS_PALMOS)
-	/** No concept of user home exists in PalmOS. */
-	#define SJME_PATH_PSEUDO_HOME "0:/PALM/SquirrelJME/"
-
-	/** Paths cannot be relative in PalmOS. */
-	#define SJME_PATH_NO_RELATIVE
-#endif
-
 typedef struct sjme_path_defaultPathEnv
 {
 	/** The type of directory this matches. */
@@ -1060,19 +1049,32 @@ sjme_errorCode sjme_path_userHome(
 	sjme_attrInNullable const sjme_nal* nal,
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath)
 {
+	sjme_errorCode error;
+	sjme_cchar env[SJME_MAX_PATH];
+	const sjme_path_style* style;
+
 	if (outPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-#if defined(SJME_PATH_PSEUDO_HOME)
-	/* The operating system has no concept of a home directory, so choose an */
-	/* arbitrary one. */
-	return sjme_path_resolveS(outPath, SJME_PATH_PSEUDO_HOME);
-#else
 	/* Use a default NAL? */
 	if (nal == NULL)
 		nal = &sjme_nal_default;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
+
+	/* No NAL implementation? */
+	if (nal->userHome == NULL)
+		return SJME_ERROR_PATH_NOT_DEFINED;
+
+	/* Request from NAL. */
+	memset(env, 0, sizeof(env));
+	if (sjme_error_is(error = nal->userHome(env, SJME_MAX_PATH - 1)))
+		return sjme_error_default(error);
+	env[SJME_MAX_PATH - 1] = '\0';
+
+	/* Get the native path style. */
+	style = NULL;
+	if (sjme_error_is(error = nal->pathStyle(&style)) || style == NULL)
+		return sjme_error_default(error);
+
+	/* Parse the path. */
+	return sjme_path_parseYP(style, outPath, env);
 }

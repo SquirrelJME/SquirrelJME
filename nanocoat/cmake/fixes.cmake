@@ -10,6 +10,13 @@
 # clean and pristine and patches are placed here because they affect the
 # entire project.
 
+# Debugging?
+if(SQUIRRELJME_IS_DEBUG)
+	add_compile_definitions(SJME_CONFIG_DEBUG=1)
+elseif(SQUIRRELJME_IS_RELEASE)
+	add_compile_definitions(SJME_CONFIG_RELEASE=1)
+endif()
+
 # Needed for C compiler checks
 include(CheckCCompilerFlag)
 
@@ -462,4 +469,12 @@ if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" AND
 	set(SQUIRRELJME_WIN_LIB_SUFFIX ".lib")
 else()
 	set(SQUIRRELJME_WIN_LIB_SUFFIX "")
+endif()
+
+# Force Intel syntax to be used
+if("${SQUIRRELJME_ARCH}" STREQUAL "ia32" OR
+	"${SQUIRRELJME_ARCH}" STREQUAL "amd64")
+	if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+		add_compile_options("-masm=intel")
+	endif()
 endif()

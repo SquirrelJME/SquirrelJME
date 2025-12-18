@@ -14,6 +14,7 @@
 const sjme_nal sjme_nal_default =
 {
 	sjme_sm(.currentTimeMillis, NULL),
+	sjme_sm(.execPath, sjme_nal_default_execPath),
 	sjme_sm(.fileOpen, sjme_nal_default_fileOpen),
 	sjme_sm(.getEnv, sjme_nal_default_getEnv),
 	sjme_sm(.nanoTime, sjme_nal_default_nanoTime),
@@ -41,6 +42,7 @@ const sjme_nal sjme_nal_default =
 			sjme_sm(.flush, sjme_nal_default_stdErrFlush),
 		},
 	},
+	sjme_sm(.userHome, sjme_nal_default_userHome),
 };
 
 #if defined(SJME_CONFIG_HAS_ERRNO_H)

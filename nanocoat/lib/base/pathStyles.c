@@ -20,27 +20,56 @@
 static sjme_errorCode sjme_path_dos_check(
 	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* path)
 {
+	sjme_jint i, n;
+	sjme_lpcstr chars;
+	sjme_cchar c;
+
 	if (path == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (path->style == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Ensure no invalid characters are used. */
+	chars = path->chars;
+	for (n = path->length, i = 0; i < n; i++)
+	{
+		c = chars[i];
+		if (c < 31 || c == 127 || c == '"' || c == '*' || c == '/' ||
+			c == ':' || c == '<' || c == '>' || c == '?' || c == '|' ||
+			c == '+' || c == ',' || c == '.' || c == ';' || c == '=' ||
+			c == '[' || c == ']')
+			return SJME_ERROR_PATH_NOT_VALID;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_path_dos_finalize(
 	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* path)
 {
+	sjme_jint i, n;
+	sjme_lpstr chars;
+	sjme_cchar c;
+
 	if (path == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (path->style == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Capitalize all lowercase characters. */
+	chars = path->chars;
+	for (n = path->length, i = 0; i < n; i++)
+	{
+		c = chars[i];
+		if (c >= 'a' && c <= 'z')
+			chars[i] = 'A' + (c - 'a');
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_path_dos_parseRoot(
@@ -102,7 +131,7 @@ static sjme_errorCode sjme_path_dos_parseRoot(
 		return SJME_ERROR_NO_SUCH_ELEMENT;
 	
 	/* The second character must be a colon. */
-	if (strLen < 2 || (*walkPath)[2] != ':')
+	if (strLen < 2 || (*walkPath)[1] != ':')
 		return SJME_ERROR_NO_SUCH_ELEMENT;
 	
 	/* The third character must be one of the path separators or NUL. */
@@ -121,8 +150,8 @@ static sjme_errorCode sjme_path_dos_parseRoot(
 	
 	/* Consume the slash and any redundant slashes. */
 	(*walkPath) = &(*walkPath)[strLen];
-	for (;;)
-		if (sjme_error_is(error = sjme_path_checkDirSep(path, (*walkPath)++,
+	for (;; (*walkPath)++)
+		if (sjme_error_is(error = sjme_path_checkDirSep(path, (*walkPath),
 			SJME_JNI_FALSE)))
 		{
 			if (error != SJME_ERROR_NO_SUCH_ELEMENT)
@@ -309,14 +338,29 @@ static sjme_errorCode sjme_path_posix_parseRoot(
 static sjme_errorCode sjme_path_vfat_check(
 	sjme_attrInOutNotNull sjme_attrOutModify sjme_path* path)
 {
+	sjme_jint i, n;
+	sjme_lpcstr chars;
+	sjme_cchar c;
+
 	if (path == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (path->style == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Ensure no invalid characters are used. */
+	chars = path->chars;
+	for (n = path->length, i = 0; i < n; i++)
+	{
+		c = chars[i];
+
+		if (c < 31 || c == 127 || c == '"' || c == '*' || c == '/' ||
+			c == ':' || c == '<' || c == '>' || c == '?' || c == '|')
+			return SJME_ERROR_PATH_NOT_VALID;
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_path_windows_check(
@@ -327,9 +371,9 @@ static sjme_errorCode sjme_path_windows_check(
 
 	if (path->style == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Forward to VFAT check. */
+	return sjme_path_vfat_check(path);
 }
 
 const sjme_path_style sjme_path_styles[SJME_NUM_PATH_STYLES] =
@@ -392,6 +436,7 @@ const sjme_path_style sjme_path_styles[SJME_NUM_PATH_STYLES] =
 	
 	/** @link SJME_PATH_STYLE_WINDOWS @endlink . */
 	{
+		sjme_sm(.type, SJME_PATH_STYLE_WINDOWS),
 		sjme_sm(.check, sjme_path_windows_check),
 		sjme_sm(.parseRoot, sjme_path_dos_parseRoot),
 		sjme_sm(.parseName, sjme_path_generic_parseName),

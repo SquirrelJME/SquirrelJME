@@ -181,3 +181,43 @@ sjme_errorCode sjme_nal_default_threadYield(void)
 
 #endif
 #pragma endregion(threadYield)
+
+#pragma region(userHome)
+#if (SJME_CONFIG_NAL_USER_HOME == SJME_CONFIG_NAL_IMPLEMENT_NONE)
+
+sjme_errorCode sjme_nal_default_userHome(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Not supported. */
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+#endif
+#pragma endregion(userHome)
+
+#pragma region(userName)
+#if (SJME_CONFIG_NAL_USER_NAME == SJME_CONFIG_NAL_IMPLEMENT_NONE)
+
+sjme_errorCode sjme_nal_default_userName(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Not user login. */
+	return SJME_ERROR_NO_USER_LOGIN;
+}
+
+#endif
+#pragma endregion(userName)

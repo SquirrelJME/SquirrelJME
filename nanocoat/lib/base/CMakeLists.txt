@@ -31,9 +31,12 @@ squirreljme_multilib_add_library(Base
 	multithreadPosix.c
 	multithreadWin32.c
 	native.c
+	nativeBsd.c
+	nativeDarwin.c
 	nativeLinux.c
 	nativeNone.c
 	nativePosix.c
+	nativeSolaris.c
 	nativeStdC.c
 	nativeWin32.c
 	path.c

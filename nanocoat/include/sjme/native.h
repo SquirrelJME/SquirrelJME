@@ -72,6 +72,18 @@ typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
 	sjme_attrOutNotNull sjme_jlong* result);
 
 /**
+ * Returns the path to the executable.
+ *
+ * @param out The output path.
+ * @param outLen The length of the output path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/17
+ */
+typedef sjme_errorCode (*sjme_nal_execPathFunc)(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen);
+
+/**
  * Opens the given file natively.
  * 
  * @param allocPool The pool for allocations.
@@ -166,6 +178,32 @@ typedef sjme_errorCode (*sjme_nal_threadSleepFunc)(
  * @since 2025/11/26
  */
 typedef sjme_errorCode (*sjme_nal_threadYieldFunc)(void);
+
+/**
+ * Returns the user's home directory.
+ *
+ * @param out The output buffer.
+ * @param outLen The length of the output buffer.
+ * @return Any resultant error, if any.
+ * @since 2025/12/17
+ */
+typedef sjme_errorCode (*sjme_nal_userHomeFunc)(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen);
+
+/**
+ * Returns the user's username.
+ *
+ * @param out The output buffer.
+ * @param outLen The length of the output buffer.
+ * @return Any resultant error, if any. Will
+ * return @link SJME_ERROR_NO_USER_LOGIN @endlink if the native system does
+ * not support user logins or there is no user logged in.
+ * @since 2025/12/17
+ */
+typedef sjme_errorCode (*sjme_nal_userNameFunc)(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen);
 	
 /**
  * Native Abstraction Layer functions.
@@ -176,6 +214,9 @@ typedef struct sjme_nal
 {
 	/** Current time in milliseconds. */
 	sjme_nal_currentTimeMillisFunc currentTimeMillis;
+
+	/** Returns the path to the current executable. */
+	sjme_nal_execPathFunc execPath;
 	
 	/** Opens a given native file. */
 	sjme_nal_fileOpenFunc fileOpen;
@@ -200,6 +241,12 @@ typedef struct sjme_nal
 
 	/** Standard input/output pipes. */
 	sjme_nal_stdIo stdIo[SJME_NVM_MLE_NUM_STD_PIPES];
+
+	/** Obtains the user's home directory. */
+	sjme_nal_userHomeFunc userHome;
+
+	/** Obtains the user's username. */
+	sjme_nal_userNameFunc userName;
 } sjme_nal;
 
 /** Default native abstraction layer. */

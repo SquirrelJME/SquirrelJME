@@ -715,3 +715,68 @@ sjme_errorCode sjme_nal_default_threadSleep(
 
 #endif
 #pragma endregion(threadSleep)
+
+#pragma region(userHome)
+#if (SJME_CONFIG_NAL_USER_HOME == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+
+sjme_errorCode sjme_nal_default_userHome(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	sjme_lpcstr env;
+	sjme_jint envLen;
+
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* This is usually always set in HOME. If it happens to not even be */
+	/* set, then just use the root directory. */
+	env = getenv("HOME");
+	if (env == NULL)
+		env = "/";
+
+	/* Too long of a path? */
+	envLen = strlen(env);
+	if (envLen > outLen || envLen > SJME_MAX_PATH)
+		return SJME_ERROR_PATH_TOO_LONG;
+
+	/* Give the resultant path. */
+	strncpy(out, env, sjme_min(envLen, outLen));
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(userHome)
+
+#pragma region(userName)
+#if (SJME_CONFIG_NAL_USER_NAME == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+
+sjme_errorCode sjme_nal_default_userName(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	sjme_lpcstr env;
+	sjme_jint envLen;
+
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Get from the environment variable, otherwise assume root. */
+	env = getenv("USER");
+	if (env == NULL)
+		env = "root";
+
+	/* Give the resultant path. */
+	envLen = strlen(env);
+	strncpy(out, env, sjme_min(envLen, outLen));
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(userName)

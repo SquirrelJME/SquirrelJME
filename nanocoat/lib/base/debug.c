@@ -13,6 +13,7 @@
 	#define WIN32_LEAN_AND_MEAN 1
 	
 	#include <windows.h>
+	#include <winternl.h>
 	
 	#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_NT_4)
 		#include <debugapi.h>
@@ -61,6 +62,9 @@ static void sjme_debug_crashPosix(int signalId)
 sjme_jboolean sjme_debug_abort(sjme_errorCode error)
 {
 	static sjme_atomic(sjme_jint) didAbort;
+#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_NT_4)
+	PPEB peb;
+#endif
 
 	/* Only trigger abort once. */
 	if (sjme_atomic_cs(sjme_jint, &didAbort, 0, 1))
