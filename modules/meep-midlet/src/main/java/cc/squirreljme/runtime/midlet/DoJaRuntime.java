@@ -64,7 +64,8 @@ public final class DoJaRuntime
 			throw new NullPointerException("NARG");
 		
 		// Get from system first
-		String sys = System.getProperty(__key);
+		String sys = System.getProperty(
+			IModeProperty.DOJA_PROFILE_PROPERTY + "." + __key);
 		if (sys != null)
 			return sys;
 		
@@ -142,7 +143,7 @@ public final class DoJaRuntime
 		
 		// Setup version based on the current profile
 		String profile = DoJaRuntime.getProperty(
-			IModeProperty.DOJA_PROFILE_PROPERTY);
+			IModeProperty.ADF_PROPERTY_PREFIX);
 		if (profile != null && !profile.isEmpty())
 			version = new Profile(profile.trim()).version();
 		else
