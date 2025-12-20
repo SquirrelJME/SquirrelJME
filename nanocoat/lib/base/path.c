@@ -661,8 +661,9 @@ sjme_errorCode sjme_path_getName(
 	if (nameDx >= inPath->nameCount)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* This is just a sub-path, but a single element. */
+	return sjme_path_subPath(outPath, inPath,
+		nameDx, nameDx + 1);
 }
 
 sjme_errorCode sjme_path_getNameF(
@@ -703,8 +704,21 @@ sjme_errorCode sjme_path_getParent(
 	if (sjme_error_is(error = sjme_path_check(inPath)))
 		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* If this is the root component, this will always be that root. */
+	if (inPath->nameCount == 1 && (inPath->flags & SJME_PATH_HAS_ROOT) != 0)
+	{
+		memmove(outPath, inPath, sizeof(*outPath));
+		return SJME_ERROR_NONE;
+	}
+	
+	/* If this is the blank path or otherwise only has a single name left, */
+	/* then it has no parent. */
+	if (inPath->nameCount <= 1)
+		return SJME_ERROR_NO_SUCH_ELEMENT;
+	
+	/* Otherwise, strip the last name. */
+	return sjme_path_subPath(outPath, inPath,
+		0, inPath->nameCount - 1);
 }
 
 sjme_errorCode sjme_path_getRoot(
@@ -719,8 +733,12 @@ sjme_errorCode sjme_path_getRoot(
 	if (sjme_error_is(error = sjme_path_check(inPath)))
 		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* If there is no root, then there is none. */
+	if ((inPath->flags & SJME_PATH_HAS_ROOT) == 0)
+		return SJME_ERROR_NO_SUCH_ELEMENT;
+	
+	/* Otherwise, return only the first name. */
+	return sjme_path_subPath(outPath, inPath, 0, 1);
 }
 
 sjme_errorCode sjme_path_normalize(
@@ -1099,21 +1117,58 @@ sjme_errorCode sjme_path_subPath(
 	sjme_attrInPositive sjme_jint endDx)
 {
 	sjme_errorCode error;
+	sjme_jint charBase, i;
+	sjme_path result;
 
 	if (outPath == NULL || inPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (beginDx < 0 || endDx < 0 || endDx < beginDx)
+	if (beginDx < 0 || endDx < 0 || endDx <= beginDx)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	if (sjme_error_is(error = sjme_path_check(inPath)))
 		return sjme_error_default(error);
 
-	if (beginDx >= inPath->nameCount || endDx >= inPath->nameCount)
+	if (beginDx >= inPath->nameCount || endDx > inPath->nameCount)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* The character base is where to start copying from. */
+	charBase = inPath->names[beginDx];
+	
+	/* Determine the actual new name count. */
+	memset(&result, 0, sizeof(result));
+	result.style = inPath->style;
+	result.nameCount = endDx - beginDx;
+	
+	/* Copy names over, include length end name. */
+	memmove(&result.names[0], &inPath->names[beginDx],
+		sizeof(inPath->names[0]) * (result.nameCount + 1));
+	
+	/* Copy characters over. */
+	memmove(&result.chars[0], &inPath->chars[charBase],
+		sizeof(result.chars[0]) * (inPath->length - charBase));
+	
+	/* Correct lengths and offsets. */
+	result.length = result.names[result.nameCount] - charBase;
+	for (i = 0; i <= result.nameCount; i++)
+		result.names[i] -= charBase;
+	
+	/* If the input path has a root, and we did begin from the root, then */
+	/* the target also gets the root flag. */
+	if (beginDx == 0 && (inPath->flags & SJME_PATH_HAS_ROOT) != 0)
+		result.flags |= SJME_PATH_HAS_ROOT;
+	
+	/* Otherwise, this becomes a relative path. */
+	else
+		result.flags |= SJME_PATH_IS_RELATIVE;
+	
+	/* Make sure the resultant path is valid. */
+	if (sjme_error_is(error = sjme_path_check(&result)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	memmove(outPath, &result, sizeof(*outPath));
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_path_userHome(

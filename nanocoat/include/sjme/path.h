@@ -342,11 +342,17 @@ sjme_errorCode sjme_path_getNameF(
 	sjme_attrInPositive sjme_jint nameDx);
 
 /**
- * Gets the parent of the current path, up to the root component.
+ * Gets the parent of the current path, if there is parent element then
+ * this will return @link SJME_ERROR_NO_SUCH_ELEMENT @endlink .
+ * 
+ * The parent of the root component will always be the root component,
+ * and the parent of a blank path or path with only a single name will be
+ * no path.
  * 
  * @param outPath The output path.
  * @param inPath The input path.
- * @return Any resultant error, if any.
+ * @return Any resultant error, if any. If there is no parent element then
+ * this will return @link SJME_ERROR_NO_SUCH_ELEMENT @endlink .
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_getParent(
@@ -354,11 +360,13 @@ sjme_errorCode sjme_path_getParent(
 	sjme_attrInNotNull const sjme_path* inPath);
 
 /**
- * Gets the root component of the path, if any.
+ * Gets the root component of the path, if there is no root element then
+ * this will return @link SJME_ERROR_NO_SUCH_ELEMENT @endlink .
  * 
  * @param outPath The output path.
  * @param inPath The input path.
- * @return Any resultant error, if any.
+ * @return Any resultant error, if any. If there is no root element then
+ * this will return @link SJME_ERROR_NO_SUCH_ELEMENT @endlink .
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_getRoot(
