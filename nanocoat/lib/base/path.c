@@ -489,6 +489,38 @@ sjme_errorCode sjme_path_default(
 	memset(&envPath, 0, sizeof(envPath));
 	memset(&buildPath, 0, sizeof(buildPath));
 	
+	/* Executable directory path? */
+	if (type == SJME_NVM_DEFAULT_DIRECTORY_EXEC)
+	{
+		/* Get from the environment. */
+		memset(&envPath, 0, sizeof(envPath));
+		if (nal->execPath != NULL &&
+			sjme_error_is(error = nal->execPath(envPath.chars,
+				SJME_MAX_PATH - 1)))
+			return sjme_error_default(error);
+		
+		/* Nothing here? */
+		if (envPath.chars[0] == '\0')
+			return SJME_ERROR_PATH_NOT_DEFINED;
+		
+		/* Parse path. */
+		memset(&buildPath, 0, sizeof(buildPath));
+		if (sjme_error_is(error = sjme_path_parseYN(nal,
+			&buildPath, envPath.chars)))
+			return sjme_error_default(error);
+		
+		/* Since this is the executable path, look at the parent directory. */
+		if (sjme_error_is(error = sjme_path_getParent(&buildPath, &buildPath)))
+			return sjme_error_default(error);
+		
+		/* As long as this is not a blank path, use it. */
+		if (buildPath.length > 0)
+		{
+			memmove(outPath, &buildPath, sizeof(buildPath));
+			return SJME_ERROR_NONE;
+		}
+	}
+	
 	/* Go through each default to locate paths accordingly. */
 	lastEnv = NULL;
 	lastTilde = SJME_JNI_FALSE;
@@ -599,21 +631,11 @@ sjme_errorCode sjme_path_default(
 			return sjme_error_default(error);
 		
 		/* Success! */
-		memmove(outPath, &buildPath, sizeof(buildPath));
-		return SJME_ERROR_NONE;
-	}
-	
-	/* Pseudo final index for the path of the executable. */
-	if (index >= 0 && index == vi)
-	{
-		memset(&envPath, 0, sizeof(envPath));
-		if (nal->execPath != NULL &&
-			sjme_error_is(error = nal->execPath(envPath.chars,
-				SJME_MAX_PATH - 1)))
-			return sjme_error_default(error);
-		
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		if (buildPath.length > 0)
+		{
+			memmove(outPath, &buildPath, sizeof(buildPath));
+			return SJME_ERROR_NONE;
+		}
 	}
 
 	/* The path is not defined at all. */
@@ -765,6 +787,33 @@ sjme_errorCode sjme_path_parseY(
 
 	return sjme_path_parseYP(&sjme_path_styles[style],
 		outPath, strPath);
+}
+
+sjme_errorCode sjme_path_parseYN(
+	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
+	sjme_attrInNotNull sjme_lpcstr strPath)
+{
+	sjme_errorCode error;
+	const sjme_path_style* style;
+	
+	if (outPath == NULL || strPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Use default NAL? */
+	if (nal == NULL)
+		nal = &sjme_nal_default;
+	
+	/* Get the native path style. */
+	style = NULL;
+	error = SJME_ERROR_UNKNOWN;
+	if (nal->pathStyle != NULL &&
+		sjme_error_is(error = nal->pathStyle(&style)) ||
+		style == NULL)
+		return sjme_error_default(error);
+	
+	/* Parse the given path. */
+	return sjme_path_parseYP(style, outPath, strPath);
 }
 
 sjme_errorCode sjme_path_parseYP(

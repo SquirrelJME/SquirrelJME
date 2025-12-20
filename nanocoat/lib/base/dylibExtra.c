@@ -46,7 +46,7 @@ static sjme_errorCode sjme_dylib_openExtraScritchAny(
 {
 #define TEMP_SIZE 128
 	sjme_errorCode error;
-	sjme_jint i;
+	sjme_jint i, dir;
 	sjme_lpcstr orderComponent;
 	sjme_path tryPath;
 	sjme_cchar tempName[TEMP_SIZE];
@@ -57,45 +57,47 @@ static sjme_errorCode sjme_dylib_openExtraScritchAny(
 
 	/* Go through all components, use the passed component, if any. */
 	result = NULL;
-	for (i = (subComponent != NULL ? -1 : 0);; i++)
-	{
-		/* Stop when all possible components have been checked. */
-		orderComponent = (i < 0 ? subComponent : order[i]);
-		if (orderComponent == NULL)
-			break;
-
-		/* Determine base path to use. */
-		memset(&tryPath, 0, sizeof(tryPath));
-		if (sjme_error_is(error = sjme_path_default(nal,
-			&tryPath, SJME_NVM_DEFAULT_DIRECTORY_NATIVES, -1)))
-			return sjme_error_default(error);
-
-		/* Determine dynamic library name. */
-		memset(tempName, 0, sizeof(tempName));
-		if (sjme_error_is(error = sjme_dylib_name(
-			"squirreljme-scritch", orderComponent,
-			tempName, TEMP_SIZE - 1)))
-			return sjme_error_default(error);
-		tempName[TEMP_SIZE - 1] = '\0';
-
-		/* Resolve from this path. */
-		if (sjme_error_is(error = sjme_path_resolveS(&tryPath, tempName)))
-			return sjme_error_default(error);
-
-		/* Attempt loading the library. */
-		if (sjme_error_is(error = sjme_dylib_open(tryPath.chars, &result)) ||
-			result == NULL)
+	for (dir = 0; dir < 2; dir++)
+		for (i = (subComponent != NULL ? -1 : 0);; i++)
 		{
-			if (error != SJME_ERROR_COULD_NOT_LOAD_LIBRARY)
+			/* Stop when all possible components have been checked. */
+			orderComponent = (i < 0 ? subComponent : order[i]);
+			if (orderComponent == NULL)
+				break;
+
+			/* Determine base path to use. */
+			memset(&tryPath, 0, sizeof(tryPath));
+			if (sjme_error_is(error = sjme_path_default(nal,
+				&tryPath, (dir == 0 ? SJME_NVM_DEFAULT_DIRECTORY_NATIVES :
+					SJME_NVM_DEFAULT_DIRECTORY_EXEC), -1)))
 				return sjme_error_default(error);
 
-			/* Try again. */
-			continue;
-		}
+			/* Determine dynamic library name. */
+			memset(tempName, 0, sizeof(tempName));
+			if (sjme_error_is(error = sjme_dylib_name(
+				"squirreljme-scritch", orderComponent,
+				tempName, TEMP_SIZE - 1)))
+				return sjme_error_default(error);
+			tempName[TEMP_SIZE - 1] = '\0';
 
-		/* A library was found, so stop. */
-		break;
-	}
+			/* Resolve from this path. */
+			if (sjme_error_is(error = sjme_path_resolveS(&tryPath, tempName)))
+				return sjme_error_default(error);
+
+			/* Attempt loading the library. */
+			if (sjme_error_is(error = sjme_dylib_open(tryPath.chars,
+				&result)) || result == NULL)
+			{
+				if (error != SJME_ERROR_COULD_NOT_LOAD_LIBRARY)
+					return sjme_error_default(error);
+
+				/* Try again. */
+				continue;
+			}
+
+			/* A library was found, so stop. */
+			break;
+		}
 
 	/* Was a library found? */
 	if (result != NULL)

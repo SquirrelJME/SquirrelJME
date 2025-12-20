@@ -19,3 +19,7 @@ target_include_directories(AppDemoScritchUI PUBLIC
 add_dependencies(AppDemoScritchUI
 	${SQUIRRELJME_LIB_Base_FPIC}
 	ScritchUI)
+
+# Output to the base directory
+squirreljme_target_binary_output(AppDemoScritchUI
+	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")

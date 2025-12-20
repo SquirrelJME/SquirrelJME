@@ -61,6 +61,12 @@ squirreljme_include("utils.cmake")
 # Platform information
 squirreljme_include("platform.cmake")
 
+# Valgrind Support on UNIX OSes, if debugging is enabled
+if(NOT SQUIRRELJME_IS_ANDROID AND
+	SQUIRRELJME_IS_UNIX AND SQUIRRELJME_IS_DEBUG)
+	squirreljme_include("valgrind.cmake")
+endif()
+
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
 
@@ -141,12 +147,6 @@ if(SQUIRRELJME_IS_DEBUG)
 	if(SQUIRRELJME_ENABLE_TESTING)
 		add_compile_definitions(SJME_CONFIG_UNIT_TEST=1)
 	endif()
-endif()
-
-# Valgrind Support on UNIX OSes, if debugging is enabled
-if(NOT SQUIRRELJME_IS_ANDROID AND
-	SQUIRRELJME_IS_UNIX AND SQUIRRELJME_IS_DEBUG)
-	squirreljme_include("valgrind.cmake")
 endif()
 
 # Where should dynamic libraries go when output?

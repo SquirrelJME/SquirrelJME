@@ -211,6 +211,9 @@ typedef enum sjme_nvm_defaultDirectoryType
 	/** Third classpath lookup. */
 	SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_3,
 	
+	/** Executable directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_EXEC,
+	
 	/** The number of default directory types. */
 	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE
 } sjme_nvm_defaultDirectoryType;
