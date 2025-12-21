@@ -11,16 +11,12 @@
 #include "sjme/util.h"
 #include "sjme/intern/nal.h"
 
-#if (SJME_CONFIG_NAL_EXEC_PATH == SJME_CONFIG_NAL_IMPLEMENT_LINUX)
+#if (SJME_CONFIG_NAL_EXEC_PATH == SJME_CONFIG_NAL_IMPLEMENT_BSD)
 	#include <unistd.h>
 #endif
 
-#if (SJME_CONFIG_NAL_THREAD_YIELD == SJME_CONFIG_NAL_IMPLEMENT_LINUX)
-	#include <sched.h>
-#endif
-
 #pragma region(execPath)
-#if (SJME_CONFIG_NAL_EXEC_PATH == SJME_CONFIG_NAL_IMPLEMENT_LINUX)
+#if (SJME_CONFIG_NAL_EXEC_PATH == SJME_CONFIG_NAL_IMPLEMENT_BSD)
 
 sjme_errorCode sjme_nal_default_execPath(
 	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
@@ -46,7 +42,7 @@ sjme_errorCode sjme_nal_default_execPath(
 
 	/* Unfortunately the only way to tell if a path is too long is by */
 	/* requesting more than what the user requested. */
-	procLen = readlink("/proc/self/exe", temp, tempLen);
+	procLen = readlink("/proc/curproc/file", temp, tempLen);
 	if (procLen > 0 && procLen < outLen)
 		strncpy(out, temp, sjme_min(procLen, outLen));
 
@@ -61,17 +57,3 @@ sjme_errorCode sjme_nal_default_execPath(
 
 #endif
 #pragma endregion(execPath)
-
-#pragma region(threadYield)
-#if (SJME_CONFIG_NAL_THREAD_YIELD == SJME_CONFIG_NAL_IMPLEMENT_LINUX)
-	
-sjme_errorCode sjme_nal_default_threadYield(void)
-{
-	/* Just tell the schedular to yield. */
-	sched_yield();
-	
-	return SJME_ERROR_NONE;
-}
-
-#endif
-#pragma endregion(threadYield)

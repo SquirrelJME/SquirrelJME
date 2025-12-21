@@ -88,6 +88,7 @@ sjme_errorCode sjme_dylib_lookup(
  * Calculates the name of the given library for the current system.
  * 
  * @param inLibName The input library name.
+ * @param inLibSuffix The suffix for the library. 
  * @param outName The resultant library name.
  * @param outLen The length of the output buffer.
  * @return Any error code as applicable.
@@ -95,6 +96,7 @@ sjme_errorCode sjme_dylib_lookup(
  */
 sjme_errorCode sjme_dylib_name(
 	sjme_attrInNotNull sjme_lpcstr inLibName,
+	sjme_attrInNullable sjme_lpcstr inLibSuffix,
 	sjme_attrOutNotNullBuf(outLen) sjme_lpstr outName,
 	sjme_attrInPositive sjme_jint outLen);
 

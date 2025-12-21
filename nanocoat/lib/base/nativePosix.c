@@ -9,6 +9,7 @@
 
 #include "sjme/util.h"
 #include "sjme/intern/nal.h"
+#include "sjme/path.h"
 
 #if (SJME_CONFIG_NAL_NANOTIME == SJME_CONFIG_NAL_IMPLEMENT_POSIX) || \
 	(SJME_CONFIG_NAL_THREAD_SLEEP == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
@@ -64,6 +65,22 @@ sjme_errorCode sjme_nal_default_nanoTime(
 
 #endif
 #pragma endregion(nanotime)
+
+#pragma region(pathStyle)
+#if (SJME_CONFIG_NAL_PATH_STYLE == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+
+sjme_errorCode sjme_nal_default_pathStyle(
+	sjme_attrOutNotNull const sjme_path_style** outStyle)
+{
+	if (outStyle == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	*outStyle = &sjme_path_styles[SJME_PATH_STYLE_POSIX];
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(pathStyle)
 
 #pragma region(tcpUdp)
 #if (SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_POSIX) || \
@@ -698,3 +715,68 @@ sjme_errorCode sjme_nal_default_threadSleep(
 
 #endif
 #pragma endregion(threadSleep)
+
+#pragma region(userHome)
+#if (SJME_CONFIG_NAL_USER_HOME == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+
+sjme_errorCode sjme_nal_default_userHome(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	sjme_lpcstr env;
+	sjme_jint envLen;
+
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* This is usually always set in HOME. If it happens to not even be */
+	/* set, then just use the root directory. */
+	env = getenv("HOME");
+	if (env == NULL)
+		env = "/";
+
+	/* Too long of a path? */
+	envLen = strlen(env);
+	if (envLen > outLen || envLen > SJME_MAX_PATH)
+		return SJME_ERROR_PATH_TOO_LONG;
+
+	/* Give the resultant path. */
+	strncpy(out, env, sjme_min(envLen, outLen));
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(userHome)
+
+#pragma region(userName)
+#if (SJME_CONFIG_NAL_USER_NAME == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+
+sjme_errorCode sjme_nal_default_userName(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	sjme_lpcstr env;
+	sjme_jint envLen;
+
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Get from the environment variable, otherwise assume root. */
+	env = getenv("USER");
+	if (env == NULL)
+		env = "root";
+
+	/* Give the resultant path. */
+	envLen = strlen(env);
+	strncpy(out, env, sjme_min(envLen, outLen));
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(userName)

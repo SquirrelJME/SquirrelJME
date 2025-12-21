@@ -9,7 +9,11 @@
 
 package cc.squirreljme.deviceinfo;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Objects;
 
 /**
  * Operating system specific values.
@@ -61,7 +65,30 @@ public enum InfoOperatingSystem
 		}
 	},
 	
-	/* End. */;
+	/** Executable. */
+	EXECUTABLE_PATH("Executable Path", null)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/12/06
+		 */
+		@Override
+		public String value()
+		{
+			try
+			{
+				return Objects.toString(RuntimeShelf.vmDescription(
+					VMDescriptionType.EXECUTABLE_PATH), "unknown");
+			}
+			catch (MLECallError __e)
+			{
+				return __e.getMessage();
+			}
+		}
+	},
+	
+	/* End. */
+	;
 	
 	/** The key for the field. */
 	protected final String key;
