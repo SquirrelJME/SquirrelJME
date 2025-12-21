@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.gfx.ExtraGraphics;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.midlet.MeepRuntime;
 import java.io.Closeable;
@@ -25,6 +26,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
 import javax.microedition.lcdui.game.Sprite;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This delegates drawing operations to the hardware graphics layer.
@@ -37,65 +39,69 @@ import javax.microedition.lcdui.game.Sprite;
 @SquirrelJMEVendorApi
 public final class PencilGraphics
 	extends Graphics
-	implements Closeable
+	implements Closeable, ExtraGraphics
 {
 	/** The hardware bracket reference. */
 	@SquirrelJMEVendorApi
 	protected final PencilBracket hardware;
-	
+
 	/** Surface width. */
 	@SquirrelJMEVendorApi
 	protected final int surfaceW;
-	
+
 	/** Surface height. */
 	@SquirrelJMEVendorApi
 	protected final int surfaceH;
-	
+
 	/** Is there an alpha channel? */
 	@SquirrelJMEVendorApi
 	protected final boolean hasAlpha;
-	
+
 	/** Single character. */
 	@SquirrelJMEVendorApi
 	private final char[] _singleChar =
 		new char[1];
-	
+
+	/** The current pixel format. */
+	@SquirrelJMEVendorApi
+	private int _pixelFormat;
+
 	/** The current alpha color. */
 	@SquirrelJMEVendorApi
 	private int _argbColor;
-	
+
 	/** The current blending mode. */
 	@SquirrelJMEVendorApi
 	private int _blendingMode;
-	
+
 	/** The clip height. */
 	@SquirrelJMEVendorApi
 	private int _clipHeight;
-	
+
 	/** The clip width. */
 	@SquirrelJMEVendorApi
 	private int _clipWidth;
-	
+
 	/** The clip X position. */
 	@SquirrelJMEVendorApi
 	private int _clipX;
-	
+
 	/** The clip Y position. */
 	@SquirrelJMEVendorApi
 	private int _clipY;
-	
+
 	/** The current font used. */
 	@SquirrelJMEVendorApi
 	private Font _font;
-	
+
 	/** The current stroke style. */
 	@SquirrelJMEVendorApi
 	private int _strokeStyle;
-	
+
 	/** Has this been closed? */
 	@SquirrelJMEVendorApi
 	private volatile boolean _isClosed;
-	
+
 	/**
 	 * Initializes the pencil graphics system.
 	 *
@@ -122,6 +128,9 @@ public final class PencilGraphics
 		
 		// Determines which blending modes are valid
 		this.hasAlpha = PencilShelf.hardwareHasAlpha(__hardware);
+
+		// Cache this pencil's pixel format
+		this._pixelFormat = PencilShelf.hardwareGetPixelFormat(__hardware);
 		
 		// Set initial parameters for the graphics and make sure they are
 		// properly forwarded as well
@@ -130,7 +139,7 @@ public final class PencilGraphics
 		this.setStrokeStyle(Graphics.SOLID);
 		this.setFont(null);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -204,7 +213,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/02/05
@@ -235,7 +244,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -263,7 +272,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -271,7 +280,7 @@ public final class PencilGraphics
 	@Override
 	@SquirrelJMEVendorApi
 	public void drawArc(int __x, int __y, int __w, int __h, int __startAngle,
-	 int __arcAngle)
+		int __arcAngle)
 	{
 		// Do nothing if closed
 		if (this._isClosed)
@@ -289,7 +298,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -306,7 +315,7 @@ public final class PencilGraphics
 		
 		throw Debugging.todo();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -334,7 +343,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -367,7 +376,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -382,7 +391,7 @@ public final class PencilGraphics
 			__i.getWidth(), __i.getHeight(), 0,
 			__x, __y, __anchor);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -408,7 +417,74 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	public void drawPfRegion(int __pf, @NotNull Object __data, int __off, int __scanLen,
+		boolean __alpha, int __xSrc, int __ySrc, int __wSrc,
+		int __hSrc, int __trans, int __xDest, int __yDest, int __anchor,
+		int __wDest, int __hDest, int __origImgWidth, int __origImgHeight)
+	{
+		if (__wSrc < 0 || __hSrc < 0 || __wDest < 0 || __hDest < 0)
+			throw new IllegalArgumentException("EB0b");
+
+		if (__data == null)
+			throw new NullPointerException("NARG");
+
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+
+		try
+		{
+			PencilShelf.hardwareDrawRegion(this.hardware, __pf, __data, __off,
+				__scanLen, __alpha, __xSrc, __ySrc, __wSrc, __hSrc, __trans,
+				__xDest, __yDest, __anchor, __wDest, __hDest, __origImgWidth,
+				__origImgHeight);
+		}
+
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	@SquirrelJMEVendorApi
+	public void drawPolyline(int[] __xp, int __xo, int[] __yp, int __yo,
+		int __n)
+	{
+		if (__xp == null || __yp == null)
+			throw new NullPointerException("NARG");
+
+		if (__xo < 0 || __yo < 0 || __n < 0 ||
+			__xo + __n > __xp.length ||
+			__yo + __n > __yp.length)
+			throw new IllegalArgumentException("EB0d");
+
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+
+		try
+		{
+			PencilShelf.hardwareDrawPolyline(this.hardware, __xp, __xo, __yp,
+				__yo, __n);
+		}
+
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -438,7 +514,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -455,7 +531,7 @@ public final class PencilGraphics
 		
 		throw Debugging.todo();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -480,7 +556,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -500,7 +576,7 @@ public final class PencilGraphics
 		this.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
 			__trans, __xdest, __ydest, __anch, __wsrc, __hsrc);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -561,7 +637,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -588,7 +664,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -616,7 +692,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -647,7 +723,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -662,7 +738,32 @@ public final class PencilGraphics
 		
 		throw Debugging.todo();
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	@SquirrelJMEVendorApi
+	public void drawTriangle(int __x1, int __y1, int __x2, int __y2, int __x3,
+		int __y3)
+	{
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+
+		try
+		{
+			PencilShelf.hardwareDrawTriangle(this.hardware, __x1, __y1, __x2,
+				__y2, __x3, __y3);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -688,7 +789,40 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	@SquirrelJMEVendorApi
+	public void fillPolygon(int[] __xp, int __xo, int[] __yp, int __yo,
+		int __n)
+	{
+		if (__xp == null || __yp == null)
+			throw new NullPointerException("NARG");
+
+		if (__xo < 0 || __yo < 0 || __n < 0 ||
+			__xo + __n > __xp.length ||
+			__yo + __n > __yp.length)
+			throw new IllegalArgumentException("EB0d");
+
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+
+		try
+		{
+			PencilShelf.hardwareFillPolygon(this.hardware, __xp, __xo, __yp,
+				__yo, __n);
+		}
+
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -713,7 +847,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -740,7 +874,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -767,7 +901,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -778,7 +912,7 @@ public final class PencilGraphics
 	{
 		return (this._argbColor >> 24) & 0xFF;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -789,7 +923,7 @@ public final class PencilGraphics
 	{
 		return this._argbColor;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -800,7 +934,7 @@ public final class PencilGraphics
 	{
 		return this._blendingMode;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -811,7 +945,7 @@ public final class PencilGraphics
 	{
 		return (this._argbColor) & 0xFF;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -822,7 +956,7 @@ public final class PencilGraphics
 	{
 		return this._clipHeight;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -833,7 +967,7 @@ public final class PencilGraphics
 	{
 		return this._clipWidth;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -844,7 +978,7 @@ public final class PencilGraphics
 	{
 		return this._clipX - this.getTranslateX();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -855,7 +989,7 @@ public final class PencilGraphics
 	{
 		return this._clipY - this.getTranslateY();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -866,7 +1000,7 @@ public final class PencilGraphics
 	{
 		return this._argbColor & 0xFFFFFF;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -880,7 +1014,7 @@ public final class PencilGraphics
 		// since it should hopefully match the hardware one.
 		return this.software.getDisplayColor(__rgb);*/
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -891,7 +1025,7 @@ public final class PencilGraphics
 	{
 		return this._font;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -904,7 +1038,7 @@ public final class PencilGraphics
 			((this._argbColor >> 8) & 0xFF) +
 			((this._argbColor) & 0xFF)) / 3;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -915,7 +1049,52 @@ public final class PencilGraphics
 	{
 		return (this._argbColor >> 8) & 0xFF;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	@SquirrelJMEVendorApi
+	public void getPfRegion(int __pf, @NotNull Object __data, int __off, int __scanLen,
+		boolean __alpha, int __xSrc, int __ySrc, int __wSrc, int __hSrc,
+		int __anchor)
+	{
+		if (__wSrc < 0 || __hSrc < 0)
+			throw new IllegalArgumentException("EB0b");
+
+		if (__data == null)
+			throw new NullPointerException("NARG");
+
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
+		// Forward to hardware
+		try
+		{
+			PencilShelf.hardwareGetRegion(this.hardware,
+				__pf, __data, __off, __scanLen, __alpha, __xSrc, __ySrc,
+				__wSrc, __hSrc, __anchor);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2020/09/25
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int getPixelFormat()
+	{
+		return this._pixelFormat;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -926,7 +1105,7 @@ public final class PencilGraphics
 	{
 		return (this._argbColor >> 16) & 0xFF;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -937,7 +1116,7 @@ public final class PencilGraphics
 	{
 		return this._strokeStyle;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -952,7 +1131,7 @@ public final class PencilGraphics
 		
 		return PencilShelf.hardwareTranslateXY(this.hardware, false);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -967,7 +1146,7 @@ public final class PencilGraphics
 		
 		return PencilShelf.hardwareTranslateXY(this.hardware, true);
 	}
-	
+
 	/**
 	 * Returns the {@link PencilBracket} that this graphics is currently using
 	 * so that it may be directly used with {@link PencilShelf}.
@@ -988,7 +1167,7 @@ public final class PencilGraphics
 			return this.hardware;
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -1007,7 +1186,7 @@ public final class PencilGraphics
 			this.getGreenComponent(),
 			this.getBlueComponent());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -1016,12 +1195,22 @@ public final class PencilGraphics
 	@SquirrelJMEVendorApi
 	public void setAlphaColor(int __argb)
 	{
+		this.setAlphaColor(__argb, false);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	@SquirrelJMEVendorApi
+	public void setAlphaColor(int __argb, boolean __alphaBypass)
+	{
 		// Do nothing if closed
 		if (this._isClosed)
 			return;
 		
-		// Force no alpha on older MIDP
-		if (MeepRuntime.versionBefore(3, 0))
+		// Force no alpha on older MIDP if the bypass is not in use
+		if (!__alphaBypass && MeepRuntime.versionBefore(3, 0))
 			__argb |= 0xFF_000000;
 		
 		// Mirror locally
@@ -1030,7 +1219,7 @@ public final class PencilGraphics
 		// Set on the hardware side
 		PencilShelf.hardwareSetAlphaColor(this.hardware, __argb);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -1054,7 +1243,7 @@ public final class PencilGraphics
 		// Set
 		this.setAlphaColor((__a << 24) | (__r << 16) | (__g << 8) | __b);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -1088,7 +1277,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -1147,7 +1336,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -1164,7 +1353,7 @@ public final class PencilGraphics
 		this.setAlphaColor((this.getAlphaColor() & 0xFF_000000) |
 			(__rgb & 0x00_FFFFFF));
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -1180,7 +1369,7 @@ public final class PencilGraphics
 		
 		this.setAlphaColor(this.getAlpha(), __r, __g, __b);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -1213,7 +1402,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -1228,7 +1417,7 @@ public final class PencilGraphics
 		
 		this.setAlphaColor(this.getAlpha(), __v, __v, __v);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -1261,7 +1450,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -1285,7 +1474,7 @@ public final class PencilGraphics
 			throw e.throwDistinct();
 		}
 	}
-	
+
 	/**
 	 * Draws a direct RGB region of an image.
 	 * 
@@ -1329,7 +1518,7 @@ public final class PencilGraphics
 			__trans, __xdest, __ydest, __anch,
 			__wdest, __hdest, __origImgWidth, __origImgHeight);
 	}
-	
+
 	/**
 	 * Creates a graphics that is capable of drawing on hardware if it is
 	 * supported, but falling back to software level graphics.
@@ -1357,7 +1546,7 @@ public final class PencilGraphics
 			DisplayManager.instance().scritch().hardwareGraphics(
 				__pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw, __sh));
 	}
-	
+
 	/**
 	 * Initializes a new graphics interface.
 	 *

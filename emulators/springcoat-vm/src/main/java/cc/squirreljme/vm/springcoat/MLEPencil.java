@@ -264,6 +264,70 @@ public enum MLEPencil
 	},
 
 	/**
+	 * {@link PencilShelf#hardwareDrawRegion(PencilBracket, int, Object,
+	 * int, int, boolean, int, int, int, int, int, int, int, int, int,
+	 * int, int, int)}.
+	 */
+	HARDWARE_DRAW_REGION("hardwareDrawRegion:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;I" +
+		"Ljava/lang/Object;IIZIIIIIIIIIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/12/07
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				PencilShelf.hardwareDrawRegion(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Object.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]),
+					SpringVisObject.asNative(__thread,
+						Boolean.class, __args[5]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[6]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[7]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[8]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[9]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[10]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[11]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[12]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[13]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[14]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[15]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[16]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[17]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
+		}
+	},
+
+	/**
 	 * {@link PencilShelf#hardwareDrawRoundRect(PencilBracket, int, int, int,
 	 * int, int, int)}.
 	 */
@@ -630,6 +694,80 @@ public enum MLEPencil
 						Integer.class, __args[5]),
 					SpringVisObject.asNative(__thread,
 						Integer.class, __args[6]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
+		}
+	},
+
+	/** {@link PencilShelf#hardwareGetPixelFormat(PencilBracket)}. */
+	HARDWARE_GET_NATIVE_PIXEL_FORMAT("hardwareGetPixelFormat:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;)I")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/12/07
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				return SpringVisObject.asVm(__thread, Integer.TYPE,
+					PencilShelf.hardwareGetPixelFormat(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0])));
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
+		}
+	},
+
+	/**
+	 * {@link PencilShelf#hardwareGetRegion(PencilBracket, int, Object,
+	 * int, int, boolean, int, int, int, int, int}.
+	 */
+	HARDWARE_GET_REGION("hardwareGetRegion:" +
+		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;I" +
+		"Ljava/lang/Object;IIZIIIII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/12/04
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				PencilShelf.hardwareGetRegion(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Object.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]),
+					SpringVisObject.asNative(__thread,
+						Boolean.class, __args[5]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[6]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[7]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[8]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[9]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[10]));
 				return null;
 			}
 			catch (MLECallError __e)

@@ -392,3 +392,374 @@ fail_alloca:
 		sjme_alloca_free(srcRgb);
 	return sjme_error_default(error);
 }
+
+sjme_errorCode sjme_scritchpen_core_drawRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInPositive sjme_jint origImgWidth,
+	sjme_attrInPositive sjme_jint origImgHeight)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencilMatrix m;
+	sjme_fixed wx, zy, wxBase, zyMajor;
+	sjme_jint dx, dy, iwx, izy, at, srcBytes, mulAlphaVal, byteSize;
+	sjme_pointer srcData;
+	sjme_jboolean srcAlpha, mulAlpha;
+	sjme_scritchui_line* clipLine;
+
+	if (g == NULL || data == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* The source rectangle must always be in bounds. */
+	if (xSrc < 0 || ySrc < 0 || wSrc <= 0 || hSrc <= 0 ||
+		(xSrc + wSrc) > origImgWidth || (ySrc + hSrc) > origImgHeight ||
+		(xSrc + wSrc) < 0 || (ySrc + hSrc) < 0 ||
+		origImgWidth < 0 || origImgHeight < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* The scanline length needs to be at least the image width. */
+	if (scanLen < 0 || origImgWidth > scanLen || wSrc > scanLen)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	if (off < 0 || dataLen < 0 || (off + dataLen) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Drawing nothing? */
+	if (wDest <= 0 || hDest <= 0)
+		return SJME_ERROR_NONE;
+
+	byteSize = -1;
+	if (sjme_error_is(error = g->util->pfScanBytes(g, pf,
+		1, -1, &byteSize, NULL)) ||
+		byteSize < 0)
+		return sjme_error_default(error);
+
+	/* Translate base coordinates. */
+	if (sjme_error_is(error = g->util->applyTranslate(g,
+		&xDest, &yDest)))
+		return sjme_error_default(error);
+
+	/* We are now doing the transforming and drawing ourselves. */
+	memset(&m, 0, sizeof(m));
+
+	/* Special value indicating INDEXED1, but with VERTICAL disposition */
+	if (pf == SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1_VERTICAL)
+	{
+		/* We can basically rotate 270 degrees clockwise to be able to treat */
+		/* it as INDEXED1 data, we can then apply the received transform */
+		if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyRotateScale(
+			&m, SJME_SCRITCHUI_TRANS_ROT270, wSrc, hSrc, wDest, hDest)))
+			return sjme_error_default(error);
+
+		/* Then we just change the format into normal INDEXED1 */
+		pf = SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1;
+	}
+
+	/* Calculate transformation matrix. */
+	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyRotateScale(
+		&m, trans, wSrc, hSrc, wDest, hDest)))
+		return sjme_error_default(error);
+
+	/* Now we need to adjust the source and destination areas to account for */
+	/* the transformed image, otherwise we'll read from an incorrect area, */
+	/* and draw to another wrong area. */
+	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyCoordinateAdj(
+		trans, &xSrc, &ySrc, &wSrc, &hSrc, scanLen,
+		(dataLen / scanLen))))
+		return sjme_error_default(error);
+
+	/* Anchor to target coordinates after scaling, because we need */
+	/* to know what our target scale is. */
+	if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(
+		anchor,
+		xDest, yDest, m.tw, m.th, 0,
+		&xDest, &yDest)))
+		return sjme_error_default(error);
+
+	/* Get clipping information. */
+	clipLine = &g->state.clipLine;
+
+	/* Clip left X and top Y. */
+	sjme_scritchpen_core_clipLeftTop(clipLine->s.x, &xSrc, &xDest, &m.tw);
+	sjme_scritchpen_core_clipLeftTop(clipLine->s.y, &ySrc, &yDest, &m.th);
+
+	/* Clip right X and bottom Y. */
+	sjme_scritchpen_core_clipRightBottom(g->width, clipLine->e.x,
+		&xSrc, &xDest, &m.tw);
+	sjme_scritchpen_core_clipRightBottom(g->height, clipLine->e.y,
+		&ySrc, &yDest, &m.th);
+
+	/* Not actually drawing anything? */
+	if (m.tw <= 0 || m.th <= 0)
+		return SJME_ERROR_NONE;
+
+	/* A scanline here is just the width multiplied by the byteSize */
+	srcBytes = m.tw * byteSize;
+
+	/* Setup input and output RGB buffers. */
+	srcData = sjme_alloca(srcBytes);
+	if (srcData == NULL)
+	{
+		error = sjme_error_outOfMemory(NULL, srcBytes);
+		goto fail_alloca;
+	}
+
+	/* Clear buffers. */
+	memset(srcData, 0, srcBytes);
+
+	/* Lock. */
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
+		goto fail_lock;
+
+	/* Do we draw with alpha? */
+	srcAlpha = alpha;
+	mulAlpha = g->hasAlpha || alpha;
+
+	/* The value to use to multiply the source. */
+	mulAlphaVal = g->state.color.a;
+
+	/* Figure out the position of our base pointer. */
+	/* Matrix multiplication? Squeak? */
+	wxBase = sjme_fixed_mul(sjme_fixed_hi(xSrc), m.x.wx) +
+		sjme_fixed_mul(sjme_fixed_hi(ySrc), m.y.wx);
+	zyMajor = sjme_fixed_mul(sjme_fixed_hi(xSrc), m.x.zy) +
+		sjme_fixed_mul(sjme_fixed_hi(ySrc), m.y.zy);
+
+	/* Scan copy, rotate, and stretch by destination scans. */
+	for (dy = 0; dy < m.th; dy++, wxBase += m.y.wx, zyMajor += m.y.zy)
+	{
+		/* Reset wx to base for start of scan. */
+		wx = wxBase;
+		zy = zyMajor;
+
+		/* Scan in RGB line. */
+		for (dx = 0; dx < m.tw; dx++, wx += m.x.wx, zy += m.x.zy)
+		{
+			/* Get pixel from source buffer. */
+			iwx = sjme_fixed_int(wx) % origImgWidth;
+			iwx = ((iwx % origImgWidth) + origImgWidth) % origImgWidth;
+
+			izy = sjme_fixed_int(zy) % origImgHeight;
+			izy = ((izy % origImgHeight) + origImgHeight) % origImgHeight;
+
+			/* Copy pixel from source? */
+			at = off + ((izy * scanLen) + iwx);
+
+
+			if (sjme_error_is(error = g->util->pfScanToPf(g, pf, (void*)srcData,
+					dx*byteSize, srcBytes, pf, (void*)data, at*byteSize,
+					dataLen*byteSize, 1)))
+					goto fail_scanBytes;
+		}
+
+		/* Render data to buffer, it only has alpha if the source also does */
+		if (sjme_error_is(error = g->util->pfScanPut(g, pf, xDest, yDest + dy,
+			srcData, m.tw, mulAlpha, mulAlphaVal)))
+			goto fail_anyInLock;
+	}
+
+	/* Cleanup. */
+	sjme_alloca_free(srcData);
+
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
+		goto fail_unlock;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_anyInLock:
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
+		return sjme_error_default(error);
+
+fail_applyMask:
+fail_unlock:
+fail_lock:
+fail_alloca:
+fail_scanBytes:
+	if (srcData != NULL)
+		sjme_alloca_free(srcData);
+
+	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_scritchpen_core_getRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint anchor)
+{
+	sjme_errorCode error;
+	sjme_jint* srcRGB;
+	sjme_jint* dataScanline;
+	sjme_jint blendBytes, blendPf, mulAlphaVal, byteSize;
+	sjme_jboolean mulAlpha;
+
+	if (g == NULL || data == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (off < 0 || dataLen < 0 || (off + dataLen) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	if (xSrc < 0 || ySrc < 0 || xSrc + wSrc > g->width ||
+		ySrc + hSrc > g->height)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Reading nothing? */
+	if (wSrc <= 0 || hSrc <= 0)
+		return SJME_ERROR_NONE;
+
+	/* May be dynamically allocated for blending. */
+	srcRGB = NULL;
+	dataScanline = NULL;
+
+	/* Need to lock? */
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
+		return sjme_error_default(error);
+
+	byteSize = -1;
+	if (sjme_error_is(error = g->util->pfScanBytes(g, pf,
+		1, -1, &byteSize, NULL)) ||
+		byteSize < 0)
+		goto fail_oob;
+
+	/* Do we draw with alpha? */
+	mulAlpha = g->hasAlpha || alpha;
+
+	/* The value to use to multiply the source. */
+	mulAlphaVal = g->state.color.a;
+
+	/* If alpha is specified, we need to blend pixels from the screen into */
+	/* the received 'data' array. The temporary blendPf is always (A)RGB. */
+	/* Since that allows usage of blendRGBInto(). */
+	if (alpha && sjme_scritchpen_hasAlpha(pf))
+	{
+		blendPf = ((alpha && mulAlpha) ? SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 :
+			SJME_GFX_PIXEL_FORMAT_INT_RGB888);
+
+		blendBytes = -1;
+		if (sjme_error_is(error = g->util->pfScanBytes(g, blendPf,
+			wSrc, -1, &blendBytes, NULL)) ||
+			blendBytes < 0)
+			goto fail_oob;
+
+		srcRGB = sjme_alloca(blendBytes);
+		dataScanline = sjme_alloca(blendBytes);
+		if (srcRGB == NULL || dataScanline == NULL)
+			goto fail_any;
+
+		/* Need to clear both. */
+		memset(srcRGB, 0, blendBytes);
+		memset(dataScanline, 0, blendBytes);
+	}
+
+	/* This is a special BYTE_1_GRAY_VERTICAL format not yet supported. */
+	/* Has to be rotated 270 degrees clockwise. */
+	if (pf == SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1_VERTICAL)
+		return sjme_error_notImplemented(0);
+
+	error = SJME_ERROR_NONE;
+
+	for (int y = 0; y < hSrc; y++)
+	{
+		if (alpha && sjme_scritchpen_hasAlpha(pf))
+		{
+			/* Get screen data as RGB */
+			if (sjme_error_is(error = g->util->rgbScanGet(g,
+				xSrc, ySrc + y, srcRGB, wSrc)))
+				goto fail_scanGet;
+
+			/* Convert data's elements into proper RGB for blending as well */
+			if (sjme_error_is(error = g->util->pfScanToPf(g,
+				blendPf, dataScanline, 0, blendBytes,
+				pf, (void*)data, (y * wSrc * byteSize),
+				-1, wSrc)))
+				goto fail_srcBlendMap;
+
+			/* Perform the actual blending operation, in full RGB. */
+			if (sjme_error_is(error = g->util->blendRGBInto(g,
+				g->hasAlpha, alpha,
+				mulAlpha, mulAlphaVal,
+				dataScanline, srcRGB, wSrc)))
+				goto fail_blendInto;
+
+			/* Now set blended pixels back into 'data' with correct format */
+			if (sjme_error_is(error = g->util->pfScanToPf(g, pf,
+				(void*)data, (y * wSrc * byteSize), -1,
+				blendPf, dataScanline, 0, blendBytes,
+				wSrc)))
+				goto fail_destMapBlend;
+		}
+		
+		/* No alpha blending, so we can speed it up with a direct pfScanGet */
+		else
+		{
+			if (sjme_error_is(error = g->util->pfScanGet(g, pf, xSrc, ySrc + y,
+				(void*)((char*)data + y * wSrc * byteSize), wSrc * byteSize,
+				wSrc)))
+				goto fail_scanGet;
+		}
+	}
+
+	if (srcRGB != NULL)
+		sjme_alloca_free(srcRGB);
+	if (dataScanline != NULL)
+		sjme_alloca_free(dataScanline);
+
+	/* Failed? */
+	if (sjme_error_is(error))
+		goto fail_any;
+
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
+		return sjme_error_default(error);
+
+	/* Success? */
+	return error;
+
+fail_oob:
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message("getRegion(%p, %d, %d, %d, %p, %d, %d, %d) != [%d, %d]",
+		g, pf, xSrc, ySrc, wSrc, mulAlpha, mulAlphaVal,
+		g->width, g->height);
+#endif
+fail_any:
+fail_scanGet:
+fail_srcBlendMap:
+fail_blendInto:
+fail_destMapBlend:
+	if (srcRGB != NULL)
+		sjme_alloca_free(srcRGB);
+	if (dataScanline != NULL)
+		sjme_alloca_free(dataScanline);
+
+	/* Need to release the lock? */
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
+		return sjme_error_default(error);
+
+	return sjme_error_default(error);
+}

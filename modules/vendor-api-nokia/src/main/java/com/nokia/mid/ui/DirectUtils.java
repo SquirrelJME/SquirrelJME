@@ -10,6 +10,7 @@
 package com.nokia.mid.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.lcdui.gfx.ProxyGraphics;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -66,12 +67,8 @@ public class DirectUtils
 		Image mutable = Image.createImage((w = base.getWidth()),
 			(h = base.getHeight()), base.hasAlpha(), 0);
 		
-		// Setup graphics state, use SRC blending mode since it is just a
-		// copy of the alpha channel data!
-		Graphics g = mutable.getGraphics();
-		g.setBlendingMode(Graphics.SRC);
-		
 		// Draw image on top
+		Graphics g = mutable.getGraphics();
 		g.drawRegion(base, 0, 0, w, h, 0, 0, 0, 0);
 		
 		// Use resulting image
@@ -98,13 +95,14 @@ public class DirectUtils
 		if (__g instanceof DirectGraphics)
 			return (DirectGraphics)__g;
 		
-		/* {@squirreljme.error EB3o Can only make a Nokia DirectGraphics from
-		a PencilGraphics instance.} */
-		if (!(__g instanceof PencilGraphics))
+		// {@squirreljme.error EB3o Can only make a Nokia DirectGraphics from
+		// a PencilGraphics or ProxyGraphics instance.}
+		if (!(__g instanceof PencilGraphics) &&
+				!(__g instanceof ProxyGraphics))
 			throw new RuntimeException("EB3o");
 		
 		// Otherwise wrap it
-		return new __NokiaGraphics__((PencilGraphics)__g);
+		return new __NokiaGraphics__(__g);
 	}
 }
 

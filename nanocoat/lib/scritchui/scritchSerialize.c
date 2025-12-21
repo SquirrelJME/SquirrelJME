@@ -616,6 +616,28 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->drawRect.w,
 		as->drawRect.h));
 
+	SJME_SDP_CASE(drawRegion,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_REGION,
+		(as->drawRegion.g,
+		as->drawRegion.pf,
+		as->drawRegion.data,
+		as->drawRegion.off,
+		as->drawRegion.dataLen,
+		as->drawRegion.scanLen,
+		as->drawRegion.alpha,
+		as->drawRegion.xSrc,
+		as->drawRegion.ySrc,
+		as->drawRegion.wSrc,
+		as->drawRegion.hSrc,
+		as->drawRegion.trans,
+		as->drawRegion.xDest,
+		as->drawRegion.yDest,
+		as->drawRegion.anchor,
+		as->drawRegion.wDest,
+		as->drawRegion.hDest,
+		as->drawRegion.origImgWidth,
+		as->drawRegion.origImgHeight));
+
 	SJME_SDP_CASE(drawRoundRect,
 		SJME_SCRITCHUI_SERIAL_PEN_DRAW_ROUND_RECT,
 		(as->drawRoundRect.g,
@@ -755,6 +777,21 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->fillTriangle.y2,
 		as->fillTriangle.x3,
 		as->fillTriangle.y3));
+
+	SJME_SDP_CASE(getRegion,
+		SJME_SCRITCHUI_SERIAL_PEN_GET_REGION,
+		(as->getRegion.g,
+		as->getRegion.pf,
+		as->getRegion.data,
+		as->getRegion.off,
+		as->getRegion.dataLen,
+		as->getRegion.scanLen,
+		as->getRegion.alpha,
+		as->getRegion.xSrc,
+		as->getRegion.ySrc,
+		as->getRegion.wSrc,
+		as->getRegion.hSrc,
+		as->getRegion.anchor));
 
 	SJME_SDP_CASE(mapColor,
 		SJME_SCRITCHUI_SERIAL_PEN_MAP_COLOR,
@@ -1939,6 +1976,57 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawRect(
 	SJME_SDX_WAIT;
 }
 
+sjme_errorCode sjme_scritchpen_coreSerial_drawRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInPositive sjme_jint origImgWidth,
+	sjme_attrInPositive sjme_jint origImgHeight)
+{
+	SJME_SDP_CHUNK(drawRegion,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_REGION,
+		(g, pf, data, off, dataLen, scanLen, alpha,
+			xSrc, ySrc, wSrc, hSrc, trans, xDest, yDest, anchor,
+			wDest, hDest, origImgWidth, origImgHeight));
+
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(pf);
+	SJME_SDX_PASS(data);
+	SJME_SDX_PASS(off);
+	SJME_SDX_PASS(dataLen);
+	SJME_SDX_PASS(scanLen);
+	SJME_SDX_PASS(alpha);
+	SJME_SDX_PASS(xSrc);
+	SJME_SDX_PASS(ySrc);
+	SJME_SDX_PASS(wSrc);
+	SJME_SDX_PASS(hSrc);
+	SJME_SDX_PASS(trans);
+	SJME_SDX_PASS(xDest);
+	SJME_SDX_PASS(yDest);
+	SJME_SDX_PASS(anchor);
+	SJME_SDX_PASS(wDest);
+	SJME_SDX_PASS(hDest);
+	SJME_SDX_PASS(origImgWidth);
+	SJME_SDX_PASS(origImgHeight);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
 sjme_errorCode sjme_scritchpen_coreSerial_drawRoundRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -2179,6 +2267,42 @@ sjme_errorCode sjme_scritchpen_coreSerial_fillTriangle(
 	SJME_SDX_PASS(x3);
 	SJME_SDX_PASS(y3);
 	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchpen_coreSerial_getRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint anchor)
+{
+	SJME_SDP_CHUNK(getRegion,
+		SJME_SCRITCHUI_SERIAL_PEN_GET_REGION,
+		(g, pf, data, off, dataLen, scanLen,
+			alpha, xSrc, ySrc, wSrc, hSrc, anchor));
+
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(pf);
+	SJME_SDX_PASS(data);
+	SJME_SDX_PASS(off);
+	SJME_SDX_PASS(dataLen);
+	SJME_SDX_PASS(scanLen);
+	SJME_SDX_PASS(alpha);
+	SJME_SDX_PASS(xSrc);
+	SJME_SDX_PASS(ySrc);
+	SJME_SDX_PASS(wSrc);
+	SJME_SDX_PASS(hSrc);
+	SJME_SDX_PASS(anchor);
+
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;
 }
