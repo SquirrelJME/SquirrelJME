@@ -133,7 +133,7 @@ sjme_errorCode sjme_nvm_defaultBootSuiteInDirectory(
 sjme_errorCode sjme_nvm_defaultDir(
 	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
 	sjme_attrInNotNull const sjme_nal* nal,
-	sjme_attrOutNotNull sjme_lpstr outPath,
+	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
 	sjme_attrInPositiveNonZero sjme_jint outPathLen);
 
 /**

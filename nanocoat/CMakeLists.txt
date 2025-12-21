@@ -18,7 +18,7 @@ else()
 endif()
 
 # Default to release if no build type is specified
-if(NOT CMAKE_BUILD_TYPE)
+if(NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
 	set(CMAKE_BUILD_TYPE "Release"
 		CACHE STRING "" FORCE)
 endif()
@@ -60,6 +60,12 @@ squirreljme_include("utils.cmake")
 
 # Platform information
 squirreljme_include("platform.cmake")
+
+# Valgrind Support on UNIX OSes, if debugging is enabled
+if(NOT SQUIRRELJME_IS_ANDROID AND
+	SQUIRRELJME_IS_UNIX AND SQUIRRELJME_IS_DEBUG)
+	squirreljme_include("valgrind.cmake")
+endif()
 
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
@@ -106,6 +112,13 @@ if(SQUIRRELJME_IS_RELEASE)
 		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 		add_compile_options("/Os")
 	endif()
+elseif(SQUIRRELJME_IS_DEBUG)
+	if(MSVC OR
+		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
+		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+		add_compile_options("/Zi")
+		add_link_options("/DEBUG")
+	endif()
 endif()
 
 # Assets and otherwise, such as icons, etc.
@@ -134,12 +147,6 @@ if(SQUIRRELJME_IS_DEBUG)
 	if(SQUIRRELJME_ENABLE_TESTING)
 		add_compile_definitions(SJME_CONFIG_UNIT_TEST=1)
 	endif()
-endif()
-
-# Valgrind Support on UNIX OSes, if debugging is enabled
-if(NOT SQUIRRELJME_IS_ANDROID AND
-	SQUIRRELJME_IS_UNIX AND SQUIRRELJME_IS_DEBUG)
-	squirreljme_include("valgrind.cmake")
 endif()
 
 # Where should dynamic libraries go when output?

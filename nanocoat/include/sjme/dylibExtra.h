@@ -58,7 +58,6 @@ typedef enum sjme_dylib_extraFamily
  * 
  * @param nal The optional native abstraction layer to use, if this is not
  * specified than the default is used.
- * @param libRoot The optional path to search for libraries within.
  * @param family The family of libraries to attempt opening from.
  * @param subComponent The subcomponent to open, this may not be applicable
  * to all families.
@@ -68,7 +67,6 @@ typedef enum sjme_dylib_extraFamily
  */
 sjme_errorCode sjme_dylib_openExtra(
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNullable sjme_lpcstr libRoot,
 	sjme_attrInRange(0, SJME_DYLIB_NUM_EXTRA_FAMILY)
 		sjme_dylib_extraFamily family,
 	sjme_attrInNullable sjme_lpcstr subComponent,

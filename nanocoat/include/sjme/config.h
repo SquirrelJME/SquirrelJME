@@ -70,6 +70,9 @@ extern "C" {
 			#define SJME_CONFIG_HAS_C94
 		#endif
 	#endif
+#elif defined(_MSC_VER)
+	/** MSVC is assumed to support C89. */
+	#define SJME_CONFIG_HAS_C89
 #endif
 
 #if defined(SJME_CONFIG_HAS_C11)
@@ -1325,6 +1328,14 @@ extern "C" {
 
 /** Include code that should work. */
 #define SJME_CONFIG_CODE_SHOULD_WORK 1
+
+#if defined(SJME_CONFIG_HAS_MSVC)
+	#define sjme_asm(x) __asm {x}
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	#define sjme_asm(x) __asm__ {x}
+#else
+	#define sjme_asm(x) sjme_execInlineAsm(#x)
+#endif
 	
 /* Windows header needs to be included everywhere effectively. */
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
