@@ -17,3 +17,6 @@ target_include_directories(AppDemoScritchUI PUBLIC
 # Depend on all ScritchUI targets
 add_dependencies(AppDemoScritchUI
 	ScritchUI)
+
+# Required libraries to link in
+squirreljme_target_link_libraries_required(AppDemoScritchUI)
