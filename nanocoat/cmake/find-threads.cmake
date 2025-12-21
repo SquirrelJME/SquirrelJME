@@ -7,6 +7,9 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Threading and atomics support
 
+# Used to determine if certain symbols exist
+include(CheckSymbolExists)
+
 # These platforms do not support any kind of threading
 # Also consider unknown platforms as unsupported
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "dos" OR
@@ -69,4 +72,27 @@ else()
 			message("PThread: Not available or misconfigured.")
 		endif()
 	endif()
+endif()
+
+# Older versions of glibc do not have pthread_kill() so determine if a fallback
+# can be used specifically for that
+if(SQUIRRELJME_PTHREADS_TRY_VALID)
+	# Use pthread
+	set(CMAKE_REQUIRED_INCLUDES "${CMAKE_THREAD_INCLUDE}")
+	set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_THREAD_LIBS_INIT}")
+
+	# Is there pthread_kill()?
+	check_symbol_exists(pthread_kill "signal.h"
+		SJME_CONFIG_HAS_PTHREAD_KILL)
+	if(SJME_CONFIG_HAS_PTHREAD_KILL)
+		add_compile_definitions(
+			"SJME_CONFIG_HAS_PTHREAD_KILL=1")
+	else()
+		add_compile_definitions(
+			"SJME_CONFIG_HAS_NO_PTHREAD_KILL=1")
+	endif()
+
+	# Clear
+	unset(CMAKE_REQUIRED_INCLUDES)
+	unset(CMAKE_REQUIRED_LIBRARIES)
 endif()

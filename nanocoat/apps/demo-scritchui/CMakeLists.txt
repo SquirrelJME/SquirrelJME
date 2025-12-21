@@ -23,3 +23,6 @@ add_dependencies(AppDemoScritchUI
 # Output to the base directory
 squirreljme_target_binary_output(AppDemoScritchUI
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+
+# Required libraries to link in
+squirreljme_target_link_libraries_required(AppDemoScritchUI)

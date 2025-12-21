@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import cc.squirreljme.runtime.midlet.ApplicationType;
+import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import java.util.Objects;
 
 /**
@@ -88,8 +89,8 @@ final class __StarInterface__
 		
 		// Load the suite and vendor which is needed for RMS to properly
 		// identify our own records
-		String appName = System.getProperty(IModeProperty.NAME_PROPERTY);
-		String appVend = System.getProperty(IModeProperty.VENDOR_PROPERTY);
+		String appName = DoJaRuntime.getProperty(IModeProperty.NAME_PROPERTY);
+		String appVend = DoJaRuntime.getProperty(IModeProperty.VENDOR_PROPERTY);
 		ApplicationHandler.setNameAndVendor(
 			Objects.toString(appName, mainClass),
 			Objects.toString(appVend, "SquirrelJME-Star"));
