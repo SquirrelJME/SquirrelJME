@@ -1139,6 +1139,7 @@ sjme_errorCode sjme_path_subPath(
 	memset(&result, 0, sizeof(result));
 	result.style = inPath->style;
 	result.nameCount = endDx - beginDx;
+	result.length = inPath->names[beginDx + (result.nameCount)] - charBase;
 	
 	/* Copy names over, include length end name. */
 	memmove(&result.names[0], &inPath->names[beginDx],
@@ -1146,10 +1147,9 @@ sjme_errorCode sjme_path_subPath(
 	
 	/* Copy characters over. */
 	memmove(&result.chars[0], &inPath->chars[charBase],
-		sizeof(result.chars[0]) * (inPath->length - charBase));
+		sizeof(result.chars[0]) * result.length);
 	
 	/* Correct lengths and offsets. */
-	result.length = result.names[result.nameCount] - charBase;
 	for (i = 0; i <= result.nameCount; i++)
 		result.names[i] -= charBase;
 	
