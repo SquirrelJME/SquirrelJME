@@ -259,6 +259,16 @@ public final class PencilGraphics
 		if (this._isClosed)
 			return;
 		
+		// Out of bounds?
+		if (__sx < 0 || __sy < 0 || __w < 0 || __h < 0 ||
+			(__sx + __w) > this.surfaceW ||
+			(__sy + __h) > this.surfaceH)
+			throw new IllegalArgumentException("IOOB");
+		
+		// Nothing to copy?
+		if (__w == 0 || __h == 0)
+			return;
+		
 		// Forward to native call
 		try
 		{
@@ -1219,7 +1229,7 @@ public final class PencilGraphics
 		// Set on the hardware side
 		PencilShelf.hardwareSetAlphaColor(this.hardware, __argb);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2020/09/25
@@ -1449,6 +1459,26 @@ public final class PencilGraphics
 		{
 			throw e.throwDistinct();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/21
+	 */
+	@Override
+	public int surfaceHeight()
+	{
+		return this.surfaceH;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/21
+	 */
+	@Override
+	public int surfaceWidth()
+	{
+		return this.surfaceW;
 	}
 
 	/**

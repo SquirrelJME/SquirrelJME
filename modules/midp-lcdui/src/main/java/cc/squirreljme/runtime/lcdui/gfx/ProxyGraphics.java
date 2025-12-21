@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.lcdui.gfx;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -187,12 +186,7 @@ public final class ProxyGraphics
 		int __hSrc, int __trans, int __xDest, int __yDest, int __anchor,
 		int __wDest, int __hDest, int __origImgWidth, int __origImgHeight)
 	{
-		Graphics g = this.__graphics();
-
-		if (!(g instanceof ExtraGraphics))
-			throw new IllegalStateException("Not an ExtraGraphics instance.");
-		
-		((ExtraGraphics)g).drawPfRegion(__pf, __data, __off, __scanLen,
+		this.__extra().drawPfRegion(__pf, __data, __off, __scanLen,
 			__alpha, __xSrc, __ySrc, __wSrc, __hSrc, __trans, __xDest,
 			__yDest, __anchor, __wDest, __hDest, __origImgWidth,
 			__origImgHeight);
@@ -205,12 +199,7 @@ public final class ProxyGraphics
 	public void drawPolyline(int[] __xp, int __xo, int[] __yp, int __yo,
 		int __n)
 	{
-		Graphics g = this.__graphics();
-
-		if (!(g instanceof ExtraGraphics))
-			throw new IllegalStateException("Not an ExtraGraphics instance.");
-
-		((ExtraGraphics)g).drawPolyline(__xp, __xo, __yp, __yo, __n);
+		this.__extra().drawPolyline(__xp, __xo, __yp, __yo, __n);
 	}
 
 	/**
@@ -232,7 +221,8 @@ public final class ProxyGraphics
 	public void drawRGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 	{
-		this.__graphics().drawRGB16(__data, __off, __scanlen, __x, __y, __w, __h);
+		this.__graphics().drawRGB16(__data, __off, __scanlen,
+			__x, __y, __w, __h);
 	}
 
 	/**
@@ -320,12 +310,7 @@ public final class ProxyGraphics
 	public void drawTriangle(int __x1, int __y1, int __x2, int __y2, int __x3,
 		int __y3)
 	{
-		Graphics g = this.__graphics();
-
-		if (!(g instanceof ExtraGraphics))
-			throw new IllegalStateException("Not an ExtraGraphics instance.");
-		
-		((ExtraGraphics)g).drawTriangle(__x1, __y1, __x2, __y2, __x3, __y3);
+		this.__extra().drawTriangle(__x1, __y1, __x2, __y2, __x3, __y3);
 	}
 
 	/**
@@ -346,12 +331,7 @@ public final class ProxyGraphics
 	public void fillPolygon(int[] __xp, int __xo, int[] __yp, int __yo,
 		int __n)
 	{
-		Graphics g = this.__graphics();
-
-		if (!(g instanceof ExtraGraphics))
-			throw new IllegalStateException("Not an ExtraGraphics instance.");
-		
-		((ExtraGraphics)g).fillPolygon(__xp, __xo, __yp, __yo, __n);
+		this.__extra().fillPolygon(__xp, __xo, __yp, __yo, __n);
 	}
 
 	/**
@@ -394,7 +374,7 @@ public final class ProxyGraphics
 	@Override
 	public int getAlpha()
 	{
-		return (this._argbColor >> 24) & 0xFF;
+		return (this.getAlphaColor() >> 24) & 0xFF;
 	}
 
 	/**
@@ -404,7 +384,13 @@ public final class ProxyGraphics
 	@Override
 	public int getAlphaColor()
 	{
-		return this._argbColor;
+		// We cannot actually use the cached value here because of the alpha
+		// bypass. If the target supports the bypass then we might not know
+		// the actual true value that the graphics context has...
+		// Additionally as well, if the color is remapped because the graphics
+		// does not support the given color, then this will not be accurate
+		// in any way...
+		return this.__graphics().getAlphaColor();
 	}
 
 	/**
@@ -424,7 +410,7 @@ public final class ProxyGraphics
 	@Override
 	public int getBlueComponent()
 	{
-		return (this._argbColor) & 0xFF;
+		return (this.getAlphaColor()) & 0xFF;
 	}
 
 	/**
@@ -474,7 +460,7 @@ public final class ProxyGraphics
 	@Override
 	public int getColor()
 	{
-		return this._argbColor & 0xFFFFFF;
+		return this.getAlphaColor() & 0xFFFFFF;
 	}
 
 	/**
@@ -504,9 +490,10 @@ public final class ProxyGraphics
 	@Override
 	public int getGrayScale()
 	{
-		return (((this._argbColor >> 16) & 0xFF) +
-			((this._argbColor >> 8) & 0xFF) +
-			((this._argbColor) & 0xFF)) / 3;
+		int argb = this.getAlphaColor();
+		return (((argb >> 16) & 0xFF) +
+			((argb >> 8) & 0xFF) +
+			((argb) & 0xFF)) / 3;
 	}
 
 	/**
@@ -516,7 +503,7 @@ public final class ProxyGraphics
 	@Override
 	public int getGreenComponent()
 	{
-		return (this._argbColor >> 8) & 0xFF;
+		return (this.getAlphaColor() >> 8) & 0xFF;
 	}
 
 	/**
@@ -527,12 +514,7 @@ public final class ProxyGraphics
 		boolean __alpha, int __xSrc, int __ySrc, int __wSrc, int __hSrc,
 		int __anchor)
 	{
-		Graphics g = this.__graphics();
-
-		if (!(g instanceof ExtraGraphics))
-			throw new IllegalStateException("Not an ExtraGraphics instance.");
-		
-		((ExtraGraphics)g).getPfRegion(__pf, __data, __off, __scanLen,
+		this.__extra().getPfRegion(__pf, __data, __off, __scanLen,
 			__alpha, __xSrc, __ySrc, __wSrc, __hSrc, __anchor);
 	}
 
@@ -542,12 +524,7 @@ public final class ProxyGraphics
 	 */
 	public int getPixelFormat()
 	{
-		Graphics g = this.__graphics();
-
-		if (!(g instanceof ExtraGraphics))
-			throw new IllegalStateException("Not an ExtraGraphics instance.");
-
-		return ((ExtraGraphics)g).getPixelFormat();
+		return this.__extra().getPixelFormat();
 	}
 
 	/**
@@ -557,7 +534,7 @@ public final class ProxyGraphics
 	@Override
 	public int getRedComponent()
 	{
-		return (this._argbColor >> 16) & 0xFF;
+		return (this.getAlphaColor() >> 16) & 0xFF;
 	}
 
 	/**
@@ -621,11 +598,6 @@ public final class ProxyGraphics
 	{
 		this._alphaBypass = __alphaBypass;
 		this._argbColor = __argb;
-		if (target._target instanceof PencilGraphics)
-			((PencilGraphics)target._target).setAlphaColor(__argb,
-				__alphaBypass);
-		else
-			target._target.setAlphaColor(__argb);
 	}
 
 	/**
@@ -759,6 +731,26 @@ public final class ProxyGraphics
 		// Set
 		this._strokeStyle = __style;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/21
+	 */
+	@Override
+	public int surfaceHeight()
+	{
+		return this.__extra().surfaceHeight();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/21
+	 */
+	@Override
+	public int surfaceWidth()
+	{
+		return this.__extra().surfaceWidth();
+	}
 
 	/**
 	 * Returns the target holder for this {@link ProxyGraphics}.
@@ -797,6 +789,24 @@ public final class ProxyGraphics
 			rv = Font.getDefaultFont();
 		return rv;
 	}
+	
+	/**
+	 * Returns the target graphics as an {@link ExtraGraphics}.
+	 *
+	 * @return The {@link ExtraGraphics}.
+	 * @throws IllegalStateException If this is not an {@link ExtraGraphics}.
+	 * @since 2025/12/21
+	 */
+	private ExtraGraphics __extra()
+		throws IllegalStateException
+	{
+		/* {@squirreljme.error EB39 The graphics instance is not an
+		ExtraGraphics.} */
+		Graphics g = this.__graphics();
+		if (!(g instanceof ExtraGraphics))
+			throw new IllegalStateException("EB39");
+		return (ExtraGraphics)g;
+	}
 
 	/**
 	 * Initializes and returns the target graphics accordingly.
@@ -809,8 +819,14 @@ public final class ProxyGraphics
 		// This is the graphics we are drawing into
 		Graphics target = this.target._target;
 		
+		// Alpha color can be bypassed via proxy
+		if (target instanceof ExtraGraphics)
+			((ExtraGraphics)target).setAlphaColor(this._argbColor,
+				this._alphaBypass);
+		else
+			target.setAlphaColor(this._argbColor);
+		
 		// Pass all the adjustable parameters to the target
-		target.setAlphaColor(this._argbColor);
 		target.setBlendingMode(this._blendingMode);
 		target.setFont(this.__font());
 		target.setStrokeStyle(this._strokeStyle);

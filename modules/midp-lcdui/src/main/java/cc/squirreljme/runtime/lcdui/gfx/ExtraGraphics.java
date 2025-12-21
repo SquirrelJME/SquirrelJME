@@ -216,4 +216,22 @@ public interface ExtraGraphics
 	 */
 	@SquirrelJMEVendorApi
 	void setAlphaColor(int __argb, boolean __bypass);
+	
+	/**
+	 * Returns the surface width.
+	 *
+	 * @return The surface width.
+	 * @since 2025/12/21
+	 */
+	@SquirrelJMEVendorApi
+	int surfaceWidth();
+	
+	/**
+	 * Returns the surface height.
+	 *
+	 * @return The surface height.
+	 * @since 2025/12/21
+	 */
+	@SquirrelJMEVendorApi
+	int surfaceHeight();
 }
