@@ -251,6 +251,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c drawRect . */
 	SJME_SCRITCHUI_SERIAL_PEN_DRAW_RECT,
 
+	/** @c drawRegion . */
+	SJME_SCRITCHUI_SERIAL_PEN_DRAW_REGION,
+
 	/** @c drawRoundRect . */
 	SJME_SCRITCHUI_SERIAL_PEN_DRAW_ROUND_RECT,
 
@@ -277,6 +280,9 @@ typedef enum sjme_scritchui_serialType
 
 	/** @c fillTriangle . */
 	SJME_SCRITCHUI_SERIAL_PEN_FILL_TRIANGLE,
+
+	/** @c getRegion . */
+	SJME_SCRITCHUI_SERIAL_PEN_GET_REGION,
 
 	/** @c mapColor . */
 	SJME_SCRITCHUI_SERIAL_PEN_MAP_COLOR,
@@ -680,6 +686,27 @@ SDP_STRUCT_DEF(drawRect,
 	SDX_VAR(sjme_jint, w);
 	SDX_VAR(sjme_jint, h););
 
+SDP_STRUCT_DEF(drawRegion,
+	SDX_VAR(sjme_scritchui_pencil, g);
+	SDX_VAR(sjme_jint, pf);
+	SDX_VAR(sjme_cpointer, data);
+	SDX_VAR(sjme_jint, off);
+	SDX_VAR(sjme_jint, dataLen);
+	SDX_VAR(sjme_jint, scanLen);
+	SDX_VAR(sjme_jboolean, alpha);
+	SDX_VAR(sjme_jint, xSrc);
+	SDX_VAR(sjme_jint, ySrc);
+	SDX_VAR(sjme_jint, wSrc);
+	SDX_VAR(sjme_jint, hSrc);
+	SDX_VAR(sjme_jint, trans);
+	SDX_VAR(sjme_jint, xDest);
+	SDX_VAR(sjme_jint, yDest);
+	SDX_VAR(sjme_jint, anchor);
+	SDX_VAR(sjme_jint, wDest);
+	SDX_VAR(sjme_jint, hDest);
+	SDX_VAR(sjme_jint, origImgWidth);
+	SDX_VAR(sjme_jint, origImgHeight););
+
 SDP_STRUCT_DEF(drawRoundRect,
 	SDX_VAR(sjme_scritchui_pencil, g);
 	SDX_VAR(sjme_jint, x);
@@ -768,6 +795,20 @@ SDP_STRUCT_DEF(fillTriangle,
 	SDX_VAR(sjme_jint, y2);
 	SDX_VAR(sjme_jint, x3);
 	SDX_VAR(sjme_jint, y3););
+
+SDP_STRUCT_DEF(getRegion,
+	SDX_VAR(sjme_scritchui_pencil, g);
+	SDX_VAR(sjme_jint, pf);
+	SDX_VAR(sjme_cpointer, data);
+	SDX_VAR(sjme_jint, off);
+	SDX_VAR(sjme_jint, dataLen);
+	SDX_VAR(sjme_jint, scanLen);
+	SDX_VAR(sjme_jboolean, alpha);
+	SDX_VAR(sjme_jint, xSrc);
+	SDX_VAR(sjme_jint, ySrc);
+	SDX_VAR(sjme_jint, wSrc);
+	SDX_VAR(sjme_jint, hSrc);
+	SDX_VAR(sjme_jint, anchor););
 
 SDP_STRUCT_DEF(mapColor,
 	SDX_VAR(sjme_scritchui_pencil, g);
@@ -904,6 +945,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDP_DEF(drawArc);
 	SJME_SCRITCHUI_SDP_DEF(drawHoriz);
 	SJME_SCRITCHUI_SDP_DEF(drawRect);
+	SJME_SCRITCHUI_SDP_DEF(drawRegion);
 	SJME_SCRITCHUI_SDP_DEF(drawRoundRect);
 	SJME_SCRITCHUI_SDP_DEF(drawChar);
 	SJME_SCRITCHUI_SDP_DEF(drawChars);
@@ -918,6 +960,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDP_DEF(fillRect);
 	SJME_SCRITCHUI_SDP_DEF(fillRoundRect);
 	SJME_SCRITCHUI_SDP_DEF(fillTriangle);
+	SJME_SCRITCHUI_SDP_DEF(getRegion);
 	SJME_SCRITCHUI_SDP_DEF(mapColor);
 	SJME_SCRITCHUI_SDP_DEF(setAlphaColor);
 	SJME_SCRITCHUI_SDP_DEF(setBlendingMode);
@@ -1345,6 +1388,27 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawRect(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h);
 
+sjme_errorCode sjme_scritchpen_coreSerial_drawRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInPositive sjme_jint origImgWidth,
+	sjme_attrInPositive sjme_jint origImgHeight);
+
 sjme_errorCode sjme_scritchpen_coreSerial_drawRoundRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -1433,6 +1497,20 @@ sjme_errorCode sjme_scritchpen_coreSerial_fillTriangle(
 	sjme_attrInValue sjme_jint y2,
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3);
+
+sjme_errorCode sjme_scritchpen_coreSerial_getRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint anchor);
 
 sjme_errorCode sjme_scritchpen_coreSerial_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

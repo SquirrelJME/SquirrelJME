@@ -404,6 +404,27 @@ sjme_errorCode sjme_scritchpen_core_drawRect(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h);
 
+sjme_errorCode sjme_scritchpen_core_drawRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInPositive sjme_jint origImgWidth,
+	sjme_attrInPositive sjme_jint origImgHeight);
+
 sjme_errorCode sjme_scritchpen_core_drawRoundRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -492,6 +513,20 @@ sjme_errorCode sjme_scritchpen_core_fillTriangle(
 	sjme_attrInValue sjme_jint y2,
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3);
+
+sjme_errorCode sjme_scritchpen_core_getRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint anchor);
 
 sjme_errorCode sjme_scritchpen_core_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

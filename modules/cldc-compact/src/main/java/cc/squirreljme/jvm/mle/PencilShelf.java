@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
+import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -238,6 +239,49 @@ public final class PencilShelf
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h)
+		throws MLECallError;
+
+	/**
+	 * Draws a region of data in a given pixel format into the target.
+	 *
+	 * @param __hardware The hardware graphics to draw with.
+	 * @param __pf The image format that the data is in.
+	 * @param __data The source buffer.
+	 * @param __off The offset into the buffer.
+	 * @param __scanLen The scanline length.
+	 * @param __alpha Drawing with the alpha channel?
+	 * @param __xSrc The source X position.
+	 * @param __ySrc The source Y position.
+	 * @param __wSrc The width of the source region.
+	 * @param __hSrc The height of the source region.
+	 * @param __trans Sprite translation and/or rotation, see
+	 * {@code javax.microedition.lcdui.game.Sprite}.
+	 * @param __xDest The destination X position, is translated.
+	 * @param __yDest The destination Y position, is translated.
+	 * @param __anchor The anchor point.
+	 * @param __wDest The destination width.
+	 * @param __hDest The destination height.
+	 * @param __origImgWidth Original image width.
+	 * @param __origImgHeight Original image height.
+	 * @throws MLECallError On null arguments, if the region is not valid, the
+	 * pixel format is not valid, or if the pencil is not valid.
+	 * @since 2025/12/07
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawRegion(
+		@NotNull PencilBracket __hardware,
+		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
+		@NotNull Object __data,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __scanLen,
+		boolean __alpha, int __xSrc, int __ySrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wSrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hSrc,
+		int __trans, int __xDest, int __yDest, int __anchor,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wDest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hDest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __origImgWidth,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __origImgHeight)
 		throws MLECallError;
 	
 	/**
@@ -466,7 +510,59 @@ public final class PencilShelf
 	public static native void hardwareFillTriangle(@NotNull PencilBracket __g,
 		int __x1, int __y1, int __x2, int __y2, int __x3, int __y3)
 		throws MLECallError;
+
+	/**
+	 * What is the native pixel format of this pencil?
+	 *
+	 * @param __g The graphics to get from.
+	 * @throws MLECallError If the pencil is not valid.
+	 * @return The native pixel format used by the pencil.
+	 * @since 2025/12/07
+	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = UIPixelFormat.class)
+	public static native int hardwareGetPixelFormat(
+		@NotNull PencilBracket __g)
+		throws MLECallError;
 	
+	/**
+	 * Reads a region of pixel data from a hardware graphics context.
+	 * 
+	 * Note that if the hardware graphics does not support reading of
+	 * pixel data then the destination buffer may be left unmodified,
+	 * filled with a specific value, or filled with off-screen buffer
+	 * pixels that may not reflect what is visible on the screen.
+	 *
+	 * @param __g The hardware graphics to read from.
+	 * @param __pf One of {@link UIPixelFormat}, the pixel data placed into
+	 * {@code __data} will be in this format.
+	 * @param __data The destination buffer.
+	 * @param __off The offset into the buffer.
+	 * @param __scanLen The scanline length.
+	 * @param __alpha If this argument is {@code true}, it means we must blend
+	 * the content retrieved from the graphics context with the destination
+	 * buffer's as opposed to overwriting its contents entirely.
+	 * @param __xSrc The source X position.
+	 * @param __ySrc The source Y position.
+	 * @param __wSrc The width of the source region.
+	 * @param __hSrc The height of the source region.
+	 * @param __anchor The anchor point.
+	 * @throws MLECallError On null arguments, if the region is not valid, the
+	 * pixel format is not valid, or if the pencil is not valid.
+	 * @since 2025/12/04
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareGetRegion(@NotNull PencilBracket __g,
+		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
+		@NotNull Object __data,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __scanLen,
+		boolean __alpha, int __xSrc, int __ySrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wSrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hSrc,
+		int __anchor)
+		throws MLECallError;
+
 	/**
 	 * Is there an alpha channel for this pencil?
 	 *

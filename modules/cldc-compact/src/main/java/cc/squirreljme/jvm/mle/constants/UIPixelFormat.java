@@ -138,9 +138,19 @@ public interface UIPixelFormat
 	@SquirrelJMEVendorApi
 	byte SHORT_ARGB1555 =
 		23;
+
+	/** INDEXED1 but with vertical pixel disposition. (packed {@code byte}) */
+	@SquirrelJMEVendorApi
+	byte PACKED_INDEXED1_VERTICAL = 
+		24;
+
+	/** 8-bit RGB332. {@code byte}. */
+	@SquirrelJMEVendorApi
+	byte BYTE_RGB332 = 
+		25;
 	
 	/** The number of pixel formats. */
 	@SquirrelJMEVendorApi
 	byte NUM_PIXEL_FORMATS =
-		24;
+		26;
 }

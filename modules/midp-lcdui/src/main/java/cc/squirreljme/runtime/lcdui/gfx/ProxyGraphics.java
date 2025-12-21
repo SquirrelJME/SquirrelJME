@@ -11,10 +11,12 @@ package cc.squirreljme.runtime.lcdui.gfx;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This is a proxy version of {@link Graphics} where each instance can
@@ -27,41 +29,48 @@ import javax.microedition.lcdui.Text;
 @SquirrelJMEVendorApi
 public final class ProxyGraphics
 	extends Graphics
+	implements ExtraGraphics
 {
 	/** The target graphics to draw into. */
 	@SquirrelJMEVendorApi
 	protected final ProxyGraphicsTarget target;
-	
+
 	/** The current alpha color. */
 	private int _argbColor;
-	
+
 	/** The current blending mode. */
 	private int _blendingMode;
-	
+
 	/** The clip height. */
 	private int _clipHeight;
-	
+
 	/** The clip width. */
 	private int _clipWidth;
-	
+
 	/** The clip X position. */
 	private int _clipX;
-	
+
 	/** The clip Y position. */
 	private int _clipY;
-	
+
 	/** The current font used. */
 	private Font _font;
-	
+
 	/** The current stroke style. */
 	private int _strokeStyle;
-	
+
 	/** The current X translation. */
 	private int _transX;
-	
+
 	/** The current Y translation. */
 	private int _transY;
-	
+
+	/** 
+	 * Whether to bypass the alpha channel being forced to be opaque if a
+	 * compatibility check is hit. 
+	 */
+	private boolean _alphaBypass;
+
 	/**
 	 * Initializes the proxy graphics with the given target.
 	 * 
@@ -83,7 +92,7 @@ public final class ProxyGraphics
 		this._clipWidth = __width;
 		this._clipHeight = __height;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -93,7 +102,7 @@ public final class ProxyGraphics
 	{
 		throw Debugging.todo();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -104,7 +113,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().copyArea(__a, __b, __c, __d, __e, __f, __g);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -115,7 +124,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().drawArc(__a, __b, __c, __d, __e, __f);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -127,7 +136,7 @@ public final class ProxyGraphics
 		this.__graphics().drawARGB16(__data, __off, __scanlen, __x, __y, __w,
 			__h);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -137,7 +146,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().drawChar(__a, __b, __c, __d);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -148,7 +157,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().drawChars(__a, __b, __c, __d, __e, __f);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -158,7 +167,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().drawImage(__a, __b, __c, __d);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -168,7 +177,42 @@ public final class ProxyGraphics
 	{
 		this.__graphics().drawLine(__a, __b, __c, __d);
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	public void drawPfRegion(int __pf, @NotNull Object __data, int __off, int __scanLen,
+		boolean __alpha, int __xSrc, int __ySrc, int __wSrc,
+		int __hSrc, int __trans, int __xDest, int __yDest, int __anchor,
+		int __wDest, int __hDest, int __origImgWidth, int __origImgHeight)
+	{
+		Graphics g = this.__graphics();
+
+		if (!(g instanceof ExtraGraphics))
+			throw new IllegalStateException("Not an ExtraGraphics instance.");
+		
+		((ExtraGraphics)g).drawPfRegion(__pf, __data, __off, __scanLen,
+			__alpha, __xSrc, __ySrc, __wSrc, __hSrc, __trans, __xDest,
+			__yDest, __anchor, __wDest, __hDest, __origImgWidth,
+			__origImgHeight);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	public void drawPolyline(int[] __xp, int __xo, int[] __yp, int __yo,
+		int __n)
+	{
+		Graphics g = this.__graphics();
+
+		if (!(g instanceof ExtraGraphics))
+			throw new IllegalStateException("Not an ExtraGraphics instance.");
+
+		((ExtraGraphics)g).drawPolyline(__xp, __xo, __yp, __yo, __n);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -179,7 +223,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().drawRGB(__a, __b, __c, __d, __e, __f, __g, __h);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -190,7 +234,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().drawRGB16(__data, __off, __scanlen, __x, __y, __w, __h);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -200,7 +244,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().drawRect(__a, __b, __c, __d);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -212,7 +256,7 @@ public final class ProxyGraphics
 		this.__graphics().drawRegion(__a, __b, __c, __d, __e, __f, __g, __h,
 			__i);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -225,7 +269,7 @@ public final class ProxyGraphics
 		this.__graphics().drawRegion(__src, __xsrc, __ysrc, __w, __h, __trans,
 			__xdest, __ydest, __anch, __wdest, __hdest);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -237,7 +281,7 @@ public final class ProxyGraphics
 		this.__graphics().drawRoundRect(__a, __b, __c, __d, __arcWidth,
 			__arcHeight);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -247,7 +291,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().drawString(__a, __b, __c, __d);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -258,7 +302,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().drawSubstring(__a, __b, __c, __d, __e, __f);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -268,7 +312,22 @@ public final class ProxyGraphics
 	{
 		this.__graphics().drawText(__t, __x, __y);
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	public void drawTriangle(int __x1, int __y1, int __x2, int __y2, int __x3,
+		int __y3)
+	{
+		Graphics g = this.__graphics();
+
+		if (!(g instanceof ExtraGraphics))
+			throw new IllegalStateException("Not an ExtraGraphics instance.");
+		
+		((ExtraGraphics)g).drawTriangle(__x1, __y1, __x2, __y2, __x3, __y3);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -279,7 +338,22 @@ public final class ProxyGraphics
 	{
 		this.__graphics().fillArc(__a, __b, __c, __d, __e, __f);
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	public void fillPolygon(int[] __xp, int __xo, int[] __yp, int __yo,
+		int __n)
+	{
+		Graphics g = this.__graphics();
+
+		if (!(g instanceof ExtraGraphics))
+			throw new IllegalStateException("Not an ExtraGraphics instance.");
+		
+		((ExtraGraphics)g).fillPolygon(__xp, __xo, __yp, __yo, __n);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -289,7 +363,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().fillRect(__x, __y, __w, __h);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -301,7 +375,7 @@ public final class ProxyGraphics
 		this.__graphics().fillRoundRect(__a, __b, __c, __d, __arcWidth,
 			__arcHeight);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -312,7 +386,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().fillTriangle(__a, __b, __c, __d, __e, __f);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -322,7 +396,7 @@ public final class ProxyGraphics
 	{
 		return (this._argbColor >> 24) & 0xFF;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/10
@@ -332,7 +406,7 @@ public final class ProxyGraphics
 	{
 		return this._argbColor;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -342,7 +416,7 @@ public final class ProxyGraphics
 	{
 		return this._blendingMode;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -352,7 +426,7 @@ public final class ProxyGraphics
 	{
 		return (this._argbColor) & 0xFF;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -362,7 +436,7 @@ public final class ProxyGraphics
 	{
 		return this._clipHeight;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -372,7 +446,7 @@ public final class ProxyGraphics
 	{
 		return this._clipWidth;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -382,7 +456,7 @@ public final class ProxyGraphics
 	{
 		return this._clipX - this._transX;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -392,7 +466,7 @@ public final class ProxyGraphics
 	{
 		return this._clipY - this._transY;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -402,7 +476,7 @@ public final class ProxyGraphics
 	{
 		return this._argbColor & 0xFFFFFF;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -412,7 +486,7 @@ public final class ProxyGraphics
 	{
 		return this.__graphics().getDisplayColor(__a);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -422,7 +496,7 @@ public final class ProxyGraphics
 	{
 		return this.__font();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -434,7 +508,7 @@ public final class ProxyGraphics
 			((this._argbColor >> 8) & 0xFF) +
 			((this._argbColor) & 0xFF)) / 3;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -444,7 +518,38 @@ public final class ProxyGraphics
 	{
 		return (this._argbColor >> 8) & 0xFF;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	public void getPfRegion(int __pf, @NotNull Object __data, int __off, int __scanLen,
+		boolean __alpha, int __xSrc, int __ySrc, int __wSrc, int __hSrc,
+		int __anchor)
+	{
+		Graphics g = this.__graphics();
+
+		if (!(g instanceof ExtraGraphics))
+			throw new IllegalStateException("Not an ExtraGraphics instance.");
+		
+		((ExtraGraphics)g).getPfRegion(__pf, __data, __off, __scanLen,
+			__alpha, __xSrc, __ySrc, __wSrc, __hSrc, __anchor);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	public int getPixelFormat()
+	{
+		Graphics g = this.__graphics();
+
+		if (!(g instanceof ExtraGraphics))
+			throw new IllegalStateException("Not an ExtraGraphics instance.");
+
+		return ((ExtraGraphics)g).getPixelFormat();
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -454,7 +559,7 @@ public final class ProxyGraphics
 	{
 		return (this._argbColor >> 16) & 0xFF;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -464,7 +569,7 @@ public final class ProxyGraphics
 	{
 		return this._strokeStyle;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -474,7 +579,7 @@ public final class ProxyGraphics
 	{
 		return this._transX;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -484,7 +589,7 @@ public final class ProxyGraphics
 	{
 		return this._transY;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -497,7 +602,7 @@ public final class ProxyGraphics
 			this.getGreenComponent(),
 			this.getBlueComponent());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -505,9 +610,24 @@ public final class ProxyGraphics
 	@Override
 	public void setAlphaColor(int __argb)
 	{
-		this._argbColor = __argb;
+		this.setAlphaColor(__argb, false);
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/20
+	 */
+	public void setAlphaColor(int __argb, boolean __alphaBypass)
+	{
+		this._alphaBypass = __alphaBypass;
+		this._argbColor = __argb;
+		if (target._target instanceof PencilGraphics)
+			((PencilGraphics)target._target).setAlphaColor(__argb,
+				__alphaBypass);
+		else
+			target._target.setAlphaColor(__argb);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -525,7 +645,7 @@ public final class ProxyGraphics
 		// Set
 		this.setAlphaColor((__a << 24) | (__r << 16) | (__g << 8) | __b);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -540,7 +660,7 @@ public final class ProxyGraphics
 		// Cache locally
 		this._blendingMode = __m;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -582,7 +702,7 @@ public final class ProxyGraphics
 		this._clipWidth = clipEndX - clipX;
 		this._clipHeight = clipEndY - clipY;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -593,7 +713,7 @@ public final class ProxyGraphics
 		this.setAlphaColor((this.getAlphaColor() & 0xFF_000000) |
 			(__rgb & 0x00_FFFFFF));
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -603,7 +723,7 @@ public final class ProxyGraphics
 	{
 		this.setAlphaColor(this.getAlpha(), __r, __g, __b);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -613,7 +733,7 @@ public final class ProxyGraphics
 	{
 		this.__graphics().setFont(__font);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -623,7 +743,7 @@ public final class ProxyGraphics
 	{
 		this.setAlphaColor(this.getAlpha(), __v, __v, __v);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -639,7 +759,7 @@ public final class ProxyGraphics
 		// Set
 		this._strokeStyle = __style;
 	}
-	
+
 	/**
 	 * Returns the target holder for this {@link ProxyGraphics}.
 	 *
@@ -651,7 +771,7 @@ public final class ProxyGraphics
 	{
 		return this.target;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -663,7 +783,7 @@ public final class ProxyGraphics
 		this._transX += __x;
 		this._transY += __y;
 	}
-	
+
 	/**
 	 * Returns the font that should be used.
 	 * 
@@ -677,7 +797,7 @@ public final class ProxyGraphics
 			rv = Font.getDefaultFont();
 		return rv;
 	}
-	
+
 	/**
 	 * Initializes and returns the target graphics accordingly.
 	 * 

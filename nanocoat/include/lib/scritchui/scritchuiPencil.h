@@ -510,6 +510,53 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawRectFunc)(
 	sjme_attrInPositive sjme_jint h);
 
 /**
+ * Draws a region of data in a given pixel format into the target.
+ *
+ * @param g The hardware graphics to draw with.
+ * @param pf The image format that the data is in.
+ * @param data The source buffer.
+ * @param off The offset into the buffer.
+ * @param dataLen The total length of the data buffer.
+ * @param scanLen The scanline length.
+ * @param alpha Drawing with the alpha channel?
+ * @param xSrc The source X position.
+ * @param ySrc The source Y position.
+ * @param wSrc The width of the source region.
+ * @param hSrc The height of the source region.
+ * @param trans Sprite translation and/or rotation,
+ * see @code javax.microedition.lcdui.game.Sprite @endcode.
+ * @param xDest The destination X position, is translated.
+ * @param yDest The destination Y position, is translated.
+ * @param anchor The anchor point.
+ * @param wDest The destination width.
+ * @param hDest The destination height.
+ * @param origImgWidth Original image width.
+ * @param origImgHeight Original image height.
+ * @return Any resultant error, if any
+ * @since 2025/12/07
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawRegionFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInPositive sjme_jint origImgWidth,
+	sjme_attrInPositive sjme_jint origImgHeight);
+
+/**
  * Draws a rectangle with rounded borders in hardware.
  * 
  * @param g The hardware graphics to draw with.
@@ -759,6 +806,46 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillTriangleFunc)(
 	sjme_attrInValue sjme_jint y2,
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3);
+
+/**
+ * Reads a region of pixel data from a hardware graphics context.
+ * 
+ * Note that if the hardware graphics does not support reading of
+ * pixel data then the destination buffer may be left unmodified,
+ * filled with a specific value, or filled with off-screen buffer
+ * pixels that may not reflect what is visible on the screen.
+ *
+ * @param g The hardware graphics to draw with.
+ * @param pf Integer representing the format that the target's data must be
+ * converted to before being placed into the data buffer.
+ * @param data The destination buffer.
+ * @param off The offset into the buffer.
+ * @param dataLen The total length of the data buffer.
+ * @param scanLen The scanline length.
+ * @param alpha If this argument is @code true @endcode, it means we must
+ * blend the content retrieved from the graphics context with the destination
+ * buffer's as opposed to overwriting its contents entirely.
+ * @param xSrc The source X position.
+ * @param ySrc The source Y position.
+ * @param wSrc The width of the source region.
+ * @param hSrc The height of the source region.
+ * @param anchor The anchor point.
+ * @return Any resultant error, if any.
+ * @since 2025/12/04
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilGetRegionFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint anchor);
 
 /**
  * Locks the pencil for drawing.
@@ -1302,6 +1389,9 @@ typedef struct sjme_scritchui_pencilFunctions
 	/** @c DrawRect . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawRect, drawRect);
 
+	/** @c DrawRegion . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawRegion, drawRegion);
+
 	/** @c DrawRoundRect . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawRoundRect, drawRoundRect);
 
@@ -1334,6 +1424,9 @@ typedef struct sjme_scritchui_pencilFunctions
 	
 	/** @c FillTriangle . */
 	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle, fillTriangle);
+
+	/** @c GetRegion . */
+	SJME_SCRITCHUI_QUICK_PENCIL(GetRegion, getRegion);
 
 	/** @c MapColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
