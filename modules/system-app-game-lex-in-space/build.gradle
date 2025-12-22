@@ -1,0 +1,22 @@
+import cc.squirreljme.plugin.swm.JavaMEMidlet
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "A simplistic space exploration game."
+version = rootProject.version
+
+squirreljme {
+	javaDocErrorCode = "LX"
+	swmType = JavaMEMidletType.APPLICATION
+	swmName = "Lex In Space"
+	swmVendor = "Stephanie Gawroriski"
+	midlets += new JavaMEMidlet("Lex In Space (MIDP)", "lex.xpm",
+		"cc.squirreljme.lis.fe.midp.MidletMain")
+	tags += "system-app"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+	api project(":modules:media-api")
+	api project(":modules:midp-lcdui")
+}
