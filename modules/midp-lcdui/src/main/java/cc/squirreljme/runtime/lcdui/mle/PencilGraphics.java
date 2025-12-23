@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
@@ -220,7 +221,6 @@ public final class PencilGraphics
 	 */
 	@Override
 	public void close()
-		throws IOException
 	{
 		synchronized (this)
 		{
@@ -1272,6 +1272,27 @@ public final class PencilGraphics
 		if (this._isClosed)
 			return;
 		
+		// This is directly mapped
+		this.setBlendingModeEx(__m);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/22
+	 */
+	@Override
+	public void setBlendingModeEx(int __m)
+		throws IllegalArgumentException
+	{
+		/* {@squirreljme.error EB3u Invalid blending mode. (The mode)} */
+		if (__m < 0 || __m >= PencilBlendingMode.NUM_BLENDS ||
+			(__m == Graphics.SRC && !this.hasAlpha))
+			throw new IllegalArgumentException("EB3u " + __m);
+		
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
 		// Cache locally
 		this._blendingMode = __m;
 		
@@ -1567,7 +1588,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@SquirrelJMEVendorApi
-	public static Graphics hardwareGraphics(int __pf, int __bw,
+	public static PencilGraphics hardwareGraphics(int __pf, int __bw,
 		int __bh, Object __buf, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)
 		throws NullPointerException
@@ -1588,7 +1609,8 @@ public final class PencilGraphics
 	 * @since 2024/05/12
 	 */
 	@SquirrelJMEVendorApi
-	public static Graphics of(ScritchPencilBracket __hw, int __sw, int __sh)
+	public static PencilGraphics of(ScritchPencilBracket __hw,
+		int __sw, int __sh)
 		throws NullPointerException
 	{
 		if (__hw == null)

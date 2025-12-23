@@ -173,6 +173,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c panelNew . */
 	SJME_SCRITCHUI_SERIAL_UI_PANEL_NEW,
 	
+	/** @c pseudoGraphics . */
+	SJME_SCRITCHUI_SERIAL_UI_PSEUDO_GRAPHICS,
+	
 	/** @c screenSetListener . */
 	SJME_SCRITCHUI_SERIAL_UI_SCREEN_SET_LISTENER,
 		
@@ -310,6 +313,9 @@ typedef enum sjme_scritchui_serialType
 
 	/** @c setParametersFrom . */
 	SJME_SCRITCHUI_SERIAL_PEN_SET_PARAMETERS_FROM,
+	
+	/** @c transferRegion . */
+	SJME_SCRITCHUI_SERIAL_PEN_TRANSFER_REGION,
 
 	/** @c translate . */
 	SJME_SCRITCHUI_SERIAL_PEN_TRANSLATE,
@@ -554,6 +560,13 @@ SDU_STRUCT_DEF(panelEnableFocus,
 
 SDU_STRUCT_DEF(panelNew,
 	SDX_VARP(sjme_scritchui_uiPanel, outPanel););
+
+SDU_STRUCT_DEF(pseudoGraphics,
+	SDX_VARP(sjme_scritchui_pencil, outPencil);
+	SDX_VARP(sjme_alloc_weak, outWeakPencil);
+	SDX_VARP(sjme_scritchui_pencil, pencils);
+	SDX_VAR(sjme_jint, numPencils);
+	SDX_VARP(const sjme_frontEndBindable, pencilFrontEndCopy););
 
 SDU_STRUCT_DEF(screenSetListener,
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(screen););
@@ -848,7 +861,22 @@ SDP_STRUCT_DEF(setFont,
 SDP_STRUCT_DEF(setParametersFrom,
 	SDX_VAR(sjme_scritchui_pencil, g);
 	SDX_VAR(sjme_scritchui_pencil, from););
-
+	
+SDP_STRUCT_DEF(transferRegion,
+	SDX_VAR(sjme_scritchui_pencil, g);
+	SDX_VAR(sjme_scritchui_pencil, srcPencil);
+	SDX_VAR(sjme_jboolean, alpha);
+	SDX_VAR(sjme_jint, xSrc);
+	SDX_VAR(sjme_jint, ySrc);
+	SDX_VAR(sjme_jint, wSrc);
+	SDX_VAR(sjme_jint, hSrc);
+	SDX_VAR(sjme_jint, trans);
+	SDX_VAR(sjme_jint, xDest);
+	SDX_VAR(sjme_jint, yDest);
+	SDX_VAR(sjme_jint, anchor);
+	SDX_VAR(sjme_jint, wDest);
+	SDX_VAR(sjme_jint, hDest););
+	
 SDP_STRUCT_DEF(translate,
 	SDX_VAR(sjme_scritchui_pencil, g);
 	SDX_VAR(sjme_jint, x);
@@ -924,6 +952,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(objectDelete);
 	SJME_SCRITCHUI_SDU_DEF(panelEnableFocus);
 	SJME_SCRITCHUI_SDU_DEF(panelNew);
+	SJME_SCRITCHUI_SDU_DEF(pseudoGraphics);
 	SJME_SCRITCHUI_SDU_DEF(screenSetListener);
 	SJME_SCRITCHUI_SDU_DEF(screens);
 	SJME_SCRITCHUI_SDU_DEF(scrollPanelNew);
@@ -970,6 +999,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDP_DEF(setStrokeStyle);
 	SJME_SCRITCHUI_SDP_DEF(setFont);
 	SJME_SCRITCHUI_SDP_DEF(setParametersFrom);
+	SJME_SCRITCHUI_SDP_DEF(transferRegion);
 	SJME_SCRITCHUI_SDP_DEF(translate);
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */
@@ -1245,6 +1275,14 @@ sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 sjme_errorCode sjme_scritchui_coreSerial_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
+	
+sjme_errorCode sjme_scritchui_coreSerial_pseudoGraphics(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
+	sjme_attrInNotNullBuf(numPencils) sjme_scritchui_pencil* pencils,
+	sjme_attrInPositiveNonZero sjme_jint numPencils,
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
 
 sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -1552,6 +1590,21 @@ sjme_errorCode sjme_scritchpen_coreSerial_setFont(
 sjme_errorCode sjme_scritchpen_coreSerial_setParametersFrom(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencil from);
+	
+sjme_errorCode sjme_scritchpen_coreSerial_transferRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_scritchui_pencil srcPencil,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest);
 
 sjme_errorCode sjme_scritchpen_coreSerial_translate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

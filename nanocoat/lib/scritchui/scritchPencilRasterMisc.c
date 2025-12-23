@@ -165,6 +165,62 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorPfToRgb(
 			gg = (gg << 3) | (gg >> 2);
 			bb = v & 0x1F;
 			bb = (bb << 3) | (bb >> 2);
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_RGB332:
+			aa = 0xFF;
+			rr = (v >> 5) & 0x7;
+			rr = (rr << 5) | (rr << 2) | (rr >> 2);
+			gg = (v >> 2) & 0x7;
+			gg = (gg << 5) | (gg << 2) | (gg >> 2);
+			bb = (v) & 0x3;
+			bb = (bb << 6) | (bb << 4) | (bb << 2) | bb;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_A8:
+			aa = v;
+			rr = 0;
+			gg = 0;
+			bb = 0;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_R8:
+			aa = 0xFF;
+			rr = v;
+			gg = 0;
+			bb = 0;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_G8:
+			aa = 0xFF;
+			rr = 0;
+			gg = v;
+			bb = 0;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_B8:
+			aa = 0xFF;
+			rr = 0;
+			gg = 0;
+			bb = v;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1_VERTICAL:
+			return sjme_error_fatal(SJME_ERROR_SHOULD_NOT_HAPPEN);
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_A4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_A2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_A1:
 		default:
 			return sjme_error_notImplemented(0);
 	}
@@ -378,6 +434,28 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 				(((gg >> 3) & 0x1F) << 5) |
 				((bb >> 3) & 0x1F);
 			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_RGB332:
+			v = (((rr >> 5) & 0x7) << 5) |
+				(((gg >> 5) & 0x7) << 2) |
+				(bb & 0x3);
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_A8:
+			v = aa;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_R8:
+			v = rr;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_G8:
+			v = gg;
+			break;
+			
+		case SJME_GFX_PIXEL_FORMAT_BYTE_B8:
+			v = bb;
+			break;
 		
 		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
 		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
@@ -401,9 +479,13 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1_VERTICAL:
 			v = ii & 0x1;
 			break;
-
+			
+		case SJME_GFX_PIXEL_FORMAT_PACKED_A4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_A2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_A1:
 		default:
 			return sjme_error_notImplemented(0);
 	}
@@ -737,8 +819,9 @@ sjme_errorCode sjme_scritchpen_core_setBlendingMode(
 	if (mode < 0 || mode >= SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	/* Source blending cannot be used if there is no alpha channel. */
-	if (!g->hasAlpha && mode == SJME_SCRITCHUI_PENCIL_BLEND_SRC)
+	/* Source blending cannot be used if there is no alpha channel, */
+	/* or anything else that is not SRC_OVER. */
+	if (!g->hasAlpha && mode != SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Set mode. */

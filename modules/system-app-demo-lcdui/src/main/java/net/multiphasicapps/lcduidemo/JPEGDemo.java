@@ -10,11 +10,14 @@
 package net.multiphasicapps.lcduidemo;
 
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This is the JPEG demo.
  *
  * @since 2019/05/05
  */
+@SquirrelJMEVendorApi
 public final class JPEGDemo
 	extends AbstractImageDemo
 {

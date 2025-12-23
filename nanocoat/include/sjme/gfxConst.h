@@ -110,11 +110,32 @@ typedef enum sjme_gfx_pixelFormat
 	/** INDEXED1 but with vertical pixel disposition. (packed @c uint8_t ) */
 	SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1_VERTICAL = 24,
 	
-	/** 8-bit RGB332 {@c uint8_t }. */
+	/** 8-bit RGB332 @c uint8_t . */
 	SJME_GFX_PIXEL_FORMAT_BYTE_RGB332 = 25,
+	
+	/** Only 8-bit alpha (@c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_BYTE_A8 = 26,
+	
+	/** Only 4-bit alpha (packed @c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_PACKED_A4 = 27,
+	
+	/** Only 2-bit alpha (packed @c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_PACKED_A2 = 28,
+	
+	/** Only 1-bit alpha (packed @c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_PACKED_A1 = 29,
+	
+	/** Only 8-bit red (@c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_BYTE_R8 = 30,
+	
+	/** Only 8-bit green (@c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_BYTE_G8 = 31,
+	
+	/** Only 8-bit blue (@c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_BYTE_B8 = 32,
 
 	/** The number of pixel formats. */
-	SJME_NUM_GFX_PIXEL_FORMATS = 26,
+	SJME_NUM_GFX_PIXEL_FORMATS = 33,
 } sjme_gfx_pixelFormat;
 
 /*--------------------------------------------------------------------------*/

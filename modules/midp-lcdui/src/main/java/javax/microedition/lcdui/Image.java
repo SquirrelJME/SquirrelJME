@@ -434,7 +434,8 @@ public class Image
 	 * @since 2017/02/11
 	 */
 	@Api
-	public static Image createImage(int __w, int __h, boolean __alpha, int __c)
+	public static Image createImage(int __w, int __h,
+		boolean __alpha, int __c)
 		throws IllegalArgumentException
 	{
 		/* {@squirreljme.error EB2e Zero or negative image size requested.} */

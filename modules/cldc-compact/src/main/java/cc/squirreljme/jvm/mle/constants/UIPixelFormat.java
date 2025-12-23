@@ -149,8 +149,43 @@ public interface UIPixelFormat
 	byte BYTE_RGB332 = 
 		25;
 	
+	/** Only 8-bit alpha (@c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte BYTE_A8 = 
+		26;
+	
+	/** Only 4-bit alpha (packed @c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte PACKED_A4 = 
+		27;
+	
+	/** Only 2-bit alpha (packed @c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte PACKED_A2 = 
+		28;
+	
+	/** Only 1-bit alpha (packed @c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte PACKED_A1 = 
+		29;
+	
+	/** Only 8-bit red (@c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte BYTE_R8 = 
+		30;
+	
+	/** Only 8-bit green (@c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte BYTE_G8 = 
+		31;
+	
+	/** Only 8-bit blue (@c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte BYTE_B8 = 
+		32;
+	
 	/** The number of pixel formats. */
 	@SquirrelJMEVendorApi
 	byte NUM_PIXEL_FORMATS =
-		26;
+		33;
 }

@@ -1357,6 +1357,44 @@ typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
 	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
 
 /**
+ * Creates a pseudo pencil which layers on top of multiple pencils for the
+ * purpose of supporting planar graphics. The underlying pencils may be
+ * implemented in a mix of hardware and/or software, however the pseudo
+ * pencil naturally cannot support hardware acceleration.
+ * 
+ * The color format of the returned pencil will always be
+ * either @link SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 @endlink if there is
+ * an alpha channel, or @link SJME_GFX_PIXEL_FORMAT_INT_RGB888 @endlink if
+ * there is no alpha channel.
+ * 
+ * Whether an alpha channel exists is determined by whether any of the pixel
+ * formats used by the underlying pencils contain an alpha channel.
+ * 
+ * The channel priority is first-come-first-serve, that is if two pencils
+ * have a pixel format that have a color channel only the first one will be
+ * selected.
+ * 
+ * It is not valid for any target graphics to be indexed, as determined
+ * by @link sjme_scritchpen_isIndexed() @endlink .
+ * 
+ * @param inState The UI state.
+ * @param outPencil The resultant pencil.
+ * @param outWeakPencil The weak reference to the pencil.
+ * @param pencils The pencils to wrap.
+ * @param numPencils The number of pencils to wrap.
+ * @param pencilFrontEndCopy Front end data that goes into the pencil.
+ * @return An error if the requested graphics are not valid.
+ * @since 2025/12/22
+ */
+typedef sjme_errorCode (*sjme_scritchui_pseudoGraphicsFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
+	sjme_attrInNotNullBuf(numPencils) sjme_scritchui_pencil* pencils,
+	sjme_attrInPositiveNonZero sjme_jint numPencils,
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
+	
+/**
  * Sets the label of the specified component.
  * 
  * @param inState The input state.
@@ -1950,6 +1988,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Creates a new panel. */
 	SJME_SCRITCHUI_QUICK_API(panelNew);
+	
+	/** Pseudo pencil graphics. */
+	SJME_SCRITCHUI_QUICK_API(pseudoGraphics);
 	
 	/** Register listener. */
 	SJME_SCRITCHUI_QUICK_API(screenSetListener);

@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.lcduidemo;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.Random;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
@@ -22,6 +23,7 @@ import javax.microedition.midlet.MIDletStateChangeException;
  *
  * @since 2018/11/22
  */
+@SquirrelJMEVendorApi
 public class Mystify
 	extends MIDlet
 {
