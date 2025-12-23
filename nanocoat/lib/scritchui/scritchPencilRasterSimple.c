@@ -62,7 +62,8 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	/* SRC or SRC_OVER in hardware supported? Use if so... */
 	if (!g->state.applyAlpha && g->impl->drawHorizSrc != NULL)
 		return g->impl->drawHorizSrc(g, x, y, w);
-	else if (g->state.applyAlpha && g->impl->drawHorizSrcOver != NULL)
+	else if (g->state.applyAlpha && g->impl->drawHorizSrcOver != NULL &&
+		g->state.blending == SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER)
 		return g->impl->drawHorizSrcOver(g, x, y, w);
 	
 	/* Allocate buffer. */
@@ -276,7 +277,8 @@ sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	/* SRC or SRC_OVER in hardware supported? Use if so... */
 	if (!g->state.applyAlpha && g->impl->drawLineSrc != NULL)
 		return g->impl->drawLineSrc(g, x1, y1, x2, y2);
-	else if (g->state.applyAlpha && g->impl->drawLineSrcOver != NULL)
+	else if (g->state.applyAlpha && g->impl->drawLineSrcOver != NULL &&
+		g->state.blending == SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER)
 		return g->impl->drawLineSrcOver(g, x1, y1, x2, y2);
 	
 	/* Using code I wrote 15 years ago is great! */
@@ -296,7 +298,8 @@ sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	/* Determine the pixel function to use. */
 	if (!g->state.applyAlpha && g->impl->drawPixelSrc != NULL)
 		pixelFunc = g->impl->drawPixelSrc;
-	else if (g->state.applyAlpha && g->impl->drawPixelSrcOver != NULL)
+	else if (g->state.applyAlpha && g->impl->drawPixelSrcOver != NULL &&
+		g->state.blending == SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER)
 		pixelFunc = g->impl->drawPixelSrcOver;
 	else
 		pixelFunc = sjme_scritchpen_corePrim_drawPixelThunk;
@@ -390,7 +393,8 @@ sjme_errorCode sjme_scritchpen_corePrim_drawPixel(
 	/* SRC or SRC_OVER in hardware supported? Use if so... */
 	if (!g->state.applyAlpha && g->impl->drawPixelSrc != NULL)
 		return g->impl->drawPixelSrc(g, x, y);
-	else if (g->state.applyAlpha && g->impl->drawPixelSrcOver != NULL)
+	else if (g->state.applyAlpha && g->impl->drawPixelSrcOver != NULL &&
+		g->state.blending == SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER)
 		return g->impl->drawPixelSrcOver(g, x, y);
 	
 	/* Use horizontal line drawing. */

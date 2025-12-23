@@ -189,93 +189,6 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanGetNoDest(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchpen_coreUtil_blendRGBInto(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jboolean destAlpha,
-	sjme_attrInValue sjme_jboolean srcAlpha,
-	sjme_attrInValue sjme_jboolean mulAlpha,
-	sjme_attrInRange(0, 255) sjme_jint mulAlphaValue,
-	sjme_attrInNotNullBuf(numPixels) sjme_jint* dest,
-	sjme_attrInNotNullBuf(numPixels) const sjme_jint* src,
-	sjme_attrInPositive sjme_jint numPixels)
-{
-	sjme_jint i;
-	sjme_fixed sa, sr, sg, sb, da, dr, dg, db, iA, ca, cr, cg, cb, tff;
-	sjme_juint srcMask, destMask;
-	
-	if (g == NULL || dest == NULL || src == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (numPixels < 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-	
-	/* Source and dest mask, if alpha is applicable. */
-	destMask = (destAlpha ? 0 : UINT32_C(0xFF000000));
-	srcMask = (srcAlpha ? 0 : UINT32_C(0xFF000000));
-	
-	/* Blend each pixel individually. */
-	/* R(dest) = (R(src) * A(src)) + (R(dest) * (1 - A(src))) */
-	/* G(dest) = (G(src) * A(src)) + (G(dest) * (1 - A(src))) */
-	/* B(dest) = (B(src) * A(src)) + (B(dest) * (1 - A(src))) */
-	/* A(dest) = A(src) + A(dest) - (A(src) * A(dest)) */
-	tff = sjme_fixed_hi(255);
-	for (i = 0; i < numPixels; i++)
-	{
-		/* Extract as integers first. */
-		da = ((dest[i] | destMask) >> 24) & 0xFF;
-		dr = ((dest[i]) >> 16) & 0xFF;
-		dg = ((dest[i]) >> 8) & 0xFF;
-		db = dest[i] & 0xFF;
-		
-		sa = ((src[i] | srcMask) >> 24) & 0xFF;
-		sr = ((src[i]) >> 16) & 0xFF;
-		sg = ((src[i]) >> 8) & 0xFF;
-		sb = src[i] & 0xFF;
-		
-		/* Inverse alpha. */
-		iA = sjme_fixed_fraction(255 - sa, 255);
-		
-		/* Extract components. */
-		da = sjme_fixed_fraction(da, 255);
-		dr = sjme_fixed_fraction(dr, 255);
-		dg = sjme_fixed_fraction(dg, 255);
-		db = sjme_fixed_fraction(db, 255);
-		
-		sa = sjme_fixed_fraction(sa, 255);
-		sr = sjme_fixed_fraction(sr, 255);
-		sg = sjme_fixed_fraction(sg, 255);
-		sb = sjme_fixed_fraction(sb, 255);
-		
-		/* A(dest) = A(src) + A(dest) - (A(src) * A(dest)) */
-		ca = sa + da - sjme_fixed_mul(sa, da);
-		
-		/* R(dest) = (R(src) * A(src)) + (R(dest) * (1 - A(src))) */
-		cr = sjme_fixed_mul(sr, sa) + sjme_fixed_mul(dr, iA);
-		
-		/* G(dest) = (G(src) * A(src)) + (G(dest) * (1 - A(src))) */
-		cg = sjme_fixed_mul(sg, sa) + sjme_fixed_mul(dg, iA);
-		
-		/* B(dest) = (B(src) * A(src)) + (B(dest) * (1 - A(src))) */
-		cb = sjme_fixed_mul(sb, sa) + sjme_fixed_mul(db, iA);
-		
-		/* Return the original factor. */
-		ca = sjme_fixed_mul(ca, tff);
-		cr = sjme_fixed_mul(cr, tff);
-		cg = sjme_fixed_mul(cg, tff);
-		cb = sjme_fixed_mul(cb, tff);
-		
-		/* Recompose. */
-		ca = sjme_fixed_int(ca) & 0xFF;
-		cr = sjme_fixed_int(cr) & 0xFF;
-		cg = sjme_fixed_int(cg) & 0xFF;
-		cb = sjme_fixed_int(cb) & 0xFF;
-		dest[i] = (ca << 24) | (cr << 16) | (cg << 8) | cb | destMask;
-	}
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
 sjme_errorCode sjme_scritchpen_coreUtil_pfScanGet(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
@@ -556,21 +469,30 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanBits(
 			
 		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
 		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_RGB332:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_A8:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_R8:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_G8:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_B8:
 			result = inPixels * 8;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_A4:
 			result = inPixels * 4;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_A2:
 			result = inPixels * 2;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1_VERTICAL:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_A1:
 			result = inPixels * 1;
 			break;
 
@@ -646,24 +568,33 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanBytes(
 			
 		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
 		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_A8:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_R8:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_G8:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_B8:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_RGB332:
 			result = inPixels;
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_A4:
 			result = (inPixels >> 1) + (inPixels & 1);
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_A2:
 			result = (inPixels >> 2) + ((inPixels >> 1) & 1);
 			break;
 			
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
 		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1_VERTICAL:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_A1:
 			result = (inPixels >> 3) + ((inPixels >> 2) & 1);
 			break;
-
+		
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}

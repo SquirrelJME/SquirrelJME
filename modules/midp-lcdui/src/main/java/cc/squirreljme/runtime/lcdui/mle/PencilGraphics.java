@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
@@ -1265,6 +1266,27 @@ public final class PencilGraphics
 	{
 		/* {@squirreljme.error EB3u Invalid blending mode. (The mode)} */
 		if ((__m != Graphics.SRC && __m != Graphics.SRC_OVER) ||
+			(__m == Graphics.SRC && !this.hasAlpha))
+			throw new IllegalArgumentException("EB3u " + __m);
+		
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
+		// This is directly mapped
+		this.setBlendingModeEx(__m);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/22
+	 */
+	@Override
+	public void setBlendingModeEx(int __m)
+		throws IllegalArgumentException
+	{
+		/* {@squirreljme.error EB3u Invalid blending mode. (The mode)} */
+		if (__m < 0 || __m >= PencilBlendingMode.NUM_BLENDS ||
 			(__m == Graphics.SRC && !this.hasAlpha))
 			throw new IllegalArgumentException("EB3u " + __m);
 		

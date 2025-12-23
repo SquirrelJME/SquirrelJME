@@ -584,8 +584,11 @@ typedef enum sjme_errorCode
 	/** There is no user login. */
 	SJME_ERROR_NO_USER_LOGIN = -180,
 	
+	/** This should not be happening! */
+	SJME_ERROR_SHOULD_NOT_HAPPEN = -181,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -181,
+	SJME_NUM_ERROR_CODES = -182,
 } sjme_errorCode;
 
 /**

@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
+import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
@@ -598,7 +599,8 @@ public final class PencilShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native void hardwareSetBlendingMode(
-		@NotNull PencilBracket __g, int __mode)
+		@NotNull PencilBracket __g,
+		@MagicConstant(valuesFromClass = PencilBlendingMode.class) int __mode)
 		throws MLECallError;
 	
 	/**

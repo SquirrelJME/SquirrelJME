@@ -568,6 +568,21 @@ sjme_errorCode sjme_scritchpen_core_setFont(
 sjme_errorCode sjme_scritchpen_core_setParametersFrom(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencil from);
+	
+sjme_errorCode sjme_scritchpen_core_transferRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_scritchui_pencil srcPencil,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest);
 
 sjme_errorCode sjme_scritchpen_core_translate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Graphics;
@@ -216,6 +217,18 @@ public interface ExtraGraphics
 	 */
 	@SquirrelJMEVendorApi
 	void setAlphaColor(int __argb, boolean __bypass);
+	
+	/**
+	 * Sets an extended blending mode beyond {@code SRC} and {@code SRC_OVER}.
+	 *
+	 * @param __mode The blending mode to set.
+	 * @throws IllegalArgumentException If the blending mode is not valid.
+	 * @since 2025/12/22
+	 */
+	@SquirrelJMEVendorApi
+	void setBlendingModeEx(
+		@MagicConstant(valuesFromClass = PencilBlendingMode.class) int __mode)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Returns the surface width.

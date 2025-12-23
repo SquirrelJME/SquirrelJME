@@ -309,6 +309,14 @@ sjme_errorCode sjme_scritchui_core_panelEnableFocus(
 sjme_errorCode sjme_scritchui_core_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
+	
+sjme_errorCode sjme_scritchui_core_pseudoGraphics(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
+	sjme_attrInNotNullBuf(numPencils) sjme_scritchui_pencil* pencils,
+	sjme_attrInPositiveNonZero sjme_jint numPencils,
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
 
 sjme_errorCode sjme_scritchui_core_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,

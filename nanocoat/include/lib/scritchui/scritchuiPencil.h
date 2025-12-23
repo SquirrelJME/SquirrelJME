@@ -110,13 +110,43 @@ typedef enum sjme_scritchui_pencilTranslate
 typedef enum sjme_scritchui_pencilBlendingMode
 {
 	/** Blend with source and multiply. */
-	SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER,
+	SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER = 0,
 	
 	/** Use only the source alpha color. */
-	SJME_SCRITCHUI_PENCIL_BLEND_SRC,
+	SJME_SCRITCHUI_PENCIL_BLEND_SRC = 1,
+	
+	/** Discard source pixels that do not overlap the destination. */
+	SJME_SCRITCHUI_PENCIL_BLEND_SRC_ATOP = 2,
+	
+	/** Keep source pixels that overlap the destination, discard others. */
+	SJME_SCRITCHUI_PENCIL_BLEND_SRC_IN = 3,
+	
+	/** Keep source pixels that do not overlap the destination. */
+	SJME_SCRITCHUI_PENCIL_BLEND_SRC_OUT = 4,
+	
+	/** Blend destination and source. */
+	SJME_SCRITCHUI_PENCIL_BLEND_DEST_OVER = 5,
+	
+	/** Use only the destination. */
+	SJME_SCRITCHUI_PENCIL_BLEND_DEST = 6,
+	
+	/** Discard destination pixels that do not overlap the source. */
+	SJME_SCRITCHUI_PENCIL_BLEND_DEST_ATOP = 7,
+	
+	/** Keep destination pixels that overlap the source, discard others. */
+	SJME_SCRITCHUI_PENCIL_BLEND_DEST_IN = 8,
+	
+	/** Keep destination pixels that do not overlap the source. */
+	SJME_SCRITCHUI_PENCIL_BLEND_DEST_OUT = 9,
+	
+	/** Clear everything. */
+	SJME_SCRITCHUI_PENCIL_BLEND_CLEAR = 10,
+	
+	/** XOR. */
+	SJME_SCRITCHUI_PENCIL_BLEND_XOR = 11,
 	
 	/** The number of blending modes. */
-	SJME_NUM_SCRITCHUI_PENCIL_BLENDS
+	SJME_NUM_SCRITCHUI_PENCIL_BLENDS = 12,
 } sjme_scritchui_pencilBlendingMode;
 
 /**
@@ -1341,6 +1371,52 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetStrokeStyleFunc)(
 		sjme_scritchui_pencilStrokeMode style);
 
 /**
+ * Transfers pixel data from one pencil to another and draws it onto the
+ * current pencil, this is a helper function to reduce the need to load
+ * pixel data from another pencil and then draw it onto another.
+ * 
+ * Note that both pencils must be under the same ScritchUI state as the source
+ * pencil does need to be locked accordingly.
+ * 
+ * Reading from the source pencil follows the same semantics as the
+ * functions @link sjme_scritchui_pencilCopyAreaFunc @endlink
+ * and @link sjme_scritchui_pencilGetRegionFunc @endlink , if the source
+ * pencil does not support reading pixel data then what is drawn onto the
+ * destination is undefined.
+ *
+ * @param g The hardware graphics to draw with.
+ * @param srcPencil The pencil to copy from.
+ * @param alpha Drawing with the alpha channel?
+ * @param xSrc The source X position.
+ * @param ySrc The source Y position.
+ * @param wSrc The width of the source region.
+ * @param hSrc The height of the source region.
+ * @param trans Sprite translation and/or rotation,
+ * see @code javax.microedition.lcdui.game.Sprite @endcode.
+ * @param xDest The destination X position, is translated.
+ * @param yDest The destination Y position, is translated.
+ * @param anchor The anchor point.
+ * @param wDest The destination width.
+ * @param hDest The destination height.
+ * @return Any resultant error, if any
+ * @since 2025/12/22
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilTransferRegionFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_scritchui_pencil srcPencil,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest);
+
+/**
  * Translates drawing operations.
  * 
  * @param g The hardware graphics to draw with.
@@ -1454,6 +1530,9 @@ typedef struct sjme_scritchui_pencilFunctions
 	
 	/** @c SetStrokeStyle . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetStrokeStyle, setStrokeStyle);
+	
+	/** @c TransferRegion . */
+	SJME_SCRITCHUI_QUICK_PENCIL(TransferRegion, transferRegion);
 	
 	/** @c Translate . */
 	SJME_SCRITCHUI_QUICK_PENCIL(Translate, translate);

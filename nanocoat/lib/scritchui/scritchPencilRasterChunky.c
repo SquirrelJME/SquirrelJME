@@ -763,3 +763,132 @@ fail_destMapBlend:
 
 	return sjme_error_default(error);
 }
+
+sjme_errorCode sjme_scritchpen_core_transferRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_scritchui_pencil srcPencil,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest)
+{
+	sjme_errorCode error;
+	sjme_jint origImgWidth, origImgHeight;
+	sjme_jint* rgb;
+	sjme_jint rgbPixels, rgbBytes;
+	sjme_gfx_pixelFormat rgbPf;
+	
+	if (g == NULL || srcPencil == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* These pencils must come from the same ScritchUI instance as these */
+	/* would be in the same event and locking loop! */
+	if (g->common.state != srcPencil->common.state)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* The source rectangle must always be in bounds. */
+	/* Note that we can take the original source pencil graphics surface */
+	/* to make sure we do not read out of bounds. */
+	origImgWidth = srcPencil->width;
+	origImgHeight = srcPencil->height;
+	if (xSrc < 0 || ySrc < 0 || wSrc <= 0 || hSrc <= 0 ||
+		(xSrc + wSrc) > origImgWidth || (ySrc + hSrc) > origImgHeight ||
+		(xSrc + wSrc) < 0 || (ySrc + hSrc) < 0 ||
+		origImgWidth < 0 || origImgHeight < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Drawing nothing? */
+	if (wDest <= 0 || hDest <= 0)
+		return SJME_ERROR_NONE;
+	
+	/* Does the source graphics have alpha? */
+	rgbPf = (sjme_scritchpen_hasAlpha(srcPencil->pixelFormat) ?
+		SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 :
+		SJME_GFX_PIXEL_FORMAT_INT_RGB888);
+	
+	/* Allocate RGB buffer. */
+	rgbPixels = wSrc * hSrc;
+	rgbBytes = rgbPixels * (sizeof(*rgb));
+	rgb = sjme_alloca(rgbBytes);
+	if (rgb == NULL)
+	{
+		error = sjme_error_outOfMemory(NULL, rgbBytes);
+		goto fail_alloca;
+	}
+	
+	/* Clear. */
+	memset(rgb, 0, rgbBytes);
+	
+	/* Lock destination */
+	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
+		goto fail_destLock;
+	
+	/* Lock source, if different. */
+	if (g != srcPencil)
+		if (sjme_error_is(error = sjme_scritchpen_core_lock(srcPencil)))
+			goto fail_srcLock;
+	
+	/* Read in RGB data. */
+	if (sjme_error_is(error = g->apiInThread->getRegion(
+		g, rgbPf,
+		rgb, 0, rgbBytes, wSrc,
+		alpha,
+		xSrc, ySrc, wSrc, hSrc,
+		anchor)))
+		goto fail_readRgb;
+	
+	/* Write RGB data. */
+	if (sjme_error_is(error = g->apiInThread->drawRegion(
+		g, rgbPf,
+		rgb, 0, rgbBytes, wSrc, 
+		alpha, 
+		0, 0, wSrc, hSrc,
+		trans, 
+		xDest, yDest, 
+		anchor,
+		wDest, hDest, wSrc, hSrc)))
+		goto fail_writeRgb;
+	
+	/* Release source lock. */
+	if (g != srcPencil)
+		if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(
+			srcPencil)))
+			goto fail_srcUnlock;
+	
+	/* Release destination lock. */
+	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
+		goto fail_destUnlock;
+	
+	/* Cleanup. */
+	sjme_alloca_free(rgb);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_readRgb:
+fail_writeRgb:
+	/* Source is locked at this point. */
+	if (g != srcPencil)
+		if (sjme_error_is(sjme_scritchpen_core_lockRelease(srcPencil)))
+			return sjme_error_default(error);
+	
+fail_srcLock:
+fail_srcUnlock:
+	/* Destination is locked at this point. */
+	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
+		return sjme_error_default(error);
+	
+fail_destLock:
+fail_destUnlock:
+fail_alloca:
+	if (rgb != NULL)
+		sjme_alloca_free(rgb);
+	return sjme_error_default(error);
+}
