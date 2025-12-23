@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Font;
@@ -632,7 +633,23 @@ public final class ProxyGraphics
 		// Cache locally
 		this._blendingMode = __m;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/22
+	 */
+	@Override
+	public void setBlendingModeEx(int __m)
+		throws IllegalArgumentException
+	{
+		/* {@squirreljme.error EB2x Invalid blending mode. (The mode)} */
+		if (__m < 0 || __m >= PencilBlendingMode.NUM_BLENDS)
+			throw new IllegalArgumentException("EB2x " + __m);
+		
+		// Cache locally
+		this._blendingMode = __m;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/25
@@ -820,14 +837,29 @@ public final class ProxyGraphics
 		Graphics target = this.target._target;
 		
 		// Alpha color can be bypassed via proxy
+		// Along with extended blending modes being supported
+		int blendingMode = this._blendingMode;
 		if (target instanceof ExtraGraphics)
-			((ExtraGraphics)target).setAlphaColor(this._argbColor,
-				this._alphaBypass);
+		{
+			ExtraGraphics eg = (ExtraGraphics)target;
+			
+			eg.setAlphaColor(this._argbColor, this._alphaBypass);
+			eg.setBlendingModeEx(blendingMode);
+		}
 		else
+		{
 			target.setAlphaColor(this._argbColor);
+			
+			// If an extended blending mode was requested, fallback to the
+			// default so proxying a basic Graphics does not fail
+			if (blendingMode != Graphics.SRC ||
+				blendingMode != Graphics.SRC_OVER)
+				target.setBlendingMode(Graphics.SRC_OVER);
+			else
+				target.setBlendingMode(blendingMode);
+		}
 		
 		// Pass all the adjustable parameters to the target
-		target.setBlendingMode(this._blendingMode);
 		target.setFont(this.__font());
 		target.setStrokeStyle(this._strokeStyle);
 		

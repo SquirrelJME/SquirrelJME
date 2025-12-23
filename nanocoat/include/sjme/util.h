@@ -32,6 +32,18 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Clips the value so it is in the given range.
+ * 
+ * @param l The low value.
+ * @param v The value to clip.
+ * @param h The high value.
+ * @return The value clipped in range.
+ * @since 2025/12/22
+ */
+#define sjme_clip(l, v, h) \
+	((v) < (l) ? (l) : ((v) >= (h) ? (h) : (v)))
+	
+/**
  * Returns the minimum of two values.
  * 
  * @param a The first value.
@@ -39,7 +51,8 @@ extern "C" {
  * @return The minimum of two values.
  * @since 2025/11/30
  */
-#define sjme_min(a, b) (((a) < (b)) ? (a) : (b))
+#define sjme_min(a, b) \
+	(((a) < (b)) ? (a) : (b))
 
 /**
  * Returns the maximum of two values.
@@ -49,7 +62,8 @@ extern "C" {
  * @return The maximum of two values.
  * @since 2025/11/30
  */
-#define sjme_max(a, b) (((a) > (b)) ? (a) : (b))
+#define sjme_max(a, b) \
+	(((a) > (b)) ? (a) : (b))
 
 /**
  * Function for returning the number of entries within a tree.

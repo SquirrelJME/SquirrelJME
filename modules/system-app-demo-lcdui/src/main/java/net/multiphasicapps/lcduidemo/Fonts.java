@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.lcduidemo;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.lcdui.Canvas;
@@ -23,6 +24,7 @@ import javax.microedition.midlet.MIDletStateChangeException;
  *
  * @since 2018/11/23
  */
+@SquirrelJMEVendorApi
 public class Fonts
 	extends MIDlet
 {

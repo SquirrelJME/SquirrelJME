@@ -133,6 +133,7 @@ static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 	sjme_sm(.setFont, sjme_scritchpen_core_setFont),
 	sjme_sm(.setParametersFrom, sjme_scritchpen_core_setParametersFrom),
 	sjme_sm(.setStrokeStyle, sjme_scritchpen_core_setStrokeStyle),
+	sjme_sm(.transferRegion, sjme_scritchpen_core_transferRegion),
 	sjme_sm(.translate, sjme_scritchpen_core_translate),
 };
 
@@ -170,6 +171,7 @@ static const sjme_scritchui_pencilFunctions
 	sjme_sm(.setFont, sjme_scritchpen_coreSerial_setFont),
 	sjme_sm(.setParametersFrom, sjme_scritchpen_coreSerial_setParametersFrom),
 	sjme_sm(.setStrokeStyle, sjme_scritchpen_coreSerial_setStrokeStyle),
+	sjme_sm(.transferRegion, sjme_scritchpen_coreSerial_transferRegion),
 	sjme_sm(.translate, sjme_scritchpen_coreSerial_translate),
 };
 
@@ -405,6 +407,24 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	if (outWeakPencil != NULL)
 		*outWeakPencil = resultWeak;
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_core_pseudoGraphics(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
+	sjme_attrInNotNullBuf(numPencils) sjme_scritchui_pencil* pencils,
+	sjme_attrInPositiveNonZero sjme_jint numPencils,
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy)
+{
+	if (inState == NULL || outPencil == NULL || pencils == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (numPencils <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_scritchpen_core_setDefaults(
