@@ -10,10 +10,16 @@
 package net.multiphasicapps.lcduidemo;
 
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
+import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.lcdui.gfx.ExtraGraphics;
+import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
+import java.io.IOException;
+import java.io.InputStream;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -131,6 +137,18 @@ public class Blending
 		protected volatile int blendMode =
 			0;
 		
+		/** The image of Lex. */
+		protected final Image lexImage;
+		
+		/** The base relaxed Lex. */
+		protected final int[] lex;
+		
+		/** The first relaxed Lex. */
+		protected final int[] lexSrc;
+		
+		/** The second relaxed Lex. */
+		protected final int[] lexDst;
+		
 		/**
 		 * Initializes the viewport.
 		 *
@@ -139,6 +157,34 @@ public class Blending
 		public Viewport()
 		{
 			this.setTitle("Blending Demo");
+			
+			// Load in Lex
+			Image lex;
+			try (InputStream in = this.getClass().getResourceAsStream(
+				"relaxedpixel.xpm"))
+			{
+				if (in == null)
+					throw new NullPointerException("NARG");
+				
+				// Load him in!
+				lex = Image.createImage(in);
+			}
+			catch (IOException __e)
+			{
+				throw new RuntimeException(__e);
+			}
+			
+			// Keep the base Lex around, for safekeeping since he is a good boy
+			int w = lex.getWidth();
+			int h = lex.getHeight();
+			int[] base = new int[w * h];
+			this.lexImage = lex;
+			this.lex = base;
+			lex.getRGB(base, 0, w, 0, 0, w, h);
+			
+			// Make a mutable copy of him, for alpha adjusting
+			this.lexSrc = base.clone();
+			this.lexDst = base.clone();
 		}
 		
 		/**
@@ -148,11 +194,78 @@ public class Blending
 		@Override
 		protected void paint(Graphics __g)
 		{
-			// Info on the blending mode and such
-			__g.drawString(String.format("%d -> %d (Mode %s)",
-				this.alphaSrc, this.alphaDst,
-					Blending.blendString(this.blendMode)),
-				0, 0, 0);
+			// Read in state
+			int alphaSrc = this.alphaSrc;
+			int alphaDst = this.alphaDst;
+			int blendMode = this.blendMode;
+			
+			// Get image data
+			Image lexImage = this.lexImage;
+			int iw = lexImage.getWidth();
+			int ih = lexImage.getHeight();
+			int iz = iw * ih;
+			
+			// Get array basis
+			int[] lexBase = this.lex;
+			int[] lexSrc = this.lexSrc;
+			int[] lexDst = this.lexDst;
+			
+			// Setup images depending on the state
+			for (int i = 0; i < iz; i++)
+			{
+				// No alpha here?
+				int c = lexBase[i];
+				if ((c & 0xFF000000) == 0)
+				{
+					lexSrc[i] = 0;
+					lexDst[i] = 0;
+				}
+				
+				// Otherwise, use the given color with specific alpha
+				else
+				{
+					lexSrc[i] = (c & 0xFFFFFF) | (alphaSrc << 24);
+					lexDst[i] = (c & 0xFFFFFF) | (alphaDst << 24);
+				}
+			}
+			
+			// Draw background
+			__g.setBlendingMode(Graphics.SRC_OVER);
+			__g.setAlphaColor(0xFF5BCFFB);
+			__g.fillRect(0, 0,
+				this.getWidth(), this.getHeight());
+			
+			// Open hardware graphics to draw on top of
+			try (PencilGraphics pg = PencilGraphics.hardwareGraphics(
+				UIPixelFormat.INT_ARGB8888, iw, ih,
+				lexSrc, null, 0, 0, iw, ih))
+			{
+				// Draw destination image with the given blend mode
+				pg.setBlendingModeEx(blendMode);
+				pg.drawRGB(lexDst, 0, iw,
+					iw / 4, ih / 4, iw, ih, true);
+			}
+			
+			// Draw source image (which is the resultant image)
+			__g.drawRGB(lexSrc, 0, iw,
+				0, 0, iw, ih, true);
+			
+			// Generate blending mode string
+			String info = String.format("%d -> %d (Mode %s)", alphaSrc,
+				alphaDst, Blending.blendString(blendMode));
+			
+			// Draw background to make it easier to see
+			__g.setBlendingMode(0);
+			for (int x = 0; x < 2; x++)
+				for (int y = 0; y < 2; y++)
+				{
+					__g.setAlphaColor(0xFF000000);
+					__g.drawString(info, x, y, 0);
+				}
+			
+			// Draw info again, in clear colors
+			__g.setAlphaColor(0xFFFFFFFF);
+			__g.drawString(info, 1, 1, 0);
 		}
 		
 		/**
@@ -193,6 +306,9 @@ public class Blending
 					this.blendMode = Blending.clipMode(this.blendMode - 1);
 					break;
 			}
+			
+			// Request redraw
+			this.repaint();
 		}
 		
 		/**

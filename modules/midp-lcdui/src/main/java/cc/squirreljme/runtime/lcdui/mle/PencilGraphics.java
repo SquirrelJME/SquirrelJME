@@ -221,7 +221,6 @@ public final class PencilGraphics
 	 */
 	@Override
 	public void close()
-		throws IOException
 	{
 		synchronized (this)
 		{
@@ -1589,7 +1588,7 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@SquirrelJMEVendorApi
-	public static Graphics hardwareGraphics(int __pf, int __bw,
+	public static PencilGraphics hardwareGraphics(int __pf, int __bw,
 		int __bh, Object __buf, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)
 		throws NullPointerException
@@ -1610,7 +1609,8 @@ public final class PencilGraphics
 	 * @since 2024/05/12
 	 */
 	@SquirrelJMEVendorApi
-	public static Graphics of(ScritchPencilBracket __hw, int __sw, int __sh)
+	public static PencilGraphics of(ScritchPencilBracket __hw,
+		int __sw, int __sh)
 		throws NullPointerException
 	{
 		if (__hw == null)

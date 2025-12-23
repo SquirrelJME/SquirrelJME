@@ -819,8 +819,9 @@ sjme_errorCode sjme_scritchpen_core_setBlendingMode(
 	if (mode < 0 || mode >= SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	/* Source blending cannot be used if there is no alpha channel. */
-	if (!g->hasAlpha && mode == SJME_SCRITCHUI_PENCIL_BLEND_SRC)
+	/* Source blending cannot be used if there is no alpha channel, */
+	/* or anything else that is not SRC_OVER. */
+	if (!g->hasAlpha && mode != SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Set mode. */
