@@ -126,6 +126,31 @@ fail_alloc:
 	return sjme_error_default(error);
 }
 
+sjme_errorCode sjme_scritchui_core_screenGetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrOutNotNull sjme_scritchui_rect* screenBound)
+{
+	sjme_errorCode error;
+	
+	if (inState == NULL || inScreen == NULL || screenBound == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Not implemented? */
+	if (inState->impl->screenGetBounds == NULL)
+		return sjme_error_notImplemented(0);
+	
+	/* Forward, keep a cache of the screen bounds. */
+	if (sjme_error_is(error = inState->impl->screenGetBounds(inState, inScreen,
+		&inScreen->cachedBound)))
+		return sjme_error_default(error);
+	
+	/* Return the bounds. */
+	memmove(screenBound, &inScreen->cachedBound,
+		sizeof(inScreen->cachedBound));
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_core_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(screen))

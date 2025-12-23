@@ -11,6 +11,7 @@ package cc.squirreljme.lis.fe.midp;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -42,6 +43,7 @@ public class MidletMain
 	protected void startApp()
 		throws MIDletStateChangeException
 	{
-		throw Debugging.todo();
+		// For now just make an exploration canvas
+		Display.getDisplay(this).setCurrent(new ExploreCanvas());
 	}
 }

@@ -35,6 +35,10 @@ public class DisplayIdentityScale
 	@SquirrelJMEVendorApi
 	protected final ScritchInterface scritch;
 	
+	/** Content area storage for ScritchUI calls. */
+	private final int[] _contentArea =
+		new int[2];
+	
 	/**
 	 * Initializes the scaling information.
 	 *
@@ -99,7 +103,13 @@ public class DisplayIdentityScale
 	@SquirrelJMEVendorApi
 	public int textureH()
 	{
-		return this.scritch.window().windowContentHeight(this.window);
+		// This is determined from ScritchUI
+		int[] contentArea = this._contentArea;
+		this.scritch.container().containerGetFrame(this.window,
+			contentArea, null, null);
+		
+		// Use what it determined/calculated
+		return contentArea[1];
 	}
 	
 	/**
@@ -132,7 +142,13 @@ public class DisplayIdentityScale
 	@SquirrelJMEVendorApi
 	public int textureW()
 	{
-		return this.scritch.window().windowContentWidth(this.window);
+		// This is determined from ScritchUI
+		int[] contentArea = this._contentArea;
+		this.scritch.container().containerGetFrame(this.window,
+			contentArea, null, null);
+		
+		// Use what it determined/calculated
+		return contentArea[0];
 	}
 	
 	/**

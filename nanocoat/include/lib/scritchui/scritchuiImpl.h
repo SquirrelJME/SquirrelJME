@@ -349,6 +349,9 @@ struct sjme_scritchui_implFunctions
 	/** Creates a new native panel. */
 	SJME_SCRITCHUI_QUICK_IMPL(panelNew);
 	
+	/** Get bounds of a screen. */
+	SJME_SCRITCHUI_QUICK_SAME(screenGetBounds);
+	
 	/** The available screens. */
 	SJME_SCRITCHUI_QUICK_SAME(screens);
 	
@@ -369,6 +372,9 @@ struct sjme_scritchui_implFunctions
 	
 	/** Set minimum size of content window. */
 	SJME_SCRITCHUI_QUICK_SAME(windowContentMinimumSize);
+	
+	/** Content size of a container. */
+	sjme_scritchui_containerGetFrameFunc windowGetFrame;
 	
 	/** Creates a new window. */
 	SJME_SCRITCHUI_QUICK_IMPL(windowNew);

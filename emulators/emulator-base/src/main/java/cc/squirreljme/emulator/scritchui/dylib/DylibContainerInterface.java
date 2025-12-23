@@ -13,7 +13,10 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Not Described.
@@ -51,12 +54,27 @@ public class DylibContainerInterface
 		if (__container == null || __component == null)
 			throw new MLECallError("Null arguments");
 		
-		if ((DylibContainerObject)__container == null || (DylibComponentObject)__component == null)
-			throw new MLECallError("Null arguments.");
-		
 		NativeScritchDylib.__containerAdd(this.dyLib._stateP,
 			((DylibContainerObject)__container).objectPointer(),
 			((DylibComponentObject)__component).objectPointer());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/23
+	 */
+	@Override
+	public void containerGetFrame(@NotNull ScritchContainerBracket __container,
+		@Nullable int[] __contentSize, @Nullable int[] __frameBound,
+		@Nullable int[] __contentBound)
+		throws MLECallError
+	{
+		if (__container == null)
+			throw new MLECallError("Null arguments");
+		
+		NativeScritchDylib.__containerGetFrame(this.dyLib._stateP,
+			((DylibContainerObject)__container).objectPointer(),
+			__contentSize, __frameBound, __contentBound);
 	}
 	
 	/**
@@ -69,9 +87,6 @@ public class DylibContainerInterface
 	{
 		if (__container == null)
 			throw new MLECallError("Null arguments");
-		
-		if ((DylibContainerObject)__container == null)
-			throw new MLECallError("Null arguments.");
 		
 		NativeScritchDylib.__containerRemoveAll(this.dyLib._stateP,
 			((DylibContainerObject)__container).objectPointer());

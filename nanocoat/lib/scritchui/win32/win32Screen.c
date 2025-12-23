@@ -79,6 +79,18 @@ static BOOL CALLBACK sjme_scritchui_win32_displayQuery(
 	return TRUE;
 }
 
+sjme_errorCode sjme_scritchui_win32_screenGetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrOutNotNull sjme_scritchui_rect* screenBound)
+{
+	if (inState == NULL || inScreen == NULL || screenBound == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchui_win32_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,

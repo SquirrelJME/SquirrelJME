@@ -1229,6 +1229,27 @@ typedef sjme_errorCode (*sjme_scritchui_containerAddFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 
 /**
+ * Returns the size details of a container, such as the outer frame, the
+ * content frame, and the sizes.
+ * 
+ * @param inState The input ScritchUI state.
+ * @param inContainer The container to get the content size of.
+ * @param contentSize The size of the content area.
+ * @param frameBound The bounds of the frame including the extra area such
+ * as decorations or otherwise.
+ * @param contentBound The bounds of the content area within
+ * the @a frameBound , this is the actual drawable area for widgets. 
+ * @return Any resultant error, if any.
+ * @since 2025/12/23
+ */
+typedef sjme_errorCode (*sjme_scritchui_containerGetFrameFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound);
+	
+/**
  * Removes the given component from the specified container.
  * 
  * @param inState The input state.
@@ -1621,6 +1642,21 @@ typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
 
 /**
+ * Returns the bounds of the screen, this includes its relative position
+ * to the origin point of all screen on multiscreen devices.
+ * 
+ * @param inState The input state.
+ * @param inScreen The screen to get the bounds of.
+ * @param screenBound The resultant screen bound.
+ * @return Any resultant error, if any.
+ * @since 2025/12/23
+ */
+typedef sjme_errorCode (*sjme_scritchui_screenGetBoundsFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrOutNotNull sjme_scritchui_rect* screenBound);
+	
+/**
  * Sets the screen listener callback for screen changes.
  * 
  * @param inState The input state.
@@ -1914,6 +1950,9 @@ struct sjme_scritchui_apiFunctions
 	/** Adds component to container. */
 	SJME_SCRITCHUI_QUICK_API(containerAdd);
 	
+	/** Content size of a container. */
+	SJME_SCRITCHUI_QUICK_API(containerGetFrame);
+	
 	/** Remove component from container. */
 	SJME_SCRITCHUI_QUICK_API(containerRemove);
 	
@@ -1991,6 +2030,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Pseudo pencil graphics. */
 	SJME_SCRITCHUI_QUICK_API(pseudoGraphics);
+	
+	/** Get bounds of a screen. */
+	SJME_SCRITCHUI_QUICK_API(screenGetBounds);
 	
 	/** Register listener. */
 	SJME_SCRITCHUI_QUICK_API(screenSetListener);

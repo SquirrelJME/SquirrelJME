@@ -93,6 +93,9 @@
 
 #define FORWARD_DESC___containerAdd "(" \
 	DESC_LONG DESC_LONG DESC_LONG ")" DESC_VOID
+#define FORWARD_DESC___containerGetFrame \
+	DESC_METHOD(DESC_VOID, DESC_LONG DESC_LONG \
+	DESC_ARRAY(DESC_INT) DESC_ARRAY(DESC_INT) DESC_ARRAY(DESC_INT))
 #define FORWARD_DESC___containerRemoveAll "(" \
 	DESC_LONG DESC_LONG ")" DESC_VOID
 #define FORWARD_DESC___containerSetBounds "(" \
@@ -150,6 +153,8 @@
 
 #define FORWARD_DESC___screenId "(" \
 	DESC_LONG DESC_LONG ")" DESC_INTEGER
+#define FORWARD_DESC___screenGetBounds \
+	DESC_METHOD(DESC_VOID, DESC_LONG DESC_LONG DESC_ARRAY(DESC_INT))
 #define FORWARD_DESC___screens "(" \
 	DESC_LONG DESC_ARRAY(DESC_LONG) ")" DESC_INTEGER
 
@@ -1533,6 +1538,83 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
+	__containerGetFrame)(JNIEnv* env, jclass classy,
+	jlong stateP, jlong containerP,
+	jintArray contentSize, jintArray frameBound, jintArray contentBound)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_uiComponent container;
+	sjme_scritchui_dim mapContentSize;
+	sjme_scritchui_rect mapFrameBound;
+	sjme_scritchui_rect mapContentBound;
+	sjme_jint temp[4];
+	sjme_jint lnContentSize, lnFrameBound, lnContentBound;
+
+	if (stateP == 0 || containerP == 0 ||
+		(contentSize == NULL && frameBound == NULL && contentBound == NULL))
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Get array lengths. */
+	lnContentSize = (contentSize == NULL ? -1 :
+		(*env)->GetArrayLength(env, contentSize));
+	lnFrameBound = (frameBound == NULL ? -1 :
+		(*env)->GetArrayLength(env, frameBound));
+	lnContentBound = (contentBound == NULL ? -1 :
+		(*env)->GetArrayLength(env, contentBound));
+	if ((lnContentSize >= 0 && lnContentSize < 2) ||
+		(lnFrameBound >= 0 && lnFrameBound < 4) ||
+		(lnContentBound >= 0 && lnContentBound < 4))
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_INDEX_OUT_OF_BOUNDS);
+		return;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	container = (sjme_scritchui_uiComponent)containerP;
+
+	/* Not implemented? */
+	if (state->api->containerGetFrame == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
+		return;
+	}
+
+	/* Forward call. */
+	memset(&mapContentSize, 0, sizeof(mapContentSize));
+	memset(&mapFrameBound, 0, sizeof(mapFrameBound));
+	memset(&mapContentBound, 0, sizeof(mapContentBound));
+	if (sjme_error_is(error = state->api->containerGetFrame(state, container,
+		&mapContentSize,
+		&mapFrameBound, &mapContentBound)))
+	{
+		sjme_jni_throwMLECallError(env, sjme_error_default(error));
+		return;
+	}
+
+	/* Write content size. */
+	if (lnContentSize > 0)
+		sjme_jni_setIntArray(env, contentSize, 0, lnContentSize,
+			(jint)mapContentSize.width, (jint)mapContentSize.height);
+
+	/* Write frame bound. */
+	if (lnFrameBound > 0)
+		sjme_jni_setIntArray(env, frameBound, 0, lnFrameBound,
+			(jint)mapFrameBound.s.x, (jint)mapFrameBound.s.y,
+			(jint)mapFrameBound.d.width, (jint)mapFrameBound.d.height);
+
+	/* Write content bound. */
+	if (lnContentBound > 0)
+		sjme_jni_setIntArray(env, contentBound, 0, lnContentBound,
+			(jint)mapContentBound.s.x, (jint)mapContentBound.s.y,
+			(jint)mapContentBound.d.width, (jint)mapContentBound.d.height);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__containerRemoveAll)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong containerP)
 {
@@ -2432,6 +2514,27 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screenId)
 	return screen->id;
 }
 
+JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screenSize)
+	(JNIEnv* env, jclass classy, jlong stateP, jlong screenP, jboolean height)
+{
+	sjme_scritchui state;
+	sjme_scritchui_uiScreen screen;
+
+	if (stateP == 0 || screenP == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return -1;
+	}
+
+	/* Restore. */
+	state = (sjme_scritchui)stateP;
+	screen = (sjme_scritchui_uiScreen)screenP;
+
+	/* Return the screen dimension. */
+	sjme_todo("Impl");
+	return sjme_error_notImplemented(0);
+}
+
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 	(JNIEnv* env, jclass classy, jlong stateP, jlongArray screenPs)
 {
@@ -2866,6 +2969,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __componentSetVisibleListener),
 	FORWARD_list(NativeScritchDylib, __componentWidth),
 	FORWARD_list(NativeScritchDylib, __containerAdd),
+	FORWARD_list(NativeScritchDylib, __containerGetFrame),
 	FORWARD_list(NativeScritchDylib, __containerRemoveAll),
 	FORWARD_list(NativeScritchDylib, __containerSetBounds),
 	FORWARD_list(NativeScritchDylib, __fontDerive),
@@ -2888,6 +2992,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __objectDelete),
 	FORWARD_list(NativeScritchDylib, __panelEnableFocus),
 	FORWARD_list(NativeScritchDylib, __panelNew),
+	FORWARD_list(NativeScritchDylib, __screenGetBounds),
 	FORWARD_list(NativeScritchDylib, __screenId),
 	FORWARD_list(NativeScritchDylib, __screens),
 	FORWARD_list(NativeScritchDylib, __scrollPanelNew),

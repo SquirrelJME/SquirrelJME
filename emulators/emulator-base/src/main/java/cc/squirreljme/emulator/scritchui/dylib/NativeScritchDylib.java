@@ -24,10 +24,7 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import java.nio.file.Path;
-import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 /**
  * Native dynamic library that directly wraps the C-based ScritchUI API.
@@ -338,6 +335,22 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Gets the frame of a container.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __containerP The container pointer.
+	 * @param __contentSize The content size.
+	 * @param __frameBound The frame bound.
+	 * @param __contentBound The content bound.
+	 * @throws MLECallError On null arguments and/or if the container is not
+	 * valid.
+	 * @since 2025/12/23
+	 */
+	static native void __containerGetFrame(long __stateP, long __containerP,
+		int[] __contentSize, int[] __frameBound, int[] __contentBound)
+		throws MLECallError;
+	
+	/**
 	 * Removes all items from the container.
 	 *
 	 * @param __stateP The state pointer.
@@ -617,6 +630,20 @@ public final class NativeScritchDylib
 	static native long __panelNew(long __stateP);
 	
 	/**
+	 * Gets the bounds of the screen.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __screenP The screen pointer.
+	 * @param __bounds The resultant bounds.
+	 * @throws MLECallError On null arguments and/or if the screen is not
+	 * valid.
+	 * @since 2025/12/23
+	 */
+	static native void __screenGetBounds(long __stateP, long __screenP,
+		@NotNull int[] __bounds)
+		throws MLECallError;
+	
+	/**
 	 * Returns the screen ID.
 	 *
 	 * @param __stateP The state pointer.
@@ -626,6 +653,21 @@ public final class NativeScritchDylib
 	 * @since 2024/07/16
 	 */
 	static native int __screenId(long __stateP, long __screenP)
+		throws MLECallError;
+	
+	/**
+	 * Returns the screen dimension.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __screenP The screen pointer.
+	 * @param __height Return the height?
+	 * @return The returned value.
+	 * @throws MLECallError On null arguments and/or if the screen is not
+	 * valid.
+	 * @since 2025/12/23
+	 */
+	static native int __screenSize(long __stateP, long __screenP,
+		boolean __height)
 		throws MLECallError;
 	
 	/**

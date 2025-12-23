@@ -26,6 +26,9 @@ static sjme_errorCode sjme_scritchui_fb_listenerInput(
 	topState = inComponent->common.frontEnd.base.data;
 	topComponent = inComponent->common.frontEnd.base.wrapper;
 	
+	if (topState == NULL || topComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Get target listener. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(topComponent, input);
 
@@ -54,6 +57,9 @@ static sjme_errorCode sjme_scritchui_fb_listenerPaint(
 	/* Get owning state and component. */
 	topState = inComponent->common.frontEnd.base.data;
 	topComponent = inComponent->common.frontEnd.base.wrapper;
+	
+	if (topState == NULL || topComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Get the top component's paint. */
 	topPaint = NULL;
@@ -87,6 +93,9 @@ static sjme_errorCode sjme_scritchui_fb_listenerSize(
 	topState = inComponent->common.frontEnd.base.data;
 	topComponent = inComponent->common.frontEnd.base.wrapper;
 	
+	if (topState == NULL || topComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Get target listener. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(topComponent, size);
 
@@ -112,6 +121,9 @@ static sjme_errorCode sjme_scritchui_fb_listenerVisible(
 	topState = inComponent->common.frontEnd.base.data;
 	topComponent = inComponent->common.frontEnd.base.wrapper;
 	
+	if (topState == NULL || topComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Get target listener. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(topComponent, visible);
 
@@ -134,6 +146,9 @@ sjme_errorCode sjme_scritchui_fb_componentFocusGrab(
 	wrappedState = inState->wrappedState;
 	wrappedComponent = inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Forward. */
 	return wrappedState->apiInThread->componentFocusGrab(wrappedState, 
 		wrappedComponent);
@@ -153,6 +168,9 @@ sjme_errorCode sjme_scritchui_fb_componentFocusHas(
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	wrappedComponent = inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
 	return wrappedState->apiInThread->componentFocusHas(wrappedState, 
@@ -175,6 +193,9 @@ sjme_errorCode sjme_scritchui_fb_componentPosition(
 	wrappedState = inState->wrappedState;
 	wrappedComponent =
 		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->componentPosition(wrappedState,
@@ -200,6 +221,9 @@ sjme_errorCode sjme_scritchui_fb_componentRepaint(
 	wrappedComponent =
 		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Forward repaint. */
 	return wrappedState->apiInThread->componentRepaint(wrappedState,
 		wrappedComponent, x, y, width, height);
@@ -218,6 +242,9 @@ sjme_errorCode sjme_scritchui_fb_componentRevalidate(
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	wrappedComponent = inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->componentRevalidate(wrappedState,
@@ -241,6 +268,9 @@ sjme_errorCode sjme_scritchui_fb_componentSetInputListener(
 	wrappedState = inState->wrappedState;
 	wrappedComponent =
 		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Set listener information. */
 	memset(&wrappedFrontEnd, 0, sizeof(wrappedFrontEnd));
@@ -279,6 +309,9 @@ sjme_errorCode sjme_scritchui_fb_componentSetPaintListener(
 	wrappedState = inState->wrappedState;
 	wrappedComponent =
 		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 		
 	/* Get the component's paint. */
 	paint = NULL;
@@ -323,6 +356,9 @@ sjme_errorCode sjme_scritchui_fb_componentSetSizeListener(
 	wrappedComponent =
 		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Set listener information. */
 	memset(&wrappedFrontEnd, 0, sizeof(wrappedFrontEnd));
 	if (sjme_error_is(error = sjme_scritchui_fb_biSetListener(
@@ -360,6 +396,9 @@ sjme_errorCode sjme_scritchui_fb_componentSetVisibleListener(
 	wrappedComponent =
 		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Set listener information. */
 	memset(&wrappedFrontEnd, 0, sizeof(wrappedFrontEnd));
 	if (sjme_error_is(error = sjme_scritchui_fb_biSetListener(
@@ -395,6 +434,9 @@ sjme_errorCode sjme_scritchui_fb_componentSize(
 	wrappedState = inState->wrappedState;
 	wrappedComponent =
 		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->componentSize(wrappedState,

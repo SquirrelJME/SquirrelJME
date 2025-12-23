@@ -14,8 +14,16 @@ squirreljme {
 	tags += "system-app"
 }
 
-dependencies
-{
+jar {
+	manifest {
+		attributes(
+			// Use the desktop resolution for the game
+			"X-SquirrelJME-Resolution": "identity"
+		)
+	}
+}
+
+dependencies {
 	api project(":modules:cldc-compact")
 	api project(":modules:media-api")
 	api project(":modules:midp-lcdui")

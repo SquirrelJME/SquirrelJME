@@ -113,6 +113,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c containerAdd . */
 	SJME_SCRITCHUI_SERIAL_UI_CONTAINER_ADD,
 	
+	/** @c containerGetFrame . */
+	SJME_SCRITCHUI_SERIAL_UI_CONTAINER_GET_FRAME,
+	
 	/** @c containerRemove . */
 	SJME_SCRITCHUI_SERIAL_UI_CONTAINER_REMOVE,
 	
@@ -175,6 +178,9 @@ typedef enum sjme_scritchui_serialType
 	
 	/** @c pseudoGraphics . */
 	SJME_SCRITCHUI_SERIAL_UI_PSEUDO_GRAPHICS,
+	
+	/** @c screenGetBounds . */
+	SJME_SCRITCHUI_SERIAL_UI_SCREEN_GET_BOUNDS,
 	
 	/** @c screenSetListener . */
 	SJME_SCRITCHUI_SERIAL_UI_SCREEN_SET_LISTENER,
@@ -465,6 +471,12 @@ SDU_STRUCT_DEF(containerAdd,
 	SDX_VAR(sjme_scritchui_uiComponent, inContainer);
 	SDX_VAR(sjme_scritchui_uiComponent, addComponent););
 
+SDU_STRUCT_DEF(containerGetFrame,
+	SDX_VAR(sjme_scritchui_uiComponent, inContainer);
+	SDX_VARP(sjme_scritchui_dim, contentSize);
+	SDX_VARP(sjme_scritchui_rect, frameBound);
+	SDX_VARP(sjme_scritchui_rect, contentBound););
+
 SDU_STRUCT_DEF(containerRemove,
 	SDX_VAR(sjme_scritchui_uiComponent, inContainer);
 	SDX_VAR(sjme_scritchui_uiComponent, removeComponent););
@@ -568,6 +580,10 @@ SDU_STRUCT_DEF(pseudoGraphics,
 	SDX_VAR(sjme_jint, numPencils);
 	SDX_VARP(const sjme_frontEndBindable, pencilFrontEndCopy););
 
+SDU_STRUCT_DEF(screenGetBounds,
+	SDX_VAR(sjme_scritchui_uiScreen, inScreen);
+	SDX_VARP(sjme_scritchui_rect, screenBound););
+	
 SDU_STRUCT_DEF(screenSetListener,
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(screen););
 
@@ -932,6 +948,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(componentSetVisibleListener);
 	SJME_SCRITCHUI_SDU_DEF(componentSize);
 	SJME_SCRITCHUI_SDU_DEF(containerAdd);
+	SJME_SCRITCHUI_SDU_DEF(containerGetFrame);
 	SJME_SCRITCHUI_SDU_DEF(containerRemove);
 	SJME_SCRITCHUI_SDU_DEF(containerRemoveAll);
 	SJME_SCRITCHUI_SDU_DEF(containerSetBounds);
@@ -953,6 +970,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(panelEnableFocus);
 	SJME_SCRITCHUI_SDU_DEF(panelNew);
 	SJME_SCRITCHUI_SDU_DEF(pseudoGraphics);
+	SJME_SCRITCHUI_SDU_DEF(screenGetBounds);
 	SJME_SCRITCHUI_SDU_DEF(screenSetListener);
 	SJME_SCRITCHUI_SDU_DEF(screens);
 	SJME_SCRITCHUI_SDU_DEF(scrollPanelNew);
@@ -1160,6 +1178,13 @@ sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 	
+sjme_errorCode sjme_scritchui_coreSerial_containerGetFrame(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound);
+	
 sjme_errorCode sjme_scritchui_coreSerial_containerRemove(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
@@ -1287,6 +1312,11 @@ sjme_errorCode sjme_scritchui_coreSerial_pseudoGraphics(
 sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(screen));
+	
+sjme_errorCode sjme_scritchui_coreSerial_screenGetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrOutNotNull sjme_scritchui_rect* screenBound);
 
 sjme_errorCode sjme_scritchui_coreSerial_screens(
 	sjme_attrInNotNull sjme_scritchui inState,

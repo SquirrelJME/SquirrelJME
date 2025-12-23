@@ -26,14 +26,14 @@ public abstract class DylibBaseObject
 	 * Initializes the base object.
 	 *
 	 * @param __objectP The object pointer.
-	 * @throws NullPointerException On null arguments.
+	 * @throws MLECallError On null arguments.
 	 * @since 2024/04/04
 	 */
 	public DylibBaseObject(long __objectP)
-		throws NullPointerException
+		throws MLECallError
 	{
 		if (__objectP == 0)
-			throw new NullPointerException("NARG");
+			throw new MLECallError("NARG");
 		
 		this._objectP = __objectP;
 		

@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * DyLib based screen interface for ScritchUI.
@@ -57,14 +58,20 @@ public class DylibScreenInterface
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/04/02
+	 * @since 2025/12/23
 	 */
 	@Override
-	public int screenHeight(
-		ScritchScreenBracket __screen)
+	public void screenGetBounds(@NotNull ScritchScreenBracket __screen,
+		@NotNull int[] __bounds)
 		throws MLECallError
 	{
-		throw Debugging.todo();
+		if (__screen == null)
+			throw new MLECallError("NARG");
+		
+		NativeScritchDylib.__screenGetBounds(
+			this.dyLib._stateP,
+			((DylibScreenObject)__screen).objectPointer(),
+			__bounds);
 	}
 	
 	/**
@@ -100,22 +107,7 @@ public class DylibScreenInterface
 		if (__screen == null)
 			throw new MLECallError("NARG");
 		
-		if ((DylibScreenObject)__screen == null)
-			throw new MLECallError("NARG");
-		
 		return NativeScritchDylib.__screenId(
 			this.dyLib._stateP, ((DylibScreenObject)__screen).objectPointer());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/04/02
-	 */
-	@Override
-	public int screenWidth(
-		ScritchScreenBracket __screen)
-		throws MLECallError
-	{
-		throw Debugging.todo();
 	}
 }

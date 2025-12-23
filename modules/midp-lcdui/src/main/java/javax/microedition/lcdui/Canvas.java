@@ -372,9 +372,9 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		// Use the actual buffer size first
+		// Use the actual buffer size first, if visible
 		Image buffer = this._buffer;
-		if (buffer != null)
+		if (buffer != null && this.__isShown())
 			return buffer.getHeight();
 		
 		// Otherwise, fallback to the owning or default display
@@ -492,9 +492,9 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		// Use the actual buffer size first
+		// Use the actual buffer size first, if visible
 		Image buffer = this._buffer;
-		if (buffer != null)
+		if (buffer != null && this.__isShown())
 			return buffer.getWidth();
 		
 		// Otherwise, fallback to the owning or default display
@@ -799,6 +799,10 @@ public abstract class Canvas
 		
 		// Set new mode
 		this._isFullScreen = __f;
+		
+		// Emit event to change the window size to maximum
+		this.__state().scritchApi().eventLoop()
+			.loopExecute(new __ExecCanvasFullScreen__(this, __f));
 	}
 	
 	/**

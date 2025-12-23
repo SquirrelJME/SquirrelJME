@@ -159,6 +159,13 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
+	
+sjme_errorCode sjme_scritchui_core_containerGetFrame(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound);
 
 sjme_errorCode sjme_scritchui_core_containerRemove(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -318,6 +325,11 @@ sjme_errorCode sjme_scritchui_core_pseudoGraphics(
 	sjme_attrInPositiveNonZero sjme_jint numPencils,
 	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
 
+sjme_errorCode sjme_scritchui_core_screenGetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrOutNotNull sjme_scritchui_rect* screenBound);
+	
 sjme_errorCode sjme_scritchui_core_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(screen));

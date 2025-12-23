@@ -13,6 +13,18 @@
 #include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/scritchuiTypes.h"
 
+sjme_errorCode sjme_scritchui_gtk2_screenGetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrOutNotNull sjme_scritchui_rect* screenBound)
+{
+	if (inState == NULL || inScreen == NULL || screenBound == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchui_gtk2_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,

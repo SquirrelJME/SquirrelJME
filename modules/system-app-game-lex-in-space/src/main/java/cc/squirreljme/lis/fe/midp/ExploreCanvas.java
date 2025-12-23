@@ -22,12 +22,23 @@ public class ExploreCanvas
 	extends Canvas
 {
 	/**
+	 * Initializes the exploration canvas.
+	 *
+	 * @since 2025/12/23
+	 */
+	public ExploreCanvas()
+	{
+		// Make this full screen
+		this.setFullScreenMode(true);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/21
 	 */
 	@Override
 	protected void paint(Graphics __g)
 	{
-		throw Debugging.todo();
+		//throw Debugging.todo();
 	}
 }

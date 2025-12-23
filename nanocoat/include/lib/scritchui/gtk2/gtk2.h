@@ -187,6 +187,11 @@ sjme_errorCode sjme_scritchui_gtk2_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiPanel inPanel,
 	sjme_attrInNullable sjme_pointer ignored);
+	
+sjme_errorCode sjme_scritchui_gtk2_screenGetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrOutNotNull sjme_scritchui_rect* screenBound);
 
 sjme_errorCode sjme_scritchui_gtk2_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -224,6 +229,13 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height);
+	
+sjme_errorCode sjme_scritchui_gtk2_windowGetFrame(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound);
 
 sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	sjme_attrInNotNull sjme_scritchui inState,

@@ -31,6 +31,10 @@ sjme_errorCode sjme_scritchui_fb_containerAdd(
 	wrappedAddComponent =
 		addComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
+	if (wrappedState == NULL || wrappedInContainer == NULL ||
+		wrappedAddComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Forward call. */
 	return wrappedState->apiInThread->containerAdd(wrappedState,
 		wrappedInContainer, wrappedAddComponent);
@@ -55,6 +59,10 @@ sjme_errorCode sjme_scritchui_fb_containerRemove(
 		inContainer->common.handle[SJME_SUI_FB_H_WRAPPED];
 	wrappedRemoveComponent =
 		removeComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedInContainer == NULL ||
+		wrappedRemoveComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward repaint. */
 	return wrappedState->apiInThread->containerRemove(wrappedState,
@@ -84,6 +92,10 @@ sjme_errorCode sjme_scritchui_fb_containerSetBounds(
 		inContainer->common.handle[SJME_SUI_FB_H_WRAPPED];
 	wrappedInComponent =
 		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedInContainer == NULL ||
+		wrappedInComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->containerSetBounds(

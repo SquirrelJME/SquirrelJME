@@ -245,6 +245,9 @@ struct sjme_scritchui_uiContainerBase
 {
 	/** Components within the container. */
 	sjme_list(sjme_scritchui_uiComponent)* components;
+	
+	/** The size of the content within the container. */
+	sjme_scritchui_dim contentSize;
 };
 
 struct sjme_scritchui_uiLabeledBase
@@ -392,6 +395,9 @@ struct sjme_scritchui_uiScreenBase
 	
 	/** Generic display handle such as for X11. */
 	sjme_scritchui_handle displayHandle;
+	
+	/** Cached screen bounds. */
+	sjme_scritchui_rect cachedBound;
 };
 
 struct sjme_scritchui_uiViewBase

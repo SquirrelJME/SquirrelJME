@@ -38,16 +38,18 @@ public interface ScritchScreenInterface
 		throws MLECallError;
 	
 	/**
-	 * Returns the height of this screen.
+	 * Returns the bounds of the screen, this includes its relative position
+	 * to the origin point of all screen on multiscreen devices.
 	 *
-	 * @param __screen The screen to get from.
-	 * @return The screen height.
-	 * @throws MLECallError If the screen is null or not valid.
-	 * @since 2024/03/07
+	 * @param __screen The screen to get the bounds of.
+	 * @param __bounds The bounds of the screen ({@code int[4]{x, y, w, h}}).
+	 * @throws MLECallError On null arguments and/or if the screen is not
+	 * valid.
+	 * @since 2025/12/23
 	 */
 	@SquirrelJMEVendorApi
-	@Range(from = 0, to = Integer.MAX_VALUE)
-	int screenHeight(@NotNull ScritchScreenBracket __screen)
+	void screenGetBounds(@NotNull ScritchScreenBracket __screen,
+		@NotNull int[] __bounds)
 		throws MLECallError;
 	
 	/**
@@ -85,18 +87,5 @@ public interface ScritchScreenInterface
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int screenId(@NotNull ScritchScreenBracket __screen)
-		throws MLECallError;
-	
-	/**
-	 * Returns the width of this screen.
-	 *
-	 * @param __screen The screen to get from.
-	 * @return The screen width.
-	 * @throws MLECallError If the screen is null or not valid.
-	 * @since 2024/03/07
-	 */
-	@SquirrelJMEVendorApi
-	@Range(from = 0, to = Integer.MAX_VALUE)
-	int screenWidth(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 }
