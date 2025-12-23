@@ -118,11 +118,12 @@
 	CrG = sjme_fixed_mul(CrG, tff); \
 	CrB = sjme_fixed_mul(CrB, tff); \
 	 \
-	/* Undo pre-multiply. */ \
-	invCA = sjme_fixed_div(sjme_fixed_hi(1), Ar); \
-	CrR = sjme_fixed_mul(CrB, invCA); \
-	CrG = sjme_fixed_mul(CrG, invCA); \
-	CrB = sjme_fixed_mul(CrB, invCA); \
+	/* Undo pre-multiply(???). */ \
+	/* It seems this already happens? */ \
+	/*invCA = sjme_fixed_div(sjme_fixed_hi(1), Ar);*/ \
+	/*CrR = sjme_fixed_mul(CrB, invCA);*/ \
+	/*CrG = sjme_fixed_mul(CrG, invCA);*/ \
+	/*CrB = sjme_fixed_mul(CrB, invCA);*/ \
 	\
 	/* Recompose. */ \
 	Ar = sjme_fixed_intClip(0, Ar, 0xFF); \
