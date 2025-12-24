@@ -396,8 +396,17 @@ struct sjme_scritchui_uiScreenBase
 	/** Generic display handle such as for X11. */
 	sjme_scritchui_handle displayHandle;
 	
+	/** Generic display handle for the specific screen. */
+	sjme_scritchui_handle screenHandle;
+	
+	/** Generic display handle for specific monitors. */
+	sjme_scritchui_handle monitorHandle;
+	
 	/** Cached screen bounds. */
-	sjme_scritchui_rect cachedBound;
+	sjme_scritchui_rect pixelBound;
+	
+	/** Cached millimeter bounds. */
+	sjme_scritchui_rect mmBound;
 };
 
 struct sjme_scritchui_uiViewBase

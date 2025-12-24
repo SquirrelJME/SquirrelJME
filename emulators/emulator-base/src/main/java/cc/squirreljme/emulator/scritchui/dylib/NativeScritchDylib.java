@@ -634,13 +634,15 @@ public final class NativeScritchDylib
 	 *
 	 * @param __stateP The state pointer.
 	 * @param __screenP The screen pointer.
-	 * @param __bounds The resultant bounds.
+	 * @param __forP The for pointer.
+	 * @param __pixels The resultant bounds.
+	 * @param __mm Millimeter bounds.
 	 * @throws MLECallError On null arguments and/or if the screen is not
 	 * valid.
 	 * @since 2025/12/23
 	 */
 	static native void __screenGetBounds(long __stateP, long __screenP,
-		@NotNull int[] __bounds)
+		long __forP, int[] __pixels, int[] __mm)
 		throws MLECallError;
 	
 	/**

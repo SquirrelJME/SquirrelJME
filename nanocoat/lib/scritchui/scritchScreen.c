@@ -43,7 +43,7 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 			
 			/* Update handle? */
 			if (updateHandle != NULL)
-				maybe->common.handle[0] = updateHandle;
+				maybe->screenHandle = updateHandle;
 			
 			/* Success! */
 			return SJME_ERROR_NONE;
@@ -65,7 +65,7 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	/* Fill in information. */
 	maybe->common.state = inState;
 	maybe->common.type = SJME_SCRITCHUI_TYPE_SCREEN;
-	maybe->common.handle[0] = updateHandle;
+	maybe->screenHandle = updateHandle;
 	maybe->id = screenId;
 	
 	/* Allocate a new list copy? */
@@ -129,26 +129,45 @@ fail_alloc:
 sjme_errorCode sjme_scritchui_core_screenGetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
-	sjme_attrOutNotNull sjme_scritchui_rect* screenBound)
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound)
 {
 	sjme_errorCode error;
 	
-	if (inState == NULL || inScreen == NULL || screenBound == NULL)
+	if (inState == NULL || inScreen == NULL ||
+		(pixelBound == NULL && mmBound == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Not implemented? */
 	if (inState->impl->screenGetBounds == NULL)
 		return sjme_error_notImplemented(0);
 	
-	/* Forward, keep a cache of the screen bounds. */
-	if (sjme_error_is(error = inState->impl->screenGetBounds(inState, inScreen,
-		&inScreen->cachedBound)))
-		return sjme_error_default(error);
+	/* If not getting the bounds for a screen attached to a component, then */
+	/* get one for the default screen. */
+	if (forComponent == NULL)
+	{
+		/* Forward, keep a cache of the screen bounds. */
+		if (sjme_error_is(error = inState->impl->screenGetBounds(
+			inState, inScreen,
+			NULL, &inScreen->pixelBound, &inScreen->mmBound)))
+			return sjme_error_default(error);
 	
-	/* Return the bounds. */
-	memmove(screenBound, &inScreen->cachedBound,
-		sizeof(inScreen->cachedBound));
-	return SJME_ERROR_NONE;
+		/* Return the bounds. */
+		if (pixelBound != NULL)
+			memmove(pixelBound, &inScreen->pixelBound,
+				sizeof(inScreen->pixelBound));
+		if (mmBound != NULL)
+			memmove(mmBound, &inScreen->mmBound,
+				sizeof(inScreen->mmBound));
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Otherwise forward, with no possibility of caching. */
+	return inState->impl->screenGetBounds(inState, inScreen, forComponent,
+		pixelBound, mmBound);
 }
 
 sjme_errorCode sjme_scritchui_core_screenSetListener(

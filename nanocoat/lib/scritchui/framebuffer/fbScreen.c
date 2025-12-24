@@ -17,24 +17,30 @@
 sjme_errorCode sjme_scritchui_fb_screenGetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
-	sjme_attrOutNotNull sjme_scritchui_rect* screenBound)
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound)
 {
 	sjme_scritchui wrappedState;
 	sjme_scritchui_uiScreen wrappedScreen;
+	sjme_scritchui_uiComponent wrappedComponent;
 	
-	if (inState == NULL || inScreen == NULL || screenBound == NULL)
+	if (inState == NULL || inScreen == NULL ||
+		(pixelBound == NULL && mmBound == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	wrappedScreen = inScreen->common.handle[SJME_SUI_FB_H_WRAPPED];
+	wrappedComponent = (forComponent == NULL ? NULL :
+		forComponent->common.handle[SJME_SUI_FB_H_WRAPPED]);
 	
 	if (wrappedState == NULL || wrappedScreen == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->screenGetBounds(wrappedState,
-		wrappedScreen, screenBound);
+		wrappedScreen, wrappedComponent, pixelBound, mmBound);
 }
 
 sjme_errorCode sjme_scritchui_fb_screens(

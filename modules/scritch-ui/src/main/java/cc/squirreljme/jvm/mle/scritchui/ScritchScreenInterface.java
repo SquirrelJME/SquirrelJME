@@ -10,9 +10,11 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -42,14 +44,17 @@ public interface ScritchScreenInterface
 	 * to the origin point of all screen on multiscreen devices.
 	 *
 	 * @param __screen The screen to get the bounds of.
-	 * @param __bounds The bounds of the screen ({@code int[4]{x, y, w, h}}).
+	 * @param __for The optional component for screen context.
+	 * @param __pixels The pixel bounds ({@code int[4]{x, y, w, h}}).
+	 * @param __mm The millimeter bounds ({@code int[4]{x, y, w, h}}).
 	 * @throws MLECallError On null arguments and/or if the screen is not
 	 * valid.
 	 * @since 2025/12/23
 	 */
 	@SquirrelJMEVendorApi
 	void screenGetBounds(@NotNull ScritchScreenBracket __screen,
-		@NotNull int[] __bounds)
+		@Nullable ScritchComponentBracket __for,
+		@NotNull int[] __pixels, @NotNull int[] __mm)
 		throws MLECallError;
 	
 	/**

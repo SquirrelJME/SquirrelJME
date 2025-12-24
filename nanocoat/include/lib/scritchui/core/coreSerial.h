@@ -582,7 +582,9 @@ SDU_STRUCT_DEF(pseudoGraphics,
 
 SDU_STRUCT_DEF(screenGetBounds,
 	SDX_VAR(sjme_scritchui_uiScreen, inScreen);
-	SDX_VARP(sjme_scritchui_rect, screenBound););
+	SDX_VAR(sjme_scritchui_uiComponent, forComponent);
+	SDX_VARP(sjme_scritchui_rect, pixelBound);
+	SDX_VARP(sjme_scritchui_rect, mmBound););
 	
 SDU_STRUCT_DEF(screenSetListener,
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(screen););
@@ -1316,7 +1318,9 @@ sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 sjme_errorCode sjme_scritchui_coreSerial_screenGetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
-	sjme_attrOutNotNull sjme_scritchui_rect* screenBound);
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound);
 
 sjme_errorCode sjme_scritchui_coreSerial_screens(
 	sjme_attrInNotNull sjme_scritchui inState,

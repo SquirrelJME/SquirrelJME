@@ -82,9 +82,12 @@ static BOOL CALLBACK sjme_scritchui_win32_displayQuery(
 sjme_errorCode sjme_scritchui_win32_screenGetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
-	sjme_attrOutNotNull sjme_scritchui_rect* screenBound)
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound)
 {
-	if (inState == NULL || inScreen == NULL || screenBound == NULL)
+	if (inState == NULL || inScreen == NULL ||
+		(pixelBound == NULL && mmBound == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	sjme_todo("Impl?");

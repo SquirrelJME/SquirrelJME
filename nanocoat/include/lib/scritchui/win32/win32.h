@@ -177,7 +177,9 @@ sjme_errorCode sjme_scritchui_win32_panelNew(
 sjme_errorCode sjme_scritchui_win32_screenGetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
-	sjme_attrOutNotNull sjme_scritchui_rect* screenBound);
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound);
 
 sjme_errorCode sjme_scritchui_win32_screens(
 	sjme_attrInNotNull sjme_scritchui inState,

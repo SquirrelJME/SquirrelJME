@@ -508,7 +508,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_UI_SCREEN_GET_BOUNDS,
 		(state,
 		as->screenGetBounds.inScreen,
-		as->screenGetBounds.screenBound));
+		as->screenGetBounds.forComponent,
+		as->screenGetBounds.pixelBound,
+		as->screenGetBounds.mmBound));
 
 	SJME_SDU_CASE(screenSetListener,
 		SJME_SCRITCHUI_SERIAL_UI_SCREEN_SET_LISTENER,
@@ -1674,14 +1676,18 @@ sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 sjme_errorCode sjme_scritchui_coreSerial_screenGetBounds(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
-	sjme_attrOutNotNull sjme_scritchui_rect* screenBound)
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound)
 {
 	SJME_SDU_CHUNK(screenGetBounds,
 		SJME_SCRITCHUI_SERIAL_UI_SCREEN_GET_BOUNDS,
-		(inState, inScreen, screenBound));
+		(inState, inScreen, forComponent, pixelBound, mmBound));
 		
 	SJME_SDX_PASS(inScreen);
-	SJME_SDX_PASS(screenBound);
+	SJME_SDX_PASS(forComponent);
+	SJME_SDX_PASS(pixelBound);
+	SJME_SDX_PASS(mmBound);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;

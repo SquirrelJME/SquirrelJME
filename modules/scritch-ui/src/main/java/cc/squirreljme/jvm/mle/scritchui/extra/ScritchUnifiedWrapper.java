@@ -57,7 +57,6 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -890,10 +889,12 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	public void screenGetBounds(@NotNull ScritchScreenBracket __screen,
-		@NotNull int[] __bounds)
+		@Nullable ScritchComponentBracket __for,
+		@NotNull int[] __pixels, @NotNull int[] __mm)
 		throws MLECallError
 	{
-		return this.api.screen().screenGetBounds(__screen, __bounds);
+		this.api.screen().screenGetBounds(__screen, __for,
+			__pixels, __mm);
 	}
 	
 	/**

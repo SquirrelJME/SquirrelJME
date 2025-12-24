@@ -11,10 +11,12 @@ package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * DyLib based screen interface for ScritchUI.
@@ -62,7 +64,8 @@ public class DylibScreenInterface
 	 */
 	@Override
 	public void screenGetBounds(@NotNull ScritchScreenBracket __screen,
-		@NotNull int[] __bounds)
+		@Nullable ScritchComponentBracket __for,
+		@NotNull int[] __pixels, @NotNull int[] __mm)
 		throws MLECallError
 	{
 		if (__screen == null)
@@ -71,7 +74,8 @@ public class DylibScreenInterface
 		NativeScritchDylib.__screenGetBounds(
 			this.dyLib._stateP,
 			((DylibScreenObject)__screen).objectPointer(),
-			__bounds);
+			(__for == null ? null : ((DylibComponentObject)__for).objectPointer()),
+			__pixels, __mm);
 	}
 	
 	/**

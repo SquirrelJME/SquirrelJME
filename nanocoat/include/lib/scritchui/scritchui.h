@@ -1647,14 +1647,17 @@ typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
  * 
  * @param inState The input state.
  * @param inScreen The screen to get the bounds of.
- * @param screenBound The resultant screen bound.
+ * @param pixelBound The resultant screen bound.
+ * @param mmBound The resultant screen bound in millimeters.
  * @return Any resultant error, if any.
  * @since 2025/12/23
  */
 typedef sjme_errorCode (*sjme_scritchui_screenGetBoundsFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
-	sjme_attrOutNotNull sjme_scritchui_rect* screenBound);
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound);
 	
 /**
  * Sets the screen listener callback for screen changes.
