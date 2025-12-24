@@ -198,7 +198,7 @@ sjme_errorCode sjme_scritchui_win32_windowNew(
 	windowClass.hInstance = GetModuleHandle(NULL);
 	windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
 	windowClass.lpszClassName = inWindow->component.strId;
-	windowClass.lpfnWndProc = inState->implIntern->windowProcWin32;
+	windowClass.lpfnWndProc = (WNDPROC)inState->implIntern->windowProcWin32;
 	SetLastError(0);
 	classAtom = RegisterClassEx(&windowClass);
 	if (classAtom == 0)

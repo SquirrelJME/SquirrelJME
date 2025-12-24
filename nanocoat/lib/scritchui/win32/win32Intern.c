@@ -915,6 +915,57 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_USER(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_win32_intern_dllProc(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_scritchui_win32_intern_dll dll,
+	sjme_attrInNotNull sjme_lpcstr procName,
+	sjme_attrOutNotNull PROC* outProc)
+{
+	HMODULE hModule;
+	sjme_lpcstr moduleName;
+	
+	if (inState == NULL || procName == NULL || outProc == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (dll < 0 || dll >= SJME_SCRITCHUI_WIN32_NUM_INTERN_DLL)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Determine the module name. */
+	switch (dll)
+	{
+		case SJME_SCRITCHUI_WIN32_USER32_DLL:
+			moduleName = "user32.dll";
+			break;
+			
+		case SJME_SCRITCHUI_WIN32_SHCORE32_DLL:
+			moduleName = "shcore32.dll";
+			break;
+			
+		default:
+			return sjme_error_notImplemented(0);
+	}
+	
+	/* Find the DLL first, if not loaded, try loading it. */
+	hModule = GetModuleHandleA(moduleName);
+	if (hModule == NULL)
+	{
+		/* Try loading the DLL instead. */
+		hModule = LoadLibraryA(moduleName);
+		if (hModule)
+		{
+			/* Just not available. */
+			*outProc = NULL;
+			return SJME_ERROR_COULD_NOT_LOAD_LIBRARY;
+		}
+	}
+	
+	/* Lookup the procedure. */
+	*outProc = GetProcAddress(hModule, procName);
+	if (*outProc == NULL)
+		return SJME_ERROR_NO_METHOD;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_win32_intern_getLastError(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_errorCode ifOkay)

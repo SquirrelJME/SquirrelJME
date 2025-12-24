@@ -9,16 +9,18 @@
 # Common find support
 squirreljme_include("find.cmake")
 
-# Already known to be not valid?
-# Check pkg-config first
-if(PKG_CONFIG_FOUND)
-	pkg_check_modules(GTK2 gtk+-2.0)
-endif()
+# Force do not use on certain systems
+if(NOT SQUIRRELJME_SYSTEM STREQUAL "wine")
+	# Check pkg-config first
+	if(PKG_CONFIG_FOUND)
+		pkg_check_modules(GTK2 gtk+-2.0)
+	endif()
 
-# Otherwise, fallback to CMake detection
-if(NOT GTK2_FOUND)
-	# Sets GTK2_INCLUDE_DIRS and GTK2_LIBRARIES
-	find_package(GTK2 2.0 COMPONENTS gtk)
+	# Otherwise, fallback to CMake detection
+	if(NOT GTK2_FOUND)
+		# Sets GTK2_INCLUDE_DIRS and GTK2_LIBRARIES
+		find_package(GTK2 2.0 COMPONENTS gtk)
+	endif()
 endif()
 
 # Additional checks for GTK2

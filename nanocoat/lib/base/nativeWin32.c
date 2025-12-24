@@ -7,6 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#if defined(SJME_CONFIG_IDENT_OS_WINE)
+	#define SJME_CONFIG_FORGET_STDLIB
+#endif
+
+#include "sjme/config.h"
+
+#if (SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
+	#include <winsock2.h>
+#endif
+
 #include "sjme/intern/nal.h"
 #include "sjme/path.h"
 #include "sjme/util.h"
@@ -22,8 +32,8 @@
 	#undef WIN32_LEAN_AND_MEAN
 #endif
 
-#if (SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
-	#include <winsock2.h>
+#if defined(SJME_CONFIG_FORGET_STDLIB)
+	#include <stdlib.h>
 #endif
 
 #pragma region(execPath)
@@ -416,6 +426,14 @@ sjme_errorCode sjme_nal_default_threadYield(void)
 #pragma region(userHome)
 #if (SJME_CONFIG_NAL_USER_HOME == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
 
+#if !defined(CSIDL_PROFILE)
+	#define CSIDL_PROFILE 0x0028
+#endif
+
+/** @code sjme_nal_win32_SHGetFolderPathA @endcode . */
+typedef HRESULT WINAPI (*sjme_nal_win32_SHGetFolderPathA)(HWND,
+	INT, HANDLE, DWORD, LPSTR);
+
 sjme_errorCode sjme_nal_default_userHome(
 	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
 	sjme_attrInPositiveNonZero sjme_jint outLen)
@@ -427,6 +445,7 @@ sjme_errorCode sjme_nal_default_userHome(
 	DLLGETVERSIONPROC dllVerProc;
 	DLLVERSIONINFO dllVer;
 	CHAR winPath[MAX_PATH];
+	sjme_nal_win32_SHGetFolderPathA shProc;
 
 	if (out == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -451,7 +470,9 @@ sjme_errorCode sjme_nal_default_userHome(
 	else if (info.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
 	{
 		/* Find the version procedure from the shell library. */
-		shellDll = LoadLibrary("shell32.dll");
+		shellDll = GetModuleHandleA("shell32.dll");
+		if (shellDll == NULL)
+			shellDll = LoadLibrary("shell32.dll");
 		dllVerProc = NULL;
 		if (shellDll != NULL)
 			dllVerProc = (DLLGETVERSIONPROC)GetProcAddress(shellDll,
@@ -467,10 +488,16 @@ sjme_errorCode sjme_nal_default_userHome(
 		/* If shell32.dll is 5.0+ (WinME) then use CSIDL_PROFILE. */
 		if (dllVer.dwMajorVersion >= 5)
 		{
-			memset(winPath, 0, sizeof(winPath));
-			if (SHGetFolderPathA(NULL, CSIDL_PROFILE,
-				NULL, SHGFP_TYPE_CURRENT, winPath))
-				env = winPath;
+			/* Locate the procedure for getting the shell path. */
+			shProc = (sjme_nal_win32_SHGetFolderPathA)GetProcAddress(shellDll,
+				"SHGetFolderPathA");
+			if (shProc != NULL)
+			{
+				memset(winPath, 0, sizeof(winPath));
+				if (shProc(NULL, CSIDL_PROFILE,
+					NULL, 0/*SHGFP_TYPE_CURRENT*/, winPath))
+					env = winPath;
+			}
 		}
 
 		/* Otherwise, check the registry (or fallback to it). */

@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/config.h"
 #include "sjme/stdGone.h"
 
 #if defined(SJME_CONFIG_HAS_NO_ABORT)

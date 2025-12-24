@@ -21,7 +21,12 @@
 #define SJME_C_CONFIG_H
 
 #include <stddef.h>
-#include <stdlib.h>
+
+/* Skip stdlib in certain cases? */
+#if !defined(SJME_CONFIG_FORGET_STDLIB)
+	#include <stdlib.h>
+#endif
+
 #include <setjmp.h>
 
 /* Floating point header, determines if software floats should be used. */
@@ -147,6 +152,11 @@ extern "C" {
 #else
 	/** Is the GCC version the specified version? */
 	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
+#endif
+	
+#if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
+	/** Has a GCC-like/clone compiler. */
+	#define SJME_CONFIG_HAS_GCC_CLONE
 #endif
 
 #if !defined(SJME_CONFIG_RELEASE) && !defined(SJME_CONFIG_DEBUG)
@@ -279,8 +289,10 @@ extern "C" {
 #define SJME_CONFIG_POSIX_VERSION_2008 200809L
 
 #if defined(_POSIX_C_SOURCE)
-	/** POSIX is available. */
-	#define SJME_CONFIG_HAS_OS_POSIX
+	#if !defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
+		/** POSIX is available. */
+		#define SJME_CONFIG_HAS_OS_POSIX
+	#endif
 #else
 	/* These OSes have POSIX. */
 	#if defined(SJME_CONFIG_HAS_OS_ANDROID) || \
@@ -1346,6 +1358,9 @@ extern "C" {
 	
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"
+	
+/** Standard SquirrelJME types. */
+#include "sjme/stdTypes.h"
 	
 /*--------------------------------------------------------------------------*/
 
