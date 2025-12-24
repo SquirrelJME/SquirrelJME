@@ -31,7 +31,7 @@ sjme_errorCode sjme_scritchui_fb_screenGetBounds(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	wrappedScreen = inScreen->common.handle[SJME_SUI_FB_H_WRAPPED];
+	wrappedScreen = inScreen->displayHandle;
 	wrappedComponent = (forComponent == NULL ? NULL :
 		forComponent->common.handle[SJME_SUI_FB_H_WRAPPED]);
 	
@@ -93,7 +93,7 @@ sjme_errorCode sjme_scritchui_fb_screens(
 				makeScreen == NULL)
 			return sjme_error_default(error);
 		
-		/* Update information. */
+		/* Update information and make sure to wrap back. */
 		makeScreen->displayHandle = wrappedScreens[i];
 		
 		/* Store result. */

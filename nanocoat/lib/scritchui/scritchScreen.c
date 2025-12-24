@@ -11,6 +11,7 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
+#include "sjme/fixed.h"
 
 sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -134,6 +135,7 @@ sjme_errorCode sjme_scritchui_core_screenGetBounds(
 	sjme_attrOutNullable sjme_scritchui_rect* mmBound)
 {
 	sjme_errorCode error;
+	sjme_scritchui_rect px, mm;
 	
 	if (inState == NULL || inScreen == NULL ||
 		(pixelBound == NULL && mmBound == NULL))
@@ -143,31 +145,40 @@ sjme_errorCode sjme_scritchui_core_screenGetBounds(
 	if (inState->impl->screenGetBounds == NULL)
 		return sjme_error_notImplemented(0);
 	
-	/* If not getting the bounds for a screen attached to a component, then */
-	/* get one for the default screen. */
-	if (forComponent == NULL)
-	{
-		/* Forward, keep a cache of the screen bounds. */
-		if (sjme_error_is(error = inState->impl->screenGetBounds(
-			inState, inScreen,
-			NULL, &inScreen->pixelBound, &inScreen->mmBound)))
-			return sjme_error_default(error);
+	/* Get the bounds, which will be normalized. */
+	memset(&px, 0, sizeof(px));
+	memset(&mm, 0, sizeof(mm));
+	if (sjme_error_is(error = inState->impl->screenGetBounds(
+		inState, inScreen, forComponent, &px, &mm)))
+		return sjme_error_default(error);
 	
-		/* Return the bounds. */
-		if (pixelBound != NULL)
-			memmove(pixelBound, &inScreen->pixelBound,
-				sizeof(inScreen->pixelBound));
-		if (mmBound != NULL)
-			memmove(mmBound, &inScreen->mmBound,
-				sizeof(inScreen->mmBound));
-		
-		/* Success! */
-		return SJME_ERROR_NONE;
+	/* Pixels do not start at zero and millimeters are zero? This means */
+	/* the native system cannot determine where the actual screen is */
+	/* located. */
+	if ((px.s.x != 0 || px.s.y != 0) && (mm.s.x == 0 && mm.s.y == 0))
+	{
+		/* Determine new base coordinates. */
+		mm.s.x = sjme_fixed_int(sjme_fixed_mul(sjme_fixed_hi(px.s.x),
+			sjme_fixed_fraction(px.d.width, mm.d.width)));
+		mm.s.y = sjme_fixed_int(sjme_fixed_mul(sjme_fixed_hi(px.s.x),
+			sjme_fixed_fraction(px.d.height, mm.d.height)));
 	}
 	
-	/* Otherwise forward, with no possibility of caching. */
-	return inState->impl->screenGetBounds(inState, inScreen, forComponent,
-		pixelBound, mmBound);
+	/* If no component was requested, cache it for later usage. */
+	if (forComponent == NULL)
+	{
+		memmove(&inScreen->pixelBound, &px, sizeof(px));
+		memmove(&inScreen->mmBound, &mm, sizeof(mm));
+	}
+	
+	/* Return what was requested. */
+	if (pixelBound != NULL)
+		memmove(pixelBound, &px, sizeof(px));
+	if (mmBound != NULL)
+		memmove(mmBound, &mm, sizeof(mm));
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_screenSetListener(

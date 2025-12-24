@@ -399,9 +399,6 @@ struct sjme_scritchui_uiScreenBase
 	/** Generic display handle for the specific screen. */
 	sjme_scritchui_handle screenHandle;
 	
-	/** Generic display handle for specific monitors. */
-	sjme_scritchui_handle monitorHandle;
-	
 	/** Cached screen bounds. */
 	sjme_scritchui_rect pixelBound;
 	

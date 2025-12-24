@@ -20,12 +20,55 @@ sjme_errorCode sjme_scritchui_gtk2_screenGetBounds(
 	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
 	sjme_attrOutNullable sjme_scritchui_rect* mmBound)
 {
+	GtkWindow* gtkWindow;
+	GdkScreen* gdkScreen;
+	gint gdkMonitor, mmW, mmH;
+	GdkRectangle rect;
+	
 	if (inState == NULL || inScreen == NULL ||
 		(pixelBound == NULL && mmBound == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Grab the window if there is one. */
+	gdkScreen = inScreen->screenHandle;
+	gtkWindow = (forComponent == NULL ? NULL :
+		forComponent->common.handle[SJME_SUI_GTK2_H_WIDGET]);
+	
+	/* Is there window context? */
+	if (gtkWindow != NULL)
+		gdkMonitor = gdk_screen_get_monitor_at_window(gdkScreen,
+			GDK_WINDOW(gtkWindow));
+	
+	/* There is not, so just use the default monitor. */
+	else
+		gdkMonitor = gdk_screen_get_primary_monitor(gdkScreen);
+
+	/* Read in all dimensional details. */
+	memset(&rect, 0, sizeof(rect));
+	gdk_screen_get_monitor_geometry(gdkScreen, gdkMonitor, &rect);
+	mmW = gdk_screen_get_monitor_width_mm(gdkScreen, gdkMonitor);
+	mmH = gdk_screen_get_monitor_height_mm(gdkScreen, gdkMonitor);
+	
+	/* Calculate pixels. */
+	if (pixelBound != NULL)
+	{
+		pixelBound->s.x = rect.x;
+		pixelBound->s.y = rect.y;
+		pixelBound->d.width = rect.width;
+		pixelBound->d.height = rect.height;
+	}
+	
+	/* Calculate DPI. */
+	if (mmBound != NULL)
+	{
+		mmBound->s.x = 0;
+		mmBound->s.y = 0;
+		mmBound->d.width = mmW;
+		mmBound->d.height = mmH;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_screens(
