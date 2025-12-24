@@ -67,6 +67,14 @@ if(NOT SQUIRRELJME_IS_ANDROID AND
 	squirreljme_include("valgrind.cmake")
 endif()
 
+### These need to be before fixes.cmake! ###
+# Dynamic linker
+squirreljme_include("find-dl.cmake")
+
+# Threading and atomics
+squirreljme_include("find-threads.cmake")
+############################################
+
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
 
@@ -89,9 +97,6 @@ squirreljme_include("find-jni.cmake")
 
 # Doxygen
 squirreljme_include("doxygen.cmake")
-
-# Threading and atomics
-squirreljme_include("find-threads.cmake")
 
 # To Emily and Near...
 squirreljme_include("i-miss-you.cmake")

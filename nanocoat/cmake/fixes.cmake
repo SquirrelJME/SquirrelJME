@@ -257,7 +257,7 @@ endif()
 
 # Quick compilation check
 macro(squirreljme_try_compile noun target source cdef)
-	message(NOTICE "Checking compile of ${noun}...")
+	message(STATUS "Checking compile of ${noun}...")
 	try_compile(${target}
 		"${CMAKE_CURRENT_BINARY_DIR}"
 		SOURCES "${CMAKE_CURRENT_LIST_DIR}/${source}.c"
@@ -267,7 +267,7 @@ macro(squirreljme_try_compile noun target source cdef)
 		OUTPUT_VARIABLE ${target}_OUTPUT)
 
 	message(DEBUG "${noun}: ${${target}_OUTPUT}")
-	message("${noun}: ${${target}}")
+	message(STATUS "${noun}: ${${target}}")
 	if(NOT ${target})
 		add_compile_definitions(
 			${cdef}=1)
@@ -439,6 +439,11 @@ message(STATUS "libm: ${SQUIRRELJME_LIBM}")
 # Build required libraries into a list, as you may only call
 # target_link_libraries() once!
 unset(SQUIRRELJME_REQUIRED_LIBS)
+## Dynamic Library
+if(SQUIRRELJME_LIBDL)
+	list(APPEND SQUIRRELJME_REQUIRED_LIBS
+		"${SQUIRRELJME_LIBDL}")
+endif()
 ## Math
 if(SQUIRRELJME_LIBM)
 	list(APPEND SQUIRRELJME_REQUIRED_LIBS
@@ -450,14 +455,17 @@ if(DEFINED CMAKE_THREAD_LIBS_INIT)
 		"${CMAKE_THREAD_LIBS_INIT}")
 endif()
 
+# For debugging required libraries
+message(STATUS "System Required Libraries: ${SQUIRRELJME_REQUIRED_LIBS}")
+
 # Link against required libraries
 function(squirreljme_target_link_libraries_required target)
 	# Add all of the previous required libs
 	if("${ARGN}" STREQUAL "")
-		target_link_libraries(${target} PRIVATE
+		target_link_libraries(${target} PUBLIC
 			"${SQUIRRELJME_REQUIRED_LIBS}")
 	else()
-		target_link_libraries(${target} PRIVATE
+		target_link_libraries(${target} PUBLIC
 			"${SQUIRRELJME_REQUIRED_LIBS}"
 			"${ARGN}")
 	endif()
