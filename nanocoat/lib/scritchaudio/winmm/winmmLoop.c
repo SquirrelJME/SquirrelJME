@@ -56,7 +56,13 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	buf = sjme_alloca(bufSize);
 	if (buf == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
-	memset(buf, 0, bufSize);
+	
+	/* If the source format is unsigned, we need to actually set the proper */
+	/* zero level, otherwise there will be clicks/pops. */
+	if (renderInfo->format == SJME_SCRITCHAUDIO_FORMAT_BYTE_U8)
+		memset(buf, 0x80, bufSize);
+	else
+		memset(buf, 0, bufSize);
 
 	/* Render source. */
 	if (sjme_error_is(error = source->renderFunc(inState,
