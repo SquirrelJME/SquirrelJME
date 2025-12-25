@@ -34,6 +34,15 @@ sjme_errorCode sjme_scritchui_gtk2_screenGetBounds(
 	gtkWindow = (forComponent == NULL ? NULL :
 		forComponent->common.handle[SJME_SUI_GTK2_H_WIDGET]);
 	
+	/* If the component does not have a window, it was never realized and */
+	/* also is very likely not even on-screen. */
+	if (gtkWindow != NULL && (GTK_WIDGET(gtkWindow)->window == NULL ||
+		gtk_widget_get_window(GTK_WIDGET(gtkWindow)) == NULL))
+	{
+		gtkWindow = NULL;
+		forComponent = NULL;
+	}
+	
 	/* Is there window context? */
 	if (gtkWindow != NULL)
 		gdkMonitor = gdk_screen_get_monitor_at_window(gdkScreen,

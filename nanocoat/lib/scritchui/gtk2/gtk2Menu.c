@@ -197,10 +197,6 @@ sjme_errorCode sjme_scritchui_gtk2_menuNew(
 	g_object_ref(menuWidget);
 	g_object_ref(itemLike);
 	
-	/* Set a reasonable size for the button. */
-	sjme_scritchui_gtk2_setMenuSize(inState,
-		SJME_SUI_CAST_COMPONENT(inMenu), itemLike);
-	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
 }
