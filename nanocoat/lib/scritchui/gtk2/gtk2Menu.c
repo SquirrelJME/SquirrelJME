@@ -36,6 +36,37 @@ static gboolean sjme_scritchui_gtk2_eventActivate(GtkMenuItem* gtkMenuItem,
 	return FALSE;
 }
 
+static void sjme_scritchui_gtk2_setMenuSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrInNotNull GtkWidget* widget)
+{
+	GtkAllocation alloc;
+	sjme_jint h;
+	
+	if (inState == NULL || inComponent == NULL || widget == NULL)
+		return;
+	
+	/* Make menu items the requested size. */
+	memset(&alloc, 0, sizeof(alloc));
+	if (gtk_icon_size_lookup(GTK_ICON_SIZE_MENU,
+		&alloc.width, &alloc.height))
+	{
+		/* Keep the width undefined. */
+		alloc.width = -1;
+		
+		/* The returned size is not scaled to the system DPI! */
+		h = alloc.height;
+		if (!sjme_error_is(inState->apiInThread->lafDpiProject(
+			inState, inComponent, SJME_JNI_FALSE,
+			NULL, NULL, NULL, &h)))
+			alloc.height = h;
+		
+		/* Request this size. */
+		gtk_widget_set_allocation(widget, &alloc);
+	}
+}
+
 sjme_errorCode sjme_scritchui_gtk2_menuBarNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar,
@@ -55,6 +86,10 @@ sjme_errorCode sjme_scritchui_gtk2_menuBarNew(
 
 	/* Do not lose the menu bar. */
 	g_object_ref(widget);
+	
+	/* Set a reasonable size. */
+	sjme_scritchui_gtk2_setMenuSize(inState,
+		SJME_SUI_CAST_COMPONENT(inMenuBar), widget);
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
@@ -122,6 +157,10 @@ sjme_errorCode sjme_scritchui_gtk2_menuItemNew(
 	/* Menu items can be activated, activation propagates up. */
 	g_signal_connect(widget, "activate",
 		G_CALLBACK(sjme_scritchui_gtk2_eventActivate), inMenuItem);
+	
+	/* Set a reasonable size. */
+	sjme_scritchui_gtk2_setMenuSize(inState,
+		SJME_SUI_CAST_COMPONENT(inMenuItem), widget);
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

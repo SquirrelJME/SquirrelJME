@@ -178,13 +178,16 @@ sjme_errorCode sjme_scritchui_core_containerGetFrame(
 		/* for every system rather than having each system handle it */
 		/* on its own. */
 		overhead = &inWindow->minOverhead;
+		if (content.d.width >= 0 && frame.d.height >= 0)
+		{
 #if 0
-		overhead->width = abs(content.s.x - frame.s.x);
-		overhead->height = abs(content.s.y - frame.s.y);
+			overhead->width = abs(content.s.x - frame.s.x);
+			overhead->height = abs(content.s.y - frame.s.y);
 #else
-		overhead->width = abs(content.d.width - frame.d.width);
-		overhead->height = abs(content.d.height - frame.d.height);
+			overhead->width = abs(content.d.width - frame.d.width);
+			overhead->height = abs(content.d.height - frame.d.height);
 #endif
+		}
 		
 		/* Give the results if requested. */
 		if (frameBound != NULL)

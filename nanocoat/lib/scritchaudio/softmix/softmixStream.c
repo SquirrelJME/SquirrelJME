@@ -15,7 +15,8 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_renderSource(
 	sjme_attrInNotNull sjme_scritchaudio_source inSource,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* sourceInfo,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* destInfo,
-	sjme_attrInNotNull sjme_scritchaudio_buffer* destBuf)
+	sjme_attrInNotNull sjme_scritchaudio_buffer* destBuf,
+	sjme_attrInValue sjme_jboolean isFirst)
 {
 	sjme_errorCode error;
 	sjme_jint bufSize;
@@ -30,12 +31,29 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_renderSource(
 	sourceBuf = sjme_alloca(bufSize);
 	if (sourceBuf == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
-	memset(sourceBuf, 0, bufSize);
+	
+	/* If the source format is unsigned, we need to actually set the proper */
+	/* zero level, otherwise there will be clicks/pops. */
+	if (sourceInfo->format == SJME_SCRITCHAUDIO_FORMAT_BYTE_U8)
+		memset(sourceBuf, 0x80, bufSize);
+	else
+		memset(sourceBuf, 0, bufSize);
 
 	/* Call source render function. */
 	if (sjme_error_is(error = inSource->renderFunc(inState, inSource,
 		sourceInfo, sourceBuf)))
 		return sjme_error_default(error);
+	
+	/* If this is the first render, and it matches the native format, then */
+	/* we do not actually need to perform mixing of any kind. */
+	if (isFirst && sourceInfo->channels == destInfo->channels &&
+		sourceInfo->format == destInfo->format &&
+		sourceInfo->rate == destInfo->rate &&
+		destInfo->bufSize == bufSize)
+	{
+		memmove(destBuf, sourceBuf, bufSize);
+		return SJME_ERROR_NONE;
+	}
 
 	/* Get the mixer to use. */
 	mixer = sjme_scritchaudio_softmix_mixers[sourceInfo->format]
@@ -63,6 +81,7 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 	sjme_scritchaudio_source source;
 	sjme_list(sjme_scritchaudio_source)* sources;
 	sjme_scritchaudio_renderInfo sourceInfo;
+	sjme_jboolean first;
 	sjme_jint i, n;
 	
 	if (wrappedState == NULL || wrappedSource == NULL || destInfo == NULL ||
@@ -91,6 +110,7 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 
 	/* Run through all the sources to render. */
 	anyError = SJME_ERROR_NONE;
+	first = SJME_JNI_TRUE;
 	for (i = 0, n = sources->length; i < n; i++)
 	{
 		/* Skip blank slots. */
@@ -124,13 +144,20 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 		/* Forward render. */
 		if (sjme_error_is(error = sjme_scritchaudio_softmix_renderSource(
 			sourceState, source, &sourceInfo,
-			destInfo, destBuf)))
+			destInfo, destBuf, first)))
 			goto fail_any;
+		
+		/* No longer first. */
+		first = SJME_JNI_FALSE;
 
 		/* Render and mix in the next source. */
 		continue;
 fail_any:
+		/* Let audio process still. */
 		anyError = sjme_error_default(error);
+		
+		/* No longer first. */
+		first = SJME_JNI_FALSE;
 	}
 
 	/* Success? */

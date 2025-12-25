@@ -43,13 +43,13 @@ else()
 			"${CMAKE_CURRENT_BINARY_DIR}"
 			SOURCES "${CMAKE_CURRENT_LIST_DIR}/tryPThread.c"
 			CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
-			LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT}
+			LINK_LIBRARIES "${CMAKE_THREAD_LIBS_INIT}"
 			OUTPUT_VARIABLE SQUIRRELJME_PTHREADS_TRY_OUTPUT)
-		message("PThread: ${SQUIRRELJME_PTHREADS_TRY_OUTPUT}")
+		message(STATUS "PThread: ${SQUIRRELJME_PTHREADS_TRY_OUTPUT}")
 
 		# Valid?
 		if(SQUIRRELJME_PTHREADS_TRY_VALID)
-			message("PThread: Valid!")
+			message(STATUS "PThread: Valid!")
 
 			add_compile_definitions(
 				SJME_CONFIG_HAS_THREADS=1)
@@ -70,7 +70,7 @@ else()
 					SJME_CONFIG_HAS_THREADS_PTHREAD_BSD=1)
 			endif()
 		else()
-			message("PThread: Not available or misconfigured.")
+			message(STATUS "PThread: Not available or misconfigured.")
 		endif()
 	endif()
 endif()

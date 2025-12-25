@@ -12,6 +12,7 @@
 #endif
 
 #include "sjme/config.h"
+#include "sjme/intern/nalSelect.h"
 
 #if (SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
 	#include <winsock2.h>
