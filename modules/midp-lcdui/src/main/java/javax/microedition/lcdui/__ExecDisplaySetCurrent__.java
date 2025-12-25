@@ -14,12 +14,14 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchContainerInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPaintableInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
+import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayIdentityScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
@@ -95,12 +97,6 @@ class __ExecDisplaySetCurrent__
 		// the Display's frame...
 		ScritchInterface scritchApi = this.scritchApi;
 		ScritchContainerInterface containerApi = scritchApi.container();
-		ScritchComponentInterface componentApi = scritchApi.component();
-		ScritchPaintableInterface paintableApi = scritchApi.paintable();
-		ScritchWindowInterface windowApi = scritchApi.window();
-		
-		// Target panel may be set later
-		ScritchPanelBracket panel;
 		
 		// Get the ScritchUI window
 		Display display = this.display;
@@ -160,6 +156,48 @@ class __ExecDisplaySetCurrent__
 			}
 		}
 		
+		// Use commonized logic for refreshing the displayable on this display
+		this.__refresh(false, false);
+	}
+	
+	/**
+	 * Removes the old displayable, if any, then shows the new one.
+	 *
+	 * @param __skipExit If this is a direct call that was not performed
+	 * from {@link #run()}, this will not cause any alert boxes or other
+	 * on exit handlers to be called.
+	 * @param __forceRemove Force remove of the current widget, even if it
+	 * is the currently shown one.
+	 * @since 2025/12/23
+	 */
+	@ScritchEventLoop
+	@SquirrelJMEVendorApi
+	void __refresh(boolean __skipExit, boolean __forceRemove)
+	{
+		// Get the container API since we will have to clear and add it to
+		// the Display's frame...
+		ScritchInterface scritchApi = this.scritchApi;
+		ScritchContainerInterface containerApi = scritchApi.container();
+		ScritchComponentInterface componentApi = scritchApi.component();
+		ScritchPaintableInterface paintableApi = scritchApi.paintable();
+		ScritchWindowInterface windowApi = scritchApi.window();
+		
+		// Target panel may be set later
+		ScritchPanelBracket panel;
+		
+		// Get the ScritchUI window
+		Display display = this.display;
+		DisplayState displayState = display.__state();
+		ScritchWindowBracket window = displayState.scritchWindow();
+		
+		// The displayable we are showing
+		Displayable showNow = this.showNow;
+		DisplayableState showNowState =
+			(showNow != null ? showNow.__state() : null);
+		
+		// What is currently being displayed?
+		DisplayableState current = displayState.current();
+		
 		// Are we removing a displayable?
 		if (showNow == null)
 		{
@@ -174,51 +212,78 @@ class __ExecDisplaySetCurrent__
 			
 			// Disassociate both ends
 			current.setParent(null);
+			
+			// Do no further processing.
+			return;
 		}
 		
-		// One is being added
-		else
+		// Remove old displayable first, this can be forced
+		if ((__forceRemove || current != showNowState) && current != null)
 		{
-			// Remove old displayable first
-			if (current != showNowState && current != null)
-				new __ExecDisplaySetCurrent__(scritchApi,
-					current.currentDisplay().display(),
-					null, null).run();
+			// Setup the same logic, however with nothing
+			__ExecDisplaySetCurrent__ exec = new __ExecDisplaySetCurrent__(
+				scritchApi, current.currentDisplay().display(),
+				null, null);
 			
-			// Get the needed panel and add it in
-			panel = showNowState.scritchPanel();
-			containerApi.containerAdd(window, panel);
+			// If we are skipping exit/alert handlers, then we do not want
+			// this removal to evoke them. However, they will still remain
+			// in effect as the normal run() call sets these!
+			if (__skipExit)
+				exec.__refresh(__skipExit, __forceRemove);
+			else
+				exec.run();
 			
-			// Set the frame's preferred and minimum sizes for the content area
-			DisplayScale scale = display._scale;
-			windowApi.windowContentMinimumSize(window,
-				scale.screenX(scale.textureMaxW()),
-				scale.screenY(scale.textureMaxH()));
-			
-			// Make sure the parent is set
-			showNowState.setParent(displayState);
-			
-			// Revalidate so it gets updated
-			componentApi.componentRevalidate(panel);
-			
-			// Update text tracker of displayable to use the one that is
-			// attached to the display
-			showNow._trackerTitle.connect(display._listenerTitle);
-			
-			// Set the menu bar of the window to that of this displayable
-			windowApi.windowSetMenuBar(window,
-				MenuActionNodeOnly.rootTree(showNow)
-					.map(MenuActionNodeOnly.node(showNow))
-					.scritchWidget(ScritchMenuBarBracket.class));
-			
-			// Show the display window
-			windowApi.windowSetVisible(window, true);
-			
-			// Internal revalidation logic
-			showNow.__execRevalidate(displayState);
-			
-			// Force it to be painted
-			paintableApi.componentRepaint(panel);
+			// Do no further processing.
+			return;
 		}
+		
+		// This was externally called from elsewhere
+		if (showNow == null || showNowState == null)
+			return;
+		
+		// If full screen is being desired, we only want to set it when the
+		// display is in identity scale mode. Otherwise, if we do not then
+		// compatibility framing and scaling will break along with providing
+		// a very inconsistent experience.
+		DisplayScale scale = display._scale;
+		boolean isFull = ((scale instanceof DisplayIdentityScale) &&
+			showNowState.desireFullScreen());
+		
+		// Get the needed panel and add it in
+		panel = showNowState.scritchPanel();
+		containerApi.containerAdd(window, panel);
+		
+		// Set the frame's preferred and minimum sizes for the content area
+		Debugging.debugNote("Screen [%d, %d] <- %s",
+			scale.textureMaxW(), scale.textureMaxH(),
+			scale.getClass());
+		windowApi.windowContentMinimumSize(window,
+			scale.screenX(scale.textureMaxW()),
+			scale.screenY(scale.textureMaxH()));
+		
+		// Make sure the parent is set
+		showNowState.setParent(displayState);
+		
+		// Revalidate so it gets updated
+		componentApi.componentRevalidate(panel);
+		
+		// Update text tracker of displayable to use the one that is
+		// attached to the display
+		showNow._trackerTitle.connect(display._listenerTitle);
+		
+		// Set the menu bar of the window to that of this displayable
+		windowApi.windowSetMenuBar(window,
+			MenuActionNodeOnly.rootTree(showNow)
+				.map(MenuActionNodeOnly.node(showNow))
+				.scritchWidget(ScritchMenuBarBracket.class));
+		
+		// Show the display window
+		windowApi.windowSetVisible(window, true);
+		
+		// Internal revalidation logic
+		showNow.__execRevalidate(displayState);
+		
+		// Force it to be painted
+		paintableApi.componentRepaint(panel);
 	}
 }

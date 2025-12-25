@@ -10,9 +10,11 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -38,16 +40,21 @@ public interface ScritchScreenInterface
 		throws MLECallError;
 	
 	/**
-	 * Returns the height of this screen.
+	 * Returns the bounds of the screen, this includes its relative position
+	 * to the origin point of all screen on multiscreen devices.
 	 *
-	 * @param __screen The screen to get from.
-	 * @return The screen height.
-	 * @throws MLECallError If the screen is null or not valid.
-	 * @since 2024/03/07
+	 * @param __screen The screen to get the bounds of.
+	 * @param __for The optional component for screen context.
+	 * @param __pixels The pixel bounds ({@code int[4]{x, y, w, h}}).
+	 * @param __mm The millimeter bounds ({@code int[4]{x, y, w, h}}).
+	 * @throws MLECallError On null arguments and/or if the screen is not
+	 * valid.
+	 * @since 2025/12/23
 	 */
 	@SquirrelJMEVendorApi
-	@Range(from = 0, to = Integer.MAX_VALUE)
-	int screenHeight(@NotNull ScritchScreenBracket __screen)
+	void screenGetBounds(@NotNull ScritchScreenBracket __screen,
+		@Nullable ScritchComponentBracket __for,
+		@NotNull int[] __pixels, @NotNull int[] __mm)
 		throws MLECallError;
 	
 	/**
@@ -85,18 +92,5 @@ public interface ScritchScreenInterface
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int screenId(@NotNull ScritchScreenBracket __screen)
-		throws MLECallError;
-	
-	/**
-	 * Returns the width of this screen.
-	 *
-	 * @param __screen The screen to get from.
-	 * @return The screen width.
-	 * @throws MLECallError If the screen is null or not valid.
-	 * @since 2024/03/07
-	 */
-	@SquirrelJMEVendorApi
-	@Range(from = 0, to = Integer.MAX_VALUE)
-	int screenWidth(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 }

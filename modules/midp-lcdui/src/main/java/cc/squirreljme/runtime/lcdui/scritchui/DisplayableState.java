@@ -48,6 +48,10 @@ public final class DisplayableState
 	@SquirrelJMEVendorApi
 	private volatile DisplayState _current;
 	
+	/** Is full screen being desired? */
+	@SquirrelJMEVendorApi
+	private volatile boolean _desireFullScreen;
+	
 	/**
 	 * Initializes the displayable state.
 	 *
@@ -82,6 +86,36 @@ public final class DisplayableState
 		synchronized (this)
 		{
 			return this._current;
+		}
+	}
+	
+	/**
+	 * Is full-screen is desired?
+	 *
+	 * @return If fullscreen is desired or not.
+	 * @since 2025/12/23
+	 */
+	@SquirrelJMEVendorApi
+	public boolean desireFullScreen()
+	{
+		synchronized (this)
+		{
+			return this._desireFullScreen;
+		}
+	}
+	
+	/**
+	 * Sets if full-screen is desired.
+	 *
+	 * @param __isFull Should full-screen be used?
+	 * @since 2025/12/23
+	 */
+	@SquirrelJMEVendorApi
+	public void desireFullScreen(boolean __isFull)
+	{
+		synchronized (this)
+		{
+			this._desireFullScreen = __isFull;
 		}
 	}
 	

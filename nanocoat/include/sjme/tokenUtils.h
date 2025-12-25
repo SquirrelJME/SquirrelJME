@@ -350,7 +350,7 @@ extern "C"
  * @param type The type used.
  * @param numPointerStars The number of pointer stars
  * @param snippet The snippet to place.
- * @param orSnippet The snippet if it is a pointer.
+ * @param orSnippet The snippet if it is not a pointer.
  * @return Either @c snippet or nothing.
  * @since 2024/01/09
  */

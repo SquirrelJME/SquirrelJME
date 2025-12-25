@@ -22,7 +22,8 @@ if("${SQUIRRELJME_SYSTEM}" STREQUAL "dos" OR
 	add_compile_definitions(SJME_CONFIG_ONLY_THREAD_SINGLE=1)
 
 # On Windows do not use pthreads at all as it has its own threading system
-elseif("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+elseif("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "wine")
 	# Notice
 	message(STATUS "Forcing Win32 Threads")
 

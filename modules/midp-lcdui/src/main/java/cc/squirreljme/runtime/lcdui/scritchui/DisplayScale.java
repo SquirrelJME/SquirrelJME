@@ -169,6 +169,13 @@ public abstract class DisplayScale
 		MIDlet midlet = ActiveMidlet.optional();
 		if (midlet != null)
 		{
+			// Special scaling type?
+			String v = midlet.getAppProperty("X-SquirrelJME-Resolution");
+			if (v != null && v.trim().equals("identity"))
+				return new DisplayIdentityScale(__scritch,
+				__screen, __window);
+			
+			// Otherwise, parse from MIDlet properties
 			rv = DisplayScale.__midlet(midlet);
 			if (rv != null)
 				return rv;
@@ -228,6 +235,12 @@ public abstract class DisplayScale
 		// Get the scale the application uses
 		DisplayScale appScale = DisplayScale.applicationScale(__scritch,
 			__screen, __window);
+		
+		// If the requested scale was the identity scale, then we are using
+		// the entire screen with no forms of scaling in place... effectively
+		// this is native
+		if (appScale instanceof DisplayIdentityScale)
+			return appScale;
 		
 		// Overridden by the user?
 		String override = System.getProperty(DisplayScale.SCALE_PROPERTY);
@@ -490,8 +503,8 @@ public abstract class DisplayScale
 			throw new NullPointerException("NARG");
 		
 		DisplayScale rv;
-		
-		// SquirrelJME Specific
+			
+		// Use SquirrelJME WxH interpretation
 		rv = DisplayScale.__midlet(__midlet,
 			"X-SquirrelJME-Resolution", false, 'x');
 		if (rv != null)

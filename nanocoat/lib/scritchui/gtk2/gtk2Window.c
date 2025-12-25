@@ -11,6 +11,7 @@
 #include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
+#include "sjme/util.h"
 
 static gboolean sjme_scritchui_gtk2_eventDelete(GtkWidget* widget,
 	GdkEvent* event,
@@ -83,15 +84,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height)
 {
-	sjme_errorCode error;
 	GtkWindow* gtkWindow;
-	GtkWidget* menuBar;
 	GdkGeometry geometry;
 	sjme_scritchui_dim* overhead;
-	gint w, h;
-	gint ox, oy;
-	GtkAllocation alloc;
-	GdkRectangle extent;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -101,54 +96,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	
 	/* Recover window. */
 	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
-	menuBar = inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBAR];
 	
-	/* Calculate window overhead, we can only consider this if there is */
-	/* a menu bar that would add overhead. */
+	/* The overhead has been calculated via windowContentGetFrame(). */
 	overhead = &inWindow->minOverhead;
-	memset(overhead, 0, sizeof(*overhead));
-	if (menuBar != NULL)
-	{
-		/* Get the size allocation of the menu bar. */
-		memset(&alloc, 0, sizeof(alloc));
-		w = 0;
-		h = 0;
-		gtk_widget_get_size_request(menuBar, &w, &h);
-		gtk_widget_get_allocation(menuBar, &alloc);
-		
-		/* Add its height. */
-		if (h > alloc.height)
-			overhead->height += h;
-		else
-			overhead->height += alloc.height;
-	}
-	
-	/* Get the frame extents of the window. */
-	memset(&extent, 0, sizeof(extent));
-	ox = oy = 0;
-	if (GTK_WIDGET(gtkWindow)->window != NULL)
-	{
-		/* Get the frame extents, from the window manager. */
-		gdk_window_get_frame_extents(GTK_WIDGET(gtkWindow)->window,
-			&extent);
-		
-		/* Then get the origin of where our actual window is in terms */
-		/* that GTK uses. */
-		gdk_window_get_origin(GTK_WIDGET(gtkWindow)->window,
-			&ox, &oy);
-
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-		sjme_message("EXTENT %d %d %d %d -- ORIGIN %d %d",
-			extent.x, extent.y, extent.width, extent.height, ox, oy);
-#endif
-		
-		/* We need to add to the overhead of our window. */
-		/* This does not work perfectly, but it should allow for the */
-		/* entire content of the window to be visible. */
-		/* EXTENT 836 379 248 378 -- ORIGIN 840 432 */
-		overhead->width += abs(ox - extent.x);
-		overhead->height += abs(oy - extent.y);
-	}
 	
 	/* Setup geometry. */
 	memset(&geometry, 0, sizeof(geometry));
@@ -165,6 +115,110 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchui_gtk2_windowGetFrame(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound)
+{
+	sjme_scritchui_uiWindow inWindow;
+	sjme_scritchui_rect resultFrame, resultContent;
+	GtkWindow* gtkWindow;
+	GtkWidget* menuBar;
+	gint menuW, menuH;
+	gint ox, oy;
+	GtkAllocation alloc;
+	GdkRectangle extent;
+	
+	if (inState == NULL || inContainer == NULL ||
+		(contentSize == NULL && frameBound == NULL && contentBound == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover the window. */
+	inWindow = SJME_SUI_CAST_WINDOW(inContainer);
+	if (inWindow == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Clear results. */
+	memset(&resultFrame, 0, sizeof(resultFrame));
+	memset(&resultContent, 0, sizeof(resultContent));
+	
+	/* Recover window. */
+	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
+	menuBar = inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBAR];
+	
+	/* Calculate window overhead, we can only consider this if there is */
+	/* a menu bar that would add overhead. */
+	/* Note that the menu bar could be hidden with a global menu. */
+	menuW = 0;
+	menuH = 0;
+	if (menuBar != NULL)
+	{
+		/* Get the size allocation of the menu bar. */
+		memset(&alloc, 0, sizeof(alloc));
+		gtk_widget_get_size_request(menuBar, &menuW, &menuH);
+		gtk_widget_get_allocation(menuBar, &alloc);
+		
+		/* Use the greater of the two bounds for the menu. */
+		menuH = sjme_max(menuH, alloc.height);
+	}
+	
+	/* Get the frame extents of the window. */
+	memset(&extent, 0, sizeof(extent));
+	ox = oy = 0;
+	if (GTK_WIDGET(gtkWindow)->window != NULL)
+	{
+		/* Get the frame extents, from the window manager. */
+		/* EXTENT 836 379 248 378 -- ORIGIN 840 432 */
+		gdk_window_get_frame_extents(GTK_WIDGET(gtkWindow)->window,
+			&extent);
+		
+		/* Then get the origin of where our actual window is in terms */
+		/* that GTK uses. */
+		/* EXTENT 836 379 248 378 -- ORIGIN 840 432 */
+		memset(&alloc, 0, sizeof(alloc));
+		gdk_window_get_origin(GTK_WIDGET(gtkWindow)->window,
+			&ox, &oy);
+		gtk_widget_get_allocation(GTK_WIDGET(gtkWindow), &alloc);
+
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+		sjme_message("EXTENT %d %d %d %d -- ORIGIN %d %d",
+			extent.x, extent.y, extent.width, extent.height, ox, oy);
+#endif
+		
+		/* Calculate frame. */
+		resultFrame.s.x = extent.x;
+		resultFrame.s.y = extent.y;
+		resultFrame.d.width = extent.width;
+		resultFrame.d.height = extent.height;
+		
+		/* Calculate base content. */
+		resultContent.s.x = ox;
+		resultContent.s.y = oy;
+		resultContent.d.width = alloc.width;
+		resultContent.d.height = alloc.height;
+		
+		/* Is there a menu to consider? */
+		if (menuH > 0)
+		{
+			resultContent.s.y += menuH;
+			resultContent.d.height -= menuH;
+		}
+	}
+	
+	/* Give the results. */
+	if (frameBound != NULL)
+		memmove(frameBound, &resultFrame, sizeof(resultFrame));
+	if (contentBound != NULL)
+		memmove(contentBound, &resultContent, sizeof(resultContent));
+	if (contentSize != NULL)
+		memmove(contentSize, &resultContent.d, sizeof(resultContent.d));
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_windowNew(

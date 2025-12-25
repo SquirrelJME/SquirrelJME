@@ -60,18 +60,6 @@ public class DylibWindowInterface
 	 * @since 2024/04/02
 	 */
 	@Override
-	public int windowContentHeight(
-		ScritchWindowBracket __window)
-		throws MLECallError
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/04/02
-	 */
-	@Override
 	public void windowContentMinimumSize(ScritchWindowBracket __window,
 		int __w, int __h)
 		throws MLECallError
@@ -81,25 +69,8 @@ public class DylibWindowInterface
 		if (__w <= 0 || __h <= 0)
 			throw new MLECallError("Zero or negative size");
 		
-		if ((DylibWindowObject)__window == null)
-			throw new MLECallError("Null arguments");
-		if (__w <= 0 || __h <= 0)
-			throw new MLECallError("Zero or negative size");
-		
 		NativeScritchDylib.__windowContentMinimumSize(this.dyLib._stateP,
 			((DylibWindowObject)__window).objectPointer(), __w, __h);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/04/02
-	 */
-	@Override
-	public int windowContentWidth(
-		ScritchWindowBracket __window)
-		throws MLECallError
-	{
-		throw Debugging.todo();
 	}
 	
 	/**
@@ -179,7 +150,7 @@ public class DylibWindowInterface
 		throws MLECallError
 	{
 		if (__window == null)
-			throw new NullPointerException("NARG");
+			throw new MLECallError("NARG");
 		
 		// Forward call
 		NativeScritchDylib.__windowSetMenuBar(this.dyLib._stateP,

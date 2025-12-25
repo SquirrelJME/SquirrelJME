@@ -85,99 +85,335 @@ extern "C"
 		#define __func__ __FUNCTION__
 	#endif
 #endif
-
-#if !defined(SJME_CONFIG_HAS_STDINT)
-	#if !SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
-		/** Signed 8-bit integer. */
-		typedef signed __int8 int8_t;
-
-		/** Minimum signed 8-bit integer. */
-		#define INT8_MIN SCHAR_MIN
-
-		/** Maximum signed 8-bit integer. */
-		#define INT8_MAX SCHAR_MAX
-
-		/** Unigned 8-bit integer. */
-		typedef unsigned __int8 uint8_t;
-
-		/** Minimum unsigned 8-bit integer. */
-		#define UINT8_MIN 0
-
-		/** Maximum unsigned 8-bit integer. */
-		#define UINT8_MAX UCHAR_MAX
-
-		/** Signed 16-bit integer. */
-		typedef signed __int16 int16_t;
-
-		/** Minimum signed 16-bit integer. */
-		#define INT16_MIN SHRT_MIN
-
-		/** Maximum signed 16-bit integer. */
-		#define INT16_MAX SHRT_MAX
-
-		/** Unigned 16-bit integer. */
-		typedef unsigned __int16 uint16_t;
-
-		/** Minimum unsigned 16-bit integer. */
-		#define UINT16_MIN 0
-
-		/** Maximum unsigned 16-bit integer. */
-		#define UINT16_MAX USHRT_MAX
-
-		/** Signed 16-bit constant. */
-		#define INT16_C(x) x
-
-		/** Signed 32-bit integer. */
-		typedef signed __int32 int32_t;
-
-		/** Minimum signed 32-bit integer. */
-		#define INT32_MIN INT_MIN
-
-		/** Maximum signed 32-bit integer. */
-		#define INT32_MAX INT_MAX
 	
-		/** Signed 32-bit integer macro. */
-		#define INT32_C(x) x
-
-		/** Unigned 32-bit integer. */
-		typedef unsigned __int32 uint32_t;
-
-		/** Minimum unsigned 32-bit integer. */
-		#define UINT32_MIN 0
-
-		/** Maximum unsigned 32-bit integer. */
-		#define UINT32_MAX UINT_MAX
+#pragma region(sjme_jbyteNative)
 	
-		/** Unsigned 32-bit integer macro. */
-		#define UINT32_C(x) x##U
-
-		/** Signed 64-bit integer. */
-		typedef signed __int64 int64_t;
-
-		/** Minimum signed 64-bit integer. */
-		#define INT64_MIN _I64_MIN
-
-		/** Maximum signed 64-bit integer. */
-		#define INT64_MAX _I64_MAX
+#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__INT8_TYPE__)
+	/** Signed 8-bit integer. */
+	typedef __INT8_TYPE__ sjme_jbyteNative;
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Signed 8-bit integer. */
+	typedef signed __int8 sjme_jbyteNative;
+#elif defined(SJME_CONFIG_HAS_STDINT)
+	/** Signed 8-bit integer. */
+	typedef int8_t sjme_jbyteNative;
+#else
+	#error No sjme_jbyteNative
+#endif
 	
-		/** Signed 64-bit integer macro. */
-		#define INT64_C(x) x##I64
-
-		/** Unigned 64-bit integer. */
-		typedef unsigned __int64 uint64_t;
-
-		/** Minimum unsigned 64-bit integer. */
-		#define UINT64_MIN 0
-
-		/** Maximum unsigned 64-bit integer. */
-		#define UINT64_MAX _UI64_MAX
+#pragma endregion(sjme_jbyteNative)
+#pragma region(sjme_jubyteNative)
 	
-		/** Unsigned 64-bit integer macro. */
-		#define UINT64_C(x) x##UI64
+#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__INT8_TYPE__)
+	/** Unsigned 8-bit integer. */
+	typedef __UINT8_TYPE__ sjme_jubyteNative;
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Unsigned 8-bit integer. */
+	typedef unsigned __int8 sjme_jubyteNative;
+#elif defined(SJME_CONFIG_HAS_STDINT)
+	/** Unsigned 8-bit integer. */
+	typedef uint8_t sjme_jubyteNative;
+#else
+	#error No sjme_jubyteNative
+#endif
+	
+#pragma endregion(sjme_jubyteNative)
+#pragma region(sjme_jshortNative)
+	
+#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__INT16_TYPE__)
+	/** Signed 16-bit integer. */
+	typedef __INT16_TYPE__ sjme_jshortNative;
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Signed 16-bit integer. */
+	typedef signed __int16 sjme_jshortNative;
+#elif defined(SJME_CONFIG_HAS_STDINT)
+	/** Signed 16-bit integer. */
+	typedef int16_t sjme_jshortNative;
+#else
+	#error No sjme_jshortNative
+#endif
+	
+#pragma endregion(sjme_jshortNative)
+#pragma region(sjme_jushortNative)
+	
+#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__INT16_TYPE__)
+	/** Unsigned 16-bit integer. */
+	typedef __UINT16_TYPE__ sjme_jushortNative;
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Unsigned 16-bit integer. */
+	typedef unsigned __int16 sjme_jushortNative;
+#elif defined(SJME_CONFIG_HAS_STDINT)
+	/** Unsigned 16-bit integer. */
+	typedef uint16_t sjme_jushortNative;
+#else
+	#error No sjme_jushortNative
+#endif
+	
+#pragma endregion(sjme_jushortNative)
+#pragma region(sjme_jintNative)
+	
+#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__INT32_TYPE__)
+	/** Signed 32-bit integer. */
+	typedef __INT32_TYPE__ sjme_jintNative;
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Signed 32-bit integer. */
+	typedef signed __int32 sjme_jintNative;
+#elif defined(SJME_CONFIG_HAS_STDINT)
+	/** Signed 32-bit integer. */
+	typedef int32_t sjme_jintNative;
+#else
+	#error No sjme_jintNative
+#endif
+	
+#pragma endregion(sjme_jintNative)
+#pragma region(sjme_juintNative)
+	
+#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__INT32_TYPE__)
+	/** Unsigned 32-bit integer. */
+	typedef __UINT32_TYPE__ sjme_juintNative;
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Unsigned 32-bit integer. */
+	typedef unsigned __int32 sjme_juintNative;
+#elif defined(SJME_CONFIG_HAS_STDINT)
+	/** Unsigned 32-bit integer. */
+	typedef uint32_t sjme_juintNative;
+#else
+	#error No sjme_juintNative
+#endif
+	
+#pragma endregion(sjme_juintNative)
+#pragma region(sjme_jlongNative)
+	
+#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__INT64_TYPE__)
+	/** Signed 64-bit integer. */
+	typedef __INT64_TYPE__ sjme_jlongNative;
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Signed 64-bit integer. */
+	typedef signed __int64 sjme_jlongNative;
+#elif defined(SJME_CONFIG_HAS_STDINT)
+	/** Signed 64-bit integer. */
+	typedef int64_t sjme_jlongNative;
+#else
+	#error No sjme_jlongNative
+#endif
+	
+#pragma endregion(sjme_jlongNative)
+#pragma region(sjme_julongNative)
+	
+#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__INT64_TYPE__)
+	/** Unsigned 64-bit integer. */
+	typedef __UINT64_TYPE__ sjme_julongNative;
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Unsigned 64-bit integer. */
+	typedef unsigned __int64 sjme_julongNative;
+#elif defined(SJME_CONFIG_HAS_STDINT)
+	/** Unsigned 64-bit integer. */
+	typedef uint64_t sjme_julongNative;
+#else
+	#error No sjme_julongNative
+#endif
+	
+#pragma endregion(sjme_julongNative)
+#pragma region(sjme_intPointerNative)
+
+#if SJME_CONFIG_HAS_POINTER == 64
+	/** Pointer as integer type. */
+	typedef sjme_jlongNative sjme_intPointerNative;
+#elif SJME_CONFIG_HAS_POINTER == 32
+	/** Pointer as integer type. */
+	typedef sjme_jintNative sjme_intPointerNative;
+#elif SJME_CONFIG_HAS_POINTER == 16
+	/** Pointer as integer type. */
+	typedef sjme_jshortNative sjme_intPointerNative;
+#elif SJME_CONFIG_HAS_POINTER == 8
+	/** Pointer as integer type. */
+	typedef sjme_jbyteNative sjme_intPointerNative;
+#else
+	#error No sjme_intPointerNative
+#endif
+	
+#pragma endregion(sjme_intPointerNative)
+#pragma region(sjme_uintPointerNative)
+
+#if SJME_CONFIG_HAS_POINTER == 64
+	/** Pointer as integer type. */
+	typedef sjme_julongNative sjme_uintPointerNative;
+#elif SJME_CONFIG_HAS_POINTER == 32
+	/** Pointer as integer type. */
+	typedef sjme_juintNative sjme_uintPointerNative;
+#elif SJME_CONFIG_HAS_POINTER == 16
+	/** Pointer as integer type. */
+	typedef sjme_jushortNative sjme_uintPointerNative;
+#elif SJME_CONFIG_HAS_POINTER == 8
+	/** Pointer as integer type. */
+	typedef sjme_jubyteNative sjme_uintPointerNative;
+#else
+	#error No sjme_uintPointerNative
+#endif
+	
+#pragma endregion(sjme_uintPointerNative)
+#pragma region(constWrappers)
+
+#if !defined(INT8_C)
+	#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__INT8_C)
+		/** Signed 8-bit constant. */
+		#define INT8_C(x) __INT8_C(x)
+	#elif defined(SJME_CONFIG_HAS_MSVC)
+		/** Signed 8-bit constant. */
+		#define INT8_C(x) x
 	#else
-		#error No stdint types
+		#error No INT8_C
 	#endif
 #endif
+	
+#if !defined(UINT8_C)
+	#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__UINT8_C)
+		/** Unsigned 8-bit constant. */
+		#define UINT8_C(x) __UINT8_C(x)
+	#elif defined(SJME_CONFIG_HAS_MSVC)
+		/** Unsigned 8-bit constant. */
+		#define UINT8_C(x) x##U
+	#else
+		#error No UINT8_C
+	#endif
+#endif
+	
+#if !defined(INT16_C)
+	#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__INT16_C)
+		/** Signed 16-bit constant. */
+		#define INT16_C(x) __INT16_C(x)
+	#elif defined(SJME_CONFIG_HAS_MSVC)
+		/** Signed 16-bit constant. */
+		#define INT16_C(x) x
+	#else
+		#error No INT16_C
+	#endif
+#endif
+	
+#if !defined(UINT16_C)
+	#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__UINT16_C)
+		/** Signed 16-bit constant. */
+		#define UINT16_C(x) __UINT16_C(x)
+	#elif defined(SJME_CONFIG_HAS_MSVC)
+		/** Signed 16-bit constant. */
+		#define UINT16_C(x) x##U
+	#else
+		#error No UINT16_C
+	#endif
+#endif
+	
+#if !defined(INT32_C)
+	#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__INT32_C)
+		/** Signed 32-bit constant. */
+		#define INT32_C(x) __INT32_C(x)
+	#elif defined(SJME_CONFIG_HAS_MSVC)
+		/** Signed 32-bit constant. */
+		#define INT32_C(x) x
+	#else
+		#error No INT32_C
+	#endif
+#endif
+	
+#if !defined(UINT32_C)
+	#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__UINT32_C)
+		/** Unsigned 32-bit constant. */
+		#define UINT32_C(x) __UINT32_C(x)
+	#elif defined(SJME_CONFIG_HAS_MSVC)
+		/** Unsigned 32-bit constant. */
+		#define UINT32_C(x) x##U
+	#else
+		#error No UINT32_C
+	#endif
+#endif
+
+#if !defined(INT64_C)
+	#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__INT64_C)
+		/** Signed 64-bit constant. */
+		#define INT64_C(x) __INT64_C(x)
+	#elif defined(SJME_CONFIG_HAS_MSVC)
+		/** Signed 64-bit constant. */
+		#define INT64_C(x) x##I64
+	#else
+		#error No INT64_C
+	#endif
+#endif
+
+#if !defined(UINT64_C)
+	#if defined(SJME_CONFIG_HAS_GCC_CLONE) && defined(__UINT64_C)
+		/** Unsigned 64-bit constant. */
+		#define UINT64_C(x) __UINT64_C(x)
+	#elif defined(SJME_CONFIG_HAS_MSVC)
+		/** Unsigned 64-bit constant. */
+		#define UINT64_C(x) x##UI64
+	#else
+		#error No UINT64_C
+	#endif
+#endif
+	
+#pragma endregion(constWrappers)
+#pragma region(limits)
+
+#if !defined(INT8_MIN)
+	/** Minimum signed 8-bit integer. */
+	#define INT8_MIN INT8_C(-128)
+#endif
+
+#if !defined(INT8_MAX)
+	/** Maximum signed 8-bit integer. */
+	#define INT8_MAX INT8_C(127)
+#endif
+
+#if !defined(UINT8_MAX)
+	/** Maximum unsigned 8-bit integer. */
+	#define UINT8_MAX UINT8_C(255)
+#endif
+	
+#if !defined(INT16_MIN)
+	/** Minimum signed 16-bit integer. */
+	#define INT16_MIN INT16_C(-32768)
+#endif
+
+#if !defined(INT16_MAX)
+	/** Maximum signed 16-bit integer. */
+	#define INT16_MAX INT16_C(32767)
+#endif
+
+#if !defined(UINT16_MAX)
+	/** Maximum unsigned 16-bit integer. */
+	#define UINT16_MAX UINT16_C(65535)
+#endif
+
+#if !defined(INT32_MIN)
+	/** Minimum signed 32-bit integer. */
+	#define INT32_MIN INT32_C(0x80000000)
+#endif
+
+#if !defined(INT32_MAX)
+	/** Maximum signed 32-bit integer. */
+	#define INT32_MAX INT32_C(0x7FFFFFFF)
+#endif
+
+#if !defined(UINT32_MAX)
+	/** Maximum unsigned 32-bit integer. */
+	#define UINT32_MAX UINT32_C(0xFFFFFFFF)
+#endif
+
+#if !defined(INT64_MIN)
+	/** Minimum signed 64-bit integer. */
+	#define INT64_MIN INT64_C(0x8000000000000000)
+#endif
+
+#if !defined(INT64_MAX)
+	/** Maximum signed 64-bit integer. */
+	#define INT64_MAX INT64_C(0x7FFFFFFFFFFFFFFF)
+#endif
+	
+#if !defined(UINT64_MAX)
+	/** Maximum unsigned 64-bit integer. */
+	#define UINT64_MAX UINT64_C(0xFFFFFFFFFFFFFFFF)
+#endif
+	
+#pragma endregion(limits)
 
 #if !defined(SJME_CONFIG_HAS_INTTYPES_H)
 	#if defined(SJME_CONFIG_HAS_MSVC)

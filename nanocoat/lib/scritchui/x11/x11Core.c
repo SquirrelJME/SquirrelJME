@@ -49,6 +49,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_x11Functions =
 	sjme_sm(.menuRemove, NULL),
 	sjme_sm(.panelEnableFocus, NULL),
 	sjme_sm(.panelNew, NULL),
+	sjme_sm(.screenGetBounds, NULL),
 	sjme_sm(.screens, NULL),
 	sjme_sm(.scrollPanelNew, NULL),
 	sjme_sm(.viewGetView, NULL),

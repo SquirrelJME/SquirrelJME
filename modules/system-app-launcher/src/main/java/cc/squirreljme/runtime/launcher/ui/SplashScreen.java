@@ -66,8 +66,8 @@ public final class SplashScreen
 		// Set a nice title!
 		this.setTitle("SquirrelJME is Loading!");
 		
-		// Full-screen mode for the entire image
-		this.setFullScreenMode(true);
+		// Do not use fullscreen mode for the loading screen
+		this.setFullScreenMode(false);
 		
 		// Add command to exit the VM, so it does something
 		this.addCommand(MidletMain.EXIT_COMMAND);

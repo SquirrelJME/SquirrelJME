@@ -116,7 +116,8 @@ extern "C"
 				SJME_ATOMIC_GCC_MEMORY_ORDER); \
 		}
 
-#elif defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY)
+#elif defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
 	
 	#define SJME_ATOMIC_FUNCTION_COMPARE_SET(type, numPointerStars) \
 		SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
@@ -138,7 +139,8 @@ extern "C"
 			return __sync_fetch_and_add( \
 				SJME_TYPEOF_IF_POINTER(type, numPointerStars, \
 					(volatile sjme_pointer*))&atomic->value, \
-				add); \
+				SJME_TYPEOF_IF_POINTER_OR(type, numPointerStars, \
+					(volatile sjme_pointer*)add, add)); \
 		}
 
 	#define SJME_ATOMIC_FUNCTION_SET(type, numPointerStars) \

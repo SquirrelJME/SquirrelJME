@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -36,6 +37,26 @@ public interface ScritchContainerInterface
 	@SquirrelJMEVendorApi
 	void containerAdd(@NotNull ScritchContainerBracket __container,
 		@NotNull ScritchComponentBracket __component)
+		throws MLECallError;
+	
+	/**
+	 * Gets the framing for the given container.
+	 *
+	 * @param __container The container to get the framing for.
+	 * @param __contentSize The content size of the
+	 * container ({@code int[2]{x, y}}).
+	 * @param __frameBound The bounds of the frame, this includes any
+	 * decorations and non-content area ({@code int[4]{x, y, w, h}}).
+	 * @param __contentBound The bounds of the content, this is purely
+	 * for the content area ({@code int[4]{x, y, w, h}}).
+	 * @throws MLECallError On null arguments.
+	 * @since 2025/12/23
+	 */
+	@SquirrelJMEVendorApi
+	void containerGetFrame(@NotNull ScritchContainerBracket __container,
+		@Nullable int[] __contentSize,
+		@Nullable int[] __frameBound,
+		@Nullable int[] __contentBound)
 		throws MLECallError;
 	
 	/**

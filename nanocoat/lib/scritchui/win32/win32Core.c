@@ -79,13 +79,16 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	sjme_sm(.menuRemove, sjme_scritchui_win32_menuRemove),
 	sjme_sm(.panelEnableFocus, sjme_scritchui_win32_panelEnableFocus),
 	sjme_sm(.panelNew, sjme_scritchui_win32_panelNew),
+	sjme_sm(.screenGetBounds, sjme_scritchui_win32_screenGetBounds),
 	sjme_sm(.screens, sjme_scritchui_win32_screens),
 	sjme_sm(.scrollPanelNew, sjme_scritchui_win32_scrollPanelNew),
 	sjme_sm(.viewGetView, sjme_scritchui_win32_viewGetView),
 	sjme_sm(.viewSetArea, sjme_scritchui_win32_viewSetArea),
 	sjme_sm(.viewSetView, sjme_scritchui_win32_viewSetView),
 	sjme_sm(.viewSetViewListener, NULL),
-	sjme_sm(.windowContentMinimumSize, sjme_scritchui_win32_windowContentMinimumSize),
+	sjme_sm(.windowContentMinimumSize, 
+		sjme_scritchui_win32_windowContentMinimumSize),
+	sjme_sm(.windowGetFrame, sjme_scritchui_win32_windowGetFrame),
 	sjme_sm(.windowNew, sjme_scritchui_win32_windowNew),
 	sjme_sm(.windowSetCloseListener, NULL),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_win32_windowSetMenuBar),
@@ -98,8 +101,89 @@ static const sjme_scritchui_implInternFunctions
 	sjme_sm(.getLastError, sjme_scritchui_win32_intern_getLastError),
 	sjme_sm(.recoverComponent, sjme_scritchui_win32_intern_recoverComponent),
 	sjme_sm(.windowProc, sjme_scritchui_win32_intern_windowProc),
-	sjme_sm(.windowProcWin32, sjme_scritchui_win32_windowProcForward),
+	sjme_sm(.windowProcWin32, (PROC)sjme_scritchui_win32_windowProcForward),
+	sjme_sm(.dllProc, sjme_scritchui_win32_intern_dllProc),
+	sjme_sm(.dpiWin10, sjme_scritchui_win32_intern_dpiWin10)
 };
+
+static sjme_jboolean sjme_scritchui_win32_dpiWin10(
+	sjme_attrInNotNull sjme_scritchui inState)
+{
+	sjme_scritchui_win32_intern_SPDAC proc;
+	
+	if (inState == NULL || inState->implIntern->dllProc == NULL)
+		return SJME_JNI_FALSE;
+	
+	/* Find procedure. */
+	if (sjme_error_is(inState->implIntern->dllProc(inState,
+		SJME_SCRITCHUI_WIN32_USER32_DLL,
+		"SetProcessDpiAwarenessContext",
+		(PROC*)&proc)))
+	{
+		sjme_message("ScritchUI: Win10 DPI not found!");
+		return SJME_JNI_FALSE;
+	}
+	
+	/* Try every single handle! */
+	if (TRUE != proc(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
+		if (TRUE != proc(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE))
+			if (TRUE != proc(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE))
+				return SJME_JNI_FALSE;
+	
+	/* One of the checks passed! */
+	return SJME_JNI_TRUE;
+}
+
+static sjme_jboolean sjme_scritchui_win32_dpiWin8(
+	sjme_attrInNotNull sjme_scritchui inState)
+{
+	sjme_scritchui_win32_intern_SPDA proc;
+	
+	if (inState == NULL || inState->implIntern->dllProc == NULL)
+		return SJME_JNI_FALSE;
+	
+	/* Find procedure. */
+	if (sjme_error_is(inState->implIntern->dllProc(inState,
+		SJME_SCRITCHUI_WIN32_SHCORE32_DLL,
+		"SetProcessDpiAwarenessContext",
+		(PROC*)&proc)))
+	{
+		sjme_message("ScritchUI: Win8 DPI not found!");
+		return SJME_JNI_FALSE;
+	}
+	
+	/* Try every single type! */
+	if (!proc(2))
+		if (!proc(1))
+			return SJME_JNI_FALSE;
+	
+	/* One of the checks passed! */
+	return SJME_JNI_TRUE;
+}
+
+static sjme_jboolean sjme_scritchui_win32_dpiWinVista(
+	sjme_attrInNotNull sjme_scritchui inState)
+{
+	sjme_scritchui_win32_intern_SPDPIA proc;
+	
+	if (inState == NULL || inState->implIntern->dllProc == NULL)
+		return SJME_JNI_FALSE;
+	
+	/* Find procedure. */
+	if (sjme_error_is(inState->implIntern->dllProc(inState,
+		SJME_SCRITCHUI_WIN32_USER32_DLL,
+		"SetProcessDPIAware",
+		(PROC*)&proc)))
+	{
+		sjme_message("ScritchUI: WinVista DPI not found!");
+		return SJME_JNI_FALSE;
+	}
+	
+	/* For Vista, there is only one possible function. */
+	if (!proc())
+		return SJME_JNI_FALSE;
+	return SJME_JNI_TRUE;
+}
 
 static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
 	sjme_attrInNullable sjme_thread_parameter anything)
@@ -114,6 +198,12 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
 	state = (sjme_scritchui)anything;
 	if (state == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+	
+	/* ScritchUI on Win32 is DPI aware! Try setting it... */
+	if (!sjme_scritchui_win32_dpiWin10(state))
+		if (!sjme_scritchui_win32_dpiWin8(state))
+			if (!sjme_scritchui_win32_dpiWinVista(state))
+				sjme_message("ScritchUI: Not DPI Aware");
 	
 	/* Windows specific bugs. */
 	state->bugs.noContentSizeWhenVisible = SJME_JNI_TRUE;

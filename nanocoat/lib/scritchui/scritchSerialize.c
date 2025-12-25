@@ -351,6 +351,14 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->containerAdd.inContainer,
 		as->containerAdd.addComponent));
 		
+	SJME_SDU_CASE(containerGetFrame,
+		SJME_SCRITCHUI_SERIAL_UI_CONTAINER_GET_FRAME,
+		(state,
+		as->containerGetFrame.inContainer,
+		as->containerGetFrame.contentSize,
+		as->containerGetFrame.frameBound,
+		as->containerGetFrame.contentBound));
+		
 	SJME_SDU_CASE(containerRemove,
 		SJME_SCRITCHUI_SERIAL_UI_CONTAINER_REMOVE,
 		(state,
@@ -495,6 +503,14 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_UI_PANEL_NEW,
 		(state,
 		as->panelNew.outPanel));
+
+	SJME_SDU_CASE(screenGetBounds,
+		SJME_SCRITCHUI_SERIAL_UI_SCREEN_GET_BOUNDS,
+		(state,
+		as->screenGetBounds.inScreen,
+		as->screenGetBounds.forComponent,
+		as->screenGetBounds.pixelBound,
+		as->screenGetBounds.mmBound));
 
 	SJME_SDU_CASE(screenSetListener,
 		SJME_SCRITCHUI_SERIAL_UI_SCREEN_SET_LISTENER,
@@ -1244,6 +1260,27 @@ sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 	SJME_SDX_WAIT;
 }
 
+	
+sjme_errorCode sjme_scritchui_coreSerial_containerGetFrame(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound)
+{
+	SJME_SDU_CHUNK(containerGetFrame,
+		SJME_SCRITCHUI_SERIAL_UI_CONTAINER_GET_FRAME,
+		(inState, inContainer, contentSize, frameBound, contentBound));
+		
+	SJME_SDX_PASS(inContainer);
+	SJME_SDX_PASS(contentSize);
+	SJME_SDX_PASS(frameBound);
+	SJME_SDX_PASS(contentBound);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
 sjme_errorCode sjme_scritchui_coreSerial_containerRemove(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
@@ -1631,6 +1668,26 @@ sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 		
 	SJME_SDX_PASS(inListener);
 	SJME_SDX_PASS(copyFrontEnd);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_screenGetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound)
+{
+	SJME_SDU_CHUNK(screenGetBounds,
+		SJME_SCRITCHUI_SERIAL_UI_SCREEN_GET_BOUNDS,
+		(inState, inScreen, forComponent, pixelBound, mmBound));
+		
+	SJME_SDX_PASS(inScreen);
+	SJME_SDX_PASS(forComponent);
+	SJME_SDX_PASS(pixelBound);
+	SJME_SDX_PASS(mmBound);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;

@@ -26,6 +26,9 @@ sjme_errorCode sjme_scritchui_fb_scrollPanelNew(
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	
+	if (wrappedState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Create a wrapped panel. */
 	wrappedPanel = NULL;
 	if (sjme_error_is(error = wrappedState->apiInThread->scrollPanelNew(

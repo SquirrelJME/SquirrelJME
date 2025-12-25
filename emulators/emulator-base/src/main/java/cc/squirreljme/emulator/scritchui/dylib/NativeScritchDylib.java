@@ -338,6 +338,22 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Gets the frame of a container.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __containerP The container pointer.
+	 * @param __contentSize The content size.
+	 * @param __frameBound The frame bound.
+	 * @param __contentBound The content bound.
+	 * @throws MLECallError On null arguments and/or if the container is not
+	 * valid.
+	 * @since 2025/12/23
+	 */
+	static native void __containerGetFrame(long __stateP, long __containerP,
+		int[] __contentSize, int[] __frameBound, int[] __contentBound)
+		throws MLECallError;
+	
+	/**
 	 * Removes all items from the container.
 	 *
 	 * @param __stateP The state pointer.
@@ -615,6 +631,22 @@ public final class NativeScritchDylib
 	 * @since 2024/04/06
 	 */
 	static native long __panelNew(long __stateP);
+	
+	/**
+	 * Gets the bounds of the screen.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __screenP The screen pointer.
+	 * @param __forP The for pointer.
+	 * @param __pixels The resultant bounds.
+	 * @param __mm Millimeter bounds.
+	 * @throws MLECallError On null arguments and/or if the screen is not
+	 * valid.
+	 * @since 2025/12/23
+	 */
+	static native void __screenGetBounds(long __stateP, long __screenP,
+		long __forP, int[] __pixels, int[] __mm)
+		throws MLECallError;
 	
 	/**
 	 * Returns the screen ID.
