@@ -192,9 +192,6 @@ sjme_errorCode sjme_scritchui_gtk2_windowGetFrame(
 		gtk_widget_get_size_request(menuBar, &menuW, &menuH);
 		gtk_widget_get_allocation(menuBar, &alloc);
 		
-		sjme_message("GtkMenu Size/Alloc [%d, %d] + [%d, %d]",
-			menuW, menuH, alloc.width, alloc.height);
-		
 		/* Use the greater of the two bounds for the menu. */
 		menuH = sjme_max(menuH, alloc.height);
 	}
@@ -392,12 +389,13 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
 	/* Place into the table at the top. */
 	if (gtkMenuBar != NULL)
 	{
-		/* Attach to top of table. */
+		/* Attach to top of table, do not allow the menu to shrink on the */
+		/* Y axis. */
 		gtk_table_attach(GTK_TABLE(gtkTable),
 			GTK_WIDGET(gtkMenuBar),
 			0, 1, 0, 1,
 			GTK_FILL | GTK_EXPAND,
-			GTK_SHRINK,
+			0,
 			0, 0);
 		
 		/* Show the menu bar. */
