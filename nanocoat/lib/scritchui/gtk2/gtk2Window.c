@@ -71,6 +71,36 @@ static gboolean sjme_scritchui_gtk2_eventVisibilityNotify(
 	return FALSE;
 }
 
+static gboolean sjme_scritchui_gtk2_eventWindowExpose(
+	GtkWindow* gtkWindow,
+	GdkEventExpose* event,
+	gpointer data)
+{
+	sjme_scritchui inState;
+	sjme_scritchui_uiWindow inWindow;
+	
+	if (event == NULL)
+		return FALSE;
+	
+	/* Disconnect this signal, we only want to call this once. */
+	g_signal_handlers_disconnect_by_func(gtkWindow,
+		(gpointer)sjme_scritchui_gtk2_eventWindowExpose, data);
+	
+	/* These must be valid. */
+	inWindow = data;
+	if (gtkWindow == NULL || data == NULL)
+		return FALSE;
+	
+	/* Set minimum window size, if specified. */
+	inState = inWindow->component.common.state;
+	if (inWindow->min.width != 0 && inWindow->min.height != 0)
+		return inState->apiInThread->windowContentMinimumSize(
+			inState, inWindow, inWindow->min.width, inWindow->min.height);
+	
+	/* Always continue handling. */
+	return FALSE;
+}
+
 static void sjme_scritchui_gtk2_nukeMenuBox(GtkWidget* widget,
 	gpointer gtkMenuBox)
 {
@@ -161,6 +191,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowGetFrame(
 		memset(&alloc, 0, sizeof(alloc));
 		gtk_widget_get_size_request(menuBar, &menuW, &menuH);
 		gtk_widget_get_allocation(menuBar, &alloc);
+		
+		sjme_message("GtkMenu Size/Alloc [%d, %d] + [%d, %d]",
+			menuW, menuH, alloc.width, alloc.height);
 		
 		/* Use the greater of the two bounds for the menu. */
 		menuH = sjme_max(menuH, alloc.height);
@@ -323,7 +356,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar)
 {
+	sjme_errorCode error;
 	GtkWindow* gtkWindow;
+	GdkWindow* windowGdkWindow; 
 	GtkMenuBar* gtkMenuBar;
 	GtkMenuBar* gtkExistingBar;
 	GtkTable* gtkTable;
@@ -373,6 +408,18 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
 		
 		/* Reference the bar as it is being used. */
 		g_object_ref(gtkMenuBar);
+		
+		/* If a minimum size is set and the window is visible, this */
+		/* needs to be recalculated. */
+		windowGdkWindow = gtk_widget_get_window(GTK_WIDGET(gtkWindow));
+		if (windowGdkWindow != NULL &&
+			inWindow->min.width != 0 && inWindow->min.height != 0)
+			if (gdk_window_is_viewable(windowGdkWindow) ||
+				gdk_window_is_visible(windowGdkWindow))
+				if (sjme_error_is(error = inState->apiInThread
+					->windowContentMinimumSize(inState, inWindow,
+						inWindow->min.width, inWindow->min.height)))
+					return sjme_error_default(error);
 	}
 	
 	/* Success? */
@@ -384,7 +431,10 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInValue sjme_jboolean isVisible)
 {
+#define SJME_SUI_GTK2_MAX_ATTEMPTS 256
 	GtkWindow* gtkWindow;
+	GdkWindow* gdkWindow;
+	int attempt;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -392,12 +442,30 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 	/* Recover window. */
 	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
 	
-	/* Show or hide it. */
-	if (isVisible)
-		gtk_window_present(GTK_WINDOW(gtkWindow));
-	else
+	/* Hide or show it. */
+	if (!isVisible)
 		gtk_widget_hide(GTK_WIDGET(gtkWindow));
+	else
+	{
+		/* When the window is exposed, set the minimum size here. */
+		g_signal_connect(gtkWindow, "expose-event",
+			G_CALLBACK(sjme_scritchui_gtk2_eventWindowExpose), inWindow);
+		
+		/* Present the window */
+		gtk_window_present(GTK_WINDOW(gtkWindow));
+		
+		/* Wait for the window to be visible and viewable, we need to do */
+		/* this as there can be a race condition where the window is not */
+		/* yet fully on screen, which can break things on remote/indirect */
+		/* connections. */
+		gdkWindow = gtk_widget_get_window(GTK_WIDGET(gtkWindow));
+		for (attempt = 0; attempt < SJME_SUI_GTK2_MAX_ATTEMPTS &&
+			(!gdk_window_is_viewable(gdkWindow) || 
+				!gdk_window_is_visible(gdkWindow)); attempt++)
+			sjme_thread_yield();
+	}
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+#undef SJME_SUI_GTK2_MAX_ATTEMPTS
 }
