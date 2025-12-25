@@ -21,6 +21,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayIdentityScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
@@ -240,12 +241,19 @@ class __ExecDisplaySetCurrent__
 		if (showNow == null || showNowState == null)
 			return;
 		
+		// If full screen is being desired, we only want to set it when the
+		// display is in identity scale mode. Otherwise, if we do not then
+		// compatibility framing and scaling will break along with providing
+		// a very inconsistent experience.
+		DisplayScale scale = display._scale;
+		boolean isFull = ((scale instanceof DisplayIdentityScale) &&
+			showNowState.desireFullScreen());
+		
 		// Get the needed panel and add it in
 		panel = showNowState.scritchPanel();
 		containerApi.containerAdd(window, panel);
 		
 		// Set the frame's preferred and minimum sizes for the content area
-		DisplayScale scale = display._scale;
 		Debugging.debugNote("Screen [%d, %d] <- %s",
 			scale.textureMaxW(), scale.textureMaxH(),
 			scale.getClass());

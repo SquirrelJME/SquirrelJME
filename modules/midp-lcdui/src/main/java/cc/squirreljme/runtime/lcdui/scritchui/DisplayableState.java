@@ -90,7 +90,22 @@ public final class DisplayableState
 	}
 	
 	/**
-	 * Sets the full-screen is desired.
+	 * Is full-screen is desired?
+	 *
+	 * @return If fullscreen is desired or not.
+	 * @since 2025/12/23
+	 */
+	@SquirrelJMEVendorApi
+	public boolean desireFullScreen()
+	{
+		synchronized (this)
+		{
+			return this._desireFullScreen;
+		}
+	}
+	
+	/**
+	 * Sets if full-screen is desired.
 	 *
 	 * @param __isFull Should full-screen be used?
 	 * @since 2025/12/23

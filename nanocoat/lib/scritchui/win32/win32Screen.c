@@ -81,27 +81,6 @@ static BOOL CALLBACK sjme_scritchui_win32_displayQuery(
 	return TRUE;
 }
 
-static sjme_jboolean sjme_scritchui_win32_dpiWin10(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull HWND hWnd)
-{
-	sjme_scritchui_win32_intern_GDFW proc;
-	
-	if (inState == NULL || inState->implIntern->dllProc == NULL ||
-		hWnd == NULL)
-		return 0;
-	
-	/* Find procedure. */
-	if (sjme_error_is(inState->implIntern->dllProc(inState,
-		SJME_SCRITCHUI_WIN32_USER32_DLL,
-		"GetDpiForWindow",
-		(PROC*)&proc)))
-		return 0;
-	
-	/* Forward call! */
-	return proc(hWnd);
-}
-
 static sjme_jboolean sjme_scritchui_win32_dpiWin8(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull HMONITOR hMonitor,
@@ -122,7 +101,7 @@ static sjme_jboolean sjme_scritchui_win32_dpiWin8(
 		return SJME_JNI_FALSE;
 	
 	/* Forward call! */
-	if (S_OK == proc(hMonitor, 2, dpiX, dpiY))
+	if (S_OK == proc(hMonitor, sjme_scritchui_win32_MDT_RAW_DPI, dpiX, dpiY))
 		return SJME_JNI_TRUE;
 	return SJME_JNI_FALSE;
 }
@@ -160,7 +139,7 @@ sjme_errorCode sjme_scritchui_win32_screenGetBounds(
 		hMonitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTOPRIMARY);
 		
 		/* Get the DPI for this window. */
-		check = sjme_scritchui_win32_dpiWin10(inState, hWnd);
+		check = inState->implIntern->dpiWin10(inState, hWnd);
 		if (check > 0)
 		{
 			dpiX = check;

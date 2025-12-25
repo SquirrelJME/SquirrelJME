@@ -966,6 +966,27 @@ sjme_errorCode sjme_scritchui_win32_intern_dllProc(
 	return SJME_ERROR_NONE;
 }
 
+sjme_jint sjme_scritchui_win32_intern_dpiWin10(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull HWND hWnd)
+{
+	sjme_scritchui_win32_intern_GDFW proc;
+
+	if (inState == NULL || inState->implIntern->dllProc == NULL ||
+		hWnd == NULL)
+		return 0;
+
+	/* Find procedure. */
+	if (sjme_error_is(inState->implIntern->dllProc(inState,
+		SJME_SCRITCHUI_WIN32_USER32_DLL,
+		"GetDpiForWindow",
+		(PROC*)&proc)))
+		return 0;
+
+	/* Forward call! */
+	return proc(hWnd);
+}
+
 sjme_errorCode sjme_scritchui_win32_intern_getLastError(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_errorCode ifOkay)

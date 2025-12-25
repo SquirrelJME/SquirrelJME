@@ -459,9 +459,6 @@ int vsnprintf(
 	#define strcasecmp stricmp
 #endif
 	
-/* Force ordering. */
-#include "sjme/stdTypes.h"
-	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

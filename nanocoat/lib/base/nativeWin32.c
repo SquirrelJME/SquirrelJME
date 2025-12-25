@@ -431,7 +431,7 @@ sjme_errorCode sjme_nal_default_threadYield(void)
 #endif
 
 /** @code sjme_nal_win32_SHGetFolderPathA @endcode . */
-typedef HRESULT WINAPI (*sjme_nal_win32_SHGetFolderPathA)(HWND,
+typedef HRESULT (WINAPI *sjme_nal_win32_SHGetFolderPathA)(HWND,
 	INT, HANDLE, DWORD, LPSTR);
 
 sjme_errorCode sjme_nal_default_userHome(

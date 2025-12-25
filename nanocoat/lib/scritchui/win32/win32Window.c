@@ -100,7 +100,8 @@ sjme_errorCode sjme_scritchui_win32_windowGetFrame(
 	RECT winRect, clientRect;
 	POINT clientOrig;
 	sjme_jboolean notReady;
-	sjme_jint menuH;
+	sjme_jint menuH, dpi;
+	sjme_scritchui_win32_intern_GSMFD smDpi;
 	
 	if (inState == NULL || inContainer == NULL ||
 		(contentSize == NULL && frameBound == NULL && contentBound == NULL))
@@ -153,20 +154,9 @@ sjme_errorCode sjme_scritchui_win32_windowGetFrame(
 	resultContent.s.y = clientOrig.y;
 	resultContent.d.width = abs(clientRect.right - clientRect.left);
 	resultContent.d.height = abs(clientRect.bottom - clientRect.top);
-	
-	/* Need to cut out the space used by the menu bar? */
-	if (inWindow->menuBar != NULL)
-	{
-		/* Get the menu size. */
-		menuH = GetSystemMetrics(SM_CYMENU);
-	
-		/* Is there a menu to consider? */
-		if (menuH > 0)
-		{
-			resultContent.s.y += menuH;
-			resultContent.d.height -= menuH;
-		}
-	}
+
+	/* The menu bar is not considered part of the client area unlike in */
+	/* other windowing systems such as GTK. */
 	
 	/* Give the results. */
 	if (frameBound != NULL)

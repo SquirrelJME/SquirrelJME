@@ -58,7 +58,7 @@ final class __ExecCanvasFullScreen__
 		DisplayState current = state.currentDisplay();
 		if (current != null)
 			new __ExecDisplaySetCurrent__(state.scritchApi(),
-				current.display(), canvas, null)
+					current.display(), canvas, null)
 				.__refresh(true, true);
 	}
 }

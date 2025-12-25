@@ -103,6 +103,7 @@ static const sjme_scritchui_implInternFunctions
 	sjme_sm(.windowProc, sjme_scritchui_win32_intern_windowProc),
 	sjme_sm(.windowProcWin32, (PROC)sjme_scritchui_win32_windowProcForward),
 	sjme_sm(.dllProc, sjme_scritchui_win32_intern_dllProc),
+	sjme_sm(.dpiWin10, sjme_scritchui_win32_intern_dpiWin10)
 };
 
 static sjme_jboolean sjme_scritchui_win32_dpiWin10(
@@ -124,9 +125,9 @@ static sjme_jboolean sjme_scritchui_win32_dpiWin10(
 	}
 	
 	/* Try every single handle! */
-	if (!proc(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
-		if (!proc(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE))
-			if (!proc(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE))
+	if (TRUE != proc(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
+		if (TRUE != proc(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE))
+			if (TRUE != proc(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE))
 				return SJME_JNI_FALSE;
 	
 	/* One of the checks passed! */

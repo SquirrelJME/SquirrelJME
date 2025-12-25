@@ -1359,9 +1359,6 @@ extern "C" {
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"
 	
-/** Standard SquirrelJME types. */
-#include "sjme/stdTypes.h"
-	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
