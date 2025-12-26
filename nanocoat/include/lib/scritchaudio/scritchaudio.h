@@ -544,7 +544,7 @@ typedef struct sjme_scritchaudio_implFunctions
 	/** Api initialization. */
 	sjme_scritchaudio_apiInitFunc apiInit;
 	
-	/** Disconnects a connection. */
+	/** Notification that a disconnection is about to occur. */
 	sjme_scritchaudio_disconnectFunc disconnect;
 	
 	/** Iterates the audio loop. */
@@ -637,7 +637,10 @@ typedef struct sjme_scritchaudio_clock
 struct sjme_scritchaudioBase
 {
 	/** The lock for audio streams and otherwise. */
-	sjme_thread_spinLock lock;
+	sjme_thread_spinLock baseLock;
+	
+	/** The actual lock which should be used. */
+	sjme_thread_spinLock* lock;
 	
 	/** The allocation pool to use. */
 	sjme_alloc_pool pool;
@@ -774,9 +777,6 @@ struct sjme_scritchaudio_streamBase
 		/** The handle to the device. */
 		void* handle;
 	} data;
-
-	/** The shared stream lock. */
-	sjme_thread_spinLock sharedLock;
 };
 
 struct sjme_scritchaudio_sourceBase
@@ -872,6 +872,10 @@ extern sjme_attrExport const sjme_scritchaudio_dylibApiFunc
 /** Casts to a @link sjme_scritchaudio_connection @endlink . */
 #define SJME_SAU_CAST_CONNECTION(x) \
 	((sjme_scritchaudio_connection)(x))
+
+/** Casts to a @link sjme_scritchaudio_stream @endlink . */
+#define SJME_SAU_CAST_STREAM(x) \
+	((sjme_scritchaudio_stream)(x))
 	
 /*--------------------------------------------------------------------------*/
 

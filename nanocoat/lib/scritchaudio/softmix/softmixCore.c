@@ -26,7 +26,7 @@
 const sjme_scritchaudio_implFunctions sjme_scritchaudio_softmixFunctions =
 {
 	sjme_sm(.apiInit, sjme_scritchaudio_softmix_apiInit),
-	sjme_sm(.disconnect, sjme_scritchaudio_softmix_disconnect),
+	sjme_sm(.disconnect, NULL),
 	sjme_sm(.loopIterate, sjme_scritchaudio_softmix_loopIterate),
 	sjme_sm(.queryMidiPorts, sjme_scritchaudio_softmix_queryMidiPorts),
 	sjme_sm(.sourceAttach, sjme_scritchaudio_softmix_sourceAttach),
@@ -96,14 +96,6 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_softmix_poll(
 
 	/* Finished. */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
-}
-
-sjme_errorCode sjme_scritchaudio_softmix_disconnect(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
-{
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_scritchaudio_softmix_apiInit(

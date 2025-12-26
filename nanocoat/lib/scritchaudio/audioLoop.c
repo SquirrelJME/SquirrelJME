@@ -134,14 +134,14 @@ sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
 	
 	/* Lock the shared lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&inStream->sharedLock)))
+		inState->lock)))
 		return sjme_error_default(error);
 	
 	/* Run the loop. */
 	error = inState->impl->loopIterate(inState, inStream, renderInfo);
 
 	/* Release the lock. */
-	if (sjme_error_is(sjme_thread_spinLockRelease(&inStream->sharedLock,
+	if (sjme_error_is(sjme_thread_spinLockRelease(inState->lock,
 		NULL)))
 		return sjme_error_defaultOr(error, SJME_ERROR_ILLEGAL_STATE);
 

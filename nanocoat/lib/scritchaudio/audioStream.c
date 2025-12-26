@@ -150,7 +150,7 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 		goto fail_allocResult;
 
 	/* Set stream details. */
-	result->connection.lock = &result->sharedLock;
+	result->connection.lock = inState->lock;
 	result->connection.inState = inState;
 	result->connection.type = SJME_SCRITCHAUDIO_CONN_STREAM;
 	result->format = inFormat;

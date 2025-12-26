@@ -42,10 +42,6 @@ extern "C"
 sjme_errorCode sjme_scritchaudio_winmm_apiInit(
 	sjme_attrInNotNull sjme_scritchaudio inState);
 
-sjme_errorCode sjme_scritchaudio_winmm_disconnect(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn);
-
 sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,

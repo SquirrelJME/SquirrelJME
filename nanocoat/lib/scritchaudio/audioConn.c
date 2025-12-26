@@ -173,6 +173,11 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 	sharedLock = inConn->lock;
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(sharedLock)))
 		return sjme_error_default(error);
+	
+	/* Notify the audio system that a disconnect is about to happen. */
+	if (inState->impl->disconnect != NULL)
+		if (sjme_error_is(error = inState->impl->disconnect(inState, inConn)))
+			goto fail_notifyDisconnect;
 
 	/* Find the first available peer. */
 	for (i = 0, n = 0;;)
@@ -229,6 +234,7 @@ skip_releaseLock:
 	/* Success! */
 	return SJME_ERROR_NONE;
 	
+fail_notifyDisconnect:
 fail_peerDisconnect:
 	sjme_thread_spinLockRelease(sharedLock, NULL);
 	return sjme_error_default(error);

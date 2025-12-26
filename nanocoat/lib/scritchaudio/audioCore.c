@@ -64,7 +64,7 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
 	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd,
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
-	sjme_attrInNotNull sjme_scritchaudio wrappedStated,
+	sjme_attrInNotNull sjme_scritchaudio wrappedState,
 	sjme_attrInValue sjme_jboolean isHigher,
 	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread)
 {
@@ -103,14 +103,24 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	result->nal = nal;
 	result->bindAudioThread = bindAudioThread;
 
-	/* Set clock base, if wrapped use that as it was first. */
-	if (wrappedStated != NULL)
-		memmove(&result->clock, &wrappedStated->clock,
+	/* Is this wrapped? */
+	if (wrappedState != NULL)
+	{
+		/* Use the wrapped lock. */
+		result->lock = &wrappedState->baseLock;
+		
+		/* Set clock base, if wrapped use that as it was first. */
+		memmove(&result->clock, &wrappedState->clock,
 			sizeof(result->clock));
-
-	/* Otherwise, derive from the monotonic clock. */
+	}
+	
+	/* This is a primary driver. */
 	else
 	{
+		/* Use the base lock. */
+		result->lock = &result->baseLock;
+		
+		/* Otherwise, derive from the monotonic clock. */
 		result->nal->nanoTime(&result->clock.clockBase);
 		memmove(&result->clock.clock, &result->clock.clockBase,
 			sizeof(result->clock.clock));
@@ -127,15 +137,15 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 		sjme_frontEnd_copy(&result->frontEnd, initFrontEnd);
 
 	/* Bind wrapped states together? */
-	if (wrappedStated != NULL)
+	if (wrappedState != NULL)
 	{
 		/* Bind each other. */
-		result->wrappedState = wrappedStated;
-		sjme_atomic_s(sjme_pointer, &wrappedStated->topState, result);
+		result->wrappedState = wrappedState;
+		sjme_atomic_s(sjme_pointer, &wrappedState->topState, result);
 
 		/* Take the wrapped state's thread information, if applicable. */
-		result->loopThread = wrappedStated->loopThread;
-		result->loopThreadId = wrappedStated->loopThreadId;
+		result->loopThread = wrappedState->loopThread;
+		result->loopThreadId = wrappedState->loopThreadId;
 	}
 
 	/* Call inner initialization. */
