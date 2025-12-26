@@ -145,6 +145,7 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	/* Mark loop thread as ready. */
 	sjme_atomic_s(sjme_jint, &result->loopThreadReady, 1);
 
+#if 0
 	/* Only create the stream when this is the higher level layer. */
 	if (isHigher)
 	{
@@ -193,6 +194,7 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 		/* Set the only audio stream. */
 		result->stream = onlyStream;
 	}
+#endif
 
 	/* Success! */
 	*outState = result;

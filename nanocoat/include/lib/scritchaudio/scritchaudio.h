@@ -689,6 +689,9 @@ struct sjme_scritchaudioBase
 
 	/** Called to bind the audio thread. */
 	sjme_thread_mainFunc bindAudioThread;
+
+	/** The underlying stream, if this uses double-layered streaming. */
+	sjme_scritchaudio_stream underStream;
 };
 
 /**

@@ -9,6 +9,7 @@
 
 #include "lib/scritchaudio/softmix/softmixIntern.h"
 #include "sjme/fixed.h"
+#include "sjme/util.h"
 
 static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_renderSource(
 	sjme_attrInNotNull sjme_scritchaudio inState,
@@ -256,6 +257,91 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerDisconnect(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_scritchaudio_softmix_underlay(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInOutNotNull sjme_scritchaudio_stream inOutStream,
+	sjme_attrInNotNull sjme_lpcstr inName,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels)
+{
+	sjme_errorCode error;
+	sjme_jint i, n;
+	sjme_list(sjme_scritchaudio_source)* sources;
+	sjme_scritchaudio_source source;
+	sjme_scritchaudio_format bestFormat;
+	sjme_scritchaudio_rate bestRate;
+	sjme_scritchaudio_channels bestChannels;
+	sjme_scritchaudio wrappedState;
+	sjme_scritchaudio_stream underStream;
+	
+	if (inState == NULL || inOutStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover the wrapped state. */
+	wrappedState = inState->wrappedState;
+	if (wrappedState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Start with the worst format, it only gets better. */
+	bestFormat = SJME_SCRITCHAUDIO_FORMAT_BYTE_U8;
+	bestRate = SJME_SCRITCHAUDIO_RATE_HZ_8000;
+	bestChannels = SJME_SCRITCHAUDIO_CHANNELS_MONO;
+	
+	/* Do the input formats improve on the worst format? */
+	if (inFormat != SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
+		bestFormat = sjme_max(bestFormat, inFormat);
+	if (inRate != SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
+		bestRate = sjme_max(bestRate, inRate);
+	if (inChannels != SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
+		bestChannels = sjme_max(bestChannels, inChannels);
+	
+	/* Determine the best format based on all the currently connected */
+	/* streams, so we can choose a better format. */
+	if (inState->stream != NULL && inState->stream->sources != NULL)
+	{
+		/* Go through each attached source. */
+		sources = inState->stream->sources;
+		for (i = 0, n = sources->length; i < n; i++)
+		{
+			source = sources->elements[i];
+			if (source == NULL)
+				continue;
+			
+			/* Does this source use a better format? */
+			if (source->format != SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
+				bestFormat = sjme_max(bestFormat, source->format);
+			if (source->rate != SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
+				bestRate = sjme_max(bestRate, source->rate);
+			if (source->channels != SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
+				bestChannels = sjme_max(bestChannels, source->channels);
+		}
+	}
+	
+	/* Does the underlying stream exist? */
+	underStream = inState->underStream;
+	if (underStream != NULL)
+	{
+		/* If it does, do we need to reopen it? */
+		if (underStream->format != bestFormat ||
+			underStream->rate != bestRate ||
+			underStream->channels != bestChannels)
+		{
+			/* Destroy it! */
+			inState->underStream = NULL;
+			if (sjme_error_is(error = wrappedState->api->disconnect(
+				wrappedState, NULL)))
+				return sjme_error_default(error);
+			
+			/* Destroyed! */
+			underStream = NULL;
+		}
+	}
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
@@ -336,6 +422,22 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 			wrappedState, &wrapped, inName, inFormat, inRate, inChannels)) ||
 			wrapped == NULL)
 		{
+#if 0
+			/* Opening more streams than what the sound card supports, so */
+			/* we will have to do mixing ourselves. */
+			if (error == SJME_ERROR_AUDIO_NO_RESOURCES)
+			{
+				/* Try recreating the underlying stream. */
+				if (sjme_error_is(error = sjme_scritchaudio_softmix_recreate(
+					inState, inOutStream, inName, inFormat, inRate,
+					inChannels, &wrapped)))
+					return sjme_error_default(error);
+				
+				if (wrapped != NULL)
+					break;
+			}
+#endif
+			
 			/* Only check against unsupported format. */
 			if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
 				return sjme_error_default(error);
