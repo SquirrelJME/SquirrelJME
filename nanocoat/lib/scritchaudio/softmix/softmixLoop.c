@@ -30,9 +30,13 @@ sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
 	memmove(&wrappedState->clock.clock, &inState->clock.clock,
 		sizeof(inState->clock.clock));
 
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Go directly to the intern handler. */
 	memset(&newInfo, 0, sizeof(newInfo));
 	newInfo.parent = renderInfo;
 	return wrappedState->intern->loopIterate(wrappedState,
 		inStream->data.wrapped, &newInfo);
+#endif
 }

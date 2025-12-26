@@ -689,9 +689,16 @@ struct sjme_scritchaudioBase
 
 	/** Called to bind the audio thread. */
 	sjme_thread_mainFunc bindAudioThread;
-
-	/** The underlying stream, if this uses double-layered streaming. */
-	sjme_scritchaudio_stream underStream;
+	
+	/** Underlying streams/connections if this is double-layered. */
+	struct
+	{
+		/** The underlying stream. */
+		sjme_scritchaudio_stream stream;
+		
+		/** The underlying source. */
+		sjme_scritchaudio_source source;
+	} under;
 };
 
 /**
@@ -766,12 +773,6 @@ struct sjme_scritchaudio_streamBase
 
 		/** The handle to the device. */
 		void* handle;
-		
-		/** The stream this wrapped. */
-		sjme_scritchaudio_stream wrapped;
-
-		/** The source stream for mixing. */
-		sjme_scritchaudio_source wrappedSource;
 	} data;
 
 	/** The shared stream lock. */
@@ -868,6 +869,10 @@ extern sjme_attrExport const sjme_scritchaudio_dylibApiFunc
 #define SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(x) \
 	SJME_SCRITCHANY_DYLIB_SYMBOL_DECLARE(audio, x)
 
+/** Casts to a @link sjme_scritchaudio_connection @endlink . */
+#define SJME_SAU_CAST_CONNECTION(x) \
+	((sjme_scritchaudio_connection)(x))
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

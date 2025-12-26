@@ -184,6 +184,9 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerNone(
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Is this a wrapped connection we know about? */
 	wrappedConn = NULL;
 	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM)
@@ -192,6 +195,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerNone(
 	else if (inConn->type == SJME_SCRITCHAUDIO_CONN_SOURCE)
 		wrappedConn = SJME_AS_AUDIO_CONN(
 			SJME_AS_AUDIO_SOURCE(inConn)->data.wrapped);
+#endif
 
 	/* Do we know about this connection type? */
 	if (wrappedConn != NULL)
@@ -228,6 +232,9 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerDisconnect(
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Is this a wrapped connection we know about? */
 	wrappedConn = NULL;
 	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM)
@@ -245,6 +252,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerDisconnect(
 	else if (inPeer->type == SJME_SCRITCHAUDIO_CONN_SOURCE)
 		wrappedPeer = SJME_AS_AUDIO_CONN(
 			SJME_AS_AUDIO_SOURCE(inPeer)->data.wrapped);
+#endif
 
 	/* Do we know about this connection type? */
 	/* Forward disconnect signal to the lower level. */
@@ -263,7 +271,8 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
-	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels)
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels,
+	sjme_attrOutNotNull sjme_scritchaudio_stream* outUnderStream)
 {
 	sjme_errorCode error;
 	sjme_jint i, n;
@@ -274,8 +283,9 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 	sjme_scritchaudio_channels bestChannels;
 	sjme_scritchaudio wrappedState;
 	sjme_scritchaudio_stream underStream;
+	sjme_scritchaudio_source underSource;
 	
-	if (inState == NULL || inOutStream == NULL)
+	if (inState == NULL || inOutStream == NULL || outUnderStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover the wrapped state. */
@@ -319,27 +329,97 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 	}
 	
 	/* Does the underlying stream exist? */
-	underStream = inState->underStream;
+	underStream = inState->under.stream;
+	underSource = inState->under.source;
 	if (underStream != NULL)
 	{
-		/* If it does, do we need to reopen it? */
+		/* If it does, is the format not the best one desired? */
 		if (underStream->format != bestFormat ||
 			underStream->rate != bestRate ||
 			underStream->channels != bestChannels)
 		{
-			/* Destroy it! */
-			inState->underStream = NULL;
+			/* Disconnect the source if there is one. */
+			if (underSource != NULL)
+			{
+				/* Disconnect the source. */
+				inState->under.source = NULL;
+				if (sjme_error_is(error = wrappedState->api->disconnect(
+					wrappedState, SJME_SAU_CAST_CONNECTION(underSource))))
+					return sjme_error_default(error);
+				
+				/* No longer connected. */
+				underSource = NULL;
+			}
+			
+			/* Disconnect the stream. */
+			inState->under.stream = NULL;
 			if (sjme_error_is(error = wrappedState->api->disconnect(
-				wrappedState, NULL)))
+				wrappedState, SJME_SAU_CAST_CONNECTION(underStream))))
 				return sjme_error_default(error);
 			
 			/* Destroyed! */
 			underStream = NULL;
 		}
+		
+		/* If the underlying stream is still here, then it is the same */
+		/* format and we need not reopen it. */
+		if (underStream != NULL)
+		{
+			*outUnderStream = underStream;
+			return SJME_ERROR_NULL_ARGUMENTS;
+		}
 	}
-
+	
+	/* Does the underlying system support this exact best case? */
+	underStream = NULL;
+	if (sjme_error_is(error = wrappedState->intern->streamCreate(wrappedState,
+		&underStream, "SquirrelJMEScritchAudio",
+		bestFormat, bestRate, bestChannels)))
+	{
+		/* Unsupported format is okay, we will just try again. */
+		if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
+			return sjme_error_default(error);
+		
+		/* Since we really have no idea what the sound card supports */
+		/* natively, we really only have the choice of opening a stream */
+		/* with the almost best options possible. Of course, */
+		bestFormat = sjme_max(bestFormat, SJME_SCRITCHAUDIO_FORMAT_INT_S32);
+		bestRate = sjme_max(bestRate, SJME_SCRITCHAUDIO_RATE_HZ_44100);
+		bestChannels = sjme_max(bestChannels,
+			SJME_SCRITCHAUDIO_CHANNELS_STEREO);
+	}
+	
+	/* Try worse and worse formats. */
+	while (underStream == NULL)
+		if (sjme_error_is(error = wrappedState->intern->streamCreate(
+			wrappedState, &underStream, inName,
+			bestFormat, bestRate, bestChannels)))
+		{
+			/* Some other error?. */
+			if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
+				return sjme_error_default(error);
+			
+			/* Reduce the rate. */
+			if (sjme_error_is(error = inState->intern->fallbackNext(
+				inState, bestFormat, bestRate, bestChannels,
+				&inFormat, &inRate, &inChannels)))
+				return sjme_error_default(error);
+		}
+	
+	/* Never got a stream? */
+	if (underStream == NULL)
+		return SJME_ERROR_AUDIO_NO_RESOURCES;
+	
+	/* This stream is valid now. */
+	inState->under.stream = underStream;
+	
+	/* Directly attach to the source for rendering. */
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+	
+	/* Return the created stream. */
+	*outUnderStream = underStream;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
@@ -394,6 +474,9 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* If automatic, choose a format to use. */
 	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
 		inFormat = SJME_SCRITCHAUDIO_FORMAT_INT_S32;
@@ -480,4 +563,5 @@ fail_subSource:
 	}
 	
 	return sjme_error_default(error);
+#endif
 }
