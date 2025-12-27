@@ -1,0 +1,20 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "File support for GCF."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "GF"
+	swmType = JavaMEMidletType.API
+	swmName = "Generic Connection Framework (File Support)"
+	swmVendor = "Stephanie Gawroriski"
+	tags += "j2me"
+}
+
+dependencies
+{
+	api project(":modules:cldc")
+
+	api project(":modules:gcf")
+}

@@ -283,6 +283,12 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_message("softmixUnderlay(%p): Wanting %d %d %d",
+		inState, inFormat, inRate, inChannels);
+#endif
+	
 	/* Start with the worst format, it only gets better. */
 	bestFormat = SJME_SCRITCHAUDIO_FORMAT_BYTE_U8;
 	bestRate = SJME_SCRITCHAUDIO_RATE_HZ_8000;
@@ -335,7 +341,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 				inState->under.source = NULL;
 				if (sjme_error_is(error = wrappedState->api->disconnect(
 					wrappedState, SJME_SAU_CAST_CONNECTION(underSource))))
-					return sjme_error_default(error);
+					goto fail_disconnectSource;
 				
 				/* No longer connected. */
 				underSource = NULL;
@@ -345,7 +351,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 			inState->under.stream = NULL;
 			if (sjme_error_is(error = wrappedState->api->disconnect(
 				wrappedState, SJME_SAU_CAST_CONNECTION(underStream))))
-				return sjme_error_default(error);
+				goto fail_disconnectStream;
 			
 			/* Destroyed! */
 			underStream = NULL;
@@ -356,7 +362,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 		if (underStream != NULL)
 		{
 			*outUnderStream = underStream;
-			return SJME_ERROR_NULL_ARGUMENTS;
+			return SJME_ERROR_NONE;
 		}
 	}
 	
@@ -368,11 +374,12 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 	{
 		/* Unsupported format is okay, we will just try again. */
 		if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
-			return sjme_error_default(error);
+			goto fail_underlayCreate;
 		
 		/* Since we really have no idea what the sound card supports */
 		/* natively, we really only have the choice of opening a stream */
-		/* with the almost best options possible. Of course, */
+		/* with the almost best options possible. Of course, this */
+		/* ultimately could fail in the end. */
 		bestFormat = sjme_max(bestFormat, SJME_SCRITCHAUDIO_FORMAT_INT_S32);
 		bestRate = sjme_max(bestRate, SJME_SCRITCHAUDIO_RATE_HZ_44100);
 		bestChannels = sjme_max(bestChannels,
@@ -387,18 +394,21 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 		{
 			/* Some other error?. */
 			if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
-				return sjme_error_default(error);
+				goto fail_underlayCreate;
 			
 			/* Reduce the rate. */
 			if (sjme_error_is(error = inState->intern->fallbackNext(
 				inState, bestFormat, bestRate, bestChannels,
 				&inFormat, &inRate, &inChannels)))
-				return sjme_error_default(error);
+				goto fail_rateReduce;
 		}
 	
 	/* Never got a stream? */
 	if (underStream == NULL)
-		return SJME_ERROR_AUDIO_NO_RESOURCES;
+	{
+		error = SJME_ERROR_AUDIO_NO_RESOURCES;
+		goto fail_noStream;
+	}
 	
 	/* Directly attach to the source for rendering. */
 	if (sjme_error_is(error = wrappedState->api->sourceAttach(
@@ -411,6 +421,12 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 	inState->under.stream = underStream;
 	inState->under.source = underSource;
 	
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_message("softmixUnderlay(%p): Attached with %d %d %d!",
+		inState, bestFormat, bestRate, bestChannels);
+#endif
+	
 	/* Return the created stream. */
 	*outUnderStream = underStream;
 	return SJME_ERROR_NONE;
@@ -421,6 +437,17 @@ fail_attach:
 	if (underStream != NULL)
 		wrappedState->api->disconnect(wrappedState,
 			SJME_SAU_CAST_CONNECTION(underStream));
+fail_noStream:
+fail_disconnectSource:
+fail_disconnectStream:
+fail_underlayCreate:
+fail_rateReduce:
+	
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_message("softmixUnderlay(%p): Failed with %d!",
+		inState, error);
+#endif
 	
 	return sjme_error_default(error);
 }

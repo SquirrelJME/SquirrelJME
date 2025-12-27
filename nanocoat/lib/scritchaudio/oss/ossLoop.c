@@ -35,8 +35,9 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	if (inStream == NULL)
 		return SJME_ERROR_NONE;
 	
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-	sjme_message("OSS Tick: %lld", inState->clock.clock.full / 1000000);
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message("OSS Tick: %lld",
+		inState->clock.clock.full / 1000000);
 #endif
 
 	/* Recover the single source. */

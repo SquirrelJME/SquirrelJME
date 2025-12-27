@@ -1,0 +1,3 @@
+cc.squirreljme.runtime.gcf.file.pseudo.AllVolumesConnectionFactory
+cc.squirreljme.runtime.gcf.file.pseudo.LibraryConnectionFactory
+cc.squirreljme.runtime.gcf.file.real.SystemFileConnectionFactory

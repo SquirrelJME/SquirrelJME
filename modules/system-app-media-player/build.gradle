@@ -1,0 +1,32 @@
+import cc.squirreljme.plugin.swm.JavaMEMidlet
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "Plays media files."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "MP"
+	swmType = JavaMEMidletType.APPLICATION
+	swmName = "SquirrelJME Media Player"
+	swmVendor = "Stephanie Gawroriski"
+	midlets += new JavaMEMidlet("System - Media Player", null,
+		"cc.squirreljme.mp.MidletMain")
+}
+
+jar {
+	manifest {
+		attributes(
+			"MicroEdition-Profile": "MEEP-8.0"
+		)
+	}
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+
+	api project(":modules:media-api")
+	api project(":modules:midp-lcdui")
+	api project(":modules:gcf")
+}

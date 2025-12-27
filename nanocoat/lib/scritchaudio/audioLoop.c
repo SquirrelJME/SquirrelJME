@@ -98,6 +98,11 @@ sjme_errorCode sjme_scritchaudio_core_loopIterate(
 	/* Update the clock time. */
 	inState->nal->nanoTime(&now);
 	inState->clock.clock.full = now.full - inState->clock.clockBase.full;
+	
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_message("loopIterate(%p, %p)",
+		inState, inState->stream);
+#endif
 
 	/* If there is no stream, do not bother. */
 	stream = inState->stream;

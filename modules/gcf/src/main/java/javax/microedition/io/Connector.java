@@ -112,7 +112,6 @@ public class Connector
 			case "comm":
 			case "datagram":
 			case "dtls":
-			case "file":
 			case "imc":
 			case "multicast":
 			case "socket":
@@ -425,10 +424,6 @@ public class Connector
 				
 				// SSL UDP datagrams
 			case "dtls":
-				throw Debugging.todo();
-				
-				// Local Files
-			case "file":
 				throw Debugging.todo();
 				
 				// HTTP

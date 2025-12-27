@@ -45,6 +45,7 @@
             <option value="$PROJECT_DIR$/modules/dio-uart" />
             <option value="$PROJECT_DIR$/modules/dio-watchdog" />
             <option value="$PROJECT_DIR$/modules/gcf" />
+            <option value="$PROJECT_DIR$/modules/gcf-file" />
             <option value="$PROJECT_DIR$/modules/io-file" />
             <option value="$PROJECT_DIR$/modules/m3g" />
             <option value="$PROJECT_DIR$/modules/markdown-writer" />
@@ -70,6 +71,7 @@
             <option value="$PROJECT_DIR$/modules/system-app-demo-squirrel-quarrel" />
             <option value="$PROJECT_DIR$/modules/system-app-device-info" />
             <option value="$PROJECT_DIR$/modules/system-app-launcher" />
+            <option value="$PROJECT_DIR$/modules/system-app-media-player" />
             <option value="$PROJECT_DIR$/modules/tac" />
             <option value="$PROJECT_DIR$/modules/tango-icon-theme" />
             <option value="$PROJECT_DIR$/modules/tool-classfile" />

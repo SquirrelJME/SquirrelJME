@@ -205,6 +205,12 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 		result->stream = onlyStream;
 	}
 #endif
+	
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_message("audioInit(%p) -> Success!",
+		result);
+#endif
 
 	/* Success! */
 	*outState = result;

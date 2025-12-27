@@ -129,7 +129,7 @@ sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 			&inState->loopThreadId,
 			sjme_scritchaudio_softmix_poll, inState)))
 			goto fail_initThread;
-
+		
 		/* Await loop ready. */
 		sjme_atomic_barrier();
 		while (sjme_atomic_g(sjme_jint, &inState->loopThreadReady) == 0)
@@ -139,6 +139,11 @@ sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 			sjme_atomic_barrier();
 		}
 	}
+	
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_message("Software mixer is ready!");
+#endif
 
 	/* Success! */
 	return SJME_ERROR_NONE;

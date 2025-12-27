@@ -37,6 +37,12 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	if (inState == NULL || inStream == NULL || outSource == NULL ||
 		renderFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_message("sourceAttach(%p, %d, %d, %d)",
+		inStream, inFormat, inRate, inChannels);
+#endif
 
 	/* If any are automatic, use the stream's format. */
 	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
@@ -148,6 +154,12 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	if (sjme_error_is(error = sjme_alloc(inState->pool,
 		sizeof(*result), (sjme_pointer*)&result)) || result == NULL)
 		goto fail_allocResult;
+	
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_message("createStream(%p, %d, %d, %d)",
+		result, inFormat, inRate, inChannels);
+#endif
 
 	/* Set stream details. */
 	result->connection.lock = inState->lock;

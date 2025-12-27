@@ -9,7 +9,7 @@ squirreljme {
 	swmType = JavaMEMidletType.APPLICATION
 	swmName = "Device Information"
 	swmVendor = "Stephanie Gawroriski"
-	midlets += new JavaMEMidlet("Device Information", "info.xpm",
+	midlets += new JavaMEMidlet("System - Device Information", "info.xpm",
 		"cc.squirreljme.deviceinfo.Main")
 	tags += "system-app"
 }
