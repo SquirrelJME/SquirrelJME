@@ -20,12 +20,12 @@ import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Enumeration;
+import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.ConnectionClosedException;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.io.file.IllegalModeException;
 import net.multiphasicapps.collections.UnmodifiableArrayList;
-import net.multiphasicapps.collections.UnmodifiableList;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,14 +42,34 @@ public abstract class AbstractFileConnection
 	/**
 	 * Initializes the base connection.
 	 *
+	 * @param __part The URI part.
 	 * @param __mode The mode this is opened in.
+	 * @throws ConnectionNotFoundException If the part is not valid.
+	 * @throws IllegalArgumentException If the connection mode is not valid.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
 	protected AbstractFileConnection(
+		@NotNull String __part,
 		@MagicConstant(valuesFromClass = Connector.class) int __mode)
+		throws ConnectionNotFoundException, IllegalArgumentException,
+			NullPointerException
 	{
 		super(__mode);
+		
+		if (__part == null)
+			throw new NullPointerException("NARG");
+		
+		// Set the connection to this path
+		try
+		{
+			this.changeFullPart(__part);
+		}
+		catch (IOException __e)
+		{
+			throw new ConnectionNotFoundException(__e.getMessage());
+		}
 	}
 	
 	/**
@@ -86,17 +106,33 @@ public abstract class AbstractFileConnection
 		throws SecurityException;
 	
 	/**
-	 * Returns the list of directory contents.
+	 * This is called before the full part is being changed.
+	 *
+	 * @param __part The new part.
+	 * @throws IOException If the part could not be changed.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the operation was not permitted.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract void changingFullPart(@NotNull String __part)
+		throws IOException, NullPointerException, SecurityException;
+	
+	/**
+	 * Returns the list of directory contents, all returned values are
+	 * considered to be URI parts to be passed
+	 * to {@link #changeFullPart(String)}.
 	 *
 	 * @param __includeHidden Should file that are hidden be included?
-	 * @return The directory content listing.
+	 * @return The directory content listing, if the resultant string is a
+	 * URI it should be treated as such.
 	 * @throws IOException If the directory could not be listed or other
 	 * read errors.
 	 * @throws SecurityException If this operation is not permitted. 
 	 * @since 2025/12/28
 	 */
 	@SquirrelJMEVendorApi
-	protected abstract String[] directoryList(boolean __includeHidden)
+	protected abstract String[] directoryListParts(boolean __includeHidden)
 		throws IOException, SecurityException;
 	
 	/**
@@ -142,6 +178,22 @@ public abstract class AbstractFileConnection
 	
 	@Override
 	public final boolean canWrite()
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Sets the full file part.
+	 *
+	 * @param __part The part to change to.
+	 * @throws IOException If it could not be changed.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If the operation is not permitted.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	protected void changeFullPart(@NotNull String __part)
+		throws IOException, NullPointerException, SecurityException
 	{
 		throw Debugging.todo();
 	}
@@ -261,7 +313,7 @@ public abstract class AbstractFileConnection
 				throw new IOException("NOPE"); 
 			
 			// Get list of contents
-			contents = this.directoryList(__includeHidden);
+			contents = this.directoryListParts(__includeHidden);
 			if (contents == null)
 				contents = new String[0]; 
 		}

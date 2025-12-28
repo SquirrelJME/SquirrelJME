@@ -32,11 +32,13 @@ public abstract class AbstractStreamConnection
 	 * Initializes the base connection.
 	 *
 	 * @param __mode The mode this is opened in.
+	 * @throws IllegalArgumentException If the connection mode is not valid.
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
 	protected AbstractStreamConnection(
 		@MagicConstant(valuesFromClass = Connector.class) int __mode)
+		throws IllegalArgumentException
 	{
 		super(__mode);
 	}

@@ -38,14 +38,8 @@ public class AllVolumesConnectionFactory
 		if (__part == null)
 			throw new NullPointerException("NARG");
 		
-		/* {@squirreljme.error GF01 Only the scheme being specified is valid.
-		(The URI)} */
-		if (!__part.isEmpty())
-			throw new ConnectionNotFoundException(
-				ErrorCode.__error__("GF01 %s", __part));
-		
 		// Use this, as there is only this
-		return new AllVolumesConnection(__mode);
+		return new AllVolumesConnection(__part, __mode);
 	}
 	
 	/**

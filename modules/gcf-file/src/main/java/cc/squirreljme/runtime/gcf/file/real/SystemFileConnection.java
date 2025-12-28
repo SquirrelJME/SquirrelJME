@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.nio.file.attribute.BasicFileAttributes;
+import javax.microedition.io.ConnectionNotFoundException;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A connection to a real system filesystem.
@@ -30,12 +32,14 @@ public class SystemFileConnection
 	 * Initializes the file system connection.
 	 *
 	 * @param __mode The mode this is opened in.
+	 * @throws ConnectionNotFoundException If the part is not valid.
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	public SystemFileConnection(int __mode)
+	public SystemFileConnection(String __part, int __mode)
+		throws ConnectionNotFoundException
 	{
-		super(__mode);
+		super(__part, __mode);
 	}
 	
 	@Override
@@ -60,7 +64,14 @@ public class SystemFileConnection
 	}
 	
 	@Override
-	protected String[] directoryList(boolean __includeHidden)
+	protected void changingFullPart(@NotNull String __part)
+		throws IOException, NullPointerException, SecurityException
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	protected String[] directoryListParts(boolean __includeHidden)
 		throws IOException, SecurityException
 	{
 		throw Debugging.todo();
