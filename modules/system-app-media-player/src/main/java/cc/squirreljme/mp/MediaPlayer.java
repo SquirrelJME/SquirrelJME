@@ -10,16 +10,14 @@
 package cc.squirreljme.mp;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.media.ContentTypeUtil;
+import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
-import javax.microedition.io.Connection;
 import javax.microedition.io.HttpConnection;
 import javax.microedition.io.InputConnection;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;

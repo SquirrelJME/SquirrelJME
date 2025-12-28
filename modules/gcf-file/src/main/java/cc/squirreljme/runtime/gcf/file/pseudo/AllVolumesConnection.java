@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.gcf.file.pseudo;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.file.AbstractFileConnection;
+import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -70,5 +71,12 @@ public class AllVolumesConnection
 	{
 		// No filesystem is attached
 		return null;
+	}
+	
+	@Override
+	protected String[] directoryList(boolean __includeHidden)
+		throws IOException, SecurityException
+	{
+		throw Debugging.todo();
 	}
 }

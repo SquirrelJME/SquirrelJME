@@ -34,6 +34,7 @@ public abstract class AbstractStreamConnection
 	 * @param __mode The mode this is opened in.
 	 * @since 2025/12/27
 	 */
+	@SquirrelJMEVendorApi
 	protected AbstractStreamConnection(
 		@MagicConstant(valuesFromClass = Connector.class) int __mode)
 	{

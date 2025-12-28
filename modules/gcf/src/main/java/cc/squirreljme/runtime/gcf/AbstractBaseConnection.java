@@ -42,6 +42,7 @@ public abstract class AbstractBaseConnection
 	 * @throws IllegalArgumentException If the connection mode is not valid.
 	 * @since 2025/12/27
 	 */
+	@SquirrelJMEVendorApi
 	protected AbstractBaseConnection(
 		@MagicConstant(valuesFromClass = Connector.class) int __mode)
 		throws IllegalArgumentException

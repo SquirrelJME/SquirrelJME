@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import javax.microedition.io.StreamConnection;
+import org.jetbrains.annotations.NotNull;
 
 @Api
 public interface FileConnection
@@ -95,17 +96,55 @@ public interface FileConnection
 	@Api
 	long lastModified();
 	
+	/**
+	 * As {@code list("*", false)}.
+	 *
+	 * @return As {@code list("*", false)}.
+	 * @throws ConnectionClosedException If the connection is closed.
+	 * @throws IllegalModeException If the connection is not opened with
+	 * read access.
+	 * @throws IOException If the directory is not accessible, this is not
+	 * a directory, or some other read error occurs.
+	 * @throws SecurityException If this operation is not permitted.
+	 * @since 2025/12/27
+	 */
 	@Api
 	@SuppressWarnings("rawtypes")
 	@RawTypeIsDefined(String.class)
 	Enumeration list()
-		throws IOException;
+		throws ConnectionClosedException, IllegalModeException, IOException,
+			SecurityException;
 	
+	/**
+	 * Iterates over the directory contents, with the given filter applied,
+	 * note that the returned list will be in a format that matches URIs and
+	 * not the native filesystem. That is, for example on DOS/Windows, the
+	 * slashes will always be forward slashes and never backslashes.
+	 * 
+	 * Any directories will end in a {@link /}.
+	 * 
+	 * Any files which become part of relative paths such as {@code .} and
+	 * {@code ..} are not included in the result.
+	 *
+	 * @param __filter The filter to apply. If an asterisk ('{@code *}') is
+	 * specified it means to match zero or more characters
+	 * @param __includeHidden Should any files that are hidden be included?
+	 * @return An iteration of the directory contents with the applied filter.
+	 * @throws ConnectionClosedException If the connection is closed.
+	 * @throws IllegalModeException If the connection is not opened with
+	 * read access.
+	 * @throws IOException If the directory is not accessible, this is not
+	 * a directory, or some other read error occurs.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If this operation is not permitted.
+	 * @since 2025/12/27
+	 */
 	@Api
 	@SuppressWarnings("rawtypes")
 	@RawTypeIsDefined(String.class)
-	Enumeration list(String __a, boolean __b)
-		throws IOException;
+	Enumeration list(@NotNull String __filter, boolean __includeHidden)
+		throws ConnectionClosedException, IllegalModeException, IOException,
+			SecurityException;
 	
 	@Api
 	void mkdir()

@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.media;
+package cc.squirreljme.runtime.gcf;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.Language;
@@ -58,6 +58,56 @@ public final class ContentTypeUtil
 		// Try to determine it based on the extension
 		switch (__path.substring(ld + 1).toLowerCase())
 		{
+			case "txt":
+				return "text/plain";
+			
+			case "htm":
+			case "html":
+				return "text/html";
+				
+			case "jar":
+				return "application/java-archive";
+				
+			case "jad":
+				return "text/vnd.sun.j2me.app-descriptor";
+				
+			case "gif":
+				return "image/gif";
+				
+			case "png":
+				return "image/png";
+				
+			case "bmp":
+			case "dib":
+				return "image/bmp";
+			
+			case "xpm":
+				return "image/x-xpixmap";
+				
+			case "pbm":
+				return "image/x-portable-bitmap";
+				
+			case "pgm":
+				return "image/x-portable-graymap";
+				
+			case "ppm":
+				return "image/x-portable-pixmap";
+				
+			case "pnm":
+				return "image/x-portable-anymap";
+				
+			case "jpg":
+			case "jpeg":
+			case "jpe":
+			case "jif":
+			case "jfif":
+			case "jfi":
+				return "image/jpeg";
+				
+			case "svg":
+			case "svgz":
+				return "image/svg+xml";
+				
 			case "mid":
 			case "midi":
 			case "rmi":
@@ -90,6 +140,9 @@ public final class ContentTypeUtil
 			case "m2p":
 			case "ps":
 				return "video/mpeg";
+				
+			case "ota":
+				return "application/vnd.nokia.ota";
 			
 				// Unknown
 			default:

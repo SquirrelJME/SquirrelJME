@@ -11,9 +11,8 @@ package cc.squirreljme.runtime.gcf.file;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.gcf.AbstractStreamConnection;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,8 +24,10 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.file.ConnectionClosedException;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.io.file.IllegalModeException;
+import net.multiphasicapps.collections.UnmodifiableArrayList;
+import net.multiphasicapps.collections.UnmodifiableList;
 import org.intellij.lang.annotations.MagicConstant;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base implementation for file connections.
@@ -44,6 +45,7 @@ public abstract class AbstractFileConnection
 	 * @param __mode The mode this is opened in.
 	 * @since 2025/12/27
 	 */
+	@SquirrelJMEVendorApi
 	protected AbstractFileConnection(
 		@MagicConstant(valuesFromClass = Connector.class) int __mode)
 	{
@@ -82,6 +84,20 @@ public abstract class AbstractFileConnection
 	@SquirrelJMEVendorApi
 	protected abstract FileSystem attachedFileSystem()
 		throws SecurityException;
+	
+	/**
+	 * Returns the list of directory contents.
+	 *
+	 * @param __includeHidden Should file that are hidden be included?
+	 * @return The directory content listing.
+	 * @throws IOException If the directory could not be listed or other
+	 * read errors.
+	 * @throws SecurityException If this operation is not permitted. 
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract String[] directoryList(boolean __includeHidden)
+		throws IOException, SecurityException;
 	
 	/**
 	 * {@inheritDoc}
@@ -216,18 +232,44 @@ public abstract class AbstractFileConnection
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/27
+	 */
 	@Override
 	public final Enumeration list()
-		throws IOException
+		throws ConnectionClosedException, IllegalModeException, IOException,
+			SecurityException
 	{
-		return this.list(null, false);
+		return this.list("*", false);
 	}
 	
 	@Override
-	public final Enumeration list(String __a, boolean __b)
-		throws IOException
+	public final Enumeration list(@NotNull String __filter,
+		boolean __includeHidden)
+		throws ConnectionClosedException, IllegalModeException, IOException,
+			SecurityException
 	{
-		throw Debugging.todo();
+		String[] contents;
+		synchronized (this)
+		{
+			this.checkClosed();
+			this.checkRead();
+			
+			// Not a directory?
+			if (!this.isDirectory())
+				throw new IOException("NOPE"); 
+			
+			// Get list of contents
+			contents = this.directoryList(__includeHidden);
+			if (contents == null)
+				contents = new String[0]; 
+		}
+		
+		// Filter and wrap accordingly (because Enumeration is terrible)
+		return new IteratorToEnumeration<String>(
+			new __BasicGlobFilter__(__filter,
+				UnmodifiableArrayList.of(contents).iterator()));
 	}
 	
 	@Override
