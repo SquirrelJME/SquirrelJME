@@ -38,7 +38,6 @@ public abstract class AbstractBaseConnection
 	/**
 	 * Initializes the base connection.
 	 *
-	 * @param __part The path part.
 	 * @param __mode The mode this is opened in.
 	 * @throws IllegalArgumentException If the connection mode is not valid.
 	 * @since 2025/12/27
