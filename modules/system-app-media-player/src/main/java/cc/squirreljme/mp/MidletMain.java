@@ -10,14 +10,16 @@
 package cc.squirreljme.mp;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 import javax.microedition.io.Connector;
+import javax.microedition.io.InputConnection;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
+import org.intellij.lang.annotations.Language;
 
 /**
  * Main entry point for the media player.
@@ -28,6 +30,9 @@ import javax.microedition.midlet.MIDletStateChangeException;
 public class MidletMain
 	extends MIDlet
 {
+	/** The binder used. */
+	public static volatile Binder binder;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/26
@@ -46,20 +51,48 @@ public class MidletMain
 	protected void startApp()
 		throws MIDletStateChangeException
 	{
-		// Start browsing at the SquirrelJME specific root
-		BasicBrowser browser;
-		try (Connection conn = Connector.open(
-			"x-squirreljme-volumes:"))
+		// What is the starting URI?
+		@Language("http-url-reference")
+		String uri = "x-squirreljme-volumes:";
+		
+		// Use this main display
+		Display display = Display.getDisplay(this);
+		
+		// Setup both browser and player
+		Binder binder = new Binder(display);
+		BasicBrowser browser = binder._browser;
+		MediaPlayer player = binder._player;
+		
+		// Set this binder globally
+		synchronized (MidletMain.class)
 		{
-			browser = new BasicBrowser();
-			browser.browse((FileConnection)conn);
+			if (MidletMain.binder == null)
+				MidletMain.binder = binder;
 		}
-		catch (ClassCastException|IOException __e)
+		
+		// Start browsing or playing specific media
+		Displayable show;
+		try (Connection conn = Connector.open(uri))
+		{
+			// If browsing a directory, browse the contents
+			if ((conn instanceof FileConnection) &&
+				((FileConnection)conn).isDirectory())
+				show = browser.browse((FileConnection)conn);
+			
+			// Otherwise view the content
+			else if (conn instanceof InputConnection)
+				show = player.play((InputConnection)conn);
+			
+			// Unsupported
+			else
+				throw new UnsupportedOperationException(uri);
+		}
+		catch (IOException __e)
 		{
 			throw new RuntimeException(__e.getMessage(), __e);
 		}
 		
 		// Show on the display!
-		Display.getDisplay(this).setCurrent(browser);
+		display.setCurrent(show);
 	}
 }

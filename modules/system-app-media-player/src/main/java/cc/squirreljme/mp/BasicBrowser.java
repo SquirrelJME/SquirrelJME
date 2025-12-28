@@ -10,9 +10,8 @@
 package cc.squirreljme.mp;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.lang.ref.Reference;
 import javax.microedition.io.file.FileConnection;
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.List;
 
 /**
@@ -23,24 +22,35 @@ import javax.microedition.lcdui.List;
 public class BasicBrowser
 	extends List
 {
+	/** The binder this is attached to. */
+	private final Reference<Binder> _binder;
+	
 	/**
 	 * Initializes the browser. 
 	 *
+	 * @param __binder The binder this is attached to.
 	 * @since 2025/12/26
 	 */
-	public BasicBrowser()
+	public BasicBrowser(Reference<Binder> __binder)
+		throws NullPointerException
 	{
 		super("Select File", List.EXCLUSIVE);
+		
+		if (__binder == null)
+			throw new NullPointerException("NARG");
+		
+		this._binder = __binder;
 	}
 	
 	/**
 	 * Browses the given file connection directory.
 	 *
 	 * @param __file The file to browse.
+	 * @return {@code this}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/26
 	 */
-	public void browse(FileConnection __file)
+	public BasicBrowser browse(FileConnection __file)
 		throws NullPointerException
 	{
 		if (__file == null)
