@@ -115,6 +115,10 @@ public abstract class AbstractFileConnection
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/27
+	 */
 	@Override
 	public final boolean isDirectory()
 	{
