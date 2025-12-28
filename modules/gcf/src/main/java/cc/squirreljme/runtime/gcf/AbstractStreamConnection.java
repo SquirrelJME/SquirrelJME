@@ -7,49 +7,37 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.gcf.file.pseudo;
+package cc.squirreljme.runtime.gcf;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.gcf.file.AbstractFileConnection;
-import java.nio.file.FileStore;
-import java.nio.file.FileSystem;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import javax.microedition.io.Connector;
+import javax.microedition.io.StreamConnection;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
- * A connection to a specific library to browse its contents as if it were
- * a filesystem.
+ * Base abstract class for stream based connections.
  *
  * @since 2025/12/27
  */
 @SquirrelJMEVendorApi
-public class LibraryConnection
-	extends AbstractFileConnection
+public abstract class AbstractStreamConnection
+	extends AbstractBaseConnection
+	implements StreamConnection
 {
 	/**
-	 * Initializes the library connection.
+	 * Initializes the base connection.
 	 *
 	 * @param __mode The mode this is opened in.
 	 * @since 2025/12/27
 	 */
-	@SquirrelJMEVendorApi
-	public LibraryConnection(int __mode)
+	protected AbstractStreamConnection(
+		@MagicConstant(valuesFromClass = Connector.class) int __mode)
 	{
 		super(__mode);
-	}
-	
-	@Override
-	protected BasicFileAttributes attachedAttributes()
-		throws SecurityException
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	protected FileStore attachedFileStore()
-		throws SecurityException
-	{
-		throw Debugging.todo();
 	}
 	
 	/**
@@ -57,10 +45,20 @@ public class LibraryConnection
 	 * @since 2025/12/27
 	 */
 	@Override
-	protected FileSystem attachedFileSystem()
-		throws SecurityException
+	public final DataInputStream openDataInputStream()
+		throws IOException
 	{
-		// No filesystem is attached
-		return null;
+		return new DataInputStream(this.openInputStream());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/27
+	 */
+	@Override
+	public final DataOutputStream openDataOutputStream()
+		throws IOException
+	{
+		return new DataOutputStream(this.openOutputStream());
 	}
 }

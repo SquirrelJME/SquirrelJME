@@ -13,14 +13,29 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
+import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
 @Api
 public interface FileConnection
 	extends StreamConnection
 {
+	/**
+	 * Returns the available free space for the file system that the
+	 * file/directory exists within.
+	 *
+	 * @return The available number of bytes, or {@code -1} if there is no
+	 * supported filesystem.
+	 * @throws ConnectionClosedException If the connection is closed.
+	 * @throws IllegalModeException If the connection is not opened with
+	 * read access.
+	 * @throws SecurityException If this operation is not permitted.
+	 * @since 2025/12/27
+	 */
 	@Api
-	long availableSize();
+	long availableSize()
+		throws ConnectionClosedException, IllegalModeException,
+			SecurityException;
 	
 	@Api
 	boolean canRead();
@@ -56,8 +71,20 @@ public interface FileConnection
 	@Api
 	String getURL();
 	
+	/**
+	 * Is this an accessible directory?
+	 *
+	 * @return If this is a directory that can be accessed.
+	 * @throws ConnectionClosedException If the connection is closed.
+	 * @throws IllegalModeException If the connection is not opened with
+	 * read access.
+	 * @throws SecurityException If this operation is not permitted.
+	 * @since 2025/12/27
+	 */
 	@Api
-	boolean isDirectory();
+	boolean isDirectory()
+		throws ConnectionClosedException, IllegalModeException,
+			SecurityException;
 	
 	@Api
 	boolean isHidden();

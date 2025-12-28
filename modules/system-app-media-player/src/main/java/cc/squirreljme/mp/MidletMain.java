@@ -72,7 +72,7 @@ public class MidletMain
 		
 		// Start browsing or playing specific media
 		Displayable show;
-		try (Connection conn = Connector.open(uri))
+		try (Connection conn = Connector.open(uri, Connector.READ))
 		{
 			// If browsing a directory, browse the contents
 			if ((conn instanceof FileConnection) &&

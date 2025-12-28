@@ -24,6 +24,7 @@ import javax.microedition.io.SocketConnection;
  * @since 2019/05/06
  */
 public abstract class TCPClientConnection
+	extends AbstractStreamConnection
 	implements SocketConnection
 {
 	/** The used IP address. */
@@ -37,12 +38,15 @@ public abstract class TCPClientConnection
 	 * Initializes the TCP client connection.
 	 *
 	 * @param __ip The IP to use.
+	 * @param __mode The connection mode.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/12
 	 */
-	public TCPClientConnection(IPAddress __ip)
+	public TCPClientConnection(IPAddress __ip, int __mode)
 		throws NullPointerException
 	{
+		super(__mode);
+		
 		if (__ip == null)
 			throw new NullPointerException("NARG");
 		
@@ -95,7 +99,7 @@ public abstract class TCPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
-	public final void close()
+	protected final void becomingClosed()
 		throws IOException
 	{
 		// Tracker knows if the streams have been closed...
@@ -224,28 +228,6 @@ public abstract class TCPClientConnection
 		throws IllegalArgumentException, IOException
 	{
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/05/06
-	 */
-	@Override
-	public final DataInputStream openDataInputStream()
-		throws IOException
-	{
-		return new DataInputStream(this.openInputStream());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/05/06
-	 */
-	@Override
-	public final DataOutputStream openDataOutputStream()
-		throws IOException
-	{
-		return new DataOutputStream(this.openOutputStream());
 	}
 	
 	/**

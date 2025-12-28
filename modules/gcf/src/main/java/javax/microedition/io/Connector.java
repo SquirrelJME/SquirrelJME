@@ -429,7 +429,7 @@ public class Connector
 				// HTTP
 			case "http":
 				return HTTPClientConnection.connectDefault(
-					HTTPAddress.fromUriPart(part));
+					HTTPAddress.fromUriPart(part), Connector.READ);
 				
 				// HTTPS
 			case "https":

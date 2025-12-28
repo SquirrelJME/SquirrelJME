@@ -8,7 +8,7 @@
 // ---------------------------------------------------------------------------
 
 /**
- * SquirrelJME specific speudo connections.
+ * SquirrelJME specific pseudo connections.
  *
  * @since 2025/12/27
  */

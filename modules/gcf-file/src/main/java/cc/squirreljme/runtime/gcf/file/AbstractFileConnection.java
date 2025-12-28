@@ -11,14 +11,22 @@ package cc.squirreljme.runtime.gcf.file;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.gcf.AbstractStreamConnection;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Enumeration;
+import javax.microedition.io.Connector;
+import javax.microedition.io.file.ConnectionClosedException;
 import javax.microedition.io.file.FileConnection;
+import javax.microedition.io.file.IllegalModeException;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base implementation for file connections.
@@ -27,19 +35,85 @@ import javax.microedition.io.file.FileConnection;
  */
 @SquirrelJMEVendorApi
 public abstract class AbstractFileConnection
+	extends AbstractStreamConnection
 	implements FileConnection
 {
 	/**
-	 * Returns the attached filesystem.
+	 * Initializes the base connection.
 	 *
-	 * @return The attached filesystem.
+	 * @param __mode The mode this is opened in.
+	 * @since 2025/12/27
+	 */
+	protected AbstractFileConnection(
+		@MagicConstant(valuesFromClass = Connector.class) int __mode)
+	{
+		super(__mode);
+	}
+	
+	/**
+	 * Returns the attributes which are currently attached.
+	 *
+	 * @return The attached attributes.
+	 * @throws SecurityException If this operation is not permitted.
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	protected abstract FileSystem attachedFileSystem();
+	protected abstract BasicFileAttributes attachedAttributes()
+		throws SecurityException;
 	
+	/**
+	 * Returns the attached file store.
+	 *
+	 * @return The attached file store or {@code null} if not available.
+	 * @throws SecurityException If this operation is not permitted.
+	 * @since 2025/12/27
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract FileStore attachedFileStore()
+		throws SecurityException;
+	
+	/**
+	 * Returns the attached filesystem.
+	 *
+	 * @return The attached filesystem or {@code null} if not available.
+	 * @throws SecurityException If this operation is not permitted.
+	 * @since 2025/12/27
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract FileSystem attachedFileSystem()
+		throws SecurityException;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/27
+	 */
 	@Override
 	public final long availableSize()
+		throws ConnectionClosedException, IllegalModeException,
+			SecurityException
+	{
+		FileStore fs = this.__fileStore();
+		if (fs == null)
+			return -1;
+		
+		// This could potentially fail
+		try
+		{
+			return fs.getUnallocatedSpace();
+		}
+		catch (IOException ignored)
+		{
+			return -1;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/27
+	 */
+	@Override
+	protected final void becomingClosed()
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
@@ -52,13 +126,6 @@ public abstract class AbstractFileConnection
 	
 	@Override
 	public final boolean canWrite()
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public void close()
-		throws IOException
 	{
 		throw Debugging.todo();
 	}
@@ -121,8 +188,14 @@ public abstract class AbstractFileConnection
 	 */
 	@Override
 	public final boolean isDirectory()
+		throws ConnectionClosedException, IllegalModeException,
+			SecurityException
 	{
-		throw Debugging.todo();
+		BasicFileAttributes attrib = this.__fileAttributes();
+		if (attrib == null)
+			return false;
+		
+		return attrib.isDirectory();
 	}
 	
 	@Override
@@ -159,20 +232,6 @@ public abstract class AbstractFileConnection
 	
 	@Override
 	public final void mkdir()
-		throws IOException
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public final DataInputStream openDataInputStream()
-		throws IOException
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public final DataOutputStream openDataOutputStream()
 		throws IOException
 	{
 		throw Debugging.todo();
@@ -251,5 +310,41 @@ public abstract class AbstractFileConnection
 	public final long usedSize()
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Get and check file attributes.
+	 *
+	 * @return The file attributes.
+	 * @since 2025/12/27
+	 */
+	private BasicFileAttributes __fileAttributes()
+	{
+		synchronized (this)
+		{
+			this.checkClosed();
+			this.checkRead();
+			
+			// Are there attributes?
+			return this.attachedAttributes();
+		}
+	}
+	
+	/**
+	 * Get and check file store.
+	 *
+	 * @return The file store.
+	 * @since 2025/12/27
+	 */
+	private FileStore __fileStore()
+	{
+		synchronized (this)
+		{
+			this.checkClosed();
+			this.checkRead();
+			
+			// Is there a filestore?
+			return this.attachedFileStore();
+		}
 	}
 }

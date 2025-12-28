@@ -45,7 +45,7 @@ public class AllVolumesConnectionFactory
 				ErrorCode.__error__("GF01 %s", __part));
 		
 		// Use this, as there is only this
-		return new AllVolumesConnection();
+		return new AllVolumesConnection(__mode);
 	}
 	
 	/**

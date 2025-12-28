@@ -12,7 +12,9 @@ package cc.squirreljme.runtime.gcf.file.pseudo;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.file.AbstractFileConnection;
+import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * Listing of all possible filesystem volumes, including pseudo volumes.
@@ -23,9 +25,50 @@ import java.nio.file.FileSystem;
 public class AllVolumesConnection
 	extends AbstractFileConnection
 {
+	/**
+	 * Initializes the all volumes connection.
+	 *
+	 * @param __mode The mode this is connected in.
+	 * @since 2025/12/27
+	 */
+	@SquirrelJMEVendorApi
+	public AllVolumesConnection(int __mode)
+	{
+		super(__mode);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/27
+	 */
 	@Override
-	protected FileSystem attachedFileSystem()
+	protected BasicFileAttributes attachedAttributes()
+		throws SecurityException
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/27
+	 */
+	@Override
+	protected FileStore attachedFileStore()
+		throws SecurityException
+	{
+		// No filestore is attached
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/27
+	 */
+	@Override
+	protected FileSystem attachedFileSystem()
+		throws SecurityException
+	{
+		// No filesystem is attached
+		return null;
 	}
 }
