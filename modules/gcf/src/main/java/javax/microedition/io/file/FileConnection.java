@@ -10,10 +10,10 @@
 package javax.microedition.io.file;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.RawTypeIsDefined;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
-import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
 @Api
@@ -95,13 +95,15 @@ public interface FileConnection
 	@Api
 	long lastModified();
 	
-	@SuppressWarnings("rawtypes")
 	@Api
+	@SuppressWarnings("rawtypes")
+	@RawTypeIsDefined(String.class)
 	Enumeration list()
 		throws IOException;
 	
-	@SuppressWarnings("rawtypes")
 	@Api
+	@SuppressWarnings("rawtypes")
+	@RawTypeIsDefined(String.class)
 	Enumeration list(String __a, boolean __b)
 		throws IOException;
 	

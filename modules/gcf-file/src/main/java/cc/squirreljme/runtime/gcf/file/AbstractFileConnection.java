@@ -220,7 +220,7 @@ public abstract class AbstractFileConnection
 	public final Enumeration list()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return this.list(null, false);
 	}
 	
 	@Override
