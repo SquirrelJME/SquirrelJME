@@ -11,45 +11,21 @@ package cc.squirreljme.runtime.gcf.uri;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * Scheme specific URI part, this does not have any restrictions to the URI
- * formatting similar to {@link UriGenericPart}.
+ * URI which has a path.
  *
  * @since 2025/12/28
  */
 @SquirrelJMEVendorApi
-public final class UriSchemeSpecificPart
-	extends UriPart
-	implements UriPartFragment
+public interface UriPartPath
 {
 	/**
-	 * Parses the given URI part as a scheme specific part.
+	 * Returns the path component of this URI.
 	 *
-	 * @param __part The part to parse.
-	 * @throws InvalidUriException If the part is not valid.
-	 * @throws NullPointerException On null arguments.
+	 * @return The path component or {@code null} if there is none.
 	 * @since 2025/12/28
 	 */
 	@SquirrelJMEVendorApi
-	public UriSchemeSpecificPart(String __part)
-		throws InvalidUriException, NullPointerException
-	{
-		super(__part);
-		
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public int compareTo(@NotNull UriPart __b)
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
-	public String getPart()
-	{
-		throw Debugging.todo();
-	}
+	String getPath();
 }

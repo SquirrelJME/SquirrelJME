@@ -20,10 +20,73 @@ import org.jetbrains.annotations.NotNull;
  */
 @SquirrelJMEVendorApi
 public final class UriGenericPart
-	extends UriPart<UriGenericPart>
+	extends UriPart
+	implements UriPartAuthority, UriPartFragment, UriPartPath,
+		UriPartPathParameter, UriPartQueryParameter
 {
+	/**
+	 * Parses the given URI part as a generic part.
+	 *
+	 * @param __part The part to parse.
+	 * @throws InvalidUriException If the part is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	public UriGenericPart(String __part)
+		throws InvalidUriException, NullPointerException
+	{
+		super(__part);
+		
+		throw Debugging.todo();
+	}
+	
 	@Override
-	public int compareTo(@NotNull UriGenericPart __b)
+	public int compareTo(@NotNull UriPart __b)
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public String getAuthority()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public String getPart()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public String getPath()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public String pathParam(int __dx)
+		throws IndexOutOfBoundsException
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public int pathParamCount()
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public String queryParam(int __dx)
+		throws IndexOutOfBoundsException
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public int queryParamCount()
 	{
 		throw Debugging.todo();
 	}

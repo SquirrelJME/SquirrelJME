@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.gcf;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.util.ServiceLoader;
 import javax.microedition.io.Connection;
@@ -40,7 +41,7 @@ public interface CustomConnectionFactory
 	 * @since 2021/11/30
 	 */
 	@SquirrelJMEVendorApi
-	Connection connect(String __part, int __mode, boolean __timeouts,
+	Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException;
 	

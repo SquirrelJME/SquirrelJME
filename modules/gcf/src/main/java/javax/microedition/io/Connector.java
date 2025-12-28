@@ -16,6 +16,8 @@ import cc.squirreljme.runtime.gcf.HTTPAddress;
 import cc.squirreljme.runtime.gcf.HTTPClientConnection;
 import cc.squirreljme.runtime.gcf.IPAddress;
 import cc.squirreljme.runtime.gcf.IPConnectionFactory;
+import cc.squirreljme.runtime.gcf.uri.Uri;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -401,6 +403,9 @@ public class Connector
 		if (__opts == null)
 			__opts = new ConnectionOption<?>[0];
 		
+		// Parse the full URI
+		Uri uri = new Uri(__uri);
+		
 		/* {@squirreljme.error EC11 The URI does not have a scheme.
 		(The URI)} */
 		int fc = __uri.indexOf(':');
@@ -408,8 +413,8 @@ public class Connector
 			throw new IllegalArgumentException(String.format("EC11 %s",
 				__uri));
 		
-		String scheme = __uri.substring(0, fc);
-		String part = __uri.substring(fc + 1);
+		String scheme = uri.getScheme();
+		UriPart part = uri.getPart();
 		
 		// Sockets of a given protocol must be of a given class type
 		switch (scheme)
@@ -429,7 +434,7 @@ public class Connector
 				// HTTP
 			case "http":
 				return HTTPClientConnection.connectDefault(
-					HTTPAddress.fromUriPart(part), Connector.READ);
+					HTTPAddress.fromUriPart(part.toString()), Connector.READ);
 				
 				// HTTPS
 			case "https":
@@ -447,7 +452,7 @@ public class Connector
 			case "socket":
 				{
 					// Decode address
-					IPAddress addr = IPAddress.fromUriPart(part);
+					IPAddress addr = IPAddress.fromUriPart(part.toString());
 					
 					// Creating server
 					if (addr.isServer())

@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.gcf.file.pseudo;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.file.AbstractFileConnection;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
@@ -38,7 +39,7 @@ public class LibraryConnection
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	public LibraryConnection(String __part, int __mode)
+	public LibraryConnection(UriPart __part, int __mode)
 		throws ConnectionNotFoundException
 	{
 		super(__part, __mode);

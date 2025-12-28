@@ -10,11 +10,10 @@
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import javax.microedition.io.Connection;
-import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.ConnectionOption;
 
 /**
@@ -31,7 +30,7 @@ public class AllVolumesConnectionFactory
 	 * @since 2025/12/27
 	 */
 	@Override
-	public Connection connect(String __part, int __mode, boolean __timeouts,
+	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
 	{

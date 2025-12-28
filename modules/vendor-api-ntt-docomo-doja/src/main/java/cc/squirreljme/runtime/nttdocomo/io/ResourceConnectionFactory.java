@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.nttdocomo.io;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import com.nttdocomo.ui.IApplication;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +37,7 @@ public class ResourceConnectionFactory
 	@SuppressWarnings("resource")
 	@Override
 	@SquirrelJMEVendorApi
-	public Connection connect(String __part, int __mode, boolean __timeouts,
+	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
 	{

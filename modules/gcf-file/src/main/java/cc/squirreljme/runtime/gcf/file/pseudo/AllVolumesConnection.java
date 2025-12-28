@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.file.AbstractFileConnection;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
@@ -41,7 +42,7 @@ public class AllVolumesConnection
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	public AllVolumesConnection(String __part, int __mode)
+	public AllVolumesConnection(UriPart __part, int __mode)
 		throws ConnectionNotFoundException
 	{
 		super(__part, __mode);

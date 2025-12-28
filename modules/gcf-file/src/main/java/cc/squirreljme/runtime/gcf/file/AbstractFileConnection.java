@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.gcf.AbstractStreamConnection;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -51,7 +52,7 @@ public abstract class AbstractFileConnection
 	 */
 	@SquirrelJMEVendorApi
 	protected AbstractFileConnection(
-		@NotNull String __part,
+		@NotNull UriPart __part,
 		@MagicConstant(valuesFromClass = Connector.class) int __mode)
 		throws ConnectionNotFoundException, IllegalArgumentException,
 			NullPointerException
@@ -192,7 +193,7 @@ public abstract class AbstractFileConnection
 	 * @since 2025/12/28
 	 */
 	@SquirrelJMEVendorApi
-	protected void changeFullPart(@NotNull String __part)
+	protected void changeFullPart(@NotNull UriPart __part)
 		throws IOException, NullPointerException, SecurityException
 	{
 		throw Debugging.todo();
