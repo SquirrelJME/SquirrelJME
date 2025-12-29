@@ -1,0 +1,77 @@
+# The New Year
+
+The next year is very much upon us, I am hopeful that for SquirrelJME's tenth
+year that SquirrelJME 0.4.0 is released at some point in 2025. However, in
+the meantime there have been a number of changes and updates which have
+occured.
+
+Since November, I have been slowly working on the new build pipeline so that
+SquirrelJME builds are completely self-hosted and self-reliant. Currently as
+of now, the majority of the can be performed under CMake which naturally
+calls Gradle and CMake, again. The ultimate goal here is to eventually
+migrate everything onto [Concourse](https://concourse-ci.org/) as that
+supports Fossil, is open-source, and can be self-hosted.
+
+For the release build, ProGuard is used to optimize the code by shrinking and
+removing everything that is not needed. Due to ProGuard being rather buggy,
+it often times would just run out of memory resulting in failed builds
+especially on 32-bit systems or macOS. It will now be attempted twice, and
+if both times fail it will instead be skipped.
+
+Generic raster pixel format translation has been added so SquirrelJME is now
+capable of converting to and from any pixel format to any other pixel format.
+This means that any APIs and devices which use a specific pixel format are now
+better supported.
+
+Additionally, _AShiningRay_, who has worked on FreeJ2ME-Plus, has contributed
+support for Nokia's `DirectGraphics` APIs so SquirrelJME is now able to play
+some games such as _Bounce Tales_, with some minor transparency/alpha related
+issues. _AShiningRay_ has also fixed a number of issues with transformations,
+which games such as _Sonic_ render properly. On top of this as well, there
+is now support for drawing polygons, arcs, and rounded rectangles. Currently,
+triangle drawing uses the polygon drawing which is non-optimal however it is
+a stand-in until a proper triangle rendering algorithm is implemented. Copying
+of regions has been implemented as well.
+
+From these contributions, I have utilized _AShiningRay_'s work to add
+polygon, triangle, arcs, and rounded rectangle drawing support to DoJa.
+
+There is now support for more blending modes on top of SRC and SRC_OVER, all
+the rest of them are supported now albeit they are only going to be seen
+in very specific cases. This is mostly a concern for my future plans to
+support AWT and eventually Java applets (people still remember those, right?).
+
+Dependencies for the Debian packages has been fixed as well! These packages
+should now install properly for Debian and/or Ubuntu.
+
+Regarding Flatpak, it was asked if there is an alternative, I have been
+considering AppImages which would work on platforms such as the Steam Deck
+and any Linux distro. I am however, still evaluating this.
+
+NanoCoat now has better native path handling support, it is able to handle
+POSIX, DOS, VFAT, and Windows paths in a uniform and well-defined way. This
+will be integrated into `Path` eventually.
+
+OSS is now always enabled on POSIX platforms such as BSD and Linux, even if
+your system does not include any built-in OSS headers. Thus, you should always
+be able to get sound assuming you have OSS or a compatibility layer such
+as `osspd` installed.
+
+ScritchUI now better handles DPI on GTK2 and Win32, and also is DPI aware
+on Win32, so it should look much better and be more accurate without
+Windows performing scaling for you. On top of this, there is generic
+DPI awareness in ScritchUI for when other platforms are eventually added. A
+bug was fixed as well, where if the height was requested for a display it
+would instead return the width.
+
+ScritchAudio now correctly initializes U8 buffers to the proper zero level,
+so if you happen to be using the worst audio format possible it will now
+sound a bit better. Additionally, there will be a slight boost to speed as
+it will no longer mix in the first stream of audio if it is pointless to do.
+
+For NanoCoat, there have also been important fixes regarding ILP32, ILP64,
+and ILLP64 platforms. MIPSr6 received a few compilation fixes in NanoCoat as
+it is now properly detected as a unique processor architecture.
+
+DoJa also had a tendency to not work properly since a refactor due to changes
+in how application properties were handled, this should be fixed.

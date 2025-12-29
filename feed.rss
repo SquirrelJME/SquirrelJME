@@ -17,8 +17,22 @@
 		rel="self" />
 
 	<!-- Update these accordingly! -->
-	<pubDate>Sat, 22 Nov 2025 17:00 EST</pubDate>
-	<lastBuildDate>Sat, 22 Nov 2025 17:00 EST</lastBuildDate>
+	<pubDate>Sun, 28 Dec 2025 21:00 EST</pubDate>
+	<lastBuildDate>Sun, 28 Dec 2025 21:00 EST</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">647dcab9-e0a9-44e6-a929-607c16640107</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20251228_2100.mkd</link>
+		<pubDate>Sun, 28 Dec 2025 21:00 EST</pubDate>
+
+		<title>The New Year</title>
+		<description>The next year is very much upon us, I am hopeful that for SquirrelJME's tenth
+year that SquirrelJME 0.4.0 is released at some point in 2025. However, in
+the meantime there have been a number of changes and updates which have
+occured.</description>
+	</item>
+
+	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">74c4dc1e-40b5-4753-8ce6-1b7c38d4d54d</guid>
@@ -81,8 +95,6 @@ will have to run the _Hosted_ version.
 There may be some audio issues on Windows as that is not my main development
 system.</description>
 	</item>
-
-	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">d4ff685b-5e4e-4ae6-aeeb-ee82bc4ede51</guid>
