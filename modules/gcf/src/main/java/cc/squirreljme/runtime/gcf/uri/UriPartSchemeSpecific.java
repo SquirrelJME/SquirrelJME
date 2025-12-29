@@ -12,19 +12,19 @@ package cc.squirreljme.runtime.gcf.uri;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Uri part has a fragment.
+ * URI has a scheme specific part.
  *
  * @since 2025/12/28
  */
 @SquirrelJMEVendorApi
-public interface UriPartFragment
+public interface UriPartSchemeSpecific
 {
 	/**
-	 * Gets the fragment of the Uri.
+	 * Returns the scheme specific part.
 	 *
-	 * @return The URI fragment.
+	 * @return The scheme specific part.
 	 * @since 2025/12/28
 	 */
 	@SquirrelJMEVendorApi
-	String getFragment();
+	String getSchemeSpecific();
 }

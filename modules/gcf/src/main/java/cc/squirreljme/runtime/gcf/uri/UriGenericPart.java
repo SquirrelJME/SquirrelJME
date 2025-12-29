@@ -42,19 +42,13 @@ public final class UriGenericPart
 	}
 	
 	@Override
-	public int compareTo(@NotNull UriPart __b)
-	{
-		throw Debugging.todo();
-	}
-	
-	@Override
 	public String getAuthority()
 	{
 		throw Debugging.todo();
 	}
 	
 	@Override
-	public String getPart()
+	public String getFragment()
 	{
 		throw Debugging.todo();
 	}

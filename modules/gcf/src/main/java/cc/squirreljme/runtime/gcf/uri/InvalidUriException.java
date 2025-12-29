@@ -31,4 +31,17 @@ public class InvalidUriException
 	{
 		super(__m);
 	}
+	
+	/**
+	 * Initializes the exception with the given cause.
+	 *
+	 * @param __m The message.
+	 * @param __c The cause.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	public InvalidUriException(String __m, Throwable __c)
+	{
+		super(__m, __c);
+	}
 }

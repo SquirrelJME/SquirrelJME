@@ -76,7 +76,22 @@ public final class Uri
 		if (__scheme == null || __part == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Check the scheme for valid characters
+		for (int n = __scheme.length(), i = 0; i < n; i++)
+		{
+			char c = __scheme.charAt(i);
+			
+			/* {@squirreljme.error EC24 Scheme contains an invalid
+			character. (The scheme; the invalid character)} */
+			if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || 
+				(i > 0 && ((c >= '0' && c <= '9') ||
+					c == '+' || c == '-' || c == '.'))))
+				throw new InvalidUriException(
+					__error__("EC24 %s %c", __scheme, c));
+		}
+		
+		this.scheme = __scheme;
+		this.part = __part;
 	}
 	
 	/**

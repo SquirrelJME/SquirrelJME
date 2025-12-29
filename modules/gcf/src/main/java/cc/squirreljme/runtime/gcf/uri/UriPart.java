@@ -9,8 +9,10 @@
 
 package cc.squirreljme.runtime.gcf.uri;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.UnsupportedEncodingException;
 import org.jetbrains.annotations.NotNull;
 
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
@@ -44,10 +46,25 @@ public abstract class UriPart
 		
 		// Remember the original full part
 		this.original = __part;
+		
+		// Perform a check for invalid characters
+		for (int n = __part.length(), i = 0; i < n; i++)
+		{
+			char c = __part.charAt(i);
+			
+			/* {@squirreljme.error EC23 Invalid URI character. (The URI part;
+			the character)} */
+			if (!UriPart.isFragment(c) &&
+				!UriPart.isGenDelim(c) &&
+				!UriPart.isHexDigit(c) &&
+				!UriPart.isPChar(c) &&
+				!UriPart.isReserved(c) &&
+				!UriPart.isSubDelim(c) &&
+				!UriPart.isUnreserved(c))
+				throw new InvalidUriException(
+					__error__("EC23 %s %c", __part, c));
+		}
 	}
-	
-	@Override
-	public abstract int compareTo(@NotNull UriPart __b);
 	
 	/**
 	 * Returns this URI as a generic URI.
@@ -73,8 +90,236 @@ public abstract class UriPart
 	 * @since 2025/12/28
 	 */
 	@Override
+	public final int compareTo(UriPart __b)
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// The original URIs are very different
+		int rv = this.original.compareTo(__b.original);
+		if (rv != 0)
+			return rv;
+		
+		// Are these actually the same class?
+		if (this.equals(__b))
+			return 0;
+		
+		// Otherwise order based on class type
+		return this.getClass().getName().compareTo(
+			__b.getClass().getName());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/28
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.original.hashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/28
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		else if (__o == null || this.getClass() != __o.getClass())
+			return false;
+		
+		// Must be the same original path and the same type
+		return this.original.equals(((UriPart)__o).original);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/28
+	 */
+	@Override
 	public final String toString()
 	{
 		return this.original;
+	}
+	
+	/**
+	 * Decodes the given string.
+	 *
+	 * @param __in The input string.
+	 * @return The resultant decoded characters.
+	 * @throws InvalidUriException If the input contains an invalid encoding.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	public static String decode(String __in)
+		throws InvalidUriException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// If there are no percents, then nothing actually needs to be
+		// decoded
+		int anyPercent = __in.indexOf('%');
+		if (anyPercent < 0)
+			return __in;
+		
+		// First get the bytes to process
+		byte[] inBytes;
+		try
+		{
+			inBytes = __in.getBytes("utf-8");
+		}
+		
+		// Should not occur
+		catch (UnsupportedEncodingException __e)
+		{
+			throw new InvalidUriException(__e.getMessage(), __e);
+		}
+		
+		// Go through and scan through to find percent indicators
+		int len = inBytes.length;
+		for (int i = 0; i < len; i++)
+		{
+			// Skip non-percent
+			if (inBytes[i] != '%')
+				continue;
+			
+			/* {@squirreljme.error EB25 URI section contains a truncated
+			escape sequence. (The input section)} */
+			if (i + 3 > len)
+				throw new InvalidUriException(
+					__error__("EB25 %s", __in));
+			
+			/* {@squirreljme.error EB25 URI section contains an invalid
+			escape sequence. (The input section)} */
+			int hi = Character.digit((char)inBytes[i + 1], 16);
+			int lo = Character.digit((char)inBytes[i + 2], 16);
+			if (hi < -1 || lo < -1)
+				throw new InvalidUriException(
+					__error__("EB26 %s", __in));
+			
+			// Replace the percent
+			inBytes[i] = (byte)((hi << 4) | lo);
+			
+			// Move the entire right chunk down
+			ObjectShelf.arrayCopy(inBytes, i + 3,
+				inBytes, i + 1, len - 2);
+			len -= 2;
+		}
+		
+		// Convert back to string
+		try
+		{
+			return new String(inBytes, 0, len, "utf-8");
+		}
+		
+		// Should not occur
+		catch (UnsupportedEncodingException __e)
+		{
+			throw new InvalidUriException(__e.getMessage(), __e);
+		}
+	}
+	
+	/**
+	 * Is this a valid gen-delimiter?
+	 *
+	 * @param __c The character to check.
+	 * @return If this is valid or not.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isGenDelim(char __c)
+	{
+		return __c == ':' || __c == '/' || __c == '?' || __c == '#' ||
+			__c == '[' || __c == ']' || __c == '@';
+	}
+	
+	/**
+	 * Is this a valid hexidecimal digit?
+	 *
+	 * @param __c The character to check.
+	 * @return If this is valid or not.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isHexDigit(char __c)
+	{
+		return (__c >= 'a' && __c <= 'f') || (__c >= 'A' && __c <= 'F') ||
+			(__c >= '0' && __c <= '9');
+	}
+	
+	/**
+	 * Is this a valid p-character?
+	 *
+	 * @param __c The character to check.
+	 * @return If this is valid or not.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isPChar(char __c)
+	{
+		return UriPart.isUnreserved(__c) || UriPart.isHexDigit(__c) ||
+			__c == '%' || __c == ':' || __c == '@';
+	}
+	
+	/**
+	 * Is this a valid reserved character?
+	 *
+	 * @param __c The character to check.
+	 * @return If this is valid or not.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isReserved(char __c)
+	{
+		return UriPart.isGenDelim(__c) || UriPart.isSubDelim(__c);
+	}
+	
+	/**
+	 * Is this a valid character for a fragment?
+	 *
+	 * @param __c The character to check.
+	 * @return If this is valid or not.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isFragment(char __c)
+	{
+		return __c == '/' || __c == '?' || UriPart.isPChar(__c);
+	}
+	
+	
+	/**
+	 * Is this a valid sub-delimiter?
+	 *
+	 * @param __c The character to check.
+	 * @return If this is valid or not.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isSubDelim(char __c)
+	{
+		return __c == '!' || __c == '$' || __c == '&' || __c == '\'' ||
+			__c == '(' || __c == ')' || __c == '*' || __c == '+' ||
+			__c == ',' || __c == ';' || __c == '=';
+	}
+	
+	/**
+	 * Is this a valid unreserved character?
+	 *
+	 * @param __c The character to check.
+	 * @return If this is valid or not.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isUnreserved(char __c)
+	{
+		return (__c >= 'a' && __c <= 'z') || (__c >= 'A' && __c <= 'Z') ||
+			(__c >= '0' && __c <= '9') || __c == '-' || __c == '.' ||
+			__c == '_' || __c == '~';
 	}
 }
