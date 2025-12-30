@@ -40,4 +40,13 @@ public interface UriPartPathParameter
 	 */
 	@SquirrelJMEVendorApi
 	int pathParamCount();
+	
+	/**
+	 * Returns the decoded path parameters, with no field splitting.
+	 *
+	 * @return The path parameters.
+	 * @since 2025/12/29
+	 */
+	@SquirrelJMEVendorApi
+	String pathParams();
 }

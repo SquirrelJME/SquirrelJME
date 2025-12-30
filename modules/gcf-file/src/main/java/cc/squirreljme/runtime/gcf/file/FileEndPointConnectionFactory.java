@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.gcf.file.real;
+package cc.squirreljme.runtime.gcf.file;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -18,17 +18,17 @@ import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionOption;
 
 /**
- * Provides access to {@link SystemFileConnection}.
+ * Factory for creating endpoint files.
  *
- * @since 2025/12/27
+ * @since 2025/12/29
  */
 @SquirrelJMEVendorApi
-public class SystemFileConnectionFactory
+public class FileEndPointConnectionFactory
 	implements CustomConnectionFactory
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/27
+	 * @since 2025/12/29
 	 */
 	@Override
 	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
@@ -40,7 +40,7 @@ public class SystemFileConnectionFactory
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/27
+	 * @since 2025/12/29
 	 */
 	@Override
 	public String scheme()

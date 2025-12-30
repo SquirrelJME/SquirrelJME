@@ -7,25 +7,19 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.gcf.uri;
+package cc.squirreljme.runtime.gcf.file;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.Closeable;
 
 /**
- * Not Described.
+ * This represents an endpoint for file connections, this performs the actual
+ * logic for direct file access.
  *
- * @since 2025/12/28
+ * @since 2025/12/29
  */
 @SquirrelJMEVendorApi
-public interface UriPartAuthority
+public abstract class FileEndPoint
+	implements Closeable
 {
-	/**
-	 * Returns the authority.
-	 *
-	 * @return The authority or {@code null} if there is none.
-	 * @since 2025/12/28
-	 */
-	@SquirrelJMEVendorApi
-	UriAuthority getAuthority();
 }

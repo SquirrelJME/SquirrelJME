@@ -11,14 +11,14 @@ package cc.squirreljme.runtime.gcf.file.real;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.gcf.file.AbstractFileConnection;
+import cc.squirreljme.runtime.gcf.file.FileEndPoint;
+import cc.squirreljme.runtime.gcf.file.FileEndPointConnection;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.nio.file.attribute.BasicFileAttributes;
 import javax.microedition.io.ConnectionNotFoundException;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A connection to a real system filesystem.
@@ -26,8 +26,8 @@ import org.jetbrains.annotations.NotNull;
  * @since 2025/12/27
  */
 @SquirrelJMEVendorApi
-public class SystemFileConnection
-	extends AbstractFileConnection
+public class SystemFileEndPoint
+	extends FileEndPoint
 {
 	/**
 	 * Initializes the file system connection.
@@ -37,7 +37,7 @@ public class SystemFileConnection
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	public SystemFileConnection(UriPart __part, int __mode)
+	public SystemFileEndPoint(UriPart __part, int __mode)
 		throws ConnectionNotFoundException
 	{
 		super(__part, __mode);
@@ -65,8 +65,8 @@ public class SystemFileConnection
 	}
 	
 	@Override
-	protected void changingFullPart(@NotNull String __part)
-		throws IOException, NullPointerException, SecurityException
+	protected void changingFullPart(UriPart __part)
+		throws IOException, SecurityException
 	{
 		throw Debugging.todo();
 	}

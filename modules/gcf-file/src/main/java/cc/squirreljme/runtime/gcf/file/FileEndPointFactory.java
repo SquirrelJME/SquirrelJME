@@ -7,25 +7,19 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.gcf.uri;
+package cc.squirreljme.runtime.gcf.file;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.ServiceLoader;
 
 /**
- * Not Described.
+ * Factory for file end-point handlers.
+ * 
+ * Used with {@link ServiceLoader}.
  *
- * @since 2025/12/28
+ * @since 2025/12/29
  */
 @SquirrelJMEVendorApi
-public interface UriPartAuthority
+public interface FileEndPointFactory
 {
-	/**
-	 * Returns the authority.
-	 *
-	 * @return The authority or {@code null} if there is none.
-	 * @since 2025/12/28
-	 */
-	@SquirrelJMEVendorApi
-	UriAuthority getAuthority();
 }

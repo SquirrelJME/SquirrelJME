@@ -10,20 +10,21 @@
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.gcf.file.FileEndPointFactory;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionOption;
 
 /**
- * Provides access to {@link AllVolumesConnection}.
+ * Provides access to {@link LibraryEndPoint}.
  *
  * @since 2025/12/27
  */
 @SquirrelJMEVendorApi
-public class AllVolumesConnectionFactory
-	implements CustomConnectionFactory
+public class LibraryEndPointFactory
+	implements FileEndPointFactory
 {
 	/**
 	 * {@inheritDoc}
@@ -34,11 +35,7 @@ public class AllVolumesConnectionFactory
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
 	{
-		if (__part == null)
-			throw new NullPointerException("NARG");
-		
-		// Use this, as there is only this
-		return new AllVolumesConnection(__part, __mode);
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -48,6 +45,6 @@ public class AllVolumesConnectionFactory
 	@Override
 	public String scheme()
 	{
-		return "x-squirreljme-volumes";
+		return "x-squirreljme-library";
 	}
 }

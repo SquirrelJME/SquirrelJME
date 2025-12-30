@@ -54,13 +54,7 @@ public abstract class UriPart
 			
 			/* {@squirreljme.error EC23 Invalid URI character. (The URI part;
 			the character)} */
-			if (!UriPart.isFragment(c) &&
-				!UriPart.isGenDelim(c) &&
-				!UriPart.isHexDigit(c) &&
-				!UriPart.isPChar(c) &&
-				!UriPart.isReserved(c) &&
-				!UriPart.isSubDelim(c) &&
-				!UriPart.isUnreserved(c))
+			if (!UriPart.isAny(c))
 				throw new InvalidUriException(
 					__error__("EC23 %s %c", __part, c));
 		}
@@ -225,6 +219,53 @@ public abstract class UriPart
 	}
 	
 	/**
+	 * Encodes the given string so it can be stored in the URI.
+	 *
+	 * @param __in The input string.
+	 * @return The resultant string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/29
+	 */
+	public static String encode(String __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// First determine if it actually needs to be encoded
+		int n = __in.length();
+		boolean needsEncode = false;
+		for (int i = 0; i < n; i++)
+			if (needsEncode |= UriPart.isAny(__in.charAt(i)))
+				break;
+		
+		// Does not need encoding?
+		if (!needsEncode)
+			return __in;
+		
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * Is this any valid URI character?
+	 *
+	 * @param __c The character to check.
+	 * @return If this is valid or not.
+	 * @since 2025/12/29
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isAny(char __c)
+	{
+		return __c == ':' || __c == '#' || __c == '[' || __c == ']' || 
+			__c == '@' || __c == '/' || __c == '?' || __c == '!' || 
+			__c == '$' || __c == '&' || __c == '\'' || __c == '(' || 
+			__c == ')' || __c == '*' || __c == '+' || __c == ',' || 
+			__c == ';' || __c == '=' || (__c >= 'a' && __c <= 'z') || 
+			(__c >= 'A' && __c <= 'Z') || (__c >= '0' && __c <= '9') || 
+			__c == '-' || __c == '.' || __c == '_' || __c == '~';
+	}
+	
+	/**
 	 * Is this a valid gen-delimiter?
 	 *
 	 * @param __c The character to check.
@@ -250,6 +291,12 @@ public abstract class UriPart
 	{
 		return (__c >= 'a' && __c <= 'f') || (__c >= 'A' && __c <= 'F') ||
 			(__c >= '0' && __c <= '9');
+	}
+	
+	@SquirrelJMEVendorApi
+	public static boolean isQuery(char __c)
+	{
+		return __c == '/' || __c == '?' || UriPart.isPChar(__c);
 	}
 	
 	/**
@@ -321,5 +368,24 @@ public abstract class UriPart
 		return (__c >= 'a' && __c <= 'z') || (__c >= 'A' && __c <= 'Z') ||
 			(__c >= '0' && __c <= '9') || __c == '-' || __c == '.' ||
 			__c == '_' || __c == '~';
+	}
+	
+	/**
+	 * Splits with the delimiter and then decodes the parameters.
+	 *
+	 * @param __in The input string.
+	 * @param __delim The delimiter to use.
+	 * @return The split string with delimiters
+	 * @throws InvalidUriException If the decoded path is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/29
+	 */
+	public static String[] splitDecode(String __in, char __delim)
+		throws InvalidUriException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		throw Debugging.todo();
 	}
 }

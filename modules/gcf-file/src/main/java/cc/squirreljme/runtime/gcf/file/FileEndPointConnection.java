@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.gcf.AbstractStreamConnection;
+import cc.squirreljme.runtime.gcf.uri.Uri;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +22,8 @@ import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.ConnectionClosedException;
@@ -29,6 +32,8 @@ import javax.microedition.io.file.IllegalModeException;
 import net.multiphasicapps.collections.UnmodifiableArrayList;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * Base implementation for file connections.
@@ -36,10 +41,17 @@ import org.jetbrains.annotations.NotNull;
  * @since 2025/12/26
  */
 @SquirrelJMEVendorApi
-public abstract class AbstractFileConnection
+public final class FileEndPointConnection
 	extends AbstractStreamConnection
 	implements FileConnection
 {
+	/** The mapping between directory contents and URIs. */
+	private final Map<String, Uri> _dirListing =
+		new HashMap<>();
+	
+	/** The current part. */
+	private volatile UriPart _current;
+	
 	/**
 	 * Initializes the base connection.
 	 *
@@ -51,7 +63,7 @@ public abstract class AbstractFileConnection
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	protected AbstractFileConnection(
+	protected FileEndPointConnection(
 		@NotNull UriPart __part,
 		@MagicConstant(valuesFromClass = Connector.class) int __mode)
 		throws ConnectionNotFoundException, IllegalArgumentException,
@@ -109,20 +121,19 @@ public abstract class AbstractFileConnection
 	/**
 	 * This is called before the full part is being changed.
 	 *
-	 * @param __part The new part.
+	 * @param __part The new part, if {@code null} then none is set.
 	 * @throws IOException If the part could not be changed.
-	 * @throws NullPointerException On null arguments.
 	 * @throws SecurityException If the operation was not permitted.
 	 * @since 2025/12/28
 	 */
 	@SquirrelJMEVendorApi
-	protected abstract void changingFullPart(@NotNull String __part)
-		throws IOException, NullPointerException, SecurityException;
+	protected abstract void changingFullPart(@Nullable UriPart __part)
+		throws IOException, SecurityException;
 	
 	/**
 	 * Returns the list of directory contents, all returned values are
 	 * considered to be URI parts to be passed
-	 * to {@link #changeFullPart(String)}.
+	 * to {@link #changeFullPart(UriPart)}.
 	 *
 	 * @param __includeHidden Should file that are hidden be included?
 	 * @return The directory content listing, if the resultant string is a
@@ -196,7 +207,34 @@ public abstract class AbstractFileConnection
 	protected void changeFullPart(@NotNull UriPart __part)
 		throws IOException, NullPointerException, SecurityException
 	{
-		throw Debugging.todo();
+		if (__part == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		Debugging.debugNote("cfp(%s)", __part);
+		
+		// This needs to happen in the lock
+		synchronized (this)
+		{
+			// Remove the old part and any references that could be open
+			UriPart current = this._current;
+			if (current != null)
+				try
+				{
+					this.changingFullPart(null);
+				}
+				finally
+				{
+					this._current = null;
+				}
+			
+			// Indicate that the new part is changing
+			this.changingFullPart(__part);
+			
+			// Set it now that it is valid, if an exception was thrown before
+			// this then the part is not valid
+			this._current = __part;
+		}
 	}
 	
 	@Override

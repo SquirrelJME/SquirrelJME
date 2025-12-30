@@ -39,4 +39,13 @@ public interface UriPartQueryParameter
 	 */
 	@SquirrelJMEVendorApi
 	int queryParamCount();
+	
+	/**
+	 * Returns the decoded query parameters, with no field splitting.
+	 *
+	 * @return The query parameters.
+	 * @since 2025/12/29
+	 */
+	@SquirrelJMEVendorApi
+	String queryParams();
 }
