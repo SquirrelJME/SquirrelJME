@@ -149,4 +149,128 @@ public final class ContentTypeUtil
 				return null;
 		}
 	}
+	
+	/**
+	 * Is this a media type?
+	 *
+	 * @param __type The input type.
+	 * @return If this is a media type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/30
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isMedia(
+		@Language("mime-type-reference") String __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		return ContentTypeUtil.isMediaAudio(__type) ||
+			ContentTypeUtil.isMediaImage(__type) ||
+			ContentTypeUtil.isMediaVideo(__type);
+	}
+	
+	/**
+	 * Is this an audio type?
+	 *
+	 * @param __type The input type.
+	 * @return If this is an audio type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/30
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isMediaAudio(
+		@Language("mime-type-reference") String __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		// Generic?
+		if (__type.startsWith("audio/"))
+			return true;
+		
+		switch (__type)
+		{
+			case "audio/midi":
+			case "application/x-mld-music":
+			case "audio/wave":
+			case "audio/basic":
+			case "audio/aiff":
+			case "audio/mpeg":
+			case "application/vnd.nokia.ota":
+				return true;
+		}
+		
+		return false;
+		
+	}
+	
+	/**
+	 * Is this an image type?
+	 *
+	 * @param __type The input type.
+	 * @return If this is an image type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/30
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isMediaImage(
+		@Language("mime-type-reference") String __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		// Generic?
+		if (__type.startsWith("image/"))
+			return true;
+		
+		switch (__type)
+		{
+			case "image/png":
+			case "image/bmp":
+			case "image/x-xpixmap":
+			case "image/x-portable-bitmap":
+			case "image/x-portable-graymap":
+			case "image/x-portable-pixmap":
+			case "image/x-portable-anymap":
+			case "image/jpeg":
+			case "image/svg+xml":
+				return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Is this a video type?
+	 *
+	 * @param __type The input type.
+	 * @return If this is a video type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/30
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isMediaVideo(
+		@Language("mime-type-reference") String __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		// Generic?
+		if (__type.startsWith("video/"))
+			return true;
+		
+		switch (__type)
+		{
+			case "image/gif":
+			case "video/mpeg":
+				return true;
+		}
+		
+		return false;
+	}
 }

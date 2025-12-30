@@ -40,6 +40,9 @@ idea
 		excludeDirs += file("manifest")
 		excludeDirs += file("manifest.uuid")
 		
+		// Patches
+		excludeDirs += file("patches")
+		
 		// Emulator Base Native Code
 		excludeDirs += file("emulators/emulator-base-native/cmake-build-debug")
 		excludeDirs += file("emulators/emulator-base-native/cmake-build-release")

@@ -102,10 +102,10 @@ public final class UriGenericPart
 		
 		// Path must start with slash-slash
 		/* {@squirreljme.error EC28 URI does not start with slash-slash.
-		(The URI) */
+		(The URI; The authority/path) */
 		if (!authPath.startsWith("//"))
 			throw new InvalidUriException(
-				ErrorCode.__error__("EC28 %s", __part));
+				ErrorCode.__error__("EC28 %s %s", __part, authPath));
 		
 		/* {@squirreljme.error EC29 URI too short. (The URI)} */
 		if (authPath.length() < 3)
@@ -123,7 +123,7 @@ public final class UriGenericPart
 		// There is an authority
 		else
 		{
-			this.authority = new UriAuthority(authPath.substring(1, fs));
+			this.authority = new UriAuthority(authPath.substring(2, fs));
 			this.path = authPath.substring(fs);
 		}
 		

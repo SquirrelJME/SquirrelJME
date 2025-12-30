@@ -30,6 +30,7 @@ public abstract class AbstractBaseConnection
 {
 	/** The mode this connection is opened in. */
 	@SquirrelJMEVendorApi
+	@MagicConstant(flagsFromClass = Connector.class)
 	protected final int mode;
 	
 	/** Has this been closed? */
@@ -44,7 +45,7 @@ public abstract class AbstractBaseConnection
 	 */
 	@SquirrelJMEVendorApi
 	protected AbstractBaseConnection(
-		@MagicConstant(valuesFromClass = Connector.class) int __mode)
+		@MagicConstant(flagsFromClass = Connector.class) int __mode)
 		throws IllegalArgumentException
 	{
 		/* {@squirreljme.error EC20 Invalid connection mode. (The mode)} */

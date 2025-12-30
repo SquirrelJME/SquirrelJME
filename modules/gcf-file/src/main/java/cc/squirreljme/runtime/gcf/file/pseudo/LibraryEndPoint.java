@@ -13,16 +13,16 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
-import cc.squirreljme.runtime.gcf.file.FileEndPointConnection;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
-import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Map;
 import javax.microedition.io.ConnectionNotFoundException;
+import org.jetbrains.annotations.NotNull;
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -35,6 +35,16 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 public class LibraryEndPoint
 	extends FileEndPoint
 {
+	/** Host. */
+	@SquirrelJMEVendorApi
+	public static final String HOST =
+		"!%3Fx-squirreljme-library%3A%2F%2F%3F!";
+	
+	/** Decoded host. */
+	@SquirrelJMEVendorApi
+	public static final String DECODED_HOST =
+		"!?x-squirreljme-library://?!";
+	
 	/** The Jar being accessed. */
 	@SquirrelJMEVendorApi
 	protected final JarPackageBracket jar;
@@ -48,19 +58,14 @@ public class LibraryEndPoint
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	public LibraryEndPoint(UriPart __part, int __mode)
+	public LibraryEndPoint(UriGenericPart __part, int __mode)
 		throws ConnectionNotFoundException
 	{
-		/* {@squirreljme.error GF03 Incorrect URI for this connection.
-		(The URI; The passed type)} */
-		if (!(__part instanceof UriGenericPart))
-			throw new ConnectionNotFoundException(
-				__error__("GF03 %s %s", __part, __part.getClass()));
+		super(__part, __mode);
 		
 		/* {@squirreljme.error GF04 Library connection has no host.
 		(The URI)} */
-		UriGenericPart part = (UriGenericPart)__part;
-		UriAuthority auth = part.getAuthority();
+		UriAuthority auth = __part.getAuthority();
 		String desireName = (auth == null ? null : auth.host());
 		if (auth == null || desireName == null || desireName.isEmpty())
 			throw new ConnectionNotFoundException(
@@ -121,12 +126,14 @@ public class LibraryEndPoint
 		this.jar = jar;
 	}
 	
-	protected BasicFileAttributes attachedAttributes()
+	@Override
+	protected ExtraFileAttributes attachedAttributes()
 		throws SecurityException
 	{
 		throw Debugging.todo();
 	}
 	
+	@Override
 	protected FileStore attachedFileStore()
 		throws SecurityException
 	{
@@ -137,6 +144,7 @@ public class LibraryEndPoint
 	 * {@inheritDoc}
 	 * @since 2025/12/27
 	 */
+	@Override
 	protected FileSystem attachedFileSystem()
 		throws SecurityException
 	{
@@ -144,8 +152,9 @@ public class LibraryEndPoint
 		return null;
 	}
 	
-	protected void changingFullPart(UriPart __part)
-		throws IOException, SecurityException
+	@Override
+	protected void listDirectory(@NotNull Map<String, UriGenericPart> __into)
+		throws IOException, NullPointerException, SecurityException
 	{
 		throw Debugging.todo();
 	}

@@ -15,6 +15,8 @@ import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.IOException;
 import java.util.ServiceLoader;
 import javax.microedition.io.ConnectionNotFoundException;
+import javax.microedition.io.Connector;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * Factory for file end-point handlers.
@@ -30,6 +32,7 @@ public interface FileEndPointFactory
 	 * Connects to the given endpoint.
 	 *
 	 * @param __uri The URI to connect to.
+	 * @param __mode
 	 * @return The resultant endpoint connection.
 	 * @throws ConnectionNotFoundException If the endpoint was not found.
 	 * @throws IOException On any other error.
@@ -37,7 +40,8 @@ public interface FileEndPointFactory
 	 * @since 2025/12/29
 	 */
 	@SquirrelJMEVendorApi
-	FileEndPoint connect(UriGenericPart __uri)
+	FileEndPoint connect(UriGenericPart __uri,
+		@MagicConstant(flagsFromClass = Connector.class) int __mode)
 		throws ConnectionNotFoundException, IOException,
 			NullPointerException;
 	

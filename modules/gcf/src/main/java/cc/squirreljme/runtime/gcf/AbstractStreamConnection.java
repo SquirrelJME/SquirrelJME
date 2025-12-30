@@ -37,7 +37,7 @@ public abstract class AbstractStreamConnection
 	 */
 	@SquirrelJMEVendorApi
 	protected AbstractStreamConnection(
-		@MagicConstant(valuesFromClass = Connector.class) int __mode)
+		@MagicConstant(flagsFromClass = Connector.class) int __mode)
 		throws IllegalArgumentException
 	{
 		super(__mode);

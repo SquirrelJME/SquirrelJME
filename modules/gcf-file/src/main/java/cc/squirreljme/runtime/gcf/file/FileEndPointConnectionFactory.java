@@ -47,7 +47,7 @@ public class FileEndPointConnectionFactory
 				__error__("GF09 %s", __part));
 		
 		return new FileEndPointConnection(__mode)
-			.changeEndPoint((UriGenericPart)__part);
+			.__changeEndPoint((UriGenericPart)__part);
 	}
 	
 	/**

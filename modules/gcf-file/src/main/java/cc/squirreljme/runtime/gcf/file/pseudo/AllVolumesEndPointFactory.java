@@ -15,11 +15,10 @@ import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.file.FileEndPointFactory;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
-import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
-import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
-import javax.microedition.io.ConnectionOption;
+import javax.microedition.io.Connector;
+import org.intellij.lang.annotations.MagicConstant;
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -36,20 +35,14 @@ public class AllVolumesEndPointFactory
 	 * @since 2025/12/29
 	 */
 	@Override
-	public FileEndPoint connect(UriGenericPart __uri)
+	public FileEndPoint connect(UriGenericPart __uri,
+		@MagicConstant(flagsFromClass = Connector.class) int __mode)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
 		if (__uri == null)
 			throw new NullPointerException("NARG");
 		
-		// Must always be the root component
-		/* {@squirreljme.error GF0a All volume connection is only valid
-		when there is only the root path specified.} */
-		if (!"/".equals(__uri.getPath()))
-			throw new ConnectionNotFoundException(
-				__error__("GF0a %s", __uri));
-		
-		return new AllVolumesEndPoint();
+		return new AllVolumesEndPoint(__uri, __mode);
 	}
 	
 	/**
@@ -69,6 +62,6 @@ public class AllVolumesEndPointFactory
 			return false;
 		
 		// Must be a specific hostname
-		return "!?x-squirreljme-all-volumes://?!".equals(host);
+		return AllVolumesEndPoint.DECODED_HOST.equals(host);
 	}
 }

@@ -56,7 +56,7 @@ public class HTTPClientConnection
 	 */
 	public HTTPClientConnection(HTTPAddress __addr,
 		HTTPAgentConnector __connector,
-		@MagicConstant(valuesFromClass = Connector.class) int __mode)
+		@MagicConstant(flagsFromClass = Connector.class) int __mode)
 		throws NullPointerException
 	{
 		super(__mode);

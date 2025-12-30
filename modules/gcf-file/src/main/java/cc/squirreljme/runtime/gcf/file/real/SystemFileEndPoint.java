@@ -11,14 +11,14 @@ package cc.squirreljme.runtime.gcf.file.real;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
-import cc.squirreljme.runtime.gcf.file.FileEndPointConnection;
-import cc.squirreljme.runtime.gcf.uri.UriPart;
+import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
-import java.nio.file.attribute.BasicFileAttributes;
-import javax.microedition.io.ConnectionNotFoundException;
+import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A connection to a real system filesystem.
@@ -29,40 +29,38 @@ import javax.microedition.io.ConnectionNotFoundException;
 public class SystemFileEndPoint
 	extends FileEndPoint
 {
-	/**
-	 * Initializes the file system connection.
-	 *
-	 * @param __mode The mode this is opened in.
-	 * @throws ConnectionNotFoundException If the part is not valid.
-	 * @since 2025/12/27
-	 */
-	@SquirrelJMEVendorApi
-	public SystemFileEndPoint(UriPart __part, int __mode)
-		throws ConnectionNotFoundException
+	public SystemFileEndPoint(@NotNull UriGenericPart __part, int __mode)
+		throws NullPointerException
 	{
+		super(__part, __mode);
+		
 		throw Debugging.todo();
 	}
 	
-	protected BasicFileAttributes attachedAttributes()
+	@Override
+	protected ExtraFileAttributes attachedAttributes()
 		throws SecurityException
 	{
 		throw Debugging.todo();
 	}
 	
+	@Override
 	protected FileStore attachedFileStore()
 		throws SecurityException
 	{
 		throw Debugging.todo();
 	}
 	
+	@Override
 	protected FileSystem attachedFileSystem()
 		throws SecurityException
 	{
 		throw Debugging.todo();
 	}
 	
-	protected void changingFullPart(UriPart __part)
-		throws IOException, SecurityException
+	@Override
+	protected void listDirectory(@NotNull Map<String, UriGenericPart> __into)
+		throws IOException, NullPointerException, SecurityException
 	{
 		throw Debugging.todo();
 	}
@@ -70,12 +68,6 @@ public class SystemFileEndPoint
 	@Override
 	public void close()
 		throws IOException
-	{
-		throw Debugging.todo();
-	}
-	
-	protected String[] directoryListParts(boolean __includeHidden)
-		throws IOException, SecurityException
 	{
 		throw Debugging.todo();
 	}

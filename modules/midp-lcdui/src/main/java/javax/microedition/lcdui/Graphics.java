@@ -164,7 +164,7 @@ public abstract class Graphics
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
 		int __dx, int __dy,
-		@MagicConstant(valuesFromClass = Graphics.class) int __anchor)
+		@MagicConstant(flagsFromClass = Graphics.class) int __anchor)
 		throws IllegalArgumentException, IllegalStateException;
 	
 	/**
@@ -215,7 +215,7 @@ public abstract class Graphics
 	
 	@Api
 	public abstract void drawChar(char __s, int __x, int __y,
-		@MagicConstant(valuesFromClass = Graphics.class) int __anchor);
+		@MagicConstant(flagsFromClass = Graphics.class) int __anchor);
 	
 	/**
 	 * Draws the given characters.
@@ -237,7 +237,7 @@ public abstract class Graphics
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l,
 		int __x, int __y,
-		@MagicConstant(valuesFromClass = Graphics.class) int __anchor)
+		@MagicConstant(flagsFromClass = Graphics.class) int __anchor)
 		throws IllegalArgumentException, IndexOutOfBoundsException,
 			NullPointerException;
 	
@@ -258,7 +258,7 @@ public abstract class Graphics
 	 */
 	@Api
 	public abstract void drawImage(@NotNull Image __i, int __x, int __y,
-		@MagicConstant(valuesFromClass = Graphics.class) int __anchor)
+		@MagicConstant(flagsFromClass = Graphics.class) int __anchor)
 		throws IllegalArgumentException, NullPointerException;
 	
 	/**
@@ -333,9 +333,9 @@ public abstract class Graphics
 		int __xsrc, int __ysrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wsrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hsrc,
-		@MagicConstant(valuesFromClass = Sprite.class) int __trans,
+		@MagicConstant(flagsFromClass = Sprite.class) int __trans,
 		int __xdest, int __ydest,
-		@MagicConstant(valuesFromClass = Graphics.class) int __anch)
+		@MagicConstant(flagsFromClass = Graphics.class) int __anch)
 		throws IllegalArgumentException, NullPointerException;
 	
 	/**
@@ -364,9 +364,9 @@ public abstract class Graphics
 		int __xsrc, int __ysrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wsrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hsrc,
-		@MagicConstant(valuesFromClass = Sprite.class) int __trans,
+		@MagicConstant(flagsFromClass = Sprite.class) int __trans,
 		int __xdest, int __ydest,
-		@MagicConstant(valuesFromClass = Graphics.class) int __anch,
+		@MagicConstant(flagsFromClass = Graphics.class) int __anch,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wdest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hdest)
 		throws IllegalArgumentException, NullPointerException;
@@ -403,7 +403,7 @@ public abstract class Graphics
 	 */
 	@Api
 	public abstract void drawString(@NotNull String __s, int __x, int __y,
-		@MagicConstant(valuesFromClass = Graphics.class) int __anchor)
+		@MagicConstant(flagsFromClass = Graphics.class) int __anchor)
 		throws NullPointerException;
 	
 	/**
@@ -425,7 +425,7 @@ public abstract class Graphics
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __l,
 		int __x, int __y,
-		@MagicConstant(valuesFromClass = Graphics.class) int __anchor)
+		@MagicConstant(flagsFromClass = Graphics.class) int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException;
 	
 	@Api

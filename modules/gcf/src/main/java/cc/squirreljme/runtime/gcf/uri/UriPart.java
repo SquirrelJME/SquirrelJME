@@ -200,8 +200,10 @@ public abstract class UriPart
 			inBytes[i] = (byte)((hi << 4) | lo);
 			
 			// Move the entire right chunk down
-			ObjectShelf.arrayCopy(inBytes, i + 3,
-				inBytes, i + 1, len - 2);
+			if (i + 3 < len)
+				ObjectShelf.arrayCopy(inBytes, i + 3,
+					inBytes, i + 1, (len - (i + 1)) - 2);
+			ObjectShelf.arrayFill(inBytes, len - 2, 2, (byte)0);
 			len -= 2;
 		}
 		
@@ -236,12 +238,15 @@ public abstract class UriPart
 		int n = __in.length();
 		boolean needsEncode = false;
 		for (int i = 0; i < n; i++)
-			if (needsEncode |= UriPart.isAny(__in.charAt(i)))
+			if (needsEncode |= (!UriPart.isAny(__in.charAt(i))))
 				break;
 		
 		// Does not need encoding?
 		if (!needsEncode)
 			return __in;
+		
+		// Debug
+		Debugging.debugNote("Encode(%s)", __in);
 		
 		throw Debugging.todo();
 	}
@@ -262,7 +267,8 @@ public abstract class UriPart
 			__c == ')' || __c == '*' || __c == '+' || __c == ',' || 
 			__c == ';' || __c == '=' || (__c >= 'a' && __c <= 'z') || 
 			(__c >= 'A' && __c <= 'Z') || (__c >= '0' && __c <= '9') || 
-			__c == '-' || __c == '.' || __c == '_' || __c == '~';
+			__c == '-' || __c == '.' || __c == '_' || __c == '~' ||
+			__c == '%';
 	}
 	
 	/**

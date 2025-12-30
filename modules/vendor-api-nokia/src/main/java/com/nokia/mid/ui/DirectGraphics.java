@@ -127,8 +127,8 @@ public interface DirectGraphics
 	@ApiDefinedDeprecated
 	@Api
 	void drawImage(@NotNull Image __img, int __x, int __y,
-		@MagicConstant(valuesFromClass = Graphics.class) int __anchor,
-		@MagicConstant(valuesFromClass = DirectGraphics.class)
+		@MagicConstant(flagsFromClass = Graphics.class) int __anchor,
+		@MagicConstant(flagsFromClass = DirectGraphics.class)
 		int __manipulation);
 
 	/**
@@ -160,9 +160,9 @@ public interface DirectGraphics
 		int __offset, int __scanlength, int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
-		@MagicConstant(valuesFromClass = DirectGraphics.class) 
+		@MagicConstant(flagsFromClass = DirectGraphics.class) 
 		int __manipulation,
-		@MagicConstant(valuesFromClass = DirectGraphics.class) int __format);
+		@MagicConstant(flagsFromClass = DirectGraphics.class) int __format);
 
 	/**
 	 * Draws the pixel data from the specified array onto the specified region
@@ -191,9 +191,9 @@ public interface DirectGraphics
 		int __offset, int __scanlength, int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
-		@MagicConstant(valuesFromClass = DirectGraphics.class) 
+		@MagicConstant(flagsFromClass = DirectGraphics.class) 
 		int __manipulation,
-		@MagicConstant(valuesFromClass = DirectGraphics.class) int __format);
+		@MagicConstant(flagsFromClass = DirectGraphics.class) int __format);
 
 	/**
 	 * Draws the pixel data from the specified array onto the specified region
@@ -222,7 +222,7 @@ public interface DirectGraphics
 		int __offset, int __scanlength, int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE)int __w,
 		@Range(from = 0, to = Integer.MAX_VALUE)int __h,
-		@MagicConstant(valuesFromClass = DirectGraphics.class) 
+		@MagicConstant(flagsFromClass = DirectGraphics.class) 
 		int __manipulation,
 		@MagicConstant(valuesFromClass = DirectGraphics.class) int __format);
 

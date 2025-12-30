@@ -13,18 +13,18 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.gcf.AbstractStreamConnection;
-import cc.squirreljme.runtime.gcf.uri.Uri;
+import cc.squirreljme.runtime.gcf.file.real.SystemFileEndPoint;
+import cc.squirreljme.runtime.gcf.uri.UriAuthority;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
-import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.FileStore;
-import java.nio.file.FileSystem;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.Connector;
@@ -34,7 +34,6 @@ import javax.microedition.io.file.IllegalModeException;
 import net.multiphasicapps.collections.UnmodifiableArrayList;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -47,12 +46,16 @@ public final class FileEndPointConnection
 	extends AbstractStreamConnection
 	implements FileConnection
 {
-	/** The mapping between directory contents and URIs. */
-	private final Map<String, Uri> _dirListing =
-		new HashMap<>();
+	/** Service loader for file endpoint handlers. */
+	private static final ServiceLoader<FileEndPointFactory> _SERVICE =
+		ServiceLoader.load(FileEndPointFactory.class);
 	
-	/** The current part. */
-	private volatile UriPart _current;
+	/** The directory listing file to part cache. */
+	private final Map<String, UriGenericPart> _listing =
+		new LinkedHashMap<>();
+	
+	/** The currently connected endpoint. */
+	private volatile FileEndPoint _current;
 	
 	/**
 	 * Initializes the base connection.
@@ -64,92 +67,10 @@ public final class FileEndPointConnection
 	 */
 	@SquirrelJMEVendorApi
 	public FileEndPointConnection(
-		@MagicConstant(valuesFromClass = Connector.class) int __mode)
+		@MagicConstant(flagsFromClass = Connector.class) int __mode)
 		throws IllegalArgumentException, NullPointerException
 	{
 		super(__mode);
-	}
-	
-	/**
-	 * Returns the attributes which are currently attached.
-	 *
-	 * @return The attached attributes.
-	 * @throws SecurityException If this operation is not permitted.
-	 * @since 2025/12/27
-	 */
-	@SquirrelJMEVendorApi
-	protected BasicFileAttributes attachedAttributes()
-		throws SecurityException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Returns the attached file store.
-	 *
-	 * @return The attached file store or {@code null} if not available.
-	 * @throws SecurityException If this operation is not permitted.
-	 * @since 2025/12/27
-	 */
-	@SquirrelJMEVendorApi
-	protected FileStore attachedFileStore()
-		throws SecurityException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Returns the attached filesystem.
-	 *
-	 * @return The attached filesystem or {@code null} if not available.
-	 * @throws SecurityException If this operation is not permitted.
-	 * @since 2025/12/27
-	 */
-	@SquirrelJMEVendorApi
-	protected FileSystem attachedFileSystem()
-		throws SecurityException
-	{
-		throw Debugging.todo();
-	}
-	
-	protected Connection changeEndPoint(UriGenericPart __part)
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * This is called before the full part is being changed.
-	 *
-	 * @param __part The new part, if {@code null} then none is set.
-	 * @throws IOException If the part could not be changed.
-	 * @throws SecurityException If the operation was not permitted.
-	 * @since 2025/12/28
-	 */
-	@SquirrelJMEVendorApi
-	protected void changingFullPart(@Nullable UriPart __part)
-		throws IOException, SecurityException
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * Returns the list of directory contents, all returned values are
-	 * considered to be URI parts to be passed
-	 * to {@link #changeFullPart(UriPart)}.
-	 *
-	 * @param __includeHidden Should file that are hidden be included?
-	 * @return The directory content listing, if the resultant string is a
-	 * URI it should be treated as such.
-	 * @throws IOException If the directory could not be listed or other
-	 * read errors.
-	 * @throws SecurityException If this operation is not permitted. 
-	 * @since 2025/12/28
-	 */
-	@SquirrelJMEVendorApi
-	protected String[] directoryListParts(boolean __includeHidden)
-		throws IOException, SecurityException
-	{
-		throw Debugging.todo();
 	}
 	
 	/**
@@ -184,7 +105,13 @@ public final class FileEndPointConnection
 	protected final void becomingClosed()
 		throws IOException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// Does the old endpoint need to be closed?
+			FileEndPoint current = this._current;
+			if (current != null)
+				this.__currentClose();
+		}
 	}
 	
 	@Override
@@ -197,49 +124,6 @@ public final class FileEndPointConnection
 	public final boolean canWrite()
 	{
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * Sets the full file part.
-	 *
-	 * @param __part The part to change to.
-	 * @throws IOException If it could not be changed.
-	 * @throws NullPointerException On null arguments.
-	 * @throws SecurityException If the operation is not permitted.
-	 * @since 2025/12/28
-	 */
-	@SquirrelJMEVendorApi
-	protected void changeFullPart(@NotNull UriPart __part)
-		throws IOException, NullPointerException, SecurityException
-	{
-		if (__part == null)
-			throw new NullPointerException("NARG");
-		
-		// Debug
-		Debugging.debugNote("cfp(%s)", __part);
-		
-		// This needs to happen in the lock
-		synchronized (this)
-		{
-			// Remove the old part and any references that could be open
-			UriPart current = this._current;
-			if (current != null)
-				try
-				{
-					this.changingFullPart(null);
-				}
-				finally
-				{
-					this._current = null;
-				}
-			
-			// Indicate that the new part is changing
-			this.changingFullPart(__part);
-			
-			// Set it now that it is valid, if an exception was thrown before
-			// this then the part is not valid
-			this._current = __part;
-		}
 	}
 	
 	@Override
@@ -340,6 +224,10 @@ public final class FileEndPointConnection
 		return this.list("*", false);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/30
+	 */
 	@Override
 	public final Enumeration list(@NotNull String __filter,
 		boolean __includeHidden)
@@ -352,19 +240,38 @@ public final class FileEndPointConnection
 			this.checkClosed();
 			this.checkRead();
 			
+			// Not connected to any endpoint?
+			FileEndPoint current = this.__current();
+			if (current == null)
+				throw new IOException("DISC");
+			
 			// Not a directory?
 			if (!this.isDirectory())
-				throw new IOException("NOPE"); 
+				throw new IOException("NOPE");
 			
-			// Get list of contents
-			contents = this.directoryListParts(__includeHidden);
-			if (contents == null)
-				contents = new String[0]; 
+			// Need to load the directory list?
+			Map<String, UriGenericPart> listing = this._listing;
+			if (listing.isEmpty())
+				try
+				{
+					current.listDirectory(listing);
+				}
+				catch (IOException|RuntimeException __e)
+				{
+					// Invalidate the directory listing
+					listing.clear();
+					
+					// Retoss
+					throw __e;
+				}
+			
+			// Only keep the keys from the listing
+			contents = listing.keySet().toArray(new String[listing.size()]);
 		}
 		
 		// Filter and wrap accordingly (because Enumeration is terrible)
-		return new IteratorToEnumeration<String>(
-			new __BasicGlobFilter__(__filter,
+		return new IteratorToEnumeration<>(
+			new BasicGlobFilter(__filter,
 				UnmodifiableArrayList.of(contents).iterator()));
 	}
 	
@@ -451,6 +358,105 @@ public final class FileEndPointConnection
 	}
 	
 	/**
+	 * This is called to change the endpoint.
+	 *
+	 * @param __part The new part, if {@code null} then none is set.
+	 * @return {@code this}.
+	 * @throws IOException If the part could not be changed.
+	 * @throws SecurityException If the operation was not permitted.
+	 * @since 2025/12/28
+	 */
+	@SuppressWarnings("resource")
+	@SquirrelJMEVendorApi
+	Connection __changeEndPoint(UriGenericPart __part)
+		throws ConnectionNotFoundException, IOException, SecurityException
+	{
+		synchronized (this)
+		{
+			// Does the old endpoint need to be closed?
+			FileEndPoint current = this._current;
+			if (current != null)
+				this.__currentClose();
+			
+			// Setting a new endpoint?
+			if (__part != null)
+			{
+				FileEndPoint endPoint = null;
+				int mode = this.mode;
+				
+				// If there is no host, we know it is this system
+				UriAuthority auth = __part.getAuthority();
+				if (auth == null || auth.host() == null ||
+					auth.host().isEmpty())
+					endPoint = new SystemFileEndPoint(__part, mode);
+				
+				// Find the matching service, if non-default
+				if (endPoint == null)
+					for (FileEndPointFactory it :
+						FileEndPointConnection._SERVICE)
+						if (it.handleAuthority(auth))
+						{
+							endPoint = it.connect(__part, mode);
+							break;
+						}
+				
+				// Nothing found?
+				/* {@squirreljme.error EC30 No endpoint was found that
+				can handle the given authority. (The URI; The authority)} */
+				if (endPoint == null)
+					throw new ConnectionNotFoundException(
+						__error__("EC30 %s", __part, auth));
+				
+				// Use this one
+				this._current = endPoint;
+			}
+		}
+		
+		// Self
+		return this;
+	}
+	
+	/**
+	 * Returns the currently attached endpoint.
+	 *
+	 * @return The current endpoint.
+	 * @since 2025/12/30
+	 */
+	FileEndPoint __current()
+	{
+		synchronized (this)
+		{
+			return this._current;
+		}
+	}
+	
+	/**
+	 * Closes the current endpoint.
+	 *
+	 * @throws IOException If it could not be closed.
+	 * @since 2025/12/30
+	 */
+	private void __currentClose()
+		throws IOException
+	{
+		synchronized (this)
+		{
+			FileEndPoint current = this._current;
+			if (current != null)
+			{
+				// Clear
+				this._current = null;
+				
+				// Invalidate the directory cache
+				this._listing.clear();
+				
+				// Close the underlying endpoint
+				current.close();
+			}
+		}
+	}
+	
+	/**
 	 * Get and check file attributes.
 	 *
 	 * @return The file attributes.
@@ -464,7 +470,10 @@ public final class FileEndPointConnection
 			this.checkRead();
 			
 			// Are there attributes?
-			return this.attachedAttributes();
+			FileEndPoint endPoint = this.__current();
+			if (endPoint == null)
+				return null;
+			return endPoint.attachedAttributes();
 		}
 	}
 	
@@ -482,7 +491,10 @@ public final class FileEndPointConnection
 			this.checkRead();
 			
 			// Is there a filestore?
-			return this.attachedFileStore();
+			FileEndPoint endPoint = this.__current();
+			if (endPoint == null)
+				return null;
+			return endPoint.attachedFileStore();
 		}
 	}
 }

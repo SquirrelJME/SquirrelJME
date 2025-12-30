@@ -15,11 +15,10 @@ import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.file.FileEndPointFactory;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
-import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
-import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
-import javax.microedition.io.ConnectionOption;
+import javax.microedition.io.Connector;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * Provides access to {@link LibraryEndPoint}.
@@ -35,7 +34,8 @@ public class LibraryEndPointFactory
 	 * @since 2025/12/29
 	 */
 	@Override
-	public FileEndPoint connect(UriGenericPart __uri)
+	public FileEndPoint connect(UriGenericPart __uri,
+		@MagicConstant(flagsFromClass = Connector.class) int __mode)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
 		if (__uri == null)

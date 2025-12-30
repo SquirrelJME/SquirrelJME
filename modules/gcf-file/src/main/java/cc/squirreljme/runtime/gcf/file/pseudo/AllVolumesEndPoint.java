@@ -13,15 +13,21 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.full.attrib.AbstractFileAttributes;
+import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
+import cc.squirreljme.runtime.cldc.full.attrib.StaticFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
+import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.microedition.io.ConnectionNotFoundException;
+import org.jetbrains.annotations.NotNull;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * Listing of all possible filesystem volumes, including pseudo volumes.
@@ -32,32 +38,64 @@ import javax.microedition.io.ConnectionNotFoundException;
 public class AllVolumesEndPoint
 	extends FileEndPoint
 {
+	/** Host. */
+	@SquirrelJMEVendorApi
+	public static final String HOST =
+		"!%3Fx-squirreljme-all-volumes%3A%2F%2F%3F!";
+	
+	/** Decoded host. */
+	@SquirrelJMEVendorApi
+	public static final String DECODED_HOST =
+		"!?x-squirreljme-all-volumes://?!";
+	
+	/** Attributes for the root directory. */
+	@SquirrelJMEVendorApi
+	public static final StaticFileAttributes ATTRIBUTES =
+		new StaticFileAttributes(AbstractFileAttributes.IS_DIRECTORY |
+			AbstractFileAttributes.IS_DOS_ARCHIVABLE |
+			AbstractFileAttributes.IS_POSIX_USER_READ |
+			AbstractFileAttributes.IS_POSIX_GROUP_READ |
+			AbstractFileAttributes.IS_POSIX_OTHER_READ, 0);
+	
 	/**
-	 * Initializes the all volumes connection.
+	 * Initializes the endpoint.
 	 *
-	 * @throws ConnectionNotFoundException If the part is not valid.
-	 * @since 2025/12/27
+	 * @param __part The URI part.
+	 * @param __mode The open mode.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/30
 	 */
 	@SquirrelJMEVendorApi
-	public AllVolumesEndPoint()
-		throws ConnectionNotFoundException
+	protected AllVolumesEndPoint(@NotNull UriGenericPart __part, int __mode)
+		throws ConnectionNotFoundException, NullPointerException
 	{
+		super(__part, __mode);
+		
+		// Must always be the root component
+		/* {@squirreljme.error GF0a All volume connection is only valid
+		when there is only the root path specified.} */
+		if (!"/".equals(__part.getPath()))
+			throw new ConnectionNotFoundException(
+				__error__("GF0a %s", __part));
 	}
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2025/12/27
 	 */
-	protected BasicFileAttributes attachedAttributes()
+	@Override
+	protected ExtraFileAttributes attachedAttributes()
 		throws SecurityException
 	{
-		throw Debugging.todo();
+		return AllVolumesEndPoint.ATTRIBUTES;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/27
 	 */
+	@Override
 	protected FileStore attachedFileStore()
 		throws SecurityException
 	{
@@ -69,6 +107,7 @@ public class AllVolumesEndPoint
 	 * {@inheritDoc}
 	 * @since 2025/12/27
 	 */
+	@Override
 	protected FileSystem attachedFileSystem()
 		throws SecurityException
 	{
@@ -76,17 +115,16 @@ public class AllVolumesEndPoint
 		return null;
 	}
 	
-	protected void changingFullPart(UriPart __part)
-		throws IOException, SecurityException
-	{
-		throw Debugging.todo();
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/30
+	 */
 	@Override
 	public void close()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// This is purely a pseudo endpoint and has no resources open
+		// on the disk in any way
 	}
 	
 	/**
@@ -97,6 +135,21 @@ public class AllVolumesEndPoint
 		throws IOException, SecurityException
 	{
 		List<String> rv = new ArrayList<>();
+		
+		
+		return rv.toArray(new String[rv.size()]);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/30
+	 */
+	@Override
+	protected void listDirectory(@NotNull Map<String, UriGenericPart> __into)
+		throws IOException, NullPointerException, SecurityException
+	{
+		if (__into == null)
+			throw new NullPointerException("NARG");
 		
 		// List all libraries
 		for (JarPackageBracket library : JarPackageShelf.libraries())
@@ -119,15 +172,16 @@ public class AllVolumesEndPoint
 					baseName = baseName.substring(ls + 1);
 			}
 			
-			// Add it, refer to just by ID or its base name
+			// Determine the base filename that is used
+			String fileName;
 			if (baseName == null || baseName.isEmpty())
-				rv.add(String.format("x-squirreljme-library://%d/",
-					id));
+				fileName = id + "/";
 			else
-				rv.add(String.format("x-squirreljme-library://%s/",
-					UriPart.encode(baseName)));
+				fileName = UriPart.encode(baseName) + "/";
+			
+			// Determine full URI connection to this item
+			__into.put(fileName, new UriGenericPart(
+				"//" + LibraryEndPoint.HOST + "/" + fileName));
 		}
-		
-		return rv.toArray(new String[rv.size()]);
 	}
 }
