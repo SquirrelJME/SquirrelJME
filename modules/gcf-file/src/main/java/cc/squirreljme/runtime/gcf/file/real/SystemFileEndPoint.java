@@ -40,31 +40,27 @@ public class SystemFileEndPoint
 	public SystemFileEndPoint(UriPart __part, int __mode)
 		throws ConnectionNotFoundException
 	{
-		super(__part, __mode);
+		throw Debugging.todo();
 	}
 	
-	@Override
 	protected BasicFileAttributes attachedAttributes()
 		throws SecurityException
 	{
 		throw Debugging.todo();
 	}
 	
-	@Override
 	protected FileStore attachedFileStore()
 		throws SecurityException
 	{
 		throw Debugging.todo();
 	}
 	
-	@Override
 	protected FileSystem attachedFileSystem()
 		throws SecurityException
 	{
 		throw Debugging.todo();
 	}
 	
-	@Override
 	protected void changingFullPart(UriPart __part)
 		throws IOException, SecurityException
 	{
@@ -72,6 +68,12 @@ public class SystemFileEndPoint
 	}
 	
 	@Override
+	public void close()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
 	protected String[] directoryListParts(boolean __includeHidden)
 		throws IOException, SecurityException
 	{

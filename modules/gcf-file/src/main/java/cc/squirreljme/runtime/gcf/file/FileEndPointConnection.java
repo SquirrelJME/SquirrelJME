@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.gcf.AbstractStreamConnection;
 import cc.squirreljme.runtime.gcf.uri.Uri;
+import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +25,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.ConnectionClosedException;
@@ -55,34 +57,17 @@ public final class FileEndPointConnection
 	/**
 	 * Initializes the base connection.
 	 *
-	 * @param __part The URI part.
 	 * @param __mode The mode this is opened in.
-	 * @throws ConnectionNotFoundException If the part is not valid.
 	 * @throws IllegalArgumentException If the connection mode is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	protected FileEndPointConnection(
-		@NotNull UriPart __part,
+	public FileEndPointConnection(
 		@MagicConstant(valuesFromClass = Connector.class) int __mode)
-		throws ConnectionNotFoundException, IllegalArgumentException,
-			NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		super(__mode);
-		
-		if (__part == null)
-			throw new NullPointerException("NARG");
-		
-		// Set the connection to this path
-		try
-		{
-			this.changeFullPart(__part);
-		}
-		catch (IOException __e)
-		{
-			throw new ConnectionNotFoundException(__e.getMessage());
-		}
 	}
 	
 	/**
@@ -93,8 +78,11 @@ public final class FileEndPointConnection
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	protected abstract BasicFileAttributes attachedAttributes()
-		throws SecurityException;
+	protected BasicFileAttributes attachedAttributes()
+		throws SecurityException
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the attached file store.
@@ -104,8 +92,11 @@ public final class FileEndPointConnection
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	protected abstract FileStore attachedFileStore()
-		throws SecurityException;
+	protected FileStore attachedFileStore()
+		throws SecurityException
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the attached filesystem.
@@ -115,8 +106,16 @@ public final class FileEndPointConnection
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	protected abstract FileSystem attachedFileSystem()
-		throws SecurityException;
+	protected FileSystem attachedFileSystem()
+		throws SecurityException
+	{
+		throw Debugging.todo();
+	}
+	
+	protected Connection changeEndPoint(UriGenericPart __part)
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * This is called before the full part is being changed.
@@ -127,8 +126,11 @@ public final class FileEndPointConnection
 	 * @since 2025/12/28
 	 */
 	@SquirrelJMEVendorApi
-	protected abstract void changingFullPart(@Nullable UriPart __part)
-		throws IOException, SecurityException;
+	protected void changingFullPart(@Nullable UriPart __part)
+		throws IOException, SecurityException
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * Returns the list of directory contents, all returned values are
@@ -144,8 +146,11 @@ public final class FileEndPointConnection
 	 * @since 2025/12/28
 	 */
 	@SquirrelJMEVendorApi
-	protected abstract String[] directoryListParts(boolean __includeHidden)
-		throws IOException, SecurityException;
+	protected String[] directoryListParts(boolean __includeHidden)
+		throws IOException, SecurityException
+	{
+		throw Debugging.todo();
+	}
 	
 	/**
 	 * {@inheritDoc}

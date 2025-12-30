@@ -11,11 +11,17 @@ package cc.squirreljme.runtime.gcf.file.real;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.file.FileEndPointFactory;
+import cc.squirreljme.runtime.gcf.file.pseudo.AllVolumesEndPoint;
+import cc.squirreljme.runtime.gcf.uri.UriAuthority;
+import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import javax.microedition.io.Connection;
+import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.ConnectionOption;
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * Provides access to {@link SystemFileEndPoint}.
@@ -28,23 +34,30 @@ public class SystemFileEndPointFactory
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/27
+	 * @since 2025/12/29
 	 */
 	@Override
-	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
-		ConnectionOption<?>[] __opts)
-		throws IOException, NullPointerException
+	public FileEndPoint connect(UriGenericPart __uri)
+		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
+		if (__uri == null)
+			throw new NullPointerException("NARG");
+		
 		throw Debugging.todo();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/27
+	 * @since 2025/12/29
 	 */
 	@Override
-	public String scheme()
+	public boolean handleAuthority(UriAuthority __auth)
+		throws NullPointerException
 	{
-		return "file";
+		if (__auth == null)
+			throw new NullPointerException("NARG");
+		
+		// There must be no actual host specified
+		return __auth.host() == null;
 	}
 }

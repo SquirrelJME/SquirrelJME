@@ -35,23 +35,19 @@ public class AllVolumesEndPoint
 	/**
 	 * Initializes the all volumes connection.
 	 *
-	 * @param __part The path part.
-	 * @param __mode The mode this is connected in.
 	 * @throws ConnectionNotFoundException If the part is not valid.
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	public AllVolumesEndPoint(UriPart __part, int __mode)
+	public AllVolumesEndPoint()
 		throws ConnectionNotFoundException
 	{
-		super(__part, __mode);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/27
 	 */
-	@Override
 	protected BasicFileAttributes attachedAttributes()
 		throws SecurityException
 	{
@@ -62,7 +58,6 @@ public class AllVolumesEndPoint
 	 * {@inheritDoc}
 	 * @since 2025/12/27
 	 */
-	@Override
 	protected FileStore attachedFileStore()
 		throws SecurityException
 	{
@@ -74,7 +69,6 @@ public class AllVolumesEndPoint
 	 * {@inheritDoc}
 	 * @since 2025/12/27
 	 */
-	@Override
 	protected FileSystem attachedFileSystem()
 		throws SecurityException
 	{
@@ -82,9 +76,15 @@ public class AllVolumesEndPoint
 		return null;
 	}
 	
-	@Override
 	protected void changingFullPart(UriPart __part)
 		throws IOException, SecurityException
+	{
+		throw Debugging.todo();
+	}
+	
+	@Override
+	public void close()
+		throws IOException
 	{
 		throw Debugging.todo();
 	}
@@ -93,7 +93,6 @@ public class AllVolumesEndPoint
 	 * {@inheritDoc}
 	 * @since 2025/12/28
 	 */
-	@Override
 	protected String[] directoryListParts(boolean __includeHidden)
 		throws IOException, SecurityException
 	{

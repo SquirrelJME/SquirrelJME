@@ -10,7 +10,11 @@
 package cc.squirreljme.runtime.gcf.file;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.gcf.uri.UriAuthority;
+import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
+import java.io.IOException;
 import java.util.ServiceLoader;
+import javax.microedition.io.ConnectionNotFoundException;
 
 /**
  * Factory for file end-point handlers.
@@ -22,4 +26,30 @@ import java.util.ServiceLoader;
 @SquirrelJMEVendorApi
 public interface FileEndPointFactory
 {
+	/**
+	 * Connects to the given endpoint.
+	 *
+	 * @param __uri The URI to connect to.
+	 * @return The resultant endpoint connection.
+	 * @throws ConnectionNotFoundException If the endpoint was not found.
+	 * @throws IOException On any other error.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/29
+	 */
+	@SquirrelJMEVendorApi
+	FileEndPoint connect(UriGenericPart __uri)
+		throws ConnectionNotFoundException, IOException,
+			NullPointerException;
+	
+	/**
+	 * Checks if this end-point handles the given endpoint.
+	 *
+	 * @param __auth The authority to check.
+	 * @return If this is handled.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/29
+	 */
+	@SquirrelJMEVendorApi
+	boolean handleAuthority(UriAuthority __auth)
+		throws NullPointerException;
 }

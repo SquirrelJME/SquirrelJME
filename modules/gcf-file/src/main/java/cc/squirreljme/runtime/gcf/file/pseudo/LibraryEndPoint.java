@@ -51,8 +51,6 @@ public class LibraryEndPoint
 	public LibraryEndPoint(UriPart __part, int __mode)
 		throws ConnectionNotFoundException
 	{
-		super(__part, __mode);
-		
 		/* {@squirreljme.error GF03 Incorrect URI for this connection.
 		(The URI; The passed type)} */
 		if (!(__part instanceof UriGenericPart))
@@ -123,14 +121,12 @@ public class LibraryEndPoint
 		this.jar = jar;
 	}
 	
-	@Override
 	protected BasicFileAttributes attachedAttributes()
 		throws SecurityException
 	{
 		throw Debugging.todo();
 	}
 	
-	@Override
 	protected FileStore attachedFileStore()
 		throws SecurityException
 	{
@@ -141,7 +137,6 @@ public class LibraryEndPoint
 	 * {@inheritDoc}
 	 * @since 2025/12/27
 	 */
-	@Override
 	protected FileSystem attachedFileSystem()
 		throws SecurityException
 	{
@@ -149,7 +144,6 @@ public class LibraryEndPoint
 		return null;
 	}
 	
-	@Override
 	protected void changingFullPart(UriPart __part)
 		throws IOException, SecurityException
 	{
@@ -157,6 +151,12 @@ public class LibraryEndPoint
 	}
 	
 	@Override
+	public void close()
+		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
 	protected String[] directoryListParts(boolean __includeHidden)
 		throws IOException, SecurityException
 	{

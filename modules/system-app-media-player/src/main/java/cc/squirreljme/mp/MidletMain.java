@@ -53,7 +53,7 @@ public class MidletMain
 	{
 		// What is the starting URI?
 		@Language("http-url-reference")
-		String uri = "x-squirreljme-volumes:///";
+		String uri = "file://!%3Fx-squirreljme-all-volumes%3A%2F%2F%3F!/";
 		
 		// Use this main display
 		Display display = Display.getDisplay(this);
