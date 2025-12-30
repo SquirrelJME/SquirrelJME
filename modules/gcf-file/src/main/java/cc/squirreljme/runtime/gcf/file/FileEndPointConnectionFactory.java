@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
+import cc.squirreljme.runtime.gcf.uri.UriSchemeSpecificPart;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionOption;
@@ -40,14 +41,31 @@ public class FileEndPointConnectionFactory
 		if (__part == null)
 			throw new NullPointerException("NARG");
 		
+		// If this is a scheme specific part, then this is very likely blank
 		/* {@squirreljme.error GF09 File URI is of the incorrect syntax.
 		(The URI)} */
+		if (__part instanceof UriSchemeSpecificPart)
+		{
+			// It really must be blank
+			if (!"".equals(__part.toString()))
+				throw new IOException(
+					__error__("GF09 %s", __part));
+			
+			__part = null;
+		}
+		
+		// And now it must truly be a generic part
 		if (!(__part instanceof UriGenericPart))
 			throw new IOException(
 				__error__("GF09 %s", __part));
 		
-		return new FileEndPointConnection(__mode)
-			.__changeEndPoint((UriGenericPart)__part);
+		// The connection could start connected to an endpoint or just be
+		// connected to nothing
+		FileEndPointConnection connection = new FileEndPointConnection(__mode);
+		if (__part != null)
+			return connection.__changeEndPoint((UriGenericPart)__part);
+		return connection;
+			
 	}
 	
 	/**

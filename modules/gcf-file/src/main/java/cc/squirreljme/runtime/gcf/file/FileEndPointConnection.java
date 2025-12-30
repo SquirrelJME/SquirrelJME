@@ -172,10 +172,20 @@ public final class FileEndPointConnection
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/30
+	 */
 	@Override
 	public final String getURL()
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			FileEndPoint current = this.__current();
+			if (current == null)
+				return "file:";
+			return "file:" + current.part;
+		}
 	}
 	
 	/**

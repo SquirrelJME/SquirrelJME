@@ -10,6 +10,7 @@
 package cc.squirreljme.mp;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 import javax.microedition.io.Connector;
@@ -51,17 +52,11 @@ public class MidletMain
 	protected void startApp()
 		throws MIDletStateChangeException
 	{
-		// What is the starting URI?
-		@Language("http-url-reference")
-		String uri = "file://!%3Fx-squirreljme-all-volumes%3A%2F%2F%3F!/";
-		
 		// Use this main display
 		Display display = Display.getDisplay(this);
 		
 		// Setup both browser and player
 		Binder binder = new Binder(display);
-		BasicBrowser browser = binder._browser;
-		MediaPlayer player = binder._player;
 		
 		// Set this binder globally
 		synchronized (MidletMain.class)
@@ -70,29 +65,19 @@ public class MidletMain
 				MidletMain.binder = binder;
 		}
 		
-		// Start browsing or playing specific media
-		Displayable show;
-		try (Connection conn = Connector.open(uri, Connector.READ))
+		// Implicit refresh
+		try
 		{
-			// If browsing a directory, browse the contents
-			if ((conn instanceof FileConnection) &&
-				((FileConnection)conn).isDirectory())
-				show = browser.browse((FileConnection)conn);
-			
-			// Otherwise view the content
-			else if (conn instanceof InputConnection)
-				show = player.play((InputConnection)conn);
-			
-			// Unsupported
-			else
-				throw new UnsupportedOperationException(uri);
-		}
-		catch (IOException __e)
-		{
-			throw new RuntimeException(__e.getMessage(), __e);
+			binder.refresh();
 		}
 		
-		// Show on the display!
-		display.setCurrent(show);
+		// Failed to open the initial browser
+		catch (Throwable __e)
+		{
+			__e.printStackTrace();
+			
+			// Cannot really recover from this
+			System.exit(1);
+		}
 	}
 }

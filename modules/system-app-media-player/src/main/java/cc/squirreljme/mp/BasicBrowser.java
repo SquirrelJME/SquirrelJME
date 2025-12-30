@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.util.Iterator;
 import javax.microedition.io.file.FileConnection;
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 
@@ -27,6 +28,10 @@ import javax.microedition.lcdui.List;
 public class BasicBrowser
 	extends List
 {
+	/** Exit the application. */
+	public static final Command EXIT =
+		new Command("Exit", Command.EXIT, 1);
+	
 	/** Folder icon. */
 	public static final Image ICON_FOLDER =
 		Utils.tangoIcon("folder");
@@ -63,12 +68,23 @@ public class BasicBrowser
 	public BasicBrowser(Reference<Binder> __binder)
 		throws NullPointerException
 	{
-		super("Select File", List.EXCLUSIVE);
+		super("Select File", List.IMPLICIT);
 		
 		if (__binder == null)
 			throw new NullPointerException("NARG");
 		
+		// Remember the binder we are using
 		this._binder = __binder;
+		
+		// Add normal selection handling
+		this.addCommand(List.SELECT_COMMAND);
+		this.setSelectCommand(List.SELECT_COMMAND);
+		
+		// Normal exit
+		this.addCommand(BasicBrowser.EXIT);
+		
+		// The binder listens for selections
+		this.setCommandListener(__binder.get());
 	}
 	
 	/**
@@ -93,35 +109,52 @@ public class BasicBrowser
 		// Always add the ability to go back up
 		this.append("..", BasicBrowser.ICON_UP);
 		
-		// List contents of the directory and add them accordingly
-		Iterator<String> it = new EnumerationToIterator<>(__file.list());
-		while (it.hasNext())
+		try
 		{
-			// Get the file
-			String fn = it.next();
-			
-			// Is a directory?
-			Image icon;
-			if (fn.endsWith("/"))
-				icon = BasicBrowser.ICON_FOLDER;
-			else
+			// List contents of the directory and add them accordingly
+			Iterator<String> it = new EnumerationToIterator<>(__file.list());
+			while (it.hasNext())
 			{
-				// Guess the MIME type based on the extension
-				String mimeType = ContentTypeUtil.guessByPath(fn);
-				if (mimeType == null)
-					icon = BasicBrowser.ICON_OTHER;
-				else if (ContentTypeUtil.isMediaAudio(mimeType))
-					icon = BasicBrowser.ICON_AUDIO;
-				else if (ContentTypeUtil.isMediaImage(mimeType))
-					icon = BasicBrowser.ICON_IMAGE;
-				else if (ContentTypeUtil.isMediaVideo(mimeType))
-					icon = BasicBrowser.ICON_VIDEO;
+				// Get the file
+				String fn = it.next();
+				
+				// Is a directory?
+				Image icon;
+				if (fn.endsWith("/"))
+					icon = BasicBrowser.ICON_FOLDER;
 				else
-					icon = BasicBrowser.ICON_OTHER;
+				{
+					// Guess the MIME type based on the extension
+					String mimeType = ContentTypeUtil.guessByPath(fn);
+					if (mimeType == null)
+						icon = BasicBrowser.ICON_OTHER;
+					else if (ContentTypeUtil.isMediaAudio(mimeType))
+						icon = BasicBrowser.ICON_AUDIO;
+					else if (ContentTypeUtil.isMediaImage(mimeType))
+						icon = BasicBrowser.ICON_IMAGE;
+					else if (ContentTypeUtil.isMediaVideo(mimeType))
+						icon = BasicBrowser.ICON_VIDEO;
+					else
+						icon = BasicBrowser.ICON_OTHER;
+				}
+				
+				// Add to self, with the icon of the type of file we think 
+				// this is
+				this.append(fn, icon);
 			}
+		}
+		
+		// Failed directory read
+		catch (IOException __e)
+		{
+			// Clear the list as it is not valid
+			this.deleteAll();
 			
-			// Add to self, with the icon of the type of file we think this is
-			this.append(fn, icon);
+			// But do add the ability to go back
+			this.append("..", BasicBrowser.ICON_UP);
+			
+			// Retoss
+			throw __e;
 		}
 		
 		// Self
