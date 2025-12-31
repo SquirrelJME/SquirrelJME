@@ -96,13 +96,10 @@ class __ExecDisplaySetCurrent__
 		// Get the container API since we will have to clear and add it to
 		// the Display's frame...
 		ScritchInterface scritchApi = this.scritchApi;
-		ScritchContainerInterface containerApi = scritchApi.container();
 		
 		// Get the ScritchUI window
 		Display display = this.display;
 		DisplayState displayState = display.__state();
-		ScritchWindowBracket window =
-			displayState.scritchWindow();
 		
 		// The displayable we are showing
 		Displayable showNow = this.showNow;
@@ -232,9 +229,6 @@ class __ExecDisplaySetCurrent__
 				exec.__refresh(__skipExit, __forceRemove);
 			else
 				exec.run();
-			
-			// Do no further processing.
-			return;
 		}
 		
 		// This was externally called from elsewhere
