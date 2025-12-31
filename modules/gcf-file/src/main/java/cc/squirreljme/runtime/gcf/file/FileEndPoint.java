@@ -116,7 +116,7 @@ public abstract class FileEndPoint
 	 * @return If this is a directory.
 	 * @since 2025/12/30
 	 */
-	public boolean isDirectory()
+	public final boolean isDirectory()
 	{
 		// If the directory bit it set or if it ends with a slash, then this
 		// is a directory

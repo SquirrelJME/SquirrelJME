@@ -49,6 +49,7 @@ public class LibraryEndPointFactory
 		UriAuthority auth = __uri.getAuthority();
 		String fullHost = auth.host();
 		if (fullHost == null ||
+			!fullHost.startsWith(LibraryEndPoint.DECODED_HOST) ||
 			fullHost.length() <= LibraryEndPoint.DECODED_HOST.length())
 			throw new ConnectionNotFoundException(
 				__error__("GF04 %s", __uri));

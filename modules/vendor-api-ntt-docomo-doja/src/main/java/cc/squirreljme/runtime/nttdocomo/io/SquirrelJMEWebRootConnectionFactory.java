@@ -89,7 +89,7 @@ public class SquirrelJMEWebRootConnectionFactory
 		{
 			return new DoJaHttpConnectionAdapter(new HTTPClientConnection(
 				SquirrelJMEWebRootConnectionFactory.__fixAddress(manager,
-					__part),
+					__part.toString()),
 				new SquirrelJMEWebRootHTTPAgentConnector(manager),
 				__mode));
 		}

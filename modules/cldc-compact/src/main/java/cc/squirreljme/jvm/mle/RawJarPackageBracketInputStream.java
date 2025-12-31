@@ -27,6 +27,7 @@ public class RawJarPackageBracketInputStream
 	extends InputStream
 {
 	/** The given library. */
+	@SquirrelJMEVendorApi
 	protected final JarPackageBracket jar;
 	
 	/** The size of the JAR. */

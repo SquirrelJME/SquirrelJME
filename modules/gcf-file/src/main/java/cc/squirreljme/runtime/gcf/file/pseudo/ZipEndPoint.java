@@ -9,10 +9,11 @@
 
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
-import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.full.attrib.AbstractFileAttributes;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
+import cc.squirreljme.runtime.cldc.full.attrib.StaticFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.IOException;
@@ -22,49 +23,61 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A connection to a specific library to browse its contents as if it were
- * a filesystem.
+ * Endpoint which is capable of reading ZIP files.
  *
- * @since 2025/12/27
+ * @since 2025/12/30
  */
 @SquirrelJMEVendorApi
-public class LibraryEndPoint
+public class ZipEndPoint
 	extends FileEndPoint
 {
 	/** Decoded host. */
 	@SquirrelJMEVendorApi
 	public static final String DECODED_HOST =
-		"!?x-squirreljme-library://?!";
+		"!?x-squirreljme-zip://?!";
 	
 	/** Host. */
 	@SquirrelJMEVendorApi
 	public static final String HOST =
-		"!%3Fx-squirreljme-library%3A%2F%2F%3F!";
+		"!%3Fx-squirreljme-zip%3A%2F%2F%3F!";
 	
-	/** The Jar being accessed. */
+	/** Attributes for any directory. */
 	@SquirrelJMEVendorApi
-	protected final JarPackageBracket jar;
+	public static final StaticFileAttributes ATTRIBUTES_DIRECTORY =
+		new StaticFileAttributes(
+			AbstractFileAttributes.IS_DIRECTORY |
+			AbstractFileAttributes.IS_DOS_READ_ONLY |
+			AbstractFileAttributes.IS_POSIX_USER_READ |
+			AbstractFileAttributes.IS_POSIX_USER_EXECUTE |
+			AbstractFileAttributes.IS_POSIX_GROUP_READ |
+			AbstractFileAttributes.IS_POSIX_GROUP_EXECUTE |
+			AbstractFileAttributes.IS_POSIX_OTHER_READ |
+			AbstractFileAttributes.IS_POSIX_OTHER_EXECUTE, 0);
+	
+	/** Attributes for any file. */
+	@SquirrelJMEVendorApi
+	public static final StaticFileAttributes ATTRIBUTES_FILE =
+		new StaticFileAttributes(
+			AbstractFileAttributes.IS_DOS_READ_ONLY |
+			AbstractFileAttributes.IS_POSIX_USER_READ |
+			AbstractFileAttributes.IS_POSIX_GROUP_READ |
+			AbstractFileAttributes.IS_POSIX_OTHER_READ, 0);
 	
 	/**
-	 * Initializes the library connection.
+	 * Initializes the ZIP connection.
 	 *
-	 * @param __jar The Jar to access.
 	 * @param __part The initial part.
 	 * @param __mode The mode this is opened in.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	public LibraryEndPoint(@NotNull JarPackageBracket __jar,
-		UriGenericPart __part, int __mode)
+	protected ZipEndPoint(@NotNull UriGenericPart __part, int __mode)
 		throws NullPointerException
 	{
 		super(__part, __mode);
 		
-		if (__jar == null)
-			throw new NullPointerException("NARG");
-		
-		this.jar = __jar;
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -105,10 +118,6 @@ public class LibraryEndPoint
 		return null;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/12/30
-	 */
 	@Override
 	public void close()
 		throws IOException
@@ -116,20 +125,10 @@ public class LibraryEndPoint
 		throw Debugging.todo();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/12/30
-	 */
 	@Override
 	protected void listDirectory(@NotNull Map<String, UriGenericPart> __into)
 		throws IOException, NullPointerException, SecurityException
 	{
-		if (__into == null)
-			throw new NullPointerException("NARG");
-		
-		// Where is this?
-		String path = this.part.getPath();
-		
 		throw Debugging.todo();
 	}
 }
