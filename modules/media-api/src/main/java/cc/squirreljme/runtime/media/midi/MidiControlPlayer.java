@@ -147,11 +147,11 @@ public class MidiControlPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/06/03
+	 * @since 2025/12/28
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void deallocate()
+	public void becomingDeallocated()
 	{
 		throw Debugging.todo();
 	}

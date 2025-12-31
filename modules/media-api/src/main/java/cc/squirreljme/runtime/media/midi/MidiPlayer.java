@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractMidiControl;
 import cc.squirreljme.runtime.media.AbstractPlayer;
+import cc.squirreljme.runtime.media.AbstractVolumeControl;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -101,6 +102,18 @@ public class MidiPlayer
 		
 		// Register the MIDI controller
 		this.registerControl(this.midiControl);
+		this.registerControl(new AbstractVolumeControl(this));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/28
+	 */
+	@Override
+	public void becomingDeallocated()
+	{
+		this._data = null;
+		this._tracks = null;
 	}
 	
 	/**
@@ -346,33 +359,26 @@ public class MidiPlayer
 	@Override
 	public void close()
 	{
-		// Just deallocate
+		// Do nothing if already closed
+		if(this.getState() == Player.CLOSED)
+			return;
+
+		// Deallocate first
 		this.deallocate();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/02/26
-	 */
-	@Override
-	public void deallocate()
-	{
-		// Stop playing
+
+		// Now we can make sure to fully free the player
 		try
 		{
-			this.stop();
+			this._unrealizedIn.close();
+			this._unrealizedIn = null;
+			// Mark as closed
+			this.setState(Player.CLOSED);
 		}
-		catch (MediaException __ignored)
-		{	
+		catch (IOException __e)
+		{
+			__e.printStackTrace();
 		}
 		
-		// Mark as closed
-		this.setState(Player.CLOSED);
-		
-		// Destroy everything
-		this._unrealizedIn = null;
-		this._data = null;
-		this._tracks = null;
 	}
 	
 	/**

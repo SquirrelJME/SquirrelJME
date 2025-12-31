@@ -297,10 +297,10 @@ public class IMelodyPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/05/05
+	 * @since 2025/12/28
 	 */
 	@Override
-	public void deallocate()
+	public void becomingDeallocated()
 	{
 		throw Debugging.todo();
 	}

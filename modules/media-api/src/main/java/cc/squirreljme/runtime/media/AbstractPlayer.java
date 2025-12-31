@@ -93,6 +93,16 @@ public abstract class AbstractPlayer
 		
 		this._mime = __mime;
 	}
+
+	/**
+	 * This is called when the player is becoming deallocated.
+	 * 
+	 * @throws MediaException If the player cannot be deallocated.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract void becomingDeallocated()
+		throws MediaException;
 	
 	/**
 	 * This is called when the player is becoming prefetched.
@@ -155,6 +165,50 @@ public abstract class AbstractPlayer
 	protected abstract void clockSet(long __micros)
 		throws MediaException;
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/15
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public final void deallocate()
+	{
+		int state = this.getState();
+
+		if (state == Player.CLOSED)
+			throw new IllegalStateException("EA06");
+		
+		// Do nothing if already in deallocated state
+		if (state == Player.REALIZED || state == Player.UNREALIZED)
+			return;
+
+		try
+		{
+			// Stop playing first, if it is playing at all
+			if(state == Player.STARTED)
+				this.stop();
+
+			// Now becoming deallocated
+			this.becomingDeallocated();
+
+			// Only set state to REALIZED if we have effectively moved into
+			// REALIZED or higher (PREFETCHED, etc), as deallocate can be
+			// called during the transition from UNREALIZED to REALIZED, and if
+			// that happens, we can't actually set it as REALIZED, it must be
+			// kept as UNREALIZED.
+			if(state > Player.UNREALIZED) 
+			{
+				this.realize();
+				this.setState(Player.REALIZED);
+			}
+			else
+				this.setState(Player.UNREALIZED);
+		}
+		catch (MediaException __ignored)
+		{	
+		}
+	}
+
 	/**
 	 * Determines the length of the media.
 	 * 

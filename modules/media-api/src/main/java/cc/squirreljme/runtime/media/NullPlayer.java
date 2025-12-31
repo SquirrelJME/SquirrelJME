@@ -129,31 +129,13 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/04/15
+	 * @since 2025/12/28
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public final void deallocate()
+	public final void becomingDeallocated()
 	{
-		// {@squirreljme.error EA03 Null Player has been closed.}
-		if (this.getState() == Player.CLOSED)
-			throw new IllegalStateException("EA03");
-		
-		if (this.getState() == Player.STARTED)
-		{
-			// Implicit stop state
-			try
-			{
-				this.stop();
-			}
-			catch (MediaException e)
-			{
-				e.printStackTrace();
-			}
-			
-			// Become realized
-			this.setState(Player.REALIZED);
-		}
+		// There is nothing to be done here, as NullPlayer allocates nothing.
 	}
 	
 	/**
