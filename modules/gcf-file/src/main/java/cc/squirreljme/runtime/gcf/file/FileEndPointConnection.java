@@ -197,11 +197,12 @@ public final class FileEndPointConnection
 		throws ConnectionClosedException, IllegalModeException,
 			SecurityException
 	{
-		BasicFileAttributes attrib = this.__fileAttributes();
-		if (attrib == null)
+		FileEndPoint current = this.__current();
+		if (current == null)
 			return false;
 		
-		return attrib.isDirectory();
+		// Is this considered a directory?
+		return current.isDirectory();
 	}
 	
 	@Override
@@ -257,23 +258,10 @@ public final class FileEndPointConnection
 			
 			// Not a directory?
 			if (!this.isDirectory())
-				throw new IOException("NOPE");
+				throw new IOException("FILE");
 			
 			// Need to load the directory list?
-			Map<String, UriGenericPart> listing = this._listing;
-			if (listing.isEmpty())
-				try
-				{
-					current.listDirectory(listing);
-				}
-				catch (IOException|RuntimeException __e)
-				{
-					// Invalidate the directory listing
-					listing.clear();
-					
-					// Retoss
-					throw __e;
-				}
+			Map<String, UriGenericPart> listing = this.__listing(false);
 			
 			// Only keep the keys from the listing
 			contents = listing.keySet().toArray(new String[listing.size()]);
@@ -320,11 +308,41 @@ public final class FileEndPointConnection
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/30
+	 */
 	@Override
-	public final void setFileConnection(String __a)
-		throws IOException
+	public final void setFileConnection(String __fileName)
+		throws ConnectionClosedException, IllegalArgumentException,
+			IOException, NullPointerException, SecurityException
 	{
-		throw Debugging.todo();
+		if (__fileName == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			this.checkClosed();
+			this.checkRead();
+			
+			// Need to load the directory list?
+			Map<String, UriGenericPart> listing = this.__listing(false);
+			
+			/* {@squirreljme.error EC34 The specified file does not
+			exist in the current directory. (The file; The base URL)} */
+			UriGenericPart part = listing.get(__fileName);
+			if (part == null)
+				throw new IllegalArgumentException(
+					__error__("EC34 %s", __fileName, this.getURL()));
+			
+			// Only .. is valid on files, otherwise there would be no way
+			// to escape them
+			if (!this.isDirectory() && !"..".equals(__fileName))
+				throw new IOException("FILE");
+			
+			// Change to it since it is valid
+			this.__changeEndPoint(part);
+		}
 	}
 	
 	@Override
@@ -506,5 +524,46 @@ public final class FileEndPointConnection
 				return null;
 			return endPoint.attachedFileStore();
 		}
+	}
+	
+	/**
+	 * Fills the directory listing if needed and then returns it.
+	 *
+	 * @param __drop Should the cache be dropped?
+	 * @return The resultant listing.
+	 * @throws IOException On read errors.
+	 * @since 2025/12/30
+	 */
+	private Map<String, UriGenericPart> __listing(boolean __drop)
+		throws IOException
+	{
+		Map<String, UriGenericPart> listing = this._listing;
+		synchronized (this)
+		{
+			this.checkClosed();
+			this.checkRead();
+			
+			// Drop the cache?
+			if (__drop)
+				listing.clear();
+			
+			// Needs to be filled?
+			FileEndPoint current = this.__current();
+			if (current != null && listing.isEmpty())
+				try
+				{
+					current.listDirectory(listing);
+				}
+				catch (IOException|RuntimeException __e)
+				{
+					// Invalidate the directory listing
+					listing.clear();
+					
+					// Retoss
+					throw __e;
+				}
+		}
+		
+		return listing;
 	}
 }

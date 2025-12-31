@@ -144,8 +144,12 @@ public final class BasicGlobFilter
 		while (queue == null)
 			try
 			{
-				// Get the next file name
+				// The current and dot specifiers are never returned
 				String maybe = it.next();
+				if (".".equals(maybe) || "..".equals(maybe))
+					continue;
+				
+				// Get the next file name
 				if (this.__isMatch(maybe))
 				{
 					queue = maybe;

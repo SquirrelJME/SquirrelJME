@@ -109,4 +109,19 @@ public abstract class FileEndPoint
 	protected abstract void listDirectory(
 		@NotNull Map<String, UriGenericPart> __into)
 		throws IOException, NullPointerException, SecurityException;
+	
+	/**
+	 * Is this a directory?
+	 *
+	 * @return If this is a directory.
+	 * @since 2025/12/30
+	 */
+	public boolean isDirectory()
+	{
+		// If the directory bit it set or if it ends with a slash, then this
+		// is a directory
+		ExtraFileAttributes attrib = this.attachedAttributes();
+		return attrib.isDirectory() ||
+			this.part.getPath().endsWith("/");
+	}
 }

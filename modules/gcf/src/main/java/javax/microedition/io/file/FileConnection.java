@@ -158,9 +158,31 @@ public interface FileConnection
 	void rename(String __a)
 		throws IOException;
 	
+	/**
+	 * Sets this to refer to a different filesystem path in the current
+	 * directory, or the parent directory if {@code ..}. Only a single path
+	 * may be specified at any one time, and any paths which are specified
+	 * must be paths which are returned by {@code list("*", true)}.
+	 * 
+	 * If {@code ..} is passed, then navigation returns to the parent
+	 * directory.
+	 *
+	 * @param __fileName The file name to set the connection to.
+	 * @throws ConnectionClosedException If the connection has already been
+	 * closed.
+	 * @throws IllegalArgumentException If the path is not valid or does not
+	 * exist within the directory.
+	 * @throws IOException If this is currently opened on a file and not
+	 * a directory; the target file is not accessible; the file name is not
+	 * valid for this system; or on any other read error.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If this operation is not permitted.
+	 * @since 2025/12/30
+	 */
 	@Api
-	void setFileConnection(String __a)
-		throws IOException;
+	void setFileConnection(String __fileName)
+		throws ConnectionClosedException, IllegalArgumentException,
+			IOException, NullPointerException, SecurityException;
 	
 	@Api
 	void setHidden(boolean __a)

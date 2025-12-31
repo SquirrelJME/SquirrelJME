@@ -52,10 +52,13 @@ public class AllVolumesEndPoint
 	@SquirrelJMEVendorApi
 	public static final StaticFileAttributes ATTRIBUTES =
 		new StaticFileAttributes(AbstractFileAttributes.IS_DIRECTORY |
-			AbstractFileAttributes.IS_DOS_ARCHIVABLE |
+			AbstractFileAttributes.IS_DOS_READ_ONLY |
 			AbstractFileAttributes.IS_POSIX_USER_READ |
+			AbstractFileAttributes.IS_POSIX_USER_EXECUTE |
 			AbstractFileAttributes.IS_POSIX_GROUP_READ |
-			AbstractFileAttributes.IS_POSIX_OTHER_READ, 0);
+			AbstractFileAttributes.IS_POSIX_GROUP_EXECUTE |
+			AbstractFileAttributes.IS_POSIX_OTHER_READ |
+			AbstractFileAttributes.IS_POSIX_OTHER_EXECUTE, 0);
 	
 	/**
 	 * Initializes the endpoint.
@@ -151,6 +154,9 @@ public class AllVolumesEndPoint
 		if (__into == null)
 			throw new NullPointerException("NARG");
 		
+		// The parent directory for the all volumes root just points to here
+		__into.put("..", this.part);
+		
 		// List all libraries
 		for (JarPackageBracket library : JarPackageShelf.libraries())
 		{
@@ -181,7 +187,7 @@ public class AllVolumesEndPoint
 			
 			// Determine full URI connection to this item
 			__into.put(fileName, new UriGenericPart(
-				"//" + LibraryEndPoint.HOST + "/" + fileName));
+				"//" + LibraryEndPoint.HOST + fileName + "/"));
 		}
 	}
 }

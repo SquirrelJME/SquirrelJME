@@ -13,7 +13,9 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.full.attrib.AbstractFileAttributes;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
+import cc.squirreljme.runtime.cldc.full.attrib.StaticFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
@@ -35,15 +37,37 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 public class LibraryEndPoint
 	extends FileEndPoint
 {
-	/** Host. */
+	/** Attributes for any directory. */
 	@SquirrelJMEVendorApi
-	public static final String HOST =
-		"!%3Fx-squirreljme-library%3A%2F%2F%3F!";
+	public static final StaticFileAttributes ATTRIBUTES_DIRECTORY =
+		new StaticFileAttributes(
+			AbstractFileAttributes.IS_DIRECTORY |
+			AbstractFileAttributes.IS_DOS_READ_ONLY |
+			AbstractFileAttributes.IS_POSIX_USER_READ |
+			AbstractFileAttributes.IS_POSIX_USER_EXECUTE |
+			AbstractFileAttributes.IS_POSIX_GROUP_READ |
+			AbstractFileAttributes.IS_POSIX_GROUP_EXECUTE |
+			AbstractFileAttributes.IS_POSIX_OTHER_READ |
+			AbstractFileAttributes.IS_POSIX_OTHER_EXECUTE, 0);
+	
+	/** Attributes for any file. */
+	@SquirrelJMEVendorApi
+	public static final StaticFileAttributes ATTRIBUTES_FILE =
+		new StaticFileAttributes(
+			AbstractFileAttributes.IS_DOS_READ_ONLY |
+			AbstractFileAttributes.IS_POSIX_USER_READ |
+			AbstractFileAttributes.IS_POSIX_GROUP_READ |
+			AbstractFileAttributes.IS_POSIX_OTHER_READ, 0);
 	
 	/** Decoded host. */
 	@SquirrelJMEVendorApi
 	public static final String DECODED_HOST =
 		"!?x-squirreljme-library://?!";
+	
+	/** Host. */
+	@SquirrelJMEVendorApi
+	public static final String HOST =
+		"!%3Fx-squirreljme-library%3A%2F%2F%3F!";
 	
 	/** The Jar being accessed. */
 	@SquirrelJMEVendorApi
@@ -52,92 +76,49 @@ public class LibraryEndPoint
 	/**
 	 * Initializes the library connection.
 	 *
+	 * @param __jar The Jar to access.
 	 * @param __part The initial part.
 	 * @param __mode The mode this is opened in.
-	 * @throws ConnectionNotFoundException If the part is not valid.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	public LibraryEndPoint(UriGenericPart __part, int __mode)
-		throws ConnectionNotFoundException
+	public LibraryEndPoint(@NotNull JarPackageBracket __jar,
+		UriGenericPart __part, int __mode)
+		throws NullPointerException
 	{
 		super(__part, __mode);
 		
-		/* {@squirreljme.error GF04 Library connection has no host.
-		(The URI)} */
-		UriAuthority auth = __part.getAuthority();
-		String desireName = (auth == null ? null : auth.host());
-		if (auth == null || desireName == null || desireName.isEmpty())
-			throw new ConnectionNotFoundException(
-				__error__("GF04 %s", __part));
+		if (__jar == null)
+			throw new NullPointerException("NARG");
 		
-		// Match by ID?
-		int desireId = -1;
-		try
-		{
-			desireId = Integer.parseInt(desireName, 10);
-		}
-		catch (NumberFormatException ignored)
-		{
-		}
-		
-		// Go through libraries to determine which one to actually use
-		JarPackageBracket jar = null;
-		JarPackageBracket[] libs = JarPackageShelf.libraries();
-		for (int n = libs.length, i = 0; i < n; i++)
-		{
-			// Jar happens to be blank? Skip
-			JarPackageBracket lib = libs[i];
-			if (lib == null)
-				continue;
-			
-			// Matches this ID?
-			if (i == desireId)
-			{
-				jar = lib;
-				break;
-			}
-			
-			// If the Jar has no known path, skip
-			String path = JarPackageShelf.libraryPath(lib);
-			if (path == null)
-				continue;
-			
-			// Find the last slash for the basename, if applicable
-			int ls = Math.max(path.lastIndexOf('/'),
-				path.lastIndexOf('\\'));
-			if (ls >= 0)
-				path = path.substring(ls + 1);
-			
-			// Is this the Jar?
-			if (path.equals(desireName))
-			{
-				jar = lib;
-				break;
-			}
-		}
-		
-		/* {@squirreljme.error GF05 Could not find the specified Jar.
-		(The URI)} */
-		if (jar == null)
-			throw new ConnectionNotFoundException(
-				__error__("GF05 %s", __part));
-		
-		this.jar = jar;
+		this.jar = __jar;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/30
+	 */
 	@Override
 	protected ExtraFileAttributes attachedAttributes()
 		throws SecurityException
 	{
-		throw Debugging.todo();
+		// This could be a directory or a file
+		if (this.part.getPath().endsWith("/"))
+			return LibraryEndPoint.ATTRIBUTES_DIRECTORY;
+		return LibraryEndPoint.ATTRIBUTES_FILE;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/30
+	 */
 	@Override
 	protected FileStore attachedFileStore()
 		throws SecurityException
 	{
-		throw Debugging.todo();
+		// No filesystem is ever attached
+		return null;
 	}
 	
 	/**
@@ -152,23 +133,29 @@ public class LibraryEndPoint
 		return null;
 	}
 	
-	@Override
-	protected void listDirectory(@NotNull Map<String, UriGenericPart> __into)
-		throws IOException, NullPointerException, SecurityException
-	{
-		throw Debugging.todo();
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/30
+	 */
 	@Override
 	public void close()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// This is purely a pseudo filesystem, additionally any streams opened
+		// to a resource are done via JarPackageShelf and not this
 	}
 	
-	protected String[] directoryListParts(boolean __includeHidden)
-		throws IOException, SecurityException
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/30
+	 */
+	@Override
+	protected void listDirectory(@NotNull Map<String, UriGenericPart> __into)
+		throws IOException, NullPointerException, SecurityException
 	{
+		if (__into == null)
+			throw new NullPointerException("NARG");
+		
 		throw Debugging.todo();
 	}
 }
