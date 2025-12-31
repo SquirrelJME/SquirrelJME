@@ -94,6 +94,23 @@ public class IMelodyPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2025/12/28
+	 */
+	@Override
+	public void becomingDeallocated()
+		throws MediaException
+	{
+		// Close the input connection, if it was never read in
+		InputStreamConnection unrealizedIn = this._unrealizedIn;
+		if (unrealizedIn != null)
+		{
+			this._unrealizedIn = null;
+			AbstractPlayer.closeConnection(unrealizedIn);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2025/05/05
 	 */
 	@Override
@@ -290,49 +307,10 @@ public class IMelodyPlayer
 	 * @since 2025/05/05
 	 */
 	@Override
-	public void close()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/12/28
-	 */
-	@Override
-	public void becomingDeallocated()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/05/05
-	 */
-	@Override
 	protected long determineDuration()
 		throws MediaException
 	{
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/06/03
-	 */
-	@Override
-	protected void useVolume(int __volume)
-	{
-		synchronized (this)
-		{
-			// Ignore volume set if there is no player
-			MLDPlayer mldPlayer = this._mldPlayer;
-			if (mldPlayer == null)
-				return;
-			
-			// Forward the volume
-			mldPlayer.sampler.masterVolume(__volume / 100.0F);
-		}
 	}
 	
 	/**
@@ -402,6 +380,25 @@ public class IMelodyPlayer
 						__e.printStackTrace();
 					}
 				}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/06/03
+	 */
+	@Override
+	protected void useVolume(int __volume)
+	{
+		synchronized (this)
+		{
+			// Ignore volume set if there is no player
+			MLDPlayer mldPlayer = this._mldPlayer;
+			if (mldPlayer == null)
+				return;
+			
+			// Forward the volume
+			mldPlayer.sampler.masterVolume(__volume / 100.0F);
 		}
 	}
 	

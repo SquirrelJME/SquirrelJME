@@ -104,7 +104,8 @@ public final class Manager
 			/* {@squirreljme.error EA1a Could not determine the content
 			type of the input data.} */
 			if (__contentType == null)
-				throw new MediaException("EA1a");
+				throw new MediaException(
+					__error__("EA1a"));
 		}
 		
 		// Native audio stream support?
@@ -166,7 +167,8 @@ public final class Manager
 		
 		/* {@squirreljme.error EA1b Unsupported content type. (The content
 		type)} */
-		throw new MediaException("EA1b: " + __contentType);
+		throw new MediaException(
+			__error__("EA1b: %s", __contentType));
 	}
 	
 	/**
@@ -209,7 +211,8 @@ public final class Manager
 			/* {@squirreljme.error EA1c The specified locator does not
 			support being read from. (The locator)} */
 			if (!(netSource instanceof InputConnection))
-				throw new MediaException("EA1c: " + __locator);
+				throw new MediaException(
+					__error__("EA1c: %s", __locator));
 			
 			// Open source and load from it
 			try (InputStream in = ((InputConnection)netSource)

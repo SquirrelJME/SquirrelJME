@@ -111,9 +111,18 @@ public class MidiPlayer
 	 */
 	@Override
 	public void becomingDeallocated()
+		throws MediaException
 	{
 		this._data = null;
 		this._tracks = null;
+		
+		// Close the input connection, if it was never read in
+		InputStreamConnection unrealizedIn = this._unrealizedIn;
+		if (unrealizedIn != null)
+		{
+			this._unrealizedIn = null;
+			AbstractPlayer.closeConnection(unrealizedIn);
+		}
 	}
 	
 	/**
@@ -354,31 +363,6 @@ public class MidiPlayer
 			if (tracker != null)
 				tracker.fastForward(__micros);
 		}
-	}
-	
-	@Override
-	public void close()
-	{
-		// Do nothing if already closed
-		if(this.getState() == Player.CLOSED)
-			return;
-
-		// Deallocate first
-		this.deallocate();
-
-		// Now we can make sure to fully free the player
-		try
-		{
-			this._unrealizedIn.close();
-			this._unrealizedIn = null;
-			// Mark as closed
-			this.setState(Player.CLOSED);
-		}
-		catch (IOException __e)
-		{
-			__e.printStackTrace();
-		}
-		
 	}
 	
 	/**

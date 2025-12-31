@@ -9,9 +9,13 @@
 package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.gcf.InputStreamConnection;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import javax.microedition.io.Connection;
 import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
@@ -167,11 +171,40 @@ public abstract class AbstractPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2025/12/31
+	 */
+	@Override
+	public final void close()
+	{
+		synchronized (this)
+		{
+			// Do nothing if already closed
+			if (this.getState() == Player.CLOSED)
+				return;
+			
+			// Always force close to be set after potential deallocation
+			try
+			{
+				// Deallocate if realized
+				if (this.getState() >= Player.REALIZED)
+					this.deallocate();
+			}
+			finally
+			{
+				// Force the closed state to always occur
+				this.setState(Player.CLOSED);
+			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/15
 	 */
 	@Override
 	@SquirrelJMEVendorApi
 	public final void deallocate()
+		throws IllegalStateException
 	{
 		int state = this.getState();
 
@@ -179,33 +212,22 @@ public abstract class AbstractPlayer
 			throw new IllegalStateException("EA06");
 		
 		// Do nothing if already in deallocated state
-		if (state == Player.REALIZED || state == Player.UNREALIZED)
+		if (state == Player.UNREALIZED)
 			return;
 
 		try
 		{
 			// Stop playing first, if it is playing at all
-			if(state == Player.STARTED)
+			if(state >= Player.STARTED)
 				this.stop();
 
-			// Now becoming deallocated
+			// Now becoming deallocated (unrealized)
 			this.becomingDeallocated();
-
-			// Only set state to REALIZED if we have effectively moved into
-			// REALIZED or higher (PREFETCHED, etc), as deallocate can be
-			// called during the transition from UNREALIZED to REALIZED, and if
-			// that happens, we can't actually set it as REALIZED, it must be
-			// kept as UNREALIZED.
-			if(state > Player.UNREALIZED) 
-			{
-				this.realize();
-				this.setState(Player.REALIZED);
-			}
-			else
-				this.setState(Player.UNREALIZED);
+			this.setState(Player.UNREALIZED);
 		}
-		catch (MediaException __ignored)
-		{	
+		catch (MediaException __e)
+		{
+			__e.printStackTrace();
 		}
 	}
 
@@ -795,6 +817,34 @@ public abstract class AbstractPlayer
 					__e.printStackTrace(System.err);
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Closes the connection and wraps any {@link IOException} with
+	 * a {@link MediaException}.
+	 *
+	 * @param __in The input connection to close.
+	 * @throws MediaException If any {@link IOException} occurred.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/31
+	 */
+	public static final void closeConnection(Connection __in)
+		throws MediaException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Close the input connection
+		try
+		{
+			__in.close();
+		}
+		catch (IOException __e)
+		{
+			MediaException toss = new MediaException(__e.getMessage());
+			toss.initCause(__e);
+			throw toss;
 		}
 	}
 }
