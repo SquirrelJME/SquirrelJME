@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.nokia.NokiaOTAPlayer;
+import cc.squirreljme.runtime.media.wav.WavPlayer;
 import java.io.ByteArrayInputStream;
 import java.lang.ref.WeakReference;
 import javax.microedition.media.Manager;
@@ -226,7 +227,8 @@ public class Sound
 					player = new NokiaOTAPlayer(new InputStreamConnection(new
 						ByteArrayInputStream(__data)));
 				else
-					throw Debugging.todo("Support wav player");
+					player = new WavPlayer(new InputStreamConnection(new
+						ByteArrayInputStream(__data)));
 
 				player.addPlayerListener(this._playerListener);
 
