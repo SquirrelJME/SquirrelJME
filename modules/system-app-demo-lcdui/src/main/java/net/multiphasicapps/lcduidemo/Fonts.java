@@ -75,7 +75,6 @@ public class Fonts
 		 */
 		{
 			this.setTitle("Font Demo");
-			this.setPaintMode(false);
 			
 			// Try to get fonts of various pixel sizes
 			List<Font> fonts = new ArrayList<>();
