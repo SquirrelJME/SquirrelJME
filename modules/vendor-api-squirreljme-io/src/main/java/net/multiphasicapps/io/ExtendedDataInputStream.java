@@ -452,7 +452,7 @@ public class ExtendedDataInputStream
 	public String readUTF()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return DataInputStream.readUTF(this);
 	}
 	
 	/**

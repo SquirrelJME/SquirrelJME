@@ -41,8 +41,7 @@ import org.jetbrains.annotations.Contract;
 public final class Debugging
 {
 	/** Is debugging enabled? */
-	@SuppressWarnings({"noinspection", "ConstantValue", "UnnecessaryUnboxing",
-		"unused"})
+	@SuppressWarnings({"noinspection", "ConstantValue", "UnnecessaryUnboxing", "unused", "PatternValidation"})
 	public static boolean ENABLED =
 		Boolean.valueOf(true).booleanValue();
 	

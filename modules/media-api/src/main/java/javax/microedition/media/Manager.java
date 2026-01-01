@@ -22,6 +22,7 @@ import cc.squirreljme.runtime.media.SystemNanoTimeBase;
 import cc.squirreljme.runtime.media.midi.MidiControlPlayer;
 import cc.squirreljme.runtime.media.midi.MidiPlayer;
 import cc.squirreljme.runtime.media.mld.IMelodyPlayer;
+import cc.squirreljme.runtime.media.wav.WavPlayer;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.io.Connection;
@@ -103,8 +104,8 @@ public final class Manager
 			/* {@squirreljme.error EA1a Could not determine the content
 			type of the input data.} */
 			if (__contentType == null)
-				throw new MediaException(__error__(
-					"EA1a"));
+				throw new MediaException(
+					__error__("EA1a"));
 		}
 		
 		// Native audio stream support?
@@ -142,12 +143,13 @@ public final class Manager
 				// Setup player
 				return new IMelodyPlayer(new InputStreamConnection(__in));
 				
-				// Standardized but not yet supported by SquirrelJME
 			case "audio/vnd.wave":
 			case "audio/wav":
 			case "audio/wave":
 			case "audio/x-wav":
+				return new WavPlayer(new InputStreamConnection(__in));
 				
+				// Standardized but not yet supported by SquirrelJME
 			case "audio/basic":
 				
 			case "audio/aiff":
@@ -165,8 +167,8 @@ public final class Manager
 		
 		/* {@squirreljme.error EA1b Unsupported content type. (The content
 		type)} */
-		throw new MediaException(__error__("EA1b %s",
-			__contentType));
+		throw new MediaException(
+			__error__("EA1b: %s", __contentType));
 	}
 	
 	/**
@@ -209,8 +211,8 @@ public final class Manager
 			/* {@squirreljme.error EA1c The specified locator does not
 			support being read from. (The locator)} */
 			if (!(netSource instanceof InputConnection))
-				throw new MediaException(__error__(
-					"EA1c %s", __locator));
+				throw new MediaException(
+					__error__("EA1c: %s", __locator));
 			
 			// Open source and load from it
 			try (InputStream in = ((InputConnection)netSource)

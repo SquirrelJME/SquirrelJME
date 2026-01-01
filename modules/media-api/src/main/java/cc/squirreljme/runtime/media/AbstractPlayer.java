@@ -9,9 +9,11 @@
 package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import javax.microedition.io.Connection;
 import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
@@ -93,6 +95,16 @@ public abstract class AbstractPlayer
 		
 		this._mime = __mime;
 	}
+
+	/**
+	 * This is called when the player is becoming deallocated.
+	 * 
+	 * @throws MediaException If the player cannot be deallocated.
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract void becomingDeallocated()
+		throws MediaException;
 	
 	/**
 	 * This is called when the player is becoming prefetched.
@@ -155,6 +167,71 @@ public abstract class AbstractPlayer
 	protected abstract void clockSet(long __micros)
 		throws MediaException;
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/31
+	 */
+	@Override
+	public final void close()
+	{
+		synchronized (this)
+		{
+			// Do nothing if already closed
+			if (this.getState() == Player.CLOSED)
+				return;
+			
+			// Always force close to be set after potential deallocation
+			try
+			{
+				// Deallocate if realized
+				if (this.getState() >= Player.REALIZED)
+					this.deallocate();
+			}
+			finally
+			{
+				// Force the closed state to always occur
+				this.setState(Player.CLOSED);
+			}
+			
+			// Send the closed event now that everything is closed
+			this.dispatchEvent(PlayerListener.CLOSED, null);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/15
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public final void deallocate()
+		throws IllegalStateException
+	{
+		int state = this.getState();
+
+		if (state == Player.CLOSED)
+			throw new IllegalStateException("EA06");
+		
+		// Do nothing if already in deallocated state
+		if (state == Player.UNREALIZED)
+			return;
+
+		try
+		{
+			// Stop playing first, if it is playing at all
+			if (state >= Player.STARTED)
+				this.stop();
+
+			// Now becoming deallocated (unrealized)
+			this.becomingDeallocated();
+			this.setState(Player.UNREALIZED);
+		}
+		catch (MediaException __e)
+		{
+			__e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Determines the length of the media.
 	 * 
@@ -741,6 +818,34 @@ public abstract class AbstractPlayer
 					__e.printStackTrace(System.err);
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Closes the connection and wraps any {@link IOException} with
+	 * a {@link MediaException}.
+	 *
+	 * @param __in The input connection to close.
+	 * @throws MediaException If any {@link IOException} occurred.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/31
+	 */
+	public static final void closeConnection(Connection __in)
+		throws MediaException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Close the input connection
+		try
+		{
+			__in.close();
+		}
+		catch (IOException __e)
+		{
+			MediaException toss = new MediaException(__e.getMessage());
+			toss.initCause(__e);
+			throw toss;
 		}
 	}
 }

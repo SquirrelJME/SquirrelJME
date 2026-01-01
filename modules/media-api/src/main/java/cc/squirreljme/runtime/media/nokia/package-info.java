@@ -1,4 +1,3 @@
-// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -7,23 +6,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package squirreljme.compilerbug;
-
-import net.multiphasicapps.tac.TestRunnable;
-
 /**
- * This exists to store fields for the linked list iterator compiler bug test
- * but Jasmin is being stupidly impossible with fields.
+ * This contains the support within SquirrelJME for Nokia OTA decoding.
  *
- * @since 2021/06/16
+ * @since 2025/12/25
  */
-@SuppressWarnings("unused")
-abstract class __LLIAFields__
-	extends TestRunnable
-{
-	int _vdx;
-	int _atmod;
-	FakeLinkedList list;
-	__Link__ _next;
-	__Link__ _last;
-}
+
+package cc.squirreljme.runtime.media.nokia;

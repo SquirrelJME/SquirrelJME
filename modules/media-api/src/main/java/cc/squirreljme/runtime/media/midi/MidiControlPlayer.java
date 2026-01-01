@@ -12,7 +12,6 @@ import cc.squirreljme.jvm.mle.MidiShelf;
 import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.media.AbstractMidiControl;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import javax.microedition.media.MediaException;
@@ -69,12 +68,24 @@ public class MidiControlPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2025/12/28
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void becomingDeallocated()
+	{
+		// Nothing needs to be done
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2025/06/03
 	 */
 	@Override
 	protected void becomingPrefetched()
 		throws MediaException
 	{
+		// Nothing needs to be done
 	}
 	
 	/**
@@ -132,28 +143,6 @@ public class MidiControlPlayer
 		throws MediaException
 	{
 		// Does nothing
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/06/03
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void close()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/06/03
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void deallocate()
-	{
-		throw Debugging.todo();
 	}
 	
 	/**

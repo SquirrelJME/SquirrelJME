@@ -18,7 +18,7 @@ public class SimpleSerializeException
 	extends IOException
 {
 	@Api
-    public SimpleSerializeException(String var1)
+	public SimpleSerializeException(String var1)
 	{
 		throw Debugging.todo();
 	}
