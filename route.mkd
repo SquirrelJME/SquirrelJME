@@ -32,29 +32,44 @@ This release was before the goal-oriented release planning.
 
 ## 0.4.0 (2026 TBD)
 
-As of 2026/01/01: 109 of 200 (54%) (Optional/Extra: 121 of 227 (53%))
+As of 2026/01/01: 176 of 278 (63%)
 
 ```
 [| 0%...|10%...|20%...|30%...|40%...|50%...|60%...|70%...|80%...|90%...|]
-[||||||||||||||||||||||||||||||||||||||.................................]
+[||||||||||||||||||||||||||||||||||||||||||||...........................]
 ```
 
  * [ ] Runtime Library
    * [ ] Building
+     * [ ] Fonts 
+       * [ ] Convert BDF to SQF
+       * [ ] Place SQFs as a resource
      * [ ] Improved Pipeline Build using CMake
        * [X] Ability to build everything
        * [ ] Emit warnings for missing release required targets
        * [X] Upload everything to Fossil
      * [X] Migration to Gradle
      * [X] NanoTest Support
+     * [X] Old script cleanup
      * [X] Release optimization/stripping/compaction
        * [X] Annotations for disabling for exported APIs
      * [X] "ROM"-ization of the Jar
+     * [X] Standalone "Emulator"
+       * [X] Release and Debug Support
+       * [X] JDWP Debugger Support
+       * [X] Standard `java` command line support
+       * [X] VMs
+         * [X] Hosted
+         * [X] SpringCoat
+         * [X] NanoCoat
      * [X] TAC Integration
    * [ ] Implementation  
      * [X] Collections
+     * [X] Compact Stack Traces
      * [X] Encodings
-       * [X] ASCII 
+       * [X] ASCII
+       * [X] ISO-8859-1
+       * [X] ISO-8859-15
        * [X] Shift-JIS
        * [X] UTF-8
      * [ ] DoJa
@@ -63,6 +78,12 @@ As of 2026/01/01: 109 of 200 (54%) (Optional/Extra: 121 of 227 (53%))
        * [X] MLD Playback Support 
        * [X] Most `Canvas` based applications are supported
        * [X] ScratchPad Support
+       * [X] Version Checking (Compatibility)
+     * [ ] Fonts 
+       * [X] 12 Strike Font
+       * [X] 16 Strike Font
+       * [X] Japanese Font (Misaki)
+       * [X] Unifont 16 Fallback Font
      * [ ] GCF
        * [X] HTTP Support
        * [ ] Inter-MIDlet Communication
@@ -74,12 +95,48 @@ As of 2026/01/01: 109 of 200 (54%) (Optional/Extra: 121 of 227 (53%))
        * [X] PNG
        * [X] XPM
      * [X] `java.lang`
+       * [X] Boxed Types
+         * [X] `toString()` corrections
+       * [X] Fixes to `Object.clone()`
+       * [X] Fixes to `Object.equals()`
+       * [X] `System.getProperty()`
+         * [X] Java SE Specific Properties
+         * [X] Java ME Specific Properties
+       * [X] Traditional Java SE-style `Class.getResourceAsStream()` Fallback
+     * [X] `java.io`
+       * [X] `DataInputStream`
+       * [X] `DataOutputStream`
+     * [X] `java.util`
+       * [X] Hash based collection improvements
+       * [X] Vector (Deprecated)
      * [X] KJX Support
-     * [ ] LCDUI Improvements
+     * [X] Launcher
+       * [X] Auto-launch via system property
+       * [X] Major improvements to the splash screen
+       * [X] Show that an application is loading when it is selected
+       * [X] System Information Application
+     * [ ] LCDUI Refactoring and Improvements
+       * [ ] Alerts
        * [ ] All `Displayable`s using ScritchUI
+       * [X] Commands (Mostly)
+       * [X] Double Buffering
        * [X] Generalized input support
+       * [X] Menus (Mostly)
        * [X] MLE Implementation
-     * [X] MIDI Playback
+       * [ ] Improve and Refactor `Text`
+       * [X] `setCurrent()` Improvements
+       * [ ] Show images in Lists
+     * [X] Media API
+       * [X] Abstract Player
+       * [X] MIDI File Playback
+       * [X] MIDI Control Support
+       * [X] Null Player
+       * [X] Volume Control Support
+     * [X] MEEP
+       * [X] Improved Task Management
+       * [X] Permission Checking
+       * [X] Support for Broken Java Manifests
+       * [X] Version Checking (Compatibility)
      * [X] Modern "Mid-Level" API implementations (MLE)
        * [X] Atomics
        * [X] Classpath and Library Access
@@ -108,6 +165,8 @@ As of 2026/01/01: 109 of 200 (54%) (Optional/Extra: 121 of 227 (53%))
        * [ ] `float`
        * [ ] `long`
        * [X] String operations
+     * [X] Nokia
+       * [X] `FullCanvas`
      * [X] Record Store Support
      * [X] Testing-Acceptance-Correctness
        * [X] Inherited test results
@@ -124,11 +183,22 @@ As of 2026/01/01: 109 of 200 (54%) (Optional/Extra: 121 of 227 (53%))
          * [X] Base
          * [ ] Conversions
      * [X] Sorting algorithm
+     * [X] ZIP Files
+       * [X] Block based
+         * [X] Read
+         * [X] Write
+       * [X] Stream based
+         * [X] Read
+         * [X] Write
  * [ ] SpringCoat
    * [X] Building
-     * [X] TAC Support 
-   * [X] Implementation  
+     * [X] TAC Support
+   * [X] Implementation
+     * [X] Corrected Static Method Inheritance
      * [X] JDWP Debugging Support
+     * [X] Limit depth of the call-stack
+     * [X] Major Refactoring
+     * [X] Major Simplification
      * [X] Modern "Mid-Level" API implementations (MLE)
      * [X] NPS Profiling Support
      * [X] Pseudo-proxy layer for future MLE APIs
@@ -147,6 +217,8 @@ As of 2026/01/01: 109 of 200 (54%) (Optional/Extra: 121 of 227 (53%))
        * [ ] Compatible JNI implementation
        * [ ] Self-written `jni.h`
        * [ ] Self-written `jvm.h`
+       * [X] Standalone Application
+       * [X] Standard `java` command line support
      * [ ] RetroArch (libretro)
      * [ ] SDL 1
      * [ ] SDL 2
@@ -159,6 +231,7 @@ As of 2026/01/01: 109 of 200 (54%) (Optional/Extra: 121 of 227 (53%))
      * [X] Character Sequences
      * [X] Class Loading
      * [X] Closeable
+     * [X] Compact Stack Traces
      * [X] Debug Output
      * [X] Dynamic Library Loading
      * [X] Error Handling
@@ -222,6 +295,9 @@ As of 2026/01/01: 109 of 200 (54%) (Optional/Extra: 121 of 227 (53%))
    * [ ] ScritchUI
      * [ ] Implementation
        * [X] Fully synchronized graphics, for compatibility
+       * [ ] Fonts
+         * [X] Fallback Font
+         * [ ] Resource-Based Loading
        * [X] Generic raster operations
        * [X] HiDPI Support
      * [ ] Frontends
@@ -230,8 +306,10 @@ As of 2026/01/01: 109 of 200 (54%) (Optional/Extra: 121 of 227 (53%))
        * [ ] Improvised Framebuffer Fallback Adaptation
          * [ ] Buttons (Selectable/Clickable)
          * [ ] Labels
-         * [ ] Images in Lists
-         * [X] Lists
+         * [ ] Lists
+           * [X] Basic rendering
+           * [ ] Fonts
+           * [ ] Images
          * [ ] Text Boxes
            * [ ] ABC Mode Input (2=A, 22=B, 222=C)
            * [ ] Keyboard Input
@@ -239,11 +317,16 @@ As of 2026/01/01: 109 of 200 (54%) (Optional/Extra: 121 of 227 (53%))
          * [ ] Front-end Specific Framebuffer
        * [X] Win32
        * [ ] X11 (Pure No-Library Implementation)
- * [ ] Nice-To-Have
+ * [ ] Nice-To-Have (Not Included in Percent)
+   * [ ] Bluetooth Stubs
    * [ ] Complete `Calendar` Implementation
+   * [ ] Compatibility System
+     * [ ] Ability to set flags
+     * [X] Compatibility Flags
    * [ ] Harmonize all `XXnn` to `__error__(id)`
    * [X] `javap` equivalent
    * [ ] Linter/Formatter
+   * [ ] Modem Stubs
    * [ ] Move `debug-jdwp-vm-host` to `emulator-base`
    * [ ] SquirrelJME applications under `system-app-*`
      * [X] `launcher` 
@@ -261,7 +344,7 @@ As of 2026/01/01: 109 of 200 (54%) (Optional/Extra: 121 of 227 (53%))
      * [ ] `tac`
      * [X] `zip`
    * [X] `unzip` equivalent
- * [X] Unplanned/Extra
+ * [X] Unplanned/Extra (Not Included in Percent)
    * [X] Additional Blending Modes
    * [X] Generic Pixel Format Support 
    * [X] Nokia Tone Support
