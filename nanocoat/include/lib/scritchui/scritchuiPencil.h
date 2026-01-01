@@ -230,6 +230,33 @@ typedef struct sjme_scritchui_pencilColor
 } sjme_scritchui_pencilColor;
 
 /**
+ * Mode flags for @code sjme_scritchui_transferRegionFunc @endcode .
+ * 
+ * @since 2026/01/01
+ */
+typedef enum sjme_scritchui_transferRegionMode
+{
+	/**
+	 * Disregard the current blending mode and force SRC when drawing
+	 * ontop of the destination.
+	 */
+	SJME_SCRITCHUI_TRANSFER_SRC_FORCE = INT32_C(1),
+
+	/**
+	 * Optimized transfer of regions going scanline by scanline in the
+	 * fashion of @code memmove() @endcode, any transformations are
+	 * disregarded.
+	 * 
+	 * This requires that the source and destination pixel format have the
+	 * same density, so a 16-bit pixel format may only ever be copied to
+	 * another 16-bit pixel format.
+	 * 
+	 * This implies @link SJME_SCRITCHUI_TRANSFER_SRC_FORCE @endlink .
+	 */
+	SJME_SCRITCHUI_TRANSFER_MEMMOVE = INT32_C(2),
+} sjme_scritchui_transferRegionMode;
+
+/**
  * Applies an anchor point.
  * 
  * @param anchor The anchor point.
@@ -1417,7 +1444,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTransferRegionFunc)(
 	sjme_attrInValue sjme_jint yDest,
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInPositive sjme_jint wDest,
-	sjme_attrInPositive sjme_jint hDest);
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInValue sjme_scritchui_transferRegionMode mode);
 
 /**
  * Translates drawing operations.

@@ -880,7 +880,8 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->transferRegion.yDest,
 		as->transferRegion.anchor,
 		as->transferRegion.wDest,
-		as->transferRegion.hDest));
+		as->transferRegion.hDest,
+		as->transferRegion.mode));
 
 	SJME_SDP_CASE(translate,
 		SJME_SCRITCHUI_SERIAL_PEN_TRANSLATE,
@@ -2568,12 +2569,13 @@ sjme_errorCode sjme_scritchpen_coreSerial_transferRegion(
 	sjme_attrInValue sjme_jint yDest,
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInPositive sjme_jint wDest,
-	sjme_attrInPositive sjme_jint hDest)
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInValue sjme_scritchui_transferRegionMode mode)
 {
 	SJME_SDP_CHUNK(transferRegion,
 		SJME_SCRITCHUI_SERIAL_PEN_TRANSFER_REGION,
 		(g, srcPencil, alpha, xSrc, ySrc, wSrc, hSrc,
-			trans, xDest, yDest, anchor, wDest, hDest));
+			trans, xDest, yDest, anchor, wDest, hDest, mode));
 		
 	SJME_SDX_PASS(g);
 	SJME_SDX_PASS(srcPencil);
@@ -2588,6 +2590,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_transferRegion(
 	SJME_SDX_PASS(anchor);
 	SJME_SDX_PASS(wDest);
 	SJME_SDX_PASS(hDest);
+	SJME_SDX_PASS(mode);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;

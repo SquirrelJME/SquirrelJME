@@ -582,7 +582,8 @@ sjme_errorCode sjme_scritchpen_core_transferRegion(
 	sjme_attrInValue sjme_jint yDest,
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInPositive sjme_jint wDest,
-	sjme_attrInPositive sjme_jint hDest);
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInValue sjme_scritchui_transferRegionMode mode);
 
 sjme_errorCode sjme_scritchpen_core_translate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
