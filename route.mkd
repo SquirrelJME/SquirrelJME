@@ -32,6 +32,13 @@ This release was before the goal-oriented release planning.
 
 ## 0.4.0 (2026 TBD)
 
+As of 2026/01/01: 109 of 200 (54%) (Optional/Extra: 121 of 227 (53%))
+
+```
+[| 0%...|10%...|20%...|30%...|40%...|50%...|60%...|70%...|80%...|90%...|]
+[||||||||||||||||||||||||||||||||||||||.................................]
+```
+
  * [ ] Runtime Library
    * [ ] Building
      * [ ] Improved Pipeline Build using CMake
