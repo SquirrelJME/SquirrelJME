@@ -76,7 +76,7 @@ public class NokiaOTAPlayer
 		this._unrealizedIn = __in;
 
 		if (Debugging.VERBOSE)
-			Debugging.debugNote("NokiaOTAPlayer: init(%p)", __in);
+			Debugging.debugNote("NokiaOTAPlayer: init(%s)", __in);
 
 		// Register volume control so we can properly set the gain
 		this.registerControl(new AbstractVolumeControl(this));
@@ -156,20 +156,12 @@ public class NokiaOTAPlayer
 				stream = AudioStreamShelf.stream();
 				this._stream = stream;
 			}
-			catch (MLECallError __e)
+			catch (MLECallError | IOException __e)
 			{
 				__e.printStackTrace();
 
 				MediaException mex = new MediaException(__e.getMessage());
 				mex.initCause(__e);
-				throw mex;
-			}
-			catch (IOException __ie)
-			{
-				__ie.printStackTrace();
-
-				MediaException mex = new MediaException(__ie.getMessage());
-				mex.initCause(__ie);
 				throw mex;
 			}
 		}

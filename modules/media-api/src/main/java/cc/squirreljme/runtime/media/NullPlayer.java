@@ -11,8 +11,7 @@ package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.media.MediaException;
-import javax.microedition.media.Player;
-import javax.microedition.media.PlayerListener;
+import org.intellij.lang.annotations.Language;
 
 /**
  * This is a player which does nothing.
@@ -31,7 +30,7 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@SquirrelJMEVendorApi
-	public NullPlayer(String __mime)
+	public NullPlayer(@Language("mime-type-reference") String __mime)
 		throws NullPointerException
 	{
 		super(__mime);

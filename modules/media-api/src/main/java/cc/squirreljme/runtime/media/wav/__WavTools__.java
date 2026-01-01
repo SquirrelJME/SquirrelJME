@@ -9,64 +9,63 @@
 
 package cc.squirreljme.runtime.media.wav;
 
-import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
-import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.StreamUtils;
-import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import java.io.InputStream;
 import java.io.IOException;
-import org.intellij.lang.annotations.MagicConstant;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
+import net.multiphasicapps.io.ExtendedDataInputStream;
 
+/**
+ * WAV Utilities.
+ *
+ * @since 2025/12/31
+ */
 @SquirrelJMEVendorApi
 class __WavTools__ 
 {
 	/** The standard size of a PCM WAV's header. */
-	private static final byte PCM_HEADER_SIZE
-		= 44;
+	private static final byte PCM_HEADER_SIZE =
+		44;
 
 	/** The standard size of an ADPCM WAV's header. */
-	private static final byte ADPCM_HEADER_SIZE
-		= 60;
+	private static final byte ADPCM_HEADER_SIZE =
+		60;
 
 	/** Magic number for the header's 'RIFF' string. */
-	private static final int RIFF_MAGIC
-		= 0x52494646;          
+	private static final int RIFF_MAGIC =
+		0x52494646;          
 
 	/** Magic number for the header's 'WAVE' string. */
-	private static final int WAVE_MAGIC
-		= 0x57415645;
+	private static final int WAVE_MAGIC =
+		0x57415645;
 
-	/** Magic number for the header's 'fmt ' chunk delimiter. */
-	private static final int FMT_MAGIC
-		= 0x666d7420;
+	/** Magic number for the header's {@code 'fmt '} chunk delimiter. */
+	private static final int FMT_MAGIC =
+		0x666d7420;
 
-	/** Magic number for the header's 'data' chunk delimiter. */
-	private static final int DATA_MAGIC
-		= 0x64617461;
+	/** Magic number for the header's {@code 'data'} chunk delimiter. */
+	private static final int DATA_MAGIC =
+		0x64617461;
 
 	/** Header format value that indicates a standard PCM WAV. */
-	public static final int FORMAT_PCM_WAV
-		= 0x1;
+	public static final int FORMAT_PCM_WAV =
+		0x1;
 
 	/** Header format value that indicates an IEEE-spec Float PCM WAV. */
-	public static final int FORMAT_FLOAT_WAV
-		= 0x3;
+	public static final int FORMAT_FLOAT_WAV =
+		0x3;
 
 	/** Header format value that indicates an 8-bit ITU-T G.711 A-law WAV. */
-	public static final int FORMAT_ALAW_WAV
-		= 0x6;
+	public static final int FORMAT_ALAW_WAV =
+		0x6;
 
 	/** Header format value that indicates an 8-bit ITU-T G.711 u-law WAV. */
-	public static final int FORMAT_MULAW_WAV
-		= 0x7;
+	public static final int FORMAT_MULAW_WAV =
+		0x7;
 
 	/** Header format value that indicates an IMA ADPCM WAV. */
-	public static final int FORMAT_IMA_ADPCM
-		= 0x11;
+	public static final int FORMAT_IMA_ADPCM =
+		0x11;
 
 	/**
 	 * Builds a WAV header that describes a decoded PCM file on the first 44
@@ -80,12 +79,16 @@ class __WavTools__
 	 * @param __sampleRate The data's sample rate
 	 * @param __numBits The data's amount of bits per sample
 	 * @param __sampleDataLength The amount of samples in the data array
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/13/31
 	 */
 	public static void buildPCMWavHeader(byte[] __buffer,
 		byte __numChannels, int __sampleRate,
 		byte __numBits, int __sampleDataLength)
-	{ 
-		short audioFormat = __WavTools__.FORMAT_PCM_WAV;
+		throws NullPointerException
+	{
+		if (__buffer == null)
+			throw new NullPointerException("NARG");
 		
 		// subChunkSize defaults to 16 for Wav PCM
 		int subChunkSize = 16;
@@ -101,19 +104,21 @@ class __WavTools__
 			(__numBits / 8);
 		
 		// NOTE: ChunkSize is the total file size - 8 bytes
-		__writeIntBE(__buffer, 0, __WavTools__.RIFF_MAGIC);
-		__writeIntLE(__buffer, 4, __buffer.length - 8);
-		__writeIntBE(__buffer, 8, __WavTools__.WAVE_MAGIC);
-		__writeIntBE(__buffer, 12, __WavTools__.FMT_MAGIC);
-		__writeIntLE(__buffer, 16, subChunkSize);
-		__writeShort(__buffer, 20, audioFormat);
-		__writeShort(__buffer, 22, __numChannels);
-		__writeIntLE(__buffer, 24, __sampleRate);
-		__writeIntLE(__buffer, 28, bytesPerSec);
-		__writeShort(__buffer, 32, frameSize);
-		__writeShort(__buffer, 34, __numBits);
-		__writeIntBE(__buffer, 36, __WavTools__.DATA_MAGIC);
-		__writeIntLE(__buffer, 40, __sampleDataLength);
+		__WavTools__.__writeIntBE(__buffer, 0, __WavTools__.RIFF_MAGIC);
+		__WavTools__.__writeIntLE(__buffer, 4, 
+			__buffer.length - 8);
+		__WavTools__.__writeIntBE(__buffer, 8, __WavTools__.WAVE_MAGIC);
+		__WavTools__.__writeIntBE(__buffer, 12, __WavTools__.FMT_MAGIC);
+		__WavTools__.__writeIntLE(__buffer, 16, subChunkSize);
+		__WavTools__.__writeShort(__buffer, 20, 
+			(short)__WavTools__.FORMAT_PCM_WAV);
+		__WavTools__.__writeShort(__buffer, 22, __numChannels);
+		__WavTools__.__writeIntLE(__buffer, 24, __sampleRate);
+		__WavTools__.__writeIntLE(__buffer, 28, bytesPerSec);
+		__WavTools__.__writeShort(__buffer, 32, frameSize);
+		__WavTools__.__writeShort(__buffer, 34, __numBits);
+		__WavTools__.__writeIntBE(__buffer, 36, __WavTools__.DATA_MAGIC);
+		__WavTools__.__writeIntLE(__buffer, 40, __sampleDataLength);
 	}
 
 	/**
@@ -123,10 +128,14 @@ class __WavTools__
 	 * @return An array containing relevant wav data to begin processing, such
 	 * as sample rate, bits per sample, amount of channels, and so on.
 	 * @throws IOException If data could not be read.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/13/31
 	 */
-	public static int[] readHeader(InputStream __in)
-		throws IOException
+	public static int[] readHeader(ExtendedDataInputStream __in)
+		throws IOException, NullPointerException
 	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
 		
 		// The header of a WAV (RIFF) file is 44 bytes long and has the
 		// following format:
@@ -155,17 +164,17 @@ class __WavTools__
 		// UINT32 SubChunk2Size
 		// UINT32 NumOfSamples
 		
-		String riff = __readString(__in, 4);
-		int dataSize = __readInt(__in);  
-		String format = __readString(__in, 4);
-		String fmt = __readString(__in, 4);
-		int chunkSize = __readInt(__in);
-		short audioFormat = __readShort(__in);
-		short audioChannels = __readShort(__in);
-		int sampleRate = __readInt(__in);
-		int bytesPerSec = __readInt(__in);
-		short frameSize = __readShort(__in);
-		short bitsPerSample = __readShort(__in);
+		String riff = __WavTools__.__readString(__in, 4);
+		int dataSize = __in.readInt();  
+		String format = __WavTools__.__readString(__in, 4);
+		String fmt = __WavTools__.__readString(__in, 4);
+		int chunkSize = __in.readInt();
+		short audioFormat = __in.readShort();
+		short audioChannels = __in.readShort();
+		int sampleRate = __in.readInt();
+		int bytesPerSec = __in.readInt();
+		short frameSize = __in.readShort();
+		short bitsPerSample = __in.readShort();
 		
 		// These are conditionally read depending on IMA ADPCM
 		short ByteExtraData = 0;
@@ -174,115 +183,89 @@ class __WavTools__
 		int SubChunk2Size = 0;
 		int numOfSamples = 0;
 
-		if(audioFormat == __WavTools__.FORMAT_IMA_ADPCM) 
+		if (audioFormat == __WavTools__.FORMAT_IMA_ADPCM) 
 		{
-			ByteExtraData = __readShort(__in);
-			ExtraData = __readShort(__in);
-			factHeader = __readString(__in, 4);
-			SubChunk2Size = __readInt(__in);
-			numOfSamples = __readInt(__in);
+			ByteExtraData = __in.readShort();
+			ExtraData = __in.readShort();
+			factHeader = __WavTools__.__readString(__in, 4);
+			SubChunk2Size = __in.readInt();
+			numOfSamples = __in.readInt();
 		}
 
-		String dataHeader = __readString(__in, 4);
-
-		int dataLen = __readInt(__in);
+		String dataHeader = __WavTools__.__readString(__in, 4);
+		
+		int dataLen = __in.readInt();
 
 		if (Debugging.VERBOSE)
 		{
-			Debugging.debugNote((audioFormat == __WavTools__.FORMAT_IMA_ADPCM ?
-				"IMA ADPCM" : "PCM") + " WAV HEADER_START");
+			Debugging.debugNote("%s WAV HEADER_START",
+				audioFormat == __WavTools__.FORMAT_IMA_ADPCM ? "IMA ADPCM" :
+					"PCM");
 
-			Debugging.debugNote(riff);
-			Debugging.debugNote("FileSize:" + dataSize);
-			Debugging.debugNote("Format: " + format);
+			Debugging.debugNote("%s", riff);
+			Debugging.debugNote("FileSize:%d", dataSize);
+			Debugging.debugNote("Format: %s", format);
 
-			Debugging.debugNote("---'" + fmt + "' header---");
-			Debugging.debugNote("Header ChunkSize:" +
-				Integer.toString(chunkSize));
+			Debugging.debugNote("---'%s' header---", fmt);
+			Debugging.debugNote(
+				"Header ChunkSize:%d", chunkSize);
 
-			Debugging.debugNote("AudioFormat: " +
+			Debugging.debugNote("AudioFormat: %s",
 				Integer.toString(audioFormat));
 
-			Debugging.debugNote("AudioChannels:" +
+			Debugging.debugNote("AudioChannels:%s",
 				Integer.toString(audioChannels));
 
-			Debugging.debugNote("SampleRate:" +
-				Integer.toString(sampleRate));
+			Debugging.debugNote("SampleRate:%d", sampleRate);
 				
-			Debugging.debugNote("BytesPerSec:" +
-				Integer.toString(bytesPerSec));
+			Debugging.debugNote("BytesPerSec:%d", bytesPerSec);
 
-			Debugging.debugNote("FrameSize:" +
-				Integer.toString(frameSize));
+			Debugging.debugNote(
+				"FrameSize:%s", Integer.toString(frameSize));
 
-			Debugging.debugNote("BitsPerSample:" +
+			Debugging.debugNote("BitsPerSample:%s",
 				Integer.toString(bitsPerSample));
 			
-			if(audioFormat == __WavTools__.FORMAT_IMA_ADPCM) 
+			if (audioFormat == __WavTools__.FORMAT_IMA_ADPCM) 
 			{
-				Debugging.debugNote("ByteExtraData:" +
+				Debugging.debugNote("ByteExtraData:%s",
 					Integer.toString(ByteExtraData));
 
-				Debugging.debugNote("ExtraData:" +
-					Integer.toString(ExtraData));
+				Debugging.debugNote(
+					"ExtraData:%s", Integer.toString(ExtraData));
 
-				Debugging.debugNote("---'" + factHeader +"' header---");
+				Debugging.debugNote(
+					"---'%s' header---", factHeader);
 
-				Debugging.debugNote("SubChunk2Size:" +
-					Integer.toString(SubChunk2Size));
+				Debugging.debugNote(
+					"SubChunk2Size:%d", SubChunk2Size);
 
-				Debugging.debugNote("numOfSamples:" +
-					Integer.toString(numOfSamples));
+				Debugging.debugNote(
+					"numOfSamples:%d", numOfSamples);
 			}
 			
-			Debugging.debugNote("---'" + dataHeader +"' header---");
-			Debugging.debugNote("SampleDataLength:" +
-				Integer.toString(dataLen));
+			Debugging.debugNote("---'%s' header---", dataHeader);
+			Debugging.debugNote("SampleDataLength:%d", dataLen);
 
-			Debugging.debugNote((audioFormat == __WavTools__.FORMAT_IMA_ADPCM ?
-				"IMA ADPCM" : "PCM") + "WAV HEADER_END");
+			Debugging.debugNote("%sWAV HEADER_END",
+				audioFormat == __WavTools__.FORMAT_IMA_ADPCM ? "IMA ADPCM" :
+					"PCM");
 		}
 		
 		// Return everything we need to write into a scritchaudio buffer
 		return new int[] {audioFormat, sampleRate, audioChannels, frameSize,
 			dataLen, bitsPerSample};
 	}
-
-	/**
-	 * Read a 16-bit little-endian unsigned integer from input.
-	 * 
-	 * @param __in Data stream to read from.
-	 * @return
-	 * @throws IOException If data could not be read.
-	 */
-	private static short __readShort(InputStream __in)
-		throws IOException
-	{ 
-		return (short) ((__in.read() & 0xFF) | (( __in.read() & 0xFF) << 8));
-	}
-
-	/**
-	 * Read a 32-bit little-endian signed integer from input.
-	 * 
-	 * @param __in Data stream to read from.
-	 * @return
-	 * @throws IOException If data could not be read.
-	 */
-	private static int __readInt(InputStream __in)
-		throws IOException
-	{
-		return (__in.read() & 0xFF) | (( __in.read() & 0xFF) << 8)
-			| ((__in.read() & 0xFF) << 16) | ((__in.read() & 0xFF) << 24);
-	}
-
+	
 	/**
 	 * Return a String containing 'n' Characters of ASCII/ISO-8859-1 text
 	 * from the input stream.
 	 * 
 	 * @param __in Data stream to read from.
 	 * @param __n The amount of characters/bytes to read
-	 * @return
+	 * @return The resultant string.
 	 * @throws IOException If data could not be read.
+	 * @since 2025/13/31
 	 */
 	private static String __readString(InputStream __in, int __n)
 		throws IOException
@@ -292,7 +275,7 @@ class __WavTools__
 		while(pos < __n) 
 		{
 			int read = __in.read(chars, pos, __n - pos);
-			if(read < 0)
+			if (read < 0)
 				throw new java.io.EOFException();
 			pos += read;
 		}
@@ -305,6 +288,7 @@ class __WavTools__
 	 * @param __buffer The buffer to write data
 	 * @param __index The buffer index to write into
 	 * @param __value The value to write
+	 * @since 2025/13/31
 	 */
 	private static void __writeIntLE(byte[] __buffer, int __index, int __value)
 	{
@@ -321,6 +305,7 @@ class __WavTools__
 	 * @param __buffer The buffer to write data
 	 * @param __index The buffer index to write into
 	 * @param __value The value to write
+	 * @since 2025/13/31
 	 */
 	private static void __writeIntBE(byte[] __buffer, int __index, int __value)
 	{
@@ -336,6 +321,7 @@ class __WavTools__
 	 * @param __buffer The buffer to write data
 	 * @param __index The buffer index to write into
 	 * @param __value The value to write
+	 * @since 2025/13/31
 	 */
 	private static void __writeShort(byte[] __buffer, int __index, int __value)
 	{

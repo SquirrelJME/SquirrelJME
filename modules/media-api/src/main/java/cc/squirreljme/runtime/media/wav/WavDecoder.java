@@ -113,13 +113,13 @@ public class WavDecoder
 
 		boolean isNegative = false;
 		int decodedSample;
-        int step;
-        int position;
+		int step;
+		int position;
 		byte aLawSample;
 
 		int i;
 		int minLen = Math.min(__inLen, __outLen);
-        
+		
 		for (i = 0; i < minLen; i++)
 		{
 			// Most of the logic here is pretty similar for u-law.
@@ -135,7 +135,7 @@ public class WavDecoder
 
 			// We have to invert the sign bit again if the sample is negative
 			if (isNegative)
-				aLawSample &= ~(1 << 7);
+				aLawSample &= (byte)(~(1 << 7));
 
 			// We now get the a-step (mantissa) as well as the channel and
 			// shift exponent to use in the decoding formula.
@@ -143,6 +143,8 @@ public class WavDecoder
 			position = (aLawSample & 0xF0) >> 4;
 
 			// Based on 'Equation 25' from the PDF.
+			// TODO: Out of bounds shifts are treated as if they were 0x1F
+			// TODO: by the JVM.
 			if (position != 4)
 				decodedSample = (2 * step + 33) * (1 << position - 32) << 2;
 			else
@@ -152,8 +154,8 @@ public class WavDecoder
 			if (isNegative)
 				decodedSample = -decodedSample;
 			
-            __output[__outOff + i] = (short) (decodedSample * __volMult / 100);
-        }
+			__output[__outOff + i] = (short) (decodedSample * __volMult / 100);
+		}
 
 		return i;
 	}
@@ -242,13 +244,13 @@ public class WavDecoder
 				// Bytes 0 and 1 describe the chunk's initial predictor value
 				// (little-endian), clamp it even in case of issues such as to
 				// try and preserve the decoded stream's quality.
-				predictedSample[LEFT_CHANNEL] = (short) Math.max(
+				predictedSample[WavDecoder.LEFT_CHANNEL] = (short) Math.max(
 					Short.MIN_VALUE, Math.min(((__input[inputIndex])) |
 					((__input[inputIndex+1]) << 8), Short.MAX_VALUE));
 				
 				// Byte 2 is the chunk's initial index on the step_size_table.
 				// Clamp as well
-				tableIndex[LEFT_CHANNEL] = (byte) Math.max(0,
+				tableIndex[WavDecoder.LEFT_CHANNEL] = (byte) Math.max(0,
 					Math.min(__input[inputIndex+2], 88));
 
 				inputIndex += 4;
@@ -256,11 +258,11 @@ public class WavDecoder
 				// If we're dealing with stereo IMA ADPCM:
 				if (__numCh == 2)
 				{
-					predictedSample[RIGHT_CHANNEL] = (short) Math.max(
+					predictedSample[WavDecoder.RIGHT_CHANNEL] = (short) Math.max(
 						Short.MIN_VALUE, Math.min(((__input[inputIndex])) |
 						((__input[inputIndex+1]) << 8), Short.MAX_VALUE));
 
-					tableIndex[RIGHT_CHANNEL] = (byte) Math.max(0,
+					tableIndex[WavDecoder.RIGHT_CHANNEL] = (byte) Math.max(0,
 						Math.min(__input[inputIndex+2], 88));
 
 					inputIndex += 4;
@@ -283,17 +285,18 @@ public class WavDecoder
 				// resulting PCM stream.
 				for (byte i = 0; i < 8; i++) 
 				{
-					curChannel = (i < 4) ? LEFT_CHANNEL : RIGHT_CHANNEL;
+					curChannel = (i < 4) ? WavDecoder.LEFT_CHANNEL :
+						WavDecoder.RIGHT_CHANNEL;
 
 					adpcmSample = (byte) (__input[inputIndex] & 0x0f);
-					decodedSample = (short) (__decodeADPCMSample(curChannel,
+					decodedSample = (short) (this.__decodeADPCMSample(curChannel,
 						adpcmSample) * __volMult / 100);
 
 					__output[outputIndex + ((i & 3) << 2) +
 						(curChannel << 1)] = decodedSample;
 
 					adpcmSample = (byte) ((__input[inputIndex] >> 4) & 0x0f);
-					decodedSample = (short) (__decodeADPCMSample(curChannel,
+					decodedSample = (short) (this.__decodeADPCMSample(curChannel,
 						adpcmSample) * __volMult / 100);
 
 					__output[outputIndex + ((i & 3) << 2) +
@@ -316,13 +319,15 @@ public class WavDecoder
 					__inLen)
 				{
 					adpcmSample = (byte) (__input[inputIndex] & 0x0f);
-					decodedSample = (short) (__decodeADPCMSample(LEFT_CHANNEL,
+					decodedSample = (short) (this.__decodeADPCMSample(
+						WavDecoder.LEFT_CHANNEL,
 						adpcmSample) * __volMult / 100);
 
 					__output[outputIndex++] = decodedSample;
 
 					adpcmSample = (byte) ((__input[inputIndex] >> 4) & 0x0f);
-					decodedSample = (short) (__decodeADPCMSample(LEFT_CHANNEL,
+					decodedSample = (short) (this.__decodeADPCMSample(
+						WavDecoder.LEFT_CHANNEL,
 						adpcmSample) * __volMult / 100);
 
 					__output[outputIndex++] = decodedSample;
@@ -380,13 +385,13 @@ public class WavDecoder
 
 		boolean isNegative = false;
 		int decodedSample;
-        int step;
-        int position;
+		int step;
+		int position;
 		byte uLawSample;
 
 		int i;
 		int minLen = Math.min(__inLen, __outLen);
-        
+		
 		for (i = 0; i < minLen; i++)
 		{
 			uLawSample = __input[__inOff + i];
@@ -401,7 +406,7 @@ public class WavDecoder
 
 			// We have to invert the sign bit again if the sample is negative
 			if (isNegative)
-				uLawSample &= ~(1 << 7);
+				uLawSample &= (byte)(~(1 << 7));
 
 			// We now get the u-step (mantissa) as well as the channel and
 			// shift exponent to use in the decoding formula.
@@ -409,14 +414,16 @@ public class WavDecoder
 			position = (uLawSample & 0xF0) >> 4;
 
 			// This is 'Equation 17' from the PDF above.
+			// TODO: Out of bounds shifts are treated as if they were 0x1F
+			// TODO: by the JVM.
 			decodedSample = ((2 * step + 33) * (1 << position - 33)) << 3;
 
 			// Instead of multiplying by the sign, we invert it here instead
 			if (isNegative)
 				decodedSample = -decodedSample;
 			
-            __output[__outOff + i] = (short) (decodedSample * __volMult / 100);
-        }
+			__output[__outOff + i] = (short) (decodedSample * __volMult / 100);
+		}
 
 		return i;
 	}
@@ -454,13 +461,10 @@ public class WavDecoder
 		byte[] tableIndex = this._tableIndex;
 		
 		// Initialize the predictor's sample and step values.
-		predictedSample[LEFT_CHANNEL] = 0;
-		predictedSample[RIGHT_CHANNEL] = 0;
-		tableIndex[LEFT_CHANNEL] = 0;
-		tableIndex[RIGHT_CHANNEL] = 0;
-
-		this._predictedSample = predictedSample;
-		this._tableIndex = tableIndex;
+		predictedSample[WavDecoder.LEFT_CHANNEL] = 0;
+		predictedSample[WavDecoder.RIGHT_CHANNEL] = 0;
+		tableIndex[WavDecoder.LEFT_CHANNEL] = 0;
+		tableIndex[WavDecoder.RIGHT_CHANNEL] = 0;
 
 		// If we are resetting to a later position, fast-forward the decoder
 		// until we reach the closest position to the one we received (IMA
@@ -492,7 +496,7 @@ public class WavDecoder
 	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	private int __decodeADPCMSample(
-		@Range(from = LEFT_CHANNEL, to = RIGHT_CHANNEL) byte __channel, 
+		@Range(from = WavDecoder.LEFT_CHANNEL, to = WavDecoder.RIGHT_CHANNEL) byte __channel, 
 		@Range(from = 0, to = 255) byte __adpcmSample)
 	{ 
 		// This decode procedure is mostly based on the following document:
@@ -502,7 +506,7 @@ public class WavDecoder
 		// to be used when decoding the new given sample. 
 		short predictedSample = this._predictedSample[__channel];
 		byte tableIndex = this._tableIndex[__channel];
-		int stepSize = IMA_STEP_SIZE_TABLE[tableIndex];
+		int stepSize = WavDecoder.IMA_STEP_SIZE_TABLE[tableIndex];
 		
 		// This follows the first optimization of the original IMA ADPCM diff
 		// calculation formula found in
@@ -522,7 +526,7 @@ public class WavDecoder
 			Math.min(predictedSample + diff, Short.MAX_VALUE));
 
 		// Basically columbia doc's "calculate stepsize" snippet
-		tableIndex += IMA_STEP_INDEX_TABLE[__adpcmSample];
+		tableIndex += WavDecoder.IMA_STEP_INDEX_TABLE[__adpcmSample];
 		tableIndex = (byte) Math.max(0, Math.min(tableIndex, 88));
 
 		this._tableIndex[__channel] = tableIndex;

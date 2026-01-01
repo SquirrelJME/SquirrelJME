@@ -9,8 +9,6 @@
 package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -221,7 +219,7 @@ public abstract class AbstractPlayer
 		try
 		{
 			// Stop playing first, if it is playing at all
-			if(state >= Player.STARTED)
+			if (state >= Player.STARTED)
 				this.stop();
 
 			// Now becoming deallocated (unrealized)

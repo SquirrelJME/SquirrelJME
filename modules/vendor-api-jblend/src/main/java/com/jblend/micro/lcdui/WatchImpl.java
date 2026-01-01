@@ -18,30 +18,30 @@ public class WatchImpl
 	implements WatchInterface
 {
 	@Api
-    public WatchImpl()
+	public WatchImpl()
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public void initWatchValues(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public void paint(Graphics var1, int var2, int var3, int var4)
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public String getBackCommand()
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public String getSaveCommand()
 	{
 		throw Debugging.todo();

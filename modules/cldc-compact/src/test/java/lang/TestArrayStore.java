@@ -67,16 +67,16 @@ public class TestArrayStore
 		this.secondary("exception-error",
 			TestArrayStore.__store(exception, new Error()));
 	}
-    
-    /**
-     * Attempts to store the given object into the specified array.
-     * 
-     * @param __array The array to store into.
-     * @param __what The object to store.
-     * @return If this threw an {@link ArrayStoreException}.
-     * @throws NullPointerException On null arguments.
-     * @since 2022/06/20
-     */
+	
+	/**
+	 * Attempts to store the given object into the specified array.
+	 * 
+	 * @param __array The array to store into.
+	 * @param __what The object to store.
+	 * @return If this threw an {@link ArrayStoreException}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2022/06/20
+	 */
 	private static boolean __store(Object[] __array, Object __what)
 		throws NullPointerException
 	{

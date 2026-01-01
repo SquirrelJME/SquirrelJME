@@ -21,11 +21,13 @@ import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import cc.squirreljme.runtime.media.AbstractVolumeControl;
+import java.io.DataInputStream;
+import net.multiphasicapps.io.DataEndianess;
+import net.multiphasicapps.io.ExtendedDataInputStream;
 import org.jetbrains.annotations.NotNull;
 import java.io.InputStream;
 import java.io.IOException;
 import javax.microedition.media.MediaException;
-import javax.microedition.media.Player;
 
 @SquirrelJMEVendorApi
 public class WavPlayer 
@@ -285,7 +287,9 @@ public class WavPlayer
 					throw new MediaException("GONE");
 				
 				// Read in the data and drop the unrealized stream
-				try (InputStream in = this._unrealizedIn.openInputStream())
+				try (ExtendedDataInputStream in = new ExtendedDataInputStream(
+					this._unrealizedIn.openDataInputStream(),
+					DataEndianess.LITTLE))
 				{
 					// readHeader will give us all the data we need to render,
 					// while also leaving the inputStream right at the start

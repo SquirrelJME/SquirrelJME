@@ -260,7 +260,7 @@ public class NokiaOTADecoder
 		this._curPos = 0;
 		this._curBitPos = 0;
 		this._noteScale = 10;
-		this._noteStyle = NATURAL_STYLE;
+		this._noteStyle = NokiaOTADecoder.NATURAL_STYLE;
 		this._data = null;
 		this._parsing = false;
 	}
@@ -479,7 +479,7 @@ public class NokiaOTADecoder
 		
 		if (Debugging.VERBOSE)
 			Debugging.debugNote("Title Length:" + titleLength +
-				" | Basic Song Title: " + title.toString());
+				" | Basic Song Title: " + title);
 		
 		// Read song sequence length (8 bits)
 		this._songSequenceLength = this.__readBits(8);
@@ -554,12 +554,12 @@ public class NokiaOTADecoder
 		if (patternSpecifier == 0x0)
 		{
 			// Well restore back to this position after reusing a pattern
-			_restorePatternPos = this._curPos;
-			_restorePatternBitPos = this._curBitPos;
+			this._restorePatternPos = this._curPos;
+			this._restorePatternBitPos = this._curBitPos;
 
-			this._instructionsLeft = _lastPatternLen;
-			this._curPos = _lastPatternPos;
-			this._curBitPos = _lastPatternBitPos;
+			this._instructionsLeft = this._lastPatternLen;
+			this._curPos = this._lastPatternPos;
+			this._curBitPos = this._lastPatternBitPos;
 
 			for (int i = 0; i < this._instructionsLeft; i++)
 				// Parse one instructions until the audio buffer fills up
@@ -571,8 +571,8 @@ public class NokiaOTADecoder
 				this._loopValue--;
 
 			// We can now continue reading the next bits
-			this._curPos = _restorePatternPos;
-			this._curBitPos = _restorePatternBitPos;
+			this._curPos = this._restorePatternPos;
+			this._curBitPos = this._restorePatternBitPos;
 
 			if (this._loopValue < 0)
 				this._songSequenceLength--;
@@ -584,15 +584,15 @@ public class NokiaOTADecoder
 		{
 			// The number of instructions to read
 			this._instructionsLeft = patternSpecifier;
-
-			_lastPatternLen = this._instructionsLeft;
-			_lastPatternPos = _curPos;
-			_lastPatternBitPos = _curBitPos;
+			
+			this._lastPatternLen = this._instructionsLeft;
+			this._lastPatternPos = this._curPos;
+			this._lastPatternBitPos = this._curBitPos;
 
 			// Reset note Style and Scale, otherwise they will carry over
 			// from the last pattern (which is incorrect despite the Smart
 			// Message API not disclosing it)
-			this._noteStyle = NATURAL_STYLE;
+			this._noteStyle = NokiaOTADecoder.NATURAL_STYLE;
 			this._noteScale = 10;
 
 			for (int i = 0; i < this._instructionsLeft; i++)
@@ -706,7 +706,7 @@ public class NokiaOTADecoder
 
 		// STACCATO has shorter notes with longer rest by making a note
 		// end way before the next note begins to play
-		if (_noteStyle == STACCATO_STYLE)
+		if (this._noteStyle == NokiaOTADecoder.STACCATO_STYLE)
 		{
 			this._restDurationMs = (int) (this._noteDurationMs * 0.4f);
 			this._noteDurationMs = (int) (this._noteDurationMs * 0.6f);
@@ -714,7 +714,7 @@ public class NokiaOTADecoder
 			
 
 		// CONTINUOUS has notes flow into each other (no rest)
-		else if (_noteStyle == NATURAL_STYLE)
+		else if (this._noteStyle == NokiaOTADecoder.NATURAL_STYLE)
 		{
 			this._restDurationMs = (int) (this._noteDurationMs * 0.2f);
 			this._noteDurationMs = (int) (this._noteDurationMs * 0.8f);
@@ -781,17 +781,17 @@ public class NokiaOTADecoder
 		{
 				// Natural style (small rest between notes)
 			case 0x0:
-				this._noteStyle = NATURAL_STYLE;
+				this._noteStyle = NokiaOTADecoder.NATURAL_STYLE;
 				break;
 
 				// Continuous style (no rest between notes)
 			case 0x1:
-				this._noteStyle = CONTINUOUS_STYLE;
+				this._noteStyle = NokiaOTADecoder.CONTINUOUS_STYLE;
 				break;
 
 				// Staccato style (larger rest between notes)
 			case 0x2:
-				this._noteStyle = STACCATO_STYLE;
+				this._noteStyle = NokiaOTADecoder.STACCATO_STYLE;
 				break;
 
 				// Invalid Style
@@ -1119,8 +1119,7 @@ public class NokiaOTADecoder
 				// for OTA playback.
 			default:
 				if (Debugging.VERBOSE)
-					Debugging.debugNote("Parsed Note: " +
-						NOTE_STRINGS[__noteValue] +
+					Debugging.debugNote("Parsed Note: " + NokiaOTADecoder.NOTE_STRINGS[__noteValue] +
 						". Returning a pause instead.");
 				return 0; 
 		}
@@ -1144,8 +1143,7 @@ public class NokiaOTADecoder
 			if (octave < 0)
 				octave = 0;
 
-			Debugging.debugNote("Parsed Note: " +
-				NOTE_STRINGS[__noteValue] + (octave+1));
+			Debugging.debugNote("Parsed Note: " + NokiaOTADecoder.NOTE_STRINGS[__noteValue] + (octave+1));
 		}
 
 		return baseFrequency;
