@@ -41,9 +41,9 @@ public class NokiaOTADecoder
 		2;
 
 	/** Debugging array for printing readable note values */
-	private static final String[] NOTE_STRINGS = Debugging.ENABLED ?
+	private static final String[] NOTE_STRINGS = (Debugging.ENABLED ?
 		new String[] {"Pause", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#",
-		"A", "A#", "H", "RESERVED", "RESERVED", "RESERVED"} : null;
+		"A", "A#", "H", "RESERVED", "RESERVED", "RESERVED"} : null);
 
 	/** Reference for the received data array */
 	private byte[] _data;
@@ -392,7 +392,7 @@ public class NokiaOTADecoder
 		// A unicode is defined in the spec as a 16-bit UCS-2 encoded char
 		short unicode = (short) this.__readBits(16);
 		if (Debugging.VERBOSE)
-			Debugging.debugNote("Unicode:" + unicode);
+			Debugging.debugNote("Unicode:%s", unicode);
 	}
 
 	/**
@@ -478,8 +478,8 @@ public class NokiaOTADecoder
 		}
 		
 		if (Debugging.VERBOSE)
-			Debugging.debugNote("Title Length:" + titleLength +
-				" | Basic Song Title: " + title);
+			Debugging.debugNote("Title Length:%d | Basic Song Title: %s",
+					titleLength, title);
 		
 		// Read song sequence length (8 bits)
 		this._songSequenceLength = this.__readBits(8);
@@ -1119,8 +1119,9 @@ public class NokiaOTADecoder
 				// for OTA playback.
 			default:
 				if (Debugging.VERBOSE)
-					Debugging.debugNote("Parsed Note: " + NokiaOTADecoder.NOTE_STRINGS[__noteValue] +
-						". Returning a pause instead.");
+					Debugging.debugNote(
+						"Parsed Note: %s. Returning a pause instead.",
+						NokiaOTADecoder.NOTE_STRINGS[__noteValue]);
 				return 0; 
 		}
 
@@ -1143,7 +1144,8 @@ public class NokiaOTADecoder
 			if (octave < 0)
 				octave = 0;
 
-			Debugging.debugNote("Parsed Note: " + NokiaOTADecoder.NOTE_STRINGS[__noteValue] + (octave+1));
+			Debugging.debugNote("Parsed Note: %s%d",
+				NokiaOTADecoder.NOTE_STRINGS[__noteValue], octave + 1);
 		}
 
 		return baseFrequency;

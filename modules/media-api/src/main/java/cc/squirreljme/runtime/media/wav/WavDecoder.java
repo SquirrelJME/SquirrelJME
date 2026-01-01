@@ -226,9 +226,10 @@ public class WavDecoder
 			// invalidated). TODO: Check if this is expected behavior.
 			if (__numCh == 2 && (__inLen - inputIndex) < 16) 
 			{
-				Debugging.debugNote("Remaining Bytes:" +
-					(__inLen-inputIndex) + " < 16, cannot decode the" +
-					" last few stereo samples. Adding silence instead."); 
+				Debugging.debugNote(
+					"Remaining Bytes:%d < 16, cannot decode the last" +
+						"few stereo samples. Adding silence instead.",
+					__inLen - inputIndex); 
 				break;
 			} 
 

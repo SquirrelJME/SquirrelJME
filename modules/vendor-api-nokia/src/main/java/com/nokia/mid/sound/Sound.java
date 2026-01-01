@@ -272,14 +272,14 @@ public class Sound
 			throw new IllegalArgumentException("Invalid frequency/duration");
 		
 		if (Debugging.VERBOSE)
-			Debugging.debugNote("Nokia Sound, single note:" + __freq +
-				" for:" + __duration);
+			Debugging.debugNote("Nokia Sound, single note:%d for:%d", 
+				__freq, __duration);
 
 		synchronized (this)
 		{
 			try 
-			{ 
-				release();
+			{
+				this.release();
 				Manager.playTone(this.__convertFreqToNote(__freq),
 					(int)__duration, Sound._TONE_MAX_VOLUME); 
 			}
