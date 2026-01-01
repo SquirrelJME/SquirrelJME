@@ -15,7 +15,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
-import cc.squirreljme.runtime.nokia.NokiaOTAPlayer;
+import cc.squirreljme.runtime.media.nokia.NokiaOTAPlayer;
 import cc.squirreljme.runtime.media.wav.WavPlayer;
 import java.io.ByteArrayInputStream;
 import java.lang.ref.WeakReference;
@@ -67,7 +67,7 @@ public class Sound
 
 	/**
 	 * Constant frequency multiplier to make Nokia tone frequencies match the
-	 * note values expected by {@link Manager#playTone(int, int)}.
+	 * note values expected by {@link Manager#playTone(int, int, int)}.
 	 */
 	private static final float _SEMITONE_CONST = 17.31234049066755f;
 
@@ -303,7 +303,7 @@ public class Sound
 	 * event.
 	 * 
 	 * As of Nokia UI API 1.1, this has been deprecated in favor of
-	 * {@link Player#setLoopCount(int)}, {@link Player#setMediaTime(int)} and
+	 * {@link Player#setLoopCount(int)}, {@link Player#setMediaTime(long)} and
 	 * {@link Player#start()}.
 	 *
 	 * @param __loop The amount of times the player must loop (0 means infinite
@@ -370,9 +370,6 @@ public class Sound
 	 * As of Nokia UI API 1.1, this has been deprecated in favor of
 	 * {@link Player#deallocate()}.
 	 *
-	 * @param __loop The amount of times the player must loop (0 means infinite
-	 * looping)
-	 * @throws IllegalArgumentException If {@code __loop} is invalid.
 	 * @since 2025/12/24
 	 */
 	@Api
@@ -575,7 +572,7 @@ public class Sound
 
 	/**
 	 * Converts a given tone frequency into a {@link Manager}-compatible note,
-	 * so that it can be used in {@link Manager#playTone(int, int)}.
+	 * so that it can be used in {@link Manager#playTone(int, int, int)}.
 	 *
 	 * @param __freq The frequency to convert into a MIDP 2 note value
 	 * @return The {@link Manager} note that {@code __freq} matches to.

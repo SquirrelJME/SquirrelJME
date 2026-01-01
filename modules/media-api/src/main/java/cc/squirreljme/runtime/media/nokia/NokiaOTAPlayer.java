@@ -23,11 +23,9 @@ import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import cc.squirreljme.runtime.media.AbstractVolumeControl;
-import cc.squirreljme.runtime.nokia.NokiaOTADecoder;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.microedition.media.MediaException;
-import javax.microedition.media.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class NokiaOTAPlayer

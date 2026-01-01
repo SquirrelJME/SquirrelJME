@@ -112,23 +112,6 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public final void close()
-	{
-		if (this.getState() != Player.CLOSED)
-		{
-			this.setState(Player.CLOSED);
-			
-			// Send event
-			this.dispatchEvent(PlayerListener.CLOSED, null);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2025/12/28
 	 */
 	@Override

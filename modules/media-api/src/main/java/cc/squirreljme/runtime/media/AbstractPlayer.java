@@ -194,6 +194,9 @@ public abstract class AbstractPlayer
 				// Force the closed state to always occur
 				this.setState(Player.CLOSED);
 			}
+			
+			// Send the closed event now that everything is closed
+			this.dispatchEvent(PlayerListener.CLOSED, null);
 		}
 	}
 	
