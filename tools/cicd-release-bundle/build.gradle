@@ -1,6 +1,10 @@
 import cc.squirreljme.plugin.multivm.VMHelpers
 import cc.squirreljme.plugin.util.MIMEFileDecoder
 
+/////////////////// DEPRECATED ///////////////////
+// REPLACED BY THE ROOT CMAKE PIPELINES //////////
+//////////////////////////////////////////////////
+
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
