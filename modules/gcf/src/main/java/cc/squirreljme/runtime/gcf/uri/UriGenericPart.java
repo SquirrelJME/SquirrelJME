@@ -10,9 +10,9 @@
 package cc.squirreljme.runtime.gcf.uri;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
-import org.jetbrains.annotations.NotNull;
+
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
  * Generic URI part.
@@ -105,12 +105,12 @@ public final class UriGenericPart
 		(The URI; The authority/path) */
 		if (!authPath.startsWith("//"))
 			throw new InvalidUriException(
-				ErrorCode.__error__("EC28 %s %s", __part, authPath));
+				__error__("EC28 %s %s", __part, authPath));
 		
 		/* {@squirreljme.error EC29 URI too short. (The URI)} */
 		if (authPath.length() < 3)
 			throw new InvalidUriException(
-				ErrorCode.__error__("EC29 %s", __part));
+				__error__("EC29 %s", __part));
 		
 		// There is no authority specified
 		int fs = authPath.indexOf('/', 2);
@@ -242,5 +242,31 @@ public final class UriGenericPart
 	public String queryParams()
 	{
 		return this.rawQueryParams;
+	}
+	
+	/**
+	 * Sets this URI with the same authority but a different absolute path.
+	 *
+	 * @param __path The path to use, this is treated as an absolute path.
+	 * @return This URI with a different path.
+	 * @throws InvalidUriException If the URI is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/01/01
+	 */
+	@SquirrelJMEVendorApi
+	public UriGenericPart withPath(String __path)
+		throws InvalidUriException, NullPointerException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		// Is an extra slash needed?
+		String slash = (!__path.startsWith("/") ? "/" : "");
+		
+		// The authority is optional
+		UriAuthority auth = this.authority;
+		if (auth != null)
+			return new UriGenericPart("//" + auth + slash + __path);
+		return new UriGenericPart("//" + slash + __path);
 	}
 }

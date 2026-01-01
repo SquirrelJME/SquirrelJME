@@ -47,6 +47,9 @@ public class LibraryEndPoint
 	@SquirrelJMEVendorApi
 	protected final JarPackageBracket jar;
 	
+	/** The cached library listing. */
+	private volatile String[] _listing;
+	
 	/**
 	 * Initializes the library connection.
 	 *
@@ -115,7 +118,11 @@ public class LibraryEndPoint
 	public void close()
 		throws IOException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// Dereference the listing
+			this._listing = null;
+		}
 	}
 	
 	/**
@@ -129,10 +136,67 @@ public class LibraryEndPoint
 		if (__into == null)
 			throw new NullPointerException("NARG");
 		
-		// Where is this?
-		String path = this.part.getPath();
+		// Get the listing
+		String[] listing;
+		synchronized (this)
+		{
+			// Get the Jar listing
+			listing = this._listing;
+			if (listing == null)
+			{
+				listing = JarPackageShelf.list(this.jar);
+				this._listing = listing;
+			}
+		}
 		
-		for (String rc : JarPackageShelf.list(this.jar))
-			__into.put(UriPart.encode(rc), new UriGenericPart("///"));
+		// Where is this?
+		UriGenericPart part = this.part;
+		String path = part.getPath();
+		
+		// Parent directory at the root points to all volumes, otherwise
+		// it points to the directory above
+		if (path.equals("/"))
+			__into.put("..", new UriGenericPart(
+				"//" + AllVolumesEndPoint.HOST + "/"));
+		
+		// Otherwise, strip a component
+		else
+		{
+			int ls = path.lastIndexOf('/', path.length() - 2);
+			__into.put("..",
+				part.withPath(path.substring(0, ls) + "/"));
+		}
+		
+		// No listing? Just list nothing then
+		if (listing == null)
+			return;
+		
+		// Add all items which exist within this path directory, note that
+		// this needs to be filtered
+		path = path.substring(1);
+		for (String rc : listing)
+		{
+			// Does not start with this, so cannot be in the subtree
+			if (!rc.startsWith(path))
+				continue;
+			
+			// Strip the entire start
+			String rcSub = rc.substring(path.length());
+			
+			// Is this a directory or in a subdirectory?
+			int fs = rcSub.indexOf('/');
+			if (fs >= 0)
+			{
+				// Strip to the directory
+				String rcDir = rcSub.substring(0, fs + 1);
+				if (!__into.containsKey(rcDir))
+					__into.put(rcDir, part.withPath(
+						rc.substring(0, path.length()) + rcDir));
+			}
+			
+			// Normal file
+			else
+				__into.put(rcSub, part.withPath(rc));
+		}
 	}
 }

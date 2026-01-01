@@ -187,7 +187,7 @@ public class AllVolumesEndPoint
 			
 			// Determine full URI connection to this item
 			__into.put(fileName, new UriGenericPart(
-				"//" + LibraryEndPoint.HOST + fileName + "/"));
+				"//" + LibraryEndPoint.HOST + fileName));
 		}
 	}
 }
