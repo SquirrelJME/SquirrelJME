@@ -230,6 +230,33 @@ typedef struct sjme_scritchui_pencilColor
 } sjme_scritchui_pencilColor;
 
 /**
+ * Mode flags for @code sjme_scritchui_transferRegionFunc @endcode .
+ * 
+ * @since 2026/01/01
+ */
+typedef enum sjme_scritchui_transferRegionMode
+{
+	/**
+	 * Disregard the current blending mode and force SRC when drawing
+	 * ontop of the destination.
+	 */
+	SJME_SCRITCHUI_TRANSFER_SRC_FORCE = INT32_C(1),
+
+	/**
+	 * Optimized transfer of regions going scanline by scanline in the
+	 * fashion of @code memmove() @endcode, any transformations are
+	 * disregarded.
+	 * 
+	 * This requires that the source and destination pixel format have the
+	 * same density, so a 16-bit pixel format may only ever be copied to
+	 * another 16-bit pixel format.
+	 * 
+	 * This implies @link SJME_SCRITCHUI_TRANSFER_SRC_FORCE @endlink .
+	 */
+	SJME_SCRITCHUI_TRANSFER_MEMMOVE = INT32_C(2),
+} sjme_scritchui_transferRegionMode;
+
+/**
  * Applies an anchor point.
  * 
  * @param anchor The anchor point.
@@ -367,9 +394,12 @@ typedef sjme_errorCode (*sjme_scritchui_pencilCloseFunc)(
  * @param anchor The anchor point of the destination.
  * @return An error if the call is not valid or the native graphics
  * does not support this operation.
+ * @deprecated Use @link sjme_scritchui_pencilTransferRegionFunc @endlink 
+ * with direct copy mapping.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*sjme_scritchui_pencilCopyAreaFunc)(
+typedef sjme_errorCode sjme_attrDeprecated
+	(*sjme_scritchui_pencilCopyAreaFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
@@ -1414,7 +1444,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTransferRegionFunc)(
 	sjme_attrInValue sjme_jint yDest,
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInPositive sjme_jint wDest,
-	sjme_attrInPositive sjme_jint hDest);
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInValue sjme_scritchui_transferRegionMode mode);
 
 /**
  * Translates drawing operations.
@@ -1445,7 +1476,7 @@ typedef struct sjme_scritchui_pencilFunctions
 	SJME_SCRITCHUI_QUICK_PENCIL(Close, close);
 	
 	/** @c CopyArea . */
-	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
+	sjme_attrDeprecated SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 
 	/** @c DrawArc . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawArc, drawArc);
@@ -1664,7 +1695,7 @@ typedef struct sjme_scritchui_pencilImplFunctions
 	SJME_SCRITCHUI_QUICK_PENCIL(Close, close);
 	
 	/** @c CopyArea . */
-	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
+	sjme_attrDeprecated SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	
 	/** @c DrawHoriz , direct source. */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawHoriz, drawHorizSrc);

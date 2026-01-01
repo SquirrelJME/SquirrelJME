@@ -26,6 +26,10 @@ public interface Player
 	int PREFETCHED =
 		300;
 	
+	/**
+	 * Realize has the following conditions:
+	 *  - Is set after a call to {@link #realize()}.
+	 */
 	@Api
 	int REALIZED =
 		200;
@@ -38,6 +42,10 @@ public interface Player
 	long TIME_UNKNOWN =
 		-1L;
 	
+	/**
+	 * Realize has the following conditions:
+	 *  - Is set after a call to {@link #deallocate()}
+	 */
 	@Api
 	int UNREALIZED =
 		100;
@@ -48,8 +56,15 @@ public interface Player
 	@Api
 	void close();
 	
+	/**
+	 * Deallocates the player, placing it into the {@link #UNREALIZED} state.
+	 *
+	 * @throws IllegalStateException If this player is {@link #CLOSED}.
+	 * @since 2025/12/31
+	 */
 	@Api
-	void deallocate();
+	void deallocate()
+		throws IllegalStateException;
 	
 	@Api
 	@Language("mime-type-reference")

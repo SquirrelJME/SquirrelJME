@@ -70,7 +70,7 @@ static void sjme_scritchpen_core_clipRightBottom(
 	}
 }
 
-sjme_errorCode sjme_scritchpen_core_copyArea(
+sjme_errorCode sjme_attrDeprecated sjme_scritchpen_core_copyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
@@ -616,51 +616,68 @@ sjme_errorCode sjme_scritchpen_core_getRegion(
 	sjme_errorCode error;
 	sjme_jint* srcRGB;
 	sjme_jint* dataScanline;
-	sjme_jint blendBytes, blendPf, mulAlphaVal, byteSize;
-	sjme_jboolean mulAlpha;
+	sjme_jint blendBytes, mulAlphaVal, byteSize, y;
+	sjme_gfx_pixelFormat blendPf;
+	sjme_jboolean mulAlpha, pfAlpha;
 
 	if (g == NULL || data == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (off < 0 || dataLen < 0 || (off + dataLen) < 0)
+	if (off < 0 || dataLen < 0 || scanLen < 0 ||
+		(off + dataLen) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* The scanline length needs to be at least the image width. */
+	if (scanLen < 0 || wSrc > scanLen)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
-	if (xSrc < 0 || ySrc < 0 || xSrc + wSrc > g->width ||
-		ySrc + hSrc > g->height)
+	/* The source needs to be in the image bounds. */
+	if (xSrc < 0 || ySrc < 0 || wSrc < 0 || hSrc < 0 ||
+		(xSrc + wSrc) < 0 || (ySrc + hSrc) < 0 ||
+		(xSrc + wSrc) > g->width || (ySrc + hSrc) > g->height)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	/* Reading nothing? */
 	if (wSrc <= 0 || hSrc <= 0)
 		return SJME_ERROR_NONE;
+	
+	/* This is a special BYTE_1_GRAY_VERTICAL format not yet supported. */
+	/* Has to be rotated 270 degrees clockwise. */
+	if (pf == SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1_VERTICAL)
+		return sjme_error_notImplemented(0);
+	
+	/* TODO: Create static sjme_scritchui_pencil and then use */
+	/* TODO: @code g->apiInThread->transferRegion() @endcode . */
 
 	/* May be dynamically allocated for blending. */
 	srcRGB = NULL;
 	dataScanline = NULL;
 
+	/* Do we draw with alpha? */
+	mulAlpha = g->hasAlpha || alpha;
+	pfAlpha = sjme_scritchpen_hasAlpha(pf);
+	blendPf = ((alpha && mulAlpha) ? SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 :
+		SJME_GFX_PIXEL_FORMAT_INT_RGB888);
+
+	/* The value to use to multiply the source. */
+	mulAlphaVal = g->state.color.a;
+
 	/* Need to lock? */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 
+	/* How large is a scan? */
 	byteSize = -1;
 	if (sjme_error_is(error = g->util->pfScanBytes(g, pf,
 		1, -1, &byteSize, NULL)) ||
 		byteSize < 0)
 		goto fail_oob;
 
-	/* Do we draw with alpha? */
-	mulAlpha = g->hasAlpha || alpha;
-
-	/* The value to use to multiply the source. */
-	mulAlphaVal = g->state.color.a;
-
 	/* If alpha is specified, we need to blend pixels from the screen into */
 	/* the received 'data' array. The temporary blendPf is always (A)RGB. */
 	/* Since that allows usage of blendRGBInto(). */
-	if (alpha && sjme_scritchpen_hasAlpha(pf))
+	if (alpha && pfAlpha)
 	{
-		blendPf = ((alpha && mulAlpha) ? SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 :
-			SJME_GFX_PIXEL_FORMAT_INT_RGB888);
-
 		blendBytes = -1;
 		if (sjme_error_is(error = g->util->pfScanBytes(g, blendPf,
 			wSrc, -1, &blendBytes, NULL)) ||
@@ -677,16 +694,10 @@ sjme_errorCode sjme_scritchpen_core_getRegion(
 		memset(dataScanline, 0, blendBytes);
 	}
 
-	/* This is a special BYTE_1_GRAY_VERTICAL format not yet supported. */
-	/* Has to be rotated 270 degrees clockwise. */
-	if (pf == SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1_VERTICAL)
-		return sjme_error_notImplemented(0);
-
 	error = SJME_ERROR_NONE;
-
-	for (int y = 0; y < hSrc; y++)
+	for (y = 0; y < hSrc; y++)
 	{
-		if (alpha && sjme_scritchpen_hasAlpha(pf))
+		if (alpha && pfAlpha)
 		{
 			/* Get screen data as RGB */
 			if (sjme_error_is(error = g->util->rgbScanGet(g,
@@ -719,7 +730,8 @@ sjme_errorCode sjme_scritchpen_core_getRegion(
 		else
 		{
 			if (sjme_error_is(error = g->util->pfScanGet(g, pf, xSrc, ySrc + y,
-				(void*)((char*)data + y * wSrc * byteSize), wSrc * byteSize,
+				(void*)((char*)data + y * wSrc * byteSize),
+				wSrc * byteSize,
 				wSrc)))
 				goto fail_scanGet;
 		}
@@ -743,7 +755,7 @@ sjme_errorCode sjme_scritchpen_core_getRegion(
 
 fail_oob:
 #if defined(SJME_CONFIG_DEBUG)
-	sjme_message("getRegion(%p, %d, %d, %d, %p, %d, %d, %d) != [%d, %d]",
+	sjme_message("getRegion(%p, %d, %d, %d, %d, %d, %d) != [%d, %d]",
 		g, pf, xSrc, ySrc, wSrc, mulAlpha, mulAlphaVal,
 		g->width, g->height);
 #endif
@@ -777,13 +789,15 @@ sjme_errorCode sjme_scritchpen_core_transferRegion(
 	sjme_attrInValue sjme_jint yDest,
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInPositive sjme_jint wDest,
-	sjme_attrInPositive sjme_jint hDest)
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInValue sjme_scritchui_transferRegionMode mode)
 {
 	sjme_errorCode error;
 	sjme_jint origImgWidth, origImgHeight;
 	sjme_jint* rgb;
-	sjme_jint rgbPixels, rgbBytes;
+	sjme_jint rgbPixels, rgbBytes, direction, zS, zD, y, yE;
 	sjme_gfx_pixelFormat rgbPf;
+	sjme_scritchui_pencilBlendingMode oldBlend;
 	
 	if (g == NULL || srcPencil == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -793,6 +807,37 @@ sjme_errorCode sjme_scritchpen_core_transferRegion(
 	if (g->common.state != srcPencil->common.state)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
+	/* If memmove() like transfer, needs to be the same size. */
+	if ((mode & SJME_SCRITCHUI_TRANSFER_MEMMOVE) != 0)
+	{
+		/* Determine source bits per pixel. */
+		zS = -1;
+		if (sjme_error_is(error = g->util->pfScanBits(srcPencil,
+			srcPencil->pixelFormat,
+			1, -1, &zS, NULL)) || zS <= 0)
+			return sjme_error_default(error);
+		
+		/* Determine dest bits per pixel. */
+		zD = -1;
+		if (sjme_error_is(error = g->util->pfScanBits(g,
+			g->pixelFormat,
+			1, -1, &zD, NULL)) || zS <= 0)
+			return sjme_error_default(error);
+		
+		/* These must be the same values. */
+		if (zS != zD)
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	/* If we are doing a memmove() like transfer, since drawRegion() is not */
+	/* being used, we need to pre-anchor the destination. We also need to */
+	/* make sure the target destination is actually valid. */
+	if ((mode & SJME_SCRITCHUI_TRANSFER_MEMMOVE) != 0)
+		if (sjme_error_is(error = g->util->applyAnchor(anchor,
+			xDest, yDest, wDest, hDest,
+			0, &xDest, &yDest)))
+			return sjme_error_default(error);
+	
 	/* The source rectangle must always be in bounds. */
 	/* Note that we can take the original source pencil graphics surface */
 	/* to make sure we do not read out of bounds. */
@@ -800,21 +845,49 @@ sjme_errorCode sjme_scritchpen_core_transferRegion(
 	origImgHeight = srcPencil->height;
 	if (xSrc < 0 || ySrc < 0 || wSrc <= 0 || hSrc <= 0 ||
 		(xSrc + wSrc) > origImgWidth || (ySrc + hSrc) > origImgHeight ||
+		(xSrc + wSrc) > srcPencil->width ||
+		(ySrc + hSrc) > srcPencil->height ||
 		(xSrc + wSrc) < 0 || (ySrc + hSrc) < 0 ||
-		origImgWidth < 0 || origImgHeight < 0)
+		origImgWidth < 0 || origImgHeight < 0 ||
+		wDest < 0 || hDest < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
+	/* Additional checks if memmove()-like. */
+	if ((mode & SJME_SCRITCHUI_TRANSFER_MEMMOVE) != 0)
+	{
+		/* memmove() copy requires the destination be fully in bounds. */
+		if (xDest < 0 || yDest < 0 ||
+			(xDest + wDest) < 0 || (yDest + hDest) < 0 ||
+			(xDest + wDest) > g->width ||
+			(yDest + hDest) > g->height)
+			return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		
+		/* Source and destination dimensions must match. */
+		if (wSrc != wDest || hSrc != hDest)
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
 	/* Drawing nothing? */
-	if (wDest <= 0 || hDest <= 0)
+	if (wSrc <= 0 || hSrc <= 0 || wDest <= 0 || hDest <= 0)
 		return SJME_ERROR_NONE;
+	
+	/* Drop all translations. */
+	if ((mode & SJME_SCRITCHUI_TRANSFER_MEMMOVE) != 0)
+		trans = SJME_SCRITCHUI_TRANS_NONE;
 	
 	/* Does the source graphics have alpha? */
 	rgbPf = (sjme_scritchpen_hasAlpha(srcPencil->pixelFormat) ?
 		SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 :
 		SJME_GFX_PIXEL_FORMAT_INT_RGB888);
 	
-	/* Allocate RGB buffer. */
-	rgbPixels = wSrc * hSrc;
+	/* memmove() like transfer copies only scan per scan */
+	if ((mode & SJME_SCRITCHUI_TRANSFER_MEMMOVE) != 0)
+		rgbPixels = wSrc;
+	else
+		rgbPixels = wSrc * hSrc;
+	
+	/* Allocate RGB/PF buffer. */
+	rgb = NULL;
 	rgbBytes = rgbPixels * (sizeof(*rgb));
 	rgb = sjme_alloca(rgbBytes);
 	if (rgb == NULL)
@@ -822,7 +895,7 @@ sjme_errorCode sjme_scritchpen_core_transferRegion(
 		error = sjme_error_outOfMemory(NULL, rgbBytes);
 		goto fail_alloca;
 	}
-	
+
 	/* Clear. */
 	memset(rgb, 0, rgbBytes);
 	
@@ -835,26 +908,78 @@ sjme_errorCode sjme_scritchpen_core_transferRegion(
 		if (sjme_error_is(error = sjme_scritchpen_core_lock(srcPencil)))
 			goto fail_srcLock;
 	
-	/* Read in RGB data. */
-	if (sjme_error_is(error = g->apiInThread->getRegion(
-		g, rgbPf,
-		rgb, 0, rgbBytes, wSrc,
-		alpha,
-		xSrc, ySrc, wSrc, hSrc,
-		anchor)))
-		goto fail_readRgb;
+	/* memmove() like transfer. */
+	if ((mode & SJME_SCRITCHUI_TRANSFER_MEMMOVE) != 0)
+	{
+		/* Determine the virtual scan based pixel positions. */
+		zS = (srcPencil->width * ySrc) + xSrc;
+		zD = (g->width * yDest) + xDest;
+		
+		/* Which direction is used? */
+		direction = (zD < zS ? 1 : -1);
+		
+		/* Copy scan by scan. */
+		error = SJME_ERROR_NONE;
+		y = (direction > 0 ? 0 : hSrc);
+		yE = (direction > 0 ? (hSrc + 1) : -1);
+		for (; y != yE; y += direction)
+		{
+			error |= srcPencil->impl->rawScanGet(
+				srcPencil, xSrc, ySrc + y,
+				rgb, rgbBytes, wSrc);
+			error |= g->impl->rawScanPutPure(
+				g, xDest, yDest + y,
+				rgb, rgbBytes, wDest);
+		}
+		
+		/* Any errors occurred? */
+		if (sjme_error_is(error))
+			goto fail_memmove;
+	}
 	
-	/* Write RGB data. */
-	if (sjme_error_is(error = g->apiInThread->drawRegion(
-		g, rgbPf,
-		rgb, 0, rgbBytes, wSrc, 
-		alpha, 
-		0, 0, wSrc, hSrc,
-		trans, 
-		xDest, yDest, 
-		anchor,
-		wDest, hDest, wSrc, hSrc)))
-		goto fail_writeRgb;
+	/* Load entire chunk and blend RGB. */
+	else
+	{
+		/* Read in RGB data. */
+		if (sjme_error_is(error = g->apiInThread->getRegion(
+			g, rgbPf,
+			rgb, 0, rgbBytes, wSrc,
+			alpha,
+			xSrc, ySrc, wSrc, hSrc,
+			anchor)))
+			goto fail_readRgb;
+	
+		/* Remember the old blending mode so that SRC is forced if */
+		/* requested. Disregard error, in the event the blending mode is */
+		/* unsupported as it will be unchanged. */
+		oldBlend = g->state.blending;
+		if ((mode & SJME_SCRITCHUI_TRANSFER_SRC_FORCE) != 0)
+			g->apiInThread->setBlendingMode(g,
+				SJME_SCRITCHUI_PENCIL_BLEND_SRC);
+		
+		/* Write RGB data. */
+		if (sjme_error_is(error = g->apiInThread->drawRegion(
+			g, rgbPf,
+			rgb, 0, rgbBytes, wSrc, 
+			alpha, 
+			0, 0, wSrc, hSrc,
+			trans, 
+			xDest, yDest, 
+			anchor,
+			wDest, hDest, wSrc, hSrc)))
+		{
+			/* If SRC was forced, return the old blending mode. */
+			if ((mode & SJME_SCRITCHUI_TRANSFER_SRC_FORCE) != 0)
+				g->apiInThread->setBlendingMode(g, oldBlend);
+		
+			/* Fail. */
+			goto fail_writeRgb;
+		}
+	
+		/* If SRC was forced, return the old blending mode. */
+		if ((mode & SJME_SCRITCHUI_TRANSFER_SRC_FORCE) != 0)
+			g->apiInThread->setBlendingMode(g, oldBlend);
+	}
 	
 	/* Release source lock. */
 	if (g != srcPencil)
@@ -872,6 +997,7 @@ sjme_errorCode sjme_scritchpen_core_transferRegion(
 	/* Success! */
 	return SJME_ERROR_NONE;
 	
+fail_memmove:
 fail_readRgb:
 fail_writeRgb:
 	/* Source is locked at this point. */

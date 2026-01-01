@@ -51,6 +51,7 @@
         <value>
           <package name="" withSubpackages="true" static="false" module="true" />
           <package name="" withSubpackages="true" static="false" />
+          <emptyLine />
           <package name="" withSubpackages="true" static="true" />
         </value>
       </option>
@@ -96,12 +97,14 @@
       <option name="THROWS_KEYWORD_WRAP" value="2" />
       <option name="METHOD_CALL_CHAIN_WRAP" value="1" />
       <option name="TERNARY_OPERATION_WRAP" value="1" />
-      <option name="ASSIGNMENT_WRAP" value="1" />
+      <option name="WRAP_COMMENTS" value="true" />
       <option name="WRAP_LONG_LINES" value="true" />
+      <option name="VARIABLE_ANNOTATION_WRAP" value="2" />
       <option name="WRAP_ON_TYPING" value="0" />
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />
         <option name="USE_TAB_CHARACTER" value="true" />
+        <option name="LABEL_INDENT_ABSOLUTE" value="true" />
         <option name="KEEP_INDENTS_ON_EMPTY_LINES" value="true" />
       </indentOptions>
       <arrangement>

@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractMidiControl;
 import cc.squirreljme.runtime.media.AbstractPlayer;
+import cc.squirreljme.runtime.media.AbstractVolumeControl;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -101,6 +102,27 @@ public class MidiPlayer
 		
 		// Register the MIDI controller
 		this.registerControl(this.midiControl);
+		this.registerControl(new AbstractVolumeControl(this));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/28
+	 */
+	@Override
+	public void becomingDeallocated()
+		throws MediaException
+	{
+		this._data = null;
+		this._tracks = null;
+		
+		// Close the input connection, if it was never read in
+		InputStreamConnection unrealizedIn = this._unrealizedIn;
+		if (unrealizedIn != null)
+		{
+			this._unrealizedIn = null;
+			AbstractPlayer.closeConnection(unrealizedIn);
+		}
 	}
 	
 	/**
@@ -341,38 +363,6 @@ public class MidiPlayer
 			if (tracker != null)
 				tracker.fastForward(__micros);
 		}
-	}
-	
-	@Override
-	public void close()
-	{
-		// Just deallocate
-		this.deallocate();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/02/26
-	 */
-	@Override
-	public void deallocate()
-	{
-		// Stop playing
-		try
-		{
-			this.stop();
-		}
-		catch (MediaException __ignored)
-		{	
-		}
-		
-		// Mark as closed
-		this.setState(Player.CLOSED);
-		
-		// Destroy everything
-		this._unrealizedIn = null;
-		this._data = null;
-		this._tracks = null;
 	}
 	
 	/**

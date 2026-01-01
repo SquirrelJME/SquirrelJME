@@ -186,9 +186,9 @@ public final class JDWPHostLinker<T>
 			{
 				T val = ref.get();
 				if (val != null && val != __t)
-					Debugging.debugNote(String.format(
+					Debugging.debugNote(
 						"Change of reference: %s -> %s",
-						val, __t));
+						val, __t);
 			}
 		}
 	}

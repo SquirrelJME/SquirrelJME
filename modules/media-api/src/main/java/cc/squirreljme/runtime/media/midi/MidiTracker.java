@@ -10,6 +10,7 @@ package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.control.MIDIControl;
 
@@ -102,7 +103,7 @@ public final class MidiTracker
 	 * {@inheritDoc}
 	 * @since 2022/04/27
 	 */
-	@SuppressWarnings("ConditionCoveredByFurtherCondition")
+	@SuppressWarnings({"ConditionCoveredByFurtherCondition", "BusyWait"})
 	@Override
 	public void run()
 	{
@@ -113,8 +114,7 @@ public final class MidiTracker
 		
 		// Used to indicate when the next track time should play
 		long[] readyAts = new long[numTracks];
-		for (int i = 0; i < numTracks; i++)
-			readyAts[i] = Long.MIN_VALUE;
+		Arrays.fill(readyAts, Long.MIN_VALUE);
 		
 		// Reset all trackers so they start at the beginning
 		for (MTrkTracker tracker : trackers)
@@ -209,8 +209,9 @@ public final class MidiTracker
 		{
 			player.stopViaMedia();
 		}
-		catch (MediaException __ignored)
+		catch (MediaException __e)
 		{
+			__e.printStackTrace();
 		}
 	}
 }

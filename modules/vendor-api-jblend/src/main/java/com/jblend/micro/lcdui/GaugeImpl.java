@@ -20,49 +20,49 @@ public class GaugeImpl implements GaugeInterface {
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public void setValue(int var1)
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public int getValue()
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public void setMaxValue(int var1)
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public int getMaxValue()
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public void paint(boolean var1, Graphics var2, int var3, int var4)
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public int processEvent(int var1, int var2, int var3, int var4)
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public synchronized int getWidth()
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public synchronized int getHeight()
 	{
 		throw Debugging.todo();
