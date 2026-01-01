@@ -15,9 +15,12 @@
 #define FORWARD_CLASS "cc/squirreljme/jvm/mle/JarPackageShelf"
 #define FORWARD_NATIVE_CLASS JARSHELF_CLASSNAME
 
+#define FORWARD_DESC_equals \
+	DESC_METHOD(DESC_BOOLEAN, DESC_JARPACKAGE DESC_JARPACKAGE)
+#define FORWARD_DESC_list \
+	DESC_METHOD(DESC_ARRAY(DESC_STRING), DESC_JARPACKAGE)
+
 #define JARSHELF_CLASSPATH_DESC "()[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"
-#define FORWARD_DESC_equals "(" \
-	DESC_JARPACKAGE DESC_JARPACKAGE ")" DESC_BOOLEAN
 #define JARSHELF_LIBRARIES_DESC "()[Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"
 #define JARSHELF_LIBRARYID_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)I"
 #define JARSHELF_LIBRARYPATH_DESC "(Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;)Ljava/lang/String;"
@@ -36,6 +39,9 @@ JNIEXPORT jobject JNICALL Impl_mle_JarShelf_classPath(JNIEnv* env,
 FORWARD_IMPL(JarPackageShelf, equals, jboolean, Boolean, \
 	FORWARD_IMPL_args(jobject a, jobject b), \
 	FORWARD_IMPL_pass(a, b))
+FORWARD_IMPL(JarPackageShelf, list, jobjectArray, Object, \
+	FORWARD_IMPL_args(jobject jar), \
+	FORWARD_IMPL_pass(jar))
 
 JNIEXPORT jobject JNICALL Impl_mle_JarShelf_libraries(JNIEnv* env,
 	jclass classy)
@@ -100,6 +106,7 @@ static const JNINativeMethod mleJarMethods[] =
 	{"libraries", JARSHELF_LIBRARIES_DESC, (void*)Impl_mle_JarShelf_libraries},
 	{"libraryId", JARSHELF_LIBRARYID_DESC, (void*)Impl_mle_JarShelf_libraryId},
 	{"libraryPath", JARSHELF_LIBRARYPATH_DESC, (void*)Impl_mle_JarShelf_libraryPath},
+	FORWARD_list(JarPackageShelf, list),
 	{"openResourcePipe", JARSHELF_OPENRESOURCE_DESC, (void*)Impl_mle_JarShelf_openResourcePipe},
 	{"prefixCode", JARSHELF_PREFIXCODE_DESC, (void*)Impl_mle_JarShelf_prefixCode},
 	{"rawData", JARSHELF_RAWDATA_DESC, (void*)Impl_mle_JarShelf_rawData},

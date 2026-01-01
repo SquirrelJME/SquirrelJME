@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.vm.RawVMClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -133,6 +134,24 @@ public enum MLEJarPackage
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return MLEObjects.jarPackage(__args[0]).library().name();
+		}
+	},
+	
+	/** {@link JarPackageShelf#list(JarPackageBracket)} */
+	LIST(MLEDispatcher.methodKey("list",
+		String[].class, JarPackageBracket.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2026/01/01
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			JarPackageObject jar = MLEObjects.jarPackage(__args[0]);
+			
+			// Return the resource list
+			return jar.library().listResources();
 		}
 	},
 	

@@ -9,12 +9,14 @@
 
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
+import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
@@ -130,6 +132,7 @@ public class LibraryEndPoint
 		// Where is this?
 		String path = this.part.getPath();
 		
-		throw Debugging.todo();
+		for (String rc : JarPackageShelf.list(this.jar))
+			__into.put(UriPart.encode(rc), new UriGenericPart("///"));
 	}
 }

@@ -348,9 +348,13 @@ sjme_errorCode sjme_scritchui_core_choiceItemRemove(
 	if (wipeItem != NULL)
 	{
 		/* Move all items down. */
-		memmove(&items->elements[atIndex], &items->elements[atIndex + 1],
-			sizeof(items->elements[0]) * ((choice->numItems - atIndex) - 1));
-		items->elements[choice->numItems] = NULL;
+		if (atIndex < choice->numItems)
+		{
+			memmove(&items->elements[atIndex], &items->elements[atIndex + 1],
+				sizeof(items->elements[0]) *
+					((choice->numItems - atIndex) - 1));
+			items->elements[atIndex] = NULL;
+		}
 	
 		/* Reduce item count. */
 		choice->numItems--;

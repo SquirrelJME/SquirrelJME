@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -157,6 +158,26 @@ public final class EmulatedJarPackageShelf
 		
 		Path path = ((EmulatedJarPackageBracket)__jar).vmLib.path();
 		return Objects.toString(path, null);
+	}
+	
+	/**
+	 * Returns the list of resources within the JAR.
+	 *
+	 * @param __jar The library to get the content listing for.
+	 * @return The list of contents, if this could not be obtained or does
+	 * not make sense for the type of library this will be {@code null}.
+	 * @throws MLECallError On null arguments.
+	 * @since 2026/01/01
+	 */
+	@SquirrelJMEVendorApi
+	@Nullable
+	public static String[] list(@NotNull JarPackageBracket __jar)
+		throws MLECallError
+	{
+		if (__jar == null)
+			throw new MLECallError("NARG");
+		
+		return ((EmulatedJarPackageBracket)__jar).vmLib.listResources();
 	}
 	
 	/**
