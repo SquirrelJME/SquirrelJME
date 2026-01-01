@@ -334,8 +334,8 @@ sjme_errorCode sjme_scritchpen_core_lockRelease(
 
 sjme_errorCode sjme_scritchpen_core_close(
 	sjme_attrInNotNull sjme_scritchui_pencil g);
-
-sjme_errorCode sjme_scritchpen_core_copyArea(
+	
+sjme_errorCode sjme_attrDeprecated sjme_scritchpen_core_copyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,

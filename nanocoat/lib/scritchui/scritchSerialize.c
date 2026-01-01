@@ -1879,7 +1879,7 @@ sjme_attrInNotNull sjme_scritchui_pencil g)
 	SJME_SDX_WAIT;
 }
 
-sjme_errorCode sjme_scritchpen_coreSerial_copyArea(
+sjme_errorCode sjme_attrDeprecated sjme_scritchpen_coreSerial_copyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,

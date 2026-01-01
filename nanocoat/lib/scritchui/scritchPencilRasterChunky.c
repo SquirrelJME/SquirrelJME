@@ -70,7 +70,7 @@ static void sjme_scritchpen_core_clipRightBottom(
 	}
 }
 
-sjme_errorCode sjme_scritchpen_core_copyArea(
+sjme_errorCode sjme_attrDeprecated sjme_scritchpen_core_copyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
@@ -616,51 +616,65 @@ sjme_errorCode sjme_scritchpen_core_getRegion(
 	sjme_errorCode error;
 	sjme_jint* srcRGB;
 	sjme_jint* dataScanline;
-	sjme_jint blendBytes, blendPf, mulAlphaVal, byteSize;
-	sjme_jboolean mulAlpha;
+	sjme_jint blendBytes, mulAlphaVal, byteSize, y;
+	sjme_gfx_pixelFormat blendPf;
+	sjme_jboolean mulAlpha, pfAlpha;
 
 	if (g == NULL || data == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (off < 0 || dataLen < 0 || (off + dataLen) < 0)
+	if (off < 0 || dataLen < 0 || scanLen < 0 ||
+		(off + dataLen) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* The scanline length needs to be at least the image width. */
+	if (scanLen < 0 || wSrc > scanLen)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
-	if (xSrc < 0 || ySrc < 0 || xSrc + wSrc > g->width ||
-		ySrc + hSrc > g->height)
+	/* The source needs to be in the image bounds. */
+	if (xSrc < 0 || ySrc < 0 || wSrc < 0 || hSrc < 0 ||
+		(xSrc + wSrc) < 0 || (ySrc + hSrc) < 0 ||
+		(xSrc + wSrc) > g->width || (ySrc + hSrc) > g->height)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	/* Reading nothing? */
 	if (wSrc <= 0 || hSrc <= 0)
 		return SJME_ERROR_NONE;
+	
+	/* This is a special BYTE_1_GRAY_VERTICAL format not yet supported. */
+	/* Has to be rotated 270 degrees clockwise. */
+	if (pf == SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1_VERTICAL)
+		return sjme_error_notImplemented(0);
 
 	/* May be dynamically allocated for blending. */
 	srcRGB = NULL;
 	dataScanline = NULL;
 
+	/* Do we draw with alpha? */
+	mulAlpha = g->hasAlpha || alpha;
+	pfAlpha = sjme_scritchpen_hasAlpha(pf);
+	blendPf = ((alpha && mulAlpha) ? SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 :
+		SJME_GFX_PIXEL_FORMAT_INT_RGB888);
+
+	/* The value to use to multiply the source. */
+	mulAlphaVal = g->state.color.a;
+
 	/* Need to lock? */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 
+	/* How large is a scan? */
 	byteSize = -1;
 	if (sjme_error_is(error = g->util->pfScanBytes(g, pf,
 		1, -1, &byteSize, NULL)) ||
 		byteSize < 0)
 		goto fail_oob;
 
-	/* Do we draw with alpha? */
-	mulAlpha = g->hasAlpha || alpha;
-
-	/* The value to use to multiply the source. */
-	mulAlphaVal = g->state.color.a;
-
 	/* If alpha is specified, we need to blend pixels from the screen into */
 	/* the received 'data' array. The temporary blendPf is always (A)RGB. */
 	/* Since that allows usage of blendRGBInto(). */
-	if (alpha && sjme_scritchpen_hasAlpha(pf))
+	if (alpha && pfAlpha)
 	{
-		blendPf = ((alpha && mulAlpha) ? SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 :
-			SJME_GFX_PIXEL_FORMAT_INT_RGB888);
-
 		blendBytes = -1;
 		if (sjme_error_is(error = g->util->pfScanBytes(g, blendPf,
 			wSrc, -1, &blendBytes, NULL)) ||
@@ -677,16 +691,10 @@ sjme_errorCode sjme_scritchpen_core_getRegion(
 		memset(dataScanline, 0, blendBytes);
 	}
 
-	/* This is a special BYTE_1_GRAY_VERTICAL format not yet supported. */
-	/* Has to be rotated 270 degrees clockwise. */
-	if (pf == SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1_VERTICAL)
-		return sjme_error_notImplemented(0);
-
 	error = SJME_ERROR_NONE;
-
-	for (int y = 0; y < hSrc; y++)
+	for (y = 0; y < hSrc; y++)
 	{
-		if (alpha && sjme_scritchpen_hasAlpha(pf))
+		if (alpha && pfAlpha)
 		{
 			/* Get screen data as RGB */
 			if (sjme_error_is(error = g->util->rgbScanGet(g,
@@ -719,7 +727,8 @@ sjme_errorCode sjme_scritchpen_core_getRegion(
 		else
 		{
 			if (sjme_error_is(error = g->util->pfScanGet(g, pf, xSrc, ySrc + y,
-				(void*)((char*)data + y * wSrc * byteSize), wSrc * byteSize,
+				(void*)((char*)data + y * wSrc * byteSize),
+				wSrc * byteSize,
 				wSrc)))
 				goto fail_scanGet;
 		}
@@ -743,7 +752,7 @@ sjme_errorCode sjme_scritchpen_core_getRegion(
 
 fail_oob:
 #if defined(SJME_CONFIG_DEBUG)
-	sjme_message("getRegion(%p, %d, %d, %d, %p, %d, %d, %d) != [%d, %d]",
+	sjme_message("getRegion(%p, %d, %d, %d, %d, %d, %d) != [%d, %d]",
 		g, pf, xSrc, ySrc, wSrc, mulAlpha, mulAlphaVal,
 		g->width, g->height);
 #endif
