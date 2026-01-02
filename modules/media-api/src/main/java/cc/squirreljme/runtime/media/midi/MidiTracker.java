@@ -49,6 +49,9 @@ public final class MidiTracker
 	private volatile long _targetNanos =
 		Long.MIN_VALUE;
 	
+	/** Has the base time been adjusted for the main loop? */
+	private volatile int _baseAdjust;
+	
 	/**
 	 * Initializes the MIDI tracker.
 	 *
@@ -93,11 +96,23 @@ public final class MidiTracker
 	@SquirrelJMEVendorApi
 	public void fastForward(long __micros)
 	{
-		// Fast-forward with relative time and no control output
-		// We do not care what the target time is, just that it is the media
-		// time
-		this.tracker(null, this.midiControl,
-			__micros * 1_000L);
+		synchronized (this)
+		{
+			// Fast-forward or time adjustment happened, need to recalculate
+			// the base time because the base clock no longer matches the
+			// MIDI clock
+			this._baseAdjust++;
+			
+			// Fast-forward with relative time and no control output
+			// We do not care what the target time is, just that it is the media
+			// time
+			this.tracker(null, this.midiControl,
+				__micros * 1_000L);
+			
+			// Interrupt
+			this.interrupt();
+			this.notifyAll();
+		}
 	}
 	
 	/**
@@ -131,9 +146,30 @@ public final class MidiTracker
 			long baseTime = System.nanoTime();
 			long baseMidi = this._timeDiv._nanoClock;
 			
+			// The current base adjust
+			int baseAdjust = this._baseAdjust;
+			
 			// Infinite tracker loop
 			for (;;)
 			{
+				// Get the new adjustment value
+				int newAdjust;
+				synchronized (this)
+				{
+					newAdjust = this._baseAdjust;
+				}
+				
+				// Does the base clock need adjusting?
+				if (newAdjust != baseAdjust)
+				{
+					// Adjustment changed
+					baseAdjust = newAdjust;
+					
+					// Recalculate the base time
+					baseTime = System.nanoTime();
+					baseMidi = this._timeDiv._nanoClock;
+				}
+				
 				// How much time has passed since the base time, relatively?
 				long deltaTime = System.nanoTime() - baseTime;
 				long deltaMidi = baseMidi + deltaTime;
@@ -160,12 +196,14 @@ public final class MidiTracker
 						
 						// Offset the time so we do not spend extra time
 						// sleeping
-						Thread.sleep(waitMidi / 1_000_000L,
-							(int)(waitMidi % 1_000_000L));
+						synchronized (this)
+						{
+							this.wait(waitMidi / 1_000_000L,
+								(int)(waitMidi % 1_000_000L));
+						}
 					}
 					catch (InterruptedException ignored)
 					{
-						break;
 					}
 			}
 		}
@@ -207,6 +245,10 @@ public final class MidiTracker
 			// Stop playback?
 			if (this.stopPlayback)
 				return Long.MAX_VALUE;
+			
+			// If only squelch is specified, mute all note
+			if (__play == null && __squelch != null)
+				MidiTracker.squelch(__squelch);
 			
 			// Forward to internal tracking
 			return this.__tracker(__play, __squelch, __targetNanos);
