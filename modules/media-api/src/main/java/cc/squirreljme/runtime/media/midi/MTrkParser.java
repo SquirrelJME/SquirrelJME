@@ -82,7 +82,7 @@ public final class MTrkParser
 		while (!tracker._trackEnded)
 		{
 			// Read in the delta, zero would just be an event
-			int delta = tracker.playNext(null);
+			int delta = tracker.playNext(null, null);
 			if (delta < 0)
 				delta = 0;
 			

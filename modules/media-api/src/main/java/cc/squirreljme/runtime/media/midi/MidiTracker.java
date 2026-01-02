@@ -10,7 +10,6 @@ package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.util.Arrays;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.control.MIDIControl;
 
@@ -338,7 +337,7 @@ public final class MidiTracker
 				// However, if the track ends, we do not want to freeze!
 				int tickDelta = 0;
 				while (tickDelta == 0 && !tracker._trackEnded)
-					tickDelta = tracker.playNext(__play);
+					tickDelta = tracker.playNext(__play, __squelch);
 				
 				// If there is a tick delta add to the track time
 				nextNano += (tickDelta * timeDiv._nanosPerTickDiv); 

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.media.midi;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import javax.microedition.media.control.MIDIControl;
@@ -77,44 +76,16 @@ public class MTrkTracker
 	}
 	
 	/**
-	 * Fast forwards this track.
-	 *
-	 * @param __micros The target microseconds.
-	 * @since 2026/01/02
-	 */
-	public void fastForward(long __micros)
-	{
-		long desireNanos = __micros * 1_000L;
-		MidiTimeDiv timeDiv = this._timeDiv;
-		
-		// Always reset to the start as this is more accurate of a measure
-		this.reset();
-		
-		// Keep skipping events until the end of track is reached or we
-		// hit the target
-		long midiNanos = 0;
-		while (!this._trackEnded && midiNanos < desireNanos)
-		{
-			// Read in the delta, zero would just be an event
-			int delta = this.playNext(null);
-			if (delta < 0)
-				delta = 0;
-			
-			// Since the tempo can change the nanos/tickdiv, we need to pull
-			// the value constantly from the timeDiv storage
-			midiNanos += Math.max(0, delta * timeDiv._nanosPerTickDiv);
-		}
-	}
-	
-	/**
 	 * Plays the next note.
 	 *
 	 * @param __control The control to play into, if {@code null} then
 	 * no events will be sent anywhere.
+	 * @param __squelch The control to play into, if not null then
+	 * controls will go into here.
 	 * @return The delta for the current event.
 	 * @since 2024/02/25
 	 */
-	public int playNext(MIDIControl __control)
+	public int playNext(MIDIControl __control, MIDIControl __squelch)
 	{
 		// Last tracked if we want an event
 		boolean wantEvent = this._wantEvent;
@@ -147,11 +118,11 @@ public class MTrkTracker
 		
 		// System Event
 		else if (event == 0xF0 || event == 0xF7)
-			this.__eventSysEx(event, __control);
+			this.__eventSysEx(event, __control, __squelch);
 		
 		// Normal MIDI Event
 		else
-			this.__eventMidi(event, __control);
+			this.__eventMidi(event, __control, __squelch);
 		
 		// We do not want an event here, we need to read a delta
 		this._wantEvent = false;
@@ -361,10 +332,15 @@ public class MTrkTracker
 	 *
 	 * @param __event The event.
 	 * @param __control The control to send to.
+	 * @param __squelch
 	 * @since 2024/02/26
 	 */
-	private void __eventMidi(int __event, MIDIControl __control)
+	private void __eventMidi(int __event, MIDIControl __control,
+		MIDIControl __squelch)
 	{
+		// Should this play when squelched?
+		boolean squelchPlay;
+		
 		// Determine which data is to be read in
 		int data1 = 0;
 		int data2 = 0;
@@ -373,14 +349,21 @@ public class MTrkTracker
 				// One-byte
 			case 0b1100_0000:	// Program change
 			case 0b1101_0000:	// Channel pressure
+				squelchPlay = true;
 				data1 = this.read();
 				break;
 			
 				// Two-byte
 			case 0b1000_0000:	// Note Off
 			case 0b1001_0000:	// Note On
+				squelchPlay = false;
+				data1 = this.read();
+				data2 = this.read();
+				break;
+				
 			case 0b1010_0000:	// After touch
 			case 0b1110_0000:	// Pitch wheel
+				squelchPlay = true;
 				data1 = this.read();
 				data2 = this.read();
 				break;
@@ -388,12 +371,14 @@ public class MTrkTracker
 				// Control change is special as it may be double byte or
 				// single byte depending on the message
 			case 0b1011_0000:
+				squelchPlay = true;
 				data1 = this.read();
 				data2 = this.read();
 				break;
 			
 				// Special messages
 			case 0b1111_0000:
+				squelchPlay = true;
 				if (__event == 0b1111_0010)
 				{
 					data1 = this.read();
@@ -405,16 +390,20 @@ public class MTrkTracker
 				
 			default:
 				// Implied channel zero event
+				squelchPlay = true;
 				if ((__event & 0x80) == 0)
 				{
 					__event = 0b1011_0000;
 					data1 = this.read();
 				}
+				break;
 		}
 		
 		// Send event
 		if (__control != null)
 			__control.shortMidiEvent(__event, data1, data2);
+		else if (squelchPlay && __squelch != null)
+			__squelch.shortMidiEvent(__event, data1, data2);
 	}
 	
 	/**
@@ -422,9 +411,11 @@ public class MTrkTracker
 	 *
 	 * @param __event The event.
 	 * @param __control The control to send to.
+	 * @param __squelch
 	 * @since 2024/02/26
 	 */
-	private void __eventSysEx(int __event, MIDIControl __control)
+	private void __eventSysEx(int __event, MIDIControl __control,
+		MIDIControl __squelch)
 	{
 		// Read in variable length
 		int length = this.readVariable();
