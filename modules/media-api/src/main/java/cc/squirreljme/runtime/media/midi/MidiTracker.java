@@ -143,47 +143,30 @@ public final class MidiTracker
 					deltaMidi);
 				
 				// Stopping playback?
-				if (nextMidi == Long.MAX_VALUE ||
-					nextMidi == Long.MIN_VALUE)
+				if (nextMidi == Long.MIN_VALUE)
 					break;
 				
-				/*
-				// How much time has passed since the last loop?
-				long nowTime = System.nanoTime();
-				deltaClock = nowTime - lastTime;
-				
-				// The last time is now different
-				lastTime = System.nanoTime();
-				
-				// Otherwise rest the current thread so the CPU is not set
-				// on fire playing back music. Do not sleep if the delay is
-				// too short however
-				long diffNanos = (nextNanos - targetNanos);
-				if (diffNanos >= 25_000_000L)
+				// Set time to wait for the next event
+				long waitMidi = nextMidi - deltaMidi;
+				if (waitMidi > 10_000L)
 					try
 					{
+						// Debug
+						if (Debugging.VERBOSE)
+							Debugging.debugNote(
+								"Sleep %d = (%d - %d) / %d",
+								waitMidi, nextMidi, deltaMidi,
+								this._timeDiv._nanoClock);
+						
 						// Offset the time so we do not spend extra time
 						// sleeping
-						Thread.sleep(
-							(diffNanos - 25_000_000L) / 1_000_000L);
+						Thread.sleep(waitMidi / 1_000_000L,
+							(int)(waitMidi % 1_000_000L));
 					}
-					catch (InterruptedException __ignored)
+					catch (InterruptedException ignored)
 					{
 						break;
 					}
-				
-				// How much time was spent in here, with sleeping?
-				// Move up the current clock up based on the time difference
-				// so that we know what new time to target
-				long diffTime = (System.nanoTime() - startTime);
-				if (diffTime > 0)
-				{
-					targetNanos += diffTime;
-					this._timeDiv._nanoClock = targetNanos;
-				}
-				
-				// The time of the last loop
-				lastTime = System.nanoTime();*/
 			}
 		}
 		
@@ -284,9 +267,13 @@ public final class MidiTracker
 				if (__targetNanos < nextNano)
 				{
 					// Is there a new lowest delta time?
-					long delta = nextNano - __targetNanos;
+					long delta = __targetNanos - nextNano;
 					if (delta < lowestDelta)
 						lowestDelta = delta;
+					
+					// Is this a lower clock time
+					if (nextNano < lowestNanos)
+						lowestNanos = nextNano;
 					
 					// Stalled tracks go up
 					stallTracks++;
@@ -306,7 +293,7 @@ public final class MidiTracker
 				nextNano += (tickDelta * timeDiv._nanosPerTickDiv); 
 				nextNanos[track] = nextNano;
 				
-				// Is this a lower non-delta time
+				// Is this a lower clock time
 				if (nextNano < lowestNanos)
 					lowestNanos = nextNano;
 			}
@@ -316,11 +303,12 @@ public final class MidiTracker
 			return Long.MIN_VALUE;
 		
 		// Set the new MIDI time to the lowest nanos
-		if (lowestNanos != Long.MAX_VALUE)
+		if (lowestNanos != Long.MAX_VALUE && lowestNanos >= 0)
 			timeDiv._nanoClock = lowestNanos;
 		
-		// Return the lowest delta time
-		return lowestDelta;
+		// Return the time in nanoseconds where the earliest next event
+		// should play
+		return lowestNanos;
 	}
 	
 	/**

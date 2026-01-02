@@ -188,7 +188,7 @@ public final class Binder
 				player.repaint();
 				
 				// Sleep for a tiny duration
-				Thread.sleep(25);
+				Thread.sleep(250);
 			}
 			catch (InterruptedException __ignored)
 			{
