@@ -10,6 +10,7 @@ package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.control.MIDIControl;
 
@@ -95,6 +96,7 @@ public final class MidiTracker
 	@SquirrelJMEVendorApi
 	public void fastForward(long __micros)
 	{
+		long target = __micros * 1_000L;
 		synchronized (this)
 		{
 			// Fast-forward or time adjustment happened, need to recalculate
@@ -102,15 +104,30 @@ public final class MidiTracker
 			// MIDI clock
 			this._baseAdjust++;
 			
+			// Is this a back in time fast-forward?
+			MidiTimeDiv timeDiv = this._timeDiv;
+			if (target < timeDiv._nanoClock)
+			{
+				// Turn off all notes and reset all controllers
+				MidiTracker.squelch(this.midiControl, true);
+				
+				// Go back to the starting clock of zero
+				timeDiv._nanoClock = 0;
+				
+				// Reset all tracks to start at zero
+				Arrays.fill(this._nextNanos, 0);
+				
+				// Reset each track to the start since we need read the data
+				// all over again
+				for (MTrkTracker tracker : this._trackers)
+					tracker.reset();
+			}
+			
 			// Fast-forward with relative time and no control output
 			// We do not care what the target time is, just that it is the media
 			// time
-			for (long target = __micros * 1_000L, next = 0;
-				next < target && next != Long.MAX_VALUE;)
-			{
-				next = this.tracker(null, this.midiControl,
-					target);
-			}
+			for (long next = 0; next < target && next != Long.MAX_VALUE;)
+				next = this.tracker(null, this.midiControl, target);
 			
 			// Interrupt
 			this.interrupt();
@@ -366,12 +383,12 @@ public final class MidiTracker
 	 * Squelches all MIDI notes.
 	 *
 	 * @param __control The control this is for.
-	 * @param __noReset Do not reset all controllers.
+	 * @param __reset Reset all controllers.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/02
 	 */
 	@SquirrelJMEVendorApi
-	public static final void squelch(MIDIControl __control, boolean __noReset)
+	public static final void squelch(MIDIControl __control, boolean __reset)
 		throws NullPointerException
 	{
 		if (__control == null)
@@ -391,7 +408,7 @@ public final class MidiTracker
 				123, 0);
 			
 			// Reset all controllers
-			if (!__noReset)
+			if (__reset)
 				__control.shortMidiEvent(
 					MIDIControl.CONTROL_CHANGE | channel,
 					121, 0);
