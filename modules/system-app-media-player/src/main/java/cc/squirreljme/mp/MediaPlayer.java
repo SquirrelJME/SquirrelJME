@@ -18,6 +18,8 @@ import javax.microedition.io.HttpConnection;
 import javax.microedition.io.InputConnection;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
@@ -87,6 +89,8 @@ public class MediaPlayer
 	@Override
 	protected void keyPressed(int __code)
 	{
+		// Repaint the display
+		this.repaint();
 	}
 	
 	/**
@@ -114,13 +118,59 @@ public class MediaPlayer
 			player = this._player;
 		}
 		
-		// Where are we at and how long is this media?
-		long trk = (player != null ? player.getMediaTime() : 0);
-		long dur = (player != null ? player.getDuration() : 0);
+		// Top media info
+		int ix = MediaPlayer.BAR_PADDING;
+		int iy = MediaPlayer.BAR_PADDING;
+		
+		// Font is needed for marquee effect
+		Font font = __g.getFont();
 		
 		// How big is this canvas?
 		int w = this.getWidth();
 		int h = this.getHeight();
+		
+		// Get the address the media is at
+		String url = null;
+		Binder binder = this._binder.get();
+		if (binder != null)
+			url = binder.connection.getURL();
+		
+		// Unknown URL? Just point to unknown
+		if (url == null)
+			url = "<unknown>";
+		
+		// How long is the URL?
+		int sw = (font != null ? font.stringWidth(url) : 1) +
+			MediaPlayer.BAR_PADDING;
+		
+		// Marque effect for the string
+		long baseTime = (int)Math.abs((System.nanoTime() /
+			(250_000_000L / 16)));
+		
+		// Add a time penalty before the URL scrolls to the right
+		int pn = (int)(baseTime % (sw * 4));
+		int bn = (int)(baseTime % sw);
+		
+		// Determine left side coordinate
+		// If the penalty is before the base, do not scroll
+		int mx;
+		if (pn >= (bn * 2))
+			mx = ix;
+		
+		// Otherwise, start scrolling to the right
+		else
+		{
+			mx = -bn;
+			if (mx < -(sw - w))
+				mx = -(sw - w);
+		}
+		
+		// Draw the URL showing where the media is
+		__g.drawString(url, mx, iy, 0);
+		
+		// Where are we at and how long is this media?
+		long trk = (player != null ? player.getMediaTime() : 0);
+		long dur = (player != null ? player.getDuration() : 0);
 		
 		// Determine base bar coordinates, keep some extra room from the
 		// bottom just in case
@@ -135,7 +185,7 @@ public class MediaPlayer
 			bw, bh);
 		
 		// Determine base position for where the bar is filled in
-		int fx = 0;
+		int fx = MediaPlayer.BAR_PADDING;
 		int fw = (dur <= 0 ? 0 :
 			(int)((float)bw * ((float)trk / (float)dur)));
 		
@@ -143,6 +193,71 @@ public class MediaPlayer
 		__g.setColor(0xFF7900);
 		__g.fillRect(fx, by,
 			fw, bh);
+		
+		// Get the current font
+		int fh = (font != null ? font.getHeight() : 12);
+		
+		// Draw the media time
+		__g.setColor(0x000000);
+		this.paintTime(__g, trk,
+			fx + bw, by - (fh * 2));
+		this.paintTime(__g, dur,
+			fx + bw, by - fh);
+	}
+	
+	/**
+	 * Paints the current time.
+	 *
+	 * @param __g The graphics to draw in.
+	 * @param __micros The microsecond time.
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @since 2026/01/01
+	 */
+	public void paintTime(Graphics __g, long __micros, int __x, int __y)
+		throws NullPointerException
+	{
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// Add microseconds
+		long mod = __micros % 1_000_000;
+		long div = __micros / 1_000_000;
+		sb.append(String.format("%06d\u00B5s", mod));
+		
+		// Add seconds
+		if (div > 0)
+		{
+			mod = div % 60;
+			div = div / 60;
+			if (sb.length() > 0)
+				sb.insert(0, ' ');
+			sb.insert(0, String.format("%02ds", mod));
+		}
+		
+		// Add minutes
+		if (div > 0)
+		{
+			mod = div % 60;
+			div = div / 60;
+			if (sb.length() > 0)
+				sb.insert(0, ' ');
+			sb.insert(0, String.format("%02dm", mod));
+		}
+		
+		// Add hours
+		if (div > 0)
+		{
+			if (sb.length() > 0)
+				sb.insert(0, ' ');
+			sb.insert(0, String.format("%02dh", div));
+		}
+		
+		// Draw the time
+		__g.drawString(sb.toString(), __x, __y,
+			Graphics.RIGHT);
 	}
 	
 	/**
@@ -210,14 +325,26 @@ public class MediaPlayer
 		return this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/01
+	 */
 	@Override
 	protected void pointerDragged(int __x, int __y)
 	{
+		// Repaint the display
+		this.repaint();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/01
+	 */
 	@Override
 	protected void pointerPressed(int __x, int __y)
 	{
+		// Repaint the display
+		this.repaint();
 	}
 	
 	/**

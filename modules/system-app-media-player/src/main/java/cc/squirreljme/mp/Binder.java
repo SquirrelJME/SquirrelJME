@@ -9,6 +9,7 @@
 
 package cc.squirreljme.mp;
 
+import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -34,7 +35,7 @@ import org.intellij.lang.annotations.Language;
  * @since 2025/12/27
  */
 public final class Binder
-	implements CommandListener
+	implements CommandListener, Runnable
 {
 	/** Reference to self. */
 	private final Reference<Binder> _self =
@@ -53,6 +54,9 @@ public final class Binder
 	
 	/** The universal file connection. */
 	final FileConnection connection;
+	
+	/** The thread that is doing repaints. */
+	private final Thread _thread;
 	
 	/**
 	 * Initializes the binder.
@@ -82,6 +86,14 @@ public final class Binder
 		{
 			throw new RuntimeException(__e.getMessage(), __e);
 		}
+		
+		// Setup thread to repaint the media player view
+		Thread thread = new Thread(this, "Binder");
+		ThreadShelf.javaThreadSetDaemon(thread);
+		
+		// Bind and start the thread
+		this._thread = thread;
+		thread.start();
 	}
 	
 	/**
@@ -151,5 +163,36 @@ public final class Binder
 		
 		// Show on the display!
 		this._display.setCurrent(show);
+		
+		// Always repaint the media player
+		this._player.repaint();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/01
+	 */
+	@SuppressWarnings("BusyWait")
+	@Override
+	public void run()
+	{
+		MediaPlayer player = this._player;
+		for (;;)
+			try
+			{
+				// Interrupted?
+				if (Thread.interrupted())
+					break;
+				
+				// Repaint
+				player.repaint();
+				
+				// Sleep for a tiny duration
+				Thread.sleep(25);
+			}
+			catch (InterruptedException __ignored)
+			{
+				break;
+			}
 	}
 }

@@ -171,7 +171,7 @@ public final class MidiTracker
 				// However, if the track ends, we do not want to freeze!
 				int delta = 0;
 				while (delta == 0 && !tracker._trackEnded)
-					delta = tracker.playNext(this, control);
+					delta = tracker.playNext(control);
 				
 				// Determine time when the track is ready
 				long nanosPerTickDiv = timeDiv._nanosPerTickDiv;

@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
-import javax.microedition.media.MediaException;
 import javax.microedition.media.control.MIDIControl;
 
 /**
@@ -79,19 +78,13 @@ public class MTrkTracker
 	/**
 	 * Plays the next note.
 	 *
-	 * @param __midiTracker The MIDI tracker being used.
 	 * @param __control The control to play into, if {@code null} then
 	 * no events will be sent anywhere.
 	 * @return The delta for the current event.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/25
 	 */
-	public int playNext(MidiTracker __midiTracker, MIDIControl __control)
-		throws NullPointerException
+	public int playNext(MIDIControl __control)
 	{
-		if (__midiTracker == null)
-			throw new NullPointerException("NARG");
-		
 		// Last tracked if we want an event
 		boolean wantEvent = this._wantEvent;
 		
@@ -119,7 +112,7 @@ public class MTrkTracker
 		
 		// End of track, no more events in this track
 		if (event == 0xFF)
-			this.__eventMeta(__midiTracker);
+			this.__eventMeta();
 		
 		// System Event
 		else if (event == 0xF0 || event == 0xF7)
@@ -229,17 +222,11 @@ public class MTrkTracker
 	/**
 	 * Handles a meta event, which is ignored.
 	 *
-	 * @param __midiTracker The MIDI tracker being used.
 	 * @return Will return {@code true} to stop playback.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/26
 	 */
-	private boolean __eventMeta(MidiTracker __midiTracker)
-		throws NullPointerException
+	private boolean __eventMeta()
 	{
-		if (__midiTracker == null)
-			throw new NullPointerException("NARG");
-		
 		// Read in all the data
 		int type = this.read();
 		int len;

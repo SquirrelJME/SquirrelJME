@@ -66,8 +66,10 @@ public class MidiPlayer
 	private volatile MTrkParser[] _tracks;
 	
 	/** The un-realized input stream. */
-	@SquirrelJMEVendorApi
 	private volatile InputStreamConnection _unrealizedIn;
+	
+	/** The cached nanosecond duration. */
+	private volatile long _nanoDuration;
 	
 	/**
 	 * Initializes the MIDI player.
@@ -363,13 +365,18 @@ public class MidiPlayer
 		// header details
 		this.prefetch();
 		
+		/* Has this already been calculated? */
+		long nanoDuration = this._nanoDuration;
+		if (nanoDuration > 0)
+			return nanoDuration;
+		
 		// The length of the MIDI is the duration of the longest track
-		long highestNanos = 0;
 		for (MTrkParser track : this._tracks)
-			highestNanos = Math.max(highestNanos, track.duration());
+			nanoDuration = Math.max(nanoDuration, track.duration());
 		
 		// Use the duration of the highest track
-		return highestNanos / 1_000L;
+		this._nanoDuration = nanoDuration;
+		return nanoDuration / 1_000L;
 	}
 	
 	@Override

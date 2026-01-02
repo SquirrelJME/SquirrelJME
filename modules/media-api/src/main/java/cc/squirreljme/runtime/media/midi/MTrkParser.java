@@ -73,7 +73,26 @@ public final class MTrkParser
 		if (rv >= 0)
 			return rv;
 		
-		return 60_000_000_000L;
+		// We need a copy of these
+		MidiTimeDiv timeDiv = this._timeDiv;
+		MTrkTracker tracker = new MTrkTracker(this, timeDiv);
+		
+		// Go through every single delta, until the track ends
+		rv = 0;
+		while (!tracker._trackEnded)
+		{
+			// Read in the delta, zero would just be an event
+			int delta = tracker.playNext(null);
+			if (delta < 0)
+				delta = 0;
+			
+			// Since the tempo can change the nanos/tickdiv, we need to pull
+			// the value constantly from the timeDiv storage
+			rv += Math.max(0, delta * timeDiv._nanosPerTickDiv);
+		}
+		
+		// Return the calculated time of all the deltas
+		return Math.max(0, rv);
 	}
 	
 	/**
