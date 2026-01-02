@@ -166,10 +166,23 @@ public final class FileEndPointConnection
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/01
+	 */
 	@Override
 	public final String getPath()
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// If not connected, the path makes no sense
+			FileEndPoint current = this.__current();
+			if (current == null)
+				return null;
+			
+			// Otherwise it is based on the URI itself
+			return current.part.getPath();
+		}
 	}
 	
 	/**
@@ -280,11 +293,29 @@ public final class FileEndPointConnection
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/01
+	 */
 	@Override
 	public final InputStream openInputStream()
-		throws IOException
+		throws IllegalModeException, IOException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			this.checkClosed();
+			this.checkRead();
+			
+			// Cannot open a stream for a directory
+			if (this.isDirectory())
+				throw new IOException("ADIR");
+			
+			// Forward to the endpoint
+			FileEndPoint current = this.__current();
+			if (current == null)
+				throw new IOException("DISC");
+			return current.openInputStream();
+		}
 	}
 	
 	@Override

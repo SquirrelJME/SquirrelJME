@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.util.ArrayList;
@@ -189,5 +190,16 @@ public class AllVolumesEndPoint
 			__into.put(fileName, new UriGenericPart(
 				"//" + LibraryEndPoint.HOST + fileName));
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/01
+	 */
+	@Override
+	protected InputStream openInputStream()
+		throws IOException, SecurityException
+	{
+		throw new IOException("ADIR");
 	}
 }

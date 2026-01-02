@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.util.Map;
@@ -109,6 +110,18 @@ public abstract class FileEndPoint
 	protected abstract void listDirectory(
 		@NotNull Map<String, UriGenericPart> __into)
 		throws IOException, NullPointerException, SecurityException;
+	
+	/**
+	 * Opens an input stream to this given file.
+	 *
+	 * @return The input stream for the file data.
+	 * @throws IOException On read errors; or if this is a directory.
+	 * @throws SecurityException If this operation is not permitted.
+	 * @since 2026/01/01
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract InputStream openInputStream()
+		throws IOException, SecurityException;
 	
 	/**
 	 * Is this a directory?

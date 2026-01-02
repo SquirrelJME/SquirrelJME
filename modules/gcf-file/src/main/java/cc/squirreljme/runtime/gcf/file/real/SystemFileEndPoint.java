@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.util.Map;
@@ -68,6 +69,17 @@ public class SystemFileEndPoint
 	@Override
 	public void close()
 		throws IOException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/01
+	 */
+	@Override
+	protected InputStream openInputStream()
+		throws IOException, SecurityException
 	{
 		throw Debugging.todo();
 	}

@@ -13,6 +13,7 @@ is used, refer to that for library bring-ins.
      * Mingw cross compilation.
  * _"AShiningRay"_ 
    * Nokia Graphics APIs
+   * Nokia Sound APIs
    * ScritchUI:
      * GTK2 Interface:
        * Memory leak fixes.
@@ -20,6 +21,7 @@ is used, refer to that for library bring-ins.
        * `copyArea()` implementation.
        * Polygon and arc drawing implementations.
        * Fixes and additions to rotation/scaling translations.
+   * WAVE File Playback
  * _"crystalct"_
    * RatufaCoat updates related to LibRetro:
      * PS3 Toolchain updates.

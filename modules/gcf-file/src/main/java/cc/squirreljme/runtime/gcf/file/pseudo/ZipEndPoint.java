@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.full.attrib.StaticFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.util.Map;
@@ -128,6 +129,17 @@ public class ZipEndPoint
 	@Override
 	protected void listDirectory(@NotNull Map<String, UriGenericPart> __into)
 		throws IOException, NullPointerException, SecurityException
+	{
+		throw Debugging.todo();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/01
+	 */
+	@Override
+	protected InputStream openInputStream()
+		throws IOException, SecurityException
 	{
 		throw Debugging.todo();
 	}

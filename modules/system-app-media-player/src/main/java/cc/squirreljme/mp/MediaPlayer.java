@@ -32,6 +32,14 @@ import org.intellij.lang.annotations.Language;
 public class MediaPlayer
 	extends Canvas
 {
+	/** The height of the progress bar. */
+	public static final int BAR_HEIGHT =
+		24;
+	
+	/** The padding of the progress bar. */
+	public static final int BAR_PADDING =
+		8;
+	
 	/** The binder this is under. */
 	private final Reference<Binder> _binder;
 	
@@ -66,20 +74,30 @@ public class MediaPlayer
 			// Make sure it is stopped first
 			this.stop();
 			
-			throw Debugging.todo();
+			// Deallocate and remove the player
+			Player player = this._player;
+			if (player != null)
+			{
+				player.deallocate();
+				player.close();
+			}
 		}
 	}
 	
 	@Override
 	protected void keyPressed(int __code)
 	{
-		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/01
+	 */
 	@Override
 	protected void keyRepeated(int __code)
 	{
-		throw Debugging.todo();
+		// Just treat as a key press
+		this.keyPressed(__code);
 	}
 	
 	/**
@@ -89,7 +107,42 @@ public class MediaPlayer
 	@Override
 	protected void paint(Graphics __g)
 	{
-		throw Debugging.todo();
+		// Is there a player here?
+		Player player;
+		synchronized (this)
+		{
+			player = this._player;
+		}
+		
+		// Where are we at and how long is this media?
+		long trk = (player != null ? player.getMediaTime() : 0);
+		long dur = (player != null ? player.getDuration() : 0);
+		
+		// How big is this canvas?
+		int w = this.getWidth();
+		int h = this.getHeight();
+		
+		// Determine base bar coordinates, keep some extra room from the
+		// bottom just in case
+		int bx = MediaPlayer.BAR_PADDING;
+		int by = h - (MediaPlayer.BAR_HEIGHT * 3);
+		int bw = w - (MediaPlayer.BAR_PADDING * 2);
+		int bh = MediaPlayer.BAR_HEIGHT;
+		
+		// Back of progress bar
+		__g.setColor(0xC3C3C3);
+		__g.fillRect(bx, by,
+			bw, bh);
+		
+		// Determine base position for where the bar is filled in
+		int fx = 0;
+		int fw = (dur <= 0 ? 0 :
+			(int)((float)bw * ((float)trk / (float)dur)));
+		
+		// Front of progress bar
+		__g.setColor(0xFF7900);
+		__g.fillRect(fx, by,
+			fw, bh);
 	}
 	
 	/**
@@ -142,8 +195,15 @@ public class MediaPlayer
 			// Use this player
 			this._player = player;
 				
-			if (true)
-				throw Debugging.todo();
+			// Implicit play
+			try
+			{
+				player.start();
+			}
+			catch (MediaException __e)
+			{
+				__e.printStackTrace();
+			}
 		}
 		
 		// Self
@@ -153,13 +213,11 @@ public class MediaPlayer
 	@Override
 	protected void pointerDragged(int __x, int __y)
 	{
-		throw Debugging.todo();
 	}
 	
 	@Override
 	protected void pointerPressed(int __x, int __y)
 	{
-		throw Debugging.todo();
 	}
 	
 	/**
@@ -171,7 +229,17 @@ public class MediaPlayer
 	{
 		synchronized (this)
 		{
-			throw Debugging.todo();
+			// Stop playback
+			Player player = this._player;
+			if (player != null)
+				try
+				{
+					player.stop();
+				}
+				catch (MediaException __e)
+				{
+					__e.printStackTrace();
+				}
 		}
 	}
 }

@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.util.Map;
@@ -198,5 +199,25 @@ public class LibraryEndPoint
 			else
 				__into.put(rcSub, part.withPath(rc));
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/01
+	 */
+	@Override
+	protected InputStream openInputStream()
+		throws IOException, SecurityException
+	{
+		if (this.isDirectory())
+			throw new IOException("ADIR");
+		
+		// Open a stream, note that the resource might not actually exist
+		InputStream rc = JarPackageShelf.openResource(this.jar,
+			this.part.getPath().substring(1));
+		if (rc == null)
+			throw new IOException("FNFE");
+		
+		return rc;
 	}
 }

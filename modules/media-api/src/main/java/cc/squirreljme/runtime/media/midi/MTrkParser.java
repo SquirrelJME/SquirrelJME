@@ -104,6 +104,24 @@ public final class MTrkParser
 	 */
 	private int __calculateTickDivDuration()
 	{
+		byte[] b = this._buffer;
+		int o = this._offset;
+		int l = this._length;
+		
+		// Determine the position where the time division is indicated
+		// If invalid, use a default division
+		int tdPos = o + 12;
+		if (tdPos + 1 >= (o + l))
+			return 500_000__000 / 96;
+		
+		// Read the upper and lower bits
+		int tickDiv = ((b[tdPos] & 0xFF)) | ((b[tdPos + 1] & 0xFF) << 8);
+		
+		// Is this a simple tick division?
+		if ((tickDiv & 0x8000) == 0)
+			return 500_000__000 / tickDiv;
+		
+		// SMPTE Time Code
 		throw Debugging.todo();
 	}
 }
