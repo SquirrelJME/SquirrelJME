@@ -99,8 +99,8 @@ public final class MidiTracker
 	@SquirrelJMEVendorApi
 	protected long micros()
 	{
-		Debugging.todoNote("micros()");
-		return 0;
+		// Just return the MIDI clock
+		return this._timeDiv._nanoClock / 1_000L;
 	}
 	
 	/**
@@ -126,6 +126,7 @@ public final class MidiTracker
 			tracker.reset();
 		
 		// Play almost forever
+		long startTime = System.nanoTime();
 		for (;;)
 		{
 			// Stop playback immediately?
@@ -137,6 +138,9 @@ public final class MidiTracker
 			
 			// The current time for this loop
 			long nowTime = System.nanoTime();
+			
+			// Set the current media clock
+			timeDiv._nanoClock = nowTime - startTime;
 			
 			// How many tracks have ended?
 			int endedTracks = 0;

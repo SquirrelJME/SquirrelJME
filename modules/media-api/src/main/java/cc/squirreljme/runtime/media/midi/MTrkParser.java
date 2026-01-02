@@ -30,8 +30,8 @@ public final class MTrkParser
 	/** The length of the buffer. */
 	private final int _length;
 	
-	/** The tick division duration of the track. */
-	private long _tickDivDuration =
+	/** The calculated duration of this track. */
+	private volatile long _duration =
 		-1;
 	
 	/**
@@ -68,6 +68,11 @@ public final class MTrkParser
 	 */
 	protected long duration()
 	{
+		// If the duration was already calculated, do not calculate it again
+		long rv = this._duration;
+		if (rv >= 0)
+			return rv;
+		
 		return 60_000_000_000L;
 	}
 	
@@ -92,45 +97,5 @@ public final class MTrkParser
 	public int length()
 	{
 		return this._length;
-	}
-	
-	/**
-	 * Returns the total tick division duration for this given track.
-	 * 
-	 * @return The total tick division duration for this track.
-	 * @since 2022/04/25
-	 */
-	public final long tickDivDuration()
-	{
-		// Does the duration need to be figured out?
-		long deltaDuration = this._tickDivDuration;
-		if (deltaDuration < 0)
-			this._tickDivDuration =
-				(deltaDuration = this.__calculateTickDivDuration());
-		
-		return deltaDuration;
-	}
-	
-	/**
-	 * Calculates the tick division duration of the track.
-	 * 
-	 * @return The calculated tick division duration of the track.
-	 * @since 2022/04/24
-	 */
-	private long __calculateTickDivDuration()
-	{
-		byte[] b = this._buffer;
-		int o = this._offset;
-		int l = this._length;
-		
-		// Determine the position where the time division is indicated
-		// If invalid, use a default division
-		int tdPos = o + 12;
-		if (tdPos + 1 >= (o + l))
-			return MidiPlayer.calculateTickDiv(96 * 256);
-		
-		// Read the upper and lower bits, then calculate the tickdiv
-		int tickDiv = ((b[tdPos] & 0xFF) << 8) | ((b[tdPos + 1] & 0xFF));
-		return MidiPlayer.calculateTickDiv(tickDiv);
 	}
 }

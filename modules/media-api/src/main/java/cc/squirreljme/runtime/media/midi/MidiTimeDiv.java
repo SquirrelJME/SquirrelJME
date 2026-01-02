@@ -27,6 +27,9 @@ public final class MidiTimeDiv
 	/** The current nanoseconds per tick division, for ALL tracks. */
 	volatile long _nanosPerTickDiv;
 	
+	/** The current nano clock. */
+	volatile long _nanoClock;
+	
 	/**
 	 * Initializes the time division storage.
 	 *
@@ -39,5 +42,16 @@ public final class MidiTimeDiv
 		this._tickDiv = __tickDiv;
 		this._nanosPerTickDivOrig = __nanosPerTickDiv;
 		this._nanosPerTickDiv = __nanosPerTickDiv;
+	}
+	
+	/**
+	 * Duplicates this time division.
+	 *
+	 * @return The duplicate time division.
+	 * @since 2026/01/01
+	 */
+	public MidiTimeDiv duplicate()
+	{
+		return new MidiTimeDiv(this._tickDiv, this._nanosPerTickDivOrig);
 	}
 }

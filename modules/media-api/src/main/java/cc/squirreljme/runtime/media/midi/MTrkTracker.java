@@ -65,10 +65,23 @@ public class MTrkTracker
 	}
 	
 	/**
+	 * Duplicate this tracker, generally for duration calculation.
+	 *
+	 * @return The duplicated tracker, note the time division is copied.
+	 * @since 2026/01/01
+	 */
+	public MTrkTracker duplicate()
+	{
+		return new MTrkTracker(this.parser,
+			this._timeDiv.duplicate());
+	}
+	
+	/**
 	 * Plays the next note.
 	 *
 	 * @param __midiTracker The MIDI tracker being used.
-	 * @param __control The control to play into.
+	 * @param __control The control to play into, if {@code null} then
+	 * no events will be sent anywhere.
 	 * @return The delta for the current event.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/25
@@ -76,7 +89,7 @@ public class MTrkTracker
 	public int playNext(MidiTracker __midiTracker, MIDIControl __control)
 		throws NullPointerException
 	{
-		if (__midiTracker == null || __control == null)
+		if (__midiTracker == null)
 			throw new NullPointerException("NARG");
 		
 		// Last tracked if we want an event
@@ -382,7 +395,8 @@ public class MTrkTracker
 		}
 		
 		// Send event
-		__control.shortMidiEvent(__event, data1, data2);
+		if (__control != null)
+			__control.shortMidiEvent(__event, data1, data2);
 	}
 	
 	/**
@@ -401,6 +415,7 @@ public class MTrkTracker
 		byte[] sysEx = this.readBulk(length);
 		
 		// Send long message
-		__control.longMidiEvent(sysEx, 0, length);
+		if (__control != null)
+			__control.longMidiEvent(sysEx, 0, length);
 	}
 }

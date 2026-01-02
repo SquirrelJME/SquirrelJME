@@ -99,7 +99,7 @@ public class ExtendedDataInputStream
 	public int available()
 		throws IOException
 	{
-		throw Debugging.todo();
+		return this.input.available();
 	}
 	
 	/**
@@ -178,7 +178,10 @@ public class ExtendedDataInputStream
 	public int read(byte[] __b)
 		throws IOException
 	{
-		throw Debugging.todo();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		return this.read(__b, 0, __b.length);
 	}
 	
 	/**
@@ -189,7 +192,19 @@ public class ExtendedDataInputStream
 	public int read(byte[] __b, int __o, int __l)
 		throws IOException
 	{
-		throw Debugging.todo();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new NullPointerException("NARG");
+		
+		// Read in bytes
+		int rc = this.input.read(__b, __o, __l);
+		
+		// If not purely EOF, count up bytes
+		if (rc >= 0)
+			this._count++;
+		
+		return rc;
 	}
 	
 	/**
@@ -200,7 +215,15 @@ public class ExtendedDataInputStream
 	public boolean readBoolean()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Read value
+		int rv = this.read();
+		
+		/* {@squirreljme.error BD0t End of file reached.} */
+		if (rv < 0)
+			throw new EOFException("BD0t");
+		
+		// Cast
+		return rv != 0;
 	}
 	
 	/**

@@ -233,9 +233,9 @@ public abstract class AbstractPlayer
 	}
 
 	/**
-	 * Determines the length of the media.
+	 * Determines the length of the media in microseconds.
 	 * 
-	 * @return The media length.
+	 * @return The media length in microseconds.
 	 * @since 2022/04/25
 	 */
 	@SquirrelJMEVendorApi

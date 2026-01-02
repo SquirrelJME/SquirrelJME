@@ -369,7 +369,7 @@ public class MidiPlayer
 			highestNanos = Math.max(highestNanos, track.duration());
 		
 		// Use the duration of the highest track
-		return highestNanos;
+		return highestNanos / 1_000L;
 	}
 	
 	@Override
