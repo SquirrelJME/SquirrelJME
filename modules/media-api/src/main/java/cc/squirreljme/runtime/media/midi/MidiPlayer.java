@@ -323,6 +323,22 @@ public class MidiPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected void clockFastForward(long __micros)
+		throws MediaException
+	{
+		synchronized (MidiPlayer.class)
+		{
+			MidiTracker tracker = MidiPlayer._TRACKER;
+			if (tracker != null)
+				tracker.fastForward(__micros);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2025/06/15
 	 */
 	@Override
@@ -345,12 +361,7 @@ public class MidiPlayer
 	protected void clockSet(long __micros)
 		throws MediaException
 	{
-		synchronized (MidiPlayer.class)
-		{
-			MidiTracker tracker = MidiPlayer._TRACKER;
-			if (tracker != null)
-				tracker.fastForward(__micros);
-		}
+		throw new MediaException("FAST");
 	}
 	
 	/**
@@ -377,6 +388,17 @@ public class MidiPlayer
 		// Use the duration of the highest track
 		this._nanoDuration = nanoDuration;
 		return nanoDuration / 1_000L;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected boolean resetFastForward()
+	{
+		// This is a tracker based format
+		return true;
 	}
 	
 	@Override

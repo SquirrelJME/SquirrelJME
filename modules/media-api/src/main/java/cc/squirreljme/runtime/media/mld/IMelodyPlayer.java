@@ -256,6 +256,32 @@ public class IMelodyPlayer
 		}
 	}
 	
+	@Override
+	protected void clockFastForward(long __micros)
+		throws MediaException
+	{
+		synchronized (this)
+		{
+			// Can only set the time if the player is valid
+			MLDPlayer mldPlayer = this._mldPlayer;
+			if (mldPlayer == null)
+			{
+				this._belayTime = __micros;
+				return;
+			}
+			
+			// Clear the belay time
+			this._belayTime = -1;
+			
+			// Reset synthesizer state
+			mldPlayer.reset();
+			
+			// This uses double time
+			// Media time is in microseconds
+			mldPlayer.setTime((double)__micros / 1_000_000D);
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/06/15
@@ -283,23 +309,7 @@ public class IMelodyPlayer
 	protected void clockSet(long __micros)
 		throws MediaException
 	{
-		synchronized (this)
-		{
-			// Can only set the time if the player is valid
-			MLDPlayer mldPlayer = this._mldPlayer;
-			if (mldPlayer == null)
-			{
-				this._belayTime = __micros;
-				return;
-			}
-			
-			// Clear the belay time
-			this._belayTime = -1;
-			
-			// This uses double time
-			// Media time is in microseconds
-			mldPlayer.setTime((double)__micros / 1_000_000D);
-		}
+		throw new MediaException("FAST");
 	}
 	
 	/**
@@ -381,6 +391,17 @@ public class IMelodyPlayer
 					}
 				}
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected boolean resetFastForward()
+	{
+		// This is a tracker based format
+		return true;
 	}
 	
 	/**

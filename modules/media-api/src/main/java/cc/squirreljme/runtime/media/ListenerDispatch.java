@@ -48,6 +48,10 @@ public final class ListenerDispatch
 		if (__player == null || __eventType == null)
 			throw new NullPointerException("NARG");
 		
+		// Player is not permitted to dispatch events
+		if (__player._ffNoDispatch)
+			return;
+		
 		// Does the dispatch thread need to be created?
 		Thread thread = ListenerDispatch._THREAD;
 		if (thread == null)

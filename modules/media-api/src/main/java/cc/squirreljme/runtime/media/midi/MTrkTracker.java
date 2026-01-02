@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.media.midi;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import javax.microedition.media.control.MIDIControl;
@@ -73,6 +74,36 @@ public class MTrkTracker
 	{
 		return new MTrkTracker(this.parser,
 			this._timeDiv.duplicate());
+	}
+	
+	/**
+	 * Fast forwards this track.
+	 *
+	 * @param __micros The target microseconds.
+	 * @since 2026/01/02
+	 */
+	public void fastForward(long __micros)
+	{
+		long desireNanos = __micros * 1_000L;
+		MidiTimeDiv timeDiv = this._timeDiv;
+		
+		// Always reset to the start as this is more accurate of a measure
+		this.reset();
+		
+		// Keep skipping events until the end of track is reached or we
+		// hit the target
+		long midiNanos = 0;
+		while (!this._trackEnded && midiNanos < desireNanos)
+		{
+			// Read in the delta, zero would just be an event
+			int delta = this.playNext(null);
+			if (delta < 0)
+				delta = 0;
+			
+			// Since the tempo can change the nanos/tickdiv, we need to pull
+			// the value constantly from the timeDiv storage
+			midiNanos += Math.max(0, delta * timeDiv._nanosPerTickDiv);
+		}
 	}
 	
 	/**

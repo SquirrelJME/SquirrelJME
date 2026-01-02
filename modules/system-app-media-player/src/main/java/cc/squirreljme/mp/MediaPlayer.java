@@ -174,7 +174,7 @@ public class MediaPlayer
 				
 				// Seek -5
 			case Canvas.GAME_C:
-				lastMediaTime -= 5_000;
+				lastMediaTime -= 5_000_000;
 				if (lastMediaTime < 0)
 					lastMediaTime = 0;
 				
@@ -193,7 +193,7 @@ public class MediaPlayer
 				
 				// Seek +5
 			case Canvas.GAME_D:
-				lastMediaTime += 5_000;
+				lastMediaTime += 5_000_000;
 				
 				// Set the time if the player is valid
 				if (player != null)

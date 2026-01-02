@@ -12,6 +12,7 @@ import cc.squirreljme.jvm.mle.MidiShelf;
 import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.media.AbstractMidiControl;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import javax.microedition.media.MediaException;
@@ -126,6 +127,17 @@ public class MidiControlPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected void clockFastForward(long __micros)
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2025/06/15
 	 */
 	@Override
@@ -155,6 +167,17 @@ public class MidiControlPlayer
 	{
 		// The duration is always zero
 		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected boolean resetFastForward()
+	{
+		// This does not make sense here
+		return false;
 	}
 	
 	/**

@@ -435,6 +435,20 @@ public class WavPlayer
 			AbstractPlayer.closeConnection(unrealizedIn);
 		}
 	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected void clockFastForward(long __micros)
+		throws MediaException
+	{
+		// TODO: This is for compatibility with old code, for variable width
+		// TODO: formats this should be handled here just for those
+		this.clockSet(__micros);
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -474,7 +488,21 @@ public class WavPlayer
 		else
 			this._curSample = curSample;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected boolean resetFastForward()
+	{
+		// Only variable width formats require fast-forward based setMediaTime
+		int format = this._wavFormat;
+		return format == __WavTools__.FORMAT_ALAW_WAV ||
+			format == __WavTools__.FORMAT_MULAW_WAV ||
+			format == __WavTools__.FORMAT_IMA_ADPCM;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/25

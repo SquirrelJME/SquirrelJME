@@ -65,6 +65,10 @@ public abstract class AbstractPlayer
 	@SquirrelJMEVendorApi
 	private volatile AbstractControl[] _controls;
 	
+	/** Cancel dispatch of events during fast-forwarding. */
+	@SquirrelJMEVendorApi
+	volatile boolean _ffNoDispatch;
+	
 	/** The state of the player. */
 	@SquirrelJMEVendorApi
 	private volatile int _state =
@@ -148,6 +152,22 @@ public abstract class AbstractPlayer
 		throws MediaException;
 	
 	/**
+	 * Sets the current clock via fast-forwarding, this should generally
+	 * not output any audio. While this method is being called no events
+	 * will be dispatched.
+	 * 
+	 * If fast-forwarding is not needed then this should just
+	 * call {@link #clockSet(long)}.
+	 *
+	 * @param __micros The microseconds to fast-forward to.
+	 * @throws MediaException If the clock could not be set.
+	 * @since 2026/01/01
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract void clockFastForward(long __micros)
+		throws MediaException;
+	
+	/**
 	 * Returns the current clock in microseconds.
 	 *
 	 * @return The current clock.
@@ -166,6 +186,17 @@ public abstract class AbstractPlayer
 	@SquirrelJMEVendorApi
 	protected abstract void clockSet(long __micros)
 		throws MediaException;
+	
+	/**
+	 * Returns whether the player/media currently requires the reset and
+	 * fast-forward method for {@link #setMediaTime(long)} to function.
+	 *
+	 * @return If reset then fast-forward is required for this media to
+	 * properly play.
+	 * @since 2026/01/02
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract boolean resetFastForward();
 	
 	/**
 	 * {@inheritDoc}
@@ -312,6 +343,10 @@ public abstract class AbstractPlayer
 	{
 		if (__key == null)
 			throw new NullPointerException("NARG");
+		
+		// Player is not permitted to dispatch events
+		if (this._ffNoDispatch)
+			return;
 		
 		// Send to the dispatcher
 		ListenerDispatch.dispatch(this, __key, __data);
@@ -630,7 +665,28 @@ public abstract class AbstractPlayer
 				this.getState() == Player.UNREALIZED)
 				throw new IllegalStateException("EA09");
 			
-			this.clockSet(__micros);
+			// If this does not require reset then fast-forward, just set
+			// the clock directly
+			if (!this.resetFastForward())
+				this.clockSet(__micros);
+			
+			// Otherwise reset, then fast-forward
+			else
+				try
+				{
+					// Do not dispatch events during fast forwarding, as
+					// this will very much break everything
+					this._ffNoDispatch = true;
+					
+					// Fast-forward the clock
+					this.clockFastForward(__micros);
+				}
+				finally
+				{
+					this._ffNoDispatch = false;
+				}
+			
+			// Return the set clock time
 			return this.clockGet();
 		}
 	}
