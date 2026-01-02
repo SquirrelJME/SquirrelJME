@@ -106,13 +106,22 @@ public final class MidiTracker
 			// Fast-forward with relative time and no control output
 			// We do not care what the target time is, just that it is the media
 			// time
-			this.tracker(null, this.midiControl,
-				__micros * 1_000L);
+			for (long target = __micros * 1_000L, next = 0;
+				next < target && next != Long.MAX_VALUE;)
+			{
+				next = this.tracker(null, this.midiControl,
+					target);
+			}
 			
 			// Interrupt
 			this.interrupt();
 			this.notifyAll();
 		}
+	}
+	
+	private static long getTargetNano(long __micros)
+	{
+		return __micros * 1_000L;
 	}
 	
 	/**
