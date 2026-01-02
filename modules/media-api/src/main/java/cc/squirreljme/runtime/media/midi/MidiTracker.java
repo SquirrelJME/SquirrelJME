@@ -39,9 +39,8 @@ public final class MidiTracker
 	/** MIDI trackers. */
 	private final MTrkTracker[] _trackers;
 	
-	/** The number of nanoseconds per tick division. */
-	volatile long _nanosPerTickDiv =
-		-1;
+	/** The timing that is shared for all MIDI tracks. */
+	final MidiTimeDiv _timeDiv;
 	
 	/** The time signature. */
 	volatile int _timeSignature =
@@ -52,25 +51,30 @@ public final class MidiTracker
 	 *
 	 * @param __player The player used.
 	 * @param __tracks MIDI tracks to run with.
+	 * @param __timeDiv The time division.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/27
 	 */
-	public MidiTracker(MidiPlayer __player, MTrkParser[] __tracks)
+	public MidiTracker(MidiPlayer __player, MTrkParser[] __tracks,
+		MidiTimeDiv __timeDiv)
 		throws NullPointerException
 	{
 		super("SquirrelJME-MidiTracker-" +
 			Math.abs(__player.hashCode()));
 		
-		if (__tracks == null)
+		if (__tracks == null || __timeDiv == null)
 			throw new NullPointerException("NARG");
 		
 		this.player = __player;
 		this.midiControl = __player.midiControl;
 		
+		// Store the time division
+		this._timeDiv = __timeDiv;
+		
 		// Trackers for each track
 		MTrkTracker[] trackers = new MTrkTracker[__tracks.length];
 		for (int i = 0, n = __tracks.length; i < n; i++)
-			trackers[i] = new MTrkTracker(__tracks[i]);
+			trackers[i] = new MTrkTracker(__tracks[i], __timeDiv);
 		this._trackers = trackers;
 	}
 	
@@ -110,6 +114,7 @@ public final class MidiTracker
 		MidiPlayer player = this.player;
 		MIDIControl control = this.midiControl;
 		MTrkTracker[] trackers = this._trackers;
+		MidiTimeDiv timeDiv = this._timeDiv;
 		int numTracks = trackers.length;
 		
 		// Used to indicate when the next track time should play
@@ -132,15 +137,6 @@ public final class MidiTracker
 			
 			// The current time for this loop
 			long nowTime = System.nanoTime();
-			
-			// Current micros per tick div, used for sleeping... if no tempo
-			// was previously set then use the default for MIDI?
-			long nanosPerTickDiv = this._nanosPerTickDiv;
-			if (nanosPerTickDiv < 0)
-			{
-				nanosPerTickDiv = this.player._nanosPerTickDiv;
-				this._nanosPerTickDiv = nanosPerTickDiv;
-			}
 			
 			// Update each tracker accordingly
 			long soonestReady = Long.MAX_VALUE;
@@ -165,9 +161,10 @@ public final class MidiTracker
 					delta = tracker.playNext(this, control);
 				
 				// Determine time when the track is ready
+				long nanosPerTickDiv = timeDiv._nanosPerTickDiv;
 				if (nanosPerTickDiv > 0)
 					readyAts[track] = nowTime +
-						((delta * nanosPerTickDiv) / player._tickDiv);
+						((delta * nanosPerTickDiv) / timeDiv._tickDiv);
 			}
 			
 			// Sleep until the next event can occur

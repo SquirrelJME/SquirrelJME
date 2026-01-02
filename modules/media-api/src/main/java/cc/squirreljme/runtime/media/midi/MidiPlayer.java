@@ -56,13 +56,8 @@ public class MidiPlayer
 	@SquirrelJMEVendorApi
 	protected final Player midiPlayer;
 	
-	/** The number of nanoseconds per tick division. */
-	volatile long _nanosPerTickDiv =
-		-1;
-	
-	/** The tick division used. */
-	volatile long _tickDiv =
-		-1;
+	/** The timing that is shared for all MIDI tracks. */
+	volatile MidiTimeDiv _timeDiv;
 	
 	/** The MIDI track data. */
 	private volatile byte[] _data;
@@ -139,6 +134,11 @@ public class MidiPlayer
 		// Tracks that are loaded
 		List<MTrkParser> tracks = new ArrayList<>();
 		
+		// Tick Division that was calculated
+		int tickDiv = 0;
+		long nanosPerTickDiv = 0;
+		MidiTimeDiv timeDiv = null;
+		
 		// Load more information about the MIDI, such as its length along with
 		// all the track information
 		byte[] data = this._data;
@@ -188,36 +188,22 @@ public class MidiPlayer
 							header.readUnsignedShort();
 							
 							// Determine tick division.. either SMPTE or ppqn
-							int tickDiv = header.readUnsignedShort();
-							if ((tickDiv & 0x8000) != 0)
-							{
-								// Parse values
-								int frames = -((byte)(tickDiv >>> 8));
-								int subFrames = (byte)tickDiv;
-								
-								// Is essentially frames and subframes per
-								// second
-								this._nanosPerTickDiv = 1_000_000__000 /
-									(frames * subFrames);
-								this._tickDiv = 1;
-							}
+							tickDiv = header.readUnsignedShort();
+							nanosPerTickDiv =
+								MidiPlayer.calculateTickDiv(tickDiv);
 							
-							// Reversed value from 120 BPM with 24 PPQN
-							// which was 0.02083s. Reversing operation with
-							// multiplication gives 0.5s so this is used as
-							// the base.
-							else
-							{
-								this._nanosPerTickDiv = 500_000__000 / tickDiv;
-								this._tickDiv = tickDiv;
-							}
+							// Store for later
+							timeDiv = new MidiTimeDiv(
+								tickDiv, nanosPerTickDiv);
+							this._timeDiv = timeDiv;
 						}
 						break;
 						
 						// MIDI track, just store where the track is since
 						// it just contains events
 					case MidiPlayer.MTRK_MAGIC:
-						tracks.add(new MTrkParser(data, filePos, length));
+						tracks.add(new MTrkParser(data, filePos, length,
+							timeDiv));
 						break;
 					
 						// Ignore unknown chunks
@@ -296,7 +282,7 @@ public class MidiPlayer
 		throws MediaException
 	{
 		// We just need to set up the tracker
-		MidiPlayer.__createTracker(this);
+		MidiPlayer.__createTracker(this, this._timeDiv);
 		
 		// Do set the new state
 		return true;
@@ -378,13 +364,12 @@ public class MidiPlayer
 		this.prefetch();
 		
 		// The length of the MIDI is the duration of the longest track
-		int highestTickDivDuration = 0;
+		long highestNanos = 0;
 		for (MTrkParser track : this._tracks)
-			highestTickDivDuration = Math.max(highestTickDivDuration,
-				track.tickDivDuration());
+			highestNanos = Math.max(highestNanos, track.duration());
 		
-		// The actual song length is basic multiplication
-		return highestTickDivDuration * this._nanosPerTickDiv;
+		// Use the duration of the highest track
+		return highestNanos;
 	}
 	
 	@Override
@@ -397,14 +382,16 @@ public class MidiPlayer
 	 * Creates a MIDI tracker.
 	 * 
 	 * @return The resultant MIDI tracker.
+	 * @param __timeDiv The MIDI time division, shared by all tracks.
 	 * @throws MediaException If the tracker cannot be created.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/27
 	 */
-	private static MidiTracker __createTracker(MidiPlayer __player)
+	private static MidiTracker __createTracker(MidiPlayer __player,
+		MidiTimeDiv __timeDiv)
 		throws MediaException, NullPointerException
 	{
-		if (__player == null)
+		if (__player == null || __timeDiv == null)
 			throw new NullPointerException("NARG");
 		
 		synchronized (MidiPlayer.class)
@@ -415,7 +402,7 @@ public class MidiPlayer
 				tracker.player.stop();
 			
 			// Setup new tracker
-			tracker = new MidiTracker(__player, __player._tracks);
+			tracker = new MidiTracker(__player, __player._tracks, __timeDiv);
 			
 			// Make sure it is a daemon thread, so it gets killed on exit
 			ThreadShelf.javaThreadSetDaemon(tracker);
@@ -427,5 +414,38 @@ public class MidiPlayer
 			MidiPlayer._TRACKER = tracker;
 			return tracker;
 		}
+	}
+	
+	/**
+	 * Calculates the nanoseconds per tick-division.
+	 * 
+	 * My wonderful spouse who is a musical technical artist helped me out
+	 * with this.
+	 *
+	 * @param __rawTickDiv The raw tick division from the header.
+	 * @return The nanoseconds per tick division.
+	 * @since 2026/01/01
+	 */
+	@SquirrelJMEVendorApi
+	public static long calculateTickDiv(int __rawTickDiv)
+	{
+		// Determine tick division.. either SMPTE or ppqn
+		if ((__rawTickDiv & 0x8000) != 0)
+		{
+			// Parse values
+			int frames = -((byte)(__rawTickDiv >>> 8));
+			int subFrames = (byte)__rawTickDiv;
+			
+			// Is essentially frames and subframes per
+			// second
+			return 1_000_000__000 / (frames * subFrames);
+		}
+		
+		// Reversed value from 120 BPM with 24 PPQN
+		// which was 0.02083s. Reversing operation with
+		// multiplication gives 0.5s so this is used as
+		// the base.
+		else
+			return 500_000__000 / __rawTickDiv;
 	}
 }

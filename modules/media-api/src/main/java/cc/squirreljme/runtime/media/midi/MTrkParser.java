@@ -8,7 +8,6 @@
 
 package cc.squirreljme.runtime.media.midi;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 
 /**
@@ -19,6 +18,9 @@ import java.io.ByteArrayInputStream;
  */
 public final class MTrkParser
 {
+	/** The timing that is shared for all MIDI tracks. */
+	final MidiTimeDiv _timeDiv;
+	
 	/** The MIDI buffer data. */
 	private final byte[] _buffer;
 	
@@ -29,7 +31,7 @@ public final class MTrkParser
 	private final int _length;
 	
 	/** The tick division duration of the track. */
-	private int _tickDivDuration =
+	private long _tickDivDuration =
 		-1;
 	
 	/**
@@ -38,15 +40,16 @@ public final class MTrkParser
 	 * @param __b The buffer to read data from.
 	 * @param __o The offset into the buffer.
 	 * @param __l The length of the buffer.
+	 * @param __timeDiv The time division.
 	 * @throws IndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
-	public MTrkParser(byte[] __b, int __o, int __l)
+	public MTrkParser(byte[] __b, int __o, int __l, MidiTimeDiv __timeDiv)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		if (__b == null)
+		if (__b == null || __timeDiv == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
@@ -54,6 +57,18 @@ public final class MTrkParser
 		this._buffer = __b;
 		this._offset = __o;
 		this._length = __l;
+		this._timeDiv = __timeDiv;
+	}
+	
+	/**
+	 * Calculate the duration of the MIDI track.
+	 *
+	 * @return The MIDI track duration.
+	 * @since 2026/01/01
+	 */
+	protected long duration()
+	{
+		return 60_000_000_000L;
 	}
 	
 	/**
@@ -85,10 +100,10 @@ public final class MTrkParser
 	 * @return The total tick division duration for this track.
 	 * @since 2022/04/25
 	 */
-	public final int tickDivDuration()
+	public final long tickDivDuration()
 	{
 		// Does the duration need to be figured out?
-		int deltaDuration = this._tickDivDuration;
+		long deltaDuration = this._tickDivDuration;
 		if (deltaDuration < 0)
 			this._tickDivDuration =
 				(deltaDuration = this.__calculateTickDivDuration());
@@ -102,7 +117,7 @@ public final class MTrkParser
 	 * @return The calculated tick division duration of the track.
 	 * @since 2022/04/24
 	 */
-	private int __calculateTickDivDuration()
+	private long __calculateTickDivDuration()
 	{
 		byte[] b = this._buffer;
 		int o = this._offset;
@@ -112,16 +127,10 @@ public final class MTrkParser
 		// If invalid, use a default division
 		int tdPos = o + 12;
 		if (tdPos + 1 >= (o + l))
-			return 500_000__000 / 96;
+			return MidiPlayer.calculateTickDiv(96 * 256);
 		
-		// Read the upper and lower bits
-		int tickDiv = ((b[tdPos] & 0xFF)) | ((b[tdPos + 1] & 0xFF) << 8);
-		
-		// Is this a simple tick division?
-		if ((tickDiv & 0x8000) == 0)
-			return 500_000__000 / tickDiv;
-		
-		// SMPTE Time Code
-		throw Debugging.todo();
+		// Read the upper and lower bits, then calculate the tickdiv
+		int tickDiv = ((b[tdPos] & 0xFF) << 8) | ((b[tdPos + 1] & 0xFF));
+		return MidiPlayer.calculateTickDiv(tickDiv);
 	}
 }

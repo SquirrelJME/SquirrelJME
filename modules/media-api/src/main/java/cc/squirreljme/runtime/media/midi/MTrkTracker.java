@@ -33,20 +33,27 @@ public class MTrkTracker
 	/** Do we want an event or a delta? */
 	private volatile boolean _wantEvent;
 	
+	/** The timing that is shared for all MIDI tracks. */
+	final MidiTimeDiv _timeDiv;
+	
 	/**
 	 * Initializes the tracker for the single track.
 	 *
 	 * @param __track The track to follow.
+	 * @param __timeDiv The time division.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/25
 	 */
-	public MTrkTracker(MTrkParser __track)
+	public MTrkTracker(MTrkParser __track, MidiTimeDiv __timeDiv)
 		throws NullPointerException
 	{
-		if (__track == null)
+		if (__track == null || __timeDiv == null)
 			throw new NullPointerException("NARG");
 		
 		this.parser = __track;
+		
+		// Store the time division
+		this._timeDiv = __timeDiv;
 		
 		// Load byte array from the input
 		ByteArrayInputStream input = __track.inputStream();
@@ -275,11 +282,25 @@ public class MTrkTracker
 						((bulk[1] & 0xFF) << 8) |
 						(bulk[2] & 0xFF);
 					
-					// Debug
-					Debugging.debugNote("MIDI Tempo: %d", tempo);
+					// Never divide by zero
+					if (tempo == 0)
+						tempo = 1;
 					
-					// Set new tempo
-					__midiTracker._nanosPerTickDiv = tempo * 1__000L;
+					// We need the original track nanos per tickDiv to
+					// recalculate what the tempo should be
+					MidiTimeDiv timeDiv = this._timeDiv;
+					long tickDivOrig = timeDiv._tickDiv;
+					long nanosPerTickDivOrig = timeDiv._nanosPerTickDivOrig;
+					
+					// Debug
+					Debugging.debugNote("MIDI Tempo: " +
+						"td=%d ntd=%d tempo=%d",
+						tickDivOrig, nanosPerTickDivOrig,
+						tempo);
+					
+					// Set new tempo (nanos / ticks)
+					timeDiv._nanosPerTickDiv =
+						(tempo * 1_000L) / tickDivOrig;
 				}
 				break;
 			
@@ -293,6 +314,10 @@ public class MTrkTracker
 					int notated32NoteInMidiQuarter = bulk[3];
 					
 					// TODO: ??????
+					Debugging.debugNote("MIDI Time Signature: " +
+							"num=%d den=%d cpm=%d nnmd=%d",
+						num, den,
+						clocksPerMetronome, notated32NoteInMidiQuarter);
 				}
 				break;
 				
