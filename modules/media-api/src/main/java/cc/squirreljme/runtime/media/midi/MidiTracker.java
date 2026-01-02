@@ -131,49 +131,21 @@ public final class MidiTracker
 			long baseTime = System.nanoTime();
 			long baseMidi = this._timeDiv._nanoClock;
 			
-			// The starting loop times
-			long startTime = 0;
-			long startMidi = 0;
-			
-			// The last loop times
-			long lastTime = 0;
-			long lastMidi = 0;
-			
 			// Infinite tracker loop
 			for (;;)
 			{
-				// Start time relative to the base time
-				startTime = System.nanoTime() - baseTime;
-				startMidi = this._timeDiv._nanoClock - baseMidi;
-				
-				// How much time has passed since the last clock?
-				long diffTime = lastTime - startTime;
-				long diffMidi = lastMidi - startMidi;
-				
-				// Use the furthest time
-				long targetMidi;
-				if (diffTime > diffMidi)
-					targetMidi = lastMidi + diffTime;
-				else
-					targetMidi = lastMidi + diffMidi;
-				
-				// Do not use a negative time
-				if (targetMidi < lastMidi)
-					targetMidi = lastMidi;
+				// How much time has passed since the base time, relatively?
+				long deltaTime = System.nanoTime() - baseTime;
+				long deltaMidi = baseMidi + deltaTime;
 				
 				// Try to keep up with the tracker
 				long nextMidi = this.tracker(control, control,
-					targetMidi);
+					deltaMidi);
 				
 				// Stopping playback?
 				if (nextMidi == Long.MAX_VALUE ||
 					nextMidi == Long.MIN_VALUE)
 					break;
-				
-				// Set a new time target
-				lastMidi = nextMidi;
-				lastTime = (System.nanoTime() - baseTime) +
-					(nextMidi - baseMidi);
 				
 				/*
 				// How much time has passed since the last loop?
@@ -281,6 +253,7 @@ public final class MidiTracker
 		
 		// The lowest delta time to meet the next target
 		long lowestDelta = Long.MAX_VALUE;
+		long lowestNanos = Long.MAX_VALUE;
 		
 		// Tracks that have ended and which are not ready
 		int stallTracks = 0;
@@ -330,12 +303,21 @@ public final class MidiTracker
 					tickDelta = tracker.playNext(__play);
 				
 				// If there is a tick delta add to the track time
-				nextNanos[track] += (tickDelta * timeDiv._nanosPerTickDiv);
+				nextNano += (tickDelta * timeDiv._nanosPerTickDiv); 
+				nextNanos[track] = nextNano;
+				
+				// Is this a lower non-delta time
+				if (nextNano < lowestNanos)
+					lowestNanos = nextNano;
 			}
 		
 		// Did all tracks end?
 		if (endedTracks >= numTracks)
 			return Long.MIN_VALUE;
+		
+		// Set the new MIDI time to the lowest nanos
+		if (lowestNanos != Long.MAX_VALUE)
+			timeDiv._nanoClock = lowestNanos;
 		
 		// Return the lowest delta time
 		return lowestDelta;
