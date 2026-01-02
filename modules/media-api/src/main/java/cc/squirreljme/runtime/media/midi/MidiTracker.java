@@ -127,28 +127,67 @@ public final class MidiTracker
 		// Needed for final cleanup
 		try
 		{
-			// Set the current track time to the nano time
-			long targetNanos = this._timeDiv._nanoClock;
+			// The base timing for events
+			long baseTime = System.nanoTime();
+			long baseMidi = this._timeDiv._nanoClock;
+			
+			// The starting loop times
+			long startTime = 0;
+			long startMidi = 0;
+			
+			// The last loop times
+			long lastTime = 0;
+			long lastMidi = 0;
 			
 			// Infinite tracker loop
 			for (;;)
 			{
-				// Track time we entered
-				long startTime = System.nanoTime();
+				// Start time relative to the base time
+				startTime = System.nanoTime() - baseTime;
+				startMidi = this._timeDiv._nanoClock - baseMidi;
 				
-				// Track until we reach the target time
-				long nextNanos = this.tracker(control, control,
-					targetNanos);
+				// How much time has passed since the last clock?
+				long diffTime = lastTime - startTime;
+				long diffMidi = lastMidi - startMidi;
+				
+				// Use the furthest time
+				long targetMidi;
+				if (diffTime > diffMidi)
+					targetMidi = lastMidi + diffTime;
+				else
+					targetMidi = lastMidi + diffMidi;
+				
+				// Do not use a negative time
+				if (targetMidi < lastMidi)
+					targetMidi = lastMidi;
+				
+				// Try to keep up with the tracker
+				long nextMidi = this.tracker(control, control,
+					targetMidi);
 				
 				// Stopping playback?
-				if (nextNanos == Long.MIN_VALUE)
+				if (nextMidi == Long.MAX_VALUE ||
+					nextMidi == Long.MIN_VALUE)
 					break;
+				
+				// Set a new time target
+				lastMidi = nextMidi;
+				lastTime = (System.nanoTime() - baseTime) +
+					(nextMidi - baseMidi);
+				
+				/*
+				// How much time has passed since the last loop?
+				long nowTime = System.nanoTime();
+				deltaClock = nowTime - lastTime;
+				
+				// The last time is now different
+				lastTime = System.nanoTime();
 				
 				// Otherwise rest the current thread so the CPU is not set
 				// on fire playing back music. Do not sleep if the delay is
 				// too short however
 				long diffNanos = (nextNanos - targetNanos);
-				if (false && diffNanos >= 25_000_000L)
+				if (diffNanos >= 25_000_000L)
 					try
 					{
 						// Offset the time so we do not spend extra time
@@ -170,6 +209,9 @@ public final class MidiTracker
 					targetNanos += diffTime;
 					this._timeDiv._nanoClock = targetNanos;
 				}
+				
+				// The time of the last loop
+				lastTime = System.nanoTime();*/
 			}
 		}
 		
@@ -210,10 +252,10 @@ public final class MidiTracker
 			// Stop playback?
 			if (this.stopPlayback)
 				return Long.MAX_VALUE;
+			
+			// Forward to internal tracking
+			return this.__tracker(__play, __squelch, __targetNanos);
 		}
-		
-		// Forward to internal tracking
-		return this.__tracker(__play, __squelch, __targetNanos);
 	}
 	
 	/**
