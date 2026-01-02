@@ -16,9 +16,12 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public final class FileTime
 	implements Comparable<FileTime>
 {
-	private FileTime()
+	/** The millisecond time. */
+	private final long _millis;
+	
+	private FileTime(long __millis)
 	{
-		throw Debugging.todo();
+		this._millis = __millis;
 	}
 	
 	@Override
@@ -54,7 +57,7 @@ public final class FileTime
 	@Api
 	public static FileTime fromMillis(long __v)
 	{
-		throw Debugging.todo();
+		return new FileTime(__v);
 	}
 }
 

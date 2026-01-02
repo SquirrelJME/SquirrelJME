@@ -51,7 +51,7 @@ public final class ContentTypeUtil
 			__path = __path.substring(ls + 1);
 		
 		// Find the last dot, if there is none then this is unknown
-		int ld = __path.lastIndexOf(".");
+		int ld = __path.lastIndexOf('.');
 		if (ld < 0)
 			return null;
 		
