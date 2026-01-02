@@ -770,7 +770,7 @@ public abstract class AbstractPlayer
 		{
 			this.setMediaTime(0);
 		}
-		catch (MediaException ignored)
+		catch (IllegalStateException|MediaException ignored)
 		{
 		}
 		

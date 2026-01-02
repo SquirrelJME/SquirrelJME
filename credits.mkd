@@ -35,6 +35,10 @@ is used, refer to that for library bring-ins.
      * PS2 Toolchain updates.
  * Guy Perfect
    * Keitai Wiki Community Music Implementation
+ * _Jinette Rufflepaws_
+   * For all the love and support you have given me over the years!
+   * Correct MIDI timings and codes.
+   * The `PSXIntro.mid` and `` sample MIDIs, self composed.
  * Sandy Vujaković
    * Documentation:
      * Contributing.

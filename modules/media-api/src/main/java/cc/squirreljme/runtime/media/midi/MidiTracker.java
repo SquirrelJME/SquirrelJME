@@ -242,7 +242,7 @@ public final class MidiTracker
 		{
 			player.stopViaMedia();
 		}
-		catch (MediaException __e)
+		catch (IllegalStateException|MediaException __e)
 		{
 			__e.printStackTrace();
 		}

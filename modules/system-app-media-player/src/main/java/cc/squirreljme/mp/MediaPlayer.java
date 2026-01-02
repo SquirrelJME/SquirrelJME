@@ -48,6 +48,9 @@ public class MediaPlayer
 	/** The currently playing media. */
 	private volatile Player _player;
 	
+	/** The last known media time. */
+	private volatile long _lastMediaTime;
+	
 	/**
 	 * Initializes the media player.
 	 *
@@ -86,9 +89,126 @@ public class MediaPlayer
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
 	@Override
 	protected void keyPressed(int __code)
 	{
+		Player player = this._player;
+		
+		// Store and get the last known media time
+		long lastMediaTime = this._lastMediaTime;
+		if (player != null && player.getState() == Player.STARTED)
+		{
+			lastMediaTime = player.getMediaTime();
+			this._lastMediaTime = lastMediaTime;
+		}
+		
+		// Cap media time to zero
+		if (lastMediaTime < 0)
+			lastMediaTime = 0;
+		
+		// Which action happened?
+		switch (this.getGameAction(__code))
+		{
+				// Play/Stop
+			case Canvas.GAME_A:
+				if (player != null)
+					try
+					{
+						// Stop playing?
+						if (player.getState() == Player.STARTED)
+							player.stop();
+						
+						// Playback starting at the correct media time
+						else
+						{
+							player.setMediaTime(lastMediaTime);
+							player.start();
+						}
+					}
+					catch (MediaException __e)
+					{
+						__e.printStackTrace();
+					}
+				break;
+				
+				// Browse Files
+			case Canvas.GAME_B:
+				// Force stop the player
+				if (player != null)
+					try
+					{
+						// Deallocate first
+						player.deallocate();
+						
+						// Then close
+						player.close();
+						
+						// Remove reference to this
+						this._player = null;
+					}
+					catch (RuntimeException __e)
+					{
+						__e.printStackTrace();
+					}
+				
+				// Restore the file browser
+				Binder binder = this._binder.get();
+				if (binder != null)
+					try
+					{
+						// Go to the parent directory
+						binder.connection.setFileConnection("..");
+						
+						// Refresh the display
+						binder.refresh();
+					}
+					catch (IOException __e)
+					{
+						__e.printStackTrace();
+					}
+				break;
+				
+				// Seek -5
+			case Canvas.GAME_C:
+				lastMediaTime -= 5_000;
+				if (lastMediaTime < 0)
+					lastMediaTime = 0;
+				
+				// Set the time if the player is valid
+				if (player != null)
+					try
+					{
+						player.setMediaTime(lastMediaTime);
+						this._lastMediaTime = lastMediaTime;
+					}
+					catch (MediaException __e)
+					{
+						__e.printStackTrace();
+					}
+				break;
+				
+				// Seek +5
+			case Canvas.GAME_D:
+				lastMediaTime += 5_000;
+				
+				// Set the time if the player is valid
+				if (player != null)
+					try
+					{
+						player.setMediaTime(lastMediaTime);
+						this._lastMediaTime = lastMediaTime;
+					}
+					catch (MediaException __e)
+					{
+						__e.printStackTrace();
+					}
+				break;
+		}
+		
 		// Repaint the display
 		this.repaint();
 	}
@@ -124,6 +244,7 @@ public class MediaPlayer
 		
 		// Font is needed for marquee effect
 		Font font = __g.getFont();
+		int fh = (font != null ? font.getHeight() : 12);
 		
 		// How big is this canvas?
 		int w = this.getWidth();
@@ -168,9 +289,27 @@ public class MediaPlayer
 		// Draw the URL showing where the media is
 		__g.drawString(url, mx, iy, 0);
 		
+		// Draw instructions
+		__g.drawString(String.format("[%s (A)] Play/Stop",
+				this.getKeyName(this.getKeyCode(Canvas.GAME_A))),
+			ix, iy + (fh * 2), 0);
+		__g.drawString(String.format("[%s (B)] Browse Files",
+				this.getKeyName(this.getKeyCode(Canvas.GAME_B))),
+			ix, iy + (fh * 3), 0);
+		__g.drawString(String.format("[%s (C)] Seek -5s",
+				this.getKeyName(this.getKeyCode(Canvas.GAME_C))),
+			ix, iy + (fh * 4), 0);
+		__g.drawString(String.format("[%s (D)] Seek +5s",
+				this.getKeyName(this.getKeyCode(Canvas.GAME_D))),
+			ix, iy + (fh * 5), 0);
+		
 		// Where are we at and how long is this media?
 		long trk = (player != null ? player.getMediaTime() : 0);
 		long dur = (player != null ? player.getDuration() : 0);
+		
+		// Store the media time for playing back
+		if (trk > 0)
+			this._lastMediaTime = trk;
 		
 		// Determine base bar coordinates, keep some extra room from the
 		// bottom just in case
@@ -194,15 +333,50 @@ public class MediaPlayer
 		__g.fillRect(fx, by,
 			fw, bh);
 		
-		// Get the current font
-		int fh = (font != null ? font.getHeight() : 12);
-		
 		// Draw the media time
 		__g.setColor(0x000000);
 		this.paintTime(__g, trk,
 			fx + bw, by - (fh * 2));
 		this.paintTime(__g, dur,
 			fx + bw, by - fh);
+		
+		// Print current state
+		if (player != null)
+		{
+			// Name based state?
+			String state;
+			int id = player.getState();
+			switch (id)
+			{
+				case Player.CLOSED:
+					state = "Closed (0)";
+					break;
+					
+				case Player.UNREALIZED:
+					state = "Unrealized/Deallocated (100)";
+					break;
+					
+				case Player.PREFETCHED:
+					state = "Prefetched (300)";
+					break;
+					
+				case Player.REALIZED:
+					state = "Realized (200)";
+					break;
+					
+				case Player.STARTED:
+					state = "Started/Playing (400)";
+					break;
+					
+					// Unknown State ID
+				default:
+					state = String.format("%d?", id);
+					break;
+			}
+			
+			// Draw the state
+			__g.drawString(state, bx, by + bh + 2, 0);
+		}
 	}
 	
 	/**
