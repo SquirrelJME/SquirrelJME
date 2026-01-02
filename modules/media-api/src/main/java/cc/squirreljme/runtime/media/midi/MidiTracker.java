@@ -220,7 +220,7 @@ public final class MidiTracker
 		finally
 		{
 			// Squelch all notes
-			MidiTracker.squelch(control);
+			MidiTracker.squelch(control, true);
 			
 			// Indicate stop
 			try
@@ -254,9 +254,10 @@ public final class MidiTracker
 			if (this.stopPlayback)
 				return Long.MAX_VALUE;
 			
-			// If only squelch is specified, mute all note
+			// If only squelch is specified, mute all notes but do not
+			// reset all controls
 			if (__play == null && __squelch != null)
-				MidiTracker.squelch(__squelch);
+				MidiTracker.squelch(__squelch, false);
 			
 			// Forward to internal tracking
 			return this.__tracker(__play, __squelch, __targetNanos);
@@ -365,11 +366,12 @@ public final class MidiTracker
 	 * Squelches all MIDI notes.
 	 *
 	 * @param __control The control this is for.
+	 * @param __noReset Do not reset all controllers.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/02
 	 */
 	@SquirrelJMEVendorApi
-	public static final void squelch(MIDIControl __control)
+	public static final void squelch(MIDIControl __control, boolean __noReset)
 		throws NullPointerException
 	{
 		if (__control == null)
@@ -389,9 +391,10 @@ public final class MidiTracker
 				123, 0);
 			
 			// Reset all controllers
-			__control.shortMidiEvent(
-				MIDIControl.CONTROL_CHANGE | channel,
-				121, 0);
+			if (!__noReset)
+				__control.shortMidiEvent(
+					MIDIControl.CONTROL_CHANGE | channel,
+					121, 0);
 		}
 	}
 }
