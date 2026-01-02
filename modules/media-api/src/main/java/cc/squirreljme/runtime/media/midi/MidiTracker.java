@@ -163,9 +163,10 @@ public final class MidiTracker
 				}
 				
 				// Advance the track, keep playing notes when the delta is
-				// zero. Once the delta is non-zero we need to pause
+				// zero. Once the delta is non-zero we need to pause.
+				// However, if the track ends, we do not want to freeze!
 				int delta = 0;
-				while (delta == 0)
+				while (delta == 0 && !tracker._trackEnded)
 					delta = tracker.playNext(this, control);
 				
 				// Determine time when the track is ready
@@ -206,8 +207,9 @@ public final class MidiTracker
 					if (millis > 250)
 						millis = 250;
 					
-					// Rest
-					Thread.sleep(millis);
+					// Do not rest if the sleep time is too short
+					if (millis < 20)
+						Thread.sleep(millis);
 				}
 				catch (InterruptedException __ignored)
 				{

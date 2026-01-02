@@ -91,11 +91,10 @@ public class MTrkTracker
 		}
 		
 		// Read in delta time if we do not want an event
-		int delta;
 		if (!wantEvent)
 		{
 			// Read delta time
-			delta = this.readVariable();
+			int delta = this.readVariable();
 			
 			// We are at a delta, we need to stop for timing
 			this._wantEvent = true;
@@ -120,7 +119,8 @@ public class MTrkTracker
 		// We do not want an event here, we need to read a delta
 		this._wantEvent = false;
 		
-		// The delta for events are always nothing
+		// All events have a delta-time of zero, if the next delta ends up
+		// being zero as well, then we will continue events without sleeping
 		return 0;
 	}
 	
@@ -208,6 +208,9 @@ public class MTrkTracker
 		
 		// Track is not ended
 		this._trackEnded = false;
+		
+		// MIDI always starts at a delta
+		this._wantEvent = false;
 	}
 	
 	/**
