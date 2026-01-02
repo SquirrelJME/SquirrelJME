@@ -36,6 +36,9 @@ public class MTrkTracker
 	/** The timing that is shared for all MIDI tracks. */
 	final MidiTimeDiv _timeDiv;
 	
+	/** Has the track ended? */
+	volatile boolean _trackEnded;
+	
 	/**
 	 * Initializes the tracker for the single track.
 	 *
@@ -79,6 +82,14 @@ public class MTrkTracker
 		// Last tracked if we want an event
 		boolean wantEvent = this._wantEvent;
 		
+		// If we are at the end of the track, there is no delta and we cannot
+		// read any more events
+		if (this._trackEnded)
+		{
+			this._wantEvent = false;
+			return 0;
+		}
+		
 		// Read in delta time if we do not want an event
 		int delta;
 		if (!wantEvent)
@@ -101,24 +112,15 @@ public class MTrkTracker
 		// Read in event
 		int event = this.read();
 		
-		// Handle
+		// End of track, no more events in this track
 		if (event == 0xFF)
-		{
-			try
-			{
-				if (this.__eventMeta(__midiTracker))
-					if (__midiTracker.player.decrementLoop())
-						__midiTracker.player.stopViaMedia();
-					else
-						__midiTracker.player.loopViaMedia();
-			}
-			catch (MediaException __e)
-			{
-				throw new RuntimeException(__e.getMessage(), __e);
-			}
-		}
+			this.__eventMeta(__midiTracker);
+		
+		// System Event
 		else if (event == 0xF0 || event == 0xF7)
 			this.__eventSysEx(event, __control);
+		
+		// Normal MIDI Event
 		else
 			this.__eventMidi(event, __control);
 		
@@ -139,16 +141,10 @@ public class MTrkTracker
 	{
 		ByteArrayInputStream input = this.input;
 		
-		// Read in single value
+		// Read in single value, if EOF, just zero
 		int val = input.read();
 		if (val < 0)
-		{
-			// Reset to beginning
-			this.reset();
-			
-			// Read again
-			return input.read() & 0xFF;
-		}
+			return -1;
 		
 		// Return value masked to normal byte
 		return val & 0xFF;
@@ -212,10 +208,13 @@ public class MTrkTracker
 	 */
 	public void reset()
 	{
+		// Reset buffer to the start
 		ByteArrayInputStream input = this.input;
-		
 		input.reset();
 		input.mark(0);
+		
+		// Track is not ended
+		this._trackEnded = false;
 	}
 	
 	/**
@@ -272,7 +271,7 @@ public class MTrkTracker
 				
 				// End of track
 			case 0x2F:
-				this.reset();
+				this._trackEnded = true;
 				return true;
 				
 				// Set Tempo

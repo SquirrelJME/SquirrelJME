@@ -138,10 +138,20 @@ public final class MidiTracker
 			// The current time for this loop
 			long nowTime = System.nanoTime();
 			
+			// How many tracks have ended?
+			int endedTracks = 0;
+			
 			// Update each tracker accordingly
 			long soonestReady = Long.MAX_VALUE;
 			for (int track = 0; track < numTracks; track++)
 			{
+				// Get the current track to play
+				MTrkTracker tracker = trackers[track];
+				
+				// If a track has ended, count up the end tracker
+				if (tracker._trackEnded)
+					endedTracks++;
+				
 				// We are not ready here yet
 				long readyAt = readyAts[track];
 				if (readyAt != Long.MIN_VALUE && nowTime < readyAt)
@@ -152,9 +162,6 @@ public final class MidiTracker
 					continue;
 				}
 				
-				// Get the current track to play
-				MTrkTracker tracker = trackers[track];
-				
 				// Advance the track
 				int delta = 0;
 				while (delta == 0)
@@ -163,9 +170,31 @@ public final class MidiTracker
 				// Determine time when the track is ready
 				long nanosPerTickDiv = timeDiv._nanosPerTickDiv;
 				if (nanosPerTickDiv > 0)
-					readyAts[track] = nowTime +
-						((delta * nanosPerTickDiv) / timeDiv._tickDiv);
+					readyAts[track] = nowTime + (delta * nanosPerTickDiv);
 			}
+			
+			// End of MIDI reached, stop or loop depending on what was
+			// requested
+			if (endedTracks >= numTracks)
+				try
+				{
+					// Tracks that ended
+					Debugging.debugNote("ended: %d/%d",
+						endedTracks, numTracks);
+					
+					// Either stop or loop
+					if (player.decrementLoop())
+						player.stopViaMedia();
+					else
+						player.loopViaMedia();
+					
+					// Reset the soonest ready time as we are looping
+					soonestReady = Long.MAX_VALUE;
+				}
+				catch (MediaException __e)
+				{
+					throw new RuntimeException(__e.getMessage(), __e);
+				}
 			
 			// Sleep until the next event can occur
 			if (soonestReady != Long.MAX_VALUE && soonestReady > nowTime)
