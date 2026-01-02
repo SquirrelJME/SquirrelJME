@@ -162,7 +162,8 @@ public final class MidiTracker
 					continue;
 				}
 				
-				// Advance the track
+				// Advance the track, keep playing notes when the delta is
+				// zero. Once the delta is non-zero we need to pause
 				int delta = 0;
 				while (delta == 0)
 					delta = tracker.playNext(this, control);

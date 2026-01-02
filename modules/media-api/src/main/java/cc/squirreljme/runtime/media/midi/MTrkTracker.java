@@ -83,7 +83,7 @@ public class MTrkTracker
 		boolean wantEvent = this._wantEvent;
 		
 		// If we are at the end of the track, there is no delta and we cannot
-		// read any more events
+		// read any more events either
 		if (this._trackEnded)
 		{
 			this._wantEvent = false;
@@ -98,16 +98,9 @@ public class MTrkTracker
 			delta = this.readVariable();
 			
 			// We are at a delta, we need to stop for timing
-			if (delta > 0)
-			{
-				this._wantEvent = true;
-				return delta;
-			}
+			this._wantEvent = true;
+			return delta;
 		}
-		
-		// Delta was not read
-		else
-			delta = 0;
 		
 		// Read in event
 		int event = this.read();
@@ -127,8 +120,8 @@ public class MTrkTracker
 		// We do not want an event here, we need to read a delta
 		this._wantEvent = false;
 		
-		// Return the read in delta
-		return delta;
+		// The delta for events are always nothing
+		return 0;
 	}
 	
 	/**
