@@ -52,6 +52,9 @@ public class LinearScanEndPoint
 	@SquirrelJMEVendorApi
 	protected final Connection wrapped;
 	
+	/** The scanned contents and magic numbers. */
+	private volatile String[] _contents;
+	
 	/**
 	 * Initializes the endpoint.
 	 *
@@ -88,34 +91,88 @@ public class LinearScanEndPoint
 		return PseudoAttributes.FILE;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
 	@Override
 	protected FileStore attachedFileStore()
 		throws SecurityException
 	{
-		throw Debugging.todo();
+		// Not attached to a filesystem
+		return null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
 	@Override
 	protected FileSystem attachedFileSystem()
 		throws SecurityException
 	{
-		throw Debugging.todo();
+		// Not attached to a filesystem
+		return null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
 	@Override
 	public void close()
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Close the wrapped connection
+		this.wrapped.close();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
 	@Override
 	protected void listDirectory(@NotNull Map<String, UriGenericPart> __into)
 		throws IOException, NullPointerException, SecurityException
 	{
+		if (__into == null)
+			throw new NullPointerException("NARG");
+		
+		// Only root is valid
+		UriGenericPart part = this.part;
+		if (!"/".equals(part.getPath()))
+			throw new IOException("FILE");
+		
+		// Have the contents already been determined?
+		String[] contents;
+		synchronized (this)
+		{
+			contents = this._contents;
+		}
+		
+		// Only add dot-dot if it is known
+		UriGenericPart dotDot = this.dotDot;
+		if (dotDot != null)
+			__into.put("..", dotDot);
+		
+		// Are there contents cached?
+		if (contents != null)
+		{
+			// Load in contents
+			for (String item : contents)
+				__into.put(item, part.withPath(item));
+			
+			// No more processing is needed
+			return;
+		}
+		
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
 	@Override
 	protected InputStream openInputStream()
 		throws IOException, SecurityException

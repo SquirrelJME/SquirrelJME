@@ -13,7 +13,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.gcf.AbstractStreamConnection;
-import cc.squirreljme.runtime.gcf.file.real.SystemFileEndPoint;
 import cc.squirreljme.runtime.gcf.file.real.SystemFileEndPointFactory;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
@@ -22,6 +21,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.FileStore;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -58,6 +59,10 @@ public final class FileEndPointConnection
 	/** The directory listing file to part cache. */
 	private final Map<String, UriGenericPart> _listing =
 		new LinkedHashMap<>();
+	
+	/** The directory stack, for improved dot-dot handling. */
+	private final Deque<UriGenericPart> _stack =
+		new ArrayDeque<>();
 	
 	/** The currently connected endpoint. */
 	private volatile FileEndPoint _current;
@@ -311,8 +316,9 @@ public final class FileEndPointConnection
 			this.checkClosed();
 			this.checkRead();
 			
-			// Cannot open a stream for a directory
-			if (this.isDirectory())
+			// Cannot open a stream for a directory, unless it is the root
+			// filesystem which allows for block level access
+			if (this.isDirectory() && !"/".equals(this.getPath()))
 				throw new IOException("ADIR");
 			
 			// Forward to the endpoint
@@ -362,11 +368,27 @@ public final class FileEndPointConnection
 			this.checkRead();
 			
 			// Need to load the directory list?
+			UriGenericPart part = null;
 			Map<String, UriGenericPart> listing = this.__listing(false);
+			
+			// Going to the parent directory?
+			// Try to load the parent from the stack first
+			Deque<UriGenericPart> stack = this._stack;
+			if ("..".equals(__fileName))
+			{
+				// Top of the stack is the current item, so drop it
+				stack.pollLast();
+				
+				// This would be the parent directory
+				part = stack.pollLast();
+			}
+			
+			// Load from the listing
+			if (part == null)
+				part = listing.get(__fileName);
 			
 			/* {@squirreljme.error EC34 The specified file does not
 			exist in the current directory. (The file; The base URL)} */
-			UriGenericPart part = listing.get(__fileName);
 			if (part == null)
 				throw new IllegalArgumentException(
 					__error__("EC34 %s", __fileName, this.getURL()));
@@ -376,8 +398,11 @@ public final class FileEndPointConnection
 			if (!this.isDirectory() && !"..".equals(__fileName))
 				throw new IOException("FILE");
 			
+			// Use the top of the stack as the return point
+			UriGenericPart dotDot = stack.peekLast();
+			
 			// Change to it since it is valid
-			this.__changeEndPoint(part);
+			this.__changeEndPoint(part, dotDot);
 		}
 	}
 	
@@ -425,6 +450,7 @@ public final class FileEndPointConnection
 	 * This is called to change the endpoint.
 	 *
 	 * @param __part The new part, if {@code null} then none is set.
+	 * @param __dotDot The dot-dot path to use, may be {@code null}.
 	 * @return {@code this}.
 	 * @throws IOException If the part could not be changed.
 	 * @throws SecurityException If the operation was not permitted.
@@ -432,29 +458,15 @@ public final class FileEndPointConnection
 	 */
 	@SuppressWarnings("resource")
 	@SquirrelJMEVendorApi
-	Connection __changeEndPoint(UriGenericPart __part)
+	Connection __changeEndPoint(UriGenericPart __part, UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, SecurityException
 	{
 		synchronized (this)
 		{
 			// Does the old endpoint need to be closed?
 			FileEndPoint current = this._current;
-			UriGenericPart oldPart = null;
-			UriGenericPart oldDotDot = null;
 			if (current != null)
-			{
-				// Allow going back to the old part, if it is a directory
-				// We do not want this to end up doing an infinite loop by
-				// going back to 
-				if (current.isDirectory())
-				{
-					oldPart = current.part;
-					oldDotDot = current.dotDot;
-				}
-				
-				// Close the current connection
 				this.__currentClose();
-			}
 			
 			// No new endpoint is set?
 			if (__part == null)
@@ -489,23 +501,18 @@ public final class FileEndPointConnection
 				throw new ConnectionNotFoundException(
 					__error__("EC30 %s", __part, auth));
 			
-			// Does the endpoint need help with returning to this current
-			// point when dot-dot is used with the specified path?
-			// If it does not, clear it otherwise we will end up in a loop
-			// this will never get out of. This will only ever return to the
-			// current address. Note that if the old dot-dot was set, then
-			// this will end up looping so we definitely do not want that to
-			// happen
-			if (!factory.needDotDot(__part) || oldDotDot != null)
-				oldPart = null;
-			
-			// Connect to the endpoint
-			endPoint = factory.connect(__part, mode, oldPart);
+			// Connect to the endpoint, use the old dot-dot to return to the
+			// previous point, overriding whatever was here
+			endPoint = factory.connect(__part, mode, __dotDot);
 			if (endPoint == null)
 				throw Debugging.oops();
 			
 			// Use this one
 			this._current = endPoint;
+			
+			// No exceptions were thrown so now we are at a valid point, so
+			// push to the stack
+			this._stack.offerLast(__part);
 		}
 		
 		// Self

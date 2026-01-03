@@ -135,19 +135,4 @@ public class LibraryEndPointFactory
 		return host.startsWith(LibraryEndPoint.DECODED_HOST);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @since 2026/01/03
-	 */
-	@Override
-	public boolean needDotDot(UriGenericPart __part)
-		throws NullPointerException
-	{
-		if (__part == null)
-			throw new NullPointerException("NARG");
-		
-		// This does not need assistance with dot-dot, everything ends up
-		// in all-volumes
-		return false;
-	}
 }

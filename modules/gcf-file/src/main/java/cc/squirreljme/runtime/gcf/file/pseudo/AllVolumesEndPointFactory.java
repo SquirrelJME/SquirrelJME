@@ -65,19 +65,4 @@ public class AllVolumesEndPointFactory
 		return AllVolumesEndPoint.DECODED_HOST.equals(host);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @since 2026/01/03
-	 */
-	@Override
-	public boolean needDotDot(UriGenericPart __part)
-		throws NullPointerException
-	{
-		if (__part == null)
-			throw new NullPointerException("NARG");
-		
-		// This does not need assistance with dot-dot, it just points
-		// to the current URI as there is only ever the root directory
-		return false;
-	}
 }

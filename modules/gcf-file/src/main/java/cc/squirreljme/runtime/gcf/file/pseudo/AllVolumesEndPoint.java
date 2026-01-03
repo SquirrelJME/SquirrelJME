@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.gcf.file.pseudo;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
@@ -176,9 +177,14 @@ public class AllVolumesEndPoint
 			else
 				fileName = UriPart.encode(baseName) + "/";
 			
+			// If this is a resource type, use a different host
+			String host = (baseName != null &&
+				SuiteUtils.isResource(baseName) ?
+				LinearScanEndPoint.HOST : LibraryEndPoint.HOST);
+			
 			// Determine full URI connection to this item
 			__into.put(fileName, new UriGenericPart(
-				"//" + LibraryEndPoint.HOST + fileName));
+				"//" + host + fileName));
 		}
 	}
 	

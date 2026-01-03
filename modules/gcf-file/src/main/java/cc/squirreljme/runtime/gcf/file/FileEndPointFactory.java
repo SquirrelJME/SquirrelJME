@@ -60,16 +60,4 @@ public interface FileEndPointFactory
 	@SquirrelJMEVendorApi
 	boolean handleAuthority(UriAuthority __auth)
 		throws NullPointerException;
-	
-	/**
-	 * Does this need assistance with {@code ..} if that is desired?
-	 *
-	 * @param __part Which part does this relate to?
-	 * @return If this needs {@code ..} assistance.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2026/01/03
-	 */
-	@SquirrelJMEVendorApi
-	boolean needDotDot(UriGenericPart __part)
-		throws NullPointerException;
 }

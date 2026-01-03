@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.RawJarPackageBracketInputStream;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
@@ -154,22 +155,27 @@ public class LibraryEndPoint
 		UriGenericPart part = this.part;
 		String path = part.getPath();
 		
-		// Parent directory at the root points to all volumes, otherwise
-		// it points to the directory above
-		if (path.equals("/"))
-		{
-			UriGenericPart dotDot = this.dotDot;
-			__into.put("..", (dotDot != null ? dotDot :
-				new UriGenericPart("//" +
-					AllVolumesEndPoint.HOST + "/")));
-		}
-		
-		// Otherwise, strip a component
+		// Override dot-dot?
+		UriGenericPart dotDot = this.dotDot;
+		if (dotDot != null)
+			__into.put("..", dotDot);
 		else
 		{
-			int ls = path.lastIndexOf('/', path.length() - 2);
-			__into.put("..",
-				part.withPath(path.substring(0, ls) + "/"));
+			// Parent directory at the root points to all volumes, otherwise
+			// it points to the directory above
+			if (path.equals("/"))
+			{
+				__into.put("..", new UriGenericPart("//" +
+					AllVolumesEndPoint.HOST + "/"));
+			}
+			
+			// Otherwise, strip a component
+			else
+			{
+				int ls = path.lastIndexOf('/', path.length() - 2);
+				__into.put("..",
+					part.withPath(path.substring(0, ls) + "/"));
+			}
 		}
 		
 		// No listing? Just list nothing then
@@ -214,7 +220,13 @@ public class LibraryEndPoint
 		throws IOException, SecurityException
 	{
 		if (this.isDirectory())
+		{
+			// If this is the root, allow the entire Jar to be read as
+			// a block device
+			if ("/".equals(this.part.getPath()))
+				return new RawJarPackageBracketInputStream(this.jar);
 			throw new IOException("ADIR");
+		}
 		
 		// Open a stream, note that the resource might not actually exist
 		InputStream rc = JarPackageShelf.openResource(this.jar,

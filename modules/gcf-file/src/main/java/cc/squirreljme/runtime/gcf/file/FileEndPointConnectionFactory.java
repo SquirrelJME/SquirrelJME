@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.gcf.file;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
@@ -63,7 +62,8 @@ public class FileEndPointConnectionFactory
 		// connected to nothing
 		FileEndPointConnection connection = new FileEndPointConnection(__mode);
 		if (__part != null)
-			return connection.__changeEndPoint((UriGenericPart)__part);
+			return connection.__changeEndPoint((UriGenericPart)__part,
+				null);
 		return connection;
 			
 	}

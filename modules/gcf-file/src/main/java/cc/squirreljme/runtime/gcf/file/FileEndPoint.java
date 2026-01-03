@@ -119,7 +119,9 @@ public abstract class FileEndPoint
 		throws IOException, NullPointerException, SecurityException;
 	
 	/**
-	 * Opens an input stream to this given file.
+	 * Opens an input stream to this given file. If this is the root of the
+	 * filesystem, this method is valid to be called as a stream over the
+	 * entire filesystem block, if applicable.
 	 *
 	 * @return The input stream for the file data.
 	 * @throws IOException On read errors; or if this is a directory.

@@ -61,18 +61,4 @@ public class SystemFileEndPointFactory
 		return __auth.host() == null;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @since 2026/01/03
-	 */
-	@Override
-	public boolean needDotDot(UriGenericPart __part)
-		throws NullPointerException
-	{
-		if (__part == null)
-			throw new NullPointerException("NARG");
-		
-		// Dot-dot is only useful for the root directory
-		return __part.getPath().equals("/");
-	}
 }
