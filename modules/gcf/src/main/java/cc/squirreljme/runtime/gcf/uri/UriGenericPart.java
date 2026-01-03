@@ -114,7 +114,7 @@ public final class UriGenericPart
 		
 		// There is no authority specified
 		int fs = authPath.indexOf('/', 2);
-		if (fs == 2)
+		if (fs < 0 || fs == 2)
 		{
 			this.authority = null;
 			this.path = authPath.substring(2);

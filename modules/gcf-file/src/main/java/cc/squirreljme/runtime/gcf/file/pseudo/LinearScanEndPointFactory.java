@@ -10,13 +10,16 @@
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.file.FileEndPointFactory;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.IOException;
+import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.Connector;
+import javax.microedition.io.InputConnection;
 import org.intellij.lang.annotations.Language;
 
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
@@ -57,10 +60,18 @@ public class LinearScanEndPointFactory
 		String desiredUri = fullHost.substring(
 			LinearScanEndPoint.DECODED_HOST.length());
 		
+		// This must be a readable connection
+		Connection conn = Connector.open(desiredUri, Connector.READ);
+		if (!(conn instanceof InputConnection))
+		{
+			conn.close();
+			throw new ConnectionNotFoundException("RORO");
+		}
+		
 		// Open the wrapped connection along with the linear stream
 		// Attempt to open the wrapped connection
 		return new LinearScanEndPoint(__uri, __mode,
-			Connector.open(desiredUri, Connector.READ), __dotDot);
+			(InputConnection)conn, __dotDot);
 	}
 	
 	/**
@@ -73,6 +84,10 @@ public class LinearScanEndPointFactory
 	{
 		if (__auth == null)
 			throw new NullPointerException("NARG");
+		
+		Debugging.debugNote("%s ?= %s / %s",
+			LinearScanEndPoint.DECODED_HOST, __auth,
+			__auth.host());
 		
 		// Ignore if no host was specified
 		String host = __auth.host();

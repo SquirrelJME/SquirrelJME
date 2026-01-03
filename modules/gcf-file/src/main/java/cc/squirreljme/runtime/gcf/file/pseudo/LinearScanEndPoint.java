@@ -9,17 +9,24 @@
 
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
+import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import javax.microedition.io.Connection;
+import javax.microedition.io.InputConnection;
+import net.multiphasicapps.io.ExtendedDataInputStream;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +45,16 @@ import org.jetbrains.annotations.Nullable;
 public class LinearScanEndPoint
 	extends FileEndPoint
 {
+	/** The number of bytes to scan attempt at once. */
+	@SquirrelJMEVendorApi
+	public static final int SCAN_LEN =
+		12;
+	
+	/** The number of bytes to skip at once. */
+	@SquirrelJMEVendorApi
+	public static final int SKIP =
+		4;
+	
 	/** Host. */
 	@SquirrelJMEVendorApi
 	public static final String HOST =
@@ -50,7 +67,7 @@ public class LinearScanEndPoint
 	
 	/** The connection to wrap. */
 	@SquirrelJMEVendorApi
-	protected final Connection wrapped;
+	protected final InputConnection wrapped;
 	
 	/** The scanned contents and magic numbers. */
 	private volatile String[] _contents;
@@ -67,7 +84,7 @@ public class LinearScanEndPoint
 	 */
 	@SquirrelJMEVendorApi
 	public LinearScanEndPoint(@NotNull UriGenericPart __part, int __mode,
-		Connection __wrapped, @Nullable UriGenericPart __dotDot)
+		InputConnection __wrapped, @Nullable UriGenericPart __dotDot)
 		throws NullPointerException
 	{
 		super(__part, __mode, __dotDot);
@@ -143,17 +160,17 @@ public class LinearScanEndPoint
 		if (!"/".equals(part.getPath()))
 			throw new IOException("FILE");
 		
+		// Only add dot-dot if it is known
+		UriGenericPart dotDot = this.dotDot;
+		if (dotDot != null)
+			__into.put("..", dotDot);
+		
 		// Have the contents already been determined?
 		String[] contents;
 		synchronized (this)
 		{
 			contents = this._contents;
 		}
-		
-		// Only add dot-dot if it is known
-		UriGenericPart dotDot = this.dotDot;
-		if (dotDot != null)
-			__into.put("..", dotDot);
 		
 		// Are there contents cached?
 		if (contents != null)
@@ -166,7 +183,84 @@ public class LinearScanEndPoint
 			return;
 		}
 		
-		throw Debugging.todo();
+		// Scan length and where to write for the skip
+		int scanLen = LinearScanEndPoint.SCAN_LEN;
+		int skip = LinearScanEndPoint.SKIP;
+		int moveChunk = scanLen - skip;
+		
+		// The last found magic
+		@Language("mime-type-reference")
+		String lastMagic = null;
+		int lastMagicPos = -1;
+		
+		// Scan and detect magic numbers
+		List<String> buildContent = new ArrayList<>();
+		try (ExtendedDataInputStream in = new ExtendedDataInputStream(
+			this.wrapped.openDataInputStream()))
+		{
+			// Setup rolling scan buffer and full it with initial data
+			byte[] roll = new byte[scanLen];
+			in.readFully(roll);
+			
+			// Magic number detection loop
+			for (;;)
+			{
+				// Notice
+				Debugging.debugNote("Checking %d", in.size());
+				
+				// Try to find a magic number
+				String magic = ContentTypeUtil.guess(roll, 0, roll.length);
+				
+				// Do not allow plain text to be detected
+				if ("text/plain".equals(magic))
+					magic = null;
+				
+				// Was a new magic detected?
+				if (magic != null)
+				{
+					// Was there a previous magic?
+					if (lastMagic != null)
+					{
+						// Add the last magic
+						LinearScanEndPoint.__add(buildContent,
+							lastMagic, lastMagicPos, Integer.MAX_VALUE);
+						
+						// Clear
+						lastMagic = null;
+						lastMagicPos = -1;
+					}
+					
+					// Remember this
+					lastMagic = magic;
+					lastMagicPos = (int)Math.min(Integer.MAX_VALUE, in.size());
+				}
+				
+				// Shift down and read the next bytes
+				ObjectShelf.arrayCopy(roll, skip,
+					roll, 0, moveChunk);
+				in.read(roll, moveChunk, skip);
+			}
+		}
+		catch (EOFException __ignored)
+		{
+			// Ignore EOF as we reached the end for processing
+		}
+		
+		// Final magic number in file?
+		if (lastMagic != null)
+			LinearScanEndPoint.__add(buildContent, lastMagic, lastMagicPos,
+				Integer.MAX_VALUE);
+		
+		// Cache contents for later runs
+		contents = buildContent.toArray(new String[buildContent.size()]);
+		synchronized (this)
+		{
+			this._contents = contents;
+		}
+		
+		// Load in contents
+		for (String item : contents)
+			__into.put(item, part.withPath(item));
 	}
 	
 	/**
@@ -178,5 +272,39 @@ public class LinearScanEndPoint
 		throws IOException, SecurityException
 	{
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Adds the detected magic number.
+	 *
+	 * @param __build The target list of files.
+	 * @param __magic The content type.
+	 * @param __pos The position in the stream.
+	 * @param __len The number of bytes in the chunk.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/01/03
+	 */
+	private static void __add(List<String> __build,
+		@Language("mime-type-reference") String __magic,
+		int __pos, int __len)
+		throws NullPointerException
+	{
+		if (__magic == null || __build == null)
+			throw new NullPointerException("NARG");
+		
+		// Build the file name
+		String fileName;
+		if (__len > 0 && __len < Integer.MAX_VALUE)
+			fileName = String.format("%08x+%d.%s",
+				__pos, __len, ContentTypeUtil.toExtension(__magic));
+		else
+			fileName = String.format("%08x.%s",
+				__pos, ContentTypeUtil.toExtension(__magic));
+		
+		// Debug
+		Debugging.debugNote("Found %s!", fileName);
+		
+		// Add the file
+		__build.add(fileName);
 	}
 }

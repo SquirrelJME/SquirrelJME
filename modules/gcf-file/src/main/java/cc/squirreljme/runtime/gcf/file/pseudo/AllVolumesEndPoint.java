@@ -177,14 +177,22 @@ public class AllVolumesEndPoint
 			else
 				fileName = UriPart.encode(baseName) + "/";
 			
-			// If this is a resource type, use a different host
-			String host = (baseName != null &&
-				SuiteUtils.isResource(baseName) ?
-				LinearScanEndPoint.HOST : LibraryEndPoint.HOST);
+			// Determine the normal library name
+			UriGenericPart normal = new UriGenericPart(
+				"//" + LibraryEndPoint.HOST + fileName);
 			
 			// Determine full URI connection to this item
-			__into.put(fileName, new UriGenericPart(
-				"//" + host + fileName));
+			// If this is a resource type, use linear scanning instead
+			if (baseName != null && SuiteUtils.isResource(baseName))
+			{
+				__into.put(fileName, new UriGenericPart(
+					"//" + LinearScanEndPoint.HOST +
+						UriPart.encode("file:" + normal) + "/"));
+			}
+			
+			// Otherwise a normal library
+			else
+				__into.put(fileName, normal);
 		}
 	}
 	

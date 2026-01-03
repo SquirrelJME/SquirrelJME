@@ -140,10 +140,12 @@ public abstract class FileEndPoint
 	 */
 	public final boolean isDirectory()
 	{
-		// If the directory bit it set or if it ends with a slash, then this
-		// is a directory
+		// This is a directory if this ends with a slash
+		if (this.part.getPath().endsWith("/"))
+			return true;
+		
+		// Fallback to the directory bit
 		ExtraFileAttributes attrib = this.attachedAttributes();
-		return attrib.isDirectory() ||
-			this.part.getPath().endsWith("/");
+		return attrib.isDirectory();
 	}
 }

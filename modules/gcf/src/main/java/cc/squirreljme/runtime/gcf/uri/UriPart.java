@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.UnsupportedEncodingException;
-import org.jetbrains.annotations.NotNull;
 
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
@@ -235,20 +234,47 @@ public abstract class UriPart
 			throw new NullPointerException("NARG");
 		
 		// First determine if it actually needs to be encoded
-		int n = __in.length();
 		boolean needsEncode = false;
+		int n = __in.length();
 		for (int i = 0; i < n; i++)
-			if (needsEncode |= (!UriPart.isAny(__in.charAt(i))))
+			if (needsEncode |= (!UriPart.isUnreserved(__in.charAt(i))))
 				break;
 		
 		// Does not need encoding?
 		if (!needsEncode)
 			return __in;
 		
-		// Debug
-		Debugging.debugNote("Encode(%s)", __in);
-		
-		throw Debugging.todo();
+		// Encode anything that is not reserved
+		try
+		{
+			StringBuilder sb = new StringBuilder(__in.length());
+			
+			// Encode to UTF-8
+			byte[] in = __in.getBytes("utf-8");
+			for (int bn = in.length, i = 0; i < bn; i++)
+			{
+				char c = (char)(in[i] & 0xFF);
+				
+				// Add directly if unreserved
+				if (UriPart.isUnreserved(__in.charAt(i)))
+				{
+					sb.append(c);
+					continue;
+				}
+				
+				// Otherwise, use percent encoding
+				sb.append('%');
+				sb.append(Character.forDigit((c >> 4) & 0xF, 16));
+				sb.append(Character.forDigit(c & 0xF, 16));
+			}
+			
+			// Return the encoded string
+			return sb.toString();
+		}
+		catch (UnsupportedEncodingException __e)
+		{
+			throw Debugging.oops();
+		}
 	}
 	
 	/**

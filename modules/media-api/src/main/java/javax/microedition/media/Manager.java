@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
+import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.NullPlayer;
 import cc.squirreljme.runtime.media.SystemNanoTimeBase;
@@ -99,7 +100,7 @@ public final class Manager
 		// Do we need to guess the content type for the stream?
 		if (__contentType == null)
 		{
-			__contentType = Manager.__guessContentType(__in);
+			__contentType = ContentTypeUtil.guess(__in);
 			
 			/* {@squirreljme.error EA1a Could not determine the content
 			type of the input data.} */
@@ -265,71 +266,6 @@ public final class Manager
 	{
 		Debugging.todoNote("playTone(%d, %d, %d)",
 			__note, __duration, __volume);
-	}
-	
-	/**
-	 * Attempts to guess the content type of the stream.
-	 * 
-	 * @param __in The stream to guess.
-	 * @return The guessed content type or {@code null} if it could not be
-	 * determined.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2022/04/24
-	 */
-	@Language("mime-type-reference")
-	private static String __guessContentType(InputStream __in)
-		throws IOException, NullPointerException
-	{
-		if (__in == null)
-			throw new NullPointerException("NARG");
-		
-		// Read in header completely
-		__in.mark(12);
-		int a = __in.read();
-		int b = __in.read();
-		int c = __in.read();
-		int d = __in.read();
-		int e = __in.read();
-		int f = __in.read();
-		int g = __in.read();
-		int h = __in.read();
-		int i = __in.read();
-		int j = __in.read();
-		int k = __in.read();
-		int l = __in.read();
-		__in.reset();
-		
-		// MIDI (MThd/MTrk)
-		if ((a == 'M' && b == 'T' && c == 'h' && d == 'd') ||
-			(a == 'M' && b == 'T' && c == 'r' && d == 'k'))
-			return "audio/midi";
-		
-		// WAVE
-		if (a == 'R' && b == 'I' && c == 'F' && d == 'F' &&
-			i == 'W' && j == 'A' && k == 'V' && l == 'E')
-			return "audio/wave";
-		
-		// AIFF
-		if (a == 'F' && b == 'O' && c == 'R' && d == 'M' &&
-			i == 'A' && j == 'I' && k == 'F' && l == 'F')
-			return "audio/aiff";
-		
-		// Basic sound
-		if (a == 0x2E && b == 0x73 && c == 0x6E && d == 0x64)
-			return "audio/basic";
-		
-		// i-melody MLD
-		if ((a == 'm' && b == 'e' && c == 'l' && d == 'o'))
-			return "audio/x-mld";
-		
-		// SMAF
-		if (a == 'M' && b == 'M' && c == 'M' && d == 'D' &&
-			i == 'C' && j == 'N' && k == 'T' && l == 'I')
-			return "application/x-smaf";
-		
-		// Unknown
-		return null;
 	}
 }
 

@@ -202,7 +202,7 @@ public class ExtendedDataInputStream
 		
 		// If not purely EOF, count up bytes
 		if (rc >= 0)
-			this._count++;
+			this._count += rc;
 		
 		return rc;
 	}
@@ -540,7 +540,13 @@ public class ExtendedDataInputStream
 	public long skip(long __n)
 		throws IOException
 	{
-		throw Debugging.todo();
+		// Limit to integer values
+		long skipped = this.input.skip(__n);
+		
+		// Move counter up, if applicable
+		if (skipped > 0)
+			this._count += skipped;
+		return skipped;
 	}
 	
 	/**
