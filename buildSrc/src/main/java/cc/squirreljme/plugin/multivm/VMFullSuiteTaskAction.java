@@ -77,23 +77,7 @@ public class VMFullSuiteTaskAction
 		String exLib = System.getProperty(
 			VMFullSuiteTaskAction.LIBRARIES_PROPERTY);
 		if (exLib != null)
-			for (Path p : VMHelpers.classpathDecode(exLib))
-			{
-				// Add contents of a given directory
-				if (Files.isDirectory(p))
-					try (Stream<Path> s = Files.list(p))
-					{
-						libPath.addAll(Arrays.asList(s.toArray(Path[]::new)));
-					}
-					catch (IOException e)
-					{
-						e.printStackTrace();
-					}
-				
-				// Add single path
-				else
-					libPath.add(p);
-			}
+			libPath.addAll(VMHelpers.fullExtra(exLib));
 		
 		// Determine the initial classpath of the launcher, which is always
 		// ran first
