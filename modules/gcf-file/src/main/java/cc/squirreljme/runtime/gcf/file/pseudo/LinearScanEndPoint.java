@@ -219,7 +219,7 @@ public class LinearScanEndPoint
 				// Was there a previous magic?
 				if (lastMagic != null)
 					LinearScanEndPoint.__add(buildContent,
-						lastMagic, lastMagicPos, Integer.MAX_VALUE);
+						lastMagic, lastMagicPos, checkAt - lastMagicPos);
 				
 				// Remember this
 				lastMagic = magic;
