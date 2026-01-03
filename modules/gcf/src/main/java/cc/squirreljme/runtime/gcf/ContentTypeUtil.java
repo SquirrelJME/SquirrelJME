@@ -103,15 +103,29 @@ public final class ContentTypeUtil
 			(a == 'M' && b == 'T' && c == 'r' && d == 'k'))
 			return "audio/midi";
 		
-		// WAVE
-		if (a == 'R' && b == 'I' && c == 'F' && d == 'F' &&
-			i == 'W' && j == 'A' && k == 'V' && l == 'E')
-			return "audio/wave";
+		// RIFF
+		if (a == 'R' && b == 'I' && c == 'F' && d == 'F')
+		{
+			// WAVE
+			if (i == 'W' && j == 'A' && k == 'V' && l == 'E')
+				return "audio/wave";
+			
+			// AVI
+			if (i == 'A' && j == 'V' && k == 'I' && l == ' ')
+				return "video/avi";
+			
+			// WebP
+			if (i == 'W' && j == 'E' && k == 'B' && l == 'P')
+				return "image/webp";
+		}
 		
-		// AIFF
-		if (a == 'F' && b == 'O' && c == 'R' && d == 'M' &&
-			i == 'A' && j == 'I' && k == 'F' && l == 'F')
-			return "audio/aiff";
+		// FORM
+		if (a == 'F' && b == 'O' && c == 'R' && d == 'M')
+		{
+			// AIFF
+			if (i == 'A' && j == 'I' && k == 'F' && l == 'F')
+				return "audio/aiff";
+		}
 		
 		// Basic sound
 		if (a == 0x2E && b == 0x73 && c == 0x6E && d == 0x64)
@@ -127,16 +141,43 @@ public final class ContentTypeUtil
 			return "application/x-smaf";
 		
 		// GIF? (GIF8)
-		if (magic == 0x47494638)
+		if (a == 'G' && b == 'I' && c == 'F' && d == '8' &&
+			(e == '7' || e == '9') && f == 'a')
 			return "image/gif";
 		
+		// TIFF
+		if ((a == 0x49 || a == 0x4D) && (b == 0x49 || b == 0x4D) &&
+			(c == 0x2A || c == 0x00) && (d == 0x2B || d == 0x00) &&
+			(a != b) && (c != d))
+			return "image/tiff";
+		
 		// PNG?
-		if (magic == 0x89504E47)
+		if (a == 0x89 && b == 0x50 && c == 0x4E && d == 0x47 &&
+			e == 0x0D && f == 0x0A && g == 0x1A && h == 0x0A)
 			return "image/png";
 		
 		// JPEG?
-		if ((magic & 0xFFFFFF00) == 0xFFD8FF00)
+		if ((magic & 0xFFFFFFF0) == 0xFFD8FFE0)
 			return "image/jpeg";
+		
+		// ZIP
+		if (a == 0x50 && b == 0x4B &&
+			((c == 0x03 && d == 0x04) ||
+			(c == 0x05 && d == 0x06) ||
+			(c == 0x07 && d == 0x08)))
+			return "application/zip";
+		
+		// PBM
+		if (a == 'P' && (b == '1' || b == '4') && c == 0x0A)
+			return "image/x-portable-bitmap";
+		
+		// PGM
+		if (a == 'P' && (b == '2' || b == '5') && c == 0x0A)
+			return "image/x-portable-graymap";
+		
+		// PPM
+		if (a == 'P' && (b == '3' || b == '6') && c == 0x0A)
+			return "image/x-portable-pixmap";
 		
 		// Text files (ALWAYS LOWEST PRIORITY)
 		if (!Character.isISOControl((char)a) &&
@@ -260,11 +301,21 @@ public final class ContentTypeUtil
 			case "jar":
 				return "application/java-archive";
 				
+			case "zip":
+				return "application/zip";
+				
 			case "jad":
 				return "text/vnd.sun.j2me.app-descriptor";
 				
 			case "gif":
 				return "image/gif";
+				
+			case "webp":
+				return "image/webp";
+				
+			case "tif":
+			case "tiff":
+				return "image/tiff";
 				
 			case "png":
 				return "image/png";
@@ -329,6 +380,9 @@ public final class ContentTypeUtil
 			case "mpga":
 			case "bit":
 				return "audio/mpeg";
+				
+			case "avi":
+				return "video/avi";
 			
 			case "mpg":
 			case "mpeg":
@@ -498,11 +552,21 @@ public final class ContentTypeUtil
 			case "application/java-archive":
 				return "jar";
 				
+			case "application/zip":
+				return "zip";
+				
 			case "text/vnd.sun.j2me.app-descriptor":
 				return "jad";
 				
 			case "image/gif":
 				return "gif";
+				
+			case "image/webp":
+				return "webp";
+				
+			case "image/tiff":
+			case "image/tiff-fx":
+				return "tiff";
 				
 			case "image/png":
 				return "png";
@@ -552,6 +616,12 @@ public final class ContentTypeUtil
 			
 			case "audio/mpeg":
 				return "mp3";
+			
+			case "video/vnd.avi":
+			case "video/avi":
+			case "video/msvideo":
+			case "video/x-msvideo":
+				return "avi";
 			
 			case "video/mpeg":
 				return "mpg";
