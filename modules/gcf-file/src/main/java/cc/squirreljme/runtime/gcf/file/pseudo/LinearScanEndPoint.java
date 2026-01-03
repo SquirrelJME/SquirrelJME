@@ -295,7 +295,9 @@ public class LinearScanEndPoint
 		try (InputStream in = this.wrapped.openInputStream())
 		{
 			// Skip over all the bytes to get to the target location
-			in.skip(pos);
+			long total = 0;
+			while (total < pos)
+				total += in.skip(pos - total);
 			
 			// Read up until EOF?
 			if (len == Integer.MAX_VALUE)
