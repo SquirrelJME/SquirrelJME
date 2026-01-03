@@ -12,8 +12,10 @@ package cc.squirreljme.runtime.media.wav;
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
 import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
+import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
+import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -245,7 +247,10 @@ public class WavPlayer
 			AudioStreamBracket stream = null;
 			try
 			{
-				stream = AudioStreamShelf.stream();
+				stream = AudioStreamShelf.stream(
+					AudioStreamFormat.AUTOMATIC,
+					AudioStreamRate.AUTOMATIC,
+					AudioStreamChannels.MONO);
 				this._stream = stream;
 			}
 			catch (MLECallError __e)

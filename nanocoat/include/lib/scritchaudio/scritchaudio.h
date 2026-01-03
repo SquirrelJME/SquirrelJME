@@ -532,6 +532,9 @@ typedef struct sjme_scritchaudio_apiFunctions
 	
 	/** Attaches or detaches a source. */
 	sjme_scritchaudio_sourceAttachFunc sourceAttach;
+	
+	/** Create a new audio stream. */
+	sjme_scritchaudio_streamCreateFunc streamCreate;
 } sjme_scritchaudio_apiFunctions;
 
 /**

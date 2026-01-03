@@ -130,7 +130,7 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	sjme_errorCode error;
 	sjme_scritchaudio_stream result;
 	
-	if (inState == NULL || outStream == NULL || inName == NULL)
+	if (inState == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inFormat != SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC &&
@@ -144,6 +144,10 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	if (inChannels != SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC &&
 		(inChannels <= 0))
 		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Use a default name. */
+	if (inName == NULL)
+		inName = "SquirrelJME";
 
 	/* Missing? */
 	if (inState->impl->streamCreate == NULL)
@@ -154,6 +158,10 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	if (sjme_error_is(error = sjme_alloc(inState->pool,
 		sizeof(*result), (sjme_pointer*)&result)) || result == NULL)
 		goto fail_allocResult;
+
+	/* Lock the state. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(inState->lock)))
+		goto fail_grabLock;
 	
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
@@ -173,6 +181,11 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	if (sjme_error_is(error = inState->impl->streamCreate(inState,
 		result, inName, inFormat, inRate, inChannels)) || result == NULL)
 		goto fail_implCreate;
+	
+	/* Release the state. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		inState->lock, NULL)))
+		goto fail_releaseLock;
 
 	/* No stream has been set yet? */
 	if (inState->stream == NULL)
@@ -183,6 +196,11 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	return SJME_ERROR_NONE;
 
 fail_implCreate:
+	/* Release the lock before failing. */
+	sjme_thread_spinLockRelease(inState->lock, NULL);
+	
+fail_grabLock:
+fail_releaseLock:
 fail_allocResult:
 	if (result != NULL)
 		sjme_alloc_free(result);

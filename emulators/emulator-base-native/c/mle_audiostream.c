@@ -32,7 +32,7 @@
 #define FORWARD_DESC_midiRenderer \
 	DESC_METHOD(DESC_AUDIORENDERER, DESC_MIDIPORT)
 #define FORWARD_DESC_stream \
-	DESC_METHOD(DESC_AUDIOSTREAM, )
+	DESC_METHOD(DESC_AUDIOSTREAM, DESC_INT DESC_INT DESC_INT)
 
 #define FORWARD_DESC___attach \
 	DESC_METHOD(DESC_LONG, DESC_LONG DESC_LONG DESC_AUDIORENDERER \
@@ -42,7 +42,7 @@
 #define FORWARD_DESC___dylibLoad \
 	DESC_METHOD(DESC_LONG, DESC_STRING DESC_STRING)
 #define FORWARD_DESC___stream \
-	DESC_METHOD(DESC_LONG, DESC_LONG)
+	DESC_METHOD(DESC_LONG, DESC_LONG DESC_INT DESC_INT DESC_INT)
 
 FORWARD_IMPL(AudioStream, attach,
 	jobject, Object,
@@ -71,8 +71,8 @@ FORWARD_IMPL(AudioStream, midiRenderer,
 	FORWARD_IMPL_pass(port))
 FORWARD_IMPL(AudioStream, stream,
 	jobject, Object,
-	FORWARD_IMPL_none(),
-	FORWARD_IMPL_none())
+	FORWARD_IMPL_args(jint format, jint rate, jint channels),
+	FORWARD_IMPL_pass(format, rate, channels))
 
 static sjme_thread_result sjme_attrThreadCall sjme_jni_bindAudioThread(
 	sjme_thread_parameter anything)
@@ -231,9 +231,12 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(Emulated, __disconnect)(
 }
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __stream)(
-	JNIEnv* env, jclass classy, jlong statePtr)
+	JNIEnv* env, jclass classy, jlong statePtr, jint format, jint rate,
+	jint channels)
 {
+	sjme_errorCode error;
 	sjme_scritchaudio inState;
+	sjme_scritchaudio_stream stream;
 
 	/* Recover state. */
 	inState = (sjme_scritchaudio)statePtr;
@@ -243,8 +246,17 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __stream)(
 		return 0;
 	}
 
-	/* Return the native audio stream! */
-	return (sjme_intPointer)inState->stream;
+	/* Create a new stream. */
+	stream = NULL;
+	if (sjme_error_is(error = inState->api->streamCreate(inState,
+		&stream, NULL, format, rate, channels)) || stream == NULL)
+	{
+		sjme_jni_throwMLECallError(env, sjme_error_default(error));
+		return 0;
+	}
+
+	/* Return the stream pointer. */
+	return (sjme_intPointer)stream;
 }
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(Emulated, __dylibLoad)(

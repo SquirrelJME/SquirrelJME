@@ -107,6 +107,14 @@ public class IMelodyPlayer
 			this._unrealizedIn = null;
 			AbstractPlayer.closeConnection(unrealizedIn);
 		}
+		
+		// Disconnect the audio stream
+		AudioConnectionBracket stream = this._stream;
+		if (stream != null)
+		{
+			this._connection = null;
+			AudioStreamShelf.disconnect(stream);
+		}
 	}
 	
 	/**
@@ -187,7 +195,10 @@ public class IMelodyPlayer
 			AudioStreamBracket stream;
 			try
 			{
-				stream = AudioStreamShelf.stream();
+				stream = AudioStreamShelf.stream(
+					AudioStreamFormat.FLOAT_F32,
+					AudioStreamRate.AUTOMATIC,
+					AudioStreamChannels.STEREO);
 			}
 			catch (MLECallError __e)
 			{
@@ -320,7 +331,7 @@ public class IMelodyPlayer
 	protected long determineDuration()
 		throws MediaException
 	{
-		throw Debugging.todo();
+		return (long)(this._mld.getDuration(true) * 1_000_000D);
 	}
 	
 	/**

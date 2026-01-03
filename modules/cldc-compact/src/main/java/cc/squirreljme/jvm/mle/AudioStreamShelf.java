@@ -47,9 +47,12 @@ public final class AudioStreamShelf
 	 *
 	 * @param __stream The stream to render to.
 	 * @param __renderer The renderer to attach.
-	 * @param __format The format used.
-	 * @param __rate The rate.
-	 * @param __channels The channels.
+	 * @param __format The format used, if {@code -1} this will use the
+	 * preferred format specified by the {@link AudioStreamBracket}.
+	 * @param __rate The rate, if {@code -1} this will use the
+	 * preferred rate specified by the {@link AudioStreamBracket}.
+	 * @param __channels The channels, if {@code -1} this will use the
+	 * preferred channels specified by the {@link AudioStreamBracket}.
 	 * @return The connection state.
 	 * @throws MLECallError On null arguments or if the renderer could not
 	 * be attached.
@@ -176,8 +179,16 @@ public final class AudioStreamShelf
 		throws MLECallError;
 	
 	/**
-	 * Returns the native audio stream.
+	 * Creates a native audio stream which may support one or more renderers.
 	 *
+	 * @param __format The format to use as a suggestion, if {@code -1} then
+	 * the decoder will use its preferred format. If the player does
+	 * not support the given format it should treat this as if it
+	 * were {@code -1}.
+	 * @param __rate The frequency of the audio, if {@code -1} then the
+	 * decoder will use its preferred rate.
+	 * @param __channels The channels count, if {@code -1} then the
+	 * decoder will use its preferred channel count.
 	 * @return The native audio stream.
 	 * @throws MLECallError On null arguments, invalid arguments, or if the
 	 * stream does not exist.
@@ -185,6 +196,12 @@ public final class AudioStreamShelf
 	 */
 	@NotNull
 	@SquirrelJMEVendorApi
-	public static native AudioStreamBracket stream()
+	public static native AudioStreamBracket stream(
+		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+			int __format,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
 		throws MLECallError;
 }

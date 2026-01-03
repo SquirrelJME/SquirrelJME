@@ -153,7 +153,10 @@ public class NokiaOTAPlayer
 			{
 				this._data = StreamUtils.readAll(in);
 
-				stream = AudioStreamShelf.stream();
+				stream = AudioStreamShelf.stream(
+					AudioStreamFormat.AUTOMATIC,
+					AudioStreamRate.AUTOMATIC,
+					AudioStreamChannels.MONO);
 				this._stream = stream;
 			}
 			catch (MLECallError | IOException __e)
