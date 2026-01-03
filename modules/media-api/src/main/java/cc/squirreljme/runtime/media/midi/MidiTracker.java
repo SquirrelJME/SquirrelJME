@@ -45,10 +45,6 @@ public final class MidiTracker
 	/** The timing that is shared for all MIDI tracks. */
 	final MidiTimeDiv _timeDiv;
 	
-	/** The time to fast-forward to. */
-	private volatile long _targetNanos =
-		Long.MIN_VALUE;
-	
 	/** Has the base time been adjusted for the main loop? */
 	private volatile int _baseAdjust;
 	
@@ -134,11 +130,6 @@ public final class MidiTracker
 			this.interrupt();
 			this.notifyAll();
 		}
-	}
-	
-	private static long getTargetNano(long __micros)
-	{
-		return __micros * 1_000L;
 	}
 	
 	/**

@@ -78,14 +78,14 @@ public class MTrkTracker
 	/**
 	 * Plays the next note.
 	 *
-	 * @param __control The control to play into, if {@code null} then
+	 * @param __play The control to play into, if {@code null} then
 	 * no events will be sent anywhere.
 	 * @param __squelch The control to play into, if not null then
 	 * controls will go into here.
 	 * @return The delta for the current event.
 	 * @since 2024/02/25
 	 */
-	public int playNext(MIDIControl __control, MIDIControl __squelch)
+	public int playNext(MIDIControl __play, MIDIControl __squelch)
 	{
 		// Last tracked if we want an event
 		boolean wantEvent = this._wantEvent;
@@ -118,11 +118,11 @@ public class MTrkTracker
 		
 		// System Event
 		else if (event == 0xF0 || event == 0xF7)
-			this.__eventSysEx(event, __control, __squelch);
+			this.__eventSysEx(event, __play, __squelch);
 		
 		// Normal MIDI Event
 		else
-			this.__eventMidi(event, __control, __squelch);
+			this.__eventMidi(event, __play, __squelch);
 		
 		// We do not want an event here, we need to read a delta
 		this._wantEvent = false;
@@ -331,22 +331,22 @@ public class MTrkTracker
 	 * Handles a normal MIDI event.
 	 *
 	 * @param __event The event.
-	 * @param __control The control to send to.
-	 * @param __squelch
+	 * @param __play The control to send to.
+	 * @param __squelch The squelch controller.
 	 * @since 2024/02/26
 	 */
-	private void __eventMidi(int __event, MIDIControl __control,
+	private void __eventMidi(int __event, MIDIControl __play,
 		MIDIControl __squelch)
 	{
 		// Should this play when squelched?
-		boolean squelchPlay;
+		boolean squelchPlay = false;
 		
 		// Determine which data is to be read in
 		int data1 = 0;
 		int data2 = 0;
 		switch (__event & 0b1111_0000)
 		{
-				// One-byte
+				// One-byte (squelchable)
 			case 0b1100_0000:	// Program change
 			case 0b1101_0000:	// Channel pressure
 				squelchPlay = true;
@@ -356,11 +356,11 @@ public class MTrkTracker
 				// Two-byte
 			case 0b1000_0000:	// Note Off
 			case 0b1001_0000:	// Note On
-				squelchPlay = false;
 				data1 = this.read();
 				data2 = this.read();
 				break;
 				
+				// Two-byte (squelchable)
 			case 0b1010_0000:	// After touch
 			case 0b1110_0000:	// Pitch wheel
 				squelchPlay = true;
@@ -369,14 +369,14 @@ public class MTrkTracker
 				break;
 				
 				// Control change is special as it may be double byte or
-				// single byte depending on the message
+				// single byte depending on the message (squelchable)
 			case 0b1011_0000:
 				squelchPlay = true;
 				data1 = this.read();
 				data2 = this.read();
 				break;
 			
-				// Special messages
+				// Special messages (squelchable)
 			case 0b1111_0000:
 				squelchPlay = true;
 				if (__event == 0b1111_0010)
@@ -400,8 +400,8 @@ public class MTrkTracker
 		}
 		
 		// Send event
-		if (__control != null)
-			__control.shortMidiEvent(__event, data1, data2);
+		if (__play != null)
+			__play.shortMidiEvent(__event, data1, data2);
 		else if (squelchPlay && __squelch != null)
 			__squelch.shortMidiEvent(__event, data1, data2);
 	}
@@ -411,7 +411,7 @@ public class MTrkTracker
 	 *
 	 * @param __event The event.
 	 * @param __control The control to send to.
-	 * @param __squelch
+	 * @param __squelch The squelch controller.
 	 * @since 2024/02/26
 	 */
 	private void __eventSysEx(int __event, MIDIControl __control,
