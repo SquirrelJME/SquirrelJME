@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
-import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
@@ -18,7 +17,6 @@ import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.ByteArrayInputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileStore;
@@ -27,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.microedition.io.InputConnection;
-import net.multiphasicapps.io.ExtendedDataInputStream;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -255,7 +252,65 @@ public class LinearScanEndPoint
 	protected InputStream openInputStream()
 		throws IOException, SecurityException
 	{
-		throw Debugging.todo();
+		// Need to extract the positional components
+		String path = this.part.getPath();
+		int ls = path.lastIndexOf('/');
+		if (ls < 0)
+			throw new IOException("ADIR");
+		
+		// Get the base name, remove the extension
+		path = path.substring(ls + 1);
+		int ld = path.lastIndexOf('.');
+		if (ld >= 0)
+			path = path.substring(0, ld);
+		
+		// Base position and length
+		int pos = 0;
+		int len = Integer.MAX_VALUE;
+		
+		// The numbers could be invalid
+		try
+		{
+			// Is there a plus, for the length?
+			int pl = path.indexOf('+');
+			if (pl >= 0)
+			{
+				pos = Math.abs(Integer.parseInt(
+					path.substring(0, pl), 16));
+				len = Math.abs(Integer.parseInt(
+					path.substring(pl + 1), 10));
+			}
+			else
+			{
+				pos = Integer.parseInt(path, 16);
+			}
+		}
+		catch (NumberFormatException __e)
+		{
+			throw new IOException(__e.getMessage(), __e);
+		}
+		
+		// Open the input stream
+		byte[] chunk;
+		try (InputStream in = this.wrapped.openInputStream())
+		{
+			// Skip over all the bytes to get to the target location
+			in.skip(pos);
+			
+			// Read up until EOF?
+			if (len == Integer.MAX_VALUE)
+				chunk = StreamUtils.readAll(in);
+			
+			// Only read up to a specific number of bytes?
+			else
+			{
+				chunk = new byte[len];
+				StreamUtils.readMostly(in, chunk);
+			}
+		}
+		
+		// Wrap the data stream
+		return new ByteArrayInputStream(chunk);
 	}
 	
 	/**
