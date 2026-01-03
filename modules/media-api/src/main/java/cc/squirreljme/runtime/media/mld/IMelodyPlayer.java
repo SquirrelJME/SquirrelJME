@@ -80,7 +80,7 @@ public class IMelodyPlayer
 	public IMelodyPlayer(InputStreamConnection __in)
 		throws NullPointerException
 	{
-		super("audio/x-mld");
+		super("application/x-mld-music");
 		
 		if (__in == null)
 			throw new NullPointerException("NARG");

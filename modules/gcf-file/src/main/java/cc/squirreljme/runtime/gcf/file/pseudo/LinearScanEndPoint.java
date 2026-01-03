@@ -13,9 +13,11 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
+import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -103,7 +105,7 @@ public class LinearScanEndPoint
 	protected ExtraFileAttributes attachedAttributes()
 		throws SecurityException
 	{
-		if (this.isDirectory())
+		if (this.part.getPath().endsWith("/"))
 			return PseudoAttributes.DIRECTORY;
 		return PseudoAttributes.FILE;
 	}
@@ -183,10 +185,17 @@ public class LinearScanEndPoint
 			return;
 		}
 		
+		// Scanning is a very inefficient process, read everything all at
+		// once
+		byte[] entireChunk;
+		try (InputStream in = this.wrapped.openInputStream())
+		{
+			entireChunk = StreamUtils.readAll(in);
+		}
+		
 		// Scan length and where to write for the skip
 		int scanLen = LinearScanEndPoint.SCAN_LEN;
 		int skip = LinearScanEndPoint.SKIP;
-		int moveChunk = scanLen - skip;
 		
 		// The last found magic
 		@Language("mime-type-reference")
@@ -195,55 +204,30 @@ public class LinearScanEndPoint
 		
 		// Scan and detect magic numbers
 		List<String> buildContent = new ArrayList<>();
-		try (ExtendedDataInputStream in = new ExtendedDataInputStream(
-			this.wrapped.openDataInputStream()))
+		for (int checkAt = 0, limit = entireChunk.length - scanLen;
+			checkAt < limit; checkAt++)
 		{
-			// Setup rolling scan buffer and full it with initial data
-			byte[] roll = new byte[scanLen];
-			in.readFully(roll);
+			// Try to find a magic number
+			@Language("mime-type-reference")
+			String magic = ContentTypeUtil.guess(entireChunk,
+				checkAt, scanLen);
 			
-			// Magic number detection loop
-			for (;;)
+			// Do not allow plain text to be detected
+			if ("text/plain".equals(magic))
+				magic = null;
+			
+			// Was a new magic detected?
+			if (magic != null)
 			{
-				// Notice
-				Debugging.debugNote("Checking %d", in.size());
+				// Was there a previous magic?
+				if (lastMagic != null)
+					LinearScanEndPoint.__add(buildContent,
+						lastMagic, lastMagicPos, Integer.MAX_VALUE);
 				
-				// Try to find a magic number
-				String magic = ContentTypeUtil.guess(roll, 0, roll.length);
-				
-				// Do not allow plain text to be detected
-				if ("text/plain".equals(magic))
-					magic = null;
-				
-				// Was a new magic detected?
-				if (magic != null)
-				{
-					// Was there a previous magic?
-					if (lastMagic != null)
-					{
-						// Add the last magic
-						LinearScanEndPoint.__add(buildContent,
-							lastMagic, lastMagicPos, Integer.MAX_VALUE);
-						
-						// Clear
-						lastMagic = null;
-						lastMagicPos = -1;
-					}
-					
-					// Remember this
-					lastMagic = magic;
-					lastMagicPos = (int)Math.min(Integer.MAX_VALUE, in.size());
-				}
-				
-				// Shift down and read the next bytes
-				ObjectShelf.arrayCopy(roll, skip,
-					roll, 0, moveChunk);
-				in.read(roll, moveChunk, skip);
+				// Remember this
+				lastMagic = magic;
+				lastMagicPos = checkAt;
 			}
-		}
-		catch (EOFException __ignored)
-		{
-			// Ignore EOF as we reached the end for processing
 		}
 		
 		// Final magic number in file?

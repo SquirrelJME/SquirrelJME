@@ -85,10 +85,6 @@ public class LinearScanEndPointFactory
 		if (__auth == null)
 			throw new NullPointerException("NARG");
 		
-		Debugging.debugNote("%s ?= %s / %s",
-			LinearScanEndPoint.DECODED_HOST, __auth,
-			__auth.host());
-		
 		// Ignore if no host was specified
 		String host = __auth.host();
 		if (host == null)

@@ -119,7 +119,7 @@ public final class ContentTypeUtil
 		
 		// i-melody MLD
 		if ((a == 'm' && b == 'e' && c == 'l' && d == 'o'))
-			return "audio/x-mld";
+			return "application/x-mld-music";
 		
 		// SMAF
 		if (a == 'M' && b == 'M' && c == 'M' && d == 'D' &&
@@ -309,6 +309,9 @@ public final class ContentTypeUtil
 			case "mld":
 				return "application/x-mld-music";
 				
+			case "smaf":
+				return "application/x-smaf";
+				
 			case "wav":
 			case "wave":
 				return "audio/wave";
@@ -386,6 +389,7 @@ public final class ContentTypeUtil
 		switch (__type)
 		{
 			case "audio/midi":
+			case "audio/x-mld":
 			case "application/x-mld-music":
 			case "audio/wave":
 			case "audio/basic":
@@ -530,8 +534,12 @@ public final class ContentTypeUtil
 			case "audio/midi":
 				return "mid";
 			
+			case "audio/x-mld":
 			case "application/x-mld-music":
 				return "mld";
+			
+			case "application/x-smaf":
+				return "smaf";
 				
 			case "audio/wave":
 				return "wav";

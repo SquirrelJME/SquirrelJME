@@ -321,9 +321,16 @@ public final class EmulatedJarPackageShelf
 			throw new MLECallError("JAR is not physically backed.");
 		RawVMClassLibrary rawLib = (RawVMClassLibrary)vmLib;
 		
-		// Read in the data
-		rawLib.rawData(__jarOffset, __b, __o, __l);
-		return __l;
+		try
+		{
+			// Read in the data
+			rawLib.rawData(__jarOffset, __b, __o, __l);
+			return __l;
+		}
+		catch (IndexOutOfBoundsException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**

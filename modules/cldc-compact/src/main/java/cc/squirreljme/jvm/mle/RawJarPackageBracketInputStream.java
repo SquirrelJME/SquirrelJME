@@ -31,6 +31,7 @@ public class RawJarPackageBracketInputStream
 	protected final JarPackageBracket jar;
 	
 	/** The size of the JAR. */
+	@SquirrelJMEVendorApi
 	protected final int jarSize;
 	
 	/** Single byte read, as only bulk read is supported. */
@@ -141,9 +142,20 @@ public class RawJarPackageBracketInputStream
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Read in the JAR data
+		// At EOF?
 		int readPos = this._readPos;
-		int count = JarPackageShelf.rawData(this.jar, readPos, __b, __o, __l);
+		int jarSize = this.jarSize;
+		if (readPos >= jarSize)
+			return -1;
+		
+		// How many bytes can actually be read?
+		int limit = Math.min(Math.max(0, jarSize - readPos), __l);
+		
+		// Read in the JAR data, note that since this could be a filesystem
+		// read this can be shorter than we actually request. However, we still
+		// cannot read past the end of the Jar, hence the limit
+		int count = JarPackageShelf.rawData(this.jar,
+			readPos, __b, __o, limit);
 		
 		// EOF?
 		if (count < 0)
@@ -152,10 +164,13 @@ public class RawJarPackageBracketInputStream
 			return -1;
 		}
 		
-		// Count up what we read
-		this._readPos = readPos + count;
+		// Move the read counter up
+		readPos += count;
+		this._readPos = readPos;
 		
-		// And use our count!
+		// Did we read EOF?
+		if (count == 0 && readPos >= jarSize)
+			return -1;
 		return count;
 	}
 }
