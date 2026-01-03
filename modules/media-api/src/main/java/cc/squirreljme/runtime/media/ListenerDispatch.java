@@ -40,6 +40,7 @@ public final class ListenerDispatch
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/06/03
 	 */
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	@SquirrelJMEVendorApi
 	public static void dispatch(AbstractPlayer __player, String __eventType,
 		Object __eventValue)
@@ -49,8 +50,11 @@ public final class ListenerDispatch
 			throw new NullPointerException("NARG");
 		
 		// Player is not permitted to dispatch events
-		if (__player._ffNoDispatch)
-			return;
+		synchronized (__player)
+		{
+			if (__player._ffNoDispatch)
+				return;
+		}
 		
 		// Does the dispatch thread need to be created?
 		Thread thread = ListenerDispatch._THREAD;

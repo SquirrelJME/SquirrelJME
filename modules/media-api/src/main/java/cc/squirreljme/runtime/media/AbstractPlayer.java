@@ -38,6 +38,7 @@ public abstract class AbstractPlayer
 		new TrackPosition();
 	
 	/** The mime type. */
+	@Language("mime-type-reference")
 	private final String _mime;
 	
 	/** Listeners available. */
@@ -57,12 +58,13 @@ public abstract class AbstractPlayer
 		0;
 	
 	/** The currently available controls. */
-	private volatile AbstractControl[] _controls;
+	private volatile AbstractControl<?>[] _controls;
 	
 	/** Cancel dispatch of events during fast-forwarding. */
 	volatile boolean _ffNoDispatch;
 	
 	/** The state of the player. */
+	@MagicConstant(valuesFromClass = Player.class)
 	private volatile int _state =
 		Player.UNREALIZED;
 	
@@ -228,28 +230,30 @@ public abstract class AbstractPlayer
 	public final void deallocate()
 		throws IllegalStateException
 	{
-		int state = this.getState();
-
-		if (state == Player.CLOSED)
-			throw new IllegalStateException("EA06");
-		
-		// Do nothing if already in deallocated state
-		if (state == Player.UNREALIZED)
-			return;
-
-		try
+		synchronized (this)
 		{
-			// Stop playing first, if it is playing at all
-			if (state >= Player.STARTED)
-				this.stop();
-
-			// Now becoming deallocated (unrealized)
-			this.becomingDeallocated();
-			this.setState(Player.UNREALIZED);
-		}
-		catch (MediaException __e)
-		{
-			__e.printStackTrace();
+			int state = this.getState();
+			if (state == Player.CLOSED)
+				throw new IllegalStateException("EA06");
+			
+			// Do nothing if already in deallocated state
+			if (state == Player.UNREALIZED)
+				return;
+			
+			try
+			{
+				// Stop playing first, if it is playing at all
+				if (state >= Player.STARTED)
+					this.stop();
+				
+				// Now becoming deallocated (unrealized)
+				this.becomingDeallocated();
+				this.setState(Player.UNREALIZED);
+			}
+			catch (MediaException __e)
+			{
+				__e.printStackTrace();
+			}
 		}
 	}
 
@@ -304,7 +308,7 @@ public abstract class AbstractPlayer
 	 * @since 2024/02/26
 	 */
 	@SquirrelJMEVendorApi
-	public final boolean decrementLoop()
+	protected final boolean decrementLoop()
 	{
 		int count = this._loopCounter;
 		
@@ -335,8 +339,11 @@ public abstract class AbstractPlayer
 			throw new NullPointerException("NARG");
 		
 		// Player is not permitted to dispatch events
-		if (this._ffNoDispatch)
-			return;
+		synchronized (this)
+		{
+			if (this._ffNoDispatch)
+				return;
+		}
 		
 		// Send to the dispatcher
 		ListenerDispatch.dispatch(this, __key, __data);
@@ -368,7 +375,7 @@ public abstract class AbstractPlayer
 		synchronized (this)
 		{
 			// Are there no actual controls?
-			AbstractControl[] controls = this._controls;
+			AbstractControl<?>[] controls = this._controls;
 			if (controls == null)
 				return null;
 			
@@ -392,11 +399,14 @@ public abstract class AbstractPlayer
 		synchronized (this)
 		{
 			// Are there no actual controls?
-			AbstractControl[] controls = this._controls;
+			AbstractControl<?>[] controls = this._controls;
 			if (controls == null)
 				return new Control[0];
+			
+			// Need to use the base return type as the caller may be modifying
+			// the array
 			return Arrays.copyOf(controls, controls.length,
-				AbstractControl[].class);
+				Control[].class);
 		}
 	}
 	
@@ -449,7 +459,8 @@ public abstract class AbstractPlayer
 		{
 			/* {@squirreljme.error EA08 Cannot obtain the media time for a
 			closed player.} */
-			if (this.getState() == Player.CLOSED)
+			int state = this.getState();
+			if (state == Player.CLOSED)
 				throw new IllegalStateException("EA08");
 			
 			// Update the cached time and use the up-to-date one, or if the
@@ -459,7 +470,15 @@ public abstract class AbstractPlayer
 			if (internalClock != Player.TIME_UNKNOWN)
 				this.trackPosition.trackMicros = internalClock;
 			else
-				internalClock = this.trackPosition.trackMicros;
+			{
+				// If the player is not started, prefer the time it stopped at
+				if (state < Player.STARTED)
+					internalClock = this.trackPosition.stoppedMicros;
+				
+				// Otherwise return the time that it is currently tracked at
+				else
+					internalClock = this.trackPosition.trackMicros;
+			}
 			
 			// Return the time
 			return internalClock;
@@ -587,7 +606,7 @@ public abstract class AbstractPlayer
 		synchronized (this)
 		{
 			// Add control to the end
-			AbstractControl[] controls = this._controls;
+			AbstractControl<?>[] controls = this._controls;
 			if (controls == null)
 				controls = new AbstractControl[]{__control};
 			else
@@ -657,13 +676,22 @@ public abstract class AbstractPlayer
 	public final long setMediaTime(long __micros)
 		throws MediaException
 	{
+		// Do not allow microseconds to be negative
+		if (__micros < 0)
+			throw new MediaException("NEGV");
+		
 		synchronized (this)
 		{
 			/* {@squirreljme.error EA09 Cannot set the media time on a closed
 			or unrealized player.} */
-			if (this.getState() == Player.CLOSED ||
-				this.getState() == Player.UNREALIZED)
+			int state = this.getState();
+			if (state == Player.CLOSED ||
+				state == Player.UNREALIZED)
 				throw new IllegalStateException("EA09");
+			
+			// If not started, update the stopped and track time
+			if (state < Player.STARTED)
+				this.trackPosition.stoppedMicros = __micros;
 			
 			// If this does not require reset then fast-forward, just set
 			// the clock directly
@@ -699,7 +727,8 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/24
 	 */
 	@SquirrelJMEVendorApi
-	protected final void setState(int __state)
+	protected final void setState(
+		@MagicConstant(valuesFromClass = Player.class) int __state)
 		throws IllegalArgumentException
 	{
 		switch (__state)
@@ -738,37 +767,41 @@ public abstract class AbstractPlayer
 	public final void start()
 		throws MediaException
 	{
-		// {@squirreljme.error EA05 Null Player has been closed.}
-		int state = this.getState();
-		if (state == Player.CLOSED)
-			throw new IllegalStateException("EA05");
-		
-		// Ignore when started
-		if (state == Player.STARTED)
-			return;
-		
-		// The player needs to be prefetched first?
-		if (state == Player.UNREALIZED ||
-			state == Player.REALIZED)
-			this.prefetch();
-		
-		// Set up the track position for starting
-		TrackPosition trackPosition = this.trackPosition;
-		TimeBase timeBase = this.getTimeBase();
-		trackPosition.timeBase = timeBase;
-		trackPosition.basisMicros = timeBase.getTime() -
-			trackPosition.stoppedMicros;
-		
-		// Reset the loop count
-		this._loopLeft = this._loopCounter;
-		
-		// Is being started now
-		if (this.becomingStarted())
+		synchronized (this)
 		{
-			this.setState(Player.STARTED);
-		
-			// Send event
-			this.dispatchEvent(PlayerListener.STARTED, timeBase.getTime());
+			// {@squirreljme.error EA05 Null Player has been closed.}
+			int state = this.getState();
+			if (state == Player.CLOSED)
+				throw new IllegalStateException("EA05");
+			
+			// Ignore when started
+			if (state == Player.STARTED)
+				return;
+			
+			// The player needs to be prefetched first?
+			if (state == Player.UNREALIZED || state == Player.REALIZED)
+				this.prefetch();
+			
+			// Set up the track position for starting
+			TrackPosition trackPosition = this.trackPosition;
+			TimeBase timeBase = this.getTimeBase();
+			trackPosition.timeBase = timeBase;
+			trackPosition.basisMicros =
+				timeBase.getTime() - trackPosition.stoppedMicros;
+			
+			// Reset the loop count
+			this._loopLeft = this._loopCounter;
+			
+			// Is being started now
+			if (this.becomingStarted())
+			{
+				// Set start state
+				this.setState(Player.STARTED);
+				
+				// Send event
+				this.dispatchEvent(PlayerListener.STARTED,
+					timeBase.getTime());
+			}
 		}
 	}
 	
