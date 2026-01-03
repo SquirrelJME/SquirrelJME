@@ -20,6 +20,7 @@ import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A connection to a real system filesystem.
@@ -30,10 +31,11 @@ import org.jetbrains.annotations.NotNull;
 public class SystemFileEndPoint
 	extends FileEndPoint
 {
-	public SystemFileEndPoint(@NotNull UriGenericPart __part, int __mode)
+	public SystemFileEndPoint(@NotNull UriGenericPart __part, int __mode,
+		@Nullable UriGenericPart __dotDot)
 		throws NullPointerException
 	{
-		super(__part, __mode);
+		super(__part, __mode, __dotDot);
 		
 		throw Debugging.todo();
 	}

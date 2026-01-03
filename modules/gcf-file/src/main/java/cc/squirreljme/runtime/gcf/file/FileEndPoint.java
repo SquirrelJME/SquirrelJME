@@ -19,9 +19,9 @@ import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.util.Map;
 import javax.microedition.io.Connector;
-import javax.microedition.io.file.FileConnection;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This represents an endpoint for file connections, this performs the actual
@@ -42,17 +42,23 @@ public abstract class FileEndPoint
 	@SquirrelJMEVendorApi
 	protected final UriGenericPart part;
 	
+	/** The return point for this endpoint. */
+	@SquirrelJMEVendorApi
+	protected final @Nullable UriGenericPart dotDot;
+	
 	/**
 	 * Initializes the endpoint.
 	 *
 	 * @param __part The URI part of the endpoint.
 	 * @param __mode The mode the endpoint is opened in.
+	 * @param __dotDot Optional {@code ..} replacement override.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
 	@SquirrelJMEVendorApi
 	protected FileEndPoint(@NotNull UriGenericPart __part,
-		@MagicConstant(flagsFromClass = Connector.class) int __mode)
+		@MagicConstant(flagsFromClass = Connector.class) int __mode,
+		@Nullable UriGenericPart __dotDot)
 		throws NullPointerException
 	{
 		if (__part == null)
@@ -60,6 +66,7 @@ public abstract class FileEndPoint
 		
 		this.part = __part;
 		this.mode = __mode;
+		this.dotDot = __dotDot;
 	}
 	
 	/**

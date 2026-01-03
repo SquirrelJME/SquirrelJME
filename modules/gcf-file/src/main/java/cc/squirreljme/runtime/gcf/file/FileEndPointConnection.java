@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.gcf.AbstractStreamConnection;
 import cc.squirreljme.runtime.gcf.file.real.SystemFileEndPoint;
+import cc.squirreljme.runtime.gcf.file.real.SystemFileEndPointFactory;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.IOException;
@@ -46,6 +47,10 @@ public final class FileEndPointConnection
 	extends AbstractStreamConnection
 	implements FileConnection
 {
+	/** The standard file: factory. */
+	private static final FileEndPointFactory _FILE =
+		new SystemFileEndPointFactory();
+	
 	/** Service loader for file endpoint handlers. */
 	private static final ServiceLoader<FileEndPointFactory> _SERVICE =
 		ServiceLoader.load(FileEndPointFactory.class);
@@ -434,41 +439,73 @@ public final class FileEndPointConnection
 		{
 			// Does the old endpoint need to be closed?
 			FileEndPoint current = this._current;
+			UriGenericPart oldPart = null;
+			UriGenericPart oldDotDot = null;
 			if (current != null)
+			{
+				// Allow going back to the old part, if it is a directory
+				// We do not want this to end up doing an infinite loop by
+				// going back to 
+				if (current.isDirectory())
+				{
+					oldPart = current.part;
+					oldDotDot = current.dotDot;
+				}
+				
+				// Close the current connection
 				this.__currentClose();
+			}
+			
+			// No new endpoint is set?
+			if (__part == null)
+				return this;
 			
 			// Setting a new endpoint?
-			if (__part != null)
-			{
-				FileEndPoint endPoint = null;
-				int mode = this.mode;
-				
-				// If there is no host, we know it is this system
-				UriAuthority auth = __part.getAuthority();
-				if (auth == null || auth.host() == null ||
-					auth.host().isEmpty())
-					endPoint = new SystemFileEndPoint(__part, mode);
-				
-				// Find the matching service, if non-default
-				if (endPoint == null)
-					for (FileEndPointFactory it :
-						FileEndPointConnection._SERVICE)
-						if (it.handleAuthority(auth))
-						{
-							endPoint = it.connect(__part, mode);
-							break;
-						}
-				
-				// Nothing found?
-				/* {@squirreljme.error EC30 No endpoint was found that
-				can handle the given authority. (The URI; The authority)} */
-				if (endPoint == null)
-					throw new ConnectionNotFoundException(
-						__error__("EC30 %s", __part, auth));
-				
-				// Use this one
-				this._current = endPoint;
-			}
+			FileEndPoint endPoint = null;
+			int mode = this.mode;
+			
+			// Determine the factory to use
+			FileEndPointFactory factory = null;
+			
+			// If there is no host, we know it is this system factory
+			UriAuthority auth = __part.getAuthority();
+			if (auth == null || auth.host() == null ||
+				auth.host().isEmpty())
+				factory = FileEndPointConnection._FILE;
+			
+			// Otherwise, find one via the service loader
+			else
+				for (FileEndPointFactory it : FileEndPointConnection._SERVICE)
+					if (it.handleAuthority(auth))
+					{
+						factory = it;
+						break;
+					}
+			
+			// Nothing found?
+			/* {@squirreljme.error EC30 No endpoint was found that
+			can handle the given authority. (The URI; The authority)} */
+			if (factory == null)
+				throw new ConnectionNotFoundException(
+					__error__("EC30 %s", __part, auth));
+			
+			// Does the endpoint need help with returning to this current
+			// point when dot-dot is used with the specified path?
+			// If it does not, clear it otherwise we will end up in a loop
+			// this will never get out of. This will only ever return to the
+			// current address. Note that if the old dot-dot was set, then
+			// this will end up looping so we definitely do not want that to
+			// happen
+			if (!factory.needDotDot(__part) || oldDotDot != null)
+				oldPart = null;
+			
+			// Connect to the endpoint
+			endPoint = factory.connect(__part, mode, oldPart);
+			if (endPoint == null)
+				throw Debugging.oops();
+			
+			// Use this one
+			this._current = endPoint;
 		}
 		
 		// Self

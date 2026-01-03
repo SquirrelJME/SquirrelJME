@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.gcf.file.pseudo;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.file.FileEndPointFactory;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
@@ -38,7 +37,8 @@ public class LibraryEndPointFactory
 	 */
 	@Override
 	public FileEndPoint connect(UriGenericPart __uri,
-		@MagicConstant(flagsFromClass = Connector.class) int __mode)
+		@MagicConstant(flagsFromClass = Connector.class) int __mode,
+		UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
 		if (__uri == null)
@@ -111,7 +111,7 @@ public class LibraryEndPointFactory
 				__error__("GF05 %s", __uri));
 		
 		// Open connection
-		return new LibraryEndPoint(jar, __uri, __mode);
+		return new LibraryEndPoint(jar, __uri, __mode, __dotDot);
 	}
 	
 	/**
@@ -133,5 +133,21 @@ public class LibraryEndPointFactory
 		// Libraries have a more unique way to specify the library via the
 		// authority by specifying the index/name after the ://
 		return host.startsWith(LibraryEndPoint.DECODED_HOST);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
+	@Override
+	public boolean needDotDot(UriGenericPart __part)
+		throws NullPointerException
+	{
+		if (__part == null)
+			throw new NullPointerException("NARG");
+		
+		// This does not need assistance with dot-dot, everything ends up
+		// in all-volumes
+		return false;
 	}
 }

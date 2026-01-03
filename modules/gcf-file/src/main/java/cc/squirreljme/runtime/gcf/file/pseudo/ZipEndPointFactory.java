@@ -33,7 +33,8 @@ public class ZipEndPointFactory
 	 * @since 2025/12/30
 	 */
 	@Override
-	public FileEndPoint connect(UriGenericPart __uri, int __mode)
+	public FileEndPoint connect(UriGenericPart __uri, int __mode,
+		UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
 		if (__uri == null)
@@ -76,5 +77,20 @@ public class ZipEndPointFactory
 		// Zips have a more unique way to specify the zip via the
 		// authority by specifying the URI after the ://
 		return host.startsWith(ZipEndPoint.DECODED_HOST);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
+	@Override
+	public boolean needDotDot(UriGenericPart __part)
+		throws NullPointerException
+	{
+		if (__part == null)
+			throw new NullPointerException("NARG");
+		
+		// Dot-dot is only useful for the root directory
+		return __part.getPath().equals("/");
 	}
 }

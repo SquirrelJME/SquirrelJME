@@ -12,10 +12,7 @@ package cc.squirreljme.runtime.gcf.file.pseudo;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.full.attrib.AbstractFileAttributes;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
-import cc.squirreljme.runtime.cldc.full.attrib.StaticFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
@@ -28,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import javax.microedition.io.ConnectionNotFoundException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -49,31 +48,21 @@ public class AllVolumesEndPoint
 	public static final String DECODED_HOST =
 		"!?x-squirreljme-all-volumes://?!";
 	
-	/** Attributes for the root directory. */
-	@SquirrelJMEVendorApi
-	public static final StaticFileAttributes ATTRIBUTES =
-		new StaticFileAttributes(AbstractFileAttributes.IS_DIRECTORY |
-			AbstractFileAttributes.IS_DOS_READ_ONLY |
-			AbstractFileAttributes.IS_POSIX_USER_READ |
-			AbstractFileAttributes.IS_POSIX_USER_EXECUTE |
-			AbstractFileAttributes.IS_POSIX_GROUP_READ |
-			AbstractFileAttributes.IS_POSIX_GROUP_EXECUTE |
-			AbstractFileAttributes.IS_POSIX_OTHER_READ |
-			AbstractFileAttributes.IS_POSIX_OTHER_EXECUTE, 0);
-	
 	/**
 	 * Initializes the endpoint.
 	 *
 	 * @param __part The URI part.
 	 * @param __mode The open mode.
+	 * @param __dotDot The optional parent directory to return to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
 	@SquirrelJMEVendorApi
-	protected AllVolumesEndPoint(@NotNull UriGenericPart __part, int __mode)
+	protected AllVolumesEndPoint(@NotNull UriGenericPart __part, int __mode,
+		@Nullable UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, NullPointerException
 	{
-		super(__part, __mode);
+		super(__part, __mode, __dotDot);
 		
 		// Must always be the root component
 		/* {@squirreljme.error GF0a All volume connection is only valid
@@ -92,7 +81,7 @@ public class AllVolumesEndPoint
 	protected ExtraFileAttributes attachedAttributes()
 		throws SecurityException
 	{
-		return AllVolumesEndPoint.ATTRIBUTES;
+		return PseudoAttributes.DIRECTORY;
 	}
 	
 	/**
@@ -156,7 +145,8 @@ public class AllVolumesEndPoint
 			throw new NullPointerException("NARG");
 		
 		// The parent directory for the all volumes root just points to here
-		__into.put("..", this.part);
+		UriGenericPart dotDot = this.dotDot;
+		__into.put("..", (dotDot != null ? dotDot : this.part));
 		
 		// List all libraries
 		for (JarPackageBracket library : JarPackageShelf.libraries())

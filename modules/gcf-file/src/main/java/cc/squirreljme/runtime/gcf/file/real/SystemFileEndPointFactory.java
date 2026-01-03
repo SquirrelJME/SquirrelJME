@@ -36,7 +36,8 @@ public class SystemFileEndPointFactory
 	 */
 	@Override
 	public FileEndPoint connect(UriGenericPart __uri,
-		@MagicConstant(flagsFromClass = Connector.class) int __mode)
+		@MagicConstant(flagsFromClass = Connector.class) int __mode,
+		UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
 		if (__uri == null)
@@ -58,5 +59,20 @@ public class SystemFileEndPointFactory
 		
 		// There must be no actual host specified
 		return __auth.host() == null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
+	@Override
+	public boolean needDotDot(UriGenericPart __part)
+		throws NullPointerException
+	{
+		if (__part == null)
+			throw new NullPointerException("NARG");
+		
+		// Dot-dot is only useful for the root directory
+		return __part.getPath().equals("/");
 	}
 }

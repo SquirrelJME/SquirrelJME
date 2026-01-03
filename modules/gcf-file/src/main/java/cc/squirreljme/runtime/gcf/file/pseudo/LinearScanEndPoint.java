@@ -19,13 +19,18 @@ import java.io.InputStream;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.util.Map;
+import javax.microedition.io.Connection;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This is a file end point that scans through a file to detect magic numbers
  * and provides access to those regions as files. This is so that certain
  * types of files such as DoJa Scratchpads can be accessed via the media
  * player despite not a file structure.
+ * 
+ * Note that while this works, it is not the most efficient means of accessing
+ * the contents of arbitrary blocks of data.
  *
  * @since 2026/01/02
  */
@@ -33,28 +38,54 @@ import org.jetbrains.annotations.NotNull;
 public class LinearScanEndPoint
 	extends FileEndPoint
 {
+	/** Host. */
+	@SquirrelJMEVendorApi
+	public static final String HOST =
+		"!%3Fx-squirreljme-linear-scan%3A%2F%2F%3F!";
+	
+	/** Decoded host. */
+	@SquirrelJMEVendorApi
+	public static final String DECODED_HOST =
+		"!?x-squirreljme-linear-scan://?!";
+	
+	/** The connection to wrap. */
+	@SquirrelJMEVendorApi
+	protected final Connection wrapped;
+	
 	/**
 	 * Initializes the endpoint.
 	 *
 	 * @param __part The URI part of the endpoint.
 	 * @param __mode The mode the endpoint is opened in.
+	 * @param __wrapped The wrapped connection.
+	 * @param __dotDot The optional parent directory to return to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/02
 	 */
 	@SquirrelJMEVendorApi
-	public LinearScanEndPoint(@NotNull UriGenericPart __part, int __mode)
+	public LinearScanEndPoint(@NotNull UriGenericPart __part, int __mode,
+		Connection __wrapped, @Nullable UriGenericPart __dotDot)
 		throws NullPointerException
 	{
-		super(__part, __mode);
+		super(__part, __mode, __dotDot);
 		
-		throw Debugging.todo();
+		if (__wrapped == null)
+			throw new NullPointerException("NARG");
+		
+		this.wrapped = __wrapped;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
 	@Override
 	protected ExtraFileAttributes attachedAttributes()
 		throws SecurityException
 	{
-		throw Debugging.todo();
+		if (this.isDirectory())
+			return PseudoAttributes.DIRECTORY;
+		return PseudoAttributes.FILE;
 	}
 	
 	@Override

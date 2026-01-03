@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.file.FileEndPointFactory;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
@@ -36,13 +35,14 @@ public class AllVolumesEndPointFactory
 	 */
 	@Override
 	public FileEndPoint connect(UriGenericPart __uri,
-		@MagicConstant(flagsFromClass = Connector.class) int __mode)
+		@MagicConstant(flagsFromClass = Connector.class) int __mode,
+		UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
 		if (__uri == null)
 			throw new NullPointerException("NARG");
 		
-		return new AllVolumesEndPoint(__uri, __mode);
+		return new AllVolumesEndPoint(__uri, __mode, __dotDot);
 	}
 	
 	/**
@@ -63,5 +63,21 @@ public class AllVolumesEndPointFactory
 		
 		// Must be a specific hostname
 		return AllVolumesEndPoint.DECODED_HOST.equals(host);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
+	@Override
+	public boolean needDotDot(UriGenericPart __part)
+		throws NullPointerException
+	{
+		if (__part == null)
+			throw new NullPointerException("NARG");
+		
+		// This does not need assistance with dot-dot, it just points
+		// to the current URI as there is only ever the root directory
+		return false;
 	}
 }

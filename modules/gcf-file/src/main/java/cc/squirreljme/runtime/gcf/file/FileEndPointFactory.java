@@ -17,6 +17,7 @@ import java.util.ServiceLoader;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.Connector;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Factory for file end-point handlers.
@@ -32,7 +33,9 @@ public interface FileEndPointFactory
 	 * Connects to the given endpoint.
 	 *
 	 * @param __uri The URI to connect to.
-	 * @param __mode
+	 * @param __mode The mode the endpoint is opened in.
+	 * @param __dotDot The optional {@code ..} to use to return to the parent
+	 * directory.
 	 * @return The resultant endpoint connection.
 	 * @throws ConnectionNotFoundException If the endpoint was not found.
 	 * @throws IOException On any other error.
@@ -41,7 +44,8 @@ public interface FileEndPointFactory
 	 */
 	@SquirrelJMEVendorApi
 	FileEndPoint connect(UriGenericPart __uri,
-		@MagicConstant(flagsFromClass = Connector.class) int __mode)
+		@MagicConstant(flagsFromClass = Connector.class) int __mode,
+		@Nullable UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException,
 			NullPointerException;
 	
@@ -55,5 +59,17 @@ public interface FileEndPointFactory
 	 */
 	@SquirrelJMEVendorApi
 	boolean handleAuthority(UriAuthority __auth)
+		throws NullPointerException;
+	
+	/**
+	 * Does this need assistance with {@code ..} if that is desired?
+	 *
+	 * @param __part Which part does this relate to?
+	 * @return If this needs {@code ..} assistance.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/01/03
+	 */
+	@SquirrelJMEVendorApi
+	boolean needDotDot(UriGenericPart __part)
 		throws NullPointerException;
 }

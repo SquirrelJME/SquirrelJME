@@ -11,9 +11,7 @@ package cc.squirreljme.runtime.gcf.file.pseudo;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.full.attrib.AbstractFileAttributes;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
-import cc.squirreljme.runtime.cldc.full.attrib.StaticFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.IOException;
@@ -22,6 +20,7 @@ import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Endpoint which is capable of reading ZIP files.
@@ -42,41 +41,21 @@ public class ZipEndPoint
 	public static final String HOST =
 		"!%3Fx-squirreljme-zip%3A%2F%2F%3F!";
 	
-	/** Attributes for any directory. */
-	@SquirrelJMEVendorApi
-	public static final StaticFileAttributes ATTRIBUTES_DIRECTORY =
-		new StaticFileAttributes(
-			AbstractFileAttributes.IS_DIRECTORY |
-			AbstractFileAttributes.IS_DOS_READ_ONLY |
-			AbstractFileAttributes.IS_POSIX_USER_READ |
-			AbstractFileAttributes.IS_POSIX_USER_EXECUTE |
-			AbstractFileAttributes.IS_POSIX_GROUP_READ |
-			AbstractFileAttributes.IS_POSIX_GROUP_EXECUTE |
-			AbstractFileAttributes.IS_POSIX_OTHER_READ |
-			AbstractFileAttributes.IS_POSIX_OTHER_EXECUTE, 0);
-	
-	/** Attributes for any file. */
-	@SquirrelJMEVendorApi
-	public static final StaticFileAttributes ATTRIBUTES_FILE =
-		new StaticFileAttributes(
-			AbstractFileAttributes.IS_DOS_READ_ONLY |
-			AbstractFileAttributes.IS_POSIX_USER_READ |
-			AbstractFileAttributes.IS_POSIX_GROUP_READ |
-			AbstractFileAttributes.IS_POSIX_OTHER_READ, 0);
-	
 	/**
 	 * Initializes the ZIP connection.
 	 *
 	 * @param __part The initial part.
 	 * @param __mode The mode this is opened in.
+	 * @param __dotDot The optional parent directory to return to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
-	protected ZipEndPoint(@NotNull UriGenericPart __part, int __mode)
+	protected ZipEndPoint(@NotNull UriGenericPart __part, int __mode,
+		@Nullable UriGenericPart __dotDot)
 		throws NullPointerException
 	{
-		super(__part, __mode);
+		super(__part, __mode, __dotDot);
 		
 		throw Debugging.todo();
 	}
@@ -91,8 +70,8 @@ public class ZipEndPoint
 	{
 		// This could be a directory or a file
 		if (this.part.getPath().endsWith("/"))
-			return ZipEndPoint.ATTRIBUTES_DIRECTORY;
-		return ZipEndPoint.ATTRIBUTES_FILE;
+			return PseudoAttributes.DIRECTORY;
+		return PseudoAttributes.FILE;
 	}
 	
 	/**

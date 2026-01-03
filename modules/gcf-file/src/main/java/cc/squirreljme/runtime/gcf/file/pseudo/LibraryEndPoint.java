@@ -12,17 +12,16 @@ package cc.squirreljme.runtime.gcf.file.pseudo;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
-import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A connection to a specific library to browse its contents as if it were
@@ -57,15 +56,16 @@ public class LibraryEndPoint
 	 * @param __jar The Jar to access.
 	 * @param __part The initial part.
 	 * @param __mode The mode this is opened in.
+	 * @param __dotDot The optional parent directory to return to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/27
 	 */
 	@SquirrelJMEVendorApi
 	public LibraryEndPoint(@NotNull JarPackageBracket __jar,
-		UriGenericPart __part, int __mode)
+		UriGenericPart __part, int __mode, @Nullable UriGenericPart __dotDot)
 		throws NullPointerException
 	{
-		super(__part, __mode);
+		super(__part, __mode, __dotDot);
 		
 		if (__jar == null)
 			throw new NullPointerException("NARG");
@@ -83,8 +83,8 @@ public class LibraryEndPoint
 	{
 		// This could be a directory or a file
 		if (this.part.getPath().endsWith("/"))
-			return ZipEndPoint.ATTRIBUTES_DIRECTORY;
-		return ZipEndPoint.ATTRIBUTES_FILE;
+			return PseudoAttributes.DIRECTORY;
+		return PseudoAttributes.FILE;
 	}
 	
 	/**
@@ -157,8 +157,12 @@ public class LibraryEndPoint
 		// Parent directory at the root points to all volumes, otherwise
 		// it points to the directory above
 		if (path.equals("/"))
-			__into.put("..", new UriGenericPart(
-				"//" + AllVolumesEndPoint.HOST + "/"));
+		{
+			UriGenericPart dotDot = this.dotDot;
+			__into.put("..", (dotDot != null ? dotDot :
+				new UriGenericPart("//" +
+					AllVolumesEndPoint.HOST + "/")));
+		}
 		
 		// Otherwise, strip a component
 		else
