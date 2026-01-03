@@ -38,48 +38,38 @@ public abstract class AbstractPlayer
 		new TrackPosition();
 	
 	/** The mime type. */
-	@Language("mime-type-reference")
 	private final String _mime;
 	
 	/** Listeners available. */
-	@SquirrelJMEVendorApi
 	private final List<PlayerListener> _listeners =
 		new LinkedList<>();
 	
 	/** The default time base. */
-	@SquirrelJMEVendorApi
 	private final TimeBase _defaultTimeBase =
 		Manager.getSystemTimeBase();
 	
 	/** The loop counter which controls how much the audio replays. */
-	@SquirrelJMEVendorApi
-	protected volatile int _loopCounter =
+	private volatile int _loopCounter =
 		1;
 	
 	/** The number of loops left. */
-	@SquirrelJMEVendorApi
-	protected volatile int _loopLeft =
+	private volatile int _loopLeft =
 		0;
 	
 	/** The currently available controls. */
-	@SquirrelJMEVendorApi
 	private volatile AbstractControl[] _controls;
 	
 	/** Cancel dispatch of events during fast-forwarding. */
-	@SquirrelJMEVendorApi
 	volatile boolean _ffNoDispatch;
 	
 	/** The state of the player. */
-	@SquirrelJMEVendorApi
 	private volatile int _state =
 		Player.UNREALIZED;
 	
 	/** The current timebase. */
-	@SquirrelJMEVendorApi
 	private volatile TimeBase _currentTimebase;
 	
 	/** The duration of the media. */
-	@SquirrelJMEVendorApi
 	private volatile long _cachedDurationMicros =
 		Long.MIN_VALUE;
 	
@@ -462,7 +452,17 @@ public abstract class AbstractPlayer
 			if (this.getState() == Player.CLOSED)
 				throw new IllegalStateException("EA08");
 			
-			return this.clockGet();
+			// Update the cached time and use the up-to-date one, or if the
+			// time is unknown and we knew it before return the previously
+			// cached time
+			long internalClock = this.clockGet();
+			if (internalClock != Player.TIME_UNKNOWN)
+				this.trackPosition.trackMicros = internalClock;
+			else
+				internalClock = this.trackPosition.trackMicros;
+			
+			// Return the time
+			return internalClock;
 		}
 	}
 	
@@ -781,26 +781,34 @@ public abstract class AbstractPlayer
 	public final void stop()
 		throws MediaException
 	{
-		// {@squirreljme.error EA06 Null Player has been closed.}
-		int state = this.getState();
-		if (state == Player.CLOSED)
-			throw new IllegalStateException("EA06");
-		
-		// Ignore these
-		if (state == Player.UNREALIZED ||
-			state == Player.REALIZED ||
-			state == Player.PREFETCHED)
-			return;
-		
-		// Becoming stopped
-		this.becomingStopped();
-		
-		// Make sure the state stays valid
-		if (state != Player.CLOSED &&
-			state != Player.UNREALIZED &&
-			state != Player.REALIZED &&
-			state != Player.PREFETCHED)
-			this.setState(Player.PREFETCHED);
+		synchronized (this)
+		{
+			// {@squirreljme.error EA06 Null Player has been closed.}
+			int state = this.getState();
+			if (state == Player.CLOSED)
+				throw new IllegalStateException("EA06");
+			
+			// Ignore these
+			if (state == Player.UNREALIZED ||
+				state == Player.REALIZED ||
+				state == Player.PREFETCHED)
+				return;
+			
+			// Request the media time before stopping so that it is kept
+			// around, additionally record the time of stopping
+			this.trackPosition.stoppedMicros = this.getMediaTime();
+			
+			// Becoming stopped
+			this.becomingStopped();
+			
+			// Make sure the state stays valid
+			state = this.getState();
+			if (state != Player.CLOSED &&
+				state != Player.UNREALIZED &&
+				state != Player.REALIZED &&
+				state != Player.PREFETCHED)
+				this.setState(Player.PREFETCHED);
+		}
 		
 		// Send stop event
 		this.dispatchEvent(PlayerListener.STOPPED,

@@ -106,10 +106,11 @@ public final class MidiTracker
 			
 			// Is this a back in time fast-forward?
 			MidiTimeDiv timeDiv = this._timeDiv;
+			MIDIControl control = this.midiControl;
 			if (target < timeDiv._nanoClock)
 			{
 				// Turn off all notes and reset all controllers
-				MidiTracker.squelch(this.midiControl, true);
+				MidiTracker.squelch(control, true);
 				
 				// Go back to the starting clock of zero
 				timeDiv._nanoClock = 0;
@@ -124,10 +125,10 @@ public final class MidiTracker
 			}
 			
 			// Fast-forward with relative time and no control output
-			// We do not care what the target time is, just that it is the media
-			// time
+			// We do not care what the target time is, just that it is the
+			// media time
 			for (long next = 0; next < target && next != Long.MAX_VALUE;)
-				next = this.tracker(null, this.midiControl, target);
+				next = this.tracker(null, control, target);
 			
 			// Interrupt
 			this.interrupt();
@@ -269,7 +270,13 @@ public final class MidiTracker
 		{
 			// Stop playback?
 			if (this.stopPlayback)
+			{
+				// Force squelch everything
+				MidiTracker.squelch(__squelch, true);
+				
+				// Playback is stopping
 				return Long.MAX_VALUE;
+			}
 			
 			// If only squelch is specified, mute all notes but do not
 			// reset all controls
