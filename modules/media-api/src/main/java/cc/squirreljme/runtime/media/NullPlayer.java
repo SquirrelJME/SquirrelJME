@@ -11,7 +11,9 @@ package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.media.midi.MidiControlPlayer;
 import javax.microedition.media.MediaException;
+import javax.microedition.media.Player;
 import org.intellij.lang.annotations.Language;
 
 /**
@@ -161,7 +163,7 @@ public final class NullPlayer
 	protected long determineDuration()
 	{
 		// There is no duration for null media
-		return 0;
+		return Player.TIME_UNKNOWN;
 	}
 	
 	/**

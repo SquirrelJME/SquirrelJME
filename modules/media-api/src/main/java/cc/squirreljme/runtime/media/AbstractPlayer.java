@@ -53,10 +53,6 @@ public abstract class AbstractPlayer
 	private volatile int _loopCounter =
 		1;
 	
-	/** The number of loops left. */
-	private volatile int _loopLeft =
-		0;
-	
 	/** The currently available controls. */
 	private volatile AbstractControl<?>[] _controls;
 	
@@ -351,18 +347,25 @@ public abstract class AbstractPlayer
 	 * @since 2024/02/26
 	 */
 	@SquirrelJMEVendorApi
-	protected final boolean decrementLoop()
+	public final boolean decrementLoop()
 	{
-		int count = this._loopCounter;
-		
-		if ((--count) <= 0)
+		synchronized (this)
 		{
-			this._loopCounter = 0;
-			return true;
+			// Infinite loop?
+			int count = this._loopCounter;
+			if (count == -1)
+				return false;
+			
+			// Otherwise stop when the counter reaches zero
+			if ((--count) <= 0)
+			{
+				this._loopCounter = 0;
+				return true;
+			}
+			
+			this._loopCounter = count;
+			return false;
 		}
-		
-		this._loopCounter = count;
-		return false;
 	}
 	
 	/**
@@ -704,21 +707,24 @@ public abstract class AbstractPlayer
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void setLoopCount(int __count)
+	public final void setLoopCount(int __count)
 		throws IllegalArgumentException, IllegalStateException
 	{
 		// {@squirreljme.error EA0g Invalid loop count. (The count)}
 		if (__count == 0 || __count < -1)
 			throw new IllegalArgumentException("EA0g " + __count);
 		
-		// {@squirreljme.error EA0h Cannot set the loop count when the
-		// player has started or is closed.}
-		int state = this.getState();
-		if (state <= Player.CLOSED || state >= Player.STARTED)
-			throw new IllegalStateException("EA0h");
-		
-		// Set the internal loop counter
-		this._loopCounter = __count;
+		synchronized (this)
+		{
+			// {@squirreljme.error EA0h Cannot set the loop count when the
+			// player has started or is closed.}
+			int state = this.getState();
+			if (state <= Player.CLOSED || state >= Player.STARTED)
+				throw new IllegalStateException("EA0h");
+			
+			// Set the internal loop counter
+			this._loopCounter = __count;
+		}
 	}
 	
 	/**
@@ -741,6 +747,18 @@ public abstract class AbstractPlayer
 			int state = this.getState();
 			if (state <= Player.UNREALIZED)
 				throw new IllegalStateException("EA09");
+			
+			// If the duration is unknown, then this makes no sense
+			long duration = this.getDuration();
+			if (duration == Player.TIME_UNKNOWN)
+				return this.getMediaTime();
+			
+			// If the clock is set at exactly the end of the track or past it,
+			// set it to just before the track ends otherwise fast-forward
+			// and other sets may not be able to find the end of track as it
+			// extends to the bound
+			if (__micros >= duration)
+				__micros = duration - 1;
 			
 			// If not started, update the stopped and track time
 			if (state < Player.STARTED)
@@ -846,14 +864,19 @@ public abstract class AbstractPlayer
 				this._isPrimed = true;
 			}
 			
+			// If the loop count is zero or invalid, force it to be valid
+			int loopCounter = this._loopCounter;
+			if (loopCounter == 0)
+			{
+				loopCounter = 1;
+				this._loopCounter = loopCounter;
+			}
+			
 			// Set up the track position for starting
 			TrackPosition trackPosition = this.trackPosition;
 			trackPosition.timeBase = timeBase;
 			trackPosition.basisMicros =
 				timeBase.getTime() - trackPosition.stoppedMicros;
-			
-			// Reset the loop count
-			this._loopLeft = this._loopCounter;
 			
 			// Is being started now
 			if (dispatch = this.becomingStarted())
@@ -919,9 +942,10 @@ public abstract class AbstractPlayer
 		// We stopped via media, so go back to the start
 		try
 		{
+			// Set the media time
 			this.setMediaTime(0);
 		}
-		catch (IllegalStateException|MediaException ignored)
+		catch (IllegalStateException | MediaException ignored)
 		{
 		}
 		

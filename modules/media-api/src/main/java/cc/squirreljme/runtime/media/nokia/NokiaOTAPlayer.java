@@ -26,6 +26,7 @@ import cc.squirreljme.runtime.media.AbstractVolumeControl;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.media.MediaException;
+import javax.microedition.media.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class NokiaOTAPlayer
@@ -335,7 +336,7 @@ public class NokiaOTAPlayer
 		throws MediaException
 	{
 		// Return no duration, Nokia OTA has no getDuration() equivalent
-		return 0;
+		return Player.TIME_UNKNOWN;
 	}
 	
 	/**

@@ -197,7 +197,25 @@ public final class MidiTracker
 				
 				// Stopping playback?
 				if (nextMidi == Long.MIN_VALUE)
-					break;
+				{
+					// Media is stopping, stop playing
+					if (player.decrementLoop())
+					{
+						// Turn off all notes
+						MidiTracker.squelch(control, true);
+						
+						// Stop everything
+						player.stopViaMedia();
+						return;
+					}
+					
+					// Media is looping, go back to the start
+					else
+						player.loopViaMedia();
+					
+					// Run another loop
+					continue;
+				}
 				
 				// Set time to wait for the next event
 				long waitMidi = nextMidi - deltaMidi;
@@ -223,6 +241,12 @@ public final class MidiTracker
 					{
 					}
 			}
+		}
+		
+		// Failed to stop or otherwise?
+		catch (IllegalStateException|MediaException __e)
+		{
+			__e.printStackTrace();
 		}
 		
 		// Stop all notes and stop the media playback

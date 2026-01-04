@@ -185,8 +185,8 @@ public class MidiControlPlayer
 	protected long determineDuration()
 		throws MediaException
 	{
-		// The duration is always zero
-		return 0;
+		// The duration is always invalid
+		return MidiControlPlayer.TIME_UNKNOWN;
 	}
 	
 	/**
@@ -198,17 +198,6 @@ public class MidiControlPlayer
 	{
 		// This does not make sense here
 		return false;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/06/03
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void setLoopCount(int __count)
-	{
-		// Does not make sense here
 	}
 	
 	/**

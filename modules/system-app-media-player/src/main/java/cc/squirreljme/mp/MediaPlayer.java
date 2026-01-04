@@ -126,7 +126,7 @@ public class MediaPlayer
 					try
 					{
 						// Stop playing?
-						if (player.getState() == Player.STARTED)
+						if (player.getState() >= Player.STARTED)
 							player.stop();
 						
 						// Playback starting at the correct media time
@@ -176,8 +176,54 @@ public class MediaPlayer
 					}
 				break;
 				
-				// Seek -5
+				// Never loop
 			case Canvas.GAME_C:
+				if (player != null)
+					try
+					{
+						// Can only set the count if stopped
+						boolean play = (player.getState() >= Player.STARTED);
+						if (play)
+							player.stop();
+						
+						// Set the loop count
+						player.setLoopCount(1);
+						
+						// Resume playing if it was stopped
+						if (play)
+							player.start();
+					}
+					catch (RuntimeException|MediaException __e)
+					{
+						__e.printStackTrace();
+					}
+				break;
+				
+				// Loop forever
+			case Canvas.GAME_D:
+				if (player != null)
+					try
+					{
+						// Can only set the count if stopped
+						boolean play = (player.getState() >= Player.STARTED);
+						if (play)
+							player.stop();
+						
+						// Set the loop count
+						player.setLoopCount(-1);
+						
+						// Resume playing if it was stopped
+						if (play)
+							player.start();
+					}
+					catch (RuntimeException|MediaException __e)
+					{
+						__e.printStackTrace();
+					}
+				break;
+				
+				// Seek -5
+			case Canvas.LEFT:
 				lastMediaTime -= 5_000_000;
 				if (lastMediaTime < 0)
 					lastMediaTime = 0;
@@ -196,7 +242,7 @@ public class MediaPlayer
 				break;
 				
 				// Seek +5
-			case Canvas.GAME_D:
+			case Canvas.RIGHT:
 				lastMediaTime += 5_000_000;
 				
 				// Set the time if the player is valid
@@ -300,12 +346,18 @@ public class MediaPlayer
 		__g.drawString(String.format("[%s (B)] Browse Files",
 				this.getKeyName(this.getKeyCode(Canvas.GAME_B))),
 			ix, iy + (fh * 4), 0);
-		__g.drawString(String.format("[%s (C)] Seek -5s",
-				this.getKeyName(this.getKeyCode(Canvas.GAME_C))),
+		__g.drawString(String.format("[%s (Left)] Seek -5s",
+				this.getKeyName(this.getKeyCode(Canvas.LEFT))),
 			ix, iy + (fh * 5), 0);
-		__g.drawString(String.format("[%s (D)] Seek +5s",
-				this.getKeyName(this.getKeyCode(Canvas.GAME_D))),
+		__g.drawString(String.format("[%s (Right)] Seek +5s",
+				this.getKeyName(this.getKeyCode(Canvas.RIGHT))),
 			ix, iy + (fh * 6), 0);
+		__g.drawString(String.format("[%s (C)] Do not loop",
+				this.getKeyName(this.getKeyCode(Canvas.GAME_C))),
+			ix, iy + (fh * 7), 0);
+		__g.drawString(String.format("[%s (D)] Loop forever",
+				this.getKeyName(this.getKeyCode(Canvas.GAME_D))),
+			ix, iy + (fh * 8), 0);
 		
 		// Where are we at and how long is this media?
 		long trk = (player != null ? player.getMediaTime() : 0);

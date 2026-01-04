@@ -110,6 +110,21 @@ public interface Player
 	@Api
 	void removePlayerListener(PlayerListener __a);
 	
+	/**
+	 * Sets the number of times the media will play before returning to the
+	 * start of playback.
+	 * 
+	 * The default loop count is {@code 1}, which means to only play the
+	 * given media once.
+	 *
+	 * @param __count The number of times to play the media, if {@code -1}
+	 * then this will loop indefinitely. Note that {@code 0} is not a valid
+	 * loop count.
+	 * @throws IllegalArgumentException If the loop count is not valid.
+	 * @throws IllegalStateException If the player is in the {@link #STARTED}
+	 * or {@link #CLOSED} state.
+	 * @since 2026/01/04
+	 */
 	@Api
 	void setLoopCount(int __count)
 		throws IllegalArgumentException, IllegalStateException;
