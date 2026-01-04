@@ -38,7 +38,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 		renderFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("sourceAttach(%p, %d, %d, %d)",
 		inStream, inFormat, inRate, inChannels);

@@ -53,6 +53,17 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
+	@Override
+	protected void becomingPrimed()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/04/24
 	 */
 	@Override
@@ -64,8 +75,17 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
+	 * @since 2026/01/03
+	 */
+	@Override
+	protected void becomingSolvent()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/04/24
 	 */
 	@Override

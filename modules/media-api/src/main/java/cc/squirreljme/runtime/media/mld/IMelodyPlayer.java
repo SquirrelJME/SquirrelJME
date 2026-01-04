@@ -48,10 +48,6 @@ public class IMelodyPlayer
 	/** The MA-3 instance. */
 	private static SamplerProvider _SAMPLER;
 	
-	/** The belayed media time. */
-	private volatile long _belayTime =
-		-1;
-	
 	/** The audio connection. */
 	private volatile AudioConnectionBracket _connection;
 	
@@ -107,14 +103,6 @@ public class IMelodyPlayer
 			this._unrealizedIn = null;
 			AbstractPlayer.closeConnection(unrealizedIn);
 		}
-		
-		// Disconnect the audio stream
-		AudioConnectionBracket stream = this._stream;
-		if (stream != null)
-		{
-			this._connection = null;
-			AudioStreamShelf.disconnect(stream);
-		}
 	}
 	
 	/**
@@ -138,13 +126,43 @@ public class IMelodyPlayer
 			// Store it now
 			this._mldPlayer = mldPlayer;
 			
-			// Set the correct time
-			long belayTime = this._belayTime;
-			if (belayTime >= 0)
+			// Determine the duration so something gets processed
+			mldPlayer.getDuration(true);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
+	@Override
+	protected void becomingPrimed()
+		throws MediaException
+	{
+		synchronized (this)
+		{
+			// Does not need to be created?
+			if (this._stream != null)
+				return;
+			
+			// Create native audio stream for playback
+			AudioStreamBracket stream;
+			try
 			{
-				this._belayTime = -1;
-				this.setMediaTime(belayTime);
+				stream = AudioStreamShelf.stream(AudioStreamFormat.FLOAT_F32,
+					AudioStreamRate.HZ_48000, AudioStreamChannels.STEREO);
 			}
+			catch (MLECallError __e)
+			{
+				__e.printStackTrace();
+				
+				MediaException toss = new MediaException(__e.getMessage());
+				toss.initCause(__e);
+				throw toss;
+			}
+			
+			// Set the stream
+			this._stream = stream;
 		}
 	}
 	
@@ -181,24 +199,21 @@ public class IMelodyPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
-	 * @since 2025/05/05
+	 * @since 2026/01/03
 	 */
 	@Override
-	protected boolean becomingStarted()
+	protected void becomingSolvent()
 		throws MediaException
 	{
 		synchronized (this)
 		{
-			// Create native audio stream for playback
-			AudioStreamBracket stream;
 			try
 			{
-				stream = AudioStreamShelf.stream(
-					AudioStreamFormat.FLOAT_F32,
-					AudioStreamRate.HZ_48000,
-					AudioStreamChannels.STEREO);
+				AudioStreamBracket stream = this._stream;
+				this._stream = null;
+				
+				if (stream != null)
+					AudioStreamShelf.disconnect(stream);
 			}
 			catch (MLECallError __e)
 			{
@@ -208,16 +223,25 @@ public class IMelodyPlayer
 				toss.initCause(__e);
 				throw toss;
 			}
-			
-			// Set the stream
-			this._stream = stream;
-			
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/05/05
+	 */
+	@Override
+	protected boolean becomingStarted()
+		throws MediaException
+	{
+		synchronized (this)
+		{
 			// Start rendering the stream, which will cause the audio to be
 			// played
 			try
 			{
 				this._connection =
-					AudioStreamShelf.attach(stream, this,
+					AudioStreamShelf.attach(this._stream, this,
 						AudioStreamFormat.FLOAT_F32,
 						AudioStreamRate.HZ_48000,
 						AudioStreamChannels.STEREO);
@@ -290,7 +314,7 @@ public class IMelodyPlayer
 			// Can only get the time if the player is valid
 			MLDPlayer mldPlayer = this._mldPlayer;
 			if (mldPlayer == null)
-				throw new IllegalStateException("GONE");
+				return IMelodyPlayer.TIME_UNKNOWN;
 			
 			// This uses double time, in microseconds
 			return (long)(mldPlayer.getTime() * 1_000_000D);
@@ -310,13 +334,7 @@ public class IMelodyPlayer
 			// Can only set the time if the player is valid
 			MLDPlayer mldPlayer = this._mldPlayer;
 			if (mldPlayer == null)
-			{
-				this._belayTime = __micros;
 				return;
-			}
-			
-			// Clear the belay time
-			this._belayTime = -1;
 			
 			// Reset synthesizer state
 			mldPlayer.reset();
@@ -335,7 +353,11 @@ public class IMelodyPlayer
 	protected long determineDuration()
 		throws MediaException
 	{
-		return (long)(this._mld.getDuration(true) * 1_000_000D);
+		MLD mld = this._mld;
+		if (mld == null)
+			return IMelodyPlayer.TIME_UNKNOWN;
+		
+		return (long)(mld.getDuration(true) * 1_000_000D);
 	}
 	
 	/**

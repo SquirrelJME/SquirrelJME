@@ -75,6 +75,9 @@ public abstract class AbstractPlayer
 	private volatile long _cachedDurationMicros =
 		Long.MIN_VALUE;
 	
+	/** Is the audio stream primed? */
+	private volatile boolean _isPrimed;
+	
 	/**
 	 * Initializes the base player.
 	 * 
@@ -96,6 +99,7 @@ public abstract class AbstractPlayer
 	 * This is called when the player is becoming deallocated.
 	 * 
 	 * @throws MediaException If the player cannot be deallocated.
+	 * @see #becomingRealized()
 	 * @since 2025/12/28
 	 */
 	@SquirrelJMEVendorApi
@@ -113,9 +117,23 @@ public abstract class AbstractPlayer
 		throws MediaException;
 	
 	/**
+	 * This is called to open the underlying around stream so that any calls
+	 * to {@link Player#start()} and {@link Player#stop()} do not need to
+	 * attach to or disconnect from the sound card.
+	 *
+	 * @throws MediaException If priming failed.
+	 * @see #becomingSolvent()
+	 * @since 2026/01/03
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract void becomingPrimed()
+		throws MediaException;
+	
+	/**
 	 * This is called when the player is becoming realized.
 	 * 
 	 * @throws MediaException If the player cannot be realized.
+	 * @see #becomingDeallocated()
 	 * @since 2022/04/24
 	 */
 	@SquirrelJMEVendorApi
@@ -123,10 +141,22 @@ public abstract class AbstractPlayer
 		throws MediaException;
 	
 	/**
+	 * This is called to close the underlying around stream.
+	 *
+	 * @throws MediaException If priming failed.
+	 * @see #becomingPrimed()
+	 * @since 2026/01/03
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract void becomingSolvent()
+		throws MediaException;
+	
+	/**
 	 * Indicates that the media is about to start.
 	 *
 	 * @return If the state should be set.
 	 * @throws MediaException If the player could not be started.
+	 * @see #becomingStopped()
 	 * @since 2022/04/24
 	 */
 	@SquirrelJMEVendorApi
@@ -137,6 +167,7 @@ public abstract class AbstractPlayer
 	 * Indicates that the player is stopping.
 	 * 
 	 * @throws MediaException If the player could not be stopped.
+	 * @see #becomingStarted()
 	 * @since 2022/04/24
 	 */
 	@SquirrelJMEVendorApi
@@ -200,8 +231,20 @@ public abstract class AbstractPlayer
 		synchronized (this)
 		{
 			// Do nothing if already closed
-			if (this.getState() == Player.CLOSED)
+			if (this.getState() <= Player.CLOSED)
 				return;
+			
+			// Does the sound card need to become solvent?
+			if (this._isPrimed)
+				try
+				{
+					this._isPrimed = false;
+					this.becomingSolvent();
+				}
+				catch (MediaException __e)
+				{
+					__e.printStackTrace();
+				}
 			
 			// Always force close to be set after potential deallocation
 			try
@@ -233,11 +276,11 @@ public abstract class AbstractPlayer
 		synchronized (this)
 		{
 			int state = this.getState();
-			if (state == Player.CLOSED)
+			if (state <= Player.CLOSED)
 				throw new IllegalStateException("EA06");
 			
 			// Do nothing if already in deallocated state
-			if (state == Player.UNREALIZED)
+			if (state <= Player.UNREALIZED)
 				return;
 			
 			try
@@ -289,7 +332,7 @@ public abstract class AbstractPlayer
 			return;
 		
 		// {@squirreljme.error EA01 Player has been closed.}
-		if (this.getState() == Player.CLOSED)
+		if (this.getState() <= Player.CLOSED)
 			throw new IllegalStateException("EA01");
 		
 		// Add unique listener
@@ -420,30 +463,38 @@ public abstract class AbstractPlayer
 		throws IllegalStateException
 	{
 		// {@squirreljme.error EA0g Stream closed, cannot get duration.}
-		if (this.getState() == Player.CLOSED)
+		if (this.getState() <= Player.CLOSED)
 			throw new IllegalStateException("EA0g");
 		
-		// Already has been cached?
-		long cachedDuration = this._cachedDurationMicros;
-		if (cachedDuration != Long.MIN_VALUE)
-			return cachedDuration;
-		
-		// Otherwise determine the duration
+		// Lock
 		long newDuration;
-		try
+		synchronized (this)
 		{
-			newDuration = this.determineDuration();
-			this._cachedDurationMicros = newDuration;
+			// Already has been cached?
+			long cachedDuration = this._cachedDurationMicros;
+			if (cachedDuration != Long.MIN_VALUE)
+				return cachedDuration;
 			
-		}
-		catch (MediaException e)
-		{
-			return Player.TIME_UNKNOWN;
+			// Otherwise determine the duration
+			try
+			{
+				// Prefetch needs to happen for the duration to be known
+				this.prefetch();
+				
+				// Determine the duration
+				newDuration = this.determineDuration();
+				this._cachedDurationMicros = newDuration;
+			}
+			catch (MediaException e)
+			{
+				return Player.TIME_UNKNOWN;
+			}
 		}
 		
 		// Indicate the duration is available now
 		this.dispatchEvent(PlayerListener.DURATION_UPDATED, newDuration);
 		
+		// Return the calculated duration
 		return newDuration;
 	}
 	
@@ -460,7 +511,7 @@ public abstract class AbstractPlayer
 			/* {@squirreljme.error EA08 Cannot obtain the media time for a
 			closed player.} */
 			int state = this.getState();
-			if (state == Player.CLOSED)
+			if (state <= Player.CLOSED)
 				throw new IllegalStateException("EA08");
 			
 			// Update the cached time and use the up-to-date one, or if the
@@ -546,22 +597,24 @@ public abstract class AbstractPlayer
 	public final void prefetch()
 		throws MediaException
 	{
-		int state = this.getState();
-		if (state == Player.CLOSED)
-			throw new IllegalStateException("EA0g");
-		
-		// Ignore when started or already prefetched
-		if (state == Player.STARTED ||
-			state == Player.PREFETCHED)
-			return;
-		
-		// Implicit realize, if not yet realized
-		if (state == Player.UNREALIZED)
-			this.realize();
-		
-		// Now becoming prefetched
-		this.becomingPrefetched();
-		this.setState(Player.PREFETCHED);
+		synchronized (this)
+		{
+			int state = this.getState();
+			if (state <= Player.CLOSED)
+				throw new IllegalStateException("EA0g");
+			
+			// Do nothing if already prefetched
+			if (state >= Player.PREFETCHED)
+				return;
+			
+			// Implicit realize, if not yet realized
+			if (state <= Player.UNREALIZED)
+				this.realize();
+			
+			// Now becoming prefetched
+			this.becomingPrefetched();
+			this.setState(Player.PREFETCHED);
+		}
 	}
 	
 	/**
@@ -573,20 +626,21 @@ public abstract class AbstractPlayer
 	public final void realize()
 		throws MediaException
 	{
-		// {@squirreljme.error EA04 Player has been closed.}
-		int state = this.getState();
-		if (state == Player.CLOSED)
-			throw new IllegalStateException("EA04");
-		
-		// Ignore in these states
-		if (state == Player.REALIZED ||
-			state == Player.PREFETCHED ||
-			state == Player.STARTED)
-			return;
-		
-		// Now becoming realized
-		this.becomingRealized();
-		this.setState(Player.REALIZED);
+		synchronized (this)
+		{
+			// {@squirreljme.error EA04 Player has been closed.}
+			int state = this.getState();
+			if (state <= Player.CLOSED)
+				throw new IllegalStateException("EA04");
+			
+			// Do nothing if already realized
+			if (state >= Player.REALIZED)
+				return;
+			
+			// Now becoming realized
+			this.becomingRealized();
+			this.setState(Player.REALIZED);
+		}
 	}
 	
 	/**
@@ -634,7 +688,7 @@ public abstract class AbstractPlayer
 			return;
 		
 		// {@squirreljme.error EA02 Player has been closed.}
-		if (this.getState() == Player.CLOSED)
+		if (this.getState() <= Player.CLOSED)
 			throw new IllegalStateException("EA02");
 		
 		// Remove it
@@ -660,7 +714,7 @@ public abstract class AbstractPlayer
 		// {@squirreljme.error EA0h Cannot set the loop count when the
 		// player has started or is closed.}
 		int state = this.getState();
-		if (state == Player.CLOSED || state == Player.STARTED)
+		if (state <= Player.CLOSED || state >= Player.STARTED)
 			throw new IllegalStateException("EA0h");
 		
 		// Set the internal loop counter
@@ -685,8 +739,7 @@ public abstract class AbstractPlayer
 			/* {@squirreljme.error EA09 Cannot set the media time on a closed
 			or unrealized player.} */
 			int state = this.getState();
-			if (state == Player.CLOSED ||
-				state == Player.UNREALIZED)
+			if (state <= Player.UNREALIZED)
 				throw new IllegalStateException("EA09");
 			
 			// If not started, update the stopped and track time
@@ -771,16 +824,23 @@ public abstract class AbstractPlayer
 		{
 			// {@squirreljme.error EA05 Null Player has been closed.}
 			int state = this.getState();
-			if (state == Player.CLOSED)
+			if (state <= Player.CLOSED)
 				throw new IllegalStateException("EA05");
 			
 			// Ignore when started
-			if (state == Player.STARTED)
+			if (state >= Player.STARTED)
 				return;
 			
 			// The player needs to be prefetched first?
-			if (state == Player.UNREALIZED || state == Player.REALIZED)
+			if (state < Player.PREFETCHED)
 				this.prefetch();
+			
+			// Does the sound card need to be primed?
+			if (!this._isPrimed)
+			{
+				this.becomingPrimed();
+				this._isPrimed = true;
+			}
 			
 			// Set up the track position for starting
 			TrackPosition trackPosition = this.trackPosition;
@@ -818,13 +878,11 @@ public abstract class AbstractPlayer
 		{
 			// {@squirreljme.error EA06 Null Player has been closed.}
 			int state = this.getState();
-			if (state == Player.CLOSED)
+			if (state <= Player.CLOSED)
 				throw new IllegalStateException("EA06");
 			
-			// Ignore these
-			if (state == Player.UNREALIZED ||
-				state == Player.REALIZED ||
-				state == Player.PREFETCHED)
+			// Ignore if already stopped
+			if (state <= Player.PREFETCHED)
 				return;
 			
 			// Request the media time before stopping so that it is kept
@@ -836,10 +894,7 @@ public abstract class AbstractPlayer
 			
 			// Make sure the state stays valid
 			state = this.getState();
-			if (state != Player.CLOSED &&
-				state != Player.UNREALIZED &&
-				state != Player.REALIZED &&
-				state != Player.PREFETCHED)
+			if (state >= Player.PREFETCHED)
 				this.setState(Player.PREFETCHED);
 		}
 		

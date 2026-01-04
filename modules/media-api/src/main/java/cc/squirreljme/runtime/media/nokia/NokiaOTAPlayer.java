@@ -169,7 +169,14 @@ public class NokiaOTAPlayer
 			}
 		}
 	}
-
+	
+	@Override
+	protected void becomingPrimed()
+		throws MediaException
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/24
@@ -180,11 +187,16 @@ public class NokiaOTAPlayer
 	{
 		// Do nothing, Nokia OTA has no realize() equivalent
 	}
-
+	
+	@Override
+	protected void becomingSolvent()
+		throws MediaException
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
 	 * @since 2025/12/24
 	 */
 	@Override

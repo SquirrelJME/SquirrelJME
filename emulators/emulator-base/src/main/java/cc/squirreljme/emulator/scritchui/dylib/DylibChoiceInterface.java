@@ -89,8 +89,6 @@ public class DylibChoiceInterface
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
 	 * @since 2024/07/25
 	 */
 	@Override

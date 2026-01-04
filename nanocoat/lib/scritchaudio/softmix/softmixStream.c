@@ -195,6 +195,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerNone(
 	underSource = inState->under.source;
 
 	/* Nothing is currently playing audio? */
+#if 0
 	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM)
 	{
 		/* Close the underlying source. */
@@ -223,6 +224,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerNone(
 			underStream = NULL;
 		}
 	}
+#endif
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -287,12 +289,6 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_message("softmixUnderlay(%p): Wanting %d %d %d",
-		inState, inFormat, inRate, inChannels);
-#endif
-	
 	/* Start with the worst format, it only gets better. */
 	bestFormat = SJME_SCRITCHAUDIO_FORMAT_BYTE_U8;
 	bestRate = SJME_SCRITCHAUDIO_RATE_HZ_8000;
@@ -334,9 +330,10 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 	if (underStream != NULL)
 	{
 		/* If it does, is the format not the best one desired? */
-		if (underStream->format != bestFormat ||
-			underStream->rate != bestRate ||
-			underStream->channels != bestChannels)
+		if (underSource == NULL ||
+			underSource->format != bestFormat ||
+			underSource->rate != bestRate ||
+			underSource->channels != bestChannels)
 		{
 			/* Disconnect the source if there is one. */
 			if (underSource != NULL)

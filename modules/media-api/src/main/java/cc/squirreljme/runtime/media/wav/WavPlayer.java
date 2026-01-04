@@ -263,7 +263,14 @@ public class WavPlayer
 			}
 		}
 	}
-
+	
+	@Override
+	protected void becomingPrimed()
+		throws MediaException
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/25
@@ -332,11 +339,16 @@ public class WavPlayer
 			throw toss;
 		}
 	}
-
+	
+	@Override
+	protected void becomingSolvent()
+		throws MediaException
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
 	 * @since 2025/12/25
 	 */
 	@Override

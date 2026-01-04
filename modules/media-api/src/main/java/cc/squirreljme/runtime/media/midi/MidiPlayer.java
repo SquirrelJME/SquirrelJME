@@ -232,6 +232,16 @@ public class MidiPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
+	@Override
+	protected void becomingPrimed()
+		throws MediaException
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/04/24
 	 */
 	@Override
@@ -275,8 +285,16 @@ public class MidiPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
+	 * @since 2026/01/03
+	 */
+	@Override
+	protected void becomingSolvent()
+		throws MediaException
+	{
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/04/24
 	 */
 	@Override
