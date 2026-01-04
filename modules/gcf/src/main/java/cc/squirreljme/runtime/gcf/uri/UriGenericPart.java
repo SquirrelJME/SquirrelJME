@@ -93,12 +93,17 @@ public final class UriGenericPart
 		int qe = Math.min(__part.length(),
 			(fr >= 0 ? fr : Integer.MAX_VALUE));
 		
+		// The path parameters ends at the length, query, or fragment
+		int ep = Math.min(Math.min(__part.length(),
+			(qp >= 0 ? qp : Integer.MAX_VALUE)),
+			(fr >= 0 ? fr : Integer.MAX_VALUE));
+		
 		// Get the three main parts of the URI, keep the authority and path
 		// together for now
 		String authPath = __part.substring(0, en);
-		String pathParams = (pp < 0 ? null : __part.substring(en, pp));
-		String queryParams = (qp < 0 ? null : __part.substring(qp, qe));
-		String fragment = (fr < 0 ? null : __part.substring(fr));
+		String pathParams = (pp < 0 ? null : __part.substring(pp + 1, ep));
+		String queryParams = (qp < 0 ? null : __part.substring(qp + 1, qe));
+		String fragment = (fr < 0 ? null : __part.substring(fr + 1));
 		
 		// Path must start with slash-slash
 		/* {@squirreljme.error EC28 URI does not start with slash-slash.
@@ -127,15 +132,31 @@ public final class UriGenericPart
 			this.path = authPath.substring(fs);
 		}
 		
-		// Store decoded URI parts
-		this.rawPathParams = (pathParams == null ? null :
-			UriPart.decode(pathParams));
-		this._pathParams = (pathParams == null ? null :
-			UriPart.splitDecode(pathParams, ','));
-		this.rawQueryParams = (queryParams == null ? null :
-			UriPart.decode(queryParams));
-		this._queryParams = (queryParams == null ? null :
-			UriPart.splitDecode(queryParams, '&'));
+		// Path parameters
+		if (pathParams == null)
+		{
+			this.rawPathParams = null;
+			this._pathParams = null;
+		}
+		else
+		{
+			this.rawPathParams = UriPart.decode(pathParams);
+			this._pathParams = UriPart.splitDecode(pathParams, ',');
+		}
+		
+		// Query parameters
+		if (queryParams == null)
+		{
+			this.rawQueryParams = null;
+			this._queryParams = null;
+		}
+		else
+		{
+			this.rawQueryParams = UriPart.decode(queryParams);
+			this._queryParams = UriPart.splitDecode(queryParams, '&');
+		}
+		
+		// Fragment
 		this.fragment = (fragment == null ? null :
 			UriPart.decode(fragment));
 	}

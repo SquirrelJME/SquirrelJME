@@ -422,7 +422,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 	inState->under.stream = underStream;
 	inState->under.source = underSource;
 	
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("softmixUnderlay(%p): Attached with %d %d %d!",
 		inState, bestFormat, bestRate, bestChannels);
@@ -444,7 +444,7 @@ fail_disconnectStream:
 fail_underlayCreate:
 fail_rateReduce:
 	
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("softmixUnderlay(%p): Failed with %d!",
 		inState, error);

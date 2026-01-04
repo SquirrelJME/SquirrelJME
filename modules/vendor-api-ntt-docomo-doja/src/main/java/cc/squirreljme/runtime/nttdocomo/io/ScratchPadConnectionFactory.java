@@ -145,6 +145,12 @@ public class ScratchPadConnectionFactory
 				String.format("AH0h %s %d %d %d", __part, wantPos, wantLen,
 					params.getLength(wantPad)));
 		
+		// Final connection
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("Opened %d at [%x+%d] (from %s %s %s)",
+				wantPad, wantPos, wantLen,
+				__part, part.getPath(), part.pathParams());
+		
 		// Initialize the connection
 		return new ScratchPadConnection(params, wantPad, wantPos, wantLen);
 	}
