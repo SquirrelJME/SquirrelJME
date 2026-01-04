@@ -894,7 +894,7 @@ SDP_STRUCT_DEF(transferRegion,
 	SDX_VAR(sjme_jint, anchor);
 	SDX_VAR(sjme_jint, wDest);
 	SDX_VAR(sjme_jint, hDest);
-	SDX_VAR(sjme_scritchui_transferRegionMode, mode));
+	SDX_VAR(sjme_scritchui_transferRegionMode, mode););
 	
 SDP_STRUCT_DEF(translate,
 	SDX_VAR(sjme_scritchui_pencil, g);
