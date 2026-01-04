@@ -111,6 +111,7 @@
             <option value="$PROJECT_DIR$/tools/squirreljme-font" />
             <option value="$PROJECT_DIR$/tools/squirreljme-javap" />
             <option value="$PROJECT_DIR$/tools/squirreljme-lint" />
+            <option value="$PROJECT_DIR$/tools/squirreljme-media-player" />
             <option value="$PROJECT_DIR$/tools/squirreljme-rms" />
             <option value="$PROJECT_DIR$/tools/squirreljme-unzip" />
             <option value="$PROJECT_DIR$/tools/txt-to-pbm" />
