@@ -135,7 +135,6 @@ public final class Manager
 			case "application/x-mld":
 			case "application/x-mld-music":
 			case "audio/x-mld":
-				// Setup player
 				return new IMelodyPlayer(new InputStreamConnection(__in));
 				
 			case "audio/vnd.wave":
