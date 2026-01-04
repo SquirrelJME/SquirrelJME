@@ -160,7 +160,7 @@ public class Mystify
 			int w = this.getWidth(),
 				h = this.getHeight();
 			
-			// Needed for cycling	
+			// Needed for cycling
 			Random random = this.random;
 			
 			// Needed for drawing

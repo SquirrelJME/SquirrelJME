@@ -63,13 +63,33 @@ static sjme_errorCode sjme_scritchaudio_oss_peerNone(
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInValue sjme_jboolean explicit)
 {
+	sjme_scritchaudio_stream stream;
+	int fd;
+	
 	if (inState == NULL || inConn == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
+	
+	/* Closing our only stream? */
+	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM && explicit)
+	{
+		stream = (sjme_scritchaudio_stream)inConn;
+		
+		/* Is the file descriptor valid? */
+		fd = stream->data.fd;
+		if (fd != -1)
+		{
+			/* Destroy. */
+			stream->data.fd = -1;
+			
+			/* Close the file. */
+			close(fd);
+		}
+	}
 
-	/* OSS does not care about any peers. */
+	/* OSS does not care about any other peers. */
 	return SJME_ERROR_NONE;
 }
 
@@ -153,7 +173,11 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	/* Try to open the DSP device. */
 	fd = open(SJME_SCRITCHAUDIO_OSS_DSP, O_WRONLY | O_NONBLOCK, 0);
 	if (fd == -1)
+	{
+		if (errno == EBUSY)
+			return SJME_ERROR_AUDIO_NO_RESOURCES;
 		return SJME_ERROR_HEADLESS_AUDIO;
+	}
 
 	/* Get hardware supported formats. */
 	actual = 0;

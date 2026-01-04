@@ -35,6 +35,14 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	/** The minimum sleeping time. */
+	#define SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS 16
+#else
+	/** The minimum sleeping time. */
+	#define SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS 0
+#endif
+	
 /**
  * ScritchAudio state structure.
  *
@@ -361,7 +369,7 @@ typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchaudio_loopIterateRenderFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNullable sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
 
 /**
@@ -604,6 +612,9 @@ typedef struct sjme_scritchaudio_bugs
 {
 	/** Audio is manually polled, there is no system managed loop. */
 	sjme_jboolean manualPoll;
+	
+	/** Writing to the output audio blocks until playback is finished. */
+	sjme_jboolean outputBlocks;
 } sjme_scritchaudio_bugs;
 
 /**

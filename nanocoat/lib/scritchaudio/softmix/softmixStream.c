@@ -184,15 +184,37 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerNone(
 
 	if (inState != inConn->inState)
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
-
+	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* Get underlying streams, if they exist. */
-	underStream = inState->under.stream;
-	underSource = inState->under.source;
+	/* If the stream is being closed, disconnect the underlying stream. */
+	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM && explicit)
+	{
+		/* Close the underlying source. */
+		underSource = inState->under.source;
+		if (underSource != NULL)
+		{
+			/* Disconnect the source. */
+			inState->under.source = NULL;
+			if (sjme_error_is(error = wrappedState->api->disconnect(
+				wrappedState, SJME_SAU_CAST_CONNECTION(underSource))))
+				return sjme_error_default(error);
+		}
+		
+		/* Remove the underlying stream. */
+		underStream = inState->under.stream;
+		if (underStream != NULL)
+		{
+			/* Disconnect the source. */
+			inState->under.stream = NULL;
+			if (sjme_error_is(error = wrappedState->api->disconnect(
+				wrappedState, SJME_SAU_CAST_CONNECTION(underStream))))
+				return sjme_error_default(error);
+		}
+	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -213,15 +235,6 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerDisconnect(
 
 	if (inState != inConn->inState)
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
-
-	/* Recover wrapped state. */
-	wrappedState = inState->wrappedState;
-	if (wrappedState == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* Get underlying streams, if they exist. */
-	underStream = inState->under.stream;
-	underSource = inState->under.source;
 	
 	/* Nothing currently needs to be done here as when a peer disconnects */
 	/* we should not try to change the underlying audio rate if any sound */

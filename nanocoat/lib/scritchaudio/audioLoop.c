@@ -113,26 +113,21 @@ sjme_errorCode sjme_scritchaudio_core_loopIterate(
 	/* Update the clock time. */
 	inState->nal->nanoTime(&now);
 	inState->clock.clock.full = now.full - inState->clock.clockBase.full;
-
-	/* If there is no stream, do not bother. */
-	stream = inState->stream;
-	if (stream == NULL)
-		return SJME_ERROR_NONE;
-
-	/* Forward. */
+	
+	/* Forward using the default stream. */
 	memset(&renderInfo, 0, sizeof(renderInfo));
-	return inState->intern->loopIterate(inState, stream, &renderInfo);
+	return inState->intern->loopIterate(inState, inState->stream, &renderInfo);
 }
 
 sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNullable sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
 {
 	sjme_errorCode error;
 	sjme_scritchaudio contextState;
 
-	if (inState == NULL || inStream == NULL || renderInfo == NULL)
+	if (inState == NULL || renderInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Is there a wrapped state? Use that instead and skip any middle */
@@ -140,10 +135,6 @@ sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
 	contextState = inState->wrappedState;
 	if (contextState == NULL)
 		contextState = inState;
-	
-	/* Context state has no stream? */
-	if (contextState->stream == NULL)
-		return SJME_ERROR_NONE;
 
 	/* Underlying audio system does not have a loop iterator? */
 	if (contextState->impl->loopIterate == NULL)

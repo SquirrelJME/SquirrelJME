@@ -587,8 +587,11 @@ typedef enum sjme_errorCode
 	/** This should not be happening! */
 	SJME_ERROR_SHOULD_NOT_HAPPEN = -181,
 	
+	/** Audio is awaiting streams/sources. */
+	SJME_ERROR_AUDIO_AWAITING = -182,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -182,
+	SJME_NUM_ERROR_CODES = -183,
 } sjme_errorCode;
 
 /**

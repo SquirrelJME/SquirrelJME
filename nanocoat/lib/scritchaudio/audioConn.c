@@ -63,6 +63,17 @@ static sjme_errorCode sjme_scritchaudio_core_peerNone(
 		sjme_alloc_free(inConn->peers);
 		inConn->peers = NULL;
 	}
+	
+	/* Is this a well known connection? */
+	if (explicit)
+	{
+		if (inConn == (void*)inState->stream)
+			inState->stream = NULL;
+		if (inConn == (void*)inState->under.stream)
+			inState->under.stream = NULL;
+		if (inConn == (void*)inState->under.source)
+			inState->under.source = NULL;
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -214,8 +225,8 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 		else
 			i++;
 	}
-
-	/* Double check if there is nothing left. */
+	
+	/* Double check to be sure that there is nothing left. */
 	if (sjme_error_is(error = inState->intern->peerDisconnect(
 		inState, inConn, NULL, SJME_JNI_TRUE)))
 	{
@@ -365,7 +376,10 @@ skip_noPeers:
 		return SJME_ERROR_NONE;
 	
 	/* All peers were removed, dispatch the no-peer handler. */
-	if (numPeers <= 0)
+	/* This is only valid if there is no peer specified. */
+	if (numPeers <= 0 && inPeer == NULL)
+	{
+		/* Dispatch. */
 		if (sjme_error_is(error = inState->intern->peerNoneDispatch(
 			inState, inConn, explicit)))
 		{
@@ -375,6 +389,15 @@ skip_noPeers:
 			
 			return sjme_error_default(error);
 		}
+		
+		/* Is this a well known connection? */
+		if (inConn == (void*)inState->stream)
+			inState->stream = NULL;
+		if (inConn == (void*)inState->under.stream)
+			inState->under.stream = NULL;
+		if (inConn == (void*)inState->under.source)
+			inState->under.source = NULL;
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;

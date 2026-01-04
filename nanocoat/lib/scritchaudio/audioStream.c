@@ -20,6 +20,125 @@ const sjme_jint sjme_scritchaudio_bytesPerSample
 	4,
 };
 
+static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_core_poll(
+	sjme_attrInNotNull sjme_thread_parameter rawState)
+{
+	sjme_errorCode error;
+	sjme_scritchaudio inState;
+	sjme_jint nanoSum, milliCarry, milliTime, milliSpent, milliRemain;
+	const sjme_nal* nal;
+	sjme_jlong enterTime, exitTime;
+	sjme_jboolean await;
+
+	/* Recover state. */
+	inState = rawState;
+	if (inState == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+
+	/* Does a binder need to be called? */
+	if (inState->bindAudioThread != NULL)
+		inState->bindAudioThread(inState);
+	
+	/* Set the loop as ready. */
+	sjme_atomic_s(sjme_jint, &inState->loopThreadReady, 1);
+	
+	/* Awaiting the first audio stream still? */
+	await = SJME_JNI_TRUE;
+	
+	/* Enter threading loop. */
+	nal = inState->nal;
+	for (nanoSum = 0, milliCarry = 0;;)
+	{
+		/* Keep everything at millisecond accuracy. Thus round up nanos */
+		/* to millis by carrying. */
+		nanoSum += sjme_atomic_g(sjme_jint, &inState->pollDelayNanos);
+		if (nanoSum >= 1000000)
+		{
+			milliCarry++;
+			nanoSum -= 1000000;
+		}
+
+		/* What is the millisecond time for this cycle? */
+		milliTime = sjme_atomic_g(sjme_jint, &inState->pollDelayMillis);
+
+		/* What time did this loop enter? */
+		nal->nanoTime(&enterTime);
+
+		/* Call loop iteration handler. */
+		if (sjme_error_is(error = inState->api->loopIterate(inState)))
+		{
+			/* If the output blocks, we never want to lose our thread. */
+			if (inState->bugs.outputBlocks)
+				error = SJME_ERROR_NONE;
+			
+			/* Awaiting the first audio stream? */
+			if (error == SJME_ERROR_AUDIO_AWAITING)
+			{
+				/* Still waiting for it, do not consider this an error. */
+				if (await)
+					error = SJME_ERROR_NONE;
+				
+				/* We lost the stream, so consider it gone. */
+				else
+					error = SJME_ERROR_AUDIO_DESTROYED;
+			}
+			
+			/* Audio was destroyed? */
+			if (error != SJME_ERROR_NONE &&
+				error != SJME_ERROR_AUDIO_DESTROYED)
+				sjme_message("Audio error: %d", error);
+		}
+
+		/* What time did this loop end? */
+		nal->nanoTime(&exitTime);
+
+		/* How much time was spent in the loop? */
+		/* Use carried milliseconds. */
+		milliSpent = (sjme_jint)((exitTime.full - enterTime.full) /
+			INT64_C(1000000));
+		milliRemain = (milliTime + milliCarry) - milliSpent;
+		milliCarry = 0;
+		
+		/* Streaming is done? */
+		if (error == SJME_ERROR_AUDIO_DESTROYED)
+		{
+			/* Go back to the sleeping rate as there is no audio */
+			/* playing anymore. */
+			sjme_atomic_sjme_jint_set(&inState->pollDelayMillis,
+				SJME_SCRITCHAUDIO_SLEEP_RATE_MS);
+			sjme_atomic_sjme_jint_set(&inState->pollDelayNanos,
+				SJME_SCRITCHAUDIO_SLEEP_RATE_NS);
+			
+			/* Invalidate before leaving. */
+			sjme_atomic_s(sjme_jint, &inState->loopThreadReady, 0);
+			
+			/* Barrier before leaving. */
+			sjme_atomic_barrier();
+			sjme_thread_yield();
+			sjme_atomic_barrier();
+			
+#if defined(SJME_CONFIG_DEBUG)
+			/* Debug. */
+			sjme_message("Polling thread complete!");
+#endif
+			
+			/* Stop. */
+			break;
+		}
+
+		/* The audio subsystem could be synchronous or asynchronous, however */
+		/* in either case just go for both and sleep if there is still time */
+		/* remaining in the loop. */
+		/* Do not sleep if the output blocks, since it handles it anyway. */
+		if (milliRemain > SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS &&
+			!inState->bugs.outputBlocks)
+			sjme_thread_sleep(milliRemain, 0);
+	}
+
+	/* Finished. */
+	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+}
+
 sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
@@ -129,7 +248,9 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 {
 #define GROW_SIZE 8
 	sjme_errorCode error;
+	sjme_scritchaudio wrappedState;
 	sjme_scritchaudio_stream result;
+	sjme_jint nextReady;
 	
 	if (inState == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -192,6 +313,58 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	if (inState->stream == NULL)
 		inState->stream = result;
 	
+	/* No thread has been set up yet? */
+	/* If the state must be manually polled, we like having */
+	/* threaded audio. Note that even if there is no thread defined */
+	/* the operating system could call back into the audio subroutine. */
+	/* We must be the top-most state! */
+	if (((sjme_atomic_g(sjme_pointer, &inState->topState) == NULL &&
+		inState->bugs.manualPoll)))
+	{
+#if defined(SJME_CONFIG_DEBUG)
+		/* Debug. */
+		sjme_message("Polling thread preparing...");
+#endif
+		
+		/* Await loop unready. */
+		/* Note if the output blocks, we really do not want to recreate */
+		/* the thread dynamically on each stream. */
+		if (!inState->bugs.outputBlocks)
+		{
+			sjme_atomic_barrier();
+			while (sjme_atomic_g(sjme_jint, &inState->loopThreadReady) != 0)
+			{
+				sjme_atomic_barrier();
+				sjme_thread_yield();
+				sjme_atomic_barrier();
+			}
+		}
+		
+		/* Create thread that loops infinitely. */
+		if (sjme_atomic_g(sjme_jint, &inState->loopThreadReady) == 0)
+		{
+			inState->loopThread = SJME_THREAD_NULL;
+			if (sjme_error_is(error = sjme_thread_new(&inState->loopThread,
+				&inState->loopThreadId, sjme_scritchaudio_core_poll,
+				inState)) || inState->loopThread == SJME_THREAD_NULL)
+				goto fail_initThread;
+		}
+		
+		/* Await loop ready. */
+		sjme_atomic_barrier();
+		while (sjme_atomic_g(sjme_jint, &inState->loopThreadReady) == 0)
+		{
+			sjme_atomic_barrier();
+			sjme_thread_yield();
+			sjme_atomic_barrier();
+		}
+		
+#if defined(SJME_CONFIG_DEBUG)
+		/* Debug. */
+		sjme_message("Polling thread ready!");
+#endif
+	}
+	
 	/* Success! */
 	*outStream = result;
 	return SJME_ERROR_NONE;
@@ -200,6 +373,8 @@ fail_implCreate:
 	/* Release the lock before failing. */
 	sjme_thread_spinLockRelease(inState->lock, NULL);
 	
+fail_noLoopIterate:
+fail_initThread:
 fail_grabLock:
 fail_releaseLock:
 fail_allocResult:
