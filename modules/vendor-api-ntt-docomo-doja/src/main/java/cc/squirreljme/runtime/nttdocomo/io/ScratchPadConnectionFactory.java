@@ -75,7 +75,7 @@ public class ScratchPadConnectionFactory
 			for (int n = part.pathParamCount(), i = 0; i < n; i++)
 			{
 				// Get the item here
-				String item = part.pathParam(0);
+				String item = part.pathParam(i);
 				
 				// {@squirreljme.error AH0d Missing equal sign in the
 				// parameter. (The URI part)}

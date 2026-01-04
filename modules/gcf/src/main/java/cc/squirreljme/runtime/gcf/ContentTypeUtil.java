@@ -145,12 +145,6 @@ public final class ContentTypeUtil
 			(e == '7' || e == '9') && f == 'a')
 			return "image/gif";
 		
-		// TIFF
-		if ((a == 0x49 || a == 0x4D) && (b == 0x49 || b == 0x4D) &&
-			(c == 0x2A || c == 0x00) && (d == 0x2B || d == 0x00) &&
-			(a != b) && (c != d))
-			return "image/tiff";
-		
 		// PNG?
 		if (a == 0x89 && b == 0x50 && c == 0x4E && d == 0x47 &&
 			e == 0x0D && f == 0x0A && g == 0x1A && h == 0x0A)
@@ -178,6 +172,24 @@ public final class ContentTypeUtil
 		// PPM
 		if (a == 'P' && (b == '3' || b == '6') && c == 0x0A)
 			return "image/x-portable-pixmap";
+		
+		// XPM
+		if ((a == '/') &&
+			(b == '*') &&
+			(c == ' ') &&
+			(d == 'X' || d == 'x') &&
+			(e == 'P' || e == 'p') &&
+			(f == 'M' || f == 'm') &&
+			(g == ' ') &&
+			(h == '*') &&
+			(i == '/'))
+			return "image/x-xpixmap";
+		
+		// TIFF
+		if ((a == 0x49 || a == 0x4D) && (b == 0x49 || b == 0x4D) &&
+			(c == 0x2A || c == 0x00) && (d == 0x2A || d == 0x00) &&
+			(a != b) && (c != d))
+			return "image/tiff";
 		
 		// Text files (ALWAYS LOWEST PRIORITY)
 		if (!Character.isISOControl((char)a) &&
@@ -207,18 +219,6 @@ public final class ContentTypeUtil
 				(k == 'E' || k == 'e') &&
 				(l == 'R' || l == 'r'))
 				return "text/vnd.sun.j2me.app-descriptor";
-			
-			// XPM
-			if ((a == '/') &&
-				(b == '*') &&
-				(c == ' ') &&
-				(d == 'X' || d == 'x') &&
-				(e == 'P' || e == 'p') &&
-				(f == 'M' || f == 'm') &&
-				(g == ' ') &&
-				(h == '*') &&
-				(i == '/'))
-				return "image/x-xpixmap";
 			
 			// <!DOCTYPE Family
 			if ((a == '<') &&

@@ -86,6 +86,7 @@ public class ImageReaderDispatcher<S>
 		
 		// Common magic number detection
 		String type = ContentTypeUtil.guess(__is);
+		Debugging.debugNote("Detected: %s", type);
 		
 		// GIF? (GIF8)
 		if ("image/gif".equals(type))

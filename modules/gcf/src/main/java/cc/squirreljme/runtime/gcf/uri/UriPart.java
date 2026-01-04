@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.gcf.uri;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.io.UnsupportedEncodingException;
 
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
@@ -418,6 +419,11 @@ public abstract class UriPart
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
+		// Splice and decode
+		String[] splice = StringUtils.basicSplit(__delim, __in);
+		for (int i = 0; i < splice.length; i++)
+			splice[i] = UriPart.decode(splice[i]);
+		
+		return splice;
 	}
 }
