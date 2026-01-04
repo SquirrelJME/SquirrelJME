@@ -14,7 +14,8 @@
 
 static const struct sjme_scritchui_pencilImplFunctions pencilFunc_NAME(_) =
 {
-	SJME_JNI_FALSE,
+	sjme_sm(.driverName, SJME_TOKEN_STRING_PP(pencilFunc_NAME(_))),
+	sjme_sm(.asyncSafe, SJME_JNI_FALSE),
 	sjme_sm(.close, NULL),
 	sjme_sm(.copyArea, NULL),
 	sjme_sm(.drawHorizSrc, NULL),

@@ -12,8 +12,10 @@ package cc.squirreljme.runtime.media.wav;
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
 import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
+import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
+import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -245,7 +247,10 @@ public class WavPlayer
 			AudioStreamBracket stream = null;
 			try
 			{
-				stream = AudioStreamShelf.stream();
+				stream = AudioStreamShelf.stream(
+					AudioStreamFormat.AUTOMATIC,
+					AudioStreamRate.AUTOMATIC,
+					AudioStreamChannels.MONO);
 				this._stream = stream;
 			}
 			catch (MLECallError __e)
@@ -258,7 +263,14 @@ public class WavPlayer
 			}
 		}
 	}
-
+	
+	@Override
+	protected void becomingPrimed()
+		throws MediaException
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/25
@@ -327,11 +339,16 @@ public class WavPlayer
 			throw toss;
 		}
 	}
-
+	
+	@Override
+	protected void becomingSolvent()
+		throws MediaException
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
 	 * @since 2025/12/25
 	 */
 	@Override
@@ -435,6 +452,20 @@ public class WavPlayer
 			AbstractPlayer.closeConnection(unrealizedIn);
 		}
 	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected void clockFastForward(long __micros)
+		throws MediaException
+	{
+		// TODO: This is for compatibility with old code, for variable width
+		// TODO: formats this should be handled here just for those
+		this.clockSet(__micros);
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -474,7 +505,21 @@ public class WavPlayer
 		else
 			this._curSample = curSample;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected boolean resetFastForward()
+	{
+		// Only variable width formats require fast-forward based setMediaTime
+		int format = this._wavFormat;
+		return format == __WavTools__.FORMAT_ALAW_WAV ||
+			format == __WavTools__.FORMAT_MULAW_WAV ||
+			format == __WavTools__.FORMAT_IMA_ADPCM;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/25

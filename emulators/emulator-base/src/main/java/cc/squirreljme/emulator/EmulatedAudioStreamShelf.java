@@ -87,7 +87,7 @@ public class EmulatedAudioStreamShelf
 		// Wrap renderer
 		return new EmulatedAudioSourceBracket(statePtr, 
 			EmulatedAudioStreamShelf.__attach(statePtr,
-				((EmulatedAudioStreamBracket)__stream).streamPtr,
+				((EmulatedAudioStreamBracket)__stream).instancePtr,
 				__renderer, __format, __rate, __channels),
 			(EmulatedAudioStreamBracket)__stream,
 			__renderer);
@@ -263,7 +263,13 @@ public class EmulatedAudioStreamShelf
 	 */
 	@NotNull
 	@SquirrelJMEVendorApi
-	public static AudioStreamBracket stream()
+	public static AudioStreamBracket stream(
+		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+			int __format,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
 		throws MLECallError
 	{
 		// Make sure the dynamic library is initialized
@@ -280,46 +286,12 @@ public class EmulatedAudioStreamShelf
 			
 			// Create wrapper for it
 			result = new EmulatedAudioStreamBracket(statePtr,
-				EmulatedAudioStreamShelf.__stream(statePtr));
+				EmulatedAudioStreamShelf.__stream(statePtr, __format,
+					__rate, __channels));
 			EmulatedAudioStreamShelf._stream = result;
 			return result;
 		}
 	}
-	
-	/**
-	 * Attaches the given renderer to the stream.
-	 *
-	 * @param __statePtr The state pointer.
-	 * @param __streamPtr The stream pointer.
-	 * @param __renderer The renderer to attach.
-	 * @param __format The format used.
-	 * @param __rate The rate.
-	 * @param __channels The channels.
-	 * @return The pointer to the renderer.
-	 * @throws MLECallError If the renderer could not be attached.
-	 * @since 2025/05/18
-	 */
-	native static long __attach(long __statePtr, long __streamPtr,
-		AudioStreamRenderer __renderer,
-		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
-			int __format,
-		@MagicConstant(valuesFromClass = AudioStreamRate.class)
-			int __rate,
-		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
-			int __channels)
-		throws MLECallError;
-	
-	/**
-	 * Disconnects the given connection.
-	 *
-	 * @param __statePtr The state pointer.
-	 * @param __connPtr The connection pointer.
-	 * @throws MLECallError On null arguments or if the connection could not
-	 * be disconnected.
-	 * @since 2025/05/26
-	 */
-	private static native void __disconnect(long __statePtr, long __connPtr)
-		throws MLECallError;
 	
 	/**
 	 * Initializes the dynamic library interface.
@@ -333,7 +305,12 @@ public class EmulatedAudioStreamShelf
 		{
 			// Does not need initialization?
 			if (EmulatedAudioStreamShelf._statePtr != 0)
+			{
+				if (EmulatedAudioStreamShelf._statePtr == 1)
+					throw new MLECallError("No audio support");
+					
 				return EmulatedAudioStreamShelf._statePtr;
+			}
 			
 			// Try multiple libraries for a given order
 			for (String order : EmulatedAudioStreamShelf.__dylibOrder())
@@ -345,10 +322,11 @@ public class EmulatedAudioStreamShelf
 					return maybe;
 				}
 			}
+			
+			// Could not initialize any audio
+			EmulatedAudioStreamShelf._statePtr = 1;
+			throw new MLECallError("No audio support");
 		}
-		
-		// Could not initialize any audio
-		throw new MLECallError("No audio support");
 	}
 	
 	/**
@@ -385,18 +363,6 @@ public class EmulatedAudioStreamShelf
 			return 0;
 		}
 	}
-	
-	/**
-	 * Performs the actual library load.
-	 *
-	 * @param __path The path to load.
-	 * @param __name The name of the library.
-	 * @return The state pointer.
-	 * @throws MLECallError If loading failed.
-	 * @since 2025/05/11
-	 */
-	static native long __dylibLoad(String __path, String __name)
-		throws MLECallError;
 	
 	/**
 	 * Returns the dynamic library order to use.
@@ -476,6 +442,53 @@ public class EmulatedAudioStreamShelf
 	}
 	
 	/**
+	 * Attaches the given renderer to the stream.
+	 *
+	 * @param __statePtr The state pointer.
+	 * @param __streamPtr The stream pointer.
+	 * @param __renderer The renderer to attach.
+	 * @param __format The format used.
+	 * @param __rate The rate.
+	 * @param __channels The channels.
+	 * @return The pointer to the renderer.
+	 * @throws MLECallError If the renderer could not be attached.
+	 * @since 2025/05/18
+	 */
+	native static long __attach(long __statePtr, long __streamPtr,
+		AudioStreamRenderer __renderer,
+		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+			int __format,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
+		throws MLECallError;
+	
+	/**
+	 * Disconnects the given connection.
+	 *
+	 * @param __statePtr The state pointer.
+	 * @param __connPtr The connection pointer.
+	 * @throws MLECallError On null arguments or if the connection could not
+	 * be disconnected.
+	 * @since 2025/05/26
+	 */
+	private static native void __disconnect(long __statePtr, long __connPtr)
+		throws MLECallError;
+	
+	/**
+	 * Performs the actual library load.
+	 *
+	 * @param __path The path to load.
+	 * @param __name The name of the library.
+	 * @return The state pointer.
+	 * @throws MLECallError If loading failed.
+	 * @since 2025/05/11
+	 */
+	static native long __dylibLoad(String __path, String __name)
+		throws MLECallError;
+	
+	/**
 	 * Returns the native stream pointer.
 	 *
 	 * @param __statePtr The state pointer.
@@ -483,6 +496,12 @@ public class EmulatedAudioStreamShelf
 	 * @throws MLECallError If it could not be obtained.
 	 * @since 2025/05/18
 	 */
-	native static long __stream(long __statePtr)
+	native static long __stream(long __statePtr,
+		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+			int __format,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
 		throws MLECallError;
 }

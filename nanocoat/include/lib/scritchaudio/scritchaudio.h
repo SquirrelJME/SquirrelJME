@@ -35,6 +35,14 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	/** The minimum sleeping time. */
+	#define SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS 16
+#else
+	/** The minimum sleeping time. */
+	#define SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS 0
+#endif
+	
 /**
  * ScritchAudio state structure.
  *
@@ -361,7 +369,7 @@ typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchaudio_loopIterateRenderFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNullable sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
 
 /**
@@ -532,6 +540,9 @@ typedef struct sjme_scritchaudio_apiFunctions
 	
 	/** Attaches or detaches a source. */
 	sjme_scritchaudio_sourceAttachFunc sourceAttach;
+	
+	/** Create a new audio stream. */
+	sjme_scritchaudio_streamCreateFunc streamCreate;
 } sjme_scritchaudio_apiFunctions;
 
 /**
@@ -541,10 +552,13 @@ typedef struct sjme_scritchaudio_apiFunctions
  */
 typedef struct sjme_scritchaudio_implFunctions
 {
+	/** The driver name. */
+	sjme_lpcstr driverName;
+	
 	/** Api initialization. */
 	sjme_scritchaudio_apiInitFunc apiInit;
 	
-	/** Disconnects a connection. */
+	/** Notification that a disconnection is about to occur. */
 	sjme_scritchaudio_disconnectFunc disconnect;
 	
 	/** Iterates the audio loop. */
@@ -598,6 +612,9 @@ typedef struct sjme_scritchaudio_bugs
 {
 	/** Audio is manually polled, there is no system managed loop. */
 	sjme_jboolean manualPoll;
+	
+	/** Writing to the output audio blocks until playback is finished. */
+	sjme_jboolean outputBlocks;
 } sjme_scritchaudio_bugs;
 
 /**
@@ -637,7 +654,10 @@ typedef struct sjme_scritchaudio_clock
 struct sjme_scritchaudioBase
 {
 	/** The lock for audio streams and otherwise. */
-	sjme_thread_spinLock lock;
+	sjme_thread_spinLock baseLock;
+	
+	/** The actual lock which should be used. */
+	sjme_thread_spinLock* lock;
 	
 	/** The allocation pool to use. */
 	sjme_alloc_pool pool;
@@ -689,6 +709,16 @@ struct sjme_scritchaudioBase
 
 	/** Called to bind the audio thread. */
 	sjme_thread_mainFunc bindAudioThread;
+	
+	/** Underlying streams/connections if this is double-layered. */
+	struct
+	{
+		/** The underlying stream. */
+		sjme_scritchaudio_stream stream;
+		
+		/** The underlying source. */
+		sjme_scritchaudio_source source;
+	} under;
 };
 
 /**
@@ -763,16 +793,7 @@ struct sjme_scritchaudio_streamBase
 
 		/** The handle to the device. */
 		void* handle;
-		
-		/** The stream this wrapped. */
-		sjme_scritchaudio_stream wrapped;
-
-		/** The source stream for mixing. */
-		sjme_scritchaudio_source wrappedSource;
 	} data;
-
-	/** The shared stream lock. */
-	sjme_thread_spinLock sharedLock;
 };
 
 struct sjme_scritchaudio_sourceBase
@@ -865,6 +886,14 @@ extern sjme_attrExport const sjme_scritchaudio_dylibApiFunc
 #define SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(x) \
 	SJME_SCRITCHANY_DYLIB_SYMBOL_DECLARE(audio, x)
 
+/** Casts to a @link sjme_scritchaudio_connection @endlink . */
+#define SJME_SAU_CAST_CONNECTION(x) \
+	((sjme_scritchaudio_connection)(x))
+
+/** Casts to a @link sjme_scritchaudio_stream @endlink . */
+#define SJME_SAU_CAST_STREAM(x) \
+	((sjme_scritchaudio_stream)(x))
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

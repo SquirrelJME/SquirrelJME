@@ -70,9 +70,24 @@ public interface Player
 	@Language("mime-type-reference")
 	String getContentType();
 	
+	/**
+	 * Returns the duration of the media in microseconds.
+	 *
+	 * @return The duration in microseconds that the media is. 
+	 * @throws IllegalStateException If this is in the closed state.
+	 * @since 2026/01/01
+	 */
 	@Api
-	long getDuration();
+	long getDuration()
+		throws IllegalStateException;
 	
+	/**
+	 * Returns the current position the media is playing at in microseconds.
+	 *
+	 * @return The microseconds for the current position. 
+	 * @throws IllegalStateException If this is in the closed state.
+	 * @since 2026/01/01
+	 */
 	@Api
 	long getMediaTime()
 		throws IllegalStateException;

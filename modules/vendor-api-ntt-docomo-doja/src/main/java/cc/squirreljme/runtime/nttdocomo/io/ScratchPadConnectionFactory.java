@@ -13,6 +13,8 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
+import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
@@ -37,12 +39,15 @@ public class ScratchPadConnectionFactory
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public Connection connect(String __part, int __mode, boolean __timeouts,
+	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
 	{
 		if (__part == null)
 			throw new NullPointerException("NARG");
+		
+		// This requires generic parts
+		UriGenericPart part = __part.asGeneric();
 		
 		// {@squirreljme.error AH05 Application JAD never set any available
 		// scratch pads.}
@@ -52,7 +57,9 @@ public class ScratchPadConnectionFactory
 		
 		// {@squirreljme.error AH0a URI is missing the starting triple
 		// slashes. (The URI part)}
-		if (!__part.startsWith("///"))
+		String path = part.getPath();
+		if (part.getAuthority() != null || path == null ||
+			!path.startsWith("/"))
 			throw new ConnectionNotFoundException("AH0a " + __part);
 		
 		// Which scratchpad is wanted?
@@ -61,63 +68,53 @@ public class ScratchPadConnectionFactory
 		int wantLen = Integer.MIN_VALUE;
 		try
 		{
-			// No parameters to the URI?
-			int semi = __part.indexOf(';');
-			if (semi < 0)
-				wantPad = Integer.parseInt(__part.substring(3),
-					10);
-				
-				// Parameters are given
-			else
+			// The scratchpad number is passed as the path
+			wantPad = Integer.parseInt(path.substring(1), 10);
+			
+			// Parse path parameters
+			for (int n = part.pathParamCount(), i = 0; i < n; i++)
 			{
-				// The wanted scratch pad
-				wantPad = Integer.parseInt(__part.substring(3, semi), 10);
+				// Get the item here
+				String item = part.pathParam(i);
 				
-				// Handle various parameters
-				String parms = __part.substring(semi + 1);
-				if (!parms.isEmpty())
-					for (String item : StringUtils.basicSplit(',',
-						parms))
-					{
-						// {@squirreljme.error AH0d Missing equal sign in the
-						// parameter. (The URI part)}
-						int eq = item.indexOf('=');
-						if (eq < 0)
+				// {@squirreljme.error AH0d Missing equal sign in the
+				// parameter. (The URI part)}
+				int eq = item.indexOf('=');
+				if (eq < 0)
+					throw new ConnectionNotFoundException(
+						"AH0d " + __part);
+				
+				// Parse the value
+				int val = Integer.parseInt(item.substring(
+					eq + 1), 10);
+				
+				// And store it accordingly
+				switch (item.substring(0, eq))
+				{
+					case "pos":
+						// {@squirreljme.error AH0f Invalid position
+						// for scratchpad. (The URI part)}
+						if (val < 0)
 							throw new ConnectionNotFoundException(
-								"AH0d " + __part);
-						
-						// Parse the value
-						int val = Integer.parseInt(item.substring(
-							eq + 1), 10);
-						
-						// And store it accordingly
-						switch (item.substring(0, eq))
-						{
-							case "pos":
-								// {@squirreljme.error AH0f Invalid position
-								// for scratchpad. (The URI part)}
-								if (val < 0)
-									throw new ConnectionNotFoundException(
-										"AH0f " + __part);
-								wantPos = val;
-								break;
-							
-							case "length":
-								// {@squirreljme.error AH0g Invalid length
-								// for scratchpad. (The URI part)}
-								if (val <= 0)
-									throw new ConnectionNotFoundException(
-										"AH0g " + __part);
-								wantLen = val;
-								break;
-							
-							// {@squirreljme.error AH0e Invalid parameter
-							// for scratch pads. (The URI part)}
-							default:
-								throw new ConnectionNotFoundException(
-									"AH0e " + __part);
-						}
-					}
+								"AH0f " + __part);
+						wantPos = val;
+						break;
+					
+					case "length":
+						// {@squirreljme.error AH0g Invalid length
+						// for scratchpad. (The URI part)}
+						if (val <= 0)
+							throw new ConnectionNotFoundException(
+								"AH0g " + __part);
+						wantLen = val;
+						break;
+					
+					// {@squirreljme.error AH0e Invalid parameter
+					// for scratch pads. (The URI part)}
+					default:
+						throw new ConnectionNotFoundException(
+							"AH0e " + __part);
+				}
 			}
 		}
 		
@@ -147,6 +144,12 @@ public class ScratchPadConnectionFactory
 			throw new ConnectionNotFoundException(
 				String.format("AH0h %s %d %d %d", __part, wantPos, wantLen,
 					params.getLength(wantPad)));
+		
+		// Final connection
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("Opened %d at [%x+%d] (from %s %s %s)",
+				wantPad, wantPos, wantLen,
+				__part, part.getPath(), part.pathParams());
 		
 		// Initialize the connection
 		return new ScratchPadConnection(params, wantPad, wantPos, wantLen);

@@ -224,6 +224,9 @@ struct sjme_scritchui_uiChoiceItemBase
 	
 	/** The number of pixels in the image. */
 	sjme_jint imageRgbNumPixels;
+	
+	/** Should the image RGB data be freed? */
+	sjme_jboolean freeImageRgb;
 };
 
 /** A list of choice items. */

@@ -15,13 +15,32 @@ static sjme_errorCode sjme_scritchaudio_winmm_peerNone(
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInValue sjme_jboolean explicit)
 {
+	HWAVEOUT handle;
+	
 	if (inState == NULL || inConn == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
+	
+	/* Closing our only stream? */
+	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM && explicit)
+	{
+		stream = (sjme_scritchaudio_stream)inConn;
+		
+		/* Is the handle valid? */
+		handle = inOutStream->data.handle;
+		if (handle != NULL)
+		{
+			/* Destroy. */
+			stream->data.handle = NULL;
+			
+			/* Close the handle. */
+			waveOutClose(handle);
+		}
+	}
 
-	/* WinMM does not care about any peers. */
+	/* WinMM does not care about any other peers. */
 	return SJME_ERROR_NONE;
 }
 
@@ -88,6 +107,14 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 
 	if (inState == NULL || inOutStream == NULL || inName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If automatic, choose a format to use. */
+	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
+		inFormat = SJME_SCRITCHAUDIO_FORMAT_INT_S32;
+	if (inRate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
+		inRate = SJME_SCRITCHAUDIO_RATE_HZ_44100;
+	if (inChannels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
+		inChannels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
 
 	/* Float is not supported. */
 	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_FLOAT_F32)
@@ -111,6 +138,9 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
 
 	/* Set stream details. */
+	inOutStream->format = inFormat;
+	inOutStream->rate = inRate;
+	inOutStream->channels = inChannels;
 	inOutStream->data.handle = handle;
 	inOutStream->connection.noPeers = sjme_scritchaudio_winmm_peerNone;
 	inOutStream->connection.peerDisconnect =

@@ -12,6 +12,7 @@
 
 static const sjme_scritchui_implFunctions sjme_scritchui_palmosFunctions =
 {
+	sjme_sm(.driverName, "palmos"),
 	sjme_sm(.apiInit, NULL),
 	sjme_sm(.choiceItemInsert, NULL),
 	sjme_sm(.choiceItemRemove, NULL),

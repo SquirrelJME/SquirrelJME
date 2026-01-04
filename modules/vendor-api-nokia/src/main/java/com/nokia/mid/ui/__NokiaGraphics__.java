@@ -333,7 +333,7 @@ class __NokiaGraphics__
 	@SquirrelJMEVendorApi
 	public void drawPixels(int[] __pixels, boolean __transparency,
 		int __offset, int __scanlength, int __x, int __y, int __w, int __h,
-		@MagicConstant(valuesFromClass = DirectGraphics.class) 
+		@MagicConstant(flagsFromClass = DirectGraphics.class) 
 		int __manipulation,
 		@MagicConstant(valuesFromClass = DirectGraphics.class) int __format)
 	{
@@ -835,9 +835,9 @@ class __NokiaGraphics__
 	 * supported by {@link DirectGraphics}.
 	 * @since 2025/11/25
 	 */
-	@MagicConstant(valuesFromClass = Sprite.class)
+	@MagicConstant(flagsFromClass = Sprite.class)
 	private static final int __nokiaToMIDPTransform(
-		@MagicConstant(valuesFromClass = DirectGraphics.class) int __trans)
+		@MagicConstant(flagsFromClass = DirectGraphics.class) int __trans)
 	{
 		// Return early if there's no manipulation to be done
 		if (__trans == 0 ||

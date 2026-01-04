@@ -18,8 +18,9 @@
  */
 static const sjme_scritchaudio_implFunctions sjme_scritchaudio_ossFunctions =
 {
+	sjme_sm(.driverName, "oss"),
 	sjme_sm(.apiInit, sjme_scritchaudio_oss_apiInit),
-	sjme_sm(.disconnect, sjme_scritchaudio_oss_disconnect),
+	sjme_sm(.disconnect, NULL),
 	sjme_sm(.loopIterate, sjme_scritchaudio_oss_loopIterate),
 	sjme_sm(.queryMidiPorts, sjme_scritchaudio_oss_queryMidiPorts),
 	sjme_sm(.sourceAttach, sjme_scritchaudio_oss_sourceAttach),
@@ -74,12 +75,4 @@ sjme_errorCode sjme_scritchaudio_oss_apiInit(
 
 	/* Success! Not much else to do here. */
 	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_scritchaudio_oss_disconnect(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn)
-{
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
 }

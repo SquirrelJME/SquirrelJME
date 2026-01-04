@@ -14,6 +14,7 @@
 
 const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 {
+	sjme_sm(.driverName, "fb"),
 	sjme_sm(.apiInit, sjme_scritchui_fb_apiInit),
 	sjme_sm(.choiceItemInsert, sjme_scritchui_fb_choiceItemInsert),
 	sjme_sm(.choiceItemRemove, sjme_scritchui_fb_choiceItemRemove),

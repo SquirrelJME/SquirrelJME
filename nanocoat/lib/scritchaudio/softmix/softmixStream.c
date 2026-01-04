@@ -9,6 +9,7 @@
 
 #include "lib/scritchaudio/softmix/softmixIntern.h"
 #include "sjme/fixed.h"
+#include "sjme/util.h"
 
 static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_renderSource(
 	sjme_attrInNotNull sjme_scritchaudio inState,
@@ -87,7 +88,7 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 	if (wrappedState == NULL || wrappedSource == NULL || destInfo == NULL ||
 		destBuf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
+	
 	/* Recover the top level state. */
 	inState = sjme_atomic_g(sjme_pointer, &wrappedState->topState);
 	if (inState == NULL)
@@ -126,7 +127,12 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 		memset(&sourceInfo, 0, sizeof(sourceInfo));
 		if (sjme_error_is(error = inState->intern->calcRenderInfo(
 			sourceState, sourceStream, source, &sourceInfo)))
-			goto fail_any;
+		{
+			/* Let audio process still. */
+			anyError = sjme_error_default(error);
+			first = SJME_JNI_FALSE;
+			continue;
+		}
 
 		/* Calculate the rate scale. */
 		if (sourceInfo.rate != destInfo->rate)
@@ -145,19 +151,18 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 		if (sjme_error_is(error = sjme_scritchaudio_softmix_renderSource(
 			sourceState, source, &sourceInfo,
 			destInfo, destBuf, first)))
-			goto fail_any;
+		{
+			/* Let audio process still. */
+			anyError = sjme_error_default(error);
+			first = SJME_JNI_FALSE;
+			continue;
+		}
 		
 		/* No longer first. */
 		first = SJME_JNI_FALSE;
 
 		/* Render and mix in the next source. */
 		continue;
-fail_any:
-		/* Let audio process still. */
-		anyError = sjme_error_default(error);
-		
-		/* No longer first. */
-		first = SJME_JNI_FALSE;
 	}
 
 	/* Success? */
@@ -169,40 +174,49 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerNone(
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInValue sjme_jboolean explicit)
 {
+	sjme_errorCode error;
 	sjme_scritchaudio wrappedState;
-	sjme_scritchaudio_connection wrappedConn;
+	sjme_scritchaudio_stream underStream;
+	sjme_scritchaudio_source underSource;
 	
 	if (inState == NULL || inConn == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
-
+	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-
-	/* Is this a wrapped connection we know about? */
-	wrappedConn = NULL;
-	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM)
-		wrappedConn = SJME_AS_AUDIO_CONN(
-			SJME_AS_AUDIO_STREAM(inConn)->data.wrapped);
-	else if (inConn->type == SJME_SCRITCHAUDIO_CONN_SOURCE)
-		wrappedConn = SJME_AS_AUDIO_CONN(
-			SJME_AS_AUDIO_SOURCE(inConn)->data.wrapped);
-
-	/* Do we know about this connection type? */
-	if (wrappedConn != NULL)
+	
+	/* If the stream is being closed, disconnect the underlying stream. */
+	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM && explicit)
 	{
-		/* Handle disconnect if explicit, otherwise soft dispatch */
-		if (explicit)
-			return wrappedState->api->disconnect(wrappedState, wrappedConn);
-		return wrappedState->intern->peerNoneDispatch(wrappedState,
-			wrappedConn, SJME_JNI_FALSE);
+		/* Close the underlying source. */
+		underSource = inState->under.source;
+		if (underSource != NULL)
+		{
+			/* Disconnect the source. */
+			inState->under.source = NULL;
+			if (sjme_error_is(error = wrappedState->api->disconnect(
+				wrappedState, SJME_SAU_CAST_CONNECTION(underSource))))
+				return sjme_error_default(error);
+		}
+		
+		/* Remove the underlying stream. */
+		underStream = inState->under.stream;
+		if (underStream != NULL)
+		{
+			/* Disconnect the source. */
+			inState->under.stream = NULL;
+			if (sjme_error_is(error = wrappedState->api->disconnect(
+				wrappedState, SJME_SAU_CAST_CONNECTION(underStream))))
+				return sjme_error_default(error);
+		}
 	}
-
-	/* Otherwise, do nothing. */
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -213,47 +227,211 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerDisconnect(
 	sjme_attrInValue sjme_jboolean explicit)
 {
 	sjme_scritchaudio wrappedState;
-	sjme_scritchaudio_connection wrappedConn;
-	sjme_scritchaudio_connection wrappedPeer;
+	sjme_scritchaudio_stream underStream;
+	sjme_scritchaudio_source underSource;
 	
 	if (inState == NULL || inConn == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
+	
+	/* Nothing currently needs to be done here as when a peer disconnects */
+	/* we should not try to change the underlying audio rate if any sound */
+	/* is playing. */
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
 
-	/* Recover wrapped state. */
+static sjme_errorCode sjme_scritchaudio_softmix_underlay(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
+	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels,
+	sjme_attrOutNotNull sjme_scritchaudio_stream* outUnderStream)
+{
+	sjme_errorCode error;
+	sjme_jint i, n;
+	sjme_list(sjme_scritchaudio_source)* sources;
+	sjme_scritchaudio_source source;
+	sjme_scritchaudio_format bestFormat;
+	sjme_scritchaudio_rate bestRate;
+	sjme_scritchaudio_channels bestChannels;
+	sjme_scritchaudio wrappedState;
+	sjme_scritchaudio_stream underStream;
+	sjme_scritchaudio_source underSource;
+	
+	if (inState == NULL || outUnderStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover the wrapped state. */
 	wrappedState = inState->wrappedState;
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-
-	/* Is this a wrapped connection we know about? */
-	wrappedConn = NULL;
-	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM)
-		wrappedConn = SJME_AS_AUDIO_CONN(
-			SJME_AS_AUDIO_STREAM(inConn)->data.wrapped);
-	else if (inConn->type == SJME_SCRITCHAUDIO_CONN_SOURCE)
-		wrappedConn = SJME_AS_AUDIO_CONN(
-			SJME_AS_AUDIO_SOURCE(inConn)->data.wrapped);
 	
-	/* Is this a wrapped peer we know about? */
-	wrappedPeer = NULL;
-	if (inPeer->type == SJME_SCRITCHAUDIO_CONN_STREAM)
-		wrappedPeer = SJME_AS_AUDIO_CONN(
-			SJME_AS_AUDIO_STREAM(inPeer)->data.wrapped);
-	else if (inPeer->type == SJME_SCRITCHAUDIO_CONN_SOURCE)
-		wrappedPeer = SJME_AS_AUDIO_CONN(
-			SJME_AS_AUDIO_SOURCE(inPeer)->data.wrapped);
-
-	/* Do we know about this connection type? */
-	/* Forward disconnect signal to the lower level. */
-	if (wrappedConn != NULL && wrappedPeer != NULL)
-		if (wrappedConn->peerDisconnect != NULL)
-			return wrappedConn->peerDisconnect(wrappedState,
-				wrappedConn, wrappedPeer, explicit);
-
-	/* Otherwise, do nothing. */
+	/* Start with the worst format, it only gets better. */
+	bestFormat = SJME_SCRITCHAUDIO_FORMAT_BYTE_U8;
+	bestRate = SJME_SCRITCHAUDIO_RATE_HZ_8000;
+	bestChannels = SJME_SCRITCHAUDIO_CHANNELS_MONO;
+	
+	/* Do the input formats improve on the worst format? */
+	if (inFormat != SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
+		bestFormat = sjme_max(bestFormat, inFormat);
+	if (inRate != SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
+		bestRate = sjme_max(bestRate, inRate);
+	if (inChannels != SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
+		bestChannels = sjme_max(bestChannels, inChannels);
+	
+	/* Determine the best format based on all the currently connected */
+	/* streams, so we can choose a better format. */
+	if (inState->stream != NULL && inState->stream->sources != NULL)
+	{
+		/* Go through each attached source. */
+		sources = inState->stream->sources;
+		for (i = 0, n = sources->length; i < n; i++)
+		{
+			source = sources->elements[i];
+			if (source == NULL)
+				continue;
+			
+			/* Does this source use a better format? */
+			if (source->format != SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
+				bestFormat = sjme_max(bestFormat, source->format);
+			if (source->rate != SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
+				bestRate = sjme_max(bestRate, source->rate);
+			if (source->channels != SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
+				bestChannels = sjme_max(bestChannels, source->channels);
+		}
+	}
+	
+	/* Does the underlying stream exist? */
+	underStream = inState->under.stream;
+	underSource = inState->under.source;
+	if (underStream != NULL)
+	{
+		/* If it does, is the format not the best one desired? */
+		if (underSource == NULL ||
+			underSource->format != bestFormat ||
+			underSource->rate != bestRate ||
+			underSource->channels != bestChannels)
+		{
+			/* Disconnect the source if there is one. */
+			if (underSource != NULL)
+			{
+				/* Disconnect the source. */
+				inState->under.source = NULL;
+				if (sjme_error_is(error = wrappedState->api->disconnect(
+					wrappedState, SJME_SAU_CAST_CONNECTION(underSource))))
+					goto fail_disconnectSource;
+				
+				/* No longer connected. */
+				underSource = NULL;
+			}
+			
+			/* Disconnect the stream. */
+			inState->under.stream = NULL;
+			if (sjme_error_is(error = wrappedState->api->disconnect(
+				wrappedState, SJME_SAU_CAST_CONNECTION(underStream))))
+				goto fail_disconnectStream;
+			
+			/* Destroyed! */
+			underStream = NULL;
+		}
+		
+		/* If the underlying stream is still here, then it is the same */
+		/* format and we need not reopen it. */
+		if (underStream != NULL)
+		{
+			*outUnderStream = underStream;
+			return SJME_ERROR_NONE;
+		}
+	}
+	
+	/* Does the underlying system support this exact best case? */
+	underStream = NULL;
+	if (sjme_error_is(error = wrappedState->intern->streamCreate(wrappedState,
+		&underStream, "SquirrelJMEScritchAudio",
+		bestFormat, bestRate, bestChannels)))
+	{
+		/* Unsupported format is okay, we will just try again. */
+		if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
+			goto fail_underlayCreate;
+		
+		/* Since we really have no idea what the sound card supports */
+		/* natively, we really only have the choice of opening a stream */
+		/* with the almost best options possible. Of course, this */
+		/* ultimately could fail in the end. */
+		bestFormat = sjme_max(bestFormat, SJME_SCRITCHAUDIO_FORMAT_INT_S32);
+		bestRate = sjme_max(bestRate, SJME_SCRITCHAUDIO_RATE_HZ_44100);
+		bestChannels = sjme_max(bestChannels,
+			SJME_SCRITCHAUDIO_CHANNELS_STEREO);
+	}
+	
+	/* Try worse and worse formats. */
+	while (underStream == NULL)
+		if (sjme_error_is(error = wrappedState->intern->streamCreate(
+			wrappedState, &underStream, "SquirrelJMEScritchAudio",
+			bestFormat, bestRate, bestChannels)))
+		{
+			/* Some other error?. */
+			if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
+				goto fail_underlayCreate;
+			
+			/* Reduce the rate. */
+			if (sjme_error_is(error = inState->intern->fallbackNext(
+				inState, bestFormat, bestRate, bestChannels,
+				&inFormat, &inRate, &inChannels)))
+				goto fail_rateReduce;
+		}
+	
+	/* Never got a stream? */
+	if (underStream == NULL)
+	{
+		error = SJME_ERROR_AUDIO_NO_RESOURCES;
+		goto fail_noStream;
+	}
+	
+	/* Directly attach to the source for rendering. */
+	if (sjme_error_is(error = wrappedState->api->sourceAttach(
+		wrappedState, underStream, &underSource,
+		sjme_scritchaudio_softmix_render,
+		bestFormat, bestRate, bestChannels, NULL)))
+		goto fail_attach;
+	
+	/* This stream and source are now valid! */
+	inState->under.stream = underStream;
+	inState->under.source = underSource;
+	
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+	/* Debug. */
+	sjme_message("softmixUnderlay(%p): Attached with %d %d %d!",
+		inState, bestFormat, bestRate, bestChannels);
+#endif
+	
+	/* Return the created stream. */
+	*outUnderStream = underStream;
 	return SJME_ERROR_NONE;
+	
+fail_attach:
+	/* Since we could not attach, disconnect the stream so we do not leave */
+	/* the sound card open. */
+	if (underStream != NULL)
+		wrappedState->api->disconnect(wrappedState,
+			SJME_SAU_CAST_CONNECTION(underStream));
+fail_noStream:
+fail_disconnectSource:
+fail_disconnectStream:
+fail_underlayCreate:
+fail_rateReduce:
+	
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+	/* Debug. */
+	sjme_message("softmixUnderlay(%p): Failed with %d!",
+		inState, error);
+#endif
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
@@ -263,7 +441,7 @@ sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 {
 	sjme_errorCode error;
 	sjme_scritchaudio wrappedState;
-	sjme_scritchaudio_source wrapped;
+	sjme_scritchaudio_stream underStream;
 	
 	if (inState == NULL || inStream == NULL || inSource == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -279,6 +457,14 @@ sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 	inSource->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
 	inSource->connection.peerDisconnect =
 		sjme_scritchaudio_softmix_peerDisconnect;
+	
+	/* Make sure the underlying stream is properly primed, note that */
+	/* the source might want a better format than what is currently used. */
+	underStream = NULL;
+	if (sjme_error_is(error = sjme_scritchaudio_softmix_underlay(
+		inState, inSource->format, inSource->rate, inSource->channels,
+		&underStream)) || underStream == NULL)
+		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -292,13 +478,9 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels)
 {
-	sjme_scritchaudio wrappedState;
 	sjme_errorCode error;
-	sjme_scritchaudio_stream wrapped;
-	sjme_scritchaudio_format origFormat;
-	sjme_scritchaudio_rate origRate;
-	sjme_scritchaudio_channels origChannels;
-	sjme_scritchaudio_source wrappedSource;
+	sjme_scritchaudio wrappedState;
+	sjme_scritchaudio_stream underStream;
 	
 	if (inState == NULL || inOutStream == NULL || inName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -308,74 +490,18 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* If automatic, choose a format to use. */
-	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
-		inFormat = SJME_SCRITCHAUDIO_FORMAT_INT_S32;
-	if (inRate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
-		inRate = SJME_SCRITCHAUDIO_RATE_HZ_44100;
-	if (inChannels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
-		inChannels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
-
-	/* Remember the original values, used for audio conversion. */
-	origFormat = inFormat;
-	origRate = inRate;
-	origChannels = inChannels;
-
-	/* Fallback to less precise formats. */
-	wrapped = NULL;
-	while (wrapped == NULL)
-	{
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-		/* Debug. */
-		sjme_message("streamCreate(%d, %d, %d)",
-			inFormat, inRate, inChannels);
-#endif
-		
-		/* Try to use the requested format. */
-		if (sjme_error_is(error = wrappedState->intern->streamCreate(
-			wrappedState, &wrapped, inName, inFormat, inRate, inChannels)) ||
-			wrapped == NULL)
-		{
-			/* Only check against unsupported format. */
-			if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
-				return sjme_error_default(error);
-			
-			/* Reduce the rate. */
-			if (sjme_error_is(error = inState->intern->fallbackNext(
-				inState, origFormat, origRate, origChannels,
-				&inFormat, &inRate, &inChannels)))
-				return sjme_error_default(error);
-		}
-	}
-
-	/* Set stream details. */
-	/* Note that if the stream needs to be wrapped with a format conversion */
-	/* that is handled in the renderer by comparing the wrapped format */
-	/* with the renderer format. If a renderer happens to have the same */
-	/* format, then we do no conversion. */
-	inOutStream->data.wrapped = wrapped;
+	/* Set peer callbacks. */
 	inOutStream->connection.noPeers = sjme_scritchaudio_softmix_peerNone;
 	inOutStream->connection.peerDisconnect =
 		sjme_scritchaudio_softmix_peerDisconnect;
 	
-	/* Setup underlying source stream to render mixed audio. */
-	wrappedSource = NULL;
-	if (sjme_error_is(error = wrappedState->api->sourceAttach(wrappedState,
-		wrapped, &wrappedSource,
-		sjme_scritchaudio_softmix_render, inFormat, inRate, inChannels,
-		NULL)) || wrapped == NULL)
-		goto fail_subSource;
-
-	/* Success! */
+	/* Make sure the underlying stream is properly primed. */
+	underStream = NULL;
+	if (sjme_error_is(error = sjme_scritchaudio_softmix_underlay(
+		inState, inFormat, inRate, inChannels,
+		&underStream)) || underStream == NULL)
+		return sjme_error_default(error);
+	
+	/* Nothing else needs to be done as this is all virtualized. */
 	return SJME_ERROR_NONE;
-	
-fail_allocResult:
-fail_subSource:
-	if (wrapped != NULL)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-	
-	return sjme_error_default(error);
 }

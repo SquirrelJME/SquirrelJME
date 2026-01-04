@@ -94,6 +94,20 @@ public final class JarPackageShelf
 		throws MLECallError;
 	
 	/**
+	 * Returns the list of resources within the JAR.
+	 *
+	 * @param __jar The library to get the content listing for.
+	 * @return The list of contents, if this could not be obtained or does
+	 * not make sense for the type of library this will be {@code null}.
+	 * @throws MLECallError On null arguments.
+	 * @since 2026/01/01
+	 */
+	@SquirrelJMEVendorApi
+	@Nullable
+	public static native String[] list(@NotNull JarPackageBracket __jar)
+		throws MLECallError;
+	
+	/**
 	 * Opens the give resource from the given Jar as an input stream.
 	 *
 	 * @param __jar The JAR to open.

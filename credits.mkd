@@ -13,6 +13,7 @@ is used, refer to that for library bring-ins.
      * Mingw cross compilation.
  * _"AShiningRay"_ 
    * Nokia Graphics APIs
+   * Nokia Sound APIs
    * ScritchUI:
      * GTK2 Interface:
        * Memory leak fixes.
@@ -20,6 +21,7 @@ is used, refer to that for library bring-ins.
        * `copyArea()` implementation.
        * Polygon and arc drawing implementations.
        * Fixes and additions to rotation/scaling translations.
+   * WAVE File Playback
  * _"crystalct"_
    * RatufaCoat updates related to LibRetro:
      * PS3 Toolchain updates.
@@ -33,6 +35,10 @@ is used, refer to that for library bring-ins.
      * PS2 Toolchain updates.
  * Guy Perfect
    * Keitai Wiki Community Music Implementation
+ * _Jinette Rufflepaws_
+   * For all the love and support you have given me over the years!
+   * Correct MIDI timings and codes.
+   * The `PSXIntro.mid` and `WinXPShutdown.mid` sample MIDIs, self composed.
  * Sandy Vujaković
    * Documentation:
      * Contributing.

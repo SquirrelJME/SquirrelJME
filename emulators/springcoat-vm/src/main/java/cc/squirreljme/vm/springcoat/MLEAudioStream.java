@@ -149,11 +149,14 @@ public enum MLEAudioStream
 		 * {@inheritDoc}
 		 * @since 2025/06/07
 		 */
+		@SuppressWarnings("MagicConstant")
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new AudioStreamObject(__thread.machine,
-				AudioStreamShelf.stream());
+				AudioStreamShelf.stream((Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2]));
 		}
 	},
 	

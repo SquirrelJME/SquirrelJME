@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
-import javax.microedition.media.MediaException;
 import javax.microedition.media.control.MIDIControl;
 
 /**
@@ -33,20 +32,30 @@ public class MTrkTracker
 	/** Do we want an event or a delta? */
 	private volatile boolean _wantEvent;
 	
+	/** The timing that is shared for all MIDI tracks. */
+	final MidiTimeDiv _timeDiv;
+	
+	/** Has the track ended? */
+	volatile boolean _trackEnded;
+	
 	/**
 	 * Initializes the tracker for the single track.
 	 *
 	 * @param __track The track to follow.
+	 * @param __timeDiv The time division.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/25
 	 */
-	public MTrkTracker(MTrkParser __track)
+	public MTrkTracker(MTrkParser __track, MidiTimeDiv __timeDiv)
 		throws NullPointerException
 	{
-		if (__track == null)
+		if (__track == null || __timeDiv == null)
 			throw new NullPointerException("NARG");
 		
 		this.parser = __track;
+		
+		// Store the time division
+		this._timeDiv = __timeDiv;
 		
 		// Load byte array from the input
 		ByteArrayInputStream input = __track.inputStream();
@@ -55,71 +64,72 @@ public class MTrkTracker
 	}
 	
 	/**
+	 * Duplicate this tracker, generally for duration calculation.
+	 *
+	 * @return The duplicated tracker, note the time division is copied.
+	 * @since 2026/01/01
+	 */
+	public MTrkTracker duplicate()
+	{
+		return new MTrkTracker(this.parser,
+			this._timeDiv.duplicate());
+	}
+	
+	/**
 	 * Plays the next note.
 	 *
-	 * @param __midiTracker The MIDI tracker being used.
-	 * @param __control The control to play into.
+	 * @param __play The control to play into, if {@code null} then
+	 * no events will be sent anywhere.
+	 * @param __squelch The control to play into, if not null then
+	 * controls will go into here.
 	 * @return The delta for the current event.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/25
 	 */
-	public int playNext(MidiTracker __midiTracker, MIDIControl __control)
-		throws NullPointerException
+	public int playNext(MIDIControl __play, MIDIControl __squelch)
 	{
-		if (__midiTracker == null || __control == null)
-			throw new NullPointerException("NARG");
-		
 		// Last tracked if we want an event
 		boolean wantEvent = this._wantEvent;
 		
+		// If we are at the end of the track, there is no delta and we cannot
+		// read any more events either
+		if (this._trackEnded)
+		{
+			this._wantEvent = false;
+			return 0;
+		}
+		
 		// Read in delta time if we do not want an event
-		int delta;
 		if (!wantEvent)
 		{
 			// Read delta time
-			delta = this.readVariable();
+			int delta = this.readVariable();
 			
 			// We are at a delta, we need to stop for timing
-			if (delta > 0)
-			{
-				this._wantEvent = true;
-				return delta;
-			}
+			this._wantEvent = true;
+			return delta;
 		}
-		
-		// Delta was not read
-		else
-			delta = 0;
 		
 		// Read in event
 		int event = this.read();
 		
-		// Handle
+		// End of track, no more events in this track
 		if (event == 0xFF)
-		{
-			try
-			{
-				if (this.__eventMeta(__midiTracker))
-					if (__midiTracker.player.decrementLoop())
-						__midiTracker.player.stopViaMedia();
-					else
-						__midiTracker.player.loopViaMedia();
-			}
-			catch (MediaException __e)
-			{
-				throw new RuntimeException(__e.getMessage(), __e);
-			}
-		}
+			this.__eventMeta();
+		
+		// System Event
 		else if (event == 0xF0 || event == 0xF7)
-			this.__eventSysEx(event, __control);
+			this.__eventSysEx(event, __play, __squelch);
+		
+		// Normal MIDI Event
 		else
-			this.__eventMidi(event, __control);
+			this.__eventMidi(event, __play, __squelch);
 		
 		// We do not want an event here, we need to read a delta
 		this._wantEvent = false;
 		
-		// Return the read in delta
-		return delta;
+		// All events have a delta-time of zero, if the next delta ends up
+		// being zero as well, then we will continue events without sleeping
+		return 0;
 	}
 	
 	/**
@@ -132,16 +142,10 @@ public class MTrkTracker
 	{
 		ByteArrayInputStream input = this.input;
 		
-		// Read in single value
+		// Read in single value, if EOF, just zero
 		int val = input.read();
 		if (val < 0)
-		{
-			// Reset to beginning
-			this.reset();
-			
-			// Read again
-			return input.read() & 0xFF;
-		}
+			return -1;
 		
 		// Return value masked to normal byte
 		return val & 0xFF;
@@ -205,26 +209,26 @@ public class MTrkTracker
 	 */
 	public void reset()
 	{
+		// Reset buffer to the start
 		ByteArrayInputStream input = this.input;
-		
 		input.reset();
 		input.mark(0);
+		
+		// Track is not ended
+		this._trackEnded = false;
+		
+		// MIDI always starts at a delta
+		this._wantEvent = false;
 	}
 	
 	/**
 	 * Handles a meta event, which is ignored.
 	 *
-	 * @param __midiTracker The MIDI tracker being used.
 	 * @return Will return {@code true} to stop playback.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/26
 	 */
-	private boolean __eventMeta(MidiTracker __midiTracker)
-		throws NullPointerException
+	private boolean __eventMeta()
 	{
-		if (__midiTracker == null)
-			throw new NullPointerException("NARG");
-		
 		// Read in all the data
 		int type = this.read();
 		int len;
@@ -265,7 +269,7 @@ public class MTrkTracker
 				
 				// End of track
 			case 0x2F:
-				this.reset();
+				this._trackEnded = true;
 				return true;
 				
 				// Set Tempo
@@ -275,11 +279,25 @@ public class MTrkTracker
 						((bulk[1] & 0xFF) << 8) |
 						(bulk[2] & 0xFF);
 					
-					// Debug
-					Debugging.debugNote("MIDI Tempo: %d", tempo);
+					// Never divide by zero
+					if (tempo == 0)
+						tempo = 1;
 					
-					// Set new tempo
-					__midiTracker._nanosPerTickDiv = tempo * 1__000L;
+					// We need the original track nanos per tickDiv to
+					// recalculate what the tempo should be
+					MidiTimeDiv timeDiv = this._timeDiv;
+					long tickDivOrig = timeDiv._tickDiv;
+					long nanosPerTickDivOrig = timeDiv._nanosPerTickDivOrig;
+					
+					// Debug
+					Debugging.debugNote("MIDI Tempo: " +
+						"td=%d ntd=%d tempo=%d",
+						tickDivOrig, nanosPerTickDivOrig,
+						tempo);
+					
+					// Set new tempo (nanos / ticks)
+					timeDiv._nanosPerTickDiv =
+						(tempo * 1_000L) / tickDivOrig;
 				}
 				break;
 			
@@ -293,6 +311,10 @@ public class MTrkTracker
 					int notated32NoteInMidiQuarter = bulk[3];
 					
 					// TODO: ??????
+					Debugging.debugNote("MIDI Time Signature: " +
+							"num=%d den=%d cpm=%d nnmd=%d",
+						num, den,
+						clocksPerMetronome, notated32NoteInMidiQuarter);
 				}
 				break;
 				
@@ -309,40 +331,54 @@ public class MTrkTracker
 	 * Handles a normal MIDI event.
 	 *
 	 * @param __event The event.
-	 * @param __control The control to send to.
+	 * @param __play The control to send to.
+	 * @param __squelch The squelch controller.
 	 * @since 2024/02/26
 	 */
-	private void __eventMidi(int __event, MIDIControl __control)
+	private void __eventMidi(int __event, MIDIControl __play,
+		MIDIControl __squelch)
 	{
+		// Should this play when squelched?
+		boolean squelchPlay = false;
+		
 		// Determine which data is to be read in
 		int data1 = 0;
 		int data2 = 0;
 		switch (__event & 0b1111_0000)
 		{
-				// One-byte
+				// One-byte (squelchable)
 			case 0b1100_0000:	// Program change
 			case 0b1101_0000:	// Channel pressure
+				squelchPlay = true;
 				data1 = this.read();
 				break;
 			
 				// Two-byte
 			case 0b1000_0000:	// Note Off
 			case 0b1001_0000:	// Note On
+				data1 = this.read();
+				data2 = this.read();
+				break;
+				
+				// Two-byte (squelchable)
 			case 0b1010_0000:	// After touch
 			case 0b1110_0000:	// Pitch wheel
+				squelchPlay = true;
 				data1 = this.read();
 				data2 = this.read();
 				break;
 				
 				// Control change is special as it may be double byte or
-				// single byte depending on the message
+				// single byte depending on the message (squelchable)
 			case 0b1011_0000:
+				squelchPlay = true;
 				data1 = this.read();
 				data2 = this.read();
 				break;
 			
-				// Special messages
+				// Special messages (squelchable)
 			case 0b1111_0000:
+				squelchPlay = true;
 				if (__event == 0b1111_0010)
 				{
 					data1 = this.read();
@@ -354,15 +390,20 @@ public class MTrkTracker
 				
 			default:
 				// Implied channel zero event
+				squelchPlay = true;
 				if ((__event & 0x80) == 0)
 				{
 					__event = 0b1011_0000;
 					data1 = this.read();
 				}
+				break;
 		}
 		
 		// Send event
-		__control.shortMidiEvent(__event, data1, data2);
+		if (__play != null)
+			__play.shortMidiEvent(__event, data1, data2);
+		else if (squelchPlay && __squelch != null)
+			__squelch.shortMidiEvent(__event, data1, data2);
 	}
 	
 	/**
@@ -370,9 +411,11 @@ public class MTrkTracker
 	 *
 	 * @param __event The event.
 	 * @param __control The control to send to.
+	 * @param __squelch The squelch controller.
 	 * @since 2024/02/26
 	 */
-	private void __eventSysEx(int __event, MIDIControl __control)
+	private void __eventSysEx(int __event, MIDIControl __control,
+		MIDIControl __squelch)
 	{
 		// Read in variable length
 		int length = this.readVariable();
@@ -381,6 +424,7 @@ public class MTrkTracker
 		byte[] sysEx = this.readBulk(length);
 		
 		// Send long message
-		__control.longMidiEvent(sysEx, 0, length);
+		if (__control != null)
+			__control.longMidiEvent(sysEx, 0, length);
 	}
 }

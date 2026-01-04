@@ -117,8 +117,6 @@ public class InfoThread
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
 	 * @since 2024/01/20
 	 */
 	@Override

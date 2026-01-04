@@ -147,9 +147,6 @@ public class Mystify
 			for (int i = 0; i < Mystify.NUM_POINTS; i++)
 				direction[i] = this.__newDirection(new Point(),
 					random.nextBoolean(), random.nextBoolean());
-				
-			// We do not draw over every pixel
-			this.setPaintMode(false);
 		}
 		
 		/**
@@ -163,7 +160,7 @@ public class Mystify
 			int w = this.getWidth(),
 				h = this.getHeight();
 			
-			// Needed for cycling	
+			// Needed for cycling
 			Random random = this.random;
 			
 			// Needed for drawing

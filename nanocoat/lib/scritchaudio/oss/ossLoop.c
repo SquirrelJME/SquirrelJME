@@ -30,19 +30,21 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Recover stream, ignore if not ready yet. */
-	inStream = inState->stream;
+	/* Recover stream. */
+	inStream = (inStream != NULL ? inStream : inState->stream);
 	if (inStream == NULL)
-		return SJME_ERROR_NONE;
-	
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-	sjme_message("OSS Tick: %lld", inState->clock.clock.full / 1000000);
-#endif
+		return SJME_ERROR_AUDIO_DESTROYED;
+
+	/* Recover the file descriptor. */
+	fd = inStream->data.fd;
+	if (fd == -1)
+		return SJME_ERROR_AUDIO_DESTROYED;
 
 	/* Recover the single source. */
 	sources = inStream->sources;
 	if (sources == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_AUDIO_AWAITING;
+	
 	source = NULL;
 	for (i = 0, n = sources->length; i < n; i++)
 	{
@@ -53,10 +55,12 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 
 	/* None found? */
 	if (source == NULL)
-		return SJME_ERROR_NONE;
-
-	/* Recover the file descriptor. */
-	fd = inStream->data.fd;
+		return SJME_ERROR_AUDIO_AWAITING;
+	
+	/* Calculate the render info. */
+	if (sjme_error_is(error = inState->intern->calcRenderInfo(
+		inState, inStream, source, renderInfo)))
+		return sjme_error_default(error);
 	
 	/* Allocate sample buffer */
 	bufSize = renderInfo->bufSize;

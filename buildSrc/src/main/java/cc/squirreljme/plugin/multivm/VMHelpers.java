@@ -750,6 +750,42 @@ public final class VMHelpers
 	}
 	
 	/**
+	 * Parses a full extra path.
+	 *
+	 * @param __exLib Extra library path.
+	 * @return The extra path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/01/02
+	 */
+	public static List<Path> fullExtra(String __exLib)
+		throws NullPointerException
+	{
+		if (__exLib == null)
+			throw new NullPointerException("NARG");
+		
+		List<Path> rv = new ArrayList<>();
+		for (Path p : VMHelpers.classpathDecode(__exLib))
+		{
+			// Add contents of a given directory
+			if (Files.isDirectory(p))
+				try (Stream<Path> s = Files.list(p))
+				{
+					rv.addAll(Arrays.asList(s.toArray(Path[]::new)));
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			
+			// Add single path
+			else
+				rv.add(p);
+		}
+		
+		return rv;
+	}
+	
+	/**
 	 * Returns the full suite libraries for a given task.
 	 * 
 	 * @param __task The task to get.

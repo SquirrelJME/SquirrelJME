@@ -58,7 +58,7 @@ sjme_errorCode sjme_scritchaudio_core_loopIterate(
 	
 sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
+	sjme_attrInNullable sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
 
 sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(

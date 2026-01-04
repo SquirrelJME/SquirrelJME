@@ -35,8 +35,6 @@ public class DylibEventLoopInterface
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
 	 * @since 2024/12/22
 	 */
 	@Override

@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.media.MediaException;
 import org.intellij.lang.annotations.Language;
 
@@ -52,6 +53,17 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
+	@Override
+	protected void becomingPrimed()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/04/24
 	 */
 	@Override
@@ -63,8 +75,17 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
+	 * @since 2026/01/03
+	 */
+	@Override
+	protected void becomingSolvent()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/04/24
 	 */
 	@Override
@@ -83,6 +104,17 @@ public final class NullPlayer
 	@Override
 	@SquirrelJMEVendorApi
 	protected void becomingStopped()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected void clockFastForward(long __micros)
 		throws MediaException
 	{
 		// Does nothing
@@ -130,6 +162,18 @@ public final class NullPlayer
 	{
 		// There is no duration for null media
 		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected boolean resetFastForward()
+	{
+		// Everything is always zero length and there is no special
+		// fast-forward logic needed
+		return false;
 	}
 	
 	/**

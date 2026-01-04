@@ -153,7 +153,10 @@ public class NokiaOTAPlayer
 			{
 				this._data = StreamUtils.readAll(in);
 
-				stream = AudioStreamShelf.stream();
+				stream = AudioStreamShelf.stream(
+					AudioStreamFormat.AUTOMATIC,
+					AudioStreamRate.AUTOMATIC,
+					AudioStreamChannels.MONO);
 				this._stream = stream;
 			}
 			catch (MLECallError | IOException __e)
@@ -166,7 +169,14 @@ public class NokiaOTAPlayer
 			}
 		}
 	}
-
+	
+	@Override
+	protected void becomingPrimed()
+		throws MediaException
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/24
@@ -177,11 +187,16 @@ public class NokiaOTAPlayer
 	{
 		// Do nothing, Nokia OTA has no realize() equivalent
 	}
-
+	
+	@Override
+	protected void becomingSolvent()
+		throws MediaException
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
 	 * @since 2025/12/24
 	 */
 	@Override
@@ -239,7 +254,22 @@ public class NokiaOTAPlayer
 			}
 		}
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected void clockFastForward(long __micros)
+		throws MediaException
+	{
+		// Always reset to start, Nokia OTA has no setMediaTime() equivalent
+		this._decoder.reset();
+		
+		// Determine the events to be skipped
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/24
@@ -259,10 +289,9 @@ public class NokiaOTAPlayer
 	protected void clockSet(long __micros)
 		throws MediaException
 	{
-		// Always reset to start, Nokia OTA has no setMediaTime() equivalent
-		this._decoder.reset();
+		throw new MediaException("FAST");
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/24
@@ -273,6 +302,17 @@ public class NokiaOTAPlayer
 	{
 		// Return no duration, Nokia OTA has no getDuration() equivalent
 		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected boolean resetFastForward()
+	{
+		// This is a tracker based format
+		return true;
 	}
 
 	/**

@@ -11,6 +11,9 @@ package cc.squirreljme.runtime.nttdocomo.io;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
+import cc.squirreljme.runtime.gcf.uri.UriAuthority;
+import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import com.nttdocomo.ui.IApplication;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,21 +39,26 @@ public class ResourceConnectionFactory
 	@SuppressWarnings("resource")
 	@Override
 	@SquirrelJMEVendorApi
-	public Connection connect(String __part, int __mode, boolean __timeouts,
+	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
 	{
 		if (__part == null)
 			throw new NullPointerException("NARG");
 		
+		// This requires generic parts
+		UriGenericPart part = __part.asGeneric();
+		UriAuthority auth = part.getAuthority();
+		String path = part.getPath();
+		
 		// {@squirreljme.error AH0i Resource URI does not start with triple
 		// slash. (The URI part)}
-		if (!__part.startsWith("///"))
+		if (!path.startsWith("/") || auth != null)
 			throw new ConnectionNotFoundException("AH0i " + __part);
 		
 		// Try loading the resource once
 		Class<?> pivot = IApplication.getCurrentApp().getClass();
-		String rcName = __part.substring(2);
+		String rcName = path.substring(2);
 		try (InputStream in = pivot.getResourceAsStream(rcName))
 		{
 			// {@squirreljme.error AH0j The specified resource does not exist.

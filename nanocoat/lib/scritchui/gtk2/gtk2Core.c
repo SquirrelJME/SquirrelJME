@@ -15,6 +15,7 @@
 /** GTK Function set for Scritch UI. */
 static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 {
+	sjme_sm(.driverName, "gtk2"),
 	sjme_sm(.apiInit, sjme_scritchui_gtk2_apiInit),
 	sjme_sm(.choiceItemInsert, NULL),
 	sjme_sm(.choiceItemRemove, NULL),

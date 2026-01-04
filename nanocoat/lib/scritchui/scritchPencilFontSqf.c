@@ -347,6 +347,7 @@ static sjme_errorCode sjme_scritchui_sqfRenderBitmap(
 static const sjme_scritchui_pencilFontImplFunctions
 	sjme_scritchui_sqfFunctions =
 {
+	sjme_sm(.driverName, "sqf"),
 	sjme_sm(.equals, NULL),
 	sjme_sm(.metricCharValid, sjme_scritchui_sqfMetricCharValid),
 	sjme_sm(.metricFontFace, sjme_scritchui_sqfMetricFontFace),
