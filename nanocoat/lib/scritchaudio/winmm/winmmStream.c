@@ -16,6 +16,7 @@ static sjme_errorCode sjme_scritchaudio_winmm_peerNone(
 	sjme_attrInValue sjme_jboolean explicit)
 {
 	HWAVEOUT handle;
+	sjme_scritchaudio_stream stream;
 	
 	if (inState == NULL || inConn == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -29,7 +30,7 @@ static sjme_errorCode sjme_scritchaudio_winmm_peerNone(
 		stream = (sjme_scritchaudio_stream)inConn;
 		
 		/* Is the handle valid? */
-		handle = inOutStream->data.handle;
+		handle = stream->data.handle;
 		if (handle != NULL)
 		{
 			/* Destroy. */
