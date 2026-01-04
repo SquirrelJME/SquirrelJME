@@ -197,7 +197,7 @@ public class IMelodyPlayer
 			{
 				stream = AudioStreamShelf.stream(
 					AudioStreamFormat.FLOAT_F32,
-					AudioStreamRate.AUTOMATIC,
+					AudioStreamRate.HZ_48000,
 					AudioStreamChannels.STEREO);
 			}
 			catch (MLECallError __e)
@@ -219,7 +219,7 @@ public class IMelodyPlayer
 				this._connection =
 					AudioStreamShelf.attach(stream, this,
 						AudioStreamFormat.FLOAT_F32,
-						AudioStreamRate.AUTOMATIC,
+						AudioStreamRate.HZ_48000,
 						AudioStreamChannels.STEREO);
 			}
 			catch (MLECallError __e)

@@ -255,7 +255,7 @@ sjme_errorCode sjme_scritchaudio_core_peerConnect(
 	if (inState != inConn->inState && inState != inPeer->inState)
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_message("%p <==> %p", inConn, inPeer);
 #endif
@@ -326,7 +326,7 @@ sjme_errorCode sjme_scritchaudio_core_peerDisconnect(
 		check = peers->elements[i];
 		if (check == inPeer)
 		{
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 			/* Debug, only when we find a peer to disconnect. */
 			sjme_message("%p <//> %p (%s)", inConn, inPeer,
 				(explicit ? "EXPLICIT" : "---"));
