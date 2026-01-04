@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.gcf.file;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import java.util.NoSuchElementException;
  *
  * @since 2025/12/28
  */
+@SquirrelJMEVendorApi
 public final class BasicGlobFilter
 	implements Iterator<String>
 {
@@ -41,8 +43,8 @@ public final class BasicGlobFilter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/28
 	 */
-	public BasicGlobFilter(String __filter,
-		Iterator<String> __iterator)
+	@SquirrelJMEVendorApi
+	public BasicGlobFilter(String __filter, Iterator<String> __iterator)
 		throws NullPointerException
 	{
 		if (__filter == null || __iterator == null)
@@ -60,8 +62,7 @@ public final class BasicGlobFilter
 			
 			// Deduplicate asterisks, add everything else otherwise
 			int sbl = sb.length();
-			if (c != '*' || (c == '*' && sbl > 0 &&
-				sb.charAt(sbl - 1) != '*') || (c == '*' && sbl == 0))
+			if (c != '*' || (c == '*' && sbl > 0 && sb.charAt(sbl - 1) != '*') || (c == '*' && sbl == 0))
 				sb.append(c);
 		}
 		
@@ -100,6 +101,7 @@ public final class BasicGlobFilter
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2025/12/28
 	 */
 	@Override
@@ -110,6 +112,7 @@ public final class BasicGlobFilter
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2025/12/30
 	 */
 	@Override
@@ -128,6 +131,7 @@ public final class BasicGlobFilter
 	
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since 2025/12/30
 	 */
 	@Override
@@ -182,13 +186,13 @@ public final class BasicGlobFilter
 		
 		// Debug
 		if (Debugging.VERBOSE)
-			Debugging.debugNote("%s ?~= %s",
-				Arrays.asList(this._order), __maybe);
+			Debugging.debugNote("%s ?~= %s", Arrays.asList(this._order),
+				__maybe);
 		
 		// Go through the entire order to find sequences
 		String[] order = this._order;
 		int orderAt = 0;
-		for (int si = 0, n = __maybe.length(); si < n;)
+		for (int si = 0, n = __maybe.length(); si < n; )
 		{
 			// Reached the end of the order list before we found the end
 			// of the string? We failed to find items in it
@@ -203,8 +207,7 @@ public final class BasicGlobFilter
 			{
 				// If there is a string to the right of this wildcard, we
 				// need to find that string to jump all the characters
-				String right = (orderAt < order.length ?
-					order[orderAt] : null);
+				String right = (orderAt < order.length ? order[orderAt] : null);
 				if (right != null)
 				{
 					// Find the string on the right side, if it is missing

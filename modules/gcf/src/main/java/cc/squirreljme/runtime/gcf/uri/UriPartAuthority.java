@@ -13,7 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
- * Not Described.
+ * A URI which contains an authority.
  *
  * @since 2025/12/28
  */

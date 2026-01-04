@@ -193,38 +193,6 @@ static sjme_errorCode sjme_scritchaudio_softmix_peerNone(
 	/* Get underlying streams, if they exist. */
 	underStream = inState->under.stream;
 	underSource = inState->under.source;
-
-	/* Nothing is currently playing audio? */
-#if 0
-	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM)
-	{
-		/* Close the underlying source. */
-		if (underSource != NULL)
-		{
-			/* Disconnect. */
-			inState->under.source = NULL;
-			if (sjme_error_is(error = wrappedState->api->disconnect(
-				wrappedState, SJME_SAU_CAST_CONNECTION(underSource))))
-				return sjme_error_default(error);
-			
-			/* This is now gone. */
-			underSource = NULL;
-		}
-		
-		/* Close the underlying stream. */
-		if (underStream != NULL)
-		{
-			/* Disconnect. */
-			inState->under.stream = NULL;
-			if (sjme_error_is(error = wrappedState->api->disconnect(
-				wrappedState, SJME_SAU_CAST_CONNECTION(underStream))))
-				return sjme_error_default(error);
-			
-			/* This is now gone. */
-			underStream = NULL;
-		}
-	}
-#endif
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
