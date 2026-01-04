@@ -135,12 +135,6 @@ public final class Manager
 			case "application/x-mld":
 			case "application/x-mld-music":
 			case "audio/x-mld":
-				if (RuntimeShelf.vmType() == VMType.SPRINGCOAT)
-				{
-					Debugging.todoNote("Accelerated MLD support.");
-					return new NullPlayer(__contentType);
-				}
-				
 				// Setup player
 				return new IMelodyPlayer(new InputStreamConnection(__in));
 				
