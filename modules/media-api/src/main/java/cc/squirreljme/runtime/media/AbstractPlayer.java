@@ -258,10 +258,10 @@ public abstract class AbstractPlayer
 				{
 					__e.printStackTrace();
 				}
-			
-			// Send the closed event now that everything is closed
-			this.dispatchEvent(PlayerListener.CLOSED, null);
 		}
+		
+		// Send the closed event now that everything is closed
+		this.dispatchEvent(PlayerListener.CLOSED, null);
 	}
 	
 	/**
@@ -608,7 +608,7 @@ public abstract class AbstractPlayer
 				return;
 			
 			// Implicit realize, if not yet realized
-			if (state <= Player.UNREALIZED)
+			if (state < Player.REALIZED)
 				this.realize();
 			
 			// Now becoming prefetched
@@ -815,11 +815,15 @@ public abstract class AbstractPlayer
 	 * {@inheritDoc}
 	 * @since 2019/04/15
 	 */
+	@SuppressWarnings("AssignmentUsedAsCondition")
 	@Override
 	@SquirrelJMEVendorApi
 	public final void start()
 		throws MediaException
 	{
+		boolean dispatch = false;
+		TimeBase timeBase = this.getTimeBase();
+		
 		synchronized (this)
 		{
 			// {@squirreljme.error EA05 Null Player has been closed.}
@@ -844,7 +848,6 @@ public abstract class AbstractPlayer
 			
 			// Set up the track position for starting
 			TrackPosition trackPosition = this.trackPosition;
-			TimeBase timeBase = this.getTimeBase();
 			trackPosition.timeBase = timeBase;
 			trackPosition.basisMicros =
 				timeBase.getTime() - trackPosition.stoppedMicros;
@@ -853,16 +856,14 @@ public abstract class AbstractPlayer
 			this._loopLeft = this._loopCounter;
 			
 			// Is being started now
-			if (this.becomingStarted())
-			{
-				// Set start state
+			if (dispatch = this.becomingStarted())
 				this.setState(Player.STARTED);
-				
-				// Send event
-				this.dispatchEvent(PlayerListener.STARTED,
-					timeBase.getTime());
-			}
 		}
+		
+		// Send event
+		if (dispatch)
+			this.dispatchEvent(PlayerListener.STARTED,
+				timeBase.getTime());
 	}
 	
 	/**
