@@ -12,6 +12,7 @@
 
 static const sjme_scritchui_implFunctions sjme_scritchui_toolboxFunctions =
 {
+	sjme_sm(.driverName, "toolbox"),
 	sjme_sm(.apiInit, NULL),
 	sjme_sm(.choiceItemInsert, NULL),
 	sjme_sm(.choiceItemRemove, NULL),

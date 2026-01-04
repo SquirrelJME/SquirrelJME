@@ -34,16 +34,12 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	inStream = inState->stream;
 	if (inStream == NULL)
 		return SJME_ERROR_NONE;
-	
-#if defined(SJME_CONFIG_DEBUG)
-	sjme_message("OSS Tick: %lld",
-		inState->clock.clock.full / 1000000);
-#endif
 
 	/* Recover the single source. */
 	sources = inStream->sources;
 	if (sources == NULL)
 		return SJME_ERROR_NONE;
+	
 	source = NULL;
 	for (i = 0, n = sources->length; i < n; i++)
 	{
@@ -55,6 +51,11 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	/* None found? */
 	if (source == NULL)
 		return SJME_ERROR_NONE;
+	
+	/* Calculate the render info. */
+	if (sjme_error_is(error = inState->intern->calcRenderInfo(
+		inState, inStream, source, renderInfo)))
+		return sjme_error_default(error);
 
 	/* Recover the file descriptor. */
 	fd = inStream->data.fd;

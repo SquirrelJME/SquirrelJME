@@ -12,6 +12,7 @@
 
 static const sjme_scritchui_implFunctions sjme_scritchui_motifFunctions =
 {
+	sjme_sm(.driverName, "motif"),
 	sjme_sm(.apiInit, NULL),
 	sjme_sm(.choiceItemInsert, NULL),
 	sjme_sm(.choiceItemRemove, NULL),

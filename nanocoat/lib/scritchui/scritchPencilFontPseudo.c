@@ -358,6 +358,7 @@ fail_renderBitmap:
 static const sjme_scritchui_pencilFontImplFunctions
 	sjme_scritchui_pseudoFontFunctions =
 {
+	sjme_sm(.driverName, "pseudo"),
 	sjme_sm(.equals, sjme_scritchui_pseudoEquals),
 	sjme_sm(.metricCharValid, sjme_scritchui_pseudoMetricCharValid),
 	sjme_sm(.metricFontFace, sjme_scritchui_pseudoMetricFontFace),

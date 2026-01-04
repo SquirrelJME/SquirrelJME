@@ -44,7 +44,8 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 		inStream, inFormat, inRate, inChannels);
 #endif
 
-	/* If any are automatic, use the stream's format. */
+	/* If any are automatic, use the stream's format which could also be */
+	/* automatic as well. */
 	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
 		inFormat = inStream->format;
 	if (inRate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC)

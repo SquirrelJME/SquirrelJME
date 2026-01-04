@@ -17,6 +17,7 @@
  */
 static const sjme_scritchaudio_implFunctions sjme_scritchaudio_winmmFunctions =
 {
+	sjme_sm(.driverName, "winmm"),
 	sjme_sm(.apiInit, sjme_scritchaudio_winmm_apiInit),
 	sjme_sm(.disconnect, NULL),
 	sjme_sm(.loopIterate, sjme_scritchaudio_winmm_loopIterate),

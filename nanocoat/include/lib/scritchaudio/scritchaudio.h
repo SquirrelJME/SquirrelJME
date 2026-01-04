@@ -544,6 +544,9 @@ typedef struct sjme_scritchaudio_apiFunctions
  */
 typedef struct sjme_scritchaudio_implFunctions
 {
+	/** The driver name. */
+	sjme_lpcstr driverName;
+	
 	/** Api initialization. */
 	sjme_scritchaudio_apiInitFunc apiInit;
 	

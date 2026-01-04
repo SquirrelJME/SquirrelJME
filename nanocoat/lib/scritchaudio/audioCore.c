@@ -11,6 +11,14 @@
 #include "lib/scritchaudio/scritchaudioIntern.h"
 #include "lib/scritchaudio/softmix/softmixIntern.h"
 
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	/** The minimum sleeping time. */
+	#define SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS 16
+#else
+	/** The minimum sleeping time. */
+	#define SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS 0
+#endif
+
 /** Fallback for audio formats. */
 static const sjme_scritchaudio_format
 	sjme_scritchaudio_formatFallback[SJME_SCRITCHAUDIO_FORMAT_NUM_FORMATS] =
@@ -60,6 +68,71 @@ static const sjme_scritchaudio_internFunctions sjme_scritchaudio_coreInterns =
 	sjme_sm(.streamCreate, sjme_scritchaudio_core_streamCreate),
 };
 
+static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_core_poll(
+	sjme_attrInNotNull sjme_thread_parameter rawState)
+{
+	sjme_errorCode error;
+	sjme_scritchaudio inState;
+	sjme_jint nanoSum, milliCarry, milliTime, milliSpent, milliRemain;
+	const sjme_nal* nal;
+	sjme_jlong enterTime, exitTime;
+
+	/* Recover state. */
+	inState = rawState;
+	if (inState == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+
+	/* Does a binder need to be called? */
+	if (inState->bindAudioThread != NULL)
+		inState->bindAudioThread(inState);
+	
+	/* Set the loop as ready. */
+	sjme_atomic_s(sjme_jint, &inState->loopThreadReady, 1);
+	
+	/* Enter threading loop. */
+	nal = inState->nal;
+	for (nanoSum = 0, milliCarry = 0;;)
+	{
+		/* Keep everything at millisecond accuracy. Thus round up nanos */
+		/* to millis by carrying. */
+		nanoSum += sjme_atomic_g(sjme_jint, &inState->pollDelayNanos);
+		if (nanoSum >= 1000000)
+		{
+			milliCarry++;
+			nanoSum -= 1000000;
+		}
+
+		/* What is the millisecond time for this cycle? */
+		milliTime = sjme_atomic_g(sjme_jint, &inState->pollDelayMillis);
+
+		/* What time did this loop enter? */
+		nal->nanoTime(&enterTime);
+
+		/* Call loop iteration handler. */
+		if (sjme_error_is(error = inState->api->loopIterate(inState)))
+			sjme_message("Audio error: %d", error);
+
+		/* What time did this loop end? */
+		nal->nanoTime(&exitTime);
+
+		/* How much time was spent in the loop? */
+		/* Use carried milliseconds. */
+		milliSpent = (sjme_jint)((exitTime.full - enterTime.full) /
+			INT64_C(1000000));
+		milliRemain = (milliTime + milliCarry) - milliSpent;
+		milliCarry = 0;
+
+		/* The audio subsystem could be synchronous or asynchronous, however */
+		/* in either case just go for both and sleep if there is still time */
+		/* remaining in the loop. */
+		if (milliRemain > SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS)
+			sjme_thread_sleep(milliRemain, 0);
+	}
+
+	/* Finished. */
+	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+}
+
 static sjme_errorCode sjme_scritchaudio_core_initActual(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
@@ -71,12 +144,7 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 {
 	sjme_errorCode error;
 	sjme_scritchaudio result;
-	sjme_scritchaudio_stream onlyStream;
 	const sjme_nal* nal;
-	sjme_scritchaudio_format origFormat, inFormat;
-	sjme_scritchaudio_rate origRate, inRate;
-	sjme_scritchaudio_channels origChannels, inChannels;
-	sjme_jint i, n;
 	
 	if (inPool == NULL || outState == NULL || inImplFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -152,71 +220,35 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	/* Call inner initialization. */
 	if (sjme_error_is(error = result->impl->apiInit(result)))
 		goto fail_apiInit;
-
-	/* Mark loop thread as ready. */
-	sjme_atomic_s(sjme_jint, &result->loopThreadReady, 1);
-
-#if 0
-	/* Only create the stream when this is the higher level layer. */
-	if (isHigher)
-	{
-		/* Use an automatically determined format. */
-#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
-		inFormat = SJME_SCRITCHAUDIO_FORMAT_FLOAT_F32;
-#else
-		inFormat = SJME_SCRITCHAUDIO_FORMAT_INT_S32;
-#endif
-		inRate = SJME_SCRITCHAUDIO_RATE_HZ_48000;
-		inChannels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
-
-		/* Remember the original values, for loop returning. */
-		origFormat = inFormat;
-		origRate = inRate;
-		origChannels = inChannels;
-
-		/* Fallback to less precise formats. */
-		onlyStream = NULL;
-		while (onlyStream == NULL)
-		{
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-			/* Debug. */
-			sjme_message("streamCreate(%d, %d, %d)",
-				inFormat, inRate, inChannels);
-#endif
-		
-			/* Try to use the requested format. */
-			if (sjme_error_is(error = result->intern->streamCreate(
-				result, &onlyStream, "SquirrelJME",
-				inFormat, inRate, inChannels)) ||
-				onlyStream == NULL)
-			{
-				/* Only check against unsupported format. */
-				if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
-					goto fail_noFormats;
-
-				/* Reduce the rate. */
-				if (sjme_error_is(error = result->intern->fallbackNext(
-					result, origFormat, origRate, origChannels,
-					&inFormat, &inRate, &inChannels)))
-					goto fail_noFormats;
-			}
-		}
-
-		/* Set the only audio stream. */
-		result->stream = onlyStream;
-	}
-#endif
 	
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_message("audioInit(%p) -> Success!",
-		result);
-#endif
+	/* If the wrapped state must be manually polled, we like having threaded */
+	/* audio. Note that even if there is no thread defined the operating */
+	/* system could call back into the audio subroutine. */
+	if (isHigher && ((wrappedState != NULL &&
+		wrappedState->bugs.manualPoll) || result->bugs.manualPoll))
+	{
+		/* Create thread that loops infinitely. */
+		if (sjme_error_is(error = sjme_thread_new(&result->loopThread,
+			&result->loopThreadId,
+			sjme_scritchaudio_core_poll, result)))
+			goto fail_initThread;
+		
+		/* Await loop ready. */
+		sjme_atomic_barrier();
+		while (sjme_atomic_g(sjme_jint, &result->loopThreadReady) == 0)
+		{
+			sjme_atomic_barrier();
+			sjme_thread_yield();
+			sjme_atomic_barrier();
+		}
+	}
 
 	/* Success! */
 	*outState = result;
 	return SJME_ERROR_NONE;
 
+fail_noLoopIterate:
+fail_initThread:
 fail_noFormats:
 fail_apiInit:
 fail_allocResult:

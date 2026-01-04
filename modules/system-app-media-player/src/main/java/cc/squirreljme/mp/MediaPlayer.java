@@ -463,6 +463,9 @@ public class MediaPlayer
 			
 			// Setup player to play the data with
 			player = Manager.createPlayer(in, contentType);
+			
+			// Set the title
+			this.setTitle(contentType);
 		}
 		
 		// Could not load this media

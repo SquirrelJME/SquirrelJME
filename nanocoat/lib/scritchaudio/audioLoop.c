@@ -23,6 +23,11 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 
 	if (inState == NULL || inStream == NULL || renderInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Initialize to automatic. */
+	renderInfo->format = SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC;
+	renderInfo->rate = SJME_SCRITCHAUDIO_RATE_AUTOMATIC;
+	renderInfo->channels = SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC;
 
 	/* Copy everything, if a source is specified it overrides everything. */
 	if (inSource != NULL)
@@ -31,12 +36,22 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 		renderInfo->rate = inSource->rate;
 		renderInfo->channels = inSource->channels;
 	}
-	else
-	{
+	
+	/* Pull from stream if still automatic. */
+	if (renderInfo->format == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
 		renderInfo->format = inStream->format;
+	if (renderInfo->rate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
 		renderInfo->rate = inStream->rate;
+	if (renderInfo->channels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
 		renderInfo->channels = inStream->channels;
-	}
+	
+	/* If still automatic, just choose the best format. */
+	if (renderInfo->format == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
+		renderInfo->format = SJME_SCRITCHAUDIO_FORMAT_INT_S32;
+	if (renderInfo->rate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
+		renderInfo->rate = SJME_SCRITCHAUDIO_RATE_HZ_44100;
+	if (renderInfo->channels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
+		renderInfo->channels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
 
 	/* Set the clock. */
 	renderInfo->clock = inState->clock.clock;
@@ -98,19 +113,10 @@ sjme_errorCode sjme_scritchaudio_core_loopIterate(
 	/* Update the clock time. */
 	inState->nal->nanoTime(&now);
 	inState->clock.clock.full = now.full - inState->clock.clockBase.full;
-	
-#if defined(SJME_CONFIG_DEBUG)
-	sjme_message("loopIterate(%p, %p)",
-		inState, inState->stream);
-#endif
 
 	/* If there is no stream, do not bother. */
 	stream = inState->stream;
 	if (stream == NULL)
-		return SJME_ERROR_NONE;
-	
-	/* Only forward if the handler supports this. */
-	if (inState->impl->loopIterate == NULL)
 		return SJME_ERROR_NONE;
 
 	/* Forward. */
@@ -124,32 +130,50 @@ sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
 {
 	sjme_errorCode error;
+	sjme_scritchaudio contextState;
 
 	if (inState == NULL || inStream == NULL || renderInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Only forward if the handler supports this. */
-	if (inState->impl->loopIterate == NULL)
+	/* Is there a wrapped state? Use that instead and skip any middle */
+	/* layer such as the software mixer. */
+	contextState = inState->wrappedState;
+	if (contextState == NULL)
+		contextState = inState;
+	
+	/* Context state has no stream? */
+	if (contextState->stream == NULL)
 		return SJME_ERROR_NONE;
 
-	/* Calculate the render info. */
-	if (sjme_error_is(error = inState->intern->calcRenderInfo(inState,
-		inStream, NULL, renderInfo)))
-		return sjme_error_default(error);
+	/* Underlying audio system does not have a loop iterator? */
+	if (contextState->impl->loopIterate == NULL)
+		return SJME_ERROR_NONE;
 	
 	/* Lock the shared lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		inState->lock)))
-		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(contextState->lock)))
+		goto fail_lock;
 	
 	/* Run the loop. */
-	error = inState->impl->loopIterate(inState, inStream, renderInfo);
+	error = contextState->impl->loopIterate(contextState,
+		contextState->stream, renderInfo);
 
 	/* Release the lock. */
-	if (sjme_error_is(sjme_thread_spinLockRelease(inState->lock,
-		NULL)))
-		return sjme_error_defaultOr(error, SJME_ERROR_ILLEGAL_STATE);
+	if (sjme_error_is(sjme_thread_spinLockRelease(contextState->lock, NULL)))
+	{
+		error = SJME_ERROR_ILLEGAL_STATE;
+		goto fail_unlock;
+	}
 
 	/* Return whatever error was given. */
 	return error;
+	
+fail_calcRender:
+fail_unlock:
+fail_lock:
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_message("intern fail: %d", error);
+#endif
+	
+	return sjme_error_default(error);
 }

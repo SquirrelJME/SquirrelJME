@@ -231,6 +231,7 @@ static sjme_errorCode sjme_scritchui_gtk2_pencilSetStrokeStyle(
 
 const sjme_scritchui_pencilImplFunctions sjme_scritchui_gtk2_pencilFunctions =
 {
+	sjme_sm(.driverName, "gtk2"),
 	sjme_sm(.copyArea, NULL),
 	sjme_sm(.drawHorizSrc, sjme_scritchui_gtk2_pencilDrawHoriz),
 	sjme_sm(.drawHorizSrcOver, NULL),

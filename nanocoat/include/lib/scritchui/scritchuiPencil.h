@@ -1688,6 +1688,9 @@ struct sjme_scritchui_pencilUtilFunctions
  */
 typedef struct sjme_scritchui_pencilImplFunctions
 {
+	/** The driver name. */
+	sjme_lpcstr driverName;
+	
 	/** Asynchronous safe, can be called outside the event thread. */
 	sjme_jboolean asyncSafe;
 	

@@ -88,7 +88,7 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 	if (wrappedState == NULL || wrappedSource == NULL || destInfo == NULL ||
 		destBuf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
+	
 	/* Recover the top level state. */
 	inState = sjme_atomic_g(sjme_pointer, &wrappedState->topState);
 	if (inState == NULL)
@@ -127,7 +127,12 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 		memset(&sourceInfo, 0, sizeof(sourceInfo));
 		if (sjme_error_is(error = inState->intern->calcRenderInfo(
 			sourceState, sourceStream, source, &sourceInfo)))
-			goto fail_any;
+		{
+			/* Let audio process still. */
+			anyError = sjme_error_default(error);
+			first = SJME_JNI_FALSE;
+			continue;
+		}
 
 		/* Calculate the rate scale. */
 		if (sourceInfo.rate != destInfo->rate)
@@ -146,19 +151,18 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 		if (sjme_error_is(error = sjme_scritchaudio_softmix_renderSource(
 			sourceState, source, &sourceInfo,
 			destInfo, destBuf, first)))
-			goto fail_any;
+		{
+			/* Let audio process still. */
+			anyError = sjme_error_default(error);
+			first = SJME_JNI_FALSE;
+			continue;
+		}
 		
 		/* No longer first. */
 		first = SJME_JNI_FALSE;
 
 		/* Render and mix in the next source. */
 		continue;
-fail_any:
-		/* Let audio process still. */
-		anyError = sjme_error_default(error);
-		
-		/* No longer first. */
-		first = SJME_JNI_FALSE;
 	}
 
 	/* Success? */

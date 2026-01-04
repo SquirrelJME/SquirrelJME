@@ -12,6 +12,7 @@
 
 static const sjme_scritchui_implFunctions sjme_scritchui_gtk3Functions =
 {
+	sjme_sm(.driverName, "gtk3"),
 	sjme_sm(.apiInit, NULL),
 	sjme_sm(.choiceItemInsert, NULL),
 	sjme_sm(.choiceItemRemove, NULL),

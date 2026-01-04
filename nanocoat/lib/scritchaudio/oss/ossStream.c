@@ -144,7 +144,7 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 
 	/* If automatic, choose a format to use. */
 	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
-		inFormat = SJME_SCRITCHAUDIO_FORMAT_BYTE_U8;
+		inFormat = SJME_SCRITCHAUDIO_FORMAT_INT_S32;
 	if (inRate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
 		inRate = SJME_SCRITCHAUDIO_RATE_HZ_44100;
 	if (inChannels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
@@ -203,6 +203,9 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	}
 
 	/* Set stream details. */
+	inOutStream->format = inFormat;
+	inOutStream->rate = inRate;
+	inOutStream->channels = inChannels;
 	inOutStream->data.fd = fd;
 	inOutStream->connection.noPeers = sjme_scritchaudio_oss_peerNone;
 	inOutStream->connection.peerDisconnect =

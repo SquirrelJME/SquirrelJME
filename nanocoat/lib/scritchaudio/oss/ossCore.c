@@ -18,6 +18,7 @@
  */
 static const sjme_scritchaudio_implFunctions sjme_scritchaudio_ossFunctions =
 {
+	sjme_sm(.driverName, "oss"),
 	sjme_sm(.apiInit, sjme_scritchaudio_oss_apiInit),
 	sjme_sm(.disconnect, NULL),
 	sjme_sm(.loopIterate, sjme_scritchaudio_oss_loopIterate),

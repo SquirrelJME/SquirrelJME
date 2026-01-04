@@ -353,6 +353,9 @@ typedef struct sjme_scritchui_pencilFontFunctions
  */
 typedef struct sjme_scritchui_pencilFontImplFunctions
 {
+	/** The driver name. */
+	sjme_lpcstr driverName;
+	
 	/** Checks font equality. */
 	SJME_SCRITCHUI_QUICK_PENCIL(Equals, equals);
 	

@@ -58,11 +58,6 @@ extern const sjme_scritchaudio_softmix_mixer
 sjme_errorCode sjme_scritchaudio_softmix_apiInit(
 	sjme_attrInNotNull sjme_scritchaudio inState);
 
-sjme_errorCode sjme_scritchaudio_softmix_loopIterate(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
-	
 sjme_errorCode sjme_scritchaudio_softmix_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInOutNotNull sjme_list(sjme_scritchaudio_midiPort)* inOutPorts,

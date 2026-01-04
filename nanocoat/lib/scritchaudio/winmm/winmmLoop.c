@@ -47,6 +47,11 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	/* None found? */
 	if (source == NULL)
 		return SJME_ERROR_NONE;
+	
+	/* Calculate the render info. */
+	if (sjme_error_is(error = inState->intern->calcRenderInfo(
+		inState, inStream, source, renderInfo)))
+		return sjme_error_default(error);
 
 	/* Recover the output handle. */
 	handle = inStream->data.handle;
