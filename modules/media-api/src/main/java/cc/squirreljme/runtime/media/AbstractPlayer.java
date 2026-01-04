@@ -234,18 +234,6 @@ public abstract class AbstractPlayer
 			if (this.getState() <= Player.CLOSED)
 				return;
 			
-			// Does the sound card need to become solvent?
-			if (this._isPrimed)
-				try
-				{
-					this._isPrimed = false;
-					this.becomingSolvent();
-				}
-				catch (MediaException __e)
-				{
-					__e.printStackTrace();
-				}
-			
 			// Always force close to be set after potential deallocation
 			try
 			{
@@ -258,6 +246,18 @@ public abstract class AbstractPlayer
 				// Force the closed state to always occur
 				this.setState(Player.CLOSED);
 			}
+			
+			// Does the sound card need to become solvent?
+			if (this._isPrimed)
+				try
+				{
+					this._isPrimed = false;
+					this.becomingSolvent();
+				}
+				catch (MediaException __e)
+				{
+					__e.printStackTrace();
+				}
 			
 			// Send the closed event now that everything is closed
 			this.dispatchEvent(PlayerListener.CLOSED, null);
@@ -887,15 +887,13 @@ public abstract class AbstractPlayer
 			
 			// Request the media time before stopping so that it is kept
 			// around, additionally record the time of stopping
-			this.trackPosition.stoppedMicros = this.getMediaTime();
+			long micros = this.getMediaTime();
+			if (micros > Player.TIME_UNKNOWN)
+				this.trackPosition.stoppedMicros = micros;
 			
 			// Becoming stopped
 			this.becomingStopped();
-			
-			// Make sure the state stays valid
-			state = this.getState();
-			if (state >= Player.PREFETCHED)
-				this.setState(Player.PREFETCHED);
+			this.setState(Player.PREFETCHED);
 		}
 		
 		// Send stop event

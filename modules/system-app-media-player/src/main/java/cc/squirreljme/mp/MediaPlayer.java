@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
+import java.util.Objects;
 import javax.microedition.io.HttpConnection;
 import javax.microedition.io.InputConnection;
 import javax.microedition.io.file.FileConnection;
@@ -50,6 +51,12 @@ public class MediaPlayer
 	
 	/** The last known media time. */
 	private volatile long _lastMediaTime;
+	
+	/** The content path. */
+	private volatile String contentPath;
+	
+	/** The content type. */
+	private volatile String contentType;
 	
 	/**
 	 * Initializes the media player.
@@ -141,10 +148,7 @@ public class MediaPlayer
 				if (player != null)
 					try
 					{
-						// Deallocate first
-						player.deallocate();
-						
-						// Then close
+						// Close the player
 						player.close();
 						
 						// Remove reference to this
@@ -253,10 +257,9 @@ public class MediaPlayer
 		// Get the address the media is at
 		String url = null;
 		Binder binder = this._binder.get();
-		if (binder != null)
-			url = binder.connection.getURL();
 		
 		// Unknown URL? Just point to unknown
+		url = this.contentPath;
 		if (url == null)
 			url = "<unknown>";
 		
@@ -288,20 +291,21 @@ public class MediaPlayer
 		
 		// Draw the URL showing where the media is
 		__g.drawString(url, mx, iy, 0);
+		__g.drawString(this.contentType, ix, iy + fh, 0);
 		
 		// Draw instructions
 		__g.drawString(String.format("[%s (A)] Play/Stop",
 				this.getKeyName(this.getKeyCode(Canvas.GAME_A))),
-			ix, iy + (fh * 2), 0);
+			ix, iy + (fh * 3), 0);
 		__g.drawString(String.format("[%s (B)] Browse Files",
 				this.getKeyName(this.getKeyCode(Canvas.GAME_B))),
-			ix, iy + (fh * 3), 0);
+			ix, iy + (fh * 4), 0);
 		__g.drawString(String.format("[%s (C)] Seek -5s",
 				this.getKeyName(this.getKeyCode(Canvas.GAME_C))),
-			ix, iy + (fh * 4), 0);
+			ix, iy + (fh * 5), 0);
 		__g.drawString(String.format("[%s (D)] Seek +5s",
 				this.getKeyName(this.getKeyCode(Canvas.GAME_D))),
-			ix, iy + (fh * 5), 0);
+			ix, iy + (fh * 6), 0);
 		
 		// Where are we at and how long is this media?
 		long trk = (player != null ? player.getMediaTime() : 0);
@@ -464,8 +468,18 @@ public class MediaPlayer
 			// Setup player to play the data with
 			player = Manager.createPlayer(in, contentType);
 			
+			// Cache these
+			if (__conn instanceof HttpConnection)
+				this.contentPath = ((HttpConnection)__conn).getURL();
+			else if (__conn instanceof FileConnection)
+				this.contentPath = ((FileConnection)__conn).getPath();
+			else
+				this.contentPath = null;
+			this.contentType = contentType;
+			
 			// Set the title
-			this.setTitle(contentType);
+			this.setTitle(Objects.toString(this.contentPath,
+				this.contentType));
 		}
 		
 		// Could not load this media

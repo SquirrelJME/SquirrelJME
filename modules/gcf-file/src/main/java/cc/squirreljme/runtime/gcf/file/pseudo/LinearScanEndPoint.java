@@ -154,15 +154,15 @@ public class LinearScanEndPoint
 		if (__into == null)
 			throw new NullPointerException("NARG");
 		
-		// Only root is valid
-		UriGenericPart part = this.part;
-		if (!"/".equals(part.getPath()))
-			throw new IOException("FILE");
-		
 		// Only add dot-dot if it is known
 		UriGenericPart dotDot = this.dotDot;
 		if (dotDot != null)
 			__into.put("..", dotDot);
+		
+		// Only root is valid
+		UriGenericPart part = this.part;
+		if (!"/".equals(part.getPath()))
+			return;
 		
 		// Have the contents already been determined?
 		String[] contents;
