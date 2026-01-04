@@ -271,9 +271,9 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Start with the worst format, it only gets better. */
-	bestFormat = SJME_SCRITCHAUDIO_FORMAT_BYTE_U8;
-	bestRate = SJME_SCRITCHAUDIO_RATE_HZ_8000;
-	bestChannels = SJME_SCRITCHAUDIO_CHANNELS_MONO;
+	bestFormat = SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC;
+	bestRate = SJME_SCRITCHAUDIO_RATE_AUTOMATIC;
+	bestChannels = SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC;
 	
 	/* Do the input formats improve on the worst format? */
 	if (inFormat != SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
@@ -282,6 +282,18 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 		bestRate = sjme_max(bestRate, inRate);
 	if (inChannels != SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
 		bestChannels = sjme_max(bestChannels, inChannels);
+	
+	/* Does the stream specify a better format? */
+	if (inState->stream != NULL)
+	{
+		/* Does this source use a better format? */
+		if (inState->stream->format != SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
+			bestFormat = sjme_max(bestFormat, inState->stream->format);
+		if (inState->stream->rate != SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
+			bestRate = sjme_max(bestRate, inState->stream->rate);
+		if (inState->stream->channels != SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
+			bestChannels = sjme_max(bestChannels, inState->stream->channels);
+	}
 	
 	/* Determine the best format based on all the currently connected */
 	/* streams, so we can choose a better format. */
@@ -311,10 +323,15 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 	if (underStream != NULL)
 	{
 		/* If it does, is the format not the best one desired? */
+		/* Note if the best format is automatic, we do not want to just */
+		/* change the underlying stream for no reason. */
 		if (underSource == NULL ||
-			underSource->format != bestFormat ||
-			underSource->rate != bestRate ||
-			underSource->channels != bestChannels)
+			(bestFormat != SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC &&
+				underSource->format != bestFormat) ||
+			(bestRate != SJME_SCRITCHAUDIO_RATE_AUTOMATIC &&
+				underSource->rate != bestRate) ||
+			(bestChannels != SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC &&
+				underSource->channels != bestChannels))
 		{
 			/* Disconnect the source if there is one. */
 			if (underSource != NULL)
