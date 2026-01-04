@@ -147,19 +147,11 @@ public class NokiaOTAPlayer
 			if (this._unrealizedIn == null)
 				throw new MediaException("GONE");
 
-			// Create the native audio stream
-			AudioStreamBracket stream = null;
 			try(InputStream in = this._unrealizedIn.openInputStream())
 			{
 				this._data = StreamUtils.readAll(in);
-
-				stream = AudioStreamShelf.stream(
-					AudioStreamFormat.AUTOMATIC,
-					AudioStreamRate.AUTOMATIC,
-					AudioStreamChannels.MONO);
-				this._stream = stream;
 			}
-			catch (MLECallError | IOException __e)
+			catch (IOException __e)
 			{
 				__e.printStackTrace();
 
@@ -174,7 +166,30 @@ public class NokiaOTAPlayer
 	protected void becomingPrimed()
 		throws MediaException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// If the native stream already exists, we can return right away
+			if (this._stream != null)
+				return;
+
+			// Create the native audio stream
+			AudioStreamBracket stream = null;
+			try
+			{
+				stream = AudioStreamShelf.stream(AudioStreamFormat.AUTOMATIC,
+					AudioStreamRate.AUTOMATIC, AudioStreamChannels.MONO);
+			}
+			catch (MLECallError __e)
+			{
+				__e.printStackTrace();
+
+				MediaException mex = new MediaException(__e.getMessage());
+				mex.initCause(__e);
+				throw mex;
+			}
+
+			this._stream = stream;
+		}
 	}
 	
 	/**
@@ -192,7 +207,26 @@ public class NokiaOTAPlayer
 	protected void becomingSolvent()
 		throws MediaException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			try
+			{
+				// Close the native audio stream, we won't be using it
+				AudioStreamBracket stream = this._stream;
+				this._stream = null;
+				
+				if (stream != null)
+					AudioStreamShelf.disconnect(stream);
+			}
+			catch (MLECallError __e)
+			{
+				__e.printStackTrace();
+				
+				MediaException toss = new MediaException(__e.getMessage());
+				toss.initCause(__e);
+				throw toss;
+			}
+		}
 	}
 	
 	/**
@@ -212,8 +246,7 @@ public class NokiaOTAPlayer
 			{
 				this._connection =
 					AudioStreamShelf.attach(this._stream, this,
-						AudioStreamFormat.AUTOMATIC,
-						AudioStreamRate.AUTOMATIC,
+						AudioStreamFormat.AUTOMATIC, AudioStreamRate.AUTOMATIC,
 						AudioStreamChannels.MONO);
 			}
 			catch (MLECallError __e)
@@ -247,10 +280,13 @@ public class NokiaOTAPlayer
 					AudioStreamShelf.disconnect(connection);
 				}
 			}
-
 			catch (MLECallError __e)
 			{
 				__e.printStackTrace();
+
+				MediaException toss = new MediaException(__e.getMessage());
+				toss.initCause(__e);
+				throw toss;
 			}
 		}
 	}
@@ -263,11 +299,7 @@ public class NokiaOTAPlayer
 	protected void clockFastForward(long __micros)
 		throws MediaException
 	{
-		// Always reset to start, Nokia OTA has no setMediaTime() equivalent
-		this._decoder.reset();
-		
-		// Determine the events to be skipped
-		throw Debugging.todo();
+		this.clockSet(__micros);
 	}
 	
 	/**
@@ -289,7 +321,9 @@ public class NokiaOTAPlayer
 	protected void clockSet(long __micros)
 		throws MediaException
 	{
-		throw new MediaException("FAST");
+		// Always reset to start, Nokia OTA has no setMediaTime() equivalent
+		// and no concept of fast-forwarding to a specific point.
+		this._decoder.reset();
 	}
 	
 	/**
