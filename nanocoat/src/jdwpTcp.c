@@ -27,11 +27,15 @@ sjme_errorCode sjme_jdwp_sessionNewTcpNetwork(
 	
 	if (allocPool == NULL || outSession == NULL || inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* TODO: If there is no TCP/IP, perhaps fallback to serial? */
+	if (inState->nal->tcpUdp == NULL)
+		return sjme_error_notImplemented(0);
 
 	/* Open TCP port. */
 	netIn = NULL;
 	netOut = NULL;
-	if (sjme_error_is(error = sjme_stream_biOpenTcpUdp(allocPool,
+	if (sjme_error_is(error = inState->nal->tcpUdp(allocPool,
 		&netIn, &netOut, SJME_JNI_FALSE, listening, address, port)) ||
 		netIn == NULL || netOut == NULL)
 		return sjme_error_default(error);
