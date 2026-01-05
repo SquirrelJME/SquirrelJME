@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.cldc.io;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -19,10 +20,12 @@ import java.util.Arrays;
  *
  * @since 2021/12/04
  */
+@SquirrelJMEVendorApi
 public class MarkableInputStream
 	extends InputStream
 {
 	/** The stream to wrap. */
+	@SquirrelJMEVendorApi
 	protected final InputStream in;
 	
 	/** Single byte read. */
@@ -57,6 +60,7 @@ public class MarkableInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/04
 	 */
+	@SquirrelJMEVendorApi
 	public MarkableInputStream(InputStream __in)
 		throws NullPointerException
 	{

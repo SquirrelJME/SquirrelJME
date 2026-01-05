@@ -113,6 +113,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c containerAdd . */
 	SJME_SCRITCHUI_SERIAL_UI_CONTAINER_ADD,
 	
+	/** @c containerGetFrame . */
+	SJME_SCRITCHUI_SERIAL_UI_CONTAINER_GET_FRAME,
+	
 	/** @c containerRemove . */
 	SJME_SCRITCHUI_SERIAL_UI_CONTAINER_REMOVE,
 	
@@ -172,6 +175,12 @@ typedef enum sjme_scritchui_serialType
 		
 	/** @c panelNew . */
 	SJME_SCRITCHUI_SERIAL_UI_PANEL_NEW,
+	
+	/** @c pseudoGraphics . */
+	SJME_SCRITCHUI_SERIAL_UI_PSEUDO_GRAPHICS,
+	
+	/** @c screenGetBounds . */
+	SJME_SCRITCHUI_SERIAL_UI_SCREEN_GET_BOUNDS,
 	
 	/** @c screenSetListener . */
 	SJME_SCRITCHUI_SERIAL_UI_SCREEN_SET_LISTENER,
@@ -251,6 +260,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c drawRect . */
 	SJME_SCRITCHUI_SERIAL_PEN_DRAW_RECT,
 
+	/** @c drawRegion . */
+	SJME_SCRITCHUI_SERIAL_PEN_DRAW_REGION,
+
 	/** @c drawRoundRect . */
 	SJME_SCRITCHUI_SERIAL_PEN_DRAW_ROUND_RECT,
 
@@ -278,6 +290,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c fillTriangle . */
 	SJME_SCRITCHUI_SERIAL_PEN_FILL_TRIANGLE,
 
+	/** @c getRegion . */
+	SJME_SCRITCHUI_SERIAL_PEN_GET_REGION,
+
 	/** @c mapColor . */
 	SJME_SCRITCHUI_SERIAL_PEN_MAP_COLOR,
 
@@ -304,6 +319,9 @@ typedef enum sjme_scritchui_serialType
 
 	/** @c setParametersFrom . */
 	SJME_SCRITCHUI_SERIAL_PEN_SET_PARAMETERS_FROM,
+	
+	/** @c transferRegion . */
+	SJME_SCRITCHUI_SERIAL_PEN_TRANSFER_REGION,
 
 	/** @c translate . */
 	SJME_SCRITCHUI_SERIAL_PEN_TRANSLATE,
@@ -453,6 +471,12 @@ SDU_STRUCT_DEF(containerAdd,
 	SDX_VAR(sjme_scritchui_uiComponent, inContainer);
 	SDX_VAR(sjme_scritchui_uiComponent, addComponent););
 
+SDU_STRUCT_DEF(containerGetFrame,
+	SDX_VAR(sjme_scritchui_uiComponent, inContainer);
+	SDX_VARP(sjme_scritchui_dim, contentSize);
+	SDX_VARP(sjme_scritchui_rect, frameBound);
+	SDX_VARP(sjme_scritchui_rect, contentBound););
+
 SDU_STRUCT_DEF(containerRemove,
 	SDX_VAR(sjme_scritchui_uiComponent, inContainer);
 	SDX_VAR(sjme_scritchui_uiComponent, removeComponent););
@@ -549,6 +573,19 @@ SDU_STRUCT_DEF(panelEnableFocus,
 SDU_STRUCT_DEF(panelNew,
 	SDX_VARP(sjme_scritchui_uiPanel, outPanel););
 
+SDU_STRUCT_DEF(pseudoGraphics,
+	SDX_VARP(sjme_scritchui_pencil, outPencil);
+	SDX_VARP(sjme_alloc_weak, outWeakPencil);
+	SDX_VARP(sjme_scritchui_pencil, pencils);
+	SDX_VAR(sjme_jint, numPencils);
+	SDX_VARP(const sjme_frontEndBindable, pencilFrontEndCopy););
+
+SDU_STRUCT_DEF(screenGetBounds,
+	SDX_VAR(sjme_scritchui_uiScreen, inScreen);
+	SDX_VAR(sjme_scritchui_uiComponent, forComponent);
+	SDX_VARP(sjme_scritchui_rect, pixelBound);
+	SDX_VARP(sjme_scritchui_rect, mmBound););
+	
 SDU_STRUCT_DEF(screenSetListener,
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(screen););
 
@@ -680,6 +717,27 @@ SDP_STRUCT_DEF(drawRect,
 	SDX_VAR(sjme_jint, w);
 	SDX_VAR(sjme_jint, h););
 
+SDP_STRUCT_DEF(drawRegion,
+	SDX_VAR(sjme_scritchui_pencil, g);
+	SDX_VAR(sjme_jint, pf);
+	SDX_VAR(sjme_cpointer, data);
+	SDX_VAR(sjme_jint, off);
+	SDX_VAR(sjme_jint, dataLen);
+	SDX_VAR(sjme_jint, scanLen);
+	SDX_VAR(sjme_jboolean, alpha);
+	SDX_VAR(sjme_jint, xSrc);
+	SDX_VAR(sjme_jint, ySrc);
+	SDX_VAR(sjme_jint, wSrc);
+	SDX_VAR(sjme_jint, hSrc);
+	SDX_VAR(sjme_jint, trans);
+	SDX_VAR(sjme_jint, xDest);
+	SDX_VAR(sjme_jint, yDest);
+	SDX_VAR(sjme_jint, anchor);
+	SDX_VAR(sjme_jint, wDest);
+	SDX_VAR(sjme_jint, hDest);
+	SDX_VAR(sjme_jint, origImgWidth);
+	SDX_VAR(sjme_jint, origImgHeight););
+
 SDP_STRUCT_DEF(drawRoundRect,
 	SDX_VAR(sjme_scritchui_pencil, g);
 	SDX_VAR(sjme_jint, x);
@@ -769,6 +827,20 @@ SDP_STRUCT_DEF(fillTriangle,
 	SDX_VAR(sjme_jint, x3);
 	SDX_VAR(sjme_jint, y3););
 
+SDP_STRUCT_DEF(getRegion,
+	SDX_VAR(sjme_scritchui_pencil, g);
+	SDX_VAR(sjme_jint, pf);
+	SDX_VAR(sjme_cpointer, data);
+	SDX_VAR(sjme_jint, off);
+	SDX_VAR(sjme_jint, dataLen);
+	SDX_VAR(sjme_jint, scanLen);
+	SDX_VAR(sjme_jboolean, alpha);
+	SDX_VAR(sjme_jint, xSrc);
+	SDX_VAR(sjme_jint, ySrc);
+	SDX_VAR(sjme_jint, wSrc);
+	SDX_VAR(sjme_jint, hSrc);
+	SDX_VAR(sjme_jint, anchor););
+
 SDP_STRUCT_DEF(mapColor,
 	SDX_VAR(sjme_scritchui_pencil, g);
 	SDX_VAR(sjme_jboolean, fromRaw);
@@ -807,7 +879,23 @@ SDP_STRUCT_DEF(setFont,
 SDP_STRUCT_DEF(setParametersFrom,
 	SDX_VAR(sjme_scritchui_pencil, g);
 	SDX_VAR(sjme_scritchui_pencil, from););
-
+	
+SDP_STRUCT_DEF(transferRegion,
+	SDX_VAR(sjme_scritchui_pencil, g);
+	SDX_VAR(sjme_scritchui_pencil, srcPencil);
+	SDX_VAR(sjme_jboolean, alpha);
+	SDX_VAR(sjme_jint, xSrc);
+	SDX_VAR(sjme_jint, ySrc);
+	SDX_VAR(sjme_jint, wSrc);
+	SDX_VAR(sjme_jint, hSrc);
+	SDX_VAR(sjme_jint, trans);
+	SDX_VAR(sjme_jint, xDest);
+	SDX_VAR(sjme_jint, yDest);
+	SDX_VAR(sjme_jint, anchor);
+	SDX_VAR(sjme_jint, wDest);
+	SDX_VAR(sjme_jint, hDest);
+	SDX_VAR(sjme_scritchui_transferRegionMode, mode););
+	
 SDP_STRUCT_DEF(translate,
 	SDX_VAR(sjme_scritchui_pencil, g);
 	SDX_VAR(sjme_jint, x);
@@ -863,6 +951,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(componentSetVisibleListener);
 	SJME_SCRITCHUI_SDU_DEF(componentSize);
 	SJME_SCRITCHUI_SDU_DEF(containerAdd);
+	SJME_SCRITCHUI_SDU_DEF(containerGetFrame);
 	SJME_SCRITCHUI_SDU_DEF(containerRemove);
 	SJME_SCRITCHUI_SDU_DEF(containerRemoveAll);
 	SJME_SCRITCHUI_SDU_DEF(containerSetBounds);
@@ -883,6 +972,8 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(objectDelete);
 	SJME_SCRITCHUI_SDU_DEF(panelEnableFocus);
 	SJME_SCRITCHUI_SDU_DEF(panelNew);
+	SJME_SCRITCHUI_SDU_DEF(pseudoGraphics);
+	SJME_SCRITCHUI_SDU_DEF(screenGetBounds);
 	SJME_SCRITCHUI_SDU_DEF(screenSetListener);
 	SJME_SCRITCHUI_SDU_DEF(screens);
 	SJME_SCRITCHUI_SDU_DEF(scrollPanelNew);
@@ -904,6 +995,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDP_DEF(drawArc);
 	SJME_SCRITCHUI_SDP_DEF(drawHoriz);
 	SJME_SCRITCHUI_SDP_DEF(drawRect);
+	SJME_SCRITCHUI_SDP_DEF(drawRegion);
 	SJME_SCRITCHUI_SDP_DEF(drawRoundRect);
 	SJME_SCRITCHUI_SDP_DEF(drawChar);
 	SJME_SCRITCHUI_SDP_DEF(drawChars);
@@ -918,6 +1010,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDP_DEF(fillRect);
 	SJME_SCRITCHUI_SDP_DEF(fillRoundRect);
 	SJME_SCRITCHUI_SDP_DEF(fillTriangle);
+	SJME_SCRITCHUI_SDP_DEF(getRegion);
 	SJME_SCRITCHUI_SDP_DEF(mapColor);
 	SJME_SCRITCHUI_SDP_DEF(setAlphaColor);
 	SJME_SCRITCHUI_SDP_DEF(setBlendingMode);
@@ -927,6 +1020,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDP_DEF(setStrokeStyle);
 	SJME_SCRITCHUI_SDP_DEF(setFont);
 	SJME_SCRITCHUI_SDP_DEF(setParametersFrom);
+	SJME_SCRITCHUI_SDP_DEF(transferRegion);
 	SJME_SCRITCHUI_SDP_DEF(translate);
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */
@@ -1087,6 +1181,13 @@ sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 	
+sjme_errorCode sjme_scritchui_coreSerial_containerGetFrame(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound);
+	
 sjme_errorCode sjme_scritchui_coreSerial_containerRemove(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
@@ -1202,10 +1303,25 @@ sjme_errorCode sjme_scritchui_coreSerial_panelEnableFocus(
 sjme_errorCode sjme_scritchui_coreSerial_panelNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
+	
+sjme_errorCode sjme_scritchui_coreSerial_pseudoGraphics(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
+	sjme_attrInNotNullBuf(numPencils) sjme_scritchui_pencil* pencils,
+	sjme_attrInPositiveNonZero sjme_jint numPencils,
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
 
 sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(screen));
+	
+sjme_errorCode sjme_scritchui_coreSerial_screenGetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound);
 
 sjme_errorCode sjme_scritchui_coreSerial_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -1345,6 +1461,27 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawRect(
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h);
 
+sjme_errorCode sjme_scritchpen_coreSerial_drawRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInPositive sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInPositive sjme_jint origImgWidth,
+	sjme_attrInPositive sjme_jint origImgHeight);
+
 sjme_errorCode sjme_scritchpen_coreSerial_drawRoundRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -1434,6 +1571,20 @@ sjme_errorCode sjme_scritchpen_coreSerial_fillTriangle(
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3);
 
+sjme_errorCode sjme_scritchpen_coreSerial_getRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint anchor);
+
 sjme_errorCode sjme_scritchpen_coreSerial_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
@@ -1474,6 +1625,22 @@ sjme_errorCode sjme_scritchpen_coreSerial_setFont(
 sjme_errorCode sjme_scritchpen_coreSerial_setParametersFrom(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencil from);
+	
+sjme_errorCode sjme_scritchpen_coreSerial_transferRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_scritchui_pencil srcPencil,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInValue sjme_scritchui_transferRegionMode mode);
 
 sjme_errorCode sjme_scritchpen_coreSerial_translate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

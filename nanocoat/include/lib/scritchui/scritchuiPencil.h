@@ -110,13 +110,43 @@ typedef enum sjme_scritchui_pencilTranslate
 typedef enum sjme_scritchui_pencilBlendingMode
 {
 	/** Blend with source and multiply. */
-	SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER,
+	SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER = 0,
 	
 	/** Use only the source alpha color. */
-	SJME_SCRITCHUI_PENCIL_BLEND_SRC,
+	SJME_SCRITCHUI_PENCIL_BLEND_SRC = 1,
+	
+	/** Discard source pixels that do not overlap the destination. */
+	SJME_SCRITCHUI_PENCIL_BLEND_SRC_ATOP = 2,
+	
+	/** Keep source pixels that overlap the destination, discard others. */
+	SJME_SCRITCHUI_PENCIL_BLEND_SRC_IN = 3,
+	
+	/** Keep source pixels that do not overlap the destination. */
+	SJME_SCRITCHUI_PENCIL_BLEND_SRC_OUT = 4,
+	
+	/** Blend destination and source. */
+	SJME_SCRITCHUI_PENCIL_BLEND_DEST_OVER = 5,
+	
+	/** Use only the destination. */
+	SJME_SCRITCHUI_PENCIL_BLEND_DEST = 6,
+	
+	/** Discard destination pixels that do not overlap the source. */
+	SJME_SCRITCHUI_PENCIL_BLEND_DEST_ATOP = 7,
+	
+	/** Keep destination pixels that overlap the source, discard others. */
+	SJME_SCRITCHUI_PENCIL_BLEND_DEST_IN = 8,
+	
+	/** Keep destination pixels that do not overlap the source. */
+	SJME_SCRITCHUI_PENCIL_BLEND_DEST_OUT = 9,
+	
+	/** Clear everything. */
+	SJME_SCRITCHUI_PENCIL_BLEND_CLEAR = 10,
+	
+	/** XOR. */
+	SJME_SCRITCHUI_PENCIL_BLEND_XOR = 11,
 	
 	/** The number of blending modes. */
-	SJME_NUM_SCRITCHUI_PENCIL_BLENDS
+	SJME_NUM_SCRITCHUI_PENCIL_BLENDS = 12,
 } sjme_scritchui_pencilBlendingMode;
 
 /**
@@ -198,6 +228,33 @@ typedef struct sjme_scritchui_pencilColor
 	/** Indexed color. */
 	sjme_jchar i;
 } sjme_scritchui_pencilColor;
+
+/**
+ * Mode flags for @code sjme_scritchui_transferRegionFunc @endcode .
+ * 
+ * @since 2026/01/01
+ */
+typedef enum sjme_scritchui_transferRegionMode
+{
+	/**
+	 * Disregard the current blending mode and force SRC when drawing
+	 * ontop of the destination.
+	 */
+	SJME_SCRITCHUI_TRANSFER_SRC_FORCE = INT32_C(1),
+
+	/**
+	 * Optimized transfer of regions going scanline by scanline in the
+	 * fashion of @code memmove() @endcode, any transformations are
+	 * disregarded.
+	 * 
+	 * This requires that the source and destination pixel format have the
+	 * same density, so a 16-bit pixel format may only ever be copied to
+	 * another 16-bit pixel format.
+	 * 
+	 * This implies @link SJME_SCRITCHUI_TRANSFER_SRC_FORCE @endlink .
+	 */
+	SJME_SCRITCHUI_TRANSFER_MEMMOVE = INT32_C(2),
+} sjme_scritchui_transferRegionMode;
 
 /**
  * Applies an anchor point.
@@ -337,9 +394,12 @@ typedef sjme_errorCode (*sjme_scritchui_pencilCloseFunc)(
  * @param anchor The anchor point of the destination.
  * @return An error if the call is not valid or the native graphics
  * does not support this operation.
+ * @deprecated Use @link sjme_scritchui_pencilTransferRegionFunc @endlink 
+ * with direct copy mapping.
  * @since 2024/05/01
  */
-typedef sjme_errorCode (*sjme_scritchui_pencilCopyAreaFunc)(
+typedef sjme_errorCode sjme_attrDeprecated
+	(*sjme_scritchui_pencilCopyAreaFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
@@ -508,6 +568,53 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawRectFunc)(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h);
+
+/**
+ * Draws a region of data in a given pixel format into the target.
+ *
+ * @param g The hardware graphics to draw with.
+ * @param pf The image format that the data is in.
+ * @param data The source buffer.
+ * @param off The offset into the buffer.
+ * @param dataLen The total length of the data buffer.
+ * @param scanLen The scanline length.
+ * @param alpha Drawing with the alpha channel?
+ * @param xSrc The source X position.
+ * @param ySrc The source Y position.
+ * @param wSrc The width of the source region.
+ * @param hSrc The height of the source region.
+ * @param trans Sprite translation and/or rotation,
+ * see @code javax.microedition.lcdui.game.Sprite @endcode.
+ * @param xDest The destination X position, is translated.
+ * @param yDest The destination Y position, is translated.
+ * @param anchor The anchor point.
+ * @param wDest The destination width.
+ * @param hDest The destination height.
+ * @param origImgWidth Original image width.
+ * @param origImgHeight Original image height.
+ * @return Any resultant error, if any
+ * @since 2025/12/07
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilDrawRegionFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInPositive sjme_jint origImgWidth,
+	sjme_attrInPositive sjme_jint origImgHeight);
 
 /**
  * Draws a rectangle with rounded borders in hardware.
@@ -759,6 +866,46 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillTriangleFunc)(
 	sjme_attrInValue sjme_jint y2,
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3);
+
+/**
+ * Reads a region of pixel data from a hardware graphics context.
+ * 
+ * Note that if the hardware graphics does not support reading of
+ * pixel data then the destination buffer may be left unmodified,
+ * filled with a specific value, or filled with off-screen buffer
+ * pixels that may not reflect what is visible on the screen.
+ *
+ * @param g The hardware graphics to draw with.
+ * @param pf Integer representing the format that the target's data must be
+ * converted to before being placed into the data buffer.
+ * @param data The destination buffer.
+ * @param off The offset into the buffer.
+ * @param dataLen The total length of the data buffer.
+ * @param scanLen The scanline length.
+ * @param alpha If this argument is @code true @endcode, it means we must
+ * blend the content retrieved from the graphics context with the destination
+ * buffer's as opposed to overwriting its contents entirely.
+ * @param xSrc The source X position.
+ * @param ySrc The source Y position.
+ * @param wSrc The width of the source region.
+ * @param hSrc The height of the source region.
+ * @param anchor The anchor point.
+ * @return Any resultant error, if any.
+ * @since 2025/12/04
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilGetRegionFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint anchor);
 
 /**
  * Locks the pencil for drawing.
@@ -1254,6 +1401,53 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetStrokeStyleFunc)(
 		sjme_scritchui_pencilStrokeMode style);
 
 /**
+ * Transfers pixel data from one pencil to another and draws it onto the
+ * current pencil, this is a helper function to reduce the need to load
+ * pixel data from another pencil and then draw it onto another.
+ * 
+ * Note that both pencils must be under the same ScritchUI state as the source
+ * pencil does need to be locked accordingly.
+ * 
+ * Reading from the source pencil follows the same semantics as the
+ * functions @link sjme_scritchui_pencilCopyAreaFunc @endlink
+ * and @link sjme_scritchui_pencilGetRegionFunc @endlink , if the source
+ * pencil does not support reading pixel data then what is drawn onto the
+ * destination is undefined.
+ *
+ * @param g The hardware graphics to draw with.
+ * @param srcPencil The pencil to copy from.
+ * @param alpha Drawing with the alpha channel?
+ * @param xSrc The source X position.
+ * @param ySrc The source Y position.
+ * @param wSrc The width of the source region.
+ * @param hSrc The height of the source region.
+ * @param trans Sprite translation and/or rotation,
+ * see @code javax.microedition.lcdui.game.Sprite @endcode.
+ * @param xDest The destination X position, is translated.
+ * @param yDest The destination Y position, is translated.
+ * @param anchor The anchor point.
+ * @param wDest The destination width.
+ * @param hDest The destination height.
+ * @return Any resultant error, if any
+ * @since 2025/12/22
+ */
+typedef sjme_errorCode (*sjme_scritchui_pencilTransferRegionFunc)(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_scritchui_pencil srcPencil,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInValue sjme_scritchui_transferRegionMode mode);
+
+/**
  * Translates drawing operations.
  * 
  * @param g The hardware graphics to draw with.
@@ -1282,7 +1476,7 @@ typedef struct sjme_scritchui_pencilFunctions
 	SJME_SCRITCHUI_QUICK_PENCIL(Close, close);
 	
 	/** @c CopyArea . */
-	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
+	sjme_attrDeprecated SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 
 	/** @c DrawArc . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawArc, drawArc);
@@ -1301,6 +1495,9 @@ typedef struct sjme_scritchui_pencilFunctions
 	
 	/** @c DrawRect . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawRect, drawRect);
+
+	/** @c DrawRegion . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawRegion, drawRegion);
 
 	/** @c DrawRoundRect . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawRoundRect, drawRoundRect);
@@ -1335,6 +1532,9 @@ typedef struct sjme_scritchui_pencilFunctions
 	/** @c FillTriangle . */
 	SJME_SCRITCHUI_QUICK_PENCIL(FillTriangle, fillTriangle);
 
+	/** @c GetRegion . */
+	SJME_SCRITCHUI_QUICK_PENCIL(GetRegion, getRegion);
+
 	/** @c MapColor . */
 	SJME_SCRITCHUI_QUICK_PENCIL(MapColor, mapColor);
 	
@@ -1361,6 +1561,9 @@ typedef struct sjme_scritchui_pencilFunctions
 	
 	/** @c SetStrokeStyle . */
 	SJME_SCRITCHUI_QUICK_PENCIL(SetStrokeStyle, setStrokeStyle);
+	
+	/** @c TransferRegion . */
+	SJME_SCRITCHUI_QUICK_PENCIL(TransferRegion, transferRegion);
 	
 	/** @c Translate . */
 	SJME_SCRITCHUI_QUICK_PENCIL(Translate, translate);
@@ -1485,6 +1688,9 @@ struct sjme_scritchui_pencilUtilFunctions
  */
 typedef struct sjme_scritchui_pencilImplFunctions
 {
+	/** The driver name. */
+	sjme_lpcstr driverName;
+	
 	/** Asynchronous safe, can be called outside the event thread. */
 	sjme_jboolean asyncSafe;
 	
@@ -1492,7 +1698,7 @@ typedef struct sjme_scritchui_pencilImplFunctions
 	SJME_SCRITCHUI_QUICK_PENCIL(Close, close);
 	
 	/** @c CopyArea . */
-	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
+	sjme_attrDeprecated SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	
 	/** @c DrawHoriz , direct source. */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawHoriz, drawHorizSrc);

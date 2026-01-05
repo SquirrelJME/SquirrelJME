@@ -30,7 +30,7 @@ sjme_errorCode sjme_scritchui_win32_scrollPanelNew(
 	windowClass.hInstance = GetModuleHandle(NULL);
 	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	windowClass.lpszClassName = inScrollPanel->component.strId;
-	windowClass.lpfnWndProc = inState->implIntern->windowProcWin32;
+	windowClass.lpfnWndProc = (WNDPROC)inState->implIntern->windowProcWin32;
 	SetLastError(0);
 	classAtom = RegisterClassEx(&windowClass);
 	if (classAtom == 0)

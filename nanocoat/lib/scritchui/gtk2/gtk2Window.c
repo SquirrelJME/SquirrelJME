@@ -11,6 +11,7 @@
 #include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
+#include "sjme/util.h"
 
 static gboolean sjme_scritchui_gtk2_eventDelete(GtkWidget* widget,
 	GdkEvent* event,
@@ -70,6 +71,36 @@ static gboolean sjme_scritchui_gtk2_eventVisibilityNotify(
 	return FALSE;
 }
 
+static gboolean sjme_scritchui_gtk2_eventWindowExpose(
+	GtkWindow* gtkWindow,
+	GdkEventExpose* event,
+	gpointer data)
+{
+	sjme_scritchui inState;
+	sjme_scritchui_uiWindow inWindow;
+	
+	if (event == NULL)
+		return FALSE;
+	
+	/* Disconnect this signal, we only want to call this once. */
+	g_signal_handlers_disconnect_by_func(gtkWindow,
+		(gpointer)sjme_scritchui_gtk2_eventWindowExpose, data);
+	
+	/* These must be valid. */
+	inWindow = data;
+	if (gtkWindow == NULL || data == NULL)
+		return FALSE;
+	
+	/* Set minimum window size, if specified. */
+	inState = inWindow->component.common.state;
+	if (inWindow->min.width != 0 && inWindow->min.height != 0)
+		return inState->apiInThread->windowContentMinimumSize(
+			inState, inWindow, inWindow->min.width, inWindow->min.height);
+	
+	/* Always continue handling. */
+	return FALSE;
+}
+
 static void sjme_scritchui_gtk2_nukeMenuBox(GtkWidget* widget,
 	gpointer gtkMenuBox)
 {
@@ -83,15 +114,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height)
 {
-	sjme_errorCode error;
 	GtkWindow* gtkWindow;
-	GtkWidget* menuBar;
 	GdkGeometry geometry;
 	sjme_scritchui_dim* overhead;
-	gint w, h;
-	gint ox, oy;
-	GtkAllocation alloc;
-	GdkRectangle extent;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -101,54 +126,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	
 	/* Recover window. */
 	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
-	menuBar = inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBAR];
 	
-	/* Calculate window overhead, we can only consider this if there is */
-	/* a menu bar that would add overhead. */
+	/* The overhead has been calculated via windowContentGetFrame(). */
 	overhead = &inWindow->minOverhead;
-	memset(overhead, 0, sizeof(*overhead));
-	if (menuBar != NULL)
-	{
-		/* Get the size allocation of the menu bar. */
-		memset(&alloc, 0, sizeof(alloc));
-		w = 0;
-		h = 0;
-		gtk_widget_get_size_request(menuBar, &w, &h);
-		gtk_widget_get_allocation(menuBar, &alloc);
-		
-		/* Add its height. */
-		if (h > alloc.height)
-			overhead->height += h;
-		else
-			overhead->height += alloc.height;
-	}
-	
-	/* Get the frame extents of the window. */
-	memset(&extent, 0, sizeof(extent));
-	ox = oy = 0;
-	if (GTK_WIDGET(gtkWindow)->window != NULL)
-	{
-		/* Get the frame extents, from the window manager. */
-		gdk_window_get_frame_extents(GTK_WIDGET(gtkWindow)->window,
-			&extent);
-		
-		/* Then get the origin of where our actual window is in terms */
-		/* that GTK uses. */
-		gdk_window_get_origin(GTK_WIDGET(gtkWindow)->window,
-			&ox, &oy);
-
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-		sjme_message("EXTENT %d %d %d %d -- ORIGIN %d %d",
-			extent.x, extent.y, extent.width, extent.height, ox, oy);
-#endif
-		
-		/* We need to add to the overhead of our window. */
-		/* This does not work perfectly, but it should allow for the */
-		/* entire content of the window to be visible. */
-		/* EXTENT 836 379 248 378 -- ORIGIN 840 432 */
-		overhead->width += abs(ox - extent.x);
-		overhead->height += abs(oy - extent.y);
-	}
 	
 	/* Setup geometry. */
 	memset(&geometry, 0, sizeof(geometry));
@@ -165,6 +145,110 @@ sjme_errorCode sjme_scritchui_gtk2_windowContentMinimumSize(
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchui_gtk2_windowGetFrame(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound)
+{
+	sjme_scritchui_uiWindow inWindow;
+	sjme_scritchui_rect resultFrame, resultContent;
+	GtkWindow* gtkWindow;
+	GtkWidget* menuBar;
+	gint menuW, menuH;
+	gint ox, oy;
+	GtkAllocation alloc;
+	GdkRectangle extent;
+	
+	if (inState == NULL || inContainer == NULL ||
+		(contentSize == NULL && frameBound == NULL && contentBound == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover the window. */
+	inWindow = SJME_SUI_CAST_WINDOW(inContainer);
+	if (inWindow == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Clear results. */
+	memset(&resultFrame, 0, sizeof(resultFrame));
+	memset(&resultContent, 0, sizeof(resultContent));
+	
+	/* Recover window. */
+	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
+	menuBar = inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBAR];
+	
+	/* Calculate window overhead, we can only consider this if there is */
+	/* a menu bar that would add overhead. */
+	/* Note that the menu bar could be hidden with a global menu. */
+	menuW = 0;
+	menuH = 0;
+	if (menuBar != NULL)
+	{
+		/* Get the size allocation of the menu bar. */
+		memset(&alloc, 0, sizeof(alloc));
+		gtk_widget_get_size_request(menuBar, &menuW, &menuH);
+		gtk_widget_get_allocation(menuBar, &alloc);
+		
+		/* Use the greater of the two bounds for the menu. */
+		menuH = sjme_max(menuH, alloc.height);
+	}
+	
+	/* Get the frame extents of the window. */
+	memset(&extent, 0, sizeof(extent));
+	ox = oy = 0;
+	if (GTK_WIDGET(gtkWindow)->window != NULL)
+	{
+		/* Get the frame extents, from the window manager. */
+		/* EXTENT 836 379 248 378 -- ORIGIN 840 432 */
+		gdk_window_get_frame_extents(GTK_WIDGET(gtkWindow)->window,
+			&extent);
+		
+		/* Then get the origin of where our actual window is in terms */
+		/* that GTK uses. */
+		/* EXTENT 836 379 248 378 -- ORIGIN 840 432 */
+		memset(&alloc, 0, sizeof(alloc));
+		gdk_window_get_origin(GTK_WIDGET(gtkWindow)->window,
+			&ox, &oy);
+		gtk_widget_get_allocation(GTK_WIDGET(gtkWindow), &alloc);
+
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+		sjme_message("EXTENT %d %d %d %d -- ORIGIN %d %d",
+			extent.x, extent.y, extent.width, extent.height, ox, oy);
+#endif
+		
+		/* Calculate frame. */
+		resultFrame.s.x = extent.x;
+		resultFrame.s.y = extent.y;
+		resultFrame.d.width = extent.width;
+		resultFrame.d.height = extent.height;
+		
+		/* Calculate base content. */
+		resultContent.s.x = ox;
+		resultContent.s.y = oy;
+		resultContent.d.width = alloc.width;
+		resultContent.d.height = alloc.height;
+		
+		/* Is there a menu to consider? */
+		if (menuH > 0)
+		{
+			resultContent.s.y += menuH;
+			resultContent.d.height -= menuH;
+		}
+	}
+	
+	/* Give the results. */
+	if (frameBound != NULL)
+		memmove(frameBound, &resultFrame, sizeof(resultFrame));
+	if (contentBound != NULL)
+		memmove(contentBound, &resultContent, sizeof(resultContent));
+	if (contentSize != NULL)
+		memmove(contentSize, &resultContent.d, sizeof(resultContent.d));
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_windowNew(
@@ -191,6 +275,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowNew(
 	/* Setup window. */
 	inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET] = gtkWindow;
 	inWindow->component.common.handle[SJME_SUI_GTK2_H_WINTABLE] = gtkTable;
+
+	/* Since the table will soon be referenced, we do not want to lose it. */
+	g_object_ref(gtkTable);
 	
 	/* The table needs to be in the window. */
 	gtk_container_add(GTK_CONTAINER(gtkWindow),
@@ -266,7 +353,9 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar)
 {
+	sjme_errorCode error;
 	GtkWindow* gtkWindow;
+	GdkWindow* windowGdkWindow; 
 	GtkMenuBar* gtkMenuBar;
 	GtkMenuBar* gtkExistingBar;
 	GtkTable* gtkTable;
@@ -292,17 +381,21 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
 			
 		/* Clear state. */
 		inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBAR] = NULL;
+
+		/* Do not care for this menu bar anymore. */
+		g_object_unref(gtkExistingBar);
 	}
 	
 	/* Place into the table at the top. */
 	if (gtkMenuBar != NULL)
 	{
-		/* Attach to top of table. */
+		/* Attach to top of table, do not allow the menu to shrink on the */
+		/* Y axis. */
 		gtk_table_attach(GTK_TABLE(gtkTable),
 			GTK_WIDGET(gtkMenuBar),
 			0, 1, 0, 1,
 			GTK_FILL | GTK_EXPAND,
-			GTK_SHRINK,
+			0,
 			0, 0);
 		
 		/* Show the menu bar. */
@@ -310,6 +403,21 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
 		
 		/* Remember this bar for future changes. */
 		inWindow->component.common.handle[SJME_SUI_GTK2_H_WINBAR] = gtkMenuBar;
+		
+		/* Reference the bar as it is being used. */
+		g_object_ref(gtkMenuBar);
+		
+		/* If a minimum size is set and the window is visible, this */
+		/* needs to be recalculated. */
+		windowGdkWindow = gtk_widget_get_window(GTK_WIDGET(gtkWindow));
+		if (windowGdkWindow != NULL &&
+			inWindow->min.width != 0 && inWindow->min.height != 0)
+			if (gdk_window_is_viewable(windowGdkWindow) ||
+				gdk_window_is_visible(windowGdkWindow))
+				if (sjme_error_is(error = inState->apiInThread
+					->windowContentMinimumSize(inState, inWindow,
+						inWindow->min.width, inWindow->min.height)))
+					return sjme_error_default(error);
 	}
 	
 	/* Success? */
@@ -321,7 +429,10 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInValue sjme_jboolean isVisible)
 {
+#define SJME_SUI_GTK2_MAX_ATTEMPTS 256
 	GtkWindow* gtkWindow;
+	GdkWindow* gdkWindow;
+	int attempt;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -329,12 +440,30 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 	/* Recover window. */
 	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
 	
-	/* Show or hide it. */
-	if (isVisible)
-		gtk_window_present(GTK_WINDOW(gtkWindow));
-	else
+	/* Hide or show it. */
+	if (!isVisible)
 		gtk_widget_hide(GTK_WIDGET(gtkWindow));
+	else
+	{
+		/* When the window is exposed, set the minimum size here. */
+		g_signal_connect(gtkWindow, "expose-event",
+			G_CALLBACK(sjme_scritchui_gtk2_eventWindowExpose), inWindow);
+		
+		/* Present the window */
+		gtk_window_present(GTK_WINDOW(gtkWindow));
+		
+		/* Wait for the window to be visible and viewable, we need to do */
+		/* this as there can be a race condition where the window is not */
+		/* yet fully on screen, which can break things on remote/indirect */
+		/* connections. */
+		gdkWindow = gtk_widget_get_window(GTK_WIDGET(gtkWindow));
+		for (attempt = 0; attempt < SJME_SUI_GTK2_MAX_ATTEMPTS &&
+			(!gdk_window_is_viewable(gdkWindow) || 
+				!gdk_window_is_visible(gdkWindow)); attempt++)
+			sjme_thread_yield();
+	}
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+#undef SJME_SUI_GTK2_MAX_ATTEMPTS
 }

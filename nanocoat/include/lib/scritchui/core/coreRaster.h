@@ -31,6 +31,8 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+#pragma region(corePrimitives)
+	
 sjme_errorCode sjme_scritchpen_corePrim_drawArc(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -159,22 +161,12 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanGetNoDest(
 	sjme_attrInPositiveNonZero sjme_jint inDataLen,
 	sjme_attrInPositiveNonZero sjme_jint inNumPixels);
 
-/*--------------------------------------------------------------------------*/
+#pragma endregion(corePrimitives)
 	
-/**
- * Calculates the anchor position of a box on a point.
- * 
- * @param anchor The anchor point to use.
- * @param x The X coordinate. 
- * @param y The Y coordinate.
- * @param w The width.
- * @param h The height.
- * @param baseline The baseline, if this is a font.
- * @param outX The resultant X coordinate.
- * @param outY The resultant Y coordinate.
- * @return Any resultant error, if any.
- * @since 2024/06/27
- */
+/*--------------------------------------------------------------------------*/
+
+#pragma region(coreUtils)
+	
 sjme_errorCode sjme_scritchpen_coreUtil_applyAnchor(
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInValue sjme_jint x,
@@ -328,7 +320,11 @@ sjme_errorCode sjme_scritchpen_coreUtil_rawScanToRgb(
 	sjme_attrInPositive sjme_jint inRawOff,
 	sjme_attrInPositive sjme_jint inRawLen);
 
+#pragma endregion(coreUtils)
+	
 /*--------------------------------------------------------------------------*/
+	
+#pragma region(coreImplementations)
 	
 sjme_errorCode sjme_scritchpen_core_lock(
 	sjme_attrInNotNull sjme_scritchui_pencil g);
@@ -338,8 +334,8 @@ sjme_errorCode sjme_scritchpen_core_lockRelease(
 
 sjme_errorCode sjme_scritchpen_core_close(
 	sjme_attrInNotNull sjme_scritchui_pencil g);
-
-sjme_errorCode sjme_scritchpen_core_copyArea(
+	
+sjme_errorCode sjme_attrDeprecated sjme_scritchpen_core_copyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
@@ -407,6 +403,27 @@ sjme_errorCode sjme_scritchpen_core_drawRect(
 	sjme_attrInValue sjme_jint y,
 	sjme_attrInPositive sjme_jint w,
 	sjme_attrInPositive sjme_jint h);
+
+sjme_errorCode sjme_scritchpen_core_drawRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInPositive sjme_jint origImgWidth,
+	sjme_attrInPositive sjme_jint origImgHeight);
 
 sjme_errorCode sjme_scritchpen_core_drawRoundRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -497,6 +514,20 @@ sjme_errorCode sjme_scritchpen_core_fillTriangle(
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3);
 
+sjme_errorCode sjme_scritchpen_core_getRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint anchor);
+
 sjme_errorCode sjme_scritchpen_core_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
@@ -537,11 +568,29 @@ sjme_errorCode sjme_scritchpen_core_setFont(
 sjme_errorCode sjme_scritchpen_core_setParametersFrom(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencil from);
+	
+sjme_errorCode sjme_scritchpen_core_transferRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_scritchui_pencil srcPencil,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInValue sjme_scritchui_transferRegionMode mode);
 
 sjme_errorCode sjme_scritchpen_core_translate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
+	
+#pragma endregion(coreImplementations)
 	
 /*--------------------------------------------------------------------------*/
 

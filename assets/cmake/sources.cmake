@@ -22,6 +22,7 @@ if(Fossil_EXECUTABLE)
 		COMMAND "${Fossil_EXECUTABLE}" "zip"
 			"${SQUIRRELJME_VERSION_ID_FOSSIL}" "${zipPath}"
 			"--name" "${archiveBase}"
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${zipPath}"
 		COMMENT "Archiving Zip Source..."
 		COMMAND_EXPAND_LISTS)
@@ -33,6 +34,7 @@ if(Fossil_EXECUTABLE)
 		COMMAND "${Fossil_EXECUTABLE}" "tar"
 			"${SQUIRRELJME_VERSION_ID_FOSSIL}" "${tgzPath}"
 			"--name" "${archiveBase}"
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${tgzPath}"
 		COMMENT "Archiving Tarball Source..."
 		COMMAND_EXPAND_LISTS)

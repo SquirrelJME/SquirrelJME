@@ -10,6 +10,7 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "lib/scritchui/core/core.h"
 #include "sjme/alloc.h"
+#include "sjme/fixed.h"
 
 static void sjme_scritchui_core_lafFallbackColor(
 	sjme_scritchui_lafElementColorType type,
@@ -63,17 +64,106 @@ sjme_errorCode sjme_scritchui_core_lafDpiProject(
 	sjme_attrInNullable sjme_jint* inOutW,
 	sjme_attrInNullable sjme_jint* inOutH)
 {
+	sjme_errorCode error;
+	sjme_scritchui_uiScreen firstScreen;
+	sjme_jint numScreens;
+	sjme_scritchui_rect px, mm;
+	sjme_fixed pxMm, def, mul;
+	
 	if (inState == NULL || (inOutX == NULL && inOutY == NULL &&
 		inOutW == NULL && inOutH == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* If not implemented, then do nothing which is a 1:1 scale. */
-	if (inState->impl->lafDpiProject == NULL)
+	/* If DPI projection is supported natively, we can try that. We do */
+	/* allow for the implementation to soft fail and fallback to default */
+	/* projection handling. */
+	if (inState->impl->lafDpiProject != NULL)
+	{
+		/* Perform the projection. */
+		if (!sjme_error_is(error = inState->impl->lafDpiProject(inState,
+			inContext, toBase, inOutX, inOutY, inOutW, inOutH)))
+			return SJME_ERROR_NONE;
+		
+		/* The implementation is requesting that we fall back to software */
+		/* projection handling. */
+		if (error != SJME_ERROR_CONTINUE)
+			return sjme_error_default(error);
+	}
+	
+	/* Grab the first (default) screen, since that is all we care about. */
+	firstScreen = NULL;
+	numScreens = 1;
+	if (sjme_error_is(error = inState->apiInThread->screens(inState,
+		&firstScreen, &numScreens)))
+	{
+		/* There is no display device, so we cannot do any kind of */
+		/* projecting as DPI is not a concept. */
+		if (error == SJME_ERROR_HEADLESS_DISPLAY)
+			return SJME_ERROR_NONE;
+		
+		return sjme_error_default(error);
+	}
+	
+	/* No screen? Should have returned SJME_ERROR_HEADLESS_DISPLAY! */
+	if (firstScreen == NULL)
 		return SJME_ERROR_NONE;
 	
-	/* Forward to native implementation. */
-	return inState->impl->lafDpiProject(inState, inContext, toBase,
-		inOutX, inOutY, inOutW, inOutH);
+	/* Get the bounds of the screen. */
+	memset(&px, 0, sizeof(px));
+	memset(&mm, 0, sizeof(mm));
+	if (sjme_error_is(error = inState->apiInThread->screenGetBounds(
+		inState, firstScreen, inContext, &px, &mm)))
+		return sjme_error_default(error);
+	
+	/* Calculate average pixels per millimeter. */
+	pxMm = sjme_fixed_div(
+		sjme_fixed_fraction(px.d.width, mm.d.width) +
+		sjme_fixed_fraction(px.d.height, mm.d.height),
+		sjme_fixed_hi(2));
+	
+	/* 96dpi == 3.779529px/mm */
+	/* 3.779529*(2^13) = 30961.901568 / 8192 */
+	def = sjme_fixed_fraction(30961, 8192);
+	
+	/* Determine the multiplier to use. */
+	mul = sjme_fixed_div(pxMm, def);
+	
+	/* Converting from HiDPI to SquirrelJME non-scaled DPI?. */
+	if (toBase)
+	{
+		if (inOutX != NULL)
+			*inOutX = sjme_fixed_int(sjme_fixed_round(
+				sjme_fixed_div(sjme_fixed_hi(*inOutX), mul)));
+		if (inOutY != NULL)
+			*inOutY = sjme_fixed_int(sjme_fixed_round(
+				sjme_fixed_div(sjme_fixed_hi(*inOutY), mul)));
+		if (inOutW != NULL)
+			*inOutW = sjme_fixed_int(sjme_fixed_round(
+				sjme_fixed_div(sjme_fixed_hi(*inOutW), mul)));
+		if (inOutH != NULL)
+			*inOutH = sjme_fixed_int(sjme_fixed_round(
+				sjme_fixed_div(sjme_fixed_hi(*inOutH), mul)));
+	}
+	
+	/* Otherwise converting from non-scaled DPI to HiDPI. */
+	else
+	{
+		if (inOutX != NULL)
+			*inOutX = sjme_fixed_int(sjme_fixed_round(
+				sjme_fixed_mul(sjme_fixed_hi(*inOutX), mul)));
+		if (inOutY != NULL)
+			*inOutY = sjme_fixed_int(sjme_fixed_round(
+				sjme_fixed_mul(sjme_fixed_hi(*inOutY), mul)));
+		if (inOutW != NULL)
+			*inOutW = sjme_fixed_int(sjme_fixed_round(
+				sjme_fixed_mul(sjme_fixed_hi(*inOutW), mul)));
+		if (inOutH != NULL)
+			*inOutH = sjme_fixed_int(sjme_fixed_round(
+				sjme_fixed_mul(sjme_fixed_hi(*inOutH), mul)));
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_lafElementColor(

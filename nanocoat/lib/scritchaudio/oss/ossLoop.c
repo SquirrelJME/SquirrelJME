@@ -6,8 +6,6 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
-
-#include <string.h>
 #include <unistd.h>
 
 #if defined(SJME_CONFIG_HAS_SYS_IOCTL_H)
@@ -32,19 +30,21 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Recover stream, ignore if not ready yet. */
-	inStream = inState->stream;
+	/* Recover stream. */
+	inStream = (inStream != NULL ? inStream : inState->stream);
 	if (inStream == NULL)
-		return SJME_ERROR_NONE;
-	
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-	sjme_message("OSS Tick: %lld", inState->clock.clock.full / 1000000);
-#endif
+		return SJME_ERROR_AUDIO_DESTROYED;
+
+	/* Recover the file descriptor. */
+	fd = inStream->data.fd;
+	if (fd == -1)
+		return SJME_ERROR_AUDIO_DESTROYED;
 
 	/* Recover the single source. */
 	sources = inStream->sources;
 	if (sources == NULL)
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_AUDIO_AWAITING;
+	
 	source = NULL;
 	for (i = 0, n = sources->length; i < n; i++)
 	{
@@ -55,17 +55,25 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 
 	/* None found? */
 	if (source == NULL)
-		return SJME_ERROR_NONE;
-
-	/* Recover the file descriptor. */
-	fd = inStream->data.fd;
+		return SJME_ERROR_AUDIO_AWAITING;
+	
+	/* Calculate the render info. */
+	if (sjme_error_is(error = inState->intern->calcRenderInfo(
+		inState, inStream, source, renderInfo)))
+		return sjme_error_default(error);
 	
 	/* Allocate sample buffer */
 	bufSize = renderInfo->bufSize;
 	buf = sjme_alloca(bufSize);
 	if (buf == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
-	memset(buf, 0, bufSize);
+	
+	/* If the source format is unsigned, we need to actually set the proper */
+	/* zero level, otherwise there will be clicks/pops. */
+	if (renderInfo->format == SJME_SCRITCHAUDIO_FORMAT_BYTE_U8)
+		memset(buf, 0x80, bufSize);
+	else
+		memset(buf, 0, bufSize);
 
 	/* Render source. */
 	if (sjme_error_is(error = source->renderFunc(inState,

@@ -11,6 +11,7 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.gfx.ExtraGraphics;
 import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import cc.squirreljme.runtime.nttdocomo.ui.EightBitImageStore;
 import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
@@ -167,6 +168,17 @@ public class Graphics
 		__g.setFont(Font.getDefaultFont()._midpFont);
 	}
 	
+	/**
+	 * Clears the given rectangle.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws IllegalArgumentException If either the width and/or height
+	 * are negative.
+	 * @since 2025/12/21
+	 */
 	@Api
 	public void clearRect(int __x, int __y, int __w, int __h)
 		throws IllegalArgumentException
@@ -208,6 +220,37 @@ public class Graphics
 		this.__checkDispose();
 		
 		throw Debugging.todo();
+	}
+	
+	/**
+	 * Describe this. 
+	 *
+	 * @param __sx The source X coordinate.
+	 * @param __sy The source Y coordinate.
+	 * @param __w The width to copy.
+	 * @param __h The height to copy.
+	 * @param __dx The destination X coordinate.
+	 * @param __dy The destination Y coordinate.
+	 * @throws IllegalArgumentException If the width and/or height are
+	 * negative.
+	 * @since 2025/12/21
+	 */
+	@Api
+	public void copyArea(int __sx, int __sy, int __w, int __h,
+		int __dx, int __dy)
+		throws IllegalArgumentException
+	{
+		if (__w < 0 || __h < 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		// Nothing to draw?
+		if (__w == 0 || __h == 0)
+			return;
+		
+		// Forward
+		this._graphics.copyArea(__sx, __sy, __w, __h, __dx, __dy,
+			javax.microedition.lcdui.Graphics.TOP |
+				javax.microedition.lcdui.Graphics.LEFT);
 	}
 	
 	/**
@@ -260,16 +303,55 @@ public class Graphics
 		this._graphics.drawArc(__x, __y, __w, __h, __startAngle, __arcAngle);
 	}
 	
+	/**
+	 * Draws the given characters at the baseline.
+	 *
+	 * @param __c The characters to draw.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __off The offset into the array.
+	 * @param __n The number of characters to draw.
+	 * @throws IllegalArgumentException Before DoJa 2.0, if the offset and/or
+	 * length exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StringIndexOutOfBoundsException DoJa 2.0 and after, if the
+	 * offset and/or length exceed the array bounds.
+	 * @since 2025/12/21
+	 */
 	@Api
-	public void drawChars(char[] __c, int __x, int __y, int __off, int __len)
-		throws IllegalArgumentException
+	public void drawChars(char[] __c, int __x, int __y, int __off, int __n)
+		throws IllegalArgumentException, NullPointerException,
+			StringIndexOutOfBoundsException
 	{
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Different DoJa versions throw distinct exceptions
+		if (__off < 0 || __n < 0 || (__off + __n) < 0 ||
+			(__off + __n) > __c.length)
+		{
+			if (DoJaRuntime.versionBefore(2, 0))
+				throw new IllegalArgumentException("IOOB");
+			else if (DoJaRuntime.versionLeast(2, 0))
+				throw new StringIndexOutOfBoundsException("IOOB");
+		}
+		
 		this.__checkDispose();
 		
 		// TODO: Support default emoji color
-		throw Debugging.todo();
+		this._graphics.drawChars(__c, __x, __y, __off, __n,
+			javax.microedition.lcdui.Graphics.BASELINE);
 	}
 	
+	/**
+	 * Draws the specified image at the given coordinates.
+	 *
+	 * @param __i The image to draw.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/21
+	 */
 	@Api
 	public void drawImage(Image __i, int __x, int __y)
 		throws NullPointerException
@@ -279,11 +361,27 @@ public class Graphics
 		
 		this.__checkDispose();
 		
-		
 		this.drawImage(__i, __x, __y, 0, 0,
 			__i.getWidth(), __i.getHeight());
 	}
 	
+	/**
+	 * Draws a part of the given image at the given coordinates, if the
+	 * width and/or height would exceed the image bounds it is not drawn.
+	 *
+	 * @param __i The image to draw.
+	 * @param __dx The destination X coordinate.
+	 * @param __dy The destination Y coordinate.
+	 * @param __sx The source X coordinate.
+	 * @param __sy The source Y coordinate.
+	 * @param __w The width of the area to draw.
+	 * @param __h The height to draw.
+	 * @throws IllegalArgumentException If the width and/or height are
+	 * negative.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UIException If the image has already been disposed.
+	 * @since 2025/12/21
+	 */
 	@Api
 	public void drawImage(Image __i, int __dx, int __dy, int __sx, int __sy,
 		int __w, int __h)
@@ -292,8 +390,10 @@ public class Graphics
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		this.__checkDispose();
+		if (__w < 0 || __h < 0)
+			throw new IllegalArgumentException("NEGV");
 		
+		this.__checkDispose();
 		
 		// Forward to other call, as it simplifies the shared logic
 		this.drawScaledImage(__i,
@@ -301,6 +401,15 @@ public class Graphics
 			__sx, __sy, __w, __h);
 	}
 	
+	/**
+	 * Draws a line.
+	 *
+	 * @param __x1 The starting X coordinate.
+	 * @param __y1 The starting Y coordinate.
+	 * @param __x2 The ending X coordinate.
+	 * @param __y2 The ending Y coordinate.
+	 * @since 2025/12/21
+	 */
 	@Api
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
@@ -309,15 +418,105 @@ public class Graphics
 		this._graphics.drawLine(__x1, __y1, __x2, __y2);
 	}
 	
+	/**
+	 * Draws the given set of points as a non-filled polygon. 
+	 *
+	 * @param __x The X coordinates.
+	 * @param __y The Y coordinates.
+	 * @param __n The number of points to draw.
+	 * @throws ArrayIndexOutOfBoundsException For DoJa 2.0+, this is thrown
+	 * if {@code __n} is negative and/or exceeds the array bounds.
+	 * @throws IllegalArgumentException Before DoJa 2.0, this is thrown if
+	 * any argument is {@code null} and {@code __n} is positive; if {@code __n}
+	 * is negative; or if {@code __n} exceeds array bounds.
+	 * @throws NullPointerException For DoJa 2.0+, this is thrown if any
+	 * input argument is {@code null}.
+	 * @since 2025/12/21
+	 */
 	@Api
+	@SuppressWarnings("DuplicatedCode")
 	public void drawPolyline(int[] __x, int[] __y, int __n)
-		throws IllegalArgumentException
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
+		// DoJa 1.0 just throws IllegalArgumentException if __n is negative
+		// or too large for an array, however there is no specific case for
+		// an NPE to occur
+		if (DoJaRuntime.versionBefore(2, 0))
+		{
+			// It is assumed that null arrays are zero length
+			if (__n < 0 || __n > (__x != null ? __x.length : 0) ||
+				__n > (__y != null ? __y.length : 0))
+				throw new IllegalArgumentException("NARG");
+		}
+		
+		// DoJa 2.0+ uses these exceptions instead for consistency with
+		// the version with the offset specified
+		else if (DoJaRuntime.versionLeast(2, 0))
+		{
+			if (__x == null || __y == null)
+				throw new NullPointerException("NARG");
+			
+			if (__n < 0 || __n > __x.length || __n > __y.length)
+				throw new ArrayIndexOutOfBoundsException("NARG");
+		}
+		
 		this.__checkDispose();
 		
-		throw Debugging.todo();
+		// Not drawing anything?
+		if (__n <= 0)
+			return;
+		
+		// Forward
+		this.drawPolyline(__x, __y, 0, __n);
 	}
 	
+	/**
+	 * Draws the given set of points as a non-filled polygon. 
+	 *
+	 * @param __x The X coordinates.
+	 * @param __y The Y coordinates.
+	 * @param __o The offset into the array.
+	 * @param __n The number of points to draw.
+	 * @throws ArrayIndexOutOfBoundsException If {@code __n} is negative
+	 * and/or exceeds the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/21
+	 */
+	@Api
+	@SuppressWarnings("DuplicatedCode")
+	public void drawPolyline(int[] __x, int[] __y, int __o, int __n)
+		throws ArrayIndexOutOfBoundsException, NullPointerException
+	{
+		if (__x == null || __y == null)
+			throw new NullPointerException("NARG");
+		
+		if (__o < 0 || __n < 0 || (__o + __n) > __x.length ||
+			(__o + __n) > __y.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		// Pointless draw?
+		if (__n == 0)
+			return;
+		
+		this.__checkDispose();
+		
+		// ExtraGraphics handles this
+		this.__extra().drawPolyline(__x, __o,
+			__y, __o, __n);
+	}
+	
+	/**
+	 * Draws a non-filled rectangle. 
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws IllegalArgumentException If any rectangle dimension is
+	 * negative.
+	 * @since 2025/12/21
+	 */
 	@Api
 	public void drawRect(int __x, int __y, int __w, int __h)
 		throws IllegalArgumentException
@@ -393,6 +592,15 @@ public class Graphics
 			__dw, __dh);
 	}
 	
+	/**
+	 * Draws the given string at the baseline.
+	 *
+	 * @param __s The string to draw.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/21
+	 */
 	@Api
 	public void drawString(String __s, int __x, int __y)
 		throws NullPointerException
@@ -404,6 +612,38 @@ public class Graphics
 		
 		// TODO: Support default emoji color
 		this._graphics.drawString(__s, __x, __y,
+			javax.microedition.lcdui.Graphics.BASELINE);
+	}
+	
+	/**
+	 * Draws the given string at the baseline.
+	 *
+	 * @param __s The string to draw.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __off The offset into the array.
+	 * @param __n The number of characters to draw.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StringIndexOutOfBoundsException If the
+	 * offset and/or length exceed the array bounds.
+	 * @since 2025/12/21
+	 */
+	@Api
+	public void drawString(String __s, int __x, int __y, int __off, int __n)
+		throws IllegalArgumentException, NullPointerException,
+			StringIndexOutOfBoundsException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		if (__off < 0 || __n < 0 || (__off + __n) < 0 ||
+			(__off + __n) > __s.length())
+			throw new StringIndexOutOfBoundsException("IOOB");
+		
+		this.__checkDispose();
+		
+		// TODO: Support default emoji color
+		this._graphics.drawSubstring(__s, __off, __n, __x, __y,
 			javax.microedition.lcdui.Graphics.BASELINE);
 	}
 	
@@ -436,15 +676,105 @@ public class Graphics
 		this._graphics.fillArc(__x, __y, __w, __h, __startAngle, __arcAngle);
 	}
 	
+	/**
+	 * Draws the given set of points as a filled polygon. 
+	 *
+	 * @param __x The X coordinates.
+	 * @param __y The Y coordinates.
+	 * @param __n The number of points to draw.
+	 * @throws ArrayIndexOutOfBoundsException For DoJa 2.0+, this is thrown
+	 * if {@code __n} is negative and/or exceeds the array bounds.
+	 * @throws IllegalArgumentException Before DoJa 2.0, this is thrown if
+	 * any argument is {@code null} and {@code __n} is positive; if {@code __n}
+	 * is negative; or if {@code __n} exceeds array bounds.
+	 * @throws NullPointerException For DoJa 2.0+, this is thrown if any
+	 * input argument is {@code null}.
+	 * @since 2025/12/21
+	 */
 	@Api
+	@SuppressWarnings("DuplicatedCode")
 	public void fillPolygon(int[] __x, int[] __y, int __n)
-		throws IllegalArgumentException
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
+		// DoJa 1.0 just throws IllegalArgumentException if __n is negative
+		// or too large for an array, however there is no specific case for
+		// an NPE to occur
+		if (DoJaRuntime.versionBefore(2, 0))
+		{
+			// It is assumed that null arrays are zero length
+			if (__n < 0 || __n > (__x != null ? __x.length : 0) ||
+				__n > (__y != null ? __y.length : 0))
+				throw new IllegalArgumentException("NARG");
+		}
+		
+		// DoJa 2.0+ uses these exceptions instead for consistency with
+		// the version with the offset specified
+		else if (DoJaRuntime.versionLeast(2, 0))
+		{
+			if (__x == null || __y == null)
+				throw new NullPointerException("NARG");
+			
+			if (__n < 0 || __n > __x.length || __n > __y.length)
+				throw new ArrayIndexOutOfBoundsException("NARG");
+		}
+		
 		this.__checkDispose();
 		
-		throw Debugging.todo();
+		// Not drawing anything?
+		if (__n <= 0)
+			return;
+		
+		// Forward
+		this.fillPolygon(__x, __y, 0, __n);
 	}
 	
+	/**
+	 * Draws the given set of points as a non-filled polygon. 
+	 *
+	 * @param __x The X coordinates.
+	 * @param __y The Y coordinates.
+	 * @param __o The offset into the array.
+	 * @param __n The number of points to draw.
+	 * @throws ArrayIndexOutOfBoundsException If {@code __n} is negative
+	 * and/or exceeds the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/21
+	 */
+	@Api
+	@SuppressWarnings("DuplicatedCode")
+	public void fillPolygon(int[] __x, int[] __y, int __o, int __n)
+		throws ArrayIndexOutOfBoundsException, NullPointerException
+	{
+		if (__x == null || __y == null)
+			throw new NullPointerException("NARG");
+		
+		if (__o < 0 || __n < 0 || (__o + __n) > __x.length ||
+			(__o + __n) > __y.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		// Pointless draw?
+		if (__n == 0)
+			return;
+		
+		this.__checkDispose();
+		
+		// ExtraGraphics handles this
+		this.__extra().fillPolygon(__x, __o,
+			__y, __o, __n);
+	}
+	
+	/**
+	 * Draws a-filled rectangle. 
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws IllegalArgumentException If any rectangle dimension is
+	 * negative.
+	 * @since 2025/12/21
+	 */
 	@Api
 	public void fillRect(int __x, int __y, int __w, int __h)
 		throws IllegalArgumentException
@@ -528,7 +858,7 @@ public class Graphics
 	public void setFlipMode(int __mode)
 		throws IllegalArgumentException
 	{
-		/** {@squirreljme.error AH1f Invalid flip mode. (The mode)} */
+		/* {@squirreljme.error AH1f Invalid flip mode. (The mode)} */
 		if (__mode != Graphics.FLIP_HORIZONTAL &&
 			__mode != Graphics.FLIP_NONE &&
 			__mode != Graphics.FLIP_ROTATE &&
@@ -760,6 +1090,27 @@ public class Graphics
 		if (DoJaRuntime.versionLeast(2, 0))
 			if (this._disposed)
 				throw new UIException(UIException.ILLEGAL_STATE);
+	}
+	
+	/**
+	 * Returns the graphics instance as an {@link ExtraGraphics}.
+	 *
+	 * @return The {@link ExtraGraphics}.
+	 * @throws UIException If this is not an {@link ExtraGraphics}.
+	 * @since 2025/12/21
+	 */
+	private ExtraGraphics __extra()
+		throws UIException
+	{
+		/* {@squirreljme.error AH91 Graphics is not capable of extra
+		functions.} */
+		javax.microedition.lcdui.Graphics g = this._graphics;
+		if (!(g instanceof ExtraGraphics))
+			throw new UIException(UIException.ILLEGAL_STATE,
+				"AH91");
+		
+		// Cast
+		return (ExtraGraphics)g;
 	}
 	
 	/**

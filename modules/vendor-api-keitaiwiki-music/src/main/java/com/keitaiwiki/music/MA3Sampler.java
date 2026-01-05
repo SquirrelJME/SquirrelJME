@@ -253,7 +253,7 @@ public class MA3Sampler
 		// Stop the previous note if necessary
 		if (note != null && (chan.isDrum || note.algorithm != algorithm))
 		{
-			keyOff(channel, key);
+			this.keyOff(channel, key);
 			note = null;
 		}
 		

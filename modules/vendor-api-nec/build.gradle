@@ -1,0 +1,22 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.iban4j.CountryCode
+
+description = "Implements support for the NEC APIs."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "NE"
+	swmType = JavaMEMidletType.API
+	swmName = "NEC API"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "NEC Mobile Communications"
+	originalApiVendorUrl = "https://www.nec.com/"
+	originalApiVendorCountry = CountryCode.JP
+	tags += "nec"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}

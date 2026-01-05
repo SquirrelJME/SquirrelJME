@@ -22,6 +22,13 @@
 
 #include <stddef.h>
 
+/* Skip stdlib in certain cases? */
+#if !defined(SJME_CONFIG_FORGET_STDLIB)
+	#include <stdlib.h>
+#endif
+
+#include <setjmp.h>
+
 /* Floating point header, determines if software floats should be used. */
 #if !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
 	#include <float.h>
@@ -68,6 +75,9 @@ extern "C" {
 			#define SJME_CONFIG_HAS_C94
 		#endif
 	#endif
+#elif defined(_MSC_VER)
+	/** MSVC is assumed to support C89. */
+	#define SJME_CONFIG_HAS_C89
 #endif
 
 #if defined(SJME_CONFIG_HAS_C11)
@@ -143,6 +153,11 @@ extern "C" {
 	/** Is the GCC version the specified version? */
 	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
 #endif
+	
+#if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
+	/** Has a GCC-like/clone compiler. */
+	#define SJME_CONFIG_HAS_GCC_CLONE
+#endif
 
 #if !defined(SJME_CONFIG_RELEASE) && !defined(SJME_CONFIG_DEBUG)
 	#if (defined(DEBUG) || defined(_DEBUG)) || \
@@ -170,10 +185,6 @@ extern "C" {
 #elif defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
 	/** Emscripten (WASM). */
 	#define SJME_CONFIG_HAS_OS_EMSCRIPTEN
-#elif defined(SJME_CONFIG_IDENT_OS_GAMECUBE) || \
-	(defined(GEKKO) && defined(HW_DOL))
-	/** Nintendo GameCube is available. */
-	#define SJME_CONFIG_HAS_OS_NINTENDO_GAMECUBE
 #elif defined(SJME_CONFIG_IDENT_OS_WIIU) || \
 	(defined(GEKKO) && defined(HW_RVL) && defined(WIIU))
 	/** Nintendo Wii U is available. */
@@ -182,9 +193,16 @@ extern "C" {
 	(defined(GEKKO) && defined(HW_RVL) && !defined(WIIU))
 	/** Nintendo Wii is available. */
 	#define SJME_CONFIG_HAS_OS_NINTENDO_WII
+#elif defined(SJME_CONFIG_IDENT_OS_GAMECUBE) || \
+	(defined(GEKKO) && defined(HW_DOL))
+	/** Nintendo GameCube is available. */
+	#define SJME_CONFIG_HAS_OS_NINTENDO_GAMECUBE
 #elif defined(__3DS__) || defined(_3DS) || defined(SJME_CONFIG_IDENT_OS_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_OS_NINTENDO_3DS
+#elif defined(PSP) || defined(SJME_CONFIG_IDENT_OS_PSP)
+	/** Sony PSP. */
+	#define SJME_CONFIG_HAS_OS_SONY_PSP
 #elif defined(PS2) || defined(_EE) || defined(_IOP) || defined(__PS2__) || \
 	defined(SJME_CONFIG_IDENT_OS_PLAYSTATION2)
 	/** Sony PlayStation 2. */
@@ -271,8 +289,10 @@ extern "C" {
 #define SJME_CONFIG_POSIX_VERSION_2008 200809L
 
 #if defined(_POSIX_C_SOURCE)
-	/** POSIX is available. */
-	#define SJME_CONFIG_HAS_OS_POSIX
+	#if !defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
+		/** POSIX is available. */
+		#define SJME_CONFIG_HAS_OS_POSIX
+	#endif
 #else
 	/* These OSes have POSIX. */
 	#if defined(SJME_CONFIG_HAS_OS_ANDROID) || \
@@ -795,6 +815,12 @@ extern "C" {
 	#define sjme_attrOutNotNullBuf(lenArg) sjme_attrOutNotNull
 #endif
 
+#if !defined(sjme_attrInOutNotNullBuf)
+	/** Input/output to/from buffer. */
+	#define sjme_attrInOutNotNullBuf(lenArg) \
+		sjme_attrInNotNullBuf(lenArg) sjme_attrOutNotNullBuf(lenArg)
+#endif
+
 #if !defined(sjme_attrOutRange)
 	/** Output value range. */
 	#define sjme_attrOutRange(lo, hi)
@@ -841,6 +867,16 @@ extern "C" {
 #if !defined(sjme_attrArtificial)
 	/** Artificial function. */
 	#define sjme_attrArtificial
+#endif
+
+#if !defined(sjme_attrOutModify)
+	/** Modifies the output. */
+	#define sjme_attrOutModify
+#endif
+
+#if !defined(sjme_attrOutOverwrite)
+	/** Overwrites the output. */
+	#define sjme_attrOutOverwrite
 #endif
 
 #if !defined(sjme_alloca)
@@ -1304,6 +1340,14 @@ extern "C" {
 
 /** Include code that should work. */
 #define SJME_CONFIG_CODE_SHOULD_WORK 1
+
+#if defined(SJME_CONFIG_HAS_MSVC)
+	#define sjme_asm(x) __asm {x}
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	#define sjme_asm(x) __asm__ {x}
+#else
+	#define sjme_asm(x) sjme_execInlineAsm(#x)
+#endif
 	
 /* Windows header needs to be included everywhere effectively. */
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)

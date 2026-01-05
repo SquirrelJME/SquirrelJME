@@ -1,0 +1,40 @@
+import cc.squirreljme.plugin.swm.JavaMEMidlet
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "This is a demo which is used to demonstrate " +
+	"how the graphic operations operate."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "AW"
+	swmType = JavaMEMidletType.APPLICATION
+	swmName = "LCDUI Graphics Demo"
+	swmVendor = "Stephanie Gawroriski"
+	midlets += new JavaMEMidlet("Demo - Mystify", "mystify.xpm",
+		"net.multiphasicapps.lcduidemo.Mystify")
+	midlets += new JavaMEMidlet("Demo - Fonts", "fonts.xpm",
+		"net.multiphasicapps.lcduidemo.Fonts")
+	midlets += new JavaMEMidlet("Demo - Events", "event.xpm",
+		"net.multiphasicapps.lcduidemo.Events")
+	midlets += new JavaMEMidlet("Demo - List", "list.xpm",
+		"net.multiphasicapps.lcduidemo.Lists")
+	midlets += new JavaMEMidlet("Demo - XPM Image", "image.xpm",
+		"net.multiphasicapps.lcduidemo.XPMDemo")
+	midlets += new JavaMEMidlet("Demo - PNG Image", "image.xpm",
+		"net.multiphasicapps.lcduidemo.PNGDemo")
+	midlets += new JavaMEMidlet("Demo - JPEG Image", "image.xpm",
+		"net.multiphasicapps.lcduidemo.JPEGDemo")
+	midlets += new JavaMEMidlet("Demo - GIF Image", "image.xpm",
+		"net.multiphasicapps.lcduidemo.GIFDemo")
+	midlets += new JavaMEMidlet("Demo - Blending", "image.xpm",
+		"net.multiphasicapps.lcduidemo.Blending")
+	tags += "demo"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+	api project(":modules:profile-meep")
+	api project(":modules:midp-lcdui")
+}

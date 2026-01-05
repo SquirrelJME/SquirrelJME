@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/util.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
@@ -351,9 +349,11 @@ sjme_errorCode sjme_scritchpen_corePrim_fillPolygon(
 	yMax = INT32_MIN;
 	yMin = INT32_MAX;
 
+	/* Alpha blending in hardware? */
 	if (!g->state.applyAlpha && g->impl->drawHorizSrc != NULL)
 		drawHoriz = g->impl->drawHorizSrc;
-	else if (g->state.applyAlpha && g->impl->drawHorizSrcOver != NULL)
+	else if (g->state.applyAlpha && g->impl->drawHorizSrcOver != NULL &&
+		g->state.blending == SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER)
 		drawHoriz = g->impl->drawHorizSrcOver;
 	else
 		drawHoriz = g->prim.drawHoriz;

@@ -18,6 +18,8 @@
 
 #include "sjme/config.h"
 
+#include <windef.h>
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -29,6 +31,102 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 	
 /*--------------------------------------------------------------------------*/
+
+#pragma region(missing)
+
+#if !defined(DPI_AWARENESS_CONTEXT_UNAWARE)
+	#define DPI_AWARENESS_CONTEXT_UNAWARE \
+		((HANDLE)-1)
+#endif
+	
+#if !defined(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE)
+	#define DPI_AWARENESS_CONTEXT_SYSTEM_AWARE \
+		((HANDLE)-2)
+#endif
+	
+#if !defined(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE)
+	#define DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE \
+		((HANDLE)-3)
+#endif
+	
+#if !defined(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)
+	#define DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 \
+		((HANDLE)-4)
+#endif
+	
+#if !defined(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED)
+	#define DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED \
+		((HANDLE)-5)
+#endif
+
+#define sjme_scritchui_win32_MDT_RAW_DPI 2
+	
+/** @code SetProcessDpiAwarenessContext @endcode . */
+typedef BOOL (WINAPI *sjme_scritchui_win32_intern_SPDAC)(HANDLE);
+	
+/** @code SetProcessDpiAwareness @endcode . */
+typedef BOOL (WINAPI *sjme_scritchui_win32_intern_SPDA)(int);
+	
+/** @code SetProcessDPIAware @endcode . */
+typedef BOOL (WINAPI *sjme_scritchui_win32_intern_SPDPIA)(void);
+	
+/** @code GetDpiForWindow @endcode . */
+typedef UINT (WINAPI *sjme_scritchui_win32_intern_GDFW)(HWND);
+
+/** @code GetDpiForMonitor @endcode . */
+typedef HRESULT (WINAPI *sjme_scritchui_win32_intern_GDFM)(
+	HMONITOR, INT, UINT*, UINT*);
+
+/** @code GetSystemMetricsForDpi @endcode . */
+typedef INT (WINAPI *sjme_scritchui_win32_intern_GSMFD)(INT nIndex, UINT dpi);
+	
+#pragma endregion(missing)
+	
+/**
+ * Standard DLLs on Windows.
+ * 
+ * @since 2025/12/23
+ */
+typedef enum sjme_scritchui_win32_intern_dll
+{
+	/** user32.dll. */
+	SJME_SCRITCHUI_WIN32_USER32_DLL,
+	
+	/** shcore.dll. */
+	SJME_SCRITCHUI_WIN32_SHCORE32_DLL,
+	
+	/** The number of internal DLLs. */
+	SJME_SCRITCHUI_WIN32_NUM_INTERN_DLL,
+} sjme_scritchui_win32_intern_dll;
+
+/**
+ * Loads a standard DLL and potentially returns the procedure function for
+ * the given name.
+ * 
+ * @param inState The input state.
+ * @param dll The standard DLL to locate.
+ * @param procName The procedure name.
+ * @param outProc The resultant procedure.
+ * @return Any resultant error, if any.
+ * @since 2025/12/23
+ */
+typedef sjme_errorCode (*sjme_scritchui_win32_intern_dllProcFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_scritchui_win32_intern_dll dll,
+	sjme_attrInNotNull sjme_lpcstr procName,
+	sjme_attrOutNotNull PROC* outProc);
+
+/**
+ * Returns the DPI for the window, if this is Windows 10.
+ *
+ * @param inState The input state.
+ * @param hWnd The window to get the DPI for.
+ * @return The DPI value or {@code 0} if it could not be determined.
+ * @since 2025/12/24
+ */
+typedef sjme_jint (*sjme_scritchui_win32_dpiWin10Func)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull HWND hWnd);
 
 /**
  * Calls @c GetLastError() and translates the error code.
@@ -89,8 +187,24 @@ struct sjme_scritchui_implInternFunctions
 	sjme_scritchui_win32_intern_windowProcFunc windowProc;
 	
 	/** Direct Win32 window processor. */
-	void* windowProcWin32;
+	PROC windowProcWin32;
+	
+	/** Return function pointer from a standard DLL. */
+	sjme_scritchui_win32_intern_dllProcFunc dllProc;
+
+	/** DPI for Windows 10. */
+	sjme_scritchui_win32_dpiWin10Func dpiWin10;
 };
+	
+sjme_errorCode sjme_scritchui_win32_intern_dllProc(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_scritchui_win32_intern_dll dll,
+	sjme_attrInNotNull sjme_lpcstr procName,
+	sjme_attrOutNotNull PROC* outProc);
+
+sjme_jint sjme_scritchui_win32_intern_dpiWin10(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull HWND hWnd);
 
 sjme_errorCode sjme_scritchui_win32_intern_getLastError(
 	sjme_attrInNotNull sjme_scritchui inState,

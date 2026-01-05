@@ -59,6 +59,24 @@ sjme_jint sjme_fixed_int(
 	return val >> SJME_FIXED_SHIFT;
 }
 
+sjme_jint sjme_fixed_intClip(
+	sjme_attrInValue sjme_jint lo,
+	sjme_attrInValue sjme_fixed val,
+	sjme_attrInValue sjme_jint hi)
+{
+	sjme_jint v;
+	
+	/* Convert value first. */
+	v = val >> SJME_FIXED_SHIFT;
+	
+	/* Then clip. */
+	if (v < lo)
+		return lo;
+	else if (v >= hi)
+		return hi;
+	return v;
+}
+
 sjme_fixed sjme_fixed_mul(
 	sjme_attrInValue sjme_fixed a,
 	sjme_attrInValue sjme_fixed b)

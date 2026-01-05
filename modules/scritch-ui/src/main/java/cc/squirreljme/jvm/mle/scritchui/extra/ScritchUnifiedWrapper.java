@@ -57,7 +57,7 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -403,6 +403,20 @@ public class ScritchUnifiedWrapper
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2025/12/23
+	 */
+	@Override
+	public void containerGetFrame(@NotNull ScritchContainerBracket __container,
+		@Nullable int[] __contentSize, @Nullable int[] __frameBound,
+		@Nullable int[] __contentBound)
+		throws MLECallError
+	{
+		this.api.container().containerGetFrame(__container, 
+			__contentSize, __frameBound, __contentBound);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/08/02
 	 */
 	@Override
@@ -507,8 +521,6 @@ public class ScritchUnifiedWrapper
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
 	 * @since 2024/12/22
 	 */
 	@Override
@@ -862,24 +874,25 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
-	@SquirrelJMEVendorApi
-	public int screenHeight(
-		ScritchScreenBracket __screen)
-		throws MLECallError
-	{
-		return this.api.screen().screenHeight(__screen);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
 	public int screenId(
 		ScritchScreenBracket __screen)
 		throws MLECallError
 	{
 		return this.api.screen().screenId(__screen);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/23
+	 */
+	@Override
+	public void screenGetBounds(@NotNull ScritchScreenBracket __screen,
+		@Nullable ScritchComponentBracket __for,
+		@NotNull int[] __pixels, @NotNull int[] __mm)
+		throws MLECallError
+	{
+		this.api.screen().screenGetBounds(__screen, __for,
+			__pixels, __mm);
 	}
 	
 	/**
@@ -904,19 +917,6 @@ public class ScritchUnifiedWrapper
 		throws MLECallError
 	{
 		return this.api.screen().screenIsPortrait(__screen);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int screenWidth(
-		ScritchScreenBracket __screen)
-		throws MLECallError
-	{
-		return this.api.screen().screenWidth(__screen);
 	}
 	
 	/**
@@ -1073,38 +1073,12 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public int windowContentHeight(
-		ScritchWindowBracket __window)
-		throws MLECallError
-	{
-		return this.api.window().windowContentHeight(__window);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
 	public void windowContentMinimumSize(ScritchWindowBracket __window,
 		int __w,
 		int __h)
 		throws MLECallError
 	{
 		this.api.window().windowContentMinimumSize(__window, __w, __h);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public int windowContentWidth(
-		ScritchWindowBracket __window)
-		throws MLECallError
-	{
-		return this.api.window().windowContentWidth(__window);
 	}
 	
 	/**

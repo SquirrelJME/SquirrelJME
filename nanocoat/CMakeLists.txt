@@ -17,12 +17,6 @@ else()
 	cmake_minimum_required(VERSION 3.13)
 endif()
 
-# Default to release if no build type is specified
-if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE "Release"
-		CACHE STRING "" FORCE)
-endif()
-
 # Easier includes
 include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
 
@@ -61,6 +55,20 @@ squirreljme_include("utils.cmake")
 # Platform information
 squirreljme_include("platform.cmake")
 
+# Valgrind Support on UNIX OSes, if debugging is enabled
+if(NOT SQUIRRELJME_IS_ANDROID AND
+	SQUIRRELJME_IS_UNIX AND SQUIRRELJME_IS_DEBUG)
+	squirreljme_include("valgrind.cmake")
+endif()
+
+### These need to be before fixes.cmake! ###
+# Dynamic linker
+squirreljme_include("find-dl.cmake")
+
+# Threading and atomics
+squirreljme_include("find-threads.cmake")
+############################################
+
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
 
@@ -84,9 +92,6 @@ squirreljme_include("find-jni.cmake")
 # Doxygen
 squirreljme_include("doxygen.cmake")
 
-# Threading and atomics
-squirreljme_include("find-threads.cmake")
-
 # To Emily and Near...
 squirreljme_include("i-miss-you.cmake")
 
@@ -105,6 +110,13 @@ if(SQUIRRELJME_IS_RELEASE)
 		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
 		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 		add_compile_options("/Os")
+	endif()
+elseif(SQUIRRELJME_IS_DEBUG)
+	if(MSVC OR
+		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
+		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+		add_compile_options("/Zi")
+		add_link_options("/DEBUG")
 	endif()
 endif()
 
@@ -134,12 +146,6 @@ if(SQUIRRELJME_IS_DEBUG)
 	if(SQUIRRELJME_ENABLE_TESTING)
 		add_compile_definitions(SJME_CONFIG_UNIT_TEST=1)
 	endif()
-endif()
-
-# Valgrind Support on UNIX OSes, if debugging is enabled
-if(NOT SQUIRRELJME_IS_ANDROID AND
-	SQUIRRELJME_IS_UNIX AND SQUIRRELJME_IS_DEBUG)
-	squirreljme_include("valgrind.cmake")
 endif()
 
 # Where should dynamic libraries go when output?
@@ -190,3 +196,6 @@ add_subdirectory(frontend)
 
 # Directory where the ROM compiled sources exist
 add_subdirectory(rom)
+
+# General applications
+add_subdirectory(apps)

@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-orange: string[1]:orange
+secondary-px: string[3]:pear,peach,pizza
+secondary-xeax: string[2]:pear,peach
+secondary-xrx: string[1]:orange
+secondary-xaxax: string[1]:banana
+secondary-xon: string[1]:lemon

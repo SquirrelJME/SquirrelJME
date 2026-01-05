@@ -17,7 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * Generally, {@link Enumeration}s are not meant to be shared across threads.
  *
- * It is recommended to use {@link Iterator} when writing new code. However
+ * It is recommended to use {@link Iterator} when writing new code. However,
  * this class exists for backwards compatibility with J2ME environments.
  *
  * @param <E> The type of value to iterate over.

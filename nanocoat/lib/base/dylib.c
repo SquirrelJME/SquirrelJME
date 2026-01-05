@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/config.h"
+#include "sjme/path.h"
 
 #if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
 	#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
@@ -133,6 +134,7 @@ sjme_errorCode sjme_dylib_lookup(
 
 sjme_errorCode sjme_dylib_name(
 	sjme_attrInNotNull sjme_lpcstr inLibName,
+	sjme_attrInNullable sjme_lpcstr inLibSuffix,
 	sjme_attrOutNotNullBuf(outLen) sjme_lpstr outName,
 	sjme_attrInPositive sjme_jint outLen)
 {
@@ -156,13 +158,17 @@ sjme_errorCode sjme_dylib_name(
 #if defined(SJME_CONFIG_HAS_OS_LINUX) || \
 	defined(SJME_CONFIG_HAS_OS_BSD) || \
     defined(SJME_CONFIG_HAS_OS_BEOS)
-	snprintf(outName, outLen - 1, "lib%s.so", inLibName);
+	snprintf(outName, outLen - 1, "lib%s%s.so",
+		inLibName, (inLibSuffix != NULL ? inLibSuffix : ""));
 #elif defined(SJME_CONFIG_HAS_OS_CYGWIN)
-	snprintf(outName, outLen - 1, "lib%s.dll", inLibName);
+	snprintf(outName, outLen - 1, "lib%s%s.dll",
+		inLibName, (inLibSuffix != NULL ? inLibSuffix : ""));
 #elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	snprintf(outName, outLen - 1, "%s.dll", inLibName);
+	snprintf(outName, outLen - 1, "%s%s.dll",
+		inLibName, (inLibSuffix != NULL ? inLibSuffix : ""));
 #elif defined(SJME_CONFIG_HAS_OS_MACOS)
-	snprintf(outName, outLen - 1, "lib%s.dylib", inLibName);
+	snprintf(outName, outLen - 1, "lib%s%s.dylib",
+		inLibName, (inLibSuffix != NULL ? inLibSuffix : ""));
 #else
 	return sjme_error_notImplemented(0);
 #endif

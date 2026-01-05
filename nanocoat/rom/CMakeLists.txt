@@ -6,4 +6,4 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Placeholder
+# Currently just a placeholder

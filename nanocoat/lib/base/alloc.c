@@ -7,8 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-#include <stdio.h>
+#include "sjme/config.h"
 
 /* Include Valgrind if it is available? */
 #if defined(SJME_CONFIG_HAS_VALGRIND)

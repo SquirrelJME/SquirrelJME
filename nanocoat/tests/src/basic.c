@@ -8,8 +8,6 @@
 // -------------------------------------------------------------------------*/
 
 #include <stdlib.h>
-#include <string.h>
-
 #include "proto.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"

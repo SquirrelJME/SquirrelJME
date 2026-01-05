@@ -19,6 +19,7 @@ squirreljme_multilib_add_library(Base
 	comparator.c
 	debug.c
 	dylib.c
+	dylibExtra.c
 	error.c
 	fixed.c
 	frontEnd.c
@@ -30,12 +31,16 @@ squirreljme_multilib_add_library(Base
 	multithreadPosix.c
 	multithreadWin32.c
 	native.c
+	nativeBsd.c
+	nativeDarwin.c
 	nativeLinux.c
 	nativeNone.c
 	nativePosix.c
+	nativeSolaris.c
 	nativeStdC.c
 	nativeWin32.c
 	path.c
+	pathStyles.c
 	seekable.c
 	seekableMemory.c
 	stdGone.c

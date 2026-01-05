@@ -1240,12 +1240,13 @@ public class Display
 	 *
 	 * @param __m The display to get the midlet for.
 	 * @return The display for the given midlet.
+	 * @throws IllegalStateException If no displays are available.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/08
 	 */
 	@Api
 	public static Display getDisplay(MIDlet __m)
-		throws NullPointerException
+		throws IllegalStateException, NullPointerException
 	{
 		// Check
 		if (__m == null)

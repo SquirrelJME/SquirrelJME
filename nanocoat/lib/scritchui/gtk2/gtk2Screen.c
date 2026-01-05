@@ -13,6 +13,73 @@
 #include "lib/scritchui/gtk2/gtk2Intern.h"
 #include "lib/scritchui/scritchuiTypes.h"
 
+sjme_errorCode sjme_scritchui_gtk2_screenGetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound)
+{
+	GtkWindow* gtkWindow;
+	GdkScreen* gdkScreen;
+	gint gdkMonitor, mmW, mmH;
+	GdkRectangle rect;
+	
+	if (inState == NULL || inScreen == NULL ||
+		(pixelBound == NULL && mmBound == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Grab the window if there is one. */
+	gdkScreen = inScreen->screenHandle;
+	gtkWindow = (forComponent == NULL ? NULL :
+		forComponent->common.handle[SJME_SUI_GTK2_H_WIDGET]);
+	
+	/* If the component does not have a window, it was never realized and */
+	/* also is very likely not even on-screen. */
+	if (gtkWindow != NULL && (GTK_WIDGET(gtkWindow)->window == NULL ||
+		gtk_widget_get_window(GTK_WIDGET(gtkWindow)) == NULL))
+	{
+		gtkWindow = NULL;
+		forComponent = NULL;
+	}
+	
+	/* Is there window context? */
+	if (gtkWindow != NULL)
+		gdkMonitor = gdk_screen_get_monitor_at_window(gdkScreen,
+			GDK_WINDOW(gtkWindow));
+	
+	/* There is not, so just use the default monitor. */
+	else
+		gdkMonitor = gdk_screen_get_primary_monitor(gdkScreen);
+
+	/* Read in all dimensional details. */
+	memset(&rect, 0, sizeof(rect));
+	gdk_screen_get_monitor_geometry(gdkScreen, gdkMonitor, &rect);
+	mmW = gdk_screen_get_monitor_width_mm(gdkScreen, gdkMonitor);
+	mmH = gdk_screen_get_monitor_height_mm(gdkScreen, gdkMonitor);
+	
+	/* Calculate pixels. */
+	if (pixelBound != NULL)
+	{
+		pixelBound->s.x = rect.x;
+		pixelBound->s.y = rect.y;
+		pixelBound->d.width = rect.width;
+		pixelBound->d.height = rect.height;
+	}
+	
+	/* Calculate DPI. */
+	if (mmBound != NULL)
+	{
+		mmBound->s.x = 0;
+		mmBound->s.y = 0;
+		mmBound->d.width = mmW;
+		mmBound->d.height = mmH;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_gtk2_screens(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_uiScreen* outScreens,

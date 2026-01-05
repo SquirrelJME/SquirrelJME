@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchui/framebuffer/fb.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -40,8 +38,8 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	inState = wrappedComponent->common.frontEnd.base.data;
 	inComponent = wrappedComponent->common.frontEnd.base.wrapper;
 	
-	if (inState == NULL || inComponent == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
+	if (wrappedState == NULL || inComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Widget state for interactions. */
 	wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];

@@ -79,6 +79,47 @@ jintArray sjme_jni_mappedArrayInt(JNIEnv* env,
 	return NULL;
 }
 
+sjme_errorCode sjme_jni_setIntArray(JNIEnv* env, jintArray array,
+	jint offset, jint len, ...)
+{
+	jint* values;
+	sjme_jint i;
+	va_list args;
+
+	if (env == NULL || array == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (offset < 0 || len < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Pointless? */
+	if (len == 0)
+		return SJME_ERROR_NONE;
+
+	/* Allocate values. */
+	values = sjme_alloca(sizeof(*values) * len);
+	if (values == NULL)
+		return sjme_error_outOfMemory(NULL, len);
+
+	/* Clear all values. */
+	memset(values, 0, sizeof(*values) * len);
+
+	/* Read in. */
+	va_start(args, len);
+	for (i = 0; i < len; i++)
+		values[i] = va_arg(args, jint);
+	va_end(args);
+
+	/* Set array values. */
+	(*env)->SetIntArrayRegion(env, array, offset, len, values);
+
+	/* Cleanup. */
+	sjme_alloca_free(values);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 void sjme_jni_throwMLECallError(JNIEnv* env, sjme_errorCode code)
 {
 	sjme_jni_throwThrowable(env, code,

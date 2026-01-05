@@ -1,0 +1,14 @@
+plugins {
+	id "java"
+	id "application"
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+description = "Formats and lints Java source code to SquirrelJME standards."
+mainClassName = "cc.squirreljme.lint.Main"
+
+dependencies {
+	implementation project(":modules:vendor-api-squirreljme-collections")
+	implementation project(":modules:vendor-api-squirreljme-io")
+}

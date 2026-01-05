@@ -26,6 +26,9 @@ sjme_errorCode sjme_scritchui_fb_viewGetView(
 	wrappedState = inState->wrappedState;
 	wrappedComponent = inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Forward call. */
 	return wrappedState->apiInThread->viewGetView(wrappedState,
 		wrappedComponent, outViewRect);
@@ -47,6 +50,9 @@ sjme_errorCode sjme_scritchui_fb_viewSetArea(
 	wrappedState = inState->wrappedState;
 	wrappedComponent = inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Forward call. */
 	return wrappedState->apiInThread->viewSetArea(wrappedState,
 		wrappedComponent, inViewArea);
@@ -66,6 +72,9 @@ sjme_errorCode sjme_scritchui_fb_viewSetView(
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	wrappedComponent = inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->viewSetView(wrappedState,

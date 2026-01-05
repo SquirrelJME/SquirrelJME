@@ -104,7 +104,7 @@ public class DylibComponentInterface
 		throws MLECallError
 	{
 		if (__component == null)
-			throw new NullPointerException("NARG");
+			throw new MLECallError("NARG");
 		
 		NativeScritchDylib.__componentSetActivateListener(
 			this.dyLib._stateP,

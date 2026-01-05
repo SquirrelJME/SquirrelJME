@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
@@ -322,6 +320,9 @@ sjme_errorCode sjme_scritchui_core_choiceItemRemove(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiChoice choice;
+	sjme_list_sjme_scritchui_uiChoiceItem* items;
+	sjme_scritchui_uiChoiceItem wipeItem;
+	sjme_jint* imageRgb;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -336,8 +337,44 @@ sjme_errorCode sjme_scritchui_core_choiceItemRemove(
 	if (atIndex < 0 || atIndex >= choice->numItems)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Recover items. */
+	items = choice->items;
+	if (items == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Get the item to be wiped, note that lazy initialization means it is */
+	/* possible for it to not actually be allocated here. */
+	wipeItem = items->elements[atIndex];
+	if (wipeItem != NULL)
+	{
+		/* Move all items down. */
+		if (atIndex < choice->numItems)
+		{
+			memmove(&items->elements[atIndex], &items->elements[atIndex + 1],
+				sizeof(items->elements[0]) *
+					((choice->numItems - atIndex) - 1));
+			items->elements[atIndex] = NULL;
+		}
+	
+		/* Reduce item count. */
+		choice->numItems--;
+	
+		/* Delete the image, if any. */
+		imageRgb = wipeItem->imageRgb;
+		wipeItem->imageRgb = NULL;
+		if (imageRgb != NULL && wipeItem->freeImageRgb)
+			if (sjme_error_is(error = sjme_alloc_free(imageRgb)))
+				return sjme_error_default(error);
+	
+		/* Delete the actual choice now. */
+		if (sjme_error_is(error = sjme_alloc_free(wipeItem)))
+			return sjme_error_default(error);
+	}
+	
+	/* Recalculate choice set. */
+	if (sjme_error_is(error = sjme_scritchui_core_choiceCalculate(
+		inState, choice->items)))
+		return sjme_error_default(error);
 	
 	/* Forward. */
 	if (inState->impl->choiceItemRemove == NULL)
@@ -365,7 +402,7 @@ sjme_errorCode sjme_scritchui_core_choiceItemRemoveAll(
 	/* Delete all items from the choice one by one. */
 	while (choice->numItems > 0)
 		if (sjme_error_is(error = inState->apiInThread->choiceItemRemove(
-			inState, inComponent, 0)))
+			inState, inComponent, choice->numItems - 1)))
 			return sjme_error_default(error);
 	
 	/* Success! */

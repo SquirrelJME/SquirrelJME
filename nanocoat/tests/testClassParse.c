@@ -8,8 +8,6 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/nvm/classy.h"
-#include <string.h>
-
 #include "mock.h"
 #include "proto.h"
 #include "test.h"

@@ -94,6 +94,7 @@ if(Fossil_EXECUTABLE)
 			COMMAND "${Fossil_EXECUTABLE}"
 				"uv" "add" "${uvDateNative}"
 					"--as" "${toPath}.mkd"
+			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 			COMMENT "Uploading ${toPath}..."
 			COMMAND_EXPAND_LISTS)
 	endmacro()

@@ -13,6 +13,7 @@
 
 static const sjme_scritchui_implFunctions sjme_scritchui_pureFunctions =
 {
+	sjme_sm(.driverName, "pure"),
 	sjme_sm(.apiInit, NULL),
 	sjme_sm(.choiceItemInsert, NULL),
 	sjme_sm(.choiceItemRemove, NULL),
@@ -50,6 +51,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_pureFunctions =
 	sjme_sm(.menuNew, NULL),
 	sjme_sm(.panelEnableFocus, NULL),
 	sjme_sm(.panelNew, NULL),
+	sjme_sm(.screenGetBounds, NULL),
 	sjme_sm(.screens, NULL),
 	sjme_sm(.scrollPanelNew, NULL),
 	sjme_sm(.viewGetView, NULL),
@@ -57,6 +59,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_pureFunctions =
 	sjme_sm(.viewSetView, NULL),
 	sjme_sm(.viewSetViewListener, NULL),
 	sjme_sm(.windowContentMinimumSize, NULL),
+	sjme_sm(.windowGetFrame, NULL),
 	sjme_sm(.windowNew, NULL),
 	sjme_sm(.windowSetCloseListener, NULL),
 	sjme_sm(.windowSetMenuBar, NULL),

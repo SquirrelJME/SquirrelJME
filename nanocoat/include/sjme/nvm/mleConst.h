@@ -175,6 +175,49 @@ typedef enum sjme_nvm_mle_vmType
 	/** The number of VM types. */
 	SJME_NVM_MLE_NUM_VM_TYPES = 5,
 } sjme_nvm_mle_vmType;
+	
+/**
+ * The type of default directory used.
+ * 
+ * This is the same as @c cc.squirreljme.runtime.cldc.full.SystemPathProvider .
+ * 
+ * @since 2024/08/09
+ */
+typedef enum sjme_nvm_defaultDirectoryType
+{
+	/** Unknown. */
+	SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN,
+	
+	/** The cache directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_CACHE,
+	
+	/** The config directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_CONFIG,
+	
+	/** The data directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_DATA,
+	
+	/** The state directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_STATE,
+	
+	/** The native library directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
+	
+	/** First classpath lookup. */
+	SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_1,
+	
+	/** Second classpath lookup. */
+	SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_2,
+	
+	/** Third classpath lookup. */
+	SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_3,
+	
+	/** Executable directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_EXEC,
+	
+	/** The number of default directory types. */
+	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE
+} sjme_nvm_defaultDirectoryType;
 
 /*--------------------------------------------------------------------------*/
 

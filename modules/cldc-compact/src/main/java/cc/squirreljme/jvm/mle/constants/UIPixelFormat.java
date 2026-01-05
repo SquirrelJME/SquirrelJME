@@ -133,9 +133,59 @@ public interface UIPixelFormat
 	@SquirrelJMEVendorApi
 	byte SHORT_RGB444 =
 		22;
+
+	/** 16-bit ARGB1555. ({@code short}) [Nokia]. */
+	@SquirrelJMEVendorApi
+	byte SHORT_ARGB1555 =
+		23;
+
+	/** INDEXED1 but with vertical pixel disposition. (packed {@code byte}) */
+	@SquirrelJMEVendorApi
+	byte PACKED_INDEXED1_VERTICAL = 
+		24;
+
+	/** 8-bit RGB332. {@code byte}. */
+	@SquirrelJMEVendorApi
+	byte BYTE_RGB332 = 
+		25;
+	
+	/** Only 8-bit alpha (@c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte BYTE_A8 = 
+		26;
+	
+	/** Only 4-bit alpha (packed @c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte PACKED_A4 = 
+		27;
+	
+	/** Only 2-bit alpha (packed @c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte PACKED_A2 = 
+		28;
+	
+	/** Only 1-bit alpha (packed @c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte PACKED_A1 = 
+		29;
+	
+	/** Only 8-bit red (@c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte BYTE_R8 = 
+		30;
+	
+	/** Only 8-bit green (@c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte BYTE_G8 = 
+		31;
+	
+	/** Only 8-bit blue (@c uint8_t ). */
+	@SquirrelJMEVendorApi
+	byte BYTE_B8 = 
+		32;
 	
 	/** The number of pixel formats. */
 	@SquirrelJMEVendorApi
 	byte NUM_PIXEL_FORMATS =
-		23;
+		33;
 }

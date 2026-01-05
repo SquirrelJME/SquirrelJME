@@ -69,12 +69,35 @@ public class MidiControlPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2025/12/28
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public void becomingDeallocated()
+	{
+		// Nothing needs to be done
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2025/06/03
 	 */
 	@Override
 	protected void becomingPrefetched()
 		throws MediaException
 	{
+		// Nothing needs to be done
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
+	@Override
+	protected void becomingPrimed()
+		throws MediaException
+	{
+		// Does nothing
 	}
 	
 	/**
@@ -90,8 +113,17 @@ public class MidiControlPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
+	 * @since 2026/01/03
+	 */
+	@Override
+	protected void becomingSolvent()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2025/06/03
 	 */
 	@Override
@@ -111,6 +143,17 @@ public class MidiControlPlayer
 		throws MediaException
 	{
 		// Nothing needs to be done
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected void clockFastForward(long __micros)
+		throws MediaException
+	{
+		// Does nothing
 	}
 	
 	/**
@@ -139,44 +182,22 @@ public class MidiControlPlayer
 	 * @since 2025/06/03
 	 */
 	@Override
-	@SquirrelJMEVendorApi
-	public void close()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/06/03
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public void deallocate()
-	{
-		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/06/03
-	 */
-	@Override
 	protected long determineDuration()
 		throws MediaException
 	{
-		// The duration is always zero
-		return 0;
+		// The duration is always invalid
+		return MidiControlPlayer.TIME_UNKNOWN;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/06/03
+	 * @since 2026/01/02
 	 */
 	@Override
-	@SquirrelJMEVendorApi
-	public void setLoopCount(int __count)
+	protected boolean resetFastForward()
 	{
-		// Does not make sense here
+		// This does not make sense here
+		return false;
 	}
 	
 	/**

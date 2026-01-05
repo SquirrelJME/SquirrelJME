@@ -7,10 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
-#include <sjme/nvm/walk.h>
-
+#include "sjme/nvm/walk.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/debug.h"
 #include "sjme/nvm/cleanup.h"

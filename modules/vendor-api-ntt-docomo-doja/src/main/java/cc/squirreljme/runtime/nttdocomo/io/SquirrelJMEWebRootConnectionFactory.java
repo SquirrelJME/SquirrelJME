@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.HTTPAddress;
 import cc.squirreljme.runtime.gcf.HTTPClientConnection;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
@@ -54,7 +55,7 @@ public class SquirrelJMEWebRootConnectionFactory
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public Connection connect(String __part, int __mode, boolean __timeouts,
+	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
 	{
@@ -88,8 +89,9 @@ public class SquirrelJMEWebRootConnectionFactory
 		{
 			return new DoJaHttpConnectionAdapter(new HTTPClientConnection(
 				SquirrelJMEWebRootConnectionFactory.__fixAddress(manager,
-					__part),
-				new SquirrelJMEWebRootHTTPAgentConnector(manager)));
+					__part.toString()),
+				new SquirrelJMEWebRootHTTPAgentConnector(manager),
+				__mode));
 		}
 		catch (IOException e)
 		{

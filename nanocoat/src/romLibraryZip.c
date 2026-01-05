@@ -6,10 +6,6 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
-
-#include <string.h>
-#include <stdio.h>
-
 #include "sjme/nvm/rom.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"

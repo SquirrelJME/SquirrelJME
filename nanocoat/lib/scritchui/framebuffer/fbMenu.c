@@ -26,6 +26,9 @@ sjme_errorCode sjme_scritchui_fb_menuBarNew(
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	
+	if (wrappedState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Create a wrapped panel. */
 	wrapped = NULL;
 	if (sjme_error_is(error = wrappedState->apiInThread->menuBarNew(
@@ -62,6 +65,10 @@ sjme_errorCode sjme_scritchui_fb_menuInsert(
 	wrappedChildItem =
 		childItem->common.handle[SJME_SUI_FB_H_WRAPPED];
 	
+	if (wrappedState == NULL || wrappedIntoMenu == NULL ||
+		wrappedChildItem == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Forward. */
 	return wrappedState->apiInThread->menuInsert(wrappedState,
 		wrappedIntoMenu, atIndex, wrappedChildItem);
@@ -81,6 +88,9 @@ sjme_errorCode sjme_scritchui_fb_menuItemNew(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
+	
+	if (wrappedState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Create a wrapped panel. */
 	wrapped = NULL;
@@ -113,6 +123,9 @@ sjme_errorCode sjme_scritchui_fb_menuNew(
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	
+	if (wrappedState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Create a wrapped panel. */
 	wrapped = NULL;
 	if (sjme_error_is(error = wrappedState->apiInThread->menuNew(
@@ -144,6 +157,9 @@ sjme_errorCode sjme_scritchui_fb_menuRemove(
 	wrappedState = inState->wrappedState;
 	wrappedFromMenu =
 		fromMenu->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedFromMenu == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
 	return wrappedState->apiInThread->menuRemove(wrappedState,

@@ -17,9 +17,8 @@
 #ifndef SJME_C_STDTYPES_H
 #define SJME_C_STDTYPES_H
 
-#include <stdlib.h>
-
 #include "sjme/config.h"
+#include "sjme/stdGone.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -138,7 +137,7 @@ typedef enum sjme_jboolean
  * 
  * @since 2023/07/25
  */
-typedef int8_t sjme_jbyte;
+typedef sjme_jbyteNative sjme_jbyte;
 
 /** Basic @link sjme_jbyte @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jbyte SJME_BASIC_TYPE_ID_BYTE
@@ -161,7 +160,7 @@ typedef int sjme_jbyte_promoted;
  * 
  * @since 2023/08/09
  */
-typedef uint8_t sjme_jubyte;
+typedef sjme_jubyteNative sjme_jubyte;
 
 /** Basic @link sjme_jubyte @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jubyte SJME_BASIC_TYPE_ID_BYTE
@@ -184,7 +183,7 @@ typedef int sjme_jubyte_promoted;
  * 
  * @since 2023/07/25
  */
-typedef int16_t sjme_jshort;
+typedef sjme_jshortNative sjme_jshort;
 
 /** Basic @link sjme_jshort @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jshort SJME_BASIC_TYPE_ID_SHORT
@@ -207,7 +206,7 @@ typedef int sjme_jshort_promoted;
  * 
  * @since 2025/07/04
  */
-typedef uint16_t sjme_jushort;
+typedef sjme_jushortNative sjme_jushort;
 
 /** Basic @link sjme_jushort @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jushort SJME_BASIC_TYPE_ID_CHARACTER
@@ -230,7 +229,7 @@ typedef int sjme_jushort_promoted;
  * 
  * @since 2023/07/25
  */
-typedef uint16_t sjme_jchar;
+typedef sjme_jushortNative sjme_jchar;
 
 /** Basic @link sjme_jchar @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jchar SJME_BASIC_TYPE_ID_CHARACTER
@@ -253,7 +252,7 @@ typedef int sjme_jchar_promoted;
  * 
  * @since 2023/07/25
  */
-typedef int32_t sjme_jint;
+typedef sjme_jintNative sjme_jint;
 
 /** Basic @link sjme_jint @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jint SJME_BASIC_TYPE_ID_INTEGER
@@ -269,7 +268,7 @@ typedef int32_t sjme_jint;
  * 
  * @since 2023/11/20
  */
-typedef uint32_t sjme_juint;
+typedef sjme_juintNative sjme_juint;
 
 /** Basic @link sjme_juint @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_juint SJME_BASIC_TYPE_ID_INTEGER
@@ -415,32 +414,8 @@ typedef sjme_pointer sjme_buffer;
  * @since 2024/08/13
  */
 typedef sjme_cpointer sjme_cbuffer;
-
-/**
- * Integer based pointer.
- * 
- * @since 2024/04/06
- */
-typedef intptr_t sjme_intPointer;
-
-/** Calculates a pointer offset. */
-#define SJME_POINTER_OFFSET(base, off) \
-	(sjme_pointer)(((sjme_intPointer)(base)) + ((sjme_intPointer)(off)))
-
-#if defined(SJME_CONFIG_HAS_POINTER64)
-	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_jpointer
-#else
-	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_juint
-#endif
-
-#define SJME_TYPEOF_IS_POINTER_sjme_intPointer 0
-
-/**
- * Native long value.
- *
- * @since 2025/07/13
- */
-typedef int64_t sjme_jlongNative;
+	
+#pragma region(sjme_jlongNative)
 
 /** Basic @link sjme_jlongNative @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jlongNative SJME_BASIC_TYPE_ID_LONG
@@ -451,13 +426,6 @@ typedef int64_t sjme_jlongNative;
 /** Is a pointer for @link sjme_jlongNative @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jlongNative 0
 
-/**
- * Native unsigned long value.
- *
- * @since 2025/07/13
- */
-typedef uint64_t sjme_julongNative;
-
 /** Basic @link sjme_julongNative @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_julongNative SJME_BASIC_TYPE_ID_LONG
 
@@ -466,7 +434,43 @@ typedef uint64_t sjme_julongNative;
 
 /** Is a pointer for @link sjme_julongNative @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_julongNative 0
+	
+#pragma endregion(sjme_jlongNative)
+#pragma region(sjme_intPointer)
 
+/**
+ * Integer based pointer.
+ * 
+ * @since 2025/12/23
+ */
+typedef sjme_intPointerNative sjme_intPointer;
+
+/** Calculates a pointer offset. */
+#define SJME_POINTER_OFFSET(base, off) \
+	(sjme_pointer)(((sjme_intPointer)(base)) + ((sjme_intPointer)(off)))
+
+/** Determines if a pointer overflows. */
+#define SJME_POINTER_OVERFLOW(base, off) \
+	((sjme_intPointer)SJME_POINTER_OFFSET((base), (off)) < \
+		(sjme_intPointer)(base))
+
+#if SJME_CONFIG_HAS_POINTER == 64
+	#define SJME_TYPEOF_BASIC_sjme_intPointer \
+		SJME_TYPEOF_BASIC_sjme_jlongNative
+#elif SJME_CONFIG_HAS_POINTER == 32
+	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_juint
+#elif SJME_CONFIG_HAS_POINTER == 16
+	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_jushort
+#elif SJME_CONFIG_HAS_POINTER == 8
+	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_jubyte
+#else
+	#error Unsupported pointer size
+#endif
+
+#define SJME_TYPEOF_IS_POINTER_sjme_intPointer 0
+	
+#pragma endregion(sjme_intPointer)
+	
 /**
  * Max size integer.
  *

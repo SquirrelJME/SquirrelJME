@@ -7,7 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
 
 #include "sjme/circleBuffer.h"
 #include "sjme/debug.h"

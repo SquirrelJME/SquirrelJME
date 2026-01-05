@@ -7,9 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/util.h"
 #include "sjme/intern/nal.h"
+#include "sjme/path.h"
 
-#if (SJME_CONFIG_NAL_NANOTIME == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+#if (SJME_CONFIG_NAL_NANOTIME == SJME_CONFIG_NAL_IMPLEMENT_POSIX) || \
+	(SJME_CONFIG_NAL_THREAD_SLEEP == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
 	#include <time.h>
 #endif
 
@@ -63,6 +66,22 @@ sjme_errorCode sjme_nal_default_nanoTime(
 #endif
 #pragma endregion(nanotime)
 
+#pragma region(pathStyle)
+#if (SJME_CONFIG_NAL_PATH_STYLE == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+
+sjme_errorCode sjme_nal_default_pathStyle(
+	sjme_attrOutNotNull const sjme_path_style** outStyle)
+{
+	if (outStyle == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	*outStyle = &sjme_path_styles[SJME_PATH_STYLE_POSIX];
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(pathStyle)
+
 #pragma region(tcpUdp)
 #if (SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_POSIX) || \
 	(SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_POSIX_OLD)
@@ -84,7 +103,7 @@ static sjme_errorCode sjme_stream_inputNetAvailable(
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* outAvail)
 {
-#if defined(SJME_CONFIG_HAS_POLL_H)
+#if defined(SJME_CONFIG_HAS_POLL_H) && defined(FIONREAD)
 	int rfd, avail;
 	struct pollfd fds;
 	
@@ -382,7 +401,13 @@ sjme_errorCode sjme_nal_default_tcpUdp(
 	/* Determine bind/connect address hints, if any */
 	posixHints.ai_family = AF_UNSPEC;
 	posixHints.ai_socktype = (isUdp ? SOCK_DGRAM : SOCK_STREAM);
+#if defined(AI_ALL) && defined(AI_PASSIVE)
 	posixHints.ai_flags = (listening && address == NULL ? AI_PASSIVE : AI_ALL);
+#elif defined(AI_ALL)
+	posixHints.ai_flags = (listening && address == NULL ? 0 : AI_ALL);
+#elif defined(AI_PASSIVE)
+	posixHints.ai_flags = (listening && address == NULL ? AI_PASSIVE : 0);
+#endif
 
 	/* Convert port to string. */
 	memset(portBuf, 0, sizeof(portBuf));
@@ -499,7 +524,7 @@ fail_connect:
 		memmove(&posixAddress.sin_addr,
 			posixHost->h_addr, posixHost->h_length);
 	posixAddress.sin_family = AF_INET;
-	posixAddress.sin_port = htons(port);
+	posixAddress.sin_port = sjme_big_ushort(port);
 	
 	/* Open the appropriate socket. */
 	sfd = socket(posixAddress.sin_family,
@@ -690,3 +715,68 @@ sjme_errorCode sjme_nal_default_threadSleep(
 
 #endif
 #pragma endregion(threadSleep)
+
+#pragma region(userHome)
+#if (SJME_CONFIG_NAL_USER_HOME == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+
+sjme_errorCode sjme_nal_default_userHome(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	sjme_lpcstr env;
+	sjme_jint envLen;
+
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* This is usually always set in HOME. If it happens to not even be */
+	/* set, then just use the root directory. */
+	env = getenv("HOME");
+	if (env == NULL)
+		env = "/";
+
+	/* Too long of a path? */
+	envLen = strlen(env);
+	if (envLen > outLen || envLen > SJME_MAX_PATH)
+		return SJME_ERROR_PATH_TOO_LONG;
+
+	/* Give the resultant path. */
+	strncpy(out, env, sjme_min(envLen, outLen));
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(userHome)
+
+#pragma region(userName)
+#if (SJME_CONFIG_NAL_USER_NAME == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+
+sjme_errorCode sjme_nal_default_userName(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	sjme_lpcstr env;
+	sjme_jint envLen;
+
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Get from the environment variable, otherwise assume root. */
+	env = getenv("USER");
+	if (env == NULL)
+		env = "root";
+
+	/* Give the resultant path. */
+	envLen = strlen(env);
+	strncpy(out, env, sjme_min(envLen, outLen));
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(userName)

@@ -17,6 +17,7 @@
 #ifndef SJME_C_NVM_H
 #define SJME_C_NVM_H
 
+#include "sjme/closeable.h"
 #include "sjme/config.h"
 #include "sjme/closeable.h"
 #include "sjme/stdTypes.h"

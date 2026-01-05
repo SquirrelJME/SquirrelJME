@@ -14,7 +14,7 @@
 
 static void sjme_thread_pthreadResume(int signalId)
 {
-	/* No longer handle the signal, otherwise an infinite loop occurs. */
+	/* No longer handle the signal, otpsherwise an infinite loop occurs. */
 	signal(signalId, SIG_IGN);
 }
 
@@ -101,7 +101,9 @@ sjme_errorCode sjme_thread_wake(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Send the user signal to the thread, to force wake it. */
+#if defined(SJME_CONFIG_HAS_PTHREAD_KILL)
 	pthread_kill(inThread, SIGUSR1);
+#endif
 
 	return SJME_ERROR_NONE;
 }

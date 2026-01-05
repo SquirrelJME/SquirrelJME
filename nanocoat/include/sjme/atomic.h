@@ -18,11 +18,6 @@
 #define SJME_C_ATOMIC_H
 
 #include "sjme/config.h"
-
-#if defined(SJME_MEMIO_ATOMIC_C11)
-	#include <stdatomic.h>
-#endif
-
 #include "sjme/stdTypes.h"
 #include "sjme/tokenUtils.h"
 

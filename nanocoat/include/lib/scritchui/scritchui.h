@@ -1229,6 +1229,27 @@ typedef sjme_errorCode (*sjme_scritchui_containerAddFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 
 /**
+ * Returns the size details of a container, such as the outer frame, the
+ * content frame, and the sizes.
+ * 
+ * @param inState The input ScritchUI state.
+ * @param inContainer The container to get the content size of.
+ * @param contentSize The size of the content area.
+ * @param frameBound The bounds of the frame including the extra area such
+ * as decorations or otherwise.
+ * @param contentBound The bounds of the content area within
+ * the @a frameBound , this is the actual drawable area for widgets. 
+ * @return Any resultant error, if any.
+ * @since 2025/12/23
+ */
+typedef sjme_errorCode (*sjme_scritchui_containerGetFrameFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound);
+	
+/**
  * Removes the given component from the specified container.
  * 
  * @param inState The input state.
@@ -1356,6 +1377,44 @@ typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
 
+/**
+ * Creates a pseudo pencil which layers on top of multiple pencils for the
+ * purpose of supporting planar graphics. The underlying pencils may be
+ * implemented in a mix of hardware and/or software, however the pseudo
+ * pencil naturally cannot support hardware acceleration.
+ * 
+ * The color format of the returned pencil will always be
+ * either @link SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 @endlink if there is
+ * an alpha channel, or @link SJME_GFX_PIXEL_FORMAT_INT_RGB888 @endlink if
+ * there is no alpha channel.
+ * 
+ * Whether an alpha channel exists is determined by whether any of the pixel
+ * formats used by the underlying pencils contain an alpha channel.
+ * 
+ * The channel priority is first-come-first-serve, that is if two pencils
+ * have a pixel format that have a color channel only the first one will be
+ * selected.
+ * 
+ * It is not valid for any target graphics to be indexed, as determined
+ * by @link sjme_scritchpen_isIndexed() @endlink .
+ * 
+ * @param inState The UI state.
+ * @param outPencil The resultant pencil.
+ * @param outWeakPencil The weak reference to the pencil.
+ * @param pencils The pencils to wrap.
+ * @param numPencils The number of pencils to wrap.
+ * @param pencilFrontEndCopy Front end data that goes into the pencil.
+ * @return An error if the requested graphics are not valid.
+ * @since 2025/12/22
+ */
+typedef sjme_errorCode (*sjme_scritchui_pseudoGraphicsFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
+	sjme_attrInNotNullBuf(numPencils) sjme_scritchui_pencil* pencils,
+	sjme_attrInPositiveNonZero sjme_jint numPencils,
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
+	
 /**
  * Sets the label of the specified component.
  * 
@@ -1582,6 +1641,24 @@ typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
 
+/**
+ * Returns the bounds of the screen, this includes its relative position
+ * to the origin point of all screen on multiscreen devices.
+ * 
+ * @param inState The input state.
+ * @param inScreen The screen to get the bounds of.
+ * @param pixelBound The resultant screen bound.
+ * @param mmBound The resultant screen bound in millimeters.
+ * @return Any resultant error, if any.
+ * @since 2025/12/23
+ */
+typedef sjme_errorCode (*sjme_scritchui_screenGetBoundsFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound);
+	
 /**
  * Sets the screen listener callback for screen changes.
  * 
@@ -1876,6 +1953,9 @@ struct sjme_scritchui_apiFunctions
 	/** Adds component to container. */
 	SJME_SCRITCHUI_QUICK_API(containerAdd);
 	
+	/** Content size of a container. */
+	SJME_SCRITCHUI_QUICK_API(containerGetFrame);
+	
 	/** Remove component from container. */
 	SJME_SCRITCHUI_QUICK_API(containerRemove);
 	
@@ -1950,6 +2030,12 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Creates a new panel. */
 	SJME_SCRITCHUI_QUICK_API(panelNew);
+	
+	/** Pseudo pencil graphics. */
+	SJME_SCRITCHUI_QUICK_API(pseudoGraphics);
+	
+	/** Get bounds of a screen. */
+	SJME_SCRITCHUI_QUICK_API(screenGetBounds);
 	
 	/** Register listener. */
 	SJME_SCRITCHUI_QUICK_API(screenSetListener);
@@ -2251,6 +2337,25 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchui_dylibApiFunc)(
 	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
 	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
+
+/** The symbol used for default API export. */
+#define SJME_SCRITCHUI_DYLIB_API_EXPORT \
+	sjme_scritchui_dylibApiExport
+
+/** The default API entry export method. */
+extern sjme_attrExport const sjme_scritchui_dylibApiFunc
+	SJME_SCRITCHUI_DYLIB_API_EXPORT;
+
+#if defined(SJME_CONFIG_MULTILIB_IS_DYLIB)
+	/** Set the value for the default dynamic library export. */
+	#define SJME_SCRITCHUI_DYLIB_API_EXPORT_SET(x) \
+		sjme_attrExport \
+		const sjme_scritchui_dylibApiFunc SJME_SCRITCHUI_DYLIB_API_EXPORT = \
+			SJME_SCRITCHUI_DYLIB_SYMBOL(x);
+#else
+	/** Set the value for the default dynamic library export. */
+	#define SJME_SCRITCHUI_DYLIB_API_EXPORT_SET(x)
+#endif
 
 /** The base name for the ScritchUI dynamic library. */
 #define SJME_SCRITCHUI_DYLIB_NAME_BASE \
