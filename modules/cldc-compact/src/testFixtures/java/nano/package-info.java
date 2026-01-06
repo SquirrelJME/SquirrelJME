@@ -13,4 +13,4 @@
  * @since 2025/09/24
  */
 
-package cc.squirreljme.nanocoat.mle;
+package nano;

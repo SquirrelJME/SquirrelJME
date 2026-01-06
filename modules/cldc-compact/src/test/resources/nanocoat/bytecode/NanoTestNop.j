@@ -15,6 +15,6 @@
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
 	nop
-	invokestatic cc/squirreljme/nanocoat/mle/NanoTestShelf/result()V
+	invokestatic nano/NanoShelf/result()V
 	return
 .end method
