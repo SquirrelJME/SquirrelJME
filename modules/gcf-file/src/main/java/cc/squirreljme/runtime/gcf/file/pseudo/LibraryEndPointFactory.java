@@ -136,5 +136,4 @@ public class LibraryEndPointFactory
 		// authority by specifying the index/name after the ://
 		return host.startsWith(LibraryEndPoint.DECODED_HOST);
 	}
-	
 }

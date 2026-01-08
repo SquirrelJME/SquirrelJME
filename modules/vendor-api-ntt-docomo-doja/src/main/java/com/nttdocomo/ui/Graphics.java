@@ -1279,7 +1279,8 @@ public class Graphics
 		else
 		{
 			// Debug
-			Debugging.todoNote("Unsupported image %s", __i.getClass());
+			Debugging.todoNote("Unsupported image %s",
+				__i.getClass());
 			
 			throw new UIException(UIException.UNSUPPORTED_FORMAT);
 		}

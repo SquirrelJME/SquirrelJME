@@ -27,8 +27,6 @@ squirreljme
 	tags += "nttdocomo"
 	tags += "imode"
 	tags += "doja"
-	
-	
 }
 
 dependencies
@@ -40,4 +38,5 @@ dependencies
 	api project(":modules:vendor-api-squirreljme-zip")
 	api project(":modules:vendor-api-jblend")
 	api project(":modules:media-api")
+	api project(":modules:gcf-file")
 }

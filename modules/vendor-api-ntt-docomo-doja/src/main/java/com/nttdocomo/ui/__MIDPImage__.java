@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.nttdocomo.media.AbstractMediaImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,6 +65,10 @@ final class __MIDPImage__
 			}
 			catch (IOException __e)
 			{
+				// Debug, as DoJa applications will drop exceptions
+				if (Debugging.ENABLED)
+					__e.printStackTrace();
+				
 				UIException toss = new UIException(
 					UIException.UNSUPPORTED_FORMAT);
 				

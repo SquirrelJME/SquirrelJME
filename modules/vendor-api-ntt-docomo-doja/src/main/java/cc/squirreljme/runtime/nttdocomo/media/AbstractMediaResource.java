@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.nttdocomo.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.nttdocomo.io.ConnectionException;
 import com.nttdocomo.ui.MediaResource;
 import com.nttdocomo.ui.UIException;
@@ -245,6 +246,10 @@ public abstract class AbstractMediaResource
 			}
 			catch (IOException __e)
 			{
+				// Debugging for DoJa applications
+				if (Debugging.ENABLED)
+					__e.printStackTrace();
+				
 				UIException toss = new UIException(
 					UIException.UNSUPPORTED_FORMAT, __e.getMessage());
 				

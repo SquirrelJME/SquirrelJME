@@ -21,6 +21,8 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.InputConnection;
 import org.intellij.lang.annotations.Language;
 
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
+
 @Api
 public class MediaManager
 {
@@ -185,7 +187,7 @@ public class MediaManager
 		/* {@squirreljme.error AH0w Invalid protocol specified. (The URI)} */
 		if (__uri.startsWith("comm:") || __uri.startsWith("obex:"))
 			throw new IllegalArgumentException(
-				ErrorCode.__error__("AH0w %s", __uri));
+				__error__("AH0w %s", __uri));
 		
 		// Open connection to the target
 		try (Connection con = Connector.open(__uri))
@@ -194,7 +196,7 @@ public class MediaManager
 			read from. (The URI)} */
 			if (!(con instanceof InputConnection))
 				throw new IllegalArgumentException(
-					ErrorCode.__error__("AH1g %s", __uri));
+					__error__("AH1g %s", __uri));
 			
 			// Read in
 			return ((InputConnection)con).openInputStream();
