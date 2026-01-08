@@ -21,6 +21,8 @@ import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.ConnectionOption;
 
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
+
 /**
  * Factory to create {@link ResourceConnection}.
  *
@@ -33,7 +35,6 @@ public class ResourceConnectionFactory
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@SuppressWarnings("resource")
@@ -53,21 +54,24 @@ public class ResourceConnectionFactory
 		
 		// {@squirreljme.error AH0i Resource URI does not start with triple
 		// slash. (The URI part)}
-		if (!path.startsWith("/") || auth != null)
-			throw new ConnectionNotFoundException("AH0i " + __part);
+		if (!path.startsWith("/") ||
+			(auth != null && "".equals(auth.toString())))
+			throw new ConnectionNotFoundException(
+				__error__("AH0i %s", __part));
 		
 		// Try loading the resource once
 		Class<?> pivot = IApplication.getCurrentApp().getClass();
-		String rcName = path.substring(2);
-		try (InputStream in = pivot.getResourceAsStream(rcName))
+		try (InputStream in = pivot.getResourceAsStream(path))
 		{
 			// {@squirreljme.error AH0j The specified resource does not exist.
-			// (The URI part)}
+			// (The URI part; The pivot class; The path)}
 			if (in == null)
-				throw new ConnectionNotFoundException("AH0j " + __part);
+				throw new ConnectionNotFoundException(
+					__error__("AH0j %s %s %s", __part,
+						pivot, path));
 			
 			// Set up the connection
-			return new ResourceConnection(pivot, rcName);
+			return new ResourceConnection(pivot, path, __mode);
 		}
 	}
 	

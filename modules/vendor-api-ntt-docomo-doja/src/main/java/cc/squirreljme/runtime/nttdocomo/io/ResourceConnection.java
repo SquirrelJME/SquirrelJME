@@ -10,6 +10,8 @@
 package cc.squirreljme.runtime.nttdocomo.io;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.gcf.AbstractInputConnection;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +27,7 @@ import javax.microedition.io.InputConnection;
  */
 @SquirrelJMEVendorApi
 public class ResourceConnection
+	extends AbstractInputConnection
 	implements InputConnection
 {
 	/** The pivot class for resource lookup. */
@@ -38,13 +41,16 @@ public class ResourceConnection
 	 *
 	 * @param __pivot The pivot class.
 	 * @param __rcName The resource name.
+	 * @param __mode The open mode.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/01
 	 */
 	@SquirrelJMEVendorApi
-	public ResourceConnection(Class<?> __pivot, String __rcName)
+	public ResourceConnection(Class<?> __pivot, String __rcName, int __mode)
 		throws NullPointerException
 	{
+		super(__mode);
+		
 		if (__pivot == null || __rcName == null)
 			throw new NullPointerException("NARG");
 		
@@ -54,26 +60,13 @@ public class ResourceConnection
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @since 2021/11/30
+	 * @since 2026/01/08
 	 */
 	@Override
-	public void close()
+	protected void becomingClosed()
 		throws IOException
 	{
-		// Does nothing
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @since 2021/11/30
-	 */
-	@Override
-	public DataInputStream openDataInputStream()
-		throws IOException
-	{
-		return new DataInputStream(this.openInputStream());
+		// Nothing needs to be done
 	}
 	
 	/**

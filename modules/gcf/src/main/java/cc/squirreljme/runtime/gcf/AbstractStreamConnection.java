@@ -25,7 +25,7 @@ import org.intellij.lang.annotations.MagicConstant;
  */
 @SquirrelJMEVendorApi
 public abstract class AbstractStreamConnection
-	extends AbstractBaseConnection
+	extends AbstractInputConnection
 	implements StreamConnection
 {
 	/**
@@ -41,17 +41,6 @@ public abstract class AbstractStreamConnection
 		throws IllegalArgumentException
 	{
 		super(__mode);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2025/12/27
-	 */
-	@Override
-	public final DataInputStream openDataInputStream()
-		throws IOException
-	{
-		return new DataInputStream(this.openInputStream());
 	}
 	
 	/**

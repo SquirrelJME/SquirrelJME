@@ -39,7 +39,7 @@ public class SquirrelJMEWebRootConnectionFactory
 	@Language("http-url-reference")
 	@SquirrelJMEVendorApi
 	public static final String URI_SCHEME =
-		"squirreljme+doja";
+		"++++";
 	
 	/** Webroot suffix. */
 	@SquirrelJMEVendorApi

@@ -142,8 +142,9 @@ public enum MLEAudioStream
 		}
 	},
 	
-	/** {@link AudioStreamShelf#stream()}. */
-	STREAM(MLEDispatcher.methodKey("stream", AudioStreamBracket.class))
+	/** {@link AudioStreamShelf#stream(int, int, int)}. */
+	STREAM(MLEDispatcher.methodKey("stream", AudioStreamBracket.class,
+		"I", "I", "I"))
 	{
 		/**
 		 * {@inheritDoc}
