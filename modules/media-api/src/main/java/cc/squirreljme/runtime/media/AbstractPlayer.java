@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.media;
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
 import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
+import cc.squirreljme.jvm.mle.callbacks.AudioStreamSnoop;
 import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
@@ -42,6 +43,9 @@ public abstract class AbstractPlayer
 {
 	/** Single sourced audio stream. */
 	private static volatile AudioStreamBracket _stream;
+	
+	/** Global audio snoop. */
+	private static volatile AudioStreamSnoop _snoop;
 	
 	/** Stream format. */
 	@MagicConstant(valuesFromClass = AudioStreamFormat.class)
@@ -1048,6 +1052,34 @@ public abstract class AbstractPlayer
 			MediaException toss = new MediaException(__e.getMessage());
 			toss.initCause(__e);
 			throw toss;
+		}
+	}
+	
+	/**
+	 * Returns the current audio snoop.
+	 *
+	 * @return The current audio snoop.
+	 * @since 2026/01/08
+	 */
+	@SquirrelJMEVendorApi
+	public static AudioStreamSnoop snoop()
+	{
+		return AbstractPlayer._snoop;
+	}
+	
+	/**
+	 * Sets the audio snoop.
+	 *
+	 * @param __snoop The snoop to set, {@code null} clears it.
+	 * @since 2026/01/08
+	 */
+	@SquirrelJMEVendorApi
+	public static void snoop(AudioStreamSnoop __snoop)
+	{
+		// Clear
+		synchronized (AbstractPlayer.class)
+		{
+			AbstractPlayer._snoop = null;
 		}
 	}
 	
