@@ -103,6 +103,9 @@ extern "C" {
 /** Visual Studio 2010 */
 #define SJME_CONFIG_MSVC_VERSION_2010 1600
 
+/** Visual Studio 2019 */
+#define SJME_CONFIG_MSVC_VERSION_2019 1920
+
 #if defined(__WATCOMC__)
 	/** Watcom C Compiler. */
 	#define SJME_CONFIG_HAS_WATCOM
@@ -1252,6 +1255,15 @@ extern "C" {
 #if !defined(SJME_CONFIG_HAS_DOUBLE_HARD)
 	/** Has software double floating point. */
 	#define SJME_CONFIG_HAS_DOUBLE_SOFT
+#endif
+
+#if defined(SJME_CONFIG_HAS_C99) || \
+	SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2019)
+	/** Binary float option (0x1.2p3 or 1.2e3). */
+	#define SJME_FLOAT_BD(bin, dec) (bin)
+#else
+	/** Binary float option (0x1.2p3 or 1.2e3). */
+	#define SJME_FLOAT_BD(bin, dec) (dec)
 #endif
 
 #if defined(SJME_CONFIG_HAS_AMIGA) || \
