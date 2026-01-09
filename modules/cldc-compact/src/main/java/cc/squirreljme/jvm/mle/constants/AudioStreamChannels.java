@@ -19,6 +19,11 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 @SquirrelJMEVendorApi
 public interface AudioStreamChannels
 {
+	/** Automatic. */
+	@SquirrelJMEVendorApi
+	byte AUTOMATIC =
+		-1;
+	
 	/** Mono audio. */
 	@SquirrelJMEVendorApi
 	byte MONO =

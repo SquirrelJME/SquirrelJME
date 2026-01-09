@@ -174,22 +174,8 @@ public class NokiaOTAPlayer
 				return;
 
 			// Create the native audio stream
-			AudioStreamBracket stream = null;
-			try
-			{
-				stream = AudioStreamShelf.stream(AudioStreamFormat.AUTOMATIC,
-					AudioStreamRate.AUTOMATIC, AudioStreamChannels.MONO);
-			}
-			catch (MLECallError __e)
-			{
-				__e.printStackTrace();
-
-				MediaException mex = new MediaException(__e.getMessage());
-				mex.initCause(__e);
-				throw mex;
-			}
-
-			this._stream = stream;
+			this._stream = AbstractPlayer.stream(AudioStreamFormat.AUTOMATIC,
+				AudioStreamRate.AUTOMATIC, AudioStreamChannels.MONO);
 		}
 	}
 	
@@ -210,23 +196,12 @@ public class NokiaOTAPlayer
 	{
 		synchronized (this)
 		{
-			try
-			{
-				// Close the native audio stream, we won't be using it
-				AudioStreamBracket stream = this._stream;
-				this._stream = null;
-				
-				if (stream != null)
-					AudioStreamShelf.disconnect(stream);
-			}
-			catch (MLECallError __e)
-			{
-				__e.printStackTrace();
-				
-				MediaException toss = new MediaException(__e.getMessage());
-				toss.initCause(__e);
-				throw toss;
-			}
+			// Close the native audio stream, we won't be using it
+			AudioStreamBracket stream = this._stream;
+			this._stream = null;
+			
+			if (stream != null)
+				AbstractPlayer.streamDisconnect(stream, false);
 		}
 	}
 	
