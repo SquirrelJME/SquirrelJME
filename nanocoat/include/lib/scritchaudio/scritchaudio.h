@@ -391,6 +391,16 @@ typedef sjme_errorCode (*sjme_scritchaudio_peerNoneFunc)(
 	sjme_attrInValue sjme_jboolean explicit);
 
 /**
+ * A polling function callback.
+ *
+ * @param rawStream The raw stream function.
+ * @return The thread result.
+ * @since 2026/01/09
+ */
+typedef sjme_thread_result (sjme_attrThreadCall *sjme_scritchaudio_pollFunc)(
+	sjme_attrInNotNull sjme_thread_parameter rawStream);
+
+/**
  * Called when the peer has been connected or disconnected.
  *
  * @param inState The ScritchAudio state.
@@ -562,6 +572,9 @@ typedef struct sjme_scritchaudio_implFunctions
 {
 	/** The driver name. */
 	sjme_lpcstr driverName;
+
+	/** Supports every format and can handle its own mixing. */
+	sjme_jboolean allFormatsOwnMixing;
 	
 	/** Api initialization. */
 	sjme_scritchaudio_apiInitFunc apiInit;
@@ -580,6 +593,9 @@ typedef struct sjme_scritchaudio_implFunctions
 	
 	/** Create a new audio stream. */
 	sjme_scritchaudio_streamCreateImplFunc streamCreate;
+
+	/** Native callback procedure. */
+	sjme_undefinedFunction nativeCallback;
 } sjme_scritchaudio_implFunctions;
 
 /**
@@ -606,6 +622,12 @@ typedef struct sjme_scritchaudio_internFunctions
 	
 	/** Dispatch peer none. */
 	sjme_scritchaudio_peerNoneFunc peerNoneDispatch;
+
+	/** Event based polling loop. */
+	sjme_scritchaudio_pollFunc pollEvent;
+
+	/** Manual polling loop. */
+	sjme_scritchaudio_pollFunc pollManual;
 	
 	/** Create a new audio stream. */
 	sjme_scritchaudio_streamCreateFunc streamCreate;
@@ -620,6 +642,9 @@ typedef struct sjme_scritchaudio_bugs
 {
 	/** Audio is manually polled, there is no system managed loop. */
 	sjme_jboolean manualPoll;
+
+	/** Uses event based polling. */
+	sjme_jboolean eventPoll;
 	
 	/** Writing to the output audio blocks until playback is finished. */
 	sjme_jboolean outputBlocks;
@@ -682,15 +707,6 @@ struct sjme_scritchaudioBase
 	/** Internal functions. */
 	const sjme_scritchaudio_internFunctions* intern;
 	
-	/** The audio loop thread, if applicable. */
-	sjme_thread loopThread;
-	
-	/** The current audio thread ID, if applicable. */
-	sjme_thread_id loopThreadId;
-
-	/** The loop thread is ready. */
-	sjme_atomic(sjme_jint) loopThreadReady;
-	
 	/** Wrapped ScritchAudio state, if this is a wrapper. */
 	sjme_scritchaudio wrappedState;
 	
@@ -699,12 +715,6 @@ struct sjme_scritchaudioBase
 
 	/** Bugs. */
 	sjme_scritchaudio_bugs bugs;
-
-	/** The delay between manual polls. */
-	sjme_atomic(sjme_jint) pollDelayMillis;
-
-	/** The delay between manual polls (Nanos). */
-	sjme_atomic(sjme_jint) pollDelayNanos;
 
 	/** The output audio stream. */
 	sjme_scritchaudio_stream stream;
@@ -775,6 +785,9 @@ struct sjme_scritchaudio_streamBase
 	/** The connection. */
 	sjme_scritchaudio_connectionBase connection;
 
+	/** The lock for audio streams and otherwise. */
+	sjme_thread_spinLock baseLock;
+
 	/** The stream format. */
 	sjme_scritchaudio_format format;
 
@@ -787,6 +800,24 @@ struct sjme_scritchaudio_streamBase
 	/** The sources attached to this stream. */
 	sjme_list(sjme_scritchaudio_source)* sources;
 
+	/** Last callback error. */
+	sjme_atomic(sjme_jint) lastError;
+
+	/** The audio loop thread, if applicable. */
+	sjme_thread loopThread;
+
+	/** The current audio thread ID, if applicable. */
+	sjme_thread_id loopThreadId;
+
+	/** The loop thread is ready. */
+	sjme_atomic(sjme_jint) loopThreadReady;
+
+	/** The delay between manual polls. */
+	sjme_atomic(sjme_jint) pollDelayMillis;
+
+	/** The delay between manual polls (Nanos). */
+	sjme_atomic(sjme_jint) pollDelayNanos;
+
 	/** Stream data. */
 	struct
 	{
@@ -794,7 +825,19 @@ struct sjme_scritchaudio_streamBase
 		int fd;
 
 		/** The handle to the device. */
-		void* handle;
+		sjme_pointer handle;
+
+		/** Any header that is needed (such as for winmm). */
+		sjme_pointer header;
+
+		/** The buffer data. */
+		sjme_pointer buffer;
+
+		/** Was the audio thread bound? */
+		sjme_atomic(sjme_jint) bound;
+
+		/** The current event counter. */
+		sjme_atomic(sjme_jint) eventCounter;
 	} data;
 };
 

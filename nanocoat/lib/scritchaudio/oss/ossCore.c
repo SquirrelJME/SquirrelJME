@@ -19,12 +19,14 @@
 static const sjme_scritchaudio_implFunctions sjme_scritchaudio_ossFunctions =
 {
 	sjme_sm(.driverName, "oss"),
+	sjme_sm(.allFormatsOwnMixing, SJME_JNI_FALSE),
 	sjme_sm(.apiInit, sjme_scritchaudio_oss_apiInit),
 	sjme_sm(.disconnect, NULL),
 	sjme_sm(.loopIterate, sjme_scritchaudio_oss_loopIterate),
 	sjme_sm(.queryMidiPorts, sjme_scritchaudio_oss_queryMidiPorts),
 	sjme_sm(.sourceAttach, sjme_scritchaudio_oss_sourceAttach),
 	sjme_sm(.streamCreate, sjme_scritchaudio_oss_streamCreate),
+	sjme_sm(.nativeCallback, NULL),
 };
 
 sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(oss)(

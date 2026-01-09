@@ -88,6 +88,12 @@ sjme_errorCode sjme_scritchaudio_core_peerNoneDispatch(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInValue sjme_jboolean explicit);
+
+sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_core_pollEvent(
+	sjme_attrInNotNull sjme_thread_parameter rawStream);
+
+sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_core_pollManual(
+	sjme_attrInNotNull sjme_thread_parameter rawStream);
 	
 sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,

@@ -57,6 +57,8 @@ static const sjme_scritchaudio_internFunctions sjme_scritchaudio_coreInterns =
 	sjme_sm(.peerConnect, sjme_scritchaudio_core_peerConnect),
 	sjme_sm(.peerDisconnect, sjme_scritchaudio_core_peerDisconnect),
 	sjme_sm(.peerNoneDispatch, sjme_scritchaudio_core_peerNoneDispatch),
+	sjme_sm(.pollEvent, sjme_scritchaudio_core_pollEvent),
+	sjme_sm(.pollManual, sjme_scritchaudio_core_pollManual),
 	sjme_sm(.streamCreate, sjme_scritchaudio_core_streamCreate),
 };
 
@@ -119,12 +121,6 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 		memmove(&result->clock.clock, &result->clock.clockBase,
 			sizeof(result->clock.clock));
 	}
-
-	/* Use a "sleeping" rate so if manually polling the CPU does not burn. */
-	sjme_atomic_s(sjme_jint, &result->pollDelayMillis,
-		SJME_SCRITCHAUDIO_POLL_SLEEP_MILLIS);
-	sjme_atomic_s(sjme_jint, &result->pollDelayNanos,
-		0);
 
 	/* Copy front end data. */
 	if (initFrontEnd != NULL)
@@ -214,16 +210,15 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread)
 {
-	sjme_jboolean isSoftMixWrapper, needSoftMixWrapper;
+	sjme_jboolean needSoftMixWrapper;
 	sjme_scritchaudio lower, higher;
 	sjme_errorCode error;
 	
 	if (inPool == NULL || outState == NULL || inImplFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Do we need the softmix wrapper? */
-	isSoftMixWrapper = (inImplFunc == &sjme_scritchaudio_softmixFunctions);
-	needSoftMixWrapper = !isSoftMixWrapper;
+	/* Do we need the software mixing wrapper? */
+	needSoftMixWrapper = !inImplFunc->allFormatsOwnMixing;
 	
 	/* Normal top-level initialization. */
 	if (!needSoftMixWrapper)
@@ -234,7 +229,8 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	/* Initialize the lower level state. */
 	lower = NULL;
 	if (sjme_error_is(error = sjme_scritchaudio_core_initActual(inPool,
-		&lower, NULL, inImplFunc, NULL, SJME_JNI_FALSE, NULL)) ||
+		&lower, initFrontEnd, inImplFunc, NULL, SJME_JNI_FALSE,
+		bindAudioThread)) ||
 		lower == NULL)
 		goto fail_initLower;
 
@@ -250,7 +246,11 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	/* Manual poll. */
 	lower->bugs.manualPoll |= higher->bugs.manualPoll;
 	higher->bugs.manualPoll |= lower->bugs.manualPoll;
-	
+
+	/* Event poll. */
+	lower->bugs.eventPoll |= higher->bugs.eventPoll;
+	higher->bugs.eventPoll |= lower->bugs.eventPoll;
+
 	/* Write blocks. */
 	lower->bugs.outputBlocks |= higher->bugs.outputBlocks;
 	higher->bugs.outputBlocks |= lower->bugs.outputBlocks;

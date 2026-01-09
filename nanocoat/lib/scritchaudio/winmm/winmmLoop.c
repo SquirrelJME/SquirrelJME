@@ -10,7 +10,9 @@
 #include "lib/scritchaudio/scritchaudioIntern.h"
 #include "lib/scritchaudio/winmm/winmmIntern.h"
 
-#define SJME_CONFIG_EXPERIMENT_WINMM_PAUSE
+#if 1
+	#define SJME_CONFIG_EXPERIMENT_WINMM_PAUSE
+#endif
 
 sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
@@ -18,9 +20,9 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
 {
 	sjme_errorCode error;
-	WAVEHDR header;
-	HWAVEOUT handle;
-	MMRESULT result, writeResult;
+	WAVEHDR* header;
+	HWAVEOUT hWaveOut;
+	MMRESULT mmResult;
 	sjme_pointer buf;
 	sjme_jint bufSize, i, n;
 	sjme_scritchaudio_source source;
@@ -35,8 +37,8 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 		return SJME_ERROR_AUDIO_DESTROYED;
 
 	/* Recover the output handle. */
-	handle = inStream->data.handle;
-	if (handle == NULL)
+	hWaveOut = inStream->data.handle;
+	if (hWaveOut == NULL)
 		return SJME_ERROR_AUDIO_DESTROYED;
 
 	/* Recover the single source. */
@@ -54,20 +56,20 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	/* None found? */
 	if (source == NULL)
 		return SJME_ERROR_AUDIO_AWAITING;
-	
+
+	/* Obtain sample buffer */
+	buf = inStream->data.buffer;
+	if (buf == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
 	/* Calculate the render info. */
 	if (sjme_error_is(error = inState->intern->calcRenderInfo(
 		inState, inStream, source, renderInfo)))
 		return sjme_error_default(error);
 
-	/* Allocate sample buffer */
-	bufSize = renderInfo->bufSize;
-	buf = sjme_alloca(bufSize);
-	if (buf == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
-	
 	/* If the source format is unsigned, we need to actually set the proper */
 	/* zero level, otherwise there will be clicks/pops. */
+	bufSize = renderInfo->bufSize;
 	if (renderInfo->format == SJME_SCRITCHAUDIO_FORMAT_BYTE_U8)
 		memset(buf, 0x80, bufSize);
 	else
@@ -78,45 +80,287 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 		source, renderInfo, (sjme_scritchaudio_buffer*)buf)))
 		return sjme_error_default(error);
 
-	/* Setup output header. */
-	memset(&header, 0, sizeof(header));
-	header.lpData = buf;
-	header.dwBufferLength = bufSize;
-	header.dwLoops = 0;
-
-	/* Prepare to write the data. */
-	if (waveOutPrepareHeader(handle, &header,
-		sizeof(header)) != MMSYSERR_NOERROR)
-		return SJME_ERROR_AUDIO_PREPARE_FAILED;
-
 #if defined(SJME_CONFIG_EXPERIMENT_WINMM_PAUSE)
 	/* Disable playback, if playback is synchronous then pausing */
 	/* does not occur. */
-	result = waveOutPause(handle);
-	if (result != MMSYSERR_NOERROR && result != MMSYSERR_NOTSUPPORTED)
+	mmResult = waveOutPause(hWaveOut);
+	if (mmResult != MMSYSERR_NOERROR && mmResult != MMSYSERR_NOTSUPPORTED)
 		return SJME_ERROR_AUDIO_TRIGGER_FAILED;
 #endif
 
+	/* Setup output header. */
+	header = inStream->data.header;
+	memset(header, 0, sizeof(*header));
+	header->lpData = buf;
+	header->dwBufferLength = bufSize;
+	header->dwFlags = 0;
+
+	/* Wait until the output header is fully ready. */
+	do
+	{
+		mmResult = waveOutPrepareHeader(hWaveOut, header,
+			sizeof(WAVEHDR));
+		sjme_message("Prepare header... %d", mmResult);
+	} while (mmResult == MMSYSERR_HANDLEBUSY ||
+		mmResult == MMSYSERR_INVALHANDLE);
+
+	/* Failed to prepare? */
+	if (mmResult != MMSYSERR_NOERROR)
+		return SJME_ERROR_AUDIO_PREPARE_FAILED;
+
 	/* Write to the audio device. */
-	result = waveOutWrite(handle, &header, sizeof(header));
-	if (result != MMSYSERR_NOERROR)
+	mmResult = waveOutWrite(hWaveOut, header, sizeof(WAVEHDR));
+	sjme_message("Write audio... %d", mmResult);
+	if (mmResult != MMSYSERR_NOERROR)
 		return SJME_ERROR_AUDIO_WRITE_FAILED;
 
 #if defined(SJME_CONFIG_EXPERIMENT_WINMM_PAUSE)
 	/* Resume playback, if it was previously paused. */
-	if (result == MMSYSERR_NOERROR)
+	if (mmResult == MMSYSERR_NOERROR)
 	{
-		result = waveOutRestart(handle);
-		if (result != MMSYSERR_NOERROR && result != MMSYSERR_NOTSUPPORTED)
+		mmResult = waveOutRestart(hWaveOut);
+		if (mmResult != MMSYSERR_NOERROR && mmResult != MMSYSERR_NOTSUPPORTED)
 			return SJME_ERROR_AUDIO_TRIGGER_FAILED;
 	}
 #endif
 
 	/* Unprepare the header. */
-	result = waveOutUnprepareHeader(handle, &header, sizeof(header));
-	if (result != WAVERR_STILLPLAYING && result != MMSYSERR_NOERROR)
+	mmResult = waveOutUnprepareHeader(hWaveOut, header, sizeof(WAVEHDR));
+	if (mmResult != WAVERR_STILLPLAYING && mmResult != MMSYSERR_NOERROR)
 		return SJME_ERROR_AUDIO_PREPARE_FAILED;
 
 	/* Nothing. */
 	return SJME_ERROR_NONE;
+
+#if 0
+	sjme_errorCode error, errorRender;
+	sjme_scritchaudio inState;
+	sjme_scritchaudio_stream inStream;
+	sjme_pointer buf;
+	sjme_jint bufSize, i, n;
+	sjme_scritchaudio_source source;
+	WAVEHDR* header;
+	MMRESULT mmResult;
+	sjme_scritchaudio_renderInfo renderInfo;
+	sjme_list(sjme_scritchaudio_source)* sources;
+
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+	/* Debug. */
+	sjme_message("(%p, %d, %p, %d, %d)",
+		hWaveOut, uMsg, dwInstance, dwParam1, dwParam2);
+#endif
+
+	/* Reset other errors. */
+	error = SJME_ERROR_NONE;
+	errorRender = SJME_ERROR_NONE;
+	mmResult = MMSYSERR_NOERROR;
+
+	/* We only care about open and write. */
+	if (uMsg != WOM_OPEN && uMsg != WOM_DONE)
+		return;
+
+	/* Recover stream. */
+	inStream = (sjme_scritchaudio_stream)dwInstance;
+	if (inStream == NULL)
+	{
+		error = SJME_ERROR_NULL_ARGUMENTS;
+		goto fail_any;
+	}
+
+	/* Recover state. */
+	inState = inStream->connection.inState;
+	if (inState == NULL)
+	{
+		error = SJME_ERROR_NULL_ARGUMENTS;
+		goto fail_any;
+	}
+
+	/* We are in the audio thread and need to bind natively */
+	/* before we can call into any attached JVM. */
+	if (sjme_atomic_cs(sjme_jint, &inStream->data.bound, 0, 1))
+	{
+		/* Set loop thread. */
+		inStream->loopThread = sjme_thread_currentR();
+		sjme_atomic_s(sjme_jint, &inStream->loopThreadReady, 1);
+
+		/* Call native binder. */
+		if (inState->bindAudioThread != NULL)
+			inState->bindAudioThread(inStream);
+	}
+
+	/* Allocate the buffer. */
+	buf = inStream->data.buffer;
+	if (buf == NULL)
+	{
+		error = SJME_ERROR_ILLEGAL_STATE;
+		goto fail_any;
+	}
+
+	/* Grab the header. */
+	header = inStream->data.header;
+	if (header == NULL)
+	{
+		error = SJME_ERROR_ILLEGAL_STATE;
+		goto fail_any;
+	}
+
+	/* Calculate the render info. */
+	memset(&renderInfo, 0, sizeof(renderInfo));
+	if (sjme_error_is(error = inState->intern->calcRenderInfo(
+		inState, inStream, NULL, &renderInfo)))
+		goto fail_any;
+
+	/* What is the buffer size? */
+	bufSize = renderInfo.bufSize;
+
+	/* If the source format is unsigned, we need to actually set the proper */
+	/* zero level, otherwise there will be clicks/pops. */
+	if (renderInfo.format == SJME_SCRITCHAUDIO_FORMAT_BYTE_U8)
+		memset(buf, 0x80, bufSize);
+	else
+		memset(buf, 0, bufSize);
+
+	/* Recover the single source, if done playing the last buffer. */
+	source = NULL;
+	if (uMsg == WOM_DONE)
+	{
+		/* Lock the shared lock. */
+		if (sjme_error_is(error = sjme_thread_spinLockGrab(
+			inStream->connection.lock)))
+			goto fail_any;
+
+		/* Recover the single source. */
+		sources = inStream->sources;
+		if (sources != NULL)
+			for (i = 0, n = sources->length; i < n; i++)
+			{
+				source = sources->elements[i];
+				if (source != NULL)
+					break;
+			}
+
+		/* Free the shared lock. */
+		if (sjme_error_is(error = sjme_thread_spinLockRelease(
+			inStream->connection.lock, NULL)))
+			goto fail_any;
+	}
+
+#if defined(SJME_CONFIG_EXPERIMENT_WINMM_PAUSE)
+	/* Disable playback, if playback is synchronous then pausing */
+	/* does not occur. */
+	if (uMsg == WOM_OPEN || uMsg == WOM_DONE)
+	{
+		mmResult = waveOutPause(hWaveOut);
+		if (mmResult != MMSYSERR_NOERROR && mmResult != MMSYSERR_NOTSUPPORTED)
+		{
+			error = SJME_ERROR_AUDIO_TRIGGER_FAILED;
+			goto fail_any;
+		}
+	}
+#endif
+
+	/* Render source. */
+	if (source == NULL || source->renderFunc == NULL)
+		errorRender = SJME_ERROR_AUDIO_AWAITING;
+	else
+		errorRender = source->renderFunc(inState,
+			source, &renderInfo, (sjme_scritchaudio_buffer*)buf);
+
+	/* Only send data when there is nothing left. */
+	if (uMsg == WOM_OPEN || uMsg == WOM_DONE)
+	{
+		/* Prepare the wave header. */
+		header->lpData = buf;
+		header->dwBufferLength = bufSize;
+		header->dwFlags = 0;
+		do
+		{
+			sjme_message("Prepare... %d", mmResult);
+			mmResult = waveOutPrepareHeader(hWaveOut, header,
+				sizeof(*header));
+		} while (mmResult == MMSYSERR_HANDLEBUSY ||
+			mmResult == MMSYSERR_INVALHANDLE);
+
+		/* Failed to prepare? */
+		if (mmResult != MMSYSERR_NOERROR)
+		{
+			error = SJME_ERROR_AUDIO_PREPARE_FAILED;
+			goto fail_any;
+		}
+
+		/* Write to the audio device. */
+		mmResult = waveOutWrite(hWaveOut, header, sizeof(*header));
+		if (mmResult != MMSYSERR_NOERROR)
+		{
+			error = SJME_ERROR_AUDIO_WRITE_FAILED;
+			goto fail_any;
+		}
+	}
+
+#if defined(SJME_CONFIG_EXPERIMENT_WINMM_PAUSE)
+	/* Resume playback, if it was previously paused. */
+	if ((uMsg == WOM_OPEN || uMsg == WOM_DONE) && mmResult == MMSYSERR_NOERROR)
+	{
+		mmResult = waveOutRestart(hWaveOut);
+		if (mmResult != MMSYSERR_NOERROR && mmResult != MMSYSERR_NOTSUPPORTED)
+		{
+			error = SJME_ERROR_AUDIO_TRIGGER_FAILED;
+			goto fail_any;
+		}
+	}
+#endif
+
+	/* Did the render fail? */
+	if (sjme_error_is(errorRender))
+	{
+		error = errorRender;
+		goto fail_any;
+	}
+
+	/* Success! */
+	return;
+
+fail_any:
+	/* Set last callback error. */
+	if (inStream != NULL)
+		sjme_atomic_s(sjme_jint, &inStream->lastError,
+			error);
+
+#if defined(SJME_CONFIG_DEBUG)
+	if (error != SJME_ERROR_AUDIO_AWAITING)
+	{
+		sjme_message("winMM Error: %d %d (mm: %d; win: %d)",
+			error, errorRender, mmResult, GetLastError());
+		sjme_message("(%p, %d, %p, %d, %d)",
+			hWaveOut, uMsg, dwInstance, dwParam1, dwParam2);
+	}
+#endif
+
+	/* Close self to stop this thread. */
+	waveOutClose(hWaveOut);
+#endif
+}
+
+void CALLBACK sjme_scritchaudio_winmm_nativeCallback(
+	HWAVEOUT hWaveOut,
+	UINT uMsg,
+	DWORD_PTR dwInstance,
+	DWORD dwParam1,
+	DWORD dwParam2)
+{
+	sjme_scritchaudio_stream inStream;
+	sjme_jint next;
+
+	/* Recover stream. */
+	inStream = (sjme_scritchaudio_stream)dwInstance;
+	if (inStream == NULL)
+		return;
+
+	/* Trigger the event and try to wake the audio thread. */
+	next = sjme_atomic_ga(sjme_jint, &inStream->data.eventCounter, 1);
+	sjme_atomic_barrier();
+	sjme_thread_wake(inStream->loopThread);
+
+	/* Debug. */
+	sjme_message("Next event: %d", next);
 }

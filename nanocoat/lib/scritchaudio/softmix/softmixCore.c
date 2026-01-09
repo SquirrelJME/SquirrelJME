@@ -18,12 +18,14 @@
 const sjme_scritchaudio_implFunctions sjme_scritchaudio_softmixFunctions =
 {
 	sjme_sm(.driverName, "softmix"),
+	sjme_sm(.allFormatsOwnMixing, SJME_JNI_TRUE),
 	sjme_sm(.apiInit, sjme_scritchaudio_softmix_apiInit),
 	sjme_sm(.disconnect, NULL),
 	sjme_sm(.loopIterate, NULL),
 	sjme_sm(.queryMidiPorts, sjme_scritchaudio_softmix_queryMidiPorts),
 	sjme_sm(.sourceAttach, sjme_scritchaudio_softmix_sourceAttach),
 	sjme_sm(.streamCreate, sjme_scritchaudio_softmix_streamCreate),
+	sjme_sm(.nativeCallback, NULL),
 };
 
 sjme_errorCode sjme_scritchaudio_softmix_apiInit(

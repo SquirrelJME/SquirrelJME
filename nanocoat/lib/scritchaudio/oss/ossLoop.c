@@ -20,7 +20,7 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
 {
-	sjme_errorCode error;
+	sjme_errorCode error, renderError;
 	int fd, trigger;
 	sjme_pointer buf;
 	sjme_jint bufSize, i, n;
@@ -67,6 +67,10 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	buf = sjme_alloca(bufSize);
 	if (buf == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
+
+	/* Disable playback (if supported by the driver). */
+	trigger = 0;
+	ioctl(fd, SNDCTL_DSP_SETTRIGGER, &trigger);
 	
 	/* If the source format is unsigned, we need to actually set the proper */
 	/* zero level, otherwise there will be clicks/pops. */
@@ -76,23 +80,18 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 		memset(buf, 0, bufSize);
 
 	/* Render source. */
-	if (sjme_error_is(error = source->renderFunc(inState,
-		source, renderInfo, (sjme_scritchaudio_buffer*)buf)))
-		return sjme_error_default(error);
-	
-	/* Disable playback. */
-	trigger = 0;
-	ioctl(fd, SNDCTL_DSP_SETTRIGGER, &trigger);
+	renderError = source->renderFunc(inState,
+		source, renderInfo, (sjme_scritchaudio_buffer*)buf);
 
 	/* Write the buffer data. */
 	if (write(fd, buf, bufSize) < 0)
 		return SJME_ERROR_AUDIO_WRITE_FAILED;
 
-	/* Resume playback. */
+	/* Resume playback (if supported by the driver). */
 	trigger = PCM_ENABLE_OUTPUT;
 	ioctl(fd, SNDCTL_DSP_SETTRIGGER, &trigger);
 	ioctl(fd, SNDCTL_DSP_POST, NULL);
 
-	/* Nothing. */
-	return SJME_ERROR_NONE;
+	/* Return the rendering error, if any. */
+	return renderError;
 }

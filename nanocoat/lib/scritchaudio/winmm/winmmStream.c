@@ -58,6 +58,20 @@ static sjme_errorCode sjme_scritchaudio_winmm_peerNone(
 			/* Close the handle. */
 			waveOutClose(handle);
 		}
+
+		/* Free the header. */
+		if (stream->data.header != NULL)
+		{
+			sjme_alloc_free(stream->data.header);
+			stream->data.header = NULL;
+		}
+
+		/* Free the buffer. */
+		if (stream->data.buffer != NULL)
+		{
+			sjme_alloc_free(stream->data.buffer);
+			stream->data.buffer = NULL;
+		}
 	}
 
 	/* WinMM does not care about any other peers. */
@@ -121,9 +135,12 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels)
 {
+	sjme_errorCode error;
 	MMRESULT mmResult;
-	HWAVEOUT handle;
+	HWAVEOUT hWaveOut;
 	WAVEFORMATEXTENSIBLE format;
+	sjme_scritchaudio_winmm_WAVEOUTPROC bump;
+	sjme_scritchaudio_renderInfo renderInfo;
 
 	if (inState == NULL || inOutStream == NULL || inName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -160,13 +177,13 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 			0x00, 0x38, 0x9b, 0x71);
 	}
 
-	/* Samples.. */
+	/* Samples. */
 	format.Format.wBitsPerSample =
 		sjme_scritchaudio_bytesPerSample[inFormat] * 8;
 	format.Samples.wValidBitsPerSample = format.Format.wBitsPerSample;
 	format.Format.nSamplesPerSec = inRate;
 
-	/* Channels */
+	/* Channels. */
 	format.dwChannelMask = (1 << inChannels) - 1;
 	format.Format.nChannels = inChannels;
 
@@ -176,22 +193,84 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	format.Format.nAvgBytesPerSec = format.Format.nSamplesPerSec *
 		format.Format.nBlockAlign;
 
-	/* Open the default device. */
-	handle = NULL;
-	mmResult = waveOutOpen(&handle, WAVE_MAPPER, (WAVEFORMATEX*)&format,
-		0, 0, WAVE_FORMAT_DIRECT | CALLBACK_NULL);
-	if (mmResult != MMSYSERR_NOERROR || handle == NULL)
-		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
-
-	/* Set stream details. */
+	/* Set stream info. */
 	inOutStream->format = inFormat;
 	inOutStream->rate = inRate;
 	inOutStream->channels = inChannels;
-	inOutStream->data.handle = handle;
 	inOutStream->connection.noPeers = sjme_scritchaudio_winmm_peerNone;
 	inOutStream->connection.peerDisconnect =
 		sjme_scritchaudio_winmm_peerDisconnect;
 
+	/* Calculate the render info. */
+	hWaveOut = NULL;
+	memset(&renderInfo, 0, sizeof(renderInfo));
+	if (sjme_error_is(error = inState->intern->calcRenderInfo(
+		inState, inOutStream, NULL, &renderInfo)))
+		goto fail_any;
+
+	/* Allocate sample buffer. */
+	if (sjme_error_is(error = sjme_alloc(inState->pool,
+		renderInfo.bufSize, &inOutStream->data.buffer)) ||
+		inOutStream->data.buffer == NULL)
+		goto fail_any;
+
+	/* Allocate space for the header. */
+	if (sjme_error_is(error = sjme_alloc(inState->pool,
+		sizeof(WAVEHDR),
+		(sjme_pointer*)&inOutStream->data.header)) ||
+		inOutStream->data.header == NULL)
+		goto fail_any;
+
+	/* Open the default device. */
+	mmResult = waveOutOpen(&hWaveOut, WAVE_MAPPER, (WAVEFORMATEX*)&format,
+		(DWORD_PTR)inState->impl->nativeCallback,
+		(DWORD_PTR)inOutStream,
+		WAVE_FORMAT_DIRECT | CALLBACK_FUNCTION | WAVE_ALLOWSYNC);
+	if (mmResult != MMSYSERR_NOERROR || hWaveOut == NULL)
+		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_message("waveOutOpen: Success!");
+#endif
+
+	/* Set stream details. */
+	inOutStream->data.handle = hWaveOut;
+
+	/* Resume playback. */
+	mmResult = waveOutRestart(hWaveOut);
+	if (mmResult != MMSYSERR_NOERROR && mmResult != MMSYSERR_NOTSUPPORTED)
+		goto fail_any;
+
+#if 0
+	/* We need to run the stream at least once for Windows to start it. */
+	if (sjme_error_is(error = inState->impl->loopIterate(
+		inState, inOutStream, &renderInfo)))
+	{
+		/* These errors are okay. */
+		if (error != SJME_ERROR_AUDIO_AWAITING)
+			goto fail_any;
+	}
+#endif
+
 	/* Return the resultant stream. */
 	return SJME_ERROR_NONE;
+
+fail_any:
+	if (hWaveOut != NULL)
+		waveOutClose(hWaveOut);
+
+	if (inOutStream->data.header != NULL)
+	{
+		sjme_alloc_free(inOutStream->data.header);
+		inOutStream->data.header = NULL;
+	}
+
+	if (inOutStream->data.buffer != NULL)
+	{
+		sjme_alloc_free(inOutStream->data.buffer);
+		inOutStream->data.buffer = NULL;
+	}
+
+	return sjme_error_default(error);
 }
