@@ -36,16 +36,10 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /** The minimum sleeping time, sleep does not occur below this point. */
-#define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS 0 /*INT64_C(25000000)*/
+#define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS INT64_C(25000000)
 
-/** The number of nanoseconds to hold off when burning the CPU. */
-#define SJME_SCRITCHAUDIO_HOLD_NANOS 0
-
-/**
- * The number of nanoseconds to remove when sleeping, used so that the next
- * audio that plays does not play too late.
- */
-#define SJME_SCRITCHAUDIO_CUT_SLEEP_NANOS 0
+/** The number of nanoseconds to hold off when sleeping. */
+#define SJME_SCRITCHAUDIO_HOLD_NANOS INT64_C(5000000)
 
 /** The poll delay time to use. */
 #define SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS 150

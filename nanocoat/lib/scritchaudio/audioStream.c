@@ -56,8 +56,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_core_poll(
 			break;
 
 		/* Not yet ready? */
-		if (nextTime != INT64_MIN &&
-			(enterTime.full + SJME_SCRITCHAUDIO_HOLD_NANOS) < nextTime)
+		if (nextTime != INT64_MIN && enterTime.full < nextTime)
 		{
 			/* Let other threads run. */
 			sjme_thread_yield();
@@ -113,7 +112,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_core_poll(
 		if (diffNanos >= SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS &&
 			exitTime.full < nextTime)
 			sjme_thread_sleep((diffNanos -
-				SJME_SCRITCHAUDIO_CUT_SLEEP_NANOS) / INT64_C(1000000), 0);
+				SJME_SCRITCHAUDIO_HOLD_NANOS) / INT64_C(1000000), 0);
 	}
 
 	/* Go back to the sleeping rate as there is no audio */
