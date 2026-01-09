@@ -87,7 +87,7 @@ typedef enum sjme_scritchui_uiType
 	/** The number of possible types. */
 	SJME_NUM_SCRITCHUI_UI_TYPES
 } sjme_scritchui_uiType;
-	
+
 /**
  * Flags representing the type of input method that may be available, this can
  * be used to allow for text and dial-pad input on less capable devices.

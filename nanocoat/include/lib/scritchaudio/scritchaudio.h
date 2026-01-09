@@ -437,6 +437,10 @@ typedef sjme_errorCode (*sjme_scritchaudio_sourceRenderFunc)(
  * Attaches a source renderer to the given stream, the renderer will use the
  * same format that the stream uses.
  *
+ * If the target audio system does not support opening streams and attaching
+ * sources in a different format
+ * then @link SJME_ERROR_AUDIO_FORMAT_MISMATCH @endlink will be returned.
+ *
  * @param inState The ScritchAudio state.
  * @param inStream The stream to attach to or detach from.
  * @param outSource The resultant source.
