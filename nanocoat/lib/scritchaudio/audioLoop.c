@@ -16,7 +16,6 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	sjme_attrInNullable sjme_scritchaudio_source inSource,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
 {
-	sjme_errorCode error;
 	sjme_jint latency, freqAt;
 	sjme_jint expected48KHzSamples;
 	sjme_jint expected44KHzSamples;
@@ -103,20 +102,35 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 sjme_errorCode sjme_scritchaudio_core_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState)
 {
-	sjme_jlong now;
-	sjme_scritchaudio_stream stream;
+	sjme_errorCode error;
 	sjme_scritchaudio_renderInfo renderInfo;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Update the clock time. */
-	inState->nal->nanoTime(&now);
-	inState->clock.clock.full = now.full - inState->clock.clockBase.full;
+	/* Lock the shared lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(inState->lock)))
+		return sjme_error_default(error);
 	
 	/* Forward using the default stream. */
 	memset(&renderInfo, 0, sizeof(renderInfo));
-	return inState->intern->loopIterate(inState, inState->stream, &renderInfo);
+	if (sjme_error_is(error = inState->intern->loopIterate(inState,
+		inState->stream, &renderInfo)))
+		goto fail_iterate;
+
+	/* Release the lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(inState->lock,
+		NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_iterate:
+	/* Release before failing. */
+	sjme_thread_spinLockRelease(inState->lock, NULL);
+
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
@@ -124,7 +138,7 @@ sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
 	sjme_attrInNullable sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
 {
-	sjme_errorCode error;
+	sjme_jlong now;
 	sjme_scritchaudio contextState;
 
 	if (inState == NULL || renderInfo == NULL)
@@ -136,35 +150,15 @@ sjme_errorCode sjme_scritchaudio_core_loopIterateIntern(
 	if (contextState == NULL)
 		contextState = inState;
 
+	/* Update the clock time. */
+	inState->nal->nanoTime(&now);
+	inState->clock.clock.full = now.full - inState->clock.clockBase.full;
+
 	/* Underlying audio system does not have a loop iterator? */
 	if (contextState->impl->loopIterate == NULL)
 		return SJME_ERROR_NONE;
-	
-	/* Lock the shared lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(contextState->lock)))
-		goto fail_lock;
-	
-	/* Run the loop. */
-	error = contextState->impl->loopIterate(contextState,
+
+	/* Run the implementation loop. */
+	return contextState->impl->loopIterate(contextState,
 		contextState->stream, renderInfo);
-
-	/* Release the lock. */
-	if (sjme_error_is(sjme_thread_spinLockRelease(contextState->lock, NULL)))
-	{
-		error = SJME_ERROR_ILLEGAL_STATE;
-		goto fail_unlock;
-	}
-
-	/* Return whatever error was given. */
-	return error;
-	
-fail_calcRender:
-fail_unlock:
-fail_lock:
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_message("intern fail: %d", error);
-#endif
-	
-	return sjme_error_default(error);
 }

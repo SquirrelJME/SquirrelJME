@@ -99,12 +99,13 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	result->nal = nal;
 	result->bindAudioThread = bindAudioThread;
 
+	/* Always use the base lock as there will be an overlying and underlying */
+	/* stream. The lock is really only needed for buffer protection. */
+	result->lock = &result->baseLock;
+
 	/* Is this wrapped? */
 	if (wrappedState != NULL)
 	{
-		/* Use the wrapped lock. */
-		result->lock = &wrappedState->baseLock;
-		
 		/* Set clock base, if wrapped use that as it was first. */
 		memmove(&result->clock, &wrappedState->clock,
 			sizeof(result->clock));
@@ -113,9 +114,6 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	/* This is a primary driver. */
 	else
 	{
-		/* Use the base lock. */
-		result->lock = &result->baseLock;
-		
 		/* Otherwise, derive from the monotonic clock. */
 		result->nal->nanoTime(&result->clock.clockBase);
 		memmove(&result->clock.clock, &result->clock.clockBase,
@@ -124,9 +122,9 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 
 	/* Use a "sleeping" rate so if manually polling the CPU does not burn. */
 	sjme_atomic_s(sjme_jint, &result->pollDelayMillis,
-		SJME_SCRITCHAUDIO_SLEEP_RATE_MS);
+		SJME_SCRITCHAUDIO_POLL_SLEEP_MILLIS);
 	sjme_atomic_s(sjme_jint, &result->pollDelayNanos,
-		SJME_SCRITCHAUDIO_SLEEP_RATE_NS);
+		0);
 
 	/* Copy front end data. */
 	if (initFrontEnd != NULL)

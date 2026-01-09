@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileStore;
@@ -235,5 +236,50 @@ public class LibraryEndPoint
 			throw new IOException("FNFE");
 		
 		return rc;
+	}
+	
+	/**
+	 * Returns the URI part that would be used for the given library.
+	 *
+	 * @param __library The arguments
+	 * @param __fileName Optional output file name, before any encoding.
+	 * @return The URI part for the given library.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/01/08
+	 */
+	@SquirrelJMEVendorApi
+	public static UriGenericPart libraryPart(JarPackageBracket __library,
+		@Nullable String[] __fileName)
+		throws NullPointerException
+	{
+		if (__library == null)
+			throw new NullPointerException("NARG");
+		
+		// The ID is used if there is no name
+		int id = JarPackageShelf.libraryId(__library);
+		
+		// Is there a name for this? We just want the base name
+		String baseName = JarPackageShelf.libraryPath(__library);
+		if (baseName != null && !baseName.isEmpty())
+		{
+			// Slash strip
+			int ls = Math.max(baseName.lastIndexOf('/'),
+				baseName.lastIndexOf('\\'));
+			if (ls >= 0)
+				baseName = baseName.substring(ls + 1);
+		}
+		
+		// Determine the base filename that is used
+		String fileName;
+		if (baseName == null || baseName.isEmpty())
+			fileName = id + "/";
+		else
+			fileName = UriPart.encode(baseName) + "/";
+		
+		// Determine the normal library name
+		if (__fileName != null && __fileName.length > 0)
+			__fileName[0] = fileName;
+		return new UriGenericPart(
+			"//" + LibraryEndPoint.HOST + fileName);
 	}
 }

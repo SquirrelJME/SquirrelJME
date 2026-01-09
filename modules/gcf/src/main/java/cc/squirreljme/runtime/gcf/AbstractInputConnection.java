@@ -10,33 +10,31 @@
 package cc.squirreljme.runtime.gcf;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import javax.microedition.io.Connector;
-import javax.microedition.io.StreamConnection;
+import javax.microedition.io.InputConnection;
 import org.intellij.lang.annotations.MagicConstant;
 
 /**
- * Base abstract class for stream based connections.
+ * Abstract base class for input connections.
  *
- * @since 2025/12/27
+ * @since 2026/01/08
  */
 @SquirrelJMEVendorApi
-public abstract class AbstractStreamConnection
-	extends AbstractInputConnection
-	implements StreamConnection
+public abstract class AbstractInputConnection
+	extends AbstractBaseConnection
+	implements InputConnection
 {
 	/**
 	 * Initializes the base connection.
 	 *
 	 * @param __mode The mode this is opened in.
 	 * @throws IllegalArgumentException If the connection mode is not valid.
-	 * @since 2025/12/27
+	 * @since 2026/01/08
 	 */
 	@SquirrelJMEVendorApi
-	protected AbstractStreamConnection(
+	protected AbstractInputConnection(
 		@MagicConstant(flagsFromClass = Connector.class) int __mode)
 		throws IllegalArgumentException
 	{
@@ -48,9 +46,9 @@ public abstract class AbstractStreamConnection
 	 * @since 2025/12/27
 	 */
 	@Override
-	public final DataOutputStream openDataOutputStream()
+	public final DataInputStream openDataInputStream()
 		throws IOException
 	{
-		return new DataOutputStream(this.openOutputStream());
+		return new DataInputStream(this.openInputStream());
 	}
 }

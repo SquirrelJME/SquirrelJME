@@ -218,21 +218,41 @@ public final class StreamUtils
 			throw new IllegalArgumentException("ZERO");
 		
 		// Setup buffers for temporary copy
-		byte[] buf = new byte[__size];
+		return StreamUtils.readAll(new byte[__size], __in);
+	}
+	
+	/**
+	 * Reads every byte within the input stream.
+	 * 
+	 * @param __workBuf The work buffer to use when reading.
+	 * @param __in The stream to read from.
+	 * @return A byte array containing all the stream bytes.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2021/12/05
+	 */
+	@SquirrelJMEVendorApi
+	public static byte[] readAll(byte[] __workBuf, InputStream __in)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		if (__workBuf == null || __in == null)
+			throw new NullPointerException("NARG");
 		
 		// Write into our target buffer
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(__size))
+		int workLen = __workBuf.length;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
+			__workBuf.length))
 		{
 			for (;;)
 			{
-				int rc = __in.read(buf, 0, __size);
+				int rc = __in.read(__workBuf, 0, workLen);
 				
 				// EOF?
 				if (rc < 0)
 					break;
 				
 				// Store within
-				baos.write(buf, 0, rc);
+				baos.write(__workBuf, 0, rc);
 			}
 		
 			// All done!

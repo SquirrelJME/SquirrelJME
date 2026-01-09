@@ -60,13 +60,15 @@ public class LibraryEndPointFactory
 		
 		// Match by ID?
 		int desireId = -1;
-		try
-		{
-			desireId = Integer.parseInt(desireName, 10);
-		}
-		catch (NumberFormatException ignored)
-		{
-		}
+		if (!desireName.isEmpty() && desireName.charAt(0) >= '0' &&
+			desireName.charAt(0) <= '9')
+			try
+			{
+				desireId = Integer.parseInt(desireName, 10);
+			}
+			catch (NumberFormatException ignored)
+			{
+			}
 		
 		// Go through libraries to determine which one to actually use
 		JarPackageBracket jar = null;
@@ -134,5 +136,4 @@ public class LibraryEndPointFactory
 		// authority by specifying the index/name after the ://
 		return host.startsWith(LibraryEndPoint.DECODED_HOST);
 	}
-	
 }

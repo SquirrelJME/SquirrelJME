@@ -150,49 +150,27 @@ public class AllVolumesEndPoint
 		__into.put("..", (dotDot != null ? dotDot : this.part));
 		
 		// List all libraries
+		String[] fileName = new String[1];
 		for (JarPackageBracket library : JarPackageShelf.libraries())
 		{
-			// The ID is always used
-			int id = JarPackageShelf.libraryId(library);
-			
-			// Is there a name for this? We just want the base name
-			String baseName = JarPackageShelf.libraryPath(library);
-			if (baseName != null && !baseName.isEmpty())
-			{
-				// Forward slash strip
-				int ls = baseName.lastIndexOf('/');
-				if (ls >= 0)
-					baseName = baseName.substring(ls + 1);
-				
-				// Backslash strip
-				ls = baseName.lastIndexOf('\\');
-				if (ls >= 0)
-					baseName = baseName.substring(ls + 1);
-			}
-			
-			// Determine the base filename that is used
-			String fileName;
-			if (baseName == null || baseName.isEmpty())
-				fileName = id + "/";
-			else
-				fileName = UriPart.encode(baseName) + "/";
-			
-			// Determine the normal library name
-			UriGenericPart normal = new UriGenericPart(
-				"//" + LibraryEndPoint.HOST + fileName);
+			// Determine the normal URI part
+			fileName[0] = null;
+			UriGenericPart normal = LibraryEndPoint.libraryPart(library,
+				fileName);
 			
 			// Determine full URI connection to this item
 			// If this is a resource type, use linear scanning instead
-			if (baseName != null && SuiteUtils.isResource(baseName))
+			String path = JarPackageShelf.libraryPath(library);
+			if (path != null && SuiteUtils.isResource(path))
 			{
-				__into.put(fileName, new UriGenericPart(
+				__into.put(fileName[0], new UriGenericPart(
 					"//" + LinearScanEndPoint.HOST +
 						UriPart.encode("file:" + normal) + "/"));
 			}
 			
 			// Otherwise a normal library
 			else
-				__into.put(fileName, normal);
+				__into.put(fileName[0], normal);
 		}
 	}
 	

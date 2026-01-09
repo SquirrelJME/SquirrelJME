@@ -88,6 +88,51 @@ typedef enum sjme_scritchui_uiType
 	SJME_NUM_SCRITCHUI_UI_TYPES
 } sjme_scritchui_uiType;
 
+/**
+ * Flags representing the type of input method that may be available, this can
+ * be used to allow for text and dial-pad input on less capable devices.
+ *
+ * @since 2026/01/07
+ */
+typedef enum sjme_scritchui_inputMethodType
+{
+	/** A dial-pad such as one on a phone. */
+	SJME_SCRITCHUI_INPUT_METHOD_DIAL_PAD = INT32_C(0x1),
+
+	/** A number pad such as one on a computer keyboard. */
+	SJME_SCRITCHUI_INPUT_METHOD_NUMBER_PAD = INT32_C(0x2),
+
+	/** A basic keyboard, glyphs only, no functions. */
+	SJME_SCRITCHUI_INPUT_METHOD_BASIC_KEYBOARD = INT32_C(0x4),
+
+	/** A full keyboard with function keys, number pad is another bit. */
+	SJME_SCRITCHUI_INPUT_METHOD_FULL_KEYBOARD = INT32_C(0x8),
+
+	/** A rocker or hat capable of moving left or right. */
+	SJME_SCRITCHUI_INPUT_METHOD_ROCKER_LEFT_RIGHT = INT32_C(0x10),
+
+	/** A rocker or hat capable of moving up or down. */
+	SJME_SCRITCHUI_INPUT_METHOD_ROCKER_UP_DOWN = INT32_C(0x20),
+
+	/** A pointer that is always on the device, such as a mouse. */
+	SJME_SCRITCHUI_INPUT_METHOD_ATTACHED_POINTER = INT32_C(0x40),
+
+	/** A pointer that can appear at will, such as a stylus/finger. */
+	SJME_SCRITCHUI_INPUT_METHOD_DETACHED_POINTER = INT32_C(0x80),
+
+	/** Has button A. */
+	SJME_SCRITCHUI_INPUT_METHOD_BUTTON_A = INT32_C(0x100),
+
+	/** Has button B. */
+	SJME_SCRITCHUI_INPUT_METHOD_BUTTON_B = INT32_C(0x200),
+
+	/** Has button C. */
+	SJME_SCRITCHUI_INPUT_METHOD_BUTTON_C = INT32_C(0x400),
+
+	/** Has button D. */
+	SJME_SCRITCHUI_INPUT_METHOD_BUTTON_D = INT32_C(0x800),
+} sjme_scritchui_inputMethodType;
+
 /** Generic cast check. */
 #define SJME_SUI_CAST(uiType, type, v) \
 	((type)sjme_scritchui_checkCast((uiType), (v)))

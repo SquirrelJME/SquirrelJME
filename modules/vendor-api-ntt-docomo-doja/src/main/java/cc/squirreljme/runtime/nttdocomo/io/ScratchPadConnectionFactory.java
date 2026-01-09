@@ -34,7 +34,6 @@ public class ScratchPadConnectionFactory
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@Override

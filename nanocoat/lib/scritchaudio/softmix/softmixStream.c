@@ -398,7 +398,7 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 			/* Reduce the rate. */
 			if (sjme_error_is(error = inState->intern->fallbackNext(
 				inState, bestFormat, bestRate, bestChannels,
-				&inFormat, &inRate, &inChannels)))
+				&bestFormat, &bestRate, &bestChannels)))
 				goto fail_rateReduce;
 		}
 	
@@ -442,7 +442,7 @@ fail_disconnectStream:
 fail_underlayCreate:
 fail_rateReduce:
 	
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
 	sjme_message("softmixUnderlay(%p): Failed with %d!",
 		inState, error);

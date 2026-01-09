@@ -1253,12 +1253,18 @@ public class Graphics
 	private static javax.microedition.lcdui.Image __recoverImage(Image __i)
 		throws UIException
 	{
-		if (__i != null)
-			return __i._midpImage;
-		
-		// Mutable image
-		else if (__i instanceof __MutableImage__)
-			return __i._midpImage;
+		// Mutable image or base DoJa image
+		if ((__i instanceof __MutableImage__) ||
+			(__i instanceof __DoJaImage__))
+		{
+			javax.microedition.lcdui.Image midpImage = __i._midpImage;
+			
+			// Disposed?
+			if (midpImage == null)
+				throw new UIException(UIException.ILLEGAL_STATE);
+			
+			return midpImage;
+		}
 		
 		// 8-bit image
 		else if (__i instanceof __8BitImage__)
@@ -1279,7 +1285,8 @@ public class Graphics
 		else
 		{
 			// Debug
-			Debugging.todoNote("Unsupported image %s", __i.getClass());
+			Debugging.todoNote("Unsupported image %s",
+				__i.getClass());
 			
 			throw new UIException(UIException.UNSUPPORTED_FORMAT);
 		}
