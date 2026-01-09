@@ -35,13 +35,23 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	/** The minimum sleeping time. */
-	#define SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS 16
-#else
-	/** The minimum sleeping time. */
-	#define SJME_SCRITCHAUDIO_MIN_SLEEP_MILLIS 0
-#endif
+/** The minimum sleeping time, sleep does not occur below this point. */
+#define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS 0 /*INT64_C(25000000)*/
+
+/** The number of nanoseconds to hold off when burning the CPU. */
+#define SJME_SCRITCHAUDIO_HOLD_NANOS 0
+
+/**
+ * The number of nanoseconds to remove when sleeping, used so that the next
+ * audio that plays does not play too late.
+ */
+#define SJME_SCRITCHAUDIO_CUT_SLEEP_NANOS 0
+
+/** The poll delay time to use. */
+#define SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS 150
+
+/** The sleeping rate when no audio is playing (millis). */
+#define SJME_SCRITCHAUDIO_POLL_SLEEP_MILLIS 1000
 	
 /**
  * ScritchAudio state structure.
@@ -635,12 +645,6 @@ typedef struct sjme_scritchaudio_time
 	sjme_jint nanos;
 } sjme_scritchaudio_time;
 
-/** The sleeping rate when no audio is playing (millis). */
-#define SJME_SCRITCHAUDIO_SLEEP_RATE_MS 1000
-
-/** The sleeping rate when no audio is playing (nanos). */
-#define SJME_SCRITCHAUDIO_SLEEP_RATE_NS 0
-
 /**
  * Represents an audio clock.
  *
@@ -702,7 +706,7 @@ struct sjme_scritchaudioBase
 	/** Bugs. */
 	sjme_scritchaudio_bugs bugs;
 
-	/** The delay between manual polls (Millis). */
+	/** The delay between manual polls. */
 	sjme_atomic(sjme_jint) pollDelayMillis;
 
 	/** The delay between manual polls (Nanos). */

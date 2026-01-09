@@ -414,6 +414,17 @@ extern "C"
 #endif
 	
 #pragma endregion(limits)
+#pragma region(printf)
+
+#if !defined(PRId64)
+	#if defined(SJME_CONFIG_HAS_MSVC)
+		#define PRId64 "I64d"
+	#else
+		#define PRId64 "lld"
+	#endif
+#endif
+
+#pragma endregion(printf)
 
 #if !defined(SJME_CONFIG_HAS_INTTYPES_H)
 	#if defined(SJME_CONFIG_HAS_MSVC)
