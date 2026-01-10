@@ -33,7 +33,7 @@ static sjme_errorCode sjme_scritchpen_core_clipPolygon(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_drawArc(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawArc(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -144,7 +144,7 @@ fail_any:
 #endif
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_fillArc(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillArc(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -284,7 +284,7 @@ fail_any:
 #endif
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_fillPolygon(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_jint* inXPoints,
 	sjme_attrInPositive sjme_jint xOffset,
@@ -474,7 +474,7 @@ fail_alloc:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_fillTriangle(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillTriangle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -507,7 +507,7 @@ sjme_errorCode sjme_scritchpen_corePrim_fillTriangle(
 		SJME_JNI_TRUE);
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_drawRect(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -547,7 +547,7 @@ sjme_errorCode sjme_scritchpen_corePrim_drawRect(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_fillRect(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
