@@ -143,6 +143,29 @@ sjme_errorCode sjme_mle_mleCallShelf(
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV);
 
+/**
+ * Performs a MLE native function call on the specified shelf, using
+ * a direct pointer to the shelves.
+ * 
+ * @param inFrame The frame this is being called from.
+ * @param shelf The shelf being executed.
+ * @param methodName The method name.
+ * @param methodType The method type.
+ * @param argR The return value of the call.
+ * @param argC The argument count.
+ * @param argV The argument values.
+ * @return Any resultant error, if any.
+ * @since 2026/01/10
+ */
+sjme_errorCode sjme_mle_mleCallShelfM(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull const sjme_nvm_mleShelf* shelf,
+	sjme_attrInNotNull sjme_charSeq methodName,
+	sjme_attrInNotNull sjme_charSeq methodType,
+	sjme_attrInNotNull sjme_jvalueTyped* argR,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

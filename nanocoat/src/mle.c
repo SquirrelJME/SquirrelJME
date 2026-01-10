@@ -153,10 +153,31 @@ sjme_errorCode sjme_mle_mleCallShelf(
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV)
 {
+	if (inFrame == NULL || shelf == NULL || methodName == NULL ||
+		methodType == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	return sjme_mle_mleCallShelfM(inFrame, &shelf->shelf[0],
+		methodName, methodType, argR, argC, argV);
+}
+
+sjme_errorCode sjme_mle_mleCallShelfM(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull const sjme_nvm_mleShelf* shelf,
+	sjme_attrInNotNull sjme_charSeq methodName,
+	sjme_attrInNotNull sjme_charSeq methodType,
+	sjme_attrInNotNull sjme_jvalueTyped* argR,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV)
+{
 	const sjme_nvm_mleShelf* minor;
 	
+	if (inFrame == NULL || shelf == NULL || methodName == NULL ||
+		methodType == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	/* Look for the function. */
-	for (minor = shelf->shelf; minor->name != NULL; minor++)
+	for (minor = shelf; minor->name != NULL; minor++)
 		if (sjme_charSeq_equalsUtfR(methodName, minor->name) &&
 			sjme_charSeq_equalsUtfR(methodType, minor->type))
 			return sjme_mle_mleCallFunction(inFrame, minor, argR, argC, argV);

@@ -10,7 +10,10 @@
 .class public nanocoat/bytecode/NanoTestDLoad1
 .super java/lang/Object
 
-.field public static final "EXPECTED" I = 0
+.runtime_visible_annotation
+	.annotation "Lnano/NanoDetails;"
+	.end .annotation
+.end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2

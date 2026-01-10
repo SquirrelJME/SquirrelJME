@@ -470,7 +470,7 @@ sjme_errorCode sjme_nvm_boot(
 			goto fail_initTask;
 	}
 
-#if !defined(SJME_CONFIG_NETWORK_NONE)
+#if SJME_CONFIG_DEBUG_VERBOSE && !defined(SJME_CONFIG_NETWORK_NONE)
 	/* Using JDWP for this virtual machine? */
 	if (bootParamCopy->jdwpPort > 0 || bootParamCopy->jdwpAddress != NULL ||
 		bootParamCopy->jdwpListening)

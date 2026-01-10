@@ -590,8 +590,14 @@ typedef enum sjme_errorCode
 	/** Audio is awaiting streams/sources. */
 	SJME_ERROR_AUDIO_AWAITING = -182,
 	
+	/** NanoTest: Expected value has no value. */
+	SJME_ERROR_NANOTEST_EXPECTED_NO_VALUE = -183,
+	
+	/** NanoTest: Expected value has no static expected field. */
+	SJME_ERROR_NANOTEST_EXPECTED_MISSING = -184,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -183,
+	SJME_NUM_ERROR_CODES = -185,
 } sjme_errorCode;
 
 /**

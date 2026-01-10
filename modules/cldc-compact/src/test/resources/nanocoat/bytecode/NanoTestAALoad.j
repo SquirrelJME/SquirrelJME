@@ -10,10 +10,25 @@
 .class public nanocoat/bytecode/NanoTestAALoad
 .super java/lang/Object
 
-.field public static final "EXPECTED" I = 0
+.runtime_visible_annotation
+	.annotation "Lnano/NanoDetails;"
+		.elem .str_kind "expectedString" "string0"
+	.end .annotation
+.end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+; Grab an array
+	iconst_5
+	invokestatic nano/NanoShelf/makeArrayString(I)[Ljava/lang/String;
+	
+; Read the first value from it
+	iconst_0
+	aaload
+
+; Result
+	invokestatic nano/NanoShelf/result(Ljava/lang/String;)V
+
+; Done
 	return
 .end method

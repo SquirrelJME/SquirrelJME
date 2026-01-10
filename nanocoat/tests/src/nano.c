@@ -15,7 +15,50 @@
 #include "sjme/nvm/nvmFunc.h"
 #include "sjme/nvm/payload.h"
 #include "sjme/nvm/loop.h"
+#include "sjme/nvm/mleShelves.h"
 #include "test.h"
+
+SJME_NVM_MLE_SHELF_DECLARE(NanoShelf) =
+{
+#if 0
+	SJME_NVM_MLE_DEFINE(stringCharAt,
+		SJME_MD(SJME_MD_C, SJME_MD_STRING SJME_MD_I),
+		"I", "LI"),
+	SJME_NVM_MLE_DEFINE(stringEquals,
+		SJME_MD(SJME_MD_Z, SJME_MD_STRING SJME_MD_STRING),
+		"I", "LL"),
+	SJME_NVM_MLE_DEFINE(stringHash,
+		SJME_MD(SJME_MD_I, SJME_MD_STRING),
+		"I", "L"),
+	SJME_NVM_MLE_DEFINE_ALT(stringInit, chars,
+		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_AC SJME_MD_I SJME_MD_I),
+		"V", "LLII"),
+	SJME_NVM_MLE_DEFINE_ALT(stringInit, emptyOrThis,
+		SJME_MD(SJME_MD_V, SJME_MD_STRING),
+		"V", "L"),
+	SJME_NVM_MLE_DEFINE_ALT(stringInit, string,
+		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_STRING),
+		"V", "LL"),
+	SJME_NVM_MLE_DEFINE(stringIsIntern,
+		SJME_MD(SJME_MD_Z, SJME_MD_STRING),
+		"I", "L"),
+	SJME_NVM_MLE_DEFINE(stringLength,
+		SJME_MD(SJME_MD_I, SJME_MD_STRING),
+		"I", "L"),
+	SJME_NVM_MLE_DEFINE(stringToChar,
+		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_I
+			SJME_MD_AC SJME_MD_I SJME_MD_I),
+		"V", "LILII"),
+	SJME_NVM_MLE_DEFINE_ALT(stringValueOf, chars,
+		SJME_MD(SJME_MD_STRING, SJME_MD_Z SJME_MD_AC SJME_MD_I SJME_MD_I),
+		"L", "ILII"),
+	SJME_NVM_MLE_DEFINE_ALT(stringValueOf, string,
+		SJME_MD(SJME_MD_STRING, SJME_MD_Z SJME_MD_STRING),
+		"L", "IL"),
+#endif
+	
+	SJME_NVM_MLE_STOP()
+};
 
 typedef struct sjme_test_nano_result
 {
@@ -52,12 +95,15 @@ static sjme_errorCode sjme_test_nano_nativeCall(
 
 	/* Is this the correct class and method? */
 	if (!sjme_charSeq_equalsUtfR(sjme_atomic_g(sjme_nvm_class_info,
-		&methodInfo->inClass)->name->seq,
-			"cc/squirreljme/nanocoat/mle/NanoTestShelf") ||
-		!sjme_charSeq_equalsUtfR(methodInfo->name->seq,
-			"result"))
+		&methodInfo->inClass)->name->seq, "nano/NanoShelf"))
 		return SJME_ERROR_UNKNOWN_NATIVE_FUNCTION;
-
+	
+	/* Forward MLE call. */
+	return sjme_mle_mleCallShelfM(inFrame, &sjme_nvm_mleNanoShelf[0],
+		methodID->member.name->seq,
+		methodID->member.type->seq,
+		argR, argC, argV);
+#if 0
 	/* Wrong argument count? */
 	if (argC != 0 && argC != 1)
 		return SJME_ERROR_INVALID_ARGUMENT;
@@ -73,6 +119,7 @@ static sjme_errorCode sjme_test_nano_nativeCall(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }
 
 static const sjme_nvm_stateHooks sjme_test_nano_hooks =
@@ -271,7 +318,7 @@ int main(int argc, sjme_lpstr* argv)
 			/* Constant value not set? */
 			if (field->info->constVal.type == SJME_NUM_JAVA_TYPE_IDS)
 			{
-				error = SJME_ERROR_NO_SUCH_ELEMENT;
+				error = SJME_ERROR_NANOTEST_EXPECTED_NO_VALUE;
 				goto fail_noConstant;
 			}
 
@@ -283,7 +330,7 @@ int main(int argc, sjme_lpstr* argv)
 	/* No field was found? */
 	if (expected.t == SJME_NUM_BASIC_TYPE_IDS)
 	{
-		error = SJME_ERROR_NO_FIELD;
+		error = SJME_ERROR_NANOTEST_EXPECTED_MISSING;
 		goto fail_noExpected;
 	}
 
