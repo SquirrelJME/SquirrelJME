@@ -68,7 +68,7 @@ Badges:
      https://circleci.com/gh/SquirrelJME/SquirrelJME/tree/trunk)
    * [![RetroArch Core](
      https://git.libretro.com/libretro/SquirrelJME/badges/trunk/pipeline.svg?key_text=RetroArch%20Core&key_width=115)](
-     https://git.libretro.org/libretro/SquirrelJME)
+     https://git.libretro.com/libretro/SquirrelJME)
  * _Social and Community_
    * [![Discord](https://img.shields.io/discord/278929900893634560.svg?label=Discord%20Server)](
      https://discord.gg/9PkMMKt)
