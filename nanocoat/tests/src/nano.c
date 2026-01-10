@@ -159,10 +159,11 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_jclass mainClass;
 	sjme_nvm_task mainTask;
 	sjme_cchar mainName[BUF_SIZE];
-	sjme_nvm_class_fieldConstVal expected;
 	sjme_jfieldID field;
 	sjme_list(sjme_nvm_class_annotation)* annotations;
 	sjme_nvm_class_annotation annotation;
+	sjme_jvalueTyped expectedJava;
+	sjme_nvm_stringPool_string expectedString;
 	
 	/* Incorrect number of arguments? */
 	if (argc < 5)
@@ -296,8 +297,9 @@ int main(int argc, sjme_lpstr* argv)
 		goto fail_findMain;
 
 	/* Set expected value to something invalid. */
-	memset(&expected, 0, sizeof(expected));
-	expected.type = SJME_NUM_BASIC_TYPE_IDS;
+	memset(&expectedJava, 0, sizeof(expectedJava));
+	expectedJava.t = SJME_NUM_BASIC_TYPE_IDS;
+	expectedString = NULL;
 	
 	/* There needs to be defined annotations. */
 	annotations = mainClass->info->annotations;
@@ -320,18 +322,26 @@ int main(int argc, sjme_lpstr* argv)
 			"Lnano/NanoDetails;"))
 			continue;
 		
-		/* Expected values. */
+		/* Ignore blank field, this indicates an annotation is starting. */
+		if (annotation->fieldName == NULL)
+			continue;
+		
+		/* Java type value. */
 		if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
-				"expectedVoid") ||
-			sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
 				"expectedInteger") ||
 			sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
-				"expectedLong") ||
-			sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
+				"expectedLong"))
+			expectedJava = annotation->value.value;
+		
+		/* String. */
+		else if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
 				"expectedString"))
-		{
-			expected = annotation->value;
-		}
+			expectedString = annotation->value.string;
+		
+		/* Void, as nothing can directly use void. */
+		else if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
+			"expectedVoid"))
+			expectedJava.t = SJME_BASIC_TYPE_ID_VOID;
 		
 		/* Unknown. */
 		else
@@ -340,9 +350,9 @@ int main(int argc, sjme_lpstr* argv)
 				sjme_charSeq_tempUtf(annotation->fieldName->seq));
 		}
 	}
-
-	/* No field was found? */
-	if (expected.type == SJME_NUM_BASIC_TYPE_IDS)
+	
+	/* No expected value was found? */
+	if (expectedString == NULL && expectedJava.t == SJME_NUM_BASIC_TYPE_IDS)
 	{
 		error = SJME_ERROR_NANOTEST_EXPECTED_MISSING;
 		goto fail_noExpected;
@@ -384,17 +394,17 @@ int main(int argc, sjme_lpstr* argv)
 		}
 
 		/* Compare directly. */
-		if (memcmp(&result.value, &expected.value,
-			sizeof(expected)) != 0)
+		if (memcmp(&result.value, &expectedJava.v,
+			sizeof(expectedJava)) != 0)
 		{
 			/* Debug. */
 			sjme_emitB("Failed test: got %d:%08x.%08x, expected %d:%08x.%08x",
 				result.value.t,
 					result.value.v.j.part.hi,
 					result.value.v.j.part.lo,
-				expected.type,
-					expected.value.java.j.part.hi,
-					expected.value.java.j.part.lo);
+				expectedJava.t,
+					expectedJava.v.j.part.hi,
+					expectedJava.v.j.part.lo);
 			
 			/* Fail. */
 			error = SJME_ERROR_NOT_MATCHED;

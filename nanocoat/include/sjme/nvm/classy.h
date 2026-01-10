@@ -568,6 +568,53 @@ typedef struct sjme_nvm_class_fieldConstVal
 	} value;
 } sjme_nvm_class_fieldConstVal;
 
+/**
+ * The tag used for the annotation.
+ * 
+ * @since 2026/01/10
+ */
+typedef enum sjme_nvm_class_annotationTag
+{
+	/** Byte tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_BYTE = 'B',
+	
+	/** Character tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_CHARACTER = 'C',
+	
+	/** Double tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_DOUBLE = 'D',
+	
+	/** Float tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_FLOAT = 'F',
+	
+	/** Integer tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_INTEGER = 'I',
+	
+	/** Long tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_LONG = 'J',
+	
+	/** Short tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_SHORT = 'S',
+	
+	/** Boolean tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_BOOLEAN = 'Z',
+	
+	/** String tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_STRING = 's',
+	
+	/** Enum tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_ENUM = 'e',
+	
+	/** Class tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_CLASS = 'c',
+	
+	/** Annotation tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_ANNOTATION = '@',
+	
+	/** Array tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_ARRAY = '[',
+} sjme_nvm_class_annotationTag;
+
 typedef struct sjme_nvm_class_annotationBase
 {
 	/** The class name. */
@@ -576,8 +623,31 @@ typedef struct sjme_nvm_class_annotationBase
 	/** The field name. */
 	sjme_nvm_stringPool_string fieldName;
 	
+	/** The tag for the value. */
+	sjme_nvm_class_annotationTag tag;
+	
 	/** The value. */
-	sjme_nvm_class_fieldConstVal value;
+	union
+	{
+		/** Class. */
+		sjme_nvm_stringPool_string type;
+		
+		/** String. */
+		sjme_nvm_stringPool_string string;
+		
+		/** Java value. */
+		sjme_jvalueTyped value;
+		
+		/** Enum. */
+		struct
+		{
+			/** The enum class. */
+			sjme_nvm_stringPool_string type;
+			
+			/** The enum value. */
+			sjme_nvm_stringPool_string value;
+		} enumValue;
+	} value;
 } sjme_nvm_class_annotationBase;
 
 struct sjme_nvm_class_fieldInfoBase

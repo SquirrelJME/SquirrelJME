@@ -70,8 +70,203 @@ static sjme_errorCode sjme_nvm_class_readPoolRefIndex(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_class_classAnnotations(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
+	sjme_attrInNotNull sjme_pointer context,
+	sjme_attrInNotNull sjme_charSeq attrName,
+	sjme_attrInNotNull sjme_stream_input attrStream,
+	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
+	sjme_attrInPositive sjme_jint attrLen)
+{
+	sjme_errorCode error;
+	sjme_nvm_class_info classInfo;
+	sjme_jint i, j, listAt;
+	sjme_jbyte tag;
+	sjme_jshort numAnnotations, numValues;
+	sjme_nvm_class_annotation annotation;
+	sjme_list(sjme_nvm_class_annotation)* annotations;
+	sjme_nvm_class_poolEntry* type;
+	sjme_nvm_class_poolEntry* name;
+	sjme_nvm_class_poolEntry* string;
+	
+	if (allocPool == NULL || inConstPool == NULL || inStringPool == NULL ||
+		attrName == NULL || attrData == NULL ||
+		attrStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover class. */
+	classInfo = context;
+	if (classInfo == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Read annotation count. */
+	numAnnotations = -1;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJS(attrStream,
+		&numAnnotations)) || numAnnotations < 0)
+		return sjme_error_default(error);
+	
+	/* Start with no annotations, these are dynamically allocated. */
+	annotations = NULL;
+	listAt = 0;
+	
+	/* Read in each annotation. */
+	for (i = 0; i < numAnnotations; i++)
+	{
+		/* Read in the annotation type (the class). */
+		type = NULL;
+		if (sjme_error_is(error = sjme_nvm_class_readPoolRefIndex(attrStream,
+			inConstPool, SJME_NVM_CLASS_POOL_TYPE_UTF,
+			SJME_JNI_FALSE, &type)) || type == NULL)
+			goto fail_readType;
+		
+		/* Read in the number of values. */
+		numValues = -1;
+		if (sjme_error_is(error = sjme_stream_inputReadValueJS(attrStream,
+			&numValues)) || numValues < 0)
+			goto fail_readNumValues;
+		
+		/* No values to add? */
+		if (numValues == 0)
+			continue;
+		
+		/* Grow list. */
+		if (sjme_error_is(error = sjme_list_replace(allocPool,
+			listAt + numValues + 1, &annotations,
+			sjme_nvm_class_annotation, 0)))
+			goto fail_allocList;
+		
+		/* Allocate initial marker annotation, for any without values. */
+		annotation = NULL;
+		if (sjme_error_is(error = sjme_alloc(allocPool,
+			sizeof(*annotation), (sjme_pointer*)&annotation)) ||
+			annotation == NULL)
+			goto fail_allocSingle;
+		
+		/* Store. */
+		annotations->elements[listAt++] = annotation;
+		
+		/* Set its info. */
+		annotation->className = sjme_weakUpR(sjme_nvm_stringPool_string,
+			type->utf.utf);
+		
+		/* Read in each value. */
+		for (j = 0; j < numValues; j++)
+		{
+			/* Read in the annotation name (the field). */
+			name = NULL;
+			if (sjme_error_is(error = sjme_nvm_class_readPoolRefIndex(
+				attrStream, inConstPool, SJME_NVM_CLASS_POOL_TYPE_UTF,
+				SJME_JNI_FALSE, &name)) || name == NULL)
+				goto fail_readName;
+			
+			/* Read in the tag. */
+			tag = -1;
+			if (sjme_error_is(error = sjme_stream_inputReadValueJB(attrStream,
+				&tag)) || tag < 0)
+				goto fail_readTag;
+		
+			/* Allocate and set annotation. */
+			annotation = NULL;
+			if (sjme_error_is(error = sjme_alloc(allocPool,
+				sizeof(*annotation), (sjme_pointer*)&annotation)) ||
+				annotation == NULL)
+				goto fail_allocSingle;
+			
+			/* Store. */
+			annotations->elements[listAt++] = annotation;
+			
+			/* Set its info. */
+			annotation->className = sjme_weakUpR(sjme_nvm_stringPool_string,
+				type->utf.utf);
+			annotation->fieldName = sjme_weakUpR(sjme_nvm_stringPool_string,
+				name->utf.utf); 
+			annotation->tag = tag;
+		
+			/* Which type of value is being read? */
+			switch ((sjme_nvm_class_annotationTag)tag)
+			{
+					/* Java type value. */
+				case SJME_NVM_CLASS_ANNOTATION_TAG_BYTE:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_CHARACTER:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_DOUBLE:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_FLOAT:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_INTEGER:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_LONG:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_SHORT:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_BOOLEAN:
+					sjme_todo("Impl?");
+					return SJME_ERROR_NOT_IMPLEMENTED;
+					
+					/* String Constant. */
+				case SJME_NVM_CLASS_ANNOTATION_TAG_STRING:
+					string = NULL;
+					if (sjme_error_is(error =
+						sjme_nvm_class_readPoolRefIndex(
+						attrStream, inConstPool,
+						SJME_NVM_CLASS_POOL_TYPE_UTF,
+						SJME_JNI_FALSE, &string)) || string == NULL)
+						goto fail_readString;
+					
+					/* Set string value. */
+					annotation->value.string = sjme_weakUpR(
+						sjme_nvm_stringPool_string, string->utf.utf);
+					break;
+					
+				case SJME_NVM_CLASS_ANNOTATION_TAG_ENUM:
+					sjme_todo("Impl?");
+					return SJME_ERROR_NOT_IMPLEMENTED;
+					
+				case SJME_NVM_CLASS_ANNOTATION_TAG_CLASS:
+					sjme_todo("Impl?");
+					return SJME_ERROR_NOT_IMPLEMENTED;
+					
+				case SJME_NVM_CLASS_ANNOTATION_TAG_ANNOTATION:
+					sjme_todo("Impl?");
+					return SJME_ERROR_NOT_IMPLEMENTED;
+					
+				case SJME_NVM_CLASS_ANNOTATION_TAG_ARRAY:
+					sjme_todo("Impl?");
+					return SJME_ERROR_NOT_IMPLEMENTED;
+					
+				default:
+					error = SJME_ERROR_CLASS_UNKNOWN_ANNOTATION_TAG;
+					goto fail_badTag;
+			}
+		}
+	}
+	
+	/* Store final list, if anything was even allocated. */
+	classInfo->annotations = annotations;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_readString:
+fail_readName:
+fail_badTag:
+fail_readTag:
+fail_readNumValues:
+fail_readType:
+fail_allocSingle:
+fail_allocList:
+	if (annotations != NULL)
+	{
+		for (i = 0; i < numAnnotations; i++)
+			if (annotations->elements[i] != NULL)
+				sjme_alloc_free(annotations->elements[i]);
+		sjme_alloc_free(annotations);
+	}
+	
+	return sjme_error_default(error);
+}
+
 static const sjme_nvm_class_parseAttributeHandler sjme_nvm_class_classAttr[] =
 {
+	{"RuntimeVisibleAnnotations",
+		sjme_nvm_class_classAnnotations},
+	
 	{NULL, NULL},
 };
 

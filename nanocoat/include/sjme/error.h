@@ -599,8 +599,11 @@ typedef enum sjme_errorCode
 	/** NanoTest: Missing annotations on test. */
 	SJME_ERROR_NANOTEST_NO_ANNOTATIONS = -185,
 	
+	/** Class has an invalid annotation tag. */
+	SJME_ERROR_CLASS_UNKNOWN_ANNOTATION_TAG = -186,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -186,
+	SJME_NUM_ERROR_CODES = -187,
 } sjme_errorCode;
 
 /**
