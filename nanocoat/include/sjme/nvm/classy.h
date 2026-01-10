@@ -542,6 +542,9 @@ struct sjme_nvm_class_infoBase
 
 	/** The library this came from. */
 	sjme_phantom(sjme_nvm_rom_library) library;
+	
+	/** The runtime visible annotations of this class. */
+	sjme_list(sjme_nvm_class_annotation)* annotations;
 };
 
 /**
@@ -564,6 +567,18 @@ typedef struct sjme_nvm_class_fieldConstVal
 		sjme_nvm_stringPool_string string;
 	} value;
 } sjme_nvm_class_fieldConstVal;
+
+typedef struct sjme_nvm_class_annotationBase
+{
+	/** The class name. */
+	sjme_nvm_stringPool_string className;
+	
+	/** The field name. */
+	sjme_nvm_stringPool_string fieldName;
+	
+	/** The value. */
+	sjme_nvm_class_fieldConstVal value;
+} sjme_nvm_class_annotationBase;
 
 struct sjme_nvm_class_fieldInfoBase
 {

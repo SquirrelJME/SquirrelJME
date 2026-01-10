@@ -29,9 +29,13 @@ import org.jetbrains.annotations.VisibleForTesting;
 @Target(value = {ElementType.TYPE})
 public @interface NanoDetails
 {
+	/** Expected void value. */
+	@SquirrelJMEVendorApi
+	boolean expectedVoid() default false;
+	
 	/** Expected integer value. */
 	@SquirrelJMEVendorApi
-	int expectedInt() default Integer.MIN_VALUE;
+	int expectedInteger() default Integer.MIN_VALUE;
 	
 	/** Expected long value. */
 	@SquirrelJMEVendorApi

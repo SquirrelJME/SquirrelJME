@@ -399,6 +399,20 @@ typedef struct sjme_nvm_stringPool_stringBase sjme_nvm_stringPool_stringBase;
  * @since 2024/09/14
  */
 typedef sjme_nvm_stringPool_stringBase* sjme_nvm_stringPool_string;
+
+/**
+ * Simple annotation storage.
+ * 
+ * @since 2026/01/10
+ */
+typedef struct sjme_nvm_class_annotationBase sjme_nvm_class_annotationBase;
+
+/**
+ * Simple annotation storage.
+ * 
+ * @since 2026/01/10
+ */
+typedef sjme_nvm_class_annotationBase* sjme_nvm_class_annotation;
 	
 #pragma endregion(NvmTypeDefs)
 #pragma region(TypeOfSpecifiers)
@@ -525,6 +539,9 @@ SJME_LIST_DECLARE(sjme_phantom(sjme_nvm_stringPool_string), 0);
 
 /** Atomic pointer to a @link sjme_nvm_class_poolEntryNameAndType @endlink . */
 SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryNameAndType, 1);
+	
+/** A list of @link sjme_nvm_class_annotation @endlink . */
+SJME_LIST_DECLARE(sjme_nvm_class_annotation, 0);
 	
 #pragma endregion(AtomicsAndLists)
 

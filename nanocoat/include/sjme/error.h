@@ -596,8 +596,11 @@ typedef enum sjme_errorCode
 	/** NanoTest: Expected value has no static expected field. */
 	SJME_ERROR_NANOTEST_EXPECTED_MISSING = -184,
 	
+	/** NanoTest: Missing annotations on test. */
+	SJME_ERROR_NANOTEST_NO_ANNOTATIONS = -185,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -185,
+	SJME_NUM_ERROR_CODES = -186,
 } sjme_errorCode;
 
 /**

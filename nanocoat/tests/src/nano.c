@@ -159,9 +159,10 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_jclass mainClass;
 	sjme_nvm_task mainTask;
 	sjme_cchar mainName[BUF_SIZE];
-	sjme_list(sjme_jfieldID)* fields;
-	sjme_jvalueTyped expected;
+	sjme_nvm_class_fieldConstVal expected;
 	sjme_jfieldID field;
+	sjme_list(sjme_nvm_class_annotation)* annotations;
+	sjme_nvm_class_annotation annotation;
 	
 	/* Incorrect number of arguments? */
 	if (argc < 5)
@@ -296,39 +297,52 @@ int main(int argc, sjme_lpstr* argv)
 
 	/* Set expected value to something invalid. */
 	memset(&expected, 0, sizeof(expected));
-	expected.t = SJME_NUM_BASIC_TYPE_IDS;
-
-	/* Find the expected value field. */
-	fields = mainClass->fields[SJME_NVM_CLASS_MEMBER_STATIC].binds;
-	for (i = 0, n = fields->length; i < n; i++)
+	expected.type = SJME_NUM_BASIC_TYPE_IDS;
+	
+	/* There needs to be defined annotations. */
+	annotations = mainClass->info->annotations;
+	if (annotations == NULL || annotations->length <= 0)
 	{
-		/* Is this wanting void? */
-		field = fields->elements[i];
-		if (sjme_charSeq_equalsUtfR(field->info->name->seq,
-			"EXPECTED_VOID"))
+		error = SJME_ERROR_NANOTEST_NO_ANNOTATIONS;
+		goto fail_noAnnotations;
+	}
+	
+	/* Parse the detail annotation. */
+	for (i = 0, n = annotations->length; i < n; i++)
+	{
+		/* Skip blanks. */
+		annotation = annotations->elements[i];
+		if (annotation == NULL)
+			continue;
+		
+		/* Ignore non-NanoDetails, as those belong to something else. */
+		if (!sjme_charSeq_equalsUtfR(annotation->className->seq,
+			"Lnano/NanoDetails;"))
+			continue;
+		
+		/* Expected values. */
+		if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
+				"expectedVoid") ||
+			sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
+				"expectedInteger") ||
+			sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
+				"expectedLong") ||
+			sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
+				"expectedString"))
 		{
-			expected.t = SJME_JAVA_TYPE_ID_VOID;
-			break;
+			expected = annotation->value;
 		}
-
-		/* Otherwise, any other type. */
-		else if (sjme_charSeq_equalsUtfR(field->info->name->seq,
-			"EXPECTED"))
+		
+		/* Unknown. */
+		else
 		{
-			/* Constant value not set? */
-			if (field->info->constVal.type == SJME_NUM_JAVA_TYPE_IDS)
-			{
-				error = SJME_ERROR_NANOTEST_EXPECTED_NO_VALUE;
-				goto fail_noConstant;
-			}
-
-			/* Copy over. */
-			memmove(&expected, &field->info->constVal, sizeof(expected));
+			sjme_emitB("Unknown/unhandled annotation: %s %s",
+				sjme_charSeq_tempUtf(annotation->fieldName->seq));
 		}
 	}
 
 	/* No field was found? */
-	if (expected.t == SJME_NUM_BASIC_TYPE_IDS)
+	if (expected.type == SJME_NUM_BASIC_TYPE_IDS)
 	{
 		error = SJME_ERROR_NANOTEST_EXPECTED_MISSING;
 		goto fail_noExpected;
@@ -370,14 +384,17 @@ int main(int argc, sjme_lpstr* argv)
 		}
 
 		/* Compare directly. */
-		if (memcmp(&result.value, &expected, sizeof(expected)) != 0)
+		if (memcmp(&result.value, &expected.value,
+			sizeof(expected)) != 0)
 		{
 			/* Debug. */
 			sjme_emitB("Failed test: got %d:%08x.%08x, expected %d:%08x.%08x",
 				result.value.t,
-					result.value.v.j.part.hi, result.value.v.j.part.lo,
-				expected.t,
-					expected.v.j.part.hi, expected.v.j.part.lo);
+					result.value.v.j.part.hi,
+					result.value.v.j.part.lo,
+				expected.type,
+					expected.value.java.j.part.hi,
+					expected.value.java.j.part.lo);
 			
 			/* Fail. */
 			error = SJME_ERROR_NOT_MATCHED;
@@ -413,6 +430,7 @@ fail_free:
 fail_unexpected:
 fail_noConstant:
 fail_noExpected:
+fail_noAnnotations:
 fail_findMain:
 fail_countBlocks:
 fail_notCaptured:
