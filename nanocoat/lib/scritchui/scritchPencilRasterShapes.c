@@ -19,6 +19,20 @@
 	#define SJME_ANGLE_RAD 0.017453292f
 #endif
 
+static sjme_errorCode sjme_scritchpen_core_clipPolygon(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull const sjme_jint* inXPoints,
+	sjme_attrInNotNull const sjme_jint* inYPoints,
+	sjme_attrInPositive sjme_jint nPoints,
+	sjme_attrInNotNull sjme_scritchui_line* clipLine)
+{
+	if (g == NULL || inXPoints == NULL || inYPoints == NULL ||
+		clipLine == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchpen_corePrim_drawArc(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -955,6 +969,8 @@ sjme_errorCode sjme_scritchpen_core_fillPolygon(
 	sjme_jint i, allocBytes;
 	sjme_jint* xPoints;
 	sjme_jint* yPoints;
+	sjme_scritchui_line* clipLine;
+	sjme_jboolean needsClipping;
 
 	if (g == NULL || inXPoints == NULL || inYPoints == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -992,14 +1008,30 @@ sjme_errorCode sjme_scritchpen_core_fillPolygon(
 	for (i = 0; i < nPoints; i++)
 		sjme_scritchpen_coreUtil_applyTranslate(g,
 			&xPoints[i], &yPoints[i]);
+	
+	/* Check to see if clipping needs to be performed on the polygon. */
+	clipLine = &g->state.clipLine;
+	needsClipping = SJME_JNI_FALSE;
+	for (i = 0; i < nPoints; i++)
+		needsClipping |= (xPoints[i] < clipLine->s.x || 
+			yPoints[i] < clipLine->s.y ||
+			xPoints[i] > clipLine->e.x || 
+			yPoints[i] > clipLine->e.y);
+	
+	/* Perform Sutherland-Hodgman clipping for any software which decides */
+	/* it should draw absurdly large polygons. */
+	if (needsClipping)
+		if (sjme_error_is(error = sjme_scritchpen_core_clipPolygon(g,
+			xPoints, yPoints, nPoints, clipLine)))
+			goto fail_clipPolygon;
 
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		goto fail_lock;
 	
-	/* Use primitives draw operation. */
+	/* Use primitive draw operation. */
 	if (sjme_error_is(error = g->prim.fillPolygon(g,
-		xPoints, xOffset, yPoints, yOffset, nPoints,
+		xPoints, 0, yPoints, 0, nPoints,
 		SJME_JNI_TRUE)))
 		goto fail_any;
 		
@@ -1018,6 +1050,7 @@ fail_any:
 	/* Release lock before failing */
 	sjme_scritchpen_core_lockRelease(g);
 
+fail_clipPolygon:
 fail_unlock:
 fail_lock:
 fail_alloc:
