@@ -84,6 +84,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 
 	/* Pop instance. */
 	instance = NULL;
+	virtualId = NULL;
 	if (!isStatic)
 	{
 		/* Pop. */
@@ -113,7 +114,6 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		if (callType == SJME_NVM_CALL_VIRTUAL)
 		{
 			/* Lookup again. */
-			virtualId = NULL;
 			if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
 				sjme_atomic_g(sjme_jclass, &instance->isClass),
 				SJME_F_T(inFrame),
@@ -151,9 +151,10 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		memset(&mleArgR, 0, sizeof(mleArgR));
 		mleArgR.t = SJME_JAVA_TYPE_ID_VOID;
 
-		/* Invoke MLE call. */
+		/* Invoke MLE call, if static we use the entry point method */
+		/* unless it has been replaced. */
 		mleError = sjme_mle_mleCall(inFrame,
-			virtualId, target,
+			(virtualId != NULL ? virtualId : methodId), target,
 			&mleArgR,
 			argC, argV);
 
