@@ -1209,29 +1209,27 @@ sjme_errorCode sjme_scritchpen_core_fillTriangle(
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3)
 {
-	sjme_errorCode error;
-
+	sjme_jint xPoints[3];
+	sjme_jint yPoints[3];
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* Lock. */
-	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
-		return sjme_error_default(error);
 	
-	/* Use primitive draw. */
-	if (sjme_error_is(error = g->prim.fillTriangle(g, x1, y1, x2, y2, x3, y3)))
-		goto fail_any;
-		
-	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
-	
-	/* Success? */
-	return error;
-	
-fail_any:
-	/* Release lock before failing */
-	sjme_scritchpen_core_lockRelease(g);
-	
-	return sjme_error_default(error);
+	/* A triangle is just a polygon with 3 vertices, so just call */
+	/* fillPolygon() to draw it like any other in Software mode, for */
+	/* consistency. */
+	xPoints[0] = x1;
+	yPoints[0] = y1;
+	xPoints[1] = x2;
+	yPoints[1] = y2;
+	xPoints[2] = x3;
+	yPoints[2] = y3;
+
+	/* TODO: For now use the polygon filling algorithm. Note that the normal */
+	/* TODO: triangle drawing algorithm will be much faster in the future. */
+	/* TODO: Note that this should not do the primitive draw directly as */
+	/* TODO: that does not handle any kind of translation and/or clipping. */
+	return g->apiInThread->fillPolygon(g,
+		&xPoints[0], 0,
+		&yPoints[0], 0, 3);
 }
