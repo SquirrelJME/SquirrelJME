@@ -130,6 +130,9 @@ public class SquirrelJMEPluginConfiguration
 	public List<String> proGuardOptionsTestFixtures =
 		new ArrayList<>();
 	
+	/** Always optimize with ProGuard even for debug. */
+	public boolean alwaysOptimize;
+	
 	/**
 	 * Initializes the configuration with the contained project.
 	 *

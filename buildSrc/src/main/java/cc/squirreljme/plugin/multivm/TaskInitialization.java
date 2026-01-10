@@ -244,6 +244,10 @@ public final class TaskInitialization
 		// Everything will be working on these tasks
 		TaskContainer tasks = __project.getTasks();
 		
+		// Configuration, for modifiers
+		SquirrelJMEPluginConfiguration config =
+			SquirrelJMEPluginConfiguration.configuration(__project);
+		
 		// Make sure the source set exists first
 		try
 		{
@@ -270,7 +274,8 @@ public final class TaskInitialization
 		// strip everything out that we can to minimize the size as much as
 		// possible...
 		// Or it is just disabled completely
-		if (__classifier.getTargetClassifier().getClutterLevel().isDebug())
+		if (__classifier.getTargetClassifier().getClutterLevel().isDebug() &&
+			config.alwaysOptimize)
 			usedSourceJar = sourceJar;
 		
 		// Otherwise set up a new task to compact the Jar and remove any

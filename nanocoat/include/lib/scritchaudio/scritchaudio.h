@@ -41,8 +41,11 @@ extern "C"
 /** The number of nanoseconds to hold off when sleeping. */
 #define SJME_SCRITCHAUDIO_HOLD_NANOS INT64_C(5000000)
 
+/** The number of nanoseconds to enter the next loop early. */
+#define SJME_SCRITCHAUDIO_EARLY_NANOS INT64_C(10000000)
+
 /** The poll delay time to use. */
-#define SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS 150
+#define SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS 200
 
 /** The sleeping rate when no audio is playing (millis). */
 #define SJME_SCRITCHAUDIO_POLL_SLEEP_MILLIS 1000

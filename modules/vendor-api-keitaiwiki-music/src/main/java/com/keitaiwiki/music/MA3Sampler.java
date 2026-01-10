@@ -16,117 +16,97 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Not Described.
+ * Generates live MA-3 samples.
  *
  * @since 2025/05/02
  */
-@SquirrelJMEVendorApi
 public class MA3Sampler
 	extends AbstractSampler
 	implements Sampler
 {
-	@SquirrelJMEVendorApi
 	private final MA3SamplerProvider ma3;
 	
 	/**
 	 * Amplitude modulator phase
 	 */
-	@SquirrelJMEVendorApi
 	int amPhase;
 	
 	/**
 	 * Global pitch bend
 	 */
-	@SquirrelJMEVendorApi
 	float bendOut;
 	
 	/**
 	 * Channel states
 	 */
-	@SquirrelJMEVendorApi
 	final MA3Channel[] channels;
 	
 	/**
 	 * Output sampling rate
 	 */
-	@SquirrelJMEVendorApi
 	final float sampleRate;
 	
 	/**
 	 * Next input sample
 	 */
-	@SquirrelJMEVendorApi
 	final float[] smpNext;
 	
 	/**
 	 * Position between input samples
 	 */
-	@SquirrelJMEVendorApi
 	float smpPosition;
 	
 	/**
 	 * Previous input sample
 	 */
-	@SquirrelJMEVendorApi
 	final float[] smpPrev;
 	
 	/**
 	 * Number of input samples per output sample
 	 */
-	@SquirrelJMEVendorApi
 	final float smpWidth;
 	
 	/**
 	 * Frequency modulator phase
 	 */
-	@SquirrelJMEVendorApi
 	int vibPhase;
 	
 	/**
 	 * Global attenuation
 	 */
-	@SquirrelJMEVendorApi
 	float volFade;
 	
 	/**
 	 * Global volume
 	 */
-	@SquirrelJMEVendorApi
 	float volLevel;
 	
 	/**
 	 * Effective global volume
 	 */
-	@SquirrelJMEVendorApi
 	float volOut;
 	
 	/**
 	 * Automatic volume adjustment rate
 	 */
-	@SquirrelJMEVendorApi
 	final float volRate;
 	
 	/**
 	 * Registered wave drums
 	 */
-	@SquirrelJMEVendorApi
 	final MA3Algorithm[] wavDrums;
 	
 	/**
 	 * Wave RAM, decoded from ADPCM
 	 */
-	@SquirrelJMEVendorApi
 	int[] wavRam;
 	
 	/** 2-operator instruments. */
-	@SquirrelJMEVendorApi
 	Map<Integer, MA3Algorithm> fm2ops;
 	
 	/** 4-operator instruments. */
-	@SquirrelJMEVendorApi
 	Map<Integer, MA3Algorithm> fm4ops;
 	
-	@SquirrelJMEVendorApi
 	public MA3Sampler(MA3SamplerProvider __ma3, float sampleRate)
 	{
 		this.channels = new MA3Channel[10];
@@ -153,12 +133,13 @@ public class MA3Sampler
 	 * Specify a channel's program bank.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void bankChange(int channel, int bank)
 	{
-		if (channel < 0 || channel >= this.channels.length)
+		MA3Channel[] channels = this.channels;
+		if (channel < 0 || channel >= channels.length)
 			return;
-		MA3Channel chan = this.channels[channel];
+		
+		MA3Channel chan = channels[channel];
 		chan.prgBank = bank;
 	}
 	
@@ -166,12 +147,13 @@ public class MA3Sampler
 	 * Specify whether a channel should play drum notes.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drumEnable(int channel, boolean enable)
 	{
-		if (channel < 0 || channel >= this.channels.length)
+		MA3Channel[] channels = this.channels;
+		if (channel < 0 || channel >= channels.length)
 			return;
-		MA3Channel chan = this.channels[channel];
+		
+		MA3Channel chan = channels[channel];
 		chan.isDrum = enable;
 	}
 	
@@ -179,14 +161,12 @@ public class MA3Sampler
 	 * Determine whether or not any notes are producing output.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public boolean isFinished()
 	{
 		for (MA3Channel chan : this.channels)
-		{
 			if (chan.notesOut.size() != 0)
 				return false;
-		}
+		
 		return true;
 	}
 	
@@ -196,12 +176,17 @@ public class MA3Sampler
 	@Override
 	public void keyOff(int channel, int key)
 	{
-		if (channel < 0 || channel >= this.channels.length || MA3SamplerProvider.A4 + key < 0 || MA3SamplerProvider.A4 + key >= 128)
+		MA3Channel[] channels = this.channels;
+		if (channel < 0 || channel >= channels.length ||
+			MA3SamplerProvider.A4 + key < 0 || 
+			MA3SamplerProvider.A4 + key >= 128)
 			return;
-		MA3Channel chan = this.channels[channel];
+		
+		MA3Channel chan = channels[channel];
 		MA3Note note = chan.notesOn[MA3SamplerProvider.A4 + key];
 		if (note != null)
 			note.off();
+		
 		chan.notesOn[MA3SamplerProvider.A4 + key] = null;
 	}
 	
@@ -209,19 +194,21 @@ public class MA3Sampler
 	 * Activate a key on a channel.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void keyOn(int channel, int key, float velocity)
 	{
-		
 		// Error checking
+		MA3Channel[] channels = this.channels;
 		if (Float.isInfinite(velocity) || velocity < 0.0f)
 			throw new IllegalArgumentException("Invalid velocity.");
-		if (channel < 0 || channel >= this.channels.length || MA3SamplerProvider.A4 + key < 0 || MA3SamplerProvider.A4 + key >= 128)
+		
+		if (channel < 0 || channel >= channels.length || 
+			MA3SamplerProvider.A4 + key < 0 || 
+			MA3SamplerProvider.A4 + key >= 128)
 			return;
 		
 		// Working variables
 		MA3Algorithm algorithm = null;
-		MA3Channel chan = this.channels[channel];
+		MA3Channel chan = channels[channel];
 		float freqBase = 0;
 		boolean isWave = false;
 		MA3Note note = chan.notesOn[MA3SamplerProvider.A4 + key];
@@ -241,10 +228,13 @@ public class MA3Sampler
 				algorithm = this.getDrumWave(key);
 				isWave = algorithm != null;
 			}
+			
 			if (algorithm == null)
 				algorithm = this.getDrumFM(key);
+			
 			if (algorithm == null)
 				return;
+			
 			freqBase = algorithm.freqBase;
 			isWave = algorithm.isWave;
 		}
@@ -281,11 +271,11 @@ public class MA3Sampler
 	 * Specify the global pitch bend.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void masterTune(float semitones)
 	{
 		if (Float.isInfinite(semitones))
 			throw new IllegalArgumentException("Invalid semitones.");
+		
 		this.bendOut = (float)ExtraMath.pow(2, semitones);
 		for (MA3Channel chan : this.channels)
 			chan.onFrequency();
@@ -295,7 +285,6 @@ public class MA3Sampler
 	 * Specify the global volume.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void masterVolume(float volume)
 	{
 		if (Float.isInfinite(volume) || volume < 0.0f)
@@ -308,14 +297,16 @@ public class MA3Sampler
 	 * Specify stereo panning on a channel.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void panpot(int channel, float panpot)
 	{
+		MA3Channel[] channels = this.channels;
 		if (Float.isInfinite(panpot) || panpot < -1.0f || panpot > 1.0f)
 			throw new IllegalArgumentException("Invalid panpot.");
-		if (channel < 0 || channel >= this.channels.length)
+		
+		if (channel < 0 || channel >= channels.length)
 			return;
-		MA3Channel chan = this.channels[channel];
+		
+		MA3Channel chan = channels[channel];
 		chan.volPanning = (panpot + 1) / 2;
 		chan.volLeft = (1.0f - chan.volPanning) * chan.volLevel;
 		chan.volRight = chan.volPanning * chan.volLevel;
@@ -326,14 +317,16 @@ public class MA3Sampler
 	 * Specify a channel's pitch bend.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void pitchBend(int channel, float semitones)
 	{
+		MA3Channel[] channels = this.channels;
 		if (Float.isInfinite(semitones))
 			throw new IllegalArgumentException("Invalid semitones.");
-		if (channel < 0 || channel >= this.channels.length)
+		
+		if (channel < 0 || channel >= channels.length)
 			return;
-		MA3Channel chan = this.channels[channel];
+		
+		MA3Channel chan = channels[channel];
 		chan.bendBase = semitones;
 		chan.bendOut = (float)ExtraMath.pow(2,
 			chan.bendBase * chan.bendRange);
@@ -344,14 +337,16 @@ public class MA3Sampler
 	 * Specify the range of a channel's pitch bend.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void pitchBendRange(int channel, float range)
 	{
+		MA3Channel[] channels = this.channels;
 		if (Float.isInfinite(range) || range < 0.0f)
 			throw new IllegalArgumentException("Invalid range.");
-		if (channel < 0 || channel >= this.channels.length)
+		
+		if (channel < 0 || channel >= channels.length)
 			return;
-		MA3Channel chan = this.channels[channel];
+		
+		MA3Channel chan = channels[channel];
 		chan.bendRange = range;
 		chan.bendOut = (float)ExtraMath.pow(2,
 			chan.bendBase * chan.bendRange);
@@ -362,7 +357,6 @@ public class MA3Sampler
 	 * Speicfy a channel's program number.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void programChange(int channel, int program)
 	{
 		MA3Channel chan = this.channels[channel];
@@ -373,7 +367,6 @@ public class MA3Sampler
 	 * Generate output samples.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames)
 	{
 		this.render(samples, offset, frames, 1.0f, 1.0f,
@@ -384,7 +377,6 @@ public class MA3Sampler
 	 * Generate output samples.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames,
 		float amplitude)
 	{
@@ -396,7 +388,6 @@ public class MA3Sampler
 	 * Generate output samples.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames, float left,
 		float right)
 	{
@@ -408,7 +399,6 @@ public class MA3Sampler
 	 * Generate output samples.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void render(float[] samples, int offset, int frames, float left,
 		float right, boolean erase, boolean clamp)
 	{
@@ -417,118 +407,135 @@ public class MA3Sampler
 		if (samples == null)
 			throw new NullPointerException(
 				"A sample buffer is required" + ".");
+		
 		if (frames < 0)
 			throw new IllegalArgumentException("Invalid frames.");
+		
 		if (offset < 0 || offset + frames * 2 > samples.length)
 		{
 			throw new ArrayIndexOutOfBoundsException(
 				"Invalid range in sample buffer.");
 		}
+		
 		if (Float.isInfinite(left) || left < 0.0f)
 			throw new IllegalArgumentException("Invalid left amplitude.");
+		
 		if (Float.isInfinite(right) || right < 0.0f)
 			throw new IllegalArgumentException(
 				"Invalid right amplitude" + ".");
 		
-		// Process all output frames
-		float[] frame = new float[2];
-		for (int x = 0; x < frames; x++)
-		{
-			float l = this.smpPosition;
-			float r = l + this.smpWidth;
-			//  Scratch
-			float a, b;
-			
-			// Edge case: need the next input sample
-			if (l == 0.0f)
-				this.sample();
-			
-			// Left and right are in the same input sample
-			if (l < 1.0f)
-			{
-				a = (l + r) / 2;
-				frame[0] =
-					this.smpPrev[0] + (this.smpNext[0] - this.smpPrev[0]) * a;
-				frame[1] =
-					this.smpPrev[1] + (this.smpNext[1] - this.smpPrev[1]) * a;
-			}
-			
-			// Left and right span input samples
-			else
-			{
-				
-				// First partial
-				a = (l + 1.0f) / 2;
-				b = 1.0f - l;
-				frame[0] =
-					(this.smpPrev[0] + (this.smpNext[0] - this.smpPrev[0]) * a) * b;
-				frame[1] =
-					(this.smpPrev[1] + (this.smpNext[1] - this.smpPrev[1]) * a) * b;
-				
-				// All wholes
-				for (int y = (int)Math.floor(r) - 1; y > 0; y--)
-				{
-					this.smpPrev[0] = this.smpNext[0];
-					this.smpPrev[1] = this.smpNext[1];
-					this.sample();
-					frame[0] += (this.smpPrev[0] + this.smpNext[0]) / 2;
-					frame[1] += (this.smpPrev[1] + this.smpNext[1]) / 2;
-				}
-				
-				// Record the latest input sample
-				this.smpPrev[0] = this.smpNext[0];
-				this.smpPrev[1] = this.smpNext[1];
-				
-				// Last partial
-				r %= 1.0f;
-				if (r != 0.0f)
-				{
-					this.sample();
-					a = r / 2;
-					frame[0] +=
-						(this.smpPrev[0] + (this.smpNext[0] - this.smpPrev[0]) * a) * r;
-					frame[1] +=
-						(this.smpPrev[1] + (this.smpNext[1] - this.smpPrev[1]) * a) * r;
-				}
-				
-				// Take the weigted average of all spanned input samples
-				frame[0] /= this.smpWidth;
-				frame[1] /= this.smpWidth;
-			}
-			
-			// Output scaling
-			frame[0] *= left;
-			frame[1] *= right;
-			
-			// Incorporate the existing contents of the buffer
-			if (!erase)
-			{
-				frame[0] += samples[offset];
-				frame[1] += samples[offset + 1];
-			}
-			
-			// Constrain the output
-			if (clamp)
-			{
-				frame[0] = Math.min(Math.max(frame[0], -1.0f), 1.0f);
-				frame[1] = Math.min(Math.max(frame[1], -1.0f), 1.0f);
-			}
-			
-			// Output the frame
-			samples[offset++] = frame[0];
-			samples[offset++] = frame[1];
-			
-			// Advance to the next output sample
-			this.smpPosition = r;
-		}
+		// Used in the loop
+		float[] smpPrev = this.smpPrev;
+		float[] smpNext = this.smpNext;
+		float smpWidth = this.smpWidth;
 		
+		// Modified in the loop
+		float smpPosition = this.smpPosition;
+		
+		try
+		{
+			// Process all output frames
+			float[] frame = new float[2];
+			for (int x = 0; x < frames; x++)
+			{
+				float l = smpPosition;
+				float r = l + smpWidth;
+				
+				//  Scratch
+				float a, b;
+				
+				// Edge case: need the next input sample
+				if (l == 0.0f)
+					this.sample();
+				
+				// Left and right are in the same input sample
+				if (l < 1.0f)
+				{
+					a = (l + r) / 2;
+					frame[0] =
+						smpPrev[0] + (smpNext[0] - smpPrev[0]) * a;
+					frame[1] =
+						smpPrev[1] + (smpNext[1] - smpPrev[1]) * a;
+				}
+				
+				// Left and right span input samples
+				else
+				{
+					// First partial
+					a = (l + 1.0f) / 2;
+					b = 1.0f - l;
+					frame[0] =
+						(smpPrev[0] + (smpNext[0] - smpPrev[0]) * a) * b;
+					frame[1] =
+						(smpPrev[1] + (smpNext[1] - smpPrev[1]) * a) * b;
+					
+					// All wholes
+					for (int y = (int)Math.floor(r) - 1; y > 0; y--)
+					{
+						smpPrev[0] = smpNext[0];
+						smpPrev[1] = smpNext[1];
+						this.sample();
+						frame[0] += (smpPrev[0] + smpNext[0]) / 2;
+						frame[1] += (smpPrev[1] + smpNext[1]) / 2;
+					}
+					
+					// Record the latest input sample
+					smpPrev[0] = smpNext[0];
+					smpPrev[1] = smpNext[1];
+					
+					// Last partial
+					r %= 1.0f;
+					if (r != 0.0f)
+					{
+						this.sample();
+						a = r / 2;
+						frame[0] += (smpPrev[0] + 
+							(smpNext[0] - smpPrev[0]) * a) * r;
+						frame[1] += (smpPrev[1] + 
+							(smpNext[1] - smpPrev[1]) * a) * r;
+					}
+					
+					// Take the weighted average of all spanned input samples
+					frame[0] /= smpWidth;
+					frame[1] /= smpWidth;
+				}
+				
+				// Output scaling
+				frame[0] *= left;
+				frame[1] *= right;
+				
+				// Incorporate the existing contents of the buffer
+				if (!erase)
+				{
+					frame[0] += samples[offset];
+					frame[1] += samples[offset + 1];
+				}
+				
+				// Constrain the output
+				if (clamp)
+				{
+					frame[0] = Math.min(Math.max(frame[0], -1.0f), 1.0f);
+					frame[1] = Math.min(Math.max(frame[1], -1.0f), 1.0f);
+				}
+				
+				// Output the frame
+				samples[offset++] = frame[0];
+				samples[offset++] = frame[1];
+				
+				// Advance to the next output sample
+				smpPosition = r;
+			}
+		}
+		finally
+		{
+			this.smpPosition = smpPosition;
+		}
 	}
 	
 	/**
 	 * Initialize all output state.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void reset()
 	{
 		this.amPhase = 0;
@@ -548,7 +555,6 @@ public class MA3Sampler
 	}
 	
 	/** Terminate all active notes. */
-	@SquirrelJMEVendorApi
 	public void stopAll()
 	{
 		for (MA3Channel chan : this.channels)
@@ -574,12 +580,13 @@ public class MA3Sampler
 	 * Process a SysEx message.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void sysEx(byte[] message)
 	{
 		
 		// Error checking
-		if (message == null || message.length < 4 || message[0] != (byte)0x11 || message[1] != (byte)0x01 || (message[2] & 0xF0) != 0xF0)
+		if (message == null || message.length < 4 || 
+			message[0] != (byte)0x11 || message[1] != (byte)0x01 || 
+			(message[2] & 0xF0) != 0xF0)
 			return;
 		
 		// Processing by sub-message type
@@ -614,14 +621,16 @@ public class MA3Sampler
 	 * Specify a channel's volume.
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void volume(int channel, float volume)
 	{
+		MA3Channel[] channels = this.channels;
 		if (Float.isInfinite(volume) || volume < 0.0f)
 			throw new IllegalArgumentException("Invalid volume.");
-		if (channel < 0 || channel >= this.channels.length)
+		
+		if (channel < 0 || channel >= channels.length)
 			return;
-		MA3Channel chan = this.channels[channel];
+		
+		MA3Channel chan = channels[channel];
 		chan.volLevel = volume;
 		chan.volLeft = (1.0f - chan.volPanning) * chan.volLevel;
 		chan.volRight = chan.volPanning * chan.volLevel;
@@ -629,15 +638,17 @@ public class MA3Sampler
 	}
 	
 	/** Retrieve an algorithm for playing an FM instrument. */
-	@SquirrelJMEVendorApi
 	MA3Algorithm getFMInstrument(int bank, int program)
 	{
 		int hashKey = bank << 8 | program;
 		MA3Algorithm ret = null;
 		
+		MA3SamplerProvider ma3 = this.ma3;
+		Map<Integer, MA3Algorithm> fm4ops = this.fm4ops;
+		
 		// Running in 4-algorithm mode
-		if (this.ma3.prgInstrumentType == MA3SamplerProvider.FM_MA3_4OP)
-			ret = this.fm4ops.get(hashKey);
+		if (ma3.prgInstrumentType == MA3SamplerProvider.FM_MA3_4OP)
+			ret = fm4ops.get(hashKey);
 		
 		// Fallback to 2-algorithm mode
 		if (ret == null)
@@ -646,7 +657,7 @@ public class MA3Sampler
 		// Fallback to preset
 		if (ret == null)
 		{
-			ret = this.ma3.algInstruments[bank < 2 ? 0 : // Apparent behavior
+			ret = ma3.algInstruments[bank < 2 ? 0 : // Apparent behavior
 				(bank & 1) << 6 | program & 0x3F];
 		}
 		
@@ -654,9 +665,10 @@ public class MA3Sampler
 	}
 	
 	/** Specify FM algorithms. */
-	@SquirrelJMEVendorApi
 	void setFMAlgorithms(byte[] message)
 	{
+		Map<Integer, MA3Algorithm> fm2ops = this.fm2ops;
+		Map<Integer, MA3Algorithm> fm4ops = this.fm4ops;
 		
 		// Process all algorithms in the message
 		for (int offset = 4; offset < message.length; )
@@ -688,7 +700,7 @@ public class MA3Sampler
 				continue;
 			
 			// Register the algorithm
-			(type == 1 ? this.fm2ops : this.fm4ops).put(
+			(type == 1 ? fm2ops : fm4ops).put(
 				(message[offset + 1] & 0xFF) << 8 | // Bank
 					message[offset + 2] & 0xFF,        // Program
 				algorithm);
@@ -702,29 +714,27 @@ public class MA3Sampler
 	/**
 	 * Retrieve an algorithm for playing an FM drum note
 	 */
-	@SquirrelJMEVendorApi
 	MA3Algorithm getDrumFM(int key)
 	{
+		MA3Algorithm[] algDrums = this.ma3.algDrums;
 		
 		// Transform wave drum keys into FM drum keys
 		if (key < 0)
 			key += 35;
 		
 		// Error checking
-		if (key < 0 || key >= this.ma3.algDrums.length)
+		if (key < 0 || key >= algDrums.length)
 			return null;
 		
 		// Select the preset algorithm
-		return this.ma3.algDrums[key];
+		return algDrums[key];
 	}
 	
 	/**
 	 * Retrieve an algorithm for playing a wave drum note
 	 */
-	@SquirrelJMEVendorApi
 	MA3Algorithm getDrumWave(int key)
 	{
-		
 		// Error checking
 		if (key < -24)
 			return null;
@@ -741,7 +751,9 @@ public class MA3Sampler
 			ret = algs[key];
 		
 		// Error checking
-		if (ret != null && !ret.rm && (this.wavRam == null || ret.ep >= this.wavRam.length))
+		int[] wavRam = this.wavRam;
+		if (ret != null && !ret.rm &&
+			(wavRam == null || ret.ep >= wavRam.length))
 			ret = null;
 		
 		return ret;
@@ -750,7 +762,6 @@ public class MA3Sampler
 	/**
 	 * Master volume has changed
 	 */
-	@SquirrelJMEVendorApi
 	void onVolume()
 	{
 		this.volOut = (1.0f - this.volFade) * this.volLevel;
@@ -761,12 +772,12 @@ public class MA3Sampler
 	/**
 	 * Produce one input sample
 	 */
-	@SquirrelJMEVendorApi
 	void sample()
 	{
 		this.smpNext[0] = this.smpNext[1] = 0.0f;
 		for (MA3Channel chan : this.channels)
 			chan.render();
+		
 		this.amPhase = (this.amPhase + 1) % 0x34000;
 		this.vibPhase++;
 	}
@@ -774,11 +785,11 @@ public class MA3Sampler
 	/**
 	 * Specify the global fade.
 	 */
-	@SquirrelJMEVendorApi
 	void setMasterFade(byte[] message)
 	{
 		if (message.length < 5)
 			return;
+		
 		this.volFade = (message[4] & 0x7F) / 127.0f;
 		this.onVolume();
 	}
@@ -786,27 +797,27 @@ public class MA3Sampler
 	/**
 	 * Decode and register wave drum definitions
 	 */
-	@SquirrelJMEVendorApi
 	void setWaveDrums(byte[] message)
 	{
-		
 		// De-register existing wave drums
-		Arrays.fill(this.wavDrums, null);
+		MA3Algorithm[] wavDrums = this.wavDrums;
+		Arrays.fill(wavDrums, null);
 		
 		// Decode wave drums
 		int count = (message.length - 4) / 18;
 		for (int x = 0, src = 4; x < count; x++, src += 18)
 		{
-			
 			// Working variables
 			MA3Algorithm drum = new MA3Algorithm(message, src + 1);
 			
 			// Error checking
-			if (drum.drumKey >= 24 && drum.drumKey <= 91 || drum.ep < drum.lp || drum.rm && (drum.waveId == 7 || drum.ep > MA3SamplerProvider.MA3_WAVEROM[drum.waveId].length))
+			if (drum.drumKey >= 24 && drum.drumKey <= 91 || 
+				drum.ep < drum.lp || drum.rm && (drum.waveId == 7 ||
+				drum.ep > MA3SamplerProvider.MA3_WAVEROM[drum.waveId].length))
 				continue;
 			
 			// Register the wave drum
-			this.wavDrums[drum.drumKey] = drum;
+			wavDrums[drum.drumKey] = drum;
 		}
 		
 	}
@@ -814,7 +825,6 @@ public class MA3Sampler
 	/**
 	 * Terminate any existing wave drum notes
 	 */
-	@SquirrelJMEVendorApi
 	void stopWaveDrums()
 	{
 		for (MA3Channel chan : this.channels)

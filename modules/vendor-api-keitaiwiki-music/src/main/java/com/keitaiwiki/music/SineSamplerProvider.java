@@ -50,7 +50,6 @@ public class SineSamplerProvider
 	/**
 	 * Key index bias
 	 */
-	@SquirrelJMEVendorApi
 	static final int A4 = 81;
 	
 	
@@ -74,7 +73,7 @@ public class SineSamplerProvider
 	 * @throws IllegalArgumentException if {@code sampleRate} is a
 	 * non-number or is less than or equal to zero.
 	 */
-	@SquirrelJMEVendorApi
+	@Override
 	public Sampler instance(float sampleRate)
 	{
 		if (Float.isInfinite(sampleRate) || sampleRate <= 0.0f)

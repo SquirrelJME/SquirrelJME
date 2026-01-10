@@ -1194,6 +1194,9 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_GCC)
 	/** Optimize this specific function. */
 	#define sjme_attrOptimize __attribute__((optimize("-O3")))
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Optimize this specific function. */
+	#define sjme_attrOptimize __pragma(optimize("t", on))
 #else
 	/** Optimize this specific function. */
 	#define sjme_attrOptimize

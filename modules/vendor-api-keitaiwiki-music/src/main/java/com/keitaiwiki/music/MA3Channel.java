@@ -40,104 +40,86 @@ import java.util.Arrays;
 /**
  * Output channel
  */
-@SquirrelJMEVendorApi
 class MA3Channel
 	implements BasicChannel
 {
 	/**
 	 * Index in sampler
 	 */
-	@SquirrelJMEVendorApi
 	final int index;
 	
 	/**
 	 * Encapsulating instance
 	 */
-	@SquirrelJMEVendorApi
 	final MA3Sampler instance;
 	
 	/**
 	 * All notes currently on keys
 	 */
-	@SquirrelJMEVendorApi
 	final MA3Note[] notesOn;
 	
-	@SquirrelJMEVendorApi
 	final ArrayList<MA3Note> notesOut;
 	
 	/**
 	 * Pitch bend base ratio
 	 */
-	@SquirrelJMEVendorApi
 	float bendBase;
 	
 	/**
 	 * Effective channel frequency ratio
 	 */
-	@SquirrelJMEVendorApi
 	float bendOut;
 	
 	/**
 	 * Pitch bend magnitude
 	 */
-	@SquirrelJMEVendorApi
 	float bendRange;
 	
 	/**
 	 * The channel plays drum notes
 	 */
-	@SquirrelJMEVendorApi
 	boolean isDrum;
 	
 	/**
 	 * Program bank
 	 */
-	@SquirrelJMEVendorApi
 	int prgBank;
 	
 	/**
 	 * Program index in bank
 	 */
-	@SquirrelJMEVendorApi
 	int prgProgram;
 	
 	/**
 	 * Left stereo amplitude
 	 */
-	@SquirrelJMEVendorApi
 	float volLeft;
 	
 	/**
 	 * Left stereo output amplitude
 	 */
-	@SquirrelJMEVendorApi
 	float volLeftOut;
 	
 	/**
 	 * Channel output amplitude
 	 */
-	@SquirrelJMEVendorApi
 	float volLevel;
 	
 	/**
 	 * Stereo level
 	 */
-	@SquirrelJMEVendorApi
 	float volPanning;
 	
 	/**
 	 * Right stereo amplitude
 	 */
-	@SquirrelJMEVendorApi
 	float volRight;
 	
 	/**
 	 * Right stereo output amplitude
 	 */
-	@SquirrelJMEVendorApi
 	float volRightOut;
 	
-	@SquirrelJMEVendorApi
 	MA3Channel(MA3Sampler instance, int index)
 	{
 		this.index = index;
@@ -150,7 +132,6 @@ class MA3Channel
 	/**
 	 * Frequency has changed
 	 */
-	@SquirrelJMEVendorApi
 	void onFrequency()
 	{
 		float bend = this.instance.bendOut * this.bendOut;
@@ -161,11 +142,12 @@ class MA3Channel
 	/**
 	 * Volume has changed
 	 */
-	@SquirrelJMEVendorApi
 	void onVolume()
 	{
-		this.volLeftOut = this.instance.volOut * this.volLeft;
-		this.volRightOut = this.instance.volOut * this.volRight;
+		MA3Sampler instance = this.instance;
+		
+		this.volLeftOut = instance.volOut * this.volLeft;
+		this.volRightOut = instance.volOut * this.volRight;
 		for (MA3Note note : this.notesOut)
 			note.onVolume();
 	}
@@ -173,20 +155,19 @@ class MA3Channel
 	/**
 	 * Render the next input sample
 	 */
-	@SquirrelJMEVendorApi
 	void render()
 	{
-		for (int x = 0; x < this.notesOut.size(); x++)
+		ArrayList<MA3Note> notesOut = this.notesOut;
+		for (int x = 0; x < notesOut.size(); x++)
 		{
-			if (this.notesOut.get(x).render())
-				this.notesOut.remove(x--);
+			if (notesOut.get(x).render())
+				notesOut.remove(x--);
 		}
 	}
 	
 	/**
 	 * Initialize state
 	 */
-	@SquirrelJMEVendorApi
 	void reset()
 	{
 		this.bendBase = 0.0f;
