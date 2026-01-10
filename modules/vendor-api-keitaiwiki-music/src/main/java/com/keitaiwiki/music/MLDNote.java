@@ -38,25 +38,21 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 /**
  * Music note
  */
-@SquirrelJMEVendorApi
 class MLDNote
 	implements BasicNote
 {
 	/**
 	 * Output channel
 	 */
-	@SquirrelJMEVendorApi
 	int channel;
 	
 	/**
 	 * Ticks before note expires
 	 */
-	@SquirrelJMEVendorApi
 	int gateTime;
 	
 	/**
 	 * Key index
 	 */
-	@SquirrelJMEVendorApi
 	int key;
 }

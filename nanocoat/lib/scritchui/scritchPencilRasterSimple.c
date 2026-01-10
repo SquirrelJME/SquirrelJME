@@ -15,7 +15,7 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawHoriz(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -247,7 +247,7 @@ static void lineNormal(sjme_jint* x1, sjme_jint* y1,
 	}
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_drawLine(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -382,7 +382,7 @@ sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	return error;
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_drawPixel(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawPixel(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)

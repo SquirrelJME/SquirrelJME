@@ -100,7 +100,7 @@ sjme_errorCode sjme_scritchpen_corePrim_fillTriangle(
 	sjme_attrInValue sjme_jint y2,
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3);
-
+	
 sjme_errorCode sjme_scritchpen_corePrim_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,

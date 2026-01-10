@@ -146,23 +146,10 @@ public class IMelodyPlayer
 				return;
 			
 			// Create native audio stream for playback
-			AudioStreamBracket stream;
-			try
-			{
-				stream = AudioStreamShelf.stream(AudioStreamFormat.FLOAT_F32,
-					AudioStreamRate.HZ_48000, AudioStreamChannels.STEREO);
-			}
-			catch (MLECallError __e)
-			{
-				__e.printStackTrace();
-				
-				MediaException toss = new MediaException(__e.getMessage());
-				toss.initCause(__e);
-				throw toss;
-			}
-			
-			// Set the stream
-			this._stream = stream;
+			this._stream = AbstractPlayer.stream(
+				AudioStreamFormat.FLOAT_F32,
+				AudioStreamRate.HZ_48000, 
+				AudioStreamChannels.STEREO);
 		}
 	}
 	
@@ -207,22 +194,11 @@ public class IMelodyPlayer
 	{
 		synchronized (this)
 		{
-			try
-			{
-				AudioStreamBracket stream = this._stream;
-				this._stream = null;
-				
-				if (stream != null)
-					AudioStreamShelf.disconnect(stream);
-			}
-			catch (MLECallError __e)
-			{
-				__e.printStackTrace();
-				
-				MediaException toss = new MediaException(__e.getMessage());
-				toss.initCause(__e);
-				throw toss;
-			}
+			AudioStreamBracket stream = this._stream;
+			this._stream = null;
+			
+			if (stream != null)
+				AbstractPlayer.streamDisconnect(stream, false);
 		}
 	}
 	

@@ -8,7 +8,16 @@
 
 package cc.squirreljme.runtime.media;
 
+import cc.squirreljme.jvm.mle.AudioStreamShelf;
+import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
+import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
+import cc.squirreljme.jvm.mle.callbacks.AudioStreamSnoop;
+import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
+import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
+import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -24,7 +33,7 @@ import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.MagicConstant;
 
 /**
- * Common implementation of players.
+ * Common base implementation for any MIDP {@link Player}.
  *
  * @since 2022/04/24
  */
@@ -32,6 +41,27 @@ import org.intellij.lang.annotations.MagicConstant;
 public abstract class AbstractPlayer
 	implements Player
 {
+	/** Single sourced audio stream. */
+	private static volatile AudioStreamBracket _stream;
+	
+	/** Global audio snoop. */
+	private static volatile AudioStreamSnoop _snoop;
+	
+	/** Stream format. */
+	@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+	private static volatile int _streamFormat =
+		AudioStreamFormat.AUTOMATIC;
+	
+	/** Stream rate. */
+	@MagicConstant(valuesFromClass = AudioStreamRate.class)
+	private static volatile int _streamRate =
+		AudioStreamRate.AUTOMATIC;
+	
+	/** Stream channels. */
+	@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+	private static volatile int _streamChannels =
+		AudioStreamChannels.AUTOMATIC;
+	
 	/** The current track position. */
 	@SquirrelJMEVendorApi
 	protected final TrackPosition trackPosition =
@@ -1005,6 +1035,7 @@ public abstract class AbstractPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/31
 	 */
+	@SquirrelJMEVendorApi
 	public static final void closeConnection(Connection __in)
 		throws MediaException, NullPointerException
 	{
@@ -1021,6 +1052,150 @@ public abstract class AbstractPlayer
 			MediaException toss = new MediaException(__e.getMessage());
 			toss.initCause(__e);
 			throw toss;
+		}
+	}
+	
+	/**
+	 * Returns the current audio snoop.
+	 *
+	 * @return The current audio snoop.
+	 * @since 2026/01/08
+	 */
+	@SquirrelJMEVendorApi
+	public static AudioStreamSnoop snoop()
+	{
+		return AbstractPlayer._snoop;
+	}
+	
+	/**
+	 * Sets the audio snoop.
+	 *
+	 * @param __snoop The snoop to set, {@code null} clears it.
+	 * @since 2026/01/08
+	 */
+	@SquirrelJMEVendorApi
+	public static void snoop(AudioStreamSnoop __snoop)
+	{
+		// Clear
+		synchronized (AbstractPlayer.class)
+		{
+			AbstractPlayer._snoop = null;
+		}
+	}
+	
+	/**
+	 * This will open the audio stream with the specified format, if it is
+	 * better, otherwise attempts to open another stream.
+	 *
+	 * @param __format The format used, if {@code -1} this will use the
+	 * preferred format specified by the {@link AudioStreamBracket}.
+	 * @param __rate The rate, if {@code -1} this will use the
+	 * preferred rate specified by the {@link AudioStreamBracket}.
+	 * @param __channels The channels, if {@code -1} this will use the
+	 * preferred channels specified by the {@link AudioStreamBracket}.
+	 * @return The audio stream.
+	 * @throws MediaException If the stream could not be opened.
+	 * @since 2026/01/08
+	 */
+	@SquirrelJMEVendorApi
+	public static AudioStreamBracket stream(
+		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+			int __format,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
+		throws MediaException
+	{
+		synchronized (AbstractPlayer.class)
+		{
+			// Is there already a stream?
+			AudioStreamBracket common = AbstractPlayer._stream;
+			if (common != null)
+			{
+				// Get the existing format
+				int format = AbstractPlayer._streamFormat;
+				int rate = AbstractPlayer._streamRate;
+				int channels = AbstractPlayer._streamChannels;
+				
+				// If the common stream is better, use it
+				if (format >= __format || rate >= __rate ||
+					channels >= __channels)
+					return common;
+			}
+			
+			// Otherwise set up a new stream
+			try
+			{
+				// Open stream
+				AudioStreamBracket rv = AudioStreamShelf.stream(__format,
+					__rate, __channels);
+				
+				// If no common stream is open yet, make this stream the
+				// common stream
+				if (common == null)
+				{
+					// Cache it
+					AbstractPlayer._stream = rv;
+					
+					// Set format
+					AbstractPlayer._streamFormat = __format;
+					AbstractPlayer._streamRate = __rate;
+					AbstractPlayer._streamChannels = __channels;
+				}
+				
+				// Use this stream
+				return rv;
+			}
+			catch (MLECallError __e)
+			{
+				if (Debugging.ENABLED)
+					__e.printStackTrace();
+				
+				MediaException toss = new MediaException(__e.getMessage());
+				toss.initCause(__e);
+				throw toss;
+			}
+		}
+	}
+	
+	/**
+	 * Disconnects the stream given from {@link #stream(int, int, int)}.
+	 *
+	 * @param __stream The stream to disconnect.
+	 * @param __force Force close of the common stream.
+	 * @throws MediaException If the stream could not be closed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/01/08
+	 */
+	@SquirrelJMEVendorApi
+	public static void streamDisconnect(AudioStreamBracket __stream,
+		boolean __force)
+		throws MediaException, NullPointerException
+	{
+		if (__stream == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (AbstractPlayer.class)
+		{
+			// Never close the common stream, unless forced
+			AudioStreamBracket common = AbstractPlayer._stream;
+			if (__stream != common || __force)
+				try
+				{
+					if (__force && __stream == common)
+						AbstractPlayer._stream = null;
+					AudioStreamShelf.disconnect(__stream);
+				}
+				catch (MLECallError __e)
+				{
+					if (Debugging.ENABLED)
+						__e.printStackTrace();
+					
+					MediaException toss = new MediaException(__e.getMessage());
+					toss.initCause(__e);
+					throw toss;
+				}
 		}
 	}
 }

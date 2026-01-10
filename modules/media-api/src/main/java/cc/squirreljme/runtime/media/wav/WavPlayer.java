@@ -244,23 +244,9 @@ public class WavPlayer
 		synchronized (this)
 		{
 			// Create the native audio stream
-			AudioStreamBracket stream = null;
-			try
-			{
-				stream = AudioStreamShelf.stream(
-					AudioStreamFormat.AUTOMATIC,
-					AudioStreamRate.AUTOMATIC,
-					AudioStreamChannels.MONO);
-				this._stream = stream;
-			}
-			catch (MLECallError __e)
-			{
-				__e.printStackTrace();
-
-				MediaException mex = new MediaException(__e.getMessage());
-				mex.initCause(__e);
-				throw mex;
-			}
+			this._stream = AbstractPlayer.stream(
+				AudioStreamFormat.AUTOMATIC, AudioStreamRate.AUTOMATIC,
+				AudioStreamChannels.MONO);
 		}
 	}
 	
@@ -340,11 +326,23 @@ public class WavPlayer
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/08
+	 */
 	@Override
 	protected void becomingSolvent()
 		throws MediaException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// Close the native audio stream, we won't be using it
+			AudioStreamBracket stream = this._stream;
+			this._stream = null;
+			
+			if (stream != null)
+				AbstractPlayer.streamDisconnect(stream, false);
+		}
 	}
 	
 	/**

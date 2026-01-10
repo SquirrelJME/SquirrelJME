@@ -19,50 +19,39 @@ import java.io.InputStream;
  *
  * @since 2025/05/03
  */
-@SquirrelJMEVendorApi
 public enum RomData
 {
 	/** MA-2 Instruments. */
-	@SquirrelJMEVendorApi
 	MA2_INSTRUMENTS("2i", 128),
 	
 	/** MA-2 Drums. */
-	@SquirrelJMEVendorApi
 	MA2_DRUMS("2d", 61),
 	
 	/** MA-3 Instruments 20P. */
-	@SquirrelJMEVendorApi
 	MA3_INSTRUMENTS_2OP("3i20p", 128),
 	
 	/** MA-3 Instruments 40P. */
-	@SquirrelJMEVendorApi
 	MA3_INSTRUMENTS_4OP("3i40p", 128),
 	
 	/** MA-3 Drums 20P. */
-	@SquirrelJMEVendorApi
 	MA3_DRUMS_2OP("3d20p", 61),
 	
 	/** MA-3 Drums 40P. */
-	@SquirrelJMEVendorApi
 	MA3_DRUMS_4OP("3d40p", 61),
 	
 	/** MA-3 Drum Waves. */
-	@SquirrelJMEVendorApi
 	MA3_DRUMS_WAVE("3d", 21),
 	
 	/** MA-3 WaveROM. */
-	@SquirrelJMEVendorApi
 	MA3_WAVEROM("3wr", 7),
 	
 	/* End. */
 	;
 	
 	/** The data prefix. */
-	@SquirrelJMEVendorApi
 	protected final String prefix;
 	
 	/** The number of entries. */
-	@SquirrelJMEVendorApi
 	protected final int count;
 	
 	/**
@@ -91,7 +80,6 @@ public enum RomData
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public final byte[] bytes(int __id)
 		throws IndexOutOfBoundsException, RuntimeException
 	{
@@ -113,7 +101,6 @@ public enum RomData
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public final InputStream input(int __id)
 		throws IndexOutOfBoundsException
 	{

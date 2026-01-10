@@ -252,6 +252,19 @@ extern "C"
 #endif
 	
 #pragma endregion(sjme_uintPointerNative)
+#pragma region(floats)
+
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/** Native float. */
+	typedef float sjme_jfloatNative;
+#endif
+
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/** Native double. */
+	typedef double sjme_jdoubleNative;
+#endif
+
+#pragma endregion(floats)
 #pragma region(constWrappers)
 
 #if !defined(INT8_C)

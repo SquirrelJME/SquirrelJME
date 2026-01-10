@@ -57,29 +57,35 @@
 
 SJME_SOFTMIX(u8, u8, sjme_jubyte, sjme_jubyte, u, u, a)
 SJME_SOFTMIX(u8, s16, sjme_jubyte, sjme_jshort, u, s,
-	(sjme_jshort)(((sjme_jbyte)(a - 128))) * 256)
+	(((sjme_jshort)(a - 128))) * 257)
 SJME_SOFTMIX(u8, s32, sjme_jubyte, sjme_jint, u, i,
-	(sjme_jshort)(((sjme_jbyte)(a - 128))) * 16777216)
+	(((sjme_jint)(a - 128))) * 16777217)
 
 SJME_SOFTMIX(s16, u8, sjme_jshort, sjme_jubyte, s, u, 
-	((sjme_jubyte)(a / 256)) + 128)
+	(sjme_jubyte)(((a / 255)) + 128))
 SJME_SOFTMIX(s16, s16, sjme_jshort, sjme_jshort, s, s, a)
-SJME_SOFTMIX(s16, s32, sjme_jshort, sjme_jint, s, i, a * 65536)
+SJME_SOFTMIX(s16, s32, sjme_jshort, sjme_jint, s, i, a * 65535)
 
 SJME_SOFTMIX(s32, u8, sjme_jint, sjme_jubyte, i, u, 
-	((sjme_jubyte)(a / 16777216)) + 128)
-SJME_SOFTMIX(s32, s16, sjme_jint, sjme_jshort, i, s, a / 65536)
+	(sjme_jubyte)(((a / 16777215)) + 128))
+SJME_SOFTMIX(s32, s16, sjme_jint, sjme_jshort, i, s, a / 65535)
 SJME_SOFTMIX(s32, s32, sjme_jint, sjme_jint, i, i, a)
 
 #if defined(SJME_CONFIG_HAS_FLOAT_HARD)
-SJME_SOFTMIX(u8, f32, sjme_jubyte, float, u, f, a / 128.0F)
-SJME_SOFTMIX(s16, f32, sjme_jshort, float, s, f, a / 32768.0F)
-SJME_SOFTMIX(s32, f32, sjme_jint, float, i, f, a / 2147483648.0F)
+SJME_SOFTMIX(u8, f32, sjme_jubyte, sjme_jfloatNative, u, f,
+	(((sjme_jfloatNative)a) - 127.0F) / 127.0F)
+SJME_SOFTMIX(s16, f32, sjme_jshort, sjme_jfloatNative, s, f,
+	a / SJME_FLOAT_BD(0x1.fffcp14, 32767.0F))
+SJME_SOFTMIX(s32, f32, sjme_jint, sjme_jfloatNative, i, f,
+	a / SJME_FLOAT_BD(0x1.fffffffcp30, 2147483647.0F))
 
-SJME_SOFTMIX(f32, u8, float, sjme_jubyte, f, u, a * 128.0F)
-SJME_SOFTMIX(f32, s16, float, sjme_jshort, f, s, a * 32768.0F)
-SJME_SOFTMIX(f32, s32, float, sjme_jint, f, i, a * 2147483648.0F)
-SJME_SOFTMIX(f32, f32, float, float, f, f, a)
+SJME_SOFTMIX(f32, u8, sjme_jfloatNative, sjme_jubyte, f, u,
+	((a * 127.0F) + 127.0F))
+SJME_SOFTMIX(f32, s16, sjme_jfloatNative, sjme_jshort, f, s,
+	a * SJME_FLOAT_BD(0x1.fffcp14, 32767.0F))
+SJME_SOFTMIX(f32, s32, sjme_jfloatNative, sjme_jint, f, i,
+	a * SJME_FLOAT_BD(0x1.fffffffcp30, 2147483647.0F))
+SJME_SOFTMIX(f32, f32, sjme_jfloatNative, sjme_jfloatNative, f, f, a)
 #endif
 
 const sjme_scritchaudio_softmix_mixer
