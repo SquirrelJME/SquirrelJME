@@ -275,7 +275,7 @@ public final class TaskInitialization
 		// possible...
 		// Or it is just disabled completely
 		if (__classifier.getTargetClassifier().getClutterLevel().isDebug() &&
-			config.alwaysOptimize)
+			!config.alwaysOptimize)
 			usedSourceJar = sourceJar;
 		
 		// Otherwise set up a new task to compact the Jar and remove any
