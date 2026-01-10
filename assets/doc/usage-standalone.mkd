@@ -213,6 +213,14 @@ compilation depending on which code is actively being used often. As such when
 it decides to optimize the audio playback specific code, there will be
 stutters and inconsistencies.
 
+***`java.lang.NoClassDefFoundError` on `-Xemulator:hosted`?:*** Using the
+Hosted environment which uses the host Java SE JVM, the JVM itself is very
+likely to be very up-to-date especially if you have Java 17 or greater
+installed. Backwards compatibility with versions of Java 8 and earlier are
+not guaranteed. It is recommended to switch to SpringCoat
+(`-Xemulator:springcoat`) or NanoCoat (`-Xemulator:nanocoat`) to use any
+software which relies on older behavior.
+
 ## Framing/Scaling
 
 SquirrelJME supports framing and scaling of any MIDP `Canvas`, to override
