@@ -1108,7 +1108,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		/* Locate the class type. */
 		classType = NULL;
 		if (sjme_error_is(error = sjme_nvm_task_commonClass(contextThread,
-			SJME_NVM_TASK_COMMON_CLASS_CLASS, &classType,
+			SJME_NVM_COMMON_CLASS, &classType,
 			SJME_JNI_FALSE)) || classType == NULL)
 			goto fail_findClassType;
 		sjme_atomic_s(sjme_jclass, &inClass->object.isClass,
@@ -1711,7 +1711,7 @@ sjme_errorCode sjme_nvm_vmClass_isAssignableFrom(
 
 	/* Everything can be assigned to object! */
 	if (canAssignTo == sjme_nvm_task_commonClassR(contextThread,
-		SJME_NVM_TASK_COMMON_CLASS_OBJECT))
+		SJME_NVM_COMMON_OBJECT))
 		return SJME_ERROR_NONE;
 
 	/* We need to compare if we can put an array in another array. */

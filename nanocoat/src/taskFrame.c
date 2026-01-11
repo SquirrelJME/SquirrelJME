@@ -140,6 +140,33 @@ sjme_errorCode sjme_nvm_task_frameCommitPush(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_nvm_task_frameEmit(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	...)
+{
+	sjme_errorCode error;
+	va_list args;
+	
+	if (inFrame == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Start arguments. */
+	va_start(args, message);
+	
+	/* Forward as this is just a convenience method. */
+	error = sjme_nvm_task_threadEmitV(SJME_F_T(inFrame), commonClass, cause,
+		message, args);
+	
+	/* End. */
+	va_end(args);
+	
+	/* Return the result of the forward. */
+	return error;
+}
+
 sjme_errorCode sjme_nvm_task_frameHandler(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_jobject tossed,

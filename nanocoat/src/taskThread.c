@@ -130,6 +130,33 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
 	...)
 {
+	sjme_errorCode error;
+	va_list args;
+	
+	if (inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Start arguments. */
+	va_start(args, message);
+	
+	/* Forward. */
+	error = sjme_nvm_task_threadEmitV(inThread, commonClass, cause,
+		message, args);
+	
+	/* End. */
+	va_end(args);
+	
+	/* Return the result of the forward. */
+	return error;
+}
+
+sjme_errorCode sjme_nvm_task_threadEmitV(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	sjme_attrInValue va_list args)
+{
 #define BUF_SIZE 256
 	sjme_errorCode error;
 	sjme_jclass tossClass, throwableClass;
@@ -192,7 +219,7 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 	sjme_atomic_s(sjme_jint, &inThread->tossedLevel, inThread->numFrames);
 
 	/* Build message string. */
-	va_start(copy, message);
+	va_copy(copy, args);
 
 	memset(buf, 0, sizeof(buf));
 	vsnprintf(buf, BUF_SIZE - 1, message, copy);
@@ -224,7 +251,7 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 		/* Locate the throwable class. */
 		throwableClass = NULL;
 		if (sjme_error_is(error = sjme_nvm_task_commonClass(inThread,
-			SJME_NVM_TASK_COMMON_CLASS_THROWABLE, &throwableClass,
+			SJME_NVM_COMMON_THROWABLE, &throwableClass,
 			SJME_JNI_TRUE)))
 			return sjme_error_default(error);
 
@@ -667,6 +694,7 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	sjme_nvm_frameBase blank;
 	sjme_nvm_frame_gcCommit commit;
 	sjme_jobject uncaught;
+	const sjme_nvm_stateHooks* hooks;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -749,6 +777,13 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 				inThread, (sjme_jthrowable)uncaught)))
 				sjme_message("Uncaught throwable, print error %d",
 					error);
+			
+			/* Is there a special handler for this? */
+			hooks = SJME_T_S(inThread)->hooks;
+			if (hooks != NULL && hooks->uncaught != NULL)
+				if (sjme_error_is(error = hooks->uncaught(inThread,
+					(sjme_jthrowable)uncaught)))
+					return sjme_error_vmError(inThread, error);
 
 			/* Clear it. */
 			sjme_atomic_cs(sjme_jobject, &inThread->tossed,
@@ -842,7 +877,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	/* Soft load the thread class. */
 	threadType = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_commonClass(result,
-		SJME_NVM_TASK_COMMON_CLASS_THREAD,
+		SJME_NVM_COMMON_THREAD,
 		&threadType,
 		SJME_JNI_FALSE)) || threadType == NULL)
 		goto fail_loadThreadClass;
@@ -1021,7 +1056,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 		sizeof(*result), SJME_NVM_STRUCT_STRING_INSTANCE,
 		SJME_AS_JOBJECTP(&result),
 		sjme_nvm_task_commonClassR(inThread,
-			SJME_NVM_TASK_COMMON_CLASS_STRING))) ||
+			SJME_NVM_COMMON_STRING))) ||
 		result == NULL)
 		goto fail_allocStringInstance;
 

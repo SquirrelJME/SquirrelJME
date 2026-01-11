@@ -646,35 +646,35 @@ sjme_errorCode sjme_nvm_instance_objectArrayNewT(
 	switch (componentType)
 	{
 		case SJME_BASIC_TYPE_ID_BOOLEAN:
-			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BOOLEAN;
+			commonId = SJME_NVM_COMMON_PRIMITIVE_BOOLEAN;
 			break;
 
 		case SJME_BASIC_TYPE_ID_BYTE:
-			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BYTE;
+			commonId = SJME_NVM_COMMON_PRIMITIVE_BYTE;
 			break;
 
 		case SJME_BASIC_TYPE_ID_SHORT:
-			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_SHORT;
+			commonId = SJME_NVM_COMMON_PRIMITIVE_SHORT;
 			break;
 
 		case SJME_BASIC_TYPE_ID_CHARACTER:
-			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_CHARACTER;
+			commonId = SJME_NVM_COMMON_PRIMITIVE_CHARACTER;
 			break;
 
 		case SJME_BASIC_TYPE_ID_INTEGER:
-			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_INTEGER;
+			commonId = SJME_NVM_COMMON_PRIMITIVE_INTEGER;
 			break;
 
 		case SJME_BASIC_TYPE_ID_LONG:
-			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_LONG;
+			commonId = SJME_NVM_COMMON_PRIMITIVE_LONG;
 			break;
 
 		case SJME_BASIC_TYPE_ID_FLOAT:
-			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_FLOAT;
+			commonId = SJME_NVM_COMMON_PRIMITIVE_FLOAT;
 			break;
 
 		case SJME_BASIC_TYPE_ID_DOUBLE:
-			commonId = SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_DOUBLE;
+			commonId = SJME_NVM_COMMON_PRIMITIVE_DOUBLE;
 			break;
 
 		default:
@@ -721,12 +721,12 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 		/* Cannot be these types as they are allocated implicitly by */
 		/* the virtual machine. */
 		if (inClass == sjme_nvm_task_commonClassR(contextThread,
-			SJME_NVM_TASK_COMMON_CLASS_CLASS))
+			SJME_NVM_COMMON_CLASS))
 			return SJME_ERROR_INVALID_ARGUMENT;
 		
 		/* Remap @c String . */
 		else if (inClass == sjme_nvm_task_commonClassR(contextThread,
-			SJME_NVM_TASK_COMMON_CLASS_STRING))
+			SJME_NVM_COMMON_STRING))
 		{
 			inType = SJME_NVM_STRUCT_STRING_INSTANCE;
 			allocSize = sizeof(sjme_jstringBase);
@@ -736,11 +736,11 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 		/* limit to a small selection of reference based classes. */
 		/* This is so that any aliases are treated the same regardless. */
 		else if (inClass == sjme_nvm_task_commonClassR(contextThread,
-				SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM) ||
+				SJME_NVM_COMMON_REFERENCE_PHANTOM) ||
 			inClass == sjme_nvm_task_commonClassR(contextThread,
-				SJME_NVM_TASK_COMMON_CLASS_REFERENCE_SOFT) ||
+				SJME_NVM_COMMON_REFERENCE_SOFT) ||
 			inClass == sjme_nvm_task_commonClassR(contextThread,
-				SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK))
+				SJME_NVM_COMMON_REFERENCE_WEAK))
 		{
 			inType = SJME_NVM_STRUCT_WEAK_INSTANCE;
 			allocSize = sizeof(sjme_jweakBase);
@@ -785,17 +785,17 @@ sjme_errorCode sjme_nvm_instance_objectNewBracket(
 	switch (inType)
 	{
 		case SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE:
-			commonId = SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE;
+			commonId = SJME_NVM_COMMON_JAR_PACKAGE;
 			allocSize = sizeof(sjme_jbracketJarPackageBase);
 			break;
 
 		case SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE:
-			commonId = SJME_NVM_TASK_COMMON_CLASS_PIPE;
+			commonId = SJME_NVM_COMMON_PIPE;
 			allocSize = sizeof(sjme_jbracketPipeBase);
 			break;
 		
 		case SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE:
-			commonId = SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT;
+			commonId = SJME_NVM_COMMON_TRACE_POINT;
 			allocSize = sizeof(sjme_jbracketTraceBase);
 			break;
 			

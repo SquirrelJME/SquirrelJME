@@ -31,7 +31,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(inThread,
 		&result, sjme_nvm_task_commonClassR(inThread,
-			SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT), count)) || result == NULL)
+			SJME_NVM_COMMON_TRACE_POINT), count)) || result == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Create trace point objects mapped to frames. */
@@ -114,7 +114,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceThrowable)
 	if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
 		SJME_F_T(inFrame),
 		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
-			SJME_NVM_TASK_COMMON_CLASS_THROWABLE),
+			SJME_NVM_COMMON_THROWABLE),
 			sjme_atomic_g(sjme_jclass, &throwable->object.isClass))))
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 

@@ -186,17 +186,19 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 				error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
 				error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
 			{
-				sjme_nvm_task_threadEmit(SJME_F_T(inFrame),
-					SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_LINKAGE_ERROR,
+				if (sjme_error_is(error = sjme_nvm_task_frameEmit(inFrame,
+					SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR,
 					NULL, "LINK %s.%s %s",
 					sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
 						&target->inClass)->name->seq),
 					sjme_charSeq_tempUtf(target->name->seq),
-					sjme_charSeq_tempUtf(target->type->seq));
+					sjme_charSeq_tempUtf(target->type->seq))))
+					return sjme_error_vmError(inFrame, error);
 			}
 			
 			/* Anything else is considered a failure. */
-			return sjme_error_vmError(inFrame, error);
+			else
+				return sjme_error_vmError(inFrame, error);
 		}
 
 		/* Only push a value if not cancelled. */
@@ -412,7 +414,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 		
 		/* Emit exception. */
 		if (sjme_error_is(error = sjme_nvm_task_threadEmit(SJME_F_T(inFrame),
-			SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_CLASS_CAST,
+			SJME_NVM_COMMON_EXCEPTION_CLASS_CAST,
 			NULL,
 			"CAST %s %s",
 			(value.v.l == NULL ? "NULL" :
@@ -1443,7 +1445,16 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	/* Must not be null. */
 	array = SJME_AS_JARRAY(arrayValue.v.l);
 	if (array == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
+	{
+		/* Emit exception. */
+		if (sjme_error_is(error = sjme_nvm_task_frameEmit(inFrame,
+			SJME_NVM_COMMON_EXCEPTION_NULL_POINTER, NULL,
+			"NULL")))
+			return sjme_error_vmError(inFrame, error);
+		
+		/* Leave early. */
+		goto skip_tossed;
+	}
 
 	/* Make sure the array is actually valid. */
 	arrayType = sjme_nvm_byteCode_xArrayType[id - 46];
@@ -1529,6 +1540,7 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 		inFrame, &commit, &pushValue)))
 		return sjme_error_vmError(inFrame, error);
 
+skip_tossed:
 	/* Commit GC. */
 	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);

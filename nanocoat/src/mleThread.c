@@ -185,7 +185,7 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
 		SJME_F_T(inFrame), SJME_AS_JARRAYP(&mainArgs),
 		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
-			SJME_NVM_TASK_COMMON_CLASS_STRING), n)))
+			SJME_NVM_COMMON_STRING), n)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Fill in array arguments, directly. */

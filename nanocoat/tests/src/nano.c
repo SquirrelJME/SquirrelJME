@@ -28,7 +28,18 @@ typedef struct sjme_test_nano_result
 	
 	/** The string captured. */
 	sjme_charSeq string;
+	
+	/** The exception captured. */
+	sjme_charSeq exception;
 } sjme_test_nano_result;
+
+SJME_NVM_MLE_FUNCTION_DECL(makeArrayNull)
+{
+	/* Just return null. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = NULL;
+	return SJME_ERROR_NONE;
+}
 
 SJME_NVM_MLE_FUNCTION_DECL(makeArrayString)
 {
@@ -49,7 +60,7 @@ SJME_NVM_MLE_FUNCTION_DECL(makeArrayString)
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
 		SJME_F_T(inFrame), &rv,
 		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
-			SJME_NVM_TASK_COMMON_CLASS_STRING), len)) || rv == NULL)
+			SJME_NVM_COMMON_STRING), len)) || rv == NULL)
 		goto fail_allocArray;
 	
 	/* Setup string values in the array. */
@@ -128,6 +139,9 @@ SJME_NVM_MLE_FUNCTION_DECL(result)
 
 SJME_NVM_MLE_SHELF_DECLARE(NanoShelf) =
 {
+	SJME_NVM_MLE_DEFINE(makeArrayNull,
+		SJME_MD(SJME_MD_A(SJME_MD_STRING), ),
+		"L", ""),
 	SJME_NVM_MLE_DEFINE(makeArrayString,
 		SJME_MD(SJME_MD_A(SJME_MD_STRING), SJME_MD_I),
 		"L", "I"),
@@ -173,29 +187,43 @@ static sjme_errorCode sjme_test_nano_nativeCall(
 		methodID->member.name->seq,
 		methodID->member.type->seq,
 		argR, argC, argV);
-#if 0
-	/* Wrong argument count? */
-	if (argC != 0 && argC != 1)
-		return SJME_ERROR_INVALID_ARGUMENT;
+}
 
-	/* Was a result already captured? */
-	if (result->captured)
+static sjme_errorCode sjme_test_nano_uncaught(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInNotNull sjme_jthrowable uncaught)
+{
+	sjme_errorCode error;
+	sjme_test_nano_result* result;
+	
+	if (inThread == NULL || uncaught == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover result. */
+	result = SJME_F_S(inThread)->hookData;
+	if (result == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-
-	/* Capture data. */
+	
+	/* An exception was captured. */
 	result->captured = SJME_JNI_TRUE;
-	if (argC == 1)
-		memmove(&result->value, &argV[0], sizeof(argV[0]));
-
+	result->value.t = SJME_NUM_JAVA_TYPE_IDS;
+	
+	/* Duplicate string so the object can go through normal GC. */
+	if (sjme_error_is(error = sjme_charSeq_dup(SJME_T_S(inThread)->allocPool,
+		&result->exception, sjme_atomic_g(sjme_jclass, 
+			&uncaught->object.isClass)->binaryName)) ||
+		result->exception == NULL)
+		return sjme_die("Failed to dup string: %d", error);
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
-#endif
 }
 
 static const sjme_nvm_stateHooks sjme_test_nano_hooks =
 {
 	sjme_sm(.gc, NULL),
 	sjme_sm(.nativeCall, sjme_test_nano_nativeCall),
+	sjme_sm(.uncaught, sjme_test_nano_uncaught),
 };
 
 /**
@@ -232,7 +260,7 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_list(sjme_nvm_class_annotation)* annotations;
 	sjme_nvm_class_annotation annotation;
 	sjme_jvalueTyped expectedJava;
-	sjme_charSeq expectedString;
+	sjme_charSeq expectedString, expectedException;
 	
 	/* Incorrect number of arguments? */
 	if (argc < 5)
@@ -402,6 +430,16 @@ int main(int argc, sjme_lpstr* argv)
 				"expectedLong"))
 			expectedJava = annotation->valueJava;
 		
+		/* Exception. */
+		else if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
+			"expectedException"))
+		{
+			/* Duplicate expected string so it does not interfere with GC. */
+			if (sjme_error_is(error = sjme_charSeq_dup(paramPool,
+				&expectedException, annotation->valueString->seq)))
+				goto fail_dupExpected;
+		}
+		
 		/* String. */
 		else if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
 				"expectedString"))
@@ -428,7 +466,8 @@ int main(int argc, sjme_lpstr* argv)
 	}
 	
 	/* No expected value was found? */
-	if (expectedString == NULL && expectedJava.t == SJME_NUM_BASIC_TYPE_IDS)
+	if (expectedString == NULL && expectedJava.t == SJME_NUM_BASIC_TYPE_IDS &&
+		expectedException == NULL)
 	{
 		error = SJME_ERROR_NANOTEST_EXPECTED_MISSING;
 		goto fail_noExpected;
@@ -449,7 +488,14 @@ int main(int argc, sjme_lpstr* argv)
 			if (error == SJME_ERROR_INTERRUPTED)
 				continue;
 			
-			goto fail_loop;
+			/* Uncaught exception, which is what we might want, however */
+			/* the hook and cleanup were already called. */
+			else if (error == SJME_ERROR_UNCAUGHT_EXCEPTION)
+				break;
+			
+			/* Everything else. */
+			else
+				goto fail_loop;
 		}
 	}
 	sjme_messageB("--------------------------------------------------------");
@@ -469,8 +515,24 @@ int main(int argc, sjme_lpstr* argv)
 			goto fail_notCaptured;
 		}
 		
+		/* Exception type. */
+		if ((expectedException != NULL || result.exception != NULL) &&
+			!sjme_charSeq_equalsR(expectedException,
+				result.exception))
+		{
+			/* Debug. */
+			sjme_emitB("Failed test: got exception %s, exception %s",
+				sjme_charSeq_tempUtf(result.exception),
+				sjme_charSeq_tempUtf(expectedException));
+			
+			/* Fail. */
+			error = SJME_ERROR_NOT_MATCHED;
+			goto fail_unexpected;
+		}
+		
 		/* Wrong type? */
-		if (result.value.t != expectedJava.t)
+		else if (result.value.t != expectedJava.t &&
+			expectedException == NULL)
 		{
 			/* Debug. */
 			sjme_emitB("Failed test: got type %d, expected %d",
@@ -500,7 +562,7 @@ int main(int argc, sjme_lpstr* argv)
 		}
 		
 		/* Java Type. */
-		else if (expectedString == NULL &&
+		else if (expectedString == NULL && expectedException == NULL &&
 			memcmp(&result.value, &expectedJava.v,
 				sizeof(expectedJava)) != 0)
 		{
@@ -527,12 +589,28 @@ int main(int argc, sjme_lpstr* argv)
 		result.string = NULL;
 	}
 	
+	/* Free result exception if it was created. */
+	if (result.exception != NULL)
+	{
+		if (sjme_error_is(error = sjme_charSeq_delete(result.exception)))
+			goto fail_deleteResultString;
+		result.exception = NULL;
+	}
+	
 	/* And the expected string as well. */
 	if (expectedString != NULL)
 	{
 		if (sjme_error_is(error = sjme_charSeq_delete(expectedString)))
 			goto fail_deleteExpectedString;
 		expectedString = NULL;
+	}
+	
+	/* And the expected exception as well. */
+	if (expectedException != NULL)
+	{
+		if (sjme_error_is(error = sjme_charSeq_delete(expectedException)))
+			goto fail_deleteExpectedString;
+		expectedException = NULL;
 	}
 
 	/* There must be no memory blocks allocated, destruction should be */

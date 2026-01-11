@@ -27,6 +27,15 @@ public final class NanoShelf
 	}
 	
 	/**
+	 * Returns {@code null}.
+	 *
+	 * @return {@code null}.
+	 * @since 2026/01/10
+	 */
+	@SquirrelJMEVendorApi
+	public static native String[] makeArrayNull();
+	
+	/**
 	 * Creates a string array.
 	 *
 	 * @param __n The number of elements.

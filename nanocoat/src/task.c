@@ -202,8 +202,8 @@ sjme_errorCode sjme_nvm_task_commonClass(
 	if (contextThread == NULL)
 		return SJME_ERROR_NONE;
 
-	if (commonId <= SJME_NVM_TASK_COMMON_CLASS_NULL ||
-		commonId == SJME_NVM_TASK_COMMON_CLASS_VERY_IMPORTANT ||
+	if (commonId <= SJME_NVM_COMMON_NULL ||
+		commonId == SJME_NVM_COMMON_VERY_IMPORTANT ||
 		commonId >= SJME_NVM_TASK_NUM_COMMON_CLASS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
@@ -221,91 +221,95 @@ sjme_errorCode sjme_nvm_task_commonClass(
 	commonName = NULL;
 	switch (commonId)
 	{
-		case SJME_NVM_TASK_COMMON_CLASS_CLASS:
+		case SJME_NVM_COMMON_CLASS:
 			commonName = "Ljava/lang/Class;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_CLASS_CAST:
+		case SJME_NVM_COMMON_EXCEPTION_CLASS_CAST:
 			commonName = "Ljava/lang/ClassCastException;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_LINKAGE_ERROR:
+		case SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR:
 			commonName = "Ljava/lang/LinkageError;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE:
+		case SJME_NVM_COMMON_EXCEPTION_NULL_POINTER:
+			commonName = "Ljava/lang/NullPointerException;";
+			break;
+
+		case SJME_NVM_COMMON_JAR_PACKAGE:
 			commonName = "Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;";
 			break;
 		
-		case SJME_NVM_TASK_COMMON_CLASS_OBJECT:
+		case SJME_NVM_COMMON_OBJECT:
 			commonName = "Ljava/lang/Object;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_PIPE:
+		case SJME_NVM_COMMON_PIPE:
 			commonName = "Lcc/squirreljme/jvm/mle/brackets/PipeBracket;";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BOOLEAN:
+		case SJME_NVM_COMMON_PRIMITIVE_BOOLEAN:
 			commonName = "Z";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BYTE:
+		case SJME_NVM_COMMON_PRIMITIVE_BYTE:
 			commonName = "B";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_CHARACTER:
+		case SJME_NVM_COMMON_PRIMITIVE_CHARACTER:
 			commonName = "C";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_DOUBLE:
+		case SJME_NVM_COMMON_PRIMITIVE_DOUBLE:
 			commonName = "D";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_FLOAT:
+		case SJME_NVM_COMMON_PRIMITIVE_FLOAT:
 			commonName = "F";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_INTEGER:
+		case SJME_NVM_COMMON_PRIMITIVE_INTEGER:
 			commonName = "I";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_LONG:
+		case SJME_NVM_COMMON_PRIMITIVE_LONG:
 			commonName = "J";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_SHORT:
+		case SJME_NVM_COMMON_PRIMITIVE_SHORT:
 			commonName = "S";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_VOID:
+		case SJME_NVM_COMMON_PRIMITIVE_VOID:
 			commonName = "F";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM:
+		case SJME_NVM_COMMON_REFERENCE_PHANTOM:
 			commonName = "Ljava/lang/ref/PhantomReference;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_SOFT:
+		case SJME_NVM_COMMON_REFERENCE_SOFT:
 			commonName = "Ljava/lang/ref/SoftReference;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK:
+		case SJME_NVM_COMMON_REFERENCE_WEAK:
 			commonName = "Ljava/lang/ref/WeakReference;";
 			break;
 		
-		case SJME_NVM_TASK_COMMON_CLASS_STRING:
+		case SJME_NVM_COMMON_STRING:
 			commonName = "Ljava/lang/String;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_THREAD:
+		case SJME_NVM_COMMON_THREAD:
 			commonName = "Ljava/lang/Thread;";
 			break;
 		
-		case SJME_NVM_TASK_COMMON_CLASS_THROWABLE:
+		case SJME_NVM_COMMON_THROWABLE:
 			commonName = "Ljava/lang/Throwable;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT:
+		case SJME_NVM_COMMON_TRACE_POINT:
 			commonName = "Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;";
 			break;
 		
@@ -346,8 +350,8 @@ sjme_jclass sjme_nvm_task_commonClassR(
 	if (contextThread == NULL)
 		return NULL;
 
-	if (commonId <= SJME_NVM_TASK_COMMON_CLASS_NULL ||
-		commonId == SJME_NVM_TASK_COMMON_CLASS_VERY_IMPORTANT || 
+	if (commonId <= SJME_NVM_COMMON_NULL ||
+		commonId == SJME_NVM_COMMON_VERY_IMPORTANT || 
 		commonId >= SJME_NVM_TASK_NUM_COMMON_CLASS)
 		return NULL;
 
@@ -465,7 +469,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 
 	/* Must be Throwable. */
 	throwableClass = sjme_nvm_task_commonClassR(contextThread,
-		SJME_NVM_TASK_COMMON_CLASS_THROWABLE);
+		SJME_NVM_COMMON_THROWABLE);
 	if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(contextThread,
 		throwableClass,
 		sjme_atomic_g(sjme_jclass, &inThrowable->object.isClass))))

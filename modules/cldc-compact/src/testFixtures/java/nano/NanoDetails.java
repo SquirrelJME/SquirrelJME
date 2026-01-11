@@ -44,4 +44,8 @@ public @interface NanoDetails
 	/** Expected string value. */
 	@SquirrelJMEVendorApi
 	String expectedString() default "";
+	
+	/** Expected exception. */
+	@SquirrelJMEVendorApi
+	String expectedException() default "";
 }

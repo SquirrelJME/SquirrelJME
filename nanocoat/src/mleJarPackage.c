@@ -33,7 +33,7 @@ SJME_NVM_MLE_FUNCTION_DECL(classPath)
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
 		SJME_F_T(inFrame), &result,
 		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
-			SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE), n)) || result == NULL)
+			SJME_NVM_COMMON_JAR_PACKAGE), n)) || result == NULL)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Libraries need to be converted to brackets. */

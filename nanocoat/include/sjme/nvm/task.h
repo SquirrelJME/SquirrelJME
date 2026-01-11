@@ -447,76 +447,79 @@ struct sjme_nvm_taskStringsBase
 typedef enum sjme_nvm_task_commonClassId
 {
 	/** Null class. */
-	SJME_NVM_TASK_COMMON_CLASS_NULL,
+	SJME_NVM_COMMON_NULL,
 
 	/** @c java.lang.ClassCastException. */
-	SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_CLASS_CAST,
+	SJME_NVM_COMMON_EXCEPTION_CLASS_CAST,
 
 	/** @c java.lang.LinkageError . */
-	SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_LINKAGE_ERROR,
+	SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR,
+	
+	/** @c java.lang.NullPointerException . */
+	SJME_NVM_COMMON_EXCEPTION_NULL_POINTER,
 
 	/** @c cc.squirreljme.jvm.mle.brackets.JarPackageBracket . */
-	SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE,
+	SJME_NVM_COMMON_JAR_PACKAGE,
 
 	/** @c cc.squirreljme.jvm.mle.brackets.PipeBracket . */
-	SJME_NVM_TASK_COMMON_CLASS_PIPE,
+	SJME_NVM_COMMON_PIPE,
 	
 	/** @c boolean . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BOOLEAN,
+	SJME_NVM_COMMON_PRIMITIVE_BOOLEAN,
 	
 	/** @c byte . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BYTE,
+	SJME_NVM_COMMON_PRIMITIVE_BYTE,
 	
 	/** @c char . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_CHARACTER,
+	SJME_NVM_COMMON_PRIMITIVE_CHARACTER,
 	
 	/** @c double . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_DOUBLE,
+	SJME_NVM_COMMON_PRIMITIVE_DOUBLE,
 	
 	/** @c float . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_FLOAT,
+	SJME_NVM_COMMON_PRIMITIVE_FLOAT,
 	
 	/** @c int . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_INTEGER,
+	SJME_NVM_COMMON_PRIMITIVE_INTEGER,
 	
 	/** @c long . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_LONG,
+	SJME_NVM_COMMON_PRIMITIVE_LONG,
 	
 	/** @c short . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_SHORT,
+	SJME_NVM_COMMON_PRIMITIVE_SHORT,
 	
 	/** @c void . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_VOID,
+	SJME_NVM_COMMON_PRIMITIVE_VOID,
 
 	/** @c java.lang.ref.PhantomReference . */
-	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM,
+	SJME_NVM_COMMON_REFERENCE_PHANTOM,
 
 	/** @c java.lang.ref.SoftReference . */
-	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_SOFT,
+	SJME_NVM_COMMON_REFERENCE_SOFT,
 
 	/** @c java.lang.ref.WeakReference . */
-	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK,
+	SJME_NVM_COMMON_REFERENCE_WEAK,
 
 	/** @c cc.squirreljme.jvm.mle.brackets.TracePointBracket . */
-	SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT,
+	SJME_NVM_COMMON_TRACE_POINT,
 
 	/** The start of very important classes. */
-	SJME_NVM_TASK_COMMON_CLASS_VERY_IMPORTANT,
+	SJME_NVM_COMMON_VERY_IMPORTANT,
 
 	/** @c java.lang.Throwable . */
-	SJME_NVM_TASK_COMMON_CLASS_THROWABLE,
+	SJME_NVM_COMMON_THROWABLE,
 
 	/** @c java.lang.Thread . */
-	SJME_NVM_TASK_COMMON_CLASS_THREAD,
+	SJME_NVM_COMMON_THREAD,
 	
 	/** @c java.lang.String . */
-	SJME_NVM_TASK_COMMON_CLASS_STRING,
+	SJME_NVM_COMMON_STRING,
 	
 	/** @c java.lang.Class . */
-	SJME_NVM_TASK_COMMON_CLASS_CLASS,
+	SJME_NVM_COMMON_CLASS,
 	
 	/** @c java.lang.Object . */
-	SJME_NVM_TASK_COMMON_CLASS_OBJECT,
+	SJME_NVM_COMMON_OBJECT,
 
 	/** The number of common classes. */
 	SJME_NVM_TASK_NUM_COMMON_CLASS
@@ -803,6 +806,25 @@ sjme_errorCode sjme_nvm_task_frameCommitPush(
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jobject pushObject);
 
+
+/**
+ * Emits an exception with the given message.
+ * 
+ * @param inFrame The frame to emit within.
+ * @param commonClass The commit class to emit.
+ * @param cause The cause of this exception, this is optional.
+ * @param message The message to use for the message.
+ * @param ... Any formatted parameters to the message.
+ * @return Any resultant error, if any.
+ * @since 2026/01/11
+ */
+sjme_errorCode sjme_nvm_task_frameEmit(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	...) sjme_attrFormatOuter(3, 4);
+	
 /**
  * Locates the exception handler to use for exceptions.
  * 
@@ -1250,6 +1272,24 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 	sjme_attrInNullable sjme_jthrowable cause,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
 	...) sjme_attrFormatOuter(3, 4);
+
+/**
+ * Emits an exception with the given message.
+ * 
+ * @param inThread The thread to emit within.
+ * @param commonClass The commit class to emit.
+ * @param cause The cause of this exception, this is optional.
+ * @param message The message to use for the message.
+ * @param args Any formatted parameters to the message.
+ * @return Any resultant error, if any.
+ * @since 2026/01/11
+ */
+sjme_errorCode sjme_nvm_task_threadEmitV(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	sjme_attrInValue va_list args);
 
 /**
  * Enters a frame for the given exact method within the thread.

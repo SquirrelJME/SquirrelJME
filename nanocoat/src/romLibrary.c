@@ -47,7 +47,7 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 {
 	sjme_errorCode error;
 	sjme_jboolean exists;
-	sjme_jint freeSlot;
+	sjme_jint freeSlot, newLen;
 	sjme_nvm_class_info maybe;
 	sjme_list(sjme_nvm_class_info)* classInfos;
 	sjme_stream_input stream;
@@ -136,8 +136,17 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 	/* Need to grow the list? */
 	if (freeSlot < 0)
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Grow. */
+		newLen = (classInfos == NULL ? 0 :
+			classInfos->length) + SJME_NVM_ROM_CLASS_INFO_GROW;
+		if (sjme_error_is(error = sjme_list_replace(inLibrary->allocPool,
+			newLen, &inLibrary->classInfos, sjme_nvm_class_info, 0)) ||
+			inLibrary->classInfos == NULL)
+			return sjme_error_default(error);
+		
+		/* Regrab the list. */
+		classInfos = inLibrary->classInfos;
+		freeSlot = newLen - SJME_NVM_ROM_CLASS_INFO_GROW;
 	}
 	
 	/* Store info in for later caching. */

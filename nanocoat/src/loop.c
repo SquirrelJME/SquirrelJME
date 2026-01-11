@@ -387,7 +387,7 @@ skip_thrown:
 					/* Emit the exception to the caller. */
 					if (sjme_error_is(error = sjme_nvm_task_threadEmit(
 						inThread,
-						SJME_NVM_TASK_COMMON_CLASS_EXCEPTION_LINKAGE_ERROR,
+						SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR,
 						SJME_AS_JTHROWABLE(tossed),
 						"Uncaught in <clinit>.")))
 						goto fail_any;

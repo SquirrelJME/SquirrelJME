@@ -1093,7 +1093,7 @@ static sjme_errorCode sjme_nvm_cleanup_postTask(
 		/* The very important classes are ones which are very hard to */
 		/* garbage collect as everything uses them. */
 		/* Or nothing was ever used. */
-		if (i < SJME_NVM_TASK_COMMON_CLASS_VERY_IMPORTANT ||
+		if (i < SJME_NVM_COMMON_VERY_IMPORTANT ||
 			nukeClass == NULL)
 			continue;
 

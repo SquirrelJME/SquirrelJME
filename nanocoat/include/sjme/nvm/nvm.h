@@ -239,6 +239,18 @@ typedef sjme_errorCode (*sjme_nvm_stateHookNativeCallFunc)(
 	sjme_attrInNullable sjme_jvalueTyped* argV);
 
 /**
+ * This is called when a thread throws an uncaught exception.
+ * 
+ * @param inThread The thread this occurred for.
+ * @param uncaught The exception which was never caught.
+ * @return Any resultant error, if any.
+ * @since 2026/01/11
+ */
+typedef sjme_errorCode (*sjme_nvm_stateHookUncaughtFunc)(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInNotNull sjme_jthrowable uncaught);
+	
+/**
  * Hooks for alternative function.
  * 
  * @since 2023/11/17
@@ -250,6 +262,9 @@ typedef struct sjme_nvm_stateHooks
 
 	/** Perform a native call. */
 	sjme_nvm_stateHookNativeCallFunc nativeCall;
+
+	/** Uncaught exception occurred in thread. */
+	sjme_nvm_stateHookUncaughtFunc uncaught;
 } sjme_nvm_stateHooks;
 	
 struct sjme_nvm_commonBase
