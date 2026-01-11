@@ -18,44 +18,17 @@
 #include "sjme/nvm/mleShelves.h"
 #include "test.h"
 
+SJME_NVM_MLE_FUNCTION_DECL(makeArrayString)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 SJME_NVM_MLE_SHELF_DECLARE(NanoShelf) =
 {
-#if 0
-	SJME_NVM_MLE_DEFINE(stringCharAt,
-		SJME_MD(SJME_MD_C, SJME_MD_STRING SJME_MD_I),
-		"I", "LI"),
-	SJME_NVM_MLE_DEFINE(stringEquals,
-		SJME_MD(SJME_MD_Z, SJME_MD_STRING SJME_MD_STRING),
-		"I", "LL"),
-	SJME_NVM_MLE_DEFINE(stringHash,
-		SJME_MD(SJME_MD_I, SJME_MD_STRING),
-		"I", "L"),
-	SJME_NVM_MLE_DEFINE_ALT(stringInit, chars,
-		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_AC SJME_MD_I SJME_MD_I),
-		"V", "LLII"),
-	SJME_NVM_MLE_DEFINE_ALT(stringInit, emptyOrThis,
-		SJME_MD(SJME_MD_V, SJME_MD_STRING),
-		"V", "L"),
-	SJME_NVM_MLE_DEFINE_ALT(stringInit, string,
-		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_STRING),
-		"V", "LL"),
-	SJME_NVM_MLE_DEFINE(stringIsIntern,
-		SJME_MD(SJME_MD_Z, SJME_MD_STRING),
-		"I", "L"),
-	SJME_NVM_MLE_DEFINE(stringLength,
-		SJME_MD(SJME_MD_I, SJME_MD_STRING),
-		"I", "L"),
-	SJME_NVM_MLE_DEFINE(stringToChar,
-		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_I
-			SJME_MD_AC SJME_MD_I SJME_MD_I),
-		"V", "LILII"),
-	SJME_NVM_MLE_DEFINE_ALT(stringValueOf, chars,
-		SJME_MD(SJME_MD_STRING, SJME_MD_Z SJME_MD_AC SJME_MD_I SJME_MD_I),
-		"L", "ILII"),
-	SJME_NVM_MLE_DEFINE_ALT(stringValueOf, string,
-		SJME_MD(SJME_MD_STRING, SJME_MD_Z SJME_MD_STRING),
-		"L", "IL"),
-#endif
+	SJME_NVM_MLE_DEFINE(makeArrayString,
+		SJME_MD(SJME_MD_A(SJME_MD_STRING), SJME_MD_I),
+		"L", "I"),
 	
 	SJME_NVM_MLE_STOP()
 };
