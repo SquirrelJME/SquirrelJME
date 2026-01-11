@@ -1050,8 +1050,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 			goto fail_dupSeq;
 
 		/* Set. */
-		if (!sjme_atomic_cs(sjme_charSeq, &result->seq,
-			NULL, strSeq))
+		if (!sjme_atomic_cs(sjme_charSeq, &result->seq, NULL, strSeq))
 			goto fail_collided;
 	}
 	
@@ -1076,12 +1075,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 		}
 		
 		/* Set slot here. */
-		*blankIntern = result;
-
-		/* Count it up since it is in the intern list. */
-		if (sjme_error_is(error = sjme_nvm_instance_countUp(
-			SJME_AS_JOBJECT(result))))
-			goto fail_countInIntern;
+		*blankIntern = sjme_weakUpR(sjme_jstring, result);
 		
 		/* Release. */
 		if (sjme_error_is(error = sjme_thread_spinLockRelease(

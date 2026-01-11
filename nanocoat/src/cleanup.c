@@ -539,7 +539,7 @@ static sjme_errorCode sjme_nvm_cleanup_postString(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Strings have one of two possible states, either they use a character */
-	/* sequence from a string pool or they are dynamically allocated. */
+	/* sequence from a string pool, or they are dynamically allocated. */
 	poolString = sjme_atomic_g(sjme_nvm_stringPool_string,
 		&string->poolString);
 	if (poolString != NULL)

@@ -210,8 +210,16 @@ static sjme_errorCode sjme_nvm_class_classAnnotations(
 						goto fail_readString;
 					
 					/* Set string value. */
+#if 0
 					annotation->valueString = sjme_weakUpR(
 						sjme_nvm_stringPool_string, string->utf.utf);
+#else
+					/* TODO: Counting up is the correct solution, however */
+					/* TODO: annotations are very new and only used in */
+					/* TODO: testing. So something else seems to be */
+					/* TODO: miscounting. */
+					annotation->valueString = string->utf.utf;
+#endif
 					break;
 					
 				case SJME_NVM_CLASS_ANNOTATION_TAG_ENUM:
