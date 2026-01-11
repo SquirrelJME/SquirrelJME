@@ -18,10 +18,107 @@
 #include "sjme/nvm/mleShelves.h"
 #include "test.h"
 
+typedef struct sjme_test_nano_result
+{
+	/** Was this captured? */
+	sjme_jboolean captured;
+
+	/** The value captured. */
+	sjme_jvalueTyped value;
+	
+	/** The string captured. */
+	sjme_charSeq string;
+} sjme_test_nano_result;
+
 SJME_NVM_MLE_FUNCTION_DECL(makeArrayString)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+#define BUF_SIZE 32
+	sjme_errorCode error, otherError;
+	sjme_jint i, len;
+	sjme_jarray rv;
+	sjme_cchar buf[BUF_SIZE];
+	
+	/* Array cannot be negative. */
+	len = argV[0].v.i;
+	if (len < 0)
+		return sjme_die("Negative array size.");
+
+	/* Directly allocate array. */
+	rv = NULL;
+	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
+		SJME_F_T(inFrame), &rv,
+		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+			SJME_NVM_TASK_COMMON_CLASS_STRING), len)) || rv == NULL)
+		goto fail_allocArray;
+	
+	/* Setup string values in the array. */
+	for (i = 0; i < len; i++)
+	{
+		/* Build a sample string. */
+		memset(buf, 0, sizeof(buf));
+		snprintf(buf, BUF_SIZE - 1,
+			"string%d", i);
+		buf[BUF_SIZE - 1] = '\0';
+		
+		/* Create string. */
+		if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
+			SJME_F_T(inFrame), (sjme_jstring*)&rv->e.l[i],
+			SJME_JNI_TRUE, buf)) || rv->e.l[i] == NULL)
+			goto fail_stringValue;
+	}
+	
+	/* Return the array. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)rv;
+	return SJME_ERROR_NONE;
+	
+fail_stringValue:
+fail_allocArray:
+	/* Deallocate. */
+	if (rv != NULL)
+	{
+		if (sjme_error_is(otherError = sjme_nvm_instance_countDown(
+			(sjme_jobject)rv)))
+			return sjme_error_vmError(inFrame, otherError);
+	}
+	
+	return sjme_error_vmError(inFrame, error);
+#undef BUF_SIZE
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(result)
+{
+	sjme_errorCode error;
+	sjme_test_nano_result* result;
+	sjme_jstring string;
+	
+	/* String cannot be null. */
+	string = (sjme_jstring)argV[0].v.l;
+	if (string < 0)
+		return sjme_die("Null string.");
+	
+	/* Recover result. */
+	result = SJME_F_S(inFrame)->hookData;
+	if (result == NULL)
+		return sjme_die("No hookData.");
+	
+	/* Result can only be called once! */
+	if (result->captured)
+		return sjme_die("Result already captured.");
+	
+	/* Set test string result. */
+	result->captured = SJME_JNI_TRUE;
+	result->value.t = SJME_JAVA_TYPE_ID_OBJECT;
+	
+	/* Duplicate string so the object can go through normal GC. */
+	if (sjme_error_is(error = sjme_charSeq_dup(SJME_F_S(inFrame)->allocPool,
+		&result->string,
+		sjme_atomic_g(sjme_charSeq, &string->seq))) ||
+		result->string == NULL)
+		return sjme_die("Failed to dup string: %d", error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_SHELF_DECLARE(NanoShelf) =
@@ -30,17 +127,12 @@ SJME_NVM_MLE_SHELF_DECLARE(NanoShelf) =
 		SJME_MD(SJME_MD_A(SJME_MD_STRING), SJME_MD_I),
 		"L", "I"),
 	
+	SJME_NVM_MLE_DEFINE(result,
+		SJME_MD(SJME_MD_V, SJME_MD_STRING),
+		"V", "L"),
+	
 	SJME_NVM_MLE_STOP()
 };
-
-typedef struct sjme_test_nano_result
-{
-	/** Was this captured? */
-	sjme_jboolean captured;
-
-	/** The value captured. */
-	sjme_jvalueTyped value;
-} sjme_test_nano_result;
 
 static sjme_errorCode sjme_test_nano_nativeCall(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
@@ -132,7 +224,6 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_jclass mainClass;
 	sjme_nvm_task mainTask;
 	sjme_cchar mainName[BUF_SIZE];
-	sjme_jfieldID field;
 	sjme_list(sjme_nvm_class_annotation)* annotations;
 	sjme_nvm_class_annotation annotation;
 	sjme_jvalueTyped expectedJava;
@@ -304,12 +395,15 @@ int main(int argc, sjme_lpstr* argv)
 				"expectedInteger") ||
 			sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
 				"expectedLong"))
-			expectedJava = annotation->value.value;
+			expectedJava = annotation->valueJava;
 		
 		/* String. */
 		else if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
 				"expectedString"))
-			expectedString = annotation->value.string;
+		{
+			expectedString = annotation->valueString;
+			expectedJava.t = SJME_JAVA_TYPE_ID_OBJECT;
+		}
 		
 		/* Void, as nothing can directly use void. */
 		else if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
@@ -365,10 +459,41 @@ int main(int argc, sjme_lpstr* argv)
 			error = SJME_ERROR_NO_TEST_RESULT;
 			goto fail_notCaptured;
 		}
-
-		/* Compare directly. */
-		if (memcmp(&result.value, &expectedJava.v,
-			sizeof(expectedJava)) != 0)
+		
+		/* Wrong type? */
+		if (result.value.t != expectedJava.t)
+		{
+			/* Debug. */
+			sjme_emitB("Failed test: got type %d, expected %d",
+				result.value.t,
+				expectedJava.t);
+			
+			/* Fail. */
+			error = SJME_ERROR_NOT_MATCHED;
+			goto fail_unexpected;
+		}
+		
+		/* String type. */
+		else if (expectedString != NULL && (result.string == NULL ||
+			!sjme_charSeq_equalsR(expectedString->seq,
+				result.string)))
+		{
+			/* Debug. */
+			sjme_emitB("Failed test: got %d:%s, expected %d:%s",
+				result.value.t,
+					sjme_charSeq_tempUtf(result.string),
+				expectedJava.t,
+					sjme_charSeq_tempUtf(expectedString->seq));
+			
+			/* Fail. */
+			error = SJME_ERROR_NOT_MATCHED;
+			goto fail_unexpected;
+		}
+		
+		/* Java Type. */
+		else if (expectedString == NULL &&
+			memcmp(&result.value, &expectedJava.v,
+				sizeof(expectedJava)) != 0)
 		{
 			/* Debug. */
 			sjme_emitB("Failed test: got %d:%08x.%08x, expected %d:%08x.%08x",
@@ -383,6 +508,14 @@ int main(int argc, sjme_lpstr* argv)
 			error = SJME_ERROR_NOT_MATCHED;
 			goto fail_unexpected;
 		}
+	}
+	
+	/* Free result string if it was created. */
+	if (result.string != NULL)
+	{
+		if (sjme_error_is(error = sjme_charSeq_delete(result.string)))
+			goto fail_deleteResultString;
+		result.string = NULL;
 	}
 
 	/* There must be no memory blocks allocated, destruction should be */
@@ -416,6 +549,7 @@ fail_noExpected:
 fail_noAnnotations:
 fail_findMain:
 fail_countBlocks:
+fail_deleteResultString:
 fail_notCaptured:
 fail_destroy:
 fail_loop:

@@ -210,7 +210,7 @@ static sjme_errorCode sjme_nvm_class_classAnnotations(
 						goto fail_readString;
 					
 					/* Set string value. */
-					annotation->value.string = sjme_weakUpR(
+					annotation->valueString = sjme_weakUpR(
 						sjme_nvm_stringPool_string, string->utf.utf);
 					break;
 					

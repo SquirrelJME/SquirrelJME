@@ -257,6 +257,24 @@ fail_walk:
 	return sjme_error_default(error);
 }
 
+static sjme_errorCode sjme_nvm_cleanup_postAnnotation(
+	sjme_attrInNotNull sjme_nvm_class_annotation annotation)
+{
+	SJME_CLEANUP_DECL;
+	
+	if (annotation == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Close various fields. */
+	SJME_SIMPLE_CLOSE(annotation->className);
+	SJME_SIMPLE_CLOSE(annotation->fieldName);
+	SJME_SIMPLE_CLOSE(annotation->refClass);
+	SJME_SIMPLE_CLOSE(annotation->valueString);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_cleanup_postCodeInfo(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -588,6 +606,8 @@ static sjme_errorCode sjme_nvm_cleanup_postClassInfo(
 	sjme_list(sjme_nvm_stringPool_string)* interfaceNames;
 	sjme_list(sjme_nvm_class_fieldInfo)* fields;
 	sjme_list(sjme_nvm_class_methodInfo)* methods;
+	sjme_list(sjme_nvm_class_annotation)* annotations;
+	sjme_nvm_class_annotation annotation;
 	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
 	
@@ -634,6 +654,34 @@ static sjme_errorCode sjme_nvm_cleanup_postClassInfo(
 
 	/* Class file name. */
 	SJME_SIMPLE_FREE(info->fileName);
+	
+	/* Annotations. */
+	annotations = info->annotations;
+	if (annotations != NULL)
+	{
+		/* Free individual items. */
+		for (n = annotations->length, i = 0; i < n; i++)
+		{
+			/* Clear list item. */
+			annotation = annotations->elements[i];
+			annotations->elements[i] = NULL;
+			
+			/* Cleanup. */
+			if (annotation != NULL)
+			{
+				/* Internal free. */
+				if (sjme_error_is(error = sjme_nvm_cleanup_postAnnotation(
+					annotation)))
+					return sjme_error_default(error);
+				
+				/* Self free. */
+				SJME_SIMPLE_FREE(annotation);
+			}
+		}
+
+		/* Free list. */
+		SJME_SIMPLE_FREE(info->annotations);
+	}
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -1308,7 +1356,7 @@ sjme_errorCode sjme_nvm_allocR(
 	if (sjme_error_is(error = sjme_closeable_allocR(allocPool,
 		allocSize, sjme_nvm_cleanup_close,
 		SJME_AS_CLOSEABLEP(&result)
-		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)) ||
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) ||
 		result == NULL)
 		return sjme_error_default(error);
 	

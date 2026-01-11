@@ -270,6 +270,15 @@ typedef enum sjme_nvm_walk_pseudoType
 
 	/** @link sjme_frame_frameStack @endlink . */
 	SJME_NVM_WALK_PSEUDO_FRAME_STACK = -77,
+	
+	/** @link sjme_nvm_class_annotation @endlink. */
+	SJME_NVM_WALK_PSEUDO_ANNOTATION = -78,
+	
+	/** @link sjme_nvm_class_annotationTag @endlink. */
+	SJME_NVM_WALK_PSEUDO_ANNOTATION_TAG = -79,
+	
+	/** @link sjme_jvalueTyped @endlink. */
+	SJME_NVM_WALK_PSEUDO_JAVA_VALUE = -80,
 } sjme_nvm_walk_pseudoType;
 
 /**

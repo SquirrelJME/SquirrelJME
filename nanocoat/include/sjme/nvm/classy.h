@@ -626,28 +626,14 @@ typedef struct sjme_nvm_class_annotationBase
 	/** The tag for the value. */
 	sjme_nvm_class_annotationTag tag;
 	
-	/** The value. */
-	union
-	{
-		/** Class. */
-		sjme_nvm_stringPool_string type;
-		
-		/** String. */
-		sjme_nvm_stringPool_string string;
-		
-		/** Java value. */
-		sjme_jvalueTyped value;
-		
-		/** Enum. */
-		struct
-		{
-			/** The enum class. */
-			sjme_nvm_stringPool_string type;
-			
-			/** The enum value. */
-			sjme_nvm_stringPool_string value;
-		} enumValue;
-	} value;
+	/** Referenced class. */
+	sjme_nvm_stringPool_string refClass;
+	
+	/** Java value. */
+	sjme_jvalueTyped valueJava;
+	
+	/** String Value. */
+	sjme_nvm_stringPool_string valueString;
 } sjme_nvm_class_annotationBase;
 
 struct sjme_nvm_class_fieldInfoBase
