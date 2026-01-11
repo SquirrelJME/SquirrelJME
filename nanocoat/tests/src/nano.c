@@ -37,6 +37,7 @@ SJME_NVM_MLE_FUNCTION_DECL(makeArrayString)
 	sjme_jint i, len;
 	sjme_jarray rv;
 	sjme_cchar buf[BUF_SIZE];
+	sjme_jstring element;
 	
 	/* Array cannot be negative. */
 	len = argV[0].v.i;
@@ -60,11 +61,15 @@ SJME_NVM_MLE_FUNCTION_DECL(makeArrayString)
 			"string%d", i);
 		buf[BUF_SIZE - 1] = '\0';
 		
-		/* Create string. */
+		/* Create string, do not make intern strings. */
+		element = NULL;
 		if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
-			SJME_F_T(inFrame), (sjme_jstring*)&rv->e.l[i],
-			SJME_JNI_TRUE, buf)) || rv->e.l[i] == NULL)
+			SJME_F_T(inFrame), (sjme_jstring*)&element,
+			SJME_JNI_FALSE, buf)) || element == NULL)
 			goto fail_stringValue;
+		
+		/* These do need to be counted up. */
+		rv->e.l[i] = sjme_weakUpR(sjme_jobject, element);
 	}
 	
 	/* Return the array. */
@@ -227,7 +232,7 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_list(sjme_nvm_class_annotation)* annotations;
 	sjme_nvm_class_annotation annotation;
 	sjme_jvalueTyped expectedJava;
-	sjme_nvm_stringPool_string expectedString;
+	sjme_charSeq expectedString;
 	
 	/* Incorrect number of arguments? */
 	if (argc < 5)
@@ -401,7 +406,11 @@ int main(int argc, sjme_lpstr* argv)
 		else if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
 				"expectedString"))
 		{
-			expectedString = annotation->valueString;
+			/* Duplicate expected string so it does not interfere with GC. */
+			if (sjme_error_is(error = sjme_charSeq_dup(paramPool,
+				&expectedString, annotation->valueString->seq)))
+				goto fail_dupExpected;
+			
 			expectedJava.t = SJME_JAVA_TYPE_ID_OBJECT;
 		}
 		
@@ -475,7 +484,7 @@ int main(int argc, sjme_lpstr* argv)
 		
 		/* String type. */
 		else if (expectedString != NULL && (result.string == NULL ||
-			!sjme_charSeq_equalsR(expectedString->seq,
+			!sjme_charSeq_equalsR(expectedString,
 				result.string)))
 		{
 			/* Debug. */
@@ -483,7 +492,7 @@ int main(int argc, sjme_lpstr* argv)
 				result.value.t,
 					sjme_charSeq_tempUtf(result.string),
 				expectedJava.t,
-					sjme_charSeq_tempUtf(expectedString->seq));
+					sjme_charSeq_tempUtf(expectedString));
 			
 			/* Fail. */
 			error = SJME_ERROR_NOT_MATCHED;
@@ -517,6 +526,14 @@ int main(int argc, sjme_lpstr* argv)
 			goto fail_deleteResultString;
 		result.string = NULL;
 	}
+	
+	/* And the expected string as well. */
+	if (expectedString != NULL)
+	{
+		if (sjme_error_is(error = sjme_charSeq_delete(expectedString)))
+			goto fail_deleteExpectedString;
+		expectedString = NULL;
+	}
 
 	/* There must be no memory blocks allocated, destruction should be */
 	/* in an entirely clean slate with nothing left over. */
@@ -546,9 +563,11 @@ fail_free:
 fail_unexpected:
 fail_noConstant:
 fail_noExpected:
+fail_dupExpected:
 fail_noAnnotations:
 fail_findMain:
 fail_countBlocks:
+fail_deleteExpectedString:
 fail_deleteResultString:
 fail_notCaptured:
 fail_destroy:
