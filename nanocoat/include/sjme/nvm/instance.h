@@ -479,6 +479,19 @@ sjme_errorCode sjme_nvm_instance_defaultInit(
 	sjme_attrInNotNull sjme_lpcstr inDesc,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV);
+
+/**
+ * Returns the pointer to the direct field placements for the given object
+ * and type.
+ * 
+ * @param instance The instance to get the placement for.
+ * @param forType The type to get.
+ * @return Any resultant error, if any.
+ * @since 2026/01/11
+ */
+sjme_errorCode sjme_nvm_instance_directPlacement(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInValue sjme_extendedTypeId forType);
 	
 /**
  * The default accessor for fields.

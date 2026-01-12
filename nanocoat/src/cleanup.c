@@ -690,13 +690,54 @@ static sjme_errorCode sjme_nvm_cleanup_postClassInfo(
 static sjme_errorCode sjme_nvm_cleanup_postObject(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
-	sjme_jobject object;
+	sjme_jobject object, ref;
+	sjme_jclass isClass;
+	sjme_nvm_rawFieldValue* rawField;
+	sjme_jfieldID fieldBind;
+	sjme_list(sjme_jfieldID)* fieldBinds;
+	sjme_jint i, n;
 	SJME_CLEANUP_DECL;
 	
 	/* Recover. */
 	object = (sjme_jobject)closeable;
 	if (object == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Cleanup when there is a valid class. */
+	isClass = sjme_atomic_g(sjme_jclass, &object->isClass);
+	if (isClass != NULL)
+	{
+		/* We need to clean up all the instance fields for this object. */
+		fieldBinds = isClass->fields[SJME_NVM_CLASS_MEMBER_INSTANCE].binds;
+		for (n = (fieldBinds != NULL ? fieldBinds->length : 0), i = 0;
+			i < n; i++)
+		{
+			/* Skip blank binds. */
+			fieldBind = fieldBinds->elements[i];
+			if (fieldBind == NULL)
+				continue;
+			
+			/* Only consider objects. */
+			if (fieldBind->basicType != SJME_JAVA_TYPE_ID_OBJECT)
+				continue;
+			
+			/* Grab the raw field. */
+			rawField = sjme_nvm_instance_fieldAccessor(object,
+				fieldBind);
+			if (rawField == NULL)
+				return sjme_error_vmError(NULL, SJME_ERROR_ILLEGAL_STATE);
+			
+			/* Get and clear. */
+			ref = rawField->l.p;
+			rawField->l.p = NULL;
+			rawField->l.check = 0;
+			
+			/* Count down. */
+			if (ref != NULL)
+				if (sjme_error_is(error = sjme_nvm_instance_countDown(ref)))
+					return sjme_error_default(error);
+		}
+	}
 
 	/* Class specific cleanup? */
 	if (object->common.type == SJME_NVM_STRUCT_ARRAY_INSTANCE)
