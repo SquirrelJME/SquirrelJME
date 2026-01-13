@@ -257,7 +257,7 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 
 		/* Lookup initCause to flag it on. */
 		initCauseID = NULL;
-		if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameTypeU(
+		if (sjme_error_is(error = sjme_nvm_vmField_idByNameTypeU(
 			throwableClass, inThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
 			SJME_JNI_TRUE,
 			"_initCause", "Z",
@@ -266,7 +266,7 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 
 		/* Lookup cause, to set it. */
 		causeID = NULL;
-		if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameTypeU(
+		if (sjme_error_is(error = sjme_nvm_vmField_idByNameTypeU(
 			throwableClass, inThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
 			SJME_JNI_TRUE,
 			"_cause", "Ljava/lang/Throwable;",
@@ -568,7 +568,7 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 
 	/* Locate method to execute, since we are calling it, it is required. */
 	id = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+	if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
 		inClass, inThread, instanceType, SJME_JNI_TRUE, inName,
 		inType, &id)) || id == NULL)
 		return sjme_error_vmError(inThread, error);

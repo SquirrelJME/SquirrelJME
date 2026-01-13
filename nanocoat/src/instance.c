@@ -178,7 +178,7 @@ sjme_errorCode sjme_nvm_instance_defaultInit(
 	
 	/* Locate the default constructor. */
 	defaultCon = NULL;
-	if (sjme_error_is(sjme_nvm_vmClass_methodIDByNameTypeU(
+	if (sjme_error_is(sjme_nvm_vmMethod_idByNameTypeU(
 		sjme_atomic_g(sjme_jclass, &inObject->isClass),
 		contextThread, SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_JNI_TRUE, "<init>", inDesc,

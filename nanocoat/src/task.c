@@ -477,7 +477,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 
 	/* Locate the message field, if at all possible... */
 	messageId = NULL;
-	if (sjme_error_is(sjme_nvm_vmClass_fieldIDByNameTypeU(throwableClass,
+	if (sjme_error_is(sjme_nvm_vmField_idByNameTypeU(throwableClass,
 		contextThread,
 		SJME_NVM_CLASS_MEMBER_INSTANCE, SJME_JNI_FALSE,
 		"_message", "Ljava/lang/String;", &messageId)))
@@ -485,7 +485,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 
 	/* Locate the cause field as well, if possible... */
 	causeId = NULL;
-	if (sjme_error_is(sjme_nvm_vmClass_fieldIDByNameTypeU(throwableClass,
+	if (sjme_error_is(sjme_nvm_vmField_idByNameTypeU(throwableClass,
 		contextThread,
 		SJME_NVM_CLASS_MEMBER_INSTANCE, SJME_JNI_FALSE,
 		"_cause", "Ljava/lang/Throwable;", &causeId)))

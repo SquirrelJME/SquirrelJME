@@ -172,7 +172,7 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 
 	/* Locate the main method. */
 	mainMethod = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameTypeU(
+	if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameTypeU(
 		mainClass, SJME_F_T(inFrame),
 		SJME_NVM_CLASS_MEMBER_STATIC, SJME_JNI_TRUE,
 		"main", "([Ljava/lang/String;)V", &mainMethod)) ||

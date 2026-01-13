@@ -103,6 +103,74 @@ struct sjme_jfieldIDBase
 	/** The direct offset to this field. */
 	sjme_jint pointerOffset;
 };
+	
+/**
+ * Locates a field in the given class by name and type.
+ * 
+ * @param inClass The class to look within.
+ * @param contextThread The context thread.
+ * @param instanceType The type of field instance to locate.
+ * @param required Is this a required lookup?
+ * @param inName The name of the field to resolve.
+ * @param inType The type of the field to resolve.
+ * @param outID The resultant field.
+ * @return Any resultant error, if any.
+ * @since 2025/06/19
+ */
+sjme_errorCode sjme_nvm_vmField_idByNameType(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
+	sjme_attrInPositive sjme_charSeq inName,
+	sjme_attrInPositive sjme_charSeq inType,
+	sjme_attrOutNotNull sjme_jfieldID* outID);
+	
+/**
+ * Locates a field in the given class by name and type.
+ * 
+ * @param inClass The class to look within.
+ * @param contextThread The context thread.
+ * @param instanceType The type of field instance to locate.
+ * @param required Is this a required lookup?
+ * @param inName The name of the field to resolve.
+ * @param inType The type of the field to resolve.
+ * @param outID The resultant field.
+ * @return Any resultant error, if any.
+ * @since 2025/09/06
+ */
+sjme_errorCode sjme_nvm_vmField_idByNameTypeU(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInValue sjme_jboolean required,
+	sjme_attrInPositive sjme_lpcstr inName,
+	sjme_attrInPositive sjme_lpcstr inType,
+	sjme_attrOutNotNull sjme_jfieldID* outID);
+	
+/**
+ * Locates the source field in the given class chain for the given static
+ * or instance field ID, which would be the source target field for the given
+ * field slot.
+ * 
+ * @param inClass The class tree to look within. 
+ * @param instanceType The type of instance this is.
+ * @param fieldId The field identifier.
+ * @param extendedType The Java type used.
+ * @param outInfo The output info.
+ * @return Any resultant error.
+ * @since 2024/11/03
+ */
+sjme_errorCode sjme_nvm_vmField_sourceByIndex(
+	sjme_attrInNotNull sjme_jclass inClass,
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
+		sjme_nvm_class_instanceType instanceType,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS)
+		sjme_extendedTypeId extendedType,
+	sjme_attrInPositive sjme_jint fieldId,
+	sjme_attrOutNotNull sjme_nvm_class_fieldInfo* outInfo);
 
 /*--------------------------------------------------------------------------*/
 

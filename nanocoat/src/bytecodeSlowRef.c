@@ -114,7 +114,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		if (callType == SJME_NVM_CALL_VIRTUAL)
 		{
 			/* Lookup again. */
-			if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+			if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
 				sjme_atomic_g(sjme_jclass, &instance->isClass),
 				SJME_F_T(inFrame),
 				SJME_NVM_CLASS_MEMBER_INSTANCE,
@@ -474,7 +474,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	
 	/* Lookup field in the class. */
 	fieldId = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameType(
+	if (sjme_error_is(error = sjme_nvm_vmField_idByNameType(
 		desireClass, SJME_F_T(inFrame),
 		SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_JNI_TRUE,
@@ -683,7 +683,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 	
 	/* Lookup interface method. */
 	methodId = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByInterface(
+	if (sjme_error_is(error = sjme_nvm_vmMethod_idByInterface(
 		SJME_F_T(inFrame), SJME_JNI_TRUE, &methodId,
 		depthRef.v.l, methodRef)) ||
 		methodId == NULL)
@@ -747,7 +747,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	memset(&commit, 0, sizeof(commit));
 
 	/* The target method needs to be found dynamically. */
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+	if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
 		refClass, SJME_F_T(inFrame), SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_JNI_TRUE, SJME_P_M_N(entry)->seq,
 		SJME_P_M_T(entry)->seq, &refMethod)) ||
@@ -782,7 +782,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	/* Call superclass method instead? */
 	if ((!isPrivate && !isPackagePrivate) && inSuper && !isInit)
 	{
-		if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+		if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
 			SJME_C_SU(refClass),
 			SJME_F_T(inFrame),
 			SJME_NVM_CLASS_MEMBER_INSTANCE,
@@ -850,7 +850,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	
 	/* Lookup target method. */
 	target = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+	if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
 		refClass, SJME_F_T(inFrame), SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_JNI_TRUE,
 		SJME_P_M_N(entry)->seq,
@@ -911,7 +911,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 	
 	/* Lookup target method. */
 	target = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+	if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
 		refClass, SJME_F_T(inFrame), SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_JNI_TRUE,
 		SJME_P_M_N(entry)->seq,
@@ -1298,7 +1298,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	
 	/* Lookup field in the class. */
 	fieldId = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameType(
+	if (sjme_error_is(error = sjme_nvm_vmField_idByNameType(
 		desireClass, SJME_F_T(inFrame),
 		SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_JNI_TRUE,
