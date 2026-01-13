@@ -615,7 +615,7 @@ typedef enum sjme_nvm_class_annotationTag
 	SJME_NVM_CLASS_ANNOTATION_TAG_ARRAY = '[',
 } sjme_nvm_class_annotationTag;
 
-typedef struct sjme_nvm_class_annotationBase
+struct sjme_nvm_class_annotationBase
 {
 	/** The class name. */
 	sjme_nvm_stringPool_string className;
@@ -634,7 +634,7 @@ typedef struct sjme_nvm_class_annotationBase
 	
 	/** String Value. */
 	sjme_nvm_stringPool_string valueString;
-} sjme_nvm_class_annotationBase;
+};
 
 struct sjme_nvm_class_fieldInfoBase
 {

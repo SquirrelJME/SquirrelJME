@@ -278,10 +278,10 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 			SJME_AS_JOBJECT(toss), initCauseID);
 		accessor->v.z = SJME_JNI_TRUE;
 
-		/* Set actual cause now, and its check value. */
+		/* Set actual cause now, and its check value directly. */
 		accessor = sjme_nvm_instance_fieldAccessor(
 			SJME_AS_JOBJECT(toss), causeID);
-		accessor->l.p = SJME_AS_JOBJECT(toss);
+		accessor->l.p = sjme_weakUp(toss);
 		accessor->l.check = toss->object.identityHash;
 
 		/* If we are not just replacing the tossed exception that was */

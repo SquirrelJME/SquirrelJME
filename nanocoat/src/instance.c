@@ -326,6 +326,7 @@ sjme_errorCode sjme_nvm_instance_initFields(
 	sjme_nvm_jfieldAccessFunc accessor;
 	sjme_nvm_rawFieldValue* direct;
 	sjme_nvm_class_fieldConstVal* constVal;
+	sjme_jstring constString;
 
 	if (contextThread == NULL || instance == NULL || chunk == NULL ||
 		fields == NULL || placements == NULL)
@@ -355,21 +356,17 @@ sjme_errorCode sjme_nvm_instance_initFields(
 			field->info->javaType == SJME_JAVA_TYPE_ID_OBJECT)
 		{
 			/* Initialize. */
-			direct->l.p = NULL;
+			constString = NULL;
 			if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
-				contextThread, SJME_AS_JSTRINGP(&direct->l),
-				constVal->value.string)) || direct->l.p == NULL)
+				contextThread, SJME_AS_JSTRINGP(&constString),
+				constVal->value.string)) || constString == NULL)
 				return sjme_error_vmError(contextThread,
 					sjme_error_defaultOr(error,
 						SJME_ERROR_STATIC_STRING_INIT));
-
-				/* Count up as this exists in a field. */
-				if (sjme_error_is(error = sjme_nvm_instance_countUp(
-					direct->l.p)))
-					return sjme_error_vmError(contextThread, error);
-
-			/* Set check value. */
-			direct->l.check = direct->l.p->identityHash;
+			
+			/* Set field. */
+			direct->l.p = sjme_weakUpR(sjme_jobject, constString);
+			direct->l.check = constString->object.identityHash;
 		}
 
 		/* Copy value directly is primitive. */
@@ -398,6 +395,10 @@ sjme_errorCode sjme_nvm_instance_initFieldsChunk(
 		/* If there are no fields, ignore. */
 		if (placements->count[type] == 0)
 			continue;
+		
+		/* Not valid. */
+		if (placements->offset[type] < 0)
+			return SJME_ERROR_ILLEGAL_STATE;
 		
 		/* Determine the base offset to write at. */
 		into = SJME_POINTER_OFFSET(chunk, placements->offset[type]);

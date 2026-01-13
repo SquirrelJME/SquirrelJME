@@ -202,6 +202,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 		if (extendedType == SJME_JAVA_TYPE_ID_OBJECT)
 			typeMul = sizeof(sjme_nvm_fieldObject);
 		
+		/* This field is not valid. */
+		if (placements->offset[extendedType] < 0)
+			return SJME_ERROR_ILLEGAL_STATE;
+		
 		/* Determine the pointer offset for this field into the object */
 		id->pointerOffset = placements->offset[extendedType] +
 			offsetof(sjme_nvm_fieldValues, values) +
@@ -1067,6 +1071,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_jmethodID staticInit;
 	sjme_nvm_frame ignoreFrame;
 	sjme_jclass classType;
+	sjme_nvm_jclass_fields* singleFields;
 	
 	if (inClass == NULL || contextThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1227,6 +1232,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	{
 		/* Determine base allocation size, and extra base. */
 		/* Static field storage always has zero base. */
+		singleFields = &inClass->fields[i];
 		if (i == SJME_NVM_CLASS_MEMBER_STATIC)
 			allocSize = 0;
 		else if (superClass == NULL)
@@ -1239,19 +1245,30 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 
 		/* The self allocation base is where fields should be stored for */
 		/* the fields in this specific class. */
-		inClass->fields[i].allocSelfBase = allocSize;
+		singleFields->allocSelfBase = allocSize;
 	
 		/* Determine offset for fields into the object, along with how much */
 		/* space they should take up. */
 		for (extendedType = 0; extendedType < SJME_NUM_EXTENDED_JAVA_TYPE_IDS;
 			extendedType++)
 		{
+			/* There are no fields here, so we do not want to claim any */
+			/* space to store nothing. */
+			if (inClass->info->fieldCount[i][extendedType] == 0)
+			{
+				/* Invalidate. */
+				singleFields->offset[extendedType] = INT32_MIN;
+				
+				/* Skip. */
+				continue;
+			}
+			
 			/* Make sure the offset is fully aligned first. */
 			allocSize = sjme_util_alignTo(allocSize,
 				SJME_POINTER_BYTES);
 
 			/* Place the offset here. */
-			inClass->fields[i].offset[extendedType] = allocSize;
+			singleFields->offset[extendedType] = allocSize;
 
 			/* Grow the allocation size by what is needed to store */
 			/* the fields. */
@@ -1260,7 +1277,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		}
 
 		/* Store rounded up allocation size, always to the pointer. */
-		inClass->fields[i].allocSize = sjme_util_alignTo(allocSize,
+		singleFields->allocSize = sjme_util_alignTo(allocSize,
 			SJME_POINTER_BYTES);
 	}
 

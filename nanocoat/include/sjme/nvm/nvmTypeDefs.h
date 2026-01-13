@@ -20,7 +20,6 @@
 #include "sjme/config.h"
 #include "sjme/atomic.h"
 #include "sjme/list.h"
-#include "sjme/nvm/nvm.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -542,6 +541,33 @@ SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryNameAndType, 1);
 	
 /** A list of @link sjme_nvm_class_annotation @endlink . */
 SJME_LIST_DECLARE(sjme_nvm_class_annotation, 0);
+	
+/** List of method binds. */
+SJME_LIST_DECLARE(sjme_jmethodID, 0);
+
+/** List of interface binds. */
+SJME_LIST_DECLARE(sjme_jinterfaceID, 0);
+	
+/**
+ * A list of classes.
+ * 
+ * @since 2024/10/22
+ */
+SJME_LIST_DECLARE(sjme_jclass, 0);
+	
+/**
+ * A list of atomic references to classes.
+ * 
+ * @since 2025/10/12
+ */
+SJME_LIST_DECLARE(sjme_atomic(sjme_jclass), 0);
+	
+/**
+ * A list of phantom references to classes.
+ * 
+ * @since 2025/10/12
+ */
+SJME_LIST_DECLARE(sjme_phantom(sjme_jclass), 0);
 	
 #pragma endregion(AtomicsAndLists)
 

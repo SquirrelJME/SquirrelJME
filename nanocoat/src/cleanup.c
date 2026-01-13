@@ -691,11 +691,11 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_jobject object, ref;
-	sjme_jclass isClass;
-	sjme_nvm_rawFieldValue* rawField;
-	sjme_jfieldID fieldBind;
-	sjme_list(sjme_jfieldID)* fieldBinds;
+	sjme_jclass isClass, atClass;
 	sjme_jint i, n;
+	sjme_nvm_jclass_fields* fields;
+	sjme_nvm_fieldValues* rawValues;
+	sjme_nvm_fieldObject* value;
 	SJME_CLEANUP_DECL;
 	
 	/* Recover. */
@@ -705,37 +705,45 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 	
 	/* Cleanup when there is a valid class. */
 	isClass = sjme_atomic_g(sjme_jclass, &object->isClass);
-	if (isClass != NULL)
+	for (atClass = isClass; atClass != NULL;
+		atClass = sjme_atomic_g(sjme_jclass, &atClass->superClass))
 	{
-		/* We need to clean up all the instance fields for this object. */
-		fieldBinds = isClass->fields[SJME_NVM_CLASS_MEMBER_INSTANCE].binds;
-		for (n = (fieldBinds != NULL ? fieldBinds->length : 0), i = 0;
-			i < n; i++)
+		/* We need to clean up all the instance fields for this object, */
+		/* however at this point it is possible for the field binds to be */
+		/* invalidated, so directly access the fields. */
+		fields = &isClass->fields[SJME_NVM_CLASS_MEMBER_INSTANCE];
+		
+		/* Are there any actual objects to free? */
+		n = fields->count[SJME_JAVA_TYPE_ID_OBJECT];
+		if (n <= 0)
+			continue;
+		
+		/* Recover the raw field structure. */
+		rawValues = SJME_POINTER_OFFSET(object,
+			fields->offset[SJME_JAVA_TYPE_ID_OBJECT]);
+		
+		/* Sanity check. */
+		if (n != rawValues->length)
+			return sjme_error_vmError(NULL, SJME_ERROR_ILLEGAL_STATE);
+		
+		/* Cleanup all object fields. */
+		for (i = 0; i < n; i++)
 		{
-			/* Skip blank binds. */
-			fieldBind = fieldBinds->elements[i];
-			if (fieldBind == NULL)
-				continue;
+			/* We are working on this value. */
+			value = &rawValues->values.l[i];
 			
-			/* Only consider objects. */
-			if (fieldBind->basicType != SJME_JAVA_TYPE_ID_OBJECT)
-				continue;
+			/* Make sure this points to a valid object. */
+			ref = value->p;
+			if (sjme_nvm_isAR(ref, SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
+			{
+				/* Get and clear. */
+				value->p = NULL;
+				value->check = 0;
 			
-			/* Grab the raw field. */
-			rawField = sjme_nvm_instance_fieldAccessor(object,
-				fieldBind);
-			if (rawField == NULL)
-				return sjme_error_vmError(NULL, SJME_ERROR_ILLEGAL_STATE);
-			
-			/* Get and clear. */
-			ref = rawField->l.p;
-			rawField->l.p = NULL;
-			rawField->l.check = 0;
-			
-			/* Count down. */
-			if (ref != NULL)
+				/* Count down. */
 				if (sjme_error_is(error = sjme_nvm_instance_countDown(ref)))
 					return sjme_error_default(error);
+			}
 		}
 	}
 
