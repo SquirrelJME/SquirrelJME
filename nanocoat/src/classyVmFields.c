@@ -11,6 +11,47 @@
 #include "sjme/util.h"
 #include "sjme/nvm/instance.h"
 
+sjme_errorCode sjme_nvm_vmField_atomicSet(
+	sjme_attrInOutNotNull sjme_nvm_rawFieldValue* rawField,
+	sjme_attrInRange(0, SJME_NVM_VMFIELD_NUM_VAR)
+		sjme_nvm_vmField_var SJME_VFT_,
+	...)
+{
+	if (rawField == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (SJME_VFT_ < 0 || SJME_VFT_ >= SJME_NVM_VMFIELD_NUM_VAR)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_vmField_cisSet(
+	sjme_attrInOutNotNull sjme_nvm_rawFieldValue* rawField,
+	sjme_attrInRange(0, SJME_NVM_VMFIELD_NUM_VAR)
+		sjme_nvm_vmField_var SJME_VFT_,
+	...)
+{
+	if (rawField == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (SJME_VFT_ < 0 || SJME_VFT_ >= SJME_NVM_VMFIELD_NUM_VAR)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Barrier. */
+	sjme_atomic_barrier();
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+	/* Barrier. */
+	sjme_atomic_barrier();
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_vmField_idByNameType(
 	sjme_attrInNotNull sjme_jclass inClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
