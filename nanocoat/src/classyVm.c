@@ -258,12 +258,12 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldStatics(
 	chunk = NULL;
 	if (sjme_error_is(error = sjme_alloc(SJME_T_S(contextThread)->allocPool,
 		placements->allocSize, &chunk)) || chunk == NULL)
-		return sjme_error_default(error);
+		return sjme_error_vmError(contextThread, error);
 
 	/* Initialize each sub-chunk for each placement. */
 	if (sjme_error_is(error = sjme_nvm_instance_initFieldsChunk(
 		chunk, placements)))
-		return sjme_error_default(error);
+		return sjme_error_vmError(contextThread, error);
 
 	/* Set chunk. */
 	inClass->staticChunk = chunk;
@@ -1060,7 +1060,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	sjme_errorCode error;
 	sjme_nvm_class_info info;
 	sjme_nvm_vmClass_loader loader;
-	sjme_jint i, n;
+	sjme_jint i, n, j, numFields;
 	sjme_jclass superClass, interface;
 	sjme_list(sjme_jclass)* interfaces;
 	sjme_alloc_pool allocPool;
@@ -1284,8 +1284,13 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	/* Bind instance and static fields. */
 	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
 	{
+		/* Count the number of fields. */
+		numFields = 0;
+		for (j = 0; j < SJME_NUM_EXTENDED_JAVA_TYPE_IDS; j++)
+			numFields += info->fieldCount[i][j];
+		
 		/* Skip if there are no fields at all. */
-		if (info->fields == NULL)
+		if (numFields == 0)
 			continue;
 		
 		/* Initialize binds. */
@@ -1295,6 +1300,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			loader, inClass, i, contextThread,
 			&fieldBinds)) || fieldBinds == NULL)
 			goto fail_bindFields;
+		
 		inClass->fields[i].binds = fieldBinds;
 	}
 
@@ -1534,7 +1540,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
 	memset(&wrapSeq, 0, sizeof(wrapSeq));
 	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&wrapSeq,
 		wrapName, 0, -1)))
-		return sjme_error_default(error);
+		return sjme_error_vmError(contextThread, error);
 
 	/* Forward. */
 	return sjme_nvm_vmClass_loaderLoadF(inLoader, outClass,
