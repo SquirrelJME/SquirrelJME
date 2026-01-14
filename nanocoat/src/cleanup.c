@@ -433,10 +433,12 @@ static sjme_errorCode sjme_nvm_cleanup_postArray(
 	if (array == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Only objects need to be GCed. */
+	/* Only objects need to be GCed, we can set field items to NULL. */
 	if (array->type == SJME_JAVA_TYPE_ID_OBJECT)
 		for (n = array->length, i = 0; i < n; i++)
-			SJME_SIMPLE_CLOSE(array->e.l[i]);
+			if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+				&array->e, i, NULL, SJME_VLS_JOBJECT(NULL))))
+				return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -694,8 +696,8 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 	sjme_jclass isClass, atClass;
 	sjme_jint i, n;
 	sjme_nvm_jclass_fields* fields;
-	sjme_nvm_fieldValues* rawValues;
-	sjme_nvm_fieldObject* value;
+	sjme_nvm_valueSet* valueSet;
+	sjme_nvm_value* value;
 	SJME_CLEANUP_DECL;
 	
 	/* Recover. */
@@ -719,32 +721,18 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 			continue;
 		
 		/* Recover the raw field structure. */
-		rawValues = SJME_POINTER_OFFSET(object,
+		valueSet = SJME_POINTER_OFFSET(object,
 			fields->offset[SJME_JAVA_TYPE_ID_OBJECT]);
 		
 		/* Sanity check. */
-		if (n != rawValues->length)
+		if (n != valueSet->length)
 			return sjme_error_vmError(NULL, SJME_ERROR_ILLEGAL_STATE);
 		
 		/* Cleanup all object fields. */
 		for (i = 0; i < n; i++)
-		{
-			/* We are working on this value. */
-			value = &rawValues->values.l[i];
-			
-			/* Make sure this points to a valid object. */
-			ref = value->p;
-			if (sjme_nvm_isAR(ref, SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE))
-			{
-				/* Get and clear. */
-				value->p = NULL;
-				value->check = 0;
-			
-				/* Count down. */
-				if (sjme_error_is(error = sjme_nvm_instance_countDown(ref)))
-					return sjme_error_default(error);
-			}
-		}
+			if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+				valueSet, i, NULL, SJME_VLS_JOBJECT(NULL))))
+				return sjme_error_default(error);
 	}
 
 	/* Class specific cleanup? */

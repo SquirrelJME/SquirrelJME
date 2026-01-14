@@ -18,6 +18,7 @@ SJME_NVM_MLE_FUNCTION_DECL(classPath)
 	sjme_list(sjme_nvm_rom_library)* libraries;
 	sjme_jint i, n;
 	sjme_jarray result;
+	sjme_jbracketJarPackage bracket;
 
 	/* Something is very wrong! */
 	if (SJME_T_K(inFrame)->classLoader == NULL ||
@@ -38,10 +39,19 @@ SJME_NVM_MLE_FUNCTION_DECL(classPath)
 
 	/* Libraries need to be converted to brackets. */
 	for (i = 0; i < n; i++)
+	{
+		/* Setup bracket. */
+		bracket = NULL;
 		if (sjme_error_is(error = sjme_nvm_task_bracketJarPackage(
 			SJME_F_T(inFrame), libraries->elements[i],
-			SJME_AS_B_JARPACKAGEP(&result->e.l[i]))))
+			&bracket)) || bracket == NULL)
 			return sjme_error_vmError(inFrame, error);
+		
+		/* Set into the array. */
+		if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+			&result->e, i, NULL, SJME_VLS_JOBJECT(bracket))))
+			return sjme_error_vmError(inFrame, error);
+	}
 	
 	/* Success! */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;

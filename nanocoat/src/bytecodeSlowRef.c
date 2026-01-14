@@ -302,7 +302,9 @@ static sjme_errorCode sjme_nvm_byteCode_slowNewArrayMultiSub(
 				return sjme_error_vmError(inFrame, error);
 
 			/* Store into this array. */
-			baseArray->e.l[i] = SJME_AS_JOBJECT(sub.v.l);
+			if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+				&baseArray->e, i, NULL, SJME_VLS_JOBJECT(sub.v.l))))
+				return sjme_error_vmError(inFrame, error);
 		}
 	}
 
@@ -1482,58 +1484,11 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
 
-	/* Load value to push. */
+	/* Load value to be pushed. */
 	memset(&pushValue, 0, sizeof(pushValue));
-	pushValue.t = componentType->typeId;
-	switch (componentType->arrayTypeId)
-	{
-		case SJME_BASIC_TYPE_ID_BOOLEAN:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-			
-		case SJME_BASIC_TYPE_ID_BYTE:
-			pushValue.v.i =
-				((sjme_jint)array->e.b[index]) & INT32_C(0xFF);
-			if ((pushValue.v.i & INT32_C(0x80)) != 0)
-				pushValue.v.i |= INT32_C(0xFFFFFF00);
-			break;
-			
-		case SJME_BASIC_TYPE_ID_SHORT:
-			pushValue.v.i =
-				((sjme_jint)array->e.s[index]) & INT32_C(0xFFFF);
-			if ((pushValue.v.i & INT32_C(0x8000)) != 0)
-				pushValue.v.i |= INT32_C(0xFFFF0000);
-			break;
-			
-		case SJME_BASIC_TYPE_ID_CHARACTER:
-			pushValue.v.i =
-				((sjme_jint)array->e.c[index]) & INT32_C(0xFFFF);
-			break;
-			
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			pushValue.v.i = array->e.i[index];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_LONG:
-			pushValue.v.j = array->e.j[index];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			pushValue.v.f = array->e.f[index];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			pushValue.v.d = array->e.d[index];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-			pushValue.v.l = array->e.l[index];
-			break;
-
-		default:
-			return sjme_error_vmError(inFrame,
-				SJME_ERROR_STACK_INVALID_WRITE);
-	}
+	if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
+		&array->e, index, SJME_VLG_JVALUE_TYPED_P(&pushValue))))
+		return sjme_error_vmError(inFrame, error);
 
 	/* Push. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
@@ -1602,55 +1557,10 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
 
 	/* Store value into the array. */
-	switch (componentType->arrayTypeId)
-	{
-		case SJME_BASIC_TYPE_ID_BOOLEAN:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-			
-		case SJME_BASIC_TYPE_ID_BYTE:
-			array->e.b[index] = (sjme_jbyte)popValue.v.i;
-			break;
-			
-		case SJME_BASIC_TYPE_ID_SHORT:
-			array->e.s[index] = (sjme_jshort)popValue.v.i;
-			break;
-			
-		case SJME_BASIC_TYPE_ID_CHARACTER:
-			array->e.c[index] = (sjme_jchar)popValue.v.i;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			array->e.i[index] = popValue.v.i;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_LONG:
-			array->e.j[index] = popValue.v.j;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			array->e.f[index] = popValue.v.f;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			array->e.d[index] = popValue.v.d;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-			/* If there is an old value here, commit it. */
-			if (array->e.l[index] != NULL)
-				if (sjme_error_is(error = sjme_nvm_task_frameCommitPush(
-					inFrame, &commit, array->e.l[index])))
-					return sjme_error_vmError(inFrame, error);
-			
-			/* Set new value, count it up as the array now uses it. */
-			array->e.l[index] = sjme_weakUp(popValue.v.l);
-			break;
-
-		default:
-			return sjme_error_vmError(inFrame,
-				SJME_ERROR_STACK_INVALID_READ);
-	}
+	if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+		&array->e, index, &commit,
+		SJME_VLS_JVALUE_TYPED_P(&popValue))))
+		return sjme_error_vmError(inFrame, error);
 
 	/* Commit GC. */
 	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))

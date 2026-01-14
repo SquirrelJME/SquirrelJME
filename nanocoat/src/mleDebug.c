@@ -54,7 +54,9 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 			if (point->frame == atFrame && point->id == atFrame->id)
 			{
 				/* Store into the array. */
-				result->e.l[into] = SJME_AS_JOBJECT(point);
+				if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+					&result->e, into, NULL, SJME_VLS_JOBJECT(point))))
+					goto fail_setPoint;
 				
 				/* No need to create. */
 				continue;
@@ -83,7 +85,9 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 		point->capture.lastIv = atFrame->lastIv;
 		
 		/* Store into the array. */
-		result->e.l[into] = SJME_AS_JOBJECT(point);
+		if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+			&result->e, into, NULL, SJME_VLS_JOBJECT(point))))
+			goto fail_setPoint;
 	}
 
 	/* Return the trace point array. */
@@ -91,6 +95,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 	argR->v.l = SJME_AS_JOBJECT(result);
 	return SJME_ERROR_NONE;
 
+fail_setPoint:
 fail_allocBracket:
 	/* Count down the array so it gets GCed. */
 	if (result != NULL)

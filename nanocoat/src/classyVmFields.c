@@ -11,43 +11,58 @@
 #include "sjme/util.h"
 #include "sjme/nvm/instance.h"
 
-sjme_errorCode sjme_nvm_vmField_atomicSet(
-	sjme_attrInOutNotNull sjme_nvm_rawFieldValue* rawField,
-	sjme_attrInRange(0, SJME_NVM_VMFIELD_NUM_VAR)
-		sjme_nvm_vmField_var SJME_VFT_,
+sjme_errorCode sjme_nvm_vmField_cisGet(
+	sjme_attrInNotNull sjme_nvm_value* srcValue,
+	sjme_attrInRange(-SJME_NVM_VMFIELD_NUM_VAR, 0)
+		sjme_nvm_vmField_var SJME_VLG_,
 	...)
 {
-	if (rawField == NULL)
+	if (srcValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (SJME_VFT_ < 0 || SJME_VFT_ >= SJME_NVM_VMFIELD_NUM_VAR)
+	if (SJME_VLG_ < 0 || SJME_VLG_ >= SJME_NVM_VMFIELD_NUM_VAR)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
-sjme_errorCode sjme_nvm_vmField_cisSet(
-	sjme_attrInOutNotNull sjme_nvm_rawFieldValue* rawField,
-	sjme_attrInRange(0, SJME_NVM_VMFIELD_NUM_VAR)
-		sjme_nvm_vmField_var SJME_VFT_,
+sjme_errorCode sjme_nvm_vmField_cisGetS(
+	sjme_attrInOutNotNull sjme_nvm_valueSet* srcSet,
+	sjme_attrInPositive sjme_jint getIndex,
+	sjme_attrInRange(-SJME_NVM_VMFIELD_NUM_VAR, 0)
+		sjme_nvm_vmField_var SJME_VLG_,
 	...)
 {
-	if (rawField == NULL)
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_vmField_cisSet(
+	sjme_attrInOutNotNull sjme_nvm_value* destValue,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInRange(0, SJME_NVM_VMFIELD_NUM_VAR)
+		sjme_nvm_vmField_var SJME_VLS_,
+	...)
+{
+	if (destValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (SJME_VFT_ < 0 || SJME_VFT_ >= SJME_NVM_VMFIELD_NUM_VAR)
+	if (SJME_VLS_ < 0 || SJME_VLS_ >= SJME_NVM_VMFIELD_NUM_VAR)
 		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* Barrier. */
-	sjme_atomic_barrier();
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
-	
-	/* Barrier. */
-	sjme_atomic_barrier();
-	
+}
+
+sjme_errorCode sjme_nvm_vmField_cisSetS(
+	sjme_attrInOutNotNull sjme_nvm_valueSet* destSet,
+	sjme_attrInPositive sjme_jint setIndex,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInRange(0, SJME_NVM_VMFIELD_NUM_VAR)
+		sjme_nvm_vmField_var SJME_VLS_,
+	...)
+{
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

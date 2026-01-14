@@ -460,7 +460,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	sjme_jint i;
 	sjme_jfieldID messageId, causeId;
 	sjme_jstring message;
-	sjme_nvm_rawFieldValue* accessor;
+	sjme_nvm_value* accessor;
 	sjme_charSeq messageSeq;
 	sjme_jboolean printedMessage;
 	
@@ -539,8 +539,17 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 		memset(&traceState, 0, sizeof(traceState));
 		for (i = 0; i < pointArray->length; i++)
 		{
+			/* Read in. */
+			point = NULL;
+			if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
+				&pointArray->e, i, SJME_VLG_JOBJECT_P(&point))))
+				return sjme_error_default(error);
+			
+			/* Ignore NULLs. */
+			if (point == NULL)
+				continue;
+			
 			/* Must be a trace point. */
-			point = (sjme_jbracketTrace)pointArray->e.l[i];
 			if (!sjme_nvm_isAR(point,
 				SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE))
 				return SJME_ERROR_CLASS_CAST;

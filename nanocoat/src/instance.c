@@ -23,14 +23,14 @@ sjme_jint sjme_nvm_fieldValueSize(
 		return -1;
 	
 	if (extendedType == SJME_JAVA_TYPE_ID_OBJECT)
-		baseSize = sizeof(sjme_nvm_fieldObject);
+		baseSize = sizeof(sjme_nvm_valueObject);
 	else
 		baseSize = sjme_nvm_typeMul[extendedType];
 	
 	/* Base size is the offset of where values start */
 	return (baseSize * n) +
-		offsetof(sjme_nvm_fieldValues, values) +
-		offsetof(sjme_nvm_rawFieldValues, l);
+		offsetof(sjme_nvm_valueSet, values) +
+		offsetof(sjme_nvm_valueSetRaw, l);
 }
 
 sjme_jint sjme_nvm_instance_calcIdentityHash(
@@ -251,12 +251,12 @@ sjme_errorCode sjme_nvm_instance_directPlacement(
 	return sjme_error_notImplemented(0);
 }
 
-sjme_nvm_rawFieldValue* sjme_nvm_instance_fieldAccessor(
+sjme_nvm_value* sjme_nvm_instance_fieldAccessor(
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jfieldID field)
 {
 #define NUM_VOIDLESS 4
-	sjme_threadLocal(sjme_nvm_rawFieldValue, voidless[NUM_VOIDLESS]);
+	sjme_threadLocal(sjme_nvm_value, voidless[NUM_VOIDLESS]);
 	sjme_threadLocal(sjme_jint, voidlessNext);
 
 	/* If neither are valid, treat this as a bad memory read/write. */
@@ -324,7 +324,7 @@ sjme_errorCode sjme_nvm_instance_initFields(
 	sjme_jint i, n;
 	sjme_jfieldID field;
 	sjme_nvm_jfieldAccessFunc accessor;
-	sjme_nvm_rawFieldValue* direct;
+	sjme_nvm_value* direct;
 	sjme_nvm_class_fieldConstVal* constVal;
 	sjme_jstring constString;
 
@@ -365,8 +365,9 @@ sjme_errorCode sjme_nvm_instance_initFields(
 						SJME_ERROR_STATIC_STRING_INIT));
 			
 			/* Set field. */
-			direct->l.p = sjme_weakUpR(sjme_jobject, constString);
-			direct->l.check = constString->object.identityHash;
+			if (sjme_error_is(error = sjme_nvm_vmField_cisSet(
+			direct, NULL, SJME_VLS_JOBJECT(constString))))
+				return sjme_error_vmError(contextThread, error);
 		}
 
 		/* Copy value directly is primitive. */
@@ -384,7 +385,7 @@ sjme_errorCode sjme_nvm_instance_initFieldsChunk(
 	sjme_attrInNotNull sjme_nvm_jclass_fields* placements)
 {
 	sjme_extendedTypeId type;
-	sjme_nvm_fieldValues* into;
+	sjme_nvm_valueSet* into;
 	
 	if (chunk == NULL || placements == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -421,7 +422,7 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	sjme_attrInValue sjme_jboolean isPut)
 {
 	sjme_errorCode error;
-	sjme_nvm_rawFieldValue* direct;
+	sjme_nvm_value* direct;
 	sjme_nvm_jfieldAccessFunc accessor;
 
 	if (contextThread == NULL || commit == NULL || fieldId == NULL ||
@@ -457,20 +458,10 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 		
 		if (isPut)
 		{
-			/* Commit the old value to the GC. */
-			if (direct->l.p != NULL)
-				if (sjme_error_is(error = sjme_nvm_task_frameCommitPush(
-					NULL, commit, direct->l.p)))
-				return sjme_error_default(error);
-			
-			/* Put in the new value. */
-			direct->l.p = sjme_weakUp(stackType->v.l);
-
-			/* Set new check value. */
-			if (stackType->v.l == NULL)
-				direct->l.check = 0;
-			else
-				direct->l.check = stackType->v.l->identityHash;
+			/* Set the field value. */
+			if (sjme_error_is(error = sjme_nvm_vmField_cisSet(
+				direct, commit, SJME_VLS_JVALUE_TYPED_P(stackType))))
+				return sjme_error_vmError(contextThread, error);
 		}
 
 		/* Read in value. */

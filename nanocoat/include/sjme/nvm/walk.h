@@ -139,7 +139,7 @@ typedef enum sjme_nvm_walk_pseudoType
 	/** @link sjme_basicTypeId @endlink . */
 	SJME_NVM_WALK_PSEUDO_BASIC_TYPE_ID = -33,
 
-	/** @link sjme_nvm_rawArrayValues @endlink . */
+	/** @link sjme_nvm_valueSet @endlink . */
 	SJME_NVM_WALK_PSEUDO_RAW_ARRAY_VALUES = -34,
 
 	/** Unspecified stored binary data . */

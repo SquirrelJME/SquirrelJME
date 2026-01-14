@@ -200,7 +200,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 		extendedType = field->extendedType;
 		typeMul = sjme_nvm_typeMul[extendedType];
 		if (extendedType == SJME_JAVA_TYPE_ID_OBJECT)
-			typeMul = sizeof(sjme_nvm_fieldObject);
+			typeMul = sizeof(sjme_nvm_valueObject);
 		
 		/* This field is not valid. */
 		if (placements->offset[extendedType] < 0)
@@ -208,7 +208,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 		
 		/* Determine the pointer offset for this field into the object */
 		id->pointerOffset = placements->offset[extendedType] +
-			offsetof(sjme_nvm_fieldValues, values) +
+			offsetof(sjme_nvm_valueSet, values) +
 			((typeMul) * (typedOffset[extendedType]++));
 
 		/* Lookup class this stores if an object, but do not initialize. */

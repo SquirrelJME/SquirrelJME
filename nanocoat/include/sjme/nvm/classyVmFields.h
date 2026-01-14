@@ -40,28 +40,28 @@ extern "C"
  *
  * @since 2025/07/18
  */
-typedef struct sjme_nvm_fieldObject
+typedef struct sjme_nvm_valueObject
 {
 	/** The check for the object. */
 	sjme_jint check;
 	
 	/** The pointer to the object. */
 	sjme_alignPointer sjme_jobject p;
-} sjme_nvm_fieldObject;
+} sjme_nvm_valueObject;
 
 /**
  * Raw field value.
  *
  * @since 2025/07/18
  */
-typedef union sjme_nvm_rawFieldValue
+typedef union sjme_nvm_value
 {
 	/** Normal non-object values. */
 	sjme_jvaluePrimitive v;
 		
 	/** Object reference values. */
-	sjme_nvm_fieldObject l;
-} sjme_nvm_rawFieldValue;
+	sjme_nvm_valueObject l;
+} sjme_nvm_value;
 
 /**
  * Returns the direct pointer to the field data pointer.
@@ -70,7 +70,7 @@ typedef union sjme_nvm_rawFieldValue
  * @param field The field to access for.
  * @since 2025/06/21
  */
-typedef sjme_nvm_rawFieldValue* (*sjme_nvm_jfieldAccessFunc)(
+typedef sjme_nvm_value* (*sjme_nvm_jfieldAccessFunc)(
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jfieldID field);
 
@@ -111,6 +111,9 @@ struct sjme_jfieldIDBase
  */
 typedef enum sjme_nvm_vmField_var
 {
+	/** Not valid. */
+	SJME_NVM_VMFIELD_VAR_INVALID,
+	
 	/** @link sjme_jvalue @endlink. */
 	SJME_NVM_VMFIELD_VAR_JVALUE,
 	
@@ -126,40 +129,127 @@ typedef enum sjme_nvm_vmField_var
 	/** @link sjme_jobject @endlink. */
 	SJME_NVM_VMFIELD_VAR_JOBJECT,
 	
+	/** @link sjme_jobject* @endlink. */
+	SJME_NVM_VMFIELD_VAR_JOBJECT_P,
+	
 	/** The number of variable types. */
 	SJME_NVM_VMFIELD_NUM_VAR,
 } sjme_nvm_vmField_var;
 
 /**
- * Atomically sets the raw value of a field with a memory barrier.
+ * Non-atomically reads the value into another value type.
  * 
- * @param rawField The raw field to access.
- * @param SJME_VFT_ Pass via @code SJME_VFT_ @endcode macros.
- * @param ... Pass via @code SJME_VFT_ @endcode macros.
+ * @param srcValue The value storage to access.
+ * @param SJME_VLG_ Pass via @code SJME_VLG_ @endcode macros.
+ * @param ... Pass via @code SJME_VLG_ @endcode macros.
  * @return Any resultant error, if any.
- * @since 2026/01/12
+ * @since 2026/01/14
  */
-sjme_errorCode sjme_nvm_vmField_atomicSet(
-	sjme_attrInOutNotNull sjme_nvm_rawFieldValue* rawField,
-	sjme_attrInRange(0, SJME_NVM_VMFIELD_NUM_VAR)
-		sjme_nvm_vmField_var SJME_VFT_,
+sjme_errorCode sjme_nvm_vmField_cisGet(
+	sjme_attrInNotNull sjme_nvm_value* srcValue,
+	sjme_attrInRange(-SJME_NVM_VMFIELD_NUM_VAR, 0)
+		sjme_nvm_vmField_var SJME_VLG_,
 	...);
 
 /**
- * Non-atomically sets the raw value of a field.
+ * Non-atomically reads the value of an index within a value set, writing it
+ * to the given destination.
  * 
- * @param rawField The raw field to access.
- * @param SJME_VFT_ Pass via @code SJME_VFT_ @endcode macros.
- * @param ... Pass via @code SJME_VFT_ @endcode macros.
+ * @param srcSet The value set to access.
+ * @param getIndex The index into the get.
+ * @param SJME_VLG_ Pass via @code SJME_VLG_ @endcode macros.
+ * @param ... Pass via @code SJME_VLG_ @endcode macros.
  * @return Any resultant error, if any.
- * @since 2026/01/12
+ * @since 2026/01/14
  */
-sjme_errorCode sjme_nvm_vmField_cisSet(
-	sjme_attrInOutNotNull sjme_nvm_rawFieldValue* rawField,
-	sjme_attrInRange(0, SJME_NVM_VMFIELD_NUM_VAR)
-		sjme_nvm_vmField_var SJME_VFT_,
+sjme_errorCode sjme_nvm_vmField_cisGetS(
+	sjme_attrInOutNotNull sjme_nvm_valueSet* srcSet,
+	sjme_attrInPositive sjme_jint getIndex,
+	sjme_attrInRange(-SJME_NVM_VMFIELD_NUM_VAR, 0)
+		sjme_nvm_vmField_var SJME_VLG_,
 	...);
 
+/**
+ * Non-atomically sets the value to the given value.
+ * 
+ * @param destValue The value storage to access.
+ * @param commit Garbage collection commit.
+ * @param SJME_VLS_ Pass via @code SJME_VLS_ @endcode macros.
+ * @param ... Pass via @code SJME_VLS_ @endcode macros.
+ * @return Any resultant error, if any.
+ * @since 2026/01/14
+ */
+sjme_errorCode sjme_nvm_vmField_cisSet(
+	sjme_attrInOutNotNull sjme_nvm_value* destValue,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInRange(0, SJME_NVM_VMFIELD_NUM_VAR)
+		sjme_nvm_vmField_var SJME_VLS_,
+	...);
+
+/**
+ * Non-atomically sets the value of an index within a value set.
+ * 
+ * @param destSet The value set to access.
+ * @param setIndex The index into the set.
+ * @param commit Garbage collection commit.
+ * @param SJME_VLS_ Pass via @code SJME_VLS_ @endcode macros.
+ * @param ... Pass via @code SJME_VLS_ @endcode macros.
+ * @return Any resultant error, if any.
+ * @since 2026/01/14
+ */
+sjme_errorCode sjme_nvm_vmField_cisSetS(
+	sjme_attrInOutNotNull sjme_nvm_valueSet* destSet,
+	sjme_attrInPositive sjme_jint setIndex,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInRange(0, SJME_NVM_VMFIELD_NUM_VAR)
+		sjme_nvm_vmField_var SJME_VLS_,
+	...);
+
+#pragma region(SJME_VLG_)
+	
+/**
+ * Variable field value get.
+ * 
+ * @param varType Variable type.
+ * @param args Variable arguments.
+ * @since 2026/01/14
+ */
+#define SJME_VLG_(varType, args) \
+	(-varType), args
+	
+/**
+ * Get field into a @link sjme_jobject @endlink.
+ * 
+ * @param inValue The input value.
+ * @since 2026/01/14
+ */
+#define SJME_VLG_JOBJECT_P(inValue) \
+	SJME_VLG_(SJME_NVM_VMFIELD_VAR_JOBJECT_P, \
+		(sjme_jobject*)(inValue))
+	
+/**
+ * Get field into a @link sjme_jvalue @endlink.
+ * 
+ * @param inValue The input value.
+ * @since 2026/01/14
+ */
+#define SJME_VLG_JVALUE_P(inValue) \
+	SJME_VLG_(SJME_NVM_VMFIELD_VAR_JVALUE_P, \
+		(sjme_jvalue*)(inValue))
+	
+/**
+ * Get field into a @link sjme_jvalueTyped @endlink.
+ * 
+ * @param inValue The input value.
+ * @since 2026/01/14
+ */
+#define SJME_VLG_JVALUE_TYPED_P(inValue) \
+	SJME_VLG_(SJME_NVM_VMFIELD_VAR_JVALUE_TYPED_P, \
+		(sjme_jvalueTyped*)(inValue))
+	
+#pragma endregion(SJME_VLG_)
+#pragma region(SJME_VLS_)
+	
 /**
  * Variable field value set.
  * 
@@ -167,58 +257,70 @@ sjme_errorCode sjme_nvm_vmField_cisSet(
  * @param args Variable arguments.
  * @since 2026/01/12
  */
-#define SJME_VFT_(varType, args) \
+#define SJME_VLS_(varType, args) \
 	(varType), args
 	
 /**
- * Set field to a @link sjme_jobject @endlink.
+ * Set field from a @link sjme_jobject @endlink.
  * 
  * @param inValue The input value.
  * @since 2026/01/12
  */
-#define SJME_VFT_JOBJECT(inValue) \
-	SJME_VFT_(SJME_NVM_VMFIELD_VAR_JOBJECT, \
-		(sjme_jobject)inValue)
+#define SJME_VLS_JOBJECT(inValue) \
+	SJME_VLS_(SJME_NVM_VMFIELD_VAR_JOBJECT, \
+		(sjme_jobject)(inValue))
 	
 /**
- * Set field to a @link sjme_jvalue @endlink.
+ * Set field from a @link sjme_jobject* @endlink.
  * 
  * @param inValue The input value.
  * @since 2026/01/12
  */
-#define SJME_VFT_JVALUE(inValue) \
-	SJME_VFT_(SJME_NVM_VMFIELD_VAR_JVALUE, \
-		(sjme_jvalue)inValue)
+#define SJME_VLS_JOBJECT_P(inValue) \
+	SJME_VLS_(SJME_NVM_VMFIELD_VAR_JOBJECT_P, \
+		(sjme_jobject*)(inValue))
 	
 /**
- * Set field to a @link sjme_jvalue* @endlink.
+ * Set field from a @link sjme_jvalue @endlink.
  * 
  * @param inValue The input value.
  * @since 2026/01/12
  */
-#define SJME_VFT_JVALUE_P(inValue) \
-	SJME_VFT_(SJME_NVM_VMFIELD_VAR_JVALUE_P, \
-		(sjme_jvalue*)inValue)
+#define SJME_VLS_JVALUE(inValue) \
+	SJME_VLS_(SJME_NVM_VMFIELD_VAR_JVALUE, \
+		(sjme_jvalue)(inValue))
 	
 /**
- * Set field to a @link sjme_jvalueTyped @endlink.
+ * Set field from a @link sjme_jvalue* @endlink.
  * 
  * @param inValue The input value.
  * @since 2026/01/12
  */
-#define SJME_VFT_JVALUE_TYPED(inValue) \
-	SJME_VFT_(SJME_NVM_VMFIELD_VAR_JVALUE_TYPED, \
-		(sjme_jvalueTyped)inValue)
+#define SJME_VLS_JVALUE_P(inValue) \
+	SJME_VLS_(SJME_NVM_VMFIELD_VAR_JVALUE_P, \
+		(sjme_jvalue*)(inValue))
 	
 /**
- * Set field to a @link sjme_jvalueTyped* @endlink.
+ * Set field from a @link sjme_jvalueTyped @endlink.
  * 
  * @param inValue The input value.
  * @since 2026/01/12
  */
-#define SJME_VFT_JVALUE_TYPED_P(inValue) \
-	SJME_VFT_(SJME_NVM_VMFIELD_VAR_JVALUE_TYPED_P, \
-		(sjme_jvalueTyped*)inValue)
+#define SJME_VLS_JVALUE_TYPED(inValue) \
+	SJME_VLS_(SJME_NVM_VMFIELD_VAR_JVALUE_TYPED, \
+		(sjme_jvalueTyped)(inValue))
+	
+/**
+ * Set field from a @link sjme_jvalueTyped* @endlink.
+ * 
+ * @param inValue The input value.
+ * @since 2026/01/12
+ */
+#define SJME_VLS_JVALUE_TYPED_P(inValue) \
+	SJME_VLS_(SJME_NVM_VMFIELD_VAR_JVALUE_TYPED_P, \
+		(sjme_jvalueTyped*)(inValue))
+	
+#pragma endregion(SJME_VLS_)
 	
 /**
  * Locates a field in the given class by name and type.

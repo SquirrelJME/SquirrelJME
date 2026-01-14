@@ -413,6 +413,13 @@ typedef struct sjme_nvm_class_annotationBase sjme_nvm_class_annotationBase;
  */
 typedef sjme_nvm_class_annotationBase* sjme_nvm_class_annotation;
 	
+/**
+ * Stores multiple field values for a given type.
+ * 
+ * @since 2024/10/27
+ */
+typedef struct sjme_nvm_valueSet sjme_nvm_valueSet;
+	
 #pragma endregion(NvmTypeDefs)
 #pragma region(TypeOfSpecifiers)
 	

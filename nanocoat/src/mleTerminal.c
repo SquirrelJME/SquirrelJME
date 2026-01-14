@@ -250,7 +250,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(read, multi)
 	/* Read call. */
 	readCount = INT32_MIN;
 	if (sjme_error_is(error = sjme_stream_inputRead(pipe->stream.in,
-		&readCount, &buf->e.b[off], len)) || readCount < -1)
+		&readCount, &buf->e.values.b[off], len)) || readCount < -1)
 		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
 
 	/* Success! */
@@ -314,7 +314,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(write, multi)
 	
 	/* Write call. */
 	if (sjme_error_is(error = sjme_stream_outputWrite(pipe->stream.out,
-		&buf->e.b[off], len)))
+		&buf->e.values.b[off], len)))
 		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
 
 	/* Success! */

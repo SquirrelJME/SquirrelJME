@@ -80,7 +80,9 @@ SJME_NVM_MLE_FUNCTION_DECL(makeArrayString)
 			goto fail_stringValue;
 		
 		/* These do need to be counted up. */
-		rv->e.l[i] = sjme_weakUpR(sjme_jobject, element);
+		if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+			&rv->e, i, NULL, SJME_VLS_JOBJECT(element))))
+			goto fail_arraySet;
 	}
 	
 	/* Return the array. */
@@ -89,6 +91,7 @@ SJME_NVM_MLE_FUNCTION_DECL(makeArrayString)
 	return SJME_ERROR_NONE;
 	
 fail_stringValue:
+fail_arraySet:
 fail_allocArray:
 	/* Deallocate. */
 	if (rv != NULL)

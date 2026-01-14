@@ -17,7 +17,7 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
 	sjme_errorCode error;
 	sjme_jarray array;
 	sjme_jarray clone;
-	sjme_jobject element;
+	sjme_jobject copyRef;
 	sjme_jint length, i;
 
 	/* Must be an actual array. */
@@ -43,22 +43,26 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
 				clone == NULL)
 		goto fail_alloc;
 
-	/* Copy all values over. */
-	memmove(&clone->e, &array->e, sjme_nvm_typeMul[array->type] * length);
-
-	/* If this is an object array, everything needs to be counted. */
+	/* If this is an object array, copy over all values one by one. */
 	if (array->type == SJME_JAVA_TYPE_ID_OBJECT)
 		for (i = 0; i < length; i++)
 		{
-			/* Skip null elements. */
-			element = array->e.l[i];
-			if (element == NULL)
-				continue;
-
-			/* Count up. */
-			if (sjme_error_is(error = sjme_nvm_instance_countUp(element)))
-				goto fail_count;
+			/* Read the reference. */
+			copyRef = NULL;
+			if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
+				&clone->e, i, SJME_VLS_JOBJECT_P(&copyRef))))
+				goto fail_readRef;
+			
+			/* Set the reference. */
+			if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+				&clone->e, i, NULL, SJME_VLS_JOBJECT(copyRef))))
+				goto fail_writeRef;
 		}
+	
+	/* Copy all values over. */
+	else
+		memmove(&clone->e, &array->e,
+			sjme_nvm_typeMul[array->type] * length);
 
 	/* Release lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -70,7 +74,8 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
 	argR->v.l = SJME_AS_JOBJECT(clone);
 	return SJME_ERROR_NONE;
 
-fail_count:
+fail_writeRef:
+fail_readRef:
 fail_alloc:
 	sjme_thread_spinLockRelease(&array->object.common.lock, NULL);
 	return sjme_error_vmError(inFrame, error);

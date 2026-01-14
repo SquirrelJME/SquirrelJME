@@ -162,7 +162,7 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 	sjme_jclass tossClass, throwableClass;
 	sjme_jthrowable toss, oldTossed;
 	sjme_jfieldID initCauseID, causeID;
-	sjme_nvm_rawFieldValue* accessor;
+	sjme_nvm_value* accessor;
 	sjme_jvalueTyped argV[1];
 	sjme_cchar buf[BUF_SIZE];
 	va_list copy;
@@ -281,15 +281,9 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 		/* Set actual cause now, and its check value directly. */
 		accessor = sjme_nvm_instance_fieldAccessor(
 			SJME_AS_JOBJECT(toss), causeID);
-		accessor->l.p = sjme_weakUp(toss);
-		accessor->l.check = toss->object.identityHash;
-
-		/* If we are not just replacing the tossed exception that was */
-		/* already sitting around as being tossed, count it up. */
-		if (oldTossed != cause)
-			if (sjme_error_is(error = sjme_nvm_instance_countUp(
-				SJME_AS_JOBJECT(cause))))
-				return sjme_error_default(error);
+		if (sjme_error_is(error = sjme_nvm_vmField_cisSet(
+			accessor, NULL, SJME_VLS_JOBJECT(toss))))
+			return sjme_error_vmError(inThread, error);
 	}
 
 	/* Success! */

@@ -205,7 +205,10 @@ SJME_NVM_MLE_FUNCTION_DECL(interfaces)
 	/* Copy everything over. */
 	if (interfaceClasses != NULL)
 		for (i = 0; i < n; i++)
-			result->e.l[i] = SJME_AS_JOBJECT(interfaceClasses->elements[i]);
+			if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+				&result->e, i, NULL, SJME_VLS_JOBJECT(
+					interfaceClasses->elements[i]))))
+				return sjme_error_vmError(inFrame, error);
 
 	/* Success! */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;

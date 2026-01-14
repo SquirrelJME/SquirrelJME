@@ -33,19 +33,19 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Raw array values.
+ * Raw field values.
  *
- * @since 2025/03/23
+ * @since 2024/11/27
  */
-typedef union sjme_nvm_rawArrayValues
+typedef union sjme_nvm_valueSetRaw
 {
-	/** Byte/boolean values. */
+	/** Byte values. */
 	sjme_jbyte b[sjme_flexibleArrayCountUnion];
 	
 	/** Short values. */
 	sjme_jshort s[sjme_flexibleArrayCountUnion];
 	
-	/** Char values. */
+	/** Character values. */
 	sjme_jchar c[sjme_flexibleArrayCountUnion];
 	
 	/** Integer values. */
@@ -61,48 +61,20 @@ typedef union sjme_nvm_rawArrayValues
 	sjme_jdouble d[sjme_flexibleArrayCountUnion];
 		
 	/** Object reference values. */
-	sjme_jobject l[sjme_flexibleArrayCountUnion];
-} sjme_nvm_rawArrayValues;
+	sjme_nvm_valueObject l[sjme_flexibleArrayCountUnion];
+} sjme_nvm_valueSetRaw;
 	
-/**
- * Raw field values.
- *
- * @since 2024/11/27
- */
-typedef union sjme_nvm_rawFieldValues
-{
-	/** Integer values. */
-	sjme_jint i[sjme_flexibleArrayCountUnion];
-		
-	/** Long values. */
-	sjme_jlong j[sjme_flexibleArrayCountUnion];
-		
-	/** Float values. */
-	sjme_jfloat f[sjme_flexibleArrayCountUnion];
-		
-	/** Double values. */
-	sjme_jdouble d[sjme_flexibleArrayCountUnion];
-		
-	/** Object reference values. */
-	sjme_nvm_fieldObject l[sjme_flexibleArrayCountUnion];
-} sjme_nvm_rawFieldValues;
-
-/**
- * Stores multiple field values for a given type.
- * 
- * @since 2024/10/27
- */
-typedef struct sjme_nvm_fieldValues
+struct sjme_nvm_valueSet
 {
 	/** The type of value this stores. */
-	sjme_javaTypeId type;
+	sjme_extendedTypeId type;
 	
 	/** The number of items in this tread. */
 	sjme_jint length;
 	
 	/** Values within the tread. */
-	sjme_alignPointer sjme_nvm_rawFieldValues values;
-} sjme_nvm_fieldValues;
+	sjme_alignPointer sjme_nvm_valueSetRaw values;
+};
 
 struct sjme_jobjectBase
 {
@@ -370,7 +342,7 @@ struct sjme_jarrayBase
 	sjme_jint length;
 
 	/** The elements in the array. */
-	sjme_alignPointer sjme_nvm_rawArrayValues e;
+	sjme_alignPointer sjme_nvm_valueSet e;
 };
 
 struct sjme_jweakBase
@@ -392,7 +364,7 @@ struct sjme_jweakBase
 };
 
 /**
- * Returns the size for @link sjme_nvm_fieldValues @endlink for the given number of
+ * Returns the size for @link sjme_nvm_valueSet @endlink for the given number of
  * values.
  * 
  * @param extendedType The Java type to use.
@@ -501,7 +473,7 @@ sjme_errorCode sjme_nvm_instance_directPlacement(
  * @return The pointer to the field data directly.
  * @since 2025/06/21
  */
-sjme_nvm_rawFieldValue* sjme_nvm_instance_fieldAccessor(
+sjme_nvm_value* sjme_nvm_instance_fieldAccessor(
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jfieldID field);
 
