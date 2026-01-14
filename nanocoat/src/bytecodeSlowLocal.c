@@ -21,6 +21,7 @@ static const sjme_javaTypeId sjme_nvm_byteCode_xLoadType[5] =
 	SJME_JAVA_TYPE_ID_OBJECT,
 };
 
+#pragma region(IInc)
 SJME_NVM_BYTECODE_SLOW(IInc)
 {
 	sjme_jint index, increment;
@@ -41,7 +42,9 @@ SJME_NVM_BYTECODE_SLOW(IInc)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(IIncWide)
 SJME_NVM_BYTECODE_SLOW(IIncWide)
 {
 	sjme_jint index;
@@ -62,7 +65,9 @@ SJME_NVM_BYTECODE_SLOW(IIncWide)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(XLoad)
 SJME_NVM_BYTECODE_SLOW(XLoad)
 {
 	sjme_jint index;
@@ -98,7 +103,9 @@ SJME_NVM_BYTECODE_SLOW(XLoad)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(XLoadZ)
 SJME_NVM_BYTECODE_SLOW(XLoadZ)
 {
 	sjme_jint index;
@@ -121,7 +128,9 @@ SJME_NVM_BYTECODE_SLOW(XLoadZ)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(XStore)
 SJME_NVM_BYTECODE_SLOW(XStore)
 {
 	sjme_jvalueTyped popped;
@@ -164,7 +173,9 @@ SJME_NVM_BYTECODE_SLOW(XStore)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(XStoreZ)
 SJME_NVM_BYTECODE_SLOW(XStoreZ)
 {
 	sjme_jvalueTyped popped;
@@ -194,3 +205,4 @@ SJME_NVM_BYTECODE_SLOW(XStoreZ)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()

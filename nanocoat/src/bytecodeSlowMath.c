@@ -32,6 +32,7 @@
 /** Float NaN mask. */
 #define SJME_NVM_NAN_FLOAT INT32_C(0x7F800000)
 
+#pragma region(CastDoubleToX)
 SJME_NVM_BYTECODE_SLOW(CastDoubleToX)
 {
 	sjme_jvalueTyped in, out;
@@ -90,7 +91,9 @@ SJME_NVM_BYTECODE_SLOW(CastDoubleToX)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(CastFloatToX)
 SJME_NVM_BYTECODE_SLOW(CastFloatToX)
 {
 	sjme_jvalueTyped in, out;
@@ -149,7 +152,9 @@ SJME_NVM_BYTECODE_SLOW(CastFloatToX)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(CastIntToX)
 SJME_NVM_BYTECODE_SLOW(CastIntToX)
 {
 	sjme_jvalueTyped in, out;
@@ -229,7 +234,9 @@ SJME_NVM_BYTECODE_SLOW(CastIntToX)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(CastLongToX)
 SJME_NVM_BYTECODE_SLOW(CastLongToX)
 {
 	sjme_jvalueTyped in, out;
@@ -288,7 +295,9 @@ SJME_NVM_BYTECODE_SLOW(CastLongToX)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(CompareDouble)
 SJME_NVM_BYTECODE_SLOW(CompareDouble)
 {
 	sjme_jvalueTyped a, b, result;
@@ -336,7 +345,9 @@ SJME_NVM_BYTECODE_SLOW(CompareDouble)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(CompareFloat)
 SJME_NVM_BYTECODE_SLOW(CompareFloat)
 {
 	sjme_jvalueTyped a, b, result;
@@ -384,7 +395,9 @@ SJME_NVM_BYTECODE_SLOW(CompareFloat)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(CompareLong)
 SJME_NVM_BYTECODE_SLOW(CompareLong)
 {
 	sjme_jvalueTyped a, b, result;
@@ -422,7 +435,9 @@ SJME_NVM_BYTECODE_SLOW(CompareLong)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(MathBinaryInt)
 SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 {
 	sjme_jvalueTyped a, b, result;
@@ -488,7 +503,9 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(MathBinaryLong)
 SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 {
 	sjme_jvalueTyped a, b, result;
@@ -554,7 +571,9 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(MathDouble)
 SJME_NVM_BYTECODE_SLOW(MathDouble)
 {
 	sjme_jvalueTyped a, b, result;
@@ -616,7 +635,9 @@ SJME_NVM_BYTECODE_SLOW(MathDouble)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(MathFloat)
 SJME_NVM_BYTECODE_SLOW(MathFloat)
 {
 	sjme_jvalueTyped a, b, result;
@@ -678,7 +699,9 @@ SJME_NVM_BYTECODE_SLOW(MathFloat)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(MathInt)
 SJME_NVM_BYTECODE_SLOW(MathInt)
 {
 	sjme_jvalueTyped a, b, result;
@@ -736,7 +759,9 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(MathLong)
 SJME_NVM_BYTECODE_SLOW(MathLong)
 {
 	sjme_jvalueTyped a, b, result;
@@ -794,7 +819,9 @@ SJME_NVM_BYTECODE_SLOW(MathLong)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(MathNegateDouble)
 SJME_NVM_BYTECODE_SLOW(MathNegateDouble)
 {
 	SJME_NVM_BYTECODE_ENTRY;
@@ -804,7 +831,9 @@ SJME_NVM_BYTECODE_SLOW(MathNegateDouble)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(MathNegateFloat)
 SJME_NVM_BYTECODE_SLOW(MathNegateFloat)
 {
 	SJME_NVM_BYTECODE_ENTRY;
@@ -814,7 +843,9 @@ SJME_NVM_BYTECODE_SLOW(MathNegateFloat)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(MathNegateInt)
 SJME_NVM_BYTECODE_SLOW(MathNegateInt)
 {
 	sjme_jvalueTyped value;
@@ -842,7 +873,9 @@ SJME_NVM_BYTECODE_SLOW(MathNegateInt)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(MathNegateLong)
 SJME_NVM_BYTECODE_SLOW(MathNegateLong)
 {
 	sjme_jvalueTyped value;
@@ -870,3 +903,4 @@ SJME_NVM_BYTECODE_SLOW(MathNegateLong)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()

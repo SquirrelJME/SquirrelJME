@@ -67,6 +67,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 	}
 }
 
+#pragma region(AConstNull)
 SJME_NVM_BYTECODE_SLOW(AConstNull)
 {
 	sjme_jvalueTyped value;
@@ -91,7 +92,9 @@ SJME_NVM_BYTECODE_SLOW(AConstNull)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(BIPush)
 SJME_NVM_BYTECODE_SLOW(BIPush)
 {
 	sjme_jvalueTyped value;
@@ -118,7 +121,9 @@ SJME_NVM_BYTECODE_SLOW(BIPush)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(DConstZ)
 SJME_NVM_BYTECODE_SLOW(DConstZ)
 {
 	sjme_jvalueTyped value;
@@ -146,7 +151,9 @@ SJME_NVM_BYTECODE_SLOW(DConstZ)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(FConstZ)
 SJME_NVM_BYTECODE_SLOW(FConstZ)
 {
 	sjme_jvalueTyped value;
@@ -176,7 +183,9 @@ SJME_NVM_BYTECODE_SLOW(FConstZ)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(IConstM)
 SJME_NVM_BYTECODE_SLOW(IConstM)
 {
 	sjme_jvalueTyped value;
@@ -201,7 +210,9 @@ SJME_NVM_BYTECODE_SLOW(IConstM)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(LConstZ)
 SJME_NVM_BYTECODE_SLOW(LConstZ)
 {
 	sjme_jvalueTyped value;
@@ -226,7 +237,9 @@ SJME_NVM_BYTECODE_SLOW(LConstZ)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(Ldc)
 SJME_NVM_BYTECODE_SLOW(Ldc)
 {
 	sjme_jint poolIndex;
@@ -258,7 +271,9 @@ SJME_NVM_BYTECODE_SLOW(Ldc)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(LdcW)
 SJME_NVM_BYTECODE_SLOW(LdcW)
 {
 	sjme_jint poolIndex;
@@ -290,7 +305,9 @@ SJME_NVM_BYTECODE_SLOW(LdcW)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(LdcWTwo)
 SJME_NVM_BYTECODE_SLOW(LdcWTwo)
 {
 	sjme_jint poolIndex;
@@ -320,7 +337,9 @@ SJME_NVM_BYTECODE_SLOW(LdcWTwo)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(SIPush)
 SJME_NVM_BYTECODE_SLOW(SIPush)
 {
 	sjme_jvalueTyped value;
@@ -347,3 +366,4 @@ SJME_NVM_BYTECODE_SLOW(SIPush)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()

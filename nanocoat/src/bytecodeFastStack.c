@@ -11,30 +11,39 @@
 #include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/bytecodeFast.h"
 
+#pragma region(DupTwoNarrow)
 SJME_NVM_BYTECODE_FAST(DupTwoNarrow)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+#pragma endregion()
 
+#pragma region(DupWide)
 SJME_NVM_BYTECODE_FAST(DupWide)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+#pragma endregion()
 
+#pragma region(DupTwoX1Narrow)
 SJME_NVM_BYTECODE_FAST(DupTwoX1Narrow)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+#pragma endregion()
 
+#pragma region(DupTwoX1Wide)
 SJME_NVM_BYTECODE_FAST(DupTwoX1Wide)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+#pragma endregion()
 
+#pragma region(DupX1Wide)
 SJME_NVM_BYTECODE_FAST(DupX1Wide)
 {
 	sjme_jvalueTyped a, b;
@@ -70,7 +79,9 @@ SJME_NVM_BYTECODE_FAST(DupX1Wide)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(DupX2Narrow)
 SJME_NVM_BYTECODE_FAST(DupX2Narrow)
 {
 	SJME_NVM_BYTECODE_ENTRY;
@@ -80,7 +91,9 @@ SJME_NVM_BYTECODE_FAST(DupX2Narrow)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(PopTwoNarrow)
 SJME_NVM_BYTECODE_FAST(PopTwoNarrow)
 {
 	sjme_jvalueTyped a, b;
@@ -104,7 +117,9 @@ SJME_NVM_BYTECODE_FAST(PopTwoNarrow)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(PopWide)
 SJME_NVM_BYTECODE_FAST(PopWide)
 {
 	sjme_jvalueTyped top;
@@ -125,3 +140,4 @@ SJME_NVM_BYTECODE_FAST(PopWide)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()

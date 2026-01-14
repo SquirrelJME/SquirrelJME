@@ -12,6 +12,7 @@
 #include "sjme/nvm/bytecodeSlow.h"
 #include "sjme/nvm/task.h"
 
+#pragma region(Dup)
 SJME_NVM_BYTECODE_SLOW(Dup)
 {
 	sjme_jvalueTyped top;
@@ -42,7 +43,9 @@ SJME_NVM_BYTECODE_SLOW(Dup)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(DupX1)
 SJME_NVM_BYTECODE_SLOW(DupX1)
 {
 	sjme_jvalueTyped a, b;
@@ -78,7 +81,9 @@ SJME_NVM_BYTECODE_SLOW(DupX1)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(DupX2)
 SJME_NVM_BYTECODE_SLOW(DupX2)
 {
 	sjme_jvalueTyped check;
@@ -111,7 +116,9 @@ SJME_NVM_BYTECODE_SLOW(DupX2)
 	/* Forward to the new fast function. */
 	return fastFunc(inFrame, id, relRawCode, pcNew);
 }
+#pragma endregion()
 
+#pragma region(DupTwo)
 SJME_NVM_BYTECODE_SLOW(DupTwo)
 {
 	sjme_jvalueTyped check;
@@ -144,7 +151,9 @@ SJME_NVM_BYTECODE_SLOW(DupTwo)
 	/* Forward to the new fast function. */
 	return fastFunc(inFrame, id, relRawCode, pcNew);
 }
+#pragma endregion()
 
+#pragma region(DupTwoX1)
 SJME_NVM_BYTECODE_SLOW(DupTwoX1)
 {
 	sjme_jvalueTyped check;
@@ -177,7 +186,9 @@ SJME_NVM_BYTECODE_SLOW(DupTwoX1)
 	/* Forward to the new fast function. */
 	return fastFunc(inFrame, id, relRawCode, pcNew);
 }
+#pragma endregion()
 
+#pragma region(DupTwoX2)
 SJME_NVM_BYTECODE_SLOW(DupTwoX2)
 {
 	SJME_NVM_BYTECODE_ENTRY;
@@ -188,7 +199,9 @@ SJME_NVM_BYTECODE_SLOW(DupTwoX2)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(Pop)
 SJME_NVM_BYTECODE_SLOW(Pop)
 {
 	sjme_jvalueTyped top;
@@ -209,7 +222,9 @@ SJME_NVM_BYTECODE_SLOW(Pop)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(PopTwo)
 SJME_NVM_BYTECODE_SLOW(PopTwo)
 {
 	sjme_jvalueTyped top;
@@ -241,7 +256,9 @@ SJME_NVM_BYTECODE_SLOW(PopTwo)
 	/* Forward to the new fast function. */
 	return fastFunc(inFrame, id, relRawCode, pcNew);
 }
+#pragma endregion()
 
+#pragma region(Swap)
 SJME_NVM_BYTECODE_SLOW(Swap)
 {
 	sjme_jvalueTyped a, b;
@@ -274,3 +291,4 @@ SJME_NVM_BYTECODE_SLOW(Swap)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()

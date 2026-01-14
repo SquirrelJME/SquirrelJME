@@ -314,6 +314,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowNewArrayMultiSub(
 	return SJME_ERROR_NONE;
 }
 
+#pragma region(ArrayLength)
 SJME_NVM_BYTECODE_SLOW(ArrayLength)
 {
 	sjme_jarray array;
@@ -353,7 +354,9 @@ SJME_NVM_BYTECODE_SLOW(ArrayLength)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(CheckCast)
 SJME_NVM_BYTECODE_SLOW(CheckCast)
 {
 	sjme_jint poolIndex;
@@ -436,7 +439,9 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(InstanceAccess)
 SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 {
 	sjme_jint poolIndex;
@@ -564,7 +569,9 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(InstanceOf)
 SJME_NVM_BYTECODE_SLOW(InstanceOf)
 {
 	sjme_jint poolIndex;
@@ -637,7 +644,9 @@ SJME_NVM_BYTECODE_SLOW(InstanceOf)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(InvokeInterface)
 SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 {
 	sjme_jmethodID methodId;
@@ -706,7 +715,9 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(InvokeSpecial)
 SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 {
 	sjme_jint poolIndex;
@@ -813,7 +824,9 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(InvokeStatic)
 SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 {
 	sjme_jint poolIndex;
@@ -874,7 +887,9 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(InvokeVirtual)
 SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 {
 	sjme_jint poolIndex;
@@ -934,7 +949,9 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(Monitor)
 SJME_NVM_BYTECODE_SLOW(Monitor)
 {
 	sjme_jboolean isExit;
@@ -977,7 +994,9 @@ SJME_NVM_BYTECODE_SLOW(Monitor)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(New)
 SJME_NVM_BYTECODE_SLOW(New)
 {
 	SJME_NVM_BYTECODE_ENTRY;
@@ -1035,7 +1054,9 @@ SJME_NVM_BYTECODE_SLOW(New)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(NewArray)
 SJME_NVM_BYTECODE_SLOW(NewArray)
 {
 	sjme_jvalueTyped length, array;
@@ -1113,7 +1134,9 @@ SJME_NVM_BYTECODE_SLOW(NewArray)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(NewArrayA)
 SJME_NVM_BYTECODE_SLOW(NewArrayA)
 {
 	sjme_jint poolIndex;
@@ -1180,7 +1203,9 @@ SJME_NVM_BYTECODE_SLOW(NewArrayA)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(NewArrayMulti)
 SJME_NVM_BYTECODE_SLOW(NewArrayMulti)
 {
 	sjme_nvm_class_poolEntry* entry;
@@ -1258,7 +1283,9 @@ SJME_NVM_BYTECODE_SLOW(NewArrayMulti)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(StaticAccess)
 SJME_NVM_BYTECODE_SLOW(StaticAccess)
 {
 	sjme_jint poolIndex;
@@ -1382,7 +1409,9 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(Throw)
 SJME_NVM_BYTECODE_SLOW(Throw)
 {
 	sjme_jvalueTyped toss;
@@ -1420,7 +1449,9 @@ SJME_NVM_BYTECODE_SLOW(Throw)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(XALoad)
 SJME_NVM_BYTECODE_SLOW(XALoad)
 {
 	sjme_jvalueTyped arrayValue;
@@ -1503,7 +1534,9 @@ skip_tossed:
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(XAStore)
 SJME_NVM_BYTECODE_SLOW(XAStore)
 {
 	sjme_jvalueTyped popValue;
@@ -1569,3 +1602,4 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()

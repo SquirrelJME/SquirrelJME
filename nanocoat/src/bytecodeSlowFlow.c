@@ -102,6 +102,7 @@ static const sjme_javaTypeId sjme_nvm_byteCode_returnTypes[6] =
 	SJME_JAVA_TYPE_ID_VOID,
 };
 
+#pragma region(IfAX)
 SJME_NVM_BYTECODE_SLOW(IfAX)
 {
 	sjme_jvalueTyped value;
@@ -129,7 +130,9 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(IfX)
 SJME_NVM_BYTECODE_SLOW(IfX)
 {
 	sjme_jvalueTyped value;
@@ -157,7 +160,9 @@ SJME_NVM_BYTECODE_SLOW(IfX)
 
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(IfICmpX)
 SJME_NVM_BYTECODE_SLOW(IfICmpX)
 {
 	sjme_jvalueTyped a, b;
@@ -189,7 +194,9 @@ SJME_NVM_BYTECODE_SLOW(IfICmpX)
 
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(IfACmpX)
 SJME_NVM_BYTECODE_SLOW(IfACmpX)
 {
 	sjme_jvalueTyped a, b;
@@ -221,7 +228,9 @@ SJME_NVM_BYTECODE_SLOW(IfACmpX)
 
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(Goto)
 SJME_NVM_BYTECODE_SLOW(Goto)
 {
 	SJME_NVM_BYTECODE_ENTRY;
@@ -232,7 +241,9 @@ SJME_NVM_BYTECODE_SLOW(Goto)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(GotoWide)
 SJME_NVM_BYTECODE_SLOW(GotoWide)
 {
 	SJME_NVM_BYTECODE_ENTRY;
@@ -243,7 +254,9 @@ SJME_NVM_BYTECODE_SLOW(GotoWide)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(LookupSwitch)
 SJME_NVM_BYTECODE_SLOW(LookupSwitch)
 {
 	sjme_jint paramBase, divHi;
@@ -328,14 +341,18 @@ skip_matched:
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(NoOp)
 SJME_NVM_BYTECODE_SLOW(NoOp)
 {
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(ReturnX)
 SJME_NVM_BYTECODE_SLOW(ReturnX)
 {
 	sjme_javaTypeId desire;
@@ -379,7 +396,9 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(TableSwitch)
 SJME_NVM_BYTECODE_SLOW(TableSwitch)
 {
 	sjme_jint paramBase, lo, hi, tableCount;
@@ -423,3 +442,4 @@ SJME_NVM_BYTECODE_SLOW(TableSwitch)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
