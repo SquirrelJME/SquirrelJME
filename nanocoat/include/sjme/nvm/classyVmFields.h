@@ -34,9 +34,8 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 	
-
 /**
- * Stores field object values.
+ * Stores values.
  *
  * @since 2025/07/18
  */
@@ -50,7 +49,7 @@ typedef struct sjme_nvm_valueObject
 } sjme_nvm_valueObject;
 
 /**
- * Raw field value.
+ * A single value.
  *
  * @since 2025/07/18
  */
@@ -63,6 +62,50 @@ typedef union sjme_nvm_value
 	sjme_nvm_valueObject l;
 } sjme_nvm_value;
 
+/**
+ * Raw set of values.
+ *
+ * @since 2024/11/27
+ */
+typedef union sjme_nvm_valueSetRaw
+{
+	/** Byte values. */
+	sjme_jbyte b[sjme_flexibleArrayCountUnion];
+	
+	/** Short values. */
+	sjme_jshort s[sjme_flexibleArrayCountUnion];
+	
+	/** Character values. */
+	sjme_jchar c[sjme_flexibleArrayCountUnion];
+	
+	/** Integer values. */
+	sjme_jint i[sjme_flexibleArrayCountUnion];
+		
+	/** Long values. */
+	sjme_jlong j[sjme_flexibleArrayCountUnion];
+		
+	/** Float values. */
+	sjme_jfloat f[sjme_flexibleArrayCountUnion];
+		
+	/** Double values. */
+	sjme_jdouble d[sjme_flexibleArrayCountUnion];
+		
+	/** Object reference values. */
+	sjme_nvm_valueObject l[sjme_flexibleArrayCountUnion];
+} sjme_nvm_valueSetRaw;
+	
+struct sjme_nvm_valueSet
+{
+	/** The type of value this stores. */
+	sjme_extendedTypeId type;
+	
+	/** The number of items in this tread. */
+	sjme_jint length;
+	
+	/** Values within the tread. */
+	sjme_alignPointer sjme_nvm_valueSetRaw values;
+};
+	
 /**
  * Returns the direct pointer to the field data pointer.
  *
@@ -146,7 +189,7 @@ typedef enum sjme_nvm_vmField_var
  * @since 2026/01/14
  */
 sjme_errorCode sjme_nvm_vmField_cisGet(
-	sjme_attrInNotNull sjme_nvm_value* srcValue,
+	sjme_attrInNotNull const sjme_nvm_value* srcValue,
 	sjme_attrInRange(-SJME_NVM_VMFIELD_NUM_VAR, 0)
 		sjme_nvm_vmField_var SJME_VLG_,
 	...);
@@ -163,7 +206,7 @@ sjme_errorCode sjme_nvm_vmField_cisGet(
  * @since 2026/01/14
  */
 sjme_errorCode sjme_nvm_vmField_cisGetS(
-	sjme_attrInOutNotNull sjme_nvm_valueSet* srcSet,
+	sjme_attrInNotNull const sjme_nvm_valueSet* srcSet,
 	sjme_attrInPositive sjme_jint getIndex,
 	sjme_attrInRange(-SJME_NVM_VMFIELD_NUM_VAR, 0)
 		sjme_nvm_vmField_var SJME_VLG_,

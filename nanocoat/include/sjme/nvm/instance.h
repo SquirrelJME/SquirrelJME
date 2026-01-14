@@ -32,50 +32,6 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/**
- * Raw field values.
- *
- * @since 2024/11/27
- */
-typedef union sjme_nvm_valueSetRaw
-{
-	/** Byte values. */
-	sjme_jbyte b[sjme_flexibleArrayCountUnion];
-	
-	/** Short values. */
-	sjme_jshort s[sjme_flexibleArrayCountUnion];
-	
-	/** Character values. */
-	sjme_jchar c[sjme_flexibleArrayCountUnion];
-	
-	/** Integer values. */
-	sjme_jint i[sjme_flexibleArrayCountUnion];
-		
-	/** Long values. */
-	sjme_jlong j[sjme_flexibleArrayCountUnion];
-		
-	/** Float values. */
-	sjme_jfloat f[sjme_flexibleArrayCountUnion];
-		
-	/** Double values. */
-	sjme_jdouble d[sjme_flexibleArrayCountUnion];
-		
-	/** Object reference values. */
-	sjme_nvm_valueObject l[sjme_flexibleArrayCountUnion];
-} sjme_nvm_valueSetRaw;
-	
-struct sjme_nvm_valueSet
-{
-	/** The type of value this stores. */
-	sjme_extendedTypeId type;
-	
-	/** The number of items in this tread. */
-	sjme_jint length;
-	
-	/** Values within the tread. */
-	sjme_alignPointer sjme_nvm_valueSetRaw values;
-};
-
 struct sjme_jobjectBase
 {
 	/** Common base for all objects. */

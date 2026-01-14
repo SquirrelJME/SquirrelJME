@@ -11,29 +11,107 @@
 #include "sjme/util.h"
 #include "sjme/nvm/instance.h"
 
+#define SJME_NVM_VMFIELD_DECOMPOSE_DECL(prefix) \
+	prefix sjme_jvaluePrimitive* prim; \
+	prefix sjme_jint* objC; \
+	prefix sjme_jobject* objP
+
+#define sjme_nvm_vmField_decomposeValue(value) \
+	do { \
+		(prim) = &(value)->v; \
+		(objC) = &(value)->l.check; \
+		(objP) = &(value)->l.p; \
+	} while (0)
+
+#define sjme_nvm_vmField_decomposeValueSet(value, index, prefix) \
+	do { \
+		/* Initialize everything to NULL. */ \
+		(prim) = NULL; \
+		(objC) = NULL; \
+		(objP) = NULL; \
+		/* This really depends on the type. */ \
+		switch ((value)->type) \
+		{ \
+			case SJME_BASIC_TYPE_ID_INTEGER: \
+				(prim) = (prefix sjme_jvaluePrimitive*)( \
+					&(value)->values.i[index]); \
+				break; \
+			case SJME_BASIC_TYPE_ID_LONG: \
+				(prim) = (prefix sjme_jvaluePrimitive*)( \
+					&(value)->values.j[index]); \
+				break; \
+			case SJME_BASIC_TYPE_ID_FLOAT: \
+				(prim) = (prefix sjme_jvaluePrimitive*)( \
+					&(value)->values.f[index]); \
+				break; \
+			case SJME_BASIC_TYPE_ID_DOUBLE: \
+				(prim) = (prefix sjme_jvaluePrimitive*)( \
+					&(value)->values.d[index]); \
+				break; \
+			case SJME_BASIC_TYPE_ID_BOOLEAN: \
+			case SJME_BASIC_TYPE_ID_BYTE: \
+				(prim) = (prefix sjme_jvaluePrimitive*)( \
+					&(value)->values.b[index]); \
+				break; \
+			case SJME_BASIC_TYPE_ID_SHORT: \
+				(prim) = (prefix sjme_jvaluePrimitive*)( \
+					&(value)->values.s[index]); \
+				break; \
+			case SJME_BASIC_TYPE_ID_CHARACTER: \
+				(prim) = (prefix sjme_jvaluePrimitive*)( \
+					&(value)->values.c[index]); \
+				break; \
+			case SJME_BASIC_TYPE_ID_OBJECT: \
+				(objC) = &((value)->values.l[index].check); \
+				(objP) = &((value)->values.l[index].p); \
+				break; \
+			default: \
+				return SJME_ERROR_INVALID_FIELD_TYPE; \
+		} \
+	} while (0)
+
 sjme_errorCode sjme_nvm_vmField_cisGet(
-	sjme_attrInNotNull sjme_nvm_value* srcValue,
+	sjme_attrInNotNull const sjme_nvm_value* srcValue,
 	sjme_attrInRange(-SJME_NVM_VMFIELD_NUM_VAR, 0)
 		sjme_nvm_vmField_var SJME_VLG_,
 	...)
 {
+	SJME_NVM_VMFIELD_DECOMPOSE_DECL(const);
+	
 	if (srcValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (SJME_VLG_ < 0 || SJME_VLG_ >= SJME_NVM_VMFIELD_NUM_VAR)
+	if (SJME_VLG_ <= -SJME_NVM_VMFIELD_NUM_VAR || SJME_VLG_ >= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Decompose. */
+	sjme_nvm_vmField_decomposeValue(srcValue);
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_vmField_cisGetS(
-	sjme_attrInOutNotNull sjme_nvm_valueSet* srcSet,
+	sjme_attrInNotNull const sjme_nvm_valueSet* srcSet,
 	sjme_attrInPositive sjme_jint getIndex,
 	sjme_attrInRange(-SJME_NVM_VMFIELD_NUM_VAR, 0)
 		sjme_nvm_vmField_var SJME_VLG_,
 	...)
 {
+	SJME_NVM_VMFIELD_DECOMPOSE_DECL(const);
+	
+	if (srcSet == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (SJME_VLG_ <= -SJME_NVM_VMFIELD_NUM_VAR || SJME_VLG_ >= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (getIndex < 0 || getIndex >= srcSet->length)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Decompose. */
+	sjme_nvm_vmField_decomposeValueSet(srcSet, getIndex, const);
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -45,11 +123,16 @@ sjme_errorCode sjme_nvm_vmField_cisSet(
 		sjme_nvm_vmField_var SJME_VLS_,
 	...)
 {
+	SJME_NVM_VMFIELD_DECOMPOSE_DECL();
+	
 	if (destValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (SJME_VLS_ < 0 || SJME_VLS_ >= SJME_NVM_VMFIELD_NUM_VAR)
+	if (SJME_VLS_ <= 0 || SJME_VLS_ >= SJME_NVM_VMFIELD_NUM_VAR)
 		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Decompose. */
+	sjme_nvm_vmField_decomposeValue(destValue);
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -63,6 +146,20 @@ sjme_errorCode sjme_nvm_vmField_cisSetS(
 		sjme_nvm_vmField_var SJME_VLS_,
 	...)
 {
+	SJME_NVM_VMFIELD_DECOMPOSE_DECL();
+	
+	if (destSet == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (SJME_VLS_ <= 0 || SJME_VLS_ >= SJME_NVM_VMFIELD_NUM_VAR)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (setIndex < 0 || setIndex >= destSet->length)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Decompose. */
+	sjme_nvm_vmField_decomposeValueSet(destSet, setIndex, );
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
