@@ -95,5 +95,9 @@ set_target_properties(libEmulatorBase PROPERTIES
 set_property(TARGET libEmulatorBase
 	PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+# Needed for all platforms
+squirreljme_target_link_libraries_required(libEmulatorBase)
+
 # Library Exports
 squirreljme_target_shared_library_exports(libEmulatorBase)
+
