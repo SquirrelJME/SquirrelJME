@@ -469,7 +469,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawCharFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawCharsFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_jchar* s,
+	sjme_attrInNotNull const sjme_jchar* s,
 	sjme_attrInPositive sjme_jint o,
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrInValue sjme_jint x,

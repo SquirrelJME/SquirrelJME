@@ -130,20 +130,30 @@ public class Fonts
 		@Override
 		protected void paint(Graphics __g)
 		{
-			Font font;
+			Font font = Font.getDefaultFont();
 			
 			// Determine the actual font to use
 			int index = Fonts.INDEX_MAP[this.index % Fonts.INDEX_MAP.length];
-			if ((index & 0x8000_0000) != 0)
-				font = Font.getFont(~index);
-			else
-				font = Font.getFont(index,
-					this.style & Fonts.STYLE_MASK,
-					FontUtilities.pixelSizeToLogicalSize(this.size));
+			try
+			{
+				// One's complement are the "specification" fonts
+				if ((index & 0x8000_0000) != 0)
+					font = Font.getFont(~index);
+				else
+					font = Font.getFont(index,
+						this.style & Fonts.STYLE_MASK,
+						FontUtilities.pixelSizeToLogicalSize(this.size));
+				
+				// Derive then set the font
+				font = font.deriveFont(this.style & Fonts.STYLE_MASK,
+					this.size);
+			}
+			catch (IllegalArgumentException __e)
+			{
+				__e.printStackTrace();
+			}
 			
-			// Derive then set the font
-			font = font.deriveFont(this.style & Fonts.STYLE_MASK,
-				this.size);
+			// Use the newly derived font
 			__g.setFont(font);
 			
 			// Height of the font, for rows
@@ -160,18 +170,19 @@ public class Fonts
 			__g.setColor(oldColor);
 			
 			// Draw basic font information
-			__g.drawString(String.format("%s %d %s%s%s",
+			int charPage = this.charPage;
+			__g.drawString(String.format("%s %d %s%s%s [pg. %04x]",
 					Fonts.INDEX_NAMES[this.index], this.size,
 					((this.style & Font.STYLE_BOLD) != 0 ? "B" : ""),
 					((this.style & Font.STYLE_ITALIC) != 0 ? "I" : ""),
-					((this.style & Font.STYLE_UNDERLINED) != 0 ? "U" : "")),
+					((this.style & Font.STYLE_UNDERLINED) != 0 ? "U" : ""),
+					charPage),
 				ix, iy, Graphics.BASELINE);
 			
 			// Move on
 			iy += fh;
 			
 			// Are we drawing the basic strings, or a character page?
-			int charPage = this.charPage;
 			if (charPage < 0)
 			{
 				// Yes I do know buried is spelt wrong, but this is staying
@@ -212,6 +223,12 @@ public class Fonts
 			// Draw character sheet instead
 			else
 			{
+				// The canvas size
+				int ph = this.getHeight();
+				int max = ph - iy;
+				int baseIX = ix;
+				int baseIY = iy;
+				
 				// There is no real way to determine the best width for a
 				// given character
 				int cw = 1;
@@ -222,12 +239,37 @@ public class Fonts
 				cw = Math.max(cw, font.charWidth('~'));
 				cw = Math.max(cw, font.charWidth('_'));
 				
+				// A more sensible width
+				int pw = cw * Fonts.PAGE_WIDTH;
+				
+				// Draw the background grid
+				__g.setColor(0xFF7900);
+				
+				// Vertical
+				ix = baseIX;
+				for (int l = 0; l < Fonts.PAGE_WIDTH; l++, ix += cw)
+					__g.drawLine(ix, baseIY, ix, ph);
+				
+				// Horizontal
+				for (iy = baseIY; iy < max; iy += fh)
+					__g.drawLine(baseIX, iy, pw, iy);
+				__g.setColor(oldColor);
+				
 				// Cannot exceed the max height of the canvas
-				for (int max = this.getHeight() - iy; iy < max; iy += fh)
-					for (int l = 0, bx = ix; l < Fonts.PAGE_WIDTH;
-						 l++, bx += cw, charPage++)
-						__g.drawChar((char)charPage, bx, iy,
+				int atChar = charPage;
+				for (iy = baseIY + fh, ix = baseIX; iy < max;
+					 iy += fh, ix = baseIX)
+					for (int l = 0; l < Fonts.PAGE_WIDTH; l++, ix += cw)
+					{
+						// Which character is being drawn?
+						char dc = (char)(atChar++);
+						
+						// Center the character on the block
+						int dw = Math.max(1, font.charWidth(dc));
+						__g.drawChar(dc, ix + 
+								Math.max(0, ((cw >> 2) - (dw >> 2))), iy,
 							Graphics.BASELINE);
+					}
 			}
 		}
 		

@@ -27,6 +27,8 @@
 #define FORWARD_DESC_hardwareDrawArc "(" \
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
 	DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawChar DESC_METHOD(DESC_VOID, \
+	DESC_PENCIL DESC_CHAR DESC_INT DESC_INT DESC_INT)
 #define FORWARD_DESC_hardwareDrawChars "(" \
 	DESC_PENCIL DESC_ARRAY(DESC_CHAR) DESC_INT DESC_INT DESC_INT DESC_INT \
 	DESC_INT ")" DESC_VOID
@@ -164,13 +166,34 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawArc)
 		sjme_jni_throwMLECallError(env, error);
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawChar)
+	(JNIEnv* env, jclass classy, jobject g, jchar c,
+	jint x, jint y, jint anchor)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawChar(p,
+		c, x, y, anchor, NULL)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawChars)
 	(JNIEnv* env, jclass classy, jobject g, jcharArray s, jint o, jint l,
 	jint x, jint y, jint anchor)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
-	sjme_pointer chars;
+	jchar* chars;
 	jboolean isCopy;
 	sjme_jint len;
 
@@ -194,14 +217,15 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawChars)
 	chars = NULL;
 	isCopy = SJME_JNI_FALSE;
 	if (sjme_error_is(error = sjme_jni_arrayGetElements(env, s,
-		&chars, &isCopy, NULL)) || chars == NULL)
+		(sjme_pointer*)&chars, &isCopy, NULL)) || chars == NULL)
 	{
 		sjme_jni_throwMLECallError(env, error);
 		return;
 	}
 
 	/* Forward. */
-	if (sjme_error_is(error = p->api->drawChars(p, chars, o, l, x, y, anchor)))
+	if (sjme_error_is(error = p->api->drawChars(p,
+		&chars[o], 0, l, x, y, anchor)))
 		sjme_jni_throwMLECallError(env, error);
 
 	/* Cleanup. */
@@ -876,6 +900,7 @@ static const JNINativeMethod mlePencilMethods[] =
 	FORWARD_list(PencilShelf, hardwareCloseGraphics),
 	FORWARD_list(PencilShelf, hardwareCopyArea),
 	FORWARD_list(PencilShelf, hardwareDrawArc),
+	FORWARD_list(PencilShelf, hardwareDrawChar),
 	FORWARD_list(PencilShelf, hardwareDrawChars),
 	FORWARD_list(PencilShelf, hardwareDrawHoriz),
 	FORWARD_list(PencilShelf, hardwareDrawLine),

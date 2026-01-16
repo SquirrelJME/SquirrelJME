@@ -129,6 +129,24 @@ public final class PencilShelf
 		throws MLECallError;
 	
 	/**
+	 * Draws the given character.
+	 *
+	 * @param __g The hardware graphics to draw with.
+	 * @param __s The character to draw.
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __anchor The anchor point.
+	 * @throws MLECallError If the graphics is not valid, does not support
+	 * the given operation, if the anchor point is not valid, or if the
+	 * offset and/or length are out of bounds.
+	 * @since 2026/01/16
+	 */
+	@SquirrelJMEVendorApi
+	public static native void hardwareDrawChar(@NotNull PencilBracket __g,
+		char __s, int __x, int __y, int __anchor)
+		throws MLECallError;
+	
+	/**
 	 * Draws the given characters.
 	 *
 	 * @param __g The hardware graphics to draw with.

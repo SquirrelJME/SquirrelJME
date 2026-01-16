@@ -1976,7 +1976,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawChar(
 
 sjme_errorCode sjme_scritchpen_coreSerial_drawChars(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_jchar* s,
+	sjme_attrInNotNull const sjme_jchar* s,
 	sjme_attrInPositive sjme_jint o,
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrInValue sjme_jint x,

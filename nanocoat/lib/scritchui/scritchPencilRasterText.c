@@ -25,7 +25,7 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
-	sjme_jint cw, ch, area, dx, dy, sx, sy, v, scanLen;
+	sjme_jint cw, ch, area, dx, dy, sx, sy, v, scanLen, baseline;
 	sjme_jint offX, offY;
 	sjme_jubyte* bitmap;
 	sjme_scritchui_pencilBitLineFunc bitline;
@@ -75,11 +75,17 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	if (cw == 0 || ch == 0)
 		return SJME_ERROR_NONE;
 	
+	/* Need the font baseline. */
+	baseline = 0;
+	if (sjme_error_is(error = font->api->metricPixelBaseline(
+		font, &baseline)))
+		goto fail_anyInLock;
+	
 	/* Calculate anchor point accordingly. */
 	if (anchor != 0)
 		if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(
 			anchor,
-			x, y, cw, ch, 0, &x, &y)))
+			x, y, cw, ch, baseline, &x, &y)))
 			goto fail_anyInLock;
 		
 	/* Determine scanline length for each bitmap row. */
@@ -147,7 +153,7 @@ fail_unlock:
 
 sjme_errorCode sjme_scritchpen_core_drawChars(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_jchar* s,
+	sjme_attrInNotNull const sjme_jchar* s,
 	sjme_attrInPositive sjme_jint o,
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrInValue sjme_jint x,
@@ -155,29 +161,25 @@ sjme_errorCode sjme_scritchpen_core_drawChars(
 	sjme_attrInValue sjme_jint anchor)
 {
 	sjme_errorCode error;
+	sjme_charSeqStatic seq;
 	
-	if (g == NULL)
+	if (g == NULL || s == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* Need to lock? */
-	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
+	
+	if (o < 0 || l < 0 || (o + l) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* This is just setting up a static sequence then forwarding it. */
+	memset(&seq, 0, sizeof(seq));
+	if (sjme_error_is(error = sjme_charSeq_newWideStatic(&seq,
+		s, o, l)))
 		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-	
-	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
-	
-	return sjme_error_notImplemented(0);
-	
-fail_any:
-	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
-	
-	return sjme_error_default(error);
+	/* Forward, we do not need to worry about cleanup as everything is */
+	/* on the stack. Note offset becomes zero as it is properly offset */
+	/* in the static initialization. */
+	return g->apiInThread->drawSubstring(g, &seq, 0, l,
+		x, y, anchor);
 }
 
 sjme_errorCode sjme_scritchpen_core_drawSubstring(
