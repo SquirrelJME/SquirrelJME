@@ -169,6 +169,18 @@ public abstract class Application
 	}
 	
 	/**
+	 * Indicates that Java main should not appear on the launcher.
+	 * 
+	 * @return If Java main should not appear on the launcher.
+	 * @since 2026/01/16
+	 */
+	@SquirrelJMEVendorApi
+	public boolean isNoJavaMainLauncher()
+	{
+		return false;
+	}
+	
+	/**
 	 * Launches the specified task.
 	 * 
 	 * @return The bracket for the task.

@@ -159,9 +159,9 @@ public class AllVolumesEndPoint
 				fileName);
 			
 			// Determine full URI connection to this item
-			// If this is a resource type, use linear scanning instead
+			// If this is not an archive type, use linear scanning instead
 			String path = JarPackageShelf.libraryPath(library);
-			if (path != null && SuiteUtils.isResource(path))
+			if (path != null && !SuiteUtils.isArchive(path))
 			{
 				__into.put(fileName[0], new UriGenericPart(
 					"//" + LinearScanEndPoint.HOST +

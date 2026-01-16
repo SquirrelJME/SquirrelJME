@@ -10,6 +10,8 @@ squirreljme
 	swmType = JavaMEMidletType.APPLICATION
 	swmName = "SquirrelJME Media Player"
 	swmVendor = "Stephanie Gawroriski"
+	mainClass = "cc.squirreljme.mp.CommandLine"
+	ignoreJavaMainInLauncher = true
 	midlets += new JavaMEMidlet("System - Media Player", null,
 		"cc.squirreljme.mp.MidletMain")
 }

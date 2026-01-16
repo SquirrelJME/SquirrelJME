@@ -101,7 +101,7 @@ public final class ByteCode
 	private final short[] _linenumbertable;
 	
 	/** The cache of instructions in the byte code. */
-	private final Reference<Instruction>[] _icache;
+	private final Instruction[] _icache;
 	
 	/** String representation of this byte code */
 	private Reference<String> _string;
@@ -372,13 +372,13 @@ public final class ByteCode
 		not valid. (The address)} */
 		if (!this.isValidAddress(__a))
 		{
-			Reference<Instruction>[] iCache = this._icache;
+			Instruction[] iCache = this._icache;
 			int numCache = iCache.length;
 			Instruction[] cache = new Instruction[numCache];
 			for (int i = 0; i < numCache; i++)
 				if (i == __a || iCache[i] != null ||
 					!this.isValidAddress(i))
-					cache[i] = (iCache[i] != null ? iCache[i].get() : null);
+					cache[i] = (iCache[i] != null ? iCache[i] : null);
 				else
 					try
 					{
@@ -398,12 +398,12 @@ public final class ByteCode
 					Arrays.asList(cache)), this);
 		}
 		
-		Reference<Instruction>[] icache = this._icache;
-		Reference<Instruction> ref = icache[__a];
+		Instruction[] icache = this._icache;
+		Instruction ref = icache[__a];
 		Instruction rv;
 		
-		if (ref == null || null == (rv = ref.get()))
-			icache[__a] = new WeakReference<>((rv = new Instruction(
+		if (ref == null || null == (rv = ref))
+			icache[__a] = ((rv = new Instruction(
 				this._rawByteCode, this.pool, __a, this.exceptions,
 				this.stackMapTable(), this.addressFollowing(__a),
 				this.addressToIndex(__a))));
@@ -1517,9 +1517,9 @@ public final class ByteCode
 	 * @since 2017/05/18
 	 */
 	@SuppressWarnings({"unchecked"})
-	private static Reference<Instruction>[] __newCache(int __l)
+	private static Instruction[] __newCache(int __l)
 	{
-		return (Reference<Instruction>[])new Reference[__l];
+		return new Instruction[__l];
 	}
 	
 	/**

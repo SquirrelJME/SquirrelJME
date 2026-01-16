@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.classfile;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -312,9 +313,9 @@ final class __StackMapParser__
 		/* {@squirreljme.error JC47 Could not chop off all local variables
 		because there are no variables remaining to be chopped. (The
 		remaining variables to remove)} */
-		if (__chops != 0)
-			throw new InvalidClassFormatException(
-				String.format("JC47 %d", __chops), this);
+		if (__chops > 0 && Debugging.VERBOSE)
+			new InvalidClassFormatException(
+				String.format("JC47 %d", __chops), this).printStackTrace();
 		
 		return rv;
 	}

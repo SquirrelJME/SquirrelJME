@@ -176,6 +176,11 @@ public class AdditionalManifestPropertiesTaskAction
 				if (config.ignoreInLauncher)
 					attributes.putValue("X-SquirrelJME-NoLauncher",
 						"true");
+				
+				// Ignored Java main in the launcher?
+				if (config.ignoreJavaMainInLauncher)
+					attributes.putValue("X-SquirrelJME-NoJavaMainLauncher",
+						"true");
 			}
 			
 			// No profile was specified? Default to MEEP-8.0

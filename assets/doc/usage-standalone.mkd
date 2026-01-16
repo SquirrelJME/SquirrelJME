@@ -236,3 +236,129 @@ the default scale factor you may specify:
      * `cc.squirreljme.scale=(multiplier|WxH)`
    * Environment Variable:
      * `SQUIRRELJME_SCALE=(multiplier|WxH)`
+
+## Special `file:` URIs
+
+These are special `file:` URIs in SquirrelJME, specified by using a special
+authority. Within each authority, there may be an URI encoded target, this
+is specified in brackets (`<>`). Note that it is shown here as being
+unencoded so that it is readable and understood. This means that if the
+contained value is `<file://hello/>` this will be encoded
+as `file%3A%2F%2Fhello%2F`.
+
+ * `file://!%3Fx-squirreljme-all-volumes%3A%2F%2F%3F!/`
+   * All volumes root, this lists every internal library and all
+     file system roots which are available.
+ * `file://!%3Fx-squirreljme-library%3A%2F%2F%3F!<...>/`
+   * Provides access to a specific library.
+   * `<...>` may be a number indicating the library index (`<0>`).
+   * `<...>` may be the name of a Jar to access (`<example.jar>`).
+   * The root directory may be opened as a data stream to access the raw
+     library data.
+ * `file://!%3Fx-squirreljme-linear-scan%3A%2F%2F%3F!<uri:...>/`
+   * Walks through a binary file locating any known magic number and exposes
+     a file system to access scanned content.
+   * `<uri:...>` is the URI to load and access as binary data.
+ * `file://!%3Fx-squirreljme-zip%3A%2F%2F%3F!<uri:...>/`
+   * Provides access to reading arbitrary ZIP files.
+   * `<uri:...>` is the URI to load and access as a ZIP file.
+
+An example of referring to a library as a ZIP:
+
+ * Start with the target library:
+   * `file://!%3Fx-squirreljme-library%3A%2F%2F%3F!example.jar/`
+ * URI encode the entire path:
+   * `file%3A%2F%2F%21%253Fx-squirreljme-library%253A%252F%252F%253F`
+     `%21example.jar%2F`
+ * Then insert it into the ZIP authority:
+   * `file://!%3Fx-squirreljme-zip%3A%2F%2F%3F!file%3A%2F%2F%21%253Fx-s`
+     `quirreljme-library%253A%252F%252F%253F%21example.jar%2F/`
+
+## Using the Media Player from the Command Line
+
+The media player may be started purely from the command line with the
+specified command:
+
+ * `squirreljme -Xentry:0 -jar system-app-media-player.jar`
+   * If you are using standalone, `squirreljme` is
+     instead `java -jar squirreljme-standalone.jar`. You may also want to
+     use `-Xemulator:hosted` additionally to use your host virtual machine
+     for faster music playback unless you are playing on a system with no
+     support for Java SE.
+
+Note if you are on any UNIX/Posix system and are using Bash you will need
+to quote URLs as Bash will try to interpret any exclamation point (`!`).
+
+The following commands are available:
+
+ * `list`
+   * Lists the contents of the root directory.
+ * `list url`
+   * Lists the contents of the given URL.
+ * `play url (contentType)`
+   * Plays the given URL.
+
+Listing contents will give a tab (`\t`) separated output in three columns:
+
+ * The content type.
+ * The URL of the content.
+ * The file name of the content.
+
+For example, split into three rows:
+
+```
+inode/directory
+file://!%3Fx-squirreljme-library%3A%2F%2F%3F!system-app-media-player.jar/
+system-app-media-player.jar/
+```
+
+Then from the second argument, to list the contents of the JAR, copy the
+URL and run the list command:
+
+ * `list file://!%3Fx-squ<TRUNCATED>yer.jar/`
+
+This will give another list of tab (`\t`) separated columns:
+
+```
+audio/midi
+file://!%3Fx-squ<TRUNCATED>yer.jar/11-Stucked-Convoi.mid
+11-Stucked-Convoi.mid
+```
+
+Then to play the media, copy the URL into the given command with its
+content type:
+
+ * `play file://!%3Fx-squ<TRUNCATED>yer.jar/11-Stucked-Convoi.mid audio/midi`
+
+While playing the output will be as followed. Progress updates will always
+end in carriage return (`\r`) so that the last line is replaced. The starting
+tilde (`~`) may be used to synchronize the output to find the next set of
+messages to parse, while the ending caret (`^`) may be used to synchronize
+the end of a line. The synchronization is mostly useful if you are parsing
+the output from a script or another program, and you are not able to
+differentiate between `stdout` and `stderr` as reliably.
+
+The output template followed by an example:
+
+```
+~PlayerType: [99h 59m 59s 999999µs / 99h 59m 59s 999999µs] State (999)^
+~MidiPlayer: [06s 244790µs / 04m 11s 812500µs] Started (400)^
+```
+
+States are as followed:
+
+ * `Closed (0)`
+   * The media is in the closed state.
+ * `Unrealized (100)`
+   * No data has yet been loaded.
+ * `Realized (200)` 
+   * Data for the media has been loaded.
+ * `Prefetched (300)` 
+   * The media and all resources are ready for playback. 
+ * `Started (400)` 
+   * The media is currently playing.
+ * `Undefined (999)`
+   * Not defined, the indicated number will be between any of the values
+     indicated above.
+
+The song will continue playing until it reaches the end.

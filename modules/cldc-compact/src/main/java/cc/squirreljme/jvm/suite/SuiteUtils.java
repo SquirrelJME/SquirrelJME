@@ -170,6 +170,20 @@ public final class SuiteUtils
 	}
 	
 	/**
+	 * Is this an archive?
+	 *
+	 * @param __name The name to check.
+	 * @return If it is an archive.
+	 * @since 2026/01/16
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean isArchive(String __name)
+	{
+		return SuiteUtils.isJar(__name) ||
+			__name.endsWith(".zip") || __name.endsWith(".ZIP");
+	}
+	
+	/**
 	 * Is this a resource, that should be included but might not be a Jar?
 	 *
 	 * @param __name The name to check.
