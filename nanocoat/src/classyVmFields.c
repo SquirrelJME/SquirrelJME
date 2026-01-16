@@ -12,9 +12,11 @@
 #include "sjme/nvm/instance.h"
 
 #define SJME_NVM_VMFIELD_DECOMPOSE_DECL(prefix) \
+	sjme_errorCode error; \
 	prefix sjme_jvaluePrimitive* prim; \
 	prefix sjme_jint* objC; \
-	prefix sjme_jobject* objP
+	prefix sjme_jobject* objP; \
+	va_list args
 
 #define sjme_nvm_vmField_decomposeValue(value) \
 	do { \
@@ -70,6 +72,59 @@
 		} \
 	} while (0)
 
+#define sjme_nvm_vmField_operate(SJME_VLX_, extra) \
+	do { \
+		/* Read in arguments. */ \
+		va_start(args, SJME_VLX_); \
+		/* Forward. */ \
+		if (sjme_error_is(error = SJME_TOKEN_PASTE3_PP( \
+			sjme_nvm_vmField_operate, _, SJME_VLX_)(SJME_VLX_, prim, \
+				objC, objP, (extra), args))) \
+			return sjme_error_default(error); \
+		/* Cleanup arguments. */ \
+		va_end(args); \
+	} while (0)
+
+static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLG_(
+	sjme_attrInRange(-SJME_NVM_VMFIELD_NUM_VAR, 0)
+		sjme_nvm_vmField_var SJME_VLG_,
+	sjme_attrInNullable const sjme_jvaluePrimitive* prim,
+	sjme_attrInNullable const sjme_jint* objC,
+	sjme_attrInNullable const sjme_jobject* objP,
+	sjme_attrUnused sjme_pointer ignored,
+	sjme_attrInValue va_list args)
+{
+	if ((prim == NULL && objC == NULL && objP == NULL) ||
+		((objC == NULL) != (objP == NULL)))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (SJME_VLG_ <= -SJME_NVM_VMFIELD_NUM_VAR || SJME_VLG_ >= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
+	sjme_attrInRange(0, SJME_NVM_VMFIELD_NUM_VAR)
+		sjme_nvm_vmField_var SJME_VLS_,
+	sjme_attrInNullable sjme_jvaluePrimitive* prim,
+	sjme_attrInNullable sjme_jint* objC,
+	sjme_attrInNullable sjme_jobject* objP,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInValue va_list args)
+{
+	if ((prim == NULL && objC == NULL && objP == NULL) ||
+		((objC == NULL) != (objP == NULL)))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (SJME_VLS_ <= 0 || SJME_VLS_ >= SJME_NVM_VMFIELD_NUM_VAR)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_vmField_cisGet(
 	sjme_attrInNotNull const sjme_nvm_value* srcValue,
 	sjme_attrInRange(-SJME_NVM_VMFIELD_NUM_VAR, 0)
@@ -87,8 +142,11 @@ sjme_errorCode sjme_nvm_vmField_cisGet(
 	/* Decompose. */
 	sjme_nvm_vmField_decomposeValue(srcValue);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Operate. */
+	sjme_nvm_vmField_operate(SJME_VLG_, NULL);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_vmField_cisGetS(
@@ -112,8 +170,11 @@ sjme_errorCode sjme_nvm_vmField_cisGetS(
 	/* Decompose. */
 	sjme_nvm_vmField_decomposeValueSet(srcSet, getIndex, const);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Operate. */
+	sjme_nvm_vmField_operate(SJME_VLG_, NULL);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_vmField_cisSet(
@@ -134,8 +195,11 @@ sjme_errorCode sjme_nvm_vmField_cisSet(
 	/* Decompose. */
 	sjme_nvm_vmField_decomposeValue(destValue);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Operate. */
+	sjme_nvm_vmField_operate(SJME_VLS_, commit);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_vmField_cisSetS(
@@ -160,8 +224,11 @@ sjme_errorCode sjme_nvm_vmField_cisSetS(
 	/* Decompose. */
 	sjme_nvm_vmField_decomposeValueSet(destSet, setIndex, );
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Operate. */
+	sjme_nvm_vmField_operate(SJME_VLS_, commit);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_vmField_idByNameType(
