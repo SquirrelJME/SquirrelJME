@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.font;
 
 import cc.squirreljme.jvm.mle.constants.UIFontFlag;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Font;
 
 /**
@@ -17,6 +18,7 @@ import javax.microedition.lcdui.Font;
  *
  * @since 2018/11/24
  */
+@SquirrelJMEVendorApi
 public final class FontUtilities
 {
 	/**
@@ -36,6 +38,7 @@ public final class FontUtilities
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/14
 	 */
+	@SquirrelJMEVendorApi
 	public static int fontToSystemFont(Font __font)
 		throws NullPointerException
 	{
@@ -87,6 +90,7 @@ public final class FontUtilities
 	 * @since 2018/11/24
 	 */
 	@SuppressWarnings("MagicNumber")
+	@SquirrelJMEVendorApi
 	public static int logicalSizeToPixelSize(int __lsz)
 		throws IllegalArgumentException
 	{
@@ -114,6 +118,7 @@ public final class FontUtilities
 	 * @return The logical size.
 	 * @since 2018/11/24
 	 */
+	@SquirrelJMEVendorApi
 	public static int pixelSizeToLogicalSize(int __psz)
 	{
 		if (__psz < 10)

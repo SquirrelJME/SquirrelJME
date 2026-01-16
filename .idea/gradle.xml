@@ -105,8 +105,6 @@
             <option value="$PROJECT_DIR$/tools/cicd-release-bundle" />
             <option value="$PROJECT_DIR$/tools/github-classic-project-dump" />
             <option value="$PROJECT_DIR$/tools/markdown-javadoc" />
-            <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
-            <option value="$PROJECT_DIR$/tools/sqf-to-c" />
             <option value="$PROJECT_DIR$/tools/squirreljme-debugger" />
             <option value="$PROJECT_DIR$/tools/squirreljme-font" />
             <option value="$PROJECT_DIR$/tools/squirreljme-javap" />
