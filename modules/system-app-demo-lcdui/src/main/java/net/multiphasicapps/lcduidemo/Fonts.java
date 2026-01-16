@@ -257,7 +257,7 @@ public class Fonts
 				
 				// Cannot exceed the max height of the canvas
 				int atChar = charPage;
-				for (iy = baseIY + fh, ix = baseIX; iy < max;
+				for (iy = baseIY + fh, ix = baseIX; iy <= (max + fh);
 					 iy += fh, ix = baseIX)
 					for (int l = 0; l < Fonts.PAGE_WIDTH; l++, ix += cw)
 					{
