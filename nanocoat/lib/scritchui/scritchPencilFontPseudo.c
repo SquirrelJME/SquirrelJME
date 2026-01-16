@@ -13,6 +13,10 @@
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
+#include "sjme/util.h"
+
+/** Use a better barcode-like scaling algorithm I thought of. */
+#define SJME_CONFIG_SCRITCHUI_FONT_BARCODE
 
 static sjme_jboolean sjme_scritchui_pseudoEquals(
 	sjme_attrInNullable sjme_scritchui_pencilFont a,
@@ -270,8 +274,14 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	sjme_jubyte* src;
 	sjme_jubyte* sp;
 	sjme_jubyte* dp;
-	sjme_jint dy, th, minScanLen;
+	sjme_jint dy, th, minScanLen, syInt;
 	sjme_fixed sy, ifrac;
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+	sjme_jint dx, syIntLast;
+	sjme_jubyte* bar;
+	sjme_jubyte* sup;
+	sjme_jubyte orig, diff, bif, lim;
+#endif
 	
 	if (inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -296,14 +306,37 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	/* Determine scanline length for each bitmap row. */
 	scanLen = sjme_scritchui_pencilFontScanLen(cw);
 	
+	/* We do not want to write over other rows. */
+	if (bufScanLen < scanLen)
+		minScanLen = bufScanLen;
+	else
+		minScanLen = scanLen;
+	
 	/* Allocate source bitmap. */
 	area = sizeof(*src) * (scanLen * ch);
 	src = sjme_alloca(area);
-	if (src == NULL)
+	
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+	/* Current barcode bits and suppressor. */
+	bar = sjme_alloca(minScanLen);
+	sup = sjme_alloca(minScanLen);
+#endif
+	
+	/* Did any allocations fail? */
+	if (
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+		bar == NULL || sup == NULL ||
+#endif
+		src == NULL)
 		return sjme_error_outOfMemory(NULL, area);
 	
 	/* Initialize. */
 	memset(src, 0, area);
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+	memset(bar, 0, minScanLen);
+	memset(sup, 0, minScanLen);
+	syIntLast = -1;
+#endif
 	
 	/* Get original glyph bitmap. */
 	origOffX = 0;
@@ -317,22 +350,61 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	/* Target desired pixel size. */
 	th = inFont->cache.pixelSize;
 	
-	/* We do not want to write over other rows. */
-	if (bufScanLen < scanLen)
-		minScanLen = bufScanLen;
-	else
-		minScanLen = scanLen;
-	
 	/* Copy rows, for every change in dy we grab from the source. */
 	ifrac = inFont->cache.ifraction;
 	for (dy = 0, sy = 0; dy < th && dy < bufHeight; dy++, sy += ifrac)
 	{
+		/* Normalize sy. */
+		syInt = sjme_fixed_int(sjme_fixed_floor(sy));
+		
 		/* Determine where to move and copy from. */
 		dp = &buf[bufOff + (dy * bufScanLen)];
-		sp = &src[sjme_fixed_int(sy) * scanLen];
+		sp = &src[syInt * scanLen];
 		
-		/* Copy entire scanline over. */
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+		/* Use a new set of suppressor bits? */
+		if (syIntLast != syInt)
+		{
+			memmove(sup, bar, minScanLen);
+			syIntLast = syInt;
+		}
+		
+		/* Run through each bit and draw the last barcode state. */
+		for (dx = 0; dx < minScanLen; dx++)
+		{
+			/* Determine the new bit state, with any bits will change. */
+			orig = bar[dx];
+			diff = (orig ^ sp[dx]);
+			bar[dx] ^= diff;
+			
+			/* Directly copy over, with suppressors in place. The */
+			/* suppressors really only have an effect at very high scales */
+			/* changes as they reduce some edge distortion. */
+#if defined(SJME_I_REALLY_LIKE_THIS_BUT_THIS_IS_MISSING_INNER_LINES)
+			/* The inner lines are missing for this, but this produces a */
+			/* very clean thin line set otherwise. */
+			dp[dx] = orig & (orig ^ (orig ^ sup[dx]));
+#else
+			/* There are very ugly looking thick horizontal bars due, these */
+			/* can be removed with suppression however they end up leaving */
+			/* gaps. Thus, we need to bifuricate bits to remove anything. */
+			/* This essentially removes subsequent zeroes. */
+			bif = 0;
+#if 0
+			bif = lim = sup[dx];
+			bif = (bif << 1) & bif;
+#endif
+			
+			/* The inner lines are normally missing for this, but this */
+			/* produces a very clean thin line set otherwise. To get the */
+			/* inner lines, the bifurication value is used. */
+			dp[dx] = (orig & (orig ^ (orig ^ sup[dx]))) | bif;
+#endif
+		}
+#else
+		/* Copy entire scanline over (nearest scaling). */
 		memmove(dp, sp, minScanLen);
+#endif
 	}
 	
 	/* X-axis is unchanged. */
@@ -344,12 +416,26 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 		*outOffY = sjme_fixed_int(sjme_fixed_mul(
 			sjme_fixed_hi(origOffY), inFont->cache.fraction));
 	
+	/* Cleanup. */
+	sjme_alloca_free(src);
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+	sjme_alloca_free(bar);
+	sjme_alloca_free(sup);
+#endif
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 	
 fail_renderBitmap:
 	if (src != NULL)
 		sjme_alloca_free(src);
+	
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+	if (bar != NULL)
+		sjme_alloca_free(bar);
+	if (sup != NULL)
+		sjme_alloca_free(sup);
+#endif
 
 	return sjme_error_default(error);
 }
