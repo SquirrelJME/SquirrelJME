@@ -170,16 +170,42 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawChars)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
+	sjme_pointer chars;
+	jboolean isCopy;
+	sjme_jint len;
 
 	/* Recover. */
 	p = sjme_jni_recoverPencil(env, g);
-	if (g == NULL || p == NULL)
+	if (g == NULL || p == NULL || s == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
 
-	sjme_todo("Impl?");
+	/* Double check length. */
+	len = (*env)->GetArrayLength(env, s);
+	if (o < 0 || l < 0 || (o + l) > len || (o + l) < 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_INDEX_OUT_OF_BOUNDS);
+		return;
+	}
+
+	/* Get character array. */
+	chars = NULL;
+	isCopy = SJME_JNI_FALSE;
+	if (sjme_error_is(error = sjme_jni_arrayGetElements(env, s,
+		&chars, &isCopy, NULL)) || chars == NULL)
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawChars(p, chars, o, l, x, y, anchor)))
+		sjme_jni_throwMLECallError(env, error);
+
+	/* Cleanup. */
+	sjme_jni_arrayReleaseElements(env, s, chars);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawHoriz)

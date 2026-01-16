@@ -60,6 +60,34 @@ public class Blending
 	}
 	
 	/**
+	 * Returns the blending mode string.
+	 *
+	 * @param __blendMode The blending mode.
+	 * @return The resultant blending mode string.
+	 * @since 2025/12/22
+	 */
+	public static String blendString(int __blendMode)
+	{
+		switch (__blendMode)
+		{
+			case PencilBlendingMode.SRC_OVER:	return "SRC_OVER";
+			case PencilBlendingMode.SRC:		return "SRC";
+			case PencilBlendingMode.SRC_ATOP:	return "SRC_ATOP";
+			case PencilBlendingMode.SRC_IN:		return "SRC_IN";
+			case PencilBlendingMode.SRC_OUT:	return "SRC_OUT";
+			case PencilBlendingMode.DEST_OVER:	return "DEST_OVER";
+			case PencilBlendingMode.DEST:		return "DEST";
+			case PencilBlendingMode.DEST_ATOP:	return "DEST_ATOP";
+			case PencilBlendingMode.DEST_IN:	return "DEST_IN";
+			case PencilBlendingMode.DEST_OUT:	return "DEST_OUT";
+			case PencilBlendingMode.CLEAR:		return "CLEAR";
+			case PencilBlendingMode.XOR:		return "XOR";
+			default:
+				return String.format("Unknown %d?", __blendMode);
+		}
+	}
+	
+	/**
 	 * Clips the value to a pixel color.
 	 *
 	 * @param __v The value to clip.
@@ -87,34 +115,6 @@ public class Blending
 		if (__v < 0 || __v >= PencilBlendingMode.NUM_BLENDS)
 			return 0;
 		return __v;
-	}
-	
-	/**
-	 * Returns the blending mode string.
-	 *
-	 * @param __blendMode The blending mode.
-	 * @return The resultant blending mode string.
-	 * @since 2025/12/22
-	 */
-	private static String blendString(int __blendMode)
-	{
-		switch (__blendMode)
-		{
-			case PencilBlendingMode.SRC_OVER:	return "SRC_OVER";
-			case PencilBlendingMode.SRC:		return "SRC";
-			case PencilBlendingMode.SRC_ATOP:	return "SRC_ATOP";
-			case PencilBlendingMode.SRC_IN:		return "SRC_IN";
-			case PencilBlendingMode.SRC_OUT:	return "SRC_OUT";
-			case PencilBlendingMode.DEST_OVER:	return "DEST_OVER";
-			case PencilBlendingMode.DEST:		return "DEST";
-			case PencilBlendingMode.DEST_ATOP:	return "DEST_ATOP";
-			case PencilBlendingMode.DEST_IN:	return "DEST_IN";
-			case PencilBlendingMode.DEST_OUT:	return "DEST_OUT";
-			case PencilBlendingMode.CLEAR:		return "CLEAR";
-			case PencilBlendingMode.XOR:		return "XOR";
-			default:
-				return String.format("Unknown %d?", __blendMode);
-		}
 	}
 	
 	/**
@@ -157,6 +157,10 @@ public class Blending
 		public Viewport()
 		{
 			this.setTitle("Blending Demo");
+			
+			// Exit command
+			this.addCommand(Exit.command);
+			this.setCommandListener(new Exit());
 			
 			// Load in Lex
 			Image lex;
