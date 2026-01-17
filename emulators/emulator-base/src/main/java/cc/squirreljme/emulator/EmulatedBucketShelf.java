@@ -165,12 +165,10 @@ public class EmulatedBucketShelf
 			EmulatedBucketBracket result;
 			if (__type == StandardBucketType.DATA_BUCKET)
 				result = new EmulatedBucketBracket(
-					SystemPathProvider.provider().state()
-						.resolve("data"));
+					SystemPathProvider.provider().bucketData());
 			else if (__type == StandardBucketType.LIBRARIES_BUCKET)
 				result = new EmulatedBucketBracket(
-					SystemPathProvider.provider().data()
-						.resolve("lib"));
+					SystemPathProvider.provider().libraries());
 			else
 				throw new MLECallError("Unknown bucket type: " + __type);
 			

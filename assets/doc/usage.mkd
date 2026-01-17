@@ -124,77 +124,57 @@ The available options are:
 SquirrelJME has a set of default directories, which have a priority order
 and may be overridden by environment variables.
 
-The directory types and their orders are:
+ * `<ENVIRONMENT_VARIABLE>` -- value is read from an environment variable.
+ * `[Another Type]` -- value is read from another directory type.
+
+Any entry with {~} means the first character will be placed by your home
+directory, `<HOME>` on POSIX or `<USERHOME>` on Windows.
+
+The directory types and their order of precedence are:
 
  * _Cache_
+   * `<SQUIRRELJME_CACHE_HOME>` {~}
+   * `<LOCALAPPDATA>/squirreljme/cache` (Windows)
+   * `<APPDATA>/squirreljme/cache` (Windows)
+   * `<PROGRAMDATA>/squirreljme/cache` (Windows)
+   * `<XDG_CACHE_HOME>/squirreljme` (POSIX)
+   * `<HOME>/.cache/squirreljme` (POSIX)
  * _Config_
+   * `<SQUIRRELJME_CONFIG_HOME>` {~}
+   * `<APPDATA>/squirreljme/config` (Windows)
+   * `<PROGRAMDATA>/squirreljme/config` (Windows)
+   * `<XDG_CONFIG_HOME>/squirreljme` (POSIX)
+   * `<HOME>/.config/squirreljme` (POSIX)
  * _Data_
+   * `<SQUIRRELJME_DATA_HOME>` {~}
+   * `<APPDATA>/squirreljme/data` (Windows)
+   * `<PROGRAMDATA>/squirreljme/data` (Windows)
+   * `<XDG_DATA_HOME>/squirreljme` (POSIX)
+   * `<HOME>/.local/share/squirreljme` (POSIX)
  * _State_
+   * `<SQUIRRELJME_STATE_HOME>` {~}
+   * `<LOCALAPPDATA>/squirreljme/state` (Windows)
+   * `<APPDATA>/squirreljme/state` (Windows)
+   * `<PROGRAMDATA>/squirreljme/state` (Windows)
+   * `<XDG_STATE_HOME>/squirreljme` (POSIX)
+   * `<HOME>/.local/state/squirreljme` (POSIX)
  * _Natives_
+   * `<SQUIRRELJME_LIB_JVM>` {~}
+   * `<PROGRAMDATA>/squirreljme/natives` (Windows)
+   * `/lib/squirreljme/natives` (POSIX)
  * _Executable_
+   * This always points to the current executable, if it can be determined.
  * _Temporary_
- * _Libraries_
- * _Data Bucket_
+   * `<TMP>` (Windows)
+   * `<TEMP>` (POSIX)
+   * `/tmp` (POSIX)
+   * `[Cache]/sjme.tmp`
+ * _Libraries_ -- User provided JARs are loaded from here.
+   * `[Data]/lib`
+ * _Data Bucket_ -- Non-volatile storage is here (RMS and DoJa Scratchpads).
+   * `[State]/data`
  * _Extra Bucket_
-
-SquirrelJME may be configured automatically via files on the file system. The
-following paths are considered for automatic configuration and classpath
-inclusion.
-
- * Windows:
-   * Cache (Local):
-     * Vista/7/8/10/11: `%LOCALAPPDATA%/squirreljme/cache`
-     * 95/98/ME/2000/XP: `%APPDATA%/squirreljme/cache`
-     * Or otherwise `%PROGRAMDATA%/squirreljme/cache`
-   * Configuration (Roaming):
-     * 95/98/ME/XP/Vista/7/8/10/11: `%APPDATA%/squirreljme/config`
-     * Or otherwise `%PROGRAMDATA%/squirreljme/config`
-   * Data (Roaming):
-     * 95/98/ME/XP/Vista/7/8/10/11: `%APPDATA%/squirreljme/data`
-     * Or otherwise `%PROGRAMDATA%/squirreljme/data`
-   * State (Local):
-     * Vista/7/8/10/11: `%LOCALAPPDATA%/squirreljme/data`
-     * 95/98/ME/2000/XP: `%APPDATA%/squirreljme/data`
-     * Or otherwise `%PROGRAMDATA%/squirreljme/data`
- * Linux, macOS, BSD, and other UNIX/UNIX-like systems:
-  * Cache: `$XDG_CACHE_HOME/squirreljme`
-    * Or otherwise `$HOME/.cache/squirreljme`
-  * Configuration: `$XDG_CONFIG_HOME/squirreljme`
-    * Or otherwise `$HOME/.config/squirreljme`
-  * Data: `$XDG_DATA_HOME/squirreljme`
-    * Or otherwise `$HOME/.local/share/squirreljme`
-  * State: `$XDG_STATE_HOME/squirreljme`
-    * Or otherwise `$HOME/.local/state/squirreljme`
-
-To override the defaults, you may instead use the following, if any start
-with `~` that is replaced with `$HOME` or `%USERPROFILE%`:
-
- * `SQUIRRELJME_CACHE_HOME` for _Cache_ path.
-   * Alternatively the property `cc.squirreljme.cache.home`.
- * `SQUIRRELJME_CONFIG_HOME` for _Configuration_ path.
-   * Alternatively the property `cc.squirreljme.config.home`.
- * `SQUIRRELJME_DATA_HOME` for _Data_ path.
-   * Alternatively the property `cc.squirreljme.data.home`.
- * `SQUIRRELJME_STATE_HOME` for _State_ path.
-   * Alternatively the property `cc.squirreljme.state.home`.
-
-SquirrelJME will automatically add to system properties for a properties file:
-
- * `$SQUIRRELJME_JAVA_OPTS`
-   * In the form of `"-Dproperty=value -Dcute=squirrel"`
- * `{Configuration}/squirreljme.properties`
-   * In the form of `property=value` on individual lines.
-
-SquirrelJME will automatically add to the classpath from:
-
- * `$SQUIRRELJME_CLASSPATH/`
- * `$SQUIRRELJME_JAVA_HOME/lib/`
- * `$SQUIRRELJME_JAVA_HOME/jre/lib/`
- * `{Data}/lib/`
-
-SquirrelJME will look for native libraries in:
-
- * `$SQUIRRELJME_LIB_JVM`
+   * `<SQUIRRELJME_BUCKET_EXTRA>` {~}
 
 ## Common Issues
 
