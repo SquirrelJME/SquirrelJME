@@ -10,7 +10,10 @@
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.constants.StandardBucketType;
+import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
@@ -153,6 +156,13 @@ public class AllVolumesEndPoint
 			"//" + BucketEndPoint.HOST + "data/"));
 		__into.put("@bucket.libraries/", new UriGenericPart(
 			"//" + BucketEndPoint.HOST + "libraries/"));
+		
+		// Does the extra bucket exist?
+		String extraPath = RuntimeShelf.vmDescription(
+			VMDescriptionType.DEFAULT_DIR_BUCKET_EXTRA);
+		if (extraPath != null && !extraPath.isEmpty())
+			__into.put("@bucket.extra/", new UriGenericPart(
+				"//" + BucketEndPoint.HOST + "extra/"));
 		
 		// List all libraries
 		String[] fileName = new String[1];

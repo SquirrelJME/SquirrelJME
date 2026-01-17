@@ -73,6 +73,11 @@ public class BucketEndPointFactory
 			case "libraries":
 				type = StandardBucketType.LIBRARIES_BUCKET;
 				break;
+				
+			case "2":
+			case "extra":
+				type = StandardBucketType.EXTRA_BUCKET;
+				break;
 			
 			default:
 				/* {@squirreljme.error GF0h Invalid bucket specified.

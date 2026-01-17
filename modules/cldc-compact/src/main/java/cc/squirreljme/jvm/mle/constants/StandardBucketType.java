@@ -29,8 +29,13 @@ public interface StandardBucketType
 	byte LIBRARIES_BUCKET =
 		1;
 	
+	/** The extra bucket. */
+	@SquirrelJMEVendorApi
+	byte EXTRA_BUCKET =
+		2;
+	
 	/** The number of standard buckets. */
 	@SquirrelJMEVendorApi
 	byte NUM_BUCKETS =
-		2;
+		3;
 }

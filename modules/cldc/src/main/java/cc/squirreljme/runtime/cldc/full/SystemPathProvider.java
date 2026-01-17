@@ -53,6 +53,18 @@ public final class SystemPathProvider
 	}
 	
 	/**
+	 * Returns the extra bucket path.
+	 *
+	 * @return The extra bucket.
+	 * @since 2026/01/16
+	 */
+	public Path bucketExtra()
+	{
+		return SystemPathProvider.__vmDesc(
+			VMDescriptionType.DEFAULT_DIR_BUCKET_EXTRA);
+	}
+	
+	/**
 	 * Returns the cache path or {@code null} if there is none.
 	 *
 	 * @return The cache path.

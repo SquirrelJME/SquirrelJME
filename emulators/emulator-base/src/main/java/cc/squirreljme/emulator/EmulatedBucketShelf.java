@@ -162,17 +162,22 @@ public class EmulatedBucketShelf
 				return buckets.get(type);
 			
 			// Otherwise setup new bucket
-			EmulatedBucketBracket result;
+			Path path;
 			if (__type == StandardBucketType.DATA_BUCKET)
-				result = new EmulatedBucketBracket(
-					SystemPathProvider.provider().bucketData());
+				path = SystemPathProvider.provider().bucketData();
 			else if (__type == StandardBucketType.LIBRARIES_BUCKET)
-				result = new EmulatedBucketBracket(
-					SystemPathProvider.provider().libraries());
+				path = SystemPathProvider.provider().libraries();
+			else if (__type == StandardBucketType.EXTRA_BUCKET)
+				path = SystemPathProvider.provider().bucketExtra();
 			else
 				throw new MLECallError("Unknown bucket type: " + __type);
 			
+			// No path?
+			if (path == null)
+				throw new MLECallError("Bucket is unmapped: " + __type);
+			
 			// Cache and use it
+			EmulatedBucketBracket result = new EmulatedBucketBracket(path);
 			buckets.put(type, result);
 			return result;
 		}

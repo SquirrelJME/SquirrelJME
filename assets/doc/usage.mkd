@@ -220,6 +220,7 @@ as `file%3A%2F%2Fhello%2F`.
      such as RMS, DoJa ScratchPads, and user installed applications.
    * `<0>` or `<data>` for the data bucket.
    * `<1>` or `<libraries>` for the library bucket.
+   * `<2>` or `<extra>` for the extra bucket.
  * `file://!%3Fx-squirreljme-library%3A%2F%2F%3F!<...>/`
    * Provides access to a specific library.
    * `<...>` may be a number indicating the library index (`<0>`).
