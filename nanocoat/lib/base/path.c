@@ -64,6 +64,12 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 		"",
 		SJME_JNI_TRUE
 	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_LIBRARIES,
+		"SQUIRRELJME_LIBRARY_PATH",
+		"",
+		SJME_JNI_TRUE
+	},
 
 #if 0
 	/* Multiple class path location lookup. */

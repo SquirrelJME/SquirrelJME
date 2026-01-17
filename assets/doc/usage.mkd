@@ -170,6 +170,7 @@ The directory types and their order of precedence are:
    * `/tmp` (POSIX)
    * `[Cache]/sjme.tmp`
  * _Libraries_ -- User provided JARs are loaded from here.
+   * `<SQUIRRELJME_LIBRARY_PATH>` {~}
    * `[Data]/lib`
  * _Data Bucket_ -- Non-volatile storage is here (RMS and DoJa Scratchpads).
    * `[State]/data`
