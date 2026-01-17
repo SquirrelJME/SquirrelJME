@@ -33,7 +33,6 @@ public class TestGlobFilter
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/12/30
 	 */
 	@Override

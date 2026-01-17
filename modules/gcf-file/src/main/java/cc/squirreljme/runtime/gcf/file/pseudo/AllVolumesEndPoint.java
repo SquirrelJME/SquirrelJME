@@ -75,7 +75,6 @@ public class AllVolumesEndPoint
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/12/27
 	 */
 	@Override

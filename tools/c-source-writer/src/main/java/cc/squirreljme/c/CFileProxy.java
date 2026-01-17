@@ -200,7 +200,6 @@ public abstract class CFileProxy
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2023/06/04
 	 */
 	@Override

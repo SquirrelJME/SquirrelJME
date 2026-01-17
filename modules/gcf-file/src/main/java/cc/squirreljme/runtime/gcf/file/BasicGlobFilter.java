@@ -102,7 +102,6 @@ public final class BasicGlobFilter
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/12/28
 	 */
 	@Override
@@ -113,7 +112,6 @@ public final class BasicGlobFilter
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/12/30
 	 */
 	@Override
@@ -132,7 +130,6 @@ public final class BasicGlobFilter
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/12/30
 	 */
 	@Override

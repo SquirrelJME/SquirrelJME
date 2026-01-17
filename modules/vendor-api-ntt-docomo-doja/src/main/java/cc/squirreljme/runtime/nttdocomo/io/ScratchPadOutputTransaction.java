@@ -69,7 +69,6 @@ public final class ScratchPadOutputTransaction
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/12/02
 	 */
 	@Override
@@ -91,7 +90,6 @@ public final class ScratchPadOutputTransaction
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/12/02
 	 */
 	@Override
@@ -112,7 +110,6 @@ public final class ScratchPadOutputTransaction
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/12/02
 	 */
 	@Override

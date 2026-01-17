@@ -119,7 +119,23 @@ The available options are:
  * `-zero`
    * Alias for `-Xemulator:springcoat`.
 
-## Default Configuration and Library Paths
+## Default Directories
+
+SquirrelJME has a set of default directories, which have a priority order
+and may be overridden by environment variables.
+
+The directory types and their orders are:
+
+ * _Cache_
+ * _Config_
+ * _Data_
+ * _State_
+ * _Natives_
+ * _Executable_
+ * _Temporary_
+ * _Libraries_
+ * _Data Bucket_
+ * _Extra Bucket_
 
 SquirrelJME may be configured automatically via files on the file system. The
 following paths are considered for automatic configuration and classpath

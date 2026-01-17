@@ -164,7 +164,6 @@ public abstract class Canvas
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@Override

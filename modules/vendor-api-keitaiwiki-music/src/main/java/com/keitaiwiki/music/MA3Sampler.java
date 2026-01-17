@@ -571,7 +571,6 @@ public class MA3Sampler
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/05/05
 	 */
 	@Override

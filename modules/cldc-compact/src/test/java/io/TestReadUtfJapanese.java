@@ -31,7 +31,6 @@ public class TestReadUtfJapanese
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/02/03
 	 */
 	@Override
