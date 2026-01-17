@@ -218,6 +218,11 @@ as `file%3A%2F%2Fhello%2F`.
  * `file://!%3Fx-squirreljme-all-volumes%3A%2F%2F%3F!/`
    * All volumes root, this lists every internal library and all
      file system roots which are available.
+ * `file://!%3Fx-squirreljme-bucket%3A%2F%2F%3F!<...>/`
+   * Access to the bucket storage which contains non-volatile data
+     such as RMS, DoJa ScratchPads, and user installed applications.
+   * `<0>` or `<data>` for the data bucket.
+   * `<1>` or `<libraries>` for the library bucket.
  * `file://!%3Fx-squirreljme-library%3A%2F%2F%3F!<...>/`
    * Provides access to a specific library.
    * `<...>` may be a number indicating the library index (`<0>`).
@@ -293,6 +298,13 @@ Then to play the media, copy the URL into the given command with its
 content type:
 
  * `play file://!%3Fx-squ<TRUNCATED>yer.jar/11-Stucked-Convoi.mid audio/midi`
+
+If you place the media file in the data and/or library directory, which
+is where non-volatile data is stored or your applications are installed, you
+can then play it via:
+
+ * `file://!%3Fx-squirreljme-bucket%3A%2F%2F%3F!data/music.mid`
+ * `file://!%3Fx-squirreljme-bucket%3A%2F%2F%3F!libraries/music.mid`
 
 While playing the output will be as followed. Progress updates will always
 end in carriage return (`\r`) so that the last line is replaced. The starting

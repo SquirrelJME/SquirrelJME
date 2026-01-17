@@ -149,6 +149,12 @@ public class AllVolumesEndPoint
 		UriGenericPart dotDot = this.dotDot;
 		__into.put("..", (dotDot != null ? dotDot : this.part));
 		
+		// List all buckets
+		__into.put("@bucket.data/", new UriGenericPart(
+			"//" + BucketEndPoint.HOST + "data/"));
+		__into.put("@bucket.libraries/", new UriGenericPart(
+			"//" + BucketEndPoint.HOST + "libraries/"));
+		
 		// List all libraries
 		String[] fileName = new String[1];
 		for (JarPackageBracket library : JarPackageShelf.libraries())

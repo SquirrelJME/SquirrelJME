@@ -354,12 +354,16 @@ public class MA3Sampler
 	}
 	
 	/**
-	 * Speicfy a channel's program number.
+	 * Specify a channel's program number.
 	 */
 	@Override
 	public void programChange(int channel, int program)
 	{
-		MA3Channel chan = this.channels[channel];
+		MA3Channel[] channels = this.channels;
+		if (channel < 0 || channel >= channels.length)
+			return;
+		
+		MA3Channel chan = channels[channel];
 		chan.prgProgram = program;
 	}
 	
