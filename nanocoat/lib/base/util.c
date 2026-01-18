@@ -683,7 +683,7 @@ sjme_jint sjme_util_intReverse(sjme_jint v)
 sjme_juint sjme_util_intReverseU(sjme_juint v)
 {
 #if SJME_CONFIG_HAS_GCC_BUILTIN(bitreverse32)
-	return __builtin_bitreverse32(v)
+	return __builtin_bitreverse32(v);
 #else
 	/* Henry S. Warren, Jr. (2013). Hacker's Delight (2nd Edition). */
 	/* Addison Wesley. ISBN-13 978-0-321-842268-8. */

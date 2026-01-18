@@ -2196,9 +2196,28 @@ typedef struct sjme_scritchui_bugs
 } sjme_scritchui_bugs;
 
 /**
+ * The type of external access which is being requested, this is used
+ * as a hint.
+ * 
+ * @since 2026/01/18
+ */
+typedef enum sjme_scritchui_externalAssetType
+{
+	/** Undefined asset. */
+	SJME_SCRITCHUI_ASSET_TYPE_UNDEFINED = 0,
+	
+	/** Font asset. */
+	SJME_SCRITCHUI_ASSET_TYPE_FONT = 1,
+	
+	/** The number of asset types. */
+	SJME_SCRITCHUI_NUM_ASSET_TYPES = 2,
+} sjme_scritchui_externalAssetType;
+
+/**
  * Obtains an asset that is externally provided.
  *
  * @param inState The input state.
+ * @param assetType The asset type requested, this is used as a hint.
  * @param outStream The resultant stream of the asset data.
  * @param inAsset The name of the asset to load.
  * @return Any resultant error, if any.
@@ -2206,6 +2225,7 @@ typedef struct sjme_scritchui_bugs
  */
 typedef sjme_errorCode (*sjme_scritchui_externalAssetFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_scritchui_externalAssetType assetType,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr inAsset);
 	
