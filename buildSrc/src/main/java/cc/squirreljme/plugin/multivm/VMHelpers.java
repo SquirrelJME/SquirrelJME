@@ -1203,7 +1203,8 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		byte[] buf = new byte[65536];
-		try (ByteArrayOutputStream out = new ByteArrayOutputStream(8192))
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream(
+			Math.max(__in.available(), 65536)))
 		{
 			for (;;)
 			{
