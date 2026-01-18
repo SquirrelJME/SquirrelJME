@@ -409,17 +409,25 @@ sjme_jlong sjme_swap_long(
 sjme_juint sjme_swap_uint(
 	sjme_attrInValue sjme_juint in)
 {
+#if SJME_CONFIG_HAS_GCC_BUILTIN(bswap32)
+	return __builtin_bswap32(in);
+#else
 	// 0xAABBCCDD -> 0xBBAADDCC
 	in = (((in & 0xFF00FF00) >> 8) | ((in & 0x00FF00FF) << 8));
 
 	// 0xBBAADDCC -> 0xDDCCBBAA
 	return (in >> 16) | (in << 16);
+#endif
 }
 
 sjme_jchar sjme_swap_ushort(
 	sjme_attrInValue sjme_jchar in)
 {
+#if SJME_CONFIG_HAS_GCC_BUILTIN(bswap16)
+	return __builtin_bswap16(in);
+#else
 	return ((in >> 8) | (in << 8));
+#endif
 }
 
 sjme_errorCode sjme_swap_shu8_uint_memmove(
@@ -503,11 +511,11 @@ sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
 sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v)
 {
-	/* Henry S. Warren, Jr. (2013). Hacker's Delight (2nd Edition). */
-	/* Addison Wesley. ISBN-13 978-0-321-842268-8. Page 156. */
 #if SJME_CONFIG_HAS_GCC_BUILTIN(popcount)
 	return __builtin_popcount(v);
 #else
+	/* Henry S. Warren, Jr. (2013). Hacker's Delight (2nd Edition). */
+	/* Addison Wesley. ISBN-13 978-0-321-842268-8. Page 156. */
 	v = v - ((v >> 1) & UINT32_C(0x55555555));
 	v = (v & UINT32_C(0x33333333)) + ((v >> 2) & UINT32_C(0x33333333));
 	return ((v + (v >> 4) & UINT32_C(0xF0F0F0F)) * UINT32_C(0x1010101)) >> 24;
@@ -674,6 +682,9 @@ sjme_jint sjme_util_intReverse(sjme_jint v)
 
 sjme_juint sjme_util_intReverseU(sjme_juint v)
 {
+#if SJME_CONFIG_HAS_GCC_BUILTIN(bitreverse32)
+	return __builtin_bitreverse32(v)
+#else
 	/* Henry S. Warren, Jr. (2013). Hacker's Delight (2nd Edition). */
 	/* Addison Wesley. ISBN-13 978-0-321-842268-8. */
 	v = (((v & UINT32_C(0xAAAAAAAA)) >> 1) |
@@ -686,6 +697,7 @@ sjme_juint sjme_util_intReverseU(sjme_juint v)
 		((v & UINT32_C(0x00FF00FF)) << 8));
 	
 	return ((v >> 16) | (v << 16));
+#endif
 }
 
 sjme_errorCode sjme_util_intToBinary(
@@ -725,6 +737,11 @@ sjme_errorCode sjme_util_intToBinary(
 sjme_juint sjme_util_intZeroesLeadingU(
 	sjme_attrInValue sjme_juint v)
 {
+#if SJME_CONFIG_HAS_GCC_BUILTIN(clz)
+	if (v == 0)
+		return 32;
+	return __builtin_clz(v);
+#else
 	/* Henry S. Warren, Jr. (2013). Hacker's Delight (2nd Edition). */
 	/* Addison Wesley. ISBN-13 978-0-321-842268-8. */
 	v = v | (v >> 1);
@@ -734,13 +751,20 @@ sjme_juint sjme_util_intZeroesLeadingU(
 	v = v | (v >> 16);
 	
 	return sjme_util_intBitCountU(~v);
+#endif
 }
 
 sjme_juint sjme_util_intZeroesTrailingU(
 	sjme_attrInValue sjme_juint v)
 {
+#if SJME_CONFIG_HAS_GCC_BUILTIN(ctz)
+	if (v == 0)
+		return 32;
+	return __builtin_ctz(v);
+#else
 	return sjme_util_intZeroesLeadingU(
 		sjme_util_intReverseU(v));
+#endif
 }
 
 sjme_errorCode sjme_util_lpstrTrimEnd(

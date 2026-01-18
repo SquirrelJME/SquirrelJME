@@ -363,6 +363,9 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 		
 #if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
 		/* Use a new set of suppressor bits? */
+		/* The suppressor bits are used so that only when the barcode bits */
+		/* change, they are actually drawn. Suppressed bits get drawn in */
+		/* at a later step. */
 		if (syIntLast != syInt)
 		{
 			memmove(sup, bar, minScanLen);
@@ -380,11 +383,6 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 			/* Directly copy over, with suppressors in place. The */
 			/* suppressors really only have an effect at very high scales */
 			/* changes as they reduce some edge distortion. */
-#if defined(SJME_I_REALLY_LIKE_THIS_BUT_THIS_IS_MISSING_INNER_LINES)
-			/* The inner lines are missing for this, but this produces a */
-			/* very clean thin line set otherwise. */
-			dp[dx] = orig & (orig ^ (orig ^ sup[dx]));
-#else
 			/* There are very ugly looking thick horizontal bars due, these */
 			/* can be removed with suppression however they end up leaving */
 			/* gaps. Thus, compact the bits so they just become lines. */
@@ -404,8 +402,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 			/* The inner lines are normally missing for this, but this */
 			/* produces a very clean thin line set otherwise. To get the */
 			/* inner lines, the compacted value is used. */
-			dp[dx] = (orig & (orig ^ (orig ^ sup[dx]))) | cmp;
-#endif
+			dp[dx] = (orig & sup[dx]) | cmp;
 		}
 #else
 		/* Copy entire scanline over (nearest scaling). */
