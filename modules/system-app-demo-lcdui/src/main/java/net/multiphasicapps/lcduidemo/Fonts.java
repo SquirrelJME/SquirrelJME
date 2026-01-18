@@ -218,6 +218,19 @@ public class Fonts
 				__g.drawString("Wiewi\u00F3rki jest uroczy!",
 					ix, iy, Graphics.BASELINE);
 				iy += fh;
+				
+				// Japanese
+				__g.drawString(
+					"\u305D\u308C\u306F\u591A\u5206\u7686\u3082\u3046" +
+						"\u5206\u304B\u3063\u3066\u308B\u3068\u601D\u3046" +
+						"\u3051\u3069\u3002\u3002\u3002",
+					ix, iy, Graphics.BASELINE);
+				iy += fh;
+				__g.drawString(
+					"\u30EA\u30B9\u3068\u3063\u3066\u3082\u304B\u308F" +
+						"\u3044\u3044\uFF01",
+					ix, iy, Graphics.BASELINE);
+				iy += fh;
 			}
 			
 			// Draw character sheet instead

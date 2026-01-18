@@ -388,8 +388,18 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 			/* There are very ugly looking thick horizontal bars due, these */
 			/* can be removed with suppression however they end up leaving */
 			/* gaps. Thus, compact the bits so they just become lines. */
-			cmp = sjme_util_intCompactRight(sup[dx], UINT32_MAX) |
-				sjme_util_intCompactLeft(sup[dx], UINT32_MAX);
+			cmp = (sjme_util_intCompactRight(sup[dx], UINT32_MAX) |
+				sjme_util_intCompactLeft(sup[dx], UINT32_MAX));
+			
+			/* Compacting from both sides leaves nubs on the ends of glyphs */
+			/* however, which looks bad, however the nubs are always within */
+			/* a single bit from the current row. So create a wiggle of the */
+			/* current row to use as the mask. */
+			lim = sp[dx];
+			lim |= (lim << 1) | (lim >> 1);
+			
+			/* Apply the wiggle mask. */
+			cmp &= lim;
 			
 			/* The inner lines are normally missing for this, but this */
 			/* produces a very clean thin line set otherwise. To get the */
