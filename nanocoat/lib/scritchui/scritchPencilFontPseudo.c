@@ -280,7 +280,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	sjme_jint dx, syIntLast;
 	sjme_jubyte* bar;
 	sjme_jubyte* sup;
-	sjme_jubyte orig, diff, bif, lim;
+	sjme_jubyte orig, diff, cmp, lim;
 #endif
 	
 	if (inFont == NULL)
@@ -387,18 +387,14 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 #else
 			/* There are very ugly looking thick horizontal bars due, these */
 			/* can be removed with suppression however they end up leaving */
-			/* gaps. Thus, we need to bifuricate bits to remove anything. */
-			/* This essentially removes subsequent zeroes. */
-			bif = 0;
-#if 0
-			bif = lim = sup[dx];
-			bif = (bif << 1) & bif;
-#endif
+			/* gaps. Thus, compact the bits so they just become lines. */
+			cmp = sjme_util_intCompactRight(sup[dx], UINT32_MAX) |
+				sjme_util_intCompactLeft(sup[dx], UINT32_MAX);
 			
 			/* The inner lines are normally missing for this, but this */
 			/* produces a very clean thin line set otherwise. To get the */
-			/* inner lines, the bifurication value is used. */
-			dp[dx] = (orig & (orig ^ (orig ^ sup[dx]))) | bif;
+			/* inner lines, the compacted value is used. */
+			dp[dx] = (orig & (orig ^ (orig ^ sup[dx]))) | cmp;
 #endif
 		}
 #else
