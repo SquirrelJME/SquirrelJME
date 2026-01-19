@@ -345,15 +345,6 @@ typedef struct sjme_scritchui_pencilFontImplFunctions
 	/** Checks the validity of a glyph. */
 	SJME_SCRITCHUI_QUICK_PENCIL(MetricCharValid, metricCharValid);
 	
-	/** Returns the face of the font. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricFontFace, metricFontFace);
-	
-	/** Returns the name of the font. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricFontName, metricFontName);
-	
-	/** Returns the style of the font. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricFontStyle, metricFontStyle);
-	
 	/** Returns the ascent of the font. */
 	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelAscent, metricPixelAscent);
 	

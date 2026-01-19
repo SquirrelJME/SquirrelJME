@@ -28,7 +28,7 @@ static sjme_errorCode sjme_scritchui_fromCache(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Font list already cached? */
-	fontCache = inState->font.fontCache;
+	fontCache = inState->font.fontRegister;
 	if (fontCache == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
@@ -148,26 +148,8 @@ static sjme_errorCode sjme_scritchui_fontMetricFontFace(
 	if (inFont == NULL || outFace == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Cached? */
-	if (inFont->cache.face != 0)
-	{
-		*outFace = inFont->cache.face;
-		return SJME_ERROR_NONE;
-	}
-	
-	/* Not implemented? */
-	if (inFont->impl->metricFontFace == NULL)
-		return sjme_error_notImplemented(0);
-	
-	/* Load into cache. */
-	result = 0;
-	if (sjme_error_is(error = inFont->impl->metricFontFace(inFont,
-		&result)) || result == 0)
-		return sjme_error_default(error);
-	
-	/* Cache and use it. */
-	inFont->cache.face = result;
-	*outFace = result;
+	/* Use from the ID. */
+	*outFace = inFont->id.face;
 	return SJME_ERROR_NONE;
 }
 
@@ -180,21 +162,8 @@ static sjme_errorCode sjme_scritchui_fontMetricFontName(
 	if (inFont == NULL || outName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Need to load cache? */
-	if (inFont->cache.name == NULL)
-	{
-		/* Not implemented? */
-		if (inFont->impl->metricFontName == NULL)
-			return sjme_error_notImplemented(0);
-		
-		/* Use internal lookup. */
-		if (sjme_error_is(error = inFont->impl->metricFontName(
-			inFont, &inFont->cache.name)))
-			return sjme_error_default(error);
-	}
-	
-	/* Return the name. */
-	*outName = inFont->cache.name;
+	/* Use from the ID. */
+	*outName = inFont->id.name;
 	return SJME_ERROR_NONE;
 }
 
@@ -208,30 +177,8 @@ static sjme_errorCode sjme_scritchui_fontMetricFontStyle(
 	if (inFont == NULL || outStyle == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Cached? */
-	if (inFont->cache.style != 0)
-	{
-		*outStyle = inFont->cache.style;
-		return SJME_ERROR_NONE;
-	}
-	
-	/* Not implemented? */
-	if (inFont->impl->metricFontStyle != NULL)
-	{
-		/* Load into cache. */
-		result = -1;
-		if (sjme_error_is(error = inFont->impl->metricFontStyle(inFont,
-			&result)) || result == -1)
-			return sjme_error_default(error);
-	}
-	
-	/* Font has no style otherwise. */
-	else
-		result = 0;
-	
-	/* Cache and use it. */
-	inFont->cache.style = result;
-	*outStyle = result;
+	/* Use from the ID. */
+	*outStyle = inFont->id.style;
 	return SJME_ERROR_NONE;
 }
 
@@ -424,27 +371,15 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 	if (inCodepoint < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	/* Use cached value if no codepoint was requested. */
-	if (inCodepoint >= 0 && inFont->cache.pixelSize != 0)
-	{
-		*outSize = inFont->cache.pixelSize;
-		return SJME_ERROR_NONE;
-	}
+	/* Codepoint specified and the implementation has pixel size */
+	/* implementation? */
+	if (inCodepoint >= 0 && inFont->impl->metricPixelSize != NULL)
+		if (sjme_error_is(error = inFont->impl->metricPixelSize(inFont,
+			inCodepoint, &result)) || result <= 0)
+			return sjme_error_default(error);
 	
-	/* Not implemented? */
-	if (inFont->impl->metricPixelSize == NULL)
-		return sjme_error_notImplemented(0);
-	
-	/* Obtain pixel height. */
-	result = -1;
-	if (sjme_error_is(error = inFont->impl->metricPixelSize(inFont,
-		inCodepoint, &result)) || result <= 0)
-		return sjme_error_default(error);
-	
-	/* Cache if a general request use it. */
-	if (inCodepoint == -1)
-		inFont->cache.pixelSize = result;
-	*outSize = result;
+	/* Otherwise, use the pixel size from the ID. */
+	*outSize = inFont->id.pixelSize;
 	return SJME_ERROR_NONE;
 }
 
@@ -657,10 +592,36 @@ sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(
 
 sjme_errorCode sjme_scritchui_core_intern_fontRegister(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont)
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_jboolean isPseudo)
 {
+	sjme_scritchui_fontState* fontState;
+	sjme_list_sjme_scritchui_pencilFont** whichRegister;
+	sjme_scritchui_pencilFont check;
+	sjme_jint i, n;
+	
 	if (inState == NULL || inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* We operate with the font state */
+	fontState = &inState->font;
+	
+	/* Check the font register if this font already exists. */
+	whichRegister = (isPseudo ? &fontState->pseudoRegister :
+		&fontState->fontRegister);
+	if (whichRegister != NULL)
+		for (n = (*whichRegister)->length, i = 0; i < n; i++)
+		{
+			/* Ignore blank slots. */
+			check = (*whichRegister)->elements[0];
+			if (check == NULL)
+				continue;
+			
+			/* If the ID is a perfect match, skip. */
+			if (0 == memcmp(&check->id, &inFont->id,
+				sizeof(sjme_scritchui_pencilFontId)))
+				return SJME_ERROR_FONT_ALREADY_REGISTERED;
+		}
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -688,7 +649,7 @@ sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
 	
 	/* Recover and check the state. */
 	fontState = &inState->font;
-	if (fontState->fontCache != NULL && fontState->scanTotal > 0)
+	if (fontState->fontRegister != NULL && fontState->scanTotal > 0)
 	{
 		*outCount = fontState->scanTotal;
 		return SJME_ERROR_NONE;
@@ -726,7 +687,8 @@ sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
 	if (!sjme_error_is(errorFallback))
 	{
 		/* Attempt registration. */
-		errorFallback = inState->intern->fontRegister(inState, builtin);
+		errorFallback = inState->intern->fontRegister(inState, builtin,
+			SJME_JNI_FALSE);
 		
 		/* Since the builtin was registered, count it up. */
 		if (!sjme_error_is(errorFallback))
@@ -793,7 +755,7 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	
 	/* If no fonts have been scanned, scan every one. */
 	ignored = 0;
-	if (inState->font.fontCache == NULL || inState->font.scanTotal <= 0)
+	if (inState->font.fontRegister == NULL || inState->font.scanTotal <= 0)
 		if (sjme_error_is(error = inState->intern->fontScanAll(inState,
 			&ignored)))
 			return sjme_error_default(error);
@@ -849,7 +811,7 @@ sjme_errorCode sjme_scritchui_core_fontList(
 			outFonts, outValid, outCount);
 
 	/* Font list already cached? */
-	fontCache = inState->font.fontCache;
+	fontCache = inState->font.fontRegister;
 	if (fontCache != NULL)
 		return sjme_scritchui_fromCache(inState, outFonts, outValid,
 			outCount);

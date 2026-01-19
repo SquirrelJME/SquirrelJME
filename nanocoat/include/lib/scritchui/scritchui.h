@@ -1433,14 +1433,19 @@ typedef sjme_errorCode (*sjme_scritchui_fontListFunc)(
 /**
  * Registers the specified font.
  * 
+ * If the font is already registered
+ * then @link SJME_ERROR_FONT_ALREADY_REGISTERED @endlink is returned.
+ * 
  * @param inState The input state.
  * @param inFont The font to register.
+ * @param isPseudo Register this font into the pseudo line of fonts?
  * @return Any resultant error, if any.
  * @since 2026/01/18
  */
 typedef sjme_errorCode (*sjme_scritchui_fontRegisterFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont);
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_jboolean isPseudo);
 
 /**
  * Creates a hardware reference bracket to the native hardware graphics.
@@ -2378,12 +2383,15 @@ typedef struct sjme_scritchui_fontState
 {
 	/** The internal built-in font. */
 	sjme_scritchui_pencilFont builtinFont;
-
-	/** Font cache. */
-	sjme_list(sjme_scritchui_pencilFont)* fontCache;
 	
 	/** The total number of scanned fonts. */
 	sjme_jint scanTotal;
+
+	/** The fonts which have been registered. */
+	sjme_list(sjme_scritchui_pencilFont)* fontRegister;
+
+	/** Pseudo fonts being kept track of. */
+	sjme_list(sjme_scritchui_pencilFont)* pseudoRegister;
 } sjme_scritchui_fontState;
 
 struct sjme_scritchui_stateBase

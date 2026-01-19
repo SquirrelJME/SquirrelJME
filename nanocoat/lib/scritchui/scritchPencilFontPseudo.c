@@ -42,68 +42,13 @@ static sjme_errorCode sjme_scritchui_pseudoMetricCharValid(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapper. */
-	wrapped = inFont->context;
+	wrapped = inFont->handle;
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward. */
 	return wrapped->api->metricCharValid(wrapped, inCodepoint,
 		outValid);
-}
-
-static sjme_errorCode sjme_scritchui_pseudoMetricFontFace(
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrOutNotNull sjme_scritchui_pencilFontFace* outFace)
-{
-	sjme_scritchui_pencilFont wrapped;
-	
-	if (inFont == NULL || outFace == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Recover wrapper. */
-	wrapped = inFont->context;
-	if (wrapped == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* Forward. */
-	return wrapped->api->metricFontFace(wrapped, outFace);
-}
-
-static sjme_errorCode sjme_scritchui_pseudoMetricFontName(
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInOutNotNull sjme_lpcstr* outName)
-{
-	sjme_scritchui_pencilFont wrapped;
-	
-	if (inFont == NULL || outName == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Recover wrapper. */
-	wrapped = inFont->context;
-	if (wrapped == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* Forward. */
-	return wrapped->api->metricFontName(wrapped, outName);
-}
-
-static sjme_errorCode sjme_scritchui_pseudoMetricFontStyle(
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrOutNotNull sjme_scritchui_pencilFontStyle* outStyle)
-{
-	sjme_scritchui_pencilFont wrapped;
-	
-	if (inFont == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Recover wrapper. */
-	wrapped = inFont->context;
-	if (wrapped == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* Always use the cached base. */
-	*outStyle = inFont->cache.style;
-	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelAscent(
@@ -119,7 +64,7 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelAscent(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapper. */
-	wrapped = inFont->context;
+	wrapped = inFont->handle;
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
@@ -147,7 +92,7 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelBaseline(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapper. */
-	wrapped = inFont->context;
+	wrapped = inFont->handle;
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
@@ -176,7 +121,7 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelDescent(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapper. */
-	wrapped = inFont->context;
+	wrapped = inFont->handle;
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
@@ -204,7 +149,7 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelLeading(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapper. */
-	wrapped = inFont->context;
+	wrapped = inFont->handle;
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
@@ -234,12 +179,12 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelSize(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Recover wrapper. */
-	wrapped = inFont->context;
+	wrapped = inFont->handle;
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Always use the cached base. */
-	*outSize = inFont->cache.pixelSize;
+	*outSize = inFont->id.pixelSize;
 	return SJME_ERROR_NONE;
 }
 
@@ -254,7 +199,7 @@ static sjme_errorCode sjme_scritchui_pseudoPixelCharWidth(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover wrapper. */
-	wrapped = inFont->context;
+	wrapped = inFont->handle;
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
@@ -294,7 +239,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmapScale(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Recover wrapper. */
-	wrapped = inFont->context;
+	wrapped = inFont->handle;
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
@@ -355,7 +300,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmapScale(
 		goto fail_renderBitmap;
 	
 	/* Target desired pixel size. */
-	th = inFont->cache.pixelSize;
+	th = inFont->id.pixelSize;
 	
 	/* Copy rows, for every change in dy we grab from the source. */
 	ifrac = inFont->cache.ifraction;
@@ -471,7 +416,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Recover wrapper. */
-	wrapped = inFont->context;
+	wrapped = inFont->handle;
 	if (wrapped == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 		
@@ -482,7 +427,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 		return sjme_error_default(error);
 	
 	/* If scaling is needed, use the barcode font scaling algorithm I wrote. */
-	if (ch != inFont->cache.pixelSize)
+	if (ch != inFont->id.pixelSize)
 		return sjme_scritchui_pseudoRenderBitmapScale(inFont, inCodepoint,
 			buf, bufOff, bufScanLen, bufHeight, outOffX, outOffY);
 	
@@ -499,9 +444,6 @@ static const sjme_scritchui_pencilFontImplFunctions
 	sjme_sm(.driverName, "pseudo"),
 	sjme_sm(.equals, sjme_scritchui_pseudoEquals),
 	sjme_sm(.metricCharValid, sjme_scritchui_pseudoMetricCharValid),
-	sjme_sm(.metricFontFace, sjme_scritchui_pseudoMetricFontFace),
-	sjme_sm(.metricFontName, sjme_scritchui_pseudoMetricFontName),
-	sjme_sm(.metricFontStyle, sjme_scritchui_pseudoMetricFontStyle),
 	sjme_sm(.metricPixelAscent, sjme_scritchui_pseudoMetricPixelAscent),
 	sjme_sm(.metricPixelBaseline, sjme_scritchui_pseudoMetricPixelBaseline),
 	sjme_sm(.metricPixelDescent, sjme_scritchui_pseudoMetricPixelDescent),
@@ -533,7 +475,7 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	/* If it is then we do not want to derive from a derivation. */
 	if (inFont->impl == &sjme_scritchui_pseudoFontFunctions)
 		return sjme_scritchui_core_fontPseudo(inState,
-			(sjme_scritchui_pencilFont)inFont->context, inStyle,
+			(sjme_scritchui_pencilFont)inFont->handle, inStyle,
 			inPixelSize, outDerived);
 	
 	/* We need the original pixel size to calculate the fraction. */
@@ -560,11 +502,13 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	
 	/* Setup new font. */
 	result->impl = &sjme_scritchui_pseudoFontFunctions;
-	result->context = inFont;
-	result->cache.style = inStyle;
-	result->cache.pixelSize = inPixelSize;
+	result->handle = inFont;
 	result->cache.fraction = fraction;
 	result->cache.ifraction = ifraction;
+	
+	/* Fill in font ID. */
+	result->id.style = inStyle;
+	result->id.pixelSize = inPixelSize;
 	
 	/* Initialize base font. */
 	if (sjme_error_is(error = sjme_scritchui_newPencilFontStatic(

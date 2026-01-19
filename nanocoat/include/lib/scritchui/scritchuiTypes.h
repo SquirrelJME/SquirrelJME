@@ -25,6 +25,8 @@
 #include "lib/scritchui/scritchuiText.h"
 #include "lib/scritchui/scritchuiTypesListener.h"
 
+#include "sjme/path.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -36,6 +38,9 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+/** The max length for a font name. */
+#define SJME_MAX_FONT_NAME 64
+	
 /**
  * The state of the pencil lock.
  * 
@@ -466,13 +471,36 @@ struct sjme_scritchui_uiWindowBase
 	sjme_scritchui_uiComponent focusedComponent;
 };
 
+/**
+ * Contains the identifying information for a font.
+ * 
+ * @since 2026/01/19
+ */
+typedef struct sjme_scritchui_pencilFontId
+{
+	/** The name of the font. */
+	sjme_cchar name[SJME_MAX_FONT_NAME];
+	
+	/** The face of the font. */
+	sjme_scritchui_pencilFontFace face;
+		
+	/** The style of the font. */
+	sjme_scritchui_pencilFontStyle style;
+	
+	/** The pixel size of the font. */
+	sjme_jint pixelSize;
+} sjme_scritchui_pencilFontId;
+
 struct sjme_scritchui_pencilFontBase
 {
 	/** Common data. */
 	sjme_scritchui_uiCommonBase common;
 	
-	/** Internal context pointer for implementation needs. */
-	sjme_pointer context;
+	/** The ID of the font. */
+	sjme_scritchui_pencilFontId id;
+	
+	/** Internal handle pointer for implementation needs. */
+	sjme_pointer handle;
 	
 	/** External API. */
 	const sjme_scritchui_pencilFontFunctions* api;
@@ -483,21 +511,6 @@ struct sjme_scritchui_pencilFontBase
 	/** Font cache details. */
 	struct
 	{
-		/** The name of the font. */
-		sjme_lpcstr name;
-	
-		/** The unique identifier for the font. */
-		sjme_lpcstr uniqueId;
-		
-		/** The face of the font. */
-		sjme_scritchui_pencilFontFace face;
-		
-		/** The style of the font. */
-		sjme_scritchui_pencilFontStyle style;
-		
-		/** The pixel size of the font. */
-		sjme_jint pixelSize;
-		
 		/** The height of the font. */
 		sjme_jint height;
 		
