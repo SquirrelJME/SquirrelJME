@@ -356,7 +356,7 @@ sjme_errorCode sjme_scritchpen_initBuffer(
 	/* Common initialize. */
 	if (sjme_error_is(error = inState->intern->initCommon(inState,
 		SJME_SUI_CAST_COMMON(result), SJME_JNI_FALSE,
-		SJME_SCRITCHUI_TYPE_ROOT_STATE)))
+		SJME_SCRITCHUI_TYPE_PENCIL)))
 		goto fail_commonInit;
 	
 	/* Success! */

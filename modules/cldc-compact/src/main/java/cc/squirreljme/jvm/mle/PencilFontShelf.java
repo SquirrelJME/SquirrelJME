@@ -184,6 +184,7 @@ public final class PencilFontShelf
 	 * Returns the pixel size of the font.
 	 *
 	 * @param __font The font to get the size of.
+	 * @param __codepoint The specific codepoint to request.
 	 * @return The pixel size of the font.
 	 * @throws MLECallError On null arguments or the font is invalid.
 	 * @since 2024/05/17
@@ -191,7 +192,8 @@ public final class PencilFontShelf
 	@SquirrelJMEVendorApi
 	@Range(from = 1, to = Integer.MAX_VALUE)
 	public static native int metricPixelSize(
-		@NotNull PencilFontBracket __font)
+		@NotNull PencilFontBracket __font,
+		@Range(from = -1, to = Integer.MAX_VALUE) int __codepoint)
 		throws MLECallError;
 	
 	/**

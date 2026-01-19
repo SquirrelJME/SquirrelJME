@@ -177,12 +177,15 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelLeadingFunc)(
  * Returns the pixel size of the font.
  *
  * @param inFont The font to get the size of.
+ * @param inCodepoint The code point to get the height of, this will
+ * be @code -1 @endcode if this is a general request for the font.
  * @param outSize The pixel size of the font.
  * @return Any resultant error, if any.
  * @since 2024/05/17
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelSizeFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNegativeOnePositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize);
 
 /**

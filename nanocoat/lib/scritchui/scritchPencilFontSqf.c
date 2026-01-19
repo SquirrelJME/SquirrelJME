@@ -236,12 +236,16 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelLeading(
 
 static sjme_errorCode sjme_scritchui_sqfMetricPixelSize(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNegativeOnePositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
 {
 	const sjme_scritchui_sqfCodepage* sqf;
 	
 	if (inFont == NULL || outSize == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inCodepoint < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
 		
 	/* Recover SQF. */
 	sqf = inFont->context;
@@ -383,7 +387,7 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 		/* Common initialize. */
 		if (sjme_error_is(error = inState->intern->initCommon(inState,
 			SJME_SUI_CAST_COMMON(only), SJME_JNI_FALSE,
-			SJME_SCRITCHUI_TYPE_ROOT_STATE)))
+			SJME_SCRITCHUI_TYPE_FONT)))
 			goto fail_commonInit;
 		
 		/* Initialize font. */
@@ -392,7 +396,8 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 			goto fail_init;
 		
 		/* Valid now, so cache. */
-		inState->font.builtinFont = only;
+		inState->font.builtinFont = sjme_weakUpR(sjme_scritchui_pencilFont,
+			only);
 	}
 	
 	/* Success, or already cached! */

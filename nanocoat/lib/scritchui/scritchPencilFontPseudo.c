@@ -222,12 +222,16 @@ static sjme_errorCode sjme_scritchui_pseudoMetricPixelLeading(
 
 static sjme_errorCode sjme_scritchui_pseudoMetricPixelSize(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNegativeOnePositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
 {
 	sjme_scritchui_pencilFont wrapped;
 	
 	if (inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inCodepoint < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Recover wrapper. */
 	wrapped = inFont->context;
@@ -258,7 +262,7 @@ static sjme_errorCode sjme_scritchui_pseudoPixelCharWidth(
 	return wrapped->api->pixelCharWidth(wrapped, inCodepoint, outWidth);
 }
 
-static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
+static sjme_errorCode sjme_scritchui_pseudoRenderBitmapScale(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrInNotNull sjme_jubyte* buf,
@@ -286,6 +290,9 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	if (inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	if (inCodepoint < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
 	/* Recover wrapper. */
 	wrapped = inFont->context;
 	if (wrapped == NULL)
@@ -300,7 +307,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	/* And the pixel height, since this is a bitmap font. */
 	ch = 0;
 	if (sjme_error_is(error = wrapped->api->metricPixelSize(
-		wrapped, &ch)))
+		wrapped, inCodepoint, &ch)))
 		return sjme_error_default(error);
 	
 	/* Determine scanline length for each bitmap row. */
@@ -443,6 +450,48 @@ fail_renderBitmap:
 	return sjme_error_default(error);
 }
 
+static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrInNotNull sjme_jubyte* buf,
+	sjme_attrInPositive sjme_jint bufOff,
+	sjme_attrInPositive sjme_jint bufScanLen,
+	sjme_attrInPositive sjme_jint bufHeight,
+	sjme_attrOutNullable sjme_jint* outOffX,
+	sjme_attrOutNullable sjme_jint* outOffY)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencilFont wrapped;
+	sjme_jint ch;
+	
+	if (inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inCodepoint < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Recover wrapper. */
+	wrapped = inFont->context;
+	if (wrapped == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+		
+	/* Get the height of this specific codepoint. */
+	ch = 0;
+	if (sjme_error_is(error = wrapped->api->metricPixelSize(
+		wrapped, inCodepoint, &ch)))
+		return sjme_error_default(error);
+	
+	/* If scaling is needed, use the barcode font scaling algorithm I wrote. */
+	if (ch != inFont->cache.pixelSize)
+		return sjme_scritchui_pseudoRenderBitmapScale(inFont, inCodepoint,
+			buf, bufOff, bufScanLen, bufHeight, outOffX, outOffY);
+	
+	/* Otherwise just use the underlying font rendering system, which may */
+	/* apply its own scaling or not. */
+	return wrapped->api->renderBitmap(inFont, inCodepoint,
+		buf, bufOff, bufScanLen, bufHeight, outOffX, outOffY);
+}
+
 /** Functions for basic font support. */
 static const sjme_scritchui_pencilFontImplFunctions
 	sjme_scritchui_pseudoFontFunctions =
@@ -490,7 +539,7 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	/* We need the original pixel size to calculate the fraction. */
 	origPixelSize = -1;
 	if (sjme_error_is(error = inFont->api->metricPixelSize(inFont,
-		&origPixelSize)) || origPixelSize < 0)
+		-1, &origPixelSize)) || origPixelSize < 0)
 		return sjme_error_default(error);
 	
 	/* Calculate the font fraction. */
@@ -506,7 +555,7 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	/* Common initialize. */
 	if (sjme_error_is(error = inState->intern->initCommon(inState,
 		SJME_SUI_CAST_COMMON(result), SJME_JNI_FALSE,
-		SJME_SCRITCHUI_TYPE_ROOT_STATE)))
+		SJME_SCRITCHUI_TYPE_FONT)))
 		goto fail_commonInit;
 	
 	/* Setup new font. */

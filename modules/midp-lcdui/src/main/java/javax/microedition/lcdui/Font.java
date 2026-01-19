@@ -167,7 +167,8 @@ public final class Font
 			this._face = Font.FACE_PROPORTIONAL;
 		
 		// Get pixel size of font
-		this._pixelsize = PencilFontShelf.metricPixelSize(__bracket);
+		this._pixelsize = PencilFontShelf.metricPixelSize(__bracket,
+			-1);
 		
 		// Font style directly maps
 		this._style = PencilFontShelf.metricFontStyle(__bracket);

@@ -499,6 +499,15 @@ sjme_errorCode sjme_scritchui_intern_menuItemActivateById(
 	sjme_attrInNotNull sjme_jint itemActivated,
 	sjme_attrInValue sjme_jint itemMask);
 
+sjme_errorCode sjme_scritchui_core_intern_objectNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiCommon* outCommon,
+	sjme_attrInPositiveNonZero sjme_jint outCommonSize,
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+		sjme_scritchui_uiType uiType,
+	sjme_attrInNotNull sjme_scritchui_core_intern_objectNewImplFunc implNew,
+	sjme_attrInNullable sjme_pointer inData);
+
 sjme_errorCode sjme_scritchui_core_intern_setSimpleListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoAny,

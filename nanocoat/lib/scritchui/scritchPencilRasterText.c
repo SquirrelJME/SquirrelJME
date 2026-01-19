@@ -68,7 +68,7 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	/* And the pixel height, since this is a bitmap font. */
 	ch = 0;
 	if (sjme_error_is(error = font->api->metricPixelSize(
-		font, &ch)))
+		font, -1, &ch)))
 		goto fail_anyInLock;
 	
 	/** Do not bother drawing nothing. */
@@ -315,11 +315,27 @@ sjme_errorCode sjme_scritchpen_core_setFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull sjme_scritchui_pencilFont font)
 {
+	sjme_errorCode error;
+	sjme_scritchui_pencilFont oldFont;
+	
 	if (g == NULL || font == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* Setting the same font? */
+	if (font == g->state.font)
+		return SJME_ERROR_NONE;
+	
+	/* Clear old font, if one is used. */
+	oldFont = g->state.font;
+	g->state.font = NULL;
+	
+	/* Count down. */
+	if (oldFont != NULL)
+		if (sjme_error_is(error = sjme_alloc_weakUnRef(oldFont)))
+			return sjme_error_default(error);
+	
 	/* Set font used. */
-	g->state.font = font;
+	g->state.font = sjme_weakUpR(sjme_scritchui_pencilFont, font);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

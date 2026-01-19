@@ -412,6 +412,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNegativeOnePositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
 {
 	sjme_errorCode error;
@@ -420,8 +421,11 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 	if (inFont == NULL || outSize == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Cached? */
-	if (inFont->cache.pixelSize != 0)
+	if (inCodepoint < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Use cached value if no codepoint was requested. */
+	if (inCodepoint >= 0 && inFont->cache.pixelSize != 0)
 	{
 		*outSize = inFont->cache.pixelSize;
 		return SJME_ERROR_NONE;
@@ -431,14 +435,15 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 	if (inFont->impl->metricPixelSize == NULL)
 		return sjme_error_notImplemented(0);
 	
-	/* Load into cache. */
+	/* Obtain pixel height. */
 	result = -1;
 	if (sjme_error_is(error = inFont->impl->metricPixelSize(inFont,
-		&result)) || result <= 0)
+		inCodepoint, &result)) || result <= 0)
 		return sjme_error_default(error);
 	
-	/* Cache and use it. */
-	inFont->cache.pixelSize = result;
+	/* Cache if a general request use it. */
+	if (inCodepoint == -1)
+		inFont->cache.pixelSize = result;
 	*outSize = result;
 	return SJME_ERROR_NONE;
 }

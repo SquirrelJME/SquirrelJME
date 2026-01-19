@@ -680,6 +680,41 @@ typedef sjme_errorCode (*sjme_scritchui_intern_updateVisibleWindowFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInValue sjme_jboolean isVisible);
 
+/**
+ * Base function for common initialization logic.
+ * 
+ * @param inState The input state. 
+ * @param inCommon The common item to be initialized.
+ * @param inData Any data to use for initialization.
+ * @return Any resultant error, if any.
+ * @since 2024/07/22
+ */
+typedef sjme_errorCode (*sjme_scritchui_core_intern_objectNewImplFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
+	sjme_attrInNullable sjme_pointer inData);
+	
+/**
+ * Basic core common initialization logic.
+ * 
+ * @param inState The input state. 
+ * @param outCommon The resultant common.
+ * @param outCommonSize The size of the resultant common.
+ * @param uiType The UI type to initialize.
+ * @param implNew The implementation new for this type.
+ * @param inData Any data to pass to @c implNew .
+ * @return Any resultant error, if any.
+ * @since 2024/07/22
+ */
+typedef sjme_errorCode (*sjme_scritchui_core_intern_objectNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiCommon* outCommon,
+	sjme_attrInPositiveNonZero sjme_jint outCommonSize,
+	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+		sjme_scritchui_uiType uiType,
+	sjme_attrInNotNull sjme_scritchui_core_intern_objectNewImplFunc implNew,
+	sjme_attrInNullable sjme_pointer inData);
+	
 struct sjme_scritchui_internFunctions
 {
 	/** Binds focus to a window. */
@@ -735,6 +770,9 @@ struct sjme_scritchui_internFunctions
 	
 	/** Menu item activation propagation, from top down. */
 	sjme_scritchui_intern_menuItemActivateByIdFunc menuItemActivateById;
+	
+	/** Create a new object instance. */
+	sjme_scritchui_core_intern_objectNewFunc objectNew;
 	
 	/** Set of simple user listener. */
 	sjme_scritchui_intern_setSimpleListenerFunc setSimpleListener;

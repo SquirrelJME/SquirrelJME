@@ -913,10 +913,7 @@ sjme_errorCode sjme_scritchpen_core_setDefaultFont(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Reset to use the default font. */
-	g->state.font = g->defaultFont;
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	return g->apiInThread->setFont(g, g->defaultFont);
 }
 
 sjme_errorCode sjme_scritchpen_core_setParametersFrom(

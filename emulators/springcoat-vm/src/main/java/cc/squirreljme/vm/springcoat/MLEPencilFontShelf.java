@@ -206,7 +206,8 @@ public enum MLEPencilFontShelf
 		{
 			return PencilFontShelf.metricPixelSize(
 				SpringVisObject.asNative(__thread,
-					PencilFontBracket.class, __args[0]));
+					PencilFontBracket.class, __args[0]),
+				(Integer)__args[1]);
 		}
 	},
 	

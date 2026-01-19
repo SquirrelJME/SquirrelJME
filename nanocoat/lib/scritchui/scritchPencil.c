@@ -248,7 +248,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	result.util = &sjme_scritchpen_coreUtil_functions;
 	result.impl = inFunctions;
 	result.lock = inLockFuncs;
-	result.defaultFont = defaultFont;
+	result.defaultFont = sjme_weakUpR(sjme_scritchui_pencilFont, defaultFont);
 	result.pixelFormat = pf;
 	result.width = sw;
 	result.height = sh;
