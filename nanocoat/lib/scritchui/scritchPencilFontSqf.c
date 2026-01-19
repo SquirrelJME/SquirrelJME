@@ -373,7 +373,7 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Does the font need initialization? */
-	only = inState->builtinFont;
+	only = inState->font.builtinFont;
 	if (only == NULL)
 	{
 		if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
@@ -392,7 +392,7 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 			goto fail_init;
 		
 		/* Valid now, so cache. */
-		inState->builtinFont = only;
+		inState->font.builtinFont = only;
 	}
 	
 	/* Success, or already cached! */

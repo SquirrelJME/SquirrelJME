@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="ScritchUI" pattern="file[nanocoat]:include/lib/scritchui//*||file[nanocoat]:lib/scritchui//*" />
+</component>

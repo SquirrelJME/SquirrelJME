@@ -385,10 +385,16 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		(state,
 		as->fontBuiltin.outFont));
 	
+	SJME_SDU_CASE(fontCount,
+		SJME_SCRITCHUI_SERIAL_UI_FONT_COUNT,
+		(state,
+		as->fontCount.outCount));
+	
 	SJME_SDU_CASE(fontDerive,
 		SJME_SCRITCHUI_SERIAL_UI_FONT_DERIVE,
 		(state,
 		as->fontDerive.inFont,
+		as->fontDerive.inFace,
 		as->fontDerive.inStyle,
 		as->fontDerive.inPixelSize,
 		as->fontDerive.outDerived));
@@ -398,7 +404,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		(state,
 		as->fontList.outFonts,
 		as->fontList.outValid,
-		as->fontList.outMaxFonts));
+		as->fontList.outCount));
 		
 	SJME_SDU_CASE(hardwareGraphics,
 		SJME_SCRITCHUI_SERIAL_UI_HARDWARE_GRAPHICS,
@@ -1350,18 +1356,34 @@ sjme_errorCode sjme_scritchui_coreSerial_fontBuiltin(
 	SJME_SDX_WAIT;
 }
 
+sjme_errorCode sjme_scritchui_coreSerial_fontCount(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_jint* outCount)
+{
+	SJME_SDU_CHUNK(fontCount,
+		SJME_SCRITCHUI_SERIAL_UI_FONT_COUNT,
+		(inState, outCount));
+		
+	SJME_SDX_PASS(outCount);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
 sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived)
 {
 	SJME_SDU_CHUNK(fontDerive,
 		SJME_SCRITCHUI_SERIAL_UI_FONT_DERIVE,
-		(inState, inFont, inStyle, inPixelSize, outDerived));
+		(inState, inFont, inFace, inStyle, inPixelSize, outDerived));
 		
 	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inFace);
 	SJME_SDX_PASS(inStyle);
 	SJME_SDX_PASS(inPixelSize);
 	SJME_SDX_PASS(outDerived);
@@ -1374,15 +1396,15 @@ sjme_errorCode sjme_scritchui_coreSerial_fontList(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
-	sjme_attrOutNullable sjme_jint* outMaxFonts)
+	sjme_attrOutNullable sjme_jint* outCount)
 {
 	SJME_SDU_CHUNK(fontList,
 		SJME_SCRITCHUI_SERIAL_UI_FONT_LIST,
-		(inState, outFonts, outValid, outMaxFonts));
+		(inState, outFonts, outValid, outCount));
 		
 	SJME_SDX_PASS(outFonts);
 	SJME_SDX_PASS(outValid);
-	SJME_SDX_PASS(outMaxFonts);
+	SJME_SDX_PASS(outCount);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;

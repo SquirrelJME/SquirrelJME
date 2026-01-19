@@ -128,6 +128,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c fontBuiltin . */
 	SJME_SCRITCHUI_SERIAL_UI_FONT_BUILTIN,
 	
+	/** @c fontCount . */
+	SJME_SCRITCHUI_SERIAL_UI_FONT_COUNT,
+	
 	/** @c fontDerive . */
 	SJME_SCRITCHUI_SERIAL_UI_FONT_DERIVE,
 	
@@ -495,8 +498,12 @@ SDU_STRUCT_DEF(containerSetBounds,
 SDU_STRUCT_DEF(fontBuiltin,
 	SDX_VARP(sjme_scritchui_pencilFont, outFont););
 
+SDU_STRUCT_DEF(fontCount,
+	SDX_VARP(sjme_jint, outCount););
+
 SDU_STRUCT_DEF(fontDerive,
 	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VAR(sjme_scritchui_pencilFontFace, inFace);
 	SDX_VAR(sjme_scritchui_pencilFontStyle, inStyle);
 	SDX_VAR(sjme_jint, inPixelSize);
 	SDX_VARP(sjme_scritchui_pencilFont, outDerived););
@@ -504,7 +511,7 @@ SDU_STRUCT_DEF(fontDerive,
 SDU_STRUCT_DEF(fontList,
 	SDX_VARP(sjme_list(sjme_scritchui_pencilFont), outFonts);
 	SDX_VARP(sjme_jint, outValid);
-	SDX_VARP(sjme_jint, outMaxFonts););
+	SDX_VARP(sjme_jint, outCount););
 
 SDU_STRUCT_DEF(hardwareGraphics,
 	SDX_VARP(sjme_scritchui_pencil, outPencil);
@@ -956,6 +963,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(containerRemoveAll);
 	SJME_SCRITCHUI_SDU_DEF(containerSetBounds);
 	SJME_SCRITCHUI_SDU_DEF(fontBuiltin);
+	SJME_SCRITCHUI_SDU_DEF(fontCount);
 	SJME_SCRITCHUI_SDU_DEF(fontDerive);
 	SJME_SCRITCHUI_SDU_DEF(fontList);
 	SJME_SCRITCHUI_SDU_DEF(hardwareGraphics);
@@ -1210,9 +1218,14 @@ sjme_errorCode sjme_scritchui_coreSerial_fontBuiltin(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
 	
+sjme_errorCode sjme_scritchui_coreSerial_fontCount(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_jint* outCount);
+	
 sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
@@ -1221,7 +1234,7 @@ sjme_errorCode sjme_scritchui_coreSerial_fontList(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
-	sjme_attrOutNullable sjme_jint* outMaxFonts);
+	sjme_attrOutNullable sjme_jint* outCount);
 	
 sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	sjme_attrInNotNull sjme_scritchui inState,

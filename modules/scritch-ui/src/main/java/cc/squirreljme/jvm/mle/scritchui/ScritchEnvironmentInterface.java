@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
+import cc.squirreljme.jvm.mle.constants.PencilFontFace;
 import cc.squirreljme.jvm.mle.constants.PencilFontStyle;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
@@ -17,6 +18,7 @@ import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -42,7 +44,9 @@ public interface ScritchEnvironmentInterface
 	/**
 	 * Derives the given font.
 	 *
-	 * @param __font The font to derive.
+	 * @param __font The font to derive, if {@code null} then no font is used
+	 * as the basis.
+	 * @param __face The new face to select. 
 	 * @param __style The new style to select.
 	 * @param __pixelSize The pixel size of the font.
 	 * @return The resultant font.
@@ -52,7 +56,8 @@ public interface ScritchEnvironmentInterface
 	 */
 	@SquirrelJMEVendorApi
 	@NotNull
-	PencilFontBracket fontDerive(@NotNull PencilFontBracket __font,
+	PencilFontBracket fontDerive(@Nullable PencilFontBracket __font,
+		@MagicConstant(flagsFromClass = PencilFontFace.class) int __face,
 		@MagicConstant(flagsFromClass = PencilFontStyle.class) int __style,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
 		throws MLECallError;

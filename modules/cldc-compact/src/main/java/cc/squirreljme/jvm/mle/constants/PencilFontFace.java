@@ -39,4 +39,9 @@ public interface PencilFontFace
 	@SquirrelJMEVendorApi
 	byte NORMAL =
 		8;
+	
+	/** Special case for automatic font selection. */
+	@SquirrelJMEVendorApi
+	byte AUTOMATIC =
+		16;
 }

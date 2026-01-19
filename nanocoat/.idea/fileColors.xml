@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SharedFileColors">
+    <fileColor scope="NanoCoatCore" color="Violet" />
+    <fileColor scope="ScritchAudio" color="4f375f" />
+    <fileColor scope="ScritchUI" color="5f3153" />
     <fileColor scope="BuildUtils" color="Yellow" />
     <fileColor scope="3rdParty" color="Blue" />
     <fileColor scope="CMake Generated" color="Yellow" />

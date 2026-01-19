@@ -485,6 +485,9 @@ struct sjme_scritchui_pencilFontBase
 	{
 		/** The name of the font. */
 		sjme_lpcstr name;
+	
+		/** The unique identifier for the font. */
+		sjme_lpcstr uniqueId;
 		
 		/** The face of the font. */
 		sjme_scritchui_pencilFontFace face;

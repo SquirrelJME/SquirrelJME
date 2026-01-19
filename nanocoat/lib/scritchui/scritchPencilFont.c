@@ -12,12 +12,13 @@
 #include "lib/scritchui/scritchuiPencilFontPseudo.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
+#include "sjme/util.h"
 
 static sjme_errorCode sjme_scritchui_fromCache(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
-	sjme_attrOutNullable sjme_jint* outMaxFonts)
+	sjme_attrOutNullable sjme_jint* outCount)
 {
 	sjme_errorCode error;
 	sjme_jint limit, i, n;
@@ -27,7 +28,7 @@ static sjme_errorCode sjme_scritchui_fromCache(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Font list already cached? */
-	fontCache = inState->fontCache;
+	fontCache = inState->font.fontCache;
 	if (fontCache == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
@@ -45,8 +46,8 @@ static sjme_errorCode sjme_scritchui_fromCache(
 	*outValid = limit;
 	
 	/* Report the max number of fonts, if requested. */
-	if (outMaxFonts != NULL)
-		*outMaxFonts = fontCache->length;
+	if (outCount != NULL)
+		*outCount = fontCache->length;
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -649,23 +650,171 @@ sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(
 	return inState->api->fontBuiltin(inState, outFont);
 }
 
+sjme_errorCode sjme_scritchui_core_intern_fontRegister(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont)
+{
+	if (inState == NULL || inFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_jint* outCount)
+{
+	sjme_errorCode error, errorSystem, errorResource, errorFallback;
+	sjme_jint total;
+	sjme_jint current;
+	sjme_scritchui_fontState* fontState;
+	sjme_scritchui_pencilFont builtin;
+	sjme_scritchui wrappedState;
+	
+	if (inState == NULL || outCount == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If wrapped, always use the underlying layer fonts. */
+	wrappedState = inState->wrappedState;
+	if (wrappedState != NULL)
+		return wrappedState->intern->fontScanAll(wrappedState,
+			outCount);
+	
+	/* Recover and check the state. */
+	fontState = &inState->font;
+	if (fontState->fontCache != NULL && fontState->scanTotal > 0)
+	{
+		*outCount = fontState->scanTotal;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Start at nothing. */
+	total = 0;
+	
+	/* Scan resource fonts. */
+	current = 0;
+	errorResource = inState->intern->fontScanResource(inState, &current);
+	
+	/* Add to the total. */
+	if (!sjme_error_is(errorResource))
+		total += sjme_max(0, current);
+	
+	/* There might not be a system font implementation. */
+	errorSystem = SJME_ERROR_NONE;
+	if (inState->impl->fontScanSystem != NULL)
+	{
+		/* Perform the scan. */
+		current = 0;
+		errorSystem = inState->impl->fontScanSystem(inState, &current);
+		
+		/* Add to the total. */
+		if (!sjme_error_is(errorSystem))
+			total += sjme_max(0, current);
+	}
+	
+	/* Load the builtin font. */
+	builtin = NULL;
+	errorFallback = inState->intern->fontBuiltin(inState, &builtin);
+	
+	/* Register the fallback font. */
+	if (!sjme_error_is(errorFallback))
+	{
+		/* Attempt registration. */
+		errorFallback = inState->intern->fontRegister(inState, builtin);
+		
+		/* Since the builtin was registered, count it up. */
+		if (!sjme_error_is(errorFallback))
+			total += 1;
+	}
+	
+	/* Since all fonts were scanned, set as such. */
+	fontState->scanTotal = total;
+	*outCount = total;
+	
+	/* Did any fail? */
+	if (sjme_error_is(errorSystem))
+		return sjme_error_default(errorSystem);
+	if (sjme_error_is(errorResource))
+		return sjme_error_default(errorResource);
+	if (sjme_error_is(errorFallback))
+		return sjme_error_default(errorFallback);
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_core_intern_fontScanResource(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_jint* outCount)
+{
+	sjme_scritchui wrappedState;
+	
+	if (inState == NULL || outCount == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If wrapped, always use the underlying layer fonts. */
+	wrappedState = inState->wrappedState;
+	if (wrappedState != NULL)
+		return wrappedState->intern->fontScanResource(wrappedState,
+			outCount);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_scritchui_core_fontCount(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_jint* outCount)
+{
+	sjme_scritchui wrappedState;
+	
+	if (inState == NULL || outCount == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If wrapped, always use the underlying layer fonts. */
+	wrappedState = inState->wrappedState;
+	if (wrappedState != NULL)
+		return wrappedState->apiInThread->fontCount(wrappedState,
+			outCount);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFontStyle wasStyle;
-	sjme_jint wasPixelSize;
+	sjme_jint wasPixelSize, ignored;
+	sjme_scritchui wrappedState;
 	
-	if (inState == NULL || inFont == NULL || outDerived == NULL)
+	if (inState == NULL || outDerived == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inPixelSize <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
+	/* If wrapped, always use the underlying layer fonts. */
+	wrappedState = inState->wrappedState;
+	if (wrappedState != NULL)
+		return wrappedState->apiInThread->fontDerive(wrappedState,
+			inFont, inFace, inStyle, inPixelSize, outDerived);
+	
+	/* If no fonts have been scanned, scan every one. */
+	ignored = 0;
+	if (inState->font.fontCache == NULL || inState->font.scanTotal <= 0)
+		if (sjme_error_is(error = inState->intern->fontScanAll(inState,
+			&ignored)))
+			return sjme_error_default(error);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
 	/* Limit. */
 	inStyle &= SJME_SCRITCHUI_PENCIL_FONT_STYLE_ALL;
 	
@@ -685,42 +834,46 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 		return SJME_ERROR_NONE;
 	}
 	
+	
+	
 	/* Create pseudo font. */
 	return sjme_scritchui_core_fontPseudo(inState, inFont, inStyle,
 		inPixelSize, outDerived);
+#endif
 }
 
 sjme_errorCode sjme_scritchui_core_fontList(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
-	sjme_attrOutNullable sjme_jint* outMaxFonts)
+	sjme_attrOutNullable sjme_jint* outCount)
 {
 	sjme_errorCode error;
 	sjme_jint limit, i, n;
 	sjme_list(sjme_scritchui_pencilFont)* fontCache;
+	sjme_scritchui wrappedState;
 	
 	if (inState == NULL || outFonts == NULL || outValid == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* If wrapped, use that instead since we want to use whatever core */
-	/* system fonts we are using, if there is such a capability. */
-	if (inState->wrappedState != NULL)
-		return inState->wrappedState->api->fontList(inState,
-			outFonts, outValid, outMaxFonts);
+	/* If wrapped, always use the underlying layer fonts. */
+	wrappedState = inState->wrappedState;
+	if (wrappedState != NULL)
+		return wrappedState->apiInThread->fontList(wrappedState,
+			outFonts, outValid, outCount);
 
 	/* Font list already cached? */
-	fontCache = inState->fontCache;
+	fontCache = inState->font.fontCache;
 	if (fontCache != NULL)
 		return sjme_scritchui_fromCache(inState, outFonts, outValid,
-			outMaxFonts);
+			outCount);
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 
 	/* Font cache was set, so load that in. */
 	return sjme_scritchui_fromCache(inState, outFonts, outValid,
-		outMaxFonts);
+		outCount);
 }
 
 sjme_jint sjme_scritchui_pencilFontScanLen(

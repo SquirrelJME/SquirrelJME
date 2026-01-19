@@ -35,6 +35,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_pureFunctions =
 	sjme_sm(.containerAdd, NULL),
 	sjme_sm(.containerRemove, NULL),
 	sjme_sm(.containerSetBounds, NULL),
+	sjme_sm(.fontScanSystem, NULL),
 	sjme_sm(.hardwareGraphics, NULL),
 	sjme_sm(.labelSetString, NULL),
 	sjme_sm(.lafDpiProject, NULL),

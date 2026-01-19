@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.ApiStatus;
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
@@ -295,7 +296,8 @@ public final class Font
 		// Derive font
 		ScritchInterface scritch = this._scritch;
 		return new Font(scritch, scritch.environment()
-			.fontDerive(this._font, __style, __pixelSize));
+			.fontDerive(this._font, PencilFontFace.AUTOMATIC,
+				__style, __pixelSize));
 	}
 	
 	/**
@@ -704,8 +706,10 @@ public final class Font
 		if (rv != null)
 			return rv;
 		
-		// Use the first found font as the default
-		Font._DEFAULT_FONT = (rv = Font.getAvailableFonts()[0]);
+		// Use a sensible default
+		rv = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN,
+			Font.SIZE_MEDIUM);
+		Font._DEFAULT_FONT = rv;
 		return rv;
 	}
 	
@@ -751,7 +755,9 @@ public final class Font
 	 * @since 2017/05/25
 	 */
 	@Api
-	public static Font getFont(int __face, int __style, int __size)
+	public static Font getFont(
+		@MagicConstant(flagsFromClass = Font.class) int __face,
+		int __style, int __size)
 		throws IllegalArgumentException
 	{
 		/* {@squirreljme.error EB1y Invalid font face specified. (The face)} */
@@ -766,37 +772,12 @@ public final class Font
 			throw new IllegalArgumentException(String.format("EB1z %d",
 				__size));
 		
-		// Get fonts that might exist
-		Font[] scan = Font.getAvailableFonts(__face, __style,
-			FontUtilities.logicalSizeToPixelSize(__size));
-		
-		// If no fonts were found, use a default font with a derived pixel
-		// size as such
-		if (scan.length == 0)
-		{
-			// Try to derive this font to the style and size, but if that
-			// fails then just do the style
-			Font d = Font.getDefaultFont();
-			try
-			{
-				return d.deriveFont(__style,
-					FontUtilities.logicalSizeToPixelSize(__size));
-			}
-			catch (IllegalArgumentException e)
-			{
-				try
-				{
-					return d.deriveFont(__style, d.getPixelSize());
-				}
-				catch (IllegalArgumentException f)
-				{
-					return d;
-				}
-			}
-		}
-		
-		// Use the first font, since it should be correct hopefully
-		return scan[0];
+		// Ask the system to derive the font
+		DisplayManager manager = DisplayManager.instance();
+		ScritchInterface scritch = manager.scritch();
+		return new Font(scritch, scritch.environment()
+			.fontDerive(null, FontUtilities.faceToPencil(__face),
+				__style, FontUtilities.logicalSizeToPixelSize(__size)));
 	}
 	
 	/**
@@ -818,68 +799,13 @@ public final class Font
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		Font faceOnly = null;
-		Font faceSize = null;
-		Font name = null;
-		Font any = null;
-		
-		// Derive the face of the font
-		int face = Font.__commonFace(__name);
-		
-		// Find the closest font then derive it
-		for (Font f : Font.getAvailableFonts())
-		{
-			// Same name?
-			if (Font.__compatibleName(__name, f.getFontName()))
-			{
-				// Exactly the desired size?
-				if (f.getPixelSize() == __pxs)
-					return f;
-				
-				// First font of this name?
-				if (name == null)
-					name = f;
-				
-				// Closest in terms of size?
-				else if (Math.abs(f.getPixelSize() - __pxs) <
-					Math.abs(name.getPixelSize() - __pxs))
-					name = f;
-			}
-			
-			// Same face and same size
-			else if (faceSize == null && f.getFace() == face &&
-				f.getPixelSize() == __pxs)
-				faceSize = f;
-			
-			// Fallback font, assuming the face is the same
-			else if (faceOnly == null && f.getFace() == face)
-				faceOnly = f;
-			
-			// Any font
-			else if (any == null)
-				any = f;
-		}
-		
-		// Derive the closest font
-		if (name != null)
-			return name.deriveFont(__style, __pxs);
-		
-		// First face match with the same size?
-		else if (faceSize != null)
-			return faceSize.deriveFont(__style, __pxs);
-		
-		// Or the first face font?
-		else if (faceOnly != null)
-			return faceOnly.deriveFont(__style, __pxs);
-		
-		// Or the worst case, any available font
-		else if (any != null)
-			return any.deriveFont(__style, __pxs);
-		
-		/* {@squirreljme.error EB20 Could not locate a font by the given
-		name. (The font name; The style; The pixel size)} */
-		throw new IllegalArgumentException(__error__("EB20",
-			__name, __style, __pxs));
+		// Ask the system to derive the font
+		DisplayManager manager = DisplayManager.instance();
+		ScritchInterface scritch = manager.scritch();
+		return new Font(scritch, scritch.environment()
+			.fontDerive(null,
+				FontUtilities.faceNameToPencil(__name),
+				__style, __pxs));
 	}
 	
 	/**
@@ -930,109 +856,6 @@ public final class Font
 		/* {@squirreljme.error EB22 No font with the given name exists.
 		(The font name)} */
 		throw new IllegalArgumentException("EB2g " + __name);
-	}
-	
-	/**
-	 * Returns the common face for the given logical font name.
-	 *
-	 * @param __name The name of the font to locate.
-	 * @return The face of the logical font, will return {@code -1} if there
-	 * is no corresponding face.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/11/30
-	 */
-	private static int __commonFace(String __name)
-		throws NullPointerException
-	{
-		if (__name == null)
-			throw new NullPointerException("NARG");
-		
-		// Proportional
-		if (__name.equalsIgnoreCase("Serif") ||
-			__name.equalsIgnoreCase("SansSerif") ||
-			__name.equalsIgnoreCase("Dialog") ||
-			__name.equalsIgnoreCase("DialogInput") ||
-			__name.equalsIgnoreCase("Helvetica") ||
-			__name.equalsIgnoreCase("Arial") ||
-			__name.equalsIgnoreCase("Times New Roman"))
-			return Font.FACE_PROPORTIONAL;
-		
-		// Monospaced
-		else if (__name.equalsIgnoreCase("Monospace") ||
-			__name.equalsIgnoreCase("Monospaced") ||
-			__name.equalsIgnoreCase("Courier") ||
-			__name.equalsIgnoreCase("Courier New"))
-			return Font.FACE_MONOSPACE;
-		
-		// Unknown, do not consider it in a match
-		return -1;
-	}
-	
-	/**
-	 * Is the name of this font compatible?
-	 *
-	 * @param __want The name that is desired.
-	 * @param __font The name of the font.
-	 * @return If this is a compatible name.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/12/01
-	 */
-	private static boolean __compatibleName(String __want, String __font)
-		throws NullPointerException
-	{
-		if (__want == null || __font == null)
-			throw new NullPointerException("NARG");
-		
-		// Same exact name
-		if (__want.equalsIgnoreCase(__font))
-			return true;
-		
-		// We can have a copy/paste of names, which is a giant mess, or we
-		// can just boil the names down to integers and compare them. Do note
-		// that the initial values should not be the same in the event there
-		// is no name match!
-		int wantIs = -1;
-		int fontIs = -2;
-		for (int i = 0; i < 2; i++)
-		{
-			// Determine the class of the font
-			int is = -(i + 1);
-			String with = (i == 0 ? __want : __font);
-			switch (with.toLowerCase())
-			{
-				case "serif":
-				case "times new roman":
-					is = 1;
-					break;
-					
-				case "monospace":
-				case "monospaced":
-				case "courier":
-				case "courier new":
-					is = 2;
-					break;
-					
-				case "sansserif":
-				case "dialog":
-				case "dialoginput":
-				case "helvetica":
-				case "arial":
-					is = 3;
-					break;
-			}
-			
-			// Remember the class for later comparison
-			if (is > 0)
-			{
-				if (i == 0)
-					wantIs = is;
-				else
-					fontIs = is;
-			}
-		}
-		
-		// Same class of font?
-		return wantIs == fontIs;
 	}
 }
 

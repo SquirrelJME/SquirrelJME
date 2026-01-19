@@ -103,7 +103,7 @@
 	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER ")" DESC_VOID
 
 #define FORWARD_DESC___fontDerive "(" \
-	DESC_LONG DESC_LONG DESC_INT DESC_INT ")" DESC_LONG
+	DESC_LONG DESC_LONG DESC_INT DESC_INT DESC_INT ")" DESC_LONG
 
 #define FORWARD_DESC___hardwareGraphics "(" \
 	DESC_LONG DESC_INT DESC_INT DESC_INT DESC_OBJECT \
@@ -1688,14 +1688,14 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__fontDerive)(JNIEnv* env, jclass classy, jlong stateP,
-	jlong fontP, jint style, jint pixelSize)
+	jlong fontP, jint face, jint style, jint pixelSize)
 {
 	sjme_scritchui state;
 	sjme_scritchui_pencilFont font;
 	sjme_scritchui_pencilFont derived;
 	sjme_errorCode error;
 
-	if (stateP == 0 || fontP == 0)
+	if (stateP == 0)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return 0;
@@ -1708,7 +1708,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	/* Forward. */
 	derived = NULL;
 	if (sjme_error_is(error = state->api->fontDerive(state,
-		font, style, pixelSize,
+		font, face, style, pixelSize,
 		&derived)) ||
 		derived == NULL)
 	{

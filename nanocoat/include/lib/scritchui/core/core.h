@@ -199,9 +199,14 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
 	
+sjme_errorCode sjme_scritchui_core_fontCount(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_jint* outCount);
+	
 sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
@@ -210,7 +215,7 @@ sjme_errorCode sjme_scritchui_core_fontList(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
-	sjme_attrOutNullable sjme_jint* outMaxFonts);
+	sjme_attrOutNullable sjme_jint* outCount);
 
 sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -409,6 +414,18 @@ sjme_errorCode sjme_scritchui_core_intern_bindFocus(
 sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
+	
+sjme_errorCode sjme_scritchui_core_intern_fontRegister(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont);
+
+sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_jint* outCount);
+
+sjme_errorCode sjme_scritchui_core_intern_fontScanResource(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_jint* outCount);
 
 sjme_errorCode sjme_scritchui_core_intern_getChoice(
 	sjme_attrInNotNull sjme_scritchui inState,

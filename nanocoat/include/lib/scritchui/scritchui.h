@@ -226,6 +226,29 @@ typedef enum sjme_scritchui_windowManagerType
 } sjme_scritchui_windowManagerType;
 
 /**
+ * Font face for pencil fonts.
+ * 
+ * @since 2024/06/13
+ */
+typedef enum sjme_scritchui_pencilFontFace
+{
+	/** Monospaced. */
+	SJME_SCRITCHUI_PENCIL_FONT_FACE_MONOSPACE = 1,
+	
+	/** Serifs. */
+	SJME_SCRITCHUI_PENCIL_FONT_FACE_SERIF = 2,
+	
+	/** Symbol. */
+	SJME_SCRITCHUI_PENCIL_FONT_FACE_SYMBOL = 4,
+	
+	/** Normal, nothing different from anything. */
+	SJME_SCRITCHUI_PENCIL_FONT_FACE_NORMAL = 8,
+	
+	/** Special case for automatic font selection. */
+	SJME_SCRITCHUI_PENCIL_FONT_FACE_AUTOMATIC = 16,
+} sjme_scritchui_pencilFontFace;
+	
+/**
  * Font style for pencil fonts.
  * 
  * @since 2024/06/13
@@ -240,6 +263,9 @@ typedef enum sjme_scritchui_pencilFontStyle
 	
 	/** Underlined text. */
 	SJME_SCRITCHUI_PENCIL_FONT_STYLE_UNDERLINED = 4,
+	
+	/** Special case for automatic style selection. */
+	SJME_SCRITCHUI_PENCIL_FONT_STYLE_AUTOMATIC = 8,
 	
 	/** All styles. */
 	SJME_SCRITCHUI_PENCIL_FONT_STYLE_ALL =
@@ -1355,10 +1381,22 @@ typedef sjme_errorCode (*sjme_scritchui_fontBuiltinFunc)(
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
 
 /**
+ * Returns the total number of fonts available.
+ * 
+ * @param inState The input state.
+ * @param outCount The number of known fonts.
+ * @since 2026/01/18
+ */
+typedef sjme_errorCode (*sjme_scritchui_fontCountFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_jint* outCount);
+
+/**
  * Derives a new font from an existing font.
  * 
  * @param inState The input state.
  * @param inFont The input font to derive.
+ * @param inFace The face of the font.
  * @param inStyle The style to switch to.
  * @param inPixelSize The pixel size to use.
  * @param outDerived The resultant derived font.
@@ -1368,6 +1406,7 @@ typedef sjme_errorCode (*sjme_scritchui_fontBuiltinFunc)(
 typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
@@ -1378,7 +1417,7 @@ typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
  * @param inState The input state.
  * @param outFonts The list which gets filled with all the fonts.
  * @param outValid The number of valid fonts.
- * @param outMaxFonts The maximum number of fonts available, this is optional.
+ * @param outCount The maximum number of fonts available, this is optional.
  * @return Any resultant error, if any.
  * @since 2024/12/01
  */
@@ -1386,7 +1425,19 @@ typedef sjme_errorCode (*sjme_scritchui_fontListFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
-	sjme_attrOutNullable sjme_jint* outMaxFonts);
+	sjme_attrOutNullable sjme_jint* outCount);
+
+/**
+ * Registers the specified font.
+ * 
+ * @param inState The input state.
+ * @param inFont The font to register.
+ * @return Any resultant error, if any.
+ * @since 2026/01/18
+ */
+typedef sjme_errorCode (*sjme_scritchui_fontRegisterFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont);
 
 /**
  * Creates a hardware reference bracket to the native hardware graphics.
@@ -2013,6 +2064,9 @@ struct sjme_scritchui_apiFunctions
 	/** Returns the default built-in font. */
 	SJME_SCRITCHUI_QUICK_API(fontBuiltin);
 	
+	/** The total number of fonts. */
+	SJME_SCRITCHUI_QUICK_API(fontCount);
+	
 	/** Derive a similar font. */
 	SJME_SCRITCHUI_QUICK_API(fontDerive);
 	
@@ -2308,6 +2362,23 @@ typedef struct sjme_scritchui_loopQueue
 	sjme_scritchui_loopQueueItem* last;
 } sjme_scritchui_loopQueue;
 
+/**
+ * The state of fonts within ScritchUI.
+ * 
+ * @since 2026/01/18
+ */
+typedef struct sjme_scritchui_fontState
+{
+	/** The internal built-in font. */
+	sjme_scritchui_pencilFont builtinFont;
+
+	/** Font cache. */
+	sjme_list(sjme_scritchui_pencilFont)* fontCache;
+	
+	/** The total number of scanned fonts. */
+	sjme_jint scanTotal;
+} sjme_scritchui_fontState;
+
 struct sjme_scritchui_stateBase
 {
 	/** Common data. */
@@ -2355,9 +2426,6 @@ struct sjme_scritchui_stateBase
 	/** The window manager type used. */
 	sjme_scritchui_windowManagerType wmType;
 	
-	/** The internal built-in font. */
-	sjme_scritchui_pencilFont builtinFont;
-	
 	/** Function to obtain the current nanotime, for input events. */
 	sjme_nal_nanoTimeFunc nanoTime;
 	
@@ -2373,14 +2441,14 @@ struct sjme_scritchui_stateBase
 	/** Windowing system specific bugs. */
 	sjme_scritchui_bugs bugs;
 
-	/** Font cache. */
-	sjme_list(sjme_scritchui_pencilFont)* fontCache;
-
 	/** The loop queue for manual event loops. */
 	sjme_alignPointer sjme_scritchui_loopQueue loopQueue;
 
 	/** Platform flags (@link sjme_scritchui_lafPlatformFlag @endlink ). */
 	sjme_jint platformFlags;
+	
+	/** Font state. */
+	sjme_scritchui_fontState font;
 };
 
 /**

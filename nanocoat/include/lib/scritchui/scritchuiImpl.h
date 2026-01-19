@@ -304,6 +304,9 @@ struct sjme_scritchui_implFunctions
 	/** Set bounds of component in container. */
 	SJME_SCRITCHUI_QUICK_SAME(containerSetBounds);
 	
+	/** Scan fonts which are available to the system and register to them. */
+	sjme_scritchui_fontCountFunc fontScanSystem;
+	
 	/** Hardware graphics support on arbitrary buffers. */
 	SJME_SCRITCHUI_QUICK_SAME(hardwareGraphics);
 	
@@ -687,6 +690,15 @@ struct sjme_scritchui_internFunctions
 	
 	/** Returns the built-in font, this can handle layers. */
 	sjme_scritchui_fontBuiltinFunc fontBuiltin;
+	
+	/** Register a font for use. */
+	sjme_scritchui_fontRegisterFunc fontRegister;
+	
+	/** Perform a full font scan and registration. */
+	sjme_scritchui_fontCountFunc fontScanAll;
+	
+	/** Scan for SquirrelJME SQF resource fonts. */
+	sjme_scritchui_fontCountFunc fontScanResource;
 		
 	/** Returns the choice for the given component. */
 	sjme_scritchui_intern_getChoiceFunc getChoice;

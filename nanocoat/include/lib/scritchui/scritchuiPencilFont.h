@@ -31,26 +31,6 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
- * Font face for pencil fonts.
- * 
- * @since 2024/06/13
- */
-typedef enum sjme_scritchui_pencilFontFace
-{
-	/** Monospaced. */
-	SJME_SCRITCHUI_PENCIL_FONT_FACE_MONOSPACE = 1,
-	
-	/** Serifs. */
-	SJME_SCRITCHUI_PENCIL_FONT_FACE_SERIF = 2,
-	
-	/** Symbol. */
-	SJME_SCRITCHUI_PENCIL_FONT_FACE_SYMBOL = 4,
-	
-	/** Normal, nothing different from anything. */
-	SJME_SCRITCHUI_PENCIL_FONT_FACE_NORMAL = 8,
-} sjme_scritchui_pencilFontFace;
-
-/**
  * Checks if two brackets refer to the same font.
  *
  * @param a The first font.
