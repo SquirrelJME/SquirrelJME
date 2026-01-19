@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -66,7 +67,7 @@ public class DylibEnvironmentInterface
 	 */
 	@Override
 	public @NotNull PencilFontBracket fontDerive(
-		@NotNull PencilFontBracket __font, int __face, int __style,
+		@Nullable PencilFontBracket __font, int __face, int __style,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
 		throws MLECallError
 	{

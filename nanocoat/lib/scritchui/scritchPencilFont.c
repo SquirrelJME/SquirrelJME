@@ -742,25 +742,6 @@ sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_core_intern_fontScanResource(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrOutNotNull sjme_jint* outCount)
-{
-	sjme_scritchui wrappedState;
-	
-	if (inState == NULL || outCount == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* If wrapped, always use the underlying layer fonts. */
-	wrappedState = inState->wrappedState;
-	if (wrappedState != NULL)
-		return wrappedState->intern->fontScanResource(wrappedState,
-			outCount);
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
 sjme_errorCode sjme_scritchui_core_fontCount(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_jint* outCount)

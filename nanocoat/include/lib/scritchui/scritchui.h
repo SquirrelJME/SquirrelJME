@@ -255,6 +255,9 @@ typedef enum sjme_scritchui_pencilFontFace
  */
 typedef enum sjme_scritchui_pencilFontStyle
 {
+	/** Plain font style. */
+	SJME_SCRITCHUI_PENCIL_FONT_STYLE_PLAIN = 1,
+	
 	/** Bold text. */
 	SJME_SCRITCHUI_PENCIL_FONT_STYLE_BOLD = 1,
 	
@@ -2269,19 +2272,23 @@ typedef enum sjme_scritchui_externalAssetType
 
 /**
  * Obtains an asset that is externally provided.
+ * 
+ * Note that directories cannot be opened as a stream, however they may be
+ * checked for existence.
  *
  * @param inState The input state.
  * @param assetType The asset type requested, this is used as a hint.
- * @param outStream The resultant stream of the asset data.
  * @param inAsset The name of the asset to load.
+ * @param outStream The resultant stream of the asset data, if this
+ * is @code NULL @endcode then this only checks for existence.
  * @return Any resultant error, if any.
  * @since 2024/11/29 
  */
 typedef sjme_errorCode (*sjme_scritchui_externalAssetFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_scritchui_externalAssetType assetType,
-	sjme_attrOutNotNull sjme_stream_input* outStream,
-	sjme_attrInNotNull sjme_lpcstr inAsset);
+	sjme_attrInNotNull sjme_lpcstr inAsset,
+	sjme_attrOutNullable sjme_stream_input* outStream);
 	
 /**
  * Optional external functions for ScritchUI to use dependent on the front
