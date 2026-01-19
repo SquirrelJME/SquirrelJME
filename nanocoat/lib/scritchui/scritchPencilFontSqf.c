@@ -377,8 +377,7 @@ sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
 	init.handle = (sjme_pointer)inSqfCodepage;
 	
 	/* Fill in ID details. */
-	snprintf(init.id.name, SJME_MAX_FONT_NAME - 1,
-		"%s-%d.sqf", firstPage->name, firstPage->pixelHeight);
+	strncpy(init.id.name, firstPage->name, SJME_MAX_FONT_NAME - 1);
 	if (firstPage->family == SJME_SCRITCHUI_SQF_FAMILY_MONOSPACE)
 		init.id.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_MONOSPACE;
 	else if (firstPage->family == SJME_SCRITCHUI_SQF_FAMILY_SERIF)
