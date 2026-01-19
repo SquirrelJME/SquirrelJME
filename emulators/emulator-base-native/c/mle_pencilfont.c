@@ -234,7 +234,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelLeading)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelSize)
-	(JNIEnv* env, jclass classy, jint codepoint, jobject fontInstance)
+	(JNIEnv* env, jclass classy, jobject fontInstance, jint codepoint)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;

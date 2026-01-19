@@ -384,7 +384,7 @@ sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
 		init.id.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_SERIF;
 	else
 		init.id.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_NORMAL;
-	init.id.style = SJME_SCRITCHUI_PENCIL_FONT_STYLE_AUTOMATIC;
+	init.id.style = SJME_SCRITCHUI_PENCIL_FONT_STYLE_PLAIN;
 	init.id.pixelSize = firstPage->pixelHeight;
 	
 	/* Perform default initialization. */

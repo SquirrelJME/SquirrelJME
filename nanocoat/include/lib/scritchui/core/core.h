@@ -206,6 +206,7 @@ sjme_errorCode sjme_scritchui_core_fontCount(
 sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_lpcstr inName,
 	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,

@@ -67,7 +67,8 @@ public class DylibEnvironmentInterface
 	 */
 	@Override
 	public @NotNull PencilFontBracket fontDerive(
-		@Nullable PencilFontBracket __font, int __face, int __style,
+		@Nullable PencilFontBracket __font, String __name,
+		int __face, int __style,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
 		throws MLECallError
 	{
@@ -76,7 +77,7 @@ public class DylibEnvironmentInterface
 			fontP = ((DylibPencilFontObject)__font).objectPointer();
 		
 		return new DylibPencilFontObject(NativeScritchDylib.__fontDerive(
-			this.dyLib._stateP,fontP,
+			this.dyLib._stateP,fontP, __name,
 			__face, __style, __pixelSize));
 	}
 	

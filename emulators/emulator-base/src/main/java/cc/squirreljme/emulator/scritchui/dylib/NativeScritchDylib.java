@@ -397,7 +397,7 @@ public final class NativeScritchDylib
 	 * @since 2024/06/14
 	 */
 	static native long __fontDerive(long __stateP, long __fontP,
-		int __face, int __style, int __pixelSize)
+		String __name, int __face, int __style, int __pixelSize)
 		throws MLECallError;
 	
 	/**

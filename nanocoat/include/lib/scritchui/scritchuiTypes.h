@@ -490,6 +490,15 @@ typedef struct sjme_scritchui_pencilFontId
 	/** The pixel size of the font. */
 	sjme_jint pixelSize;
 } sjme_scritchui_pencilFontId;
+	
+typedef struct sjme_scritchui_pencilFontCompare
+{
+	/** The font that is identified. */
+	sjme_scritchui_pencilFont font;
+	
+	/** The ID of the font. */
+	sjme_scritchui_pencilFontId id;
+} sjme_scritchui_pencilFontCompare;
 
 struct sjme_scritchui_pencilFontBase
 {

@@ -394,6 +394,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_UI_FONT_DERIVE,
 		(state,
 		as->fontDerive.inFont,
+		as->fontDerive.inName,
 		as->fontDerive.inFace,
 		as->fontDerive.inStyle,
 		as->fontDerive.inPixelSize,
@@ -1373,6 +1374,7 @@ sjme_errorCode sjme_scritchui_coreSerial_fontCount(
 sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_lpcstr inName,
 	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
@@ -1380,9 +1382,10 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 {
 	SJME_SDU_CHUNK(fontDerive,
 		SJME_SCRITCHUI_SERIAL_UI_FONT_DERIVE,
-		(inState, inFont, inFace, inStyle, inPixelSize, outDerived));
+		(inState, inFont, inName, inFace, inStyle, inPixelSize, outDerived));
 		
 	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inName);
 	SJME_SDX_PASS(inFace);
 	SJME_SDX_PASS(inStyle);
 	SJME_SDX_PASS(inPixelSize);

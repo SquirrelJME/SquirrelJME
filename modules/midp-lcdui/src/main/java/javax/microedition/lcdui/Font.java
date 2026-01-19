@@ -297,7 +297,7 @@ public final class Font
 		// Derive font
 		ScritchInterface scritch = this._scritch;
 		return new Font(scritch, scritch.environment()
-			.fontDerive(this._font, PencilFontFace.AUTOMATIC,
+			.fontDerive(this._font, null, PencilFontFace.AUTOMATIC,
 				__style, __pixelSize));
 	}
 	
@@ -777,7 +777,8 @@ public final class Font
 		DisplayManager manager = DisplayManager.instance();
 		ScritchInterface scritch = manager.scritch();
 		return new Font(scritch, scritch.environment()
-			.fontDerive(null, FontUtilities.faceToPencil(__face),
+			.fontDerive(null, null, 
+				FontUtilities.faceToPencil(__face),
 				__style, FontUtilities.logicalSizeToPixelSize(__size)));
 	}
 	
@@ -804,7 +805,7 @@ public final class Font
 		DisplayManager manager = DisplayManager.instance();
 		ScritchInterface scritch = manager.scritch();
 		return new Font(scritch, scritch.environment()
-			.fontDerive(null,
+			.fontDerive(null, __name,
 				FontUtilities.faceNameToPencil(__name),
 				__style, __pxs));
 	}

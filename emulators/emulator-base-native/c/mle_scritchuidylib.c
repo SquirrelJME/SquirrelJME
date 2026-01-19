@@ -103,7 +103,7 @@
 	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER ")" DESC_VOID
 
 #define FORWARD_DESC___fontDerive "(" \
-	DESC_LONG DESC_LONG DESC_INT DESC_INT DESC_INT ")" DESC_LONG
+	DESC_LONG DESC_LONG DESC_STRING DESC_INT DESC_INT DESC_INT ")" DESC_LONG
 
 #define FORWARD_DESC___hardwareGraphics "(" \
 	DESC_LONG DESC_INT DESC_INT DESC_INT DESC_OBJECT \
@@ -1688,12 +1688,14 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__fontDerive)(JNIEnv* env, jclass classy, jlong stateP,
-	jlong fontP, jint face, jint style, jint pixelSize)
+	jlong fontP, jstring name, jint face, jint style, jint pixelSize)
 {
 	sjme_scritchui state;
 	sjme_scritchui_pencilFont font;
 	sjme_scritchui_pencilFont derived;
 	sjme_errorCode error;
+	jboolean isCopy;
+	const char* nameChars;
 
 	if (stateP == 0)
 	{
@@ -1705,16 +1707,27 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	state = (sjme_scritchui)stateP;
 	font = (sjme_scritchui_pencilFont)fontP;
 
+	/* Get the name characters. */
+	nameChars = NULL;
+	isCopy = JNI_FALSE;
+	if (name != NULL)
+		nameChars = (*env)->GetStringUTFChars(env, name, &isCopy);
+
 	/* Forward. */
 	derived = NULL;
 	if (sjme_error_is(error = state->api->fontDerive(state,
-		font, face, style, pixelSize,
-		&derived)) ||
-		derived == NULL)
+		font, nameChars, face, style, pixelSize,
+		&derived)) || derived == NULL)
 	{
+		/* Cleanup. */
+		(*env)->ReleaseStringUTFChars(env, name, nameChars);
+
 		sjme_jni_throwMLECallError(env, error);
 		return 0;
 	}
+
+	/* Cleanup. */
+	(*env)->ReleaseStringUTFChars(env, name, nameChars);
 
 	return (jlong)derived;
 }

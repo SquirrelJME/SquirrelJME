@@ -503,6 +503,7 @@ SDU_STRUCT_DEF(fontCount,
 
 SDU_STRUCT_DEF(fontDerive,
 	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VAR(sjme_lpcstr, inName);
 	SDX_VAR(sjme_scritchui_pencilFontFace, inFace);
 	SDX_VAR(sjme_scritchui_pencilFontStyle, inStyle);
 	SDX_VAR(sjme_jint, inPixelSize);
@@ -1225,6 +1226,7 @@ sjme_errorCode sjme_scritchui_coreSerial_fontCount(
 sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNullable sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_lpcstr inName,
 	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,

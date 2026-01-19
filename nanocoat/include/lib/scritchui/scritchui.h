@@ -256,7 +256,7 @@ typedef enum sjme_scritchui_pencilFontFace
 typedef enum sjme_scritchui_pencilFontStyle
 {
 	/** Plain font style. */
-	SJME_SCRITCHUI_PENCIL_FONT_STYLE_PLAIN = 1,
+	SJME_SCRITCHUI_PENCIL_FONT_STYLE_PLAIN = 0,
 	
 	/** Bold text. */
 	SJME_SCRITCHUI_PENCIL_FONT_STYLE_BOLD = 1,
@@ -1399,6 +1399,7 @@ typedef sjme_errorCode (*sjme_scritchui_fontCountFunc)(
  * 
  * @param inState The input state.
  * @param inFont The input font to derive.
+ * @param inName The name of the font to derive.
  * @param inFace The face of the font.
  * @param inStyle The style to switch to.
  * @param inPixelSize The pixel size to use.
@@ -1409,6 +1410,7 @@ typedef sjme_errorCode (*sjme_scritchui_fontCountFunc)(
 typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_lpcstr inName,
 	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,

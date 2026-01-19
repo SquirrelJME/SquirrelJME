@@ -46,6 +46,7 @@ public interface ScritchEnvironmentInterface
 	 *
 	 * @param __font The font to derive, if {@code null} then no font is used
 	 * as the basis.
+	 * @param __name The name of the font to derive.
 	 * @param __face The new face to select. 
 	 * @param __style The new style to select.
 	 * @param __pixelSize The pixel size of the font.
@@ -57,6 +58,7 @@ public interface ScritchEnvironmentInterface
 	@SquirrelJMEVendorApi
 	@NotNull
 	PencilFontBracket fontDerive(@Nullable PencilFontBracket __font,
+		@Nullable String __name,
 		@MagicConstant(flagsFromClass = PencilFontFace.class) int __face,
 		@MagicConstant(flagsFromClass = PencilFontStyle.class) int __style,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
