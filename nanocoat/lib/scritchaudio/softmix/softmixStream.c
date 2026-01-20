@@ -11,7 +11,7 @@
 #include "sjme/fixed.h"
 #include "sjme/util.h"
 
-static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_renderSource(
+static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_softmix_renderSource(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_source inSource,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* sourceInfo,

@@ -28,4 +28,13 @@ public interface UriPartPath
 	 */
 	@SquirrelJMEVendorApi
 	String getPath();
+	
+	/**
+	 * Is this a directory? This is so if this ends in a slash.
+	 *
+	 * @return If this ends in a slash.
+	 * @since 2026/01/16
+	 */
+	@SquirrelJMEVendorApi
+	boolean isDirectory();
 }

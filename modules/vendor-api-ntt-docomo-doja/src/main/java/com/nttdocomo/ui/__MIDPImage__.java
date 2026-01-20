@@ -94,7 +94,6 @@ final class __MIDPImage__
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/12/01
 	 */
 	@Override
@@ -129,7 +128,6 @@ final class __MIDPImage__
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/12/01
 	 */
 	@Override

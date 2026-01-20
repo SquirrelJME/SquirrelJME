@@ -10,7 +10,10 @@
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.jvm.mle.constants.StandardBucketType;
+import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
@@ -75,7 +78,6 @@ public class AllVolumesEndPoint
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/12/27
 	 */
 	@Override
@@ -149,6 +151,19 @@ public class AllVolumesEndPoint
 		UriGenericPart dotDot = this.dotDot;
 		__into.put("..", (dotDot != null ? dotDot : this.part));
 		
+		// List all buckets
+		__into.put("@bucket.data/", new UriGenericPart(
+			"//" + BucketEndPoint.HOST + "data/"));
+		__into.put("@bucket.libraries/", new UriGenericPart(
+			"//" + BucketEndPoint.HOST + "libraries/"));
+		
+		// Does the extra bucket exist?
+		String extraPath = RuntimeShelf.vmDescription(
+			VMDescriptionType.DEFAULT_DIR_BUCKET_EXTRA);
+		if (extraPath != null && !extraPath.isEmpty())
+			__into.put("@bucket.extra/", new UriGenericPart(
+				"//" + BucketEndPoint.HOST + "extra/"));
+		
 		// List all libraries
 		String[] fileName = new String[1];
 		for (JarPackageBracket library : JarPackageShelf.libraries())
@@ -159,9 +174,9 @@ public class AllVolumesEndPoint
 				fileName);
 			
 			// Determine full URI connection to this item
-			// If this is a resource type, use linear scanning instead
+			// If this is not an archive type, use linear scanning instead
 			String path = JarPackageShelf.libraryPath(library);
-			if (path != null && SuiteUtils.isResource(path))
+			if (path != null && !SuiteUtils.isArchive(path))
 			{
 				__into.put(fileName[0], new UriGenericPart(
 					"//" + LinearScanEndPoint.HOST +

@@ -10,10 +10,6 @@
 #include "lib/scritchaudio/scritchaudioIntern.h"
 #include "lib/scritchaudio/winmm/winmmIntern.h"
 
-#if 1
-	#define SJME_CONFIG_EXPERIMENT_WINMM_PAUSE
-#endif
-
 sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
@@ -80,14 +76,6 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 		source, renderInfo, (sjme_scritchaudio_buffer*)buf)))
 		return sjme_error_default(error);
 
-#if defined(SJME_CONFIG_EXPERIMENT_WINMM_PAUSE)
-	/* Disable playback, if playback is synchronous then pausing */
-	/* does not occur. */
-	mmResult = waveOutPause(hWaveOut);
-	if (mmResult != MMSYSERR_NOERROR && mmResult != MMSYSERR_NOTSUPPORTED)
-		return SJME_ERROR_AUDIO_TRIGGER_FAILED;
-#endif
-
 	/* Setup output header. */
 	header = inStream->data.header;
 	memset(header, 0, sizeof(*header));
@@ -113,16 +101,6 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	sjme_message("Write audio... %d", mmResult);
 	if (mmResult != MMSYSERR_NOERROR)
 		return SJME_ERROR_AUDIO_WRITE_FAILED;
-
-#if defined(SJME_CONFIG_EXPERIMENT_WINMM_PAUSE)
-	/* Resume playback, if it was previously paused. */
-	if (mmResult == MMSYSERR_NOERROR)
-	{
-		mmResult = waveOutRestart(hWaveOut);
-		if (mmResult != MMSYSERR_NOERROR && mmResult != MMSYSERR_NOTSUPPORTED)
-			return SJME_ERROR_AUDIO_TRIGGER_FAILED;
-	}
-#endif
 
 	/* Unprepare the header. */
 	mmResult = waveOutUnprepareHeader(hWaveOut, header, sizeof(WAVEHDR));

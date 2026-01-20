@@ -34,11 +34,11 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Individual FM algorithm operator
  */
-@SquirrelJMEVendorApi
 class MA3Operator
 	implements BasicOperator
 {
@@ -46,213 +46,184 @@ class MA3Operator
 	 * OPL registers
 	 * Envelope attack rate
 	 */
-	@SquirrelJMEVendorApi
 	final int ar;
 	
 	/**
 	 * Amplitude modulation depth
 	 */
-	@SquirrelJMEVendorApi
 	final int dam;
 	
 	/**
 	 * Envelope decay rate
 	 */
-	@SquirrelJMEVendorApi
 	final int dr;
 	
 	/**
 	 * Frequency modulation depth
 	 */
-	@SquirrelJMEVendorApi
 	final int dvb;
 	
 	/**
 	 * Enable amplutide modulation
 	 */
-	@SquirrelJMEVendorApi
 	final boolean eam;
 	
 	/**
 	 * Enable frequency modulation
 	 */
-	@SquirrelJMEVendorApi
 	final boolean evb;
 	
 	/**
 	 * Envelope release rate
 	 */
-	@SquirrelJMEVendorApi
 	final int rr;
 	
 	/**
 	 * Envelope sustain level
 	 */
-	@SquirrelJMEVendorApi
 	final int sl;
 	
 	/**
 	 * Envelope sustain rate
 	 */
-	@SquirrelJMEVendorApi
 	final int sr;
 	
 	/**
 	 * MIDI Hold 1 is supported
 	 */
-	@SquirrelJMEVendorApi
 	final boolean sus;
 	
 	/**
 	 * Envelope attenuation
 	 */
-	@SquirrelJMEVendorApi
 	final int tl;
 	
 	/**
 	 * Ignore key-off response
 	 */
-	@SquirrelJMEVendorApi
 	final boolean xof;
 	
 	/**
 	 * Encapsulating algorithm
 	 */
-	@SquirrelJMEVendorApi
-	MA3Algorithm algorithm;
+	final MA3Algorithm algorithm;
 	
 	/**
 	 * u14 Amplitude modulation counter
 	 */
-	@SquirrelJMEVendorApi
 	int amPhase;
 	
 	/**
 	 * Detune shift
 	 */
-	@SquirrelJMEVendorApi
 	int dt;
 	
 	/**
 	 * u9  Current envelope level
 	 */
-	@SquirrelJMEVendorApi
 	int envLevel;
 	
 	/**
 	 * u9  Effective envelope output
 	 */
-	@SquirrelJMEVendorApi
 	int envOut;
 	
 	/**
 	 * u15 Envelope phase counter
 	 */
-	@SquirrelJMEVendorApi
 	int envPhase;
 	
 	/**
 	 * Current envelope rate of change
 	 */
-	@SquirrelJMEVendorApi
 	int envRate;
 	
 	/**
 	 * Envelope rate offset modifier
 	 */
-	@SquirrelJMEVendorApi
 	int envRof;
 	
 	/**
 	 * Envelope processing stage
 	 */
-	@SquirrelJMEVendorApi
 	int envStage;
 	
 	/**
 	 * Feedback rate index
 	 */
-	@SquirrelJMEVendorApi
 	int fb;
 	
 	/**
 	 * Most recent output sample
 	 */
-	@SquirrelJMEVendorApi
 	int fb0;
 	
 	/**
 	 * Second-most recent output sample
 	 */
-	@SquirrelJMEVendorApi
 	int fb1;
 	
 	/**
 	 * Encapsulating instance
 	 */
-	@SquirrelJMEVendorApi
-	MA3Sampler instance;
+	final MA3Sampler instance;
 	
 	/**
 	 * Wave drum parameters are valid
 	 */
-	@SquirrelJMEVendorApi
 	boolean isValid;
 	
 	/**
 	 * Attenuation index per octave
 	 */
-	@SquirrelJMEVendorApi
 	int ksl;
 	
 	/**
 	 * KSL attenuation level
 	 */
-	@SquirrelJMEVendorApi
 	int kslOut;
 	
 	/**
 	 * Envelope rate modifier scale
 	 */
-	@SquirrelJMEVendorApi
 	int ksr;
 	
 	/**
 	 * Frequency multiplier
 	 */
-	@SquirrelJMEVendorApi
 	int multi;
 	
 	/**
 	 * Encapsulating note
 	 */
-	@SquirrelJMEVendorApi
-	MA3Note note;
+	final MA3Note note;
 	
 	/**
 	 * u10 Oscillator counter
 	 */
-	@SquirrelJMEVendorApi
 	int oscPhase;
 	
 	/**
 	 * Current wave source sample
 	 */
-	@SquirrelJMEVendorApi
 	float wavSample;
 	
 	/**
 	 * Wave function index
 	 */
-	@SquirrelJMEVendorApi
 	int ws;
 	
 	/**
 	 * Template constructor
 	 */
-	@SquirrelJMEVendorApi
 	MA3Operator(byte[] bytes, int offset)
 	{
+		// Not used for non-samples //
+		this.algorithm = null;
+		this.instance = null;
+		this.note = null;
+		//////////////////////////////
+		
 		this.sus = (bytes[offset] >> 3 & 1) != 0;
 		this.ksr = bytes[offset] >> 2 & 1;
 		this.eam = (bytes[offset] >> 1 & 1) != 0;
@@ -276,9 +247,14 @@ class MA3Operator
 	/**
 	 * Wave constructor
 	 */
-	@SquirrelJMEVendorApi
 	MA3Operator(int offset, byte[] message)
 	{
+		// Not used for non-samples //
+		this.algorithm = null;
+		this.instance = null;
+		this.note = null;
+		//////////////////////////////
+		
 		int bits;
 		bits = message[offset++] & 0xFF;
 		this.sr = bits >> 4 & 15;
@@ -302,7 +278,6 @@ class MA3Operator
 	/**
 	 * Playback constructor
 	 */
-	@SquirrelJMEVendorApi
 	MA3Operator(MA3Note note, MA3Operator o)
 	{
 		
@@ -340,9 +315,14 @@ class MA3Operator
 	}
 	
 	/** SysEx constructor. */
-	@SquirrelJMEVendorApi
 	MA3Operator(byte[] message, int offset, boolean diff)
 	{
+		// Not used for non-samples //
+		this.algorithm = null;
+		this.instance = null;
+		this.note = null;
+		//////////////////////////////
+		
 		int bits;
 		bits = message[offset++] & 0xFF;
 		this.sr = bits >> 4 & 15;
@@ -375,21 +355,36 @@ class MA3Operator
 	/**
 	 * Frequency has changed
 	 */
-	@SquirrelJMEVendorApi
 	void onFrequency()
 	{
+		// These are only ever used for FM samples, so this failure condition
+		// should never occur
+		MA3Note note = this.note;
+		if (note == null)
+			throw Debugging.oops();
+		
 		this.envRof =
-			(this.note.block << 1 | this.note.f_number >> 8 + MA3SamplerProvider.NTS & 1) >> ((this.ksr ^ 1) << 1);
+			(note.block << 1 | note.f_number >> 8 + 
+				MA3SamplerProvider.NTS & 1) >> ((this.ksr ^ 1) << 1);
 		this.kslOut = Math.max(0,
-			MA3SamplerProvider.KSL_B[this.ksl] * ((this.note.block << 3) - MA3SamplerProvider.KSL_F[this.note.f_number >> 6]));
+			MA3SamplerProvider.KSL_B[this.ksl] * ((note.block << 3) - 
+				MA3SamplerProvider.KSL_F[note.f_number >> 6]));
 	}
 	
 	/**
 	 * Generate a sample on an operator
 	 */
-	@SquirrelJMEVendorApi
 	int sample(int mod, boolean feedback)
 	{
+		int[] constSustains = MA3SamplerProvider.SUSTAINS;
+		int[][] constWaves = MA3SamplerProvider.WAVES;
+		int[] constExp = MA3SamplerProvider.EXP;
+		int[][] constMa3WaveRom = MA3SamplerProvider.MA3_WAVEROM;
+		int[] constWaveEnv = MA3SamplerProvider.WAVE_ENV;
+		int[] constAmLfoA = MA3SamplerProvider.AM_LFO_A;
+		int[] constAmLfoB = MA3SamplerProvider.AM_LFO_B;
+		int[] constMultis = MA3SamplerProvider.MULTIS;
+		
 		//  Scratch
 		int x, y;
 		
@@ -397,46 +392,53 @@ class MA3Operator
 		if (this.envStage == MA3SamplerProvider.ENV_DONE)
 			return 0;
 		
+		// These are only ever used for FM samples, so this failure condition
+		// should never occur
+		MA3Algorithm algorithm = this.algorithm;
+		MA3Sampler instance = this.instance;
+		MA3Note note = this.note;
+		if (algorithm == null || instance == null || note == null)
+			throw Debugging.oops();
+		
 		// FM sample
-		if (!this.algorithm.isWave)
+		if (!algorithm.isWave)
 		{
 			if (feedback && this.fb != 0)
 				mod += this.fb0 + this.fb1 >> 9 - this.fb;
 			this.fb1 = this.fb0;
-			x =
-				MA3SamplerProvider.WAVES[this.ws][(this.oscPhase >> 9) + mod & 1023] + (this.envOut << 3);
+			x = constWaves[this.ws][(this.oscPhase >> 9) + mod & 1023] + 
+					(this.envOut << 3);
 			this.fb0 =
-				MA3SamplerProvider.EXP[x & 0xFF] << 1 >> (x >> 8 & 31) ^ x >> 31;
+				constExp[x & 0xFF] << 1 >> (x >> 8 & 31) ^ x >> 31;
 		}
 		
 		// Wave sample
 		else
 		{
-			int[] samples = !this.algorithm.rm ? this.instance.wavRam :
-				MA3SamplerProvider.MA3_WAVEROM[this.algorithm.waveId];
+			int[] samples = !algorithm.rm ? instance.wavRam :
+				constMa3WaveRom[algorithm.waveId];
 			
 			// Select the sample from wave memory
-			if (samples != null && this.wavSample < this.algorithm.ep)
+			if (samples != null && this.wavSample < algorithm.ep)
 			{
-				
 				// Produce the output sample
 				x = (int)Math.floor(this.wavSample);
 				this.fb0 =
-					samples[x] * MA3SamplerProvider.WAVE_ENV[this.envOut] / 32767;
+					samples[x] * constWaveEnv[this.envOut] / 32767;
 				
 				// Advance to the next sample
-				this.wavSample += this.algorithm.wavAdvance;
-				if (this.wavSample >= this.algorithm.ep)
+				this.wavSample += algorithm.wavAdvance;
+				if (this.wavSample >= algorithm.ep)
 				{
-					if (this.algorithm.lp < this.algorithm.ep)
+					if (algorithm.lp < algorithm.ep)
 					{
-						this.wavSample =
-							(this.wavSample - this.algorithm.lp) % (this.algorithm.ep - this.algorithm.lp) + this.algorithm.lp;
+						this.wavSample = (this.wavSample - algorithm.lp) %
+							(algorithm.ep - algorithm.lp) + algorithm.lp;
 					}
 					else
 					{
-						this.wavSample = this.algorithm.ep;
-						this.note.stop();
+						this.wavSample = algorithm.ep;
+						note.stop();
 					}
 				}
 				
@@ -466,23 +468,27 @@ class MA3Operator
 					this.envStage = MA3SamplerProvider.ENV_DECAY;
 				}
 				break;
+				
 			case MA3SamplerProvider.ENV_DECAY:
 			case MA3SamplerProvider.ENV_SUSTAIN:
 			case MA3SamplerProvider.ENV_RELEASE:
 				this.envLevel += y;
-				if (this.envStage == MA3SamplerProvider.ENV_DECAY && this.envLevel >= MA3SamplerProvider.SUSTAINS[this.sl])
+				if (this.envStage == MA3SamplerProvider.ENV_DECAY && 
+					this.envLevel >= constSustains[this.sl])
 				{
-					this.envLevel = MA3SamplerProvider.SUSTAINS[this.sl];
+					this.envLevel = constSustains[this.sl];
 					this.envRate = this.sr;
 					this.envStage = MA3SamplerProvider.ENV_SUSTAIN;
 				}
+				
 				if (this.envLevel >= 511)
 				{
 					this.envLevel = 511;
 					this.envStage = MA3SamplerProvider.ENV_DONE;
-					this.note.onEnvelopeDone();
+					note.onEnvelopeDone();
 				}
 				break;
+				
 			case MA3SamplerProvider.ENV_DONE:
 				this.envLevel = 511;
 				break;
@@ -493,19 +499,19 @@ class MA3Operator
 		if (this.eam)
 		{
 			this.envOut +=
-				MA3SamplerProvider.AM_LFO_A[this.amPhase >> 12] << this.dam >> 2;
+				constAmLfoA[this.amPhase >> 12] << this.dam >> 2;
 			this.amPhase =
-				(this.amPhase + MA3SamplerProvider.AM_LFO_B[this.algorithm.lfo]) % (0x34000);
+				(this.amPhase + constAmLfoB[algorithm.lfo]) % (0x34000);
 		}
 		this.envOut = Math.min(Math.max(this.envOut, 0), 511);
 		
 		// Wave drums have no oscillator
-		if (this.algorithm.isWave)
+		if (algorithm.isWave)
 			return this.fb0;
 		
 		// Advance the oscillator
 		this.oscPhase +=
-			(this.note.f_number << this.note.block >> 1) * MA3SamplerProvider.MULTIS[this.multi] >> 1;
+			(note.f_number << note.block >> 1) * constMultis[this.multi] >> 1;
 		
 		// According to available resources, the below algorithm should be
 		// correct for vibrato, but no significance has been observed and

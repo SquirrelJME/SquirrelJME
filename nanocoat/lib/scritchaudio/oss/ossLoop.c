@@ -15,7 +15,7 @@
 #include "lib/scritchaudio/scritchaudioIntern.h"
 #include "lib/scritchaudio/oss/ossIntern.h"
 
-sjme_errorCode sjme_scritchaudio_oss_loopIterate(
+sjme_errorCode sjme_attrOptimize sjme_scritchaudio_oss_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)

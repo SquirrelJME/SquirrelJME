@@ -17,7 +17,8 @@
 
 #define RUNTIME_MEMORYPROFILE_DESC "()I"
 #define RUNTIME_SYSTEMENV_DESC "(Ljava/lang/String;)Ljava/lang/String;"
-#define RUNTIME_VMDESCRIPTION_DESC "(I)Ljava/lang/String;"
+#define RUNTIME_VMDESCRIPTION_DESC \
+	DESC_METHOD(DESC_STRING, DESC_INT)
 #define RUNTIME_VMSTATISTIC_DESC "(I)J"
 
 #define FORWARD_CLASS "cc/squirreljme/jvm/mle/RuntimeShelf"
@@ -60,9 +61,10 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 {
 	sjme_errorCode error;
 	char fileName[SJME_MAX_PATH];
+	sjme_path fullPath;
 
 	// Executable path of the VM binary (EXECUTABLE_PATH)
-	if (id == 6)
+	if (id == SJME_NVM_VM_DESC_EXECUTABLE_PATH)
 	{
 		// Use NAL API
 		memset(fileName, 0, sizeof(fileName));
@@ -85,6 +87,29 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 		}
 
 		// Not a valid executable path
+		return NULL;
+	}
+
+	/* Default directory. */
+	if (id > SJME_NVM_VM_DESC_DEFAULT_DIR_UNKNOWN &&
+		id < (SJME_NVM_VM_DESC_DEFAULT_DIR_UNKNOWN +
+			SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES))
+	{
+		/* Lookup default path through the path system. */
+		memset(&fullPath, 0, sizeof(fullPath));
+		if (sjme_error_default(error = sjme_path_default(NULL,
+			&fullPath, id - SJME_NVM_VM_DESC_DEFAULT_DIR_UNKNOWN,
+			-1)))
+			return NULL;
+
+		// Convert to Java String if Valid
+		if (fullPath.length > 0)
+		{
+			fullPath.chars[SJME_MAX_PATH - 1] = '\0';
+			return (*env)->NewStringUTF(env, fullPath.chars);
+		}
+
+		// Not a valid path
 		return NULL;
 	}
 

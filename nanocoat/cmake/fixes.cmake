@@ -19,6 +19,7 @@ endif()
 
 # Needed for C compiler checks
 include(CheckCCompilerFlag)
+include(CheckLinkerFlag)
 
 # Do not install with RPATH, CMake does relinking in build/install which
 # we do not want as we give away whatever executes and such
@@ -432,6 +433,20 @@ squirreljme_try_compile("sjme_threadLocal"
 	"tryThreadLocal"
 	SJME_CONFIG_HAS_NO_THREAD_LOCAL)
 
+# Statically link in libgcc?
+# Plain variant
+check_linker_flag(C "-static-libgcc"
+	SJME_CONFIG_HAS_STATIC_LIBGCC)
+message(STATUS "-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC}")
+# -Wl variant
+check_linker_flag(C "-Wl,-static-libgcc"
+	SJME_CONFIG_HAS_STATIC_LIBGCC_WL)
+message(STATUS "-Wl,-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_WL}")
+# LINKER: variant
+check_linker_flag(C "LINKER:-static-libgcc"
+	SJME_CONFIG_HAS_STATIC_LIBGCC_LINK)
+message(STATUS "LINKER:-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_LINK}")
+
 # Locate the math library, if applicable
 find_library(SQUIRRELJME_LIBM m)
 message(STATUS "libm: ${SQUIRRELJME_LIBM}")
@@ -458,6 +473,22 @@ endif()
 # For debugging required libraries
 message(STATUS "System Required Libraries: ${SQUIRRELJME_REQUIRED_LIBS}")
 
+function(squirreljme_target_link_fixes target)
+	# Static libgcc?
+	if(SJME_CONFIG_HAS_STATIC_LIBGCC)
+		target_link_options(${target} PRIVATE
+			"-static-libgcc")
+	# Static libgcc (-Wl)?
+	elseif(SJME_CONFIG_HAS_STATIC_LIBGCC_WL)
+		target_link_options(${target} PRIVATE
+			"-Wl,-static-libgcc")
+	# Static libgcc (LINKER:)?
+	elseif(SJME_CONFIG_HAS_STATIC_LIBGCC_LINK)
+		target_link_options(${target} PRIVATE
+			"LINKER:-static-libgcc")
+	endif()
+endfunction()
+
 # Link against required libraries
 function(squirreljme_target_link_libraries_required target)
 	# Add all of the previous required libs
@@ -469,6 +500,9 @@ function(squirreljme_target_link_libraries_required target)
 			"${SQUIRRELJME_REQUIRED_LIBS}"
 			"${ARGN}")
 	endif()
+
+	# For these to be used, linker fixes need to go in also
+	squirreljme_target_link_fixes(${target})
 endfunction()
 
 # Do not use .lib suffix for Windows libraries for mingw32/mingw-w64
@@ -488,5 +522,12 @@ if("${SQUIRRELJME_ARCH}" STREQUAL "ia32" OR
 			add_compile_definitions("SJME_CONFIG_HAS_ASM_INTEL=1")
 			add_compile_options("-masm=intel")
 		endif()
+	endif()
+endif()
+
+
+# Disable SEH on Windows
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+	if(SJME_CONFIG_HAS_SEH_DISABLE_GCC)
 	endif()
 endif()

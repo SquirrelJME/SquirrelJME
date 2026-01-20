@@ -64,6 +64,9 @@ public class SquirrelJMEPluginConfiguration
 	/** Ignore in the launcher? */
 	public boolean ignoreInLauncher;
 	
+	/** Ignore Java main in the launcher? */
+	public boolean ignoreJavaMainInLauncher;
+	
 	/** The configurations this defines. */
 	public Set<JavaMEConfiguration> definedConfigurations =
 		new LinkedHashSet<>();
@@ -129,6 +132,9 @@ public class SquirrelJMEPluginConfiguration
 	/** Extra proguard options, for test fixtures. */
 	public List<String> proGuardOptionsTestFixtures =
 		new ArrayList<>();
+	
+	/** Always optimize with ProGuard even for debug. */
+	public boolean alwaysOptimize;
 	
 	/**
 	 * Initializes the configuration with the contained project.

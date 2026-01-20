@@ -60,7 +60,7 @@ public final class Method
 	private final byte[] _rawcodeattr;
 	
 	/** The method byte code. */
-	private Reference<ByteCode> _bytecode;
+	private ByteCode _bytecode;
 	
 	/** Name and type reference. */
 	private Reference<MethodNameAndType> _nameandtype;
@@ -147,11 +147,11 @@ public final class Method
 			return null;
 		
 		// Otherwise, load a representation of it
-		Reference<ByteCode> ref = this._bytecode;
+		ByteCode ref = this._bytecode;
 		ByteCode rv;
 		
-		if (ref == null || null == (rv = ref.get()))
-			this._bytecode = new WeakReference<>((rv = new ByteCode(
+		if (ref == null || null == (rv = ref))
+			this._bytecode = ((rv = new ByteCode(
 				new WeakReference<>(this), this._rawcodeattr,
 				this.classname, this.methodflags)));
 		

@@ -21,7 +21,10 @@
       <fileEntry mountPoint="26" file="./compatibility.mkd" />
       <fileEntry mountPoint="26" file="./credits.mkd" />
       <fileEntry mountPoint="26" file="./assets/doc/supported-formats.mkd" />
+      <fileEntry mountPoint="26" file="./assets/doc/usage.mkd" />
       <fileEntry mountPoint="26" file="./assets/doc/usage-standalone.mkd" />
+      <fileEntry mountPoint="26" file="./assets/doc/usage-springcoat.mkd" />
+      <fileEntry mountPoint="26" file="./assets/doc/usage-nanocoat.mkd" />
       <variableEntry mountPoint="26" overwriteMode="0" fileMode="755" overrideFileMode="true" name="squirreljme.standalone.path" />
       <variableEntry mountPoint="26" name="squirreljme.source.path" />
     </entries>
@@ -849,7 +852,7 @@ if (context.isUnattended()) {
 }
  args.add("-dir");
  args.add(installationDirectory);
- 
+
  return args.toArray(new String[args.size()]);
 </property>
                                 </object>

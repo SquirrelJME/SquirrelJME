@@ -284,7 +284,6 @@ public class ImplMegaFactory
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2014/08/01
 	 */
 	@Override
@@ -344,7 +343,6 @@ public class ImplMegaFactory
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2014/08/01
 	 */
 	@Override

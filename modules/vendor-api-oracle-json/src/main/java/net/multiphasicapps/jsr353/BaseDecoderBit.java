@@ -74,7 +74,6 @@ public final class BaseDecoderBit
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2015/04/12?
 	 */
 	@Override

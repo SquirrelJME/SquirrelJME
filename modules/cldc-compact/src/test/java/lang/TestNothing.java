@@ -21,7 +21,6 @@ public class TestNothing
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2023/12/12
 	 */
 	@Override

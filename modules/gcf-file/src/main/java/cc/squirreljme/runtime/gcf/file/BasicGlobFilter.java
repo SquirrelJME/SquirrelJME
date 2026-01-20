@@ -62,7 +62,8 @@ public final class BasicGlobFilter
 			
 			// Deduplicate asterisks, add everything else otherwise
 			int sbl = sb.length();
-			if (c != '*' || (c == '*' && sbl > 0 && sb.charAt(sbl - 1) != '*') || (c == '*' && sbl == 0))
+			if (c != '*' || (c == '*' && sbl > 0 &&
+				sb.charAt(sbl - 1) != '*') || (c == '*' && sbl == 0))
 				sb.append(c);
 		}
 		
@@ -101,7 +102,6 @@ public final class BasicGlobFilter
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/12/28
 	 */
 	@Override
@@ -112,7 +112,6 @@ public final class BasicGlobFilter
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/12/30
 	 */
 	@Override
@@ -131,7 +130,6 @@ public final class BasicGlobFilter
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/12/30
 	 */
 	@Override

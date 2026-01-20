@@ -492,7 +492,8 @@ public class MidiPlayer
 		// which was 0.02083s. Reversing operation with
 		// multiplication gives 0.5s so this is used as
 		// the base.
-		else
-			return 500_000__000 / __rawTickDiv;
+		/*if (true)
+			return 60_000__000L / (24L * __rawTickDiv);*/
+		return 500_000__000 / __rawTickDiv;
 	}
 }

@@ -18,6 +18,7 @@ import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
@@ -26,7 +27,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -327,14 +330,43 @@ public final class SpringThread
 				SpringMethod inMethod = frame.method();
 				int pc = frame.lastExecutedPc();
 				
-				trace = new CallTraceElement(
-					inMethod.inClass().toString(),
-					inMethod.name().toString(),
-					inMethod.nameAndType().type().toString(),
-					0,
-					inMethod.infile,
-					inMethod.byteCode().lineOfAddress(pc),
-					inMethod.byteCode().getByAddress(pc).operation(),
+				String className = null;
+				String methodName = null;
+				String methodType = null;
+				String inFile = null;
+				ByteCode byteCode = null;
+				int lineOfAddr = -1;
+				int operation = -1;
+				try
+				{
+					// Can we get the method class/name byte code?
+					if (inMethod != null)
+					{
+						className = inMethod.inClass().toString();
+						methodName = inMethod.name().toString();
+						methodType = inMethod.nameAndType().type().toString();
+						
+						inFile = inMethod.inFile();
+						
+						byteCode = inMethod.byteCode();
+					}
+					
+					// Can we get the instruction details?
+					if (byteCode != null)
+					{
+						lineOfAddr = byteCode.lineOfAddress(pc);
+						operation = byteCode.getByAddress(pc).operation();
+					}
+				}
+				catch (InvalidClassFormatException __e)
+				{
+					if (Debugging.VERBOSE)
+						__e.printStackTrace();
+				}
+				
+				// Build trace
+				trace = new CallTraceElement(className, methodName, methodType,
+					pc, inFile, lineOfAddr, operation,
 					pc);
 			}
 			

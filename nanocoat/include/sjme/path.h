@@ -300,8 +300,8 @@ sjme_errorCode sjme_path_checkDirSep(
  * Returns @link SJME_ERROR_PATH_NOT_DEFINED @endlink if the requested
  * directory is not defined.
  * @param type The type of path to obtain.
- * @param index The index of the path to use, if @c -1 then only the valid
- * possible match is used.
+ * @param index The index of the path to use, if @c -1 then only the first
+ * valid possible match is used.
  * @since 2025/12/07
  */
 sjme_errorCode sjme_path_default(
