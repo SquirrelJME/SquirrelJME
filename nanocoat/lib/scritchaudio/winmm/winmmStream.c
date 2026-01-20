@@ -139,8 +139,6 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	MMRESULT mmResult;
 	HWAVEOUT hWaveOut;
 	WAVEFORMATEXTENSIBLE format;
-	sjme_scritchaudio_winmm_WAVEOUTPROC bump;
-	sjme_scritchaudio_renderInfo renderInfo;
 
 	if (inState == NULL || inOutStream == NULL || inName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -203,14 +201,13 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 
 	/* Calculate the render info. */
 	hWaveOut = NULL;
-	memset(&renderInfo, 0, sizeof(renderInfo));
 	if (sjme_error_is(error = inState->intern->calcRenderInfo(
-		inState, inOutStream, NULL, &renderInfo)))
+		inState, inOutStream, NULL, &inOutStream->data.renderInfo)))
 		goto fail_any;
 
 	/* Allocate sample buffer. */
 	if (sjme_error_is(error = sjme_alloc(inState->pool,
-		renderInfo.bufSize, &inOutStream->data.buffer)) ||
+		inOutStream->data.renderInfo.bufSize, &inOutStream->data.buffer)) ||
 		inOutStream->data.buffer == NULL)
 		goto fail_any;
 
@@ -241,17 +238,6 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	mmResult = waveOutRestart(hWaveOut);
 	if (mmResult != MMSYSERR_NOERROR && mmResult != MMSYSERR_NOTSUPPORTED)
 		goto fail_any;
-
-#if 0
-	/* We need to run the stream at least once for Windows to start it. */
-	if (sjme_error_is(error = inState->impl->loopIterate(
-		inState, inOutStream, &renderInfo)))
-	{
-		/* These errors are okay. */
-		if (error != SJME_ERROR_AUDIO_AWAITING)
-			goto fail_any;
-	}
-#endif
 
 	/* Return the resultant stream. */
 	return SJME_ERROR_NONE;

@@ -219,18 +219,16 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	/* No stream has been set yet? */
 	if (inState->stream == NULL)
 		inState->stream = result;
-	
-	/* No thread has been set up yet? */
-	/* If the state must be manually polled, we like having */
-	/* threaded audio. Note that even if there is no thread defined */
-	/* the operating system could call back into the audio subroutine. */
-	/* We must be the top-most state if manually polled! */
-	/* When event polling, the underlying stream manages rendering and */
-	/* event handling. */
+
+	/* Each stream gets its own thread if manual or event based polling */
+	/* is used. This means that the system is not capable of multi-threaded */
+	/* audio. */
+	/* Note that the lower level that is closer to the sound card owns */
+	/* the thread. */
 	hasTop = (sjme_atomic_g(sjme_pointer, &inState->topState) != NULL);
 	hasWrapped = (inState->wrappedState != NULL);
-	if ((!hasTop && inState->bugs.manualPoll) ||
-		((hasTop && !hasWrapped) && inState->bugs.eventPoll))
+	if ((inState->bugs.manualPoll || inState->bugs.eventPoll) &&
+		(!hasWrapped || hasTop))
 	{
 #if defined(SJME_CONFIG_DEBUG)
 		/* Debug. */

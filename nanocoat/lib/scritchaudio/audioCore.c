@@ -53,7 +53,7 @@ static const sjme_scritchaudio_internFunctions sjme_scritchaudio_coreInterns =
 {
 	sjme_sm(.calcRenderInfo, sjme_scritchaudio_core_calcRenderInfo),
 	sjme_sm(.fallbackNext, sjme_scritchaudio_core_fallbackNext),
-	sjme_sm(.loopIterate, sjme_scritchaudio_core_loopIterateIntern),
+	sjme_sm(.loopIterateLocked, sjme_scritchaudio_core_loopIterateLocked),
 	sjme_sm(.peerConnect, sjme_scritchaudio_core_peerConnect),
 	sjme_sm(.peerDisconnect, sjme_scritchaudio_core_peerDisconnect),
 	sjme_sm(.peerNoneDispatch, sjme_scritchaudio_core_peerNoneDispatch),
@@ -218,7 +218,8 @@ sjme_errorCode sjme_scritchaudio_core_init(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Do we need the software mixing wrapper? */
-	needSoftMixWrapper = !inImplFunc->allFormatsOwnMixing;
+	needSoftMixWrapper = (!inImplFunc->allFormatsOwnMixing ||
+		!inImplFunc->supportsMultiStream);
 	
 	/* Normal top-level initialization. */
 	if (!needSoftMixWrapper)
@@ -229,7 +230,8 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	/* Initialize the lower level state. */
 	lower = NULL;
 	if (sjme_error_is(error = sjme_scritchaudio_core_initActual(inPool,
-		&lower, initFrontEnd, inImplFunc, NULL, SJME_JNI_FALSE,
+		&lower, initFrontEnd, inImplFunc,
+		NULL, SJME_JNI_FALSE,
 		bindAudioThread)) ||
 		lower == NULL)
 		goto fail_initLower;
@@ -238,7 +240,8 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	higher = NULL;
 	if (sjme_error_is(error = sjme_scritchaudio_core_initActual(inPool,
 		&higher, initFrontEnd, &sjme_scritchaudio_softmixFunctions,
-		lower, SJME_JNI_TRUE, bindAudioThread)) ||
+		lower, SJME_JNI_TRUE,
+		bindAudioThread)) ||
 		higher == NULL)
 		goto fail_initHigher;
 	

@@ -51,8 +51,7 @@ sjme_errorCode sjme_scritchaudio_winmm_apiInit(
 
 sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream);
 
 sjme_errorCode sjme_scritchaudio_winmm_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,
@@ -71,13 +70,6 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_format inFormat,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels);
-
-void CALLBACK sjme_scritchaudio_winmm_nativeCallback(
-	HWAVEOUT hWaveOut,
-	UINT uMsg,
-	DWORD_PTR dwInstance,
-	DWORD dwParam1,
-	DWORD dwParam2);
 
 /*--------------------------------------------------------------------------*/
 

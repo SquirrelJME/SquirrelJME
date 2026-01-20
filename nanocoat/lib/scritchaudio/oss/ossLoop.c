@@ -17,8 +17,7 @@
 
 sjme_errorCode sjme_attrOptimize sjme_scritchaudio_oss_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream)
 {
 	sjme_errorCode error, renderError;
 	int fd, trigger;
@@ -26,14 +25,10 @@ sjme_errorCode sjme_attrOptimize sjme_scritchaudio_oss_loopIterate(
 	sjme_jint bufSize, i, n;
 	sjme_scritchaudio_source source;
 	sjme_list(sjme_scritchaudio_source)* sources;
+	sjme_scritchaudio_renderInfo* renderInfo;
 	
-	if (inState == NULL)
+	if (inState == NULL || inStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Recover stream. */
-	inStream = (inStream != NULL ? inStream : inState->stream);
-	if (inStream == NULL)
-		return SJME_ERROR_AUDIO_DESTROYED;
 
 	/* Recover the file descriptor. */
 	fd = inStream->data.fd;
@@ -56,11 +51,9 @@ sjme_errorCode sjme_attrOptimize sjme_scritchaudio_oss_loopIterate(
 	/* None found? */
 	if (source == NULL)
 		return SJME_ERROR_AUDIO_AWAITING;
-	
-	/* Calculate the render info. */
-	if (sjme_error_is(error = inState->intern->calcRenderInfo(
-		inState, inStream, source, renderInfo)))
-		return sjme_error_default(error);
+
+	/* Recover the render info. */
+	renderInfo = &inStream->data.renderInfo;
 	
 	/* Allocate sample buffer */
 	bufSize = renderInfo->bufSize;

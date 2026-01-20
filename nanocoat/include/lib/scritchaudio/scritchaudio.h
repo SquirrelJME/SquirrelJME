@@ -352,32 +352,20 @@ typedef sjme_errorCode (*sjme_scritchaudio_fallbackNextFunc)(
 	sjme_attrInOutNotNull sjme_scritchaudio_format* adjustFormat,
 	sjme_attrInOutNotNull sjme_scritchaudio_rate* adjustRate,
 	sjme_attrInOutNotNull sjme_scritchaudio_channels* adjustChannels);
-	
+
 /**
- * Loop iteration for audio processing, if there is no background thread
- * for audio-processing.
+ * Loop iteration for audio processing.
  *
- * @param inState The ScritchAudio state.
- * @return Any resultant error, if any.
- * @since 2025/05/15
- */
-typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
-	sjme_attrInNotNull sjme_scritchaudio inState);
-	
-/**
- * Loop iteration for audio processing, if there is no background thread
- * for audio-processing.
+ * This may be called from a background through or a the current thread.
  *
  * @param inState The ScritchAudio state.
  * @param inStream The stream to render in.
- * @param renderInfo The information needed for rendering.
  * @return Any resultant error, if any.
  * @since 2025/05/28
  */
-typedef sjme_errorCode (*sjme_scritchaudio_loopIterateRenderFunc)(
+typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNullable sjme_scritchaudio_stream inStream,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
+	sjme_attrInNullable sjme_scritchaudio_stream inStream);
 
 /**
  * Called when there are no peers.
@@ -578,6 +566,9 @@ typedef struct sjme_scritchaudio_implFunctions
 
 	/** Supports every format and can handle its own mixing. */
 	sjme_jboolean allFormatsOwnMixing;
+
+	/** Supports more than one stream opened at once. */
+	sjme_jboolean supportsMultiStream;
 	
 	/** Api initialization. */
 	sjme_scritchaudio_apiInitFunc apiInit;
@@ -586,7 +577,7 @@ typedef struct sjme_scritchaudio_implFunctions
 	sjme_scritchaudio_disconnectFunc disconnect;
 	
 	/** Iterates the audio loop. */
-	sjme_scritchaudio_loopIterateRenderFunc loopIterate;
+	sjme_scritchaudio_loopIterateFunc loopIterate;
 	
 	/** Queries the MIDI ports and synths available. */
 	sjme_scritchaudio_queryMidiPortsFunc queryMidiPorts;
@@ -614,8 +605,8 @@ typedef struct sjme_scritchaudio_internFunctions
 	/** Determines the next fallback. */
 	sjme_scritchaudio_fallbackNextFunc fallbackNext;
 	
-	/** Iterates the audio loop. */
-	sjme_scritchaudio_loopIterateRenderFunc loopIterate;
+	/** Iterates the audio loop, while locked. */
+	sjme_scritchaudio_loopIterateFunc loopIterateLocked;
 	
 	/** Connect two peers. */
 	sjme_scritchaudio_peerConnectFunc peerConnect;
@@ -841,6 +832,9 @@ struct sjme_scritchaudio_streamBase
 
 		/** The current event counter. */
 		sjme_atomic(sjme_jint) eventCounter;
+
+		/** The stream rendering information. */
+		sjme_scritchaudio_renderInfo renderInfo;
 	} data;
 };
 

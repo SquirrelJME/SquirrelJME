@@ -19,6 +19,7 @@ const sjme_scritchaudio_implFunctions sjme_scritchaudio_softmixFunctions =
 {
 	sjme_sm(.driverName, "softmix"),
 	sjme_sm(.allFormatsOwnMixing, SJME_JNI_TRUE),
+	sjme_sm(.supportsMultiStream, SJME_JNI_TRUE),
 	sjme_sm(.apiInit, sjme_scritchaudio_softmix_apiInit),
 	sjme_sm(.disconnect, NULL),
 	sjme_sm(.loopIterate, NULL),

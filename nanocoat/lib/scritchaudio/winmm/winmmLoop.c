@@ -12,8 +12,7 @@
 
 sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream)
 {
 	sjme_errorCode error;
 	WAVEHDR* header;
@@ -23,8 +22,9 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	sjme_jint bufSize, i, n;
 	sjme_scritchaudio_source source;
 	sjme_list(sjme_scritchaudio_source)* sources;
+	sjme_scritchaudio_renderInfo* renderInfo;
 
-	if (inState == NULL)
+	if (inState == NULL || inStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Recover stream. */
@@ -53,15 +53,13 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	if (source == NULL)
 		return SJME_ERROR_AUDIO_AWAITING;
 
+	/* Recover the render info. */
+	renderInfo = &inStream->data.renderInfo;
+
 	/* Obtain sample buffer */
 	buf = inStream->data.buffer;
 	if (buf == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-
-	/* Calculate the render info. */
-	if (sjme_error_is(error = inState->intern->calcRenderInfo(
-		inState, inStream, source, renderInfo)))
-		return sjme_error_default(error);
 
 	/* If the source format is unsigned, we need to actually set the proper */
 	/* zero level, otherwise there will be clicks/pops. */
@@ -98,7 +96,6 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 
 	/* Write to the audio device. */
 	mmResult = waveOutWrite(hWaveOut, header, sizeof(WAVEHDR));
-	sjme_message("Write audio... %d", mmResult);
 	if (mmResult != MMSYSERR_NOERROR)
 		return SJME_ERROR_AUDIO_WRITE_FAILED;
 
@@ -107,7 +104,7 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	if (mmResult != WAVERR_STILLPLAYING && mmResult != MMSYSERR_NOERROR)
 		return SJME_ERROR_AUDIO_PREPARE_FAILED;
 
-	/* Nothing. */
+	/* Success! */
 	return SJME_ERROR_NONE;
 
 #if 0
@@ -181,12 +178,6 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 		error = SJME_ERROR_ILLEGAL_STATE;
 		goto fail_any;
 	}
-
-	/* Calculate the render info. */
-	memset(&renderInfo, 0, sizeof(renderInfo));
-	if (sjme_error_is(error = inState->intern->calcRenderInfo(
-		inState, inStream, NULL, &renderInfo)))
-		goto fail_any;
 
 	/* What is the buffer size? */
 	bufSize = renderInfo.bufSize;
@@ -317,28 +308,4 @@ fail_any:
 	/* Close self to stop this thread. */
 	waveOutClose(hWaveOut);
 #endif
-}
-
-void CALLBACK sjme_scritchaudio_winmm_nativeCallback(
-	HWAVEOUT hWaveOut,
-	UINT uMsg,
-	DWORD_PTR dwInstance,
-	DWORD dwParam1,
-	DWORD dwParam2)
-{
-	sjme_scritchaudio_stream inStream;
-	sjme_jint next;
-
-	/* Recover stream. */
-	inStream = (sjme_scritchaudio_stream)dwInstance;
-	if (inStream == NULL)
-		return;
-
-	/* Trigger the event and try to wake the audio thread. */
-	next = sjme_atomic_ga(sjme_jint, &inStream->data.eventCounter, 1);
-	sjme_atomic_barrier();
-	sjme_thread_wake(inStream->loopThread);
-
-	/* Debug. */
-	sjme_message("Next event: %d", next);
 }
