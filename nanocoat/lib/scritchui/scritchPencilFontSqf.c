@@ -96,6 +96,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricCharValid(
 
 static sjme_errorCode sjme_scritchui_sqfMetricPixelAscent(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outAscent)
 {
@@ -116,6 +117,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelAscent(
 
 static sjme_errorCode sjme_scritchui_sqfMetricPixelBaseline(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_jint* outBaseline)
 {
 	const sjme_scritchui_sqfCodepage* sqf;
@@ -137,6 +139,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelBaseline(
 
 static sjme_errorCode sjme_scritchui_sqfMetricPixelDescent(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outDescent)
 {
@@ -157,6 +160,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelDescent(
 
 static sjme_errorCode sjme_scritchui_sqfMetricPixelLeading(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading)
 {
 	const sjme_scritchui_sqfCodepage* sqf;
@@ -176,6 +180,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelLeading(
 
 static sjme_errorCode sjme_scritchui_sqfMetricPixelSize(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInNegativeOnePositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
 {
@@ -199,6 +204,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelSize(
 
 static sjme_errorCode sjme_scritchui_sqfMetricPixelCharWidth(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth)
 {
@@ -230,6 +236,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelCharWidth(
 
 static sjme_errorCode sjme_scritchui_sqfRenderBitmap(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,

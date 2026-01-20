@@ -508,6 +508,7 @@ SDU_STRUCT_DEF(fontDerive,
 	SDX_VAR(sjme_scritchui_pencilFontStyle, inStyle);
 	SDX_VAR(sjme_jint, inPixelSize);
 	SDX_VARP(sjme_scritchui_pencilFont, outDerived);
+	SDX_VARP(sjme_scritchui_pencilFontParam, outParams);
 	SDX_VAR(sjme_jint, limitDepth););
 
 SDU_STRUCT_DEF(fontList,
@@ -1232,6 +1233,7 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
 	sjme_attrInPositive sjme_jint limitDepth);
 	
 sjme_errorCode sjme_scritchui_coreSerial_fontList(

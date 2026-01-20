@@ -97,7 +97,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontNameFunc)(
 	sjme_attrOutNotNull sjme_lpcstr* outName);
 
 /**
- * Returns the style of the font.
+ * Returns the base style of the font.
  *
  * @param inFont The style of the font to request.
  * @param outStyle The font style, will be flags
@@ -113,6 +113,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontStyleFunc)(
  * Returns the ascent of the font.
  *
  * @param inFont The font to check.
+ * @param inParams The font parameters for property adjustment.
  * @param isMax Should the max be obtained.
  * @param outAscent The ascent of the font in pixels.
  * @return Any resultant error, if any.
@@ -120,6 +121,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontStyleFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelAscentFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outAscent);
 
@@ -127,30 +129,35 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelAscentFunc)(
  * Returns the baseline of the font.
  *
  * @param inFont The font to check.
+ * @param inParams The font parameters for property adjustment.
  * @param outBaseline The baseline of the font in pixels.
  * @return Any resultant error, if any.
  * @since 2024/05/14
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelBaselineFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_jint* outBaseline);
 
 /**
  * Returns the height of the font.
  *
  * @param inFont The font to check.
+ * @param inParams The font parameters for property adjustment.
  * @param outHeight The height of the font in pixels.
  * @return Any resultant error, if any.
  * @since 2024/06/27
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelHeightFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_jint* outHeight);
 
 /**
  * Returns the descent of the font.
  *
  * @param inFont The font to check.
+ * @param inParams The font parameters for property adjustment.
  * @param isMax Should the max be obtained.
  * @param outDescent The descent of the font in pixels.
  * @return Any resultant error, if any.
@@ -158,6 +165,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelHeightFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelDescentFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outDescent);
 	
@@ -165,18 +173,21 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelDescentFunc)(
  * Returns the leading of the font.
  *
  * @param inFont The font to obtain from.
+ * @param inParams The font parameters for property adjustment.
  * @param outLeading The leading amount in pixels.
  * @return Any resultant error, if any.
  * @since 2024/05/14
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelLeadingFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading);
 	
 /**
  * Returns the pixel size of the font.
  *
  * @param inFont The font to get the size of.
+ * @param inParams The font parameters for property adjustment.
  * @param inCodepoint The code point to get the height of, this will
  * be @code -1 @endcode if this is a general request for the font.
  * @param outSize The pixel size of the font.
@@ -185,6 +196,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelLeadingFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelSizeFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInNegativeOnePositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize);
 
@@ -192,6 +204,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelSizeFunc)(
  * Returns the width of the given character.
  *
  * @param inFont The font to obtain from.
+ * @param inParams The font parameters for property adjustment.
  * @param inCodepoint The character.
  * @param outWidth The width of the font in pixels.
  * @return Any resultant error, if any.
@@ -199,6 +212,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelSizeFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontPixelCharWidthFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth);
 
@@ -207,6 +221,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontPixelCharWidthFunc)(
  * byte within the array represents 8 pixels.
  *
  * @param inFont The font to render to the bitmap.
+ * @param inParams The font parameters for property adjustment.
  * @param inCodepoint The character to render.
  * @param buf The resultant buffer.
  * @param bufOff The offset into the buffer.
@@ -219,6 +234,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontPixelCharWidthFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderBitmapFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,
@@ -231,6 +247,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderBitmapFunc)(
  * Renders the given character to the resultant pencil.
  *
  * @param inFont The font to render from.
+ * @param inParams The font parameters for property adjustment.
  * @param inCodepoint The character to render.
  * @param inPencil The pencil to draw into.
  * @param xPos The target X position.
@@ -244,6 +261,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderBitmapFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderCharFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrInNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInValue sjme_jint xPos,
@@ -255,6 +273,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderCharFunc)(
  * Calculates the width of the given string.
  * 
  * @param inFont The font to calculate for.
+ * @param inParams The font parameters for property adjustment.
  * @param s The input character sequence.
  * @param o The offset into the sequence.
  * @param l The length of the sequence.
@@ -264,6 +283,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderCharFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontStringWidthFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInNotNull const sjme_charSeq s,
 	sjme_attrInPositive sjme_jint o,
 	sjme_attrInPositive sjme_jint l,

@@ -19,7 +19,6 @@
 
 #include "sjme/atomic.h"
 #include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiImpl.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiText.h"
@@ -523,9 +522,6 @@ struct sjme_scritchui_pencilFontBase
 	/** Font cache details. */
 	struct
 	{
-		/** The height of the font. */
-		sjme_jint height;
-		
 		/** The baseline of the font. */
 		sjme_jint baseline;
 		
@@ -537,12 +533,6 @@ struct sjme_scritchui_pencilFontBase
 		
 		/** The descent of the font. */
 		sjme_jint descent[2];
-		
-		/** Font fraction, for pseudo fonts. */
-		sjme_fixed fraction;
-		
-		/** Inverted font fraction, for pseudo fonts. */
-		sjme_fixed ifraction;
 	} cache;
 };
 
@@ -550,6 +540,24 @@ struct sjme_scritchui_textBase
 {
 	/** Common data. */
 	sjme_scritchui_uiCommonBase common;
+};
+	
+struct sjme_scritchui_pencilFontParam
+{
+	/** The style of font to render. */
+	sjme_scritchui_pencilFontStyle style;
+	
+	/** The pixel size to render at. */
+	sjme_jint pixelSize;
+};
+	
+struct sjme_scritchui_pencilFontWithParam
+{
+	/** The pencil font. */
+	sjme_scritchui_pencilFont font;
+	
+	/** The font parameters. */
+	sjme_scritchui_pencilFontParam params;
 };
 
 /*--------------------------------------------------------------------------*/

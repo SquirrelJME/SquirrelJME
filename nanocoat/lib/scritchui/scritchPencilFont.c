@@ -8,14 +8,31 @@
 // -------------------------------------------------------------------------*/
 
 #include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/scritchuiImpl.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiPencilFontPseudo.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
+#include "sjme/fixed.h"
 #include "sjme/util.h"
+
+/** Use a better barcode-like scaling algorithm I thought of. */
+#define SJME_CONFIG_SCRITCHUI_FONT_BARCODE
 
 /** The size to grow the font list by. */
 #define SJME_FONT_LIST_GROW 16
+
+/** Horizontal scaler for font values. */
+#define sjme_scritchui_fontScaleH(inFont, inParams, value) \
+	(value)
+
+/** Vertical scaler for font values. */
+#define sjme_scritchui_fontScaleV(inFont, inParams, value) \
+	(inParams == NULL ? (value) : \
+	sjme_fixed_intClip(1, \
+		sjme_fixed_mul(sjme_fixed_hi((value)), \
+		sjme_fixed_fraction((inParams)->pixelSize, (inFont)->id.pixelSize)), \
+	INT32_MAX))
 
 static sjme_errorCode sjme_scritchui_fromCache(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -226,6 +243,7 @@ static sjme_errorCode sjme_scritchui_fontMetricFontStyle(
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelAscent(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outAscent)
 {
@@ -237,29 +255,33 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelAscent(
 	
 	/* Cached? */
 	if (inFont->cache.ascent[!!isMax] != 0)
+		result = inFont->cache.ascent[!!isMax];
+	
+	/* Load from the cache? */
+	else
 	{
-		*outAscent = inFont->cache.ascent[!!isMax];
-		return SJME_ERROR_NONE;
+		/* Not implemented? */
+		if (inFont->impl->metricPixelAscent == NULL)
+			return sjme_error_notImplemented(0);
+		
+		/* Load into cache. */
+		result = 0;
+		if (sjme_error_is(error = inFont->impl->metricPixelAscent(inFont,
+			NULL, isMax, &result)))
+			return sjme_error_default(error);
+		
+		/* Cache and use it. */
+		inFont->cache.ascent[!!isMax] = result;
 	}
 	
-	/* Not implemented? */
-	if (inFont->impl->metricPixelAscent == NULL)
-		return sjme_error_notImplemented(0);
-	
-	/* Load into cache. */
-	result = 0;
-	if (sjme_error_is(error = inFont->impl->metricPixelAscent(inFont,
-		isMax, &result)))
-		return sjme_error_default(error);
-	
-	/* Cache and use it. */
-	inFont->cache.ascent[!!isMax] = result;
-	*outAscent = result;
+	/* Perform scaling, if required. */
+	*outAscent = sjme_scritchui_fontScaleV(inFont, inParams, result);
 	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelBaseline(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_jint* outBaseline)
 {
 	sjme_errorCode error;
@@ -270,29 +292,31 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelBaseline(
 	
 	/* Cached? */
 	if (inFont->cache.baseline != 0)
+		result = inFont->cache.baseline;
+	else
 	{
-		*outBaseline = inFont->cache.baseline;
-		return SJME_ERROR_NONE;
+		/* Not implemented? */
+		if (inFont->impl->metricPixelBaseline == NULL)
+			return sjme_error_notImplemented(0);
+	
+		/* Load into cache. */
+		result = 0;
+		if (sjme_error_is(error = inFont->impl->metricPixelBaseline(inFont,
+			NULL, &result)))
+			return sjme_error_default(error);
+		
+		/* Cache and use it. */
+		inFont->cache.baseline = result;
 	}
 	
-	/* Not implemented? */
-	if (inFont->impl->metricPixelBaseline == NULL)
-		return sjme_error_notImplemented(0);
-	
-	/* Load into cache. */
-	result = 0;
-	if (sjme_error_is(error = inFont->impl->metricPixelBaseline(inFont,
-		&result)))
-		return sjme_error_default(error);
-	
 	/* Cache and use it. */
-	inFont->cache.baseline = result;
-	*outBaseline = result;
+	*outBaseline = sjme_scritchui_fontScaleV(inFont, inParams, result);
 	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelDescent(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outDescent)
 {
@@ -304,29 +328,30 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelDescent(
 	
 	/* Cached? */
 	if (inFont->cache.descent[!!isMax] != 0)
+		result = inFont->cache.descent[!!isMax];
+	else
 	{
-		*outDescent = inFont->cache.descent[!!isMax];
-		return SJME_ERROR_NONE;
+		/* Not implemented? */
+		if (inFont->impl->metricPixelDescent == NULL)
+			return sjme_error_notImplemented(0);
+	
+		/* Load into cache. */
+		result = 0;
+		if (sjme_error_is(error = inFont->impl->metricPixelDescent(inFont,
+			NULL, isMax, &result)))
+			return sjme_error_default(error);
+	
+		/* Cache and use it. */
+		inFont->cache.descent[!!isMax] = result;
 	}
 	
-	/* Not implemented? */
-	if (inFont->impl->metricPixelDescent == NULL)
-		return sjme_error_notImplemented(0);
-	
-	/* Load into cache. */
-	result = 0;
-	if (sjme_error_is(error = inFont->impl->metricPixelDescent(inFont,
-		isMax, &result)))
-		return sjme_error_default(error);
-	
-	/* Cache and use it. */
-	inFont->cache.descent[!!isMax] = result;
-	*outDescent = result;
+	*outDescent = sjme_scritchui_fontScaleV(inFont, inParams, result);
 	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelHeight(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_jint* outHeight)
 {
 	sjme_errorCode error;
@@ -335,39 +360,32 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelHeight(
 	if (inFont == NULL || outHeight == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Cached? */
-	if (inFont->cache.height != 0)
-	{
-		*outHeight = inFont->cache.height;
-		return SJME_ERROR_NONE;
-	}
-	
-	/* Get all of these parameters. */
+	/* Get all of these parameters, as caching individual heights can lead */
+	/* to multiplicative errors. */
 	leading = 0;
 	if (sjme_error_is(error = inFont->api->metricPixelLeading(inFont,
-		&leading)))
+		NULL, &leading)))
 		return sjme_error_default(error);
 		
 	ascent = 0;
 	if (sjme_error_is(error = inFont->api->metricPixelAscent(inFont,
-		SJME_JNI_FALSE, &ascent)))
+		NULL, SJME_JNI_FALSE, &ascent)))
 		return sjme_error_default(error);
 		
 	descent = 0;
 	if (sjme_error_is(error = inFont->api->metricPixelDescent(inFont,
-		SJME_JNI_FALSE, &descent)))
+		NULL, SJME_JNI_FALSE, &descent)))
 		return sjme_error_default(error);
 	
-	/* Calculate. */
-	inFont->cache.height = leading + ascent + descent; 
-	
-	/* Success! */
-	*outHeight = inFont->cache.height;
+	/* Scale each value in total */
+	*outHeight = sjme_scritchui_fontScaleV(inFont, inParams,
+		leading + ascent + descent);
 	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading)
 {
 	sjme_errorCode error;
@@ -378,29 +396,30 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
 	
 	/* Cached? */
 	if (inFont->cache.leading != 0)
+		result = inFont->cache.leading;
+	else
 	{
-		*outLeading = inFont->cache.leading;
-		return SJME_ERROR_NONE;
+		/* Not implemented? */
+		if (inFont->impl->metricPixelLeading == NULL)
+			return sjme_error_notImplemented(0);
+	
+		/* Load into cache. */
+		result = 0;
+		if (sjme_error_is(error = inFont->impl->metricPixelLeading(inFont,
+			NULL, &result)))
+			return sjme_error_default(error);
+	
+		/* Cache and use it. */
+		inFont->cache.leading = result;
 	}
 	
-	/* Not implemented? */
-	if (inFont->impl->metricPixelLeading == NULL)
-		return sjme_error_notImplemented(0);
-	
-	/* Load into cache. */
-	result = 0;
-	if (sjme_error_is(error = inFont->impl->metricPixelLeading(inFont,
-		&result)))
-		return sjme_error_default(error);
-	
-	/* Cache and use it. */
-	inFont->cache.leading = result;
-	*outLeading = result;
+	*outLeading = sjme_scritchui_fontScaleV(inFont, inParams, result);
 	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInNegativeOnePositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
 {
@@ -413,20 +432,21 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 	if (inCodepoint < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	/* Codepoint specified and the implementation has pixel size */
-	/* implementation? */
-	if (inCodepoint >= 0 && inFont->impl->metricPixelSize != NULL)
-		if (sjme_error_is(error = inFont->impl->metricPixelSize(inFont,
-			inCodepoint, &result)) || result <= 0)
-			return sjme_error_default(error);
+	/* If input parameters are passed, this is the size specified there. */
+	if (inParams != NULL)
+		*outSize = inParams->pixelSize;
 	
-	/* Otherwise, use the pixel size from the ID. */
-	*outSize = inFont->id.pixelSize;
+	/* Otherwise the size is derived from the ID. */
+	else
+		*outSize = inFont->id.pixelSize;
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_scritchui_fontPixelCharWidth(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth)
 {
@@ -462,16 +482,17 @@ static sjme_errorCode sjme_scritchui_fontPixelCharWidth(
 	/* Forward. */
 	result = -1;
 	if (sjme_error_is(error = inFont->impl->pixelCharWidth(inFont,
-		inCodepoint, &result)) || result < 0)
+		NULL, inCodepoint, &result)) || result < 0)
 		return sjme_error_default(error);
 	
 	/* Success! */
-	*outWidth = result;
+	*outWidth = sjme_scritchui_fontScaleH(inFont, inParams, result);
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_fontRenderBitmap(
+static sjme_errorCode sjme_scritchui_renderBitmapScaled(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNotNull sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,
@@ -481,6 +502,197 @@ static sjme_errorCode sjme_scritchui_fontRenderBitmap(
 	sjme_attrOutNullable sjme_jint* outOffY)
 {
 	sjme_errorCode error;
+	sjme_jint origOffX, origOffY, scanLen, area, cw, ch;
+	sjme_jubyte* src;
+	sjme_jubyte* sp;
+	sjme_jubyte* dp;
+	sjme_jint dy, th, minScanLen, syInt;
+	sjme_fixed sy, fraction, ifraction;
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+	sjme_jint dx, syIntLast;
+	sjme_jubyte* bar;
+	sjme_jubyte* sup;
+	sjme_jubyte orig, diff, cmp, lim;
+#endif
+	
+	if (inFont == NULL || inParams == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inCodepoint < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Recover wrapper. */
+	inFont = inFont->handle;
+	if (inFont == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Need character width. */
+	cw = 0;
+	if (sjme_error_is(error = inFont->api->pixelCharWidth(
+		inFont, NULL, inCodepoint, &cw)))
+		return sjme_error_default(error);
+		
+	/* And the pixel height, since this is a bitmap font. */
+	ch = 0;
+	if (sjme_error_is(error = inFont->api->metricPixelSize(
+		inFont, NULL, inCodepoint, &ch)))
+		return sjme_error_default(error);
+	
+	/* Determine scanline length for each bitmap row. */
+	scanLen = sjme_scritchui_pencilFontScanLen(cw);
+	
+	/* We do not want to write over other rows. */
+	if (bufScanLen < scanLen)
+		minScanLen = bufScanLen;
+	else
+		minScanLen = scanLen;
+	
+	/* Allocate source bitmap. */
+	area = sizeof(*src) * (scanLen * ch);
+	src = sjme_alloca(area);
+	
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+	/* Current barcode bits and suppressor. */
+	bar = sjme_alloca(minScanLen);
+	sup = sjme_alloca(minScanLen);
+#endif
+	
+	/* Did any allocations fail? */
+	if (
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+		bar == NULL || sup == NULL ||
+#endif
+		src == NULL)
+		return sjme_error_outOfMemory(NULL, area);
+	
+	/* Initialize. */
+	memset(src, 0, area);
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+	memset(bar, 0, minScanLen);
+	memset(sup, 0, minScanLen);
+	syIntLast = -1;
+#endif
+	
+	/* Get original glyph bitmap. */
+	origOffX = 0;
+	origOffY = 0;
+	if (sjme_error_is(error = inFont->impl->renderBitmap(inFont, NULL,
+		inCodepoint, src, 0, scanLen,
+		ch, &origOffX, &origOffY)))
+		goto fail_renderBitmap;
+	
+	/* Target desired pixel size. */
+	th = inParams->pixelSize;
+	
+	/* Calculate the font fraction. */
+	fraction = sjme_fixed_fraction(th, ch);
+	ifraction = sjme_fixed_fraction(ch, th);
+	
+	/* Copy rows, for every change in dy we grab from the source. */
+	for (dy = 0, sy = 0; dy < th && dy < bufHeight; dy++, sy += ifraction)
+	{
+		/* Normalize sy. */
+		syInt = sjme_fixed_int(sjme_fixed_floor(sy));
+		
+		/* Determine where to move and copy from. */
+		dp = &buf[bufOff + (dy * bufScanLen)];
+		sp = &src[syInt * scanLen];
+		
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+		/* Use a new set of suppressor bits? */
+		/* The suppressor bits are used so that only when the barcode bits */
+		/* change, they are actually drawn. Suppressed bits get drawn in */
+		/* at a later step. */
+		if (syIntLast != syInt)
+		{
+			memmove(sup, bar, minScanLen);
+			syIntLast = syInt;
+		}
+		
+		/* Run through each bit and draw the last barcode state. */
+		for (dx = 0; dx < minScanLen; dx++)
+		{
+			/* Determine the new bit state, with any bits will change. */
+			orig = bar[dx];
+			diff = (orig ^ sp[dx]);
+			bar[dx] ^= diff;
+			
+			/* Directly copy over, with suppressors in place. The */
+			/* suppressors really only have an effect at very high scales */
+			/* changes as they reduce some edge distortion. */
+			/* There are very ugly looking thick horizontal bars due, these */
+			/* can be removed with suppression however they end up leaving */
+			/* gaps. Thus, compact the bits so they just become lines. */
+			cmp = (sjme_util_intCompactRight(sup[dx], UINT32_MAX) |
+				sjme_util_intCompactLeft(sup[dx], UINT32_MAX));
+			
+			/* Compacting from both sides leaves nubs on the ends of glyphs */
+			/* however, which looks bad, however the nubs are always within */
+			/* a single bit from the current row. So create a wiggle of the */
+			/* current row to use as the mask. */
+			lim = sp[dx];
+			lim |= (lim << 1) | (lim >> 1);
+			
+			/* Apply the wiggle mask. */
+			cmp &= lim;
+			
+			/* The inner lines are normally missing for this, but this */
+			/* produces a very clean thin line set otherwise. To get the */
+			/* inner lines, the compacted value is used. */
+			dp[dx] = (orig & sup[dx]) | cmp;
+		}
+#else
+		/* Copy entire scanline over (nearest scaling). */
+		memmove(dp, sp, minScanLen);
+#endif
+	}
+	
+	/* X-axis is unchanged. */
+	if (outOffX)
+		*outOffX = origOffX;
+	
+	/* Translate height, so it actually offsets correctly! */
+	if (outOffY)
+		*outOffY = sjme_fixed_int(sjme_fixed_mul(
+			sjme_fixed_hi(origOffY), fraction));
+	
+	/* Cleanup. */
+	sjme_alloca_free(src);
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+	sjme_alloca_free(bar);
+	sjme_alloca_free(sup);
+#endif
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_renderBitmap:
+	if (src != NULL)
+		sjme_alloca_free(src);
+	
+#if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+	if (bar != NULL)
+		sjme_alloca_free(bar);
+	if (sup != NULL)
+		sjme_alloca_free(sup);
+#endif
+
+	return sjme_error_default(error);
+}
+
+static sjme_errorCode sjme_scritchui_fontRenderBitmap(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrInNotNull sjme_jubyte* buf,
+	sjme_attrInPositive sjme_jint bufOff,
+	sjme_attrInPositive sjme_jint bufScanLen,
+	sjme_attrInPositive sjme_jint bufHeight,
+	sjme_attrOutNullable sjme_jint* outOffX,
+	sjme_attrOutNullable sjme_jint* outOffY)
+{
+	sjme_errorCode error;
+	sjme_jint ch;
 	
 	if (inFont == NULL || buf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -502,17 +714,26 @@ static sjme_errorCode sjme_scritchui_fontRenderBitmap(
 		&inCodepoint)))
 		return sjme_error_default(error);
 	
-	/* Render resultant bitmap. */
-	if (sjme_error_is(error = inFont->impl->renderBitmap(inFont,
-		inCodepoint, buf, bufOff, bufScanLen, bufHeight, outOffX, outOffY)))
+	/* Get the height of this specific codepoint. */
+	ch = 0;
+	if (sjme_error_is(error = inFont->api->metricPixelSize(
+		inFont, inParams, inCodepoint, &ch)))
 		return sjme_error_default(error);
 	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	/* If scaling is needed, use the barcode font scaling algorithm I wrote. */
+	if (ch != inFont->id.pixelSize)
+		return sjme_scritchui_renderBitmapScaled(inFont, inParams,
+			inCodepoint, buf, bufOff, bufScanLen, bufHeight, outOffX, outOffY);
+	
+	/* Otherwise just use the underlying font rendering system, which may */
+	/* apply its own scaling or not. */
+	return inFont->impl->renderBitmap(inFont, inParams,
+		inCodepoint, buf, bufOff, bufScanLen, bufHeight, outOffX, outOffY);
 }
 
 static sjme_errorCode sjme_scritchui_fontRenderChar(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrInNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInValue sjme_jint xPos,
@@ -529,6 +750,7 @@ static sjme_errorCode sjme_scritchui_fontRenderChar(
 
 static sjme_errorCode sjme_scritchui_fontStringWidth(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInNotNull const sjme_charSeq s,
 	sjme_attrInPositive sjme_jint o,
 	sjme_attrInPositive sjme_jint l,
@@ -577,7 +799,7 @@ static sjme_errorCode sjme_scritchui_fontStringWidth(
 		/* Determine character width. */
 		cw = 0;
 		if (sjme_error_is(error = inFont->api->pixelCharWidth(inFont,
-			c, &cw)))
+			inParams, c, &cw)))
 			return sjme_error_default(error);
 		
 		/* Add onto. */
@@ -800,6 +1022,7 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
 	sjme_attrInPositive sjme_jint limitDepth)
 {
 	sjme_errorCode error;
@@ -824,7 +1047,7 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	if (wrappedState != NULL)
 		return wrappedState->apiInThread->fontDerive(wrappedState,
 			inFont, inName, inFace, inStyle, inPixelSize, outDerived,
-			limitDepth);
+			outParams, limitDepth);
 	
 	/* If no fonts have been scanned, scan every one. */
 	ignored = 0;
@@ -932,7 +1155,7 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 		
 		/* Run this again, with the fallback font specified. */
 		return sjme_scritchui_core_fontDerive(inState, NULL, "fallback",
-			inFace, inStyle, inPixelSize, outDerived, limitDepth);
+			inFace, inStyle, inPixelSize, outDerived, outParams, limitDepth);
 	}
 	
 	/* If this is a size and style match, use this font. */
