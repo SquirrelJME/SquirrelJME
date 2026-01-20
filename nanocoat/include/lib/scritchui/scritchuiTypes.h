@@ -508,6 +508,9 @@ struct sjme_scritchui_pencilFontBase
 	/** The ID of the font. */
 	sjme_scritchui_pencilFontId id;
 	
+	/** The depth of this font, that is the number of fonts this wraps. */
+	sjme_jint depth;
+	
 	/** Internal handle pointer for implementation needs. */
 	sjme_pointer handle;
 	

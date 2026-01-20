@@ -506,7 +506,12 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	result->cache.fraction = fraction;
 	result->cache.ifraction = ifraction;
 	
+	/* Font depth is one deeper. */
+	result->depth = inFont->depth + 1;
+	
 	/* Fill in font ID. */
+	strncpy(result->id.name, inFont->id.name, SJME_MAX_FONT_NAME);
+	result->id.face = inFont->id.face;
 	result->id.style = inStyle;
 	result->id.pixelSize = inPixelSize;
 	

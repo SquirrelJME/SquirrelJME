@@ -1717,7 +1717,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	derived = NULL;
 	if (sjme_error_is(error = state->api->fontDerive(state,
 		font, nameChars, face, style, pixelSize,
-		&derived)) || derived == NULL)
+		&derived, INT32_MAX)) || derived == NULL)
 	{
 		/* Cleanup. */
 		(*env)->ReleaseStringUTFChars(env, name, nameChars);

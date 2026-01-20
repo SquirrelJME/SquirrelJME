@@ -398,7 +398,8 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->fontDerive.inFace,
 		as->fontDerive.inStyle,
 		as->fontDerive.inPixelSize,
-		as->fontDerive.outDerived));
+		as->fontDerive.outDerived,
+		as->fontDerive.limitDepth));
 	
 	SJME_SDU_CASE(fontList,
 		SJME_SCRITCHUI_SERIAL_UI_FONT_LIST,
@@ -1378,11 +1379,13 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
-	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived)
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived,
+	sjme_attrInPositive sjme_jint limitDepth)
 {
 	SJME_SDU_CHUNK(fontDerive,
 		SJME_SCRITCHUI_SERIAL_UI_FONT_DERIVE,
-		(inState, inFont, inName, inFace, inStyle, inPixelSize, outDerived));
+		(inState, inFont, inName, inFace, inStyle, inPixelSize, outDerived,
+			limitDepth));
 		
 	SJME_SDX_PASS(inFont);
 	SJME_SDX_PASS(inName);
@@ -1390,6 +1393,7 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	SJME_SDX_PASS(inStyle);
 	SJME_SDX_PASS(inPixelSize);
 	SJME_SDX_PASS(outDerived);
+	SJME_SDX_PASS(limitDepth);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;

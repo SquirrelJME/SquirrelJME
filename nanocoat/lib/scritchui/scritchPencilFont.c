@@ -799,7 +799,8 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
-	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived)
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived,
+	sjme_attrInPositive sjme_jint limitDepth)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFontStyle wasStyle;
@@ -815,14 +816,15 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	if (inState == NULL || outDerived == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (inPixelSize <= 0)
+	if (inPixelSize <= 0 || limitDepth < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* If wrapped, always use the underlying layer fonts. */
 	wrappedState = inState->wrappedState;
 	if (wrappedState != NULL)
 		return wrappedState->apiInThread->fontDerive(wrappedState,
-			inFont, inName, inFace, inStyle, inPixelSize, outDerived);
+			inFont, inName, inFace, inStyle, inPixelSize, outDerived,
+			limitDepth);
 	
 	/* If no fonts have been scanned, scan every one. */
 	ignored = 0;
@@ -832,8 +834,8 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 			return sjme_error_default(error);
 	
 	/* Debug. */
-	sjme_messageB("deriveFont(%p %s %d %d %d)",
-		inFont, inName, inFace, inStyle, inPixelSize);
+	sjme_messageB("deriveFont(%p %s %d %d %d %d)",
+		inFont, inName, inFace, inStyle, inPixelSize, limitDepth);
 	
 	/* There is no best font, yet. */
 	memset(&derive, 0, sizeof(derive));
@@ -885,6 +887,10 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 			if (chosen.font == NULL)
 				continue;
 			
+			/* Font is too deep? */
+			if (chosen.font->depth > limitDepth)
+				continue;
+			
 			/* Normalize chosen's ID, remove automatics. */
 			memmove(&chosen.id, &chosen.font->id, sizeof(chosen.id));
 			if (0 != (chosen.id.style &
@@ -926,7 +932,7 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 		
 		/* Run this again, with the fallback font specified. */
 		return sjme_scritchui_core_fontDerive(inState, NULL, "fallback",
-			inFace, inStyle, inPixelSize, outDerived);
+			inFace, inStyle, inPixelSize, outDerived, limitDepth);
 	}
 	
 	/* If this is a size and style match, use this font. */
@@ -936,6 +942,12 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 		*outDerived = derive.font;
 		return SJME_ERROR_NONE;
 	}
+	
+	/* Otherwise, we need to build a pseudo font, however this will not be */
+	/* built if there is a limit to the font depth since for this we */
+	/* only want primary fonts. */
+	if (limitDepth == 0)
+		return SJME_ERROR_INVALID_FONT;
 	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

@@ -45,7 +45,7 @@ typedef struct sjme_scritchui_resourceFontInfo
 	{ \
 		sjme_sm(.baseDir, \
 			SJME_TOKEN_STRING_PP(inName)"-"SJME_TOKEN_STRING_PP(inSize)), \
-		sjme_sm(.name, SJME_TOKEN_STRING(inName)), \
+		sjme_sm(.name, "sjme-rc-"SJME_TOKEN_STRING(inName)), \
 		sjme_sm(.size, inSize), \
 		sjme_sm(.face, \
 			SJME_TOKEN_PASTE(SJME_SCRITCHUI_PENCIL_FONT_FACE_, inFace)), \

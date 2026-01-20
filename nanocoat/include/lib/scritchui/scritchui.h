@@ -1404,6 +1404,9 @@ typedef sjme_errorCode (*sjme_scritchui_fontCountFunc)(
  * @param inStyle The style to switch to.
  * @param inPixelSize The pixel size to use.
  * @param outDerived The resultant derived font.
+ * @param limitDepth Limit the depth of the derived font, this can be used
+ * to filter out pseudo and wrapper fonts. If this is not desired, then
+ * this should be @code INT32_MAX @endcode.
  * @return Any resultant error, if any.
  * @since 2024/06/14
  */
@@ -1414,7 +1417,8 @@ typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
 	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
-	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived,
+	sjme_attrInPositive sjme_jint limitDepth);
 
 /**
  * Obtains the fonts which are available in the system, if any.

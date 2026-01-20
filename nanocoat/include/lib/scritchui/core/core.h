@@ -210,7 +210,8 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
 	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
-	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived,
+	sjme_attrInPositive sjme_jint limitDepth);
 	
 sjme_errorCode sjme_scritchui_core_fontList(
 	sjme_attrInNotNull sjme_scritchui inState,

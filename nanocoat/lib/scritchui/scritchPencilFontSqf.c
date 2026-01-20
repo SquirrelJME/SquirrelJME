@@ -376,6 +376,9 @@ sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
 	init.impl = &sjme_scritchui_sqfFunctions;
 	init.handle = (sjme_pointer)inSqfCodepage;
 	
+	/* SQFs are always lowest level fonts with regards to depth. */
+	init.depth = 0;
+	
 	/* Fill in ID details. */
 	strncpy(init.id.name, firstPage->name, SJME_MAX_FONT_NAME - 1);
 	if (firstPage->family == SJME_SCRITCHUI_SQF_FAMILY_MONOSPACE)
