@@ -135,16 +135,29 @@ static sjme_attrOptimize sjme_errorCode sjme_scritchaudio_softmix_render(
 		}
 
 		/* Calculate the rate scale. */
-		if (sourceInfo.rate != destInfo->rate)
-			sourceInfo.fromIncr = sjme_fixed_div(
+		/* Note if dest = 2 and src = 1, if dest / src = 2 then only one */
+		/* channel will be mixed, if src / dest = 0.5 then both channels */
+		/* will be mixed. */
+		if (sourceInfo.rate != destInfo->rate ||
+			sourceInfo.channels != destInfo->channels)
+			sourceInfo.fromIncr = sjme_fixed_mul(sjme_fixed_div(
 				sjme_fixed_hi(sourceInfo.rate / 100),
-				sjme_fixed_hi(destInfo->rate / 100));
+				sjme_fixed_hi(destInfo->rate / 100)),
+				sjme_fixed_fraction(sourceInfo.channels,
+					destInfo->channels));
 		else
 			sourceInfo.fromIncr = SJME_FIXED_ONE;
 		destInfo->fromIncr = sourceInfo.fromIncr;
 
-		/* The destination is always one. */
-		sourceInfo.toIncr = SJME_FIXED_ONE;
+		/* The destination is always one, unless there are more channels. */
+		/* Note if dest = 2 and src = 1, if dest / src = 2 then only one */
+		/* speaker will have audio, if src / dest = 0.5 then both speakers */
+		/* will have audio. */
+		if (sourceInfo.channels != destInfo->channels)
+			sourceInfo.toIncr = sjme_fixed_fraction(sourceInfo.channels,
+				destInfo->channels);
+		else
+			sourceInfo.toIncr = SJME_FIXED_ONE;
 		destInfo->toIncr = sourceInfo.toIncr;
 
 		/* Forward render. */
@@ -255,9 +268,9 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 	sjme_jint i, n;
 	sjme_list(sjme_scritchaudio_source)* sources;
 	sjme_scritchaudio_source source;
-	sjme_scritchaudio_format bestFormat;
-	sjme_scritchaudio_rate bestRate;
-	sjme_scritchaudio_channels bestChannels;
+	sjme_scritchaudio_format bestFormat, origFormat;
+	sjme_scritchaudio_rate bestRate, origRate;
+	sjme_scritchaudio_channels bestChannels, origChannels;
 	sjme_scritchaudio wrappedState;
 	sjme_scritchaudio_stream underStream;
 	sjme_scritchaudio_source underSource;
@@ -384,6 +397,11 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 		bestChannels = sjme_max(bestChannels,
 			SJME_SCRITCHAUDIO_CHANNELS_STEREO);
 	}
+
+	/* Store these for downgrading. */
+	origFormat = bestFormat;
+	origRate = bestRate;
+	origChannels = bestChannels;
 	
 	/* Try worse and worse formats. */
 	while (underStream == NULL)
@@ -394,10 +412,14 @@ static sjme_errorCode sjme_scritchaudio_softmix_underlay(
 			/* Some other error?. */
 			if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
 				goto fail_underlayCreate;
+
+			/* Notice. */
+			sjme_messageB("Failed underlay(%d, %d, %d)",
+				bestFormat, bestRate, bestChannels);
 			
 			/* Reduce the rate. */
 			if (sjme_error_is(error = inState->intern->fallbackNext(
-				inState, bestFormat, bestRate, bestChannels,
+				inState, origFormat, origRate, origChannels,
 				&bestFormat, &bestRate, &bestChannels)))
 				goto fail_rateReduce;
 		}
@@ -501,6 +523,12 @@ sjme_errorCode sjme_scritchaudio_softmix_streamCreate(
 	
 	if (inState == NULL || inOutStream == NULL || inName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+#if !defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/* No floating point support means no floating point audio. */
+	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_FLOAT_F32)
+		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
+#endif
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;

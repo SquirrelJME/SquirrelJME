@@ -37,6 +37,11 @@ import org.intellij.lang.annotations.Language;
 public final class Binder
 	implements CommandListener, Runnable
 {
+	/** Initial root directory. */
+	@Language("http-url-reference")
+	public static final String INITIAL_ROOT =
+		"file://!%3Fx-squirreljme-all-volumes%3A%2F%2F%3F!/";
+	
 	/** Reference to self. */
 	private final Reference<Binder> _self =
 		new WeakReference<>(this);
@@ -79,7 +84,7 @@ public final class Binder
 		{
 			// We do have to start somewhere
 			this.connection = (FileConnection)Connector.open(
-				"file://!%3Fx-squirreljme-all-volumes%3A%2F%2F%3F!/",
+				Binder.INITIAL_ROOT,
 				Connector.READ);
 		}
 		catch (IOException __e)

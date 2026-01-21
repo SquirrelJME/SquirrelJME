@@ -64,6 +64,9 @@ public class SquirrelJMEPluginConfiguration
 	/** Ignore in the launcher? */
 	public boolean ignoreInLauncher;
 	
+	/** Ignore Java main in the launcher? */
+	public boolean ignoreJavaMainInLauncher;
+	
 	/** The configurations this defines. */
 	public Set<JavaMEConfiguration> definedConfigurations =
 		new LinkedHashSet<>();

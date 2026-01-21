@@ -1193,7 +1193,7 @@ extern "C" {
 
 #if defined(SJME_CONFIG_HAS_GCC)
 	/** Optimize this specific function. */
-	#define sjme_attrOptimize __attribute__((optimize("-O3")))
+	#define sjme_attrOptimize __attribute__((optimize("-Os")))
 #elif defined(SJME_CONFIG_HAS_MSVC)
 	/** Optimize this specific function. */
 	#define sjme_attrOptimize __pragma(optimize("t", on))
@@ -1363,6 +1363,15 @@ extern "C" {
 #else
 	#define sjme_asm(x) sjme_execInlineAsm(#x)
 #endif
+
+/** Milliseconds as nanos. */
+#define SJME_NANOS_MS(n) INT64_C(n##000000)
+	
+/** Microseconds as nanos. */
+#define SJME_NANOS_US(n) INT64_C(n##000)
+	
+/** Nanoseconds as nanos (identity). */
+#define SJME_NANOS_NS(n) INT64_C(n)
 	
 /* Windows header needs to be included everywhere effectively. */
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)

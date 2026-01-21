@@ -36,7 +36,6 @@ public class TestMidiDevice
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/04/21
 	 */
 	@Override

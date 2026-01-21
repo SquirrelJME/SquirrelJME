@@ -47,8 +47,7 @@ sjme_errorCode sjme_scritchaudio_oss_apiInit(
 
 sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream);
 	
 sjme_errorCode sjme_scritchaudio_oss_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,

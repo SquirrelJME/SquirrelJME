@@ -458,7 +458,8 @@ public final class FileEndPointConnection
 	 */
 	@SuppressWarnings("resource")
 	@SquirrelJMEVendorApi
-	Connection __changeEndPoint(UriGenericPart __part, UriGenericPart __dotDot)
+	FileEndPointConnection __changeEndPoint(UriGenericPart __part,
+		UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, SecurityException
 	{
 		synchronized (this)

@@ -1,0 +1,12 @@
+# SpringCoat Usage
+
+This covers SquirrelJME SpringCoat, for general usage see [Usage](usage.mkd).
+
+## Common Issues
+
+***SpringCoat is too slow for my system:*** SpringCoat is a pure interpreter
+focused on compatibility that is implemented on top of an existing Java
+Virtual Machine. Due to such, it has no built-in optimization strategies,
+therefor it is recommended you use `-Xemulator:nanocoat`. If you are on
+standalone you additionally have the option of `-Xemulator:hosted` with
+no regard to accuracy and compatibility.

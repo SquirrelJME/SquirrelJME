@@ -60,6 +60,20 @@ public enum SpecificGroup
 		}
 	},
 	
+	/** Virtual machine descriptions. */
+	VM_DESCRIPTION("VM Description")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/12/06
+		 */
+		@Override
+		public SpecificField[] fields()
+		{
+			return InfoVmDescription.values();
+		}
+	},
+	
 	/* End. */
 	;
 	

@@ -22,7 +22,6 @@ public class TestPointerType
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2023/06/24
 	 */
 	@Override

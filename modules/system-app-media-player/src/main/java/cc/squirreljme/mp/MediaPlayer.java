@@ -9,7 +9,6 @@
 
 package cc.squirreljme.mp;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +18,6 @@ import javax.microedition.io.HttpConnection;
 import javax.microedition.io.InputConnection;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.media.Manager;
@@ -400,35 +398,7 @@ public class MediaPlayer
 		if (player != null)
 		{
 			// Name based state?
-			String state;
-			int id = player.getState();
-			switch (id)
-			{
-				case Player.CLOSED:
-					state = "Closed (0)";
-					break;
-					
-				case Player.UNREALIZED:
-					state = "Unrealized/Deallocated (100)";
-					break;
-					
-				case Player.PREFETCHED:
-					state = "Prefetched (300)";
-					break;
-					
-				case Player.REALIZED:
-					state = "Realized (200)";
-					break;
-					
-				case Player.STARTED:
-					state = "Started/Playing (400)";
-					break;
-					
-					// Unknown State ID
-				default:
-					state = String.format("%d?", id);
-					break;
-			}
+			String state = Utils.formatState(player.getState());
 			
 			// Draw the state
 			__g.drawString(state, bx, by + bh + 2, 0);
@@ -450,43 +420,8 @@ public class MediaPlayer
 		if (__g == null)
 			throw new NullPointerException("NARG");
 		
-		StringBuilder sb = new StringBuilder();
-		
-		// Add microseconds
-		long mod = __micros % 1_000_000;
-		long div = __micros / 1_000_000;
-		sb.append(String.format("%06d\u00B5s", mod));
-		
-		// Add seconds
-		if (div > 0)
-		{
-			mod = div % 60;
-			div = div / 60;
-			if (sb.length() > 0)
-				sb.insert(0, ' ');
-			sb.insert(0, String.format("%02ds", mod));
-		}
-		
-		// Add minutes
-		if (div > 0)
-		{
-			mod = div % 60;
-			div = div / 60;
-			if (sb.length() > 0)
-				sb.insert(0, ' ');
-			sb.insert(0, String.format("%02dm", mod));
-		}
-		
-		// Add hours
-		if (div > 0)
-		{
-			if (sb.length() > 0)
-				sb.insert(0, ' ');
-			sb.insert(0, String.format("%02dh", div));
-		}
-		
 		// Draw the time
-		__g.drawString(sb.toString(), __x, __y,
+		__g.drawString(Utils.formatTime(__micros), __x, __y,
 			Graphics.RIGHT);
 	}
 	

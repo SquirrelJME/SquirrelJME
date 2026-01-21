@@ -15,25 +15,21 @@
 #include "lib/scritchaudio/scritchaudioIntern.h"
 #include "lib/scritchaudio/oss/ossIntern.h"
 
-sjme_errorCode sjme_attrOptimize sjme_scritchaudio_oss_loopIterate(
+sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream)
 {
-	sjme_errorCode error;
+	sjme_errorCode rendError, playError;
 	int fd, trigger;
-	sjme_pointer buf;
-	sjme_jint bufSize, i, n;
+	sjme_jint i, wc, n;
 	sjme_scritchaudio_source source;
 	sjme_list(sjme_scritchaudio_source)* sources;
+	sjme_scritchaudio_renderInfo* renderInfo;
+	sjme_scritchaudio_streamBuffer* rend;
+	sjme_scritchaudio_streamBuffer* play;
 	
-	if (inState == NULL)
+	if (inState == NULL || inStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Recover stream. */
-	inStream = (inStream != NULL ? inStream : inState->stream);
-	if (inStream == NULL)
-		return SJME_ERROR_AUDIO_DESTROYED;
 
 	/* Recover the file descriptor. */
 	fd = inStream->data.fd;
@@ -56,43 +52,62 @@ sjme_errorCode sjme_attrOptimize sjme_scritchaudio_oss_loopIterate(
 	/* None found? */
 	if (source == NULL)
 		return SJME_ERROR_AUDIO_AWAITING;
-	
-	/* Calculate the render info. */
-	if (sjme_error_is(error = inState->intern->calcRenderInfo(
-		inState, inStream, source, renderInfo)))
-		return sjme_error_default(error);
-	
-	/* Allocate sample buffer */
-	bufSize = renderInfo->bufSize;
-	buf = sjme_alloca(bufSize);
-	if (buf == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
-	
-	/* If the source format is unsigned, we need to actually set the proper */
-	/* zero level, otherwise there will be clicks/pops. */
-	if (renderInfo->format == SJME_SCRITCHAUDIO_FORMAT_BYTE_U8)
-		memset(buf, 0x80, bufSize);
-	else
-		memset(buf, 0, bufSize);
 
-	/* Render source. */
-	if (sjme_error_is(error = source->renderFunc(inState,
-		source, renderInfo, (sjme_scritchaudio_buffer*)buf)))
-		return sjme_error_default(error);
-	
-	/* Disable playback. */
+	/* Recover the render info. */
+	renderInfo = &inStream->data.renderInfo;
+
+	/* Which buffer are we playing and which are we rendering? */
+	rend = &inStream->data.buffers[inStream->data.renderBuffer];
+	play = &inStream->data.buffers[!inStream->data.renderBuffer];
+
+	/* Reset error states. */
+	playError = SJME_ERROR_NONE;
+	rendError = SJME_ERROR_NONE;
+
+	/* Disable playback (if supported by the driver). */
 	trigger = 0;
 	ioctl(fd, SNDCTL_DSP_SETTRIGGER, &trigger);
 
-	/* Write the buffer data. */
-	if (write(fd, buf, bufSize) < 0)
-		return SJME_ERROR_AUDIO_WRITE_FAILED;
-
-	/* Resume playback. */
+	/* Send the data to the sound card, pre-rendering, write may fail. */
+	for (i = 0, n = renderInfo->bufSize; i < n;)
+	{
+		/* Send as much as possible to the sound card. */
+		wc = write(fd, SJME_POINTER_OFFSET(play->buffer, i),
+			renderInfo->bufSize - i);
+		if (wc < 0)
+			break;
+		
+		/* Shift buffer up. */
+		i += wc;
+	}
+	
+	/* While the sound card is playing audio, render the next batch of */
+	/* audio into the buffer. This will happen if playback is synchronous. */
+	rendError = source->renderFunc(inState, source, renderInfo,
+		(sjme_scritchaudio_buffer*)rend->buffer);
+	
+	/* Resume playback (if supported by the driver). */
 	trigger = PCM_ENABLE_OUTPUT;
 	ioctl(fd, SNDCTL_DSP_SETTRIGGER, &trigger);
 	ioctl(fd, SNDCTL_DSP_POST, NULL);
+	
+	/* Send the rest of the data to the sound card post-rendering. */
+	while (i < n)
+	{
+		/* Send as much as possible to the sound card. */
+		wc = write(fd, SJME_POINTER_OFFSET(play->buffer, i),
+			renderInfo->bufSize - i);
+		if (wc < 0)
+			break;
+		
+		/* Shift buffer up. */
+		i += wc;
+	}
 
-	/* Nothing. */
+	/* Ladder any errors. */
+	if (sjme_error_is(rendError))
+		return sjme_error_default(rendError);
+	if (sjme_error_is(playError))
+		return sjme_error_default(playError);
 	return SJME_ERROR_NONE;
 }

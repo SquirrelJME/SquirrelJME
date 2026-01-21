@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.launcher.ui;
 
 import cc.squirreljme.jvm.launch.Application;
 import cc.squirreljme.jvm.launch.SuiteScanListener;
+import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -102,6 +103,13 @@ final class __ProgressListener__
 		// Do nothing if this is not to appear on the launcher
 		if (__app.isNoLauncher())
 			return;
+		
+		// If this is not a MIDlet and the classic Java main should not
+		// appear in the list
+		EntryPoint entryPoint = __app.entryPoint();
+		if (entryPoint != null && !entryPoint.isMidlet())
+			if (__app.isNoJavaMainLauncher())
+				return;
 		
 		ArrayList<Application> listedSuites = this.listedSuites;
 		List programList = this.programList;

@@ -32,7 +32,6 @@ public class TestWeakHashMap
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2023/02/09
 	 */
 	@Override

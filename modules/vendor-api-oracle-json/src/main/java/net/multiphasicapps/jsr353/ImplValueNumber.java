@@ -183,7 +183,6 @@ public class ImplValueNumber
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/07/12
 	 */
 	@Override

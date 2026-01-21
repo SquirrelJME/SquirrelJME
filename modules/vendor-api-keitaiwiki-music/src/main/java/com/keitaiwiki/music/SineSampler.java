@@ -401,7 +401,6 @@ public class SineSampler
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/05/05
 	 */
 	@Override

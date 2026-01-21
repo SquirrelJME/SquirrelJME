@@ -56,7 +56,6 @@ public final class BaseDecoderData
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2015/04/12
 	 */
 	@Override

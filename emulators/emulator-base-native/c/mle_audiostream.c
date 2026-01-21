@@ -77,7 +77,7 @@ FORWARD_IMPL(AudioStream, stream,
 static sjme_thread_result sjme_attrThreadCall sjme_jni_bindAudioThread(
 	sjme_thread_parameter anything)
 {
-	sjme_scritchaudio inState;
+	sjme_scritchaudio_stream inStream;
 	JavaVM* vm;
 	JNIEnv* env;
 	JNIEnv* checkEnv;
@@ -88,18 +88,25 @@ static sjme_thread_result sjme_attrThreadCall sjme_jni_bindAudioThread(
 	sjme_message("Binding ScritchAudio thread to JNI...");
 
 	/* Restore state. */
-	inState = (sjme_scritchaudio)anything;
-	if (inState == NULL)
+	inStream = (sjme_scritchaudio_stream)anything;
+	if (inStream == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 
 	/* Restore VM. */
-	vm = (JavaVM*)inState->frontEnd.data;
+	vm = (JavaVM*)inStream->connection.inState->frontEnd.data;
 
 	/* If this thread is already attached, only attach once. */
 	checkEnv = NULL;
 	error = (*vm)->GetEnv(vm, (void**)&checkEnv, JNI_VERSION_1_1);
 	if (error == JNI_OK)
+	{
+		/* Debug. */
+		sjme_message("Already bound!");
 		return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+	}
+
+	/* Debug. */
+	sjme_message("Recovered ScritchAudio env...");
 
 	/* Setup arguments. */
 	memset(&attachArgs, 0, sizeof(attachArgs));
@@ -111,6 +118,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_jni_bindAudioThread(
 	error = (*vm)->AttachCurrentThreadAsDaemon(vm, (void**)&env, &attachArgs);
 	if (env == NULL)
 		sjme_die("Could not attach thread: %d??", error);
+
+	/* Debug. */
+	sjme_message("Bound ScritchAudio to JNI!");
 
 	/* Success! */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
