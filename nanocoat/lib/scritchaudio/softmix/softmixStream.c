@@ -485,12 +485,6 @@ sjme_errorCode sjme_scritchaudio_softmix_sourceAttach(
 	if (inState == NULL || inStream == NULL || inSource == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-#if !defined(SJME_CONFIG_HAS_FLOAT_HARD)
-	/* No floating point support means no floating point audio. */
-	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_FLOAT_F32)
-		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
-#endif
-
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	if (wrappedState == NULL)
