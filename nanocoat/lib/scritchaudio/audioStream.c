@@ -207,6 +207,13 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 			inState, result, NULL, &result->data.renderInfo)))
 			goto fail_calcRender;
 	
+	/* Allocate sample buffer, if none were allocated. */
+	if (result->data.buffer == NULL)
+		if (sjme_error_is(error = sjme_alloc(inState->pool,
+			result->data.renderInfo.bufSize, &result->data.buffer)) ||
+			result->data.buffer == NULL)
+			goto fail_allocBuf;
+	
 	/* Release the state. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		inState->lock, NULL)))
@@ -283,6 +290,7 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	*outStream = result;
 	return SJME_ERROR_NONE;
 
+fail_allocBuf:
 fail_calcRender:
 fail_implCreate:
 	/* Release the lock before failing. */

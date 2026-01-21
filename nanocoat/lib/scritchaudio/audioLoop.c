@@ -10,6 +10,8 @@
 #include "lib/scritchaudio/scritchaudio.h"
 #include "lib/scritchaudio/scritchaudioIntern.h"
 
+#include "sjme/util.h"
+
 /** Gets the current polling time. */
 #define sjme_scritchaudio_core_pollTimeGet() \
 	/* Get the current polling times for this loop. */ \
@@ -27,9 +29,9 @@
 		nextTime = enterTime.full + pollNanos
 
 /** Common end of poll sleep calculation. */
-#define sjme_scritchaudio_core_pollLoopSleep(targetTime) \
+#define sjme_scritchaudio_core_pollLoopSleep(targetTime, penalty) \
 	/* Do we have extra time to sleep */ \
-	diffNanos = ((targetTime) - exitTime.full); \
+	diffNanos = ((targetTime) - exitTime.full) - (penalty); \
 	if (diffNanos >= SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS) \
 		sjme_thread_sleep((diffNanos - \
 			SJME_SCRITCHAUDIO_HOLD_NANOS) / INT64_C(1000000), 0)
@@ -37,7 +39,20 @@
 /** Common pre-enter for triggering? */
 #define sjme_scritchaudio_core_preTrigger() \
 	triggerCut = (inState->bugs.noTriggering ? 0 : \
-		SJME_SCRITCHAUDIO_HOLD_NANOS)
+		SJME_SCRITCHAUDIO_TRIGGER_NANOS)
+
+static void sjme_scritchaudio_core_triggerBump(sjme_jboolean* triggerNotice,
+	sjme_jlongNative from, sjme_jlongNative to)
+{
+	/* Only emit warning once. */
+	if (*triggerNotice)
+		return;
+	
+	/* Emit message, once. */
+	*triggerNotice = SJME_JNI_TRUE;
+	sjme_emitB("Audio buffer underflow detected (%"PRId64"ns -> %"PRId64"ns).",
+		from, to);
+}
 
 static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerEvent(
 	sjme_attrInNotNull sjme_scritchaudio inState,
@@ -93,7 +108,7 @@ static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerEvent(
 
 		/* Handle sleeping, assume the next event will happen some time */
 		/* after our event time. */
-		sjme_scritchaudio_core_pollLoopSleep(enterTime.full + pollNanos);
+		sjme_scritchaudio_core_pollLoopSleep(enterTime.full + pollNanos, 0);
 	}
 
 	/* Success? */
@@ -108,11 +123,13 @@ static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerManual(
 	const sjme_nal* nal;
 	sjme_jlong enterTime, exitTime;
 	sjme_jlongNative diffNanos, nextTime, pollMilli, pollNanos, triggerCut;
+	sjme_jboolean triggerNotice;
 
 	if (inState == NULL || inStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Triggering pre-delay? */
+	triggerNotice = SJME_JNI_FALSE;
 	sjme_scritchaudio_core_preTrigger();
 
 	/* Enter threading loop. */
@@ -126,7 +143,7 @@ static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerManual(
 
 		/* Not yet ready? */
 		if (nextTime != INT64_MIN &&
-			enterTime.full < (nextTime - triggerCut))
+			(enterTime.full + triggerCut) < nextTime)
 			continue;
 
 		/* Get and calculate polling times, along with giving up. */
@@ -145,9 +162,23 @@ static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerManual(
 		exitTime.full = INT64_MIN;
 		if (sjme_error_is(error = nal->nanoTime(&exitTime)))
 			return sjme_error_default(error);
+		
+		/* Is the system unable to handle playing audio at this rate? */
+		/* If so, increase the triggering amount so buffers load sooner. */
+		diffNanos = exitTime.full - enterTime.full;
+		if (diffNanos > triggerCut)
+		{
+			/* Emit warning. */
+			sjme_scritchaudio_core_triggerBump(&triggerNotice,
+				triggerCut, diffNanos);
+			
+			/* Increase the cap. */
+			triggerCut = sjme_min(SJME_SCRITCHAUDIO_TRIGGER_CAP_NANOS,
+				diffNanos);
+		}
 
 		/* Handle sleeping. */
-		sjme_scritchaudio_core_pollLoopSleep(nextTime);
+		sjme_scritchaudio_core_pollLoopSleep(nextTime, triggerCut);
 	}
 
 	/* Success? */

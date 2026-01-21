@@ -34,17 +34,23 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+	
+/** The minimum sleeping time, sleep does not occur below this (75ms). */
+#define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS SJME_NANOS_MS(75)
 
-/** The minimum sleeping time, sleep does not occur below this (25ms). */
-#define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS INT64_C(25000000)
+/** The number of nanoseconds to give up if we are behind (750ms). */
+#define SJME_SCRITCHAUDIO_GIVE_UP_NANOS SJME_NANOS_MS(750)
 
-/** The number of nanoseconds to give up if we are behind (250ms). */
-#define SJME_SCRITCHAUDIO_GIVE_UP_NANOS INT64_C(250000000)
+/** The number of nanoseconds to hold off when sleeping (25ms). */
+#define SJME_SCRITCHAUDIO_HOLD_NANOS SJME_NANOS_MS(25)
 
-/** The number of nanoseconds to hold off when sleeping (5ms). */
-#define SJME_SCRITCHAUDIO_HOLD_NANOS INT64_C(5000000)
+/** The number of nanoseconds to pre-fill for triggering (75ms). */
+#define SJME_SCRITCHAUDIO_TRIGGER_NANOS SJME_NANOS_MS(75)
 
-/** The poll delay time to use. */
+/** The maximum amount of time the trigger cap can be (400ms). */
+#define SJME_SCRITCHAUDIO_TRIGGER_CAP_NANOS SJME_NANOS_MS(400)
+
+/** The poll delay time to use (200ms). */
 #define SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS 200
 	
 /**

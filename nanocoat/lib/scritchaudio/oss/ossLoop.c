@@ -57,9 +57,7 @@ sjme_errorCode sjme_attrOptimize sjme_scritchaudio_oss_loopIterate(
 	
 	/* Allocate sample buffer */
 	bufSize = renderInfo->bufSize;
-	buf = sjme_alloca(bufSize);
-	if (buf == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+	buf = inStream->data.buffer;
 
 	/* Disable playback (if supported by the driver). */
 	trigger = 0;
