@@ -99,8 +99,12 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 		return SJME_ERROR_AUDIO_WRITE_FAILED;
 
 	/* Unprepare the header. */
-	mmResult = waveOutUnprepareHeader(hWaveOut, header, sizeof(WAVEHDR));
-	if (mmResult != WAVERR_STILLPLAYING && mmResult != MMSYSERR_NOERROR)
+	do
+	{
+		mmResult = waveOutUnprepareHeader(hWaveOut, header,
+			sizeof(WAVEHDR));
+	} while (mmResult == WAVERR_STILLPLAYING);
+	if (mmResult != MMSYSERR_NOERROR)
 		return SJME_ERROR_AUDIO_PREPARE_FAILED;
 
 	/* Success! */
