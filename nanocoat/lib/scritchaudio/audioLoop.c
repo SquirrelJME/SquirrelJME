@@ -44,9 +44,11 @@
 static void sjme_scritchaudio_core_triggerBump(sjme_jboolean* triggerNotice,
 	sjme_jlongNative from, sjme_jlongNative to)
 {
+#if 0
 	/* Only emit warning once. */
 	if (*triggerNotice)
 		return;
+#endif
 	
 	/* Emit message, once. */
 	*triggerNotice = SJME_JNI_TRUE;
@@ -54,7 +56,7 @@ static void sjme_scritchaudio_core_triggerBump(sjme_jboolean* triggerNotice,
 		from, to);
 }
 
-static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerEvent(
+static sjme_errorCode sjme_scritchaudio_core_innerEvent(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNullable sjme_scritchaudio_stream inStream)
 {
@@ -101,6 +103,9 @@ static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerEvent(
 				return sjme_error_default(error);
 		}
 
+		/* Flip buffer. */
+		inStream->data.renderBuffer ^= 1;
+
 		/* Current time exiting the loop. */
 		exitTime.full = INT64_MIN;
 		if (sjme_error_is(error = nal->nanoTime(&exitTime)))
@@ -115,7 +120,7 @@ static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerEvent(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerManual(
+static sjme_errorCode sjme_scritchaudio_core_innerManual(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNullable sjme_scritchaudio_stream inStream)
 {
@@ -124,6 +129,8 @@ static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerManual(
 	sjme_jlong enterTime, exitTime;
 	sjme_jlongNative diffNanos, nextTime, pollMilli, pollNanos, triggerCut;
 	sjme_jboolean triggerNotice;
+	sjme_scritchaudio_renderInfo* renderInfo;
+	sjme_scritchaudio_streamBuffer* buffer;
 
 	if (inState == NULL || inStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -131,6 +138,9 @@ static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerManual(
 	/* Triggering pre-delay? */
 	triggerNotice = SJME_JNI_FALSE;
 	sjme_scritchaudio_core_preTrigger();
+
+	/* Rendering info. */
+	renderInfo = &inStream->data.renderInfo;
 
 	/* Enter threading loop. */
 	nal = inState->nal;
@@ -150,6 +160,12 @@ static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerManual(
 		sjme_scritchaudio_core_pollTimeGet();
 		sjme_scritchaudio_core_pollTimeGiveUp();
 
+		/* Wipe the render buffer. */
+		buffer = &inStream->data.buffers[inStream->data.renderBuffer];
+		memset(buffer->buffer,
+			(renderInfo->format == SJME_SCRITCHAUDIO_FORMAT_BYTE_U8 ?
+				0x80 : 0x00), renderInfo->bufSize);
+
 		/* Call loop iteration handler. */
 		if (sjme_error_is(error = inState->api->loopIterate(inState,
 			inStream)))
@@ -158,6 +174,9 @@ static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerManual(
 				return sjme_error_default(error);
 		}
 
+		/* Flip buffer. */
+		inStream->data.renderBuffer = !inStream->data.renderBuffer;
+
 		/* Current time exiting the loop. */
 		exitTime.full = INT64_MIN;
 		if (sjme_error_is(error = nal->nanoTime(&exitTime)))
@@ -165,16 +184,20 @@ static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerManual(
 		
 		/* Is the system unable to handle playing audio at this rate? */
 		/* If so, increase the triggering amount so buffers load sooner. */
+		/* Note, never go over the cap because that does not make much sense */
+		/* as likely the system experience a lag spike of some kind. */
 		diffNanos = exitTime.full - enterTime.full;
-		if (diffNanos > triggerCut)
+		if (diffNanos > triggerCut &&
+			diffNanos < SJME_SCRITCHAUDIO_TRIGGER_CAP_NANOS)
 		{
-			/* Emit warning. */
-			sjme_scritchaudio_core_triggerBump(&triggerNotice,
-				triggerCut, diffNanos);
+			/* Emit warning if significant. */
+			if (diffNanos > SJME_SCRITCHAUDIO_TRIGGER_NANOS)
+				sjme_scritchaudio_core_triggerBump(&triggerNotice,
+					triggerCut, diffNanos);
 			
-			/* Increase the cap. */
+			/* Increase the cap, but only by the average of these. */
 			triggerCut = sjme_min(SJME_SCRITCHAUDIO_TRIGGER_CAP_NANOS,
-				diffNanos);
+				(triggerCut + diffNanos) >> 1);
 		}
 
 		/* Handle sleeping. */
@@ -224,6 +247,56 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_core_poll(
 
 	/* Finished. */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchaudio_core_allocBuffers(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNullable sjme_scritchaudio_stream inStream)
+{
+	sjme_errorCode error;
+	sjme_scritchaudio_streamBuffer* buffer;
+	sjme_jint i;
+
+	if (inState == NULL || inStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Render info missing? */
+	if (inStream->data.renderInfo.bufSize == 0 ||
+		inStream->data.renderInfo.rate == 0 ||
+		inStream->data.renderInfo.channels == 0)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Allocate each buffer. */
+	for (i = 0; i < SJME_SCRITCHAUDIO_STREAM_BUFFERS; i++)
+	{
+		buffer = &inStream->data.buffers[i];
+
+		/* Allocate the buffer. */
+		if (buffer->buffer == NULL)
+			if (sjme_error_is(error = sjme_alloc(inState->pool,
+				inStream->data.renderInfo.bufSize,
+				&buffer->buffer)) ||
+				buffer->buffer == NULL)
+				return sjme_error_default(error);
+
+		/* Wipe the buffer. */
+		memset(buffer->buffer,
+			(inStream->data.renderInfo.format ==
+				SJME_SCRITCHAUDIO_FORMAT_BYTE_U8 ?
+				0x80 : 0x00), inStream->data.renderInfo.bufSize);
+
+		/* Allocate headers? */
+		if (inStream->data.headerSize > 0 &&
+			buffer->header == NULL)
+			if (sjme_error_is(error = sjme_alloc(inState->pool,
+				inStream->data.headerSize,
+				&buffer->header)) ||
+				buffer->header == NULL)
+				return sjme_error_default(error);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(

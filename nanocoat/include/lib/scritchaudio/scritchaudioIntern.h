@@ -52,12 +52,8 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd,
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread);
-	
-sjme_errorCode sjme_scritchaudio_core_loopIterate(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream);
-	
-sjme_errorCode sjme_scritchaudio_core_loopIterateLocked(
+
+sjme_errorCode sjme_scritchaudio_core_allocBuffers(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNullable sjme_scritchaudio_stream inStream);
 
@@ -66,6 +62,14 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrInNullable sjme_scritchaudio_source inSource,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
+
+sjme_errorCode sjme_scritchaudio_core_loopIterate(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream);
+
+sjme_errorCode sjme_scritchaudio_core_loopIterateLocked(
+	sjme_attrInNotNull sjme_scritchaudio inState,
+	sjme_attrInNullable sjme_scritchaudio_stream inStream);
 	
 sjme_errorCode sjme_scritchaudio_core_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,

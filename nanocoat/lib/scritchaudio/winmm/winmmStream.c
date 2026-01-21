@@ -58,20 +58,6 @@ static sjme_errorCode sjme_scritchaudio_winmm_peerNone(
 			/* Close the handle. */
 			waveOutClose(handle);
 		}
-
-		/* Free the header. */
-		if (stream->data.header != NULL)
-		{
-			sjme_alloc_free(stream->data.header);
-			stream->data.header = NULL;
-		}
-
-		/* Free the buffer. */
-		if (stream->data.buffer != NULL)
-		{
-			sjme_alloc_free(stream->data.buffer);
-			stream->data.buffer = NULL;
-		}
 	}
 
 	/* WinMM does not care about any other peers. */
@@ -205,18 +191,8 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 		inState, inOutStream, NULL, &inOutStream->data.renderInfo)))
 		goto fail_any;
 
-	/* Allocate sample buffer. */
-	if (sjme_error_is(error = sjme_alloc(inState->pool,
-		inOutStream->data.renderInfo.bufSize, &inOutStream->data.buffer)) ||
-		inOutStream->data.buffer == NULL)
-		goto fail_any;
-
-	/* Allocate space for the header. */
-	if (sjme_error_is(error = sjme_alloc(inState->pool,
-		sizeof(WAVEHDR),
-		(sjme_pointer*)&inOutStream->data.header)) ||
-		inOutStream->data.header == NULL)
-		goto fail_any;
+	/* Headers are this big. */
+	inOutStream->data.headerSize = sizeof(WAVEHDR);
 
 	/* Open the default device. */
 	mmResult = waveOutOpen(&hWaveOut, WAVE_MAPPER, (WAVEFORMATEX*)&format,
@@ -234,29 +210,16 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	/* Set stream details. */
 	inOutStream->data.handle = hWaveOut;
 
-	/* Resume playback. */
-	mmResult = waveOutRestart(hWaveOut);
-	if (mmResult != MMSYSERR_NOERROR && mmResult != MMSYSERR_NOTSUPPORTED)
-		goto fail_any;
+	/* Playback needs to be "resumed" */
+	waveOutRestart(hWaveOut);
 
 	/* Return the resultant stream. */
 	return SJME_ERROR_NONE;
 
+fail_allocBuf:
 fail_any:
 	if (hWaveOut != NULL)
 		waveOutClose(hWaveOut);
-
-	if (inOutStream->data.header != NULL)
-	{
-		sjme_alloc_free(inOutStream->data.header);
-		inOutStream->data.header = NULL;
-	}
-
-	if (inOutStream->data.buffer != NULL)
-	{
-		sjme_alloc_free(inOutStream->data.buffer);
-		inOutStream->data.buffer = NULL;
-	}
 
 	return sjme_error_default(error);
 }

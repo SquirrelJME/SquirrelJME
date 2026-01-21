@@ -34,7 +34,33 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-	
+
+#if 1
+
+/* Values after double buffered rendering/playback. */
+
+/** The minimum sleeping time, sleep does not occur below this (100ms). */
+#define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS SJME_NANOS_MS(100)
+
+/** The number of nanoseconds to give up if we are behind (750ms). */
+#define SJME_SCRITCHAUDIO_GIVE_UP_NANOS SJME_NANOS_MS(750)
+
+/** The number of nanoseconds to hold off when sleeping (10ms). */
+#define SJME_SCRITCHAUDIO_HOLD_NANOS SJME_NANOS_MS(10)
+
+/** The number of nanoseconds to pre-fill for triggering (50ms). */
+#define SJME_SCRITCHAUDIO_TRIGGER_NANOS SJME_NANOS_MS(50)
+
+/** The maximum amount of time the trigger cap can be (200ms). */
+#define SJME_SCRITCHAUDIO_TRIGGER_CAP_NANOS SJME_NANOS_MS(200)
+
+/** The poll delay time to use (200ms). */
+#define SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS 200
+
+#else
+
+/* Values before double-buffered audio. */
+
 /** The minimum sleeping time, sleep does not occur below this (75ms). */
 #define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS SJME_NANOS_MS(75)
 
@@ -52,6 +78,8 @@ extern "C"
 
 /** The poll delay time to use (200ms). */
 #define SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS 200
+
+#endif
 	
 /**
  * ScritchAudio state structure.
@@ -602,6 +630,9 @@ typedef struct sjme_scritchaudio_implFunctions
  */
 typedef struct sjme_scritchaudio_internFunctions
 {
+	/** Allocates buffers. */
+	sjme_scritchaudio_loopIterateFunc allocBuffers;
+
 	/** Calculate the rendering information. */
 	sjme_scritchaudio_calcRenderInfoFunc calcRenderInfo;
 	
@@ -780,6 +811,55 @@ struct sjme_scritchaudio_connectionBase
 	sjme_atomic(sjme_jint) disconnecting;
 };
 
+/**
+ * An individual stream buffer.
+ *
+ * @since 2026/01/20
+ */
+typedef struct sjme_scritchaudio_streamBuffer
+{
+	/** Any header that is needed (such as for winmm). */
+	sjme_pointer header;
+
+	/** The buffer data. */
+	sjme_pointer buffer;
+} sjme_scritchaudio_streamBuffer;
+
+/** The number of stream buffers. */
+#define SJME_SCRITCHAUDIO_STREAM_BUFFERS 2
+
+/**
+ * The data associated with a stream.
+ *
+ * @since 2026/01/20
+ */
+typedef struct sjme_scritchaudio_streamData
+{
+	/** The file descriptor, if applicable. */
+	int fd;
+
+	/** The handle to the device. */
+	sjme_pointer handle;
+
+	/** If headers are needed, are big are the headers? */
+	sjme_jint headerSize;
+
+	/** The buffers to use, one renders, one plays. */
+	sjme_scritchaudio_streamBuffer buffers[SJME_SCRITCHAUDIO_STREAM_BUFFERS];
+
+	/** The buffer to render, this flips accordingly. */
+	sjme_jint renderBuffer;
+
+	/** Was the audio thread bound? */
+	sjme_atomic(sjme_jint) bound;
+
+	/** The current event counter. */
+	sjme_atomic(sjme_jint) eventCounter;
+
+	/** The stream rendering information. */
+	sjme_scritchaudio_renderInfo renderInfo;
+} sjme_scritchaudio_streamData;
+
 struct sjme_scritchaudio_streamBase
 {
 	/** The connection. */
@@ -819,29 +899,7 @@ struct sjme_scritchaudio_streamBase
 	sjme_atomic(sjme_jint) pollDelayNanos;
 
 	/** Stream data. */
-	struct
-	{
-		/** The file descriptor, if applicable. */
-		int fd;
-
-		/** The handle to the device. */
-		sjme_pointer handle;
-
-		/** Any header that is needed (such as for winmm). */
-		sjme_pointer header;
-
-		/** The buffer data. */
-		sjme_pointer buffer;
-
-		/** Was the audio thread bound? */
-		sjme_atomic(sjme_jint) bound;
-
-		/** The current event counter. */
-		sjme_atomic(sjme_jint) eventCounter;
-
-		/** The stream rendering information. */
-		sjme_scritchaudio_renderInfo renderInfo;
-	} data;
+	sjme_scritchaudio_streamData data;
 };
 
 struct sjme_scritchaudio_sourceBase

@@ -206,13 +206,11 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 		if (sjme_error_is(error = inState->intern->calcRenderInfo(
 			inState, result, NULL, &result->data.renderInfo)))
 			goto fail_calcRender;
-	
-	/* Allocate sample buffer, if none were allocated. */
-	if (result->data.buffer == NULL)
-		if (sjme_error_is(error = sjme_alloc(inState->pool,
-			result->data.renderInfo.bufSize, &result->data.buffer)) ||
-			result->data.buffer == NULL)
-			goto fail_allocBuf;
+
+	/* Allocate buffers, if not done already. */
+	if (sjme_error_is(error = inState->intern->allocBuffers(inState,
+		result)))
+		goto fail_allocBuf;
 	
 	/* Release the state. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -235,8 +233,8 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	{
 #if defined(SJME_CONFIG_DEBUG)
 		/* Debug. */
-		sjme_message("(%p) Polling thread preparing...",
-			inState);
+		sjme_message("(%p %s) Polling thread preparing...",
+			inState, inState->impl->driverName);
 #endif
 		
 		/* Await loop unready. */
