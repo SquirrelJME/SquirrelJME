@@ -69,11 +69,6 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	else
 		memset(buf, 0, bufSize);
 
-	/* Render source. */
-	if (sjme_error_is(error = source->renderFunc(inState,
-		source, renderInfo, (sjme_scritchaudio_buffer*)buf)))
-		return sjme_error_default(error);
-
 	/* Setup output header. */
 	header = inStream->data.header;
 	memset(header, 0, sizeof(*header));
@@ -86,9 +81,13 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	{
 		mmResult = waveOutPrepareHeader(hWaveOut, header,
 			sizeof(WAVEHDR));
-		sjme_message("Prepare header... %d", mmResult);
 	} while (mmResult == MMSYSERR_HANDLEBUSY ||
 		mmResult == MMSYSERR_INVALHANDLE);
+
+	/* Render source. */
+	if (sjme_error_is(error = source->renderFunc(inState,
+		source, renderInfo, (sjme_scritchaudio_buffer*)buf)))
+		return sjme_error_default(error);
 
 	/* Failed to prepare? */
 	if (mmResult != MMSYSERR_NOERROR)

@@ -188,23 +188,11 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	result->rate = inRate;
 	result->channels = inChannels;
 
-	/* Use a "sleeping" rate so if manually polling the CPU does not burn. */
-	if (inState->bugs.manualPoll || inState->bugs.eventPoll)
-	{
-		sjme_atomic_s(sjme_jint, &result->pollDelayMillis,
-			SJME_SCRITCHAUDIO_POLL_SLEEP_MILLIS);
-		sjme_atomic_s(sjme_jint, &result->pollDelayNanos,
-			0);
-	}
-
-	/* Otherwise, use a faster rate when running live. */
-	else
-	{
-		sjme_atomic_s(sjme_jint, &result->pollDelayMillis,
-			SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS);
-		sjme_atomic_s(sjme_jint, &result->pollDelayNanos,
-			0);
-	}
+	/* Set a base initial time. */
+	sjme_atomic_s(sjme_jint, &result->pollDelayMillis,
+		SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS);
+	sjme_atomic_s(sjme_jint, &result->pollDelayNanos,
+		0);
 
 	/* Forward to implementation. */
 	if (sjme_error_is(error = inState->impl->streamCreate(inState,

@@ -35,20 +35,17 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/** The minimum sleeping time, sleep does not occur below this point. */
+/** The minimum sleeping time, sleep does not occur below this (25ms). */
 #define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS INT64_C(25000000)
 
-/** The number of nanoseconds to hold off when sleeping. */
-#define SJME_SCRITCHAUDIO_HOLD_NANOS INT64_C(5000000)
+/** The number of nanoseconds to give up if we are behind (250ms). */
+#define SJME_SCRITCHAUDIO_GIVE_UP_NANOS INT64_C(250000000)
 
-/** The number of nanoseconds to enter the next loop early. */
-#define SJME_SCRITCHAUDIO_EARLY_NANOS INT64_C(10000000)
+/** The number of nanoseconds to hold off when sleeping (5ms). */
+#define SJME_SCRITCHAUDIO_HOLD_NANOS INT64_C(5000000)
 
 /** The poll delay time to use. */
 #define SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS 200
-
-/** The sleeping rate when no audio is playing (millis). */
-#define SJME_SCRITCHAUDIO_POLL_SLEEP_MILLIS 1000
 	
 /**
  * ScritchAudio state structure.

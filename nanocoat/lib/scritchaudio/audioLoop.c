@@ -10,16 +10,37 @@
 #include "lib/scritchaudio/scritchaudio.h"
 #include "lib/scritchaudio/scritchaudioIntern.h"
 
+/** Common get and calculation of poll time, along with giving up time. */
+#define sjme_scritchaudio_core_pollTimeGiveUp() \
+	/* Get the current polling times for this loop. */ \
+	pollMilli = sjme_atomic_g(sjme_jint, &inStream->pollDelayMillis); \
+	pollNanos = sjme_atomic_g(sjme_jint, &inStream->pollDelayNanos) + \
+		(pollMilli * INT64_C(1000000)); \
+	 \
+	/* When should the next buffer run be? Always use the same time base */ \
+	/* unless we are really behind! */ \
+	nextTime = nextTime + pollNanos; \
+	diffNanos = nextTime - enterTime.full; \
+	if (diffNanos >= SJME_SCRITCHAUDIO_GIVE_UP_NANOS) \
+		nextTime = enterTime.full + pollNanos
+
+/** Common end of poll sleep calculation. */
+#define sjme_scritchaudio_core_pollLoopSleep() \
+	/* Do we have extra time to sleep */ \
+	diffNanos = (nextTime - exitTime.full); \
+	if (diffNanos >= SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS) \
+		sjme_thread_sleep((diffNanos - \
+			SJME_SCRITCHAUDIO_HOLD_NANOS) / INT64_C(1000000), 0)
+
 static sjme_errorCode sjme_scritchaudio_core_innerEvent(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNullable sjme_scritchaudio_stream inStream)
 {
 	sjme_errorCode error;
-	sjme_jint pollMilli;
 	const sjme_nal* nal;
 	sjme_jint lastEvent, nowEvent;
 	sjme_jlong enterTime, exitTime;
-	sjme_jlongNative diffNanos, nextTime, pollNanos;
+	sjme_jlongNative diffNanos, nextTime, pollMilli, pollNanos;
 
 	if (inState == NULL || inStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -48,13 +69,8 @@ static sjme_errorCode sjme_scritchaudio_core_innerEvent(
 		/* Loop cycle. */
 		lastEvent = nowEvent;
 
-		/* Get the current polling times for this loop. */
-		pollMilli = sjme_atomic_g(sjme_jint, &inStream->pollDelayMillis);
-		pollNanos = sjme_atomic_g(sjme_jint, &inStream->pollDelayNanos) +
-			(pollMilli * INT64_C(1000000));
-
-		/* When should the next buffer run be? */
-		nextTime = enterTime.full + pollNanos;
+		/* Get and calculate polling times, along with giving up. */
+		sjme_scritchaudio_core_pollTimeGiveUp();
 
 		/* Call loop iteration handler. */
 		if (sjme_error_is(error = inState->api->loopIterate(inState,
@@ -69,12 +85,8 @@ static sjme_errorCode sjme_scritchaudio_core_innerEvent(
 		if (sjme_error_is(error = nal->nanoTime(&exitTime)))
 			return sjme_error_default(error);
 
-		/* Do we have extra time to sleep */
-		diffNanos = nextTime - (exitTime.full - enterTime.full);
-		if (diffNanos >= SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS &&
-			exitTime.full < nextTime)
-			sjme_thread_sleep((diffNanos -
-				SJME_SCRITCHAUDIO_HOLD_NANOS) / INT64_C(1000000), 0);
+		/* Handle sleeping. */
+		sjme_scritchaudio_core_pollLoopSleep();
 	}
 
 	/* Success? */
@@ -86,10 +98,9 @@ static sjme_errorCode sjme_scritchaudio_core_innerManual(
 	sjme_attrInNullable sjme_scritchaudio_stream inStream)
 {
 	sjme_errorCode error;
-	sjme_jint pollMilli;
 	const sjme_nal* nal;
 	sjme_jlong enterTime, exitTime;
-	sjme_jlongNative diffNanos, nextTime, pollNanos;
+	sjme_jlongNative diffNanos, nextTime, pollMilli, pollNanos;
 
 	if (inState == NULL || inStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -113,13 +124,8 @@ static sjme_errorCode sjme_scritchaudio_core_innerManual(
 			continue;
 		}
 
-		/* Get the current polling times for this loop. */
-		pollMilli = sjme_atomic_g(sjme_jint, &inStream->pollDelayMillis);
-		pollNanos = sjme_atomic_g(sjme_jint, &inStream->pollDelayNanos) +
-			(pollMilli * INT64_C(1000000));
-
-		/* When should the next buffer run be? */
-		nextTime = enterTime.full + pollNanos;
+		/* Get and calculate polling times, along with giving up. */
+		sjme_scritchaudio_core_pollTimeGiveUp();
 
 		/* Call loop iteration handler. */
 		if (sjme_error_is(error = inState->api->loopIterate(inState,
@@ -134,12 +140,8 @@ static sjme_errorCode sjme_scritchaudio_core_innerManual(
 		if (sjme_error_is(error = nal->nanoTime(&exitTime)))
 			return sjme_error_default(error);
 
-		/* Do we have extra time to sleep */
-		diffNanos = nextTime - (exitTime.full - enterTime.full);
-		if (diffNanos >= SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS &&
-			exitTime.full < nextTime)
-			sjme_thread_sleep((diffNanos -
-				SJME_SCRITCHAUDIO_HOLD_NANOS) / INT64_C(1000000), 0);
+		/* Handle sleeping. */
+		sjme_scritchaudio_core_pollLoopSleep();
 	}
 
 	/* Success? */
@@ -169,16 +171,6 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_core_poll(
 
 	/* Enter main polling method. */
 	error = innerFunc(inState, inStream);
-
-	/* Go back to the sleeping rate as there is no audio */
-	/* playing anymore, if we are manual polling. */
-	if (inState->bugs.manualPoll || inState->bugs.eventPoll)
-	{
-		sjme_atomic_sjme_jint_set(&inStream->pollDelayMillis,
-			SJME_SCRITCHAUDIO_POLL_SLEEP_MILLIS);
-		sjme_atomic_sjme_jint_set(&inStream->pollDelayNanos,
-			0);
-	}
 
 	/* Invalidate before leaving. */
 	sjme_atomic_s(sjme_jint, &inStream->loopThreadReady, 0);
