@@ -199,6 +199,14 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 		result, inName, inFormat, inRate, inChannels)) || result == NULL)
 		goto fail_implCreate;
 	
+	/* Stream initializer did not do its own render calculation? */
+	if (result->data.renderInfo.bufSize == 0 ||
+		result->data.renderInfo.rate == 0 ||
+		result->data.renderInfo.channels == 0)
+		if (sjme_error_is(error = inState->intern->calcRenderInfo(
+			inState, result, NULL, &result->data.renderInfo)))
+			goto fail_calcRender;
+	
 	/* Release the state. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		inState->lock, NULL)))
@@ -275,6 +283,7 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	*outStream = result;
 	return SJME_ERROR_NONE;
 
+fail_calcRender:
 fail_implCreate:
 	/* Release the lock before failing. */
 	sjme_thread_spinLockRelease(inState->lock, NULL);

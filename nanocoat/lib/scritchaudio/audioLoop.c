@@ -10,13 +10,15 @@
 #include "lib/scritchaudio/scritchaudio.h"
 #include "lib/scritchaudio/scritchaudioIntern.h"
 
-/** Common get and calculation of poll time, along with giving up time. */
-#define sjme_scritchaudio_core_pollTimeGiveUp() \
+/** Gets the current polling time. */
+#define sjme_scritchaudio_core_pollTimeGet() \
 	/* Get the current polling times for this loop. */ \
 	pollMilli = sjme_atomic_g(sjme_jint, &inStream->pollDelayMillis); \
 	pollNanos = sjme_atomic_g(sjme_jint, &inStream->pollDelayNanos) + \
-		(pollMilli * INT64_C(1000000)); \
-	 \
+		(pollMilli * INT64_C(1000000))
+
+/** Calculate next time and when giving up should occur. */
+#define sjme_scritchaudio_core_pollTimeGiveUp() \
 	/* When should the next buffer run be? Always use the same time base */ \
 	/* unless we are really behind! */ \
 	nextTime = nextTime + pollNanos; \
@@ -25,12 +27,17 @@
 		nextTime = enterTime.full + pollNanos
 
 /** Common end of poll sleep calculation. */
-#define sjme_scritchaudio_core_pollLoopSleep() \
+#define sjme_scritchaudio_core_pollLoopSleep(targetTime) \
 	/* Do we have extra time to sleep */ \
-	diffNanos = (nextTime - exitTime.full); \
+	diffNanos = ((targetTime) - exitTime.full); \
 	if (diffNanos >= SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS) \
 		sjme_thread_sleep((diffNanos - \
 			SJME_SCRITCHAUDIO_HOLD_NANOS) / INT64_C(1000000), 0)
+
+/** Common pre-enter for triggering? */
+#define sjme_scritchaudio_core_preTrigger() \
+	triggerCut = (inState->bugs.noTriggering ? 0 : \
+		SJME_SCRITCHAUDIO_HOLD_NANOS)
 
 static sjme_errorCode sjme_scritchaudio_core_innerEvent(
 	sjme_attrInNotNull sjme_scritchaudio inState,
@@ -40,7 +47,7 @@ static sjme_errorCode sjme_scritchaudio_core_innerEvent(
 	const sjme_nal* nal;
 	sjme_jint lastEvent, nowEvent;
 	sjme_jlong enterTime, exitTime;
-	sjme_jlongNative diffNanos, nextTime, pollMilli, pollNanos;
+	sjme_jlongNative diffNanos, pollMilli, pollNanos;
 
 	if (inState == NULL || inStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -48,10 +55,10 @@ static sjme_errorCode sjme_scritchaudio_core_innerEvent(
 	/* Always start from zero as the last event rather than the actual */
 	/* event in the counter, since an event may have already happened. */
 	lastEvent = 0;
-
+	
 	/* Enter threading loop. */
 	nal = inState->nal;
-	for (nextTime = INT64_MIN;;)
+	for (;;)
 	{
 		/* Current time entering the loop. */
 		enterTime.full = INT64_MIN;
@@ -62,15 +69,14 @@ static sjme_errorCode sjme_scritchaudio_core_innerEvent(
 		while ((nowEvent = sjme_atomic_g(sjme_jint,
 			&inStream->data.eventCounter)) == lastEvent)
 		{
-			sjme_thread_yield();
 			sjme_atomic_barrier();
 		}
 
 		/* Loop cycle. */
 		lastEvent = nowEvent;
 
-		/* Get and calculate polling times, along with giving up. */
-		sjme_scritchaudio_core_pollTimeGiveUp();
+		/* We only need the current poll time */
+		sjme_scritchaudio_core_pollTimeGet();
 
 		/* Call loop iteration handler. */
 		if (sjme_error_is(error = inState->api->loopIterate(inState,
@@ -85,8 +91,9 @@ static sjme_errorCode sjme_scritchaudio_core_innerEvent(
 		if (sjme_error_is(error = nal->nanoTime(&exitTime)))
 			return sjme_error_default(error);
 
-		/* Handle sleeping. */
-		sjme_scritchaudio_core_pollLoopSleep();
+		/* Handle sleeping, assume the next event will happen some time */
+		/* after our event time. */
+		sjme_scritchaudio_core_pollLoopSleep(enterTime.full + pollNanos);
 	}
 
 	/* Success? */
@@ -100,10 +107,13 @@ static sjme_errorCode sjme_scritchaudio_core_innerManual(
 	sjme_errorCode error;
 	const sjme_nal* nal;
 	sjme_jlong enterTime, exitTime;
-	sjme_jlongNative diffNanos, nextTime, pollMilli, pollNanos;
+	sjme_jlongNative diffNanos, nextTime, pollMilli, pollNanos, triggerCut;
 
 	if (inState == NULL || inStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Triggering pre-delay? */
+	sjme_scritchaudio_core_preTrigger();
 
 	/* Enter threading loop. */
 	nal = inState->nal;
@@ -115,16 +125,12 @@ static sjme_errorCode sjme_scritchaudio_core_innerManual(
 			return sjme_error_default(error);
 
 		/* Not yet ready? */
-		if (nextTime != INT64_MIN && enterTime.full < nextTime)
-		{
-			/* Let other threads run. */
-			sjme_thread_yield();
-
-			/* Loop again. */
+		if (nextTime != INT64_MIN &&
+			enterTime.full < (nextTime - triggerCut))
 			continue;
-		}
 
 		/* Get and calculate polling times, along with giving up. */
+		sjme_scritchaudio_core_pollTimeGet();
 		sjme_scritchaudio_core_pollTimeGiveUp();
 
 		/* Call loop iteration handler. */
@@ -141,7 +147,7 @@ static sjme_errorCode sjme_scritchaudio_core_innerManual(
 			return sjme_error_default(error);
 
 		/* Handle sleeping. */
-		sjme_scritchaudio_core_pollLoopSleep();
+		sjme_scritchaudio_core_pollLoopSleep(nextTime);
 	}
 
 	/* Success? */

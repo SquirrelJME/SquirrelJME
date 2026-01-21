@@ -639,6 +639,9 @@ typedef struct sjme_scritchaudio_bugs
 	
 	/** Writing to the output audio blocks until playback is finished. */
 	sjme_jboolean outputBlocks;
+	
+	/** Triggering is not supported. */
+	sjme_jboolean noTriggering;
 } sjme_scritchaudio_bugs;
 
 /**

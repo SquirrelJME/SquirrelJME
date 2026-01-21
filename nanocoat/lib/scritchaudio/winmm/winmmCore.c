@@ -61,8 +61,9 @@ sjme_errorCode sjme_scritchaudio_winmm_apiInit(
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* This uses manual pollin. */
+	/* This uses manual polling, and also winmm does not support triggering. */
 	inState->bugs.manualPoll = SJME_JNI_TRUE;
+	inState->bugs.noTriggering = SJME_JNI_TRUE;
 
 	/* There needs to be at least one audio device. */
 	if (waveOutGetNumDevs() <= 0)
