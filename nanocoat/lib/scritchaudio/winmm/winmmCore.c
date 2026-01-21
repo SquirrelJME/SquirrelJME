@@ -18,12 +18,15 @@
 static const sjme_scritchaudio_implFunctions sjme_scritchaudio_winmmFunctions =
 {
 	sjme_sm(.driverName, "winmm"),
+	sjme_sm(.allFormatsOwnMixing, SJME_JNI_FALSE),
+	sjme_sm(.supportsMultiStream, SJME_JNI_TRUE),
 	sjme_sm(.apiInit, sjme_scritchaudio_winmm_apiInit),
 	sjme_sm(.disconnect, NULL),
 	sjme_sm(.loopIterate, sjme_scritchaudio_winmm_loopIterate),
 	sjme_sm(.queryMidiPorts, sjme_scritchaudio_winmm_queryMidiPorts),
 	sjme_sm(.sourceAttach, sjme_scritchaudio_winmm_sourceAttach),
 	sjme_sm(.streamCreate, sjme_scritchaudio_winmm_streamCreate),
+	sjme_sm(.nativeCallback, NULL),
 };
 
 sjme_errorCode SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(winmm)(
@@ -58,8 +61,13 @@ sjme_errorCode sjme_scritchaudio_winmm_apiInit(
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* WinMM is always manually polled. */
+	/* This uses manual polling. */
 	inState->bugs.manualPoll = SJME_JNI_TRUE;
+
+#if 0
+	/* Does WinMM support triggering or not? */
+	inState->bugs.noTriggering = SJME_JNI_TRUE;
+#endif
 
 	/* There needs to be at least one audio device. */
 	if (waveOutGetNumDevs() <= 0)

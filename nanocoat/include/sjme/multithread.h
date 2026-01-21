@@ -212,6 +212,14 @@ sjme_errorCode sjme_thread_current(
 	sjme_attrInOutNotNull sjme_thread* outThread);
 
 /**
+ * Returns the current thread.
+ *
+ * @return The resultant thread.
+ * @since 2026/01/09
+ */
+sjme_thread sjme_thread_currentR(void);
+
+/**
  * Compares equality between two threads.
  * 
  * @param aThread The first thread.

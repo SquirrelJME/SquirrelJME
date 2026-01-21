@@ -35,20 +35,51 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/** The minimum sleeping time, sleep does not occur below this point. */
-#define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS INT64_C(25000000)
+#if 1
 
-/** The number of nanoseconds to hold off when sleeping. */
-#define SJME_SCRITCHAUDIO_HOLD_NANOS INT64_C(5000000)
+/* Values after double buffered rendering/playback. */
 
-/** The number of nanoseconds to enter the next loop early. */
-#define SJME_SCRITCHAUDIO_EARLY_NANOS INT64_C(10000000)
+/** The minimum sleeping time, sleep does not occur below this (100ms). */
+#define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS SJME_NANOS_MS(100)
 
-/** The poll delay time to use. */
+/** The number of nanoseconds to give up if we are behind (750ms). */
+#define SJME_SCRITCHAUDIO_GIVE_UP_NANOS SJME_NANOS_MS(750)
+
+/** The number of nanoseconds to hold off when sleeping (10ms). */
+#define SJME_SCRITCHAUDIO_HOLD_NANOS SJME_NANOS_MS(10)
+
+/** The number of nanoseconds to pre-fill for triggering (50ms). */
+#define SJME_SCRITCHAUDIO_TRIGGER_NANOS SJME_NANOS_MS(50)
+
+/** The maximum amount of time the trigger cap can be (200ms). */
+#define SJME_SCRITCHAUDIO_TRIGGER_CAP_NANOS SJME_NANOS_MS(200)
+
+/** The poll delay time to use (200ms). */
 #define SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS 200
 
-/** The sleeping rate when no audio is playing (millis). */
-#define SJME_SCRITCHAUDIO_POLL_SLEEP_MILLIS 1000
+#else
+
+/* Values before double-buffered audio. */
+
+/** The minimum sleeping time, sleep does not occur below this (75ms). */
+#define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS SJME_NANOS_MS(75)
+
+/** The number of nanoseconds to give up if we are behind (750ms). */
+#define SJME_SCRITCHAUDIO_GIVE_UP_NANOS SJME_NANOS_MS(750)
+
+/** The number of nanoseconds to hold off when sleeping (25ms). */
+#define SJME_SCRITCHAUDIO_HOLD_NANOS SJME_NANOS_MS(25)
+
+/** The number of nanoseconds to pre-fill for triggering (75ms). */
+#define SJME_SCRITCHAUDIO_TRIGGER_NANOS SJME_NANOS_MS(75)
+
+/** The maximum amount of time the trigger cap can be (400ms). */
+#define SJME_SCRITCHAUDIO_TRIGGER_CAP_NANOS SJME_NANOS_MS(400)
+
+/** The poll delay time to use (200ms). */
+#define SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS 200
+
+#endif
 	
 /**
  * ScritchAudio state structure.
@@ -352,32 +383,20 @@ typedef sjme_errorCode (*sjme_scritchaudio_fallbackNextFunc)(
 	sjme_attrInOutNotNull sjme_scritchaudio_format* adjustFormat,
 	sjme_attrInOutNotNull sjme_scritchaudio_rate* adjustRate,
 	sjme_attrInOutNotNull sjme_scritchaudio_channels* adjustChannels);
-	
+
 /**
- * Loop iteration for audio processing, if there is no background thread
- * for audio-processing.
+ * Loop iteration for audio processing.
  *
- * @param inState The ScritchAudio state.
- * @return Any resultant error, if any.
- * @since 2025/05/15
- */
-typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
-	sjme_attrInNotNull sjme_scritchaudio inState);
-	
-/**
- * Loop iteration for audio processing, if there is no background thread
- * for audio-processing.
+ * This may be called from a background through or a the current thread.
  *
  * @param inState The ScritchAudio state.
  * @param inStream The stream to render in.
- * @param renderInfo The information needed for rendering.
  * @return Any resultant error, if any.
  * @since 2025/05/28
  */
-typedef sjme_errorCode (*sjme_scritchaudio_loopIterateRenderFunc)(
+typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNullable sjme_scritchaudio_stream inStream,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
+	sjme_attrInNullable sjme_scritchaudio_stream inStream);
 
 /**
  * Called when there are no peers.
@@ -392,6 +411,16 @@ typedef sjme_errorCode (*sjme_scritchaudio_peerNoneFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInValue sjme_jboolean explicit);
+
+/**
+ * A polling function callback.
+ *
+ * @param rawStream The raw stream function.
+ * @return The thread result.
+ * @since 2026/01/09
+ */
+typedef sjme_thread_result (sjme_attrThreadCall *sjme_scritchaudio_pollFunc)(
+	sjme_attrInNotNull sjme_thread_parameter rawStream);
 
 /**
  * Called when the peer has been connected or disconnected.
@@ -565,6 +594,12 @@ typedef struct sjme_scritchaudio_implFunctions
 {
 	/** The driver name. */
 	sjme_lpcstr driverName;
+
+	/** Supports every format and can handle its own mixing. */
+	sjme_jboolean allFormatsOwnMixing;
+
+	/** Supports more than one stream opened at once. */
+	sjme_jboolean supportsMultiStream;
 	
 	/** Api initialization. */
 	sjme_scritchaudio_apiInitFunc apiInit;
@@ -573,7 +608,7 @@ typedef struct sjme_scritchaudio_implFunctions
 	sjme_scritchaudio_disconnectFunc disconnect;
 	
 	/** Iterates the audio loop. */
-	sjme_scritchaudio_loopIterateRenderFunc loopIterate;
+	sjme_scritchaudio_loopIterateFunc loopIterate;
 	
 	/** Queries the MIDI ports and synths available. */
 	sjme_scritchaudio_queryMidiPortsFunc queryMidiPorts;
@@ -583,6 +618,9 @@ typedef struct sjme_scritchaudio_implFunctions
 	
 	/** Create a new audio stream. */
 	sjme_scritchaudio_streamCreateImplFunc streamCreate;
+
+	/** Native callback procedure. */
+	sjme_undefinedFunction nativeCallback;
 } sjme_scritchaudio_implFunctions;
 
 /**
@@ -592,14 +630,17 @@ typedef struct sjme_scritchaudio_implFunctions
  */
 typedef struct sjme_scritchaudio_internFunctions
 {
+	/** Allocates buffers. */
+	sjme_scritchaudio_loopIterateFunc allocBuffers;
+
 	/** Calculate the rendering information. */
 	sjme_scritchaudio_calcRenderInfoFunc calcRenderInfo;
 	
 	/** Determines the next fallback. */
 	sjme_scritchaudio_fallbackNextFunc fallbackNext;
 	
-	/** Iterates the audio loop. */
-	sjme_scritchaudio_loopIterateRenderFunc loopIterate;
+	/** Iterates the audio loop, while locked. */
+	sjme_scritchaudio_loopIterateFunc loopIterateLocked;
 	
 	/** Connect two peers. */
 	sjme_scritchaudio_peerConnectFunc peerConnect;
@@ -609,6 +650,12 @@ typedef struct sjme_scritchaudio_internFunctions
 	
 	/** Dispatch peer none. */
 	sjme_scritchaudio_peerNoneFunc peerNoneDispatch;
+
+	/** Event based polling loop. */
+	sjme_scritchaudio_pollFunc pollEvent;
+
+	/** Manual polling loop. */
+	sjme_scritchaudio_pollFunc pollManual;
 	
 	/** Create a new audio stream. */
 	sjme_scritchaudio_streamCreateFunc streamCreate;
@@ -623,9 +670,15 @@ typedef struct sjme_scritchaudio_bugs
 {
 	/** Audio is manually polled, there is no system managed loop. */
 	sjme_jboolean manualPoll;
+
+	/** Uses event based polling. */
+	sjme_jboolean eventPoll;
 	
 	/** Writing to the output audio blocks until playback is finished. */
 	sjme_jboolean outputBlocks;
+	
+	/** Triggering is not supported. */
+	sjme_jboolean noTriggering;
 } sjme_scritchaudio_bugs;
 
 /**
@@ -685,15 +738,6 @@ struct sjme_scritchaudioBase
 	/** Internal functions. */
 	const sjme_scritchaudio_internFunctions* intern;
 	
-	/** The audio loop thread, if applicable. */
-	sjme_thread loopThread;
-	
-	/** The current audio thread ID, if applicable. */
-	sjme_thread_id loopThreadId;
-
-	/** The loop thread is ready. */
-	sjme_atomic(sjme_jint) loopThreadReady;
-	
 	/** Wrapped ScritchAudio state, if this is a wrapper. */
 	sjme_scritchaudio wrappedState;
 	
@@ -702,12 +746,6 @@ struct sjme_scritchaudioBase
 
 	/** Bugs. */
 	sjme_scritchaudio_bugs bugs;
-
-	/** The delay between manual polls. */
-	sjme_atomic(sjme_jint) pollDelayMillis;
-
-	/** The delay between manual polls (Nanos). */
-	sjme_atomic(sjme_jint) pollDelayNanos;
 
 	/** The output audio stream. */
 	sjme_scritchaudio_stream stream;
@@ -773,10 +811,62 @@ struct sjme_scritchaudio_connectionBase
 	sjme_atomic(sjme_jint) disconnecting;
 };
 
+/**
+ * An individual stream buffer.
+ *
+ * @since 2026/01/20
+ */
+typedef struct sjme_scritchaudio_streamBuffer
+{
+	/** Any header that is needed (such as for winmm). */
+	sjme_pointer header;
+
+	/** The buffer data. */
+	sjme_pointer buffer;
+} sjme_scritchaudio_streamBuffer;
+
+/** The number of stream buffers. */
+#define SJME_SCRITCHAUDIO_STREAM_BUFFERS 2
+
+/**
+ * The data associated with a stream.
+ *
+ * @since 2026/01/20
+ */
+typedef struct sjme_scritchaudio_streamData
+{
+	/** The file descriptor, if applicable. */
+	int fd;
+
+	/** The handle to the device. */
+	sjme_pointer handle;
+
+	/** If headers are needed, are big are the headers? */
+	sjme_jint headerSize;
+
+	/** The buffers to use, one renders, one plays. */
+	sjme_scritchaudio_streamBuffer buffers[SJME_SCRITCHAUDIO_STREAM_BUFFERS];
+
+	/** The buffer to render, this flips accordingly. */
+	sjme_jint renderBuffer;
+
+	/** Was the audio thread bound? */
+	sjme_atomic(sjme_jint) bound;
+
+	/** The current event counter. */
+	sjme_atomic(sjme_jint) eventCounter;
+
+	/** The stream rendering information. */
+	sjme_scritchaudio_renderInfo renderInfo;
+} sjme_scritchaudio_streamData;
+
 struct sjme_scritchaudio_streamBase
 {
 	/** The connection. */
 	sjme_scritchaudio_connectionBase connection;
+
+	/** The lock for audio streams and otherwise. */
+	sjme_thread_spinLock baseLock;
 
 	/** The stream format. */
 	sjme_scritchaudio_format format;
@@ -790,15 +880,26 @@ struct sjme_scritchaudio_streamBase
 	/** The sources attached to this stream. */
 	sjme_list(sjme_scritchaudio_source)* sources;
 
-	/** Stream data. */
-	struct
-	{
-		/** The file descriptor, if applicable. */
-		int fd;
+	/** Last callback error. */
+	sjme_atomic(sjme_jint) lastError;
 
-		/** The handle to the device. */
-		void* handle;
-	} data;
+	/** The audio loop thread, if applicable. */
+	sjme_thread loopThread;
+
+	/** The current audio thread ID, if applicable. */
+	sjme_thread_id loopThreadId;
+
+	/** The loop thread is ready. */
+	sjme_atomic(sjme_jint) loopThreadReady;
+
+	/** The delay between manual polls. */
+	sjme_atomic(sjme_jint) pollDelayMillis;
+
+	/** The delay between manual polls (Nanos). */
+	sjme_atomic(sjme_jint) pollDelayNanos;
+
+	/** Stream data. */
+	sjme_scritchaudio_streamData data;
 };
 
 struct sjme_scritchaudio_sourceBase
