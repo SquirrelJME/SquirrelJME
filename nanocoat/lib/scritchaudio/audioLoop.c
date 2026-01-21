@@ -39,7 +39,7 @@
 	triggerCut = (inState->bugs.noTriggering ? 0 : \
 		SJME_SCRITCHAUDIO_HOLD_NANOS)
 
-static sjme_errorCode sjme_scritchaudio_core_innerEvent(
+static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerEvent(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNullable sjme_scritchaudio_stream inStream)
 {
@@ -100,7 +100,7 @@ static sjme_errorCode sjme_scritchaudio_core_innerEvent(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchaudio_core_innerManual(
+static sjme_errorCode sjme_attrOptimize sjme_scritchaudio_core_innerManual(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNullable sjme_scritchaudio_stream inStream)
 {
