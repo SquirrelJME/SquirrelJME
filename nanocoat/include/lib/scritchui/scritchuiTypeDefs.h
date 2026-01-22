@@ -17,6 +17,8 @@
 #ifndef SJME_C_SQUIRRELJME_SCRITCHUITYPEDEFS_H
 #define SJME_C_SQUIRRELJME_SCRITCHUITYPEDEFS_H
 
+#include "sjme/stdTypes.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -29,6 +31,15 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+#pragma region(scritchui)
+	
+/**
+ * An opaque native handle.
+ * 
+ * @since 2024/04/02
+ */
+typedef sjme_pointer sjme_scritchui_handle;
 
 /**
  * ScritchUI state.
@@ -58,6 +69,13 @@ typedef struct sjme_scritchui_implFunctions sjme_scritchui_implFunctions;
  */
 typedef struct sjme_scritchui_internFunctions sjme_scritchui_internFunctions;
 
+/**
+ * A chunk of loop queue slots.
+ * 
+ * @since 2024/12/31
+ */
+typedef struct sjme_scritchui_loopQueueChunk sjme_scritchui_loopQueueChunk;
+	
 /**
  * Common data structure shared by everything in ScritchUI.
  * 
@@ -292,6 +310,24 @@ typedef struct sjme_scritchui_uiWindowBase sjme_scritchui_uiWindowBase;
 typedef sjme_scritchui_uiWindowBase* sjme_scritchui_uiWindow;
 
 /**
+ * Opaque internal implementation functions.
+ * 
+ * @since 2024/05/14
+ */
+typedef struct sjme_scritchui_implInternFunctions
+	sjme_scritchui_implInternFunctions;
+	
+/**
+ * Stores information for a single loop queue item.
+ * 
+ * @since 2024/12/31
+ */
+typedef struct sjme_scritchui_loopQueueItem sjme_scritchui_loopQueueItem;
+	
+#pragma endregion(scritchui)
+#pragma region(scritchui_pencil)
+	
+/**
  * ScritchUI Pencil state.
  * 
  * @since 2024/12/25
@@ -354,8 +390,11 @@ typedef struct sjme_scritchui_pencilFontParam sjme_scritchui_pencilFontParam;
  * 
  * @since 2026/01/20
  */
-typedef struct sjme_scritchui_pencilFontWithParam sjme_scritchui_pencilFontWithParam;
+typedef struct sjme_scritchui_pencilFontWithParam 
+	sjme_scritchui_pencilFontWithParam;
 
+#pragma endregion(scritchui_pencil)
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

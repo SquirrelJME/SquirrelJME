@@ -884,7 +884,8 @@ SDP_STRUCT_DEF(setStrokeStyle,
 
 SDP_STRUCT_DEF(setFont,
 	SDX_VAR(sjme_scritchui_pencil, g);
-	SDX_VAR(sjme_scritchui_pencilFont, font););
+	SDX_VAR(sjme_scritchui_pencilFont, font);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, params););
 
 SDP_STRUCT_DEF(setParametersFrom,
 	SDX_VAR(sjme_scritchui_pencil, g);
@@ -1639,7 +1640,8 @@ sjme_errorCode sjme_scritchpen_coreSerial_setStrokeStyle(
 	
 sjme_errorCode sjme_scritchpen_coreSerial_setFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_scritchui_pencilFont font);
+	sjme_attrInNotNull sjme_scritchui_pencilFont font,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* params);
 
 sjme_errorCode sjme_scritchpen_coreSerial_setParametersFrom(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

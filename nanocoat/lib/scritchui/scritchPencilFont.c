@@ -243,7 +243,7 @@ static sjme_errorCode sjme_scritchui_fontMetricFontStyle(
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelAscent(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outAscent)
 {
@@ -281,7 +281,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelAscent(
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelBaseline(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_jint* outBaseline)
 {
 	sjme_errorCode error;
@@ -316,7 +316,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelBaseline(
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelDescent(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outDescent)
 {
@@ -351,7 +351,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelDescent(
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelHeight(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_jint* outHeight)
 {
 	sjme_errorCode error;
@@ -385,7 +385,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelHeight(
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading)
 {
 	sjme_errorCode error;
@@ -419,7 +419,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
 
 static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInNegativeOnePositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
 {
@@ -446,7 +446,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 
 static sjme_errorCode sjme_scritchui_fontPixelCharWidth(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth)
 {
@@ -682,7 +682,7 @@ fail_renderBitmap:
 
 static sjme_errorCode sjme_scritchui_fontRenderBitmap(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,
@@ -733,7 +733,7 @@ static sjme_errorCode sjme_scritchui_fontRenderBitmap(
 
 static sjme_errorCode sjme_scritchui_fontRenderChar(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrInNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInValue sjme_jint xPos,
@@ -750,7 +750,7 @@ static sjme_errorCode sjme_scritchui_fontRenderChar(
 
 static sjme_errorCode sjme_scritchui_fontStringWidth(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInNotNull const sjme_charSeq s,
 	sjme_attrInPositive sjme_jint o,
 	sjme_attrInPositive sjme_jint l,

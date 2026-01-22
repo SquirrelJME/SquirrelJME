@@ -868,7 +868,8 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	SJME_SDP_CASE(setFont,
 		SJME_SCRITCHUI_SERIAL_PEN_SET_FONT,
 		(as->setFont.g,
-		as->setFont.font));
+		as->setFont.font,
+		as->setFont.param));
 
 	SJME_SDP_CASE(setParametersFrom,
 		SJME_SCRITCHUI_SERIAL_PEN_SET_PARAMETERS_FROM,
@@ -2560,14 +2561,16 @@ sjme_errorCode sjme_scritchpen_coreSerial_setStrokeStyle(
 	
 sjme_errorCode sjme_scritchpen_coreSerial_setFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_scritchui_pencilFont font)
+	sjme_attrInNotNull sjme_scritchui_pencilFont font,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* params)
 {
 	SJME_SDP_CHUNK(setFont,
 		SJME_SCRITCHUI_SERIAL_PEN_SET_FONT,
-		(g, font));
+		(g, font, params));
 		
 	SJME_SDX_PASS(g);
 	SJME_SDX_PASS(font);
+	SJME_SDX_PASS(params);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;

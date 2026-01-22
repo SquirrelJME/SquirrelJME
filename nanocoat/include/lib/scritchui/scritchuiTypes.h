@@ -17,14 +17,7 @@
 #ifndef SJME_C_SCRITCHUITYPES_H
 #define SJME_C_SCRITCHUITYPES_H
 
-#include "sjme/atomic.h"
-#include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiPencil.h"
-#include "lib/scritchui/scritchuiPencilFont.h"
-#include "lib/scritchui/scritchuiText.h"
-#include "lib/scritchui/scritchuiTypesListener.h"
-
-#include "sjme/path.h"
+#include "lib/scritchui/scritchuiTypeDefs.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -37,114 +30,83 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-/** The max length for a font name. */
-#define SJME_MAX_FONT_NAME 64
-	
-/**
- * The state of the pencil lock.
- * 
- * @since 2024/07/08
- */
-typedef struct sjme_scritchui_pencilLockState
-{
-	/** Spin lock for access to the buffer. */
-	sjme_alignPointer sjme_thread_spinLock spinLock;
-	
-	/** The times this was opened. */
-	sjme_alignPointer sjme_atomic(sjme_jint) count;
-	
-	/** The front end source for drawing. */
-	sjme_frontEndBindable source;
-	
-	/** The base address where drawing should occur. */
-	sjme_pointer base;
-	
-	/** The buffer limit of the base, in bytes. */
-	sjme_jint baseLimitBytes;
-	
-	/** Is this a copy? */
-	sjme_jboolean isCopy;
-} sjme_scritchui_pencilLockState;
+#pragma region(scritchui_core)
 
-struct sjme_scritchui_pencilBase
+/**
+ * Represents a point.
+ * 
+ * @since 2024/07/12
+ */
+typedef struct sjme_scritchui_point
 {
-	/** Common data. */
-	sjme_scritchui_uiCommonBase common;
+	/** X coordinate. */
+	sjme_jint x;
 	
-	/** The current state of the pencil. */
-	sjme_scritchui_pencilState state;
+	/** Y coordinate. */
+	sjme_jint y;
+} sjme_scritchui_point;
+
+/**
+ * Represents a line.
+ * 
+ * @since 2024/07/12
+ */
+typedef struct sjme_scritchui_line
+{
+	/** Starting point. */
+	sjme_scritchui_point s;
 	
-	/** External API. */
-	const sjme_scritchui_pencilFunctions* api;
-	
-	/** External API, in thread of execution. */
-	const sjme_scritchui_pencilFunctions* apiInThread;
-	
-	/** Implementation API. */
-	const sjme_scritchui_pencilImplFunctions* impl;
-	
-	/** Utility functions. */
-	const sjme_scritchui_pencilUtilFunctions* util;
-	
-	/** Optional locking functions, for buffer access as required. */
-	const sjme_scritchui_pencilLockFunctions* lock;
-	
-	/** The lock state. */
-	sjme_scritchui_pencilLockState lockState;
-	
-	/** Lowest level primitive pencil functions. */
-	sjme_scritchui_pencilPrimFunctions prim;
-	
-	/** Front end information for paint. */
-	sjme_frontEndBindable frontEnd;
-	
-	/** The pixel format used. */
-	sjme_gfx_pixelFormat pixelFormat;
-	
-	/** Is there an alpha channel? */
-	sjme_jboolean hasAlpha;
-	
-	/** The default font to use. */
-	sjme_scritchui_pencilFont defaultFont;
-	
-	/** The width of the surface. */
+	/** End point. */
+	sjme_scritchui_point e;
+} sjme_scritchui_line;
+
+/**
+ * Represents a dimension.
+ * 
+ * @since 2024/07/12
+ */
+typedef struct sjme_scritchui_dim
+{
+	/** The width. */
 	sjme_jint width;
 	
-	/** The height of the surface. */
+	/** The height. */
 	sjme_jint height;
-	
-	/** The scanline length, in pixels. */
-	sjme_jint scanLenPixels;
-	
-	/** The scan line length, in bits. */
-	sjme_jint scanLenBits;
-	
-	/** The scan line length, in bytes. */
-	sjme_jint scanLenBytes;
-	
-	/** Bits per pixel. */
-	sjme_jint bitsPerPixel;
-	
-	/** The bytes per pixel. */
-	sjme_jint bytesPerPixel;
-	
-	/** Forced X/Y translate. */
-	sjme_scritchui_point forceTranslate;
-	
-	/** Color palette. */
-	struct
-	{
-		/** The colors available. */
-		const sjme_jint* colors;
-		
-		/** The number of colors used. */
-		sjme_jint numColors;
-	} palette;
-};
+} sjme_scritchui_dim;
 
-/** The string length of a component ID. */
-#define SJME_SCRITCHUI_UI_COMPONENT_ID_STRLEN 32
-
+/**
+ * Represents a rectangle.
+ * 
+ * @since 2024/04/26
+ */
+typedef struct sjme_scritchui_rect
+{
+	/** The starting point of the rectangle. */
+	sjme_scritchui_point s;
+	
+	/** The dimension of the rect. */
+	sjme_scritchui_dim d;
+} sjme_scritchui_rect;
+	
+#pragma endregion(scritchui_core)
+#pragma region(scritchui_independent)
+	
+/**
+ * Windowing system specific bugs.
+ * 
+ * @since 2024/08/15
+ */
+typedef struct sjme_scritchui_bugs
+{
+	/** Manual event polling. */
+	sjme_jboolean manualEventPoll;
+	
+	/** Do not set content size when the window is made visible. */
+	sjme_jboolean noContentSizeWhenVisible;
+	
+	/** It is unknown when a window is visible or not. */
+	sjme_jboolean windowVisibilityUnknown;
+} sjme_scritchui_bugs;
 /**
  * Stores the mouse state.
  * 
@@ -164,6 +126,47 @@ typedef struct sjme_scritchui_uiMouseState
 	/** Last mouse Y position. */
 	sjme_jint mouseY;
 } sjme_scritchui_uiMouseState;
+	
+/**
+ * Window manager details to use.
+ * 
+ * @since 2024/04/24
+ */
+typedef struct sjme_scritchui_wmInfo
+{
+	/** Default title. */
+	sjme_lpcstr defaultTitle;
+	
+	/** X Window System Class. */
+	sjme_lpcstr xwsClass;
+} sjme_scritchui_wmInfo;
+	
+#pragma endregion(scritchui_independent)
+#pragma region(scritchui_base)
+	
+struct sjme_scritchui_uiCommonBase
+{
+	/** The type of what this is. */
+	sjme_scritchui_uiType type;
+	
+	/** The state which owns this. */
+	sjme_scritchui state;
+	
+	/**
+	 * Front-end data for this, note that ScritchUI implementations must not
+	 * use this for information as this is only to be used by front-ends.
+	 *
+	 * Bindings may be used as needed.
+	 */
+	sjme_frontEndBindable frontEnd;
+	
+	/** Opaque native handles for this, as needed. */
+	sjme_scritchui_handle handle[SJME_SCRITCHUI_NUM_COMMON_HANDLES];
+	
+	/** Other value storage, as needed. */
+	sjme_jint intVals[SJME_SCRITCHUI_NUM_COMMON_VALUES];
+};
+	
 
 struct sjme_scritchui_uiComponentBase
 {
@@ -198,14 +201,58 @@ struct sjme_scritchui_uiComponentBase
 		sjme_scritchui_uiMouseState mouse[2];
 	} state;
 };
+	
+struct sjme_scritchui_uiContainerBase
+{
+	/** Components within the container. */
+	sjme_list(sjme_scritchui_uiComponent)* components;
+	
+	/** The size of the content within the container. */
+	sjme_scritchui_dim contentSize;
+};
 
-/** List of component. */
-SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);
+struct sjme_scritchui_uiLabeledBase
+{
+	/** The current label, which is always a copy. */
+	sjme_lpcstr label;
+};
 
-/** Type that component pointers are. */
-#define SJME_TYPEOF_BASIC_sjme_scritchui_uiComponent \
-	SJME_TYPEOF_BASIC_sjme_pointer
-
+struct sjme_scritchui_uiPaintableBase
+{
+	/** Listeners. */
+	sjme_scritchui_uiPaintableListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
+	
+	/** Extra data if needed. */
+	sjme_intPointer extra;
+	
+	/** Is this currently in paint? */
+	sjme_alignPointer sjme_atomic(sjme_jint) inPaint;
+	
+	/** Belayed painting. */
+	sjme_scritchui_rect belayRect;
+	
+	/** Last error while in paint. */
+	sjme_errorCode lastError;
+	
+	/** Pencil drawing information. */
+	sjme_scritchui_pencilBase pencil;
+};
+	
+#pragma endregion(scritchui_base)
+#pragma region(scritchui_baseChoice)
+	
+struct sjme_scritchui_uiChoiceBase
+{
+	/** The type of choice this is. */
+	sjme_scritchui_choiceType type;
+	
+	/** The number of valid entries on the list. */
+	sjme_jint numItems;
+	
+	/** The items on this list. */
+	sjme_list(sjme_scritchui_uiChoiceItem)* items;
+};
+	
 struct sjme_scritchui_uiChoiceItemBase
 {
 	/** Is this selected? */
@@ -233,48 +280,9 @@ struct sjme_scritchui_uiChoiceItemBase
 	sjme_jboolean freeImageRgb;
 };
 
-/** A list of choice items. */
-SJME_LIST_DECLARE(sjme_scritchui_uiChoiceItem, 0);
-
-struct sjme_scritchui_uiChoiceBase
-{
-	/** The type of choice this is. */
-	sjme_scritchui_choiceType type;
+#pragma endregion(scritchui_baseChoice)
+#pragma region(scritchui_baseMenu)
 	
-	/** The number of valid entries on the list. */
-	sjme_jint numItems;
-	
-	/** The items on this list. */
-	sjme_list(sjme_scritchui_uiChoiceItem)* items;
-};
-
-struct sjme_scritchui_uiContainerBase
-{
-	/** Components within the container. */
-	sjme_list(sjme_scritchui_uiComponent)* components;
-	
-	/** The size of the content within the container. */
-	sjme_scritchui_dim contentSize;
-};
-
-struct sjme_scritchui_uiLabeledBase
-{
-	/** The current label, which is always a copy. */
-	sjme_lpcstr label;
-};
-
-struct sjme_scritchui_uiListBase
-{
-	/** Common data. */
-	sjme_scritchui_uiComponentBase component;
-	
-	/** Choice information. */
-	sjme_scritchui_uiChoiceBase choice;
-};
-
-/** Menu item list. */
-SJME_LIST_DECLARE(sjme_scritchui_uiMenuKind, 0);
-
 struct sjme_scritchui_uiMenuKindBase
 {
 	/** Common data. */
@@ -353,45 +361,9 @@ struct sjme_scritchui_uiMenuItemBase
 	sjme_jint opaqueId;
 };
 
-struct sjme_scritchui_uiPaintableBase
-{
-	/** Listeners. */
-	sjme_scritchui_uiPaintableListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
+#pragma endregion(scritchui_baseMenu)
+#pragma region(scritchui_baseScreen)
 	
-	/** Extra data if needed. */
-	sjme_intPointer extra;
-	
-	/** Is this currently in paint? */
-	sjme_alignPointer sjme_atomic(sjme_jint) inPaint;
-	
-	/** Belayed painting. */
-	sjme_scritchui_rect belayRect;
-	
-	/** Last error while in paint. */
-	sjme_errorCode lastError;
-	
-	/** Pencil drawing information. */
-	sjme_scritchui_pencilBase pencil;
-};
-
-struct sjme_scritchui_uiPanelBase
-{
-	/** Common data. */
-	sjme_scritchui_uiComponentBase component;
-	
-	/** Container related. */
-	sjme_scritchui_uiContainerBase container;
-	
-	/** Paint related. */
-	sjme_scritchui_uiPaintableBase paint;
-	
-	/** Is focus enabled? */
-	sjme_jboolean enableFocus;
-	
-	/** Is default focus enabled? */
-	sjme_jboolean defaultFocus;
-};
-
 struct sjme_scritchui_uiScreenBase
 {
 	/** Common data. */
@@ -411,36 +383,6 @@ struct sjme_scritchui_uiScreenBase
 	
 	/** Cached millimeter bounds. */
 	sjme_scritchui_rect mmBound;
-};
-
-struct sjme_scritchui_uiViewBase
-{
-	/** User and core listeners for the view. */
-	sjme_scritchui_uiViewListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
-	
-	/** The current view area. */
-	sjme_scritchui_dim area;
-	
-	/** The current view rectangle. */
-	sjme_scritchui_rect view;
-	
-	/** The current page size. */
-	sjme_scritchui_dim pageSize;
-	
-	/** The last suggested viewing size. */
-	sjme_scritchui_dim lastSuggest;
-};
-
-struct sjme_scritchui_uiScrollPanelBase
-{
-	/** Common data. */
-	sjme_scritchui_uiComponentBase component;
-	
-	/** Container related. */
-	sjme_scritchui_uiContainerBase container;
-	
-	/** Viewport data. */
-	sjme_scritchui_uiViewBase view;
 };
 
 struct sjme_scritchui_uiWindowBase
@@ -469,6 +411,223 @@ struct sjme_scritchui_uiWindowBase
 	/** The component that has the focus. */
 	sjme_scritchui_uiComponent focusedComponent;
 };
+	
+#pragma endregion(scritchui_baseScreen)
+#pragma endregion(scritchui_baseText)
+	
+struct sjme_scritchui_textBase
+{
+	/** Common data. */
+	sjme_scritchui_uiCommonBase common;
+};
+	
+#pragma endregion(scritchui_baseText)
+#pragma region(scritchui_baseView)
+	
+struct sjme_scritchui_uiViewBase
+{
+	/** User and core listeners for the view. */
+	sjme_scritchui_uiViewListeners listeners[SJME_NUM_SCRITCHUI_LISTENER];
+	
+	/** The current view area. */
+	sjme_scritchui_dim area;
+	
+	/** The current view rectangle. */
+	sjme_scritchui_rect view;
+	
+	/** The current page size. */
+	sjme_scritchui_dim pageSize;
+	
+	/** The last suggested viewing size. */
+	sjme_scritchui_dim lastSuggest;
+};
+	
+#pragma endregion(scritchui_baseView)
+#pragma region(scritchui_midLevel)
+	
+struct sjme_scritchui_uiPanelBase
+{
+	/** Common data. */
+	sjme_scritchui_uiComponentBase component;
+	
+	/** Container related. */
+	sjme_scritchui_uiContainerBase container;
+	
+	/** Paint related. */
+	sjme_scritchui_uiPaintableBase paint;
+	
+	/** Is focus enabled? */
+	sjme_jboolean enableFocus;
+	
+	/** Is default focus enabled? */
+	sjme_jboolean defaultFocus;
+};
+	
+struct sjme_scritchui_uiScrollPanelBase
+{
+	/** Common data. */
+	sjme_scritchui_uiComponentBase component;
+	
+	/** Container related. */
+	sjme_scritchui_uiContainerBase container;
+	
+	/** Viewport data. */
+	sjme_scritchui_uiViewBase view;
+};
+
+#pragma endregion(scritchui_midLevel)
+#pragma region(scritchui_highLevel)
+	
+	
+struct sjme_scritchui_uiListBase
+{
+	/** Common data. */
+	sjme_scritchui_uiComponentBase component;
+	
+	/** Choice information. */
+	sjme_scritchui_uiChoiceBase choice;
+};
+	
+#pragma endregion(scritchui_highLevel)
+#pragma region(scritchui_loopQueue)
+
+/**
+ * The loop queue which contains multiple loop items.
+ * 
+ * @since 2024/12/31
+ */
+typedef struct sjme_scritchui_loopQueue
+{
+	/** The lock for the queue items. */
+	sjme_alignPointer sjme_thread_spinLock lock;
+	
+	/** The first chunk. */
+	sjme_scritchui_loopQueueChunk* firstChunk;
+	
+	/** The next item in the queue. */
+	sjme_scritchui_loopQueueItem* next;
+	
+	/** The last item in the queue. */
+	sjme_scritchui_loopQueueItem* last;
+} sjme_scritchui_loopQueue;
+	
+struct sjme_scritchui_loopQueueItem
+{
+	/** The function to execute. */
+	sjme_thread_mainFunc function;
+	
+	/** The "anything" value. */
+	sjme_thread_parameter anything;
+	
+	/** The next item in the queue. */
+	sjme_scritchui_loopQueueItem* next;
+};
+struct sjme_scritchui_loopQueueChunk
+{
+	/** The items in the loop queue. */
+	sjme_scritchui_loopQueueItem items[SJME_SCRITCHUI_LOOP_SIZE];
+	
+	/** The next chunk, if this is full. */
+	sjme_scritchui_loopQueueChunk* nextChunk;
+};
+
+#pragma endregion(scritchui_loopQueue)
+#pragma region(scritchui_font)
+	
+struct sjme_scritchui_pencilFontLink
+{
+	/** The loaded font for this link. */
+	sjme_scritchui_pencilFont font;
+	
+	/** The previous link. */
+	sjme_scritchui_pencilFontLink* prev;
+	
+	/** The next link. */
+	sjme_scritchui_pencilFontLink* next;
+};
+	
+#pragma endregion(scritchui_font)
+#pragma region(scritchui_pencil)
+	
+/**
+ * Pencil drawing sub-translation matrix.
+ * 
+ * @since 2024/07/09
+ */
+typedef struct sjme_scritchui_pencilMatrixSub
+{
+	/** Step for source X coordinate. */
+	sjme_fixed wx;
+	
+	/** Step for source Y coordinate. */
+	sjme_fixed zy;
+} sjme_scritchui_pencilMatrixSub;
+
+/**
+ * Pencil drawing matrix, for any translations, rotations, and mirroring.
+ * 
+ * @since 2024/07/09
+ */
+typedef struct sjme_scritchui_pencilMatrix
+{
+	/** Translation for input X coordinates. */
+	sjme_scritchui_pencilMatrixSub x;
+	
+	/** Translation for input Y coordinates. */
+	sjme_scritchui_pencilMatrixSub y;
+	
+	/** Target width after transformations. */
+	sjme_jint tw;
+	
+	/** Target width after transformations. */
+	sjme_jint th;
+} sjme_scritchui_pencilMatrix;
+
+/**
+ * Represents the color of a pixel.
+ * 
+ * @since 2024/07/09
+ */
+typedef struct sjme_scritchui_pencilColor
+{
+	/** The raw pencil color, which is placed in the buffer. */
+	sjme_jint v;
+	
+	/** The RGBA color. */
+	sjme_jint argb;
+	
+	/** Red. */
+	sjme_jubyte r;
+	
+	/** Green. */
+	sjme_jubyte g;
+	
+	/** Blue. */
+	sjme_jubyte b;
+	
+	/** Alpha. */
+	sjme_jubyte a;
+	
+	/** Indexed color. */
+	sjme_jchar i;
+} sjme_scritchui_pencilColor;
+	
+#pragma endregion(scritchui_pencil)
+
+
+/** List of component. */
+SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);
+
+/** Type that component pointers are. */
+#define SJME_TYPEOF_BASIC_sjme_scritchui_uiComponent \
+	SJME_TYPEOF_BASIC_sjme_pointer
+
+/** A list of choice items. */
+SJME_LIST_DECLARE(sjme_scritchui_uiChoiceItem, 0);
+
+/** Menu item list. */
+SJME_LIST_DECLARE(sjme_scritchui_uiMenuKind, 0);
+
 
 /**
  * Contains the identifying information for a font.
@@ -534,12 +693,6 @@ struct sjme_scritchui_pencilFontBase
 		/** The descent of the font. */
 		sjme_jint descent[2];
 	} cache;
-};
-
-struct sjme_scritchui_textBase
-{
-	/** Common data. */
-	sjme_scritchui_uiCommonBase common;
 };
 	
 struct sjme_scritchui_pencilFontParam
