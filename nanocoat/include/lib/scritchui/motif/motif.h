@@ -17,7 +17,6 @@
 #define SJME_C_MOTIF_H
 
 #include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiImpl.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "sjme/config.h"
 #include "sjme/debug.h"

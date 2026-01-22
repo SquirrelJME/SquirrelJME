@@ -17,6 +17,12 @@
 #ifndef SJME_C_SQUIRRELJME_SCRITCHUIFUNCS_H
 #define SJME_C_SQUIRRELJME_SCRITCHUIFUNCS_H
 
+#include "sjme/gfxConst.h"
+#include "sjme/stream.h"
+#include "lib/scritchinput/scritchinput.h"
+#include "lib/scritchui/scritchuiBasic.h"
+#include "lib/scritchui/scritchuiTypeDefs.h"
+#include "lib/scritchui/scritchuiTypesSub.h"
 #include "lib/scritchui/scritchuiConst.h"
 
 /* Anti-C++. */
@@ -907,7 +913,7 @@ typedef sjme_errorCode (*sjme_scritchui_lafElementColorFunc)(
  * Creates a new list.
  * 
  * @param inState The input state.
- * @param outPanel The resultant list.
+ * @param outList The resultant list.
  * @param inChoiceType The type of choice this is.
  * @return Any error code if applicable.
  * @since 2024/07/16
@@ -1053,6 +1059,7 @@ typedef sjme_errorCode (*sjme_scritchui_objectDeleteFunc)(
  * @param inState The input state.
  * @param inPanel The input panel.
  * @param enableFocus Should focus be enabled?
+ * @param defaultFocus Should this panel be set to default focus?
  * @return Any error code if applicable.
  * @since 2024/04/06
  */
@@ -1080,6 +1087,7 @@ typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
  * 
  * @param inState The input state.
  * @param inScreen The screen to get the bounds of.
+ * @param forComponent The component this is for.
  * @param pixelBound The resultant screen bound.
  * @param mmBound The resultant screen bound in millimeters.
  * @return Any resultant error, if any.
@@ -1096,7 +1104,7 @@ typedef sjme_errorCode (*sjme_scritchui_screenGetBoundsFunc)(
  * Sets the screen listener callback for screen changes.
  * 
  * @param inState The input state.
- * @param callback The callback for screen information and changes.
+ * @param inListener The callback for screen information and changes.
  * @return Any error code if applicable.
  * @since 2024/04/06
  */
@@ -1635,7 +1643,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyCoordinateAdjFunc)(
  * @since 2024/07/12
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilApplyRotateScaleFunc)(
-	sjme_attrInOutNotNull sjme_scritchui_pencilMatrix* adjMatrix,
+	sjme_attrInOutNotNull sjme_scritchui_matrix* adjMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,
 	sjme_attrInPositive sjme_jint hSrc,
@@ -2276,7 +2284,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapColorFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
+	sjme_attrOutNotNull sjme_scritchui_color* outColor);
 
 /**
  * Reads the given pixel format from a single scanline at the given position. 
@@ -2520,7 +2528,6 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanToRgbFunc)(
  * @param g The graphics owning this.
  * @param outRgb The output RGB scan buffer.
  * @param outRgbOff Offset into the RGB scan buffer.
- * @param outRawLen Length of the RGB scan buffer.
  * @param inNumPixels The number of pixels to fill.
  * @param inValue The raw pixel to fill with.
  * @return Any resultant error code.
@@ -2761,6 +2768,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetStrokeStyleFunc)(
  * @param anchor The anchor point.
  * @param wDest The destination width.
  * @param hDest The destination height.
+ * @param mode The region transfer mode.
  * @return Any resultant error, if any
  * @since 2025/12/22
  */

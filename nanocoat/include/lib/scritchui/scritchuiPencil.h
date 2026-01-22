@@ -60,6 +60,8 @@ sjme_jboolean sjme_scritchpen_hasAlpha(
  * @param sy Starting surface Y coordinate.
  * @param sw Surface width.
  * @param sh Surface height.
+ * @param defaultFont The default font to use.
+ * @param copyFrontEnd The front-end copy.
  * @return The bracket capable of drawing hardware accelerated graphics.
  * @return An error if the requested graphics are not valid.
  * @since 2024/05/01
@@ -98,6 +100,8 @@ sjme_errorCode sjme_scritchpen_initBuffer(
  * @param sy Starting surface Y coordinate.
  * @param sw Surface width.
  * @param sh Surface height.
+ * @param defaultFont The default font to use.
+ * @param copyFrontEnd The front end copy.
  * @return The bracket capable of drawing hardware accelerated graphics.
  * @return An error if the requested graphics are not valid.
  * @since 2024/05/01
@@ -174,4 +178,4 @@ sjme_jboolean sjme_scritchpen_isIndexed(
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIPENCIL_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SCRITCHUIPENCIL_H */
+#endif /* SJME_C_SCRITCHUIPENCIL_H */

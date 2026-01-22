@@ -855,7 +855,7 @@ SDP_STRUCT_DEF(mapColor,
 	SDX_VAR(sjme_scritchui_pencil, g);
 	SDX_VAR(sjme_jboolean, fromRaw);
 	SDX_VAR(sjme_jint, inRgbOrRaw);
-	SDX_VARP(sjme_scritchui_pencilColor, outColor););
+	SDX_VARP(sjme_scritchui_color, outColor););
 
 SDP_STRUCT_DEF(setAlphaColor,
 	SDX_VAR(sjme_scritchui_pencil, g);
@@ -1609,7 +1609,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
+	sjme_attrOutNotNull sjme_scritchui_color* outColor);
 
 sjme_errorCode sjme_scritchpen_coreSerial_setAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

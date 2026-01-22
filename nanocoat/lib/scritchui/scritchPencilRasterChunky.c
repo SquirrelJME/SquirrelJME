@@ -228,7 +228,7 @@ sjme_errorCode sjme_scritchpen_core_drawXRGB32Region(
 	sjme_attrInPositive sjme_jint origImgHeight)
 {
 	sjme_errorCode error;
-	sjme_scritchui_pencilMatrix m;
+	sjme_scritchui_matrix m;
 	sjme_fixed wx, zy, wxBase, zyMajor;
 	sjme_jint dx, dy, iwx, izy, at;
 	sjme_jint* srcRgb;
@@ -415,7 +415,7 @@ sjme_errorCode sjme_scritchpen_core_drawRegion(
 	sjme_attrInPositive sjme_jint origImgHeight)
 {
 	sjme_errorCode error;
-	sjme_scritchui_pencilMatrix m;
+	sjme_scritchui_matrix m;
 	sjme_fixed wx, zy, wxBase, zyMajor;
 	sjme_jint dx, dy, iwx, izy, at, srcBytes, mulAlphaVal, byteSize;
 	sjme_pointer srcData;

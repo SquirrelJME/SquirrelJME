@@ -19,17 +19,12 @@
 
 #include "sjme/config.h"
 #include "sjme/multithread.h"
-#include "sjme/tokenUtils.h"
-#include "sjme/gfxConst.h"
 #include "sjme/stdTypes.h"
 #include "sjme/list.h"
-#include "sjme/native.h"
-#include "lib/scritchinput/scritchinput.h"
 #include "sjme/alloc.h"
 #include "sjme/dylib.h"
-#include "sjme/stream.h"
 #include "lib/scritchany/scritchany.h"
-#include "lib/scritchui/scritchuiTypeDefs.h"
+#include "lib/scritchui/scritchuiState.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -86,20 +81,6 @@ extern "C" {
 #define SJME_SUI_CAST_WINDOW(v) \
 	SJME_SUI_CAST(SJME_SCRITCHUI_TYPE_WINDOW, \
 	sjme_scritchui_uiWindow, (v))
-
-/** A list of pencil fonts. */
-SJME_LIST_DECLARE(sjme_scritchui_pencilFont, 0);
-	
-/** A list of screens. */
-SJME_LIST_DECLARE(sjme_scritchui_uiScreen, 0);
-
-
-
-
-	
-
-
-
 
 /**
  * Initializes the API through the dynamic library.

@@ -18,7 +18,8 @@
 #define SJME_C_SQUIRRELJME_SCRITCHUIFUNCSIMPL_H
 
 #include "lib/scritchui/scritchuiFuncs.h"
-#include "lib/scritchui/scritchuiTypesListener.h"
+#include "lib/scritchui/scritchuiBasic.h"
+#include "lib/scritchui/scritchuiTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -50,6 +51,7 @@ typedef sjme_errorCode (*sjme_scritchui_impl_apiInitFunc)(
  * 
  * @param inState The input state.
  * @param inContainer The container to place the component within.
+ * @param inContainerData The container data.
  * @param addComponent The component to add to the container.
  * @return Any error code if applicable.
  * @since 2024/04/20
@@ -65,6 +67,7 @@ typedef sjme_errorCode (*sjme_scritchui_impl_containerAddFunc)(
  * 
  * @param inState The input state.
  * @param inContainer The container to remove the component within.
+ * @param inContainerData The container data.
  * @param removeComponent The component to remove from the container.
  * @return Any error code if applicable.
  * @since 2024/07/15
@@ -108,7 +111,7 @@ typedef sjme_errorCode (*sjme_scritchui_impl_menuBarNewFunc)(
  * 
  * @param inState The input ScritchUI state.
  * @param inMenuItem The menu item that was created.
- * @param ignored Ignored, not used.
+ * @param init Initializer.
  * @return Any resultant error, if any.
  * @since 2024/07/21
  */

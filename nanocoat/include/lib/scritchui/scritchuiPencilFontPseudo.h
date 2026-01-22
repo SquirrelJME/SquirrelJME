@@ -61,4 +61,4 @@ sjme_errorCode sjme_scritchui_core_fontPseudo(
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIPENCILFONTPSEUDO_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SCRITCHUIPENCILFONTPSEUDO_H */
+#endif /* SJME_C_SCRITCHUIPENCILFONTPSEUDO_H */

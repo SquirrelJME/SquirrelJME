@@ -16,7 +16,6 @@
 #ifndef SJME_C_SCRITCHUIEXTERN_H
 #define SJME_C_SCRITCHUIEXTERN_H
 
-#include "sjme/dylib.h"
 #include "lib/scritchui/scritchuiTypes.h"
 
 /* Anti-C++. */
@@ -49,4 +48,4 @@ extern const sjme_scritchui_pencilBitLineFunc
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIEXTERN_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SCRITCHUIEXTERN_H */
+#endif /* SJME_C_SCRITCHUIEXTERN_H */

@@ -175,4 +175,4 @@ sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIPENCILFONTSQF_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SCRITCHUIPENCILFONTSQF_H */
+#endif /* SJME_C_SCRITCHUIPENCILFONTSQF_H */

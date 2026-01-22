@@ -105,29 +105,29 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
+	sjme_attrOutNotNull sjme_scritchui_color* outColor);
 	
 sjme_errorCode sjme_scritchpen_corePrim_mapColorPfToRgb(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInValue sjme_jint v,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
+	sjme_attrOutNotNull sjme_scritchui_color* outColor);
 
 sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
+	sjme_attrOutNotNull sjme_scritchui_color* outColor);
 
 sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint v,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
+	sjme_attrOutNotNull sjme_scritchui_color* outColor);
 	
 sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInValue sjme_jint argb,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
+	sjme_attrOutNotNull sjme_scritchui_color* outColor);
 
 sjme_errorCode sjme_scritchpen_corePrim_rawScanFillInt(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -187,7 +187,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	sjme_attrInPositive sjme_jint dataHeight);
 
 sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
-	sjme_attrInOutNotNull sjme_scritchui_pencilMatrix* adjMatrix,
+	sjme_attrInOutNotNull sjme_scritchui_matrix* adjMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,
 	sjme_attrInPositive sjme_jint hSrc,
@@ -532,7 +532,7 @@ sjme_errorCode sjme_scritchpen_core_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
+	sjme_attrOutNotNull sjme_scritchui_color* outColor);
 
 sjme_errorCode sjme_scritchpen_core_setAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

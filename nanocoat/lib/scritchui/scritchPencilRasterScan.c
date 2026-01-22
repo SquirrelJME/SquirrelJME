@@ -634,7 +634,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 	sjme_jint destBytes, srcBytes, limitBytes;
 	sjme_jint destNumPixels, srcNumPixels, limitNumPixels;
 	sjme_jint limitDpp, limitSpp, dpp, spp, dn, sn, dl, sl, dm, sm;
-	sjme_scritchui_pencilColor vv;
+	sjme_scritchui_color vv;
 	sjme_juint* dx;
 	sjme_juint* sx;
 	sjme_juint rw;

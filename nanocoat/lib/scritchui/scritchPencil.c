@@ -9,7 +9,6 @@
 
 #include "sjme/util.h"
 #include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiImpl.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "lib/scritchui/core/coreRaster.h"

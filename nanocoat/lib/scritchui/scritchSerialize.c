@@ -2450,7 +2450,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+	sjme_attrOutNotNull sjme_scritchui_color* outColor)
 {
 	SJME_SDP_CHUNK(mapColor,
 		SJME_SCRITCHUI_SERIAL_PEN_MAP_COLOR,

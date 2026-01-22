@@ -17,7 +17,6 @@
 #define SJME_C_CORE_H
 
 #include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiImpl.h"
 #include "lib/scritchui/scritchuiTypes.h"
 
 /* Anti-C++. */

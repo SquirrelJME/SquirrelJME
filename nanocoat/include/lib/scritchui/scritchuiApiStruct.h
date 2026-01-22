@@ -37,6 +37,10 @@ extern "C"
 	SJME_TOKEN_PASTE3(sjme_scritchui_, x, Func) x
 	
 /** Quick definition for functions. */
+#define SJME_SCRITCHUI_QUICK_FONT(what, lWhat) \
+	SJME_TOKEN_PASTE3(sjme_scritchui_pencilFont, what, Func) lWhat
+	
+/** Quick definition for functions. */
 #define SJME_SCRITCHUI_QUICK_PENCIL(what, lWhat) \
 	SJME_TOKEN_PASTE3(sjme_scritchui_pencil, what, Func) lWhat
 	
@@ -278,52 +282,52 @@ typedef struct sjme_scritchui_externalFunctions
 typedef struct sjme_scritchui_pencilFontFunctions
 {
 	/** Checks font equality. */
-	SJME_SCRITCHUI_QUICK_PENCIL(Equals, equals);
+	SJME_SCRITCHUI_QUICK_FONT(Equals, equals);
 	
 	/** Returns the direction of the character. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricCharDirection, metricCharDirection);
+	SJME_SCRITCHUI_QUICK_FONT(MetricCharDirection, metricCharDirection);
 	
 	/** Checks the validity of a glyph. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricCharValid, metricCharValid);
+	SJME_SCRITCHUI_QUICK_FONT(MetricCharValid, metricCharValid);
 	
 	/** Returns the face of the font. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricFontFace, metricFontFace);
+	SJME_SCRITCHUI_QUICK_FONT(MetricFontFace, metricFontFace);
 	
 	/** Returns the name of the font. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricFontName, metricFontName);
+	SJME_SCRITCHUI_QUICK_FONT(MetricFontName, metricFontName);
 	
 	/** Returns the style of the font. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricFontStyle, metricFontStyle);
+	SJME_SCRITCHUI_QUICK_FONT(MetricFontStyle, metricFontStyle);
 	
 	/** Returns the ascent of the font. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelAscent, metricPixelAscent);
+	SJME_SCRITCHUI_QUICK_FONT(MetricPixelAscent, metricPixelAscent);
 	
 	/** Returns the baseline of the font. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelBaseline, metricPixelBaseline);
+	SJME_SCRITCHUI_QUICK_FONT(MetricPixelBaseline, metricPixelBaseline);
 	
 	/** Returns the descent of the font. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelDescent, metricPixelDescent);
+	SJME_SCRITCHUI_QUICK_FONT(MetricPixelDescent, metricPixelDescent);
 	
 	/** Returns the height of the font. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelHeight, metricPixelHeight);
+	SJME_SCRITCHUI_QUICK_FONT(MetricPixelHeight, metricPixelHeight);
 	
 	/** Returns the leading of the font. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelLeading, metricPixelLeading);
+	SJME_SCRITCHUI_QUICK_FONT(MetricPixelLeading, metricPixelLeading);
 	
 	/** Returns the pixel size of the font. */
-	SJME_SCRITCHUI_QUICK_PENCIL(MetricPixelSize, metricPixelSize);
+	SJME_SCRITCHUI_QUICK_FONT(MetricPixelSize, metricPixelSize);
 	
 	/** Returns the width of the font character. */
-	SJME_SCRITCHUI_QUICK_PENCIL(PixelCharWidth, pixelCharWidth);
+	SJME_SCRITCHUI_QUICK_FONT(PixelCharWidth, pixelCharWidth);
 	
 	/** Renders the font character to a bitmap. */
-	SJME_SCRITCHUI_QUICK_PENCIL(RenderBitmap, renderBitmap);
+	SJME_SCRITCHUI_QUICK_FONT(RenderBitmap, renderBitmap);
 	
 	/** Renders the font character to the given pencil. */
-	SJME_SCRITCHUI_QUICK_PENCIL(RenderChar, renderChar);
+	SJME_SCRITCHUI_QUICK_FONT(RenderChar, renderChar);
 	
 	/** Calculates the length of the given string. */
-	SJME_SCRITCHUI_QUICK_PENCIL(StringWidth, stringWidth);
+	SJME_SCRITCHUI_QUICK_FONT(StringWidth, stringWidth);
 } sjme_scritchui_pencilFontFunctions;
 	
 #pragma endregion(scritchui_font)
@@ -437,6 +441,7 @@ typedef struct sjme_scritchui_pencilFunctions
 #pragma endregion(scritchui_pencil)
 
 #undef SJME_SCRITCHUI_QUICK_API
+#undef SJME_SCRITCHUI_QUICK_FONT
 #undef SJME_SCRITCHUI_QUICK_PENCIL
 	
 /*--------------------------------------------------------------------------*/

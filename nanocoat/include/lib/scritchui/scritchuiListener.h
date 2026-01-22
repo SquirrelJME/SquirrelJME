@@ -17,7 +17,10 @@
 #ifndef SJME_C_SCRITCHUILISTENER_H
 #define SJME_C_SCRITCHUILISTENER_H
 
+#include "sjme/tokenUtils.h"
+#include "sjme/frontEnd.h"
 #include "lib/scritchui/scritchuiFuncs.h"
+#include "lib/scritchui/scritchuiTypeDefs.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -55,7 +58,7 @@ extern "C"
 
 /** Declares a ScritchUI listener set. */
 #define SJME_SCRITCHUI_LISTENER_DECLARE(what) \
-	typedef struct SJME_TOKEN_PASTE(sjme_scritchui_listener_, what) \
+	struct SJME_TOKEN_PASTE(sjme_scritchui_listener_, what) \
 	{ \
 		/** Front end data. */ \
 		sjme_frontEndBindable frontEnd; \
@@ -65,7 +68,7 @@ extern "C"
 		 \
 		/** Listener callback. */ \
 		SJME_TOKEN_PASTE3(sjme_scritchui_, what, ListenerFunc) callback; \
-	} SJME_TOKEN_PASTE(sjme_scritchui_listener_, what)
+	}
 
 /** Void listener. */
 SJME_SCRITCHUI_LISTENER_DECLARE(void);
@@ -161,4 +164,4 @@ typedef struct sjme_scritchui_uiWindowListeners
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUITYPESLISTENER_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SCRITCHUITYPESLISTENER_H */
+#endif /* SJME_C_SCRITCHUILISTENER_H */

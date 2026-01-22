@@ -33,20 +33,6 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 #pragma region(scritchui)
-	
-/**
- * An opaque native handle.
- * 
- * @since 2024/04/02
- */
-typedef sjme_pointer sjme_scritchui_handle;
-
-/**
- * ScritchUI state.
- * 
- * @since 2024/03/27
- */
-typedef struct sjme_scritchui_stateBase* sjme_scritchui;
 
 /**
  * ScritchUI API functions, implemented by a native library accordingly.
@@ -394,6 +380,47 @@ typedef struct sjme_scritchui_pencilFontWithParam
 	sjme_scritchui_pencilFontWithParam;
 
 #pragma endregion(scritchui_pencil)
+#pragma region(scritchui_listener)
+	
+/** Declares a ScritchUI listener set. */
+#define SJME_SCRITCHUI_LISTENER_TYPEDEF(what) \
+	typedef struct SJME_TOKEN_PASTE(sjme_scritchui_listener_, what) \
+		SJME_TOKEN_PASTE(sjme_scritchui_listener_, what)
+
+/** Void listener. */
+SJME_SCRITCHUI_LISTENER_TYPEDEF(void);
+
+/** Activate choice item. */
+SJME_SCRITCHUI_LISTENER_TYPEDEF(activate);
+
+/** Choice items updated, before or after. */
+SJME_SCRITCHUI_LISTENER_TYPEDEF(valueUpdate);
+
+/** Close listener. */
+SJME_SCRITCHUI_LISTENER_TYPEDEF(close);
+
+/** Input listener. */
+SJME_SCRITCHUI_LISTENER_TYPEDEF(input);
+
+/** Menu item is activated. */
+SJME_SCRITCHUI_LISTENER_TYPEDEF(menuItemActivate);
+
+/** Paint listener. */
+SJME_SCRITCHUI_LISTENER_TYPEDEF(paint);
+
+/** Size listener. */
+SJME_SCRITCHUI_LISTENER_TYPEDEF(size);
+
+/** Suggest size listener. */
+SJME_SCRITCHUI_LISTENER_TYPEDEF(sizeSuggest);
+
+/** View listener. */
+SJME_SCRITCHUI_LISTENER_TYPEDEF(view);
+
+/** Visible listener. */
+SJME_SCRITCHUI_LISTENER_TYPEDEF(visible);
+	
+#pragma endregion(scritchui_listener)
 	
 /*--------------------------------------------------------------------------*/
 

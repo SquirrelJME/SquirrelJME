@@ -51,6 +51,12 @@ SJME_LIST_DECLARE(sjme_scritchui_uiChoiceItem, 0);
 /** Menu item list. */
 SJME_LIST_DECLARE(sjme_scritchui_uiMenuKind, 0);
 	
+/** A list of pencil fonts. */
+SJME_LIST_DECLARE(sjme_scritchui_pencilFont, 0);
+	
+/** A list of screens. */
+SJME_LIST_DECLARE(sjme_scritchui_uiScreen, 0);
+
 #pragma endregion(scritchui_lists)
 	
 /*--------------------------------------------------------------------------*/
