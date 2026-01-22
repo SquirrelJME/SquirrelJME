@@ -17,6 +17,13 @@
 #ifndef SJME_C_SQUIRRELJME_SCRITCHUISTATE_H
 #define SJME_C_SQUIRRELJME_SCRITCHUISTATE_H
 
+#include "sjme/multithread.h"
+#include "sjme/native.h"
+#include "lib/scritchui/scritchuiApiStruct.h"
+#include "lib/scritchui/scritchuiApiStructImpl.h"
+#include "lib/scritchui/scritchuiConst.h"
+#include "lib/scritchui/scritchuiTypes.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -127,6 +134,42 @@ struct sjme_scritchui_stateBase
 #pragma endregion(scritchui)
 #pragma region(scritchui_font)
 	
+struct sjme_scritchui_pencilFontBase
+{
+	/** Common data. */
+	sjme_scritchui_uiCommonBase common;
+	
+	/** The ID of the font. */
+	sjme_scritchui_pencilFontId id;
+	
+	/** The depth of this font, that is the number of fonts this wraps. */
+	sjme_jint depth;
+	
+	/** Internal handle pointer for implementation needs. */
+	sjme_pointer handle;
+	
+	/** External API. */
+	const sjme_scritchui_pencilFontFunctions* api;
+	
+	/** Internal implementation. */
+	const sjme_scritchui_pencilFontImplFunctions* impl;
+	
+	/** Font cache details. */
+	struct
+	{
+		/** The baseline of the font. */
+		sjme_jint baseline;
+		
+		/** The leading of the font. */
+		sjme_jint leading;
+		
+		/** The ascent of the font. */
+		sjme_jint ascent[2];
+		
+		/** The descent of the font. */
+		sjme_jint descent[2];
+	} cache;
+};
 	
 #pragma endregion(scritchui_font)
 #pragma region(scritchui_pencil)
@@ -232,41 +275,6 @@ struct sjme_scritchui_pencilBase
 		sjme_jint numColors;
 	} palette;
 };
-
-/**
- * Pencil drawing state, such as colors or otherwise.
- * 
- * @since 2024/05/04
- */
-typedef struct sjme_scritchui_pencilState
-{
-	/** The current color used. */
-	sjme_scritchui_pencilColor color;
-	
-	/** The style for strokes. */
-	sjme_scritchui_pencilStrokeMode stroke;
-	
-	/** Blending mode for lines. */
-	sjme_scritchui_pencilBlendingMode blending;
-	
-	/** The font used for text. */
-	sjme_scritchui_pencilFontWithParam font;
-	
-	/** Transformation coordinates. */
-	sjme_scritchui_point translate;
-	
-	/** The real transformation coordinates, after adjustment. */
-	sjme_scritchui_point translateReal;
-	
-	/** The clipping region. */
-	sjme_scritchui_rect clip;
-	
-	/** Clip coordinates. */
-	sjme_scritchui_line clipLine;
-	
-	/** Is blending applicable? */
-	sjme_jboolean applyAlpha;
-} sjme_scritchui_pencilState;
 	
 #pragma endregion(scritchui_pencil)
 	

@@ -30,12 +30,6 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-/** Quick definition for functions. */
-#define SJME_SCRITCHUI_QUICK_PENCIL(what, lWhat) \
-	SJME_TOKEN_PASTE3(sjme_scritchui_pencilFont, what, Func) lWhat
-
-#undef SJME_SCRITCHUI_QUICK_PENCIL
-
 /**
  * Determines the scanline length of a bitmap.
  * 

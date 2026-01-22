@@ -17,6 +17,8 @@
 #ifndef SJME_C_SQUIRRELJME_SCRITCHUICONST_H
 #define SJME_C_SQUIRRELJME_SCRITCHUICONST_H
 
+#include "sjme/stdTypes.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
@@ -504,6 +506,26 @@ typedef enum sjme_scritchui_transferRegionMode
 } sjme_scritchui_transferRegionMode;
 	
 #pragma endregion(scritchui_pencil)
+#pragma region(scritchui_listener)
+	
+/**
+ * Represents a class for a listener for common operation.
+ * 
+ * @since 2024/04/28
+ */
+typedef enum sjme_scritchui_listenerClass
+{
+	/** User based listener. */
+	SJME_SCRITCHUI_LISTENER_USER = 0,
+	
+	/** Core based listener. */
+	SJME_SCRITCHUI_LISTENER_CORE = 1,
+	
+	/** The number of listener classes. */
+	SJME_NUM_SCRITCHUI_LISTENER = 2,
+} sjme_scritchui_listenerClass;
+	
+#pragma endregion(scritchui_listener)
 	
 /*--------------------------------------------------------------------------*/
 

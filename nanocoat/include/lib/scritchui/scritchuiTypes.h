@@ -17,7 +17,10 @@
 #ifndef SJME_C_SCRITCHUITYPES_H
 #define SJME_C_SCRITCHUITYPES_H
 
+#include "lib/scritchui/scritchuiConst.h"
 #include "lib/scritchui/scritchuiTypeDefs.h"
+#include "lib/scritchui/scritchuiTypesListener.h"
+#include "lib/scritchui/scritchuiTypesSub.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -489,6 +492,31 @@ struct sjme_scritchui_uiListBase
 };
 	
 #pragma endregion(scritchui_highLevel)
+#pragma region(scritchui_impl)
+	
+/**
+ * List initialization parameters.
+ * 
+ * @since 2024/07/24
+ */
+typedef struct sjme_scritchui_impl_initParamList
+{
+	/** The type of choice used. */
+	sjme_scritchui_choiceType type;
+} sjme_scritchui_impl_initParamList;
+
+/**
+ * Initialization parameters for menu items.
+ * 
+ * @since 2024/08/01
+ */
+typedef struct sjme_scritchui_impl_initParamMenuItem
+{
+	/** The opaque ID to use for the item. */
+	sjme_jint opaqueId;
+} sjme_scritchui_impl_initParamMenuItem;
+	
+#pragma endregion(scritchui_impl)
 #pragma region(scritchui_loopQueue)
 
 /**
@@ -544,6 +572,53 @@ struct sjme_scritchui_pencilFontLink
 	
 	/** The next link. */
 	sjme_scritchui_pencilFontLink* next;
+};
+	
+/**
+ * Contains the identifying information for a font.
+ * 
+ * @since 2026/01/19
+ */
+typedef struct sjme_scritchui_pencilFontId
+{
+	/** The name of the font. */
+	sjme_cchar name[SJME_MAX_FONT_NAME];
+	
+	/** The face of the font. */
+	sjme_scritchui_pencilFontFace face;
+		
+	/** The style of the font. */
+	sjme_scritchui_pencilFontStyle style;
+	
+	/** The pixel size of the font. */
+	sjme_jint pixelSize;
+} sjme_scritchui_pencilFontId;
+	
+typedef struct sjme_scritchui_pencilFontCompare
+{
+	/** The font that is identified. */
+	sjme_scritchui_pencilFont font;
+	
+	/** The ID of the font. */
+	sjme_scritchui_pencilFontId id;
+} sjme_scritchui_pencilFontCompare;
+
+struct sjme_scritchui_pencilFontParam
+{
+	/** The style of font to render. */
+	sjme_scritchui_pencilFontStyle style;
+	
+	/** The pixel size to render at. */
+	sjme_jint pixelSize;
+};
+	
+struct sjme_scritchui_pencilFontWithParam
+{
+	/** The pencil font. */
+	sjme_scritchui_pencilFont font;
+	
+	/** The font parameters. */
+	sjme_scritchui_pencilFontParam params;
 };
 	
 #pragma endregion(scritchui_font)
@@ -612,106 +687,42 @@ typedef struct sjme_scritchui_pencilColor
 	sjme_jchar i;
 } sjme_scritchui_pencilColor;
 	
-#pragma endregion(scritchui_pencil)
-
-
-/** List of component. */
-SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);
-
-/** Type that component pointers are. */
-#define SJME_TYPEOF_BASIC_sjme_scritchui_uiComponent \
-	SJME_TYPEOF_BASIC_sjme_pointer
-
-/** A list of choice items. */
-SJME_LIST_DECLARE(sjme_scritchui_uiChoiceItem, 0);
-
-/** Menu item list. */
-SJME_LIST_DECLARE(sjme_scritchui_uiMenuKind, 0);
-
-
 /**
- * Contains the identifying information for a font.
+ * Pencil drawing state, such as colors or otherwise.
  * 
- * @since 2026/01/19
+ * @since 2024/05/04
  */
-typedef struct sjme_scritchui_pencilFontId
+typedef struct sjme_scritchui_pencilState
 {
-	/** The name of the font. */
-	sjme_cchar name[SJME_MAX_FONT_NAME];
+	/** The current color used. */
+	sjme_scritchui_pencilColor color;
 	
-	/** The face of the font. */
-	sjme_scritchui_pencilFontFace face;
-		
-	/** The style of the font. */
-	sjme_scritchui_pencilFontStyle style;
+	/** The style for strokes. */
+	sjme_scritchui_pencilStrokeMode stroke;
 	
-	/** The pixel size of the font. */
-	sjme_jint pixelSize;
-} sjme_scritchui_pencilFontId;
+	/** Blending mode for lines. */
+	sjme_scritchui_pencilBlendingMode blending;
 	
-typedef struct sjme_scritchui_pencilFontCompare
-{
-	/** The font that is identified. */
-	sjme_scritchui_pencilFont font;
+	/** The font used for text. */
+	sjme_scritchui_pencilFontWithParam font;
 	
-	/** The ID of the font. */
-	sjme_scritchui_pencilFontId id;
-} sjme_scritchui_pencilFontCompare;
-
-struct sjme_scritchui_pencilFontBase
-{
-	/** Common data. */
-	sjme_scritchui_uiCommonBase common;
+	/** Transformation coordinates. */
+	sjme_scritchui_point translate;
 	
-	/** The ID of the font. */
-	sjme_scritchui_pencilFontId id;
+	/** The real transformation coordinates, after adjustment. */
+	sjme_scritchui_point translateReal;
 	
-	/** The depth of this font, that is the number of fonts this wraps. */
-	sjme_jint depth;
+	/** The clipping region. */
+	sjme_scritchui_rect clip;
 	
-	/** Internal handle pointer for implementation needs. */
-	sjme_pointer handle;
+	/** Clip coordinates. */
+	sjme_scritchui_line clipLine;
 	
-	/** External API. */
-	const sjme_scritchui_pencilFontFunctions* api;
+	/** Is blending applicable? */
+	sjme_jboolean applyAlpha;
+} sjme_scritchui_pencilState;
 	
-	/** Internal implementation. */
-	const sjme_scritchui_pencilFontImplFunctions* impl;
-	
-	/** Font cache details. */
-	struct
-	{
-		/** The baseline of the font. */
-		sjme_jint baseline;
-		
-		/** The leading of the font. */
-		sjme_jint leading;
-		
-		/** The ascent of the font. */
-		sjme_jint ascent[2];
-		
-		/** The descent of the font. */
-		sjme_jint descent[2];
-	} cache;
-};
-	
-struct sjme_scritchui_pencilFontParam
-{
-	/** The style of font to render. */
-	sjme_scritchui_pencilFontStyle style;
-	
-	/** The pixel size to render at. */
-	sjme_jint pixelSize;
-};
-	
-struct sjme_scritchui_pencilFontWithParam
-{
-	/** The pencil font. */
-	sjme_scritchui_pencilFont font;
-	
-	/** The font parameters. */
-	sjme_scritchui_pencilFontParam params;
-};
+#pragma endregion(scritchui_pencil)
 
 /*--------------------------------------------------------------------------*/
 

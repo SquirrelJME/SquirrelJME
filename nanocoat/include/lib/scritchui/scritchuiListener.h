@@ -14,10 +14,10 @@
  * @since 2024/07/29
  */
 
-#ifndef SJME_C_SCRITCHUITYPESLISTENER_H
-#define SJME_C_SCRITCHUITYPESLISTENER_H
+#ifndef SJME_C_SCRITCHUILISTENER_H
+#define SJME_C_SCRITCHUILISTENER_H
 
-#include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/scritchuiFuncs.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -30,23 +30,28 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+	
+/**
+ * Obtains the core listener for the given type.
+ * 
+ * @param item The structure to access.
+ * @param specific The specific listener that is wanted.
+ * @return A pointer to the listener info.
+ * @since 2024/05/01
+ */
+#define SJME_SCRITCHUI_LISTENER_CORE(item, specific) \
+	((item)->listeners[SJME_SCRITCHUI_LISTENER_CORE].specific)
 
 /**
- * Represents a class for a listener for common operation.
+ * Obtains the user listener for the given type.
  * 
- * @since 2024/04/28
+ * @param item The structure to access.
+ * @param specific The specific listener that is wanted.
+ * @return A pointer to the listener info.
+ * @since 2024/05/01
  */
-typedef enum sjme_scritchui_listenerClass
-{
-	/** User based listener. */
-	SJME_SCRITCHUI_LISTENER_USER = 0,
-	
-	/** Core based listener. */
-	SJME_SCRITCHUI_LISTENER_CORE = 1,
-	
-	/** The number of listener classes. */
-	SJME_NUM_SCRITCHUI_LISTENER = 2,
-} sjme_scritchui_listenerClass;
+#define SJME_SCRITCHUI_LISTENER_USER(item, specific) \
+	((item)->listeners[SJME_SCRITCHUI_LISTENER_USER].specific)
 
 /** Declares a ScritchUI listener set. */
 #define SJME_SCRITCHUI_LISTENER_DECLARE(what) \

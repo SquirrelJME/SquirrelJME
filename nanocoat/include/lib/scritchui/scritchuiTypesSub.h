@@ -8,21 +8,23 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * ScritchUI Pencil types.
+ * Sub-structured ScritchUI types.
  * 
  * @file
  * @since 2026/01/21
  */
 
-#ifndef SJME_C_SQUIRRELJME_SCRITCHUIPENCILTYPES_H
-#define SJME_C_SQUIRRELJME_SCRITCHUIPENCILTYPES_H
-#include "sjme/stdTypes.h"
+#ifndef SJME_C_SQUIRRELJME_SCRITCHUITYPESSUB_H
+#define SJME_C_SQUIRRELJME_SCRITCHUITYPESSUB_H
+
+#include "sjme/list.h"
+#include "lib/scritchui/scritchuiTypeDefs.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
 #define SJME_CXX_IS_EXTERNED
-#define SJME_CXX_SQUIRRELJME_SCRITCHUIPENCILTYPES_H
+#define SJME_CXX_SQUIRRELJME_SCRITCHUITYPESSUB_H
 
 extern "C"
 {
@@ -31,17 +33,35 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+#pragma region(scritchui_other)
+	
+/** Type that component pointers are. */
+#define SJME_TYPEOF_BASIC_sjme_scritchui_uiComponent \
+	SJME_TYPEOF_BASIC_sjme_pointer
+	
+#pragma endregion(scritchui_other)
+#pragma region(scritchui_lists)
+	
+/** List of component. */
+SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);
 
+/** A list of choice items. */
+SJME_LIST_DECLARE(sjme_scritchui_uiChoiceItem, 0);
 
+/** Menu item list. */
+SJME_LIST_DECLARE(sjme_scritchui_uiMenuKind, 0);
+	
+#pragma endregion(scritchui_lists)
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-#ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIPENCILTYPES_H
+#ifdef SJME_CXX_SQUIRRELJME_SCRITCHUITYPESSUB_H
 }
-#undef SJME_CXX_SQUIRRELJME_SCRITCHUIPENCILTYPES_H
+#undef SJME_CXX_SQUIRRELJME_SCRITCHUITYPESSUB_H
 #undef SJME_CXX_IS_EXTERNED
-#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIPENCILTYPES_H */
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUITYPESSUB_H */
 #endif /* #ifdef __cplusplus */
 
-#endif /* SJME_C_SQUIRRELJME_SCRITCHUIPENCILTYPES_H */
+#endif /* SJME_C_SQUIRRELJME_SCRITCHUITYPESSUB_H */

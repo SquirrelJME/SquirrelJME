@@ -17,7 +17,7 @@
 #ifndef SJME_C_SQUIRRELJME_SCRITCHUIFUNCS_H
 #define SJME_C_SQUIRRELJME_SCRITCHUIFUNCS_H
 
-#include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/scritchuiConst.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -31,6 +31,12 @@ extern "C"
 #endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/** Arguments to pass for setting of listeners. */
+#define SJME_SCRITCHUI_SET_LISTENER_ARGS(what) \
+	sjme_attrInNullable SJME_TOKEN_PASTE3(sjme_scritchui_, what, \
+		ListenerFunc) inListener, \
+	sjme_attrInNullable sjme_frontEndBindable* copyFrontEnd
 
 #pragma region(scritchui)
 	

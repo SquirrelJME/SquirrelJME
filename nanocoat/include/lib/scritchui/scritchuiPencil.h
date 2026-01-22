@@ -33,9 +33,6 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-
-#undef SJME_SCRITCHUI_QUICK_PENCIL
-
 /**
  * Returns whether the given pixel format uses an alpha channel. 
  * 

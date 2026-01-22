@@ -16,8 +16,8 @@
 #ifndef SJME_C_SCRITCHUIEXTERN_H
 #define SJME_C_SCRITCHUIEXTERN_H
 
-#include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/dylib.h"
+#include "lib/scritchui/scritchuiTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

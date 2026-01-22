@@ -93,12 +93,6 @@ SJME_LIST_DECLARE(sjme_scritchui_pencilFont, 0);
 /** A list of screens. */
 SJME_LIST_DECLARE(sjme_scritchui_uiScreen, 0);
 
-/** Arguments to pass for setting of listeners. */
-#define SJME_SCRITCHUI_SET_LISTENER_ARGS(what) \
-	sjme_attrInNullable SJME_TOKEN_PASTE3(sjme_scritchui_, what, \
-		ListenerFunc) inListener, \
-	sjme_attrInNullable sjme_frontEndBindable* copyFrontEnd
-
 
 
 

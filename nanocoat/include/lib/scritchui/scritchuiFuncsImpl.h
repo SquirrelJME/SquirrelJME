@@ -18,6 +18,7 @@
 #define SJME_C_SQUIRRELJME_SCRITCHUIFUNCSIMPL_H
 
 #include "lib/scritchui/scritchuiFuncs.h"
+#include "lib/scritchui/scritchuiTypesListener.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
