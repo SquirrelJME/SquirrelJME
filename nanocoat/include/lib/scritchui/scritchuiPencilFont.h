@@ -17,6 +17,7 @@
 #ifndef SJME_C_SCRITCHUIPENCILFONT_H
 #define SJME_C_SCRITCHUIPENCILFONT_H
 
+#include "lib/scritchui/scritchuiBasic.h"
 #include "lib/scritchui/scritchuiPencil.h"
 
 /* Anti-C++. */

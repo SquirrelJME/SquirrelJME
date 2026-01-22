@@ -18,6 +18,7 @@
 #define SJME_C_SQUIRRELJME_SCRITCHUITYPEDEFS_H
 
 #include "sjme/stdTypes.h"
+#include "lib/scritchui/scritchuiBasic.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -313,13 +314,6 @@ typedef struct sjme_scritchui_loopQueueItem sjme_scritchui_loopQueueItem;
 #pragma endregion(scritchui)
 #pragma region(scritchui_pencil)
 	
-/**
- * ScritchUI Pencil state.
- * 
- * @since 2024/12/25
- */
-typedef struct sjme_scritchui_pencilBase sjme_scritchui_pencilBase;
-
 /**
  * ScritchUI Pencil state.
  * 

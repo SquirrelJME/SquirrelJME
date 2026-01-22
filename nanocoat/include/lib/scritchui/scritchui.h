@@ -24,7 +24,9 @@
 #include "sjme/alloc.h"
 #include "sjme/dylib.h"
 #include "lib/scritchany/scritchany.h"
+#include "lib/scritchui/scritchuiBasic.h"
 #include "lib/scritchui/scritchuiState.h"
+#include "lib/scritchui/scritchuiStatePencil.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus

@@ -27,6 +27,7 @@ add_subdirectory(pure)
 
 # Source files for ScritchUI
 set(SJME_ScritchUICore_SOURCES
+	scritchAtomic.c
 	scritchChoice.c
 	scritchComponent.c
 	scritchContainer.c

@@ -19,6 +19,7 @@
 
 #include "sjme/multithread.h"
 #include "sjme/native.h"
+#include "lib/scritchui/scritchuiBasic.h"
 #include "lib/scritchui/scritchuiApiStruct.h"
 #include "lib/scritchui/scritchuiApiStructImpl.h"
 #include "lib/scritchui/scritchuiConst.h"

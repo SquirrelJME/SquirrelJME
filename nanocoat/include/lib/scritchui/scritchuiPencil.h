@@ -19,7 +19,7 @@
 
 #include "sjme/charSeq.h"
 #include "sjme/alloc.h"
-#include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/scritchuiBasic.h"
 #include "lib/scritchui/scritchuiTypeDefs.h"
 
 /* Anti-C++. */

@@ -19,6 +19,7 @@
 
 #include "sjme/stdTypes.h"
 #include "sjme/alloc.h"
+#include "lib/scritchui/scritchuiBasic.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 
 /* Anti-C++. */

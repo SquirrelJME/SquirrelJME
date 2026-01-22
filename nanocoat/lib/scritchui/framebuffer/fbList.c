@@ -91,7 +91,7 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		/* How tall is this font? Used to determine bounds. */
 		fontHeight = 0;
 		if (sjme_error_is(error = useFont->api->metricPixelSize(
-			useFont, -1, &fontHeight)))
+			useFont, NULL, -1, &fontHeight)))
 			goto fail_metric;
 		
 		/* Box this is drawn on top of. */

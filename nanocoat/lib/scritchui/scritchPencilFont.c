@@ -11,6 +11,7 @@
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiPencilFontPseudo.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/scritchuiStatePencil.h"
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 #include "sjme/util.h"

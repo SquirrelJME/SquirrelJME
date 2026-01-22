@@ -17,6 +17,7 @@
 #ifndef SJME_C_SQUIRRELJME_SCRITCHUIAPISTRUCT_H
 #define SJME_C_SQUIRRELJME_SCRITCHUIAPISTRUCT_H
 
+#include "lib/scritchui/scritchuiBasic.h"
 #include "lib/scritchui/scritchuiFuncs.h"
 
 /* Anti-C++. */

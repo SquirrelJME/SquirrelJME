@@ -17,6 +17,7 @@
 #ifndef SJME_C_SQUIRRELJME_SCRITCHUISTATEPENCIL_H
 #define SJME_C_SQUIRRELJME_SCRITCHUISTATEPENCIL_H
 
+#include "lib/scritchui/scritchuiBasic.h"
 #include "lib/scritchui/scritchuiApiStruct.h"
 #include "lib/scritchui/scritchuiApiStructImpl.h"
 #include "lib/scritchui/scritchuiTypeDefs.h"
@@ -103,7 +104,7 @@ typedef struct sjme_scritchui_pencilLockState
 	sjme_jboolean isCopy;
 } sjme_scritchui_pencilLockState;
 
-struct sjme_scritchui_pencilBase
+typedef struct sjme_scritchui_pencilBase
 {
 	/** Common data. */
 	sjme_scritchui_uiCommonBase common;
@@ -177,7 +178,7 @@ struct sjme_scritchui_pencilBase
 		/** The number of colors used. */
 		sjme_jint numColors;
 	} palette;
-};
+} sjme_scritchui_pencilBase;
 	
 #pragma endregion(scritchui_pencil)
 	

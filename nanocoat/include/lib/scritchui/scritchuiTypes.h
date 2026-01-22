@@ -101,26 +101,6 @@ struct sjme_scritchui_pencilFontLink
 	sjme_scritchui_pencilFontLink* next;
 };
 	
-/**
- * Contains the identifying information for a font.
- * 
- * @since 2026/01/19
- */
-typedef struct sjme_scritchui_pencilFontId
-{
-	/** The name of the font. */
-	sjme_cchar name[SJME_MAX_FONT_NAME];
-	
-	/** The face of the font. */
-	sjme_scritchui_pencilFontFace face;
-		
-	/** The style of the font. */
-	sjme_scritchui_pencilFontStyle style;
-	
-	/** The pixel size of the font. */
-	sjme_jint pixelSize;
-} sjme_scritchui_pencilFontId;
-	
 typedef struct sjme_scritchui_pencilFontCompare
 {
 	/** The font that is identified. */
@@ -256,7 +236,7 @@ struct sjme_scritchui_uiPaintableBase
 	sjme_errorCode lastError;
 	
 	/** Pencil drawing information. */
-	sjme_scritchui_pencilBase pencil;
+	sjme_atomic(sjme_scritchui_pencil) pencil;
 };
 	
 #pragma endregion(scritchui_base)

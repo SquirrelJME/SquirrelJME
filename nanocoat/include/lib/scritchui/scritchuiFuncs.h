@@ -19,8 +19,8 @@
 
 #include "sjme/gfxConst.h"
 #include "sjme/stream.h"
-#include "lib/scritchinput/scritchinput.h"
 #include "lib/scritchui/scritchuiBasic.h"
+#include "lib/scritchinput/scritchinput.h"
 #include "lib/scritchui/scritchuiTypeDefs.h"
 #include "lib/scritchui/scritchuiTypesSub.h"
 #include "lib/scritchui/scritchuiConst.h"

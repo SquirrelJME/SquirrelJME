@@ -19,6 +19,7 @@
 
 #include "sjme/tokenUtils.h"
 #include "sjme/frontEnd.h"
+#include "lib/scritchui/scritchuiBasic.h"
 #include "lib/scritchui/scritchuiFuncs.h"
 #include "lib/scritchui/scritchuiTypeDefs.h"
 

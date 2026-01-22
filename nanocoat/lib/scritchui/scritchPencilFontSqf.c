@@ -6,10 +6,12 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
+
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiExtern.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiPencilFontSqf.h"
+#include "lib/scritchui/scritchuiStatePencil.h"
 #include "sjme/debug.h"
 
 static sjme_errorCode sjme_scritchui_sqfLocate(

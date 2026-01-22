@@ -913,7 +913,7 @@ sjme_errorCode sjme_scritchpen_core_setDefaultFont(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Reset to use the default font. */
-	return g->apiInThread->setFont(g, g->defaultFont);
+	return g->apiInThread->setFont(g, g->defaultFont, NULL);
 }
 
 sjme_errorCode sjme_scritchpen_core_setParametersFrom(
@@ -947,10 +947,11 @@ sjme_errorCode sjme_scritchpen_core_setParametersFrom(
 		error |= g->apiInThread->setBlendingMode(g, from->state.blending);
 	
 	/* If the other has no font, then just set the default. */
-	if (from->state.font == NULL)
+	if (from->state.font.font == NULL)
 		error |= g->apiInThread->setDefaultFont(g);
 	else
-		error |= g->apiInThread->setFont(g, from->state.font);
+		error |= g->apiInThread->setFont(g, from->state.font.font,
+			&from->state.font.params);
 	
 	/* Re-translate to target coordinate system. */
 	error |= g->apiInThread->translate(g,

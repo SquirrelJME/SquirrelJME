@@ -51,6 +51,13 @@ typedef struct sjme_scritchui_stateBase* sjme_scritchui;
 typedef sjme_pointer sjme_scritchui_handle;
 
 /**
+ * ScritchUI Pencil.
+ * 
+ * @since 2026/01/21
+ */
+typedef struct sjme_scritchui_pencilBase sjme_scritchui_pencilBase;
+
+/**
  * Represents a point.
  * 
  * @since 2024/07/12
@@ -191,6 +198,26 @@ struct sjme_scritchui_uiCommonBase
 	/** Other value storage, as needed. */
 	sjme_jint intVals[SJME_SCRITCHUI_NUM_COMMON_VALUES];
 };
+	
+/**
+ * Contains the identifying information for a font.
+ * 
+ * @since 2026/01/19
+ */
+typedef struct sjme_scritchui_pencilFontId
+{
+	/** The name of the font. */
+	sjme_cchar name[SJME_MAX_FONT_NAME];
+	
+	/** The face of the font. */
+	sjme_scritchui_pencilFontFace face;
+		
+	/** The style of the font. */
+	sjme_scritchui_pencilFontStyle style;
+	
+	/** The pixel size of the font. */
+	sjme_jint pixelSize;
+} sjme_scritchui_pencilFontId;
 	
 #pragma endregion(scritchui_basicTypes)
 	

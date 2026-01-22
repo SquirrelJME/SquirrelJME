@@ -16,6 +16,7 @@
 #ifndef SJME_C_SCRITCHUIEXTERN_H
 #define SJME_C_SCRITCHUIEXTERN_H
 
+#include "lib/scritchui/scritchuiBasic.h"
 #include "lib/scritchui/scritchuiTypes.h"
 
 /* Anti-C++. */

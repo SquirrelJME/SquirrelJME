@@ -869,7 +869,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_PEN_SET_FONT,
 		(as->setFont.g,
 		as->setFont.font,
-		as->setFont.param));
+		as->setFont.params));
 
 	SJME_SDP_CASE(setParametersFrom,
 		SJME_SCRITCHUI_SERIAL_PEN_SET_PARAMETERS_FROM,

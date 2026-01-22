@@ -17,7 +17,9 @@
 #ifndef SJME_C_SQUIRRELJME_SCRITCHUITYPESSUB_H
 #define SJME_C_SQUIRRELJME_SCRITCHUITYPESSUB_H
 
+#include "sjme/atomic.h"
 #include "sjme/list.h"
+#include "lib/scritchui/scritchuiBasic.h"
 #include "lib/scritchui/scritchuiTypeDefs.h"
 
 /* Anti-C++. */
@@ -35,12 +37,22 @@ extern "C"
 
 #pragma region(scritchui_other)
 	
-/** Type that component pointers are. */
+/** @link sjme_scritchui_uiComponent @endlink type. */
 #define SJME_TYPEOF_BASIC_sjme_scritchui_uiComponent \
 	SJME_TYPEOF_BASIC_sjme_pointer
 	
+/** @link sjme_scritchui_pencil @endlink type. */
+#define SJME_TYPEOF_BASIC_sjme_scritchui_pencil \
+	SJME_TYPEOF_BASIC_sjme_pointer
+	
+/** @link sjme_scritchui_pencil @endlink is a pointer. */
+#define SJME_TYPEOF_IS_POINTER_sjme_scritchui_pencil 1
+	
 #pragma endregion(scritchui_other)
 #pragma region(scritchui_lists)
+	
+/** Atomic pencil reference. */
+SJME_ATOMIC_DECLARE(sjme_scritchui_pencil, 0);
 	
 /** List of component. */
 SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);

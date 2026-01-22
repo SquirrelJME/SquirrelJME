@@ -10,6 +10,7 @@
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/scritchuiStatePencil.h"
 #include "sjme/debug.h"
 #include "sjme/alloc.h"
 
