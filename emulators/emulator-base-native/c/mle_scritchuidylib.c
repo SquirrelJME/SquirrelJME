@@ -10,10 +10,7 @@
 #include <string.h>
 
 #include "squirreljme.h"
-#include "lib/scritchui/scritchuiExtern.h"
-#include "lib/scritchui/scritchuiPencilFontSqf.h"
 #include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 #include "sjme/dylib.h"

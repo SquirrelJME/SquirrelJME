@@ -352,8 +352,7 @@ typedef struct sjme_scritchui_pencilUtilFunctions
  */
 typedef struct sjme_scritchui_pencilLockFunctions
 	sjme_scritchui_pencilLockFunctions;
-
-
+	
 /**
  * Adjustable parameters for pencil font rendering.
  * 
