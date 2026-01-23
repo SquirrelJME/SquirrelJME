@@ -9,7 +9,8 @@
 
 /**
  * Internal ScritchAudio definitions.
- * 
+ *
+ * @file
  * @since 2025/05/10
  */
 
@@ -53,14 +54,16 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread);
 
-sjme_errorCode sjme_scritchaudio_core_allocBuffers(
+sjme_errorCode sjme_scritchaudio_core_allocBuffer(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNullable sjme_scritchaudio_stream inStream);
+	sjme_attrInPositive sjme_jint headerSize,
+	sjme_attrInNotNull const sjme_scritchaudio_renderInfo* renderInfo,
+	sjme_attrInNullable sjme_scritchaudio_streamBuffer* outBuffer);
 
 sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInNullable sjme_scritchaudio_source inSource,
+	sjme_attrInNotNull const sjme_scritchaudio_renderFormat* inFormat,
+	sjme_attrInNotNull const sjme_scritchaudio_latency* inLatency,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
 
 sjme_errorCode sjme_scritchaudio_core_loopIterate(

@@ -51,7 +51,7 @@ static const sjme_scritchaudio_apiFunctions sjme_scritchaudio_coreFunctions =
 
 static const sjme_scritchaudio_internFunctions sjme_scritchaudio_coreInterns =
 {
-	sjme_sm(.allocBuffers, sjme_scritchaudio_core_allocBuffers),
+	sjme_sm(.allocBuffers, sjme_scritchaudio_core_allocBuffer),
 	sjme_sm(.calcRenderInfo, sjme_scritchaudio_core_calcRenderInfo),
 	sjme_sm(.fallbackNext, sjme_scritchaudio_core_fallbackNext),
 	sjme_sm(.loopIterateLocked, sjme_scritchaudio_core_loopIterateLocked),

@@ -249,9 +249,11 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_core_poll(
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
-sjme_errorCode sjme_scritchaudio_core_allocBuffers(
+sjme_errorCode sjme_scritchaudio_core_allocBuffer(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNullable sjme_scritchaudio_stream inStream)
+	sjme_attrInPositive sjme_jint headerSize,
+	sjme_attrInNotNull const sjme_scritchaudio_renderInfo* renderInfo,
+	sjme_attrInNullable sjme_scritchaudio_streamBuffer* outBuffer)
 {
 	sjme_errorCode error;
 	sjme_scritchaudio_streamBuffer* buffer;
@@ -267,7 +269,7 @@ sjme_errorCode sjme_scritchaudio_core_allocBuffers(
 		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Allocate each buffer. */
-	for (i = 0; i < SJME_SCRITCHAUDIO_STREAM_BUFFERS; i++)
+	for (i = 0; i < SJME_SCRITCHAUDIO_RENDER_SLICES; i++)
 	{
 		buffer = &inStream->data.buffers[i];
 
@@ -301,53 +303,34 @@ sjme_errorCode sjme_scritchaudio_core_allocBuffers(
 
 sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInNullable sjme_scritchaudio_source inSource,
+	sjme_attrInNotNull const sjme_scritchaudio_renderFormat* inFormat,
+	sjme_attrInNotNull const sjme_scritchaudio_latency* inLatency,
 	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
 {
 	sjme_jint latency, freqAt;
 	sjme_jint expected48KHzSamples;
 	sjme_jint expected44KHzSamples;
 
-	if (inState == NULL || inStream == NULL || renderInfo == NULL)
+	if (inState == NULL || inFormat == NULL || inLatency == NULL ||
+		renderInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Initialize to automatic. */
-	renderInfo->format = SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC;
-	renderInfo->rate = SJME_SCRITCHAUDIO_RATE_AUTOMATIC;
-	renderInfo->channels = SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC;
 
-	/* Copy everything, if a source is specified it overrides everything. */
-	if (inSource != NULL)
-	{
-		renderInfo->format = inSource->format;
-		renderInfo->rate = inSource->rate;
-		renderInfo->channels = inSource->channels;
-	}
+	if (inFormat->format == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC ||
+		inFormat->rate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC ||
+		inFormat->channels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	/* Pull from stream if still automatic. */
-	if (renderInfo->format == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
-		renderInfo->format = inStream->format;
-	if (renderInfo->rate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
-		renderInfo->rate = inStream->rate;
-	if (renderInfo->channels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
-		renderInfo->channels = inStream->channels;
-	
-	/* If still automatic, just choose the best format. */
-	if (renderInfo->format == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
-		renderInfo->format = SJME_SCRITCHAUDIO_FORMAT_INT_S32;
-	if (renderInfo->rate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
-		renderInfo->rate = SJME_SCRITCHAUDIO_RATE_HZ_44100;
-	if (renderInfo->channels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
-		renderInfo->channels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
+	/* Copy format over. */
+	renderInfo->format.format = inFormat->format;
+	renderInfo->format.rate = inFormat->rate;
+	renderInfo->format.channels = inFormat->channels;
 
 	/* Set the clock. */
 	renderInfo->clock = inState->clock.clock;
 	
 	/* Get the latency to determine the sample count. */
-	latency = (sjme_atomic_g(sjme_jint, &inStream->pollDelayMillis) *
-		1000000);
-	if (sjme_atomic_g(sjme_jint, &inStream->pollDelayNanos) > 0)
+	latency = inLatency->pollDelayMillis * 1000000;
+	if (inLatency->pollDelayNanos > 0)
 		latency += 1000000;
 
 	/* Calculate the expected number of samples. */
@@ -356,8 +339,8 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	expected48KHzSamples = (448 * (latency / 10000)) / 1000;
 	
 	/* Which base samples do we start at? */
-	renderInfo->rate = renderInfo->rate;
-	if ((renderInfo->rate % 8000) == 0)
+	renderInfo->format.rate = renderInfo->format.rate;
+	if ((renderInfo->format.rate % 8000) == 0)
 	{
 		freqAt = 48000;
 		renderInfo->samples = expected48KHzSamples;
@@ -369,7 +352,7 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	}
 	
 	/* Trim down sample count until we match the given set. */
-	while (freqAt > renderInfo->rate)
+	while (freqAt > renderInfo->format.rate)
 	{
 		renderInfo->samples >>= 2;
 		freqAt >>= 2;
@@ -379,8 +362,9 @@ sjme_errorCode sjme_scritchaudio_core_calcRenderInfo(
 	renderInfo->bytesPerSample = sjme_scritchaudio_bytesPerSample[
 		renderInfo->format];
 
-	/* Allocate sample buffer */
-	renderInfo->totalSamples = renderInfo->channels * renderInfo->samples;
+	/* Determine sample buffer size. */
+	renderInfo->totalSamples = renderInfo->format.channels *
+		renderInfo->samples;
 	renderInfo->bufSize = renderInfo->bytesPerSample *
 		renderInfo->totalSamples;
 
