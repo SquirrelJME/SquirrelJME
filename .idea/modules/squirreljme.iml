@@ -340,6 +340,7 @@
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../tools/txt-to-pbm/out" />
       <excludeFolder url="file://$MODULE_DIR$/../../utils-dev" />
+      <excludeFolder url="file://$MODULE_DIR$/../../.gemini" />
     </content>
     <orderEntry type="jdk" jdkName="temurin-11" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
