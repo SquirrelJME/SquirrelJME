@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="BaseLib" pattern="(file[nanocoat]:include/sjme/*.h||file[nanocoat]:lib/base//*)&amp;&amp;!file[nanocoat]:include//*||file[nanocoat]:include/sjme/*||file[nanocoat]:include/sjme/intern//*" />
+</component>

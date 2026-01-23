@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="SquirrelJNI" pattern="file[nanocoat]:include/sjme/jvm//*||file[nanocoat]:frontend/libjvm//*||file[nanocoat]:include/frontend/libjvm//*" />
+</component>

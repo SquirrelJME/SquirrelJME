@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SharedFileColors">
+    <fileColor scope="emulator" color="661b00" />
+    <fileColor scope="libretro" color="525f5f" />
+    <fileColor scope="BaseLib" color="5f3242" />
+    <fileColor scope="SquirrelJNI" color="2d3b5f" />
     <fileColor scope="NanoCoatCore" color="Violet" />
     <fileColor scope="ScritchAudio" color="4f375f" />
-    <fileColor scope="ScritchUI" color="5f3153" />
+    <fileColor scope="ScritchUI" color="Blue" />
     <fileColor scope="BuildUtils" color="Yellow" />
     <fileColor scope="3rdParty" color="Blue" />
     <fileColor scope="CMake Generated" color="Yellow" />
     <fileColor scope="Tests" color="Green" />
-    <fileColor scope="ROM" color="Rose" />
+    <fileColor scope="ROM" color="Yellow" />
   </component>
 </project>

@@ -177,22 +177,23 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontStyle)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelAscent)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jobjectArray fontParam,
+	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam,
 		jboolean max)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
 	sjme_jint result;
 
-	/* Forward. */
 	RECOVER_FONT();
+
+	/* Forward. */
 	CHECK_AND_FORWARD(0, font->api->metricPixelAscent,
 		(font, max, &result));
 	return result;
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelBaseline)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jobjectArray fontParam)
+	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
@@ -206,7 +207,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelBaseline)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelDescent)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jobjectArray fontParam,
+	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam,
 		jboolean max)
 {
 	sjme_errorCode error;
@@ -221,7 +222,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelDescent)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelLeading)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jobjectArray fontParam)
+	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
@@ -235,7 +236,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelLeading)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelSize)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jobjectArray fontParam,
+	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam,
 		jint codepoint)
 {
 	sjme_errorCode error;
@@ -250,7 +251,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelSize)
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharWidth)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jobjectArray fontParam,
+	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam,
 		jint c)
 {
 	sjme_errorCode error;
@@ -265,7 +266,7 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharWidth)
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilFontShelf, renderBitmap)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jobjectArray fontParam,
+	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam,
 		jint c, jbyteArray buf,
 	jint bufOff, jint scanLen, jint sx, jint sy, jint sw, jint sh)
 {
