@@ -339,3 +339,38 @@ macro(squirreljme_multilib_add_multilib_dependency libBase dependOn)
 	endif()
 endmacro()
 
+# Export multilib targets
+macro(squirreljme_multilib_export target)
+	# There are multiple branching paths based on the configuration
+	if(SQUIRRELJME_ENABLE_FPIC)
+		if(SQUIRRELJME_ENABLE_DYLIB)
+			export(TARGETS ${target}
+				${target}Static
+				${target}PIC
+				${target}DyLib
+				FILE SquirrelJME${target}.cmake
+				NAMESPACE SquirrelJME::)
+		else()
+			export(TARGETS ${target}
+				${target}Static
+				${target}PIC
+				FILE SquirrelJME${target}.cmake
+				NAMESPACE SquirrelJME::)
+		endif()
+	else()
+		if(SQUIRRELJME_ENABLE_DYLIB)
+			export(TARGETS ${target}
+				${target}Static
+				${target}DyLib
+				FILE SquirrelJME${target}.cmake
+				NAMESPACE SquirrelJME::)
+		else()
+			export(TARGETS ${target}
+				${target}Static
+				${target}PIC
+				FILE SquirrelJME${target}.cmake
+				NAMESPACE SquirrelJME::)
+		endif()
+	endif()
+endmacro()
+

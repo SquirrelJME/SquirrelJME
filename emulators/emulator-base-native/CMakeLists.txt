@@ -9,15 +9,17 @@
 
 cmake_minimum_required(VERSION 3.5)
 
+# This is definitely needed
+include(ExternalProject)
+
 # Declare project
 project(libEmulatorBase
     LANGUAGES C)
 
-# Non-optional include from NanoCoat
-macro(squirreljme_include_nanocoat what)
-	include("${CMAKE_SOURCE_DIR}/../../nanocoat/cmake/${what}"
-		NO_POLICY_SCOPE)
-endmacro()
+# Specify NanoCoat directory for includes
+set(SQUIRRELJME_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
+set(SQUIRRELJME_NANOCOAT_DIR "${SQUIRRELJME_ROOT_DIR}/nanocoat")
+include("${SQUIRRELJME_NANOCOAT_DIR}/cmake/easier-includes.cmake")
 
 # Support bases
 squirreljme_include_nanocoat("cmake-patch.cmake")
@@ -28,9 +30,17 @@ squirreljme_include_nanocoat("fixes.cmake")
 squirreljme_include_nanocoat("find-jni.cmake")
 squirreljme_include_nanocoat("find-threads.cmake")
 
+# Add NanoCoat as an external project
+ExternalProject_Add(NanoCoat
+	SOURCE_DIR "${SQUIRRELJME_NANOCOAT_DIR}"
+	STEP_TARGETS build)
+
+# Include the NanoCoat target for building
+message(STATUS "Build: ${NanoCoat_BUILD}")
+
 # Where is NanoCoat?
 get_filename_component(nanocoatIncludePath
-	"${CMAKE_SOURCE_DIR}/../../nanocoat/include" ABSOLUTE)
+	"${SQUIRRELJME_NANOCOAT_DIR}/include" ABSOLUTE)
 message(STATUS "NanoCoat include is: ${nanocoatIncludePath}")
 
 # Declare library

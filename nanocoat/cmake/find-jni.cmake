@@ -116,3 +116,11 @@ message(STATUS "Has JNI: ${SQUIRRELJME_HAS_JAVA_JNI}")
 message(STATUS "JNI Include: ${SQUIRRELJME_JAVA_JNI_INCLUDE}")
 message(STATUS "Has JVM: ${SQUIRRELJME_HAS_JAVA_JVM}")
 message(STATUS "JVM Include: ${SQUIRRELJME_JAVA_JVM_INCLUDE}")
+
+# Create a virtual JNI export for the system
+add_library(discoveredJvm SHARED IMPORTED GLOBAL)
+target_include_directories(discoveredJvm INTERFACE
+	"${SQUIRRELJME_JAVA_JNI_INCLUDE}"
+	"${SQUIRRELJME_JAVA_JVM_INCLUDE}")
+target_link_libraries(discoveredJvm INTERFACE
+	"jvm")

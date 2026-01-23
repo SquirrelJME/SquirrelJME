@@ -66,3 +66,6 @@ squirreljme_multilib_target_binary_output(Base
 # Dynamic linker library is needed
 squirreljme_multilib_target_link_libraries(Base
 	${CMAKE_DL_LIBS})
+
+# The base library is rather useful
+squirreljme_multilib_export(Base)
