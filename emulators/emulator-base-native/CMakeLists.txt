@@ -106,6 +106,7 @@ target_link_directories(libEmulatorBase PRIVATE
 target_link_libraries(libEmulatorBase PUBLIC
 	"$<TARGET_PROPERTY:BaseStatic,IMPORTED_LOCATION>"
 	"$<TARGET_PROPERTY:BaseStatic,IMPORTED_LOCATION_$<UPPER_CASE:$<CONFIG>>>"
+	"$<TARGET_PROPERTY:BaseStatic,IMPORTED_LOCATION_NOCONFIG>"
 	"$<TARGET_PROPERTY:discoveredJvm,INTERFACE_LINK_LIBRARIES>")
 
 # It is easier to find this when it is in the build root
