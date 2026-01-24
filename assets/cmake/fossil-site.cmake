@@ -131,6 +131,7 @@ if(Fossil_EXECUTABLE)
 
 			# Simply only single binaries
 			elseif("${uploadHow}" STREQUAL "flatpak" OR
+				"${uploadHow}" STREQUAL "natives" OR
 				"${uploadHow}" STREQUAL "rom" OR
 				"${uploadHow}" STREQUAL "source" OR
 				"${uploadHow}" STREQUAL "standalone")

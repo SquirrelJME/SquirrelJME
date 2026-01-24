@@ -96,9 +96,9 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 		get_target_property(archNormal ${rule}
 			SQUIRRELJME_ARCH)
 
-		# Remember which actual natives were put in
-		list(APPEND SQUIRRELJME_STANDALONE_NATIVES_AVAILABLE
-			"${systemNormal}!${archNormal}")
+#		# Remember which actual natives were put in
+#		list(APPEND SQUIRRELJME_STANDALONE_NATIVES_AVAILABLE
+#			"${systemNormal}!${archNormal}")
 
 		# Add the natives to the Standalone Jar
 		add_custom_command(TARGET standaloneJar
