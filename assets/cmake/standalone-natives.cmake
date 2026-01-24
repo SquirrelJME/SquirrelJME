@@ -198,16 +198,15 @@ foreach(rule IN LISTS SQUIRRELJME_STANDALONE_NATIVE_RULES)
 	set(targetName "natives.${systemNormal}.${archNormal}")
 
 	# Temporary
-	set(outputDir
-		"${workPath}/work-pack/${systemNormal}-${archNormal}")
+	set(workPath
+		"${CMAKE_BINARY_DIR}/work-pack/${systemNormal}-${archNormal}")
 	set(outputDir
 		"${CMAKE_BINARY_DIR}/")
 	set(outputZip
 		"${outputDir}/natives-${systemNormal}-${archNormal}.zip")
 
 	# Add the natives to their own individual archive
-	file(MAKE_DIRECTORY
-		"${workPath}/natives/${systemNormal}/${archNormal}")
+	file(MAKE_DIRECTORY "${outputDir}" "${workPath}")
 	add_custom_target(${targetName}
 		COMMAND "${CMAKE_COMMAND}" "-E"
 			"make_directory"

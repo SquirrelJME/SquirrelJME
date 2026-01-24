@@ -233,6 +233,12 @@ if(Install4JC_EXECUTABLE AND (convert_EXECUTABLE))
 			SQUIRRELJME_OUTPUT_PATH "${SQUIRRELJME_INSTALL4J_BUNDLE_FILES}"
 			SQUIRRELJME_OUTPUT_TYPE "install4j")
 
+		# These get uploaded into Fossil
+		squirreljme_fossil_upload_register(install4j)
+
+		# Register to CI/CD
+		squirreljme_cicd_register(install4j)
+
 	# Individual rules for each system
 	else()
 		# Pseudo all Install4J targets
@@ -276,13 +282,5 @@ if(Install4JC_EXECUTABLE AND (convert_EXECUTABLE))
 			# Register to CI/CD
 			squirreljme_cicd_register(install4j_${mediaId})
 		endforeach()
-	endif()
-
-	if(SQUIRRELJME_INSTALL4J_BUNDLE)
-		# These get uploaded into Fossil
-		squirreljme_fossil_upload_register(install4j)
-
-		# Register to CI/CD
-		squirreljme_cicd_register(install4j)
 	endif()
 endif()
