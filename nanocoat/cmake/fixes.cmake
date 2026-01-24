@@ -525,7 +525,6 @@ if("${SQUIRRELJME_ARCH}" STREQUAL "ia32" OR
 	endif()
 endif()
 
-
 # Disable SEH on Windows
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
 	if(SJME_CONFIG_HAS_SEH_DISABLE_GCC)

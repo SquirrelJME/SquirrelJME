@@ -8,8 +8,6 @@
 
 # SquirrelJME Java SE Emulator Front-End
 if(NOT EMSCRIPTEN AND NOT LIBRETRO_REALLY_STATIC)
-	squirreljme_include("find-jni.cmake")
-
 	if(SQUIRRELJME_HAS_JAVA_JNI)
 		# Native JVM library to use with OpenJDK?
 		# Or with the native SquirrelJME libjvm launcher?

@@ -24,59 +24,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
-      <module name="squirreljme.buildSrc" target="11" />
-      <module name="squirreljme.buildSrc.main" target="11" />
-      <module name="squirreljme.buildSrc.test" target="11" />
-      <module name="squirreljme.emulators.emulator-base" target="11" />
-      <module name="squirreljme.emulators.emulator-base.test" target="11" />
-      <module name="squirreljme.emulators.nanocoat-vm" target="11" />
-      <module name="squirreljme.emulators.nanocoat-vm.test" target="11" />
-      <module name="squirreljme.emulators.springcoat-vm" target="11" />
-      <module name="squirreljme.emulators.springcoat-vm.test" target="11" />
-      <module name="squirreljme.emulators.standalone" target="11" />
-      <module name="squirreljme.emulators.standalone.test" target="11" />
-      <module name="squirreljme.sdk" target="11" />
-      <module name="squirreljme.sdk.main" target="11" />
-      <module name="squirreljme.sdk.test" target="11" />
-      <module name="squirreljme.tools.c-source-writer" target="11" />
-      <module name="squirreljme.tools.c-source-writer.main" target="11" />
-      <module name="squirreljme.tools.c-source-writer.test" target="11" />
-      <module name="squirreljme.tools.cicd-release-bundle" target="11" />
-      <module name="squirreljme.tools.cicd-release-bundle.main" target="11" />
-      <module name="squirreljme.tools.cicd-release-bundle.test" target="11" />
-      <module name="squirreljme.tools.github-classic-project-dump" target="11" />
-      <module name="squirreljme.tools.github-classic-project-dump.main" target="11" />
-      <module name="squirreljme.tools.github-classic-project-dump.test" target="11" />
-      <module name="squirreljme.tools.pcf-to-sqf" target="11" />
-      <module name="squirreljme.tools.pcf-to-sqf.main" target="11" />
-      <module name="squirreljme.tools.pcf-to-sqf.test" target="11" />
-      <module name="squirreljme.tools.sqf-to-c" target="11" />
-      <module name="squirreljme.tools.sqf-to-c.main" target="11" />
-      <module name="squirreljme.tools.sqf-to-c.test" target="11" />
-      <module name="squirreljme.tools.squirreljme-debugger" target="11" />
-      <module name="squirreljme.tools.squirreljme-debugger.main" target="11" />
-      <module name="squirreljme.tools.squirreljme-debugger.test" target="11" />
-      <module name="squirreljme.tools.squirreljme-font" target="11" />
-      <module name="squirreljme.tools.squirreljme-font.main" target="11" />
-      <module name="squirreljme.tools.squirreljme-font.test" target="11" />
       <module name="squirreljme.tools.squirreljme-format" target="11" />
       <module name="squirreljme.tools.squirreljme-format.main" target="11" />
       <module name="squirreljme.tools.squirreljme-format.test" target="11" />
-      <module name="squirreljme.tools.squirreljme-javap" target="11" />
-      <module name="squirreljme.tools.squirreljme-javap.main" target="11" />
-      <module name="squirreljme.tools.squirreljme-javap.test" target="11" />
-      <module name="squirreljme.tools.squirreljme-lint" target="11" />
-      <module name="squirreljme.tools.squirreljme-lint.main" target="11" />
-      <module name="squirreljme.tools.squirreljme-lint.test" target="11" />
-      <module name="squirreljme.tools.squirreljme-rms" target="11" />
-      <module name="squirreljme.tools.squirreljme-rms.main" target="11" />
-      <module name="squirreljme.tools.squirreljme-rms.test" target="11" />
-      <module name="squirreljme.tools.squirreljme-unzip" target="11" />
-      <module name="squirreljme.tools.squirreljme-unzip.main" target="11" />
-      <module name="squirreljme.tools.squirreljme-unzip.test" target="11" />
-      <module name="squirreljme.tools.txt-to-pbm" target="11" />
-      <module name="squirreljme.tools.txt-to-pbm.main" target="11" />
-      <module name="squirreljme.tools.txt-to-pbm.test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

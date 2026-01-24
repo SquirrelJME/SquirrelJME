@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="ScritchAudio" pattern="file[nanocoat]:include/lib/scritchaudio//*||file[nanocoat]:lib/scritchaudio//*" />
+</component>

@@ -64,6 +64,10 @@ target_include_directories(SquirrelJME SYSTEM PRIVATE
 	"${SQUIRRELJME_JAVA_JVM_INCLUDE}"
 	"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")
 
+# Public SquirrelJME Provided JNI headers
+target_include_directories(libJvm PUBLIC
+	"${CMAKE_SOURCE_DIR}/include/sjme/jvm/")
+
 # Libraries needed to be linked with for the DyLib to function
 squirreljme_multilib_target_link_libraries(libJvm PUBLIC
 	${SQUIRRELJME_LINK_LIBRARIES_Base}
@@ -104,3 +108,6 @@ if(SQUIRRELJME_ENABLE_DYLIB)
 	# Exports for Windows, etc.
 	squirreljme_target_shared_library_exports(libJvmDyLib)
 endif()
+
+# Export/Install JVM static/shared
+squirreljme_multilib_export_install(libJvm)

@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="libretro" pattern="file[nanocoat]:include/frontend/libretro//*||file[nanocoat]:frontend/libretro//*" />
+</component>

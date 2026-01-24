@@ -51,6 +51,12 @@ if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 		CHECK_INCLUDE_FILE("jvm.h" SQUIRRELJME_HAS_NATIVE_JVM)
 		unset(CMAKE_REQUIRED_INCLUDES)
 
+		# Direct path to the JVM library?
+		if(JAVA_JVM_LIBRARY)
+			set(SQUIRRELJME_JAVA_JVM_LIBRARY
+				"${JAVA_JVM_LIBRARY}")
+		endif()
+
 		# Were there actual JNI headers?
 		if(SQUIRRELJME_HAS_NATIVE_JNI)
 			# Strip NOTFOUND
@@ -116,3 +122,19 @@ message(STATUS "Has JNI: ${SQUIRRELJME_HAS_JAVA_JNI}")
 message(STATUS "JNI Include: ${SQUIRRELJME_JAVA_JNI_INCLUDE}")
 message(STATUS "Has JVM: ${SQUIRRELJME_HAS_JAVA_JVM}")
 message(STATUS "JVM Include: ${SQUIRRELJME_JAVA_JVM_INCLUDE}")
+
+# Create a virtual JNI export for the system
+add_library(discoveredJvm INTERFACE IMPORTED GLOBAL)
+set_target_properties(discoveredJvm PROPERTIES
+	LINKER_LANGUAGE C)
+target_include_directories(discoveredJvm INTERFACE
+	"${SQUIRRELJME_JAVA_JNI_INCLUDE}"
+	"${SQUIRRELJME_JAVA_JVM_INCLUDE}"
+	"${CMAKE_SOURCE_DIR}/include/sjme/jvm")
+target_link_libraries(discoveredJvm INTERFACE
+	"${SQUIRRELJME_JAVA_JVM_LIBRARY}")
+
+# Allow the JVM export to be used externally
+export(TARGETS discoveredJvm
+	FILE "discoveredJvm.cmake"
+	EXPORT_LINK_INTERFACE_LIBRARIES)

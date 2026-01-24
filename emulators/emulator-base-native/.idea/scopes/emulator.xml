@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="emulator" pattern="file[emulator-base-native]:c//*||file[emulator-base-native]:headers//*" />
+</component>

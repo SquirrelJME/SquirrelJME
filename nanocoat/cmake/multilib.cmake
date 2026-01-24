@@ -7,6 +7,9 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Multiple library declarations and otherwise
 
+# Needed for directory setups
+include(GNUInstallDirs)
+
 # Correct Paths
 ## Emulator base import directory
 if(DEFINED SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR)
@@ -82,7 +85,6 @@ macro(squirreljme_multilib_add_static_library libBase)
 			CACHE STRING "FPIC ${libBase} Target" FORCE)
 	endif()
 endmacro()
-
 
 # Make a target always FPIC
 function(squirreljme_always_fpic target)
@@ -336,6 +338,73 @@ macro(squirreljme_multilib_add_multilib_dependency libBase dependOn)
 	if(SQUIRRELJME_ENABLE_DYLIB)
 		add_dependencies(${libBase}DyLib
 			${dependOn}DyLib)
+	endif()
+endmacro()
+
+# Export multilib targets
+macro(squirreljme_multilib_export target)
+	# There are multiple branching paths based on the configuration
+	if(SQUIRRELJME_ENABLE_FPIC)
+		if(SQUIRRELJME_ENABLE_DYLIB)
+			export(TARGETS ${target}
+				${target}Static
+				${target}DyLib
+				${target}PIC
+				FILE SquirrelJME${target}.cmake
+				NAMESPACE SquirrelJME::)
+		else()
+			export(TARGETS ${target}
+				${target}Static
+				${target}PIC
+				FILE SquirrelJME${target}.cmake
+				NAMESPACE SquirrelJME::)
+		endif()
+	else()
+		if(SQUIRRELJME_ENABLE_DYLIB)
+			export(TARGETS ${target}
+				${target}Static
+				${target}DyLib
+				FILE SquirrelJME${target}.cmake
+				NAMESPACE SquirrelJME::)
+		else()
+			export(TARGETS ${target}
+				${target}Static
+				${target}PIC
+				FILE SquirrelJME${target}.cmake
+				NAMESPACE SquirrelJME::)
+		endif()
+	endif()
+endmacro()
+
+# Export and install for multilib
+macro(squirreljme_multilib_export_install target)
+	# Set base directories
+	target_sources(${target}
+		PUBLIC FILE_SET HEADERS
+		BASE_DIRS "${CMAKE_SOURCE_DIR}/include")
+
+	# Object library
+	export(TARGETS ${target}
+		FILE "${CMAKE_BINARY_DIR}/${target}Object.cmake")
+	install(TARGETS ${target})
+
+	# Static library
+	export(TARGETS ${target}Static
+		FILE "${CMAKE_BINARY_DIR}/${target}Static.cmake")
+	install(TARGETS ${target}Static)
+
+	# PIC Object library
+	if(SQUIRRELJME_ENABLE_FPIC)
+		export(TARGETS ${target}PIC
+			FILE "${CMAKE_BINARY_DIR}/${target}PIC.cmake")
+		install(TARGETS ${target}PIC)
+	endif()
+
+	# Dynamic library
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		export(TARGETS ${target}DyLib
+			FILE "${CMAKE_BINARY_DIR}/${target}DyLib.cmake")
+		install(TARGETS ${target}DyLib)
 	endif()
 endmacro()
 
