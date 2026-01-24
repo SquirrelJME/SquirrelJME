@@ -130,7 +130,7 @@ if(Fossil_EXECUTABLE)
 					squirreljme_basename_path(itemBase "${item}")
 
 					# Add to the upload
-					squirreljme_add_fossil_upload(${target} itemBase
+					squirreljme_add_fossil_upload(${target} ${itemBase}
 						"${item}"
 						"${SQUIRRELJME_UV_DIR}/${itemBase}")
 				endforeach()
