@@ -125,8 +125,7 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 		COMMENT "Finalizing ${outputJar}...")
 
 	# These get uploaded into Fossil
-	list(APPEND SQUIRRELJME_UPLOAD_TARGETS
-		standaloneJar)
+	squirreljme_fossil_upload_register(standaloneJar)
 
 	# Register to CI/CD
 	squirreljme_cicd_register(standaloneJar)

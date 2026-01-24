@@ -70,13 +70,6 @@ endif()
 
 # Shared by any output
 if(Fossil_EXECUTABLE OR Git_EXECUTABLE)
-	# These get uploaded into Fossil
-	list(APPEND SQUIRRELJME_UPLOAD_TARGETS
-		sourceZip sourceTgz)
-
-	# Register to CI/CD
-	squirreljme_cicd_register(sourceZip sourceTgz)
-
 	# Output where the binaries were placed
 	set_target_properties(sourceZip PROPERTIES
 		SQUIRRELJME_OUTPUT_PATH "${zipPath}"
@@ -84,4 +77,10 @@ if(Fossil_EXECUTABLE OR Git_EXECUTABLE)
 	set_target_properties(sourceTgz PROPERTIES
 		SQUIRRELJME_OUTPUT_PATH "${tgzPath}"
 		SQUIRRELJME_OUTPUT_TYPE "source")
+
+	# These get uploaded into Fossil
+	squirreljme_fossil_upload_register(sourceZip sourceTgz)
+
+	# Register to CI/CD
+	squirreljme_cicd_register(sourceZip sourceTgz)
 endif()

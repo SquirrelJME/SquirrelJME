@@ -61,6 +61,9 @@ endif()
 # CI/CD Pipelines
 squirreljme_include("cicd-pipeline.cmake")
 
+# Updating the Fossil site, uploading everything to it, where possible
+squirreljme_include("fossil-site.cmake")
+
 # Find compilers and such
 squirreljme_include("find.cmake")
 
@@ -82,9 +85,6 @@ squirreljme_include("install4j.cmake")
 # Building of the Linux Flatpak
 # Disabled because of the reasoning in the given file
 ###DISABLED:squirreljme_include("flatpak.cmake"):DISABLED###
-
-# Updating the Fossil site, uploading everything to it, where possible
-squirreljme_include("fossil-site.cmake")
 
 # Exporting of pipeline rules to build and setup CI/CD files
 squirreljme_include("pipeline-export.cmake")

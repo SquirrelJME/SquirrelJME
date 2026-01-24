@@ -68,7 +68,7 @@ endfunction()
 
 # Only possible if Fossil exists
 if(Fossil_EXECUTABLE)
-	# Add pseudo target for uploading
+	# Add pseudo target which depends on all upload targets
 	add_custom_target(fossilUpload)
 
 	# Register to CI/CD
@@ -84,10 +84,10 @@ if(Fossil_EXECUTABLE)
 		file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/uvDate.mkd" uvDateNative)
 
 		# Debug
-		message(STATUS "Mapped UV: ${fromPath} -> ${toPath}")
+		message(STATUS "Mapped UV: (${target}) ${fromPath} -> ${toPath}")
 
 		# Add in the upload command
-		add_custom_command(TARGET ${target} POST_BUILD
+		add_custom_target(fossilUpload.${target}
 			COMMAND "${Fossil_EXECUTABLE}"
 				"uv" "add" "${fromPathNative}"
 					"--as" "${toPath}"
@@ -95,47 +95,56 @@ if(Fossil_EXECUTABLE)
 				"uv" "add" "${uvDateNative}"
 					"--as" "${toPath}.mkd"
 			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+			DEPENDS ${target}
 			COMMENT "Uploading ${toPath}..."
 			COMMAND_EXPAND_LISTS)
+
+		# Have fossil upload depend on this
+		add_dependencies(fossilUpload
+			fossilUpload.${target})
 	endmacro()
 
-	# Depend and upload all results of upload based targets
-	foreach(uploadTarget IN LISTS SQUIRRELJME_UPLOAD_TARGETS)
-		# Get what to upload and how to handle the upload
-		get_target_property(uploadWhat ${uploadTarget}
-			SQUIRRELJME_OUTPUT_PATH)
-		get_target_property(uploadHow ${uploadTarget}
-			SQUIRRELJME_OUTPUT_TYPE)
+	# Register a target for uploading to Fossil
+	macro(squirreljme_fossil_upload_register)
+		set(targetsList "${ARGV}")
+		foreach(target IN LISTS targetsList)
+			# Get what to upload and how to handle the upload
+			get_target_property(uploadWhat ${target}
+				SQUIRRELJME_OUTPUT_PATH)
+			get_target_property(uploadHow ${target}
+				SQUIRRELJME_OUTPUT_TYPE)
 
-		# Determine the base name of the target
-		squirreljme_basename_path(uploadWhatBase "${uploadWhat}")
+			# Determine the base name of the target
+			squirreljme_basename_path(uploadWhatBase "${uploadWhat}")
 
-		# Depend on the target for upload
-		add_dependencies(fossilUpload ${uploadTarget})
+			# List based
+			if("${uploadHow}" STREQUAL "install4j")
+				foreach(item IN LISTS uploadWhat)
+					# Determine the base name of the target
+					squirreljme_basename_path(itemBase "${item}")
 
-		# List based
-		if("${uploadHow}" STREQUAL "install4j")
-			foreach(item IN LISTS uploadWhat)
-				# Determine the base name of the target
-				squirreljme_basename_path(itemBase "${item}")
+					# Add to the upload
+					squirreljme_add_fossil_upload(${target}
+						"${item}"
+						"${SQUIRRELJME_UV_DIR}/${itemBase}")
+				endforeach()
 
+			# Simply only single binaries
+			elseif("${uploadHow}" STREQUAL "flatpak" OR
+				"${uploadHow}" STREQUAL "rom" OR
+				"${uploadHow}" STREQUAL "source" OR
+				"${uploadHow}" STREQUAL "standalone")
 				# Add to the upload
-				squirreljme_add_fossil_upload(fossilUpload
-					"${item}"
-					"${SQUIRRELJME_UV_DIR}/${itemBase}")
-			endforeach()
-
-		# Simply only single binaries
-		elseif("${uploadHow}" STREQUAL "flatpak" OR
-			"${uploadHow}" STREQUAL "rom" OR
-			"${uploadHow}" STREQUAL "source" OR
-			"${uploadHow}" STREQUAL "standalone")
-			# Add to the upload
-			squirreljme_add_fossil_upload(fossilUpload
-				"${uploadWhat}"
-				"${SQUIRRELJME_UV_DIR}/${uploadWhatBase}")
-		else()
-			message(STATUS "TODO: Upload ${uploadTarget} via ${uploadHow}.")
-		endif()
-	endforeach()
+				squirreljme_add_fossil_upload(${target}
+					"${uploadWhat}"
+					"${SQUIRRELJME_UV_DIR}/${uploadWhatBase}")
+			else()
+				message(STATUS "TODO: Upload ${target} via ${uploadHow}.")
+			endif()
+		endforeach()
+	endmacro()
+else()
+	macro(squirreljme_fossil_upload_register)
+		message(STATUS "Ignoring fossilUpload for ${ARGV}...")
+	endmacro()
 endif()

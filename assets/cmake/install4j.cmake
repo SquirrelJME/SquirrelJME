@@ -234,8 +234,7 @@ if(Install4JC_EXECUTABLE AND (convert_EXECUTABLE))
 			SQUIRRELJME_OUTPUT_TYPE "install4j")
 
 		# These get uploaded into Fossil
-		list(APPEND SQUIRRELJME_UPLOAD_TARGETS
-			install4j)
+		squirreljme_fossil_upload_register(install4j)
 
 		# Register to CI/CD
 		squirreljme_cicd_register(install4j)
@@ -278,8 +277,7 @@ if(Install4JC_EXECUTABLE AND (convert_EXECUTABLE))
 				SQUIRRELJME_OUTPUT_TYPE "install4j")
 
 			# These get uploaded into Fossil
-			list(APPEND SQUIRRELJME_UPLOAD_TARGETS
-				install4j_${mediaId})
+			squirreljme_fossil_upload_register(install4j_${mediaId})
 
 			# Register to CI/CD
 			squirreljme_cicd_register(install4j_${mediaId})
