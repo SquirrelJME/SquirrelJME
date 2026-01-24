@@ -111,3 +111,33 @@ endif()
 
 # Export/Install JVM static/shared
 squirreljme_multilib_export_install(libJvm)
+
+# Exporting a JVM/JNI implementation?
+if(NOT SQUIRRELJME_EXPORT_OWN_JNI_JVM OR SQUIRRELJME_ENABLE_DYLIB)
+	# Declare library
+	add_library(discoveredJvm INTERFACE IMPORTED GLOBAL)
+
+	# Includes
+	target_include_directories(discoveredJvm INTERFACE
+		"${SQUIRRELJME_JAVA_JNI_INCLUDE}"
+		"${SQUIRRELJME_JAVA_JVM_INCLUDE}"
+		"${CMAKE_SOURCE_DIR}/include/sjme/jvm")
+
+	# Create a virtual JNI export for the system
+	if(NOT SQUIRRELJME_EXPORT_OWN_JNI_JVM)
+		# Libraries
+		target_link_libraries(discoveredJvm INTERFACE
+			"${SQUIRRELJME_JAVA_JVM_LIBRARY}")
+	else(SQUIRRELJME_ENABLE_DYLIB)
+		# Libraries
+		target_link_libraries(discoveredJvm INTERFACE
+			libJvmDyLib)
+	endif()
+
+	# Allow the JVM export to be used externally
+	set_target_properties(discoveredJvm PROPERTIES
+		LINKER_LANGUAGE C)
+	export(TARGETS discoveredJvm
+		FILE "${CMAKE_BINARY_DIR}/discoveredJvm.cmake"
+		EXPORT_LINK_INTERFACE_LIBRARIES)
+endif()

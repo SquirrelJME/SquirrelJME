@@ -92,8 +92,12 @@ if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 		endif()
 	endif()
 
+	# Do not export own JNI/JVM
+	set(SQUIRRELJME_EXPORT_OWN_JNI_JVM NO)
+
 # Otherwise emit a notice due to cross-compile
 else()
+	set(SQUIRRELJME_EXPORT_OWN_JNI_JVM YES)
 	message(STATUS "Not using the system JNI due to cross-compilation!")
 endif()
 
@@ -122,19 +126,3 @@ message(STATUS "Has JNI: ${SQUIRRELJME_HAS_JAVA_JNI}")
 message(STATUS "JNI Include: ${SQUIRRELJME_JAVA_JNI_INCLUDE}")
 message(STATUS "Has JVM: ${SQUIRRELJME_HAS_JAVA_JVM}")
 message(STATUS "JVM Include: ${SQUIRRELJME_JAVA_JVM_INCLUDE}")
-
-# Create a virtual JNI export for the system
-add_library(discoveredJvm INTERFACE IMPORTED GLOBAL)
-set_target_properties(discoveredJvm PROPERTIES
-	LINKER_LANGUAGE C)
-target_include_directories(discoveredJvm INTERFACE
-	"${SQUIRRELJME_JAVA_JNI_INCLUDE}"
-	"${SQUIRRELJME_JAVA_JVM_INCLUDE}"
-	"${CMAKE_SOURCE_DIR}/include/sjme/jvm")
-target_link_libraries(discoveredJvm INTERFACE
-	"${SQUIRRELJME_JAVA_JVM_LIBRARY}")
-
-# Allow the JVM export to be used externally
-export(TARGETS discoveredJvm
-	FILE "discoveredJvm.cmake"
-	EXPORT_LINK_INTERFACE_LIBRARIES)

@@ -37,6 +37,9 @@ Virtual Machine for embedded and Internet of Things devices."
 		LANGUAGES C)
 endif()
 
+# Enable C (again)
+enable_language(C)
+
 # Determine version information
 squirreljme_include("identify-squirreljme-version.cmake")
 

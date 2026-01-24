@@ -53,12 +53,13 @@ squirreljme_include_nanocoat("multilib.cmake")
 
 # Import the JVM library that NanoCoat found
 # We also need to build the SquirrelJME base library
-include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/discoveredJvm.cmake")
 include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/BaseStatic.cmake")
+include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/libJvmDyLib.cmake")
+include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/discoveredJvm.cmake")
 
 execute_process(COMMAND "${CMAKE_COMMAND}"
 	"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-	"--target" "BaseStatic"
+	"--target" "BaseStatic" "libJvmDyLib"
 	RESULT_VARIABLE baseStaticBuild)
 if(NOT baseStaticBuild EQUAL "0")
 	message(FATAL_ERROR "Could not build SquirrelJME base library!")
