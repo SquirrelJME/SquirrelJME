@@ -201,7 +201,7 @@ foreach(rule IN LISTS SQUIRRELJME_STANDALONE_NATIVE_RULES)
 	set(workPath
 		"${CMAKE_BINARY_DIR}/work-pack/${systemNormal}-${archNormal}")
 	set(outputDir
-		"${CMAKE_BINARY_DIR}/")
+		"${CMAKE_BINARY_DIR}")
 	set(outputZip
 		"${outputDir}/natives-${systemNormal}-${archNormal}.zip")
 

@@ -78,7 +78,7 @@ if(Fossil_EXECUTABLE)
 	# since it is used in many locations
 	# fromPath is usually the binary
 	# toPath is usually where goes in the UV space
-	macro(squirreljme_add_fossil_upload target fromPath toPath)
+	macro(squirreljme_add_fossil_upload target itemBase fromPath toPath)
 		# Determine native paths, which is needed by Fossil
 		file(TO_NATIVE_PATH "${fromPath}" fromPathNative)
 		file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/uvDate.mkd" uvDateNative)
@@ -86,8 +86,14 @@ if(Fossil_EXECUTABLE)
 		# Debug
 		message(STATUS "Mapped UV: (${target}) ${fromPath} -> ${toPath}")
 
+		if(NOT itemBase OR itemBase STREQUAL "")
+			set(uploadTarget fossilUpload.${target})
+		else()
+			set(uploadTarget fossilUpload.${target}.${itemBase})
+		endif()
+
 		# Add in the upload command
-		add_custom_target(fossilUpload.${target}
+		add_custom_target(${uploadTarget}
 			COMMAND "${Fossil_EXECUTABLE}"
 				"uv" "add" "${fromPathNative}"
 					"--as" "${toPath}"
@@ -96,12 +102,12 @@ if(Fossil_EXECUTABLE)
 					"--as" "${toPath}.mkd"
 			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 			DEPENDS ${target}
-			COMMENT "Uploading ${toPath}..."
+			COMMENT "Uploading ${toPath} (${uploadTarget})..."
 			COMMAND_EXPAND_LISTS)
 
 		# Have fossil upload depend on this
 		add_dependencies(fossilUpload
-			fossilUpload.${target})
+			${uploadTarget})
 	endmacro()
 
 	# Register a target for uploading to Fossil
@@ -124,7 +130,7 @@ if(Fossil_EXECUTABLE)
 					squirreljme_basename_path(itemBase "${item}")
 
 					# Add to the upload
-					squirreljme_add_fossil_upload(${target}
+					squirreljme_add_fossil_upload(${target} itemBase
 						"${item}"
 						"${SQUIRRELJME_UV_DIR}/${itemBase}")
 				endforeach()
@@ -136,7 +142,7 @@ if(Fossil_EXECUTABLE)
 				"${uploadHow}" STREQUAL "source" OR
 				"${uploadHow}" STREQUAL "standalone")
 				# Add to the upload
-				squirreljme_add_fossil_upload(${target}
+				squirreljme_add_fossil_upload(${target} ""
 					"${uploadWhat}"
 					"${SQUIRRELJME_UV_DIR}/${uploadWhatBase}")
 			else()
