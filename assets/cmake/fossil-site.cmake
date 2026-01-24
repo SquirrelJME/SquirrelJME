@@ -70,6 +70,7 @@ endfunction()
 if(Fossil_EXECUTABLE)
 	# Add pseudo target which depends on all upload targets
 	add_custom_target(fossilUpload)
+	add_custom_target(fossilUpload.onlyNatives)
 
 	# Register to CI/CD
 	squirreljme_cicd_register(fossilUpload)
@@ -78,7 +79,8 @@ if(Fossil_EXECUTABLE)
 	# since it is used in many locations
 	# fromPath is usually the binary
 	# toPath is usually where goes in the UV space
-	macro(squirreljme_add_fossil_upload target itemBase fromPath toPath)
+	macro(squirreljme_add_fossil_upload target itemBase fromPath toPath
+		uploadHow)
 		# Determine native paths, which is needed by Fossil
 		file(TO_NATIVE_PATH "${fromPath}" fromPathNative)
 		file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/uvDate.mkd" uvDateNative)
@@ -108,6 +110,12 @@ if(Fossil_EXECUTABLE)
 		# Have fossil upload depend on this
 		add_dependencies(fossilUpload
 			${uploadTarget})
+
+		# Natives only target?
+		if(uploadHow STREQUAL "natives")
+			add_dependencies(fossilUpload.onlyNatives
+				${uploadTarget})
+		endif()
 	endmacro()
 
 	# Register a target for uploading to Fossil
@@ -132,7 +140,8 @@ if(Fossil_EXECUTABLE)
 					# Add to the upload
 					squirreljme_add_fossil_upload(${target} ${itemBase}
 						"${item}"
-						"${SQUIRRELJME_UV_DIR}/${itemBase}")
+						"${SQUIRRELJME_UV_DIR}/${itemBase}"
+						"${uploadHow}")
 				endforeach()
 
 			# Simply only single binaries
@@ -144,7 +153,8 @@ if(Fossil_EXECUTABLE)
 				# Add to the upload
 				squirreljme_add_fossil_upload(${target} ""
 					"${uploadWhat}"
-					"${SQUIRRELJME_UV_DIR}/${uploadWhatBase}")
+					"${SQUIRRELJME_UV_DIR}/${uploadWhatBase}"
+					"${uploadHow}")
 			else()
 				message(STATUS "TODO: Upload ${target} via ${uploadHow}.")
 			endif()
