@@ -206,7 +206,7 @@ foreach(rule IN LISTS SQUIRRELJME_STANDALONE_NATIVE_RULES)
 		"${outputDir}/natives-${systemNormal}-${archNormal}.zip")
 
 	# Add the natives to their own individual archive
-	file(MAKE_DIRECTORIES
+	file(MAKE_DIRECTORY
 		"${workPath}/natives/${systemNormal}/${archNormal}")
 	add_custom_target(${targetName}
 		COMMAND "${CMAKE_COMMAND}" "-E"
