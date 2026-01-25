@@ -68,20 +68,25 @@ macro(squirreljme_compiler_cmake_args outVa outVb outVc outVd system arch)
 	# Generator Specified
 	if("${SQUIRRELJME_COMPILER_${system}_${arch}_TYPE}"
 		STREQUAL "generator")
-		set(${outVa} "-G")
-		set(${outVb} "${SQUIRRELJME_COMPILER_${system}_${arch}_GENERATOR}")
+		set(${outVa} "-G"
+			PARENT_SCOPE)
+		set(${outVb} "${SQUIRRELJME_COMPILER_${system}_${arch}_GENERATOR}"
+			PARENT_SCOPE)
 
 		if("${SQUIRRELJME_COMPILER_${system}_${arch}_PLATFORM}"
 			STREQUAL "none")
 			set(${outVc} "-DXXSJMEVCACXX=1")
 			set(${outVd} "-DXXSJMEVDXX=1")
 		else()
-			set(${outVc} "-A")
-			set(${outVd} "${SQUIRRELJME_COMPILER_${system}_${arch}_PLATFORM}")
+			set(${outVc} "-A"
+				PARENT_SCOPE)
+			set(${outVd} "${SQUIRRELJME_COMPILER_${system}_${arch}_PLATFORM}"
+				PARENT_SCOPE)
 		endif()
 	else()
 		set(${outVa}
-	"-DCMAKE_C_COMPILER=${SQUIRRELJME_COMPILER_${system}_${arch}_EXECUTABLE}")
+	"-DCMAKE_C_COMPILER=${SQUIRRELJME_COMPILER_${system}_${arch}_EXECUTABLE}"
+			PARENT_SCOPE)
 		set(${outVb} "-DXXSJMEVBXX=1")
 		set(${outVc} "-DXXSJMEVCXX=1")
 		set(${outVd} "-DXXSJMEVDXX=1")

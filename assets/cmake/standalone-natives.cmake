@@ -54,10 +54,10 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		"${systemNormal}/${archNormal}...")
 
 	# Which arguments to use?
-	unset(va)
-	unset(vb)
-	unset(vc)
-	unset(vd)
+	set(va "-DXXSJMEVAXX=1")
+	set(vb "-DXXSJMEVBXX=1")
+	set(vc "-DXXSJMEVCXX=1")
+	set(vd "-DXXSJMEVDXX=1")
 	squirreljme_compiler_cmake_args(va vb vc vd
 		"${systemNormal}" "${archNormal}")
 
