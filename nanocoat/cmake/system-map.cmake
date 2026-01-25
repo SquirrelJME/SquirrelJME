@@ -157,10 +157,20 @@ function(squirreljme_defines_gcc gccDefines gccExe)
 		foreach(gccLineRaw IN LISTS gccOutput)
 			# Split by space
 			string(REGEX REPLACE "[\t ]" ";" gccLine "${gccLineRaw}")
+			list(LENGTH gccLine gccLineLen)
 
 			# The second field is the define
 			list(GET gccLine 1 gccOnlyDefine)
-			if(NOT "${gccOnlyDefine}" STREQUAL "")
+
+			# The third field is the value
+			if(gccLineLen GREATER_EQUAL 3)
+				list(GET gccLine 2 gccOnlyValue)
+			else()
+				set(gccOnlyValue "1")
+			endif()
+
+			if(NOT "${gccOnlyDefine}" STREQUAL "" AND
+				NOT "${gccOnlyValue}" STREQUAL "0")
 				# Add it to the result
 				list(APPEND gccOutDefines "${gccOnlyDefine}")
 			endif()
@@ -386,7 +396,7 @@ endfunction()
 function(squirreljme_identify_by_cmake outSystem outArch inSystem inArch)
 	# Operating System
 	if("${inSystem}" STREQUAL "Darwin")
-		set(hasSystem "macos")
+		set(hasSystem "macosx")
 	elseif("${inSystem}" STREQUAL "FreeBSD" OR
 		"${inSystem}" STREQUAL "NetBSD" OR
 		"${inSystem}" STREQUAL "OpenBSD")

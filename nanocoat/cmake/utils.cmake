@@ -58,9 +58,9 @@ endif()
 file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
 # Try to find the host CMake as a first choice
-find_program(SJME_FIRST_CMAKE "cmake" NO_DEFAULT_PATH)
+find_program(SJME_FIRST_CMAKE "ccmake" "cmake" NO_DEFAULT_PATH)
 if(NOT SJME_FIRST_CMAKE)
-	find_program(SJME_FIRST_CMAKE "cmake")
+	find_program(SJME_FIRST_CMAKE "ccmake" "cmake")
 
 	if(NOT SJME_FIRST_CMAKE)
 		set(SJME_FIRST_CMAKE "${CMAKE_COMMAND}")
