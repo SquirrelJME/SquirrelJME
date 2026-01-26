@@ -16,8 +16,68 @@ define_property(TARGET PROPERTY SQUIRRELJME_EMULATOR_NATIVE_PATH
 	BRIEF_DOCS "Path where emulator natives are placed."
 	FULL_DOCS "Path where emulator natives are placed.")
 
-# Build natives for every known compiler on the system
-foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
+# Package natives
+macro(squirreljme_package_natives rule)
+	# Where were the binaries and list files placed?
+	get_target_property(coreNativePath ${rule}
+		SQUIRRELJME_CORE_NATIVE_PATH)
+	get_target_property(emulatorNativePath ${rule}
+		SQUIRRELJME_EMULATOR_NATIVE_PATH)
+
+	# Which system/arch does this target?
+	get_target_property(systemNormal ${rule}
+		SQUIRRELJME_SYSTEM)
+	get_target_property(archNormal ${rule}
+		SQUIRRELJME_ARCH)
+
+	# Remember which actual natives were put in
+	list(APPEND SQUIRRELJME_STANDALONE_NATIVES_AVAILABLE
+		"${systemNormal}!${archNormal}")
+
+	# The target name
+	set(targetName "natives.${systemNormal}.${archNormal}")
+
+	# Temporary
+	set(workPath
+		"${CMAKE_BINARY_DIR}/work-pack/${systemNormal}-${archNormal}")
+	set(outputDir
+		"${CMAKE_BINARY_DIR}")
+	set(outputZip
+		"${outputDir}/natives-${systemNormal}-${archNormal}.zip")
+
+	# Add the natives to their own individual archive
+	file(MAKE_DIRECTORY "${outputDir}" "${workPath}")
+	add_custom_target(${targetName}
+		COMMAND "${CMAKE_COMMAND}" "-E"
+			"make_directory"
+			"${workPath}/natives/${systemNormal}/${archNormal}"
+		COMMAND "${CMAKE_COMMAND}" "-E"
+			"copy_directory"
+			"${coreNativePath}/" "${emulatorNativePath}/"
+			"${workPath}/natives/${systemNormal}/${archNormal}"
+		COMMAND "${CMAKE_COMMAND}" "-E"
+			"make_directory" "${outputDir}"
+		COMMAND "${CMAKE_COMMAND}" "-E"
+			"tar" "c" "${outputZip}" "--format=zip" "--" "."
+		BYPRODUCTS "${outputZip}"
+		WORKING_DIRECTORY "${workPath}"
+		DEPENDS ${rule}
+		COMMENT "Packaging ${systemNormal}/${archNormal}...")
+
+	# Output type and location
+	set_target_properties(${targetName} PROPERTIES
+		SQUIRRELJME_OUTPUT_PATH "${outputZip}"
+		SQUIRRELJME_OUTPUT_TYPE "natives")
+
+	# These get uploaded into Fossil
+	squirreljme_fossil_upload_register(${targetName})
+
+	# Register to CI/CD
+	squirreljme_cicd_register(${targetName})
+endmacro()
+
+# Add natives via the compiler
+macro(squirreljme_natives_via_compiler compilerMap)
 	# Obtain back the system and architecture
 	squirreljme_unmap(systemNormal 0 "${compilerMap}")
 	squirreljme_unmap(archNormal 1 "${compilerMap}")
@@ -143,6 +203,8 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 		# Add this rule to the standalone set
 		list(APPEND SQUIRRELJME_STANDALONE_NATIVE_RULES
 			"${ruleName}")
+		set(SQUIRRELJME_STANDALONE_RULE_${systemNormal}_${archNormal}
+			"${ruleName}")
 
 		# Set the emulator native path
 		set_target_properties(${ruleName}
@@ -154,8 +216,11 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 			ADDITIONAL_CLEAN_FILES
 				"${coreBuild};${coreOut};${emulatorBuild};${emulatorOut}")
 
-			# Register to CI/CD
-			squirreljme_cicd_register(${ruleName})
+		# Register to CI/CD
+		squirreljme_cicd_register(${ruleName})
+
+		# Package these
+		squirreljme_package_natives(${ruleName})
 	else()
 		# Progress indication
 		message(STATUS "Failed to configure "
@@ -174,64 +239,92 @@ foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
 			message(WARNING ${emuErr})
 		endif()
 	endif()
+endmacro()
+
+if(Fossil_EXECUTABLE)
+	# Pull in natives available via Fossil, which are prebuild
+	macro(squirreljme_natives_via_fossil)
+	endmacro()
+endif()
+
+# Build natives for every known compiler on the system
+foreach(compilerMap IN LISTS SQUIRRELJME_COMPILER_MAP)
+	squirreljme_natives_via_compiler(${compilerMap})
 endforeach()
 
-# Go through all natives and package them individually
-foreach(rule IN LISTS SQUIRRELJME_STANDALONE_NATIVE_RULES)
-	# Where were the binaries and list files placed?
-	get_target_property(coreNativePath ${rule}
-		SQUIRRELJME_CORE_NATIVE_PATH)
-	get_target_property(emulatorNativePath ${rule}
-		SQUIRRELJME_EMULATOR_NATIVE_PATH)
+if(Fossil_EXECUTABLE)
+	# There may be pre-packaged natives in Fossil
+	# unstable/0.3.0/natives-${systemNormal}-${archNormal}.zip
+	# unstable/0.3.0/natives-${systemNormal}-${archNormal}.zip.mkd
+	set(SQUIRRELJME_PREMADE_NATIVES)
+	list(APPEND SQUIRRELJME_PREMADE_NATIVES
+		"linux!amd64"
+		"linux!arm64l"
+		"linux!ia32"
+		"linux!mips32b"
+		"linux!mips32b6"
+		"linux!mips32l"
+		"linux!mips32l6"
+		"linux!mips64b"
+		"linux!mips64b6"
+		"linux!mips64l"
+		"linux!mips64l6"
+		"linux!powerpc32b"
+		"linux!powerpc64l"
+		"linux!riscv64"
+		"macosx!arm64l"
+		"macosx!amd64l"
+		"macosx!ia32"
+		"macosx!powerpc32b"
+		"windows!amd64"
+		"windows!ia32")
 
-	# Which system/arch does this target?
-	get_target_property(systemNormal ${rule}
-		SQUIRRELJME_SYSTEM)
-	get_target_property(archNormal ${rule}
-		SQUIRRELJME_ARCH)
+	# Go through premade natives
+	foreach(premade IN LISTS SQUIRRELJME_PREMADE_NATIVES)
+		# Obtain back the system and architecture
+		squirreljme_unmap(systemNormal 0 "${premade}")
+		squirreljme_unmap(archNormal 1 "${premade}")
 
-	# Remember which actual natives were put in
-	list(APPEND SQUIRRELJME_STANDALONE_NATIVES_AVAILABLE
-		"${systemNormal}!${archNormal}")
+		# If we can compile a premade for a system, do not use it
+		if(NOT "${SQUIRRELJME_STANDALONE_RULE_${systemNormal}_${archNormal}}"
+			STREQUAL "")
+			message(STATUS "Not using Fossil ${systemNormal}/${archNormal} "
+				"as it is being built natively.")
+			continue()
+		endif()
 
-	# The target name
-	set(targetName "natives.${systemNormal}.${archNormal}")
+		# Determine the fossil path
+		set(fossilUvPath
+			"${SQUIRRELJME_UV_DIR}/natives-${systemNormal}-${archNormal}.zip")
+		set(downloadPath
+			"${CMAKE_BINARY_DIR}/natives-${systemNormal}-${archNormal}.zip")
 
-	# Temporary
-	set(workPath
-		"${CMAKE_BINARY_DIR}/work-pack/${systemNormal}-${archNormal}")
-	set(outputDir
-		"${CMAKE_BINARY_DIR}")
-	set(outputZip
-		"${outputDir}/natives-${systemNormal}-${archNormal}.zip")
+		# Try downloading it
+		execute_process(
+			COMMAND "${Fossil_EXECUTABLE}"
+				"uv" "cat" "${fossilUvPath}"
+			OUTPUT_FILE "${downloadPath}"
+			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+			RESULT_VARIABLE downloadResult)
 
-	# Add the natives to their own individual archive
-	file(MAKE_DIRECTORY "${outputDir}" "${workPath}")
-	add_custom_target(${targetName}
-		COMMAND "${CMAKE_COMMAND}" "-E"
-			"make_directory"
-			"${workPath}/natives/${systemNormal}/${archNormal}"
-		COMMAND "${CMAKE_COMMAND}" "-E"
-			"copy_directory"
-			"${coreNativePath}/" "${emulatorNativePath}/"
-			"${workPath}/natives/${systemNormal}/${archNormal}"
-		COMMAND "${CMAKE_COMMAND}" "-E"
-			"make_directory" "${outputDir}"
-		COMMAND "${CMAKE_COMMAND}" "-E"
-			"tar" "c" "${outputZip}" "--format=zip" "--" "."
-		BYPRODUCTS "${outputZip}"
-		WORKING_DIRECTORY "${workPath}"
-		DEPENDS ${rule}
-		COMMENT "Packaging ${systemNormal}/${archNormal}...")
+		# Empty or command failed?
+		file(SIZE "${downloadPath}" downloadSize)
+		if(NOT "${downloadResult}" EQUAL "0" OR
+			NOT EXISTS "${downloadPath}" OR
+			"${downloadSize}" EQUAL "0")
+			# Notice
+			message(STATUS "Native via Fossil ${systemNormal}/${archNormal} "
+				"is not available, skipping.")
 
-	# Output type and location
-	set_target_properties(${targetName} PROPERTIES
-		SQUIRRELJME_OUTPUT_PATH "${outputZip}"
-		SQUIRRELJME_OUTPUT_TYPE "natives")
+			# Remove it
+			file(REMOVE "${downloadPath}")
 
-	# These get uploaded into Fossil
-	squirreljme_fossil_upload_register(${targetName})
+			# Try another
+			continue()
+		endif()
 
-	# Register to CI/CD
-	squirreljme_cicd_register(${targetName})
-endforeach()
+		# Note that it is available
+		message(STATUS "Downloaded natives ${systemNormal}/${archNormal} "
+			"via Fossil.")
+	endforeach()
+endif()
