@@ -41,9 +41,6 @@ else(SQUIRRELJME_HAS_JAVA)
 	set_target_properties(standaloneJarBase PROPERTIES
 		ADDITIONAL_CLEAN_FILES "${outputBaseJar}"
 		SQUIRRELJME_OUTPUT_PATH "${outputBaseJar}")
-
-	# Register CI/CD Task
-	squirreljme_cicd_register(standaloneJarBase)
 endif()
 
 # If any Standalone Jar is available, then package all the natives together
@@ -126,7 +123,4 @@ if(SQUIRRELJME_HAS_STANDALONE_JAR_BASE)
 
 	# These get uploaded into Fossil
 	squirreljme_fossil_upload_register(standaloneJar)
-
-	# Register to CI/CD
-	squirreljme_cicd_register(standaloneJar)
 endif()

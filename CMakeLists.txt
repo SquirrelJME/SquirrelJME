@@ -17,6 +17,8 @@ cmake_minimum_required(VERSION 3.13)
 set(CMAKE_BUILD_PARALLEL_LEVEL 1)
 
 # Easier includes
+set(SQUIRRELJME_NANOCOAT_SOURCE_DIR
+	"${CMAKE_SOURCE_DIR}/nanocoat")
 include("${CMAKE_SOURCE_DIR}/assets/cmake/easier-includes.cmake"
 	NO_POLICY_SCOPE)
 
@@ -44,22 +46,25 @@ squirreljme_include_nanocoat("i-miss-you.cmake")
 # Include system mappings
 squirreljme_include_nanocoat("system-map.cmake")
 
+# Global macros, functions, and properties
+squirreljme_include("global.cmake")
+
 # Environment and everything else
 squirreljme_include("environment-depends.cmake")
 
-# Include a specified file such as a configuration?
-if(DEFINED $ENV{SQUIRRELJME_PIPELINE_CONFIG})
-	message(STATUS "Including pipeline configuration...")
-
-	include("$ENV{SQUIRRELJME_PIPELINE_CONFIG}")
-elseif(DEFINED SQUIRRELJME_PIPELINE_CONFIG)
-	message(STATUS "Including pipeline configuration...")
-
-	include("${SQUIRRELJME_PIPELINE_CONFIG}")
-endif()
+## Include a specified file such as a configuration?
+#if(DEFINED $ENV{SQUIRRELJME_PIPELINE_CONFIG})
+#	message(STATUS "Including pipeline configuration...")
+#
+#	include("$ENV{SQUIRRELJME_PIPELINE_CONFIG}")
+#elseif(DEFINED SQUIRRELJME_PIPELINE_CONFIG)
+#	message(STATUS "Including pipeline configuration...")
+#
+#	include("${SQUIRRELJME_PIPELINE_CONFIG}")
+#endif()
 
 # CI/CD Pipelines
-squirreljme_include("cicd-pipeline.cmake")
+###DISABLED:squirreljme_include("cicd-pipeline.cmake"):DISABLED###
 
 # Updating the Fossil site, uploading everything to it, where possible
 squirreljme_include("fossil-site.cmake")
@@ -87,7 +92,7 @@ squirreljme_include("install4j.cmake")
 ###DISABLED:squirreljme_include("flatpak.cmake"):DISABLED###
 
 # Exporting of pipeline rules to build and setup CI/CD files
-squirreljme_include("pipeline-export.cmake")
+###DISABLEDsquirreljme_include("pipeline-export.cmake"):DISABLED###
 
 # build_linux_aarch64_natives
 # build_linux_aarch64_standalone_flatpak

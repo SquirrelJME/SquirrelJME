@@ -80,7 +80,4 @@ if(Fossil_EXECUTABLE OR Git_EXECUTABLE)
 
 	# These get uploaded into Fossil
 	squirreljme_fossil_upload_register(sourceZip sourceTgz)
-
-	# Register to CI/CD
-	squirreljme_cicd_register(sourceZip sourceTgz)
 endif()
