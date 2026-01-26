@@ -24,6 +24,10 @@ find_program(convert_EXECUTABLE
 	NAMES "convert")
 find_program(uudecode_EXECUTABLE
 	NAMES "uudecode")
+find_program(xpmtoppm_EXECUTABLE
+	NAMES "xpmtoppm")
+find_program(pnmtopng_EXECUTABLE
+	NAMES "pnmtopng")
 
 # Install4j output directory
 set(SQUIRRELJME_INSTALL4J_DIR "${CMAKE_BINARY_DIR}/install4j")
@@ -56,6 +60,10 @@ foreach(xpmIcon IN LISTS SQUIRRELJME_ICONS)
 	set(inMime "${CMAKE_SOURCE_DIR}/assets/mascot/${xpmIcon}.png.__mime")
 	file(TO_NATIVE_PATH "${inMime}" inMimeNative)
 
+	# Middle (PPM)
+	set(midPpm "${CMAKE_BINARY_DIR}/${xpmIcon}.ppm")
+	file(TO_NATIVE_PATH "${midPpm}" midPpmNative)
+
 	# Output
 	set(outIcon "${SQUIRRELJME_ICONS_DIR}/${xpmIcon}.png")
 	file(TO_NATIVE_PATH "${outIcon}" outIconNative)
@@ -72,6 +80,20 @@ foreach(xpmIcon IN LISTS SQUIRRELJME_ICONS)
 			SOURCES "${inMime}"
 			BYPRODUCTS "${outIcon}")
 
+	# Round trip conversion
+	elseif(xpmtoppm_EXECUTABLE AND pnmtopng_EXECUTABLE)
+		add_custom_target(${target}
+			COMMAND "${xpmtoppm_EXECUTABLE}"
+				"--alphaout=${midPpmNative}.alpha"
+				"${inXpmNative}" ">" "${midPpmNative}"
+			COMMAND "${pnmtopng_EXECUTABLE}"
+				"-alpha=${midPpmNative}.alpha"
+				"${midPpmNative}" ">" "${outIconNative}"
+			COMMENT "Converting ${inXpm} -> ${midPpm}(.alpha) -> ${outIcon}"
+			SOURCES "${inIcon}"
+			VERBATIM
+			BYPRODUCTS "${outIcon}" "${midPpm}" "${midPpm}.alpha")
+
 	# Use imagemagick?
 	elseif(convert_EXECUTABLE)
 		add_custom_target(${target}
@@ -83,7 +105,8 @@ foreach(xpmIcon IN LISTS SQUIRRELJME_ICONS)
 	endif()
 
 	# All icons depend on this
-	if(uudecode_EXECUTABLE OR convert_EXECUTABLE)
+	if(uudecode_EXECUTABLE OR convert_EXECUTABLE OR
+		(xpmtoppm_EXECUTABLE AND pnmtopng_EXECUTABLE))
 		add_dependencies(icon ${target})
 	endif()
 endforeach()
