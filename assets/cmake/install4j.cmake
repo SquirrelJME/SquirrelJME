@@ -33,7 +33,7 @@ file(MAKE_DIRECTORY "${SQUIRRELJME_INSTALL4J_DIR}")
 set(SQUIRRELJME_ICONS_DIR "${CMAKE_BINARY_DIR}/icons")
 file(MAKE_DIRECTORY "${SQUIRRELJME_ICONS_DIR}")
 
-# Add base icon target
+# Add base target for all icons
 add_custom_target(icon)
 
 # Input icons
@@ -83,7 +83,9 @@ foreach(xpmIcon IN LISTS SQUIRRELJME_ICONS)
 	endif()
 
 	# All icons depend on this
-	add_dependencies(icon ${target})
+	if(uudecode_EXECUTABLE OR convert_EXECUTABLE)
+		add_dependencies(icon ${target})
+	endif()
 endforeach()
 
 
