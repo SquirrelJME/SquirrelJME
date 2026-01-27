@@ -58,3 +58,55 @@ macro(squirreljme_fossil_upload target)
 			${uploadTarget})
 	endif()
 endmacro()
+
+# Fossil download available and exists?
+function(squirreljme_fossil_downloadable result uvPath)
+	# We need somewhere to put it first
+	unset(tempFile)
+	squirreljme_temp_path(tempFile)
+
+	# Try catting it from the UV space, note that invalid files will have zero
+	# size
+	execute_process(
+		COMMAND "${Fossil_EXECUTABLE}"
+			"uv" "cat" "${uvPath}"
+		OUTPUT_FILE "${tempFile}"
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+		RESULT_VARIABLE catResult)
+
+	# Determine file size
+	set(tempSize "0")
+	if(EXISTS "${tempFile}")
+		file(SIZE "${tempFile}" tempSize)
+	endif()
+
+	# Remove the file, we might get a more up-to-date later
+	file(REMOVE "${tempFile}")
+
+	# This is only valid if Fossil did not fail and the file was non-zero
+	if("${catResult}" EQUAL "0" AND
+		"${tempSize}" GREATER "0")
+		set(${result} "YES" PARENT_SCOPE)
+	else()
+		set(${result} "NO" PARENT_SCOPE)
+	endif()
+endfunction()
+
+# Creates a target for downloading from Fossil
+function(squirreljme_fossil_download ruleName outputType uvPath downloadPath)
+	# Create rule for catting it
+	add_custom_target(${ruleName}
+		COMMAND "${Fossil_EXECUTABLE}"
+			"uv" "cat" "${uvPath}" ">" "${downloadPath}"
+		BYPRODUCTS "${downloadPath}"
+		VERBATIM
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+		COMMENT "Downloading '${uvPath}' to '${downloadPath}'..."
+		COMMAND_EXPAND_LISTS)
+
+	# Register the output path
+	set_target_properties(${ruleName} PROPERTIES
+		ADDITIONAL_CLEAN_FILES "${downloadPath}"
+		SQUIRRELJME_OUTPUT_PATH "${downloadPath}"
+		SQUIRRELJME_OUTPUT_TYPE "${outputType}")
+endfunction()

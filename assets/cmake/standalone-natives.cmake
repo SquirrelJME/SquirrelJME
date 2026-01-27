@@ -129,7 +129,7 @@ squirreljme_include("standalone-natives-cached.cmake")
 #		SQUIRRELJME_ARCH)
 #
 #	# Remember which actual natives were put in
-#	list(APPEND SQUIRRELJME_STANDALONE_NATIVES_AVAILABLE
+#	list(APPEND SQUIRRELJME_JAR_NATIVES_AVAILABLE
 #		"${systemNormal}!${archNormal}")
 #
 #	# The target name
@@ -296,9 +296,9 @@ squirreljme_include("standalone-natives-cached.cmake")
 #			"${systemNormal}/${archNormal} -> ${ruleName}")
 #
 #		# Add this rule to the standalone set
-#		list(APPEND SQUIRRELJME_STANDALONE_NATIVE_RULES
+#		list(APPEND SQUIRRELJME_JAR_NATIVE_RULES
 #			"${ruleName}")
-#		set(SQUIRRELJME_STANDALONE_RULE_${systemNormal}_${archNormal}
+#		set(SQUIRRELJME_JAR_RULE_${systemNormal}_${archNormal}
 #			"${ruleName}")
 #
 #		# Set the emulator native path
@@ -378,7 +378,7 @@ squirreljme_include("standalone-natives-cached.cmake")
 #		squirreljme_unmap(archNormal 1 "${premade}")
 #
 #		# If we can compile a premade for a system, do not use it
-#		if(NOT "${SQUIRRELJME_STANDALONE_RULE_${systemNormal}_${archNormal}}"
+#		if(NOT "${SQUIRRELJME_JAR_RULE_${systemNormal}_${archNormal}}"
 #			STREQUAL "")
 #			message(STATUS "Not using Fossil ${systemNormal}/${archNormal} "
 #				"as it is being built natively.")

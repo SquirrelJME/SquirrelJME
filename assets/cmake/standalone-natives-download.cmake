@@ -23,19 +23,9 @@ macro(squirreljme_natives_download systemNormal archNormal uvPath)
 	set(downloadPath
 		"${SQUIRRELJME_DOWNLOADS}/natives-${systemNormal}-${archNormal}.zip")
 
-	# Create rule for catting it
-	add_custom_target(${ruleName}
-		COMMAND "uv" "cat" "${uvPath}" ">" "${downloadPath}"
-		BYPRODUCTS "${downloadPath}"
-		VERBATIM
-		COMMENT "Downloading to ${downloadPath}..."
-		COMMAND_EXPAND_LISTS)
-
-	# Register the output path
-	set_target_properties(${ruleName} PROPERTIES
-		ADDITIONAL_CLEAN_FILES "${downloadPath}"
-		SQUIRRELJME_OUTPUT_PATH "${downloadPath}"
-		SQUIRRELJME_OUTPUT_TYPE "natives")
+	# Setup rule
+	squirreljme_fossil_download(${ruleName} "natives"
+		"${uvPath}" "${downloadPath}")
 
 	# Add to the order
 	squirreljme_natives_append_rule(${ruleName} ${systemNormal} ${archNormal}
@@ -48,36 +38,15 @@ macro(squirreljme_natives_download_check systemNormal archNormal)
 	unset(uvPath)
 	squirreljme_natives_download_uv_path(uvPath ${systemNormal} ${archNormal})
 
-	# We need somewhere to put it first
-	unset(tempFile)
-	squirreljme_temp_path(tempFile)
-
-	# Try catting it from the UV space, note that invalid files will have zero
-	# size
-	execute_process(
-		COMMAND "${Fossil_EXECUTABLE}"
-			"uv" "cat" "${uvPath}"
-		OUTPUT_FILE "${tempFile}"
-		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-		RESULT_VARIABLE catResult)
-
-	# Determine file size
-	set(tempSize "0")
-	if(EXISTS "${tempFile}")
-		file(SIZE "${tempFile}" tempSize)
-	endif()
-
-	# Remove the file, we might get a more up-to-date one with a rule run
-	# post-configuration
-	file(REMOVE "${tempFile}")
+	# Is this available?
+	unset(available)
+	squirreljme_fossil_downloadable(available "${uvPath}")
 
 	# This is only valid if Fossil did not fail and the file was non-zero
-	if("${catResult}" EQUAL "0" AND
-		"${tempSize}" GREATER "0")
+	if(available)
 		squirreljme_natives_download(${systemNormal} ${archNormal} ${uvPath})
 	else()
-		message(STATUS "No download for ${systemNormal}/${archNormal} "
-			"(${catResult}/${tempSize})!")
+		message(STATUS "No download for ${systemNormal}/${archNormal}!")
 	endif()
 endmacro()
 

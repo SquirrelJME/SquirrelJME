@@ -54,6 +54,11 @@ else()
 	macro(squirreljme_fossil_upload target)
 		message(STATUS "Ignoring fossilUpload for ${target}...")
 	endmacro()
+	
+	# Fossil download available and exists?
+	function(squirreljme_fossil_downloadable result uvPath)
+		set(${result} "NO" PARENT_SCOPE)
+	endfunction()
 endif()
 
 # Register multiple targets for Fossil uploading

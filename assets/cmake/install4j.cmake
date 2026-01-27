@@ -222,7 +222,7 @@ endforeach()
 #	# Install4J identifies each media specifically by its ID, there is the
 #	# media type however this would build them all for each type and I have
 #	# setup multiple ones that share the same media type
-#	foreach(nativeMap IN LISTS SQUIRRELJME_STANDALONE_NATIVES_AVAILABLE)
+#	foreach(nativeMap IN LISTS SQUIRRELJME_JAR_NATIVES_AVAILABLE)
 #		# Which System and architecture?
 #		squirreljme_unmap(systemNormal 0 "${nativeMap}")
 #		squirreljme_unmap(archNormal 1 "${nativeMap}")
