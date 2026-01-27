@@ -31,6 +31,6 @@ if(Fossil_EXECUTABLE)
 
 		# Add to the order
 		squirreljme_natives_append_rule(standalone.base.download
-			"standalone" "standalone" "download")
+			"standalone" "base" "download")
 	endif()
 endif()

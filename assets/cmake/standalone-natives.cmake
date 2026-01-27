@@ -71,10 +71,11 @@ macro(squirreljme_natives_append_rule newRule systemNormal archNormal method)
 	list(APPEND orderList
 		"${method}!${newRule}")
 	set_property(GLOBAL PROPERTY ${orderName} "${orderList}")
+
 	# If this is the first order, then set it as the default rule
 	if(firstOrder)
 		# Note it
-		message(STATUS "Native ${systemNormal}/${archNormal}: "
+		message(STATUS "Target ${systemNormal}/${archNormal}: "
 			"${newRule} (default)")
 
 		# Add target and its properties
@@ -93,7 +94,7 @@ macro(squirreljme_natives_append_rule newRule systemNormal archNormal method)
 	# Not first order
 	else()
 		# Note it
-		message(STATUS "Native ${systemNormal}/${archNormal}: "
+		message(STATUS "Target ${systemNormal}/${archNormal}: "
 			"${newRule}")
 	endif()
 

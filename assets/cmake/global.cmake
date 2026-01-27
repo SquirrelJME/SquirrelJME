@@ -133,15 +133,20 @@ endfunction()
 # Determine name for property
 function(squirreljme_natives_order_name result systemNormal archNormal)
 	# Calculate it
-	set(${result} SQUIRRELJME_NATIVE_${systemNormal}_${archNormal}
+	set(${result} SQUIRRELJME_TARGET_${systemNormal}_${archNormal}
 		PARENT_SCOPE)
 endfunction()
 
 # Determines rule name for an native
 function(squirreljme_natives_rule_name result systemNormal archNormal)
 	# Calculate it
-	set(${result} natives.${systemNormal}.${archNormal}
-		PARENT_SCOPE)
+	if("${systemNormal}" STREQUAL "standalone")
+		set(${result} standalone.${archNormal}
+			PARENT_SCOPE)
+	else()
+		set(${result} natives.${systemNormal}.${archNormal}
+			PARENT_SCOPE)
+	endif()
 endfunction()
 
 # Determines the rule names for configure and build steps for the compiler
@@ -192,6 +197,6 @@ foreach(compilerMap IN LISTS SQUIRRELJME_KNOWN_NATIVES)
 
 	# Define it
 	define_property(GLOBAL PROPERTY ${orderName}
-		BRIEF_DOCS "Native order for ${systemNormal}/${archNormal}."
-		FULL_DOCS "Native order for ${systemNormal}/${archNormal}.")
+		BRIEF_DOCS "Target order for ${systemNormal}/${archNormal}."
+		FULL_DOCS "Target order for ${systemNormal}/${archNormal}.")
 endforeach()
