@@ -33,7 +33,7 @@ if(SQUIRRELJME_HAS_JAVA)
 
 	# Add to the order
 	squirreljme_natives_append_rule(standalone.base.compiled
-		"standalone" "base" "compiled")
+		"standalone" "base" "compiler")
 endif()
 
 ## Is a prebuilt Jar available through CI/CD?

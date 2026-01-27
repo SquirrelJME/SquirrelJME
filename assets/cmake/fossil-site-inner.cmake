@@ -34,8 +34,8 @@ macro(squirreljme_fossil_upload target)
 	squirreljme_uv_path(uvPath "${outputBase}")
 
 	# Notice
-	message(STATUS "Upload '${outputBase}' -> '${uvPath}'...")
-	message(STATUS "Source: ${target} ${outputPath} ${outputType}")
+	message(STATUS "Upload '${outputPath}' -> '${uvPath}'...")
+	message(DEBUG "Source: ${target} ${outputPath} ${outputType}")
 
 	# Add in the upload command
 	add_custom_target(${uploadTarget}

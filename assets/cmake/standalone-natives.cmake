@@ -100,8 +100,9 @@ macro(squirreljme_natives_append_rule newRule systemNormal archNormal method)
 
 	# Regardless of what we did, we want to upload this to Fossil if not
 	# cached or download
-	if("${method}" STREQUAL "download" AND
-		"${method}" STREQUAL "cached")
+	if("${method}" STREQUAL "compiler" AND
+		NOT "${archNormal}" STREQUAL "base")
+		squirreljme_fossil_upload(${newRule})
 	endif()
 endmacro()
 

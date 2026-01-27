@@ -15,3 +15,5 @@ set(SQUIRRELJME_JAR_BASENAME
 squirreljme_include("standalone-jar-compiled.cmake")
 squirreljme_include("standalone-jar-download.cmake")
 squirreljme_include("standalone-jar-cached.cmake")
+
+# Merging of the Base Standalone with All Natives
