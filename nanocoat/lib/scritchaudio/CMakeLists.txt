@@ -6,9 +6,6 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Include common macros to make things easier
-squirreljme_include("scritchui.cmake")
-
 # Reset any state
 squirreljme_scritchany_enable(audio Audio)
 

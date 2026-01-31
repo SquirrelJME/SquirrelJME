@@ -123,3 +123,17 @@ squirreljme_target_link_libraries_required(libEmulatorBase)
 
 # Library Exports
 squirreljme_target_shared_library_exports(libEmulatorBase)
+
+# Rule to bundle all of the natives together
+set(nativesPath
+	"${CMAKE_BINARY_DIR}/natives-${SQUIRRELJME_SYSTEM}-${SQUIRRELJME_ARCH}.zip")
+add_custom_target(bundleNatives
+	COMMAND "${CMAKE_COMMAND}" "-E"
+		"tar" "c" "${nativesPath}" "--format=zip" "--"
+		"$<TARGET_FILE:libEmulatorBase>"
+		"$<TARGET_PROPERTY:BaseStatic,IMPORTED_LOCATION>"
+		"$<TARGET_PROPERTY:BaseStatic,IMPORTED_LOCATION_$<UPPER_CASE:$<CONFIG>>>"
+		"$<TARGET_PROPERTY:BaseStatic,IMPORTED_LOCATION_NOCONFIG>"
+	DEPENDS libEmulatorBase
+	SOURCES "$<TARGET_FILE:libEmulatorBase>"
+	COMMAND_EXPAND_LISTS)

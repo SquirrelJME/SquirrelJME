@@ -17,7 +17,7 @@ macro(squirreljme_natives_build systemNormal archNormal configureRuleName
 	add_custom_target(${buildRuleName}
 		COMMAND "${CMAKE_COMMAND}"
 			"--build" "${buildPath}"
-			"--target" "libEmulatorBase" "packageNatives"
+			"--target" "libEmulatorBase" "bundleNatives"
 		DEPENDS ${configureRuleName}
 		BYPRODUCTS "${packagePath}"
 		COMMENT "Building ${systemNormal}/${archNormal}..."

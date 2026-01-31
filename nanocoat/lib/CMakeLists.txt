@@ -24,9 +24,8 @@ endif()
 # Third party support libraries that come from outside SquirrelJME
 add_subdirectory(3rdparty)
 
-# Pseudo ScritchAudio and ScritchUI targets
-add_custom_target(ScritchAudio)
-add_custom_target(ScritchUI)
+# Include common macros to make things easier for Scritch interfaces
+squirreljme_include("scritchui.cmake")
 
 # ScritchUI and related
 add_subdirectory(scritchaudio)

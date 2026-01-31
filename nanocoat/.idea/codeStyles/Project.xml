@@ -82,6 +82,9 @@
     <Objective-C-extensions>
       <option name="TAG_PREFIX_OF_LINE_COMMENT" value="AT" />
     </Objective-C-extensions>
+    <Objective-C-extensions>
+      <option name="TAG_PREFIX_OF_LINE_COMMENT" value="AT" />
+    </Objective-C-extensions>
     <Python>
       <option name="ALIGN_COLLECTIONS_AND_COMPREHENSIONS" value="false" />
       <option name="ALIGN_MULTILINE_IMPORTS" value="false" />
