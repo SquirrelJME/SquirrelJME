@@ -102,7 +102,7 @@ public class CMakeBuildTask
 		CMakeBuildTaskAction action = new CMakeBuildTaskAction(__cmakeArgs);
 		
 		// Check if out of date
-		this.getOutputs().upToDateWhen(new CMakeUpToDateWhen());
+		this.getOutputs().upToDateWhen(new CMakeUpToDateWhen(__rules));
 		
 		// At the minimum we know the base input and outputs
 		this.getInputs().dir(this.cmakeSource);

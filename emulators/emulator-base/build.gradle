@@ -56,11 +56,11 @@ jar {
 	dependsOn mimeDecode, libNatives
 	
 	inputs.files(project.provider({ ->
-		libNatives.get().outputs.getFiles().getSingleFile()
+		libNatives.get().cmakeOutFile.toFile()
 	}))
 	
 	from project.provider({ ->
-		zipTree(libNatives.get().outputs.getFiles().getSingleFile())
+		zipTree(libNatives.get().cmakeOutFile.toFile())
 			.getAsFileTree()
 	})
 	
