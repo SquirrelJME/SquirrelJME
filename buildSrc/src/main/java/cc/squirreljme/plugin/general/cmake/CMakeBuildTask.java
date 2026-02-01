@@ -108,11 +108,11 @@ public class CMakeBuildTask
 		this.getInputs().dir(this.cmakeSource);
 		this.getInputs().files(
 			this.cmakeSource.resolve("CMakeLists.txt"));
-		this.getOutputs().dirs(this.cmakeBuild);
+		/*this.getOutputs().dirs(this.cmakeBuild);
 		this.getOutputs().files(
-			this.cmakeBuild.resolve("CMakeCache.txt"));
+			this.cmakeBuild.resolve("CMakeCache.txt"));*/
 		if (__outputFile != null)
-			this.getOutputs().files(this.cmakeOutFile);
+			this.getOutputs().file(this.cmakeOutFile);
 		
 		// What to do for this
 		this.doFirst(action);

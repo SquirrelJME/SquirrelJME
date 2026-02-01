@@ -138,10 +138,13 @@ squirreljme_library_path(emulatorBasePath libEmulatorBase)
 # The ZIP goes into the emulator base directory
 set(nativesZip
 	"${emulatorBaseDir}/natives-${SQUIRRELJME_SYSTEM}-${SQUIRRELJME_ARCH}.zip")
+set(nativesZipSimple
+	"${emulatorBaseDir}/natives.zip")
 
 # Determine target natives path and directories
 set(nativesDir "${CMAKE_BINARY_DIR}/bundle/")
-set(nativesSubDir "${nativesDir}/${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
+set(nativesSubDir
+	"${nativesDir}/natives/${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
 
 # Make sure it exists before we bundle
 file(MAKE_DIRECTORY "${nativesSubDir}")
@@ -163,6 +166,12 @@ add_custom_target(bundleNatives
 	COMMAND "${CMAKE_COMMAND}" "-E"
 		"tar" "cv" "${nativesZip}" "--format=zip" "--"
 			"."
+
+	# Create a simple name for it to make things easy on the Gradle side
+	COMMAND "${CMAKE_COMMAND}" "-E"
+		"copy" "${nativesZip}" "${nativesZipSimple}"
+
 	DEPENDS libEmulatorBase
 	WORKING_DIRECTORY "${nativesDir}"
+	BYPRODUCTS "${nativesZip}" "${nativesZipSimple}"
 	COMMAND_EXPAND_LISTS)
