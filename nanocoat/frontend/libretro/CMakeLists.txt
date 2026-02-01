@@ -69,7 +69,7 @@ target_include_directories(squirreljme_libretro SYSTEM PRIVATE
 
 # Exports for Windows, etc.
 if(NOT libRetroIsStatic)
-	squirreljme_target_shared_library_exports(squirreljme_libretro)
+	squirreljme_shared_library_exports(squirreljme_libretro)
 endif()
 
 # Duplicate binary

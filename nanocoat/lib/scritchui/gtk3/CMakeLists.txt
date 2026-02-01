@@ -51,4 +51,4 @@ squirreljme_target_binary_output(ScritchUiGTK3
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
 # Generate exports
-squirreljme_target_shared_library_exports(ScritchUiGTK3)
+squirreljme_shared_library_exports(ScritchUiGTK3)

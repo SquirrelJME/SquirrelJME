@@ -474,6 +474,12 @@ function(squirreljme_multilib_add_multilib_dependency libBase type)
 	endif()
 endfunction()
 
+# Export single target
+function(squirreljme_export target)
+	export(TARGETS ${target}
+		FILE "${CMAKE_BINARY_DIR}/export/${target}.cmake")
+endfunction()
+
 # Export multilib targets
 function(squirreljme_multilib_export target)
 	# There are multiple branching paths based on the configuration
@@ -482,13 +488,13 @@ function(squirreljme_multilib_export target)
 			${target}DyLib
 			${target}Static
 			${target}
-			FILE SquirrelJME${target}.cmake
+			FILE "${CMAKE_BINARY_DIR}/export/${target}.cmake"
 			NAMESPACE SquirrelJME::)
 	else()
 		export(TARGETS
 			${target}Static
 			${target}
-			FILE SquirrelJME${target}.cmake
+			FILE "${CMAKE_BINARY_DIR}/export/${target}.cmake"
 			NAMESPACE SquirrelJME::)
 	endif()
 endfunction()

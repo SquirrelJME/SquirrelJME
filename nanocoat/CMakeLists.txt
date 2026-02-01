@@ -14,6 +14,9 @@ cmake_minimum_required(VERSION 3.12)
 # Easier includes
 include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
 
+# Up-to-date info for NanoCoat, used to trigger reconfigures
+squirreljme_include("up-to-date-when.cmake")
+
 # Determine version information from the base file
 squirreljme_include("identify-squirreljme-version-file.cmake")
 

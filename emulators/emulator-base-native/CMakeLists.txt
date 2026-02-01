@@ -7,9 +7,7 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: CMake Helper for project
 
-set(CMAKE_VERBOSE_MAKEFILE YES)
-
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.12)
 
 # Declare project
 project(libEmulatorBase
@@ -53,13 +51,16 @@ squirreljme_include_nanocoat("multilib.cmake")
 
 # Import the JVM library that NanoCoat found
 # We also need to build the SquirrelJME base library
-include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/BaseStatic.cmake")
-include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/libJvmDyLib.cmake")
-include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/discoveredJvm.cmake")
+include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/Base.cmake")
+include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/Core.cmake")
+include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/libJvm.cmake")
+include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/discoveredJvm.cmake")
 
+# Build the required libraries
 execute_process(COMMAND "${CMAKE_COMMAND}"
 	"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-	"--target" "BaseStatic" "libJvmDyLib"
+	"--target" "BaseStatic" "libJvmDyLib" "SquirrelJME"
+		"ScritchAudioZip" "ScritchUiZip"
 	RESULT_VARIABLE baseStaticBuild)
 if(NOT baseStaticBuild EQUAL "0")
 	message(FATAL_ERROR "Could not build SquirrelJME base library!")
@@ -92,37 +93,32 @@ add_library(libEmulatorBase SHARED
 	c/nativebinding.c
 	c/utils.c)
 
+# Always make this position independent
+squirreljme_always_fpic(libEmulatorBase)
+
 # Includes for the build
 target_include_directories(libEmulatorBase PRIVATE
 	"${CMAKE_SOURCE_DIR}/headers"
 	"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/include"
-	"$<TARGET_PROPERTY:BaseStatic,INTERFACE_INCLUDE_DIRECTORIES>"
 	"$<TARGET_PROPERTY:discoveredJvm,INTERFACE_INCLUDE_DIRECTORIES>")
 
 # Libraries for the build
 target_link_directories(libEmulatorBase PRIVATE
-	"$<TARGET_PROPERTY:BaseStatic,INTERFACE_LINK_DIRECTORIES>"
 	"$<TARGET_PROPERTY:discoveredJvm,INTERFACE_LINK_DIRECTORIES>")
 target_link_libraries(libEmulatorBase PUBLIC
-	"$<TARGET_PROPERTY:BaseStatic,IMPORTED_LOCATION>"
-	"$<TARGET_PROPERTY:BaseStatic,IMPORTED_LOCATION_$<UPPER_CASE:$<CONFIG>>>"
-	"$<TARGET_PROPERTY:BaseStatic,IMPORTED_LOCATION_NOCONFIG>"
-	"$<TARGET_PROPERTY:discoveredJvm,INTERFACE_LINK_LIBRARIES>")
+	"${SQUIRRELJME_REQUIRED_LIBS}"
+	SquirrelJME::BaseStatic
+	discoveredJvm
+)
 
 # It is easier to find this when it is in the build root
-squirreljme_target_binary_output(libEmulatorBase "${CMAKE_BINARY_DIR}")
-
-# Use a more basic name for the library
-squirreljme_target_binary_name(libEmulatorBase "emulator-base")
-
-# Always make this position independent
-squirreljme_always_fpic(libEmulatorBase)
-
-# Needed for all platforms
-squirreljme_target_link_libraries_required(libEmulatorBase)
+squirreljme_target_binary_name(libEmulatorBase
+	"emulator-base")
+squirreljme_target_binary_output(libEmulatorBase
+	"${CMAKE_BINARY_DIR}")
 
 # Library Exports
-squirreljme_target_shared_library_exports(libEmulatorBase)
+squirreljme_shared_library_exports(libEmulatorBase)
 
 # Rule to bundle all of the natives together
 set(nativesPath
@@ -131,9 +127,8 @@ add_custom_target(bundleNatives
 	COMMAND "${CMAKE_COMMAND}" "-E"
 		"tar" "c" "${nativesPath}" "--format=zip" "--"
 		"$<TARGET_FILE:libEmulatorBase>"
-		"$<TARGET_PROPERTY:BaseStatic,IMPORTED_LOCATION>"
-		"$<TARGET_PROPERTY:BaseStatic,IMPORTED_LOCATION_$<UPPER_CASE:$<CONFIG>>>"
-		"$<TARGET_PROPERTY:BaseStatic,IMPORTED_LOCATION_NOCONFIG>"
+		"$<TARGET_PROPERTY:SquirrelJME::BaseStatic,IMPORTED_LOCATION>"
+		"$<TARGET_PROPERTY:SquirrelJME::BaseStatic,IMPORTED_LOCATION_$<UPPER_CASE:$<CONFIG>>>"
+		"$<TARGET_PROPERTY:SquirrelJME::BaseStatic,IMPORTED_LOCATION_NOCONFIG>"
 	DEPENDS libEmulatorBase
-	SOURCES "$<TARGET_FILE:libEmulatorBase>"
 	COMMAND_EXPAND_LISTS)

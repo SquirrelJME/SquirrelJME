@@ -50,4 +50,4 @@ squirreljme_target_binary_output(ScritchUiMotif
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
 # Generate exports
-squirreljme_target_shared_library_exports(ScritchUiMotif)
+squirreljme_shared_library_exports(ScritchUiMotif)

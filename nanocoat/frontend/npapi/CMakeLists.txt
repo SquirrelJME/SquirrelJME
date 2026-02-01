@@ -33,4 +33,4 @@ squirreljme_target_binary_name(npapi
 	"squirreljme-npapi")
 
 # Exports for Windows, etc.
-squirreljme_target_shared_library_exports(npapi)
+squirreljme_shared_library_exports(npapi)

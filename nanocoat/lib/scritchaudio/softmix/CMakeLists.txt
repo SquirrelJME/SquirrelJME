@@ -19,6 +19,5 @@ target_include_directories(ScritchAudioSoftMix PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
 # Export this target
-export(TARGETS ScritchAudioSoftMix
-	FILE SquirrelJMEScritchAudioSoftMix.cmake)
+squirreljme_export(ScritchAudioSoftMix)
 

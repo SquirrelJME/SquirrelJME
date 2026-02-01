@@ -29,5 +29,4 @@ target_include_directories(ScritchUiFB PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
 # Export this target
-export(TARGETS ScritchUiFB
-	FILE SquirrelJMEScritchUiFB.cmake)
+squirreljme_export(ScritchUiFB)

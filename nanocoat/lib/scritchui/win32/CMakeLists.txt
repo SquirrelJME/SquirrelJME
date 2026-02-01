@@ -27,5 +27,5 @@ squirreljme_scritchany_add_library(ui Win32
 squirreljme_scritchany_standard_properties(ui Win32)
 
 # Required libraries
-squirreljme_scritchany_link_libraries(ui Win32
+squirreljme_scritchany_link_libraries(ui Win32 PUBLIC
 	"gdi32")

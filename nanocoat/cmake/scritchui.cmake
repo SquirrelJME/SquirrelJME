@@ -68,6 +68,7 @@ macro(squirreljme_scritchany_declare area)
 				">" "${basePath}.paths"
 		BYPRODUCTS "${basePath}.list" "${basePath}.paths"
 		VERBATIM
+		WORKING_DIRECTORY "${SQUIRRELJME_BINARY_OUTPUT_DIR}"
 		COMMENT "Producing Scritch${areaNoun} list..."
 		COMMAND_EXPAND_LISTS)
 
@@ -86,6 +87,7 @@ macro(squirreljme_scritchany_declare area)
 			"tar" "cv" "${basePath}.zip"
 				"--format=zip" "--files-from=${basePath}.paths" "--"
 		BYPRODUCTS "${basePath}.zip"
+		WORKING_DIRECTORY "${SQUIRRELJME_BINARY_OUTPUT_DIR}"
 		COMMENT "Bundling Scritch${areaNoun} libraries..."
 		COMMAND_EXPAND_LISTS)
 

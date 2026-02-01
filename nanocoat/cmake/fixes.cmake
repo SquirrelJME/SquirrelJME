@@ -68,7 +68,7 @@ endif()
 #endif()
 
 # Are implibs used?
-if(MSVC AND "${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
 	set(SQUIRRELJME_HAS_IMPLIB YES)
 else()
 	set(SQUIRRELJME_HAS_IMPLIB NO)
@@ -166,59 +166,87 @@ macro(squirreljme_target_binary_output target where)
 	endforeach()
 endmacro()
 
-# Generate exports, mostly for Windows
-macro(squirreljme_target_shared_library_exports target)
-	# The target location can be overridden, generally through the pipeline
-	# build system
-	if(DEFINED ENV{SQUIRRELJME_BINARY_OUTPUT_DIR})
-		set(actualWhere "$ENV{SQUIRRELJME_BINARY_OUTPUT_DIR}")
-	elseif(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
-		set(actualWhere "${SQUIRRELJME_BINARY_OUTPUT_DIR}")
+# Determine the path of a library
+function(squirreljme_library_path result target)
+	# Try to find the output directory
+	get_target_property(dylibDirNoneR ${target}
+		RUNTIME_OUTPUT_DIRECTORY)
+	get_target_property(dylibDirConfR ${target}
+		RUNTIME_OUTPUT_DIRECTORY_$<CONFIG>)
+	get_target_property(dylibDirNone ${target}
+		LIBRARY_OUTPUT_DIRECTORY)
+	get_target_property(dylibDirConf ${target}
+		LIBRARY_OUTPUT_DIRECTORY_$<CONFIG>)
+
+	# Use configuration first
+	if(NOT "${dylibDirConfR}" STREQUAL "dylibDirConfR-NOTFOUND")
+		set(dylibDir "${dylibDirConfR}")
+	elseif(NOT "${dylibDirNoneR}" STREQUAL "dylibDirNoneR-NOTFOUND")
+		set(dylibDir "${dylibDirNoneR}")
+	elseif(NOT "${dylibDirConf}" STREQUAL "dylibDirConf-NOTFOUND")
+		set(dylibDir "${dylibDirConf}")
+	elseif(NOT "${dylibDirNone}" STREQUAL "dylibDirNone-NOTFOUND")
+		set(dylibDir "${dylibDirNone}")
 	else()
-		# If there is a config used, just use the first one
-		if(NOT "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
-			list(GET CMAKE_CONFIGURATION_TYPES 0 firstConfig)
-
-			get_target_property(actualWhere
-				${target} RUNTIME_OUTPUT_DIRECTORY_${firstConfig})
-		endif()
-
-		# If not specified, use whatever was used
-		if(NOT actualWhere)
-			get_target_property(actualWhere
-				${target} RUNTIME_OUTPUT_DIRECTORY)
-		endif()
-
-		# If not set, use the default location that CMake uses
-		if(NOT actualWhere)
-			set(actualWhere "${CMAKE_CURRENT_BINARY_DIR}")
-		endif()
+		set(dylibDir ".")
 	endif()
 
-	# If there is a config used, just use the first one, we need to know
-	# the binary name for the IMPLIB
-	if(NOT "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
-		list(GET CMAKE_CONFIGURATION_TYPES 0 firstConfig)
+	# Try to find the library name
+	get_target_property(dylibNameNoneR ${target}
+		RUNTIME_OUTPUT_NAME)
+	get_target_property(dylibNameConfR ${target}
+		RUNTIME_OUTPUT_NAME_$<CONFIG>)
+	get_target_property(dylibNameNone ${target}
+		LIBRARY_OUTPUT_NAME)
+	get_target_property(dylibNameConf ${target}
+		LIBRARY_OUTPUT_NAME_$<CONFIG>)
 
-		get_target_property(squirreljme_dylib_output_name
-			${target} RUNTIME_OUTPUT_NAME_${firstConfig})
+	# Use configuration first
+	if(NOT "${dylibNameConfR}" STREQUAL "dylibNameConfR-NOTFOUND")
+		set(dylibName "${dylibNameConfR}")
+	elseif(NOT "${dylibNameNoneR}" STREQUAL "dylibNameNoneR-NOTFOUND")
+		set(dylibName "${dylibNameNoneR}")
+	elseif(NOT "${dylibNameConf}" STREQUAL "dylibNameConf-NOTFOUND")
+		set(dylibName "${dylibNameConf}")
+	elseif(NOT "${dylibNameNone}" STREQUAL "dylibNameNone-NOTFOUND")
+		set(dylibName "${dylibNameNone}")
+	else()
+		set(dylibName "${target}")
 	endif()
 
-	# If no configuration is used, then use the normal output name
-	if(NOT squirreljme_dylib_output_name)
-		get_target_property(squirreljme_dylib_output_name
-			${target} RUNTIME_OUTPUT_NAME)
-	endif()
+	# Build output
+	set(baseName
+	"${CMAKE_SHARED_LIBRARY_PREFIX}${dylibName}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+	set(${result} "${dylibDir}/${baseName}" PARENT_SCOPE)
+endfunction()
 
-	# MSVC requires that the implementation library also be specified otherwise
-	# nothing will be able to properly link against the library
+# Determine the path of the implib
+function(squirreljme_implib_path result target)
+	# Determine the name of the library
+	squirreljme_library_path(implibPath ${target})
+	set(${result} "${implibPath}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+		PARENT_SCOPE)
+endfunction()
+
+# Generate exports, mostly for Windows
+function(squirreljme_shared_library_exports target)
+	# Determine the name that the implib should use
+	squirreljme_implib_path(impLibPath ${target})
+
+	# Import library is used?
 	if(SQUIRRELJME_HAS_IMPLIB)
-		set(impLibPath
-			"${actualWhere}/${squirreljme_dylib_output_name}.lib")
-		target_link_options(${target} PRIVATE
-			"/IMPLIB:${impLibPath}")
+		# MSVC?
+		if(MSVC)
+			target_link_options(${target} PRIVATE
+				"/IMPLIB:${impLibPath}")
+
+		# Mingw32 or Mingw-w64
+		elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+			target_link_options(${target} PRIVATE
+				"-Wl,--out-implib,${impLibPath}")
+		endif()
 	endif()
-endmacro()
+endfunction()
 
 # VC8 and Older
 if(MSVC AND "${MSVC_VERSION}" LESS_EQUAL 1400)
@@ -543,8 +571,7 @@ function(squirreljme_link_libraries target scope)
 			get_target_property(targetType ${lib} TYPE)
 
 			# If there are target objects, inherit everything
-			if(targetObjs AND
-				NOT "${targetObjs}" STREQUAL "targetObjs-NOTFOUND")
+			if(NOT "${targetObjs}" STREQUAL "targetObjs-NOTFOUND")
 				# Grab all objects
 				list(APPEND objects "${targetObjs}")
 
@@ -604,8 +631,7 @@ function(squirreljme_link_libraries target scope)
 		message(DEBUG "${target} -> ${targetObjs} (${objects})")
 
 		# Append objects, or initially set?
-		if(targetObjs AND
-			NOT "${targetObjs}" STREQUAL "targetObjs-NOTFOUND")
+		if(NOT "${targetObjs}" STREQUAL "targetObjs-NOTFOUND")
 			list(APPEND targetObjs "${objects}")
 			set_target_properties(${target} PROPERTIES
 				SQUIRRELJME_TARGET_OBJECTS "${targetObjs}")
