@@ -55,16 +55,27 @@ include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/Base.cmake")
 include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/Core.cmake")
 include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/libJvm.cmake")
 include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/discoveredJvm.cmake")
+include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/SquirrelJME.cmake")
 
 # Build the required libraries
 execute_process(COMMAND "${CMAKE_COMMAND}"
 	"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 	"--target" "BaseStatic" "libJvmDyLib" "SquirrelJME"
-		"ScritchAudioZip" "ScritchUiZip"
+		"ScritchAudio" "ScritchUi"
 	RESULT_VARIABLE baseStaticBuild)
 if(NOT baseStaticBuild EQUAL "0")
-	message(FATAL_ERROR "Could not build SquirrelJME base library!")
+	message(FATAL_ERROR "Could not build NanoCoat!")
 endif()
+
+# Get the list file and paths
+set(scritchAnyLists)
+list(APPEND scritchAnyLists
+	"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin/ScritchAudio.list"
+	"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin/ScritchUi.list")
+file(STRINGS "${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin/ScritchAudio.paths"
+	scritchAudioBins)
+file(STRINGS "${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin/ScritchUi.paths"
+	scritchUiBins)
 
 # Declare library
 add_library(libEmulatorBase SHARED
@@ -115,20 +126,43 @@ target_link_libraries(libEmulatorBase PUBLIC
 squirreljme_target_binary_name(libEmulatorBase
 	"emulator-base")
 squirreljme_target_binary_output(libEmulatorBase
-	"${CMAKE_BINARY_DIR}")
+	"${CMAKE_BINARY_DIR}/bin")
 
 # Library Exports
 squirreljme_shared_library_exports(libEmulatorBase)
 
+# Where does the library exist?
+squirreljme_library_dir(emulatorBaseDir libEmulatorBase)
+squirreljme_library_path(emulatorBasePath libEmulatorBase)
+
+# The ZIP goes into the emulator base directory
+set(nativesZip
+	"${emulatorBaseDir}/natives-${SQUIRRELJME_SYSTEM}-${SQUIRRELJME_ARCH}.zip")
+
+# Determine target natives path and directories
+set(nativesDir "${CMAKE_BINARY_DIR}/bundle/")
+set(nativesSubDir "${nativesDir}/${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
+
+# Make sure it exists before we bundle
+file(MAKE_DIRECTORY "${nativesSubDir}")
+
 # Rule to bundle all of the natives together
-set(nativesPath
-	"${CMAKE_BINARY_DIR}/natives-${SQUIRRELJME_SYSTEM}-${SQUIRRELJME_ARCH}.zip")
 add_custom_target(bundleNatives
+	# Copy the spread out binaries
 	COMMAND "${CMAKE_COMMAND}" "-E"
-		"tar" "c" "${nativesPath}" "--format=zip" "--"
-		"$<TARGET_FILE:libEmulatorBase>"
-		"$<TARGET_PROPERTY:SquirrelJME::BaseStatic,IMPORTED_LOCATION>"
-		"$<TARGET_PROPERTY:SquirrelJME::BaseStatic,IMPORTED_LOCATION_$<UPPER_CASE:$<CONFIG>>>"
-		"$<TARGET_PROPERTY:SquirrelJME::BaseStatic,IMPORTED_LOCATION_NOCONFIG>"
+		"copy"
+			"$<TARGET_FILE:libEmulatorBase>"
+			"$<TARGET_FILE:SquirrelJME>"
+			"${scritchAnyLists}"
+			"${scritchAudioBins}"
+			"${scritchUiBins}"
+			# To here...
+			"${nativesSubDir}"
+
+	# Add everything to the Zip
+	COMMAND "${CMAKE_COMMAND}" "-E"
+		"tar" "cv" "${nativesZip}" "--format=zip" "--"
+			"."
 	DEPENDS libEmulatorBase
+	WORKING_DIRECTORY "${nativesDir}"
 	COMMAND_EXPAND_LISTS)

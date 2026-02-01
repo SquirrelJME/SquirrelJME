@@ -166,8 +166,8 @@ macro(squirreljme_target_binary_output target where)
 	endforeach()
 endmacro()
 
-# Determine the path of a library
-function(squirreljme_library_path result target)
+# Determine the directory of a library
+function(squirreljme_library_dir result target)
 	# Try to find the output directory
 	get_target_property(dylibDirNoneR ${target}
 		RUNTIME_OUTPUT_DIRECTORY)
@@ -190,6 +190,15 @@ function(squirreljme_library_path result target)
 	else()
 		set(dylibDir ".")
 	endif()
+
+	# Build output
+	set(${result} "${dylibDir}" PARENT_SCOPE)
+endfunction()
+
+# Determine the path of a library
+function(squirreljme_library_path result target)
+	# Get the library directory
+	squirreljme_library_dir(dylibDir ${target})
 
 	# Try to find the library name
 	get_target_property(dylibNameNoneR ${target}
@@ -215,8 +224,11 @@ function(squirreljme_library_path result target)
 	endif()
 
 	# Build output
-	set(baseName
-	"${CMAKE_SHARED_LIBRARY_PREFIX}${dylibName}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+	set(baseName "")
+	string(APPEND baseName
+		"${CMAKE_SHARED_LIBRARY_PREFIX}"
+		"${dylibName}"
+		"${CMAKE_SHARED_LIBRARY_SUFFIX}")
 	set(${result} "${dylibDir}/${baseName}" PARENT_SCOPE)
 endfunction()
 

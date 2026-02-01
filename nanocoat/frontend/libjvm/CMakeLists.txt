@@ -152,3 +152,6 @@ squirreljme_target_binary_output(SquirrelJME
 # Use lowercase name for the wrapper
 squirreljme_target_binary_name(SquirrelJME
 	"squirreljme")
+
+# Being able to export/install SquirrelJME is nice
+squirreljme_export(SquirrelJME)
