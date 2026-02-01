@@ -7,9 +7,9 @@
 # ---------------------------------------------------------------------------
 
 # The SquirrelJME base library is added in the base root project and not
-# by this one
+# by this one!
 
-# Directory where ScritchUI/ScritchAudio lists should be placed
+# Directory where ScritchUi/ScritchAudio lists should be placed
 if(DEFINED ENV{SQUIRRELJME_BINARY_OUTPUT_DIR})
 	set(SQUIRRELJME_SCRITCHLIST_DIR
 		"$ENV{SQUIRRELJME_BINARY_OUTPUT_DIR}")
@@ -27,7 +27,7 @@ add_subdirectory(3rdparty)
 # Include common macros to make things easier for Scritch interfaces
 squirreljme_include("scritchui.cmake")
 
-# ScritchUI and related
+# ScritchUi and related
 add_subdirectory(scritchaudio)
 add_subdirectory(scritchinput)
 add_subdirectory(scritchui)

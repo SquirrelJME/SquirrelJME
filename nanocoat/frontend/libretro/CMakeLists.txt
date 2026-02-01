@@ -10,54 +10,13 @@
 if(LIBRETRO_REALLY_STATIC)
 	set(libRetroIsStatic ON)
 	set(libRetroBuildType STATIC)
-	set(libRetroCore ${SQUIRRELJME_LIB_Core_FIXED})
-	set(libRetroBaseObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FIXED}>)
-	set(libRetroCoreObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Core_FIXED}>)
-	set(scritchUiCoreObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FIXED}>)
-	set(scritchUiFramebufferObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FIXED}>)
-	set(scritchUiPureObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIPure_FIXED}>)
 else()
 	set(libRetroIsStatic OFF)
 	set(libRetroBuildType SHARED)
-	set(libRetroCore ${SQUIRRELJME_LIB_Core_FPIC})
-	set(libRetroBaseObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>)
-	set(libRetroCoreObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Core_FPIC}>)
-	set(scritchUiCoreObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>)
-	set(scritchUiFramebufferObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>)
-	set(scritchUiPureObjects
-		$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIPure_FPIC}>)
-endif()
-
-# Include tests with the build as well?
-if(SQUIRRELJME_IS_DEBUG AND SQUIRRELJME_ENABLE_TESTING)
-	if(LIBRETRO_REALLY_STATIC OR NOT SQUIRRELJME_ENABLE_FPIC)
-		set(libRetroTestObjects
-			$<TARGET_OBJECTS:BasicTestLib>)
-	else()
-		set(libRetroTestObjects
-			$<TARGET_OBJECTS:BasicTestLibPIC>)
-	endif()
-else()
-	set(libRetroTestObjects)
 endif()
 
 # Declare library
 add_library(squirreljme_libretro ${libRetroBuildType}
-	${libRetroBaseObjects}
-	${libRetroCoreObjects}
-	${libRetroTestObjects}
-	${scritchUiCoreObjects}
-	${scritchUiFramebufferObjects}
-	${scritchUiPureObjects}
 	audio.c
 	boot.c
 	env.c
@@ -74,9 +33,12 @@ if(NOT libRetroIsStatic)
 	squirreljme_always_fpic(squirreljme_libretro)
 endif()
 
-# The base SquirrelJME core needs to be built
-add_dependencies(squirreljme_libretro
-	${libRetroCore})
+# Link against base libraries, statically!!
+squirreljme_link_libraries_required(squirreljme_libretro PRIVATE
+	CoreStatic
+	ScritchAudioCoreStatic
+	ScritchUiCoreStatic
+	ScritchUiPureStatic)
 
 # Name must be specifically set for RetroArch for it to work properly
 if(SQUIRRELJME_IS_ANDROID)
@@ -109,9 +71,6 @@ target_include_directories(squirreljme_libretro SYSTEM PRIVATE
 if(NOT libRetroIsStatic)
 	squirreljme_target_shared_library_exports(squirreljme_libretro)
 endif()
-
-# Link required libraries
-squirreljme_target_link_libraries_required(squirreljme_libretro)
 
 # Duplicate binary
 if(EMSCRIPTEN)
@@ -148,7 +107,7 @@ if(retroArchExe AND NOT libRetroIsStatic AND
 	add_custom_target(RunSquirreljme_libretro
 		COMMAND "${retroArchExe}"
 			"-v"
-			"-L" "$<TARGET_FILE:squirreljme_libretro>"
+			"-L" "$<GENEX_EVAL:$<TARGET_FILE:squirreljme_libretro>>"
 			"--no-patch"
 			"--appendconfig=${CMAKE_CURRENT_BINARY_DIR}/test.config"
 			"--log-file=${CMAKE_BINARY_DIR}/libretro.log"
@@ -165,7 +124,7 @@ if(retroArchExe AND NOT libRetroIsStatic AND
 		# Add target to run accordingly
 		add_custom_target(GdbSquirreljme_libretro
 			COMMAND "${gdbExe}" "localhost:2345" "${retroArchExe}"
-			"-L" "$<TARGET_FILE:squirreljme_libretro>"
+			"-L" "$<GENEX_EVAL:$<TARGET_FILE:squirreljme_libretro>>"
 			"--no-patch"
 			"--appendconfig=${CMAKE_CURRENT_BINARY_DIR}/test.config"
 			"--log-file=${CMAKE_BINARY_DIR}/libretro.log"

@@ -7,14 +7,8 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Defines the base project and the versioning info
 
-# Allow a dynamic range of CMake versions to allow older systems
-if(${CMAKE_VERSION} VERSION_LESS "3.7")
-	cmake_minimum_required(VERSION 3.0)
-elseif(${CMAKE_VERSION} VERSION_LESS "3.13")
-	cmake_minimum_required(VERSION 3.7)
-else()
-	cmake_minimum_required(VERSION 3.13)
-endif()
+# Required minimum
+cmake_minimum_required(VERSION 3.12)
 
 # This is always needed
 project(CheckFindJNI

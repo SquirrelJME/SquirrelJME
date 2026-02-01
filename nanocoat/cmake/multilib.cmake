@@ -10,6 +10,11 @@
 # Needed for directory setups
 include(GNUInstallDirs)
 
+# Properties for multilib targets
+define_property(TARGET PROPERTY SQUIRRELJME_MULTILIB_TYPE
+	BRIEF_DOCS "The type of target this is."
+	FULL_DOCS "The type of target this is.")
+
 # Correct Paths
 ## Emulator base import directory
 if(DEFINED SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR)
@@ -30,68 +35,63 @@ if(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
 elseif(DEFINED SQUIRRELJME_DYLIB_OUTPUT_DIR)
 	file(TO_CMAKE_PATH "${SQUIRRELJME_DYLIB_OUTPUT_DIR}"
 		SQUIRRELJME_BINARY_OUTPUT_DIR)
+else()
+	set(SQUIRRELJME_BINARY_OUTPUT_DIR
+		"${CMAKE_BINARY_DIR}/bin")
 endif()
 
+# Check that the scope is valid
+function(squirreljme_check_valid_scope scope)
+	# Scope is wrong?
+	if(NOT "${scope}" STREQUAL "PRIVATE" AND
+		NOT "${scope}" STREQUAL "PUBLIC" AND
+		NOT "${scope}" STREQUAL "INTERFACE" AND
+		NOT "${scope}" STREQUAL "NONE")
+		message(FATAL_ERROR "${scope} is not a valid scope!")
+	endif()
+endfunction()
+
 # Add static library
-macro(squirreljme_multilib_add_static_library libBase)
+function(squirreljme_multilib_add_static_library libBase)
 	# Load in source files
-	set(libBaseSources)
-	foreach(arg ${ARGV})
-		# Ignore first
-		if("${arg}" STREQUAL "${libBase}")
-			continue()
-		endif()
+	set(sourcesList "${ARGV}")
+	list(REMOVE_AT sourcesList 0)
 
-		list(APPEND libBaseSources "${arg}")
-	endforeach()
-
-	# Non-PIC Object
+	# Object Library
 	add_library(${libBase} OBJECT
-		${libBaseSources})
+		${sourcesList})
 
-	# PIC Object
-	if(SQUIRRELJME_ENABLE_FPIC)
-		add_library(${libBase}PIC OBJECT
-			${libBaseSources})
+	# Always FPIC
+	squirreljme_always_fpic(${libBase})
 
-		set_property(TARGET ${libBase}PIC
-			PROPERTY POSITION_INDEPENDENT_CODE ON)
-	endif()
+	# Properties as needed
+	set_target_properties(${libBase} PROPERTIES
+		SQUIRRELJME_MULTILIB_TYPE OBJECT_LIBRARY
+		SQUIRRELJME_MULTILIB_FPIC ${SQUIRRELJME_ENABLE_FPIC}
+		SQUIRRELJME_TARGET_OBJECTS
+			"$<TARGET_GENEX_EVAL:${libBase},$<TARGET_OBJECTS:${libBase}>>")
 
-	# Static Library
+	# Static library
 	add_library(${libBase}Static STATIC
-		${libBaseSources})
+		"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/blank.c"
+		"$<TARGET_GENEX_EVAL:${libBase},$<TARGET_OBJECTS:${libBase}>>")
 
-	if(SQUIRRELJME_ENABLE_FPIC)
-		set_property(TARGET ${libBase}Static
-			PROPERTY POSITION_INDEPENDENT_CODE ON)
-	endif()
+	# Always FPIC
+	squirreljme_always_fpic(${libBase}Static)
 
-	# Use FPIC objects for a given target or not?
+	# Properties as needed
+	set_target_properties(${libBase}Static PROPERTIES
+		SQUIRRELJME_MULTILIB_TYPE STATIC_LIBRARY
+		SQUIRRELJME_MULTILIB_FPIC ${SQUIRRELJME_ENABLE_FPIC}
+		SQUIRRELJME_TARGET_OBJECTS
+			"$<TARGET_GENEX_EVAL:${libBase},$<TARGET_OBJECTS:${libBase}>>")
+
+	# Variable reference names
 	# Unfortunately, for these to be truly global these must be in the cache
-	if(SQUIRRELJME_ENABLE_FPIC)
-		set(SQUIRRELJME_LIB_${libBase}_STATIC ${libBase}Static
-			CACHE STRING "Static ${libBase} Target" FORCE)
-		set(SQUIRRELJME_LIB_${libBase}_FIXED ${libBase}
-			CACHE STRING "Non-FPIC ${libBase} Target" FORCE)
-		set(SQUIRRELJME_LIB_${libBase}_FPIC ${libBase}PIC
-			CACHE STRING "FPIC ${libBase} Target" FORCE)
-	else()
-		set(SQUIRRELJME_LIB_${libBase}_STATIC ${libBase}Static
-			CACHE STRING "Static ${libBase} Target" FORCE)
-		set(SQUIRRELJME_LIB_${libBase}_FIXED ${libBase}
-			CACHE STRING "Non-FPIC ${libBase} Target" FORCE)
-		set(SQUIRRELJME_LIB_${libBase}_FPIC ${libBase}
-			CACHE STRING "FPIC ${libBase} Target" FORCE)
-	endif()
-endmacro()
-
-# Make a target always FPIC
-function(squirreljme_always_fpic target)
-	if(SQUIRRELJME_ENABLE_FPIC)
-		set_target_properties(${target} PROPERTIES
-			POSITION_INDEPENDENT_CODE ON)
-	endif()
+	set(SQUIRRELJME_LIB_${libBase}_STATIC ${libBase}Static
+		CACHE STRING "Static ${libBase} Target" FORCE)
+	set(SQUIRRELJME_LIB_${libBase}_OBJECT ${libBase}
+		CACHE STRING "Object ${libBase} Target" FORCE)
 endfunction()
 
 # Add definitions for shared library builds
@@ -104,56 +104,105 @@ function(squirreljme_dylib_standard_properties target)
 endfunction()
 
 # Add multi-lib library
-macro(squirreljme_multilib_add_library libBase)
+function(squirreljme_multilib_add_library libBase)
 	# Bring in statics
 	squirreljme_multilib_add_static_library(${ARGV})
 
 	# Shared Library
 	if(SQUIRRELJME_ENABLE_DYLIB)
-		# Load in source files
-		set(libBaseSources)
-		foreach(arg ${ARGV})
-			# Ignore first
-			if("${arg}" STREQUAL "${libBase}")
-				continue()
-			endif()
-
-			list(APPEND libBaseSources "${arg}")
-		endforeach()
-
+		# Setup library
 		add_library(${libBase}DyLib SHARED
-			${libBaseSources})
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/blank.c"
+			"$<TARGET_GENEX_EVAL:${libBase},$<TARGET_OBJECTS:${libBase}>>")
+
+		# Always FPIC
+		squirreljme_always_fpic(${libBase}DyLib)
+
+		# Properties as needed
+		set_target_properties(${libBase}DyLib PROPERTIES
+			SQUIRRELJME_MULTILIB_TYPE SHARED_LIBRARY
+			SQUIRRELJME_MULTILIB_FPIC ${SQUIRRELJME_ENABLE_FPIC}
+			SQUIRRELJME_TARGET_OBJECTS
+				"$<TARGET_GENEX_EVAL:${libBase},$<TARGET_OBJECTS:${libBase}>>")
+
+		# Set standard properties
 		squirreljme_dylib_standard_properties(${libBase}DyLib)
+
+		# Dynamic library target reference
+		set(SQUIRRELJME_LIB_${libBase}_DYLIB ${libBase}DyLib
+			CACHE STRING "Dynamic ${libBase} Target" FORCE)
 	endif()
-endmacro()
+endfunction()
+
+# Set properties on all static targets
+function(squirreljme_multilib_static_properties target properties)
+	# Must be PROPERTIES
+	if(NOT "${properties}" STREQUAL "PROPERTIES")
+		message(FATAL_ERROR "PROPERTIES is missing!")
+	endif()
+
+	# Load in properties
+	set(properties "${ARGV}")
+	list(REMOVE_AT properties 0)
+	list(REMOVE_AT properties 0)
+
+	# Plain Objects
+	set_target_properties(${target} PROPERTIES
+		${properties})
+
+	# Static library
+	set_target_properties(${target}Static PROPERTIES
+		${properties})
+endfunction()
+
+# Set properties on all targets
+function(squirreljme_multilib_properties target properties)
+	# Must be PROPERTIES
+	if(NOT "${properties}" STREQUAL "PROPERTIES")
+		message(FATAL_ERROR "PROPERTIES is missing!")
+	endif()
+
+	# Set static targets
+	squirreljme_multilib_static_properties(${ARGV})
+
+	# Load in properties
+	set(properties "${ARGV}")
+	list(REMOVE_AT properties 0)
+	list(REMOVE_AT properties 0)
+
+	# Dynamic library
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		set_target_properties(${target}DyLib PROPERTIES
+			${properties})
+	endif()
+endfunction()
 
 # Add include directories to static multilib library
-macro(squirreljme_multilib_static_target_include_directories libBase)
+function(squirreljme_multilib_static_include_directories libBase scope)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
 	# Load in include paths
-	set(libBaseIncludes)
-	foreach(arg ${ARGV})
-		# Ignore first
-		if("${arg}" STREQUAL "${libBase}")
-			continue()
-		endif()
+	set(includesList "${ARGV}")
+	list(REMOVE_AT includesList 0)
+	list(REMOVE_AT includesList 0)
 
-		list(APPEND libBaseIncludes "${arg}")
-	endforeach()
+	# Set includes
+	target_include_directories(${libBase} ${scope}
+		${includesList})
 
-	target_include_directories(${libBase} PUBLIC
-		${libBaseIncludes})
-
-	if(SQUIRRELJME_ENABLE_FPIC)
-		target_include_directories(${libBase}PIC PUBLIC
-			${libBaseIncludes})
+	# Only needed for interfaces?
+	if(NOT "${scope}" STREQUAL "PRIVATE")
+		target_include_directories(${libBase}Static INTERFACE
+			${includesList})
 	endif()
-
-	target_include_directories(${libBase}Static PUBLIC
-		${libBaseIncludes})
-endmacro()
+endfunction()
 
 # Add compile definitions to multilib library
-macro(squirreljme_multilib_target_compile_definitions target scope what)
+function(squirreljme_multilib_compile_definitions target scope what)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
 	# Set on object target
 	target_compile_definitions(${target} ${scope}
 		${what})
@@ -162,121 +211,122 @@ macro(squirreljme_multilib_target_compile_definitions target scope what)
 	target_compile_definitions(${target}Static ${scope}
 		${what})
 
-	# And on static FPIC target
-	if(SQUIRRELJME_ENABLE_FPIC)
-		target_compile_definitions(${target}PIC ${scope}
-			${what})
-	endif()
-
 	# And on the library target
 	if(SQUIRRELJME_ENABLE_DYLIB)
 		target_compile_definitions(${target}DyLib ${scope}
 			${what})
 	endif()
-endmacro()
+endfunction()
 
-# Change the name of the library
-macro(squirreljme_multilib_target_binary_name target name)
+# Change the name of the library (dynamic)
+function(squirreljme_multilib_binary_name target name)
 	# Set on static target
 	squirreljme_target_binary_name(${target}Static ${name})
-
-	# And on static FPIC target
-	if(SQUIRRELJME_ENABLE_FPIC)
-		squirreljme_target_binary_name(${target}PIC ${name})
-	endif()
 
 	# And on the library target
 	if(SQUIRRELJME_ENABLE_DYLIB)
 		squirreljme_target_binary_name(${target}DyLib ${name})
 	endif()
-endmacro()
+endfunction()
 
 # Add include directories to multilib library
-macro(squirreljme_multilib_target_include_directories libBase)
+function(squirreljme_multilib_include_directories libBase scope)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
 	# Use static variant
-	squirreljme_multilib_static_target_include_directories(${ARGV})
+	squirreljme_multilib_static_include_directories(${ARGV})
 
 	if(SQUIRRELJME_ENABLE_DYLIB)
 		# Load in include paths
-		set(libBaseIncludes)
-		foreach(arg ${ARGV})
-			# Ignore first
-			if("${arg}" STREQUAL "${libBase}")
-				continue()
-			endif()
+		set(includesList "${ARGV}")
+		list(REMOVE_AT includesList 0)
+		list(REMOVE_AT includesList 0)
 
-			list(APPEND libBaseIncludes "${arg}")
-		endforeach()
-
-		target_include_directories(${libBase}DyLib PUBLIC
-			${libBaseIncludes})
+		# Only needed for interfaces?
+		if(NOT "${scope}" STREQUAL "PRIVATE")
+			target_include_directories(${libBase}DyLib INTERFACE
+				${includesList})
+		endif()
 	endif()
-endmacro()
+endfunction()
 
 # Multi-lib library directories
-macro(squirreljme_multilib_target_link_directories libBase)
-	# Load in source files
-	set(libBaseLibDirs)
-	foreach(arg ${ARGV})
-		# Ignore first
-		if("${arg}" STREQUAL "${libBase}")
-			continue()
-		endif()
+function(squirreljme_multilib_link_directories libBase scope)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
 
-		list(APPEND libBaseLibDirs "${arg}")
-	endforeach()
+	# Load in library paths
+	set(libraryDirs "${ARGV}")
+	list(REMOVE_AT libraryDirs 0)
+	list(REMOVE_AT libraryDirs 0)
 
-	# Only link for the dynamic library
+	# Add for the static library, but only at the interface level
+	if(NOT "${scope}" STREQUAL "PRIVATE")
+		target_link_directories(${libBase}Static INTERFACE
+			${libraryDirs})
+	endif()
+
+	# Add for the dynamic library as well
 	if(SQUIRRELJME_ENABLE_DYLIB)
-		target_link_directories(${libBase}DyLib PUBLIC
-			${libBaseLibDirs})
+		target_link_directories(${libBase}DyLib ${scope}
+			${libraryDirs})
 	endif()
 
 	# Otherwise set transient library directories to be included, for use with
 	# $<TARGET_PROPERTY:Target,SQUIRRELJME_LINK_DIRECTORIES>
 	set_target_properties(${libBase} PROPERTIES
-		SQUIRRELJME_LINK_DIRECTORIES "${libBaseLibDirs}")
+		SQUIRRELJME_LINK_DIRECTORIES "${libraryDirs}")
 	set(SQUIRRELJME_LINK_DIRECTORIES_${libBase}
-		${libBaseLibDirs})
-endmacro()
+		${libraryDirs})
+endfunction()
 
-# Multi-lib linking of libraries
-macro(squirreljme_multilib_target_link_libraries libBase)
-	# Load in source files
-	set(libBaseLibs)
-	foreach(arg ${ARGV})
-		# Ignore first
-		if("${arg}" STREQUAL "${libBase}")
-			continue()
-		endif()
+# Static linking of libraries
+function(squirreljme_multilib_static_link_libraries_required libBase scope)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
 
-		list(APPEND libBaseLibs "${arg}")
-	endforeach()
+	# Load in library paths
+	set(libraryPaths "${ARGV}")
+	list(REMOVE_AT libraryPaths 0)
+	list(REMOVE_AT libraryPaths 0)
 
-	# Only link for the dynamic library
-	if(SQUIRRELJME_ENABLE_DYLIB)
-		target_link_libraries(${libBase}DyLib PUBLIC
-			${libBaseLibs})
+	# Add for the static library, but only at the public/interface level
+	if(NOT "${scope}" STREQUAL "PRIVATE")
+		squirreljme_link_libraries_required(${libBase}Static ${scope}
+			${libraryPaths})
 	endif()
 
 	# Otherwise set transient libraries to be included, for use with
 	# $<TARGET_PROPERTY:Target,SQUIRRELJME_LINK_LIBRARIES>
 	set_target_properties(${libBase} PROPERTIES
-		SQUIRRELJME_LINK_LIBRARIES "${libBaseLibs}")
+		SQUIRRELJME_LINK_LIBRARIES "${libraryPaths}")
 	set(SQUIRRELJME_LINK_LIBRARIES_${libBase}
-		${libBaseLibs})
-endmacro()
+		${libraryPaths})
+endfunction()
 
-# Link multilib against required core libraries
-macro(squirreljme_multilib_target_link_libraries_required libBase)
-	# Dynamic library output
+# Multi-lib linking of libraries
+function(squirreljme_multilib_link_libraries_required libBase scope)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
+	# Static?
+	squirreljme_multilib_static_link_libraries_required(${ARGV})
+
+	# Dynamic library linking?
 	if(SQUIRRELJME_ENABLE_DYLIB)
-		squirreljme_target_link_libraries_required(${libBase}DyLib)
+		# Load in library list
+		set(libraries "${ARGV}")
+		list(REMOVE_AT libraries 0)
+
+		# Set libraries
+		squirreljme_link_libraries_required(${libBase}DyLib ${scope}
+			${libraries})
 	endif()
-endmacro()
+endfunction()
 
 # Output locations for binaries
-macro(squirreljme_multilib_target_binary_output libBase where)
+function(squirreljme_multilib_binary_output libBase where)
 	# Static library output
 	squirreljme_target_binary_output(${libBase}Static
 		${where})
@@ -286,125 +336,176 @@ macro(squirreljme_multilib_target_binary_output libBase where)
 		squirreljme_target_binary_output(${libBase}DyLib
 			${where})
 	endif()
-endmacro()
+endfunction()
 
-# Add dependency on library, static only
-macro(squirreljme_multilib_static_add_dependency libBase dependOn)
+# Add dependency on a plain target
+function(squirreljme_multilib_static_add_dependency libBase)
+	# Load in dependency list
+	set(dependOn "${ARGV}")
+	list(REMOVE_AT dependOn 0)
+
 	# Static library
 	add_dependencies(${libBase}
 		${dependOn})
 
-	# PIC?
-	if(SQUIRRELJME_ENABLE_FPIC)
-		add_dependencies(${libBase}PIC
-			${dependOn})
-	endif()
-endmacro()
+	# Static library
+	add_dependencies(${libBase}Static
+		${dependOn})
+endfunction()
 
-# Add dependency on library
-macro(squirreljme_multilib_add_dependency libBase dependOn)
+# Add dependency on a plain target
+function(squirreljme_multilib_add_dependency libBase dependOn)
+	# Load in dependency list
+	set(dependOn "${ARGV}")
+	list(REMOVE_AT dependOn 0)
+
 	# Static
-	squirreljme_multilib_static_add_dependency(${libBase} ${dependOn})
+	squirreljme_multilib_static_add_dependency(${ARGV})
 
 	# Only link for the dynamic library
 	if(SQUIRRELJME_ENABLE_DYLIB)
-		add_dependencies(${libBase}DyLib
-			${SQUIRRELJME_LIB_${dependOn}_FPIC})
+		foreach(subDepend IN LISTS dependOn)
+			add_dependencies(${libBase}DyLib
+				${subDepend})
+		endforeach()
 	endif()
-endmacro()
+endfunction()
+
+# Add dependency on a multi-lib library
+# - AUTOMATIC: Depend on the best matching library
+# - STATIC: Force depend on the static library
+# - SHARED: Force depend on the shared library
+function(squirreljme_add_dependency_multilib target type)
+	# Must be either AUTOMATIC, STATIC, or SHARED
+	if(NOT "${type}" STREQUAL "AUTOMATIC" AND
+		NOT "${type}" STREQUAL "STATIC" AND
+		NOT "${type}" STREQUAL "SHARED")
+		message(FATAL_ERROR "Multilib dependency must be either AUTOMATIC, "
+			"STATIC, or SHARED.")
+	endif()
+
+	# Load in dependency list
+	set(dependOn "${ARGV}")
+	list(REMOVE_AT dependOn 0)
+
+	# Then for each dependency...
+	foreach(subDepend IN LISTS dependOn)
+		# Force static dependency?
+		if("${type}" STREQUAL "STATIC")
+			# Use the object library
+			add_dependencies(${target}
+				${SQUIRRELJME_LIB_${subDepend}_OBJECT})
+
+		# Force shared dependency?
+		elseif("${type}" STREQUAL "SHARED")
+			# We need dynamic libraries
+			if(NOT SQUIRRELJME_ENABLE_DYLIB)
+				message(FATAL_ERROR "Depending on shared when dynamic "
+					"libraries are not supported!")
+			endif()
+
+			# Use the dynamic library
+			add_dependencies(${target}
+				${SQUIRRELJME_LIB_${subDepend}_DYLIB})
+
+		# Otherwise, automatic determination
+		else()
+			# Get the target details
+			get_target_property(targetType ${target}
+				TYPE)
+			get_target_property(isTargetFPIC ${target}
+				POSITION_INDEPENDENT_CODE)
+
+			# Object libraries
+			if("${targetType}" STREQUAL "OBJECT_LIBRARY" OR
+				"${targetType}" STREQUAL "STATIC_LIBRARY")
+				if(isTargetFPIC)
+					# Use FPIC
+					add_dependencies(${target}
+						${SQUIRRELJME_LIB_${subDepend}_OBJECT})
+				else()
+					# Do not use FPIC
+					add_dependencies(${target}
+						${SQUIRRELJME_LIB_${subDepend}_OBJECT})
+				endif()
+
+			# Shared libraries and executables
+			elseif("${targetType}" STREQUAL "SHARED_LIBRARY" OR
+				"${targetType}" STREQUAL "EXECUTABLE")
+				# Depend on the dynamic library
+				add_dependencies(${target}
+					${SQUIRRELJME_LIB_${subDepend}_DYLIB})
+			endif()
+		endif()
+	endforeach()
+endfunction()
 
 # Add dependency on multi-lib binaries, static only
-macro(squirreljme_multilib_static_add_multilib_dependency libBase dependOn)
-	# Base non-PIC object
-	add_dependencies(${libBase}
+function(squirreljme_multilib_static_add_multilib_dependency libBase type)
+	# Load in dependency list
+	set(dependOn "${ARGV}")
+	list(REMOVE_AT dependOn 0)
+	list(REMOVE_AT dependOn 0)
+
+	# Object Library
+	squirreljme_add_dependency_multilib(${libBase} ${type}
 		${dependOn})
 
-	# PIC?
-	if(SQUIRRELJME_ENABLE_FPIC)
-		add_dependencies(${libBase}PIC
-			${SQUIRRELJME_LIB_${dependOn}_FPIC})
-	endif()
-
 	# Static Library
-	add_dependencies(${libBase}Static
-		${SQUIRRELJME_LIB_${dependOn}_STATIC})
-endmacro()
+	squirreljme_add_dependency_multilib(${libBase}Static ${type}
+		${dependOn})
+endfunction()
 
 # Add dependency on multi-lib binaries
-macro(squirreljme_multilib_add_multilib_dependency libBase dependOn)
+function(squirreljme_multilib_add_multilib_dependency libBase type)
 	# Static
-	squirreljme_multilib_static_add_multilib_dependency(${libBase} ${dependOn})
+	squirreljme_multilib_static_add_multilib_dependency(${ARGV})
 
+	# Dynamic library
 	if(SQUIRRELJME_ENABLE_DYLIB)
-		add_dependencies(${libBase}DyLib
-			${dependOn}DyLib)
+		# Load in dependency list
+		set(dependOn "${ARGV}")
+		list(REMOVE_AT dependOn 0)
+		list(REMOVE_AT dependOn 0)
+
+		# Forward
+		squirreljme_add_dependency_multilib(${libBase}DyLib
+			${type} ${dependOn})
 	endif()
-endmacro()
+endfunction()
 
 # Export multilib targets
-macro(squirreljme_multilib_export target)
+function(squirreljme_multilib_export target)
 	# There are multiple branching paths based on the configuration
-	if(SQUIRRELJME_ENABLE_FPIC)
-		if(SQUIRRELJME_ENABLE_DYLIB)
-			export(TARGETS ${target}
-				${target}Static
-				${target}DyLib
-				${target}PIC
-				FILE SquirrelJME${target}.cmake
-				NAMESPACE SquirrelJME::)
-		else()
-			export(TARGETS ${target}
-				${target}Static
-				${target}PIC
-				FILE SquirrelJME${target}.cmake
-				NAMESPACE SquirrelJME::)
-		endif()
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		export(TARGETS
+			${target}DyLib
+			${target}Static
+			${target}
+			FILE SquirrelJME${target}.cmake
+			NAMESPACE SquirrelJME::)
 	else()
-		if(SQUIRRELJME_ENABLE_DYLIB)
-			export(TARGETS ${target}
-				${target}Static
-				${target}DyLib
-				FILE SquirrelJME${target}.cmake
-				NAMESPACE SquirrelJME::)
-		else()
-			export(TARGETS ${target}
-				${target}Static
-				${target}PIC
-				FILE SquirrelJME${target}.cmake
-				NAMESPACE SquirrelJME::)
-		endif()
+		export(TARGETS
+			${target}Static
+			${target}
+			FILE SquirrelJME${target}.cmake
+			NAMESPACE SquirrelJME::)
 	endif()
-endmacro()
+endfunction()
 
 # Export and install for multilib
-macro(squirreljme_multilib_export_install target)
+function(squirreljme_multilib_install target)
 	# Set base directories
 	target_sources(${target}
 		PUBLIC FILE_SET HEADERS
 		BASE_DIRS "${CMAKE_SOURCE_DIR}/include")
 
-	# Object library
-	export(TARGETS ${target}
-		FILE "${CMAKE_BINARY_DIR}/${target}Object.cmake")
-	install(TARGETS ${target})
-
-	# Static library
-	export(TARGETS ${target}Static
-		FILE "${CMAKE_BINARY_DIR}/${target}Static.cmake")
-	install(TARGETS ${target}Static)
-
-	# PIC Object library
-	if(SQUIRRELJME_ENABLE_FPIC)
-		export(TARGETS ${target}PIC
-			FILE "${CMAKE_BINARY_DIR}/${target}PIC.cmake")
-		install(TARGETS ${target}PIC)
-	endif()
-
-	# Dynamic library
+	# Export libraries
 	if(SQUIRRELJME_ENABLE_DYLIB)
-		export(TARGETS ${target}DyLib
-			FILE "${CMAKE_BINARY_DIR}/${target}DyLib.cmake")
-		install(TARGETS ${target}DyLib)
+		install(TARGETS ${target}DyLib
+			${target}Static)
+	else()
+		install(TARGETS ${target}Static)
 	endif()
-endmacro()
+endfunction()
 

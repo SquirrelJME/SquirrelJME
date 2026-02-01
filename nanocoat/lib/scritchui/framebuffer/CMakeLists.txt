@@ -6,8 +6,8 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Declare library
-squirreljme_multilib_add_static_library(ScritchUIFB
+# Declare object only library, as this is a fallback library
+add_library(ScritchUiFB OBJECT
 	fbChoice.c
 	fbComponent.c
 	fbContainer.c
@@ -25,9 +25,9 @@ squirreljme_multilib_add_static_library(ScritchUIFB
 	fbWindow.c)
 
 # Include main headers
-squirreljme_multilib_static_target_include_directories(ScritchUIFB PUBLIC
+target_include_directories(ScritchUiFB PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
-# ScritchUI requires a normalized library name
-squirreljme_target_binary_name(ScritchUIFB
-	"squirreljme-scritchui-fb")
+# Export this target
+export(TARGETS ScritchUiFB
+	FILE SquirrelJMEScritchUiFB.cmake)

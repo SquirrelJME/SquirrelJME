@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # Declare base library
-squirreljme_multilib_add_static_library(ScritchUIPure
+squirreljme_multilib_add_static_library(ScritchUiPure
 	pureComponent.c
 	pureContainer.c
 	pureCore.c
@@ -24,11 +24,11 @@ squirreljme_multilib_add_static_library(ScritchUIPure
 	pureWindow.c)
 
 # Include main headers
-squirreljme_multilib_static_target_include_directories(ScritchUIPure PUBLIC
+squirreljme_multilib_static_include_directories(ScritchUiPure PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
-# ScritchUI requires a normalized library name
-squirreljme_target_binary_name(ScritchUIPure
+# ScritchUi requires a normalized library name
+squirreljme_target_binary_name(ScritchUiPure
 	"squirreljme-scritchui-pure")
 
 # Do not include any of these for RetroArch

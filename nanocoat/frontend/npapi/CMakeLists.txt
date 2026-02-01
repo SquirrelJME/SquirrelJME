@@ -6,14 +6,9 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-add_library(npapi SHARED
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Core_FPIC}>
+# Make this a
+squirreljme_multilib_add_library(npapi
 	plugin.c)
-
-# The base SquirrelJME core needs to be built first
-add_dependencies(npapi
-	${SQUIRRELJME_LIB_Core_FPIC})
 
 # Always make this position independent
 squirreljme_always_fpic(npapi)
@@ -24,12 +19,10 @@ target_include_directories(npapi PUBLIC
 	"${CMAKE_SOURCE_DIR}/include/3rdparty/npapi")
 
 # Libraries needed to be linked with for the DyLib to function
-target_link_libraries(npapi PUBLIC
-	${SQUIRRELJME_LINK_LIBRARIES_Base}
-	${SQUIRRELJME_LINK_LIBRARIES_Core})
-
-# Link required libraries
-squirreljme_target_link_libraries_required(npapi)
+squirreljme_link_libraries_required(npapi PRIVATE
+	CoreStatic
+	ScritchAudioCoreStatic
+	ScritchUiCoreStatic)
 
 # Where should this library be output?
 squirreljme_target_binary_output(npapi

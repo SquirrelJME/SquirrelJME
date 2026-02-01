@@ -473,7 +473,18 @@ endif()
 # For debugging required libraries
 message(STATUS "System Required Libraries: ${SQUIRRELJME_REQUIRED_LIBS}")
 
+# Make a target always FPIC
+function(squirreljme_always_fpic target)
+	if(SQUIRRELJME_ENABLE_FPIC)
+		set_target_properties(${target} PROPERTIES
+			POSITION_INDEPENDENT_CODE ON)
+	endif()
+endfunction()
+
 function(squirreljme_target_link_fixes target)
+	# Make sure FPIC was properly set
+	squirreljme_always_fpic(${target})
+
 	# Static libgcc?
 	if(SJME_CONFIG_HAS_STATIC_LIBGCC)
 		target_link_options(${target} PRIVATE
@@ -489,16 +500,156 @@ function(squirreljme_target_link_fixes target)
 	endif()
 endfunction()
 
+# CMake does not support merging static libraries unfortunately, thus we need
+# to do it ourselves
+define_property(TARGET PROPERTY SQUIRRELJME_TARGET_OBJECTS
+	BRIEF_DOCS "The collective objects for a target."
+	FULL_DOCS "The collective objects for a target.")
+
+# Depend on a library or target, with better debugging and supporting of
+# targets accordingly
+function(squirreljme_link_libraries target scope)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
+	# Get the type that the target is
+	get_target_property(targetType ${target} TYPE)
+
+	# Get list of libraries to link against
+	set(libraries "${ARGV}")
+	list(REMOVE_AT libraries 0)
+	list(REMOVE_AT libraries 0)
+
+	# Build a list of target files
+	set(nonObjects)
+	set(objects)
+
+	# Process each library
+	foreach(lib IN LISTS libraries)
+		# Scope change?
+		if("${lib}" STREQUAL "PRIVATE" OR
+			"${lib}" STREQUAL "PUBLIC" OR
+			"${lib}" STREQUAL "INTERFACE")
+			list(APPEND items "${lib}")
+
+		# Stop parsing entries?
+		elseif("${lib}" STREQUAL "NONE")
+			break()
+
+		# Is this a target?
+		elseif(TARGET "${lib}")
+			# Get properties for the target
+			get_target_property(targetObjs ${lib} SQUIRRELJME_TARGET_OBJECTS)
+			get_target_property(targetType ${lib} TYPE)
+
+			# If there are target objects, inherit everything
+			if(targetObjs AND
+				NOT "${targetObjs}" STREQUAL "targetObjs-NOTFOUND")
+				# Grab all objects
+				list(APPEND objects "${targetObjs}")
+
+			# Otherwise normal determination
+			else()
+				# Which type of library is this?
+				get_target_property(type ${lib} TYPE)
+
+				# Depend on this target
+				add_dependencies(${target} ${lib})
+
+				# Object?
+				if("${type}" STREQUAL "OBJECT_LIBRARY")
+					# Add all objects to be linked in
+					list(APPEND objects
+						"$<TARGET_GENEX_EVAL:${lib},$<TARGET_OBJECTS:${lib}>>")
+
+				# Static or shared?
+				elseif("${type}" STREQUAL "STATIC_LIBRARY" OR
+					"${type}" STREQUAL "SHARED_LIBRARY")
+					# Just link against the object
+					list(APPEND nonObjects
+						"$<TARGET_GENEX_EVAL:${lib},$<TARGET_FILE:${lib}>>")
+
+				# Unknown target
+				else()
+					message(FATAL_ERROR "Cannot link target ${library} of "
+						"type ${type} to ${target} (${scope})!")
+				endif()
+			endif()
+
+		# Is this a direct path to a file?
+		elseif(EXISTS "${lib}")
+			# Directly add the file since it is known
+			list(APPEND nonObjects "${lib}")
+
+		# Linking to something else
+		else()
+			# Emit a warning if not in the required list!
+			list(FIND SQUIRRELJME_REQUIRED_LIBS "${lib}" foundLib)
+			if("${foundLib}" LESS "0")
+				message(AUTHOR_WARNING
+					"Indirectly referencing library ${lib}!")
+			endif()
+
+			# Add anyway
+			list(APPEND nonObjects "${lib}")
+		endif()
+	endforeach()
+
+	# Add objects to sources for this, since CMake will not link objects
+	if(NOT "${objects}" STREQUAL "")
+		# Build a collective list of objects, transitively
+		get_target_property(targetObjs ${target} SQUIRRELJME_TARGET_OBJECTS)
+
+		# This is very noisy but the debugging definitely helps
+		message(DEBUG "${target} -> ${targetObjs} (${objects})")
+
+		# Append objects, or initially set?
+		if(targetObjs AND
+			NOT "${targetObjs}" STREQUAL "targetObjs-NOTFOUND")
+			list(APPEND targetObjs "${objects}")
+			set_target_properties(${target} PROPERTIES
+				SQUIRRELJME_TARGET_OBJECTS "${targetObjs}")
+		else()
+			set_target_properties(${target} PROPERTIES
+				SQUIRRELJME_TARGET_OBJECTS "${objects}")
+		endif()
+
+		# Add to sources
+		target_sources(${target} ${scope}
+			${objects})
+	endif()
+
+	# Link to any non-objects as CMake cannot link objects
+	target_link_libraries(${target} ${scope}
+		${nonObjects})
+endfunction()
+
 # Link against required libraries
-function(squirreljme_target_link_libraries_required target)
-	# Add all of the previous required libs
-	if("${ARGN}" STREQUAL "")
-		target_link_libraries(${target} PUBLIC
-			"${SQUIRRELJME_REQUIRED_LIBS}")
+function(squirreljme_link_libraries_required target scope)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
+	# Grab all libraries
+	set(libraries "${ARGV}")
+	list(REMOVE_AT libraries 0)
+	list(REMOVE_AT libraries 0)
+
+	# No required libraries?
+	if("${SQUIRRELJME_REQUIRED_LIBS}" STREQUAL "")
+		# Add all of the previous required libs
+		if(NOT "${libraries}" STREQUAL "")
+			squirreljme_link_libraries(${target}
+				${scope} ${libraries})
+		endif()
 	else()
-		target_link_libraries(${target} PUBLIC
-			"${SQUIRRELJME_REQUIRED_LIBS}"
-			"${ARGN}")
+		if(NOT "${libraries}" STREQUAL "")
+			squirreljme_link_libraries(${target}
+				PUBLIC "${SQUIRRELJME_REQUIRED_LIBS}"
+				${scope} ${libraries})
+		else()
+			squirreljme_link_libraries(${target}
+				PUBLIC "${SQUIRRELJME_REQUIRED_LIBS}")
+		endif()
 	endif()
 
 	# For these to be used, linker fixes need to go in also

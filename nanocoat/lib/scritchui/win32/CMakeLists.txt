@@ -7,10 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # Declare base library
-add_library(ScritchUIWin32 SHARED
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>
+squirreljme_scritchany_add_library(ui Win32
 	win32Component.c
 	win32Container.c
 	win32Core.c
@@ -26,22 +23,9 @@ add_library(ScritchUIWin32 SHARED
 	win32View.c
 	win32Window.c)
 
-# Standard properties for dynamic libraries
-squirreljme_dylib_standard_properties(ScritchUIWin32)
-
-# Include main headers
-target_include_directories(ScritchUIWin32 PUBLIC
-	"${CMAKE_SOURCE_DIR}/include")
-
-# ScritchUI requires a normalized library name
-squirreljme_target_binary_name(ScritchUIWin32
-	"squirreljme-scritchui-win32")
-squirreljme_target_binary_output(ScritchUIWin32
-	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+# Standard properties
+squirreljme_scritchany_standard_properties(ui Win32)
 
 # Required libraries
-squirreljme_target_link_libraries_required(ScritchUIWin32
+squirreljme_scritchany_link_libraries(ui Win32
 	"gdi32")
-
-# Generate exports
-squirreljme_target_shared_library_exports(ScritchUIWin32)

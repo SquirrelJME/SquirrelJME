@@ -56,16 +56,16 @@ squirreljme_multilib_add_library(Base
 	zip.c)
 
 # Include main headers
-squirreljme_multilib_target_include_directories(Base
+squirreljme_multilib_include_directories(Base PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
 # Base library goes here
-squirreljme_multilib_target_binary_output(Base
+squirreljme_multilib_binary_output(Base
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
-# Dynamic linker library is needed
-squirreljme_multilib_target_link_libraries(Base
-	${CMAKE_DL_LIBS})
+# Required system libraries
+squirreljme_multilib_link_libraries_required(Base NONE)
 
 # The base library is rather useful
-squirreljme_multilib_export_install(Base)
+squirreljme_multilib_export(Base)
+squirreljme_multilib_install(Base)

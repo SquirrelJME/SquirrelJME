@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # Declare library
-squirreljme_multilib_add_static_library(ScritchAudioSoftMix
+add_library(ScritchAudioSoftMix OBJECT
 	softmixCore.c
 	softmixLoop.c
 	softmixMidi.c
@@ -15,9 +15,10 @@ squirreljme_multilib_add_static_library(ScritchAudioSoftMix
 	softmixStream.c)
 
 # Include main headers
-squirreljme_multilib_static_target_include_directories(ScritchAudioSoftMix
-	PUBLIC "${CMAKE_SOURCE_DIR}/include")
+target_include_directories(ScritchAudioSoftMix PUBLIC
+	"${CMAKE_SOURCE_DIR}/include")
 
-# ScritchUI requires a normalized library name
-squirreljme_target_binary_name(ScritchAudioSoftMix
-	"squirreljme-scritchui-softmix")
+# Export this target
+export(TARGETS ScritchAudioSoftMix
+	FILE SquirrelJMEScritchAudioSoftMix.cmake)
+
