@@ -81,15 +81,10 @@ public class CMakeUpToDateWhen
 			return true;
 		}
 		
-		// TODO: Checking this way just does not work
-		if (true)
-		{
-			__task.getLogger().warn(
-				"CMake Configuring: UP-TO-DATE (Ignoring rules)!");
-			return true;
-		}
-		
 		// Poke the native build system to see if it is out of date
+		// TODO: Checking this way just does not work all that reliably
+		// TODO: it would be far better to use the CMake file-api at some
+		// TODO: point
 		try
 		{
 			// Load CMake cache
@@ -118,6 +113,13 @@ public class CMakeUpToDateWhen
 					args.add("/Q");
 					args.addAll(this.rules);
 					break;
+					
+					// Force a rebuild since we cannot use these
+				default:
+					__task.getLogger().warn(String.format(
+						"CMake Configuring: Generator %s not known.",
+						generator));
+					return false;
 			}
 			
 			// Check via the build system?
