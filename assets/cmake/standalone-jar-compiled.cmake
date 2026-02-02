@@ -28,8 +28,8 @@ if(SQUIRRELJME_HAS_JAVA)
 	# Set some SquirrelJME specific properties
 	set_target_properties(standalone.base.compiled PROPERTIES
 		EXCLUDE_FROM_ALL YES
-		ADDITIONAL_CLEAN_FILES "${outputBaseJar}"
-		SQUIRRELJME_OUTPUT_PATH "${outputBaseJar}"
+		ADDITIONAL_CLEAN_FILES "${SQUIRRELJME_JAR_BUILD_PATH}"
+		SQUIRRELJME_OUTPUT_PATH "${SQUIRRELJME_JAR_BUILD_PATH}"
 		SQUIRRELJME_OUTPUT_TYPE "standalone")
 
 	# Add to the order

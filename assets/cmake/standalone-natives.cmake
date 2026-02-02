@@ -43,9 +43,15 @@ list(APPEND SQUIRRELJME_KNOWN_NATIVES
 	"windows!amd64"
 	"windows!ia32")
 
+# Targets which are part of the standalone merge set
+define_property(GLOBAL PROPERTY SQUIRRELJME_STANDALONE_MERGE_SET
+	BRIEF_DOCS "Targets which are part of the standalone merge set."
+	FULL_DOCS "Targets which are part of the standalone merge set.")
+
 # Appends a native rule for a given method with the given system and
 # architecture
-macro(squirreljme_natives_append_rule newRule systemNormal archNormal method)
+function(squirreljme_natives_append_rule newRule systemNormal archNormal
+	method)
 	# Determine the names
 	squirreljme_natives_order_name(orderName ${systemNormal} ${archNormal})
 	squirreljme_natives_rule_name(ruleName ${systemNormal} ${archNormal})
@@ -95,6 +101,17 @@ macro(squirreljme_natives_append_rule newRule systemNormal archNormal method)
 			SQUIRRELJME_OUTPUT_PATH
 			SQUIRRELJME_OUTPUT_TYPE)
 
+		# Add it to the standalone merge set
+		get_property(mergeSet GLOBAL PROPERTY SQUIRRELJME_STANDALONE_MERGE_SET)
+		if(NOT "${mergeSet}" STREQUAL "mergeSet-NOTFOUND")
+			list(APPEND mergeSet "${newRule}")
+			set_property(GLOBAL PROPERTY SQUIRRELJME_STANDALONE_MERGE_SET
+				"${mergeSet}")
+		else()
+			set_property(GLOBAL PROPERTY SQUIRRELJME_STANDALONE_MERGE_SET
+				"${newRule}")
+		endif()
+
 	# Not first order
 	else()
 		# Note it
@@ -108,7 +125,7 @@ macro(squirreljme_natives_append_rule newRule systemNormal archNormal method)
 		NOT "${archNormal}" STREQUAL "base")
 		squirreljme_fossil_upload(${newRule})
 	endif()
-endmacro()
+endfunction()
 
 # Add rules and detection steps for the three
 squirreljme_include("standalone-natives-compiled.cmake")
