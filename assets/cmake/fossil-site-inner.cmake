@@ -50,6 +50,10 @@ macro(squirreljme_fossil_upload target)
 		COMMENT "Uploading '${outputPath}' to '${uvPath}'..."
 		COMMAND_EXPAND_LISTS)
 
+	# Never add to all!
+	set_target_properties(${uploadTarget} PROPERTIES
+		EXCLUDE_FROM_ALL YES)
+
 	# Have the general rules depend on this
 	add_dependencies(fossilUpload
 		${uploadTarget})

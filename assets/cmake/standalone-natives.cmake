@@ -82,6 +82,10 @@ macro(squirreljme_natives_append_rule newRule systemNormal archNormal method)
 		add_custom_target(${ruleName}
 			DEPENDS ${newRule})
 
+		# Always build defaults
+		set_target_properties(${ruleName} PROPERTIES
+			EXCLUDE_FROM_ALL NO)
+
 		# And copy all of its properties
 		squirreljme_copy_properties(${newRule} ${ruleName}
 			SQUIRRELJME_CORE_NATIVE_PATH

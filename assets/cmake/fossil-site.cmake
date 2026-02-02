@@ -45,6 +45,12 @@ if(Fossil_EXECUTABLE)
 	add_custom_target(fossilUpload)
 	add_custom_target(fossilUpload.onlyNatives)
 
+	# Never add these to all!
+	set_target_properties(fossilUpload PROPERTIES
+		EXCLUDE_FROM_ALL YES)
+	set_target_properties(fossilUpload.onlyNatives PROPERTIES
+		EXCLUDE_FROM_ALL YES)
+
 	# Inner-script
 	squirreljme_include("fossil-site-inner.cmake")
 
@@ -54,7 +60,7 @@ else()
 	macro(squirreljme_fossil_upload target)
 		message(STATUS "Ignoring fossilUpload for ${target}...")
 	endmacro()
-	
+
 	# Fossil download available and exists?
 	function(squirreljme_fossil_downloadable result uvPath)
 		set(${result} "NO" PARENT_SCOPE)

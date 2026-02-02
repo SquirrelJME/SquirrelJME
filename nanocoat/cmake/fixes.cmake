@@ -10,16 +10,17 @@
 # clean and pristine and patches are placed here because they affect the
 # entire project.
 
+# Needed for C compiler checks
+include(CheckCCompilerFlag)
+include(CheckLinkerFlag)
+include(CheckIncludeFile)
+
 # Debugging?
 if(SQUIRRELJME_IS_DEBUG)
 	add_compile_definitions(SJME_CONFIG_DEBUG=1)
 elseif(SQUIRRELJME_IS_RELEASE)
 	add_compile_definitions(SJME_CONFIG_RELEASE=1)
 endif()
-
-# Needed for C compiler checks
-include(CheckCCompilerFlag)
-include(CheckLinkerFlag)
 
 # Do not install with RPATH, CMake does relinking in build/install which
 # we do not want as we give away whatever executes and such
@@ -338,9 +339,6 @@ macro(squirreljme_notfound_strip var)
 		endif()
 	endif()
 endmacro()
-
-# Find headers
-include(CheckIncludeFile)
 
 # float.h available?
 CHECK_INCLUDE_FILE("float.h" SJME_CONFIG_HAS_FLOAT_H)
@@ -682,11 +680,11 @@ function(squirreljme_link_libraries_required target scope)
 	else()
 		if(NOT "${libraries}" STREQUAL "")
 			squirreljme_link_libraries(${target}
-				PUBLIC "${SQUIRRELJME_REQUIRED_LIBS}"
+				PUBLIC ${SQUIRRELJME_REQUIRED_LIBS}
 				${scope} ${libraries})
 		else()
 			squirreljme_link_libraries(${target}
-				PUBLIC "${SQUIRRELJME_REQUIRED_LIBS}")
+				PUBLIC ${SQUIRRELJME_REQUIRED_LIBS})
 		endif()
 	endif()
 

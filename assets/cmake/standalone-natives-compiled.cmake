@@ -25,6 +25,7 @@ macro(squirreljme_natives_build systemNormal archNormal configureRuleName
 
 	# Register the output path
 	set_target_properties(${buildRuleName} PROPERTIES
+		EXCLUDE_FROM_ALL YES
 		ADDITIONAL_CLEAN_FILES "${packagePath}"
 		SQUIRRELJME_OUTPUT_PATH "${packagePath}"
 		SQUIRRELJME_OUTPUT_TYPE "natives")
@@ -58,6 +59,10 @@ macro(squirreljme_natives_compiler systemNormal archNormal compilerPath)
 			"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
 		COMMENT "Configuring ${systemNormal}/${archNormal} (compiler)..."
 		COMMAND_EXPAND_LISTS)
+
+	# Do not build by default
+	set_target_properties(${configureRuleName} PROPERTIES
+		EXCLUDE_FROM_ALL YES)
 
 	# The same build setup is used for any compiled target
 	squirreljme_natives_build(${systemNormal} ${archNormal}
@@ -110,6 +115,10 @@ macro(squirreljme_natives_generator systemNormal archNormal
 			"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
 		COMMENT "Configuring ${systemNormal}/${archNormal} (${method})..."
 		COMMAND_EXPAND_LISTS)
+
+	# Do not build by default
+	set_target_properties(${configureRuleName} PROPERTIES
+		EXCLUDE_FROM_ALL YES)
 
 	# The same build setup is used for any compiled target
 	squirreljme_natives_build(${systemNormal} ${archNormal}

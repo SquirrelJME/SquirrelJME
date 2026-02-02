@@ -9,38 +9,219 @@
 
 cmake_minimum_required(VERSION 3.12)
 
+include(ExternalProject)
+
 # Declare project
 project(libEmulatorBase
     LANGUAGES C)
+
+# We want to forward as many CMAKE_ commands to the target NanoCoat as
+# possible
+get_cmake_property(allVariables VARIABLES)
+set(cacheFile "${CMAKE_BINARY_DIR}/forward-cache.cmake")
+file(REMOVE "${cacheFile}")
+file(TOUCH "${cacheFile}")
+foreach(var IN LISTS allVariables)
+	# Only consider CMAKE_ specific variables
+	# Also SQUIRRELJME_, because anything might be desired to be passed through
+	string(FIND "${var}" "CMAKE_" foundAt)
+	string(FIND "${var}" "SQUIRRELJME_" squirreljmeAt)
+	if(NOT "${foundAt}" EQUAL "0" AND
+		NOT "${squirreljmeAt}" EQUAL "0")
+		continue()
+	endif()
+
+	# Specifically skip these
+	# Ignore host compiler information, we do not care for that
+	# Any Compiler ID information is often used internally by CMake
+	# Having compiler IDs breaks things completely, there are also suffix
+	# forms of them that need to go away as well
+	# Executable and DyLib prefix/suffix are instead set by _LANG!
+	# Ignore anything that indicates CMake is done with something
+	# Ignore internals
+	# Ignore versions
+	string(FIND "${var}" "CMAKE_ASM_COMPILER_ID_" asmCompilerIdAt)
+	string(FIND "${var}" "CMAKE_C_COMPILER_ID_" cCompilerIdAt)
+	string(FIND "${var}" "CMAKE_CXX_COMPILER_ID_" cxxCompilerIdAt)
+	string(FIND "${var}" "CMAKE_OBJC_COMPILER_ID_" objCCompilerIdAt)
+	string(FIND "${var}" "CMAKE_ASM_HOST_" asmHostAt)
+	string(FIND "${var}" "CMAKE_C_HOST_" cHostAt)
+	string(FIND "${var}" "CMAKE_CXX_HOST_" cxxHostAt)
+	string(FIND "${var}" "CMAKE_OBJC_HOST_" objCHostAt)
+	string(FIND "${var}" "_LOADED" loadedAt REVERSE)
+	string(FIND "${var}" "_INTERNAL" internalAt REVERSE)
+	string(FIND "${var}" "_VERSION" versionAt REVERSE)
+	string(FIND "${var}" "_ID" idAt REVERSE)
+	if("${asmCompilerIdAt}" EQUAL "0" OR
+		"${cCompilerIdAt}" EQUAL "0" OR
+		"${cxxCompilerIdAt}" EQUAL "0" OR
+		"${objCCompilerIdAt}" EQUAL "0" OR
+		"${asmHostAt}" EQUAL "0" OR
+		"${cHostAt}" EQUAL "0" OR
+		"${cxxHostAt}" EQUAL "0" OR
+		"${objCHostAt}" EQUAL "0" OR
+		"${loadedAt}" GREATER "7" OR
+		"${internalAt}" GREATER "9" OR
+		"${versionAt}" GREATER "8" OR
+		"${idAt}" GREATER "3" OR
+		"${var}" STREQUAL "CMAKE_SHARED_LIBRARY_PREFIX" OR
+		"${var}" STREQUAL "CMAKE_SHARED_LIBRARY_SUFFIX" OR
+		"${var}" STREQUAL "CMAKE_EXECUTABLE_PREFIX" OR
+		"${var}" STREQUAL "CMAKE_EXECUTABLE_SUFFIX" OR
+		"${var}" STREQUAL "__END_OF_EVERYTHING__")
+		continue()
+	endif()
+
+	# Find specific variables
+	string(FIND "${var}" "CMAKE_ASM_" asmAt)
+	string(FIND "${var}" "CMAKE_BUILD_" buildAt)
+	string(FIND "${var}" "CMAKE_C_" cAt)
+	string(FIND "${var}" "CMAKE_CXX_" cxxAt)
+	string(FIND "${var}" "CMAKE_DEPFILE_" depFileAt)
+	string(FIND "${var}" "CMAKE_DL_" dlAt)
+	string(FIND "${var}" "CMAKE_EXECUTABLE_" executableAt)
+	string(FIND "${var}" "CMAKE_EXE_" exeAt)
+	string(FIND "${var}" "CMAKE_GENERATOR_" genAt)
+	string(FIND "${var}" "CMAKE_INSTALL_" installAt)
+	string(FIND "${var}" "CMAKE_LINK_" linkAt)
+	string(FIND "${var}" "CMAKE_MODULE_" moduleAt)
+	string(FIND "${var}" "CMAKE_OBJC_" objcAt)
+	string(FIND "${var}" "CMAKE_SHARED_" sharedAt)
+	string(FIND "${var}" "CMAKE_SKIP_" skipAt)
+	string(FIND "${var}" "CMAKE_STATIC_" staticAt)
+	string(FIND "${var}" "SQUIRRELJME_" squirreljmeAt)
+	if("${asmAt}" EQUAL "0" OR
+		"${buildAt}" EQUAL "0" OR
+		"${cAt}" EQUAL "0" OR
+		"${cxxAt}" EQUAL "0" OR
+		"${depFileAt}" EQUAL "0" OR
+		"${dlAt}" EQUAL "0" OR
+		"${executableAt}" EQUAL "0" OR
+		"${exeAt}" EQUAL "0" OR
+		"${genAt}" EQUAL "0" OR
+		"${installAt}" EQUAL "0" OR
+		"${linkAt}" EQUAL "0" OR
+		"${moduleAt}" EQUAL "0" OR
+		"${objcAt}" EQUAL "0" OR
+		"${sharedAt}" EQUAL "0" OR
+		"${skipAt}" EQUAL "0" OR
+		"${staticAt}" EQUAL "0" OR
+		"${squirreljmeAt}" EQUAL "0" OR
+		"${var}" STREQUAL "CMAKE_ADDR2LINE" OR
+		"${var}" STREQUAL "CMAKE_AR" OR
+		"${var}" STREQUAL "CMAKE_DLLTOOL" OR
+		"${var}" STREQUAL "CMAKE_LINKER" OR
+		"${var}" STREQUAL "CMAKE_MAKE_PROGRAM" OR
+		"${var}" STREQUAL "CMAKE_MT" OR
+		"${var}" STREQUAL "CMAKE_NM" OR
+		"${var}" STREQUAL "CMAKE_OBJCOPY" OR
+		"${var}" STREQUAL "CMAKE_OBJDUMP" OR
+		"${var}" STREQUAL "CMAKE_RANLIB" OR
+		"${var}" STREQUAL "CMAKE_READELF" OR
+		"${var}" STREQUAL "CMAKE_STRIP" OR
+		"${var}" STREQUAL "CMAKE_TAPI" OR
+		"${var}" STREQUAL "CMAKE_VERBOSE_MAKEFILE" OR
+		"${var}" STREQUAL "__END_OF_EVERYTHING__")
+		# Quote the value, otherwise things will very much break
+		string(REPLACE "\\" "\\\\" quotedValue "${${var}}")
+		string(REPLACE "\"" "\\\"" quotedValue "${${var}}")
+
+		# Get the variable type
+		if(IS_DIRECTORY "${quotedValue}")
+			set(varType "PATH")
+		elseif(EXISTS "${quotedValue}")
+			set(varType "FILEPATH")
+		elseif("${quotedValue}" STREQUAL "ON" OR
+			"${quotedValue}" STREQUAL "YES" OR
+			"${quotedValue}" STREQUAL "TRUE" OR
+			"${quotedValue}" STREQUAL "Y" OR
+			"${quotedValue}" STREQUAL "OFF" OR
+			"${quotedValue}" STREQUAL "NO" OR
+			"${quotedValue}" STREQUAL "FALSE" OR
+			"${quotedValue}" STREQUAL "N" OR
+			"${quotedValue}" STREQUAL "IGNORE" OR
+			"${quotedValue}" STREQUAL "NOTFOUND")
+			set(varType "BOOL")
+		else()
+			set(varType "STRING")
+		endif()
+
+		# Append to the file
+		file(APPEND "${cacheFile}"
+			"set(\"${var}\" \"${quotedValue}\" CACHE ${varType} "${var}")\n")
+	endif()
+endforeach()
 
 # Specify NanoCoat directory for includes
 set(SQUIRRELJME_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
 set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${SQUIRRELJME_ROOT_DIR}/nanocoat")
 include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake")
 
-# Configure parent NanoCoat
+# Setup NanoCoat Project
 set(SQUIRRELJME_NANOCOAT_BINARY_DIR "${CMAKE_BINARY_DIR}/nanocoat")
-execute_process(COMMAND "${CMAKE_COMMAND}"
-	"-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
-	"-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}"
-	"-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}"
-	"-DCMAKE_ASM_COMPILER=${CMAKE_ASM_COMPILER}"
-	"-DCMAKE_ASM_FLAGS=${CMAKE_ASM_FLAGS}"
-	"-DCMAKE_AR=${CMAKE_AR}"
-	"-DCMAKE_C_LINK_EXECUTABLE=${CMAKE_C_LINK_EXECUTABLE}"
-	"-DCMAKE_LINK_LIBRARY_FLAG=${CMAKE_LINK_LIBRARY_FLAG}"
-	"-DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}"
-	"-DCMAKE_SHARED_LINKER_FLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
-	"-DCMAKE_STATIC_LINKER_FLAGS=${CMAKE_STATIC_LINKER_FLAGS}"
-	"-G" "${CMAKE_GENERATOR}"
-	"-T" "${CMAKE_GENERATOR_TOOLSET}"
-	"-A" "${CMAKE_GENERATOR_PLATFORM}"
-	"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
-	"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-	RESULT_VARIABLE nanoCoatConfigure)
-if(NOT nanoCoatConfigure EQUAL "0")
-	message(FATAL_ERROR "Could not configure NanoCoat!")
-endif()
+file(MAKE_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+ExternalProject_Add(SquirrelJME
+	BINARY_DIR "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+	SOURCE_DIR "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+	CMAKE_CACHE_ARGS allDefines
+	CONFIGURE_COMMAND "${CMAKE_COMMAND}"
+		"-C" "${cacheFile}"
+		"-G" "${CMAKE_GENERATOR}"
+		"-T" "${CMAKE_GENERATOR_TOOLSET}"
+		"-A" "${CMAKE_GENERATOR_PLATFORM}"
+		"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+	BUILD_COMMAND ""
+	INSTALL_COMMAND ""
+	TEST_COMMAND ""
+	TEST_EXCLUDE_FROM_MAIN YES
+	CONFIGURE_HANDLED_BY_BUILD NO
+	STEP_TARGETS Configure BaseStatic libJvmDyLib SquirrelJME
+		ScritchAudio ScritchUi)
+
+# Configure step, since it seems to be missing
+ExternalProject_Add_Step(SquirrelJME Configure
+	COMMENT "Configuring NanoCoat..."
+	COMMAND "${CMAKE_COMMAND}"
+		"-C" "${cacheFile}"
+		"-G" "${CMAKE_GENERATOR}"
+		"-T" "${CMAKE_GENERATOR_TOOLSET}"
+		"-A" "${CMAKE_GENERATOR_PLATFORM}"
+		"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+
+# Additional clean files for the configuration step
+set_target_properties(SquirrelJME-Configure PROPERTIES
+	ADDITIONAL_CLEAN_FILES "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+
+# Add macro since these are all the same
+macro(squirreljme_external_step target)
+	ExternalProject_Add_Step(SquirrelJME ${target}
+		COMMENT "Building ${target}..."
+		COMMAND "${CMAKE_COMMAND}"
+			"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+			"--target" ${target}
+		DEPENDS SquirrelJME-Configure)
+endmacro()
+
+# Add steps
+squirreljme_external_step(BaseStatic)
+squirreljme_external_step(ScritchAudio)
+squirreljme_external_step(ScritchUi)
+squirreljme_external_step(libJvmDyLib)
+squirreljme_external_step(SquirrelJME)
+
+# Correct dependencies
+ExternalProject_Add_StepDependencies(SquirrelJME BaseStatic
+	SquirrelJME-Configure)
+ExternalProject_Add_StepDependencies(SquirrelJME ScritchAudio
+	SquirrelJME-BaseStatic)
+ExternalProject_Add_StepDependencies(SquirrelJME ScritchUi
+	SquirrelJME-BaseStatic)
+ExternalProject_Add_StepDependencies(SquirrelJME libJvmDyLib
+	SquirrelJME-BaseStatic SquirrelJME-ScritchAudio SquirrelJME-ScritchUi)
+ExternalProject_Add_StepDependencies(SquirrelJME SquirrelJME
+	SquirrelJME-libJvmDyLib)
 
 # Support bases
 squirreljme_include_nanocoat("cmake-patch.cmake")
@@ -48,34 +229,6 @@ squirreljme_include_nanocoat("pre-fixes.cmake")
 squirreljme_include_nanocoat("system-map.cmake")
 squirreljme_include_nanocoat("fixes.cmake")
 squirreljme_include_nanocoat("multilib.cmake")
-
-# Import the JVM library that NanoCoat found
-# We also need to build the SquirrelJME base library
-include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/Base.cmake")
-include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/Core.cmake")
-include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/libJvm.cmake")
-include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/discoveredJvm.cmake")
-include("${SQUIRRELJME_NANOCOAT_BINARY_DIR}/export/SquirrelJME.cmake")
-
-# Build the required libraries
-execute_process(COMMAND "${CMAKE_COMMAND}"
-	"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-	"--target" "BaseStatic" "libJvmDyLib" "SquirrelJME"
-		"ScritchAudio" "ScritchUi"
-	RESULT_VARIABLE baseStaticBuild)
-if(NOT baseStaticBuild EQUAL "0")
-	message(FATAL_ERROR "Could not build NanoCoat!")
-endif()
-
-# Get the list file and paths
-set(scritchAnyLists)
-list(APPEND scritchAnyLists
-	"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin/ScritchAudio.list"
-	"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin/ScritchUi.list")
-file(STRINGS "${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin/ScritchAudio.paths"
-	scritchAudioBins)
-file(STRINGS "${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin/ScritchUi.paths"
-	scritchUiBins)
 
 # Declare library
 add_library(libEmulatorBase SHARED
@@ -104,6 +257,11 @@ add_library(libEmulatorBase SHARED
 	c/nativebinding.c
 	c/utils.c)
 
+# The base static library is needed first
+add_dependencies(libEmulatorBase
+	SquirrelJME-BaseStatic
+	SquirrelJME-libJvmDyLib)
+
 # Always make this position independent
 squirreljme_always_fpic(libEmulatorBase)
 
@@ -111,16 +269,15 @@ squirreljme_always_fpic(libEmulatorBase)
 target_include_directories(libEmulatorBase PRIVATE
 	"${CMAKE_SOURCE_DIR}/headers"
 	"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/include"
-	"$<TARGET_PROPERTY:discoveredJvm,INTERFACE_INCLUDE_DIRECTORIES>")
+	"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/include/3rdparty/jni")
 
 # Libraries for the build
 target_link_directories(libEmulatorBase PRIVATE
-	"$<TARGET_PROPERTY:discoveredJvm,INTERFACE_LINK_DIRECTORIES>")
+	"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin")
 target_link_libraries(libEmulatorBase PUBLIC
 	"${SQUIRRELJME_REQUIRED_LIBS}"
-	SquirrelJME::BaseStatic
-	discoveredJvm
-)
+	BaseStatic
+	jvm)
 
 # It is easier to find this when it is in the build root
 squirreljme_target_binary_name(libEmulatorBase
@@ -149,29 +306,39 @@ set(nativesSubDir
 # Make sure it exists before we bundle
 file(MAKE_DIRECTORY "${nativesSubDir}")
 
+# Determine executable name
+set(exeName "")
+string(APPEND exeName
+	"${CMAKE_EXECUTABLE_PREFIX_C}"
+	"squirreljme"
+	"${CMAKE_EXECUTABLE_SUFFIX_C}")
+message(STATUS "NanoCoat should be called '${exeName}'...")
+
 # Rule to bundle all of the natives together
 add_custom_target(bundleNatives
 	# Copy the spread out binaries
-	COMMAND "${CMAKE_COMMAND}" "-E"
-		"copy"
-			"$<TARGET_FILE:libEmulatorBase>"
-			"$<TARGET_FILE:SquirrelJME>"
-			"${scritchAnyLists}"
-			"${scritchAudioBins}"
-			"${scritchUiBins}"
-			# To here...
+	COMMAND "${CMAKE_COMMAND}" "-P"
+		"${CMAKE_SOURCE_DIR}/bundle-script.cmake" "--"
+			"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+			"${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+			"${cacheFile}"
+			"${nativesZip}"
+			"${nativesZipSimple}"
+			"${nativesDir}"
 			"${nativesSubDir}"
 
-	# Add everything to the Zip
-	COMMAND "${CMAKE_COMMAND}" "-E"
-		"tar" "cv" "${nativesZip}" "--format=zip" "--"
-			"."
-
-	# Create a simple name for it to make things easy on the Gradle side
-	COMMAND "${CMAKE_COMMAND}" "-E"
-		"copy" "${nativesZip}" "${nativesZipSimple}"
-
-	DEPENDS libEmulatorBase
+			# Copy files
+			"$<TARGET_FILE:libEmulatorBase>"
+			"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin/${exeName}"
+	DEPENDS SquirrelJME-Configure
+		SquirrelJME-ScritchAudio SquirrelJME-ScritchUi
+		SquirrelJME-SquirrelJME libEmulatorBase
 	WORKING_DIRECTORY "${nativesDir}"
 	BYPRODUCTS "${nativesZip}" "${nativesZipSimple}"
+	COMMENT "Bundling natives..."
 	COMMAND_EXPAND_LISTS)
+
+# This is good to have in all
+set_target_properties(bundleNatives PROPERTIES
+	EXCLUDE_FROM_ALL NO)
+

@@ -29,6 +29,10 @@ if(Fossil_EXECUTABLE)
 		squirreljme_fossil_download(standalone.base.download "standalone"
 			"${uvPath}" "${SQUIRRELJME_JAR_DOWNLOAD_PATH}")
 
+		# Do not download by default
+		set_target_properties(standalone.base.download PROPERTIES
+			EXCLUDE_FROM_ALL YES)
+
 		# Add to the order
 		squirreljme_natives_append_rule(standalone.base.download
 			"standalone" "base" "download")
