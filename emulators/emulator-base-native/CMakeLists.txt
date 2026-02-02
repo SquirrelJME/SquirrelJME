@@ -31,6 +31,15 @@ foreach(var IN LISTS allVariables)
 		continue()
 	endif()
 
+	# Quote the value, otherwise things will very much break
+	string(REPLACE "\\" "\\\\" quotedValue "${${var}}")
+	string(REPLACE "\"" "\\\"" quotedValue "${${var}}")
+
+	# Ignore if blank
+	if("${quotedValue}" STREQUAL "")
+		continue()
+	endif()
+
 	# Specifically skip these
 	# Ignore host compiler information, we do not care for that
 	# Any Compiler ID information is often used internally by CMake
@@ -40,6 +49,8 @@ foreach(var IN LISTS allVariables)
 	# Ignore anything that indicates CMake is done with something
 	# Ignore internals
 	# Ignore versions
+	# Any compiler works will ignore any CMake checks, which breaks system
+	# roots and otherwise
 	string(FIND "${var}" "CMAKE_ASM_COMPILER_ID_" asmCompilerIdAt)
 	string(FIND "${var}" "CMAKE_C_COMPILER_ID_" cCompilerIdAt)
 	string(FIND "${var}" "CMAKE_CXX_COMPILER_ID_" cxxCompilerIdAt)
@@ -52,6 +63,7 @@ foreach(var IN LISTS allVariables)
 	string(FIND "${var}" "_INTERNAL" internalAt REVERSE)
 	string(FIND "${var}" "_VERSION" versionAt REVERSE)
 	string(FIND "${var}" "_ID" idAt REVERSE)
+	string(FIND "${var}" "_COMPILER_WORKS" compilerWorksAt REVERSE)
 	if("${asmCompilerIdAt}" EQUAL "0" OR
 		"${cCompilerIdAt}" EQUAL "0" OR
 		"${cxxCompilerIdAt}" EQUAL "0" OR
@@ -60,14 +72,17 @@ foreach(var IN LISTS allVariables)
 		"${cHostAt}" EQUAL "0" OR
 		"${cxxHostAt}" EQUAL "0" OR
 		"${objCHostAt}" EQUAL "0" OR
-		"${loadedAt}" GREATER "7" OR
-		"${internalAt}" GREATER "9" OR
-		"${versionAt}" GREATER "8" OR
-		"${idAt}" GREATER "3" OR
+		"${var}" STREQUAL "__TAILS__" OR
+		"${loadedAt}" GREATER "0" OR
+		"${internalAt}" GREATER "0" OR
+		"${versionAt}" GREATER "0" OR
+		"${idAt}" GREATER "0" OR
+		"${compilerWorksAt}" GREATER "0" OR
 		"${var}" STREQUAL "CMAKE_SHARED_LIBRARY_PREFIX" OR
 		"${var}" STREQUAL "CMAKE_SHARED_LIBRARY_SUFFIX" OR
 		"${var}" STREQUAL "CMAKE_EXECUTABLE_PREFIX" OR
 		"${var}" STREQUAL "CMAKE_EXECUTABLE_SUFFIX" OR
+		"${var}" STREQUAL "CMAKE_C_ABI_COMPILED" OR
 		"${var}" STREQUAL "__END_OF_EVERYTHING__")
 		continue()
 	endif()
@@ -122,10 +137,6 @@ foreach(var IN LISTS allVariables)
 		"${var}" STREQUAL "CMAKE_TAPI" OR
 		"${var}" STREQUAL "CMAKE_VERBOSE_MAKEFILE" OR
 		"${var}" STREQUAL "__END_OF_EVERYTHING__")
-		# Quote the value, otherwise things will very much break
-		string(REPLACE "\\" "\\\\" quotedValue "${${var}}")
-		string(REPLACE "\"" "\\\"" quotedValue "${${var}}")
-
 		# Get the variable type
 		if(IS_DIRECTORY "${quotedValue}")
 			set(varType "PATH")

@@ -14,6 +14,13 @@
 include(CheckCCompilerFlag)
 include(CheckLinkerFlag)
 include(CheckIncludeFile)
+include(CheckLibraryExists)
+
+# Debugging
+message(STATUS "Library Path: ${CMAKE_LIBRARY_PATH}")
+message(STATUS "Prefix Path: ${CMAKE_PREFIX_PATH}")
+message(STATUS "Library Path (System): ${CMAKE_SYSTEM_LIBRARY_PATH}")
+message(STATUS "Prefix Path (System): ${CMAKE_SYSTEM_PREFIX_PATH}")
 
 # Debugging?
 if(SQUIRRELJME_IS_DEBUG)
@@ -486,7 +493,8 @@ check_linker_flag(C "LINKER:-static-libgcc"
 message(STATUS "LINKER:-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_LINK}")
 
 # Locate the math library, if applicable
-find_library(SQUIRRELJME_LIBM m)
+# There are multiple ways to go about this
+squirreljme_include_nanocoat("find-m.cmake")
 message(STATUS "libm: ${SQUIRRELJME_LIBM}")
 
 # Build required libraries into a list, as you may only call
