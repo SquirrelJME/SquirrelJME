@@ -38,6 +38,7 @@ message(STATUS "Fossil UV Timestamp: ${SQUIRRELJME_UV_DATE}")
 
 # Write the date file
 file(WRITE "${CMAKE_BINARY_DIR}/uvDate.mkd" "${SQUIRRELJME_UV_DATE}")
+file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/uvDate.mkd" uvDateNative)
 
 # Only possible if Fossil exists
 if(Fossil_EXECUTABLE)

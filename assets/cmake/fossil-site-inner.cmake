@@ -24,9 +24,6 @@ macro(squirreljme_fossil_upload target)
 	# Determine the upload target name
 	set(uploadTarget "fossilUpload.${target}")
 
-	# Determine the source native path
-	file(TO_NATIVE_PATH "${outputPath}" outputPathNative)
-
 	# Determine the base name of the output
 	squirreljme_basename_path(outputBase "${outputPath}")
 
@@ -36,6 +33,9 @@ macro(squirreljme_fossil_upload target)
 	# Notice
 	message(STATUS "Upload '${outputPath}' -> '${uvPath}'...")
 	message(DEBUG "Source: ${target} ${outputPath} ${outputType}")
+
+	# Determine the source native path
+	file(TO_NATIVE_PATH "${outputPath}" outputPathNative)
 
 	# Add in the upload command
 	add_custom_target(${uploadTarget}
