@@ -10,8 +10,13 @@
 # The name of the target standalone Jar
 set(SQUIRRELJME_JAR_BASENAME
 	"squirreljme-standalone-${SQUIRRELJME_VERSION}.jar")
+set(SQUIRRELJME_OUTPUT_JAR_DIR
+	"${CMAKE_BINARY_DIR}/bin")
 set(SQUIRRELJME_OUTPUT_JAR_PATH
-	"${CMAKE_BINARY_DIR}/bin/${SQUIRRELJME_JAR_BASENAME}")
+	"${SQUIRRELJME_OUTPUT_JAR_DIR}/${SQUIRRELJME_JAR_BASENAME}")
+
+# Make sure the output directory exists
+file(MAKE_DIRECTORY "${SQUIRRELJME_OUTPUT_JAR_DIR}")
 
 # Add rules and detection steps for the three
 squirreljme_include("standalone-jar-compiled.cmake")
@@ -35,13 +40,17 @@ endforeach()
 
 # Merging of the Base Standalone with All Natives
 add_custom_target(standalone.jar
+	COMMAND "${CMAKE_COMMAND}" "-E"
+		"rm" "-rf" "--" "${extractedTemp}"
+	COMMAND "${CMAKE_COMMAND}" "-E"
+		"make_directory" "${extractedTemp}"
 	COMMAND "${CMAKE_COMMAND}"
 		"-P" "${CMAKE_CURRENT_LIST_DIR}/merge-standalone.cmake" "--"
 			"${SQUIRRELJME_OUTPUT_JAR_PATH}" "${extractedTemp}"
 			"${mergeZips}"
 	DEPENDS "${mergeSet}"
-	COMMENT "Merging Standalone Jar into '${SQUIRRELJME_OUTPUT_JAR_PATH}'..."
 	BYPRODUCTS "${SQUIRRELJME_OUTPUT_JAR_PATH}"
+	COMMENT "Merging Standalone Jar into '${SQUIRRELJME_OUTPUT_JAR_PATH}'..."
 	COMMAND_EXPAND_LISTS)
 
 # Add this to all
