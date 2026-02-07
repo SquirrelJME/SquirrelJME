@@ -9,6 +9,8 @@
 
 #include "sjme/config.h"
 
+#include "sjme/binary.h"
+
 /* Include Valgrind if it is available? */
 #if defined(SJME_CONFIG_HAS_VALGRIND)
 	#include <valgrind.h>
