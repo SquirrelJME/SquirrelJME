@@ -391,7 +391,54 @@ struct sjme_nvm_frameBase
 	} condition;
 
 	/** Frame state flags. */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 394)
 	sjme_nvm_frame_stateFlags flags;
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_packed struct
+	{
+		/** Enter synchronization was performed. */
+		sjme_jboolean synchronizedEnter;
+
+		/** Exit synchronization was performed. */
+		sjme_jboolean synchronizedExit;
+
+		/** Is this a static initializer? */
+		sjme_jboolean isStaticInit;
+
+		/** Is this an instance initializer? */
+		sjme_jboolean isInstanceInit;
+	} flags;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 313)
+	sjme_packed struct
+	{
+		/** Enter synchronization was performed. */
+		sjme_jboolean synchronizedEnter : sjme_booleanBit;
+
+		/** Exit synchronization was performed. */
+		sjme_jboolean synchronizedExit : sjme_booleanBit;
+
+		/** Is this a static initializer? */
+		sjme_jboolean isStaticInit : sjme_booleanBit;
+
+		/** Is this an instance initializer? */
+		sjme_jboolean isInstanceInit : sjme_booleanBit;
+	} flags;
+======= MERGED IN content follows =============================== (line 313)
+	sjme_packed struct
+	{
+		/** Enter synchronization was performed. */
+		sjme_jboolean synchronizedEnter;
+
+		/** Exit synchronization was performed. */
+		sjme_jboolean synchronizedExit;
+
+		/** Is this a static initializer? */
+		sjme_jboolean isStaticInit;
+
+		/** Is this an instance initializer? */
+		sjme_jboolean isInstanceInit;
+	} flags;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 };
 
 /** List of stack frames. */
@@ -705,7 +752,27 @@ struct sjme_nvm_threadBase
 	sjme_atomic(sjme_jint) interrupted;
 
 	/** Thread specific flags. */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 708)
 	sjme_nvm_thread_flags flags;
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	struct
+	{
+		/** Is this a daemon thread? */
+		sjme_jboolean isDaemon;
+	} flags;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 591)
+	struct
+	{
+		/** Is this a daemon thread? */
+		sjme_jboolean isDaemon : sjme_booleanBit;
+	} flags;
+======= MERGED IN content follows =============================== (line 591)
+	struct
+	{
+		/** Is this a daemon thread? */
+		sjme_jboolean isDaemon;
+	} flags;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 };
 
 /**

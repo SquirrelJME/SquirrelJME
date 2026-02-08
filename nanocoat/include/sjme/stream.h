@@ -115,10 +115,10 @@ typedef struct sjme_stream_implState
 	struct sjme_packed
 	{
 		/** Forward close? */
-		sjme_jboolean forwardClose : sjme_booleanBit;
+		sjme_jboolean forwardClose;
 	
 		/** EOF hit? */
-		sjme_jboolean hitEof : sjme_booleanBit;
+		sjme_jboolean hitEof;
 	} flags;
 } sjme_stream_implState;
 

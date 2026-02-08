@@ -50,8 +50,10 @@ sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 {
 	switch (errNum)
 	{
+#if defined(EAGAIN)
 		case EAGAIN:
 			return SJME_ERROR_TRY_AGAIN;
+#endif
 
 #if defined(ECONNREFUSED)
 			/* Not available on all platforms. */
@@ -59,14 +61,20 @@ sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 			return SJME_ERROR_CONNECTION_REFUSED;
 #endif
 			
+#if defined(EIO)
 		case EIO:
 			return SJME_ERROR_IO_EXCEPTION;
+#endif
 
+#if defined(EINVAL)
 		case EINVAL:
 			return SJME_ERROR_INVALID_ARGUMENT;
+#endif
 		
+#if defined(ENOENT)
 		case ENOENT:
 			return SJME_ERROR_FILE_NOT_FOUND;
+#endif
 
 		default:
 			return SJME_ERROR_UNKNOWN;
@@ -107,8 +115,11 @@ sjme_errorCode sjme_nal_stdF(
 #endif
 
 	/* Send to the output. */
-	return outFunc(buf, 0, strlen(buf));
 #if !defined(SJME_CONFIG_HAS_NO_STDIO)
+	return outFunc(buf, 0, strlen(buf));
 #undef BUF_SIZE
+#else
+	/* Just say success */
+	return SJME_ERROR_NONE;
 #endif
 }

@@ -109,11 +109,27 @@ extern "C" {
 #if defined(__WATCOMC__)
 	/** Watcom C Compiler. */
 	#define SJME_CONFIG_HAS_WATCOM
+	
+	/** Compiler ID. */
+	#define SJME_CONFIG_HAS_COMPILER "watcom"
 #endif
 	
-#if defined(__clang__)
+#if !defined(SJME_CONFIG_HAS_COMPILER) && \
+	defined(SDCC) || defined(__SDCC)
+	/** SDCC. */
+	#define SJME_CONFIG_HAS_SDCC
+	
+	/** Compiler ID. */
+	#define SJME_CONFIG_HAS_COMPILER "sdcc"
+#endif
+	
+#if !defined(SJME_CONFIG_HAS_COMPILER) && \
+	defined(__clang__)
 	/** CLang LLVM Compiler. */
 	#define SJME_CONFIG_HAS_CLANG
+	
+	/** Compiler ID. */
+	#define SJME_CONFIG_HAS_COMPILER "clang"
 	
 	/** Is the CLang version the specified version? */
 	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) \
@@ -125,9 +141,14 @@ extern "C" {
 	#define SJME_CONFIG_CLANG_VERSION_LEAST(major, minor) 0
 #endif
 	
-#if defined(_MSC_VER) && !defined(SJME_CONFIG_HAS_CLANG)
+/* Clang likes to lie about being MSVC. */
+#if !defined(SJME_CONFIG_HAS_COMPILER) && \
+	defined(_MSC_VER) && !defined(SJME_CONFIG_HAS_CLANG)
 	/** Microsoft Visual C++ Compiler. */
 	#define SJME_CONFIG_HAS_MSVC
+	
+	/** Compiler ID. */
+	#define SJME_CONFIG_HAS_COMPILER "msvc"
 	
 	/** Is the MSVC version the specified version? */
 	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) \
@@ -137,9 +158,14 @@ extern "C" {
 	#define SJME_CONFIG_MSVC_VERSION_LEAST(against) 0
 #endif
 
-#if defined(__GNUC__) && !defined(SJME_CONFIG_HAS_CLANG)
+/* Clang likes to lie about being GCC. */
+#if !defined(SJME_CONFIG_HAS_COMPILER) && \
+	defined(__GNUC__) && !defined(SJME_CONFIG_HAS_CLANG)
 	/** GNU C Compiler. */
 	#define SJME_CONFIG_HAS_GCC
+	
+	/** Compiler ID. */
+	#define SJME_CONFIG_HAS_COMPILER "gcc"
 
 	#if defined(__GNUC_MINOR__)
 		/** Is the GCC version the specified version? */
@@ -163,7 +189,10 @@ extern "C" {
 #endif
 
 #if !defined(SJME_CONFIG_RELEASE) && !defined(SJME_CONFIG_DEBUG)
-	#if (defined(DEBUG) || defined(_DEBUG)) || \
+	#if defined(SJME_CONFIG_HAS_SDCC)
+		/** Force SDCC to be release. */
+		#define SJME_CONFIG_RELEASE
+	#elif (defined(DEBUG) || defined(_DEBUG)) || \
 		(!defined(NDEBUG) && !defined(_NDEBUG))
 		/** Debug build. */
 		#define SJME_CONFIG_DEBUG
@@ -176,7 +205,13 @@ extern "C" {
 #endif
 
 /* The current operating system. */
-#if defined(SJME_CONFIG_IDENT_OS_WINE) || defined(__WINE__)
+#if defined(SJME_CONFIG_IDENT_OS_SDCC) || defined(SJME_CONFIG_HAS_SDCC) || \
+	defined(SJME_CONFIG_IDENT_OS_BIOS) || \
+	defined(SJME_CONFIG_IDENT_OS_EFI) || \
+	defined(SJME_CONFIG_IDENT_OS_IEEE1275OF)
+	/** There is no operating system. */
+	#define SJME_CONFIG_HAS_OS_BAREMETAL
+#elif defined(SJME_CONFIG_IDENT_OS_WINE) || defined(__WINE__)
 	/** Windows through Wine. */
 	#define SJME_CONFIG_HAS_OS_WINDOWS_WINE
 	
@@ -210,9 +245,6 @@ extern "C" {
 	defined(SJME_CONFIG_IDENT_OS_PLAYSTATION2)
 	/** Sony PlayStation 2. */
 	#define SJME_CONFIG_HAS_OS_SONY_PS2
-#elif defined(SDCC) || defined(__SDCC)
-	/** Baremetal system. */
-	#define SJME_CONFIG_HAS_OS_BAREMETAL
 #elif defined(__ANDROID__) || defined(__ANDROID_API__) || \
 	defined(SJME_CONFIG_IDENT_OS_ANDROID)
 	/** Android is available. */
@@ -499,11 +531,13 @@ extern "C" {
 	#define SJME_POINTER_BYTES (SJME_CONFIG_HAS_POINTER / 8)
 #endif
 	
-#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010) || \
-	defined(SJME_CONFIG_HAS_GCC) || \
-	defined(SJME_CONFIG_HAS_CLANG) || \
-	defined(SJME_CONFIG_HAS_C99)
-	#define SJME_CONFIG_HAS_STDINT
+#if !defined(SJME_CONFIG_HAS_STDINT)
+	#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010) || \
+		defined(SJME_CONFIG_HAS_GCC) || \
+		defined(SJME_CONFIG_HAS_CLANG) || \
+		defined(SJME_CONFIG_HAS_C99)
+		#define SJME_CONFIG_HAS_STDINT
+	#endif
 #endif
 
 #if defined(SJME_CONFIG_ROM0)
@@ -600,11 +634,28 @@ extern "C" {
 	/** Flexible array size count. */
 	#define sjme_flexibleArrayCount
 #endif
+	
+/* SDCC does not have normal alloca. */
+#if !defined(sjme_alloca) && defined(SJME_CONFIG_HAS_SDCC)
+	/** Allocate on the heap. */
+	#define sjme_alloca(size) ((void*)malloc((size)))
+
+	/** Free heap allocated data. */
+	#define sjme_alloca_free(ptr) ((void)free(ptr))
+#endif
 
 /* Visual C++ has a differently named alloca. */
-#if defined(SJME_CONFIG_HAS_MSVC)
+#if !defined(sjme_alloca) && defined(SJME_CONFIG_HAS_MSVC)
 	/** Allocate on the stack. */
 	#define sjme_alloca(size) _alloca((size))
+
+	/** Free stack allocated data. */
+	#define sjme_alloca_free(ptr) ((void)ptr)
+#endif
+
+#if !defined(sjme_alloca)
+	/** Allocate on the stack. */
+	#define sjme_alloca(size) alloca((size))
 
 	/** Free stack allocated data. */
 	#define sjme_alloca_free(ptr) ((void)ptr)
@@ -882,14 +933,6 @@ extern "C" {
 	#define sjme_attrOutOverwrite
 #endif
 
-#if !defined(sjme_alloca)
-	/** Allocate on the stack. */
-	#define sjme_alloca(size) alloca((size))
-
-	/** Free stack allocated data. */
-	#define sjme_alloca_free(ptr) ((void)ptr)
-#endif
-
 #if !defined(sjme_inline)
 	#if !defined(SJME_CONFIG_HAS_MSVC) || \
 		SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
@@ -1130,6 +1173,31 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/* Qualifier used multiple times, as there are volatile typedefs. */
 	#pragma warning(disable: 4114)
+#endif
+	
+#if defined(SJME_CONFIG_HAS_SDCC)
+	/* warning 85: in function sjme_nvm_byteCode_slowTableSwitch */
+	/*   unreferenced function argument : 'id' */
+	#pragma disable_warning 85
+	
+	/* warning 110: conditional flow changed by optimizer: so said EVELYN */
+	/*   the modified DOG */
+	#pragma disable_warning 110
+	
+	/* warning 115: Unknown pragma directive */
+	#pragma disable_warning 115
+	
+	/* warning 126: unreachable code */
+	#pragma disable_warning 126
+	
+	/* warning 127: non-pointer type cast to generic pointer */
+	#pragma disable_warning 127
+	
+	/* warning 190: ISO C forbids an empty translation unit */
+	#pragma disable_warning 190
+	
+	/* warning 283: function declarator with no prototype */
+	#pragma disable_warning 283
 #endif
 
 /** Bitfield count for @link sjme_jboolean @endlink . */

@@ -98,6 +98,7 @@ SJME_LIST_DECLARE(sjme_nvm_class_exceptionHandler, 0);
  *
  * @since 2024/01/03
  */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 101)
 typedef enum sjme_nvm_class_accessFlags
 {
 	/** Public. */
@@ -123,23 +124,135 @@ typedef enum sjme_nvm_class_accessFlags
 		SJME_NVM_ACC_PRIVATE | SJME_NVM_ACC_PROTECTED,
 } sjme_nvm_class_accessFlags;
 	
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+typedef enum sjme_nvm_class_accessFlags
+{
+	/** Is this public? */
+	sjme_jboolean public;
+
+	/** Is this protected? */
+	sjme_jboolean protected;
+	
+	/** Is this private? */
+	sjme_jboolean private;
+} sjme_nvm_class_accessFlags;
+	
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 211)
+typedef struct sjme_nvm_class_accessFlags
+{
+	/** Is this public? */
+	sjme_jboolean public : sjme_booleanBit;
+
+	/** Is this protected? */
+	sjme_jboolean protected : sjme_booleanBit;
+	
+	/** Is this private? */
+	sjme_jboolean private : sjme_booleanBit;
+} sjme_nvm_class_accessFlags;
+
+======= MERGED IN content follows =============================== (line 211)
+typedef struct sjme_nvm_class_accessFlags
+{
+	/** Is this public? */
+	sjme_jboolean public;
+
+	/** Is this protected? */
+	sjme_jboolean protected;
+	
+	/** Is this private? */
+	sjme_jboolean private;
+} sjme_nvm_class_accessFlags;
+
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 /**
  * Class flags.
  *
  * @since 2024/01/03
  */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 131)
 typedef enum sjme_nvm_class_classFlags
 {
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+typedef enum sjme_nvm_class_classFlags
+{
+	/** Access flags. */
+	sjme_nvm_class_accessFlags access;
+
+	/** Is the class final? */
+	sjme_jboolean final;
+
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 228)
+typedef struct sjme_nvm_class_classFlags
+{
+	/** Access flags. */
+	sjme_nvm_class_accessFlags access;
+
+	/** Is the class final? */
+	sjme_jboolean final : sjme_booleanBit;
+
+======= MERGED IN content follows =============================== (line 228)
+typedef struct sjme_nvm_class_classFlags
+{
+	/** Access flags. */
+	sjme_nvm_class_accessFlags access;
+
+	/** Is the class final? */
+	sjme_jboolean final;
+
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	/** Is the class super? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 134)
 	SJME_NVM_ACC_SUPER = INT32_C(0x0010),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean super;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 237)
+	sjme_jboolean super : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 237)
+	sjme_jboolean super;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	/** Is the class an interface? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 137)
 	SJME_NVM_ACC_INTERFACE = INT32_C(0x0200),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean interface;
+
+	/** Is the class abstract? */
+	sjme_jboolean abstract;
+
+	/** Is the class synthetic? */
+	sjme_jboolean synthetic;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 240)
+	sjme_jboolean interface : sjme_booleanBit;
+
+	/** Is the class abstract? */
+	sjme_jboolean abstract : sjme_booleanBit;
+
+	/** Is the class synthetic? */
+	sjme_jboolean synthetic : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 240)
+	sjme_jboolean interface;
+
+	/** Is the class abstract? */
+	sjme_jboolean abstract;
+
+	/** Is the class synthetic? */
+	sjme_jboolean synthetic;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	/** Is the class an annotation? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 140)
 	SJME_NVM_ACC_ANNOTATION = INT32_C(0x2000),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean annotation;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 249)
+	sjme_jboolean annotation : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 249)
+	sjme_jboolean annotation;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	/** Is the class an enum? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 143)
 	SJME_NVM_ACC_ENUM = INT32_C(0x4000),
 
 	/** Class flag mask. */
@@ -148,6 +261,13 @@ typedef enum sjme_nvm_class_classFlags
 		SJME_NVM_ACC_ANNOTATION | SJME_NVM_ACC_ENUM |
 		SJME_NVM_ACC_FINAL | SJME_NVM_ACC_SYNTHETIC |
 		SJME_NVM_ACC_ABSTRACT | SJME_NVM_ACC_ACCESS_MASK,
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean enumeration;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 252)
+	sjme_jboolean enumeration : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 252)
+	sjme_jboolean enumeration;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 } sjme_nvm_class_classFlags;
 
 /**
@@ -158,12 +278,40 @@ typedef enum sjme_nvm_class_classFlags
 typedef enum sjme_nvm_class_memberFlags
 {
 	/** Static member? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 161)
 	SJME_NVM_ACC_STATIC = INT32_C(0x0008),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean isStatic;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 266)
+	sjme_jboolean isStatic : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 266)
+	sjme_jboolean isStatic;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 163)
 	/** Member flag mask. */
 	SJME_NVM_ACC_MEMBER_MASK = SJME_NVM_ACC_STATIC |
 		SJME_NVM_ACC_FINAL | SJME_NVM_ACC_SYNTHETIC |
 		SJME_NVM_ACC_ACCESS_MASK,
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	/** Final member? */
+	sjme_jboolean final;
+
+	/** Synthetic member? */
+	sjme_jboolean synthetic;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 268)
+	/** Final member? */
+	sjme_jboolean final : sjme_booleanBit;
+
+	/** Synthetic member? */
+	sjme_jboolean synthetic : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 268)
+	/** Final member? */
+	sjme_jboolean final;
+
+	/** Synthetic member? */
+	sjme_jboolean synthetic;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 } sjme_nvm_class_memberFlags;
 
 /**
@@ -174,15 +322,42 @@ typedef enum sjme_nvm_class_memberFlags
 typedef enum sjme_nvm_class_fieldFlags
 {
 	/** Is this volatile? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 177)
 	SJME_NVM_ACC_VOLATILE = INT32_C(0x0040),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean isVolatile;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 286)
+	sjme_jboolean isVolatile : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 286)
+	sjme_jboolean isVolatile;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	/** Is this transient? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 180)
 	SJME_NVM_ACC_TRANSIENT = INT32_C(0x0080),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean transient;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 289)
+	sjme_jboolean transient : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 289)
+	sjme_jboolean transient;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 182)
 	/** Field flag mask. */
 	SJME_NVM_ACC_FIELD_MASK = SJME_NVM_ACC_VOLATILE |
 		SJME_NVM_ACC_TRANSIENT | SJME_NVM_ACC_ENUM |
 		SJME_NVM_ACC_MEMBER_MASK,
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	/** Field flag mask. */
+	sjme_jboolean enumeration;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 291)
+	/** Is this an enumeration. */
+	sjme_jboolean enumeration : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 291)
+	/** Is this an enumeration. */
+	sjme_jboolean enumeration;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 } sjme_nvm_class_fieldFlags;
 
 /**
@@ -193,18 +368,60 @@ typedef enum sjme_nvm_class_fieldFlags
 typedef enum sjme_nvm_class_methodFlags
 {
 	/** Synchronized, monitor entry/exit on call? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 196)
 	SJME_NVM_ACC_SYNCHRONIZED = INT32_C(0x0020),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean synchronized;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 306)
+	sjme_jboolean synchronized : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 306)
+	sjme_jboolean synchronized;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	/** Bridge method, generated by the compiler? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 199)
 	SJME_NVM_ACC_BRIDGE = INT32_C(0x0040),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean bridge;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 309)
+	sjme_jboolean bridge : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 309)
+	sjme_jboolean bridge;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	/** Variadic arguments? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 202)
 	SJME_NVM_ACC_VARARGS = INT32_C(0x0080),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean varargs;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 312)
+	sjme_jboolean varargs : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 312)
+	sjme_jboolean varargs;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	/** Is this a native method? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 205)
 	SJME_NVM_ACC_NATIVE = INT32_C(0x0100),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean native;
+
+	/** Abstract? */
+	sjme_jboolean abstract;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 315)
+	sjme_jboolean native : sjme_booleanBit;
+
+	/** Abstract? */
+	sjme_jboolean abstract : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 315)
+	sjme_jboolean native;
+
+	/** Abstract? */
+	sjme_jboolean abstract;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	/** Strict floating point? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 208)
 	SJME_NVM_ACC_STRICTFP = INT32_C(0x0800),
 
 	/** Method flag mask. */
@@ -214,6 +431,13 @@ typedef enum sjme_nvm_class_methodFlags
 		SJME_NVM_ACC_VARARGS | SJME_NVM_ACC_NATIVE |
 		SJME_NVM_ACC_STRICTFP |
 		SJME_NVM_ACC_MEMBER_MASK,
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean strictfp;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 321)
+	sjme_jboolean strictfp : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 321)
+	sjme_jboolean strictfp;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 } sjme_nvm_class_methodFlags;
 
 /**
@@ -677,14 +901,30 @@ struct sjme_nvm_class_fieldInfoBase
 typedef enum sjme_nvm_class_methodInfoBits
 {
 	/** Is this a static initializer? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 680)
 	SJME_NVM_CLASS_INIT_STATIC = INT8_C(0x1),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean isStaticInit;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 719)
+	sjme_jboolean isStaticInit : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 719)
+	sjme_jboolean isStaticInit;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	/** Is this an instance initializer? */
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 683)
 	SJME_NVM_CLASS_INIT_INSTANCE = INT8_C(0x2),
 
 	/** Is this any static initializer? */
 	SJME_NVM_CLASS_INIT_ANY = SJME_NVM_CLASS_INIT_STATIC |
 		SJME_NVM_CLASS_INIT_INSTANCE,
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_jboolean isInstanceInit;
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 722)
+	sjme_jboolean isInstanceInit : sjme_booleanBit;
+======= MERGED IN content follows =============================== (line 722)
+	sjme_jboolean isInstanceInit;
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 } sjme_nvm_class_methodInfoBits;
 
 /**

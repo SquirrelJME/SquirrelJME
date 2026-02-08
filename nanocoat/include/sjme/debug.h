@@ -40,7 +40,7 @@ extern "C" {
 /** File, line, and function. */
 #define SJME_DEBUG_FILE_LINE_FUNC_ALWAYS __FILE__, __LINE__, __func__
 
-#if defined(SJME_CONFIG_RELEASE)
+#if defined(SJME_CONFIG_RELEASE) || defined(SJME_CONFIG_HAS_SDCC)
 	/** Debug comma. */
 	#define SJME_DEBUG_ONLY_COMMA
 	

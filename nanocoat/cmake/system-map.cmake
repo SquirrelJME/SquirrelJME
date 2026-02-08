@@ -132,7 +132,7 @@ function(squirreljme_defines_gcc gccDefines gccExe)
 	unset(gccOutputRaw)
 	execute_process(
 		COMMAND "${gccExe}"
-			"-E" "-dM" ${CMAKE_C_FLAGS} ${CFLAGS} "${gccMainSource}"
+			"-E" "-dM" ${CMAKE_C_FLAGS} ${CFLAGS} "-c" "${gccMainSource}"
 		OUTPUT_VARIABLE gccOutputRaw
 		RESULT_VARIABLE gccResult
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -141,7 +141,7 @@ function(squirreljme_defines_gcc gccDefines gccExe)
 	if(NOT "${gccResult}" EQUAL "0")
 		execute_process(
 			COMMAND "${gccExe}"
-				"-E" "-dM" "${gccMainSource}"
+				"-E" "-dM" "-c" "${gccMainSource}"
 			OUTPUT_VARIABLE gccOutputRaw
 			RESULT_VARIABLE gccResult
 			OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -252,6 +252,9 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		"__WIN32__" IN_LIST defines OR
 		"__WINDOWS__" IN_LIST defines)
 		set(hasSystem "windows")
+	elseif("__SDCC" IN_LIST defines OR
+		"SDCC" IN_LIST defines)
+		set(hasSystem "sdcc")
 	else()
 		set(hasSystem "unknown")
 	endif()
@@ -382,7 +385,47 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		set(hasArch "riscv64")
 	elseif("EMSCRIPTEN" IN_LIST defines OR
 		"__EMSCRIPTEN__" IN_LIST defines)
-		set(hasSystem "emscripten")
+		set(hasArch "emscripten")
+	elseif("__SDCC_mcs51" IN_LIST defines)
+		set(hasArch "mcs51")
+	elseif("__SDCC_z80" IN_LIST defines)
+		set(hasArch "z80")
+	elseif("__SDCC_z180" IN_LIST defines)
+		set(hasArch "z180")
+	elseif("__SDCC_r2k" IN_LIST defines)
+		set(hasArch "r2k")
+	elseif("__SDCC_r2ka" IN_LIST defines)
+		set(hasArch "r2ka")
+	elseif("__SDCC_r3ka" IN_LIST defines)
+		set(hasArch "r3ka")
+	elseif("__SDCC_sm83" IN_LIST defines)
+		set(hasArch "sm83")
+	elseif("__SDCC_tlcs90" IN_LIST defines)
+		set(hasArch "tlcs90")
+	elseif("__SDCC_ez80_z80" IN_LIST defines)
+		set(hasArch "ez80_z80")
+	elseif("__SDCC_z80n" IN_LIST defines)
+		set(hasArch "z80n")
+	elseif("__SDCC_r800" IN_LIST defines)
+		set(hasArch "r800")
+	elseif("__SDCC_ds390" IN_LIST defines)
+		set(hasArch "ds390")
+	elseif("__SDCC_TININative" IN_LIST defines)
+		set(hasArch "TININative")
+	elseif("__SDCC_ds400" IN_LIST defines)
+		set(hasArch "ds400")
+	elseif("__SDCC_hc08" IN_LIST defines)
+		set(hasArch "hc08")
+	elseif("__SDCC_s08" IN_LIST defines)
+		set(hasArch "s08")
+	elseif("__SDCC_stm8" IN_LIST defines)
+		set(hasArch "stm8")
+	elseif("__SDCC_mos6502" IN_LIST defines)
+		set(hasArch "mos6502")
+	elseif("__SDCC_mos65c02" IN_LIST defines)
+		set(hasArch "mos65c02")
+	elseif("__SDCC_f8" IN_LIST defines)
+		set(hasArch "f8")
 	else()
 		set(hasArch "unknown")
 	endif()
@@ -511,6 +554,7 @@ function(squirreljme_identify_by_current outSystem outArch)
 	# Name-likes
 	string(FIND "${CMAKE_C_COMPILER}" "gcc" isGcc)
 	string(FIND "${CMAKE_C_COMPILER}" "cl.exe" isMsvc)
+	string(FIND "${CMAKE_C_COMPILER}" "sdcc" isSDCC)
 
 	# Unconfigured environment?
 	if("${CMAKE_C_COMPILER_ID}" STREQUAL "" AND
@@ -520,6 +564,7 @@ function(squirreljme_identify_by_current outSystem outArch)
 		set(hasArch "none")
 
 	# Is this GCC or GCC-like?
+	# SDCC supports this as well!
 	elseif(CMAKE_COMPILER_IS_GNUCC OR
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" OR
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" OR
@@ -530,7 +575,8 @@ function(squirreljme_identify_by_current outSystem outArch)
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "TIClang" OR
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "XLClang" OR
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "IBMClang" OR
-		"${isGcc}" GREATER_EQUAL "0")
+		"${isGcc}" GREATER_EQUAL "0" OR
+		"${isSDCC}" GREATER_EQUAL "0")
 		message(STATUS "Identifying compiler via GCC...")
 		squirreljme_identify_by_gcc(hasSystem hasArch
 			"${CMAKE_C_COMPILER}")
@@ -635,6 +681,28 @@ squirreljme_identify_by_cmake(SQUIRRELJME_HOST_SYSTEM SQUIRRELJME_HOST_ARCH
 message(STATUS "Detected Host System: "
 	"${SQUIRRELJME_HOST_SYSTEM}/${SQUIRRELJME_HOST_ARCH}")
 
+# Bare metal system?
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "bios" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "efi" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "ieee1275of" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "sdcc")
+	set(SQUIRRELJME_IS_BARE_METAL YES)
+else()
+	set(SQUIRRELJME_IS_BARE_METAL NO)
+endif()
+
+# Retro system?
+if("${SQUIRRELJME_ARCH}" STREQUAL "ia16" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "amiga" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "classicmac" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "palmos" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "win16" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "wince")
+	set(SQUIRRELJME_IS_RETRO YES)
+else()
+	set(SQUIRRELJME_IS_RETRO NO)
+endif()
+
 # It's a Windows system?
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "windowsce" OR
@@ -646,6 +714,7 @@ endif()
 
 # It's a UNIX system! I know this!
 if(NOT SQUIRRELJME_IS_WINDOWS AND
+	NOT SQUIRRELJME_IS_BARE_METAL AND
 	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "3ds" AND
 	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "dos" AND
 	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "gamecube" AND
@@ -673,9 +742,11 @@ endif()
 # If this is targeting Android, always treat as cross-compiled even if we
 # are running on Android due to all of the pseudo-Linux based systems
 # available on the platform
+# Bare metal is always cross compiled
 if (NOT "${SQUIRRELJME_HOST_SYSTEM}" STREQUAL "${SQUIRRELJME_SYSTEM}" OR
 	NOT "${SQUIRRELJME_HOST_ARCH}" STREQUAL "${SQUIRRELJME_ARCH}" OR
-	SQUIRRELJME_IS_ANDROID)
+	SQUIRRELJME_IS_ANDROID OR
+	SQUIRRELJME_IS_BARE_METAL)
 	set(SQUIRRELJME_IS_CROSS_COMPILE YES)
 else()
 	set(SQUIRRELJME_IS_CROSS_COMPILE NO)
