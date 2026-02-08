@@ -10,15 +10,24 @@
 # clean and pristine and patches are placed here because they affect the
 # entire project.
 
+# Needed for C compiler checks
+include(CheckCCompilerFlag)
+include(CheckLinkerFlag)
+include(CheckIncludeFile)
+include(CheckLibraryExists)
+
+# Debugging
+message(STATUS "Library Path: ${CMAKE_LIBRARY_PATH}")
+message(STATUS "Prefix Path: ${CMAKE_PREFIX_PATH}")
+message(STATUS "Library Path (System): ${CMAKE_SYSTEM_LIBRARY_PATH}")
+message(STATUS "Prefix Path (System): ${CMAKE_SYSTEM_PREFIX_PATH}")
+
 # Debugging?
 if(SQUIRRELJME_IS_DEBUG)
 	add_compile_definitions(SJME_CONFIG_DEBUG=1)
 elseif(SQUIRRELJME_IS_RELEASE)
 	add_compile_definitions(SJME_CONFIG_RELEASE=1)
 endif()
-
-# Needed for C compiler checks
-include(CheckCCompilerFlag)
 
 # Do not install with RPATH, CMake does relinking in build/install which
 # we do not want as we give away whatever executes and such
@@ -67,7 +76,7 @@ endif()
 #endif()
 
 # Are implibs used?
-if(MSVC AND "${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
 	set(SQUIRRELJME_HAS_IMPLIB YES)
 else()
 	set(SQUIRRELJME_HAS_IMPLIB NO)
@@ -165,59 +174,99 @@ macro(squirreljme_target_binary_output target where)
 	endforeach()
 endmacro()
 
-# Generate exports, mostly for Windows
-macro(squirreljme_target_shared_library_exports target)
-	# The target location can be overridden, generally through the pipeline
-	# build system
-	if(DEFINED ENV{SQUIRRELJME_BINARY_OUTPUT_DIR})
-		set(actualWhere "$ENV{SQUIRRELJME_BINARY_OUTPUT_DIR}")
-	elseif(DEFINED SQUIRRELJME_BINARY_OUTPUT_DIR)
-		set(actualWhere "${SQUIRRELJME_BINARY_OUTPUT_DIR}")
+# Determine the directory of a library
+function(squirreljme_library_dir result target)
+	# Try to find the output directory
+	get_target_property(dylibDirNoneR ${target}
+		RUNTIME_OUTPUT_DIRECTORY)
+	get_target_property(dylibDirConfR ${target}
+		RUNTIME_OUTPUT_DIRECTORY_$<CONFIG>)
+	get_target_property(dylibDirNone ${target}
+		LIBRARY_OUTPUT_DIRECTORY)
+	get_target_property(dylibDirConf ${target}
+		LIBRARY_OUTPUT_DIRECTORY_$<CONFIG>)
+
+	# Use configuration first
+	if(NOT "${dylibDirConfR}" STREQUAL "dylibDirConfR-NOTFOUND")
+		set(dylibDir "${dylibDirConfR}")
+	elseif(NOT "${dylibDirNoneR}" STREQUAL "dylibDirNoneR-NOTFOUND")
+		set(dylibDir "${dylibDirNoneR}")
+	elseif(NOT "${dylibDirConf}" STREQUAL "dylibDirConf-NOTFOUND")
+		set(dylibDir "${dylibDirConf}")
+	elseif(NOT "${dylibDirNone}" STREQUAL "dylibDirNone-NOTFOUND")
+		set(dylibDir "${dylibDirNone}")
 	else()
-		# If there is a config used, just use the first one
-		if(NOT "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
-			list(GET CMAKE_CONFIGURATION_TYPES 0 firstConfig)
-
-			get_target_property(actualWhere
-				${target} RUNTIME_OUTPUT_DIRECTORY_${firstConfig})
-		endif()
-
-		# If not specified, use whatever was used
-		if(NOT actualWhere)
-			get_target_property(actualWhere
-				${target} RUNTIME_OUTPUT_DIRECTORY)
-		endif()
-
-		# If not set, use the default location that CMake uses
-		if(NOT actualWhere)
-			set(actualWhere "${CMAKE_CURRENT_BINARY_DIR}")
-		endif()
+		set(dylibDir ".")
 	endif()
 
-	# If there is a config used, just use the first one, we need to know
-	# the binary name for the IMPLIB
-	if(NOT "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
-		list(GET CMAKE_CONFIGURATION_TYPES 0 firstConfig)
+	# Build output
+	set(${result} "${dylibDir}" PARENT_SCOPE)
+endfunction()
 
-		get_target_property(squirreljme_dylib_output_name
-			${target} RUNTIME_OUTPUT_NAME_${firstConfig})
+# Determine the path of a library
+function(squirreljme_library_path result target)
+	# Get the library directory
+	squirreljme_library_dir(dylibDir ${target})
+
+	# Try to find the library name
+	get_target_property(dylibNameNoneR ${target}
+		RUNTIME_OUTPUT_NAME)
+	get_target_property(dylibNameConfR ${target}
+		RUNTIME_OUTPUT_NAME_$<CONFIG>)
+	get_target_property(dylibNameNone ${target}
+		LIBRARY_OUTPUT_NAME)
+	get_target_property(dylibNameConf ${target}
+		LIBRARY_OUTPUT_NAME_$<CONFIG>)
+
+	# Use configuration first
+	if(NOT "${dylibNameConfR}" STREQUAL "dylibNameConfR-NOTFOUND")
+		set(dylibName "${dylibNameConfR}")
+	elseif(NOT "${dylibNameNoneR}" STREQUAL "dylibNameNoneR-NOTFOUND")
+		set(dylibName "${dylibNameNoneR}")
+	elseif(NOT "${dylibNameConf}" STREQUAL "dylibNameConf-NOTFOUND")
+		set(dylibName "${dylibNameConf}")
+	elseif(NOT "${dylibNameNone}" STREQUAL "dylibNameNone-NOTFOUND")
+		set(dylibName "${dylibNameNone}")
+	else()
+		set(dylibName "${target}")
 	endif()
 
-	# If no configuration is used, then use the normal output name
-	if(NOT squirreljme_dylib_output_name)
-		get_target_property(squirreljme_dylib_output_name
-			${target} RUNTIME_OUTPUT_NAME)
-	endif()
+	# Build output
+	set(baseName "")
+	string(APPEND baseName
+		"${CMAKE_SHARED_LIBRARY_PREFIX}"
+		"${dylibName}"
+		"${CMAKE_SHARED_LIBRARY_SUFFIX}")
+	set(${result} "${dylibDir}/${baseName}" PARENT_SCOPE)
+endfunction()
 
-	# MSVC requires that the implementation library also be specified otherwise
-	# nothing will be able to properly link against the library
+# Determine the path of the implib
+function(squirreljme_implib_path result target)
+	# Determine the name of the library
+	squirreljme_library_path(implibPath ${target})
+	set(${result} "${implibPath}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+		PARENT_SCOPE)
+endfunction()
+
+# Generate exports, mostly for Windows
+function(squirreljme_shared_library_exports target)
+	# Determine the name that the implib should use
+	squirreljme_implib_path(impLibPath ${target})
+
+	# Import library is used?
 	if(SQUIRRELJME_HAS_IMPLIB)
-		set(impLibPath
-			"${actualWhere}/${squirreljme_dylib_output_name}.lib")
-		target_link_options(${target} PRIVATE
-			"/IMPLIB:${impLibPath}")
+		# MSVC?
+		if(MSVC)
+			target_link_options(${target} PRIVATE
+				"/IMPLIB:${impLibPath}")
+
+		# Mingw32 or Mingw-w64
+		elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+			target_link_options(${target} PRIVATE
+				"-Wl,--out-implib,${impLibPath}")
+		endif()
 	endif()
-endmacro()
+endfunction()
 
 # VC8 and Older
 if(MSVC AND "${MSVC_VERSION}" LESS_EQUAL 1400)
@@ -297,9 +346,6 @@ macro(squirreljme_notfound_strip var)
 		endif()
 	endif()
 endmacro()
-
-# Find headers
-include(CheckIncludeFile)
 
 # float.h available?
 CHECK_INCLUDE_FILE("float.h" SJME_CONFIG_HAS_FLOAT_H)
@@ -432,8 +478,23 @@ squirreljme_try_compile("sjme_threadLocal"
 	"tryThreadLocal"
 	SJME_CONFIG_HAS_NO_THREAD_LOCAL)
 
+# Statically link in libgcc?
+# Plain variant
+check_linker_flag(C "-static-libgcc"
+	SJME_CONFIG_HAS_STATIC_LIBGCC)
+message(STATUS "-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC}")
+# -Wl variant
+check_linker_flag(C "-Wl,-static-libgcc"
+	SJME_CONFIG_HAS_STATIC_LIBGCC_WL)
+message(STATUS "-Wl,-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_WL}")
+# LINKER: variant
+check_linker_flag(C "LINKER:-static-libgcc"
+	SJME_CONFIG_HAS_STATIC_LIBGCC_LINK)
+message(STATUS "LINKER:-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_LINK}")
+
 # Locate the math library, if applicable
-find_library(SQUIRRELJME_LIBM m)
+# There are multiple ways to go about this
+squirreljme_include_nanocoat("find-m.cmake")
 message(STATUS "libm: ${SQUIRRELJME_LIBM}")
 
 # Build required libraries into a list, as you may only call
@@ -458,17 +519,185 @@ endif()
 # For debugging required libraries
 message(STATUS "System Required Libraries: ${SQUIRRELJME_REQUIRED_LIBS}")
 
-# Link against required libraries
-function(squirreljme_target_link_libraries_required target)
-	# Add all of the previous required libs
-	if("${ARGN}" STREQUAL "")
-		target_link_libraries(${target} PUBLIC
-			"${SQUIRRELJME_REQUIRED_LIBS}")
-	else()
-		target_link_libraries(${target} PUBLIC
-			"${SQUIRRELJME_REQUIRED_LIBS}"
-			"${ARGN}")
+# Make a target always FPIC
+function(squirreljme_always_fpic target)
+	if(SQUIRRELJME_ENABLE_FPIC)
+		set_target_properties(${target} PROPERTIES
+			POSITION_INDEPENDENT_CODE ON)
 	endif()
+endfunction()
+
+function(squirreljme_target_link_fixes target)
+	# Make sure FPIC was properly set
+	squirreljme_always_fpic(${target})
+
+	# Static libgcc?
+	if(SJME_CONFIG_HAS_STATIC_LIBGCC)
+		target_link_options(${target} PRIVATE
+			"-static-libgcc")
+	# Static libgcc (-Wl)?
+	elseif(SJME_CONFIG_HAS_STATIC_LIBGCC_WL)
+		target_link_options(${target} PRIVATE
+			"-Wl,-static-libgcc")
+	# Static libgcc (LINKER:)?
+	elseif(SJME_CONFIG_HAS_STATIC_LIBGCC_LINK)
+		target_link_options(${target} PRIVATE
+			"LINKER:-static-libgcc")
+	endif()
+endfunction()
+
+# CMake does not support merging static libraries unfortunately, thus we need
+# to do it ourselves
+define_property(TARGET PROPERTY SQUIRRELJME_TARGET_OBJECTS
+	BRIEF_DOCS "The collective objects for a target."
+	FULL_DOCS "The collective objects for a target.")
+
+# Depend on a library or target, with better debugging and supporting of
+# targets accordingly
+function(squirreljme_link_libraries target scope)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
+	# Get the type that the target is
+	get_target_property(targetType ${target} TYPE)
+
+	# Get list of libraries to link against
+	set(libraries "${ARGV}")
+	list(REMOVE_AT libraries 0)
+	list(REMOVE_AT libraries 0)
+
+	# Build a list of target files
+	set(nonObjects)
+	set(objects)
+
+	# Process each library
+	foreach(lib IN LISTS libraries)
+		# Scope change?
+		if("${lib}" STREQUAL "PRIVATE" OR
+			"${lib}" STREQUAL "PUBLIC" OR
+			"${lib}" STREQUAL "INTERFACE")
+			list(APPEND items "${lib}")
+
+		# Stop parsing entries?
+		elseif("${lib}" STREQUAL "NONE")
+			break()
+
+		# Is this a target?
+		elseif(TARGET "${lib}")
+			# Get properties for the target
+			get_target_property(targetObjs ${lib} SQUIRRELJME_TARGET_OBJECTS)
+			get_target_property(targetType ${lib} TYPE)
+
+			# If there are target objects, inherit everything
+			if(NOT "${targetObjs}" STREQUAL "targetObjs-NOTFOUND")
+				# Grab all objects
+				list(APPEND objects "${targetObjs}")
+
+			# Otherwise normal determination
+			else()
+				# Which type of library is this?
+				get_target_property(type ${lib} TYPE)
+
+				# Depend on this target
+				add_dependencies(${target} ${lib})
+
+				# Object?
+				if("${type}" STREQUAL "OBJECT_LIBRARY")
+					# Add all objects to be linked in
+					list(APPEND objects
+						"$<TARGET_GENEX_EVAL:${lib},$<TARGET_OBJECTS:${lib}>>")
+
+				# Static or shared?
+				elseif("${type}" STREQUAL "STATIC_LIBRARY" OR
+					"${type}" STREQUAL "SHARED_LIBRARY")
+					# Just link against the object
+					list(APPEND nonObjects
+						"$<TARGET_GENEX_EVAL:${lib},$<TARGET_FILE:${lib}>>")
+
+				# Unknown target
+				else()
+					message(FATAL_ERROR "Cannot link target ${library} of "
+						"type ${type} to ${target} (${scope})!")
+				endif()
+			endif()
+
+		# Is this a direct path to a file?
+		elseif(EXISTS "${lib}")
+			# Directly add the file since it is known
+			list(APPEND nonObjects "${lib}")
+
+		# Linking to something else
+		else()
+			# Emit a warning if not in the required list!
+			list(FIND SQUIRRELJME_REQUIRED_LIBS "${lib}" foundLib)
+			if("${foundLib}" LESS "0")
+				message(AUTHOR_WARNING
+					"Indirectly referencing library ${lib}!")
+			endif()
+
+			# Add anyway
+			list(APPEND nonObjects "${lib}")
+		endif()
+	endforeach()
+
+	# Add objects to sources for this, since CMake will not link objects
+	if(NOT "${objects}" STREQUAL "")
+		# Build a collective list of objects, transitively
+		get_target_property(targetObjs ${target} SQUIRRELJME_TARGET_OBJECTS)
+
+		# This is very noisy but the debugging definitely helps
+		message(DEBUG "${target} -> ${targetObjs} (${objects})")
+
+		# Append objects, or initially set?
+		if(NOT "${targetObjs}" STREQUAL "targetObjs-NOTFOUND")
+			list(APPEND targetObjs "${objects}")
+			set_target_properties(${target} PROPERTIES
+				SQUIRRELJME_TARGET_OBJECTS "${targetObjs}")
+		else()
+			set_target_properties(${target} PROPERTIES
+				SQUIRRELJME_TARGET_OBJECTS "${objects}")
+		endif()
+
+		# Add to sources
+		target_sources(${target} ${scope}
+			${objects})
+	endif()
+
+	# Link to any non-objects as CMake cannot link objects
+	target_link_libraries(${target} ${scope}
+		${nonObjects})
+endfunction()
+
+# Link against required libraries
+function(squirreljme_link_libraries_required target scope)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
+	# Grab all libraries
+	set(libraries "${ARGV}")
+	list(REMOVE_AT libraries 0)
+	list(REMOVE_AT libraries 0)
+
+	# No required libraries?
+	if("${SQUIRRELJME_REQUIRED_LIBS}" STREQUAL "")
+		# Add all of the previous required libs
+		if(NOT "${libraries}" STREQUAL "")
+			squirreljme_link_libraries(${target}
+				${scope} ${libraries})
+		endif()
+	else()
+		if(NOT "${libraries}" STREQUAL "")
+			squirreljme_link_libraries(${target}
+				PUBLIC ${SQUIRRELJME_REQUIRED_LIBS}
+				${scope} ${libraries})
+		else()
+			squirreljme_link_libraries(${target}
+				PUBLIC ${SQUIRRELJME_REQUIRED_LIBS})
+		endif()
+	endif()
+
+	# For these to be used, linker fixes need to go in also
+	squirreljme_target_link_fixes(${target})
 endfunction()
 
 # Do not use .lib suffix for Windows libraries for mingw32/mingw-w64
@@ -488,5 +717,11 @@ if("${SQUIRRELJME_ARCH}" STREQUAL "ia32" OR
 			add_compile_definitions("SJME_CONFIG_HAS_ASM_INTEL=1")
 			add_compile_options("-masm=intel")
 		endif()
+	endif()
+endif()
+
+# Disable SEH on Windows
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+	if(SJME_CONFIG_HAS_SEH_DISABLE_GCC)
 	endif()
 endif()

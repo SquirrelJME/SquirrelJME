@@ -58,7 +58,20 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 		"",
 		SJME_JNI_TRUE
 	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_BUCKET_EXTRA,
+		"SQUIRRELJME_BUCKET_EXTRA",
+		"",
+		SJME_JNI_TRUE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_LIBRARIES,
+		"SQUIRRELJME_LIBRARY_PATH",
+		"",
+		SJME_JNI_TRUE
+	},
 
+#if 0
 	/* Multiple class path location lookup. */
 	{
 		SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_1,
@@ -78,6 +91,7 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 		"jre/lib",
 		SJME_JNI_FALSE,
 	},
+#endif
 
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
 	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE)
@@ -129,19 +143,19 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 	{
 		SJME_NVM_DEFAULT_DIRECTORY_STATE,
 		"LOCALAPPDATA",
-		"squirreljme/data",
+		"squirreljme/state",
 		SJME_JNI_FALSE
 	},
 	{
 		SJME_NVM_DEFAULT_DIRECTORY_STATE,
 		"APPDATA",
-		"squirreljme/data",
+		"squirreljme/state",
 		SJME_JNI_FALSE
 	},
 	{
 		SJME_NVM_DEFAULT_DIRECTORY_STATE,
 		"PROGRAMDATA",
-		"squirreljme/data",
+		"squirreljme/state",
 		SJME_JNI_FALSE
 	},
 
@@ -150,6 +164,14 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 		SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
 		"PROGRAMDATA",
 		"squirreljme/natives",
+		SJME_JNI_FALSE
+	},
+
+	/* Temporary files. */
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_TEMPORARY,
+		"TMP",
+		"",
 		SJME_JNI_FALSE
 	},
 #endif
@@ -214,6 +236,20 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 		"/lib/squirreljme/natives",
 		SJME_JNI_FALSE
 	},
+
+	/* Temporary files. */
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_TEMPORARY,
+		"TEMP",
+		"",
+		SJME_JNI_FALSE
+	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_TEMPORARY,
+		NULL,
+		"/tmp",
+		SJME_JNI_FALSE
+	},
 #endif
 
 	/* End. */
@@ -245,10 +281,12 @@ static sjme_errorCode sjme_path_append(
 	/* Shift up lengths. */
 	path->length = newLen;
 	path->names[path->nameCount] = newLen;
-	
+
+#if defined(SJME_CONFIG_DEBUG_VERBOSE_PATH)
 	sjme_message("[%d/%d]: %s <- %.*s",
 		path->length, path->nameCount, path->chars,
 		len, str);
+#endif
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -275,6 +313,262 @@ static sjme_errorCode sjme_path_appendName(
 	
 	/* Continue to append, since it appends to the last name. */
 	return sjme_path_append(path, len, str);
+}
+
+static sjme_errorCode sjme_path_defaultLookup(
+	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
+	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
+	sjme_attrInNegativeOnePositive sjme_jint index)
+{
+	sjme_errorCode error;
+	sjme_jint i, vi;
+	const sjme_path_pathEnv* lookup;
+	sjme_lpcstr lastEnv;
+	sjme_jboolean lastTilde;
+	sjme_path envPath, buildPath;
+
+	if (outPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (type <= SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN ||
+		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (index < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Use a default NAL? */
+	if (nal == NULL)
+		nal = &sjme_nal_default;
+
+	/* Clear temporary paths. */
+	memset(&envPath, 0, sizeof(envPath));
+	memset(&buildPath, 0, sizeof(buildPath));
+
+	/* Go through each default to locate paths accordingly. */
+	lastEnv = NULL;
+	lastTilde = SJME_JNI_FALSE;
+	error = SJME_ERROR_NONE;
+	for (i = 0, vi = 0;; i++)
+	{
+		/* Go through the lookup set. */
+		lookup = &sjme_path_pathEnvLookup[i];
+		if (lookup->type <= 0 ||
+			(lookup->env == NULL && lookup->envRel == NULL))
+			break;
+
+		/* Is this the wrong type? */
+		if (lookup->type != type)
+			continue;
+
+		/* Wanting a specific index? */
+		if (index >= 0)
+			if (index != (vi++))
+				continue;
+
+		/* Lookup uses no defined environment variable. */
+		if (lookup->env == NULL)
+		{
+			/* Clear these, as they are both not valid. */
+			lastEnv = NULL;
+			lastTilde = SJME_JNI_FALSE;
+			memset(&envPath, 0, sizeof(envPath));
+		}
+
+		/* Lookup the environment variable, if it has changed. */
+		else if (lastEnv == NULL || lastTilde != lookup->tildeHome ||
+			0 != strcmp(lastEnv, lookup->env))
+		{
+			/* Get it from the system. */
+			memset(&buildPath, 0, sizeof(buildPath));
+			if (nal->getEnv == NULL ||
+				sjme_error_is(error = nal->getEnv(
+					buildPath.chars, SJME_MAX_PATH - 1, lookup->env)))
+			{
+				/* No env set, so ignore this lookup. */
+				if (error == SJME_ERROR_NO_SUCH_ELEMENT)
+				{
+					/* If looking for a specific index? Stop. */
+					if (index >= 0)
+						break;
+
+					/* Skip looking at this path. */
+					continue;
+				}
+
+				/* Fail. */
+				return sjme_error_default(error);
+			}
+
+			/* Replace with the user home directory? */
+			memset(&envPath, 0, sizeof(envPath));
+			if (buildPath.chars[0] == '~' && (buildPath.chars[1] == '\0' ||
+				buildPath.chars[1] == '/'))
+			{
+				/* Grab the home directory. */
+				if (sjme_error_is(error = sjme_path_userHome(nal, &envPath)))
+					return sjme_error_default(error);
+
+				/* Append the resolved path, if not NUL. */
+				if (buildPath.chars[1] == '/')
+					if (sjme_error_is(error = sjme_path_resolveS(&envPath,
+						&buildPath.chars[2])))
+						return sjme_error_default(error);
+			}
+
+			/* Normal parse. */
+			else
+			{
+				/* Parse the path. */
+				if (sjme_error_is(error = sjme_path_parse(&envPath,
+					buildPath.chars)))
+					return sjme_error_default(error);
+			}
+
+			/* The path must be absolute and normalized. */
+			if (sjme_error_is(error = sjme_path_checkDenormal(&envPath,
+				SJME_JNI_TRUE)))
+				return sjme_error_default(error);
+
+			/* Cached for later. */
+			lastEnv = lookup->env;
+			lastTilde = lookup->tildeHome;
+		}
+
+		/* Need to rebuild the path, so start by clearing it and using */
+		/* the new base path. */
+		memset(&buildPath, 0, sizeof(buildPath));
+		if (lastEnv != NULL)
+			if (sjme_error_is(error = sjme_path_resolveP(
+				&buildPath, &envPath)))
+				return sjme_error_default(error);
+
+		/* Resolve the adjacent path onto this. */
+		if (lookup->envRel != NULL)
+			if (sjme_error_is(error = sjme_path_resolveS(
+				&buildPath, lookup->envRel)))
+				return sjme_error_default(error);
+
+		/* The path must be absolute and normalized. */
+		if (sjme_error_is(error = sjme_path_checkDenormal(&buildPath,
+			SJME_JNI_TRUE)))
+			return sjme_error_default(error);
+
+		/* Success! */
+		if (buildPath.length > 0)
+		{
+			memmove(outPath, &buildPath, sizeof(buildPath));
+			return SJME_ERROR_NONE;
+		}
+	}
+
+	/* The path is not defined at all. */
+	return SJME_ERROR_PATH_NOT_DEFINED;
+}
+
+static sjme_errorCode sjme_path_defaultStatic(
+	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
+	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
+	sjme_attrInNegativeOnePositive sjme_jint index)
+{
+	sjme_errorCode error;
+	sjme_path envPath, buildPath;
+
+	if (outPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (type <= SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN ||
+		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (index < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Use a default NAL? */
+	if (nal == NULL)
+		nal = &sjme_nal_default;
+
+	/* Clear temporary paths. */
+	memset(&envPath, 0, sizeof(envPath));
+	memset(&buildPath, 0, sizeof(buildPath));
+
+	/* Executable directory path? */
+	if (type == SJME_NVM_DEFAULT_DIRECTORY_EXEC)
+	{
+		/* Get from the environment. */
+		if (nal->execPath != NULL &&
+			sjme_error_is(error = nal->execPath(envPath.chars,
+				SJME_MAX_PATH - 1)))
+			return sjme_error_default(error);
+
+		/* Nothing here? */
+		if (envPath.chars[0] == '\0')
+			return SJME_ERROR_PATH_NOT_DEFINED;
+
+		/* Parse path. */
+		if (sjme_error_is(error = sjme_path_parseYN(nal,
+			&buildPath, envPath.chars)))
+			return sjme_error_default(error);
+
+		/* Since this is the executable path, look at the parent directory. */
+		if (sjme_error_is(error = sjme_path_getParent(&buildPath, &buildPath)))
+			return sjme_error_default(error);
+	}
+
+	/* Default library directory. */
+	else if (type == SJME_NVM_DEFAULT_DIRECTORY_LIBRARIES)
+	{
+		/* This starts from the data directory. */
+		if (sjme_error_is(error = sjme_path_defaultLookup(nal, &buildPath,
+			SJME_NVM_DEFAULT_DIRECTORY_DATA, -1)))
+			return sjme_error_default(error);
+
+		/* Then is just the "lib" subdirectory. */
+		if (sjme_error_is(error = sjme_path_resolveS(
+			&buildPath, "lib")))
+			return sjme_error_default(error);
+	}
+
+	/* Non-volatile data bucket. */
+	else if (type == SJME_NVM_DEFAULT_DIRECTORY_BUCKET_DATA)
+	{
+		/* This starts from the state directory. */
+		if (sjme_error_is(error = sjme_path_defaultLookup(nal, &buildPath,
+			SJME_NVM_DEFAULT_DIRECTORY_STATE, -1)))
+			return sjme_error_default(error);
+
+		/* Then is just the "data" subdirectory. */
+		if (sjme_error_is(error = sjme_path_resolveS(
+			&buildPath, "data")))
+			return sjme_error_default(error);
+	}
+
+	/* The temporary directory should always exist, so use a fallback */
+	/* just in case. */
+	else if (type == SJME_NVM_DEFAULT_DIRECTORY_TEMPORARY)
+	{
+		/* We can place temporary files in the cache directory. */
+		if (sjme_error_is(error = sjme_path_defaultLookup(nal, &buildPath,
+			SJME_NVM_DEFAULT_DIRECTORY_CACHE, -1)))
+			return sjme_error_default(error);
+
+		/* Everything should be placed in a directory. */
+		if (sjme_error_is(error = sjme_path_resolveS(
+			&buildPath, "sjme.tmp")))
+			return sjme_error_default(error);
+	}
+
+	/* As long as this is not a blank path, use it. */
+	if (buildPath.length > 0)
+	{
+		memmove(outPath, &buildPath, sizeof(buildPath));
+		return SJME_ERROR_NONE;
+	}
+
+	/* Otherwise, fail. */
+	return SJME_ERROR_PATH_NOT_DEFINED;
 }
 
 sjme_errorCode sjme_path_check(
@@ -465,17 +759,12 @@ sjme_errorCode sjme_path_default(
 	sjme_attrInNegativeOnePositive sjme_jint index)
 {
 	sjme_errorCode error;
-	sjme_jint i, vi;
-	const sjme_path_pathEnv* lookup;
-	sjme_lpcstr lastEnv;
-	sjme_jboolean lastTilde;
-	sjme_path envPath, buildPath;
 	
 	if (outPath == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (type <= SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN ||
-		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE)
+		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	if (index < -1)
@@ -485,161 +774,26 @@ sjme_errorCode sjme_path_default(
 	if (nal == NULL)
 		nal = &sjme_nal_default;
 
-	/* Clear temporary paths. */
-	memset(&envPath, 0, sizeof(envPath));
-	memset(&buildPath, 0, sizeof(buildPath));
-	
-	/* Executable directory path? */
-	if (type == SJME_NVM_DEFAULT_DIRECTORY_EXEC)
+	/* Static paths? */
+	if (type == SJME_NVM_DEFAULT_DIRECTORY_EXEC ||
+		type == SJME_NVM_DEFAULT_DIRECTORY_LIBRARIES ||
+		type == SJME_NVM_DEFAULT_DIRECTORY_BUCKET_DATA)
+		return sjme_path_defaultStatic(nal, outPath, type, -1);
+
+	/* Use default lookup and resolution for paths. */
+	if (sjme_error_is(error = sjme_path_defaultLookup(nal, outPath, type,
+		index)))
 	{
-		/* Get from the environment. */
-		memset(&envPath, 0, sizeof(envPath));
-		if (nal->execPath != NULL &&
-			sjme_error_is(error = nal->execPath(envPath.chars,
-				SJME_MAX_PATH - 1)))
-			return sjme_error_default(error);
-		
-		/* Nothing here? */
-		if (envPath.chars[0] == '\0')
-			return SJME_ERROR_PATH_NOT_DEFINED;
-		
-		/* Parse path. */
-		memset(&buildPath, 0, sizeof(buildPath));
-		if (sjme_error_is(error = sjme_path_parseYN(nal,
-			&buildPath, envPath.chars)))
-			return sjme_error_default(error);
-		
-		/* Since this is the executable path, look at the parent directory. */
-		if (sjme_error_is(error = sjme_path_getParent(&buildPath, &buildPath)))
-			return sjme_error_default(error);
-		
-		/* As long as this is not a blank path, use it. */
-		if (buildPath.length > 0)
-		{
-			memmove(outPath, &buildPath, sizeof(buildPath));
-			return SJME_ERROR_NONE;
-		}
-	}
-	
-	/* Go through each default to locate paths accordingly. */
-	lastEnv = NULL;
-	lastTilde = SJME_JNI_FALSE;
-	error = SJME_ERROR_NONE;
-	for (i = 0, vi = 0;; i++)
-	{
-		/* Go through the lookup set. */
-		lookup = &sjme_path_pathEnvLookup[i];
-		if (lookup->type <= 0 ||
-			(lookup->env == NULL && lookup->envRel == NULL))
-			break;
+		/* Second chance path? */
+		if (type == SJME_NVM_DEFAULT_DIRECTORY_TEMPORARY)
+			return sjme_path_defaultStatic(nal, outPath, type, -1);
 
-		/* Is this the wrong type? */
-		if (lookup->type != type)
-			continue;
-
-		/* Wanting a specific index? */
-		if (index >= 0)
-			if (index != (vi++))
-				continue;
-
-		/* Lookup uses no defined environment variable. */
-		if (lookup->env == NULL)
-		{
-			/* Clear these, as they are both not valid. */
-			lastEnv = NULL;
-			lastTilde = SJME_JNI_FALSE;
-			memset(&envPath, 0, sizeof(envPath));
-		}
-		
-		/* Lookup the environment variable, if it has changed. */
-		else if (lastEnv == NULL || lastTilde != lookup->tildeHome ||
-			0 != strcmp(lastEnv, lookup->env))
-		{
-			/* Get it from the system. */
-			memset(&buildPath, 0, sizeof(buildPath));
-			if (nal->getEnv == NULL ||
-				sjme_error_is(error = nal->getEnv(
-					buildPath.chars, SJME_MAX_PATH - 1, lookup->env)))
-			{
-				/* No env set, so ignore this lookup. */
-				if (error == SJME_ERROR_NO_SUCH_ELEMENT)
-				{
-					/* If looking for a specific index? Stop. */
-					if (index >= 0)
-						break;
-
-					/* Skip looking at this path. */
-					continue;
-				}
-
-				/* Fail. */
-				return sjme_error_default(error);
-			}
-
-			/* Replace with the user home directory? */
-			memset(&envPath, 0, sizeof(envPath));
-			if (buildPath.chars[0] == '~' && (buildPath.chars[1] == '\0' ||
-				buildPath.chars[1] == '/'))
-			{
-				/* Grab the home directory. */
-				if (sjme_error_is(error = sjme_path_userHome(nal, &envPath)))
-					return sjme_error_default(error);
-
-				/* Append the resolved path, if not NUL. */
-				if (buildPath.chars[1] == '/')
-					if (sjme_error_is(error = sjme_path_resolveS(&envPath,
-						&buildPath.chars[2])))
-						return sjme_error_default(error);
-			}
-
-			/* Normal parse. */
-			else
-			{
-				/* Parse the path. */
-				if (sjme_error_is(error = sjme_path_parse(&envPath,
-					buildPath.chars)))
-					return sjme_error_default(error);
-			}
-
-			/* The path must be absolute and normalized. */
-			if (sjme_error_is(error = sjme_path_checkDenormal(&envPath,
-				SJME_JNI_TRUE)))
-				return sjme_error_default(error);
-			
-			/* Cached for later. */
-			lastEnv = lookup->env;
-			lastTilde = lookup->tildeHome;
-		}
-
-		/* Need to rebuild the path, so start by clearing it and using */
-		/* the new base path. */
-		memset(&buildPath, 0, sizeof(buildPath));
-		if (lastEnv != NULL)
-			if (sjme_error_is(error = sjme_path_resolveP(
-				&buildPath, &envPath)))
-				return sjme_error_default(error);
-		
-		/* Resolve the adjacent path onto this. */
-		if (lookup->envRel != NULL)
-			if (sjme_error_is(error = sjme_path_resolveS(
-				&buildPath, lookup->envRel)))
-				return sjme_error_default(error);
-		
-		/* The path must be absolute and normalized. */
-		if (sjme_error_is(error = sjme_path_checkDenormal(&buildPath,
-			SJME_JNI_TRUE)))
-			return sjme_error_default(error);
-		
-		/* Success! */
-		if (buildPath.length > 0)
-		{
-			memmove(outPath, &buildPath, sizeof(buildPath));
-			return SJME_ERROR_NONE;
-		}
+		/* Fail. */
+		return sjme_error_default(error);
 	}
 
-	/* The path is not defined at all. */
-	return SJME_ERROR_PATH_NOT_DEFINED;
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_path_getName(

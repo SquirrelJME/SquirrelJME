@@ -476,6 +476,8 @@ public final class CMakeUtils
 			VersionNumber.parse("3.13")) >= 0)
 			fullArgs.addAll(Arrays.asList(
 				"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+				// We do our own configuration check
+				"-DCMAKE_SUPPRESS_REGENERATION=ON",
 				"-DSQUIRRELJME_GRADLE=YES",
 				String.format("-DSQUIRRELJME_VERSION_BUILD=%s",
 					VMHelpers.buildVersion(__task.getProject())),
@@ -519,7 +521,11 @@ public final class CMakeUtils
 		// Missing directories or no cache at all?
 		if (!Files.isDirectory(cmakeBuild) ||
 			!Files.exists(cmakeBuild.resolve("CMakeCache.txt")))
+		{
+			__task.getLogger().warn(
+				"CMake Configuring: Build Dir and/or CMakeCache missing!");
 			return true;
+		}
 		
 		// Load in the CMake cache to check it
 		try
@@ -533,7 +539,11 @@ public final class CMakeUtils
 			
 			// No configuration directory is known??
 			if (rawConfigDir == null)
+			{
+				__task.getLogger().warn(
+					"CMake Configuring: No CMAKE_CACHEFILE_DIR (Baseline)");
 				return true;
+			}
 			
 			// Did the directory of the cache change? This can happen
 			// under CI/CD where the build directory is different and
@@ -541,15 +551,24 @@ public final class CMakeUtils
 			Path configDir = Paths.get(rawConfigDir).toAbsolutePath();
 			if (!Files.isSameFile(configDir, cmakeBuild) ||
 				!cmakeBuild.equals(configDir))
+			{
+				__task.getLogger().warn(String.format(
+					"CMake Configuring: '%s' is not '%s' (Baseline)",
+					configDir, cmakeBuild));
 				return true;
+			}
 		}
-		catch (IOException __ignored)
+		catch (IOException __e)
 		{
 			// If this happens, just assume it needs to be done
+			__task.getLogger().warn(
+				"CMake Configuring: IOException (Baseline)", __e);
 			return true;
 		}
 		
 		// Not needed
+		__task.getLogger().warn(
+			"CMake Configuring: UP-TO-DATE (Baseline)!");
 		return false;
 	}
 	

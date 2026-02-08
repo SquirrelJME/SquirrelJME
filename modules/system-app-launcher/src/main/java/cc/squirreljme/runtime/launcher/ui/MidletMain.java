@@ -207,7 +207,7 @@ public class MidletMain
 				this._autoLaunch = null;
 				
 				// Launch it
-				Debugging.debugNote("Auto-launching " + autoLaunch + "...");
+				Debugging.debugNote("Auto-launching %s...", autoLaunch);
 				this.__launch(autoLaunch);
 			}
 		}

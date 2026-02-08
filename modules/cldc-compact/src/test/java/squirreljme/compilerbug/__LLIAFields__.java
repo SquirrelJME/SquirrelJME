@@ -23,7 +23,7 @@ abstract class __LLIAFields__
 {
 	int _vdx;
 	int _atmod;
-    FakeLinkedList list;
+	FakeLinkedList list;
 	__Link__ _next;
 	__Link__ _last;
 }

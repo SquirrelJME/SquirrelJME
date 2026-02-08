@@ -57,10 +57,20 @@ endif()
 # Make sure the resultant utility directory exists
 file(MAKE_DIRECTORY "${SQUIRRELJME_UTIL_DIR}")
 
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "macosx")
+	set(SQUIRRELJME_CCMAKE "ccmake")
+else()
+	set(SQUIRRELJME_CCMAKE "cmake")
+endif()
+
 # Try to find the host CMake as a first choice
-find_program(SJME_FIRST_CMAKE "cmake" NO_DEFAULT_PATH)
+find_program(SJME_FIRST_CMAKE "${SQUIRRELJME_CCMAKE}" "cmake"
+	NO_DEFAULT_PATH
+	HINTS "/Applications/CMake.app/Contents/bin/")
+
 if(NOT SJME_FIRST_CMAKE)
-	find_program(SJME_FIRST_CMAKE "cmake")
+	find_program(SJME_FIRST_CMAKE "${SQUIRRELJME_CCMAKE}" "cmake"
+		HINTS "/Applications/CMake.app/Contents/bin/")
 
 	if(NOT SJME_FIRST_CMAKE)
 		set(SJME_FIRST_CMAKE "${CMAKE_COMMAND}")

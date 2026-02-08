@@ -36,20 +36,6 @@ endif()
 option(SQUIRRELJME_HAS_JAVA "Java Build Capability"
 	${SQUIRRELJME_HAS_JAVA_DEFAULT})
 
-# Used for CI/CD integration
-define_property(TARGET PROPERTY SQUIRRELJME_GRADLE_BUILD
-	BRIEF_DOCS "Is this a Gradle build?"
-	FULL_DOCS "Is this a Gradle build?")
-define_property(TARGET PROPERTY SQUIRRELJME_OUTPUT_PATH
-	BRIEF_DOCS "The resultant output path, used for later upload."
-	FULL_DOCS "The resultant output path, used for later upload.")
-define_property(TARGET PROPERTY SQUIRRELJME_OUTPUT_TYPE
-	BRIEF_DOCS "The resultant output type, used for later upload."
-	FULL_DOCS "The resultant output type, used for later upload.")
-define_property(TARGET PROPERTY SQUIRRELJME_TEST_RESULTS_DIR
-	BRIEF_DOCS "Directory where test results are stored."
-	FULL_DOCS "Directory where test results are stored.")
-
 # Only possible when Java is available
 if(SQUIRRELJME_HAS_JAVA)
 	# Which Gradle is to be used?

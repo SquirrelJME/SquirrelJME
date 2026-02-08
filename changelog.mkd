@@ -1,15 +1,18 @@
 # Changelog
 
-## 0.4.0 (September 29, 2023)
+## 0.4.0 (2026 TBD)
 
 This release is dedicated to Emily, the developer of Mu, she was a close and
 dear friend of mine. Rest in piece, you will not be forgotten.
+
+This release is dedicated to Near, the developer of Ares, they were a close
+and dear friend of mine. Rest in piece, you will not be forgotten.
 
 This release existed through both the previous release plan and the now
 current goal oriented releases.
 
 SquirrelJME is also available on RetroArch since the implementation of
-RatufaCoat which is written in C and is capable of using the SquirrelJME
+NanoCoat which is written in C and is capable of using the SquirrelJME
 Runtime.
 
 _Note that this is a work in progress and not everything will run, due to_
@@ -17,186 +20,7 @@ _the implementation being incomplete. However, it does work and is proven to_
 _work, which means progress can continue as such. Later releases of_
 _SquirrelJME will always be an improvement over the older versions._
 
-More detailed changes:
-
- * Modernized the build system to Gradle!
-   * This will make it much easier to develop and allow for contributions!
- * Modules
-   * `bluetooth`
-     * Stubbed.
-   * `cldc-compact`
-     * Added a rehash indicator for the internal `__BucketMap__` so that
-       `java.util.Hashtable` knows when a reorder was performed.
-     * Added `java.util.Vector`, it was missing.
-     * Added support for ISO-8859-15, this is the newer encoding with the
-       Euro symbol.
-     * Added support for `os.arch`, `os.name`, and `os.version`.
-     * Corrected bug in `__CanSetPrintStream__` where if it were set to itself
-       then it could lead to infinite recursion, instead if this kind of
-       stream is attempted to be set it will use the target.
-     * Corrected `Integer.toString()` and `Long.toString()` to correctly
-       handle `MIN_VALUE`s. They are no longer printed as a bunch of
-       parenthesis and minus signs due to character overflow.
-     * Corrected `java.lang.Object.clone()` to return the new copy of the array
-       when cloning and not the original.
-     * Corrected `java.util.Objects.equals()` not correctly checking equality
-       on two objects.
-     * Fallback encoding is now UTF-8 and not ISO-8859-1.
-     * If the name of the requested resource is blank, ignore it.
-     * If a resource was not found, do a traditional search of the classpath
-       for the given resource. This technically is not valid, however some
-       games use the wrong class when looking up resources. Note that the
-       current suite will always be searched first to maintain the correct
-       behavior.
-     * Implemented `java.lang`, `java.io`, and `java.util` classes.
-     * Made the stack trace printed by `Throwable` much cleaner so that it
-       takes up less screen space and is formatted a bit better.
-     * Removed `GuestDepth`, it is no longer a concept.
-     * Return values for `line.separator`, `microedition.encoding`,
-       `microedition.configuration`, and `microedition.locale`.
-   * `collections`
-     * Various fixes, implementation, and cleaning up.
-   * `debug-jdwp`
-     * Implemented JDWP protocol, this is used for debugging.
-   * `demo-hello`
-     * Made the system properties array `final`.
-   * `dio`
-     * Stubs.
-   * `dio-adc`
-     * Stubs.
-   * `dio-atcmd`
-     * Stubs.
-   * `dio-counter`
-     * Stubs.
-   * `dio-dac`
-     * Stubs.
-   * `dio-generic`
-     * Stubs.
-   * `dio-gpio`
-     * Stubs.
-   * `dio-i2cbus`
-     * Stubs.
-   * `dio-mmio`
-     * Stubs.
-   * `dio-modem`
-     * Stubs.
-   * `dio-pwm`
-     * Stubs.
-   * `dio-spibus`
-     * Stubs.
-   * `dio-uart`
-     * Stubs.
-   * `dio-watchdog`
-     * Stubs.
-   * `io`
-     * Fixed bug in `ByteDeque` if an attempt was made to read from an
-       empty deque.
-   * `jblend-api`
-       * Added API Stubs.
-   * `launcher`
-     * Added the system property `cc.squirreljme.autolaunch` to automatically
-       launch a program once the program list is read.
-     * When a program is launched, instead of saying just "Loading..." instead
-       allow show the program which is being loaded in the title.
-   * `media-api`
-     * Add null media support for: players, and volume control.
-   * `meep-midlet`
-     * Handle Konami's Mobile US games using a special system request.
-     * Implement `MIDlet.checkPermission()`.
-   * `meep-rms`
-     * Added basic support for record stores.
-   * `meep-swm`
-     * Added proprietary `ExtendedTaskManager` interface which can be used
-       to specify arguments, system properties, and console output alternatives
-       to launched tasks.
-     * Workaround for broken JAR manifests which violate the specification.
-   * `midp-lcdui`
-     * Added a 12 strike font.
-     * Added capability flag for pointer events.
-     * Added support for getting the number of display colors which depends on
-       the pixel format of the display.
-     * Added support to get the number of alpha levels.
-     * Adjusted the style of the lowercase A character in the sans-serif font.
-     * Changed 16 strike font to be the large size font and made the 12 strike
-       font the medium size font.
-     * Corrected mapping of characters since SQFs are ISO-8859-1 and most games
-       may be ISO-8859-1, since some characters may be missing in the font
-       use similar graphics for them.
-     * Fully added `cc.squirreljme.runtime.lcdui.gfx.SerializedGraphics`, This
-       allows all of the graphics drawing functions to be forwarded when
-       graphics acceleration is used, previously only a subset of methods were
-       implemented.
-     * Fixed crash in text drawing when an empty string is drawn.
-     * Fully drawn default fonts.
-     * Implemented `com.nokia.mid.ui.FullCanvas`.
-     * Made all the graphics operations not throw a `TODO`, instead they will
-       just draw a placeholder graphic.
-     * Moved the graphics drawing operations to another class.
-     * Removed the 24 strike font, it was too large.
-     * Support double buffered `GameCanvas`.
-     * Update the `Display` when a command is added or removed.
-     * Use a default title for a `Displayable` if one has not been set, this
-       will be in the order of the suite name, the main class, and if those
-       are not valid then "SquirrelJME" will be used instead.
-     * When a `Displayable` is made current and it is already the current
-       displayed item, always set the title since it may have been placed in
-       the background by another application calling `setCurrent()`.
-   * `tac`
-     * Override standard output and forward to standard error while a test is
-       running, so things are not kludged.
-   * `tac-runner`
-     * Deleted as it is no longer needed.
-   * `tool-classfile`
-     * Corrected comparison behavior of `FieldReference`, it did not check the
-       class name, so if a class referred to a field of the same name when
-       using SummerCoat it will result in the wrong class field being read
-       from whatever class just happened to be set first.
-     * Corrected parsing of the stack map table.
-     * Removed `net.multiphasicapps.classfile.ExecutableCode`, it was not used.
-   * `tool-profiler`
-     * When writing the NPS snapshot, set a limit on how deep the stack can
-       traverse in the event an infinite recursive method was profiled.
-   * `vodafone-api`
-     * Added API Stubs.
-   * `zip`
-     * Added `read(byte[])` which forwards to the more optimal function
-       rather than the super-class which only performs single byte reads.
-     * When reading entries where the size is fully known, if the uncompressed
-       data size is fulfilled but there is still remaining compressed data
-       (in the case where a zero byte file is compressed to two bytes),
-       continue to read the compressed data to drain it out.
- * Compiler Backend
-   * Added a bunch of string representations for class structures.
-   * Created a stack-cached register based compiler for Java byte code.
-   * Implemented a new tree based unit system for packages and classes.
-   * `MergedPathSet` can be initialized by iterables now.
- * Virtual Machines
-   * General
-     * Adjusted the Shaded JAR directory layout and added a dash in the path
-       so that classes technically become invalid.
-     * Allow properties to be obtained from internally passed system
-       properties.
-     * Added string representation for the stack map table.
-     * Add ability to start tasks with command line arguments, system
-       properties, and alternative console redirection (to capture output).
-     * Correct cases where `NullPointerException` is thrown when a `Display`
-       was initialized but was not yet claimed by any program.
-     * If a JAR is not valid, the launcher will no longer fail to start since
-       the invalid JAR is just ignored.
-   * SpringCoat
-     * Add limit to stack frame depth.
-     * Add support for system properties being based to virtual machine
-       instances.
-     * Allow inheritance of static methods in classes.
-     * Profiler thread lists are easier to read because the main suite is
-       listed instead of the VM identifier.
-     * Refactored greatly to be much leaner and simplified.
-   * RatufaCoat
-     * New Virtual Machine.
-     * Fast and slim, written in C.
- * Cleanup
-   * Removed the `test.sh` script, it was empty.
-   * Removed unused scripts due to the Gradle refactor.
+This is currently in development, please see [route.mkd](route.mkd)!
 
 ## 0.2.0 (December 25, 2018)
 

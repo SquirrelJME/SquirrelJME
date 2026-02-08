@@ -185,38 +185,166 @@ typedef enum sjme_nvm_mle_vmType
 typedef enum sjme_nvm_defaultDirectoryType
 {
 	/** Unknown. */
-	SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN,
+	SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN = 0,
 	
 	/** The cache directory. */
-	SJME_NVM_DEFAULT_DIRECTORY_CACHE,
+	SJME_NVM_DEFAULT_DIRECTORY_CACHE = 1,
 	
 	/** The config directory. */
-	SJME_NVM_DEFAULT_DIRECTORY_CONFIG,
+	SJME_NVM_DEFAULT_DIRECTORY_CONFIG = 2,
 	
 	/** The data directory. */
-	SJME_NVM_DEFAULT_DIRECTORY_DATA,
+	SJME_NVM_DEFAULT_DIRECTORY_DATA = 3,
 	
 	/** The state directory. */
-	SJME_NVM_DEFAULT_DIRECTORY_STATE,
+	SJME_NVM_DEFAULT_DIRECTORY_STATE = 4,
 	
 	/** The native library directory. */
-	SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
-	
-	/** First classpath lookup. */
-	SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_1,
-	
-	/** Second classpath lookup. */
-	SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_2,
-	
-	/** Third classpath lookup. */
-	SJME_NVM_DEFAULT_DIRECTORY_CLASSPATH_3,
+	SJME_NVM_DEFAULT_DIRECTORY_NATIVES = 5,
 	
 	/** Executable directory. */
-	SJME_NVM_DEFAULT_DIRECTORY_EXEC,
+	SJME_NVM_DEFAULT_DIRECTORY_EXEC = 6,
+
+	/** Temporary directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_TEMPORARY = 7,
+
+	/** The libraries directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_LIBRARIES = 8,
+
+	/** The non-volatile storage directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_BUCKET_DATA = 9,
+
+	/** The extra bucket directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_BUCKET_EXTRA = 10,
 	
 	/** The number of default directory types. */
-	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE
+	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES = 11,
 } sjme_nvm_defaultDirectoryType;
+
+/**
+ * Virtual machine description identifier.
+ *
+ * @since 2026/01/1
+ */
+typedef enum sjme_nvm_vmDescriptionType
+{
+	/** Unspecified. */
+	SJME_NVM_VM_DESC_UNSPECIFIED = 0,
+	
+	/** The VM version. */
+	SJME_NVM_VM_DESC_VM_VERSION = 1,
+	
+	/** The VM name. */
+	SJME_NVM_VM_DESC_VM_NAME = 2,
+	
+	/** The VM Vendor. */
+	SJME_NVM_VM_DESC_VM_VENDOR = 3,
+	
+	/** The VM E-mail. */
+	SJME_NVM_VM_DESC_VM_EMAIL = 4,
+	
+	/** The VM URL. */
+	SJME_NVM_VM_DESC_VM_URL = 5,
+	
+	/** The executable path of the VM. */
+	SJME_NVM_VM_DESC_EXECUTABLE_PATH = 6,
+	
+	/** The operating system name. */
+	SJME_NVM_VM_DESC_OS_NAME = 7,
+	
+	/** The operating system version. */
+	SJME_NVM_VM_DESC_OS_VERSION = 8,
+	
+	/** The operating system architecture. */
+	SJME_NVM_VM_DESC_OS_ARCH = 9,
+	
+	/**
+	 * The current virtual machine security policy, this is used by
+	 * @code AccessController @endcode.
+	 */
+	SJME_NVM_VM_DESC_VM_SECURITY_POLICY = 10,
+	
+	/** Single lines of legal text and copyrights used for ports. */
+	SJME_NVM_VM_DESC_THIRD_PARTY_LEGAL_LINE = 11,
+	
+	/** Full document of legal text, with entire licenses. */
+	SJME_NVM_VM_DESC_THIRD_PARTY_LEGAL_DOCUMENT = 12,
+	
+	/** The path separator used. */
+	SJME_NVM_VM_DESC_PATH_SEPARATOR = 13,
+	
+	/** The virtual machine info. */
+	SJME_NVM_VM_DESC_VM_INFO = 14,
+	
+	/** Unknown. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_UNKNOWN = 15,
+	
+	/** The cache directory. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_CACHE = 16,
+	
+	/** The config directory. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_CONFIG = 17,
+	
+	/** The data directory. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_DATA = 18,
+	
+	/** The state directory. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_STATE = 19,
+	
+	/** The native library directory. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_NATIVES = 20,
+	
+	/** Executable directory. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_EXEC = 21,
+	
+	/** Temporary directory. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_TEMPORARY = 22,
+	
+	/** The libraries directory. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_LIBRARIES = 23,
+	
+	/** The non-volatile storage directory. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_BUCKET_DATA = 24,
+	
+	/** The extra bucket directory. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_BUCKET_EXTRA = 25,
+	
+	/** The number of default directory types. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_NUM_TYPES = 26,
+	
+	/** Default directory reserved: 12. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_12 = 27,
+	
+	/** Default directory reserved: 13. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_13 = 28,
+	
+	/** Default directory reserved: 14. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_14 = 29,
+	
+	/** Default directory reserved: 15. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_15 = 30,
+	
+	/** Default directory reserved: 16. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_16 = 31,
+	
+	/** Default directory reserved: 17. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_17 = 32,
+	
+	/** Default directory reserved: 18. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_18 = 33,
+	
+	/** Default directory reserved: 19. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_19 = 34,
+	
+	/** Default directory reserved: 20. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_20 = 35,
+	
+	/** The number of reserved directories. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_NUM_RESERVED = 36,
+	
+	/** The current number of properties. */
+	SJME_NVM_VM_DESC_NUM_TYPES = 37,
+} sjme_nvm_vmDescriptionType;
 
 /*--------------------------------------------------------------------------*/
 

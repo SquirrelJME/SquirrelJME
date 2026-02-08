@@ -98,8 +98,118 @@ public interface VMDescriptionType
 	byte VM_INFO =
 		14;
 	
+	/** Unknown. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_UNKNOWN =
+		15;
+	
+	/** The cache directory. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_CACHE = 
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 1;
+	
+	/** The config directory. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_CONFIG =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 2;
+	
+	/** The data directory. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_DATA =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 3;
+	
+	/** The state directory. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_STATE =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 4;
+	
+	/** The native library directory. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_NATIVES =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 5;
+	
+	/** Executable directory. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_EXEC =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 6;
+	
+	/** Temporary directory. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_TEMPORARY =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 7;
+	
+	/** The libraries directory. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_LIBRARIES =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 8;
+	
+	/** The non-volatile storage directory. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_BUCKET_DATA =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 9;
+	
+	/** The extra bucket directory. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_BUCKET_EXTRA =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 10;
+	
+	/** The number of default directory types. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_NUM_TYPES =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 11;
+	
+	/** Default directory reserved: 12. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_RESERVED_12 =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 12;
+	
+	/** Default directory reserved: 13. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_RESERVED_13 =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 13;
+	
+	/** Default directory reserved: 14. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_RESERVED_14 =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 14;
+	
+	/** Default directory reserved: 15. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_RESERVED_15 =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 15;
+	
+	/** Default directory reserved: 16. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_RESERVED_16 =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 16;
+	
+	/** Default directory reserved: 17. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_RESERVED_17 =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 17;
+	
+	/** Default directory reserved: 18. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_RESERVED_18 =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 18;
+	
+	/** Default directory reserved: 19. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_RESERVED_19 =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 19;
+	
+	/** Default directory reserved: 20. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_RESERVED_20 =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 20;
+	
+	/** The number of reserved directories. */
+	@SquirrelJMEVendorApi
+	byte DEFAULT_DIR_NUM_RESERVED =
+		36;
+	
 	/** The current number of properties. */
 	@SquirrelJMEVendorApi
 	byte NUM_TYPES =
-		15;
+		37;
 }

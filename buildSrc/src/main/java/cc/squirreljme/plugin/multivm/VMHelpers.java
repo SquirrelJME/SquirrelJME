@@ -667,56 +667,29 @@ public final class VMHelpers
 		if (!Files.isDirectory(__path))
 			return;
 		
-		// Collect files to delete
-		Set<Path> deleteFiles = new LinkedHashSet<>();
-		Set<Path> deleteDirs = new LinkedHashSet<>();
-		
-		// Perform the walk to collect files
-		try (Stream<Path> walk = Files.walk(__path))
-		{
-			walk.forEach((__it) -> {
-				Path normal = __it.toAbsolutePath().normalize();
-				
-				if (Files.isDirectory(normal))
-					deleteDirs.add(normal);
-				else
-					deleteFiles.add(normal);
-			});
-		}
-		catch (IOException __e)
-		{
-			__e.printStackTrace();
-		}
-		
 		// Run through and delete files then directories
-		for (Set<Path> rawByes : Arrays.asList(deleteFiles, deleteDirs))
+		for (Path bye : VMHelpers.walkDirTree(base, true))
 		{
-			List<Path> byes = new ArrayList<>(rawByes);
-			Collections.reverse(byes);
+			// Note
+			__task.getLogger().lifecycle(
+				String.format("Cleaning %s...", bye));
 			
-			for (Path bye : byes)
+			// Skip out of tree files
+			if (!bye.startsWith(base))
 			{
-				// Note
 				__task.getLogger().lifecycle(
-					String.format("Cleaning %s...", bye));
-				
-				// Skip out of tree files
-				if (!bye.startsWith(base))
-				{
-					__task.getLogger().lifecycle(
-						String.format("%s is out of tree, skipping...", bye));
-					continue;
-				}
-				
-				// Perform deletion
-				try
-				{
-					Files.deleteIfExists(bye);
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
+					String.format("%s is out of tree, skipping...", bye));
+				continue;
+			}
+			
+			// Perform deletion
+			try
+			{
+				Files.deleteIfExists(bye);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
 			}
 		}
 	}
@@ -741,12 +714,46 @@ public final class VMHelpers
 		Project emuBase = __anyProject.getRootProject()
 			.findProject(":emulators:emulator-base");
 		
-		// Get the CMake Task for this
-		CMakeBuildTask cmake = (CMakeBuildTask)emuBase.getTasks()
-			.getByName("libNativeEmulatorBase");
+		// Use the emulator base library
+		return emuBase.getBuildDir().toPath().resolve("bin")
+			.resolve(System.mapLibraryName("emulator-base"))
+			.toAbsolutePath().normalize();
+	}
+	
+	/**
+	 * Parses a full extra path.
+	 *
+	 * @param __exLib Extra library path.
+	 * @return The extra path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/01/02
+	 */
+	public static List<Path> fullExtra(String __exLib)
+		throws NullPointerException
+	{
+		if (__exLib == null)
+			throw new NullPointerException("NARG");
 		
-		// Use the resultant library
-		return cmake.cmakeOutFile;
+		List<Path> rv = new ArrayList<>();
+		for (Path p : VMHelpers.classpathDecode(__exLib))
+		{
+			// Add contents of a given directory
+			if (Files.isDirectory(p))
+				try (Stream<Path> s = Files.list(p))
+				{
+					rv.addAll(Arrays.asList(s.toArray(Path[]::new)));
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			
+			// Add single path
+			else
+				rv.add(p);
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -1194,7 +1201,8 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		byte[] buf = new byte[65536];
-		try (ByteArrayOutputStream out = new ByteArrayOutputStream(8192))
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream(
+			Math.max(__in.available(), 65536)))
 		{
 			for (;;)
 			{
@@ -1818,6 +1826,71 @@ public final class VMHelpers
 		return new UnassistedLaunchEntry(
 			VMHelpers.mainClass(__cfg, __midlet),
 			args);
+	}
+	
+	/**
+	 * Walks the given directory tree.
+	 *
+	 * @param __path The path to walk.
+	 * @param __filesFirst Should files be first?
+	 * @return The listed files.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/01/17
+	 */
+	public static Iterable<Path> walkDirTree(Path __path, boolean __filesFirst)
+		throws NullPointerException
+	{
+		if (__path == null)
+			throw new NullPointerException("NARG");
+		
+		// Ignore if not a directory
+		Path base = __path.toAbsolutePath().normalize();
+		if (!Files.isDirectory(__path))
+			return Arrays.asList();
+		
+		// Collect files to add
+		Set<Path> walkFiles = new LinkedHashSet<>();
+		Set<Path> walkDirs = new LinkedHashSet<>();
+		
+		// Perform the walk to collect files
+		try (Stream<Path> walk = Files.walk(base))
+		{
+			walk.forEach((__it) -> {
+				Path normal = __it.toAbsolutePath().normalize();
+				
+				if (Files.isDirectory(normal))
+					walkDirs.add(normal);
+				else
+					walkFiles.add(normal);
+			});
+		}
+		catch (IOException __e)
+		{
+			__e.printStackTrace();
+		}
+		
+		// Remap to reversed lists, so deeper files appear first
+		List<Path> revFiles = new ArrayList<>(walkFiles);
+		Collections.reverse(revFiles);
+		List<Path> revDirs = new ArrayList<>(walkDirs);
+		Collections.reverse(revDirs);
+		
+		// Are files or directories first?
+		List<Path> rv = new ArrayList<>(revFiles.size() +
+			revDirs.size());
+		if (__filesFirst)
+		{
+			rv.addAll(revFiles);
+			rv.addAll(revDirs);
+		}
+		else
+		{
+			rv.addAll(revDirs);
+			rv.addAll(revFiles);
+		}
+		
+		// Return the list
+		return Collections.unmodifiableList(rv);
 	}
 	
 	/**

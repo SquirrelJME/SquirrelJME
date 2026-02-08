@@ -124,8 +124,8 @@ public final class InMemoryClassLibrary
 		// Target map
 		Map<String, byte[]> rv = new HashMap<>();
 		
-		// Temporary buffer to reading class data
-		byte[] buf = new byte[4096];
+		// Temporary buffer
+		byte[] buf = null;
 		
 		// Process all entries
 		ZipStreamEntry zse;
@@ -136,8 +136,12 @@ public final class InMemoryClassLibrary
 			if (zse == null)
 				break;
 			
+			// Temporary buffer to reading class data
+			if (buf == null)
+				buf = new byte[StreamUtils.bufferSize(zse)];
+			
 			// Copy data over
-			rv.put(zse.name(), StreamUtils.readAll(zse));
+			rv.put(zse.name(), StreamUtils.readAll(buf, zse));
 			
 			// Close
 			zse.close();

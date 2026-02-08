@@ -96,17 +96,16 @@ sjme_errorCode sjme_nal_default_nanoTime(
 	memset(&freq, 0, sizeof(freq));
 	if (!QueryPerformanceFrequency(&freq))
 		return SJME_ERROR_NATIVE_SYSTEM_CLOCK_FAILURE;
-	
+
 	/* Get actual counter. */
 	memset(&ticks, 0, sizeof(ticks));
 	if (!QueryPerformanceCounter(&ticks))
 		return SJME_ERROR_NATIVE_SYSTEM_CLOCK_FAILURE;
-	
+
 	/* Calculate time. */
 	/* Freq: A pointer to a variable that receives the current */
 	/* performance-counter frequency, in counts per second. */
-	result->full = (ticks.QuadPart / (freq.QuadPart * UINT64_C(1000000000)) /
-		UINT64_C(1000000000));
+	result->full = (ticks.QuadPart * SJME_NANOS_MS(1000)) / freq.QuadPart;
 	return SJME_ERROR_NONE;
 }
 

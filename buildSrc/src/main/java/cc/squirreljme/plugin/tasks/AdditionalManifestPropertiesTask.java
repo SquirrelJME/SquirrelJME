@@ -92,6 +92,10 @@ public class AdditionalManifestPropertiesTask
 			this.getProject().provider(() -> Boolean.toString(
 				SquirrelJMEPluginConfiguration.configuration(project)
 					.ignoreInLauncher)));
+		this.getInputs().property("squirreljme.ignoreJavaMainInLauncher",
+			this.getProject().provider(() -> Boolean.toString(
+				SquirrelJMEPluginConfiguration.configuration(project)
+					.ignoreJavaMainInLauncher)));
 		this.getInputs().property("squirreljme.swmName",
 			this.getProject().provider(() -> Objects.toString(
 				SquirrelJMEPluginConfiguration.configuration(project)

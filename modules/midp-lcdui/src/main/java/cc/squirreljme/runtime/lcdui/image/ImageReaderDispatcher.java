@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import net.multiphasicapps.io.DataEndianess;
@@ -83,37 +84,29 @@ public class ImageReaderDispatcher<S>
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		// Mark header
-		__is.mark(4);
-		
-		// Read in the header magic number
-		int first = (__is.read() & 0xFF);
-		int magic = (first << 24) |
-			((__is.read() & 0xFF) << 16) |
-			((__is.read() & 0xFF) << 8) |
-			(__is.read() & 0xFF);
-		
-		// Reset for future read
-		__is.reset();
+		// Common magic number detection
+		String type = ContentTypeUtil.guess(__is);
+		if (Debugging.VERBOSE)
+			Debugging.debugNote("Detected: %s", type);
 		
 		// GIF? (GIF8)
-		if (magic == 0x47494638)
+		if ("image/gif".equals(type))
 			return NativeImageLoadType.LOAD_GIF;
 		
 		// PNG?
-		else if (magic == 0x89504E47)
+		else if ("image/png".equals(type))
 			return NativeImageLoadType.LOAD_PNG;
 		
 		// JPEG?
-		else if ((magic & 0xFFFFFF00) == 0xFFD8FF00)
+		else if ("image/jpeg".equals(type))
 			return NativeImageLoadType.LOAD_JPEG;
 		
 		// SVG?
-		else if (first == '<')
+		else if ("image/svg+xml".equals(type))
 			return NativeImageLoadType.LOAD_SVG;
 		
 		// XPM?
-		else if (first == '/')
+		else if ("image/x-xpixmap".equals(type))
 			return NativeImageLoadType.LOAD_XPM;
 		
 		// Unknown

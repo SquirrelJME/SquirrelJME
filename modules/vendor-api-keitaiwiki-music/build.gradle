@@ -9,6 +9,7 @@ squirreljme
 	swmType = JavaMEMidletType.API
 	swmName = "Keitai Wiki Community Music Implementation"
 	swmVendor = "Keitai Wiki Community"
+	alwaysOptimize = true
 }
 
 dependencies

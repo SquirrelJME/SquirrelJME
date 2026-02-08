@@ -14,6 +14,7 @@ import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
 import cc.squirreljme.jdwp.host.trips.JDWPTripVmState;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
+import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
@@ -210,7 +211,7 @@ public enum MLEDebug
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			if (true)
+			if (__thread.verboseCheck(VerboseDebugFlag.IMPLICIT_EXCEPTION))
 			{
 				System.err.println("*******************************");
 				__thread.thread.printStackTrace(System.err);

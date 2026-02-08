@@ -89,9 +89,6 @@ public abstract class AbstractImageDemo
 		cv.addCommand(Exit.command);
 		cv.setCommandListener(new Exit());
 		
-		// We do not draw every pixel
-		cv.setPaintMode(false);
-		
 		// Set display to the canvas
 		Display.getDisplay(this).setCurrent(cv);
 	}
@@ -121,9 +118,6 @@ public abstract class AbstractImageDemo
 				throw new NullPointerException("NARG");
 			
 			this.image = __i;
-			
-			// We do not draw over every pixel
-			this.setPaintMode(false);
 		}
 		
 		/**

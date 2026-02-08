@@ -8,7 +8,6 @@
 
 package cc.squirreljme.runtime.media.midi;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 
 /**
@@ -19,6 +18,9 @@ import java.io.ByteArrayInputStream;
  */
 public final class MTrkParser
 {
+	/** The timing that is shared for all MIDI tracks. */
+	final MidiTimeDiv _timeDiv;
+	
 	/** The MIDI buffer data. */
 	private final byte[] _buffer;
 	
@@ -28,8 +30,8 @@ public final class MTrkParser
 	/** The length of the buffer. */
 	private final int _length;
 	
-	/** The tick division duration of the track. */
-	private int _tickDivDuration =
+	/** The calculated duration of this track. */
+	private volatile long _duration =
 		-1;
 	
 	/**
@@ -38,15 +40,16 @@ public final class MTrkParser
 	 * @param __b The buffer to read data from.
 	 * @param __o The offset into the buffer.
 	 * @param __l The length of the buffer.
+	 * @param __timeDiv The time division.
 	 * @throws IndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
-	public MTrkParser(byte[] __b, int __o, int __l)
+	public MTrkParser(byte[] __b, int __o, int __l, MidiTimeDiv __timeDiv)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		if (__b == null)
+		if (__b == null || __timeDiv == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
@@ -54,6 +57,42 @@ public final class MTrkParser
 		this._buffer = __b;
 		this._offset = __o;
 		this._length = __l;
+		this._timeDiv = __timeDiv;
+	}
+	
+	/**
+	 * Calculate the duration of the MIDI track.
+	 *
+	 * @return The MIDI track duration.
+	 * @since 2026/01/01
+	 */
+	protected long duration()
+	{
+		// If the duration was already calculated, do not calculate it again
+		long rv = this._duration;
+		if (rv >= 0)
+			return rv;
+		
+		// We need a copy of these
+		MidiTimeDiv timeDiv = this._timeDiv;
+		MTrkTracker tracker = new MTrkTracker(this, timeDiv);
+		
+		// Go through every single delta, until the track ends
+		rv = 0;
+		while (!tracker._trackEnded)
+		{
+			// Read in the delta, zero would just be an event
+			int delta = tracker.playNext(null, null);
+			if (delta < 0)
+				delta = 0;
+			
+			// Since the tempo can change the nanos/tickdiv, we need to pull
+			// the value constantly from the timeDiv storage
+			rv += Math.max(0, delta * timeDiv._nanosPerTickDiv);
+		}
+		
+		// Return the calculated time of all the deltas
+		return Math.max(0, rv);
 	}
 	
 	/**
@@ -77,33 +116,5 @@ public final class MTrkParser
 	public int length()
 	{
 		return this._length;
-	}
-	
-	/**
-	 * Returns the total tick division duration for this given track.
-	 * 
-	 * @return The total tick division duration for this track.
-	 * @since 2022/04/25
-	 */
-	public final int tickDivDuration()
-	{
-		// Does the duration need to be figured out?
-		int deltaDuration = this._tickDivDuration;
-		if (deltaDuration < 0)
-			this._tickDivDuration =
-				(deltaDuration = this.__calculateTickDivDuration());
-		
-		return deltaDuration;
-	}
-	
-	/**
-	 * Calculates the tick division duration of the track.
-	 * 
-	 * @return The calculated tick division duration of the track.
-	 * @since 2022/04/24
-	 */
-	private int __calculateTickDivDuration()
-	{
-		throw Debugging.todo();
 	}
 }

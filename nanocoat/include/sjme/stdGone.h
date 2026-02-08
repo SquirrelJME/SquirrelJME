@@ -252,6 +252,19 @@ extern "C"
 #endif
 	
 #pragma endregion(sjme_uintPointerNative)
+#pragma region(floats)
+
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/** Native float. */
+	typedef float sjme_jfloatNative;
+#endif
+
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/** Native double. */
+	typedef double sjme_jdoubleNative;
+#endif
+
+#pragma endregion(floats)
 #pragma region(constWrappers)
 
 #if !defined(INT8_C)
@@ -414,6 +427,17 @@ extern "C"
 #endif
 	
 #pragma endregion(limits)
+#pragma region(printf)
+
+#if !defined(PRId64)
+	#if defined(SJME_CONFIG_HAS_MSVC)
+		#define PRId64 "I64d"
+	#else
+		#define PRId64 "lld"
+	#endif
+#endif
+
+#pragma endregion(printf)
 
 #if !defined(SJME_CONFIG_HAS_INTTYPES_H)
 	#if defined(SJME_CONFIG_HAS_MSVC)

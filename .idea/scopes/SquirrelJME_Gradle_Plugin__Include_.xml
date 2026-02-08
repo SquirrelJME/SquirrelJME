@@ -1,3 +1,3 @@
 <component name="DependencyValidationManager">
-  <scope name="SquirrelJME Gradle Plugin (Include)" pattern="file[squirreljme2.buildSrc]:*/||file[squirreljme2.buildSrc.main]:*/" />
+  <scope name="SquirrelJME Gradle Plugin (Include)" pattern="file:buildSrc//*||file[squirreljme.buildSrc*]:*//*" />
 </component>

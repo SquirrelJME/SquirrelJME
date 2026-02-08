@@ -40,7 +40,14 @@ public class EmulatedObjectShelf
 		int __destOff,
 		int __len)
 	{
-		System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		try
+		{
+			System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		}
+		catch (IndexOutOfBoundsException|NullPointerException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**
@@ -62,7 +69,14 @@ public class EmulatedObjectShelf
 		int __destOff,
 		int __len)
 	{
-		System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		try
+		{
+			System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		}
+		catch (IndexOutOfBoundsException|NullPointerException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**
@@ -84,7 +98,14 @@ public class EmulatedObjectShelf
 		int __destOff,
 		int __len)
 	{
-		System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		try
+		{
+			System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		}
+		catch (IndexOutOfBoundsException|NullPointerException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**
@@ -106,7 +127,14 @@ public class EmulatedObjectShelf
 		int __destOff,
 		int __len)
 	{
-		System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		try
+		{
+			System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		}
+		catch (IndexOutOfBoundsException|NullPointerException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**
@@ -128,7 +156,14 @@ public class EmulatedObjectShelf
 		int __destOff,
 		int __len)
 	{
-		System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		try
+		{
+			System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		}
+		catch (IndexOutOfBoundsException|NullPointerException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**
@@ -150,7 +185,14 @@ public class EmulatedObjectShelf
 		int __destOff,
 		int __len)
 	{
-		System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		try
+		{
+			System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		}
+		catch (IndexOutOfBoundsException|NullPointerException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**
@@ -172,7 +214,14 @@ public class EmulatedObjectShelf
 		int __destOff,
 		int __len)
 	{
-		System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		try
+		{
+			System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		}
+		catch (IndexOutOfBoundsException|NullPointerException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**
@@ -194,7 +243,14 @@ public class EmulatedObjectShelf
 		int __destOff,
 		int __len)
 	{
-		System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		try
+		{
+			System.arraycopy(__src, __srcOff, __dest, __destOff, __len);
+		}
+		catch (IndexOutOfBoundsException|NullPointerException __e)
+		{
+			throw new MLECallError(__e.getMessage(), __e);
+		}
 	}
 	
 	/**

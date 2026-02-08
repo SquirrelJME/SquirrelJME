@@ -1,0 +1,5 @@
+cc.squirreljme.runtime.gcf.file.pseudo.AllVolumesEndPointFactory
+cc.squirreljme.runtime.gcf.file.pseudo.BucketEndPointFactory
+cc.squirreljme.runtime.gcf.file.pseudo.LibraryEndPointFactory
+cc.squirreljme.runtime.gcf.file.pseudo.LinearScanEndPointFactory
+cc.squirreljme.runtime.gcf.file.real.SystemFileEndPointFactory

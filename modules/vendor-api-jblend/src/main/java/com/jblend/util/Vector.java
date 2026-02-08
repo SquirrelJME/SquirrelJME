@@ -22,27 +22,27 @@ public class Vector
 	implements SimpleSerializable
 {
 	@Api
-    public Vector() {
-        super(0, 0);
-        
-        throw Debugging.todo();
-    }
+	public Vector() {
+		super(0, 0);
+		
+		throw Debugging.todo();
+	}
 
 	@Api
-    public Vector(int var1) {
-        super(0, 0);
-        
-        throw Debugging.todo();
-    }
+	public Vector(int var1) {
+		super(0, 0);
+		
+		throw Debugging.todo();
+	}
 
-    @Override
+	@Override
 	public void writeObject(SimpleObjectOutputStream var1)
 		throws IOException
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public void readObject(SimpleObjectInputStream var1)
 		throws IOException
 	{

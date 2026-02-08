@@ -39,117 +39,97 @@ import cc.squirreljme.runtime.cldc.util.ExtraMath;
 /**
  * Audio source
  */
-@SquirrelJMEVendorApi
 class MA3Note
 	implements BasicNote
 {
 	/**
 	 * FM operator algorithm
 	 */
-	@SquirrelJMEVendorApi
 	final MA3Algorithm algorithm;
 	
 	/**
 	 * Encapsulating channel
 	 */
-	@SquirrelJMEVendorApi
 	final MA3Channel channel;
 	
 	/**
 	 * Encapsulating instance
 	 */
-	@SquirrelJMEVendorApi
 	final MA3Sampler instance;
 	
 	/**
 	 * OPL operators
 	 */
-	@SquirrelJMEVendorApi
 	final MA3Operator[] operators;
 	
 	/**
 	 * Current output sample
 	 */
-	@SquirrelJMEVendorApi
 	final float sample;
 	
 	/**
 	 * Frequency advancement when dissociated
 	 */
-	@SquirrelJMEVendorApi
 	float advance;
 	
 	/**
 	 * Amplitude modulator phase
 	 */
-	@SquirrelJMEVendorApi
 	int amPhase;
 	
 	/**
 	 * Effective left stereo amplitude
 	 */
-	@SquirrelJMEVendorApi
 	float ampLeft;
 	
 	/**
 	 * Effective right stereo amplitude
 	 */
-	@SquirrelJMEVendorApi
 	float ampRight;
 	
 	/**
 	 * Octave index
 	 */
-	@SquirrelJMEVendorApi
 	int block;
 	
 	/**
 	 * All operator envelopes are finished
 	 */
-	@SquirrelJMEVendorApi
 	boolean envDone;
 	
 	/**
 	 * Frequency divider
 	 */
-	@SquirrelJMEVendorApi
 	int f_number;
 	
 	/**
 	 * Base frequency
 	 */
-	@SquirrelJMEVendorApi
 	float freqBase;
 	
 	/**
 	 * Note is generating output
 	 */
-	@SquirrelJMEVendorApi
 	boolean playing;
 	
 	/**
 	 * Base volume
 	 */
-	@SquirrelJMEVendorApi
 	float volBase;
 	
 	/**
 	 * Left stereo output amplitude
 	 */
-	@SquirrelJMEVendorApi
 	float volLeftOut;
 	
 	/**
 	 * Right stereo output amplitude
 	 */
-	@SquirrelJMEVendorApi
 	float volRightOut;
 	
 	/** Key index within channel. */
-	@SquirrelJMEVendorApi
 	int key;
 	
-	@SquirrelJMEVendorApi
 	MA3Note(MA3Channel channel, int key, MA3Algorithm algorithm)
 	{
 		this.algorithm = algorithm;
@@ -172,7 +152,6 @@ class MA3Note
 	/**
 	 * Perform easing on an amplitude controller
 	 */
-	@SquirrelJMEVendorApi
 	float ease(float level, float target)
 	{
 		return level < target ? Math.min(target,
@@ -183,7 +162,6 @@ class MA3Note
 	/**
 	 * Key-off processing
 	 */
-	@SquirrelJMEVendorApi
 	void off()
 	{
 		// A data-supplied FM algorithm never decays
@@ -211,19 +189,20 @@ class MA3Note
 	/**
 	 * An envelope has finished
 	 */
-	@SquirrelJMEVendorApi
 	void onEnvelopeDone()
 	{
 		this.envDone = true;
 		
+		MA3Operator[] operators = this.operators;
+		
 		// Test all relevant operators
 		int flags = this.algorithm.isWave ? 1 :
 			MA3SamplerProvider.ENV_FLAGS[this.algorithm.alg];
-		for (int x = 0; x < this.operators.length; x++, flags >>= 1)
+		for (int x = 0; x < operators.length; x++, flags >>= 1)
 		{
 			if ((flags & 1) != 0)
 				this.envDone = this.envDone &&
-					this.operators[x].envStage == MA3SamplerProvider.ENV_DONE;
+					operators[x].envStage == MA3SamplerProvider.ENV_DONE;
 		}
 		
 		// If all relevant operators are done, shut off the note
@@ -234,7 +213,6 @@ class MA3Note
 	/**
 	 * Frequency has changed
 	 */
-	@SquirrelJMEVendorApi
 	void onFrequency(double bend)
 	{
 		
@@ -258,7 +236,6 @@ class MA3Note
 	/**
 	 * Master volume has changed
 	 */
-	@SquirrelJMEVendorApi
 	void onVolume()
 	{
 		this.volLeftOut =
@@ -270,7 +247,6 @@ class MA3Note
 	/**
 	 * Render the next input sample
 	 */
-	@SquirrelJMEVendorApi
 	boolean render()
 	{
 		// Compute desired left and right volume levels
@@ -299,63 +275,64 @@ class MA3Note
 	/**
 	 * Generate an FM sample
 	 */
-	@SquirrelJMEVendorApi
 	float sampleFM()
 	{
+		MA3Operator[] operators = this.operators;
+		
 		int out1, out2, out3, out4;
 		int ret = 0;
 		switch (this.algorithm.alg)
 		{
 			case 0:
-				out1 = this.operators[0].sample(0, true);
-				out2 = this.operators[1].sample(out1, false);
+				out1 = operators[0].sample(0, true);
+				out2 = operators[1].sample(out1, false);
 				ret = out2;
 				break;
 			case 1:
-				out1 = this.operators[0].sample(0, true);
-				out2 = this.operators[1].sample(0, false);
+				out1 = operators[0].sample(0, true);
+				out2 = operators[1].sample(0, false);
 				ret = out1 + out2;
 				break;
 			case 2:
-				out1 = this.operators[0].sample(0, true);
-				out2 = this.operators[1].sample(0, false);
-				out3 = this.operators[2].sample(0, true);
-				out4 = this.operators[3].sample(0, false);
+				out1 = operators[0].sample(0, true);
+				out2 = operators[1].sample(0, false);
+				out3 = operators[2].sample(0, true);
+				out4 = operators[3].sample(0, false);
 				ret = out1 + out2 + out3 + out4;
 				break;
 			case 3:
-				out1 = this.operators[0].sample(0, true);
-				out2 = this.operators[1].sample(0, false);
-				out3 = this.operators[2].sample(out2, false);
-				out4 = this.operators[3].sample(out1 + out3, false);
+				out1 = operators[0].sample(0, true);
+				out2 = operators[1].sample(0, false);
+				out3 = operators[2].sample(out2, false);
+				out4 = operators[3].sample(out1 + out3, false);
 				ret = out4;
 				break;
 			case 4:
-				out1 = this.operators[0].sample(0, true);
-				out2 = this.operators[1].sample(out1, false);
-				out3 = this.operators[2].sample(out2, false);
-				out4 = this.operators[3].sample(out3, false);
+				out1 = operators[0].sample(0, true);
+				out2 = operators[1].sample(out1, false);
+				out3 = operators[2].sample(out2, false);
+				out4 = operators[3].sample(out3, false);
 				ret = out4;
 				break;
 			case 5:
-				out1 = this.operators[0].sample(0, true);
-				out2 = this.operators[1].sample(out1, false);
-				out3 = this.operators[2].sample(0, true);
-				out4 = this.operators[3].sample(out3, false);
+				out1 = operators[0].sample(0, true);
+				out2 = operators[1].sample(out1, false);
+				out3 = operators[2].sample(0, true);
+				out4 = operators[3].sample(out3, false);
 				ret = out2 + out4;
 				break;
 			case 6:
-				out1 = this.operators[0].sample(0, true);
-				out2 = this.operators[1].sample(0, false);
-				out3 = this.operators[2].sample(out2, false);
-				out4 = this.operators[3].sample(out3, false);
+				out1 = operators[0].sample(0, true);
+				out2 = operators[1].sample(0, false);
+				out3 = operators[2].sample(out2, false);
+				out4 = operators[3].sample(out3, false);
 				ret = out1 + out4;
 				break;
 			case 7:
-				out1 = this.operators[0].sample(0, true);
-				out2 = this.operators[1].sample(0, false);
-				out3 = this.operators[2].sample(out2, false);
-				out4 = this.operators[3].sample(0, false);
+				out1 = operators[0].sample(0, true);
+				out2 = operators[1].sample(0, false);
+				out3 = operators[2].sample(out2, false);
+				out4 = operators[3].sample(0, false);
 				ret = out1 + out3 + out4;
 				break;
 		}
@@ -366,7 +343,6 @@ class MA3Note
 	/**
 	 * Terminate playback
 	 */
-	@SquirrelJMEVendorApi
 	void stop()
 	{
 		this.envDone = true;

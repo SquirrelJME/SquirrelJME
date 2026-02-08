@@ -142,18 +142,22 @@ public enum MLEAudioStream
 		}
 	},
 	
-	/** {@link AudioStreamShelf#stream()}. */
-	STREAM(MLEDispatcher.methodKey("stream", AudioStreamBracket.class))
+	/** {@link AudioStreamShelf#stream(int, int, int)}. */
+	STREAM(MLEDispatcher.methodKey("stream", AudioStreamBracket.class,
+		"I", "I", "I"))
 	{
 		/**
 		 * {@inheritDoc}
 		 * @since 2025/06/07
 		 */
+		@SuppressWarnings("MagicConstant")
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
 			return new AudioStreamObject(__thread.machine,
-				AudioStreamShelf.stream());
+				AudioStreamShelf.stream((Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2]));
 		}
 	},
 	

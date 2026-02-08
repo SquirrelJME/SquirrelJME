@@ -103,6 +103,9 @@ extern "C" {
 /** Visual Studio 2010 */
 #define SJME_CONFIG_MSVC_VERSION_2010 1600
 
+/** Visual Studio 2019 */
+#define SJME_CONFIG_MSVC_VERSION_2019 1920
+
 #if defined(__WATCOMC__)
 	/** Watcom C Compiler. */
 	#define SJME_CONFIG_HAS_WATCOM
@@ -1190,7 +1193,10 @@ extern "C" {
 
 #if defined(SJME_CONFIG_HAS_GCC)
 	/** Optimize this specific function. */
-	#define sjme_attrOptimize __attribute__((optimize("-O3")))
+	#define sjme_attrOptimize __attribute__((optimize("-Os")))
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Optimize this specific function. */
+	#define sjme_attrOptimize __pragma(optimize("t", on))
 #else
 	/** Optimize this specific function. */
 	#define sjme_attrOptimize
@@ -1252,6 +1258,15 @@ extern "C" {
 #if !defined(SJME_CONFIG_HAS_DOUBLE_HARD)
 	/** Has software double floating point. */
 	#define SJME_CONFIG_HAS_DOUBLE_SOFT
+#endif
+
+#if defined(SJME_CONFIG_HAS_C99) || \
+	SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2019)
+	/** Binary float option (0x1.2p3 or 1.2e3). */
+	#define SJME_FLOAT_BD(bin, dec) (bin)
+#else
+	/** Binary float option (0x1.2p3 or 1.2e3). */
+	#define SJME_FLOAT_BD(bin, dec) (dec)
 #endif
 
 #if defined(SJME_CONFIG_HAS_AMIGA) || \
@@ -1348,6 +1363,15 @@ extern "C" {
 #else
 	#define sjme_asm(x) sjme_execInlineAsm(#x)
 #endif
+
+/** Milliseconds as nanos. */
+#define SJME_NANOS_MS(n) INT64_C(n##000000)
+	
+/** Microseconds as nanos. */
+#define SJME_NANOS_US(n) INT64_C(n##000)
+	
+/** Nanoseconds as nanos (identity). */
+#define SJME_NANOS_NS(n) INT64_C(n)
 	
 /* Windows header needs to be included everywhere effectively. */
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)

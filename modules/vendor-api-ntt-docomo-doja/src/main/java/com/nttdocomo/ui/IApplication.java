@@ -9,7 +9,9 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.TaskShelf;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.TaskStatusType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
@@ -201,6 +203,10 @@ public abstract class IApplication
 	@SquirrelJMEVendorApi
 	static volatile String[] _appArgs;
 	
+	/** The source URL for this application. */
+	@Language("http-url-reference")
+	private volatile String _sourceUrl; 
+	
 	{
 		synchronized (IApplication.class)
 		{
@@ -276,10 +282,49 @@ public abstract class IApplication
 	@SuppressWarnings("MethodNamesDifferingOnlyByCase")
 	public final String getSourceUrl()
 	{
+		// Has this already been calculated?
+		@Language("http-url-reference")
+		String rv = this._sourceUrl;
+		if (rv != null)
+			return rv;
+		
+		// Is there a DoJa property for this?
+		rv = DoJaRuntime.getProperty(DoJaRuntime.SOURCE_URL);
+		if (rv != null)
+		{
+			this._sourceUrl = rv;
+			return rv;
+		}
+		
 		// Our webroot is always non-networked, so we handle and potentially
 		// proxy all the various HTTP calls accordingly.
-		return SquirrelJMEWebRootConnectionFactory.URI_SCHEME +
-			"://";
+		StringBuilder sb = new StringBuilder();
+		sb.append(SquirrelJMEWebRootConnectionFactory.URI_SCHEME);
+		sb.append("://localhost.local/");
+		
+		// Determine the name of this Jar
+		JarPackageBracket[] classPath = JarPackageShelf.classPath();
+		String jarName = null;
+		if (classPath != null && classPath.length > 0)
+			jarName = JarPackageShelf.libraryPath(
+				classPath[classPath.length - 1]);
+		
+		// Fallback to any name
+		if (jarName == null)
+			jarName = "unknown-doja-source.jar";
+		
+		// Remove everything except the last slash
+		int ls = Math.max(jarName.lastIndexOf('/'),
+			jarName.lastIndexOf('\\'));
+		if (ls >= 0)
+			sb.append(jarName, ls + 1, jarName.length());
+		else
+			sb.append(jarName);
+		
+		// Cache and use it
+		rv = sb.toString();
+		this._sourceUrl = rv;
+		return rv;
 	}
 	
 	/**

@@ -1,0 +1,338 @@
+# SquirrelJME Usage
+
+This covers all variants of SquirrelJME, for specific variant documentation
+please see:
+
+ * [Standalone Usage](usage-standalone.mkd)
+ * [SpringCoat Usage](usage-springcoat.mkd)
+ * [NanoCoat Usage](usage-nanocoat.mkd)
+
+## Command Line Usage
+
+The following may be used at the command line, the format is the same
+as `java`. An option within square brackets `[]` are optional, and
+any option within parenthesis `()` are required. The usage of SquirrelJME is
+in the following format:
+
+ * `squirreljme [options]`
+   * Start into the launcher. 
+ * `squirreljme [options] -jar a.jar`
+   * Directly launch the given Jar, bypassing the launcher. 
+ * `squirreljme [options] mainClass [mainArgs|...]`
+   * Standard launch into the specific classpath and main arguments.
+   * For this option, `-classpath (class:path:...)` may be used
+ * `squirreljme -XdebuggerOnly [options]`
+   * Only launch the built-in SquirrelJME debugger and not an actual virtual
+     machine.
+
+The available options are:
+
+ * `-Xclutter:(release|debug)`
+   * Use the given core libraries with the given clutter level.
+   * `release` includes obfuscation and no debugging and thus runs faster.
+   * `debug` does not have any obfuscation and may work in cases where
+     obfuscation and optimization may cause issues.
+ * `-Xdebug[:fork|nofork]`
+   * Enable debugging but with the internal built-in SquirrelJME debugger and
+     not a JDWP connection over TCP.
+   * This is supported under the `hosted` emulator, however if you launch
+     another application within it will not debug that process, therefor if
+     you wish to debug you should use `-jar`.
+   * Optionally, `fork` or `nofork` can be specified to where the
+     internal debugger to launched as a separate process or not.
+ * `-XdebuggerOnly`
+   * Launches the built-in SquirrelJME Debugger, if available. 
+ * `-Xemulator:(vm)`
+   * Specifies the backend emulator to use, the supported options are:
+     * `hosted` -- Uses the host JVM to run all the software.
+     * `springcoat` -- SpringCoat, interpreter written in Java.
+     * `nanocoat` -- NanoCoat, interpreter written in C.
+ * `-Xentry:id`
+   * Used with `-jar`, this allows one to specify an entry point index,
+     application name, or application entry point to determine which one to
+     launch within the Jar as there may be multiple.
+   * By default, if not specified, the first is always used.
+ * `-Xint`
+   * Alias for `-Xemulator:springcoat`.
+ * `-Xjdwp:[hostname]:port`
+   * Enable debugging.
+   * If `hostname` is specified then the debugger will connect to the
+     remote host that is a listening JDWP debugger.
+   * Otherwise, if only `port` is specified then the debugger will wait and
+     listen on the given port for an incoming connection.
+ * `-Xlibraries:(class:path:...)`
+   * Specifies libraries that should be available to the virtual machine
+     and the suite management system, note that this is not the same as
+     the `-classpath` option as that is for the _current_ application.
+   * Wildcard directories may be specified in the following way, depending
+     on the operating system and possible shell expansion:
+     * `/path/to/directory/*`
+     * `/path/to/directory/**`
+     * `/path/to/directory/*.*`
+     * `wildcard=/path/to/directory`
+ * `-Xrom:(path)`
+   * Specifies the SpringCoat ROM that should be used by the virtual
+     machine.
+ * `-Xscritchui:(ui)`
+   * Rather than the default, use a specific user interface library.
+   * This may also be set by using `cc.squirreljme.scritchui`.
+ * `-Xsnapshot:(path-to-nps)`
+   * Profile the virtual machine and store the profile results into the
+     given VisualVM snapshot file.
+ * `-XstartOnFirstThread`
+   * Ignored.
+ * `-Xthread:(single|coop|shared|multi|smt)`
+   * Sets the threading mode of the virtual machine.
+   * `single`/`coop` -- Single threaded using cooperative multitasking.
+   * `shared` -- Single threaded using preemptive multitasking.
+   * `multi`/`smt` -- Multi threaded using asynchronous multitasking.
+ * `-Xtrace:option[,option[,...]]` -- Trace options
+   * `all` -- Enable all.
+   * `allocation` -- Allocations such as `new`.
+   * `classInitialize` -- Class is initialized.
+   * `defaultPackage` -- In default package only.
+   * `ignoredException` -- Exception that may be ignored.
+   * `instructions` -- Instructions being executed.
+   * `invokeStatic` -- Static invocations.
+   * `notMainThread` -- Do not trace on the main thread.
+   * `methodEntry` -- Entry of methods.
+   * `methodExit` -- Exit of methods.
+   * `missingClass` -- Class does not exist.
+   * `mleCall` -- SquirrelJME MLE Native Calls.
+   * `monitorEnter` -- Monitor is entered.
+   * `monitorExit` -- Exiting a monitor.
+   * `monitorNotify` -- Monitor is notified.
+   * `monitorWait` -- Monitor is waited on.
+   * `threadNew` -- New thread is created.
+   * `vmException` -- Virtual machine exceptions.
+ * `-Dsysprop=value`
+   * Defines the given system property. 
+ * `-classpath (class:path:...)`
+   * Specifies the class path to use for the current application, the entries
+     must be visible from the library path.
+ * `-jar (path.jar)`
+   * Launches the given Jar file.
+ * `-client`
+   * Ignored.
+ * `-server`
+   * Ignored.
+ * `-zero`
+   * Alias for `-Xemulator:springcoat`.
+
+## Default Directories
+
+SquirrelJME has a set of default directories, which have a priority order
+and may be overridden by environment variables.
+
+ * `<ENVIRONMENT_VARIABLE>` -- value is read from an environment variable.
+ * `[Another Type]` -- value is read from another directory type.
+
+Any entry with {~} means the first character will be placed by your home
+directory, `<HOME>` on POSIX or `<USERHOME>` on Windows.
+
+The directory types and their order of precedence are:
+
+ * _Cache_
+   * `<SQUIRRELJME_CACHE_HOME>` {~}
+   * `<LOCALAPPDATA>/squirreljme/cache` (Windows)
+   * `<APPDATA>/squirreljme/cache` (Windows)
+   * `<PROGRAMDATA>/squirreljme/cache` (Windows)
+   * `<XDG_CACHE_HOME>/squirreljme` (POSIX)
+   * `<HOME>/.cache/squirreljme` (POSIX)
+ * _Config_
+   * `<SQUIRRELJME_CONFIG_HOME>` {~}
+   * `<APPDATA>/squirreljme/config` (Windows)
+   * `<PROGRAMDATA>/squirreljme/config` (Windows)
+   * `<XDG_CONFIG_HOME>/squirreljme` (POSIX)
+   * `<HOME>/.config/squirreljme` (POSIX)
+ * _Data_
+   * `<SQUIRRELJME_DATA_HOME>` {~}
+   * `<APPDATA>/squirreljme/data` (Windows)
+   * `<PROGRAMDATA>/squirreljme/data` (Windows)
+   * `<XDG_DATA_HOME>/squirreljme` (POSIX)
+   * `<HOME>/.local/share/squirreljme` (POSIX)
+ * _State_
+   * `<SQUIRRELJME_STATE_HOME>` {~}
+   * `<LOCALAPPDATA>/squirreljme/state` (Windows)
+   * `<APPDATA>/squirreljme/state` (Windows)
+   * `<PROGRAMDATA>/squirreljme/state` (Windows)
+   * `<XDG_STATE_HOME>/squirreljme` (POSIX)
+   * `<HOME>/.local/state/squirreljme` (POSIX)
+ * _Natives_
+   * `<SQUIRRELJME_LIB_JVM>` {~}
+   * `<PROGRAMDATA>/squirreljme/natives` (Windows)
+   * `/lib/squirreljme/natives` (POSIX)
+ * _Executable_
+   * This always points to the current executable, if it can be determined.
+ * _Temporary_
+   * `<TMP>` (Windows)
+   * `<TEMP>` (POSIX)
+   * `/tmp` (POSIX)
+   * `[Cache]/sjme.tmp`
+ * _Libraries_ -- User provided JARs are loaded from here.
+   * `<SQUIRRELJME_LIBRARY_PATH>` {~}
+   * `[Data]/lib`
+ * _Data Bucket_ -- Non-volatile storage is here (RMS and DoJa Scratchpads).
+   * `[State]/data`
+ * _Extra Bucket_
+   * `<SQUIRRELJME_BUCKET_EXTRA>` {~}
+
+## Common Issues
+
+***TRYING TO RUN DoJa/Star (i-mode) SOFTWARE?:*** Both
+DoJa and Star require the accompanying `.jam` file to be able
+to load the titles as the Jar has no information itself on
+how to start such titles. Some DoJa/Star software will also
+require the `.sp` (Scratchpad) file as it relies on DLC which
+must have already been downloaded, considering the services
+for downloading such DLC are no longer online.
+
+## Framing/Scaling
+
+SquirrelJME supports framing and scaling of any MIDP `Canvas`, to override
+the default scale factor you may specify:
+
+ * Framing -- Sets the default resolution of SquirrelJME
+   * System property:
+     * `cc.squirreljme.frame=WxH`
+   * Environment Variable:
+     * `SQUIRRELJME_FRAME=WxH`
+ * Scaling -- Sets the output resolution that the frame is scaled to
+   * System property:
+     * `cc.squirreljme.scale=(multiplier|WxH)`
+   * Environment Variable:
+     * `SQUIRRELJME_SCALE=(multiplier|WxH)`
+
+## Special `file:` URIs
+
+These are special `file:` URIs in SquirrelJME, specified by using a special
+authority. Within each authority, there may be an URI encoded target, this
+is specified in brackets (`<>`). Note that it is shown here as being
+unencoded so that it is readable and understood. This means that if the
+contained value is `<file://hello/>` this will be encoded
+as `file%3A%2F%2Fhello%2F`.
+
+ * `file://!%3Fx-squirreljme-all-volumes%3A%2F%2F%3F!/`
+   * All volumes root, this lists every internal library and all
+     file system roots which are available.
+ * `file://!%3Fx-squirreljme-bucket%3A%2F%2F%3F!<...>/`
+   * Access to the bucket storage which contains non-volatile data
+     such as RMS, DoJa ScratchPads, and user installed applications.
+   * `<0>` or `<data>` for the data bucket.
+   * `<1>` or `<libraries>` for the library bucket.
+   * `<2>` or `<extra>` for the extra bucket.
+ * `file://!%3Fx-squirreljme-library%3A%2F%2F%3F!<...>/`
+   * Provides access to a specific library.
+   * `<...>` may be a number indicating the library index (`<0>`).
+   * `<...>` may be the name of a Jar to access (`<example.jar>`).
+   * The root directory may be opened as a data stream to access the raw
+     library data.
+ * `file://!%3Fx-squirreljme-linear-scan%3A%2F%2F%3F!<uri:...>/`
+   * Walks through a binary file locating any known magic number and exposes
+     a file system to access scanned content.
+   * `<uri:...>` is the URI to load and access as binary data.
+ * `file://!%3Fx-squirreljme-zip%3A%2F%2F%3F!<uri:...>/`
+   * Provides access to reading arbitrary ZIP files.
+   * `<uri:...>` is the URI to load and access as a ZIP file.
+
+An example of referring to a library as a ZIP:
+
+ * Start with the target library:
+   * `file://!%3Fx-squirreljme-library%3A%2F%2F%3F!example.jar/`
+ * URI encode the entire path:
+   * `file%3A%2F%2F%21%253Fx-squirreljme-library%253A%252F%252F%253F`
+     `%21example.jar%2F`
+ * Then insert it into the ZIP authority:
+   * `file://!%3Fx-squirreljme-zip%3A%2F%2F%3F!file%3A%2F%2F%21%253Fx-s`
+     `quirreljme-library%253A%252F%252F%253F%21example.jar%2F/`
+
+## Using the Media Player from the Command Line
+
+The media player may be started purely from the command line with the
+specified command:
+
+ * `squirreljme -Xentry:0 -jar system-app-media-player.jar`
+
+Note if you are on any UNIX/Posix system and are using Bash you will need
+to quote URLs as Bash will try to interpret any exclamation point (`!`).
+
+The following commands are available:
+
+ * `list`
+   * Lists the contents of the root directory.
+ * `list url`
+   * Lists the contents of the given URL.
+ * `play url (contentType)`
+   * Plays the given URL.
+
+Listing contents will give a tab (`\t`) separated output in three columns:
+
+ * The content type.
+ * The URL of the content.
+ * The file name of the content.
+
+For example, split into three rows:
+
+```
+inode/directory
+file://!%3Fx-squirreljme-library%3A%2F%2F%3F!system-app-media-player.jar/
+system-app-media-player.jar/
+```
+
+Then from the second argument, to list the contents of the JAR, copy the
+URL and run the list command:
+
+ * `list file://!%3Fx-squ<TRUNCATED>yer.jar/`
+
+This will give another list of tab (`\t`) separated columns:
+
+```
+audio/midi
+file://!%3Fx-squ<TRUNCATED>yer.jar/11-Stucked-Convoi.mid
+11-Stucked-Convoi.mid
+```
+
+Then to play the media, copy the URL into the given command with its
+content type:
+
+ * `play file://!%3Fx-squ<TRUNCATED>yer.jar/11-Stucked-Convoi.mid audio/midi`
+
+If you place the media file in the data and/or library directory, which
+is where non-volatile data is stored or your applications are installed, you
+can then play it via:
+
+ * `file://!%3Fx-squirreljme-bucket%3A%2F%2F%3F!data/music.mid`
+ * `file://!%3Fx-squirreljme-bucket%3A%2F%2F%3F!libraries/music.mid`
+
+While playing the output will be as followed. Progress updates will always
+end in carriage return (`\r`) so that the last line is replaced. The starting
+tilde (`~`) may be used to synchronize the output to find the next set of
+messages to parse, while the ending caret (`^`) may be used to synchronize
+the end of a line. The synchronization is mostly useful if you are parsing
+the output from a script or another program, and you are not able to
+differentiate between `stdout` and `stderr` as reliably.
+
+The output template followed by an example:
+
+```
+~PlayerType: [99h 59m 59s 999999µs / 99h 59m 59s 999999µs] State (999)^
+~MidiPlayer: [06s 244790µs / 04m 11s 812500µs] Started (400)^
+```
+
+States are as followed:
+
+ * `Closed (0)`
+   * The media is in the closed state.
+ * `Unrealized (100)`
+   * No data has yet been loaded.
+ * `Realized (200)` 
+   * Data for the media has been loaded.
+ * `Prefetched (300)` 
+   * The media and all resources are ready for playback. 
+ * `Started (400)` 
+   * The media is currently playing.
+ * `Undefined (999)`
+   * Not defined, the indicated number will be between any of the values
+     indicated above.
+
+The song will continue playing until it reaches the end.

@@ -73,13 +73,13 @@ public class TestArrayNegativeSize
 		
 		this.secondary("array", array.getClass().toString());
 	}
-    
-    /**
-     * Returns a negative size.
-     * 
-     * @return A negative value.
-     * @since 2022/06/26
-     */
+	
+	/**
+	 * Returns a negative size.
+	 * 
+	 * @return A negative value.
+	 * @since 2022/06/26
+	 */
 	private static int __size()
 	{
 		return System.identityHashCode(new Object()) | Integer.MIN_VALUE;

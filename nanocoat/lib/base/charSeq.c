@@ -123,8 +123,10 @@ sjme_jchar sjme_charSeq_charAtR(
 			return sjme_string_charAt(inSeq->data.staticUtf, inIndex);
 
 		case SJME_CHAR_SEQ_TYPE_WIDE:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			return inSeq->data.chars[inIndex] & 0xFFFF;
+			
+		case SJME_CHAR_SEQ_TYPE_WIDE_STATIC:
+			return inSeq->data.staticWide[inIndex] & 0xFFFF;
 
 		default:
 			return 0;

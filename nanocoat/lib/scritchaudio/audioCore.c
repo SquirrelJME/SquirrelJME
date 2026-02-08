@@ -46,16 +46,20 @@ static const sjme_scritchaudio_apiFunctions sjme_scritchaudio_coreFunctions =
 	sjme_sm(.loopIterate, sjme_scritchaudio_core_loopIterate),
 	sjme_sm(.queryMidiPorts, sjme_scritchaudio_core_queryMidiPorts),
 	sjme_sm(.sourceAttach, sjme_scritchaudio_core_sourceAttach),
+	sjme_sm(.streamCreate, sjme_scritchaudio_core_streamCreate),
 };
 
 static const sjme_scritchaudio_internFunctions sjme_scritchaudio_coreInterns =
 {
+	sjme_sm(.allocBuffers, sjme_scritchaudio_core_allocBuffers),
 	sjme_sm(.calcRenderInfo, sjme_scritchaudio_core_calcRenderInfo),
 	sjme_sm(.fallbackNext, sjme_scritchaudio_core_fallbackNext),
-	sjme_sm(.loopIterate, sjme_scritchaudio_core_loopIterateIntern),
+	sjme_sm(.loopIterateLocked, sjme_scritchaudio_core_loopIterateLocked),
 	sjme_sm(.peerConnect, sjme_scritchaudio_core_peerConnect),
 	sjme_sm(.peerDisconnect, sjme_scritchaudio_core_peerDisconnect),
 	sjme_sm(.peerNoneDispatch, sjme_scritchaudio_core_peerNoneDispatch),
+	sjme_sm(.pollEvent, sjme_scritchaudio_core_pollEvent),
+	sjme_sm(.pollManual, sjme_scritchaudio_core_pollManual),
 	sjme_sm(.streamCreate, sjme_scritchaudio_core_streamCreate),
 };
 
@@ -64,18 +68,13 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
 	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd,
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
-	sjme_attrInNotNull sjme_scritchaudio wrappedStated,
+	sjme_attrInNotNull sjme_scritchaudio wrappedState,
 	sjme_attrInValue sjme_jboolean isHigher,
 	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread)
 {
 	sjme_errorCode error;
 	sjme_scritchaudio result;
-	sjme_scritchaudio_stream onlyStream;
 	const sjme_nal* nal;
-	sjme_scritchaudio_format origFormat, inFormat;
-	sjme_scritchaudio_rate origRate, inRate;
-	sjme_scritchaudio_channels origChannels, inChannels;
-	sjme_jint i, n;
 	
 	if (inPool == NULL || outState == NULL || inImplFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -103,102 +102,47 @@ static sjme_errorCode sjme_scritchaudio_core_initActual(
 	result->nal = nal;
 	result->bindAudioThread = bindAudioThread;
 
-	/* Set clock base, if wrapped use that as it was first. */
-	if (wrappedStated != NULL)
-		memmove(&result->clock, &wrappedStated->clock,
-			sizeof(result->clock));
+	/* Always use the base lock as there will be an overlying and underlying */
+	/* stream. The lock is really only needed for buffer protection. */
+	result->lock = &result->baseLock;
 
-	/* Otherwise, derive from the monotonic clock. */
+	/* Is this wrapped? */
+	if (wrappedState != NULL)
+	{
+		/* Set clock base, if wrapped use that as it was first. */
+		memmove(&result->clock, &wrappedState->clock,
+			sizeof(result->clock));
+	}
+	
+	/* This is a primary driver. */
 	else
 	{
+		/* Otherwise, derive from the monotonic clock. */
 		result->nal->nanoTime(&result->clock.clockBase);
 		memmove(&result->clock.clock, &result->clock.clockBase,
 			sizeof(result->clock.clock));
 	}
-
-	/* Use a "sleeping" rate so if manually polling the CPU does not burn. */
-	sjme_atomic_s(sjme_jint, &result->pollDelayMillis,
-		SJME_SCRITCHAUDIO_SLEEP_RATE_MS);
-	sjme_atomic_s(sjme_jint, &result->pollDelayNanos,
-		SJME_SCRITCHAUDIO_SLEEP_RATE_NS);
 
 	/* Copy front end data. */
 	if (initFrontEnd != NULL)
 		sjme_frontEnd_copy(&result->frontEnd, initFrontEnd);
 
 	/* Bind wrapped states together? */
-	if (wrappedStated != NULL)
+	if (wrappedState != NULL)
 	{
 		/* Bind each other. */
-		result->wrappedState = wrappedStated;
-		sjme_atomic_s(sjme_pointer, &wrappedStated->topState, result);
-
-		/* Take the wrapped state's thread information, if applicable. */
-		result->loopThread = wrappedStated->loopThread;
-		result->loopThreadId = wrappedStated->loopThreadId;
+		result->wrappedState = wrappedState;
+		sjme_atomic_s(sjme_pointer, &wrappedState->topState, result);
 	}
 
 	/* Call inner initialization. */
 	if (sjme_error_is(error = result->impl->apiInit(result)))
 		goto fail_apiInit;
 
-	/* Mark loop thread as ready. */
-	sjme_atomic_s(sjme_jint, &result->loopThreadReady, 1);
-
-	/* Only create the stream when this is the higher level layer. */
-	if (isHigher)
-	{
-		/* Use an automatically determined format. */
-#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
-		inFormat = SJME_SCRITCHAUDIO_FORMAT_FLOAT_F32;
-#else
-		inFormat = SJME_SCRITCHAUDIO_FORMAT_INT_S32;
-#endif
-		inRate = SJME_SCRITCHAUDIO_RATE_HZ_48000;
-		inChannels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
-
-		/* Remember the original values, for loop returning. */
-		origFormat = inFormat;
-		origRate = inRate;
-		origChannels = inChannels;
-
-		/* Fallback to less precise formats. */
-		onlyStream = NULL;
-		while (onlyStream == NULL)
-		{
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-			/* Debug. */
-			sjme_message("streamCreate(%d, %d, %d)",
-				inFormat, inRate, inChannels);
-#endif
-		
-			/* Try to use the requested format. */
-			if (sjme_error_is(error = result->intern->streamCreate(
-				result, &onlyStream, "SquirrelJME",
-				inFormat, inRate, inChannels)) ||
-				onlyStream == NULL)
-			{
-				/* Only check against unsupported format. */
-				if (error != SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT)
-					goto fail_noFormats;
-
-				/* Reduce the rate. */
-				if (sjme_error_is(error = result->intern->fallbackNext(
-					result, origFormat, origRate, origChannels,
-					&inFormat, &inRate, &inChannels)))
-					goto fail_noFormats;
-			}
-		}
-
-		/* Set the only audio stream. */
-		result->stream = onlyStream;
-	}
-
 	/* Success! */
 	*outState = result;
 	return SJME_ERROR_NONE;
 
-fail_noFormats:
 fail_apiInit:
 fail_allocResult:
 	if (result != NULL)
@@ -267,16 +211,16 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	sjme_attrInNotNull const sjme_scritchaudio_implFunctions* inImplFunc,
 	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread)
 {
-	sjme_jboolean isSoftMixWrapper, needSoftMixWrapper;
+	sjme_jboolean needSoftMixWrapper;
 	sjme_scritchaudio lower, higher;
 	sjme_errorCode error;
 	
 	if (inPool == NULL || outState == NULL || inImplFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Do we need the softmix wrapper? */
-	isSoftMixWrapper = (inImplFunc == &sjme_scritchaudio_softmixFunctions);
-	needSoftMixWrapper = !isSoftMixWrapper;
+	/* Do we need the software mixing wrapper? */
+	needSoftMixWrapper = (!inImplFunc->allFormatsOwnMixing ||
+		!inImplFunc->supportsMultiStream);
 	
 	/* Normal top-level initialization. */
 	if (!needSoftMixWrapper)
@@ -287,7 +231,9 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	/* Initialize the lower level state. */
 	lower = NULL;
 	if (sjme_error_is(error = sjme_scritchaudio_core_initActual(inPool,
-		&lower, NULL, inImplFunc, NULL, SJME_JNI_FALSE, NULL)) ||
+		&lower, initFrontEnd, inImplFunc,
+		NULL, SJME_JNI_FALSE,
+		bindAudioThread)) ||
 		lower == NULL)
 		goto fail_initLower;
 
@@ -295,9 +241,23 @@ sjme_errorCode sjme_scritchaudio_core_init(
 	higher = NULL;
 	if (sjme_error_is(error = sjme_scritchaudio_core_initActual(inPool,
 		&higher, initFrontEnd, &sjme_scritchaudio_softmixFunctions,
-		lower, SJME_JNI_TRUE, bindAudioThread)) ||
+		lower, SJME_JNI_TRUE,
+		bindAudioThread)) ||
 		higher == NULL)
 		goto fail_initHigher;
+	
+	/* Make sure all the bugs are synced. */
+	/* Manual poll. */
+	lower->bugs.manualPoll |= higher->bugs.manualPoll;
+	higher->bugs.manualPoll |= lower->bugs.manualPoll;
+
+	/* Event poll. */
+	lower->bugs.eventPoll |= higher->bugs.eventPoll;
+	higher->bugs.eventPoll |= lower->bugs.eventPoll;
+
+	/* Write blocks. */
+	lower->bugs.outputBlocks |= higher->bugs.outputBlocks;
+	higher->bugs.outputBlocks |= lower->bugs.outputBlocks;
 
 	/* Use the higher state. */
 	*outState = higher;

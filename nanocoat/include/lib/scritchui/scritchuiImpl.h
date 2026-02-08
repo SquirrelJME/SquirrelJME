@@ -238,6 +238,9 @@ typedef sjme_errorCode (*sjme_scritchui_impl_windowNewFunc)(
 
 struct sjme_scritchui_implFunctions
 {
+	/** The driver name. */
+	sjme_lpcstr driverName;
+	
 	/** Initialize implementation API instance. */
 	SJME_SCRITCHUI_QUICK_IMPL(apiInit);
 	

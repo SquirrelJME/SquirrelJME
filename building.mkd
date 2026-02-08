@@ -328,12 +328,15 @@ to Gradle `-Dforce.ecj=true`.
 
 # Standalone Java Based Emulators
 
-A standalone Java emulator Jar which contains all of the available test
+A standalone Java emulator Jar which contains all the available test
 virtual machine implementations is available when calling the task:
 
  * `:emulators:standalone:shadowJar`
 
-## Flatpak
+## Flatpak (No Longer Supported)
+
+_Flatpak is no longer supported, however instructions here still remain if_
+_you wish you experiment. These instructions are very likely out of date._
 
 This is used with [Flatpak](https://www.flatpak.org/). This requires some dependencies first:
 

@@ -6,13 +6,10 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Include common macros to make things easier
-squirreljme_include("scritchui.cmake")
-
 # Core ScritchInput Library
 squirreljme_multilib_add_library(ScritchInputCore
 	inputCore.c)
 
 # Include main headers
-squirreljme_multilib_target_include_directories(ScritchInputCore PUBLIC
+squirreljme_multilib_include_directories(ScritchInputCore PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")

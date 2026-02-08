@@ -116,7 +116,6 @@ public enum InfoOperatingSystem
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/12/06
 	 */
 	@Override
@@ -127,7 +126,6 @@ public enum InfoOperatingSystem
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/12/06
 	 */
 	@Override

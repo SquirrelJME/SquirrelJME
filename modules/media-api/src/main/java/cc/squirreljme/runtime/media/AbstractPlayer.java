@@ -8,10 +8,21 @@
 
 package cc.squirreljme.runtime.media;
 
+import cc.squirreljme.jvm.mle.AudioStreamShelf;
+import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
+import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
+import cc.squirreljme.jvm.mle.callbacks.AudioStreamSnoop;
+import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
+import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
+import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import javax.microedition.io.Connection;
 import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
@@ -22,7 +33,7 @@ import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.MagicConstant;
 
 /**
- * Common implementation of players.
+ * Common base implementation for any MIDP {@link Player}.
  *
  * @since 2022/04/24
  */
@@ -30,6 +41,27 @@ import org.intellij.lang.annotations.MagicConstant;
 public abstract class AbstractPlayer
 	implements Player
 {
+	/** Single sourced audio stream. */
+	private static volatile AudioStreamBracket _stream;
+	
+	/** Global audio snoop. */
+	private static volatile AudioStreamSnoop _snoop;
+	
+	/** Stream format. */
+	@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+	private static volatile int _streamFormat =
+		AudioStreamFormat.AUTOMATIC;
+	
+	/** Stream rate. */
+	@MagicConstant(valuesFromClass = AudioStreamRate.class)
+	private static volatile int _streamRate =
+		AudioStreamRate.AUTOMATIC;
+	
+	/** Stream channels. */
+	@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+	private static volatile int _streamChannels =
+		AudioStreamChannels.AUTOMATIC;
+	
 	/** The current track position. */
 	@SquirrelJMEVendorApi
 	protected final TrackPosition trackPosition =
@@ -40,42 +72,37 @@ public abstract class AbstractPlayer
 	private final String _mime;
 	
 	/** Listeners available. */
-	@SquirrelJMEVendorApi
 	private final List<PlayerListener> _listeners =
 		new LinkedList<>();
 	
 	/** The default time base. */
-	@SquirrelJMEVendorApi
 	private final TimeBase _defaultTimeBase =
 		Manager.getSystemTimeBase();
 	
 	/** The loop counter which controls how much the audio replays. */
-	@SquirrelJMEVendorApi
-	protected volatile int _loopCounter =
+	private volatile int _loopCounter =
 		1;
 	
-	/** The number of loops left. */
-	@SquirrelJMEVendorApi
-	protected volatile int _loopLeft =
-		0;
-	
 	/** The currently available controls. */
-	@SquirrelJMEVendorApi
-	private volatile AbstractControl[] _controls;
+	private volatile AbstractControl<?>[] _controls;
+	
+	/** Cancel dispatch of events during fast-forwarding. */
+	volatile boolean _ffNoDispatch;
 	
 	/** The state of the player. */
-	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = Player.class)
 	private volatile int _state =
 		Player.UNREALIZED;
 	
 	/** The current timebase. */
-	@SquirrelJMEVendorApi
 	private volatile TimeBase _currentTimebase;
 	
 	/** The duration of the media. */
-	@SquirrelJMEVendorApi
 	private volatile long _cachedDurationMicros =
 		Long.MIN_VALUE;
+	
+	/** Is the audio stream primed? */
+	private volatile boolean _isPrimed;
 	
 	/**
 	 * Initializes the base player.
@@ -93,6 +120,17 @@ public abstract class AbstractPlayer
 		
 		this._mime = __mime;
 	}
+
+	/**
+	 * This is called when the player is becoming deallocated.
+	 * 
+	 * @throws MediaException If the player cannot be deallocated.
+	 * @see #becomingRealized()
+	 * @since 2025/12/28
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract void becomingDeallocated()
+		throws MediaException;
 	
 	/**
 	 * This is called when the player is becoming prefetched.
@@ -105,9 +143,23 @@ public abstract class AbstractPlayer
 		throws MediaException;
 	
 	/**
+	 * This is called to open the underlying around stream so that any calls
+	 * to {@link Player#start()} and {@link Player#stop()} do not need to
+	 * attach to or disconnect from the sound card.
+	 *
+	 * @throws MediaException If priming failed.
+	 * @see #becomingSolvent()
+	 * @since 2026/01/03
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract void becomingPrimed()
+		throws MediaException;
+	
+	/**
 	 * This is called when the player is becoming realized.
 	 * 
 	 * @throws MediaException If the player cannot be realized.
+	 * @see #becomingDeallocated()
 	 * @since 2022/04/24
 	 */
 	@SquirrelJMEVendorApi
@@ -115,10 +167,22 @@ public abstract class AbstractPlayer
 		throws MediaException;
 	
 	/**
+	 * This is called to close the underlying around stream.
+	 *
+	 * @throws MediaException If priming failed.
+	 * @see #becomingPrimed()
+	 * @since 2026/01/03
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract void becomingSolvent()
+		throws MediaException;
+	
+	/**
 	 * Indicates that the media is about to start.
 	 *
 	 * @return If the state should be set.
 	 * @throws MediaException If the player could not be started.
+	 * @see #becomingStopped()
 	 * @since 2022/04/24
 	 */
 	@SquirrelJMEVendorApi
@@ -129,10 +193,27 @@ public abstract class AbstractPlayer
 	 * Indicates that the player is stopping.
 	 * 
 	 * @throws MediaException If the player could not be stopped.
+	 * @see #becomingStarted()
 	 * @since 2022/04/24
 	 */
 	@SquirrelJMEVendorApi
 	protected abstract void becomingStopped()
+		throws MediaException;
+	
+	/**
+	 * Sets the current clock via fast-forwarding, this should generally
+	 * not output any audio. While this method is being called no events
+	 * will be dispatched.
+	 * 
+	 * If fast-forwarding is not needed then this should just
+	 * call {@link #clockSet(long)}.
+	 *
+	 * @param __micros The microseconds to fast-forward to.
+	 * @throws MediaException If the clock could not be set.
+	 * @since 2026/01/01
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract void clockFastForward(long __micros)
 		throws MediaException;
 	
 	/**
@@ -156,9 +237,99 @@ public abstract class AbstractPlayer
 		throws MediaException;
 	
 	/**
-	 * Determines the length of the media.
+	 * Returns whether the player/media currently requires the reset and
+	 * fast-forward method for {@link #setMediaTime(long)} to function.
+	 *
+	 * @return If reset then fast-forward is required for this media to
+	 * properly play.
+	 * @since 2026/01/02
+	 */
+	@SquirrelJMEVendorApi
+	protected abstract boolean resetFastForward();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/31
+	 */
+	@Override
+	public final void close()
+	{
+		synchronized (this)
+		{
+			// Do nothing if already closed
+			if (this.getState() <= Player.CLOSED)
+				return;
+			
+			// Always force close to be set after potential deallocation
+			try
+			{
+				// Deallocate if realized
+				if (this.getState() >= Player.REALIZED)
+					this.deallocate();
+			}
+			finally
+			{
+				// Force the closed state to always occur
+				this.setState(Player.CLOSED);
+			}
+			
+			// Does the sound card need to become solvent?
+			if (this._isPrimed)
+				try
+				{
+					this._isPrimed = false;
+					this.becomingSolvent();
+				}
+				catch (MediaException __e)
+				{
+					__e.printStackTrace();
+				}
+		}
+		
+		// Send the closed event now that everything is closed
+		this.dispatchEvent(PlayerListener.CLOSED, null);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/15
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public final void deallocate()
+		throws IllegalStateException
+	{
+		synchronized (this)
+		{
+			int state = this.getState();
+			if (state <= Player.CLOSED)
+				throw new IllegalStateException("EA06");
+			
+			// Do nothing if already in deallocated state
+			if (state <= Player.UNREALIZED)
+				return;
+			
+			try
+			{
+				// Stop playing first, if it is playing at all
+				if (state >= Player.STARTED)
+					this.stop();
+				
+				// Now becoming deallocated (unrealized)
+				this.becomingDeallocated();
+				this.setState(Player.UNREALIZED);
+			}
+			catch (MediaException __e)
+			{
+				__e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Determines the length of the media in microseconds.
 	 * 
-	 * @return The media length.
+	 * @return The media length in microseconds.
 	 * @since 2022/04/25
 	 */
 	@SquirrelJMEVendorApi
@@ -187,7 +358,7 @@ public abstract class AbstractPlayer
 			return;
 		
 		// {@squirreljme.error EA01 Player has been closed.}
-		if (this.getState() == Player.CLOSED)
+		if (this.getState() <= Player.CLOSED)
 			throw new IllegalStateException("EA01");
 		
 		// Add unique listener
@@ -208,16 +379,23 @@ public abstract class AbstractPlayer
 	@SquirrelJMEVendorApi
 	public final boolean decrementLoop()
 	{
-		int count = this._loopCounter;
-		
-		if ((--count) <= 0)
+		synchronized (this)
 		{
-			this._loopCounter = 0;
-			return true;
+			// Infinite loop?
+			int count = this._loopCounter;
+			if (count == -1)
+				return false;
+			
+			// Otherwise stop when the counter reaches zero
+			if ((--count) <= 0)
+			{
+				this._loopCounter = 0;
+				return true;
+			}
+			
+			this._loopCounter = count;
+			return false;
 		}
-		
-		this._loopCounter = count;
-		return false;
 	}
 	
 	/**
@@ -235,6 +413,13 @@ public abstract class AbstractPlayer
 	{
 		if (__key == null)
 			throw new NullPointerException("NARG");
+		
+		// Player is not permitted to dispatch events
+		synchronized (this)
+		{
+			if (this._ffNoDispatch)
+				return;
+		}
 		
 		// Send to the dispatcher
 		ListenerDispatch.dispatch(this, __key, __data);
@@ -266,7 +451,7 @@ public abstract class AbstractPlayer
 		synchronized (this)
 		{
 			// Are there no actual controls?
-			AbstractControl[] controls = this._controls;
+			AbstractControl<?>[] controls = this._controls;
 			if (controls == null)
 				return null;
 			
@@ -290,11 +475,14 @@ public abstract class AbstractPlayer
 		synchronized (this)
 		{
 			// Are there no actual controls?
-			AbstractControl[] controls = this._controls;
+			AbstractControl<?>[] controls = this._controls;
 			if (controls == null)
 				return new Control[0];
+			
+			// Need to use the base return type as the caller may be modifying
+			// the array
 			return Arrays.copyOf(controls, controls.length,
-				AbstractControl[].class);
+				Control[].class);
 		}
 	}
 	
@@ -308,30 +496,38 @@ public abstract class AbstractPlayer
 		throws IllegalStateException
 	{
 		// {@squirreljme.error EA0g Stream closed, cannot get duration.}
-		if (this.getState() == Player.CLOSED)
+		if (this.getState() <= Player.CLOSED)
 			throw new IllegalStateException("EA0g");
 		
-		// Already has been cached?
-		long cachedDuration = this._cachedDurationMicros;
-		if (cachedDuration != Long.MIN_VALUE)
-			return cachedDuration;
-		
-		// Otherwise determine the duration
+		// Lock
 		long newDuration;
-		try
+		synchronized (this)
 		{
-			newDuration = this.determineDuration();
-			this._cachedDurationMicros = newDuration;
+			// Already has been cached?
+			long cachedDuration = this._cachedDurationMicros;
+			if (cachedDuration != Long.MIN_VALUE)
+				return cachedDuration;
 			
-		}
-		catch (MediaException e)
-		{
-			return Player.TIME_UNKNOWN;
+			// Otherwise determine the duration
+			try
+			{
+				// Prefetch needs to happen for the duration to be known
+				this.prefetch();
+				
+				// Determine the duration
+				newDuration = this.determineDuration();
+				this._cachedDurationMicros = newDuration;
+			}
+			catch (MediaException e)
+			{
+				return Player.TIME_UNKNOWN;
+			}
 		}
 		
 		// Indicate the duration is available now
 		this.dispatchEvent(PlayerListener.DURATION_UPDATED, newDuration);
 		
+		// Return the calculated duration
 		return newDuration;
 	}
 	
@@ -347,10 +543,29 @@ public abstract class AbstractPlayer
 		{
 			/* {@squirreljme.error EA08 Cannot obtain the media time for a
 			closed player.} */
-			if (this.getState() == Player.CLOSED)
+			int state = this.getState();
+			if (state <= Player.CLOSED)
 				throw new IllegalStateException("EA08");
 			
-			return this.clockGet();
+			// Update the cached time and use the up-to-date one, or if the
+			// time is unknown and we knew it before return the previously
+			// cached time
+			long internalClock = this.clockGet();
+			if (internalClock != Player.TIME_UNKNOWN)
+				this.trackPosition.trackMicros = internalClock;
+			else
+			{
+				// If the player is not started, prefer the time it stopped at
+				if (state < Player.STARTED)
+					internalClock = this.trackPosition.stoppedMicros;
+				
+				// Otherwise return the time that it is currently tracked at
+				else
+					internalClock = this.trackPosition.trackMicros;
+			}
+			
+			// Return the time
+			return internalClock;
 		}
 	}
 	
@@ -415,22 +630,24 @@ public abstract class AbstractPlayer
 	public final void prefetch()
 		throws MediaException
 	{
-		int state = this.getState();
-		if (state == Player.CLOSED)
-			throw new IllegalStateException("EA0g");
-		
-		// Ignore when started or already prefetched
-		if (state == Player.STARTED ||
-			state == Player.PREFETCHED)
-			return;
-		
-		// Implicit realize, if not yet realized
-		if (state == Player.UNREALIZED)
-			this.realize();
-		
-		// Now becoming prefetched
-		this.becomingPrefetched();
-		this.setState(Player.PREFETCHED);
+		synchronized (this)
+		{
+			int state = this.getState();
+			if (state <= Player.CLOSED)
+				throw new IllegalStateException("EA0g");
+			
+			// Do nothing if already prefetched
+			if (state >= Player.PREFETCHED)
+				return;
+			
+			// Implicit realize, if not yet realized
+			if (state < Player.REALIZED)
+				this.realize();
+			
+			// Now becoming prefetched
+			this.becomingPrefetched();
+			this.setState(Player.PREFETCHED);
+		}
 	}
 	
 	/**
@@ -442,20 +659,21 @@ public abstract class AbstractPlayer
 	public final void realize()
 		throws MediaException
 	{
-		// {@squirreljme.error EA04 Player has been closed.}
-		int state = this.getState();
-		if (state == Player.CLOSED)
-			throw new IllegalStateException("EA04");
-		
-		// Ignore in these states
-		if (state == Player.REALIZED ||
-			state == Player.PREFETCHED ||
-			state == Player.STARTED)
-			return;
-		
-		// Now becoming realized
-		this.becomingRealized();
-		this.setState(Player.REALIZED);
+		synchronized (this)
+		{
+			// {@squirreljme.error EA04 Player has been closed.}
+			int state = this.getState();
+			if (state <= Player.CLOSED)
+				throw new IllegalStateException("EA04");
+			
+			// Do nothing if already realized
+			if (state >= Player.REALIZED)
+				return;
+			
+			// Now becoming realized
+			this.becomingRealized();
+			this.setState(Player.REALIZED);
+		}
 	}
 	
 	/**
@@ -475,7 +693,7 @@ public abstract class AbstractPlayer
 		synchronized (this)
 		{
 			// Add control to the end
-			AbstractControl[] controls = this._controls;
+			AbstractControl<?>[] controls = this._controls;
 			if (controls == null)
 				controls = new AbstractControl[]{__control};
 			else
@@ -503,7 +721,7 @@ public abstract class AbstractPlayer
 			return;
 		
 		// {@squirreljme.error EA02 Player has been closed.}
-		if (this.getState() == Player.CLOSED)
+		if (this.getState() <= Player.CLOSED)
 			throw new IllegalStateException("EA02");
 		
 		// Remove it
@@ -519,21 +737,24 @@ public abstract class AbstractPlayer
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void setLoopCount(int __count)
+	public final void setLoopCount(int __count)
 		throws IllegalArgumentException, IllegalStateException
 	{
 		// {@squirreljme.error EA0g Invalid loop count. (The count)}
 		if (__count == 0 || __count < -1)
 			throw new IllegalArgumentException("EA0g " + __count);
 		
-		// {@squirreljme.error EA0h Cannot set the loop count when the
-		// player has started or is closed.}
-		int state = this.getState();
-		if (state == Player.CLOSED || state == Player.STARTED)
-			throw new IllegalStateException("EA0h");
-		
-		// Set the internal loop counter
-		this._loopCounter = __count;
+		synchronized (this)
+		{
+			// {@squirreljme.error EA0h Cannot set the loop count when the
+			// player has started or is closed.}
+			int state = this.getState();
+			if (state <= Player.CLOSED || state >= Player.STARTED)
+				throw new IllegalStateException("EA0h");
+			
+			// Set the internal loop counter
+			this._loopCounter = __count;
+		}
 	}
 	
 	/**
@@ -545,15 +766,56 @@ public abstract class AbstractPlayer
 	public final long setMediaTime(long __micros)
 		throws MediaException
 	{
+		// Do not allow microseconds to be negative
+		if (__micros < 0)
+			throw new MediaException("NEGV");
+		
 		synchronized (this)
 		{
 			/* {@squirreljme.error EA09 Cannot set the media time on a closed
 			or unrealized player.} */
-			if (this.getState() == Player.CLOSED ||
-				this.getState() == Player.UNREALIZED)
+			int state = this.getState();
+			if (state <= Player.UNREALIZED)
 				throw new IllegalStateException("EA09");
 			
-			this.clockSet(__micros);
+			// If the duration is unknown, then this makes no sense
+			long duration = this.getDuration();
+			if (duration == Player.TIME_UNKNOWN)
+				return this.getMediaTime();
+			
+			// If the clock is set at exactly the end of the track or past it,
+			// set it to just before the track ends otherwise fast-forward
+			// and other sets may not be able to find the end of track as it
+			// extends to the bound
+			if (__micros >= duration)
+				__micros = duration - 1;
+			
+			// If not started, update the stopped and track time
+			if (state < Player.STARTED)
+				this.trackPosition.stoppedMicros = __micros;
+			
+			// If this does not require reset then fast-forward, just set
+			// the clock directly
+			if (!this.resetFastForward())
+				this.clockSet(__micros);
+			
+			// Otherwise reset, then fast-forward
+			else
+				try
+				{
+					// Do not dispatch events during fast forwarding, as
+					// this will very much break everything
+					this._ffNoDispatch = true;
+					
+					// Fast-forward the clock
+					this.clockFastForward(__micros);
+				}
+				finally
+				{
+					this._ffNoDispatch = false;
+				}
+			
+			// Return the set clock time
 			return this.clockGet();
 		}
 	}
@@ -566,7 +828,8 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/24
 	 */
 	@SquirrelJMEVendorApi
-	protected final void setState(int __state)
+	protected final void setState(
+		@MagicConstant(valuesFromClass = Player.class) int __state)
 		throws IllegalArgumentException
 	{
 		switch (__state)
@@ -600,43 +863,60 @@ public abstract class AbstractPlayer
 	 * {@inheritDoc}
 	 * @since 2019/04/15
 	 */
+	@SuppressWarnings("AssignmentUsedAsCondition")
 	@Override
 	@SquirrelJMEVendorApi
 	public final void start()
 		throws MediaException
 	{
-		// {@squirreljme.error EA05 Null Player has been closed.}
-		int state = this.getState();
-		if (state == Player.CLOSED)
-			throw new IllegalStateException("EA05");
-		
-		// Ignore when started
-		if (state == Player.STARTED)
-			return;
-		
-		// The player needs to be prefetched first?
-		if (state == Player.UNREALIZED ||
-			state == Player.REALIZED)
-			this.prefetch();
-		
-		// Set up the track position for starting
-		TrackPosition trackPosition = this.trackPosition;
+		boolean dispatch = false;
 		TimeBase timeBase = this.getTimeBase();
-		trackPosition.timeBase = timeBase;
-		trackPosition.basisMicros = timeBase.getTime() -
-			trackPosition.stoppedMicros;
 		
-		// Reset the loop count
-		this._loopLeft = this._loopCounter;
-		
-		// Is being started now
-		if (this.becomingStarted())
+		synchronized (this)
 		{
-			this.setState(Player.STARTED);
-		
-			// Send event
-			this.dispatchEvent(PlayerListener.STARTED, timeBase.getTime());
+			// {@squirreljme.error EA05 Null Player has been closed.}
+			int state = this.getState();
+			if (state <= Player.CLOSED)
+				throw new IllegalStateException("EA05");
+			
+			// Ignore when started
+			if (state >= Player.STARTED)
+				return;
+			
+			// The player needs to be prefetched first?
+			if (state < Player.PREFETCHED)
+				this.prefetch();
+			
+			// Does the sound card need to be primed?
+			if (!this._isPrimed)
+			{
+				this.becomingPrimed();
+				this._isPrimed = true;
+			}
+			
+			// If the loop count is zero or invalid, force it to be valid
+			int loopCounter = this._loopCounter;
+			if (loopCounter == 0)
+			{
+				loopCounter = 1;
+				this._loopCounter = loopCounter;
+			}
+			
+			// Set up the track position for starting
+			TrackPosition trackPosition = this.trackPosition;
+			trackPosition.timeBase = timeBase;
+			trackPosition.basisMicros =
+				timeBase.getTime() - trackPosition.stoppedMicros;
+			
+			// Is being started now
+			if (dispatch = this.becomingStarted())
+				this.setState(Player.STARTED);
 		}
+		
+		// Send event
+		if (dispatch)
+			this.dispatchEvent(PlayerListener.STARTED,
+				timeBase.getTime());
 	}
 	
 	/**
@@ -648,26 +928,27 @@ public abstract class AbstractPlayer
 	public final void stop()
 		throws MediaException
 	{
-		// {@squirreljme.error EA06 Null Player has been closed.}
-		int state = this.getState();
-		if (state == Player.CLOSED)
-			throw new IllegalStateException("EA06");
-		
-		// Ignore these
-		if (state == Player.UNREALIZED ||
-			state == Player.REALIZED ||
-			state == Player.PREFETCHED)
-			return;
-		
-		// Becoming stopped
-		this.becomingStopped();
-		
-		// Make sure the state stays valid
-		if (state != Player.CLOSED &&
-			state != Player.UNREALIZED &&
-			state != Player.REALIZED &&
-			state != Player.PREFETCHED)
+		synchronized (this)
+		{
+			// {@squirreljme.error EA06 Null Player has been closed.}
+			int state = this.getState();
+			if (state <= Player.CLOSED)
+				throw new IllegalStateException("EA06");
+			
+			// Ignore if already stopped
+			if (state <= Player.PREFETCHED)
+				return;
+			
+			// Request the media time before stopping so that it is kept
+			// around, additionally record the time of stopping
+			long micros = this.getMediaTime();
+			if (micros > Player.TIME_UNKNOWN)
+				this.trackPosition.stoppedMicros = micros;
+			
+			// Becoming stopped
+			this.becomingStopped();
 			this.setState(Player.PREFETCHED);
+		}
 		
 		// Send stop event
 		this.dispatchEvent(PlayerListener.STOPPED,
@@ -691,9 +972,10 @@ public abstract class AbstractPlayer
 		// We stopped via media, so go back to the start
 		try
 		{
+			// Set the media time
 			this.setMediaTime(0);
 		}
-		catch (MediaException ignored)
+		catch (IllegalStateException | MediaException ignored)
 		{
 		}
 		
@@ -741,6 +1023,179 @@ public abstract class AbstractPlayer
 					__e.printStackTrace(System.err);
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Closes the connection and wraps any {@link IOException} with
+	 * a {@link MediaException}.
+	 *
+	 * @param __in The input connection to close.
+	 * @throws MediaException If any {@link IOException} occurred.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/12/31
+	 */
+	@SquirrelJMEVendorApi
+	public static final void closeConnection(Connection __in)
+		throws MediaException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Close the input connection
+		try
+		{
+			__in.close();
+		}
+		catch (IOException __e)
+		{
+			MediaException toss = new MediaException(__e.getMessage());
+			toss.initCause(__e);
+			throw toss;
+		}
+	}
+	
+	/**
+	 * Returns the current audio snoop.
+	 *
+	 * @return The current audio snoop.
+	 * @since 2026/01/08
+	 */
+	@SquirrelJMEVendorApi
+	public static AudioStreamSnoop snoop()
+	{
+		return AbstractPlayer._snoop;
+	}
+	
+	/**
+	 * Sets the audio snoop.
+	 *
+	 * @param __snoop The snoop to set, {@code null} clears it.
+	 * @since 2026/01/08
+	 */
+	@SquirrelJMEVendorApi
+	public static void snoop(AudioStreamSnoop __snoop)
+	{
+		// Clear
+		synchronized (AbstractPlayer.class)
+		{
+			AbstractPlayer._snoop = null;
+		}
+	}
+	
+	/**
+	 * This will open the audio stream with the specified format, if it is
+	 * better, otherwise attempts to open another stream.
+	 *
+	 * @param __format The format used, if {@code -1} this will use the
+	 * preferred format specified by the {@link AudioStreamBracket}.
+	 * @param __rate The rate, if {@code -1} this will use the
+	 * preferred rate specified by the {@link AudioStreamBracket}.
+	 * @param __channels The channels, if {@code -1} this will use the
+	 * preferred channels specified by the {@link AudioStreamBracket}.
+	 * @return The audio stream.
+	 * @throws MediaException If the stream could not be opened.
+	 * @since 2026/01/08
+	 */
+	@SquirrelJMEVendorApi
+	public static AudioStreamBracket stream(
+		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
+			int __format,
+		@MagicConstant(valuesFromClass = AudioStreamRate.class)
+			int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class)
+			int __channels)
+		throws MediaException
+	{
+		synchronized (AbstractPlayer.class)
+		{
+			// Is there already a stream?
+			AudioStreamBracket common = AbstractPlayer._stream;
+			if (common != null)
+			{
+				// Get the existing format
+				int format = AbstractPlayer._streamFormat;
+				int rate = AbstractPlayer._streamRate;
+				int channels = AbstractPlayer._streamChannels;
+				
+				// If the common stream is better, use it
+				if (format >= __format || rate >= __rate ||
+					channels >= __channels)
+					return common;
+			}
+			
+			// Otherwise set up a new stream
+			try
+			{
+				// Open stream
+				AudioStreamBracket rv = AudioStreamShelf.stream(__format,
+					__rate, __channels);
+				
+				// If no common stream is open yet, make this stream the
+				// common stream
+				if (common == null)
+				{
+					// Cache it
+					AbstractPlayer._stream = rv;
+					
+					// Set format
+					AbstractPlayer._streamFormat = __format;
+					AbstractPlayer._streamRate = __rate;
+					AbstractPlayer._streamChannels = __channels;
+				}
+				
+				// Use this stream
+				return rv;
+			}
+			catch (MLECallError __e)
+			{
+				if (Debugging.ENABLED)
+					__e.printStackTrace();
+				
+				MediaException toss = new MediaException(__e.getMessage());
+				toss.initCause(__e);
+				throw toss;
+			}
+		}
+	}
+	
+	/**
+	 * Disconnects the stream given from {@link #stream(int, int, int)}.
+	 *
+	 * @param __stream The stream to disconnect.
+	 * @param __force Force close of the common stream.
+	 * @throws MediaException If the stream could not be closed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/01/08
+	 */
+	@SquirrelJMEVendorApi
+	public static void streamDisconnect(AudioStreamBracket __stream,
+		boolean __force)
+		throws MediaException, NullPointerException
+	{
+		if (__stream == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (AbstractPlayer.class)
+		{
+			// Never close the common stream, unless forced
+			AudioStreamBracket common = AbstractPlayer._stream;
+			if (__stream != common || __force)
+				try
+				{
+					if (__force && __stream == common)
+						AbstractPlayer._stream = null;
+					AudioStreamShelf.disconnect(__stream);
+				}
+				catch (MLECallError __e)
+				{
+					if (Debugging.ENABLED)
+						__e.printStackTrace();
+					
+					MediaException toss = new MediaException(__e.getMessage());
+					toss.initCause(__e);
+					throw toss;
+				}
 		}
 	}
 }

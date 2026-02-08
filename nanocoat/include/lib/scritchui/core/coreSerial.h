@@ -893,7 +893,8 @@ SDP_STRUCT_DEF(transferRegion,
 	SDX_VAR(sjme_jint, yDest);
 	SDX_VAR(sjme_jint, anchor);
 	SDX_VAR(sjme_jint, wDest);
-	SDX_VAR(sjme_jint, hDest););
+	SDX_VAR(sjme_jint, hDest);
+	SDX_VAR(sjme_scritchui_transferRegionMode, mode););
 	
 SDP_STRUCT_DEF(translate,
 	SDX_VAR(sjme_scritchui_pencil, g);
@@ -1638,7 +1639,8 @@ sjme_errorCode sjme_scritchpen_coreSerial_transferRegion(
 	sjme_attrInValue sjme_jint yDest,
 	sjme_attrInValue sjme_jint anchor,
 	sjme_attrInPositive sjme_jint wDest,
-	sjme_attrInPositive sjme_jint hDest);
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInValue sjme_scritchui_transferRegionMode mode);
 
 sjme_errorCode sjme_scritchpen_coreSerial_translate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,

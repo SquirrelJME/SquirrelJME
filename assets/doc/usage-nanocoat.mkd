@@ -1,0 +1,10 @@
+# NanoCoat Usage
+
+This covers SquirrelJME NanoCoat, for general usage see [Usage](usage.mkd).
+
+## Command Line Usage
+
+Any reference to `squirreljme` is unchanged, unless you replaced and/or use
+SquirrelJME as your system's default `java`.
+
+## Common Issues

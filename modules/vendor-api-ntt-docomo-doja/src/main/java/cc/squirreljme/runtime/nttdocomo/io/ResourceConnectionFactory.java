@@ -9,17 +9,23 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
+import cc.squirreljme.jvm.mle.JarPackageShelf;
+import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
-import com.nttdocomo.ui.IApplication;
+import cc.squirreljme.runtime.gcf.file.pseudo.LibraryEndPoint;
+import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
-import java.io.InputStream;
 import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.ConnectionOption;
+import javax.microedition.io.Connector;
+
+import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
- * Factory to create {@link ResourceConnection}.
+ * Factory to open {@code resource://} URIs.
  *
  * @see ResourceConnection
  * @since 2021/11/30
@@ -30,13 +36,12 @@ public class ResourceConnectionFactory
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@SuppressWarnings("resource")
 	@Override
 	@SquirrelJMEVendorApi
-	public Connection connect(String __part, int __mode, boolean __timeouts,
+	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
 	{
@@ -45,22 +50,29 @@ public class ResourceConnectionFactory
 		
 		// {@squirreljme.error AH0i Resource URI does not start with triple
 		// slash. (The URI part)}
-		if (!__part.startsWith("///"))
-			throw new ConnectionNotFoundException("AH0i " + __part);
+		UriGenericPart part = __part.asGeneric();
+		if (!part.getPath().startsWith("/") ||
+			(part.getAuthority() != null &&
+				!"".equals(part.getAuthority().toString())))
+			throw new ConnectionNotFoundException(
+				__error__("AH0i %s", __part));
 		
-		// Try loading the resource once
-		Class<?> pivot = IApplication.getCurrentApp().getClass();
-		String rcName = __part.substring(2);
-		try (InputStream in = pivot.getResourceAsStream(rcName))
-		{
-			// {@squirreljme.error AH0j The specified resource does not exist.
-			// (The URI part)}
-			if (in == null)
-				throw new ConnectionNotFoundException("AH0j " + __part);
-			
-			// Set up the connection
-			return new ResourceConnection(pivot, rcName);
-		}
+		/* {@squirreljme.error AH0j There is no current classpath. (The URI) */
+		JarPackageBracket[] classPath = JarPackageShelf.classPath();
+		if (classPath == null || classPath.length == 0 ||
+			classPath[classPath.length - 1] == null)
+			throw new ConnectionNotFoundException(
+				__error__("AH0j %s", __part));
+		
+		// Determine the base library connection to use
+		UriGenericPart base = LibraryEndPoint.libraryPart(
+			classPath[classPath.length - 1], null);
+		
+		// Use the library resource handler instead to open this specific
+		// file, considering that if the VM in Standalone uses Java SE the
+		// ZIP endpoint can be very broken
+		return Connector.open("file:" + base.withPath(part.getPath()),
+			__mode);
 	}
 	
 	/**

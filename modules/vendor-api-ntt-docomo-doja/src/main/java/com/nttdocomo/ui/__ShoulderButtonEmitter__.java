@@ -44,7 +44,6 @@ final class __ShoulderButtonEmitter__
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/02/14
 	 */
 	@Override

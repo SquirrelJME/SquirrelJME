@@ -7,22 +7,17 @@
 # ---------------------------------------------------------------------------
 
 # Setup base executable
-add_executable(AppDemoScritchUI
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
+add_executable(AppDemoScritchUi
 	main.c)
 
 # Include main headers
-target_include_directories(AppDemoScritchUI PUBLIC
+target_include_directories(AppDemoScritchUi PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
-# Depend on all ScritchUI targets
-add_dependencies(AppDemoScritchUI
-	${SQUIRRELJME_LIB_Base_FPIC}
-	ScritchUI)
+# Link against the base libraries
+squirreljme_link_libraries_required(AppDemoScritchUi PUBLIC
+	libJvmStatic)
 
 # Output to the base directory
-squirreljme_target_binary_output(AppDemoScritchUI
+squirreljme_target_binary_output(AppDemoScritchUi
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
-
-# Required libraries to link in
-squirreljme_target_link_libraries_required(AppDemoScritchUI)

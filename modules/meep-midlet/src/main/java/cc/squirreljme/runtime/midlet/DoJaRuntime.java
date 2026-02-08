@@ -29,6 +29,11 @@ public final class DoJaRuntime
 	public static final String LAUNCH_TYPE =
 		"X-SquirrelJME-DoJa-LaunchType";
 	
+	/** The source URL from where the application came from. */
+	@SquirrelJMEVendorApi
+	public static final String SOURCE_URL =
+		"X-SquirrelJME-DoJa-SourceUrl";
+	
 	/** Internally set properties. */
 	private static final Map<String, String> _PROPERTIES =
 		new LinkedHashMap<>();

@@ -13,6 +13,7 @@
 
 static const sjme_scritchui_implFunctions sjme_scritchui_pureFunctions =
 {
+	sjme_sm(.driverName, "pure"),
 	sjme_sm(.apiInit, NULL),
 	sjme_sm(.choiceItemInsert, NULL),
 	sjme_sm(.choiceItemRemove, NULL),

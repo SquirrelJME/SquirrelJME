@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="NanoCoatCore" pattern="file[nanocoat]:include/sjme/nvm//*||file[nanocoat]:src//*" />
+</component>

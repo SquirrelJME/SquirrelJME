@@ -45,6 +45,7 @@
             <option value="$PROJECT_DIR$/modules/dio-uart" />
             <option value="$PROJECT_DIR$/modules/dio-watchdog" />
             <option value="$PROJECT_DIR$/modules/gcf" />
+            <option value="$PROJECT_DIR$/modules/gcf-file" />
             <option value="$PROJECT_DIR$/modules/io-file" />
             <option value="$PROJECT_DIR$/modules/m3g" />
             <option value="$PROJECT_DIR$/modules/markdown-writer" />
@@ -71,6 +72,7 @@
             <option value="$PROJECT_DIR$/modules/system-app-device-info" />
             <option value="$PROJECT_DIR$/modules/system-app-game-lex-in-space" />
             <option value="$PROJECT_DIR$/modules/system-app-launcher" />
+            <option value="$PROJECT_DIR$/modules/system-app-media-player" />
             <option value="$PROJECT_DIR$/modules/tac" />
             <option value="$PROJECT_DIR$/modules/tango-icon-theme" />
             <option value="$PROJECT_DIR$/modules/tool-classfile" />
@@ -109,6 +111,7 @@
             <option value="$PROJECT_DIR$/tools/squirreljme-debugger" />
             <option value="$PROJECT_DIR$/tools/squirreljme-font" />
             <option value="$PROJECT_DIR$/tools/squirreljme-javap" />
+            <option value="$PROJECT_DIR$/tools/squirreljme-lint" />
             <option value="$PROJECT_DIR$/tools/squirreljme-rms" />
             <option value="$PROJECT_DIR$/tools/squirreljme-unzip" />
             <option value="$PROJECT_DIR$/tools/txt-to-pbm" />

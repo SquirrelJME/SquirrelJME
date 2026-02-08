@@ -6,5 +6,5 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# ScritchUI Demo
+# ScritchUi Demo
 add_subdirectory(demo-scritchui)

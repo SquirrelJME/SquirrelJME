@@ -266,7 +266,8 @@ static sjme_errorCode sjme_scritchui_win32_pencilSetStrokeStyle(
 
 const sjme_scritchui_pencilImplFunctions sjme_scritchui_win32_pencilFunctions =
 {
-	SJME_JNI_FALSE,
+	sjme_sm(.driverName, "win32"),
+	sjme_sm(.asyncSafe, SJME_JNI_FALSE),
 	sjme_sm(.close, NULL),
 	sjme_sm(.copyArea, NULL),
 	sjme_sm(.drawHorizSrc, sjme_scritchui_win32_pencilDrawHorizSrc),

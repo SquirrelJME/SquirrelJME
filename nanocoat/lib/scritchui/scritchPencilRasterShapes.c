@@ -19,7 +19,21 @@
 	#define SJME_ANGLE_RAD 0.017453292f
 #endif
 
-sjme_errorCode sjme_scritchpen_corePrim_drawArc(
+static sjme_errorCode sjme_scritchpen_core_clipPolygon(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull const sjme_jint* inXPoints,
+	sjme_attrInNotNull const sjme_jint* inYPoints,
+	sjme_attrInPositive sjme_jint nPoints,
+	sjme_attrInNotNull sjme_scritchui_line* clipLine)
+{
+	if (g == NULL || inXPoints == NULL || inYPoints == NULL ||
+		clipLine == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawArc(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -130,7 +144,7 @@ fail_any:
 #endif
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_fillArc(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillArc(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -270,7 +284,7 @@ fail_any:
 #endif
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_fillPolygon(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_jint* inXPoints,
 	sjme_attrInPositive sjme_jint xOffset,
@@ -460,7 +474,7 @@ fail_alloc:
 	return sjme_error_default(error);
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_fillTriangle(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillTriangle(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -493,7 +507,7 @@ sjme_errorCode sjme_scritchpen_corePrim_fillTriangle(
 		SJME_JNI_TRUE);
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_drawRect(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -533,7 +547,7 @@ sjme_errorCode sjme_scritchpen_corePrim_drawRect(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_fillRect(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -955,6 +969,8 @@ sjme_errorCode sjme_scritchpen_core_fillPolygon(
 	sjme_jint i, allocBytes;
 	sjme_jint* xPoints;
 	sjme_jint* yPoints;
+	sjme_scritchui_line* clipLine;
+	sjme_jboolean needsClipping;
 
 	if (g == NULL || inXPoints == NULL || inYPoints == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -992,14 +1008,30 @@ sjme_errorCode sjme_scritchpen_core_fillPolygon(
 	for (i = 0; i < nPoints; i++)
 		sjme_scritchpen_coreUtil_applyTranslate(g,
 			&xPoints[i], &yPoints[i]);
+	
+	/* Check to see if clipping needs to be performed on the polygon. */
+	clipLine = &g->state.clipLine;
+	needsClipping = SJME_JNI_FALSE;
+	for (i = 0; i < nPoints; i++)
+		needsClipping |= (xPoints[i] < clipLine->s.x || 
+			yPoints[i] < clipLine->s.y ||
+			xPoints[i] > clipLine->e.x || 
+			yPoints[i] > clipLine->e.y);
+	
+	/* Perform Sutherland-Hodgman clipping for any software which decides */
+	/* it should draw absurdly large polygons. */
+	if (needsClipping)
+		if (sjme_error_is(error = sjme_scritchpen_core_clipPolygon(g,
+			xPoints, yPoints, nPoints, clipLine)))
+			goto fail_clipPolygon;
 
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		goto fail_lock;
 	
-	/* Use primitives draw operation. */
+	/* Use primitive draw operation. */
 	if (sjme_error_is(error = g->prim.fillPolygon(g,
-		xPoints, xOffset, yPoints, yOffset, nPoints,
+		xPoints, 0, yPoints, 0, nPoints,
 		SJME_JNI_TRUE)))
 		goto fail_any;
 		
@@ -1018,6 +1050,7 @@ fail_any:
 	/* Release lock before failing */
 	sjme_scritchpen_core_lockRelease(g);
 
+fail_clipPolygon:
 fail_unlock:
 fail_lock:
 fail_alloc:
@@ -1176,29 +1209,27 @@ sjme_errorCode sjme_scritchpen_core_fillTriangle(
 	sjme_attrInValue sjme_jint x3,
 	sjme_attrInValue sjme_jint y3)
 {
-	sjme_errorCode error;
-
+	sjme_jint xPoints[3];
+	sjme_jint yPoints[3];
+	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* Lock. */
-	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
-		return sjme_error_default(error);
 	
-	/* Use primitive draw. */
-	if (sjme_error_is(error = g->prim.fillTriangle(g, x1, y1, x2, y2, x3, y3)))
-		goto fail_any;
-		
-	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
-	
-	/* Success? */
-	return error;
-	
-fail_any:
-	/* Release lock before failing */
-	sjme_scritchpen_core_lockRelease(g);
-	
-	return sjme_error_default(error);
+	/* A triangle is just a polygon with 3 vertices, so just call */
+	/* fillPolygon() to draw it like any other in Software mode, for */
+	/* consistency. */
+	xPoints[0] = x1;
+	yPoints[0] = y1;
+	xPoints[1] = x2;
+	yPoints[1] = y2;
+	xPoints[2] = x3;
+	yPoints[2] = y3;
+
+	/* TODO: For now use the polygon filling algorithm. Note that the normal */
+	/* TODO: triangle drawing algorithm will be much faster in the future. */
+	/* TODO: Note that this should not do the primitive draw directly as */
+	/* TODO: that does not handle any kind of translation and/or clipping. */
+	return g->apiInThread->fillPolygon(g,
+		&xPoints[0], 0,
+		&yPoints[0], 0, 3);
 }

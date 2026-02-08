@@ -22,7 +22,6 @@ public class TestConstType
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2023/06/05
 	 */
 	@Override

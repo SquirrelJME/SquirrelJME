@@ -41,6 +41,7 @@ static LRESULT WINAPI sjme_scritchui_win32_windowProcForward(
 
 static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 {
+	sjme_sm(.driverName, "win32"),
 	sjme_sm(.apiInit, sjme_scritchui_win32_apiInit),
 	sjme_sm(.choiceItemInsert, NULL),
 	sjme_sm(.choiceItemRemove, NULL),

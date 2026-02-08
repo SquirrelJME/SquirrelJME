@@ -528,7 +528,7 @@ typedef union sjme_jfloat
 
 #if defined(SJME_CONFIG_HAS_FLOAT_HARD)
 	/** The native float value. */
-	float native;
+	sjme_jfloatNative native;
 #endif
 } sjme_jfloat;
 
@@ -570,7 +570,7 @@ typedef union sjme_jdouble
 
 #if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
 	/** Native hardware double value. */
-	double native;
+	sjme_jdoubleNative native;
 #endif
 } sjme_jdouble;
 

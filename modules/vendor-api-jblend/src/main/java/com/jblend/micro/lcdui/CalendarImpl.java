@@ -20,19 +20,19 @@ public class CalendarImpl implements CalendarInterface {
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public void paint(Graphics var1, int var2, int var3, int var4, int var5, int var6, int var7)
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public String getBackCommand()
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public String getSaveCommand()
 	{
 		throw Debugging.todo();

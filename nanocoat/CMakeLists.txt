@@ -7,24 +7,15 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Defines the base project and the versioning info
 
-# Allow a dynamic range of CMake versions to allow older systems
+# Required Minimum
 message(STATUS "Detected CMake (${CMAKE_VERSION})")
-if(${CMAKE_VERSION} VERSION_LESS "3.7")
-	cmake_minimum_required(VERSION 3.0)
-elseif(${CMAKE_VERSION} VERSION_LESS "3.13")
-	cmake_minimum_required(VERSION 3.7)
-else()
-	cmake_minimum_required(VERSION 3.13)
-endif()
-
-# Default to release if no build type is specified
-if(NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
-	set(CMAKE_BUILD_TYPE "Release"
-		CACHE STRING "" FORCE)
-endif()
+cmake_minimum_required(VERSION 3.12)
 
 # Easier includes
 include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
+
+# Up-to-date info for NanoCoat, used to trigger reconfigures
+squirreljme_include("up-to-date-when.cmake")
 
 # Determine version information from the base file
 squirreljme_include("identify-squirreljme-version-file.cmake")
@@ -42,6 +33,9 @@ Virtual Machine for embedded and Internet of Things devices."
 		HOMEPAGE_URL https://squirreljme.cc/
 		LANGUAGES C)
 endif()
+
+# Enable C (again)
+enable_language(C)
 
 # Determine version information
 squirreljme_include("identify-squirreljme-version.cmake")

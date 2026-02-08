@@ -73,11 +73,21 @@ public class VMRunTaskAction
 		SquirrelJMEPluginConfiguration config =
 			SquirrelJMEPluginConfiguration.configuration(__task.getProject());
 		
+		// The running classpath, can be added to
+		List<Path> runClassPath = new ArrayList<>();
+		runClassPath.addAll(Arrays.asList(
+			VMHelpers.runClassPath(__task, this.classifier, true)));
+		
+		// Additional items onto the library set?
+		String exLib = System.getProperty(
+			VMFullSuiteTaskAction.LIBRARIES_PROPERTY);
+		if (exLib != null && !exLib.isEmpty())
+			runClassPath.addAll(VMHelpers.fullExtra(exLib));
+		
 		// Setup detached runner then execute it
 		new VMRunTaskDetached(this.classifier,
 			__task.getLogger(),
-			VMHelpers.runClassPath(__task,
-				this.classifier, true),
+			runClassPath.toArray(new Path[runClassPath.size()]),
 			runTask.midlet,
 			VMHelpers.mainClass(config, runTask.midlet),
 			runTask.getProject().getBuildDir().toPath(),
