@@ -20,6 +20,9 @@ squirreljme_include("up-to-date-when.cmake")
 # Determine version information from the base file
 squirreljme_include("identify-squirreljme-version-file.cmake")
 
+# Special compiler shims
+squirreljme_include("compiler-shim.cmake")
+
 # Define project
 if(${CMAKE_VERSION} VERSION_LESS "3.12")
 	project(SquirrelJME

@@ -291,6 +291,7 @@ sjme_errorCode sjme_list_flattenArgNul(
 	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outList,
 	sjme_attrInNotNull sjme_lpcstr inNulString)
 {
+	sjme_errorCode error;
 	sjme_jint count, i, allocLen;
 	sjme_lpcstr at;
 	sjme_lpcstr* argV;
@@ -317,8 +318,20 @@ sjme_errorCode sjme_list_flattenArgNul(
 		argV[i] = at;
 	
 	/* Perform the flattening. */
-	return sjme_list_flattenArgCV(allocPool,
-		(sjme_list(sjme_lpstr)**)outList, count, argV);
+	if (sjme_error_is(error = sjme_list_flattenArgCV(allocPool,
+		(sjme_list(sjme_lpstr)**)outList, count, argV)))
+		goto fail_flatten;
+	
+	/* Cleanup. */
+	sjme_alloca_free(argV);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_flatten:
+	if (argV != NULL)
+		sjme_alloca_free(argV);
+	return sjme_error_default(error);
 }
 
 static sjme_jint sjme_list_injectGrowComparator(sjme_cpointer a,
@@ -359,14 +372,14 @@ sjme_errorCode sjme_list_injectGrowR(
 	/* Allocate nothing to compare against. */
 	nothing = sjme_alloca(elementSize);
 	if (nothing == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, elementSize);
 	memset(nothing, 0, elementSize);
 
 	/* Find the first free slot. */
 	n = ((sjme_list_void*)(*inOutList))->length;
 	if (sjme_error_is(error = sjme_list_search(*inOutList,
 		sjme_list_injectGrowComparator, &nothing, &freeSlot)))
-		return sjme_error_default(error);
+		goto fail_findFirst;
 
 	/* No free slot found, grow the list. */
 skip_grow:
@@ -377,7 +390,7 @@ skip_grow:
 			n + growSize,
 			inOutList, elementSize, elementOffset, pointerCheck
 			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)))
-			return sjme_error_default(error);
+			goto fail_replace;
 
 		/* The free slot is at the end. */
 		freeSlot = n;
@@ -386,10 +399,20 @@ skip_grow:
 	/* Store here. */
 skip_store:
 	memmove(SJME_POINTER_OFFSET((*inOutList),
-		elementOffset + (elementSize * freeSlot)), injectValuePtr, elementSize);
-
+		elementOffset + (elementSize * freeSlot)),
+		injectValuePtr, elementSize);
+	
+	/* Cleanup. */
+	sjme_alloca_free(nothing);
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
+	
+fail_replace:
+fail_findFirst:
+	if (nothing != NULL)
+		sjme_alloca_free(nothing);
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_list_newAR(

@@ -15,6 +15,7 @@ include(CheckCCompilerFlag)
 include(CheckLinkerFlag)
 include(CheckIncludeFile)
 include(CheckLibraryExists)
+include(CheckSymbolExists)
 
 # Debugging
 message(STATUS "Library Path: ${CMAKE_LIBRARY_PATH}")
@@ -22,11 +23,12 @@ message(STATUS "Prefix Path: ${CMAKE_PREFIX_PATH}")
 message(STATUS "Library Path (System): ${CMAKE_SYSTEM_LIBRARY_PATH}")
 message(STATUS "Prefix Path (System): ${CMAKE_SYSTEM_PREFIX_PATH}")
 
-# Debugging?
-if(SQUIRRELJME_IS_DEBUG)
-	add_compile_definitions(SJME_CONFIG_DEBUG=1)
-elseif(SQUIRRELJME_IS_RELEASE)
+# Debugging? SDCC does not like extra debugging info
+if(SQUIRRELJME_IS_RELEASE OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "sdcc")
 	add_compile_definitions(SJME_CONFIG_RELEASE=1)
+elseif(SQUIRRELJME_IS_DEBUG)
+	add_compile_definitions(SJME_CONFIG_DEBUG=1)
 endif()
 
 # Do not install with RPATH, CMake does relinking in build/install which
@@ -348,13 +350,13 @@ macro(squirreljme_notfound_strip var)
 endmacro()
 
 # float.h available?
-CHECK_INCLUDE_FILE("float.h" SJME_CONFIG_HAS_FLOAT_H)
+check_include_file("float.h" SJME_CONFIG_HAS_FLOAT_H)
 if(NOT SJME_CONFIG_HAS_FLOAT_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_FLOAT_H=1)
 endif()
 
 # dlfcn.h available?
-CHECK_INCLUDE_FILE("dlfcn.h" SJME_CONFIG_HAS_DLFCN_H)
+check_include_file("dlfcn.h" SJME_CONFIG_HAS_DLFCN_H)
 if(NOT SJME_CONFIG_HAS_DLFCN_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_DLFCN_H=1)
 else()
@@ -362,7 +364,7 @@ else()
 endif()
 
 # stdarg.h available?
-CHECK_INCLUDE_FILE("stdarg.h" SJME_CONFIG_HAS_STDARG_H)
+check_include_file("stdarg.h" SJME_CONFIG_HAS_STDARG_H)
 if(NOT SJME_CONFIG_HAS_STDARG_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_STDARG_H=1)
 else()
@@ -370,7 +372,7 @@ else()
 endif()
 
 # inttypes.h available?
-CHECK_INCLUDE_FILE("inttypes.h" SJME_CONFIG_HAS_INTTYPES_H)
+check_include_file("inttypes.h" SJME_CONFIG_HAS_INTTYPES_H)
 if(NOT SJME_CONFIG_HAS_INTTYPES_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_INTTYPES_H=1)
 else()
@@ -378,7 +380,7 @@ else()
 endif()
 
 # varargs.h available?
-CHECK_INCLUDE_FILE("varargs.h" SJME_CONFIG_HAS_VARARGS_H)
+check_include_file("varargs.h" SJME_CONFIG_HAS_VARARGS_H)
 if(NOT SJME_CONFIG_HAS_VARARGS_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_VARARGS_H=1)
 else()
@@ -386,21 +388,29 @@ else()
 endif()
 
 # threads.h available?
-CHECK_INCLUDE_FILE("threads.h" SJME_CONFIG_HAS_THREADS_H)
+check_include_file("threads.h" SJME_CONFIG_HAS_THREADS_H)
 if(NOT SJME_CONFIG_HAS_THREADS_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_C11_THREADS=1)
 endif()
 
 # sys/socket.h available?
-CHECK_INCLUDE_FILE("sys/socket.h" SJME_CONFIG_HAS_SYS_SOCKET_H)
+check_include_file("sys/socket.h" SJME_CONFIG_HAS_SYS_SOCKET_H)
 if(NOT SJME_CONFIG_HAS_SYS_SOCKET_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_SYS_SOCKET_H=1)
 else()
 	add_compile_definitions(SJME_CONFIG_HAS_SYS_SOCKET_H=1)
 endif()
 
+# ctype.h available?
+check_include_file("ctype.h" SJME_CONFIG_HAS_CTYPE_H)
+if(NOT SJME_CONFIG_HAS_CTYPE_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_CTYPE_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_CTYPE_H=1)
+endif()
+
 # netinet/in.h available?
-CHECK_INCLUDE_FILE("netinet/in.h" SJME_CONFIG_HAS_NETINET_IN_H)
+check_include_file("netinet/in.h" SJME_CONFIG_HAS_NETINET_IN_H)
 if(NOT SJME_CONFIG_HAS_NETINET_IN_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_NETINET_IN_H=1)
 else()
@@ -408,7 +418,7 @@ else()
 endif()
 
 # sys/ioctl.h available?
-CHECK_INCLUDE_FILE("sys/ioctl.h" SJME_CONFIG_HAS_SYS_IOCTL_H)
+check_include_file("sys/ioctl.h" SJME_CONFIG_HAS_SYS_IOCTL_H)
 if(NOT SJME_CONFIG_HAS_SYS_IOCTL_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_SYS_IOCTL_H=1)
 else()
@@ -416,7 +426,7 @@ else()
 endif()
 
 # stropts.h available?
-CHECK_INCLUDE_FILE("stropts.h" SJME_CONFIG_HAS_STROPTS_H)
+check_include_file("stropts.h" SJME_CONFIG_HAS_STROPTS_H)
 if(NOT SJME_CONFIG_HAS_STROPTS_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_STROPTS_H=1)
 else()
@@ -424,7 +434,7 @@ else()
 endif()
 
 # errno.h available?
-CHECK_INCLUDE_FILE("errno.h" SJME_CONFIG_HAS_ERRNO_H)
+check_include_file("errno.h" SJME_CONFIG_HAS_ERRNO_H)
 if(NOT SJME_CONFIG_HAS_ERRNO_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_ERRNO_H=1)
 else()
@@ -432,17 +442,65 @@ else()
 endif()
 
 # poll.h available?
-CHECK_INCLUDE_FILE("poll.h" SJME_CONFIG_HAS_POLL_H)
+check_include_file("poll.h" SJME_CONFIG_HAS_POLL_H)
 if(NOT SJME_CONFIG_HAS_POLL_H)
 	add_compile_definitions(SJME_CONFIG_HAS_NO_POLL_H=1)
 else()
 	add_compile_definitions(SJME_CONFIG_HAS_POLL_H=1)
 endif()
 
+# stdint.h available?
+check_include_file("stdint.h" SJME_CONFIG_HAS_STDINT_H)
+if(NOT SJME_CONFIG_HAS_STDINT_H)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_STDINT_H=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_STDINT_H=1)
+endif()
+
 # Is the SDK version header information available?
-CHECK_INCLUDE_FILE("sdkddkver.h" WIN32_SDKDDKVER_INCLUDE)
+check_include_file("sdkddkver.h" WIN32_SDKDDKVER_INCLUDE)
 if(WIN32_SDKDDKVER_INCLUDE)
 	add_compile_definitions(SJME_CONFIG_HAS_SDKDDKVER_H=1)
+endif()
+
+# getenv()?
+check_symbol_exists("getenv" "stdlib.h" SJME_CONFIG_HAS_GETENV)
+if(NOT SJME_CONFIG_HAS_GETENV)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_GETENV=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_GETENV=1)
+endif()
+
+# strcasecmp()?
+check_symbol_exists("strcasecmp" "strings.h" SJME_CONFIG_HAS_STRCASECMP)
+if(NOT SJME_CONFIG_HAS_STRCASECMP)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_STRCASECMP=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_STRCASECMP=1)
+endif()
+
+# stricmp()?
+check_symbol_exists("stricmp" "string.h" SJME_CONFIG_HAS_STRICMP)
+if(NOT SJME_CONFIG_HAS_STRICMP)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_STRICMP=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_STRICMP=1)
+endif()
+
+# toupper()?
+check_symbol_exists("toupper" "ctype.h" SJME_CONFIG_HAS_TOUPPER)
+if(NOT SJME_CONFIG_HAS_TOUPPER)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_TOUPPER=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_TOUPPER=1)
+endif()
+
+# tolower()?
+check_symbol_exists("tolower" "ctype.h" SJME_CONFIG_HAS_TOLOWER)
+if(NOT SJME_CONFIG_HAS_TOLOWER)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_TOLOWER=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_TOLOWER=1)
 endif()
 
 # snprintf() available?

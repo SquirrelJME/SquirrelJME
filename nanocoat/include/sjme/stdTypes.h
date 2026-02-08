@@ -490,16 +490,16 @@ typedef union sjme_jlong
 	{
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
 		/** Low value. */
-		sjme_juint lo : 32;
+		sjme_juint lo;
 	
 		/** High value. */
-		sjme_jint hi : 32;
+		sjme_jint hi;
 #else
 		/** High value. */
-		sjme_jint hi : 32;
+		sjme_jint hi;
 		
 		/** Low value. */
-		sjme_juint lo : 32;
+		sjme_juint lo;
 #endif
 	} part;
 	
@@ -552,16 +552,16 @@ typedef union sjme_jdouble
 	{
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
 		/** Low value. */
-		sjme_juint lo : 32;
+		sjme_juint lo;
 
 		/** High value. */
-		sjme_juint hi : 32;
+		sjme_juint hi;
 #else
 		/** High value. */
-		sjme_juint hi : 32;
+		sjme_juint hi;
 		
 		/** Low value. */
-		sjme_juint lo : 32;
+		sjme_juint lo;
 #endif
 	} bits;
 

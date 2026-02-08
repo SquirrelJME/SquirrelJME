@@ -67,6 +67,10 @@
 	#include <stdatomic.h>
 #endif
 
+#if defined(SJME_CONFIG_HAS_CTYPE_H)
+	#include <ctype.h>
+#endif
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED
@@ -478,9 +482,35 @@ int vsnprintf(
 	#define va_copy(d, s) ((d) = (s))
 #endif
 
-#if defined(SJME_CONFIG_HAS_MSVC)
+#if defined(SJME_CONFIG_HAS_MSVC) || defined(SJME_CONFIG_HAS_STRICMP)
 	/** Compare two strings without regarding case. */
 	#define strcasecmp stricmp
+	
+	/** Compare two strings without regarding case, limit length. */
+	#define strncasecmp strnicmp
+	
+	#if !defined(SJME_CONFIG_HAS_STRICMP)
+		/** stricmp() is available. */
+		#define SJME_CONFIG_HAS_STRICMP
+	#endif
+#endif
+	
+#if !defined(SJME_CONFIG_HAS_NO_TOLOWER)
+int tolower(int c);
+#endif
+	
+#if !defined(SJME_CONFIG_HAS_NO_TOUPPER)
+int toupper(int c);
+#endif
+	
+#if !defined(SJME_CONFIG_HAS_STRCASECMP) && !defined(SJME_CONFIG_HAS_STRICMP)
+int strcasecmp(const char* a, const char* b);
+int strncasecmp(const char* a, const char* b, size_t n);
+#endif
+	
+#if !defined(EXIT_FAILURE)
+	/** Exit with failure. */
+	#define EXIT_FAILURE 1
 #endif
 	
 /*--------------------------------------------------------------------------*/

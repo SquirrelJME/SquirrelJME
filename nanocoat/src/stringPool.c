@@ -230,22 +230,40 @@ sjme_errorCode sjme_nvm_stringPool_locateStreamR(
 	/* Need to read in everything. */
 	if (sjme_error_is(error = sjme_stream_inputReadFully(
 		inStream, &count, chars, length)))
-		return sjme_error_default(error);
+		goto fail_readFully;
 	
 	/* Too short of a read? */
 	if (count != length)
-		return SJME_ERROR_END_OF_FILE;
+	{
+		error = SJME_ERROR_END_OF_FILE;
+		goto fail_eof;
+	}
 
 	/* Setup base sequence. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&seq,
 		(sjme_lpcstr)chars, 0, length)))
-		return sjme_error_default(error);
+		goto fail_newStatic;
 	
 	/* Use normal locating logic. */
-	return sjme_nvm_stringPool_locateSeqR(inStringPool,
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeqR(inStringPool,
 		outString, &seq, 0 
-		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)))
+		goto fail_locateSeq;
+	
+	/* Cleanup. */
+	sjme_alloca_free(chars);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_locateSeq:
+fail_newStatic:
+fail_eof:
+fail_readFully:
+	if (chars != NULL)
+		sjme_alloca_free(chars);
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_nvm_stringPool_locateUtfR(
