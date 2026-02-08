@@ -26,47 +26,15 @@ dependencies
 	api project(":modules:scritch-ui")
 }
 
-// Directory where all natives will be placed
-java.nio.file.Path dylibBase = project.buildDir.toPath()
-	.resolve("squirreljme").resolve("natives").toAbsolutePath()
-
-static java.nio.file.Path dylibPath(java.nio.file.Path __dylibBase, String __suffix) {
-	return __dylibBase.resolve(__suffix)
-}
-
-static List<String> dylibArgs(java.nio.file.Path __dylibBase, String __suffix) {
-	return [	
-		"-DSQUIRRELJME_EMULATOR_BASE_IMPORT_DIR=${dylibPath(__dylibBase, "core")}".toString(),
-		"-DSQUIRRELJME_DYLIB_OUTPUT_DIR=${dylibPath(__dylibBase, __suffix)}".toString(),
-		"-DSQUIRRELJME_BINARY_OUTPUT_DIR=${dylibPath(__dylibBase, __suffix)}".toString()
-	]
-}
-
 // Native emulator support library
-Provider<CMakeBuildTask> libNativeEmulatorBase = tasks.register(
-	"libNativeEmulatorBase",
+Provider<CMakeBuildTask> libNatives = tasks.register(
+	"libNatives",
 	CMakeBuildTask.class,
 	project.getProjectDir().toPath().getParent()
 		.resolve("emulator-base-native"),
-	"",
-	["libEmulatorBase"],
-	dylibArgs(dylibBase, "emulator"))
-
-// NanoCoat core libraries along with ScritchUI and ScritchAudio
-Provider<CMakeBuildTask> libNanoCoatCore = tasks.register(
-	"libNanoCoatCore",
-	CMakeBuildTask.class,
-	rootProject.getProjectDir().toPath().resolve("nanocoat"),
-	"",
-	["BaseStatic", "libJvmDyLib", "ScritchUI", "ScritchAudio"],
-	dylibArgs(dylibBase, "core"))
-
-// Add additional output directories
-libNativeEmulatorBase.get().outputs.dir(dylibPath(dylibBase, "emulator"))
-libNanoCoatCore.get().outputs.dir(dylibPath(dylibBase, "core"))
-
-// The base library needs to exist first
-libNativeEmulatorBase.get().dependsOn(libNanoCoatCore)
+	"bin/natives.zip",
+	["bundleNatives"],
+	[])
 
 // Decoding of mime resources
 Provider<MimeDecodeResourcesTask> mimeDecode = tasks.register(
@@ -76,52 +44,23 @@ Provider<MimeDecodeResourcesTask> mimeDecode = tasks.register(
 	tasks.named("clean").get())
 
 processResources.dependsOn(mimeDecode)
-processResources.dependsOn(libNanoCoatCore)
-processResources.dependsOn(libNativeEmulatorBase)
+processResources.dependsOn(libNatives)
 
-compileJava.dependsOn(libNanoCoatCore)
-compileJava.dependsOn(libNativeEmulatorBase)
+compileJava.dependsOn(libNatives)
 
-mimeDecode.get().dependsOn(libNanoCoatCore)
-mimeDecode.get().dependsOn(libNativeEmulatorBase)
-
-// Package native libraries into OS and architecture dependent areas
-TaskProvider<Zip> archiveNatives = tasks.register('archiveNatives', Zip.class) {
-	dependsOn libNanoCoatCore, libNativeEmulatorBase
-	
-	group = "squirreljme"
-	description = "Archives the native SquirrelJME libraries."
-	
-	destinationDirectory.set(project.buildDir.toPath().resolve("libs").toFile())
-	archiveBaseName.set(project.provider({ ->
-		return "natives-" + (String)rootProject.squirreljmeSystemDash
-	}))
-	
-	// The sources
-	from project.provider({ ->
-		return fileTree(dylibPath(dylibBase, "emulator")).getElements()
-	})
-	from project.provider({ ->
-		return fileTree(dylibPath(dylibBase, "core")).getElements()
-	})
-	
-	// Where it is going
-	into project.provider({ ->
-		return "/natives/" + (String)rootProject.squirreljmeSystemSlash + "/"
-	})
-} as TaskProvider<Zip>
+mimeDecode.get().dependsOn(libNatives)
 
 // We need the native library in the JAR before we can properly use it
 // But we can compile the Java code just fine without it
 jar {
-	dependsOn mimeDecode, archiveNatives
+	dependsOn mimeDecode, libNatives
 	
 	inputs.files(project.provider({ ->
-		archiveNatives.get().outputs.getFiles().getSingleFile()
+		libNatives.get().cmakeOutFile.toFile()
 	}))
 	
 	from project.provider({ ->
-		zipTree(archiveNatives.get().outputs.getFiles().getSingleFile())
+		zipTree(libNatives.get().cmakeOutFile.toFile())
 			.getAsFileTree()
 	})
 	

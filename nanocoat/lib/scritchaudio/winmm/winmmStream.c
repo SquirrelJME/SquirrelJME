@@ -121,8 +121,9 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_rate inRate,
 	sjme_attrInNegativeOnePositive sjme_scritchaudio_channels inChannels)
 {
+	sjme_errorCode error;
 	MMRESULT mmResult;
-	HWAVEOUT handle;
+	HWAVEOUT hWaveOut;
 	WAVEFORMATEXTENSIBLE format;
 
 	if (inState == NULL || inOutStream == NULL || inName == NULL)
@@ -160,13 +161,13 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 			0x00, 0x38, 0x9b, 0x71);
 	}
 
-	/* Samples.. */
+	/* Samples. */
 	format.Format.wBitsPerSample =
 		sjme_scritchaudio_bytesPerSample[inFormat] * 8;
 	format.Samples.wValidBitsPerSample = format.Format.wBitsPerSample;
 	format.Format.nSamplesPerSec = inRate;
 
-	/* Channels */
+	/* Channels. */
 	format.dwChannelMask = (1 << inChannels) - 1;
 	format.Format.nChannels = inChannels;
 
@@ -176,22 +177,49 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	format.Format.nAvgBytesPerSec = format.Format.nSamplesPerSec *
 		format.Format.nBlockAlign;
 
-	/* Open the default device. */
-	handle = NULL;
-	mmResult = waveOutOpen(&handle, WAVE_MAPPER, (WAVEFORMATEX*)&format,
-		0, 0, WAVE_FORMAT_DIRECT | CALLBACK_NULL);
-	if (mmResult != MMSYSERR_NOERROR || handle == NULL)
-		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
-
-	/* Set stream details. */
+	/* Set stream info. */
 	inOutStream->format = inFormat;
 	inOutStream->rate = inRate;
 	inOutStream->channels = inChannels;
-	inOutStream->data.handle = handle;
 	inOutStream->connection.noPeers = sjme_scritchaudio_winmm_peerNone;
 	inOutStream->connection.peerDisconnect =
 		sjme_scritchaudio_winmm_peerDisconnect;
 
+	/* Calculate the render info. */
+	hWaveOut = NULL;
+	if (sjme_error_is(error = inState->intern->calcRenderInfo(
+		inState, inOutStream, NULL, &inOutStream->data.renderInfo)))
+		goto fail_any;
+
+	/* Headers are this big. */
+	inOutStream->data.headerSize = sizeof(WAVEHDR);
+
+	/* Open the default device. */
+	mmResult = waveOutOpen(&hWaveOut, WAVE_MAPPER, (WAVEFORMATEX*)&format,
+		(DWORD_PTR)inState->impl->nativeCallback,
+		(DWORD_PTR)inOutStream,
+		WAVE_FORMAT_DIRECT | CALLBACK_FUNCTION | WAVE_ALLOWSYNC);
+	if (mmResult != MMSYSERR_NOERROR || hWaveOut == NULL)
+		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_message("waveOutOpen: Success!");
+#endif
+
+	/* Set stream details. */
+	inOutStream->data.handle = hWaveOut;
+
+	/* Playback needs to be "resumed" */
+	waveOutRestart(hWaveOut);
+
 	/* Return the resultant stream. */
 	return SJME_ERROR_NONE;
+
+fail_allocBuf:
+fail_any:
+	if (hWaveOut != NULL)
+		waveOutClose(hWaveOut);
+
+	return sjme_error_default(error);
 }

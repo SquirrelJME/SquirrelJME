@@ -110,7 +110,7 @@ static sjme_errorCode sjme_scritchaudio_core_peerNoneSource(
 		
 		/* Grab the lock. */
 		if (sjme_error_is(error = sjme_thread_spinLockGrab(
-			inState->lock)))
+			inStream->connection.lock)))
 			return sjme_error_default(error);
 
 		/* Clear out matching source. */
@@ -125,7 +125,7 @@ static sjme_errorCode sjme_scritchaudio_core_peerNoneSource(
 
 		/* Release lock. */
 		if (sjme_error_is(error = sjme_thread_spinLockRelease(
-			inState->lock, NULL)))
+			inStream->connection.lock, NULL)))
 			return sjme_error_default(error);
 	}
 
@@ -181,7 +181,7 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 	/* Lock current connection. */
-	sharedLock = inState->lock;
+	sharedLock = inConn->lock;
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(sharedLock)))
 		return sjme_error_default(error);
 	
@@ -272,7 +272,7 @@ sjme_errorCode sjme_scritchaudio_core_peerConnect(
 #endif
 
 	/* Grab peer lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(inState->lock)))
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(inConn->lock)))
 		goto fail_peerGrab;
 
 	/* Connect forwards, then backwards. */
@@ -284,7 +284,7 @@ sjme_errorCode sjme_scritchaudio_core_peerConnect(
 		goto fail_backwards;
 	
 	/* Release peer lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(inState->lock,
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(inConn->lock,
 		NULL)))
 		goto fail_releaseLock;
 
@@ -294,7 +294,7 @@ sjme_errorCode sjme_scritchaudio_core_peerConnect(
 fail_backwards:
 fail_forwards:
 fail_peerGrab:
-	sjme_thread_spinLockRelease(inState->lock, NULL);
+	sjme_thread_spinLockRelease(inConn->lock, NULL);
 fail_releaseLock:
 	return sjme_error_default(error);
 }
@@ -320,7 +320,7 @@ sjme_errorCode sjme_scritchaudio_core_peerDisconnect(
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
 
 	/* Lock current connection. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(inState->lock)))
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(inConn->lock)))
 		return sjme_error_default(error);
 
 	/* Count number of active peers, and also find the peer to disconnect. */
@@ -366,7 +366,7 @@ sjme_errorCode sjme_scritchaudio_core_peerDisconnect(
 
 skip_noPeers:
 	/* Release current connection. */
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(inState->lock,
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(inConn->lock,
 		NULL)))
 		return sjme_error_default(error);
 
@@ -404,6 +404,6 @@ skip_noPeers:
 	
 fail_subDisconnect:
 fail_reverse:
-	sjme_thread_spinLockRelease(inState->lock, NULL);
+	sjme_thread_spinLockRelease(inConn->lock, NULL);
 	return sjme_error_default(error);
 }

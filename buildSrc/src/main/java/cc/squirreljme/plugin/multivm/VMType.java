@@ -688,7 +688,6 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2023/05/28
 	 */
 	@Override

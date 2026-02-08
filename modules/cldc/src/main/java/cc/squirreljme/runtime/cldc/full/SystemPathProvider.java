@@ -9,10 +9,15 @@
 
 package cc.squirreljme.runtime.cldc.full;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * Provider for system paths.
@@ -20,8 +25,45 @@ import java.nio.file.Paths;
  * @since 2024/02/25
  */
 @SquirrelJMEVendorApi
-public abstract class SystemPathProvider
+public final class SystemPathProvider
 {
+	/** The single instance. */
+	private static volatile SystemPathProvider _INSTANCE;
+	
+	/**
+	 * Not used.
+	 *
+	 * @since 2026/01/16
+	 */
+	private SystemPathProvider()
+	{
+	}
+	
+	/**
+	 * Returns the bucket data path.
+	 *
+	 * @return The bucket data path.
+	 * @since 2026/01/16
+	 */
+	@SquirrelJMEVendorApi
+	public Path bucketData()
+	{
+		return SystemPathProvider.__vmDesc(
+			VMDescriptionType.DEFAULT_DIR_BUCKET_DATA);
+	}
+	
+	/**
+	 * Returns the extra bucket path.
+	 *
+	 * @return The extra bucket.
+	 * @since 2026/01/16
+	 */
+	public Path bucketExtra()
+	{
+		return SystemPathProvider.__vmDesc(
+			VMDescriptionType.DEFAULT_DIR_BUCKET_EXTRA);
+	}
+	
 	/**
 	 * Returns the cache path or {@code null} if there is none.
 	 *
@@ -29,7 +71,11 @@ public abstract class SystemPathProvider
 	 * @since 2024/02/25
 	 */
 	@SquirrelJMEVendorApi
-	public abstract Path cache();
+	public Path cache()
+	{
+		return SystemPathProvider.__vmDesc(
+			VMDescriptionType.DEFAULT_DIR_CACHE);
+	}
 	
 	/**
 	 * Returns the config path or {@code null} if there is none.
@@ -38,7 +84,11 @@ public abstract class SystemPathProvider
 	 * @since 2024/02/25
 	 */
 	@SquirrelJMEVendorApi
-	public abstract Path config();
+	public Path config()
+	{
+		return SystemPathProvider.__vmDesc(
+			VMDescriptionType.DEFAULT_DIR_CONFIG);
+	}
 	
 	/**
 	 * Returns the data path or {@code null} if there is none.
@@ -47,7 +97,24 @@ public abstract class SystemPathProvider
 	 * @since 2024/02/25
 	 */
 	@SquirrelJMEVendorApi
-	public abstract Path data();
+	public Path data()
+	{
+		return SystemPathProvider.__vmDesc(
+			VMDescriptionType.DEFAULT_DIR_DATA);
+	}
+	
+	/**
+	 * Returns the path where libraries exist.
+	 *
+	 * @return The library paths.
+	 * @since 2026/01/16
+	 */
+	@SquirrelJMEVendorApi
+	public Path libraries()
+	{
+		return SystemPathProvider.__vmDesc(
+			VMDescriptionType.DEFAULT_DIR_LIBRARIES);
+	}
 	
 	/**
 	 * Returns the state path or {@code null} if there is none.
@@ -56,7 +123,11 @@ public abstract class SystemPathProvider
 	 * @since 2024/02/25
 	 */
 	@SquirrelJMEVendorApi
-	public abstract Path state();
+	public Path state()
+	{
+		return SystemPathProvider.__vmDesc(
+			VMDescriptionType.DEFAULT_DIR_STATE);
+	}
 	
 	/**
 	 * Returns the path of the given system path type.
@@ -64,9 +135,12 @@ public abstract class SystemPathProvider
 	 * @param __path The path to get.
 	 * @return The resultant path.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Do not use, only used by the debugger which will be
+	 * rewritten at some point.
 	 * @since 2024/02/25
 	 */
 	@SquirrelJMEVendorApi
+	@Deprecated
 	public final Path of(SystemPath __path)
 		throws NullPointerException
 	{
@@ -98,9 +172,12 @@ public abstract class SystemPathProvider
 	 * @param __path The path to get.
 	 * @return The resultant path.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Do not use, only used by the debugger which will be
+	 * rewritten at some point.
 	 * @since 2024/02/25
 	 */
 	@SquirrelJMEVendorApi
+	@Deprecated
 	public final Path ofFallback(SystemPath __path)
 		throws NullPointerException
 	{
@@ -127,16 +204,46 @@ public abstract class SystemPathProvider
 	@SquirrelJMEVendorApi
 	public static SystemPathProvider provider()
 	{
-		String osName = System.getProperty("os.name")
-			.toLowerCase();
-		String osVersion = System.getProperty("os.version")
-			.toLowerCase();
+		// Already exists?
+		SystemPathProvider rv = SystemPathProvider._INSTANCE;
+		if (rv != null)
+			return rv;
 		
-		// Windows
-		if (osName.contains("windows") || osName.contains("reactos"))
-			return new OverridingPathProvider(new WindowsPathProvider());
+		// Create one and cache it 
+		rv = new SystemPathProvider();
+		SystemPathProvider._INSTANCE = rv;
+		return rv;
+	}
+	
+	/**
+	 * Returns the path for the given ID.
+	 *
+	 * @param __id The ID to get.
+	 * @return The resultant path, or {@code null} if it does not exist or
+	 * it is not valid.
+	 * @since 2026/01/16
+	 */
+	private static Path __vmDesc(
+		@MagicConstant(valuesFromClass = VMDescriptionType.class) int __id)
+	{
+		if (__id <= VMDescriptionType.DEFAULT_DIR_UNKNOWN ||
+			__id >= VMDescriptionType.DEFAULT_DIR_NUM_TYPES)
+			return null;
 		
-		// Fallback to Unix
-		return new OverridingPathProvider(new UnixPathProvider());
+		// Ignore any failures
+		try
+		{
+			// Get the native path through NanoCoat
+			String desc = RuntimeShelf.vmDescription(__id);
+			if (desc == null)
+				return null;
+			
+			// Parse it
+			return Paths.get(desc);
+		}
+		catch (InvalidPathException|MLECallError ignored)
+		{
+			return null;
+		}
 	}
 }

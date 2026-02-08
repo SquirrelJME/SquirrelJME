@@ -48,7 +48,7 @@
 			v = d[dI >> SJME_FIXED_SHIFT]; \
 			 \
 			/* This would clip. */ \
-			d[dI >> SJME_FIXED_SHIFT] = (v + t); \
+			d[dI >> SJME_FIXED_SHIFT] = (v + t) - (v * t); \
 		} \
 		 \
 		/* Success! */ \

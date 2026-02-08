@@ -52,7 +52,6 @@ final class __MIDPCanvas__
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/02/14
 	 */
 	@Override
@@ -69,7 +68,6 @@ final class __MIDPCanvas__
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/02/14
 	 */
 	@Override
@@ -86,7 +84,6 @@ final class __MIDPCanvas__
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/02/14
 	 */
 	@Override
@@ -98,7 +95,6 @@ final class __MIDPCanvas__
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@Override

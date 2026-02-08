@@ -20,121 +20,6 @@ const sjme_jint sjme_scritchaudio_bytesPerSample
 	4,
 };
 
-static sjme_thread_result sjme_attrThreadCall sjme_attrOptimize
-	sjme_scritchaudio_core_poll(
-	sjme_attrInNotNull sjme_thread_parameter rawState)
-{
-	sjme_errorCode error;
-	sjme_scritchaudio inState;
-	sjme_jint pollMilli;
-	const sjme_nal* nal;
-	sjme_jlong enterTime, exitTime;
-	sjme_jlongNative diffNanos, nextTime, pollNanos;
-	sjme_jboolean await;
-
-	/* Recover state. */
-	inState = rawState;
-	if (inState == NULL)
-		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
-
-	/* Does a binder need to be called? */
-	if (inState->bindAudioThread != NULL)
-		inState->bindAudioThread(inState);
-	
-	/* Set the loop as ready. */
-	sjme_atomic_s(sjme_jint, &inState->loopThreadReady, 1);
-	
-	/* Awaiting the first audio stream still? */
-	await = SJME_JNI_TRUE;
-
-	/* Enter threading loop. */
-	nal = inState->nal;
-	for (nextTime = INT64_MIN;;)
-	{
-		/* Current time entering the loop. */
-		enterTime.full = INT64_MIN;
-		if (sjme_error_is(error = nal->nanoTime(&enterTime)))
-			break;
-
-		/* Not yet ready? */
-		if (enterTime.full < nextTime)
-			continue;
-
-		/* Get the current polling times for this loop. */
-		pollMilli = sjme_atomic_g(sjme_jint, &inState->pollDelayMillis);
-		pollNanos = sjme_atomic_g(sjme_jint, &inState->pollDelayNanos) +
-			(pollMilli * INT64_C(1000000));
-
-		/* When should the next buffer run be? */
-		nextTime = (enterTime.full + pollNanos) -
-			SJME_SCRITCHAUDIO_EARLY_NANOS;
-
-		/* Call loop iteration handler. */
-		if (sjme_error_is(error = inState->api->loopIterate(inState)))
-		{
-			/* If the output blocks, we never want to lose our thread. */
-			if (inState->bugs.outputBlocks)
-				error = SJME_ERROR_NONE;
-
-			/* Awaiting the first audio stream? */
-			if (error == SJME_ERROR_AUDIO_AWAITING)
-			{
-				/* Still waiting for it, do not consider this an error. */
-				if (await)
-					error = SJME_ERROR_NONE;
-
-				/* We lost the stream, so consider it gone. */
-				else
-					error = SJME_ERROR_AUDIO_DESTROYED;
-			}
-
-			/* Audio was destroyed? */
-			if (error != SJME_ERROR_NONE &&
-				error != SJME_ERROR_AUDIO_DESTROYED)
-				sjme_message("Audio error: %d", error);
-		}
-
-		/* Streaming is done? */
-		if (error == SJME_ERROR_AUDIO_DESTROYED)
-			break;
-
-		/* Current time exiting the loop. */
-		exitTime.full = INT64_MIN;
-		if (sjme_error_is(error = nal->nanoTime(&exitTime)))
-			break;
-
-		/* Do we have extra time to sleep */
-		diffNanos = nextTime - exitTime.full;
-		if (diffNanos >= SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS &&
-			exitTime.full < nextTime)
-			sjme_thread_sleep((diffNanos -
-				SJME_SCRITCHAUDIO_HOLD_NANOS) / INT64_C(1000000), 0);
-	}
-
-	/* Go back to the sleeping rate as there is no audio */
-	/* playing anymore. */
-	sjme_atomic_sjme_jint_set(&inState->pollDelayMillis,
-		SJME_SCRITCHAUDIO_POLL_SLEEP_MILLIS);
-	sjme_atomic_sjme_jint_set(&inState->pollDelayNanos,
-		0);
-
-	/* Invalidate before leaving. */
-	sjme_atomic_s(sjme_jint, &inState->loopThreadReady, 0);
-
-	/* Barrier before leaving. */
-	sjme_atomic_barrier();
-	sjme_thread_yield();
-	sjme_atomic_barrier();
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug. */
-	sjme_message("Polling thread complete! (%d)", error);
-#endif
-
-	/* Finished. */
-	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
-}
-
 sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
@@ -172,7 +57,7 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 	/* Lock the stream. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		inState->lock)))
+		inStream->connection.lock)))
 		goto fail_lockGrab;
 
 	/* Allocate resultant source. */
@@ -180,8 +65,10 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 		sizeof(*result), (sjme_pointer*)&result)) || result == NULL)
 		goto fail_allocResult;
 
+	/* Use the same lock the stream uses. */
+	result->connection.lock = inStream->connection.lock;
+
 	/* Initialize state. */
-	result->connection.lock = inState->lock;
 	result->connection.inState = inState;
 	result->connection.type = SJME_SCRITCHAUDIO_CONN_SOURCE;
 	result->inStream = inStream;
@@ -210,22 +97,13 @@ sjme_errorCode sjme_scritchaudio_core_sourceAttach(
 
 	/* Release the lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		inState->lock, NULL)))
+		inStream->connection.lock, NULL)))
 		goto fail_lockRelease;
 	
 	/* We attached a source, so make sure the audio playback is faster. */
-	sjme_atomic_s(sjme_jint, &inState->pollDelayMillis,
+	sjme_atomic_s(sjme_jint, &inStream->pollDelayMillis,
 		SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS);
-	sjme_atomic_s(sjme_jint, &inState->pollDelayNanos, 0);
-
-	/* Do the same for the wrapped state (if any) */
-	wrappedState = inState->wrappedState;
-	if (wrappedState != NULL)
-	{
-		sjme_atomic_s(sjme_jint, &wrappedState->pollDelayMillis,
-			SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS);
-		sjme_atomic_s(sjme_jint, &wrappedState->pollDelayNanos, 0);
-	}
+	sjme_atomic_s(sjme_jint, &inStream->pollDelayNanos, 0);
 
 	/* Success! */
 	*outSource = result;
@@ -256,6 +134,7 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 #define GROW_SIZE 8
 	sjme_errorCode error;
 	sjme_scritchaudio_stream result;
+	sjme_jboolean hasTop, hasWrapped;
 	
 	if (inState == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -296,18 +175,42 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 		result, inFormat, inRate, inChannels);
 #endif
 
+	/* If manual polling, all locks must use the same state. */
+	if (inState->bugs.manualPoll || inState->bugs.eventPoll)
+		result->connection.lock = inState->lock;
+	else
+		result->connection.lock = &result->baseLock;
+
 	/* Set stream details. */
-	result->connection.lock = inState->lock;
 	result->connection.inState = inState;
 	result->connection.type = SJME_SCRITCHAUDIO_CONN_STREAM;
 	result->format = inFormat;
 	result->rate = inRate;
 	result->channels = inChannels;
 
+	/* Set a base initial time. */
+	sjme_atomic_s(sjme_jint, &result->pollDelayMillis,
+		SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS);
+	sjme_atomic_s(sjme_jint, &result->pollDelayNanos,
+		0);
+
 	/* Forward to implementation. */
 	if (sjme_error_is(error = inState->impl->streamCreate(inState,
 		result, inName, inFormat, inRate, inChannels)) || result == NULL)
 		goto fail_implCreate;
+	
+	/* Stream initializer did not do its own render calculation? */
+	if (result->data.renderInfo.bufSize == 0 ||
+		result->data.renderInfo.rate == 0 ||
+		result->data.renderInfo.channels == 0)
+		if (sjme_error_is(error = inState->intern->calcRenderInfo(
+			inState, result, NULL, &result->data.renderInfo)))
+			goto fail_calcRender;
+
+	/* Allocate buffers, if not done already. */
+	if (sjme_error_is(error = inState->intern->allocBuffers(inState,
+		result)))
+		goto fail_allocBuf;
 	
 	/* Release the state. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -317,18 +220,21 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 	/* No stream has been set yet? */
 	if (inState->stream == NULL)
 		inState->stream = result;
-	
-	/* No thread has been set up yet? */
-	/* If the state must be manually polled, we like having */
-	/* threaded audio. Note that even if there is no thread defined */
-	/* the operating system could call back into the audio subroutine. */
-	/* We must be the top-most state! */
-	if (((sjme_atomic_g(sjme_pointer, &inState->topState) == NULL &&
-		inState->bugs.manualPoll)))
+
+	/* Each stream gets its own thread if manual or event based polling */
+	/* is used. This means that the system is not capable of multi-threaded */
+	/* audio. */
+	/* Note that the lower level that is closer to the sound card owns */
+	/* the thread. */
+	hasTop = (sjme_atomic_g(sjme_pointer, &inState->topState) != NULL);
+	hasWrapped = (inState->wrappedState != NULL);
+	if ((inState->bugs.manualPoll || inState->bugs.eventPoll) &&
+		(!hasWrapped || hasTop))
 	{
 #if defined(SJME_CONFIG_DEBUG)
 		/* Debug. */
-		sjme_message("Polling thread preparing...");
+		sjme_message("(%p %s) Polling thread preparing...",
+			inState, inState->impl->driverName);
 #endif
 		
 		/* Await loop unready. */
@@ -337,7 +243,7 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 		if (!inState->bugs.outputBlocks)
 		{
 			sjme_atomic_barrier();
-			while (sjme_atomic_g(sjme_jint, &inState->loopThreadReady) != 0)
+			while (sjme_atomic_g(sjme_jint, &result->loopThreadReady) != 0)
 			{
 				sjme_atomic_barrier();
 				sjme_thread_yield();
@@ -346,18 +252,20 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 		}
 		
 		/* Create thread that loops infinitely. */
-		if (sjme_atomic_g(sjme_jint, &inState->loopThreadReady) == 0)
+		if (sjme_atomic_g(sjme_jint, &result->loopThreadReady) == 0)
 		{
-			inState->loopThread = SJME_THREAD_NULL;
-			if (sjme_error_is(error = sjme_thread_new(&inState->loopThread,
-				&inState->loopThreadId, sjme_scritchaudio_core_poll,
-				inState)) || inState->loopThread == SJME_THREAD_NULL)
+			result->loopThread = SJME_THREAD_NULL;
+			if (sjme_error_is(error = sjme_thread_new(&result->loopThread,
+				&result->loopThreadId,
+				(inState->bugs.eventPoll ? inState->intern->pollEvent :
+					inState->intern->pollManual),
+				result)) || result->loopThread == SJME_THREAD_NULL)
 				goto fail_initThread;
 		}
 		
 		/* Await loop ready. */
 		sjme_atomic_barrier();
-		while (sjme_atomic_g(sjme_jint, &inState->loopThreadReady) == 0)
+		while (sjme_atomic_g(sjme_jint, &result->loopThreadReady) == 0)
 		{
 			sjme_atomic_barrier();
 			sjme_thread_yield();
@@ -369,16 +277,23 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 		sjme_message("Polling thread ready!");
 #endif
 	}
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_message("createStream(%p, %d, %d, %d) -> Success!",
+		result, inFormat, inRate, inChannels);
+#endif
 	
 	/* Success! */
 	*outStream = result;
 	return SJME_ERROR_NONE;
 
+fail_allocBuf:
+fail_calcRender:
 fail_implCreate:
 	/* Release the lock before failing. */
 	sjme_thread_spinLockRelease(inState->lock, NULL);
-	
-fail_noLoopIterate:
+
 fail_initThread:
 fail_grabLock:
 fail_releaseLock:

@@ -193,6 +193,16 @@ public final class UriGenericPart
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/01/16
+	 */
+	@Override
+	public boolean isDirectory()
+	{
+		return this.path.endsWith("/");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2025/12/29
 	 */
 	@Override

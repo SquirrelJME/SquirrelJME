@@ -601,7 +601,7 @@ sjme_errorCode sjme_nvm_defaultDir(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (type <= SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN ||
-		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE)
+		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	if (outPathLen <= 0)

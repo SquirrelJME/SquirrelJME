@@ -6,27 +6,17 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Include common macros to make things easier
-squirreljme_include("scritchui.cmake")
-
-# Reset any state
-squirreljme_scritchany_enable(ui UI)
-
-# Enable prototype developer ScritchUI implementations?
+# Enable prototype developer ScritchUi implementations?
 option(SQUIRRELJME_ENABLE_GUI_DEVELOPER
 	"Enable Developer Prototype GUIs" OFF)
 
-# Framebuffer implementation of ScritchUI, does not require any native
+# Framebuffer implementation of ScritchUi, does not require any native
 # libraries other than direct framebuffer access. This library is purely
 # a static library and is included as needed...
 add_subdirectory(framebuffer)
 
-# Pure Framebuffer implementation, this is the underlayer which provides
-# panels and other basic Widgets
-add_subdirectory(pure)
-
-# Source files for ScritchUI
-set(SJME_ScritchUICore_SOURCES
+# Core ScritchUi Library
+squirreljme_multilib_add_library(ScritchUiCore
 	scritchChoice.c
 	scritchComponent.c
 	scritchContainer.c
@@ -59,17 +49,21 @@ set(SJME_ScritchUICore_SOURCES
 	scritchView.c
 	scritchWindow.c)
 
-# Core ScritchUI Library
-squirreljme_multilib_add_static_library(ScritchUICore
-	${SJME_ScritchUICore_SOURCES})
+# The base SquirrelJME library is always needed
+squirreljme_multilib_link_libraries_required(ScritchUiCore PUBLIC
+	BaseStatic
+	ScritchUiFB)
 
 # Include main headers
-squirreljme_multilib_static_target_include_directories(ScritchUICore PUBLIC
+squirreljme_multilib_include_directories(ScritchUiCore PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
-# Collection dependencies
-set(SQUIRRELJME_SCRITCHUI_COLLECT_TARGETS)
-set(SQUIRRELJME_SCRITCHUI_COLLECT_LIBS)
+# Export the core library
+squirreljme_multilib_export(ScritchUiCore)
+
+# Pure Framebuffer implementation, this is the underlayer which provides
+# panels and other basic Widgets
+add_subdirectory(pure)
 
 # Windows?
 option(SQUIRRELJME_ENABLE_GUI_WIN32 "Enable Win32 GUI"

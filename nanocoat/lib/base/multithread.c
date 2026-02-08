@@ -12,6 +12,17 @@
 #include "sjme/native.h"
 #include "sjme/debug.h"
 
+sjme_thread sjme_thread_currentR(void)
+{
+	sjme_thread result;
+
+	result = SJME_THREAD_NULL;
+	if (sjme_error_is(sjme_thread_current(&result)))
+		return SJME_THREAD_NULL;
+
+	return result;
+}
+
 sjme_errorCode sjme_thread_rwLockGrabRead(
 	sjme_attrInNotNull sjme_thread_rwLock* inLock)
 {

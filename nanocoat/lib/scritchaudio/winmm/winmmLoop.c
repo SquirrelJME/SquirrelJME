@@ -10,23 +10,23 @@
 #include "lib/scritchaudio/scritchaudioIntern.h"
 #include "lib/scritchaudio/winmm/winmmIntern.h"
 
-#define SJME_CONFIG_EXPERIMENT_WINMM_PAUSE
-
 sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo)
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream)
 {
-	sjme_errorCode error;
-	WAVEHDR header;
-	HWAVEOUT handle;
-	MMRESULT result, writeResult;
-	sjme_pointer buf;
-	sjme_jint bufSize, i, n;
+	sjme_errorCode error, playError, rendError;
+	HWAVEOUT hWaveOut;
+	MMRESULT mmResult;
+	sjme_scritchaudio_streamBuffer* rend;
+	sjme_scritchaudio_streamBuffer* play;
+	WAVEHDR* playHeader;
+	sjme_jint i, n;
 	sjme_scritchaudio_source source;
+	sjme_jboolean missedPrepare;
 	sjme_list(sjme_scritchaudio_source)* sources;
+	sjme_scritchaudio_renderInfo* renderInfo;
 
-	if (inState == NULL)
+	if (inState == NULL || inStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Recover stream. */
@@ -35,8 +35,8 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 		return SJME_ERROR_AUDIO_DESTROYED;
 
 	/* Recover the output handle. */
-	handle = inStream->data.handle;
-	if (handle == NULL)
+	hWaveOut = inStream->data.handle;
+	if (hWaveOut == NULL)
 		return SJME_ERROR_AUDIO_DESTROYED;
 
 	/* Recover the single source. */
@@ -54,69 +54,80 @@ sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	/* None found? */
 	if (source == NULL)
 		return SJME_ERROR_AUDIO_AWAITING;
-	
-	/* Calculate the render info. */
-	if (sjme_error_is(error = inState->intern->calcRenderInfo(
-		inState, inStream, source, renderInfo)))
-		return sjme_error_default(error);
 
-	/* Allocate sample buffer */
-	bufSize = renderInfo->bufSize;
-	buf = sjme_alloca(bufSize);
-	if (buf == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
-	
-	/* If the source format is unsigned, we need to actually set the proper */
-	/* zero level, otherwise there will be clicks/pops. */
-	if (renderInfo->format == SJME_SCRITCHAUDIO_FORMAT_BYTE_U8)
-		memset(buf, 0x80, bufSize);
-	else
-		memset(buf, 0, bufSize);
+	/* Recover the render info. */
+	renderInfo = &inStream->data.renderInfo;
 
-	/* Render source. */
-	if (sjme_error_is(error = source->renderFunc(inState,
-		source, renderInfo, (sjme_scritchaudio_buffer*)buf)))
-		return sjme_error_default(error);
+	/* Which buffer are we playing and which are we rendering? */
+	rend = &inStream->data.buffers[inStream->data.renderBuffer];
+	play = &inStream->data.buffers[!inStream->data.renderBuffer];
 
-	/* Setup output header. */
-	memset(&header, 0, sizeof(header));
-	header.lpData = buf;
-	header.dwBufferLength = bufSize;
-	header.dwLoops = 0;
+	/* Reset error states. */
+	playError = SJME_ERROR_NONE;
+	rendError = SJME_ERROR_NONE;
 
-	/* Prepare to write the data. */
-	if (waveOutPrepareHeader(handle, &header,
-		sizeof(header)) != MMSYSERR_NOERROR)
-		return SJME_ERROR_AUDIO_PREPARE_FAILED;
+	/* Set up the play header. */
+	playHeader = play->header;
+	memset(playHeader, 0, inStream->data.headerSize);
+	playHeader->lpData = play->buffer;
+	playHeader->dwBufferLength = renderInfo->bufSize;
+	playHeader->dwFlags = 0;
 
-#if defined(SJME_CONFIG_EXPERIMENT_WINMM_PAUSE)
-	/* Disable playback, if playback is synchronous then pausing */
-	/* does not occur. */
-	result = waveOutPause(handle);
-	if (result != MMSYSERR_NOERROR && result != MMSYSERR_NOTSUPPORTED)
-		return SJME_ERROR_AUDIO_TRIGGER_FAILED;
-#endif
-
-	/* Write to the audio device. */
-	result = waveOutWrite(handle, &header, sizeof(header));
-	if (result != MMSYSERR_NOERROR)
-		return SJME_ERROR_AUDIO_WRITE_FAILED;
-
-#if defined(SJME_CONFIG_EXPERIMENT_WINMM_PAUSE)
-	/* Resume playback, if it was previously paused. */
-	if (result == MMSYSERR_NOERROR)
+	/* Prepare the header and try to send the data to the sound card. */
+	/* If it is not busy, then we can actually push data to it. */
+	mmResult = waveOutPrepareHeader(hWaveOut, playHeader,
+		sizeof(WAVEHDR));
+	missedPrepare = (mmResult == MMSYSERR_HANDLEBUSY ||
+		mmResult == MMSYSERR_INVALHANDLE);
+	if (!missedPrepare)
 	{
-		result = waveOutRestart(handle);
-		if (result != MMSYSERR_NOERROR && result != MMSYSERR_NOTSUPPORTED)
-			return SJME_ERROR_AUDIO_TRIGGER_FAILED;
+		/* Send the playback buffer to the sound card. */
+		mmResult = waveOutWrite(hWaveOut, playHeader, sizeof(WAVEHDR));
+		if (mmResult != MMSYSERR_NOERROR && !sjme_error_is(playError))
+			playError = SJME_ERROR_AUDIO_WRITE_FAILED;
 	}
+
+	/* While the sound card is playing audio, render the next batch of */
+	/* audio into the buffer. */
+	rendError = source->renderFunc(inState, source, renderInfo,
+		(sjme_scritchaudio_buffer*)rend->buffer);
+
+	/* If we missed preparing the audio, then try playing it now after we */
+	/* rendered something. */
+	if (missedPrepare)
+	{
+		/* Wait until ready. */
+		do
+		{
+			mmResult = waveOutPrepareHeader(hWaveOut, playHeader,
+				sizeof(WAVEHDR));
+		} while (mmResult == MMSYSERR_HANDLEBUSY ||
+			mmResult == MMSYSERR_INVALHANDLE);
+
+		/* Send the playback buffer to the sound card. */
+		mmResult = waveOutWrite(hWaveOut, playHeader, sizeof(WAVEHDR));
+		if (mmResult != MMSYSERR_NOERROR && !sjme_error_is(playError))
+			playError = SJME_ERROR_AUDIO_WRITE_FAILED;
+	}
+
+	/* Unprepare the play header, wait until it actually stops. */
+#if 1
+	do
+	{
 #endif
+		mmResult = waveOutUnprepareHeader(hWaveOut, playHeader,
+			sizeof(WAVEHDR));
+#if 1
+	} while (mmResult == WAVERR_STILLPLAYING);
+#endif
+	if (mmResult != MMSYSERR_NOERROR && mmResult != WAVERR_STILLPLAYING &&
+		!sjme_error_is(playError))
+		playError = SJME_ERROR_AUDIO_PREPARE_FAILED;
 
-	/* Unprepare the header. */
-	result = waveOutUnprepareHeader(handle, &header, sizeof(header));
-	if (result != WAVERR_STILLPLAYING && result != MMSYSERR_NOERROR)
-		return SJME_ERROR_AUDIO_PREPARE_FAILED;
-
-	/* Nothing. */
+	/* Ladder any errors. */
+	if (sjme_error_is(rendError))
+		return sjme_error_default(rendError);
+	if (sjme_error_is(playError))
+		return sjme_error_default(playError);
 	return SJME_ERROR_NONE;
 }

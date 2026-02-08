@@ -24,7 +24,6 @@ public class TestMidiDeviceInvalid
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/04/21
 	 */
 	@Override

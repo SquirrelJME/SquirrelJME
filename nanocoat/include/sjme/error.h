@@ -602,8 +602,11 @@ typedef enum sjme_errorCode
 	/** Class has an invalid annotation tag. */
 	SJME_ERROR_CLASS_UNKNOWN_ANNOTATION_TAG = -186,
 	
+	/** Font is already registered. */
+	SJME_ERROR_FONT_ALREADY_REGISTERED = -187,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -187,
+	SJME_NUM_ERROR_CODES = -188,
 } sjme_errorCode;
 
 /**

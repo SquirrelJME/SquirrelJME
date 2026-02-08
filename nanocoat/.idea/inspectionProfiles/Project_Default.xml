@@ -1,7 +1,6 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
-    <inspection_tool class="9d34d9f4-ee61-3835-9287-5f135f283b71" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
     <inspection_tool class="ClangTidy" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppDFAConstantConditions" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="CppDFAConstantFunctionResult" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
@@ -9,7 +8,6 @@
     <inspection_tool class="CppJoinDeclarationAndAssignment" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppParameterMayBeConst" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppParameterMayBeConstPtrOrRef" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="CppRedundantElseKeyword" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantElseKeywordInsideCompoundStatement" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantParentheses" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppReplaceMemsetWithZeroInitialization" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
@@ -50,46 +48,6 @@
               </list>
             </option>
           </RegExpInspectionConfiguration>
-          <RegExpInspectionConfiguration>
-            <option name="description" value="SquirrelJME No Commit Used In Stack Pop" />
-            <option name="name" value="SquirrelJME No Commit Used In Stack Pop" />
-            <option name="problemDescriptor" value="SquirrelJME No Commit Used In Stack Pop" />
-            <option name="suppressId" value="squirreljme_nocommitpop" />
-            <option name="uuid" value="9d34d9f4-ee61-3835-9287-5f135f283b71" />
-            <option name="patterns">
-              <list>
-                <InspectionPattern>
-                  <option name="regExp" value="sjme_nvm_task_frameStackPopA?\([^,]+,[^,]+,[ \t\r\n]*NULL[ \t\r\n]*,[^,)]+\)" />
-                  <option name="_fileType" value="C/C++" />
-                  <option name="searchContext" value="ANY" />
-                  <option name="flags" value="64" />
-                </InspectionPattern>
-              </list>
-            </option>
-          </RegExpInspectionConfiguration>
-          <RegExpInspectionConfiguration>
-            <option name="description" value="SquirrelJME Narrow Form Not Used" />
-            <option name="name" value="SquirrelJME Narrow Form Not Used" />
-            <option name="problemDescriptor" value="SquirrelJME Narrow Form Not Used" />
-            <option name="suppressId" value="squirreljme_narrowForm" />
-            <option name="uuid" value="cd028f03-2c1b-3e73-8713-8daffe49c4e0" />
-            <option name="patterns">
-              <list>
-                <InspectionPattern>
-                  <option name="regExp" value="sjme_list_([a-zA-Z0-9_]+)([ \t]+[^(.\-])" />
-                  <option name="_fileType" value="C/C++" />
-                  <option name="searchContext" value="EXCEPT_COMMENTS_AND_STRING_LITERALS" />
-                  <option name="replacement" value="sjme_list($1)$2" />
-                </InspectionPattern>
-                <InspectionPattern>
-                  <option name="regExp" value="sjme_atomic_([a-zA-Z0-9_]+)([ \t]+[^(.\-])" />
-                  <option name="_fileType" value="C/C++" />
-                  <option name="searchContext" value="EXCEPT_COMMENTS_AND_STRING_LITERALS" />
-                  <option name="replacement" value="sjme_atomic($1)$2" />
-                </InspectionPattern>
-              </list>
-            </option>
-          </RegExpInspectionConfiguration>
         </list>
       </option>
     </inspection_tool>
@@ -97,6 +55,11 @@
     <inspection_tool class="EditorConfigEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HashLoopInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="IdentifierInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="ImplicitTypeConversion" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="BITS" value="1720" />
+      <option name="FLAG_EXPLICIT_CONVERSION" value="true" />
+      <option name="IGNORE_NODESET_TO_BOOLEAN_VIA_STRING" value="true" />
+    </inspection_tool>
     <inspection_tool class="LanguageDetectionInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="LoopControlInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="MooseAttributeAccessors" enabled="false" level="ERROR" enabled_by_default="false" />
@@ -133,6 +96,5 @@
     <inspection_tool class="VariableLexicalBuiltIn" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="VariableShadows" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="VariableUnresolvable" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="cd028f03-2c1b-3e73-8713-8daffe49c4e0" enabled="true" level="WARNING" enabled_by_default="true" />
   </profile>
 </component>

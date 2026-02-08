@@ -11,16 +11,13 @@
 include(CheckLibraryExists)
 
 # Check to see if dl has both of these
-find_library(SQUIRRELJME_MAYBE_LIBDL "dl")
-if(SQUIRRELJME_MAYBE_LIBDL)
-	check_library_exists("${SQUIRRELJME_MAYBE_LIBDL}"
-		"dlopen" "" SJME_CONFIG_HAS_DL_DLOPEN)
-	check_library_exists("${SQUIRRELJME_MAYBE_LIBDL}"
-		"dlclose" "" SJME_CONFIG_HAS_DL_DLCLOSE)
-endif()
-
-# If it does, then the dynamic linker is not built in
+check_library_exists("${SQUIRRELJME_MAYBE_LIBDL}"
+	"dlopen" "" SJME_CONFIG_HAS_DL_DLOPEN)
+check_library_exists("${SQUIRRELJME_MAYBE_LIBDL}"
+	"dlclose" "" SJME_CONFIG_HAS_DL_DLCLOSE)
 if(SJME_CONFIG_HAS_DL_DLOPEN AND SJME_CONFIG_HAS_DL_DLCLOSE)
-	set(SQUIRRELJME_LIBDL "${SQUIRRELJME_MAYBE_LIBDL}")
+	set(SQUIRRELJME_MAYBE_LIBDL "dl")
+else()
+	find_library(SQUIRRELJME_MAYBE_LIBDL "dl")
 endif()
 

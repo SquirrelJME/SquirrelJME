@@ -24,7 +24,6 @@ public class NokiaKeyCodeTranslator
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/02/03
 	 */
 	@Override
@@ -57,7 +56,6 @@ public class NokiaKeyCodeTranslator
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/02/03
 	 */
 	@Override

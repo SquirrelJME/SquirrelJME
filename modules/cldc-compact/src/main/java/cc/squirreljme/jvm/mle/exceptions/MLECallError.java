@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.mle.exceptions;
 
-import cc.squirreljme.jvm.SystemCallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
@@ -146,7 +145,7 @@ public class MLECallError
 	 * Initializes system call exception.
 	 * 
 	 * @param __callId The call ID.
-	 * @param __code The {@link SystemCallError}.
+	 * @param __code The {@link MLECallErrorCode}.
 	 * @since 2020/11/29
 	 */
 	@SquirrelJMEVendorApi

@@ -10,10 +10,7 @@
 squirreljme_include("find-gtk2.cmake")
 
 # Declare base library
-add_library(ScritchUIGTK2 SHARED
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>
+squirreljme_scritchany_add_library(ui GTK2
 	gtk2Component.c
 	gtk2Container.c
 	gtk2Core.c
@@ -29,29 +26,18 @@ add_library(ScritchUIGTK2 SHARED
 	gtk2View.c
 	gtk2Window.c)
 
-# Standard properties for dynamic libraries
-squirreljme_dylib_standard_properties(ScritchUIGTK2)
+# Standard properties ScritchAny libraries
+squirreljme_scritchany_standard_properties(ui GTK2)
 
-# Include main headers
-target_include_directories(ScritchUIGTK2 PUBLIC
-	"${CMAKE_SOURCE_DIR}/include")
-target_include_directories(ScritchUIGTK2 SYSTEM PRIVATE
+# Include headers
+squirreljme_scritchany_include_directories(ui GTK2 PRIVATE
 	${GTK2_INCLUDE_DIR} ${GTK2_INCLUDE_DIRS})
 
 # Link in GTK2
 if(DEFINED GTK2_LIBRARY_DIRS)
-	target_link_directories(ScritchUIGTK2 PUBLIC
+	squirreljme_scritchany_link_directories(ui GTK2 PUBLIC
 		${GTK2_LIBRARY_DIRS})
 endif()
 
-target_link_libraries(ScritchUIGTK2 PUBLIC
+squirreljme_scritchany_link_libraries(ui GTK2 PUBLIC
 	${GTK2_LIBRARIES})
-
-# ScritchUI requires a normalized library name
-squirreljme_target_binary_name(ScritchUIGTK2
-	"squirreljme-scritchui-gtk2")
-squirreljme_target_binary_output(ScritchUIGTK2
-	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
-
-# Generate exports
-squirreljme_target_shared_library_exports(ScritchUIGTK2)

@@ -8,21 +8,19 @@
 
 # Define library
 add_library(libJri SHARED
-	$<TARGET_OBJECTS:BasePIC>
-	$<TARGET_OBJECTS:CorePIC>
 	jvInit.c)
 
 # Always make this position independent
 squirreljme_always_fpic(libJri)
 
 # The base SquirrelJME core needs to be built
-add_dependencies(libJri
-	CorePIC)
+squirreljme_link_libraries_required(libJri PUBLIC
+	CoreStatic
+	ScritchAudioCoreStatic
+	ScritchUiCoreStatic)
 
 # We need to find all of the includes and such
 target_include_directories(libJri PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
 	"${CMAKE_SOURCE_DIR}/include/3rdparty/jri")
 
-# Link required libraries
-squirreljme_target_link_libraries_required(libJri)

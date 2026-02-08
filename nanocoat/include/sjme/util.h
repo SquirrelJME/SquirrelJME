@@ -419,23 +419,81 @@ sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v);
 
 /**
+ * Compacts bits to the left.
+ * 
+ * @code
+ * 10101011110011011110111100000111 ->
+ * 10101010000010010000100000000100
+ * @endcode
+ * 
+ * @param v The bits to compact.
+ * @param m The mask.
+ * @return The compacted bits.
+ * @since 2026/01/17
+ */
+sjme_juint sjme_util_intCompactLeft(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInValue sjme_juint m);
+	
+/**
+ * Compacts bits to the right.
+ * 
+ * @code
+ * 10101011110011011110111100000111 ->
+ * 10101000010001000010000100000001
+ * @endcode
+ * 
+ * @param v The bits to compact.
+ * @param m The mask.
+ * @return The compacted bits.
+ * @since 2026/01/17
+ */
+sjme_juint sjme_util_intCompactRight(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInValue sjme_juint m);
+
+/**
+ * Extracts bits to the left.
+ * 
+ * @param v The bits to extract.
+ * @param m The mask.
+ * @return The extracted bits.
+ * @since 2026/01/17
+ */
+sjme_juint sjme_util_intExtractLeft(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInValue sjme_juint m);
+	
+/**
+ * Extracts bits to the right.
+ * 
+ * @param v The bits to extract.
+ * @param m The mask.
+ * @return The extracted bits.
+ * @since 2026/01/17
+ */
+sjme_juint sjme_util_intExtractRight(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInValue sjme_juint m);
+
+/**
  * Returns the value with the highest bit set.
  * 
  * @param v The value to return the highest bit of. 
  * @return The highest bit of the value.
  * @since 2024/08/22
  */
-sjme_juint sjme_util_intHighestOneBit(
+sjme_juint sjme_util_intOneBitHighestU(
 	sjme_attrInValue sjme_juint v);
 
 /**
- * Returns the number of leading zeroes in the value.
+ * Returns the value with the lowest bit set.
  * 
- * @param v The value to check. 
- * @return The resultant number of leading zeroes.
- * @since 2024/08/22
+ * @param v The value to return the lowest bit of. 
+ * @return The lowest bit of the value.
+ * @since 2026/01/17
  */
-sjme_juint sjme_util_intLeadingZeroesU(
+sjme_juint sjme_util_intOneBitLowestU(
 	sjme_attrInValue sjme_juint v);
 
 /**
@@ -482,6 +540,26 @@ sjme_jint sjme_util_intReverse(
  * @since 2024/08/18 
  */
 sjme_juint sjme_util_intReverseU(
+	sjme_attrInValue sjme_juint v);
+
+/**
+ * Returns the number of leading zeroes in the value.
+ * 
+ * @param v The value to check. 
+ * @return The resultant number of leading zeroes.
+ * @since 2024/08/22
+ */
+sjme_juint sjme_util_intZeroesLeadingU(
+	sjme_attrInValue sjme_juint v);
+
+/**
+ * Returns the number of trailing zeroes in the value.
+ * 
+ * @param v The value to check. 
+ * @return The resultant number of trailing zeroes.
+ * @since 2026/01/17
+ */
+sjme_juint sjme_util_intZeroesTrailingU(
 	sjme_attrInValue sjme_juint v);
 
 /**
