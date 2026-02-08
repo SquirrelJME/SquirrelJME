@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
@@ -64,6 +62,9 @@ sjme_errorCode sjme_scritchui_core_windowContentMinimumSize(
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height)
 {
+	sjme_errorCode error;
+	sjme_scritchui_rect ignored;
+	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -73,6 +74,13 @@ sjme_errorCode sjme_scritchui_core_windowContentMinimumSize(
 	/* Not implemented? */
 	if (inState->impl->windowContentMinimumSize == NULL)
 		return sjme_error_notImplemented(0);
+	
+	/* Calculate the window frame so that the overhead is known going into */
+	/* the minimum size set. */
+	if (sjme_error_is(error = inState->apiInThread->containerGetFrame(
+		inState, SJME_SUI_CAST_COMPONENT(inWindow),
+		NULL, &ignored, &ignored)))
+		return sjme_error_default(error);
 	
 	/* Store dimension set in the window. */
 	inWindow->min.width = width;

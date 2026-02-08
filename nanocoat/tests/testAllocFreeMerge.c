@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "proto.h"
 #include "sjme/alloc.h"
 #include "test.h"
@@ -179,8 +177,9 @@ static void dumpPool(sjme_alloc_pool pool, sjme_lpcstr what)
 	
 	/* Debug view. */
 	sjme_message("---------------------------------------------");
-	for (rover = pool->frontLink,
-		x = 0; rover != NULL; rover = rover->next, x++)
+	for (rover = sjme_atomic_g(sjme_alloc_link, &pool->frontLink),
+		x = 0; rover != NULL;
+		rover = sjme_atomic_g(sjme_alloc_link, &rover->next), x++)
 	{
 		sjme_message("%s %d: @%p %s %d/%d bytes",
 			what, x, rover, (rover->space == SJME_ALLOC_POOL_SPACE_FREE ?
@@ -266,8 +265,8 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 		}
 
 		/* Seed front and back links which are constant. */
-		links[FRONT] = pool->frontLink;
-		links[BACK] = pool->backLink;
+		links[FRONT] = sjme_atomic_g(sjme_alloc_link, &pool->frontLink);
+		links[BACK] = sjme_atomic_g(sjme_alloc_link, &pool->backLink);
 
 		/* Free the links in the specified order and test the result. */
 		for (linkNum = 0; linkNum < NUM_LINKS; linkNum++)
@@ -291,7 +290,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 			
 			/* Go through the entire chain. */
 			numUsed = numFree = 0;
-			rover = pool->frontLink;
+			rover = sjme_atomic_g(sjme_alloc_link, &pool->frontLink);
 			for (x = 0; x < NUM_WHICH; x++)
 			{
 				/* End of list? Stop. */
@@ -327,7 +326,7 @@ SJME_TEST_DECLARE(testAllocFreeMerge)
 				}
 
 				/* Go the next link. */
-				rover = rover->next;
+				rover = sjme_atomic_g(sjme_alloc_link, &rover->next);
 			}
 
 			/* Free and used counts should match. */

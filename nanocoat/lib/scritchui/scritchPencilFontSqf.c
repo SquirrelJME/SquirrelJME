@@ -6,10 +6,6 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
-
-#include <string.h>
-#include <stdio.h>
-
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiExtern.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
@@ -351,6 +347,7 @@ static sjme_errorCode sjme_scritchui_sqfRenderBitmap(
 static const sjme_scritchui_pencilFontImplFunctions
 	sjme_scritchui_sqfFunctions =
 {
+	sjme_sm(.driverName, "sqf"),
 	sjme_sm(.equals, NULL),
 	sjme_sm(.metricCharValid, sjme_scritchui_sqfMetricCharValid),
 	sjme_sm(.metricFontFace, sjme_scritchui_sqfMetricFontFace),

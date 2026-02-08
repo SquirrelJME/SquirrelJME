@@ -11,8 +11,10 @@
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
 
+#include "sjme/fixed.h"
+
 /**
- * Passed to @c sjme_scritchui_win32_displayQuery to fill in screen
+ * Passed to @link sjme_scritchui_win32_displayQuery @endlink to fill in screen
  * information.
  * 
  * @sincer 2024/08/05
@@ -77,6 +79,125 @@ static BOOL CALLBACK sjme_scritchui_win32_displayQuery(
 	
 	/* Always continue the query. */
 	return TRUE;
+}
+
+static sjme_jboolean sjme_scritchui_win32_dpiWin8(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull HMONITOR hMonitor,
+	sjme_attrOutNotNull UINT* dpiX,
+	sjme_attrOutNotNull UINT* dpiY)
+{
+	sjme_scritchui_win32_intern_GDFM proc;
+	
+	if (inState == NULL || hMonitor == NULL || dpiX == NULL || dpiY == NULL ||
+		inState->implIntern->dllProc == NULL)
+		return SJME_JNI_FALSE;
+	
+	/* Find procedure. */
+	if (sjme_error_is(inState->implIntern->dllProc(inState,
+		SJME_SCRITCHUI_WIN32_SHCORE32_DLL,
+		"GetDpiForMonitor",
+		(PROC*)&proc)))
+		return SJME_JNI_FALSE;
+	
+	/* Forward call! */
+	if (S_OK == proc(hMonitor, sjme_scritchui_win32_MDT_RAW_DPI, dpiX, dpiY))
+		return SJME_JNI_TRUE;
+	return SJME_JNI_FALSE;
+}
+
+sjme_errorCode sjme_scritchui_win32_screenGetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound)
+{
+	HWND hWnd;
+	HMONITOR hMonitor;
+	MONITORINFOEXA info;
+	UINT dpiX, dpiY, check;
+	sjme_fixed inMm, w, h;
+	
+	if (inState == NULL || inScreen == NULL ||
+		(pixelBound == NULL && mmBound == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Grab the window if there is one. */
+	hMonitor = inScreen->screenHandle;
+	hWnd = (forComponent == NULL ? NULL :
+		forComponent->common.handle[SJME_SUI_WIN32_H_HWND]);
+	
+	/* Currently set DPI as being unknown. */
+	dpiX = 0;
+	dpiY = 0;
+	
+	/* Is there window context? Use the monitor it belongs to most. */
+	if (hWnd != NULL)
+	{
+		/* Which monitor is the window on? */
+		hMonitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTOPRIMARY);
+		
+		/* Get the DPI for this window. */
+		check = inState->implIntern->dpiWin10(inState, hWnd);
+		if (check > 0)
+		{
+			dpiX = check;
+			dpiY = check;
+		}
+	}
+
+	/* Read in all dimensional details. */
+	memset(&info, 0 , sizeof(info));
+	info.cbSize = sizeof(info);
+	if (!GetMonitorInfoA(hMonitor, (LPMONITORINFO)&info))
+		return inState->implIntern->getLastError(inState,
+			SJME_ERROR_NATIVE_WIDGET_FAILURE);
+	
+	/* If the DPI is still unknown, get it from the monitor. */
+	if (dpiX <= 0 || dpiY <= 0)
+		if (!sjme_scritchui_win32_dpiWin8(inState, hMonitor, &dpiX, &dpiY))
+		{
+			/* Invalidate incase any value was set. */
+			dpiX = 0;
+			dpiY = 0;
+		}
+	
+	/* DPI still not valid? Fallback to Windows 96. */
+	if (dpiX <= 0 || dpiY <= 0)
+	{
+		dpiX = 96;
+		dpiY = 96;
+	}
+	
+	/* Calculate pixels. */
+	w = abs(info.rcMonitor.right - info.rcMonitor.left);
+	h = abs(info.rcMonitor.bottom - info.rcMonitor.top);
+	if (pixelBound != NULL)
+	{
+		pixelBound->s.x = info.rcMonitor.left;
+		pixelBound->s.y = info.rcMonitor.top;
+		pixelBound->d.width = w;
+		pixelBound->d.height = h;
+	}
+	
+	/* Calculate DPI. */
+	if (mmBound != NULL)
+	{
+		/* Inches to millimeters, 1 / 25.4, try to get more precision! */
+		inMm = sjme_fixed_fraction(1,
+			sjme_fixed_fraction(127, 5));
+		
+		mmBound->s.x = 0;
+		mmBound->s.y = 0;
+		mmBound->d.width = sjme_fixed_int(
+			sjme_fixed_mul(sjme_fixed_hi(w), inMm));
+		mmBound->d.height = sjme_fixed_int(
+			sjme_fixed_mul(sjme_fixed_hi(h), inMm));
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_win32_screens(

@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -314,7 +312,7 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 		inCodepoint,
 		src, 0, scanLen,
 		ch, &origOffX, &origOffY)))
-		return sjme_error_default(error);
+		goto fail_renderBitmap;
 	
 	/* Target desired pixel size. */
 	th = inFont->cache.pixelSize;
@@ -348,12 +346,19 @@ static sjme_errorCode sjme_scritchui_pseudoRenderBitmap(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+	
+fail_renderBitmap:
+	if (src != NULL)
+		sjme_alloca_free(src);
+
+	return sjme_error_default(error);
 }
 
 /** Functions for basic font support. */
 static const sjme_scritchui_pencilFontImplFunctions
 	sjme_scritchui_pseudoFontFunctions =
 {
+	sjme_sm(.driverName, "pseudo"),
 	sjme_sm(.equals, sjme_scritchui_pseudoEquals),
 	sjme_sm(.metricCharValid, sjme_scritchui_pseudoMetricCharValid),
 	sjme_sm(.metricFontFace, sjme_scritchui_pseudoMetricFontFace),

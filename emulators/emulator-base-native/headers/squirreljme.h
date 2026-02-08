@@ -272,6 +272,20 @@ jintArray sjme_jni_mappedArrayInt(JNIEnv* env,
 	jint* buf, jint off, jint len);
 
 /**
+ * Sets values in an array.
+ *
+ * @param env Java environment.
+ * @param array Array to set.
+ * @param offset Offset into the array.
+ * @param len The array length.
+ * @param ... Values to set.
+ * @return Any resultant error, if any.
+ * @since 2025/12/23
+ */
+sjme_errorCode sjme_jni_setIntArray(JNIEnv* env, jintArray array,
+	jint offset, jint len, ...);
+
+/**
  * Throws a @c MLECallError .
  *
  * @param env The current Java environment.

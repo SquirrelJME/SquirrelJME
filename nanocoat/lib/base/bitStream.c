@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/bitStream.h"
 #include "sjme/util.h"
 
@@ -190,7 +188,6 @@ sjme_errorCode sjme_bitStream_inputOpen(
 	result = NULL;
 	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_bitStream_inputOutputClose,
-		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) ||
 		result == NULL)
 		goto fail_alloc;
@@ -400,7 +397,6 @@ sjme_errorCode sjme_bitStream_outputOpen(
 	result = NULL;
 	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
 		sizeof(*result), sjme_bitStream_inputOutputClose,
-		SJME_JNI_FALSE,
 		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
 		goto fail_alloc;
 	

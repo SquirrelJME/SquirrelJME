@@ -7,18 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/listUtil.h"
 
 sjme_errorCode sjme_listUtil_binListInt(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_list_sjme_jint** outList,
+	sjme_attrOutNotNull sjme_list(sjme_jint)** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream)
 {
 	sjme_errorCode error;
 	sjme_jint length, i;
-	sjme_list_sjme_jint* result;
+	sjme_list(sjme_jint)* result;
 	
 	if (allocPool == NULL || outList == NULL || inputStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -60,7 +58,7 @@ fail_allocList:
 
 sjme_errorCode sjme_listUtil_binListUtf(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outList,
 	sjme_attrInNotNull sjme_stream_input inputStream)
 {
 	sjme_errorCode error;
@@ -121,7 +119,7 @@ sjme_errorCode sjme_listUtil_binListUtf(
 }
 
 sjme_errorCode sjme_listUtil_findFree(
-	sjme_attrInNotNull sjme_list_sjme_pointer* inList,
+	sjme_attrInNotNull sjme_list(sjme_pointer)* inList,
 	sjme_attrOutNotNull sjme_jint* outFreeSlot)
 {
 	sjme_jint i, n;
@@ -156,7 +154,7 @@ sjme_errorCode sjme_listUtil_findFree(
 }
 
 sjme_errorCode sjme_listUtil_findItemWeak(
-	sjme_attrInNotNull sjme_list_sjme_pointer* inList,
+	sjme_attrInNotNull sjme_list(sjme_pointer)* inList,
 	sjme_attrOutNotNull sjme_jint* outFreeSlot,
 	sjme_attrOutNotNull sjme_pointer* outFound,
 	sjme_attrInNotNull sjme_listUtil_findItemCompareFunc compareFunc,

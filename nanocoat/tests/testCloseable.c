@@ -29,7 +29,7 @@ sjme_errorCode testCloseable_new(
 	result = NULL;
 	if (sjme_error_is(error = sjme_closeable_alloc(
 		allocPool, sizeof(*result),
-		handlerFunc, isRefCounted,
+		handlerFunc,
 		&result)) || result == NULL)
 		return sjme_error_default(error);
 	

@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/nvm/stringPool.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/util.h"
@@ -76,7 +74,7 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
 		
 		/* Is a weak reference but does not actually point to the string? */
 		/* If so then this was freed! */
-		if (weak != NULL && weak->pointer != possible)
+		if (weak != NULL && sjme_atomic_pg(&weak->pointer) != possible)
 		{
 			strings->elements[i] = NULL;
 			possible = NULL;

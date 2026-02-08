@@ -10,6 +10,7 @@
 /**
  * Generic inflation interface.
  * 
+ * @file
  * @since 2024/08/25
  */
 

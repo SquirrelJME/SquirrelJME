@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/inflate.h"
 #include "sjme/util.h"
 
@@ -53,6 +51,7 @@ static sjme_errorCode sjme_inflate_bitFill(
 	buffer = sjme_alloca(avail);
 	if (buffer == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
+	
 	memset(buffer, 0, avail);
 	
 	/* Read everything in as much as possible. */
@@ -1478,24 +1477,12 @@ sjme_errorCode sjme_inflate_new(
 	/* Store everything in the result now. */
 	result->allocPool = allocPool;
 	result->failed = SJME_ERROR_NONE;
-	result->source = source;
-	result->input = input;
+	result->source = sjme_weakUpR(sjme_stream_input, source);
+	result->input = sjme_weakUpR(sjme_bitStream_input, input);
 	result->inputBuffer = inputBuffer;
-	result->output = output;
+	result->output = sjme_weakUpR(sjme_bitStream_output, output);
 	result->outputBuffer = outputBuffer;
 	result->window = window;
-	
-	/* Since we hold onto the source, count it up. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(source, NULL)))
-		goto fail_countSource;
-	
-	/* Along with the input... */
-	if (sjme_error_is(error = sjme_alloc_weakRef(input, NULL)))
-		goto fail_countSource;
-	
-	/* and output bit streams! */
-	if (sjme_error_is(error = sjme_alloc_weakRef(output, NULL)))
-		goto fail_countSource;
 	
 	/* Success! */
 	*outState = result;

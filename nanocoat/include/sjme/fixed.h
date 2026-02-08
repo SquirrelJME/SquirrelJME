@@ -10,6 +10,7 @@
 /**
  * Fixed point math.
  * 
+ * @file
  * @since 2024/06/27
  */
 
@@ -107,6 +108,20 @@ sjme_fixed sjme_fixed_hi(
  */
 sjme_jint sjme_fixed_int(
 	sjme_attrInValue sjme_fixed val);
+
+/**
+ * Converts a fixed to an integer value, with clipping.
+ * 
+ * @param lo The low value.
+ * @param val The input value to convert.
+ * @param hi The high value.
+ * @return The resultant integer value.
+ * @since 2025/12/22
+ */
+sjme_jint sjme_fixed_intClip(
+	sjme_attrInValue sjme_jint lo,
+	sjme_attrInValue sjme_fixed val,
+	sjme_attrInValue sjme_jint hi);
 
 /**
  * Multiplies two fixed values.

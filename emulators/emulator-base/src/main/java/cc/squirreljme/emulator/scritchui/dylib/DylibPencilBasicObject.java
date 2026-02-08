@@ -9,6 +9,7 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -38,7 +39,7 @@ public class DylibPencilBasicObject
 		throws NullPointerException
 	{
 		if (__pencilP == 0 || __weakP == 0)
-			throw new NullPointerException("NARG");
+			throw new MLECallError("NARG");
 		
 		this._pencilP = __pencilP;
 		this._weakP = __weakP;

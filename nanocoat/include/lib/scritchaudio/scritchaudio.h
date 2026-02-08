@@ -10,6 +10,7 @@
 /**
  * Main ScritchAudio header.
  * 
+ * @file
  * @since 2025/05/07
  */
 
@@ -34,6 +35,52 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+#if 1
+
+/* Values after double buffered rendering/playback. */
+
+/** The minimum sleeping time, sleep does not occur below this (100ms). */
+#define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS SJME_NANOS_MS(100)
+
+/** The number of nanoseconds to give up if we are behind (750ms). */
+#define SJME_SCRITCHAUDIO_GIVE_UP_NANOS SJME_NANOS_MS(750)
+
+/** The number of nanoseconds to hold off when sleeping (10ms). */
+#define SJME_SCRITCHAUDIO_HOLD_NANOS SJME_NANOS_MS(10)
+
+/** The number of nanoseconds to pre-fill for triggering (50ms). */
+#define SJME_SCRITCHAUDIO_TRIGGER_NANOS SJME_NANOS_MS(50)
+
+/** The maximum amount of time the trigger cap can be (200ms). */
+#define SJME_SCRITCHAUDIO_TRIGGER_CAP_NANOS SJME_NANOS_MS(200)
+
+/** The poll delay time to use (200ms). */
+#define SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS 200
+
+#else
+
+/* Values before double-buffered audio. */
+
+/** The minimum sleeping time, sleep does not occur below this (75ms). */
+#define SJME_SCRITCHAUDIO_MIN_SLEEP_NANOS SJME_NANOS_MS(75)
+
+/** The number of nanoseconds to give up if we are behind (750ms). */
+#define SJME_SCRITCHAUDIO_GIVE_UP_NANOS SJME_NANOS_MS(750)
+
+/** The number of nanoseconds to hold off when sleeping (25ms). */
+#define SJME_SCRITCHAUDIO_HOLD_NANOS SJME_NANOS_MS(25)
+
+/** The number of nanoseconds to pre-fill for triggering (75ms). */
+#define SJME_SCRITCHAUDIO_TRIGGER_NANOS SJME_NANOS_MS(75)
+
+/** The maximum amount of time the trigger cap can be (400ms). */
+#define SJME_SCRITCHAUDIO_TRIGGER_CAP_NANOS SJME_NANOS_MS(400)
+
+/** The poll delay time to use (200ms). */
+#define SJME_SCRITCHAUDIO_POLL_DELAY_MILLIS 200
+
+#endif
+	
 /**
  * ScritchAudio state structure.
  *
@@ -336,32 +383,20 @@ typedef sjme_errorCode (*sjme_scritchaudio_fallbackNextFunc)(
 	sjme_attrInOutNotNull sjme_scritchaudio_format* adjustFormat,
 	sjme_attrInOutNotNull sjme_scritchaudio_rate* adjustRate,
 	sjme_attrInOutNotNull sjme_scritchaudio_channels* adjustChannels);
-	
+
 /**
- * Loop iteration for audio processing, if there is no background thread
- * for audio-processing.
+ * Loop iteration for audio processing.
  *
- * @param inState The ScritchAudio state.
- * @return Any resultant error, if any.
- * @since 2025/05/15
- */
-typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
-	sjme_attrInNotNull sjme_scritchaudio inState);
-	
-/**
- * Loop iteration for audio processing, if there is no background thread
- * for audio-processing.
+ * This may be called from a background through or a the current thread.
  *
  * @param inState The ScritchAudio state.
  * @param inStream The stream to render in.
- * @param renderInfo The information needed for rendering.
  * @return Any resultant error, if any.
  * @since 2025/05/28
  */
-typedef sjme_errorCode (*sjme_scritchaudio_loopIterateRenderFunc)(
+typedef sjme_errorCode (*sjme_scritchaudio_loopIterateFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
+	sjme_attrInNullable sjme_scritchaudio_stream inStream);
 
 /**
  * Called when there are no peers.
@@ -376,6 +411,16 @@ typedef sjme_errorCode (*sjme_scritchaudio_peerNoneFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInValue sjme_jboolean explicit);
+
+/**
+ * A polling function callback.
+ *
+ * @param rawStream The raw stream function.
+ * @return The thread result.
+ * @since 2026/01/09
+ */
+typedef sjme_thread_result (sjme_attrThreadCall *sjme_scritchaudio_pollFunc)(
+	sjme_attrInNotNull sjme_thread_parameter rawStream);
 
 /**
  * Called when the peer has been connected or disconnected.
@@ -405,7 +450,7 @@ typedef sjme_errorCode (*sjme_scritchaudio_peerConnectFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchaudio_queryMidiPortsFunc)(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInOutNotNull sjme_list_sjme_scritchaudio_midiPort* inOutPorts,
+	sjme_attrInOutNotNull sjme_list(sjme_scritchaudio_midiPort)* inOutPorts,
 	sjme_attrOutNotNull sjme_jint* outNumPorts);
 
 /**
@@ -428,15 +473,19 @@ typedef sjme_errorCode (*sjme_scritchaudio_sourceRenderFunc)(
  * Attaches a source renderer to the given stream, the renderer will use the
  * same format that the stream uses.
  *
+ * If the target audio system does not support opening streams and attaching
+ * sources in a different format
+ * then @link SJME_ERROR_AUDIO_FORMAT_MISMATCH @endlink will be returned.
+ *
  * @param inState The ScritchAudio state.
  * @param inStream The stream to attach to or detach from.
  * @param outSource The resultant source.
  * @param renderFunc The render function to use.
- * @param inFormat The audio format to use, @c -1 means to use the system
+ * @param inFormat The audio format to use, @a -1 means to use the system
  * preferred format.
- * @param inRate The rate to use, @c -1 means to use the system preferred
+ * @param inRate The rate to use, @a -1 means to use the system preferred
  * rate.
- * @param inChannels The number of channels to use, @c -1 means to use the
+ * @param inChannels The number of channels to use, @a -1 means to use the
  * system preferred channels.
  * @param initFrontEnd The front end used for the renderer.
  * @return Any resultant error, if any.
@@ -531,6 +580,9 @@ typedef struct sjme_scritchaudio_apiFunctions
 	
 	/** Attaches or detaches a source. */
 	sjme_scritchaudio_sourceAttachFunc sourceAttach;
+	
+	/** Create a new audio stream. */
+	sjme_scritchaudio_streamCreateFunc streamCreate;
 } sjme_scritchaudio_apiFunctions;
 
 /**
@@ -540,14 +592,23 @@ typedef struct sjme_scritchaudio_apiFunctions
  */
 typedef struct sjme_scritchaudio_implFunctions
 {
+	/** The driver name. */
+	sjme_lpcstr driverName;
+
+	/** Supports every format and can handle its own mixing. */
+	sjme_jboolean allFormatsOwnMixing;
+
+	/** Supports more than one stream opened at once. */
+	sjme_jboolean supportsMultiStream;
+	
 	/** Api initialization. */
 	sjme_scritchaudio_apiInitFunc apiInit;
 	
-	/** Disconnects a connection. */
+	/** Notification that a disconnection is about to occur. */
 	sjme_scritchaudio_disconnectFunc disconnect;
 	
 	/** Iterates the audio loop. */
-	sjme_scritchaudio_loopIterateRenderFunc loopIterate;
+	sjme_scritchaudio_loopIterateFunc loopIterate;
 	
 	/** Queries the MIDI ports and synths available. */
 	sjme_scritchaudio_queryMidiPortsFunc queryMidiPorts;
@@ -557,6 +618,9 @@ typedef struct sjme_scritchaudio_implFunctions
 	
 	/** Create a new audio stream. */
 	sjme_scritchaudio_streamCreateImplFunc streamCreate;
+
+	/** Native callback procedure. */
+	sjme_undefinedFunction nativeCallback;
 } sjme_scritchaudio_implFunctions;
 
 /**
@@ -566,14 +630,17 @@ typedef struct sjme_scritchaudio_implFunctions
  */
 typedef struct sjme_scritchaudio_internFunctions
 {
+	/** Allocates buffers. */
+	sjme_scritchaudio_loopIterateFunc allocBuffers;
+
 	/** Calculate the rendering information. */
 	sjme_scritchaudio_calcRenderInfoFunc calcRenderInfo;
 	
 	/** Determines the next fallback. */
 	sjme_scritchaudio_fallbackNextFunc fallbackNext;
 	
-	/** Iterates the audio loop. */
-	sjme_scritchaudio_loopIterateRenderFunc loopIterate;
+	/** Iterates the audio loop, while locked. */
+	sjme_scritchaudio_loopIterateFunc loopIterateLocked;
 	
 	/** Connect two peers. */
 	sjme_scritchaudio_peerConnectFunc peerConnect;
@@ -583,6 +650,12 @@ typedef struct sjme_scritchaudio_internFunctions
 	
 	/** Dispatch peer none. */
 	sjme_scritchaudio_peerNoneFunc peerNoneDispatch;
+
+	/** Event based polling loop. */
+	sjme_scritchaudio_pollFunc pollEvent;
+
+	/** Manual polling loop. */
+	sjme_scritchaudio_pollFunc pollManual;
 	
 	/** Create a new audio stream. */
 	sjme_scritchaudio_streamCreateFunc streamCreate;
@@ -597,6 +670,15 @@ typedef struct sjme_scritchaudio_bugs
 {
 	/** Audio is manually polled, there is no system managed loop. */
 	sjme_jboolean manualPoll;
+
+	/** Uses event based polling. */
+	sjme_jboolean eventPoll;
+	
+	/** Writing to the output audio blocks until playback is finished. */
+	sjme_jboolean outputBlocks;
+	
+	/** Triggering is not supported. */
+	sjme_jboolean noTriggering;
 } sjme_scritchaudio_bugs;
 
 /**
@@ -612,12 +694,6 @@ typedef struct sjme_scritchaudio_time
 	/** Nanoseconds. */
 	sjme_jint nanos;
 } sjme_scritchaudio_time;
-
-/** The sleeping rate when no audio is playing (millis). */
-#define SJME_SCRITCHAUDIO_SLEEP_RATE_MS 1000
-
-/** The sleeping rate when no audio is playing (nanos). */
-#define SJME_SCRITCHAUDIO_SLEEP_RATE_NS 0
 
 /**
  * Represents an audio clock.
@@ -636,7 +712,10 @@ typedef struct sjme_scritchaudio_clock
 struct sjme_scritchaudioBase
 {
 	/** The lock for audio streams and otherwise. */
-	sjme_thread_spinLock lock;
+	sjme_thread_spinLock baseLock;
+	
+	/** The actual lock which should be used. */
+	sjme_thread_spinLock* lock;
 	
 	/** The allocation pool to use. */
 	sjme_alloc_pool pool;
@@ -659,35 +738,30 @@ struct sjme_scritchaudioBase
 	/** Internal functions. */
 	const sjme_scritchaudio_internFunctions* intern;
 	
-	/** The audio loop thread, if applicable. */
-	sjme_thread loopThread;
-	
-	/** The current audio thread ID, if applicable. */
-	sjme_thread_id loopThreadId;
-
-	/** The loop thread is ready. */
-	sjme_atomic_sjme_jint loopThreadReady;
-	
 	/** Wrapped ScritchAudio state, if this is a wrapper. */
 	sjme_scritchaudio wrappedState;
 	
 	/** Reference to the owning state. */
-	sjme_alignPointer sjme_atomic_sjme_pointer topState;
+	sjme_alignPointer sjme_atomic(sjme_pointer) topState;
 
 	/** Bugs. */
 	sjme_scritchaudio_bugs bugs;
-
-	/** The delay between manual polls (Millis). */
-	sjme_atomic_sjme_jint pollDelayMillis;
-
-	/** The delay between manual polls (Nanos). */
-	sjme_atomic_sjme_jint pollDelayNanos;
 
 	/** The output audio stream. */
 	sjme_scritchaudio_stream stream;
 
 	/** Called to bind the audio thread. */
 	sjme_thread_mainFunc bindAudioThread;
+	
+	/** Underlying streams/connections if this is double-layered. */
+	struct
+	{
+		/** The underlying stream. */
+		sjme_scritchaudio_stream stream;
+		
+		/** The underlying source. */
+		sjme_scritchaudio_source source;
+	} under;
 };
 
 /**
@@ -731,16 +805,68 @@ struct sjme_scritchaudio_connectionBase
 	sjme_scritchaudio_peerNoneFunc noPeers;
 
 	/** The connections this is connected to. */
-	sjme_list_sjme_scritchaudio_connection* peers;
+	sjme_list(sjme_scritchaudio_connection)* peers;
 
 	/** Is this disconnecting? */
-	sjme_atomic_sjme_jint disconnecting;
+	sjme_atomic(sjme_jint) disconnecting;
 };
+
+/**
+ * An individual stream buffer.
+ *
+ * @since 2026/01/20
+ */
+typedef struct sjme_scritchaudio_streamBuffer
+{
+	/** Any header that is needed (such as for winmm). */
+	sjme_pointer header;
+
+	/** The buffer data. */
+	sjme_pointer buffer;
+} sjme_scritchaudio_streamBuffer;
+
+/** The number of stream buffers. */
+#define SJME_SCRITCHAUDIO_STREAM_BUFFERS 2
+
+/**
+ * The data associated with a stream.
+ *
+ * @since 2026/01/20
+ */
+typedef struct sjme_scritchaudio_streamData
+{
+	/** The file descriptor, if applicable. */
+	int fd;
+
+	/** The handle to the device. */
+	sjme_pointer handle;
+
+	/** If headers are needed, are big are the headers? */
+	sjme_jint headerSize;
+
+	/** The buffers to use, one renders, one plays. */
+	sjme_scritchaudio_streamBuffer buffers[SJME_SCRITCHAUDIO_STREAM_BUFFERS];
+
+	/** The buffer to render, this flips accordingly. */
+	sjme_jint renderBuffer;
+
+	/** Was the audio thread bound? */
+	sjme_atomic(sjme_jint) bound;
+
+	/** The current event counter. */
+	sjme_atomic(sjme_jint) eventCounter;
+
+	/** The stream rendering information. */
+	sjme_scritchaudio_renderInfo renderInfo;
+} sjme_scritchaudio_streamData;
 
 struct sjme_scritchaudio_streamBase
 {
 	/** The connection. */
 	sjme_scritchaudio_connectionBase connection;
+
+	/** The lock for audio streams and otherwise. */
+	sjme_thread_spinLock baseLock;
 
 	/** The stream format. */
 	sjme_scritchaudio_format format;
@@ -752,26 +878,28 @@ struct sjme_scritchaudio_streamBase
 	sjme_scritchaudio_channels channels;
 
 	/** The sources attached to this stream. */
-	sjme_list_sjme_scritchaudio_source* sources;
+	sjme_list(sjme_scritchaudio_source)* sources;
+
+	/** Last callback error. */
+	sjme_atomic(sjme_jint) lastError;
+
+	/** The audio loop thread, if applicable. */
+	sjme_thread loopThread;
+
+	/** The current audio thread ID, if applicable. */
+	sjme_thread_id loopThreadId;
+
+	/** The loop thread is ready. */
+	sjme_atomic(sjme_jint) loopThreadReady;
+
+	/** The delay between manual polls. */
+	sjme_atomic(sjme_jint) pollDelayMillis;
+
+	/** The delay between manual polls (Nanos). */
+	sjme_atomic(sjme_jint) pollDelayNanos;
 
 	/** Stream data. */
-	struct
-	{
-		/** The file descriptor, if applicable. */
-		int fd;
-
-		/** The handle to the device. */
-		void* handle;
-		
-		/** The stream this wrapped. */
-		sjme_scritchaudio_stream wrapped;
-
-		/** The source stream for mixing. */
-		sjme_scritchaudio_source wrappedSource;
-	} data;
-
-	/** The shared stream lock. */
-	sjme_thread_spinLock sharedLock;
+	sjme_scritchaudio_streamData data;
 };
 
 struct sjme_scritchaudio_sourceBase
@@ -820,6 +948,25 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchaudio_dylibApiFunc)(
 	sjme_attrInOutNotNull sjme_scritchaudio* outState,
 	sjme_attrInNullable sjme_thread_mainFunc bindAudioThread,
 	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
+
+/** The symbol used for default API export. */
+#define SJME_SCRITCHAUDIO_DYLIB_API_EXPORT \
+	sjme_scritchaudio_dylibApiExport
+
+/** The default API entry export method. */
+extern sjme_attrExport const sjme_scritchaudio_dylibApiFunc
+	SJME_SCRITCHAUDIO_DYLIB_API_EXPORT;
+
+#if defined(SJME_CONFIG_MULTILIB_IS_DYLIB)
+	/** Set the value for the default dynamic library export. */
+	#define SJME_SCRITCHAUDIO_DYLIB_API_EXPORT_SET(x) \
+		sjme_attrExport const sjme_scritchaudio_dylibApiFunc \
+			SJME_SCRITCHAUDIO_DYLIB_API_EXPORT = \
+			SJME_SCRITCHAUDIO_DYLIB_SYMBOL(x);
+#else
+	/** Set the value for the default dynamic library export. */
+	#define SJME_SCRITCHAUDIO_DYLIB_API_EXPORT_SET(x)
+#endif
 	
 /** The base name for the ScritchAudio dynamic library. */
 #define SJME_SCRITCHAUDIO_DYLIB_NAME_BASE \
@@ -837,7 +984,7 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchaudio_dylibApiFunc)(
 #define SJME_SCRITCHAUDIO_DYLIB_SYMBOL_PREFIX \
 	SJME_SCRITCHANY_DYLIB_SYMBOL_PREFIX(audio)
 
-/** The symbol to use with @c sjme_scritchaudio_dylibApiFunc . */
+/** The symbol to use with @link sjme_scritchaudio_dylibApiFunc @endlink . */
 #define SJME_SCRITCHAUDIO_DYLIB_SYMBOL(x) \
 	SJME_SCRITCHANY_DYLIB_SYMBOL(audio, x)
 
@@ -845,6 +992,14 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchaudio_dylibApiFunc)(
 #define SJME_SCRITCHAUDIO_DYLIB_SYMBOL_DECLARE(x) \
 	SJME_SCRITCHANY_DYLIB_SYMBOL_DECLARE(audio, x)
 
+/** Casts to a @link sjme_scritchaudio_connection @endlink . */
+#define SJME_SAU_CAST_CONNECTION(x) \
+	((sjme_scritchaudio_connection)(x))
+
+/** Casts to a @link sjme_scritchaudio_stream @endlink . */
+#define SJME_SAU_CAST_STREAM(x) \
+	((sjme_scritchaudio_stream)(x))
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

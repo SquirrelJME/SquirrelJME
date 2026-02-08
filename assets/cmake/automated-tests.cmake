@@ -53,9 +53,6 @@ foreach(jvm IN LISTS SQUIRRELJME_JVM_MAP)
 			# Set some SquirrelJME specific properties
 			set_target_properties(${targetName} PROPERTIES
 				SQUIRRELJME_TEST_RESULTS_DIR "${testResultsDir}")
-
-			# Register this task with CI/CD
-			squirreljme_cicd_register(${targetName})
 		endif()
 	endforeach()
 endforeach()

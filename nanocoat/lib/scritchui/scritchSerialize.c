@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/core/coreSerial.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -353,6 +351,14 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->containerAdd.inContainer,
 		as->containerAdd.addComponent));
 		
+	SJME_SDU_CASE(containerGetFrame,
+		SJME_SCRITCHUI_SERIAL_UI_CONTAINER_GET_FRAME,
+		(state,
+		as->containerGetFrame.inContainer,
+		as->containerGetFrame.contentSize,
+		as->containerGetFrame.frameBound,
+		as->containerGetFrame.contentBound));
+		
 	SJME_SDU_CASE(containerRemove,
 		SJME_SCRITCHUI_SERIAL_UI_CONTAINER_REMOVE,
 		(state,
@@ -409,6 +415,15 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->hardwareGraphics.sw,
 		as->hardwareGraphics.sh,
 		as->hardwareGraphics.pencilFrontEndCopy));
+		
+	SJME_SDU_CASE(pseudoGraphics,
+		SJME_SCRITCHUI_SERIAL_UI_PSEUDO_GRAPHICS,
+		(state,
+		as->pseudoGraphics.outPencil,
+		as->pseudoGraphics.outWeakPencil,
+		as->pseudoGraphics.pencils,
+		as->pseudoGraphics.numPencils,
+		as->pseudoGraphics.pencilFrontEndCopy));
 		
 	SJME_SDU_CASE(labelSetString,
 		SJME_SCRITCHUI_SERIAL_UI_LABEL_SET_STRING,
@@ -488,6 +503,14 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_UI_PANEL_NEW,
 		(state,
 		as->panelNew.outPanel));
+
+	SJME_SDU_CASE(screenGetBounds,
+		SJME_SCRITCHUI_SERIAL_UI_SCREEN_GET_BOUNDS,
+		(state,
+		as->screenGetBounds.inScreen,
+		as->screenGetBounds.forComponent,
+		as->screenGetBounds.pixelBound,
+		as->screenGetBounds.mmBound));
 
 	SJME_SDU_CASE(screenSetListener,
 		SJME_SCRITCHUI_SERIAL_UI_SCREEN_SET_LISTENER,
@@ -593,6 +616,16 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->copyArea.dy,
 		as->copyArea.anchor));
 
+	SJME_SDP_CASE(drawArc,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_ARC,
+		(as->drawArc.g,
+		as->drawArc.x,
+		as->drawArc.y,
+		as->drawArc.w,
+		as->drawArc.h,
+		as->drawArc.startAngle,
+		as->drawArc.arcAngle));
+
 	SJME_SDP_CASE(drawHoriz,
 		SJME_SCRITCHUI_SERIAL_PEN_DRAW_HORIZ,
 		(as->drawHoriz.g,
@@ -608,15 +641,37 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->drawRect.w,
 		as->drawRect.h));
 
-	SJME_SDP_CASE(drawTriangle,
-		SJME_SCRITCHUI_SERIAL_PEN_DRAW_TRIANGLE,
-		(as->drawTriangle.g,
-		as->drawTriangle.x1,
-		as->drawTriangle.y1,
-		as->drawTriangle.x2,
-		as->drawTriangle.y2,
-		as->drawTriangle.x3,
-		as->drawTriangle.y3));
+	SJME_SDP_CASE(drawRegion,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_REGION,
+		(as->drawRegion.g,
+		as->drawRegion.pf,
+		as->drawRegion.data,
+		as->drawRegion.off,
+		as->drawRegion.dataLen,
+		as->drawRegion.scanLen,
+		as->drawRegion.alpha,
+		as->drawRegion.xSrc,
+		as->drawRegion.ySrc,
+		as->drawRegion.wSrc,
+		as->drawRegion.hSrc,
+		as->drawRegion.trans,
+		as->drawRegion.xDest,
+		as->drawRegion.yDest,
+		as->drawRegion.anchor,
+		as->drawRegion.wDest,
+		as->drawRegion.hDest,
+		as->drawRegion.origImgWidth,
+		as->drawRegion.origImgHeight));
+
+	SJME_SDP_CASE(drawRoundRect,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_ROUND_RECT,
+		(as->drawRoundRect.g,
+		as->drawRoundRect.x,
+		as->drawRoundRect.y,
+		as->drawRoundRect.w,
+		as->drawRoundRect.h,
+		as->drawRoundRect.arcWidth,
+		as->drawRoundRect.arcHeight));
 
 	SJME_SDP_CASE(drawChar,
 		SJME_SCRITCHUI_SERIAL_PEN_DRAW_CHAR,
@@ -651,6 +706,15 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->drawPixel.x,
 		as->drawPixel.y));
 
+	SJME_SDP_CASE(drawPolyline,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_POLYLINE,
+		(as->drawPolyline.g,
+		as->drawPolyline.inXPoints,
+		as->drawPolyline.xOffset,
+		as->drawPolyline.inYPoints,
+		as->drawPolyline.yOffset,
+		as->drawPolyline.nPoints));
+
 	SJME_SDP_CASE(drawSubstring,
 		SJME_SCRITCHUI_SERIAL_PEN_DRAW_SUBSTRING,
 		(as->drawSubstring.g,
@@ -660,6 +724,16 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->drawSubstring.x,
 		as->drawSubstring.y,
 		as->drawSubstring.anchor));
+
+	SJME_SDP_CASE(drawTriangle,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_TRIANGLE,
+		(as->drawTriangle.g,
+		as->drawTriangle.x1,
+		as->drawTriangle.y1,
+		as->drawTriangle.x2,
+		as->drawTriangle.y2,
+		as->drawTriangle.x3,
+		as->drawTriangle.y3));
 
 	SJME_SDP_CASE(drawXRGB32Region,
 		SJME_SCRITCHUI_SERIAL_PEN_DRAW_XRGB32REGION,
@@ -682,6 +756,25 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->drawXRGB32Region.origImgWidth,
 		as->drawXRGB32Region.origImgHeight));
 
+	SJME_SDP_CASE(fillArc,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_ARC,
+		(as->fillArc.g,
+		as->fillArc.x,
+		as->fillArc.y,
+		as->fillArc.w,
+		as->fillArc.h,
+		as->fillArc.startAngle,
+		as->fillArc.arcAngle));
+
+	SJME_SDP_CASE(fillPolygon,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_POLYGON,
+		(as->fillPolygon.g,
+		as->fillPolygon.inXPoints,
+		as->fillPolygon.xOffset,
+		as->fillPolygon.inYPoints,
+		as->fillPolygon.yOffset,
+		as->fillPolygon.nPoints));
+
 	SJME_SDP_CASE(fillRect,
 		SJME_SCRITCHUI_SERIAL_PEN_FILL_RECT,
 		(as->fillRect.g,
@@ -689,6 +782,16 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->fillRect.y,
 		as->fillRect.w,
 		as->fillRect.h));
+
+	SJME_SDP_CASE(fillRoundRect,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_ROUND_RECT,
+		(as->fillRoundRect.g,
+		as->fillRoundRect.x,
+		as->fillRoundRect.y,
+		as->fillRoundRect.w,
+		as->fillRoundRect.h,
+		as->fillRoundRect.arcWidth,
+		as->fillRoundRect.arcHeight));
 
 	SJME_SDP_CASE(fillTriangle,
 		SJME_SCRITCHUI_SERIAL_PEN_FILL_TRIANGLE,
@@ -699,6 +802,21 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->fillTriangle.y2,
 		as->fillTriangle.x3,
 		as->fillTriangle.y3));
+
+	SJME_SDP_CASE(getRegion,
+		SJME_SCRITCHUI_SERIAL_PEN_GET_REGION,
+		(as->getRegion.g,
+		as->getRegion.pf,
+		as->getRegion.data,
+		as->getRegion.off,
+		as->getRegion.dataLen,
+		as->getRegion.scanLen,
+		as->getRegion.alpha,
+		as->getRegion.xSrc,
+		as->getRegion.ySrc,
+		as->getRegion.wSrc,
+		as->getRegion.hSrc,
+		as->getRegion.anchor));
 
 	SJME_SDP_CASE(mapColor,
 		SJME_SCRITCHUI_SERIAL_PEN_MAP_COLOR,
@@ -747,6 +865,23 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_PEN_SET_PARAMETERS_FROM,
 		(as->setParametersFrom.g,
 		as->setParametersFrom.from));
+
+	SJME_SDP_CASE(transferRegion,
+		SJME_SCRITCHUI_SERIAL_PEN_TRANSFER_REGION,
+		(as->transferRegion.g,
+		as->transferRegion.srcPencil,
+		as->transferRegion.alpha,
+		as->transferRegion.xSrc,
+		as->transferRegion.ySrc,
+		as->transferRegion.wSrc,
+		as->transferRegion.hSrc,
+		as->transferRegion.trans,
+		as->transferRegion.xDest,
+		as->transferRegion.yDest,
+		as->transferRegion.anchor,
+		as->transferRegion.wDest,
+		as->transferRegion.hDest,
+		as->transferRegion.mode));
 
 	SJME_SDP_CASE(translate,
 		SJME_SCRITCHUI_SERIAL_PEN_TRANSLATE,
@@ -1126,6 +1261,27 @@ sjme_errorCode sjme_scritchui_coreSerial_containerAdd(
 	SJME_SDX_WAIT;
 }
 
+	
+sjme_errorCode sjme_scritchui_coreSerial_containerGetFrame(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound)
+{
+	SJME_SDU_CHUNK(containerGetFrame,
+		SJME_SCRITCHUI_SERIAL_UI_CONTAINER_GET_FRAME,
+		(inState, inContainer, contentSize, frameBound, contentBound));
+		
+	SJME_SDX_PASS(inContainer);
+	SJME_SDX_PASS(contentSize);
+	SJME_SDX_PASS(frameBound);
+	SJME_SDX_PASS(contentBound);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
 sjme_errorCode sjme_scritchui_coreSerial_containerRemove(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
@@ -1216,7 +1372,7 @@ sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 
 sjme_errorCode sjme_scritchui_coreSerial_fontList(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
 	sjme_attrOutNullable sjme_jint* outMaxFonts)
 {
@@ -1480,6 +1636,29 @@ sjme_errorCode sjme_scritchui_coreSerial_panelNew(
 	SJME_SDX_WAIT;
 }
 
+sjme_errorCode sjme_scritchui_coreSerial_pseudoGraphics(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
+	sjme_attrInNotNullBuf(numPencils) sjme_scritchui_pencil* pencils,
+	sjme_attrInPositiveNonZero sjme_jint numPencils,
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy)
+{
+	SJME_SDU_CHUNK(pseudoGraphics,
+		SJME_SCRITCHUI_SERIAL_UI_PSEUDO_GRAPHICS,
+		(inState, outPencil, outWeakPencil, pencils, numPencils,
+			pencilFrontEndCopy));
+		
+	SJME_SDX_PASS(outPencil);
+	SJME_SDX_PASS(outWeakPencil);
+	SJME_SDX_PASS(pencils);
+	SJME_SDX_PASS(numPencils);
+	SJME_SDX_PASS(pencilFrontEndCopy);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
 sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(screen))
@@ -1490,6 +1669,26 @@ sjme_errorCode sjme_scritchui_coreSerial_screenSetListener(
 		
 	SJME_SDX_PASS(inListener);
 	SJME_SDX_PASS(copyFrontEnd);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_screenGetBounds(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound)
+{
+	SJME_SDU_CHUNK(screenGetBounds,
+		SJME_SCRITCHUI_SERIAL_UI_SCREEN_GET_BOUNDS,
+		(inState, inScreen, forComponent, pixelBound, mmBound));
+		
+	SJME_SDX_PASS(inScreen);
+	SJME_SDX_PASS(forComponent);
+	SJME_SDX_PASS(pixelBound);
+	SJME_SDX_PASS(mmBound);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;
@@ -1681,7 +1880,7 @@ sjme_attrInNotNull sjme_scritchui_pencil g)
 	SJME_SDX_WAIT;
 }
 
-sjme_errorCode sjme_scritchpen_coreSerial_copyArea(
+sjme_errorCode sjme_attrDeprecated sjme_scritchpen_coreSerial_copyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
@@ -1708,6 +1907,31 @@ sjme_errorCode sjme_scritchpen_coreSerial_copyArea(
 	SJME_SDX_WAIT;
 }
 
+sjme_errorCode sjme_scritchpen_coreSerial_drawArc(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInValue sjme_jint startAngle,
+	sjme_attrInValue sjme_jint arcAngle)
+{
+	SJME_SDP_CHUNK(drawArc,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_ARC,
+		(g, x, y, w, h, startAngle, arcAngle));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	SJME_SDX_PASS(w);
+	SJME_SDX_PASS(h);
+	SJME_SDX_PASS(startAngle);
+	SJME_SDX_PASS(arcAngle);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
 sjme_errorCode sjme_scritchpen_coreSerial_drawHoriz(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -1722,52 +1946,6 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawHoriz(
 	SJME_SDX_PASS(x);
 	SJME_SDX_PASS(y);
 	SJME_SDX_PASS(w);
-	
-	/* Invoke and wait. */
-	SJME_SDX_WAIT;
-}
-
-sjme_errorCode sjme_scritchpen_coreSerial_drawRect(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint x,
-	sjme_attrInValue sjme_jint y,
-	sjme_attrInPositive sjme_jint w,
-	sjme_attrInPositive sjme_jint h)
-{
-	SJME_SDP_CHUNK(drawRect,
-		SJME_SCRITCHUI_SERIAL_PEN_DRAW_RECT,
-		(g, x, y, w, h));
-		
-	SJME_SDX_PASS(g);
-	SJME_SDX_PASS(x);
-	SJME_SDX_PASS(y);
-	SJME_SDX_PASS(w);
-	SJME_SDX_PASS(h);
-	
-	/* Invoke and wait. */
-	SJME_SDX_WAIT;
-}
-
-sjme_errorCode sjme_scritchpen_coreSerial_drawTriangle(
-	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInValue sjme_jint x1,
-	sjme_attrInValue sjme_jint y1,
-	sjme_attrInValue sjme_jint x2,
-	sjme_attrInValue sjme_jint y2,
-	sjme_attrInValue sjme_jint x3,
-	sjme_attrInValue sjme_jint y3)
-{
-	SJME_SDP_CHUNK(drawTriangle,
-		SJME_SCRITCHUI_SERIAL_PEN_DRAW_TRIANGLE,
-		(g, x1, y1, x2, y2, x3, y3));
-		
-	SJME_SDX_PASS(g);
-	SJME_SDX_PASS(x1);
-	SJME_SDX_PASS(y1);
-	SJME_SDX_PASS(x2);
-	SJME_SDX_PASS(y2);
-	SJME_SDX_PASS(x3);
-	SJME_SDX_PASS(y3);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;
@@ -1858,6 +2036,127 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawPixel(
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;
 }
+
+sjme_errorCode sjme_scritchpen_coreSerial_drawPolyline(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull const sjme_jint* inXPoints,
+	sjme_attrInPositive sjme_jint xOffset,
+	sjme_attrInNotNull const sjme_jint* inYPoints,
+	sjme_attrInPositive sjme_jint yOffset,
+	sjme_attrInPositive sjme_jint nPoints)
+{
+	SJME_SDP_CHUNK(drawPolyline,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_POLYGON,
+		(g, inXPoints, xOffset,
+			inYPoints, yOffset, nPoints));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(inXPoints);
+	SJME_SDX_PASS(xOffset);
+	SJME_SDX_PASS(inYPoints);
+	SJME_SDX_PASS(yOffset);
+	SJME_SDX_PASS(nPoints);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchpen_coreSerial_drawRect(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h)
+{
+	SJME_SDP_CHUNK(drawRect,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_RECT,
+		(g, x, y, w, h));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	SJME_SDX_PASS(w);
+	SJME_SDX_PASS(h);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchpen_coreSerial_drawRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInPositive sjme_jint origImgWidth,
+	sjme_attrInPositive sjme_jint origImgHeight)
+{
+	SJME_SDP_CHUNK(drawRegion,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_REGION,
+		(g, pf, data, off, dataLen, scanLen, alpha,
+			xSrc, ySrc, wSrc, hSrc, trans, xDest, yDest, anchor,
+			wDest, hDest, origImgWidth, origImgHeight));
+
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(pf);
+	SJME_SDX_PASS(data);
+	SJME_SDX_PASS(off);
+	SJME_SDX_PASS(dataLen);
+	SJME_SDX_PASS(scanLen);
+	SJME_SDX_PASS(alpha);
+	SJME_SDX_PASS(xSrc);
+	SJME_SDX_PASS(ySrc);
+	SJME_SDX_PASS(wSrc);
+	SJME_SDX_PASS(hSrc);
+	SJME_SDX_PASS(trans);
+	SJME_SDX_PASS(xDest);
+	SJME_SDX_PASS(yDest);
+	SJME_SDX_PASS(anchor);
+	SJME_SDX_PASS(wDest);
+	SJME_SDX_PASS(hDest);
+	SJME_SDX_PASS(origImgWidth);
+	SJME_SDX_PASS(origImgHeight);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchpen_coreSerial_drawRoundRect(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInPositive sjme_jint arcWidth,
+	sjme_attrInPositive sjme_jint arcHeight)
+{
+	SJME_SDP_CHUNK(drawRoundRect,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_ROUND_RECT,
+		(g, x, y, w, h, arcWidth, arcHeight));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	SJME_SDX_PASS(w);
+	SJME_SDX_PASS(h);
+	SJME_SDX_PASS(arcWidth);
+	SJME_SDX_PASS(arcHeight);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
 	
 sjme_errorCode sjme_scritchpen_coreSerial_drawSubstring(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -1879,6 +2178,31 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawSubstring(
 	SJME_SDX_PASS(x);
 	SJME_SDX_PASS(y);
 	SJME_SDX_PASS(anchor);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchpen_coreSerial_drawTriangle(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x1,
+	sjme_attrInValue sjme_jint y1,
+	sjme_attrInValue sjme_jint x2,
+	sjme_attrInValue sjme_jint y2,
+	sjme_attrInValue sjme_jint x3,
+	sjme_attrInValue sjme_jint y3)
+{
+	SJME_SDP_CHUNK(drawTriangle,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_TRIANGLE,
+		(g, x1, y1, x2, y2, x3, y3));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x1);
+	SJME_SDX_PASS(y1);
+	SJME_SDX_PASS(x2);
+	SJME_SDX_PASS(y2);
+	SJME_SDX_PASS(x3);
+	SJME_SDX_PASS(y3);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;
@@ -1933,6 +2257,55 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawXRGB32Region(
 	SJME_SDX_WAIT;
 }
 
+sjme_errorCode sjme_scritchpen_coreSerial_fillArc(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInValue sjme_jint startAngle,
+	sjme_attrInValue sjme_jint arcAngle)
+{
+	SJME_SDP_CHUNK(fillArc,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_ARC,
+		(g, x, y, w, h, startAngle, arcAngle));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	SJME_SDX_PASS(w);
+	SJME_SDX_PASS(h);
+	SJME_SDX_PASS(startAngle);
+	SJME_SDX_PASS(arcAngle);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchpen_coreSerial_fillPolygon(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull const sjme_jint* inXPoints,
+	sjme_attrInPositive sjme_jint xOffset,
+	sjme_attrInNotNull const sjme_jint* inYPoints,
+	sjme_attrInPositive sjme_jint yOffset,
+	sjme_attrInPositive sjme_jint nPoints)
+{
+	SJME_SDP_CHUNK(fillPolygon,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_POLYGON,
+		(g, inXPoints, xOffset,
+			inYPoints, yOffset, nPoints));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(inXPoints);
+	SJME_SDX_PASS(xOffset);
+	SJME_SDX_PASS(inYPoints);
+	SJME_SDX_PASS(yOffset);
+	SJME_SDX_PASS(nPoints);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
 sjme_errorCode sjme_scritchpen_coreSerial_fillRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
@@ -1949,6 +2322,31 @@ sjme_errorCode sjme_scritchpen_coreSerial_fillRect(
 	SJME_SDX_PASS(y);
 	SJME_SDX_PASS(w);
 	SJME_SDX_PASS(h);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchpen_coreSerial_fillRoundRect(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
+	sjme_attrInPositive sjme_jint w,
+	sjme_attrInPositive sjme_jint h,
+	sjme_attrInPositive sjme_jint arcWidth,
+	sjme_attrInPositive sjme_jint arcHeight)
+{
+	SJME_SDP_CHUNK(fillRoundRect,
+		SJME_SCRITCHUI_SERIAL_PEN_FILL_ROUND_RECT,
+		(g, x, y, w, h, arcWidth, arcHeight));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(x);
+	SJME_SDX_PASS(y);
+	SJME_SDX_PASS(w);
+	SJME_SDX_PASS(h);
+	SJME_SDX_PASS(arcWidth);
+	SJME_SDX_PASS(arcHeight);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;
@@ -1975,6 +2373,42 @@ sjme_errorCode sjme_scritchpen_coreSerial_fillTriangle(
 	SJME_SDX_PASS(x3);
 	SJME_SDX_PASS(y3);
 	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchpen_coreSerial_getRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInValue sjme_jint pf,
+	sjme_attrInNotNull sjme_cpointer data,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositive sjme_jint dataLen,
+	sjme_attrInPositive sjme_jint scanLen,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint anchor)
+{
+	SJME_SDP_CHUNK(getRegion,
+		SJME_SCRITCHUI_SERIAL_PEN_GET_REGION,
+		(g, pf, data, off, dataLen, scanLen,
+			alpha, xSrc, ySrc, wSrc, hSrc, anchor));
+
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(pf);
+	SJME_SDX_PASS(data);
+	SJME_SDX_PASS(off);
+	SJME_SDX_PASS(dataLen);
+	SJME_SDX_PASS(scanLen);
+	SJME_SDX_PASS(alpha);
+	SJME_SDX_PASS(xSrc);
+	SJME_SDX_PASS(ySrc);
+	SJME_SDX_PASS(wSrc);
+	SJME_SDX_PASS(hSrc);
+	SJME_SDX_PASS(anchor);
+
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;
 }
@@ -2117,6 +2551,46 @@ sjme_errorCode sjme_scritchpen_coreSerial_setParametersFrom(
 		
 	SJME_SDX_PASS(g);
 	SJME_SDX_PASS(from);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchpen_coreSerial_transferRegion(
+	sjme_attrInNotNull sjme_scritchui_pencil g,
+	sjme_attrInNotNull sjme_scritchui_pencil srcPencil,
+	sjme_attrInValue sjme_jboolean alpha,
+	sjme_attrInValue sjme_jint xSrc,
+	sjme_attrInValue sjme_jint ySrc,
+	sjme_attrInPositive sjme_jint wSrc,
+	sjme_attrInPositive sjme_jint hSrc,
+	sjme_attrInValue sjme_jint trans,
+	sjme_attrInValue sjme_jint xDest,
+	sjme_attrInValue sjme_jint yDest,
+	sjme_attrInValue sjme_jint anchor,
+	sjme_attrInPositive sjme_jint wDest,
+	sjme_attrInPositive sjme_jint hDest,
+	sjme_attrInValue sjme_scritchui_transferRegionMode mode)
+{
+	SJME_SDP_CHUNK(transferRegion,
+		SJME_SCRITCHUI_SERIAL_PEN_TRANSFER_REGION,
+		(g, srcPencil, alpha, xSrc, ySrc, wSrc, hSrc,
+			trans, xDest, yDest, anchor, wDest, hDest, mode));
+		
+	SJME_SDX_PASS(g);
+	SJME_SDX_PASS(srcPencil);
+	SJME_SDX_PASS(alpha);
+	SJME_SDX_PASS(xSrc);
+	SJME_SDX_PASS(ySrc);
+	SJME_SDX_PASS(wSrc);
+	SJME_SDX_PASS(hSrc);
+	SJME_SDX_PASS(trans);
+	SJME_SDX_PASS(xDest);
+	SJME_SDX_PASS(yDest);
+	SJME_SDX_PASS(anchor);
+	SJME_SDX_PASS(wDest);
+	SJME_SDX_PASS(hDest);
+	SJME_SDX_PASS(mode);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;

@@ -6,11 +6,9 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
-
-#include <string.h>
-#include <stdio.h>
-
 #include "test.h"
+
+#include "sjme/intern/nal.h"
 
 #define TAC_BUF_SIZE 2048
 
@@ -113,6 +111,8 @@ const sjme_nal sjme_nal_test =
 	.fileOpen = sjme_nal_test_fileOpen,
 	.getEnv = sjme_nal_test_getEnv,
 	.nanoTime = sjme_nal_test_nanoTime,
+	.threadSleep = sjme_nal_default_threadSleep,
+	.threadYield = sjme_nal_default_threadYield,
 	{
 		{
 		},

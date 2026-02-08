@@ -154,7 +154,7 @@ public class SizeLimitedInputStream
 			}
 		}
 		
-		// Close the underlying stream, but only if propogating
+		// Close the underlying stream, but only if propagating
 		if (this.propagate)
 			this.wrapped.close();
 	}

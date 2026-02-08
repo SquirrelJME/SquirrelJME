@@ -10,16 +10,19 @@
 /**
  * Native Shelf Abstraction (NAL).
  * 
+ * @file
  * @since 2023/07/29
  */
 
 #ifndef SJME_C_NATIVE_H
 #define SJME_C_NATIVE_H
 
-#include "nvm/mleConst.h"
 #include "sjme/stdTypes.h"
+#include "nvm/mleConst.h"
 #include "sjme/error.h"
 #include "sjme/seekable.h"
+#include "sjme/stream.h"
+#include "sjme/nativeTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -50,6 +53,14 @@ typedef enum sjme_nal_openMode
 } sjme_nal_openMode;
 	
 /**
+ * Represents a specific style of paths which are compatible with each other
+ * but not with other styles.
+ *
+ * @since 2025/12/11
+ */
+typedef struct sjme_path_style sjme_path_style;
+	
+/**
  * Returns the current time in milliseconds as per the Java
  * method @c System::currentTimeMillis() .
  * 
@@ -59,6 +70,18 @@ typedef enum sjme_nal_openMode
  */
 typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
 	sjme_attrOutNotNull sjme_jlong* result);
+
+/**
+ * Returns the path to the executable.
+ *
+ * @param out The output path.
+ * @param outLen The length of the output path.
+ * @return Any resultant error, if any.
+ * @since 2025/12/17
+ */
+typedef sjme_errorCode (*sjme_nal_execPathFunc)(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen);
 
 /**
  * Opens the given file natively.
@@ -82,7 +105,8 @@ typedef sjme_errorCode (*sjme_nal_fileOpenFunc)(
  * @param buf The output buffer.
  * @param bufLen The length of the buffer to store within.
  * @param env The environment variable to lookup.
- * @return Any resultant error code. Will return @c SJME_ERROR_NO_SUCH_ELEMENT
+ * @return Any resultant error code. Will
+ * return @link SJME_ERROR_NO_SUCH_ELEMENT @endlink
  * if there is no environment variable with the given name.
  * @since 2023/08/05
  */
@@ -103,46 +127,83 @@ typedef sjme_errorCode (*sjme_nal_nanoTimeFunc)(
 	sjme_attrOutNotNull sjme_jlong* result);
 
 /**
- * Flushes the given output stream.
+ * Returns the path style that the current system uses.
  *
- * @return Any resultant error.
- * @since 2025/03/03
- */
-typedef sjme_errorCode (*sjme_nal_stdIoFlush)(void);
-	
-/**
- * Writes data to a standard output type stream.
- *
- * @param buf The data buffer to write.
- * @param off The offset into the buffer.
- * @param len The number of bytes to write.
+ * @param outStyle The output path style.
  * @return Any resultant error, if any.
- * @since 2025/02/25
+ * @since 2025/12/11
  */
-typedef sjme_errorCode (*sjme_nal_stdOFunc)(
-	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
-	sjme_attrInPositive sjme_jint off,
-	sjme_attrInPositiveNonZero sjme_jint len);
+typedef sjme_errorCode (*sjme_nal_pathStyleFunc)(
+	sjme_attrOutNotNull const sjme_path_style** outStyle);
+	
+/**
+ * Binds and opens a stream to the given TCP/UDP remote host somewhere on
+ * a network. 
+ * 
+ * @param allocPool The allocation pool to use.
+ * @param netIn The stream for reading input data from the remote host.
+ * @param netOut The stream for writing output data to the remote host.
+ * @param isUdp Should this be a UDP connection?
+ * @param listening Is this listening for a connection?
+ * @param address The address to connect to or to bind to.
+ * @param port The port to connect to or to bind to.
+ * @return Any resultant error, if any.
+ * @since 2025/09/07
+ */
+typedef sjme_errorCode (*sjme_nal_tcpUdpFunc)(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNullable sjme_stream_input* netIn,
+	sjme_attrOutNullable sjme_stream_output* netOut,
+	sjme_attrInValue sjme_jboolean isUdp,
+	sjme_attrInValue sjme_jboolean listening,
+	sjme_attrInNullable sjme_lpcstr address,
+	sjme_attrInRange(0, 65535) sjme_jint port);
+	
+/**
+ * Sleeps for the given time duration.
+ * 
+ * @param millis The number of milliseconds to sleep for.
+ * @param nanos The number of nanoseconds to sleep for.
+ * @return Any resultant error, if any.
+ * @since 2025/11/26
+ */
+typedef sjme_errorCode (*sjme_nal_threadSleepFunc)(
+	sjme_attrInPositive sjme_jint millis,
+	sjme_attrInPositive sjme_jint nanos);
+	
+/**
+ * Yields execution.
+ * 
+ * @return Any resultant error, if any.
+ * @since 2025/11/26
+ */
+typedef sjme_errorCode (*sjme_nal_threadYieldFunc)(void);
 
 /**
- * Contains the needed function calls to perform calls to standard streams.
+ * Returns the user's home directory.
  *
- * @since 2025/03/03
+ * @param out The output buffer.
+ * @param outLen The length of the output buffer.
+ * @return Any resultant error, if any.
+ * @since 2025/12/17
  */
-typedef struct sjme_nal_stdIo
-{
-	/** Close function. */
-	sjme_jboolean (*close)(void);
-	
-	/** Reads from the input. */
-	sjme_jboolean (*in)(void);
+typedef sjme_errorCode (*sjme_nal_userHomeFunc)(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen);
 
-	/** Writes to the output. */
-	sjme_nal_stdOFunc out;
-
-	/** Flushes the output stream. */
-	sjme_nal_stdIoFlush flush;
-} sjme_nal_stdIo;
+/**
+ * Returns the user's username.
+ *
+ * @param out The output buffer.
+ * @param outLen The length of the output buffer.
+ * @return Any resultant error, if any. Will
+ * return @link SJME_ERROR_NO_USER_LOGIN @endlink if the native system does
+ * not support user logins or there is no user logged in.
+ * @since 2025/12/17
+ */
+typedef sjme_errorCode (*sjme_nal_userNameFunc)(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen);
 	
 /**
  * Native Abstraction Layer functions.
@@ -153,6 +214,9 @@ typedef struct sjme_nal
 {
 	/** Current time in milliseconds. */
 	sjme_nal_currentTimeMillisFunc currentTimeMillis;
+
+	/** Returns the path to the current executable. */
+	sjme_nal_execPathFunc execPath;
 	
 	/** Opens a given native file. */
 	sjme_nal_fileOpenFunc fileOpen;
@@ -163,14 +227,32 @@ typedef struct sjme_nal
 	/** Get the current monotonic nanosecond time. */
 	sjme_nal_nanoTimeFunc nanoTime;
 
+	/** Returns the system path style. */
+	sjme_nal_pathStyleFunc pathStyle;
+
+	/** Opens a network socket. */
+	sjme_nal_tcpUdpFunc tcpUdp;
+	
+	/** Sleep the current thread. */
+	sjme_nal_threadSleepFunc threadSleep;
+	
+	/** Yield the current thread. */
+	sjme_nal_threadYieldFunc threadYield;
+
 	/** Standard input/output pipes. */
 	sjme_nal_stdIo stdIo[SJME_NVM_MLE_NUM_STD_PIPES];
+
+	/** Obtains the user's home directory. */
+	sjme_nal_userHomeFunc userHome;
+
+	/** Obtains the user's username. */
+	sjme_nal_userNameFunc userName;
 } sjme_nal;
 
 /** Default native abstraction layer. */
 extern const sjme_nal sjme_nal_default;
 
-#if !defined(SJME_CONFIG_HAS_NO_ERRNO)
+#if !defined(SJME_CONFIG_HAS_NO_ERRNO_H)
 
 /**
  * Maps @c errno to a SquirrelJME error.

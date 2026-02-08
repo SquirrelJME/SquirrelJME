@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.microedition.io.AccessPoint;
+import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * This is a connection to a remote HTTP server, this runs off an existing
@@ -27,6 +29,7 @@ import javax.microedition.io.HttpConnection;
  * @since 2019/05/06
  */
 public class HTTPClientConnection
+	extends AbstractStreamConnection
 	implements HttpConnection
 {
 	/** The remote address. */
@@ -47,13 +50,17 @@ public class HTTPClientConnection
 	 *
 	 * @param __addr The address.
 	 * @param __connector The connector for HTTP calls.
+	 * @param __mode The connection mode.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/12
 	 */
 	public HTTPClientConnection(HTTPAddress __addr,
-		HTTPAgentConnector __connector)
+		HTTPAgentConnector __connector,
+		@MagicConstant(flagsFromClass = Connector.class) int __mode)
 		throws NullPointerException
 	{
+		super(__mode);
+		
 		if (__addr == null || __connector == null)
 			throw new NullPointerException("NARG");
 		
@@ -73,7 +80,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
-	public final void close()
+	protected final void becomingClosed()
 		throws IOException
 	{
 		// Transition to the closed state
@@ -326,28 +333,6 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
-	public final DataInputStream openDataInputStream()
-		throws IOException
-	{
-		return new DataInputStream(this.openInputStream());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/05/06
-	 */
-	@Override
-	public final DataOutputStream openDataOutputStream()
-		throws IOException
-	{
-		return new DataOutputStream(this.openOutputStream());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/05/06
-	 */
-	@Override
 	public final InputStream openInputStream()
 		throws IOException
 	{
@@ -459,18 +444,20 @@ public class HTTPClientConnection
 	 * Connects to the given address using the given stream.
 	 *
 	 * @param __addr The address.
+	 * @param __mode The connection mode.
 	 * @return The open connection.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/06
 	 */
-	public static final HTTPClientConnection connectDefault(HTTPAddress __addr)
+	public static final HTTPClientConnection connectDefault(
+		HTTPAddress __addr, int __mode)
 		throws NullPointerException
 	{
 		if (__addr == null)
 			throw new NullPointerException("NARG");
 		
 		return new HTTPClientConnection(__addr,
-			new SocketHTTPAgentConnector());
+			new SocketHTTPAgentConnector(), __mode);
 	}
 }
 

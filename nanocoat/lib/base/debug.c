@@ -13,8 +13,9 @@
 	#define WIN32_LEAN_AND_MEAN 1
 	
 	#include <windows.h>
+	#include <winternl.h>
 	
-	#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_4)
+	#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_NT_4)
 		#include <debugapi.h>
 	#endif
 
@@ -60,17 +61,20 @@ static void sjme_debug_crashPosix(int signalId)
 
 sjme_jboolean sjme_debug_abort(sjme_errorCode error)
 {
-	static sjme_atomic_sjme_jint didAbort;
+	static sjme_atomic(sjme_jint) didAbort;
+#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_NT_4)
+	PPEB peb;
+#endif
 
 	/* Only trigger abort once. */
-	if (sjme_atomic_sjme_jint_compareSet(&didAbort, 0, 1))
+	if (sjme_atomic_cs(sjme_jint, &didAbort, 0, 1))
 	{
 		/* Use specific abort handler? */
 		if (sjme_debug_handlers != NULL && sjme_debug_handlers->abort != NULL)
 			if (sjme_debug_handlers->abort(error))
 				return SJME_JNI_TRUE;
 
-#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_NT_4)
+#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_NT_4)
 		/* When running tests without a debugger this will pop up about 1000 */
 		/* dialogs saying the program aborted, so only abort on debugging. */
 		if (!IsDebuggerPresent())
@@ -90,7 +94,7 @@ sjme_jboolean sjme_debug_abort(sjme_errorCode error)
 		abort();
 
 		/* We skipped abort, so clear it. */
-		sjme_atomic_sjme_jint_compareSet(&didAbort, 1, 0);
+		sjme_atomic_cs(sjme_jint, &didAbort, 1, 0);
 
 		/* Triggered abort. */
 		return SJME_JNI_TRUE;
@@ -197,7 +201,7 @@ sjme_errorCode sjme_error_outOfMemoryR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 #if defined(SJME_CONFIG_DEBUG)
 	/* Dump entire pool contents. */
 	if (allocPool != NULL)
-		sjme_alloc_poolDump(allocPool);
+		sjme_alloc_poolDump(allocPool, SJME_JNI_FALSE);
 
 	/* It could be huge... */
 	sjme_todoR(file, line, func, "OUT OF MEMORY %p: %d %p!",

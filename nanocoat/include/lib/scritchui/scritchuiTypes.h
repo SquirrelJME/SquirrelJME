@@ -10,6 +10,7 @@
 /**
  * Internal ScritchUI types.
  * 
+ * @file
  * @since 2024/04/02
  */
 
@@ -46,7 +47,7 @@ typedef struct sjme_scritchui_pencilLockState
 	sjme_alignPointer sjme_thread_spinLock spinLock;
 	
 	/** The times this was opened. */
-	sjme_alignPointer sjme_atomic_sjme_jint count;
+	sjme_alignPointer sjme_atomic(sjme_jint) count;
 	
 	/** The front end source for drawing. */
 	sjme_frontEndBindable source;
@@ -110,6 +111,9 @@ struct sjme_scritchui_pencilBase
 	
 	/** The scanline length, in pixels. */
 	sjme_jint scanLenPixels;
+	
+	/** The scan line length, in bits. */
+	sjme_jint scanLenBits;
 	
 	/** The scan line length, in bytes. */
 	sjme_jint scanLenBytes;
@@ -220,6 +224,9 @@ struct sjme_scritchui_uiChoiceItemBase
 	
 	/** The number of pixels in the image. */
 	sjme_jint imageRgbNumPixels;
+	
+	/** Should the image RGB data be freed? */
+	sjme_jboolean freeImageRgb;
 };
 
 /** A list of choice items. */
@@ -234,13 +241,16 @@ struct sjme_scritchui_uiChoiceBase
 	sjme_jint numItems;
 	
 	/** The items on this list. */
-	sjme_list_sjme_scritchui_uiChoiceItem* items;
+	sjme_list(sjme_scritchui_uiChoiceItem)* items;
 };
 
 struct sjme_scritchui_uiContainerBase
 {
 	/** Components within the container. */
-	sjme_list_sjme_scritchui_uiComponent* components;
+	sjme_list(sjme_scritchui_uiComponent)* components;
+	
+	/** The size of the content within the container. */
+	sjme_scritchui_dim contentSize;
 };
 
 struct sjme_scritchui_uiLabeledBase
@@ -276,7 +286,7 @@ struct sjme_scritchui_uiMenuHasChildrenBase
 	sjme_jint numChildren;
 	
 	/** The children to this. */
-	sjme_list_sjme_scritchui_uiMenuKind* children;
+	sjme_list(sjme_scritchui_uiMenuKind)* children;
 };
 
 struct sjme_scritchui_uiMenuHasParentBase
@@ -326,10 +336,13 @@ struct sjme_scritchui_uiMenuItemBase
 	/** Menu parent. */
 	sjme_scritchui_uiMenuHasParentBase parent;
 	
-	/** The accelerator key @c sjme_scritchinput_key , if any. */
+	/** The accelerator key @link sjme_scritchinput_key @endlink , if any. */
 	sjme_jint accelKey;
 	
-	/** The accelerator modifiers @c sjme_scritchinput_modifier , if any. */
+	/**
+	 * The accelerator modifiers @link sjme_scritchinput_modifier @endlink ,
+	 * if any.
+	 */
 	sjme_jint accelMod;
 	
 	/** Some windowing systems need some ID to be specified. */
@@ -345,7 +358,7 @@ struct sjme_scritchui_uiPaintableBase
 	sjme_intPointer extra;
 	
 	/** Is this currently in paint? */
-	sjme_alignPointer sjme_atomic_sjme_jint inPaint;
+	sjme_alignPointer sjme_atomic(sjme_jint) inPaint;
 	
 	/** Belayed painting. */
 	sjme_scritchui_rect belayRect;
@@ -385,6 +398,15 @@ struct sjme_scritchui_uiScreenBase
 	
 	/** Generic display handle such as for X11. */
 	sjme_scritchui_handle displayHandle;
+	
+	/** Generic display handle for the specific screen. */
+	sjme_scritchui_handle screenHandle;
+	
+	/** Cached screen bounds. */
+	sjme_scritchui_rect pixelBound;
+	
+	/** Cached millimeter bounds. */
+	sjme_scritchui_rect mmBound;
 };
 
 struct sjme_scritchui_uiViewBase

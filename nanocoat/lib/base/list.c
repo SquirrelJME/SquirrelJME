@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/list.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
@@ -41,7 +39,7 @@ static sjme_errorCode sjme_list_newInit(
 	sjme_attrInPositive sjme_jint extraFill)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_jint* fakeList;
+	sjme_list(sjme_jint)* fakeList;
 
 	if (allocPool == NULL || newData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -72,7 +70,7 @@ static sjme_errorCode sjme_list_newInit(
 		return sjme_error_default(error);
 
 	/* Store list length. */
-	fakeList = (sjme_list_sjme_jint*)newData->outList;
+	fakeList = (sjme_list(sjme_jint)*)newData->outList;
 	fakeList->length = length;
 	fakeList->elementSize = elementSize;
 	fakeList->elementOffset = elementOffset;
@@ -139,8 +137,8 @@ sjme_errorCode sjme_list_copyR(
 {
 	sjme_errorCode error;
 	sjme_jint i, limit;
-	sjme_list_sjme_jint* fakeOld;
-	sjme_list_sjme_jint* fakeNew;
+	sjme_list(sjme_jint)* fakeOld;
+	sjme_list(sjme_jint)* fakeNew;
 	
 	if (allocPool == NULL || inOldList == NULL || outNewList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -149,7 +147,7 @@ sjme_errorCode sjme_list_copyR(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Map fake. */
-	fakeOld = (sjme_list_sjme_jint*)inOldList;
+	fakeOld = (sjme_list(sjme_jint)*)inOldList;
 	
 	/* Wrong element size and/or offset? Might be different types. */
 	if (fakeOld->elementSize != elementSize ||
@@ -182,7 +180,7 @@ sjme_errorCode sjme_list_directInitR(
 	sjme_attrInValue sjme_jint pointerCheck)
 {
 	sjme_jint size;
-	sjme_list_sjme_jint* fakeList;
+	sjme_list(sjme_jint)* fakeList;
 	
 	if (outList == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -210,13 +208,13 @@ sjme_errorCode sjme_list_directInitR(
 
 sjme_errorCode sjme_list_flattenArgCV(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outList,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNull sjme_lpcstr* argV)
 {
 	sjme_errorCode error;
 	sjme_list_newData newData;
-	sjme_list_sjme_lpstr* result;
+	sjme_list(sjme_lpstr)* result;
 	sjme_jint extraFill, i, len;
 	sjme_lpcstr arg;
 	sjme_pointer destPtr;
@@ -253,13 +251,13 @@ sjme_errorCode sjme_list_flattenArgCV(
 	if (sjme_error_is(error = sjme_list_newInit(&newData,
 		allocPool, sizeof(sjme_lpstr),
 		sizeof(sjme_lpstr),
-		offsetof(sjme_list_sjme_lpstr, elements), 4,
+		offsetof(sjme_list(sjme_lpstr), elements), 4,
 		SJME_BASIC_TYPE_ID_OBJECT, 1, argC,
 		extraFill)))
 		return sjme_error_default(error);
 
 	/* Map result. */
-	result = (sjme_list_sjme_lpstr*)newData.outList;
+	result = (sjme_list(sjme_lpstr)*)newData.outList;
 
 	/* The destination pointer is at the very end of the element set. */
 	destPtr = &result->elements[argC];
@@ -290,7 +288,7 @@ sjme_errorCode sjme_list_flattenArgCV(
 
 sjme_errorCode sjme_list_flattenArgNul(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outList,
 	sjme_attrInNotNull sjme_lpcstr inNulString)
 {
 	sjme_jint count, i, allocLen;
@@ -320,7 +318,7 @@ sjme_errorCode sjme_list_flattenArgNul(
 	
 	/* Perform the flattening. */
 	return sjme_list_flattenArgCV(allocPool,
-		(sjme_list_sjme_lpstr**)outList, count, argV);
+		(sjme_list(sjme_lpstr)**)outList, count, argV);
 }
 
 static sjme_jint sjme_list_injectGrowComparator(sjme_cpointer a,
@@ -538,7 +536,7 @@ sjme_errorCode sjme_list_replaceR(
 	if (oldList == NULL)
 		return sjme_list_allocR(allocPool, inNewLength, inOutList,
 			elementSize, elementOffset, pointerCheck
-			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL);
+			SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
 
 	/* Allocate new list as a copy. */
 	newList = NULL;
@@ -546,7 +544,7 @@ sjme_errorCode sjme_list_replaceR(
 		oldList, &newList, elementSize,
 		elementOffset, pointerCheck
 		SJME_DEBUG_ONLY_COMMA
-		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)) || newList == NULL)
+		SJME_DEBUG_FILE_LINE_COPY)) || newList == NULL)
 		return sjme_error_default(error);
 
 	/* Set new list and free old one. */

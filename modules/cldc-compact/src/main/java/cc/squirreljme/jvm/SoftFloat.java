@@ -886,7 +886,7 @@ public final class SoftFloat
 	private static long __shortShiftRightJam64(long __a, int __dist)
 	{
 		// return a>>dist | ((a & (((uint_fast64_t) 1<<dist) - 1)) != 0);
-    	return __a >>> __dist |
+		return __a >>> __dist |
 			(((__a & ((1L << __dist) - 1)) != 0) ? 1 : 0);
 	}
 	

@@ -67,7 +67,6 @@ public class ScratchPadConnection
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -80,7 +79,6 @@ public class ScratchPadConnection
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -93,7 +91,6 @@ public class ScratchPadConnection
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -106,7 +103,6 @@ public class ScratchPadConnection
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@Override
@@ -120,7 +116,6 @@ public class ScratchPadConnection
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2021/11/30
 	 */
 	@Override

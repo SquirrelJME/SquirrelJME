@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/core/coreSerial.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -32,10 +30,25 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	sjme_sm(.choiceItemGet, sjme_scritchui_coreSerial_choiceItemGet),
 	sjme_sm(.choiceItemInsert, sjme_scritchui_coreSerial_choiceItemInsert),
 	sjme_sm(.choiceItemRemove, sjme_scritchui_coreSerial_choiceItemRemove),
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 35)
 	sjme_sm(.choiceItemRemoveAll,
 		sjme_scritchui_coreSerial_choiceItemRemoveAll),
 	sjme_sm(.choiceItemSetEnabled, 
 		sjme_scritchui_coreSerial_choiceItemSetEnabled),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_sm(.choiceItemRemoveAll, 
+		sjme_scritchui_coreSerial_choiceItemRemoveAll),
+	sjme_sm(.choiceItemSetEnabled, 
+		sjme_scritchui_coreSerial_choiceItemSetEnabled),
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 34)
+	sjme_sm(.choiceItemRemoveAll, sjme_scritchui_coreSerial_choiceItemRemoveAll),
+	sjme_sm(.choiceItemSetEnabled, sjme_scritchui_coreSerial_choiceItemSetEnabled),
+======= MERGED IN content follows =============================== (line 33)
+	sjme_sm(.choiceItemRemoveAll, 
+		sjme_scritchui_coreSerial_choiceItemRemoveAll),
+	sjme_sm(.choiceItemSetEnabled, 
+		sjme_scritchui_coreSerial_choiceItemSetEnabled),
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	sjme_sm(.choiceItemSetImage, sjme_scritchui_coreSerial_choiceItemSetImage),
 	sjme_sm(.choiceItemSetSelected, 
 		sjme_scritchui_coreSerial_choiceItemSetSelected),
@@ -46,9 +59,24 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	sjme_sm(.componentFocusHas, sjme_scritchui_coreSerial_componentFocusHas),
 	sjme_sm(.componentGetParent, sjme_scritchui_coreSerial_componentGetParent),
 	sjme_sm(.componentPosition, sjme_scritchui_coreSerial_componentPosition),
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 49)
 	sjme_sm(.componentRepaint, sjme_scritchui_coreSerial_componentRepaint),
 	sjme_sm(.componentRevalidate, 
 		sjme_scritchui_coreSerial_componentRevalidate),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_sm(.componentRepaint, 
+		sjme_scritchui_coreSerial_componentRepaint),
+	sjme_sm(.componentRevalidate, 
+		sjme_scritchui_coreSerial_componentRevalidate),
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 44)
+	sjme_sm(.componentRepaint, sjme_scritchui_coreSerial_componentRepaint),
+	sjme_sm(.componentRevalidate, sjme_scritchui_coreSerial_componentRevalidate),
+======= MERGED IN content follows =============================== (line 47)
+	sjme_sm(.componentRepaint, 
+		sjme_scritchui_coreSerial_componentRepaint),
+	sjme_sm(.componentRevalidate, 
+		sjme_scritchui_coreSerial_componentRevalidate),
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	sjme_sm(.componentSetActivateListener,
 		sjme_scritchui_coreSerial_componentSetActivateListener),
 	sjme_sm(.componentSetInputListener,
@@ -63,6 +91,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 		sjme_scritchui_coreSerial_componentSetVisibleListener),
 	sjme_sm(.componentSize, sjme_scritchui_coreSerial_componentSize),
 	sjme_sm(.containerAdd, sjme_scritchui_coreSerial_containerAdd),
+	sjme_sm(.containerGetFrame,
+		sjme_scritchui_coreSerial_containerGetFrame),
 	sjme_sm(.containerRemove, sjme_scritchui_coreSerial_containerRemove),
 	sjme_sm(.containerRemoveAll, sjme_scritchui_coreSerial_containerRemoveAll),
 	sjme_sm(.containerSetBounds, sjme_scritchui_coreSerial_containerSetBounds),
@@ -92,6 +122,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	sjme_sm(.objectDelete, sjme_scritchui_coreSerial_objectDelete),
 	sjme_sm(.panelEnableFocus, sjme_scritchui_coreSerial_panelEnableFocus),
 	sjme_sm(.panelNew, sjme_scritchui_coreSerial_panelNew),
+	sjme_sm(.pseudoGraphics, sjme_scritchui_coreSerial_pseudoGraphics),
+	sjme_sm(.screenGetBounds, sjme_scritchui_coreSerial_screenGetBounds),
 	sjme_sm(.screenSetListener, sjme_scritchui_coreSerial_screenSetListener),
 	sjme_sm(.screens, sjme_scritchui_coreSerial_screens),
 	sjme_sm(.scrollPanelNew, sjme_scritchui_coreSerial_scrollPanelNew),
@@ -143,6 +175,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 		sjme_scritchui_core_componentSetVisibleListener),
 	sjme_sm(.componentSize, sjme_scritchui_core_componentSize),
 	sjme_sm(.containerAdd, sjme_scritchui_core_containerAdd),
+	sjme_sm(.containerGetFrame,
+		sjme_scritchui_core_containerGetFrame),
 	sjme_sm(.containerRemove, sjme_scritchui_core_containerRemove),
 	sjme_sm(.containerRemoveAll, sjme_scritchui_core_containerRemoveAll),
 	sjme_sm(.containerSetBounds, sjme_scritchui_core_containerSetBounds),
@@ -168,6 +202,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	sjme_sm(.objectDelete, sjme_scritchui_core_objectDelete),
 	sjme_sm(.panelEnableFocus, sjme_scritchui_core_panelEnableFocus),
 	sjme_sm(.panelNew, sjme_scritchui_core_panelNew),
+	sjme_sm(.pseudoGraphics, sjme_scritchui_core_pseudoGraphics),
+	sjme_sm(.screenGetBounds, sjme_scritchui_core_screenGetBounds),
 	sjme_sm(.screenSetListener, sjme_scritchui_core_screenSetListener),
 	sjme_sm(.screens, sjme_scritchui_core_screens),
 	sjme_sm(.scrollPanelNew, sjme_scritchui_core_scrollPanelNew),
@@ -177,9 +213,11 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	sjme_sm(.viewSetSizeSuggestListener,
 		sjme_scritchui_core_viewSetSizeSuggestListener),
 	sjme_sm(.viewSetViewListener, sjme_scritchui_core_viewSetViewListener),
-	sjme_sm(.windowContentMinimumSize, sjme_scritchui_core_windowContentMinimumSize),
+	sjme_sm(.windowContentMinimumSize, 
+		sjme_scritchui_core_windowContentMinimumSize),
 	sjme_sm(.windowNew, sjme_scritchui_core_windowNew),
-	sjme_sm(.windowSetCloseListener, sjme_scritchui_core_windowSetCloseListener),
+	sjme_sm(.windowSetCloseListener, 
+		sjme_scritchui_core_windowSetCloseListener),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_core_windowSetMenuBar),
 	sjme_sm(.windowSetMenuItemActivateListener,
 		sjme_scritchui_core_windowSetMenuItemActivateListener),
@@ -240,7 +278,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 		sjme_atomic_barrier();
 		
 		/* Read it in. */
-		topState = sjme_atomic_sjme_pointer_get(
+		topState = sjme_atomic_g(sjme_pointer, 
 			&wrappedState->topState);
 	}
 	
@@ -255,7 +293,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	sjme_message("Marking framebuffer as ready!");
 	
 	/* Mark as ready so initialization continues and gets finished. */
-	sjme_atomic_sjme_jint_set(&topState->loopThreadReady, 1);
+	sjme_atomic_s(sjme_jint, &topState->loopThreadReady, 1);
 	
 	/* Success! */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
@@ -356,7 +394,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 			state, wrappedState);
 		
 		/* Link together. */
-		sjme_atomic_sjme_pointer_set(&wrappedState->topState,
+		sjme_atomic_s(sjme_pointer, &wrappedState->topState,
 			state);
 		
 		/* Barrier here for wrapped init. */
@@ -379,10 +417,10 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	if (state->loopThread == SJME_THREAD_NULL ||
 		(currentThread != SJME_THREAD_NULL &&
 			state->loopThread == currentThread))
-		sjme_atomic_sjme_jint_set(&state->loopThreadReady, 1);
+		sjme_atomic_s(sjme_jint, &state->loopThreadReady, 1);
 	else
 	{
-		while (0 == sjme_atomic_sjme_jint_get(&state->loopThreadReady))
+		while (0 == sjme_atomic_g(sjme_jint, &state->loopThreadReady))
 		{
 			sjme_atomic_barrier();
 			sjme_thread_yield();

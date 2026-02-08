@@ -182,11 +182,7 @@ public final class Font
 	@Api
 	public int charWidth(char __c)
 	{
-		throw Debugging.todo();
-		/*
-		return this._sqf.charWidth(SQFFont.mapChar(__c));
-		
-		 */
+		return PencilFontShelf.pixelCharWidth(this._font, __c);
 	}
 	
 	/**

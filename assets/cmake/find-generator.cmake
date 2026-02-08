@@ -10,112 +10,167 @@
 # target anyway. So I think the best thing to do here is to just use the
 # Visual Studio generators... This also applies to Xcode and such as well.
 
-# Possible CMake Generators
-list(APPEND SQUIRRELJME_CMAKE_GENERATORS
-	"Green Hills MULTI")
+# Attempts a given generator
+macro(squirreljme_find_generator generator toolset platform)
+	# We need a temporary directory for the build project
+	squirreljme_temp_path(tempBuild)
+	file(MAKE_DIRECTORY "${tempBuild}")
 
-# Add Windows based generators
-if("${SQUIRRELJME_HOST_SYSTEM}" STREQUAL "windows")
-	list(APPEND SQUIRRELJME_CMAKE_GENERATORS
-		"Visual Studio 6"
-		"Visual Studio 7"
-		"Visual Studio 7 .NET 2003"
-		"Visual Studio 8 2005"
-		"Visual Studio 9 2008"
-		"Visual Studio 10 2010"
-		"Visual Studio 11 2012"
-		"Visual Studio 12 2013"
-		"Visual Studio 14 2015"
-		"Visual Studio 15 2017"
-		"Visual Studio 16 2019"
-		"Visual Studio 17 2022"
-		"Visual Studio 18 2026")
+	# Try configuring the blank project
+	# If the toolset is none, ignore it
+	unset(generatorResult)
+	if("${toolset}" STREQUAL "none")
+		# Ignore also if the platform is none
+		if("${platform}" STREQUAL "none")
+			execute_process(
+				COMMAND "${CMAKE_COMMAND}"
+					"-G" "${generator}"
+					"-B" "${tempBuild}"
+					"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+				RESULT_VARIABLE generatorResult
+				OUTPUT_QUIET
+				ERROR_QUIET)
+		else()
+			execute_process(
+				COMMAND "${CMAKE_COMMAND}"
+					"-G" "${generator}"
+					"-A" "${platform}"
+					"-B" "${tempBuild}"
+					"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+				RESULT_VARIABLE generatorResult
+				OUTPUT_QUIET
+				ERROR_QUIET)
+		endif()
+	else()
+		execute_process(
+			COMMAND "${CMAKE_COMMAND}"
+				"-G" "${generator}"
+				"-T" "${platform}"
+				"-A" "${toolset}"
+				"-B" "${tempBuild}"
+				"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+			RESULT_VARIABLE generatorResult
+			OUTPUT_QUIET
+			ERROR_QUIET)
+	endif()
 
-# macOS based generators
-elseif("${SQUIRRELJME_HOST_SYSTEM}" STREQUAL "macosx")
-	list(APPEND SQUIRRELJME_CMAKE_GENERATORS
-		"Xcode")
-endif()
+	# If successful and the system/arch information exists, register it
+	if("${generatorResult}" EQUAL "0" AND
+		EXISTS "${tempBuild}/system.tgt" AND
+		EXISTS "${tempBuild}/arch__.tgt")
+		# Load the info
+		file(READ "${tempBuild}/system.tgt" systemNormal)
+		file(READ "${tempBuild}/arch__.tgt" archNormal)
 
-# Platforms to be passed to the generators
-list(APPEND SQUIRRELJME_CMAKE_PLATFORMS
+		# Track it
+		squirreljme_track_generator(${systemNormal} ${archNormal}
+			${generator} ${toolset} ${platform})
+	endif()
+
+	# Delete the configuration directory
+	file(REMOVE_RECURSE "${tempBuild}")
+endmacro()
+
+# Try a set of generators
+macro(squirreljme_find_generators generators toolsets platforms)
+	# Make actual variables for lists
+	set(generators "${generators}")
+	set(toolsets "${toolsets}")
+	set(platforms "${platforms}")
+
+	# Process each combination
+	foreach(generator IN LISTS generators)
+		foreach(toolset IN LISTS toolsets)
+			foreach(platform IN LISTS platforms)
+				squirreljme_find_generator(${generator} ${toolset} ${platform})
+			endforeach()
+		endforeach()
+	endforeach()
+endmacro()
+
+# Basic platforms, generally used as a sanity check to ensure that generators
+# work properly but this could unlock more compilers!
+unset(SQUIRRELJME_GENERATOR_BASIC)
+unset(SQUIRRELJME_GENERATOR_BASIC_TOOLSETS)
+unset(SQUIRRELJME_GENERATOR_BASIC_PLATFORMS)
+list(APPEND SQUIRRELJME_GENERATOR_BASIC
+	"Borland Makefiles"
+	"NMake Makefiles"
+	"Watcom WMake"
+	"MinGW Makefiles"
+	"Unix Makefiles")
+list(APPEND SQUIRRELJME_GENERATOR_BASIC_TOOLSETS
 	"none")
-list(APPEND SQUIRRELJME_CMAKE_PLATFORMS_GREEN
+list(APPEND SQUIRRELJME_GENERATOR_BASIC_PLATFORMS
+	"none")
+
+squirreljme_find_generators(
+	"${SQUIRRELJME_GENERATOR_BASIC}"
+	"${SQUIRRELJME_GENERATOR_BASIC_TOOLSETS}"
+	"${SQUIRRELJME_GENERATOR_BASIC_PLATFORMS}")
+
+# Green Hills
+unset(SQUIRRELJME_GENERATOR_GHM)
+unset(SQUIRRELJME_GENERATOR_GHM_TOOLSETS)
+unset(SQUIRRELJME_GENERATOR_GHM_PLATFORMS)
+list(APPEND SQUIRRELJME_GENERATOR_GHM
+	"Green Hills MULTI")
+list(APPEND SQUIRRELJME_GENERATOR_GHM_TOOLSETS
+	"none")
+list(APPEND SQUIRRELJME_GENERATOR_GHM_PLATFORMS
 	"arm"
 	"ppc"
 	"86")
-list(APPEND SQUIRRELJME_CMAKE_PLATFORMS_MSVC
+
+squirreljme_find_generators(
+	"${SQUIRRELJME_GENERATOR_GHM}"
+	"${SQUIRRELJME_GENERATOR_GHM_TOOLSETS}"
+	"${SQUIRRELJME_GENERATOR_GHM_PLATFORMS}")
+
+# Microsoft Visual Studio
+unset(SQUIRRELJME_GENERATOR_MSVC)
+unset(SQUIRRELJME_GENERATOR_MSVC_TOOLSETS)
+unset(SQUIRRELJME_GENERATOR_MSVC_PLATFORMS)
+list(APPEND SQUIRRELJME_GENERATOR_MSVC
+	"Visual Studio 6"
+	"Visual Studio 7"
+	"Visual Studio 7 .NET 2003"
+	"Visual Studio 8 2005"
+	"Visual Studio 9 2008"
+	"Visual Studio 10 2010"
+	"Visual Studio 11 2012"
+	"Visual Studio 12 2013"
+	"Visual Studio 14 2015"
+	"Visual Studio 15 2017"
+	"Visual Studio 16 2019"
+	"Visual Studio 17 2022"
+	"Visual Studio 18 2026")
+list(APPEND SQUIRRELJME_GENERATOR_MSVC_TOOLSETS
+	"none")
+list(APPEND SQUIRRELJME_GENERATOR_MSVC_PLATFORMS
 	"Win32"
 	"X64"
 	"ARM"
 	"ARM64")
 
-# Go through each generator, and each platform
-message(STATUS "Checking CMake Generators...")
-foreach(generator IN LISTS SQUIRRELJME_CMAKE_GENERATORS)
-	# Which set of platforms to use?
-	string(FIND "${generator}" "Visual Studio" isMsvc)
-	string(FIND "${generator}" "Green Hills" isGreen)
-	if("${isMsvc}" GREATER_EQUAL "0")
-		set(usePlatforms "${SQUIRRELJME_CMAKE_PLATFORMS_MSVC}")
-	elseif("${isGreen}" GREATER_EQUAL "0")
-		set(usePlatforms "${SQUIRRELJME_CMAKE_PLATFORMS_GREEN}")
-	else()
-		set(usePlatforms "${SQUIRRELJME_CMAKE_PLATFORMS}")
-	endif()
+squirreljme_find_generators(
+	"${SQUIRRELJME_GENERATOR_MSVC}"
+	"${SQUIRRELJME_GENERATOR_MSVC_TOOLSETS}"
+	"${SQUIRRELJME_GENERATOR_MSVC_PLATFORMS}")
 
-	# Then for each platform
-	foreach(platform IN LISTS usePlatforms)
-		# Where to place this?
-		string(MAKE_C_IDENTIFIER
-			"check-${generator}-${platform}" dirName)
-		file(TO_CMAKE_PATH
-			"${CMAKE_BINARY_DIR}/gen-check/${dirName}" checkDir)
-		file(MAKE_DIRECTORY "${checkDir}")
+# Xcode (macOS)
+unset(SQUIRRELJME_GENERATOR_XCODE)
+unset(SQUIRRELJME_GENERATOR_XCODE_TOOLSETS)
+unset(SQUIRRELJME_GENERATOR_XCODE_PLATFORMS)
+list(APPEND SQUIRRELJME_GENERATOR_XCODE
+	"Xcode")
+list(APPEND SQUIRRELJME_GENERATOR_XCODE_TOOLSETS
+	"none")
+list(APPEND SQUIRRELJME_GENERATOR_XCODE_PLATFORMS
+	"arm64"
+	"x86_64")
 
-		# Check to see if we can configure for this platform
-		message(STATUS "Checking CMake Generator ${generator}/${platform}...")
-		if("${platform}" STREQUAL "none")
-			execute_process(COMMAND "${CMAKE_COMMAND}"
-				"-G" "${generator}"
-				"-B" "${checkDir}"
-				"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
-				RESULT_VARIABLE checkResult
-				OUTPUT_FILE "${checkDir}.out"
-				ERROR_FILE "${checkDir}.err")
-		else()
-			execute_process(COMMAND "${CMAKE_COMMAND}"
-				"-G" "${generator}"
-				"-A" "${platform}"
-				"-B" "${checkDir}"
-				"-S" "${CMAKE_SOURCE_DIR}/nanocoat"
-				RESULT_VARIABLE checkResult
-				OUTPUT_FILE "${checkDir}.out"
-				ERROR_FILE "${checkDir}.err")
-		endif()
-
-		# Successfully configured? With a valid system?
-		if("${checkResult}" EQUAL "0" AND
-			EXISTS "${checkDir}/system.tgt" AND
-			EXISTS "${checkDir}/arch__.tgt")
-			# Read in architecture and target
-			file(READ "${checkDir}/system.tgt" systemChecked)
-			file(READ "${checkDir}/arch__.tgt" archChecked)
-
-			# Cleanup
-			string(STRIP "${systemChecked}" systemChecked)
-			string(STRIP "${archChecked}" archChecked)
-
-			# Is this valid?
-			if(NOT "${systemChecked}" STREQUAL "unknown" AND
-				NOT "${archChecked}" STREQUAL "unknown" AND
-				NOT "${systemChecked}" STREQUAL "" AND
-				NOT "${archChecked}" STREQUAL "")
-				# Register the compiler by generator/arch
-				squirreljme_compiler_by_generator(
-					"${systemChecked}" "${archChecked}"
-					"${generator}" "${platform}")
-			endif()
-		endif()
-	endforeach()
-endforeach()
+squirreljme_find_generators(
+	"${SQUIRRELJME_GENERATOR_XCODE}"
+	"${SQUIRRELJME_GENERATOR_XCODE_TOOLSETS}"
+	"${SQUIRRELJME_GENERATOR_XCODE_PLATFORMS}")

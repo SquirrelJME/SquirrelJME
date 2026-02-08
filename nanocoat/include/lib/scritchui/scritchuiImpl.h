@@ -238,6 +238,9 @@ typedef sjme_errorCode (*sjme_scritchui_impl_windowNewFunc)(
 
 struct sjme_scritchui_implFunctions
 {
+	/** The driver name. */
+	sjme_lpcstr driverName;
+	
 	/** Initialize implementation API instance. */
 	SJME_SCRITCHUI_QUICK_IMPL(apiInit);
 	
@@ -337,17 +340,20 @@ struct sjme_scritchui_implFunctions
 	/** Creates a new menu item. */
 	SJME_SCRITCHUI_QUICK_IMPL(menuItemNew);
 	
-	/** Removes an item from the menu. */
-	SJME_SCRITCHUI_QUICK_SAME(menuRemove);
-	
 	/** Creates a new menu. */
 	SJME_SCRITCHUI_QUICK_IMPL(menuNew);
+
+	/** Removes an item from the menu. */
+	SJME_SCRITCHUI_QUICK_SAME(menuRemove);
 	
 	/** Enable/disable focus on a panel. */
 	SJME_SCRITCHUI_QUICK_SAME(panelEnableFocus);
 	
 	/** Creates a new native panel. */
 	SJME_SCRITCHUI_QUICK_IMPL(panelNew);
+	
+	/** Get bounds of a screen. */
+	SJME_SCRITCHUI_QUICK_SAME(screenGetBounds);
 	
 	/** The available screens. */
 	SJME_SCRITCHUI_QUICK_SAME(screens);
@@ -369,6 +375,9 @@ struct sjme_scritchui_implFunctions
 	
 	/** Set minimum size of content window. */
 	SJME_SCRITCHUI_QUICK_SAME(windowContentMinimumSize);
+	
+	/** Content size of a container. */
+	sjme_scritchui_containerGetFrameFunc windowGetFrame;
 	
 	/** Creates a new window. */
 	SJME_SCRITCHUI_QUICK_IMPL(windowNew);

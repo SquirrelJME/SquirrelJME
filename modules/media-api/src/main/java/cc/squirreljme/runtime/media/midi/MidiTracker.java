@@ -10,6 +10,7 @@ package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.util.Arrays;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.control.MIDIControl;
 
@@ -38,39 +39,48 @@ public final class MidiTracker
 	/** MIDI trackers. */
 	private final MTrkTracker[] _trackers;
 	
-	/** The number of nanoseconds per tick division. */
-	volatile long _nanosPerTickDiv =
-		-1;
+	/** The nanosecond clock when the next event occurs. */
+	private final long[] _nextNanos;
 	
-	/** The time signature. */
-	volatile int _timeSignature =
-		1;
+	/** The timing that is shared for all MIDI tracks. */
+	final MidiTimeDiv _timeDiv;
+	
+	/** Has the base time been adjusted for the main loop? */
+	private volatile int _baseAdjust;
 	
 	/**
 	 * Initializes the MIDI tracker.
 	 *
 	 * @param __player The player used.
 	 * @param __tracks MIDI tracks to run with.
+	 * @param __timeDiv The time division.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/27
 	 */
-	public MidiTracker(MidiPlayer __player, MTrkParser[] __tracks)
+	public MidiTracker(MidiPlayer __player, MTrkParser[] __tracks,
+		MidiTimeDiv __timeDiv)
 		throws NullPointerException
 	{
 		super("SquirrelJME-MidiTracker-" +
 			Math.abs(__player.hashCode()));
 		
-		if (__tracks == null)
+		if (__tracks == null || __timeDiv == null)
 			throw new NullPointerException("NARG");
 		
 		this.player = __player;
 		this.midiControl = __player.midiControl;
 		
+		// Store the time division
+		this._timeDiv = __timeDiv;
+		
 		// Trackers for each track
 		MTrkTracker[] trackers = new MTrkTracker[__tracks.length];
 		for (int i = 0, n = __tracks.length; i < n; i++)
-			trackers[i] = new MTrkTracker(__tracks[i]);
+			trackers[i] = new MTrkTracker(__tracks[i], __timeDiv);
 		this._trackers = trackers;
+		
+		// Times the next event occurs for each track
+		this._nextNanos = new long[__tracks.length];
 	}
 	
 	/**
@@ -82,7 +92,44 @@ public final class MidiTracker
 	@SquirrelJMEVendorApi
 	public void fastForward(long __micros)
 	{
-		Debugging.todoNote("fastForward(%d)", __micros);
+		long target = __micros * 1_000L;
+		synchronized (this)
+		{
+			// Fast-forward or time adjustment happened, need to recalculate
+			// the base time because the base clock no longer matches the
+			// MIDI clock
+			this._baseAdjust++;
+			
+			// Is this a back in time fast-forward?
+			MidiTimeDiv timeDiv = this._timeDiv;
+			MIDIControl control = this.midiControl;
+			if (target < timeDiv._nanoClock)
+			{
+				// Turn off all notes and reset all controllers
+				MidiTracker.squelch(control, true);
+				
+				// Go back to the starting clock of zero
+				timeDiv._nanoClock = 0;
+				
+				// Reset all tracks to start at zero
+				Arrays.fill(this._nextNanos, 0);
+				
+				// Reset each track to the start since we need read the data
+				// all over again
+				for (MTrkTracker tracker : this._trackers)
+					tracker.reset();
+			}
+			
+			// Fast-forward with relative time and no control output
+			// We do not care what the target time is, just that it is the
+			// media time
+			for (long next = 0; next < target && next != Long.MAX_VALUE;)
+				next = this.tracker(null, control, target);
+			
+			// Interrupt
+			this.interrupt();
+			this.notifyAll();
+		}
 	}
 	
 	/**
@@ -94,123 +141,299 @@ public final class MidiTracker
 	@SquirrelJMEVendorApi
 	protected long micros()
 	{
-		Debugging.todoNote("micros()");
-		return 0;
+		// Just return the MIDI clock
+		return this._timeDiv._nanoClock / 1_000L;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/04/27
 	 */
-	@SuppressWarnings("ConditionCoveredByFurtherCondition")
+	@SuppressWarnings({"ConditionCoveredByFurtherCondition", "BusyWait"})
 	@Override
 	public void run()
 	{
 		MidiPlayer player = this.player;
 		MIDIControl control = this.midiControl;
-		MTrkTracker[] trackers = this._trackers;
-		int numTracks = trackers.length;
 		
-		// Used to indicate when the next track time should play
-		long[] readyAts = new long[numTracks];
-		for (int i = 0; i < numTracks; i++)
-			readyAts[i] = Long.MIN_VALUE;
-		
-		// Reset all trackers so they start at the beginning
-		for (MTrkTracker tracker : trackers)
-			tracker.reset();
-		
-		// Play almost forever
-		for (;;)
+		// Needed for final cleanup
+		try
 		{
-			// Stop playback immediately?
-			synchronized (this)
-			{
-				if (this.stopPlayback)
-					break;
-			}
+			// The base timing for events
+			long baseTime = System.nanoTime();
+			long baseMidi = this._timeDiv._nanoClock;
 			
-			// The current time for this loop
-			long nowTime = System.nanoTime();
+			// The current base adjust
+			int baseAdjust = this._baseAdjust;
 			
-			// Current micros per tick div, used for sleeping... if no tempo
-			// was previously set then use the default for MIDI?
-			long nanosPerTickDiv = this._nanosPerTickDiv;
-			if (nanosPerTickDiv < 0)
+			// Infinite tracker loop
+			for (;;)
 			{
-				nanosPerTickDiv = this.player._nanosPerTickDiv;
-				this._nanosPerTickDiv = nanosPerTickDiv;
-			}
-			
-			// Update each tracker accordingly
-			long soonestReady = Long.MAX_VALUE;
-			for (int track = 0; track < numTracks; track++)
-			{
-				// We are not ready here yet
-				long readyAt = readyAts[track];
-				if (readyAt != Long.MIN_VALUE && nowTime < readyAt)
+				// Get the new adjustment value
+				int newAdjust;
+				synchronized (this)
 				{
-					// Used for sleeping
-					if (readyAt < soonestReady)
-						soonestReady = readyAt;
+					newAdjust = this._baseAdjust;
+				}
+				
+				// Does the base clock need adjusting?
+				if (newAdjust != baseAdjust)
+				{
+					// Adjustment changed
+					baseAdjust = newAdjust;
+					
+					// Recalculate the base time
+					baseTime = System.nanoTime();
+					baseMidi = this._timeDiv._nanoClock;
+				}
+				
+				// How much time has passed since the base time, relatively?
+				long deltaTime = System.nanoTime() - baseTime;
+				long deltaMidi = baseMidi + deltaTime;
+				
+				// Try to keep up with the tracker
+				long nextMidi = this.tracker(control, control,
+					deltaMidi);
+				
+				// Stopping playback?
+				if (nextMidi == Long.MIN_VALUE)
+				{
+					// Media is stopping, stop playing
+					if (player.decrementLoop())
+					{
+						// Turn off all notes
+						MidiTracker.squelch(control, true);
+						
+						// Stop everything
+						player.stopViaMedia();
+						return;
+					}
+					
+					// Media is looping, go back to the start
+					else
+						player.loopViaMedia();
+					
+					// Run another loop
 					continue;
 				}
 				
-				// Get the current track to play
-				MTrkTracker tracker = trackers[track];
+				// Set time to wait for the next event
+				long waitMidi = nextMidi - deltaMidi;
+				if (waitMidi > 10_000L)
+					try
+					{
+						// Debug
+						if (Debugging.VERBOSE)
+							Debugging.debugNote(
+								"Sleep %d = (%d - %d) / %d",
+								waitMidi, nextMidi, deltaMidi,
+								this._timeDiv._nanoClock);
+						
+						// Offset the time so we do not spend extra time
+						// sleeping
+						synchronized (this)
+						{
+							this.wait(waitMidi / 1_000_000L,
+								(int)(waitMidi % 1_000_000L));
+						}
+					}
+					catch (InterruptedException ignored)
+					{
+					}
+			}
+		}
+		
+		// Failed to stop or otherwise?
+		catch (IllegalStateException|MediaException __e)
+		{
+			__e.printStackTrace();
+		}
+		
+		// Stop all notes and stop the media playback
+		finally
+		{
+			// Squelch all notes
+			MidiTracker.squelch(control, true);
+			
+			// Indicate stop
+			try
+			{
+				player.stopViaMedia();
+			}
+			catch (IllegalStateException|MediaException __e)
+			{
+				__e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Performs a tracker tick.
+	 *
+	 * @param __play The control to play into.
+	 * @param __squelch The squelch control.
+	 * @param __targetNanos The target MIDI nanoseconds that we want to
+	 * play up to.
+	 * @return The clock where the next event will be at.
+	 * @since 2026/01/02
+	 */
+	@SquirrelJMEVendorApi
+	public long tracker(MIDIControl __play, MIDIControl __squelch,
+		long __targetNanos)
+	{
+		synchronized (this)
+		{
+			// Stop playback?
+			if (this.stopPlayback)
+			{
+				// Force squelch everything
+				MidiTracker.squelch(__squelch, true);
 				
-				// Advance the track
-				int delta = 0;
-				while (delta == 0)
-					delta = tracker.playNext(this, control);
-				
-				// Determine time when the track is ready
-				if (nanosPerTickDiv > 0)
-					readyAts[track] = nowTime +
-						((delta * nanosPerTickDiv) / player._tickDiv);
+				// Playback is stopping
+				return Long.MAX_VALUE;
 			}
 			
-			// Sleep until the next event can occur
-			if (soonestReady != Long.MAX_VALUE && soonestReady > nowTime)
-				try
+			// If only squelch is specified, mute all notes but do not
+			// reset all controls
+			if (__play == null && __squelch != null)
+				MidiTracker.squelch(__squelch, false);
+			
+			// Forward to internal tracking
+			return this.__tracker(__play, __squelch, __targetNanos);
+		}
+	}
+	
+	/**
+	 * Performs a tracker tick.
+	 *
+	 * @param __play The control to play into.
+	 * @param __squelch The squelch control.
+	 * @param __targetNanos The target MIDI nanoseconds that we want to
+	 * play up to.
+	 * @return The clock where the next event will be at.
+	 * @since 2026/01/02
+	 */
+	private long __tracker(MIDIControl __play, MIDIControl __squelch,
+		long __targetNanos)
+	{
+		// MIDI Tracks
+		MTrkTracker[] trackers = this._trackers;
+		int numTracks = trackers.length;
+		
+		// Timing
+		MidiTimeDiv timeDiv = this._timeDiv;
+		long[] nextNanos = this._nextNanos;
+		
+		// The lowest delta time to meet the next target
+		long lowestDelta = Long.MAX_VALUE;
+		long lowestNanos = Long.MAX_VALUE;
+		
+		// Tracks that have ended and which are not ready
+		int stallTracks = 0;
+		int endedTracks = 0;
+		
+		// Go through each track and process events
+		// Note that the inner for() loop is to catch up if the timing was
+		// too slow
+		for (int track = 0; track < numTracks; track++)
+			for (;;)
+			{
+				// Get the current track and the timing
+				MTrkTracker tracker = trackers[track];
+				long nextNano = nextNanos[track];
+				
+				// Track has finished?
+				if (tracker._trackEnded)
 				{
-					// Do not rest for too long
-					long millis = (soonestReady - nowTime) / 1_000_000;
-					if (millis > 250)
-						millis = 250;
+					// Both ended and stalled go up
+					stallTracks++;
+					endedTracks++;
 					
-					// Rest
-					Thread.sleep(millis);
-				}
-				catch (InterruptedException __ignored)
-				{
+					// Go to the next track
 					break;
 				}
-		}
+				
+				// We are not playing up to this point?
+				if (__targetNanos < nextNano)
+				{
+					// Is there a new lowest delta time?
+					long delta = __targetNanos - nextNano;
+					if (delta < lowestDelta)
+						lowestDelta = delta;
+					
+					// Is this a lower clock time
+					if (nextNano < lowestNanos)
+						lowestNanos = nextNano;
+					
+					// Stalled tracks go up
+					stallTracks++;
+					
+					// Go to the next track
+					break;
+				}
+				
+				// Advance the track, keep playing notes when the delta is
+				// zero. Once the delta is non-zero we need to pause.
+				// However, if the track ends, we do not want to freeze!
+				int tickDelta = 0;
+				while (tickDelta == 0 && !tracker._trackEnded)
+					tickDelta = tracker.playNext(__play, __squelch);
+				
+				// If there is a tick delta add to the track time
+				nextNano += (tickDelta * timeDiv._nanosPerTickDiv); 
+				nextNanos[track] = nextNano;
+				
+				// Is this a lower clock time
+				if (nextNano < lowestNanos)
+					lowestNanos = nextNano;
+			}
+		
+		// Did all tracks end?
+		if (endedTracks >= numTracks)
+			return Long.MIN_VALUE;
+		
+		// Set the new MIDI time to the lowest nanos
+		if (lowestNanos != Long.MAX_VALUE && lowestNanos >= 0)
+			timeDiv._nanoClock = lowestNanos;
+		
+		// Return the time in nanoseconds where the earliest next event
+		// should play
+		return lowestNanos;
+	}
+	
+	/**
+	 * Squelches all MIDI notes.
+	 *
+	 * @param __control The control this is for.
+	 * @param __reset Reset all controllers.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/01/02
+	 */
+	@SquirrelJMEVendorApi
+	public static final void squelch(MIDIControl __control, boolean __reset)
+		throws NullPointerException
+	{
+		if (__control == null)
+			throw new NullPointerException("NARG");
 		
 		// Put every channel into a default state before leaving
 		for (int channel = 0; channel < MidiTracker._MAX_CHANNELS; channel++)
 		{
 			// All sound off
-			control.shortMidiEvent(MIDIControl.CONTROL_CHANGE | channel,
+			__control.shortMidiEvent(
+				MIDIControl.CONTROL_CHANGE | channel,
 				120, 0);
 			
 			// All notes off
-			control.shortMidiEvent(MIDIControl.CONTROL_CHANGE | channel,
+			__control.shortMidiEvent(
+				MIDIControl.CONTROL_CHANGE | channel,
 				123, 0);
 			
 			// Reset all controllers
-			control.shortMidiEvent(MIDIControl.CONTROL_CHANGE | channel,
-				121, 0);
-		}
-		
-		// Indicate stop
-		try
-		{
-			player.stopViaMedia();
-		}
-		catch (MediaException __ignored)
-		{
+			if (__reset)
+				__control.shortMidiEvent(
+					MIDIControl.CONTROL_CHANGE | channel,
+					121, 0);
 		}
 	}
 }

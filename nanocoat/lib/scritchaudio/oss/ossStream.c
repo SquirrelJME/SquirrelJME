@@ -9,9 +9,11 @@
 
 #include "sjme/config.h"
 
-#if defined(SJME_CONFIG_HAS_OS_LINUX)
+#if defined(SJME_CONFIG_HAS_SYS_IOCTL_H)
 	#include <sys/ioctl.h>
-#else
+#endif
+
+#if defined(SJME_CONFIG_HAS_STROPTS_H)
 	#include <stropts.h>
 #endif
 
@@ -61,13 +63,33 @@ static sjme_errorCode sjme_scritchaudio_oss_peerNone(
 	sjme_attrInNotNull sjme_scritchaudio_connection inConn,
 	sjme_attrInValue sjme_jboolean explicit)
 {
+	sjme_scritchaudio_stream stream;
+	int fd;
+	
 	if (inState == NULL || inConn == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState != inConn->inState)
 		return SJME_ERROR_AUDIO_STATE_MISMATCH;
+	
+	/* Closing our only stream? */
+	if (inConn->type == SJME_SCRITCHAUDIO_CONN_STREAM && explicit)
+	{
+		stream = (sjme_scritchaudio_stream)inConn;
+		
+		/* Is the file descriptor valid? */
+		fd = stream->data.fd;
+		if (fd != -1)
+		{
+			/* Destroy. */
+			stream->data.fd = -1;
+			
+			/* Close the file. */
+			close(fd);
+		}
+	}
 
-	/* OSS does not care about any peers. */
+	/* OSS does not care about any other peers. */
 	return SJME_ERROR_NONE;
 }
 
@@ -92,7 +114,7 @@ sjme_errorCode sjme_scritchaudio_oss_sourceAttach(
 	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
 	sjme_attrInNotNull sjme_scritchaudio_source inSource)
 {
-	sjme_list_sjme_scritchaudio_source* sources;
+	sjme_list(sjme_scritchaudio_source)* sources;
 	sjme_jint i, n;
 	
 	if (inState == NULL || inStream == NULL || inSource == NULL)
@@ -131,7 +153,6 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	int fd;
 	volatile int ossFormat, ossChannels, ossRate, actual;
 	sjme_errorCode error;
-	sjme_jint single, i, n;
 	
 	if (inState == NULL || inOutStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -142,7 +163,7 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 
 	/* If automatic, choose a format to use. */
 	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC)
-		inFormat = SJME_SCRITCHAUDIO_FORMAT_BYTE_U8;
+		inFormat = SJME_SCRITCHAUDIO_FORMAT_INT_S32;
 	if (inRate == SJME_SCRITCHAUDIO_RATE_AUTOMATIC)
 		inRate = SJME_SCRITCHAUDIO_RATE_HZ_44100;
 	if (inChannels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
@@ -151,7 +172,11 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	/* Try to open the DSP device. */
 	fd = open(SJME_SCRITCHAUDIO_OSS_DSP, O_WRONLY | O_NONBLOCK, 0);
 	if (fd == -1)
+	{
+		if (errno == EBUSY)
+			return SJME_ERROR_AUDIO_NO_RESOURCES;
 		return SJME_ERROR_HEADLESS_AUDIO;
+	}
 
 	/* Get hardware supported formats. */
 	actual = 0;
@@ -201,6 +226,9 @@ sjme_errorCode sjme_scritchaudio_oss_streamCreate(
 	}
 
 	/* Set stream details. */
+	inOutStream->format = inFormat;
+	inOutStream->rate = inRate;
+	inOutStream->channels = inChannels;
 	inOutStream->data.fd = fd;
 	inOutStream->connection.noPeers = sjme_scritchaudio_oss_peerNone;
 	inOutStream->connection.peerDisconnect =

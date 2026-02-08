@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/util.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
@@ -17,7 +15,7 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawHoriz(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y,
@@ -64,27 +62,45 @@ sjme_errorCode sjme_scritchpen_corePrim_drawHoriz(
 	/* SRC or SRC_OVER in hardware supported? Use if so... */
 	if (!g->state.applyAlpha && g->impl->drawHorizSrc != NULL)
 		return g->impl->drawHorizSrc(g, x, y, w);
-	else if (g->state.applyAlpha && g->impl->drawHorizSrcOver != NULL)
+	else if (g->state.applyAlpha && g->impl->drawHorizSrcOver != NULL &&
+		g->state.blending == SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER)
 		return g->impl->drawHorizSrcOver(g, x, y, w);
 	
 	/* Allocate buffer. */
 	rgbScan = sjme_alloca(sizeof(*rgbScan) * w);
 	if (rgbScan == NULL)
-		return sjme_error_outOfMemory(NULL, w);
+	{
+		error = sjme_error_outOfMemory(NULL, w);
+		goto fail_alloca;
+	}
 	
 	/* Fill RGB buffer. */
 	memset(rgbScan, 0, sizeof(*rgbScan) * w);
 	if (sjme_error_is(error = g->util->rgbScanFill(g,
 		rgbScan, 0, w,
 		g->state.color.argb)))
-		return sjme_error_default(error);
+		goto fail_rgbScanFill;
 	
 	/* Put onto image, we do not multiply alpha as the alpha in source */
 	/* is already the correct alpha value and this is not an image. */
-	return g->util->rgbScanPut(g, x, y,
+	if (sjme_error_is(error = g->util->rgbScanPut(g, x, y,
 		rgbScan, w,
 		g->state.applyAlpha,
-		SJME_JNI_FALSE, 0);
+		SJME_JNI_FALSE, 0)))
+		goto fail_rgbScanPut;
+
+	/* Cleanup. */
+	sjme_alloca_free(rgbScan);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_rgbScanPut:
+fail_rgbScanFill:
+fail_alloca:
+	if (rgbScan != NULL)
+		sjme_alloca_free(rgbScan);
+	return sjme_error_default(error);
 }
 
 /** Clipping above. */
@@ -231,7 +247,7 @@ static void lineNormal(sjme_jint* x1, sjme_jint* y1,
 	}
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_drawLine(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawLine(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x1,
 	sjme_attrInValue sjme_jint y1,
@@ -261,7 +277,8 @@ sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	/* SRC or SRC_OVER in hardware supported? Use if so... */
 	if (!g->state.applyAlpha && g->impl->drawLineSrc != NULL)
 		return g->impl->drawLineSrc(g, x1, y1, x2, y2);
-	else if (g->state.applyAlpha && g->impl->drawLineSrcOver != NULL)
+	else if (g->state.applyAlpha && g->impl->drawLineSrcOver != NULL &&
+		g->state.blending == SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER)
 		return g->impl->drawLineSrcOver(g, x1, y1, x2, y2);
 	
 	/* Using code I wrote 15 years ago is great! */
@@ -281,7 +298,8 @@ sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	/* Determine the pixel function to use. */
 	if (!g->state.applyAlpha && g->impl->drawPixelSrc != NULL)
 		pixelFunc = g->impl->drawPixelSrc;
-	else if (g->state.applyAlpha && g->impl->drawPixelSrcOver != NULL)
+	else if (g->state.applyAlpha && g->impl->drawPixelSrcOver != NULL &&
+		g->state.blending == SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER)
 		pixelFunc = g->impl->drawPixelSrcOver;
 	else
 		pixelFunc = sjme_scritchpen_corePrim_drawPixelThunk;
@@ -364,7 +382,7 @@ sjme_errorCode sjme_scritchpen_corePrim_drawLine(
 	return error;
 }
 
-sjme_errorCode sjme_scritchpen_corePrim_drawPixel(
+sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawPixel(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y)
@@ -375,7 +393,8 @@ sjme_errorCode sjme_scritchpen_corePrim_drawPixel(
 	/* SRC or SRC_OVER in hardware supported? Use if so... */
 	if (!g->state.applyAlpha && g->impl->drawPixelSrc != NULL)
 		return g->impl->drawPixelSrc(g, x, y);
-	else if (g->state.applyAlpha && g->impl->drawPixelSrcOver != NULL)
+	else if (g->state.applyAlpha && g->impl->drawPixelSrcOver != NULL &&
+		g->state.blending == SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER)
 		return g->impl->drawPixelSrcOver(g, x, y);
 	
 	/* Use horizontal line drawing. */
@@ -398,7 +417,8 @@ sjme_errorCode sjme_scritchpen_core_drawHoriz(
 		return SJME_ERROR_NONE;
 		
 	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x, &y)))
+		return sjme_error_default(error);
 	
 	/* Need to lock? */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
@@ -439,14 +459,16 @@ sjme_errorCode sjme_scritchpen_core_drawLine(
 	if (y1 == y2)
 		return g->apiInThread->drawHoriz(g, x1, y1,
 			(x2 < x1 ? x1 - x2 : x2 - x1));
+		
+	/* Transform. */
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x1, &y1)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x2, &y2)))
+		return sjme_error_default(error);
 	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
-		
-	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x1, &y1);
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x2, &y2);
 	
 	/* Use primitive. */
 	if (sjme_error_is(error = g->prim.drawLine(g, x1, y1, x2, y2)))
@@ -478,7 +500,8 @@ sjme_errorCode sjme_scritchpen_core_drawPixel(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Transform. */
-	sjme_scritchpen_coreUtil_applyTranslate(g, &x, &y);
+	if (sjme_error_is(error = g->util->applyTranslate(g, &x, &y)))
+		return sjme_error_default(error);
 	
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))

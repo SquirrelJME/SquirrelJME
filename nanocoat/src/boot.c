@@ -6,10 +6,6 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
-
-#include <stdio.h>
-#include <string.h>
-
 #include "sjme/nvm/allocSizeOf.h"
 #include "sjme/nvm/boot.h"
 #include "sjme/debug.h"
@@ -133,6 +129,10 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 		basePath == NULL || romName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+#if 1
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#else
 	/* Base path here. */
 	memset(&dataPath, 0, sizeof(dataPath));
 	if (strlen(basePath) > 0)
@@ -147,6 +147,7 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 			dataPath, SJME_MAX_PATH - 1,
 			romName, INT32_MAX)))
 			return sjme_error_default(error);
+#endif
 	
 	/* Open main ROM file. */
 	rom = NULL;
@@ -560,7 +561,7 @@ sjme_errorCode sjme_nvm_defaultDir(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (type <= SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN ||
-		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPE)
+		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	if (outPathLen <= 0)
@@ -627,25 +628,35 @@ sjme_errorCode sjme_nvm_defaultDir(
 			return sjme_error_default(error);
 		
 		/* Get home variable instead, to add onto. */
-		memset(work, 0, sizeof(work));
+		memset(work, 0, limit);
 		if (sjme_error_is(error = nal->getEnv(
 			work, limit - 1, "HOME")))
 			return sjme_error_default(error);
 		
+#if 1
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+#else
 		/* Append subdirectory path. */
 		if (sjme_error_is(error = sjme_path_resolveAppend(work,
 			limit - 1, insteadSub, INT32_MAX)))
 			return sjme_error_default(error);
+#endif
 	}
 		
 #else
 	return sjme_error_notImplemented(0);
 #endif
-	
+
+#if 1
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#else
 	/* Append SquirrelJME on top. */
 	if (sjme_error_is(error = sjme_path_resolveAppend(work,
 		limit - 1, SJME_DIRECTORY_NAME, INT32_MAX)))
 		return sjme_error_default(error);
+#endif
 	
 	/* Is there enough room to fit? */
 	limit = strlen(work) + 1;

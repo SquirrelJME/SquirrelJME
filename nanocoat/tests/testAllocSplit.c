@@ -45,35 +45,46 @@ SJME_TEST_DECLARE(testAllocSplit)
 		return sjme_unit_fail(test, "Could not initialize static pool?");
 
 	/* There should be a front and back link. */
-	sjme_unit_notEqualP(test, pool->frontLink, NULL,
+	sjme_unit_notEqualP(test, sjme_atomic_g(sjme_alloc_link, &pool->frontLink), NULL,
 		"There is no front link?");
-	sjme_unit_notEqualP(test, pool->backLink, NULL,
+	sjme_unit_notEqualP(test, sjme_atomic_g(sjme_alloc_link, &pool->backLink), NULL,
 		"There is no back link?");
 
 	/* There should be a next to the front link, and it should not be the */
 	/* back link. Vice versa as well... */
-	sjme_unit_notEqualP(test, pool->frontLink->next, NULL,
+	sjme_unit_notEqualP(test,
+		sjme_atomic_chainGetGet(sjme_alloc_link, &pool->frontLink, ->next),
+		NULL,
 		"There is no next after the front link?");
-	sjme_unit_notEqualP(test, pool->frontLink->next, pool->backLink,
+	sjme_unit_notEqualP(test,
+		sjme_atomic_chainGetGet(sjme_alloc_link, &pool->frontLink, ->next),
+		sjme_atomic_g(sjme_alloc_link, &pool->backLink),
 		"Front link next is the back link?");
-	sjme_unit_notEqualP(test, pool->backLink->prev, NULL,
+	sjme_unit_notEqualP(test,
+		sjme_atomic_chainGetGet(sjme_alloc_link, &pool->backLink, ->prev),
+		NULL,
 		"There is no prev before the back link?");
-	sjme_unit_notEqualP(test, pool->backLink->prev, pool->frontLink,
+	sjme_unit_notEqualP(test,
+		sjme_atomic_chainGetGet(sjme_alloc_link, &pool->backLink, ->prev),
+		sjme_atomic_g(sjme_alloc_link, &pool->frontLink),
 		"Back link prev is the front link?");
 
 	/* The front and back should point to the same link. */
-	sjme_unit_equalP(test, pool->frontLink->next, pool->backLink->prev,
+	sjme_unit_equalP(test,
+		sjme_atomic_chainGetGet(sjme_alloc_link, &pool->frontLink, ->next),
+		sjme_atomic_chainGetGet(sjme_alloc_link, &pool->backLink, ->prev),
 		"Different link in the middle?");
 
 	/* Get the main starting link. */
-	initLink = pool->frontLink->next;
+	initLink = sjme_atomic_chainGetGet(sjme_alloc_link,
+		&pool->frontLink, ->next);
 	oldInitLinkBlockSize = initLink->blockSize;
 
 	/* Determine the old initial total space. */
 	initTotal = 0;
 	initReserved = 0;
 	sjme_alloc_poolSpaceTotalSize(pool,
-		&initTotal, &initReserved, NULL);
+		&initTotal, &initReserved, NULL, NULL);
 	sjme_unit_notEqualI(test, initTotal, 0,
 		"Pool indicates that it has zero space usage?");
 
@@ -99,17 +110,21 @@ SJME_TEST_DECLARE(testAllocSplit)
 		"Used different link from the first?");
 
 	/* The two links should be linked together. */
-	sjme_unit_equalP(test, link, link->next->prev,
+	sjme_unit_equalP(test, link, sjme_atomic_chainGetGet(sjme_alloc_link, &link->next, ->prev),
 		"Link not linked back?");
 
 	/* The back link's prev should be the new link's next. */
-	sjme_unit_equalP(test, link->next, pool->backLink->prev,
+	sjme_unit_equalP(test,
+		sjme_atomic_g(sjme_alloc_link, &link->next),
+		sjme_atomic_chainGetGet(sjme_alloc_link, &pool->backLink, ->prev),
 		"Back link is not link's next?");
-	sjme_unit_equalP(test, link->next->next, pool->backLink,
+	sjme_unit_equalP(test,
+		sjme_atomic_chainGetGet(sjme_alloc_link, &link->next, ->next),
+		sjme_atomic_g(sjme_alloc_link, &pool->backLink),
 		"Link's next is not the back link?");
 
 	/* The sizes of both links should be equal. */
-	next = link->next;
+	next = sjme_atomic_g(sjme_alloc_link, &link->next);
 	sjme_unit_equalI(test, oldInitLinkBlockSize,
 		link->blockSize + next->blockSize + SJME_SIZEOF_ALLOC_LINK(0),
 		"Block sizes do not add up?");
@@ -122,7 +137,7 @@ SJME_TEST_DECLARE(testAllocSplit)
 	newTotal = 0;
 	newReserved = 0;
 	sjme_alloc_poolSpaceTotalSize(pool,
-		&newTotal, &newReserved, NULL);
+		&newTotal, &newReserved, NULL, NULL);
 
 	/* Debug. */
 	sjme_message("New size is: %d (reserved %d)",

@@ -10,8 +10,9 @@
 /**
  * CBOR Data Streams.
  *
- * https://www.rfc-editor.org/rfc/rfc8949
+ * @url https://www.rfc-editor.org/rfc/rfc8949
  * 
+ * @file
  * @since 2025/07/13
  */
 

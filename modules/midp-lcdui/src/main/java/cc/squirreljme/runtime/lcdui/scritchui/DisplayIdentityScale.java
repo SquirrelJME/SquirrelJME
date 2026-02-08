@@ -35,6 +35,14 @@ public class DisplayIdentityScale
 	@SquirrelJMEVendorApi
 	protected final ScritchInterface scritch;
 	
+	/** Content area storage for ScritchUI calls. */
+	private final int[] _contentArea =
+		new int[2];
+	
+	/** Screen bounds. */
+	private final int[] _screenBounds =
+		new int[4];
+	
 	/**
 	 * Initializes the scaling information.
 	 *
@@ -99,7 +107,13 @@ public class DisplayIdentityScale
 	@SquirrelJMEVendorApi
 	public int textureH()
 	{
-		return this.scritch.window().windowContentHeight(this.window);
+		// This is determined from ScritchUI
+		int[] contentArea = this._contentArea;
+		this.scritch.container().containerGetFrame(this.window,
+			contentArea, null, null);
+		
+		// Use what it determined/calculated
+		return contentArea[1];
 	}
 	
 	/**
@@ -110,7 +124,13 @@ public class DisplayIdentityScale
 	@SquirrelJMEVendorApi
 	public int textureMaxH()
 	{
-		return this.scritch.screen().screenHeight(this.screen);
+		// Get bounds from ScritchUI
+		int[] screenBounds = this._screenBounds;
+		this.scritch.screen().screenGetBounds(this.screen,
+			this.window, screenBounds, null);
+		
+		// Return the determined value
+		return screenBounds[3];
 	}
 	
 	/**
@@ -121,7 +141,13 @@ public class DisplayIdentityScale
 	@SquirrelJMEVendorApi
 	public int textureMaxW()
 	{
-		return this.scritch.screen().screenWidth(this.screen);
+		// Get bounds from ScritchUI
+		int[] screenBounds = this._screenBounds;
+		this.scritch.screen().screenGetBounds(this.screen,
+			this.window, screenBounds, null);
+		
+		// Return the determined value
+		return screenBounds[2];
 	}
 	
 	/**
@@ -132,7 +158,13 @@ public class DisplayIdentityScale
 	@SquirrelJMEVendorApi
 	public int textureW()
 	{
-		return this.scritch.window().windowContentWidth(this.window);
+		// This is determined from ScritchUI
+		int[] contentArea = this._contentArea;
+		this.scritch.container().containerGetFrame(this.window,
+			contentArea, null, null);
+		
+		// Use what it determined/calculated
+		return contentArea[0];
 	}
 	
 	/**

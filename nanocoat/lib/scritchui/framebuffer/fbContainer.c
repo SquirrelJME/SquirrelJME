@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchui/framebuffer/fb.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -32,6 +30,10 @@ sjme_errorCode sjme_scritchui_fb_containerAdd(
 		inContainer->common.handle[SJME_SUI_FB_H_WRAPPED];
 	wrappedAddComponent =
 		addComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedInContainer == NULL ||
+		wrappedAddComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward add. */
 	return wrappedState->apiInThread->containerAdd(wrappedState,
@@ -57,6 +59,10 @@ sjme_errorCode sjme_scritchui_fb_containerRemove(
 		inContainer->common.handle[SJME_SUI_FB_H_WRAPPED];
 	wrappedRemoveComponent =
 		removeComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedInContainer == NULL ||
+		wrappedRemoveComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward remove. */
 	return wrappedState->apiInThread->containerRemove(wrappedState,
@@ -86,6 +92,10 @@ sjme_errorCode sjme_scritchui_fb_containerSetBounds(
 		inContainer->common.handle[SJME_SUI_FB_H_WRAPPED];
 	wrappedInComponent =
 		inComponent->common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedInContainer == NULL ||
+		wrappedInComponent == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->containerSetBounds(

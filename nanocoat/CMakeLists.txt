@@ -7,18 +7,15 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Defines the base project and the versioning info
 
-# Allow a dynamic range of CMake versions to allow older systems
+# Required Minimum
 message(STATUS "Detected CMake (${CMAKE_VERSION})")
-if(${CMAKE_VERSION} VERSION_LESS "3.7")
-	cmake_minimum_required(VERSION 3.0)
-elseif(${CMAKE_VERSION} VERSION_LESS "3.13")
-	cmake_minimum_required(VERSION 3.7)
-else()
-	cmake_minimum_required(VERSION 3.13)
-endif()
+cmake_minimum_required(VERSION 3.12)
 
 # Easier includes
 include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
+
+# Up-to-date info for NanoCoat, used to trigger reconfigures
+squirreljme_include("up-to-date-when.cmake")
 
 # Determine version information from the base file
 squirreljme_include("identify-squirreljme-version-file.cmake")
@@ -37,6 +34,9 @@ Virtual Machine for embedded and Internet of Things devices."
 		LANGUAGES C)
 endif()
 
+# Enable C (again)
+enable_language(C)
+
 # Determine version information
 squirreljme_include("identify-squirreljme-version.cmake")
 
@@ -54,6 +54,20 @@ squirreljme_include("utils.cmake")
 
 # Platform information
 squirreljme_include("platform.cmake")
+
+# Valgrind Support on UNIX OSes, if debugging is enabled
+if(NOT SQUIRRELJME_IS_ANDROID AND
+	SQUIRRELJME_IS_UNIX AND SQUIRRELJME_IS_DEBUG)
+	squirreljme_include("valgrind.cmake")
+endif()
+
+### These need to be before fixes.cmake! ###
+# Dynamic linker
+squirreljme_include("find-dl.cmake")
+
+# Threading and atomics
+squirreljme_include("find-threads.cmake")
+############################################
 
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
@@ -78,9 +92,6 @@ squirreljme_include("find-jni.cmake")
 # Doxygen
 squirreljme_include("doxygen.cmake")
 
-# Threading and atomics
-squirreljme_include("find-threads.cmake")
-
 # To Emily and Near...
 squirreljme_include("i-miss-you.cmake")
 
@@ -99,6 +110,13 @@ if(SQUIRRELJME_IS_RELEASE)
 		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
 		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 		add_compile_options("/Os")
+	endif()
+elseif(SQUIRRELJME_IS_DEBUG)
+	if(MSVC OR
+		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
+		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+		add_compile_options("/Zi")
+		add_link_options("/DEBUG")
 	endif()
 endif()
 
@@ -128,12 +146,6 @@ if(SQUIRRELJME_IS_DEBUG)
 	if(SQUIRRELJME_ENABLE_TESTING)
 		add_compile_definitions(SJME_CONFIG_UNIT_TEST=1)
 	endif()
-endif()
-
-# Valgrind Support on UNIX OSes, if debugging is enabled
-if(NOT SQUIRRELJME_IS_ANDROID AND
-	SQUIRRELJME_IS_UNIX AND SQUIRRELJME_IS_DEBUG)
-	squirreljme_include("valgrind.cmake")
 endif()
 
 # Where should dynamic libraries go when output?
@@ -184,3 +196,6 @@ add_subdirectory(frontend)
 
 # Directory where the ROM compiled sources exist
 add_subdirectory(rom)
+
+# General applications
+add_subdirectory(apps)

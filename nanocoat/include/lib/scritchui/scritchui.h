@@ -10,6 +10,7 @@
 /**
  * ScritchUI Library Header.
  * 
+ * @file
  * @since 2024/03/27
  */
 
@@ -86,6 +87,51 @@ typedef enum sjme_scritchui_uiType
 	/** The number of possible types. */
 	SJME_NUM_SCRITCHUI_UI_TYPES
 } sjme_scritchui_uiType;
+
+/**
+ * Flags representing the type of input method that may be available, this can
+ * be used to allow for text and dial-pad input on less capable devices.
+ *
+ * @since 2026/01/07
+ */
+typedef enum sjme_scritchui_inputMethodType
+{
+	/** A dial-pad such as one on a phone. */
+	SJME_SCRITCHUI_INPUT_METHOD_DIAL_PAD = INT32_C(0x1),
+
+	/** A number pad such as one on a computer keyboard. */
+	SJME_SCRITCHUI_INPUT_METHOD_NUMBER_PAD = INT32_C(0x2),
+
+	/** A basic keyboard, glyphs only, no functions. */
+	SJME_SCRITCHUI_INPUT_METHOD_BASIC_KEYBOARD = INT32_C(0x4),
+
+	/** A full keyboard with function keys, number pad is another bit. */
+	SJME_SCRITCHUI_INPUT_METHOD_FULL_KEYBOARD = INT32_C(0x8),
+
+	/** A rocker or hat capable of moving left or right. */
+	SJME_SCRITCHUI_INPUT_METHOD_ROCKER_LEFT_RIGHT = INT32_C(0x10),
+
+	/** A rocker or hat capable of moving up or down. */
+	SJME_SCRITCHUI_INPUT_METHOD_ROCKER_UP_DOWN = INT32_C(0x20),
+
+	/** A pointer that is always on the device, such as a mouse. */
+	SJME_SCRITCHUI_INPUT_METHOD_ATTACHED_POINTER = INT32_C(0x40),
+
+	/** A pointer that can appear at will, such as a stylus/finger. */
+	SJME_SCRITCHUI_INPUT_METHOD_DETACHED_POINTER = INT32_C(0x80),
+
+	/** Has button A. */
+	SJME_SCRITCHUI_INPUT_METHOD_BUTTON_A = INT32_C(0x100),
+
+	/** Has button B. */
+	SJME_SCRITCHUI_INPUT_METHOD_BUTTON_B = INT32_C(0x200),
+
+	/** Has button C. */
+	SJME_SCRITCHUI_INPUT_METHOD_BUTTON_C = INT32_C(0x400),
+
+	/** Has button D. */
+	SJME_SCRITCHUI_INPUT_METHOD_BUTTON_D = INT32_C(0x800),
+} sjme_scritchui_inputMethodType;
 
 /** Generic cast check. */
 #define SJME_SUI_CAST(uiType, type, v) \
@@ -681,7 +727,8 @@ typedef sjme_errorCode (*sjme_scritchui_activateListenerFunc)(
  * 
  * @param inState The input state.
  * @param inWindow The window being closed.
- * @return Any resultant error, @c SJME_ERROR_CANCEL_WINDOW_CLOSE is handled
+ * @return Any resultant error, @link SJME_ERROR_CANCEL_WINDOW_CLOSE @endlink
+ * is handled
  * specifically in that it will not be treated as an error however normal
  * application exit will not happen.
  * @since 2024/05/13
@@ -789,8 +836,8 @@ typedef sjme_errorCode (*sjme_scritchui_sizeSuggestListenerFunc)(
 
 /**
  * Listener that is called before and after the state within a component
- * has changed, when @c isAfterUpdate is @c SJME_JNI_FALSE then the component
- * is about to be updated.
+ * has changed, when @c isAfterUpdate is @link SJME_JNI_FALSE @endlink then
+ * the component is about to be updated.
  * 
  * @param inState The input state.
  * @param inComponent The component where this event occurred.
@@ -1227,6 +1274,27 @@ typedef sjme_errorCode (*sjme_scritchui_containerAddFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent);
 
 /**
+ * Returns the size details of a container, such as the outer frame, the
+ * content frame, and the sizes.
+ * 
+ * @param inState The input ScritchUI state.
+ * @param inContainer The container to get the content size of.
+ * @param contentSize The size of the content area.
+ * @param frameBound The bounds of the frame including the extra area such
+ * as decorations or otherwise.
+ * @param contentBound The bounds of the content area within
+ * the @a frameBound , this is the actual drawable area for widgets. 
+ * @return Any resultant error, if any.
+ * @since 2025/12/23
+ */
+typedef sjme_errorCode (*sjme_scritchui_containerGetFrameFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound);
+	
+/**
  * Removes the given component from the specified container.
  * 
  * @param inState The input state.
@@ -1316,7 +1384,7 @@ typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_fontListFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrOutNotNull sjme_list_sjme_scritchui_pencilFont* outFonts,
+	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
 	sjme_attrOutNullable sjme_jint* outMaxFonts);
 
@@ -1326,7 +1394,7 @@ typedef sjme_errorCode (*sjme_scritchui_fontListFunc)(
  * @param inState The UI state.
  * @param outPencil The resultant pencil.
  * @param outWeakPencil The weak reference to the pencil.
- * @param pf The @c sjme_gfx_pixelFormat used for the draw.
+ * @param pf The @link sjme_gfx_pixelFormat @endlink used for the draw.
  * @param bw The buffer width, this is the scanline width of the buffer.
  * @param bh The buffer height.
  * @param inLockFuncs The locking functions to use for buffer access.
@@ -1354,6 +1422,44 @@ typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
 	sjme_attrInPositiveNonZero sjme_jint sh,
 	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
 
+/**
+ * Creates a pseudo pencil which layers on top of multiple pencils for the
+ * purpose of supporting planar graphics. The underlying pencils may be
+ * implemented in a mix of hardware and/or software, however the pseudo
+ * pencil naturally cannot support hardware acceleration.
+ * 
+ * The color format of the returned pencil will always be
+ * either @link SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 @endlink if there is
+ * an alpha channel, or @link SJME_GFX_PIXEL_FORMAT_INT_RGB888 @endlink if
+ * there is no alpha channel.
+ * 
+ * Whether an alpha channel exists is determined by whether any of the pixel
+ * formats used by the underlying pencils contain an alpha channel.
+ * 
+ * The channel priority is first-come-first-serve, that is if two pencils
+ * have a pixel format that have a color channel only the first one will be
+ * selected.
+ * 
+ * It is not valid for any target graphics to be indexed, as determined
+ * by @link sjme_scritchpen_isIndexed() @endlink .
+ * 
+ * @param inState The UI state.
+ * @param outPencil The resultant pencil.
+ * @param outWeakPencil The weak reference to the pencil.
+ * @param pencils The pencils to wrap.
+ * @param numPencils The number of pencils to wrap.
+ * @param pencilFrontEndCopy Front end data that goes into the pencil.
+ * @return An error if the requested graphics are not valid.
+ * @since 2025/12/22
+ */
+typedef sjme_errorCode (*sjme_scritchui_pseudoGraphicsFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
+	sjme_attrInNotNullBuf(numPencils) sjme_scritchui_pencil* pencils,
+	sjme_attrInPositiveNonZero sjme_jint numPencils,
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
+	
 /**
  * Sets the label of the specified component.
  * 
@@ -1580,6 +1686,24 @@ typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiPanel* outPanel);
 
+/**
+ * Returns the bounds of the screen, this includes its relative position
+ * to the origin point of all screen on multiscreen devices.
+ * 
+ * @param inState The input state.
+ * @param inScreen The screen to get the bounds of.
+ * @param pixelBound The resultant screen bound.
+ * @param mmBound The resultant screen bound in millimeters.
+ * @return Any resultant error, if any.
+ * @since 2025/12/23
+ */
+typedef sjme_errorCode (*sjme_scritchui_screenGetBoundsFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiScreen inScreen,
+	sjme_attrInNullable sjme_scritchui_uiComponent forComponent,
+	sjme_attrOutNullable sjme_scritchui_rect* pixelBound,
+	sjme_attrOutNullable sjme_scritchui_rect* mmBound);
+	
 /**
  * Sets the screen listener callback for screen changes.
  * 
@@ -1874,6 +1998,9 @@ struct sjme_scritchui_apiFunctions
 	/** Adds component to container. */
 	SJME_SCRITCHUI_QUICK_API(containerAdd);
 	
+	/** Content size of a container. */
+	SJME_SCRITCHUI_QUICK_API(containerGetFrame);
+	
 	/** Remove component from container. */
 	SJME_SCRITCHUI_QUICK_API(containerRemove);
 	
@@ -1948,6 +2075,12 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Creates a new panel. */
 	SJME_SCRITCHUI_QUICK_API(panelNew);
+	
+	/** Pseudo pencil graphics. */
+	SJME_SCRITCHUI_QUICK_API(pseudoGraphics);
+	
+	/** Get bounds of a screen. */
+	SJME_SCRITCHUI_QUICK_API(screenGetBounds);
 	
 	/** Register listener. */
 	SJME_SCRITCHUI_QUICK_API(screenSetListener);
@@ -2197,10 +2330,10 @@ struct sjme_scritchui_stateBase
 	sjme_thread_mainFunc loopThreadInit;
 	
 	/** Indicator that the main loop is ready for execution. */
-	sjme_alignPointer sjme_atomic_sjme_jint loopThreadReady;
+	sjme_alignPointer sjme_atomic(sjme_jint) loopThreadReady;
 	
 	/** The available screens. */
-	sjme_list_sjme_scritchui_uiScreen* screens;
+	sjme_list(sjme_scritchui_uiScreen)* screens;
 	
 	/** The window manager type used. */
 	sjme_scritchui_windowManagerType wmType;
@@ -2215,7 +2348,7 @@ struct sjme_scritchui_stateBase
 	sjme_scritchui wrappedState;
 	
 	/** Reference to owning state. */
-	sjme_alignPointer sjme_atomic_sjme_pointer topState;
+	sjme_alignPointer sjme_atomic(sjme_pointer) topState;
 	
 	/** The next ID for opaque menu items. */
 	sjme_jint nextMenuItemId;
@@ -2224,12 +2357,12 @@ struct sjme_scritchui_stateBase
 	sjme_scritchui_bugs bugs;
 
 	/** Font cache. */
-	sjme_list_sjme_scritchui_pencilFont* fontCache;
+	sjme_list(sjme_scritchui_pencilFont)* fontCache;
 
 	/** The loop queue for manual event loops. */
 	sjme_alignPointer sjme_scritchui_loopQueue loopQueue;
 
-	/** Platform flags (@c sjme_scritchui_lafPlatformFlag ). */
+	/** Platform flags (@link sjme_scritchui_lafPlatformFlag @endlink ). */
 	sjme_jint platformFlags;
 };
 
@@ -2253,6 +2386,25 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchui_dylibApiFunc)(
 	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
 	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
 
+/** The symbol used for default API export. */
+#define SJME_SCRITCHUI_DYLIB_API_EXPORT \
+	sjme_scritchui_dylibApiExport
+
+/** The default API entry export method. */
+extern sjme_attrExport const sjme_scritchui_dylibApiFunc
+	SJME_SCRITCHUI_DYLIB_API_EXPORT;
+
+#if defined(SJME_CONFIG_MULTILIB_IS_DYLIB)
+	/** Set the value for the default dynamic library export. */
+	#define SJME_SCRITCHUI_DYLIB_API_EXPORT_SET(x) \
+		sjme_attrExport \
+		const sjme_scritchui_dylibApiFunc SJME_SCRITCHUI_DYLIB_API_EXPORT = \
+			SJME_SCRITCHUI_DYLIB_SYMBOL(x);
+#else
+	/** Set the value for the default dynamic library export. */
+	#define SJME_SCRITCHUI_DYLIB_API_EXPORT_SET(x)
+#endif
+
 /** The base name for the ScritchUI dynamic library. */
 #define SJME_SCRITCHUI_DYLIB_NAME_BASE \
 	SJME_SCRITCHANY_DYLIB_NAME_BASE(ui)
@@ -2269,7 +2421,7 @@ typedef sjme_errorCode (sjme_attrExportCall *sjme_scritchui_dylibApiFunc)(
 #define SJME_SCRITCHUI_DYLIB_SYMBOL_PREFIX \
 	SJME_SCRITCHANY_DYLIB_SYMBOL_PREFIX(ui)
 
-/** The symbol to use with @c sjme_scritchui_dylibApiFunc . */
+/** The symbol to use with @link sjme_scritchui_dylibApiFunc @endlink . */
 #define SJME_SCRITCHUI_DYLIB_SYMBOL(x) \
 	SJME_SCRITCHANY_DYLIB_SYMBOL(ui, x)
 

@@ -29,7 +29,6 @@ public class TestShiftJISInSpec
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/06/04
 	 */
 	@Override

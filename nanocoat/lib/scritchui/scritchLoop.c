@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchui/core/core.h"
 #include "sjme/atomic.h"
 #include "sjme/debug.h"
@@ -16,7 +14,7 @@
 typedef struct sjme_scritchui_core_waitData
 {
 	/** The signal to trigger on. */
-	sjme_atomic_sjme_jint signal;
+	sjme_atomic(sjme_jint) signal;
 	
 	/** The callback to execute. */
 	sjme_thread_mainFunc callback;
@@ -45,7 +43,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_waitAdapter(
 	
 	/* Signal that wait is complete. */
 	sjme_atomic_barrier();
-	sjme_atomic_sjme_jint_set(&waitData->signal, 1);
+	sjme_atomic_s(sjme_jint, &waitData->signal, 1);
 	sjme_atomic_barrier();
 	
 	/* Use result from callback. */
@@ -247,7 +245,7 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 	
 	/* Initialize wait. */
 	memset(&waitData, 0, sizeof(waitData));
-	sjme_atomic_sjme_jint_set(&waitData.signal, 0);
+	sjme_atomic_s(sjme_jint, &waitData.signal, 0);
 	waitData.callback = callback;
 	waitData.anything = anything;
 	
@@ -265,7 +263,7 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 		sjme_atomic_barrier();
 		
 		/* Done? */
-		if (0 != sjme_atomic_sjme_jint_get(&waitData.signal))
+		if (0 != sjme_atomic_g(sjme_jint, &waitData.signal))
 			break;
 	}
 	

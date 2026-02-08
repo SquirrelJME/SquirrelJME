@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "mock.h"
 #include "proto.h"
 #include "test.h"
@@ -21,7 +19,7 @@
  */
 SJME_TEST_DECLARE(testListFlattenArgsNul)
 {
-	sjme_list_sjme_lpstr* result;
+	sjme_list(sjme_lpstr)* result;
 	
 	/* Zero sequence. */
 	result = NULL;

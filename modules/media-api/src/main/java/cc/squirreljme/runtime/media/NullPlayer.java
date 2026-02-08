@@ -10,9 +10,11 @@
 package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.media.midi.MidiControlPlayer;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
-import javax.microedition.media.PlayerListener;
+import org.intellij.lang.annotations.Language;
 
 /**
  * This is a player which does nothing.
@@ -31,7 +33,7 @@ public final class NullPlayer
 	 * @since 2019/04/15
 	 */
 	@SquirrelJMEVendorApi
-	public NullPlayer(String __mime)
+	public NullPlayer(@Language("mime-type-reference") String __mime)
 		throws NullPointerException
 	{
 		super(__mime);
@@ -53,6 +55,17 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/01/03
+	 */
+	@Override
+	protected void becomingPrimed()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/04/24
 	 */
 	@Override
@@ -64,8 +77,17 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @return
+	 * @since 2026/01/03
+	 */
+	@Override
+	protected void becomingSolvent()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/04/24
 	 */
 	@Override
@@ -84,6 +106,17 @@ public final class NullPlayer
 	@Override
 	@SquirrelJMEVendorApi
 	protected void becomingStopped()
+		throws MediaException
+	{
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected void clockFastForward(long __micros)
 		throws MediaException
 	{
 		// Does nothing
@@ -112,48 +145,13 @@ public final class NullPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/04/15
+	 * @since 2025/12/28
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public final void close()
+	public final void becomingDeallocated()
 	{
-		if (this.getState() != Player.CLOSED)
-		{
-			this.setState(Player.CLOSED);
-			
-			// Send event
-			this.dispatchEvent(PlayerListener.CLOSED, null);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/15
-	 */
-	@Override
-	@SquirrelJMEVendorApi
-	public final void deallocate()
-	{
-		// {@squirreljme.error EA03 Null Player has been closed.}
-		if (this.getState() == Player.CLOSED)
-			throw new IllegalStateException("EA03");
-		
-		if (this.getState() == Player.STARTED)
-		{
-			// Implicit stop state
-			try
-			{
-				this.stop();
-			}
-			catch (MediaException e)
-			{
-				e.printStackTrace();
-			}
-			
-			// Become realized
-			this.setState(Player.REALIZED);
-		}
+		// There is nothing to be done here, as NullPlayer allocates nothing.
 	}
 	
 	/**
@@ -165,7 +163,19 @@ public final class NullPlayer
 	protected long determineDuration()
 	{
 		// There is no duration for null media
-		return 0;
+		return Player.TIME_UNKNOWN;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/02
+	 */
+	@Override
+	protected boolean resetFastForward()
+	{
+		// Everything is always zero length and there is no special
+		// fast-forward logic needed
+		return false;
 	}
 	
 	/**

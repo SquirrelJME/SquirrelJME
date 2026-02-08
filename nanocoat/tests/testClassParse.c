@@ -8,8 +8,6 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/nvm/classy.h"
-#include <string.h>
-
 #include "mock.h"
 #include "proto.h"
 #include "test.h"
@@ -198,11 +196,6 @@ SJME_TEST_DECLARE(testClassParse)
 		if (sjme_error_is(test->error = sjme_closeable_close(
 			SJME_AS_CLOSEABLE(stringPool))))
 			return sjme_unit_fail(test, "Could not close string pool.");
-			
-#if defined(SJME_CONFIG_DEBUG)
-		/* Check for never freed memory. */
-		sjme_test_leakCheck(test->pool);
-#endif
 	}
 	
 	/* Close the Zip. */

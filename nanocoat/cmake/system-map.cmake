@@ -132,10 +132,20 @@ function(squirreljme_defines_gcc gccDefines gccExe)
 	unset(gccOutputRaw)
 	execute_process(
 		COMMAND "${gccExe}"
-			"-E" "-dM" ${CMAKE_C_FLAGS} "${gccMainSource}"
+			"-E" "-dM" ${CMAKE_C_FLAGS} ${CFLAGS} "${gccMainSource}"
 		OUTPUT_VARIABLE gccOutputRaw
 		RESULT_VARIABLE gccResult
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+	# Try again, but with no passed flags
+	if(NOT "${gccResult}" EQUAL "0")
+		execute_process(
+			COMMAND "${gccExe}"
+				"-E" "-dM" "${gccMainSource}"
+			OUTPUT_VARIABLE gccOutputRaw
+			RESULT_VARIABLE gccResult
+			OUTPUT_STRIP_TRAILING_WHITESPACE)
+	endif()
 
 	# Did this actually work?
 	set(gccOutDefines)
@@ -147,10 +157,20 @@ function(squirreljme_defines_gcc gccDefines gccExe)
 		foreach(gccLineRaw IN LISTS gccOutput)
 			# Split by space
 			string(REGEX REPLACE "[\t ]" ";" gccLine "${gccLineRaw}")
+			list(LENGTH gccLine gccLineLen)
 
 			# The second field is the define
 			list(GET gccLine 1 gccOnlyDefine)
-			if(NOT "${gccOnlyDefine}" STREQUAL "")
+
+			# The third field is the value
+			if(gccLineLen GREATER_EQUAL 3)
+				list(GET gccLine 2 gccOnlyValue)
+			else()
+				set(gccOnlyValue "1")
+			endif()
+
+			if(NOT "${gccOnlyDefine}" STREQUAL "" AND
+				NOT "${gccOnlyValue}" STREQUAL "0")
 				# Add it to the result
 				list(APPEND gccOutDefines "${gccOnlyDefine}")
 			endif()
@@ -173,15 +193,15 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		set(hasSystem "android")
 	elseif("_3DS" IN_LIST defines)
 		set(hasSystem "3ds")
-	elseif("GEKKO" IN_LIST defines AND
-		"HW_DOL" IN_LIST defines)
-		set(hasSystem "gamecube")
-	elseif("GEKKO" IN_LIST defines AND
-		"HW_RVL" IN_LIST defines)
-		if("WIIU" IN_LIST defines)
-			set(hasSystem "wiiu")
+	elseif("GEKKO" IN_LIST defines)
+		if("HW_RVL" IN_LIST defines)
+			if("WIIU" IN_LIST defines)
+				set(hasSystem "wiiu")
+			else()
+				set(hasSystem "wii")
+			endif()
 		else()
-			set(hasSystem "wii")
+			set(hasSystem "gamecube")
 		endif()
 	elseif("PS2" IN_LIST defines)
 		set(hasSystem "playstation2")
@@ -376,7 +396,7 @@ endfunction()
 function(squirreljme_identify_by_cmake outSystem outArch inSystem inArch)
 	# Operating System
 	if("${inSystem}" STREQUAL "Darwin")
-		set(hasSystem "macos")
+		set(hasSystem "macosx")
 	elseif("${inSystem}" STREQUAL "FreeBSD" OR
 		"${inSystem}" STREQUAL "NetBSD" OR
 		"${inSystem}" STREQUAL "OpenBSD")
@@ -681,7 +701,8 @@ add_compile_definitions(${SJME_CONFIG_IDENT_ARCH}=1)
 # When compiling with mingw-w64, it is possible that CMake gets this wrong!
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
 	# For EXEs
-	set(CMAKE_EXECUTABLE_SUFFIX ".exe" CACHE STRING "" FORCE)
+	set(CMAKE_EXECUTABLE_SUFFIX ".exe"
+		CACHE STRING "" FORCE)
 	set(CMAKE_EXECUTABLE_SUFFIX_ASM "${CMAKE_EXECUTABLE_SUFFIX}"
 		CACHE STRING "" FORCE)
 	set(CMAKE_EXECUTABLE_SUFFIX_C "${CMAKE_EXECUTABLE_SUFFIX}"
@@ -690,7 +711,8 @@ if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
 		CACHE STRING "" FORCE)
 
 	# Ditto for DLL prefixes
-	set(CMAKE_SHARED_LIBRARY_PREFIX "" CACHE STRING "" FORCE)
+	set(CMAKE_SHARED_LIBRARY_PREFIX ""
+		CACHE STRING "" FORCE)
 	set(CMAKE_SHARED_LIBRARY_PREFIX_ASM "${CMAKE_SHARED_LIBRARY_PREFIX}"
 		CACHE STRING "" FORCE)
 	set(CMAKE_SHARED_LIBRARY_PREFIX_C "${CMAKE_SHARED_LIBRARY_PREFIX}"
@@ -699,7 +721,8 @@ if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
 		CACHE STRING "" FORCE)
 
 	# Ditto for DLL suffixes
-	set(CMAKE_SHARED_LIBRARY_SUFFIX ".dll" CACHE STRING "" FORCE)
+	set(CMAKE_SHARED_LIBRARY_SUFFIX ".dll"
+		CACHE STRING "" FORCE)
 	set(CMAKE_SHARED_LIBRARY_SUFFIX_ASM "${CMAKE_SHARED_LIBRARY_SUFFIX}"
 		CACHE STRING "" FORCE)
 	set(CMAKE_SHARED_LIBRARY_SUFFIX_C "${CMAKE_SHARED_LIBRARY_SUFFIX}"

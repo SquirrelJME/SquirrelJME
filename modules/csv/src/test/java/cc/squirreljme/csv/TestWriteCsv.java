@@ -26,7 +26,6 @@ public class TestWriteCsv
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2023/09/14
 	 */
 	@Override

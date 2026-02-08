@@ -47,7 +47,6 @@ final class __MIDPPlayer__
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/05/05
 	 */
 	@Override
@@ -78,7 +77,6 @@ final class __MIDPPlayer__
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/05/05
 	 */
 	@Override
@@ -89,7 +87,6 @@ final class __MIDPPlayer__
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2025/05/05
 	 */
 	@Override

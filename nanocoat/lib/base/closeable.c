@@ -26,16 +26,16 @@ static sjme_errorCode sjme_closeable_autoEnqueue(
 	/* Do not close if we are counting and our count is positive still. */
 	/* However, we should always close if a free is called, as we are */
 	/* going to lose the closeable anyway. */
-	if (!isBlockFree && closeable->refCounting && newCount > 0)
+	if (!isBlockFree && SJME_JNI_TRUE && newCount > 0)
 		return SJME_ERROR_NONE;
 	
 	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_CLOSEABLE)
 	sjme_message("Closeable auto-close %p", closeable);
 #endif
 	
 	/* Only close once! */
-	if (sjme_atomic_sjme_jint_compareSet(&closeable->isClosed,
+	if (sjme_atomic_cs(sjme_jint, &closeable->isClosed,
 		0, 1))
 	{
 		/* Call the close handler. */
@@ -52,7 +52,6 @@ sjme_errorCode sjme_closeable_allocR(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInNotNull sjme_closeable_closeHandlerFunc handler,
-	sjme_attrInValue sjme_jboolean refCounting,
 	sjme_attrOutNotNull sjme_closeable* outCloseable
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
@@ -66,21 +65,15 @@ sjme_errorCode sjme_closeable_allocR(
 	/* Attempt allocation. */
 	result = NULL;
 	weak = NULL;
-#if defined(SJME_CONFIG_DEBUG)
-	if (sjme_error_is(error = sjme_alloc_weakNewR(allocPool,
+	if (sjme_error_is(error = sjme_alloc_weakNewR(
+		allocPool,
 		allocSize, sjme_closeable_autoEnqueue,
 		(sjme_pointer*)&result,
-		&weak, file, line, func)) ||
-		result == NULL)
-#else
-	if (sjme_error_is(error = sjme_alloc_weakNew(allocPool,
-		allocSize, sjme_closeable_autoEnqueue,
-		(sjme_pointer*)&result, &weak)) || result == NULL)
-#endif
+		&weak SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) ||
+		result == NULL || weak == NULL)
 		return sjme_error_default(error);
 	
 	/* Set fields. */
-	result->refCounting = refCounting;
 	result->closeHandler = handler;
 	
 	/* Success! */

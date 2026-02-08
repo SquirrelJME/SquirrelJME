@@ -62,7 +62,7 @@ macro(squirreljme_romLibrary_include sourceSet
 
 	# Used for later inclusion
 	list(APPEND squirreljme_dynamic_objLibs
-		"$<$<TARGET_OBJECTS:${sourceSet}_${clutterLevel}_${libIdentifier}>>")
+		"$<GENEX_EVAL:$<TARGET_OBJECTS:${sourceSet}_${clutterLevel}_${libIdentifier}>>")
 endmacro()
 
 # Declares a class for a library

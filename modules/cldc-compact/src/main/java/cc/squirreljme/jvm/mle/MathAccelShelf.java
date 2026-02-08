@@ -37,7 +37,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
-	@MagicConstant(valuesFromClass = MathAccelFlag.class)
+	@MagicConstant(flagsFromClass = MathAccelFlag.class)
 	public static native int accel();
 	
 	/**

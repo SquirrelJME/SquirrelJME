@@ -64,7 +64,7 @@ SJME_TEST_DECLARE(testAllocWeakFreeLink)
 	
 	/* The weak ref should still be valid. */
 	sjme_unit_equalI(test,
-		sjme_atomic_sjme_jint_get(&weak->valid), SJME_ALLOC_WEAK_VALID,
+		sjme_atomic_g(sjme_jint, &weak->valid), SJME_ALLOC_WEAK_VALID,
 		"Weak reference now invalid?");
 	
 	/* Enqueue should have been called. */
@@ -72,17 +72,18 @@ SJME_TEST_DECLARE(testAllocWeakFreeLink)
 		"Enqueue was not called?");
 	
 	/* Reading invalid memory, but the weak should be cleared. */
-	sjme_unit_notEqualP(test, link->weak, weak,
+	sjme_unit_notEqualP(test,
+		sjme_atomic_g(sjme_alloc_weak, &link->weak), weak,
 		"Weak ref in link not cleared?");
 	
 	/* The weak ref should still have a count. */
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 1,
+	sjme_unit_equalI(test, sjme_atomic_g(sjme_jint, &weak->count), 1,
 		"Weak reference has incorrect count?");
 	
 	/* These should be cleared out. */
-	sjme_unit_equalP(test, weak->pointer, NULL,
+	sjme_unit_equalP(test, sjme_atomic_pg(&weak->pointer), NULL,
 		"Pointer not cleared?");
-	sjme_unit_equalP(test, weak->link, NULL,
+	sjme_unit_equalP(test, sjme_atomic_pg(&weak->link), NULL,
 		"Link not cleared?");
 	
 	/* Success! */

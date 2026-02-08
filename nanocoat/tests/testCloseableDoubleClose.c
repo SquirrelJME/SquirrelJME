@@ -68,7 +68,7 @@ SJME_TEST_DECLARE(testCloseableDoubleClose)
 		return sjme_unit_fail(test, "Could not get weak ref");
 	sjme_unit_notEqualP(test, NULL, weak,
 		"No weak reference returned?");
-	sjme_unit_equalI(test, 1, sjme_atomic_sjme_jint_get(&weak->count),
+	sjme_unit_equalI(test, 1, sjme_atomic_g(sjme_jint, &weak->count),
 		"Wrong count?");
 	
 	/* Close it, again! */

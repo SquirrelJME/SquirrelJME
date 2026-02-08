@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchui/scritchuiTypes.h"
 #include "lib/scritchui/core/core.h"
 #include "sjme/alloc.h"
@@ -38,8 +36,8 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_scritchui_uiMenuKind* childList;
-	sjme_list_sjme_scritchui_uiMenuKind* newList;
+	sjme_list(sjme_scritchui_uiMenuKind)* childList;
+	sjme_list(sjme_scritchui_uiMenuKind)* newList;
 	sjme_scritchui_uiMenuHasChildren parentMenu;
 	sjme_scritchui_uiMenuHasParent childMenu;
 	sjme_jint i, o, n;
@@ -184,7 +182,7 @@ sjme_errorCode sjme_scritchui_core_menuRemove(
 	sjme_errorCode error;
 	sjme_scritchui_uiMenuHasChildren parentMenu;
 	sjme_scritchui_uiMenuHasParent childMenu;
-	sjme_list_sjme_scritchui_uiMenuKind* childList;
+	sjme_list(sjme_scritchui_uiMenuKind)* childList;
 	sjme_scritchui_uiMenuKind childAt;
 	sjme_jint i, o, n;
 	
@@ -498,13 +496,21 @@ sjme_errorCode sjme_scritchui_intern_menuItemActivateById(
 		
 		/* Fail? */
 		else if (sjme_error_is(error))
-			return sjme_error_default(error);
+			goto fail_iterate;
 		
 		/* We found the menu item. */
-		else
-			break;
+		break;
 	}
+
+	/* Cleanup. */
+	sjme_alloca_free(children);
 	
 	/* Nothing left to check. */
 	return SJME_ERROR_NONE;
+	
+fail_iterate:
+	if (children != NULL)
+		sjme_alloca_free(children);
+	
+	return sjme_error_default(error);
 }

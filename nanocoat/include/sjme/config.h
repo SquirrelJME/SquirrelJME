@@ -12,7 +12,8 @@
  *
  * The majority of this header is to simplify the system specific macros
  * and definitions and unify them so they are far easier to use.
- * 
+ *
+ * @file
  * @since 2023/07/27
  */
 
@@ -20,6 +21,13 @@
 #define SJME_C_CONFIG_H
 
 #include <stddef.h>
+
+/* Skip stdlib in certain cases? */
+#if !defined(SJME_CONFIG_FORGET_STDLIB)
+	#include <stdlib.h>
+#endif
+
+#include <setjmp.h>
 
 /* Floating point header, determines if software floats should be used. */
 #if !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
@@ -67,6 +75,9 @@ extern "C" {
 			#define SJME_CONFIG_HAS_C94
 		#endif
 	#endif
+#elif defined(_MSC_VER)
+	/** MSVC is assumed to support C89. */
+	#define SJME_CONFIG_HAS_C89
 #endif
 
 #if defined(SJME_CONFIG_HAS_C11)
@@ -84,13 +95,16 @@ extern "C" {
 #endif
 	
 /** Visual Studio 6 */
-#define SJME_VERSION_MSVC_6 1200
+#define SJME_CONFIG_MSVC_VERSION_6 1200
 
 /** Visual Studio 2005 */
-#define SJME_VERSION_MSVC_2005 1400
+#define SJME_CONFIG_MSVC_VERSION_2005 1400
 
 /** Visual Studio 2010 */
-#define SJME_VERSION_MSVC_2010 1600
+#define SJME_CONFIG_MSVC_VERSION_2010 1600
+
+/** Visual Studio 2019 */
+#define SJME_CONFIG_MSVC_VERSION_2019 1920
 
 #if defined(__WATCOMC__)
 	/** Watcom C Compiler. */
@@ -142,6 +156,11 @@ extern "C" {
 	/** Is the GCC version the specified version? */
 	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
 #endif
+	
+#if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
+	/** Has a GCC-like/clone compiler. */
+	#define SJME_CONFIG_HAS_GCC_CLONE
+#endif
 
 #if !defined(SJME_CONFIG_RELEASE) && !defined(SJME_CONFIG_DEBUG)
 	#if (defined(DEBUG) || defined(_DEBUG)) || \
@@ -169,10 +188,6 @@ extern "C" {
 #elif defined(__EMSCRIPTEN__) || defined(EMSCRIPTEN)
 	/** Emscripten (WASM). */
 	#define SJME_CONFIG_HAS_OS_EMSCRIPTEN
-#elif defined(SJME_CONFIG_IDENT_OS_GAMECUBE) || \
-	(defined(GEKKO) && defined(HW_DOL))
-	/** Nintendo GameCube is available. */
-	#define SJME_CONFIG_HAS_OS_NINTENDO_GAMECUBE
 #elif defined(SJME_CONFIG_IDENT_OS_WIIU) || \
 	(defined(GEKKO) && defined(HW_RVL) && defined(WIIU))
 	/** Nintendo Wii U is available. */
@@ -181,9 +196,16 @@ extern "C" {
 	(defined(GEKKO) && defined(HW_RVL) && !defined(WIIU))
 	/** Nintendo Wii is available. */
 	#define SJME_CONFIG_HAS_OS_NINTENDO_WII
+#elif defined(SJME_CONFIG_IDENT_OS_GAMECUBE) || \
+	(defined(GEKKO) && defined(HW_DOL))
+	/** Nintendo GameCube is available. */
+	#define SJME_CONFIG_HAS_OS_NINTENDO_GAMECUBE
 #elif defined(__3DS__) || defined(_3DS) || defined(SJME_CONFIG_IDENT_OS_3DS)
 	/** Nintendo 3DS is available. */
 	#define SJME_CONFIG_HAS_OS_NINTENDO_3DS
+#elif defined(PSP) || defined(SJME_CONFIG_IDENT_OS_PSP)
+	/** Sony PSP. */
+	#define SJME_CONFIG_HAS_OS_SONY_PSP
 #elif defined(PS2) || defined(_EE) || defined(_IOP) || defined(__PS2__) || \
 	defined(SJME_CONFIG_IDENT_OS_PLAYSTATION2)
 	/** Sony PlayStation 2. */
@@ -250,29 +272,70 @@ extern "C" {
 	/** Is Microsoft Dos. */
 	#define SJME_CONFIG_HAS_OS_PC_DOS
 #endif
+	
+/** POSIX 1990. */
+#define SJME_CONFIG_POSIX_VERSION_1990 1
 
-#if defined(SJME_CONFIG_HAS_OS_ANDROID) || \
-	defined(SJME_CONFIG_HAS_OS_BSD) || \
-	defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
-	defined(SJME_CONFIG_HAS_OS_LINUX) || \
-	defined(SJME_CONFIG_HAS_OS_MACOS) || \
-	defined(SJME_CONFIG_HAS_OS_NEXTSTEP) || \
-	defined(SJME_CONFIG_HAS_OS_SOLARIS)
-	/** POSIX is available. */
-	#define SJME_CONFIG_HAS_OS_POSIX
+/** POSIX 1992. */
+#define SJME_CONFIG_POSIX_VERSION_1992 2
+
+/** POSIX 1993. */
+#define SJME_CONFIG_POSIX_VERSION_1993 199309L
+
+/** POSIX 1995. */
+#define SJME_CONFIG_POSIX_VERSION_1995 199506L
+
+/** POSIX 2001. */
+#define SJME_CONFIG_POSIX_VERSION_2001 200112L
+
+/** POSIX 2008. */
+#define SJME_CONFIG_POSIX_VERSION_2008 200809L
+
+#if defined(_POSIX_C_SOURCE)
+	#if !defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
+		/** POSIX is available. */
+		#define SJME_CONFIG_HAS_OS_POSIX
+	#endif
+#else
+	/* These OSes have POSIX. */
+	#if defined(SJME_CONFIG_HAS_OS_ANDROID) || \
+		defined(SJME_CONFIG_HAS_OS_BSD) || \
+		defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
+		defined(SJME_CONFIG_HAS_OS_LINUX) || \
+		defined(SJME_CONFIG_HAS_OS_MACOS) || \
+		defined(SJME_CONFIG_HAS_OS_NEXTSTEP) || \
+		defined(SJME_CONFIG_HAS_OS_SOLARIS)
+		/** POSIX is available. */
+		#define SJME_CONFIG_HAS_OS_POSIX
+	#endif
+#endif
+
+#if defined(SJME_CONFIG_HAS_OS_POSIX)
+	#if defined(_POSIX_C_SOURCE)
+		/** POSIX version is at least the given version. */
+		#define SJME_CONFIG_POSIX_VERSION_LEAST(posixVer) \
+			(_POSIX_C_SOURCE > SJME_CONFIG_POSIX_VERSION_1990)
+	#else
+			/** POSIX version is at least the given version. */
+		#define SJME_CONFIG_POSIX_VERSION_LEAST(posixVer) \
+			(posixVer > SJME_CONFIG_POSIX_VERSION_1990)
+	#endif
+#else
+	/** POSIX version is at least the given version. */
+	#define SJME_CONFIG_POSIX_VERSION_LEAST(posixVer) 0
 #endif
 
 /** Windows 8. */
-#define SJME_CONFIG_WINDOWS_8 0x0600
+#define SJME_CONFIG_WINDOWS_VERSION_8 0x0600
 
 /** Windows XP */
-#define SJME_CONFIG_WINDOWS_XP 0x0501
+#define SJME_CONFIG_WINDOWS_VERSION_XP 0x0501
 
 /** Windows Vista. */
-#define SJME_CONFIG_WINDOWS_VISTA 0x0600
+#define SJME_CONFIG_WINDOWS_VERSION_VISTA 0x0600
 
 /** Windows NT 4.0 */
-#define SJME_CONFIG_WINDOWS_NT_4 0x0400
+#define SJME_CONFIG_WINDOWS_VERSION_NT_4 0x0400
 
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/* Include the Windows SDK versioning information, if available. */
@@ -283,33 +346,37 @@ extern "C" {
 	/** Windows version is at least the given version. */
 	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) (WINVER >= winVer)
 
-	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_VISTA)
+	#if SJME_CONFIG_WINDOWS_VERSION_LEAST(SJME_CONFIG_WINDOWS_VERSION_VISTA)
 		/** Windows NT version is at least the given version. */
-		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) \
+		#define SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(winVer) \
 			SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer)
 	#elif defined(_WIN32_WINNT)
 		/** Windows NT version is at least the given version. */
-		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) \
+		#define SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(winVer) \
 			(_WIN32_WINNT >= winVer)
 	#else
 		/** Windows NT version is at least the given version. */
-		#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+		#define SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(winVer) 0
 	#endif
 #else
 	/** Windows version is at least the given version. */
 	#define SJME_CONFIG_WINDOWS_VERSION_LEAST(winVer) 0
 
 	/** Windows NT version is at least the given version. */
-	#define SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(winVer) 0
+	#define SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(winVer) 0
 #endif
 	
 /** Possibly detect endianess. */
 #if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
 	!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
 	/** Defined by the system? */
-	#if !defined(SJME_CONFIG_HAS_BIG_ENDIAN)
+	#if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && !defined(__LITTLE_ENDIAN__)
 		#if defined(__BYTE_ORDER__) && \
 			(__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+			/** The system is big endian. */ 
+			#define SJME_CONFIG_HAS_BIG_ENDIAN
+		#elif defined(__BIG_ENDIAN__)
+			/** The system is big endian. */
 			#define SJME_CONFIG_HAS_BIG_ENDIAN
 		#endif
 	#endif
@@ -317,6 +384,7 @@ extern "C" {
 	/** Just set little endian if no endianess was defined */
 	#if !defined(SJME_CONFIG_HAS_BIG_ENDIAN) && \
 		!defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+			/** The system is little endian. */
 		#define SJME_CONFIG_HAS_LITTLE_ENDIAN
 	#endif
 
@@ -431,7 +499,7 @@ extern "C" {
 	#define SJME_POINTER_BYTES (SJME_CONFIG_HAS_POINTER / 8)
 #endif
 	
-#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010) || \
+#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010) || \
 	defined(SJME_CONFIG_HAS_GCC) || \
 	defined(SJME_CONFIG_HAS_CLANG) || \
 	defined(SJME_CONFIG_HAS_C99)
@@ -543,7 +611,7 @@ extern "C" {
 #endif
 
 /* Visual C SAL 2.0 Annotations. */
-#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
 	#include <sal.h>
 
 	/** Return value must be checked. */
@@ -586,7 +654,7 @@ extern "C" {
 	#define sjme_attrOutRange(lo, hi) _Out_range_((lo), (hi))
 
 /* Older Visual C++. */
-#elif SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_6)
+#elif SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_6)
 	#include <sal.h>
 
 	/** Return value must be checked. */
@@ -647,7 +715,7 @@ extern "C" {
 	 * @since 2023/08/05
 	 */
 	#define sjme_attrFormatOuter(formatIndex, vaIndex) \
-		__attribute__((format(__printf__, formatIndex + 1, vaIndex + 1)))
+		__attribute__((__format__(__printf__, formatIndex + 1, vaIndex + 1)))
 	
 	/** Indicates a callback. */
 	#define sjme_attrCallback __attribute__((callback))
@@ -750,6 +818,12 @@ extern "C" {
 	#define sjme_attrOutNotNullBuf(lenArg) sjme_attrOutNotNull
 #endif
 
+#if !defined(sjme_attrInOutNotNullBuf)
+	/** Input/output to/from buffer. */
+	#define sjme_attrInOutNotNullBuf(lenArg) \
+		sjme_attrInNotNullBuf(lenArg) sjme_attrOutNotNullBuf(lenArg)
+#endif
+
 #if !defined(sjme_attrOutRange)
 	/** Output value range. */
 	#define sjme_attrOutRange(lo, hi)
@@ -798,6 +872,16 @@ extern "C" {
 	#define sjme_attrArtificial
 #endif
 
+#if !defined(sjme_attrOutModify)
+	/** Modifies the output. */
+	#define sjme_attrOutModify
+#endif
+
+#if !defined(sjme_attrOutOverwrite)
+	/** Overwrites the output. */
+	#define sjme_attrOutOverwrite
+#endif
+
 #if !defined(sjme_alloca)
 	/** Allocate on the stack. */
 	#define sjme_alloca(size) alloca((size))
@@ -807,7 +891,8 @@ extern "C" {
 #endif
 
 #if !defined(sjme_inline)
-	#if !defined(SJME_CONFIG_HAS_MSVC) || SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+	#if !defined(SJME_CONFIG_HAS_MSVC) || \
+		SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
 		/** Inline function. */
 		#define sjme_inline inline
 	#else
@@ -892,11 +977,17 @@ extern "C" {
 /* DOS: Threading not supported. */
 /* Nintendo 3DS: devkitPro has broken/unimplemented pthreads. */
 /* Or if proper multithreaded volatiles are not supported. */
-#if defined(SJME_CONFIG_HAS_OS_PC_DOS) || \
-	defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
-	defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
-	/** Single threaded only. */
-	#define SJME_CONFIG_ONLY_THREAD_SINGLE
+#if !defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	#if defined(SJME_CONFIG_HAS_OS_PC_DOS) || \
+		defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
+		defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
+		/** Single threaded only (system does not support threads). */
+		#define SJME_CONFIG_ONLY_THREAD_SINGLE
+	#elif !defined(SJME_CONFIG_HAS_THREADS_PTHREAD) && \
+		!defined(SJME_CONFIG_HAS_THREADS_WIN32)
+		/** Single threaded only (no other implementations). */
+		#define SJME_CONFIG_ONLY_THREAD_SINGLE
+	#endif
 #endif
 
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS_16)
@@ -959,13 +1050,21 @@ extern "C" {
 	/** Packed structure. */
 	#define sjme_packed
 #endif
-	
-#if defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
-	defined(SJME_CONFIG_HAS_OS_NINTENDO_WIIU) || \
-    defined(SJME_CONFIG_HAS_OS_NINTENDO_WII) || \
-    defined(SJME_CONFIG_HAS_OS_BAREMETAL)
-	/* Disable errno support. */
-	#define SJME_CONFIG_HAS_NO_ERRNO 1
+
+#if !defined(SJME_CONFIG_HAS_NO_ERRNO_H) && \
+	!defined(SJME_CONFIG_HAS_ERRNO_H)
+	#if defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
+		defined(SJME_CONFIG_HAS_OS_NINTENDO_WIIU) || \
+		defined(SJME_CONFIG_HAS_OS_NINTENDO_WII) || \
+		defined(SJME_CONFIG_HAS_OS_BAREMETAL)
+		/* Disable errno support. */
+		#define SJME_CONFIG_HAS_NO_ERRNO_H 1
+	#endif
+#endif
+
+#if !defined(SJME_CONFIG_HAS_ERRNO_H) && !defined(SJME_CONFIG_HAS_NO_ERRNO_H)
+	/** errno.h was not checked, assumed to not be available? */
+	#define SJME_CONFIG_HAS_NO_ERRNO_H
 #endif
 
 #if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
@@ -1033,7 +1132,7 @@ extern "C" {
 	#pragma warning(disable: 4114)
 #endif
 
-/** Bitfield count for @c sjme_jboolean . */
+/** Bitfield count for @link sjme_jboolean @endlink . */
 #define sjme_booleanBit 2
 
 /* Clang is completely broken with FLT_ROUNDS. */ 
@@ -1094,14 +1193,17 @@ extern "C" {
 
 #if defined(SJME_CONFIG_HAS_GCC)
 	/** Optimize this specific function. */
-	#define sjme_attrOptimize __attribute__((optimize("-O3")))
+	#define sjme_attrOptimize __attribute__((optimize("-Os")))
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Optimize this specific function. */
+	#define sjme_attrOptimize __pragma(optimize("t", on))
 #else
 	/** Optimize this specific function. */
 	#define sjme_attrOptimize
 #endif
 
 #if defined(SJME_CONFIG_HAS_C99) || \
-	SJME_CONFIG_MSVC_VERSION_LEAST(SJME_VERSION_MSVC_2010)
+	SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
 	/** Constant-ish struct member set. */
 	#define sjme_sm(dot, val) dot = val
 #else
@@ -1109,7 +1211,7 @@ extern "C" {
 	#define sjme_sm(dot, val) val
 #endif
 
-/** Bitfield count for @c sjme_jboolean . */
+/** Bitfield count for @link sjme_jboolean @endlink . */
 #define sjme_booleanBit 2
 
 /* Clang is completely broken with FLT_ROUNDS. */ 
@@ -1158,6 +1260,15 @@ extern "C" {
 	#define SJME_CONFIG_HAS_DOUBLE_SOFT
 #endif
 
+#if defined(SJME_CONFIG_HAS_C99) || \
+	SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2019)
+	/** Binary float option (0x1.2p3 or 1.2e3). */
+	#define SJME_FLOAT_BD(bin, dec) (bin)
+#else
+	/** Binary float option (0x1.2p3 or 1.2e3). */
+	#define SJME_FLOAT_BD(bin, dec) (dec)
+#endif
+
 #if defined(SJME_CONFIG_HAS_AMIGA) || \
 	defined(SJME_CONFIG_HAS_OS_WINDOWS_16) || \
 	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE) || \
@@ -1167,25 +1278,101 @@ extern "C" {
 	#define SJME_CONFIG_HAS_LOW_MEMORY
 #endif
 
-/* Multi-threading is not possible if this is set. */
-#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
-	#if defined(SJME_CONFIG_HAS_THREADS_FALLBACK)
-		#undef SJME_CONFIG_HAS_THREADS_FALLBACK
+/* More verbosity? */
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+	#if !defined(SJME_CONFIG_DEBUG_BYTECODES)
+		/** Print out bytecodes. */
+		#define SJME_CONFIG_DEBUG_BYTECODES
 	#endif
 
-	#if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
-		#undef SJME_CONFIG_HAS_THREADS_PTHREAD
+	#if !defined(SJME_CONFIG_DEBUG_FIELD)
+		/** Print out field access operations. */
+		#define SJME_CONFIG_DEBUG_FIELD
 	#endif
 
-	#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
-		#undef SJME_CONFIG_HAS_THREADS_WIN32
+	#if !defined(SJME_CONFIG_DEBUG_GC)
+		/** Print out GC operations. */
+		#define SJME_CONFIG_DEBUG_GC
 	#endif
 
-	#if defined(SJME_CONFIG_HAS_THREADS_ATOMIC)
-		#undef SJME_CONFIG_HAS_THREADS_ATOMIC
+	#if !defined(SJME_CONFIG_DEBUG_MLE)
+		/** Print out MLE operations. */
+		#define SJME_CONFIG_DEBUG_MLE
+	#endif
+	
+	#if !defined(SJME_CONFIG_DEBUG_TREAD)
+		/** Print out tread operations. */
+		#define SJME_CONFIG_DEBUG_TREAD
 	#endif
 #endif
 
+/* Stable verbose printouts. */
+#if defined(SJME_CONFIG_DEBUG_VERBOSE_STABLE)
+	#if !defined(SJME_CONFIG_DEBUG_ALLOC)
+		/** Allocation printouts. */
+		#define SJME_CONFIG_DEBUG_ALLOC
+	#endif
+
+	#if !defined(SJME_CONFIG_DEBUG_CIRCLEBUF)
+		/** Circle buffer printouts. */
+		#define SJME_CONFIG_DEBUG_CIRCLEBUF
+	#endif
+
+	#if !defined(SJME_CONFIG_DEBUG_CLOSEABLE)
+		/** Debug closeable objects. */
+		#define SJME_CONFIG_DEBUG_CLOSEABLE
+	#endif
+
+	#if !defined(SJME_CONFIG_DEBUG_ZIP)
+		/** Debug Zip files. */
+		#define SJME_CONFIG_DEBUG_ZIP
+	#endif
+#endif
+
+#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	#if defined(__has_builtin)
+		/** Is the specified GCC built-in available? */
+		#define SJME_CONFIG_HAS_GCC_BUILTIN(x) __has_builtin(__builtin_##x)
+	#else
+		/** Is the specified GCC built-in available? */
+		#define SJME_CONFIG_HAS_GCC_BUILTIN(x) 0
+	#endif
+#else
+	/** Is the specified GCC built-in available? */
+	#define SJME_CONFIG_HAS_GCC_BUILTIN(x) 0
+#endif
+
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/* Include the intrinsics header. */
+	#include <intrin.h>
+	
+	/** Is the specified MSVC intrinsic available? */
+	#define SJME_CONFIG_HAS_MSVC_INTRINSIC(x) defined(x)
+#else
+	/** Is the specified MSVC intrinsic available? */
+	#define SJME_CONFIG_HAS_MSVC_INTRINSIC(x) 0
+#endif
+
+/** Include code that should work. */
+#define SJME_CONFIG_CODE_SHOULD_WORK 1
+
+#if defined(SJME_CONFIG_HAS_MSVC)
+	#define sjme_asm(x) __asm {x}
+#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	#define sjme_asm(x) __asm__ {x}
+#else
+	#define sjme_asm(x) sjme_execInlineAsm(#x)
+#endif
+
+/** Milliseconds as nanos. */
+#define SJME_NANOS_MS(n) INT64_C(n##000000)
+	
+/** Microseconds as nanos. */
+#define SJME_NANOS_US(n) INT64_C(n##000)
+	
+/** Nanoseconds as nanos (identity). */
+#define SJME_NANOS_NS(n) INT64_C(n)
+	
 /* Windows header needs to be included everywhere effectively. */
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN 1

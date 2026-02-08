@@ -10,6 +10,7 @@
 package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 
 /**
  * Emulated audio stream connection.
@@ -30,15 +31,14 @@ public abstract class EmulatedAudioConnectionBracket
 	 *
 	 * @param __statePtr The state pointer.
 	 * @param __instancePtr The instance pointer.
-	 * @throws NullPointerException On null arguments.
+	 * @throws MLECallError On null arguments.
 	 * @since 2025/05/25
 	 */
-	EmulatedAudioConnectionBracket(long __statePtr,
-		long __instancePtr)
-		throws NullPointerException
+	EmulatedAudioConnectionBracket(long __statePtr, long __instancePtr)
+		throws MLECallError
 	{
 		if (__statePtr == 0 || __instancePtr == 0)
-			throw new NullPointerException("NARG");
+			throw new MLECallError("NARG");
 		
 		this.statePtr = __statePtr;
 		this.instancePtr = __instancePtr;

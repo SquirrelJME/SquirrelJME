@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchui/framebuffer/fb.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -27,6 +25,9 @@ static sjme_errorCode sjme_scritchui_fb_listenerClose(
 	/* Get owning state and component. */
 	topState = inWindow->component.common.frontEnd.base.data;
 	topWindow = inWindow->component.common.frontEnd.base.wrapper;
+	
+	if (topState == NULL || topWindow == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Get target listener. */
 	infoCore = &SJME_SCRITCHUI_LISTENER_CORE(topWindow, close);
@@ -52,6 +53,9 @@ static sjme_errorCode sjme_scritchui_fb_listenerMenuItemActivate(
 	topState = inWindow->component.common.frontEnd.base.data;
 	topWindow = inWindow->component.common.frontEnd.base.wrapper;
 	topMenu = activatedItem->common.frontEnd.base.wrapper;
+	
+	if (topState == NULL || topWindow == NULL || topMenu == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Get target listener. */
 	infoUser = &SJME_SCRITCHUI_LISTENER_USER(topWindow, menuItemActivate);
@@ -80,10 +84,46 @@ sjme_errorCode sjme_scritchui_fb_windowContentMinimumSize(
 	wrappedWindow =
 		inWindow->component.common.handle[SJME_SUI_FB_H_WRAPPED];
 	
+	if (wrappedState == NULL || wrappedWindow == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Forward call. */
 	return wrappedState->apiInThread->windowContentMinimumSize(
 		wrappedState,
 		wrappedWindow, width, height);
+}
+
+sjme_errorCode sjme_scritchui_fb_windowGetFrame(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound)
+{
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiWindow inWindow, wrappedWindow;
+	
+	if (inState == NULL || inContainer == NULL ||
+		(contentSize == NULL && frameBound == NULL && contentBound == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover the window. */
+	inWindow = SJME_SUI_CAST_WINDOW(inContainer);
+	
+	if (inWindow == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedWindow = inWindow->component.common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedWindow == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Forward to container logic. */
+	return wrappedState->apiInThread->containerGetFrame(
+		wrappedState, SJME_SUI_CAST_COMPONENT(wrappedWindow),
+		contentSize, frameBound, contentBound);
 }
 
 sjme_errorCode sjme_scritchui_fb_windowNew(
@@ -100,6 +140,9 @@ sjme_errorCode sjme_scritchui_fb_windowNew(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
+	
+	if (wrappedState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Create a wrapped panel. */
 	wrappedWindow = NULL;
@@ -144,6 +187,9 @@ sjme_errorCode sjme_scritchui_fb_windowSetCloseListener(
 	wrappedWindow =
 		inWindow->component.common.handle[SJME_SUI_FB_H_WRAPPED];
 	
+	if (wrappedState == NULL || wrappedWindow == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Set listener information. */
 	memset(&wrappedFrontEnd, 0, sizeof(wrappedFrontEnd));
 	if (sjme_error_is(error = sjme_scritchui_fb_biSetListener(
@@ -179,11 +225,11 @@ sjme_errorCode sjme_scritchui_fb_windowSetMenuBar(
 	wrappedState = inState->wrappedState;
 	wrappedWindow =
 		inWindow->component.common.handle[SJME_SUI_FB_H_WRAPPED];
-	if (inMenuBar != NULL)
-		wrappedMenuBar = inMenuBar->menuKind.common
-			.handle[SJME_SUI_FB_H_WRAPPED];
-	else
-		wrappedMenuBar = NULL;
+	wrappedMenuBar = (inMenuBar != NULL ? inMenuBar->menuKind.common
+		.handle[SJME_SUI_FB_H_WRAPPED] : NULL);
+	
+	if (wrappedState == NULL || wrappedWindow == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->windowSetMenuBar(wrappedState,
@@ -205,6 +251,9 @@ sjme_errorCode sjme_scritchui_fb_windowSetVisible(
 	wrappedState = inState->wrappedState;
 	wrappedWindow =
 		inWindow->component.common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedWindow == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Forward call. */
 	return wrappedState->apiInThread->windowSetVisible(wrappedState,

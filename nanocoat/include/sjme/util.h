@@ -10,6 +10,7 @@
 /**
  * Utilities.
  * 
+ * @file
  * @since 2023/07/26
  */
 
@@ -29,6 +30,40 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+/**
+ * Clips the value so it is in the given range.
+ * 
+ * @param l The low value.
+ * @param v The value to clip.
+ * @param h The high value.
+ * @return The value clipped in range.
+ * @since 2025/12/22
+ */
+#define sjme_clip(l, v, h) \
+	((v) < (l) ? (l) : ((v) >= (h) ? (h) : (v)))
+	
+/**
+ * Returns the minimum of two values.
+ * 
+ * @param a The first value.
+ * @param b The first value.
+ * @return The minimum of two values.
+ * @since 2025/11/30
+ */
+#define sjme_min(a, b) \
+	(((a) < (b)) ? (a) : (b))
+
+/**
+ * Returns the maximum of two values.
+ * 
+ * @param a The first value.
+ * @param b The first value.
+ * @return The maximum of two values.
+ * @since 2025/11/30
+ */
+#define sjme_max(a, b) \
+	(((a) > (b)) ? (a) : (b))
 
 /**
  * Function for returning the number of entries within a tree.
@@ -54,8 +89,8 @@ typedef sjme_jint (*sjme_tree_findHash)(void* what);
  * 
  * @param tree The tree to search in.
  * @param what What to being searched for in the tree.
- * @param hash The hash generated from @c sjme_tree_findHash .
- * @param withIndex Compare @c hash and @c what against the given tree.
+ * @param hash The hash generated from @link sjme_tree_findHash @endlink .
+ * @param withIndex Compare @a hash and @a what against the given tree.
  * @return A negative value if lower, zero if equal, or a positive value if
  * greater.
  * @since 2023/07/26
@@ -75,8 +110,8 @@ typedef struct sjme_random
 } sjme_random;
 
 /**
- * Tree finding functions, used with @c sjme_tree_find to determine how to
- * search through a given tree.
+ * Tree finding functions, used with @link sjme_tree_find @endlink to
+ * determine how to search through a given tree.
  * 
  * @since 2023/07/26
  */
@@ -110,7 +145,7 @@ sjme_jint sjme_compare_null(
  * @param outRandom The random state to initialize. 
  * @param seedHi The high seed value.
  * @param seedLo The low seed value.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns @link SJME_JNI_TRUE @endlink on success.
  * @since 2023/12/02
  */
 sjme_errorCode sjme_random_init(
@@ -123,7 +158,7 @@ sjme_errorCode sjme_random_init(
  * 
  * @param outRandom The random state to initialize. 
  * @param seed The seed value.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns @link SJME_JNI_TRUE @endlink on success.
  * @since 2023/12/02
  */
 sjme_errorCode sjme_random_initL(
@@ -135,7 +170,7 @@ sjme_errorCode sjme_random_initL(
  * 
  * @param random The random state.
  * @param outValue The output value.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns @link SJME_JNI_TRUE @endlink on success.
  * @since 2023/12/02
  */
 sjme_errorCode sjme_random_nextInt(
@@ -158,7 +193,7 @@ sjme_jint sjme_random_nextIntR(
  * @param random The random state.
  * @param outValue The output value.
  * @param maxValue The maximum exclusive value.
- * @return Returns @c SJME_JNI_TRUE on success.
+ * @return Returns @link SJME_JNI_TRUE @endlink on success.
  * @since 2023/12/02
  */
 sjme_errorCode sjme_random_nextIntMax(
@@ -178,7 +213,7 @@ sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index);
 
 /**
  * Compares two strings up to the given number of characters each, nulls are
- * in the same order as @c sjme_compare_null() .
+ * in the same order as @link sjme_compare_null() @endlink .
  * 
  * @param aString A string. 
  * @param aLen A length.
@@ -384,25 +419,96 @@ sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v);
 
 /**
+ * Compacts bits to the left.
+ * 
+ * @code
+ * 10101011110011011110111100000111 ->
+ * 10101010000010010000100000000100
+ * @endcode
+ * 
+ * @param v The bits to compact.
+ * @param m The mask.
+ * @return The compacted bits.
+ * @since 2026/01/17
+ */
+sjme_juint sjme_util_intCompactLeft(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInValue sjme_juint m);
+	
+/**
+ * Compacts bits to the right.
+ * 
+ * @code
+ * 10101011110011011110111100000111 ->
+ * 10101000010001000010000100000001
+ * @endcode
+ * 
+ * @param v The bits to compact.
+ * @param m The mask.
+ * @return The compacted bits.
+ * @since 2026/01/17
+ */
+sjme_juint sjme_util_intCompactRight(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInValue sjme_juint m);
+
+/**
+ * Extracts bits to the left.
+ * 
+ * @param v The bits to extract.
+ * @param m The mask.
+ * @return The extracted bits.
+ * @since 2026/01/17
+ */
+sjme_juint sjme_util_intExtractLeft(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInValue sjme_juint m);
+	
+/**
+ * Extracts bits to the right.
+ * 
+ * @param v The bits to extract.
+ * @param m The mask.
+ * @return The extracted bits.
+ * @since 2026/01/17
+ */
+sjme_juint sjme_util_intExtractRight(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInValue sjme_juint m);
+
+/**
  * Returns the value with the highest bit set.
  * 
  * @param v The value to return the highest bit of. 
  * @return The highest bit of the value.
  * @since 2024/08/22
  */
-sjme_juint sjme_util_intHighestOneBit(
+sjme_juint sjme_util_intOneBitHighestU(
 	sjme_attrInValue sjme_juint v);
 
 /**
- * Returns the number of leading zeroes in the value.
+ * Returns the value with the lowest bit set.
  * 
- * @param v The value to check. 
- * @return The resultant number of leading zeroes.
- * @since 2024/08/22
+ * @param v The value to return the lowest bit of. 
+ * @return The lowest bit of the value.
+ * @since 2026/01/17
  */
-sjme_juint sjme_util_intLeadingZeroesU(
+sjme_juint sjme_util_intOneBitLowestU(
 	sjme_attrInValue sjme_juint v);
 
+/**
+ * Allows for shifting left/right by 32 for certain CPUs.
+ * 
+ * @param v The value to shift.
+ * @param sh The shift amount, positive is left shift and negative is right
+ * shift.
+ * @return The resultant shifted value.
+ * @since 2025/11/28
+ */
+sjme_jint sjme_util_intOverShift(
+	sjme_attrInValue sjme_jint v,
+	sjme_attrInRange(-32, 32) sjme_jint sh);
+	
 /**
  * Allows for shifting left/right by 32 for certain CPUs.
  * 
@@ -434,6 +540,26 @@ sjme_jint sjme_util_intReverse(
  * @since 2024/08/18 
  */
 sjme_juint sjme_util_intReverseU(
+	sjme_attrInValue sjme_juint v);
+
+/**
+ * Returns the number of leading zeroes in the value.
+ * 
+ * @param v The value to check. 
+ * @return The resultant number of leading zeroes.
+ * @since 2024/08/22
+ */
+sjme_juint sjme_util_intZeroesLeadingU(
+	sjme_attrInValue sjme_juint v);
+
+/**
+ * Returns the number of trailing zeroes in the value.
+ * 
+ * @param v The value to check. 
+ * @return The resultant number of trailing zeroes.
+ * @since 2026/01/17
+ */
+sjme_juint sjme_util_intZeroesTrailingU(
 	sjme_attrInValue sjme_juint v);
 
 /**
@@ -502,6 +628,16 @@ const sjme_jshort* sjme_util_memUnaligned16(void* addr);
  */
 const sjme_jint* sjme_util_memUnaligned32(void* addr);
 	
+/**
+ * Writes to an address in an unaligned way.
+ *
+ * @param addr The address to access.
+ * @param v The value to write.
+ * @return The written value.
+ * @since 2025/11/28
+ */
+sjme_jint* sjme_util_memUnaligned32W(void* addr, sjme_jint v);
+	
 #else
 	
 /**
@@ -513,6 +649,16 @@ const sjme_jint* sjme_util_memUnaligned32(void* addr);
  * @since 2025/03/02
  */
 #define sjme_util_memUnaligned32(addr) ((const sjme_jint*)(addr))
+
+/**
+ * Writes to an address in an unaligned way.
+ *
+ * @param addr The address to access.
+ * @param v The value to write.
+ * @return The written value.
+ * @since 2025/11/28
+ */
+#define sjme_util_memUnaligned32W(addr, v) (*((sjme_jint*)(addr)) = (v))
 	
 #endif
 

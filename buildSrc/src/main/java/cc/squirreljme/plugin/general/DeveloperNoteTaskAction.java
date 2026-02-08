@@ -28,7 +28,6 @@ class DeveloperNoteTaskAction
 {
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2022/07/10
 	 */
 	@SuppressWarnings("HttpUrlsUsage")

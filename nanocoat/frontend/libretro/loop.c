@@ -6,8 +6,6 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
-
-#include <string.h>
 #include <libretro.h>
 
 #include "sjme/nvm/loop.h"
@@ -126,7 +124,7 @@ sjme_attrUnused RETRO_API void retro_run(void)
 	/* Performing things within the actual machine. */
 	terminated = SJME_JNI_FALSE;
 	if (inState != NULL &&
-		sjme_atomic_sjme_jint_get(&inState->numRunningTasks) > 0)
+		sjme_atomic_g(sjme_jint, &inState->numRunningTasks) > 0)
 	{
 		/* Tick. */
 		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, -1,

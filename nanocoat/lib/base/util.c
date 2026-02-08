@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/stdTypes.h"
 #include "sjme/util.h"
 #include "sjme/debug.h"
@@ -411,17 +409,25 @@ sjme_jlong sjme_swap_long(
 sjme_juint sjme_swap_uint(
 	sjme_attrInValue sjme_juint in)
 {
+#if SJME_CONFIG_HAS_GCC_BUILTIN(bswap32)
+	return __builtin_bswap32(in);
+#else
 	// 0xAABBCCDD -> 0xBBAADDCC
 	in = (((in & 0xFF00FF00) >> 8) | ((in & 0x00FF00FF) << 8));
 
 	// 0xBBAADDCC -> 0xDDCCBBAA
 	return (in >> 16) | (in << 16);
+#endif
 }
 
 sjme_jchar sjme_swap_ushort(
 	sjme_attrInValue sjme_jchar in)
 {
+#if SJME_CONFIG_HAS_GCC_BUILTIN(bswap16)
+	return __builtin_bswap16(in);
+#else
 	return ((in >> 8) | (in << 8));
+#endif
 }
 
 sjme_errorCode sjme_swap_shu8_uint_memmove(
@@ -505,33 +511,150 @@ sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
 sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v)
 {
+#if SJME_CONFIG_HAS_GCC_BUILTIN(popcount)
+	return __builtin_popcount(v);
+#else
+	/* Henry S. Warren, Jr. (2013). Hacker's Delight (2nd Edition). */
+	/* Addison Wesley. ISBN-13 978-0-321-842268-8. Page 156. */
 	v = v - ((v >> 1) & UINT32_C(0x55555555));
 	v = (v & UINT32_C(0x33333333)) + ((v >> 2) & UINT32_C(0x33333333));
 	return ((v + (v >> 4) & UINT32_C(0xF0F0F0F)) * UINT32_C(0x1010101)) >> 24;
+#endif
 }
 
-sjme_juint sjme_util_intHighestOneBit(
-	sjme_attrInValue sjme_juint v)
+sjme_juint sjme_util_intCompactLeft(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInValue sjme_juint m)
 {
-	v = v | (v >> 1);
-	v = v | (v >> 2);
-	v = v | (v >> 4);
-	v = v | (v >> 8);
-	v = v | (v >> 16);
+	return sjme_util_intReverseU(sjme_util_intCompactRight(
+		sjme_util_intReverseU(v), sjme_util_intReverseU(m)));
+}
 	
-	return v - (v >> 1);
+sjme_juint sjme_util_intCompactRight(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInValue sjme_juint m)
+{
+	sjme_juint fm, pb, lb, i;
+	
+	/* So Hacker's Delight, which is an amazing book to have in your */
+	/* library, I did not find what I needed. Inside there was compress */
+	/* which really is extract, which is useful however not exactly what */
+	/* I needed. However, from looking at it, I rather have gotten inspired */
+	/* to write my own compaction method. */
+	
+	/* First remove bits we do not care about. */
+	v &= m;
+	
+	/* Set the initial final mask to nothing. */
+	fm = 0;
+	
+	/* Effectively what we are doing here is getting the lowest one bit */
+	/* over and over until none remains. We only add into the final mask */
+	/* if the lowest bit is not the same as the previous bit. */
+	/* Note that 32-bits is worse case scenario. */
+	pb = INT32_MAX;
+	for (i = 0; i < 32; i++)
+	{
+		/* Get the lowest bit, if there are none left then we can stop. */
+		lb = sjme_util_intZeroesTrailingU(v);
+		if (lb == 32)
+			break;
+		
+		/* If the previous bit is not one away, then mask it in. */
+		if ((pb + 1) != lb)
+			fm |= (1 << lb);
+		
+		/* Mask away the value from the lowest bit, up one so that */
+		/* we do not get stuck on the lowest bit. */
+		v &= sjme_util_intOverShiftU(UINT32_MAX, (lb + 1));
+		
+		/* Remember the lowest bit. */
+		pb = lb;
+	}
+	
+	/* The final mask is the one we care about. */
+	return fm;
 }
 
-sjme_juint sjme_util_intLeadingZeroesU(
+sjme_juint sjme_util_intExtractLeft(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInValue sjme_juint m)
+{
+	/* Henry S. Warren, Jr. (2013). Hacker's Delight (2nd Edition). */
+	/* Addison Wesley. ISBN-13 978-0-321-842268-8. Page 156. */
+	return sjme_util_intReverseU(sjme_util_intExtractRight(
+		sjme_util_intReverseU(v), sjme_util_intReverseU(m)));
+}
+	
+sjme_juint sjme_util_intExtractRight(
+	sjme_attrInValue sjme_juint v,
+	sjme_attrInValue sjme_juint m)
+{
+	/* Henry S. Warren, Jr. (2013). Hacker's Delight (2nd Edition). */
+	/* Addison Wesley. ISBN-13 978-0-321-842268-8. Page 153. */
+	sjme_juint mk, mp, mv, t, i;
+	
+	/* Clear irrelevant bits. */
+	v = v & m;
+	
+	/* We will count zeroes to the right. */
+	mk = ~m << 1;
+	
+	for (i = 0; i < 5; i++)
+	{
+		/* Parallel suffix. */
+		mp = mk ^ (mk << 1);
+		
+		/* Cycle again. */
+		mp = mp ^ (mp << 2);
+		mp = mp ^ (mp << 4);
+		mp = mp ^ (mp << 8);
+		mp = mp ^ (mp << 16);
+		
+		/* Bits to move. */
+		mv = mp & m;
+		
+		/* Compress m. */
+		m = m ^ mv | (mv > (1 << i));
+		t = v & mv;
+		
+		/* Compress v. */
+		v = v ^ t | (t >> (1 << i));
+		mk = mk & ~mp;
+	}
+	
+	return v;
+}
+
+sjme_juint sjme_util_intOneBitHighestU(
 	sjme_attrInValue sjme_juint v)
 {
-	v = v | (v >> 1);
-	v = v | (v >> 2);
-	v = v | (v >> 4);
-	v = v | (v >> 8);
-	v = v | (v >> 16);
+	return 1 << sjme_util_intZeroesLeadingU(v);
+}
+
+sjme_juint sjme_util_intOneBitLowestU(
+	sjme_attrInValue sjme_juint v)
+{
+	return 1 << sjme_util_intZeroesTrailingU(v);
+}
+
+sjme_jint sjme_util_intOverShift(
+	sjme_attrInValue sjme_jint v,
+	sjme_attrInRange(-32, 32) sjme_jint sh)
+{
+	/* Shifting to the right all the way, smears the highest bit. */
+	if (sh <= -32)
+		return ((v & INT32_C(0x80000000)) ?
+			INT32_C(0xFFFFFFFF) : INT32_C(0));
+
+	/* Shifting all the way to the left results in zero. */
+	if (sh >= 32)
+		return 0;
 	
-	return sjme_util_intBitCountU(~v);
+	/* Otherwise the shifted amount. */
+	if (sh < 0)
+		return v >> (-sh);
+	return v << sh;
 }
 
 sjme_juint sjme_util_intOverShiftU(
@@ -559,6 +682,11 @@ sjme_jint sjme_util_intReverse(sjme_jint v)
 
 sjme_juint sjme_util_intReverseU(sjme_juint v)
 {
+#if SJME_CONFIG_HAS_GCC_BUILTIN(bitreverse32)
+	return __builtin_bitreverse32(v);
+#else
+	/* Henry S. Warren, Jr. (2013). Hacker's Delight (2nd Edition). */
+	/* Addison Wesley. ISBN-13 978-0-321-842268-8. */
 	v = (((v & UINT32_C(0xAAAAAAAA)) >> 1) |
 		((v & UINT32_C(0x55555555)) << 1));
 	v = (((v & UINT32_C(0xCCCCCCCC)) >> 2) |
@@ -569,6 +697,7 @@ sjme_juint sjme_util_intReverseU(sjme_juint v)
 		((v & UINT32_C(0x00FF00FF)) << 8));
 	
 	return ((v >> 16) | (v << 16));
+#endif
 }
 
 sjme_errorCode sjme_util_intToBinary(
@@ -591,7 +720,7 @@ sjme_errorCode sjme_util_intToBinary(
 	if (destLen <= (3 + bitCount))
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
-	/* Start with the prefix. */	
+	/* Start with the prefix. */
 	wp = destBuf;
 	*(wp++) = '0';
 	*(wp++) = 'b';
@@ -603,6 +732,39 @@ sjme_errorCode sjme_util_intToBinary(
 	/* End with NUL. */
 	*(wp) = '\0';
 	return SJME_ERROR_NONE;
+}
+
+sjme_juint sjme_util_intZeroesLeadingU(
+	sjme_attrInValue sjme_juint v)
+{
+#if SJME_CONFIG_HAS_GCC_BUILTIN(clz)
+	if (v == 0)
+		return 32;
+	return __builtin_clz(v);
+#else
+	/* Henry S. Warren, Jr. (2013). Hacker's Delight (2nd Edition). */
+	/* Addison Wesley. ISBN-13 978-0-321-842268-8. */
+	v = v | (v >> 1);
+	v = v | (v >> 2);
+	v = v | (v >> 4);
+	v = v | (v >> 8);
+	v = v | (v >> 16);
+	
+	return sjme_util_intBitCountU(~v);
+#endif
+}
+
+sjme_juint sjme_util_intZeroesTrailingU(
+	sjme_attrInValue sjme_juint v)
+{
+#if SJME_CONFIG_HAS_GCC_BUILTIN(ctz)
+	if (v == 0)
+		return 32;
+	return __builtin_ctz(v);
+#else
+	return sjme_util_intZeroesLeadingU(
+		sjme_util_intReverseU(v));
+#endif
 }
 
 sjme_errorCode sjme_util_lpstrTrimEnd(
@@ -661,12 +823,12 @@ sjme_errorCode sjme_util_lpstrTrimEnd(
 const sjme_jshort* sjme_util_memUnaligned16(void* addr)
 {
 	sjme_threadLocal(sjme_jshort, temp[SJME_UTIL_UNALIGNED_16_FILL]);
-	sjme_threadLocal(sjme_atomic_sjme_jint, fill);
+	sjme_threadLocal(sjme_atomic(sjme_jint), fill);
 	sjme_jshort* into;
 	sjme_jubyte* bytes;
 
 	/* Map in. */
-	into = &temp[sjme_atomic_sjme_jint_getAdd(&fill, 1) &
+	into = &temp[sjme_atomic_ga(sjme_jint, &fill, 1) &
 		(SJME_UTIL_UNALIGNED_16_FILL - 1)];
 	bytes = addr;
 #if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
@@ -691,12 +853,12 @@ const sjme_jshort* sjme_util_memUnaligned16(void* addr)
 const sjme_jint* sjme_util_memUnaligned32(void* addr)
 {
 	sjme_threadLocal(sjme_jint, temp[SJME_UTIL_UNALIGNED_32_FILL]);
-	sjme_threadLocal(sjme_atomic_sjme_jint, fill);
+	sjme_threadLocal(sjme_atomic(sjme_jint), fill);
 	sjme_jint* into;
 	sjme_jushort* shorts;
 
 	/* Map in. */
-	into = &temp[sjme_atomic_sjme_jint_getAdd(&fill, 1) &
+	into = &temp[sjme_atomic_ga(sjme_jint, &fill, 1) &
 		(SJME_UTIL_UNALIGNED_32_FILL - 1)];
 	shorts = addr;
 #if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
@@ -709,6 +871,12 @@ const sjme_jint* sjme_util_memUnaligned32(void* addr)
 
 	/* Return address of temporary. */
 	return into;
+}
+
+sjme_jint* sjme_util_memUnaligned32W(void* addr, sjme_jint v)
+{
+	sjme_todo("Impl?");
+	return NULL;
 }
 
 #endif

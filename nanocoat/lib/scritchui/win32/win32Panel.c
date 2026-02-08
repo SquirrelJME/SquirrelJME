@@ -82,7 +82,7 @@ sjme_errorCode sjme_scritchui_win32_panelNew(
 	windowClass.hCursor = LoadCursor(NULL, IDC_CROSS);
 	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	windowClass.lpszClassName = inPanel->component.strId;
-	windowClass.lpfnWndProc = inState->implIntern->windowProcWin32;
+	windowClass.lpfnWndProc = (WNDPROC)inState->implIntern->windowProcWin32;
 	SetLastError(0);
 	classAtom = RegisterClassEx(&windowClass);
 	if (classAtom == 0)

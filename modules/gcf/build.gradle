@@ -12,6 +12,9 @@ squirreljme
 	swmName = "Generic Connection Framework"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "j2me"
+	
+	// File support
+	optionalDependencies += project(":modules:gcf-file")
 }
 
 dependencies

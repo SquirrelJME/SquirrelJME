@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
@@ -20,8 +18,8 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 	sjme_attrInNotNull sjme_scritchui_uiComponent addComponent)
 {
 	sjme_scritchui_uiContainer container;
-	sjme_list_sjme_scritchui_uiComponent* list;
-	sjme_list_sjme_scritchui_uiComponent* newList;
+	sjme_list(sjme_scritchui_uiComponent)* list;
+	sjme_list(sjme_scritchui_uiComponent)* newList;
 	sjme_errorCode error;
 	sjme_jint freeSlot, i, n;
 	
@@ -140,6 +138,110 @@ sjme_errorCode sjme_scritchui_core_containerAdd(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_core_containerGetFrame(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound)
+{
+	sjme_errorCode error;
+	sjme_jint basicW, basicH;
+	sjme_scritchui_uiWindow inWindow;
+	sjme_scritchui_dim* overhead;
+	sjme_scritchui_rect frame;
+	sjme_scritchui_rect content;
+	
+	if (inState == NULL || inContainer == NULL ||
+		(contentSize == NULL && frameBound == NULL && contentBound == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If this is a window there might be excess area that is part of the */
+	/* window title and other decorations. If the system has such a thing. */
+	if (inContainer->common.type == SJME_SCRITCHUI_TYPE_WINDOW &&
+		inState->impl->windowGetFrame != NULL)
+	{
+		/* Recover the window. */
+		inWindow = SJME_SUI_CAST_WINDOW(inContainer);
+		if (inWindow == NULL)
+			return SJME_ERROR_ILLEGAL_STATE;
+		
+		/* Get the window frame information. */
+		memset(&frame, 0, sizeof(frame));
+		memset(&content, 0, sizeof(content));
+		if (sjme_error_is(error = inState->impl->windowGetFrame(
+			inState, inContainer,
+			NULL, &frame, &content)))
+			return sjme_error_default(error);
+		
+		/* Calculate the overhead for the window, this is done the same */
+		/* for every system rather than having each system handle it */
+		/* on its own. */
+		overhead = &inWindow->minOverhead;
+		if (content.d.width >= 0 && frame.d.height >= 0)
+		{
+#if 0
+			overhead->width = abs(content.s.x - frame.s.x);
+			overhead->height = abs(content.s.y - frame.s.y);
+#else
+			overhead->width = abs(content.d.width - frame.d.width);
+			overhead->height = abs(content.d.height - frame.d.height);
+#endif
+		}
+		
+		/* Give the results if requested. */
+		if (frameBound != NULL)
+			memmove(frameBound, &frame, sizeof(frame));
+		if (contentBound != NULL)
+			memmove(contentBound, &content, sizeof(content));
+		
+		/* Calculate the content size. */
+		if (contentSize != NULL)
+		{
+			contentSize->width = content.d.width;
+			contentSize->height = content.d.height;
+		}
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+
+	/* Otherwise, fallback and get the actual size of the component. */
+	basicW = 0;
+	basicH = 0;
+	if (sjme_error_is(error = inState->apiInThread->componentSize(inState,
+		inContainer, &basicW, &basicH)))
+		return sjme_error_default(error);
+	
+	/* Output content size. */
+	if (contentSize != NULL)
+	{
+		contentSize->width = basicW;
+		contentSize->height = basicH;
+	}
+	
+	/* Output frame bounds, only known to be zero. */
+	if (frameBound != NULL)
+	{
+		frameBound->s.x = 0;
+		frameBound->s.y = 0;
+		frameBound->d.width = basicW;
+		frameBound->d.height = basicH;
+	}
+	
+	/* Output content bounds, only known to be zero. */
+	if (contentBound != NULL)
+	{
+		contentBound->s.x = 0;
+		contentBound->s.y = 0;
+		contentBound->d.width = basicW;
+		contentBound->d.height = basicH;
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_core_containerRemove(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
@@ -147,7 +249,7 @@ sjme_errorCode sjme_scritchui_core_containerRemove(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiContainer container;
-	sjme_list_sjme_scritchui_uiComponent* list;
+	sjme_list(sjme_scritchui_uiComponent)* list;
 	sjme_jint i, n;
 	
 	if (inState == NULL || inContainer == NULL || removeComponent == NULL)
@@ -218,7 +320,7 @@ sjme_errorCode sjme_scritchui_core_containerRemoveAll(
 {
 	sjme_errorCode error;
 	sjme_scritchui_uiContainer container;
-	sjme_list_sjme_scritchui_uiComponent* list;
+	sjme_list(sjme_scritchui_uiComponent)* list;
 	sjme_scritchui_uiComponent remove;
 	sjme_jint i, n;
 	
@@ -505,7 +607,7 @@ sjme_errorCode sjme_scritchui_core_intern_updateVisibleContainer(
 	sjme_attrInValue sjme_jboolean isVisible)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_scritchui_uiComponent* list;
+	sjme_list(sjme_scritchui_uiComponent)* list;
 	sjme_scritchui_uiComponent sub;
 	sjme_scritchui_uiContainer container;
 	sjme_jint i, n;

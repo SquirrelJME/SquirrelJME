@@ -56,7 +56,8 @@ SJME_TEST_DECLARE(testStringPoolUtf)
 		"String not equal?");
 	
 	/* Should be first. */
-	sjme_unit_equalP(test, string, stringPool->strings->elements[0],
+	sjme_unit_equalP(test,
+		string, sjme_atomic_pg(&stringPool->strings->elements[0]),
 		"Not placed in first pool spot?");
 		
 	/* Locate string, again. */

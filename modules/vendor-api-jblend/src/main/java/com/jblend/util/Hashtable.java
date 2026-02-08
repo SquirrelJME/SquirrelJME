@@ -22,27 +22,27 @@ public class Hashtable
 	implements SimpleSerializable
 {
 	@Api
-    public Hashtable() {
-        super(0, 0.0F);
-        
-        throw Debugging.todo();
-    }
+	public Hashtable() {
+		super(0, 0.0F);
+		
+		throw Debugging.todo();
+	}
 
 	@Api
-    public Hashtable(int var1) {
-        super(0, 0.0F);
-        
-        throw Debugging.todo();
-    }
+	public Hashtable(int var1) {
+		super(0, 0.0F);
+		
+		throw Debugging.todo();
+	}
 
-    @Override
+	@Override
 	public void writeObject(SimpleObjectOutputStream var1)
 		throws IOException
 	{
 		throw Debugging.todo();
 	}
 
-    @Override
+	@Override
 	public void readObject(SimpleObjectInputStream var1)
 		throws IOException
 	{

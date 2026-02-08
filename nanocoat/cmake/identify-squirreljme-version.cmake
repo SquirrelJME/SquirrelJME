@@ -41,6 +41,7 @@ message(STATUS
 # Does `fossil info` work?
 execute_process(COMMAND "fossil" "info" "-v"
 	OUTPUT_FILE "${CMAKE_BINARY_DIR}/fossil.info"
+	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 	RESULT_VARIABLE fossilInfoResult)
 if("${fossilInfoResult}" EQUAL "0" AND
 	EXISTS "${CMAKE_BINARY_DIR}/fossil.info")

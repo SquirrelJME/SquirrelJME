@@ -10,6 +10,7 @@
 /**
  * Character sequences.
  * 
+ * @file
  * @since 2024/06/26
  */
 
@@ -44,6 +45,16 @@ typedef sjme_jchar (*sjme_charSeq_charAtFunc)(
 	sjme_attrInPositive sjme_jint inIndex);
 
 /**
+ * Deletes the given character sequence.
+ * 
+ * @param inSeq The input character sequence.
+ * @return Any resultant error, if any.
+ * @since 2025/10/11
+ */
+typedef sjme_errorCode (*sjme_charSeq_deleteFunc)(
+	sjme_attrInNotNull sjme_charSeq inSeq);
+
+/**
  * Returns the length of the character sequence.
  * 
  * @param inSeq The input character sequence.
@@ -67,10 +78,13 @@ typedef struct sjme_charSeq_functions
 	
 	/** The length of the character sequence. */
 	sjme_charSeq_lengthFunc length;
+
+	/** Handle freeing of sequence resources. */ 
+	sjme_charSeq_deleteFunc delete;
 } sjme_charSeq_functions;
 
 /**
- * The type of character encoding used in @c sjme_charSeq .
+ * The type of character encoding used in @link sjme_charSeq @endlink .
  *
  * @since 2025/03/07
  */
@@ -113,7 +127,7 @@ struct sjme_charSeqStatic
 	sjme_jint length;
 
 	/** The hashcode for this string. */
-	sjme_atomic_sjme_jint hash;
+	sjme_atomic(sjme_jint) hash;
 
 	/** The sequence data. */
 	sjme_alignPointer union
@@ -220,6 +234,16 @@ sjme_jchar sjme_charSeq_charAtR(
 	sjme_attrInPositive sjme_jint inIndex);
 
 /**
+ * Deletes the given character sequence.
+ * 
+ * @param seq The sequence to delete.
+ * @return On any resultant error, if any.
+ * @since 2025/10/11
+ */
+sjme_errorCode sjme_charSeq_delete(
+	sjme_attrInNotNull sjme_charSeq seq);
+	
+/**
  * Makes a copy of the given character sequence.
  * 
  * @param allocPool The allocation pool to allocate within.
@@ -232,7 +256,7 @@ sjme_errorCode sjme_charSeq_dup(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrOutNotNull sjme_charSeq* destCopy,
 	sjme_attrInNotNull sjme_charSeq sourceFrom);
-
+	
 /**
  * Duplicates a character sequence to the given buffer.
  * 
@@ -286,7 +310,7 @@ sjme_errorCode sjme_charSeq_equals(
  * @param aSeq The sequence to check.
  * @param bSeq The char sequence to check for equality against.
  * @return Returns whether it matches, note that if there is an error
- * then @c SJME_JNI_FALSE will be returned and the error will be hidden.
+ * then @link SJME_JNI_FALSE @endlink will be returned and the error will be hidden.
  * @since 2024/11/09
  */
 sjme_jboolean sjme_charSeq_equalsR(
@@ -313,7 +337,7 @@ sjme_errorCode sjme_charSeq_equalsUtf(
  * @param aSeq The sequence to check.
  * @param bUtf The UTF sequence to check for equality against.
  * @return Returns whether it matches, note that if there is an error
- * then @c SJME_JNI_FALSE will be returned and the error will be hidden.
+ * then @link SJME_JNI_FALSE @endlink will be returned and the error will be hidden.
  * @since 2024/08/08 
  */
 sjme_jboolean sjme_charSeq_equalsUtfR(
@@ -331,7 +355,8 @@ sjme_errorCode sjme_charSeq_free(
 	sjme_attrInNotNull sjme_charSeq seq);
 
 /**
- * Hashes the given string in accordance to Java's @c String.hashCode() .
+ * Hashes the given string in accordance to
+ * Java's @code{.java} String.hashCode() @endcode .
  * 
  * @param inSeq The sequence to hash.
  * @param outHash The resultant hash code.
@@ -343,7 +368,8 @@ sjme_errorCode sjme_charSeq_hash(
 	sjme_attrOutNotNull sjme_jint* outHash);
 
 /**
- * Hashes the given string in accordance to Java's @c String.hashCode() , note
+ * Hashes the given string in accordance to
+ * Java's @code{.java} String.hashCode() @endcode , note
  * that this will any errors that occur.
  * 
  * @param inSeq The sequence to hash.
@@ -472,7 +498,7 @@ sjme_errorCode sjme_charSeq_newWide(
 	sjme_attrInNegativeOnePositive sjme_jint limitLen);
 
 /**
- * Allocates a new static wide character sequence.
+ * Initializes a new static wide character sequence.
  * 
  * @param inOutSeq The input/output sequence.
  * @param wide The input wide bytes for the string.
@@ -522,7 +548,7 @@ sjme_errorCode sjme_charSeq_startsWithUtf(
  * @param inSeq The sequence to check.
  * @param startsWithUtf The UTF sequence to check the start for.
  * @return Returns whether it matches, note that if there is an error
- * then @c SJME_JNI_FALSE will be returned and the error will be hidden.
+ * then @link SJME_JNI_FALSE @endlink will be returned and the error will be hidden.
  * @since 2024/08/08 
  */
 sjme_jboolean sjme_charSeq_startsWithUtfR(
@@ -530,10 +556,10 @@ sjme_jboolean sjme_charSeq_startsWithUtfR(
 	sjme_attrInNotNull sjme_lpcstr startsWithUtf);
 	
 /**
- * Returns a temporary @c sjme_lpcstr over the character sequence.
+ * Returns a temporary @link sjme_lpcstr @endlink over the character sequence.
  * 
  * @param inSeq The input sequence.
- * @return The temporary @c sjme_lpcstr .
+ * @return The temporary @link sjme_lpcstr @endlink .
  * @since 2025/03/07
  */
 sjme_lpcstr sjme_charSeq_tempUtf(

@@ -9,10 +9,10 @@
 
 package cc.squirreljme.runtime.messaging;
 
-import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
+import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionOption;
@@ -32,7 +32,7 @@ public class MessageConnectionFactory
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public Connection connect(String __part, int __mode, boolean __timeouts,
+	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
 	{

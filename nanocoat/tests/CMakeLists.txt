@@ -24,8 +24,6 @@ squirreljme_sourceize_dir("${CMAKE_CURRENT_BINARY_DIR}/blobs/binary"
 
 # Setup main test execution wrapper which runs within TAC
 add_library(TACTestExecutorCore STATIC
-	$<TARGET_OBJECTS:Base>
-	$<TARGET_OBJECTS:Core>
 	src/tac.c)
 
 # Make sure we have our headers included accordingly
@@ -34,7 +32,9 @@ target_include_directories(TACTestExecutorCore PUBLIC
 	"${CMAKE_SOURCE_DIR}/tests/include")
 
 # Depend on the core
-target_link_libraries(TACTestExecutorCore PUBLIC
+squirreljme_link_libraries_required(TACTestExecutorCore PUBLIC
+	BaseStatic
+	CoreStatic
 	${SQUIRRELJME_EXEC_LINK_LIBRARIES})
 
 # Get a list of tests that are not TAC tests, but more general tests
@@ -68,29 +68,14 @@ add_library(BasicTestLib OBJECT
 	${basicTestSources}
 	${basicTestBlobs})
 
-# Basic test library
-add_library(BasicTestLibPIC OBJECT
-	src/basic.c
-	src/blobs.c
-	src/mock.c
-	src/unit.c
-	${basicTestSources}
-	${basicTestBlobs})
-
 # TAC executable
 add_executable(TACTest
 	src/tac.c
-	src/tacNal.c
-	$<TARGET_OBJECTS:Base>
-	$<TARGET_OBJECTS:Core>
-	$<TARGET_OBJECTS:BasicTestLib>)
+	src/tacNal.c)
 
 # Initialize executable for basic tests, which contains everything
 add_executable(BasicTest
-	src/basicMain.c
-	$<TARGET_OBJECTS:Base>
-	$<TARGET_OBJECTS:Core>
-	$<TARGET_OBJECTS:BasicTestLib>)
+	src/basicMain.c)
 
 # Make them both static
 squirreljme_static_executable(TACTest)
@@ -102,17 +87,9 @@ target_include_directories(BasicTestLib PUBLIC
 	"${CMAKE_CURRENT_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_BINARY_DIR}"
 	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
-target_include_directories(BasicTestLibPIC PUBLIC
-	"${CMAKE_SOURCE_DIR}/include"
-	"${CMAKE_CURRENT_SOURCE_DIR}/include"
-	"${CMAKE_CURRENT_BINARY_DIR}"
-	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
 
 # Make sure the PIC libraries are position independent!
-if(SQUIRRELJME_ENABLE_FPIC)
-	set_target_properties(BasicTestLibPIC PROPERTIES
-		POSITION_INDEPENDENT_CODE ON)
-endif()
+squirreljme_always_fpic(BasicTestLib)
 
 # Make sure we have our headers included accordingly
 target_include_directories(BasicTest PUBLIC
@@ -127,30 +104,21 @@ target_include_directories(TACTest PUBLIC
 	"${CMAKE_CURRENT_BINARY_DIR}"
 	"${CMAKE_CURRENT_BINARY_DIR}/blobs")
 
-# Depend on the core
-add_dependencies(BasicTest Core)
-target_link_libraries(BasicTest PUBLIC
-	Core)
-
-add_dependencies(TACTest Core)
-target_link_libraries(TACTest PUBLIC
-	Core)
-
-# Link required libraries
-squirreljme_target_link_libraries_required(BasicTest)
-squirreljme_target_link_libraries_required(TACTest)
+# Link in the test library
+squirreljme_link_libraries_required(BasicTest PUBLIC
+	CoreStatic
+	BasicTestLib)
+squirreljme_link_libraries_required(TACTest PUBLIC
+	CoreStatic
+	BasicTestLib)
 
 # Include debugging info for tests
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 		target_compile_options(BasicTestLib PRIVATE
 			"-g")
-		target_compile_options(BasicTestLibPIC PRIVATE
-			"-g")
 	elseif(MSVC)
 		target_compile_options(BasicTestLib PRIVATE
-			"/DEBUG")
-		target_compile_options(BasicTestLibPIC PRIVATE
 			"/DEBUG")
 	endif()
 endif()

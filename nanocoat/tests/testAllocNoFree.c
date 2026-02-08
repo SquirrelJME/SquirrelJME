@@ -26,6 +26,7 @@ SJME_TEST_DECLARE(testAllocNoFree)
 	sjme_alloc_pool pool;
 	sjme_pointer block;
 	sjme_alloc_link link;
+	sjme_alloc_link lp;
 
 	/* Allocate data on the stack so it gets cleared. */
 	chunkLen = 32768;
@@ -66,16 +67,20 @@ SJME_TEST_DECLARE(testAllocNoFree)
 		"Block size not divisible by 8?");
 
 	/* The edge of the block should be the right side. */
-	sjme_unit_equalP(test, &link->block[link->blockSize], link->next,
+	sjme_unit_equalP(test,
+		&link->block[link->blockSize], sjme_atomic_pg(&link->next),
 		"Block to the right not at the edge of this one?");
 
 	/* The left edge should be the same as well. */
-	sjme_unit_equalP(test, &link->prev->block[link->prev->blockSize], link,
+	lp = sjme_atomic_g(sjme_alloc_link, &link->prev);
+	sjme_unit_equalP(test, &lp->block[lp->blockSize], link,
 		"This block on at the edge of the left side block?");
 
 	/* There should be no free prev and next. */
-	sjme_unit_equalP(test, link->freeNext, NULL, "Free next not cleared?");
-	sjme_unit_equalP(test, link->freePrev, NULL, "Free prev not cleared?");
+	sjme_unit_equalP(test, sjme_atomic_pg(&link->freeNext), NULL,
+		"Free next not cleared?");
+	sjme_unit_equalP(test, sjme_atomic_pg(&link->freePrev), NULL,
+		"Free prev not cleared?");
 
 	/* Link should be marked used. */
 	sjme_unit_equalI(test, link->space, SJME_ALLOC_POOL_SPACE_USED,
@@ -85,7 +90,8 @@ SJME_TEST_DECLARE(testAllocNoFree)
 	sjme_unit_equalP(test, block, &link->block[0], "Wrong block pointers?");
 
 	/* Next link should be the backlink's previous. */
-	sjme_unit_equalP(test, link->next, pool->backLink->prev,
+	sjme_unit_equalP(test, sjme_atomic_pg(&link->next),
+		sjme_atomic_chainGetGet(sjme_alloc_link, &pool->backLink, ->prev),
 		"Back link previous is not the next free block?");
 
 	/* Success. */

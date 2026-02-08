@@ -59,10 +59,7 @@ sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 {
 	HWND window;
 	WINDOWPLACEMENT placement;
-	RECT winRect;
-	POINT clientPoint;
 	sjme_scritchui_dim* overhead;
-	sjme_jboolean notReady;
 	
 	if (inState == NULL || inWindow == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -70,39 +67,8 @@ sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 	/* Recover window. */
 	window = inWindow->component.common.handle[SJME_SUI_WIN32_H_HWND];
 	
-	/* Calculate the overhead of the window, we need to do this with knowing */
-	/* the client rectangle and the window rectangle as GetSystemMetrics */
-	/* returns old information for compatibility purposes, which breaks */
-	/* on HiDPI or Vista Glass. */
+	/* The overhead has been calculated via windowContentGetFrame(). */
 	overhead = &inWindow->minOverhead;
-	memset(&winRect, 0, sizeof(winRect));
-	memset(&clientPoint, 0, sizeof(clientPoint));
-	
-	/* If either of these fail, the window exists but is not on the screen */
-	/* so any attempts to place it will fail. */
-	notReady = SJME_JNI_FALSE;
-	if (0 == GetWindowRect(window, &winRect))
-		notReady = SJME_JNI_TRUE;
-	if (0 == ClientToScreen(window, &clientPoint))
-		notReady = SJME_JNI_TRUE;
-	
-	/* Do nothing yet if this is the case. */
-	if (notReady)
-		return SJME_ERROR_NONE;
-	
-	/* The X coordinates are effectively a lie. */
-	overhead->width = (clientPoint.x - winRect.left) +
-		(GetSystemMetrics(SM_CXSIZEFRAME) * 2) +
-		(GetSystemMetrics(SM_CXEDGE) * 2);
-	
-	/* This is correct. */
-	overhead->height = (clientPoint.y - winRect.top) +
-		GetSystemMetrics(SM_CYSIZEFRAME) +
-		GetSystemMetrics(SM_CYEDGE);
-	
-	/* Add menu bar height? */
-	if (inWindow->menuBar != NULL)
-		overhead->height += GetSystemMetrics(SM_CYMENU);
 	
 	/* Setup new placement information. */
 	memset(&placement, 0, sizeof(placement));
@@ -119,6 +85,89 @@ sjme_errorCode sjme_scritchui_win32_windowContentMinimumSize(
 
 	/* Center the window before leaving */
 	return sjme_scritchui_win32_windowCenter(inState, inWindow);
+}
+
+sjme_errorCode sjme_scritchui_win32_windowGetFrame(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNullable sjme_scritchui_dim* contentSize,
+	sjme_attrOutNullable sjme_scritchui_rect* frameBound,
+	sjme_attrOutNullable sjme_scritchui_rect* contentBound)
+{
+	sjme_scritchui_uiWindow inWindow;
+	sjme_scritchui_rect resultFrame, resultContent;
+	HWND window;
+	RECT winRect, clientRect;
+	POINT clientOrig;
+	sjme_jboolean notReady;
+	sjme_jint menuH, dpi;
+	sjme_scritchui_win32_intern_GSMFD smDpi;
+	
+	if (inState == NULL || inContainer == NULL ||
+		(contentSize == NULL && frameBound == NULL && contentBound == NULL))
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover the window. */
+	inWindow = SJME_SUI_CAST_WINDOW(inContainer);
+	if (inWindow == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Recover window. */
+	window = inWindow->component.common.handle[SJME_SUI_WIN32_H_HWND];
+	
+	/* Clear results. */
+	memset(&resultFrame, 0, sizeof(resultFrame));
+	memset(&resultContent, 0, sizeof(resultContent));
+	
+	/* Calculate the overhead of the window, we need to do this with knowing */
+	/* the client rectangle and the window rectangle as GetSystemMetrics */
+	/* returns old information for compatibility purposes, which breaks */
+	/* on HiDPI or Vista Glass. */
+	memset(&winRect, 0, sizeof(winRect));
+	memset(&clientRect, 0, sizeof(clientRect));
+	memset(&clientOrig, 0, sizeof(clientOrig));
+	
+	/* If either of these fail, the window exists but is not on the screen */
+	/* so any attempts to place it will fail. */
+	notReady = SJME_JNI_FALSE;
+	if (0 == GetWindowRect(window, &winRect))
+		notReady = SJME_JNI_TRUE;
+	if (0 == GetClientRect(window, &clientRect))
+		notReady = SJME_JNI_TRUE;
+	if (0 == ClientToScreen(window, &clientOrig))
+		notReady = SJME_JNI_TRUE;
+	
+	/* Do nothing yet if this is the case. */
+	if (notReady)
+		return SJME_ERROR_NONE;
+	
+	/* Calculate the frame bounds from the window rectangle. */
+	resultFrame.s.x = winRect.left;
+	resultFrame.s.y = winRect.top;
+	resultFrame.d.width = abs(winRect.right - winRect.left);
+	resultFrame.d.height = abs(winRect.bottom - winRect.top);
+	
+	/* The client rectangle always starts at (0, 0) so we have to convert */
+	/* those to screen coordinates to get the actual position of the content */
+	/* area on the screen. */
+	resultContent.s.x = clientOrig.x;
+	resultContent.s.y = clientOrig.y;
+	resultContent.d.width = abs(clientRect.right - clientRect.left);
+	resultContent.d.height = abs(clientRect.bottom - clientRect.top);
+
+	/* The menu bar is not considered part of the client area unlike in */
+	/* other windowing systems such as GTK. */
+	
+	/* Give the results. */
+	if (frameBound != NULL)
+		memmove(frameBound, &resultFrame, sizeof(resultFrame));
+	if (contentBound != NULL)
+		memmove(contentBound, &resultContent, sizeof(resultContent));
+	if (contentSize != NULL)
+		memmove(contentSize, &resultContent.d, sizeof(resultContent.d));
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_win32_windowNew(
@@ -139,7 +188,7 @@ sjme_errorCode sjme_scritchui_win32_windowNew(
 	windowClass.hInstance = GetModuleHandle(NULL);
 	windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
 	windowClass.lpszClassName = inWindow->component.strId;
-	windowClass.lpfnWndProc = inState->implIntern->windowProcWin32;
+	windowClass.lpfnWndProc = (WNDPROC)inState->implIntern->windowProcWin32;
 	SetLastError(0);
 	classAtom = RegisterClassEx(&windowClass);
 	if (classAtom == 0)

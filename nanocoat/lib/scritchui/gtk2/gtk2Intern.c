@@ -219,7 +219,7 @@ sjme_errorCode sjme_scritchui_gtk2_intern_disconnectSignal(
 	sjme_attrInNotNull sjme_scritchui_listener_void* infoCore)
 {
 	sjme_jint i, n;
-	sjme_list_sjme_intPointer* idList;
+	sjme_list(sjme_intPointer)* idList;
 	
 	if (inState == NULL || inWidget == NULL || infoCore == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -228,7 +228,7 @@ sjme_errorCode sjme_scritchui_gtk2_intern_disconnectSignal(
 	if (infoCore->extra != 0)
 	{
 		/* Recover ID list. */
-		idList = (sjme_list_sjme_intPointer*)infoCore->extra;
+		idList = (sjme_list(sjme_intPointer)*)infoCore->extra;
 		
 		/* Disconnect each signal. */
 		for (i = 0, n = idList->length; i < n; i++)
@@ -353,7 +353,7 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 {
 	sjme_errorCode error;
 	sjme_jint i;
-	sjme_list_sjme_intPointer* idList;
+	sjme_list(sjme_intPointer)* idList;
 	va_list argList;
 	sjme_lpcstr inSignal;
 	

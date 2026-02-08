@@ -81,7 +81,10 @@ BreakConstructorInitializersBeforeComma: false
 BreakInheritanceList: AfterComma
 ColumnLimit: 79
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
-FixNamespaceComments: false
+NamespaceMacros:
+  - SJME_WALK_BEGIN
+  - SJME_NVM_BYTECODE_SLOW
+  - SJME_NVM_BYTECODE_FAST
 ForEachMacros:
   - SJME_FOREACH_TODO
 IfMacros:
@@ -100,8 +103,8 @@ IndentGotoLabels: false
 IndentWidth: 4
 InsertNewlineAtEOF: true
 LineEnding: LF
-MacroBlockBegin: ''
-MacroBlockEnd: ''
+MacroBlockBegin: 'SJME_WALK_BEGIN'
+MacroBlockEnd: 'SJME_WALK_END'
 PenaltyBreakComment: 1000000
 PenaltyReturnTypeOnItsOwnLine: 10
 PointerAlignment: Left

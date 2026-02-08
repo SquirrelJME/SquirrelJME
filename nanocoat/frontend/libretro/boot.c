@@ -6,8 +6,6 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
-
-#include <string.h>
 #include <libretro.h>
 
 #include "sjme/config.h"
@@ -90,7 +88,7 @@ static sjme_jboolean sjme_libretro_exitHandler(int exitCode)
 static sjme_jboolean sjme_libretro_abortHandler(sjme_errorCode error)
 {
 	/* Set modeless stars error. */
-	sjme_atomic_sjme_jint_set(&sjme_libretro_globals.modelessStars.errorCode,
+	sjme_atomic_s(sjme_jint, &sjme_libretro_globals.modelessStars.errorCode,
 		error);
 	
 	/* Forward to the exit handler. */
@@ -219,11 +217,15 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 			if (jarInfo->path == NULL)
 				continue;
 
+#if 1
+			sjme_todo("Impl?");
+#else
 			/* Pass it through. */
 			strncat((char*)argV[argC], jarInfo->path, libStrSize);
 			if ((i + 1) < num_info)
 				strncat((char*)argV[argC],
 					SJME_CONFIG_PATH_SEPARATOR, libStrSize);
+#endif
 		}
 
 		/* Consume it now. */

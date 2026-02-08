@@ -16,14 +16,12 @@
 #ifndef SJME_C_WINMMINTERN_H
 #define SJME_C_WINMMINTERN_H
 
+#include "sjme/config.h"
 #include "lib/scritchaudio/winmm/winmm.h"
 
-#define WIN32_LEAN_AND_MEAN 1
-
-#include <windows.h>
 #include <mmsystem.h>
 
-#if SJME_CONFIG_WINDOWS_NT_VERSION_LEAST(SJME_CONFIG_WINDOWS_XP)
+#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_XP)
 	#include <mmreg.h>
 #endif
 
@@ -41,21 +39,23 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+typedef void (CALLBACK *sjme_scritchaudio_winmm_WAVEOUTPROC)(
+	HWAVEOUT hWaveOut,
+	UINT uMsg,
+	DWORD_PTR dwInstance,
+	DWORD dwParam1,
+	DWORD dwParam2);
+
 sjme_errorCode sjme_scritchaudio_winmm_apiInit(
 	sjme_attrInNotNull sjme_scritchaudio inState);
 
-sjme_errorCode sjme_scritchaudio_winmm_disconnect(
-	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_connection inConn);
-
 sjme_errorCode sjme_scritchaudio_winmm_loopIterate(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInNotNull sjme_scritchaudio_stream inStream,
-	sjme_attrInNotNull sjme_scritchaudio_renderInfo* renderInfo);
+	sjme_attrInNotNull sjme_scritchaudio_stream inStream);
 
 sjme_errorCode sjme_scritchaudio_winmm_queryMidiPorts(
 	sjme_attrInNotNull sjme_scritchaudio inState,
-	sjme_attrInOutNotNull sjme_list_sjme_scritchaudio_midiPort* inOutPorts,
+	sjme_attrInOutNotNull sjme_list(sjme_scritchaudio_midiPort)* inOutPorts,
 	sjme_attrOutNotNull sjme_jint* outNumPorts);
 
 sjme_errorCode sjme_scritchaudio_winmm_sourceAttach(

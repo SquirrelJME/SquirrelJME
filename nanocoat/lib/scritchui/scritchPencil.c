@@ -8,8 +8,6 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/util.h"
-#include <string.h>
-
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
@@ -56,7 +54,7 @@ sjme_errorCode sjme_scritchpen_core_lock(
 			return sjme_error_default(error);
 		
 		/* Obtain the buffer if we need to. */
-		if (sjme_atomic_sjme_jint_getAdd(&state->count, 1) == 0)
+		if (sjme_atomic_ga(sjme_jint, &state->count, 1) == 0)
 			if (sjme_error_is(error = g->lock->lock(g)))
 				return sjme_error_default(error);
 	}
@@ -85,9 +83,9 @@ sjme_errorCode sjme_scritchpen_core_lockRelease(
 		state = &g->lockState;
 		
 		/* Forward if release is needed. */
-		if (sjme_atomic_sjme_jint_getAdd(&state->count, -1) <= 1)
+		if (sjme_atomic_ga(sjme_jint, &state->count, -1) <= 1)
 		{
-			sjme_atomic_sjme_jint_set(&state->count, 0);
+			sjme_atomic_s(sjme_jint, &state->count, 0);
 			if (sjme_error_is(error = g->lock->lockRelease(g)))
 				return sjme_error_default(error);
 		}
@@ -107,17 +105,25 @@ static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 {
 	sjme_sm(.close, sjme_scritchpen_core_close),
 	sjme_sm(.copyArea, sjme_scritchpen_core_copyArea),
+	sjme_sm(.drawArc, sjme_scritchpen_core_drawArc),
 	sjme_sm(.drawChar, sjme_scritchpen_core_drawChar),
 	sjme_sm(.drawChars, sjme_scritchpen_core_drawChars),
 	sjme_sm(.drawHoriz, sjme_scritchpen_core_drawHoriz),
 	sjme_sm(.drawLine, sjme_scritchpen_core_drawLine),
 	sjme_sm(.drawPixel, sjme_scritchpen_core_drawPixel),
+	sjme_sm(.drawPolyline, sjme_scritchpen_core_drawPolyline),
 	sjme_sm(.drawRect, sjme_scritchpen_core_drawRect),
-	sjme_sm(.drawSubstring, sjme_scritchpen_core_drawSubstring),
+	sjme_sm(.drawRegion, sjme_scritchpen_core_drawRegion),
+	sjme_sm(.drawRoundRect, sjme_scritchpen_core_drawRoundRect),
 	sjme_sm(.drawTriangle, sjme_scritchpen_core_drawTriangle),
+	sjme_sm(.drawSubstring, sjme_scritchpen_core_drawSubstring),
 	sjme_sm(.drawXRGB32Region, sjme_scritchpen_core_drawXRGB32Region),
+	sjme_sm(.fillArc, sjme_scritchpen_core_fillArc),
+	sjme_sm(.fillPolygon, sjme_scritchpen_core_fillPolygon),
 	sjme_sm(.fillRect, sjme_scritchpen_core_fillRect),
+	sjme_sm(.fillRoundRect, sjme_scritchpen_core_fillRoundRect),
 	sjme_sm(.fillTriangle, sjme_scritchpen_core_fillTriangle),
+	sjme_sm(.getRegion, sjme_scritchpen_core_getRegion),
 	sjme_sm(.mapColor, sjme_scritchpen_core_mapColor),
 	sjme_sm(.setAlphaColor, sjme_scritchpen_core_setAlphaColor),
 	sjme_sm(.setBlendingMode, sjme_scritchpen_core_setBlendingMode),
@@ -127,6 +133,7 @@ static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 	sjme_sm(.setFont, sjme_scritchpen_core_setFont),
 	sjme_sm(.setParametersFrom, sjme_scritchpen_core_setParametersFrom),
 	sjme_sm(.setStrokeStyle, sjme_scritchpen_core_setStrokeStyle),
+	sjme_sm(.transferRegion, sjme_scritchpen_core_transferRegion),
 	sjme_sm(.translate, sjme_scritchpen_core_translate),
 };
 
@@ -136,17 +143,25 @@ static const sjme_scritchui_pencilFunctions
 {
 	sjme_sm(.close, sjme_scritchpen_core_close),
 	sjme_sm(.copyArea, sjme_scritchpen_coreSerial_copyArea),
+	sjme_sm(.drawArc, sjme_scritchpen_coreSerial_drawArc),
 	sjme_sm(.drawChar, sjme_scritchpen_coreSerial_drawChar),
 	sjme_sm(.drawChars, sjme_scritchpen_coreSerial_drawChars),
 	sjme_sm(.drawHoriz, sjme_scritchpen_coreSerial_drawHoriz),
 	sjme_sm(.drawLine, sjme_scritchpen_coreSerial_drawLine),
 	sjme_sm(.drawPixel, sjme_scritchpen_coreSerial_drawPixel),
+	sjme_sm(.drawPolyline, sjme_scritchpen_coreSerial_drawPolyline),
 	sjme_sm(.drawRect, sjme_scritchpen_coreSerial_drawRect),
+	sjme_sm(.drawRegion, sjme_scritchpen_coreSerial_drawRegion),
+	sjme_sm(.drawRoundRect, sjme_scritchpen_coreSerial_drawRoundRect),
 	sjme_sm(.drawSubstring, sjme_scritchpen_coreSerial_drawSubstring),
 	sjme_sm(.drawTriangle, sjme_scritchpen_coreSerial_drawTriangle),
 	sjme_sm(.drawXRGB32Region, sjme_scritchpen_coreSerial_drawXRGB32Region),
+	sjme_sm(.fillArc, sjme_scritchpen_coreSerial_fillArc),
+	sjme_sm(.fillPolygon, sjme_scritchpen_coreSerial_fillPolygon),
 	sjme_sm(.fillRect, sjme_scritchpen_coreSerial_fillRect),
+	sjme_sm(.fillRoundRect, sjme_scritchpen_coreSerial_fillRoundRect),
 	sjme_sm(.fillTriangle, sjme_scritchpen_coreSerial_fillTriangle),
+	sjme_sm(.getRegion, sjme_scritchpen_coreSerial_getRegion),
 	sjme_sm(.mapColor, sjme_scritchpen_coreSerial_mapColor),
 	sjme_sm(.setAlphaColor, sjme_scritchpen_coreSerial_setAlphaColor),
 	sjme_sm(.setBlendingMode, sjme_scritchpen_coreSerial_setBlendingMode),
@@ -156,6 +171,7 @@ static const sjme_scritchui_pencilFunctions
 	sjme_sm(.setFont, sjme_scritchpen_coreSerial_setFont),
 	sjme_sm(.setParametersFrom, sjme_scritchpen_coreSerial_setParametersFrom),
 	sjme_sm(.setStrokeStyle, sjme_scritchpen_coreSerial_setStrokeStyle),
+	sjme_sm(.transferRegion, sjme_scritchpen_coreSerial_transferRegion),
 	sjme_sm(.translate, sjme_scritchpen_coreSerial_translate),
 };
 
@@ -165,13 +181,20 @@ static const sjme_scritchui_pencilUtilFunctions
 {
 	sjme_sm(.blendRGBInto, sjme_scritchpen_coreUtil_blendRGBInto),
 	sjme_sm(.applyAnchor, sjme_scritchpen_coreUtil_applyAnchor),
+	sjme_sm(.applyCoordinateAdj, sjme_scritchpen_coreUtil_applyCoordinateAdj),
 	sjme_sm(.applyRotateScale, sjme_scritchpen_coreUtil_applyRotateScale),
 	sjme_sm(.applyTranslate, sjme_scritchpen_coreUtil_applyTranslate),
-	sjme_sm(.rawScanBytes, sjme_scritchpen_coreUtil_rawScanBytes),
+	sjme_sm(.pfScanGet, sjme_scritchpen_coreUtil_pfScanGet),
+	sjme_sm(.pfScanPut, sjme_scritchpen_coreUtil_pfScanPut),
+	sjme_sm(.pfScanBits, sjme_scritchpen_coreUtil_pfScanBits),
+	sjme_sm(.pfScanBytes, sjme_scritchpen_coreUtil_pfScanBytes),
+	sjme_sm(.pfScanToPf, sjme_scritchpen_coreUtil_pfScanToPf),
+	sjme_sm(.pfScanToRgb, sjme_scritchpen_coreUtil_pfScanToRgb),
 	sjme_sm(.rgbScanFill, sjme_scritchpen_coreUtil_rgbScanFill),
 	sjme_sm(.rgbScanGet, sjme_scritchpen_coreUtil_rgbScanGet),
 	sjme_sm(.rgbScanPut, sjme_scritchpen_coreUtil_rgbScanPut),
-	sjme_sm(.rgbToRawScan, sjme_scritchpen_coreUtil_rgbToRawScan),
+	sjme_sm(.rgbScanToPf, sjme_scritchpen_coreUtil_rgbScanToPf),
+	sjme_sm(.rgbScanToRaw, sjme_scritchpen_coreUtil_rgbScanToRaw),
 	sjme_sm(.rawScanToRgb, sjme_scritchpen_coreUtil_rawScanToRgb),
 };
 
@@ -190,6 +213,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
 	sjme_attrInNullable const sjme_frontEndBindable* copyFrontEnd)
 {
+	sjme_errorCode error;
 	sjme_scritchui_pencilBase result;
 	
 	if (inPencil == NULL || inFunctions == NULL || defaultFont == NULL ||
@@ -232,51 +256,29 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	result.forceTranslate.x = tx;
 	result.forceTranslate.y = ty;
 	
-	/* Determine bits per pixel. */
+	/* Determine bits and bytes per pixel. */
 	result.bitsPerPixel = -1;
-	switch (pf)
-	{
-		case SJME_GFX_PIXEL_FORMAT_INT_ARGB8888:
-		case SJME_GFX_PIXEL_FORMAT_INT_RGB888:
-		case SJME_GFX_PIXEL_FORMAT_INT_BGRA8888:
-		case SJME_GFX_PIXEL_FORMAT_INT_BGRX8888:
-		case SJME_GFX_PIXEL_FORMAT_INT_BGR888:
-		case SJME_GFX_PIXEL_FORMAT_INT_RGBX8888:
-			result.bitsPerPixel = 32;
-			break;
-		
-		case SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888:
-		case SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888:
-			result.bitsPerPixel = 24;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444:
-		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB565:
-		case SJME_GFX_PIXEL_FORMAT_SHORT_RGB555:
-		case SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555:
-		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
-			result.bitsPerPixel = 16;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
-			result.bitsPerPixel = 8;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
-			result.bitsPerPixel = 4;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
-			result.bitsPerPixel = 2;
-			break;
-			
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
-			result.bitsPerPixel = 1;
-			break;
-	}
+	if (sjme_error_is(error = result.util->pfScanBits(&result, pf,
+		1, -1,
+		&result.bitsPerPixel, NULL)) ||
+		result.bitsPerPixel <= 0)
+		goto fail_determineBpp;
+	result.bytesPerPixel = -1;
+	if (sjme_error_is(error = result.util->pfScanBytes(&result, pf,
+		1, -1,
+		&result.bytesPerPixel, NULL)) ||
+		result.bytesPerPixel <= 0)
+		goto fail_determineBpp;
 	
 	/* Determine raw scan line length. */
-	result.scanLenBytes = (result.scanLenPixels * result.bitsPerPixel) / 8;
+	/* Note that the scanline length needs to be ceil() to a full byte. */
+	result.scanLenBits = (sjme_jint)sjme_util_alignTo(
+		result.scanLenPixels * result.bitsPerPixel, 8);
+	result.scanLenBytes = result.scanLenBits / 8;
+
+	/* Overflowed? */
+	if (result.scanLenBits <= 0 || result.scanLenBytes <= 0)
+		goto fail_determineBpp;
 	
 	/* Copy lock front end source? */
 	if (inLockFuncs != NULL && inLockFrontEndCopy != NULL)
@@ -285,11 +287,8 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	/* Is there an alpha channel? */
 	/* Note that alpha can only be supported if we can read the underlying */
 	/* pixel data. */
-	result.hasAlpha = (pf == SJME_GFX_PIXEL_FORMAT_INT_ARGB8888 ||
-		pf == SJME_GFX_PIXEL_FORMAT_SHORT_ARGB4444 ||
-		pf == SJME_GFX_PIXEL_FORMAT_SHORT_ABGR1555 ||
-		pf == SJME_GFX_PIXEL_FORMAT_INT_BGRA8888 ? SJME_JNI_TRUE :
-		SJME_JNI_FALSE) && (result.impl->rawScanGet != NULL);
+	result.hasAlpha = (sjme_scritchpen_hasAlpha(pf) &&
+		(result.impl->rawScanGet != NULL));
 	
 	/* Copy in front end? */
 	if (copyFrontEnd != NULL)
@@ -299,9 +298,15 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	result.prim.rawScanPutPure = result.impl->rawScanPutPure;
 	
 	/* These are always handled by us unless supported by hardware. */
+	result.prim.drawArc = sjme_scritchpen_corePrim_drawArc;
 	result.prim.drawHoriz = sjme_scritchpen_corePrim_drawHoriz;
 	result.prim.drawLine = sjme_scritchpen_corePrim_drawLine;
 	result.prim.drawPixel = sjme_scritchpen_corePrim_drawPixel;
+	result.prim.drawRect = sjme_scritchpen_corePrim_drawRect;
+	result.prim.fillArc = sjme_scritchpen_corePrim_fillArc;
+	result.prim.fillPolygon = sjme_scritchpen_corePrim_fillPolygon;
+	result.prim.fillRect = sjme_scritchpen_corePrim_fillRect;
+	result.prim.fillTriangle = sjme_scritchpen_corePrim_fillTriangle;
 	
 	/* Raw scan get. */
 	if (result.impl->rawScanGet != NULL)
@@ -314,11 +319,6 @@ sjme_errorCode sjme_scritchpen_initStatic(
 		result.prim.mapColor = result.impl->mapColor;
 	else
 		result.prim.mapColor = sjme_scritchpen_corePrim_mapColor;
-	
-	/* Determine bytes per pixel. */
-	result.util->rawScanBytes(&result,
-		1, 0,
-		&result.bytesPerPixel, NULL);
 	
 	/* Basic filling of raw value. */
 	if (result.bytesPerPixel == 4)
@@ -334,6 +334,9 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	/* Success! Copy back. */
 	memmove(inPencil, &result, sizeof(result));
 	return SJME_ERROR_NONE;
+
+fail_determineBpp:
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
@@ -404,6 +407,24 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	if (outWeakPencil != NULL)
 		*outWeakPencil = resultWeak;
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_core_pseudoGraphics(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
+	sjme_attrInNotNullBuf(numPencils) sjme_scritchui_pencil* pencils,
+	sjme_attrInPositiveNonZero sjme_jint numPencils,
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy)
+{
+	if (inState == NULL || outPencil == NULL || pencils == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (numPencils <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_scritchpen_core_setDefaults(

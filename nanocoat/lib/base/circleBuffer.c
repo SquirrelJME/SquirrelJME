@@ -7,7 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
 
 #include "sjme/circleBuffer.h"
 #include "sjme/debug.h"
@@ -99,7 +98,7 @@ static sjme_errorCode sjme_circleBuffer_splice(
 	externBase = externSl->base;
 	len = circleSl->len;
 
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_CIRCLEBUF)
 	/* Debug. */
 	sjme_message("len: %d", len);
 #endif
@@ -379,7 +378,7 @@ static sjme_errorCode sjme_circleBuffer_operate(
 		if (src->len != dest->len)
 			return SJME_ERROR_ILLEGAL_STATE;
 
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+#if defined(SJME_CONFIG_DEBUG_CIRCLEBUF)
 		/* Debug. */
 		sjme_message("Slice %d [%p %d %d] <- [%p %d %d]",
 			i, dest->externalBuf, dest->base, dest->len,

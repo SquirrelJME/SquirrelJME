@@ -10,6 +10,7 @@
 /**
  * Generic lists.
  * 
+ * @file
  * @since 2023/12/17
  */
 
@@ -89,53 +90,61 @@ extern "C" {
 		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars)) + \
 	(sizeof(SJME_TOKEN_TYPE(type, numPointerStars)) * (size_t)(count)))
 
-/** List of @c sjme_jbyte. */
+/** List of @link sjme_jbyte. */
 SJME_LIST_DECLARE(sjme_jbyte, 0);
 
-/** List of @c sjme_jubyte. */
+/** List of @link sjme_jubyte. */
 SJME_LIST_DECLARE(sjme_jubyte, 0);
 
-/** List of @c sjme_jshort. */
+/** List of @link sjme_jshort. */
 SJME_LIST_DECLARE(sjme_jshort, 0);
 
-/** List of @c sjme_jchar. */
+/** List of @link sjme_jchar. */
 SJME_LIST_DECLARE(sjme_jchar, 0);
 
-/** List of @c sjme_jint. */
+/** List of @link sjme_jint. */
 SJME_LIST_DECLARE(sjme_jint, 0);
 
-/** List of @c sjme_jint* . */
+/** List of @link sjme_jint* . */
 SJME_LIST_DECLARE(sjme_jint, 1);
 
-/** List of @c sjme_juint . */
+/** List of @link sjme_juint @endlink . */
 SJME_LIST_DECLARE(sjme_juint, 0);
 
-/** List of @c sjme_lpstr . */
+/** List of @link sjme_lpstr @endlink . */
 SJME_LIST_DECLARE(sjme_lpstr, 0);
 
-/** List of @c sjme_lpcstr . */
+/** List of @link sjme_lpcstr @endlink . */
 SJME_LIST_DECLARE(sjme_lpcstr, 0);
 
-/** List of @c sjme_pointer . */
+/** List of @link sjme_pointer @endlink . */
 SJME_LIST_DECLARE(sjme_pointer, 0);
 
-/** List of @c sjme_cchar . */
+/** List of @link sjme_cchar @endlink . */
 SJME_LIST_DECLARE(sjme_cchar, 0);
 
-/** List of @c sjme_pointerLen . */
+/** List of @link sjme_pointerLen @endlink . */
 SJME_LIST_DECLARE(sjme_pointerLen, 0);
 
-/** List of @c sjme_intPointer . */
+/** List of @link sjme_intPointer @endlink . */
 SJME_LIST_DECLARE(sjme_intPointer, 0);
 
-/** List of @c sjme_jobject . */
+/** List of @link sjme_jobject @endlink . */
 SJME_LIST_DECLARE(sjme_jobject, 0);
 
-/** List of @c sjme_jstring . */
+/** List of @link sjme_jstring @endlink . */
 SJME_LIST_DECLARE(sjme_jstring, 0);
 
+/**
+ * List reference.
+ *
+ * @since 2025/10/12
+ */
+#define sjme_list(type) \
+	SJME_TOKEN_PASTE_PP(sjme_list_, type)
+
 /** Void list. */
-typedef sjme_list_sjme_jint sjme_list_void;
+typedef sjme_list(sjme_jint) sjme_list_void;
 
 /** Cast to void list. */
 #define SJME_AS_LIST_VOID(x) ((sjme_list_void*)(x))
@@ -144,10 +153,10 @@ typedef sjme_list_sjme_jint sjme_list_void;
 #define SJME_AS_LISTP_VOID(x) ((sjme_list_void**)(x))
 
 /** Cast to pointer list. */
-#define SJME_AS_LIST_POINTER(x) ((sjme_list_sjme_pointer*)(x))
+#define SJME_AS_LIST_POINTER(x) ((sjme_list(sjme_pointer)*)(x))
 
 /** Cast to pointer list. */
-#define SJME_AS_LISTP_POINTER(x) ((sjme_list_sjme_pointer**)(x))
+#define SJME_AS_LISTP_POINTER(x) ((sjme_list(sjme_pointer)**)(x))
 
 /**
  * Allocates a given list generically.
@@ -188,6 +197,25 @@ sjme_errorCode sjme_list_allocR(
 		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars), \
 		sizeof(**(outList)) SJME_DEBUG_ONLY_COMMA \
 		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
+
+/**
+ * Allocates the given list without setting any of the values.
+ *
+ * @param allocPool The pool to allocate within.
+ * @param inLength The list length.
+ * @param outList The resultant list.
+ * @param type The list type.
+ * @param numPointerStars The number of pointer stars.
+ * @return Any error state.
+ * @since 2023/12/17
+ */
+#define sjme_list_allocD(allocPool, inLength, outList, type, numPointerStars) \
+	sjme_list_allocR((allocPool), (inLength), \
+		(sjme_pointer*)(outList), \
+		sizeof(SJME_TOKEN_TYPE(type, numPointerStars)), \
+		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars), \
+		sizeof(**(outList)) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_FILE_LINE_COPY)
 
 /**
  * Allocates a given list generically.
@@ -474,7 +502,7 @@ sjme_errorCode sjme_list_newVAR(
  */
 sjme_errorCode sjme_list_flattenArgCV(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outList,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNull sjme_lpcstr* argV);
 
@@ -489,7 +517,7 @@ sjme_errorCode sjme_list_flattenArgCV(
  */
 sjme_errorCode sjme_list_flattenArgNul(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outList,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outList,
 	sjme_attrInNotNull sjme_lpcstr inNulString);
 
 /**

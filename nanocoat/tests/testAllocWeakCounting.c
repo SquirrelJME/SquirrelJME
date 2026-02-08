@@ -31,7 +31,7 @@ SJME_TEST_DECLARE(testAllocWeakCounting)
 		return sjme_unit_fail(test, "Failed to allocate weak?");
 	
 	/* Reference count should be one. */
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 1,
+	sjme_unit_equalI(test, sjme_atomic_g(sjme_jint, &weak->count), 1,
 		"Reference count not one?");
 	
 	/* Reference again. */
@@ -40,7 +40,7 @@ SJME_TEST_DECLARE(testAllocWeakCounting)
 		return sjme_unit_fail(test, "Could not re-ref weak?");
 	
 	/* Reference count should be two. */
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 2,
+	sjme_unit_equalI(test, sjme_atomic_g(sjme_jint, &weak->count), 2,
 		"Reference count not two?");
 	
 	/* Delete weak reference. */
@@ -52,7 +52,7 @@ SJME_TEST_DECLARE(testAllocWeakCounting)
 		"Second weak pointer changed?");
 		
 	/* Reference count should be one. */
-	sjme_unit_equalI(test, sjme_atomic_sjme_jint_get(&weak->count), 1,
+	sjme_unit_equalI(test, sjme_atomic_g(sjme_jint, &weak->count), 1,
 		"Reference count not one?");
 	
 	/* Delete weak reference again. */
@@ -65,7 +65,7 @@ SJME_TEST_DECLARE(testAllocWeakCounting)
 	
 	/* This should be marked invalid. */
 	sjme_unit_notEqualI(test,
-		sjme_atomic_sjme_jint_get(&weak->valid), SJME_ALLOC_WEAK_VALID,
+		sjme_atomic_g(sjme_jint, &weak->valid), SJME_ALLOC_WEAK_VALID,
 		"Weak reference not marked invalid?");
 	
 	/* Success! */

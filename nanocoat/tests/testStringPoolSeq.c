@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/nvm/stringPool.h"
 #include "test.h"
 #include "proto.h"
@@ -65,7 +63,8 @@ SJME_TEST_DECLARE(testStringPoolSeq)
 		"String not equal?");
 	
 	/* Should be first. */
-	sjme_unit_equalP(test, string, stringPool->strings->elements[0],
+	sjme_unit_equalP(test,
+		string, sjme_atomic_pg(&stringPool->strings->elements[0]),
 		"Not placed in first pool spot?");
 	
 	/* Close string. */

@@ -316,6 +316,20 @@ public enum VMType
 				}
 			}
 			
+			// Copy in forwarded arguments JVM arguments
+			for (Map.Entry<Object, Object> e :
+				System.getProperties().entrySet())
+			{
+				// These need to be translated
+				String k = Objects.toString(e.getKey(), "");
+				String v = Objects.toString(e.getValue(), "");
+				
+				// Strip if this should be forwarded
+				if (k.startsWith(VMType._JVM_KEY_PREFIX))
+					sysProps.put(k.substring(VMType._JVM_KEY_PREFIX.length()),
+						v);
+			}
+			
 			// Add in the arguments
 			if (!jvmArgs.isEmpty())
 				__execSpec.setJvmArgs(jvmArgs);
@@ -674,7 +688,6 @@ public enum VMType
 	
 	/**
 	 * {@inheritDoc}
-	 *
 	 * @since 2023/05/28
 	 */
 	@Override

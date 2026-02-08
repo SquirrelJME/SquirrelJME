@@ -59,8 +59,7 @@ if(SQUIRRELJME_HAS_JAVA)
 				ADDITIONAL_CLEAN_FILES "${romPath}")
 
 				# These get uploaded into Fossil
-				list(APPEND SQUIRRELJME_UPLOAD_TARGETS
-					${targetName})
+				squirreljme_fossil_upload_register(${targetName})
 		endforeach()
 	endforeach()
 endif()

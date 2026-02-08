@@ -10,6 +10,7 @@
 /**
  * Compares values.
  * 
+ * @file
  * @since 2024/01/03
  */
 
@@ -76,29 +77,29 @@ typedef sjme_jint (*sjme_comparator)(sjme_cpointer a, sjme_cpointer b,
 	sjme_jint SJME_COMPARATOR(type, numPointerStars)( \
 		sjme_cpointer a, sjme_cpointer b, int elementSize)
 
-/** Generic @c sjme_jbyte comparator. */
+/** Generic @link sjme_jbyte @endlink comparator. */
 SJME_COMPARATOR_GENERIC_DECLARE(sjme_jbyte, 0);
 
-/** Generic @c sjme_jubyte comparator. */
+/** Generic @link sjme_jubyte @endlink comparator. */
 SJME_COMPARATOR_GENERIC_DECLARE(sjme_jubyte, 0);
 
-/** Generic @c sjme_jshort comparator. */
+/** Generic @link sjme_jshort @endlink comparator. */
 SJME_COMPARATOR_GENERIC_DECLARE(sjme_jshort, 0);
 
-/** Generic @c sjme_jchar comparator. */
+/** Generic @link sjme_jchar @endlink comparator. */
 SJME_COMPARATOR_GENERIC_DECLARE(sjme_jchar, 0);
 
-/** Generic @c sjme_jint comparator. */
+/** Generic @link sjme_jint @endlink comparator. */
 SJME_COMPARATOR_GENERIC_DECLARE(sjme_jint, 0);
 
-/** Generic @c sjme_juint comparator. */
+/** Generic @link sjme_juint @endlink comparator. */
 SJME_COMPARATOR_GENERIC_DECLARE(sjme_juint, 0);
 
-/** Generic @c sjme_cchar comparator. */
+/** Generic @link sjme_cchar @endlink comparator. */
 SJME_COMPARATOR_GENERIC_DECLARE(sjme_cchar, 0);
 
 /**
- * Compares two @c sjme_lpcstr .
+ * Compares two @link sjme_lpcstr @endlink .
  *
  * @param a The first item.
  * @param b The second item.
@@ -110,7 +111,7 @@ sjme_jint SJME_COMPARATOR(sjme_lpcstr, 0)(sjme_cpointer a, sjme_cpointer b,
 	int elementSize);
 
 /**
- * Compares two @c sjme_lpcstr without regards to case.
+ * Compares two @link sjme_lpcstr @endlink without regards to case.
  *
  * @param a The first item.
  * @param b The second item.

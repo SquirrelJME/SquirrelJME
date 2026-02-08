@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/util.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
@@ -64,11 +62,14 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
 	
+	/* Allocation checks for this are after this point. */
+	bitmap = NULL;
+	
 	/* And the pixel height, since this is a bitmap font. */
 	ch = 0;
 	if (sjme_error_is(error = font->api->metricPixelSize(
 		font, &ch)))
-		goto fail_any;
+		goto fail_anyInLock;
 	
 	/** Do not bother drawing nothing. */
 	if (cw == 0 || ch == 0)
@@ -79,7 +80,7 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 		if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(
 			anchor,
 			x, y, cw, ch, 0, &x, &y)))
-			goto fail_any;
+			goto fail_anyInLock;
 		
 	/* Determine scanline length for each bitmap row. */
 	scanLen = sjme_scritchui_pencilFontScanLen(cw);
@@ -90,7 +91,7 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	if (bitmap == NULL)
 	{
 		error = sjme_error_outOfMemory(NULL, area);
-		goto fail_any;
+		goto fail_anyInLock;
 	}
 	
 	/* Initialize. */
@@ -104,7 +105,7 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	if (sjme_error_is(error = font->api->renderBitmap(font,
 		c, bitmap, 0, scanLen,
 		ch, &offX, &offY)))
-		goto fail_any;
+		goto fail_anyInLock;
 	
 	/* Draw bit-lines for the glyphs. */
 	for (sy = 0, dy = y + offY, v = 0; sy < ch; sy++, dy++)
@@ -115,23 +116,31 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 			
 			/* Render the bitline. */
 			if (sjme_error_is(error = bitline(g, dx, dy)))
-				goto fail_any;
+				goto fail_anyInLock;
 		}
 		
 	/* Release lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
+		goto fail_unlock;
 	
 	/* Success! */
 	if (outCw != NULL)
 		*outCw = cw;
+
+	/* Cleanup. */
+	if (bitmap != NULL)
+		sjme_alloca_free(bitmap);
 		
 	return SJME_ERROR_NONE;
 
-fail_any:
+fail_anyInLock:
 	/* Need to release the lock? */
 	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
+	
+fail_unlock:
+	if (bitmap != NULL)
+		sjme_alloca_free(bitmap);
 	
 	return sjme_error_default(error);
 }

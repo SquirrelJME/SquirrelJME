@@ -10,15 +10,15 @@
 /**
  * Standard C types.
  * 
+ * @file
  * @since 2024/08/09
  */
 
 #ifndef SJME_C_STDTYPES_H
 #define SJME_C_STDTYPES_H
 
-#include <stdlib.h>
-
 #include "sjme/config.h"
+#include "sjme/stdGone.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -123,13 +123,13 @@ typedef enum sjme_jboolean
 	SJME_JNI_TRUE = 1
 } sjme_jboolean;
 
-/** Basic @c sjme_jboolean type identifier. */
+/** Basic @link sjme_jboolean @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jboolean SJME_BASIC_TYPE_ID_BOOLEAN
 
-/** Java @c sjme_jboolean type identifier. */
+/** Java @link sjme_jboolean @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jboolean SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE
 
-/** Is a pointer for @c sjme_jboolean ? */
+/** Is a pointer for @link sjme_jboolean @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jboolean 0
 
 /**
@@ -137,19 +137,19 @@ typedef enum sjme_jboolean
  * 
  * @since 2023/07/25
  */
-typedef int8_t sjme_jbyte;
+typedef sjme_jbyteNative sjme_jbyte;
 
-/** Basic @c sjme_jbyte type identifier. */
+/** Basic @link sjme_jbyte @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jbyte SJME_BASIC_TYPE_ID_BYTE
 
-/** Java @c sjme_jbyte type identifier. */
+/** Java @link sjme_jbyte @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jbyte SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE
 
-/** Is a pointer for @c sjme_jbyte ? */
+/** Is a pointer for @link sjme_jbyte @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jbyte 0
 
 /**
- * Promoted @c sjme_jbyte .
+ * Promoted @link sjme_jbyte @endlink .
  * 
  * @since 2024/06/20
  */
@@ -160,19 +160,19 @@ typedef int sjme_jbyte_promoted;
  * 
  * @since 2023/08/09
  */
-typedef uint8_t sjme_jubyte;
+typedef sjme_jubyteNative sjme_jubyte;
 
-/** Basic @c sjme_jubyte type identifier. */
+/** Basic @link sjme_jubyte @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jubyte SJME_BASIC_TYPE_ID_BYTE
 
-/** Java @c sjme_jubyte type identifier. */
+/** Java @link sjme_jubyte @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jubyte SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE
 
-/** Is a pointer for @c sjme_jubyte ? */
+/** Is a pointer for @link sjme_jubyte @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jubyte 0
 
 /**
- * Promoted @c sjme_jubyte .
+ * Promoted @link sjme_jubyte @endlink .
  * 
  * @since 2024/06/20
  */
@@ -183,19 +183,19 @@ typedef int sjme_jubyte_promoted;
  * 
  * @since 2023/07/25
  */
-typedef int16_t sjme_jshort;
+typedef sjme_jshortNative sjme_jshort;
 
-/** Basic @c sjme_jshort type identifier. */
+/** Basic @link sjme_jshort @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jshort SJME_BASIC_TYPE_ID_SHORT
 
-/** Java @c sjme_jshort type identifier. */
+/** Java @link sjme_jshort @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jshort SJME_JAVA_TYPE_ID_INTEGER
 
-/** Is a pointer for @c sjme_jshort ? */
+/** Is a pointer for @link sjme_jshort @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jshort 0
 
 /**
- * Promoted @c sjme_jshort .
+ * Promoted @link sjme_jshort @endlink .
  * 
  * @since 2024/06/20
  */
@@ -206,19 +206,19 @@ typedef int sjme_jshort_promoted;
  * 
  * @since 2025/07/04
  */
-typedef uint16_t sjme_jushort;
+typedef sjme_jushortNative sjme_jushort;
 
-/** Basic @c sjme_jushort type identifier. */
+/** Basic @link sjme_jushort @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jushort SJME_BASIC_TYPE_ID_CHARACTER
 
-/** Java @c sjme_jushort type identifier. */
+/** Java @link sjme_jushort @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jushort SJME_JAVA_TYPE_ID_INTEGER
 
-/** Is a pointer for @c sjme_jushort ? */
+/** Is a pointer for @link sjme_jushort @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jushort 0
 
 /**
- * Promoted @c sjme_jushort .
+ * Promoted @link sjme_jushort @endlink .
  * 
  * @since 2025/07/04
  */
@@ -229,19 +229,19 @@ typedef int sjme_jushort_promoted;
  * 
  * @since 2023/07/25
  */
-typedef uint16_t sjme_jchar;
+typedef sjme_jushortNative sjme_jchar;
 
-/** Basic @c sjme_jchar type identifier. */
+/** Basic @link sjme_jchar @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jchar SJME_BASIC_TYPE_ID_CHARACTER
 
-/** Java @c sjme_jchar type identifier. */
+/** Java @link sjme_jchar @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jchar SJME_JAVA_TYPE_ID_INTEGER
 
-/** Is a pointer for @c sjme_jchar ? */
+/** Is a pointer for @link sjme_jchar @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jchar 0
 
 /**
- * Promoted @c sjme_jchar .
+ * Promoted @link sjme_jchar @endlink .
  * 
  * @since 2024/06/20
  */
@@ -252,15 +252,15 @@ typedef int sjme_jchar_promoted;
  * 
  * @since 2023/07/25
  */
-typedef int32_t sjme_jint;
+typedef sjme_jintNative sjme_jint;
 
-/** Basic @c sjme_jint type identifier. */
+/** Basic @link sjme_jint @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jint SJME_BASIC_TYPE_ID_INTEGER
 
-/** Java @c sjme_jint type identifier. */
+/** Java @link sjme_jint @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jint SJME_JAVA_TYPE_ID_INTEGER
 
-/** Is a pointer for @c sjme_jint ? */
+/** Is a pointer for @link sjme_jint @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jint 0
 
 /**
@@ -268,15 +268,15 @@ typedef int32_t sjme_jint;
  * 
  * @since 2023/11/20
  */
-typedef uint32_t sjme_juint;
+typedef sjme_juintNative sjme_juint;
 
-/** Basic @c sjme_juint type identifier. */
+/** Basic @link sjme_juint @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_juint SJME_BASIC_TYPE_ID_INTEGER
 
-/** Java @c sjme_juint type identifier. */
+/** Java @link sjme_juint @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_juint SJME_JAVA_TYPE_ID_INTEGER
 
-/** Is a pointer for @c sjme_juint ? */
+/** Is a pointer for @link sjme_juint @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_juint 0
 
 /**
@@ -294,20 +294,20 @@ typedef sjme_jint sjme_fixed;
 typedef char sjme_cchar;
 
 #if defined(CHAR_BIT) && (CHAR_BIT == 64)
-	/** Basic @c sjme_cchar type identifier. */
+	/** Basic @link sjme_cchar @endlink type identifier. */
 	#define SJME_TYPEOF_BASIC_sjme_cchar SJME_BASIC_TYPE_ID_LONG
 #elif defined(CHAR_BIT) && (CHAR_BIT == 32)
-	/** Basic @c sjme_cchar type identifier. */
+	/** Basic @link sjme_cchar @endlink type identifier. */
 	#define SJME_TYPEOF_BASIC_sjme_cchar SJME_BASIC_TYPE_ID_INTEGER
 #elif defined(CHAR_BIT) && (CHAR_BIT == 16)
-	/** Basic @c sjme_cchar type identifier. */
+	/** Basic @link sjme_cchar @endlink type identifier. */
 	#define SJME_TYPEOF_BASIC_sjme_cchar SJME_BASIC_TYPE_ID_SHORT
 #else
-	/** Basic @c sjme_cchar type identifier. */
+	/** Basic @link sjme_cchar @endlink type identifier. */
 	#define SJME_TYPEOF_BASIC_sjme_cchar SJME_BASIC_TYPE_ID_BYTE
 #endif
 
-/** Is a pointer for @c sjme_cchar ? */
+/** Is a pointer for @link sjme_cchar @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_cchar 0
 
 /**
@@ -317,10 +317,10 @@ typedef char sjme_cchar;
  */
 typedef sjme_cchar sjme_attrHugeP* sjme_lpstr;
 
-/** Basic @c sjme_lpstr type identifier. */
+/** Basic @link sjme_lpstr @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_lpstr SJME_BASIC_TYPE_ID_OBJECT
 
-/** Is a pointer for @c sjme_lpstr ? */
+/** Is a pointer for @link sjme_lpstr @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_lpstr 1
 
 /**
@@ -330,10 +330,10 @@ typedef sjme_cchar sjme_attrHugeP* sjme_lpstr;
  */
 typedef const sjme_cchar sjme_attrHugeP* sjme_lpcstr;
 
-/** Basic @c sjme_lpcstr type identifier. */
+/** Basic @link sjme_lpcstr @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_lpcstr SJME_BASIC_TYPE_ID_OBJECT
 
-/** Is a pointer for @c sjme_lpcstr ? */
+/** Is a pointer for @link sjme_lpcstr @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_lpcstr 1
 
 /**
@@ -343,10 +343,10 @@ typedef const sjme_cchar sjme_attrHugeP* sjme_lpcstr;
  */
 typedef sjme_jchar sjme_attrHugeP* sjme_lpwstr;
 
-/** Basic @c sjme_lpwstr type identifier. */
+/** Basic @link sjme_lpwstr @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_lpwstr SJME_BASIC_TYPE_ID_OBJECT
 
-/** Is a pointer for @c sjme_lpwstr ? */
+/** Is a pointer for @link sjme_lpwstr @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_lpwstr 1
 
 /**
@@ -356,10 +356,10 @@ typedef sjme_jchar sjme_attrHugeP* sjme_lpwstr;
  */
 typedef const sjme_jchar sjme_attrHugeP* sjme_lpcwstr;
 
-/** Basic @c sjme_lpcwstr type identifier. */
+/** Basic @link sjme_lpcwstr @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_lpcwstr SJME_BASIC_TYPE_ID_OBJECT
 
-/** Is a pointer for @c sjme_lpcwstr ? */
+/** Is a pointer for @link sjme_lpcwstr @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_lpcwstr 1
 
 /**
@@ -369,10 +369,10 @@ typedef const sjme_jchar sjme_attrHugeP* sjme_lpcwstr;
  */
 typedef void sjme_attrHugeP* sjme_pointer;
 
-/** Basic @c sjme_pointer type identifier. */
+/** Basic @link sjme_pointer @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_pointer SJME_BASIC_TYPE_ID_OBJECT
 
-/** Is a pointer for @c sjme_pointer ? */
+/** Is a pointer for @link sjme_pointer @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_pointer 1
 
 /**
@@ -382,10 +382,10 @@ typedef void sjme_attrHugeP* sjme_pointer;
  */
 typedef volatile void sjme_attrHugeP* sjme_vpointer;
 
-/** Basic @c sjme_pointer type identifier. */
+/** Basic @link sjme_pointer @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_vpointer SJME_BASIC_TYPE_ID_OBJECT
 
-/** Is a pointer for @c sjme_pointer ? */
+/** Is a pointer for @link sjme_pointer @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_vpointer 1
 
 /**
@@ -395,10 +395,10 @@ typedef volatile void sjme_attrHugeP* sjme_vpointer;
  */
 typedef const void sjme_attrHugeP* sjme_cpointer;
 
-/** Basic @c sjme_cpointer type identifier. */
+/** Basic @link sjme_cpointer @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_cpointer SJME_BASIC_TYPE_ID_OBJECT
 
-/** Is a pointer for @c sjme_cpointer ? */
+/** Is a pointer for @link sjme_cpointer @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_cpointer 1
 
 /**
@@ -414,58 +414,63 @@ typedef sjme_pointer sjme_buffer;
  * @since 2024/08/13
  */
 typedef sjme_cpointer sjme_cbuffer;
+	
+#pragma region(sjme_jlongNative)
+
+/** Basic @link sjme_jlongNative @endlink type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jlongNative SJME_BASIC_TYPE_ID_LONG
+
+/** Java @link sjme_jlongNative @endlink type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jlongNative SJME_JAVA_TYPE_ID_LONG
+
+/** Is a pointer for @link sjme_jlongNative @endlink ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jlongNative 0
+
+/** Basic @link sjme_julongNative @endlink type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_julongNative SJME_BASIC_TYPE_ID_LONG
+
+/** Java @link sjme_julongNative @endlink type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_julongNative SJME_JAVA_TYPE_ID_LONG
+
+/** Is a pointer for @link sjme_julongNative @endlink ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_julongNative 0
+	
+#pragma endregion(sjme_jlongNative)
+#pragma region(sjme_intPointer)
 
 /**
  * Integer based pointer.
  * 
- * @since 2024/04/06
+ * @since 2025/12/23
  */
-typedef intptr_t sjme_intPointer;
+typedef sjme_intPointerNative sjme_intPointer;
 
 /** Calculates a pointer offset. */
 #define SJME_POINTER_OFFSET(base, off) \
 	(sjme_pointer)(((sjme_intPointer)(base)) + ((sjme_intPointer)(off)))
 
-#if defined(SJME_CONFIG_HAS_POINTER64)
-	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_jpointer
-#else
+/** Determines if a pointer overflows. */
+#define SJME_POINTER_OVERFLOW(base, off) \
+	((sjme_intPointer)SJME_POINTER_OFFSET((base), (off)) < \
+		(sjme_intPointer)(base))
+
+#if SJME_CONFIG_HAS_POINTER == 64
+	#define SJME_TYPEOF_BASIC_sjme_intPointer \
+		SJME_TYPEOF_BASIC_sjme_jlongNative
+#elif SJME_CONFIG_HAS_POINTER == 32
 	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_juint
+#elif SJME_CONFIG_HAS_POINTER == 16
+	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_jushort
+#elif SJME_CONFIG_HAS_POINTER == 8
+	#define SJME_TYPEOF_BASIC_sjme_intPointer SJME_TYPEOF_BASIC_sjme_jubyte
+#else
+	#error Unsupported pointer size
 #endif
 
 #define SJME_TYPEOF_IS_POINTER_sjme_intPointer 0
-
-/**
- * Native long value.
- *
- * @since 2025/07/13
- */
-typedef int64_t sjme_jlongNative;
-
-/** Basic @c sjme_jlongNative type identifier. */
-#define SJME_TYPEOF_BASIC_sjme_jlongNative SJME_BASIC_TYPE_ID_LONG
-
-/** Java @c sjme_jlongNative type identifier. */
-#define SJME_TYPEOF_JAVA_sjme_jlongNative SJME_JAVA_TYPE_ID_LONG
-
-/** Is a pointer for @c sjme_jlongNative ? */
-#define SJME_TYPEOF_IS_POINTER_sjme_jlongNative 0
-
-/**
- * Native unsigned long value.
- *
- * @since 2025/07/13
- */
-typedef uint64_t sjme_julongNative;
-
-/** Basic @c sjme_julongNative type identifier. */
-#define SJME_TYPEOF_BASIC_sjme_julongNative SJME_BASIC_TYPE_ID_LONG
-
-/** Java @c sjme_julongNative type identifier. */
-#define SJME_TYPEOF_JAVA_sjme_julongNative SJME_JAVA_TYPE_ID_LONG
-
-/** Is a pointer for @c sjme_julongNative ? */
-#define SJME_TYPEOF_IS_POINTER_sjme_julongNative 0
-
+	
+#pragma endregion(sjme_intPointer)
+	
 /**
  * Max size integer.
  *
@@ -502,13 +507,13 @@ typedef union sjme_jlong
 	sjme_jlongNative full;
 } sjme_jlong;
 
-/** Basic @c sjme_jlong type identifier. */
+/** Basic @link sjme_jlong @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jlong SJME_BASIC_TYPE_ID_LONG
 
-/** Java @c sjme_jlong type identifier. */
+/** Java @link sjme_jlong @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jlong SJME_JAVA_TYPE_ID_LONG
 
-/** Is a pointer for @c sjme_jlong ? */
+/** Is a pointer for @link sjme_jlong @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jlong 0
 
 /**
@@ -523,17 +528,17 @@ typedef union sjme_jfloat
 
 #if defined(SJME_CONFIG_HAS_FLOAT_HARD)
 	/** The native float value. */
-	float native;
+	sjme_jfloatNative native;
 #endif
 } sjme_jfloat;
 
-/** Basic @c sjme_jfloat type identifier. */
+/** Basic @link sjme_jfloat @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jfloat SJME_BASIC_TYPE_ID_FLOAT
 
-/** Java @c sjme_jfloat type identifier. */
+/** Java @link sjme_jfloat @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jfloat SJME_JAVA_TYPE_ID_FLOAT
 
-/** Is a pointer for @c sjme_jfloat ? */
+/** Is a pointer for @link sjme_jfloat @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jfloat 0
 
 /**
@@ -565,17 +570,17 @@ typedef union sjme_jdouble
 
 #if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
 	/** Native hardware double value. */
-	double native;
+	sjme_jdoubleNative native;
 #endif
 } sjme_jdouble;
 
-/** Basic @c sjme_jdouble type identifier. */
+/** Basic @link sjme_jdouble @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jdouble SJME_BASIC_TYPE_ID_DOUBLE
 
-/** Java @c sjme_jdouble type identifier. */
+/** Java @link sjme_jdouble @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jdouble SJME_JAVA_TYPE_ID_DOUBLE
 
-/** Is a pointer for @c sjme_jdouble ? */
+/** Is a pointer for @link sjme_jdouble @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jdouble 0
 
 /**
@@ -666,13 +671,13 @@ typedef struct sjme_jobjectBase sjme_jobjectBase;
  */
 typedef sjme_jobjectBase* sjme_jobject;
 
-/** Basic @c sjme_jobject type identifier. */
+/** Basic @link sjme_jobject @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jobject SJME_BASIC_TYPE_ID_OBJECT
 
-/** Java @c sjme_jobject type identifier. */
+/** Java @link sjme_jobject @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jobject SJME_BASIC_TYPE_ID_OBJECT
 
-/** Is a pointer for @c sjme_jobject ? */
+/** Is a pointer for @link sjme_jobject @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jobject 1
 
 /**
@@ -689,13 +694,13 @@ typedef struct sjme_jclassBase sjme_jclassBase;
  */
 typedef sjme_jclassBase* sjme_jclass;
 
-/** Basic @c sjme_jclass type identifier. */
+/** Basic @link sjme_jclass @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jclass SJME_TYPEOF_BASIC_sjme_jobject
 
-/** Java @c sjme_jclass type identifier. */
+/** Java @link sjme_jclass @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jclass SJME_TYPEOF_JAVA_sjme_jobject
 
-/** Is a pointer for @c sjme_jclass ? */
+/** Is a pointer for @link sjme_jclass @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jclass SJME_TYPEOF_IS_POINTER_sjme_jobject
 
 /**
@@ -712,13 +717,13 @@ typedef struct sjme_jstringBase sjme_jstringBase;
  */
 typedef sjme_jstringBase* sjme_jstring;
 
-/** Basic @c sjme_jstring type identifier. */
+/** Basic @link sjme_jstring @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jstring SJME_TYPEOF_BASIC_sjme_jobject
 
-/** Java @c sjme_jstring type identifier. */
+/** Java @link sjme_jstring @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jstring SJME_TYPEOF_JAVA_sjme_jobject
 
-/** Is a pointer for @c sjme_jstring ? */
+/** Is a pointer for @link sjme_jstring @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jstring SJME_TYPEOF_IS_POINTER_sjme_jobject
 
 /**
@@ -729,19 +734,19 @@ typedef sjme_jstringBase* sjme_jstring;
 typedef struct sjme_jarrayBase sjme_jarrayBase;
 
 /**
- * Array type.
+ * Array type, a @link SJME_NVM_STRUCT_ARRAY_INSTANCE @endlink .
  * 
  * @since 2025/03/16
  */
 typedef sjme_jarrayBase* sjme_jarray;
 
-/** Basic @c sjme_jarray type identifier. */
+/** Basic @link sjme_jarray @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jarray SJME_TYPEOF_BASIC_sjme_jobject
 
-/** Java @c sjme_jarray type identifier. */
+/** Java @link sjme_jarray @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jarray SJME_TYPEOF_JAVA_sjme_jobject
 
-/** Is a pointer for @c sjme_jarray ? */
+/** Is a pointer for @link sjme_jarray @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jarray SJME_TYPEOF_IS_POINTER_sjme_jobject
 
 /**
@@ -758,13 +763,13 @@ typedef struct sjme_jweakBase sjme_jweakBase;
  */
 typedef sjme_jweakBase* sjme_jweak;
 	
-/** Basic @c sjme_jweak type identifier. */
+/** Basic @link sjme_jweak @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jweak SJME_TYPEOF_BASIC_sjme_jobject
 
-/** Java @c sjme_jweak type identifier. */
+/** Java @link sjme_jweak @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jweak SJME_TYPEOF_JAVA_sjme_jobject
 
-/** Is a pointer for @c sjme_jweak ? */
+/** Is a pointer for @link sjme_jweak @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jweak SJME_TYPEOF_IS_POINTER_sjme_jobject
 
 /**
@@ -781,13 +786,13 @@ typedef struct sjme_jthrowableBase sjme_jthrowableBase;
  */
 typedef sjme_jthrowableBase* sjme_jthrowable;
 
-/** Basic @c sjme_jthrowable type identifier. */
+/** Basic @link sjme_jthrowable @endlink type identifier. */
 #define SJME_TYPEOF_BASIC_sjme_jthrowable SJME_BASIC_TYPE_ID_OBJECT
 
-/** Java @c sjme_jthrowable type identifier. */
+/** Java @link sjme_jthrowable @endlink type identifier. */
 #define SJME_TYPEOF_JAVA_sjme_jthrowable SJME_BASIC_TYPE_ID_OBJECT
 
-/** Is a pointer for @c sjme_jthrowable ? */
+/** Is a pointer for @link sjme_jthrowable @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jthrowable 1
 	
 /**
@@ -804,11 +809,11 @@ typedef struct sjme_charSeqStatic sjme_charSeqStatic;
  */
 typedef sjme_charSeqStatic* sjme_charSeq;
 
-/** Is a pointer for @c sjme_charSeq ? */
+/** Is a pointer for @link sjme_charSeq @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_charSeq SJME_TYPEOF_IS_POINTER_sjme_jobject
 
 /**
- * Generic value union, primitives only without @c sjme_jobject .
+ * Generic value union, primitives only without @link sjme_jobject @endlink .
  *
  * @since 2025/07/18
  */
@@ -875,7 +880,7 @@ typedef union sjme_jvalue
 } sjme_jvalue;
 
 /**
- * Typed @c sjme_value .
+ * Typed @link sjme_value @endlink .
  *
  * @since 2025/01/04
  */

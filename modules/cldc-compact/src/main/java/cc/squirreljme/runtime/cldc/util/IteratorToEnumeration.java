@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
  * This adapts an iterator to an enumeration.
  *
  * @param <E> The element type.
+ * @see EnumerationToIterator
  * @since 2019/05/05
  */
 @SquirrelJMEVendorApi

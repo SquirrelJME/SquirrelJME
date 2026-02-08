@@ -39,7 +39,6 @@ import java.util.ArrayList;
 /**
  * Event list
  */
-@SquirrelJMEVendorApi
 class MLDTrack
 	extends ArrayList<MLDEvent>
 	implements BasicTrack
@@ -47,12 +46,10 @@ class MLDTrack
 	/**
 	 * Initial event offset on reset
 	 */
-	@SquirrelJMEVendorApi
 	int cue;
 	
 	/**
 	 * Channel index base
 	 */
-	@SquirrelJMEVendorApi
 	int index;
 }

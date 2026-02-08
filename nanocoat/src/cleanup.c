@@ -523,16 +523,10 @@ sjme_errorCode sjme_nvm_allocR(
 	
 	/* Allocate result. */
 	result = NULL;
-#if defined(SJME_CONFIG_DEBUG)
 	if (sjme_error_is(error = sjme_closeable_allocR(allocPool,
-		allocSize, sjme_nvm_closeHandler, SJME_JNI_TRUE,
-		SJME_AS_CLOSEABLEP(&result), file, line, func)) ||
+		allocSize, sjme_nvm_closeHandler, SJME_AS_CLOSEABLEP(&result)
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) ||
 		result == NULL)
-#else
-	if (sjme_error_is(error = sjme_closeable_alloc(allocPool,
-		allocSize, sjme_nvm_closeHandler, SJME_JNI_TRUE,
-		SJME_AS_CLOSEABLEP(&result))) || result == NULL)
-#endif
 		return sjme_error_default(error);
 	
 	/* Set fields. */

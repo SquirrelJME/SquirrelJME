@@ -10,6 +10,7 @@
 /**
  * Graphics constants.
  * 
+ * @file
  * @since 2024/04/06
  */
 
@@ -85,8 +86,56 @@ typedef enum sjme_gfx_pixelFormat
 	/** 24-bit BGR consisting of three bytes. */
 	SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888 = 16,
 	
+	/** 65536 Colors (@c uint16_t ), alpha enabled. */
+	SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A = 17,
+	
+	/** 256 Colors (@c uint8_t ), alpha enabled. */
+	SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A = 18,
+	
+	/** Packed 16 colors (4-bit), alpha enabled. (packed @c uint8_t ) */
+	SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A = 19,
+	
+	/** Packed 4 Colors (2-bit), alpha enabled. (packed @c uint8_t ) */
+	SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A = 20,
+	
+	/** Packed 2 colors (1-bit), alpha enabled. (packed @c uint8_t ) */
+	SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A = 21,
+	
+	/** 16-bit RGB444. (@c uint16_t ). */
+	SJME_GFX_PIXEL_FORMAT_SHORT_RGB444 = 22,
+
+	/** 16-bit ARGB1555. (@c uint16_t ) [Nokia]. */
+	SJME_GFX_PIXEL_FORMAT_SHORT_ARGB1555 = 23,
+
+	/** INDEXED1 but with vertical pixel disposition. (packed @c uint8_t ) */
+	SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1_VERTICAL = 24,
+	
+	/** 8-bit RGB332 @c uint8_t . */
+	SJME_GFX_PIXEL_FORMAT_BYTE_RGB332 = 25,
+	
+	/** Only 8-bit alpha (@c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_BYTE_A8 = 26,
+	
+	/** Only 4-bit alpha (packed @c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_PACKED_A4 = 27,
+	
+	/** Only 2-bit alpha (packed @c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_PACKED_A2 = 28,
+	
+	/** Only 1-bit alpha (packed @c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_PACKED_A1 = 29,
+	
+	/** Only 8-bit red (@c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_BYTE_R8 = 30,
+	
+	/** Only 8-bit green (@c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_BYTE_G8 = 31,
+	
+	/** Only 8-bit blue (@c uint8_t ). */
+	SJME_GFX_PIXEL_FORMAT_BYTE_B8 = 32,
+
 	/** The number of pixel formats. */
-	SJME_NUM_GFX_PIXEL_FORMATS = 16,
+	SJME_NUM_GFX_PIXEL_FORMATS = 33,
 } sjme_gfx_pixelFormat;
 
 /*--------------------------------------------------------------------------*/

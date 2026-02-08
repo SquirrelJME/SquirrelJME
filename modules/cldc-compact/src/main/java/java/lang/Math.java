@@ -14,12 +14,19 @@ import cc.squirreljme.jvm.mle.constants.MathAccelFlag;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import cc.squirreljme.runtime.cldc.util.FDMLMath;
 import java.util.Random;
 
 /**
  * This class contains mathematical functions.
  *
+ * Java ME CLDC does not have every math function that Java SE has, thus
+ * SquirrelJME has implementations of these functions in {@link ExtraMath}. If
+ * you plan to write a portable application meant to run on any runtime, you
+ * will have to implement the function you need yourself.
+ * 
+ * @see ExtraMath
  * @since 2018/12/08
  */
 @Api

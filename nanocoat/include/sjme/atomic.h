@@ -10,6 +10,7 @@
 /**
  * Atomic read/write support.
  * 
+ * @file
  * @since 2024/01/08
  */
 
@@ -17,11 +18,6 @@
 #define SJME_C_ATOMIC_H
 
 #include "sjme/config.h"
-
-#if defined(SJME_MEMIO_ATOMIC_C11)
-	#include <stdatomic.h>
-#endif
-
 #include "sjme/stdTypes.h"
 #include "sjme/tokenUtils.h"
 
@@ -182,6 +178,12 @@ extern "C" {
 		SJME_TOKEN_TYPE(type, numPointerStars) \
 			sjme_alignPointer volatile value; \
 	} SJME_ATOMIC_NAME(type, numPointerStars); \
+	typedef SJME_ATOMIC_NAME(type, numPointerStars) \
+		SJME_TOKEN_PASTE_PP(SJME_ATOMIC_NAME(type, numPointerStars), \
+		_phantom); \
+	typedef SJME_ATOMIC_NAME(type, numPointerStars) \
+		SJME_TOKEN_PASTE_PP(SJME_ATOMIC_NAME(type, numPointerStars), \
+		_nonCyclic); \
 	SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars)
 
 #else
@@ -190,32 +192,237 @@ extern "C" {
 
 #endif
 
-/** Atomic @c sjme_jint. */
+/** Atomic @link sjme_jint. */
 SJME_ATOMIC_DECLARE(sjme_jint, 0);
 
-/** Atomic @c sjme_juint. */
+/** Atomic @link sjme_juint. */
 SJME_ATOMIC_DECLARE(sjme_juint, 0);
 
-/** Atomic @c sjme_lpstr. */
+/** Atomic @link sjme_lpstr. */
 SJME_ATOMIC_DECLARE(sjme_lpstr, 0);
 
-/** Atomic @c sjme_lpcstr. */
+/** Atomic @link sjme_lpcstr. */
 SJME_ATOMIC_DECLARE(sjme_lpcstr, 0);
 
-/** Atomic @c sjme_pointer. */
+/** Atomic @link sjme_pointer. */
 SJME_ATOMIC_DECLARE(sjme_pointer, 0);
 
 /** Atomic pointer declaration. */
 SJME_ATOMIC_DECLARE(sjme_intPointer , 0);
 
-/** Atomic @c sjme_jobject. */
+/** Atomic @link sjme_jobject. */
 SJME_ATOMIC_DECLARE(sjme_jobject, 0);
 
-/** Atomic @c sjme_jclass. */
+/** Atomic @link sjme_jclass. */
 SJME_ATOMIC_DECLARE(sjme_jclass, 0);
 
-/** Atomic @c sjme_charSeq. */
+/** Atomic @link sjme_charSeq. */
 SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
+
+/**
+ * Atomic reference.
+ *
+ * @since 2025/10/11
+ */
+#define sjme_atomic(type) \
+	SJME_TOKEN_PASTE_PP(sjme_atomic_, type)
+
+/**
+ * Phantom atomic reference.
+ *
+ * @param type The type to reference.
+ * @since 2025/10/11
+ */
+#define sjme_phantom(type) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _phantom)
+
+/**
+ * Phantom pointer reference.
+ * 
+ * @param type The type to reference.
+ * @param numPointerStars The number of pointer stars.
+ * @since 2025/10/17
+ */
+#define sjme_phantomP(type, numPointerStars) \
+	SJME_TOKEN_PASTE4_PP(sjme_atomic_, type, \
+		SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars), _phantom)
+
+/**
+ * Non-cyclic atomic reference.
+ *
+ * @param type The type to reference.
+ * @since 2025/10/27
+ */
+#define sjme_nonCyclic(type) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _nonCyclic)
+
+/**
+ * Non-cyclic pointer reference.
+ * 
+ * @param type The type to reference.
+ * @param numPointerStars The number of pointer stars.
+ * @since 2025/10/27
+ */
+#define sjme_nonCyclicP(type, numPointerStars) \
+	SJME_TOKEN_PASTE4_PP(sjme_atomic_, type, \
+		SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars), _nonCyclic)
+	
+
+/**
+ * Chain gets from two atomic values which are in a structure with each
+ * other.
+ *
+ * Equivalent to @code refTop->structIsh @endcode .
+ * 
+ * @param type The atomic type.
+ * @param refTop The top reference.
+ * @param structIsh The sub-structure member reference.
+ * @return The resultant sub-structure member value.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_chainGetGet(type, refTop, structIsh) \
+	sjme_atomic_g(type, (&sjme_atomic_g(type, (refTop)) structIsh))
+
+/**
+ * Chain gets from a sub-structure of an atomic, which is also an atomic,
+ * then sets the atomic value.
+ *
+ * Equivalent to @code refTop->structIsh = set @endcode .
+ * 
+ * @param type The atomic type.
+ * @param refTop The top reference.
+ * @param structIsh The sub-structure member reference.
+ * @param set The value to set.
+ * @return The old value of the sub-structure member value.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_chainGetSet(type, refTop, structIsh, set) \
+	sjme_atomic_s(type, (&sjme_atomic_g(type, (refTop)) structIsh), set)
+
+/**
+ * Copies the value of one atomic to another.
+ * 
+ * @param type The type of the atomic.
+ * @param dst The destination atomic.
+ * @param src The source atomic.
+ * @return The old value.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_copy(type, dst, src) \
+	sjme_atomic_s(type, dst, sjme_atomic_g(type, src))
+	
+/**
+ * Compares the atomic to the given value then sets it if it is the given
+ * value.
+ * 
+ * @param type The atomic type.
+ * @param ref The atomic reference.
+ * @param cmp The value to compare against.
+ * @param set The value to set, if the existing value is the given value.
+ * @return If the value matched then @link SJME_JNI_TRUE @endlink and the new value will
+ * be set, otherwise @link SJME_JNI_FALSE @endlink and there are no changes.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_cs(type, ref, cmp, set) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _compareSet)((ref), (cmp), (set))
+
+/**
+ * Gets the atomic value.
+ * 
+ * @param type The atomic type.
+ * @param ref The atomic reference.
+ * @return The current value of the atomic.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_g(type, ref) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _get)((ref))
+
+/**
+ * Gets the atomic value.
+ * 
+ * @param type The atomic type.
+ * @param numPointerStars The number of pointer stars.
+ * @param ref The atomic reference.
+ * @return The current value of the atomic.
+ * @since 2025/10/17
+ */
+#define sjme_atomic_gP(type, numPointerStars, ref) \
+	SJME_TOKEN_PASTE4_PP(sjme_atomic_, type, \
+	SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars), _get)((ref))
+
+/**
+ * Gets the value of the atomic then adds to it. This is only valid for
+ * non-pointer types.
+ * 
+ * @param type The atomic type.
+ * @param ref The atomic reference.
+ * @param add The value to add to the given type.
+ * @return The previous value before the add.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_ga(type, ref, add) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _getAdd)((ref), (add))
+
+/**
+ * Compares the pointer atomic, without regards to type, to the given value
+ * then sets it if it is the given value.
+ * 
+ * @param ref The atomic pointer reference.
+ * @param cmp The value to compare against.
+ * @param set The value to set, if the existing value is the given value.
+ * @return If the value matched then @link SJME_JNI_TRUE @endlink and the new value will
+ * be set, otherwise @link SJME_JNI_FALSE @endlink and there are no changes.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_pcs(ref, cmp, set) \
+	sjme_atomic_cs(sjme_pointer, (sjme_atomic(sjme_pointer)*)(ref), (cmp), (set))
+	
+/**
+ * Returns the pointer value of an atomic, disregarding type. This is mostly
+ * a utility macro when a type is not needed.
+ * 
+ * @param ref The atomic reference.
+ * @return The pointer value.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_pg(ref) \
+	sjme_atomic_g(sjme_pointer, (sjme_atomic(sjme_pointer)*)(ref))
+
+/**
+ * Directly set pointer atomic to @c NULL .
+ * 
+ * @param ref The reference to set to NULL.
+ * @return The old value.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_psNull(ref) \
+	sjme_atomic_s(sjme_pointer, (sjme_atomic(sjme_pointer)*)(ref), NULL)
+	
+/**
+ * Sets the new value of the atomic and returns the old value.
+ * 
+ * @param type The atomic type.
+ * @param ref The atomic reference.
+ * @param set The new value to set.
+ * @return The old value of the atomic.
+ * @since 2025/10/02
+ */
+#define sjme_atomic_s(type, ref, set) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _set)((ref), (set))
+	
+/**
+ * Sets the new value of the atomic and returns the old value.
+ * 
+ * @param type The atomic type.
+ * @param numPointerStars The number of pointer stars.
+ * @param ref The atomic reference.
+ * @param set The new value to set.
+ * @return The old value of the atomic.
+ * @since 2025/10/17
+ */
+#define sjme_atomic_sP(type, numPointerStars, ref, set) \
+	SJME_TOKEN_PASTE4_PP(sjme_atomic_, type, \
+	SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars), _set)((ref), (set))
 
 #if defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
 

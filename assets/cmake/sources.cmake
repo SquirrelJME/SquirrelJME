@@ -22,6 +22,7 @@ if(Fossil_EXECUTABLE)
 		COMMAND "${Fossil_EXECUTABLE}" "zip"
 			"${SQUIRRELJME_VERSION_ID_FOSSIL}" "${zipPath}"
 			"--name" "${archiveBase}"
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${zipPath}"
 		COMMENT "Archiving Zip Source..."
 		COMMAND_EXPAND_LISTS)
@@ -33,6 +34,7 @@ if(Fossil_EXECUTABLE)
 		COMMAND "${Fossil_EXECUTABLE}" "tar"
 			"${SQUIRRELJME_VERSION_ID_FOSSIL}" "${tgzPath}"
 			"--name" "${archiveBase}"
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${tgzPath}"
 		COMMENT "Archiving Tarball Source..."
 		COMMAND_EXPAND_LISTS)
@@ -68,13 +70,6 @@ endif()
 
 # Shared by any output
 if(Fossil_EXECUTABLE OR Git_EXECUTABLE)
-	# These get uploaded into Fossil
-	list(APPEND SQUIRRELJME_UPLOAD_TARGETS
-		sourceZip sourceTgz)
-
-	# Register to CI/CD
-	squirreljme_cicd_register(sourceZip sourceTgz)
-
 	# Output where the binaries were placed
 	set_target_properties(sourceZip PROPERTIES
 		SQUIRRELJME_OUTPUT_PATH "${zipPath}"
@@ -82,4 +77,7 @@ if(Fossil_EXECUTABLE OR Git_EXECUTABLE)
 	set_target_properties(sourceTgz PROPERTIES
 		SQUIRRELJME_OUTPUT_PATH "${tgzPath}"
 		SQUIRRELJME_OUTPUT_TYPE "source")
+
+	# These get uploaded into Fossil
+	squirreljme_fossil_upload_register(sourceZip sourceTgz)
 endif()

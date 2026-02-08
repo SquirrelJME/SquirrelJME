@@ -63,6 +63,17 @@ static sjme_errorCode sjme_scritchaudio_core_peerNone(
 		sjme_alloc_free(inConn->peers);
 		inConn->peers = NULL;
 	}
+	
+	/* Is this a well known connection? */
+	if (explicit)
+	{
+		if (inConn == (void*)inState->stream)
+			inState->stream = NULL;
+		if (inConn == (void*)inState->under.stream)
+			inState->under.stream = NULL;
+		if (inConn == (void*)inState->under.source)
+			inState->under.source = NULL;
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -75,7 +86,7 @@ static sjme_errorCode sjme_scritchaudio_core_peerNoneSource(
 {
 	sjme_errorCode error;
 	sjme_scritchaudio_stream inStream;
-	sjme_list_sjme_scritchaudio_source* sources;
+	sjme_list(sjme_scritchaudio_source)* sources;
 	sjme_jint i, n;
 	
 	if (inState == NULL || inSource == NULL)
@@ -139,7 +150,7 @@ sjme_errorCode sjme_scritchaudio_core_peerNoneDispatch(
 	
 	/* Explicit no-peer is a full disconnect, it can only happen once. */
 	if (explicit)
-		if (!sjme_atomic_sjme_jint_compareSet(&inConn->disconnecting,
+		if (!sjme_atomic_cs(sjme_jint, &inConn->disconnecting,
 			0, 1))
 			return SJME_ERROR_NONE;
 
@@ -159,7 +170,7 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 	sjme_errorCode error;
 	sjme_jint i, n;
 	sjme_scritchaudio_connection peer;
-	sjme_list_sjme_scritchaudio_connection* peers;
+	sjme_list(sjme_scritchaudio_connection)* peers;
 	sjme_thread_spinLock* sharedLock;
 	
 	if (inState == NULL || inConn == NULL)
@@ -173,6 +184,11 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 	sharedLock = inConn->lock;
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(sharedLock)))
 		return sjme_error_default(error);
+	
+	/* Notify the audio system that a disconnect is about to happen. */
+	if (inState->impl->disconnect != NULL)
+		if (sjme_error_is(error = inState->impl->disconnect(inState, inConn)))
+			goto fail_notifyDisconnect;
 
 	/* Find the first available peer. */
 	for (i = 0, n = 0;;)
@@ -209,8 +225,8 @@ sjme_errorCode sjme_scritchaudio_core_disconnect(
 		else
 			i++;
 	}
-
-	/* Double check if there is nothing left. */
+	
+	/* Double check to be sure that there is nothing left. */
 	if (sjme_error_is(error = inState->intern->peerDisconnect(
 		inState, inConn, NULL, SJME_JNI_TRUE)))
 	{
@@ -229,6 +245,7 @@ skip_releaseLock:
 	/* Success! */
 	return SJME_ERROR_NONE;
 	
+fail_notifyDisconnect:
 fail_peerDisconnect:
 	sjme_thread_spinLockRelease(sharedLock, NULL);
 	return sjme_error_default(error);
@@ -255,7 +272,7 @@ sjme_errorCode sjme_scritchaudio_core_peerConnect(
 #endif
 
 	/* Grab peer lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(inPeer->lock)))
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(inConn->lock)))
 		goto fail_peerGrab;
 
 	/* Connect forwards, then backwards. */
@@ -267,7 +284,7 @@ sjme_errorCode sjme_scritchaudio_core_peerConnect(
 		goto fail_backwards;
 	
 	/* Release peer lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(inPeer->lock,
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(inConn->lock,
 		NULL)))
 		goto fail_releaseLock;
 
@@ -277,7 +294,7 @@ sjme_errorCode sjme_scritchaudio_core_peerConnect(
 fail_backwards:
 fail_forwards:
 fail_peerGrab:
-	sjme_thread_spinLockRelease(inPeer->lock, NULL);
+	sjme_thread_spinLockRelease(inConn->lock, NULL);
 fail_releaseLock:
 	return sjme_error_default(error);
 }
@@ -289,7 +306,7 @@ sjme_errorCode sjme_scritchaudio_core_peerDisconnect(
 	sjme_attrInValue sjme_jboolean explicit)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_scritchaudio_connection* peers;
+	sjme_list(sjme_scritchaudio_connection)* peers;
 	sjme_scritchaudio_connection check;
 	sjme_jint numPeers, i, n;
 	sjme_jboolean wasFound;
@@ -359,7 +376,10 @@ skip_noPeers:
 		return SJME_ERROR_NONE;
 	
 	/* All peers were removed, dispatch the no-peer handler. */
-	if (numPeers <= 0)
+	/* This is only valid if there is no peer specified. */
+	if (numPeers <= 0 && inPeer == NULL)
+	{
+		/* Dispatch. */
 		if (sjme_error_is(error = inState->intern->peerNoneDispatch(
 			inState, inConn, explicit)))
 		{
@@ -369,6 +389,15 @@ skip_noPeers:
 			
 			return sjme_error_default(error);
 		}
+		
+		/* Is this a well known connection? */
+		if (inConn == (void*)inState->stream)
+			inState->stream = NULL;
+		if (inConn == (void*)inState->under.stream)
+			inState->under.stream = NULL;
+		if (inConn == (void*)inState->under.source)
+			inState->under.source = NULL;
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;

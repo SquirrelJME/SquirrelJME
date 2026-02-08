@@ -15,6 +15,7 @@
 /** GTK Function set for Scritch UI. */
 static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 {
+	sjme_sm(.driverName, "gtk2"),
 	sjme_sm(.apiInit, sjme_scritchui_gtk2_apiInit),
 	sjme_sm(.choiceItemInsert, NULL),
 	sjme_sm(.choiceItemRemove, NULL),
@@ -54,14 +55,27 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	sjme_sm(.menuRemove, sjme_scritchui_gtk2_menuRemove),
 	sjme_sm(.panelEnableFocus, sjme_scritchui_gtk2_panelEnableFocus),
 	sjme_sm(.panelNew, sjme_scritchui_gtk2_panelNew),
+	sjme_sm(.screenGetBounds, sjme_scritchui_gtk2_screenGetBounds),
 	sjme_sm(.screens, sjme_scritchui_gtk2_screens),
 	sjme_sm(.scrollPanelNew, sjme_scritchui_gtk2_scrollPanelNew),
 	sjme_sm(.viewGetView, sjme_scritchui_gtk2_viewGetView),
 	sjme_sm(.viewSetArea, sjme_scritchui_gtk2_viewSetArea),
 	sjme_sm(.viewSetView, sjme_scritchui_gtk2_viewSetView),
 	sjme_sm(.viewSetViewListener, sjme_scritchui_gtk2_viewSetViewListener),
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 63)
 	sjme_sm(.windowContentMinimumSize, 
 		sjme_scritchui_gtk2_windowContentMinimumSize),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_sm(.windowContentMinimumSize, 
+		sjme_scritchui_gtk2_windowContentMinimumSize),
+	sjme_sm(.windowGetFrame, sjme_scritchui_gtk2_windowGetFrame),
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 60)
+	sjme_sm(.windowContentMinimumSize, sjme_scritchui_gtk2_windowContentMinimumSize),
+======= MERGED IN content follows =============================== (line 62)
+	sjme_sm(.windowContentMinimumSize, 
+		sjme_scritchui_gtk2_windowContentMinimumSize),
+	sjme_sm(.windowGetFrame, sjme_scritchui_gtk2_windowGetFrame),
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	sjme_sm(.windowNew, sjme_scritchui_gtk2_windowNew),
 	sjme_sm(.windowSetCloseListener, 
 		sjme_scritchui_gtk2_windowSetCloseListenerFunc),
@@ -88,6 +102,7 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
 	sjme_scritchui state;
+	GtkAccelGroup* accelGroup;
 	int argc;
 	char** argv;
 	
@@ -110,7 +125,11 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	gtk_init(&argc, &argv);
 	
 	/* Accelerator group, needed for menus. */
-	state->common.handle[SJME_SUI_GTK2_H_ACCELG] = gtk_accel_group_new();
+	accelGroup = gtk_accel_group_new();
+	state->common.handle[SJME_SUI_GTK2_H_ACCELG] = accelGroup;
+	
+	/* Make sure the accelerator group does not just disappear. */
+	g_object_ref(accelGroup);
 	
 	/* Need to call thread specific initializer? */
 	/* Usually this is for binding a thread to a JavaVM. */
@@ -121,7 +140,7 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	sjme_message("GTK Main Loop...");
 	
 	/* Before we go into the main loop, signal it is ready. */
-	sjme_atomic_sjme_jint_set(&state->loopThreadReady, 1);
+	sjme_atomic_s(sjme_jint, &state->loopThreadReady, 1);
 	
 	/* Run main loop. */
 	gtk_main();
@@ -155,6 +174,8 @@ sjme_errorCode SJME_SCRITCHUI_DYLIB_SYMBOL_DECLARE(gtk2)(
 	return SJME_ERROR_NONE;
 }
 
+SJME_SCRITCHUI_DYLIB_API_EXPORT_SET(gtk2)
+
 sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState)
 {
@@ -162,6 +183,9 @@ sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* We set the minimum size in the expose event of the window. */
+	inState->bugs.noContentSizeWhenVisible = SJME_JNI_TRUE;
 	
 	/* Internal functions to use specifically for GTK. */
 	inState->implIntern = &sjme_scritchui_gtk2InternFunctions;

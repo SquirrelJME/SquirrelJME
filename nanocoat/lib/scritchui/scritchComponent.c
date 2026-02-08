@@ -6,10 +6,6 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
-
-#include <string.h>
-#include <stdio.h>
-
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
@@ -263,7 +259,7 @@ static sjme_errorCode sjme_scritchui_basePaintListener(
 	}
 	
 	/* Forward to callback. */
-	sjme_atomic_sjme_jint_set(&paint->inPaint, 1);
+	sjme_atomic_s(sjme_jint, &paint->inPaint, 1);
 	error = callback(inState, inComponent, g, sw, sh, special);
 
 #if defined(SJME_CONFIG_DEBUG)
@@ -273,7 +269,7 @@ static sjme_errorCode sjme_scritchui_basePaintListener(
 #endif
 	
 	/* No longer painting. */
-	sjme_atomic_sjme_jint_set(&paint->inPaint, 0);
+	sjme_atomic_s(sjme_jint, &paint->inPaint, 0);
 	
 	/* Success or failure! */
 fail_noListener:
@@ -513,7 +509,7 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 	/* Not implemented? */
 	if (inState->impl->componentRepaint == NULL)
 		return sjme_error_notImplemented(0);
-		
+	
 	/* Only certain types are paintable, ignore if requested. */
 	paint = NULL;
 	if (sjme_error_is(error = inState->intern->getPaintable(inState,
@@ -523,7 +519,6 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 		if (error != SJME_ERROR_INVALID_ARGUMENT)
 			return sjme_error_default(error);
 
-#if 1
 		/* If this is a container, repaint all children. */
 		container = NULL;
 		if (sjme_error_is(error = inState->intern->getContainer(inState,
@@ -553,12 +548,19 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 					x, y, width, height)))
 				{
 					if (error != SJME_ERROR_INVALID_ARGUMENT)
-						return sjme_error_default(error);
+						goto fail_subRepaint;
 				}
-#endif
+
+		/* Cleanup. */
+		sjme_alloca_free(subComponents);
 		
 		/* Success! */
 		return SJME_ERROR_NONE;
+		
+fail_subRepaint:
+		if (subComponents != NULL)
+			sjme_alloca_free(subComponents);
+		return sjme_error_default(error);
 	}
 	
 	/* Rather than failing, just normalize. */
@@ -574,7 +576,7 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 	/* If we are in a paint, we need to delay painting by a single frame */
 	/* otherwise the native UI might get stuck not repainting or end up */
 	/* in an infinite loop. */
-	if (sjme_atomic_sjme_jint_get(&paint->inPaint) != 0)
+	if (sjme_atomic_g(sjme_jint, &paint->inPaint) != 0)
 	{
 		/* Store paint properties. */
 		paint->belayRect.s.x = x;
@@ -871,7 +873,7 @@ sjme_errorCode sjme_scritchui_core_intern_initCommon(
 				SJME_ERROR_INVALID_LINK);
 		
 		/* Must be weak referenced. */
-		if (link->weak == NULL)
+		if (sjme_atomic_g(sjme_alloc_weak, &link->weak) == NULL)
 			return SJME_ERROR_NOT_WEAK_REFERENCE;
 		
 		/* Type must be valid. */

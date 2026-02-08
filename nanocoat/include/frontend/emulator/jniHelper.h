@@ -83,10 +83,6 @@ extern "C" {
 #define SJME_CLASS_ALLOC_POOL \
 	SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, AllocPool)
 
-/** Allocation sizeof utility. */
-#define SJME_CLASS_ALLOC_SIZEOF \
-	SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, AllocSizeOf)
-
 /** Character array string. */
 #define SJME_CLASS_CHAR_STAR \
 	SJME_JNI_CLASS(SJME_PACKAGE_NANOCOAT, CharStar)

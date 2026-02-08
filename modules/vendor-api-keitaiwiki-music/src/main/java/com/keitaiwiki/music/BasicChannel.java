@@ -40,7 +40,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/05/02
  */
-@SquirrelJMEVendorApi
 public interface BasicChannel
 {
 }

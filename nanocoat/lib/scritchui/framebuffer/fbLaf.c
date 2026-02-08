@@ -29,6 +29,9 @@ sjme_errorCode sjme_scritchui_fb_lafDpiProject(
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
 	
+	if (wrappedState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Is there a wrapped component? */
 	wrappedComponent = NULL;
 	if (inContext != NULL)
@@ -53,6 +56,9 @@ sjme_errorCode sjme_scritchui_fb_lafElementColor(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
+	
+	if (wrappedState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Is there a wrapped component? */
 	wrappedComponent = NULL;

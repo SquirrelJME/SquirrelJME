@@ -10,6 +10,7 @@
 /**
  * Error codes.
  * 
+ * @file
  * @since 2024/08/09
  */
 
@@ -540,9 +541,60 @@ typedef enum sjme_errorCode
 
 	/** There is still an active GC commit. */
 	SJME_ERROR_ACTIVE_GC_COMMIT = -166,
+
+	/** Connection refused. */
+	SJME_ERROR_CONNECTION_REFUSED = -167,
+
+	/** JDWP handshake not valid. */
+	SJME_ERROR_JDWP_BAD_HANDSHAKE = -168,
+
+	/** Unknown native function. */
+	SJME_ERROR_UNKNOWN_NATIVE_FUNCTION = -169,
+
+	/** No test result occurred. */
+	SJME_ERROR_NO_TEST_RESULT = -170,
+
+	/** Memory exists. */
+	SJME_ERROR_MEMORY_EXISTS = -171,
+
+	/** Cancel MLE call. */
+	SJME_ERROR_CANCEL_MLE_CALL = -172,
+
+	/** Skip default walk action after custom step is performed. */
+	SJME_ERROR_WALK_SKIP_CUSTOM_DEFAULT = -173,
+
+	/** Try the operation again. */
+	SJME_ERROR_TRY_AGAIN = -174,
+
+	/** The requested path is not defined. */
+	SJME_ERROR_PATH_NOT_DEFINED = -175,
+
+	/** Security has been violated. */
+	SJME_ERROR_SECURITY_EXCEPTION = -176,
+
+	/* Path is not absolute. */
+	SJME_ERROR_PATH_NOT_ABSOLUTE = -177,
+
+	/** Path is too deep. */
+	SJME_ERROR_PATH_TOO_DEEP = -178,
+
+	/** Path is not valid. */
+	SJME_ERROR_PATH_NOT_VALID = -179,
+
+	/** There is no user login. */
+	SJME_ERROR_NO_USER_LOGIN = -180,
+	
+	/** This should not be happening! */
+	SJME_ERROR_SHOULD_NOT_HAPPEN = -181,
+	
+	/** Audio is awaiting streams/sources. */
+	SJME_ERROR_AUDIO_AWAITING = -182,
+	
+	/** Font is already registered. */
+	SJME_ERROR_FONT_ALREADY_REGISTERED = -183,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -167,
+	SJME_NUM_ERROR_CODES = -184,
 } sjme_errorCode;
 
 /**
@@ -558,11 +610,13 @@ sjme_errorCode sjme_error_also(
 	sjme_errorCode error, sjme_errorCode expression);
 
 /**
- * Similar to @c sjme_error_also except this allows multiple error expressions
- * to be passed until the final is done via @c sjme_error_alsoVEnd() .
+ * Similar to @link sjme_error_also @endlink except this allows multiple error
+ * expressions to be passed until the final is done via
+ * @link sjme_error_alsoVEnd() @endlink.
  * 
  * @param error The current error state.
- * @param ... All of the expressions, ends on @c sjme_error_alsoVEnd() .
+ * @param ... All of the expressions, ends
+ * on @link sjme_error_alsoVEnd() @endlink.
  * @return The resultant error code.
  * @since 2024/01/18
  */
@@ -570,7 +624,7 @@ sjme_errorCode sjme_error_alsoV(
 	sjme_errorCode error, ...);
 
 /**
- * The end expression for @c sjme_error_alsoV() .
+ * The end expression for @link sjme_error_alsoV() .
  * 
  * @return The ending sequence for error codes.
  * @since 2024/01/18 
@@ -600,7 +654,7 @@ sjme_errorCode sjme_error_default(
  * Determines the default error code to use.
  *
  * @param error The error code.
- * @param otherwise The other error code rather than @c SJME_ERROR_UNKNOWN.
+ * @param otherwise The other error code rather than @link SJME_ERROR_UNKNOWN.
  * @return Either @c error or @c otherwise if the former is not valid.
  * @since 2023/12/29
  */

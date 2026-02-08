@@ -98,7 +98,7 @@ jar {
 			"X-SquirrelJME-Standalone-Parameter":
 				"cc.squirreljme.runtime.launcher.ui.MidletMain",
 			"X-SquirrelJME-Standalone-Classpath": project.provider({ ->
-					return flatClasspath(project(":modules:launcher"))
+					return flatClasspath(project(":modules:system-app-launcher"))
 				}),
 			"X-SquirrelJME-Standalone-Library": project.provider({ ->
 					return VMHelpers.classpathAsString(

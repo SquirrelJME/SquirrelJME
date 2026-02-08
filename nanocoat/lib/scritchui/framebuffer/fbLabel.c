@@ -26,6 +26,9 @@ sjme_errorCode sjme_scritchui_fb_labelSetString(
 	wrappedState = inState->wrappedState;
 	wrappedCommon = inCommon->handle[SJME_SUI_FB_H_WRAPPED];
 	
+	if (wrappedState == NULL || wrappedCommon == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
 	/* Just forward to the wrapper. */
 	return wrappedState->apiInThread->labelSetString(wrappedState,
 		wrappedCommon, inString);

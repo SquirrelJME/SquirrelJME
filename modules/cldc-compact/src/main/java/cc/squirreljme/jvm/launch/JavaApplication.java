@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.SuiteInfo;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Represents a single application that can be launched.
@@ -25,6 +26,10 @@ public final class JavaApplication
 	/** Manifest property for appearing on the launcher. */
 	private static final String _NO_LAUNCHER =
 		"X-SquirrelJME-NoLauncher";
+	
+	/** Manifest property for ignoring classic Java main in the launcher. */
+	private static final String _NO_JAVA_MAIN_LAUNCHER =
+		"X-SquirrelJME-NoJavaMainLauncher";
 	
 	/** The suite information. */
 	protected final SuiteInfo info;
@@ -90,6 +95,17 @@ public final class JavaApplication
 	{
 		return this.info.manifest().getMainAttributes()
 			.definesValue(JavaApplication._NO_LAUNCHER);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/01/16
+	 */
+	@Override
+	public boolean isNoJavaMainLauncher()
+	{
+		return this.info.manifest().getMainAttributes()
+			.definesValue(JavaApplication._NO_JAVA_MAIN_LAUNCHER);
 	}
 	
 	/**

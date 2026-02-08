@@ -1,0 +1,23 @@
+import cc.squirreljme.plugin.swm.JavaMEMidlet
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "Displays information about the current device."
+version = rootProject.version
+
+squirreljme {
+	javaDocErrorCode = "DV"
+	swmType = JavaMEMidletType.APPLICATION
+	swmName = "Device Information"
+	swmVendor = "Stephanie Gawroriski"
+	midlets += new JavaMEMidlet("System - Device Information", "info.xpm",
+		"cc.squirreljme.deviceinfo.Main")
+	tags += "system-app"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+	api project(":modules:profile-meep")
+	api project(":modules:midp-lcdui")
+	api project(":modules:meep-lui")
+}

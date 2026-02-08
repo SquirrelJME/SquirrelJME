@@ -80,5 +80,4 @@ public class MLDPlayerEvent
 		this.time = time;
 		this.type = type;
 	}
-	
 }

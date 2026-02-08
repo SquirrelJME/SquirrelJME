@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/nvm/bytecode.h"
 #include "sjme/util.h"
 #include "sjme/nvm/instance.h"

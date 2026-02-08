@@ -10,6 +10,7 @@
 /**
  * Multithreaded support.
  * 
+ * @file
  * @since 2023/12/16
  */
 
@@ -19,17 +20,9 @@
 #include "sjme/config.h"
 #include "sjme/error.h"
 
-#if defined(SJME_CONFIG_HAS_THREADS_WIN32)
-	#define WIN32_LEAN_AND_MEAN 1
-
-	#include <windows.h>
-
-	#undef WIN32_LEAN_AND_MEAN
-#endif
-
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	#include <pthread.h>
-	#include <errno.h>
+	#include <signal.h>
 #endif
 
 #include "sjme/stdTypes.h"
@@ -167,7 +160,7 @@ SJME_ATOMIC_DECLARE(sjme_thread, 0);
 /**
  * Main thread function type.
  * 
- * @param anything Passed from @c sjme_thread_new .
+ * @param anything Passed from @link sjme_thread_new @endlink .
  * @return Thread resultant value.
  * @since 2024/04/16
  */
@@ -182,13 +175,13 @@ typedef sjme_thread_result (sjme_attrThreadCall *sjme_thread_mainFunc)(
 typedef volatile struct sjme_alignPointer sjme_thread_spinLock
 {
 	/** The thread that is currently poking this lock. */
-	sjme_alignPointer sjme_atomic_sjme_thread poke;
+	sjme_alignPointer sjme_atomic(sjme_thread) poke;
 	
 	/** The thread that owns this lock. */
-	sjme_alignPointer sjme_atomic_sjme_thread owner;
+	sjme_alignPointer sjme_atomic(sjme_thread) owner;
 	
 	/** Lock count. */
-	sjme_alignPointer sjme_atomic_sjme_jint count;
+	sjme_alignPointer sjme_atomic(sjme_jint) count;
 } sjme_thread_spinLock;
 
 /**
@@ -202,7 +195,7 @@ typedef volatile struct sjme_alignPointer sjme_thread_rwLock
 	sjme_alignPointer sjme_thread_spinLock* read;
 	
 	/** The number of times writes are locked. */
-	sjme_alignPointer sjme_atomic_sjme_jint writeCount;
+	sjme_alignPointer sjme_atomic(sjme_jint) writeCount;
 	
 	/** The write specific lock. */
 	sjme_alignPointer sjme_thread_spinLock write;
@@ -217,6 +210,14 @@ typedef volatile struct sjme_alignPointer sjme_thread_rwLock
  */
 sjme_errorCode sjme_thread_current(
 	sjme_attrInOutNotNull sjme_thread* outThread);
+
+/**
+ * Returns the current thread.
+ *
+ * @return The resultant thread.
+ * @since 2026/01/09
+ */
+sjme_thread sjme_thread_currentR(void);
 
 /**
  * Compares equality between two threads.
@@ -320,7 +321,17 @@ sjme_errorCode sjme_thread_spinLockRelease(
  */
 void sjme_thread_sleep(sjme_attrInPositive sjme_jint millis,
 	sjme_attrInPositive sjme_jint nanos);
-	
+
+/**
+ * Wakes the given thread, if possible.
+ * 
+ * @param inThread The thread to wake.
+ * @return Any resultant error, if any.
+ * @since 2025/10/02
+ */
+sjme_errorCode sjme_thread_wake(
+	sjme_attrInNotNull sjme_thread inThread);
+
 /**
  * Yields execution.
  * 

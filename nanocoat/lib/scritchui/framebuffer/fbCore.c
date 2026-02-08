@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "lib/scritchui/framebuffer/fb.h"
 #include "lib/scritchui/framebuffer/fbIntern.h"
 #include "lib/scritchui/scritchui.h"
@@ -16,6 +14,7 @@
 
 const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 {
+	sjme_sm(.driverName, "fb"),
 	sjme_sm(.apiInit, sjme_scritchui_fb_apiInit),
 	sjme_sm(.choiceItemInsert, sjme_scritchui_fb_choiceItemInsert),
 	sjme_sm(.choiceItemRemove, sjme_scritchui_fb_choiceItemRemove),
@@ -57,14 +56,27 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	sjme_sm(.menuRemove, sjme_scritchui_fb_menuRemove),
 	sjme_sm(.panelEnableFocus, sjme_scritchui_fb_panelEnableFocus),
 	sjme_sm(.panelNew, sjme_scritchui_fb_panelNew),
+	sjme_sm(.screenGetBounds, sjme_scritchui_fb_screenGetBounds),
 	sjme_sm(.screens, sjme_scritchui_fb_screens),
 	sjme_sm(.scrollPanelNew, sjme_scritchui_fb_scrollPanelNew),
 	sjme_sm(.viewGetView, sjme_scritchui_fb_viewGetView),
 	sjme_sm(.viewSetArea, sjme_scritchui_fb_viewSetArea),
 	sjme_sm(.viewSetView, sjme_scritchui_fb_viewSetView),
 	sjme_sm(.viewSetViewListener, sjme_scritchui_fb_viewSetViewListener),
+<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 66)
 	sjme_sm(.windowContentMinimumSize, 
 		sjme_scritchui_fb_windowContentMinimumSize),
+####### SUGGESTED CONFLICT RESOLUTION follows ###################
+	sjme_sm(.windowContentMinimumSize, 
+		sjme_scritchui_fb_windowContentMinimumSize),
+	sjme_sm(.windowGetFrame, sjme_scritchui_fb_windowGetFrame),
+||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 63)
+	sjme_sm(.windowContentMinimumSize, sjme_scritchui_fb_windowContentMinimumSize),
+======= MERGED IN content follows =============================== (line 63)
+	sjme_sm(.windowContentMinimumSize, 
+		sjme_scritchui_fb_windowContentMinimumSize),
+	sjme_sm(.windowGetFrame, sjme_scritchui_fb_windowGetFrame),
+>>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	sjme_sm(.windowNew, sjme_scritchui_fb_windowNew),
 	sjme_sm(.windowSetCloseListener, sjme_scritchui_fb_windowSetCloseListener),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_fb_windowSetMenuBar),

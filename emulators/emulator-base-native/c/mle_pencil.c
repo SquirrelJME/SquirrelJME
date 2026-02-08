@@ -24,6 +24,9 @@
 #define FORWARD_DESC_hardwareCopyArea "(" \
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
 	DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawArc "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareDrawChars "(" \
 	DESC_PENCIL DESC_ARRAY(DESC_CHAR) DESC_INT DESC_INT DESC_INT DESC_INT \
 	DESC_INT ")" DESC_VOID
@@ -33,8 +36,22 @@
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareDrawPixel "(" \
 	DESC_PENCIL DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawPolyline "(" \
+	DESC_PENCIL DESC_ARRAY(DESC_INT) DESC_INT DESC_ARRAY(DESC_INT) DESC_INT \
+	DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareDrawRect "(" \
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawRegion "(" \
+	DESC_PENCIL DESC_INT DESC_OBJECT DESC_INT DESC_INT DESC_BOOLEAN \
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawRoundRect "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareDrawTriangle "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareDrawSubstring "(" \
 	DESC_PENCIL DESC_STRING DESC_INT DESC_INT DESC_INT DESC_INT \
 	DESC_INT ")" DESC_VOID
@@ -42,11 +59,25 @@
 	DESC_PENCIL DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_BOOLEAN \
 	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
 	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareFillArc "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareFillPolygon "(" \
+	DESC_PENCIL DESC_ARRAY(DESC_INT) DESC_INT DESC_ARRAY(DESC_INT) DESC_INT \
+	DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareFillRect "(" \
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareFillRoundRect "(" \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareFillTriangle "(" \
 	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
 	DESC_INT ")" DESC_VOID
+#define FORWARD_DESC_hardwareGetPixelFormat "(" \
+	DESC_PENCIL ")" DESC_INT
+#define FORWARD_DESC_hardwareGetRegion "(" \
+	DESC_PENCIL DESC_INT DESC_OBJECT DESC_INT DESC_INT DESC_BOOLEAN \
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
 #define FORWARD_DESC_hardwareHasAlpha "(" \
 	DESC_PENCIL ")" DESC_BOOLEAN
 #define FORWARD_DESC_hardwareSetAlphaColor "(" \
@@ -106,7 +137,31 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareCopyArea)
 		return;
 	}
 
-	sjme_todo("Impl?");
+	/* Forward. */
+	if (sjme_error_is(error = p->api->copyArea(p, sx, sy, w, h, dw, dh,
+		anchor)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawArc)
+	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h,
+	jint startAngle, jint arcAngle)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawArc(p, x, y, w, h, startAngle,
+			arcAngle)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawChars)
@@ -184,6 +239,53 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawPixel)
 		sjme_jni_throwMLECallError(env, error);
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawPolyline)
+	(JNIEnv* env, jclass classy, jobject g, jintArray xPoints, jint xOffset,
+		jintArray yPoints, jint yOffset, jint nPoints)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+	jboolean isCopyX, isCopyY;
+	jint* xElements;
+	jint* yElements;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	isCopyX = JNI_FALSE;
+	xElements = (*env)->GetIntArrayElements(env, xPoints, &isCopyX);
+	if (xElements == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED);
+		return;
+	}
+
+	isCopyY = JNI_FALSE;
+	yElements = (*env)->GetIntArrayElements(env, yPoints, &isCopyY);
+	if (yElements == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawPolyline(p,
+		(sjme_jint*)xElements, xOffset,
+		(sjme_jint*)yElements, yOffset, nPoints)))
+		sjme_jni_throwMLECallError(env, error);
+
+	/* Cleanup. */
+	(*env)->ReleaseIntArrayElements(env, xPoints, xElements, 0);
+	(*env)->ReleaseIntArrayElements(env, yPoints, yElements, 0);
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRect)
 	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h)
 {
@@ -200,6 +302,97 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRect)
 
 	/* Forward. */
 	if (sjme_error_is(error = p->api->drawRect(p, x, y, w, h)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRegion)
+	(JNIEnv* env, jclass classy, jobject g, jint pf, jobject data,
+	jint off, jint scanLen, jboolean alpha,
+	jint xSrc, jint ySrc, jint wSrc, jint hSrc, jint trans, jint xDest,
+	jint yDest, jint anchor, jint wDest, jint hDest,
+	jint origImgWidth, jint origImgHeight)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+	jboolean isCopy;
+	sjme_pointer dataElem;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL || data == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Need this. */
+	isCopy = JNI_FALSE;
+	dataElem = NULL;
+
+	if (sjme_error_is(error = sjme_jni_arrayGetElements(env, data, &dataElem,
+		&isCopy, NULL)) || dataElem == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED);
+		return;
+	}
+
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+	if (xSrc != 0 || ySrc != 0)
+		sjme_message("s(%d, %d)", xSrc, ySrc);
+#endif
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawRegion(p, pf,
+		(sjme_cpointer) dataElem, off,
+		(*env)->GetArrayLength(env, data), scanLen,
+		alpha, xSrc, ySrc, wSrc, hSrc, trans,
+		xDest, yDest, anchor, wDest, hDest,
+		origImgWidth, origImgHeight)))
+		sjme_jni_throwMLECallError(env, error);
+
+	/* Cleanup. */
+	sjme_jni_arrayReleaseElements(env, data, dataElem);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRoundRect)
+	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h,
+	jint arcWidth, jint arcHeight)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawRoundRect(p, x, y, w, h, arcWidth,
+			arcHeight)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawTriangle)
+	(JNIEnv* env, jclass classy, jobject g, jint x1, jint y1, jint x2, jint y2,
+	jint x3, jint y3)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawTriangle(p, x1, y1, x2, y2, x3, y3)))
 		sjme_jni_throwMLECallError(env, error);
 }
 
@@ -288,6 +481,74 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawXRGB32Region)
 	(*env)->ReleaseIntArrayElements(env, data, elem, 0);
 }
 
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillArc)
+	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h,
+	jint startAngle, jint arcAngle)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->fillArc(p, x, y, w, h, startAngle,
+			arcAngle)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillPolygon)
+	(JNIEnv* env, jclass classy, jobject g, jintArray xPoints, jint xOffset,
+		jintArray yPoints, jint yOffset, jint nPoints)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+	jboolean isCopyX, isCopyY;
+	jint* xElements;
+	jint* yElements;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	isCopyX = JNI_FALSE;
+	xElements = (*env)->GetIntArrayElements(env, xPoints, &isCopyX);
+	if (xElements == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED);
+		return;
+	}
+
+	isCopyY = JNI_FALSE;
+	yElements = (*env)->GetIntArrayElements(env, yPoints, &isCopyY);
+	if (yElements == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->fillPolygon(p,
+		(sjme_jint*)xElements, xOffset,
+		(sjme_jint*)yElements, yOffset, nPoints)))
+		sjme_jni_throwMLECallError(env, error);
+
+	/* Cleanup. */
+	(*env)->ReleaseIntArrayElements(env, xPoints, xElements, 0);
+	(*env)->ReleaseIntArrayElements(env, yPoints, yElements, 0);
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRect)
 	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h)
 {
@@ -304,6 +565,27 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRect)
 
 	/* Forward. */
 	if (sjme_error_is(error = p->api->fillRect(p, x, y, w, h)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRoundRect)
+	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h,
+	jint arcWidth, jint arcHeight)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->fillRoundRect(p, x, y, w, h, arcWidth,
+			arcHeight)))
 		sjme_jni_throwMLECallError(env, error);
 }
 
@@ -326,6 +608,64 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillTriangle)
 	if (sjme_error_is(error = p->api->fillTriangle(p,
 		x1, y1, x2, y2, x3, y3)))
 		sjme_jni_throwMLECallError(env, error);
+}
+
+JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilShelf,
+	hardwareGetPixelFormat)
+	(JNIEnv* env, jclass classy, jobject g)
+{
+	sjme_scritchui_pencil p;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return JNI_FALSE;
+	}
+
+	/* Simply return the pencil's pixel format */
+	return p->pixelFormat;
+}
+
+JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareGetRegion)
+	(JNIEnv* env, jclass classy, jobject g, jint pf, jobject data,
+	jint off, jint scanLen, jboolean alpha, jint xSrc,
+	jint ySrc, jint wSrc, jint hSrc, jint anchor)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+	jboolean isCopy;
+	sjme_pointer dataElem;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL || data == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Need this. */
+	isCopy = JNI_FALSE;
+	dataElem = NULL;
+	if (sjme_error_is(error = sjme_jni_arrayGetElements(env, data, &dataElem,
+		&isCopy, NULL)) || dataElem == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			SJME_ERROR_NATIVE_ARRAY_ACCESS_FAILED);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->getRegion(p, pf,
+		(sjme_cpointer) dataElem, off,
+		(*env)->GetArrayLength(env, data), scanLen, alpha, xSrc,
+		ySrc, wSrc, hSrc, anchor)))
+		sjme_jni_throwMLECallError(env, error);
+
+	/* Cleanup. */
+	sjme_jni_arrayReleaseElements(env, data, dataElem);
 }
 
 JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareHasAlpha)
@@ -509,15 +849,25 @@ static const JNINativeMethod mlePencilMethods[] =
 {
 	FORWARD_list(PencilShelf, hardwareCloseGraphics),
 	FORWARD_list(PencilShelf, hardwareCopyArea),
+	FORWARD_list(PencilShelf, hardwareDrawArc),
 	FORWARD_list(PencilShelf, hardwareDrawChars),
 	FORWARD_list(PencilShelf, hardwareDrawHoriz),
 	FORWARD_list(PencilShelf, hardwareDrawLine),
 	FORWARD_list(PencilShelf, hardwareDrawPixel),
+	FORWARD_list(PencilShelf, hardwareDrawPolyline),
 	FORWARD_list(PencilShelf, hardwareDrawRect),
+	FORWARD_list(PencilShelf, hardwareDrawRegion),
+	FORWARD_list(PencilShelf, hardwareDrawRoundRect),
+	FORWARD_list(PencilShelf, hardwareDrawTriangle),
 	FORWARD_list(PencilShelf, hardwareDrawSubstring),
 	FORWARD_list(PencilShelf, hardwareDrawXRGB32Region),
+	FORWARD_list(PencilShelf, hardwareFillArc),
+	FORWARD_list(PencilShelf, hardwareFillPolygon),
 	FORWARD_list(PencilShelf, hardwareFillRect),
+	FORWARD_list(PencilShelf, hardwareFillRoundRect),
 	FORWARD_list(PencilShelf, hardwareFillTriangle),
+	FORWARD_list(PencilShelf, hardwareGetPixelFormat),
+	FORWARD_list(PencilShelf, hardwareGetRegion),
 	FORWARD_list(PencilShelf, hardwareHasAlpha),
 	FORWARD_list(PencilShelf, hardwareSetAlphaColor),
 	FORWARD_list(PencilShelf, hardwareSetBlendingMode),
