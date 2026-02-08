@@ -144,21 +144,16 @@ target_include_directories(TACTest PUBLIC
 
 # Depend on the core
 add_dependencies(BasicTest Core)
-target_link_libraries(BasicTest PUBLIC
+squirreljme_link_libraries_required(BasicTest PUBLIC
 	Core)
 
 add_dependencies(NanoTest Core)
-target_link_libraries(TACTest PUBLIC
+squirreljme_link_libraries_required(NanoTest PUBLIC
 	Core)
 
 add_dependencies(TACTest Core)
-target_link_libraries(TACTest PUBLIC
+squirreljme_link_libraries_required(TACTest PUBLIC
 	Core)
-
-# Link required libraries
-squirreljme_target_link_libraries_required(BasicTest)
-squirreljme_target_link_libraries_required(NanoTest)
-squirreljme_target_link_libraries_required(TACTest)
 
 # Include debugging info for tests
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
