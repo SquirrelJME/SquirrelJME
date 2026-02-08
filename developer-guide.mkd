@@ -195,6 +195,16 @@ The following plugins are recommended:
    is its own JDK.
    * <https://plugins.jetbrains.com/plugin/10480-embeddedprojectjdk>
 
+## Build Issues
+
+### Cleaning your entire tree
+
+Your entire source tree along with everything can be wiped cleaned with
+the following commands, _NOTE THAT THIS WILL DELETE EVERYTHING_:
+
+ * Fossil: `fossil clean -x -v`
+ * Git: `git clean -x -f -d`
+
 ## Custom File Type for Jasmin
 
 IntelliJ supports custom file type definitions, the following is for

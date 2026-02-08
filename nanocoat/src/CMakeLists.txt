@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # Declare library
-squirreljme_multilib_add_static_library(Core
+squirreljme_multilib_add_library(Core
 	access.c
 	allocSizeOf.c
 	boot.c
@@ -67,5 +67,14 @@ squirreljme_multilib_add_static_library(Core
 	walkDebug.c)
 
 # Include main headers
-squirreljme_multilib_static_target_include_directories(Core
+squirreljme_multilib_include_directories(Core PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
+
+# Core needs base to function
+squirreljme_multilib_link_libraries_required(Core PUBLIC
+	BaseStatic)
+
+# The core library is rather important!
+squirreljme_multilib_export(Core)
+squirreljme_multilib_install(Core)
+

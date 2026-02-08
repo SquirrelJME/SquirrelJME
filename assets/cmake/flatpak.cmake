@@ -60,6 +60,5 @@ if(Flatpak_EXECUTABLE AND FlatpakBuilder_EXECUTABLE)
 		SQUIRRELJME_OUTPUT_TYPE "flatpak")
 
 	# This does get uploaded to Fossil
-	list(APPEND SQUIRRELJME_UPLOAD_TARGETS
-		flatpakBundle)
+	squirreljme_fossil_upload_register(flatpakBundle)
 endif()

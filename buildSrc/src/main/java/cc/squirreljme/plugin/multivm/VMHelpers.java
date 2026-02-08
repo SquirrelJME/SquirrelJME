@@ -714,12 +714,10 @@ public final class VMHelpers
 		Project emuBase = __anyProject.getRootProject()
 			.findProject(":emulators:emulator-base");
 		
-		// Get the CMake Task for this
-		CMakeBuildTask cmake = (CMakeBuildTask)emuBase.getTasks()
-			.getByName("libNativeEmulatorBase");
-		
-		// Use the resultant library
-		return cmake.cmakeOutFile;
+		// Use the emulator base library
+		return emuBase.getBuildDir().toPath().resolve("bin")
+			.resolve(System.mapLibraryName("emulator-base"))
+			.toAbsolutePath().normalize();
 	}
 	
 	/**

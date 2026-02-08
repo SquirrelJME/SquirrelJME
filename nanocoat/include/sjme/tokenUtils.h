@@ -159,6 +159,99 @@ extern "C"
 	SJME_TOKEN_PASTE6(a, b, c, d, e, f)
 
 /**
+ * Pastes seven tokens together.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @param f The sixth token.
+ * @param g The seventh token.
+ * @since 2026/02/07
+ */
+#define SJME_TOKEN_PASTE7(a, b, c, d, e, f, g) a##b##c##d##e##f##g
+
+/**
+ * Pasting seven tokens but with preprocessing.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @param f The sixth token.
+ * @param g The seventh token.
+ * @since 2026/02/07
+ */
+#define SJME_TOKEN_PASTE7_PP(a, b, c, d, e, f, g) \
+	SJME_TOKEN_PASTE7(a, b, c, d, e, f, g)
+
+/**
+ * Pastes eight tokens together.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @param f The sixth token.
+ * @param g The seventh token.
+ * @param h The eighth token.
+ * @since 2026/02/07
+ */
+#define SJME_TOKEN_PASTE8(a, b, c, d, e, f, g, h) a##b##c##d##e##f##g##h
+
+/**
+ * Pasting eight tokens but with preprocessing.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @param f The sixth token.
+ * @param g The seventh token.
+ * @param h The eighth token.
+ * @since 2026/02/07
+ */
+#define SJME_TOKEN_PASTE8_PP(a, b, c, d, e, f, g, h) \
+	SJME_TOKEN_PASTE8(a, b, c, d, e, f, g, h)
+
+/**
+ * Pastes nine tokens together.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @param f The sixth token.
+ * @param g The seventh token.
+ * @param h The eighth token.
+ * @param i The ninth token.
+ * @since 2026/02/07
+ */
+#define SJME_TOKEN_PASTE9(a, b, c, d, e, f, g, h, i) a##b##c##d##e##f##g##h##i
+
+/**
+ * Pasting nine tokens but with preprocessing.
+ *
+ * @param a The first token.
+ * @param b The second token.
+ * @param c The third token.
+ * @param d The fourth token.
+ * @param e The fifth token.
+ * @param f The sixth token.
+ * @param g The seventh token.
+ * @param h The eighth token.
+ * @param i The ninth token.
+ * @since 2026/02/07
+ */
+#define SJME_TOKEN_PASTE9_PP(a, b, c, d, e, f, g, h, i) \
+	SJME_TOKEN_PASTE9(a, b, c, d, e, f, g, h, i)
+
+/**
  * Stringifies the given token.
  * 
  * @param s The token to stringify.

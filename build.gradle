@@ -25,6 +25,7 @@ idea
 		excludeDirs += file(".circleci")
 		excludeDirs += file(".fossil-settings")
 		excludeDirs += file(".github")
+		excludeDirs += file(".gemini")
 		excludeDirs += file(".idea")
 		excludeDirs += file(".vscode")
 		excludeDirs += file(".settings")

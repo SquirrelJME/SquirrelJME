@@ -13,7 +13,7 @@ if(SQUIRRELJME_IS_LIBRETRO)
 	# native libraries of any kind
 	add_compile_definitions(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT=1)
 
-	# Disable ScritchUI dynamic libraries
+	# Disable ScritchUi dynamic libraries
 	add_compile_definitions(SJME_CONFIG_SCRITCHUI_NO_DYLIB=1)
 	set(SQUIRRELJME_SCRITCHUI_NO_DYLIB ON)
 endif()

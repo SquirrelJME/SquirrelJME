@@ -51,6 +51,12 @@ if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 		CHECK_INCLUDE_FILE("jvm.h" SQUIRRELJME_HAS_NATIVE_JVM)
 		unset(CMAKE_REQUIRED_INCLUDES)
 
+		# Direct path to the JVM library?
+		if(JAVA_JVM_LIBRARY)
+			set(SQUIRRELJME_JAVA_JVM_LIBRARY
+				"${JAVA_JVM_LIBRARY}")
+		endif()
+
 		# Were there actual JNI headers?
 		if(SQUIRRELJME_HAS_NATIVE_JNI)
 			# Strip NOTFOUND
@@ -86,8 +92,12 @@ if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 		endif()
 	endif()
 
+	# Do not export own JNI/JVM
+	set(SQUIRRELJME_EXPORT_OWN_JNI_JVM NO)
+
 # Otherwise emit a notice due to cross-compile
 else()
+	set(SQUIRRELJME_EXPORT_OWN_JNI_JVM YES)
 	message(STATUS "Not using the system JNI due to cross-compilation!")
 endif()
 

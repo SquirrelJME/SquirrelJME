@@ -6,14 +6,8 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# We need to know where X11 is
-squirreljme_include("find-x11.cmake")
-
 # Declare base library
-add_library(ScritchUIX11 SHARED
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUICore_FPIC}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchUIFB_FPIC}>
+squirreljme_scritchany_add_library(ui X11
 	x11Component.c
 	x11Container.c
 	x11Core.c
@@ -29,28 +23,9 @@ add_library(ScritchUIX11 SHARED
 	x11View.c
 	x11Window.c)
 
-# Always make it PIC
-squirreljme_always_fpic(ScritchUIX11)
+squirreljme_scritchany_standard_properties(ui X11)
 
 # Include main headers
-target_include_directories(ScritchUIX11 PUBLIC
-	"${CMAKE_SOURCE_DIR}/include")
-target_include_directories(ScritchUIX11 SYSTEM PRIVATE
+squirreljme_scritchany_include_directories(ui X11 SYSTEM PRIVATE
 	${X11_INCLUDE_DIR}
 	${X11_INCLUDE_DIRS})
-
-# Link in X11
-target_link_directories(ScritchUIX11 PUBLIC
-	${X11_LIBRARY_DIRS})
-target_link_libraries(ScritchUIX11
-	${X11_LIBRARIES})
-
-# ScritchUI requires a normalized library name
-squirreljme_target_binary_name(ScritchUIX11
-	"squirreljme-scritchui-x11")
-squirreljme_target_binary_output(ScritchUIX11
-	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
-
-# Generate exports
-squirreljme_target_shared_library_exports(ScritchUIX11)
-

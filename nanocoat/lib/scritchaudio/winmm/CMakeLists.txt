@@ -7,35 +7,15 @@
 # ---------------------------------------------------------------------------
 
 # Declare base library
-add_library(ScritchAudioWinMM SHARED
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_Base_FPIC}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchAudioCore_FPIC}>
-	$<TARGET_OBJECTS:${SQUIRRELJME_LIB_ScritchAudioSoftMix_FPIC}>
+squirreljme_scritchany_add_library(audio WinMM
 	winmmCore.c
 	winmmLoop.c
 	winmmMidi.c
 	winmmStream.c)
 
 # Standard properties for dynamic libraries
-squirreljme_dylib_standard_properties(ScritchAudioWinMM)
-
-# The file where the include lives
-target_compile_definitions(ScritchAudioWinMM PUBLIC
-	SQUIRRELJME_OSS_INCLUDE_FILE="${OSS_INCLUDE_FILE}")
-
-# Include main headers
-target_include_directories(ScritchAudioWinMM PUBLIC
-	"${CMAKE_SOURCE_DIR}/include")
+squirreljme_scritchany_standard_properties(audio WinMM)
 
 # Windows Multimedia Library is needed here
-target_link_libraries(ScritchAudioWinMM PUBLIC
+squirreljme_scritchany_link_libraries(audio WinMM PUBLIC
 	"winmm${SQUIRRELJME_WIN_LIB_SUFFIX}")
-
-# ScritchAudio requires a normalized library name
-squirreljme_target_binary_name(ScritchAudioWinMM
-	"squirreljme-scritchaudio-winmm")
-squirreljme_target_binary_output(ScritchAudioWinMM
-	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
-
-# Generate exports
-squirreljme_target_shared_library_exports(ScritchAudioWinMM)

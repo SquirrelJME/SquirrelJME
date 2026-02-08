@@ -341,7 +341,7 @@ public class DylibScritchInterface
 		try (InputStream in = DylibScritchInterface.class
 			.getResourceAsStream(
 				NativeBinding.nativePrefix() +
-					"/libsquirreljme-scritchui.list"))
+					"/ScritchUi.list"))
 		{
 			if (in == null)
 				throw new MLECallError(
