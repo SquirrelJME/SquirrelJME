@@ -71,7 +71,6 @@ function(squirreljme_fossil_upload target)
 		message(FATAL_ERROR "Target ${target} is missing either "
 			"SQUIRRELJME_OUTPUT_PATH (${outputPath}) or "
 			"SQUIRRELJME_OUTPUT_TYPE (${outputType})!")
-		return()
 	endif()
 
 	# Multiple files specified?

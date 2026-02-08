@@ -92,6 +92,10 @@ function(squirreljme_natives_append_rule newRule systemNormal archNormal
 			ALL
 			DEPENDS ${newRule})
 
+		# Make sure it really depends on this
+		add_dependencies(${ruleName}
+			${newRule})
+
 		# Always build defaults
 		set_target_properties(${ruleName} PROPERTIES
 			EXCLUDE_FROM_ALL NO)
@@ -106,8 +110,10 @@ function(squirreljme_natives_append_rule newRule systemNormal archNormal
 			SQUIRRELJME_OUTPUT_TYPE)
 
 		# Add it to the standalone and system merge set
-		get_property(mergeSet GLOBAL PROPERTY SQUIRRELJME_STANDALONE_MERGE_SET)
-		get_property(systemSet GLOBAL PROPERTY SQUIRRELJME_STANDALONE_SYSTEM_SET)
+		get_property(mergeSet GLOBAL PROPERTY
+			SQUIRRELJME_STANDALONE_MERGE_SET)
+		get_property(systemSet GLOBAL PROPERTY
+			SQUIRRELJME_STANDALONE_SYSTEM_SET)
 		if(NOT "${mergeSet}" STREQUAL "mergeSet-NOTFOUND")
 			list(APPEND mergeSet "${newRule}")
 			set_property(GLOBAL PROPERTY SQUIRRELJME_STANDALONE_MERGE_SET
@@ -132,9 +138,11 @@ function(squirreljme_natives_append_rule newRule systemNormal archNormal
 
 	# Regardless of what we did, we want to upload this to Fossil if not
 	# cached or download
-	if("${method}" STREQUAL "compiler" AND
-		NOT "${archNormal}" STREQUAL "base")
-		squirreljme_fossil_upload(${newRule})
+	if(NOT "${archNormal}" STREQUAL "base")
+		if("${method}" STREQUAL "compiler" OR
+			"${method}" STREQUAL "generator")
+			squirreljme_fossil_upload(${newRule})
+		endif()
 	endif()
 endfunction()
 
