@@ -129,20 +129,19 @@ function(squirreljme_natives_append_rule newRule systemNormal archNormal
 				"${systemNormal}!${archNormal}")
 		endif()
 
+		# Upload the default to Fossil
+		string(FIND "${method}" "generator." hasGenerator)
+		if(NOT "${archNormal}" STREQUAL "base")
+			if("${method}" STREQUAL "compiler" OR
+				"${hasGenerator}" EQUAL "0")
+				squirreljme_fossil_upload(${newRule})
+			endif()
+		endif()
 	# Not first order
 	else()
 		# Note it
 		message(STATUS "Target ${systemNormal}/${archNormal}: "
 			"${newRule}")
-	endif()
-
-	# Regardless of what we did, we want to upload this to Fossil if not
-	# cached or download
-	if(NOT "${archNormal}" STREQUAL "base")
-		if("${method}" STREQUAL "compiler" OR
-			"${method}" STREQUAL "generator")
-			squirreljme_fossil_upload(${newRule})
-		endif()
 	endif()
 endfunction()
 
