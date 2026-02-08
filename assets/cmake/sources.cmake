@@ -24,6 +24,7 @@ if(Fossil_EXECUTABLE)
 			"--name" "${archiveBase}"
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${zipPath}"
+		ALL
 		COMMENT "Archiving Zip Source..."
 		COMMAND_EXPAND_LISTS)
 
@@ -36,6 +37,7 @@ if(Fossil_EXECUTABLE)
 			"--name" "${archiveBase}"
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${tgzPath}"
+		ALL
 		COMMENT "Archiving Tarball Source..."
 		COMMAND_EXPAND_LISTS)
 
@@ -51,6 +53,7 @@ elseif(Git_EXECUTABLE)
 			"-o" "${zipPath}"
 			"${SQUIRRELJME_VERSION_ID_GIT}"
 		BYPRODUCTS "${zipPath}"
+		ALL
 		COMMENT "Archiving Zip Source..."
 		COMMAND_EXPAND_LISTS)
 
@@ -64,6 +67,7 @@ elseif(Git_EXECUTABLE)
 			"-o" "${tgzPath}"
 			"${SQUIRRELJME_VERSION_ID_GIT}"
 		BYPRODUCTS "${tgzPath}"
+		ALL
 		COMMENT "Archiving Tarball Source..."
 		COMMAND_EXPAND_LISTS)
 endif()
@@ -73,10 +77,12 @@ if(Fossil_EXECUTABLE OR Git_EXECUTABLE)
 	# Output where the binaries were placed
 	set_target_properties(sourceZip PROPERTIES
 		SQUIRRELJME_OUTPUT_PATH "${zipPath}"
-		SQUIRRELJME_OUTPUT_TYPE "source")
+		SQUIRRELJME_OUTPUT_TYPE "source"
+		EXCLUDE_FROM_ALL NO)
 	set_target_properties(sourceTgz PROPERTIES
 		SQUIRRELJME_OUTPUT_PATH "${tgzPath}"
-		SQUIRRELJME_OUTPUT_TYPE "source")
+		SQUIRRELJME_OUTPUT_TYPE "source"
+		EXCLUDE_FROM_ALL NO)
 
 	# These get uploaded into Fossil
 	squirreljme_fossil_upload_register(sourceZip sourceTgz)

@@ -50,9 +50,10 @@ function(squirreljme_fossil_upload_single target named outputPath outputType)
 	if("${outputType}" STREQUAL "natives")
 		add_dependencies(fossilUpload.onlyNatives
 			${uploadTarget})
+	endif()
 
 	# Install4J Target?
-	elseif("${outputType}" STREQUAL "install4j")
+	if("${outputType}" STREQUAL "install4j")
 		add_dependencies(fossilUpload.install4j
 			${uploadTarget})
 	endif()
@@ -70,7 +71,6 @@ function(squirreljme_fossil_upload target)
 		message(FATAL_ERROR "Target ${target} is missing either "
 			"SQUIRRELJME_OUTPUT_PATH (${outputPath}) or "
 			"SQUIRRELJME_OUTPUT_TYPE (${outputType})!")
-		return()
 	endif()
 
 	# Multiple files specified?

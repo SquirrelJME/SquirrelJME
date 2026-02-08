@@ -123,7 +123,7 @@ function(squirreljme_copy_properties fromTarget toTarget)
 		get_target_property(value ${fromTarget} ${property})
 
 		# Copy it over, if set
-		if(NOT "${value}" STREQUAL "")
+		if(NOT "${value}" STREQUAL "${property}-NOTFOUND")
 			set_target_properties(${toTarget} PROPERTIES
 				"${property}" "${value}")
 		endif()

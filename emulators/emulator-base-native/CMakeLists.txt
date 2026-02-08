@@ -186,12 +186,14 @@ ExternalProject_Add(SquirrelJME
 	INSTALL_COMMAND ""
 	TEST_COMMAND ""
 	TEST_EXCLUDE_FROM_MAIN YES
-	CONFIGURE_HANDLED_BY_BUILD NO
-	STEP_TARGETS Configure BaseStatic libJvmDyLib SquirrelJME
-		ScritchAudio ScritchUi)
+#	STEP_TARGETS RunConfigureStep BaseStatic libJvmDyLib SquirrelJME
+#		ScritchAudio ScritchUi
+	CONFIGURE_HANDLED_BY_BUILD NO)
 
 # Configure step, since it seems to be missing
-ExternalProject_Add_Step(SquirrelJME Configure
+# Cannot be called Configure because build systems with case insensitive rules
+# will clash with built-in "configure"
+ExternalProject_Add_Step(SquirrelJME RunConfigureStep
 	COMMENT "Configuring NanoCoat..."
 	COMMAND "${CMAKE_COMMAND}"
 		"-C" "${cacheFile}"
@@ -199,11 +201,16 @@ ExternalProject_Add_Step(SquirrelJME Configure
 		"-T" "${CMAKE_GENERATOR_TOOLSET}"
 		"-A" "${CMAKE_GENERATOR_PLATFORM}"
 		"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
-		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+	INDEPENDENT)
+ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep
+	SquirrelJME-RunConfigureStep)
 
 # Additional clean files for the configuration step
-set_target_properties(SquirrelJME-Configure PROPERTIES
-	ADDITIONAL_CLEAN_FILES "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+if(TARGET SquirrelJME-RunConfigureStep)
+	set_target_properties(SquirrelJME-RunConfigureStep PROPERTIES
+		ADDITIONAL_CLEAN_FILES "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+endif()
 
 # Add macro since these are all the same
 macro(squirreljme_external_step target)
@@ -212,7 +219,9 @@ macro(squirreljme_external_step target)
 		COMMAND "${CMAKE_COMMAND}"
 			"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 			"--target" ${target}
-		DEPENDS SquirrelJME-Configure)
+		INDEPENDENT)
+	ExternalProject_Add_StepTargets(SquirrelJME ${target}
+		SquirrelJME-${target})
 endmacro()
 
 # Add steps
@@ -224,7 +233,7 @@ squirreljme_external_step(SquirrelJME)
 
 # Correct dependencies
 ExternalProject_Add_StepDependencies(SquirrelJME BaseStatic
-	SquirrelJME-Configure)
+	SquirrelJME-RunConfigureStep)
 ExternalProject_Add_StepDependencies(SquirrelJME ScritchAudio
 	SquirrelJME-BaseStatic)
 ExternalProject_Add_StepDependencies(SquirrelJME ScritchUi
@@ -269,6 +278,8 @@ add_library(libEmulatorBase SHARED
 	c/utils.c)
 
 # The base static library is needed first
+# Dependencies are handled by DEPENDERS, since this cannot be reliably called
+# especially for plain makefiles
 add_dependencies(libEmulatorBase
 	SquirrelJME-BaseStatic
 	SquirrelJME-libJvmDyLib)
@@ -341,9 +352,7 @@ add_custom_target(bundleNatives
 			# Copy files
 			"$<TARGET_FILE:libEmulatorBase>"
 			"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin/${exeName}"
-	DEPENDS SquirrelJME-Configure
-		SquirrelJME-ScritchAudio SquirrelJME-ScritchUi
-		SquirrelJME-SquirrelJME libEmulatorBase
+	DEPENDS libEmulatorBase
 	WORKING_DIRECTORY "${nativesDir}"
 	BYPRODUCTS "${nativesZip}" "${nativesZipSimple}"
 	COMMENT "Bundling natives..."

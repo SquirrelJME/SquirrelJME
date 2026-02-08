@@ -11,7 +11,8 @@
 macro(squirreljme_natives_build systemNormal archNormal configureRuleName
 	buildRuleName buildPath method)
 	# Where are all the packaged natives placed?
-	set(packagePath "${buildPath}/bin/natives-${systemNormal}-${archNormal}.zip")
+	set(packagePath
+		"${buildPath}/bin/natives-${systemNormal}-${archNormal}.zip")
 
 	# Setup rule to build
 	add_custom_target(${buildRuleName}
