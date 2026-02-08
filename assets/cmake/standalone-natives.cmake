@@ -47,6 +47,9 @@ list(APPEND SQUIRRELJME_KNOWN_NATIVES
 define_property(GLOBAL PROPERTY SQUIRRELJME_STANDALONE_MERGE_SET
 	BRIEF_DOCS "Targets which are part of the standalone merge set."
 	FULL_DOCS "Targets which are part of the standalone merge set.")
+define_property(GLOBAL PROPERTY SQUIRRELJME_STANDALONE_SYSTEM_SET
+	BRIEF_DOCS "Systems which are part of the standalone merge set."
+	FULL_DOCS "Systems which are part of the standalone merge set.")
 
 # Appends a native rule for a given method with the given system and
 # architecture
@@ -101,15 +104,22 @@ function(squirreljme_natives_append_rule newRule systemNormal archNormal
 			SQUIRRELJME_OUTPUT_PATH
 			SQUIRRELJME_OUTPUT_TYPE)
 
-		# Add it to the standalone merge set
+		# Add it to the standalone and system merge set
 		get_property(mergeSet GLOBAL PROPERTY SQUIRRELJME_STANDALONE_MERGE_SET)
+		get_property(systemSet GLOBAL PROPERTY SQUIRRELJME_STANDALONE_SYSTEM_SET)
 		if(NOT "${mergeSet}" STREQUAL "mergeSet-NOTFOUND")
 			list(APPEND mergeSet "${newRule}")
 			set_property(GLOBAL PROPERTY SQUIRRELJME_STANDALONE_MERGE_SET
 				"${mergeSet}")
+
+			list(APPEND systemSet "${systemNormal}!${archNormal}")
+			set_property(GLOBAL PROPERTY SQUIRRELJME_STANDALONE_SYSTEM_SET
+				"${systemSet}")
 		else()
 			set_property(GLOBAL PROPERTY SQUIRRELJME_STANDALONE_MERGE_SET
 				"${newRule}")
+			set_property(GLOBAL PROPERTY SQUIRRELJME_STANDALONE_SYSTEM_SET
+				"${systemNormal}!${archNormal}")
 		endif()
 
 	# Not first order

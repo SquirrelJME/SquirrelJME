@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="12.0.1" transformSequenceNumber="12">
-  <directoryPresets config="./build/install4j/in/squirreljme-standalone-0.3.0-linux-amd64.jar" />
+  <directoryPresets config="." />
   <application name="SquirrelJME" applicationId="5232-9992-4953-4137" mediaDir="./build/install4j/out" compression="9" lzmaCompression="true" pack200Compression="true" shortName="squirreljme" publisher="Stephanie Gawroriski" publisherWeb="https://squirreljme.cc/" version="0.3.0_0" allPathsRelative="true" backupOnSave="true" autoSave="true" macVolumeId="b44c0629f58949ee" javaMinVersion="1.8.0_452" javaMaxVersion="11">
     <variables>
       <variable name="squirreljme.installer_version" value="0_3_0" description="Installer version string." />
@@ -1273,8 +1273,11 @@ return true;</property>
     <unixInstaller name="Solaris AMD64 Installer" id="31" mediaFileName="${compiler:sys.shortName}_solaris-amd64_${compiler:squirreljme.installer_version}">
       <jreBundle jdkProviderId="Adoptium" release="8/latest" overrideJdkRelease="true" platform="solaris-amd64" />
     </unixInstaller>
-    <macosFolder name="macOS Folder" id="32" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:squirreljme.installer_version}" architecture="universal" compressDmg="true">
+    <macosFolder name="macOS Folder" id="32" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:squirreljme.installer_version}" architecture="universal">
       <jreBundle jdkProviderId="Adoptium" release="11/latest" overrideJdkRelease="true" />
+      <topLevelFiles>
+        <file name="readme.mkd" file="./readme.mkd" />
+      </topLevelFiles>
     </macosFolder>
     <windowsArchive name="Windows Archive" id="128" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:squirreljme.installer_version}" architecture="64">
       <jreBundle usePack200="true" />

@@ -45,6 +45,7 @@ if(Fossil_EXECUTABLE)
 	# Pseudo targets for uploading everything and only natives
 	add_custom_target(fossilUpload)
 	add_custom_target(fossilUpload.onlyNatives)
+	add_custom_target(fossilUpload.install4j)
 
 	# Never add these to all!
 	set_target_properties(fossilUpload PROPERTIES

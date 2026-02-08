@@ -7,22 +7,10 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Fossil site inner script
 
-# Upload to fossil
-function(squirreljme_fossil_upload target)
-	# Get the output path and type for the target
-	get_target_property(outputPath ${target} SQUIRRELJME_OUTPUT_PATH)
-	get_target_property(outputType ${target} SQUIRRELJME_OUTPUT_TYPE)
-
-	# These are required
-	if("${outputPath}" STREQUAL "" OR
-		"${outputType}" STREQUAL "")
-		message(FATAL_ERROR "Target ${target} is missing either "
-			"SQUIRRELJME_OUTPUT_PATH (${outputPath}) or "
-			"SQUIRRELJME_OUTPUT_TYPE (${outputType})!")
-	endif()
-
+# Upload path and type to Fossil
+function(squirreljme_fossil_upload_single target named outputPath outputType)
 	# Determine the upload target name
-	set(uploadTarget "fossilUpload.${target}")
+	set(uploadTarget "fossilUpload.${named}")
 
 	# Determine the base name of the output
 	squirreljme_basename_path(outputBase "${outputPath}")
@@ -57,9 +45,49 @@ function(squirreljme_fossil_upload target)
 	# Have the general rules depend on this
 	add_dependencies(fossilUpload
 		${uploadTarget})
+
+	# Native target?
 	if("${outputType}" STREQUAL "natives")
 		add_dependencies(fossilUpload.onlyNatives
 			${uploadTarget})
+
+	# Install4J Target?
+	elseif("${outputType}" STREQUAL "install4j")
+		add_dependencies(fossilUpload.install4j
+			${uploadTarget})
+	endif()
+endfunction()
+
+# Upload to fossil
+function(squirreljme_fossil_upload target)
+	# Get the output path and type for the target
+	get_target_property(outputPath ${target} SQUIRRELJME_OUTPUT_PATH)
+	get_target_property(outputType ${target} SQUIRRELJME_OUTPUT_TYPE)
+
+	# These are required
+	if("${outputPath}" STREQUAL "" OR
+		"${outputType}" STREQUAL "")
+		message(FATAL_ERROR "Target ${target} is missing either "
+			"SQUIRRELJME_OUTPUT_PATH (${outputPath}) or "
+			"SQUIRRELJME_OUTPUT_TYPE (${outputType})!")
+		return()
+	endif()
+
+	# Multiple files specified?
+	if("${outputType}" STREQUAL "install4j")
+		foreach(subFile IN LISTS outputPath)
+			# Determine base name
+			squirreljme_basename_path(subBase "${subFile}")
+
+			# Add upload target
+			squirreljme_fossil_upload_single(${target} ${target}.${subBase}
+				"${subFile}" "${outputType}")
+		endforeach()
+
+	# Only single file
+	else()
+		squirreljme_fossil_upload_single(${target} ${target}
+			"${outputPath}" "${outputType}")
 	endif()
 endfunction()
 
