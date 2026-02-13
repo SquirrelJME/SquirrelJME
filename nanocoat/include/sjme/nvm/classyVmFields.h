@@ -97,7 +97,7 @@ typedef union sjme_nvm_valueSetRaw
 struct sjme_nvm_valueSet
 {
 	/** The type of value this stores. */
-	sjme_extendedTypeId type;
+	sjme_basicTypeId type;
 	
 	/** The number of items in this tread. */
 	sjme_jint length;
@@ -183,6 +183,7 @@ typedef enum sjme_nvm_vmField_var
  * Non-atomically reads the value into another value type.
  * 
  * @param srcValue The value storage to access.
+ * @param srcType The source type.
  * @param SJME_VLG_ Pass via @code SJME_VLG_ @endcode macros.
  * @param ... Pass via @code SJME_VLG_ @endcode macros.
  * @return Any resultant error, if any.
@@ -190,6 +191,7 @@ typedef enum sjme_nvm_vmField_var
  */
 sjme_errorCode sjme_nvm_vmField_cisGet(
 	sjme_attrInNotNull const sjme_nvm_value* srcValue,
+	sjme_attrInValue sjme_basicTypeId srcType,
 	sjme_attrInRange(-SJME_NVM_VMFIELD_NUM_VAR, 0)
 		sjme_nvm_vmField_var SJME_VLG_,
 	...);
@@ -216,6 +218,7 @@ sjme_errorCode sjme_nvm_vmField_cisGetS(
  * Non-atomically sets the value to the given value.
  * 
  * @param destValue The value storage to access.
+ * @param destType The destination type.
  * @param commit Garbage collection commit.
  * @param SJME_VLS_ Pass via @code SJME_VLS_ @endcode macros.
  * @param ... Pass via @code SJME_VLS_ @endcode macros.
@@ -224,6 +227,7 @@ sjme_errorCode sjme_nvm_vmField_cisGetS(
  */
 sjme_errorCode sjme_nvm_vmField_cisSet(
 	sjme_attrInOutNotNull sjme_nvm_value* destValue,
+	sjme_attrInValue sjme_basicTypeId destType,
 	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInRange(0, SJME_NVM_VMFIELD_NUM_VAR)
 		sjme_nvm_vmField_var SJME_VLS_,
@@ -410,6 +414,20 @@ sjme_errorCode sjme_nvm_vmField_idByNameTypeU(
 	sjme_attrInPositive sjme_lpcstr inName,
 	sjme_attrInPositive sjme_lpcstr inType,
 	sjme_attrOutNotNull sjme_jfieldID* outID);
+
+/**
+ * Calculates the size of a @link sjme_nvm_valueSet @endlink.
+ * 
+ * @param outSize The resultant size of the @link sjme_nvm_valueSet @endlink.
+ * @param type The type the value set stores.
+ * @param length The number of elements to store.
+ * @return Any resultant error, if any.
+ * @since 2026/02/09
+ */
+sjme_errorCode sjme_nvm_vmField_sizeValueSet(
+	sjme_attrOutNotNull sjme_jint* outSize,
+	sjme_attrInValue sjme_extendedTypeId type,
+	sjme_attrInPositive sjme_jint length);
 	
 /**
  * Locates the source field in the given class chain for the given static

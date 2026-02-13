@@ -282,7 +282,8 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 		accessor = sjme_nvm_instance_fieldAccessor(
 			SJME_AS_JOBJECT(toss), causeID);
 		if (sjme_error_is(error = sjme_nvm_vmField_cisSet(
-			accessor, NULL, SJME_VLS_JOBJECT(toss))))
+			accessor, causeID->info->basicType,
+			NULL, SJME_VLS_JOBJECT(toss))))
 			return sjme_error_vmError(inThread, error);
 	}
 

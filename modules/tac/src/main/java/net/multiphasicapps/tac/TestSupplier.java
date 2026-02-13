@@ -23,6 +23,16 @@ public abstract class TestSupplier<R>
 	extends __CoreTest__
 {
 	/**
+	 * Implicit constructor, initializes anything as needed.
+	 *
+	 * @since 2026/02/12
+	 */
+	@SquirrelJMEVendorApi
+	public TestSupplier()
+	{
+	}
+	
+	/**
 	 * Runs the specified test.
 	 *
 	 * @return The result.

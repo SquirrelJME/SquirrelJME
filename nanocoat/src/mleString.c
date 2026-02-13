@@ -112,9 +112,9 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, chars)
 	if (string == NULL || array == NULL ||
 		!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE) ||
 		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		array->type != SJME_BASIC_TYPE_ID_CHARACTER ||
+		array->e.type != SJME_BASIC_TYPE_ID_CHARACTER ||
 		off < 0 || len < 0 || (off + len) < 0 ||
-		(off + len) > array->length)
+		(off + len) > array->e.length)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Lock the string. */
@@ -228,7 +228,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 	if (source == NULL || dest == NULL ||
 		!sjme_nvm_isAR(source, SJME_NVM_STRUCT_STRING_INSTANCE) ||
 		!sjme_nvm_isAR(dest, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		dest->type != SJME_BASIC_TYPE_ID_CHARACTER)
+		dest->e.type != SJME_BASIC_TYPE_ID_CHARACTER)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has the sequence ever been initialized? */
@@ -240,7 +240,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 	if (sourceOff < 0 || destOff < 0 || len < 0 ||
 		(sourceOff + len) < 0 || (destOff + len) < 0 ||
 		(sourceOff + len) > seq->length ||
-		(destOff + len) > dest->length)
+		(destOff + len) > dest->e.length)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Read characters into the target. */
@@ -269,7 +269,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Must be a char array. */
-	if (array->type != SJME_BASIC_TYPE_ID_CHARACTER)
+	if (array->e.type != SJME_BASIC_TYPE_ID_CHARACTER)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Read offset and length. */
@@ -283,7 +283,8 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 	/* Wrap a wide sequence. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(error = sjme_charSeq_newWideStatic(&seq,
-		(sjme_jchar*)&array->e.values.c[0], off, array->length)))
+		(sjme_jchar*)&array->e.values.c[0], off, 
+		array->e.length)))
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
 	/* Obtain string value from the sequence. */

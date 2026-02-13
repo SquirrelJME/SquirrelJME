@@ -31,7 +31,7 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Remember the length, since we will be locking. */
-	length = array->length;
+	length = array->e.length;
 
 	/* Allocate a new array which uses the same type. */
 	clone = NULL;
@@ -44,7 +44,7 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
 		goto fail_alloc;
 
 	/* If this is an object array, copy over all values one by one. */
-	if (array->type == SJME_JAVA_TYPE_ID_OBJECT)
+	if (array->e.type == SJME_JAVA_TYPE_ID_OBJECT)
 		for (i = 0; i < length; i++)
 		{
 			/* Read the reference. */
@@ -62,7 +62,7 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
 	/* Copy all values over. */
 	else
 		memmove(&clone->e, &array->e,
-			sjme_nvm_typeMul[array->type] * length);
+			sjme_nvm_typeMul[array->e.type] * length);
 
 	/* Release lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -104,14 +104,14 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(arrayCopy, generic)
 	if (src == NULL || dst == NULL ||
 		!sjme_nvm_isAR(src, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
 		!sjme_nvm_isAR(dst, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		src->type != dst->type ||
-		srcOff < 0 || (srcOff + len) < 0 || (srcOff + len) > src->length ||
-		dstOff < 0 || (dstOff + len) < 0 || (dstOff + len) > dst->length ||
+		src->e.type != dst->e.type ||
+		srcOff < 0 || (srcOff + len) < 0 || (srcOff + len) > src->e.length ||
+		dstOff < 0 || (dstOff + len) < 0 || (dstOff + len) > dst->e.length ||
 		len < 0)
 		return SJME_ERROR_MLE_CALL;
 
 	/* This is just a memmove, based on the actual type size. */
-	mul = sjme_nvm_typeMul[src->type];
+	mul = sjme_nvm_typeMul[src->e.type];
 	memmove(SJME_POINTER_OFFSET(&dst->e, dstOff * mul),
 		SJME_POINTER_OFFSET(&src->e, srcOff * mul),
 		mul * len);
@@ -143,11 +143,11 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(arrayFill, generic)
 	/* Check arguments. */
 	if (into == NULL ||
 		!sjme_nvm_isAR(into, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		off < 0 || len < 0 || (off + len) < 0 || (off + len) > into->length)
+		off < 0 || len < 0 || (off + len) < 0 || (off + len) > into->e.length)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Determine the value being written. */
-	mul = sjme_nvm_typeMul[into->type];
+	mul = sjme_nvm_typeMul[into->e.type];
 	memmove(&raw[0], &argV[3].v, mul);
 
 	/* We can optimize this more by filling more bytes at once if the value */
@@ -180,7 +180,7 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayLength)
 	/* If an array, set the length. */
 	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
 	if (sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
-		argR->v.i = array->length;
+		argR->v.i = array->e.length;
 	else
 		argR->v.i = -1;
 

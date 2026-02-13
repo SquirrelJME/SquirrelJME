@@ -239,8 +239,8 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(read, multi)
 	if (pipe == NULL || buf == NULL ||
 		!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE) ||
 		!sjme_nvm_isAR(buf, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		buf->type != SJME_BASIC_TYPE_ID_BYTE ||
-		off < 0 || len < 0 || (off + len) < 0 || (off + len) > buf->length)
+		buf->e.type != SJME_BASIC_TYPE_ID_BYTE ||
+		off < 0 || len < 0 || (off + len) < 0 || (off + len) > buf->e.length)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Not an input pipe? */
@@ -304,8 +304,8 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(write, multi)
 	if (pipe == NULL || buf == NULL ||
 		!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE) ||
 		!sjme_nvm_isAR(buf, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		buf->type != SJME_BASIC_TYPE_ID_BYTE ||
-		off < 0 || len < 0 || (off + len) < 0 || (off + len) > buf->length)
+		buf->e.type != SJME_BASIC_TYPE_ID_BYTE ||
+		off < 0 || len < 0 || (off + len) < 0 || (off + len) > buf->e.length)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Not an output pipe? */

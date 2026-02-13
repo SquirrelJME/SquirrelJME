@@ -214,7 +214,7 @@ static sjme_errorCode sjme_test_nano_uncaught(
 	/* Duplicate string so the object can go through normal GC. */
 	if (sjme_error_is(error = sjme_charSeq_dup(SJME_T_S(inThread)->allocPool,
 		&result->exception, sjme_atomic_g(sjme_jclass, 
-			&uncaught->object.isClass)->binaryName)) ||
+			&uncaught->object.isClass)->fieldName)) ||
 		result->exception == NULL)
 		return sjme_die("Failed to dup string: %d", error);
 	

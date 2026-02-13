@@ -22,6 +22,16 @@ public abstract class TestRunnable
 	extends __CoreTest__
 {
 	/**
+	 * Implicit constructor, initializes anything as needed.
+	 *
+	 * @since 2026/02/12
+	 */
+	@SquirrelJMEVendorApi
+	public TestRunnable()
+	{
+	}
+	
+	/**
 	 * Runs the specified test.
 	 *
 	 * @throws Throwable On any thrown exception.

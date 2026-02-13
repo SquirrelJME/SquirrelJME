@@ -24,6 +24,16 @@ public abstract class TestFunction<A, R>
 	extends __CoreTest__
 {
 	/**
+	 * Implicit constructor, initializes anything as needed.
+	 *
+	 * @since 2026/02/12
+	 */
+	@SquirrelJMEVendorApi
+	public TestFunction()
+	{
+	}
+	
+	/**
 	 * Runs the specified test.
 	 *
 	 * @param __a The first parameter.

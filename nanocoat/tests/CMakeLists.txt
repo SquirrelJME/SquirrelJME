@@ -156,16 +156,26 @@ squirreljme_link_libraries_required(TACTest PUBLIC
 	Core)
 
 # Include debugging info for tests
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
+if(CMAKE_BUILD_TYPE STREQUAL "Release" OR
+	CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR
+	CMAKE_BUILD_TYPE STREQUAL "Debug")
 	if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 		target_compile_options(BasicTestLib PRIVATE
 			"-g")
-		target_compile_options(BasicTestLibPIC PRIVATE
+		target_compile_options(BasicTest PRIVATE
+			"-g")
+		target_compile_options(NanoTest PRIVATE
+			"-g")
+		target_compile_options(TACTest PRIVATE
 			"-g")
 	elseif(MSVC)
 		target_compile_options(BasicTestLib PRIVATE
 			"/DEBUG")
-		target_compile_options(BasicTestLibPIC PRIVATE
+		target_compile_options(BasicTest PRIVATE
+			"/DEBUG")
+		target_compile_options(NanoTest PRIVATE
+			"/DEBUG")
+		target_compile_options(TACTest PRIVATE
 			"/DEBUG")
 	endif()
 endif()

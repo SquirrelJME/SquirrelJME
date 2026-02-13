@@ -489,7 +489,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("Binding %s %s%s...",
-			inClass->binaryName,
+			inClass->fieldName,
 			sjme_charSeq_tempUtf(methodInfo->name->seq),
 			sjme_charSeq_tempUtf(methodInfo->type->seq));
 #endif
@@ -513,7 +513,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBinds(
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("Bound `%s` %s.%s:%s -> %s.%s:%s",
-			sjme_charSeq_tempUtf(inClass->binaryName),
+			sjme_charSeq_tempUtf(inClass->fieldName),
 			sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
 				&methodInfo->inClass)->name->seq),
 			sjme_charSeq_tempUtf(methodInfo->name->seq),
@@ -624,7 +624,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	/* Lookup self name. */
 	thisName = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeq(
-		strings, &thisName, inClass->binaryName, 0)) || thisName == NULL)
+		strings, &thisName, inClass->fieldName, 0)) || thisName == NULL)
 		return sjme_error_vmError(contextThread, error);
 	info->name = sjme_weakUpR(sjme_nvm_stringPool_string, thisName);
 
@@ -648,7 +648,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	memset(componentTypeName, 0, sizeof(componentTypeName));
 	snprintf(componentTypeName, SJME_NVM_CLASS_NAME_LIMIT - 1,
 		"%s", (sjme_lpcstr)SJME_POINTER_OFFSET(
-			sjme_charSeq_tempUtf(inClass->binaryName), sizeof(sjme_cchar)));
+			sjme_charSeq_tempUtf(inClass->fieldName), sizeof(sjme_cchar)));
 
 	/* Locate component type of the array. */
 	componentType = NULL;
@@ -701,7 +701,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
 	/* Lookup self name. */
 	thisName = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_locateSeq(
-		strings, &thisName, inClass->binaryName, 0)) || thisName == NULL)
+		strings, &thisName, inClass->fieldName, 0)) || thisName == NULL)
 		return sjme_error_vmError(contextThread, error);
 	info->name = sjme_weakUpR(sjme_nvm_stringPool_string, thisName);
 	
@@ -743,7 +743,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 	/* Determine the file name of the class. */
 	memset(fileName, 0, sizeof(fileName));
 	snprintf(fileName, SJME_NVM_CLASS_NAME_LIMIT - 1,
-		"%s", sjme_charSeq_tempUtf(inClass->binaryName));
+		"%s", sjme_charSeq_tempUtf(inClass->fieldName));
 	memmove(&fileName[0], &fileName[1],
 		sizeof(*fileName) * (SJME_NVM_CLASS_NAME_LIMIT - 2));
 	if (strlen(fileName) > 0)
@@ -903,8 +903,8 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadCheck(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Could it be this one? */
-	if (againstI == maybe->binaryHash &&
-		sjme_charSeq_equalsR(maybe->binaryName, againstP))
+	if (againstI == maybe->fieldHash &&
+		sjme_charSeq_equalsR(maybe->fieldName, againstP))
 		return SJME_ERROR_NONE;
 	
 	/* Not matched. */
@@ -1017,11 +1017,11 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 	autoLoad = SJME_VM_CLASS_INIT_LOAD_NEVER;
 
 	/* Pre-calculate hash. */
-	if (sjme_error_is(error = sjme_charSeq_hash(dupName, &result->binaryHash)))
+	if (sjme_error_is(error = sjme_charSeq_hash(dupName, &result->fieldHash)))
 		goto fail_hash;
 	
 	/* Initialize base fields. */
-	result->binaryName = dupName;
+	result->fieldName = dupName;
 	sjme_atomic_s(sjme_jint, &result->error, SJME_ERROR_NONE);
 	sjme_atomic_s(sjme_jint, &result->isLoaded, 0);
 	sjme_atomic_s(sjme_jint, &result->isInitialized, autoLoad);
@@ -1106,7 +1106,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	}
 	
 	/* This is always set to the @c Class type. */
-	if (sjme_charSeq_equalsUtfR(inClass->binaryName, "Ljava/lang/Class;"))
+	if (sjme_charSeq_equalsUtfR(inClass->fieldName, "Ljava/lang/Class;"))
 		sjme_atomic_s(sjme_jclass, &inClass->object.isClass, inClass);
 	else
 	{
@@ -1127,7 +1127,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	/* Debug. */
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Initializing class: %s",
-		sjme_charSeq_tempUtf(inClass->binaryName));
+		sjme_charSeq_tempUtf(inClass->fieldName));
 #endif
 	
 	/* The class info should now be valid. */
@@ -1322,7 +1322,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		goto fail_releaseLock;
 	
 	/* If this is Object, then implicitly initialize Class as well. */
-	if (sjme_charSeq_equalsUtfR(inClass->binaryName,
+	if (sjme_charSeq_equalsUtfR(inClass->fieldName,
 		"Ljava/lang/Object;"))
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
 			sjme_atomic_g(sjme_jclass, &inClass->object.isClass),
@@ -1428,7 +1428,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 
 	/* Array type? */
 	if (SJME_ERROR_NONE ==
-		sjme_charSeq_charAtIs(inClass->binaryName, 0, '['))
+		sjme_charSeq_charAtIs(inClass->fieldName, 0, '['))
 	{
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitArray(inClass,
 			contextThread, classLoader)))
@@ -1437,7 +1437,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 
 	/* Object type? */
 	else if (SJME_ERROR_NONE ==
-		sjme_charSeq_charAtIs(inClass->binaryName, 0, 'L'))
+		sjme_charSeq_charAtIs(inClass->fieldName, 0, 'L'))
 	{
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitStandard(inClass,
 			contextThread, classLoader)))

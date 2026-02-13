@@ -203,8 +203,7 @@ ExternalProject_Add_Step(SquirrelJME RunConfigureStep
 		"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
 		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 	INDEPENDENT)
-ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep
-	SquirrelJME-RunConfigureStep)
+ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep)
 
 # Additional clean files for the configuration step
 if(TARGET SquirrelJME-RunConfigureStep)
@@ -220,8 +219,7 @@ macro(squirreljme_external_step target)
 			"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 			"--target" ${target}
 		INDEPENDENT)
-	ExternalProject_Add_StepTargets(SquirrelJME ${target}
-		SquirrelJME-${target})
+	ExternalProject_Add_StepTargets(SquirrelJME ${target})
 endmacro()
 
 # Add steps

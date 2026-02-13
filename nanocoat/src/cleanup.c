@@ -434,8 +434,8 @@ static sjme_errorCode sjme_nvm_cleanup_postArray(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Only objects need to be GCed, we can set field items to NULL. */
-	if (array->type == SJME_JAVA_TYPE_ID_OBJECT)
-		for (n = array->length, i = 0; i < n; i++)
+	if (array->e.type == SJME_JAVA_TYPE_ID_OBJECT)
+		for (n = array->e.length, i = 0; i < n; i++)
 			if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
 				&array->e, i, NULL, SJME_VLS_JOBJECT(NULL))))
 				return sjme_error_default(error);
@@ -519,7 +519,7 @@ static sjme_errorCode sjme_nvm_cleanup_postClass(
 	}
 
 	/* Cleanup any remaining manual allocations. */
-	SJME_CHARSEQ_DELETE(classy->binaryName);
+	SJME_CHARSEQ_DELETE(classy->fieldName);
 
 	/* Free the static chunk, which contains field storage. */
 	SJME_SIMPLE_FREE(classy->staticChunk);
@@ -1146,7 +1146,7 @@ static sjme_errorCode sjme_nvm_cleanup_postTask(
 #if defined(SJME_CONFIG_DEBUG_GC)
 			sjme_message("Force GC: %d:%p (%s)",
 				nukeClass->object.common.type, nukeClass,
-				sjme_charSeq_tempUtf(nukeClass->binaryName));
+				sjme_charSeq_tempUtf(nukeClass->fieldName));
 #endif
 			
 			/* Count it down. */

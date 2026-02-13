@@ -22,6 +22,16 @@ public abstract class TestLong
 	extends __CoreTest__
 {
 	/**
+	 * Implicit constructor, initializes anything as needed.
+	 *
+	 * @since 2026/02/12
+	 */
+	@SquirrelJMEVendorApi
+	public TestLong()
+	{
+	}
+	
+	/**
 	 * Runs the specified test.
 	 *
 	 * @return The result.

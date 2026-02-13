@@ -384,7 +384,7 @@ sjme_errorCode sjme_nvm_task_stackTraceStep(
 	traceState->nowClass = atClass;
 	if (traceState->nowClass != traceState->lastClass)
 		sjme_emitB(" | IN %s (%s)",
-			sjme_charSeq_tempUtf(traceState->nowClass->binaryName),
+			sjme_charSeq_tempUtf(traceState->nowClass->fieldName),
 				"<UNKNOWN>");
 
 	/* Print method trace. */
@@ -511,7 +511,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 					sjme_emitB("EXCEPTION %s: %s",
 						sjme_charSeq_tempUtf(
 							sjme_atomic_g(sjme_jclass,
-								&inThrowable->object.isClass)->binaryName),
+								&inThrowable->object.isClass)->fieldName),
 						sjme_charSeq_tempUtf(messageSeq));
 					printedMessage = SJME_JNI_TRUE;
 				}
@@ -524,7 +524,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 		sjme_emitB("EXCEPTION %s: <NO MESSAGE>",
 			sjme_charSeq_tempUtf(
 				sjme_atomic_g(sjme_jclass,
-					&inThrowable->object.isClass)->binaryName));
+					&inThrowable->object.isClass)->fieldName));
 
 	/* There may be trace points in this. */
 	pointArray = (sjme_jarray)sjme_atomic_g(sjme_intPointer, 
@@ -537,7 +537,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 
 		/* Go through and extract points per each. */
 		memset(&traceState, 0, sizeof(traceState));
-		for (i = 0; i < pointArray->length; i++)
+		for (i = 0; i < pointArray->e.length; i++)
 		{
 			/* Read in. */
 			point = NULL;
@@ -669,7 +669,7 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	}
 		
 	/* Set argument strings. */
-	inTask->globals.mainArgs = sjme_weakUp(argStrings);
+	inTask->globals.mainArgs = argStrings;
 	
 	/* The main thread of any task is always implicitly started. */
 	if (sjme_error_is(error = sjme_nvm_task_threadStart(mainThread)))

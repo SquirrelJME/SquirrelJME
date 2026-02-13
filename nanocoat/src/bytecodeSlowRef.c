@@ -238,7 +238,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	/* Commit any pending GC objects. */
 skip_mleFailed:
 	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, commit)))
-			return sjme_error_vmError(inFrame, error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Success? */
 	if (sjme_error_is(mleError))
@@ -342,7 +342,7 @@ SJME_NVM_BYTECODE_SLOW(ArrayLength)
 	/* Push length onto the stack. */
 	memset(&result, 0, sizeof(result));
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
-	result.v.i = array->length;
+	result.v.i = array->e.length;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
@@ -402,7 +402,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 		(value.v.l == NULL ? "NULL" :
 			sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->binaryName)),
 		(desireClass == NULL ? "NULL" :
-			sjme_charSeq_tempUtf(desireClass->binaryName)));
+			sjme_charSeq_tempUtf(desireClass->fieldName)));
 #endif
 
 	/* Not a match? */
@@ -423,9 +423,9 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 			NULL,
 			"CAST %s %s",
 			(value.v.l == NULL ? "NULL" :
-				sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->binaryName)),
+				sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->fieldName)),
 					(desireClass == NULL ? "NULL" :
-				sjme_charSeq_tempUtf(desireClass->binaryName)))))
+				sjme_charSeq_tempUtf(desireClass->fieldName)))))
 			return sjme_error_vmError(inFrame, error);
 		
 		/* Check for recycle, class load and/or static constructor. */
@@ -1511,7 +1511,7 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	
 	/* Check bounds. */
 	index = indexValue.v.i;
-	if (index < 0 || index >= array->length)
+	if (index < 0 || index >= array->e.length)
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
 
@@ -1585,7 +1585,7 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 
 	/* Check bounds. */
 	index = indexValue.v.i;
-	if (index < 0 || index >= array->length)
+	if (index < 0 || index >= array->e.length)
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
 

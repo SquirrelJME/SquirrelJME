@@ -132,11 +132,16 @@ sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 {
 	sjme_errorCode dumpError;
 	sjme_nvm stateContext;
+	sjme_atomic(sjme_jint) doubleTrip;
 	
 	/* Emit trace? */
 	if (sjme_debug_vmTraceErrorIs(error) ||
 		error == SJME_ERROR_NOT_IMPLEMENTED)
 	{
+		/* Do not double trip this. */
+		if (!sjme_atomic_cs(sjme_jint, &doubleTrip, 0, 1))
+			return sjme_error_default(error);
+		
 		/* Emit stack trace, if acceptable. */
 		stateContext = NULL;
 		if (sjme_nvm_isAR(vmContext, SJME_NVM_STRUCT_FRAME))

@@ -605,8 +605,11 @@ typedef enum sjme_errorCode
 	/** Font is already registered. */
 	SJME_ERROR_FONT_ALREADY_REGISTERED = -187,
 	
+	/** Value or object is too large. */
+	SJME_ERROR_TOO_LARGE = -188,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -188,
+	SJME_NUM_ERROR_CODES = -189,
 } sjme_errorCode;
 
 /**

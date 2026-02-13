@@ -209,11 +209,11 @@ struct sjme_jclassBase
 	/** All classes are objects. */
 	sjme_jobjectBase object;
 	
-	/** The binary name of this class. */
-	sjme_charSeq binaryName;
+	/** The field name of this class. */
+	sjme_charSeq fieldName;
 	
-	/** The has of the binary name. */
-	sjme_jint binaryHash;
+	/** The hash of the field name. */
+	sjme_jint fieldHash;
 	
 	/** Error emitted when loading/initializing. */
 	sjme_atomic(sjme_jint) error; 
@@ -290,14 +290,8 @@ struct sjme_jarrayBase
 {
 	/** Base object. */
 	sjme_jobjectBase object;
-
-	/** The array type. */
-	sjme_basicTypeId type;
-
-	/** The length of the array. */
-	sjme_jint length;
-
-	/** The elements in the array. */
+	
+	/** The elements in the array, along with the type and length. */
 	sjme_alignPointer sjme_nvm_valueSet e;
 };
 

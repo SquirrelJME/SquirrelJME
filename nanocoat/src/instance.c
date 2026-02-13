@@ -366,7 +366,8 @@ sjme_errorCode sjme_nvm_instance_initFields(
 			
 			/* Set field. */
 			if (sjme_error_is(error = sjme_nvm_vmField_cisSet(
-			direct, NULL, SJME_VLS_JOBJECT(constString))))
+			direct, field->info->basicType,
+				NULL, SJME_VLS_JOBJECT(constString))))
 				return sjme_error_vmError(contextThread, error);
 		}
 
@@ -460,7 +461,8 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 		{
 			/* Set the field value. */
 			if (sjme_error_is(error = sjme_nvm_vmField_cisSet(
-				direct, commit, SJME_VLS_JVALUE_TYPED_P(stackType))))
+				direct, fieldId->info->basicType,
+				commit, SJME_VLS_JVALUE_TYPED_P(stackType))))
 				return sjme_error_vmError(contextThread, error);
 		}
 
@@ -596,6 +598,7 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	sjme_jarray result;
 	sjme_jint allocSize;
 	sjme_cchar buf[SJME_NVM_CLASS_NAME_LIMIT];
+	sjme_jint setSize;
 	
 	if (contextThread == NULL || outObject == NULL || componentType == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -608,18 +611,22 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	if (componentType->arrayTypeId == SJME_JAVA_TYPE_ID_VOID)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	/* Determine the allocation size. */
-	allocSize = sizeof(*result);
-	if (componentType->arrayTypeId == SJME_BASIC_TYPE_ID_BOOLEAN)
-		allocSize += (arrayLength / 8) + 1;
-	else
-		allocSize += (sjme_nvm_typeMul[componentType->arrayTypeId] *
-			arrayLength);
+	/* Determine value set size. */
+	setSize = -1;
+	if (sjme_error_is(error = sjme_nvm_vmField_sizeValueSet(
+		&setSize, SJME_JAVA_TYPE_ID_OBJECT, arrayLength)))
+		return sjme_error_vmError(contextThread, error);
+
+	/* Determine the base allocation size. */
+	allocSize = sizeof(*result) + 
+		offsetof(sjme_jarrayBase, e) + setSize;
+	if (allocSize <= 0)
+		return sjme_error_vmError(contextThread, SJME_ERROR_TOO_LARGE);
 
 	/* Determine array type class name. */
 	memset(buf, 0, sizeof(buf));
 	snprintf(buf, SJME_NVM_CLASS_NAME_LIMIT - 1,
-		"[%s", sjme_charSeq_tempUtf(componentType->binaryName));
+		"[%s", sjme_charSeq_tempUtf(componentType->fieldName));
 
 	/* Locate array type class. */
 	arrayClass = NULL;
@@ -637,8 +644,8 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 		return sjme_error_vmError(contextThread, error);
 	
 	/* Setup array. */
-	result->type = componentType->arrayTypeId;
-	result->length = arrayLength;
+	result->e.type = componentType->arrayTypeId;
+	result->e.length = arrayLength;
 
 	/* Success! */
 	*outObject = result;
