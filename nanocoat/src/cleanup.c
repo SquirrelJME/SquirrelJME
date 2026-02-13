@@ -710,6 +710,14 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 	for (atClass = isClass; atClass != NULL;
 		atClass = sjme_atomic_g(sjme_jclass, &atClass->superClass))
 	{
+		/* Class was GCed before the object? This is not something that */
+		/* should occur! Can be ignored, if a class. */
+		/* Strings are special objects, so they can be skipped. */
+		if (object->common.type != SJME_NVM_STRUCT_CLASS_INSTANCE &&
+			object->common.type != SJME_NVM_STRUCT_STRING_INSTANCE)
+			if (atClass->fieldName == NULL || atClass->info == NULL)
+				return sjme_error_vmError(NULL, SJME_ERROR_OBJECT_GONE);
+		
 		/* We need to clean up all the instance fields for this object, */
 		/* however at this point it is possible for the field binds to be */
 		/* invalidated, so directly access the fields. */
@@ -1118,23 +1126,24 @@ static sjme_errorCode sjme_nvm_cleanup_postTask(
 		/* Free list. */
 		SJME_SIMPLE_FREE(globals->mainArgs);
 	}
-
-	/* Clear each common class. */
-	for (i = 0; i < SJME_NVM_TASK_NUM_COMMON_CLASS; i++)
+	
+	/* Uncount common classes, at least once. */
+	for (i = SJME_NVM_COMMON_VERY_IMPORTANT;
+		i < SJME_NVM_TASK_NUM_COMMON_CLASS; i++)
 	{
 		/* Try basic close on the class. */
 		nukeClass = sjme_atomic_g(sjme_jclass, &globals->commonClasses[i]);
 		SJME_SIMPLE_CLOSE_ATOMIC_NAT(sjme_jclass, 0,
 			&globals->commonClasses[i]);
+	}
 
-		/* The very important classes are ones which are very hard to */
-		/* garbage collect as everything uses them. */
-		/* Or nothing was ever used. */
-		if (i < SJME_NVM_COMMON_VERY_IMPORTANT ||
-			nukeClass == NULL)
-			continue;
+	/* Forcefully GC each common class. */
+	for (i = 0; i < SJME_NVM_TASK_NUM_COMMON_CLASS; i++)
+	{
+		/* Grab the class here again. */
+		nukeClass = sjme_atomic_g(sjme_jclass, &globals->commonClasses[i]);
 
-		/* Ignore if freed. */
+		/* Class was already fully GCed? */
 		if (nukeClass == NULL || !sjme_nvm_isAR(nukeClass,
 			SJME_NVM_STRUCT_CLASS_INSTANCE))
 			continue;

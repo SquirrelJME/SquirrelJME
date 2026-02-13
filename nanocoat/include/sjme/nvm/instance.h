@@ -512,11 +512,28 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
  * @return Any resultant error, if any.
  * @since 2025/03/17
  */
-sjme_errorCode sjme_nvm_instance_objectArrayNew(
+sjme_errorCode sjme_nvm_instance_objectArrayNewR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_jarray* outObject,
 	sjme_attrInNotNull sjme_jclass componentType,
-	sjme_attrInPositive sjme_jint arrayLength);
+	sjme_attrInPositive sjme_jint arrayLength
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+	
+/**
+ * Allocates a new array object.
+ * 
+ * @param contextThread The thread the allocation is being performed in.
+ * @param outObject The resultant type.
+ * @param componentType The component type of the array.
+ * @param arrayLength The length of the array to allocate.
+ * @return Any resultant error, if any.
+ * @since 2025/03/17
+ */
+#define sjme_nvm_instance_objectArrayNew(contextThread, outObject, \
+		componentType, arrayLength) \
+	(sjme_nvm_instance_objectArrayNewR((contextThread), (outObject), \
+		(componentType), (arrayLength) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**
  * Allocates a new array object.
@@ -528,12 +545,29 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
  * @return Any resultant error, if any.
  * @since 2025/03/17
  */
-sjme_errorCode sjme_nvm_instance_objectArrayNewT(
+sjme_errorCode sjme_nvm_instance_objectArrayNewTR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_jarray* outObject,
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS)
 	sjme_basicTypeId componentType,
-	sjme_attrInPositive sjme_jint arrayLength);
+	sjme_attrInPositive sjme_jint arrayLength
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Allocates a new array object.
+ * 
+ * @param contextThread The thread the allocation is being performed in.
+ * @param outObject The resultant type.
+ * @param componentType The component type of the array.
+ * @param arrayLength The length of the array to allocate.
+ * @return Any resultant error, if any.
+ * @since 2025/03/17
+ */
+#define sjme_nvm_instance_objectArrayNewT(contextThread, outObject, \
+		componentType, arrayLength) \
+	(sjme_nvm_instance_objectArrayNewTR((contextThread), (outObject), \
+		(componentType), (arrayLength) \
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 	
 /**
  * Allocates a new object.
@@ -547,12 +581,31 @@ sjme_errorCode sjme_nvm_instance_objectArrayNewT(
  * @return Any resultant error, if any.
  * @since 2025/02/23
  */
-sjme_errorCode sjme_nvm_instance_objectNew(
+sjme_errorCode sjme_nvm_instance_objectNewR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNegativeOnePositive sjme_jint allocSize,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_jobject* outObject,
-	sjme_attrInNotNull sjme_jclass inClass);
+	sjme_attrInNotNull sjme_jclass inClass
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+	
+/**
+ * Allocates a new object.
+ * 
+ * @param contextThread The context thread for the allocation, if a class
+ * initialization is required.
+ * @param allocSize The allocation size.
+ * @param inType The NVM structure type.
+ * @param outObject The resultant object.
+ * @param inClass The class type to use for the object.
+ * @return Any resultant error, if any.
+ * @since 2025/02/23
+ */
+#define sjme_nvm_instance_objectNew(contextThread, allocSize, \
+		inType, outObject, inClass) \
+	(sjme_nvm_instance_objectNewR((contextThread), (allocSize), \
+		(inType), (outObject), (inClass) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**
  * Allocates a bracket based type.
@@ -563,10 +616,24 @@ sjme_errorCode sjme_nvm_instance_objectNew(
  * @return Any resultant error, if any.
  * @since 2025/06/28
  */
-sjme_errorCode sjme_nvm_instance_objectNewBracket(
+sjme_errorCode sjme_nvm_instance_objectNewBracketR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
-	sjme_attrOutNotNull sjme_jobject* outObject);
+	sjme_attrOutNotNull sjme_jobject* outObject
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Allocates a bracket based type.
+ * 
+ * @param contextThread The thread this is allocating within.
+ * @param inType The structure type being allocated.
+ * @param outObject The resultant bracket object.
+ * @return Any resultant error, if any.
+ * @since 2025/06/28
+ */
+#define sjme_nvm_instance_objectNewBracket(contextThread, inType, outObject) \
+	(sjme_nvm_instance_objectNewBracketR((contextThread), (inType), \
+		(outObject) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 	
 /**
  * Allocates a new object.

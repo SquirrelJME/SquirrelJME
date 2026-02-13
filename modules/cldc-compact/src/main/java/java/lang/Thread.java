@@ -47,7 +47,7 @@ public class Thread
 	public static final int NORM_PRIORITY =
 		5;
 	
-	/** Second in nano seconds. */
+	/** Second in nanoseconds. */
 	private static final long _NS_SECOND =
 		1_000_000L;
 	
@@ -568,7 +568,8 @@ public class Thread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/17
 	 */
-	private static String __defaultName(String __name, VMThreadBracket __vm)
+	private static String __defaultName(String __name, 
+		VMThreadBracket __vm)
 		throws NullPointerException
 	{
 		if (__vm == null)

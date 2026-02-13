@@ -587,11 +587,12 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_instance_objectArrayNew(
+sjme_errorCode sjme_nvm_instance_objectArrayNewR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_jarray* outObject,
 	sjme_attrInNotNull sjme_jclass componentType,
-	sjme_attrInPositive sjme_jint arrayLength)
+	sjme_attrInPositive sjme_jint arrayLength
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	sjme_jclass arrayClass;
@@ -614,7 +615,7 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	/* Determine value set size. */
 	setSize = -1;
 	if (sjme_error_is(error = sjme_nvm_vmField_sizeValueSet(
-		&setSize, SJME_JAVA_TYPE_ID_OBJECT, arrayLength)))
+		&setSize, componentType->arrayTypeId, arrayLength)))
 		return sjme_error_vmError(contextThread, error);
 
 	/* Determine the base allocation size. */
@@ -638,9 +639,10 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_instance_objectNew(contextThread,
+	if (sjme_error_is(error = sjme_nvm_instance_objectNewR(contextThread,
 		allocSize, SJME_NVM_STRUCT_ARRAY_INSTANCE,
-		SJME_AS_JOBJECTP(&result), arrayClass)) || result == NULL)
+		SJME_AS_JOBJECTP(&result), arrayClass SJME_DEBUG_ONLY_COMMA
+		SJME_DEBUG_FILE_LINE_COPY)) || result == NULL)
 		return sjme_error_vmError(contextThread, error);
 	
 	/* Setup array. */
@@ -652,11 +654,12 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_instance_objectArrayNewT(
+sjme_errorCode sjme_nvm_instance_objectArrayNewTR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_jarray* outObject,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_basicTypeId componentType,
-	sjme_attrInPositive sjme_jint arrayLength)
+	sjme_attrInPositive sjme_jint arrayLength
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	sjme_jclass componentClass;
@@ -718,20 +721,23 @@ sjme_errorCode sjme_nvm_instance_objectArrayNewT(
 	/* Load the component class. */
 	componentClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_commonClass(
-		contextThread, commonId, &componentClass, SJME_JNI_TRUE)) || componentClass == NULL)
+		contextThread, commonId, &componentClass, SJME_JNI_TRUE)) ||
+		componentClass == NULL)
 		return sjme_error_vmError(contextThread, error);
 
 	/* Forward initialize. */
-	return sjme_nvm_instance_objectArrayNew(contextThread, outObject,
-		componentClass, arrayLength);
+	return sjme_nvm_instance_objectArrayNewR(contextThread, outObject,
+		componentClass, arrayLength SJME_DEBUG_ONLY_COMMA
+		SJME_DEBUG_FILE_LINE_COPY);
 }
 
-sjme_errorCode sjme_nvm_instance_objectNew(
+sjme_errorCode sjme_nvm_instance_objectNewR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNegativeOnePositive sjme_jint allocSize,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_jobject* outObject,
-	sjme_attrInNotNull sjme_jclass inClass)
+	sjme_attrInNotNull sjme_jclass inClass
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_errorCode error;
 	sjme_jobject result;
@@ -788,10 +794,11 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 	
 	/* Setup object. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(
+	if (sjme_error_is(error = sjme_nvm_allocR(
 		sjme_atomic_g(sjme_nvm, &contextThread->inState),
 		allocSize, inType,
-		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
+		SJME_AS_NVM_COMMONP(&result) SJME_DEBUG_ONLY_COMMA
+		SJME_DEBUG_FILE_LINE_COPY)) || result == NULL)
 		return sjme_error_vmError(contextThread, error);
 	
 	/* Setup object. */
@@ -804,10 +811,11 @@ sjme_errorCode sjme_nvm_instance_objectNew(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_instance_objectNewBracket(
+sjme_errorCode sjme_nvm_instance_objectNewBracketR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
-	sjme_attrOutNotNull sjme_jobject* outObject)
+	sjme_attrOutNotNull sjme_jobject* outObject
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
 	sjme_nvm_task_commonClassId commonId;
 	sjme_jint allocSize;
@@ -838,9 +846,9 @@ sjme_errorCode sjme_nvm_instance_objectNewBracket(
 	}
 
 	/* Allocate. */
-	return sjme_nvm_instance_objectNew(contextThread, allocSize,
+	return sjme_nvm_instance_objectNewR(contextThread, allocSize,
 		inType, outObject, sjme_nvm_task_commonClassR(contextThread,
-			commonId));
+			commonId) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
 }
 
 sjme_errorCode sjme_nvm_instance_objectNewN(
