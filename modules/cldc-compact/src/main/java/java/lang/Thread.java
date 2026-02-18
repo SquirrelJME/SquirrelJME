@@ -11,7 +11,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
-import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import java.lang.Thread;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.Range;
@@ -56,7 +56,7 @@ public class Thread
 	private final Runnable _runnable;
 	
 	/** The virtual machine thread this uses. */
-	private final VMThreadBracket _vmThread;
+	private final Thread _vmThread;
 	
 	/** The name of this thread. */
 	private volatile String _name;
@@ -138,7 +138,7 @@ public class Thread
 		if (__hasName && __name == null)
 			throw new NullPointerException("NARG");
 		
-		VMThreadBracket vmThread = ThreadShelf.createVMThread(this,
+		Thread vmThread = ThreadShelf.createVMThread(this,
 			__name);
 		this._vmThread = vmThread;
 		
@@ -568,7 +568,7 @@ public class Thread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/17
 	 */
-	private static String __defaultName(String __name, VMThreadBracket __vm)
+	private static String __defaultName(String __name, Thread __vm)
 		throws NullPointerException
 	{
 		if (__vm == null)

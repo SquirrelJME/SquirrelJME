@@ -16,7 +16,7 @@ import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
 import cc.squirreljme.jdwp.host.trips.JDWPTripVmState;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
-import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import java.lang.Thread;
 import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
@@ -76,8 +76,7 @@ public enum MLEThread
 	
 	/** {@link ThreadShelf#createVMThread(Thread, String)}. */
 	CREATE_VM_THREAD( "createVMThread:(Ljava/lang/Thread;" +
-		"Ljava/lang/String;)Lcc/" +
-		"squirreljme/jvm/mle/brackets/VMThreadBracket;")
+		"Ljava/lang/String;)java/lang/Thread;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -204,7 +203,7 @@ public enum MLEThread
 	
 	/** {@link ThreadShelf#currentVMThread()}. */
 	CURRENT_VM_THREAD("currentVMThread:" +
-		"()Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;")
+		"()Ljava/lang/Thread;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -217,9 +216,9 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#equals(VMThreadBracket, VMThreadBracket)}. */
-	EQUALS("equals:(Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;" +
-		"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;)Z")
+	/** {@link ThreadShelf#equals(Thread, Thread)}. */
+	EQUALS("equals:(Ljava/lang/Thread;" +
+		"Ljava/lang/Thread;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -458,9 +457,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#toJavaThread(VMThreadBracket)}. */
-	TO_JAVA_THREAD("toJavaThread:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/VMThreadBracket;)Ljava/lang/Thread;")
+	/** {@link ThreadShelf#toJavaThread(Thread)}. */
+	TO_JAVA_THREAD("toJavaThread:(Ljava/lang/Thread;)Ljava/lang/Thread;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -476,8 +474,7 @@ public enum MLEThread
 	}, 
 	
 	/** {@link ThreadShelf#toVMThread(Thread)}. */
-	TO_VM_THREAD("toVMThread:(Ljava/lang/Thread;)Lcc/squirreljme/" +
-		"jvm/mle/brackets/VMThreadBracket;")
+	TO_VM_THREAD("toVMThread:(Ljava/lang/Thread;)Ljava/lang/Thread;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -489,14 +486,13 @@ public enum MLEThread
 			return MLEObjects.threadJava(__thread, __args[0]).fieldByField(
 				__thread.resolveClass("java/lang/Thread")
 				.lookupField(false, "_vmThread",
-				"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;"))
+				"Ljava/lang/Thread;"))
 				.get();
 		}
 	},
 	
-	/** {@link ThreadShelf#vmThreadId(VMThreadBracket)}. */
-	VM_THREAD_ID("vmThreadId:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"VMThreadBracket;)I")
+	/** {@link ThreadShelf#vmThreadId(Thread)}. */
+	VM_THREAD_ID("vmThreadId:(Ljava/lang/Thread;)I")
 	{
 		/**
 		 * {@inheritDoc}
@@ -509,9 +505,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#vmThreadInterrupt(VMThreadBracket)}. */ 
-	VM_THREAD_INTERRUPT("vmThreadInterrupt:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/VMThreadBracket;)V")
+	/** {@link ThreadShelf#vmThreadInterrupt(Thread)}. */ 
+	VM_THREAD_INTERRUPT("vmThreadInterrupt:(Ljava/lang/Thread;)V")
 	{
 		/**
 		 * {@inheritDoc}
@@ -529,9 +524,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#vmThreadIsAlive(VMThreadBracket)}. */
-	VM_THREAD_IS_ALIVE("vmThreadIsAlive:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/VMThreadBracket;)Z")
+	/** {@link ThreadShelf#vmThreadIsAlive(Thread)}. */
+	VM_THREAD_IS_ALIVE("vmThreadIsAlive:(Ljava/lang/Thread;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -545,9 +539,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#vmThreadIsMain(VMThreadBracket)}. */
-	VM_THREAD_IS_MAIN("vmThreadIsMain:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/VMThreadBracket;)Z")
+	/** {@link ThreadShelf#vmThreadIsMain(Thread)}. */
+	VM_THREAD_IS_MAIN("vmThreadIsMain:(Ljava/lang/Thread;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -560,9 +553,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#vmThreadIsStarted(VMThreadBracket)}. */
-	VM_THREAD_IS_STARTED("vmThreadIsStarted:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/VMThreadBracket;)Z")
+	/** {@link ThreadShelf#vmThreadIsStarted(Thread)}. */
+	VM_THREAD_IS_STARTED("vmThreadIsStarted:(Ljava/lang/Thread;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -576,9 +568,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#vmThreadSetPriority(VMThreadBracket, int)}. */
-	VM_THREAD_SET_PRIORITY("vmThreadSetPriority:(Lcc/squirreljme/" +
-		"jvm/mle/brackets/VMThreadBracket;I)V")
+	/** {@link ThreadShelf#vmThreadSetPriority(Thread, int)}. */
+	VM_THREAD_SET_PRIORITY("vmThreadSetPriority:(Ljava/lang/Thread;I)V")
 	{
 		/**
 		 * {@inheritDoc}
@@ -613,9 +604,8 @@ public enum MLEThread
 		}
 	}, 
 	
-	/** {@link ThreadShelf#vmThreadStart(VMThreadBracket)}. */
-	VM_THREAD_START("vmThreadStart:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"VMThreadBracket;)Z")
+	/** {@link ThreadShelf#vmThreadStart(Thread)}. */
+	VM_THREAD_START("vmThreadStart:(Ljava/lang/Thread;)Z")
 	{
 		/**
 		 * {@inheritDoc}
@@ -651,9 +641,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#vmThreadTask(VMThreadBracket)}. */
-	VM_THREAD_TASK("vmThreadTask:(Lcc/squirreljme/jvm/mle/brackets/" +
-		"VMThreadBracket;)Lcc/squirreljme/jvm/mle/brackets/TaskBracket;")
+	/** {@link ThreadShelf#vmThreadTask(Thread)}. */
+	VM_THREAD_TASK("vmThreadTask:(Ljava/lang/Thread;)Lcc/squirreljme/jvm/mle/brackets/TaskBracket;")
 	{
 		/**
 		 * {@inheritDoc}

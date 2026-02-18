@@ -12,7 +12,7 @@ package java.lang;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
-import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import java.lang.Thread;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.UncaughtExceptionHandler;
@@ -49,7 +49,7 @@ final class __Start__
 	{
 		// We will need to catch any exceptions that the thread throws and
 		// have some fallback logic for handling it
-		VMThreadBracket vmThread = ThreadShelf.currentVMThread();
+		Thread vmThread = ThreadShelf.currentVMThread();
 		try
 		{
 			// Execute the thread, if we are the main thread we use an

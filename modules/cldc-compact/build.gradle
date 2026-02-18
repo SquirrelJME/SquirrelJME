@@ -48,7 +48,7 @@ squirreljme
 			"boolean", "_isAlive", ";",
 			"boolean", "_interrupted", ";",
 			"java.lang.Runnable", "_runnable", ";",
-			"cc.squirreljme.jvm.mle.brackets.VMThreadBracket", "_vmThread",
+			"java.lang.Thread", "_vmThread",
 				";",
 		"}"]
 	proGuardOptions += ["-keepclassmembernames", "class",
@@ -57,7 +57,7 @@ squirreljme
 			"boolean", "_isAlive", ";",
 			"boolean", "_interrupted", ";",
 			"java.lang.Runnable", "_runnable", ";",
-			"cc.squirreljme.jvm.mle.brackets.VMThreadBracket", "_vmThread",
+			"java.lang.Thread", "_vmThread",
 				";",
 		"}"]
 	

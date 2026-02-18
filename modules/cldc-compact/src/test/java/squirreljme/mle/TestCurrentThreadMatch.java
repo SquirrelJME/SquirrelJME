@@ -12,7 +12,7 @@ package squirreljme.mle;
 import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
-import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import java.lang.Thread;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -32,7 +32,7 @@ public class TestCurrentThreadMatch
 		throws Throwable
 	{
 		Thread javaThread = ThreadShelf.currentJavaThread();
-		VMThreadBracket vmThread = ThreadShelf.currentVMThread();
+		Thread vmThread = ThreadShelf.currentVMThread();
 		TaskBracket task = TaskShelf.current();
 		
 		this.secondary("vmthread-java",

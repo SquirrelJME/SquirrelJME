@@ -144,7 +144,7 @@ extern "C"
 
 /** VM Thread. */
 #define SJME_MD_VM_THREAD \
-	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/VMThreadBracket")
+	SJME_MD_L("java/lang/Thread")
 
 /** MLE Function name. */
 #define SJME_NVM_MLE_FUNCTION_NAME(name, alt) \

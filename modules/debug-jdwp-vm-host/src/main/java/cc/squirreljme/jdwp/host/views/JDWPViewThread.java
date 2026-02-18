@@ -11,7 +11,7 @@ package cc.squirreljme.jdwp.host.views;
 
 import cc.squirreljme.jdwp.host.JDWPHostStepTracker;
 import cc.squirreljme.jdwp.host.JDWPHostThreadSuspension;
-import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import java.lang.Thread;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 
 /**
@@ -35,7 +35,7 @@ public interface JDWPViewThread
 	/**
 	 * Returns the thread that belongs to the given thread bracket.
 	 * 
-	 * @param __bracket The {@link VMThreadBracket} to read from.
+	 * @param __bracket The {@link Thread} to read from.
 	 * @return The thread from the given bracket.
 	 * @since 2022/09/24
 	 */

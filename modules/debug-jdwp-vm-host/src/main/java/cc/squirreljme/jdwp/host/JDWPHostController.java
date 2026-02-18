@@ -897,7 +897,7 @@ public final class JDWPHostController
 					// Find the field for this
 					int fieldId = JDWPHostUtils.findFieldId(viewType, objType,
 						"_vmThread",
-						"Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;");
+						"Ljava/lang/Thread;");
 					
 					// Read from this field
 					if (fieldId >= 0)
