@@ -76,7 +76,7 @@ public enum MLEThread
 	
 	/** {@link ThreadShelf#createVMThread(Thread, String)}. */
 	CREATE_VM_THREAD( "createVMThread:(Ljava/lang/Thread;" +
-		"Ljava/lang/String;)java/lang/Thread;")
+		"Ljava/lang/String;)Ljava/lang/Thread;")
 	{
 		/**
 		 * {@inheritDoc}

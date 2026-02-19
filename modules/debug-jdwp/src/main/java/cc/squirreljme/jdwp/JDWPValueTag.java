@@ -171,7 +171,6 @@ public enum JDWPValueTag
 						return JDWPValueTag.STRING;
 						
 					case "Ljava/lang/Thread;":
-					case "Ljava/lang/Thread;":
 						return JDWPValueTag.THREAD;
 						
 					case "Ljava/lang/Class;":
