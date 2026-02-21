@@ -74,9 +74,9 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#vmThreadInit(Thread, String)}. */
+	/** {@link ThreadShelf#vmThreadInit(Thread, String, Runnable)}. */
 	CREATE_VM_THREAD( "vmThreadInit:(Ljava/lang/Thread;" +
-		"Ljava/lang/String;)Ljava/lang/Thread;")
+		"Ljava/lang/String;Ljava/lang/Runnable;)Ljava/lang/Thread;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -254,23 +254,6 @@ public enum MLEThread
 		}
 	}, 
 	
-	/** {@link ThreadShelf#javaThreadIsStarted(Thread)}. */
-	JAVA_THREAD_IS_STARTED("javaThreadIsStarted:(Ljava/lang/Thread;)Z")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/18
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			// Just get the state of the given field
-			return MLEObjects.threadJava(__thread, __args[0])
-				.fieldByNameAndType(false, 
-					"_started", "Z").get();
-		}
-	},
-	
 	/** {@link ThreadShelf#vmThreadRunnable(Thread)}. */
 	JAVA_THREAD_RUNNABLE("vmThreadRunnable:(Ljava/lang/Thread;)" +
 		"Ljava/lang/Runnable;")
@@ -296,8 +279,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringThread vmThread = MLEObjects.threadVm(
-				MLEThread.TO_VM_THREAD.handle(__thread, __args[0]))
+			SpringThread vmThread = MLEObjects.threadVm(__args[0])
 				.getThread();
 			
 			synchronized (vmThread)

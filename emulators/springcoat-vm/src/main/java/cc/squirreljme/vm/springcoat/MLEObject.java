@@ -453,9 +453,7 @@ public enum MLEObject
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringThread vmThread = MLEObjects.threadVm(
-				MLEThread.TO_VM_THREAD.handle(__thread, __args[0]))
-				.getThread();
+			SpringThread vmThread = MLEObjects.threadVm(__args[0]).getThread();
 			SpringObject target = (SpringObject)__args[1];
 			
 			// Cannot be null
