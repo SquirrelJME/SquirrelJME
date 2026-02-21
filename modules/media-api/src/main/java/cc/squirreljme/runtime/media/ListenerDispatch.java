@@ -69,7 +69,7 @@ public final class ListenerDispatch
 						"ScritchAudioDispatcher");
 					
 					// Make sure it starts as a daemon thread
-					ThreadShelf.javaThreadSetDaemon(thread);
+					ThreadShelf.vmThreadSetDaemon(thread);
 					thread.start();
 					
 					// Store it for later

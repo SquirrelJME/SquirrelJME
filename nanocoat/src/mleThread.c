@@ -18,7 +18,7 @@ SJME_NVM_MLE_FUNCTION_DECL(aliveThreadCount)
 	return sjme_error_notImplemented(0);
 }
 
-SJME_NVM_MLE_FUNCTION_DECL(createVMThread)
+SJME_NVM_MLE_FUNCTION_DECL(vmThreadInit)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -30,13 +30,13 @@ SJME_NVM_MLE_FUNCTION_DECL(currentExitCode)
 	return sjme_error_notImplemented(0);
 }
 
-SJME_NVM_MLE_FUNCTION_DECL(currentJavaThread)
+SJME_NVM_MLE_FUNCTION_DECL(currentThread)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
-SJME_NVM_MLE_FUNCTION_DECL(currentVMThread)
+SJME_NVM_MLE_FUNCTION_DECL(currentThread)
 {
 	sjme_errorCode error;
 	
@@ -54,19 +54,19 @@ SJME_NVM_MLE_FUNCTION_DECL(equals)
 	return sjme_error_notImplemented(0);
 }
 
-SJME_NVM_MLE_FUNCTION_DECL(javaThreadClearInterrupt)
+SJME_NVM_MLE_FUNCTION_DECL(vmThreadInterruptClear)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
-SJME_NVM_MLE_FUNCTION_DECL(javaThreadRunnable)
+SJME_NVM_MLE_FUNCTION_DECL(vmThreadRunnable)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
-SJME_NVM_MLE_FUNCTION_DECL(javaThreadSetDaemon)
+SJME_NVM_MLE_FUNCTION_DECL(vmThreadSetDaemon)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -208,7 +208,7 @@ SJME_NVM_MLE_FUNCTION_DECL(vmThreadIsStarted)
 	return sjme_error_notImplemented(0);
 }
 
-SJME_NVM_MLE_FUNCTION_DECL(vmThreadSetPriority)
+SJME_NVM_MLE_FUNCTION_DECL(vmThreadPriority)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -237,28 +237,28 @@ SJME_NVM_MLE_SHELF_DECLARE(ThreadShelf) =
 	SJME_NVM_MLE_DEFINE(aliveThreadCount,
 		SJME_MD(SJME_MD_I, SJME_MD_Z SJME_MD_Z),
 		"I", "II"),
-	SJME_NVM_MLE_DEFINE(createVMThread,
+	SJME_NVM_MLE_DEFINE(vmThreadInit,
 		SJME_MD(SJME_MD_VM_THREAD, SJME_MD_THREAD),
 		"L", "L"),
 	SJME_NVM_MLE_DEFINE(currentExitCode,
 		SJME_MD(SJME_MD_I, ),
 		"I", ),
-	SJME_NVM_MLE_DEFINE(currentJavaThread,
+	SJME_NVM_MLE_DEFINE(currentThread,
 		SJME_MD(SJME_MD_THREAD, ),
 		"L", ),
-	SJME_NVM_MLE_DEFINE(currentVMThread,
+	SJME_NVM_MLE_DEFINE(currentThread,
 		SJME_MD(SJME_MD_VM_THREAD, ),
 		"L", ),
 	SJME_NVM_MLE_DEFINE(equals,
 		SJME_MD(SJME_MD_Z, SJME_MD_VM_THREAD SJME_MD_VM_THREAD),
 		"I", "LL"),
-	SJME_NVM_MLE_DEFINE(javaThreadClearInterrupt,
+	SJME_NVM_MLE_DEFINE(vmThreadInterruptClear,
 		SJME_MD(SJME_MD_Z, SJME_MD_THREAD),
 		"I", "L"),
-	SJME_NVM_MLE_DEFINE(javaThreadRunnable,
+	SJME_NVM_MLE_DEFINE(vmThreadRunnable,
 		SJME_MD(SJME_MD_RUNNABLE, SJME_MD_THREAD),
 		"L", "L"),
-	SJME_NVM_MLE_DEFINE(javaThreadSetDaemon,
+	SJME_NVM_MLE_DEFINE(vmThreadSetDaemon,
 		SJME_MD(SJME_MD_V, SJME_MD_THREAD),
 		"V", "L"),
 	SJME_NVM_MLE_DEFINE(model,
@@ -297,7 +297,7 @@ SJME_NVM_MLE_SHELF_DECLARE(ThreadShelf) =
 	SJME_NVM_MLE_DEFINE(vmThreadIsStarted,
 		SJME_MD(SJME_MD_Z, SJME_MD_VM_THREAD),
 		"I", "L"),
-	SJME_NVM_MLE_DEFINE(vmThreadSetPriority,
+	SJME_NVM_MLE_DEFINE(vmThreadPriority,
 		SJME_MD(SJME_MD_V, SJME_MD_VM_THREAD SJME_MD_I),
 		"V", "LI"),
 	SJME_NVM_MLE_DEFINE(vmThreadStart,

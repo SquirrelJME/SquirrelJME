@@ -74,8 +74,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#createVMThread(Thread, String)}. */
-	CREATE_VM_THREAD( "createVMThread:(Ljava/lang/Thread;" +
+	/** {@link ThreadShelf#vmThreadInit(Thread, String)}. */
+	CREATE_VM_THREAD( "vmThreadInit:(Ljava/lang/Thread;" +
 		"Ljava/lang/String;)Ljava/lang/Thread;")
 	{
 		/**
@@ -187,8 +187,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#currentJavaThread()}. */
-	CURRENT_JAVA_THREAD("currentJavaThread:()Ljava/lang/Thread;")
+	/** {@link ThreadShelf#currentThread()}. */
+	CURRENT_JAVA_THREAD("currentThread:()Ljava/lang/Thread;")
 	{
 		/**
 		 * {@inheritDoc}
@@ -201,8 +201,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#currentVMThread()}. */
-	CURRENT_VM_THREAD("currentVMThread:" +
+	/** {@link ThreadShelf#currentThread()}. */
+	CURRENT_VM_THREAD("currentThread:" +
 		"()Ljava/lang/Thread;")
 	{
 		/**
@@ -232,8 +232,8 @@ public enum MLEThread
 		}
 	}, 
 	
-	/** {@link ThreadShelf#javaThreadClearInterrupt(Thread)}. */
-	JAVA_THREAD_CLEAR_INTERRUPT("javaThreadClearInterrupt:" +
+	/** {@link ThreadShelf#vmThreadInterruptClear(Thread)}. */
+	JAVA_THREAD_CLEAR_INTERRUPT("vmThreadInterruptClear:" +
 		"(Ljava/lang/Thread;)Z")
 	{
 		/**
@@ -271,8 +271,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#javaThreadRunnable(Thread)}. */
-	JAVA_THREAD_RUNNABLE("javaThreadRunnable:(Ljava/lang/Thread;)" +
+	/** {@link ThreadShelf#vmThreadRunnable(Thread)}. */
+	JAVA_THREAD_RUNNABLE("vmThreadRunnable:(Ljava/lang/Thread;)" +
 		"Ljava/lang/Runnable;")
 	{
 		@Override
@@ -286,8 +286,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#javaThreadSetDaemon(Thread)}. */ 
-	JAVA_THREAD_SET_DAEMON("javaThreadSetDaemon:(Ljava/lang/Thread;)V")
+	/** {@link ThreadShelf#vmThreadSetDaemon(Thread)}. */ 
+	JAVA_THREAD_SET_DAEMON("vmThreadSetDaemon:(Ljava/lang/Thread;)V")
 	{
 		/**
 		 * {@inheritDoc}
@@ -457,40 +457,6 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#toJavaThread(Thread)}. */
-	TO_JAVA_THREAD("toJavaThread:(Ljava/lang/Thread;)Ljava/lang/Thread;")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/29
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			VMThreadObject vmThread = MLEObjects.threadVm(__args[0]);
-			
-			return vmThread.getThread().threadInstance();
-		}
-	}, 
-	
-	/** {@link ThreadShelf#toVMThread(Thread)}. */
-	TO_VM_THREAD("toVMThread:(Ljava/lang/Thread;)Ljava/lang/Thread;")
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2020/06/18
-		 */
-		@Override
-		public Object handle(SpringThreadWorker __thread, Object... __args)
-		{
-			return MLEObjects.threadJava(__thread, __args[0]).fieldByField(
-				__thread.resolveClass("java/lang/Thread")
-				.lookupField(false, "_vmThread",
-				"Ljava/lang/Thread;"))
-				.get();
-		}
-	},
-	
 	/** {@link ThreadShelf#vmThreadId(Thread)}. */
 	VM_THREAD_ID("vmThreadId:(Ljava/lang/Thread;)I")
 	{
@@ -568,8 +534,8 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#vmThreadSetPriority(Thread, int)}. */
-	VM_THREAD_SET_PRIORITY("vmThreadSetPriority:(Ljava/lang/Thread;I)V")
+	/** {@link ThreadShelf#vmThreadPriority(Thread, int)}. */
+	VM_THREAD_SET_PRIORITY("vmThreadPriority:(Ljava/lang/Thread;I)V")
 	{
 		/**
 		 * {@inheritDoc}

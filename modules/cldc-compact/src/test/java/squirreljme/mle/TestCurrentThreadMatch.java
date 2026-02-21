@@ -31,15 +31,15 @@ public class TestCurrentThreadMatch
 	public void test()
 		throws Throwable
 	{
-		Thread javaThread = ThreadShelf.currentJavaThread();
-		Thread vmThread = ThreadShelf.currentVMThread();
+		Thread javaThread = ThreadShelf.currentThread();
+		Thread vmThread = ThreadShelf.currentThread();
 		TaskBracket task = TaskShelf.current();
 		
 		this.secondary("vmthread-java",
-			javaThread == ThreadShelf.toJavaThread(vmThread));
+			javaThread == vmThread);
 		
 		this.secondary("java-vmthread",
-			ThreadShelf.equals(vmThread, ThreadShelf.toVMThread(javaThread)));
+			ThreadShelf.equals(vmThread, javaThread));
 		
 		this.secondary("vmthread-task",
 			TaskShelf.equals(task, ThreadShelf.vmThreadTask(vmThread)));

@@ -14,13 +14,10 @@ import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import java.lang.Thread;
 import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.Flow;
 import org.intellij.lang.annotations.MagicConstant;
-import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.Blocking;
-import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -49,21 +46,6 @@ public final class ThreadShelf
 		boolean __includeDaemon);
 	
 	/**
-	 * Creates a virtual machine thread for the given Java thread.
-	 *
-	 * @param __javaThread The Java thread to create under.
-	 * @param __name The name of this thread.
-	 * @return The virtual machine thread.
-	 * @throws MLECallError If {@code __javaThread} is null.
-	 * @since 2020/06/17
-	 */
-	@SquirrelJMEVendorApi
-	public static native Thread createVMThread(
-		@Flow(target = "this._vmThread") @NotNull Thread __javaThread,
-		@Nullable String __name)
-		throws MLECallError;
-	
-	/**
 	 * Returns the exit code for the current process.
 	 *
 	 * @return The exit code for the current process.
@@ -79,17 +61,7 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native Thread currentJavaThread();
-	
-	/**
-	 * Returns the current virtual machine thread.
-	 * 
-	 * @return The current virtual machine thread.
-	 * @since 2021/05/08
-	 */
-	@SquirrelJMEVendorApi
-	@NotNull
-	public static native Thread currentVMThread();
+	public static native Thread currentThread();
 	
 	/**
 	 * Checks if these two threads are the same.
@@ -103,46 +75,6 @@ public final class ThreadShelf
 	@SquirrelJMEVendorApi
 	public static native boolean equals(Thread __a,
 		Thread __b)
-		throws MLECallError;
-	
-	/**
-	 * Returns whether the interrupt flag was raised and clears it.
-	 *
-	 * @param __javaThread The Java thread.
-	 * @return If the thread was interrupted.
-	 * @throws MLECallError If {@code __javaThread} is null.
-	 * @since 2020/06/17
-	 */
-	@SquirrelJMEVendorApi
-	public static native boolean javaThreadClearInterrupt(
-		@NotNull Thread __javaThread)
-		throws MLECallError;
-	
-	/**
-	 * Returns the runnable for the given Java thread.
-	 *
-	 * @param __javaThread The Java thread.
-	 * @return The {@link Runnable} for the given thread.
-	 * @throws MLECallError If {@code __javaThread} is null.
-	 * @since 2020/06/17
-	 */
-	
-	@SquirrelJMEVendorApi
-	@Flow(source = "this._runnable")
-	public static native Runnable javaThreadRunnable(
-		@NotNull Thread __javaThread)
-		throws MLECallError;
-	
-	/**
-	 * Sets the thread to be a daemon thread, it cannot be started.
-	 * 
-	 * @param __javaThread The thread to set as a daemon thread.
-	 * @throws MLECallError If {@code __javaThread} is null or is already
-	 * started.
-	 * @since 2020/09/12
-	 */
-	@SquirrelJMEVendorApi
-	public static native void javaThreadSetDaemon(@NotNull Thread __javaThread)
 		throws MLECallError;
 	
 	/**
@@ -213,33 +145,6 @@ public final class ThreadShelf
 		throws MLECallError;
 	
 	/**
-	 * Returns the Java thread for the VM thread.
-	 *
-	 * @param __vmThread The VM thread.
-	 * @return The Java thread which belongs to this thread.
-	 * @throws MLECallError If {@code __thread} is null.
-	 * @since 2020/06/17
-	 */
-	@SquirrelJMEVendorApi
-	public static native Thread toJavaThread(
-		@NotNull Thread __vmThread)
-		throws MLECallError;
-	
-	/**
-	 * Returns the virtual machine thread from the given Java thread.
-	 *
-	 * @param __thread The Java thread.
-	 * @return The VM thread for this thread.
-	 * @throws MLECallError If {@code __thread} is null.
-	 * @since 2020/06/17
-	 */
-	@SquirrelJMEVendorApi
-	@Flow(source = "this._vmThread") 
-	public static native Thread toVMThread(
-		@NotNull Thread __thread)
-		throws MLECallError;
-	
-	/**
 	 * Returns the thread ID for the given thread.
 	 *
 	 * @param __vmThread The virtual machine thread.
@@ -253,6 +158,23 @@ public final class ThreadShelf
 		throws MLECallError;
 	
 	/**
+	 * Binds a virtual machine thread for the given Java thread, if a thread
+	 * is created through a constructor.
+	 *
+	 * @param __javaThread The Java thread to create under.
+	 * @param __name The name of this thread.
+	 * @param __runnable The runnable target, this is optional.
+	 * @return The virtual machine thread.
+	 * @throws MLECallError If {@code __javaThread} is null.
+	 * @since 2020/06/17
+	 */
+	@SquirrelJMEVendorApi
+	public static native Thread vmThreadInit(
+		@Flow(target = "this._vmThread") @NotNull Thread __javaThread,
+		@Nullable String __name, @Nullable Runnable __runnable)
+		throws MLECallError;
+	
+	/**
 	 * Performs a hardware interrupt on the thread.
 	 *
 	 * @param __vmThread The virtual machine thread.
@@ -262,6 +184,32 @@ public final class ThreadShelf
 	@SquirrelJMEVendorApi
 	public static native void vmThreadInterrupt(
 		@NotNull Thread __vmThread)
+		throws MLECallError;
+	
+	/**
+	 * Returns whether the interrupt flag was raised and clears it.
+	 *
+	 * @param __javaThread The Java thread.
+	 * @return If the thread was interrupted.
+	 * @throws MLECallError If {@code __javaThread} is null.
+	 * @since 2020/06/17
+	 */
+	@SquirrelJMEVendorApi
+	public static native boolean vmThreadInterruptClear(
+		@NotNull Thread __javaThread)
+		throws MLECallError;
+	
+	/**
+	 * Returns whether the interrupt flag was raised.
+	 *
+	 * @param __javaThread The Java thread.
+	 * @return If the thread was interrupted.
+	 * @throws MLECallError If {@code __javaThread} is null.
+	 * @since 2026/02/21
+	 */
+	@SquirrelJMEVendorApi
+	public static native boolean vmThreadInterruptCheck(
+		@NotNull Thread __javaThread)
 		throws MLECallError;
 	
 	/**
@@ -305,6 +253,42 @@ public final class ThreadShelf
 		throws MLECallError;
 	
 	/**
+	 * Returns the name of the thread.
+	 *
+	 * @param __thread The thread to get the name of.
+	 * @return The thread name.
+	 * @throws MLECallError On null arguments.
+	 * @since 2026/02/21
+	 */
+	@NotNull
+	public static native String vmThreadName(@NotNull Thread __thread)
+		throws MLECallError;
+	
+	/**
+	 * Sets the name of the thread.
+	 *
+	 * @param __thread The thread to get the name of.
+	 * @param __name The name of the thread to set.
+	 * @throws MLECallError On null arguments.
+	 * @since 2026/02/21
+	 */
+	public static native void vmThreadName(@NotNull Thread __thread,
+		@NotNull String __name)
+		throws MLECallError;
+	
+	/**
+	 * Returns the thread priority.
+	 *
+	 * @param __thread The thread to get the priority of.
+	 * @return The thread priority.
+	 * @throws MLECallError On null arguments.
+	 * @since 2026/02/21
+	 */
+	@SquirrelJMEVendorApi
+	public static native int vmThreadPriority(@NotNull Thread __thread)
+		throws MLECallError;
+	
+	/**
 	 * Sets the thread priority in the same manner as
 	 * {@link Thread#setPriority(int)} if this is supported by the hardware.
 	 * 
@@ -320,9 +304,36 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native void vmThreadSetPriority(
+	public static native void vmThreadPriority(
 		@NotNull Thread __vmThread,
 		@Range(from = Thread.MIN_PRIORITY, to = Thread.MAX_PRIORITY) int __p)
+		throws MLECallError;
+	
+	/**
+	 * Returns the runnable for the given Java thread.
+	 *
+	 * @param __javaThread The Java thread.
+	 * @return The {@link Runnable} for the given thread.
+	 * @throws MLECallError If {@code __javaThread} is null.
+	 * @since 2020/06/17
+	 */
+	
+	@SquirrelJMEVendorApi
+	@Flow(source = "this._runnable")
+	public static native Runnable vmThreadRunnable(
+		@NotNull Thread __javaThread)
+		throws MLECallError;
+	
+	/**
+	 * Sets the thread to be a daemon thread, it cannot be started.
+	 * 
+	 * @param __javaThread The thread to set as a daemon thread.
+	 * @throws MLECallError If {@code __javaThread} is null or is already
+	 * started.
+	 * @since 2020/09/12
+	 */
+	@SquirrelJMEVendorApi
+	public static native void vmThreadSetDaemon(@NotNull Thread __javaThread)
 		throws MLECallError;
 	
 	/**

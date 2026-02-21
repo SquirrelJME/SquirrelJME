@@ -94,7 +94,7 @@ public final class Binder
 		
 		// Setup thread to repaint the media player view
 		Thread thread = new Thread(this, "Binder");
-		ThreadShelf.javaThreadSetDaemon(thread);
+		ThreadShelf.vmThreadSetDaemon(thread);
 		
 		// Bind and start the thread
 		this._thread = thread;

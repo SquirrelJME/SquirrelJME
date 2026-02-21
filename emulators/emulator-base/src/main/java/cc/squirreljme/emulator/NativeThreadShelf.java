@@ -91,13 +91,13 @@ public final class NativeThreadShelf
 	}
 	
 	/**
-	 * As {@link ThreadShelf#javaThreadSetDaemon(Thread)}. 
+	 * As {@link ThreadShelf#vmThreadSetDaemon(Thread)}. 
 	 * 
 	 * @param __thread The thread to use.
 	 * @throws MLECallError If the thread is null or is already alive.
 	 * @since 2020/09/12
 	 */
-	public static void javaThreadSetDaemon(Thread __thread)
+	public static void vmThreadSetDaemon(Thread __thread)
 		throws MLECallError
 	{
 		if (__thread == null)

@@ -243,7 +243,7 @@ public class Object
 				// Our thread was interrupted
 			case MonitorResultType.INTERRUPTED:
 				// The interrupt status becomes cleared for our current thread
-				ThreadShelf.javaThreadClearInterrupt(Thread.currentThread());
+				ThreadShelf.vmThreadInterruptClear(Thread.currentThread());
 				
 				throw new InterruptedException("ZZ1h");
 				

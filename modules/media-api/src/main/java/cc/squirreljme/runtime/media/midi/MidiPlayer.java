@@ -452,7 +452,7 @@ public class MidiPlayer
 			tracker = new MidiTracker(__player, __player._tracks, __timeDiv);
 			
 			// Make sure it is a daemon thread, so it gets killed on exit
-			ThreadShelf.javaThreadSetDaemon(tracker);
+			ThreadShelf.vmThreadSetDaemon(tracker);
 			
 			// Start it, yay!
 			tracker.start();

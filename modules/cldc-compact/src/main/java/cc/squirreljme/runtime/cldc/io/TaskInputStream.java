@@ -84,7 +84,7 @@ public final class TaskInputStream
 				if (self.isInterrupted())
 				{
 					// Clear interrupt status
-					ThreadShelf.javaThreadClearInterrupt(self);
+					ThreadShelf.vmThreadInterruptClear(self);
 					
 					/* {@squirreljme.error ZZ4f Interrupt during single byte
 					task input read.} */

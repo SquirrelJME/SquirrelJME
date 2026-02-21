@@ -11,7 +11,6 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
-import java.lang.Thread;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.Range;
@@ -47,26 +46,9 @@ public class Thread
 	public static final int NORM_PRIORITY =
 		5;
 	
-	/** Second in nano seconds. */
+	/** Second in nanoseconds. */
 	private static final long _NS_SECOND =
 		1_000_000L;
-	
-	/** The runnable that this thread uses for its main code, if applicable. */
-	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final Runnable _runnable;
-	
-	/** The virtual machine thread this uses. */
-	private final Thread _vmThread;
-	
-	/** The name of this thread. */
-	private volatile String _name;
-	
-	/** The priority of the thread. */
-	private volatile int _priority =
-		Thread.NORM_PRIORITY;
-	
-	/** Is this thread interrupted? */
-	volatile boolean _interrupted;
 	
 	/**
 	 * Initializes the thread which invokes this object's {@link #run()} and
@@ -138,12 +120,8 @@ public class Thread
 		if (__hasName && __name == null)
 			throw new NullPointerException("NARG");
 		
-		Thread vmThread = ThreadShelf.createVMThread(this,
-			__name);
-		this._vmThread = vmThread;
-		
-		this._runnable = __runnable;
-		this._name = Thread.__defaultName(__name, vmThread);
+		ThreadShelf.vmThreadInit(this,
+			Thread.__defaultName(__name, this), __runnable);
 	}
 	
 	/**
@@ -170,7 +148,7 @@ public class Thread
 	@Api
 	public long getId()
 	{
-		return ThreadShelf.vmThreadId(this._vmThread);
+		return ThreadShelf.vmThreadId(this);
 	}
 	
 	/**
@@ -182,7 +160,7 @@ public class Thread
 	@Api
 	public final String getName()
 	{
-		return this._name;
+		return ThreadShelf.vmThreadName(this);
 	}
 	
 	/**
@@ -194,7 +172,7 @@ public class Thread
 	@Api
 	public final int getPriority()
 	{
-		return this._priority;
+		return ThreadShelf.vmThreadPriority(this);
 	}
 	
 	/**
@@ -213,14 +191,11 @@ public class Thread
 	{
 		// If this is not the current thread, we need to talk to the security
 		// manager
-		if (ThreadShelf.currentJavaThread() != this)
+		if (ThreadShelf.currentThread() != this)
 			this.checkAccess();
 		
-		// Signal software interrupt
-		this._interrupted = true;
-		
 		// Signal hardware interrupt
-		ThreadShelf.vmThreadInterrupt(this._vmThread);
+		ThreadShelf.vmThreadInterrupt(this);
 	}
 	
 	/**
@@ -232,7 +207,7 @@ public class Thread
 	@Api
 	public final boolean isAlive()
 	{
-		return ThreadShelf.vmThreadIsAlive(this._vmThread);
+		return ThreadShelf.vmThreadIsAlive(this);
 	}
 	
 	/**
@@ -244,7 +219,7 @@ public class Thread
 	@Api
 	public boolean isInterrupted()
 	{
-		return this._interrupted;
+		return ThreadShelf.vmThreadInterruptCheck(this);
 	}
 	
 	/**
@@ -319,7 +294,7 @@ public class Thread
 					return;
 				
 				// Did the thread die yet?
-				if (ThreadShelf.vmThreadIsStarted(this._vmThread) &&
+				if (ThreadShelf.vmThreadIsStarted(this) &&
 					!this.isAlive())
 					return;
 				
@@ -359,10 +334,7 @@ public class Thread
 		this.checkAccess();
 		
 		// Set new name
-		synchronized (this)
-		{
-			this._name = __n;
-		}
+		ThreadShelf.vmThreadName(this, __n);
 	}
 	
 	/**
@@ -384,11 +356,8 @@ public class Thread
 		// Check access
 		this.checkAccess();
 		
-		// Store for later
-		this._priority = __p;
-		
 		// Set the thread's hardware priority
-		ThreadShelf.vmThreadSetPriority(this._vmThread, __p);
+		ThreadShelf.vmThreadPriority(this, __p);
 	}
 	
 	/**
@@ -405,11 +374,11 @@ public class Thread
 		synchronized (this)
 		{
 			/* {@squirreljme.error ZZ21 A thread may only be started once.} */
-			if (ThreadShelf.vmThreadIsStarted(this._vmThread))
+			if (ThreadShelf.vmThreadIsStarted(this))
 				throw new IllegalThreadStateException("ZZ21");
 			
 			/* {@squirreljme.error ZZ22 Failed to start the thread.} */
-			if (!ThreadShelf.vmThreadStart(this._vmThread))
+			if (!ThreadShelf.vmThreadStart(this))
 				throw new IllegalThreadStateException("ZZ22");
 		}
 	}
@@ -423,7 +392,8 @@ public class Thread
 	{
 		// JavaSE is in the format of `Thread[name,priority,group]` but
 		// we do not have thread groups here
-		return "Thread[" + this._name + "," + this._priority + "]";
+		return "Thread[" + ThreadShelf.vmThreadName(this) + "," +
+			ThreadShelf.vmThreadPriority(this) + "]";
 	}
 	
 	/**
@@ -448,7 +418,7 @@ public class Thread
 	@Api
 	public static Thread currentThread()
 	{
-		return ThreadShelf.currentJavaThread();
+		return ThreadShelf.currentThread();
 	}
 	
 	/**
@@ -466,7 +436,7 @@ public class Thread
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		return ObjectShelf.holdsLock(ThreadShelf.currentJavaThread(), __o);
+		return ObjectShelf.holdsLock(ThreadShelf.currentThread(), __o);
 	}
 	
 	/**
@@ -479,7 +449,7 @@ public class Thread
 	@Api
 	public static boolean interrupted()
 	{
-		return ThreadShelf.javaThreadClearInterrupt(Thread.currentThread());
+		return ThreadShelf.vmThreadInterruptClear(Thread.currentThread());
 	}
 	
 	/**
@@ -531,7 +501,7 @@ public class Thread
 		if (ThreadShelf.sleep(ims, __ns))
 		{
 			// The interrupt status becomes cleared for our current thread
-			ThreadShelf.javaThreadClearInterrupt(Thread.currentThread());
+			ThreadShelf.vmThreadInterruptClear(Thread.currentThread());
 			
 			/* {@squirreljme.error ZZ24 Sleep was interrupted.} */
 			throw new InterruptedException("ZZ24");

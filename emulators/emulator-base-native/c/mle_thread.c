@@ -14,36 +14,36 @@
 JNIEXPORT jint JNICALL Impl_mle_ThreadShelf_aliveThreadCount(JNIEnv* env,
 	jclass classy, jboolean includeMain, jboolean includeDaemon)
 {
-	return forwardCallStaticInteger(env, 
+	return forwardCallStaticInteger(env,
 		"cc/squirreljme/emulator/NativeThreadShelf",
 		"aliveThreadCount", "(ZZ)I", includeMain, includeDaemon);
 }
 
-JNIEXPORT jobject JNICALL Impl_mle_ThreadShelf_currentJavaThread(JNIEnv* env,
+JNIEXPORT jobject JNICALL Impl_mle_ThreadShelf_currentThread(JNIEnv* env,
 	jclass classy)
 {
 	return forwardCallStaticObject(env, "java/lang/Thread",
 		"currentThread", "()Ljava/lang/Thread;");
 }
 
-JNIEXPORT void JNICALL Impl_mle_ThreadShelf_javaThreadSetDaemon(JNIEnv* env,
+JNIEXPORT void JNICALL Impl_mle_ThreadShelf_vmThreadSetDaemon(JNIEnv* env,
 	jclass classy, jobject javaThread)
 {
 	forwardCallStaticVoid(env, "cc/squirreljme/emulator/NativeThreadShelf",
-		"javaThreadSetDaemon", "(Ljava/lang/Thread;)V", javaThread);
+		"vmThreadSetDaemon", "(Ljava/lang/Thread;)V", javaThread);
 }
-		
+
 JNIEXPORT void JNICALL Impl_mle_ThreadShelf_setTrace(JNIEnv* env,
 	jclass classy, jint fd, jobject string, jobject array)
 {
 	// Has no effect
 }
-		
+
 JNIEXPORT jboolean JNICALL Impl_mle_ThreadShelf_waitForUpdate(JNIEnv* env,
 	jclass classy, jint msWait)
 {
 	// Has no effect
-	return forwardCallStaticBoolean(env, 
+	return forwardCallStaticBoolean(env,
 		"cc/squirreljme/emulator/NativeThreadShelf",
 		"waitForUpdate", WAITFORUPDATE_DESC,
 		msWait);
@@ -53,10 +53,10 @@ static const JNINativeMethod mleThreadMethods[] =
 {
 	{"aliveThreadCount", "(ZZ)I",
 		(void*)Impl_mle_ThreadShelf_aliveThreadCount},
-	{"currentJavaThread", "()Ljava/lang/Thread;",
-		(void*)Impl_mle_ThreadShelf_currentJavaThread},
-	{"javaThreadSetDaemon", "(Ljava/lang/Thread;)V",
-		(void*)Impl_mle_ThreadShelf_javaThreadSetDaemon},
+	{"currentThread", "()Ljava/lang/Thread;",
+		(void*)Impl_mle_ThreadShelf_currentThread},
+	{"vmThreadSetDaemon", "(Ljava/lang/Thread;)V",
+		(void*)Impl_mle_ThreadShelf_vmThreadSetDaemon},
 	{"setTrace", "(Ljava/lang/String;[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;)V",
 		(void*)Impl_mle_ThreadShelf_setTrace},
 	{"waitForUpdate", WAITFORUPDATE_DESC,

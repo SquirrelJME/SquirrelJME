@@ -46,11 +46,11 @@ public class TestThreadShelfInvalid
 				break;
 			
 			case 3:
-				ThreadShelf.createVMThread(null, null);
+				ThreadShelf.vmThreadInit(null, null);
 				break;
 			
 			case 4:
-				ThreadShelf.javaThreadClearInterrupt(null);
+				ThreadShelf.vmThreadInterruptClear(null);
 				break;
 				
 			case 5:
@@ -58,15 +58,13 @@ public class TestThreadShelfInvalid
 				break;
 			
 			case 6:
-				ThreadShelf.javaThreadRunnable(null);
+				ThreadShelf.vmThreadRunnable(null);
 				break;
 			
 			case 7:
-				ThreadShelf.toJavaThread(null);
 				break;
 			
 			case 8:
-				ThreadShelf.toVMThread(null);
 				break;
 			
 			case 9:
@@ -78,7 +76,7 @@ public class TestThreadShelfInvalid
 				break;
 			
 			case 11:
-				ThreadShelf.vmThreadSetPriority(null, 
+				ThreadShelf.vmThreadPriority(null, 
 					Thread.MIN_PRIORITY - 1);
 				break;
 			
@@ -103,7 +101,7 @@ public class TestThreadShelfInvalid
 				break;
 			
 			case 17:
-				ThreadShelf.vmThreadSetPriority(null, 
+				ThreadShelf.vmThreadPriority(null, 
 					Thread.MAX_PRIORITY + 1);
 				break;
 			
