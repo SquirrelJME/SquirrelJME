@@ -32,12 +32,6 @@ SJME_NVM_MLE_FUNCTION_DECL(currentExitCode)
 
 SJME_NVM_MLE_FUNCTION_DECL(currentThread)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-SJME_NVM_MLE_FUNCTION_DECL(currentThread)
-{
 	sjme_errorCode error;
 	
 	/* Native threads are VM threads. */

@@ -307,13 +307,19 @@ public class Thread
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/17
+	 * This will run the {@link Runnable} that was passed to this thread
+	 * during construction.
+	 * 
+	 * Any classes extending {@link Thread} should override this method.
+	 * 
+	 * @since 2026/02/22
 	 */
 	@Override
 	public void run()
 	{
-		// Does nothing
+		Runnable self = ThreadShelf.vmThreadRunnable(this);
+		if (self != null)
+			self.run();
 	}
 	
 	/**
