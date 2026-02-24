@@ -611,13 +611,6 @@ public final class SpringMachine
 		// Enter blank thread so it is always at the ready
 		thread.enterBlankFrame();
 		
-		// Allocate thread object instance, this will get a VM thread
-		// created for it in the constructor and otherwise
-		SpringObject jvmThread = worker.newInstance(
-			SpringMachine._THREAD_CLASS, SpringMachine._THREAD_NEW,
-			worker.asVMObject(name));
-		thread.setThreadInstance(jvmThread);
-		
 		// Register this callback thread since it was initialized
 		synchronized (this)
 		{

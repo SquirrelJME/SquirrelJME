@@ -19,14 +19,11 @@ import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -38,6 +35,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/09/01
  */
 public final class SpringThread
+	implements SpringObject
 {
 	/** Maximum depth of the stack. */
 	public static final int MAX_STACK_DEPTH =
@@ -82,11 +80,9 @@ public final class SpringThread
 	/** The thread status. */
 	int _status;
 	
-	/** The thread's {@link Thread} instance. */
 	private SpringObject _threadInstance;
 	
-	/** The thread's VM Thread instance. */
-	private VMThreadObject _vmThread;
+	private SpringThread _vmThread;
 		
 	/** String representation. */
 	private Reference<String> _string;
@@ -407,7 +403,7 @@ public final class SpringThread
 	{
 		synchronized (this)
 		{
-			return this._threadInstance != null;
+			return this != null;
 		}
 	}
 	
@@ -491,6 +487,16 @@ public final class SpringThread
 		{
 			return this._terminate;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/02/23
+	 */
+	@Override
+	public SpringMonitor monitor()
+	{
+		throw Debugging.todo();
 	}
 	
 	/**
@@ -588,53 +594,6 @@ public final class SpringThread
 	}
 	
 	/**
-	 * Sets the {@link Thread} instance.
-	 *
-	 * @param __object The object to set the instance to.
-	 * @throws IllegalStateException If this thread already has an instance.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/06/17
-	 */
-	public final void setThreadInstance(SpringObject __object)
-		throws IllegalStateException, NullPointerException
-	{
-		if (__object == null)
-			throw new NullPointerException("NARG");
-		
-		synchronized (this)
-		{
-			// Only a single instance is permitted
-			if (this._threadInstance != null)
-				throw new IllegalStateException("Thread has an instance.");
-			
-			this._threadInstance = __object;
-		}
-	}
-	
-	/**
-	 * Sets the virtual machine thread of this thread.
-	 *
-	 * @param __vmThread The thread to set.
-	 * @throws IllegalStateException If this thread already has one.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2020/06/17
-	 */
-	public final void setVMThread(VMThreadObject __vmThread)
-		throws IllegalStateException, NullPointerException
-	{
-		if (__vmThread == null)
-			throw new NullPointerException("NARG");
-		
-		synchronized (this)
-		{
-			if (this._vmThread != null)
-				throw new IllegalStateException("Thread has VM Thread.");
-			
-			this._vmThread = __vmThread;
-		}
-	}
-	
-	/**
 	 * Terminates this thread.
 	 * 
 	 * @since 2020/06/29
@@ -661,25 +620,13 @@ public final class SpringThread
 	}
 	
 	/**
-	 * Returns the instance of the {@link Thread} object for this thread.
-	 *
-	 * @return The instance of {@link Thread}.
-	 * @throws IllegalStateException If the thread has no instance.
-	 * @since 2020/06/17
+	 * {@inheritDoc}
+	 * @since 2026/02/23
 	 */
-	public final SpringObject threadInstance()
-		throws IllegalStateException
+	@Override
+	public SpringClass type()
 	{
-		SpringObject rv;
-		synchronized (this)
-		{
-			rv = this._threadInstance;
-		}
-		
-		if (rv == null)
-			throw new IllegalStateException("Thread has no instance.");
-		
-		return rv;
+		throw Debugging.todo();
 	}
 	
 	/**

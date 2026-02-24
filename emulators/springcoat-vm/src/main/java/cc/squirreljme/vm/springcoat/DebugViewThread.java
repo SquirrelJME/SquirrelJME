@@ -13,7 +13,6 @@ import cc.squirreljme.jdwp.host.JDWPHostState;
 import cc.squirreljme.jdwp.host.JDWPHostStepTracker;
 import cc.squirreljme.jdwp.host.JDWPHostThreadSuspension;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
-import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.Collections;
@@ -85,7 +84,7 @@ public class DebugViewThread
 	@Override
 	public Object fromBracket(Object __bracket)
 	{
-		return ((VMThreadObject)__bracket).getThread();
+		return ((SpringThread)__bracket);
 	}
 	
 	/**
@@ -97,7 +96,7 @@ public class DebugViewThread
 	{
 		try
 		{
-			return ((SpringThread)__which).threadInstance();
+			return __which;
 		}
 		catch (IllegalStateException ignored)
 		{

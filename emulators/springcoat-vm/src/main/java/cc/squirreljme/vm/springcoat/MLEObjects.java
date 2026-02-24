@@ -28,7 +28,6 @@ import cc.squirreljme.vm.springcoat.brackets.NativeArchiveObject;
 import cc.squirreljme.vm.springcoat.brackets.PipeObject;
 import cc.squirreljme.vm.springcoat.brackets.TaskObject;
 import cc.squirreljme.vm.springcoat.brackets.TracePointObject;
-import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
 import cc.squirreljme.vm.springcoat.callbacks.NativeImageLoadCallbackAdapter;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import javax.microedition.lcdui.Image;
@@ -479,20 +478,20 @@ public final class MLEObjects
 	}
 	
 	/**
-	 * Ensures that this is a {@link VMThreadObject}.
+	 * Ensures that this is a {@link SpringThread}.
 	 * 
 	 * @param __object The object to check.
-	 * @return As a {@link VMThreadObject}.
+	 * @return As a {@link SpringThread}.
 	 * @throws SpringMLECallError If this is not one.
 	 * @since 2020/06/27
 	 */
-	public static VMThreadObject threadVm(Object __object)
+	public static SpringThread threadVm(Object __object)
 		throws SpringMLECallError
 	{
-		if (!(__object instanceof VMThreadObject))
-			throw new SpringMLECallError("Not a VMThreadObject.");
+		if (!(__object instanceof SpringThread))
+			throw new SpringMLECallError("Not a SpringThread.");
 		
-		return (VMThreadObject)__object; 
+		return (SpringThread)__object; 
 	}
 	
 	/**

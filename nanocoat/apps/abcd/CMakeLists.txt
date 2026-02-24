@@ -20,6 +20,8 @@ add_executable(AppAncientBuildContraptionDevice
 	device-address.c
 	device-manager.c
 	dispatch.c
+	doja.c
+	doja_g.c
 	eclipse.c
 	emulator.c
 	jadtool.c
@@ -35,6 +37,7 @@ add_executable(AppAncientBuildContraptionDevice
 	midp.c
 	netbeans.c
 	preverify.c
+	star.c
 	touch.c
 	wscompile.c
 	zip.c)
