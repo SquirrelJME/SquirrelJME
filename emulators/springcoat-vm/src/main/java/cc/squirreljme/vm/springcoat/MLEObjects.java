@@ -450,34 +450,6 @@ public final class MLEObjects
 	}
 	
 	/**
-	 * Checks if this is a Java thread.
-	 * 
-	 * @param __thread The context thread.
-	 * @param __object The object to check.
-	 * @return The verified object.
-	 * @throws SpringMLECallError If {@code __object} is {@code null} or is
-	 * not an instance of {@link Throwable}.
-	 * @since 2020/06/28
-	 */
-	public static SpringSimpleObject threadJava(SpringThreadWorker __thread,
-		Object __object)
-		throws SpringMLECallError
-	{
-		if (__thread == null)
-			throw new NullPointerException("NARG");
-		
-		if (!(__object instanceof SpringSimpleObject))
-			throw new SpringMLECallError("Not a Java Thread");
-		
-		SpringSimpleObject rv = (SpringSimpleObject)__object;
-		if (!__thread.resolveClass("java/lang/Thread")
-			.isAssignableFrom(rv.type()))
-			throw new SpringMLECallError("Not instance of Thread.");
-		
-		return rv;
-	}
-	
-	/**
 	 * Ensures that this is a {@link SpringThread}.
 	 * 
 	 * @param __object The object to check.
@@ -485,7 +457,7 @@ public final class MLEObjects
 	 * @throws SpringMLECallError If this is not one.
 	 * @since 2020/06/27
 	 */
-	public static SpringThread threadVm(Object __object)
+	public static SpringThread thread(Object __object)
 		throws SpringMLECallError
 	{
 		if (!(__object instanceof SpringThread))

@@ -70,7 +70,7 @@ public enum MLEThread
 	},
 	
 	/** {@link ThreadShelf#vmThreadInit(Thread, String, Runnable)}. */
-	CREATE_VM_THREAD( "vmThreadInit:(Ljava/lang/Thread;" +
+	VM_THREAD_INIT( "vmThreadInit:(Ljava/lang/Thread;" +
 		"Ljava/lang/String;Ljava/lang/Runnable;)Ljava/lang/Thread;")
 	{
 		/**
@@ -81,9 +81,14 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
+			// Must be the same thread!
+			SpringThread target = MLEObjects.thread(__args[0]);
+			if (target == null || target != __thread.thread)
+				throw new SpringMLECallError("Wrong thread.");
+			
 			throw Debugging.todo();
 			/*
-			SpringSimpleObject javaThread = MLEObjects.threadJava(__thread,
+			SpringSimpleObject javaThread = MLEObjects.thread(__thread,
 				__args[0]);
 			String name = (__args[1] == null ||
 				__args[1] == SpringNullObject.NULL ? null :
@@ -212,7 +217,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEObjects.threadVm(__args[0]) == MLEObjects.threadVm(
+			return MLEObjects.thread(__args[0]) == MLEObjects.thread(
 				__args[1]);
 		}
 	}, 
@@ -228,14 +233,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringFieldStorage field = MLEObjects.threadJava(__thread,
-				__args[0]).fieldByNameAndType(false, 
-				"_interrupted", "Z");
-			
-			// Get and clear the field value
-			Object old = field.get();
-			field.set(false);
-			return old;
+			throw Debugging.todo();
 		}
 	}, 
 	
@@ -246,11 +244,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			// Just get the state of the given field
-			return MLEObjects.threadJava(__thread, __args[0])
-				.fieldByNameAndType(
-				false, "_runnable",
-				"Ljava/lang/Runnable;").get();
+			throw Debugging.todo();
 		}
 	},
 	
@@ -264,7 +258,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringThread vmThread = MLEObjects.threadVm(__args[0]);
+			SpringThread vmThread = MLEObjects.thread(__args[0]);
 			
 			synchronized (vmThread)
 			{
@@ -433,7 +427,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEObjects.threadVm(__args[0]).id;
+			return MLEObjects.thread(__args[0]).id;
 		}
 	},
 	
@@ -447,7 +441,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringThread vmThread = MLEObjects.threadVm(__args[0]);
+			SpringThread vmThread = MLEObjects.thread(__args[0]);
 			
 			// Send an interrupt to the thread
 			vmThread.hardInterrupt();
@@ -466,7 +460,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringThread thread = MLEObjects.threadVm(__args[0]);
+			SpringThread thread = MLEObjects.thread(__args[0]);
 			return thread._worker != null && !thread.isTerminated();
 		}
 	},
@@ -481,7 +475,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEObjects.threadVm(__args[0]).isMain();
+			return MLEObjects.thread(__args[0]).isMain();
 		}
 	},
 	
@@ -495,7 +489,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringThread thread = MLEObjects.threadVm(__args[0]);
+			SpringThread thread = MLEObjects.thread(__args[0]);
 			return thread._worker != null;
 		}
 	},
@@ -510,7 +504,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringThread thread = MLEObjects.threadVm(__args[0]);
+			SpringThread thread = MLEObjects.thread(__args[0]);
 			int priority = (int)__args[1];
 			
 			if (priority < Thread.MIN_PRIORITY ||
@@ -546,7 +540,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			SpringThread target = MLEObjects.threadVm(__args[0]);
+			SpringThread target = MLEObjects.thread(__args[0]);
 			
 			// Create worker for thread and start it
 			SpringThreadWorker worker = new SpringThreadWorker(
@@ -583,7 +577,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			return MLEObjects.threadVm(__args[0])
+			return MLEObjects.thread(__args[0])
 				.machine().taskObject(__thread.machine);
 		}
 	}, 
