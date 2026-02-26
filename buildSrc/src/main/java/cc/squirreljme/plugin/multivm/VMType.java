@@ -283,7 +283,9 @@ public enum VMType
 				// Enable debugging for the spawned hosted environment
 				// Use an alternative variable to allow for VMFactory to be
 				// debugged rather than just the emulated environment.
-				String xjdwpProp = System.getProperty("squirreljme.xjdwp");
+				String xjdwpProp = Objects.toString(
+					System.getProperty("squirreljme.xjdwp"),
+					__sysProps.get("squirreljme.jdwp.jvm.jdwp"));
 				String jdwpProp = (xjdwpProp != null ? xjdwpProp :
 					Objects.toString(System.getProperty("squirreljme.jdwp"),
 						__sysProps.get("squirreljme.jdwp")));
