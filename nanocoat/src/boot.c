@@ -16,6 +16,7 @@
 #include "sjme/native.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/path.h"
+#include "sjme/joptarg.h"
 
 #if defined(SJME_PATH_SHORT)
 	/** The name of the SquirrelJME Jar. */
@@ -31,21 +32,7 @@
 	#define SJME_DIRECTORY_NAME "squirreljme"
 #endif
 
-/**
- * Help parameter storage.
- * 
- * @since 2024/08/08
- */
-typedef struct sjme_nvm_helpParam
-{
-	/** The argument. */
-	sjme_lpcstr arg;
-	
-	/** Description of the parameter. */
-	sjme_lpcstr desc;
-} sjme_nvm_helpParam;
-
-static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
+static const sjme_joptarg_helpParam sjme_joptarg_helpParams[] =
 {
 	{"-Xclutter:<release|debug>",
 		"If available, selects the given clutter level."},
@@ -195,7 +182,7 @@ static sjme_errorCode sjme_nvm_printHelp(
 	sjme_attrInNotNull sjme_lpcstr argSeq,
 	sjme_attrInNotNull sjme_lpcstr programName)
 {
-	const sjme_nvm_helpParam* help;
+	const sjme_joptarg_helpParam* help;
 
 	if (nal == NULL || helpOut == NULL || helpFlush == NULL ||
 		argSeq == NULL || programName == NULL)
@@ -217,7 +204,7 @@ static sjme_errorCode sjme_nvm_printHelp(
 	
 	/* And all the help parameters. */
 	sjme_nal_stdF(helpOut, "Options are:\n");
-	for (help = &sjme_nvm_helpParams[0]; help->arg != NULL; help++)
+	for (help = &sjme_joptarg_helpParams[0]; help->arg != NULL; help++)
 	{
 		sjme_nal_stdF(helpOut, "  %s\n",
 			help->arg);
