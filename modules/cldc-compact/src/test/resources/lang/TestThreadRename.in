@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+result: NoResult
+thrown: NoExceptionThrown
+secondary-old: string:old
+secondary-new: string:new
