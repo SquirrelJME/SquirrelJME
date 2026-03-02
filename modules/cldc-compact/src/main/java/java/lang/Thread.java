@@ -338,7 +338,10 @@ public class Thread
 	@Override
 	public void run()
 	{
-		// Does nothing
+		// Run the runnable that is assigned to this
+		Runnable run = ThreadShelf.javaThreadRunnable(this);
+		if (run != null)
+			run.run();
 	}
 	
 	/**

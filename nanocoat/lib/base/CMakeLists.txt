@@ -69,3 +69,30 @@ squirreljme_multilib_link_libraries_required(Base NONE)
 # The base library is rather useful
 squirreljme_multilib_export(Base)
 squirreljme_multilib_install(Base)
+
+# Add an option to use a vendor specific implementation for a NAL default
+macro(squirreljme_add_nal_option upper)
+	# Add option to use vendor specific item
+	option(SQUIRRELJME_NAL_VENDOR_${upper}
+		"Use vendor implementation for ${upper}."
+		OFF)
+
+	# Is this option enabled?
+	if(SQUIRRELJME_NAL_VENDOR_${upper})
+		squirreljme_multilib_compile_definitions(Base PRIVATE
+			SJME_CONFIG_NAL_${upper}=127)
+	endif()
+endmacro()
+
+# Each NAL option can be overridden
+squirreljme_add_nal_option(EXEC_PATH)
+squirreljme_add_nal_option(GETENV)
+squirreljme_add_nal_option(NANOTIME)
+squirreljme_add_nal_option(PATH_STYLE)
+squirreljme_add_nal_option(PIPE)
+squirreljme_add_nal_option(SEEKABLE)
+squirreljme_add_nal_option(TCP_UDP)
+squirreljme_add_nal_option(THREAD_SLEEP)
+squirreljme_add_nal_option(THREAD_YIELD)
+squirreljme_add_nal_option(USER_HOME)
+squirreljme_add_nal_option(USER_NAME)
