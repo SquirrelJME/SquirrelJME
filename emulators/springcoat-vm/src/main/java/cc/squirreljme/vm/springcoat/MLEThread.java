@@ -10,13 +10,16 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
+import cc.squirreljme.jdwp.host.JDWPHostController;
+import cc.squirreljme.jdwp.host.trips.JDWPGlobalTrip;
+import cc.squirreljme.jdwp.host.trips.JDWPTripThread;
+import cc.squirreljme.jdwp.host.trips.JDWPTripVmState;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.lang.Thread;
 import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
@@ -81,99 +84,22 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			// Must be the same thread!
 			SpringThread target = MLEObjects.thread(__args[0]);
-			if (target == null)
-				throw new SpringMLECallError("Wrong thread.");
+			SpringObject runnable = MLEObjects.object(__args[1]);
 			
-			throw Debugging.todo();
-			/*
-			SpringSimpleObject javaThread = MLEObjects.thread(__thread,
-				__args[0]);
-			String name = (__args[1] == null ||
-				__args[1] == SpringNullObject.NULL ? null :
-				__thread.<String>asNativeObject(String.class, __args[1]));
+			// The second must be a runnable
+			if (runnable != null && runnable != SpringNullObject.NULL)
+				if (runnable.type().isAssignableFrom(
+					__thread.resolveClass("java/lang/Runnable")))
+					throw new SpringMLECallError("Not a Runnable!.");
 			
-			// Find the thread which the given passed object is bound to, this
-			// is the target thread
-			SpringThread target = null;
-			SpringMachine machine = __thread.machine;
-			synchronized (machine)
+			// Set target runnable, once!
+			synchronized (target)
 			{
-				// Search through every thread
-				SpringThread[] threads = machine.getThreads();
-				for (SpringThread thread : threads)
-				{
-					SpringObject instance;
-					try
-					{
-						instance = thread.threadInstance();
-					}
-					catch (IllegalStateException ignored)
-					{
-						continue;
-					}
-					
-					// If this is the thread for this, then use that!
-					if (javaThread == instance)
-					{
-						target = thread;
-						break;
-					}
-				}
-				
-				// If there is exactly one thread, we can rather get into a bit
-				// of a loop where our main thread is created outside of normal
-				// means by the VM and not by any other thread.. but only if
-				// this initial thread has no actual instance
-				if (threads.length == 1 && !threads[0].hasThreadInstance())
-					target = threads[0];
-				
-				// No actual thread exists that the object is bound to, so
-				// oops! We need to actually create one here and bind it
-				// accordingly!
-				if (target == null)
-					target = machine.createThread(name,
-						false, false);
+				target.initRunnable(runnable);
 			}
 			
-			// New thread?
-			if (__thread.verboseCheck(VerboseDebugFlag.THREAD_NEW))
-				__thread.verboseEmit("New Thread: %s", target);
-			
-			// Inherit verbose flags for this new thread?
-			if (__thread.verboseCheck(VerboseDebugFlag.INHERIT_VERBOSE_FLAGS))
-				target._initVerboseFlags = __thread.verbose().activeFlags();
-			
-			// Create object with this attached thread
-			SpringThread vmThread = new SpringThread(machine, target);
-			
-			// The thread gets these as well
-			target.setThreadInstance(javaThread);
-			target.setVMThread(vmThread);
-			
-			// If we are debugging, we are going to need to tell the debugger
-			// some important details
-			JDWPHostController jdwp = target.machine()
-				.taskManager().jdwpController;
-			if (jdwp != null)
-			{
-				// If we are debugging, we need to tell the debugger that the
-				// virtual machine actually started
-				if (target.machine().rootVm && target.isMain())
-					jdwp.<JDWPTripVmState>trip(JDWPTripVmState.class,
-						JDWPGlobalTrip.VM_STATE).alive(target, true);
-				
-				// If we are debugging, signal that this thread is in the start
-				// state. We need the instance to have been set for this to
-				// even properly work!
-				jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
-					JDWPGlobalTrip.THREAD).alive(target, true);
-			}
-			
-			return vmThread;
-			
-			 */
+			return null;
 		}
 	},
 	
@@ -244,7 +170,7 @@ public enum MLEThread
 		@Override
 		public Object handle(SpringThreadWorker __thread, Object... __args)
 		{
-			throw Debugging.todo();
+			return MLEObjects.thread(__args[0])._runnable;
 		}
 	},
 	
@@ -595,7 +521,28 @@ public enum MLEThread
 			// Try to start it
 			try
 			{
+				// Start it
 				worker.start();
+				
+				// If we are debugging, we are going to need to tell the
+				// debugger some important details
+				JDWPHostController jdwp = target.machine()
+					.taskManager().jdwpController;
+				if (jdwp != null)
+				{
+					// If we are debugging, we need to tell the debugger that
+					// the virtual machine actually started
+					if (target.machine().rootVm && target.isMain())
+						jdwp.<JDWPTripVmState>trip(JDWPTripVmState.class,
+							JDWPGlobalTrip.VM_STATE).alive(target, true);
+					
+					// If we are debugging, signal that this thread is in the
+					// start state. We need the instance to have been set for 
+					// this to even properly work!
+					jdwp.<JDWPTripThread>trip(JDWPTripThread.class,
+						JDWPGlobalTrip.THREAD).alive(target, true);
+				}
+				
 				return true;
 			}
 			catch (IllegalThreadStateException ignored)

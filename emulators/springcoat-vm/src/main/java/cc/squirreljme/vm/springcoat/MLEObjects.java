@@ -366,6 +366,23 @@ public final class MLEObjects
 	}
 	
 	/**
+	 * Ensures that this is a {@link SpringObject}.
+	 * 
+	 * @param __object The object to check.
+	 * @return As a {@link SpringObject}.
+	 * @throws SpringMLECallError If this is not one.
+	 * @since 2026/03/02
+	 */
+	public static SpringObject object(Object __object)
+		throws SpringMLECallError
+	{
+		if (!(__object instanceof SpringObject))
+			throw new SpringMLECallError("Not a SpringObject.");
+		
+		return (SpringObject)__object; 
+	}
+	
+	/**
 	 * Ensures that this is a {@link PipeObject}.
 	 * 
 	 * @param __object The object to check.
@@ -463,7 +480,8 @@ public final class MLEObjects
 		if (!(__object instanceof SpringThread))
 		{
 			new Throwable().printStackTrace();
-			throw new SpringMLECallError("Not a SpringThread.");
+			throw new SpringMLECallError(
+				String.format("Not a SpringThread: %s", __object));
 		}
 		
 		return (SpringThread)__object; 

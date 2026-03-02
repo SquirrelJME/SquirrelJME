@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.lang.ref.Reference;
@@ -60,6 +61,10 @@ public final class SpringThread
 	/** Unique thread ID. */
 	protected final int uniqueId;
 	
+	/** The monitor for this thread. */
+	private final SpringMonitor _monitor =
+		new SpringMonitor();
+	
 	/** The name of this thread. */
 	private volatile String _name;
 	
@@ -79,6 +84,12 @@ public final class SpringThread
 	
 	/** The thread status. */
 	int _status;
+	
+	/** The runnable to use. */
+	volatile SpringObject _runnable;
+	
+	/** Has the runnable been set? */
+	private volatile boolean _runnableSet;
 	
 	private SpringObject _threadInstance;
 	
@@ -406,6 +417,26 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Initializes the runnable.
+	 *
+	 * @param __runnable The runnable to use.
+	 * @throws SpringMLECallError If the runnable was already set.
+	 * @since 2026/03/02
+	 */
+	public void initRunnable(SpringObject __runnable)
+		throws SpringMLECallError
+	{
+		synchronized (this)
+		{
+			if (this._runnableSet)
+				throw new SpringMLECallError("Runnable already set!");
+			
+			this._runnableSet = true;
+			this._runnable = __runnable;
+		}
+	}
+	
+	/**
 	 * Invokes the given method, this forwards to
 	 * {@link SpringThreadWorker#invokeMethod(boolean, ClassName,
 	 * MethodNameAndType, Object...)}.
@@ -494,7 +525,7 @@ public final class SpringThread
 	@Override
 	public SpringMonitor monitor()
 	{
-		throw Debugging.todo();
+		return this._monitor;
 	}
 	
 	/**
@@ -651,7 +682,8 @@ public final class SpringThread
 	@Override
 	public SpringClass type()
 	{
-		throw Debugging.todo();
+		return this.machine().classLoader()
+			.loadClass(new ClassName("java/lang/Thread"));
 	}
 	
 	/**
