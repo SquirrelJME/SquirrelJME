@@ -47,9 +47,6 @@ public final class SpringThread
 	/** Is this a main thread? */
 	protected final boolean main;
 	
-	/** The name of this thread. */
-	protected final String name;
-	
 	/** Profiler information. */
 	protected final ProfiledThread profiler;
 	
@@ -62,6 +59,9 @@ public final class SpringThread
 	
 	/** Unique thread ID. */
 	protected final int uniqueId;
+	
+	/** The name of this thread. */
+	private volatile String _name;
 	
 	/** The stack frames. */
 	private final SpringThreadFrames _frames =
@@ -124,14 +124,12 @@ public final class SpringThread
 		boolean __noDebugSuspend)
 		throws NullPointerException
 	{
-		if (__n == null)
-			throw new NullPointerException("NARG");
-		
 		this.machineRef = __machRef;
 		this.id = __id;
 		this.uniqueId = __uniqueId;
 		this.main = __main;
-		this.name = __n;
+		this._name = (__n != null ? __n :
+			String.format("Thread-%d", __uniqueId));
 		this.profiler = __profiler;
 		this.noDebugSuspend = __noDebugSuspend;
 	}
@@ -507,7 +505,34 @@ public final class SpringThread
 	 */
 	public final String name()
 	{
-		return this.name;
+		synchronized (this)
+		{
+			return this._name;
+		}
+	}
+	
+	/**
+	 * Sets the thread name.
+	 *
+	 * @param __name The new name to set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/03
+	 */
+	public final void name(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			this._name = __name;
+			
+			// Does the worker need updating?
+			SpringThreadWorker worker = this._worker;
+			if (worker != null)
+				worker.setName(__name);
+		}
 	}
 	
 	/**
@@ -561,7 +586,7 @@ public final class SpringThread
 		
 		// Use standard SquirrelJME trace printing here
 		CallTraceUtils.printStackTrace(__ps,
-			String.format("SpringThread #%d: %s", this.id, this.name),
+			String.format("SpringThread #%d: %s", this.id, this.name()),
 			this.getStackTrace(), null, null,
 			0);
 	}
@@ -641,7 +666,7 @@ public final class SpringThread
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"Thread-%d: %s", this.id, this.name)));
+				"Thread-%d: %s", this.id, this.name())));
 		
 		return rv;
 	}

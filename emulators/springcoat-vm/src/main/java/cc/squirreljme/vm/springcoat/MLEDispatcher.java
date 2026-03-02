@@ -285,6 +285,9 @@ public enum MLEDispatcher
 		if (__arg == null)
 			throw new NullPointerException("NARG");
 		
+		if (__arg == void.class)
+			return "V";
+		
 		// Use the class name
 		if (__arg instanceof Class)
 		{

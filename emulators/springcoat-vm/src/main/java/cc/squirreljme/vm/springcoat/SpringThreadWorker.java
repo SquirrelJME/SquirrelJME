@@ -220,7 +220,10 @@ public final class SpringThreadWorker
 		// The called constructor will allocate the space needed to store
 		// this object, strings always are allocated in a special way however
 		String desire = __cl.name().toString();
-		if ("java/lang/String".equals(desire))
+		if ("java/lang/Thread".equals(desire))
+			return this.machine.createThread(null, 
+				false, false);
+		else if ("java/lang/String".equals(desire))
 			return new SpringStringObject(__cl, null);
 		else if ("java/lang/ref/WeakReference".equals(desire))
 			return new SpringWeakObject(__cl);

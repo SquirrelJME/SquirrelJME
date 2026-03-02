@@ -658,14 +658,6 @@ public final class SpringMachine
 		mainThread.enterFrame(worker.loadClass(SpringMachine._START_CLASS)
 			.lookupMethod(true, SpringMachine._MAIN_THREAD_METHOD));
 		
-		// Initialize an instance of Thread for this thread, as this is
-		// very important, the call to create VM threads will bind the instance
-		// object and the vm thread together.
-		worker.newInstance(
-			new ClassName("java/lang/Thread"),
-			new MethodDescriptor("(Ljava/lang/String;)V"),
-			worker.asVMObject("main"));
-		
 		// The main although it executes in this context will always have the
 		// same exact logic as other threads running apart from this main
 		// thread, so no code is needed to be duplicated at all.

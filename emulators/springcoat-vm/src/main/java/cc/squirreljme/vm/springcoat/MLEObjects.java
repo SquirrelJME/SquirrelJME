@@ -461,7 +461,10 @@ public final class MLEObjects
 		throws SpringMLECallError
 	{
 		if (!(__object instanceof SpringThread))
+		{
+			new Throwable().printStackTrace();
 			throw new SpringMLECallError("Not a SpringThread.");
+		}
 		
 		return (SpringThread)__object; 
 	}

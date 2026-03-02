@@ -69,9 +69,9 @@ public enum MLEThread
 		}
 	},
 	
-	/** {@link ThreadShelf#vmThreadInit(Thread, String, Runnable)}. */
+	/** {@link ThreadShelf#vmThreadInit(Thread, Runnable)}. */
 	VM_THREAD_INIT( "vmThreadInit:(Ljava/lang/Thread;" +
-		"Ljava/lang/String;Ljava/lang/Runnable;)Ljava/lang/Thread;")
+		"Ljava/lang/Runnable;)V")
 	{
 		/**
 		 * {@inheritDoc}
@@ -83,7 +83,7 @@ public enum MLEThread
 		{
 			// Must be the same thread!
 			SpringThread target = MLEObjects.thread(__args[0]);
-			if (target == null || target != __thread.thread)
+			if (target == null)
 				throw new SpringMLECallError("Wrong thread.");
 			
 			throw Debugging.todo();
@@ -491,6 +491,44 @@ public enum MLEThread
 		{
 			SpringThread thread = MLEObjects.thread(__args[0]);
 			return thread._worker != null;
+		}
+	},
+	
+	/** {@link ThreadShelf#vmThreadName(Thread)}. */
+	VM_THREAD_NAME(MLEDispatcher.methodKey("vmThreadName",
+		String.class, Thread.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2026/03/01
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringThread thread = MLEObjects.thread(__args[0]);
+			
+			// Return the current name
+			return __thread.asVMObject(thread.name());
+		}
+	},
+	
+	/** {@link ThreadShelf#vmThreadName(Thread, String)}. */
+	VM_THREAD_NAME_SET(MLEDispatcher.methodKey("vmThreadName",
+		void.class, Thread.class, String.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2026/03/01
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringThread thread = MLEObjects.thread(__args[0]);
+			String name = MLEObjects.string(__args[1]);
+			
+			// Set new name
+			thread.name(name);
+			return null;
 		}
 	},
 	

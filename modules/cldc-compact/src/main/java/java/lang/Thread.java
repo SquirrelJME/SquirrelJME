@@ -120,8 +120,9 @@ public class Thread
 		if (__hasName && __name == null)
 			throw new NullPointerException("NARG");
 		
-		ThreadShelf.vmThreadInit(this,
-			Thread.__defaultName(__name, this), __runnable);
+		ThreadShelf.vmThreadName(this,
+			Thread.__defaultName(__name, this));
+		ThreadShelf.vmThreadInit(this, __runnable);
 	}
 	
 	/**

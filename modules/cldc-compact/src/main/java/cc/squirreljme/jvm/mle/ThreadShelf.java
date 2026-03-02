@@ -158,20 +158,20 @@ public final class ThreadShelf
 		throws MLECallError;
 	
 	/**
-	 * Binds a virtual machine thread for the given Java thread, if a thread
-	 * is created through a constructor.
+	 * Sets the {@link Runnable} for a {@link Thread}, this is only done once
+	 * in the thread constructor and thus can never be called again or
+	 * elsewhere even if previously called with {@code null}.
 	 *
-	 * @param __javaThread The Java thread to create under.
-	 * @param __name The name of this thread.
+	 * @param __thread The thread to initialize
 	 * @param __runnable The runnable target, this is optional.
-	 * @return The virtual machine thread.
-	 * @throws MLECallError If {@code __javaThread} is null.
+	 * @throws MLECallError If {@code __thread} is null, or this has been
+	 * called multiple times.
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native Thread vmThreadInit(
-		@Flow(target = "this._vmThread") @NotNull Thread __javaThread,
-		@Nullable String __name, @Nullable Runnable __runnable)
+	public static native void vmThreadInit(
+		@Flow(target = "this._vmThread") @NotNull Thread __thread,
+		@Nullable Runnable __runnable)
 		throws MLECallError;
 	
 	/**
