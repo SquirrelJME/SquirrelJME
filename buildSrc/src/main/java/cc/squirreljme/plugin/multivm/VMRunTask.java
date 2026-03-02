@@ -36,6 +36,10 @@ public class VMRunTask
 	public static final URI JDWP_HOST =
 		URI.create("jdwp::5005");
 	
+	/** JDWP the VM instead of the target. */
+	public static final URI JDWP_JVM =
+		URI.create("jvm::5005");
+	
 	/** Internal Debugger. */
 	public static final URI INTERNAL =
 		URI.create("internal:internal");
