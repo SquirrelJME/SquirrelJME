@@ -197,38 +197,16 @@ struct sjme_frame_frameStack
 
 	/** The front of the stack, anything before are local variables. */
 	sjme_jint front;
-
-	/** The length of this stack. */
+	
+	/** The length of this set. */
 	sjme_jint length;
 	
-	/** Pointer bases for the type on the frame. */
-	sjme_alignPointer union
-	{
-		/** Pointer base. */
-		sjme_pointer base;
-		
-		/** Integer values. */
-		sjme_jint* i;
-
-		/** Long values. */
-		sjme_jlong* j;
-
-		/** Float values. */
-		sjme_jfloat* f;
-
-		/** Double values. */
-		sjme_jdouble* d;
-
-		/** Object values. */
-		sjme_jobject* l;
-	} base;
+	/** The value set. */
+	sjme_nvm_valueSet* set;;
 };
 
-/** The object check stack type. */
-#define SJME_NVM_STACK_OBJECT_CHECK_ID SJME_NUM_JAVA_TYPE_IDS
-
 /** Final stack indicator. */
-#define SJME_NVM_STACK_FINAL_ID (SJME_NVM_STACK_OBJECT_CHECK_ID + 1)
+#define SJME_NVM_STACK_FINAL_ID SJME_NUM_JAVA_TYPE_IDS
 
 struct sjme_frame_frameStacks
 {
@@ -842,22 +820,6 @@ sjme_errorCode sjme_nvm_task_frameHandler(
 	sjme_attrInOutNotNull sjme_nvm_byteCode_pcNew* pcNew);
 
 /**
- * Returns the direct address to the local variable.
- * 
- * @param inFrame The thread frame.
- * @param localType The type of local to access.
- * @param localIndex The local index.
- * @param outAddr The direct address to the local value.
- * @return Any resultant error, if any.
- * @since 2025/03/02
- */
-sjme_errorCode sjme_nvm_task_frameLocalAddr(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId localType,
-	sjme_attrInPositive sjme_jint localIndex,
-	sjme_attrOutNotNull sjme_jvalue** outAddr);
-
-/**
  * Clears the entire set of locals for a frame.
  * 
  * @param inFrame The frame to clear.
@@ -914,7 +876,7 @@ sjme_errorCode sjme_nvm_task_frameLocalPush(
  */
 sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint localIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue);
 	
@@ -1059,27 +1021,7 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint depth,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue);
-
-/**
- * Returns the direct address to a tread value.
- * 
- * @param inFrame The input stack frame.
- * @param typeId The type.
- * @param typeIndex The index into the tread.
- * @param outAddr The resultant address of the value.
- * @param outCheck The output check value if an object.
- * @param outConsiderGc How to consider garbage collection.
- * @return Any resultant value, if any.
- * @since 2025/03/02
- */
-sjme_errorCode sjme_nvm_task_frameTreadAddr(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrOutNotNull sjme_jvalue** outAddr,
-	sjme_attrOutNotNull sjme_jint** outCheck,
-	sjme_attrOutNullable sjme_nvm_frame_considerGc* outConsiderGc);
-
+	
 /**
  * Gets the value of a variable within a frame using the typed index
  * which is placed within its own frame set.

@@ -38,10 +38,9 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_frame_frameStacks* stack;
 	sjme_nvm_class_codePerType* perType;
 	sjme_frame_frameStack* typeStack;
-	sjme_jint i;
+	sjme_jint i, setSize;
 	sjme_intPointer typeOff[SJME_NVM_STACK_FINAL_ID + 1];
 	sjme_pointer storeBase;
-	sjme_javaTypeId sizeAlias;
 	
 	if (inState == NULL || inThread == NULL || inFrame == NULL ||
 		targetInfo == NULL)
@@ -71,19 +70,8 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	/* Determine the totals for each type. */
 	for (i = 0; i < SJME_NVM_STACK_FINAL_ID; i++)
 	{
-		/* Fill in the object check stack. */
-		if (i == SJME_NVM_STACK_OBJECT_CHECK_ID)
-		{
-			perType = &code->perType[SJME_JAVA_TYPE_ID_OBJECT];
-			sizeAlias = SJME_JAVA_TYPE_ID_INTEGER;
-		}
-
-		/* Normal type set. */
-		else
-		{
-			perType = &code->perType[i];
-			sizeAlias = i;
-		}
+		/* What is the per-type info? */
+		perType = &code->perType[i];
 
 		/* Obtain this stack. */
 		typeStack = &stack->stack[i];
@@ -92,13 +80,17 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 		typeStack->front = perType->locals;
 		typeStack->top = typeStack->front;
 		typeStack->length = typeStack->front + perType->stack;
+		
+		/* Determine the size of this set. */
+		setSize = -1;
+		if (sjme_error_is(error = sjme_nvm_vmField_sizeValueSet(&setSize,
+			i, typeStack->length)) || setSize < 0)
+			return sjme_error_default(error);
 
 		/* The offset for the next type is the total storage for this type. */
-		typeOff[i + 1] = sjme_util_alignTo(
-			sjme_util_alignTo(typeOff[i],
-				sjme_nvm_typeMul[sizeAlias]) +
-			(sjme_nvm_typeMul[sizeAlias] * typeStack->length),
-			sizeof(sjme_pointer));
+		typeOff[i + 1] = sjme_util_alignTo(typeOff[i],
+				sjme_nvm_typeMul[i]) +
+			sjme_util_alignTo(setSize, sizeof(sjme_pointer));
 	}
 
 	/* Is there enough memory to even allocate this big of a stack? */
@@ -117,7 +109,14 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	/* Setup pointers. */
 	stack->order = SJME_POINTER_OFFSET(storeBase, 0);
 	for (i = 0; i < SJME_NVM_STACK_FINAL_ID; i++)
-		stack->stack[i].base.base = SJME_POINTER_OFFSET(storeBase, typeOff[i]);
+	{
+		/* Determine base pointer. */
+		stack->stack[i].set = SJME_POINTER_OFFSET(storeBase, typeOff[i]);
+		
+		/* Set the set details. */
+		stack->stack[i].set->type = i;
+		stack->stack[i].set->length = stack->stack[i].length;
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;

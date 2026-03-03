@@ -229,6 +229,23 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 	memset(&set, 0, sizeof(set));
 	switch (SJME_VLS_)
 	{
+		case SJME_NVM_VMFIELD_VAR_JVALUE:
+			/* Copy over. */
+			set.t = sjme_nvm_typePromote[type];
+			set.v = va_arg(args, sjme_jvalue);
+			break;
+			
+		case SJME_NVM_VMFIELD_VAR_JVALUE_P:
+			/* Cannot be null. */
+			valueP = va_arg(args, sjme_jvalue*);
+			if (valueP == NULL)
+				return SJME_ERROR_NULL_ARGUMENTS;
+			
+			/* Copy over. */
+			set.t = sjme_nvm_typePromote[type];
+			set.v = *valueP;
+			break;
+		
 		case SJME_NVM_VMFIELD_VAR_JVALUE_TYPED:
 			/* Copy over. */
 			set = va_arg(args, sjme_jvalueTyped);
@@ -319,6 +336,10 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 		{
 			case SJME_BASIC_TYPE_ID_CHARACTER:
 				prim->c = (sjme_jchar)(set.v.i & 0xFFFF);
+				break;
+				
+			case SJME_JAVA_TYPE_ID_INTEGER:
+				prim->i = set.v.i;
 				break;
 			
 			default:

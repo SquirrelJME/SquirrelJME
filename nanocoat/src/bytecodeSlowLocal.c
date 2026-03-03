@@ -21,23 +21,47 @@ static const sjme_javaTypeId sjme_nvm_byteCode_xLoadType[5] =
 	SJME_JAVA_TYPE_ID_OBJECT,
 };
 
+static sjme_errorCode sjme_nvm_byteCode_iincAny(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInPositive sjme_jint index,
+	sjme_attrInPositive sjme_jint increment)
+{
+	sjme_errorCode error;
+	sjme_jvalueTyped value;
+	
+	if (inFrame == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Read the value. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_nvm_task_frameLocalGet(inFrame,
+		SJME_JAVA_TYPE_ID_INTEGER, index, &value)))
+		return sjme_error_default(error);
+	
+	/* Increment. */
+	value.v.i += increment;
+	
+	/* Set the value, we are setting an integer so logically we should */
+	/* never get an actual commit for objects. */
+	if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(inFrame,
+		NULL, index, &value)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 #pragma region(IInc)
 SJME_NVM_BYTECODE_SLOW(IInc)
 {
-	sjme_jint index, increment;
-	sjme_jvalue* value;
 	SJME_NVM_BYTECODE_ENTRY;
-
-	/* Directly access value. */
-	value = NULL;
-	index = (relRawCode[1] & 0xFF);
-	if (sjme_error_is(error = sjme_nvm_task_frameLocalAddr(
-		inFrame, SJME_JAVA_TYPE_ID_INTEGER, index,
-		&value)) || value == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INVALID_READ);
-
-	/* Increment directly. */
-	value->i += (sjme_jbyte)relRawCode[2];
+	
+	/* Perform the increment. */
+	if (sjme_error_is(error = sjme_nvm_byteCode_iincAny(
+		inFrame, (relRawCode[1] & 0xFF), 
+		(sjme_jbyte)relRawCode[2])))
+		return sjme_error_vmError(inFrame,
+			sjme_error_defaultOr(error, SJME_ERROR_LOCAL_INVALID_READ));
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
@@ -47,20 +71,14 @@ SJME_NVM_BYTECODE_SLOW(IInc)
 #pragma region(IIncWide)
 SJME_NVM_BYTECODE_SLOW(IIncWide)
 {
-	sjme_jint index;
-	sjme_jvalue* value;
 	SJME_NVM_BYTECODE_ENTRY;
-
-	/* Directly access value. */
-	value = NULL;
-	index = sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[2]));
-	if (sjme_error_is(error = sjme_nvm_task_frameLocalAddr(
-		inFrame, SJME_JAVA_TYPE_ID_INTEGER, index,
-		&value)) || value == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INVALID_READ);
-
-	/* Increment directly. */
-	value->i += sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[4]));
+	
+	/* Perform the increment. */
+	if (sjme_error_is(error = sjme_nvm_byteCode_iincAny(
+		inFrame, sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[2])),
+		sjme_big_short(*sjme_util_memUnaligned16(&relRawCode[4])))))
+		return sjme_error_vmError(inFrame,
+			sjme_error_defaultOr(error, SJME_ERROR_LOCAL_INVALID_READ));
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;

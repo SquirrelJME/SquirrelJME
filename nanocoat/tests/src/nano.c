@@ -661,6 +661,8 @@ fail_splicePath:
 fail_loadBootJar:
 fail_openBootJar:
 fail_poolInit:
+	sjme_message("Failed NanoTest (via Error): %d", error);
+	return EXIT_FAILURE;
 	
 #if defined(SJME_CONFIG_DEBUG)
 	/* Always dump memory state for any other error. */

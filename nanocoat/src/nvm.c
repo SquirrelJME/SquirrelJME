@@ -92,6 +92,7 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_NO_FIELD:
 		case SJME_ERROR_NO_METHOD:
 		case SJME_ERROR_NULL_ARGUMENTS:
+		case SJME_ERROR_OBJECT_GONE:
 		case SJME_ERROR_PURE_VIRTUAL_CALL:
 		case SJME_ERROR_STACK_INDEX_INVALID:
 		case SJME_ERROR_STACK_INVALID_READ:
