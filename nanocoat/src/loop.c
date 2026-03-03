@@ -106,9 +106,22 @@ sjme_errorCode sjme_nvm_loop_tick(
 		/* Nothing to run? Give up CPU slice and re-run. */
 		if (runThread == NULL)
 		{
-			sjme_thread_yield();
+			/* Yield instead of a longer sleep delay? */
+			if (++inState->schedule->yieldTimer < 
+				inState->schedule->yieldMax)
+				sjme_thread_yield();
+			
+			/* Sleep instead of yield. */
+			else
+				sjme_thread_sleep(inState->schedule->nothingMillis,
+					inState->schedule->nothingNanos);
+			
+			/* Run again. */
 			continue;
 		}
+		
+		/* Reset the yield timer. */
+		inState->schedule->yieldTimer = 0;
 
 		/* Otherwise execute the single thread. */
 		if (sjme_error_is(error = sjme_nvm_loop_tickThread(

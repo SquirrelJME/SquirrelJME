@@ -275,6 +275,7 @@ sjme_errorCode sjme_nvm_boot(
 	const sjme_nvm_bootParam* bootParamCopy;
 	sjme_nvm_task initTask;
 	sjme_list(sjme_nvm_rom_library)* classPath;
+	sjme_jlong yieldIn, yieldOut;
 	
 	if (allocPool == NULL || param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -431,10 +432,37 @@ sjme_errorCode sjme_nvm_boot(
 
 	/* Allocate the task scheduler, if applicable. */
 	if (result->threadModel != SJME_NVM_MLE_THREAD_MULTI)
+	{
+		/* Allocate. */
 		if (sjme_error_is(error = sjme_alloc(allocPool,
 			sizeof(*result->schedule), (sjme_pointer*)&result->schedule)) ||
 			result->schedule == NULL)
 			goto fail_allocSchedule;
+		
+		/* Determine the number of yields that occur for a very small slice */
+		/* of time. */
+		memset(&yieldIn, 0, sizeof(yieldIn));
+		memset(&yieldOut, 0, sizeof(yieldOut));
+		result->nal->nanoTime(&yieldIn);
+		for (i = 0; i >= 0; i++)
+		{
+			/* Yield. */
+			sjme_thread_yield();
+			
+			/* How much time has passed? */
+			result->nal->nanoTime(&yieldOut);
+			if ((yieldOut.full - yieldIn.full) >= INT64_C(100000000))
+				break;
+		}
+		
+		/* We want to yield up to this point. */
+		result->schedule->yieldTimer = 0;
+		result->schedule->yieldMax = i;
+		
+		/* Then transition to actual sleeps. */
+		result->schedule->nothingMillis = 100;
+		result->schedule->nothingNanos = 0;
+	}
 
 	/* Setup task details. */
 	initTaskConfig = (sjme_nvm_task_taskNewConfig*)result->initTaskConfig;

@@ -340,6 +340,18 @@ typedef struct sjme_nvm_threadSchedule
 	
 	/** The schedules for each mode. */
 	sjme_nvm_threadSubSchedule mode[SJME_NVM_THREAD_NUM_SCHEDULE_MODE];
+	
+	/** The timer used for yields. */
+	sjme_jint yieldTimer;
+	
+	/** The maximum amount of time to yield for. */
+	sjme_jint yieldMax;
+	
+	/** The millisecond nothing/deadlock time to sleep for. */
+	sjme_jint nothingMillis;
+	
+	/** The nanosecond nothing/deadlock time to sleep for. */
+	sjme_jint nothingNanos;
 } sjme_nvm_threadSchedule;
 
 /**

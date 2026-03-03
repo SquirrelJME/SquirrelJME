@@ -59,7 +59,8 @@ sjme_errorCode sjme_nal_default_nanoTime(
 		return SJME_ERROR_NATIVE_SYSTEM_CLOCK_FAILURE;
 	
 	/* Translate time. */
-	result->full = spec.tv_nsec + (spec.tv_sec * UINT64_C(1000000000));
+	result->full = spec.tv_nsec + ((sjme_julongNative)spec.tv_sec *
+		UINT64_C(1000000000));
 	return SJME_ERROR_NONE;
 }
 

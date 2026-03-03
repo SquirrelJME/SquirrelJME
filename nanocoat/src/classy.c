@@ -89,7 +89,7 @@ static sjme_errorCode sjme_nvm_class_classAnnotations(
 	sjme_list(sjme_nvm_class_annotation)* annotations;
 	sjme_nvm_class_poolEntry* type;
 	sjme_nvm_class_poolEntry* name;
-	sjme_nvm_class_poolEntry* string;
+	sjme_nvm_class_poolEntry* value;
 	
 	if (allocPool == NULL || inConstPool == NULL || inStringPool == NULL ||
 		attrName == NULL || attrData == NULL ||
@@ -187,38 +187,50 @@ static sjme_errorCode sjme_nvm_class_classAnnotations(
 			/* Which type of value is being read? */
 			switch ((sjme_nvm_class_annotationTag)tag)
 			{
-					/* Java type value. */
+					/* Integer constant. */
 				case SJME_NVM_CLASS_ANNOTATION_TAG_BYTE:
 				case SJME_NVM_CLASS_ANNOTATION_TAG_CHARACTER:
-				case SJME_NVM_CLASS_ANNOTATION_TAG_DOUBLE:
-				case SJME_NVM_CLASS_ANNOTATION_TAG_FLOAT:
-				case SJME_NVM_CLASS_ANNOTATION_TAG_INTEGER:
-				case SJME_NVM_CLASS_ANNOTATION_TAG_LONG:
 				case SJME_NVM_CLASS_ANNOTATION_TAG_SHORT:
 				case SJME_NVM_CLASS_ANNOTATION_TAG_BOOLEAN:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_INTEGER:
+					value = NULL;
+					if (sjme_error_is(error =
+						sjme_nvm_class_readPoolRefIndex(
+						attrStream, inConstPool,
+						SJME_NVM_CLASS_POOL_TYPE_INTEGER,
+						SJME_JNI_FALSE, &value)) || value == NULL)
+						goto fail_readString;
+					
+					/* Copy value. */
+					annotation->valueJava.v.i = value->constInteger.value;
+					break;
+					
+				case SJME_NVM_CLASS_ANNOTATION_TAG_DOUBLE:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_FLOAT:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_LONG:
 					sjme_todo("Impl?");
 					return SJME_ERROR_NOT_IMPLEMENTED;
 					
 					/* String Constant. */
 				case SJME_NVM_CLASS_ANNOTATION_TAG_STRING:
-					string = NULL;
+					value = NULL;
 					if (sjme_error_is(error =
 						sjme_nvm_class_readPoolRefIndex(
 						attrStream, inConstPool,
 						SJME_NVM_CLASS_POOL_TYPE_UTF,
-						SJME_JNI_FALSE, &string)) || string == NULL)
+						SJME_JNI_FALSE, &value)) || value == NULL)
 						goto fail_readString;
 					
 					/* Set string value. */
-#if 0
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 					annotation->valueString = sjme_weakUpR(
-						sjme_nvm_stringPool_string, string->utf.utf);
+						sjme_nvm_stringPool_string, value->utf.utf);
 #else
 					/* TODO: Counting up is the correct solution, however */
 					/* TODO: annotations are very new and only used in */
 					/* TODO: testing. So something else seems to be */
 					/* TODO: miscounting. */
-					annotation->valueString = string->utf.utf;
+					annotation->valueString = value->utf.utf;
 #endif
 					break;
 					

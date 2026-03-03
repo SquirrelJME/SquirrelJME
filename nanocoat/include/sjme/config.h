@@ -1278,6 +1278,14 @@ extern "C" {
 	/** Constant-ish struct member set. */
 	#define sjme_sm(dot, val) val
 #endif
+	
+/** Two structure values. */
+#define sjme_sm2(dot, v1, v2) \
+	sjme_sm(dot, {v1 SJME_TOKEN_COMMA v2})
+	
+/** Three structure values. */
+#define sjme_sm3(dot, v1, v2, v3) \
+	sjme_sm(dot, {v1 SJME_TOKEN_COMMA v2 SJME_TOKEN_COMMA v3})
 
 /** Bitfield count for @link sjme_jboolean @endlink . */
 #define sjme_booleanBit 2

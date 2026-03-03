@@ -10,7 +10,11 @@
 .class public nanocoat/bytecode/NanoTestNop
 .super java/lang/Object
 
-.field public static final "EXPECTED_VOID" I = 0
+.runtime_visible_annotation
+	.annotation "Lnano/NanoDetails;"
+		.elem .bool_kind "expectedVoid" 1
+	.end .annotation
+.end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2

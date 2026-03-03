@@ -326,6 +326,13 @@ extern "C"
 #define SJME_TOKEN_SEMI ;
 
 /**
+ * Comma token.
+ *
+ * @since 2026/03/03
+ */
+#define SJME_TOKEN_COMMA ,
+
+/**
  * Does this have pointer stars?
  *
  * @param numPointerStars The number of pointer stars.
