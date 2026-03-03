@@ -830,7 +830,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	/* Allocate thread structure. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(inState, sizeof(*result),
-		SJME_NVM_STRUCT_THREAD_INSTANCE, SJME_AS_NVM_COMMONP(&result))))
+		SJME_NVM_STRUCT_BRACKET_VM_THREAD_INSTANCE, SJME_AS_NVM_COMMONP(&result))))
 		goto fail_allocResult;
 	
 	/* Lock state on the task. */
@@ -868,10 +868,10 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	sjme_atomic_s(sjme_nvm_thread_statusType, &result->status,
 		SJME_NVM_THREAD_STATUS_SLEEPING);
 	
-	/* Soft load the thread class. */
+	/* Soft load the VM thread bracket class. */
 	threadType = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_commonClass(result,
-		SJME_NVM_COMMON_THREAD,
+		SJME_NVM_COMMON_VM_THREAD,
 		&threadType,
 		SJME_JNI_FALSE)) || threadType == NULL)
 		goto fail_loadThreadClass;

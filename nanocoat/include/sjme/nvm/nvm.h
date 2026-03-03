@@ -145,8 +145,8 @@ typedef enum sjme_nvm_structType
 	/** Task intern strings. */
 	SJME_NVM_STRUCT_TASK_STRINGS,
 	
-	/** A single thread. */
-	SJME_NVM_STRUCT_THREAD_INSTANCE,
+	/** A single VM thread. */
+	SJME_NVM_STRUCT_BRACKET_VM_THREAD_INSTANCE,
 	
 	/** Class loader. */
 	SJME_NVM_STRUCT_VM_CLASS_LOADER,

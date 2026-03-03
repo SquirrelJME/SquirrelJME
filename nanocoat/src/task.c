@@ -312,6 +312,10 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		case SJME_NVM_COMMON_TRACE_POINT:
 			commonName = "Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;";
 			break;
+			
+		case SJME_NVM_COMMON_VM_THREAD:
+			commonName = "Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;";
+			break;
 		
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;

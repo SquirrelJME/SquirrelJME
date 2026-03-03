@@ -713,8 +713,10 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 		/* Class was GCed before the object? This is not something that */
 		/* should occur! Can be ignored, if a class. */
 		/* Strings are special objects, so they can be skipped. */
+		/* Threads are special objects as well. */
 		if (object->common.type != SJME_NVM_STRUCT_CLASS_INSTANCE &&
-			object->common.type != SJME_NVM_STRUCT_STRING_INSTANCE)
+			object->common.type != SJME_NVM_STRUCT_STRING_INSTANCE &&
+			object->common.type != SJME_NVM_STRUCT_BRACKET_VM_THREAD_INSTANCE)
 			if (atClass->fieldName == NULL || atClass->info == NULL)
 				return sjme_error_vmError(NULL, SJME_ERROR_OBJECT_GONE);
 		
@@ -759,7 +761,7 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 		if (sjme_error_is(error = sjme_nvm_cleanup_postString(closeable)))
 			return sjme_error_default(error);
 	}
-	else if (object->common.type == SJME_NVM_STRUCT_THREAD_INSTANCE)
+	else if (object->common.type == SJME_NVM_STRUCT_BRACKET_VM_THREAD_INSTANCE)
 	{
 		if (sjme_error_is(error = sjme_nvm_cleanup_postThread(closeable)))
 			return sjme_error_default(error);
@@ -1278,10 +1280,10 @@ static sjme_jboolean sjme_nvm_cleanup_typeIsObject(
 		case SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE:
 		case SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE:
 		case SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE:
+		case SJME_NVM_STRUCT_BRACKET_VM_THREAD_INSTANCE:
 		case SJME_NVM_STRUCT_CLASS_INSTANCE:
 		case SJME_NVM_STRUCT_OBJECT_INSTANCE:
 		case SJME_NVM_STRUCT_STRING_INSTANCE:
-		case SJME_NVM_STRUCT_THREAD_INSTANCE:
 		case SJME_NVM_STRUCT_WEAK_INSTANCE:
 			return SJME_JNI_TRUE;
 

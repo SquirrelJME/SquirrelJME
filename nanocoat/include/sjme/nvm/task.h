@@ -427,77 +427,80 @@ typedef enum sjme_nvm_task_commonClassId
 	/** Null class. */
 	SJME_NVM_COMMON_NULL,
 
-	/** @c java.lang.ClassCastException. */
+	/** @code java.lang.ClassCastException@endcode . */
 	SJME_NVM_COMMON_EXCEPTION_CLASS_CAST,
 
-	/** @c java.lang.LinkageError . */
+	/** @code java.lang.LinkageError @endcode . */
 	SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR,
 	
-	/** @c java.lang.NullPointerException . */
+	/** @code java.lang.NullPointerException @endcode . */
 	SJME_NVM_COMMON_EXCEPTION_NULL_POINTER,
 
-	/** @c cc.squirreljme.jvm.mle.brackets.JarPackageBracket . */
+	/** @code cc.squirreljme.jvm.mle.brackets.JarPackageBracket @endcode . */
 	SJME_NVM_COMMON_JAR_PACKAGE,
 
-	/** @c cc.squirreljme.jvm.mle.brackets.PipeBracket . */
+	/** @code cc.squirreljme.jvm.mle.brackets.PipeBracket @endcode . */
 	SJME_NVM_COMMON_PIPE,
 	
-	/** @c boolean . */
+	/** @code boolean @endcode . */
 	SJME_NVM_COMMON_PRIMITIVE_BOOLEAN,
 	
-	/** @c byte . */
+	/** @code byte @endcode . */
 	SJME_NVM_COMMON_PRIMITIVE_BYTE,
 	
-	/** @c char . */
+	/** @code char @endcode . */
 	SJME_NVM_COMMON_PRIMITIVE_CHARACTER,
 	
-	/** @c double . */
+	/** @code double @endcode . */
 	SJME_NVM_COMMON_PRIMITIVE_DOUBLE,
 	
-	/** @c float . */
+	/** @code float @endcode . */
 	SJME_NVM_COMMON_PRIMITIVE_FLOAT,
 	
-	/** @c int . */
+	/** @code int @endcode . */
 	SJME_NVM_COMMON_PRIMITIVE_INTEGER,
 	
-	/** @c long . */
+	/** @code long @endcode . */
 	SJME_NVM_COMMON_PRIMITIVE_LONG,
 	
-	/** @c short . */
+	/** @code short @endcode . */
 	SJME_NVM_COMMON_PRIMITIVE_SHORT,
 	
-	/** @c void . */
+	/** @code void @endcode . */
 	SJME_NVM_COMMON_PRIMITIVE_VOID,
 
-	/** @c java.lang.ref.PhantomReference . */
+	/** @code java.lang.ref.PhantomReference @endcode . */
 	SJME_NVM_COMMON_REFERENCE_PHANTOM,
 
-	/** @c java.lang.ref.SoftReference . */
+	/** @code java.lang.ref.SoftReference @endcode . */
 	SJME_NVM_COMMON_REFERENCE_SOFT,
 
-	/** @c java.lang.ref.WeakReference . */
+	/** @code java.lang.ref.WeakReference @endcode . */
 	SJME_NVM_COMMON_REFERENCE_WEAK,
 
-	/** @c cc.squirreljme.jvm.mle.brackets.TracePointBracket . */
+	/** @code cc.squirreljme.jvm.mle.brackets.TracePointBracket @endcode . */
 	SJME_NVM_COMMON_TRACE_POINT,
 
 	/** The start of very important classes. */
 	SJME_NVM_COMMON_VERY_IMPORTANT,
 
-	/** @c java.lang.Throwable . */
+	/** @code java.lang.Throwable @endcode . */
 	SJME_NVM_COMMON_THROWABLE,
 
-	/** @c java.lang.Thread . */
+	/** @code java.lang.Thread @endcode . */
 	SJME_NVM_COMMON_THREAD,
 	
-	/** @c java.lang.String . */
+	/** @code java.lang.String @endcode . */
 	SJME_NVM_COMMON_STRING,
 	
-	/** @c java.lang.Class . */
+	/** @code java.lang.Class @endcode . */
 	SJME_NVM_COMMON_CLASS,
 	
-	/** @c java.lang.Object . */
+	/** @code java.lang.Object @endcode . */
 	SJME_NVM_COMMON_OBJECT,
+
+	/** @code cc.squirreljme.jvm.mle.brackets.VMThreadBracket @endcode . */
+	SJME_NVM_COMMON_VM_THREAD,
 
 	/** The number of common classes. */
 	SJME_NVM_TASK_NUM_COMMON_CLASS
