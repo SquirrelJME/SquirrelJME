@@ -400,7 +400,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("Is %s a %s?",
 		(value.v.l == NULL ? "NULL" :
-			sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->binaryName)),
+			sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->fieldName)),
 		(desireClass == NULL ? "NULL" :
 			sjme_charSeq_tempUtf(desireClass->fieldName)));
 #endif

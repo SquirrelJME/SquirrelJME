@@ -58,6 +58,9 @@ squirreljme_include("utils.cmake")
 # Platform information
 squirreljme_include("platform.cmake")
 
+# Verbosity
+squirreljme_include("verbose.cmake")
+
 # Valgrind Support on UNIX OSes, if debugging is enabled
 if(NOT SQUIRRELJME_IS_ANDROID AND
 	SQUIRRELJME_IS_UNIX AND SQUIRRELJME_IS_DEBUG)

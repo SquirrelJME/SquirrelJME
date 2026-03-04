@@ -96,7 +96,7 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 		(sjme_atomic_g(sjme_jclass, &object->isClass) != NULL ?
 			sjme_charSeq_tempUtf(
 				sjme_atomic_g(sjme_jclass,
-					&object->isClass)->binaryName) : "?"),
+					&object->isClass)->fieldName) : "?"),
 		oldCount,
 		sjme_atomic_g(sjme_jint, &weak->count));
 #endif
@@ -146,7 +146,7 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 		object,
 		(sjme_atomic_g(sjme_jclass, &object->isClass) != NULL ?
 			sjme_charSeq_tempUtf(sjme_atomic_g(sjme_jclass,
-				&object->isClass)->binaryName) : "?"),
+				&object->isClass)->fieldName) : "?"),
 		oldCount,
 		sjme_atomic_g(sjme_jint, &weak->count));
 #endif
