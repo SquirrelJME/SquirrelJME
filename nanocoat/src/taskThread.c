@@ -837,7 +837,8 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	/* Allocate thread structure. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(inState, sizeof(*result),
-		SJME_NVM_STRUCT_BRACKET_VM_THREAD_INSTANCE, SJME_AS_NVM_COMMONP(&result))))
+		SJME_NVM_STRUCT_BRACKET_VM_THREAD_INSTANCE,
+		SJME_AS_NVM_COMMONP(&result))))
 		goto fail_allocResult;
 	
 	/* Lock state on the task. */

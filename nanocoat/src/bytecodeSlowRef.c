@@ -167,20 +167,21 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			if (error == SJME_ERROR_MLE_CALL)
 				goto skip_mleFailed;
 			
-#if defined(SJME_CONFIG_DEBUG)
 			/* Unknown/Unimplemented method. */
 			else if (error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
 				error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
 			{
+#if defined(SJME_CONFIG_DEBUG_MLE)
 				sjme_message("Missing MLE: %s.%s %s",
 					sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
 						&target->inClass)->name->seq),
 					sjme_charSeq_tempUtf(target->name->seq),
 					sjme_charSeq_tempUtf(target->type->seq));
+#endif
 				
 				return sjme_error_vmError(inFrame, error);
 			}
-#endif
+			
 			/* Emit linkage error otherwise. */
 			else if (error == SJME_ERROR_UNKNOWN_NATIVE_FUNCTION ||
 				error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
@@ -211,9 +212,18 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 
 			/* Is there a return value being pushed to the stack? */
 			if (mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
+			{
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
+				/* MLE is not responsible for counting objects. */
+				if (mleArgR.t == SJME_JAVA_TYPE_ID_OBJECT)
+					mleArgR.v.l = sjme_weakUp(mleArgR.v.l);
+#endif
+				
+				/* Push to the stack. */
 				if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 					inFrame, commit, &mleArgR)))
 					return sjme_error_vmError(inFrame, error);
+			}
 		}
 	}
 

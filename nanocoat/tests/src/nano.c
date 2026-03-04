@@ -105,7 +105,7 @@ fail_allocArray:
 #undef BUF_SIZE
 }
 
-SJME_NVM_MLE_FUNCTION_DECL(result)
+SJME_NVM_MLE_FUNCTION_DECL_ALT(result, string)
 {
 	sjme_errorCode error;
 	sjme_test_nano_result* result;
@@ -140,6 +140,27 @@ SJME_NVM_MLE_FUNCTION_DECL(result)
 	return SJME_ERROR_NONE;
 }
 
+SJME_NVM_MLE_FUNCTION_DECL_ALT(result, void)
+{
+	sjme_test_nano_result* result;
+	
+	/* Recover result. */
+	result = SJME_F_S(inFrame)->hookData;
+	if (result == NULL)
+		return sjme_die("No hookData.");
+	
+	/* Result can only be called once! */
+	if (result->captured)
+		return sjme_die("Result already captured.");
+	
+	/* Set test string result. */
+	result->captured = SJME_JNI_TRUE;
+	result->value.t = SJME_JAVA_TYPE_ID_VOID;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_SHELF_DECLARE(NanoShelf) =
 {
 	SJME_NVM_MLE_DEFINE(makeArrayNull,
@@ -149,9 +170,12 @@ SJME_NVM_MLE_SHELF_DECLARE(NanoShelf) =
 		SJME_MD(SJME_MD_A(SJME_MD_STRING), SJME_MD_I),
 		"L", "I"),
 	
-	SJME_NVM_MLE_DEFINE(result,
+	SJME_NVM_MLE_DEFINE_ALT(result, string,
 		SJME_MD(SJME_MD_V, SJME_MD_STRING),
 		"V", "L"),
+	SJME_NVM_MLE_DEFINE_ALT(result, void,
+		SJME_MD(SJME_MD_V, ),
+		"V", ""),
 	
 	SJME_NVM_MLE_STOP()
 };

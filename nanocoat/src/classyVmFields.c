@@ -167,6 +167,10 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLG_(
 			/* Depending on the input type, we need to promote. */
 			switch (type)
 			{
+				case SJME_JAVA_TYPE_ID_INTEGER:
+					valueP->i = prim->i;
+					break;
+				
 				case SJME_JAVA_TYPE_ID_OBJECT:
 					valueP->l = checkObj;
 					break;
