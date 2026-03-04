@@ -1360,6 +1360,11 @@ extern "C" {
 		/** Print out bytecodes. */
 		#define SJME_CONFIG_DEBUG_BYTECODES
 	#endif
+	
+	#if !defined(SJME_CONFIG_DEBUG_ENTRY)
+		/** Entry and exit from methods. */
+		#define SJME_CONFIG_DEBUG_ENTRY
+	#endif
 
 	#if !defined(SJME_CONFIG_DEBUG_FIELD)
 		/** Print out field access operations. */

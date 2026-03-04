@@ -430,7 +430,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	/* Set frame as active. */
 	inThread->numFrames++;
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_ENTRY)
 	/* Print out arguments. */
 	memset(argBuf, 0, sizeof(argBuf));
 	for (i = 0; i < argC && argV != NULL; i++)
@@ -470,7 +470,8 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	}
 	
 	/* Emit. */
-	sjme_messageB("ENTER %s.%s %s: (%s)",
+	sjme_messageB("ENTER (+%d) %s.%s %s: (%s)",
+		inThread->numFrames,
 		sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
 			&targetInfo->inClass)->name->seq),
 		sjme_charSeq_tempUtf(targetInfo->name->seq),
@@ -697,6 +698,12 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	topIndex = inThread->numFrames - 1;
 	if (topIndex <= -1)
 		return SJME_ERROR_INVALID_THREAD_STATE;
+	
+#if defined(SJME_CONFIG_DEBUG_ENTRY)
+	/* DEBUG. */
+	sjme_emitB("LEAVE (-%d): ",
+		inThread->numFrames);
+#endif
 
 	/* Setup commit. */
 	memset(&commit, 0, sizeof(commit));

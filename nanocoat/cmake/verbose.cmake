@@ -31,6 +31,8 @@ squirreljme_verbose_option(STABLE
 # Define all of the possible verbose functions
 squirreljme_verbose_option(BYTECODES
 	"Debug: Bytecode instructions.")
+squirreljme_verbose_option(ENTRY
+	"Debug: Entry and exit from methods.")
 squirreljme_verbose_option(FIELD
 	"Debug: Field get and set operations.")
 squirreljme_verbose_option(GC
