@@ -293,6 +293,16 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 		if (objC == NULL || objP == NULL)
 			return SJME_ERROR_INVALID_FIELD_TYPE;
 		
+		/* Do nothing if the same object. */
+		if (set.v.l != NULL)
+			if ((*objC) == set.v.l->identityHash && (*objP) == set.v.l)
+				return SJME_ERROR_NONE;
+		
+		/* Count up new object. */
+		if (set.v.l != NULL)
+			if (sjme_error_is(error = sjme_nvm_instance_countUp(set.v.l)))
+				return sjme_error_vmError(NULL, error);
+		
 		/* GC old object? */
 		oldObject = (*objP);
 		if (oldObject != NULL)
@@ -310,7 +320,8 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 			/* Direct GC? */
 			if (commit == NULL)
 			{
-				if (sjme_error_is(error = sjme_alloc_weakUnRef(oldObject)))
+				if (sjme_error_is(error = sjme_nvm_instance_countDown(
+					oldObject)))
 					return sjme_error_default(error);
 			}
 			
@@ -326,7 +337,7 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 		/* Set new object. */
 		if (set.v.l != NULL)
 			(*objC) = set.v.l->identityHash;
-		(*objP) = sjme_weakUpR(sjme_jobject, set.v.l);
+		(*objP) = set.v.l;
 	}
 	
 	/* Non-object. */

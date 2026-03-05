@@ -222,10 +222,12 @@ static sjme_errorCode sjme_nvm_cleanup_close(
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(&common->lock)))
 		return sjme_error_default(error);
 
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/* Perform a generic walk close. */
 	if (sjme_error_is(error = sjme_nvm_walk_start(common, common->type,
 		&sjme_nvm_cleanup_walkFunctions, NULL)))
 		goto fail_walk;
+#endif
 
 	/* Is there a post-close handler for this? */
 	/* Cleanup any sub-structures that would otherwise normally */

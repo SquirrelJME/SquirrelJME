@@ -896,8 +896,13 @@ sjme_errorCode sjme_nvm_task_threadNew(
 		0, NULL)))
 		goto fail_enterFrame;
 	
+	/* Count up. */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(
+		SJME_AS_JOBJECT(result))))
+		goto fail_countUp;
+	
 	/* Store thread for future referencing. */
-	inTask->threads->elements[freeSlot] = sjme_weakUp(result);
+	inTask->threads->elements[freeSlot] = result;
 
 	/* Increase task thread count, for both all and normal. Normal gets */
 	/* an add because a thread gets daemon being set later. */
@@ -931,6 +936,7 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	*outThread = result;
 	return SJME_ERROR_NONE;
 	
+fail_countUp:
 fail_enterFrame:
 	if (firstFrame != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(firstFrame));
