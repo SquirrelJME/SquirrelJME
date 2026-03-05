@@ -247,8 +247,10 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 
 	/* Commit any pending GC objects. */
 skip_mleFailed:
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, commit)))
 		return sjme_error_vmError(inFrame, error);
+#endif
 
 	/* Success? */
 	if (sjme_error_is(mleError))
