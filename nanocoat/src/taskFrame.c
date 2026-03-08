@@ -783,6 +783,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 {
 	sjme_errorCode error;
 	sjme_javaTypeId typeId;
+	sjme_jvalueTyped old;
 	
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -792,15 +793,16 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	/* Read old value in first? */
+	/* Read old value in first, so we can determine if it changed... */
+	memset(&old, 0, sizeof(old));
+	if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
+		inFrame->stack.stack[typeId].set, typeIndex,
+		SJME_VLG_JVALUE_TYPED_P(&old))))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Does the caller want the old value? */
 	if (oldValue != NULL)
-	{
-		/* Read in. */
-		if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
-			inFrame->stack.stack[typeId].set, typeIndex,
-			SJME_VLG_JVALUE_TYPED_P(oldValue))))
-			return sjme_error_vmError(inFrame, error);
-	}
+		memmove(oldValue, &old, sizeof(old));
 	
 	/* Perform the actual set. */
 	if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(

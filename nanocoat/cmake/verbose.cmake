@@ -39,6 +39,8 @@ squirreljme_verbose_option(GC
 	"Debug: Garbage collection.")
 squirreljme_verbose_option(MLE
 	"Debug: Middle layer emulation calls.")
+squirreljme_verbose_option(NO_REAL_GC
+	"Debug: Do not perform any real garbage collection.")
 squirreljme_verbose_option(TREAD
 	"Debug: Stack and local treads.")
 squirreljme_verbose_option(CIRCLEBUF

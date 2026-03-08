@@ -590,7 +590,7 @@ int main(int argc, sjme_lpstr* argv)
 		
 		/* Java Type. */
 		else if (expectedString == NULL && expectedException == NULL &&
-			memcmp(&result.value, &expectedJava.v,
+			memcmp(&result.value, &expectedJava,
 				sizeof(expectedJava)) != 0)
 		{
 			/* Debug. */
@@ -656,9 +656,11 @@ int main(int argc, sjme_lpstr* argv)
 		sjme_alloc_poolDump(runPool, SJME_JNI_TRUE);
 #endif
 		
+#if !defined(SJME_CONFIG_DEBUG_NO_REAL_GC)
 		/* Fail. */
 		error = SJME_ERROR_MEMORY_EXISTS;
 		goto fail_existingBlocks;
+#endif
 	}
 	
 	/* Return with the exit code. */

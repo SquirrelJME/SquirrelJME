@@ -81,6 +81,11 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 	oldCount = sjme_atomic_g(sjme_jint, &weak->count);
 	typeOf = object->common.type;
 #endif
+	
+#if defined(SJME_CONFIG_DEBUG_NO_REAL_GC)
+	if (SJME_JNI_TRUE)
+		return SJME_ERROR_NONE;
+#endif
 
 	/* Reduce the count on this. */
 	if (sjme_error_is(error = sjme_alloc_weakUnRef(object)) ||
