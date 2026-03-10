@@ -18,6 +18,12 @@ check_library_exists("${SQUIRRELJME_MAYBE_LIBDL}"
 if(SJME_CONFIG_HAS_DL_DLOPEN AND SJME_CONFIG_HAS_DL_DLCLOSE)
 	set(SQUIRRELJME_MAYBE_LIBDL "dl")
 else()
-	find_library(SQUIRRELJME_MAYBE_LIBDL "dl")
+	find_library(checkLibDlPath "dl")
+	if(NOT "${checkLibDlPath}" STREQUAL "checkLibDlPath-NOTFOUND")
+		# Ensure this is cleared
+		set(SQUIRRELJME_MAYBE_LIBDL)
+	else()
+		set(SQUIRRELJME_MAYBE_LIBDL "dl")
+	endif()
 endif()
 

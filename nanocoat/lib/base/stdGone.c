@@ -108,7 +108,7 @@ int toupper(int c)
 }
 #endif
 
-#if !defined(SJME_CONFIG_HAS_STRCASECMP) && !defined(SJME_CONFIG_HAS_STRICMP)
+#if defined(SJME_CONFIG_HAS_NO_STRCASECMP)
 int strcasecmp(const char* a, const char* b)
 {
 	int diff;
