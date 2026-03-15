@@ -7,12 +7,12 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public nanocoat/bytecode/NanoTestLALoadOOBRight
+.class public nanocoat/bytecode/NanoTestInvokeVirtualNull
 .super java/lang/Object
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
-		.elem .str_kind "expectedException" "Ljava/lang/ArrayIndexOutOfBoundsException;"
+		.elem .str_kind "expectedException" "Ljava/lang/NullPointerException;"
 	.end .annotation
 .end .annotation_attr
 
