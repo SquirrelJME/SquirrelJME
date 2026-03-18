@@ -105,6 +105,28 @@ fail_allocArray:
 #undef BUF_SIZE
 }
 
+SJME_NVM_MLE_FUNCTION_DECL_ALT(result, integer)
+{
+	sjme_test_nano_result* result;
+	
+	/* Recover result. */
+	result = SJME_F_S(inFrame)->hookData;
+	if (result == NULL)
+		return sjme_die("No hookData.");
+	
+	/* Result can only be called once! */
+	if (result->captured)
+		return sjme_die("Result already captured.");
+	
+	/* Set test string result. */
+	result->captured = SJME_JNI_TRUE;
+	result->value.t = SJME_JAVA_TYPE_ID_INTEGER;
+	result->value.v.i = argV[0].v.i;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL_ALT(result, string)
 {
 	sjme_errorCode error;
@@ -170,6 +192,9 @@ SJME_NVM_MLE_SHELF_DECLARE(NanoShelf) =
 		SJME_MD(SJME_MD_A(SJME_MD_STRING), SJME_MD_I),
 		"L", "I"),
 	
+	SJME_NVM_MLE_DEFINE_ALT(result, integer,
+		SJME_MD(SJME_MD_V, SJME_MD_I),
+		"V", "I"),
 	SJME_NVM_MLE_DEFINE_ALT(result, string,
 		SJME_MD(SJME_MD_V, SJME_MD_STRING),
 		"V", "L"),

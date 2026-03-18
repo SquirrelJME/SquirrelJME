@@ -12,7 +12,7 @@
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
-		.elem .int_kind "expectedInteger" 0x80
+		.elem .int_kind "expectedInteger" -128
 	.end .annotation
 .end .annotation_attr
 

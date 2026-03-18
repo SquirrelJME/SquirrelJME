@@ -12,14 +12,14 @@
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
-		.elem .int_kind "expectedInteger" -128
+		.elem .int_kind "expectedInteger" 8
 	.end .annotation
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
 ; Load in value to convert
-	ldc 0x80000000
+	ldc 0x80000008
 
 ; Convert
 	int2byte
