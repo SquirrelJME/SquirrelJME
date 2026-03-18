@@ -7,19 +7,19 @@
 ; See license.mkd for licensing and copyright information.
 ; ---------------------------------------------------------------------------
 
-.class public nanocoat/bytecode/NanoTestI2B
+.class public nanocoat/bytecode/NanoTestI2BShift
 .super java/lang/Object
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
-		.elem .int_kind "expectedInteger" 0x80
+		.elem .int_kind "expectedInteger" -128
 	.end .annotation
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
 ; Load in value to convert
-	ldc 0x80
+	ldc 0x80000000
 
 ; Convert
 	int2byte

@@ -12,11 +12,19 @@
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
+		.elem .int_kind "expectedInteger" 0xFF80
 	.end .annotation
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+; Load in value to convert
+	ldc 0xFFFFFF80
+
+; Convert
+	int2char
+	
+; Result
+	invokestatic nano/NanoShelf/result(I)V
 	return
 .end method
