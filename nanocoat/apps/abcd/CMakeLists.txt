@@ -49,7 +49,7 @@ target_include_directories(AppAncientBuildContraptionDevice PUBLIC
 
 # Link against the base libraries
 squirreljme_link_libraries_required(AppAncientBuildContraptionDevice PUBLIC
-	libBaseStatic)
+	BaseStatic)
 
 # Name it something easier to use
 squirreljme_target_binary_name(AppAncientBuildContraptionDevice

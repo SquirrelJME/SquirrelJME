@@ -17,6 +17,7 @@
 #define SJME_C_SQUIRRELJME_DISPATCH_H
 
 #include "sjme/config.h"
+#include "sjme/stdTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
