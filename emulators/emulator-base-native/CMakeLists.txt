@@ -64,6 +64,7 @@ foreach(var IN LISTS allVariables)
 	string(FIND "${var}" "_VERSION" versionAt REVERSE)
 	string(FIND "${var}" "_ID" idAt REVERSE)
 	string(FIND "${var}" "_COMPILER_WORKS" compilerWorksAt REVERSE)
+	string(FIND "${var}" "_COMPILER_PRODUCED_OUTPUT" compilerProduced REVERSE)
 	if("${asmCompilerIdAt}" EQUAL "0" OR
 		"${cCompilerIdAt}" EQUAL "0" OR
 		"${cxxCompilerIdAt}" EQUAL "0" OR
@@ -78,6 +79,7 @@ foreach(var IN LISTS allVariables)
 		"${versionAt}" GREATER "0" OR
 		"${idAt}" GREATER "0" OR
 		"${compilerWorksAt}" GREATER "0" OR
+		"${compilerProduced}" GREATER "0" OR
 		"${var}" STREQUAL "CMAKE_SHARED_LIBRARY_PREFIX" OR
 		"${var}" STREQUAL "CMAKE_SHARED_LIBRARY_SUFFIX" OR
 		"${var}" STREQUAL "CMAKE_EXECUTABLE_PREFIX" OR
