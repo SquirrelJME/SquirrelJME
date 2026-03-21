@@ -83,7 +83,7 @@ sjme_errorCode sjme_listUtil_binListUtf(
 	/* Allocate target values for later list creation. */
 	values = sjme_alloca(sizeof(*values) * length);
 	if (values == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, sizeof(*values) * length);
 	memset(values, 0, sizeof(*values) * length);
 	
 	/* Read in all UTF values. */
@@ -93,12 +93,15 @@ sjme_errorCode sjme_listUtil_binListUtf(
 		utfLen = 0;
 		if (sjme_error_is(error = sjme_stream_inputReadValueJS(
 			inputStream, (sjme_jshort*)&utfLen)))
-			return sjme_error_default(error);
+			goto fail_readValue;
 		
 		/* Allocate buffer for string. */
 		values[i] = sjme_alloca(utfLen + 1);
 		if (values[i] == NULL)
-			return SJME_ERROR_OUT_OF_MEMORY;
+		{
+			error = sjme_error_outOfMemory(NULL, utfLen + 1);
+			goto fail_lowerOom;
+		}
 		memset(values[i], 0, utfLen + 1);
 		
 		/* Read in. */
@@ -106,16 +109,47 @@ sjme_errorCode sjme_listUtil_binListUtf(
 		if (sjme_error_is(error = sjme_stream_inputReadFully(
 			inputStream, &actual,
 			values[i], utfLen)))
-			return sjme_error_default(error);
+			goto fail_readFully;
 		
 		/* Wrong count? */
 		if (actual != utfLen)
-			return SJME_ERROR_END_OF_FILE;
+		{
+			error = SJME_ERROR_END_OF_FILE;
+			goto fail_eof;
+		}
 	}
 	
 	/* Setup list. */
-	return sjme_list_flattenArgCV(allocPool, outList,
-		length, (sjme_lpcstr*)values);
+	if (sjme_error_is(error = sjme_list_flattenArgCV(allocPool, outList,
+		length, (sjme_lpcstr*)values)))
+		goto fail_flatten;
+	
+	/* Cleanup. */
+	for (i = 0; i < length; i++)
+		if (values[i] != NULL)
+			sjme_alloca_free(values[i]);
+	sjme_alloca_free(values);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_flatten:
+fail_eof:
+fail_readFully:
+fail_lowerOom:
+fail_readValue:
+	if (values != NULL)
+	{
+		for (i = 0; i < length; i++)
+			if (values[i] != NULL)
+			{
+				sjme_alloca_free(values[i]);
+				values[i] = NULL;
+			}
+		sjme_alloca_free(values);
+	}
+	
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_listUtil_findFree(

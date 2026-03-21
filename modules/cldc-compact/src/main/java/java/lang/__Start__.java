@@ -44,6 +44,7 @@ final class __Start__
 	 *
 	 * @since 2020/05/31
 	 */
+	@SuppressWarnings("CallToThreadRun")
 	@SquirrelJMEVendorApi
 	static void __base()
 	{
@@ -63,12 +64,9 @@ final class __Start__
 				// Use the thread's runnable or otherwise run the thread itself
 				// if none was used
 				Thread javaThread = ThreadShelf.currentJavaThread();
-				Runnable run = ThreadShelf.javaThreadRunnable(javaThread);
-				if (run == null)
-					run = javaThread;
 				
-				// Execute it
-				run.run();
+				// Execute the Thread runnable directly
+				javaThread.run();
 			}
 		}
 		

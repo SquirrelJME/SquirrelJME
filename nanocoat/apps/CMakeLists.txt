@@ -6,5 +6,8 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
+# Ancient Build Contraption Device
+add_subdirectory(abcd)
+
 # ScritchUi Demo
 add_subdirectory(demo-scritchui)

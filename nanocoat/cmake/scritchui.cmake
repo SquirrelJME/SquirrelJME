@@ -220,9 +220,18 @@ function(squirreljme_scritchany_binary_name_and_output area name)
 	# Lowercase the name
 	string(TOLOWER "${name}" name)
 
+	# The static library needs a different name, this is mostly for Windows
+	# due to the DLL implib
+	squirreljme_target_binary_name(${target}Static
+		"squirreljme-scritch${area}-${name}-static")
+
 	# ScritchAny requires a normalized library name
-	squirreljme_multilib_binary_name(${target}
-		"squirreljme-scritch${area}-${name}")
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		squirreljme_target_binary_name(${target}DyLib
+			"squirreljme-scritch${area}-${name}")
+	endif()
+
+	# The libraries are output to the same location
 	squirreljme_multilib_binary_output(${target}
 		"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 endfunction()

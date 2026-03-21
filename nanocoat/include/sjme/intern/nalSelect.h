@@ -54,6 +54,9 @@ extern "C"
 
 /** Solaris implementation. */
 #define SJME_CONFIG_NAL_IMPLEMENT_SOLARIS 8
+	
+/** Select Vendor. */
+#define SJME_CONFIG_NAL_IMPLEMENT_VENDOR 127
 
 #if !defined(SJME_CONFIG_NAL_EXEC_PATH)
 	#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
@@ -75,7 +78,7 @@ extern "C"
 #endif
 
 #if !defined(SJME_CONFIG_NAL_GETENV)
-	#if defined(SJME_CONFIG_HAS_C89)
+	#if defined(SJME_CONFIG_HAS_C89) && defined(SJME_CONFIG_HAS_GETENV)
 		/** Use Standard C getenv implementation. */
 		#define SJME_CONFIG_NAL_GETENV SJME_CONFIG_NAL_IMPLEMENT_STDC
 	#endif

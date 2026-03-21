@@ -16,7 +16,7 @@ if(PKG_CONFIG_FOUND)
 	pkg_check_modules(VALGRIND valgrind)
 
 	# Was Valgrind found?
-	if(VALGRIND_FOUND)
+	if(VALGRIND_FOUND AND NOT SQUIRRELJME_IS_CROSS_COMPILE)
 		# Notice
 		message(STATUS "Found Valgrind, including it!")
 

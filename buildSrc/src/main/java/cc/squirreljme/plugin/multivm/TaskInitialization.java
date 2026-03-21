@@ -767,10 +767,18 @@ public final class TaskInitialization
 			__classifier, __mainClass, __midlet,
 			VMRunTask.NO_DEBUG_SERVER);
 		
-		// JDWP and Internal JDWP Tasks
+		// JDWP Task
 		__provider.makeTask(__name + "Jdwp",
 			__classifier, __mainClass, __midlet,
 			VMRunTask.JDWP_HOST);
+		
+		// If this is SpringCoat, it gets a VM JDWP instance
+		if (__classifier.getVmType() == VMType.SPRINGCOAT)
+			__provider.makeTask(__name + "JdwpJvm",
+				__classifier, __mainClass, __midlet,
+				VMRunTask.JDWP_JVM);
+		
+		// Internal JDWP Task
 		__provider.makeTask(__name + "JdwpInternal",
 			__classifier, __mainClass, __midlet,
 			VMRunTask.INTERNAL);

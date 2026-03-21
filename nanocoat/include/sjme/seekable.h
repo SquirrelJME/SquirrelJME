@@ -126,10 +126,10 @@ typedef struct sjme_seekable_implState
 	struct sjme_packed
 	{
 		/** Forward close? */
-		sjme_jboolean forwardClose : sjme_booleanBit;
+		sjme_jboolean forwardClose;
 
 		/** Size is volatile. */
-		sjme_jboolean volatileSize : sjme_booleanBit;
+		sjme_jboolean volatileSize;
 	} flags;
 } sjme_seekable_implState;
 

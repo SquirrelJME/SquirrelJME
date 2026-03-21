@@ -313,16 +313,16 @@ struct sjme_nvm_frameBase
 	sjme_packed struct
 	{
 		/** Enter synchronization was performed. */
-		sjme_jboolean synchronizedEnter : sjme_booleanBit;
+		sjme_jboolean synchronizedEnter;
 
 		/** Exit synchronization was performed. */
-		sjme_jboolean synchronizedExit : sjme_booleanBit;
+		sjme_jboolean synchronizedExit;
 
 		/** Is this a static initializer? */
-		sjme_jboolean isStaticInit : sjme_booleanBit;
+		sjme_jboolean isStaticInit;
 
 		/** Is this an instance initializer? */
-		sjme_jboolean isInstanceInit : sjme_booleanBit;
+		sjme_jboolean isInstanceInit;
 	} flags;
 };
 
@@ -591,7 +591,7 @@ struct sjme_nvm_threadBase
 	struct
 	{
 		/** Is this a daemon thread? */
-		sjme_jboolean isDaemon : sjme_booleanBit;
+		sjme_jboolean isDaemon;
 	} flags;
 };
 
