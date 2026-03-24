@@ -5,6 +5,8 @@ supported and ones which are not to be supported. All of the listed
 specifications are either planned to be implemented, considering, or out
 of scope for the project.
 
+This scope is up-to-date as of March 2026.
+
 # To Implement
 
 These are specifications which are to be implemented to provide the base
@@ -41,6 +43,96 @@ specifications.
  * **JSR361** -- Java ME Embedded Profile
    * MEEP 8.
    * This is SquirrelJME's target.
+
+# Considering
+
+Specifications that may be considered for inclusion.
+
+## Specifications
+
+ * **JSR120** -- Java(TM) Wireless Messaging API Specification 1.1
+   * Supports SMS, USSD, and CBS.
+   * Uses GCF.
+ * **JSR179** -- Location API for J2ME.
+   * Locating of users via GPS and other such things.
+ * **JSR230** -- Data Sync API 0.9
+   * Similar to Palm OS's HotSync.
+ * **JSR257** -- Contactless Communication API
+   * Can be used for RFID and such.
+   * May also include NFC.
+
+## CDC, PBP, and AWT Requiring
+
+These generally all include a partial or full AWT implementation and as
+such require a more complete ScritchUI to handle properly.
+
+ * **JSR062** -- Personal Profile Specification.
+   * Effectively Java SE Embedded.
+ * **JSR129** -- Personal Basis Profile Specification
+   * Effectively Java SE Embedded.
+ * **JSR209** -- Advanced Graphics and User Interface.
+   * Effectively Java SE Embedded.
+ * **JSR216** -- Personal Profile.
+   * Effectively Java SE Embedded.
+ * **JSR217** -- Personal Basis Profile 1.1.2
+   * Effectively Java SE Embedded.
+ * **JSR218** -- Connected Device Configuration (CDC) 1.1
+   * CDC.
+ * **JSR927** -- Java TV API 1.1
+   * Depends upon _JSR127_ (Personal Basis Profile).
+   * Precedes _BD-J_.
+   * Includes `javax.tv.xlet`.
+
+## Non-JSR Specifications
+
+ * **Java Applets** -- Standard Java Applets
+   * Requires AWT
+ * **BD-J** -- Blu-ray Disc Java (Blu-ray Disc Association)
+   * Extends on Java TV (includes the Personal Basis Profile).
+   * Not a JSR, standardized by the specified association.
+
+# Out of Scope
+
+These specifications will be not be implement at all. Note however, that
+although these specifications are out of scope may potentially be provided by
+third parties libraries.
+
+## Specifications
+
+ * **JSR066** -- RMI Optional Package Specification Version 1.0.
+   * Requires CDC.
+ * **JSR169** -- JDBC Optional Package for CDC/Foundation Profile
+   * Requires CDC.
+ * **JSR172** -- J2ME Web Services 1.1
+   * XML is nasty.
+   * Designed for both CLDC and CDC.
+ * **JSR177** -- Security and Trust Services API for J2ME
+   * Some classes are partially handled by other implemented JSRs.
+ * **JSR180** -- SIP API for J2ME.
+   * Voice calls.
+   * Uses GCF.
+   * This is really handled best by third party providers.
+ * **JSR197** -- Generic Connection Framework Optional Package for J2SE.
+   * Not J2ME related, however it is included to reduce confusion.
+   * Makes it so Java SE can use GCF.
+ * **JSR219** -- Foundation Profile 1.1.2
+   * Effectively Java SE with Java ME bits.
+ * **JSR229** -- Payment API
+   * Used for monetary transactions.
+ * **JSR232** -- Mobile Operational Management
+   * CDC.
+ * **JSR242** -- Digital Set Top Box Profile - "On Ramp to OCAP"
+   * Effectively java SE.
+   * Has TV stuff.
+ * **JSR272** -- Mobile Broadcast Service API for Handheld Terminals 1.0
+   * This is for broadcast services, which is completley out of scope.
+ * **JSR302** -- Safety Critical Java Technology
+   * Essentially JSR001 for J2ME.
+   * Real time does not always mean safe.
+ * **JSR325** -- IMS Communication Enablers
+   * Essentially VoIP.
+ * **JSR332** -- Email Client API for Java ME
+   * E-mail.
 
 ## Obsolete
 
@@ -80,119 +172,31 @@ These specifications are obsolete and are implemented by newer specifications.
    * _Implemented by newer JSR_.
    * Included by Java ME 8.
 
-## Non-JSR APIs
+# Withdrawn and Rejected
 
- * Danger HipTop
- * Docomo DoJa
- * Docomo Star
- * JBlend
- * JPhone
- * LG MMPP
- * Mascot Capsule 3D
- * Nokia
- * Samsung
- * Siemens
- * SKT
- * SprintPCS
- * WIPI
- * Vodafone
-
-# Considering
-
-Specifications that may be considered for inclusion.
+These are JSRs which were proposed but then withdrawn or rejected, so
+they never went through the process of standardization.
 
 ## Specifications
 
- * **JSR120** -- Java(TM) Wireless Messaging API Specification 1.1
-   * Supports SMS, USSD, and CBS.
-   * Uses GCF.
- * **JSR179** -- Location API for J2ME.
-   * Locating of users via GPS and other such things.
- * **JSR230** -- Data Sync API 0.9
-   * Similar to Palm OS's HotSync.
- * **JSR257** -- Contactless Communication API
-   * Can be used for RFID and such.
-   * May also include NFC.
-
-# Out of Scope
-
-These specifications will be not be implement at all. Note however, that
-although these specifications are out of scope may potentially be provided by
-third parties libraries.
-
-## Specifications
-
- * **JSR062** -- Personal Profile Specification.
-   * Effectively Java SE Embedded.
- * **JSR066** -- RMI Optional Package Specification Version 1.0.
-   * Requires CDC.
  * **JSR068** -- J2ME Platform Specification
-   * Withdrawn.
+   * _Withdrawn._
    * Based on the description it uses "building blocks" which could also be
      known as profiles. SquirrelJME already has such things in the project
      system.
- * **JSR129** -- Personal Basis Profile Specification
-   * Effectively Java SE Embedded.
- * **JSR169** -- JDBC Optional Package for CDC/Foundation Profile
-   * Requires CDC.
- * **JSR172** -- J2ME Web Services 1.1
-   * XML is nasty.
-   * Designed for both CLDC and CDC.
- * **JSR177** -- Security and Trust Services API for J2ME
-   * Some classes are partially handled by other implemented JSRs.
  * **JSR178** -- Mobile Game API
-   * Withdrawn.
+   * _Withdrawn._
    * Based on the description it would essentially be a game library with
      multiplayer APIs, collisions, vector graphics, and a physics engine.
- * **JSR180** -- SIP API for J2ME.
-   * Voice calls.
-   * Uses GCF.
-   * This is really handled best by third party providers.
- * **JSR197** -- Generic Connection Framework Optional Package for J2SE.
-   * Not J2ME related, however it is included to reduce confusion.
-   * Makes it so Java SE can use GCF.
- * **JSR209** -- Advanced Graphics and User Interface.
-   * Effectively Java SE Embedded.
  * **JSR213** -- Micro WSCI Framework for J2ME.
-   * Rejected.
+   * _Rejected._
    * More nasty XML.
    * Requires CDC.
  * **JSR214** -- Micro BPSS for J2ME Devices.
-   * Rejected.
- * **JSR217** -- Personal Basis Profile 1.1.2
-   * Effectively Java SE Embedded.
- * **JSR216** -- Personal Profile.
-   * Effectively Java SE Embedded.
- * **JSR218** -- Connected Device Configuration (CDC) 1.1
-   * CDC.
- * **JSR219** -- Foundation Profile 1.1.2
-   * Effectively Java SE with Java ME bits.
- * **JSR229** -- Payment API
-   * Used for monetary transactions.
- * **JSR232** -- Mobile Operational Management
-   * CDC.
- * **JSR242** -- Digital Set Top Box Profile - "On Ramp to OCAP"
-   * Effectively java SE.
-   * Has TV stuff.
- * **JSR272** -- Mobile Broadcast Service API for Handheld Terminals 1.0
-   * This is for broadcast services, which is completley out of scope.
- * **JSR302** -- Safety Critical Java Technology
-   * Essentially JSR001 for J2ME.
-   * Real time does not always mean safe.
+   * _Rejected._
  * **JSR324** -- On Screen MIDlet API for Java ME
-   * Rejected.
+   * _Rejected._
    * Essentially stuff related to the idle screen, likely similar to MIDP 3.
- * **JSR325** -- IMS Communication Enablers
-   * Essentially VoIP.
- * **JSR332** -- Email Client API for Java ME
-   * E-mail.
- * **JSR927** -- Java TV API 1.1
-   * Depends upon _JSR127_ (Personal Basis Profile).
-   * Precedes _BD-J_.
-   * Includes `javax.tv.xlet`.
- * **BD-J** -- Blu-ray Disc Java (Blu-ray Disc Association)
-   * Extends on Java TV (includes the Personal Basis Profile).
-   * Not a JSR, standardized by the specified association.
 
 # Unknown
 
@@ -205,4 +209,25 @@ evaluate them completely for inclusion or exclusion.
    * IPDR/SP? Internet Protocol Detail Record.
    * Not sure if this is for events that happen (say temperature changes) or
      if something bad happens to hardware.
+
+## Non-JSR Vendor Specific APIs
+
+These are APIs which are vendor specific, these vendors generally have their
+own implementation that later has become a JSR even if no device actually
+implements said JSR, an example being MIDP 3.
+
+ * Danger HipTop
+ * JBlend
+ * JPhone
+ * LG MMPP
+ * Mascot Capsule 3D
+ * Nokia
+ * NTT DoCoMo DoJa
+ * NTT DoCoMo Star
+ * Samsung
+ * Siemens
+ * SKT
+ * SprintPCS
+ * WIPI
+ * Vodafone
 
