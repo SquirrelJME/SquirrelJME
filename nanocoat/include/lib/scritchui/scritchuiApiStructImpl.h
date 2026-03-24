@@ -220,6 +220,12 @@ struct sjme_scritchui_internFunctions
 	
 	/** Returns the built-in font, this can handle layers. */
 	sjme_scritchui_fontBuiltinFunc fontBuiltin;
+
+	/** Flat font parameters to structured font parameters. */
+	sjme_scritchui_pencilFontParamFromFlatFunc fontParamFromFlat;
+
+	/** Structured font parameters to flat font parameters. */
+	sjme_scritchui_pencilFontParamToFlatFunc fontParamToFlat;
 	
 	/** Register a font for use. */
 	sjme_scritchui_fontRegisterFunc fontRegister;

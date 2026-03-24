@@ -119,6 +119,9 @@ public final class Font
 	/** The bracket used to access the font. */
 	final PencilFontBracket _font;
 	
+	/** The parameters for the font. */
+	final int[] _params;
+	
 	/** The name of this font. */
 	private final String _name;
 	
@@ -143,18 +146,21 @@ public final class Font
 	 *
 	 * @param __scritch The ScritchUI API.
 	 * @param __bracket The bracket to wrap.
+	 * @param __params Font parameters.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/17
 	 */
-	Font(ScritchInterface __scritch, PencilFontBracket __bracket)
+	Font(ScritchInterface __scritch, PencilFontBracket __bracket,
+		int[] __params)
 		throws NullPointerException
 	{
-		if (__scritch == null || __bracket == null)
+		if (__scritch == null || __bracket == null || __params == null)
 			throw new NullPointerException("NARG");
 		
 		// Store for later
 		this._scritch = __scritch;
 		this._font = __bracket;
+		this._params = __params;
 		
 		// Get information on the font
 		this._name = PencilFontShelf.metricFontName(__bracket);
@@ -168,7 +174,7 @@ public final class Font
 		
 		// Get pixel size of font
 		this._pixelsize = PencilFontShelf.metricPixelSize(__bracket,
-			-1);
+			__params, -1);
 		
 		// Font style directly maps
 		this._style = PencilFontShelf.metricFontStyle(__bracket);

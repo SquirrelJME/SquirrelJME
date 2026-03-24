@@ -203,6 +203,8 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	sjme_sm(.bindFocus, sjme_scritchui_core_intern_bindFocus),
 	sjme_sm(.containerMaxSize, sjme_scritchui_core_intern_containerMaxSize),
 	sjme_sm(.fontBuiltin, sjme_scritchui_core_intern_fontBuiltin),
+	sjme_sm(.fontParamFromFlat, sjme_scritchui_core_intern_fontParamFromFlat)
+	sjme_sm(.fontParamToFlat, sjme_scritchui_core_intern_fontParamToFlat)
 	sjme_sm(.fontRegister, sjme_scritchui_core_intern_fontRegister),
 	sjme_sm(.fontScanAll, sjme_scritchui_core_intern_fontScanAll),
 	sjme_sm(.fontScanResource, sjme_scritchui_core_intern_fontScanResource),

@@ -1167,7 +1167,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__choiceSetImage)(JNIEnv* env, jclass classy, jlong stateP,
-	jlong choiceP, jint atIndex, jintArray data, jint off, jint scanLen,
+	jlong choiceP, jint  atIndex, jintArray data, jint off, jint scanLen,
 	jint width, jint height)
 {
 	sjme_errorCode error;
@@ -1178,6 +1178,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_jint dataLen;
 
 	/* Restore. */
+
 	state = (sjme_scritchui)stateP;
 	choice = (sjme_scritchui_uiComponent)choiceP;
 

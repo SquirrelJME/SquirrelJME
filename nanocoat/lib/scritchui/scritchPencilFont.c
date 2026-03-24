@@ -623,7 +623,8 @@ static sjme_errorCode sjme_scritchui_renderBitmapScaled(
 			/* There are very ugly looking thick horizontal bars due, these */
 			/* can be removed with suppression however they end up leaving */
 			/* gaps. Thus, compact the bits so they just become lines. */
-			cmp = (sjme_util_intCompactRight(sup[dx], UINT32_MAX) |
+			cmp = (sjme_jubyte)(sjme_util_intCompactRight(sup[dx],
+					UINT32_MAX) |
 				sjme_util_intCompactLeft(sup[dx], UINT32_MAX));
 			
 			/* Compacting from both sides leaves nubs on the ends of glyphs */
@@ -854,6 +855,38 @@ sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(
 	return inState->api->fontBuiltin(inState, outFont);
 }
 
+sjme_errorCode sjme_scritchui_core_intern_fontParamFromFlat(
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
+	sjme_attrInNotNullBuf(inFlatLen) const sjme_jint* inFlat,
+	sjme_attrInPositive sjme_jint inFlatOff,
+	sjme_attrInPositiveNonZero sjme_jint inFlatLen)
+{
+	if (outParams == NULL || inFlat == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inFlatOff < 0 || inFlatLen < 0 || (inFlatOff + inFlatLen) < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_scritchui_core_intern_fontParamToFlat(
+	sjme_attrInNotNull const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrOutNotNullBuf(outFlatLen) sjme_jint* outFlat,
+	sjme_attrInPositive sjme_jint outFlatOff,
+	sjme_attrInPositiveNonZero sjme_jint outFlatLen)
+{
+	if (inParams == NULL || outFlat == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outFlatOff < 0 || outFlatLen < 0 || (outFlatOff + outFlatLen) < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchui_core_intern_fontRegister(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
@@ -1058,7 +1091,7 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	
 	/* Debug. */
 	sjme_messageB("deriveFont(%p %s %d %d %d %d)",
-		inFont, inName, inFace, inStyle, inPixelSize, limitDepth);
+		(void*)inFont, inName, inFace, inStyle, inPixelSize, limitDepth);
 	
 	/* There is no best font, yet. */
 	memset(&derive, 0, sizeof(derive));

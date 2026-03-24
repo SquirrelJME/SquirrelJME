@@ -1075,7 +1075,7 @@ fail_move:
 	return sjme_error_default(error);
 }
 
-sjme_jboolean sjme_nvm_task_taskScheduleYes(
+sjme_errorCode sjme_nvm_task_taskScheduleYes(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jboolean* isRunning)

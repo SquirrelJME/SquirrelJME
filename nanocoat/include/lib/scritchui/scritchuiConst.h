@@ -346,6 +346,23 @@ typedef enum sjme_scritchui_pencilFontStyle
 		SJME_SCRITCHUI_PENCIL_FONT_STYLE_ITALIC |
 		SJME_SCRITCHUI_PENCIL_FONT_STYLE_UNDERLINED,
 } sjme_scritchui_pencilFontStyle;
+
+/**
+ * Pencil font parameter index.
+ *
+ * @since 2026/12/22
+ */
+typedef enum sjme_scritchui_pencilFontParamIndex
+{
+	/** @link sjme_scritchui_pencilFontParam.style @endlink. */
+	SJME_SCRITCHUI_PENCIL_FONT_PARAM_STYLE,
+
+	/** @link sjme_scritchui_pencilFontParam.pixelSize @endlink. */
+	SJME_SCRITCHUI_PENCIL_FONT_PARAM_PIXEL_SIZE,
+
+	/** The number of available font parameters. */
+	SJME_SCRITCHUI_PENCIL_NUM_FONT_PARAMS,
+} sjme_scritchui_pencilFontParamIndex;
 	
 #pragma endregion(scritchui_font)
 #pragma region(scritchui_pencil)
