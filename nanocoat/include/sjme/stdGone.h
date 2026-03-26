@@ -20,6 +20,7 @@
 #define SJME_C_STDGONE_H
 
 #include "sjme/config.h"
+#include "sjme/stdAttr.h"
 
 #if defined(SJME_CONFIG_HAS_NO_STDARG_H)
 	#if defined(SJME_CONFIG_HAS_NO_VARARGS_H)

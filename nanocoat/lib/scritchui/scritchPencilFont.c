@@ -861,14 +861,24 @@ sjme_errorCode sjme_scritchui_core_intern_fontParamFromFlat(
 	sjme_attrInPositive sjme_jint inFlatOff,
 	sjme_attrInPositiveNonZero sjme_jint inFlatLen)
 {
+#define sjme_unflat(structish, enumish) \
+	if (SJME_SCRITCHUI_PENCIL_FONT_PARAM_##enumish < inFlatLen) \
+		outParams->structish = inFlat[inFlatOff + \
+			SJME_SCRITCHUI_PENCIL_FONT_PARAM_##enumish]
+
 	if (outParams == NULL || inFlat == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inFlatOff < 0 || inFlatLen < 0 || (inFlatOff + inFlatLen) < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Map any valid entries. */
+	sjme_unflat(pixelSize, PIXEL_SIZE);
+	sjme_unflat(style, STYLE);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+#undef sjme_unflat
 }
 
 sjme_errorCode sjme_scritchui_core_intern_fontParamToFlat(
@@ -877,14 +887,24 @@ sjme_errorCode sjme_scritchui_core_intern_fontParamToFlat(
 	sjme_attrInPositive sjme_jint outFlatOff,
 	sjme_attrInPositiveNonZero sjme_jint outFlatLen)
 {
+#define sjme_flat(structish, enumish) \
+	if (SJME_SCRITCHUI_PENCIL_FONT_PARAM_##enumish < outFlatLen) \
+		outFlat[outFlatOff + SJME_SCRITCHUI_PENCIL_FONT_PARAM_##enumish] = \
+			(sjme_jint)inParams->structish;
+
 	if (inParams == NULL || outFlat == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (outFlatOff < 0 || outFlatLen < 0 || (outFlatOff + outFlatLen) < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Map any valid entries. */
+	sjme_flat(pixelSize, PIXEL_SIZE);
+	sjme_flat(style, STYLE);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+#undef sjme_flat
 }
 
 sjme_errorCode sjme_scritchui_core_intern_fontRegister(
