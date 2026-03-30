@@ -14,6 +14,7 @@
 #include "sjme/path.h"
 
 #define RUNTIME_CLASSNAME "cc/squirreljme/emulator/EmulatedRuntimeShelf"
+#define FORWARD_CLASS_NAME RuntimeShelf
 
 #define RUNTIME_MEMORYPROFILE_DESC "()I"
 #define RUNTIME_SYSTEMENV_DESC "(Ljava/lang/String;)Ljava/lang/String;"

@@ -17,8 +17,8 @@
 #define IMPL_CLASS "cc/squirreljme/emulator/scritchui/dylib/DylibBaseObject"
 #define FORWARD_CLASS IMPL_CLASS
 
-#define FORWARD_DESC___bind "(" \
-	DESC_LONG DESC_OBJECT ")" DESC_VOID
+#define FORWARD_DESC___bind DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_OBJECT )
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(DylibBaseObject, __bind)
 	(JNIEnv* env, jclass classy, jlong componentP, jobject bindTo)

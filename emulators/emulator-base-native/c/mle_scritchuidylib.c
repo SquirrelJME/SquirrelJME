@@ -21,113 +21,114 @@
 #define IMPL_CLASS "cc/squirreljme/emulator/scritchui/dylib/" \
 	"NativeScritchDylib"
 #define FORWARD_CLASS IMPL_CLASS
+#define FORWARD_CLASS_NAME NativeScritchDylib
 
-#define DESC_ScritchActivateListener_activate "(" \
-	DESC_SCRITCHUI_COMPONENT ")" DESC_VOID
-#define DESC_ScritchCloseListener_closed "(" \
-	DESC_SCRITCHUI_WINDOW ")" DESC_BOOLEAN
-#define DESC_ScritchInputListener_inputEvent "(" \
+#define DESC_ScritchActivateListener_activate DESC_METHOD(DESC_VOID,  \
+	DESC_SCRITCHUI_COMPONENT )
+#define DESC_ScritchCloseListener_closed DESC_METHOD(DESC_BOOLEAN,  \
+	DESC_SCRITCHUI_WINDOW )
+#define DESC_ScritchInputListener_inputEvent DESC_METHOD(DESC_VOID,  \
 	DESC_SCRITCHUI_COMPONENT DESC_INT DESC_LONG DESC_INT DESC_INT DESC_INT \
 	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT")" DESC_VOID
-#define DESC_ScritchPaintListener_paint "(" \
+	DESC_INT)
+#define DESC_ScritchPaintListener_paint DESC_METHOD(DESC_VOID,  \
 	DESC_SCRITCHUI_COMPONENT /* __component */ \
 	DESC_SCRITCHUI_PENCIL /* __g */ \
 	DESC_INTEGER /* __sw */ \
 	DESC_INTEGER /* __sh */ \
-	DESC_INTEGER /* __special */ ")" DESC_VOID
-#define DESC_ScritchMenuItemActivateListener_menuItemActivate "(" \
-	DESC_SCRITCHUI_WINDOW DESC_SCRITCHUI_MENUKIND ")" DESC_VOID
-#define DESC_ScritchSizeSuggestListener_sizeSuggest "(" \
+	DESC_INTEGER /* __special */ )
+#define DESC_ScritchMenuItemActivateListener_menuItemActivate DESC_METHOD(DESC_VOID,  \
+	DESC_SCRITCHUI_WINDOW DESC_SCRITCHUI_MENUKIND )
+#define DESC_ScritchSizeSuggestListener_sizeSuggest DESC_METHOD(DESC_VOID,  \
 	DESC_SCRITCHUI_VIEW /* __view */ \
 	DESC_SCRITCHUI_COMPONENT /* __sub */ \
-	DESC_INT DESC_INT /* __w, __h */ ")" DESC_VOID
-#define DESC_ScritchVisibleListener_visibilityChanged "(" \
+	DESC_INT DESC_INT /* __w, __h */ )
+#define DESC_ScritchVisibleListener_visibilityChanged DESC_METHOD(DESC_VOID,  \
 	DESC_SCRITCHUI_COMPONENT /* __component */ \
 	DESC_BOOLEAN /* __from */ \
-	DESC_BOOLEAN /* __to */ ")" DESC_VOID
+	DESC_BOOLEAN /* __to */ )
 
-#define FORWARD_DESC___builtinFonts "(" \
-	DESC_LONG ")" DESC_ARRAY(DESC_PENCILFONT)
+#define FORWARD_DESC___builtinFonts DESC_METHOD(DESC_ARRAY(DESC_PENCILFONT),  \
+	DESC_LONG )
 
-#define FORWARD_DESC___choiceGetSelectedIndex "(" \
-	DESC_LONG DESC_LONG ")" DESC_INT
-#define FORWARD_DESC___choiceInsert "(" \
-	DESC_LONG DESC_LONG DESC_INT ")" DESC_INT
-#define FORWARD_DESC___choiceLength "(" \
-	DESC_LONG DESC_LONG ")" DESC_INT
-#define FORWARD_DESC___choiceRemove "(" \
-	DESC_LONG DESC_LONG DESC_INT ")" DESC_VOID
-#define FORWARD_DESC___choiceRemoveAll "(" \
-	DESC_LONG DESC_LONG ")" DESC_VOID
-#define FORWARD_DESC___choiceSetEnabled "(" \
-	DESC_LONG DESC_LONG DESC_INT DESC_BOOLEAN ")" DESC_VOID
-#define FORWARD_DESC___choiceSetImage "(" \
+#define FORWARD_DESC___choiceGetSelectedIndex DESC_METHOD(DESC_INT,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___choiceInsert DESC_METHOD(DESC_INT,  \
+	DESC_LONG DESC_LONG DESC_INT )
+#define FORWARD_DESC___choiceLength DESC_METHOD(DESC_INT,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___choiceRemove DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_INT )
+#define FORWARD_DESC___choiceRemoveAll DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___choiceSetEnabled DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_INT DESC_BOOLEAN )
+#define FORWARD_DESC___choiceSetImage DESC_METHOD(DESC_VOID,  \
 	DESC_LONG DESC_LONG DESC_INT DESC_ARRAY(DESC_INT) DESC_INT \
-	DESC_INT DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC___choiceSetSelected "(" \
-	DESC_LONG DESC_LONG DESC_INT DESC_BOOLEAN ")" DESC_VOID
-#define FORWARD_DESC___choiceSetString "(" \
-	DESC_LONG DESC_LONG DESC_INT DESC_STRING ")" DESC_VOID
+	DESC_INT DESC_INT DESC_INT )
+#define FORWARD_DESC___choiceSetSelected DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_INT DESC_BOOLEAN )
+#define FORWARD_DESC___choiceSetString DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_INT DESC_STRING )
 
-#define FORWARD_DESC___componentGetParent "(" \
-	DESC_LONG DESC_LONG ")" DESC_SCRITCHUI_COMPONENT
-#define FORWARD_DESC___componentHeight "(" \
-	DESC_LONG DESC_LONG ")" DESC_INT
-#define FORWARD_DESC___componentRepaint "(" \
-	DESC_LONG DESC_LONG DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC___componentRevalidate "(" \
-	DESC_LONG DESC_LONG ")" DESC_VOID
-#define FORWARD_DESC___componentSetActivateListener "(" \
-	DESC_LONG DESC_LONG DESC_SCRITCHUI_ACTIVATE_LISTENER ")" DESC_VOID
-#define FORWARD_DESC___componentSetInputListener "(" \
-	DESC_LONG DESC_LONG DESC_SCRITCHUI_INPUT_LISTENER ")" DESC_VOID
-#define FORWARD_DESC___componentSetPaintListener "(" \
-	DESC_LONG DESC_LONG DESC_SCRITCHUI_PAINT_LISTENER ")" DESC_VOID
-#define FORWARD_DESC___componentSetVisibleListener "(" \
-	DESC_LONG DESC_LONG DESC_SCRITCHUI_VISIBLE_LISTENER ")" DESC_VOID
+#define FORWARD_DESC___componentGetParent DESC_METHOD(DESC_SCRITCHUI_COMPONENT,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___componentHeight DESC_METHOD(DESC_INT,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___componentRepaint DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_INT DESC_INT DESC_INT DESC_INT )
+#define FORWARD_DESC___componentRevalidate DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___componentSetActivateListener DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_ACTIVATE_LISTENER )
+#define FORWARD_DESC___componentSetInputListener DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_INPUT_LISTENER )
+#define FORWARD_DESC___componentSetPaintListener DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_PAINT_LISTENER )
+#define FORWARD_DESC___componentSetVisibleListener DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_VISIBLE_LISTENER )
 #define FORWARD_DESC___componentWidth FORWARD_DESC___componentHeight
 
-#define FORWARD_DESC___containerAdd "(" \
-	DESC_LONG DESC_LONG DESC_LONG ")" DESC_VOID
+#define FORWARD_DESC___containerAdd DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_LONG )
 #define FORWARD_DESC___containerGetFrame \
 	DESC_METHOD(DESC_VOID, DESC_LONG DESC_LONG \
 	DESC_ARRAY(DESC_INT) DESC_ARRAY(DESC_INT) DESC_ARRAY(DESC_INT))
-#define FORWARD_DESC___containerRemoveAll "(" \
-	DESC_LONG DESC_LONG ")" DESC_VOID
-#define FORWARD_DESC___containerSetBounds "(" \
+#define FORWARD_DESC___containerRemoveAll DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___containerSetBounds DESC_METHOD(DESC_VOID,  \
 	DESC_LONG DESC_LONG DESC_LONG \
-	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER ")" DESC_VOID
+	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER )
 
-#define FORWARD_DESC___fontDerive "(" \
-	DESC_LONG DESC_LONG DESC_STRING DESC_INT DESC_INT DESC_INT ")" DESC_LONG
+#define FORWARD_DESC___fontDerive DESC_METHOD(DESC_LONG,  \
+	DESC_LONG DESC_LONG DESC_STRING DESC_INT DESC_INT DESC_INT )
 
-#define FORWARD_DESC___hardwareGraphics "(" \
+#define FORWARD_DESC___hardwareGraphics DESC_METHOD(DESC_PENCIL,  \
 	DESC_LONG DESC_INT DESC_INT DESC_INT DESC_OBJECT \
-	DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_PENCIL
+	DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_INT DESC_INT )
 
-#define FORWARD_DESC___linkInit "(" \
-	DESC_STRING DESC_STRING ")" DESC_LONG
+#define FORWARD_DESC___linkInit DESC_METHOD(DESC_LONG,  \
+	DESC_STRING DESC_STRING )
 
-#define FORWARD_DESC___lafElementColor "(" \
-	DESC_LONG DESC_LONG DESC_INT ")" DESC_INT
-#define FORWARD_DESC___lafPlatformFlags "(" \
-	DESC_LONG ")" DESC_INT
+#define FORWARD_DESC___lafElementColor DESC_METHOD(DESC_INT,  \
+	DESC_LONG DESC_LONG DESC_INT )
+#define FORWARD_DESC___lafPlatformFlags DESC_METHOD(DESC_INT,  \
+	DESC_LONG )
 
-#define FORWARD_DESC___labelSetString "(" \
-	DESC_LONG DESC_LONG DESC_STRING ")" DESC_VOID
+#define FORWARD_DESC___labelSetString DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_STRING )
 
-#define FORWARD_DESC___listNew "(" \
-	DESC_LONG DESC_INT ")" DESC_LONG
+#define FORWARD_DESC___listNew DESC_METHOD(DESC_LONG,  \
+	DESC_LONG DESC_INT )
 
 #define FORWARD_DESC___loopExecute "(" \
 	DESC_LONG DESC_CLASS("java/lang/Runnable") ")" DESC_VOID
 #define FORWARD_DESC___loopExecuteLater FORWARD_DESC___loopExecute
 #define FORWARD_DESC___loopExecuteWait FORWARD_DESC___loopExecute
-#define FORWARD_DESC___loopIsInThread "(" \
-	DESC_LONG ")" DESC_BOOLEAN
-#define FORWARD_DESC___loopIterate "(" \
-	DESC_LONG ")" DESC_BOOLEAN
+#define FORWARD_DESC___loopIsInThread DESC_METHOD(DESC_BOOLEAN,  \
+	DESC_LONG )
+#define FORWARD_DESC___loopIterate DESC_METHOD(DESC_BOOLEAN,  \
+	DESC_LONG )
 
 #define FORWARD_DESC___menuBarNew "(" \
 	DESC_LONG ")" DESC_LONG

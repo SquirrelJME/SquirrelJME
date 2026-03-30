@@ -14,8 +14,8 @@
 #define FORWARD_CLASS "cc/squirreljme/jvm/mle/scritchui/NativeScritchInterface"
 #define FORWARD_NATIVE_CLASS "cc/squirreljme/emulator/scritchui/EmulatedNativeScritchInterface"
 
-#define FORWARD_DESC_nativeInterface "(" \
-	")" DESC_CLASS(NAME_INTERFACE)
+#define FORWARD_DESC_nativeInterface DESC_METHOD(DESC_CLASS(NAME_INTERFACE),  \
+	)
 
 FORWARD_IMPL(NativeScritchInterface, nativeInterface, jobject, Object, \
 	FORWARD_IMPL_none(), FORWARD_IMPL_none())

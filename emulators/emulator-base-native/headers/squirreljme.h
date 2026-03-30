@@ -85,15 +85,23 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 
 #define FORWARD_from(x) x
 
+/** Function name. */
+#define FORWARD_FUNC_NAME(className, methodName) \
+	SJME_TOKEN_PASTE4_PP(Impl_mle_, className, _, methodName)
+
+/** Alternate function name. */
+#define FORWARD_FUNC_NAME_ALT(className, methodName, alt) \
+	SJME_TOKEN_PASTE6_PP(Impl_mle_, className, _, methodName, _, alt)
+
 #define FORWARD_list(className, methodName) \
 	{FORWARD_stringy(methodName), \
 	FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName)), \
-	(void*)Impl_mle_ ## className ## _ ## methodName}
+	(void*)FORWARD_FUNC_NAME(className, methodName)}
 
 #define FORWARD_listAlt(className, methodName, alt) \
 	{FORWARD_stringy(methodName), \
 	FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName ## _ ## alt)), \
-	(void*)Impl_mle_ ## className ## _ ## methodName ## _ ## alt}
+	(void*)FORWARD_FUNC_NAME_ALT(className, methodName, alt)}
 
 #define FORWARD_IMPL_none()
 
@@ -103,12 +111,18 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 
 #define FORWARD_IMPL_none()
 
-#define FORWARD_FUNC_NAME(className, methodName) \
-	Impl_mle_ ## className ## _ ## methodName
+/** Own implementation of method. */
+#define FORWARD_IMPL_OWN(returnType, methodName, ...) \
+	JNIEXPORT returnType JNICALL FORWARD_FUNC_NAME(FORWARD_CLASS_NAME, \
+		methodName)(JNIEnv* env, jclass classy __VA_ARGS__)
+
+/** Own implementation of method (alternate). */
+#define FORWARD_IMPL_OWN_ALT(returnType, methodName, alt, ...) \
+	JNIEXPORT returnType JNICALL FORWARD_FUNC_NAME_ALT(FORWARD_CLASS_NAME, \
+		methodName, alt)(JNIEnv* env, jclass classy __VA_ARGS__)
 
 #define FORWARD_IMPL_VOID(className, methodName, args, pass) \
-	JNIEXPORT void JNICALL Impl_mle_ ## className ## _ ## methodName( \
-		JNIEnv* env, jclass classy args) \
+	FORWARD_IMPL_OWN(void, methodName, args) \
 	{ \
 		forwardCallStaticVoid(env, FORWARD_NATIVE_CLASS, \
 			FORWARD_stringy(methodName), \
@@ -117,8 +131,7 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	}
 
 #define FORWARD_IMPL(className, methodName, rtype, rjava, args, pass) \
-	JNIEXPORT rtype JNICALL Impl_mle_ ## className ## _ ## methodName( \
-		JNIEnv* env, jclass classy args) \
+	FORWARD_IMPL_OWN(rtype, methodName, args) \
 	{ \
 		return FORWARD_paste(forwardCallStatic, rjava)(env, \
 			FORWARD_NATIVE_CLASS, \
@@ -128,8 +141,7 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	}
 
 #define FORWARD_IMPL_ALT(className, methodName, alt, rtype, rjava, args, pass) \
-	JNIEXPORT rtype JNICALL Impl_mle_ ## className ## _ ## methodName ## _ ## alt( \
-		JNIEnv* env, jclass classy args) \
+	FORWARD_IMPL_OWN_ALT(rtype, methodName, alt, args) \
 	{ \
 		return FORWARD_paste(forwardCallStatic, rjava)(env, \
 			FORWARD_NATIVE_CLASS, \
@@ -154,6 +166,7 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_VOID "V"
 #define DESC_OBJECT DESC_CLASS("java/lang/Object")
 #define DESC_STRING DESC_CLASS("java/lang/String")
+#define DESC_RUNNABLE DESC_CLASS("java/lang/Runnable")
 #define DESC_BYTE_BUFFER DESC_CLASS("java/nio/ByteBuffer")
 
 #define DESC_AUDIOSTREAM \
