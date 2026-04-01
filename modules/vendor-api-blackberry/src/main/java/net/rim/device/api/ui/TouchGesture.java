@@ -10,43 +10,43 @@ public abstract class TouchGesture {
 	public TouchGesture() {}
 	
 	@Api
-	public static int CLICK_REPEAT;
+	public static final int CLICK_REPEAT = 13575;
 
 	@Api
-	public static int DOUBLE_TAP;
+	public static final int DOUBLE_TAP = 3;
 	
 	@Api
-	public static int HOVER;
+	public static final int HOVER = 0;
 	
 	@Api
-	public static int NAVIGATION_SWIPE;
+	public static final int NAVIGATION_SWIPE = 7;
 	
 	@Api
-	public static int PINCH_BEGIN;
+	public static final int PINCH_BEGIN = 4;
 	
 	@Api
-	public static int PINCH_END;
+	public static final int PINCH_END = 6;
 	
 	@Api
-	public static int PINCH_UPDATE;
+	public static final int PINCH_UPDATE = 5;
 	
 	@Api
-	public static int SWIPE;
+	public static final int SWIPE = 13572;
 
 	@Api
-	public static int SWIPE_EAST;
+	public static final int SWIPE_EAST = 4;
 	
 	@Api
-	public static int SWIPE_NORTH;
+	public static final int SWIPE_NORTH = 1;
 	
 	@Api
-	public static int SWIPE_SOUTH;
+	public static final int SWIPE_SOUTH = 2;
 	
 	@Api
-	public static int SWIPE_WEST;
+	public static final int SWIPE_WEST = 8;
 	
 	@Api
-	public static int TAP;
+	public static final int TAP = 2;
 	
 	@Api
 	public int getClickRepeatCount() {throw Debugging.todo();};

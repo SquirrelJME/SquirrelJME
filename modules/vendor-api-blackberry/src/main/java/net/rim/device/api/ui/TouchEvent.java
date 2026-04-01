@@ -9,25 +9,25 @@ public abstract class TouchEvent {
 	public TouchEvent() {}
 	
 	@Api
-	public static int CANCEL = 0;
+	public static final int CANCEL = 0;
 
 	@Api
-	public static int CLICK = 1;
+	public static final int CLICK = 13573;
 	
 	@Api
-	public static int DOWN = 2;
+	public static final int DOWN = 13569;
 	
 	@Api
-	public static int GESTURE = 3;
+	public static final int GESTURE = 1;
 	
 	@Api
-	public static int MOVE = 4;
+	public static final int MOVE = 13571;
 	
 	@Api
-	public static int UNCLICK = 5;
+	public static final int UNCLICK = 13574;
 	
 	@Api
-	public static int UP = 6;
+	public static final int UP = 13570;
 	
 	@Api
 	public abstract int getEvent();
