@@ -165,10 +165,14 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_DOUBLE "D"
 #define DESC_VOID "V"
 #define DESC_OBJECT DESC_CLASS("java/lang/Object")
+#define DESC_TYPE DESC_CLASS("java/lang/Class")
+#define DESC_THREAD DESC_CLASS("java/lang/Thread")
 #define DESC_STRING DESC_CLASS("java/lang/String")
 #define DESC_RUNNABLE DESC_CLASS("java/lang/Runnable")
 #define DESC_BYTE_BUFFER DESC_CLASS("java/nio/ByteBuffer")
 
+#define DESC_TRACEPOINT \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/TracePointBracket")
 #define DESC_AUDIOSTREAM \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/AudioStreamBracket")
 #define DESC_AUDIOCONN DESC_CLASS( \

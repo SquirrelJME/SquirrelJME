@@ -45,13 +45,15 @@
 	SJME_TOKEN_PASTE_PP(__, methodName), alt)
 
 #define MLE_BOX_void Void
-#define MLE_BOX_jint Integer
+#define MLE_BOX_jboolean Boolean
+#define MLE_BOX_jint Int
 #define MLE_BOX_jlong Long
 #define MLE_BOX_jfloat Float
 #define MLE_BOX_jdouble Double
 #define MLE_BOX_jobject Object
 
 #define MLE_RETURN_void(tokens)
+#define MLE_RETURN_jboolean(tokens) tokens
 #define MLE_RETURN_jint(tokens) tokens
 #define MLE_RETURN_jlong(tokens) tokens
 #define MLE_RETURN_jfloat(tokens) tokens

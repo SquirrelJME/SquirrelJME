@@ -53,7 +53,7 @@ public final class RuntimeShelf
 	 */
 	@SquirrelJMEVendorApi
 	public static native void browseLocal(boolean __create,
-		@NotNull String __path)
+		@NotNull String __path)	
 		throws MLECallError;
 	
 	/**

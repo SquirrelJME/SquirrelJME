@@ -7,66 +7,40 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+/* //// MLE /// */
+#define mleGroupId ThreadShelf
+#define mleShelfClass "cc/squirreljme/jvm/mle/ThreadShelf"
+#define mleProxyTarget "cc/squirreljme/emulator/NativeThreadShelf"
+#include "squirreljmeMle.h"
+/* //////////// */
+
 #include "squirreljme.h"
 
-#define WAITFORUPDATE_DESC "(I)Z"
+#define MLE_DESC_aliveThreadCount DESC_METHOD(DESC_INT, \
+	DESC_BOOLEAN DESC_BOOLEAN)
+MLE_FUNC_PROXY_STATIC(jint, aliveThreadCount)
 
-JNIEXPORT jint JNICALL Impl_mle_ThreadShelf_aliveThreadCount(JNIEnv* env,
-	jclass classy, jboolean includeMain, jboolean includeDaemon)
-{
-	return forwardCallStaticInteger(env, 
-		"cc/squirreljme/emulator/NativeThreadShelf",
-		"aliveThreadCount", "(ZZ)I", includeMain, includeDaemon);
-}
+#define MLE_DESC_currentJavaThread DESC_METHOD(DESC_THREAD, )
+MLE_FUNC_PROXY_STATIC(jobject, currentJavaThread)
 
-JNIEXPORT jobject JNICALL Impl_mle_ThreadShelf_currentJavaThread(JNIEnv* env,
-	jclass classy)
-{
-	return forwardCallStaticObject(env, "java/lang/Thread",
-		"currentThread", "()Ljava/lang/Thread;");
-}
+#define MLE_DESC_javaThreadSetDaemon DESC_METHOD(DESC_VOID, \
+	DESC_THREAD)
+MLE_FUNC_PROXY_STATIC(void, javaThreadSetDaemon)
 
-JNIEXPORT void JNICALL Impl_mle_ThreadShelf_javaThreadSetDaemon(JNIEnv* env,
-	jclass classy, jobject javaThread)
-{
-	forwardCallStaticVoid(env, "cc/squirreljme/emulator/NativeThreadShelf",
-		"javaThreadSetDaemon", "(Ljava/lang/Thread;)V", javaThread);
-}
-		
-JNIEXPORT void JNICALL Impl_mle_ThreadShelf_setTrace(JNIEnv* env,
-	jclass classy, jint fd, jobject string, jobject array)
+#define MLE_DESC_setTrace DESC_METHOD(DESC_VOID, \
+	DESC_STRING DESC_ARRAY(DESC_TRACEPOINT))
+MLE_FUNC_PROTO(void, setTrace, jobject string, jobject array)
 {
 	// Has no effect
 }
-		
-JNIEXPORT jboolean JNICALL Impl_mle_ThreadShelf_waitForUpdate(JNIEnv* env,
-	jclass classy, jint msWait)
-{
-	// Has no effect
-	return forwardCallStaticBoolean(env, 
-		"cc/squirreljme/emulator/NativeThreadShelf",
-		"waitForUpdate", WAITFORUPDATE_DESC,
-		msWait);
-}
 
-static const JNINativeMethod mleThreadMethods[] =
-{
-	{"aliveThreadCount", "(ZZ)I",
-		(void*)Impl_mle_ThreadShelf_aliveThreadCount},
-	{"currentJavaThread", "()Ljava/lang/Thread;",
-		(void*)Impl_mle_ThreadShelf_currentJavaThread},
-	{"javaThreadSetDaemon", "(Ljava/lang/Thread;)V",
-		(void*)Impl_mle_ThreadShelf_javaThreadSetDaemon},
-	{"setTrace", "(Ljava/lang/String;[Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;)V",
-		(void*)Impl_mle_ThreadShelf_setTrace},
-	{"waitForUpdate", WAITFORUPDATE_DESC,
-		(void*)Impl_mle_ThreadShelf_waitForUpdate},
-};
+#define MLE_DESC_waitForUpdate DESC_METHOD(DESC_BOOLEAN, DESC_INT)
+MLE_FUNC_PROXY_STATIC(jboolean, waitForUpdate)
 
-jint JNICALL mleThreadInit(JNIEnv* env, jclass classy)
-{
-	return (*env)->RegisterNatives(env,
-		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/ThreadShelf"),
-		mleThreadMethods, sizeof(mleThreadMethods) /
-			sizeof(JNINativeMethod));
-}
+MLE_LIST_BEGIN()
+	MLE_LIST_ITEM(aliveThreadCount),
+	MLE_LIST_ITEM(currentJavaThread),
+	MLE_LIST_ITEM(javaThreadSetDaemon),
+	MLE_LIST_ITEM(setTrace),
+	MLE_LIST_ITEM(waitForUpdate),
+MLE_LIST_END()
