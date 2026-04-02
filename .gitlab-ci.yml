@@ -65,6 +65,8 @@ include:
     file: '/windows-cmake-mingw.yml'
   - project: 'libretro-infrastructure/ci-templates'
     file: '/windows-cmake-msvc19.yml'
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/webos-cmake.yml'
 
 # Stages for building, required
 stages:
@@ -261,3 +263,9 @@ libretro-build-windows-x64:
 #  extends:
 #    - .libretro-windows-msvc19-cmake-x64
 #    - .core-nanocoat
+
+# webOS
+libretro-build-webos-armv7a:
+  extends:
+    - .libretro-webos-armv7a-cmake
+    - .core-nanocoat
