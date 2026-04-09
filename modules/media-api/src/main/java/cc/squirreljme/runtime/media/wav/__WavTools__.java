@@ -137,8 +137,7 @@ class __WavTools__
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// The header of a WAV (RIFF) file is 44 bytes long and has the
-		// following format:
+		// The header of a WAV (RIFF) file has the following format:
 
 		// CHAR[4] "RIFF" header
 		// UINT32  Size of the file (chunkSize).
@@ -151,12 +150,15 @@ class __WavTools__
 		//		UINT32 BytesPerSec (samplerate*frame size)
 		//		UINT16 frameSize or blockAlign
 		//		UINT16 BitsPerSample
+		//      [optional extra fmt bytes if SubChunkSize > 16]
+		// [optional sub-chunks: "fact", "LIST", etc.]
 		//	CHAR[4] "data" header
 		//	UINT32 Length of sample data.
 		//	<Sample data>
 
-		// IMA ADPCM introduces the following before "data" header, and after
-		// BitsPerSample:
+		// IMA ADPCM usually carries extra fmt bytes and often a fact chunk
+		// before data; parser scans chunks dynamically instead of relying on
+		// fixed offsets.
 
 		// UINT16 ByteExtraData
 		// UINT16 ExtraData
@@ -176,25 +178,85 @@ class __WavTools__
 		short frameSize = __in.readShort();
 		short bitsPerSample = __in.readShort();
 		
-		// These are conditionally read depending on IMA ADPCM
+		// Read extra fmt bytes for IMA ADPCM, then skip any remaining extra
+		// 'fmt' bytes
 		short ByteExtraData = 0;
 		short ExtraData = 0;
 		String factHeader = "";
 		int SubChunk2Size = 0;
 		int numOfSamples = 0;
+		String dataHeader = "";
+		int dataLen = 0;
 
-		if (audioFormat == __WavTools__.FORMAT_IMA_ADPCM) 
+		// If the 'junk' header is present, we will read these
+		String junkHeader = null;
+		int junkSize = 0;
+
+		if (audioFormat == __WavTools__.FORMAT_IMA_ADPCM && chunkSize > 16)
 		{
 			ByteExtraData = __in.readShort();
 			ExtraData = __in.readShort();
-			factHeader = __WavTools__.__readString(__in, 4);
-			SubChunk2Size = __in.readInt();
-			numOfSamples = __in.readInt();
+			int extraFmtRemaining = chunkSize - 20;
+			if(extraFmtRemaining > 0)
+				__in.skip(extraFmtRemaining); 
+		}
+		else if(chunkSize > 16)
+		{
+			int extraFmtBytes = chunkSize - 16;
+			__in.skip(extraFmtBytes);
 		}
 
-		String dataHeader = __WavTools__.__readString(__in, 4);
-		
-		int dataLen = __in.readInt();
+		while(true)
+		{
+			String chunkID = __WavTools__.__readString(__in, 4);
+			int chunkSz = __in.readInt();
+
+			if(chunkID.equals("data"))
+			{
+				dataHeader = chunkID;
+				dataLen = chunkSz;
+				break;
+			}
+			else if(chunkID.equals("fact"))
+			{
+				factHeader = chunkID;
+				SubChunk2Size = chunkSz;
+				if(chunkSz >= 4)
+				{
+					numOfSamples = __in.readInt();
+
+					// NOTE: For IMA ADPCM, it could be something with
+					// audacity/ocenaudio, but mono streams end up with
+					// numOfSamples being the exact same number as a stereo
+					// stream (test being the same file, but one is downmixed
+					// to mono), which makes no sense, as mono is supposed to 
+					// have the exact half of stereo's samples.
+					if(audioChannels == 1)
+						numOfSamples /= 2;
+
+					int factRemaining = chunkSz - 4;
+					if(factRemaining > 0)
+						__in.skip(factRemaining);
+					
+				}
+				else
+					__in.skip(chunkSz);
+				
+			}
+			else if(chunkID.equals("junk"))
+			{
+				junkHeader = chunkID;
+				junkSize = __in.readInt();
+				__in.skip(junkSize);
+
+				// Skip one extra byte if junkSize is odd
+				if(junkSize % 2 == 1)
+					__in.skip(1);
+			}
+			else
+				__in.skip(chunkSz);
+			
+		}
 
 		if (Debugging.VERBOSE)
 		{
@@ -243,6 +305,12 @@ class __WavTools__
 				Debugging.debugNote(
 					"numOfSamples:%d", numOfSamples);
 			}
+
+			if(junkHeader != null)
+			{
+				Debugging.debugNote("---'%s' header---", junkHeader);
+				Debugging.debugNote("JunkSize:%d", junkSize);
+			}
 			
 			Debugging.debugNote("---'%s' header---", dataHeader);
 			Debugging.debugNote("SampleDataLength:%d", dataLen);
@@ -254,7 +322,8 @@ class __WavTools__
 		
 		// Return everything we need to write into a scritchaudio buffer
 		return new int[] {audioFormat, sampleRate, audioChannels, frameSize,
-			dataLen, bitsPerSample};
+			numOfSamples == 0 ? dataLen : numOfSamples,
+			bitsPerSample, bytesPerSec};
 	}
 	
 	/**
