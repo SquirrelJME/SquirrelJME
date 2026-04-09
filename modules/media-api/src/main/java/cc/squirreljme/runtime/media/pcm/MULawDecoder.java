@@ -11,7 +11,7 @@ package cc.squirreljme.runtime.media.pcm;
 public class MULawDecoder
 	implements PCMDecoder
 {
-    
+	
 	/**
 	 * Creates a new U-LAW Decoder instance.
 	 * 

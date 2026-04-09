@@ -46,7 +46,7 @@ public class IMAADPCMDecoder
 
 	/** Array containing the last used table index for both channels */
 	private byte[] _tableIndex = {0, 0};
-    
+	
 	/**
 	 * Creates a new IMA ADPCM Decoder instance.
 	 * 
