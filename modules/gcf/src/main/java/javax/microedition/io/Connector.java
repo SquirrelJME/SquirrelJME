@@ -118,6 +118,7 @@ public class Connector
 			case "multicast":
 			case "socket":
 			case "ssl":
+			case "sms":
 				return true;
 			
 				// Client only
