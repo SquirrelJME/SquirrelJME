@@ -1051,12 +1051,16 @@ sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
 sjme_errorCode sjme_scritchui_core_fontByFace(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont,
-	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
+	sjme_attrOutNullable sjme_scritchui_pencilFontParam* outParams,
 	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
-	sjme_attrInNotNull const sjme_scritchui_pencilFontParam* inParams)
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams)
 {
 	if (inState == NULL || outFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* There may exactly only be one bit set. */
+	if (sjme_util_intBitCountU(inFace) != 1)
+		return SJME_ERROR_INVALID_ARGUMENT;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

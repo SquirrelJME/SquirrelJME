@@ -200,6 +200,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions = {
 		sjme_scritchui_core_windowSetMenuItemActivateListener),
 	sjme_sm(.windowSetVisible, sjme_scritchui_core_windowSetVisible),
 };
+
 /** Internal functions for ScritchUI implementations. */
 static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 {

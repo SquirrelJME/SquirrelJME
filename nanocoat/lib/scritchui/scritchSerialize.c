@@ -1372,9 +1372,9 @@ sjme_errorCode sjme_scritchui_coreSerial_fontBuiltin(
 sjme_errorCode sjme_scritchui_coreSerial_fontByFace(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont,
-	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
+	sjme_attrOutNullable sjme_scritchui_pencilFontParam* outParams,
 	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
-	sjme_attrInNotNull const sjme_scritchui_pencilFontParam* inParams)
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams)
 {
 	SJME_SDU_CHUNK(fontByFace,
 		SJME_SCRITCHUI_SERIAL_UI_FONT_BY_FACE,
