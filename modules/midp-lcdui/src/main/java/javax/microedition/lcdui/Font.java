@@ -120,7 +120,7 @@ public final class Font
 	final PencilFontBracket _font;
 	
 	/** The parameters for the font. */
-	final int[] _params;
+	private final int[] _fontParams;
 	
 	/** The name of this font. */
 	private final String _name;
@@ -160,7 +160,7 @@ public final class Font
 		// Store for later
 		this._scritch = __scritch;
 		this._font = __bracket;
-		this._params = __params;
+		this._fontParams = __params;
 		
 		// Get information on the font
 		this._name = PencilFontShelf.metricFontName(__bracket);
@@ -190,7 +190,8 @@ public final class Font
 	@Api
 	public int charWidth(char __c)
 	{
-		return PencilFontShelf.pixelCharWidth(this._font, __c);
+		return PencilFontShelf.pixelCharWidth(this._font, this._fontParams,
+			__c);
 	}
 	
 	/**
@@ -300,11 +301,16 @@ public final class Font
 		if (this._style == __style && this._pixelsize == __pixelSize)
 			return this;
 		
+		throw Debugging.todo();
+		/*
 		// Derive font
 		ScritchInterface scritch = this._scritch;
 		return new Font(scritch, scritch.environment()
-			.fontDerive(this._font, null, PencilFontFace.AUTOMATIC,
+			.fontDerive(this._font, this._fontParams,
+				null, PencilFontFace.AUTOMATIC,
 				__style, __pixelSize));
+				
+		 */
 	}
 	
 	/**
@@ -326,7 +332,8 @@ public final class Font
 		return this._pixelsize == o._pixelsize &&
 			this._style == o._style &&
 			this._name.equals(o._name) &&
-			PencilFontShelf.equals(this._font, o._font);
+			PencilFontShelf.equals(this._font, this._fontParams,
+				o._font, o._fontParams);
 	}
 	
 	/**
@@ -339,7 +346,8 @@ public final class Font
 	@Api
 	public int getAscent()
 	{
-		return PencilFontShelf.metricPixelAscent(this._font, false);
+		return PencilFontShelf.metricPixelAscent(this._font, this._fontParams,
+			false);
 	}
 	
 	/**
@@ -352,7 +360,8 @@ public final class Font
 	@Api
 	public int getBaselinePosition()
 	{
-		return PencilFontShelf.metricPixelBaseline(this._font);
+		return PencilFontShelf.metricPixelBaseline(
+			this._font, this._fontParams);
 	}
 	
 	/**
@@ -365,7 +374,8 @@ public final class Font
 	@Api
 	public int getDescent()
 	{
-		return PencilFontShelf.metricPixelDescent(this._font, false);
+		return PencilFontShelf.metricPixelDescent(
+			this._font, this._fontParams, false);
 	}
 	
 	/**
@@ -427,7 +437,8 @@ public final class Font
 	@Api
 	public int getLeading()
 	{
-		return PencilFontShelf.metricPixelLeading(this._font);
+		return PencilFontShelf.metricPixelLeading(
+			this._font, this._fontParams);
 	}
 	
 	@Api
@@ -556,6 +567,7 @@ public final class Font
 		
 		// Access this font always
 		PencilFontBracket font = this._font;
+		int[] fontParams = this._fontParams;
 		
 		// Basic width calculation
 		int totalW = 0;
@@ -565,7 +577,7 @@ public final class Font
 			char c = __s.charAt(at);
 			
 			// Add to the width
-			totalW += PencilFontShelf.pixelCharWidth(font, c);
+			totalW += PencilFontShelf.pixelCharWidth(font, fontParams, c);
 		}
 		
 		// Give the total
@@ -611,6 +623,8 @@ public final class Font
 		PencilFontBracket[] builtin = scritch.environment()
 			.builtinFonts();
 		
+		throw Debugging.todo();
+		/*
 		// Wrap built-in fonts
 		int n = builtin.length;
 		rv = new Font[n]; 
@@ -620,6 +634,8 @@ public final class Font
 		// Cache and use
 		Font._BUILTIN_FONTS = rv;
 		return rv.clone();
+		
+		 */
 	}
 	
 	/**
@@ -779,6 +795,8 @@ public final class Font
 			throw new IllegalArgumentException(String.format("EB1z %d",
 				__size));
 		
+		throw Debugging.todo();
+		/*
 		// Ask the system to derive the font
 		DisplayManager manager = DisplayManager.instance();
 		ScritchInterface scritch = manager.scritch();
@@ -786,6 +804,8 @@ public final class Font
 			.fontDerive(null, null, 
 				FontUtilities.faceToPencil(__face),
 				__style, FontUtilities.logicalSizeToPixelSize(__size)));
+				
+		 */
 	}
 	
 	/**
@@ -807,6 +827,8 @@ public final class Font
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
+		throw Debugging.todo();
+		/*
 		// Ask the system to derive the font
 		DisplayManager manager = DisplayManager.instance();
 		ScritchInterface scritch = manager.scritch();
@@ -814,6 +836,8 @@ public final class Font
 			.fontDerive(null, __name,
 				FontUtilities.faceNameToPencil(__name),
 				__style, __pxs));
+				
+		 */
 	}
 	
 	/**

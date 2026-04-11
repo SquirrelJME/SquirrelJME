@@ -1712,6 +1712,9 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	if (name != NULL)
 		nameChars = (*env)->GetStringUTFChars(env, name, &isCopy);
 
+	sjme_todo("Impl?");
+	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
+#if 0
 	/* Forward. */
 	derived = NULL;
 	if (sjme_error_is(error = state->api->fontDerive(state,
@@ -1729,6 +1732,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	(*env)->ReleaseStringUTFChars(env, name, nameChars);
 
 	return (jlong)derived;
+#endif
 }
 
 JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,

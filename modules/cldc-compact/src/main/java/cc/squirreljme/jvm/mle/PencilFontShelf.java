@@ -42,13 +42,16 @@ public final class PencilFontShelf
 	 * Checks if two brackets refer to the same font.
 	 *
 	 * @param __a The first font.
+	 * @param __aParams The first font parameters.
 	 * @param __b The second font.
+	 * @param __bParams The second font parameters.
 	 * @return If the two fonts are the same.
 	 * @since 2024/05/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean equals(@Nullable PencilFontBracket __a,
-		@Nullable PencilFontBracket __b);
+	public static native boolean equals(
+		@Nullable PencilFontBracket __a, @Nullable int[] __aParams,
+		@Nullable PencilFontBracket __b, @Nullable int[] __bParams);
 	
 	/**
 	 * Returns the direction of the given character in the font.

@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Range;
 public abstract class Graphics
 {
 	/**
-	 * This is the anchorpoint for the baseline of text. This is not valid for
+	 * This is the anchor point for the baseline of text. This is not valid for
 	 * anything which is not text. The baseline is considered to be point where
 	 * all letters rest on. The baseline is not the lowest point, so for
 	 * letters such as {@code j} the baseline will be higher than the lowest

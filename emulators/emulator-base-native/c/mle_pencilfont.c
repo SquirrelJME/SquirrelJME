@@ -9,46 +9,16 @@
 
 #include <string.h>
 
+/* //// MLE /// */
+#define mleGroupId PencilFontShelf
+#define mleShelfClass "cc/squirreljme/jvm/mle/PencilFontShelf"
+#define mleProxyTarget "cc/squirreljme/emulator/uiform/SwingPencilShelf"
+#include "squirreljmeMle.h"
+/* //////////// */
+
 #include "lib/scritchui/scritchui.h"
 #include "sjme/debug.h"
 #include "squirreljme.h"
-
-#define FORWARD_CLASS "cc/squirreljme/jvm/mle/PencilFontShelf"
-
-#define FORWARD_DESC_equals DESC_METHOD(DESC_BOOLEAN,  \
-	DESC_PENCILFONT DESC_PENCILFONT )
-#define FORWARD_DESC_metricCharDirection DESC_METHOD(DESC_INT,  \
-	DESC_PENCILFONT DESC_INT )
-#define FORWARD_DESC_metricCharValid DESC_METHOD(DESC_BOOLEAN,  \
-	DESC_PENCILFONT DESC_INT )
-#define FORWARD_DESC_metricFontFace DESC_METHOD(DESC_INT,  \
-	DESC_PENCILFONT )
-#define FORWARD_DESC_metricFontName DESC_METHOD(DESC_STRING,  \
-	DESC_PENCILFONT )
-#define FORWARD_DESC_metricPixelSize DESC_METHOD(DESC_INT,  \
-	DESC_PENCILFONT DESC_INT )
-#define FORWARD_DESC_metricFontStyle DESC_METHOD(DESC_INT,  \
-	DESC_PENCILFONT )
-#define FORWARD_DESC_metricPixelAscent DESC_METHOD(DESC_INT,  \
-	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_BOOLEAN )
-#define FORWARD_DESC_metricPixelBaseline DESC_METHOD(DESC_INT,  \
-	DESC_PENCILFONT DESC_ARRAY(DESC_INT) )
-#define FORWARD_DESC_metricPixelDescent DESC_METHOD(DESC_INT,  \
-	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_BOOLEAN )
-#define FORWARD_DESC_metricPixelLeading DESC_METHOD(DESC_INT,  \
-	DESC_PENCILFONT DESC_ARRAY(DESC_INT) )
-#define FORWARD_DESC_pixelCharHeight DESC_METHOD(DESC_INT,  \
-	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_INT )
-#define FORWARD_DESC_pixelCharWidth DESC_METHOD(DESC_INT,  \
-	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_INT )
-#define FORWARD_DESC_renderBitmap DESC_METHOD(DESC_VOID,  \
-	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_INT DESC_ARRAY(DESC_BYTE) \
-	DESC_INT \
-	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT )
-#define FORWARD_DESC_renderChar DESC_METHOD(DESC_VOID,  \
-	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_INT DESC_PENCIL DESC_INT \
-	DESC_INT \
-	DESC_ARRAY(DESC_INT) )
 
 #define RECOVER_FONT() \
 	do { font = sjme_jni_recoverFont(env, fontInstance); \
@@ -58,13 +28,17 @@
 		return 0; \
 	} } while(0)
 
-
-JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, equals)
-	(JNIEnv* env, jclass classy, jobject a, jobject b)
+#define MLE_DESC_equals DESC_METHOD(DESC_BOOLEAN,  \
+	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_PENCILFONT DESC_ARRAY(DESC_INT))
+MLE_FUNC_PROTO(jboolean, equals, jobject a, jintArray aParams,
+	jobject b, jintArray bParams)
 {
 	sjme_scritchui_pencilFont fontA;
 	sjme_scritchui_pencilFont fontB;
 
+	sjme_todo("Impl?");
+	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
+#if 0
 	/* Recover fonts. */
 	fontA = sjme_jni_recoverFont(env, a);
 	fontB = sjme_jni_recoverFont(env, b);
@@ -77,10 +51,12 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, equals)
 
 	/* Both would be NULL at this point. */
 	return JNI_TRUE;
+#endif
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharDirection)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jint c)
+#define MLE_DESC_metricCharDirection DESC_METHOD(DESC_INT,  \
+	DESC_PENCILFONT DESC_INT )
+MLE_FUNC_PROTO(jint, metricCharDirection, jobject fontInstance, jint c)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
@@ -93,8 +69,9 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharDirection)
 	return result;
 }
 
-JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharValid)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jint c)
+#define MLE_DESC_metricCharValid DESC_METHOD(DESC_BOOLEAN,  \
+	DESC_PENCILFONT DESC_INT )
+MLE_FUNC_PROTO(jboolean, metricCharValid, jobject fontInstance, jint c)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
@@ -107,8 +84,9 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricCharValid)
 	return result;
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontFace)
-	(JNIEnv* env, jclass classy, jobject fontInstance)
+#define MLE_DESC_metricFontFace DESC_METHOD(DESC_INT,  \
+	DESC_PENCILFONT )
+MLE_FUNC_PROTO(jint, metricFontFace, jobject fontInstance)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
@@ -121,8 +99,9 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontFace)
 	return result;
 }
 
-JNIEXPORT jstring JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontName)
-	(JNIEnv* env, jclass classy, jobject fontInstance)
+#define MLE_DESC_metricFontName DESC_METHOD(DESC_STRING,  \
+	DESC_PENCILFONT )
+MLE_FUNC_PROTO(jstring, metricFontName, jobject fontInstance)
 {
 	sjme_scritchui_pencilFont font;
 	sjme_errorCode error;
@@ -162,8 +141,9 @@ JNIEXPORT jstring JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontName)
 	return (*env)->NewStringUTF(env, name);
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontStyle)
-	(JNIEnv* env, jclass classy, jobject fontInstance)
+#define MLE_DESC_metricFontStyle DESC_METHOD(DESC_INT,  \
+	DESC_PENCILFONT )
+MLE_FUNC_PROTO(jint, metricFontStyle, jobject fontInstance)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
@@ -176,8 +156,9 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricFontStyle)
 	return result;
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelAscent)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam,
+#define MLE_DESC_metricPixelAscent DESC_METHOD(DESC_INT,  \
+	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_BOOLEAN )
+MLE_FUNC_PROTO(jint, metricPixelAscent, jobject fontInstance, jintArray fontParam,
 		jboolean max)
 {
 	sjme_errorCode error;
@@ -186,116 +167,149 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelAscent)
 
 	RECOVER_FONT();
 
+	sjme_todo("Impl?");
+	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
+#if 0
 	/* Forward. */
 	CHECK_AND_FORWARD(0, font->api->metricPixelAscent,
 		(font, max, &result));
 	return result;
+#endif
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelBaseline)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam)
+#define MLE_DESC_metricPixelBaseline DESC_METHOD(DESC_INT,  \
+	DESC_PENCILFONT DESC_ARRAY(DESC_INT) )
+MLE_FUNC_PROTO(jint, metricPixelBaseline, jobject fontInstance, jintArray fontParam)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
 	sjme_jint result;
 
+	sjme_todo("Impl?");
+	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
+#if 0
 	/* Forward. */
 	RECOVER_FONT();
 	CHECK_AND_FORWARD(0, font->api->metricPixelBaseline,
 		(font, &result));
 	return result;
+#endif
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelDescent)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam,
+#define MLE_DESC_metricPixelDescent DESC_METHOD(DESC_INT,  \
+	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_BOOLEAN )
+MLE_FUNC_PROTO(jint, metricPixelDescent, jobject fontInstance, jintArray fontParam,
 		jboolean max)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
 	sjme_jint result;
 
+	sjme_todo("Impl?");
+	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
+#if 0
 	/* Forward. */
 	RECOVER_FONT();
 	CHECK_AND_FORWARD(0, font->api->metricPixelDescent,
 		(font, max, &result));
 	return result;
+#endif
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelLeading)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam)
+#define MLE_DESC_metricPixelLeading DESC_METHOD(DESC_INT,  \
+	DESC_PENCILFONT DESC_ARRAY(DESC_INT) )
+MLE_FUNC_PROTO(jint, metricPixelLeading, jobject fontInstance, jintArray fontParam)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
 	sjme_jint result;
 
+	sjme_todo("Impl?");
+	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
+#if 0
 	/* Forward. */
 	RECOVER_FONT();
 	CHECK_AND_FORWARD(0, font->api->metricPixelLeading,
 		(font, &result));
 	return result;
+#endif
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, metricPixelSize)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam,
-		jint codepoint)
+#define MLE_DESC_metricPixelSize DESC_METHOD(DESC_INT,  \
+	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_INT )
+MLE_FUNC_PROTO(jint, metricPixelSize,
+	jobject fontInstance, jintArray fontParam,
+	jint codepoint)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
 	sjme_jint result;
 
+	sjme_todo("Impl?");
+	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
+#if 0
 	/* Forward. */
 	RECOVER_FONT();
 	CHECK_AND_FORWARD(0, font->api->metricPixelSize,
 		(font, codepoint, &result));
 	return result;
+#endif
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilFontShelf, pixelCharWidth)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam,
+#define MLE_DESC_pixelCharWidth DESC_METHOD(DESC_INT,  \
+	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_INT )
+MLE_FUNC_PROTO(jint, pixelCharWidth, jobject fontInstance, jintArray fontParam,
 		jint c)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
 	sjme_jint result;
 
+	sjme_todo("Impl?");
+	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
+#if 0
 	/* Forward. */
 	RECOVER_FONT();
 	CHECK_AND_FORWARD(0, font->api->pixelCharWidth,
 		(font, c, &result));
 	return result;
+#endif
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilFontShelf, renderBitmap)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jintArray fontParam,
+#define MLE_DESC_renderBitmap DESC_METHOD(DESC_VOID,  \
+	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_INT DESC_ARRAY(DESC_BYTE) \
+	DESC_INT \
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT )
+MLE_FUNC_PROTO(void, renderBitmap, jobject fontInstance, jintArray fontParam,
 		jint c, jbyteArray buf,
 	jint bufOff, jint scanLen, jint sx, jint sy, jint sw, jint sh)
 {
 	sjme_todo("Impl?");
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilFontShelf, renderChar)
-	(JNIEnv* env, jclass classy, jobject fontInstance, jint c, jobject pencil,
+#define MLE_DESC_renderChar DESC_METHOD(DESC_VOID,  \
+	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_INT DESC_PENCIL DESC_INT \
+	DESC_INT \
+	DESC_ARRAY(DESC_INT) )
+MLE_FUNC_PROTO(void, renderChar, jobject fontInstance, jint c, jobject pencil,
 	jint x, jint y, jintArray nextXY)
 {
 	sjme_todo("Impl?");
 }
 
-static const JNINativeMethod mlePencilFontMethods[] =
-{
-	FORWARD_list(PencilFontShelf, equals),
-	FORWARD_list(PencilFontShelf, metricCharDirection),
-	FORWARD_list(PencilFontShelf, metricCharValid),
-	FORWARD_list(PencilFontShelf, metricFontFace),
-	FORWARD_list(PencilFontShelf, metricFontName),
-	FORWARD_list(PencilFontShelf, metricPixelSize),
-	FORWARD_list(PencilFontShelf, metricFontStyle),
-	FORWARD_list(PencilFontShelf, metricPixelAscent),
-	FORWARD_list(PencilFontShelf, metricPixelBaseline),
-	FORWARD_list(PencilFontShelf, metricPixelDescent),
-	FORWARD_list(PencilFontShelf, metricPixelLeading),
-	FORWARD_list(PencilFontShelf, pixelCharWidth),
-	FORWARD_list(PencilFontShelf, renderBitmap),
-	FORWARD_list(PencilFontShelf, renderChar),
-};
-
-FORWARD_init(mlePencilFontInit, mlePencilFontMethods)
+MLE_LIST_BEGIN()
+	MLE_LIST_ITEM(equals),
+	MLE_LIST_ITEM(metricCharDirection),
+	MLE_LIST_ITEM(metricCharValid),
+	MLE_LIST_ITEM(metricFontFace),
+	MLE_LIST_ITEM(metricFontName),
+	MLE_LIST_ITEM(metricPixelSize),
+	MLE_LIST_ITEM(metricFontStyle),
+	MLE_LIST_ITEM(metricPixelAscent),
+	MLE_LIST_ITEM(metricPixelBaseline),
+	MLE_LIST_ITEM(metricPixelDescent),
+	MLE_LIST_ITEM(metricPixelLeading),
+	MLE_LIST_ITEM(pixelCharWidth),
+	MLE_LIST_ITEM(renderBitmap),
+	MLE_LIST_ITEM(renderChar),
+MLE_LIST_END()

@@ -114,11 +114,11 @@ MLE_FUNC_PROTO(jstring, vmDescription, jint id)
 		id);
 }
 
-#define MLE_DESC_vmStatistic "(I)J" DESC_METHOD(DESC_LONG, \
+#define MLE_DESC_vmStatistic DESC_METHOD(DESC_LONG, \
 	DESC_INTEGER)
 MLE_FUNC_PROXY_STATIC(jlong, vmStatistic)
 
-#define MLE_DESC_memoryProfile "()I" DESC_METHOD(DESC_INTEGER, )
+#define MLE_DESC_memoryProfile DESC_METHOD(DESC_INTEGER, )
 MLE_FUNC_PROTO(jint, memoryProfile)
 {
 	// The value is normal

@@ -13,7 +13,7 @@ include(ExternalProject)
 
 # Declare project
 project(libEmulatorBase
-    LANGUAGES C)
+	LANGUAGES C)
 
 # We want to forward as many CMAKE_ commands to the target NanoCoat as
 # possible
@@ -161,7 +161,7 @@ foreach(var IN LISTS allVariables)
 
 		# Append to the file
 		file(APPEND "${cacheFile}"
-			"set(\"${var}\" \"${quotedValue}\" CACHE ${varType} "${var}")\n")
+			"set(\"${var}\" \"${quotedValue}\" CACHE ${varType} \"${var}\")\n")
 	endif()
 endforeach()
 

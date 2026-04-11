@@ -16,7 +16,20 @@
 #include "sjme/debug.h"
 #include "sjme/charSeq.h"
 
-/** Initializing methods. */
+/** Prototype for initialization function. */
+#define MLE_INIT_FUNC_PROTO(mleGroupId) \
+	jint JNICALL SJME_TOKEN_PASTE_PP(SJME_TOKEN_PASTE_PP(mle, mleGroupId), \
+		Init)(JNIEnv* env, jclass classy)
+
+MLE_INIT_FUNC_PROTO(NativeScritchInterface);
+MLE_INIT_FUNC_PROTO(PencilFontShelf);
+MLE_INIT_FUNC_PROTO(PencilShelf);
+MLE_INIT_FUNC_PROTO(RuntimeShelf);
+MLE_INIT_FUNC_PROTO(TerminalShelf);
+MLE_INIT_FUNC_PROTO(ThreadShelf);
+MLE_INIT_FUNC_PROTO(TypeShelf);
+
+/* Initializing methods. */
 jint JNICALL mleAudioStreamInit(JNIEnv* env, jclass classy);
 jint JNICALL mleBucketInit(JNIEnv* env, jclass classy);
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
@@ -170,6 +183,7 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_STRING DESC_CLASS("java/lang/String")
 #define DESC_RUNNABLE DESC_CLASS("java/lang/Runnable")
 #define DESC_BYTE_BUFFER DESC_CLASS("java/nio/ByteBuffer")
+#define DESC_INPUT_STREAM DESC_CLASS("java/io/InputStream")
 
 #define DESC_TRACEPOINT \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/TracePointBracket")

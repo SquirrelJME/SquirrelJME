@@ -7,6 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+/**
+ *
+ *
+ */
+
 #ifndef LIBEMULATORBASE_SQUIRRELJMEMLE_H
 #define LIBEMULATORBASE_SQUIRRELJMEMLE_H
 
@@ -75,7 +80,15 @@
 #pragma endregion(names)
 #pragma region(functions)
 
-/** MLE Function prototype. */
+/**
+ * MLE Function prototype.
+ *
+ * Regex for mapping over old prototypes to new prototypes:
+ * @code
+ * JNIEXPORT\s+([a-zA-Z0-9_]+)\s+JNICALL\s+FORWARD_FUNC_NAME
+ * \(\w+,\s+([a-zA-Z0-9_]+)\)[\s]*\(JNIEnv\s*\*\s+env,\s*jclass\s+classy\s*,\s*
+ * @endcode
+ */
 #define MLE_FUNC_PROTO(returnType, methodName, ...) \
 	JNIEXPORT returnType JNICALL MLE_FUNC_NAME(methodName) \
 		(JNIEnv* env, jclass classy, __VA_ARGS__)
@@ -85,34 +98,63 @@
 	JNIEXPORT returnType JNICALL MLE_FUNC_NAME_ALT(methodName, alt) \
 		(JNIEnv* env, jclass classy, __VA_ARGS__)
 
-/** Proxied call to a JNI implementation. */
-#define MLE_FUNC_PROXY_STATIC(returnType, methodName) \
-	MLE_FUNC_PROTO(returnType, methodName, ...) \
+/** Proxied call to a JNI implementation (any set). */
+#define MLE_FUNC_PROXY_STATIC_ANY(returnType, nativeName, \
+	methodName, methodDesc) \
+	MLE_FUNC_PROTO(returnType, nativeName, ...) \
 	{ \
-		va_list args; \
+		va_list args, argsCopy; \
 		forwardMethod forwardedTo; \
 		MLE_RETURN(returnType, returnType rv;) \
 		\
-		/* Load in arguments. */ \
+		/* Init. */ \
+		memset(&forwardedTo, 0, sizeof(forwardedTo)); \
+		MLE_RETURN(returnType, memset(&rv, 0, sizeof(rv));) \
+		\
+		/* Load in arguments, make extra defensive copy for some systems */ \
+		/* and compiler combinations as forwarded arguments can break. */ \
 		va_start(args, classy); \
+		va_copy(argsCopy, args); \
 		\
 		/* Find the forward method. */ \
 		forwardedTo = findForwardMethod(env, \
 			SJME_TOKEN(mleProxyTarget), \
 			SJME_TOKEN_STRING(methodName), \
-			SJME_TOKEN(SJME_TOKEN_PASTE_PP(MLE_DESC_, methodName))); \
+			methodDesc); \
+		if (forwardedTo.xclass == NULL || forwardedTo.xmeth == NULL) \
+		{ \
+			sjme_todo("Missing %s %s %s", \
+				SJME_TOKEN(mleProxyTarget), \
+				SJME_TOKEN_STRING(methodName), \
+				methodDesc); \
+			sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED); \
+			return MLE_RETURN(returnType, rv); \
+		} \
 		\
 		/* Forward to JNI dispatch. */ \
 		MLE_RETURN(returnType, rv =) \
 			(*env)->MLE_CALL_STATIC_METHOD(returnType)(env, \
 				forwardedTo.xclass, \
-				forwardedTo.xmeth, args); \
+				forwardedTo.xmeth, argsCopy); \
 		\
 		/* Cleanup. */ \
+		va_end(argsCopy); \
 		va_end(args); \
 		\
 		MLE_RETURN(returnType, return rv;) \
 	}
+
+/** Proxied call to a JNI implementation. */
+#define MLE_FUNC_PROXY_STATIC(returnType, methodName) \
+	MLE_FUNC_PROXY_STATIC_ANY(returnType, methodName, methodName, \
+		SJME_TOKEN(SJME_TOKEN_PASTE_PP(MLE_DESC_, methodName)))
+
+/** Proxy static call (alternative). */
+#define MLE_FUNC_PROXY_STATIC_ALT(returnType, methodName, alt) \
+	MLE_FUNC_PROXY_STATIC_ANY(returnType, \
+		SJME_TOKEN_PASTE3_PP(methodName, _, alt), methodName, \
+		SJME_TOKEN(SJME_TOKEN_PASTE_PP(MLE_DESC_, \
+			SJME_TOKEN_PASTE3_PP(methodName, _, alt))))
 
 #pragma endregion(functions)
 #pragma region(lists)
@@ -126,6 +168,24 @@
 	{ \
 		SJME_TOKEN_STRING(methodName), \
 		SJME_TOKEN(SJME_TOKEN_PASTE_PP(MLE_DESC_, methodName)), \
+		MLE_FUNC_NAME(methodName) \
+	}
+
+/** Single item in the MLE list (alternative). */
+#define MLE_LIST_ITEM_ALT(methodName, alt) \
+	{ \
+		SJME_TOKEN_STRING(methodName), \
+		SJME_TOKEN(SJME_TOKEN_PASTE_PP(MLE_DESC_, \
+			SJME_TOKEN_PASTE3_PP(methodName, _, alt))), \
+		MLE_FUNC_NAME(SJME_TOKEN_PASTE3_PP(methodName, _, alt)) \
+	}
+
+/** Single item in the MLE list (alternative, but is a proxy). */
+#define MLE_LIST_ITEM_ALT_PROXY(methodName, alt) \
+	{ \
+		SJME_TOKEN_STRING(methodName), \
+		SJME_TOKEN(SJME_TOKEN_PASTE_PP(MLE_DESC_, \
+			SJME_TOKEN_PASTE3_PP(methodName, _, alt))), \
 		MLE_FUNC_NAME(methodName) \
 	}
 

@@ -246,8 +246,12 @@ endfunction()
 function(squirreljme_implib_path result target)
 	# Determine the name of the library
 	squirreljme_library_path(implibPath ${target})
-	set(${result} "${implibPath}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-		PARENT_SCOPE)
+	string(REPLACE
+		"${CMAKE_SHARED_LIBRARY_SUFFIX}" "${CMAKE_STATIC_LIBRARY_SUFFIX}"
+		implibPath "${implibPath}")
+
+	# Set resultant path
+	set(${result} "${implibPath}" PARENT_SCOPE)
 endfunction()
 
 # Generate exports, mostly for Windows
