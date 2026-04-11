@@ -182,6 +182,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 #define SJME_SCRITCHUI_DISPATCH_SWITCH_BEGIN switch (sdData->type) {
 #define SJME_SCRITCHUI_DISPATCH_SWITCH_END \
 	default: \
+		sjme_todo("Impl %d?", sdData->type);\
 		return SJME_THREAD_RESULT(sjme_error_notImplemented(0)); }
 	
 	volatile sjme_scritchui_serialData* sdData;
@@ -384,6 +385,14 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		SJME_SCRITCHUI_SERIAL_UI_FONT_BUILTIN,
 		(state,
 		as->fontBuiltin.outFont));
+
+	SJME_SDU_CASE(fontByFace,
+		SJME_SCRITCHUI_SERIAL_UI_FONT_BY_FACE,
+		(state,
+		as->fontByFace.outFont,
+		as->fontByFace.outParams,
+		as->fontByFace.inFace,
+		as->fontByFace.inParams));
 	
 	SJME_SDU_CASE(fontCount,
 		SJME_SCRITCHUI_SERIAL_UI_FONT_COUNT,

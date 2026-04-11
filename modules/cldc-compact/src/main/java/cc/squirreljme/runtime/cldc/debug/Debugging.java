@@ -19,8 +19,8 @@ import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.runtime.cldc.PrintVersion;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.io.PipeOutputStream;
 import cc.squirreljme.runtime.cldc.io.NonClosedOutputStream;
+import cc.squirreljme.runtime.cldc.io.PipeOutputStream;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -60,8 +60,12 @@ public final class Debugging
 		0x7E;
 	
 	/** Exit status for TODOs. */
-	private static final int _TODO_EXIT_STATUS =
+	private static final int _TODO =
 		63;
+	
+	/** Exit status for OOPS. */
+	private static final int _OOPS =
+		62;
 	
 	/** This will be set when TODOs are tripped, to prevent infinite loops. */
 	@SuppressWarnings("StaticVariableMayNotBeInitialized")
@@ -147,7 +151,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static Error oops()
 	{
-		return Debugging.todo();
+		return Debugging.__fail(Debugging._OOPS, (Object[])null);
 	}
 	
 	/**
@@ -161,7 +165,7 @@ public final class Debugging
 	@Contract("_ -> fail")
 	public static Error oops(Object... __args)
 	{
-		return Debugging.todo(__args);
+		return Debugging.__fail(Debugging._OOPS, __args);
 	}
 	
 	/**
@@ -223,7 +227,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static Error todo()
 	{
-		return Debugging.todo((Object[])null);
+		return Debugging.__fail(Debugging._TODO, (Object[])null);
 	}
 	
 	/**
@@ -239,18 +243,89 @@ public final class Debugging
 	@Contract("_ -> fail")
 	public static Error todo(Object... __args)
 	{
+		return Debugging.__fail(Debugging._TODO, __args);
+	}
+	
+	/**
+	 * Emits a To-Do note.
+	 *
+	 * @param __fmt Format string.
+	 * @since 2020/05/13
+	 */
+	@SquirrelJMEVendorApi
+	public static void todoNote(@PrintFormat String __fmt)
+	{
+		if (!Debugging.ENABLED)
+			return;
+		
+		Debugging.__format('T', 'D', __fmt, (Object[])null);
+	}
+	
+	/**
+	 * Emits a To-Do note.
+	 *
+	 * @param __fmt Format string.
+	 * @param __args Arguments.
+	 * @since 2020/03/31
+	 */
+	@SquirrelJMEVendorApi
+	public static void todoNote(@PrintFormat String __fmt, Object... __args)
+	{
+		if (!Debugging.ENABLED)
+			return;
+		
+		Debugging.__format('T', 'D', __fmt, __args);
+	}
+	
+	/**
+	 * Returns a To-Do for an object.
+	 *
+	 * @param <T> The type.
+	 * @param __args The calling arguments.
+	 * @return Never returns.
+	 * @since 2020/04/09
+	 */
+	@SquirrelJMEVendorApi
+	public static <T> T todoObject(Object... __args)
+	{
+		throw Debugging.todo(__args);
+	}
+	
+	/**
+	 * Emits a To-Do error.
+	 *
+	 * @param __code Failure code.
+	 * @param __args Arguments to the error.
+	 * @return The generated error.
+	 * @since 2020/03/21
+	 */
+	@SquirrelJMEVendorApi
+	@SuppressWarnings({"StaticVariableUsedBeforeInitialization", 
+		"squirreljme_thrownErrorToDo"})
+	@Contract("_ -> fail")
+	private static Error __fail(int __code, Object... __args)
+	{
 		// Only trip this once! In the event this trips twice, just shortcut
 		// with an exception otherwise
 		if (Debugging._tripped)
 		{
 			// There was a To-Do on this To-Do, so need to report it instead
 			// of just exiting!
-			Debugging.todoNote("TODO TRIPPED IN TODO HANDLER: ");
+			Debugging.todoNote("FAIL TRIPPED IN FAIL HANDLER: ");
 			
 			// Toss up and see what happens here
+			if (__code == Debugging._OOPS)
+				return new OopsCodeError();
 			return new IncompleteCodeError();
 		}
 		Debugging._tripped = true;
+		
+		// Context string
+		String context;
+		if (__code == Debugging._OOPS)
+			context = "OOPS CODE";
+		else
+			context = "INCOMPLETE CODE";
 		
 		// This try is here so that in event this fails or throws another
 		// exception, we always terminal no matter what
@@ -260,7 +335,10 @@ public final class Debugging
 			// Print a very visible banner to not hide this information
 			Debugging.todoNote(
 				"*****************************************");
-			Debugging.todoNote("INCOMPLETE CODE HAS BEEN REACHED: ");
+			if (__code == Debugging._OOPS)
+				Debugging.todoNote("OOPS CODE HAS BEEN HIT, FIX THIS: ");
+			else
+				Debugging.todoNote("INCOMPLETE CODE HAS BEEN REACHED: ");
 			
 			// Print version information to more easily find this
 			try
@@ -275,8 +353,7 @@ public final class Debugging
 			// because the SquirrelJME trace support may be missing
 			if (RuntimeShelf.vmType() == VMType.JAVA_SE)
 			{
-				new Throwable("INCOMPLETE CODE")
-					.printStackTrace(System.err);
+				new Throwable(context).printStackTrace(System.err);
 			}
 			
 			// Use SquirrelJME's method
@@ -287,11 +364,11 @@ public final class Debugging
 				TracePointBracket[] trace = DebugShelf.traceStack();
 				CallTraceUtils.printStackTrace(new PrintStream(
 					new NonClosedOutputStream(PipeOutputStream.stdErr())),
-					"INCOMPLETE CODE", trace,
+					context, trace,
 					null, null, 0);
 					
 				// Report the To-Do trace, so it is known to another program
-				ThreadShelf.setTrace("INCOMPLETE CODE", trace);
+				ThreadShelf.setTrace(context, trace);
 			}
 			stackTracePrinted = true;
 			
@@ -321,7 +398,7 @@ public final class Debugging
 		// In the event this happens, we can report it
 		catch (Throwable t)
 		{
-			Debugging.todoNote("THROWABLE TOSSED IN TODO HANDLER!");
+			Debugging.todoNote("THROWABLE TOSSED IN FAIL HANDLER!");
 			
 			// Report if we could not print the trace!
 			if (!stackTracePrinted)
@@ -381,7 +458,7 @@ public final class Debugging
 			try
 			{
 				if (!Debugging.NO_EXIT)
-					System.exit(Debugging._TODO_EXIT_STATUS);
+					System.exit(__code);
 			}
 			catch (SecurityException ignored)
 			{
@@ -390,52 +467,9 @@ public final class Debugging
 		}
 		
 		// Throw normal error here
+		if (__code == Debugging._OOPS)
+			throw new OopsCodeError();
 		throw new IncompleteCodeError();
-	}
-	
-	/**
-	 * Emits a To-Do note.
-	 *
-	 * @param __fmt Format string.
-	 * @since 2020/05/13
-	 */
-	@SquirrelJMEVendorApi
-	public static void todoNote(@PrintFormat String __fmt)
-	{
-		if (!Debugging.ENABLED)
-			return;
-		
-		Debugging.__format('T', 'D', __fmt, (Object[])null);
-	}
-	
-	/**
-	 * Emits a To-Do note.
-	 *
-	 * @param __fmt Format string.
-	 * @param __args Arguments.
-	 * @since 2020/03/31
-	 */
-	@SquirrelJMEVendorApi
-	public static void todoNote(@PrintFormat String __fmt, Object... __args)
-	{
-		if (!Debugging.ENABLED)
-			return;
-		
-		Debugging.__format('T', 'D', __fmt, __args);
-	}
-	
-	/**
-	 * Returns a To-Do for an object.
-	 *
-	 * @param <T> The type.
-	 * @param __args The calling arguments.
-	 * @return Never returns.
-	 * @since 2020/04/09
-	 */
-	@SquirrelJMEVendorApi
-	public static <T> T todoObject(Object... __args)
-	{
-		throw Debugging.todo(__args);
 	}
 	
 	/**
