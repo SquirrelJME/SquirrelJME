@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.jvm.mle.PencilFontShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilFontFace;
+import cc.squirreljme.jvm.mle.constants.PencilFontParam;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -732,6 +733,9 @@ public final class Font
 		// Use a sensible default
 		rv = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN,
 			Font.SIZE_MEDIUM);
+		if (rv == null)
+			rv = Font.getAvailableFonts()[0];
+		
 		Font._DEFAULT_FONT = rv;
 		return rv;
 	}
@@ -795,17 +799,26 @@ public final class Font
 			throw new IllegalArgumentException(String.format("EB1z %d",
 				__size));
 		
-		throw Debugging.todo();
-		/*
-		// Ask the system to derive the font
+		// Setup parameters for input/output
+		int[] params = new int[PencilFontParam.NUM_PARAMS];
+		int[] outParams = new int[PencilFontParam.NUM_PARAMS];
+		params[PencilFontParam.STYLE] = __style;
+		params[PencilFontParam.PIXEL_SIZE] = 
+			FontUtilities.logicalSizeToPixelSize(__size);
+		
+		// Try to locate a font with a matching face and parameter set
 		DisplayManager manager = DisplayManager.instance();
 		ScritchInterface scritch = manager.scritch();
-		return new Font(scritch, scritch.environment()
-			.fontDerive(null, null, 
-				FontUtilities.faceToPencil(__face),
-				__style, FontUtilities.logicalSizeToPixelSize(__size)));
-				
-		 */
+		PencilFontBracket found = scritch.environment().fontByFace(
+			FontUtilities.faceToPencil(__face), params, outParams);
+		
+		// If not found, fallback to a default font, derived accordingly
+		if (found == null)
+			return Font.getDefaultFont().deriveFont(__style,
+				params[PencilFontParam.PIXEL_SIZE]);
+		
+		// Setup font otherwise
+		return new Font(scritch, found, outParams);
 	}
 	
 	/**

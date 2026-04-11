@@ -1048,6 +1048,20 @@ sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
 	return SJME_ERROR_NONE;
 }
 
+sjme_errorCode sjme_scritchui_core_fontByFace(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
+	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
+	sjme_attrInNotNull const sjme_scritchui_pencilFontParam* inParams)
+{
+	if (inState == NULL || outFont == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchui_core_fontCount(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_jint* outCount)

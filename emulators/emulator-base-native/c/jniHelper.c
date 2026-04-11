@@ -612,3 +612,73 @@ sjme_errorCode sjme_jni_arrayReleaseElements(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+
+sjme_errorCode sjme_jni_fontParamFromFlat(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* destParams,
+	sjme_attrInNotNull jintArray srcFlat)
+{
+	sjme_errorCode error;
+	jint* raw;
+	jboolean isCopy;
+
+	if (env == NULL || destParams == NULL || srcFlat == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get array elements. */
+	raw = NULL;
+	isCopy = JNI_FALSE;
+	if (sjme_error_is(error = sjme_jni_arrayGetElements(env, srcFlat,
+		(sjme_pointer*)&raw, &isCopy, NULL)))
+		return sjme_error_default(error);
+
+	/* Map. */
+	memset(destParams, 0, sizeof(*destParams));
+	if (sjme_error_is(error = inState->intern->fontParamFromFlat(
+		destParams,
+		(const sjme_jint*)raw, 0,
+		(*env)->GetArrayLength(env, srcFlat))))
+		return sjme_error_default(error);
+
+	/* Release array. */
+	sjme_jni_arrayReleaseElements(env, srcFlat, raw);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_jni_fontParamToFlat(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull jintArray destFlat,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* srcParams)
+{
+	sjme_errorCode error;
+	jint* raw;
+	jboolean isCopy;
+
+	if (env == NULL || srcParams == NULL || destFlat == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get array elements. */
+	raw = NULL;
+	isCopy = JNI_FALSE;
+	if (sjme_error_is(error = sjme_jni_arrayGetElements(env, destFlat,
+		(sjme_pointer*)&raw, &isCopy, NULL)))
+		return sjme_error_default(error);
+
+	/* Map. */
+	memset(srcParams, 0, sizeof(*srcParams));
+	if (sjme_error_is(error = inState->intern->fontParamToFlat(
+		srcParams,
+		(sjme_jint*)raw, 0,
+		(*env)->GetArrayLength(env, destFlat))))
+		return sjme_error_default(error);
+
+	/* Release array. */
+	sjme_jni_arrayReleaseElements(env, destFlat, raw);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}

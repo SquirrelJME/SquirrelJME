@@ -722,6 +722,24 @@ typedef sjme_errorCode (*sjme_scritchui_fontCountFunc)(
 	sjme_attrInNotNull sjme_jint* outCount);
 
 /**
+ * Obtains a font by the given face.
+ *
+ * @param inState The input state.
+ * @param outFont The resultant font.
+ * @param outParams The resultant parameters.
+ * @param inFace The font face to lookup.
+ * @param inParams The parameters to lookup.
+ * @return Any resultant error, if any.
+ * @since 2026/04/11
+ */
+typedef sjme_errorCode (*sjme_scritchui_fontByFaceFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
+	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
+	sjme_attrInNotNull const sjme_scritchui_pencilFontParam* inParams);
+
+/**
  * Derives a new font from an existing font.
  * 
  * @param inState The input state.

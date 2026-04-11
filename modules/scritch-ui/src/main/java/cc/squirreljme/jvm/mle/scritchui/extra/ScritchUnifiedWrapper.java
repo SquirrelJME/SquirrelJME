@@ -467,6 +467,19 @@ public class ScritchUnifiedWrapper
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/04/11
+	 */
+	@Override
+	public @Nullable PencilFontBracket fontByFace(int __inFace,
+		@Nullable int[] __inParams, @Nullable int[] __outParams)
+		throws MLECallError
+	{
+		return this.api.environment().fontByFace(__inFace,
+			__inParams, __outParams);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/08/02
 	 */
 	@Override

@@ -68,6 +68,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	sjme_sm(.containerRemoveAll, sjme_scritchui_coreSerial_containerRemoveAll),
 	sjme_sm(.containerSetBounds, sjme_scritchui_coreSerial_containerSetBounds),
 	sjme_sm(.fontBuiltin, sjme_scritchui_coreSerial_fontBuiltin),
+	sjme_sm(.fontByFace, sjme_scritchui_coreSerial_fontByFace),
 	sjme_sm(.fontCount, sjme_scritchui_coreSerial_fontCount),
 	sjme_sm(.fontDerive, sjme_scritchui_coreSerial_fontDerive),
 	sjme_sm(.fontList, sjme_scritchui_coreSerial_fontList),
@@ -118,9 +119,9 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 };
 
 /** Core Function set for ScritchUI. */
-static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
-{
-	sjme_sm(.choiceGetSelectedIndex, sjme_scritchui_core_choiceGetSelectedIndex),
+static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions = {
+	sjme_sm(.choiceGetSelectedIndex,
+		sjme_scritchui_core_choiceGetSelectedIndex),
 	sjme_sm(.choiceItemGet, sjme_scritchui_core_choiceItemGet),
 	sjme_sm(.choiceItemInsert, sjme_scritchui_core_choiceItemInsert),
 	sjme_sm(.choiceItemRemove, sjme_scritchui_core_choiceItemRemove),
@@ -138,21 +139,24 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	sjme_sm(.componentRevalidate, sjme_scritchui_core_componentRevalidate),
 	sjme_sm(.componentSetActivateListener,
 		sjme_scritchui_core_componentSetActivateListener),
-	sjme_sm(.componentSetInputListener, sjme_scritchui_core_componentSetInputListener),
-	sjme_sm(.componentSetPaintListener, sjme_scritchui_core_componentSetPaintListener),
-	sjme_sm(.componentSetSizeListener, sjme_scritchui_core_componentSetSizeListener),
-	sjme_sm(.componentSetValueUpdateListener, 
+	sjme_sm(.componentSetInputListener,
+		sjme_scritchui_core_componentSetInputListener),
+	sjme_sm(.componentSetPaintListener,
+		sjme_scritchui_core_componentSetPaintListener),
+	sjme_sm(.componentSetSizeListener,
+		sjme_scritchui_core_componentSetSizeListener),
+	sjme_sm(.componentSetValueUpdateListener,
 		sjme_scritchui_core_componentSetValueUpdateListener),
 	sjme_sm(.componentSetVisibleListener,
 		sjme_scritchui_core_componentSetVisibleListener),
 	sjme_sm(.componentSize, sjme_scritchui_core_componentSize),
 	sjme_sm(.containerAdd, sjme_scritchui_core_containerAdd),
-	sjme_sm(.containerGetFrame,
-		sjme_scritchui_core_containerGetFrame),
+	sjme_sm(.containerGetFrame, sjme_scritchui_core_containerGetFrame),
 	sjme_sm(.containerRemove, sjme_scritchui_core_containerRemove),
 	sjme_sm(.containerRemoveAll, sjme_scritchui_core_containerRemoveAll),
 	sjme_sm(.containerSetBounds, sjme_scritchui_core_containerSetBounds),
 	sjme_sm(.fontBuiltin, sjme_scritchui_core_fontBuiltin),
+	sjme_sm(.fontByFace, sjme_scritchui_core_fontByFace),
 	sjme_sm(.fontCount, sjme_scritchui_core_fontCount),
 	sjme_sm(.fontDerive, sjme_scritchui_core_fontDerive),
 	sjme_sm(.fontList, sjme_scritchui_core_fontList),
@@ -186,17 +190,16 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	sjme_sm(.viewSetSizeSuggestListener,
 		sjme_scritchui_core_viewSetSizeSuggestListener),
 	sjme_sm(.viewSetViewListener, sjme_scritchui_core_viewSetViewListener),
-	sjme_sm(.windowContentMinimumSize, 
+	sjme_sm(.windowContentMinimumSize,
 		sjme_scritchui_core_windowContentMinimumSize),
 	sjme_sm(.windowNew, sjme_scritchui_core_windowNew),
-	sjme_sm(.windowSetCloseListener, 
+	sjme_sm(.windowSetCloseListener,
 		sjme_scritchui_core_windowSetCloseListener),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_core_windowSetMenuBar),
 	sjme_sm(.windowSetMenuItemActivateListener,
 		sjme_scritchui_core_windowSetMenuItemActivateListener),
 	sjme_sm(.windowSetVisible, sjme_scritchui_core_windowSetVisible),
 };
-
 /** Internal functions for ScritchUI implementations. */
 static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 {

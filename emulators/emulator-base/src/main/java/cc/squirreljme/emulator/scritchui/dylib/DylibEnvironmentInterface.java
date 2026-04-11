@@ -63,6 +63,26 @@ public class DylibEnvironmentInterface
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/04/10
+	 */
+	@Override
+	public PencilFontBracket fontByFace(int __inFace,
+		@Nullable int[] __inParams,
+		@Nullable int[] __outParams)
+		throws MLECallError
+	{
+		// Locate font by face
+		long fontP = NativeScritchDylib.__fontByFace(this.dyLib._stateP,
+			__inFace, __inParams, __outParams);
+		if (fontP == 0L)
+			return null;
+		
+		// Wrap font
+		return new DylibPencilFontObject(fontP);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/06/14
 	 */
 	@Override
@@ -114,7 +134,8 @@ public class DylibEnvironmentInterface
 		{
 			// Request all screens
 			long[] screenPs = new long[numScreens];
-			numScreens = NativeScritchDylib.__screens(this.dyLib._stateP, screenPs);
+			numScreens = NativeScritchDylib.__screens(this.dyLib._stateP,
+				screenPs);
 			
 			// Not big enough?
 			if (numScreens > screenPs.length)
@@ -124,7 +145,12 @@ public class DylibEnvironmentInterface
 			ScritchScreenBracket[] result =
 				new ScritchScreenBracket[numScreens];
 			for (int i = 0; i < numScreens; i++)
+			{
+				if (screenPs[i] == 0)
+					throw Debugging.oops(i);
+				
 				result[i] = new DylibScreenObject(screenPs[i]);
+			}
 			
 			return result;
 		}

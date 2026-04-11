@@ -24,10 +24,7 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import java.nio.file.Path;
-import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 /**
  * Native dynamic library that directly wraps the C-based ScritchUI API.
@@ -381,6 +378,21 @@ public final class NativeScritchDylib
 	static native void __containerSetBounds(long __stateP,
 		long __containerP, long __componentP,
 		int __x, int __y, int __w, int __h)
+		throws MLECallError;
+	
+	/**
+	 * Obtains a font by a given face.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __inFace The face requested.
+	 * @param __inParams The font parameters.
+	 * @param __outParams Output font parameters.
+	 * @return The resultant font pointer.
+	 * @throws MLECallError If the font could not be obtained.
+	 * @since 2026/04/10
+	 */
+	static native long __fontByFace(long __stateP,
+		int __inFace, int[] __inParams, int[] __outParams)
 		throws MLECallError;
 	
 	/**

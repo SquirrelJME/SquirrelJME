@@ -355,13 +355,13 @@ typedef enum sjme_scritchui_pencilFontStyle
 typedef enum sjme_scritchui_pencilFontParamIndex
 {
 	/** @link sjme_scritchui_pencilFontParam.style @endlink. */
-	SJME_SCRITCHUI_PENCIL_FONT_PARAM_STYLE,
+	SJME_SCRITCHUI_PENCIL_FONT_PARAM_STYLE = 1,
 
 	/** @link sjme_scritchui_pencilFontParam.pixelSize @endlink. */
-	SJME_SCRITCHUI_PENCIL_FONT_PARAM_PIXEL_SIZE,
+	SJME_SCRITCHUI_PENCIL_FONT_PARAM_PIXEL_SIZE = 2,
 
 	/** The number of available font parameters. */
-	SJME_SCRITCHUI_PENCIL_NUM_FONT_PARAMS,
+	SJME_SCRITCHUI_PENCIL_NUM_FONT_PARAMS = 3,
 } sjme_scritchui_pencilFontParamIndex;
 	
 #pragma endregion(scritchui_font)

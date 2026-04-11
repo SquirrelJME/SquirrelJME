@@ -9,6 +9,13 @@
 
 #include <string.h>
 
+/* //// MLE /// */
+#define mleGroupId NativeScritchDylibEx
+#define mleShelfClass \
+	"cc/squirreljme/emulator/scritchui/dylib/NativeScritchDylib"
+#include "squirreljmeMle.h"
+/* //////////// */
+
 #include "squirreljme.h"
 #include "lib/scritchui/scritchui.h"
 #include "sjme/alloc.h"
@@ -1685,6 +1692,56 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 }
 
+#define MLE_DESC___fontByFace DESC_METHOD(DESC_LONG, \
+	DESC_LONG DESC_INT DESC_ARRAY(DESC_INT) DESC_ARRAY(DESC_INT))
+MLE_FUNC_PROTO(jlong, __fontByFace,
+	jlong stateP, jint inFace, jintArray inParamsF, jintArray outParamsF)
+{
+	sjme_errorCode error;
+	sjme_scritchui state;
+	sjme_scritchui_pencilFontParam inParamsS, outParamsS;
+	sjme_scritchui_pencilFont found;
+
+	state = (sjme_scritchui)stateP;
+	if (state == 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Setup in parameters. */
+	memset(&inParamsS, 0, sizeof(inParamsS));
+	if (inParamsF != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env, state,
+			&inParamsS, inParamsF)))
+		{
+			sjme_jni_throwMLECallError(env, error);
+			return 0;
+		}
+
+	/* Locate font by face. */
+	found = NULL;
+	memset(&outParamsS, 0, sizeof(outParamsS));
+	if (sjme_error_is(error = state->api->fontByFace(state,
+		&found, &outParamsS, inFace, (inParamsF != NULL ? &inParamsS : NULL))))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return 0;
+	}
+
+	/* Map output parameters. */
+	if (outParamsF != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamToFlat(env, state,
+			outParamsF, &outParamsS)))
+		{
+			sjme_jni_throwMLECallError(env, error);
+			return 0;
+		}
+
+	/* Return the found font. */
+	return (jlong)found;
+}
+
 JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__fontDerive)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong fontP, jstring name, jint face, jint style, jint pixelSize)
@@ -3059,3 +3116,7 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 };
 
 FORWARD_init(mleNativeScritchDylibInit, mleNativeScritchDylibMethods)
+
+MLE_LIST_BEGIN()
+	MLE_LIST_ITEM(__fontByFace),
+MLE_LIST_END()

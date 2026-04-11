@@ -21,6 +21,7 @@
 	jint JNICALL SJME_TOKEN_PASTE_PP(SJME_TOKEN_PASTE_PP(mle, mleGroupId), \
 		Init)(JNIEnv* env, jclass classy)
 
+MLE_INIT_FUNC_PROTO(NativeScritchDylibEx);
 MLE_INIT_FUNC_PROTO(NativeScritchInterface);
 MLE_INIT_FUNC_PROTO(PencilFontShelf);
 MLE_INIT_FUNC_PROTO(PencilShelf);
@@ -517,6 +518,38 @@ sjme_errorCode sjme_jni_arrayReleaseElements(
 	sjme_attrInNotNull JNIEnv* env,
 	sjme_attrInNotNull jarray array,
 	sjme_attrInNotNull sjme_pointer rawBuf);
+
+/**
+ * Maps flat font parameters to structured font parameters.
+ *
+ * @param env The Java environment.
+ * @param inState The ScritchUI state.
+ * @param destParams The destination parameters.
+ * @param srcFlat The source flat array.
+ * @return Any resultant error, if any.
+ * @since 2026/04/11
+ */
+sjme_errorCode sjme_jni_fontParamFromFlat(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* destParams,
+	sjme_attrInNotNull jintArray srcFlat);
+
+/**
+ * Maps structured font parameters to flat font parameters.
+ *
+ * @param env The Java environment.
+ * @param inState The ScritchUI state.
+ * @param destFlat The destination flat array.
+ * @param srcParams The source parameters.
+ * @return Any resultant error, if any.
+ * @since 2026/04/11
+ */
+sjme_errorCode sjme_jni_fontParamToFlat(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull jintArray destFlat,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* srcParams);
 
 #endif /* __SQUIRRELJME_H__ */
 

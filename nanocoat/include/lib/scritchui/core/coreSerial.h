@@ -128,6 +128,9 @@ typedef enum sjme_scritchui_serialType
 	/** @c fontBuiltin . */
 	SJME_SCRITCHUI_SERIAL_UI_FONT_BUILTIN,
 	
+	/** @c fontByFace . */
+	SJME_SCRITCHUI_SERIAL_UI_FONT_BY_FACE,
+
 	/** @c fontCount . */
 	SJME_SCRITCHUI_SERIAL_UI_FONT_COUNT,
 	
@@ -497,6 +500,13 @@ SDU_STRUCT_DEF(containerSetBounds,
 
 SDU_STRUCT_DEF(fontBuiltin,
 	SDX_VARP(sjme_scritchui_pencilFont, outFont););
+
+SDU_STRUCT_DEF(fontByFace,
+	SDX_VAR(sjme_scritchui, inState);
+	SDX_VARP(sjme_scritchui_pencilFont, outFont);
+	SDX_VARP(sjme_scritchui_pencilFontParam, outParams);
+	SDX_VAR(sjme_scritchui_pencilFontFace, inFace);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, inParams););
 
 SDU_STRUCT_DEF(fontCount,
 	SDX_VARP(sjme_jint, outCount););
@@ -967,6 +977,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(containerRemoveAll);
 	SJME_SCRITCHUI_SDU_DEF(containerSetBounds);
 	SJME_SCRITCHUI_SDU_DEF(fontBuiltin);
+	SJME_SCRITCHUI_SDU_DEF(fontByFace);
 	SJME_SCRITCHUI_SDU_DEF(fontCount);
 	SJME_SCRITCHUI_SDU_DEF(fontDerive);
 	SJME_SCRITCHUI_SDU_DEF(fontList);
@@ -1221,6 +1232,13 @@ sjme_errorCode sjme_scritchui_coreSerial_containerSetBounds(
 sjme_errorCode sjme_scritchui_coreSerial_fontBuiltin(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontByFace(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
+	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
+	sjme_attrInNotNull const sjme_scritchui_pencilFontParam* inParams);
 	
 sjme_errorCode sjme_scritchui_coreSerial_fontCount(
 	sjme_attrInNotNull sjme_scritchui inState,

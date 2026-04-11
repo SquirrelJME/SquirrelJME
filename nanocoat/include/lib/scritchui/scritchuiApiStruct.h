@@ -135,6 +135,9 @@ struct sjme_scritchui_apiFunctions
 
 	/** Returns the default built-in font. */
 	SJME_SCRITCHUI_QUICK_API(fontBuiltin);
+
+	/** @link sjme_scritchui_fontByFaceFunc @endlink . */
+	SJME_SCRITCHUI_QUICK_API(fontByFace);
 	
 	/** The total number of fonts. */
 	SJME_SCRITCHUI_QUICK_API(fontCount);

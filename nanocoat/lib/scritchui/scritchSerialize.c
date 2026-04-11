@@ -1360,6 +1360,26 @@ sjme_errorCode sjme_scritchui_coreSerial_fontBuiltin(
 	SJME_SDX_WAIT;
 }
 
+sjme_errorCode sjme_scritchui_coreSerial_fontByFace(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
+	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
+	sjme_attrInNotNull const sjme_scritchui_pencilFontParam* inParams)
+{
+	SJME_SDU_CHUNK(fontByFace,
+		SJME_SCRITCHUI_SERIAL_UI_FONT_BY_FACE,
+		(inState, outFont, outParams, inFace, inParams));
+
+	SJME_SDX_PASS(outFont);
+	SJME_SDX_PASS(outParams);
+	SJME_SDX_PASS(inFace);
+	SJME_SDX_PASS(inParams);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
 sjme_errorCode sjme_scritchui_coreSerial_fontCount(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_jint* outCount)

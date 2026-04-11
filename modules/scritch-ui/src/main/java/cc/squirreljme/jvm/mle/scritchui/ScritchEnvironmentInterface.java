@@ -42,6 +42,25 @@ public interface ScritchEnvironmentInterface
 	PencilFontBracket[] builtinFonts();
 	
 	/**
+	 * Locates a font by a pre-defined face.
+	 *
+	 * @param __inFace The face of the font.
+	 * @param __inParams The input parameters of the font.
+	 * @param __outParams The output parameters of the resultant font.
+	 * @return The resultant font.
+	 * @throws MLECallError If the face is not valid, or if the font parameters
+	 * are not correct.
+	 * @since 2026/04/10
+	 */
+	@SquirrelJMEVendorApi
+	@Nullable
+	PencilFontBracket fontByFace(
+		@MagicConstant(flagsFromClass = PencilFontFace.class) int __inFace,
+		@Nullable int[] __inParams,
+		@Nullable int[] __outParams)
+		throws MLECallError;
+	
+	/**
 	 * Derives the given font.
 	 *
 	 * @param __font The font to derive, if {@code null} then no font is used
