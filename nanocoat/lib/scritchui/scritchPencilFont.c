@@ -31,8 +31,23 @@
 	(inParams == NULL ? (value) : \
 	sjme_fixed_intClip(1, \
 		sjme_fixed_mul(sjme_fixed_hi((value)), \
-		sjme_fixed_fraction((inParams)->pixelSize, (inFont)->id.pixelSize)), \
+		sjme_fixed_fraction((inParams)->pixelSize, \
+		(inFont)->id.param.pixelSize)), \
 	INT32_MAX))
+
+typedef struct sjme_scritchui_fontByFaceData
+{
+	/** The font face. */
+	sjme_scritchui_pencilFontFace inFace;
+
+	/** Font parameters. */
+	sjme_scritchui_pencilFontParam inParams;
+} sjme_scritchui_fontByFaceData;
+
+typedef struct sjme_scritchui_fontDeriveData
+{
+
+} sjme_scritchui_fontDeriveData;
 
 static sjme_errorCode sjme_scritchui_core_fontByFaceIterator(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -86,7 +101,7 @@ static sjme_errorCode sjme_scritchui_core_fontDeriveIterator(
 
 	/* Build the ID of the font we desire. */
 	memset(&desireId, 0, sizeof(desireId));
-	desireId.pixelSize = inPixelSize;
+	desireId.param.pixelSize = inPixelSize;
 
 	/* Name. */
 	if (inName != NULL)
@@ -104,11 +119,11 @@ static sjme_errorCode sjme_scritchui_core_fontDeriveIterator(
 
 	/* Style. */
 	if (inStyle != SJME_SCRITCHUI_PENCIL_FONT_STYLE_AUTOMATIC)
-		desireId.style = inStyle;
+		desireId.param.style = inStyle;
 	else if (inFont != NULL)
-		desireId.style = inFont->id.style;
+		desireId.param.style = inFont->id.param.style;
 	else
-		desireId.style = SJME_SCRITCHUI_PENCIL_FONT_STYLE_PLAIN;
+		desireId.param.style = SJME_SCRITCHUI_PENCIL_FONT_STYLE_PLAIN;
 
 	/* Check already registered real and pseudo fonts. */
 	fontState = &inState->font;
@@ -137,9 +152,9 @@ static sjme_errorCode sjme_scritchui_core_fontDeriveIterator(
 
 			/* Normalize chosen's ID, remove automatics. */
 			memmove(&chosen.id, &chosen.font->id, sizeof(chosen.id));
-			if (0 != (chosen.id.style &
+			if (0 != (chosen.id.param.style &
 				SJME_SCRITCHUI_PENCIL_FONT_STYLE_AUTOMATIC))
-				chosen.id.style = desireId.style;
+				chosen.id.param.style = desireId.param.style;
 			if (0 != (chosen.id.face &
 				SJME_SCRITCHUI_PENCIL_FONT_FACE_AUTOMATIC))
 				chosen.id.face = desireId.face;
@@ -181,8 +196,8 @@ static sjme_errorCode sjme_scritchui_core_fontDeriveIterator(
 	}
 
 	/* If this is a size and style match, use this font. */
-	if (desireId.pixelSize == derive.id.pixelSize &&
-		desireId.style == derive.id.style)
+	if (desireId.param.pixelSize == derive.id.param.pixelSize &&
+		desireId.param.style == derive.id.param.style)
 	{
 		*outDerived = derive.font;
 		return SJME_ERROR_NONE;
@@ -289,12 +304,12 @@ static sjme_jint sjme_scritchui_core_fontScore(
 	
 	/* If the style is different increase the penalty but not as much */
 	/* for every bit that is different. */
-	if (desireId->style != against->id.style)
+	if (desireId->param.style != against->id.param.style)
 		penalty += 64 * sjme_util_intBitCountU(
-			desireId->style ^ against->id.style);
+			desireId->param.style ^ against->id.param.style);
 	
 	/* Penalize based on the size. */
-	penalty += abs(desireId->pixelSize - against->id.pixelSize);
+	penalty += abs(desireId->param.pixelSize - against->id.param.pixelSize);
 	
 	/* Return the final penalty. */
 	return penalty;
@@ -425,7 +440,7 @@ static sjme_errorCode sjme_scritchui_fontMetricFontStyle(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Use from the ID. */
-	*outStyle = inFont->id.style;
+	*outStyle = inFont->id.param.style;
 	return SJME_ERROR_NONE;
 }
 
@@ -626,7 +641,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 	
 	/* Otherwise the size is derived from the ID. */
 	else
-		*outSize = inFont->id.pixelSize;
+		*outSize = inFont->id.param.pixelSize;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -910,7 +925,7 @@ static sjme_errorCode sjme_scritchui_fontRenderBitmap(
 		return sjme_error_default(error);
 	
 	/* If scaling is needed, use the barcode font scaling algorithm I wrote. */
-	if (ch != inFont->id.pixelSize)
+	if (ch != inFont->id.param.pixelSize)
 		return sjme_scritchui_renderBitmapScaled(inFont, inParams,
 			inCodepoint, buf, bufOff, bufScanLen, bufHeight, outOffX, outOffY);
 	
