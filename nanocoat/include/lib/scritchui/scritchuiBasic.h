@@ -198,6 +198,24 @@ struct sjme_scritchui_uiCommonBase
 	/** Other value storage, as needed. */
 	sjme_jint intVals[SJME_SCRITCHUI_NUM_COMMON_VALUES];
 };
+
+/**
+ * Adjustable parameters for pencil font rendering.
+ *
+ * This reduces the need to have multiples of pseudo fonts for different sizes
+ * and styles, and additionally keeps everything down to a smaller set of
+ * primary fonts.
+ *
+ * @since 2026/01/20
+ */
+typedef struct sjme_scritchui_pencilFontParam
+{
+	/** The style of font to render. */
+	sjme_scritchui_pencilFontStyle style;
+
+	/** The pixel size to render at. */
+	sjme_jint pixelSize;
+} sjme_scritchui_pencilFontParam;
 	
 /**
  * Contains the identifying information for a font.
@@ -208,15 +226,12 @@ typedef struct sjme_scritchui_pencilFontId
 {
 	/** The name of the font. */
 	sjme_cchar name[SJME_MAX_FONT_NAME];
-	
+
 	/** The face of the font. */
 	sjme_scritchui_pencilFontFace face;
-		
-	/** The style of the font. */
-	sjme_scritchui_pencilFontStyle style;
-	
-	/** The pixel size of the font. */
-	sjme_jint pixelSize;
+
+	/** The natural intrinsic parameters of the font. */
+	sjme_scritchui_pencilFontParam param;
 } sjme_scritchui_pencilFontId;
 	
 #pragma endregion(scritchui_basicTypes)

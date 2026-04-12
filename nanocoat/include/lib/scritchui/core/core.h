@@ -425,6 +425,10 @@ sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
 
+sjme_errorCode sjme_scritchui_core_intern_fontIterate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_fontIterateStep* inOutStep);
+
 sjme_errorCode sjme_scritchui_core_intern_fontParamFromFlat(
 	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
 	sjme_attrInNotNullBuf(inFlatLen) const sjme_jint* inFlat,

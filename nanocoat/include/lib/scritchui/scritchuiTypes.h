@@ -109,15 +109,6 @@ typedef struct sjme_scritchui_pencilFontCompare
 	/** The ID of the font. */
 	sjme_scritchui_pencilFontId id;
 } sjme_scritchui_pencilFontCompare;
-
-struct sjme_scritchui_pencilFontParam
-{
-	/** The style of font to render. */
-	sjme_scritchui_pencilFontStyle style;
-	
-	/** The pixel size to render at. */
-	sjme_jint pixelSize;
-};
 	
 struct sjme_scritchui_pencilFontWithParam
 {

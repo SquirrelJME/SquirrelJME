@@ -222,10 +222,24 @@ typedef sjme_errorCode (*sjme_scritchui_intern_bindFocusFunc)(
  * @return Any resultant error.
  * @since 2024/12/23
  */
-typedef sjme_errorCode (*sjme_scritchui_containerMaxSizeFunc)(
+typedef sjme_errorCode (*sjme_scritchui_intern_containerMaxSizeFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrOutNotNull sjme_scritchui_dim* outSize);
+
+/**
+ * Iterates over fonts that are available to the system along with any
+ * pseudo-fonts.
+ *
+ * @param inState The ScritchUI state.
+ * @param inOutStep The current iteration step state.
+ * @return Any resultant error, if any. @link SJME_ERROR_STOP @endlink wil
+ * discontinue iteration.
+ * @since 2026/04/11
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_fontIterateStepFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_fontIterateStep* inOutStep);
 
 /**
  * Returns the choice for the given component.
@@ -515,6 +529,27 @@ typedef sjme_errorCode (*sjme_scritchui_core_intern_objectNewFunc)(
 	sjme_attrInNullable sjme_pointer inData);
 
 #pragma endregion(scritchui_intern)
+#pragma region(scritchui_internTypes)
+
+struct sjme_scritchui_fontIterateStep
+{
+	/** The valid registers to look within. */
+	sjme_jint registerMask;
+
+	/** Limit depth traversal for font iteration. */
+	sjme_jint limitDepth;
+
+	/** Function to call for each font iteration. */
+	sjme_scritchui_intern_fontIterateStepFunc iterator;
+
+	/** The current font being looked at. */
+	sjme_scritchui_pencilFont current;
+
+	/** Generic pointer data for iteration. */
+	sjme_pointer data;
+};
+
+#pragma endregion(scritchui_internTypes)
 	
 /*--------------------------------------------------------------------------*/
 

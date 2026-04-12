@@ -216,10 +216,13 @@ struct sjme_scritchui_internFunctions
 	sjme_scritchui_intern_bindFocusFunc bindFocus;
 
 	/** Gets the max size of a container. */
-	sjme_scritchui_containerMaxSizeFunc containerMaxSize;
+	sjme_scritchui_intern_containerMaxSizeFunc containerMaxSize;
 	
 	/** Returns the built-in font, this can handle layers. */
 	sjme_scritchui_fontBuiltinFunc fontBuiltin;
+
+	/** Iterate through fonts. */
+	sjme_scritchui_intern_fontIterateStepFunc fontIterate;
 
 	/** Flat font parameters to structured font parameters. */
 	sjme_scritchui_pencilFontParamFromFlatFunc fontParamFromFlat;

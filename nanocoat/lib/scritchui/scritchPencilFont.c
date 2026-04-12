@@ -34,6 +34,194 @@
 		sjme_fixed_fraction((inParams)->pixelSize, (inFont)->id.pixelSize)), \
 	INT32_MAX))
 
+static sjme_errorCode sjme_scritchui_core_fontByFaceIterator(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_fontIterateStep* inOutStep)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_scritchui_core_fontDeriveIterator(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_fontIterateStep* inOutStep)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencilFontStyle wasStyle;
+	sjme_jint wasPixelSize, ignored, step, i, n, j;
+	sjme_jint scoreChosen, scoreDerive;
+	sjme_scritchui wrappedState;
+	sjme_list_sjme_scritchui_pencilFont** whichRegister;
+	sjme_scritchui_fontState* fontState;
+	sjme_scritchui_pencilFontId desireId;
+	sjme_scritchui_pencilFontCompare chosen;
+	sjme_scritchui_pencilFontCompare derive;
+
+	if (inState == NULL || outDerived == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inPixelSize <= 0 || limitDepth < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* If wrapped, always use the underlying layer fonts. */
+	wrappedState = inState->wrappedState;
+	if (wrappedState != NULL)
+		return wrappedState->apiInThread->fontDerive(wrappedState,
+			inFont, inName, inFace, inStyle, inPixelSize, outDerived,
+			outParams, limitDepth);
+
+	/* If no fonts have been scanned, scan every one. */
+	ignored = 0;
+	if (inState->font.fontRegister == NULL || inState->font.scanTotal <= 0)
+		if (sjme_error_is(error = inState->intern->fontScanAll(inState,
+			&ignored)))
+			return sjme_error_default(error);
+
+	/* Debug. */
+	sjme_messageB("deriveFont(%p %s %d %d %d %d)",
+		(void*)inFont, inName, inFace, inStyle, inPixelSize, limitDepth);
+
+	/* There is no best font, yet. */
+	memset(&derive, 0, sizeof(derive));
+
+	/* Build the ID of the font we desire. */
+	memset(&desireId, 0, sizeof(desireId));
+	desireId.pixelSize = inPixelSize;
+
+	/* Name. */
+	if (inName != NULL)
+		strncpy(desireId.name, inName, SJME_MAX_FONT_NAME - 1);
+	else if (inFont != NULL)
+		strncpy(desireId.name, inFont->id.name, SJME_MAX_FONT_NAME - 1);
+
+	/* Face. */
+	if (inFace != SJME_SCRITCHUI_PENCIL_FONT_FACE_AUTOMATIC)
+		desireId.face = inFace;
+	else if (inFont != NULL)
+		desireId.face = inFont->id.face;
+	else
+		desireId.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_NORMAL;
+
+	/* Style. */
+	if (inStyle != SJME_SCRITCHUI_PENCIL_FONT_STYLE_AUTOMATIC)
+		desireId.style = inStyle;
+	else if (inFont != NULL)
+		desireId.style = inFont->id.style;
+	else
+		desireId.style = SJME_SCRITCHUI_PENCIL_FONT_STYLE_PLAIN;
+
+	/* Check already registered real and pseudo fonts. */
+	fontState = &inState->font;
+	for (step = 0; step < 2; step++)
+	{
+		/* Which font are we looking for? */
+		whichRegister = (step == 1 ? &fontState->pseudoRegister :
+			&fontState->fontRegister);
+
+		/* No fonts in this group? */
+		if ((*whichRegister) == NULL)
+			continue;
+
+		/* Scan the set of fonts. */
+		for (n = (*whichRegister)->length, i = 0; i < n; i++)
+		{
+			/* Ignore blank slots. */
+			memset(&chosen, 0, sizeof(chosen));
+			chosen.font = (*whichRegister)->elements[i];
+			if (chosen.font == NULL)
+				continue;
+
+			/* Font is too deep? */
+			if (chosen.font->depth > limitDepth)
+				continue;
+
+			/* Normalize chosen's ID, remove automatics. */
+			memmove(&chosen.id, &chosen.font->id, sizeof(chosen.id));
+			if (0 != (chosen.id.style &
+				SJME_SCRITCHUI_PENCIL_FONT_STYLE_AUTOMATIC))
+				chosen.id.style = desireId.style;
+			if (0 != (chosen.id.face &
+				SJME_SCRITCHUI_PENCIL_FONT_FACE_AUTOMATIC))
+				chosen.id.face = desireId.face;
+
+			/* Exact match? */
+			if (0 == memcmp(&desireId, &chosen.id,
+				sizeof(chosen.id)))
+			{
+				*outDerived = chosen.font;
+				return SJME_ERROR_NONE;
+			}
+
+			/* Otherwise score both. */
+			scoreChosen = sjme_scritchui_core_fontScore(&desireId, &chosen);
+			scoreDerive = sjme_scritchui_core_fontScore(&desireId, &derive);
+
+			/* Debug. */
+			sjme_message("deriveFont(): %s %d ?= %s %d",
+				chosen.id.name, scoreChosen,
+				derive.id.name, scoreDerive);
+
+			/* The lower the penalty the better. */
+			if (scoreChosen < scoreDerive && scoreChosen != INT32_MAX &&
+				scoreChosen != INT32_MIN)
+				memmove(&derive, &chosen, sizeof(chosen));
+		}
+	}
+
+	/* If we found no candidate fonts, then we need to fallback. */
+	if (derive.font == NULL)
+	{
+		/* Do not infinite loop trying to find the fallback font. */
+		if (desireId.name[0] != '\0' && 0 == strcmp("fallback", desireId.name))
+			return SJME_ERROR_INVALID_FONT;
+
+		/* Run this again, with the fallback font specified. */
+		return sjme_scritchui_core_fontDerive(inState, NULL, "fallback",
+			inFace, inStyle, inPixelSize, outDerived, outParams, limitDepth);
+	}
+
+	/* If this is a size and style match, use this font. */
+	if (desireId.pixelSize == derive.id.pixelSize &&
+		desireId.style == derive.id.style)
+	{
+		*outDerived = derive.font;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Otherwise, we need to build a pseudo font, however this will not be */
+	/* built if there is a limit to the font depth since for this we */
+	/* only want primary fonts. */
+	if (limitDepth == 0)
+		return SJME_ERROR_INVALID_FONT;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
+	/* Limit. */
+	inStyle &= SJME_SCRITCHUI_PENCIL_FONT_STYLE_ALL;
+
+	/* Get old font properties. */
+	wasStyle = 0;
+	wasPixelSize = 0;
+	if (sjme_error_is(error = inFont->api->metricFontStyle(inFont,
+			&wasStyle)) ||
+		sjme_error_is(error = inFont->api->metricPixelSize(inFont,
+			&wasPixelSize)))
+		return sjme_error_default(error);
+
+	/* If the font is the same, do nothing. */
+	if (wasStyle == inStyle && wasPixelSize == inPixelSize)
+	{
+		*outDerived = inFont;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Create pseudo font. */
+	return sjme_scritchui_core_fontPseudo(inState, inFont, inStyle,
+		inPixelSize, outDerived);
+#endif
+}
+
 static sjme_errorCode sjme_scritchui_fromCache(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
@@ -855,6 +1043,83 @@ sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(
 	return inState->api->fontBuiltin(inState, outFont);
 }
 
+sjme_errorCode sjme_scritchui_core_intern_fontIterate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_fontIterateStep* inOutStep)
+{
+	sjme_errorCode error;
+	sjme_jint ignored, step, i, n;
+	sjme_scritchui wrappedState;
+	sjme_scritchui_pencilFont current;
+	sjme_list_sjme_scritchui_pencilFont** whichRegister;
+	sjme_scritchui_fontState* fontState;
+
+	if (inState == NULL || inOutStep == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inOutStep->limitDepth < 0 || inOutStep->registerMask == 0 ||
+		inOutStep->iterator == NULL)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* If wrapped, always use the underlying layer fonts. */
+	wrappedState = inState->wrappedState;
+	if (wrappedState != NULL)
+		return wrappedState->intern->fontIterate(wrappedState, inOutStep);
+
+	/* If no fonts have been scanned, scan every one. */
+	ignored = 0;
+	if (inState->font.fontRegister == NULL || inState->font.scanTotal <= 0)
+		if (sjme_error_is(error = inState->intern->fontScanAll(inState,
+			&ignored)))
+			return sjme_error_default(error);
+
+	/* Always clear current. */
+	inOutStep->current = NULL;
+
+	/* Check already registered real and pseudo fonts. */
+	fontState = &inState->font;
+	for (step = 0; step < 2; step++)
+	{
+		/* Is this mask being ignored? */
+		if ((inOutStep->registerMask & (1 << step)) == 0)
+			continue;
+
+		/* Which font are we looking for? */
+		whichRegister = (step == 1 ? &fontState->pseudoRegister :
+			&fontState->fontRegister);
+
+		/* No fonts in this group? */
+		if ((*whichRegister) == NULL)
+			continue;
+
+		/* Scan the set of fonts. */
+		for (n = (*whichRegister)->length, i = 0; i < n; i++)
+		{
+			/* Ignore blank slots. */
+			current = (*whichRegister)->elements[i];
+			if (current == NULL)
+				continue;
+
+			/* Font is too deep? */
+			if (current->depth > inOutStep->limitDepth)
+				continue;
+
+			/* Iterate. */
+			inOutStep->current = current;
+			if (sjme_error_is(error = inOutStep->iterator(inState, inOutStep)))
+			{
+				/* Stop iteration without any errors? */
+				if (error == SJME_ERROR_STOP)
+					return SJME_ERROR_NONE;
+				return sjme_error_default(error);
+			}
+		}
+	}
+
+	/* Iteration complete. */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_core_intern_fontParamFromFlat(
 	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
 	sjme_attrInNotNullBuf(inFlatLen) const sjme_jint* inFlat,
@@ -1055,12 +1320,40 @@ sjme_errorCode sjme_scritchui_core_fontByFace(
 	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
 	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams)
 {
+	sjme_errorCode error;
+	sjme_scritchui_fontIterateStep step;
+	sjme_scritchui_fontByFaceData data;
+
 	if (inState == NULL || outFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* There may exactly only be one bit set. */
 	if (sjme_util_intBitCountU(inFace) != 1)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Setup data. */
+	memset(&data, 0, sizeof(data));
+	data.inFace = inFace;
+	if (inParams != NULL)
+		memmove(&data.inParams, inParams, sizeof(data.inParams));
+
+	/* Default parameter setup? */
+	if (1)
+	{
+		sjme_todo("Impl?");
+	}
+
+	/* Setup iterator. */
+	memset(&step, 0, sizeof(step));
+	step.registerMask = ~0;
+	step.limitDepth = INT32_MAX;
+	step.iterator = sjme_scritchui_core_fontByFaceIterator;
+	step.data = &data;
+
+	/* Iterate. */
+	if (sjme_error_is(error = inState->intern->fontIterate(inState,
+		&step)))
+		return sjme_error_default(error);
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -1097,180 +1390,42 @@ sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInPositive sjme_jint limitDepth)
 {
 	sjme_errorCode error;
-	sjme_scritchui_pencilFontStyle wasStyle;
-	sjme_jint wasPixelSize, ignored, step, i, n, j;
-	sjme_jint scoreChosen, scoreDerive;
-	sjme_scritchui wrappedState;
-	sjme_list_sjme_scritchui_pencilFont** whichRegister;
-	sjme_scritchui_fontState* fontState;
-	sjme_scritchui_pencilFontId desireId;
-	sjme_scritchui_pencilFontCompare chosen;
-	sjme_scritchui_pencilFontCompare derive;
-	
+	sjme_scritchui_fontIterateStep step;
+	sjme_scritchui_fontDeriveData data;
+
 	if (inState == NULL || outDerived == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
 	if (inPixelSize <= 0 || limitDepth < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* If wrapped, always use the underlying layer fonts. */
-	wrappedState = inState->wrappedState;
-	if (wrappedState != NULL)
-		return wrappedState->apiInThread->fontDerive(wrappedState,
-			inFont, inName, inFace, inStyle, inPixelSize, outDerived,
-			outParams, limitDepth);
-	
-	/* If no fonts have been scanned, scan every one. */
-	ignored = 0;
-	if (inState->font.fontRegister == NULL || inState->font.scanTotal <= 0)
-		if (sjme_error_is(error = inState->intern->fontScanAll(inState,
-			&ignored)))
-			return sjme_error_default(error);
-	
-	/* Debug. */
-	sjme_messageB("deriveFont(%p %s %d %d %d %d)",
-		(void*)inFont, inName, inFace, inStyle, inPixelSize, limitDepth);
-	
-	/* There is no best font, yet. */
-	memset(&derive, 0, sizeof(derive));
-	
-	/* Build the ID of the font we desire. */
-	memset(&desireId, 0, sizeof(desireId));
-	desireId.pixelSize = inPixelSize;
-	
-	/* Name. */
-	if (inName != NULL)
-		strncpy(desireId.name, inName, SJME_MAX_FONT_NAME - 1);
-	else if (inFont != NULL)
-		strncpy(desireId.name, inFont->id.name, SJME_MAX_FONT_NAME - 1);
-	
-	/* Face. */
-	if (inFace != SJME_SCRITCHUI_PENCIL_FONT_FACE_AUTOMATIC)
-		desireId.face = inFace;
-	else if (inFont != NULL)
-		desireId.face = inFont->id.face;
-	else
-		desireId.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_NORMAL;
-	
-	/* Style. */
-	if (inStyle != SJME_SCRITCHUI_PENCIL_FONT_STYLE_AUTOMATIC)
-		desireId.style = inStyle;
-	else if (inFont != NULL)
-		desireId.style = inFont->id.style;
-	else
-		desireId.style = SJME_SCRITCHUI_PENCIL_FONT_STYLE_PLAIN;
-	
-	/* Check already registered real and pseudo fonts. */
-	fontState = &inState->font;
-	for (step = 0; step < 2; step++)
+
+	/* Setup data. */
+	memset(&data, 0, sizeof(data));
+	if (1)
 	{
-		/* Which font are we looking for? */
-		whichRegister = (step == 1 ? &fontState->pseudoRegister :
-			&fontState->fontRegister);
-		
-		/* No fonts in this group? */
-		if ((*whichRegister) == NULL)
-			continue;
-		
-		/* Scan the set of fonts. */
-		for (n = (*whichRegister)->length, i = 0; i < n; i++)
-		{
-			/* Ignore blank slots. */
-			memset(&chosen, 0, sizeof(chosen));
-			chosen.font = (*whichRegister)->elements[i];
-			if (chosen.font == NULL)
-				continue;
-			
-			/* Font is too deep? */
-			if (chosen.font->depth > limitDepth)
-				continue;
-			
-			/* Normalize chosen's ID, remove automatics. */
-			memmove(&chosen.id, &chosen.font->id, sizeof(chosen.id));
-			if (0 != (chosen.id.style &
-				SJME_SCRITCHUI_PENCIL_FONT_STYLE_AUTOMATIC))
-				chosen.id.style = desireId.style;
-			if (0 != (chosen.id.face &
-				SJME_SCRITCHUI_PENCIL_FONT_FACE_AUTOMATIC))
-				chosen.id.face = desireId.face;
-			
-			/* Exact match? */
-			if (0 == memcmp(&desireId, &chosen.id, sizeof(chosen.id)))
-			{
-				*outDerived = chosen.font;
-				return SJME_ERROR_NONE;
-			}
-			
-			/* Otherwise score both. */
-			scoreChosen = sjme_scritchui_core_fontScore(&desireId, &chosen);
-			scoreDerive = sjme_scritchui_core_fontScore(&desireId, &derive);
-			
-			/* Debug. */
-			sjme_message("deriveFont(): %s %d ?= %s %d",
-				chosen.id.name, scoreChosen,
-				derive.id.name, scoreDerive);
-			
-			/* The lower the penalty the better. */
-			if (scoreChosen < scoreDerive && scoreChosen != INT32_MAX &&
-				scoreChosen != INT32_MIN)
-				memmove(&derive, &chosen, sizeof(chosen));
-		}
+		sjme_todo("Impl?");
 	}
-	
-	/* If we found no candidate fonts, then we need to fallback. */
-	if (derive.font == NULL)
+
+	/* Default parameter setup? */
+	if (1)
 	{
-		/* Do not infinite loop trying to find the fallback font. */
-		if (desireId.name[0] != '\0' && 0 == strcmp("fallback", desireId.name))
-			return SJME_ERROR_INVALID_FONT;
-		
-		/* Run this again, with the fallback font specified. */
-		return sjme_scritchui_core_fontDerive(inState, NULL, "fallback",
-			inFace, inStyle, inPixelSize, outDerived, outParams, limitDepth);
+		sjme_todo("Impl?");
 	}
-	
-	/* If this is a size and style match, use this font. */
-	if (desireId.pixelSize == derive.id.pixelSize &&
-		desireId.style == derive.id.style)
-	{
-		*outDerived = derive.font;
-		return SJME_ERROR_NONE;
-	}
-	
-	/* Otherwise, we need to build a pseudo font, however this will not be */
-	/* built if there is a limit to the font depth since for this we */
-	/* only want primary fonts. */
-	if (limitDepth == 0)
-		return SJME_ERROR_INVALID_FONT;
-	
+
+	/* Setup iterator. */
+	memset(&step, 0, sizeof(step));
+	step.registerMask = ~0;
+	step.limitDepth = limitDepth;
+	step.iterator = sjme_scritchui_core_fontDeriveIterator;
+	step.data = &data;
+
+	/* Iterate. */
+	if (sjme_error_is(error = inState->intern->fontIterate(inState,
+		&step)))
+		return sjme_error_default(error);
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
-#if 0
-	/* Limit. */
-	inStyle &= SJME_SCRITCHUI_PENCIL_FONT_STYLE_ALL;
-	
-	/* Get old font properties. */
-	wasStyle = 0;
-	wasPixelSize = 0;
-	if (sjme_error_is(error = inFont->api->metricFontStyle(inFont,
-			&wasStyle)) ||
-		sjme_error_is(error = inFont->api->metricPixelSize(inFont,
-			&wasPixelSize)))
-		return sjme_error_default(error);
-	
-	/* If the font is the same, do nothing. */
-	if (wasStyle == inStyle && wasPixelSize == inPixelSize)
-	{
-		*outDerived = inFont;
-		return SJME_ERROR_NONE;
-	}
-	
-	
-	
-	/* Create pseudo font. */
-	return sjme_scritchui_core_fontPseudo(inState, inFont, inStyle,
-		inPixelSize, outDerived);
-#endif
 }
 
 sjme_errorCode sjme_scritchui_core_fontList(

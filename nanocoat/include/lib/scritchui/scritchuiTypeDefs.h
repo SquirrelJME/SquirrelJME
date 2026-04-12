@@ -336,6 +336,13 @@ typedef struct sjme_scritchui_pencilFontBase* sjme_scritchui_pencilFont;
 typedef struct sjme_scritchui_pencilFontLink sjme_scritchui_pencilFontLink;
 
 /**
+ * Font iteration state.
+ *
+ * @since 2026/04/11
+ */
+typedef struct sjme_scritchui_fontIterateStep sjme_scritchui_fontIterateStep;
+
+/**
  * Utility functions to help in implementations or otherwise perform some
  * common logic.
  * 
@@ -352,17 +359,6 @@ typedef struct sjme_scritchui_pencilUtilFunctions
  */
 typedef struct sjme_scritchui_pencilLockFunctions
 	sjme_scritchui_pencilLockFunctions;
-	
-/**
- * Adjustable parameters for pencil font rendering.
- * 
- * This reduces the need to have multiples of pseudo fonts for different sizes
- * and styles, and additionally keeps everything down to a smaller set of
- * primary fonts.
- * 
- * @since 2026/01/20
- */
-typedef struct sjme_scritchui_pencilFontParam sjme_scritchui_pencilFontParam;
 
 /**
  * Pencil font with parameters.
