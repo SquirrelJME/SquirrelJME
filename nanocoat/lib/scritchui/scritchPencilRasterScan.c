@@ -401,7 +401,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 fail_oob:
 #if defined(SJME_CONFIG_DEBUG)
 	sjme_message("pfScanPut(%p, %d, %d, %d, %p, %d, %d, %d) != [%d, %d]",
-		g, pf, x, y, inNumPixels, mulAlpha, mulAlphaValue,
+		(void*)g, pf, x, y, inNumPixels, mulAlpha, mulAlphaValue,
 		g->width, g->height);
 #endif
 fail_srcBlendMap:

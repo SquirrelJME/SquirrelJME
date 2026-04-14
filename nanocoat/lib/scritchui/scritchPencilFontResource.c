@@ -77,7 +77,7 @@ static const sjme_scritchui_resourceFontInfo sjme_scritchui_resourceFonts[] =
 	
 	/* If a specifically crafted core font does not provide a glyph for a */
 	/* language, then the fonts here */
-	/* Fonts for the same language should always use the same priority.
+	/* Fonts for the same language should always use the same priority. */
 	
 	/* Japanese Fonts. */
 	SJME_DECLARE_FONT(misaki, 8, AUTOMATIC, PLAIN, 32),

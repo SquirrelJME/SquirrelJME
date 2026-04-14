@@ -90,7 +90,7 @@ static sjme_errorCode sjme_path_dos_parseRoot(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* If Windows, check if this is a UNC path. */
-	strLen = strlen(*walkPath);
+	strLen = sjme_util_sizeToInt(strlen(*walkPath));
 	if (path->style->type == SJME_PATH_STYLE_WINDOWS && strLen >= 3)
 	{
 		/* The first three characters determine if this is valid. */
@@ -270,7 +270,7 @@ static sjme_errorCode sjme_path_generic_parseName(
 		return SJME_ERROR_NO_SUCH_ELEMENT;
 	
 	/* Give the determined name, with the separator (if any). */
-	*outFLimit = end - begin;
+	*outFLimit = (sjme_jint)((sjme_intPointer)end - (sjme_intPointer)begin);
 	*outFStr = begin;
 	
 	/* Success! */
@@ -294,7 +294,7 @@ static sjme_errorCode sjme_path_posix_parseRoot(
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Read in the first three characters. */
-	strLen = strlen((*walkPath));
+	strLen = sjme_util_sizeToInt(strlen((*walkPath)));
 	a = (strLen >= 1 ? (*walkPath)[0] : '\0');
 	b = (strLen >= 2 ? (*walkPath)[1] : '\0');
 	c = (strLen >= 3 ? (*walkPath)[2] : '\0');

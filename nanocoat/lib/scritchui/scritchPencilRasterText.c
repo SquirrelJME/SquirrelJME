@@ -357,8 +357,8 @@ sjme_errorCode sjme_scritchpen_core_setFont(
 	/* Derive from the base font otherwise. */
 	else
 	{
-		target->params.style = font->id.style;
-		target->params.pixelSize = font->id.pixelSize;
+		target->params.style = font->id.param.style;
+		target->params.pixelSize = font->id.param.pixelSize;
 	}
 	
 	/* Success! */

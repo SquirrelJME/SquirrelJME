@@ -274,13 +274,13 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 		
 	/* Set base color properties. */
 	aa = (argb >> 24) & 0xFF;
-	outColor->a = aa;
+	outColor->a = (sjme_jubyte)aa;
 	rr = (argb >> 16) & 0xFF;
-	outColor->r = rr;
+	outColor->r = (sjme_jubyte)rr;
 	gg = (argb >> 8) & 0xFF;
-	outColor->g = gg;
+	outColor->g = (sjme_jubyte)gg;
 	bb = (argb) & 0xFF;
-	outColor->b = bb;
+	outColor->b = (sjme_jubyte)bb;
 	
 	/* Find closest indexed color. */
 	ii = -1;
@@ -491,7 +491,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 	}
 		
 	/* Store raw colors. */
-	outColor->i = ii;
+	outColor->i = (sjme_jubyte)ii;
 	outColor->v = v;
 	outColor->argb = argb;
 	

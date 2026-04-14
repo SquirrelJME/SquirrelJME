@@ -134,7 +134,7 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	/* Enter the frame. */
 	ignoreFrame = NULL;
 	return sjme_nvm_task_threadEnter(SJME_F_T(inFrame),
-		&ignoreFrame, mainMethod, SJME_NVM_CLASS_MEMBER_STATIC,
+		&ignoreFrame, mainMethod, SJME_NVM_CALL_VIRTUAL,
 		1, mainArgV);
 }
 

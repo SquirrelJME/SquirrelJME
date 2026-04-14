@@ -302,6 +302,9 @@ typedef enum sjme_scritchui_lafElementColorType
  */
 typedef enum sjme_scritchui_pencilFontFace
 {
+	/** Unknown. */
+	SJME_SCRITCHUI_PENCIL_FONT_FACE_UNKNOWN = 0,
+
 	/** Monospaced. */
 	SJME_SCRITCHUI_PENCIL_FONT_FACE_MONOSPACE = 1,
 	

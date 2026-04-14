@@ -408,6 +408,11 @@ extern "C"
 	#define sjme_fp(funcPtr)
 #endif
 
+/** Force specific size for an enum. */
+#define sjme_enumInt(type) \
+	SJME__enum_##type##_MAXV = INT_MAX, \
+	SJME__enum_##type##_ZERO = 0
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

@@ -68,7 +68,7 @@ static void makeC(const char* properName)
 	for (;;)
 	{
 		/* Read in. */
-		readCount = fread(buf, 1, BUF_SIZE, stdin);
+		readCount = (int)fread(buf, 1, BUF_SIZE, stdin);
 		
 		/* EOF? */
 		if (readCount <= 0 && feof(stdin))

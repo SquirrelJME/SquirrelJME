@@ -7,6 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#pragma clang diagnostic ignored "-Wimplicit-function-declaration"
+#pragma clang diagnostic ignored "-Werror=implicit-function-declaration"
+
 #include <unistd.h>
 
 int main(int argc, char** argv)

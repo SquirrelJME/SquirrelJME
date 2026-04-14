@@ -39,10 +39,13 @@ extern "C"
 typedef enum sjme_errorCode
 {
 	/** No error. */
-	SJME_ERROR_NONE = 1,
+	SJME_ERROR_NONE = 2,
 
-	/** Generic unknown error. */
+	/** Generic unknown error (likely @link SJME_JNI_FALSE @endlink). */
 	SJME_ERROR_UNKNOWN = 0,
+
+	/** Generic unknown error (likely @link SJME_JNI_TRUE @endlink). */
+	SJME_ERROR_UNKNOWN_ONE = 1,
 
 	/** Generic unknown error. */
 	SJME_ERROR_UNKNOWN_NEGATIVE = -1,

@@ -1668,7 +1668,6 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyAnchorFunc)(
  * @param y The source region y position.
  * @param w The source region width.
  * @param h The source region height.
- * @param h The source height.
  * @param dataWidth The width of the entire data/image.
  * @param dataHeight The height of the entire data/image.
  * @since 2025/12/01
