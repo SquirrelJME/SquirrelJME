@@ -42,6 +42,9 @@ typedef struct sjme_scritchui_fontByFaceData
 
 	/** Font parameters. */
 	sjme_scritchui_pencilFontParam inParams;
+
+	/** The currently selected font. */
+	sjme_scritchui_pencilFontCompare derive;
 } sjme_scritchui_fontByFaceData;
 
 typedef struct sjme_scritchui_fontDeriveData
@@ -60,8 +63,29 @@ static sjme_errorCode sjme_scritchui_core_fontByFaceIterator(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_fontIterateStep* inOutStep)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_scritchui_fontByFaceData* data;
+
+	if (inState == NULL || inOutStep == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover data. */
+	data = (sjme_scritchui_fontByFaceData*)inOutStep->data;
+	if (data == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* If the face matches, return the found font. */
+	if (inOutStep->current->id.face == data->inFace)
+	{
+		memset(&data->derive, 0, sizeof(data->derive));
+		data->derive.font = inOutStep->current;
+		memmove(&data->derive.id, &inOutStep->current->id,
+			sizeof(data->derive.id));
+
+		return SJME_ERROR_STOP;
+	}
+
+	/* Continue. */
+	return SJME_ERROR_CONTINUE;
 }
 
 static sjme_jint sjme_scritchui_core_fontScore(
@@ -76,6 +100,11 @@ static sjme_jint sjme_scritchui_core_fontScore(
 	/* Symbol fonts are never comparable. */
 	if ((desireId->face & SJME_SCRITCHUI_PENCIL_FONT_FACE_SYMBOL) != 0 ||
 		(against->id.face & SJME_SCRITCHUI_PENCIL_FONT_FACE_SYMBOL) != 0)
+		return INT32_MAX;
+
+	/* Stylistic fonts are never comparable. */
+	if ((desireId->face & SJME_SCRITCHUI_PENCIL_FONT_FACE_STYLISTIC) != 0 ||
+		(against->id.face & SJME_SCRITCHUI_PENCIL_FONT_FACE_STYLISTIC) != 0)
 		return INT32_MAX;
 
 	/* Start with no penalty. */
@@ -118,8 +147,12 @@ static sjme_errorCode sjme_scritchui_core_fontDeriveIterator(
 	if (inState == NULL || inOutStep == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Map data. */
+	/* Recover data. */
 	data = (sjme_scritchui_fontDeriveData*)inOutStep->data;
+	if (data == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Map data. */
 	derive = &data->derive;
 	scoreDerive = &data->scoreDerive;
 	desireId = &data->desireId;
@@ -1295,8 +1328,13 @@ sjme_errorCode sjme_scritchui_core_fontByFace(
 		&step)))
 		return sjme_error_default(error);
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* If we found no candidate fonts, then fail. */
+	if (data.derive.font == NULL)
+		return SJME_ERROR_INVALID_FONT;
+
+	/* Use this font. */
+	*outFont = data.derive.font;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_fontCount(

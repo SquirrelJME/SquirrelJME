@@ -44,4 +44,9 @@ public interface PencilFontFace
 	@SquirrelJMEVendorApi
 	byte AUTOMATIC =
 		16;
+	
+	/** Stylistic and artistic fonts. */
+	@SquirrelJMEVendorApi
+	byte STYLISTIC =
+		32;
 }

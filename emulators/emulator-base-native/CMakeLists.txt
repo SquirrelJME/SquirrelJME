@@ -15,6 +15,26 @@ include(ExternalProject)
 project(libEmulatorBase
 	LANGUAGES C)
 
+# Specify NanoCoat directory for includes
+set(SQUIRRELJME_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
+set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${SQUIRRELJME_ROOT_DIR}/nanocoat")
+include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake")
+
+# Use glob recursion to detect any changes to NanoCoat
+set(nanoCoatSources_all)
+foreach(baseDir IN ITEMS "frontend" "include" "lib" "src")
+	# Determine everything
+	file(GLOB_RECURSE nanoCoatSources_${baseDir}
+		LIST_DIRECTORIES false
+		CONFIGURE_DEPENDS
+		"${CMAKE_SOURCE_DIR}/${baseDir}/*.c"
+		"${CMAKE_SOURCE_DIR}/${baseDir}/*.h"
+		"${CMAKE_SOURCE_DIR}/${baseDir}/CMakeLists*.txt")
+
+	# Add to all sources
+	list(APPEND nanoCoatSources_all "nanoCoatSources_${baseDir}")
+endforeach()
+
 # We want to forward as many CMAKE_ commands to the target NanoCoat as
 # possible
 get_cmake_property(allVariables VARIABLES)
@@ -165,11 +185,6 @@ foreach(var IN LISTS allVariables)
 	endif()
 endforeach()
 
-# Specify NanoCoat directory for includes
-set(SQUIRRELJME_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
-set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${SQUIRRELJME_ROOT_DIR}/nanocoat")
-include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake")
-
 # Setup NanoCoat Project
 set(SQUIRRELJME_NANOCOAT_BINARY_DIR "${CMAKE_BINARY_DIR}/nanocoat")
 file(MAKE_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
@@ -177,13 +192,7 @@ ExternalProject_Add(SquirrelJME
 	BINARY_DIR "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 	SOURCE_DIR "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
 	CMAKE_CACHE_ARGS allDefines
-	CONFIGURE_COMMAND "${CMAKE_COMMAND}"
-		"-C" "${cacheFile}"
-		"-G" "${CMAKE_GENERATOR}"
-		"-T" "${CMAKE_GENERATOR_TOOLSET}"
-		"-A" "${CMAKE_GENERATOR_PLATFORM}"
-		"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
-		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+	CONFIGURE_COMMAND ""
 	BUILD_COMMAND ""
 	INSTALL_COMMAND ""
 	TEST_COMMAND ""
@@ -192,7 +201,7 @@ ExternalProject_Add(SquirrelJME
 #		ScritchAudio ScritchUi
 	CONFIGURE_HANDLED_BY_BUILD NO)
 
-# Configure step, since it seems to be missing
+# Configure step done manually
 # Cannot be called Configure because build systems with case insensitive rules
 # will clash with built-in "configure"
 ExternalProject_Add_Step(SquirrelJME RunConfigureStep
@@ -204,7 +213,8 @@ ExternalProject_Add_Step(SquirrelJME RunConfigureStep
 		"-A" "${CMAKE_GENERATOR_PLATFORM}"
 		"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
 		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-	INDEPENDENT)
+	INDEPENDENT
+	DEPENDS "${nanoCoatSources_all}")
 ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep
 	SquirrelJME-RunConfigureStep)
 
@@ -221,7 +231,8 @@ macro(squirreljme_external_step target)
 		COMMAND "${CMAKE_COMMAND}"
 			"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 			"--target" ${target}
-		INDEPENDENT)
+		INDEPENDENT
+		DEPENDS "${nanoCoatSources_all}")
 	ExternalProject_Add_StepTargets(SquirrelJME ${target}
 		SquirrelJME-${target})
 endmacro()

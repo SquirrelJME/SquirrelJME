@@ -362,6 +362,9 @@ typedef enum sjme_scritchui_pencilFontFace
 	
 	/** Special case for automatic font selection. */
 	SJME_SCRITCHUI_PENCIL_FONT_FACE_AUTOMATIC = 16,
+
+	/** Stylistic and artistic fonts. */
+	SJME_SCRITCHUI_PENCIL_FONT_FACE_STYLISTIC = 32,
 } sjme_scritchui_pencilFontFace;
 	
 /**
