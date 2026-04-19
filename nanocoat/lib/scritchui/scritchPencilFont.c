@@ -1274,10 +1274,13 @@ sjme_errorCode sjme_scritchui_core_fontByFace(
 	if (inParams != NULL)
 		memmove(&data.inParams, inParams, sizeof(data.inParams));
 
-	/* Default parameter setup? */
-	if (1)
+	/* Use font size specified by the system. */
+	if (data.inParams.pixelSize == 0)
 	{
-		sjme_todo("Impl?");
+		if (sjme_error_is(error = inState->apiInThread->lafMetric(inState,
+			NULL, &data.inParams.pixelSize,
+			SJME_SCRITCHUI_LAF_METRIC_FONT_SIZE_DEFAULT)))
+			return sjme_error_default(error);
 	}
 
 	/* Setup iterator. */

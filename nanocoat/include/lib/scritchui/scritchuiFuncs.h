@@ -143,7 +143,7 @@ typedef sjme_errorCode (*sjme_scritchui_paintListenerFunc)(
 	sjme_attrInValue sjme_jint special);
 
 /**
- * Listener callback for when a screen has been queried or it has been
+ * Listener callback for when a screen has been queried, or it has been
  * updated.
  * 
  * @param inState The input state.
@@ -926,6 +926,23 @@ typedef sjme_errorCode (*sjme_scritchui_lafElementColorFunc)(
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
 	sjme_attrOutNotNull sjme_jint* outRGB,
 	sjme_attrInValue sjme_scritchui_lafElementColorType elementColor);
+
+/**
+ * Obtains a look-and-feel metric.
+ *
+ * @param inState The current state.
+ * @param inContext The component used as context, this is optional and may or
+ * may not have an effect.
+ * @param outValue The resultant value.
+ * @param metricType The metric to obtain.
+ * @return Any resultant error, if any.
+ * @since 2026/04/18
+ */
+typedef sjme_errorCode (*sjme_scritchui_lafMetricFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrOutNotNull sjme_jint* outValue,
+	sjme_attrInValue sjme_scritchui_lafMetricType metricType);
 
 /**
  * Creates a new list.

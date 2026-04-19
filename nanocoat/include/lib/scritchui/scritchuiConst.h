@@ -283,6 +283,49 @@ typedef enum sjme_scritchui_lafElementColorType
 	SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR = 11,
 } sjme_scritchui_lafElementColorType;
 
+/**
+ * The type of metric to obtain.
+ *
+ * @since 2026/04/18
+ */
+typedef enum sjme_scritchui_lafMetricType
+{
+	/** Unknown metric. */
+	SJME_SCRITCHUI_LAF_METRIC_UNKNOWN = 0,
+
+	/** Default font size when unspecified. */
+	SJME_SCRITCHUI_LAF_METRIC_FONT_SIZE_DEFAULT = 1,
+
+	/** The number of available metrics. */
+	SJME_SCRITCHUI_NUM_LAF_METRICS = 2,
+} sjme_scritchui_lafMetricType;
+
+/**
+ * Look-and-feel coordinate direction.
+ *
+ * @since 2026/04/18
+ */
+typedef enum sjme_scritchui_lafCoordDir
+{
+	/** Unspecified direction. */
+	SJME_SCRITCHUI_COORD_DIR_UNSPECIFIED,
+
+	/** X direction. */
+	SJME_SCRITCHUI_COORD_DIR_X,
+
+	/** Y direction. */
+	SJME_SCRITCHUI_COORD_DIR_Y,
+
+	/** Width direction. */
+	SJME_SCRITCHUI_COORD_DIR_W,
+
+	/** Height direction. */
+	SJME_SCRITCHUI_COORD_DIR_H,
+
+	/** The number of coordinate directions available. */
+	SJME_SCRITCHUI_NUM_COORD_DIRS,
+} sjme_scritchui_lafCoordDir;
+
 #pragma endregion(scritchui)
 #pragma region(scritchui_font)
 

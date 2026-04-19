@@ -151,6 +151,9 @@ typedef enum sjme_scritchui_serialType
 	
 	/** @c lafElementColor. */
 	SJME_SCRITCHUI_SERIAL_UI_LAF_ELEMENT_COLOR,
+
+	/** @c lafMetric. */
+	SJME_SCRITCHUI_SERIAL_UI_LAF_METRIC,
 		
 	/** @c listNew . */
 	SJME_SCRITCHUI_SERIAL_UI_LIST_NEW,
@@ -556,6 +559,11 @@ SDU_STRUCT_DEF(lafElementColor,
 	SDX_VAR(sjme_scritchui_uiComponent, inContext);
 	SDX_VARP(sjme_jint, outRGB);
 	SDX_VAR(sjme_scritchui_lafElementColorType, elementColor););
+
+SDU_STRUCT_DEF(lafMetric,
+	SDX_VAR(sjme_scritchui_uiComponent, inContext);
+	SDX_VARP(sjme_jint, outValue);
+	SDX_VAR(sjme_scritchui_lafMetricType, metricType););
 
 SDU_STRUCT_DEF(listNew,
 	SDX_VARP(sjme_scritchui_uiList, outList);
@@ -985,6 +993,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(labelSetString);
 	SJME_SCRITCHUI_SDU_DEF(lafDpiProject);
 	SJME_SCRITCHUI_SDU_DEF(lafElementColor);
+	SJME_SCRITCHUI_SDU_DEF(lafMetric);
 	SJME_SCRITCHUI_SDU_DEF(listNew);
 	SJME_SCRITCHUI_SDU_DEF(menuBarNew);
 	SJME_SCRITCHUI_SDU_DEF(menuInsert);
@@ -1295,6 +1304,12 @@ sjme_errorCode sjme_scritchui_coreSerial_lafElementColor(
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
 	sjme_attrOutNotNull sjme_jint* outRGB,
 	sjme_attrInValue sjme_scritchui_lafElementColorType elementColor);
+
+sjme_errorCode sjme_scritchui_coreSerial_lafMetric(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrOutNotNull sjme_jint* outValue,
+	sjme_attrInValue sjme_scritchui_lafMetricType metricType);
 
 sjme_errorCode sjme_scritchui_coreSerial_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,

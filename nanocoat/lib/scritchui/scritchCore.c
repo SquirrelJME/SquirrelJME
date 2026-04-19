@@ -76,6 +76,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	sjme_sm(.labelSetString, sjme_scritchui_coreSerial_labelSetString),
 	sjme_sm(.lafDpiProject, sjme_scritchui_coreSerial_lafDpiProject),
 	sjme_sm(.lafElementColor, sjme_scritchui_coreSerial_lafElementColor),
+	sjme_sm(.lafMetric, sjme_scritchui_coreSerial_lafMetric),
 	sjme_sm(.listNew, sjme_scritchui_coreSerial_listNew),
 
 	/* Loops are unchanged. */
@@ -164,6 +165,7 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions = {
 	sjme_sm(.labelSetString, sjme_scritchui_core_labelSetString),
 	sjme_sm(.lafDpiProject, sjme_scritchui_core_lafDpiProject),
 	sjme_sm(.lafElementColor, sjme_scritchui_core_lafElementColor),
+	sjme_sm(.lafMetric, sjme_scritchui_core_lafMetric),
 	sjme_sm(.listNew, sjme_scritchui_core_listNew),
 	sjme_sm(.loopExecute, sjme_scritchui_core_loopExecute),
 	sjme_sm(.loopExecuteLater, sjme_scritchui_core_loopExecuteLater),

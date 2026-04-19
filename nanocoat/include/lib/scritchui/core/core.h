@@ -262,6 +262,12 @@ sjme_errorCode sjme_scritchui_core_lafElementColor(
 	sjme_attrOutNotNull sjme_jint* outRGB,
 	sjme_attrInValue sjme_scritchui_lafElementColorType elementColor);
 
+sjme_errorCode sjme_scritchui_core_lafMetric(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrOutNotNull sjme_jint* outValue,
+	sjme_attrInValue sjme_scritchui_lafMetricType metricType);
+
 sjme_errorCode sjme_scritchui_core_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiList* outList,

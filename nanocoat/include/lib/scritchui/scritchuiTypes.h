@@ -258,6 +258,9 @@ struct sjme_scritchui_uiChoiceItemBase
 	
 	/** The font to display the text in, @c NULL is default. */
 	sjme_scritchui_pencilFont font;
+
+	/** The parameters for the font for this item. */
+	sjme_scritchui_pencilFontParam fontParams;
 	
 	/** The image data, if there is one for this. */
 	sjme_jint* imageRgb;

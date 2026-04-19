@@ -466,6 +466,13 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->lafElementColor.outRGB,
 		as->lafElementColor.elementColor));
 
+	SJME_SDU_CASE(lafMetric,
+		SJME_SCRITCHUI_SERIAL_UI_LAF_METRIC,
+		(state,
+		as->lafMetric.inContext,
+		as->lafMetric.outValue,
+		as->lafMetric.metricType));
+
 	SJME_SDU_CASE(listNew,
 		SJME_SCRITCHUI_SERIAL_UI_LIST_NEW,
 		(state,
@@ -1542,6 +1549,24 @@ sjme_errorCode sjme_scritchui_coreSerial_lafElementColor(
 	SJME_SDX_PASS(outRGB);
 	SJME_SDX_PASS(elementColor);
 	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_lafMetric(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrOutNotNull sjme_jint* outValue,
+	sjme_attrInValue sjme_scritchui_lafMetricType metricType)
+{
+	SJME_SDU_CHUNK(lafMetric,
+		SJME_SCRITCHUI_SERIAL_UI_LAF_METRIC,
+		(inState, inContext, outValue, metricType));
+
+	SJME_SDX_PASS(inContext);
+	SJME_SDX_PASS(outValue);
+	SJME_SDX_PASS(metricType);
+
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;
 }

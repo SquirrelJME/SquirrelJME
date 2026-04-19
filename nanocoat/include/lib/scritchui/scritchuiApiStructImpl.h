@@ -133,6 +133,9 @@ struct sjme_scritchui_implFunctions
 	
 	/** Returns the element color for the look and feel. */
 	SJME_SCRITCHUI_QUICK_SAME(lafElementColor);
+
+	/** Returns a default system metric value. */
+	SJME_SCRITCHUI_QUICK_SAME(lafMetric);
 	
 	/** Creates a new native list. */
 	SJME_SCRITCHUI_QUICK_IMPL(listNew);

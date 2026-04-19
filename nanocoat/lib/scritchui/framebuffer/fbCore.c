@@ -42,6 +42,7 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	sjme_sm(.labelSetString, sjme_scritchui_fb_labelSetString),
 	sjme_sm(.lafDpiProject, sjme_scritchui_fb_lafDpiProject),
 	sjme_sm(.lafElementColor, sjme_scritchui_fb_lafElementColor),
+	sjme_sm(.lafMetric, sjme_scritchui_fb_lafMetric),
 	sjme_sm(.listNew, sjme_scritchui_fb_listNew),
 	sjme_sm(.loopExecute, sjme_scritchui_fb_loopExecute),
 	sjme_sm(.loopExecuteLater, sjme_scritchui_fb_loopExecuteLater),

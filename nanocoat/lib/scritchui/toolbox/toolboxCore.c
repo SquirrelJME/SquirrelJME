@@ -39,6 +39,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_toolboxFunctions =
 	sjme_sm(.labelSetString, NULL),
 	sjme_sm(.lafDpiProject, NULL),
 	sjme_sm(.lafElementColor, NULL),
+	sjme_sm(.lafMetric, NULL),
 	sjme_sm(.listNew, NULL),
 	sjme_sm(.loopExecute, NULL),
 	sjme_sm(.loopExecuteLater, NULL),

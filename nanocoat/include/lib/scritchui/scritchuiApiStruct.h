@@ -159,6 +159,9 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Returns the element color for the look and feel. */
 	SJME_SCRITCHUI_QUICK_API(lafElementColor);
+
+	/** Returns a default system metric value. */
+	SJME_SCRITCHUI_QUICK_API(lafMetric);
 	
 	/** Creates a new list. */
 	SJME_SCRITCHUI_QUICK_API(listNew);
