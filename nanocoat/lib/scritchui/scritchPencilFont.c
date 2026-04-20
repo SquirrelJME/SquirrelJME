@@ -307,7 +307,7 @@ static sjme_errorCode sjme_scritchui_validateChar(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_jboolean sjme_scritchui_fontEquals(
+static sjme_errorCode sjme_scritchui_fontEquals(
 	sjme_attrInNullable sjme_scritchui_pencilFont a,
 	sjme_attrInNullable const sjme_scritchui_pencilFontParam* aParams,
 	sjme_attrInNullable sjme_scritchui_pencilFont b,
@@ -316,10 +316,10 @@ static sjme_jboolean sjme_scritchui_fontEquals(
 	if (a == NULL)
 		return b == NULL;
 	else if (b == NULL)
-		return SJME_JNI_FALSE;
+		return SJME_ERROR_NOT_MATCHED;
 	
 	sjme_todo("Impl?");
-	return SJME_JNI_FALSE;
+	return sjme_error_notImplemented(0);
 }
 
 static sjme_errorCode sjme_scritchui_fontMetricCharDirection(

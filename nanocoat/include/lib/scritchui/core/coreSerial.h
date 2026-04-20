@@ -1179,7 +1179,6 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(windowSetVisible);
 /* ------------------------------------------------------------------------ */
 #pragma region(pencil)
-	SJME_SCRITCHUI_SDP_DEF(graphicsCall);
 	SJME_SCRITCHUI_SDP_DEF(close);
 	SJME_SCRITCHUI_SDP_DEF(copyArea);
 	SJME_SCRITCHUI_SDP_DEF(drawArc);
@@ -1254,6 +1253,12 @@ typedef struct sjme_scritchui_serialData
 	
 	/** The current state being invoked for. */
 	volatile sjme_scritchui state;
+
+	/** The graphics context (if any). */
+	volatile sjme_scritchui_pencil g;
+
+	/** The font context (if any). */
+	volatile sjme_scritchui_pencilFont inFont;
 	
 	/** The serial data. */
 	volatile sjme_scritchui_serialDataUnion data;
@@ -1881,7 +1886,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_translate(
 
 #pragma region(font)
 
-sjme_jboolean sjme_scritchui_coreSerial_fontEquals(
+sjme_errorCode sjme_scritchui_coreSerial_fontEquals(
 	sjme_attrInNullable sjme_scritchui_pencilFont a,
 	sjme_attrInNullable const sjme_scritchui_pencilFontParam* aParams,
 	sjme_attrInNullable sjme_scritchui_pencilFont b,

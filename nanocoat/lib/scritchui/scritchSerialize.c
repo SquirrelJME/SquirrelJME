@@ -36,11 +36,12 @@
 	serial->what = what
 
 /** Setup pre-serialization. */
-#define SJME_SDX_SETUP(key, what) \
+#define SJME_SDX_SETUP(key, what, extra) \
 	do { memset((void*)&sdData, 0, sizeof(sdData)); \
 	sdData.type = (key); \
 	sdData.error = SJME_ERROR_UNKNOWN; \
 	sdData.state = inState; \
+	extra \
 	serial = (void*)&sdData.data.what; } while (0)
 
 /** The name for serial data. */
@@ -90,7 +91,7 @@
 	/* Serialize and Store. */ \
 	SJME_SDX_SETUP( \
 		whatType, \
-		what)
+		what, )
 
 /** Performs dispatch call. */
 #define SJME_SDU_CALL(what, args) \
@@ -158,14 +159,14 @@
 	/* Serialize and Store. */ \
 	SJME_SDX_SETUP( \
 		whatType, \
-		what)
+		what, sdData.g = g;)
 
 /** Performs dispatch call (pen). */
 #define SJME_SDP_CALL(what, args) \
 	do { \
-	if (as->graphicsCall.g->apiInThread->what == NULL) \
+	if (sdData->g->apiInThread->what == NULL) \
 		return SJME_THREAD_RESULT(sjme_error_notImplemented(0)); \
-	sdData->error = as->graphicsCall.g->apiInThread->what args; } while (0)
+	sdData->error = sdData->g->apiInThread->what args; } while (0)
 
 /** Simplified case call (pen). */
 #define SJME_SDP_CASE(what, whatType, args) \
@@ -186,7 +187,7 @@
 #define SJME_SDF_PRE_CHECK \
 	do { if (inFont == NULL || inFont->common.state == NULL) \
 	{ \
-		return SJME_ERROR_NULL_ARGUMENTS; \
+		return SJME_ERROR_NULL_STACK_POINTER; \
 	} inState = inFont->common.state;} while(0)
 
 /** Check for being in the loop. */
@@ -219,17 +220,17 @@
 	/* Serialize and Store. */ \
 	SJME_SDX_SETUP( \
 		whatType, \
-		what)
+		what, sdData.inFont = inFont;)
 
-/** Performs dispatch call (pen). */
+/** Performs dispatch call (font). */
 #define SJME_SDF_CALL(what, args) \
 	do { \
-	if (as->graphicsCall.inFont->apiInThread->what == NULL) \
+	if (sdData->inFont->apiInThread->what == NULL) \
 		return SJME_THREAD_RESULT(sjme_error_notImplemented(0)); \
-	sdData->error = as->graphicsCall.inFont->apiInThread->what args; \
+	sdData->error = sdData->inFont->apiInThread->what args; \
 	} while (0)
 
-/** Simplified case call (pen). */
+/** Simplified case call (font). */
 #define SJME_SDF_CASE(what, whatType, args) \
 	case whatType: \
 		SJME_SDF_CALL(what, args); \
@@ -978,6 +979,120 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		(as->translate.g,
 		as->translate.x,
 		as->translate.y));
+
+#pragma region(font)
+	SJME_SDF_CASE(equals,
+		SJME_SCRITCHUI_SERIAL_FONT_EQUALS,
+		(as->equals.a,
+		as->equals.aParams,
+		as->equals.b,
+		as->equals.bParams));
+
+	SJME_SDF_CASE(metricCharDirection,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_CHAR_DIRECTION,
+		(as->metricCharDirection.inFont,
+		as->metricCharDirection.inCodepoint,
+		as->metricCharDirection.outDirection));
+
+	SJME_SDF_CASE(metricCharValid,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_CHAR_VALID,
+		(as->metricCharValid.inFont,
+		as->metricCharValid.inCodepoint,
+		as->metricCharValid.outValid));
+
+	SJME_SDF_CASE(metricFontFace,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_FONT_FACE,
+		(as->metricFontFace.inFont,
+		as->metricFontFace.outFace));
+
+	SJME_SDF_CASE(metricFontName,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_FONT_NAME,
+		(as->metricFontName.inFont,
+		as->metricFontName.outName));
+
+	SJME_SDF_CASE(metricFontStyle,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_FONT_STYLE,
+		(as->metricFontStyle.inFont,
+		as->metricFontStyle.outStyle));
+
+	SJME_SDF_CASE(metricPixelAscent,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_ASCENT,
+		(as->metricPixelAscent.inFont,
+		as->metricPixelAscent.inParams,
+		as->metricPixelAscent.isMax,
+		as->metricPixelAscent.outAscent));
+
+	SJME_SDF_CASE(metricPixelBaseline,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_BASELINE,
+		(as->metricPixelBaseline.inFont,
+		as->metricPixelBaseline.inParams,
+		as->metricPixelBaseline.outBaseline));
+
+	SJME_SDF_CASE(metricPixelDescent,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_DESCENT,
+		(as->metricPixelDescent.inFont,
+		as->metricPixelDescent.inParams,
+		as->metricPixelDescent.isMax,
+		as->metricPixelDescent.outDescent));
+
+	SJME_SDF_CASE(metricPixelHeight,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_HEIGHT,
+		(as->metricPixelHeight.inFont,
+		as->metricPixelHeight.inParams,
+		as->metricPixelHeight.outHeight));
+
+	SJME_SDF_CASE(metricPixelLeading,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_LEADING,
+		(as->metricPixelLeading.inFont,
+		as->metricPixelLeading.inParams,
+		as->metricPixelLeading.outLeading));
+
+	SJME_SDF_CASE(metricPixelSize,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_SIZE,
+		(as->metricPixelSize.inFont,
+		as->metricPixelSize.inParams,
+		as->metricPixelSize.inCodepoint,
+		as->metricPixelSize.outSize));
+
+	SJME_SDF_CASE(pixelCharWidth,
+		SJME_SCRITCHUI_SERIAL_FONT_PIXEL_CHAR_WIDTH,
+		(as->pixelCharWidth.inFont,
+		as->pixelCharWidth.inParams,
+		as->pixelCharWidth.inCodepoint,
+		as->pixelCharWidth.outWidth));
+
+	SJME_SDF_CASE(renderBitmap,
+		SJME_SCRITCHUI_SERIAL_FONT_RENDER_BITMAP,
+		(as->renderBitmap.inFont,
+		as->renderBitmap.inParams,
+		as->renderBitmap.inCodepoint,
+		as->renderBitmap.buf,
+		as->renderBitmap.bufOff,
+		as->renderBitmap.bufScanLen,
+		as->renderBitmap.bufHeight,
+		as->renderBitmap.outOffX,
+		as->renderBitmap.outOffY));
+
+	SJME_SDF_CASE(renderChar,
+		SJME_SCRITCHUI_SERIAL_FONT_RENDER_CHAR,
+		(as->renderChar.inFont,
+		as->renderChar.inParams,
+		as->renderChar.inCodepoint,
+		as->renderChar.inPencil,
+		as->renderChar.xPos,
+		as->renderChar.yPos,
+		as->renderChar.nextXPos,
+		as->renderChar.nextYPos));
+
+	SJME_SDF_CASE(stringWidth,
+		SJME_SCRITCHUI_SERIAL_FONT_STRING_WIDTH,
+		(as->stringWidth.inFont,
+		as->stringWidth.inParams,
+		as->stringWidth.s,
+		as->stringWidth.o,
+		as->stringWidth.l,
+		as->stringWidth.outWidth));
+#pragma endregion(font)
 	
 	/* End. */
 	SJME_SCRITCHUI_DISPATCH_SWITCH_END
@@ -2768,7 +2883,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_translate(
 
 #pragma region(font)
 
-static sjme_jboolean sjme_scritchui_coreSerial_fontEqualsSub(
+static sjme_errorCode sjme_scritchui_coreSerial_fontEqualsSub(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
 	sjme_attrInNullable sjme_scritchui_pencilFont a,
 	sjme_attrInNullable const sjme_scritchui_pencilFontParam* aParams,
@@ -2788,7 +2903,7 @@ static sjme_jboolean sjme_scritchui_coreSerial_fontEqualsSub(
 	SJME_SDX_WAIT;
 }
 
-sjme_jboolean sjme_scritchui_coreSerial_fontEquals(
+sjme_errorCode sjme_scritchui_coreSerial_fontEquals(
 	sjme_attrInNullable sjme_scritchui_pencilFont a,
 	sjme_attrInNullable const sjme_scritchui_pencilFontParam* aParams,
 	sjme_attrInNullable sjme_scritchui_pencilFont b,
@@ -2801,7 +2916,7 @@ sjme_jboolean sjme_scritchui_coreSerial_fontEquals(
 	if (a == NULL)
 	{
 		if (b == NULL)
-			return SJME_JNI_FALSE;
+			return SJME_ERROR_NOT_MATCHED;
 		inFont = b;
 	}
 	else

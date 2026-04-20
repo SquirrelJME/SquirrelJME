@@ -177,9 +177,15 @@ void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
 		return NULL;
 
 	/* Fail. */
-	if (env == NULL || className == NULL)
+	if (env == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return NULL;
+	}
+
+	if (className == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_INVALID_CLASS_NAME);
 		return NULL;
 	}
 
@@ -188,7 +194,7 @@ void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
 	baseClassy = (*env)->FindClass(env, DESC_DYLIB_HAS_OBJECT_POINTER);
 	if (classy == NULL || baseClassy == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_INVALID_CLASS_NAME);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NO_CLASS);
 		return NULL;
 	}
 

@@ -107,12 +107,6 @@ MLE_FUNC_PROTO(jstring, metricFontName, jobject fontInstance)
 	sjme_errorCode error;
 	sjme_lpcstr name;
 
-	if (fontInstance == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return NULL;
-	}
-
 	/* Recover font. */
 	font = sjme_jni_recoverFont(env, fontInstance);
 	if (font == NULL)

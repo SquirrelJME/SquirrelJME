@@ -1361,10 +1361,11 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetVisibleFunc)(
  * @param aParams The first font parameters.
  * @param b The second font.
  * @param bParams The second font parameters.
- * @return If the two fonts are the same.
+ * @return If the two fonts are the same,
+ * or @link SJME_ERROR_NOT_MATCHED @endlink if they are not the same.
  * @since 2024/05/17
  */
-typedef sjme_jboolean (*sjme_scritchui_pencilFontEqualsFunc)(
+typedef sjme_errorCode (*sjme_scritchui_pencilFontEqualsFunc)(
 	sjme_attrInNullable sjme_scritchui_pencilFont a,
 	sjme_attrInNullable const sjme_scritchui_pencilFontParam* aParams,
 	sjme_attrInNullable sjme_scritchui_pencilFont b,
