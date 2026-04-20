@@ -56,7 +56,7 @@
 /** Pre-check call to make. */
 #define SJME_SDU_PRE_CHECK \
 	do { if (inState == NULL) \
-    { \
+	{ \
 		return SJME_ERROR_NULL_ARGUMENTS; \
 	} } while(0)
 
@@ -67,9 +67,9 @@
 		direct = SJME_JNI_FALSE; \
 		 \
 		if (inState->api->loopIsInThread == NULL || \
-            inState->api->what == NULL || \
-            inState->apiInThread->what == NULL) \
-        	return sjme_error_notImplemented(0); \
+			inState->api->what == NULL || \
+			inState->apiInThread->what == NULL) \
+			return sjme_error_notImplemented(0); \
 		if (sjme_error_is(error = inState->api->loopIsInThread(inState, \
 				&direct))) \
 			return sjme_error_default(error); \
@@ -124,7 +124,7 @@
 /** Pre-check call to make. */
 #define SJME_SDP_PRE_CHECK \
 	do { if (g == NULL || g->common.state == NULL) \
-    { \
+	{ \
 		return SJME_ERROR_NULL_ARGUMENTS; \
 	} inState = g->common.state;} while(0)
 
@@ -135,15 +135,15 @@
 		direct = SJME_JNI_FALSE; \
 		 \
 		if (inState->api->loopIsInThread == NULL || \
-            g->api->what == NULL || \
-            g->apiInThread->what == NULL) \
-        	return sjme_error_notImplemented(0); \
+			g->api->what == NULL || \
+			g->apiInThread->what == NULL) \
+			return sjme_error_notImplemented(0); \
 		if (sjme_error_is(error = inState->api->loopIsInThread(inState, \
 				&direct))) \
 			return sjme_error_default(error); \
 	} while (0)
 
-/** Common shared chunk of forwarding code, to reduce duplicates. */
+/** Common shared chunk of forwarding code, to reduce duplicates (graphics). */
 #define SJME_SDP_CHUNK(what, whatType, directInvokeArgs) \
 	SJME_SDX_VARS(what) \
 	SJME_SDP_VARS(what); \
@@ -172,6 +172,70 @@
 	case whatType: \
 		SJME_SDP_CALL(what, args); \
 		break
+
+/* ------------------------------------------------------------------------ */
+
+#pragma region(font)
+
+/** Serial variables. */
+#define SJME_SDF_VARS(what) \
+	sjme_scritchui inState; \
+	SDX_STRUCT_NAME(font, what)* serial
+
+/** Pre-check call to make. */
+#define SJME_SDF_PRE_CHECK \
+	do { if (inFont == NULL || inFont->common.state == NULL) \
+	{ \
+		return SJME_ERROR_NULL_ARGUMENTS; \
+	} inState = inFont->common.state;} while(0)
+
+/** Check for being in the loop. */
+#define SJME_SDF_LOOP_CHECK(what) \
+	do { \
+		error = SJME_NUM_ERROR_CODES; \
+		direct = SJME_JNI_FALSE; \
+		 \
+		if (inState->api->loopIsInThread == NULL || \
+			inFont->api->what == NULL || \
+			inFont->apiInThread->what == NULL) \
+			return sjme_error_notImplemented(0); \
+		if (sjme_error_is(error = inState->api->loopIsInThread(inState, \
+				&direct))) \
+			return sjme_error_default(error); \
+	} while (0)
+
+/** Common shared chunk of forwarding code, to reduce duplicates (graphics). */
+#define SJME_SDF_CHUNK(what, whatType, directInvokeArgs) \
+	SJME_SDX_VARS(what) \
+	SJME_SDF_VARS(what); \
+	 \
+	SJME_SDF_PRE_CHECK; \
+	SJME_SDF_LOOP_CHECK(what); \
+	 \
+	/* Direct call? */ \
+	if (direct) \
+		return inFont->apiInThread->what directInvokeArgs; \
+	 \
+	/* Serialize and Store. */ \
+	SJME_SDX_SETUP( \
+		whatType, \
+		what)
+
+/** Performs dispatch call (pen). */
+#define SJME_SDF_CALL(what, args) \
+	do { \
+	if (as->graphicsCall.inFont->apiInThread->what == NULL) \
+		return SJME_THREAD_RESULT(sjme_error_notImplemented(0)); \
+	sdData->error = as->graphicsCall.inFont->apiInThread->what args; \
+	} while (0)
+
+/** Simplified case call (pen). */
+#define SJME_SDF_CASE(what, whatType, args) \
+	case whatType: \
+		SJME_SDF_CALL(what, args); \
+		break
+
+#pragma endregion(font)
 
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */
@@ -2701,4 +2765,339 @@ sjme_errorCode sjme_scritchpen_coreSerial_translate(
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;
 }
+
+#pragma region(font)
+
+static sjme_jboolean sjme_scritchui_coreSerial_fontEqualsSub(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable sjme_scritchui_pencilFont a,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* aParams,
+	sjme_attrInNullable sjme_scritchui_pencilFont b,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* bParams)
+{
+	SJME_SDF_CHUNK(equals,
+		SJME_SCRITCHUI_SERIAL_FONT_EQUALS,
+		(a, aParams, b, bParams));
+
+	SJME_SDX_PASS(a);
+	SJME_SDX_PASS(aParams);
+	SJME_SDX_PASS(b);
+	SJME_SDX_PASS(bParams);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_jboolean sjme_scritchui_coreSerial_fontEquals(
+	sjme_attrInNullable sjme_scritchui_pencilFont a,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* aParams,
+	sjme_attrInNullable sjme_scritchui_pencilFont b,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* bParams)
+{
+	sjme_scritchui_pencilFont inFont;
+
+	/* We need a font to grab the UI state from, this is so we do not need */
+	/* to do any major rework for this one single special case for equality. */
+	if (a == NULL)
+	{
+		if (b == NULL)
+			return SJME_JNI_FALSE;
+		inFont = b;
+	}
+	else
+		inFont = a;
+
+	/* Forward call. */
+	return sjme_scritchui_coreSerial_fontEqualsSub(inFont,
+		a, aParams, b, bParams);
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricCharDirection(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrInRange(-1, 1) sjme_jint* outDirection)
+{
+	SJME_SDF_CHUNK(metricCharDirection,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_CHAR_DIRECTION,
+		(inFont, inCodepoint, outDirection));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inCodepoint);
+	SJME_SDX_PASS(outDirection);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricCharValid(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_jboolean* outValid)
+{
+	SJME_SDF_CHUNK(metricCharValid,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_CHAR_VALID,
+		(inFont, inCodepoint, outValid));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inCodepoint);
+	SJME_SDX_PASS(outValid);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricFontFace(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontFace* outFace)
+{
+	SJME_SDF_CHUNK(metricFontFace,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_FONT_FACE,
+		(inFont, outFace));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(outFace);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricFontName(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInOutNotNull sjme_lpcstr* outName)
+{
+	SJME_SDF_CHUNK(metricFontName,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_FONT_NAME,
+		(inFont, outName));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(outName);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricFontStyle(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontStyle* outStyle)
+{
+	SJME_SDF_CHUNK(metricFontStyle,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_FONT_STYLE,
+		(inFont, outStyle));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(outStyle);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricPixelAscent(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInValue sjme_jboolean isMax,
+	sjme_attrOutNotNull sjme_jint* outAscent)
+{
+	SJME_SDF_CHUNK(metricPixelAscent,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_ASCENT,
+		(inFont, inParams, isMax, outAscent));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inParams);
+	SJME_SDX_PASS(isMax);
+	SJME_SDX_PASS(outAscent);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricPixelBaseline(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrOutNotNull sjme_jint* outBaseline)
+{
+	SJME_SDF_CHUNK(metricPixelBaseline,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_BASELINE,
+		(inFont, inParams, outBaseline));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inParams);
+	SJME_SDX_PASS(outBaseline);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricPixelDescent(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInValue sjme_jboolean isMax,
+	sjme_attrOutNotNull sjme_jint* outDescent)
+{
+	SJME_SDF_CHUNK(metricPixelDescent,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_DESCENT,
+		(inFont, inParams, isMax, outDescent));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inParams);
+	SJME_SDX_PASS(isMax);
+	SJME_SDX_PASS(outDescent);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricPixelHeight(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrOutNotNull sjme_jint* outHeight)
+{
+	SJME_SDF_CHUNK(metricPixelHeight,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_HEIGHT,
+		(inFont, inParams, outHeight));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inParams);
+	SJME_SDX_PASS(outHeight);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricPixelLeading(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading)
+{
+	SJME_SDF_CHUNK(metricPixelLeading,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_LEADING,
+		(inFont, inParams, outLeading));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inParams);
+	SJME_SDX_PASS(outLeading);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricPixelSize(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNegativeOnePositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
+{
+	SJME_SDF_CHUNK(metricPixelSize,
+		SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_SIZE,
+		(inFont, inParams, inCodepoint, outSize));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inParams);
+	SJME_SDX_PASS(inCodepoint);
+	SJME_SDX_PASS(outSize);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontPixelCharWidth(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth)
+{
+	SJME_SDF_CHUNK(pixelCharWidth,
+		SJME_SCRITCHUI_SERIAL_FONT_PIXEL_CHAR_WIDTH,
+		(inFont, inParams, inCodepoint, outWidth));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inParams);
+	SJME_SDX_PASS(inCodepoint);
+	SJME_SDX_PASS(outWidth);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontRenderBitmap(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrInNotNull sjme_jubyte* buf,
+	sjme_attrInPositive sjme_jint bufOff,
+	sjme_attrInPositive sjme_jint bufScanLen,
+	sjme_attrInPositive sjme_jint bufHeight,
+	sjme_attrOutNullable sjme_jint* outOffX,
+	sjme_attrOutNullable sjme_jint* outOffY)
+{
+	SJME_SDF_CHUNK(renderBitmap,
+		SJME_SCRITCHUI_SERIAL_FONT_RENDER_BITMAP,
+		(inFont, inParams, inCodepoint, buf, bufOff, bufScanLen, bufHeight,
+			outOffX, outOffY));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inParams);
+	SJME_SDX_PASS(inCodepoint);
+	SJME_SDX_PASS(buf);
+	SJME_SDX_PASS(bufOff);
+	SJME_SDX_PASS(bufScanLen);
+	SJME_SDX_PASS(bufHeight);
+	SJME_SDX_PASS(outOffX);
+	SJME_SDX_PASS(outOffY);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontRenderChar(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrInNotNull sjme_scritchui_pencil inPencil,
+	sjme_attrInValue sjme_jint xPos,
+	sjme_attrInNotNull sjme_jint yPos,
+	sjme_attrOutNullable sjme_jint* nextXPos,
+	sjme_attrOutNullable sjme_jint* nextYPos)
+{
+	SJME_SDF_CHUNK(renderChar,
+		SJME_SCRITCHUI_SERIAL_FONT_RENDER_CHAR,
+		(inFont, inParams, inCodepoint, inPencil, xPos, yPos,
+			nextXPos, nextYPos));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inParams);
+	SJME_SDX_PASS(inCodepoint);
+	SJME_SDX_PASS(inPencil);
+	SJME_SDX_PASS(xPos);
+	SJME_SDX_PASS(yPos);
+	SJME_SDX_PASS(nextXPos);
+	SJME_SDX_PASS(nextYPos);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+sjme_errorCode sjme_scritchui_coreSerial_fontStringWidth(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNotNull const sjme_charSeq s,
+	sjme_attrInPositive sjme_jint o,
+	sjme_attrInPositive sjme_jint l,
+	sjme_attrOutNotNull sjme_jint* outWidth)
+{
+	SJME_SDF_CHUNK(stringWidth,
+		SJME_SCRITCHUI_SERIAL_FONT_STRING_WIDTH,
+		(inFont, inParams, s, o, l, outWidth));
+
+	SJME_SDX_PASS(inFont);
+	SJME_SDX_PASS(inParams);
+	SJME_SDX_PASS(s);
+	SJME_SDX_PASS(o);
+	SJME_SDX_PASS(l);
+	SJME_SDX_PASS(outWidth);
+
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
+#pragma endregion(font)
 

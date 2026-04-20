@@ -16,6 +16,8 @@
 #include "sjme/fixed.h"
 #include "sjme/util.h"
 
+#include <lib/scritchui/core/coreSerial.h>
+
 /** Use a better barcode-like scaling algorithm I thought of. */
 #define SJME_CONFIG_SCRITCHUI_FONT_BARCODE
 
@@ -210,9 +212,9 @@ static sjme_errorCode sjme_scritchui_core_fontDeriveIterator(
 	/* Get old font properties. */
 	wasStyle = 0;
 	wasPixelSize = 0;
-	if (sjme_error_is(error = inFont->api->metricFontStyle(inFont,
+	if (sjme_error_is(error = inFont->apiInThread->metricFontStyle(inFont,
 			&wasStyle)) ||
-		sjme_error_is(error = inFont->api->metricPixelSize(inFont,
+		sjme_error_is(error = inFont->apiInThread->metricPixelSize(inFont,
 			&wasPixelSize)))
 		return sjme_error_default(error);
 
@@ -280,7 +282,7 @@ static sjme_errorCode sjme_scritchui_validateChar(
 	
 	/* Determine if this character is even valid. */
 	isValid = SJME_JNI_FALSE;
-	if (sjme_error_is(error = inFont->api->metricCharValid(inFont,
+	if (sjme_error_is(error = inFont->apiInThread->metricCharValid(inFont,
 		*inOutCodepoint, &isValid)))
 		return sjme_error_default(error);
 	
@@ -292,7 +294,7 @@ static sjme_errorCode sjme_scritchui_validateChar(
 		
 		/* Check to see if zero is valid. */
 		isValid = SJME_JNI_FALSE;
-		if (sjme_error_is(error = inFont->api->metricCharValid(inFont,
+		if (sjme_error_is(error = inFont->apiInThread->metricCharValid(inFont,
 			*inOutCodepoint, &isValid)))
 			return sjme_error_default(error);
 		
@@ -307,7 +309,9 @@ static sjme_errorCode sjme_scritchui_validateChar(
 
 static sjme_jboolean sjme_scritchui_fontEquals(
 	sjme_attrInNullable sjme_scritchui_pencilFont a,
-	sjme_attrInNullable sjme_scritchui_pencilFont b)
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* aParams,
+	sjme_attrInNullable sjme_scritchui_pencilFont b,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* bParams)
 {
 	if (a == NULL)
 		return b == NULL;
@@ -519,17 +523,17 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelHeight(
 	/* Get all of these parameters, as caching individual heights can lead */
 	/* to multiplicative errors. */
 	leading = 0;
-	if (sjme_error_is(error = inFont->api->metricPixelLeading(inFont,
+	if (sjme_error_is(error = inFont->apiInThread->metricPixelLeading(inFont,
 		NULL, &leading)))
 		return sjme_error_default(error);
 		
 	ascent = 0;
-	if (sjme_error_is(error = inFont->api->metricPixelAscent(inFont,
+	if (sjme_error_is(error = inFont->apiInThread->metricPixelAscent(inFont,
 		NULL, SJME_JNI_FALSE, &ascent)))
 		return sjme_error_default(error);
 		
 	descent = 0;
-	if (sjme_error_is(error = inFont->api->metricPixelDescent(inFont,
+	if (sjme_error_is(error = inFont->apiInThread->metricPixelDescent(inFont,
 		NULL, SJME_JNI_FALSE, &descent)))
 		return sjme_error_default(error);
 	
@@ -684,13 +688,13 @@ static sjme_errorCode sjme_scritchui_renderBitmapScaled(
 	
 	/* Need character width. */
 	cw = 0;
-	if (sjme_error_is(error = inFont->api->pixelCharWidth(
+	if (sjme_error_is(error = inFont->apiInThread->pixelCharWidth(
 		inFont, NULL, inCodepoint, &cw)))
 		return sjme_error_default(error);
 		
 	/* And the pixel height, since this is a bitmap font. */
 	ch = 0;
-	if (sjme_error_is(error = inFont->api->metricPixelSize(
+	if (sjme_error_is(error = inFont->apiInThread->metricPixelSize(
 		inFont, NULL, inCodepoint, &ch)))
 		return sjme_error_default(error);
 	
@@ -873,7 +877,7 @@ static sjme_errorCode sjme_scritchui_fontRenderBitmap(
 	
 	/* Get the height of this specific codepoint. */
 	ch = 0;
-	if (sjme_error_is(error = inFont->api->metricPixelSize(
+	if (sjme_error_is(error = inFont->apiInThread->metricPixelSize(
 		inFont, inParams, inCodepoint, &ch)))
 		return sjme_error_default(error);
 	
@@ -955,7 +959,7 @@ static sjme_errorCode sjme_scritchui_fontStringWidth(
 		
 		/* Determine character width. */
 		cw = 0;
-		if (sjme_error_is(error = inFont->api->pixelCharWidth(inFont,
+		if (sjme_error_is(error = inFont->apiInThread->pixelCharWidth(inFont,
 			inParams, c, &cw)))
 			return sjme_error_default(error);
 		
@@ -991,6 +995,34 @@ static const sjme_scritchui_pencilFontFunctions sjme_scritchui_fontFunctions =
 	sjme_sm(.renderBitmap, sjme_scritchui_fontRenderBitmap),
 	sjme_sm(.renderChar, sjme_scritchui_fontRenderChar),
 	sjme_sm(.stringWidth, sjme_scritchui_fontStringWidth),
+};
+
+/** In-thread serialized wrappers for font. */
+static const sjme_scritchui_pencilFontFunctions
+	sjme_scritchui_coreSerial_fontFunctions =
+{
+	sjme_sm(.equals, sjme_scritchui_coreSerial_fontEquals),
+	sjme_sm(.metricCharDirection,
+		sjme_scritchui_coreSerial_fontMetricCharDirection),
+	sjme_sm(.metricCharValid, sjme_scritchui_coreSerial_fontMetricCharValid),
+	sjme_sm(.metricFontFace, sjme_scritchui_coreSerial_fontMetricFontFace),
+	sjme_sm(.metricFontName, sjme_scritchui_coreSerial_fontMetricFontName),
+	sjme_sm(.metricFontStyle, sjme_scritchui_coreSerial_fontMetricFontStyle),
+	sjme_sm(.metricPixelAscent,
+		sjme_scritchui_coreSerial_fontMetricPixelAscent),
+	sjme_sm(.metricPixelBaseline,
+		sjme_scritchui_coreSerial_fontMetricPixelBaseline),
+	sjme_sm(.metricPixelDescent,
+		sjme_scritchui_coreSerial_fontMetricPixelDescent),
+	sjme_sm(.metricPixelHeight,
+		sjme_scritchui_coreSerial_fontMetricPixelHeight),
+	sjme_sm(.metricPixelLeading,
+		sjme_scritchui_coreSerial_fontMetricPixelLeading),
+	sjme_sm(.metricPixelSize, sjme_scritchui_coreSerial_fontMetricPixelSize),
+	sjme_sm(.pixelCharWidth, sjme_scritchui_coreSerial_fontPixelCharWidth),
+	sjme_sm(.renderBitmap, sjme_scritchui_coreSerial_fontRenderBitmap),
+	sjme_sm(.renderChar, sjme_scritchui_coreSerial_fontRenderChar),
+	sjme_sm(.stringWidth, sjme_scritchui_coreSerial_fontStringWidth),
 };
 
 sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(
@@ -1504,7 +1536,8 @@ sjme_errorCode sjme_scritchui_newPencilFontStatic(
 		return SJME_ERROR_ILLEGAL_STATE;
 		
 	/* Set base fields. */
-	inOutFont->api = &sjme_scritchui_fontFunctions;
+	inOutFont->api = &sjme_scritchui_coreSerial_fontFunctions;
+	inOutFont->apiInThread = &sjme_scritchui_fontFunctions;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

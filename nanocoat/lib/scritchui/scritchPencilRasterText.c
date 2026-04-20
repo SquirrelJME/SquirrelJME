@@ -42,7 +42,7 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	
 	/* Need character width. */
 	cw = 0;
-	if (sjme_error_is(error = font.font->api->pixelCharWidth(
+	if (sjme_error_is(error = font.font->apiInThread->pixelCharWidth(
 		font.font, &font.params, c, &cw)))
 		return sjme_error_default(error);
 	
@@ -69,7 +69,7 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	
 	/* And the pixel height, since this is a bitmap font. */
 	ch = 0;
-	if (sjme_error_is(error = font.font->api->metricPixelSize(
+	if (sjme_error_is(error = font.font->apiInThread->metricPixelSize(
 		font.font, &font.params, -1, &ch)))
 		goto fail_anyInLock;
 	
@@ -79,7 +79,7 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	
 	/* Need the font baseline. */
 	baseline = 0;
-	if (sjme_error_is(error = font.font->api->metricPixelBaseline(
+	if (sjme_error_is(error = font.font->apiInThread->metricPixelBaseline(
 		font.font, &font.params, &baseline)))
 		goto fail_anyInLock;
 	
@@ -110,7 +110,7 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	offY = 0;
 	
 	/* Get glyph bitmap. */
-	if (sjme_error_is(error = font.font->api->renderBitmap(font.font,
+	if (sjme_error_is(error = font.font->apiInThread->renderBitmap(font.font,
 		&font.params, c, bitmap, 0, scanLen,
 		ch, &offX, &offY)))
 		goto fail_anyInLock;
@@ -215,8 +215,8 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	
 	/* Need to get the height of a line. */
 	lineHeight = -1;
-	if (sjme_error_is(error = font.font->api->metricPixelHeight(font.font,
-		&font.params, &lineHeight)) || lineHeight < 0)
+	if (sjme_error_is(error = font.font->apiInThread->metricPixelHeight(
+		font.font, &font.params, &lineHeight)) || lineHeight < 0)
 	{
 		error = sjme_error_defaultOr(error,
 			SJME_ERROR_FONT_NEGATIVE_HEIGHT);
@@ -225,7 +225,7 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	
 	/* Need the font baseline. */
 	baseline = 0;
-	if (sjme_error_is(error = font.font->api->metricPixelBaseline(
+	if (sjme_error_is(error = font.font->apiInThread->metricPixelBaseline(
 		font.font, &font.params, &baseline)))
 		goto fail_fontBaseline;
 	
@@ -244,7 +244,7 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	
 	/* Determine visual size of this block of text. */
 	tw = -1;
-	if (sjme_error_is(error = font.font->api->stringWidth(font.font,
+	if (sjme_error_is(error = font.font->apiInThread->stringWidth(font.font,
 		&font.params, s, o, l, &tw)) || tw < 0)
 		goto fail_blockDim;
 	

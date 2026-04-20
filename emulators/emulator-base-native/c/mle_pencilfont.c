@@ -238,22 +238,39 @@ MLE_FUNC_PROTO(jint, metricPixelLeading, jobject fontInstance, jintArray fontPar
 #define MLE_DESC_metricPixelSize DESC_METHOD(DESC_INT,  \
 	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_INT )
 MLE_FUNC_PROTO(jint, metricPixelSize,
-	jobject fontInstance, jintArray fontParam,
+	jobject fontInstance, jintArray fontInstanceParam,
 	jint codepoint)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_scritchui_pencilFontParam fontParam;
 	sjme_jint result;
 
-	sjme_todo("Impl?");
-	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
-#if 0
-	/* Forward. */
+	/* Recover font. */
 	RECOVER_FONT();
-	CHECK_AND_FORWARD(0, font->api->metricPixelSize,
-		(font, codepoint, &result));
+
+	/* Map parameters. */
+	memset(&fontParam, 0, sizeof(fontParam));
+	if (fontInstanceParam != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env,
+			font->common.state, &fontParam, fontInstanceParam)))
+		{
+			sjme_jni_throwVMException(env, error);
+			return 0;
+		}
+
+	/* Determine size. */
+	result = 0;
+	if (sjme_error_is(error = font->api->metricPixelSize(font,
+		(fontInstanceParam != NULL ? &fontParam : NULL), codepoint,
+		&result)))
+	{
+		sjme_jni_throwVMException(env, error);
+		return 0;
+	}
+
+	/* Success! */
 	return result;
-#endif
 }
 
 #define MLE_DESC_pixelCharWidth DESC_METHOD(DESC_INT,  \
