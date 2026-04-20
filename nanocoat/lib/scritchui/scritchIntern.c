@@ -38,6 +38,8 @@ sjme_errorCode sjme_scritchui_core_intern_objectNew(
 		goto fail_alloc;
 	
 	/* Pre-initialize. */
+	result->type = uiType;
+	result->state = inState;
 	if (sjme_error_is(error = inState->intern->initCommon(inState,
 		result, SJME_JNI_FALSE, uiType)))
 		goto fail_preInit;

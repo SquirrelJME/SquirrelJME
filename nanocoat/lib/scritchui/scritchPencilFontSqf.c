@@ -326,28 +326,14 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 	only = inState->font.builtinFont;
 	if (only == NULL)
 	{
-		/* TODO: This should be intern->objectNew */
-		if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-			sizeof(*only), NULL, (void**)&only, NULL)) || only == NULL)
+		/* Initialize static SQF. */
+		if (sjme_error_is(error = inState->intern->objectNew(inState,
+			SJME_SUI_CAST_COMMON_P(&only),
+			sizeof(*only), SJME_SCRITCHUI_TYPE_FONT,
+			sjme_scritchui_newPencilFontSqfStatic,
+			(sjme_pointer)&sqf_font_sanserif_12)))
 			return sjme_error_default(error);
-			
-		/* Common initialize. */
-		if (sjme_error_is(error = inState->intern->initCommon(inState,
-			SJME_SUI_CAST_COMMON(only), SJME_JNI_FALSE,
-			SJME_SCRITCHUI_TYPE_FONT)))
-			goto fail_commonInit;
-		
-		/* Initialize font. */
-		if (sjme_error_is(error = sjme_scritchui_newPencilFontSqfStatic(
-			only, &sqf_font_sanserif_12)))
-			goto fail_init;
 
-		/* Common initialize. */
-		if (sjme_error_is(error = inState->intern->initCommon(inState,
-			SJME_SUI_CAST_COMMON(only), SJME_JNI_TRUE,
-			SJME_SCRITCHUI_TYPE_FONT)))
-			goto fail_commonInit;
-		
 		/* Valid now, so cache. */
 		inState->font.builtinFont = sjme_weakUpR(sjme_scritchui_pencilFont,
 			only);
@@ -368,13 +354,18 @@ fail_init:
 }
 
 sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
-	sjme_scritchui_pencilFont inOutFont,
-	const sjme_scritchui_sqfCodepage* inSqfCodepage)
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inOutFontR,
+	sjme_attrInNullable sjme_pointerR(const sjme_scritchui_sqfCodepage*)
+		inSqfCodepageR)
 {
 	sjme_errorCode error;
-	struct sjme_scritchui_pencilFontBase init;
 	const sjme_scritchui_sqf* firstPage;
+	sjme_scritchui_pencilFont inOutFont;
+	const sjme_scritchui_sqfCodepage* inSqfCodepage;
 
+	inOutFont = (sjme_scritchui_pencilFont)inOutFontR;
+	inSqfCodepage = inSqfCodepageR;
 	if (inOutFont == NULL || inSqfCodepage == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -388,30 +379,28 @@ sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Initialize font. */
-	memset(&init, 0, sizeof(init));
-	init.impl = &sjme_scritchui_sqfFunctions;
-	init.handle = (sjme_pointer)inSqfCodepage;
+	inOutFont->impl = &sjme_scritchui_sqfFunctions;
+	inOutFont->handle = (sjme_pointer)inSqfCodepage;
 	
 	/* SQFs are always lowest level fonts with regards to depth. */
-	init.depth = 0;
+	inOutFont->depth = 0;
 	
 	/* Fill in ID details. */
-	strncpy(init.id.name, firstPage->name, SJME_MAX_FONT_NAME - 1);
+	strncpy(inOutFont->id.name, firstPage->name, SJME_MAX_FONT_NAME - 1);
 	if (firstPage->family == SJME_SCRITCHUI_SQF_FAMILY_MONOSPACE)
-		init.id.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_MONOSPACE;
+		inOutFont->id.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_MONOSPACE;
 	else if (firstPage->family == SJME_SCRITCHUI_SQF_FAMILY_SERIF)
-		init.id.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_SERIF;
+		inOutFont->id.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_SERIF;
 	else
-		init.id.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_NORMAL;
-	init.id.param.style = SJME_SCRITCHUI_PENCIL_FONT_STYLE_PLAIN;
-	init.id.param.pixelSize = firstPage->pixelHeight;
+		inOutFont->id.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_NORMAL;
+	inOutFont->id.param.style = SJME_SCRITCHUI_PENCIL_FONT_STYLE_PLAIN;
+	inOutFont->id.param.pixelSize = firstPage->pixelHeight;
 	
 	/* Perform default initialization. */
 	if (sjme_error_is(error = sjme_scritchui_newPencilFontStatic(
-		&init)))
+		inOutFont)))
 		return sjme_error_default(error);
 	
 	/* Success! */
-	memmove(inOutFont, &init, sizeof(init));
 	return SJME_ERROR_NONE;
 }

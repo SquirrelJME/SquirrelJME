@@ -97,7 +97,7 @@ public class DylibEnvironmentInterface
 			fontP = ((DylibPencilFontObject)__font).objectPointer();
 		
 		return new DylibPencilFontObject(NativeScritchDylib.__fontDerive(
-			this.dyLib._stateP,fontP, __name,
+			this.dyLib._stateP, fontP, __name,
 			__face, __style, __pixelSize));
 	}
 	

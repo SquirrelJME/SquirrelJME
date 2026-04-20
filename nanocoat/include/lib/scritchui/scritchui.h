@@ -47,6 +47,10 @@ extern "C" {
 #define SJME_SUI_CAST_COMMON(v) \
 	((sjme_scritchui_uiCommon)(v))
 
+/** Pointer to common type. */
+#define SJME_SUI_CAST_COMMON_P(v) \
+	((sjme_scritchui_uiCommon*)(v))
+
 /** Check cast to menu kind. */
 #define SJME_SUI_CAST_MENU_KIND(v) \
 	((sjme_scritchui_uiMenuKind)sjme_scritchui_checkCast_menuKind((v)))

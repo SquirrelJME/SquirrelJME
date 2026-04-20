@@ -185,10 +185,12 @@
 
 /** Pre-check call to make. */
 #define SJME_SDF_PRE_CHECK \
-	do { if (inFont == NULL || inFont->common.state == NULL) \
-	{ \
-		return SJME_ERROR_NULL_STACK_POINTER; \
-	} inState = inFont->common.state;} while(0)
+	do { if (inFont == NULL) \
+			return SJME_ERROR_NULL_ARGUMENTS; \
+		if (inFont->common.state == NULL) \
+			return SJME_ERROR_ILLEGAL_STATE; \
+		inState = inFont->common.state; \
+	} while(0)
 
 /** Check for being in the loop. */
 #define SJME_SDF_LOOP_CHECK(what) \

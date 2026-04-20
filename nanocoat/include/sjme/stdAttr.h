@@ -413,6 +413,16 @@ extern "C"
 	SJME__enum_##type##_MAXV = INT_MAX, \
 	SJME__enum_##type##_ZERO = 0
 
+#if SJME_CONFIG_GCC_VERSION_LEAST(9, 0)
+	/** Generic pointer which should really be the given type. */
+	#define sjme_pointerR(type) \
+		__attribute__((copy((type)0))) sjme_pointer
+#else
+	/** Generic pointer which should really be the given type. */
+	#define sjme_pointerR(type) \
+		sjme_pointer
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
