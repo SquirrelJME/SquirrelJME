@@ -9,7 +9,12 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.constants.PencilFontParam;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.gfx.ProxyGraphics;
+import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import javax.microedition.lcdui.game.Sprite;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
@@ -103,6 +108,10 @@ public abstract class Graphics
 	@Api
 	public static final int VCENTER =
 		2;
+	
+	/** Local font parameters. */
+	private final int[] _fontParams =
+		new int[PencilFontParam.NUM_PARAMS];
 	
 	/**
 	 * Base initialization of graphics sub-class.
@@ -784,7 +793,31 @@ public abstract class Graphics
 	 * @since 2017/02/09
 	 */
 	@Api
-	public abstract void setFont(@Nullable Font __font);
+	public void setFont(@Nullable Font __font)
+	{
+		// Clearing the font?
+		if (__font == null)
+			__font = Font.getDefaultFont();
+		
+		// Should never be null!
+		if (__font == null)
+			throw Debugging.oops();
+		
+		// Copy font parameters
+		int[] fontParams = this._fontParams;
+		if (__font != null)
+			ObjectShelf.arrayCopy(__font._fontParams, 0,
+				fontParams, 0,
+				Math.min(fontParams.length, __font._fontParams.length));
+		
+		// Forward call
+		if (this instanceof ProxyGraphics)
+			((ProxyGraphics)this).setFont(__font, __font._font, fontParams);
+		else if (this instanceof PencilGraphics)
+			((PencilGraphics)this).setFont(__font, __font._font, fontParams);
+		else
+			throw Debugging.oops();
+	}
 	
 	/**
 	 * Sets a grayscale color which has all the red, green, and blue

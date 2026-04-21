@@ -9,9 +9,11 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
@@ -229,6 +231,17 @@ public interface ExtraGraphics
 	void setBlendingModeEx(
 		@MagicConstant(valuesFromClass = PencilBlendingMode.class) int __mode)
 		throws IllegalArgumentException;
+	
+	/**
+	 * Sets the font and the extra font parameters.
+	 *
+	 * @param __base The base font.
+	 * @param __font The font to set.
+	 * @param __fontParams The font parameters.
+	 * @since 2026/04/21
+	 */
+	@SquirrelJMEVendorApi
+	void setFont(Font __base, PencilFontBracket __font, int[] __fontParams);
 	
 	/**
 	 * Returns the surface width.

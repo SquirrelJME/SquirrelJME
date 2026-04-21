@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -1388,24 +1389,21 @@ public final class PencilGraphics
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void setFont(Font __font)
+	public void setFont(Font __base, PencilFontBracket __font, 
+		int[] __fontParams)
 	{
 		// Do nothing if closed
 		if (this._isClosed)
 			return;
 		
-		// Clearing the font?
-		if (__font == null)
-			__font = Font.getDefaultFont();
-		
 		// Cache locally
-		this._font = __font;
+		this._font = __base;
 		
 		// Set font natively from the font details
 		try
 		{
 			PencilShelf.hardwareSetFont(this.hardware,
-				((PencilFontProvider)__font).__squirreljmePencilFont());
+				__font, __fontParams);
 		}
 		
 		// Unwrap any potential errors.

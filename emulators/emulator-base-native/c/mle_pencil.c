@@ -771,29 +771,38 @@ MLE_FUNC_PROTO(void, hardwareSetDefaultFont, jobject g)
 }
 
 #define MLE_DESC_hardwareSetFont DESC_METHOD(DESC_VOID,  \
-	DESC_PENCIL DESC_PENCILFONT )
-MLE_FUNC_PROTO(void, hardwareSetFont, jobject g, jobject font)
+	DESC_PENCIL DESC_PENCILFONT DESC_ARRAY(DESC_INT))
+MLE_FUNC_PROTO(void, hardwareSetFont, jobject jG, jobject jF,
+	jintArray jFPI)
 {
 	sjme_errorCode error;
-	sjme_scritchui_pencil p;
+	sjme_scritchui_pencil g;
 	sjme_scritchui_pencilFont fp;
+	sjme_scritchui_pencilFontParam fontParams;
 
 	/* Recover. */
-	p = sjme_jni_recoverPencil(env, g);
-	fp = sjme_jni_recoverFont(env, font);
-	if (g == NULL || p == NULL || fp == NULL)
+	g = sjme_jni_recoverPencil(env, jG);
+	fp = sjme_jni_recoverFont(env, jF);
+	if (g == NULL || fp == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
 
-	sjme_todo("Impl?");
-	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
-#if 0
+	/* Map params. */
+	memset(&fontParams, 0, sizeof(fontParams));
+	if (jFPI != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env,
+			g->common.state, &fontParams, jFPI)))
+		{
+			sjme_jni_throwMLECallError(env, error);
+			return;
+		}
+
 	/* Forward. */
-	if (sjme_error_is(error = p->api->setFont(p, fp)))
+	if (sjme_error_is(error = g->api->setFont(g, fp,
+		(jFPI != NULL ? &fontParams : NULL))))
 		sjme_jni_throwMLECallError(env, error);
-#endif
 }
 
 #define MLE_DESC_hardwareSetStrokeStyle DESC_METHOD(DESC_VOID,  \

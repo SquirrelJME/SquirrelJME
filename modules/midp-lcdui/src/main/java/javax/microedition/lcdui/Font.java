@@ -17,14 +17,13 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
-import cc.squirreljme.runtime.lcdui.mle.PencilFontProvider;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.intellij.lang.annotations.MagicConstant;
-import org.jetbrains.annotations.ApiStatus;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -35,7 +34,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  */
 @Api
 public final class Font
-	extends PencilFontProvider
 {
 	/** The monospace font. */
 	@Api
@@ -121,7 +119,7 @@ public final class Font
 	final PencilFontBracket _font;
 	
 	/** The parameters for the font. */
-	private final int[] _fontParams;
+	final int[] _fontParams;
 	
 	/** The name of this font. */
 	private final String _name;
@@ -583,17 +581,6 @@ public final class Font
 		
 		// Give the total
 		return totalW;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/06/25
-	 */
-	@Override
-	@ApiStatus.Internal
-	protected PencilFontBracket __squirreljmePencilFont()
-	{
-		return this._font;
 	}
 	
 	@Api
