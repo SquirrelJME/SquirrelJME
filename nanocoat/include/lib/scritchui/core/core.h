@@ -212,14 +212,10 @@ sjme_errorCode sjme_scritchui_core_fontCount(
 	
 sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNullable sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_lpcstr inName,
-	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
-	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
-	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
-	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived,
-	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
-	sjme_attrInPositive sjme_jint limitDepth);
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* newFont,
+	sjme_attrOutNullable sjme_scritchui_pencilFontParam* newParams,
+	sjme_attrInNotNull sjme_scritchui_pencilFont oldFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* deriveParams);
 	
 sjme_errorCode sjme_scritchui_core_fontList(
 	sjme_attrInNotNull sjme_scritchui inState,

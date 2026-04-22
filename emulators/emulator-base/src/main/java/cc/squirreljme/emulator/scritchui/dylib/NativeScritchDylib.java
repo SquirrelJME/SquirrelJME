@@ -400,16 +400,15 @@ public final class NativeScritchDylib
 	 *
 	 * @param __stateP The state pointer.
 	 * @param __fontP The font to derive.
-	 * @param __face The face to select.
-	 * @param __style The new style to select.
-	 * @param __pixelSize The pixel size of the font.
+	 * @param __deriveParams The old parameters.
+	 * @param __newParams The new parameters.
 	 * @return The resultant font pointer.
 	 * @throws MLECallError On null arguments, if the style is not valid,
 	 * or the pixel size is zero or negative.
 	 * @since 2024/06/14
 	 */
 	static native long __fontDerive(long __stateP, long __fontP,
-		String __name, int __face, int __style, int __pixelSize)
+		int[] __deriveParams, int[] __newParams)
 		throws MLECallError;
 	
 	/**

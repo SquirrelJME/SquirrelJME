@@ -107,9 +107,6 @@
 	DESC_LONG DESC_LONG DESC_LONG \
 	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER )
 
-#define FORWARD_DESC___fontDerive DESC_METHOD(DESC_LONG,  \
-	DESC_LONG DESC_LONG DESC_STRING DESC_INT DESC_INT DESC_INT )
-
 #define FORWARD_DESC___hardwareGraphics DESC_METHOD(DESC_PENCIL,  \
 	DESC_LONG DESC_INT DESC_INT DESC_INT DESC_OBJECT \
 	DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_INT DESC_INT )
@@ -1742,54 +1739,59 @@ MLE_FUNC_PROTO(jlong, __fontByFace,
 	return (jlong)found;
 }
 
-JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
-	__fontDerive)(JNIEnv* env, jclass classy, jlong stateP,
-	jlong fontP, jstring name, jint face, jint style, jint pixelSize)
+#define MLE_DESC___fontDerive DESC_METHOD(DESC_LONG,  \
+	DESC_LONG DESC_LONG DESC_ARRAY(DESC_INT) DESC_ARRAY(DESC_INT))
+MLE_FUNC_PROTO(jlong, __fontDerive, jlong jStateP, jlong jFontP,
+	jintArray jDeriveFPI, jintArray jNewFPI)
 {
-	sjme_scritchui state;
-	sjme_scritchui_pencilFont font;
-	sjme_scritchui_pencilFont derived;
 	sjme_errorCode error;
-	jboolean isCopy;
-	const char* nameChars;
+	sjme_scritchui inState;
+	sjme_scritchui_pencilFont inFont;
+	sjme_scritchui_pencilFont newFont;
+	sjme_scritchui_pencilFontParam deriveParams, newParams;
 
-	if (stateP == 0)
+	/* Check. */
+	inState = (sjme_scritchui)jStateP;
+	inFont = (sjme_scritchui_pencilFont)jFontP;
+	if (inState == NULL || inFont == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return 0;
+		return (jlong)0;
 	}
 
-	/* Restore. */
-	state = (sjme_scritchui)stateP;
-	font = (sjme_scritchui_pencilFont)fontP;
+	/* Map old parameters? */
+	memset(&deriveParams, 0, sizeof(deriveParams));
+	if (jDeriveFPI != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env, inState,
+			&deriveParams, jDeriveFPI)))
+		{
+			sjme_jni_throwMLECallError(env, error);
+			return (jlong)0;
+		}
 
-	/* Get the name characters. */
-	nameChars = NULL;
-	isCopy = JNI_FALSE;
-	if (name != NULL)
-		nameChars = (*env)->GetStringUTFChars(env, name, &isCopy);
-
-	sjme_todo("Impl?");
-	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
-#if 0
-	/* Forward. */
-	derived = NULL;
-	if (sjme_error_is(error = state->api->fontDerive(state,
-		font, nameChars, face, style, pixelSize,
-		&derived, INT32_MAX)) || derived == NULL)
+	/* Perform derivation. */
+	newFont = NULL;
+	memset(&newParams, 0, sizeof(newParams));
+	if (sjme_error_is(error = inState->api->fontDerive(inState,
+		&newFont, &newParams,
+		inFont, (jDeriveFPI != NULL ? &deriveParams : NULL))) ||
+		newFont == NULL)
 	{
-		/* Cleanup. */
-		(*env)->ReleaseStringUTFChars(env, name, nameChars);
-
 		sjme_jni_throwMLECallError(env, error);
-		return 0;
+		return (jlong)0;
 	}
 
-	/* Cleanup. */
-	(*env)->ReleaseStringUTFChars(env, name, nameChars);
+	/* Map new parameters? */
+	if (jNewFPI != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamToFlat(env, inState,
+			jNewFPI, &newParams)))
+		{
+			sjme_jni_throwMLECallError(env, error);
+			return (jlong)0;
+		}
 
-	return (jlong)derived;
-#endif
+	/* Return resultant font. */
+	return (jlong)newFont;
 }
 
 JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -3077,7 +3079,6 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __containerGetFrame),
 	FORWARD_list(NativeScritchDylib, __containerRemoveAll),
 	FORWARD_list(NativeScritchDylib, __containerSetBounds),
-	FORWARD_list(NativeScritchDylib, __fontDerive),
 	FORWARD_list(NativeScritchDylib, __hardwareGraphics),
 	FORWARD_list(NativeScritchDylib, __labelSetString),
 	FORWARD_list(NativeScritchDylib, __lafElementColor),
@@ -3119,4 +3120,5 @@ FORWARD_init(mleNativeScritchDylibInit, mleNativeScritchDylibMethods)
 
 MLE_LIST_BEGIN()
 	MLE_LIST_ITEM(__fontByFace),
+	MLE_LIST_ITEM(__fontDerive),
 MLE_LIST_END()

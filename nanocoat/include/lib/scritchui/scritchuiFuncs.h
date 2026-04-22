@@ -743,29 +743,19 @@ typedef sjme_errorCode (*sjme_scritchui_fontByFaceFunc)(
  * Derives a new font from an existing font.
  * 
  * @param inState The input state.
- * @param inFont The input font to derive.
- * @param inName The name of the font to derive.
- * @param inFace The face of the font.
- * @param inStyle The style to switch to.
- * @param inPixelSize The pixel size to use.
- * @param outDerived The resultant derived font.
- * @param outParams The resultant output parameters.
- * @param limitDepth Limit the depth of the derived font, this can be used
- * to filter out pseudo and wrapper fonts. If this is not desired, then
- * this should be @code INT32_MAX @endcode.
+ * @param newFont The new font.
+ * @param newParams The new font parameters.
+ * @param oldFont The old font.
+ * @param deriveParams The font paramters to derive to..
  * @return Any resultant error, if any.
  * @since 2024/06/14
  */
 typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_lpcstr inName,
-	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
-	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
-	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
-	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived,
-	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
-	sjme_attrInPositive sjme_jint limitDepth);
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* newFont,
+	sjme_attrOutNullable sjme_scritchui_pencilFontParam* newParams,
+	sjme_attrInNotNull sjme_scritchui_pencilFont oldFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* deriveParams);
 
 /**
  * Obtains the fonts which are available in the system, if any.

@@ -469,14 +469,10 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	SJME_SDU_CASE(fontDerive,
 		SJME_SCRITCHUI_SERIAL_UI_FONT_DERIVE,
 		(state,
-		as->fontDerive.inFont,
-		as->fontDerive.inName,
-		as->fontDerive.inFace,
-		as->fontDerive.inStyle,
-		as->fontDerive.inPixelSize,
-		as->fontDerive.outDerived,
-		as->fontDerive.outParams,
-		as->fontDerive.limitDepth));
+		as->fontDerive.newFont,
+		as->fontDerive.newParams,
+		as->fontDerive.oldFont,
+		as->fontDerive.deriveParams));
 	
 	SJME_SDU_CASE(fontList,
 		SJME_SCRITCHUI_SERIAL_UI_FONT_LIST,
@@ -1593,28 +1589,19 @@ sjme_errorCode sjme_scritchui_coreSerial_fontCount(
 
 sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNullable sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_lpcstr inName,
-	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
-	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
-	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
-	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived,
-	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
-	sjme_attrInPositive sjme_jint limitDepth)
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* newFont,
+	sjme_attrOutNullable sjme_scritchui_pencilFontParam* newParams,
+	sjme_attrInNotNull sjme_scritchui_pencilFont oldFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* deriveParams)
 {
 	SJME_SDU_CHUNK(fontDerive,
 		SJME_SCRITCHUI_SERIAL_UI_FONT_DERIVE,
-		(inState, inFont, inName, inFace, inStyle, inPixelSize, outDerived,
-			outParams, limitDepth));
+		(inState, newFont, newParams, oldFont, deriveParams));
 		
-	SJME_SDX_PASS(inFont);
-	SJME_SDX_PASS(inName);
-	SJME_SDX_PASS(inFace);
-	SJME_SDX_PASS(inStyle);
-	SJME_SDX_PASS(inPixelSize);
-	SJME_SDX_PASS(outDerived);
-	SJME_SDX_PASS(outParams);
-	SJME_SDX_PASS(limitDepth);
+	SJME_SDX_PASS(newFont);
+	SJME_SDX_PASS(newParams);
+	SJME_SDX_PASS(oldFont);
+	SJME_SDX_PASS(deriveParams);
 	
 	/* Invoke and wait. */
 	SJME_SDX_WAIT;

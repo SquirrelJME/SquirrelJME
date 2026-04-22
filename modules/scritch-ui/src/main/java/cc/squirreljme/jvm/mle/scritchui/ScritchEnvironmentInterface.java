@@ -63,24 +63,19 @@ public interface ScritchEnvironmentInterface
 	/**
 	 * Derives the given font.
 	 *
-	 * @param __font The font to derive, if {@code null} then no font is used
-	 * as the basis.
-	 * @param __name The name of the font to derive.
-	 * @param __face The new face to select. 
-	 * @param __style The new style to select.
-	 * @param __pixelSize The pixel size of the font.
+	 * @param __font The font to derive.
+	 * @param __deriveParams The font parameters to derive.
+	 * @param __newParams The new actual resultant font parameters.
 	 * @return The resultant font.
-	 * @throws MLECallError On null arguments, if the style is not valid,
-	 * or the pixel size is zero or negative.
+	 * @throws MLECallError On null arguments, or if the font parameters are
+	 * not valid.
 	 * @since 2024/06/14
 	 */
 	@SquirrelJMEVendorApi
 	@NotNull
-	PencilFontBracket fontDerive(@Nullable PencilFontBracket __font,
-		@Nullable String __name,
-		@MagicConstant(flagsFromClass = PencilFontFace.class) int __face,
-		@MagicConstant(flagsFromClass = PencilFontStyle.class) int __style,
-		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
+	PencilFontBracket fontDerive(@NotNull PencilFontBracket __font,
+		@Nullable int[] __deriveParams,
+		@Nullable int[] __newParams)
 		throws MLECallError;
 	
 	/**

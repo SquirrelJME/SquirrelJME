@@ -568,14 +568,10 @@ SDU_STRUCT_DEF(fontCount,
 	SDX_VARP(sjme_jint, outCount););
 
 SDU_STRUCT_DEF(fontDerive,
-	SDX_VAR(sjme_scritchui_pencilFont, inFont);
-	SDX_VAR(sjme_lpcstr, inName);
-	SDX_VAR(sjme_scritchui_pencilFontFace, inFace);
-	SDX_VAR(sjme_scritchui_pencilFontStyle, inStyle);
-	SDX_VAR(sjme_jint, inPixelSize);
-	SDX_VARP(sjme_scritchui_pencilFont, outDerived);
-	SDX_VARP(sjme_scritchui_pencilFontParam, outParams);
-	SDX_VAR(sjme_jint, limitDepth););
+	SDX_VARP(sjme_scritchui_pencilFont, newFont);
+	SDX_VARP(sjme_scritchui_pencilFontParam, newParams);
+	SDX_VAR(sjme_scritchui_pencilFont, oldFont);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, deriveParams););
 
 SDU_STRUCT_DEF(fontList,
 	SDX_VARP(sjme_list(sjme_scritchui_pencilFont), outFonts);
@@ -1438,14 +1434,10 @@ sjme_errorCode sjme_scritchui_coreSerial_fontCount(
 	
 sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNullable sjme_scritchui_pencilFont inFont,
-	sjme_attrInNullable sjme_lpcstr inName,
-	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
-	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
-	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
-	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived,
-	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
-	sjme_attrInPositive sjme_jint limitDepth);
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* newFont,
+	sjme_attrOutNullable sjme_scritchui_pencilFontParam* newParams,
+	sjme_attrInNotNull sjme_scritchui_pencilFont oldFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* deriveParams);
 	
 sjme_errorCode sjme_scritchui_coreSerial_fontList(
 	sjme_attrInNotNull sjme_scritchui inState,

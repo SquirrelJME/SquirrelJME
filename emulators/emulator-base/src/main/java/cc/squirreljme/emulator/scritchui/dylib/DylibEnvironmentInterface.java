@@ -87,18 +87,17 @@ public class DylibEnvironmentInterface
 	 */
 	@Override
 	public @NotNull PencilFontBracket fontDerive(
-		@Nullable PencilFontBracket __font, String __name,
-		int __face, int __style,
-		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
+		@NotNull PencilFontBracket __font,
+		@Nullable int[] __deriveParams,
+		@Nullable int[] __newParams)
 		throws MLECallError
 	{
-		long fontP = 0;
-		if (__font != null)
-			fontP = ((DylibPencilFontObject)__font).objectPointer();
+		if (__font == null)
+			throw new MLECallError("NARG");
 		
+		long fontP = ((DylibPencilFontObject)__font).objectPointer();
 		return new DylibPencilFontObject(NativeScritchDylib.__fontDerive(
-			this.dyLib._stateP, fontP, __name,
-			__face, __style, __pixelSize));
+			this.dyLib._stateP, fontP, __deriveParams, __newParams));
 	}
 	
 	/**

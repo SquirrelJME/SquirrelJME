@@ -484,13 +484,14 @@ public class ScritchUnifiedWrapper
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public PencilFontBracket fontDerive(
-		PencilFontBracket __font, String __name, int __face, int __style,
-		int __pixelSize)
+	public @NotNull PencilFontBracket fontDerive(
+		@NotNull PencilFontBracket __font,
+		@Nullable int[] __deriveParams,
+		@Nullable int[] __newParams)
 		throws MLECallError
 	{
 		return this.api.environment().fontDerive(__font, 
-			__name, __face, __style, __pixelSize);
+			__deriveParams, __newParams);
 	}
 	
 	/**

@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.PencilFontShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilFontFace;
@@ -300,16 +301,22 @@ public final class Font
 		if (this._style == __style && this._pixelsize == __pixelSize)
 			return this;
 		
-		throw Debugging.todo();
-		/*
-		// Derive font
+		// Always use the same parameters as a base
+		int[] oldParams = this._fontParams;
+		int[] newParams = new int[PencilFontParam.NUM_PARAMS];
+		ObjectShelf.arrayCopy(oldParams, 0,
+			newParams, 0, PencilFontParam.NUM_PARAMS);
+		
+		// Set new parameters
+		newParams[PencilFontParam.STYLE] = __style;
+		newParams[PencilFontParam.PIXEL_SIZE] = __pixelSize;
+		
+		// Derive natively, we technically do not have to do the native call
+		// however it is possible that there is a better choice of font that
+		// is exactly or closer to the desired font
 		ScritchInterface scritch = this._scritch;
 		return new Font(scritch, scritch.environment()
-			.fontDerive(this._font, this._fontParams,
-				null, PencilFontFace.AUTOMATIC,
-				__style, __pixelSize));
-				
-		 */
+			.fontDerive(this._font, oldParams, newParams), newParams);
 	}
 	
 	/**
