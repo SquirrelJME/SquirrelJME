@@ -806,10 +806,10 @@ public final class Font
 		PencilFontBracket found = scritch.environment().fontByFace(
 			FontUtilities.faceToPencil(__face), params, outParams);
 		
-		// If not found, fallback to a default font, derived accordingly
+		// If not found, fallback to the very baseline fallback font just so
+		// something actually works
 		if (found == null)
-			return Font.getDefaultFont().deriveFont(__style,
-				params[PencilFontParam.PIXEL_SIZE]);
+			found = scritch.environment().builtinFonts()[0];
 		
 		// Setup font otherwise
 		return new Font(scritch, found, outParams);

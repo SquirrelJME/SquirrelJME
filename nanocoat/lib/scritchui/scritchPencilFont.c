@@ -523,9 +523,6 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelSize(
 	sjme_attrInNegativeOnePositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
 {
-	sjme_errorCode error;
-	sjme_jint result;
-	
 	if (inFont == NULL || outSize == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -1063,6 +1060,7 @@ sjme_errorCode sjme_scritchui_core_intern_fontIterate(
 }
 
 sjme_errorCode sjme_scritchui_core_intern_fontParamFromFlat(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
 	sjme_attrInNotNullBuf(inFlatLen) const sjme_jint* inFlat,
 	sjme_attrInPositive sjme_jint inFlatOff,
@@ -1073,7 +1071,7 @@ sjme_errorCode sjme_scritchui_core_intern_fontParamFromFlat(
 		outParams->structish = inFlat[inFlatOff + \
 			SJME_SCRITCHUI_PENCIL_FONT_PARAM_##enumish]
 
-	if (outParams == NULL || inFlat == NULL)
+	if (inState == NULL || outParams == NULL || inFlat == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inFlatOff < 0 || inFlatLen < 0 || (inFlatOff + inFlatLen) < 0)
@@ -1089,6 +1087,7 @@ sjme_errorCode sjme_scritchui_core_intern_fontParamFromFlat(
 }
 
 sjme_errorCode sjme_scritchui_core_intern_fontParamToFlat(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNullBuf(outFlatLen) sjme_jint* outFlat,
 	sjme_attrInPositive sjme_jint outFlatOff,
@@ -1099,7 +1098,7 @@ sjme_errorCode sjme_scritchui_core_intern_fontParamToFlat(
 		outFlat[outFlatOff + SJME_SCRITCHUI_PENCIL_FONT_PARAM_##enumish] = \
 			(sjme_jint)inParams->structish;
 
-	if (inParams == NULL || outFlat == NULL)
+	if (inState == NULL || inParams == NULL || outFlat == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (outFlatOff < 0 || outFlatLen < 0 || (outFlatOff + outFlatLen) < 0)

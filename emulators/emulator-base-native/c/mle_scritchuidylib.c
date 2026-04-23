@@ -1692,24 +1692,30 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 #define MLE_DESC___fontByFace DESC_METHOD(DESC_LONG, \
 	DESC_LONG DESC_INT DESC_ARRAY(DESC_INT) DESC_ARRAY(DESC_INT))
 MLE_FUNC_PROTO(jlong, __fontByFace,
-	jlong stateP, jint inFace, jintArray inParamsF, jintArray outParamsF)
+	jlong jStateP, jint inFace, jintArray inParamsF, jintArray outParamsF)
 {
 	sjme_errorCode error;
-	sjme_scritchui state;
+	sjme_scritchui inState;
 	sjme_scritchui_pencilFontParam inParamsS, outParamsS;
 	sjme_scritchui_pencilFont found;
 
-	state = (sjme_scritchui)stateP;
-	if (state == 0)
+	inState = (sjme_scritchui)jStateP;
+	if (inState == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	if (inState->api == NULL || inState->api->fontByFace == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_ILLEGAL_STATE);
 		return 0;
 	}
 
 	/* Setup in parameters. */
 	memset(&inParamsS, 0, sizeof(inParamsS));
 	if (inParamsF != NULL)
-		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env, state,
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env, inState,
 			&inParamsS, inParamsF)))
 		{
 			sjme_jni_throwMLECallError(env, error);
@@ -1719,7 +1725,7 @@ MLE_FUNC_PROTO(jlong, __fontByFace,
 	/* Locate font by face. */
 	found = NULL;
 	memset(&outParamsS, 0, sizeof(outParamsS));
-	if (sjme_error_is(error = state->api->fontByFace(state,
+	if (sjme_error_is(error = inState->api->fontByFace(inState,
 		&found, &outParamsS, inFace, (inParamsF != NULL ? &inParamsS : NULL))))
 	{
 		sjme_jni_throwMLECallError(env, error);
@@ -1728,7 +1734,7 @@ MLE_FUNC_PROTO(jlong, __fontByFace,
 
 	/* Map output parameters. */
 	if (outParamsF != NULL)
-		if (sjme_error_is(error = sjme_jni_fontParamToFlat(env, state,
+		if (sjme_error_is(error = sjme_jni_fontParamToFlat(env, inState,
 			outParamsF, &outParamsS)))
 		{
 			sjme_jni_throwMLECallError(env, error);
@@ -1756,6 +1762,13 @@ MLE_FUNC_PROTO(jlong, __fontDerive, jlong jStateP, jlong jFontP,
 	if (inState == NULL || inFont == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return (jlong)0;
+	}
+
+	/* Make sure this exists. */
+	if (inState->api == NULL || inState->api->fontDerive == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_ILLEGAL_STATE);
 		return (jlong)0;
 	}
 

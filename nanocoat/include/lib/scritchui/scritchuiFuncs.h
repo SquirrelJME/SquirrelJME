@@ -1522,6 +1522,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelSizeFunc)(
 /**
  * Maps structured font parameters from flat font parameters.
  *
+ * @param inState The input state.
  * @param outParams The output parameters.
  * @param inFlat The @link sjme_scritchui_pencilFontParamIndex @endlink
  * for property adjustment.
@@ -1531,6 +1532,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelSizeFunc)(
  * @since 2026/03/21
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontParamFromFlatFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
 	sjme_attrInNotNullBuf(inFlatLen) const sjme_jint* inFlat,
 	sjme_attrInPositive sjme_jint inFlatOff,
@@ -1539,6 +1541,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontParamFromFlatFunc)(
 /**
  * Maps structured font parameters to flat font parameters.
  *
+ * @param inState The input state.
  * @param inParams The input structured parameters.
  * @param outFlat The @link sjme_scritchui_pencilFontParamIndex @endlink
  * for property adjustment.
@@ -1548,6 +1551,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontParamFromFlatFunc)(
  * @since 2026/03/21
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontParamToFlatFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNullBuf(outFlatLen) sjme_jint* outFlat,
 	sjme_attrInPositive sjme_jint outFlatOff,

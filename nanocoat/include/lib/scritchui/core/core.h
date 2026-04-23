@@ -432,12 +432,14 @@ sjme_errorCode sjme_scritchui_core_intern_fontIterate(
 	sjme_attrInOutNotNull sjme_scritchui_fontIterateStep* inOutStep);
 
 sjme_errorCode sjme_scritchui_core_intern_fontParamFromFlat(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
 	sjme_attrInNotNullBuf(inFlatLen) const sjme_jint* inFlat,
 	sjme_attrInPositive sjme_jint inFlatOff,
 	sjme_attrInPositiveNonZero sjme_jint inFlatLen);
 
 sjme_errorCode sjme_scritchui_core_intern_fontParamToFlat(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNullBuf(outFlatLen) sjme_jint* outFlat,
 	sjme_attrInPositive sjme_jint outFlatOff,

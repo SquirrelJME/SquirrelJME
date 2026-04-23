@@ -549,7 +549,7 @@ sjme_errorCode sjme_jni_fontParamToFlat(
 	sjme_attrInNotNull JNIEnv* env,
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull jintArray destFlat,
-	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* srcParams);
+	sjme_attrOutNotNull const sjme_scritchui_pencilFontParam* srcParams);
 
 #endif /* __SQUIRRELJME_H__ */
 

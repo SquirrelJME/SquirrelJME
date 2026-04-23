@@ -629,8 +629,12 @@ sjme_errorCode sjme_jni_fontParamFromFlat(
 	jint* raw;
 	jboolean isCopy;
 
-	if (env == NULL || destParams == NULL || srcFlat == NULL)
+	if (env == NULL || inState == NULL ||
+		destParams == NULL || srcFlat == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inState->intern == NULL || inState->intern->fontParamFromFlat == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Get array elements. */
 	raw = NULL;
@@ -642,6 +646,7 @@ sjme_errorCode sjme_jni_fontParamFromFlat(
 	/* Map. */
 	memset(destParams, 0, sizeof(*destParams));
 	if (sjme_error_is(error = inState->intern->fontParamFromFlat(
+		inState,
 		destParams,
 		(const sjme_jint*)raw, 0,
 		(*env)->GetArrayLength(env, srcFlat))))
@@ -658,14 +663,18 @@ sjme_errorCode sjme_jni_fontParamToFlat(
 	sjme_attrInNotNull JNIEnv* env,
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull jintArray destFlat,
-	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* srcParams)
+	sjme_attrOutNotNull const sjme_scritchui_pencilFontParam* srcParams)
 {
 	sjme_errorCode error;
 	jint* raw;
 	jboolean isCopy;
 
-	if (env == NULL || srcParams == NULL || destFlat == NULL)
+	if (env == NULL || inState == NULL ||
+		srcParams == NULL || destFlat == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inState->intern == NULL || inState->intern->fontParamToFlat == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Get array elements. */
 	raw = NULL;
@@ -675,8 +684,8 @@ sjme_errorCode sjme_jni_fontParamToFlat(
 		return sjme_error_default(error);
 
 	/* Map. */
-	memset(srcParams, 0, sizeof(*srcParams));
 	if (sjme_error_is(error = inState->intern->fontParamToFlat(
+		inState,
 		srcParams,
 		(sjme_jint*)raw, 0,
 		(*env)->GetArrayLength(env, destFlat))))
