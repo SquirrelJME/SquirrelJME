@@ -341,14 +341,14 @@ sjme_errorCode sjme_scritchpen_core_setFont(
 		/* Clear old font, if one is used. */
 		oldFont = target->font;
 		target->font = NULL;
+
+		/* Set font used. */
+		target->font = sjme_weakUpR(sjme_scritchui_pencilFont, font);
 	
 		/* Count down. */
 		if (oldFont != NULL)
 			if (sjme_error_is(error = sjme_alloc_weakUnRef(oldFont)))
 				return sjme_error_default(error);
-	
-		/* Set font used. */
-		target->font = sjme_weakUpR(sjme_scritchui_pencilFont, font);
 	}
 	
 	/* Use parameters. */
@@ -369,6 +369,10 @@ sjme_errorCode sjme_scritchpen_core_setFont(
 		target->params.style = font->id.param.style;
 		target->params.pixelSize = font->id.param.pixelSize;
 	}
+
+	/* Resultant font not valid? */
+	if (target->font == NULL)
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
