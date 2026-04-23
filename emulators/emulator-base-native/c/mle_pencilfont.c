@@ -152,81 +152,169 @@ MLE_FUNC_PROTO(jint, metricFontStyle, jobject fontInstance)
 
 #define MLE_DESC_metricPixelAscent DESC_METHOD(DESC_INT,  \
 	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_BOOLEAN )
-MLE_FUNC_PROTO(jint, metricPixelAscent, jobject fontInstance, jintArray fontParam,
-		jboolean max)
+MLE_FUNC_PROTO(jint, metricPixelAscent, jobject jFont, jintArray jFontParamI,
+	jboolean max)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_scritchui_pencilFontParam fontParam;
 	sjme_jint result;
 
-	RECOVER_FONT();
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, jFont);
+	if (font == NULL)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
 
-	sjme_todo("Impl?");
-	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
-#if 0
-	/* Forward. */
-	CHECK_AND_FORWARD(0, font->api->metricPixelAscent,
-		(font, max, &result));
+	/* Map parameters. */
+	memset(&fontParam, 0, sizeof(fontParam));
+	if (jFontParamI != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env,
+			font->common.state, &fontParam, jFontParamI)))
+		{
+			sjme_jni_throwVMException(env, error);
+			return 0;
+		}
+
+	/* Determine ascent. */
+	result = 0;
+	if (sjme_error_is(error = font->api->metricPixelAscent(font,
+		(jFontParamI != NULL ? &fontParam : NULL), max,
+		&result)))
+	{
+		sjme_jni_throwVMException(env, error);
+		return 0;
+	}
+
+	/* Success! */
 	return result;
-#endif
 }
 
 #define MLE_DESC_metricPixelBaseline DESC_METHOD(DESC_INT,  \
 	DESC_PENCILFONT DESC_ARRAY(DESC_INT) )
-MLE_FUNC_PROTO(jint, metricPixelBaseline, jobject fontInstance, jintArray fontParam)
+MLE_FUNC_PROTO(jint, metricPixelBaseline, jobject jFont, jintArray jFontParamI)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_scritchui_pencilFontParam fontParam;
 	sjme_jint result;
 
-	sjme_todo("Impl?");
-	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
-#if 0
-	/* Forward. */
-	RECOVER_FONT();
-	CHECK_AND_FORWARD(0, font->api->metricPixelBaseline,
-		(font, &result));
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, jFont);
+	if (font == NULL)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Map parameters. */
+	memset(&fontParam, 0, sizeof(fontParam));
+	if (jFontParamI != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env,
+			font->common.state, &fontParam, jFontParamI)))
+		{
+			sjme_jni_throwVMException(env, error);
+			return 0;
+		}
+
+	/* Determine ascent. */
+	result = 0;
+	if (sjme_error_is(error = font->api->metricPixelBaseline(font,
+		(jFontParamI != NULL ? &fontParam : NULL),
+		&result)))
+	{
+		sjme_jni_throwVMException(env, error);
+		return 0;
+	}
+
+	/* Success! */
 	return result;
-#endif
 }
 
 #define MLE_DESC_metricPixelDescent DESC_METHOD(DESC_INT,  \
 	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_BOOLEAN )
-MLE_FUNC_PROTO(jint, metricPixelDescent, jobject fontInstance, jintArray fontParam,
-		jboolean max)
+MLE_FUNC_PROTO(jint, metricPixelDescent, jobject jFont, jintArray jFontParamI,
+	jboolean max)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_scritchui_pencilFontParam fontParam;
 	sjme_jint result;
 
-	sjme_todo("Impl?");
-	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
-#if 0
-	/* Forward. */
-	RECOVER_FONT();
-	CHECK_AND_FORWARD(0, font->api->metricPixelDescent,
-		(font, max, &result));
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, jFont);
+	if (font == NULL)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Map parameters. */
+	memset(&fontParam, 0, sizeof(fontParam));
+	if (jFontParamI != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env,
+			font->common.state, &fontParam, jFontParamI)))
+		{
+			sjme_jni_throwVMException(env, error);
+			return 0;
+		}
+
+	/* Determine descent. */
+	result = 0;
+	if (sjme_error_is(error = font->api->metricPixelDescent(font,
+		(jFontParamI != NULL ? &fontParam : NULL), max,
+		&result)))
+	{
+		sjme_jni_throwVMException(env, error);
+		return 0;
+	}
+
+	/* Success! */
 	return result;
-#endif
 }
 
 #define MLE_DESC_metricPixelLeading DESC_METHOD(DESC_INT,  \
 	DESC_PENCILFONT DESC_ARRAY(DESC_INT) )
-MLE_FUNC_PROTO(jint, metricPixelLeading, jobject fontInstance, jintArray fontParam)
+MLE_FUNC_PROTO(jint, metricPixelLeading,
+	jobject jFont, jintArray jFontParamI)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_scritchui_pencilFontParam fontParam;
 	sjme_jint result;
 
-	sjme_todo("Impl?");
-	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
-#if 0
-	/* Forward. */
-	RECOVER_FONT();
-	CHECK_AND_FORWARD(0, font->api->metricPixelLeading,
-		(font, &result));
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, jFont);
+	if (font == NULL)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Map parameters. */
+	memset(&fontParam, 0, sizeof(fontParam));
+	if (jFontParamI != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env,
+			font->common.state, &fontParam, jFontParamI)))
+		{
+			sjme_jni_throwVMException(env, error);
+			return 0;
+		}
+
+	/* Determine size. */
+	result = 0;
+	if (sjme_error_is(error = font->api->metricPixelLeading(font,
+		(jFontParamI != NULL ? &fontParam : NULL),
+		&result)))
+	{
+		sjme_jni_throwVMException(env, error);
+		return 0;
+	}
+
+	/* Success! */
 	return result;
-#endif
 }
 
 #define MLE_DESC_metricPixelSize DESC_METHOD(DESC_INT,  \
