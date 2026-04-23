@@ -795,7 +795,6 @@ public final class Font
 		
 		// Setup parameters for input/output
 		int[] params = new int[PencilFontParam.NUM_PARAMS];
-		int[] outParams = new int[PencilFontParam.NUM_PARAMS];
 		params[PencilFontParam.STYLE] = __style;
 		params[PencilFontParam.PIXEL_SIZE] = 
 			FontUtilities.logicalSizeToPixelSize(__size);
@@ -804,15 +803,23 @@ public final class Font
 		DisplayManager manager = DisplayManager.instance();
 		ScritchInterface scritch = manager.scritch();
 		PencilFontBracket found = scritch.environment().fontByFace(
-			FontUtilities.faceToPencil(__face), params, outParams);
+			FontUtilities.faceToPencil(__face), params, params);
 		
 		// If not found, fallback to the very baseline fallback font just so
 		// something actually works
 		if (found == null)
+		{
+			// Use this font
 			found = scritch.environment().builtinFonts()[0];
+			
+			// Restore paramaters
+			params[PencilFontParam.STYLE] = __style;
+			params[PencilFontParam.PIXEL_SIZE] =
+				FontUtilities.logicalSizeToPixelSize(__size);
+		}
 		
 		// Setup font otherwise
-		return new Font(scritch, found, outParams);
+		return new Font(scritch, found, params);
 	}
 	
 	/**

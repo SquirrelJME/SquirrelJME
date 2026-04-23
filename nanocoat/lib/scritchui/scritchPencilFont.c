@@ -464,22 +464,21 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelHeight(
 	/* to multiplicative errors. */
 	leading = 0;
 	if (sjme_error_is(error = inFont->apiInThread->metricPixelLeading(inFont,
-		NULL, &leading)))
+		inParams, &leading)))
 		return sjme_error_default(error);
 		
 	ascent = 0;
 	if (sjme_error_is(error = inFont->apiInThread->metricPixelAscent(inFont,
-		NULL, SJME_JNI_FALSE, &ascent)))
+		inParams, SJME_JNI_FALSE, &ascent)))
 		return sjme_error_default(error);
 		
 	descent = 0;
 	if (sjme_error_is(error = inFont->apiInThread->metricPixelDescent(inFont,
-		NULL, SJME_JNI_FALSE, &descent)))
+		inParams, SJME_JNI_FALSE, &descent)))
 		return sjme_error_default(error);
 	
-	/* Scale each value in total */
-	*outHeight = sjme_scritchui_fontScaleV(inFont, inParams,
-		leading + ascent + descent);
+	/* Do not scale, use a consistent value here */
+	*outHeight = leading + ascent + descent;
 	return SJME_ERROR_NONE;
 }
 
@@ -493,7 +492,7 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
 	
 	if (inFont == NULL || outLeading == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
 	/* Cached? */
 	if (inFont->cache.leading != 0)
 		result = inFont->cache.leading;
@@ -502,17 +501,18 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
 		/* Not implemented? */
 		if (inFont->impl->metricPixelLeading == NULL)
 			return sjme_error_notImplemented(0);
-	
+
 		/* Load into cache. */
 		result = 0;
 		if (sjme_error_is(error = inFont->impl->metricPixelLeading(inFont,
 			NULL, &result)))
 			return sjme_error_default(error);
-	
+
 		/* Cache and use it. */
 		inFont->cache.leading = result;
 	}
-	
+
+	/* Scale result. */
 	*outLeading = sjme_scritchui_fontScaleV(inFont, inParams, result);
 	return SJME_ERROR_NONE;
 }
@@ -589,7 +589,7 @@ static sjme_errorCode sjme_scritchui_fontPixelCharWidth(
 
 static sjme_errorCode sjme_scritchui_renderBitmapScaled(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInNotNull sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNotNull const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,
@@ -626,13 +626,13 @@ static sjme_errorCode sjme_scritchui_renderBitmapScaled(
 	/* Need character width. */
 	cw = 0;
 	if (sjme_error_is(error = inFont->apiInThread->pixelCharWidth(
-		inFont, NULL, inCodepoint, &cw)))
+		inFont, inParams, inCodepoint, &cw)))
 		return sjme_error_default(error);
 		
 	/* And the pixel height, since this is a bitmap font. */
 	ch = 0;
 	if (sjme_error_is(error = inFont->apiInThread->metricPixelSize(
-		inFont, NULL, inCodepoint, &ch)))
+		inFont, inParams, inCodepoint, &ch)))
 		return sjme_error_default(error);
 	
 	/* Determine scanline length for each bitmap row. */
@@ -673,7 +673,7 @@ static sjme_errorCode sjme_scritchui_renderBitmapScaled(
 	/* Get original glyph bitmap. */
 	origOffX = 0;
 	origOffY = 0;
-	if (sjme_error_is(error = inFont->impl->renderBitmap(inFont, NULL,
+	if (sjme_error_is(error = inFont->impl->renderBitmap(inFont, inParams,
 		inCodepoint, src, 0, scanLen,
 		ch, &origOffX, &origOffY)))
 		goto fail_renderBitmap;
@@ -1279,7 +1279,7 @@ sjme_errorCode sjme_scritchui_core_fontByFace(
 		memmove(&data.inParams, inParams, sizeof(data.inParams));
 
 	/* Use font size specified by the system. */
-	if (data.inParams.pixelSize == 0)
+	if (data.inParams.pixelSize <= 0)
 	{
 		if (sjme_error_is(error = inState->apiInThread->lafMetric(inState,
 			NULL, &data.inParams.pixelSize,
@@ -1303,11 +1303,11 @@ sjme_errorCode sjme_scritchui_core_fontByFace(
 	if (data.derive.font == NULL)
 		return SJME_ERROR_INVALID_FONT;
 
-	/* Use this font. */
+	/* Use this font, take from the input parameters rather than from */
+	/* the font itself. */
 	*outFont = data.derive.font;
 	if (outParams != NULL)
-		memmove(outParams, &data.derive.id.param,
-			sizeof(data.derive.id.param));
+		memmove(outParams, &data.inParams, sizeof(data.inParams));
 	return SJME_ERROR_NONE;
 }
 

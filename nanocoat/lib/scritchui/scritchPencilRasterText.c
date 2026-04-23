@@ -346,7 +346,7 @@ sjme_errorCode sjme_scritchpen_core_setFont(
 	if (params != NULL)
 	{
 		/* Copy over. */
-		memmove(&target->params, params, sizeof(*params));
+		memmove(&target->params, params, sizeof(target->params));
 		
 		/* Make sure the values are valid. */
 		target->params.style &= SJME_SCRITCHUI_PENCIL_FONT_STYLE_ALL;
