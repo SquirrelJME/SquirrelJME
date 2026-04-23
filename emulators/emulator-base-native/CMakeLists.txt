@@ -32,7 +32,7 @@ foreach(baseDir IN ITEMS "frontend" "include" "lib" "src")
 		"${CMAKE_SOURCE_DIR}/${baseDir}/CMakeLists*.txt")
 
 	# Add to all sources
-	list(APPEND nanoCoatSources_all "nanoCoatSources_${baseDir}")
+	list(APPEND nanoCoatSources_all "${nanoCoatSources_${baseDir}}")
 endforeach()
 
 # We want to forward as many CMAKE_ commands to the target NanoCoat as
