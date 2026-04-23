@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
@@ -10,24 +10,45 @@
 package cc.squirreljme.runtime.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import com.nttdocomo.ui.PhoneSystem;
 
 /**
- * Vendor specific phone system IDs.
+ * Tracks modification counts.
  *
- * @see PhoneSystem
- * @since 2022/02/14
+ * @since 2026/04/10
  */
 @SquirrelJMEVendorApi
-public interface VendorPhoneSystem
+public final class ModificationCounter
 {
-	/** Vibrate attribute for F503i and So503i. */
-	@SquirrelJMEVendorApi
-	byte VIBRATE_ATTRIBUTE_F503I_SO503I = 
-		64;
+	/** The current modification count. */
+	private volatile int _modCount =
+		1;
 	
-	/** Vibration attribute for P503i.. */
+	/**
+	 * Returns the current modification count.
+	 *
+	 * @return The current modification count.
+	 * @since 2026/04/10
+	 */
 	@SquirrelJMEVendorApi
-	byte VIBRATE_ATTRIBUTE_P503I = 
-		120;
+	public int current()
+	{
+		synchronized (this)
+		{
+			return this._modCount;
+		}
+	}
+	
+	/**
+	 * Increments the modification count.
+	 *
+	 * @since 2026/04/10
+	 */
+	@SquirrelJMEVendorApi
+	public void increment()
+	{
+		synchronized (this)
+		{
+			this._modCount++;
+		}
+	}
 }

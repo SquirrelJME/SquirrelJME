@@ -9,10 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import com.nttdocomo.ui.Palette;
 import javax.microedition.lcdui.Image;
 
@@ -36,14 +33,6 @@ public final class EightBitImageStore
 	@SquirrelJMEVendorApi
 	protected final boolean hasAlpha;
 	
-	/** Internal Image palette. */
-	@SquirrelJMEVendorApi
-	protected final Palette palette;
-	
-	/** The transparent index, if any. */
-	@SquirrelJMEVendorApi
-	protected final int transparentIndex;
-	
 	/** Image pixel data. */
 	@SquirrelJMEVendorApi
 	private final byte[] _pixels;
@@ -51,6 +40,21 @@ public final class EightBitImageStore
 	/** Cached MIDP image. */
 	@SquirrelJMEVendorApi
 	private volatile Image _image;
+	
+	/** Internal Image palette. */
+	private volatile Palette _palette;
+	
+	/** The palette modification counter. */
+	private volatile ModificationCounter _paletteModCount;
+	
+	/** The transparent index, if any. */
+	private volatile int _transparentIndex;
+	
+	/** Is the image considered dirty? */
+	private volatile boolean _dirty;
+	
+	/** The currently tracked modification count. */
+	private volatile int _modCount;
 	
 	/**
 	 * Initializes the image store.
@@ -73,12 +77,18 @@ public final class EightBitImageStore
 			throw new NullPointerException("NARG");
 		
 		this._pixels = __pixels;
-		this.palette = new Palette(__palette);
 		this.width = __width;
 		this.height = __height;
 		this.hasAlpha = __hasAlpha;
-		this.transparentIndex = (__transIndex >= __palette.length ? -1 :
+		this._transparentIndex = (__transIndex >= __palette.length ? -1 :
 			__transIndex);
+		
+		// Setup initial palette
+		this._palette = new Palette(__palette);
+		
+		// Initially always dirty and invalid
+		this._dirty = true;
+		this._modCount = Integer.MIN_VALUE;
 	}
 	
 	/**
@@ -102,7 +112,10 @@ public final class EightBitImageStore
 	@SquirrelJMEVendorApi
 	public Palette getPalette()
 	{
-		return this.palette;
+		synchronized (this)
+		{
+			return this._palette;
+		}
 	}
 	
 	/**
@@ -157,7 +170,7 @@ public final class EightBitImageStore
 		
 		// Set transparent color
 		if (__transparentIndex < 0)
-			__transparentIndex = this.transparentIndex;
+			__transparentIndex = this._transparentIndex;
 		if (__transparentIndex >= 0 && __transparentIndex < 256)
 			palCache[__transparentIndex] = 0x00_000000;
 		
@@ -181,7 +194,10 @@ public final class EightBitImageStore
 	@SquirrelJMEVendorApi
 	public int getTransparentIndex()
 	{
-		return this.transparentIndex;
+		synchronized (this)
+		{
+			return this._transparentIndex;
+		}
 	}
 	
 	/**
@@ -205,28 +221,86 @@ public final class EightBitImageStore
 	@SquirrelJMEVendorApi
 	public Image midpImage()
 	{
-		// Has the image already been cached?
-		Image result = this._image;
-		if (result != null)
-			return result;
-		
-		int w = this.width;
-		int h = this.height;
-		
-		// Setup temporary RGB buffer
-		int a = w * h;
-		int[] rgb = new int[a];
-		
-		// Read in RGB data
+		// Get the modification count of the current palette
 		Palette palette = this.getPalette();
-		int transDx = this.getTransparentIndex();
-		this.getRGB(rgb, 0, w, palette, 0, 0, w, h,
-			transDx);
+		ModificationCounter paletteModCounter = this._paletteModCount;
+		int paletteModCount = (paletteModCounter != null ?
+			paletteModCounter.current() : Integer.MIN_VALUE);
 		
-		// Cache image
-		result = Image.createRGBImage(rgb, w, h, true);
-		this._image = result;
+		// (Re)create the image if it does not exist, if the palette has
+		// changed, or if the image is considered dirty
+		Image result = this._image;
+		if (result == null || this._dirty || this._modCount != paletteModCount)
+		{
+			int w = this.width;
+			int h = this.height;
+			
+			// Setup temporary RGB buffer
+			int a = w * h;
+			int[] rgb = new int[a];
+			
+			// Read in RGB data
+			int transDx = this.getTransparentIndex();
+			this.getRGB(rgb, 0, w, palette, 0, 0, w, h, transDx);
+			
+			// Cache image
+			result = Image.createRGBImage(rgb, w, h, true);
+			this._image = result;
+			
+			// Unmark dirty and set new modification count
+			this._dirty = false;
+			this._modCount = paletteModCount;
+		}
 		
 		return result;
+	}
+	
+	/**
+	 * Sets the palette to use for the image.
+	 *
+	 * @param __palette The palette to use.
+	 * @param __modCount The modification counter.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/04/10
+	 */
+	@SquirrelJMEVendorApi
+	public void setPalette(Palette __palette, ModificationCounter __modCount)
+		throws NullPointerException
+	{
+		if (__palette == null || __modCount == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			// Set new palette
+			this._palette = __palette;
+			this._paletteModCount = __modCount;
+			
+			// Our palette changed, so our own modification count makes no
+			// sense anymore
+			this._modCount = Integer.MIN_VALUE;
+			
+			// Mark dirty as the palette changed
+			this._dirty = true;
+		}
+	}
+	
+	/**
+	 * Sets the transparent index of the image.
+	 *
+	 * @param __index The index to use for transparency.
+	 * @since 2026/04/10
+	 */
+	@SquirrelJMEVendorApi
+	public void setTransparentIndex(int __index)
+	{
+		synchronized (this)
+		{
+			// Set new index
+			this._transparentIndex = __index;
+			
+			// Mark dirty as the transparent index has changed
+			this._dirty = true;
+		}
 	}
 }

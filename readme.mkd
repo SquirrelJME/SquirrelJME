@@ -20,8 +20,8 @@ host virtual machine.
 Additionally, there is a port of SquirrelJME to RetroArch which enables the
 ability to play older J2ME software and games designed for flip-phones.
 
- * Copyright (C) 2013-2025 Stephanie Gawroriski <xer@multiphasicapps.net>
- * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2025
+ * Copyright (C) 2013-2026 Stephanie Gawroriski <xer@multiphasicapps.net>
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2026
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <https://www.cmykatgraphics.ca/>
@@ -63,28 +63,12 @@ read more about it and check out their product page at:
 Badges:
 
  * _Checks and Quality_
-   * [![CircleCI](
-     https://img.shields.io/circleci/build/github/SquirrelJME/SquirrelJME/trunk.svg?label=CircleCI%20Build)](
-     https://circleci.com/gh/SquirrelJME/SquirrelJME/tree/trunk)
    * [![RetroArch Core](
      https://git.libretro.com/libretro/SquirrelJME/badges/trunk/pipeline.svg?key_text=RetroArch%20Core&key_width=115)](
      https://git.libretro.com/libretro/SquirrelJME)
  * _Social and Community_
    * [![Discord](https://img.shields.io/discord/278929900893634560.svg?label=Discord%20Server)](
      https://discord.gg/9PkMMKt)
- * _Downloads and Activity_
-   * ![Commit Activity](
-     https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg?label=Code%20Commits)
-   * [![Docker Pulls](
-     https://img.shields.io/docker/pulls/xerthesquirrel/squirreljme?label=Docker%20Pulls)](
-     https://hub.docker.com/r/xerthesquirrel/squirreljme)
-   * [![SourceForge Downloads](
-     https://img.shields.io/sourceforge/dm/squirreljme.svg?label=SourceForge%20Downloads)](
-     https://sourceforge.net/projects/squirreljme/files/)
- * _Donations_
-   * [![Liberapay](
-     https://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay&label=LiberaPay)](
-     https://liberapay.com/xershadowtail)
 
 Information:
 
@@ -128,18 +112,23 @@ Information:
    * One of these commands:
      * `fossil clone -u http://squirreljme.cc/ squirreljme.fossil`
      * `fossil clone -u https://squirreljme.cc/ squirreljme.fossil`
-     * `fossil clone -u http://vzwveldr7djnlpg7ujslaqre632htbl3unkmfbltpgumevw63jn47dad.onion/ squirreljme.fossil`
-     * `fossil clone -u http://hrkzpyi33og6j5z3anfpjuqkawvkw4kxyasrp64elg3i6dffihmdhxad.onion/ squirreljme.fossil`
-     * `fossil clone -u http://squirrelmfbf2udn.onion/ squirreljme.fossil`
+     * Alternatively via the _Tor Onion_ network:
+       * `fossil clone -u http://vzwveldr7djnlpg7ujslaqre632htbl3unkmfbltpgumevw63jn47dad.onion/ squirreljme.fossil`
+       * `fossil clone -u http://hrkzpyi33og6j5z3anfpjuqkawvkw4kxyasrp64elg3i6dffihmdhxad.onion/ squirreljme.fossil`
+       * `fossil clone -u http://squirrelmfbf2udn.onion/ squirreljme.fossil`
    * `mkdir squirreljme`
    * `cd squirreljme`
    * `fossil open ../squirreljme.fossil`
- * Alternatively via [GitHub](https://github.com/SquirrelJME/SquirrelJME):
-   * `git clone https://github.com/SquirrelJME/SquirrelJME`
-   * `cd SquirrelJME`
- * Alternatively via [repo.or.cz](https://repo.or.cz/SquirrelJME.git):
-   * `git clone https://repo.or.cz/SquirrelJME.git`
-   * `cd SquirrelJME`
+ * Alternatively via a _Git_ mirror:
+   * Via [Codeberg](https://codeberg.org/SquirrelJME/SquirrelJME)
+     * `git clone https://codeberg.org/SquirrelJME/SquirrelJME`
+     * `cd SquirrelJME`
+   * Via [GitHub](https://github.com/SquirrelJME/SquirrelJME):
+     * `git clone https://github.com/SquirrelJME/SquirrelJME`
+     * `cd SquirrelJME`
+   * Via [repo.or.cz](https://repo.or.cz/SquirrelJME.git):
+     * `git clone https://repo.or.cz/SquirrelJME.git`
+     * `cd SquirrelJME`
  * Trunk Source Snapshot (Main website or `fossil serve` only):
    * [TAR.GZ](/tarball/squirreljme-trunk.tar.gz?uuid=trunk)
    * [ZIP](/zip/squirreljme-trunk.zip?uuid=trunk)

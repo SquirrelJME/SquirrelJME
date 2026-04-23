@@ -95,7 +95,7 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		return FALSE;
 	
 	/* Setup pencil for drawing. */
-	pencil = &paint->pencil;
+	pencil = sjme_atomic_g(sjme_scritchui_pencil, &paint->pencil);
 	memset(pencil, 0, sizeof(*pencil));
 	if (sjme_error_is(sjme_scritchpen_initStatic(pencil,
 		inState,
@@ -155,8 +155,8 @@ static sjme_errorCode sjme_scritchui_gtk2_eventInputButton(
 	fill->data.mouseButton.button = event->button;
 	fill->data.mouseButton.modifiers =
 		inState->implIntern->mapGtkToScritchMod(event->state);
-	fill->data.mouseButton.x = event->x;
-	fill->data.mouseButton.y = event->y;
+	fill->data.mouseButton.x = (sjme_jint)event->x;
+	fill->data.mouseButton.y = (sjme_jint)event->y;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -225,8 +225,8 @@ static sjme_errorCode sjme_scritchui_gtk2_eventInputMotion(
 	fill->data.mouseMotion.buttonMask = 0;
 	fill->data.mouseMotion.modifiers =
 		inState->implIntern->mapGtkToScritchMod(event->state);
-	fill->data.mouseMotion.x = event->x;
-	fill->data.mouseMotion.y = event->y;
+	fill->data.mouseMotion.x = (sjme_jint)event->x;
+	fill->data.mouseMotion.y = (sjme_jint)event->y;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -444,7 +444,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetInputListener(
 		inComponent,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
 			inComponent, input),
-		inListener,
+		(sjme_undefinedFunction)inListener,
 		copyFrontEnd,
 		G_CALLBACK(sjme_scritchui_gtk2_eventInput),
 		SJME_JNI_FALSE,
@@ -504,7 +504,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetPaintListener(
 		widget,
 		inComponent,
 		(sjme_scritchui_listener_void*)infoCore,
-		inListener,
+		(sjme_undefinedFunction)inListener,
 		copyFrontEnd,
 		G_CALLBACK(sjme_scritchui_gtk2_eventExpose),
 		SJME_JNI_FALSE,
@@ -550,7 +550,7 @@ sjme_errorCode sjme_scritchui_gtk2_componentSetSizeListener(
 		inComponent,
 		(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
 			inComponent, size),
-		inListener,
+		(sjme_undefinedFunction)inListener,
 		copyFrontEnd,
 		G_CALLBACK(sjme_scritchui_gtk2_eventConfigure),
 		SJME_JNI_FALSE,

@@ -100,7 +100,8 @@
 #define SJME_SDU_CALL(what, args) \
 	do { \
 	if (state->apiInThread->what == NULL) \
-		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE); \
+		return SJME_THREAD_RESULT( \
+			sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE)); \
 	sdData->error = state->apiInThread->what args; } while (0)
 
 /** Simplified case call. */
@@ -170,7 +171,8 @@
 #define SJME_SDP_CALL(what, args) \
 	do { \
 	if (sdData->g->apiInThread->what == NULL) \
-		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE); \
+		return SJME_THREAD_RESULT( \
+			sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE)); \
 	sdData->error = sdData->g->apiInThread->what args; } while (0)
 
 /** Simplified case call (pen). */
@@ -235,7 +237,8 @@
 #define SJME_SDF_CALL(what, args) \
 	do { \
 	if (sdData->inFont->apiInThread->what == NULL) \
-		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE); \
+		return SJME_THREAD_RESULT( \
+			sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE)); \
 	sdData->error = sdData->inFont->apiInThread->what args; \
 	} while (0)
 

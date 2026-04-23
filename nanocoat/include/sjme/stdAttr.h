@@ -410,7 +410,7 @@ extern "C"
 
 /** Force specific size for an enum. */
 #define sjme_enumInt(type) \
-	SJME__enum_##type##_MAXV = INT_MAX, \
+	SJME__enum_##type##_MAXV = INT32_MAX, \
 	SJME__enum_##type##_ZERO = 0
 
 #if SJME_CONFIG_GCC_VERSION_LEAST(9, 0)

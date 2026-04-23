@@ -12,6 +12,7 @@ package com.nttdocomo.ui;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.nttdocomo.ui.ModificationCounter;
 
 /**
  * This is a mutable palette which can be utilized across multiple instances
@@ -26,6 +27,10 @@ public class Palette
 {
 	/** The set of colors in the palette. */
 	private final int[] _colors;
+	
+	/** The palette modification counter. */
+	final ModificationCounter _modCount =
+		new ModificationCounter();
 	
 	/**
 	 * Initializes the palette to entirely black.
@@ -133,5 +138,8 @@ public class Palette
 		
 		// Replace color
 		colors[__index] = __color;
+		
+		// Update modification count
+		this._modCount.increment();
 	}
 }
