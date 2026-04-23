@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.constants.PencilFontParam;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.gfx.ExtraGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.ProxyGraphics;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import javax.microedition.lcdui.game.Sprite;
@@ -811,10 +812,8 @@ public abstract class Graphics
 				Math.min(fontParams.length, __font._fontParams.length));
 		
 		// Forward call
-		if (this instanceof ProxyGraphics)
-			((ProxyGraphics)this).setFont(__font, __font._font, fontParams);
-		else if (this instanceof PencilGraphics)
-			((PencilGraphics)this).setFont(__font, __font._font, fontParams);
+		if (this instanceof ExtraGraphics)
+			((ExtraGraphics)this).setFont(__font, __font._font, fontParams);
 		else
 			throw Debugging.oops();
 	}
