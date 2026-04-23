@@ -27,7 +27,7 @@
 
 		<title>SquirrelJME has a Codeberg Mirror!</title>
 		<description>SquirrelJME is now also on Codeberg at the following
-URL: <a href="https://codeberg.org/SquirrelJME/SquirrelJME">https://codeberg.org/SquirrelJME/SquirrelJME</a>!
+URL: https://codeberg.org/SquirrelJME/SquirrelJME!
 Like the other Git mirrors, this is a direct conversion of the Fossil repository
 which is then directly pushed to the remote.</description>
 	</item>
