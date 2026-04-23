@@ -398,7 +398,7 @@ sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
 	
 	/* Perform default initialization. */
 	if (sjme_error_is(error = sjme_scritchui_newPencilFontStatic(
-		inOutFont)))
+		inState, inOutFont)))
 		return sjme_error_default(error);
 	
 	/* Success! */

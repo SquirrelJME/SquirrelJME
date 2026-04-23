@@ -26,6 +26,8 @@
 /** Invoke serial call and wait for result. */
 #define SJME_SDX_WAIT \
 	do { sjme_atomic_barrier(); \
+		if (inState->api == NULL || inState->api->loopExecuteWait == NULL) \
+			return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE); \
 		if (sjme_error_is(error = inState->api->loopExecuteWait(inState, \
 		sjme_scritchui_serialDispatch, (void*)&sdData))) \
 		return sjme_error_default(error); \
@@ -67,10 +69,11 @@
 		error = SJME_NUM_ERROR_CODES; \
 		direct = SJME_JNI_FALSE; \
 		 \
-		if (inState->api->loopIsInThread == NULL || \
+		if (inState->api == NULL || inState->apiInThread == NULL || \
+			inState->api->loopIsInThread == NULL || \
 			inState->api->what == NULL || \
 			inState->apiInThread->what == NULL) \
-			return sjme_error_notImplemented(0); \
+			return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE); \
 		if (sjme_error_is(error = inState->api->loopIsInThread(inState, \
 				&direct))) \
 			return sjme_error_default(error); \
@@ -97,7 +100,7 @@
 #define SJME_SDU_CALL(what, args) \
 	do { \
 	if (state->apiInThread->what == NULL) \
-		return SJME_THREAD_RESULT(sjme_error_notImplemented(0)); \
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE); \
 	sdData->error = state->apiInThread->what args; } while (0)
 
 /** Simplified case call. */
@@ -135,10 +138,12 @@
 		error = SJME_NUM_ERROR_CODES; \
 		direct = SJME_JNI_FALSE; \
 		 \
-		if (inState->api->loopIsInThread == NULL || \
+		if (inState->api == NULL || g->api == NULL || \
+			g->apiInThread == NULL || \
+			inState->api->loopIsInThread == NULL || \
 			g->api->what == NULL || \
 			g->apiInThread->what == NULL) \
-			return sjme_error_notImplemented(0); \
+			return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE); \
 		if (sjme_error_is(error = inState->api->loopIsInThread(inState, \
 				&direct))) \
 			return sjme_error_default(error); \
@@ -165,7 +170,7 @@
 #define SJME_SDP_CALL(what, args) \
 	do { \
 	if (sdData->g->apiInThread->what == NULL) \
-		return SJME_THREAD_RESULT(sjme_error_notImplemented(0)); \
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE); \
 	sdData->error = sdData->g->apiInThread->what args; } while (0)
 
 /** Simplified case call (pen). */
@@ -188,7 +193,7 @@
 	do { if (inFont == NULL) \
 			return SJME_ERROR_NULL_ARGUMENTS; \
 		if (inFont->common.state == NULL) \
-			return SJME_ERROR_ILLEGAL_STATE; \
+			return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE); \
 		inState = inFont->common.state; \
 	} while(0)
 
@@ -198,10 +203,12 @@
 		error = SJME_NUM_ERROR_CODES; \
 		direct = SJME_JNI_FALSE; \
 		 \
-		if (inState->api->loopIsInThread == NULL || \
+		if (inState->api == NULL || inFont->api == NULL || \
+			inFont->apiInThread == NULL || \
+			inState->api->loopIsInThread == NULL || \
 			inFont->api->what == NULL || \
 			inFont->apiInThread->what == NULL) \
-			return sjme_error_notImplemented(0); \
+			return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE); \
 		if (sjme_error_is(error = inState->api->loopIsInThread(inState, \
 				&direct))) \
 			return sjme_error_default(error); \
@@ -228,7 +235,7 @@
 #define SJME_SDF_CALL(what, args) \
 	do { \
 	if (sdData->inFont->apiInThread->what == NULL) \
-		return SJME_THREAD_RESULT(sjme_error_notImplemented(0)); \
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE); \
 	sdData->error = sdData->inFont->apiInThread->what args; \
 	} while (0)
 

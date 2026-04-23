@@ -196,27 +196,35 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	sjme_errorCode error;
 	sjme_jint seqLen, at, dx, dy, bx, lineHeight, tw, cw, baseline;
 	sjme_jchar c;
-	sjme_scritchui_pencilFontWithParam font;
+	sjme_scritchui_pencilFontWithParam* font;
 	
 	if (g == NULL || s == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (o < 0 || l < 0 || (o + l) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-	
-	/* We need the font for rendering. */
-	font = g->state.font;
-	if (font.font == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
 		
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
+
+	/* We need the font for rendering. */
+	font = &g->state.font;
+	if (font->font == NULL || font->font->apiInThread == NULL ||
+		font->font->apiInThread->metricPixelHeight == NULL ||
+		font->font->apiInThread->metricPixelBaseline == NULL ||
+		font->font->apiInThread->stringWidth == NULL ||
+		g->apiInThread == NULL ||
+		g->apiInThread->drawChar == NULL)
+	{
+		error = sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
+		goto fail_getFont;
+	}
 	
 	/* Need to get the height of a line. */
 	lineHeight = -1;
-	if (sjme_error_is(error = font.font->apiInThread->metricPixelHeight(
-		font.font, &font.params, &lineHeight)) || lineHeight < 0)
+	if (sjme_error_is(error = font->font->apiInThread->metricPixelHeight(
+		font->font, &font->params, &lineHeight)) || lineHeight < 0)
 	{
 		error = sjme_error_defaultOr(error,
 			SJME_ERROR_FONT_NEGATIVE_HEIGHT);
@@ -225,8 +233,8 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	
 	/* Need the font baseline. */
 	baseline = 0;
-	if (sjme_error_is(error = font.font->apiInThread->metricPixelBaseline(
-		font.font, &font.params, &baseline)))
+	if (sjme_error_is(error = font->font->apiInThread->metricPixelBaseline(
+		font->font, &font->params, &baseline)))
 		goto fail_fontBaseline;
 	
 	/* Get sequence length for further checking. */
@@ -244,8 +252,8 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	
 	/* Determine visual size of this block of text. */
 	tw = -1;
-	if (sjme_error_is(error = font.font->apiInThread->stringWidth(font.font,
-		&font.params, s, o, l, &tw)) || tw < 0)
+	if (sjme_error_is(error = font->font->apiInThread->stringWidth(font->font,
+		&font->params, s, o, l, &tw)) || tw < 0)
 		goto fail_blockDim;
 	
 	/* Determine anchor point of this block of text. */
@@ -306,6 +314,7 @@ fail_seqBounds:
 fail_seqLen:
 fail_fontBaseline:
 fail_fontHeight:
+fail_getFont:
 	/* Need to release the lock? */
 	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);

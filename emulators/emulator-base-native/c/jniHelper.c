@@ -634,7 +634,7 @@ sjme_errorCode sjme_jni_fontParamFromFlat(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState->intern == NULL || inState->intern->fontParamFromFlat == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 
 	/* Get array elements. */
 	raw = NULL;
@@ -674,7 +674,7 @@ sjme_errorCode sjme_jni_fontParamToFlat(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inState->intern == NULL || inState->intern->fontParamToFlat == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 
 	/* Get array elements. */
 	raw = NULL;

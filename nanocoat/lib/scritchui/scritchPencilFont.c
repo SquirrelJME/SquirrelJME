@@ -219,6 +219,11 @@ static sjme_errorCode sjme_scritchui_validateChar(
 	
 	if (inFont == NULL || inOutCodepoint == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Should be implemented. */
+	if (inFont->apiInThread == NULL ||
+		inFont->apiInThread->metricCharValid == NULL)
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 	
 	/* Determine if this character is even valid. */
 	isValid = SJME_JNI_FALSE;
@@ -281,6 +286,10 @@ static sjme_errorCode sjme_scritchui_fontMetricCharValid(
 {
 	if (inFont == NULL || outValid == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Invalid state? */
+	if (inFont->impl == NULL)
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 		
 	/* Not implemented? */
 	if (inFont->impl->metricCharValid == NULL)
@@ -360,6 +369,10 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelAscent(
 	/* Load from the cache? */
 	else
 	{
+		/* Invalid state? */
+		if (inFont->impl == NULL)
+			return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
+
 		/* Not implemented? */
 		if (inFont->impl->metricPixelAscent == NULL)
 			return sjme_error_notImplemented(0);
@@ -395,6 +408,10 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelBaseline(
 		result = inFont->cache.baseline;
 	else
 	{
+		/* Invalid state? */
+		if (inFont->impl == NULL)
+			return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
+
 		/* Not implemented? */
 		if (inFont->impl->metricPixelBaseline == NULL)
 			return sjme_error_notImplemented(0);
@@ -431,6 +448,10 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelDescent(
 		result = inFont->cache.descent[!!isMax];
 	else
 	{
+		/* Invalid state? */
+		if (inFont->impl == NULL)
+			return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
+
 		/* Not implemented? */
 		if (inFont->impl->metricPixelDescent == NULL)
 			return sjme_error_notImplemented(0);
@@ -459,6 +480,13 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelHeight(
 	
 	if (inFont == NULL || outHeight == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* These should be implemented. */
+	if (inFont->apiInThread == NULL ||
+		inFont->apiInThread->metricPixelLeading == NULL ||
+		inFont->apiInThread->metricPixelAscent == NULL ||
+		inFont->apiInThread->metricPixelDescent == NULL)
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 	
 	/* Get all of these parameters, as caching individual heights can lead */
 	/* to multiplicative errors. */
@@ -498,6 +526,10 @@ static sjme_errorCode sjme_scritchui_fontMetricPixelLeading(
 		result = inFont->cache.leading;
 	else
 	{
+		/* Invalid state? */
+		if (inFont->impl == NULL)
+			return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
+
 		/* Not implemented? */
 		if (inFont->impl->metricPixelLeading == NULL)
 			return sjme_error_notImplemented(0);
@@ -552,6 +584,10 @@ static sjme_errorCode sjme_scritchui_fontPixelCharWidth(
 	
 	if (inFont == NULL || outWidth == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Invalid state? */
+	if (inFont->impl == NULL)
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 	
 	/* Not implemented? */
 	if (inFont->impl->pixelCharWidth == NULL)
@@ -621,7 +657,14 @@ static sjme_errorCode sjme_scritchui_renderBitmapScaled(
 	/* Recover wrapper. */
 	inFont = inFont->handle;
 	if (inFont == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
+
+	/* Invalid state? Note that impl renderBitmap is valid here! */
+	if (inFont->impl == NULL || inFont->apiInThread == NULL ||
+		inFont->apiInThread->pixelCharWidth == NULL ||
+		inFont->apiInThread->metricPixelSize == NULL ||
+		inFont->impl->renderBitmap == NULL)
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 	
 	/* Need character width. */
 	cw = 0;
@@ -802,6 +845,11 @@ static sjme_errorCode sjme_scritchui_fontRenderBitmap(
 		(bufHeight * bufScanLen) < 0 ||
 		(bufOff + (bufHeight * bufScanLen)) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Invalid state? */
+	if (inFont->impl == NULL || inFont->apiInThread == NULL ||
+		inFont->apiInThread->metricPixelSize == NULL)
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 	
 	/* Not implemented? */
 	if (inFont->impl->renderBitmap == NULL)
@@ -873,6 +921,11 @@ static sjme_errorCode sjme_scritchui_fontStringWidth(
 	/* Out of bounds? */
 	if ((o + l) > seqLen)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* These should always be valid. */
+	if (inFont->apiInThread == NULL ||
+		inFont->apiInThread->pixelCharWidth == NULL)
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 		
 	/* Defaults to zero length. */
 	result = 0;
@@ -1191,6 +1244,13 @@ sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
 	if (wrappedState != NULL)
 		return wrappedState->intern->fontScanAll(wrappedState,
 			outCount);
+
+	/* Invalid state? */
+	if (inState->impl == NULL || inState->intern == NULL ||
+		inState->intern->fontScanResource == NULL ||
+		inState->intern->fontBuiltin == NULL ||
+		inState->intern->fontRegister == NULL)
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 	
 	/* Recover and check the state. */
 	fontState = &inState->font;
@@ -1443,13 +1503,14 @@ sjme_jint sjme_scritchui_pencilFontScanLen(
 }
 
 sjme_errorCode sjme_scritchui_newPencilFontStatic(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_scritchui_pencilFont inOutFont)
 {
-	if (inOutFont == NULL)
+	if (inState == NULL || inOutFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inOutFont->impl == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 		
 	/* Set base fields. */
 	inOutFont->api = &sjme_scritchui_coreSerial_fontFunctions;

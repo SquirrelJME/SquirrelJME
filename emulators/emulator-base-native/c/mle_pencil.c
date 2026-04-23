@@ -387,18 +387,26 @@ MLE_FUNC_PROTO(void, hardwareDrawTriangle, jobject g, jint x1, jint y1, jint x2,
 #define MLE_DESC_hardwareDrawSubstring DESC_METHOD(DESC_VOID,  \
 	DESC_PENCIL DESC_STRING DESC_INT DESC_INT DESC_INT DESC_INT \
 	DESC_INT )
-MLE_FUNC_PROTO(void, hardwareDrawSubstring, jobject g, jstring s, jint o, jint l,
-	jint x, jint y, jint anchor)
+MLE_FUNC_PROTO(void, hardwareDrawSubstring,
+	jobject jG, jstring s, jint o, jint l, jint x, jint y, jint anchor)
 {
-	sjme_scritchui_pencil p;
+	sjme_scritchui_pencil g;
 	sjme_errorCode error;
 	sjme_charSeqStatic seq;
 
 	/* Recover. */
-	p = sjme_jni_recoverPencil(env, g);
-	if (g == NULL || p == NULL || s == NULL)
+	g = sjme_jni_recoverPencil(env, jG);
+	if (g == NULL || s == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Should be valid. */
+	if (g->api == NULL || g->api->drawSubstring == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE));
 		return;
 	}
 
@@ -408,7 +416,7 @@ MLE_FUNC_PROTO(void, hardwareDrawSubstring, jobject g, jstring s, jint o, jint l
 		goto fail_makeSeq;
 
 	/* Forward. */
-	if (sjme_error_is(error = p->api->drawSubstring(p,
+	if (sjme_error_is(error = g->api->drawSubstring(g,
 		&seq, o, l, x, y, anchor)))
 		goto fail_drawOp;
 
@@ -786,6 +794,14 @@ MLE_FUNC_PROTO(void, hardwareSetFont, jobject jG, jobject jF,
 	if (g == NULL || fp == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Should be valid. */
+	if (g->api == NULL || g->api->setFont == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE));
 		return;
 	}
 

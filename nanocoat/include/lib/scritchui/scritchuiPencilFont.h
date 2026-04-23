@@ -43,12 +43,14 @@ sjme_jint sjme_scritchui_pencilFontScanLen(
 
 /**
  * Initializes a static pencil font.
- * 
+ *
+ * @param inState The input state.
  * @param inOutFont The resultant font.
  * @return Any resultant error, if any.
  * @since 2024/06/12
  */
 sjme_errorCode sjme_scritchui_newPencilFontStatic(
+	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_scritchui_pencilFont inOutFont);
 
 /*--------------------------------------------------------------------------*/
