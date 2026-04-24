@@ -91,12 +91,12 @@
  */
 #define MLE_FUNC_PROTO(returnType, methodName, ...) \
 	JNIEXPORT returnType JNICALL MLE_FUNC_NAME(methodName) \
-		(JNIEnv* env, jclass classy, __VA_ARGS__)
+		(JNIEnv* env, jclass classy, ##__VA_ARGS__)
 
 /** MLE Function prototype (alternate). */
 #define MLE_FUNC_PROTO_ALT(returnType, methodName, alt, ...) \
 	JNIEXPORT returnType JNICALL MLE_FUNC_NAME_ALT(methodName, alt) \
-		(JNIEnv* env, jclass classy, __VA_ARGS__)
+		(JNIEnv* env, jclass classy, ##__VA_ARGS__)
 
 /** Proxied call to a JNI implementation (any set). */
 #define MLE_FUNC_PROXY_STATIC_ANY(returnType, nativeName, \
@@ -168,7 +168,7 @@
 	{ \
 		SJME_TOKEN_STRING(methodName), \
 		SJME_TOKEN(SJME_TOKEN_PASTE_PP(MLE_DESC_, methodName)), \
-		MLE_FUNC_NAME(methodName) \
+		(void*)MLE_FUNC_NAME(methodName) \
 	}
 
 /** Single item in the MLE list (alternative). */
@@ -177,7 +177,7 @@
 		SJME_TOKEN_STRING(methodName), \
 		SJME_TOKEN(SJME_TOKEN_PASTE_PP(MLE_DESC_, \
 			SJME_TOKEN_PASTE3_PP(methodName, _, alt))), \
-		MLE_FUNC_NAME(SJME_TOKEN_PASTE3_PP(methodName, _, alt)) \
+		(void*)MLE_FUNC_NAME(SJME_TOKEN_PASTE3_PP(methodName, _, alt)) \
 	}
 
 /** Single item in the MLE list (alternative, but is a proxy). */
