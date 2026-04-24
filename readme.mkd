@@ -189,13 +189,13 @@ purchasing of food items for consumption.
 This is the SquirrelJME Webring button:
 
 [![SquirrelJME][SquirrelJME]](https://squirreljme.cc/)
-[SquirrelJME]: https://squirreljme.cc/uv/webring_button.png "SquirrelJME"
+[SquirrelJME]: https://squirreljme.cc/uv/www/webring_button.png "SquirrelJME"
 
 This can be added to your site with:
 
 ```html
 <a href="https://squirreljme.cc/" target="_blank" rel="noopener">
-<img src="https://squirreljme.cc/uv/webring_button.png"
+<img src="https://squirreljme.cc/uv/www/webring_button.png"
     alt="SquirrelJME, a Java ME 8 JVM intended for software preservation."
     width="88" height="31"
     decoding="async"
@@ -205,7 +205,7 @@ This can be added to your site with:
 
 ```markdown
 [![SquirrelJME][SquirrelJME]](https://squirreljme.cc/)
-[SquirrelJME]: https://squirreljme.cc/uv/webring_button.png "SquirrelJME"
+[SquirrelJME]: https://squirreljme.cc/uv/www/webring_button.png "SquirrelJME"
 ```
 
 ## Important Statements
