@@ -122,12 +122,49 @@ sjme_errorCode sjme_jni_setIntArray(JNIEnv* env, jintArray array,
 
 void sjme_jni_throwMLECallError(JNIEnv* env, sjme_errorCode code)
 {
-	sjme_jni_throwThrowable(env, code,
+	jclass tossingClass;
+	jmethodID methodId;
+	jobject tossing;
+
+	if (env == NULL)
+		return;
+
+	/* Get the class where the exception is. */
+	tossingClass = (*env)->FindClass(env,
 		"cc/squirreljme/jvm/mle/exceptions/MLECallError");
+	if (tossingClass == NULL)
+	{
+		sjme_die("Could not find exception class?");
+		return;
+	}
+
+	/* Find constructor. */
+	methodId = (*env)->GetMethodID(env, tossingClass, "<init>",
+		"(I)V");
+	if (methodId == NULL)
+	{
+		sjme_die("Could not find exception constructor?");
+		return;
+	}
+
+	/* Make new instance. */
+	tossing = (*env)->NewObject(env, tossingClass, methodId, code);
+	if (tossing == NULL)
+	{
+		sjme_die("Could not create throwable to toss?");
+		return;
+	}
+
+	/* Throw it. */
+	if ((*env)->Throw(env, tossing) != 0)
+		sjme_die("Could not throw MLECallError?");
 }
 
 void sjme_jni_throwNullPointerException(JNIEnv* env)
 {
+	if (env == NULL)
+		return;
+
 	sjme_jni_throwThrowable(env, SJME_ERROR_NULL_ARGUMENTS,
 		"java/lang/NullPointerException");
 }
@@ -138,6 +175,9 @@ void sjme_jni_throwThrowable(JNIEnv* env, sjme_errorCode code,
 #define BUF_SIZE 512
 	jclass tossingClass;
 	char buf[BUF_SIZE];
+
+	if (env == NULL || type == NULL)
+		return;
 
 	/* Get the class where the exception is. */
 	tossingClass = (*env)->FindClass(env, type);

@@ -14,6 +14,8 @@ import cc.squirreljme.jvm.mle.PencilFontShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilFontFace;
 import cc.squirreljme.jvm.mle.constants.PencilFontParam;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.exceptions.MLECallErrorCode;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -802,8 +804,23 @@ public final class Font
 		// Try to locate a font with a matching face and parameter set
 		DisplayManager manager = DisplayManager.instance();
 		ScritchInterface scritch = manager.scritch();
-		PencilFontBracket found = scritch.environment().fontByFace(
-			FontUtilities.faceToPencil(__face), params, params);
+		PencilFontBracket found;
+		
+		// Finding a font may fail
+		try
+		{
+			found = scritch.environment().fontByFace(
+				FontUtilities.faceToPencil(__face), params, params);
+		}
+		catch (MLECallError __e)
+		{
+			// Some other distinction?
+			if (__e.distinction != MLECallErrorCode.INVALID_FONT)
+				throw __e;
+			
+			// Consider as not found
+			found = null;
+		}
 		
 		// If not found, fallback to the very baseline fallback font just so
 		// something actually works
