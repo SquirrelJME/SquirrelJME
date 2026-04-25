@@ -27,7 +27,7 @@ static sjme_errorCode sjme_scritchui_sqfLocate(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inCodepoint < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
+		return SJME_ERROR_INVALID_CODEPOINT;
 	
 	/* Recover SQF. */
 	sqf = inFont->handle;

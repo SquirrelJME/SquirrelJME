@@ -475,7 +475,7 @@ sjme_errorCode sjme_jni_arrayType(
 	else if ((*env)->IsInstanceOf(env, array, (*env)->FindClass(env, "[D")))
 		*outType = SJME_BASIC_TYPE_ID_DOUBLE;
 	else
-		return SJME_ERROR_INVALID_ARGUMENT;
+		return sjme_error_fatal(SJME_ERROR_INVALID_ARGUMENT);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -552,7 +552,7 @@ sjme_errorCode sjme_jni_arrayGetElements(
 			break;
 
 		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
+			return sjme_error_fatal(SJME_ERROR_INVALID_ARGUMENT);
 	}
 
 	/* Success! */
@@ -612,7 +612,7 @@ sjme_errorCode sjme_jni_arrayReleaseElements(
 			break;
 
 		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
+			return sjme_error_fatal(SJME_ERROR_INVALID_ARGUMENT);
 	}
 
 	/* Success! */

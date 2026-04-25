@@ -596,8 +596,14 @@ typedef enum sjme_errorCode
 	/** Font is already registered. */
 	SJME_ERROR_FONT_ALREADY_REGISTERED = -183,
 	
+	/** The rectangle size is not valid. */
+	SJME_ERROR_INVALID_RECT = -184,
+	
+	/** Invalid codepoint. */
+	SJME_ERROR_INVALID_CODEPOINT = -185,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -184,
+	SJME_NUM_ERROR_CODES = -186,
 } sjme_errorCode;
 
 /**

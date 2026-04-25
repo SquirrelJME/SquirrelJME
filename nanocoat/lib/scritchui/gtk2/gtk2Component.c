@@ -94,20 +94,31 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 		&defaultFont)) || defaultFont == NULL)
 		return FALSE;
 	
-	/* Setup pencil for drawing. */
+	/* A pencil needs to exist. */
 	pencil = sjme_atomic_g(sjme_scritchui_pencil, &paint->pencil);
-	memset(pencil, 0, sizeof(*pencil));
-	if (sjme_error_is(sjme_scritchpen_initStatic(pencil,
-		inState,
-		&sjme_scritchui_gtk2_pencilFunctions,
-		NULL, NULL,
+	if (pencil == NULL)
+	{
+		/* Allocate new pencil. */
+		if (sjme_error_is(sjme_scritchpen_new(inState,
+			&pencil,
+			&sjme_scritchui_gtk2_pencilFunctions,
+			NULL, NULL,
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
-		SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888,
+			SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888,
 #else
-		SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888,
+			SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888,
 #endif
-		0, 0, w, h, w,
-		defaultFont, &frontEnd)))
+			0, 0, w, h, w,
+			defaultFont, &frontEnd)))
+			return FALSE;
+		
+		/* Set pencil. */
+		sjme_atomic_s(sjme_scritchui_pencil, &paint->pencil,
+			sjme_weakUp(pencil));
+	}
+	
+	/* Setup pencil for drawing. */
+	if (sjme_error_is(pencil->apiInThread->setDefaults(pencil)))
 		return FALSE;
 	
 	/* The clipping area is set to the region that needs redrawing. */

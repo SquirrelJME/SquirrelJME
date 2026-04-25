@@ -654,11 +654,6 @@ static sjme_errorCode sjme_scritchui_renderBitmapScaled(
 	if (inCodepoint < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	/* Recover wrapper. */
-	inFont = inFont->handle;
-	if (inFont == NULL)
-		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
-
 	/* Invalid state? Note that impl renderBitmap is valid here! */
 	if (inFont->impl == NULL || inFont->apiInThread == NULL ||
 		inFont->apiInThread->pixelCharWidth == NULL ||

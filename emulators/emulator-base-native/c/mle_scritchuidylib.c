@@ -2659,19 +2659,17 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 	(JNIEnv* env, jclass classy, jlong stateP, jlongArray screenPs)
 {
 	sjme_errorCode error;
-	sjme_scritchui state;
+	sjme_scritchui inState;
 	sjme_jint numScreenPs, maxScreenPs, i;
 	sjme_scritchui_uiScreen* screens;
 	jlong tempJ;
 
-	if (stateP == 0 || screenPs == NULL)
+	inState = (sjme_scritchui)stateP;
+	if (inState == 0 || screenPs == NULL)
 	{
 		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
 	}
-
-	/* Restore. */
-	state = (sjme_scritchui)stateP;
 
 	/* How many screens are being used? */
 	maxScreenPs = (*env)->GetArrayLength(env, screenPs);
@@ -2693,8 +2691,8 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 
 	/* Request screen information. */
 	error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
-	if (state->api->screens == NULL ||
-		sjme_error_is(error = state->api->screens(state,
+	if (inState->api->screens == NULL ||
+		sjme_error_is(error = inState->api->screens(inState,
 			screens, &numScreenPs)))
 	{
 		sjme_jni_throwMLECallError(env, error);
