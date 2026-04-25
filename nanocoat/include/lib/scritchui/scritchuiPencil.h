@@ -85,8 +85,8 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 /**
  * Static pencil function initialization.
  * 
- * @param inPencil The pencil to be initialized.
  * @param inState The input ScritchUI state.
+ * @param inPencil The pencil to be initialized.
  * @param inFunctions The functions to set.
  * @param inLockFuncs Functions for native locking.
  * @param inLockFrontEndCopy Front end copy data for locks.
@@ -102,8 +102,8 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
  * @since 2024/05/04
  */
 sjme_errorCode sjme_scritchpen_initStatic(
-	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,

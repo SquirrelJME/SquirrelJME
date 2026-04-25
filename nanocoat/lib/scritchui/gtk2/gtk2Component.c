@@ -117,6 +117,24 @@ static gboolean sjme_scritchui_gtk2_eventExpose(
 			sjme_weakUp(pencil));
 	}
 	
+	/* Force re-init pencil, to set-up new size. */
+	else
+	{
+		/* Re-init. */
+		if (sjme_error_is(sjme_scritchpen_initStatic(inState,
+			pencil,
+			&sjme_scritchui_gtk2_pencilFunctions,
+			NULL, NULL,
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+			SJME_GFX_PIXEL_FORMAT_BYTE3_BGR888,
+#else
+			SJME_GFX_PIXEL_FORMAT_BYTE3_RGB888,
+#endif
+			0, 0, w, h, w,
+			defaultFont, &frontEnd)))
+			return FALSE;
+	}
+	
 	/* Setup pencil for drawing. */
 	if (sjme_error_is(pencil->apiInThread->setDefaults(pencil)))
 		return FALSE;

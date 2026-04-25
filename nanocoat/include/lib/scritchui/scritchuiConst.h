@@ -64,6 +64,9 @@ typedef enum sjme_scritchui_externalAssetType
 	SJME_SCRITCHUI_NUM_ASSET_TYPES = 2,
 } sjme_scritchui_externalAssetType;
 
+/** Magic number for ScritchUI objects. */
+#define SJME_SCRITCHUI_OBJECT_MAGIC INT32_C(0x6A535549)
+	
 /**
  * Represents the type that this is.
  * 
@@ -108,7 +111,7 @@ typedef enum sjme_scritchui_uiType
 	SJME_SCRITCHUI_TYPE_WINDOW,
 	
 	/** The number of possible types. */
-	SJME_NUM_SCRITCHUI_UI_TYPES
+	SJME_SCRITCHUI_NUM_UI_TYPES
 } sjme_scritchui_uiType;
 
 /**

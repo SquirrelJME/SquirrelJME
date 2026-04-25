@@ -367,8 +367,7 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 	}
 	
 	/* Forward. */
-	return sjme_scritchpen_initStatic(inOutPencil,
-		inState,
+	return sjme_scritchpen_initStatic(inState, inOutPencil,
 		chosen, inLockFuncs, inLockFrontEndCopy, pf,
 		0, 0, sw, sh, bw, defaultFont, copyFrontEnd);
 }

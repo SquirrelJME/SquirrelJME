@@ -181,6 +181,9 @@ struct sjme_scritchui_uiCommonBase
 	/** The type of what this is. */
 	sjme_scritchui_uiType type;
 	
+	/** Magic number for ScritchUI objects. */
+	sjme_jint magic;
+	
 	/** The state which owns this. */
 	sjme_scritchui state;
 	

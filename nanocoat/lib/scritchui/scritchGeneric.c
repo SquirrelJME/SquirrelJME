@@ -14,7 +14,7 @@ sjme_errorCode sjme_scritchui_coreGeneric_componentNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiComponent* outComponent,
 	sjme_attrInPositiveNonZero sjme_jint outComponentSize,
-	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES)
 		sjme_scritchui_uiType uiType,
 	sjme_attrInNotNull sjme_scritchui_coreGeneric_componentNewImplFunc implNew,
 	sjme_attrInNullable sjme_pointer inData)

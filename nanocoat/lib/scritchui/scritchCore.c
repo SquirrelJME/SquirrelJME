@@ -546,7 +546,7 @@ sjme_pointer sjme_scritchui_checkCast_component(sjme_pointer inPtr)
 	/* Check type. */
 	common = inPtr;
 	if (common->type < SJME_SCRITCHUI_TYPE_FONT ||
-		common->type >= SJME_NUM_SCRITCHUI_UI_TYPES)
+		common->type >= SJME_SCRITCHUI_NUM_UI_TYPES)
 	{
 		sjme_debug_abort(SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 		return NULL;
@@ -596,4 +596,64 @@ sjme_pointer sjme_scritchui_checkCast_menuKind(sjme_pointer inPtr)
 	
 	/* Return passed value. */
 	return inPtr;
+}
+
+sjme_errorCode sjme_scritchui_isA(
+	sjme_attrInNullable sjme_pointer inWhat,
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES) sjme_scritchui_uiType inType,
+	sjme_attrOutNotNull sjme_jboolean* outResult)
+{
+	sjme_errorCode error;
+	sjme_alloc_weak weak;
+	sjme_scritchui_uiCommon common;
+	
+	if (outResult == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inType <= SJME_SCRITCHUI_TYPE_RESERVED ||
+		inType >= SJME_SCRITCHUI_NUM_UI_TYPES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Null input is always nothing. */
+	if (inWhat == NULL)
+	{
+		*outResult = SJME_JNI_FALSE;
+		return SJME_ERROR_NONE;
+	}
+
+	/* All ScritchUI objects are weakly referenced. */
+	weak = NULL;
+	if (sjme_error_is(sjme_alloc_weakRefGet(inWhat, &weak)) || weak == NULL)
+	{
+		*outResult = SJME_JNI_FALSE;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Must be the type and the magic must be valid! */
+	/* Aliases of object types match objects as well. */
+	common = inWhat;
+	if (common->magic != SJME_SCRITCHUI_OBJECT_MAGIC)
+		*outResult = SJME_JNI_FALSE;
+	else if (common->type == inType)
+		*outResult = SJME_JNI_TRUE;
+	else
+		*outResult = SJME_JNI_FALSE;
+		
+	return SJME_ERROR_NONE;
+}
+
+sjme_jboolean sjme_scritchui_isAR(
+	sjme_attrInNullable sjme_pointer inWhat,
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES) 
+		sjme_scritchui_uiType inType)
+{
+	sjme_jboolean result;
+	
+	/* Forward call. */
+	result = SJME_JNI_FALSE;
+	if (sjme_error_is(sjme_scritchui_isA(inWhat, inType, &result)))
+		return SJME_JNI_FALSE;
+
+	/* Was this the type? */
+	return result;
 }

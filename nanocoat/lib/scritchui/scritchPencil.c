@@ -67,8 +67,8 @@ static sjme_errorCode sjme_scritchpen_pencilNewInit(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Forward call to static initializer. */
-	return sjme_scritchpen_initStatic(pencil,
-		inState,
+	return sjme_scritchpen_initStatic(inState,
+		pencil,
 		data->inFunctions,
 		data->inLockFuncs,
 		data->inLockFrontEndCopy,
@@ -265,8 +265,8 @@ static const sjme_scritchui_pencilUtilFunctions
 };
 
 sjme_errorCode sjme_scritchpen_initStatic(
-	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
@@ -304,6 +304,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	
 	/* Setup base result. */
 	memset(&result, 0, sizeof(result));
+	result.common.magic = SJME_SCRITCHUI_OBJECT_MAGIC;
 	result.common.type = SJME_SCRITCHUI_TYPE_PENCIL;
 	result.common.state = inState;
 	if (inFunctions->asyncSafe)

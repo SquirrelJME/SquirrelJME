@@ -708,8 +708,23 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 			goto fail_badPaint;
 		
 		/* Set pencil. */
-		sjme_atomic_s(sjme_scritchui_pencil, &paint->pencil,
+		sjme_atomic_s(sjme_scritchui_pencil, &paintable->pencil,
 			sjme_weakUp(pencil));
+	}
+	
+	/* Force re-init pencil, to set-up new size. */
+	else
+	{
+		/* Allocate new pencil. */
+		if (sjme_error_is(sjme_scritchpen_initStatic(inState,
+			pencil,
+			&sjme_scritchui_win32_pencilFunctions,
+			NULL, NULL,
+			SJME_GFX_PIXEL_FORMAT_INT_RGB888,
+			tx, ty,
+			w, h, w,
+			defaultFont, &frontEnd)))
+			goto fail_badPaint;
 	}
 	
 	/* Setup pencil for drawing. */

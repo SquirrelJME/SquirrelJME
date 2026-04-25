@@ -64,6 +64,7 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 		goto fail_commonInit;
 	
 	/* Fill in information. */
+	maybe->common.magic = SJME_SCRITCHUI_OBJECT_MAGIC;
 	maybe->common.state = inState;
 	maybe->common.type = SJME_SCRITCHUI_TYPE_SCREEN;
 	maybe->screenHandle = updateHandle;
