@@ -316,7 +316,7 @@ public final class Font
 		// is exactly or closer to the desired font
 		ScritchInterface scritch = this._scritch;
 		return new Font(scritch, scritch.environment()
-			.fontDerive(this._font, oldParams, newParams), newParams);
+			.fontDerive(this._font, newParams, newParams), newParams);
 	}
 	
 	/**
