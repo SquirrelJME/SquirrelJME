@@ -188,8 +188,28 @@ purchasing of food items for consumption.
 
 This is the SquirrelJME Webring button:
 
-[![SquirrelJME][SquirrelJME]](https://squirreljme.cc/)
-[SquirrelJME]: https://squirreljme.cc/uv/www/webring_button.png "SquirrelJME"
+[![SquirrelJME](data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAFgAAAAfCAMAAABUFvrSAAAACXBIWXMAAC4jAAAuIwF4pT92AAAB
+X1BMVEUAAAABAgICAwQHCgxEmrtIRUxImrpMmLhPmLdSl7VXlrNblbJelLBhlK9lkq1my/Vpy/Rq
+kaxtkaltx/BuyfJv0/lxkKh0j6d0yO900fd3xOl4jqV4xet40fV5xux5x+18jaN80PN+xOp+xeuA
+jKKBxOiCxemCz/GEi6CEvuKFweSHw+eHzfCIip6Jvd+LiZ2Lv+GLzO2NwuWOiJyPzOyRwOGSiJqS
+weKUyuqXeVeXh5iXwOCahZeavt6ayembv9+dhZWdudidyeWgvdyhhJSix+Slg5KlvNqmxuOpgpCq
+Hh2ru9irxeCtgY6vgY6vxN6wuta0f4u0w921uNO5t9K5wtu7s82+ttC+wNjBv9fDtc3FvtbJtMvK
+vtPOssnQvdHSssfTutDUx5/WnpjXsMXXus3cr8PcuczguMrirsDlt8fnrL7qtcXstcXuY2XzAQL5
+89f/kQz/o53//O7////m5Am4AAAC1ElEQVRIibWUizsbQRTFTx/ej5YGUdVQGtpQFY9YQdT7TT2K
+eA9C0XbZ+f+/3ntnN6kkJeTzy+ycM3cm55vM7gYvnwgU1gi6Ji8yvl6IovpXuaFzXCcr64tQ3Pj6
+gehbkp3GYpQ0+wjlM2ju3qiU/8ddX/uyoX2gj1lFTvA1l6C0ze/3K0f5Gbc3s/40rq/TCt4S+L21
+SddWirKOQEAdO44KkJre5CLwPiC8DdyCq+/E0RKjniNxSx1lKO9uaZFg1aJMz8GqhSHzHCxyAR9S
+1jVmmed4xpS6y1HRGwyq42OKVLbDycoxGw4G3Z0HjZf2jAXBVJ2BfEg/ujMI9lagciAUomDKk2BO
+lrN4jhAQCnHHaiTlPGHIfSb7CexMaaASVSM6rDjXC+bsYxUGuIXDL4yaYdIR4a8yT1BBui/GMSNV
+qB6LRPj3O45lc7gyu44A3CKeGkm5iDtF0ieCPu4iZiYyVo3ayWiUcm0Jpk1TsHu2UWrRqKg35Mrt
+QpSXiCDpiMla1M3EOFdlBA/HYgA3VhZ3ZC54I2rDMVkkl/lubKYODQsUJbnJYJtlXADG7+Zb9hUL
+DWhadvfrBVsWJ6tpAZjOEX1rtNyE1lW+YZalOJGsp/MC/ax5zKeh0wuZrLaifUNJbsEfLYFzpGSs
+Fb1CmCNbyYrOXhY22tG5xXtUBXP6RlkcrG8KLMdSawbOXXs4W53o2l63+DGe+83BSpHyeat1F8Bz
+ej1HaOF2F3p2NiVY3jo6BIGOetPlx+b96IzKTg/69+LxOAfbjhsqr17cQ8cfw14/Bg92d3fpn403
+a5nOVruPQyfdwSCGjvYZSrZt91L7eXM0hNHTQ0b2bGm+beowf05HMXF2QtjyRGit+QWxTzz0yX+5
+Y4o4m8DUeSKRsCmY96r5mabzSOSFTiTOpzB78TNn9D3jFBezWLy6vLzUl2lkFB7I1SKWfuWNzlJb
+wvcn4i+bSJ+DUtAtmgAAAABJRU5ErkJggg==)](https://squirreljme.cc/)
 
 This can be added to your site with:
 
