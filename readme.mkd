@@ -60,16 +60,6 @@ read more about it and check out their product page at:
  * [Install4J Multi-Platform Installer Builder](
     https://www.ej-technologies.com/products/install4j/overview.html)
 
-Badges:
-
- * _Checks and Quality_
-   * [![RetroArch Core](
-     https://git.libretro.com/libretro/SquirrelJME/badges/trunk/pipeline.svg?key_text=RetroArch%20Core&key_width=115)](
-     https://git.libretro.com/libretro/SquirrelJME)
- * _Social and Community_
-   * [![Discord](https://img.shields.io/discord/278929900893634560.svg?label=Discord%20Server)](
-     https://discord.gg/9PkMMKt)
-
 Information:
 
  * [User Guide](assets/user-guide/readme.mkd)
@@ -193,6 +183,30 @@ purchasing of food items for consumption.
    * [Ko-Fi](http://ko-fi.com/xerthesquirrel)
    * [Patreon](https://www.patreon.com/SquirrelJME)
    * [Liberapay](https://liberapay.com/xershadowtail)
+
+## Webring Button
+
+This is the SquirrelJME Webring button:
+
+[![SquirrelJME][SquirrelJME]](https://squirreljme.cc/)
+[SquirrelJME]: https://squirreljme.cc/uv/www/webring_button.png "SquirrelJME"
+
+This can be added to your site with:
+
+```html
+<a href="https://squirreljme.cc/" target="_blank" rel="noopener">
+<img src="https://squirreljme.cc/uv/www/webring_button.png"
+    alt="SquirrelJME, a Java ME 8 JVM intended for software preservation."
+    width="88" height="31"
+    decoding="async"
+    loading="lazy">
+</img></a>
+```
+
+```markdown
+[![SquirrelJME][SquirrelJME]](https://squirreljme.cc/)
+[SquirrelJME]: https://squirreljme.cc/uv/www/webring_button.png "SquirrelJME"
+```
 
 ## Important Statements
 
