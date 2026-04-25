@@ -661,16 +661,16 @@ static sjme_errorCode sjme_scritchui_renderBitmapScaled(
 		inFont->impl->renderBitmap == NULL)
 		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 	
-	/* Need character width. */
+	/* Need the original character width. */
 	cw = 0;
 	if (sjme_error_is(error = inFont->apiInThread->pixelCharWidth(
-		inFont, inParams, inCodepoint, &cw)))
+		inFont, NULL, inCodepoint, &cw)))
 		return sjme_error_default(error);
 		
-	/* And the pixel height, since this is a bitmap font. */
+	/* And the original pixel height, since this is a bitmap font. */
 	ch = 0;
 	if (sjme_error_is(error = inFont->apiInThread->metricPixelSize(
-		inFont, inParams, inCodepoint, &ch)))
+		inFont, NULL, inCodepoint, &ch)))
 		return sjme_error_default(error);
 	
 	/* Determine scanline length for each bitmap row. */
@@ -708,10 +708,10 @@ static sjme_errorCode sjme_scritchui_renderBitmapScaled(
 	syIntLast = -1;
 #endif
 	
-	/* Get original glyph bitmap. */
+	/* Get original glyph bitmap, perform unscaled drawing of it. */
 	origOffX = 0;
 	origOffY = 0;
-	if (sjme_error_is(error = inFont->impl->renderBitmap(inFont, inParams,
+	if (sjme_error_is(error = inFont->impl->renderBitmap(inFont, NULL,
 		inCodepoint, src, 0, scanLen,
 		ch, &origOffX, &origOffY)))
 		goto fail_renderBitmap;
