@@ -795,7 +795,7 @@ public abstract class Graphics
 	 */
 	@Api
 	public void setFont(@Nullable Font __font)
-	{
+	{	
 		// Clearing the font?
 		if (__font == null)
 			__font = Font.getDefaultFont();

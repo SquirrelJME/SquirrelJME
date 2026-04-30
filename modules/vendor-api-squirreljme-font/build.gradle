@@ -161,9 +161,19 @@ TaskProvider<Task> compileFonts = tasks.register("compileFonts") {Task it ->
 processResources {
 	// Compile fonts first
 	dependsOn compileFonts
+	mustRunAfter compileFonts
 }
 
 jar {
 	// Compile fonts first
 	dependsOn compileFonts
+	mustRunAfter compileFonts
+	
+	// Merge in the compiled SQF Jar/Zip
+	from(project.provider({ ->
+		return zipTree({-> compileFonts.get()
+			.outputs.files.singleFile}).getAsFileTree()
+	})) {
+		into "/"
+	}
 }
