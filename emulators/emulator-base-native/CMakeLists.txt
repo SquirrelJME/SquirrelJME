@@ -7,8 +7,23 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: CMake Helper for project
 
-cmake_minimum_required(VERSION 3.12)
+# Use the best version possible
+# Otherwise, fallback to the lowest viable version
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+	cmake_minimum_required(VERSION 3.13..3.31)
+else()
+	cmake_minimum_required(VERSION 3.0)
+endif()
 
+# Specify NanoCoat directory for includes
+set(SQUIRRELJME_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
+set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${SQUIRRELJME_ROOT_DIR}/nanocoat")
+include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake")
+
+# Include backports
+squirreljme_include_nanocoat("cmake-bp.cmake")
+
+# External projects are needed
 include(ExternalProject)
 
 # Declare project
@@ -164,11 +179,6 @@ foreach(var IN LISTS allVariables)
 			"set(\"${var}\" \"${quotedValue}\" CACHE ${varType} "${var}")\n")
 	endif()
 endforeach()
-
-# Specify NanoCoat directory for includes
-set(SQUIRRELJME_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
-set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${SQUIRRELJME_ROOT_DIR}/nanocoat")
-include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake")
 
 # Setup NanoCoat Project
 set(SQUIRRELJME_NANOCOAT_BINARY_DIR "${CMAKE_BINARY_DIR}/nanocoat")

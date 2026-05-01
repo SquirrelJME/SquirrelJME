@@ -9,18 +9,26 @@
 # service-independent way of performing CI/CD pipeline builds on any service,
 # or even locally. This is so I can migrate between accordingly.
 
-# This is a reasonable version to base off
-cmake_minimum_required(VERSION 3.13)
-
-# Disable parallelism since Java building can run out of memory on a number
-# of systems, so for job stability it is best to do that here
-set(CMAKE_BUILD_PARALLEL_LEVEL 1)
+# Use the best version possible
+# Otherwise, fallback to the lowest viable version
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+	cmake_minimum_required(VERSION 3.13..3.31)
+else()
+	cmake_minimum_required(VERSION 3.0)
+endif()
 
 # Easier includes
 set(SQUIRRELJME_NANOCOAT_SOURCE_DIR
 	"${CMAKE_SOURCE_DIR}/nanocoat")
 include("${CMAKE_SOURCE_DIR}/assets/cmake/easier-includes.cmake"
 	NO_POLICY_SCOPE)
+
+# Include backports and versioning
+squirreljme_include_nanocoat("cmake-bp.cmake")
+
+# Disable parallelism since Java building can run out of memory on a number
+# of systems, so for job stability it is best to do that here
+set(CMAKE_BUILD_PARALLEL_LEVEL 1)
 
 # Force the build system to always be unconfigured
 set(SQUIRRELJME_SYSTEM "none")
