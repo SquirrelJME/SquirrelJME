@@ -71,7 +71,7 @@ public final class CompiledGlyph
 	 */
 	public boolean isReject()
 	{
-		return HuffBits.length(this.bitNaive) >
+		return HuffBits.length(this.bitNaive) >=
 			HuffBits.length(this.bitsRaw);
 	}
 	

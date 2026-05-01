@@ -120,8 +120,15 @@ TaskProvider<Task> compileFonts = tasks.register("compileFonts") {Task it ->
 
 						// Specify the main class and arguments
 						spec.main("cc.squirreljme.fontcompile.Main")
-						spec.args(fontFile.toPath().toAbsolutePath().toString(),
-							"-")
+						if (false && fontFileName.contains("unifont"))
+							spec.args(
+								fontFile.toPath().toAbsolutePath().toString(),
+								"-",
+								"--compress")
+						else
+							spec.args(
+								fontFile.toPath().toAbsolutePath().toString(),
+								"-")
 
 						// Output here to the array
 						spec.standardOutput(baos)
