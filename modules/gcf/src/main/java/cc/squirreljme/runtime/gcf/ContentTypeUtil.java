@@ -139,6 +139,11 @@ public final class ContentTypeUtil
 		if (a == 'M' && b == 'M' && c == 'M' && d == 'D' &&
 			i == 'C' && j == 'N' && k == 'T' && l == 'I')
 			return "application/x-smaf";
+
+		// MP3
+		if (a == 'I' && b == 'D' && c == '3' ||
+			((a == (byte) 0xFF) && (b & 0xE0) == 0xE0))
+			return "audio/mpeg";
 		
 		// GIF? (GIF8)
 		if (a == 'G' && b == 'I' && c == 'F' && d == '8' &&
