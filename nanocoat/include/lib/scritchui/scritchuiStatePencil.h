@@ -46,8 +46,11 @@ struct sjme_scritchui_pencilFontBase
 	/** The ID of the font. */
 	sjme_scritchui_pencilFontId id;
 	
-	/** The depth of this font, that is the number of fonts this wraps. */
-	sjme_jint depth;
+	/**
+	 * The priority of the font, this determines whether it is used as
+	 * a main font or as a source of backup glyphs.
+	 */
+	sjme_jint priority;
 	
 	/** Internal handle pointer for implementation needs. */
 	sjme_pointer handle;

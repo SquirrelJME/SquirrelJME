@@ -787,8 +787,7 @@ typedef sjme_errorCode (*sjme_scritchui_fontListFunc)(
  */
 typedef sjme_errorCode (*sjme_scritchui_fontRegisterFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInValue sjme_jboolean isPseudo);
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont);
 
 /**
  * Creates a hardware reference bracket to the native hardware graphics.

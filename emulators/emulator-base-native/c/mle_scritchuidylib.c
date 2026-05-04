@@ -871,75 +871,28 @@ static sjme_errorCode mlePencilLockRelease(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode mlePencilExternalAsset(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_scritchui_externalAssetType assetType,
+	sjme_attrInNotNull sjme_lpcstr inAsset,
+	sjme_attrOutNullable sjme_stream_input* outStream)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static const sjme_scritchui_pencilLockFunctions mlePencilLockFuncs =
 {
 	.lock = mlePencilLock,
 	.lockRelease = mlePencilLockRelease,
 };
 
-static sjme_errorCode mleAwtCall(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_thread_mainFunc callback,
-	sjme_attrInNullable sjme_thread_parameter anything)
+static const sjme_scritchui_externalFunctions mleExternals =
 {
-	sjme_errorCode error;
-	JNIEnv* env;
-	jclass queueClass;
-	jmethodID invokeMethod;
-	jclass nativeClass;
-	jmethodID nativeNew;
-	jobject nativeWrapper;
-
-	if (inState == NULL || callback == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* We need the JVM state for this to work. */
-	env = NULL;
-	if (sjme_error_is(error = sjme_jni_recoverEnvThis(
-		&env)) || env == NULL)
-		return sjme_error_defaultOr(error, SJME_ERROR_ILLEGAL_STATE);
-
-	/* Get the AWT event queue handler. */
-	queueClass = (*env)->FindClass(env, "java/awt/EventQueue");
-	if (queueClass == NULL)
-		return SJME_ERROR_JNI_EXCEPTION;
-
-	/* Get the invocation method. */
-	invokeMethod = (*env)->GetStaticMethodID(env, queueClass,
-		"invokeLater", "(Ljava/lang/Runnable;)V");
-	if (invokeMethod == NULL)
-		return SJME_ERROR_JNI_EXCEPTION;
-
-	/* Get native callback. */
-	nativeClass = (*env)->FindClass(env,
-		"cc/squirreljme/emulator/scritchui/dylib/__NativeCallback__");
-	if (nativeClass == NULL)
-		return SJME_ERROR_JNI_EXCEPTION;
-
-	/* And find its constructor. */
-	nativeNew = (*env)->GetMethodID(env, nativeClass, "<init>",
-		"(JJJ)V");
-	if (nativeNew == NULL)
-		return SJME_ERROR_JNI_EXCEPTION;
-
-	/* Wrap callback. */
-	nativeWrapper = (*env)->NewObject(env, nativeClass, nativeNew,
-		(jlong)((sjme_intPointer)inState),
-		(jlong)((sjme_intPointer)callback),
-		(jlong)((sjme_intPointer)anything));
-	if (nativeWrapper == NULL)
-		return SJME_ERROR_JNI_EXCEPTION;
-
-	/* Enqueue for later. */
-	(*env)->CallStaticVoidMethod(env, queueClass, invokeMethod, nativeWrapper);
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-static const sjme_scritchui_externalFunctions mleAwtLoopFuncs =
-{
-	.externalLoopExecuteLater = mleAwtCall,
+	sjme_sm(.externalAsset, mlePencilExternalAsset),
+	sjme_sm(.externalLoopExecute, NULL),
+	sjme_sm(.externalLoopExecuteLater, NULL),
+	sjme_sm(.externalLoopExecuteWait, NULL),
 };
 
 JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2063,11 +2016,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	state = NULL;
 	if (sjme_error_is(error = apiInitFunc(pool, &state,
 		mle_bindEventThread,
-#if 0 && defined(SJME_CONFIG_HAS_MACOS)
-		&mleAwtLoopFuncs,
-#else
-		NULL,
-#endif
+		&mleExternals,
 		&frontEnd)) || state == NULL)
 		goto fail_apiInit;
 

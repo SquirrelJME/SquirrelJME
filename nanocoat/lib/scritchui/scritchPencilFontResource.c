@@ -97,12 +97,25 @@ static const sjme_scritchui_resourceFontInfo sjme_scritchui_resourceFonts[] =
 	}
 };
 
+static sjme_errorCode sjme_scritchui_core_intern_rcScanSingle(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull const sjme_scritchui_resourceFontInfo* preDef)
+{
+	if (inState == NULL || preDef == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchui_core_intern_fontScanResource(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_jint* outCount)
 {
+	sjme_errorCode error;
 	sjme_scritchui wrappedState;
-	sjme_scritchui_externalAssetFunc assetFunc;
+	const sjme_scritchui_resourceFontInfo* preDef;
+	sjme_jint procCount;
 	
 	if (inState == NULL || outCount == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -120,7 +133,29 @@ sjme_errorCode sjme_scritchui_core_intern_fontScanResource(
 		*outCount = 0;
 		return SJME_ERROR_NONE;
 	}
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Go through all pre-defined fonts. */
+	procCount = 0;
+	for (preDef = &sjme_scritchui_resourceFonts[0]; preDef->name != NULL;
+		preDef++)
+	{
+		/* Scan single font. */
+		if (sjme_error_is(error = sjme_scritchui_core_intern_rcScanSingle(
+			inState, preDef)))
+		{
+			/* If the font does not exist naturally, skip it. */
+			if (error == SJME_ERROR_RESOURCE_NOT_FOUND)
+				continue;
+
+			return sjme_error_default(error);
+		}
+
+		/* Process count up. */
+		procCount++;
+	}
+
+	/* Success! */
+	if (outCount != NULL)
+		*outCount = procCount;
+	return SJME_ERROR_NONE;
 }

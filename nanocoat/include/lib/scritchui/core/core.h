@@ -447,8 +447,7 @@ sjme_errorCode sjme_scritchui_core_intern_fontParamToFlat(
 	
 sjme_errorCode sjme_scritchui_core_intern_fontRegister(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInValue sjme_jboolean isPseudo);
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont);
 
 sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
 	sjme_attrInNotNull sjme_scritchui inState,

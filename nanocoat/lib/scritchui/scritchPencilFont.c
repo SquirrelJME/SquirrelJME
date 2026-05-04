@@ -1086,7 +1086,7 @@ sjme_errorCode sjme_scritchui_core_intern_fontIterate(
 				continue;
 
 			/* Font is too deep? */
-			if (current->depth > inOutStep->limitDepth)
+			if (current->priority > inOutStep->limitDepth)
 				continue;
 
 			/* Iterate. */
@@ -1163,8 +1163,7 @@ sjme_errorCode sjme_scritchui_core_intern_fontParamToFlat(
 
 sjme_errorCode sjme_scritchui_core_intern_fontRegister(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInValue sjme_jboolean isPseudo)
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont)
 {
 	sjme_errorCode error;
 	sjme_scritchui_fontState* fontState;
@@ -1172,9 +1171,15 @@ sjme_errorCode sjme_scritchui_core_intern_fontRegister(
 	sjme_scritchui_pencilFont* freeSlot;
 	sjme_scritchui_pencilFont check;
 	sjme_jint i, n;
+	sjme_jboolean isPseudo;
 	
 	if (inState == NULL || inFont == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Would this be considered a pseudo font? */
+	/* A pseudo font is one that has a priority that is higher than zero, */
+	/* which basically means it is used as a source for fallback glyphs. */
+	isPseudo = (inFont->priority > 0);
 	
 	/* We operate with the font state */
 	fontState = &inState->font;
@@ -1217,6 +1222,18 @@ sjme_errorCode sjme_scritchui_core_intern_fontRegister(
 	
 	/* Place in the free slot. */
 	*freeSlot = sjme_weakUpR(sjme_scritchui_pencilFont, inFont);
+
+	/* Pseudo fonts need to be sorted by priority then size, so that when a */
+	/* fallback glyph needs to be selected one is accordingly chosen when */
+	/* it comes time to chose one. Size is important to sort by, due to the */
+	/* barcode scaling algorithm that is in place. */
+	if (isPseudo)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
@@ -1287,8 +1304,7 @@ sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
 	if (!sjme_error_is(errorFallback))
 	{
 		/* Attempt registration. */
-		errorFallback = inState->intern->fontRegister(inState, builtin,
-			SJME_JNI_FALSE);
+		errorFallback = inState->intern->fontRegister(inState, builtin);
 		
 		/* Since the builtin was registered, count it up. */
 		if (!sjme_error_is(errorFallback))
