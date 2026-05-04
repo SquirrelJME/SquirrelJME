@@ -230,8 +230,17 @@ static sjme_errorCode sjme_scritchui_validateChar(
 	if (sjme_error_is(error = inFont->apiInThread->metricCharValid(inFont,
 		*inOutCodepoint, &isValid)))
 		return sjme_error_default(error);
+
+	/* If not valid, look at lower priority fonts preferably with the same */
+	/* pixel size for a contained glyph that we can for rendering or for */
+	/* grabbing glyph details. */
+	if (!isValid)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
 	
-	/* If it is not valid, then replace with the invalid character. */
+	/* If it is still not valid, then replace with the invalid character. */
 	if (!isValid)
 	{
 		/* Try zero first. */
@@ -247,6 +256,11 @@ static sjme_errorCode sjme_scritchui_validateChar(
 		if (!isValid)
 			*inOutCodepoint = 0xFFFD;
 	}
+
+	/* Give the actual font and glyph information that was discovered, since */
+	/* this could be in a completely different font. */
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
