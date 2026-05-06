@@ -172,8 +172,8 @@ subprojects {
 					}
 					
 					ciManagement {
-						system = "CircleCI"
-						url = "https://app.circleci.com/pipelines/github/SquirrelJME"
+						system = "SquirrelJME"
+						url = "https://squirreljme.cc/"
 					}
 					
 					withXml {

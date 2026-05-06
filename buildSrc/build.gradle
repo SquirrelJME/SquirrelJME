@@ -3,6 +3,7 @@ plugins {
 }
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 	
 	maven {
@@ -12,6 +13,7 @@ repositories {
 
 dependencies {
 	// Lombok for simpler getters/setters
+	// Debian: liblombok-java
 	implementation 'org.projectlombok:lombok:1.18.36'
 	annotationProcessor 'org.projectlombok:lombok:1.18.36'
 	
@@ -21,17 +23,22 @@ dependencies {
 	implementation "ca.mcgill.sable:jasmin:3.0.3"
 	
 	// ProGuard, minification
+	// Debian: libproguard-java
 	implementation "com.guardsquare:proguard-base:7.6.1"
+	// Debian: libproguard-core-java
 	implementation "com.guardsquare:proguard-core:9.1.8"
 	
 	// Country codes, this is the last version supporting Java 8
 	implementation 'org.iban4j:iban4j:3.2.7-RELEASE'
 	
 	// CSV parsing, for NanoCoat generation
+	// Debian: libcommons-collections4-java 
 	implementation 'org.apache.commons:commons-collections4:4.5.0-M3'
+	// Debian: libopencsv-java
 	implementation 'com.opencsv:opencsv:5.10'
 	
 	// Shadow Jar, for single Jars
+	// Debian: libjengelman-shadow-java
 	implementation 'gradle.plugin.com.github.johnrengelman:shadow:7.1.2'
 	
 	// Jackson, for JSON APIs

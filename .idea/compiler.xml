@@ -16,7 +16,6 @@
           <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.36/5a30490a6e14977d97d9c73c924c1f1b5311ea95/lombok-1.18.36.jar" />
         </processorPath>
         <module name="squirreljme.tools.github-classic-project-dump.main" />
-        <module name="squirreljme.tools.cicd-release-bundle.main" />
         <module name="squirreljme.tools.squirreljme-font.main" />
         <module name="squirreljme.buildSrc.main" />
         <module name="squirreljme.tools.squirreljme-debugger.main" />
@@ -24,6 +23,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
+      <module name="squirreljme.tools.cicd-release-bundle" target="11" />
+      <module name="squirreljme.tools.cicd-release-bundle.main" target="11" />
+      <module name="squirreljme.tools.cicd-release-bundle.test" target="11" />
       <module name="squirreljme.tools.squirreljme-format" target="11" />
       <module name="squirreljme.tools.squirreljme-format.main" target="11" />
       <module name="squirreljme.tools.squirreljme-format.test" target="11" />

@@ -5,8 +5,8 @@ plugins {
 apply plugin: "com.github.johnrengelman.shadow"
 
 repositories {
+	mavenLocal()
 	mavenCentral()
-	jcenter()
 }
 
 dependencies {
@@ -15,7 +15,7 @@ dependencies {
 }
 
 /*task relocateShadowJar(type: ConfigureShadowRelocation) {
-    target = tasks.shadowJar
+	target = tasks.shadowJar
 }
 
 shadowJar {
