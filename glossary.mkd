@@ -43,7 +43,9 @@ definition elsewhere.
  * _MIME_ -- Multipurpose Internet Mail Extension.
    * May also refer to MIME encoding, which uses _Base64_ encapsulated
      within the MIME structure.
- * _MLD_ -- A type of _SMAF_ music file.
+ * _MLD_ -- iMelody/MFi, a type of music file used by DoJa/Star applications.
+   * There are similarities to _SMAF_.
+   * Not to be confused with Sony Ericsson's iMelody format.
  * _MLE_ **@** -- Mid-Level API.
    * This is the API layer between Java code and native code, effectively
      the system call layer.
