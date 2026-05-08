@@ -1,3 +1,72 @@
 # Glossary of Terms
 
- * _NVM_ -- NanoCoat Virtual Machine.
+Anything marked **@** is _SquirrelJME_ specific, there may be another
+definition elsewhere.
+
+ * _3GPP_ -- 3rd-Generation Parternship Project.
+   * This is the organization that has defined 2G, 3G, etc.
+ * _ADPCM_ -- Adaptive differential pulse-code modulation.
+ * _AOT_ -- Ahead-Of-Time Compiler.
+ * _BE_ -- Big Endian.
+ * _CDC_ -- Connected Device Configuration.
+ * _CLDC_ -- Connection Limited Device Configuration.
+ * _CORBA_ -- Common Object Request Broker Architecture.
+ * _DIO_ -- Device I/O.
+ * _ECJ_ -- Eclipse Compiler for Java.
+ * _GCF_ -- Generic Connection Framework.
+ * _GCJ_ -- GNU Compiler for Java.
+ * _GDB_ -- GNU Debugger.
+ * _GIJ_ -- GNU Interpreter for Java.
+ * _GSM_ -- Global System for Mobile Communications.
+ * _ICE_ -- IMS Communication Enablers.
+ * _ICE_ -- Internal Compiler Error.
+ * _IETF_ -- Internet Engineering Task Force.
+   * This group standardizes _RFC_s.
+ * _IM_ -- Instant Messaging.
+ * _IMA_ -- Interactive Multimedia Association.
+ * _IMS_ -- IP Multimedia System.
+ * _ISO_ -- International Standards Organization.
+ * _J2ME_ -- Java 2 Micro Edition.
+   * Now known as _Java ME_.
+ * _JAD_ -- Java Application Descriptor.
+   * This is DoJa/Star Specific.
+ * _JAR_ -- Java Archive.
+ * _JDB_ -- Java Debugger.
+ * _JDK_ -- Java Development Kit.
+ * _JDWP_ -- Java Debug Wire Protocol.
+ * _JIT_ -- Just-In-Time Compiler.
+ * _JNI_ -- Java Native Interface.
+ * _JSR_ -- Java Specification Request.
+ * _LE_ -- Little Endian.
+ * _MIDI_ -- Musical Instrument Digital Interface.
+ * _MIDP_ -- Mobile Information Device Profile.
+ * _MIME_ -- Multipurpose Internet Mail Extension.
+   * May also refer to MIME encoding, which uses _Base64_ encapsulated
+     within the MIME structure.
+ * _MLD_ -- A type of _SMAF_ music file.
+ * _MLE_ **@** -- Mid-Level API.
+   * This is the API layer between Java code and native code, effectively
+     the system call layer.
+   * Also sometimes called _Middle Level Emulation_.
+ * _MMF_ -- _SMAF_: Effectively _M_usic _M_obile _F_format.
+ * _MPL_ -- Mozilla Public License.
+ * _NAL_ **@** -- Native Abstraction Layer.
+ * _NVM_ **@** -- NanoCoat Virtual Machine.
+ * _OMA_ -- Open Mobile Alliance.
+ * _PCF_ -- Portable Compiled Font.
+ * _PCM_ -- Pulse-code modulation.
+ * _PNG_ -- Portable Network Graphics.
+ * _RGB_ -- Red Green Blue.
+ * _RFC_ -- Request for Comment.
+   * This generally refers to the standards put out by the _IETF_.
+ * _SMAF_ -- Synthetic music Mobile Application Format.
+ * _SMS_ -- Short Message Service.
+   * Also known as _text messages_.
+ * _SQF_ **@** -- SquirrelJME Font.
+ * _SUI_ **@** -- ScritchUI.
+ * _TAC_ **@** -- Test, Acceptance, and Compatibility.
+ * _URL_ -- Uniform Resource Locator.
+ * _URI_ -- Uniform Resource Identifier.
+ * _XCAP_ -- XML Configuration Access Protocol.
+ * _XML_ -- E_x_tensable Markup Language.
+ * _XPM_ -- X Pixmap.

@@ -12,9 +12,6 @@ otherwise do, this is something that we call _Imposter Syndrome_. You can do
 things, it takes time to learn however the learning process, although it can
 at times be frustrating it can be very fulfilling. Do not give up.
 
-(This file should be called AGENTS.mkd to match with the other documents, but
-alas AI makes far too many assumptions.)
-
 ## Contributing to SquirrelJME
 
 Note that SquirrelJME does not accept any contributions from which AI has
