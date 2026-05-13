@@ -10,6 +10,8 @@ package cc.squirreljme.runtime.nokia;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.event.GenericDefaultKeys;
 import cc.squirreljme.runtime.lcdui.event.KeyCodeTranslator;
 import com.nokia.mid.ui.FullCanvas;
 
@@ -24,30 +26,38 @@ public class NokiaKeyCodeTranslator
 {
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/05/12
+	 */
+	@Override
+	public int gameActionToVendor(int __ga, boolean __last)
+	{
+		// TODO: Use MIDP generic mapping???
+		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/02/03
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public int keyCodeToGameAction(int __kc)
+	public int keyCodeToVendor(int __kc)
 	{
+		// Nokia exposes these as physical Key IDs, so do the same here
+		// Since most software is made for Nokia we pretty much the
+		// standard and as such have to support doing it this way.
 		switch (__kc)
 		{
-			// Nokia Soft Key 1
-			case NonStandardKey.F1:
+			case GenericDefaultKeys.MENU_ITEM_1:
 			case NonStandardKey.VGAME_COMMAND_LEFT:
-			case FullCanvas.KEY_SOFTKEY1:
 				return FullCanvas.KEY_SOFTKEY1;
 			
-			// Nokia Soft Key 2
-			case NonStandardKey.F2:
-			case NonStandardKey.VGAME_COMMAND_CENTER:
-			case FullCanvas.KEY_SOFTKEY2:
+			case GenericDefaultKeys.MENU_ITEM_2:
+			case NonStandardKey.VGAME_COMMAND_RIGHT:
 				return FullCanvas.KEY_SOFTKEY2;
 			
-			// Nokia Soft Key 3
-			case NonStandardKey.F3:
-			case NonStandardKey.VGAME_COMMAND_RIGHT:
-			case FullCanvas.KEY_SOFTKEY3:
+			case GenericDefaultKeys.MENU_ITEM_3:
+			case NonStandardKey.VGAME_COMMAND_CENTER:
 				return FullCanvas.KEY_SOFTKEY3;
 		}
 		
@@ -60,24 +70,32 @@ public class NokiaKeyCodeTranslator
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public int normalizeKeyCode(int __kc)
+	public int vendorToGameAction(int __vc, boolean __last)
+	{
+		// TODO: Use MIDP generic mapping???
+		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/05/13
+	 */
+	@Override
+	public int vendorToKeyCode(int __vc)
 	{
 		// Nokia exposes these as physical Key IDs, so do the same here
 		// Since most software is made for Nokia we pretty much the
 		// standard and as such have to support doing it this way.
-		switch (__kc)
+		switch (__vc)
 		{
-			case NonStandardKey.F1:
-			case NonStandardKey.VGAME_COMMAND_LEFT:
-				return FullCanvas.KEY_SOFTKEY1;
+			case FullCanvas.KEY_SOFTKEY1:
+				return GenericDefaultKeys.MENU_ITEM_1;
 			
-			case NonStandardKey.F2:
-			case NonStandardKey.VGAME_COMMAND_RIGHT:
-				return FullCanvas.KEY_SOFTKEY2;
+			case FullCanvas.KEY_SOFTKEY2:
+				return GenericDefaultKeys.MENU_ITEM_2;
 			
-			case NonStandardKey.F3:
-			case NonStandardKey.VGAME_COMMAND_CENTER:
-				return FullCanvas.KEY_SOFTKEY3;
+			case FullCanvas.KEY_SOFTKEY3:
+				return GenericDefaultKeys.MENU_ITEM_3;
 		}
 		
 		return 0;

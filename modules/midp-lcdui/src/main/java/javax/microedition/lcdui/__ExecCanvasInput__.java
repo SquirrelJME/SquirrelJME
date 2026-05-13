@@ -13,8 +13,8 @@ import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
-import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 
@@ -73,28 +73,34 @@ class __ExecCanvasInput__
 		if (__type == ScritchInputMethodType.KEY_PRESSED ||
 			__type == ScritchInputMethodType.KEY_RELEASED ||
 			__type == ScritchInputMethodType.KEY_REPEATED)
-			__a = this.__remap(display, __a);
+			__a = this.__remapDialCalc(display, __a);
+		
+		// Perform vendor key translation, if it maps to no key then ignore it
+		// as the vendor compatibility layer says it does not have it
+		int vc = EventTranslate.keyCodeToVendor(__a);
+		if (vc == 0)
+			return;
 		
 		// Depends on the actual event that occurred
 		DisplayScale scale = display.display()._scale;
 		switch (__type)
 		{
 			case ScritchInputMethodType.KEY_PRESSED:
-				keyDefault.keyPressed(__a, __b);
+				keyDefault.keyPressed(vc, __b);
 				if (keyCustom != null)
-					keyCustom.keyPressed(__a, __b);
+					keyCustom.keyPressed(vc, __b);
 				break;
 				
 			case ScritchInputMethodType.KEY_RELEASED:
-				keyDefault.keyReleased(__a, __b);
+				keyDefault.keyReleased(vc, __b);
 				if (keyCustom != null)
-					keyCustom.keyReleased(__a, __b);
+					keyCustom.keyReleased(vc, __b);
 				break;
 				
 			case ScritchInputMethodType.KEY_REPEATED:
-				keyDefault.keyRepeated(__a, __b);
+				keyDefault.keyRepeated(vc, __b);
 				if (keyCustom != null)
-					keyCustom.keyRepeated(__a, __b);
+					keyCustom.keyRepeated(vc, __b);
 				break;
 				
 			case ScritchInputMethodType.MOUSE_MOTION:
@@ -124,7 +130,8 @@ class __ExecCanvasInput__
 	}
 	
 	/**
-	 * Remaps the given key.
+	 * Remaps the given key, handling the number pad, dial pad, and
+	 * calculator layouts.
 	 *
 	 * @param __display The display this is under.
 	 * @param __code The code to remap.
@@ -132,7 +139,7 @@ class __ExecCanvasInput__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/15
 	 */
-	private int __remap(DisplayState __display, int __code)
+	private int __remapDialCalc(DisplayState __display, int __code)
 		throws NullPointerException
 	{
 		if (__display == null)

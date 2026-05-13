@@ -390,6 +390,7 @@ public class Display
 			case NonStandardKey.F1:
 			case NonStandardKey.VGAME_COMMAND_LEFT:
 				return Display.KEY_SOFT1;
+				
 			case NonStandardKey.F2:
 			case NonStandardKey.VGAME_COMMAND_RIGHT:
 				return Display.KEY_SOFT2;

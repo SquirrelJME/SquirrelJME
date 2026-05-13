@@ -362,7 +362,7 @@ public abstract class Canvas
 	public int getGameAction(int __kc)
 		throws IllegalArgumentException
 	{
-		return EventTranslate.keyCodeToGameAction(__kc);
+		return EventTranslate.vendorToGameAction(__kc);
 	}
 	
 	/**
@@ -395,7 +395,7 @@ public abstract class Canvas
 		throws IllegalArgumentException
 	{
 		/* {@squirreljme.error EB1a The specified game action is not valid.} */
-		int rv = EventTranslate.gameActionToKeyCode(__gc);
+		int rv = EventTranslate.gameActionToVendor(__gc);
 		if (rv == 0)
 			throw new IllegalArgumentException("EB1a " + __gc);
 		return rv;
@@ -404,16 +404,18 @@ public abstract class Canvas
 	/**
 	 * Returns the name for a key.
 	 *
-	 * @param __a The name to get the key for.
+	 * @param __kc The name to get the key for.
 	 * @return The name of the given key.
 	 * @throws IllegalArgumentException If the key is not valid.
 	 * @since 2017/02/12
 	 */
 	@Api
-	public String getKeyName(int __a)
+	public String getKeyName(int __kc)
 		throws IllegalArgumentException
 	{
-		return KeyNames.getKeyName(__a);
+		// This needs to be translated from a vendor key to a SquirrelJME key
+		// as the application assumes everything is a vendor key
+		return KeyNames.getKeyName(EventTranslate.vendorToKeyCode(__kc));
 	}
 	
 	/**
