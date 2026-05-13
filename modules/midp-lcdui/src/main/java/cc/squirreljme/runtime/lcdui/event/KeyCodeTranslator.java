@@ -46,7 +46,6 @@ import org.intellij.lang.annotations.MagicConstant;
  * 
  * @since 2022/02/23
  */
-@SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 @SquirrelJMEVendorApi
 public interface KeyCodeTranslator
 {
