@@ -10,7 +10,6 @@ package cc.squirreljme.runtime.nokia;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.event.GenericDefaultKeys;
 import cc.squirreljme.runtime.lcdui.event.KeyCodeTranslator;
 import com.nokia.mid.ui.FullCanvas;
@@ -24,6 +23,23 @@ import com.nokia.mid.ui.FullCanvas;
 public class NokiaKeyCodeTranslator
 	implements KeyCodeTranslator
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/05/13
+	 */
+	@Override
+	public boolean accepts(String __identifier, boolean __exact)
+		throws NullPointerException
+	{
+		if (__identifier == null)
+			throw new NullPointerException("NARG");
+		
+		// Handle all Nokia devices in a generic manner, unless exactly
+		// generic
+		return __identifier.equals("com.nokia") ||
+			(!__exact && __identifier.startsWith("com.nokia."));
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2026/05/12

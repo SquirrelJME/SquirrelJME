@@ -148,12 +148,10 @@ class __ExecCanvasInput__
 		boolean calcLayout = __display.isCalcLayout();
 		switch (__code)
 		{
-			case NonStandardKey.F7:
 			case NonStandardKey.NUMPAD_MULTIPLY:
 			case NonStandardKey.NUMPAD_PLUS:
 				return '*';
 				
-			case NonStandardKey.F8:
 			case NonStandardKey.NUMPAD_DIVIDE:
 			case NonStandardKey.NUMPAD_MINUS:
 				return '#';

@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.ClassAssertion;
 import java.io.InputStream;
+import org.intellij.lang.annotations.Language;
 
 /**
  * This class is the in-language representation of a Java class, the CLDC
@@ -128,6 +129,7 @@ public final class Class<T>
 	 * @since 2018/09/22
 	 */
 	@Api
+	@Language("jvm-class-name")
 	public String getName()
 	{
 		return TypeShelf.runtimeName(this);
@@ -349,7 +351,8 @@ public final class Class<T>
 	 * @since 2016/03/01
 	 */
 	@Api
-	public static Class<?> forName(String __n)
+	public static Class<?> forName(
+		@Language("jvm-class-name") String __n)
 		throws ClassNotFoundException
 	{
 		// No class specified

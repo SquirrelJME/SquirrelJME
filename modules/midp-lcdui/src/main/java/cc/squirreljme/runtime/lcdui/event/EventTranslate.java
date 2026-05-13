@@ -15,12 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
 import javax.microedition.lcdui.Canvas;
+import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * Used to translate key events between SquirrelJME, Vendor Specific Keys,
  * and Game Keys. This follows the interface defined
  * in {@link KeyCodeTranslator}.
+ * 
+ * Translators may be provided via {@link ServiceLoader}.
  *
  * @see KeyCodeTranslator
  * @since 2018/12/09
@@ -28,8 +31,11 @@ import org.intellij.lang.annotations.MagicConstant;
 @SquirrelJMEVendorApi
 public final class EventTranslate
 {
-	/** Event __translators. */
+	/** Event translators. */
 	private static volatile KeyCodeTranslator[] _TRANSLATORS;
+	
+	/** The currently selected translator. */
+	private static volatile KeyCodeTranslator _translator;
 	
 	/**
 	 * Not used.
@@ -54,10 +60,11 @@ public final class EventTranslate
 	@MagicConstant(valuesFromClass = NonStandardKey.class)
 	public static int gameActionToVendor(int __ga)
 	{
-		// Check primary translators
-		for (KeyCodeTranslator adapter : EventTranslate.__translators())
+		// Check primary translator
+		KeyCodeTranslator trans = EventTranslate.translator();
+		if (trans != null)
 		{
-			int result = adapter.gameActionToVendor(__ga, false);
+			int result = trans.gameActionToVendor(__ga, false);
 			if (result != 0)
 				return (result == KeyCodeTranslator.IMMEDIATE_FAIL ?
 					0 : result);
@@ -83,10 +90,10 @@ public final class EventTranslate
 			case Canvas.GAME_D:	return Canvas.KEY_NUM9;
 		}
 		
-		// Check fallback last translators
-		for (KeyCodeTranslator adapter : EventTranslate.__translators())
+		// Check fallback last translator
+		if (trans != null)
 		{
-			int result = adapter.gameActionToVendor(__ga, true);
+			int result = trans.gameActionToVendor(__ga, true);
 			if (result != 0)
 				return (result == KeyCodeTranslator.IMMEDIATE_FAIL ?
 					0 : result);
@@ -111,10 +118,11 @@ public final class EventTranslate
 	public static int keyCodeToVendor(
 		@MagicConstant(valuesFromClass = NonStandardKey.class) int __kc)
 	{
-		// Check primary translators
-		for (KeyCodeTranslator adapter : EventTranslate.__translators())
+		// Check primary translator
+		KeyCodeTranslator trans = EventTranslate.translator();
+		if (trans != null)
 		{
-			int result = adapter.keyCodeToVendor(__kc);
+			int result = trans.keyCodeToVendor(__kc);
 			if (result != 0)
 				return (result == KeyCodeTranslator.IMMEDIATE_FAIL ?
 					0 : result);
@@ -122,6 +130,142 @@ public final class EventTranslate
 		
 		// Direct 1:1 translation
 		return __kc;
+	}
+	
+	/**
+	 * Returns the currently set translator.
+	 *
+	 * @return The current translator.
+	 * @since 2026/05/13
+	 */
+	@SquirrelJMEVendorApi
+	public static KeyCodeTranslator translator()
+	{
+		synchronized (EventTranslate.class)
+		{
+			return EventTranslate._translator;
+		}
+	}
+	
+	/**
+	 * Sets the translator to the specified identifier, if one is supported.
+	 *
+	 * @param __identifier The identifier for the translator, this is
+	 * in the same format
+	 * as {@link KeyCodeTranslator#accepts(String, boolean)}.
+	 * @return The newly set translator, if any.
+	 * @throws NullPointerException On null arguments.
+	 * @see KeyCodeTranslator#accepts(String, boolean)
+	 * @since 2026/05/13
+	 */
+	@SquirrelJMEVendorApi
+	public static KeyCodeTranslator translator(
+		@Language("rfqdn") String __identifier)
+		throws NullPointerException
+	{
+		if (__identifier == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through translators
+		KeyCodeTranslator exact = null;
+		KeyCodeTranslator wild = null;
+		for (KeyCodeTranslator maybe : EventTranslate.__translators())
+		{
+			// Is this an exact translator match?
+			if (exact == null && maybe.accepts(__identifier, true))
+				exact = maybe;
+			
+			// Is this a wildcard translator match?
+			if (wild == null && maybe.accepts(__identifier, false))
+				wild = maybe;
+		}
+		
+		// Prefer exact over a wildcard
+		KeyCodeTranslator chosen = (exact != null ? exact : wild);
+		EventTranslate.translator(chosen);
+		return chosen;
+	}
+	
+	/**
+	 * Sets the event translator.
+	 *
+	 * @param __translator The translator to use, may be {@code null} to
+	 * clear it.
+	 * @since 2026/05/13
+	 */
+	@SquirrelJMEVendorApi
+	public static void translator(KeyCodeTranslator __translator)
+	{
+		synchronized (EventTranslate.class)
+		{
+			EventTranslate._translator = __translator;
+		}
+	}
+	
+	/**
+	 * Sets the translator to the specified identifier if it valid and if
+	 * there is no currently translator set.
+	 *
+	 * @param __identifier The identifier for the translator, this is
+	 * in the same format
+	 * as {@link KeyCodeTranslator#accepts(String, boolean)}.
+	 * @return The newly set translator, if any.
+	 * @throws NullPointerException On null arguments.
+	 * @see KeyCodeTranslator#accepts(String, boolean)
+	 * @see EventTranslate#translator(String)
+	 * @since 2026/05/13
+	 */
+	@SquirrelJMEVendorApi
+	public static KeyCodeTranslator translatorDefault(
+		@Language("rfqdn") String __identifier)
+		throws NullPointerException
+	{
+		if (__identifier == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (EventTranslate.class)
+		{
+			// If there is no translator set, then set one
+			KeyCodeTranslator was = EventTranslate.translator();
+			if (was == null)
+				return EventTranslate.translator(__identifier);
+			
+			// Otherwise return the one that was already set
+			return was;
+		}
+	}
+	
+	/**
+	 * Sets the translator to the specific translator if no other translator
+	 * has already been set.
+	 *
+	 * @param __translator The translator to set.
+	 * @return The newly set translator, if any.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/05/13
+	 */
+	@SquirrelJMEVendorApi
+	public static KeyCodeTranslator translatorDefault(
+		KeyCodeTranslator __translator)
+		throws NullPointerException
+	{
+		if (__translator == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (EventTranslate.class)
+		{
+			// If there is no translator set, then set it to one that was
+			// passed
+			KeyCodeTranslator was = EventTranslate.translator();
+			if (was == null)
+			{
+				EventTranslate.translator(__translator);
+				return __translator;
+			}
+			
+			// Otherwise return the one that was already set
+			return was;
+		}
 	}
 	
 	/**
@@ -138,10 +282,11 @@ public final class EventTranslate
 	@SquirrelJMEVendorApi
 	public static int vendorToGameAction(int __vc)
 	{
-		// Check primary translators
-		for (KeyCodeTranslator adapter : EventTranslate.__translators())
+		// Check primary translator
+		KeyCodeTranslator trans = EventTranslate.translator();
+		if (trans != null)
 		{
-			int result = adapter.vendorToGameAction(__vc, false);
+			int result = trans.vendorToGameAction(__vc, false);
 			if (result != 0)
 				return (result == KeyCodeTranslator.IMMEDIATE_FAIL ?
 					0 : result);
@@ -202,9 +347,9 @@ public final class EventTranslate
 		}
 		
 		// Check fallback last translators
-		for (KeyCodeTranslator adapter : EventTranslate.__translators())
+		if (trans != null)
 		{
-			int result = adapter.vendorToGameAction(__vc, true);
+			int result = trans.vendorToGameAction(__vc, true);
 			if (result != 0)
 				return (result == KeyCodeTranslator.IMMEDIATE_FAIL ?
 					0 : result);
@@ -228,9 +373,10 @@ public final class EventTranslate
 	public static int vendorToKeyCode(int __vc)
 	{
 		// Check primary translators
-		for (KeyCodeTranslator adapter : EventTranslate.__translators())
+		KeyCodeTranslator trans = EventTranslate.translator();
+		if (trans != null)
 		{
-			int result = adapter.vendorToKeyCode(__vc);
+			int result = trans.vendorToKeyCode(__vc);
 			if (result != 0)
 				return (result == KeyCodeTranslator.IMMEDIATE_FAIL ?
 					0 : result);
@@ -241,7 +387,8 @@ public final class EventTranslate
 	}
 	
 	/**
-	 * Returns the event translation adapters which are available.
+	 * Returns the event translation adapters which are available
+	 * through {@link ServiceLoader}.
 	 * 
 	 * @return The adapters which are available.
 	 * @since 2022/02/03

@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ServiceLoader;
 import javax.microedition.lcdui.Canvas;
+import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.MagicConstant;
 
 /**
@@ -56,6 +57,29 @@ public interface KeyCodeTranslator
 	@SquirrelJMEVendorApi
 	int IMMEDIATE_FAIL =
 		Integer.MIN_VALUE;
+	
+	/**
+	 * Does this translator handle the given identifier?
+	 *
+	 * This takes a reverse fully qualified domain name as input and should
+	 * always start with the root vendor being the most generic device. For
+	 * example {@code cc.squirreljme} would be a generic SquirrelJME device
+	 * while {@code cc.squirreljme.phone.a} would be a SquirrelJME Phone
+	 * Model A, hypothetically.
+	 *
+	 * This method is generally used if {@link ServiceLoader} is used to
+	 * access a translator and one is defined.
+	 *
+	 * @param __identifier An identifier in the form of a reverse fully
+	 * qualified domain name.
+	 * @param __exact Require an exact match with no wildcard handling.
+	 * @return If the translator handles the given vendor identifier.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/05/13
+	 */
+	@SquirrelJMEVendorApi
+	boolean accepts(@Language("rfqdn") String __identifier, boolean __exact)
+		throws NullPointerException;
 	
 	/**
 	 * Converts the game action to a vendor key code.
