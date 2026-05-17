@@ -9,6 +9,13 @@ efficient format with optional compression.
 All glyphs follow the ISO/IEC 10646, Universal Coded Character Set, order.
 This also means that the first 256 glyphs are in ISO/IEC 8859-1 order.
 
+## Glyph Validity
+
+Note that a font stores information for all glyphs in a single range, if any
+glyphs within are not valid then they will have zero for their fields and
+their flags will indicate they are not valid. This is to simplify processing
+and lookup.
+
 ## Compression
 
 Compression is done with the Raster Font Compression for Embedded Systems
@@ -41,7 +48,71 @@ positions.
 
 ## Resource Stream Structure
 
-**TODO**
+The font resource uses the given structure, note that types match the types
+that Java utilizes.
+
+ * Font Header -- This is always at the start.
+   * _0_: `int` -- Pixel height of the font.
+   * _4_: `int` -- The family identifier of the font.
+     * `0` -- Regular.
+     * `1` -- Monospace.
+     * `2` -- Sans Serif.
+     * `3` -- Serif.
+   * _8_: `int` -- The ascent of the font.
+   * _12_: `int` -- The descent of the font.
+   * _16_: `int` -- Bounding Box X Coordinate.
+   * _20_: `int` -- Bounding Box Y Coordinate.
+   * _24_: `int` -- Bounding Box Width.
+   * _28_: `int` -- Bounding Box Height.
+   * _32_: `int` -- The codepoint at which the font starts at.
+   * _36_: `int` -- The number of codepoints within the font.
+   * _40_: `int` -- The size of the huffman bit table, in bytes.
+   * _44_: `int` -- The size of the character bitmap table, in bytes.
+ * Character Widths -- The width of every glyph.
+   * _0_: `short n` -- The number of bytes of the character width lookup
+     table.
+   * _2: `byte[n]` -- The character width table. 
+     * ***TODO***
+    
+```java
+ds.writeShort(__struct.charXOffset().length);
+ds.write(__struct.charXOffset());
+```
+
+```java
+ds.writeShort(__struct.charYOffset().length);
+ds.write(__struct.charYOffset());
+```
+
+```java
+ds.writeShort(__struct.charFlags().length);
+ds.write(__struct.charFlags());
+```
+
+```java
+// Character bitmap offsets
+ds.writeShort(__struct.charBmpOffset().length);
+for (int offset : __struct.charBmpOffset())
+ds.writeShort(offset & 0xFFFF);
+```
+
+```java
+// Bitmap scans
+ds.writeShort(__struct.charBmpScan().length);
+ds.write(__struct.charBmpScan());
+```
+
+```java
+// Bitmaps
+ds.writeShort(__struct.charBmp().length);
+ds.write(__struct.charBmp());
+```
+
+```java
+// Huffman bits
+ds.writeShort(__struct.huffBits().length);
+ds.write(__struct.huffBits());
+```
 
 ## Built-in C Structure
 
