@@ -11,6 +11,7 @@ package com.nokia.mid.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -80,6 +81,9 @@ public abstract class FullCanvas
 	@ApiDefinedDeprecated
 	public FullCanvas()
 	{
+		// Use generic Nokia vendor for event translation
+		EventTranslate.translatorDefault("com.nokia");
+		
 		// Nokia API just says to call this instead, so this is done
 		this.setFullScreenMode(true);
 		

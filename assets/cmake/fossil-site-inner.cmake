@@ -109,7 +109,7 @@ function(squirreljme_fossil_downloadable result uvPath)
 	# Determine file size
 	set(tempSize "0")
 	if(EXISTS "${tempFile}")
-		file(SIZE "${tempFile}" tempSize)
+		squirreljme_bp_file_size("${tempFile}" tempSize)
 	endif()
 
 	# Remove the file, we might get a more up-to-date later
