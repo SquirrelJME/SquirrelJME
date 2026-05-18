@@ -346,6 +346,46 @@ typedef enum sjme_nvm_vmDescriptionType
 	SJME_NVM_VM_DESC_NUM_TYPES = 37,
 } sjme_nvm_vmDescriptionType;
 
+/**
+ * Used to get a statistic from the VM.
+ * 
+ * @since 2026/05/17
+ */
+typedef enum sjme_nvm_vmStatisticType
+{
+	/** Unspecified. */
+	SJME_NVM_VM_STAT_UNSPECIFIED = 0,
+	
+	/** The amount of free memory. */
+	SJME_NVM_VM_STAT_MEM_FREE = 1,
+	
+	/** The maximum amount of memory. */
+	SJME_NVM_VM_STAT_MEM_MAX = 2,
+	
+	/** The amount of used memory. */
+	SJME_NVM_VM_STAT_MEM_USED = 3,
+	
+	/**
+	 * The number of possible threads, if the virtual machine is
+	 * cooperatively single threaded then this should always
+	 * return 1.
+	 */
+	SJME_NVM_VM_STAT_CPU_THREAD_COUNT = 4,
+	
+	/**
+	 * The root instance identifier of the root virtual machine. This is
+	 * generally a process ID or other unique identifier.
+	 * 
+	 * All virtual machines launched, whether they have the same process and
+	 * thread, a different thread, or a different thread will have the same
+	 * root instance ID.
+	 */
+	SJME_NVM_VM_STAT_ROOT_INSTANCE_ID = 5,
+	
+	/** The number of statistics. */
+	SJME_NVM_VM_STAT_NUM_STATISTICS = 6,
+} sjme_nvm_vmStatisticType;
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
