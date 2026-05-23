@@ -34,6 +34,7 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -68,10 +69,37 @@ public class MLD
 	/**
 	 * Event ext-B IDs
 	 */
+
+	/** Ext-B Command depicting PCM audio's 3D information. */
+	static final int EVENT_AUDIO_CHANNEL_3D_INF = 0xF0;
+
+	/** Ext-B Command depicting PCM audio's 3D positioning. */
+	static final int EVENT_AUDIO_CHANNEL_3D_POS = 0x90;
+
+	/** Ext-B Command depicting PCM audio panning. */
+	static final int EVENT_AUDIO_CHANNEL_PANPOT = 0x81;
+
+	/** Ext-B Command depicting PCM audio volume. */
+	static final int EVENT_AUDIO_CHANNEL_VOLUME = 0x80;
+
+	/** Ext-B Command depicting an expression change event. */
+	static final int EVENT_EXPRESSION_CHANGE = 0xE6;
+
+	/** Ext-B Command depicting the global MLD panning. */
+	static final int EVENT_MASTER_BALANCE = 0xB1;
+
+	/** Ext-B Command depicting the global MLD volume. */
 	static final int EVENT_MASTER_VOLUME = 0xB0;
 	
+	/** Ext-B Command depicting an modulation depth event. */
+	static final int EVENT_MODULATION_DEPTH = 0xEA;
+
+	/** Ext-B Command depicting a NOP (no-op) event. */
 	static final int EVENT_NOP = 0xDE;
 	
+	/** Ext-B Command depicting another kind of NOP event. */
+	static final int EVENT_NOP_2 = 0xDC;
+
 	static final int EVENT_PANPOT = 0xE3;
 	
 	static final int EVENT_PART_CONFIGURATION = 0xB9;
@@ -100,7 +128,7 @@ public class MLD
 	 * Event types
 	 */
 	static final int EVENT_TYPE_UNKNOWN = -1;
-	
+
 	static final int EVENT_VOLUME = 0xE2;
 	
 	static final int EVENT_WAVE_CHANNEL_PANPOT = 0xE9;
@@ -114,6 +142,12 @@ public class MLD
 	 * "adat"
 	 */
 	static final int FOURCC_ADAT = 0x61646174;
+
+	/**
+	 * FourCCs
+	 * "adpm"
+	 */
+	static final int FOURCC_ADPM = 0x6164706D;
 	
 	/**
 	 * "ainf"
@@ -217,7 +251,13 @@ public class MLD
 	String copy;
 	
 	int[] cuep;
-	
+
+	/**
+	 * Flag that indicates if cuepoint play mode must be used. Enabled if the
+	 * MLD has a CUEPOINT_START event.
+	 */
+	boolean cuepointPlayMode;
+
 	String date;
 	
 	/**
@@ -257,14 +297,15 @@ public class MLD
 	byte[] thrd;
 	
 	/**
-	 * Tick count at the end of the last event
+	 * Tick count at the end of the last event or cuepoint-end.
 	 */
 	long tickEnd;
 	
 	/**
-	 * Tick count of the loop destination
+	 * Tick count at the start of the first playback event. Usually 0 unless a
+	 * cuepoint-start event is set at a different tick.
 	 */
-	long tickLoop;
+	long tickStart;
 	
 	String titl;
 	
@@ -274,7 +315,16 @@ public class MLD
 	MLDTrack[] tracks;
 	
 	String vers;
+
+	/** This MLD file's master volume (0.0f, 1.0f). */
+	float masterVolume = 1.0f;
 	
+	/** This MLD file's master volume (-1.0f, 1.0f). */
+	float masterPan = 0.0f;
+
+	/** This MLD file's master volume (0.0f, 1.0f). */
+	float masterTune = 1.0f;
+
 	
 	/**
 	 * Decode from a byte array. Same as invoking
@@ -392,8 +442,11 @@ public class MLD
 	@SquirrelJMEVendorApi
 	public double getDuration(boolean withoutLooping)
 	{
-		return withoutLooping || this.tickLoop == -1 ? this.duration :
-			Double.POSITIVE_INFINITY;
+		// TODO: JUMP events tell if partial or complete track looping is used
+		// inside MLD, thus we should process them and see if any of its blocks
+		// have infinite repeat values in order to return POSITIVE_INFINITY.
+		return (withoutLooping ? this.duration :
+			Double.POSITIVE_INFINITY);
 	}
 	
 	/**
@@ -425,8 +478,52 @@ public class MLD
 	{
 		if (reader.u32() != MLD.FOURCC_ADAT)
 			throw new RuntimeException("Missing \"adat\" chunk.");
+
+		// Parse "adat" chunk data
+		int adatChunkSize = reader.u32();
+
+		// NOTE: this length includes the next two fields, which are NOT in the
+		// ADPM header.
+		int adpmHeaderLen = reader.u16();
+
+
+		// TODO: No idea what these mean yet
+		int dataFormat = reader.u8();
+		int dataAttribute = reader.u8();
+
+
+		// Parse "adpm" chunk data
+		if (reader.u32() != MLD.FOURCC_ADPM)
+			throw new RuntimeException("Missing \"adpm\" chunk.");
+
+		int adpmChunkSize = reader.u16();
+
+		// Now Read the actual ADPCM data
+
 		MLDADPCM ret = new MLDADPCM();
-		ret.data = reader.bytes(reader.u32());
+
+		ret.sampleRate = reader.u8() * 1000;
+		ret.bitDepth = reader.u8();
+
+		int channelData = reader.u8();
+		ret.numChannels = channelData & 0x07;
+		ret.isInterleaved = (channelData & 0x08) == 1;
+
+		// Here, the size of the ADPCM data is equal to the ADAT chunk size
+		// (as ADPM header's size is ONLY for the three fields above), minus 13
+		// bytes, which are:
+		//
+		// 2 bytes for adpmHeaderLen (parsed in ADAT header)
+		// 1 byte for dataFormat (parsed in ADAT header)
+		// 1 byte for dataAttribute (parsed in ADAT header)
+		// 9 bytes for the entire "adpm" header, of which:
+		// 	4 bytes are FOURCC,
+		// 	2 bytes are the chunk size,
+		// 	1 byte for sampleRate
+		// 	1 byte for bitDepth
+		// 	1 byte for channelData
+		ret.data = reader.bytes(adatChunkSize - 13);
+
 		return ret;
 	}
 	
@@ -471,7 +568,7 @@ public class MLD
 		// timebase-tempo event
 		if ((event.id & 0xF0) == MLD.EVENT_TIMEBASE_TEMPO)
 			return this.eventTimebaseTempo(event);
-		
+
 		// Other event
 		switch (event.id)
 		{
@@ -481,8 +578,12 @@ public class MLD
 				return this.eventBankChange(event);
 			case MLD.EVENT_CUEPOINT:
 				return this.eventCuepoint(event);
+			case MLD.EVENT_EXPRESSION_CHANGE:
+				return this.eventExpression(event);
 			case MLD.EVENT_JUMP:
 				return this.eventJump(event);
+			case MLD.EVENT_MASTER_BALANCE:
+				return this.eventMasterBalance(event);
 			case MLD.EVENT_MASTER_TUNE:
 				return this.eventMasterTune(event);
 			case MLD.EVENT_MASTER_VOLUME:
@@ -499,14 +600,20 @@ public class MLD
 				return this.eventVolume(event);
 			case MLD.EVENT_X_DRUM_ENABLE:
 				return this.eventDrumEnable(event);
-			
+
 			// Events that do not need further processing
-			case MLD.EVENT_CHANNEL_ASSIGN:      // Not implemented
-			case MLD.EVENT_PART_CONFIGURATION:  // Not implemented
-			case MLD.EVENT_WAVE_CHANNEL_PANPOT: // Not implemented
-			case MLD.EVENT_WAVE_CHANNEL_VOLUME: // Not implemented
+			case MLD.EVENT_CHANNEL_ASSIGN:       // Not implemented
+			case MLD.EVENT_PART_CONFIGURATION:   // Chip-specific configuration
+			case MLD.EVENT_MODULATION_DEPTH:     // Not implemented
+			case MLD.EVENT_WAVE_CHANNEL_PANPOT:  // Not implemented
+			case MLD.EVENT_WAVE_CHANNEL_VOLUME:  // Not implemented
+			case MLD.EVENT_AUDIO_CHANNEL_VOLUME: // Not implemented
+			case MLD.EVENT_AUDIO_CHANNEL_PANPOT: // Not implemented
+			case MLD.EVENT_AUDIO_CHANNEL_3D_POS: // Not implemented
+			case MLD.EVENT_AUDIO_CHANNEL_3D_INF: // Not implemented
 			case MLD.EVENT_END_OF_TRACK:
 			case MLD.EVENT_NOP:
+			case MLD.EVENT_NOP_2:
 			case MLD.EVENT_PAUSE:
 			case MLD.EVENT_RESET:
 			case MLD.EVENT_STOP:
@@ -568,23 +675,74 @@ public class MLD
 	}
 	
 	/**
-	 * Parse a master-tune event
+	 * Parse a Master Balance event, which is just a panpot event but applied to
+	 * all tracks and subsequent events.
+	 *
+	 * @param __event The Master Balance event to parse.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/04/18
 	 */
-	MLDEvent eventMasterTune(MLDEvent event)
+	MLDEvent eventMasterBalance(MLDEvent __event)
+		throws NullPointerException
 	{
-		event.semitones = ((event.param & 0x7F) - 64) / 64.0f;
-		return event;
+		if(__event == null)
+			throw new NullPointerException("NARG");
+
+		this.masterPan = (__event.param < 64 ? __event.param / 64.0f - 1 :
+			(__event.param - 64) / 63.0f);
+
+		__event.panpot = this.masterPan;
+		return __event;
 	}
-	
+
 	/**
-	 * Parse a master-volume event
+	 * Parse a Master Tune event, which is just a pitch bend event but applied
+	 * to all tracks and subsequent events.
+	 *
+	 * @param __event The Master Tune event to parse.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/04/18
 	 */
-	MLDEvent eventMasterVolume(MLDEvent event)
+	MLDEvent eventMasterTune(MLDEvent __event)
+		throws NullPointerException
 	{
-		event.volume = this.volumeToAmplitude((event.param & 0x7F) / 127.0f);
-		return event;
+		if (__event == null)
+			throw new NullPointerException("NARG");
+
+		this.masterTune = ((__event.param & 0x7F) - 64) / 64.0f;
+
+		__event.semitones = this.masterTune;
+		return __event;
 	}
-	
+
+	/**
+	 * Parse a Master Volume event, which is just a volume event but applied to
+	 * all tracks and subsequent events.
+	 *
+	 * @param __event The Master Volume event to parse.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/04/18
+	 */
+	MLDEvent eventMasterVolume(MLDEvent __event)
+		throws NullPointerException
+	{
+		if (__event == null)
+			throw new NullPointerException("NARG");
+
+		int vol = __event.param;
+
+		// According to the CMF specification, a value of 100 is a 0dB
+		// adjustment, so anything higher (up to 127) is a boost, which we allow
+		// up to a 27% increase in amplitude.
+		// TODO: Values lower than 100 still need to be tweaked.
+		this.masterVolume = (vol <= 100 ?
+			this.volumeToAmplitude((vol) / 100.0f) :
+			this.volumeToAmplitude((vol) / 100.0f));
+
+		__event.volume = this.masterVolume;
+		return __event;
+	}
+
 	/**
 	 * Parse a note event
 	 */
@@ -625,7 +783,8 @@ public class MLD
 	MLDEvent eventPanPot(MLDEvent event)
 	{
 		int param = event.param & 0x3F;
-		event.panpot = param < 32 ? param / 32.0f - 1 : (param - 32) / 31.0f;
+		event.panpot = (param < 32 ? param / 32.0f - 1 : (param - 32) / 31.0f) *
+			this.masterPan;
 		return event;
 	}
 	
@@ -634,7 +793,8 @@ public class MLD
 	 */
 	MLDEvent eventPitchBend(MLDEvent event)
 	{
-		event.semitones = ((event.param & 0x3F) - 32) / 3200.0f;
+		event.semitones = ((event.param & 0x3F) - 32) / 3200.0f *
+			this.masterTune;
 		return event;
 	}
 	
@@ -668,13 +828,32 @@ public class MLD
 		event.id = MLD.EVENT_TIMEBASE_TEMPO;
 		return event;
 	}
+
+	/**
+	 * Parse an expression event.
+	 *
+	 * @param __event The expression event to parse.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/04/18
+	 */
+	MLDEvent eventExpression(MLDEvent __event)
+		throws NullPointerException
+	{
+		if (__event == null)
+			throw new NullPointerException("NARG");
+
+		__event.volume *= this.volumeToAmplitude(
+			(__event.param & 0x3F) / 63.0f);
+		return __event;
+	}
 	
 	/**
 	 * Parse a volume event
 	 */
 	MLDEvent eventVolume(MLDEvent event)
 	{
-		event.volume = this.volumeToAmplitude((event.param & 0x3F) / 63.0f);
+		event.volume = this.volumeToAmplitude((event.param & 0x3F) / 63.0f) *
+			this.masterVolume;
 		return event;
 	}
 	
@@ -890,9 +1069,10 @@ public class MLD
 		int[] trkUntil = new int[this.tracks.length];
 		
 		// Initialize instance fields
+		this.cuepointPlayMode = false;
 		this.duration = 0.0;
 		this.tickEnd = 0;
-		this.tickLoop = -1;
+		this.tickStart = 0;
 		
 		// Record the start time of each track's first event
 		for (int x = 0; x < this.tracks.length; x++)
@@ -955,7 +1135,8 @@ public class MLD
 					trkUntil[x] = -1;
 				
 				// end-of-track
-				if (event.type == MLD.EVENT_TYPE_EXT_B && event.id == MLD.EVENT_END_OF_TRACK)
+				if (event.type == MLD.EVENT_TYPE_EXT_B &&
+					event.id == MLD.EVENT_END_OF_TRACK)
 				{
 					trkUntil[x] = -1;
 					continue;
@@ -990,27 +1171,25 @@ public class MLD
 				// cuepoint start
 				if (event.cuepoint == MLD.CUEPOINT_START)
 				{
-					this.tickLoop = tickNow;
+					// Decoder must use cue-point play mode
+					this.cuepointPlayMode = true;
+					this.tickStart = tickNow;
 					continue;
 				}
 				
-				// cuepoint end, but the loop point isn't set
-				if (this.tickLoop == -1)
+				// If we get a cuepoint end, but the start point isn't set,
+				// ignore, as it's not a valid cue-point play mode.
+				if (event.cuepoint == MLD.CUEPOINT_END && !this.cuepointPlayMode)
 					continue;
 				
-				// If a cuepoint end and note both happen on the
-				// same tick and the cuepoint end is "first", does
-				// it still play the note?
+				// TODO: If a cuepoint-end and note both happen on the same tick
+				// and the cuepoint end is "first", does it still play the note?
 				
 				// cuepoint end
 				this.tickEnd = tickNow;
 				return;
 			}
-			
 		}
-		
-		// The entire sequence was scanned
-		this.tickLoop = -1;
 	}
 	
 	/**
@@ -1084,6 +1263,7 @@ public class MLD
 			throw new RuntimeException("Missing \"trac\" chunk.");
 		
 		// Working variables
+		MLDEvent event;
 		MLDTrack ret = new MLDTrack();
 		ret.index = index;
 		reader = reader.reader(reader.u32());
@@ -1092,9 +1272,34 @@ public class MLD
 		// Parse events
 		while (!reader.isEOF())
 		{
-			if (reader.offset == cue)
+			event = this.event(note, index, reader);
+
+			// Do we have a "cuep" header that defines the cuepoint start of
+			// this track, or have we just parsed a CUEPOINT_START event? If so,
+			// the player will switch to cue-point play mode.
+			//
+			// As per Atarius' CMF draft on IETF (Section 7.4.1):
+			// https://web.archive.org/web/20240417112627/https://www.ietf.org/
+			// archive/id/draft-atarius-cmf-00.txt
+			//
+			// "Cuepoints are used to provide an alternative play mode for CMF
+			// files. When in cue-point play mode, the decoder SHOULD jump to
+			// the cue start point when starting playback. All rules for setup
+			// that are observed for normal playback at the beginning of the
+			// file SHOULD be observed. For example, an encoder is required to
+			// insert all configuration events in between cuepoint boundaries
+			// even if those events are redundant with configuration events
+			// outside cue-point boundaries."
+			//
+			// Thus, it should be safe to just skip everything before a
+			// CUEPOINT_START in this case. We do this by just setting the
+			// track's cue to the current position, as MLDPlayer will then begin
+			// from the cue offset.
+			if (reader.offset == cue || (event.id == MLD.EVENT_CUEPOINT &&
+				event.cuepoint == CUEPOINT_START))
 				ret.cue = ret.size();
-			ret.add(this.event(note, index, reader));
+
+			ret.add(event);
 		}
 		return ret;
 	}

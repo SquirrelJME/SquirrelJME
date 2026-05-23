@@ -74,15 +74,31 @@ class __MIDPPlayerListener__
 		{
 				// Has started playing
 			case PlayerListener.STARTED:
-				listener.mediaAction(presenter,
-					AudioPresenter.AUDIO_PLAYING, 0);
+
+				// Are we starting from the beginning? (play() methods)
+				if (!presenter.__isPaused())
+					listener.mediaAction(presenter,
+						AudioPresenter.AUDIO_PLAYING, 0);
+
+				// Or are we resuming from a paused state? (resume method)
+				else
+					listener.mediaAction(presenter,
+						AudioPresenter.AUDIO_RESTARTED, 0);
+
 				break;
 				
 				// Has stopped playing
 			case PlayerListener.STOPPED:
 			case PlayerListener.STOPPED_AT_TIME:
-				listener.mediaAction(presenter,
-					AudioPresenter.AUDIO_STOPPED, 0);
+				// Are we stopping with a stop() call, or by END-OF-MEDIA?
+				if (!presenter.__isPaused())
+					listener.mediaAction(presenter,
+						AudioPresenter.AUDIO_STOPPED, 0);
+
+				// Or are we stopping due to a pause() call?
+				else
+					listener.mediaAction(presenter,
+						AudioPresenter.AUDIO_PAUSED, 0);
 				break;
 				
 				// End of song was reached
@@ -94,7 +110,7 @@ class __MIDPPlayerListener__
 					// If in DoJa 5+ and this media is looping emit a loop
 					// event. Note that looped MLDs do not emit loop events
 					if (DoJaRuntime.versionLeast(5, 0))
-						if (mldPlayer.lastEndType() == MLDPlayer.EVENT_END)
+						if (mldPlayer.lastEndType() == MLDPlayer.EVENT_LOOP)
 						{
 							listener.mediaAction(presenter,
 								AudioPresenter.AUDIO_LOOPED, 0);

@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.control.VolumeControl;
+import org.jetbrains.annotations.Range;
 
 /**
  * An audio presenter is used to play media files. 
@@ -164,6 +165,11 @@ public class AudioPresenter
 	@SquirrelJMEVendorApi
 	volatile int _priority =
 		AudioPresenter.NORM_PRIORITY;
+
+	/** Indicates if media has been paused by calling pause() */
+	@SquirrelJMEVendorApi
+	volatile boolean _paused =
+		false;
 	
 	/** The volume scale. */
 	@SquirrelJMEVendorApi
@@ -216,13 +222,74 @@ public class AudioPresenter
 			return this._currentMedia;
 		}
 	}
+
+	/**
+	 * Returns the total duration of the media in milliseconds.
+	 *
+	 * The duration does not take into account loops performed by the player,
+	 * and if the media itself contains infinite loops, this method returns -1.
+	 *
+	 * @return The total duration of the media.
+	 * @since 2026/05/09
+	 */
+	@Api
+	public int getTotalTime()
+	{
+		throw Debugging.todo();
+	}
+
+	/**
+	 * Pauses the playback of the media. It may later be resumed by calling
+	 * {@link AudioPresenter#restart()}.
+	 *
+	 * If there is a listener attached, {@link #AUDIO_PAUSED} will be sent.
+	 *
+	 * If this method is called while media is already paused, or has stopped
+	 * normally, this method does nothing and returns silently.
+	 *
+	 * @throws UIException If the player is not in a valid state when this is
+	 * called.
+	 * @since 2026/05/09
+	 */
+	@Api
+	public void pause()
+		throws UIException
+	{
+		synchronized (this)
+		{
+			// This doesn't exist before DoJa 2.0
+			if (DoJaRuntime.versionBefore(2, 0) || this.__isPaused())
+				return;
+
+			try
+			{
+				Player player = this.__current();
+				int state = player.getState();
+
+				// If the player has already stopped, do nothing
+				if (state == Player.PREFETCHED)
+					return;
+
+				this._paused = true;
+				this.__current().stop();
+			}
+			catch (IllegalStateException|MediaException __e)
+			{
+				__e.printStackTrace();
+
+				UIException toss = new UIException(
+					UIException.ILLEGAL_STATE, __e.getMessage());
+				toss.initCause(__e);
+				throw toss;
+			}
+		}
+	}
 	
 	/**
-	 * Plays the currently loaded audio. 
+	 * Plays the currently loaded audio, starting from the very beginning.
 	 *
-	 * If there is a listener attached, {@link #AUDIO_PLAYING} will be sent.
-	 * When playback stops, {@link #AUDIO_STOPPED} will be sent otherwise
-	 * if a loop occurs {@link #AUDIO_LOOPED} will be sent.
+	 * Calling this method is effectively the same as calling
+	 * {@link AudioPresenter#play(int)} with {@code 0} as the argument.
 	 * 
 	 * @since 2025/05/05
 	 */
@@ -231,17 +298,50 @@ public class AudioPresenter
 	public void play()
 		throws UIException
 	{
+		this.play(0);
+	}
+
+	/**
+	 * Plays the currently loaded audio, starting from the received
+	 * {@code __time} position.
+	 *
+	 * If there is a listener attached, {@link #AUDIO_PLAYING} will be sent.
+	 * When playback stops, {@link #AUDIO_STOPPED} will be sent otherwise
+	 * if a loop occurs {@link #AUDIO_LOOPED} will be sent.
+	 *
+	 * If this method is called while media is playing, it is first stopped
+	 * then played again, starting from the specified time position.
+	 *
+	 * @param __time The position to start playback from, in milliseconds.
+	 * @throws UIException If the player is not in a valid state when this is
+	 * called.
+	 * @since 2026/05/07
+	 */
+	@Api
+	public void play(@Range(from = 0, to = Integer.MAX_VALUE) int __time)
+		throws UIException
+	{
 		synchronized (this)
 		{
+			// Doja before 2.0 doesn't have this method, and even in 2.0 itself,
+			// it's stated that some formats may only allow playing from the
+			// very beginning.
+			if (DoJaRuntime.versionBefore(2, 0) && __time > 0)
+				__time = 0;
+
 			try
 			{
 				Player player = this.__current();
-				
-				// Start playing, the current time is always implicitly at
-				// the start... assuming it was played previously
 				int state = player.getState();
+
+				// If the player is running, stop it first
+				if (state >= Player.STARTED)
+					player.stop();
+
+				// Set the media time to the expected position, as this method
+				// works in milliseconds and setMediaTime works in microseconds.
 				if (state != Player.CLOSED && state != Player.UNREALIZED)
-					player.setMediaTime(0);
+					player.setMediaTime(__time * 1000);
 				
 				// Either infinite loop, or loops a specific number of times
 				int loopCount = this._loopCount;
@@ -257,6 +357,55 @@ public class AudioPresenter
 			{
 				__e.printStackTrace();
 				
+				UIException toss = new UIException(
+					UIException.ILLEGAL_STATE, __e.getMessage());
+				toss.initCause(__e);
+				throw toss;
+			}
+		}
+	}
+
+	/**
+	 * Resumes playback of a media that was previously paused by calling
+	 * {@link AudioPresenter#pause()}.
+	 *
+	 * If there is a listener attached, {@link #AUDIO_RESTARTED} will be sent.
+	 *
+	 * If this method is called while media is playing, or it has not been
+	 * paused by, calling {@link AudioPresenter#pause()}, this method does
+	 * nothing and returns silently.
+	 *
+	 * @throws UIException If the player is not in a valid state when this is
+	 * called.
+	 * @since 2026/05/09
+	 */
+	@Api
+	public void restart()
+		throws UIException
+	{
+		synchronized (this)
+		{
+			// This doesn't exist before DoJa 2.0
+			if (DoJaRuntime.versionBefore(2, 0) || !this.__isPaused())
+				return;
+
+			try
+			{
+				Player player = this.__current();
+				int state = player.getState();
+
+				// If the player is running, do nothing
+				if (state >= Player.STARTED)
+					return;
+
+				// Start playing
+				player.start();
+				this._paused = false;
+			}
+			catch (IllegalStateException|MediaException __e)
+			{
+				__e.printStackTrace();
+
 				UIException toss = new UIException(
 					UIException.ILLEGAL_STATE, __e.getMessage());
 				toss.initCause(__e);
@@ -282,10 +431,39 @@ public class AudioPresenter
 		switch (__attribute)
 		{
 			case AudioPresenter.CHANGE_TEMPO:
+				// Does not exist before DoJa 3.0
+				if (DoJaRuntime.versionBefore(3, 0))
+					return;
+
+				// Any value is valid here, and if the implementation doesn't
+				// support values higher/lower than a certain threshold, it uses
+				// the upper/lower bounds it supports for values that are out
+				// of range.
+				if (__value < 0)
+					__value = 0;
+
+				// Value is a % of the original playback rate, and the spec does
+				// not disclose whether the playback pitch is affected by any
+				// tempo changes, thus we could just set up MLDPlayer to play
+				// audio faster/slower by lengthening/shortening gateTimes.
+
 				throw Debugging.todo();
 				
 			case AudioPresenter.LOOP_COUNT:
-				throw Debugging.todo();
+				// Does not exist before DoJa 5.0
+				if (DoJaRuntime.versionBefore(5, 0))
+					return;
+
+				// Values <= -2 throw an exception, anything else is valid
+				if (__value <= -2)
+					throw new IllegalArgumentException("INVL");
+
+				// Set loop count
+				synchronized (this)
+				{
+					this._loopCount = __value;
+				}
+				break;
 				
 			case AudioPresenter.PRIORITY:
 				// Does not exist before DoJa 2.0
@@ -313,7 +491,7 @@ public class AudioPresenter
 				if (__value < 0 || __value > 100)
 					throw new IllegalArgumentException("INVL");
 				
-				// Set priority
+				// Set volume
 				synchronized (this)
 				{
 					this._volume = __value;
@@ -322,27 +500,69 @@ public class AudioPresenter
 				break;
 				
 			case AudioPresenter.SYNC_MODE:
+				// Does not exist before DoJa 2.0, and DoJa 3.0 and later only
+				// apply this if the player is not currently playing (changes
+				// are ignored even for future playback calls otherwise)
+				if (DoJaRuntime.versionBefore(2, 0) ||
+					(DoJaRuntime.versionLeast(3, 0) &&
+					this._current.getState() >= Player.STARTED))
+					return;
+
+				if (__value < AudioPresenter.ATTR_SYNC_OFF ||
+					__value > AudioPresenter.ATTR_SYNC_ON)
+					throw new IllegalArgumentException("INVL");
+
 				throw Debugging.todo();
 				
 			case AudioPresenter.TRANSPOSE_KEY:
+				// Does not exist before DoJa 3.0
+				if (DoJaRuntime.versionBefore(3, 0))
+					return;
+
+				// Value is either a positive or negative pitch shift in
+				// semitones, 0 being the same as resetting to the normal pitch.
+				// Like CHANGE_TEMPO, any values out of range are clamped to the
+				// player's supported range.
+
 				throw Debugging.todo();
 				
-				// Unknown, ignore
+				// Unknown attr, ignore as exceptions are only thrown for values
 			default:
 				break;
 		}
 	}
 	
+	/**
+	 * Sets a {@link MediaData} object to be used for subsequent playback. While
+	 * not explicitly stated by the documentation, this method only really
+	 * supports {@link MediaSound} instances, as they're the only ones that may
+	 * contain audio data.
+	 *
+	 * @param __data The {@link MediaData}
+	 * @throws NullPointerException If {@code __data} is null.
+	 * @throws UIException If {@code __data} has not been used yet, or the audio
+	 * format is unsupported.
+	 * @since 2026/04/15
+	 */
 	@Api
 	public void setData(MediaData __data)
+		throws NullPointerException, UIException
 	{
 		if (__data instanceof MediaSound)
 		{
+			// If this MediaSound has not been used yet or is unsupported, this
+			// method will throw an UIException.
 			this.setSound((MediaSound)__data);
 			return;
 		}
-		
-		throw Debugging.todo();
+
+		// Only MediaSound is really supported here, and the documentation
+		// states that UIException should be thrown for any object that
+		// implements MediaData but is unsupported anyway (Star doesn't
+		// even have this method on its AudioPresenter, and DoJa earlier than
+		// 3.0 doesn't allow using this and setSound() interchangeably for
+		// whatever reason).
+		throw new UIException(UIException.UNSUPPORTED_FORMAT);
 	}
 	
 	/**
@@ -501,6 +721,7 @@ public class AudioPresenter
 	 * @throws UIException If there is no current player.
 	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	private Player __current()
 		throws UIException
 	{
@@ -512,6 +733,18 @@ public class AudioPresenter
 			
 			return current;
 		}
+	}
+
+	/**
+	 * Returns the current pause state of the player.
+	 *
+	 * @return Whether the player is currently paused or not.
+	 * @since 2026/05/09
+	 */
+	@SquirrelJMEVendorApi
+	boolean __isPaused()
+	{
+		return this._paused;
 	}
 	
 	/**
