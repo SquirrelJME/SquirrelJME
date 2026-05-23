@@ -308,13 +308,10 @@ target_include_directories(libEmulatorBase PRIVATE
 # Libraries for the build
 target_link_directories(libEmulatorBase PRIVATE
 	"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin")
-target_link_libraries(libEmulatorBase PUBLIC
+squirreljme_link_libraries_required(libEmulatorBase PUBLIC
 	"${SQUIRRELJME_REQUIRED_LIBS}"
 	BaseStatic
 	jvm)
-
-# Add required link libraries for the system
-squirreljme_link_libraries_required(libEmulatorBase)
 
 # It is easier to find this when it is in the build root
 squirreljme_target_binary_name(libEmulatorBase
