@@ -54,17 +54,18 @@ public final class MidiTracker
 	 * @param __player The player used.
 	 * @param __tracks MIDI tracks to run with.
 	 * @param __timeDiv The time division.
+	 * @param __volume The master volume.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/27
 	 */
 	public MidiTracker(MidiPlayer __player, MTrkParser[] __tracks,
-		MidiTimeDiv __timeDiv)
+		MidiTimeDiv __timeDiv, MidiVolume __volume)
 		throws NullPointerException
 	{
 		super("SquirrelJME-MidiTracker-" +
 			Math.abs(__player.hashCode()));
 		
-		if (__tracks == null || __timeDiv == null)
+		if (__tracks == null || __timeDiv == null || __volume == null)
 			throw new NullPointerException("NARG");
 		
 		this.player = __player;
@@ -76,7 +77,7 @@ public final class MidiTracker
 		// Trackers for each track
 		MTrkTracker[] trackers = new MTrkTracker[__tracks.length];
 		for (int i = 0, n = __tracks.length; i < n; i++)
-			trackers[i] = new MTrkTracker(__tracks[i], __timeDiv);
+			trackers[i] = new MTrkTracker(__tracks[i], __timeDiv, __volume);
 		this._trackers = trackers;
 		
 		// Times the next event occurs for each track

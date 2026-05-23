@@ -37,25 +37,32 @@ public class MTrkTracker
 	
 	/** Has the track ended? */
 	volatile boolean _trackEnded;
+
+	/** Global volume multiplier for MIDI notes. */
+	private volatile MidiVolume _volume;
 	
 	/**
 	 * Initializes the tracker for the single track.
 	 *
 	 * @param __track The track to follow.
 	 * @param __timeDiv The time division.
+	 * @param __volume The master volume.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/25
 	 */
-	public MTrkTracker(MTrkParser __track, MidiTimeDiv __timeDiv)
+	public MTrkTracker(MTrkParser __track, MidiTimeDiv __timeDiv,
+		MidiVolume __volume)
 		throws NullPointerException
 	{
-		if (__track == null || __timeDiv == null)
+		if (__track == null || __timeDiv == null || __volume == null)
 			throw new NullPointerException("NARG");
 		
 		this.parser = __track;
 		
 		// Store the time division
 		this._timeDiv = __timeDiv;
+
+		this._volume = __volume;
 		
 		// Load byte array from the input
 		ByteArrayInputStream input = __track.inputStream();
@@ -71,8 +78,8 @@ public class MTrkTracker
 	 */
 	public MTrkTracker duplicate()
 	{
-		return new MTrkTracker(this.parser,
-			this._timeDiv.duplicate());
+		return new MTrkTracker(this.parser, this._timeDiv.duplicate(),
+			this._volume);
 	}
 	
 	/**
@@ -357,7 +364,9 @@ public class MTrkTracker
 			case 0b1000_0000:	// Note Off
 			case 0b1001_0000:	// Note On
 				data1 = this.read();
-				data2 = this.read();
+
+				//data2 is velocity, multiply it by the current global volume
+				data2 = this.read() * this._volume._value / 100;
 				break;
 				
 				// Two-byte (squelchable)
