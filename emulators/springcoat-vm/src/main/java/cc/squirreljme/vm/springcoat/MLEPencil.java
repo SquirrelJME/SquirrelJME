@@ -91,7 +91,7 @@ public enum MLEPencil
 		{
 			try
 			{
-				PencilShelf.hardwareFillArc(
+				PencilShelf.hardwareDrawArc(
 					SpringVisObject.asNative(__thread,
 						PencilBracket.class, __args[0]),
 					SpringVisObject.asNative(__thread,

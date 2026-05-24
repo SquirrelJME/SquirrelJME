@@ -2182,7 +2182,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawArc(
 	sjme_attrInValue sjme_jint arcAngle)
 {
 	SJME_SDP_CHUNK(drawArc,
-		SJME_SCRITCHUI_SERIAL_PEN_FILL_ARC,
+		SJME_SCRITCHUI_SERIAL_PEN_DRAW_ARC,
 		(g, x, y, w, h, startAngle, arcAngle));
 		
 	SJME_SDX_PASS(g);
