@@ -27,7 +27,7 @@ java {
 	// Use a fixed version of the JVM
 	compileJava
 	{
-		sourceCompatibility = JavaVersion.VERSION_1_8
+		sourceCompatibility = JavaVersion.VERSION_1_7
 		targetCompatibility = JavaVersion.VERSION_1_8
 		
 		// Use the default bootstrap classpath
