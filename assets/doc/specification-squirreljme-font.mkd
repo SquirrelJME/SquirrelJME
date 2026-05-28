@@ -49,7 +49,12 @@ positions.
 ## Resource Stream Structure
 
 The font resource uses the given structure, note that types match the types
-that Java utilizes.
+that Java utilizes. Generally, a valid font will have all tables contain the
+same number of entries.
+
+Note that _Bitmap scans_ refers to _Bitmap scan lengths_
+as in the number of bytes each bitmap takes in a scanline and not the actual
+bitmap data.
 
  * Font Header -- This is always at the start.
    * _0_: `int` -- Pixel height of the font.
@@ -68,50 +73,82 @@ that Java utilizes.
    * _36_: `int` -- The number of codepoints within the font.
    * _40_: `int` -- The size of the huffman bit table, in bytes.
    * _44_: `int` -- The size of the character bitmap table, in bytes.
- * Character Widths -- The width of every glyph.
-   * _0_: `short n` -- The number of bytes of the character width lookup
-     table.
-   * _2: `byte[n]` -- The character width table. 
-     * ***TODO***
-    
-```java
-ds.writeShort(__struct.charXOffset().length);
-ds.write(__struct.charXOffset());
-```
+ * Glyph Widths -- The width of every glyph.
+   * _0_: `short n` -- The number of entries in the table.
+   * _2_: `struct (1)[n]` -- The character width table. 
+     * `unsigned byte width` -- Character width.
+ * Glyph X Offsets -- The X offsets of every glyph.
+   * _0_: `short n` -- The number of entries in the table.
+   * _2_: `struct (1)[n]` -- The X offset table.
+     * `byte xOffset` -- Character bitmap X offset.
+ * Glyph Y Offsets -- The Y offsets of every glyph.
+   * _0_: `short n` -- The number of entries in the table.
+   * _2_: `struct (1)[n]` -- The Y offset table.
+     * `byte yOffset` -- Character bitmap Y offset.
+ * Glyph Flags -- The flags for each glyph.
+   * _0_: `short n` -- The number of entries in the table.
+   * _2_: `struct (1)[n]` -- The glyph flag table.
+     * `byte flag` -- The flags for each glyph.
+       * `0x01` -- Glyph is valid and is stored within the font. This is used
+          as fonts store a single linear set of glyphs however not all glyphs
+          may be in the font.
+       * `0x02` -- Compression is used for this glyph.
+       * `0x04` -- Reserved.
+       * `0x08` -- Reserved.
+       * `0x10` -- Reserved.
+       * `0x20` -- Reserved.
+       * `0x40` -- Reserved.
+       * `0x80` -- Reserved.
+ * Glyph Bitmap Offsets -- Offsets to the individual glyph bitmap data.
+   * _0_: `short n` -- The number of entries in the table.
+   * _2_: `struct (2)[n]` -- The offsets to the glyph data.
+     * `unsigned short offset` -- The offset within the character font
+        bitmap data where the bitmap of this font is stored. This chunk of
+        data is later in the file, and thus this offset does not refer to
+        the current position or the start of file.
+ * Glyph Bitmap Scan Lengths -- The length of each bitmap scanline.
+   * _0_: `short n` -- The number of entries in the table.
+   * _2_: `struct (1)[n]` -- The bitmap scan length table.
+     * `byte scanLen` -- The scanline length for the given bitmap. If a
+        bitmap is 8 pixels then this will be 1 byte, if it is 9 pixels it
+        will be 2 bytes. The formula is `1 + (width / 8)`.
+ * Glyph Bitmap Data -- Raw glyph bitmap data.
+   * _0_: `short size` -- The length of this table in bytes.
+   * _2_: `byte[size]` -- Raw bitmap data.
+ * Glyph Huffman Bits -- Huffman bit data for RaFoCES compressed fonts.
+   * _0_: `short size` -- The length of this table in bytes.
+   * _2_: `byte[size]` -- Raw huffman bit data.
 
-```java
-ds.writeShort(__struct.charYOffset().length);
-ds.write(__struct.charYOffset());
-```
+## Bitmap Encoding Order
 
-```java
-ds.writeShort(__struct.charFlags().length);
-ds.write(__struct.charFlags());
-```
+As an example, the replacement glyph has a bitmap scan length of two, thus
+every byte represents 16 pixels. The replacement glyph is a clear question
+mark within a diamond. The position of the question mark is marked
+with hyphens (`-`) instead of periods (`.`) to indicate its layout and
+position. From this, the least significant bit is the first/zeroth pixel,
+whereas the most significant bit is the last/seventh pixel.
 
-```java
-// Character bitmap offsets
-ds.writeShort(__struct.charBmpOffset().length);
-for (int offset : __struct.charBmpOffset())
-ds.writeShort(offset & 0xFFFF);
-```
+As this bitmap has a height of 12 pixels, the bitmap thus has a height of
+12 pixels. This is the case for all bitmaps.
 
-```java
-// Bitmap scans
-ds.writeShort(__struct.charBmpScan().length);
-ds.write(__struct.charBmpScan());
-```
+The representation on the right is how it would be rendered on screen, note
+that the scans are in least-significant order.
 
-```java
-// Bitmaps
-ds.writeShort(__struct.charBmp().length);
-ds.write(__struct.charBmp());
 ```
-
-```java
-// Huffman bits
-ds.writeShort(__struct.huffBits().length);
-ds.write(__struct.huffBits());
+0b12345678 | 0b12345678 -> 1234567890123456
+-----------|-----------    ----------------
+0b...#.... | 0b........ -> ....#...........
+0b..###... | 0b........ -> ...###..........
+0b.##-##.. | 0b........ -> ..##-##.........
+0b##-#-##. | 0b........ -> .##-#-##........
+0b##-##### | 0b.......# -> #####-###.......
+0b###-###. | 0b........ -> .###-###........
+0b.#####.. | 0b........ -> ..#####.........
+0b..#-#... | 0b........ -> ...#-#..........
+0b...#.... | 0b........ -> ....#...........
+0b........ | 0b........ -> ................
+0b........ | 0b........ -> ................
+0b........ | 0b........ -> ................
 ```
 
 ## Built-in C Structure
