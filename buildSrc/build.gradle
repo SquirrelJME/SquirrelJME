@@ -18,6 +18,12 @@ compileJava {
 }
 
 dependencies {
+	// DO NOT UPDATE THESE DEPENDENCIES AND VERSION NUMBERS, THEY WORK FINE AS
+	// THEY ARE FOR JAVA 8. THEY ALSO DO NOT CONTAIN ANY KNOWN EXPLOITABLE
+	// VULNERABILITIES. THESE DEPENDENCIES ARE NOT USED IN SQUIRRELJME IN ANY
+	// WAY AS IT IS ENTIRELY SELF HOSTED, THESE ARE ONLY USED IN BUILDING
+	// SQUIRRELJME.
+	
 	// Lombok for simpler getters/setters
 	// Debian: liblombok-java
 	implementation 'org.projectlombok:lombok:1.18.36'
@@ -40,16 +46,24 @@ dependencies {
 	// CSV parsing, for NanoCoat generation
 	// Debian: libcommons-collections4-java 
 	implementation 'org.apache.commons:commons-collections4:4.5.0-M3'
+
+	// CVE-2025-48924 does not affect SquirrelJME
+	// > Uncontrolled Recursion vulnerability in Apache Commons Lang. This
+	// > issue affects Apache Commons Lang: Starting with
+	// > commons-lang:commons-lang 2.0 to 2.6, and, 
+	// > from org.apache.commons:commons-lang3 3.0 before 3.18.0. The 
+	// > methods ClassUtils.getClass(...) can throw StackOverflowError on 
+	// > very long inputs. Because an Error is usually not handled by 
+	// > applications and libraries, a StackOverflowError could cause an 
+	// > application to stop. Users are recommended to upgrade to version 
+	// > 3.18.0, which fixes the issue.
 	// Debian: libopencsv-java
+	//noinspection VulnerableLibrariesLocal
 	implementation 'com.opencsv:opencsv:5.10'
 	
 	// Shadow Jar, for single Jars
 	// Debian: libjengelman-shadow-java
 	implementation 'gradle.plugin.com.github.johnrengelman:shadow:7.1.2'
-	
-	// Jackson, for JSON APIs
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr353:2.17.2'
-	implementation 'org.glassfish:javax.json:1.1'
 	
 	// Install4J, for building installers (10.0.9 supports Java 8)
 	implementation 'com.install4j.gradle:com.install4j.gradle.gradle.plugin:10.0.9'

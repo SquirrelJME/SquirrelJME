@@ -19,5 +19,11 @@ it is a preservation platform.
      source code you do not need Fossil, just that you will lose out on getting
      the commit hash for the version number.
  * [Gradle](https://gradle.com)
+ * [Install4J](https://www.ej-technologies.com/install4j)
+   * This is not strictly needed, however it provides convenient installers
+     which are simple and easy to use.
  * [Jasmin](https://jasmin.sourceforge.net)
  * _Java 8 Compiler_
+ * [ProGuard](https://www.guardsquare.com/proguard)
+   * This is not strictly needed, it is intended to be used to shrink the
+     resultant Jars as much as possible.
