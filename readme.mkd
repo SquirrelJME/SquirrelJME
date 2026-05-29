@@ -89,6 +89,7 @@ Information:
    * [History](history.mkd)
    * [Project Scope](scope.mkd)
    * [Release Roadmap](route.mkd)
+   * [Supply Chain](supply-chain.mkd)
  * _Other_
    * [CLDC 1.8 API (docs.oracle.com)](
      https://docs.oracle.com/javame/8.0/api/cldc/api/overview-summary.html)
