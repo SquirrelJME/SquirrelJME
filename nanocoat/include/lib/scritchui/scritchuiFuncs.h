@@ -84,7 +84,9 @@ typedef sjme_errorCode (*sjme_scritchui_closeListenerFunc)(
  * @param inAsset The name of the asset to load.
  * @param outStream The resultant stream of the asset data, if this
  * is @code NULL @endcode then this only checks for existence.
- * @return Any resultant error, if any.
+ * @return Any resultant error, if any. This will
+ * return @link SJME_ERROR_RESOURCE_NOT_FOUND @endlink if there is no
+ * resource for this.
  * @since 2024/11/29 
  */
 typedef sjme_errorCode (*sjme_scritchui_externalAssetFunc)(

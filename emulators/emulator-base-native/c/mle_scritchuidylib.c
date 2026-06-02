@@ -877,6 +877,13 @@ static sjme_errorCode mlePencilExternalAsset(
 	sjme_attrInNotNull sjme_lpcstr inAsset,
 	sjme_attrOutNullable sjme_stream_input* outStream)
 {
+	if (inState == NULL || inAsset == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (assetType <= SJME_SCRITCHUI_ASSET_TYPE_UNDEFINED ||
+		assetType >= SJME_SCRITCHUI_NUM_ASSET_TYPES)
+		return SJME_ERROR_RESOURCE_NOT_FOUND;
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

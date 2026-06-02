@@ -257,6 +257,7 @@ squirreljme_external_step(BaseStatic)
 squirreljme_external_step(ScritchAudio)
 squirreljme_external_step(ScritchUi)
 squirreljme_external_step(libJvmDyLib)
+squirreljme_external_step(libJniSJME)
 squirreljme_external_step(SquirrelJME)
 
 # Correct dependencies
@@ -269,7 +270,7 @@ ExternalProject_Add_StepDependencies(SquirrelJME ScritchUi
 ExternalProject_Add_StepDependencies(SquirrelJME libJvmDyLib
 	SquirrelJME-BaseStatic SquirrelJME-ScritchAudio SquirrelJME-ScritchUi)
 ExternalProject_Add_StepDependencies(SquirrelJME SquirrelJME
-	SquirrelJME-libJvmDyLib)
+	SquirrelJME-libJvmDyLib SquirrelJME-libJniSJME)
 
 # Support bases
 squirreljme_include_nanocoat("cmake-patch.cmake")
@@ -310,7 +311,8 @@ add_library(libEmulatorBase SHARED
 # especially for plain makefiles
 add_dependencies(libEmulatorBase
 	SquirrelJME-BaseStatic
-	SquirrelJME-libJvmDyLib)
+	SquirrelJME-libJvmDyLib
+	SquirrelJME-libJniSJME)
 
 # Always make this position independent
 squirreljme_always_fpic(libEmulatorBase)
