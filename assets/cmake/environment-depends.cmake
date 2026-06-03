@@ -62,14 +62,21 @@ else()
 	set(SQUIRRELJME_REPO_GIT NO)
 endif()
 
-# Is this a full repo?
+# Is this an actual repo?
 message(STATUS "Fossil Repository: ${SQUIRRELJME_REPO_FOSSIL}")
 message(STATUS "Git Repository   : ${SQUIRRELJME_REPO_GIT}")
+
+# In any repo?
+if(SQUIRRELJME_REPO_FOSSIL OR SQUIRRELJME_REPO_GIT)
+	set(SQUIRRELJME_REPO_ANY YES)
+else()
+	set(SQUIRRELJME_REPO_ANY NO)
+endif()
 
 # Preference...!
 if(SQUIRRELJME_REPO_GIT AND Fossil_EXECUTABLE)
 	if(SQUIRRELJME_REPO_FOSSIL)
-		message(STATUS "Mix and matching Git and Fossil is very broken!")
+		message(STATUS "Mix and matching Fossil and Git is very broken!")
 	else()
 		message(STATUS "You have Fossil installed, however you have the Git "
 			"repository checked out. It is recommended to check out the "

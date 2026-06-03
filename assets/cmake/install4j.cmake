@@ -11,6 +11,13 @@
 find_program(Install4JC_EXECUTABLE
 	NAMES install4jc)
 
+# Boolean check
+if(Install4JC_EXECUTABLE)
+	set(SQUIRRELJME_HAS_INSTALL4JC YES)
+else()
+	set(SQUIRRELJME_HAS_INSTALL4JC NO)
+endif()
+
 # Install4J Media IDs and related files
 define_property(GLOBAL PROPERTY SQUIRRELJME_INSTALL4J_MEDIA_IDS
 	BRIEF_DOCS "Install4J Media IDs."
@@ -36,6 +43,14 @@ find_program(xpmtoppm_EXECUTABLE
 	NAMES "xpmtoppm")
 find_program(pnmtopng_EXECUTABLE
 	NAMES "pnmtopng")
+
+# Can we convert icons?
+if(uudecode_EXECUTABLE OR convert_EXECUTABLE OR
+	(xpmtoppm_EXECUTABLE AND pnmtopng_EXECUTABLE))
+	set(SQUIRRELJME_CAN_CONVERT_ICONS YES)
+else()
+	set(SQUIRRELJME_CAN_CONVERT_ICONS NO)
+endif()
 
 # Install4j output directory
 set(SQUIRRELJME_INSTALL4J_DIR "${CMAKE_BINARY_DIR}/install4j")
