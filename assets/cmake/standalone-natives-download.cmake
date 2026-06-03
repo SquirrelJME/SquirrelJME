@@ -57,7 +57,7 @@ foreach(compilerMap IN LISTS SQUIRRELJME_KNOWN_NATIVES)
 	squirreljme_unmap(archNormal 1 "${compilerMap}")
 
 	# Check and possibly process
-	if(Fossil_EXECUTABLE)
+	if(SQUIRRELJME_REPO_FOSSIL)
 		squirreljme_natives_download_check(${systemNormal} ${archNormal})
 	endif()
 endforeach()

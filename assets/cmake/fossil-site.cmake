@@ -41,7 +41,7 @@ file(WRITE "${CMAKE_BINARY_DIR}/uvDate.mkd" "${SQUIRRELJME_UV_DATE}")
 file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/uvDate.mkd" uvDateNative)
 
 # Only possible if Fossil exists
-if(Fossil_EXECUTABLE)
+if(SQUIRRELJME_REPO_FOSSIL)
 	# Pseudo targets for uploading everything and only natives
 	add_custom_target(fossilUpload)
 	add_custom_target(fossilUpload.onlyNatives)
