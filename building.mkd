@@ -209,7 +209,8 @@ CMake configure would be:
 At configure time, the root project will scan for and detect for C compilers,
 a Java environment, whether this is being run in Fossil or Git, along with
 other details. This is so that you get the full experience accordingly, or
-not if anything is missing.
+not if anything is missing. There will also be a basic summary of what the
+current environment is capable of, along with anything that is missing.
 
 The following main targets exist:
 
