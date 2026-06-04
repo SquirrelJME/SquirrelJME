@@ -507,6 +507,7 @@ public class MLD
 
 		int channelData = reader.u8();
 		ret.numChannels = channelData & 0x07;
+		// TODO: This operation is always false as 0x08 will never equal 1
 		ret.isInterleaved = (channelData & 0x08) == 1;
 
 		// Here, the size of the ADPCM data is equal to the ADAT chunk size
