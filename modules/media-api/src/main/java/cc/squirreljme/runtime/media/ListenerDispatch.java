@@ -28,7 +28,8 @@ public final class ListenerDispatch
 	private static volatile Thread _THREAD;
 	
 	/** The event queue. */
-	private static final Queue<__ListenerEvent__> _QUEUE =
+	@SquirrelJMEVendorApi
+	static final Queue<__ListenerEvent__> _QUEUE =
 		new ArrayDeque<>();
 	
 	/**
@@ -65,7 +66,7 @@ public final class ListenerDispatch
 				if (thread == null)
 				{
 					// Setup new thread to read in events
-					thread = new Thread(new __Runner__(),
+					thread = new Thread(new __DispatchRunner__(),
 						"ScritchAudioDispatcher");
 					
 					// Make sure it starts as a daemon thread
@@ -90,48 +91,5 @@ public final class ListenerDispatch
 		
 		// Event was dispatched so interrupt the thread
 		thread.interrupt();
-	}
-	
-	/**
-	 * Handles event dispatch.
-	 *
-	 * @since 2025/06/03
-	 */
-	static final class __Runner__
-		implements Runnable
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2025/06/03
-		 */
-		@Override
-		public void run()
-		{
-			Queue<__ListenerEvent__> queue = ListenerDispatch._QUEUE;
-			for (;;)
-				synchronized (ListenerDispatch.class)
-				{
-					// Get the next event
-					__ListenerEvent__ event = queue.poll();
-					if (event == null)
-					{
-						// Wait for more events as there are none
-						try
-						{
-							ListenerDispatch.class.wait(1000);
-						}
-						catch (InterruptedException ignored)
-						{
-						}
-						
-						// Try reading the next event
-						continue;
-					}
-					
-					// Handle event
-					event._player.__handleEvent(event._eventType,
-						event._eventValue, event._nanoTime);
-				}
-		}
 	}
 }
