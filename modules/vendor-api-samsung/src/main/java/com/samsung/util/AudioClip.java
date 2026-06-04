@@ -10,9 +10,11 @@
 package com.samsung.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.ContentTypeUtil;
+import cc.squirreljme.runtime.media.AudioSystem;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -155,7 +157,7 @@ public class AudioClip
 	@Api
 	public static boolean isSupported()
 	{
-		return cc.squirreljme.runtime.media.AudioSystem.available();
+		return AudioSystem.available();
 	}
 
 	/**
@@ -351,7 +353,7 @@ public class AudioClip
 	 *
 	 * @since 2026/04/07
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	void __close()
 	{
 		synchronized (this)

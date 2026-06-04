@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
@@ -23,7 +24,7 @@ import java.io.InputStream;
  *
  * @since 2024/01/14
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 class __8BitImage__
 	extends PalettedImage
 {

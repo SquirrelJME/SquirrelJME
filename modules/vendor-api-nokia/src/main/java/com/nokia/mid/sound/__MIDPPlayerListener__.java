@@ -9,6 +9,7 @@
 
 package com.nokia.mid.sound;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import javax.microedition.media.Player;
@@ -19,7 +20,7 @@ import javax.microedition.media.PlayerListener;
  *
  * @since 2025/06/03
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 class __MIDPPlayerListener__
 	implements PlayerListener
 {

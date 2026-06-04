@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchViewBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
@@ -108,7 +109,7 @@ public abstract class Screen
 	 */
 	@Override
 	@MustBeInvokedByOverriders
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	void __execRevalidate(DisplayState __parent)
 	{
 		// Setup super first

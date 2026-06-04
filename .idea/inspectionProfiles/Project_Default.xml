@@ -13,6 +13,7 @@
       </list>
     </option>
     <inspection_tool class="0a13ff53-5fcb-3e0d-aed2-4be555b30a99" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
+    <inspection_tool class="3dd8500e-aafd-3b99-948d-c23bcae4a66e" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="64b983f1-24ea-3e21-ab1a-d1f799d73f9b" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="WRONG_REFERENCES_ATTRIBUTES" />
     <inspection_tool class="65a552e9-f62d-3bdb-a825-d751c50c4ba6" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="DEPRECATED_ATTRIBUTES" />
     <inspection_tool class="9be1bd10-89f8-3737-88e5-9b5e0640e57e" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
@@ -24,6 +25,42 @@
     <inspection_tool class="CharsetObjectCanBeUsed" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ConstantValue" enabled="false" level="TEXT ATTRIBUTES" enabled_by_default="false" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="ConvertToBasicLatin" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
+    <inspection_tool class="CustomRegExpInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myConfigurations">
+        <list>
+          <RegExpInspectionConfiguration>
+            <option name="description" value="SquirrelJMEVendorAPIOnPackagePrivate" />
+            <option name="name" value="SquirrelJMEVendorAPIOnPackagePrivate" />
+            <option name="problemDescriptor" value="SquirrelJMEVendorAPIOnPackagePrivate" />
+            <option name="suppressId" value="SquirrelJMEVendorAPIOnPackagePrivate" />
+            <option name="uuid" value="3dd8500e-aafd-3b99-948d-c23bcae4a66e" />
+            <option name="patterns">
+              <list>
+                <InspectionPattern>
+                  <option name="regExp" value="@SquirrelJMEVendorApi&#10;(final\s+)?class\s+(\w+)" />
+                  <option name="_fileType" value="JAVA" />
+                  <option name="searchContext" value="EXCEPT_COMMENTS_AND_STRING_LITERALS" />
+                  <option name="replacement" value="@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting&#10;$1class $2" />
+                </InspectionPattern>
+                <InspectionPattern>
+                  <option name="regExp" value="@SquirrelJMEVendorApi&#10;(\t*)(\w+)\(" />
+                  <option name="_fileType" value="JAVA" />
+                  <option name="searchContext" value="EXCEPT_COMMENTS_AND_STRING_LITERALS" />
+                  <option name="replacement" value="@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting&#10;$1$2(" />
+                </InspectionPattern>
+                <InspectionPattern>
+                  <option name="regExp" value="@SquirrelJMEVendorApi&#10;(\t*)(void|boolean|byte|short|char|int|long|float|double|[A-Z]\w+){1}(\s+)(__\w+)\(" />
+                  <option name="_fileType" value="JAVA" />
+                  <option name="searchContext" value="EXCEPT_COMMENTS_AND_STRING_LITERALS" />
+                  <option name="replacement" value="@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting&#10;$1$2$3$4(" />
+                  <option name="flags" value="32" />
+                </InspectionPattern>
+              </list>
+            </option>
+          </RegExpInspectionConfiguration>
+        </list>
+      </option>
+    </inspection_tool>
     <inspection_tool class="EditorConfigEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="FinalMethodInFinalClass" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JUnit3StyleTestMethodInJUnit4Class" enabled="false" level="WARNING" enabled_by_default="false" />

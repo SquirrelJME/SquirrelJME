@@ -1256,7 +1256,7 @@ public final class String
 	 * @return The formatted string.
 	 * @throws IllegalArgumentException If the format is not correct.
 	 * @throws NullPointerException On null arguments.
-	 * @see java.util.Formatter
+	 * @see Formatter
 	 * @since 2018/11/02
 	 */
 	@Api

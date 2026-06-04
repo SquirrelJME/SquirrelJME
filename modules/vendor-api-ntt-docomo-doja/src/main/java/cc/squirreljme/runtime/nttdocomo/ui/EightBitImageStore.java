@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import com.nttdocomo.ui.Palette;
 import javax.microedition.lcdui.Image;
@@ -68,7 +69,7 @@ public final class EightBitImageStore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/14
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	EightBitImageStore(byte[] __pixels, int __width, int __height,
 		int[] __palette, boolean __hasAlpha, int __transIndex)
 		throws NullPointerException

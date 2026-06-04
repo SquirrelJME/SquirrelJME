@@ -13,6 +13,7 @@
  * @since 2026/04/30
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.runtime.media;
 
+import org.jetbrains.annotations.ApiStatus;

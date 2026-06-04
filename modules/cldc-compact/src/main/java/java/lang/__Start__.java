@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.UncaughtExceptionHandler;
@@ -25,7 +26,7 @@ import java.util.Objects;
  * @since 2020/05/31
  */
 @SuppressWarnings("unused")
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 final class __Start__
 {
 	/** The time to wait between each termination. */

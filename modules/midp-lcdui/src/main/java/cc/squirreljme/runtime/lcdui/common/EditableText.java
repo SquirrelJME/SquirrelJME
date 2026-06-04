@@ -10,6 +10,8 @@
 package cc.squirreljme.runtime.lcdui.common;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import javax.microedition.lcdui.TextBox;
+import javax.microedition.lcdui.TextEditor;
 import javax.microedition.lcdui.TextField;
 
 /**
@@ -19,9 +21,9 @@ import javax.microedition.lcdui.TextField;
  *
  * All locks are performed on the current object.
  *
- * @see javax.microedition.lcdui.TextBox
- * @see javax.microedition.lcdui.TextEditor
- * @see javax.microedition.lcdui.TextField
+ * @see TextBox
+ * @see TextEditor
+ * @see TextField
  * @since 2017/10/20
  */
 public final class EditableText

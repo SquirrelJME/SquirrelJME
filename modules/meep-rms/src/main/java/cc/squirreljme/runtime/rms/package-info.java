@@ -14,6 +14,7 @@
  * @since 2017/02/27
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.runtime.rms;
 
+import org.jetbrains.annotations.ApiStatus;

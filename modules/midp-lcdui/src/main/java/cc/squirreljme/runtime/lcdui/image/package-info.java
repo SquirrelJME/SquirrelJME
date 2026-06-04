@@ -13,6 +13,7 @@
  * @since 2017/10/26
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.runtime.lcdui.image;
 
+import org.jetbrains.annotations.ApiStatus;

@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/12/22
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 final class __ExecIdle__
 	implements Runnable
 {
@@ -34,7 +35,7 @@ final class __ExecIdle__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/12/22
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	__ExecIdle__(ScritchEventLoopInterface __loop)
 		throws NullPointerException
 	{

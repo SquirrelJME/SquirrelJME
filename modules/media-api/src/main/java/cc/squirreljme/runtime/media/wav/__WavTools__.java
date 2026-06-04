@@ -9,8 +9,10 @@
 
 package cc.squirreljme.runtime.media.wav;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.ExtendedDataInputStream;
@@ -20,7 +22,7 @@ import net.multiphasicapps.io.ExtendedDataInputStream;
  *
  * @since 2025/12/31
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 class __WavTools__ 
 {
 	/** The standard size of a PCM WAV's header. */
@@ -345,7 +347,7 @@ class __WavTools__
 		{
 			int read = __in.read(chars, pos, __n - pos);
 			if (read < 0)
-				throw new java.io.EOFException();
+				throw new EOFException();
 			pos += read;
 		}
 		return new String(chars, "ISO-8859-1");

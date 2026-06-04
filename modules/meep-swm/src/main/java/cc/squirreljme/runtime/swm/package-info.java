@@ -14,6 +14,7 @@
  * @since 2017/12/07
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.runtime.swm;
 
+import org.jetbrains.annotations.ApiStatus;

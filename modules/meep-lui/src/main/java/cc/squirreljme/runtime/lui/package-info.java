@@ -14,6 +14,7 @@
  * @since 2016/09/07
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.runtime.lui;
 
+import org.jetbrains.annotations.ApiStatus;

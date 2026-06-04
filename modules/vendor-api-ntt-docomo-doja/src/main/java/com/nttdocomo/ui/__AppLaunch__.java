@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.DoJaRuntime;
@@ -21,7 +22,7 @@ import java.util.Deque;
  *
  * @since 2021/06/13
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 final class __AppLaunch__
 {
 	/**
