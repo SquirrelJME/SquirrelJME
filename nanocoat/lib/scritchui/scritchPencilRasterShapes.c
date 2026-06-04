@@ -69,7 +69,11 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawArc(
 	/* Java's coordinate system has positive angles moving counter-clockwise */
 	arcAngle = -arcAngle;
 	startAngle = -startAngle;
-	
+
+	/* DrawArc draws an arc of [w+1,h+1] size*/
+	w += 1;
+	h += 1;
+
 #if defined(SJME_CONFIG_HAS_FLOAT_HARD)
 	/* This works similarly to Bresenham's midpoint circle algorithm. */
 	/* "steps" dictates how many iterations are used to draw the circle. A */
@@ -117,9 +121,13 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawArc(
 			continue;
 
 		/* We cannot paint the same pixel more than once (breaks alpha) */
-		if ((lastFillX == innerX && lastFillY == innerY) || 
+		if ((lastFillX == innerX ^ lastFillY == innerY) || 
 			(firstFillX == innerX && firstFillY == innerY)) 
-			continue;
+		{
+			lastFillX = -1;
+			lastFillY = -1;
+			continue; 
+		}
 		
 		lastFillX = innerX;
 		lastFillY = innerY;
@@ -183,10 +191,10 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillArc(
 	/* Only allocate the alpha buffer if the color isn't opaque. Noticeably */
 	/* improves performance for opaque arcs. 8 pixels of information are */
 	/* packed in a single boolean/byte, noticeably reducing memory usage. */
+	/* Width and height are inclusive, hence the + 1 on each. */
 	if (hasAlpha)
 	{
-		/* We add 1 to the allocation size just so ceil() isn't needed */
-		allocSize = (w * h) + 1;
+		allocSize = (w + 1) * (h + 1);
 		filledPixels = sjme_alloca(allocSize);
 		if (filledPixels == NULL)
 		{
@@ -241,7 +249,6 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillArc(
 		{
 			innerX = round(centerX + radiusX * cos(angle) * (j / maxRad));
 			innerY = round(centerY + radiusY * sin(angle) * (j / maxRad));
-			filledZ = ((innerY - y) * w + innerX - x);
 			
 			/* Make sure we're not drawing out of bounds. Or accessing the */
 			/* alpha buffer at an invalid position with innerX-x or innerY-y */
@@ -251,6 +258,7 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillArc(
 				continue;
 
 			/* Calculate filledPixels index. */
+			filledZ = ((innerY - y) * w + innerX - x);
 			zh = (filledZ >> 3) & zhMask;
 			zl = (1 << (7 - filledZ & 7));
 			
