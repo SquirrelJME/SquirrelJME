@@ -175,6 +175,30 @@ public final class CharSequenceUtils
 	}
 	
 	/**
+	 * Checks if the given character sequences are equal, ignoring case.
+	 *
+	 * @param __a The first sequence.
+	 * @param __b The second sequence.
+	 * @return If they are equal or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/06/06
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean equalsIgnoreCase(CharSequence __a, CharSequence __b)
+		throws NullPointerException
+	{
+		if (__a == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		// Different length strings will never be equal
+		if (__a.length() != __b.length())
+			return false;
+		
+		// Otherwise, same as an equal, ignoring case, comparison
+		return CharSequenceUtils.compareIgnoreCase(__a, __b) == 0;
+	}
+	
+	/**
 	 * Splits the specified character sequence using the given delimiter and
 	 * returns all the fields which are contained within. Extra whitespace
 	 * within fields are not trimmed.
