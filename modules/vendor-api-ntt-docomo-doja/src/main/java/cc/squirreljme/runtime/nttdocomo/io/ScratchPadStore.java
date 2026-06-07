@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.SuiteUtils;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.DoJaRuntime;
@@ -66,7 +67,7 @@ public final class ScratchPadStore
 	 * @throws IOException On read errors.
 	 * @since 2021/12/02
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	ScratchPadStore(int __pad, int __length)
 		throws IOException
 	{

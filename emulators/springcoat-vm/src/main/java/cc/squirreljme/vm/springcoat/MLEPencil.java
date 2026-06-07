@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
+import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -1044,7 +1045,7 @@ public enum MLEPencil
 	
 	/**
 	 * {@link PencilShelf#nativeImageLoadRGBA(int, byte[], int, int,
-	 * cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback)}.
+	 * NativeImageLoadCallback)}.
 	 */
 	NATIVE_IMAGE_LOAD_RGBA("nativeImageLoadRGBA:(I[BII" +
 		"Lcc/squirreljme/jvm/mle/callbacks/NativeImageLoadCallback;)" +

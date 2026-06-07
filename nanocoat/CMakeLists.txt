@@ -7,18 +7,29 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Defines the base project and the versioning info
 
-# Required Minimum
-message(STATUS "Detected CMake (${CMAKE_VERSION})")
-cmake_minimum_required(VERSION 3.12)
+# Use the best version possible
+# Otherwise, fallback to the lowest viable version
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+	cmake_minimum_required(VERSION 3.13..3.31)
+else()
+	cmake_minimum_required(VERSION 3.0)
+endif()
 
 # Easier includes
+set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${CMAKE_SOURCE_DIR}")
 include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
+
+# Include backports
+squirreljme_include_nanocoat("cmake-bp.cmake")
 
 # Up-to-date info for NanoCoat, used to trigger reconfigures
 squirreljme_include("up-to-date-when.cmake")
 
 # Determine version information from the base file
 squirreljme_include("identify-squirreljme-version-file.cmake")
+
+# Special compiler shims
+squirreljme_include("compiler-shim.cmake")
 
 # Define project
 if(${CMAKE_VERSION} VERSION_LESS "3.12")

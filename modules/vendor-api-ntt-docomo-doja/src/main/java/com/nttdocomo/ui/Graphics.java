@@ -167,6 +167,23 @@ public class Graphics
 		// Default to the default font to use
 		__g.setFont(Font.getDefaultFont()._midpFont);
 	}
+
+	/**
+	 * Clears the clip region, effectively making the clip region be the whole
+	 * surface area.
+	 *
+	 * @since 2026/04/09
+	 */
+	@Api
+	public void clearClip()
+	{
+		this.__checkDispose();
+
+		// ExtraGraphics can give us the surface area.
+		ExtraGraphics g = this.__extra();
+		this._graphics.setClip(0, 0, g.surfaceWidth(),
+			g.surfaceHeight());
+	}
 	
 	/**
 	 * Clears the given rectangle.

@@ -13,5 +13,7 @@
  * @since 2021/06/13
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.runtime.nttdocomo;
+
+import org.jetbrains.annotations.ApiStatus;

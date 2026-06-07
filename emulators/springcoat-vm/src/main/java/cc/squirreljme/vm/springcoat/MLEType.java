@@ -208,8 +208,7 @@ public enum MLEType
 			int n = interfaces.length;
 			
 			SpringObject[] rv = new SpringObject[n];
-			for (int i = 0; i < n; i++)
-				rv[i] = interfaces[i];
+			System.arraycopy(interfaces, 0, rv, 0, n);
 			
 			return __thread.asVMObjectArray(__thread.resolveClass(
 				"[Ljava/lang/Class;"), rv);

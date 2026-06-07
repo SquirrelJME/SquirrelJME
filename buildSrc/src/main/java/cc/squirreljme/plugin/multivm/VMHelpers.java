@@ -1780,7 +1780,7 @@ public final class VMHelpers
 			throw new NullPointerException("NARG");
 		
 		return __project.provider(() -> VMHelpers.cacheDir(
-			__project, __classifier).get().resolve("csv"));
+			__project, __classifier).get().resolve("vendor-api-squirreljme-csv"));
 	}
 	
 	/**

@@ -59,6 +59,12 @@ public final class ProxyGraphics
 	/** The current stroke style. */
 	private int _strokeStyle;
 
+	/** Surface width. */
+	protected final int _surfaceW;
+
+	/** Surface height. */
+	protected final int _surfaceH;
+
 	/** The current X translation. */
 	private int _transX;
 
@@ -89,6 +95,8 @@ public final class ProxyGraphics
 			throw new NullPointerException("NARG");
 		
 		this.target = __target;
+		this._surfaceW = __width;
+		this._surfaceH = __height;
 		this._clipWidth = __width;
 		this._clipHeight = __height;
 	}
@@ -98,9 +106,51 @@ public final class ProxyGraphics
 	 * @since 2022/02/25
 	 */
 	@Override
-	public void clipRect(int __a, int __b, int __c, int __d)
+	public void clipRect(int __x, int __y, int __w, int __h)
 	{
-		throw Debugging.todo();
+		// Calculate the base clip coordinates
+		int startX = __x + this._transX;
+		int startY = __y + this._transY;
+		int endX = startX + __w;
+		int endY = startY + __h;
+		
+		// Normalize X
+		if (endX < startX)
+		{
+			int temp = endX;
+			endX = startX;
+			startX = temp;
+		}
+		
+		// Normalize Y
+		if (endY < startY)
+		{
+			int temp = endY;
+			endY = startY;
+			startY = temp;
+		}
+		
+		// Get the original clip
+		int oldX = this._clipX;
+		int oldY = this._clipY;
+		int oldEndX = oldX + this._clipWidth;
+		int oldEndY = oldY + this._clipHeight;
+		
+		// Determine the bounds of all of these
+		int clipX = Math.max(oldX,
+			Math.min(this._surfaceW, Math.max(0, startX)));
+		int clipY = Math.max(oldY,
+			Math.min(this._surfaceH, Math.max(0, startY)));
+		int clipEndX = Math.min(oldEndX,
+			Math.min(this._surfaceW, Math.max(0, endX)));
+		int clipEndY = Math.min(oldEndY,
+			Math.min(this._surfaceH, Math.max(0, endY)));
+		
+		// Record internally
+		this._clipX = clipX;
+		this._clipY = clipY;
+		this._clipWidth = clipEndX - clipX;
+		this._clipHeight = clipEndY - clipY;
 	}
 
 	/**

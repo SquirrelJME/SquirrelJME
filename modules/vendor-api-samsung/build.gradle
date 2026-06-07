@@ -1,7 +1,7 @@
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 import org.iban4j.CountryCode
 
-description = "Samsung API"
+description = "Implements support for the Samsung APIs"
 version = rootProject.version
 
 squirreljme
@@ -19,4 +19,7 @@ squirreljme
 dependencies
 {
 	api project(":modules:cldc-compact")
+
+	api project(":modules:media-api")
+	api project(":modules:midp-lcdui")
 }

@@ -11,6 +11,7 @@ package javax.microedition.swm;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.util.List;
+import javax.microedition.midlet.MIDlet;
 
 /**
  * This is an interface which is used to manage tasks. Tasks allow multiple
@@ -110,12 +111,12 @@ public interface TaskManager
 	 *
 	 * @param __s The suite to start, must be an application.
 	 * @param __cn The class which extends
-	 * {@link javax.microedition.midlet.MIDlet} and acts as the main entry
+	 * {@link MIDlet} and acts as the main entry
 	 * point for the program.
 	 * @return The task which was created.
 	 * @throws IllegalArgumentException If the suite is a library, the given
 	 * class does not exist, or the given class does not extend
-	 * {@link javax.microedition.midlet.MIDlet}.
+	 * {@link MIDlet}.
 	 * @throws IllegalStateException If the suite has been removed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24

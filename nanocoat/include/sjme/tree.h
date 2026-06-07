@@ -152,7 +152,7 @@ extern "C" {
 	struct rawNodeName \
 	{ \
 		/** Is this red? Or black? */ \
-		sjme_jboolean red : sjme_booleanBit; \
+		sjme_jboolean red; \
 	\
 		/** The node to the left. */ \
 		rawNodeName* left; \

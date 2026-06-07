@@ -170,13 +170,13 @@ sjme_errorCode sjme_seekable_readReverse(
 	/* Setup temporary buffer. */
 	tempBuf = sjme_alloca(length);
 	if (tempBuf == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
+		return sjme_error_outOfMemory(NULL, length);
 	memset(tempBuf, 0, length);
 	
 	/* Read in data. */
 	if (sjme_error_is(error = sjme_seekable_read(seekable,
 		tempBuf, seekBase, length)))
-		return sjme_error_default(error);
+		goto fail_read;
 	
 	/* Flip all the contained data. */
 	halfWord = wordSize / 2;
@@ -190,7 +190,17 @@ sjme_errorCode sjme_seekable_readReverse(
 	
 	/* Give the flipped data! */
 	memmove(outBuf, tempBuf, length);
+	
+	/* Cleanup. */
+	sjme_alloca_free(tempBuf);
+	
+	/* Success! */
 	return SJME_ERROR_NONE;
+	
+fail_read:
+	if (tempBuf != NULL)
+		sjme_alloca_free(tempBuf);
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_seekable_regionLock(

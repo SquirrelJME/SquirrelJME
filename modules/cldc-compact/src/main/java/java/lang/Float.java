@@ -27,7 +27,7 @@ public final class Float
 	
 	@Api
 	public static final float MAX_VALUE =
-		+0x1.FFFFFEp127F;
+		Float.intBitsToFloat(2139095039);
 	
 	@Api
 	public static final int MIN_EXPONENT =
@@ -35,11 +35,11 @@ public final class Float
 	
 	@Api
 	public static final float MIN_NORMAL =
-		+0x1.0p-126F;
+		Float.intBitsToFloat(8388608);
 	
 	@Api
 	public static final float MIN_VALUE =
-		+0x1.0p-149F;
+		Float.intBitsToFloat(1);
 	
 	@Api
 	public static final float NEGATIVE_INFINITY =

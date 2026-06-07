@@ -3,8 +3,9 @@
 This is a guide for developers to follow for various parts of the repository.
 This is mostly intended for maintainers of _SquirrelJME_.
 
- * See the [Building](building.mkd).
- * Also see [Contributing](contributing.mkd).
+ * [AI Policy](ai-policy.mkd).
+ * [Building](building.mkd).
+ * [Contributing](contributing.mkd).
 
 ## Accepting Changes
 

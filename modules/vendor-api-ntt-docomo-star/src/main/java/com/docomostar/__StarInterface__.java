@@ -10,6 +10,7 @@
 package com.docomostar;
 
 import cc.squirreljme.jvm.launch.IModeProperty;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
@@ -22,7 +23,7 @@ import java.util.Objects;
  *
  * @since 2022/02/28
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 final class __StarInterface__
 	implements ApplicationInterface<StarApplication>
 {
@@ -40,7 +41,7 @@ final class __StarInterface__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/28
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	__StarInterface__(String __mainClass, String... __args)
 		throws NullPointerException
 	{

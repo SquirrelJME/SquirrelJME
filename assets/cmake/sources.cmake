@@ -14,7 +14,7 @@ set(zipPath "${archiveDir}/${archiveBase}.zip")
 set(tgzPath "${archiveDir}/${archiveBase}.tgz")
 
 # Prefer Fossil first
-if(Fossil_EXECUTABLE)
+if(SQUIRRELJME_REPO_FOSSIL)
 	# ZIP
 	add_custom_target(sourceZip
 		COMMAND "${CMAKE_COMMAND}" "-E"
@@ -24,6 +24,7 @@ if(Fossil_EXECUTABLE)
 			"--name" "${archiveBase}"
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${zipPath}"
+		ALL
 		COMMENT "Archiving Zip Source..."
 		COMMAND_EXPAND_LISTS)
 
@@ -36,11 +37,12 @@ if(Fossil_EXECUTABLE)
 			"--name" "${archiveBase}"
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${tgzPath}"
+		ALL
 		COMMENT "Archiving Tarball Source..."
 		COMMAND_EXPAND_LISTS)
 
 # Otherwise Git
-elseif(Git_EXECUTABLE)
+elseif(SQUIRRELJME_REPO_GIT)
 	# ZIP
 	add_custom_target(sourceZip
 		COMMAND "${CMAKE_COMMAND}" "-E"
@@ -50,7 +52,9 @@ elseif(Git_EXECUTABLE)
 			"--prefix" "${archiveBase}/"
 			"-o" "${zipPath}"
 			"${SQUIRRELJME_VERSION_ID_GIT}"
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${zipPath}"
+		ALL
 		COMMENT "Archiving Zip Source..."
 		COMMAND_EXPAND_LISTS)
 
@@ -63,20 +67,24 @@ elseif(Git_EXECUTABLE)
 			"--prefix" "${archiveBase}/"
 			"-o" "${tgzPath}"
 			"${SQUIRRELJME_VERSION_ID_GIT}"
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${tgzPath}"
+		ALL
 		COMMENT "Archiving Tarball Source..."
 		COMMAND_EXPAND_LISTS)
 endif()
 
 # Shared by any output
-if(Fossil_EXECUTABLE OR Git_EXECUTABLE)
+if(SQUIRRELJME_REPO_FOSSIL OR SQUIRRELJME_REPO_GIT)
 	# Output where the binaries were placed
 	set_target_properties(sourceZip PROPERTIES
 		SQUIRRELJME_OUTPUT_PATH "${zipPath}"
-		SQUIRRELJME_OUTPUT_TYPE "source")
+		SQUIRRELJME_OUTPUT_TYPE "source"
+		EXCLUDE_FROM_ALL NO)
 	set_target_properties(sourceTgz PROPERTIES
 		SQUIRRELJME_OUTPUT_PATH "${tgzPath}"
-		SQUIRRELJME_OUTPUT_TYPE "source")
+		SQUIRRELJME_OUTPUT_TYPE "source"
+		EXCLUDE_FROM_ALL NO)
 
 	# These get uploaded into Fossil
 	squirreljme_fossil_upload_register(sourceZip sourceTgz)

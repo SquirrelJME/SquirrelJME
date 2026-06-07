@@ -175,6 +175,11 @@ public class VMRunTaskDetached
 				sysProps.put("squirreljme.jdwp",
 					debugServer.getSchemeSpecificPart());
 			
+			// JDWP the VM itself?
+			else if ("jvm".equals(debugServer.getScheme()))
+				sysProps.put("squirreljme.jdwp.jvm.jdwp",
+					debugServer.getSchemeSpecificPart());
+			
 			// Internal debugger?
 			else if ("internal".equals(debugServer.getScheme()))
 			{

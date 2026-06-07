@@ -59,13 +59,13 @@ static sjme_errorCode sjme_inflate_bitFill(
 	if (sjme_error_is(error = sjme_stream_inputReadFully(
 		inState->source, &readCount, buffer, avail)) ||
 		readCount == INT32_MAX)
-		return sjme_error_default(error);
+		goto fail_readFully;
 	
 	/* EOF? */
 	if (readCount < 0)
 	{
 		inState->inputEof = SJME_JNI_TRUE;
-		return SJME_ERROR_NONE;
+		goto skip_eof;
 	}
 	
 	/* Push onto the buffer. */
@@ -73,10 +73,20 @@ static sjme_errorCode sjme_inflate_bitFill(
 		inState->inputBuffer,
 		buffer, readCount,
 		SJME_CIRCLE_BUFFER_TAIL)))
-		return sjme_error_default(error);
+		goto fail_push;
+	
+skip_eof:
+	/* Cleanup. */
+	sjme_alloca_free(buffer);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+	
+fail_push:
+fail_readFully:
+	if (buffer != NULL)
+		sjme_alloca_free(buffer);
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_inflate_bitRead(
@@ -235,7 +245,7 @@ static sjme_errorCode sjme_inflate_copyWindow(
 	if (sjme_error_is(error = sjme_circleBuffer_get(inState->window,
 		buf, maxLen,
 		SJME_CIRCLE_BUFFER_TAIL, dist)))
-		return sjme_error_default(error);
+		goto fail_get;
 	
 	/* Write in bytes from the window, this always wraps around the buffer. */
 	for (i = 0, at = 0; i < length; i++)
@@ -244,15 +254,24 @@ static sjme_errorCode sjme_inflate_copyWindow(
 		if (sjme_error_is(error = sjme_bitStream_outputWrite(
 			inState->output, SJME_BITSTREAM_LSB,
 			buf[at], 8)))
-			return sjme_error_default(error);
+			goto fail_write;
 		
 		/* Overflowing? */
 		if ((++at) >= maxLen)
 			at = 0;
 	}
 	
+	/* Cleanup. */
+	sjme_alloca_free(buf);
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
+	
+fail_write:
+fail_get:
+	if (buf != NULL)
+		sjme_alloca_free(buf);
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_inflate_drain(

@@ -62,7 +62,9 @@ squirreljme_multilib_link_libraries_required(libJvm PUBLIC
 	ScritchUiCoreStatic)
 
 # Exports for Windows, etc.
-squirreljme_shared_library_exports(libJvmDyLib)
+if(SQUIRRELJME_ENABLE_DYLIB)
+	squirreljme_shared_library_exports(libJvmDyLib)
+endif()
 
 # Export/Install JVM static/shared
 squirreljme_multilib_export(libJvm)

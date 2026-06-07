@@ -46,14 +46,25 @@ public abstract class PalettedImage
 	public void changeData(byte[] __data)
 		throws NullPointerException, UIException
 	{
-		throw Debugging.todo();
+		// Forward to stream based handler
+		try (InputStream in = new ByteArrayInputStream(__data))
+		{
+			this.changeData(in);
+		}
+		catch (IOException __e)
+		{
+			UIException toss = new UIException(UIException.ILLEGAL_STATE);
+			toss.initCause(__e);
+			throw toss;
+		}
 	}
 	
 	@Api
 	public void changeData(InputStream __in)
 		throws NullPointerException, UIException
 	{
-		throw Debugging.todo();
+		// Implemented by subclasses
+		throw Debugging.oops();
 	}
 	
 	/**

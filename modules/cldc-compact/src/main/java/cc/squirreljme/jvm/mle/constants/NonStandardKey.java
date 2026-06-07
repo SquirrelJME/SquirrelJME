@@ -195,9 +195,9 @@ public interface NonStandardKey
 	byte VGAME_COMMAND_CENTER =
 		-36;
 	
-	/** Game virtual open LCDUI inspector. */
+	/** Reserved 37. */
 	@SquirrelJMEVendorApi
-	byte VGAME_LCDUI_INSPECTOR =
+	byte RESERVED_37 =
 		-37;
 	
 	/** Number pad divide. */
@@ -399,4 +399,49 @@ public interface NonStandardKey
 	@SquirrelJMEVendorApi
 	byte F1 =
 		-87;
+	
+	/** Camera Shutter. */
+	@SquirrelJMEVendorApi
+	byte CAMERA_SHUTTER =
+		-88;
+	
+	/** Increase volume. */
+	@SquirrelJMEVendorApi
+	byte VOLUME_INCREASE =
+		-89;
+	
+	/** Decrease volume. */
+	@SquirrelJMEVendorApi
+	byte VOLUME_DECREASE =
+		-90;
+	
+	/** Toggle Power. */
+	@SquirrelJMEVendorApi
+	byte POWER_TOGGLE =
+		-91;
+	
+	/** Toggle On. */
+	@SquirrelJMEVendorApi
+	byte POWER_ON =
+		-92;
+	
+	/** Toggle Off. */
+	@SquirrelJMEVendorApi
+	byte POWER_OFF =
+		-93;
+	
+	/** Accept call. */
+	@SquirrelJMEVendorApi
+	byte CALL_ACCEPT =
+		-94;
+	
+	/** Deny call. */
+	@SquirrelJMEVendorApi
+	byte CALL_DENY =
+		-95;
+	
+	/** Disconnect call. */
+	@SquirrelJMEVendorApi
+	byte CALL_DISCONNECT =
+		-96;
 }

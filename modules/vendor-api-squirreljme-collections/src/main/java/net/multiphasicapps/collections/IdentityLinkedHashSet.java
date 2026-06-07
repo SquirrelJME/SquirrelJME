@@ -16,7 +16,7 @@ import java.util.LinkedHashSet;
 /**
  * This is a set which uses the identity of objects for comparison rather than
  * the actual equality of said objects. The order of elements in the set is
- * linked according to {@link java.util.LinkedHashSet}.
+ * linked according to {@link LinkedHashSet}.
  *
  * @param <T> The type of element to store in the set.
  * @since 2017/12/28

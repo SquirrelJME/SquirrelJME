@@ -50,6 +50,7 @@ add_custom_target(standalone.jar
 			"${mergeZips}"
 	DEPENDS "${mergeSet}"
 	BYPRODUCTS "${SQUIRRELJME_OUTPUT_JAR_PATH}"
+	ALL
 	COMMENT "Merging Standalone Jar into '${SQUIRRELJME_OUTPUT_JAR_PATH}'..."
 	COMMAND_EXPAND_LISTS)
 

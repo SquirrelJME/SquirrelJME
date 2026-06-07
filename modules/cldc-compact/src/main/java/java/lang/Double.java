@@ -26,7 +26,7 @@ public final class Double
 	
 	@Api
 	public static final double MAX_VALUE =
-		+0x1.FFFFFFFFFFFFFp1023D;
+		Double.longBitsToDouble(9218868437227405311L);
 	
 	@Api
 	public static final int MIN_EXPONENT =
@@ -34,11 +34,11 @@ public final class Double
 	
 	@Api
 	public static final double MIN_NORMAL =
-		+0x1.0p-1022D;
+		Double.longBitsToDouble(4503599627370496L);
 	
 	@Api
 	public static final double MIN_VALUE =
-		+0x0.0000000000001p-1022D;
+		Double.longBitsToDouble(1);
 	
 	@Api
 	public static final double NEGATIVE_INFINITY =

@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.exceptions.MLECallErrorCode;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
@@ -493,7 +494,7 @@ public abstract class Displayable
 	@ScritchEventLoop
 	@SerializedEvent
 	@Async.Execute
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	void __execMenuRebuild()
 	{
 		throw Debugging.todo();
@@ -509,7 +510,7 @@ public abstract class Displayable
 	@SerializedEvent
 	@Async.Execute
 	@MustBeInvokedByOverriders
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	void __execRevalidate(DisplayState __parent)
 	{
 		// Reparent the display
@@ -546,7 +547,7 @@ public abstract class Displayable
 	 * @return The command listener.
 	 * @since 2024/07/28
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	CommandListener __getCommandListener()
 	{
 		synchronized (this)

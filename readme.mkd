@@ -20,8 +20,8 @@ host virtual machine.
 Additionally, there is a port of SquirrelJME to RetroArch which enables the
 ability to play older J2ME software and games designed for flip-phones.
 
- * Copyright (C) 2013-2025 Stephanie Gawroriski <xer@multiphasicapps.net>
- * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2025
+ * Copyright (C) 2013-2026 Stephanie Gawroriski <xer@multiphasicapps.net>
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2026
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <https://www.cmykatgraphics.ca/>
@@ -60,32 +60,6 @@ read more about it and check out their product page at:
  * [Install4J Multi-Platform Installer Builder](
     https://www.ej-technologies.com/products/install4j/overview.html)
 
-Badges:
-
- * _Checks and Quality_
-   * [![CircleCI](
-     https://img.shields.io/circleci/build/github/SquirrelJME/SquirrelJME/trunk.svg?label=CircleCI%20Build)](
-     https://circleci.com/gh/SquirrelJME/SquirrelJME/tree/trunk)
-   * [![RetroArch Core](
-     https://git.libretro.com/libretro/SquirrelJME/badges/trunk/pipeline.svg?key_text=RetroArch%20Core&key_width=115)](
-     https://git.libretro.com/libretro/SquirrelJME)
- * _Social and Community_
-   * [![Discord](https://img.shields.io/discord/278929900893634560.svg?label=Discord%20Server)](
-     https://discord.gg/9PkMMKt)
- * _Downloads and Activity_
-   * ![Commit Activity](
-     https://img.shields.io/github/commit-activity/w/SquirrelJME/SquirrelJME.svg?label=Code%20Commits)
-   * [![Docker Pulls](
-     https://img.shields.io/docker/pulls/xerthesquirrel/squirreljme?label=Docker%20Pulls)](
-     https://hub.docker.com/r/xerthesquirrel/squirreljme)
-   * [![SourceForge Downloads](
-     https://img.shields.io/sourceforge/dm/squirreljme.svg?label=SourceForge%20Downloads)](
-     https://sourceforge.net/projects/squirreljme/files/)
- * _Donations_
-   * [![Liberapay](
-     https://img.shields.io/liberapay/receives/xershadowtail.svg?logo=liberapay&label=LiberaPay)](
-     https://liberapay.com/xershadowtail)
-
 Information:
 
  * [User Guide](assets/user-guide/readme.mkd)
@@ -96,24 +70,27 @@ Information:
    * _Fonts_ : SIL Open Font License Version 1.1
    * [Third Party Licenses](third-party.mkd)
  * [RSS Feed](feed.rss)
- * [Contributing to SquirrelJME](contributing.mkd)
+ * _[Contributing to SquirrelJME](contributing.mkd)_
    * [Credits of Contributions](credits.mkd)
    * [Test Writing](test-writing.mkd)
  * _End-User Documents_
    * [Building](building.mkd)
-   * [Changelog](changelog.mkd)
    * [Compatibility](compatibility.mkd)
-   * [History](history.mkd)
-   * [Release Roadmap](route.mkd)
+   * [Glossary of Terms](glossary.mkd)
    * [Usage](assets/doc/usage.mkd)
  * _Developer Resources_
-   * [CircleCI Status](
-     https://circleci.com/gh/SquirrelJME/SquirrelJME/tree/trunk)
+   * [AI Policy](ai-policy.mkd)
    * [Developer Guide](developer-guide.mkd)
    * [Developer Notes](assets/developer-notes/index.mkd)
    * [Design Document](design.mkd)
    * [Porting SquirrelJME](porting.mkd)
+ * _Past, Present, and Future Plans_
+   * [Changelog](changelog.mkd)
+   * [History](history.mkd)
    * [Project Scope](scope.mkd)
+   * [Release Roadmap](route.mkd)
+   * [Supply Chain](supply-chain.mkd)
+ * _Other_
    * [CLDC 1.8 API (docs.oracle.com)](
      https://docs.oracle.com/javame/8.0/api/cldc/api/overview-summary.html)
 
@@ -128,18 +105,23 @@ Information:
    * One of these commands:
      * `fossil clone -u http://squirreljme.cc/ squirreljme.fossil`
      * `fossil clone -u https://squirreljme.cc/ squirreljme.fossil`
-     * `fossil clone -u http://vzwveldr7djnlpg7ujslaqre632htbl3unkmfbltpgumevw63jn47dad.onion/ squirreljme.fossil`
-     * `fossil clone -u http://hrkzpyi33og6j5z3anfpjuqkawvkw4kxyasrp64elg3i6dffihmdhxad.onion/ squirreljme.fossil`
-     * `fossil clone -u http://squirrelmfbf2udn.onion/ squirreljme.fossil`
+     * Alternatively via the _Tor Onion_ network:
+       * `fossil clone -u http://vzwveldr7djnlpg7ujslaqre632htbl3unkmfbltpgumevw63jn47dad.onion/ squirreljme.fossil`
+       * `fossil clone -u http://hrkzpyi33og6j5z3anfpjuqkawvkw4kxyasrp64elg3i6dffihmdhxad.onion/ squirreljme.fossil`
+       * `fossil clone -u http://squirrelmfbf2udn.onion/ squirreljme.fossil`
    * `mkdir squirreljme`
    * `cd squirreljme`
    * `fossil open ../squirreljme.fossil`
- * Alternatively via [GitHub](https://github.com/SquirrelJME/SquirrelJME):
-   * `git clone https://github.com/SquirrelJME/SquirrelJME`
-   * `cd SquirrelJME`
- * Alternatively via [repo.or.cz](https://repo.or.cz/SquirrelJME.git):
-   * `git clone https://repo.or.cz/SquirrelJME.git`
-   * `cd SquirrelJME`
+ * Alternatively via a _Git_ mirror:
+   * Via [Codeberg](https://codeberg.org/SquirrelJME/SquirrelJME)
+     * `git clone https://codeberg.org/SquirrelJME/SquirrelJME`
+     * `cd SquirrelJME`
+   * Via [GitHub](https://github.com/SquirrelJME/SquirrelJME):
+     * `git clone https://github.com/SquirrelJME/SquirrelJME`
+     * `cd SquirrelJME`
+   * Via [repo.or.cz](https://repo.or.cz/SquirrelJME.git):
+     * `git clone https://repo.or.cz/SquirrelJME.git`
+     * `cd SquirrelJME`
  * Trunk Source Snapshot (Main website or `fossil serve` only):
    * [TAR.GZ](/tarball/squirreljme-trunk.tar.gz?uuid=trunk)
    * [ZIP](/zip/squirreljme-trunk.zip?uuid=trunk)
@@ -204,6 +186,50 @@ purchasing of food items for consumption.
    * [Ko-Fi](http://ko-fi.com/xerthesquirrel)
    * [Patreon](https://www.patreon.com/SquirrelJME)
    * [Liberapay](https://liberapay.com/xershadowtail)
+
+## Webring Button
+
+This is the SquirrelJME Webring button:
+
+[![SquirrelJME](data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAFgAAAAfCAMAAABUFvrSAAAACXBIWXMAAC4jAAAuIwF4pT92AAAB
+X1BMVEUAAAABAgICAwQHCgxEmrtIRUxImrpMmLhPmLdSl7VXlrNblbJelLBhlK9lkq1my/Vpy/Rq
+kaxtkaltx/BuyfJv0/lxkKh0j6d0yO900fd3xOl4jqV4xet40fV5xux5x+18jaN80PN+xOp+xeuA
+jKKBxOiCxemCz/GEi6CEvuKFweSHw+eHzfCIip6Jvd+LiZ2Lv+GLzO2NwuWOiJyPzOyRwOGSiJqS
+weKUyuqXeVeXh5iXwOCahZeavt6ayembv9+dhZWdudidyeWgvdyhhJSix+Slg5KlvNqmxuOpgpCq
+Hh2ru9irxeCtgY6vgY6vxN6wuta0f4u0w921uNO5t9K5wtu7s82+ttC+wNjBv9fDtc3FvtbJtMvK
+vtPOssnQvdHSssfTutDUx5/WnpjXsMXXus3cr8PcuczguMrirsDlt8fnrL7qtcXstcXuY2XzAQL5
+89f/kQz/o53//O7////m5Am4AAAC1ElEQVRIibWUizsbQRTFTx/ej5YGUdVQGtpQFY9YQdT7TT2K
+eA9C0XbZ+f+/3ntnN6kkJeTzy+ycM3cm55vM7gYvnwgU1gi6Ji8yvl6IovpXuaFzXCcr64tQ3Pj6
+gehbkp3GYpQ0+wjlM2ju3qiU/8ddX/uyoX2gj1lFTvA1l6C0ze/3K0f5Gbc3s/40rq/TCt4S+L21
+SddWirKOQEAdO44KkJre5CLwPiC8DdyCq+/E0RKjniNxSx1lKO9uaZFg1aJMz8GqhSHzHCxyAR9S
+1jVmmed4xpS6y1HRGwyq42OKVLbDycoxGw4G3Z0HjZf2jAXBVJ2BfEg/ujMI9lagciAUomDKk2BO
+lrN4jhAQCnHHaiTlPGHIfSb7CexMaaASVSM6rDjXC+bsYxUGuIXDL4yaYdIR4a8yT1BBui/GMSNV
+qB6LRPj3O45lc7gyu44A3CKeGkm5iDtF0ieCPu4iZiYyVo3ayWiUcm0Jpk1TsHu2UWrRqKg35Mrt
+QpSXiCDpiMla1M3EOFdlBA/HYgA3VhZ3ZC54I2rDMVkkl/lubKYODQsUJbnJYJtlXADG7+Zb9hUL
+DWhadvfrBVsWJ6tpAZjOEX1rtNyE1lW+YZalOJGsp/MC/ax5zKeh0wuZrLaifUNJbsEfLYFzpGSs
+Fb1CmCNbyYrOXhY22tG5xXtUBXP6RlkcrG8KLMdSawbOXXs4W53o2l63+DGe+83BSpHyeat1F8Bz
+ej1HaOF2F3p2NiVY3jo6BIGOetPlx+b96IzKTg/69+LxOAfbjhsqr17cQ8cfw14/Bg92d3fpn403
+a5nOVruPQyfdwSCGjvYZSrZt91L7eXM0hNHTQ0b2bGm+beowf05HMXF2QtjyRGit+QWxTzz0yX+5
+Y4o4m8DUeSKRsCmY96r5mabzSOSFTiTOpzB78TNn9D3jFBezWLy6vLzUl2lkFB7I1SKWfuWNzlJb
+wvcn4i+bSJ+DUtAtmgAAAABJRU5ErkJggg==)](https://squirreljme.cc/)
+
+This can be added to your site with:
+
+```html
+<a href="https://squirreljme.cc/" target="_blank" rel="noopener">
+<img src="https://squirreljme.cc/uv/www/webring_button.png"
+    alt="SquirrelJME, a Java ME 8 JVM intended for software preservation."
+    width="88" height="31"
+    decoding="async"
+    loading="lazy">
+</img></a>
+```
+
+```markdown
+[![SquirrelJME][SquirrelJME]](https://squirreljme.cc/)
+[SquirrelJME]: https://squirreljme.cc/uv/www/webring_button.png "SquirrelJME"
+```
 
 ## Important Statements
 

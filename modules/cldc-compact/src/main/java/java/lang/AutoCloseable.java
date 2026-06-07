@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import java.io.Closeable;
 
 /**
  * This interface is used with the classes which are initialized in the
@@ -54,11 +55,11 @@ public interface AutoCloseable
 	 * It is recommended that a resource is actually closed (or at least
 	 * marked as such) before an exception is thrown.
 	 *
-	 * Unlike {@link java.io.Closeable#close()} (and provided the class does
-	 * not extend {@link java.io.Closeable}), calling this multiple times may
+	 * Unlike {@link Closeable#close()} (and provided the class does
+	 * not extend {@link Closeable}), calling this multiple times may
 	 * produce side effects rather than doing nothing on a closed resource.
 	 * However, it is stronly recommended and encouraged to follow the "do
-	 * nothing when closed" behavior of {@link java.io.Closeable}.
+	 * nothing when closed" behavior of {@link Closeable}.
 	 *
 	 * @throws Exception If there was an error closing the specified object.
 	 * @since 2015/03/23

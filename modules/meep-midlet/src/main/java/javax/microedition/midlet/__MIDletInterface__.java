@@ -9,6 +9,7 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
@@ -20,7 +21,7 @@ import cc.squirreljme.runtime.midlet.ApplicationType;
  *
  * @since 2021/11/30
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 final class __MIDletInterface__
 	implements ApplicationInterface<MIDlet>
 {

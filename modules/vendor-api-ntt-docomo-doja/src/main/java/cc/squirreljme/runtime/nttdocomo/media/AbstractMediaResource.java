@@ -11,16 +11,19 @@ package cc.squirreljme.runtime.nttdocomo.media;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import com.nttdocomo.io.ConnectionException;
 import com.nttdocomo.ui.MediaResource;
 import com.nttdocomo.ui.UIException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import javax.microedition.io.Connection;
-import javax.microedition.io.Connector;
 import javax.microedition.io.InputConnection;
+import net.multiphasicapps.io.DataEndianess;
+import net.multiphasicapps.io.ExtendedDataInputStream;
 
 /**
  * Abstract common implementation for media resources.
@@ -36,9 +39,9 @@ public abstract class AbstractMediaResource
 	final Map<String, String> _properties =
 		new HashMap<>();
 	
-	/** The connection to the source data. */
+	/** The source data. */
 	@SquirrelJMEVendorApi
-	final InputConnection _source; 
+	protected byte[] _source;
 	
 	/** Can this be redistributed? */
 	@SquirrelJMEVendorApi
@@ -61,8 +64,21 @@ public abstract class AbstractMediaResource
 	{
 		if (__source == null)
 			throw new NullPointerException("NARG");
-		
-		this._source = __source;
+
+		try
+		{
+			ExtendedDataInputStream in = new ExtendedDataInputStream(
+				__source.openDataInputStream(), DataEndianess.LITTLE);
+
+			this._source = StreamUtils.readAll(in);
+		}
+		catch (IOException e)
+		{
+			// We really shouldn't hit an IOException here unless the data is
+			// corrupted. Just print the stacktrace.
+			e.printStackTrace();
+			this._source = null;
+		}
 	}
 	
 	/**
@@ -80,12 +96,12 @@ public abstract class AbstractMediaResource
 		throws NullPointerException, UIException;
 	
 	/**
-	 * This is called when the resource is being unrealized and must be freed.
+	 * This is called when the player is becoming deallocated.
 	 *
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	protected abstract void becomingUnrealized();
+	protected abstract void becomingDeallocated();
 	
 	/**
 	 * Checks if the given key is valid for this resource.
@@ -109,7 +125,7 @@ public abstract class AbstractMediaResource
 	{
 		synchronized (this)
 		{
-			this.becomingUnrealized();
+			this.becomingDeallocated();
 			this._useCount = 0;
 		}
 	}
@@ -201,7 +217,7 @@ public abstract class AbstractMediaResource
 			// Destroy/unrealize
 			this._useCount = (--useCount);
 			if (useCount == 0)
-				this.becomingUnrealized();
+				this.becomingDeallocated();
 		}
 	}
 	
@@ -235,16 +251,17 @@ public abstract class AbstractMediaResource
 			}
 			
 			// Use replacement data?
-			InputConnection source = this._source;
+			byte[] source = this._source;
 			if (__replaceWith instanceof AbstractMediaResource)
 				source = ((AbstractMediaResource)__replaceWith)._source;
 			
 			// Load from whatever the source was
-			try (InputStream in = source.openInputStream())
+			try
 			{
-				this.becomingRealized(in, __replaceWith);
+				this.becomingRealized(new ByteArrayInputStream(source),
+					__replaceWith);
 			}
-			catch (IOException __e)
+			catch (NullPointerException | UIException __e)
 			{
 				// Debugging for DoJa applications
 				if (Debugging.ENABLED)

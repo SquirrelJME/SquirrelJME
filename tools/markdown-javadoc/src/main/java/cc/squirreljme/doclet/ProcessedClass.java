@@ -181,6 +181,7 @@ public final class ProcessedClass
 	 * 
 	 * @since 2022/08/24
 	 */
+	@SuppressWarnings({"RedundantTypeArguments", "Convert2Diamond"})
 	public void stageOne()
 	{
 		// Only perform stage one, once
@@ -201,8 +202,9 @@ public final class ProcessedClass
 		ClassDoc[] innerClasses = classDoc.innerClasses(true);
 		if (innerClasses != null)
 		{
-			ReferenceList<ProcessedClass> childrenClasses = ReferenceList.of(
-				new ArrayList<>(innerClasses.length));
+			ReferenceList<ProcessedClass> childrenClasses =
+				ReferenceList.<ProcessedClass>of(
+				new ArrayList<Reference<ProcessedClass>>(innerClasses.length));
 			
 			// Link together children and parent
 			for (ClassDoc innerClass : innerClasses)
@@ -235,8 +237,9 @@ public final class ProcessedClass
 		ClassDoc[] interfaces = classDoc.interfaces();
 		if (interfaces != null && interfaces.length > 0)
 		{
-			ReferenceList<ProcessedClass> result = ReferenceList.of(
-				new ArrayList<>(interfaces.length));
+			ReferenceList<ProcessedClass> result =
+				ReferenceList.<ProcessedClass>of(
+				new ArrayList<Reference<ProcessedClass>>(interfaces.length));
 			
 			for (ClassDoc classy : interfaces)
 				result.add(doclet.processClass(classy));

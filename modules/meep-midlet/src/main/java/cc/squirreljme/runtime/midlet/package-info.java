@@ -13,6 +13,7 @@
  * @since 2016/10/16
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.runtime.midlet;
 
+import org.jetbrains.annotations.ApiStatus;

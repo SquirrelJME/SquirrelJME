@@ -13,5 +13,7 @@
  * @since 2022/02/27
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.runtime.messaging;
+
+import org.jetbrains.annotations.ApiStatus;

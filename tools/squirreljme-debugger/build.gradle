@@ -10,6 +10,10 @@ apply plugin: "com.github.johnrengelman.shadow"
 description = "SquirrelJME Interactive Debugger."
 mainClassName = "cc.squirreljme.debugger.Main"
 
+// The Java versions this works with
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
 tasks.register("mimeDecode", MimeDecodeResourcesTask.class,
 	"main",
 	tasks.named("processResources").get(),

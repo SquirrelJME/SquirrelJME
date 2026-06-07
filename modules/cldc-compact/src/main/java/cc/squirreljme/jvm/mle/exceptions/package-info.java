@@ -13,5 +13,7 @@
  * @since 2020/06/22
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.jvm.mle.exceptions;
+
+import org.jetbrains.annotations.ApiStatus;

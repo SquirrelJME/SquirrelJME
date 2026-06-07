@@ -53,6 +53,15 @@ foreach(jvm IN LISTS SQUIRRELJME_JVM_MAP)
 			# Set some SquirrelJME specific properties
 			set_target_properties(${targetName} PROPERTIES
 				SQUIRRELJME_TEST_RESULTS_DIR "${testResultsDir}")
+
+			# Need to make pseudo test target?
+			if(NOT TARGET test)
+				add_custom_target(test)
+			endif()
+
+			# Add to pseudo test target
+			add_dependencies(test
+				${targetName})
 		endif()
 	endforeach()
 endforeach()

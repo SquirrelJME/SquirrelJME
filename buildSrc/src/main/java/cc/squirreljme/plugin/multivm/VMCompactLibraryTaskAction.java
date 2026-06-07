@@ -109,6 +109,11 @@ public class VMCompactLibraryTaskAction
 				"class", "*", "{",
 				"public", "protected", "*", ";",
 				"}",
+			"-keep", "public",
+				"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
+				"class", "*", "{",
+				"public", "protected", "*", ";",
+				"}",
 			
 			// Keep the names of these classes as well
 			"-keepnames", "public",
@@ -125,6 +130,10 @@ public class VMCompactLibraryTaskAction
 				"}",
 			"-keepclassmembers", "public", "class", "*", "{",
 				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
+				"public", "protected", "*", ";",
+				"}",
+			"-keepclassmembers", "public", "class", "*", "{",
+				"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
 				"public", "protected", "*", ";",
 				"}",
 			

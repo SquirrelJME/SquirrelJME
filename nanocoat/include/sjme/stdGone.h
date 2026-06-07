@@ -9,6 +9,8 @@
 
 /**
  * Functions which are completely missing from a system's native C runtime.
+ *
+ * This in essence acts as a mini-C library.
  * 
  * @file
  * @since 2024/10/03
@@ -65,6 +67,10 @@
 
 #if defined(SJME_MEMIO_ATOMIC_C11)
 	#include <stdatomic.h>
+#endif
+
+#if defined(SJME_CONFIG_HAS_CTYPE_H)
+	#include <ctype.h>
 #endif
 
 /* Anti-C++. */
@@ -438,6 +444,7 @@ extern "C"
 #endif
 
 #pragma endregion(printf)
+#pragma region(intTypes)
 
 #if !defined(SJME_CONFIG_HAS_INTTYPES_H)
 	#if defined(SJME_CONFIG_HAS_MSVC)
@@ -446,12 +453,39 @@ extern "C"
 	#endif
 #endif
 
+#pragma endregion(intTypes)
+#pragma region(abort)
+
+/* Handle explicit cancelling out. */
+#if defined(SJME_CONFIG_HAS_NO_ABORT) && \
+	defined(SJME_CONFIG_HAS_ABORT)
+	#undef SJME_CONFIG_HAS_ABORT
+#endif
+
 #if defined(SJME_CONFIG_HAS_NO_ABORT)
 void abort();
 #endif
 
+#pragma endregion(abort)
+#pragma region(exit)
+
+/* Handle explicit cancelling out. */
+#if defined(SJME_CONFIG_HAS_NO_EXIT) && \
+	defined(SJME_CONFIG_HAS_EXIT)
+	#undef SJME_CONFIG_HAS_EXIT
+#endif
+
 #if defined(SJME_CONFIG_HAS_NO_EXIT)
 void exit(int exitCode);
+#endif
+
+#pragma endregion(exit)
+#pragma region(snprintf)
+
+/* Handle explicit cancelling out. */
+#if defined(SJME_CONFIG_HAS_NO_SNPRINTF) && \
+	defined(SJME_CONFIG_HAS_SNPRINTF)
+	#undef SJME_CONFIG_HAS_SNPRINTF
 #endif
 
 #if defined(SJME_CONFIG_HAS_NO_SNPRINTF)
@@ -462,6 +496,15 @@ int snprintf(
 	...);
 #endif
 
+#pragma endregion(snprintf)
+#pragma region(vsnprintf)
+
+/* Handle explicit cancelling out. */
+#if defined(SJME_CONFIG_HAS_NO_VSNPRINTF) && \
+	defined(SJME_CONFIG_HAS_VSNPRINTF)
+	#undef SJME_CONFIG_HAS_VSNPRINTF
+#endif
+
 #if defined(SJME_CONFIG_HAS_NO_VSNPRINTF)
 int vsnprintf(
 	sjme_attrInNotNull char* buf,
@@ -469,6 +512,9 @@ int vsnprintf(
 	sjme_attrInNotNull const char* format,
 	sjme_attrInValue va_list args);
 #endif
+
+#pragma endregion(vsnprintf)
+#pragma region(va_copy)
 
 /* Older MSVC does not have va_copy(). */
 #if defined(SJME_CONFIG_HAS_MSVC) && \
@@ -478,10 +524,74 @@ int vsnprintf(
 	#define va_copy(d, s) ((d) = (s))
 #endif
 
-#if defined(SJME_CONFIG_HAS_MSVC)
-	/** Compare two strings without regarding case. */
-	#define strcasecmp stricmp
+#pragma endregion(va_copy)
+#pragma region(strcasecmp)
+
+/* Handle explicit cancelling out. */
+#if defined(SJME_CONFIG_HAS_NO_STRCASECMP) && \
+	defined(SJME_CONFIG_HAS_STRCASECMP)
+	#undef SJME_CONFIG_HAS_STRCASECMP
 #endif
+
+#if defined(SJME_CONFIG_HAS_NO_STRICMP) && \
+	defined(SJME_CONFIG_HAS_STRICMP)
+	#undef SJME_CONFIG_HAS_STRICMP
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_STRCASECMP)
+	#if defined(SJME_CONFIG_HAS_STRICMP)
+		/** Compare two strings without regarding case. */
+		#define strcasecmp stricmp
+
+		/** Compare two strings without regarding case, limit length. */
+		#define strncasecmp strnicmp
+
+		/** @code strcasecmp() @endcode is aliased by stricmp() . */
+		#define SJME_CONFIG_HAS_STRCASECMP
+
+		/* Clear this as we are now aliasing it. */
+		#undef SJME_CONFIG_HAS_NO_STRCASECMP
+	#else
+int strcasecmp(const char* a, const char* b);
+int strncasecmp(const char* a, const char* b, size_t n);
+	#endif
+#endif
+
+#pragma endregion(strcasecmp)
+#pragma region(tolower)
+
+/* Handle explicit cancelling out. */
+#if defined(SJME_CONFIG_HAS_NO_TOLOWER) && \
+	defined(SJME_CONFIG_HAS_TOLOWER)
+	#undef SJME_CONFIG_HAS_TOLOWER
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_TOLOWER)
+int tolower(int c);
+#endif
+
+#pragma endregion(tolower)
+#pragma region(toupper)
+
+/* Handle explicit cancelling out. */
+#if defined(SJME_CONFIG_HAS_NO_TOUPPER) && \
+	defined(SJME_CONFIG_HAS_TOUPPER)
+	#undef SJME_CONFIG_HAS_TOUPPER
+#endif
+	
+#if defined(SJME_CONFIG_HAS_NO_TOUPPER)
+int toupper(int c);
+#endif
+
+#pragma endregion(toupper)
+#pragma region(exitFailure)
+	
+#if !defined(EXIT_FAILURE)
+	/** Exit with failure. */
+	#define EXIT_FAILURE 1
+#endif
+
+#pragma endregion(exitFailure)
 	
 /*--------------------------------------------------------------------------*/
 

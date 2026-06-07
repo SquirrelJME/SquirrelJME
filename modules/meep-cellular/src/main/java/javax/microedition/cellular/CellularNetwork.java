@@ -134,7 +134,7 @@ public class CellularNetwork
 	}
 	
 	@Api
-	public static CellularNetwork getRegisteredNetworks()
+	public static CellularNetwork[] getRegisteredNetworks()
 	{
 		throw Debugging.todo();
 	}

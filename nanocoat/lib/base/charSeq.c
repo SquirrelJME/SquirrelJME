@@ -213,10 +213,24 @@ sjme_errorCode sjme_charSeq_dup(
 	for (i = 0; i < n; i++)
 		if (sjme_error_is(error = sjme_charSeq_charAt(sourceFrom, i,
 			&chars[i])))
-			return sjme_error_default(error);
+			goto fail_charAt;
 
 	/* Wrap it. */
-	return sjme_charSeq_newWide(allocPool, destCopy, chars, 0, n);
+	if (sjme_error_is(error = sjme_charSeq_newWide(allocPool, destCopy,
+		chars, 0, n)))
+		goto fail_wrap;
+	
+	/* Cleanup. */
+	sjme_alloca_free(chars);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_wrap:
+fail_charAt:
+	if (chars != NULL)
+		sjme_alloca_free(chars);
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_charSeq_dupToU(

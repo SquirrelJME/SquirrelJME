@@ -248,8 +248,7 @@ public class LineColumnReader
 			}
 			
 			// Copy buffer to target
-			for (int i = 0; i < rc; i++)
-				__b[__o + i] = nb[i];
+			System.arraycopy(nb, 0, __b, __o, rc);
 			
 			// Return the read count
 			return rc;

@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.gcf.uri;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
@@ -37,7 +38,7 @@ public abstract class UriPart
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	UriPart(String __part)
 		throws NullPointerException
 	{

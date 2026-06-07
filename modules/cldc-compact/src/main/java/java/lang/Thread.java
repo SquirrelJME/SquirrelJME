@@ -338,7 +338,10 @@ public class Thread
 	@Override
 	public void run()
 	{
-		// Does nothing
+		// Run the runnable that is assigned to this
+		Runnable run = ThreadShelf.javaThreadRunnable(this);
+		if (run != null)
+			run.run();
 	}
 	
 	/**
@@ -568,7 +571,8 @@ public class Thread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/17
 	 */
-	private static String __defaultName(String __name, VMThreadBracket __vm)
+	private static String __defaultName(String __name, 
+		VMThreadBracket __vm)
 		throws NullPointerException
 	{
 		if (__vm == null)

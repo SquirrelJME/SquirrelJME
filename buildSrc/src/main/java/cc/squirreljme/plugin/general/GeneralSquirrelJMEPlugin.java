@@ -66,9 +66,5 @@ public class GeneralSquirrelJMEPlugin
 		
 		// Initialize the full suite tasks
 		TaskInitialization.initializeFullSuiteTask(__project);
-		
-		// Bundling the build from CI/CD
-		tasks.create("bundleCiCd",
-			BundleCiCdTask.class);
 	}
 }

@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://www.schemastore.org/qodana-1.0.json
+# ---------------------------------------------------------------------------
+# SquirrelJME
+#     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+# ---------------------------------------------------------------------------
+# SquirrelJME is under the Mozilla Public License Version 2.0.
+# See license.mkd for licensing and copyright information.
+# ---------------------------------------------------------------------------
+##############################################################################
+#              WARNING: Do not store sensitive information in this file,     #
+#               as its contents will be included in the Qodana report.       #
+##############################################################################
+version: "1.0"
+linter: qodana-cpp
+
+# This is located here
+profile:
+   path: nanocoat
+
+ # Use CMake
+cpp:
+  buildSystem: CMake

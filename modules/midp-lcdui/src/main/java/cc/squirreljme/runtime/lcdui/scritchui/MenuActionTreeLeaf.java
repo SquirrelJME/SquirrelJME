@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuKindBracket;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Menu;
@@ -38,7 +39,7 @@ public final class MenuActionTreeLeaf
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	MenuActionTreeLeaf(MenuActionNode __node)
 		throws NullPointerException
 	{

@@ -331,7 +331,7 @@ struct sjme_nvm_walk_step
 	sjme_lpcstr memberName;
 
 	/** Is this a pointer? */
-	sjme_jboolean isPointer : sjme_booleanBit;
+	sjme_jboolean isPointer;
 
 	/** The size of the type. */
 	sjme_jint size;

@@ -35,7 +35,7 @@ public class TestThreadNew
 		// Run thread and wait, this should result in did being performed
 		try
 		{
-			Thread.sleep(1000);
+			Thread.sleep(3000);
 		}
 		catch (InterruptedException e)
 		{
