@@ -23,9 +23,10 @@ directly committed to as those commits will be erased, however Pull Requests
 can still be made. Any pull requests made on GitHub will be converted to
 Fossil then merged in accordingly.
 
-Continue reading below for the contributing guide.
+Continue reading below for the contributing guide. Additionally, be sure to
+follow the [Code Style Guidelines](code-style.mkd).
 
-## Etiquette For Contributing
+# Etiquette For Contributing
 
 As with various other projects that exist, please be considerate of how
 _SquirrelJME_ is structured along with maintaining consistency within the
@@ -72,7 +73,7 @@ If there are any issues regarding these, please open an issue describing in
 detail the problem and a proposed solution if there is one on [GitHub](
 https://github.com/SquirrelJME/SquirrelJME/issues).
 
-## Core Code Contribution Requirements
+# Core Code Contribution Requirements
 
  1. No AI generated code and/or AI sourced code.
     * If you are caught breaking this, you will be banned from the project and
@@ -121,7 +122,7 @@ https://github.com/SquirrelJME/SquirrelJME/issues).
     * Static code analysis might find a condition where code is unused, but
       it only knows of it from a single set or a few sets of state.
 
-## Exceptions to Contributing
+# Exceptions to Contributing
 
 If you have worked on the following projects for the following companies, you
 are not permitted to contribute to this project due to potential poisoning:
@@ -150,7 +151,7 @@ from these projects cannot be used.
 You are however, free to give advice and insights! Just remember that this
 is clean room!
 
-## Contributor Agreement
+# Contributor Agreement
 
 **ALL CONTRIBUTORS MUST ACCEPT THE FOLLOWING AGREEMENT BEFORE THEIR CODE WILL**
 **BE CONSIDERED FOR THE PROJECT. IF THE DEVELOPER IS EMPLOYED AND DEVELOPS THE**
@@ -187,7 +188,7 @@ is clean room!
 	        `third-party.mkd` licensing information, if an approved
 	        library is being now included in the source code.
 
-## Committing and Submitting Changes
+# Committing and Submitting Changes
 
 As previously stated, _SquirrelJME_ is developed using
 [Fossil](https://fossil-scm.org/). You may alternatively use Git along with
@@ -202,11 +203,11 @@ For reference, the two sections will accordingly be:
 All development should be done in branches so that way `trunk` on your own
 copy of the repository is always aligned to `trunk` on the remote repository.
 
-### Setup
+## Setup
 
 Fossil is the recommended version control system. 
 
-#### With Fossil
+### With Fossil
 
 _SquirrelJME_ uses [Fossil](https://fossil-scm.org/) which is a distributed
 version control system that keeps the entire repository within a single file
@@ -260,7 +261,7 @@ https://www.fossil-scm.org/xfer/doc/tip/www/quickstart.wiki).
  * [Fossil hints for users of Git](
 https://www.fossil-scm.org/xfer/doc/trunk/www/gitusers.md).
 
-#### With Git
+### With Git
 
 Although _SquirrelJME_ does not use [Git](https://git-scm.com/) there are
 mirrors to both [GitHub](https://github.com/SquirrelJME/SquirrelJME) and
@@ -295,12 +296,12 @@ this do the following:
 
 After this you are ready to start development!
 
-### Starting A Branch
+## Starting A Branch
 
 It is recommended that any development be done on branches and not on the
 mainline development tree.
 
-#### With Fossil
+### With Fossil
 
 Development should be done in branches and not the main `trunk` as there will
 be a number of changes and will require constant updates:
@@ -312,7 +313,7 @@ be a number of changes and will require constant updates:
 
 Please start your branch with `wip-` when making a branch!
 
-#### With Git
+### With Git
 
 Development should be done in branches and not the main `trunk` as there will
 be a number of changes and will require constant updates:
@@ -322,11 +323,11 @@ be a number of changes and will require constant updates:
 
 Please start your branch with `wip-` when making a branch!
 
-### Committing and Making Changes
+## Committing and Making Changes
 
 Any changes you make should always be committed.
 
-#### With Fossil
+### With Fossil
 
 When you are ready to commit your changes to your branch, you may do the
 following:
@@ -335,7 +336,7 @@ following:
    * `fossil commit`
    * Enter the commit description accordingly.
 
-#### With Git
+### With Git
 
 When you are ready to commit your changes to your branch, you may do the
 following:
@@ -353,13 +354,13 @@ following:
      command should tell you how to do this but for reference it is:
      * `git push --set-upstream origin wip-branch`
 
-### Staying Up To Date
+## Staying Up To Date
 
 As SquirrelJME is actively worked on, over time your repository will become
 out of date. Any development work that you perform should always be done on
 the latest code.
 
-#### With Fossil
+### With Fossil
 
 Since SquirrelJME is actively worked on, there will be changes to other
 branches and the main `trunk` line. You can use the following commands for
@@ -381,7 +382,7 @@ this:
    * Commit the merge:
      * `fossil commit`
 
-#### With Git
+### With Git
 
 Since SquirrelJME is actively worked on, there will be changes to other
 branches and the main `trunk` line. You can use the following commands for
@@ -399,7 +400,7 @@ this:
    was not made then, you may:
    * `git commit`
 
-### Submitting
+## Submitting
 
 All submissions to _SquirrelJME_ should be sent in _unified diff_ format. This
 is the traditional patch format that does not rely on any services or
@@ -419,7 +420,7 @@ Note that your patch will be reviewed. You are expected to make the changes
 to the patch accordingly. If you fail to do so, then your patch will not be
 applied.
 
-#### With Fossil
+### With Fossil
 
 You can create a patch with the following command:
 
@@ -430,13 +431,13 @@ specify:
 
 * `fossil diff -v -i --unified -r trunk > example.patch`
 
-#### With Git
+### With Git
 
 You can create a patch with the following command:
 
  * `git format-patch --stdout --attach -n trunk..wip-branch > example.patch`
 
-### Reviewing
+## Reviewing
 
 When your patch is reviewed, comments will be placed inline within the patch,
 then it will be sent back to you. The start of line will use the `#` character,

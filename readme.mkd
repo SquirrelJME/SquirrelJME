@@ -80,6 +80,7 @@ Information:
    * [Usage](assets/doc/usage.mkd)
  * _Developer Resources_
    * [AI Policy](ai-policy.mkd)
+   * [Code Style Guidelines](code-style.mkd)
    * [Developer Guide](developer-guide.mkd)
    * [Developer Notes](assets/developer-notes/index.mkd)
    * [Design Document](design.mkd)
