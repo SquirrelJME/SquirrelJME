@@ -11,6 +11,8 @@ package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map;
 
 /**
  * This contains utilities which operate on character sequences.
@@ -20,6 +22,9 @@ import java.util.Arrays;
 @SquirrelJMEVendorApi
 public final class CharSequenceUtils
 {
+	/** Instance of the ignore case comparator. */
+	private static __ComparatorIgnoreCase__ _ignoreCase;
+	
 	/**
 	 * Not used.
 	 *
@@ -64,6 +69,29 @@ public final class CharSequenceUtils
 		// Remaining comparison is the length parameter, shorter strings are
 		// first
 		return an - bn;
+	}
+	
+	/**
+	 * Returns a comparator for two character sequences, ignoring case.
+	 *
+	 * @param <C> The class to compare.
+	 * @return The comparator for character sequences.
+	 * @since 2026/06/10
+	 */
+	@SquirrelJMEVendorApi
+	@SuppressWarnings("unchecked")
+	public static <C extends CharSequence> Comparator<C> comparatorIgnoreCase()
+	{
+		// Need to create one?
+		__ComparatorIgnoreCase__ result = CharSequenceUtils._ignoreCase;
+		if (result == null)
+		{
+			result = new __ComparatorIgnoreCase__();
+			CharSequenceUtils._ignoreCase = result;
+		}
+		
+		// Use the global instance!
+		return (Comparator<C>)result;
 	}
 	
 	/**
