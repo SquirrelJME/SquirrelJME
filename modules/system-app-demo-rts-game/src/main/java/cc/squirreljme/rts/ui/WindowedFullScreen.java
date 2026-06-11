@@ -15,9 +15,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.rts.rate.RateController;
 import cc.squirreljme.rts.rate.ScreenRunnable;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * This handles the initialization of the game and the main game screen
@@ -25,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2026/06/10
  */
-public class FullScreenLoop
+public class WindowedFullScreen
 	implements ScreenRunnable
 {
 	/** The ScritchUI interface used. */
@@ -54,7 +52,7 @@ public class FullScreenLoop
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/06/10
 	 */
-	public FullScreenLoop(ScritchInterface __scritch,
+	public WindowedFullScreen(ScritchInterface __scritch,
 		Reference<RateController> __rate)
 		throws NullPointerException
 	{
@@ -83,6 +81,10 @@ public class FullScreenLoop
 		FullScreenDrawer drawer = new FullScreenDrawer(this.rate);
 		__scritch.paintable().componentSetPaintListener(panelGame,
 			drawer);
+		
+		// Terminate the game if the window is closed
+		__scritch.window().windowSetCloseListener(winGame,
+			new TerminateGame());
 	}
 	
 	/**
@@ -92,14 +94,14 @@ public class FullScreenLoop
 	@Override
 	public void run()
 	{
+		// Do we need to set the proper screen size?
+		if (this.__latchFullscreen())
+			this.__makeFullscreen();
+		
 		// Do we need to make this visible?
-		if (this.__latchVisible())
+		else if (this.__latchVisible())
 			this.scritch.window().windowSetVisible(this.winGame,
 				true);
-		
-		// Do we need to set the proper screen size?
-		else if (this.__latchFullscreen())
-			this.__makeFullscreen();
 		
 		// Tell the panel to repaint itself
 		else if (this._madeVisible && this._madeFullscreen)
@@ -114,26 +116,20 @@ public class FullScreenLoop
 	 */
 	private boolean __latchFullscreen()
 	{
-		// If not visible or already made fullscreen, do nothing
-		if (!this._madeVisible || this._madeFullscreen)
-			return false;
+		// Only latch if we never went fullscreen
+		if (!this._madeFullscreen)
+			synchronized (this)
+			{
+				// Double check
+				if (!this._madeFullscreen)
+				{
+					// Set new state
+					this._madeFullscreen = true;
+					return true;
+				}
+			}
 		
-		// Should we try to latch?
-		synchronized (this)
-		{
-			// Double check
-			if (!this._madeVisible || this._madeFullscreen)
-				return false;
-			
-			// If ScritchUI does not consider the window visible yet, then
-			// we do not latch until it feels it is ready
-			if (!this.scritch.window().windowIsVisible(this.winGame))
-				return false;
-			
-			// Set new state
-			this._madeFullscreen = true;
-			return true;
-		}
+		return false;
 	}
 	
 	/**
@@ -145,11 +141,12 @@ public class FullScreenLoop
 	private boolean __latchVisible()
 	{
 		// Make the game visible?
-		if (!this._madeVisible)
+		// Only if we also made it fullscreen
+		if (!this._madeVisible && this._madeFullscreen)
 			synchronized (this)
 			{
 				// Double check again
-				if (!this._madeVisible)
+				if (!this._madeVisible && this._madeFullscreen)
 				{
 					this._madeVisible = true;
 					return true;

@@ -12,7 +12,7 @@ package cc.squirreljme.rts;
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.rts.rate.RateController;
-import cc.squirreljme.rts.ui.FullScreenLoop;
+import cc.squirreljme.rts.ui.WindowedFullScreen;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.midlet.MIDlet;
@@ -55,7 +55,7 @@ public class StrategyGame
 		RateController rate = new RateController();
 		
 		// Initialize the fullscreen loop and make it run indefinitely
-		FullScreenLoop screen = new FullScreenLoop(scritch, rate.reference());
+		WindowedFullScreen screen = new WindowedFullScreen(scritch, rate.reference());
 		rate.screen(screen);
 		
 		// Start the run loop
