@@ -7,38 +7,31 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.rts.map;
-
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
+package cc.squirreljme.rts.unit;
 
 /**
- * This contains an entire world map of chunks and any units within.
+ * This is the base class for all integrated components that are part of units.
  *
- * @since 2026/06/10
+ * @since 2026/06/11
  */
-public class WorldMap
+public abstract class BaseComponent
 {
-	/** Chunks within the map. */
-	protected final Chunks chunks;
+	/** The type identifier for this component. */
+	public final ComponentType type;
 	
 	/**
-	 * Initializes the world map.
+	 * Initializes the base component.
 	 *
-	 * @param __chunks The chunk data which makes up the map.
+	 * @param __type The type of component this maps as.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/06/11
 	 */
-	public WorldMap(Chunks __chunks)
+	public BaseComponent(ComponentType __type)
 		throws NullPointerException
 	{
-		if (__chunks == null)
+		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup self reference for binding the final map
-		Reference<WorldMap> ref = new WeakReference<>(this);
-		
-		// Bind everything now!
-		this.chunks = __chunks.bind(ref);
+		this.type = __type;
 	}
 }
