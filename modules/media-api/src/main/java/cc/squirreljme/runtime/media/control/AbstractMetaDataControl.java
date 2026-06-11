@@ -31,28 +31,25 @@ public class AbstractMetaDataControl
 		MetaDataControl.AUTHOR_KEY;
 	
 	/** Values stored within the mapping. */
-	private final MetaDataValues _values =
-		new MetaDataValues();
+	private final MetaDataValues _values;
 	
 	/**
 	 * Initializes the metadata control.
 	 *
-	 * @param __out This is used by the player setting the metadata
-	 * accordingly.
-	 * @throws NullPointerException On null arguments or if the array has
-	 * zero length.
+	 * @param __values The value storage to use for metadata.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2025/06/03
 	 */
 	@SquirrelJMEVendorApi
-	public AbstractMetaDataControl(@NotNull MetaDataValues[] __out)
+	public AbstractMetaDataControl(@NotNull MetaDataValues __values)
 		throws NullPointerException
 	{
 		super(MetaDataControl.class);
 		
-		if (__out == null || __out.length == 0)
+		if (__values == null)
 			throw new NullPointerException("NARG");
 		
-		__out[0] = this._values;
+		this._values = __values;
 	}
 	
 	/**

@@ -27,11 +27,11 @@ public final class MetaDataValues
 		new SortedTreeMap<>(CharSequenceUtils.<String>comparatorIgnoreCase());
 	
 	/**
-	 * Not externally instantiated.
+	 * Initializes a blank base metadata values.
 	 *
 	 * @since 2026/06/10
 	 */
-	MetaDataValues()
+	public MetaDataValues()
 	{
 	}
 	

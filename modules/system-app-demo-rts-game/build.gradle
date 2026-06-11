@@ -25,4 +25,5 @@ dependencies
 	api project(":modules:meep-midlet")
 	api project(":modules:scritch-ui")
 	api project(":modules:midp-lcdui")
+	api project(":modules:media-api")
 }
