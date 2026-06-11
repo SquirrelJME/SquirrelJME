@@ -1,0 +1,28 @@
+import cc.squirreljme.plugin.swm.JavaMEMidlet
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+description = "A real time strategy game."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "RT"
+	swmType = JavaMEMidletType.APPLICATION
+	swmName = "Real Time Strategy Game"
+	swmVendor = "Stephanie Gawroriski"
+	midlets += new JavaMEMidlet("Real Time Strategy Game", "icon.xpm",
+		"cc.squirreljme.rts.StrategyGame")
+	tags += "games"
+	tags += "demo"
+
+	// This game is currently incomplete so hide it in the launcher
+	ignoreInLauncher = true
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+	api project(":modules:meep-midlet")
+	api project(":modules:scritch-ui")
+	api project(":modules:midp-lcdui")
+}

@@ -67,6 +67,7 @@
             <option value="$PROJECT_DIR$/modules/scritch-ui" />
             <option value="$PROJECT_DIR$/modules/system-app-demo-hello" />
             <option value="$PROJECT_DIR$/modules/system-app-demo-lcdui" />
+            <option value="$PROJECT_DIR$/modules/system-app-demo-rts-game" />
             <option value="$PROJECT_DIR$/modules/system-app-demo-squirrel-quarrel" />
             <option value="$PROJECT_DIR$/modules/system-app-device-info" />
             <option value="$PROJECT_DIR$/modules/system-app-launcher" />
