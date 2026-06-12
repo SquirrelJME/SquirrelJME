@@ -9,6 +9,7 @@
 
 package cc.squirreljme.rts.map;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -18,6 +19,7 @@ import java.lang.ref.WeakReference;
  * @since 2026/06/10
  */
 public class WorldMap
+	implements Runnable
 {
 	/** Chunks within the map. */
 	protected final Chunks chunks;
@@ -40,5 +42,14 @@ public class WorldMap
 		
 		// Bind everything now!
 		this.chunks = __chunks.bind(ref);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/06/11
+	 */
+	@Override
+	public void run()
+	{
 	}
 }

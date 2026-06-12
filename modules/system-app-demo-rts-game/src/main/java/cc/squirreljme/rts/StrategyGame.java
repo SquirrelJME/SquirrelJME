@@ -66,5 +66,8 @@ public class StrategyGame
 		// Setup a basic map
 		WorldMapGenerator mapGen = new WorldMapGenerator();
 		mapGen.size(64, 64);
+		
+		// Use this map for the game
+		rate.worldMap(mapGen.finish());
 	}
 }

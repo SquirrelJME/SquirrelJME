@@ -9,6 +9,7 @@
 
 package cc.squirreljme.rts.rate;
 
+import cc.squirreljme.rts.map.WorldMap;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -33,6 +34,9 @@ public class RateController
 	
 	/** The screen to render. */
 	private volatile ScreenRunnable _screen;
+	
+	/** The world map simulation to run. */
+	private volatile WorldMap _worldMap;
 	
 	/**
 	 * Initializes the rate controller.
@@ -86,24 +90,33 @@ public class RateController
 	@Override
 	public void run()
 	{
+		// Lock loop
 		for (;;)
-		{
-			// Get the time of loop entry
-			long enterTime = System.nanoTime();
-			
-			// Lock
 			synchronized (this)
 			{
+				// Get the time of loop entry
+				long enterTime = System.nanoTime();
+				
 				// Get the current rate to run at
 				RateSpeed rate = this._rate;
 				
-				// Are we running a screen?
-				ScreenRunnable screen = this._screen;
-				if (screen != null)
-					screen.run();
+				// Run a single frame within the game, if we have a world map
+				WorldMap worldMap = this._worldMap;
+				if (worldMap != null)
+					worldMap.run();
+				
+				// Only update the screen if we have time to do so, or if
+				// there is no actual world map yet
+				long cycleTime = System.nanoTime() - enterTime;
+				if (cycleTime < rate.nanosPerTic || worldMap == null)
+				{
+					ScreenRunnable screen = this._screen;
+					if (screen != null)
+						screen.run();
+				}
 				
 				// How much time was spent in this loop cycle? Should we sleep?
-				long cycleTime = System.nanoTime() - enterTime;
+				cycleTime = System.nanoTime() - enterTime;
 				if (cycleTime < rate.nanosPerTic)
 					try
 					{
@@ -121,7 +134,6 @@ public class RateController
 						// Ignore this, as the loop was likely woken up
 					}
 			}
-		}
 	}
 	
 	/**
@@ -217,6 +229,41 @@ public class RateController
 			// Notify the run loop that the rate has changed, or some other
 			// event has happened
 			this.notifyAll();
+		}
+	}
+	
+	/**
+	 * Returns the current world map.
+	 *
+	 * @return The current world map.
+	 * @since 2026/06/11
+	 */
+	public WorldMap worldMap()
+	{
+		// Do not synchronize, as this will deadlock in the UI loop
+		return this._worldMap;
+	}
+	
+	/**
+	 * Sets the world map to use.
+	 *
+	 * @param __map The map to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/06/11
+	 */
+	public void worldMap(WorldMap __map)
+		throws NullPointerException
+	{
+		if (__map == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			// Set the new world map
+			this._worldMap = __map;
+			
+			// Poke the thread
+			this.threadPoke();
 		}
 	}
 }

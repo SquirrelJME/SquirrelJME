@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
+import cc.squirreljme.rts.map.WorldMap;
 import cc.squirreljme.rts.rate.RateController;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
@@ -57,9 +58,27 @@ public class FullScreenDrawer
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sw,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sh, int __special)
 	{
+		// Is there an actual rate controller?
+		RateController rate = this.rate.get();
+		if (rate == null)
+			return;
+		
 		// Pencil graphics is a bit easier to use here
 		try (PencilGraphics g = PencilGraphics.of(__g, __sw, __sh))
 		{
+			// Get the current world map, if there is one
+			WorldMap map = rate.worldMap();
+			if (map == null)
+			{
+				// Loading...
+				g.setColor(0xFF00FF);
+				g.drawString("Loading...", 0, 0, 0);
+				
+				// Do nothing more
+				return;
+			}
+			
+			// Draw normal game
 			g.setColor(0xFF00FF);
 			g.drawLine(0, 0, 100, 100);
 			
