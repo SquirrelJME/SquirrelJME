@@ -9,11 +9,9 @@
 
 package cc.squirreljme.rts.ui;
 
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
-import cc.squirreljme.runtime.lcdui.gfx.ExtraGraphics;
+import cc.squirreljme.rts.map.Chunk;
+import cc.squirreljme.rts.map.WorldMap;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 /**
  * This manages a viewport, or a player's view into a specific game.
@@ -48,6 +46,12 @@ public class Viewport
 	
 	/** The map height. */
 	protected volatile int mapH;
+	
+	/** The map end X coordinate. */
+	protected volatile int mapEX;
+	
+	/** The map end Y coordinate. */
+	protected volatile int mapEY;
 	
 	/** Is this viewport dirty? */
 	private volatile boolean _isDirty;
@@ -84,6 +88,10 @@ public class Viewport
 			// Map width/height depends on the zoom level
 			this.mapW = this.screenW;
 			this.mapH = this.screenH;
+			
+			// Calculate the proper end coordinate of the view
+			this.mapEX = this.mapX + this.mapW;
+			this.mapEY = this.mapY + this.mapH;
 		}
 	}
 	
@@ -93,22 +101,43 @@ public class Viewport
 	 * @param __g The graphics to paint into.
 	 * @param __sw The actual screen width.
 	 * @param __sh The actual screen height.
+	 * @param __map The map to draw.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/06/12
 	 */
-	public void paint(PencilGraphics __g, int __sw, int __sh)
+	public void paint(PencilGraphics __g, int __sw, int __sh, WorldMap __map)
 		throws NullPointerException
 	{
-		if (__g == null)
+		if (__g == null || __map == null)
 			throw new NullPointerException("NARG");
+		
+		int screenX = this.screenX;
+		int screenY = this.screenY;
 		
 		// Force the clip in the specific screen area for this view so it does
 		// not bleed anywhere else!
-		__g.setClip(this.screenX, this.screenY, this.screenW, this.screenH);
+		__g.setClip(screenX, screenY, this.screenW, this.screenH);
 		
 		// Now draw!
 		try
 		{
+			// Set map relative coordinate
+			__g.translate((-this.mapX) + screenX,
+				(-this.mapY) + screenY);
+			
+			// Draw everything that is map relative!
+			try
+			{
+				// Paint debugging stuff?
+				this.paintDebug(__g, __map);
+			}
+			
+			// Revert map translation
+			finally
+			{
+				__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
+			}
+			
 			// Draw the UI overlay after everything
 			this.paintOverlay(__g);
 		}
@@ -117,6 +146,35 @@ public class Viewport
 			// Reset the clip
 			__g.setClip(0, 0, __sw, __sh);
 		}
+	}
+	
+	/**
+	 * Prints debugging information about the map.
+	 *
+	 * @param __g The graphics to draw onto.
+	 * @param __map The map being drawn.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/06/12
+	 */
+	public void paintDebug(PencilGraphics __g, WorldMap __map)
+		throws NullPointerException
+	{
+		if (__g == null || __map == null)
+			throw new NullPointerException("NARG");
+		
+		// Set color for drawing the tile dot grid
+		__g.setColor(0xFFFFFF);
+		
+		// Map view bounds
+		int mapX = this.mapX;
+		int mapY = this.mapY;
+		int mapEX = this.mapEX;
+		int mapEY = this.mapEY;
+		
+		// Draw the tile dot grid
+		for (int y = mapY; y < mapEY; y += Chunk.TILE_TO_PX)
+			for (int x = mapX; x < mapEX; x += Chunk.TILE_TO_PX)
+				__g.drawLine(x, y, x + 1, y);
 	}
 	
 	/**

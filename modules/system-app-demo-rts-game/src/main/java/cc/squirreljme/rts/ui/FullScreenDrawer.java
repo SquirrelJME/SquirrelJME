@@ -101,7 +101,7 @@ public class FullScreenDrawer
 			
 			// Draw each viewport that is valid
 			for (int n = views.length, i = 0; i < n; i++)
-				views[i].paint(g, __sw, __sh);
+				views[i].paint(g, __sw, __sh, map);
 		}
 	}
 }
