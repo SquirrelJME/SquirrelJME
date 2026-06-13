@@ -9,13 +9,11 @@
 
 package cc.squirreljme.rts.ui;
 
-import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
 import cc.squirreljme.rts.map.WorldMap;
 import cc.squirreljme.rts.rate.RateController;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.lang.ref.Reference;
 import org.jetbrains.annotations.NotNull;
@@ -29,8 +27,18 @@ import org.jetbrains.annotations.Range;
 public class FullScreenDrawer
 	implements ScritchPaintListener
 {
+	/** The maximum number of local viewports. */
+	public static final int MAX_LOCAL_VIEWS =
+		4;
+	
 	/** The frame rate controller. */
 	protected final Reference<RateController> rate;
+	
+	/** Local viewports. */
+	private final Viewport[] _views;
+	
+	/** How many views are viewing locally? */
+	private volatile int _numViewers;
 	
 	/**
 	 * Initializes the drawer.
@@ -45,7 +53,15 @@ public class FullScreenDrawer
 		if (__rate == null)
 			throw new NullPointerException("NARG");
 		
+		// These are important
 		this.rate = __rate;
+		
+		// Setup local viewports
+		Viewport[] views = new Viewport[FullScreenDrawer.MAX_LOCAL_VIEWS];
+		this._views = views;
+		for (int n = views.length, i = 0; i < n; i++)
+			views[i] = new Viewport(i);
+		this._numViewers = views.length;
 	}
 	
 	/**
@@ -63,6 +79,11 @@ public class FullScreenDrawer
 		if (rate == null)
 			return;
 		
+		// Get all viewports and map them to the screen if needed
+		Viewport[] views = this._views;
+		for (int n = views.length, i = 0; i < n; i++)
+			views[i].splitIfDirty(__sw, __sh, this._numViewers);
+		
 		// Pencil graphics is a bit easier to use here
 		try (PencilGraphics g = PencilGraphics.of(__g, __sw, __sh))
 		{
@@ -78,12 +99,9 @@ public class FullScreenDrawer
 				return;
 			}
 			
-			// Draw normal game
-			g.setColor(0xFF00FF);
-			g.drawLine(0, 0, 100, 100);
-			
-			g.setColor(0x00FF00);
-			g.drawLine(0, 100, 100, 0);
+			// Draw each viewport that is valid
+			for (int n = views.length, i = 0; i < n; i++)
+				views[i].paint(g, __sw, __sh);
 		}
 	}
 }

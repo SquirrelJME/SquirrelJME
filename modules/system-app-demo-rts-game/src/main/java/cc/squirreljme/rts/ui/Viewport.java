@@ -9,6 +9,12 @@
 
 package cc.squirreljme.rts.ui;
 
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
+import cc.squirreljme.runtime.lcdui.gfx.ExtraGraphics;
+import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
+
 /**
  * This manages a viewport, or a player's view into a specific game.
  *
@@ -16,15 +22,200 @@ package cc.squirreljme.rts.ui;
  */
 public class Viewport
 {
+	/** The local view ID. */
+	protected final int localId;
+	
 	/** The screen X coordinate of this viewport. */ 
 	protected volatile int screenX;
 	
 	/** The screen Y coordinate of this viewport. */
 	protected volatile int screenY;
 	
+	/** The screen width of this viewport. */
+	protected volatile int screenW;
+	
+	/** The screen height of this viewport. */
+	protected volatile int screenH;
+	
 	/** The map X coordinate being viewed. */
 	protected volatile int mapX;
 	
 	/** The map Y coordinate being viewed. */
 	protected volatile int mapY;
+	
+	/** The map width. */
+	protected volatile int mapW;
+	
+	/** The map height. */
+	protected volatile int mapH;
+	
+	/** Is this viewport dirty? */
+	private volatile boolean _isDirty;
+	
+	/**
+	 * Initializes the viewport.
+	 *
+	 * @param __localId The local view ID.
+	 * @since 2026/06/12
+	 */
+	public Viewport(int __localId)
+	{
+		this.localId = __localId;
+		
+		// Viewports are always dirty by default, so they are force updated
+		this._isDirty = true;
+	}
+	
+	/**
+	 * Center the map on the given coordinates.
+	 *
+	 * @param __mapX The X coordinate.
+	 * @param __mapY The Y coordinate.
+	 * @since 2026/06/12
+	 */
+	public void center(int __mapX, int __mapY)
+	{
+		synchronized (this)
+		{
+			// Set coordinates directly
+			this.mapX = __mapX;
+			this.mapY = __mapY;
+			
+			// Map width/height depends on the zoom level
+			this.mapW = this.screenW;
+			this.mapH = this.screenH;
+		}
+	}
+	
+	/**
+	 * Paints the viewport.
+	 *
+	 * @param __g The graphics to paint into.
+	 * @param __sw The actual screen width.
+	 * @param __sh The actual screen height.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/06/12
+	 */
+	public void paint(PencilGraphics __g, int __sw, int __sh)
+		throws NullPointerException
+	{
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		// Force the clip in the specific screen area for this view so it does
+		// not bleed anywhere else!
+		__g.setClip(this.screenX, this.screenY, this.screenW, this.screenH);
+		
+		// Now draw!
+		try
+		{
+			// Draw the UI overlay after everything
+			this.paintOverlay(__g);
+		}
+		finally
+		{
+			// Reset the clip
+			__g.setClip(0, 0, __sw, __sh);
+		}
+	}
+	
+	/**
+	 * Paints the overlay which contains all the game information.
+	 *
+	 * @param __g The graphics to paint into.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/06/12
+	 */
+	public void paintOverlay(PencilGraphics __g)
+		throws NullPointerException
+	{
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		// Get screen parameters
+		int screenX = this.screenX;
+		int screenY = this.screenY;
+		int screenW = this.screenW;
+		int screenH = this.screenH;
+		
+		// Draw player ID color
+		__g.setColor(DrawStyle.localViewColor(this.localId));
+		__g.drawRect(screenX, screenY, screenW - 1, screenH - 1);
+	}
+	
+	/**
+	 * Splits this view.
+	 *
+	 * @param __sw The screen width.
+	 * @param __sh The screen height.
+	 * @param __numViewers The number of active viewers.
+	 * @throws IllegalArgumentException If the width and/or height are
+	 * negative.
+	 * @since 2026/06/12
+	 */
+	public void split(int __sw, int __sh, int __numViewers)
+		throws IllegalArgumentException
+	{
+		if (__sw <= 0 || __sh <= 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		// Determine the actual screen dimension
+		int dimW = __sw;
+		int dimH = __sh;
+		
+		// Split horizontally first
+		if (__numViewers >= 2)
+			dimW /= 2;
+		
+		// Then vertically
+		if (__numViewers >= 3)
+			dimH /= 2;
+		
+		// Use calculated values
+		synchronized (this)
+		{
+			// Horizontal split?
+			if (__numViewers >= 2)
+				this.screenX = dimW * (this.localId % 2);
+			else
+				this.screenX = 0;
+			
+			// Vertical split?
+			if (__numViewers >= 3)
+				this.screenY = dimH * (this.localId / 2);
+			else
+				this.screenY = 0;
+			
+			// Set exact screen dimension
+			this.screenW = dimW;
+			this.screenH = dimH;
+			
+			// Correct the map view coordinates
+			this.center(this.mapX, this.mapY);
+	
+			// No longer considered dirty
+			this._isDirty = false;
+		}
+	}
+	
+	/**
+	 * Splits this view if it is dirty.
+	 *
+	 * @param __sw The screen width.
+	 * @param __sh The screen height.
+	 * @param __numViewers The number of active viewers.
+	 * @throws IllegalArgumentException If the width and/or height are
+	 * zero or negative.
+	 * @since 2026/06/12
+	 */
+	public void splitIfDirty(int __sw, int __sh, int __numViewers)
+		throws IllegalArgumentException
+	{
+		if (__sw <= 0 || __sh <= 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		// Only split if dirty
+		if (this._isDirty)
+			this.split(__sw, __sh, __numViewers);
+	}
 }
