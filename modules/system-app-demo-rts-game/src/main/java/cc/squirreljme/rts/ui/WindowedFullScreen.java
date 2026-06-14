@@ -85,6 +85,12 @@ public class WindowedFullScreen
 		// Terminate the game if the window is closed
 		__scritch.window().windowSetCloseListener(winGame,
 			new TerminateGame());
+		
+		// Add input event listener
+		__scritch.panel().panelEnableFocus(panelGame, 
+			true, true);
+		__scritch.panel().panelSetInputListener(panelGame,
+			new InputEventHandler(__rate, drawer.views()));
 	}
 	
 	/**

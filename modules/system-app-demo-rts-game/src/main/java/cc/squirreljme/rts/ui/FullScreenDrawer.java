@@ -104,4 +104,15 @@ public class FullScreenDrawer
 				views[i].paint(g, __sw, __sh, map);
 		}
 	}
+	
+	/**
+	 * Returns the viewports.
+	 *
+	 * @return The viewports.
+	 * @since 2026/06/13
+	 */
+	public Viewport[] views()
+	{
+		return this._views;
+	}
 }

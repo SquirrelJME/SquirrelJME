@@ -28,10 +28,10 @@ public class DrawStyle
 		switch (Math.abs(__id) & 3)
 		{
 			case 0:		return 0xFF0000;
-			case 1:		return 0x00FF00;
-			case 2:		return 0xFFFF00;
+			case 1:		return 0x0000FF;
+			case 2:		return 0x00FF00;
 			case 3:
-			default:	return 0x0000FF;
+			default:	return 0xFFFF00;
 		}
 	}
 }

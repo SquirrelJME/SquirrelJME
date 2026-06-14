@@ -128,6 +128,9 @@ public class Viewport
 			// Draw everything that is map relative!
 			try
 			{
+				// Draw the ground surface
+				this.paintSurface(__g, __map);
+				
 				// Paint debugging stuff?
 				this.paintDebug(__g, __map);
 			}
@@ -199,6 +202,34 @@ public class Viewport
 		// Draw player ID color
 		__g.setColor(DrawStyle.localViewColor(this.localId));
 		__g.drawRect(screenX, screenY, screenW - 1, screenH - 1);
+		__g.drawRect(screenX + 1, screenY + 1,
+			screenW - 2, screenH - 2);
+	}
+	
+	/**
+	 * Paints the surface of the map.
+	 *
+	 * @param __g The graphics to draw onto.
+	 * @param __map The map to draw.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/06/13
+	 */
+	public void paintSurface(PencilGraphics __g, WorldMap __map)
+		throws NullPointerException
+	{
+		if (__g == null || __map == null)
+			throw new NullPointerException("NARG");
+		
+		// Map view bounds
+		int mapX = this.mapX;
+		int mapY = this.mapY;
+		int mapEX = this.mapEX;
+		int mapEY = this.mapEY;
+		
+		// Draw the tile dot grid
+		for (int y = mapY; y < mapEY; y += Chunk.TILE_TO_PX)
+			for (int x = mapX; x < mapEX; x += Chunk.TILE_TO_PX)
+				__g.drawLine(x, y, x + 1, y);
 	}
 	
 	/**
