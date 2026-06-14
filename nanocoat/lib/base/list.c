@@ -274,7 +274,7 @@ sjme_errorCode sjme_list_flattenArgCV(
 		result->elements[i] = destPtr;
 
 		/* Copy entire string chunk here. */
-		len = strlen(arg) + 1;
+		len = sjme_util_sizeToInt(strlen(arg) + 1);
 		memmove(destPtr, arg, len);
 
 		/* Move up pointer. */
@@ -491,7 +491,7 @@ sjme_errorCode sjme_list_newVAR(
 {
 #define SJME_BLA(basicType, cType, pType) \
 	case SJME_TOKEN_PASTE_PP(SJME_BASIC_TYPE_ID_, basicType): \
-		*((cType*)atPtr) = va_arg(elements, pType); \
+		*((cType*)atPtr) = (cType)va_arg(elements, pType); \
 		break
 
 	sjme_errorCode error;
@@ -521,9 +521,9 @@ sjme_errorCode sjme_list_newVAR(
 			SJME_BLA(SHORT, sjme_jshort, int);
 			SJME_BLA(CHARACTER, sjme_jchar, int);
 			SJME_BLA(INTEGER, sjme_jint, sjme_jint);
-			SJME_BLA(LONG, sjme_jlong, sjme_jlong);
-			SJME_BLA(FLOAT, sjme_jfloat, sjme_jfloat);
-			SJME_BLA(DOUBLE, sjme_jdouble, sjme_jdouble);
+			SJME_BLA(LONG, sjme_jlongNative, sjme_jlongNative);
+			SJME_BLA(FLOAT, sjme_jfloatNative, sjme_jfloatNative);
+			SJME_BLA(DOUBLE, sjme_jdoubleNative, sjme_jdoubleNative);
 			SJME_BLA(OBJECT, sjme_pointer, sjme_pointer);
 
 				/* Type not implemented. */

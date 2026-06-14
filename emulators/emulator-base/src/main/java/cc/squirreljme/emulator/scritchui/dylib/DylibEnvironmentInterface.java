@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -62,24 +63,41 @@ public class DylibEnvironmentInterface
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/04/10
+	 */
+	@Override
+	public PencilFontBracket fontByFace(int __inFace,
+		@Nullable int[] __inParams,
+		@Nullable int[] __outParams)
+		throws MLECallError
+	{
+		// Locate font by face
+		long fontP = NativeScritchDylib.__fontByFace(this.dyLib._stateP,
+			__inFace, __inParams, __outParams);
+		if (fontP == 0L)
+			return null;
+		
+		// Wrap font
+		return new DylibPencilFontObject(fontP);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/06/14
 	 */
 	@Override
 	public @NotNull PencilFontBracket fontDerive(
-		@NotNull PencilFontBracket __font, int __style,
-		@Range(from = 1, to = Integer.MAX_VALUE) int __pixelSize)
+		@NotNull PencilFontBracket __font,
+		@Nullable int[] __deriveParams,
+		@Nullable int[] __newParams)
 		throws MLECallError
 	{
 		if (__font == null)
 			throw new MLECallError("NARG");
 		
-		if ((DylibPencilFontObject)__font == null)
-			throw new MLECallError("NARG");
-		
+		long fontP = ((DylibPencilFontObject)__font).objectPointer();
 		return new DylibPencilFontObject(NativeScritchDylib.__fontDerive(
-			this.dyLib._stateP,
-			((DylibPencilFontObject)__font).objectPointer(),
-			__style, __pixelSize));
+			this.dyLib._stateP, fontP, __deriveParams, __newParams));
 	}
 	
 	/**
@@ -115,7 +133,8 @@ public class DylibEnvironmentInterface
 		{
 			// Request all screens
 			long[] screenPs = new long[numScreens];
-			numScreens = NativeScritchDylib.__screens(this.dyLib._stateP, screenPs);
+			numScreens = NativeScritchDylib.__screens(this.dyLib._stateP,
+				screenPs);
 			
 			// Not big enough?
 			if (numScreens > screenPs.length)
@@ -125,7 +144,12 @@ public class DylibEnvironmentInterface
 			ScritchScreenBracket[] result =
 				new ScritchScreenBracket[numScreens];
 			for (int i = 0; i < numScreens; i++)
+			{
+				if (screenPs[i] == 0)
+					throw Debugging.oops(i);
+				
 				result[i] = new DylibScreenObject(screenPs[i]);
+			}
 			
 			return result;
 		}

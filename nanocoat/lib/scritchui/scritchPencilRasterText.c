@@ -8,12 +8,14 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/util.h"
-#include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiPencil.h"
-#include "lib/scritchui/scritchuiTypes.h"
-#include "lib/scritchui/core/coreRaster.h"
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
+#include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/scritchuiExtern.h"
+#include "lib/scritchui/scritchuiPencil.h"
+#include "lib/scritchui/scritchuiPencilFont.h"
+#include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/core/coreRaster.h"
 
 sjme_errorCode sjme_scritchpen_core_drawChar(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -24,8 +26,8 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	sjme_attrOutNullable sjme_jint* outCw)
 {
 	sjme_errorCode error;
-	sjme_scritchui_pencilFont font;
-	sjme_jint cw, ch, area, dx, dy, sx, sy, v, scanLen;
+	sjme_scritchui_pencilFontWithParam font;
+	sjme_jint cw, ch, area, dx, dy, sx, sy, v, scanLen, baseline;
 	sjme_jint offX, offY;
 	sjme_jubyte* bitmap;
 	sjme_scritchui_pencilBitLineFunc bitline;
@@ -35,13 +37,13 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	
 	/* We need the font for rendering. */
 	font = g->state.font;
-	if (font == NULL)
+	if (font.font == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
 	/* Need character width. */
 	cw = 0;
-	if (sjme_error_is(error = font->api->pixelCharWidth(
-		font, c, &cw)))
+	if (sjme_error_is(error = font.font->apiInThread->pixelCharWidth(
+		font.font, &font.params, c, &cw)))
 		return sjme_error_default(error);
 	
 	/* Do not draw space characters. */
@@ -67,19 +69,25 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	
 	/* And the pixel height, since this is a bitmap font. */
 	ch = 0;
-	if (sjme_error_is(error = font->api->metricPixelSize(
-		font, &ch)))
+	if (sjme_error_is(error = font.font->apiInThread->metricPixelSize(
+		font.font, &font.params, -1, &ch)))
 		goto fail_anyInLock;
 	
 	/** Do not bother drawing nothing. */
 	if (cw == 0 || ch == 0)
 		return SJME_ERROR_NONE;
 	
+	/* Need the font baseline. */
+	baseline = 0;
+	if (sjme_error_is(error = font.font->apiInThread->metricPixelBaseline(
+		font.font, &font.params, &baseline)))
+		goto fail_anyInLock;
+	
 	/* Calculate anchor point accordingly. */
 	if (anchor != 0)
 		if (sjme_error_is(error = sjme_scritchpen_coreUtil_applyAnchor(
 			anchor,
-			x, y, cw, ch, 0, &x, &y)))
+			x, y, cw, ch, baseline, &x, &y)))
 			goto fail_anyInLock;
 		
 	/* Determine scanline length for each bitmap row. */
@@ -102,8 +110,8 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	offY = 0;
 	
 	/* Get glyph bitmap. */
-	if (sjme_error_is(error = font->api->renderBitmap(font,
-		c, bitmap, 0, scanLen,
+	if (sjme_error_is(error = font.font->apiInThread->renderBitmap(font.font,
+		&font.params, c, bitmap, 0, scanLen,
 		ch, &offX, &offY)))
 		goto fail_anyInLock;
 	
@@ -147,7 +155,7 @@ fail_unlock:
 
 sjme_errorCode sjme_scritchpen_core_drawChars(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_jchar* s,
+	sjme_attrInNotNull const sjme_jchar* s,
 	sjme_attrInPositive sjme_jint o,
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrInValue sjme_jint x,
@@ -155,29 +163,25 @@ sjme_errorCode sjme_scritchpen_core_drawChars(
 	sjme_attrInValue sjme_jint anchor)
 {
 	sjme_errorCode error;
+	sjme_charSeqStatic seq;
 	
-	if (g == NULL)
+	if (g == NULL || s == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-		
-	/* Need to lock? */
-	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
+	
+	if (o < 0 || l < 0 || (o + l) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* This is just setting up a static sequence then forwarding it. */
+	memset(&seq, 0, sizeof(seq));
+	if (sjme_error_is(error = sjme_charSeq_newWideStatic(&seq,
+		s, o, l)))
 		return sjme_error_default(error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-	
-	/* Release lock. */
-	if (sjme_error_is(error = sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
-	
-	return sjme_error_notImplemented(0);
-	
-fail_any:
-	/* Need to release the lock? */
-	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
-		return sjme_error_default(error);
-	
-	return sjme_error_default(error);
+	/* Forward, we do not need to worry about cleanup as everything is */
+	/* on the stack. Note offset becomes zero as it is properly offset */
+	/* in the static initialization. */
+	return g->apiInThread->drawSubstring(g, &seq, 0, l,
+		x, y, anchor);
 }
 
 sjme_errorCode sjme_scritchpen_core_drawSubstring(
@@ -192,27 +196,35 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	sjme_errorCode error;
 	sjme_jint seqLen, at, dx, dy, bx, lineHeight, tw, cw, baseline;
 	sjme_jchar c;
-	sjme_scritchui_pencilFont font;
+	sjme_scritchui_pencilFontWithParam* font;
 	
 	if (g == NULL || s == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (o < 0 || l < 0 || (o + l) < 0)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-	
-	/* We need the font for rendering. */
-	font = g->state.font;
-	if (font == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
 		
 	/* Lock. */
 	if (sjme_error_is(error = sjme_scritchpen_core_lock(g)))
 		return sjme_error_default(error);
+
+	/* We need the font for rendering. */
+	font = &g->state.font;
+	if (font->font == NULL || font->font->apiInThread == NULL ||
+		font->font->apiInThread->metricPixelHeight == NULL ||
+		font->font->apiInThread->metricPixelBaseline == NULL ||
+		font->font->apiInThread->stringWidth == NULL ||
+		g->apiInThread == NULL ||
+		g->apiInThread->drawChar == NULL)
+	{
+		error = sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
+		goto fail_getFont;
+	}
 	
 	/* Need to get the height of a line. */
 	lineHeight = -1;
-	if (sjme_error_is(error = font->api->metricPixelHeight(font,
-		&lineHeight)) || lineHeight < 0)
+	if (sjme_error_is(error = font->font->apiInThread->metricPixelHeight(
+		font->font, &font->params, &lineHeight)) || lineHeight < 0)
 	{
 		error = sjme_error_defaultOr(error,
 			SJME_ERROR_FONT_NEGATIVE_HEIGHT);
@@ -221,8 +233,8 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	
 	/* Need the font baseline. */
 	baseline = 0;
-	if (sjme_error_is(error = font->api->metricPixelBaseline(
-		font, &baseline)))
+	if (sjme_error_is(error = font->font->apiInThread->metricPixelBaseline(
+		font->font, &font->params, &baseline)))
 		goto fail_fontBaseline;
 	
 	/* Get sequence length for further checking. */
@@ -240,8 +252,8 @@ sjme_errorCode sjme_scritchpen_core_drawSubstring(
 	
 	/* Determine visual size of this block of text. */
 	tw = -1;
-	if (sjme_error_is(error = font->api->stringWidth(font,
-		s, o, l, &tw)) || tw < 0)
+	if (sjme_error_is(error = font->font->apiInThread->stringWidth(font->font,
+		&font->params, s, o, l, &tw)) || tw < 0)
 		goto fail_blockDim;
 	
 	/* Determine anchor point of this block of text. */
@@ -302,6 +314,7 @@ fail_seqBounds:
 fail_seqLen:
 fail_fontBaseline:
 fail_fontHeight:
+fail_getFont:
 	/* Need to release the lock? */
 	if (sjme_error_is(sjme_scritchpen_core_lockRelease(g)))
 		return sjme_error_default(error);
@@ -311,13 +324,55 @@ fail_fontHeight:
 
 sjme_errorCode sjme_scritchpen_core_setFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_scritchui_pencilFont font)
+	sjme_attrInNotNull sjme_scritchui_pencilFont font,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* params)
 {
+	sjme_errorCode error;
+	sjme_scritchui_pencilFont oldFont;
+	sjme_scritchui_pencilFontWithParam* target;
+	
 	if (g == NULL || font == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Set font used. */
-	g->state.font = font;
+	/* Only adjust the base font if it is changing. */
+	target = &g->state.font;
+	if (font != target->font)
+	{
+		/* Clear old font, if one is used. */
+		oldFont = target->font;
+		target->font = NULL;
+
+		/* Set font used. */
+		target->font = sjme_weakUpR(sjme_scritchui_pencilFont, font);
+	
+		/* Count down. */
+		if (oldFont != NULL)
+			if (sjme_error_is(error = sjme_alloc_weakUnRef(oldFont)))
+				return sjme_error_default(error);
+	}
+	
+	/* Use parameters. */
+	if (params != NULL)
+	{
+		/* Copy over. */
+		memmove(&target->params, params, sizeof(target->params));
+		
+		/* Make sure the values are valid. */
+		target->params.style &= SJME_SCRITCHUI_PENCIL_FONT_STYLE_ALL;
+		target->params.pixelSize = sjme_max(1,
+			target->params.pixelSize);
+	}
+	
+	/* Derive from the base font otherwise. */
+	else
+	{
+		target->params.style = font->id.param.style;
+		target->params.pixelSize = font->id.param.pixelSize;
+	}
+
+	/* Resultant font not valid? */
+	if (target->font == NULL)
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

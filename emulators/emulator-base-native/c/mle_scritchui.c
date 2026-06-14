@@ -9,20 +9,17 @@
 
 #include "squirreljme.h"
 
-#define NAME_INTERFACE "cc/squirreljme/jvm/mle/scritchui/ScritchInterface"
+/* //// MLE /// */
+#define mleGroupId NativeScritchInterface
+#define mleShelfClass "cc/squirreljme/jvm/mle/scritchui/NativeScritchInterface"
+#define mleProxyTarget "cc/squirreljme/emulator/scritchui/EmulatedNativeScritchInterface"
+#include "squirreljmeMle.h"
+/* //////////// */
 
-#define FORWARD_CLASS "cc/squirreljme/jvm/mle/scritchui/NativeScritchInterface"
-#define FORWARD_NATIVE_CLASS "cc/squirreljme/emulator/scritchui/EmulatedNativeScritchInterface"
+#define MLE_DESC_nativeInterface DESC_METHOD( \
+	DESC_CLASS("cc/squirreljme/jvm/mle/scritchui/ScritchInterface"), )
+MLE_FUNC_PROXY_STATIC(jobject, nativeInterface)
 
-#define FORWARD_DESC_nativeInterface "(" \
-	")" DESC_CLASS(NAME_INTERFACE)
-
-FORWARD_IMPL(NativeScritchInterface, nativeInterface, jobject, Object, \
-	FORWARD_IMPL_none(), FORWARD_IMPL_none())
-
-static const JNINativeMethod mleNativeScritchInterfaceMethods[] =
-{
-	FORWARD_list(NativeScritchInterface, nativeInterface),
-};
-
-FORWARD_init(mleNativeScritchInterfaceInit, mleNativeScritchInterfaceMethods)
+MLE_LIST_BEGIN()
+	MLE_LIST_ITEM(nativeInterface),
+MLE_LIST_END()

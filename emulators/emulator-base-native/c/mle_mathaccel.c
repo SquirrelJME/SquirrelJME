@@ -12,6 +12,7 @@
 #include "squirreljme.h"
 
 #define FORWARD_CLASS "cc/squirreljme/jvm/mle/MathAccelShelf"
+#define FORWARD_CLASS_NAME MathAccel
 #define FORWARD_NATIVE_CLASS "cc/squirreljme/emulator/EmulatedMathAccelShelf"
 
 #define FORWARD_DESC_accel \

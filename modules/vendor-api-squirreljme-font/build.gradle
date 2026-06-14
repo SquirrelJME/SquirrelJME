@@ -1,0 +1,186 @@
+import cc.squirreljme.plugin.multivm.VMHelpers
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import org.apache.tools.ant.util.StreamUtils
+
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
+import java.nio.file.StandardOpenOption
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
+
+description = "This contains font related resources."
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "FN"
+	swmType = JavaMEMidletType.API
+	swmName = "Font Resources"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+}
+
+TaskProvider<Task> compileFonts = tasks.register("compileFonts") {Task it ->
+	// The font conversion task is needed first
+	dependsOn project(":tools:squirreljme-font")
+		.tasks.named("shadowJar")
+	
+	// Info
+	description = "Compiles fonts to SQF for SquirrelJME."
+	group = "squirreljme"
+	
+	// The output is just the font package
+	outputs.files(project.buildDir.toPath().resolve("squirreljme")
+		.resolve("sqf.jar"))
+	
+	// The inputs are all the BDFs and FontForge fonts
+	inputs.files({ ->
+		// Base font directory
+		Path fontBaseDir = rootProject.projectDir.toPath()
+			.resolve("assets").resolve("font")
+		
+		// Find all FontForge SFDs and BDF fonts
+		List<Path> rv = new ArrayList<>()
+		for (Path maybe : VMHelpers.walkDirTree(fontBaseDir, false)) {
+			String fn = maybe.fileName
+			
+			// If a directory exists but this does not appear to be an
+			// actual valid font because important files are missing, ignore
+			if (fn.endsWith(".strike") &&
+				(!Files.exists(maybe.resolveSibling("font.props")) ||
+				!Files.exists(maybe.resolve("strike.props"))))
+				continue
+			
+			// Valid font!
+			if (fn.endsWith(".strike") || fn.endsWith(".bdf"))
+				rv.add(maybe.normalize().toAbsolutePath())
+		}
+		
+		return rv
+	})
+	
+	doLast {
+		Path fontCompilerPath = project(":tools:squirreljme-font")
+			.tasks.named("shadowJar").get().outputs.files.singleFile.toPath()
+		Path sqfJarPath = project.buildDir.toPath().resolve("squirreljme")
+			.resolve("sqf.jar")
+		Path tempPath = sqfJarPath.resolveSibling("temp.ja_")
+		
+		// Create directories for where the Jar will go
+		Files.createDirectories(sqfJarPath.getParent())
+		
+		// Create Jar for the output
+		try (OutputStream out = Files.newOutputStream(tempPath,
+			StandardOpenOption.TRUNCATE_EXISTING,
+			StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+			 ZipOutputStream zout = new ZipOutputStream(out)) {
+			for (File fontFile : inputs.files.files) {
+				// Get relative names
+				Path fontFilePath = fontFile.toPath()
+				String fontFileName = fontFilePath.fileName
+				String nameRel = (fontFileName.endsWith(".strike") ?
+					fontFilePath.getParent().fileName :
+					fontFilePath.fileName)
+				String sizeRel = (fontFileName.endsWith(".strike") ?
+					fontFilePath.fileName :
+					null)
+				
+				// Strip extensions
+				int ld = nameRel.lastIndexOf('.')
+				if (ld >= 0)
+					nameRel = nameRel.substring(0, ld)
+				
+				if (sizeRel != null)
+				{
+					ld = sizeRel.lastIndexOf('.')
+					if (ld >= 0)
+						sizeRel = sizeRel.substring(0, ld)
+				}
+				
+				// Build actual name
+				String baseDir = (sizeRel != null ?
+					nameRel + "-" + sizeRel : nameRel)
+				
+				// Notice
+				project.logger.lifecycle(String.format(
+					"Compiling %s to %s (name=%s, size=%s)...",
+					fontFile, baseDir, nameRel, sizeRel))
+				
+				// Compile the font
+				try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+					project.javaexec({ JavaExecSpec spec ->
+						// Use the Jar as the classpath
+						spec.classpath(fontCompilerPath)
+
+						// Specify the main class and arguments
+						spec.main("cc.squirreljme.fontcompile.Main")
+						if (false && fontFileName.contains("unifont"))
+							spec.args(
+								fontFile.toPath().toAbsolutePath().toString(),
+								"-",
+								"--compress")
+						else
+							spec.args(
+								fontFile.toPath().toAbsolutePath().toString(),
+								"-")
+
+						// Output here to the array
+						spec.standardOutput(baos)
+					})
+					
+					// Read in the Zip to copy the contents
+					try (ByteArrayInputStream bin = new ByteArrayInputStream(
+							baos.toByteArray())
+						ZipInputStream zin = new ZipInputStream(bin)) {
+						for (;;) {
+							// No more entries?
+							ZipEntry entry = zin.getNextEntry()
+							if (entry == null)
+								break
+							
+							// Write new entry
+							zout.putNextEntry(new ZipEntry(
+								baseDir + "/" + entry.getName()))
+							zout.write(VMHelpers.readAll(zin))
+							zout.closeEntry()
+						}
+					}
+				}
+			}
+
+			// Finish the zip
+			zout.finish()
+			zout.flush()
+		}
+		
+		// Move over
+		Files.move(tempPath, sqfJarPath,
+			StandardCopyOption.REPLACE_EXISTING)
+	}
+}
+
+processResources {
+	// Compile fonts first
+	dependsOn compileFonts
+	mustRunAfter compileFonts
+}
+
+jar {
+	// Compile fonts first
+	dependsOn compileFonts
+	mustRunAfter compileFonts
+	
+	// Merge in the compiled SQF Jar/Zip
+	from(project.provider({ ->
+		return zipTree({-> compileFonts.get()
+			.outputs.files.singleFile}).getAsFileTree()
+	})) {
+		into "/"
+	}
+}

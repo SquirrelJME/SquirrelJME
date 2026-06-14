@@ -39,10 +39,13 @@ extern "C"
 typedef enum sjme_errorCode
 {
 	/** No error. */
-	SJME_ERROR_NONE = 1,
+	SJME_ERROR_NONE = 2,
 
-	/** Generic unknown error. */
+	/** Generic unknown error (likely @link SJME_JNI_FALSE @endlink). */
 	SJME_ERROR_UNKNOWN = 0,
+
+	/** Generic unknown error (likely @link SJME_JNI_TRUE @endlink). */
+	SJME_ERROR_UNKNOWN_ONE = 1,
 
 	/** Generic unknown error. */
 	SJME_ERROR_UNKNOWN_NEGATIVE = -1,
@@ -593,8 +596,14 @@ typedef enum sjme_errorCode
 	/** Font is already registered. */
 	SJME_ERROR_FONT_ALREADY_REGISTERED = -183,
 	
+	/** The rectangle size is not valid. */
+	SJME_ERROR_INVALID_RECT = -184,
+	
+	/** Invalid codepoint. */
+	SJME_ERROR_INVALID_CODEPOINT = -185,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -184,
+	SJME_NUM_ERROR_CODES = -186,
 } sjme_errorCode;
 
 /**

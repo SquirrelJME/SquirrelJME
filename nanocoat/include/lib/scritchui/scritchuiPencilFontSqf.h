@@ -19,6 +19,7 @@
 
 #include "sjme/stdTypes.h"
 #include "sjme/alloc.h"
+#include "lib/scritchui/scritchuiBasic.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 
 /* Anti-C++. */
@@ -154,15 +155,18 @@ typedef struct sjme_scritchui_sqfCodepage
 
 /**
  * Initializes a new pencil font using the given SQF codepage set.
- * 
- * @param inOutFont The resultant font.
- * @param inSqfCodepage The input SQF codepage to use.
+ *
+ * @param inState The ScritchUI state.
+ * @param inOutFontR The resultant font.
+ * @param inSqfCodepageR The input SQF codepage to use.
  * @return Any resultant error, if any.
  * @since 2024/06/10
  */
 sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
-	sjme_scritchui_pencilFont inOutFont,
-	const sjme_scritchui_sqfCodepage* inSqfCodepage);
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inOutFontR,
+	sjme_attrInNullable sjme_pointerR(const sjme_scritchui_sqfCodepage*)
+		inSqfCodepageR);
 
 /*--------------------------------------------------------------------------*/
 
@@ -175,4 +179,4 @@ sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIPENCILFONTSQF_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SCRITCHUIPENCILFONTSQF_H */
+#endif /* SJME_C_SCRITCHUIPENCILFONTSQF_H */

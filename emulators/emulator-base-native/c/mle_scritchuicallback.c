@@ -14,8 +14,8 @@
 #define IMPL_CLASS "cc/squirreljme/emulator/scritchui/dylib/__NativeCallback__"
 #define FORWARD_CLASS IMPL_CLASS
 
-#define FORWARD_DESC___invoke "(" \
-	DESC_LONG DESC_LONG DESC_LONG ")" DESC_INT
+#define FORWARD_DESC___invoke DESC_METHOD(DESC_INT,  \
+	DESC_LONG DESC_LONG DESC_LONG )
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchCallback, __invoke)
 	(JNIEnv* env, jclass classy, jlong stateP, jlong callbackP,

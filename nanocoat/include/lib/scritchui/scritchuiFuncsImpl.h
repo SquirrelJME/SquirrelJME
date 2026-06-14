@@ -8,72 +8,34 @@
 // -------------------------------------------------------------------------*/
 
 /**
- * ScritchUI implementation interface.
+ * Internal ScritchUI function pointer types, for implementations.
  * 
- * @since 2024/04/06
+ * @file
+ * @since 2026/01/21
  */
 
-#ifndef SJME_C_SCRITCHUIIMPL_H
-#define SJME_C_SCRITCHUIIMPL_H
+#ifndef SJME_C_SQUIRRELJME_SCRITCHUIFUNCSIMPL_H
+#define SJME_C_SQUIRRELJME_SCRITCHUIFUNCSIMPL_H
 
-#include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiTypesListener.h"
+#include "lib/scritchui/scritchuiBasic.h"
+#include "lib/scritchui/scritchuiFuncs.h"
+#include "lib/scritchui/scritchuiTypes.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
-	#ifndef SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_IS_EXTERNED
-		#define SJME_CXX_SQUIRRELJME_SCRITCHUIIMPL_H
-extern "C" {
-	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
-#endif     /* #ifdef __cplusplus */
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_SCRITCHUIFUNCSIMPL_H
+
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
 
-/**
- * Obtains the core listener for the given type.
- * 
- * @param item The structure to access.
- * @param specific The specific listener that is wanted.
- * @return A pointer to the listener info.
- * @since 2024/05/01
- */
-#define SJME_SCRITCHUI_LISTENER_CORE(item, specific) \
-	((item)->listeners[SJME_SCRITCHUI_LISTENER_CORE].specific)
-
-/**
- * Obtains the user listener for the given type.
- * 
- * @param item The structure to access.
- * @param specific The specific listener that is wanted.
- * @return A pointer to the listener info.
- * @since 2024/05/01
- */
-#define SJME_SCRITCHUI_LISTENER_USER(item, specific) \
-	((item)->listeners[SJME_SCRITCHUI_LISTENER_USER].specific)
-
-/**
- * List initialization parameters.
- * 
- * @since 2024/07/24
- */
-typedef struct sjme_scritchui_impl_initParamList
-{
-	/** The type of choice used. */
-	sjme_scritchui_choiceType type;
-} sjme_scritchui_impl_initParamList;
-
-/**
- * Initialization parameters for menu items.
- * 
- * @since 2024/08/01
- */
-typedef struct sjme_scritchui_impl_initParamMenuItem
-{
-	/** The opaque ID to use for the item. */
-	sjme_jint opaqueId;
-} sjme_scritchui_impl_initParamMenuItem;
-
+#pragma region(scritchui_impl)
+	
 /**
  * Implementation specific initialization.
  * 
@@ -89,6 +51,7 @@ typedef sjme_errorCode (*sjme_scritchui_impl_apiInitFunc)(
  * 
  * @param inState The input state.
  * @param inContainer The container to place the component within.
+ * @param inContainerData The container data.
  * @param addComponent The component to add to the container.
  * @return Any error code if applicable.
  * @since 2024/04/20
@@ -104,6 +67,7 @@ typedef sjme_errorCode (*sjme_scritchui_impl_containerAddFunc)(
  * 
  * @param inState The input state.
  * @param inContainer The container to remove the component within.
+ * @param inContainerData The container data.
  * @param removeComponent The component to remove from the container.
  * @return Any error code if applicable.
  * @since 2024/07/15
@@ -147,7 +111,7 @@ typedef sjme_errorCode (*sjme_scritchui_impl_menuBarNewFunc)(
  * 
  * @param inState The input ScritchUI state.
  * @param inMenuItem The menu item that was created.
- * @param ignored Ignored, not used.
+ * @param init Initializer.
  * @return Any resultant error, if any.
  * @since 2024/07/21
  */
@@ -228,172 +192,10 @@ typedef sjme_errorCode (*sjme_scritchui_impl_windowNewFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInNullable sjme_pointer ignored);
+	
+#pragma endregion(scritchui_impl)
+#pragma region(scritchui_intern)
 
-#define SJME_SCRITCHUI_QUICK_IMPL(x) \
-	SJME_TOKEN_PASTE3(sjme_scritchui_impl_, x, Func) x
-
-/** Uses the same main implementation. */
-#define SJME_SCRITCHUI_QUICK_SAME(x) \
-	SJME_TOKEN_PASTE3(sjme_scritchui_, x, Func) x
-
-struct sjme_scritchui_implFunctions
-{
-	/** The driver name. */
-	sjme_lpcstr driverName;
-	
-	/** Initialize implementation API instance. */
-	SJME_SCRITCHUI_QUICK_IMPL(apiInit);
-	
-	/** Inserts an item into the given choice. */
-	SJME_SCRITCHUI_QUICK_SAME(choiceItemInsert);
-	
-	/** Removes an item from the given choice. */
-	SJME_SCRITCHUI_QUICK_SAME(choiceItemRemove);
-	
-	/** Sets whether the given choice item is enabled. */
-	SJME_SCRITCHUI_QUICK_SAME(choiceItemSetEnabled);
-	
-	/** Sets the image of the given choice item. */
-	SJME_SCRITCHUI_QUICK_SAME(choiceItemSetImage);
-	
-	/** Sets whether the given choice item is selected. */
-	SJME_SCRITCHUI_QUICK_SAME(choiceItemSetSelected);
-	
-	/** Sets the string of the given choice item. */
-	SJME_SCRITCHUI_QUICK_SAME(choiceItemSetString);
-	
-	/** Grabs the focus for this component. */
-	SJME_SCRITCHUI_QUICK_SAME(componentFocusGrab);
-	
-	/** Checks if this component has focus. */
-	SJME_SCRITCHUI_QUICK_SAME(componentFocusHas);
-	
-	/** Get the position of a component. */
-	SJME_SCRITCHUI_QUICK_SAME(componentPosition);
-	
-	/** Repaint component. */
-	SJME_SCRITCHUI_QUICK_SAME(componentRepaint);
-	
-	/** Revalidate component. */
-	SJME_SCRITCHUI_QUICK_SAME(componentRevalidate);
-	
-	/** Sets the activate listener for a component. */
-	SJME_SCRITCHUI_QUICK_SAME(componentSetActivateListener);
-	
-	/** Sets the input listener for a component. */
-	SJME_SCRITCHUI_QUICK_SAME(componentSetInputListener);
-	
-	/** Set paint listener for component. */
-	SJME_SCRITCHUI_QUICK_SAME(componentSetPaintListener);
-
-	/** Set size listener for component. */
-	SJME_SCRITCHUI_QUICK_SAME(componentSetSizeListener);
-	
-	/** Sets the listener for component visible events. */
-	SJME_SCRITCHUI_QUICK_SAME(componentSetVisibleListener);
-	
-	/** Get size of component. */
-	SJME_SCRITCHUI_QUICK_SAME(componentSize);
-	
-	/** Add component to container. */
-	SJME_SCRITCHUI_QUICK_IMPL(containerAdd);
-	
-	/** Remove component from container. */
-	SJME_SCRITCHUI_QUICK_IMPL(containerRemove);
-	
-	/** Set bounds of component in container. */
-	SJME_SCRITCHUI_QUICK_SAME(containerSetBounds);
-	
-	/** Hardware graphics support on arbitrary buffers. */
-	SJME_SCRITCHUI_QUICK_SAME(hardwareGraphics);
-	
-	/** Sets the close listener for a window. */
-	SJME_SCRITCHUI_QUICK_SAME(labelSetString);
-
-	/** Projects or reverses a projection of a scaled coordinate. */
-	SJME_SCRITCHUI_QUICK_SAME(lafDpiProject);
-	
-	/** Returns the element color for the look and feel. */
-	SJME_SCRITCHUI_QUICK_SAME(lafElementColor);
-	
-	/** Creates a new native list. */
-	SJME_SCRITCHUI_QUICK_IMPL(listNew);
-	
-	/** Execute callback within the event loop or schedule later. */
-	SJME_SCRITCHUI_QUICK_SAME(loopExecute);
-	
-	/** Execute call later in the loop. */
-	sjme_scritchui_loopExecuteFunc loopExecuteLater;
-	
-	/** Execute callback within the event loop and wait until termination. */
-	sjme_scritchui_loopExecuteFunc loopExecuteWait;
-	
-	/** Iterates a single run of the event loop. */
-	SJME_SCRITCHUI_QUICK_SAME(loopIterate);
-	
-	/** Creates a new menu bar. */
-	SJME_SCRITCHUI_QUICK_IMPL(menuBarNew);
-	
-	/** Insert menu into menu. */
-	SJME_SCRITCHUI_QUICK_SAME(menuInsert);
-	
-	/** Creates a new menu item. */
-	SJME_SCRITCHUI_QUICK_IMPL(menuItemNew);
-	
-	/** Creates a new menu. */
-	SJME_SCRITCHUI_QUICK_IMPL(menuNew);
-
-	/** Removes an item from the menu. */
-	SJME_SCRITCHUI_QUICK_SAME(menuRemove);
-	
-	/** Enable/disable focus on a panel. */
-	SJME_SCRITCHUI_QUICK_SAME(panelEnableFocus);
-	
-	/** Creates a new native panel. */
-	SJME_SCRITCHUI_QUICK_IMPL(panelNew);
-	
-	/** Get bounds of a screen. */
-	SJME_SCRITCHUI_QUICK_SAME(screenGetBounds);
-	
-	/** The available screens. */
-	SJME_SCRITCHUI_QUICK_SAME(screens);
-	
-	/** Create a new scroll panel. */
-	SJME_SCRITCHUI_QUICK_IMPL(scrollPanelNew);
-	
-	/** Get the current view rect of a viewport. */
-	SJME_SCRITCHUI_QUICK_SAME(viewGetView);
-	
-	/** Set the area of the viewport's bounds, the entire scrollable area. */
-	SJME_SCRITCHUI_QUICK_IMPL(viewSetArea);
-	
-	/** Sets the view rect of a viewport. */
-	SJME_SCRITCHUI_QUICK_SAME(viewSetView);
-	
-	/** Sets the listener for tracking scrolling and viewport changes. */
-	SJME_SCRITCHUI_QUICK_SAME(viewSetViewListener);
-	
-	/** Set minimum size of content window. */
-	SJME_SCRITCHUI_QUICK_SAME(windowContentMinimumSize);
-	
-	/** Content size of a container. */
-	sjme_scritchui_containerGetFrameFunc windowGetFrame;
-	
-	/** Creates a new window. */
-	SJME_SCRITCHUI_QUICK_IMPL(windowNew);
-	
-	/** Set close listener for a window. */
-	SJME_SCRITCHUI_QUICK_SAME(windowSetCloseListener);
-	
-	/** Sets the menu bar for a window. */
-	SJME_SCRITCHUI_QUICK_SAME(windowSetMenuBar);
-	
-	/** Sets visibility of the window. */
-	SJME_SCRITCHUI_QUICK_SAME(windowSetVisible);
-};
-
-#undef SJME_SCRITCHUI_QUICK_IMPL
-#undef SJME_SCRITCHUI_QUICK_SAME
 
 /**
  * This is called to bind the focus to a parent window.
@@ -420,10 +222,24 @@ typedef sjme_errorCode (*sjme_scritchui_intern_bindFocusFunc)(
  * @return Any resultant error.
  * @since 2024/12/23
  */
-typedef sjme_errorCode (*sjme_scritchui_containerMaxSizeFunc)(
+typedef sjme_errorCode (*sjme_scritchui_intern_containerMaxSizeFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiComponent inContainer,
 	sjme_attrOutNotNull sjme_scritchui_dim* outSize);
+
+/**
+ * Iterates over fonts that are available to the system along with any
+ * pseudo-fonts.
+ *
+ * @param inState The ScritchUI state.
+ * @param inOutStep The current iteration step state.
+ * @return Any resultant error, if any. @link SJME_ERROR_STOP @endlink wil
+ * discontinue iteration.
+ * @since 2026/04/11
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_fontIterateStepFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_fontIterateStep* inOutStep);
 
 /**
  * Returns the choice for the given component.
@@ -537,7 +353,7 @@ typedef sjme_errorCode (*sjme_scritchui_intern_initCommonFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInValue sjme_jboolean postCreate,
-	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES)
 		sjme_scritchui_uiType uiType);
 
 /**
@@ -554,7 +370,7 @@ typedef sjme_errorCode (*sjme_scritchui_intern_initComponentFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInValue sjme_jboolean postCreate,
-	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES)
 		sjme_scritchui_uiType uiType);
 
 /**
@@ -677,78 +493,73 @@ typedef sjme_errorCode (*sjme_scritchui_intern_updateVisibleWindowFunc)(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInValue sjme_jboolean isVisible);
 
-struct sjme_scritchui_internFunctions
-{
-	/** Binds focus to a window. */
-	sjme_scritchui_intern_bindFocusFunc bindFocus;
+/**
+ * Base function for common initialization logic.
+ * 
+ * @param inState The input state. 
+ * @param inCommon The common item to be initialized.
+ * @param inData Any data to use for initialization.
+ * @return Any resultant error, if any.
+ * @since 2024/07/22
+ */
+typedef sjme_errorCode (*sjme_scritchui_core_intern_objectNewImplFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
+	sjme_attrInNullable sjme_pointer inData);
+	
+/**
+ * Basic core common initialization logic.
+ * 
+ * @param inState The input state. 
+ * @param outCommon The resultant common.
+ * @param outCommonSize The size of the resultant common.
+ * @param uiType The UI type to initialize.
+ * @param implNew The implementation new for this type.
+ * @param inData Any data to pass to @c implNew .
+ * @return Any resultant error, if any.
+ * @since 2024/07/22
+ */
+typedef sjme_errorCode (*sjme_scritchui_core_intern_objectNewFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiCommon* outCommon,
+	sjme_attrInPositiveNonZero sjme_jint outCommonSize,
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES)
+		sjme_scritchui_uiType uiType,
+	sjme_attrInNotNull sjme_scritchui_core_intern_objectNewImplFunc implNew,
+	sjme_attrInNullable sjme_pointer inData);
 
-	/** Gets the max size of a container. */
-	sjme_scritchui_containerMaxSizeFunc containerMaxSize;
-	
-	/** Returns the built-in font, this can handle layers. */
-	sjme_scritchui_fontBuiltinFunc fontBuiltin;
-		
-	/** Returns the choice for the given component. */
-	sjme_scritchui_intern_getChoiceFunc getChoice;
-		
-	/** Returns the container for the given component. */
-	sjme_scritchui_intern_getContainerFunc getContainer;
-		
-	/** Returns the labeled item for the given component. */
-	sjme_scritchui_intern_getLabeledFunc getLabeled;
-		
-	/** Return children information for a given menu kind. */
-	sjme_scritchui_intern_getMenuHasChildrenFunc getMenuHasChildren;
-		
-	/** Return parent information for a given menu kind. */
-	sjme_scritchui_intern_getMenuHasParentFunc getMenuHasParent;
-	
-	/** Returns the paintable for the given component. */
-	sjme_scritchui_intern_getPaintableFunc getPaintable;
-	
-	/** Returns the viewport manager for the given component. */
-	sjme_scritchui_intern_getViewFunc getView;
-	
-	/** Common "common" initialization. */
-	sjme_scritchui_intern_initCommonFunc initCommon;
-	
-	/** Common component initialization. */
-	sjme_scritchui_intern_initComponentFunc initComponent;
-	
-	/** Maps the given screen. */
-	sjme_scritchui_intern_mapScreenFunc mapScreen;
-	
-	/** Menu item activation propagation, from bottom up. */
-	sjme_scritchui_intern_menuItemActivateFunc menuItemActivate;
-	
-	/** Menu item activation propagation, from top down. */
-	sjme_scritchui_intern_menuItemActivateByIdFunc menuItemActivateById;
-	
-	/** Set of simple user listener. */
-	sjme_scritchui_intern_setSimpleListenerFunc setSimpleListener;
-	
-	/** Update visibility recursively on container. */
-	sjme_scritchui_intern_updateVisibleContainerFunc updateVisibleContainer;
-	
-	/** Update visibility on component. */
-	sjme_scritchui_intern_updateVisibleComponentFunc updateVisibleComponent;
-	
-	/** Update visibility recursively on window. */
-	sjme_scritchui_intern_updateVisibleWindowFunc updateVisibleWindow;
-	
-	/** Suggest the size and position of a coordinate to a view. */
-	sjme_scritchui_intern_viewSuggestFunc viewSuggest;
+#pragma endregion(scritchui_intern)
+#pragma region(scritchui_internTypes)
+
+struct sjme_scritchui_fontIterateStep
+{
+	/** The valid registers to look within. */
+	sjme_jint registerMask;
+
+	/** Limit depth traversal for font iteration. */
+	sjme_jint limitDepth;
+
+	/** Function to call for each font iteration. */
+	sjme_scritchui_intern_fontIterateStepFunc iterator;
+
+	/** The current font being looked at. */
+	sjme_scritchui_pencilFont current;
+
+	/** Generic pointer data for iteration. */
+	sjme_pointer data;
 };
 
+#pragma endregion(scritchui_internTypes)
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
 #ifdef __cplusplus
-	#ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIIMPL_H
+#ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIFUNCSIMPL_H
 }
-		#undef SJME_CXX_SQUIRRELJME_SCRITCHUIIMPL_H
-		#undef SJME_CXX_IS_EXTERNED
-	#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIIMPL_H */
-#endif     /* #ifdef __cplusplus */
+#undef SJME_CXX_SQUIRRELJME_SCRITCHUIFUNCSIMPL_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIFUNCSIMPL_H */
+#endif /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SCRITCHUIIMPL_H */
+#endif /* SJME_C_SQUIRRELJME_SCRITCHUIFUNCSIMPL_H */

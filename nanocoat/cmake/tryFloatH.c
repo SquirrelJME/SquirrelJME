@@ -9,7 +9,7 @@
 
 #include <float.h>
 
-static void check(...) {}
+static void check(int ignored, ...) {}
 
 int main(int argc, char** argv)
 {

@@ -37,8 +37,11 @@ extern "C"
  *
  * @since 2023/07/25
  */
-typedef enum sjme_attrPackedEnumByte(sjme_basicTypeId)
+typedef enum sjme_basicTypeId
 {
+	/* This is an integer sized enum. */
+	sjme_enumInt(sjme_basicTypeId),
+
 	/** Integer. */
 	SJME_BASIC_TYPE_ID_INTEGER = 0,
 
@@ -912,7 +915,7 @@ typedef volatile sjme_alloc_poolBase* sjme_alloc_pool;
  *
  * @since 2025/07/04
  */
-typedef int (*sjme_undefinedFunction)();
+typedef int (*sjme_undefinedFunction)(int ignored, ...);
 
 /*--------------------------------------------------------------------------*/
 

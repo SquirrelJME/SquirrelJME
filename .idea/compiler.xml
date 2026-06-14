@@ -23,9 +23,21 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
+      <module name="squirreljme.emulators.emulator-base.test~1" target="11" />
+      <module name="squirreljme.emulators.nanocoat-vm.test~1" target="11" />
+      <module name="squirreljme.emulators.springcoat-vm.test~1" target="11" />
+      <module name="squirreljme.emulators.standalone.test~1" target="11" />
+      <module name="squirreljme.sdk.main~1" target="11" />
+      <module name="squirreljme.sdk.test~1" target="11" />
       <module name="squirreljme.tools.cicd-release-bundle" target="11" />
       <module name="squirreljme.tools.cicd-release-bundle.main" target="11" />
       <module name="squirreljme.tools.cicd-release-bundle.test" target="11" />
+      <module name="squirreljme.tools.pcf-to-sqf" target="11" />
+      <module name="squirreljme.tools.pcf-to-sqf.main" target="11" />
+      <module name="squirreljme.tools.pcf-to-sqf.test" target="11" />
+      <module name="squirreljme.tools.sqf-to-c" target="11" />
+      <module name="squirreljme.tools.sqf-to-c.main" target="11" />
+      <module name="squirreljme.tools.sqf-to-c.test" target="11" />
       <module name="squirreljme.tools.squirreljme-format" target="11" />
       <module name="squirreljme.tools.squirreljme-format.main" target="11" />
       <module name="squirreljme.tools.squirreljme-format.test" target="11" />

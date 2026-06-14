@@ -7,27 +7,31 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.mle;
+package cc.squirreljme.jvm.mle.constants;
 
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
- * Provider for pencil fonts.
+ * Parameters for {@link PencilFontBracket}.
  *
- * @since 2024/06/25
+ * @since 2026/04/10
  */
 @SquirrelJMEVendorApi
-public abstract class PencilFontProvider
+public interface PencilFontParam
 {
-	/**
-	 * Returns the used internal pencil font.
-	 *
-	 * @return The used internal pencil font.
-	 * @since 2024/06/25
-	 */
+	/** The {@link PencilFontStyle} of the font. */
 	@SquirrelJMEVendorApi
-	@ApiStatus.Internal
-	protected abstract PencilFontBracket __squirreljmePencilFont();
+	byte STYLE =
+		1;
+	
+	/** The pixel size of the font. */
+	@SquirrelJMEVendorApi
+	byte PIXEL_SIZE =
+		2;
+	
+	/** The number of available font parameters. */
+	@SquirrelJMEVendorApi
+	byte NUM_PARAMS = 
+		3;
 }

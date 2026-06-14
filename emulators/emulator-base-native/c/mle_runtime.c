@@ -10,44 +10,36 @@
 #include <string.h>
 #include <stdlib.h>
 
+/* //// MLE /// */
+#define mleGroupId RuntimeShelf
+#define mleShelfClass "cc/squirreljme/jvm/mle/RuntimeShelf"
+#define mleProxyTarget "cc/squirreljme/emulator/EmulatedRuntimeShelf"
+#include "squirreljmeMle.h"
+/* //////////// */
+
 #include "squirreljme.h"
 #include "sjme/path.h"
 
-#define RUNTIME_CLASSNAME "cc/squirreljme/emulator/EmulatedRuntimeShelf"
+#define MLE_DESC_browseLocal DESC_METHOD(DESC_VOID, \
+	DESC_BOOLEAN DESC_STRING)
+MLE_FUNC_PROXY_STATIC(void, browseLocal)
 
-#define RUNTIME_MEMORYPROFILE_DESC "()I"
-#define RUNTIME_SYSTEMENV_DESC "(Ljava/lang/String;)Ljava/lang/String;"
-#define RUNTIME_VMDESCRIPTION_DESC \
-	DESC_METHOD(DESC_STRING, DESC_INT)
-#define RUNTIME_VMSTATISTIC_DESC "(I)J"
-
-#define FORWARD_CLASS "cc/squirreljme/jvm/mle/RuntimeShelf"
-#define FORWARD_NATIVE_CLASS RUNTIME_CLASSNAME
-
-#define FORWARD_DESC_compatibilityId \
-	DESC_METHOD(DESC_BOOLEAN, DESC_INT)
-#define FORWARD_DESC_browseLocal \
-	DESC_METHOD(DESC_VOID, DESC_BOOLEAN DESC_STRING)
-
-JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(Runtime, compatibilityId)
-	(JNIEnv* env, jclass classy, jint id)
+#define MLE_DESC_compatibilityId DESC_METHOD(DESC_BOOLEAN, \
+	DESC_INT)
+MLE_FUNC_PROTO(jboolean, compatibilityId, jint id)
 {
 	/* For now everything returns false. */
 	return JNI_FALSE;
 }
 
-FORWARD_IMPL_VOID(Runtime, browseLocal,
-	FORWARD_IMPL_args(jboolean create, jstring path),
-	FORWARD_IMPL_pass(create, path))
-
-JNIEXPORT void JNICALL Impl_mle_RuntimeShelf_garbageCollect(
-	JNIEnv* env, jclass classy)
+#define MLE_DESC_garbageCollect DESC_METHOD(DESC_VOID, )
+MLE_FUNC_PROTO(void, garbageCollect)
 {
 	// Does nothing
 }
 
-JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(
-	JNIEnv* env, jclass classy)
+#define MLE_DESC_lineEnding DESC_METHOD(DESC_INTEGER, )
+MLE_FUNC_PROTO(jint, lineEnding)
 {
 #if defined(_WIN32)
 	return 3;
@@ -56,8 +48,9 @@ JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_lineEnding(
 #endif
 }
 
-JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
-	JNIEnv* env, jclass classy, jint id)
+#define MLE_DESC_vmDescription DESC_METHOD(DESC_STRING, \
+	DESC_INT)
+MLE_FUNC_PROTO(jstring, vmDescription, jint id)
 {
 	sjme_errorCode error;
 	char fileName[SJME_MAX_PATH];
@@ -100,7 +93,10 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 		if (sjme_error_default(error = sjme_path_default(NULL,
 			&fullPath, id - SJME_NVM_VM_DESC_DEFAULT_DIR_UNKNOWN,
 			-1)))
+		{
+			sjme_jni_throwMLECallError(env, error);
 			return NULL;
+		}
 
 		// Convert to Java String if Valid
 		if (fullPath.length > 0)
@@ -113,66 +109,49 @@ JNIEXPORT jstring JNICALL Impl_mle_RuntimeShelf_vmDescription(
 		return NULL;
 	}
 
-	return (jstring)forwardCallStaticObject(env, RUNTIME_CLASSNAME,
-		"vmDescription", RUNTIME_VMDESCRIPTION_DESC,
+	return (jstring)forwardCallStaticObject(env, mleProxyTarget,
+		"vmDescription", MLE_DESC_vmDescription,
 		id);
 }
 
-JNIEXPORT jlong JNICALL Impl_mle_RuntimeShelf_vmStatistic(
-	JNIEnv* env, jclass classy, jint id)
-{
-	return forwardCallStaticLong(env, RUNTIME_CLASSNAME,
-		"vmStatistic", RUNTIME_VMSTATISTIC_DESC,
-		id);
-}
+#define MLE_DESC_vmStatistic DESC_METHOD(DESC_LONG, \
+	DESC_INTEGER)
+MLE_FUNC_PROXY_STATIC(jlong, vmStatistic)
 
-JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_memoryProfile(
-	JNIEnv* env, jclass classy)
+#define MLE_DESC_memoryProfile DESC_METHOD(DESC_INTEGER, )
+MLE_FUNC_PROTO(jint, memoryProfile)
 {
 	// The value is normal
 	return 0;
 }
 
-JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_phoneModel(
-	JNIEnv* env, jclass classy)
+#define MLE_DESC_phoneModel DESC_METHOD(DESC_INTEGER, )
+MLE_FUNC_PROTO(jint, phoneModel)
 {
 	// Just be a generic device here
 	return 0;
-};
-
-JNIEXPORT jobject JNICALL Impl_mle_RuntimeShelf_systemEnv(
-	JNIEnv* env, jclass classy, jstring key)
-{
-	return forwardCallStaticObject(env, RUNTIME_CLASSNAME,
-		"systemEnv", RUNTIME_SYSTEMENV_DESC,
-		key);
 }
 
-JNIEXPORT jint JNICALL Impl_mle_RuntimeShelf_vmType(
-	JNIEnv* env, jclass classy)
+#define MLE_DESC_systemEnv DESC_METHOD(DESC_STRING, \
+	DESC_STRING)
+MLE_FUNC_PROXY_STATIC(jobject, systemEnv)
+
+#define MLE_DESC_vmType DESC_METHOD(DESC_INT, )
+MLE_FUNC_PROTO(jint, vmType)
 {
 	// The value 1 is Java SE type
 	return 1;
 }
 
-static const JNINativeMethod mleRuntimeMethods[] =
-{
-	FORWARD_list(Runtime, browseLocal),
-	FORWARD_list(Runtime, compatibilityId),
-	{"garbageCollect", "()V", (void*)Impl_mle_RuntimeShelf_garbageCollect},
-	{"lineEnding", "()I", (void*)Impl_mle_RuntimeShelf_lineEnding},
-	{"memoryProfile", RUNTIME_MEMORYPROFILE_DESC, (void*)Impl_mle_RuntimeShelf_memoryProfile},
-	{"phoneModel", "()I", (void*)Impl_mle_RuntimeShelf_phoneModel},
-	{"systemEnv", RUNTIME_SYSTEMENV_DESC, (void*)Impl_mle_RuntimeShelf_systemEnv},
-	{"vmDescription", RUNTIME_VMDESCRIPTION_DESC, (void*)Impl_mle_RuntimeShelf_vmDescription},
-	{"vmStatistic", RUNTIME_VMSTATISTIC_DESC, (void*)Impl_mle_RuntimeShelf_vmStatistic},
-	{"vmType", "()I", (void*)Impl_mle_RuntimeShelf_vmType},
-};
-
-jint JNICALL mleRuntimeInit(JNIEnv* env, jclass classy)
-{
-	return (*env)->RegisterNatives(env,
-		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/RuntimeShelf"),
-		mleRuntimeMethods, sizeof(mleRuntimeMethods) /
-			sizeof(JNINativeMethod));
-}
+MLE_LIST_BEGIN()
+	MLE_LIST_ITEM(browseLocal),
+	MLE_LIST_ITEM(compatibilityId),
+	MLE_LIST_ITEM(garbageCollect),
+	MLE_LIST_ITEM(lineEnding),
+	MLE_LIST_ITEM(memoryProfile),
+	MLE_LIST_ITEM(phoneModel),
+	MLE_LIST_ITEM(systemEnv),
+	MLE_LIST_ITEM(vmDescription),
+	MLE_LIST_ITEM(vmStatistic),
+	MLE_LIST_ITEM(vmType),
+MLE_LIST_END()

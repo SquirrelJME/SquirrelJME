@@ -178,6 +178,9 @@ typedef struct sjme_scritchui_fb_displayListText
 {
 	/** The string to render. */
 	sjme_scritchui_pencilFont font;
+
+	/** Font parameters. */
+	sjme_scritchui_pencilFontParam fontParams;
 	
 	/** The font used. */
 	sjme_lpcstr string;

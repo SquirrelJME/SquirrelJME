@@ -92,7 +92,7 @@ public enum MLEPencil
 		{
 			try
 			{
-				PencilShelf.hardwareFillArc(
+				PencilShelf.hardwareDrawArc(
 					SpringVisObject.asNative(__thread,
 						PencilBracket.class, __args[0]),
 					SpringVisObject.asNative(__thread,
@@ -918,11 +918,10 @@ public enum MLEPencil
 	},
 	
 	/**
-	 * {@link PencilShelf#hardwareSetFont(PencilBracket, PencilFontBracket)}.
+	 * {@link PencilShelf#hardwareSetFont}.
 	 */
-	HARDWARE_SET_FONT("hardwareSetFont:" +
-		"(Lcc/squirreljme/jvm/mle/brackets/PencilBracket;" +
-		"Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)V")
+	HARDWARE_SET_FONT(MLEDispatcher.methodKey("hardwareSetFont", 
+		void.class, PencilBracket.class, PencilFontBracket.class, int[].class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -937,7 +936,9 @@ public enum MLEPencil
 					SpringVisObject.asNative(__thread,
 						PencilBracket.class, __args[0]),
 					SpringVisObject.asNative(__thread,
-						PencilFontBracket.class, __args[1]));
+						PencilFontBracket.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						int[].class, __args[2]));
 				return null;
 			}
 			catch (MLECallError __e)

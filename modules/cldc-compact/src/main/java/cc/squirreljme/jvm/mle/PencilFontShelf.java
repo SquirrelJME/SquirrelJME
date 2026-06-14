@@ -42,13 +42,16 @@ public final class PencilFontShelf
 	 * Checks if two brackets refer to the same font.
 	 *
 	 * @param __a The first font.
+	 * @param __aParams The first font parameters.
 	 * @param __b The second font.
+	 * @param __bParams The second font parameters.
 	 * @return If the two fonts are the same.
 	 * @since 2024/05/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean equals(@Nullable PencilFontBracket __a,
-		@Nullable PencilFontBracket __b);
+	public static native boolean equals(
+		@Nullable PencilFontBracket __a, @Nullable int[] __aParams,
+		@Nullable PencilFontBracket __b, @Nullable int[] __bParams);
 	
 	/**
 	 * Returns the direction of the given character in the font.
@@ -128,6 +131,7 @@ public final class PencilFontShelf
 	 * Returns the ascent of the font.
 	 *
 	 * @param __font The font to check.
+	 * @param __params The font parameters.
 	 * @param __max Should the max be obtained.
 	 * @return The ascent of the font in pixels.
 	 * @throws MLECallError If the font is not valid.
@@ -136,6 +140,7 @@ public final class PencilFontShelf
 	@SquirrelJMEVendorApi
 	public static native int metricPixelAscent(
 		@NotNull PencilFontBracket __font,
+		@Nullable int[] __params,
 		boolean __max)
 		throws MLECallError;
 	
@@ -143,19 +148,22 @@ public final class PencilFontShelf
 	 * Returns the baseline of the font.
 	 *
 	 * @param __font The font to check.
+	 * @param __params The font parameters.
 	 * @return The baseline of the font in pixels.
 	 * @throws MLECallError If the font is not valid.
 	 * @since 2024/05/14
 	 */
 	@SquirrelJMEVendorApi
 	public static native int metricPixelBaseline(
-		@NotNull PencilFontBracket __font)
+		@NotNull PencilFontBracket __font,
+		@Nullable int[] __params)
 		throws MLECallError;
 	
 	/**
 	 * Returns the descent of the font.
 	 *
 	 * @param __font The font to check.
+	 * @param __params The font parameters.
 	 * @param __max Should the max be obtained.
 	 * @return The descent of the font in pixels.
 	 * @throws MLECallError If the font is not valid.
@@ -164,6 +172,7 @@ public final class PencilFontShelf
 	@SquirrelJMEVendorApi
 	public static native int metricPixelDescent(
 		@NotNull PencilFontBracket __font,
+		@Nullable int[] __params,
 		boolean __max)
 		throws MLECallError;
 	
@@ -171,19 +180,23 @@ public final class PencilFontShelf
 	 * Returns the leading of the font.
 	 *
 	 * @param __font The font to obtain from.
+	 * @param __params The font parameters.
 	 * @return The leading amount in pixels.
 	 * @throws MLECallError If the font is not valid.
 	 * @since 2024/05/14
 	 */
 	@SquirrelJMEVendorApi
 	public static native int metricPixelLeading(
-		@NotNull PencilFontBracket __font)
+		@NotNull PencilFontBracket __font,
+		@Nullable int[] __params)
 		throws MLECallError;
 	
 	/**
 	 * Returns the pixel size of the font.
 	 *
 	 * @param __font The font to get the size of.
+	 * @param __params The font parameters.
+	 * @param __codepoint The specific codepoint to request.
 	 * @return The pixel size of the font.
 	 * @throws MLECallError On null arguments or the font is invalid.
 	 * @since 2024/05/17
@@ -191,13 +204,16 @@ public final class PencilFontShelf
 	@SquirrelJMEVendorApi
 	@Range(from = 1, to = Integer.MAX_VALUE)
 	public static native int metricPixelSize(
-		@NotNull PencilFontBracket __font)
+		@NotNull PencilFontBracket __font,
+		@Nullable int[] __params,
+		@Range(from = -1, to = Integer.MAX_VALUE) int __codepoint)
 		throws MLECallError;
 	
 	/**
 	 * Returns the width of the given character.
 	 *
 	 * @param __font The font to obtain from.
+	 * @param __params The font parameters.
 	 * @param __char The character.
 	 * @return The width of the font in pixels.
 	 * @throws MLECallError If the font is not valid.
@@ -207,6 +223,7 @@ public final class PencilFontShelf
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	public static native int pixelCharWidth(
 		@NotNull PencilFontBracket __font,
+		@Nullable int[] __params,
 		int __char)
 		throws MLECallError;
 	
@@ -215,6 +232,7 @@ public final class PencilFontShelf
 	 * byte within the array represents 8 pixels.
 	 *
 	 * @param __font The font to render to the bitmap.
+	 * @param __params The font parameters.
 	 * @param __char The character to render.
 	 * @param __buf The resultant buffer.
 	 * @param __bufOff The offset into the buffer.
@@ -230,6 +248,7 @@ public final class PencilFontShelf
 	@SquirrelJMEVendorApi
 	public static native void renderBitmap(
 		@NotNull PencilFontBracket __font,
+		@Nullable int[] __params,
 		int __char,
 		@NotNull byte[] __buf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __bufOff,
@@ -244,6 +263,7 @@ public final class PencilFontShelf
 	 * Renders the given character to the resultant pencil.
 	 *
 	 * @param __font The font to render from.
+	 * @param __params The font parameters.
 	 * @param __char The character to render.
 	 * @param __pencil The pencil to draw into.
 	 * @param __x The target X position.
@@ -257,6 +277,7 @@ public final class PencilFontShelf
 	@SquirrelJMEVendorApi
 	public static native void renderChar(
 		@NotNull PencilFontBracket __font,
+		@Nullable int[] __params,
 		int __char,
 		@NotNull PencilBracket __pencil,
 		int __x, int __y,

@@ -9,11 +9,15 @@
 
 #include <string.h>
 
+/* //// MLE /// */
+#define mleGroupId NativeScritchDylibEx
+#define mleShelfClass \
+	"cc/squirreljme/emulator/scritchui/dylib/NativeScritchDylib"
+#include "squirreljmeMle.h"
+/* //////////// */
+
 #include "squirreljme.h"
-#include "lib/scritchui/scritchuiExtern.h"
-#include "lib/scritchui/scritchuiPencilFontSqf.h"
 #include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 #include "sjme/dylib.h"
@@ -24,113 +28,111 @@
 #define IMPL_CLASS "cc/squirreljme/emulator/scritchui/dylib/" \
 	"NativeScritchDylib"
 #define FORWARD_CLASS IMPL_CLASS
+#define FORWARD_CLASS_NAME NativeScritchDylib
 
-#define DESC_ScritchActivateListener_activate "(" \
-	DESC_SCRITCHUI_COMPONENT ")" DESC_VOID
-#define DESC_ScritchCloseListener_closed "(" \
-	DESC_SCRITCHUI_WINDOW ")" DESC_BOOLEAN
-#define DESC_ScritchInputListener_inputEvent "(" \
+#define DESC_ScritchActivateListener_activate DESC_METHOD(DESC_VOID,  \
+	DESC_SCRITCHUI_COMPONENT )
+#define DESC_ScritchCloseListener_closed DESC_METHOD(DESC_BOOLEAN,  \
+	DESC_SCRITCHUI_WINDOW )
+#define DESC_ScritchInputListener_inputEvent DESC_METHOD(DESC_VOID,  \
 	DESC_SCRITCHUI_COMPONENT DESC_INT DESC_LONG DESC_INT DESC_INT DESC_INT \
 	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT")" DESC_VOID
-#define DESC_ScritchPaintListener_paint "(" \
+	DESC_INT)
+#define DESC_ScritchPaintListener_paint DESC_METHOD(DESC_VOID,  \
 	DESC_SCRITCHUI_COMPONENT /* __component */ \
 	DESC_SCRITCHUI_PENCIL /* __g */ \
 	DESC_INTEGER /* __sw */ \
 	DESC_INTEGER /* __sh */ \
-	DESC_INTEGER /* __special */ ")" DESC_VOID
-#define DESC_ScritchMenuItemActivateListener_menuItemActivate "(" \
-	DESC_SCRITCHUI_WINDOW DESC_SCRITCHUI_MENUKIND ")" DESC_VOID
-#define DESC_ScritchSizeSuggestListener_sizeSuggest "(" \
+	DESC_INTEGER /* __special */ )
+#define DESC_ScritchMenuItemActivateListener_menuItemActivate DESC_METHOD(DESC_VOID,  \
+	DESC_SCRITCHUI_WINDOW DESC_SCRITCHUI_MENUKIND )
+#define DESC_ScritchSizeSuggestListener_sizeSuggest DESC_METHOD(DESC_VOID,  \
 	DESC_SCRITCHUI_VIEW /* __view */ \
 	DESC_SCRITCHUI_COMPONENT /* __sub */ \
-	DESC_INT DESC_INT /* __w, __h */ ")" DESC_VOID
-#define DESC_ScritchVisibleListener_visibilityChanged "(" \
+	DESC_INT DESC_INT /* __w, __h */ )
+#define DESC_ScritchVisibleListener_visibilityChanged DESC_METHOD(DESC_VOID,  \
 	DESC_SCRITCHUI_COMPONENT /* __component */ \
 	DESC_BOOLEAN /* __from */ \
-	DESC_BOOLEAN /* __to */ ")" DESC_VOID
+	DESC_BOOLEAN /* __to */ )
 
-#define FORWARD_DESC___builtinFonts "(" \
-	DESC_LONG ")" DESC_ARRAY(DESC_PENCILFONT)
+#define FORWARD_DESC___builtinFonts DESC_METHOD(DESC_ARRAY(DESC_PENCILFONT),  \
+	DESC_LONG )
 
-#define FORWARD_DESC___choiceGetSelectedIndex "(" \
-	DESC_LONG DESC_LONG ")" DESC_INT
-#define FORWARD_DESC___choiceInsert "(" \
-	DESC_LONG DESC_LONG DESC_INT ")" DESC_INT
-#define FORWARD_DESC___choiceLength "(" \
-	DESC_LONG DESC_LONG ")" DESC_INT
-#define FORWARD_DESC___choiceRemove "(" \
-	DESC_LONG DESC_LONG DESC_INT ")" DESC_VOID
-#define FORWARD_DESC___choiceRemoveAll "(" \
-	DESC_LONG DESC_LONG ")" DESC_VOID
-#define FORWARD_DESC___choiceSetEnabled "(" \
-	DESC_LONG DESC_LONG DESC_INT DESC_BOOLEAN ")" DESC_VOID
-#define FORWARD_DESC___choiceSetImage "(" \
+#define FORWARD_DESC___choiceGetSelectedIndex DESC_METHOD(DESC_INT,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___choiceInsert DESC_METHOD(DESC_INT,  \
+	DESC_LONG DESC_LONG DESC_INT )
+#define FORWARD_DESC___choiceLength DESC_METHOD(DESC_INT,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___choiceRemove DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_INT )
+#define FORWARD_DESC___choiceRemoveAll DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___choiceSetEnabled DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_INT DESC_BOOLEAN )
+#define FORWARD_DESC___choiceSetImage DESC_METHOD(DESC_VOID,  \
 	DESC_LONG DESC_LONG DESC_INT DESC_ARRAY(DESC_INT) DESC_INT \
-	DESC_INT DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC___choiceSetSelected "(" \
-	DESC_LONG DESC_LONG DESC_INT DESC_BOOLEAN ")" DESC_VOID
-#define FORWARD_DESC___choiceSetString "(" \
-	DESC_LONG DESC_LONG DESC_INT DESC_STRING ")" DESC_VOID
+	DESC_INT DESC_INT DESC_INT )
+#define FORWARD_DESC___choiceSetSelected DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_INT DESC_BOOLEAN )
+#define FORWARD_DESC___choiceSetString DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_INT DESC_STRING )
 
-#define FORWARD_DESC___componentGetParent "(" \
-	DESC_LONG DESC_LONG ")" DESC_SCRITCHUI_COMPONENT
-#define FORWARD_DESC___componentHeight "(" \
-	DESC_LONG DESC_LONG ")" DESC_INT
-#define FORWARD_DESC___componentRepaint "(" \
-	DESC_LONG DESC_LONG DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC___componentRevalidate "(" \
-	DESC_LONG DESC_LONG ")" DESC_VOID
-#define FORWARD_DESC___componentSetActivateListener "(" \
-	DESC_LONG DESC_LONG DESC_SCRITCHUI_ACTIVATE_LISTENER ")" DESC_VOID
-#define FORWARD_DESC___componentSetInputListener "(" \
-	DESC_LONG DESC_LONG DESC_SCRITCHUI_INPUT_LISTENER ")" DESC_VOID
-#define FORWARD_DESC___componentSetPaintListener "(" \
-	DESC_LONG DESC_LONG DESC_SCRITCHUI_PAINT_LISTENER ")" DESC_VOID
-#define FORWARD_DESC___componentSetVisibleListener "(" \
-	DESC_LONG DESC_LONG DESC_SCRITCHUI_VISIBLE_LISTENER ")" DESC_VOID
+#define FORWARD_DESC___componentGetParent DESC_METHOD(DESC_SCRITCHUI_COMPONENT,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___componentHeight DESC_METHOD(DESC_INT,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___componentRepaint DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_INT DESC_INT DESC_INT DESC_INT )
+#define FORWARD_DESC___componentRevalidate DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___componentSetActivateListener DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_ACTIVATE_LISTENER )
+#define FORWARD_DESC___componentSetInputListener DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_INPUT_LISTENER )
+#define FORWARD_DESC___componentSetPaintListener DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_PAINT_LISTENER )
+#define FORWARD_DESC___componentSetVisibleListener DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_SCRITCHUI_VISIBLE_LISTENER )
 #define FORWARD_DESC___componentWidth FORWARD_DESC___componentHeight
 
-#define FORWARD_DESC___containerAdd "(" \
-	DESC_LONG DESC_LONG DESC_LONG ")" DESC_VOID
+#define FORWARD_DESC___containerAdd DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_LONG )
 #define FORWARD_DESC___containerGetFrame \
 	DESC_METHOD(DESC_VOID, DESC_LONG DESC_LONG \
 	DESC_ARRAY(DESC_INT) DESC_ARRAY(DESC_INT) DESC_ARRAY(DESC_INT))
-#define FORWARD_DESC___containerRemoveAll "(" \
-	DESC_LONG DESC_LONG ")" DESC_VOID
-#define FORWARD_DESC___containerSetBounds "(" \
+#define FORWARD_DESC___containerRemoveAll DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG )
+#define FORWARD_DESC___containerSetBounds DESC_METHOD(DESC_VOID,  \
 	DESC_LONG DESC_LONG DESC_LONG \
-	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER ")" DESC_VOID
+	DESC_INTEGER DESC_INTEGER DESC_INTEGER DESC_INTEGER )
 
-#define FORWARD_DESC___fontDerive "(" \
-	DESC_LONG DESC_LONG DESC_INT DESC_INT ")" DESC_LONG
-
-#define FORWARD_DESC___hardwareGraphics "(" \
+#define FORWARD_DESC___hardwareGraphics DESC_METHOD(DESC_PENCIL,  \
 	DESC_LONG DESC_INT DESC_INT DESC_INT DESC_OBJECT \
-	DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_PENCIL
+	DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_INT DESC_INT )
 
-#define FORWARD_DESC___linkInit "(" \
-	DESC_STRING DESC_STRING ")" DESC_LONG
+#define FORWARD_DESC___linkInit DESC_METHOD(DESC_LONG,  \
+	DESC_STRING DESC_STRING )
 
-#define FORWARD_DESC___lafElementColor "(" \
-	DESC_LONG DESC_LONG DESC_INT ")" DESC_INT
-#define FORWARD_DESC___lafPlatformFlags "(" \
-	DESC_LONG ")" DESC_INT
+#define FORWARD_DESC___lafElementColor DESC_METHOD(DESC_INT,  \
+	DESC_LONG DESC_LONG DESC_INT )
+#define FORWARD_DESC___lafPlatformFlags DESC_METHOD(DESC_INT,  \
+	DESC_LONG )
 
-#define FORWARD_DESC___labelSetString "(" \
-	DESC_LONG DESC_LONG DESC_STRING ")" DESC_VOID
+#define FORWARD_DESC___labelSetString DESC_METHOD(DESC_VOID,  \
+	DESC_LONG DESC_LONG DESC_STRING )
 
-#define FORWARD_DESC___listNew "(" \
-	DESC_LONG DESC_INT ")" DESC_LONG
+#define FORWARD_DESC___listNew DESC_METHOD(DESC_LONG,  \
+	DESC_LONG DESC_INT )
 
 #define FORWARD_DESC___loopExecute "(" \
 	DESC_LONG DESC_CLASS("java/lang/Runnable") ")" DESC_VOID
 #define FORWARD_DESC___loopExecuteLater FORWARD_DESC___loopExecute
 #define FORWARD_DESC___loopExecuteWait FORWARD_DESC___loopExecute
-#define FORWARD_DESC___loopIsInThread "(" \
-	DESC_LONG ")" DESC_BOOLEAN
-#define FORWARD_DESC___loopIterate "(" \
-	DESC_LONG ")" DESC_BOOLEAN
+#define FORWARD_DESC___loopIsInThread DESC_METHOD(DESC_BOOLEAN,  \
+	DESC_LONG )
+#define FORWARD_DESC___loopIterate DESC_METHOD(DESC_BOOLEAN,  \
+	DESC_LONG )
 
 #define FORWARD_DESC___menuBarNew "(" \
 	DESC_LONG ")" DESC_LONG
@@ -213,7 +215,7 @@ typedef struct mle_callbackData
 	jmethodID javaCallbackId;
 } mle_callbackData;
 
-static void mle_scritchUiStoreCallback(JNIEnv* env,
+static sjme_errorCode mle_scritchUiStoreCallback(JNIEnv* env,
 	sjme_frontEndBindable* outFrontEnd,
 	jobject javaListener)
 {
@@ -221,7 +223,10 @@ static void mle_scritchUiStoreCallback(JNIEnv* env,
 
 	if (sjme_error_is(error = sjme_jni_fillFrontEnd(env,
 		outFrontEnd, javaListener)))
+	{
 		sjme_jni_throwMLECallError(env, error);
+		return sjme_error_default(error);
+	}
 }
 
 static void mle_scritchUiRecoverCallback(JNIEnv* env,
@@ -272,41 +277,31 @@ static void mle_scritchUiRecoverEnv(
 	*outEnv = env;
 }
 
-static void mle_simpleListenerSet(JNIEnv* env,
-	sjme_scritchui state,
-	sjme_scritchui_uiComponent component,
-	jobject javaListener,
-	sjme_scritchui_voidSetVoidListenerFunc setListenerFunc,
-	sjme_scritchui_voidListenerFunc wrapListener)
-{
-	sjme_errorCode error;
-	sjme_frontEndBindable newFrontEnd;
-
-	if (state == NULL || component == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return;
-	}
-
-	if (setListenerFunc == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
-		return;
-	}
-
-	/* Setup new front-end to refer to this component. */
-	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
-
-	/* Forward. */
-	if (sjme_error_is(error = setListenerFunc(
-		state, component,
-		wrapListener,
-		&newFrontEnd)))
-	{
-		sjme_jni_throwMLECallError(env, error);
-		return;
-	}
-}
+#define mle_simpleListenerSet(env, state, component, javaListener, \
+	setListenerFunc, wrapListener) \
+	do { \
+		sjme_errorCode error; \
+		sjme_frontEndBindable newFrontEnd; \
+		\
+		/* Setup new front-end to refer to this component. */ \
+		if (sjme_error_is(error = mle_scritchUiStoreCallback(env, \
+			&newFrontEnd, javaListener))) \
+		{ \
+			sjme_message("FAIL A"); \
+			sjme_jni_throwMLECallError(env, error); \
+			return; \
+		} \
+		\
+		/* Forward. */ \
+		if (sjme_error_is(error = setListenerFunc( \
+			state, component, wrapListener, \
+			&newFrontEnd))) \
+		{ \
+			sjme_message("FAIL B"); \
+			sjme_jni_throwMLECallError(env, error); \
+			return; \
+		} \
+	} while (0)
 
 static sjme_errorCode mle_scritchUiListenerClose(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -869,75 +864,35 @@ static sjme_errorCode mlePencilLockRelease(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode mlePencilExternalAsset(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInValue sjme_scritchui_externalAssetType assetType,
+	sjme_attrInNotNull sjme_lpcstr inAsset,
+	sjme_attrOutNullable sjme_stream_input* outStream)
+{
+	if (inState == NULL || inAsset == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (assetType <= SJME_SCRITCHUI_ASSET_TYPE_UNDEFINED ||
+		assetType >= SJME_SCRITCHUI_NUM_ASSET_TYPES)
+		return SJME_ERROR_RESOURCE_NOT_FOUND;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static const sjme_scritchui_pencilLockFunctions mlePencilLockFuncs =
 {
 	.lock = mlePencilLock,
 	.lockRelease = mlePencilLockRelease,
 };
 
-static sjme_errorCode mleAwtCall(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_thread_mainFunc callback,
-	sjme_attrInNullable sjme_thread_parameter anything)
+static const sjme_scritchui_externalFunctions mleExternals =
 {
-	sjme_errorCode error;
-	JNIEnv* env;
-	jclass queueClass;
-	jmethodID invokeMethod;
-	jclass nativeClass;
-	jmethodID nativeNew;
-	jobject nativeWrapper;
-
-	if (inState == NULL || callback == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* We need the JVM state for this to work. */
-	env = NULL;
-	if (sjme_error_is(error = sjme_jni_recoverEnvThis(
-		&env)) || env == NULL)
-		return sjme_error_defaultOr(error, SJME_ERROR_ILLEGAL_STATE);
-
-	/* Get the AWT event queue handler. */
-	queueClass = (*env)->FindClass(env, "java/awt/EventQueue");
-	if (queueClass == NULL)
-		return SJME_ERROR_JNI_EXCEPTION;
-
-	/* Get the invocation method. */
-	invokeMethod = (*env)->GetStaticMethodID(env, queueClass,
-		"invokeLater", "(Ljava/lang/Runnable;)V");
-	if (invokeMethod == NULL)
-		return SJME_ERROR_JNI_EXCEPTION;
-
-	/* Get native callback. */
-	nativeClass = (*env)->FindClass(env,
-		"cc/squirreljme/emulator/scritchui/dylib/__NativeCallback__");
-	if (nativeClass == NULL)
-		return SJME_ERROR_JNI_EXCEPTION;
-
-	/* And find its constructor. */
-	nativeNew = (*env)->GetMethodID(env, nativeClass, "<init>",
-		"(JJJ)V");
-	if (nativeNew == NULL)
-		return SJME_ERROR_JNI_EXCEPTION;
-
-	/* Wrap callback. */
-	nativeWrapper = (*env)->NewObject(env, nativeClass, nativeNew,
-		(jlong)((sjme_intPointer)inState),
-		(jlong)((sjme_intPointer)callback),
-		(jlong)((sjme_intPointer)anything));
-	if (nativeWrapper == NULL)
-		return SJME_ERROR_JNI_EXCEPTION;
-
-	/* Enqueue for later. */
-	(*env)->CallStaticVoidMethod(env, queueClass, invokeMethod, nativeWrapper);
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-}
-
-static const sjme_scritchui_externalFunctions mleAwtLoopFuncs =
-{
-	.externalLoopExecuteLater = mleAwtCall,
+	sjme_sm(.externalAsset, mlePencilExternalAsset),
+	sjme_sm(.externalLoopExecute, NULL),
+	sjme_sm(.externalLoopExecuteLater, NULL),
+	sjme_sm(.externalLoopExecuteWait, NULL),
 };
 
 JNIEXPORT jobjectArray JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1170,7 +1125,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__choiceSetImage)(JNIEnv* env, jclass classy, jlong stateP,
-	jlong choiceP, jint atIndex, jintArray data, jint off, jint scanLen,
+	jlong choiceP, jint  atIndex, jintArray data, jint off, jint scanLen,
 	jint width, jint height)
 {
 	sjme_errorCode error;
@@ -1181,6 +1136,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	sjme_jint dataLen;
 
 	/* Restore. */
+
 	state = (sjme_scritchui)stateP;
 	choice = (sjme_scritchui_uiComponent)choiceP;
 
@@ -1390,10 +1346,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->componentSetActivateListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerActivate);
+		state->api->componentSetActivateListener,
+		mle_scritchUiListenerActivate);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1413,10 +1367,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->componentSetInputListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerInput);
+		state->api->componentSetInputListener,
+		mle_scritchUiListenerInput);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1436,10 +1388,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->componentSetPaintListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerPaint);
+		state->api->componentSetPaintListener,
+		mle_scritchUiListenerPaint);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1459,10 +1409,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->componentSetVisibleListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerVisible);
+		state->api->componentSetVisibleListener,
+		mle_scritchUiListenerVisible);
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1686,37 +1634,122 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 }
 
-JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
-	__fontDerive)(JNIEnv* env, jclass classy, jlong stateP,
-	jlong fontP, jint style, jint pixelSize)
+#define MLE_DESC___fontByFace DESC_METHOD(DESC_LONG, \
+	DESC_LONG DESC_INT DESC_ARRAY(DESC_INT) DESC_ARRAY(DESC_INT))
+MLE_FUNC_PROTO(jlong, __fontByFace,
+	jlong jStateP, jint inFace, jintArray inParamsF, jintArray outParamsF)
 {
-	sjme_scritchui state;
-	sjme_scritchui_pencilFont font;
-	sjme_scritchui_pencilFont derived;
 	sjme_errorCode error;
+	sjme_scritchui inState;
+	sjme_scritchui_pencilFontParam inParamsS, outParamsS;
+	sjme_scritchui_pencilFont found;
 
-	if (stateP == 0 || fontP == 0)
+	inState = (sjme_scritchui)jStateP;
+	if (inState == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return 0;
 	}
 
-	/* Restore. */
-	state = (sjme_scritchui)stateP;
-	font = (sjme_scritchui_pencilFont)fontP;
+	if (inState->api == NULL || inState->api->fontByFace == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_ILLEGAL_STATE);
+		return 0;
+	}
 
-	/* Forward. */
-	derived = NULL;
-	if (sjme_error_is(error = state->api->fontDerive(state,
-		font, style, pixelSize,
-		&derived)) ||
-		derived == NULL)
+	/* Setup in parameters. */
+	memset(&inParamsS, 0, sizeof(inParamsS));
+	if (inParamsF != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env, inState,
+			&inParamsS, inParamsF)))
+		{
+			sjme_jni_throwMLECallError(env, error);
+			return 0;
+		}
+
+	/* Locate font by face. */
+	found = NULL;
+	memset(&outParamsS, 0, sizeof(outParamsS));
+	if (sjme_error_is(error = inState->api->fontByFace(inState,
+		&found, &outParamsS, inFace, (inParamsF != NULL ? &inParamsS : NULL))))
 	{
 		sjme_jni_throwMLECallError(env, error);
 		return 0;
 	}
 
-	return (jlong)derived;
+	/* Map output parameters. */
+	if (outParamsF != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamToFlat(env, inState,
+			outParamsF, &outParamsS)))
+		{
+			sjme_jni_throwMLECallError(env, error);
+			return 0;
+		}
+
+	/* Return the found font. */
+	return (jlong)found;
+}
+
+#define MLE_DESC___fontDerive DESC_METHOD(DESC_LONG,  \
+	DESC_LONG DESC_LONG DESC_ARRAY(DESC_INT) DESC_ARRAY(DESC_INT))
+MLE_FUNC_PROTO(jlong, __fontDerive, jlong jStateP, jlong jFontP,
+	jintArray jDeriveFPI, jintArray jNewFPI)
+{
+	sjme_errorCode error;
+	sjme_scritchui inState;
+	sjme_scritchui_pencilFont inFont;
+	sjme_scritchui_pencilFont newFont;
+	sjme_scritchui_pencilFontParam deriveParams, newParams;
+
+	/* Check. */
+	inState = (sjme_scritchui)jStateP;
+	inFont = (sjme_scritchui_pencilFont)jFontP;
+	if (inState == NULL || inFont == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return (jlong)0;
+	}
+
+	/* Make sure this exists. */
+	if (inState->api == NULL || inState->api->fontDerive == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_ILLEGAL_STATE);
+		return (jlong)0;
+	}
+
+	/* Map old parameters? */
+	memset(&deriveParams, 0, sizeof(deriveParams));
+	if (jDeriveFPI != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env, inState,
+			&deriveParams, jDeriveFPI)))
+		{
+			sjme_jni_throwMLECallError(env, error);
+			return (jlong)0;
+		}
+
+	/* Perform derivation. */
+	newFont = NULL;
+	memset(&newParams, 0, sizeof(newParams));
+	if (sjme_error_is(error = inState->api->fontDerive(inState,
+		&newFont, &newParams,
+		inFont, (jDeriveFPI != NULL ? &deriveParams : NULL))) ||
+		newFont == NULL)
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return (jlong)0;
+	}
+
+	/* Map new parameters? */
+	if (jNewFPI != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamToFlat(env, inState,
+			jNewFPI, &newParams)))
+		{
+			sjme_jni_throwMLECallError(env, error);
+			return (jlong)0;
+		}
+
+	/* Return resultant font. */
+	return (jlong)newFont;
 }
 
 JNIEXPORT jobject JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1975,11 +2008,7 @@ JNIEXPORT jlong JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __linkInit)
 	state = NULL;
 	if (sjme_error_is(error = apiInitFunc(pool, &state,
 		mle_bindEventThread,
-#if 0 && defined(SJME_CONFIG_HAS_MACOS)
-		&mleAwtLoopFuncs,
-#else
-		NULL,
-#endif
+		&mleExternals,
 		&frontEnd)) || state == NULL)
 		goto fail_apiInit;
 
@@ -2571,19 +2600,17 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 	(JNIEnv* env, jclass classy, jlong stateP, jlongArray screenPs)
 {
 	sjme_errorCode error;
-	sjme_scritchui state;
+	sjme_scritchui inState;
 	sjme_jint numScreenPs, maxScreenPs, i;
 	sjme_scritchui_uiScreen* screens;
 	jlong tempJ;
 
-	if (stateP == 0 || screenPs == NULL)
+	inState = (sjme_scritchui)stateP;
+	if (inState == 0 || screenPs == NULL)
 	{
 		error = SJME_ERROR_NULL_ARGUMENTS;
 		goto fail_nullArgs;
 	}
-
-	/* Restore. */
-	state = (sjme_scritchui)stateP;
 
 	/* How many screens are being used? */
 	maxScreenPs = (*env)->GetArrayLength(env, screenPs);
@@ -2605,8 +2632,8 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __screens)
 
 	/* Request screen information. */
 	error = SJME_ERROR_NATIVE_WIDGET_FAILURE;
-	if (state->api->screens == NULL ||
-		sjme_error_is(error = state->api->screens(state,
+	if (inState->api->screens == NULL ||
+		sjme_error_is(error = inState->api->screens(inState,
 			screens, &numScreenPs)))
 	{
 		sjme_jni_throwMLECallError(env, error);
@@ -2726,10 +2753,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->viewSetSizeSuggestListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerSizeSuggest);
+		state->api->viewSetSizeSuggestListener,
+		mle_scritchUiListenerSizeSuggest);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2749,10 +2774,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->viewSetViewListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerView);
+		state->api->viewSetViewListener,
+		mle_scritchUiListenerView);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __weakDelete)
@@ -2883,11 +2906,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		return;
 	}
 
-	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->windowSetCloseListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerClose);
+	mle_simpleListenerSet(env, state, SJME_SUI_CAST_WINDOW(component),
+		javaListener,
+		state->api->windowSetCloseListener,
+		mle_scritchUiListenerClose);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2940,11 +2962,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state,
-		(sjme_scritchui_uiComponent)window, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->windowSetMenuItemActivateListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerMenuItemActivate);
+		window, javaListener,
+		state->api->windowSetMenuItemActivateListener,
+		mle_scritchUiListenerMenuItemActivate);
 }
 
 
@@ -3004,7 +3024,6 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 	FORWARD_list(NativeScritchDylib, __containerGetFrame),
 	FORWARD_list(NativeScritchDylib, __containerRemoveAll),
 	FORWARD_list(NativeScritchDylib, __containerSetBounds),
-	FORWARD_list(NativeScritchDylib, __fontDerive),
 	FORWARD_list(NativeScritchDylib, __hardwareGraphics),
 	FORWARD_list(NativeScritchDylib, __labelSetString),
 	FORWARD_list(NativeScritchDylib, __lafElementColor),
@@ -3043,3 +3062,8 @@ static const JNINativeMethod mleNativeScritchDylibMethods[] =
 };
 
 FORWARD_init(mleNativeScritchDylibInit, mleNativeScritchDylibMethods)
+
+MLE_LIST_BEGIN()
+	MLE_LIST_ITEM(__fontByFace),
+	MLE_LIST_ITEM(__fontDerive),
+MLE_LIST_END()

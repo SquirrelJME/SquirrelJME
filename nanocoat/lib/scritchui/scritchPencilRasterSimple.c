@@ -457,8 +457,17 @@ sjme_errorCode sjme_scritchpen_core_drawLine(
 	
 	/* Actually a horizontal line? Use faster drawing. */
 	if (y1 == y2)
-		return g->apiInThread->drawHoriz(g, x1, y1,
-			(x2 < x1 ? x1 - x2 : x2 - x1));
+	{
+		/* To match the drawLine() implementation, add an extra pixel at the */
+		/* end of the line. Additionally, if x2 is before x1, use that */
+		/* coordinate instead as the start coordinate. */
+		if (x2 < x1)
+			return g->apiInThread->drawHoriz(g, x2, y1,
+				(x2 - x1) + 1);
+		else
+			return g->apiInThread->drawHoriz(g, x1, y1,
+				(x1 - x2) + 1);
+	}
 		
 	/* Transform. */
 	if (sjme_error_is(error = g->util->applyTranslate(g, &x1, &y1)))

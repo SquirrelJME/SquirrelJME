@@ -28,6 +28,8 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 	sjme_scritchui_fb_displayList* dlFull;
 	sjme_scritchui_fb_displayList* dlAt;
 	sjme_scritchui_pencilFont noFont, useFont;
+	sjme_scritchui_pencilFontParam noFontParams;
+	sjme_scritchui_pencilFontParam* useFontParams;
 	sjme_jint dlCount, i, n, fontHeight, x, y, cW, cH;
 	sjme_scritchui_fb_widgetState* wState;
 	
@@ -54,9 +56,17 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		
 	/* Get font to use if there is no change in it. */
 	noFont = NULL;
-	if (sjme_error_is(error = inState->api->fontBuiltin(inState,
-		&noFont)) || noFont == NULL)
-		return sjme_error_default(error);
+	memset(&noFontParams, 0, sizeof(noFontParams));
+	if (sjme_error_is(error = inState->apiInThread->fontByFace(inState,
+		&noFont, &noFontParams, SJME_SCRITCHUI_PENCIL_FONT_FACE_NORMAL,
+		NULL)) || noFont == NULL)
+	{
+		/* If a basic font was not found, use the fallback font. */
+		if (error == SJME_ERROR_INVALID_FONT || noFont == NULL)
+			if (sjme_error_is(error = inState->apiInThread->fontBuiltin(
+				inState, &noFont)) || noFont == NULL)
+				return sjme_error_default(error);
+	}
 	
 	/* Determine display list size. */
 	n = choice->numItems;
@@ -84,14 +94,20 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		
 		/* Use which font? */
 		if (choiceItem->font != NULL)
+		{
 			useFont = choiceItem->font;
+			useFontParams = &choiceItem->fontParams;
+		}
 		else
+		{
 			useFont = noFont;
+			useFontParams = &noFontParams;
+		}
 		
 		/* How tall is this font? Used to determine bounds. */
 		fontHeight = 0;
-		if (sjme_error_is(error = useFont->api->metricPixelSize(
-			useFont, &fontHeight)))
+		if (sjme_error_is(error = useFont->apiInThread->metricPixelSize(
+			useFont, useFontParams, -1, &fontHeight)))
 			goto fail_metric;
 		
 		/* Box this is drawn on top of. */
@@ -124,6 +140,8 @@ static sjme_errorCode sjme_scritchui_fb_list_draw(
 		dlAt->bound.d.height = fontHeight;
 		dlAt->color = SJME_SCRITCHUI_LAF_ELEMENT_COLOR_FOREGROUND;
 		dlAt->data.text.font = useFont;
+		memmove(&dlAt->data.text.fontParams, useFontParams,
+			sizeof(dlAt->data.text.fontParams));
 		dlAt->data.text.string = choiceItem->string;
 		
 		/* Is this selected? */

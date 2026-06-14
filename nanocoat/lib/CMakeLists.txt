@@ -31,3 +31,6 @@ squirreljme_include("scritchui.cmake")
 add_subdirectory(scritchaudio)
 add_subdirectory(scritchinput)
 add_subdirectory(scritchui)
+
+# JNI/SquirrelJME Bridge
+add_subdirectory(jnisjme)

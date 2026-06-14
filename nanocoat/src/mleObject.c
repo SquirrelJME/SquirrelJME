@@ -236,7 +236,7 @@ SJME_NVM_MLE_FUNCTION_DECL(newInstance)
 	/* Call the default constructor. */
 	subFrame = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadEnter(SJME_F_T(inFrame),
-		&subFrame, defaultCon, SJME_NVM_CLASS_MEMBER_INSTANCE,
+		&subFrame, defaultCon, SJME_NVM_CALL_VIRTUAL,
 		1, initArgV)) || subFrame == NULL)
 		return sjme_error_vmError(inFrame,
 			sjme_error_defaultOr(error, SJME_ERROR_MLE_CALL));

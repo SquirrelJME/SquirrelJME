@@ -198,19 +198,30 @@ sjme_errorCode sjme_scritchui_core_componentSetVisibleListener(
 sjme_errorCode sjme_scritchui_core_fontBuiltin(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
+
+sjme_errorCode sjme_scritchui_core_fontByFace(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont,
+	sjme_attrOutNullable sjme_scritchui_pencilFontParam* outParams,
+	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams);
+	
+sjme_errorCode sjme_scritchui_core_fontCount(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_jint* outCount);
 	
 sjme_errorCode sjme_scritchui_core_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
-	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
-	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* newFont,
+	sjme_attrOutNullable sjme_scritchui_pencilFontParam* newParams,
+	sjme_attrInNotNull sjme_scritchui_pencilFont oldFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* deriveParams);
 	
 sjme_errorCode sjme_scritchui_core_fontList(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
-	sjme_attrOutNullable sjme_jint* outMaxFonts);
+	sjme_attrOutNullable sjme_jint* outCount);
 
 sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -246,6 +257,12 @@ sjme_errorCode sjme_scritchui_core_lafElementColor(
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
 	sjme_attrOutNotNull sjme_jint* outRGB,
 	sjme_attrInValue sjme_scritchui_lafElementColorType elementColor);
+
+sjme_errorCode sjme_scritchui_core_lafMetric(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrOutNotNull sjme_jint* outValue,
+	sjme_attrInValue sjme_scritchui_lafMetricType metricType);
 
 sjme_errorCode sjme_scritchui_core_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -410,6 +427,36 @@ sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
 
+sjme_errorCode sjme_scritchui_core_intern_fontIterate(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_fontIterateStep* inOutStep);
+
+sjme_errorCode sjme_scritchui_core_intern_fontParamFromFlat(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* outParams,
+	sjme_attrInNotNullBuf(inFlatLen) const sjme_jint* inFlat,
+	sjme_attrInPositive sjme_jint inFlatOff,
+	sjme_attrInPositiveNonZero sjme_jint inFlatLen);
+
+sjme_errorCode sjme_scritchui_core_intern_fontParamToFlat(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrOutNotNullBuf(outFlatLen) sjme_jint* outFlat,
+	sjme_attrInPositive sjme_jint outFlatOff,
+	sjme_attrInPositiveNonZero sjme_jint outFlatLen);
+	
+sjme_errorCode sjme_scritchui_core_intern_fontRegister(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont);
+
+sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_jint* outCount);
+
+sjme_errorCode sjme_scritchui_core_intern_fontScanResource(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_jint* outCount);
+
 sjme_errorCode sjme_scritchui_core_intern_getChoice(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
@@ -454,14 +501,14 @@ sjme_errorCode sjme_scritchui_core_intern_initCommon(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInValue sjme_jboolean postCreate,
-	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES)
 		sjme_scritchui_uiType uiType);
 
 sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInValue sjme_jboolean postCreate,
-	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES)
 		sjme_scritchui_uiType uiType);
 
 sjme_errorCode sjme_scritchui_core_intern_mapScreen(
@@ -481,6 +528,15 @@ sjme_errorCode sjme_scritchui_intern_menuItemActivateById(
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind atRover,
 	sjme_attrInNotNull sjme_jint itemActivated,
 	sjme_attrInValue sjme_jint itemMask);
+
+sjme_errorCode sjme_scritchui_core_intern_objectNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiCommon* outCommon,
+	sjme_attrInPositiveNonZero sjme_jint outCommonSize,
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES)
+		sjme_scritchui_uiType uiType,
+	sjme_attrInNotNull sjme_scritchui_core_intern_objectNewImplFunc implNew,
+	sjme_attrInNullable sjme_pointer inData);
 
 sjme_errorCode sjme_scritchui_core_intern_setSimpleListener(
 	sjme_attrInNotNull sjme_scritchui inState,

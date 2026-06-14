@@ -662,6 +662,30 @@ sjme_jint* sjme_util_memUnaligned32W(void* addr, sjme_jint v);
 	
 #endif
 
+#if defined(SJME_CONFIG_SIZEOF_SIZE_T) && SJME_CONFIG_SIZEOF_SIZE_T == 4
+
+/**
+ * Clamps a @code size_t @endcode to @code sjme_jint @endcode .
+ *
+ * @param in The input value.
+ * @return The resultant clamped value.
+ * @since 2026/04/13
+ */
+#define sjme_util_sizeToInt(in) ((sjme_jint)(in))
+
+#else
+
+/**
+ * Clamps a @code size_t @endcode to @code sjme_jint @endcode .
+ *
+ * @param in The input value.
+ * @return The resultant clamped value.
+ * @since 2026/04/13
+ */
+sjme_jint sjme_util_sizeToInt(size_t in);
+
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

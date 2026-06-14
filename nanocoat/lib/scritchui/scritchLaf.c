@@ -212,3 +212,64 @@ sjme_errorCode sjme_scritchui_core_lafElementColor(
 	*outRGB = rgb | 0xFF000000;
 	return SJME_ERROR_NONE;
 }
+
+sjme_errorCode sjme_scritchui_core_lafMetric(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrOutNotNull sjme_jint* outValue,
+	sjme_attrInValue sjme_scritchui_lafMetricType metricType)
+{
+	sjme_errorCode error;
+	sjme_jint value;
+	sjme_scritchui_lafCoordDir dpiProject;
+
+	if (inState == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (metricType <= SJME_SCRITCHUI_LAF_METRIC_UNKNOWN ||
+		metricType >= SJME_SCRITCHUI_NUM_LAF_METRICS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Initialize, allow some metrics to be DPI projected. */
+	value = 0;
+	dpiProject = SJME_SCRITCHUI_COORD_DIR_UNSPECIFIED;
+
+	/* Use native metric value? */
+	error = SJME_ERROR_CONTINUE;
+	if (inState->impl->lafMetric != NULL)
+		if (sjme_error_is(error = inState->impl->lafMetric(inState, inContext,
+			&value, metricType)))
+		{
+			/* If continuing, use fallback. */
+			if (error != SJME_ERROR_CONTINUE)
+				return sjme_error_default(error);
+		}
+
+	/* Default metric. */
+	if (error == SJME_ERROR_CONTINUE)
+		switch (metricType)
+		{
+			case SJME_SCRITCHUI_LAF_METRIC_FONT_SIZE_DEFAULT:
+				value = 12;
+				dpiProject = SJME_SCRITCHUI_COORD_DIR_H;
+				break;
+
+			default:
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+		}
+
+	/* Perform DPI projection? */
+	if (dpiProject != SJME_SCRITCHUI_COORD_DIR_UNSPECIFIED)
+		if (sjme_error_is(error = inState->impl->lafDpiProject(inState,
+			inContext, SJME_JNI_FALSE,
+			(dpiProject == SJME_SCRITCHUI_COORD_DIR_X ? &value : NULL),
+			(dpiProject == SJME_SCRITCHUI_COORD_DIR_Y ? &value : NULL),
+			(dpiProject == SJME_SCRITCHUI_COORD_DIR_W ? &value : NULL),
+			(dpiProject == SJME_SCRITCHUI_COORD_DIR_H ? &value : NULL))))
+			return sjme_error_default(error);
+
+	/* Success! */
+	*outValue = value;
+	return SJME_ERROR_NONE;
+}

@@ -8,12 +8,13 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/util.h"
+#include "sjme/debug.h"
+#include "sjme/fixed.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "lib/scritchui/core/coreRaster.h"
-#include "sjme/debug.h"
-#include "sjme/fixed.h"
+#include "lib/scritchui/scritchuiStatePencil.h"
 
 static sjme_errorCode sjme_scritchpen_coreUtil_calcLen(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -400,7 +401,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanPut(
 fail_oob:
 #if defined(SJME_CONFIG_DEBUG)
 	sjme_message("pfScanPut(%p, %d, %d, %d, %p, %d, %d, %d) != [%d, %d]",
-		g, pf, x, y, inNumPixels, mulAlpha, mulAlphaValue,
+		(void*)g, pf, x, y, inNumPixels, mulAlpha, mulAlphaValue,
 		g->width, g->height);
 #endif
 fail_srcBlendMap:
@@ -634,7 +635,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 	sjme_jint destBytes, srcBytes, limitBytes;
 	sjme_jint destNumPixels, srcNumPixels, limitNumPixels;
 	sjme_jint limitDpp, limitSpp, dpp, spp, dn, sn, dl, sl, dm, sm;
-	sjme_scritchui_pencilColor vv;
+	sjme_scritchui_color vv;
 	sjme_juint* dx;
 	sjme_juint* sx;
 	sjme_juint rw;
