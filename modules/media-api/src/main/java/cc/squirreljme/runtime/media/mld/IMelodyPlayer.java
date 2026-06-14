@@ -367,16 +367,20 @@ public class IMelodyPlayer
 		if (mldPlayer == null)
 			return;
 		
+		int rendered = -1;
+
 		// Keep rendering frames
 		float[] buf = (float[])__buf;
 		for (int offset = 0, left = __len / __channels; left > 0;)
 		{
 			// Render the current chunk
 			// offset + frames * 2 > samples.length
-			int rendered = mldPlayer.render(buf, offset, left,
+			rendered = mldPlayer.render(buf, offset, left,
 				1.0F, 1.0F, false, false);
+
+			// MLDPlayer reached end of playback
 			if (rendered < 0)
-				rendered = left;
+				break;
 			
 			// Shift by amount of frames rendered
 			left -= rendered;
@@ -403,6 +407,37 @@ public class IMelodyPlayer
 						__e.printStackTrace();
 					}
 				}
+		}
+
+		// Don't check for End-Of-Media below, we have processed some data.
+		if (rendered >= 0)
+			return;
+
+		try
+		{
+			if (super.decrementLoop())
+			{
+				this._lastEndType = MLDPlayer.EVENT_END;
+				this.stopViaMedia();
+			}
+
+			// Only DoJa >= 5.0 supports loops in AudioPresenter
+			else
+			{
+				if (DoJaRuntime.versionLeast(5, 0))
+				{
+					this._lastEndType = MLDPlayer.EVENT_LOOP;
+					this.loopViaMedia();
+				}
+
+				// This shouldn't ever happen, throw an exception if it does
+				else
+					throw Debugging.oops();
+			}
+		}
+		catch (MediaException __e)
+		{
+			__e.printStackTrace();
 		}
 	}
 	

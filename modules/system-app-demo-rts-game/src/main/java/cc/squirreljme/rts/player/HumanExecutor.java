@@ -7,26 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.plugin.general.cmake.api;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+package cc.squirreljme.rts.player;
 
 /**
- * CMake Object Kind.
+ * A local human executor that is on the local machine.
  *
- * @since 2026/02/01
+ * @since 2026/06/12
  */
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ObjectKind
+public abstract class HumanExecutor
+	extends Executor
 {
-	/** The kind of object this is. */
-	@JsonProperty("kind")
-	String kind;
-	
-	/** Version. */
-	@JsonProperty("version")
-	FileApiVersion version;
 }

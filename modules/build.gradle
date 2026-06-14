@@ -45,8 +45,8 @@ subprojects {
 	apply plugin: "signing"
 	
 	// The Java versions this works with
-	sourceCompatibility = 8
-	targetCompatibility = 8
+	sourceCompatibility = JavaVersion.VERSION_1_7
+	targetCompatibility = JavaVersion.VERSION_1_8
 	
 	idea {
 		module

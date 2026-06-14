@@ -80,9 +80,15 @@ final class __MIDPPlayer__
 	 * @since 2025/05/05
 	 */
 	@Override
-	protected void becomingUnrealized()
+	protected void becomingDeallocated()
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// deallocate() makes more syntactical sense, but close() is better
+			// since becomingRealized() creates a whole new player.
+			this._player.close();
+			this._player = null;
+		}
 	}
 	
 	/**

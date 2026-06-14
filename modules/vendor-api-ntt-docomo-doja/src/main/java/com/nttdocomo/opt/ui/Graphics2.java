@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
 import cc.squirreljme.runtime.nttdocomo.ui.LockFlush;
 import com.nttdocomo.ui.Graphics;
+import com.nttdocomo.ui.MediaImage;
 
 @Api
 public abstract class Graphics2
@@ -38,27 +39,27 @@ public abstract class Graphics2
 	}
 	
 	@Api
-	public void drawNthImage(com.nttdocomo.ui.MediaImage __a, int __b,
+	public void drawNthImage(MediaImage __a, int __b,
 		int __c, int __d)
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
-	public void drawSpriteSet(com.nttdocomo.opt.ui.SpriteSet __a)
+	public void drawSpriteSet(SpriteSet __a)
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
-	public void drawSpriteSet(com.nttdocomo.opt.ui.SpriteSet __a, int __b,
+	public void drawSpriteSet(SpriteSet __a, int __b,
 		int __c)
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
-	public void drawImageMap(com.nttdocomo.opt.ui.ImageMap __a, int __b,
+	public void drawImageMap(ImageMap __a, int __b,
 		int __c)
 	{
 		throw Debugging.todo();

@@ -5,6 +5,7 @@ This is mostly intended for maintainers of _SquirrelJME_.
 
  * [AI Policy](ai-policy.mkd).
  * [Building](building.mkd).
+ * [Code Style Guidelines](code-style.mkd).
  * [Contributing](contributing.mkd).
 
 ## Accepting Changes

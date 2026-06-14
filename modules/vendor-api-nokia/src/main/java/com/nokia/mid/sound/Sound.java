@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.nokia.NokiaOTAPlayer;
 import cc.squirreljme.runtime.media.wav.WavPlayer;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import javax.microedition.media.Manager;
 import javax.microedition.media.Player;
@@ -96,7 +97,7 @@ public class Sound
 	 * data array.
 	 * 
 	 * As of Nokia UI API 1.1, this has been deprecated in favor of
-	 * {@link Manager#createPlayer(java.io.InputStream, String)}.
+	 * {@link Manager#createPlayer(InputStream, String)}.
 	 *
 	 * @param __data The data array to prepare for playback
 	 * @param __type The audio format in {@code __data}
@@ -194,7 +195,7 @@ public class Sound
 	 * Prepares a data array with the given format for playback.
 	 * 
 	 * As of Nokia UI API 1.1, this has been deprecated in favor of
-	 * {@link Manager#createPlayer(java.io.InputStream, String)}.
+	 * {@link Manager#createPlayer(InputStream, String)}.
 	 *
 	 * @param __data The data array to prepare for playback
 	 * @param __type The audio format in {@code __data}

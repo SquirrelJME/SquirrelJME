@@ -48,8 +48,7 @@ public final class CsvSerializerResult
 		// Copy over
 		int n = __headers.length;
 		String[] headers = new String[n];
-		for (int i = 0; i < n; i++)
-			headers[i] = __headers[i];
+		System.arraycopy(__headers, 0, headers, 0, n);
 		
 		this._headers = headers;
 		this._values = new String[n];

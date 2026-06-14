@@ -33,6 +33,9 @@ public final class MTrkParser
 	/** The calculated duration of this track. */
 	private volatile long _duration =
 		-1;
+
+	/** Global volume multiplier for MIDI notes. */
+	private volatile MidiVolume _volume;
 	
 	/**
 	 * Initializes the parser for MIDI {@code MTrk}.
@@ -41,15 +44,17 @@ public final class MTrkParser
 	 * @param __o The offset into the buffer.
 	 * @param __l The length of the buffer.
 	 * @param __timeDiv The time division.
+	 * @param __volume The master volume.
 	 * @throws IndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
-	public MTrkParser(byte[] __b, int __o, int __l, MidiTimeDiv __timeDiv)
+	public MTrkParser(byte[] __b, int __o, int __l, MidiTimeDiv __timeDiv,
+		MidiVolume __volume)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		if (__b == null || __timeDiv == null)
+		if (__b == null || __timeDiv == null || __volume == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
@@ -58,6 +63,7 @@ public final class MTrkParser
 		this._offset = __o;
 		this._length = __l;
 		this._timeDiv = __timeDiv;
+		this._volume = __volume;
 	}
 	
 	/**
@@ -75,7 +81,8 @@ public final class MTrkParser
 		
 		// We need a copy of these
 		MidiTimeDiv timeDiv = this._timeDiv;
-		MTrkTracker tracker = new MTrkTracker(this, timeDiv);
+		MidiVolume volume = this._volume;
+		MTrkTracker tracker = new MTrkTracker(this, timeDiv, volume);
 		
 		// Go through every single delta, until the track ends
 		rv = 0;

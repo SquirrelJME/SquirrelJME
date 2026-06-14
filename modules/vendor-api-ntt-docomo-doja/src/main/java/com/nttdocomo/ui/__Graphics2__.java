@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
 import cc.squirreljme.runtime.nttdocomo.ui.LockFlush;
@@ -20,7 +21,7 @@ import javax.microedition.lcdui.Graphics;
  *
  * @since 2025/06/01
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 class __Graphics2__
 	extends Graphics2
 {
@@ -35,7 +36,7 @@ class __Graphics2__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/06/01
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	__Graphics2__(Graphics __g, BGColor __bgColor, LockFlush __flush)
 		throws NullPointerException
 	{

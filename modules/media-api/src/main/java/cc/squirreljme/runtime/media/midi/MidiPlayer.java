@@ -70,6 +70,10 @@ public class MidiPlayer
 	
 	/** The cached nanosecond duration. */
 	private volatile long _nanoDuration;
+
+	/** master Volume for MIDI notes. */
+	@SquirrelJMEVendorApi
+	volatile MidiVolume _volume;
 	
 	/**
 	 * Initializes the MIDI player.
@@ -93,6 +97,8 @@ public class MidiPlayer
 		this.midiPlayer = midiPlayer;
 		this.midiControl = (AbstractMidiControl)midiPlayer.getControl(
 			MIDIControl.class.getName());
+
+		this._volume = new MidiVolume((byte) 100);
 		
 		// For later realization
 		this._unrealizedIn = __in;
@@ -205,7 +211,7 @@ public class MidiPlayer
 						// it just contains events
 					case MidiPlayer.MTRK_MAGIC:
 						tracks.add(new MTrkParser(data, filePos, length,
-							timeDiv));
+							timeDiv, this._volume));
 						break;
 					
 						// Ignore unknown chunks
@@ -302,7 +308,7 @@ public class MidiPlayer
 		throws MediaException
 	{
 		// We just need to set up the tracker
-		MidiPlayer.__createTracker(this, this._timeDiv);
+		MidiPlayer.__createTracker(this, this._timeDiv, this._volume);
 		
 		// Do set the new state
 		return true;
@@ -419,10 +425,17 @@ public class MidiPlayer
 		return true;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/05/15
+	 */
 	@Override
 	protected void useVolume(int __volume)
 	{
-		throw Debugging.todo();
+		synchronized (MidiPlayer.class)
+		{
+			this._volume._value = (byte) __volume;
+		}
 	}
 	
 	/**
@@ -435,7 +448,7 @@ public class MidiPlayer
 	 * @since 2022/04/27
 	 */
 	private static MidiTracker __createTracker(MidiPlayer __player,
-		MidiTimeDiv __timeDiv)
+		MidiTimeDiv __timeDiv, MidiVolume __volume)
 		throws MediaException, NullPointerException
 	{
 		if (__player == null || __timeDiv == null)
@@ -449,11 +462,12 @@ public class MidiPlayer
 				tracker.player.stop();
 			
 			// Setup new tracker
-			tracker = new MidiTracker(__player, __player._tracks, __timeDiv);
+			tracker = new MidiTracker(__player, __player._tracks, __timeDiv,
+				__volume);
 			
 			// Make sure it is a daemon thread, so it gets killed on exit
 			ThreadShelf.javaThreadSetDaemon(tracker);
-			
+
 			// Start it, yay!
 			tracker.start();
 			

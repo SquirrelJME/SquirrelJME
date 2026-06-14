@@ -48,8 +48,20 @@ public interface VMStatisticType
 	byte CPU_THREAD_COUNT =
 		4;
 	
+	/**
+	 * The root instance identifier of the root virtual machine. This is
+	 * generally a process ID or other unique identifier.
+	 * 
+	 * All virtual machines launched, whether they have the same process and
+	 * thread, a different thread, or a different thread will have the same
+	 * root instance ID.
+	 */
+	@SquirrelJMEVendorApi
+	byte ROOT_INSTANCE_ID =
+		5;
+	
 	/** The number of statistics. */
 	@SquirrelJMEVendorApi
 	byte NUM_STATISTICS =
-		5;
+		6;
 }

@@ -14,5 +14,7 @@
  * @since 2022/02/03
  */
 
-@cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated()
+@ApiDefinedDeprecated()
 package com.nokia.mid.sound;
+
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;

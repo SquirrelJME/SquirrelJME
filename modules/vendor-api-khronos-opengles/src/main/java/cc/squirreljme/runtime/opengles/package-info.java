@@ -13,6 +13,7 @@
  * @since 2016/10/10
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.runtime.opengles;
 
+import org.jetbrains.annotations.ApiStatus;

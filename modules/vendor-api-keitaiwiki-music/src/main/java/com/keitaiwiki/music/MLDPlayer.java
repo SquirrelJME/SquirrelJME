@@ -707,40 +707,22 @@ public class MLDPlayer
 	 */
 	void evtCuepoint(MLDPlayerTrack track, MLDEvent event)
 	{
-		
-		// cuepoint-end
-		if (event.cuepoint == MLD.CUEPOINT_END && this.tracks[0].cuepoint != -1)
-		{
-			// Process only if looping is enabled
-			if (this.loopEnabled)
-			{
-				if (this.loopStopAll)
-					this.sampler.stopAll();
-				for (MLDPlayerTrack t : this.tracks)
-					this.setTrackOffset(t, t.cuepoint);
-				if (this.evtPlayback)
-					this.events.add(
-						new MLDPlayerEvent(this.getTime(),
-							MLDPlayer.EVENT_LOOP, 0));
-			}
-			
-			// Looping is disabled
-			else
-				this.setTrackOffset(track, track.offset + 1);
-			
-			return;
-		}
-		
 		// Common processing
 		this.setTrackOffset(track, track.offset + 1);
 		
-		// cuepoint-start
 		if (event.cuepoint == MLD.CUEPOINT_START)
 		{
 			for (MLDPlayerTrack t : this.tracks)
 				t.cuepoint = t.offset;
+
+			return;
 		}
-		
+
+		if (event.cuepoint == MLD.CUEPOINT_END && this.tracks[0].cuepoint != -1)
+		{
+			// Reached CUEPOINT_END, stop playback.
+			this.finished = true;
+		}
 	}
 	
 	/**

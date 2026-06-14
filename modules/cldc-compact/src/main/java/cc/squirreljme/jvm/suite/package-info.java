@@ -13,5 +13,7 @@
  * @since 2021/01/31
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.jvm.suite;
+
+import org.jetbrains.annotations.ApiStatus;

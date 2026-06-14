@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
@@ -918,7 +919,7 @@ public abstract class Canvas
 	 * @since 2024/03/18
 	 */
 	@Override
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	void __execRevalidate(DisplayState __parent)
 	{
 		// Setup super first

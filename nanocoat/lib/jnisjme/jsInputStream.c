@@ -11,6 +11,20 @@
 
 #include "lib/jnisjme/jsInputStream.h"
 
+/**
+ * Data for input streams.
+ *
+ * @since 2026/06/02
+ */
+typedef struct sjme_js_inputStreamData
+{
+	/** The JNI Environment. */
+	JNIEnv* jEnv;
+
+	/** The InputStream object. */
+	jobject jInputStream;
+} sjme_js_inputStreamData;
+
 static sjme_errorCode sjme_js_inputStreamAvailable(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrInNotNull sjme_stream_implState* inImplState,
@@ -61,7 +75,7 @@ static sjme_errorCode sjme_js_inputStreamRead(
 	return sjme_error_notImplemented(0);
 }
 
-static sjme_stream_inputFunctions sjme_js_inputStreamFuncs =
+static const sjme_stream_inputFunctions sjme_js_inputStreamFuncs =
 {
 	sjme_sm(.available, sjme_js_inputStreamAvailable),
 	sjme_sm(.close, sjme_js_inputStreamClose),
@@ -75,10 +89,23 @@ sjme_errorCode sjme_js_wrapInputStream(
 	sjme_attrInNotNull JNIEnv* jEnv,
 	sjme_attrInNotNull jobject jInputStream)
 {
+	sjme_errorCode error;
+	sjme_js_inputStreamData data;
+
 	if (allocPool == NULL || outStream == NULL ||
 		jEnv == NULL || jInputStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Setup data. */
+	memset(&data, 0, sizeof(data));
+	data.jEnv = jEnv;
+	data.jInputStream = jInputStream;
+
+	/* Open input stream. */
+	if (sjme_error_is(error = sjme_stream_inputOpen(allocPool, outStream,
+		&sjme_js_inputStreamFuncs, &data, NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

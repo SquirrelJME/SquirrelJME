@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.media;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -16,7 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/06/03
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 final class __ListenerEvent__
 {
 	/** The player this event came from. */

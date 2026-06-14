@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
@@ -1207,7 +1208,7 @@ public class Display
 	 * @throws IllegalStateException If the state has been GCed.
 	 * @since 2024/05/12
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	DisplayState __state()
 		throws IllegalStateException
 	{

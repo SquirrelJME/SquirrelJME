@@ -219,7 +219,8 @@ public abstract class AbstractPlayer
 	/**
 	 * Returns the current clock in microseconds.
 	 *
-	 * @return The current clock.
+	 * @return The current clock, or {@link Player#TIME_UNKNOWN} if the time is
+	 * not valid.
 	 * @since 2025/06/15
 	 */
 	@SquirrelJMEVendorApi

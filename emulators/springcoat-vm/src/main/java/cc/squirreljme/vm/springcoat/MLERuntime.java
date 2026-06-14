@@ -335,6 +335,11 @@ public enum MLERuntime
 			// Forward to normal call
 			try
 			{
+				// The root instance ID is always based on the task manager
+				// as the ID needs to be consistent between all launches
+				if (index == VMStatisticType.ROOT_INSTANCE_ID)
+					return __thread.machine.taskManager().hashCode();
+				
 				return RuntimeShelf.vmStatistic(index);
 			}
 			catch (MLECallError e)

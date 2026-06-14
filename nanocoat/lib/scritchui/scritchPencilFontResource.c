@@ -34,7 +34,7 @@ typedef struct sjme_scritchui_resourceFontInfo
 	sjme_scritchui_pencilFontStyle style;
 	
 	/**
-	 * The priority level the font, for building pseudo fonts. Any font that
+	 * The priority level of the font, for building pseudo fonts. Any font that
 	 * is of the same priority level cannot override a font of the same or
 	 * higher priority level. The lower the value, the higher the priority.
 	 */
@@ -96,6 +96,17 @@ static const sjme_scritchui_resourceFontInfo sjme_scritchui_resourceFonts[] =
 		sjme_sm(.priority, INT32_MAX),
 	}
 };
+
+static sjme_errorCode sjme_scritchui_core_intern_rcForPage(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull const sjme_scritchui_resourceFontInfo* preDef)
+{
+	if (inState == NULL || preDef == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
 
 static sjme_errorCode sjme_scritchui_core_intern_rcScanSingle(
 	sjme_attrInNotNull sjme_scritchui inState,

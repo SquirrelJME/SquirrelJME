@@ -7,28 +7,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.plugin.general.cmake.api;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Map;
-import lombok.Data;
+package cc.squirreljme.rts.unit;
 
 /**
- * CMake information.
+ * This is a component which does nothing.
  *
- * @since 2026/02/01
+ * @since 2026/06/11
  */
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class CMakeInfo
+public class NoneComponent
+	extends BaseComponent
 {
-	@JsonProperty("version")
-	FileApiVersion version;
-	
-	@JsonProperty("paths")
-	Map<String, String> paths;
-	
-	@JsonProperty("generator")
-	GeneratorInfo generator;
+	/**
+	 * Initializes this component.
+	 *
+	 * @since 2026/06/11
+	 */
+	public NoneComponent()
+	{
+		super(ComponentType.NONE);
+	}
 }

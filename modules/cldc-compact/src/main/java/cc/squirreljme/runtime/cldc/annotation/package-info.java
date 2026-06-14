@@ -13,6 +13,7 @@
  * @since 2018/03/05
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.runtime.cldc.annotation;
 
+import org.jetbrains.annotations.ApiStatus;

@@ -12,6 +12,7 @@ package javax.microedition.lui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Iterator;
+import javax.microedition.key.InputDevice;
 
 /**
  * This provides an interface to basic text based displays.
@@ -44,7 +45,7 @@ import java.util.Iterator;
  * Internally to SquirrelJME, this class acts as a wrapper around display
  * driver interfaces which are implemented via the service loader.
  * If a display supports user input then it must implement
- * the {@link javax.microedition.key.InputDevice} interface.
+ * the {@link InputDevice} interface.
  *
  * @since 2016/08/30
  */

@@ -29,6 +29,14 @@
 # /tmp/build/download/natives-macosx-arm64l.zip
 # /tmp/build/base//squirreljme-standalone-0.3.0.jar
 
+# Set CMake policy here for the script (is that even possible)?
+# Use the best version possible. Otherwise, fallback to a viable version
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+	cmake_policy(VERSION 3.13..3.31)
+else()
+	cmake_policy(VERSION 3.0)
+endif()
+
 # Read in all arguments to a list
 set(args)
 set(gotDashDash)
@@ -52,11 +60,21 @@ list(GET args 1 workDir)
 list(REMOVE_AT args 0)
 list(REMOVE_AT args 0)
 
+# Debugging
+message(STATUS "Resultant Jar: ${outJar}")
+message(STATUS "Working directory: ${workDir}")
+
 # Make sure the temporary directory exists first
 file(MAKE_DIRECTORY "${workDir}")
 
 # Extract all into the working directory
 foreach(extracting IN LISTS args)
+	if(NOT EXISTS "${extracting}")
+		message(STATUS "File '${extracting}' does not exist, this is "
+			"likely indicative of a broken shell or a CMake bug!")
+		continue()
+	endif()
+
 	message(STATUS "Extracting '${extracting}'...")
 	execute_process(COMMAND "${CMAKE_COMMAND}" "-E"
 		"tar" "xvf" "${extracting}" "--format=zip" "--"

@@ -33,6 +33,7 @@
 
 package com.keitaiwiki.music;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -73,7 +74,7 @@ public class MLDPlayerEvent
 	/**
 	 * Internal constructor
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	MLDPlayerEvent(double time, int type, int data)
 	{
 		this.data = data;

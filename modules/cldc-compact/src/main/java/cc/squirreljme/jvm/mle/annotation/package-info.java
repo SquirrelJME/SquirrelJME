@@ -14,5 +14,7 @@
  * @since 2020/05/30
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.jvm.mle.annotation;
+
+import org.jetbrains.annotations.ApiStatus;

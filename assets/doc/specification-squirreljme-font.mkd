@@ -46,6 +46,12 @@ page of the font (codepoint divided by 256). This allows the ability to only
 have to load a small subset of a font to draw glyphs which are in similar
 positions.
 
+Every valid font must have the first codepage always available. This would
+be in the file `h%02x-C00.sqf`. This contains the fallback glyph for the
+entire character set which is at index zero. It is also used to load
+information on the font without needing to scan or guess which codepages are
+actually valid.
+
 ## Resource Stream Structure
 
 The font resource uses the given structure, note that types match the types

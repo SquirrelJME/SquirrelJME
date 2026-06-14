@@ -7,30 +7,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.plugin.general.cmake.api;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-
 /**
- * A reply file reference
+ * This contains units and all of their modules and components.
  *
- * @since 2026/02/01
+ * @since 2026/06/11
  */
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ReplyFile
-{
-	/** The kind. */
-	@JsonProperty("kind")
-	ObjectKind kind;
-	
-	/** The version. */
-	@JsonProperty("version")
-	FileApiVersion version;
-	
-	/** The reference file data. */
-	@JsonProperty("jsonFile")
-	String jsonFile;
-}
+
+package cc.squirreljme.rts.unit;

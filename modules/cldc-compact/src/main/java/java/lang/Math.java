@@ -37,12 +37,12 @@ public final strictfp class Math
 	/** E. */
 	@Api
 	public static final double E =
-		+0x1.5BF0A8B145769p1D;
+		Double.longBitsToDouble(4613303445314885481L);
 	
 	/** Pi. */
 	@Api
 	public static final double PI =
-		+0x1.921FB54442D18p1D;
+		Double.longBitsToDouble(4614256656552045848L);
 	
 	/**
 	 * Not used.

@@ -7,10 +7,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This contains support for the CMake File API.
- *
- * @since 2026/02/01
- */
+package cc.squirreljme.jvm.mle;
 
-package cc.squirreljme.plugin.general.cmake.api;
+import cc.squirreljme.jvm.mle.brackets.DatagramBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
+/**
+ * This shelf provides access to socket connections which are based on
+ * datagrams.
+ *
+ * @see DatagramBracket
+ * @since 2026/05/17
+ */
+@SquirrelJMEVendorApi
+public final class DatagramShelf
+{
+	/**
+	 * Not used.
+	 *
+	 * @since 2026/05/17
+	 */
+	private DatagramShelf()
+	{
+	}
+}

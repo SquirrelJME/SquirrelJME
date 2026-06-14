@@ -138,7 +138,7 @@ public final class Class<T>
 	/**
 	 * Obtains a resource from the classpath which exists within a JAR file,
 	 * inside of a directory, or in a prepacked resource. If a resource needs
-	 * to be obtain from another class which exists in another JAR file then
+	 * to be obtained from another class which exists in another JAR file then
 	 * this method must be called from a class in that JAR.
 	 *
 	 * In the Java ME environment, one should not rely on getting resources
@@ -152,10 +152,55 @@ public final class Class<T>
 	 *
 	 * Relative paths are converted to absolute paths by appending the name
 	 * to the binary name of the class package.
+	 * 
+	 * When using {@link Class#getResourceAsStream(String)} in Java ME, there 
+	 * is a strict method in how resource lookup is performed. A single JAR is
+	 * considered to be a single unit where resources and classes are located.
+	 * A class within one unit is not able to access the resources in another 
+	 * unit. Class files should not be visible to this method and not 
+	 * accessible as resources, the reason for this is that output executables 
+	 * may be ROMized which would destroy the class files that executable code 
+	 * is derived from.
+	 *
+	 * As an example, here is a set of two JAR files:
+	 *
+	 * <blockquote><pre>
+	 *  * _foo.jar_
+	 *    * _Foo.class_
+	 *    * _onlyinfoo.txt_
+	 *    * _inboth.txt_
+	 *  * _bar.jar_
+	 *    * _Bar.class_
+	 *    * _onlyinbar.txt_
+	 *    * _inboth.txt_
+	 * </pre></blockquote>
+	 *
+	 * This would be the result of
+	 * multiple {@link Class#getResourceAsStream(String)} calls from
+	 * each class:
+	 *
+	 * <blockquote><pre>
+	 *  * `Foo` -> _onlyinfoo.txt_: Returns _foo.jar/onlyinfoo.txt_.
+	 *  * `Foo` -> _onlyinbar.txt_: Returns `null`.
+	 *  * `Foo` -> _inboth.txt_: Returns _foo.jar/inboth.txt_.
+	 *  * `Foo` -> _Foo.class_: Should return `null`.
+	 *  * `Foo` -> _Bar.class_: Should return `null`.
+	 *  * `Bar` -> _onlyinfoo.txt_: Returns `null`.
+	 *  * `Bar` -> _onlyinbar.txt_: Returns _bar.jar/onlyinbar.txt_
+	 *  * `Bar` -> _inboth.txt_: Returns _bar.jar/inboth.txt_.
+	 *  * `Bar` -> _Foo.class_: Should return `null`.
+	 *  * `Bar` -> _Bar.class_: Should return `null`.
+	 * </pre></blockquote>
+	 *
+	 * This reason for this is that in each JAR, there is a resource called
+	 * {@code META-INF/MANIFEST.MF}. This resource is used and looked up by 
+	 * programs which are MIDlets in order to obtain their application
+	 * properties. It also is used by the run-time to determine what a JAR
+	 * is and what it supports.
 	 *
 	 * @param __name The name of the resource to find, if this starts with a
 	 * forward slash {@code '/'} then it is treated as an absolute path.
-	 * Otherwise a resource will be derived from the calling class.
+	 * Otherwise, a resource will be derived from the calling class.
 	 * @return A stream to the given resource or {@code null} if one was not
 	 * found.
 	 * @throws NullPointerException On null arguments.

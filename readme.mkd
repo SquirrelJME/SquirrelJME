@@ -80,6 +80,7 @@ Information:
    * [Usage](assets/doc/usage.mkd)
  * _Developer Resources_
    * [AI Policy](ai-policy.mkd)
+   * [Code Style Guidelines](code-style.mkd)
    * [Developer Guide](developer-guide.mkd)
    * [Developer Notes](assets/developer-notes/index.mkd)
    * [Design Document](design.mkd)
@@ -89,6 +90,7 @@ Information:
    * [History](history.mkd)
    * [Project Scope](scope.mkd)
    * [Release Roadmap](route.mkd)
+   * [Supply Chain](supply-chain.mkd)
  * _Other_
    * [CLDC 1.8 API (docs.oracle.com)](
      https://docs.oracle.com/javame/8.0/api/cldc/api/overview-summary.html)

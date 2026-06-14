@@ -1,132 +1,57 @@
-
 # Building
-
-------------------------------------------------------------------------------
-
-***Patience is required:***
-***Currently SquirrelJME is in active development and although it can***
-***run and produce binaries, there are limitations to consider.***
-***Currently only a limited set of programs may be ran on SquirrelJME.***
-
-------------------------------------------------------------------------------
 
 SquirrelJME requires the following before it can be built:
 
- * Java 8 or newer Virtual Machine and Compiler
- * C++ Compiler (Utilized for Testing)
+ * Java 8 JDK
+ * CMake
+ * C Compiler
    * Clang
    * GCC
-   * Microsoft Visual Studio 2010 or newer
+   * Microsoft Visual C
    * XCode
 
-## Notes on Running
+# Installing Build Dependencies
 
-SquirrelJME uses a simplified error system which starts with a two capital
-letter prefix followed by two digits and letters.
+These are simplified baseline instructions for installing build dependencies,
+note that these may change over time and are only here as a basis. Do not
+assume that this will be accurate.
 
- * [List of Error Codes](http://multiphasicapps.net/uv/errors.mkd)
+## Installing a C Compiler
 
-## Installing Java
+A C compiler is needed for the intermediary layer along with NanoCoat.
 
-SquirrelJME requires a Java 8 virtual machine in order to build itself. Gradle
-is used as well however it is available through Gradle Wrapper.
+### Linux Distributions
 
-### AdoptOpenJDK (Windows, Linux, and Mac OS X)
+These are instructions for Linux:
 
-AdoptOpenJDK is the recommended way to build and setup SquirrelJME as it has
-long-term support and is easy to setup. You will need at least a Java 8
-variant of AdoptOpenJDK.
+ * Debian, Ubuntu, and derivatives:
+   * `apt-get install build-essential`
 
- * <https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot>
+Alternatively, your system likely already has `cc`/`gcc` already installed,
+you may not have to do anything.
 
-Please note that Java 11 may be used as well.
+### macOS
 
-### Oracle's JDK (Windows, Linux, and Mac OS X)
+You must install XCode, more information on XCode is at
+<https://developer.apple.com/xcode/>. Alternatively there is a command line
+tool to install the XCode command line utilities for example if you are
+using Brew:
 
-Oracle's JDK supports modern systems and can be downloaded from:
+ * `xcode-select --install`
 
- * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
- 
-Ensure that you **download and install** the ***JDK***.
-
-If running on ReactOS/Windows/Wine, make sure that the `PATH` environment
-variables refers to the JDK's binary directory:
-
- * `C:\Program Files\Java\jdk1.8.0_131\bin\`
-
-### Common Linux Distributions
-
-If you use a common and popular Linux distribution it likely has a JDK
-available.
-
- * Arch
-   * See <https://wiki.archlinux.org/index.php/Java>
- * Debian, Ubuntu, and derivatives
-   * See <https://wiki.debian.org/Java>
-   * One of the following depending on package availability
-     * `apt-get install openjdk-8-jdk`
-     * `apt-get install openjdk-9-jdk`
-     * `apt-get install openjdk-11-jdk`
- * Gentoo
-   * See <https://wiki.gentoo.org/wiki/Java>
-
-### Running via IDEs
-
-#### IntelliJ IDEA
-
-SquirrelJME is developed on IntelliJ Ultimate, however Community Edition may
-still be used. This makes development easier and more integrated along with
-whatever code you write or contribute will match the style that is set in
-SquirrelJME.
-
- * <https://www.jetbrains.com/idea/>
-
-#### VSCode
-
-The following extensions are required to build and run SquirrelJME in VSCode:
-
- * [Extension Pack for Java](
- https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
-   * `ext install vscjava.vscode-java-pack`
- * [Gradle for Java](
- https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-gradle)
-   * `ext install vscjava.vscode-gradle`
-
-Before running on VSCode you must run the following Gradle command, since this
-uses a similar code base that is borrowed from Eclipse:
-
- * Setup Eclipse Project
-   * Windows: `gradlew eclipse`
-   * Linux/MacOS: `./gradlew eclipse`
-
-#### Eclipse
-
-Before running on Eclipse you must run the following Gradle command:
-
- * Setup Eclipse Project
-   * Windows: `gradlew eclipse`
-   * Linux/MacOS: `./gradlew eclipse`
-
-Then following this you may _Import Existing Gradle Project_ and you will have
-access to the project for building.
-
-## Installing C++ Compiler
-
-### Common Linux Distributions
-
-For the C++ Compiler which is needed for testing:
-
- * Debian, Ubuntu, and derivatives
-   * `apt-get install build-essential g++`
-   * `apt-get install build-essential clang`
+Note that if you are using an older version of macOS you will need to find
+and download an archived version of XCode.
 
 ### Windows
 
-For Gradle to detect a C++ compiler, it needs either Microsoft Visual Studio
-or a GCC installation via Cygwin, or a GCC installation via Mingw-w64.
+Windows has multiple choices available.
 
-More information is located at 
-<https://docs.gradle.org/current/userguide/building_cpp_projects.html#windows>.
+#### Cygwin
+
+You download Cygwin at: <https://www.cygwin.com/>.
+
+If you wish to target actual Windows and not the Cygwin environment, be sure
+to install the `mingw-w64` GCC compilers. 
 
 #### Microsoft Visual Studio
 
@@ -157,20 +82,167 @@ You can use Mingw-w64 as well, it is a freely available compiler.
      * Exception Handling: _seh_.
      * Install both 32-bit and 64-bit.
 
-#### Cygwin
+#### MSYS2
 
-You can also download Cygwin at: <https://www.cygwin.com/>.
+***TODO***
 
-### Mac OS X
+## Installing CMake
 
-You must install XCode, more information on XCode is at
-<https://developer.apple.com/xcode/>. Alternatively there is a command line
-tool to install the XCode command line utilities for example if you are
-using Brew:
+CMake can be downloaded and installed from <https://cmake.org>.
 
- * `xcode-select --install`
+Note that for SquirrelJME, version 3.31 is recommended:
 
-# Build Environment
+ * <https://cmake.org/files/v3.31/>
+
+## Installing a Java Development Kit
+
+SquirrelJME requires a Java 8 virtual machine in order to build itself. Gradle
+is used as well however it is available through Gradle Wrapper.
+
+### Specific JDKs
+
+These are instructions for specific JDKs.
+
+#### AdoptOpenJDK/Adoptium
+
+AdoptOpenJDK is the recommended way to build and setup SquirrelJME as it has
+long-term support and is easy to set up. You will need at least a Java 8
+variant of AdoptOpenJDK.
+
+ * <https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot>
+
+Please note that Java 11 may be used as well.
+
+#### Oracle's JDK (Windows, Linux, and Mac OS X)
+
+Oracle's JDK supports modern systems and can be downloaded from:
+
+ * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
+ 
+Ensure that you **download and install** the ***JDK***.
+
+If running on ReactOS/Windows/Wine, make sure that the `PATH` environment
+variables refers to the JDK's binary directory:
+
+ * `C:\Program Files\Java\jdk1.8.0_131\bin\`
+
+### Linux Distributions
+
+If you use a common Linux distribution it likely has a JDK available.
+
+ * Arch
+   * See <https://wiki.archlinux.org/index.php/Java>
+ * Debian, Ubuntu, and derivatives
+   * See <https://wiki.debian.org/Java>
+   * One of the following depending on package availability
+     * `apt-get install openjdk-8-jdk`
+     * `apt-get install openjdk-9-jdk`
+     * `apt-get install openjdk-11-jdk`
+ * Gentoo
+   * See <https://wiki.gentoo.org/wiki/Java>
+
+# Developing Via IDEs, Editors, and the Command Line
+
+SquirrelJME may be developed and used from within IDEs and Editors, however
+it is entirely possible to do everything from the command line using the most
+basic tools.
+
+IntelliJ IDEA is the recommended IDE and Editor.
+
+As a note due to the very large size of SquirrelJME, if you are using any
+tools that have metered costs. It is recommended to disable and turn those
+off, unless you are willing to accept the monetary risks and costs associated
+with such tools.
+
+## Eclipse
+
+Before running on Eclipse you must run the following Gradle command:
+
+ * Setup Eclipse Project
+   * Windows: `gradlew eclipse`
+   * Linux/MacOS: `./gradlew eclipse`
+
+Then following this you may _Import Existing Gradle Project_ and you will have
+access to the project for building.
+
+## VSCode
+
+VSCode is not supported. It only has very minimal Java support, of which does
+not support an advanced project such as SquirrelJME. You may attempt to use
+VSCode, however expect the editor to crash and functionality to be limited.
+
+It is recommended to disable any advanced features and not attempt to load
+the project structure as this may break your installation.
+
+## IntelliJ IDEA
+
+SquirrelJME is developed with IntelliJ Ultimate, however Community Edition may
+still be used. This makes development easier and more integrated along with
+whatever code you write or contribute will match the style that is set in
+SquirrelJME.
+
+ * <https://www.jetbrains.com/idea/>
+
+This is the recommended way to develop SquirrelJME.
+
+# Developer Commands and Invocations
+
+There are three core ways to invoke developer commands in SquirrelJME:
+
+ * CMake at the project root, for the entire project level.
+ * Gradle at the project root, for the SquirrelJME Java Runtime and testing.
+ * CMake in `nanocoat/`, for NanoCoat.
+
+## Project Root (CMake)
+
+The root CMake project is a supporting project that can detect, invoke, and
+build the common setups described in this document for both the SquirrelJME
+Java Runtime and NanoCoat. This is primarily intended for CI/CD pipelines to
+build the project and its distributions, however it may also be used by
+anyone to also get the same or similar result as a CI/CD pipeline.
+
+CMake configure would be:
+
+ * `mkdir build`
+ * `cmake -S . -B build`
+
+At configure time, the root project will scan for and detect for C compilers,
+a Java environment, whether this is being run in Fossil or Git, along with
+other details. This is so that you get the full experience accordingly, or
+not if anything is missing. There will also be a basic summary of what the
+current environment is capable of, along with anything that is missing.
+
+The following main targets exist:
+
+ * `flatpakBundle` (Not Supported) -- Builds the Flatpak bundle.
+ * `fossilUpload` -- Uploads everything to the Fossil unversioned space.
+   * `fossilUpload.install4j` -- Only uploads Install4J installers.
+   * `fossilUpload.onlyNatives` -- Only uploads native binaries.
+   * `fossilUpload.<target>` -- If applicable, upload specifically the output
+     of another target, such as `fossilUpload.sourceZip`.
+ * `icon` -- Converts the XPM icons to PNG for `install4j`.
+ * `install4j` -- Builds the Install4J Installer Bundle.
+ * `natives.<os>.<arch>` -- Builds and/or obtains the natives for a
+    specific system. The configure step will show what is available.
+ * `rom` -- Builds all NanoCoat ROMs.
+   * `romDebug` -- Builds the debug ROM, with no tests.
+   * `romRelease` -- Builds the optimized ROM, with no tests.
+   * `romTestDebug` -- Builds the debug ROM, with tests.
+   * `romTestRelease` -- Builds the optimized ROM, with tests.
+ * `sourceTgz` -- Bundles `.tar.gz` sources. 
+ * `sourceZip` -- Bundles `.zip` sources.
+ * `standaloneJar` -- Builds the final merged Standalone Jar.
+   * `standaloneJarBase` -- Builds the non-merged non-final Standalone Jar
+     without any native support layer other than the default.
+ * `test` -- Runs all tests.
+   * `testHostedDebug` -- Runs hosted VM environment tests.
+   * `testSpringCoatDebug` -- Runs SpringCoat debug ROM tests.
+   * `testSpringCoatRelease` -- Runs SpringCoat optimized ROM tests.
+
+More targets may exist, however these are usually sub-targets and helper
+targets to assist in the build. The ones listed above are the most important.
+
+## SquirrelJME Java Runtime (Gradle)
 
 The main interaction with the SquirrelJME build environment is with Gradle
 which manages anything related to building and testing. All builds are
@@ -189,26 +261,7 @@ following to run Gradle commands, it should automatically use the wrapper:
 
  * `gradle`
 
-## RetroArch
-
-Building for RetroArch uses the `makefilelibretro` makefile. As such building
-SquirrelJME for your current system involves using the alternative makefile.
-
- * `make`
- * Windows:
-   * `make -f makefilelibretro CC=i686-w64-mingw32-gcc platform=mingw_x86`
-   * `make -f makefilelibretro CC=x86_64-w64-mingw32-gcc platform=mingw_x86_64`
-
-## Docker
-
-In the root directory, execute the command:
-
- * `docker build .`
-
-This will create an image that you will be able to use to execute one of
-the built-in virtual machines.
-
-# Development Virtual Machines
+### Invoking Virtual Machines Via Gradle
 
 For development purposes you may use the virtual machines provided by the
 SquirrelJME run-time. Modules within SquirrelJME have tasks which allow them
@@ -265,7 +318,7 @@ The following _System_ properties are available:
      parameter is specified then only that one will be matched. Otherwise
      this will include all tests of that given parameter.
 
-## Custom Jar Runners
+### Custom Jar Runners
 
 There are tasks that start with `runJar` in the root project which can run
 a Jar specified by a property or environment variable, this is to ease
@@ -278,12 +331,15 @@ As an example you can run the following:
 
  * `./gradlew runJarHostedDebug1 -Djar="application.jar"`
 
-# Building ROMs
+### Building ROMs
 
 Full ROMs can be built with the following tasks, note that test ROMs contain
 all the testing libraries and are generally used to ensure things are working:
 
-# Full Suite Virtual Machines
+ * `romSpringCoatDebug`
+ * `romSpringCoatRelease`
+
+### Full Suite Virtual Machines
 
 There is a task which initializes a full suite of SquirrelJME, including
 every module. This can be used to run a specific program within SquirrelJME's
@@ -319,24 +375,35 @@ the behavior:
    * `monitorNotify` -- Monitor is notified.
    * `threadNew` -- New thread is created.
 
-# New Java Version Contingency
+### New Java Version Contingency
 
 With regard to <https://github.com/SquirrelJME/SquirrelJME/issues/6> if in
 the event this occurs, building with Gradle will attempt to use the
 Eclipse Java Compiler to compile the project. It may be forced by passing
 to Gradle `-Dforce.ecj=true`.
 
-# Standalone Java Based Emulators
+### Standalone Java Based Emulators
 
 A standalone Java emulator Jar which contains all the available test
 virtual machine implementations is available when calling the task:
 
  * `:emulators:standalone:shadowJar`
 
-## Flatpak (No Longer Supported)
+## NanoCoat (CMake)
+
+***TODO***
+
+# Antiquated Builds
+
+These are builds which are antiquated, these still exist however they are
+likely to be removed and/or migrated to the improved CMake system.
+
+## Flatpak
 
 _Flatpak is no longer supported, however instructions here still remain if_
 _you wish you experiment. These instructions are very likely out of date._
+
+_This has been replaced by `flatpakBundle`._
 
 This is used with [Flatpak](https://www.flatpak.org/). This requires some dependencies first:
 
