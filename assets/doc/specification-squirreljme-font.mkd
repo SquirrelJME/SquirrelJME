@@ -1,0 +1,327 @@
+# SquirrelJME Font Resource Specification (`.sqf`)
+
+SquirrelJME Fonts, or `.sqf`, are bitmap fonts that are able to read and used
+by ScritchUI to display glyphs on screen. This is intended to be a memory
+efficient format with optional compression.
+
+## Glyph Order
+
+All glyphs follow the ISO/IEC 10646, Universal Coded Character Set, order.
+This also means that the first 256 glyphs are in ISO/IEC 8859-1 order.
+
+## Glyph Validity
+
+Note that a font stores information for all glyphs in a single range, if any
+glyphs within are not valid then they will have zero for their fields and
+their flags will indicate they are not valid. This is to simplify processing
+and lookup.
+
+## Compression
+
+Compression is done with the Raster Font Compression for Embedded Systems
+(RaFoCES) algorithm. This is done via Vertex Chain Codes within a Huffman
+table. Effectively, a trace is done around font glyphs and a directional
+vector is chosen to follow which produced a chain of vectors accordingly.
+
+Compression is optional and individual glyphs may or may not be compressed,
+if they are compressed then they share the same compression data.
+
+Observationally, RaFoCES can decrease the amount of space a font takes up
+however it is observed that general Deflate compression offers the same
+space-saving benefit to RaFoCES in general scenarios with similarly paired
+glyphs. Currently, SquirrelJME takes a naive approach due to SQF limitations
+to keep memory usage down so this does not provide a bonus to storage space.
+
+Algorithm reference:
+
+ * <https://doi.org/10.1016/j.patcog.2010.07.018>
+
+**TODO**
+
+## Resource Name
+
+Every font follows the given naming sequence `h%02x-C%02X.sqf`. Where the
+first value is the pixel height of the font, and the second value is the
+page of the font (codepoint divided by 256). This allows the ability to only
+have to load a small subset of a font to draw glyphs which are in similar
+positions.
+
+Every valid font must have the first codepage always available. This would
+be in the file `h%02x-C00.sqf`. This contains the fallback glyph for the
+entire character set which is at index zero. It is also used to load
+information on the font without needing to scan or guess which codepages are
+actually valid.
+
+## Resource Stream Structure
+
+The font resource uses the given structure, note that types match the types
+that Java utilizes. Generally, a valid font will have all tables contain the
+same number of entries.
+
+Note that _Bitmap scans_ refers to _Bitmap scan lengths_
+as in the number of bytes each bitmap takes in a scanline and not the actual
+bitmap data.
+
+ * Font Header -- This is always at the start.
+   * _0_: `int` -- Pixel height of the font.
+   * _4_: `int` -- The family identifier of the font.
+     * `0` -- Regular.
+     * `1` -- Monospace.
+     * `2` -- Sans Serif.
+     * `3` -- Serif.
+   * _8_: `int` -- The ascent of the font.
+   * _12_: `int` -- The descent of the font.
+   * _16_: `int` -- Bounding Box X Coordinate.
+   * _20_: `int` -- Bounding Box Y Coordinate.
+   * _24_: `int` -- Bounding Box Width.
+   * _28_: `int` -- Bounding Box Height.
+   * _32_: `int` -- The codepoint at which the font starts at.
+   * _36_: `int` -- The number of codepoints within the font.
+   * _40_: `int` -- The size of the huffman bit table, in bytes.
+   * _44_: `int` -- The size of the character bitmap table, in bytes.
+ * Glyph Widths -- The width of every glyph.
+   * _0_: `short n` -- The number of entries in the table.
+   * _2_: `struct (1)[n]` -- The character width table. 
+     * `unsigned byte width` -- Character width.
+ * Glyph X Offsets -- The X offsets of every glyph.
+   * _0_: `short n` -- The number of entries in the table.
+   * _2_: `struct (1)[n]` -- The X offset table.
+     * `byte xOffset` -- Character bitmap X offset.
+ * Glyph Y Offsets -- The Y offsets of every glyph.
+   * _0_: `short n` -- The number of entries in the table.
+   * _2_: `struct (1)[n]` -- The Y offset table.
+     * `byte yOffset` -- Character bitmap Y offset.
+ * Glyph Flags -- The flags for each glyph.
+   * _0_: `short n` -- The number of entries in the table.
+   * _2_: `struct (1)[n]` -- The glyph flag table.
+     * `byte flag` -- The flags for each glyph.
+       * `0x01` -- Glyph is valid and is stored within the font. This is used
+          as fonts store a single linear set of glyphs however not all glyphs
+          may be in the font.
+       * `0x02` -- Compression is used for this glyph.
+       * `0x04` -- Reserved.
+       * `0x08` -- Reserved.
+       * `0x10` -- Reserved.
+       * `0x20` -- Reserved.
+       * `0x40` -- Reserved.
+       * `0x80` -- Reserved.
+ * Glyph Bitmap Offsets -- Offsets to the individual glyph bitmap data.
+   * _0_: `short n` -- The number of entries in the table.
+   * _2_: `struct (2)[n]` -- The offsets to the glyph data.
+     * `unsigned short offset` -- The offset within the character font
+        bitmap data where the bitmap of this font is stored. This chunk of
+        data is later in the file, and thus this offset does not refer to
+        the current position or the start of file.
+ * Glyph Bitmap Scan Lengths -- The length of each bitmap scanline.
+   * _0_: `short n` -- The number of entries in the table.
+   * _2_: `struct (1)[n]` -- The bitmap scan length table.
+     * `byte scanLen` -- The scanline length for the given bitmap. If a
+        bitmap is 8 pixels then this will be 1 byte, if it is 9 pixels it
+        will be 2 bytes. The formula is `1 + (width / 8)`.
+ * Glyph Bitmap Data -- Raw glyph bitmap data.
+   * _0_: `short size` -- The length of this table in bytes.
+   * _2_: `byte[size]` -- Raw bitmap data.
+ * Glyph Huffman Bits -- Huffman bit data for RaFoCES compressed fonts.
+   * _0_: `short size` -- The length of this table in bytes.
+   * _2_: `byte[size]` -- Raw huffman bit data.
+
+## Bitmap Encoding Order
+
+As an example, the replacement glyph has a bitmap scan length of two, thus
+every byte represents 16 pixels. The replacement glyph is a clear question
+mark within a diamond. The position of the question mark is marked
+with hyphens (`-`) instead of periods (`.`) to indicate its layout and
+position. From this, the least significant bit is the first/zeroth pixel,
+whereas the most significant bit is the last/seventh pixel.
+
+As this bitmap has a height of 12 pixels, the bitmap thus has a height of
+12 pixels. This is the case for all bitmaps.
+
+The representation on the right is how it would be rendered on screen, note
+that the scans are in least-significant order.
+
+```
+0b12345678 | 0b12345678 -> 1234567890123456
+-----------|-----------    ----------------
+0b...#.... | 0b........ -> ....#...........
+0b..###... | 0b........ -> ...###..........
+0b.##-##.. | 0b........ -> ..##-##.........
+0b##-#-##. | 0b........ -> .##-#-##........
+0b##-##### | 0b.......# -> #####-###.......
+0b###-###. | 0b........ -> .###-###........
+0b.#####.. | 0b........ -> ..#####.........
+0b..#-#... | 0b........ -> ...#-#..........
+0b...#.... | 0b........ -> ....#...........
+0b........ | 0b........ -> ................
+0b........ | 0b........ -> ................
+0b........ | 0b........ -> ................
+```
+
+## Built-in C Structure
+
+This is a standard C structure that the conversion tool outputs, it is mostly
+equivalent to the resource stream format and is here as a reference only as
+this is a copy-paste from SquirrelJME's header file.
+
+```c++
+/**
+ * Flags for a specific character.
+ * 
+ * @since 2024/06/04
+ */
+typedef enum sjme_scritchui_sqfFlag
+{
+	/** Character is valid. */
+	SJME_SCRITCHUI_SQF_FLAG_VALID = 1,
+	
+	/** Compressed with RaFoCES w/ huffman table. */
+	SJME_SCRITCHUI_SQF_FLAG_RAFOCES = 2,
+} sjme_scritchui_sqfFlag;
+
+/**
+ * Represents the SQF family.
+ * 
+ * @since 2024/06/14
+ */
+typedef enum sjme_scritchui_sqfFamily
+{
+	/** Regular font. */
+	SJME_SCRITCHUI_SQF_FAMILY_REGULAR,
+	
+	/** Monospace. */
+	SJME_SCRITCHUI_SQF_FAMILY_MONOSPACE,
+	
+	/** Sans Serif. */
+	SJME_SCRITCHUI_SQF_FAMILY_SANS_SERIF,
+	
+	/** Serif. */
+	SJME_SCRITCHUI_SQF_FAMILY_SERIF,
+	
+	/** The number of families. */
+	SJME_SCRITCHUI_NUM_SQF_FAMILY
+} sjme_scritchui_sqfFamily;
+
+/**
+ * SQF Font information.
+ *
+ * @since 2019/06/20
+ */
+typedef struct sjme_scritchui_sqf
+{
+	/** The name of the font. */
+	sjme_lpcstr name;
+	
+	/** The font family. */
+	sjme_jint family;
+	
+	/** The pixel height of the font. */
+	sjme_jint pixelHeight;
+	
+	/** The ascent of the font. */
+	sjme_jint ascent;
+	
+	/** The descent of the font. */
+	sjme_jint descent;
+	
+	/** Bounding box X offset. */
+	sjme_jint bbx;
+	
+	/** Bounding box Y offset. */
+	sjme_jint bby;
+	
+	/** Bounding box width. */
+	sjme_jint bbw;
+	
+	/** Bounding box height. */
+	sjme_jint bbh;
+	
+	/** The starting codepoint for this font. */
+	sjme_jint codepointStart;
+	
+	/** The number of codepoints which are in this font. */
+	sjme_jint codepointCount;
+	
+	/** The size of the @c huffBits member. */
+	sjme_jint huffBitsSize;
+	
+	/** The size of the @c charBmp member. */
+	sjme_jint charBmpSize;
+	
+	/** Huffman bits for huffman tables. */
+	const sjme_jbyte* huffBits;
+	
+	/** Widths for each character. */
+	const sjme_jbyte* charWidths;
+	
+	/** X offset for character. */
+	const sjme_jbyte* charXOffset;
+	
+	/** Y offset for character. */
+	const sjme_jbyte* charYOffset;
+	
+	/** SQF Font Flags, per character. */
+	const sjme_jbyte* charFlags;
+	
+	/** Offset to the character bitmap for the given character. */
+	const sjme_jshort* charBmpOffset;
+	
+	/** The bytes per scanline for each character. */
+	const sjme_jbyte* charBmpScan;
+	
+	/** Which characters make up the bitmap? */
+	const sjme_jbyte* charBmp;
+} sjme_scritchui_sqf;
+
+typedef struct sjme_scritchui_sqfCodepage
+{
+	/** The name of the font. */
+	sjme_lpcstr name;
+	
+	/** The number of codepages in the font. */
+	sjme_jint numCodepages;
+	
+	/** The codepages for the font. */
+	const sjme_scritchui_sqf* const* codepages;
+} sjme_scritchui_sqfCodepage;
+```
+
+## Creation and Conversion
+
+Generally SquirrelJME fonts are authored in _FontForge_ and are stored
+within the repository with the _.sfdir_ format. This means that every glyph
+is its own individual file, this makes it simpler to change a single glyph
+and have version control for it rather than as a bulk font. This is a text
+based format.
+
+Glyph Bitmap Distribution Format (`BDF`) is also supported as a basis for
+font data, this is an older format that is generally used by X11. This is
+a text based format.
+
+Conversion is done via the `squirreljme-font` tool. It handles both `BDF`
+and _.sfdir_ fonts.
+
+It can output to a C struct format that is used for built-in SquirrelJME fonts
+that are intended to be used as an emergency fallback in the event that there
+are no system fonts available in any fashion.
+
+The tool is invoked with the following:
+
+ * Usage: `[in.bdf|in.strike] [out.zip|-|out.c|-.c] --compress`
+
+## Future Thoughts/Ideas
+
+These are future thoughts and ideas for the format.
+
+### Static Compression Vector Tables
+
+Similar to how Deflate has fixed huffman codes for very common sequences, it
+would be very optimal to also have fixed codes for the most common sequences
+of vector directions. This is so that each font does not have to store the
+full dynamic table for the glyph.
+
+### Entire Font Huffman Table
+
+Rather than keeping the huffman table per group of glyphs, it could instead
+be combined into a single huffman chunk reference. This would be required for
+any glyph to be loaded, however it would greatly reduce the amount of memory
+needed as now there is just a single huffman table for every single glyph.
