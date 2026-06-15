@@ -1,0 +1,9 @@
+# 2026/06/15
+
+## 01:22
+
+I found an original ScritchUI bug from 2024! Well. Essentially, it is an OR
+on the wrong side of a parenthesis. That is
+`sjme_error_is(error = ... || out == NULL))` instead of
+`sjme_error_is(error = ...) || out == NULL)`. This has only appeared 12 times
+in the code base overall, but it has been fixed!
