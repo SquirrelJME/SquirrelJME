@@ -361,22 +361,36 @@ MLE_FUNC_PROTO(jint, metricPixelSize,
 
 #define MLE_DESC_pixelCharWidth DESC_METHOD(DESC_INT,  \
 	DESC_PENCILFONT DESC_ARRAY(DESC_INT) DESC_INT )
-MLE_FUNC_PROTO(jint, pixelCharWidth, jobject fontInstance, jintArray fontParam,
-		jint c)
+MLE_FUNC_PROTO(jint, pixelCharWidth, jobject jFont, jintArray jFontParamI,
+	jint c)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilFont font;
+	sjme_scritchui_pencilFontParam fontParam;
 	sjme_jint result;
 
-	sjme_todo("Impl?");
-	sjme_jni_throwVMException(env, SJME_ERROR_NOT_IMPLEMENTED);
-#if 0
+	/* Recover font. */
+	font = sjme_jni_recoverFont(env, jFont);
+	if (font == NULL)
+	{
+		sjme_jni_throwVMException(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Map parameters. */
+	memset(&fontParam, 0, sizeof(fontParam));
+	if (jFontParamI != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env,
+			font->common.state, &fontParam, jFontParamI)))
+		{
+			sjme_jni_throwVMException(env, error);
+			return 0;
+		}
+
 	/* Forward. */
-	RECOVER_FONT();
 	CHECK_AND_FORWARD(0, font->api->pixelCharWidth,
-		(font, c, &result));
+		(font, &fontParam, c, &result));
 	return result;
-#endif
 }
 
 #define MLE_DESC_renderBitmap DESC_METHOD(DESC_VOID,  \
