@@ -227,6 +227,8 @@ static sjme_errorCode mle_scritchUiStoreCallback(JNIEnv* env,
 		sjme_jni_throwMLECallError(env, error);
 		return sjme_error_default(error);
 	}
+
+	return SJME_ERROR_NONE;
 }
 
 static void mle_scritchUiRecoverCallback(JNIEnv* env,
@@ -2906,7 +2908,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		return;
 	}
 
-	mle_simpleListenerSet(env, state, SJME_SUI_CAST_WINDOW(component),
+	mle_simpleListenerSet(env, state, (sjme_scritchui_uiWindow)component,
 		javaListener,
 		state->api->windowSetCloseListener,
 		mle_scritchUiListenerClose);

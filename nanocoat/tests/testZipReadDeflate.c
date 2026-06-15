@@ -34,8 +34,8 @@ SJME_TEST_DECLARE(testZipReadDeflate)
 	/* Open Zip. */
 	zip = NULL;
 	if (sjme_error_is(error = sjme_zip_openMemory(test->pool,
-		&zip, sample_zip__bin, sample_zip__len) ||
-		zip == NULL))
+		&zip, sample_zip__bin, sample_zip__len)) ||
+		zip == NULL)
 		return sjme_unit_fail(test, "Could not open zip: %d", error);
 	
 	/* Reference up, since the Zip is valid. */
