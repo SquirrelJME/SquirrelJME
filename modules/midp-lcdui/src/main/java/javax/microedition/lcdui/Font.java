@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.NotNull;
 
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
@@ -801,42 +802,10 @@ public final class Font
 		params[PencilFontParam.PIXEL_SIZE] = 
 			FontUtilities.logicalSizeToPixelSize(__size);
 		
-		// Try to locate a font with a matching face and parameter set
-		DisplayManager manager = DisplayManager.instance();
-		ScritchInterface scritch = manager.scritch();
-		PencilFontBracket found;
-		
-		// Finding a font may fail
-		try
-		{
-			found = scritch.environment().fontByFace(
-				FontUtilities.faceToPencil(__face), params, params);
-		}
-		catch (MLECallError __e)
-		{
-			// Some other distinction?
-			if (__e.distinction != MLECallErrorCode.INVALID_FONT)
-				throw __e;
-			
-			// Consider as not found
-			found = null;
-		}
-		
-		// If not found, fallback to the very baseline fallback font just so
-		// something actually works
-		if (found == null)
-		{
-			// Use this font
-			found = scritch.environment().builtinFonts()[0];
-			
-			// Restore paramaters
-			params[PencilFontParam.STYLE] = __style;
-			params[PencilFontParam.PIXEL_SIZE] =
-				FontUtilities.logicalSizeToPixelSize(__size);
-		}
-		
-		// Setup font otherwise
-		return new Font(scritch, found, params);
+		// Lookup font
+		return Font.__byFace(FontUtilities.faceToPencil(__face),
+			__style, FontUtilities.logicalSizeToPixelSize(__size), 
+			params);
 	}
 	
 	/**
@@ -858,17 +827,19 @@ public final class Font
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw Debugging.todo();
-		/*
-		// Ask the system to derive the font
-		DisplayManager manager = DisplayManager.instance();
-		ScritchInterface scritch = manager.scritch();
-		return new Font(scritch, scritch.environment()
-			.fontDerive(null, __name,
-				FontUtilities.faceNameToPencil(__name),
-				__style, __pxs));
-				
-		 */
+		// TODO: Use a real font name
+		Debugging.todoNote("Use real font name and derivation.");
+		
+		// Fallback to a logical font in the event the font does not actually
+		// exist in the system
+		// Setup parameters for input/output
+		int[] params = new int[PencilFontParam.NUM_PARAMS];
+		params[PencilFontParam.STYLE] = __style;
+		params[PencilFontParam.PIXEL_SIZE] = __pxs;
+		
+		// Lookup font
+		return Font.__byFace(FontUtilities.faceNameToPencil(__name),
+			__style, __pxs, params);
 	}
 	
 	/**
@@ -919,6 +890,62 @@ public final class Font
 		/* {@squirreljme.error EB22 No font with the given name exists.
 		(The font name)} */
 		throw new IllegalArgumentException("EB2g " + __name);
+	}
+	
+	/**
+	 * Locates the given font by face.
+	 *
+	 * @param __face The face to locate.
+	 * @param __style The style of the font.
+	 * @param __pixelSize The size of the font.
+	 * @param __params The parameters of the font.
+	 * @return The resultant font.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/06/15
+	 */
+	private static @NotNull Font __byFace(
+		@MagicConstant(flagsFromClass = PencilFontFace.class) int __face,
+		int __style, int __pixelSize, int[] __params)
+		throws NullPointerException
+	{
+		if (__params == null)
+			throw new NullPointerException("NARG");
+		
+		// Try to locate a font with a matching face and parameter set
+		DisplayManager manager = DisplayManager.instance();
+		ScritchInterface scritch = manager.scritch();
+		PencilFontBracket found;
+		
+		// Finding a font may fail
+		try
+		{
+			found = scritch.environment().fontByFace(__face, __params, 
+				__params);
+		}
+		catch (MLECallError __e)
+		{
+			// Some other distinction?
+			if (__e.distinction != MLECallErrorCode.INVALID_FONT)
+				throw __e;
+			
+			// Consider as not found
+			found = null;
+		}
+		
+		// If not found, fallback to the very baseline fallback font just so
+		// something actually works
+		if (found == null)
+		{
+			// Use this font
+			found = scritch.environment().builtinFonts()[0];
+			
+			// Restore parameters
+			__params[PencilFontParam.STYLE] = __style;
+			__params[PencilFontParam.PIXEL_SIZE] = __pixelSize;
+		}
+		
+		// Setup font otherwise
+		return new Font(scritch, found, __params);
 	}
 }
 
