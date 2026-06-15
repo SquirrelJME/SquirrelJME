@@ -461,12 +461,13 @@ sjme_errorCode sjme_scritchpen_core_drawLine(
 		/* To match the drawLine() implementation, add an extra pixel at the */
 		/* end of the line. Additionally, if x2 is before x1, use that */
 		/* coordinate instead as the start coordinate. */
+		/* Note that if x2 is lower, then x1 has the higher value. */
 		if (x2 < x1)
-			return g->apiInThread->drawHoriz(g, x2, y1,
-				(x2 - x1) + 1);
+			return g->apiInThread->drawHoriz(g, x2, y2,
+				(x1 - x2) + 1);
 		else
 			return g->apiInThread->drawHoriz(g, x1, y1,
-				(x1 - x2) + 1);
+				(x2 - x1) + 1);
 	}
 		
 	/* Transform. */
