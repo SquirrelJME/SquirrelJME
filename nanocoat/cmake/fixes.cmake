@@ -769,6 +769,22 @@ function(squirreljme_link_libraries_required target scope)
 	squirreljme_target_link_fixes(${target})
 endfunction()
 
+# Rewrites a target property
+function(squirreljme_target_property_rewrite target property from to)
+	# Get the option
+	get_target_property(value ${target} ${property})
+
+	# Only change if it was actually found
+	if(NOT "${value}" STREQUAL "value-NOTFOUND")
+		# Perform a standard replace on it
+		string(REGEX REPLACE "${from}" "${to}" result "${value}")
+
+		# Set new property value
+		set_target_properties(${target} PROPERTIES
+			${property} "${result}")
+	endif()
+endfunction()
+
 # Do not use .lib suffix for Windows libraries for mingw32/mingw-w64
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" AND
 	NOT (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX))

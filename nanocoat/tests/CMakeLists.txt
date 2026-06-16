@@ -7,13 +7,6 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Testing framework for the main library
 
-# Specific handling for tests
-if(MSVC)
-	add_compile_options("/W0")
-elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options("-w")
-endif()
-
 # Decode all of the blobs to binary
 squirreljme_decode_dir("${CMAKE_CURRENT_SOURCE_DIR}/blobs"
 	"${CMAKE_CURRENT_BINARY_DIR}/blobs/binary")
@@ -155,30 +148,30 @@ add_dependencies(TACTest Core)
 squirreljme_link_libraries_required(TACTest PUBLIC
 	Core)
 
-# Include debugging info for tests
-if(CMAKE_BUILD_TYPE STREQUAL "Release" OR
-	CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR
-	CMAKE_BUILD_TYPE STREQUAL "Debug")
-	if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-		target_compile_options(BasicTestLib PRIVATE
-			"-g")
-		target_compile_options(BasicTest PRIVATE
-			"-g")
-		target_compile_options(NanoTest PRIVATE
-			"-g")
-		target_compile_options(TACTest PRIVATE
-			"-g")
-	elseif(MSVC)
-		target_compile_options(BasicTestLib PRIVATE
-			"/DEBUG")
-		target_compile_options(BasicTest PRIVATE
-			"/DEBUG")
-		target_compile_options(NanoTest PRIVATE
-			"/DEBUG")
-		target_compile_options(TACTest PRIVATE
-			"/DEBUG")
+# Much of the test targets are the same effectively
+foreach(target IN ITEMS BasicTestLib BasicTest NanoTest TACTest)
+	# Include debugging info for tests
+	if(CMAKE_BUILD_TYPE STREQUAL "Release" OR
+		CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR
+		CMAKE_BUILD_TYPE STREQUAL "Debug")
+		if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+			target_compile_options(${target} PRIVATE
+				"-g")
+		elseif(MSVC)
+			target_compile_options(${target} PRIVATE
+				"/DEBUG")
+		endif()
 	endif()
-endif()
+
+	# Remove the vast majority of warnings for tests as they can be more
+	# lenient
+	if(MSVC)
+		squirreljme_target_property_rewrite(${target} COMPILE_OPTIONS
+			"/W[3210]" "/W0")
+	elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+		add_compile_options("-w")
+	endif()
+endforeach()
 
 # Process each individual test accordingly
 message(DEBUG "Looking for tests...")

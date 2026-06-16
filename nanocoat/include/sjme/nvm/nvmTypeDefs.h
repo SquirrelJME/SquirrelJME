@@ -527,7 +527,7 @@ SJME_LIST_DECLARE(sjme_nvm_class_fieldInfo, 0);
 
 /** Atomic pointer to a @link sjme_nvm_class_poolEntryClass @endlink . */
 SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryClass, 1);
-	
+
 /** List of class information. */
 SJME_LIST_DECLARE(sjme_nvm_class_info, 0);
 	

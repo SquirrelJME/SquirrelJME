@@ -127,30 +127,6 @@ sjme_errorCode sjme_nal_test_userName(sjme_lpstr out,
 	return sjme_error_notImplemented(0);
 }
 
-static const sjme_nal_stdIo sjme_nal_test_stdInFuncs = 
-{
-	sjme_sm(.close, NULL),
-	sjme_sm(.in, NULL),
-	sjme_sm(.out, NULL),
-	sjme_sm(.flush, NULL),
-};
-
-static const sjme_nal_stdIo sjme_nal_test_stdOutFuncs =
-{
-	sjme_sm(.close, NULL),
-	sjme_sm(.in, NULL),
-	sjme_sm(.out, sjme_nal_test_stdOut),
-	sjme_sm(.flush, NULL),
-};
-
-static const sjme_nal_stdIo sjme_nal_test_stdErrFuncs =
-{
-	sjme_sm(.close, NULL),
-	sjme_sm(.in, NULL),
-	sjme_sm(.out, sjme_nal_test_stdErr),
-	sjme_sm(.flush, NULL),
-};
-
 const sjme_nal sjme_nal_test =
 {
 	sjme_sm(.currentTimeMillis, sjme_nal_test_currentTimeMillis),
@@ -162,9 +138,27 @@ const sjme_nal sjme_nal_test =
 	sjme_sm(.tcpUdp, sjme_nal_default_tcpUdp),
 	sjme_sm(.threadSleep, sjme_nal_default_threadSleep),
 	sjme_sm(.threadYield, sjme_nal_default_threadYield),
-	sjme_sm3(.stdIo, sjme_nal_test_stdInFuncs,
-		sjme_nal_test_stdOutFuncs,
-		sjme_nal_test_stdErrFuncs),
+	sjme_sm(.stdIo, )
+	{
+		{
+			sjme_sm(.close, NULL),
+			sjme_sm(.in, NULL),
+			sjme_sm(.out, NULL),
+			sjme_sm(.flush, NULL),
+		},
+		{
+			sjme_sm(.close, NULL),
+			sjme_sm(.in, NULL),
+			sjme_sm(.out, sjme_nal_test_stdOut),
+			sjme_sm(.flush, NULL),
+		},
+		{
+			sjme_sm(.close, NULL),
+			sjme_sm(.in, NULL),
+			sjme_sm(.out, sjme_nal_test_stdErr),
+			sjme_sm(.flush, NULL),
+		}
+	},
 	sjme_sm(.userHome, sjme_nal_test_userHome),
 	sjme_sm(.userName, sjme_nal_test_userName),
 };

@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <unistd.h>
-
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/boot.h"
 #include "sjme/nvm/instance.h"

@@ -202,7 +202,7 @@ struct sjme_frame_frameStack
 	sjme_jint length;
 	
 	/** The value set. */
-	sjme_nvm_valueSet* set;;
+	sjme_nvm_valueSet* set;
 };
 
 /** Final stack indicator. */
