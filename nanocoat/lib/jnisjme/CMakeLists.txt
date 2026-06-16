@@ -23,7 +23,8 @@ squirreljme_multilib_binary_output(libJniSJME
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
 # Required system libraries
-squirreljme_multilib_link_libraries_required(libJniSJME NONE)
+squirreljme_multilib_link_libraries_required(libJniSJME PUBLIC
+	Base)
 
 # This bridge library is rather useful
 squirreljme_multilib_export(libJniSJME)
