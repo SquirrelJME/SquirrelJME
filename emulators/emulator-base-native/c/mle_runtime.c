@@ -94,7 +94,8 @@ MLE_FUNC_PROTO(jstring, vmDescription, jint id)
 			&fullPath, id - SJME_NVM_VM_DESC_DEFAULT_DIR_UNKNOWN,
 			-1)))
 		{
-			sjme_jni_throwMLECallError(env, error);
+			if (error != SJME_ERROR_PATH_NOT_DEFINED)
+				sjme_jni_throwMLECallError(env, error);
 			return NULL;
 		}
 

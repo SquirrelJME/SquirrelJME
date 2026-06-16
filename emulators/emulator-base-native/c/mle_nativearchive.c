@@ -28,7 +28,7 @@
 	DESC_CLASS(NAME_ENTRY))
 #define FORWARD_DESC_entryUncompressedSize DESC_METHOD(DESC_LONG,  \
 	DESC_CLASS(NAME_ENTRY))
-	
+
 FORWARD_IMPL_VOID(NativeArchive, archiveClose, \
 	FORWARD_IMPL_args(jobject archive), \
 	FORWARD_IMPL_pass(archive))

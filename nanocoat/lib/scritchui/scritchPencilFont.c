@@ -216,6 +216,7 @@ static sjme_errorCode sjme_scritchui_validateChar(
 {
 	sjme_errorCode error;
 	sjme_jboolean isValid;
+	sjme_jint tryCodepoint;
 	
 	if (inFont == NULL || inOutCodepoint == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -225,12 +226,16 @@ static sjme_errorCode sjme_scritchui_validateChar(
 		inFont->apiInThread->metricCharValid == NULL)
 		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
 	
+	/* The codepoint to try. */
+	tryCodepoint = *inOutCodepoint;
+	
 	/* Determine if this character is even valid. */
 	isValid = SJME_JNI_FALSE;
 	if (sjme_error_is(error = inFont->apiInThread->metricCharValid(inFont,
-		*inOutCodepoint, &isValid)))
+		tryCodepoint, &isValid)))
 		return sjme_error_default(error);
 
+#if defined(SJME_DISABLED_OUTSIDE_FONT_BRANCH)
 	/* If not valid, look at lower priority fonts preferably with the same */
 	/* pixel size for a contained glyph that we can for rendering or for */
 	/* grabbing glyph details. */
@@ -239,30 +244,35 @@ static sjme_errorCode sjme_scritchui_validateChar(
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
 	}
+#endif
 	
 	/* If it is still not valid, then replace with the invalid character. */
 	if (!isValid)
 	{
 		/* Try zero first. */
-		*inOutCodepoint = 0;
+		tryCodepoint = 0;
 		
 		/* Check to see if zero is valid. */
 		isValid = SJME_JNI_FALSE;
 		if (sjme_error_is(error = inFont->apiInThread->metricCharValid(inFont,
-			*inOutCodepoint, &isValid)))
+			tryCodepoint, &isValid)))
 			return sjme_error_default(error);
 		
-		/* If it is not, then likely the Unicode bad character is used. */
+		/* If it is not, then likely the Unicode replacement character is */
+		/* used instead. */
 		if (!isValid)
-			*inOutCodepoint = 0xFFFD;
+			tryCodepoint = 0xFFFD;
 	}
 
+#if defined(SJME_DISABLED_OUTSIDE_FONT_BRANCH)
 	/* Give the actual font and glyph information that was discovered, since */
 	/* this could be in a completely different font. */
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+#endif
 	
 	/* Success! */
+	*inOutCodepoint = tryCodepoint;
 	return SJME_ERROR_NONE;
 }
 
@@ -1291,11 +1301,13 @@ sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
 	
 	/* Scan resource fonts. */
 	current = 0;
+#if defined(SJME_DISABLED_OUTSIDE_FONT_BRANCH)
 	errorResource = inState->intern->fontScanResource(inState, &current);
 	
 	/* Add to the total. */
 	if (!sjme_error_is(errorResource))
 		total += sjme_max(0, current);
+#endif
 	
 	/* There might not be a system font implementation. */
 	errorSystem = SJME_ERROR_NONE;
@@ -1332,8 +1344,10 @@ sjme_errorCode sjme_scritchui_core_intern_fontScanAll(
 	/* Did any fail? */
 	if (sjme_error_is(errorSystem))
 		return sjme_error_default(errorSystem);
+#if defined(SJME_DISABLED_OUTSIDE_FONT_BRANCH)
 	if (sjme_error_is(errorResource))
 		return sjme_error_default(errorResource);
+#endif
 	if (sjme_error_is(errorFallback))
 		return sjme_error_default(errorFallback);
 	return SJME_ERROR_NONE;

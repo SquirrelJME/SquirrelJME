@@ -261,7 +261,7 @@ sjme_errorCode sjme_scritchui_core_lafMetric(
 
 	/* Perform DPI projection? */
 	if (dpiProject != SJME_SCRITCHUI_COORD_DIR_UNSPECIFIED)
-		if (sjme_error_is(error = inState->impl->lafDpiProject(inState,
+		if (sjme_error_is(error = inState->apiInThread->lafDpiProject(inState,
 			inContext, SJME_JNI_FALSE,
 			(dpiProject == SJME_SCRITCHUI_COORD_DIR_X ? &value : NULL),
 			(dpiProject == SJME_SCRITCHUI_COORD_DIR_Y ? &value : NULL),

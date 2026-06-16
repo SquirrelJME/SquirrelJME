@@ -215,7 +215,7 @@ typedef struct mle_callbackData
 	jmethodID javaCallbackId;
 } mle_callbackData;
 
-static void mle_scritchUiStoreCallback(JNIEnv* env,
+static sjme_errorCode mle_scritchUiStoreCallback(JNIEnv* env,
 	sjme_frontEndBindable* outFrontEnd,
 	jobject javaListener)
 {
@@ -223,7 +223,12 @@ static void mle_scritchUiStoreCallback(JNIEnv* env,
 
 	if (sjme_error_is(error = sjme_jni_fillFrontEnd(env,
 		outFrontEnd, javaListener)))
+	{
 		sjme_jni_throwMLECallError(env, error);
+		return sjme_error_default(error);
+	}
+
+	return SJME_ERROR_NONE;
 }
 
 static void mle_scritchUiRecoverCallback(JNIEnv* env,
@@ -274,41 +279,31 @@ static void mle_scritchUiRecoverEnv(
 	*outEnv = env;
 }
 
-static void mle_simpleListenerSet(JNIEnv* env,
-	sjme_scritchui state,
-	sjme_scritchui_uiComponent component,
-	jobject javaListener,
-	sjme_scritchui_voidSetVoidListenerFunc setListenerFunc,
-	sjme_scritchui_voidListenerFunc wrapListener)
-{
-	sjme_errorCode error;
-	sjme_frontEndBindable newFrontEnd;
-
-	if (state == NULL || component == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
-		return;
-	}
-
-	if (setListenerFunc == NULL)
-	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_NATIVE_WIDGET_FAILURE);
-		return;
-	}
-
-	/* Setup new front-end to refer to this component. */
-	mle_scritchUiStoreCallback(env, &newFrontEnd, javaListener);
-
-	/* Forward. */
-	if (sjme_error_is(error = setListenerFunc(
-		state, component,
-		wrapListener,
-		&newFrontEnd)))
-	{
-		sjme_jni_throwMLECallError(env, error);
-		return;
-	}
-}
+#define mle_simpleListenerSet(env, state, component, javaListener, \
+	setListenerFunc, wrapListener) \
+	do { \
+		sjme_errorCode error; \
+		sjme_frontEndBindable newFrontEnd; \
+		\
+		/* Setup new front-end to refer to this component. */ \
+		if (sjme_error_is(error = mle_scritchUiStoreCallback(env, \
+			&newFrontEnd, javaListener))) \
+		{ \
+			sjme_message("FAIL A"); \
+			sjme_jni_throwMLECallError(env, error); \
+			return; \
+		} \
+		\
+		/* Forward. */ \
+		if (sjme_error_is(error = setListenerFunc( \
+			state, component, wrapListener, \
+			&newFrontEnd))) \
+		{ \
+			sjme_message("FAIL B"); \
+			sjme_jni_throwMLECallError(env, error); \
+			return; \
+		} \
+	} while (0)
 
 static sjme_errorCode mle_scritchUiListenerClose(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -1353,10 +1348,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->componentSetActivateListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerActivate);
+		state->api->componentSetActivateListener,
+		mle_scritchUiListenerActivate);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1376,10 +1369,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->componentSetInputListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerInput);
+		state->api->componentSetInputListener,
+		mle_scritchUiListenerInput);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1399,10 +1390,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->componentSetPaintListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerPaint);
+		state->api->componentSetPaintListener,
+		mle_scritchUiListenerPaint);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -1422,10 +1411,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->componentSetVisibleListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerVisible);
+		state->api->componentSetVisibleListener,
+		mle_scritchUiListenerVisible);
 }
 
 JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2768,10 +2755,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->viewSetSizeSuggestListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerSizeSuggest);
+		state->api->viewSetSizeSuggestListener,
+		mle_scritchUiListenerSizeSuggest);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2791,10 +2776,8 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->viewSetViewListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerView);
+		state->api->viewSetViewListener,
+		mle_scritchUiListenerView);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib, __weakDelete)
@@ -2925,11 +2908,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		return;
 	}
 
-	mle_simpleListenerSet(env, state, component, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->windowSetCloseListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerClose);
+	mle_simpleListenerSet(env, state, (sjme_scritchui_uiWindow)component,
+		javaListener,
+		state->api->windowSetCloseListener,
+		mle_scritchUiListenerClose);
 }
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
@@ -2982,11 +2964,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	}
 
 	mle_simpleListenerSet(env, state,
-		(sjme_scritchui_uiComponent)window, javaListener,
-		(sjme_scritchui_voidSetVoidListenerFunc)
-			state->api->windowSetMenuItemActivateListener,
-		(sjme_scritchui_voidListenerFunc)
-			mle_scritchUiListenerMenuItemActivate);
+		window, javaListener,
+		state->api->windowSetMenuItemActivateListener,
+		mle_scritchUiListenerMenuItemActivate);
 }
 
 

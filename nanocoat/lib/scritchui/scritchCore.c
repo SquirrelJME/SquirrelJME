@@ -120,7 +120,8 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 };
 
 /** Core Function set for ScritchUI. */
-static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions = {
+static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions = 
+{
 	sjme_sm(.choiceGetSelectedIndex,
 		sjme_scritchui_core_choiceGetSelectedIndex),
 	sjme_sm(.choiceItemGet, sjme_scritchui_core_choiceItemGet),
