@@ -142,7 +142,7 @@ public class AbstractVolumeControl
 		
 		// Did the logical volume actually change?
 		int lastLogical = this._logical;
-		if (lastLogical != __volume)
+		if (lastLogical == __volume)
 			return;
 		
 		// Tell the player to use this volume

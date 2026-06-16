@@ -119,8 +119,8 @@ allprojects {
 		// Fix for cyclic dependencies
 		eclipse.jdt {
 			// We are a Java 8 project
-			sourceCompatibility = 1.8
-			targetCompatibility = 1.8
+			sourceCompatibility = JavaVersion.VERSION_1_7
+			targetCompatibility = JavaVersion.VERSION_1_8
 			
 			// Fix for Eclipse and VSCode breaking on "circular" dependencies
 			file.withProperties { properties ->

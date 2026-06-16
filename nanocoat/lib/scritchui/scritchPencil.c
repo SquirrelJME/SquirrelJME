@@ -8,13 +8,79 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/util.h"
+#include "sjme/debug.h"
+#include "sjme/fixed.h"
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/scritchuiStatePencil.h"
 #include "lib/scritchui/core/coreRaster.h"
 #include "lib/scritchui/core/coreSerial.h"
-#include "sjme/debug.h"
-#include "sjme/fixed.h"
+
+typedef struct sjme_scritchpen_pencilNewInitData
+{
+	/** The input functions. */
+	const sjme_scritchui_pencilImplFunctions* inFunctions;
+	
+	/** The lock functions. */
+	const sjme_scritchui_pencilLockFunctions* inLockFuncs;
+	
+	/** The lock frontend copy. */
+	const sjme_frontEndBindable* inLockFrontEndCopy;
+	
+	/** The pixel format. */
+	sjme_gfx_pixelFormat pf;
+	
+	/** Translate X. */
+	sjme_jint tx;
+	
+	/** Translate Y. */
+	sjme_jint ty;
+	
+	/** Surface Width. */
+	sjme_jint sw;
+	
+	/** Surface Height. */
+	sjme_jint sh;
+	
+	/** Buffer Width. */
+	sjme_jint bw;
+	
+	/** The default font. */
+	sjme_scritchui_pencilFont defaultFont;
+	
+	/** Copied front-end data. */
+	const sjme_frontEndBindable* copyFrontEnd;
+} sjme_scritchpen_pencilNewInitData;
+
+static sjme_errorCode sjme_scritchpen_pencilNewInit(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
+	sjme_attrInNullable sjme_pointer inData)
+{
+	sjme_scritchui_pencil pencil;
+	sjme_scritchpen_pencilNewInitData* data;
+	
+	pencil = (sjme_scritchui_pencil)inCommon;
+	data = (sjme_scritchpen_pencilNewInitData*)inData;
+	if (inState == NULL || pencil == NULL || data == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Forward call to static initializer. */
+	return sjme_scritchpen_initStatic(inState,
+		pencil,
+		data->inFunctions,
+		data->inLockFuncs,
+		data->inLockFrontEndCopy,
+		data->pf,
+		data->tx,
+		data->ty,
+		data->sw,
+		data->sh,
+		data->bw,
+		data->defaultFont,
+		data->copyFrontEnd);
+}
 
 sjme_errorCode sjme_scritchpen_core_close(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
@@ -199,8 +265,8 @@ static const sjme_scritchui_pencilUtilFunctions
 };
 
 sjme_errorCode sjme_scritchpen_initStatic(
-	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_pencil inPencil,
 	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
 	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
 	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
@@ -235,9 +301,10 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	if (inLockFuncs != NULL)
 		if (inLockFuncs->lock == NULL || inLockFuncs->lockRelease == NULL)
 			return sjme_error_notImplemented(0);
-		
+	
 	/* Setup base result. */
 	memset(&result, 0, sizeof(result));
+	result.common.magic = SJME_SCRITCHUI_OBJECT_MAGIC;
 	result.common.type = SJME_SCRITCHUI_TYPE_PENCIL;
 	result.common.state = inState;
 	if (inFunctions->asyncSafe)
@@ -248,7 +315,7 @@ sjme_errorCode sjme_scritchpen_initStatic(
 	result.util = &sjme_scritchpen_coreUtil_functions;
 	result.impl = inFunctions;
 	result.lock = inLockFuncs;
-	result.defaultFont = defaultFont;
+	result.defaultFont = sjme_weakUpR(sjme_scritchui_pencilFont, defaultFont);
 	result.pixelFormat = pf;
 	result.width = sw;
 	result.height = sh;
@@ -392,7 +459,7 @@ sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
 	/* Forward to basic operations. */
 	result = NULL;
 	resultWeak = NULL;
-	if (sjme_error_is(error = sjme_scritchpen_initBuffer(
+	if (sjme_error_is(error = sjme_scritchpen_newBuffer(
 		inState, &result, &resultWeak,
 		pf, bw, bh,
 		inLockFuncs, inLockFrontEndCopy,
@@ -447,4 +514,133 @@ sjme_errorCode sjme_scritchpen_core_setDefaults(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchpen_new(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrInNotNull const sjme_scritchui_pencilImplFunctions* inFunctions,
+	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInValue sjme_jint tx,
+	sjme_attrInValue sjme_jint ty,
+	sjme_attrInPositiveNonZero sjme_jint sw,
+	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInPositiveNonZero sjme_jint bw,
+	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
+	sjme_attrInNullable const sjme_frontEndBindable* copyFrontEnd)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil result;
+	sjme_scritchpen_pencilNewInitData data;
+	
+	if (outPencil == NULL || inFunctions == NULL || defaultFont == NULL ||
+		(inLockFrontEndCopy != NULL && inLockFuncs == NULL) ||
+		inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (sw <= 0 || sh <= 0 || bw <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (pf < 0 || pf >= SJME_NUM_GFX_PIXEL_FORMATS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+		
+	/* Raw scan putting is required at a minimum. */
+	if (inFunctions->rawScanPutPure == NULL)
+		return sjme_error_notImplemented(0);
+	
+	/* Locking functions which are required. */
+	if (inLockFuncs != NULL)
+		if (inLockFuncs->lock == NULL || inLockFuncs->lockRelease == NULL)
+			return sjme_error_notImplemented(0);
+	
+	/* Setup initialization data. */
+	memset(&data, 0, sizeof(data));
+	data.inFunctions = inFunctions;
+	data.inLockFuncs = inLockFuncs;
+	data.inLockFrontEndCopy = inLockFrontEndCopy;
+	data.pf = pf;
+	data.tx = tx;
+	data.ty = ty;
+	data.sw = sw;
+	data.sh = sh;
+	data.bw = bw;
+	data.defaultFont = defaultFont;
+	data.copyFrontEnd = copyFrontEnd;
+	
+	/* Allocate resultant pencil. */
+	result = NULL;
+	if (sjme_error_is(error = inState->intern->objectNew(inState,
+		SJME_SUI_CAST_COMMON_P(&result), sizeof(*result),
+		SJME_SCRITCHUI_TYPE_PENCIL,
+		sjme_scritchpen_pencilNewInit, &data)) || result == NULL)
+		return sjme_error_default(error);
+	
+	/* Success! */
+	*outPencil = result;
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchpen_newBuffer(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositiveNonZero sjme_jint bw,
+	sjme_attrInPositiveNonZero sjme_jint bh,
+	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
+	sjme_attrInValue sjme_jint tx,
+	sjme_attrInValue sjme_jint ty,
+	sjme_attrInValue sjme_jint sx,
+	sjme_attrInValue sjme_jint sy,
+	sjme_attrInPositiveNonZero sjme_jint sw,
+	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
+	sjme_attrInNullable const sjme_frontEndBindable* copyFrontEnd)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil result;
+	sjme_alloc_weak resultWeak;
+	
+	if (inState == NULL || outPencil == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Allocate pencil. */
+	result = NULL;
+	resultWeak = NULL;
+	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
+		sizeof(*result), NULL, (void**)&result, &resultWeak)) ||
+		result == NULL || resultWeak == NULL)
+		return sjme_error_default(error);
+	
+	/* Initialize it. */
+	if (sjme_error_is(error = sjme_scritchpen_initBufferStatic(
+		result, inState,
+		pf, bw, bh, inLockFuncs, inLockFrontEndCopy,
+		tx, ty,
+		sx, sy, sw, sh, defaultFont, copyFrontEnd)))
+		goto fail_initBuffer;
+	
+	/* Common initialize. */
+	if (sjme_error_is(error = inState->intern->initCommon(inState,
+		SJME_SUI_CAST_COMMON(result), SJME_JNI_FALSE,
+		SJME_SCRITCHUI_TYPE_PENCIL)))
+		goto fail_commonInit;
+	
+	/* Success! */
+	*outPencil = result;
+	if (outWeakPencil != NULL)
+		*outWeakPencil = resultWeak;
+	return SJME_ERROR_NONE;
+
+fail_commonInit:
+fail_initBuffer:
+	/* Free before failing. */
+	if (result != NULL)
+		sjme_alloc_free(result);
+	
+	/* Then fail. */
+	return sjme_error_default(error);
 }

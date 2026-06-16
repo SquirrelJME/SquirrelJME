@@ -633,7 +633,7 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	memset(adjustMain, 0, sizeof(adjustMain));
 	snprintf(adjustMain, SJME_NVM_CLASS_NAME_LIMIT - 1,
 		"%s", initConfigCopy->mainClass);
-	for (i = 0, n = strlen(adjustMain); i < n; i++)
+	for (i = 0, n = sjme_util_sizeToInt(strlen(adjustMain)); i < n; i++)
 		if (adjustMain[i] == '.')
 			adjustMain[i] = '/';
 

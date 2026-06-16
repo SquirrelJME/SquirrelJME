@@ -13,6 +13,7 @@
  * @since 2016/05/20
  */
 
-@org.jetbrains.annotations.ApiStatus.Internal
+@ApiStatus.Internal
 package cc.squirreljme.jvm.manifest;
 
+import org.jetbrains.annotations.ApiStatus;

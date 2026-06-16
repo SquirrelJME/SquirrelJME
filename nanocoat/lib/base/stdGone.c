@@ -90,7 +90,7 @@ int vsnprintf(
 }
 #endif
 
-#if !defined(SJME_CONFIG_HAS_NO_TOLOWER)
+#if defined(SJME_CONFIG_HAS_NO_TOLOWER)
 int tolower(int c)
 {
 	if (c >= 'A' && c <= 'Z')
@@ -99,7 +99,7 @@ int tolower(int c)
 }
 #endif
 	
-#if !defined(SJME_CONFIG_HAS_NO_TOUPPER)
+#if defined(SJME_CONFIG_HAS_NO_TOUPPER)
 int toupper(int c)
 {
 	if (c >= 'a' && c <= 'z')
@@ -108,7 +108,7 @@ int toupper(int c)
 }
 #endif
 
-#if !defined(SJME_CONFIG_HAS_STRCASECMP) && !defined(SJME_CONFIG_HAS_STRICMP)
+#if defined(SJME_CONFIG_HAS_NO_STRCASECMP)
 int strcasecmp(const char* a, const char* b)
 {
 	int diff;

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.plugin.tasks;
 
+import jas.jasError;
 import jasmin.ClassFile;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -77,7 +78,7 @@ public class JasminAssembleTask
 					}
 					
 					// This could fail
-					catch (jas.jasError e)
+					catch (jasError e)
 					{
 						throw new RuntimeException(String.format(
 							"Error assembling: %s (%d errors): %s",

@@ -6,10 +6,12 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
+
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/scritchuiExtern.h"
 #include "lib/scritchui/scritchuiPencilFont.h"
 #include "lib/scritchui/scritchuiPencilFontSqf.h"
+#include "lib/scritchui/scritchuiStatePencil.h"
 #include "sjme/debug.h"
 
 static sjme_errorCode sjme_scritchui_sqfLocate(
@@ -25,10 +27,10 @@ static sjme_errorCode sjme_scritchui_sqfLocate(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inCodepoint < 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
+		return SJME_ERROR_INVALID_CODEPOINT;
 	
 	/* Recover SQF. */
-	sqf = inFont->context;
+	sqf = inFont->handle;
 	if (sqf == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
@@ -64,7 +66,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricCharValid(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Recover SQF. */
-	sqf = inFont->context;
+	sqf = inFont->handle;
 	if (sqf == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
@@ -94,68 +96,9 @@ static sjme_errorCode sjme_scritchui_sqfMetricCharValid(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_scritchui_sqfMetricFontFace(
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrOutNotNull sjme_scritchui_pencilFontFace* outFace)
-{
-	const sjme_scritchui_sqfCodepage* sqf;
-	sjme_scritchui_pencilFontFace face;
-	
-	if (inFont == NULL || outFace == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Recover SQF. */
-	sqf = inFont->context;
-	if (sqf == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-		
-	/* Give the face based on the family. */
-	switch (sqf->codepages[0]->family)
-	{
-			/* Monospace font. */
-		case SJME_SCRITCHUI_SQF_FAMILY_MONOSPACE:
-			face = SJME_SCRITCHUI_PENCIL_FONT_FACE_MONOSPACE;
-			break;
-			
-			/* Serif font. */
-		case SJME_SCRITCHUI_SQF_FAMILY_SERIF:
-			face = SJME_SCRITCHUI_PENCIL_FONT_FACE_SERIF;
-			break;
-		
-			/* Regular otherwise. */
-		case SJME_SCRITCHUI_SQF_FAMILY_REGULAR:
-		case SJME_SCRITCHUI_SQF_FAMILY_SANS_SERIF:
-		default:
-			face = SJME_SCRITCHUI_PENCIL_FONT_FACE_NORMAL;
-			break;
-	}
-	
-	/* Success! */
-	*outFace = face;
-	return SJME_ERROR_NONE;
-}
-
-static sjme_errorCode sjme_scritchui_sqfMetricFontName(
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInOutNotNull sjme_lpcstr* outName)
-{
-	const sjme_scritchui_sqfCodepage* sqf;
-	
-	if (inFont == NULL || outName == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Recover SQF. */
-	sqf = inFont->context;
-	if (sqf == NULL)
-		return SJME_ERROR_ILLEGAL_STATE;
-	
-	/* Give the name of the SQF. */
-	*outName = sqf->name;
-	return SJME_ERROR_NONE;
-}
-
 static sjme_errorCode sjme_scritchui_sqfMetricPixelAscent(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outAscent)
 {
@@ -165,7 +108,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelAscent(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover SQF. */
-	sqf = inFont->context;
+	sqf = inFont->handle;
 	if (sqf == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 		
@@ -176,6 +119,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelAscent(
 
 static sjme_errorCode sjme_scritchui_sqfMetricPixelBaseline(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_jint* outBaseline)
 {
 	const sjme_scritchui_sqfCodepage* sqf;
@@ -184,7 +128,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelBaseline(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover SQF. */
-	sqf = inFont->context;
+	sqf = inFont->handle;
 	if (sqf == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 		
@@ -197,6 +141,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelBaseline(
 
 static sjme_errorCode sjme_scritchui_sqfMetricPixelDescent(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInValue sjme_jboolean isMax,
 	sjme_attrOutNotNull sjme_jint* outDescent)
 {
@@ -206,7 +151,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelDescent(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover SQF. */
-	sqf = inFont->context;
+	sqf = inFont->handle;
 	if (sqf == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 		
@@ -217,6 +162,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelDescent(
 
 static sjme_errorCode sjme_scritchui_sqfMetricPixelLeading(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading)
 {
 	const sjme_scritchui_sqfCodepage* sqf;
@@ -225,7 +171,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelLeading(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover SQF. */
-	sqf = inFont->context;
+	sqf = inFont->handle;
 	if (sqf == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 		
@@ -236,15 +182,20 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelLeading(
 
 static sjme_errorCode sjme_scritchui_sqfMetricPixelSize(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNegativeOnePositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize)
 {
 	const sjme_scritchui_sqfCodepage* sqf;
 	
 	if (inFont == NULL || outSize == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inCodepoint < -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
 		
 	/* Recover SQF. */
-	sqf = inFont->context;
+	sqf = inFont->handle;
 	if (sqf == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
@@ -255,6 +206,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelSize(
 
 static sjme_errorCode sjme_scritchui_sqfMetricPixelCharWidth(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth)
 {
@@ -286,6 +238,7 @@ static sjme_errorCode sjme_scritchui_sqfMetricPixelCharWidth(
 
 static sjme_errorCode sjme_scritchui_sqfRenderBitmap(
 	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
 	sjme_attrInPositive sjme_jint inCodepoint,
 	sjme_attrInNotNull sjme_jubyte* buf,
 	sjme_attrInPositive sjme_jint bufOff,
@@ -350,9 +303,6 @@ static const sjme_scritchui_pencilFontImplFunctions
 	sjme_sm(.driverName, "sqf"),
 	sjme_sm(.equals, NULL),
 	sjme_sm(.metricCharValid, sjme_scritchui_sqfMetricCharValid),
-	sjme_sm(.metricFontFace, sjme_scritchui_sqfMetricFontFace),
-	sjme_sm(.metricFontName, sjme_scritchui_sqfMetricFontName),
-	sjme_sm(.metricFontStyle, NULL),
 	sjme_sm(.metricPixelAscent, sjme_scritchui_sqfMetricPixelAscent),
 	sjme_sm(.metricPixelBaseline, sjme_scritchui_sqfMetricPixelBaseline),
 	sjme_sm(.metricPixelDescent, sjme_scritchui_sqfMetricPixelDescent),
@@ -373,26 +323,20 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Does the font need initialization? */
-	only = inState->builtinFont;
+	only = inState->font.builtinFont;
 	if (only == NULL)
 	{
-		if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-			sizeof(*only), NULL, (void**)&only, NULL)) || only == NULL)
+		/* Initialize static SQF. */
+		if (sjme_error_is(error = inState->intern->objectNew(inState,
+			SJME_SUI_CAST_COMMON_P(&only),
+			sizeof(*only), SJME_SCRITCHUI_TYPE_FONT,
+			sjme_scritchui_newPencilFontSqfStatic,
+			(sjme_pointer)&sqf_font_sanserif_12)))
 			return sjme_error_default(error);
-			
-		/* Common initialize. */
-		if (sjme_error_is(error = inState->intern->initCommon(inState,
-			SJME_SUI_CAST_COMMON(only), SJME_JNI_FALSE,
-			SJME_SCRITCHUI_TYPE_ROOT_STATE)))
-			goto fail_commonInit;
-		
-		/* Initialize font. */
-		if (sjme_error_is(error = sjme_scritchui_newPencilFontSqfStatic(
-			only, &sqf_font_sanserif_12)))
-			goto fail_init;
-		
+
 		/* Valid now, so cache. */
-		inState->builtinFont = only;
+		inState->font.builtinFont = sjme_weakUpR(sjme_scritchui_pencilFont,
+			only);
 	}
 	
 	/* Success, or already cached! */
@@ -410,26 +354,53 @@ fail_init:
 }
 
 sjme_errorCode sjme_scritchui_newPencilFontSqfStatic(
-	sjme_scritchui_pencilFont inOutFont,
-	const sjme_scritchui_sqfCodepage* inSqfCodepage)
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiCommon inOutFontR,
+	sjme_attrInNullable sjme_pointerR(const sjme_scritchui_sqfCodepage*)
+		inSqfCodepageR)
 {
-	struct sjme_scritchui_pencilFontBase init;
 	sjme_errorCode error;
+	const sjme_scritchui_sqf* firstPage;
+	sjme_scritchui_pencilFont inOutFont;
+	const sjme_scritchui_sqfCodepage* inSqfCodepage;
 
+	inOutFont = (sjme_scritchui_pencilFont)inOutFontR;
+	inSqfCodepage = inSqfCodepageR;
 	if (inOutFont == NULL || inSqfCodepage == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* No codepages? */
+	if (inSqfCodepage->numCodepages <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Recover the first codepage. */
+	firstPage = inSqfCodepage->codepages[0];
+	if (firstPage == NULL)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
 	/* Initialize font. */
-	memset(&init, 0, sizeof(init));
-	init.impl = &sjme_scritchui_sqfFunctions;
-	init.context = (sjme_pointer)inSqfCodepage;
+	inOutFont->impl = &sjme_scritchui_sqfFunctions;
+	inOutFont->handle = (sjme_pointer)inSqfCodepage;
+	
+	/* SQFs are always lowest level fonts with regards to depth. */
+	inOutFont->priority = 0;
+	
+	/* Fill in ID details. */
+	strncpy(inOutFont->id.name, firstPage->name, SJME_MAX_FONT_NAME - 1);
+	if (firstPage->family == SJME_SCRITCHUI_SQF_FAMILY_MONOSPACE)
+		inOutFont->id.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_MONOSPACE;
+	else if (firstPage->family == SJME_SCRITCHUI_SQF_FAMILY_SERIF)
+		inOutFont->id.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_SERIF;
+	else
+		inOutFont->id.face = SJME_SCRITCHUI_PENCIL_FONT_FACE_NORMAL;
+	inOutFont->id.param.style = SJME_SCRITCHUI_PENCIL_FONT_STYLE_PLAIN;
+	inOutFont->id.param.pixelSize = firstPage->pixelHeight;
 	
 	/* Perform default initialization. */
 	if (sjme_error_is(error = sjme_scritchui_newPencilFontStatic(
-		&init)))
+		inState, inOutFont)))
 		return sjme_error_default(error);
 	
 	/* Success! */
-	memmove(inOutFont, &init, sizeof(init));
 	return SJME_ERROR_NONE;
 }

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.javap;
 
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.HexDumpOutputStream;
 import cc.squirreljme.runtime.cldc.util.IntegerArrayList;
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class Main
 		if (__w == null || __classy == null)
 			throw new NullPointerException("NARG");
 		
-		throw cc.squirreljme.runtime.cldc.debug.Debugging.todo();
+		throw Debugging.todo();
 	}
 	
 	/**

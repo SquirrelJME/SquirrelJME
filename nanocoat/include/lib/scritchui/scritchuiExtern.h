@@ -16,8 +16,8 @@
 #ifndef SJME_C_SCRITCHUIEXTERN_H
 #define SJME_C_SCRITCHUIEXTERN_H
 
+#include "lib/scritchui/scritchuiBasic.h"
 #include "lib/scritchui/scritchuiTypes.h"
-#include "sjme/dylib.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -33,6 +33,10 @@ extern "C" {
 /** The internal builtin fallback font. */
 extern sjme_attrExport const
 	struct sjme_scritchui_sqfCodepage sqf_font_sanserif_12;
+	
+/** The bit-line functions which are available. */
+extern const sjme_scritchui_pencilBitLineFunc
+	sjme_scritchui_pencilBitLines[256];
 
 /*--------------------------------------------------------------------------*/
 
@@ -45,4 +49,4 @@ extern sjme_attrExport const
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUIEXTERN_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SCRITCHUIEXTERN_H */
+#endif /* SJME_C_SCRITCHUIEXTERN_H */

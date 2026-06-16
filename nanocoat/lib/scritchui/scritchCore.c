@@ -68,12 +68,15 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	sjme_sm(.containerRemoveAll, sjme_scritchui_coreSerial_containerRemoveAll),
 	sjme_sm(.containerSetBounds, sjme_scritchui_coreSerial_containerSetBounds),
 	sjme_sm(.fontBuiltin, sjme_scritchui_coreSerial_fontBuiltin),
+	sjme_sm(.fontByFace, sjme_scritchui_coreSerial_fontByFace),
+	sjme_sm(.fontCount, sjme_scritchui_coreSerial_fontCount),
 	sjme_sm(.fontDerive, sjme_scritchui_coreSerial_fontDerive),
 	sjme_sm(.fontList, sjme_scritchui_coreSerial_fontList),
 	sjme_sm(.hardwareGraphics, sjme_scritchui_coreSerial_hardwareGraphics),
 	sjme_sm(.labelSetString, sjme_scritchui_coreSerial_labelSetString),
 	sjme_sm(.lafDpiProject, sjme_scritchui_coreSerial_lafDpiProject),
 	sjme_sm(.lafElementColor, sjme_scritchui_coreSerial_lafElementColor),
+	sjme_sm(.lafMetric, sjme_scritchui_coreSerial_lafMetric),
 	sjme_sm(.listNew, sjme_scritchui_coreSerial_listNew),
 
 	/* Loops are unchanged. */
@@ -117,9 +120,10 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 };
 
 /** Core Function set for ScritchUI. */
-static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
+static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions = 
 {
-	sjme_sm(.choiceGetSelectedIndex, sjme_scritchui_core_choiceGetSelectedIndex),
+	sjme_sm(.choiceGetSelectedIndex,
+		sjme_scritchui_core_choiceGetSelectedIndex),
 	sjme_sm(.choiceItemGet, sjme_scritchui_core_choiceItemGet),
 	sjme_sm(.choiceItemInsert, sjme_scritchui_core_choiceItemInsert),
 	sjme_sm(.choiceItemRemove, sjme_scritchui_core_choiceItemRemove),
@@ -137,27 +141,32 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	sjme_sm(.componentRevalidate, sjme_scritchui_core_componentRevalidate),
 	sjme_sm(.componentSetActivateListener,
 		sjme_scritchui_core_componentSetActivateListener),
-	sjme_sm(.componentSetInputListener, sjme_scritchui_core_componentSetInputListener),
-	sjme_sm(.componentSetPaintListener, sjme_scritchui_core_componentSetPaintListener),
-	sjme_sm(.componentSetSizeListener, sjme_scritchui_core_componentSetSizeListener),
-	sjme_sm(.componentSetValueUpdateListener, 
+	sjme_sm(.componentSetInputListener,
+		sjme_scritchui_core_componentSetInputListener),
+	sjme_sm(.componentSetPaintListener,
+		sjme_scritchui_core_componentSetPaintListener),
+	sjme_sm(.componentSetSizeListener,
+		sjme_scritchui_core_componentSetSizeListener),
+	sjme_sm(.componentSetValueUpdateListener,
 		sjme_scritchui_core_componentSetValueUpdateListener),
 	sjme_sm(.componentSetVisibleListener,
 		sjme_scritchui_core_componentSetVisibleListener),
 	sjme_sm(.componentSize, sjme_scritchui_core_componentSize),
 	sjme_sm(.containerAdd, sjme_scritchui_core_containerAdd),
-	sjme_sm(.containerGetFrame,
-		sjme_scritchui_core_containerGetFrame),
+	sjme_sm(.containerGetFrame, sjme_scritchui_core_containerGetFrame),
 	sjme_sm(.containerRemove, sjme_scritchui_core_containerRemove),
 	sjme_sm(.containerRemoveAll, sjme_scritchui_core_containerRemoveAll),
 	sjme_sm(.containerSetBounds, sjme_scritchui_core_containerSetBounds),
 	sjme_sm(.fontBuiltin, sjme_scritchui_core_fontBuiltin),
+	sjme_sm(.fontByFace, sjme_scritchui_core_fontByFace),
+	sjme_sm(.fontCount, sjme_scritchui_core_fontCount),
 	sjme_sm(.fontDerive, sjme_scritchui_core_fontDerive),
 	sjme_sm(.fontList, sjme_scritchui_core_fontList),
 	sjme_sm(.hardwareGraphics, sjme_scritchpen_core_hardwareGraphics),
 	sjme_sm(.labelSetString, sjme_scritchui_core_labelSetString),
 	sjme_sm(.lafDpiProject, sjme_scritchui_core_lafDpiProject),
 	sjme_sm(.lafElementColor, sjme_scritchui_core_lafElementColor),
+	sjme_sm(.lafMetric, sjme_scritchui_core_lafMetric),
 	sjme_sm(.listNew, sjme_scritchui_core_listNew),
 	sjme_sm(.loopExecute, sjme_scritchui_core_loopExecute),
 	sjme_sm(.loopExecuteLater, sjme_scritchui_core_loopExecuteLater),
@@ -184,10 +193,10 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	sjme_sm(.viewSetSizeSuggestListener,
 		sjme_scritchui_core_viewSetSizeSuggestListener),
 	sjme_sm(.viewSetViewListener, sjme_scritchui_core_viewSetViewListener),
-	sjme_sm(.windowContentMinimumSize, 
+	sjme_sm(.windowContentMinimumSize,
 		sjme_scritchui_core_windowContentMinimumSize),
 	sjme_sm(.windowNew, sjme_scritchui_core_windowNew),
-	sjme_sm(.windowSetCloseListener, 
+	sjme_sm(.windowSetCloseListener,
 		sjme_scritchui_core_windowSetCloseListener),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_core_windowSetMenuBar),
 	sjme_sm(.windowSetMenuItemActivateListener,
@@ -201,10 +210,17 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	sjme_sm(.bindFocus, sjme_scritchui_core_intern_bindFocus),
 	sjme_sm(.containerMaxSize, sjme_scritchui_core_intern_containerMaxSize),
 	sjme_sm(.fontBuiltin, sjme_scritchui_core_intern_fontBuiltin),
+	sjme_sm(.fontIterate, sjme_scritchui_core_intern_fontIterate),
+	sjme_sm(.fontParamFromFlat, sjme_scritchui_core_intern_fontParamFromFlat),
+	sjme_sm(.fontParamToFlat, sjme_scritchui_core_intern_fontParamToFlat),
+	sjme_sm(.fontRegister, sjme_scritchui_core_intern_fontRegister),
+	sjme_sm(.fontScanAll, sjme_scritchui_core_intern_fontScanAll),
+	sjme_sm(.fontScanResource, sjme_scritchui_core_intern_fontScanResource),
 	sjme_sm(.getChoice, sjme_scritchui_core_intern_getChoice),
 	sjme_sm(.getContainer, sjme_scritchui_core_intern_getContainer),
 	sjme_sm(.getLabeled, sjme_scritchui_core_intern_getLabeled),
-	sjme_sm(.getMenuHasChildren, sjme_scritchui_core_intern_getMenuHasChildren),
+	sjme_sm(.getMenuHasChildren, 
+		sjme_scritchui_core_intern_getMenuHasChildren),
 	sjme_sm(.getMenuHasParent, sjme_scritchui_core_intern_getMenuHasParent),
 	sjme_sm(.getPaintable, sjme_scritchui_core_intern_getPaintable),
 	sjme_sm(.getView, sjme_scritchui_core_intern_getView),
@@ -213,6 +229,7 @@ static const sjme_scritchui_internFunctions sjme_scritchUI_coreIntern =
 	sjme_sm(.mapScreen, sjme_scritchui_core_intern_mapScreen),
 	sjme_sm(.menuItemActivate, sjme_scritchui_intern_menuItemActivate),
 	sjme_sm(.menuItemActivateById, sjme_scritchui_intern_menuItemActivateById),
+	sjme_sm(.objectNew, sjme_scritchui_core_intern_objectNew),
 	sjme_sm(.setSimpleListener, sjme_scritchui_core_intern_setSimpleListener),
 	sjme_sm(.updateVisibleContainer,
 		sjme_scritchui_core_intern_updateVisibleContainer),
@@ -500,122 +517,6 @@ sjme_errorCode sjme_scritchui_core_objectDelete(
 	return sjme_error_notImplemented(0);
 }
 
-sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiCommon* outCommon,
-	sjme_attrInPositiveNonZero sjme_jint outCommonSize,
-	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
-		sjme_scritchui_uiType uiType,
-	sjme_attrInNotNull sjme_scritchui_coreGeneric_commonNewImplFunc implNew,
-	sjme_attrInNullable sjme_pointer inData)
-{
-	sjme_errorCode error;
-	sjme_scritchui_uiCommon result;
-
-	if (inState == NULL || outCommon == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (outCommonSize <= 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-		
-	/* Missing? */
-	if (implNew == NULL)
-		return sjme_error_notImplemented(uiType);
-	
-	/* Allocate result. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		outCommonSize, NULL, (void**)&result, NULL)) || result == NULL)
-		goto fail_alloc;
-	
-	/* Pre-initialize. */
-	if (sjme_error_is(error = inState->intern->initCommon(inState,
-		result, SJME_JNI_FALSE, uiType)))
-		goto fail_preInit;
-	
-	/* Setup common item. */
-	if (sjme_error_is(error = implNew(inState, result,
-		inData)))
-		goto fail_new;
-	
-	/* Post-initialize. */
-	if (sjme_error_is(error = inState->intern->initCommon(inState,
-		result, SJME_JNI_TRUE, uiType)))
-		goto fail_postInit;
-	
-	/* Success! */
-	*outCommon = result;
-	return SJME_ERROR_NONE;
-
-fail_postInit:
-fail_new:
-fail_alloc:
-fail_preInit:
-	if (result != NULL)
-		sjme_alloc_free(result);
-	
-	return sjme_error_default(error);
-}
-
-sjme_errorCode sjme_scritchui_coreGeneric_componentNew(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiComponent* outComponent,
-	sjme_attrInPositiveNonZero sjme_jint outComponentSize,
-	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
-		sjme_scritchui_uiType uiType,
-	sjme_attrInNotNull sjme_scritchui_coreGeneric_componentNewImplFunc implNew,
-	sjme_attrInNullable sjme_pointer inData)
-{
-	sjme_scritchui_uiComponent result;
-	sjme_errorCode error;
-	
-	if (inState == NULL || outComponent == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (outComponentSize <= 0)
-		return SJME_ERROR_INVALID_ARGUMENT;
-		
-	/* Missing? */
-	if (implNew == NULL)
-		return sjme_error_notImplemented(uiType);
-	
-	/* Allocate result. */
-	result = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		outComponentSize, NULL, (void**)&result, NULL)) ||
-		result == NULL)
-		goto fail_alloc;
-	
-	/* Pre-initialize. */
-	if (sjme_error_is(error = inState->intern->initComponent(inState,
-		result, SJME_JNI_FALSE, uiType)))
-		goto fail_preInit;
-	
-	/* Setup native widget. */
-	if (sjme_error_is(error = implNew(inState,
-		result, inData)) ||
-		result->common.handle[0] == NULL)
-		goto fail_newWidget;
-	
-	/* Post-initialize. */
-	if (sjme_error_is(error = inState->intern->initComponent(inState,
-		result, SJME_JNI_TRUE, uiType)))
-		goto fail_postInit;
-	
-	/* Success! */
-	*outComponent = result;
-	return SJME_ERROR_NONE;
-
-fail_postInit:
-fail_newWidget:
-fail_alloc:
-fail_preInit:
-	if (result != NULL)
-		sjme_alloc_free(result);
-	
-	return sjme_error_default(error);
-}
-
 sjme_pointer sjme_scritchui_checkCast(sjme_scritchui_uiType inType,
 	sjme_pointer inPtr)
 {
@@ -646,7 +547,7 @@ sjme_pointer sjme_scritchui_checkCast_component(sjme_pointer inPtr)
 	/* Check type. */
 	common = inPtr;
 	if (common->type < SJME_SCRITCHUI_TYPE_FONT ||
-		common->type >= SJME_NUM_SCRITCHUI_UI_TYPES)
+		common->type >= SJME_SCRITCHUI_NUM_UI_TYPES)
 	{
 		sjme_debug_abort(SJME_ERROR_ARGUMENT_TYPE_MISMATCH);
 		return NULL;
@@ -696,4 +597,64 @@ sjme_pointer sjme_scritchui_checkCast_menuKind(sjme_pointer inPtr)
 	
 	/* Return passed value. */
 	return inPtr;
+}
+
+sjme_errorCode sjme_scritchui_isA(
+	sjme_attrInNullable sjme_pointer inWhat,
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES) sjme_scritchui_uiType inType,
+	sjme_attrOutNotNull sjme_jboolean* outResult)
+{
+	sjme_errorCode error;
+	sjme_alloc_weak weak;
+	sjme_scritchui_uiCommon common;
+	
+	if (outResult == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inType <= SJME_SCRITCHUI_TYPE_RESERVED ||
+		inType >= SJME_SCRITCHUI_NUM_UI_TYPES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Null input is always nothing. */
+	if (inWhat == NULL)
+	{
+		*outResult = SJME_JNI_FALSE;
+		return SJME_ERROR_NONE;
+	}
+
+	/* All ScritchUI objects are weakly referenced. */
+	weak = NULL;
+	if (sjme_error_is(sjme_alloc_weakRefGet(inWhat, &weak)) || weak == NULL)
+	{
+		*outResult = SJME_JNI_FALSE;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Must be the type and the magic must be valid! */
+	/* Aliases of object types match objects as well. */
+	common = inWhat;
+	if (common->magic != SJME_SCRITCHUI_OBJECT_MAGIC)
+		*outResult = SJME_JNI_FALSE;
+	else if (common->type == inType)
+		*outResult = SJME_JNI_TRUE;
+	else
+		*outResult = SJME_JNI_FALSE;
+		
+	return SJME_ERROR_NONE;
+}
+
+sjme_jboolean sjme_scritchui_isAR(
+	sjme_attrInNullable sjme_pointer inWhat,
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES) 
+		sjme_scritchui_uiType inType)
+{
+	sjme_jboolean result;
+	
+	/* Forward call. */
+	result = SJME_JNI_FALSE;
+	if (sjme_error_is(sjme_scritchui_isA(inWhat, inType, &result)))
+		return SJME_JNI_FALSE;
+
+	/* Was this the type? */
+	return result;
 }

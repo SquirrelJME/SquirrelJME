@@ -7,6 +7,14 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#if !defined(pencilPixelType)
+	#pragma clang diagnostic ignored "-Wimplicit-function-declaration"
+	#pragma clang diagnostic ignored "-Werror=implicit-function-declaration"
+
+	#pragma clang diagnostic ignored "-Wmissing-variable-declarations"
+	#pragma clang diagnostic ignored "-Werror=missing-variable-declarations"
+#endif
+
 /** Primitive function name. */
 #define pencilFunc_NAME(func) \
 	SJME_TOKEN_PASTE5_PP(sjme_scritchui_basic, func, _, \

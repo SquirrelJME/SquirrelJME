@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.gcf.file;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
@@ -457,7 +458,7 @@ public final class FileEndPointConnection
 	 * @since 2025/12/28
 	 */
 	@SuppressWarnings("resource")
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	FileEndPointConnection __changeEndPoint(UriGenericPart __part,
 		UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, SecurityException

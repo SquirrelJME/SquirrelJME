@@ -5,7 +5,7 @@
 	<description>SquirrelJME is a Java ME 8 Virtual Machine.</description>
 	<link>https://squirreljme.cc/</link>
 	<language>en-us</language>
-	<copyright>Copyright (C) 2013-2025 Stephanie Gawroriski</copyright>
+	<copyright>Copyright (C) 2013-2026 Stephanie Gawroriski</copyright>
 	<managingEditor>xer@multiphasicapps.net (Stephanie Gawroriski)</managingEditor>
 	<webMaster>xer@multiphasicapps.net (Stephanie Gawroriski)</webMaster>
 	<ttl>1800</ttl>
@@ -17,6 +17,23 @@
 		rel="self" />
 
 	<!-- Update these accordingly! -->
+	<pubDate>Wed, 22 Apr 2026 21:00 EDT</pubDate>
+	<lastBuildDate>Wed, 22 Apr 2026 21:00 EDT</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">f917706b-9041-4e01-8e52-87780dfe4017</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20260422_2100.mkd</link>
+		<pubDate>Wed, 22 Apr 2026 21:00 EDT</pubDate>
+
+		<title>SquirrelJME has a Codeberg Mirror!</title>
+		<description>SquirrelJME is now also on Codeberg at the following
+URL: https://codeberg.org/SquirrelJME/SquirrelJME!
+Like the other Git mirrors, this is a direct conversion of the Fossil repository
+which is then directly pushed to the remote.</description>
+	</item>
+
+	<!-- Not current -->
+
 	<pubDate>Sun, 28 Dec 2025 21:00 EST</pubDate>
 	<lastBuildDate>Sun, 28 Dec 2025 21:00 EST</lastBuildDate>
 
@@ -31,8 +48,6 @@ year that SquirrelJME 0.4.0 is released at some point in 2026. However, in
 the meantime there have been a number of changes and updates which have
 occured.</description>
 	</item>
-
-	<!-- Not current -->
 
 	<item>
 		<guid isPermaLink="false">74c4dc1e-40b5-4753-8ce6-1b7c38d4d54d</guid>

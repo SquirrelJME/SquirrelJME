@@ -98,6 +98,11 @@ typedef enum sjme_scritchinput_type
 	SJME_SCRITCHINPUT_TYPE_KEY_CHAR_PRESSED = 262144,
 } sjme_scritchinput_type;
 
+/**
+ * Input keycodes for ScritchUI, these should map away.
+ * 
+ * @since 2024/06/28
+ */
 typedef enum sjme_scritchinput_key
 {
 	/** Backspace. */
@@ -223,8 +228,8 @@ typedef enum sjme_scritchinput_key
 	/** Game virtual Center Command. */
 	SJME_SCRITCHINPUT_KEY_VGAME_COMMAND_CENTER = -36,
 	
-	/** Game virtual open LCDUI inspector. */
-	SJME_SCRITCHINPUT_KEY_VGAME_LCDUI_INSPECTOR = -37,
+	/** Reserved 37. */
+	SJME_SCRITCHINPUT_KEY_RESERVED_37 = -37,
 	
 	/** Number pad divide. */
 	SJME_SCRITCHINPUT_KEY_NUMPAD_DIVIDE = -38,
@@ -347,6 +352,11 @@ typedef enum sjme_scritchinput_key
 	SJME_SCRITCHINPUT_KEY_F1 = -87,
 } sjme_scritchinput_key;
 
+/**
+ * Modifier keys for ScritchInput.
+ * 
+ * @since 2024/06/28
+ */
 typedef enum sjme_scritchinput_modifier
 {
 	/** Modifier status not supported. */

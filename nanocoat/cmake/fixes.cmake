@@ -246,8 +246,12 @@ endfunction()
 function(squirreljme_implib_path result target)
 	# Determine the name of the library
 	squirreljme_library_path(implibPath ${target})
-	set(${result} "${implibPath}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-		PARENT_SCOPE)
+	string(REPLACE
+		"${CMAKE_SHARED_LIBRARY_SUFFIX}" "${CMAKE_STATIC_LIBRARY_SUFFIX}"
+		implibPath "${implibPath}")
+
+	# Set resultant path
+	set(${result} "${implibPath}" PARENT_SCOPE)
 endfunction()
 
 # Generate exports, mostly for Windows
@@ -537,18 +541,23 @@ squirreljme_try_compile("sjme_threadLocal"
 	SJME_CONFIG_HAS_NO_THREAD_LOCAL)
 
 # Statically link in libgcc?
-# Plain variant
-check_linker_flag(C "-static-libgcc"
-	SJME_CONFIG_HAS_STATIC_LIBGCC)
-message(STATUS "-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC}")
-# -Wl variant
-check_linker_flag(C "-Wl,-static-libgcc"
-	SJME_CONFIG_HAS_STATIC_LIBGCC_WL)
-message(STATUS "-Wl,-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_WL}")
-# LINKER: variant
-check_linker_flag(C "LINKER:-static-libgcc"
-	SJME_CONFIG_HAS_STATIC_LIBGCC_LINK)
-message(STATUS "LINKER:-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_LINK}")
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	# Plain variant
+	check_linker_flag(C "-static-libgcc"
+		SJME_CONFIG_HAS_STATIC_LIBGCC)
+	message(STATUS "-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC}")
+
+	# -Wl variant
+	check_linker_flag(C "-Wl,-static-libgcc"
+			SJME_CONFIG_HAS_STATIC_LIBGCC_WL)
+	message(STATUS "-Wl,-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_WL}")
+
+	# LINKER: variant
+	check_linker_flag(C "LINKER:-static-libgcc"
+		SJME_CONFIG_HAS_STATIC_LIBGCC_LINK)
+	message(STATUS
+		"LINKER:-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_LINK}")
+endif()
 
 # Locate the math library, if applicable
 # There are multiple ways to go about this
@@ -722,8 +731,10 @@ function(squirreljme_link_libraries target scope)
 	endif()
 
 	# Link to any non-objects as CMake cannot link objects
-	target_link_libraries(${target} ${scope}
-		${nonObjects})
+	if(NOT "${scope}" STREQUAL "NONE")
+		target_link_libraries(${target} ${scope}
+			${nonObjects})
+	endif()
 endfunction()
 
 # Link against required libraries

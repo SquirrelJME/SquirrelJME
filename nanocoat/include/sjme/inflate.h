@@ -128,7 +128,7 @@ typedef struct sjme_inflate sjme_inflate;
 /**
  * Reads a code from the input.
  * 
- * @param state The state to read from.
+ * @param inState The state to read from.
  * @param outCode The resultant code which was read.
  * @return On any error, if any.
  * @since 2024/08/25
@@ -140,7 +140,7 @@ typedef sjme_errorCode (*sjme_inflate_readCodeFunc)(
 /**
  * Reads a distance code from the input.
  * 
- * @param state The state to read from.
+ * @param inState The state to read from.
  * @param outDist The resultant distance code which was read.
  * @return On any error, if any.
  * @since 2024/08/25

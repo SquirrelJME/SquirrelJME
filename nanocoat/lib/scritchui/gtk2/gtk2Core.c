@@ -40,6 +40,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	sjme_sm(.labelSetString, sjme_scritchui_gtk2_labelSetString),
 	sjme_sm(.lafDpiProject, NULL),
 	sjme_sm(.lafElementColor, sjme_scritchui_gtk2_lafElementColor),
+	sjme_sm(.lafMetric, NULL),
 	sjme_sm(.listNew, NULL),
 	sjme_sm(.loopExecute, NULL),
 	sjme_sm(.loopExecuteLater, sjme_scritchui_gtk2_loopExecuteLater),

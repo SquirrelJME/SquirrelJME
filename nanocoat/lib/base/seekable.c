@@ -185,7 +185,7 @@ sjme_errorCode sjme_seekable_readReverse(
 		{
 			temp = tempBuf[flipBase + lo];
 			tempBuf[flipBase + lo] = tempBuf[flipBase + hi];
-			tempBuf[flipBase + hi] = temp;
+			tempBuf[flipBase + hi] = (sjme_jbyte)temp;
 		}
 	
 	/* Give the flipped data! */

@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/util.h"
 #include "sjme/intern/nal.h"
 
 #pragma region(getenv)
@@ -34,7 +35,7 @@ sjme_errorCode sjme_nal_default_getEnv(
 		return SJME_ERROR_NO_SUCH_ELEMENT;
 	
 	/* Check bounds. */
-	len = strlen(value);
+	len = sjme_util_sizeToInt(strlen(value));
 	if (len < 0 || len + 1 > bufLen)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
@@ -180,8 +181,8 @@ static sjme_errorCode sjme_nal_default_cFileRead(
 	while (left > 0)
 	{
 		/* Read chunk. */
-		rc = fread(SJME_POINTER_OFFSET(outBuf, destAt),
-			1, left, file);
+		rc = sjme_util_sizeToInt(fread(SJME_POINTER_OFFSET(outBuf, destAt),
+			1, left, file));
 		
 		/* These should never happen. */
 		if (feof(file) || ferror(file))
@@ -249,7 +250,7 @@ static sjme_errorCode sjme_nal_default_cFileWrite(
 		return sjme_nal_errno(errno);
 
 	/* Write data. */
-	rc = fwrite(inBuf, 1, length, file);
+	rc = sjme_util_sizeToInt(fwrite(inBuf, 1, length, file));
 	
 	/* These should never happen. */
 	if (feof(file) || ferror(file) || rc != length)

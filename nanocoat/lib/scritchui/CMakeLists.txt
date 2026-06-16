@@ -17,11 +17,14 @@ add_subdirectory(framebuffer)
 
 # Core ScritchUi Library
 squirreljme_multilib_add_library(ScritchUiCore
+	scritchAtomic.c
 	scritchChoice.c
 	scritchComponent.c
 	scritchContainer.c
 	scritchCore.c
 	scritchFallbackFont.c
+	scritchGeneric.c
+	scritchIntern.c
 	scritchLabel.c
 	scritchLaf.c
 	scritchList.c
@@ -33,7 +36,7 @@ squirreljme_multilib_add_library(ScritchUiCore
 	scritchPencilBitLine.c
 	scritchPencilFont.c
 	scritchPencilFontMulti.c
-	scritchPencilFontPseudo.c
+	scritchPencilFontResource.c
 	scritchPencilFontSqf.c
 	scritchPencilRasterBlend.c
 	scritchPencilRasterChunky.c

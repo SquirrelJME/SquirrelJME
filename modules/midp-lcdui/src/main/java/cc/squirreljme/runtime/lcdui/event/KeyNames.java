@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.event;
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Canvas;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * This is used to translate key codes into key names.
@@ -31,15 +32,16 @@ public final class KeyNames
 	}
 	
 	/**
-	 * Returns the name of the given key.
+	 * Returns the name of the given SquirrelJME key.
 	 *
-	 * @param __c The keycode to get the name for.
-	 * @return The name of the key.
+	 * @param __c The SquirrelJME keycode to get the name for.
+	 * @return The name of the SquirrelJME key.
 	 * @throws IllegalArgumentException If the key is not valid.
 	 * @since 2017/02/12
 	 */
 	@SquirrelJMEVendorApi
-	public static String getKeyName(int __c)
+	public static String getKeyName(
+		@MagicConstant(valuesFromClass = NonStandardKey.class) int __c)
 		throws IllegalArgumentException
 	{
 		switch (__c)
@@ -108,6 +110,40 @@ public final class KeyNames
 			case NonStandardKey.F23:		return "F23";
 			case NonStandardKey.F24:		return "F24";
 			
+				// Number pad
+			case NonStandardKey.NUMPAD_DIVIDE:
+				return "NumPadDivide";
+			case NonStandardKey.NUMPAD_MULTIPLY:
+				return "NumPadMultiplay";
+			case NonStandardKey.NUMPAD_MINUS:
+				return "NumPadMinus";
+			case NonStandardKey.NUMPAD_PLUS:
+				return "NumPadPlus";
+			case NonStandardKey.NUMPAD_DECIMAL:
+				return "NumPadDecimal";
+			case NonStandardKey.NUMPAD_ENTER:
+				return "NumPadEnter";
+			case NonStandardKey.NUMPAD_0:
+				return "NumPad0";
+			case NonStandardKey.NUMPAD_1:
+				return "NumPad1";
+			case NonStandardKey.NUMPAD_2:
+				return "NumPad2";
+			case NonStandardKey.NUMPAD_3:
+				return "NumPad3";
+			case NonStandardKey.NUMPAD_4:
+				return "NumPad4";
+			case NonStandardKey.NUMPAD_5:
+				return "NumPad5";
+			case NonStandardKey.NUMPAD_6:
+				return "NumPad6";
+			case NonStandardKey.NUMPAD_7:
+				return "NumPad7";
+			case NonStandardKey.NUMPAD_8:
+				return "NumPad8";
+			case NonStandardKey.NUMPAD_9:
+				return "NumPad9";
+			
 				// Non-standard game keys (used by the VM perhaps)
 			case NonStandardKey.VGAME_UP:	return "VirtualGameUp";
 			case NonStandardKey.VGAME_DOWN:	return "VirtualGameDown";
@@ -118,6 +154,32 @@ public final class KeyNames
 			case NonStandardKey.VGAME_B:	return "VirtualGameB";
 			case NonStandardKey.VGAME_C:	return "VirtualGameC";
 			case NonStandardKey.VGAME_D:	return "VirtualGameD";
+			case NonStandardKey.VGAME_COMMAND_LEFT:
+				return "VirtualGameCommandLeft";
+			case NonStandardKey.VGAME_COMMAND_CENTER:
+				return "VirtualGameCommandCenter";
+			case NonStandardKey.VGAME_COMMAND_RIGHT:
+				return "VirtualGameCommandRight";
+				
+				// Other controls
+			case NonStandardKey.CAMERA_SHUTTER:
+				return "CameraShutter";
+			case NonStandardKey.VOLUME_INCREASE:
+				return "VolumeIncrease";
+			case NonStandardKey.VOLUME_DECREASE:
+				return "VolumeDecrease";
+			case NonStandardKey.POWER_TOGGLE:
+				return "PowerToggle";
+			case NonStandardKey.POWER_ON:
+				return "PowerOn";
+			case NonStandardKey.POWER_OFF:
+				return "PowerOff";
+			case NonStandardKey.CALL_ACCEPT:
+				return "CallAccept";
+			case NonStandardKey.CALL_DENY:
+				return "CallDeny";
+			case NonStandardKey.CALL_DISCONNECT:
+				return "CallDisconnect";
 			
 				// Default character or unknown
 			default:

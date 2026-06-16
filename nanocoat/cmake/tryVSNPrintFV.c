@@ -7,6 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#pragma clang diagnostic ignored "-Wimplicit-function-declaration"
+#pragma clang diagnostic ignored "-Werror=implicit-function-declaration"
+
 #include <varargs.h>
 #include <stdio.h>
 
@@ -15,7 +18,7 @@ int whatever(char* format, ...)
 	char buf[256];
 	va_list args;
 	int result;
-	
+
 	va_start(args, format);
 	
 	result = vsnprintf(buf, 256, "Squeak!", args);

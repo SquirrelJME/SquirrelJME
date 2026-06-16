@@ -847,7 +847,7 @@ sjme_errorCode sjme_scritchui_core_intern_initCommon(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
 	sjme_attrInValue sjme_jboolean postCreate,
-	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES)
 		sjme_scritchui_uiType uiType)
 {
 	sjme_errorCode error;
@@ -878,10 +878,11 @@ sjme_errorCode sjme_scritchui_core_intern_initCommon(
 		
 		/* Type must be valid. */
 		if (uiType <= SJME_SCRITCHUI_TYPE_RESERVED ||
-			uiType >= SJME_NUM_SCRITCHUI_UI_TYPES)
+			uiType >= SJME_SCRITCHUI_NUM_UI_TYPES)
 			return SJME_ERROR_INVALID_ARGUMENT;
 		
 		/* Set base properties. */
+		inCommon->magic = SJME_SCRITCHUI_OBJECT_MAGIC;
 		inCommon->state = inState;
 		inCommon->type = uiType;
 	}
@@ -894,7 +895,7 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInValue sjme_jboolean postCreate,
-	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES)
 		sjme_scritchui_uiType uiType)
 {
 	sjme_errorCode error;

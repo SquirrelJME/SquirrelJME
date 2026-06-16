@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -57,50 +58,35 @@ public final class PencilGraphics
 	/** Is there an alpha channel? */
 	@SquirrelJMEVendorApi
 	protected final boolean hasAlpha;
-
-	/** Single character. */
-	@SquirrelJMEVendorApi
-	private final char[] _singleChar =
-		new char[1];
-
+	
 	/** The current pixel format. */
-	@SquirrelJMEVendorApi
 	private int _pixelFormat;
 
 	/** The current alpha color. */
-	@SquirrelJMEVendorApi
 	private int _argbColor;
 
 	/** The current blending mode. */
-	@SquirrelJMEVendorApi
 	private int _blendingMode;
 
 	/** The clip height. */
-	@SquirrelJMEVendorApi
 	private int _clipHeight;
 
 	/** The clip width. */
-	@SquirrelJMEVendorApi
 	private int _clipWidth;
 
 	/** The clip X position. */
-	@SquirrelJMEVendorApi
 	private int _clipX;
 
 	/** The clip Y position. */
-	@SquirrelJMEVendorApi
 	private int _clipY;
 
 	/** The current font used. */
-	@SquirrelJMEVendorApi
 	private Font _font;
 
 	/** The current stroke style. */
-	@SquirrelJMEVendorApi
 	private int _strokeStyle;
 
 	/** Has this been closed? */
-	@SquirrelJMEVendorApi
 	private volatile boolean _isClosed;
 
 	/**
@@ -338,15 +324,11 @@ public final class PencilGraphics
 		if (this._isClosed)
 			return;
 		
-		// Fill single character first
-		char[] singleChar = this._singleChar;
-		singleChar[0] = __s;
-		
 		// Forward
 		try
 		{
-			PencilShelf.hardwareDrawChars(this.hardware,
-				singleChar, 0, 1, __x, __y, __anchor);
+			PencilShelf.hardwareDrawChar(this.hardware,
+				__s, __x, __y, __anchor);
 		}
 		catch (MLECallError e)
 		{
@@ -1407,24 +1389,21 @@ public final class PencilGraphics
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void setFont(Font __font)
+	public void setFont(Font __base, PencilFontBracket __font, 
+		int[] __fontParams)
 	{
 		// Do nothing if closed
 		if (this._isClosed)
 			return;
 		
-		// Clearing the font?
-		if (__font == null)
-			__font = Font.getDefaultFont();
-		
 		// Cache locally
-		this._font = __font;
+		this._font = __base;
 		
 		// Set font natively from the font details
 		try
 		{
 			PencilShelf.hardwareSetFont(this.hardware,
-				((PencilFontProvider)__font).__squirreljmePencilFont());
+				__font, __fontParams);
 		}
 		
 		// Unwrap any potential errors.

@@ -692,19 +692,45 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	frontEnd.base.wrapper = hWnd;
 	frontEnd.base.data = hDc;
 	
-	/* Setup pencil. */
-	pencil = &paintable->pencil;
-	memset(pencil, 0, sizeof(*pencil));
-	if (sjme_error_is(error = sjme_scritchpen_initStatic(
-		pencil, inState,
-		&sjme_scritchui_win32_pencilFunctions,
-		NULL, NULL,
-		SJME_GFX_PIXEL_FORMAT_INT_RGB888,
-		tx, ty,
-		w, h, w,
-		defaultFont, &frontEnd)))
+	/* Does the pencil need allocation? */
+	pencil = sjme_atomic_g(sjme_scritchui_pencil, &paintable->pencil);
+	if (pencil == NULL)
+	{
+		/* Allocate new pencil. */
+		if (sjme_error_is(sjme_scritchpen_new(inState,
+			&pencil,
+			&sjme_scritchui_win32_pencilFunctions,
+			NULL, NULL,
+			SJME_GFX_PIXEL_FORMAT_INT_RGB888,
+			tx, ty,
+			w, h, w,
+			defaultFont, &frontEnd)))
+			goto fail_badPaint;
+		
+		/* Set pencil. */
+		sjme_atomic_s(sjme_scritchui_pencil, &paintable->pencil,
+			sjme_weakUp(pencil));
+	}
+	
+	/* Force re-init pencil, to set-up new size. */
+	else
+	{
+		/* Allocate new pencil. */
+		if (sjme_error_is(sjme_scritchpen_initStatic(inState,
+			pencil,
+			&sjme_scritchui_win32_pencilFunctions,
+			NULL, NULL,
+			SJME_GFX_PIXEL_FORMAT_INT_RGB888,
+			tx, ty,
+			w, h, w,
+			defaultFont, &frontEnd)))
+			goto fail_badPaint;
+	}
+	
+	/* Setup pencil for drawing. */
+	if (sjme_error_is(pencil->apiInThread->setDefaults(pencil)))
 		goto fail_badPaint;
-
+	
 	/* The clipping area is set to the region that needs redrawing. */
 	pencil->apiInThread->setClip(pencil,
 		paintInfo.rcPaint.left, paintInfo.rcPaint.top,

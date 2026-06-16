@@ -9,14 +9,17 @@
 
 package cc.squirreljme.runtime.lcdui.font;
 
-import cc.squirreljme.jvm.mle.constants.UIFontFlag;
+import cc.squirreljme.jvm.mle.constants.PencilFontFace;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Font;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * This class provides static utility methods for fonts and otherwise.
  *
  * @since 2018/11/24
  */
+@SquirrelJMEVendorApi
 public final class FontUtilities
 {
 	/**
@@ -29,53 +32,71 @@ public final class FontUtilities
 	}
 	
 	/**
-	 * Converts a representation of the font to a system font ID.
-	 * 
-	 * @param __font The font to identify.
-	 * @return The identifier for the font.
+	 * Returns the common face for the given logical font name.
+	 *
+	 * @param __name The name of the font to locate.
+	 * @return The face of the logical font.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2020/11/14
+	 * @since 2024/11/30
 	 */
-	public static int fontToSystemFont(Font __font)
+	@MagicConstant(flagsFromClass = PencilFontFace.class)
+	public static int faceNameToPencil(String __name)
 		throws NullPointerException
 	{
-		if (__font == null)
+		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		int id = 0;
+		// Serif
+		if (__name.equalsIgnoreCase("Serif") ||
+			__name.equalsIgnoreCase("Times New Roman") ||
+			__name.equalsIgnoreCase("New York") ||
+			__name.equalsIgnoreCase("Toronto"))
+			return PencilFontFace.SERIF;
 		
-		// Shift in size
-		int size = __font.getPixelSize();
-		id |= (size > UIFontFlag.PIXEL_SIZE_MASK ? UIFontFlag.PIXEL_SIZE_MASK :
-			size);
+		// Sans-Serif
+		else if (__name.equalsIgnoreCase("SansSerif") ||
+			__name.equalsIgnoreCase("Dialog") ||
+			__name.equalsIgnoreCase("DialogInput") ||
+			__name.equalsIgnoreCase("Helvetica") ||
+			__name.equalsIgnoreCase("Arial") ||
+			__name.equalsIgnoreCase("Chicago") ||
+			__name.equalsIgnoreCase("Geneva"))
+			return PencilFontFace.NORMAL;
 		
-		// Shift in font face
-		switch (__font.getFace())
+		// Monospaced
+		else if (__name.equalsIgnoreCase("Monospace") ||
+			__name.equalsIgnoreCase("Monospaced") ||
+			__name.equalsIgnoreCase("Courier") ||
+			__name.equalsIgnoreCase("Courier New") ||
+			__name.equalsIgnoreCase("Monaco"))
+			return PencilFontFace.MONOSPACE;
+		
+		// Unknown, do not consider it in a match
+		return PencilFontFace.AUTOMATIC;
+	}
+	
+	/**
+	 * Maps a MIDP face to a {@link PencilFontFace}.
+	 *
+	 * @param __face The face to map.
+	 * @return The resulting mapped face.
+	 * @since 2026/01/18
+	 */
+	@MagicConstant(flagsFromClass = PencilFontFace.class)
+	public static final int faceToPencil(
+		@MagicConstant(flagsFromClass = Font.class) int __face)
+	{
+		switch (__face)
 		{
+			case Font.FACE_SYSTEM:
 			case Font.FACE_PROPORTIONAL:
-				id |= UIFontFlag.FACE_PROPORTIONAL;
-				break;
+				return PencilFontFace.NORMAL;
 				
 			case Font.FACE_MONOSPACE:
-				id |= UIFontFlag.FACE_MONOSPACE;
-				break;
-			
-			case Font.FACE_SYSTEM:
-			default:
-				id |= UIFontFlag.FACE_SYSTEM;
-				break;
+				return PencilFontFace.MONOSPACE;
 		}
 		
-		// Map font style
-		int style = __font.getStyle();
-		if ((style & Font.STYLE_ITALIC) != 0)
-			id |= UIFontFlag.STYLE_ITALIC_FLAG;
-		if ((style & Font.STYLE_BOLD) != 0)
-			id |= UIFontFlag.STYLE_BOLD_FLAG;
-		if ((style & Font.STYLE_UNDERLINED) != 0)
-			id |= UIFontFlag.STYLE_UNDERLINED_FLAG;
-		
-		return id;
+		return PencilFontFace.AUTOMATIC;
 	}
 	
 	/**
@@ -87,6 +108,7 @@ public final class FontUtilities
 	 * @since 2018/11/24
 	 */
 	@SuppressWarnings("MagicNumber")
+	@SquirrelJMEVendorApi
 	public static int logicalSizeToPixelSize(int __lsz)
 		throws IllegalArgumentException
 	{
@@ -114,6 +136,7 @@ public final class FontUtilities
 	 * @return The logical size.
 	 * @since 2018/11/24
 	 */
+	@SquirrelJMEVendorApi
 	public static int pixelSizeToLogicalSize(int __psz)
 	{
 		if (__psz < 10)

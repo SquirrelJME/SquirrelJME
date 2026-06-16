@@ -467,16 +467,31 @@ public class ScritchUnifiedWrapper
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/04/11
+	 */
+	@Override
+	public @Nullable PencilFontBracket fontByFace(int __inFace,
+		@Nullable int[] __inParams, @Nullable int[] __outParams)
+		throws MLECallError
+	{
+		return this.api.environment().fontByFace(__inFace,
+			__inParams, __outParams);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/08/02
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public PencilFontBracket fontDerive(
-		PencilFontBracket __font, int __style,
-		int __pixelSize)
+	public @NotNull PencilFontBracket fontDerive(
+		@NotNull PencilFontBracket __font,
+		@Nullable int[] __deriveParams,
+		@Nullable int[] __newParams)
 		throws MLECallError
 	{
-		return this.api.environment().fontDerive(__font, __style, __pixelSize);
+		return this.api.environment().fontDerive(__font, 
+			__deriveParams, __newParams);
 	}
 	
 	/**

@@ -16,7 +16,21 @@
 #include "sjme/debug.h"
 #include "sjme/charSeq.h"
 
-/** Initializing methods. */
+/** Prototype for initialization function. */
+#define MLE_INIT_FUNC_PROTO(mleGroupId) \
+	jint JNICALL SJME_TOKEN_PASTE_PP(SJME_TOKEN_PASTE_PP(mle, mleGroupId), \
+		Init)(JNIEnv* env, jclass classy)
+
+MLE_INIT_FUNC_PROTO(NativeScritchDylibEx);
+MLE_INIT_FUNC_PROTO(NativeScritchInterface);
+MLE_INIT_FUNC_PROTO(PencilFontShelf);
+MLE_INIT_FUNC_PROTO(PencilShelf);
+MLE_INIT_FUNC_PROTO(RuntimeShelf);
+MLE_INIT_FUNC_PROTO(TerminalShelf);
+MLE_INIT_FUNC_PROTO(ThreadShelf);
+MLE_INIT_FUNC_PROTO(TypeShelf);
+
+/* Initializing methods. */
 jint JNICALL mleAudioStreamInit(JNIEnv* env, jclass classy);
 jint JNICALL mleBucketInit(JNIEnv* env, jclass classy);
 jint JNICALL mleDebugInit(JNIEnv* env, jclass classy);
@@ -85,15 +99,23 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 
 #define FORWARD_from(x) x
 
+/** Function name. */
+#define FORWARD_FUNC_NAME(className, methodName) \
+	SJME_TOKEN_PASTE4_PP(Impl_mle_, className, _, methodName)
+
+/** Alternate function name. */
+#define FORWARD_FUNC_NAME_ALT(className, methodName, alt) \
+	SJME_TOKEN_PASTE6_PP(Impl_mle_, className, _, methodName, _, alt)
+
 #define FORWARD_list(className, methodName) \
 	{FORWARD_stringy(methodName), \
 	FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName)), \
-	(void*)Impl_mle_ ## className ## _ ## methodName}
+	(void*)FORWARD_FUNC_NAME(className, methodName)}
 
 #define FORWARD_listAlt(className, methodName, alt) \
 	{FORWARD_stringy(methodName), \
 	FORWARD_from(FORWARD_paste(FORWARD_DESC_, methodName ## _ ## alt)), \
-	(void*)Impl_mle_ ## className ## _ ## methodName ## _ ## alt}
+	(void*)FORWARD_FUNC_NAME_ALT(className, methodName, alt)}
 
 #define FORWARD_IMPL_none()
 
@@ -103,12 +125,18 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 
 #define FORWARD_IMPL_none()
 
-#define FORWARD_FUNC_NAME(className, methodName) \
-	Impl_mle_ ## className ## _ ## methodName
+/** Own implementation of method. */
+#define FORWARD_IMPL_OWN(returnType, methodName, ...) \
+	JNIEXPORT returnType JNICALL FORWARD_FUNC_NAME(FORWARD_CLASS_NAME, \
+		methodName)(JNIEnv* env, jclass classy __VA_ARGS__)
+
+/** Own implementation of method (alternate). */
+#define FORWARD_IMPL_OWN_ALT(returnType, methodName, alt, ...) \
+	JNIEXPORT returnType JNICALL FORWARD_FUNC_NAME_ALT(FORWARD_CLASS_NAME, \
+		methodName, alt)(JNIEnv* env, jclass classy __VA_ARGS__)
 
 #define FORWARD_IMPL_VOID(className, methodName, args, pass) \
-	JNIEXPORT void JNICALL Impl_mle_ ## className ## _ ## methodName( \
-		JNIEnv* env, jclass classy args) \
+	FORWARD_IMPL_OWN(void, methodName, args) \
 	{ \
 		forwardCallStaticVoid(env, FORWARD_NATIVE_CLASS, \
 			FORWARD_stringy(methodName), \
@@ -117,8 +145,7 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	}
 
 #define FORWARD_IMPL(className, methodName, rtype, rjava, args, pass) \
-	JNIEXPORT rtype JNICALL Impl_mle_ ## className ## _ ## methodName( \
-		JNIEnv* env, jclass classy args) \
+	FORWARD_IMPL_OWN(rtype, methodName, args) \
 	{ \
 		return FORWARD_paste(forwardCallStatic, rjava)(env, \
 			FORWARD_NATIVE_CLASS, \
@@ -128,8 +155,7 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 	}
 
 #define FORWARD_IMPL_ALT(className, methodName, alt, rtype, rjava, args, pass) \
-	JNIEXPORT rtype JNICALL Impl_mle_ ## className ## _ ## methodName ## _ ## alt( \
-		JNIEnv* env, jclass classy args) \
+	FORWARD_IMPL_OWN_ALT(rtype, methodName, alt, args) \
 	{ \
 		return FORWARD_paste(forwardCallStatic, rjava)(env, \
 			FORWARD_NATIVE_CLASS, \
@@ -153,9 +179,15 @@ jboolean JNICALL forwardCallStaticBoolean(JNIEnv* env,
 #define DESC_DOUBLE "D"
 #define DESC_VOID "V"
 #define DESC_OBJECT DESC_CLASS("java/lang/Object")
+#define DESC_TYPE DESC_CLASS("java/lang/Class")
+#define DESC_THREAD DESC_CLASS("java/lang/Thread")
 #define DESC_STRING DESC_CLASS("java/lang/String")
+#define DESC_RUNNABLE DESC_CLASS("java/lang/Runnable")
 #define DESC_BYTE_BUFFER DESC_CLASS("java/nio/ByteBuffer")
+#define DESC_INPUT_STREAM DESC_CLASS("java/io/InputStream")
 
+#define DESC_TRACEPOINT \
+	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/TracePointBracket")
 #define DESC_AUDIOSTREAM \
 	DESC_CLASS("cc/squirreljme/jvm/mle/brackets/AudioStreamBracket")
 #define DESC_AUDIOCONN DESC_CLASS( \
@@ -486,6 +518,38 @@ sjme_errorCode sjme_jni_arrayReleaseElements(
 	sjme_attrInNotNull JNIEnv* env,
 	sjme_attrInNotNull jarray array,
 	sjme_attrInNotNull sjme_pointer rawBuf);
+
+/**
+ * Maps flat font parameters to structured font parameters.
+ *
+ * @param env The Java environment.
+ * @param inState The ScritchUI state.
+ * @param destParams The destination parameters.
+ * @param srcFlat The source flat array.
+ * @return Any resultant error, if any.
+ * @since 2026/04/11
+ */
+sjme_errorCode sjme_jni_fontParamFromFlat(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* destParams,
+	sjme_attrInNotNull jintArray srcFlat);
+
+/**
+ * Maps structured font parameters to flat font parameters.
+ *
+ * @param env The Java environment.
+ * @param inState The ScritchUI state.
+ * @param destFlat The destination flat array.
+ * @param srcParams The source parameters.
+ * @return Any resultant error, if any.
+ * @since 2026/04/11
+ */
+sjme_errorCode sjme_jni_fontParamToFlat(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull jintArray destFlat,
+	sjme_attrOutNotNull const sjme_scritchui_pencilFontParam* srcParams);
 
 #endif /* __SQUIRRELJME_H__ */
 

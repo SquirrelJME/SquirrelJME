@@ -467,7 +467,7 @@ fail_rateReduce:
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */
 	sjme_message("softmixUnderlay(%p): Failed with %d!",
-		inState, error);
+		(void*)inState, error);
 #endif
 	
 	return sjme_error_default(error);

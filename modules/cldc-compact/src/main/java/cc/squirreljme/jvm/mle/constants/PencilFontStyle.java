@@ -34,4 +34,9 @@ public interface PencilFontStyle
 	@SquirrelJMEVendorApi
 	byte UNDERLINED =
 		4;
+	
+	/** Special case for automatic style selection. */
+	@SquirrelJMEVendorApi
+	byte AUTOMATIC =
+		8;
 }

@@ -122,12 +122,49 @@ sjme_errorCode sjme_jni_setIntArray(JNIEnv* env, jintArray array,
 
 void sjme_jni_throwMLECallError(JNIEnv* env, sjme_errorCode code)
 {
-	sjme_jni_throwThrowable(env, code,
+	jclass tossingClass;
+	jmethodID methodId;
+	jobject tossing;
+
+	if (env == NULL)
+		return;
+
+	/* Get the class where the exception is. */
+	tossingClass = (*env)->FindClass(env,
 		"cc/squirreljme/jvm/mle/exceptions/MLECallError");
+	if (tossingClass == NULL)
+	{
+		sjme_die("Could not find exception class?");
+		return;
+	}
+
+	/* Find constructor. */
+	methodId = (*env)->GetMethodID(env, tossingClass, "<init>",
+		"(I)V");
+	if (methodId == NULL)
+	{
+		sjme_die("Could not find exception constructor?");
+		return;
+	}
+
+	/* Make new instance. */
+	tossing = (*env)->NewObject(env, tossingClass, methodId, code);
+	if (tossing == NULL)
+	{
+		sjme_die("Could not create throwable to toss?");
+		return;
+	}
+
+	/* Throw it. */
+	if ((*env)->Throw(env, tossing) != 0)
+		sjme_die("Could not throw MLECallError?");
 }
 
 void sjme_jni_throwNullPointerException(JNIEnv* env)
 {
+	if (env == NULL)
+		return;
+
 	sjme_jni_throwThrowable(env, SJME_ERROR_NULL_ARGUMENTS,
 		"java/lang/NullPointerException");
 }
@@ -138,6 +175,9 @@ void sjme_jni_throwThrowable(JNIEnv* env, sjme_errorCode code,
 #define BUF_SIZE 512
 	jclass tossingClass;
 	char buf[BUF_SIZE];
+
+	if (env == NULL || type == NULL)
+		return;
 
 	/* Get the class where the exception is. */
 	tossingClass = (*env)->FindClass(env, type);
@@ -177,9 +217,15 @@ void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
 		return NULL;
 
 	/* Fail. */
-	if (env == NULL || className == NULL)
+	if (env == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return NULL;
+	}
+
+	if (className == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_INVALID_CLASS_NAME);
 		return NULL;
 	}
 
@@ -188,7 +234,7 @@ void* sjme_jni_recoverPointer(JNIEnv* env, sjme_lpcstr className,
 	baseClassy = (*env)->FindClass(env, DESC_DYLIB_HAS_OBJECT_POINTER);
 	if (classy == NULL || baseClassy == NULL)
 	{
-		sjme_jni_throwMLECallError(env, SJME_ERROR_INVALID_CLASS_NAME);
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NO_CLASS);
 		return NULL;
 	}
 
@@ -469,7 +515,7 @@ sjme_errorCode sjme_jni_arrayType(
 	else if ((*env)->IsInstanceOf(env, array, (*env)->FindClass(env, "[D")))
 		*outType = SJME_BASIC_TYPE_ID_DOUBLE;
 	else
-		return SJME_ERROR_INVALID_ARGUMENT;
+		return sjme_error_fatal(SJME_ERROR_INVALID_ARGUMENT);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -546,7 +592,7 @@ sjme_errorCode sjme_jni_arrayGetElements(
 			break;
 
 		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
+			return sjme_error_fatal(SJME_ERROR_INVALID_ARGUMENT);
 	}
 
 	/* Success! */
@@ -606,8 +652,87 @@ sjme_errorCode sjme_jni_arrayReleaseElements(
 			break;
 
 		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
+			return sjme_error_fatal(SJME_ERROR_INVALID_ARGUMENT);
 	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_jni_fontParamFromFlat(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontParam* destParams,
+	sjme_attrInNotNull jintArray srcFlat)
+{
+	sjme_errorCode error;
+	jint* raw;
+	jboolean isCopy;
+
+	if (env == NULL || inState == NULL ||
+		destParams == NULL || srcFlat == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inState->intern == NULL || inState->intern->fontParamFromFlat == NULL)
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
+
+	/* Get array elements. */
+	raw = NULL;
+	isCopy = JNI_FALSE;
+	if (sjme_error_is(error = sjme_jni_arrayGetElements(env, srcFlat,
+		(sjme_pointer*)&raw, &isCopy, NULL)))
+		return sjme_error_default(error);
+
+	/* Map. */
+	memset(destParams, 0, sizeof(*destParams));
+	if (sjme_error_is(error = inState->intern->fontParamFromFlat(
+		inState,
+		destParams,
+		(const sjme_jint*)raw, 0,
+		(*env)->GetArrayLength(env, srcFlat))))
+		return sjme_error_default(error);
+
+	/* Release array. */
+	sjme_jni_arrayReleaseElements(env, srcFlat, raw);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_jni_fontParamToFlat(
+	sjme_attrInNotNull JNIEnv* env,
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull jintArray destFlat,
+	sjme_attrOutNotNull const sjme_scritchui_pencilFontParam* srcParams)
+{
+	sjme_errorCode error;
+	jint* raw;
+	jboolean isCopy;
+
+	if (env == NULL || inState == NULL ||
+		srcParams == NULL || destFlat == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inState->intern == NULL || inState->intern->fontParamToFlat == NULL)
+		return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE);
+
+	/* Get array elements. */
+	raw = NULL;
+	isCopy = JNI_FALSE;
+	if (sjme_error_is(error = sjme_jni_arrayGetElements(env, destFlat,
+		(sjme_pointer*)&raw, &isCopy, NULL)))
+		return sjme_error_default(error);
+
+	/* Map. */
+	if (sjme_error_is(error = inState->intern->fontParamToFlat(
+		inState,
+		srcParams,
+		(sjme_jint*)raw, 0,
+		(*env)->GetArrayLength(env, destFlat))))
+		return sjme_error_default(error);
+
+	/* Release array. */
+	sjme_jni_arrayReleaseElements(env, destFlat, raw);
 
 	/* Success! */
 	return SJME_ERROR_NONE;

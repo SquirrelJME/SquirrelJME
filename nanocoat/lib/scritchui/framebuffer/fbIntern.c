@@ -621,7 +621,8 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		
 		/* Set font to use? */
 		if (dlAt->type == SJME_SCRITCHUI_FB_DL_TYPE_TEXT)
-			g->apiInThread->setFont(g, dlAt->data.text.font);
+			g->apiInThread->setFont(g, dlAt->data.text.font,
+				&dlAt->data.text.fontParams);
 		
 		/* Determine base color. */
 		colorType = 0;

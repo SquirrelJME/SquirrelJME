@@ -191,7 +191,7 @@ sjme_errorCode sjme_nvm_destroy(
  * 
  * @param allocPool The pool to allocate values within.
  * @param nal The native abstraction layer to use.
- * @param param The output parameters. 
+ * @param outParam The output parameters.
  * @param argc The argument count.
  * @param argv The arguments.
  * @return Any resultant error, if any.

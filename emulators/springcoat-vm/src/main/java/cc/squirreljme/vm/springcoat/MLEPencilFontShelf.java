@@ -21,9 +21,13 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 public enum MLEPencilFontShelf
 	implements MLEFunction
 {
-	/** {@link PencilFontShelf#equals(PencilFontBracket, PencilFontBracket)}. */
+	/** 
+	 * {@link PencilFontShelf#equals(PencilFontBracket, int[],
+	 * PencilFontBracket, int[])}. 
+	 */
 	EQUALS(MLEDispatcher.methodKey("equals", "Z",
-		PencilFontBracket.class, PencilFontBracket.class))
+		PencilFontBracket.class, int[].class,
+		PencilFontBracket.class, int[].class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -51,8 +55,8 @@ public enum MLEPencilFontShelf
 	},
 	
 	/** {@link PencilFontShelf#metricCharValid}. */
-	METRIC_CHAR_VALID("metricCharValid:" +
-		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)Z")
+	METRIC_CHAR_VALID(MLEDispatcher.methodKey("metricCharValid",
+		boolean.class, PencilFontBracket.class, int.class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -70,8 +74,8 @@ public enum MLEPencilFontShelf
 	},
 	
 	/** {@link PencilFontShelf#metricFontFace}. */
-	METRIC_FONT_FACE("metricFontFace:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/PencilFontBracket;)I")
+	METRIC_FONT_FACE(MLEDispatcher.methodKey("metricFontFace",
+		int.class, PencilFontBracket.class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -87,8 +91,8 @@ public enum MLEPencilFontShelf
 	},
 	
 	/** {@link PencilFontShelf#metricFontName}. */
-	METRIC_FONT_NAME("metricFontName:(Lcc/squirreljme/jvm/mle/" +
-		"brackets/PencilFontBracket;)Ljava/lang/String;")
+	METRIC_FONT_NAME(MLEDispatcher.methodKey("metricFontName",
+		String.class, PencilFontBracket.class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -105,8 +109,8 @@ public enum MLEPencilFontShelf
 	},
 	
 	/** {@link PencilFontShelf#metricFontStyle}. */
-	METRIC_FONT_STYLE("metricFontStyle:" +
-		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)I")
+	METRIC_FONT_STYLE(MLEDispatcher.methodKey("metricFontStyle",
+		int.class, PencilFontBracket.class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -122,8 +126,8 @@ public enum MLEPencilFontShelf
 	},
 	
 	/** {@link PencilFontShelf#metricPixelAscent}. */
-	METRIC_PIXEL_ASCENT("metricPixelAscent:" +
-		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;Z)I")
+	METRIC_PIXEL_ASCENT(MLEDispatcher.methodKey("metricPixelAscent",
+		int.class, PencilFontBracket.class, int[].class, boolean.class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -136,13 +140,15 @@ public enum MLEPencilFontShelf
 				SpringVisObject.asNative(__thread,
 					PencilFontBracket.class, __args[0]),
 				SpringVisObject.asNative(__thread,
-					Boolean.class, __args[1]));
+					int[].class, __args[1]),
+				SpringVisObject.asNative(__thread,
+					Boolean.class, __args[2]));
 		}
 	},
 	
 	/** {@link PencilFontShelf#metricPixelBaseline}. */
-	METRIC_PIXEL_BASELINE("metricPixelBaseline:" +
-		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)I")
+	METRIC_PIXEL_BASELINE(MLEDispatcher.methodKey("metricPixelBaseline",
+		int.class, PencilFontBracket.class, int[].class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -153,13 +159,15 @@ public enum MLEPencilFontShelf
 		{
 			return PencilFontShelf.metricPixelBaseline(
 				SpringVisObject.asNative(__thread,
-					PencilFontBracket.class, __args[0]));
+					PencilFontBracket.class, __args[0]),
+				SpringVisObject.asNative(__thread,
+					int[].class, __args[1]));
 		}
 	},
 	
 	/** {@link PencilFontShelf#metricPixelDescent}. */
-	METRIC_PIXEL_DESCENT("metricPixelDescent:" +
-		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;Z)I")
+	METRIC_PIXEL_DESCENT(MLEDispatcher.methodKey("metricPixelDescent",
+		int.class, PencilFontBracket.class, int[].class, boolean.class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -172,13 +180,15 @@ public enum MLEPencilFontShelf
 				SpringVisObject.asNative(__thread,
 					PencilFontBracket.class, __args[0]),
 				SpringVisObject.asNative(__thread,
-					Boolean.class, __args[1]));
+					int[].class, __args[1]),
+				SpringVisObject.asNative(__thread,
+					Boolean.class, __args[2]));
 		}
 	},
 	
 	/** {@link PencilFontShelf#metricPixelLeading}. */
-	METRIC_PIXEL_LEADING("metricPixelLeading:" +
-		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)I")
+	METRIC_PIXEL_LEADING(MLEDispatcher.methodKey("metricPixelLeading",
+		int.class, PencilFontBracket.class, int[].class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -189,13 +199,15 @@ public enum MLEPencilFontShelf
 		{
 			return PencilFontShelf.metricPixelLeading(
 				SpringVisObject.asNative(__thread,
-					PencilFontBracket.class, __args[0]));
+					PencilFontBracket.class, __args[0]),
+				SpringVisObject.asNative(__thread,
+					int[].class, __args[1]));
 		}
 	},
 	
 	/** {@link PencilFontShelf#metricPixelSize}. */
-	METRIC_PIXEL_SIZE("metricPixelSize:" +
-		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;)I")
+	METRIC_PIXEL_SIZE(MLEDispatcher.methodKey("metricPixelSize",
+		int.class, PencilFontBracket.class, int[].class, int.class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -206,13 +218,16 @@ public enum MLEPencilFontShelf
 		{
 			return PencilFontShelf.metricPixelSize(
 				SpringVisObject.asNative(__thread,
-					PencilFontBracket.class, __args[0]));
+					PencilFontBracket.class, __args[0]),
+				SpringVisObject.asNative(__thread,
+					int[].class, __args[1]),
+				(Integer)__args[2]);
 		}
 	},
 	
 	/** {@link PencilFontShelf#pixelCharWidth}. */
-	PIXEL_CHAR_WIDTH("pixelCharWidth:" +
-		"(Lcc/squirreljme/jvm/mle/brackets/PencilFontBracket;I)I")
+	PIXEL_CHAR_WIDTH(MLEDispatcher.methodKey("pixelCharWidth",
+		int.class, PencilFontBracket.class, int[].class, int.class))
 	{
 		/**
 		 * {@inheritDoc}
@@ -225,7 +240,9 @@ public enum MLEPencilFontShelf
 				SpringVisObject.asNative(__thread,
 					PencilFontBracket.class, __args[0]),
 				SpringVisObject.asNative(__thread,
-					Integer.class, __args[1]));
+					int[].class, __args[1]),
+				SpringVisObject.asNative(__thread,
+					Integer.class, __args[2]));
 		}
 	},
 	

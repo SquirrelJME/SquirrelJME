@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.ScritchChoiceInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchChoiceBracket;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Choice;
 
@@ -20,7 +21,7 @@ import javax.microedition.lcdui.Choice;
  *
  * @since 2024/07/28
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 final class __ExecChoiceSelectedFlags__
 	implements Runnable
 {
@@ -50,7 +51,7 @@ final class __ExecChoiceSelectedFlags__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/28
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	__ExecChoiceSelectedFlags__(ScritchInterface __scritchApi,
 		ScritchChoiceBracket __choice, boolean[] __flags, int __type)
 		throws NullPointerException

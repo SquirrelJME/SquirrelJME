@@ -179,8 +179,7 @@ public class SpringVisObject
 			int n = __args.length;
 			Object[] args = new Object[n + 1];
 			args[0] = this;
-			for (int i = 0; i < n; i++)
-				args[i + 1] = __args[i];
+			System.arraycopy(__args, 0, args, 1, n);
 					
 			// Invoke it
 			return __thread.invokeMethod(false, superClass.name(),

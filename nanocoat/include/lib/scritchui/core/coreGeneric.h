@@ -32,24 +32,10 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Base function for common initialization logic.
- * 
- * @param inState The input state. 
- * @param inCommon The common item to be initialized.
- * @param inData Any data to use for initialization.
- * @return Any resultant error, if any.
- * @since 2024/07/22
- */
-typedef sjme_errorCode (*sjme_scritchui_coreGeneric_commonNewImplFunc)(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
-	sjme_attrInNullable sjme_pointer inData);
-
-/**
  * Base function for component initialization logic.
  * 
  * @param inState The input state. 
- * @param inCommon The component item to be initialized.
+ * @param inComponent The component item to be initialized.
  * @param inData Any data to use for initialization.
  * @return Any resultant error, if any.
  * @since 2024/07/24
@@ -57,27 +43,6 @@ typedef sjme_errorCode (*sjme_scritchui_coreGeneric_commonNewImplFunc)(
 typedef sjme_errorCode (*sjme_scritchui_coreGeneric_componentNewImplFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInNullable sjme_pointer inData);
-
-/**
- * Basic core common initialization logic.
- * 
- * @param inState The input state. 
- * @param outCommon The resultant common.
- * @param outCommonSize The size of the resultant common.
- * @param uiType The UI type to initialize.
- * @param implNew The implementation new for this type.
- * @param inData Any data to pass to @c implNew .
- * @return Any resultant error, if any.
- * @since 2024/07/22
- */
-sjme_errorCode sjme_scritchui_coreGeneric_commonNew(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiCommon* outCommon,
-	sjme_attrInPositiveNonZero sjme_jint outCommonSize,
-	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
-		sjme_scritchui_uiType uiType,
-	sjme_attrInNotNull sjme_scritchui_coreGeneric_commonNewImplFunc implNew,
 	sjme_attrInNullable sjme_pointer inData);
 
 /**
@@ -96,7 +61,7 @@ sjme_errorCode sjme_scritchui_coreGeneric_componentNew(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInOutNotNull sjme_scritchui_uiComponent* outComponent,
 	sjme_attrInPositiveNonZero sjme_jint outComponentSize,
-	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_UI_TYPES)
+	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES)
 		sjme_scritchui_uiType uiType,
 	sjme_attrInNotNull sjme_scritchui_coreGeneric_componentNewImplFunc implNew,
 	sjme_attrInNullable sjme_pointer inData);

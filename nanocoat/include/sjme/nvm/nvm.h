@@ -469,7 +469,7 @@ struct sjme_nvm_stateBase
 extern const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS];
 
 /** Type promotion. */
-extern const sjme_jint sjme_nvm_typePromote[SJME_NUM_BASIC_TYPE_IDS];
+extern const sjme_basicTypeId sjme_nvm_typePromote[SJME_NUM_BASIC_TYPE_IDS];
 
 /**
  * Method initialization start.

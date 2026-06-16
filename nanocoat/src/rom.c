@@ -157,7 +157,7 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
 	/* Obtain the list of libraries within the suite. */
 	suiteLibs = NULL;
 	if (sjme_error_is(error = sjme_nvm_rom_suiteLibraries(inSuite,
-		&suiteLibs) || suiteLibs == NULL))
+		&suiteLibs)) || suiteLibs == NULL)
 		return sjme_error_default(error);
 
 	/* Go through each library and get hash matches. */

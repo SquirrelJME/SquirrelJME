@@ -8,6 +8,10 @@ apply plugin: "com.github.johnrengelman.shadow"
 description = "Formats and lints Java source code to SquirrelJME standards."
 mainClassName = "cc.squirreljme.lint.Main"
 
+// The Java versions this works with
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_8
+
 dependencies {
 	implementation project(":modules:vendor-api-squirreljme-collections")
 	implementation project(":modules:vendor-api-squirreljme-io")

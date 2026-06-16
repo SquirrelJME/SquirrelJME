@@ -128,6 +128,12 @@ typedef enum sjme_scritchui_serialType
 	/** @c fontBuiltin . */
 	SJME_SCRITCHUI_SERIAL_UI_FONT_BUILTIN,
 	
+	/** @c fontByFace . */
+	SJME_SCRITCHUI_SERIAL_UI_FONT_BY_FACE,
+
+	/** @c fontCount . */
+	SJME_SCRITCHUI_SERIAL_UI_FONT_COUNT,
+	
 	/** @c fontDerive . */
 	SJME_SCRITCHUI_SERIAL_UI_FONT_DERIVE,
 	
@@ -145,6 +151,9 @@ typedef enum sjme_scritchui_serialType
 	
 	/** @c lafElementColor. */
 	SJME_SCRITCHUI_SERIAL_UI_LAF_ELEMENT_COLOR,
+
+	/** @c lafMetric. */
+	SJME_SCRITCHUI_SERIAL_UI_LAF_METRIC,
 		
 	/** @c listNew . */
 	SJME_SCRITCHUI_SERIAL_UI_LIST_NEW,
@@ -325,6 +334,54 @@ typedef enum sjme_scritchui_serialType
 
 	/** @c translate . */
 	SJME_SCRITCHUI_SERIAL_PEN_TRANSLATE,
+
+	/** @link sjme_scritchui_pencilFontEqualsFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_EQUALS,
+
+	/** @link sjme_scritchui_pencilFontMetricCharDirectionFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_METRIC_CHAR_DIRECTION,
+
+	/** @link sjme_scritchui_pencilFontMetricCharValidFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_METRIC_CHAR_VALID,
+
+	/** @link sjme_scritchui_pencilFontMetricFontFaceFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_METRIC_FONT_FACE,
+
+	/** @link sjme_scritchui_pencilFontMetricFontNameFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_METRIC_FONT_NAME,
+
+	/** @link sjme_scritchui_pencilFontMetricFontStyleFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_METRIC_FONT_STYLE,
+
+	/** @link sjme_scritchui_pencilFontMetricPixelAscentFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_ASCENT,
+
+	/** @link sjme_scritchui_pencilFontMetricPixelBaselineFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_BASELINE,
+
+	/** @link sjme_scritchui_pencilFontMetricPixelDescentFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_DESCENT,
+
+	/** @link sjme_scritchui_pencilFontMetricPixelHeightFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_HEIGHT,
+
+	/** @link sjme_scritchui_pencilFontMetricPixelLeadingFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_LEADING,
+
+	/** @link sjme_scritchui_pencilFontMetricPixelSizeFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_METRIC_PIXEL_SIZE,
+
+	/** @link sjme_scritchui_pencilFontPixelCharWidthFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_PIXEL_CHAR_WIDTH,
+
+	/** @link sjme_scritchui_pencilFontRenderBitmapFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_RENDER_BITMAP,
+
+	/** @link sjme_scritchui_pencilFontRenderCharFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_RENDER_CHAR,
+
+	/** @link sjme_scritchui_pencilFontStringWidthFunc @endlink. */
+	SJME_SCRITCHUI_SERIAL_FONT_STRING_WIDTH,
 	
 	/** The number of serialized types. */
 	SJME_SCRITCHUI_NUM_SERIAL_TYPES
@@ -349,8 +406,13 @@ typedef enum sjme_scritchui_serialType
 		items \
 	} SDX_STRUCT_NAME(where, what)
 
+/** Pen struct definition. */
 #define SDP_STRUCT_DEF(what, items) SDX_STRUCT_DEF(pen, what, items)
 
+/** Font struct definition. */
+#define SDF_STRUCT_DEF(what, items) SDX_STRUCT_DEF(font, what, items)
+
+/** UI struct definition. */
 #define SDU_STRUCT_DEF(what, items) SDX_STRUCT_DEF(ui, what, items)
 
 #define SDX_VAR(type, name) \
@@ -495,16 +557,26 @@ SDU_STRUCT_DEF(containerSetBounds,
 SDU_STRUCT_DEF(fontBuiltin,
 	SDX_VARP(sjme_scritchui_pencilFont, outFont););
 
+SDU_STRUCT_DEF(fontByFace,
+	SDX_VAR(sjme_scritchui, inState);
+	SDX_VARP(sjme_scritchui_pencilFont, outFont);
+	SDX_VARP(sjme_scritchui_pencilFontParam, outParams);
+	SDX_VAR(sjme_scritchui_pencilFontFace, inFace);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, inParams););
+
+SDU_STRUCT_DEF(fontCount,
+	SDX_VARP(sjme_jint, outCount););
+
 SDU_STRUCT_DEF(fontDerive,
-	SDX_VAR(sjme_scritchui_pencilFont, inFont);
-	SDX_VAR(sjme_scritchui_pencilFontStyle, inStyle);
-	SDX_VAR(sjme_jint, inPixelSize);
-	SDX_VARP(sjme_scritchui_pencilFont, outDerived););
+	SDX_VARP(sjme_scritchui_pencilFont, newFont);
+	SDX_VARP(sjme_scritchui_pencilFontParam, newParams);
+	SDX_VAR(sjme_scritchui_pencilFont, oldFont);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, deriveParams););
 
 SDU_STRUCT_DEF(fontList,
 	SDX_VARP(sjme_list(sjme_scritchui_pencilFont), outFonts);
 	SDX_VARP(sjme_jint, outValid);
-	SDX_VARP(sjme_jint, outMaxFonts););
+	SDX_VARP(sjme_jint, outCount););
 
 SDU_STRUCT_DEF(hardwareGraphics,
 	SDX_VARP(sjme_scritchui_pencil, outPencil);
@@ -536,6 +608,11 @@ SDU_STRUCT_DEF(lafElementColor,
 	SDX_VAR(sjme_scritchui_uiComponent, inContext);
 	SDX_VARP(sjme_jint, outRGB);
 	SDX_VAR(sjme_scritchui_lafElementColorType, elementColor););
+
+SDU_STRUCT_DEF(lafMetric,
+	SDX_VAR(sjme_scritchui_uiComponent, inContext);
+	SDX_VARP(sjme_jint, outValue);
+	SDX_VAR(sjme_scritchui_lafMetricType, metricType););
 
 SDU_STRUCT_DEF(listNew,
 	SDX_VARP(sjme_scritchui_uiList, outList);
@@ -677,7 +754,7 @@ SDP_STRUCT_DEF(drawChar,
 
 SDP_STRUCT_DEF(drawChars,
 	SDX_VAR(sjme_scritchui_pencil, g);
-	SDX_VARP(sjme_jchar, s);
+	SDX_VARP(const sjme_jchar, s);
 	SDX_VAR(sjme_jint, o);
 	SDX_VAR(sjme_jint, l);
 	SDX_VAR(sjme_jint, x);
@@ -845,7 +922,7 @@ SDP_STRUCT_DEF(mapColor,
 	SDX_VAR(sjme_scritchui_pencil, g);
 	SDX_VAR(sjme_jboolean, fromRaw);
 	SDX_VAR(sjme_jint, inRgbOrRaw);
-	SDX_VARP(sjme_scritchui_pencilColor, outColor););
+	SDX_VARP(sjme_scritchui_color, outColor););
 
 SDP_STRUCT_DEF(setAlphaColor,
 	SDX_VAR(sjme_scritchui_pencil, g);
@@ -874,7 +951,8 @@ SDP_STRUCT_DEF(setStrokeStyle,
 
 SDP_STRUCT_DEF(setFont,
 	SDX_VAR(sjme_scritchui_pencil, g);
-	SDX_VAR(sjme_scritchui_pencilFont, font););
+	SDX_VAR(sjme_scritchui_pencilFont, font);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, params););
 
 SDP_STRUCT_DEF(setParametersFrom,
 	SDX_VAR(sjme_scritchui_pencil, g);
@@ -900,6 +978,106 @@ SDP_STRUCT_DEF(translate,
 	SDX_VAR(sjme_scritchui_pencil, g);
 	SDX_VAR(sjme_jint, x);
 	SDX_VAR(sjme_jint, y););
+
+#pragma region(font)
+
+SDF_STRUCT_DEF(equals,
+	SDX_VAR(sjme_scritchui_pencilFont , a);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, aParams);
+	SDX_VAR(sjme_scritchui_pencilFont , b);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, bParams););
+	
+SDF_STRUCT_DEF(metricCharDirection,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VAR(sjme_jint, inCodepoint);
+	SDX_VARP(sjme_jint, outDirection););
+
+SDF_STRUCT_DEF(metricCharValid,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VAR(sjme_jint, inCodepoint);
+	SDX_VARP(sjme_jboolean, outValid););
+
+SDF_STRUCT_DEF(metricFontFace,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(sjme_scritchui_pencilFontFace, outFace););
+
+SDF_STRUCT_DEF(metricFontName,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(sjme_lpcstr, outName););
+
+SDF_STRUCT_DEF(metricFontStyle,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(sjme_scritchui_pencilFontStyle, outStyle););
+
+SDF_STRUCT_DEF(metricPixelAscent,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, inParams);
+	SDX_VAR(sjme_jboolean, isMax);
+	SDX_VARP(sjme_jint, outAscent););
+
+SDF_STRUCT_DEF(metricPixelBaseline,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, inParams);
+	SDX_VARP(sjme_jint, outBaseline););
+
+SDF_STRUCT_DEF(metricPixelDescent,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, inParams);
+	SDX_VAR(sjme_jboolean, isMax);
+	SDX_VARP(sjme_jint, outDescent););
+
+SDF_STRUCT_DEF(metricPixelHeight,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, inParams);
+	SDX_VARP(sjme_jint, outHeight););
+
+SDF_STRUCT_DEF(metricPixelLeading,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, inParams);
+	SDX_VARP(sjme_jint, outLeading););
+
+SDF_STRUCT_DEF(metricPixelSize,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, inParams);
+	SDX_VAR(sjme_jint, inCodepoint);
+	SDX_VARP(sjme_jint, outSize););
+
+SDF_STRUCT_DEF(pixelCharWidth,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, inParams);
+	SDX_VAR(sjme_jint, inCodepoint);
+	SDX_VARP(sjme_jint, outWidth););
+
+SDF_STRUCT_DEF(renderBitmap,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, inParams);
+	SDX_VAR(sjme_jint, inCodepoint);
+	SDX_VARP(sjme_jubyte, buf);
+	SDX_VAR(sjme_jint, bufOff);
+	SDX_VAR(sjme_jint, bufScanLen);
+	SDX_VAR(sjme_jint, bufHeight);
+	SDX_VARP(sjme_jint, outOffX);
+	SDX_VARP(sjme_jint, outOffY););
+
+SDF_STRUCT_DEF(renderChar,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, inParams);
+	SDX_VAR(sjme_jint, inCodepoint);
+	SDX_VAR(sjme_scritchui_pencil, inPencil);
+	SDX_VAR(sjme_jint, xPos);
+	SDX_VAR(sjme_jint, yPos);
+	SDX_VARP(sjme_jint, nextXPos);
+	SDX_VARP(sjme_jint, nextYPos););
+	
+SDF_STRUCT_DEF(stringWidth,
+	SDX_VAR(sjme_scritchui_pencilFont, inFont);
+	SDX_VARP(const sjme_scritchui_pencilFontParam, inParams);
+	SDX_VAR(sjme_charSeq , s);
+	SDX_VAR(sjme_jint , o);
+	SDX_VAR(sjme_jint , l);
+	SDX_VARP(sjme_jint, outWidth););
+
+#pragma endregion(font)
 	
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */
@@ -917,6 +1095,10 @@ SDP_STRUCT_DEF(translate,
 /** Define pen serial data union quicker. */
 #define SJME_SCRITCHUI_SDP_DEF(what) \
 	volatile SDX_STRUCT_NAME(pen, what) what
+
+/** Define font serial data union quicker. */
+#define SJME_SCRITCHUI_SDF_DEF(what) \
+	volatile SDX_STRUCT_NAME(font, what) what
 
 /**
  * Union for serial data.
@@ -956,12 +1138,15 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(containerRemoveAll);
 	SJME_SCRITCHUI_SDU_DEF(containerSetBounds);
 	SJME_SCRITCHUI_SDU_DEF(fontBuiltin);
+	SJME_SCRITCHUI_SDU_DEF(fontByFace);
+	SJME_SCRITCHUI_SDU_DEF(fontCount);
 	SJME_SCRITCHUI_SDU_DEF(fontDerive);
 	SJME_SCRITCHUI_SDU_DEF(fontList);
 	SJME_SCRITCHUI_SDU_DEF(hardwareGraphics);
 	SJME_SCRITCHUI_SDU_DEF(labelSetString);
 	SJME_SCRITCHUI_SDU_DEF(lafDpiProject);
 	SJME_SCRITCHUI_SDU_DEF(lafElementColor);
+	SJME_SCRITCHUI_SDU_DEF(lafMetric);
 	SJME_SCRITCHUI_SDU_DEF(listNew);
 	SJME_SCRITCHUI_SDU_DEF(menuBarNew);
 	SJME_SCRITCHUI_SDU_DEF(menuInsert);
@@ -989,7 +1174,7 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(windowSetMenuItemActivateListener);
 	SJME_SCRITCHUI_SDU_DEF(windowSetVisible);
 /* ------------------------------------------------------------------------ */
-	SJME_SCRITCHUI_SDP_DEF(graphicsCall);
+#pragma region(pencil)
 	SJME_SCRITCHUI_SDP_DEF(close);
 	SJME_SCRITCHUI_SDP_DEF(copyArea);
 	SJME_SCRITCHUI_SDP_DEF(drawArc);
@@ -1022,6 +1207,26 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDP_DEF(setParametersFrom);
 	SJME_SCRITCHUI_SDP_DEF(transferRegion);
 	SJME_SCRITCHUI_SDP_DEF(translate);
+#pragma endregion(pencil)
+/* ------------------------------------------------------------------------ */
+#pragma region(font)
+	SJME_SCRITCHUI_SDF_DEF(equals);
+	SJME_SCRITCHUI_SDF_DEF(metricCharDirection);
+	SJME_SCRITCHUI_SDF_DEF(metricCharValid);
+	SJME_SCRITCHUI_SDF_DEF(metricFontFace);
+	SJME_SCRITCHUI_SDF_DEF(metricFontName);
+	SJME_SCRITCHUI_SDF_DEF(metricFontStyle);
+	SJME_SCRITCHUI_SDF_DEF(metricPixelAscent);
+	SJME_SCRITCHUI_SDF_DEF(metricPixelBaseline);
+	SJME_SCRITCHUI_SDF_DEF(metricPixelDescent);
+	SJME_SCRITCHUI_SDF_DEF(metricPixelHeight);
+	SJME_SCRITCHUI_SDF_DEF(metricPixelLeading);
+	SJME_SCRITCHUI_SDF_DEF(metricPixelSize);
+	SJME_SCRITCHUI_SDF_DEF(pixelCharWidth);
+	SJME_SCRITCHUI_SDF_DEF(renderBitmap);
+	SJME_SCRITCHUI_SDF_DEF(renderChar);
+	SJME_SCRITCHUI_SDF_DEF(stringWidth);
+#pragma endregion(font)
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */
 } sjme_scritchui_serialDataUnion;
@@ -1044,6 +1249,12 @@ typedef struct sjme_scritchui_serialData
 	
 	/** The current state being invoked for. */
 	volatile sjme_scritchui state;
+
+	/** The graphics context (if any). */
+	volatile sjme_scritchui_pencil g;
+
+	/** The font context (if any). */
+	volatile sjme_scritchui_pencilFont inFont;
 	
 	/** The serial data. */
 	volatile sjme_scritchui_serialDataUnion data;
@@ -1209,19 +1420,30 @@ sjme_errorCode sjme_scritchui_coreSerial_containerSetBounds(
 sjme_errorCode sjme_scritchui_coreSerial_fontBuiltin(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontByFace(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* outFont,
+	sjme_attrOutNullable sjme_scritchui_pencilFontParam* outParams,
+	sjme_attrInValue sjme_scritchui_pencilFontFace inFace,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams);
+	
+sjme_errorCode sjme_scritchui_coreSerial_fontCount(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_jint* outCount);
 	
 sjme_errorCode sjme_scritchui_coreSerial_fontDerive(
 	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
-	sjme_attrInValue sjme_scritchui_pencilFontStyle inStyle,
-	sjme_attrInPositiveNonZero sjme_jint inPixelSize,
-	sjme_attrOutNotNull sjme_scritchui_pencilFont* outDerived);
+	sjme_attrOutNotNull sjme_scritchui_pencilFont* newFont,
+	sjme_attrOutNullable sjme_scritchui_pencilFontParam* newParams,
+	sjme_attrInNotNull sjme_scritchui_pencilFont oldFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* deriveParams);
 	
 sjme_errorCode sjme_scritchui_coreSerial_fontList(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrOutNotNull sjme_list(sjme_scritchui_pencilFont)* outFonts,
 	sjme_attrOutNotNull sjme_jint* outValid,
-	sjme_attrOutNullable sjme_jint* outMaxFonts);
+	sjme_attrOutNullable sjme_jint* outCount);
 	
 sjme_errorCode sjme_scritchui_coreSerial_hardwareGraphics(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -1257,6 +1479,12 @@ sjme_errorCode sjme_scritchui_coreSerial_lafElementColor(
 	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
 	sjme_attrOutNotNull sjme_jint* outRGB,
 	sjme_attrInValue sjme_scritchui_lafElementColorType elementColor);
+
+sjme_errorCode sjme_scritchui_coreSerial_lafMetric(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrOutNotNull sjme_jint* outValue,
+	sjme_attrInValue sjme_scritchui_lafMetricType metricType);
 
 sjme_errorCode sjme_scritchui_coreSerial_listNew(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -1421,7 +1649,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_drawChar(
 
 sjme_errorCode sjme_scritchpen_coreSerial_drawChars(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_jchar* s,
+	sjme_attrInNotNull const sjme_jchar* s,
 	sjme_attrInPositive sjme_jint o,
 	sjme_attrInPositive sjme_jint l,
 	sjme_attrInValue sjme_jint x,
@@ -1589,7 +1817,7 @@ sjme_errorCode sjme_scritchpen_coreSerial_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor);
+	sjme_attrOutNotNull sjme_scritchui_color* outColor);
 
 sjme_errorCode sjme_scritchpen_coreSerial_setAlphaColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -1620,7 +1848,8 @@ sjme_errorCode sjme_scritchpen_coreSerial_setStrokeStyle(
 	
 sjme_errorCode sjme_scritchpen_coreSerial_setFont(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
-	sjme_attrInNotNull sjme_scritchui_pencilFont font);
+	sjme_attrInNotNull sjme_scritchui_pencilFont font,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* params);
 
 sjme_errorCode sjme_scritchpen_coreSerial_setParametersFrom(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
@@ -1646,6 +1875,106 @@ sjme_errorCode sjme_scritchpen_coreSerial_translate(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint x,
 	sjme_attrInValue sjme_jint y);
+
+#pragma region(font)
+
+sjme_errorCode sjme_scritchui_coreSerial_fontEquals(
+	sjme_attrInNullable sjme_scritchui_pencilFont a,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* aParams,
+	sjme_attrInNullable sjme_scritchui_pencilFont b,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* bParams);
+	
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricCharDirection(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrInRange(-1, 1) sjme_jint* outDirection);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricCharValid(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_jboolean* outValid);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricFontFace(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontFace* outFace);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricFontName(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInOutNotNull sjme_lpcstr* outName);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricFontStyle(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrOutNotNull sjme_scritchui_pencilFontStyle* outStyle);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricPixelAscent(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInValue sjme_jboolean isMax,
+	sjme_attrOutNotNull sjme_jint* outAscent);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricPixelBaseline(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrOutNotNull sjme_jint* outBaseline);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricPixelDescent(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInValue sjme_jboolean isMax,
+	sjme_attrOutNotNull sjme_jint* outDescent);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricPixelHeight(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrOutNotNull sjme_jint* outHeight);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricPixelLeading(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outLeading);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontMetricPixelSize(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNegativeOnePositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outSize);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontPixelCharWidth(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrOutNotNull sjme_attrOutPositiveNonZero sjme_jint* outWidth);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontRenderBitmap(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrInNotNull sjme_jubyte* buf,
+	sjme_attrInPositive sjme_jint bufOff,
+	sjme_attrInPositive sjme_jint bufScanLen,
+	sjme_attrInPositive sjme_jint bufHeight,
+	sjme_attrOutNullable sjme_jint* outOffX,
+	sjme_attrOutNullable sjme_jint* outOffY);
+
+sjme_errorCode sjme_scritchui_coreSerial_fontRenderChar(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInPositive sjme_jint inCodepoint,
+	sjme_attrInNotNull sjme_scritchui_pencil inPencil,
+	sjme_attrInValue sjme_jint xPos,
+	sjme_attrInNotNull sjme_jint yPos,
+	sjme_attrOutNullable sjme_jint* nextXPos,
+	sjme_attrOutNullable sjme_jint* nextYPos);
+	
+sjme_errorCode sjme_scritchui_coreSerial_fontStringWidth(
+	sjme_attrInNotNull sjme_scritchui_pencilFont inFont,
+	sjme_attrInNullable const sjme_scritchui_pencilFontParam* inParams,
+	sjme_attrInNotNull const sjme_charSeq s,
+	sjme_attrInPositive sjme_jint o,
+	sjme_attrInPositive sjme_jint l,
+	sjme_attrOutNotNull sjme_jint* outWidth);
+
+#pragma endregion(font)
 
 /*--------------------------------------------------------------------------*/
 

@@ -115,7 +115,7 @@ sjme_errorCode sjme_scritchui_core_intern_getChoice(
 		
 			/* Unknown. */
 		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
+			return sjme_error_fatal(SJME_ERROR_INVALID_ARGUMENT);
 	}
 	
 	/* Success! */

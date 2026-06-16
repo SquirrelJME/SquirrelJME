@@ -1,0 +1,29 @@
+# Supply Chain
+
+This is the documentation of the SquirrelJME supply chain. Effectively, this
+is the list of projects, services, and otherwise that are hard and/or soft
+dependencies that the project relies upon for existing. This only includes
+direct proper noun dependencies or direct pseudo dependencies.
+
+This does not include obvious things such as an internet connection, package
+repositories, developers, or operating systems.
+
+SquirrelJME has the goal to be as self-hosted and self-reliable as possible,
+it is a preservation platform.
+
+ * _C89 Compiler_
+ * [CMake](https://cmake.org)
+ * [Fossil](https://www.fossil-scm.org/)
+   * This is for source control and history, the project does not rely upon it
+     to exist and can work off extracted source archives. If you have the
+     source code you do not need Fossil, just that you will lose out on getting
+     the commit hash for the version number.
+ * [Gradle](https://gradle.com)
+ * [Install4J](https://www.ej-technologies.com/install4j)
+   * This is not strictly needed, however it provides convenient installers
+     which are simple and easy to use.
+ * [Jasmin](https://jasmin.sourceforge.net)
+ * _Java 8 Compiler_
+ * [ProGuard](https://www.guardsquare.com/proguard)
+   * This is not strictly needed, it is intended to be used to shrink the
+     resultant Jars as much as possible.

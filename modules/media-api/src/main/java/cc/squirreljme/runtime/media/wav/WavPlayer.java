@@ -23,7 +23,7 @@ import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import cc.squirreljme.runtime.media.AbstractVolumeControl;
-import java.io.DataInputStream;
+import cc.squirreljme.runtime.media.pcm.*;
 import net.multiphasicapps.io.DataEndianess;
 import net.multiphasicapps.io.ExtendedDataInputStream;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +46,7 @@ public class WavPlayer
 
 	/** The decoder instance for compressed PCM wav data */
 	@SquirrelJMEVendorApi
-	private WavDecoder _decoder;
+	private PCMDecoder _decoder;
 
 	/** The un-realized input stream. */
 	@SquirrelJMEVendorApi
@@ -75,6 +75,10 @@ public class WavPlayer
 	/** How many valid audio samples the wav data in use has */
 	@SquirrelJMEVendorApi
 	private int _wavSampleLen;
+
+	/** How many bytes are used for one second of playback */
+	@SquirrelJMEVendorApi
+	private int _wavBytesPerSec;
 
 	/** Current sample marker for wav audio rendering. */
 	@SquirrelJMEVendorApi
@@ -106,6 +110,9 @@ public class WavPlayer
 		// For later realization
 		this._unrealizedIn = __in;
 
+		// Start at max volume
+		this._volumeMult = 100;
+
 		// Register volume control so we can properly set the gain
 		this.registerControl(new AbstractVolumeControl(this));
 	}
@@ -118,111 +125,131 @@ public class WavPlayer
 	public void render(int __format, int __rate, int __channels, Object __buf,
 		int __off, int __len)
 	{
-		int curSample = this._curSample;
-		int sampleLen = this._wavSampleLen;
-		byte volMult = this._volumeMult;
-		long wavSample;
-		int format = this._wavFormat;
-		byte[] wavData = this._wavData;
+		// Nothing to write into yet. Return early.
+		if (__buf == null || __len == 0)
+			return;
 
-		if (format == __WavTools__.FORMAT_ALAW_WAV)
+		try
 		{
-			short[] sbuf = (short[])__buf;
-			curSample += this._decoder.decodeALaw(this._wavData, curSample,
-				sampleLen, sbuf,  __off, __len, this._volumeMult);
-		}
-		else if (format == __WavTools__.FORMAT_MULAW_WAV)
-		{
-			short[] sbuf = (short[])__buf;
-			curSample += this._decoder.decodeULaw(this._wavData, curSample,
-				sampleLen, sbuf, __off, __len, this._volumeMult);
-		}
-		else if (format == __WavTools__.FORMAT_IMA_ADPCM)
-		{
-			short[] sbuf = (short[])__buf;
-			curSample += this._decoder.decodeIMAADPCM(this._wavData, sampleLen,
-				curSample, this._wavChannels,this._wavFrameSize, sbuf, __off,
-				__len, this._volumeMult);
-		}
+			int curSample = this._curSample;
+			int sampleLen = this._wavSampleLen;
+			byte volMult = this._volumeMult;
+			long wavSample;
+			int format = this._wavFormat;
+			byte[] wavData = this._wavData;
 
-		// Else, it's a bog-standard PCM wav, we just need to move it to output
-		else
-		{
-			int toCopy = Math.min(__len, sampleLen - curSample);
-			switch (this._wavBits)
+			// ADPCM has 2 samples per byte, which means we pass sampleLen / 2
+			if (format == __WavTools__.FORMAT_IMA_ADPCM)
+				sampleLen /= 2;
+
+			// All of these end up converted to a 16-bit PCM WAV.
+			if (format == __WavTools__.FORMAT_ALAW_WAV ||
+				format == __WavTools__.FORMAT_MULAW_WAV ||
+				format == __WavTools__.FORMAT_IMA_ADPCM)
 			{
-				case 8:
-					byte[] bbuf = (byte[])__buf;
+				short[] sbuf = (short[])__buf;
+				curSample += this._decoder.decode(this._wavData, sampleLen,
+					curSample, this._wavChannels,this._wavFrameSize, sbuf,
+					__len, __off, this._volumeMult);
+			}
 
-					for (int i = 0; i < toCopy; i++) 
-					{
-						// We have each sample taking two bytes of data here
-						wavSample = (wavData[curSample++] & 0xFF) * volMult /
-							100;
+			// Else, it's a bog-standard PCM wav, we just need to move it to
+			// output
+			else
+			{
+				int toCopy = Math.min(__len, sampleLen - curSample);
+				switch (this._wavBits)
+				{
+					case 8:
+						byte[] bbuf = (byte[])__buf;
 
-						bbuf[__off + i] = (byte) (wavSample & 0xFF);
-					}
-					break;
-
-				case 16:
-					short[] sbuf = (short[])__buf;
-					for (int i = 0; i < toCopy; i++) 
-					{
-						// We have each sample taking two bytes of data here
-						wavSample = (((wavData[curSample++] & 0xFF) << 8) |
-							((wavData[curSample++] & 0xFF))) * volMult / 100;
-
-						sbuf[__off + i] = (short) wavSample;
-					}
-					break;
-
-				case 32:
-					if (__format == AudioStreamFormat.INT_S32)
-					{
-						int[] ibuf = (int[]) __buf;
-
-						for (int i = 0; i < toCopy; i++) 
+						for (int i = 0; i < toCopy; i++)
 						{
-							// We have each sample taking 4 bytes of data here
-							wavSample = (((wavData[curSample++] & 0xFF)
-								<< 24) | ((wavData[curSample++] & 0xFF)
-								<< 16) | ((wavData[curSample++] & 0xFF)
-								<< 8) | (wavData[curSample++] & 0xFF)) *
-								volMult / 100;
+							// We have each sample taking two bytes here
+							wavSample = (wavData[curSample++] & 0xFF) * volMult
+								/ 100;
 
-							ibuf[__off + i] = (int) wavSample;
+							bbuf[__off + i] = (byte) (wavSample & 0xFF);
 						}
-					}
-					else if (__format == AudioStreamFormat.FLOAT_F32)
-					{
-						float[] fbuf = (float[]) __buf;
+						break;
 
-						for (int i = 0; i < toCopy; i++) 
+					case 16:
+						short[] sbuf = (short[])__buf;
+						for (int i = 0; i < toCopy; i++)
 						{
-							wavSample = (((wavData[curSample++] & 0xFF)
-								<< 24) | ((wavData[curSample++] & 0xFF)
-								<< 16) | ((wavData[curSample++] & 0xFF)
-								<< 8) | (wavData[curSample++] & 0xFF)) *
-								volMult / 100;
+							// We have each sample taking two bytes here
+							wavSample = (((wavData[curSample++] & 0xFF) << 8) |
+								((wavData[curSample++] & 0xFF))) * volMult /
+								100;
 
-							fbuf[__off + i] = (wavSample /
-								(float) Integer.MAX_VALUE);
+							sbuf[__off + i] = (short) wavSample;
 						}
-					}
-					break;
+						break;
+
+					case 32:
+						if (__format == AudioStreamFormat.INT_S32)
+						{
+							int[] ibuf = (int[]) __buf;
+
+							for (int i = 0; i < toCopy; i++)
+							{
+								// We have each sample taking 4 bytes here
+								wavSample = (((wavData[curSample++] & 0xFF)
+									<< 24) | ((wavData[curSample++] & 0xFF)
+									<< 16) | ((wavData[curSample++] & 0xFF)
+									<< 8) | (wavData[curSample++] & 0xFF)) *
+									volMult / 100;
+
+								ibuf[__off + i] = (int) wavSample;
+							}
+						}
+						else if (__format == AudioStreamFormat.FLOAT_F32)
+						{
+							float[] fbuf = (float[]) __buf;
+
+							for (int i = 0; i < toCopy; i++)
+							{
+								wavSample = (((wavData[curSample++] & 0xFF)
+									<< 24) | ((wavData[curSample++] & 0xFF)
+									<< 16) | ((wavData[curSample++] & 0xFF)
+									<< 8) | (wavData[curSample++] & 0xFF)) *
+									volMult / 100;
+
+								fbuf[__off + i] = (wavSample /
+									(float) Integer.MAX_VALUE);
+							}
+						}
+						break;
+				}
+			}
+			this._curSample = curSample;
+
+			// Check if we reached the end of the wav file.
+			if ((curSample >= sampleLen))
+			{
+				try
+				{
+					if (super.decrementLoop())
+						this.stopViaMedia();
+					else
+						this.loopViaMedia();
+				}
+				catch (MediaException __e)
+				{
+					__e.printStackTrace();
+				}
 			}
 		}
 
-		this._curSample = curSample;
-
-		// Check if we reached the end of the wav file.
-		if ((curSample == sampleLen))
+		// If we're accessing out bounds, it means the header's sample length
+		// does not represent the actual amount of samples in the data array,
+		// as such, we must stop (or loop) when it happens.
+		catch (ArrayIndexOutOfBoundsException e)
 		{
 			try
 			{
 				if (super.decrementLoop())
 					this.stopViaMedia();
-				
 				else
 					this.loopViaMedia();
 			}
@@ -241,20 +268,40 @@ public class WavPlayer
 	protected void becomingPrefetched()
 		throws MediaException
 	{
-		synchronized (this)
-		{
-			// Create the native audio stream
-			this._stream = AbstractPlayer.stream(
-				AudioStreamFormat.AUTOMATIC, AudioStreamRate.AUTOMATIC,
-				AudioStreamChannels.MONO);
-		}
+		int format = this._wavFormat;
+		
+		if (format == __WavTools__.FORMAT_PCM_WAV ||
+			format == __WavTools__.FORMAT_FLOAT_WAV)
+			return;
+		else if (format == __WavTools__.FORMAT_ALAW_WAV)
+			this._decoder = new ALawDecoder();
+		else if (format == __WavTools__.FORMAT_MULAW_WAV)
+			this._decoder = new MULawDecoder();
+		else if (format == __WavTools__.FORMAT_IMA_ADPCM)
+			this._decoder = new IMAADPCMDecoder();
+		// {@squirreljme.error EA0u Unsupported Media Format
+		else
+			throw new MediaException("EA0u");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2025/12/25
+	 */
 	@Override
 	protected void becomingPrimed()
 		throws MediaException
 	{
-		throw Debugging.todo();
+		synchronized (this)
+		{
+			// If the native stream already exists, we can return right away
+			if (this._stream != null)
+				return;
+
+			// Create the native audio stream
+			this._stream = AbstractPlayer.stream(AudioStreamFormat.AUTOMATIC,
+				AudioStreamRate.AUTOMATIC, AudioStreamChannels.MONO);
+		}
 	}
 	
 	/**
@@ -299,6 +346,7 @@ public class WavPlayer
 					this._wavChannels = (byte) wavProps[2];
 					this._wavFrameSize = wavProps[3];
 					this._wavSampleLen = wavProps[4];
+					this._wavBytesPerSec = wavProps[6];
 
 					if (this._wavFormat == __WavTools__.FORMAT_PCM_WAV)
 						this._wavBits = (byte) wavProps[5];
@@ -309,7 +357,6 @@ public class WavPlayer
 						this._wavFormat == __WavTools__.FORMAT_IMA_ADPCM)
 					{
 						this._wavBits = (byte) 16;
-						this._decoder = new WavDecoder();
 					}
 
 					// Now we're able to get only the sample data
@@ -460,9 +507,29 @@ public class WavPlayer
 	protected void clockFastForward(long __micros)
 		throws MediaException
 	{
-		// TODO: This is for compatibility with old code, for variable width
-		// TODO: formats this should be handled here just for those
-		this.clockSet(__micros);
+		// This doesn't actually operate in microsecond intervals, instead, we
+		// set the current sample marker to the sample that's closest to the
+		// specified microsecond position.
+		int curSample = (int) ((__micros / 1_000_000f) *
+			this._wavSampleRate * this._wavChannels);
+		int wavFormat = this._wavFormat;
+		int maxSample = this._wavSampleLen;
+
+		if (curSample < 0)
+			this._curSample = 0;
+		else if (curSample > maxSample)
+			this._curSample = maxSample / 2;
+
+		// The only fast-forwarding format supported right now is IMA ADPCM.
+		//
+		// We need to pass the data array because IMA ADPCM gets predictor
+		// and table indices from the samples it decodes, so we effectively
+		// need to decode silently until we reach the stopping point. This will
+		// probably be required for fast-forwarding other formats as well.
+		else
+			if (wavFormat == __WavTools__.FORMAT_IMA_ADPCM)
+				this._curSample = this._decoder.reset(curSample, this._wavData,
+				this._wavChannels, this._wavFrameSize);
 	}
 
 	/**
@@ -472,9 +539,15 @@ public class WavPlayer
 	@Override
 	protected long clockGet()
 	{
-		// Convert the current sample marker into its microsecond equivalent.
-		return (long) (1_000_000L * ((float) this._curSample /
-			this._wavSampleRate));
+		int curSample = this._curSample;
+
+		// For IMA ADPCM (and future ADPCM formats), each index of the byte
+		// data actually holds two samples. Thus we must multiply the current
+		// sample marker by 2 when returning current media time.
+		if (this._wavFormat == __WavTools__.FORMAT_IMA_ADPCM)
+			curSample *= 2;
+
+		return (long) ((curSample * 1_000_000L) / this._wavBytesPerSec);
 	}
 
 	/**
@@ -485,23 +558,17 @@ public class WavPlayer
 	protected void clockSet(long __micros)
 		throws MediaException
 	{
-		// This one doesn't actually operate in microsecond intervals, instead,
-		// it sets the current sample marker to the sample that's closest to
-		// the specified microsecond position.
-		int curSample = (int) ((__micros / 1_000_000f) *
-			this._wavSampleRate);
+		// As in clockFastForward(long), we set time based on closest sample.
+		int curSample = (int) ((__micros * this._wavSampleRate *
+			this._wavChannels) / 1_000_000);
+		int maxSample = this._wavSampleLen;
 
-		// Due to how IMA ADPCM works, we should reset it to the start,
-		// then fast-forward it to the 'curSample' value set here.
-		//
-		// We need to pass the data array because IMA ADPCM gets predictor
-		// and table indices from the samples it decodes, so we effectively
-		// need to decode silently until we reach the stopping point.
-		if (this._wavFormat == __WavTools__.FORMAT_IMA_ADPCM)
-			this._curSample = this._decoder.resetADPCM(curSample,
-				this._wavData, this._wavChannels, this._wavFrameSize);
-		else
-			this._curSample = curSample;
+		if (curSample < 0)
+			this._curSample = 0;
+		else if (curSample > maxSample)
+			this._curSample = maxSample;
+ 		else
+ 			this._curSample = curSample;
 	}
 	
 	/**
@@ -511,11 +578,8 @@ public class WavPlayer
 	@Override
 	protected boolean resetFastForward()
 	{
-		// Only variable width formats require fast-forward based setMediaTime
-		int format = this._wavFormat;
-		return format == __WavTools__.FORMAT_ALAW_WAV ||
-			format == __WavTools__.FORMAT_MULAW_WAV ||
-			format == __WavTools__.FORMAT_IMA_ADPCM;
+		// IMA ADPCM is the only format that currently requires fast-forward
+		return this._wavFormat == __WavTools__.FORMAT_IMA_ADPCM;
 	}
 	
 	/**
@@ -526,9 +590,10 @@ public class WavPlayer
 	protected long determineDuration()
 		throws MediaException
 	{
+		int sampleLen = this._wavSampleLen;
+
 		// Duration is just the amount of samples divided by the sample rate
-		return (long) (1_000_000L * ((float) this._wavSampleLen /
-			this._wavSampleRate));
+		return (long) ((sampleLen * 1_000_000L) / this._wavBytesPerSec);
 	}
 
 	/**

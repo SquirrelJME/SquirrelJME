@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -51,7 +52,7 @@ public final class ScratchPadOutputTransaction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/02
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	ScratchPadOutputTransaction(ScratchPadStore __store, int __pos,
 		int __length)
 		throws NullPointerException

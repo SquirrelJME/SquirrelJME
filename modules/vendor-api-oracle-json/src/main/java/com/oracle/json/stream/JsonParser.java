@@ -13,10 +13,12 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import com.oracle.json.JsonException;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * This class provides a stream based reading of JSON data, it reads the input
- * in terms of events. This is used similar to a {@link java.util.Iterator} in
+ * in terms of events. This is used similar to a {@link Iterator} in
  * that you use {@link #hasNext()} and {@link #next()} to obtain the next
  * processed bits. This does not form any automatically structured objects or
  * arrays.
@@ -118,7 +120,7 @@ public interface JsonParser
 	 * @throws JsonException A standard error, {@link IOException} may be
 	 * wrapped if it occurs.
 	 * @throws JsonParsingException Invalid JSON data was detected.
-	 * @throws java.util.NoSuchElementException If there is nothing left.
+	 * @throws NoSuchElementException If there is nothing left.
 	 * @since 2014/07/25
 	 */
 	@Api

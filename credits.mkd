@@ -12,16 +12,22 @@ is used, refer to that for library bring-ins.
      * Android Updates.
      * Mingw cross compilation.
  * _"AShiningRay"_ 
-   * Nokia Graphics APIs
-   * Nokia Sound APIs
+   * ADPCM support in MLDs.
+   * Nokia Graphics APIs.
+   * Nokia Sound APIs.
+   * Samsung APIs.
    * ScritchUI:
      * GTK2 Interface:
        * Memory leak fixes.
      * Core Library:
        * `copyArea()` implementation.
-       * Polygon and arc drawing implementations.
-       * Fixes and additions to rotation/scaling translations.
-   * WAVE File Playback
+       * `drawArc()` implementation.
+       * `drawRoundRect()` implementation.
+       * `fillArc()` implementation.
+       * `fillPoly()` implementation.
+       * `fillRoundRect()` implementation.
+       * Rotation and scaling transformation fixes.
+   * WAVE File Playback.
  * _"crystalct"_
    * RatufaCoat updates related to LibRetro:
      * PS3 Toolchain updates.

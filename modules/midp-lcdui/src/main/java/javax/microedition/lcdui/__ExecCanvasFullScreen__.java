@@ -11,6 +11,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
@@ -21,7 +22,7 @@ import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
  *
  * @since 2025/12/23
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 final class __ExecCanvasFullScreen__
 	implements Runnable
 {
@@ -31,7 +32,7 @@ final class __ExecCanvasFullScreen__
 	/** Is full-screen being set? */
 	private final boolean _isFull;
 	
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	__ExecCanvasFullScreen__(Canvas __canvas, boolean __isFull)
 	{
 		this._canvas = __canvas;

@@ -13,6 +13,7 @@
 #define JARSHELF_CLASSNAME "cc/squirreljme/emulator/EmulatedJarPackageShelf"
 
 #define FORWARD_CLASS "cc/squirreljme/jvm/mle/JarPackageShelf"
+#define FORWARD_CLASS_NAME JarPackageShelf
 #define FORWARD_NATIVE_CLASS JARSHELF_CLASSNAME
 
 #define FORWARD_DESC_equals \

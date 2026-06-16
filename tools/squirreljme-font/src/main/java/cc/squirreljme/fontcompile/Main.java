@@ -50,10 +50,15 @@ public class Main
 	public static void main(String... __args)
 		throws IOException
 	{
-		if (__args == null || __args.length != 2 ||
+		if (__args == null || __args.length < 2 ||
 			__args[0] == null || __args[1] == null)
 			throw new IllegalArgumentException(
-				"Usage: [in.bdf|in.strike] [out.zip|-|out.c|-.c]");
+				"Usage: [in.bdf|in.strike] [out.zip|-|out.c|-.c] " +
+					"(--compress)");
+		
+		// Compressing?
+		boolean doCompress = (__args.length >= 3 && 
+			__args[2].equals("--compress"));
 		
 		// Writing to stdout?
 		boolean stdout = "-".equals(__args[1]) ||
@@ -89,7 +94,7 @@ public class Main
 				StandardOpenOption.WRITE)))
 			{
 				// Setup compiler
-				FontCompiler compiler = new FontCompiler(inFont);
+				FontCompiler compiler = new FontCompiler(inFont, doCompress);
 				
 				// Perform compilation
 				CompiledFont compiled = compiler.run();

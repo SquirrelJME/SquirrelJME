@@ -14,7 +14,7 @@ set(SQUIRRELJME_JAR_DOWNLOAD_PATH
 	"${SQUIRRELJME_JAR_DOWNLOAD_DIR}/${SQUIRRELJME_JAR_BASENAME}")
 
 # Can only download if Fossil is available
-if(Fossil_EXECUTABLE)
+if(SQUIRRELJME_REPO_FOSSIL)
 	# Determine the UV path
 	unset(uvPath)
 	squirreljme_uv_path(uvPath "${SQUIRRELJME_JAR_BASENAME}")

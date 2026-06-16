@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
@@ -130,7 +131,7 @@ public final class DisplayState
 	 * @param __displayable The current displayable to set.
 	 * @since 2024/07/27
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	void __setCurrent(DisplayableState __displayable)
 	{
 		synchronized (this)

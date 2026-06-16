@@ -880,3 +880,19 @@ sjme_jint* sjme_util_memUnaligned32W(void* addr, sjme_jint v)
 }
 
 #endif
+
+#if !defined(SJME_CONFIG_SIZEOF_SIZE_T) || SJME_CONFIG_SIZEOF_SIZE_T != 4
+
+sjme_jint sjme_util_sizeToInt(size_t in)
+{
+	/* size_t is an unsigned value that generally is larger than int. */
+	/* However, this may not always be the case as a compiler could say */
+	/* support only 16-bit size_t with a 32-bit sjme_jint which is long. */
+	/* There should be no overflow as we are promoting to a larger type. */
+	if (sjme_noLint(sizeof(size_t) < sizeof(sjme_jint)) || in < INT32_MAX)
+		return (sjme_jint)in;
+	return INT32_MAX;
+}
+
+#endif
+

@@ -19,7 +19,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+	sjme_attrOutNotNull sjme_scritchui_color* outColor)
 {
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -36,7 +36,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorPfToRgb(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInValue sjme_jint v,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+	sjme_attrOutNotNull sjme_scritchui_color* outColor)
 {
 	sjme_jint numCol, aa, rr, gg, bb, argb;
 	sjme_jboolean isIndexed;
@@ -234,7 +234,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorPfToRgb(
 sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint argb,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+	sjme_attrOutNotNull sjme_scritchui_color* outColor)
 {
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -246,7 +246,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRGB(
 sjme_errorCode sjme_scritchpen_corePrim_mapColorFromRaw(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint v,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+	sjme_attrOutNotNull sjme_scritchui_color* outColor)
 {
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -259,7 +259,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_gfx_pixelFormat pf,
 	sjme_attrInValue sjme_jint argb,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+	sjme_attrOutNotNull sjme_scritchui_color* outColor)
 {
 	sjme_jint v, aa, rr, gg, bb, ii;
 	sjme_jint i, numCol, d, bestCol, bestColScore, thisColScore;
@@ -274,13 +274,13 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 		
 	/* Set base color properties. */
 	aa = (argb >> 24) & 0xFF;
-	outColor->a = aa;
+	outColor->a = (sjme_jubyte)aa;
 	rr = (argb >> 16) & 0xFF;
-	outColor->r = rr;
+	outColor->r = (sjme_jubyte)rr;
 	gg = (argb >> 8) & 0xFF;
-	outColor->g = gg;
+	outColor->g = (sjme_jubyte)gg;
 	bb = (argb) & 0xFF;
-	outColor->b = bb;
+	outColor->b = (sjme_jubyte)bb;
 	
 	/* Find closest indexed color. */
 	ii = -1;
@@ -491,7 +491,7 @@ sjme_errorCode sjme_scritchpen_corePrim_mapColorRgbToPf(
 	}
 		
 	/* Store raw colors. */
-	outColor->i = ii;
+	outColor->i = (sjme_jubyte)ii;
 	outColor->v = v;
 	outColor->argb = argb;
 	
@@ -635,7 +635,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 }
 
 sjme_errorCode sjme_scritchpen_coreUtil_applyRotateScale(
-	sjme_attrInOutNotNull sjme_scritchui_pencilMatrix* adjMatrix,
+	sjme_attrInOutNotNull sjme_scritchui_matrix* adjMatrix,
 	sjme_attrInValue sjme_scritchui_pencilTranslate inTrans,
 	sjme_attrInPositive sjme_jint wSrc,
 	sjme_attrInPositive sjme_jint hSrc,
@@ -768,7 +768,7 @@ sjme_errorCode sjme_scritchpen_core_mapColor(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jboolean fromRaw,
 	sjme_attrInValue sjme_jint inRgbOrRaw,
-	sjme_attrOutNotNull sjme_scritchui_pencilColor* outColor)
+	sjme_attrOutNotNull sjme_scritchui_color* outColor)
 {
 	if (g == NULL || outColor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -782,7 +782,7 @@ sjme_errorCode sjme_scritchpen_core_setAlphaColor(
 	sjme_attrInValue sjme_jint argb)
 {
 	sjme_errorCode error;
-	sjme_scritchui_pencilColor* target;
+	sjme_scritchui_color* target;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -811,7 +811,7 @@ sjme_errorCode sjme_scritchpen_core_setBlendingMode(
 	sjme_attrInRange(0, SJME_NUM_SCRITCHUI_PENCIL_BLENDS)
 		sjme_scritchui_pencilBlendingMode mode)
 {
-	sjme_scritchui_pencilColor* color;
+	sjme_scritchui_color* color;
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -913,10 +913,7 @@ sjme_errorCode sjme_scritchpen_core_setDefaultFont(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Reset to use the default font. */
-	g->state.font = g->defaultFont;
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
+	return g->apiInThread->setFont(g, g->defaultFont, NULL);
 }
 
 sjme_errorCode sjme_scritchpen_core_setParametersFrom(
@@ -950,10 +947,11 @@ sjme_errorCode sjme_scritchpen_core_setParametersFrom(
 		error |= g->apiInThread->setBlendingMode(g, from->state.blending);
 	
 	/* If the other has no font, then just set the default. */
-	if (from->state.font == NULL)
+	if (from->state.font.font == NULL)
 		error |= g->apiInThread->setDefaultFont(g);
 	else
-		error |= g->apiInThread->setFont(g, from->state.font);
+		error |= g->apiInThread->setFont(g, from->state.font.font,
+			&from->state.font.params);
 	
 	/* Re-translate to target coordinate system. */
 	error |= g->apiInThread->translate(g,

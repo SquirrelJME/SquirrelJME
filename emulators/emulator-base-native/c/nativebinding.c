@@ -16,6 +16,11 @@
 #include "squirreljme.h"
 #include "sjme/dylib.h"
 
+/** Perform MLE initialization call. */
+#define MLE_INIT_FUNC_CALL(mleGroupId) \
+	rv |= SJME_TOKEN_PASTE_PP(SJME_TOKEN_PASTE_PP(mle, mleGroupId), \
+		Init)(env, classy)
+
 static sjme_jboolean sjme_jni_abortHandler(sjme_errorCode error)
 {
 	jsize resultLen;
@@ -99,20 +104,23 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 	rv |= mleMidiInit(env, classy);
 	rv |= mleNativeArchiveInit(env, classy);
 	rv |= mleObjectInit(env, classy);
-	rv |= mlePencilInit(env, classy);
-	rv |= mlePencilFontInit(env, classy);
 	rv |= mleReflectionInit(env, classy);
-	rv |= mleRuntimeInit(env, classy);
 	rv |= mleTaskInit(env, classy);
-	rv |= mleTerminalInit(env, classy);
-	rv |= mleTypeInit(env, classy);
-	rv |= mleThreadInit(env, classy);
 
 	/* ScritchUI. */
 	rv |= mleDylibBaseObjectInit(env, classy);
 	rv |= mleNativeScritchCallbackInit(env, classy);
 	rv |= mleNativeScritchDylibInit(env, classy);
-	rv |= mleNativeScritchInterfaceInit(env, classy);
+
+	/* MLE */
+	MLE_INIT_FUNC_CALL(NativeScritchDylibEx);
+	MLE_INIT_FUNC_CALL(NativeScritchInterface);
+	MLE_INIT_FUNC_CALL(PencilFontShelf);
+	MLE_INIT_FUNC_CALL(PencilShelf);
+	MLE_INIT_FUNC_CALL(RuntimeShelf);
+	MLE_INIT_FUNC_CALL(TerminalShelf);
+	MLE_INIT_FUNC_CALL(ThreadShelf);
+	MLE_INIT_FUNC_CALL(TypeShelf);
 
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* It happened! */

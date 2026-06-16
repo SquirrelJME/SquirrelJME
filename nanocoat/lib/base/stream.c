@@ -671,15 +671,15 @@ sjme_errorCode sjme_stream_outputWriteValueJ(
 			break;
 
 		case SJME_BASIC_TYPE_ID_BYTE:
-			value.b = va_arg(va, sjme_jbyte_promoted);
+			value.b = (sjme_jbyte)va_arg(va, sjme_jbyte_promoted);
 			break;
 
 		case SJME_BASIC_TYPE_ID_SHORT:
-			value.s = va_arg(va, sjme_jshort_promoted);
+			value.s = (sjme_jbyte)va_arg(va, sjme_jshort_promoted);
 			break;
 
 		case SJME_BASIC_TYPE_ID_CHARACTER:
-			value.c = va_arg(va, sjme_jchar_promoted);
+			value.c = (sjme_jchar)va_arg(va, sjme_jchar_promoted);
 			break;
 
 		case SJME_BASIC_TYPE_ID_INTEGER:

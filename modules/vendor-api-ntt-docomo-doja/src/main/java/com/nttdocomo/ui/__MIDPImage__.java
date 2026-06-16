@@ -84,7 +84,7 @@ final class __MIDPImage__
 	 * @since 2025/05/05
 	 */
 	@Override
-	protected void becomingUnrealized()
+	protected void becomingDeallocated()
 	{
 		synchronized (this)
 		{

@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.swm;
 
 import java.io.OutputStream;
 import java.util.Map;
+import javax.microedition.midlet.MIDlet;
 import javax.microedition.swm.Suite;
 import javax.microedition.swm.Task;
 import javax.microedition.swm.TaskStatus;
@@ -40,7 +41,7 @@ public interface ExtendedTaskManager
 	 *
 	 * @param __s The suite to start, must be an application.
 	 * @param __cn The class which extends
-	 * {@link javax.microedition.midlet.MIDlet} and acts as the main entry
+	 * {@link MIDlet} and acts as the main entry
 	 * point for the program.
 	 * @param __sprops System properties to pass to the started task.
 	 * @param __args Arguments to pass to the called program.
@@ -49,7 +50,7 @@ public interface ExtendedTaskManager
 	 * @return The task which was created.
 	 * @throws IllegalArgumentException If the suite is a library, the given
 	 * class does not exist, or the given class does not extend
-	 * {@link javax.microedition.midlet.MIDlet}.
+	 * {@link MIDlet}.
 	 * @throws IllegalStateException If the suite has been removed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/02/02

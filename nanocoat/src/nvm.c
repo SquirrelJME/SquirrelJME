@@ -36,7 +36,7 @@ const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS] =
 	sizeof(sjme_jchar),
 };
 
-const sjme_jint sjme_nvm_typePromote[SJME_NUM_BASIC_TYPE_IDS] =
+const sjme_basicTypeId sjme_nvm_typePromote[SJME_NUM_BASIC_TYPE_IDS] =
 {
 	/* Basic types. */
 	SJME_JAVA_TYPE_ID_INTEGER,

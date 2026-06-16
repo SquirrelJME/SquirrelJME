@@ -43,6 +43,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -96,7 +97,7 @@ public class AdditionalManifestPropertiesTaskAction
 			SquirrelJMEPluginConfiguration.configuration(project);
 		
 		// Setup manifest to write into
-		java.util.jar.Manifest javaManifest = new java.util.jar.Manifest();
+		Manifest javaManifest = new Manifest();
 		Attributes attributes = javaManifest.getMainAttributes();
 		
 		// Set manifest to 1.0

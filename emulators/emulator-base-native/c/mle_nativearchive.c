@@ -13,30 +13,22 @@
 #define NAME_ENTRY "cc/squirreljme/jvm/mle/brackets/NativeArchiveEntryBracket"
 
 #define FORWARD_CLASS "cc/squirreljme/jvm/mle/NativeArchiveShelf"
+#define FORWARD_CLASS_NAME NativeArchive
 #define FORWARD_NATIVE_CLASS "cc/squirreljme/emulator/EmulatedNativeArchiveShelf"
 
-#define FORWARD_DESC_archiveClose "(" \
-	DESC_CLASS(NAME_ARCHIVE) \
-	")" DESC_VOID
-#define FORWARD_DESC_archiveEntry "(" \
-	DESC_CLASS(NAME_ARCHIVE) \
-	DESC_STRING \
-	")" DESC_CLASS(NAME_ENTRY)
-#define FORWARD_DESC_archiveOpenZip "(" \
-	DESC_ARRAY(DESC_BYTE) \
-	DESC_INT \
-	DESC_INT \
-	")" DESC_CLASS(NAME_ARCHIVE)
-#define FORWARD_DESC_entryIsDirectory "(" \
-	DESC_CLASS(NAME_ENTRY) \
-	")" DESC_BOOLEAN
-#define FORWARD_DESC_entryOpen "(" \
-	DESC_CLASS(NAME_ENTRY) \
-	")" DESC_CLASS("java/io/InputStream")
-#define FORWARD_DESC_entryUncompressedSize "(" \
-	DESC_CLASS(NAME_ENTRY) \
-	")" DESC_LONG
-	
+#define FORWARD_DESC_archiveClose DESC_METHOD(DESC_VOID,  \
+	DESC_CLASS(NAME_ARCHIVE))
+#define FORWARD_DESC_archiveEntry DESC_METHOD(DESC_CLASS(NAME_ENTRY),  \
+	DESC_CLASS(NAME_ARCHIVE) DESC_STRING)
+#define FORWARD_DESC_archiveOpenZip DESC_METHOD(DESC_CLASS(NAME_ARCHIVE),  \
+	DESC_ARRAY(DESC_BYTE) DESC_INT DESC_INT)
+#define FORWARD_DESC_entryIsDirectory DESC_METHOD(DESC_BOOLEAN,  \
+	DESC_CLASS(NAME_ENTRY))
+#define FORWARD_DESC_entryOpen DESC_METHOD(DESC_INPUT_STREAM,  \
+	DESC_CLASS(NAME_ENTRY))
+#define FORWARD_DESC_entryUncompressedSize DESC_METHOD(DESC_LONG,  \
+	DESC_CLASS(NAME_ENTRY))
+
 FORWARD_IMPL_VOID(NativeArchive, archiveClose, \
 	FORWARD_IMPL_args(jobject archive), \
 	FORWARD_IMPL_pass(archive))

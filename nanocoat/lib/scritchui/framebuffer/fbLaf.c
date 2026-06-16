@@ -56,7 +56,6 @@ sjme_errorCode sjme_scritchui_fb_lafElementColor(
 	
 	/* Recover wrapped state. */
 	wrappedState = inState->wrappedState;
-	
 	if (wrappedState == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
@@ -68,4 +67,31 @@ sjme_errorCode sjme_scritchui_fb_lafElementColor(
 	/* Just forward it. */
 	return wrappedState->apiInThread->lafElementColor(wrappedState,
 		wrappedComponent, outRGB, elementColor);
+}
+
+sjme_errorCode sjme_scritchui_fb_lafMetric(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNullable sjme_scritchui_uiComponent inContext,
+	sjme_attrOutNotNull sjme_jint* outValue,
+	sjme_attrInValue sjme_scritchui_lafMetricType metricType)
+{
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiComponent wrappedComponent;
+
+	if (inState == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	if (wrappedState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Is there a wrapped component? */
+	wrappedComponent = NULL;
+	if (inContext != NULL)
+		wrappedComponent = inContext->common.handle[SJME_SUI_FB_H_WRAPPED];
+
+	/* Just forward it. */
+	return wrappedState->apiInThread->lafMetric(wrappedState,
+		wrappedComponent, outValue, metricType);
 }

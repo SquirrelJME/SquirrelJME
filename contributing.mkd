@@ -9,6 +9,7 @@ environment for developers and users.
  * For instructions on building, see [the building guide](building.mkd).
  * If you wish to maintain or become a maintainer please read the
    [developer guide](developer-guide.mkd)!
+ * No AI Use is permitted, please read [the AI Policy](ai-policy.mkd).
 
 Development can happen on any operating system that has an installation of
 Gradle, a Java JDK, any text editor/IDE (IntelliJ Ultimate is recommended), and
@@ -22,9 +23,10 @@ directly committed to as those commits will be erased, however Pull Requests
 can still be made. Any pull requests made on GitHub will be converted to
 Fossil then merged in accordingly.
 
-Continue reading below for the contributing guide.
+Continue reading below for the contributing guide. Additionally, be sure to
+follow the [Code Style Guidelines](code-style.mkd).
 
-## Etiquette For Contributing
+# Etiquette For Contributing
 
 As with various other projects that exist, please be considerate of how
 _SquirrelJME_ is structured along with maintaining consistency within the
@@ -71,7 +73,7 @@ If there are any issues regarding these, please open an issue describing in
 detail the problem and a proposed solution if there is one on [GitHub](
 https://github.com/SquirrelJME/SquirrelJME/issues).
 
-## Core Code Contribution Requirements
+# Core Code Contribution Requirements
 
  1. No AI generated code and/or AI sourced code.
     * If you are caught breaking this, you will be banned from the project and
@@ -120,7 +122,7 @@ https://github.com/SquirrelJME/SquirrelJME/issues).
     * Static code analysis might find a condition where code is unused, but
       it only knows of it from a single set or a few sets of state.
 
-## Exceptions to Contributing
+# Exceptions to Contributing
 
 If you have worked on the following projects for the following companies, you
 are not permitted to contribute to this project due to potential poisoning:
@@ -149,37 +151,49 @@ from these projects cannot be used.
 You are however, free to give advice and insights! Just remember that this
 is clean room!
 
-## Contributor Agreement
+# Contributor Agreement
 
 **ALL CONTRIBUTORS MUST ACCEPT THE FOLLOWING AGREEMENT BEFORE THEIR CODE WILL**
-**BE ACCEPTED IN THE PROJECT. IF THE DEVELOPER IS EMPLOYED AND DEVELOPS THE**
+**BE CONSIDERED FOR THE PROJECT. IF THE DEVELOPER IS EMPLOYED AND DEVELOPS THE**
 **CODE "ON THE CLOCK" OR UNDER CONTRACT, THEN THAT DEVELOPER MUST SEEK THE**
 **PERMISSION OF THE EMPLOYER.**
 
 	You grant Stephanie Gawroriski an irrevocable license that:
     
-	 1. That you own the contributing work.
-	 2. Grants a patent license, as per the Mozilla Public License 2.0.
-	 3. Granting Stephanie Gawroriski permission to redistribute, sell, lease,
-	    modify, transform, translate, and relicense the specified works. This
-	    is to simplify the licensing of the project and permit it to be
-	    consistent. Your contribution may be commercially licensed to other
-	    parties supporting the project through this means.
-	 4. If employed by a company, you have a right by that company to provide
-	    contributions to this project.
-	 5. Have pledged to follow the Code of Conduct.
-	 6. Have read and understand the Ettiquite.
-	 7. Understand that the code will be placed under the MPLv2.
-	 8. Have not used LLMs and/or GenAIs.
-	    a. This includes but is not limited to: ChatGPT, Claude, Copilot,
-	       Cursor, Junie.
+	 1.  That you own the contributing work.
+	 2.  Grants a patent license, as per the Mozilla Public License 2.0.
+	 3.  Granting Stephanie Gawroriski permission to redistribute, sell, lease,
+	     modify, transform, translate, and relicense the specified works. This
+	     is to simplify the licensing of the project and permit it to be
+	     consistent. Your contribution may be commercially licensed to other
+	     parties supporting the project through this means.
+	 4.  If employed by a company, you have a right by that company to provide
+	     contributions to this project.
+	 5.  Have pledged to follow the Code of Conduct.
+	 6.  Have read and understand the Contributor Ettiquite.
+	 7.  Understand that the code will be placed under the MPLv2.
+	 8.  Have not used LLMs and/or GenAIs.
+	     a. This includes but is not limited to: Aider, ChatGPT, Claude,
+	        Codex, Copilot, Cursor, DeepSeek, Gemini, Junie, OpenClaw,
+	        OpenCode, Windsurf.
+	 9.  Your contribution is not attached to any additional terms, terms of
+	     service, change of jurisdiction, regulatory requirements,
+	     and/or legal requirements.
+	     a. This includes terms which would require SquirrelJME to become
+	        beholden to a third-party.
+	 10. Your contribution will not modify the software licenses,
+	     contributor agreement, copyright attribution/information,
+	     trademark information, and/or code of conduct.
+	     a. The only exception to this is an addition to the
+	        `third-party.mkd` licensing information, if an approved
+	        library is being now included in the source code.
 
-## Committing and Submitting Changes
+# Committing and Submitting Changes
 
 As previously stated, _SquirrelJME_ is developed using
-[Fossil](https://fossil-scm.org/) but if you are not comfortable with it and
-would like to stick to something more familiar then you may also as well use
-[Git](https://git-scm.com/).
+[Fossil](https://fossil-scm.org/). You may alternatively use Git along with
+and the Git mirrors, however this is not the official way to contribute to
+_SquirrelJME_ and all contributions will go through Fossil always.
 
 For reference, the two sections will accordingly be:
 
@@ -189,12 +203,16 @@ For reference, the two sections will accordingly be:
 All development should be done in branches so that way `trunk` on your own
 copy of the repository is always aligned to `trunk` on the remote repository.
 
+## Setup
+
+Fossil is the recommended version control system. 
+
 ### With Fossil
 
 _SquirrelJME_ uses [Fossil](https://fossil-scm.org/) which is a distributed
 version control system that keeps the entire repository within a single file
 along with having support for other features such as web hosting and
-otherwise. It is slightly different from Git but it is simple to use and
+otherwise. It is slightly different from Git, however it is simple to use and
 works on Windows, Linux, and Mac OS X.
 
  * On Windows, you may...:
@@ -243,73 +261,6 @@ https://www.fossil-scm.org/xfer/doc/tip/www/quickstart.wiki).
  * [Fossil hints for users of Git](
 https://www.fossil-scm.org/xfer/doc/trunk/www/gitusers.md).
 
-#### Starting A Branch
-
-Development should be done in branches and not the main `trunk` as there will
-be a number of changes and will require constant updates:
-
- * Create a new branch, based off `trunk`:
-   * `fossil branch new wip-branch trunk`
- * Switching to that branch:
-   * `fossil update wip-branch`
-
-Please start your branch with `wip-` when making a branch!
-
-#### Committing and Making Changes
-
-When you are ready to commit your changes to your branch, you may do the
-following:
-
- * Making a commit:
-   * `fossil commit`
-   * Enter the commit description accordingly.
-
-#### Staying Up To Date
-
-Since SquirrelJME is actively worked on, there will be changes to other
-branches and the main `trunk` line. You can use the following commands for
-this:
-
- * Synchronizing your repository with the main repository:
-   * `fossil sync -u`
- * Updating your currently checked out branch to the latest code in that
-   version:
-   * `fossil update`
- * _If you are on your own branch_ and you want to update your branch to
-   the code that is latest within `trunk`:
-   * Make sure you commit any of your current changes or they will be lost:
-     * `fossil commit`
-   * Update to the branch to be updated:
-     * `fossil update wip-branch`
-   * Merge in the changes that were made in `trunk`:
-     * `fossil merge trunk`
-   * Commit the merge:
-     * `fossil commit`
-
-#### Submitting
-
-When you are ready to submit please note that your submission will be reviewed
-and may or may not be accepted. There may be additional requests for changes
-as well. To make a submission do the following:
-
- * Create a bundle for your branch:
-   * `fossil bundle export wip-branch.bun --branch wip-branch --standalone`
- * Send a copy of this bundle via E-Mail or another means:
-   * Via e-mail:
-     * Mail to <xer@multiphasicapps.net> OR <xerthesquirrel@gmail.com>.
-     * _In the SUBJECT line, include:_ "SquirrelJME Patch Submission"
-     * _In the MESSAGE BODY_, place that you _agree_ to the contributor
-       agreement as noted above in this document.
-   * Via the _SquirrelJME_ Discord:
-     * Mention `@XerTheSquirrel#5366`, with an upload of the bundle (it may
-       be in a ZIP file) and that you _agree_ to the contributor
-       agreement as noted above in this document.
-     * Note that Discord has a file size limit, if your file is too big please
-       e-mail it or use a file sharing service. Do note that if you use a
-       file sharing service ensure that it has a long expiration (at least
-       30 days) otherwise due to the busy schedules of the developers your
-       contribution may be lost.
-
 ### With Git
 
 Although _SquirrelJME_ does not use [Git](https://git-scm.com/) there are
@@ -345,7 +296,24 @@ this do the following:
 
 After this you are ready to start development!
 
-#### Starting A Branch
+## Starting A Branch
+
+It is recommended that any development be done on branches and not on the
+mainline development tree.
+
+### With Fossil
+
+Development should be done in branches and not the main `trunk` as there will
+be a number of changes and will require constant updates:
+
+ * Create a new branch, based off `trunk`:
+   * `fossil branch new wip-branch trunk`
+ * Switching to that branch:
+   * `fossil update wip-branch`
+
+Please start your branch with `wip-` when making a branch!
+
+### With Git
 
 Development should be done in branches and not the main `trunk` as there will
 be a number of changes and will require constant updates:
@@ -355,7 +323,20 @@ be a number of changes and will require constant updates:
 
 Please start your branch with `wip-` when making a branch!
 
-#### Committing and Making Changes
+## Committing and Making Changes
+
+Any changes you make should always be committed.
+
+### With Fossil
+
+When you are ready to commit your changes to your branch, you may do the
+following:
+
+ * Making a commit:
+   * `fossil commit`
+   * Enter the commit description accordingly.
+
+### With Git
 
 When you are ready to commit your changes to your branch, you may do the
 following:
@@ -373,7 +354,35 @@ following:
      command should tell you how to do this but for reference it is:
      * `git push --set-upstream origin wip-branch`
 
-#### Staying Up To Date
+## Staying Up To Date
+
+As SquirrelJME is actively worked on, over time your repository will become
+out of date. Any development work that you perform should always be done on
+the latest code.
+
+### With Fossil
+
+Since SquirrelJME is actively worked on, there will be changes to other
+branches and the main `trunk` line. You can use the following commands for
+this:
+
+ * Synchronizing your repository with the main repository:
+   * `fossil sync -u`
+ * Updating your currently checked out branch to the latest code in that
+   version:
+   * `fossil update`
+ * _If you are on your own branch_, and you want to update your branch to
+   the code that is latest within `trunk`:
+   * Make sure you commit any of your current changes, or they will be lost:
+     * `fossil commit`
+   * Update to the branch to be updated:
+     * `fossil update wip-branch`
+   * Merge in the changes that were made in `trunk`:
+     * `fossil merge trunk`
+   * Commit the merge:
+     * `fossil commit`
+
+### With Git
 
 Since SquirrelJME is actively worked on, there will be changes to other
 branches and the main `trunk` line. You can use the following commands for
@@ -391,33 +400,66 @@ this:
    was not made then, you may:
    * `git commit`
 
-#### Submitting
+## Submitting
 
-When you are ready to submit please note that your submission will be reviewed
-and may or may not be accepted. There may be additional requests for changes
-as well. To make a submission do the following:
+All submissions to _SquirrelJME_ should be sent in _unified diff_ format. This
+is the traditional patch format that does not rely on any services or
+otherwise, it also means that your patch will be inline reviewed.
 
- * Via [GitHub](https://guides.github.com/activities/forking/):
-   * Create a _Pull Request_.
- * Via [GitLab](https://docs.gitlab.com/ee/gitlab-basics/fork-project.html):
-   * Create a _Merge Request_.
+***Always make sure that your branch and the `trunk` branch are up to date!***
 
-Alternatively a Git Bundle may be used:
+When submitting, you may send your patch via:
 
- * Create a patch bundle for your branch:
-   * `git format-patch --binary --stdout --attach -n trunk..wip-branch > wip-branch.bun`
- * Send a copy of this patch bundle via E-Mail or another means:
-   * Via e-mail:
-     * Mail to <xer@multiphasicapps.net> OR <xerthesquirrel@gmail.com>.
-     * _In the SUBJECT line, include:_ "SquirrelJME Patch Submission"
-     * _In the MESSAGE BODY_, place that you _agree_ to the contributor
-       agreement as noted above in this document.
-   * Via the _SquirrelJME_ Discord:
-     * Mention `@XerTheSquirrel#5366`, with an upload of the bundle (it may
-       be in a ZIP file) and that you _agree_ to the contributor
-       agreement as noted above in this document.
-     * Note that Discord has a file size limit, if your file is too big please
-       e-mail it or use a file sharing service. Do note that if you use a
-       file sharing service ensure that it has a long expiration (at least
-       30 days) otherwise due to the busy schedules of the developers your
-       contribution may be lost.
+ * E-mail `Stephanie Gawroriski <xer@multiphasicapps.net>` with the starting
+   subject line: "SquirrelJME Patch".
+ * IRC via LiberaChat, please join `#squirreljme` and link to your patch via
+   a "pastebin" service or otherwise.
+ * Discord via the SquirrelJME Discord, send the patch to _xershadowtail_.
+
+Note that your patch will be reviewed. You are expected to make the changes
+to the patch accordingly. If you fail to do so, then your patch will not be
+applied.
+
+### With Fossil
+
+You can create a patch with the following command:
+
+ * `fossil diff -v -r trunk > example.patch`
+
+If you are on Windows or a system which lacks diff, you may need to also
+specify:
+
+* `fossil diff -v -i --unified -r trunk > example.patch`
+
+### With Git
+
+You can create a patch with the following command:
+
+ * `git format-patch --stdout --attach -n trunk..wip-branch > example.patch`
+
+## Reviewing
+
+When your patch is reviewed, comments will be placed inline within the patch,
+then it will be sent back to you. The start of line will use the `#` character,
+which should be ignored by patch utilities. An example of an inline review:
+
+```diff
+Index: contributing.mkd
+==================================================================
+--- contributing.mkd
++++ contributing.mkd
+@@ -188,28 +188,32 @@
+                library is being now included in the source code.
+ 
+ ## Committing and Submitting Changes
+ 
+ As previously stated, _SquirrelJME_ is developed using
+-[Fossil](https://fossil-scm.org/) but if you are not comfortable with it and
+# This is an example comment on a patch, please make any changes that are
+# requested.
+-would like to stick to something more familiar then you may also as well use
+-[Git](https://git-scm.com/).
++[Fossil](https://fossil-scm.org/). You may alternatively use Git along with
++and the Git mirrors, however this is not the official way to contribute to
++_SquirrelJME_ and all contributions will go through Fossil always.
+```

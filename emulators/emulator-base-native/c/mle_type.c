@@ -7,97 +7,38 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+/* //// MLE /// */
+#define mleGroupId TypeShelf
+#define mleShelfClass "cc/squirreljme/jvm/mle/TypeShelf"
+#define mleProxyTarget "cc/squirreljme/emulator/EmulatedTypeShelf"
+#include "squirreljmeMle.h"
+/* //////////// */
+
 #include "squirreljme.h"
 
-#define TYPE_CLASSNAME "cc/squirreljme/emulator/EmulatedTypeShelf"
+#define MLE_DESC_binaryName DESC_METHOD(DESC_STRING, DESC_TYPE)
+MLE_FUNC_PROXY_STATIC(jobject, binaryName)
 
-#define BINARYNAME_DESC "(Ljava/lang/Class;)Ljava/lang/String;"
-#define CLASSTOTYPE_DESC "(Ljava/lang/Class;)Ljava/lang/Class;"
-#define COMPONENTROOT_DESC "(Ljava/lang/Class;)Ljava/lang/Class;"
-#define FINDTYPE_DESC "(Ljava/lang/String;)Ljava/lang/Class;"
-#define INJAR_DESC "(Ljava/lang/Class;)Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;"
-#define INTERFACES_DESC "(Ljava/lang/Class;)[Ljava/lang/Class;"
-#define ISARRAY_DESC "(Ljava/lang/Class;)Z"
-#define TYPETOCLASS_DESC "(Ljava/lang/Class;)Ljava/lang/Class;"
+#define MLE_DESC_componentRoot DESC_METHOD(DESC_TYPE, DESC_TYPE)
+MLE_FUNC_PROXY_STATIC(jobject, componentRoot)
 
-JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_binaryName(JNIEnv* env,
-	jclass classy, jobject mleType)
-{
-	return forwardCallStaticObject(env, TYPE_CLASSNAME,
-		"binaryName", BINARYNAME_DESC,
-		mleType);
-}
+#define MLE_DESC_findType DESC_METHOD(DESC_TYPE, DESC_STRING)
+MLE_FUNC_PROXY_STATIC(jobject, findType)
 
-JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_classToType(JNIEnv* env,
-	jclass classy, jobject javaClass)
-{
-	return forwardCallStaticObject(env, TYPE_CLASSNAME,
-		"classToType", CLASSTOTYPE_DESC,
-		javaClass);
-}
+#define MLE_DESC_inJar DESC_METHOD(DESC_JARPACKAGE, DESC_TYPE)
+MLE_FUNC_PROXY_STATIC(jobject, inJar)
 
-JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_componentRoot(JNIEnv* env,
-	jclass classy, jobject mleType)
-{
-	return forwardCallStaticObject(env, TYPE_CLASSNAME,
-		"componentRoot", COMPONENTROOT_DESC,
-		mleType);
-}
+#define MLE_DESC_interfaces DESC_METHOD(DESC_ARRAY(DESC_TYPE), DESC_TYPE)
+MLE_FUNC_PROXY_STATIC(jobject, interfaces)
 
-JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_findType(JNIEnv* env,
-	jclass classy, jobject className)
-{
-	return forwardCallStaticObject(env, TYPE_CLASSNAME,
-		"findType", FINDTYPE_DESC,
-		className);
-}
+#define MLE_DESC_isArray DESC_METHOD(DESC_BOOLEAN, DESC_TYPE)
+MLE_FUNC_PROXY_STATIC(jboolean, isArray)
 
-JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_inJar(JNIEnv* env,
-	jclass classy, jobject mleType)
-{
-	return forwardCallStaticObject(env, TYPE_CLASSNAME,
-		"inJar", INJAR_DESC,
-		mleType);
-}
-
-JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_interfaces(JNIEnv* env,
-	jclass classy, jobject mleType)
-{
-	return forwardCallStaticObject(env, TYPE_CLASSNAME,
-		"interfaces", INTERFACES_DESC,
-		mleType);
-}
-
-JNIEXPORT jboolean JNICALL Impl_mle_TypeShelf_isArray(JNIEnv* env,
-	jclass classy, jobject mleType)
-{
-	return forwardCallStaticBoolean(env, TYPE_CLASSNAME,
-		"isArray", ISARRAY_DESC,
-		mleType);
-}
-
-JNIEXPORT jobject JNICALL Impl_mle_TypeShelf_typeToClass(JNIEnv* env,
-	jclass classy, jobject mleType)
-{
-	return forwardCallStaticObject(env, TYPE_CLASSNAME,
-		"typeToClass", TYPETOCLASS_DESC,
-		mleType);
-}
-
-static const JNINativeMethod mleTypeMethods[] =
-{
-	{"binaryName", BINARYNAME_DESC, (void*)Impl_mle_TypeShelf_binaryName},
-	{"componentRoot", COMPONENTROOT_DESC, (void*)Impl_mle_TypeShelf_componentRoot},
-	{"findType", FINDTYPE_DESC, (void*)Impl_mle_TypeShelf_findType},
-	{"inJar", INJAR_DESC, (void*)Impl_mle_TypeShelf_inJar},
-	{"interfaces", INTERFACES_DESC, (void*)Impl_mle_TypeShelf_interfaces},
-	{"isArray", ISARRAY_DESC, (void*)Impl_mle_TypeShelf_isArray},
-};
-
-jint JNICALL mleTypeInit(JNIEnv* env, jclass classy)
-{
-	return (*env)->RegisterNatives(env,
-		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/TypeShelf"),
-		mleTypeMethods, sizeof(mleTypeMethods) /
-			sizeof(JNINativeMethod));
-}
+MLE_LIST_BEGIN()
+	MLE_LIST_ITEM(binaryName),
+	MLE_LIST_ITEM(componentRoot),
+	MLE_LIST_ITEM(findType),
+	MLE_LIST_ITEM(inJar),
+	MLE_LIST_ITEM(interfaces),
+	MLE_LIST_ITEM(isArray),
+MLE_LIST_END()

@@ -35,6 +35,19 @@ public final class BacklightControl
 	private static volatile int _lastLevel;
 	
 	/**
+	 * Returns whether backlight control is supported by the device.
+	 * 
+	 * @return {@code true} If backlight control is supported, {@code false}
+	 * otherwise.
+	 * @since 2026/04/19
+	 */
+	@SquirrelJMEVendorApi
+	public static boolean available()
+	{
+		throw Debugging.todo("BacklightAvailability");
+	}
+
+	/**
 	 * Sets the level of the backlight.
 	 * 
 	 * @param __level The backlight level, if outside of bounds it will be

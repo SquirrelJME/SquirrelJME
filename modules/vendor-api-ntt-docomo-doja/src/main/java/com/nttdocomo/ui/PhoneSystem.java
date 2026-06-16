@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.BacklightControl;
 import cc.squirreljme.runtime.lcdui.mle.Vibration;
+import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import cc.squirreljme.runtime.nttdocomo.ui.VendorPhoneSystem;
 import javax.microedition.lcdui.Displayable;
 
@@ -20,16 +21,31 @@ import javax.microedition.lcdui.Displayable;
 public class PhoneSystem
 {
 	/** Maximum time for a steady vibration. */
-	private static final int _MAX_VIBRATION_TIME = 7_000;
+	private static final int _MAX_VIBRATION_TIME = 2_000;
 	
+	/** Backlight is turned off. */
 	@Api
 	public static final int ATTR_BACKLIGHT_OFF = 0;
 	
+	/** Backlight is turned on. */
 	@Api
 	public static final int ATTR_BACKLIGHT_ON = 1;
 	
+	/** Vibrator is turned off. */
+	@Api
+	public static final int ATTR_VIBRATOR_OFF = 0;
+	
+	/** Vibrator is turned on. */
+	@Api
+	public static final int ATTR_VIBRATOR_ON = 1;
+	
+	/** Backlight device control. */
 	@Api
 	public static final int DEV_BACKLIGHT = 0;
+	
+	/** Vibrator device control. */
+	@Api
+	public static final int DEV_VIBRATOR = 1;
 	
 	@Api
 	public static final int MAX_VENDOR_ATTR = 127;
@@ -66,14 +82,23 @@ public class PhoneSystem
 		
 		// Vibration
 		else if (__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_F503I_SO503I ||
-			__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_P503I)
+			__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_P503I ||
+			__attr == PhoneSystem.DEV_VIBRATOR)
 		{
+			// Vibration is not available before DoJa 2.0, if the standard
+			// device vibration is selected then just ignore it
+			if (__attr == PhoneSystem.DEV_VIBRATOR &&
+				DoJaRuntime.versionBefore(2, 0))
+				return;
+			
 			// Different phones have different means of turning on the shake
 			boolean isOn;
-			if (__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_P503I)
-				isOn = (__value == 1);
+			if (__attr == VendorPhoneSystem.VIBRATE_ATTRIBUTE_P503I ||
+				__attr == PhoneSystem.DEV_VIBRATOR)
+				isOn = (__value == PhoneSystem.ATTR_VIBRATOR_ON);
 			else
-				isOn = (__value == 1 || __value == 64);
+				isOn = (__value == PhoneSystem.ATTR_VIBRATOR_ON ||
+					__value == 64);
 			
 			// Perform the vibration
 			Vibration.vibrate((isOn ? PhoneSystem._MAX_VIBRATION_TIME : 0));

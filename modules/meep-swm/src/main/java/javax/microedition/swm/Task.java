@@ -12,10 +12,11 @@ package javax.microedition.swm;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Objects;
+import javax.microedition.midlet.MIDlet;
 
 /**
  * This describes a task which is currently running on the system. Each task
- * has a starting point which is a {@link javax.microedition.midlet.MIDlet}.
+ * has a starting point which is a {@link MIDlet}.
  *
  * System tasks cannot be started or stopped.
  *

@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -16,7 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2018/10/06
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 final class __UndefinedResult__
 {
 	/**

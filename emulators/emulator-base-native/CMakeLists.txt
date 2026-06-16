@@ -7,13 +7,28 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: CMake Helper for project
 
-cmake_minimum_required(VERSION 3.12)
+# Use the best version possible
+# Otherwise, fallback to the lowest viable version
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+	cmake_minimum_required(VERSION 3.13..3.31)
+else()
+	cmake_minimum_required(VERSION 3.0)
+endif()
 
+# Specify NanoCoat directory for includes
+set(SQUIRRELJME_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
+set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${SQUIRRELJME_ROOT_DIR}/nanocoat")
+include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake")
+
+# Include backports
+squirreljme_include_nanocoat("cmake-bp.cmake")
+
+# External projects are needed
 include(ExternalProject)
 
 # Declare project
 project(libEmulatorBase
-    LANGUAGES C)
+	LANGUAGES C)
 
 # We want to forward as many CMAKE_ commands to the target NanoCoat as
 # possible
@@ -64,6 +79,7 @@ foreach(var IN LISTS allVariables)
 	string(FIND "${var}" "_VERSION" versionAt REVERSE)
 	string(FIND "${var}" "_ID" idAt REVERSE)
 	string(FIND "${var}" "_COMPILER_WORKS" compilerWorksAt REVERSE)
+	string(FIND "${var}" "_COMPILER_PRODUCED_OUTPUT" compilerProduced REVERSE)
 	if("${asmCompilerIdAt}" EQUAL "0" OR
 		"${cCompilerIdAt}" EQUAL "0" OR
 		"${cxxCompilerIdAt}" EQUAL "0" OR
@@ -78,6 +94,7 @@ foreach(var IN LISTS allVariables)
 		"${versionAt}" GREATER "0" OR
 		"${idAt}" GREATER "0" OR
 		"${compilerWorksAt}" GREATER "0" OR
+		"${compilerProduced}" GREATER "0" OR
 		"${var}" STREQUAL "CMAKE_SHARED_LIBRARY_PREFIX" OR
 		"${var}" STREQUAL "CMAKE_SHARED_LIBRARY_SUFFIX" OR
 		"${var}" STREQUAL "CMAKE_EXECUTABLE_PREFIX" OR
@@ -162,11 +179,6 @@ foreach(var IN LISTS allVariables)
 			"set(\"${var}\" \"${quotedValue}\" CACHE ${varType} "${var}")\n")
 	endif()
 endforeach()
-
-# Specify NanoCoat directory for includes
-set(SQUIRRELJME_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
-set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${SQUIRRELJME_ROOT_DIR}/nanocoat")
-include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake")
 
 # Setup NanoCoat Project
 set(SQUIRRELJME_NANOCOAT_BINARY_DIR "${CMAKE_BINARY_DIR}/nanocoat")
@@ -294,7 +306,7 @@ target_include_directories(libEmulatorBase PRIVATE
 # Libraries for the build
 target_link_directories(libEmulatorBase PRIVATE
 	"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin")
-target_link_libraries(libEmulatorBase PUBLIC
+squirreljme_link_libraries_required(libEmulatorBase PUBLIC
 	"${SQUIRRELJME_REQUIRED_LIBS}"
 	BaseStatic
 	jvm)
