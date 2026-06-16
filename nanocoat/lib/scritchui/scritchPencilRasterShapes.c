@@ -121,7 +121,7 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawArc(
 			continue;
 
 		/* We cannot paint the same pixel more than once (breaks alpha) */
-		if ((lastFillX == innerX ^ lastFillY == innerY) || 
+		if (((lastFillX == innerX) ^ (lastFillY == innerY)) ||
 			(firstFillX == innerX && firstFillY == innerY)) 
 		{
 			lastFillX = -1;
