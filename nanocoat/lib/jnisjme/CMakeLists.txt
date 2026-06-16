@@ -22,8 +22,9 @@ target_include_directories(libJniSJME PRIVATE
 squirreljme_multilib_binary_output(libJniSJME
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
 
-# Required system libraries
-squirreljme_multilib_link_libraries_required(libJniSJME NONE)
+# The base library is needed here for linking
+squirreljme_multilib_link_libraries_required(libJniSJME PUBLIC
+	Base)
 
 # This bridge library is rather useful
 squirreljme_multilib_export(libJniSJME)
