@@ -442,7 +442,7 @@ int main(int argc, sjme_lpstr* argv)
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadU(
 		mainTask->classLoader, &mainClass,
 		sjme_atomic_g(sjme_nvm_thread, &mainTask->globals.mainThread),
-		mainName, SJME_JNI_TRUE) || mainClass == NULL))
+		mainName, SJME_JNI_TRUE)) || mainClass == NULL)
 		goto fail_findMain;
 
 	/* Set expected value to something invalid. */

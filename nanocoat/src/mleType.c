@@ -199,7 +199,7 @@ SJME_NVM_MLE_FUNCTION_DECL(interfaces)
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
 		SJME_F_T(inFrame), &result,
 		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
-			SJME_NVM_COMMON_CLASS), n) || result == NULL))
+			SJME_NVM_COMMON_CLASS), n)) || result == NULL)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Copy everything over. */
