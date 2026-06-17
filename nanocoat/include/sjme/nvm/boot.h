@@ -107,6 +107,9 @@ struct sjme_nvm_bootParam
 
 	/** An extra handle to close on destruction. */
 	sjme_closeable extraCloseHandle;
+
+	/** The initial Jar to run, if specified via @code -jar @endcode. */
+	sjme_lpcstr runJar;
 };
 
 /**

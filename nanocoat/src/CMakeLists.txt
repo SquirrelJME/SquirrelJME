@@ -58,6 +58,7 @@ squirreljme_multilib_add_library(Core
 	rom.c
 	romLibrary.c
 	romLibraryZip.c
+	romMeepSwm.c
 	romSuite.c
 	romSuiteZip.c
 	stackMap.c

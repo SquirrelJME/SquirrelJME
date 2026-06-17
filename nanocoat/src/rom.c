@@ -201,3 +201,21 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
 	return sjme_list_newA(inSuite->allocPool,
 		sjme_nvm_rom_library, 0, length, outLibs, working);
 }
+
+sjme_errorCode sjme_nvm_rom_resolveLibraryById(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrInPositive sjme_jint inValue,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLib)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_rom_resolveLibraryByName(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrInNotNull sjme_lpcstr inName,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLib)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}

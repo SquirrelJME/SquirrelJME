@@ -187,6 +187,14 @@ typedef sjme_nvm_threadBase* sjme_nvm_thread;
 typedef struct sjme_nvm_bootParam sjme_nvm_bootParam;
 
 /**
+ * Contains basic information that is enough for initial bootstrapping of
+ * MEEP SWM related information.
+ *
+ * @since 2026/06/17
+ */
+typedef struct sjme_nvm_rom_swmManagerBase* sjme_nvm_rom_swmManager;
+
+/**
  * Standard Suite structure.
  *
  * @since 2023/12/12

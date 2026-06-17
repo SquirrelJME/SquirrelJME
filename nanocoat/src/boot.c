@@ -17,6 +17,7 @@
 #include "sjme/nvm/cleanup.h"
 #include "sjme/path.h"
 #include "sjme/joptarg.h"
+#include "sjme/nvm/romMeepSwm.h"
 
 #if defined(SJME_PATH_SHORT)
 	/** The name of the SquirrelJME Jar. */
@@ -109,37 +110,32 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 	sjme_attrInValue sjme_nvm_bootClutterLevel clutterLevel)
 {
 	sjme_errorCode error;
-	sjme_cchar dataPath[SJME_MAX_PATH];
 	sjme_seekable rom;
 	sjme_nvm_rom_suite result;
+	sjme_path checkPath;
 
 	if (allocPool == NULL || nal == NULL || outSuite == NULL ||
-		basePath == NULL || romName == NULL)
+		(basePath == NULL && romName == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-#if 1
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#else
-	/* Base path here. */
-	memset(&dataPath, 0, sizeof(dataPath));
-	if (strlen(basePath) > 0)
-		if (sjme_error_is(error = sjme_path_resolveAppend(
-			dataPath, SJME_MAX_PATH - 1,
-			basePath, INT32_MAX)))
+
+	/* Determine path to check. */
+	memset(&checkPath, 0, sizeof(checkPath));
+
+	/* Base path first, if any. */
+	if (basePath != NULL && strlen(basePath) > 0)
+		if (sjme_error_is(error = sjme_path_resolveS(
+			&checkPath, basePath)))
 			return sjme_error_default(error);
 	
-	/* Use ROM from here. */
-	if (strlen(romName) > 0)
-		if (sjme_error_is(error = sjme_path_resolveAppend(
-			dataPath, SJME_MAX_PATH - 1,
-			romName, INT32_MAX)))
+	/* Then any ROM which may be directly specified. */
+	if (romName != NULL && strlen(romName) > 0)
+		if (sjme_error_is(error = sjme_path_resolveS(
+			&checkPath, romName)))
 			return sjme_error_default(error);
-#endif
 	
 	/* Open main ROM file. */
 	rom = NULL;
-	if (sjme_error_is(error = nal->fileOpen(allocPool, dataPath,
+	if (sjme_error_is(error = nal->fileOpen(allocPool, checkPath.chars,
 		&rom, SJME_NAL_OPEN_READ)) || rom == NULL)
 		return sjme_error_default(error);
 	
@@ -276,6 +272,7 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_nvm_task initTask;
 	sjme_list(sjme_nvm_rom_library)* classPath;
 	sjme_jlong yieldIn, yieldOut;
+	sjme_nvm_rom_library jarLibrary;
 	
 	if (allocPool == NULL || param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -378,7 +375,43 @@ sjme_errorCode sjme_nvm_boot(
 			goto fail_suiteMerge;
 	}
 
-	/* Use the classpath of the launcher? If enabled. */
+	/* If we are running a specific Jar, since we have all the dependency */
+	/* info loaded, and otherwise, we can look up the Jar to run and setup */
+	/* the classpath that it needs to start. */
+	if (bootParamCopy->runJar != NULL &&
+		0 != strcmp("", bootParamCopy->runJar))
+	{
+		/* It is possible the Jar passed via -jar does not exist or is just */
+		/* broken. */
+		jarLibrary = NULL;
+		if (sjme_error_is(error = sjme_nvm_rom_resolveLibraryByName(
+			result->suite, bootParamCopy->runJar, &jarLibrary)))
+			goto fail_resolveJar;
+
+		/* We have to load the MEEP SWM dependency information for our */
+		/* entire suite of libraries so that dependency resolution works */
+		/* properly. We only need this for -jar usage. */
+		result->swmManager = NULL;
+		if (sjme_error_is(error = sjme_nvm_rom_swmLoad(allocPool,
+			result->suite, &result->swmManager)) ||
+			result->swmManager == NULL)
+			goto fail_loadMeepSwm;
+
+		/* Now that we have, hopefully, loaded all the MEEP SWM */
+		/* dependency information we can perform an actual lookup of */
+		/* whatever was passed via -jar. */
+		if (sjme_error_is(error = sjme_nvm_rom_swmResolve(result->swmManager,
+			jarLibrary,
+			(sjme_lpstr*)&bootParamCopy->mainClass,
+			(sjme_list(sjme_lpstr)**)&bootParamCopy->mainArgs,
+			(sjme_list(sjme_jint)**)&bootParamCopy->mainClassPathById,
+			(sjme_list(sjme_lpstr)**)
+				&bootParamCopy->mainClassPathByName)))
+			goto fail_resolveJarClasspath;
+	}
+
+	/* Use the classpath of the launcher? If enabled and nothing is */
+	/* being launched? */
 	if (bootParamCopy->launcherFallback &&
 		(bootParamCopy->mainClassPathById == NULL &&
 		bootParamCopy->mainClassPathByName == NULL))
@@ -423,6 +456,7 @@ sjme_errorCode sjme_nvm_boot(
 			(result->bootParamCopy->mainClassPathById != NULL ?
 				"byId" : "byName"));
 
+		/* Fail. */
 		goto fail_badClassPath;
 	}
 	
@@ -514,6 +548,11 @@ fail_initTask:
 fail_allocSchedule:
 fail_badClassPath:
 fail_defaultLaunch:
+fail_resolveJarClasspath:
+fail_loadMeepSwm:
+	if (result != NULL && result->swmManager != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result->swmManager));
+fail_resolveJar:
 fail_suiteMerge:
 fail_noSuites:
 fail_payloadRom:
@@ -963,7 +1002,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
-		
+
 		/* -jar */
 		else if (sjme_charSeq_equalsUtfR(&argSeq, "-jar"))
 		{
@@ -983,7 +1022,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			jarSpecified = SJME_JNI_TRUE;
 
 			/* Set the Jar to run. */
-			runJar = &argv[argAt + 1][0];
+			runJar = &argv[++argAt][0];
 		}
 		
 		/* Invalid, fail. */
@@ -1027,14 +1066,36 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	else if (versionOpt != NULL)
 		return sjme_nvm_printVersion(nal, helpOut, helpFlush,
 			versionOpt, outParam);
+
+	/* No boot ROM was specified? Try to find a default one. */
+	if (bootRom == NULL)
+	{
+		/* This goes through and tries multiple ROM names to try to find */
+		/* one that works. */
+		if (sjme_error_is(error = sjme_nvm_defaultBootSuite(
+			allocPool, nal, &outParam->bootSuite)))
+			return sjme_error_default(error);
+	}
 	
-	/* Load boot ROM? */
-	if (bootRom != NULL)
+	/* Otherwise, attempt to load the specific ROM. */
+	else
+	{
+		/* Just use a "normal" attempt which directly sets and uses the */
+		/* path that was specified. */
 		if (sjme_error_is(error = sjme_nvm_defaultBootSuiteAttempt(
 			allocPool, nal, &outParam->bootSuite,
 			"", bootRom, outParam->clutterLevel)) ||
 			outParam->bootSuite == NULL)
 			return sjme_error_default(error);
+	}
+
+	/* Never fallback to the launcher if main class or -jar were used. */
+	if (jarSpecified || runViaMain)
+		outParam->launcherFallback = SJME_JNI_FALSE;
+
+	/* Set Jar to be used? */
+	if (jarSpecified)
+		outParam->runJar = runJar;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

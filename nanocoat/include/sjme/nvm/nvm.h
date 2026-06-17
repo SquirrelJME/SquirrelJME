@@ -463,6 +463,12 @@ struct sjme_nvm_stateBase
 
 	/** Main task reference. */
 	sjme_phantom(sjme_nvm_task) phantomMainTask;
+
+	/**
+	 * An SWM manager that may or may not exist, used for bootstrap
+	 * dependency lookup.
+	 */
+	sjme_nvm_rom_swmManager swmManager;
 };
 
 /** Type size multiplier. */
