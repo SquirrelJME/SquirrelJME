@@ -797,6 +797,9 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/* Qualifier used multiple times, as there are volatile typedefs. */
 	#pragma warning(disable: 4114)
+
+	/* "Deprecated" POSIX name. */
+	#pragma warning(disable: 4996)
 #endif
 	
 #if defined(SJME_CONFIG_HAS_SDCC)

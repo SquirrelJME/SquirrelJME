@@ -16,6 +16,24 @@
 #include "sjme/nvm/task.h"
 
 /**
+ * Checks if there is a secondary argument to a specific argument, this is
+ * for cases such as @code -jar @endcode and @code -classpath @endcode.
+ *
+ * @param arg The argument to check.
+ * @return If there is a secondary argument, or not.
+ * @since 2026/06/17
+ */
+static sjme_jboolean sjme_hasSecondArg(sjme_lpcstr arg)
+{
+	/* Just in case... */
+	if (arg == NULL)
+		return SJME_JNI_FALSE;
+
+	return 0 == strcmp(arg, "-jar") ||
+		0 == strcmp(arg, "-classpath");
+}
+
+/**
  * Main program entry point.
  * 
  * @param argc Argument count. 
@@ -35,12 +53,18 @@ int main(int argc, sjme_lpcstr* argv)
 	sjme_jint i, o, n, vmArgC, mainArgC;
 	jclass mainClass, stringClass;
 	jmethodID mainMethod;
-	sjme_jboolean isSquirrelJME;
+	sjme_jboolean isSquirrelJME, isJarLaunch;
 	sjme_nvm_task inTask;
 	sjme_cchar mainBuf[BUF_SIZE];
 	jarray invokeArgs;
 	jstring invokeArg;
 	sjme_jint exitCode;
+
+	/* This launcher here tries to launch SquirrelJME using its JNI */
+	/* interface in a seemingly standard Java way for compatibility reasons. */
+	/* It should be capable of booting a non-SquirrelJME JVM via a library */
+	/* however this has not been tested and it might not handle all */
+	/* situations. */
 
 	/* Set successful exit code. */
 	exitCode = EXIT_SUCCESS;
@@ -50,15 +74,35 @@ int main(int argc, sjme_lpcstr* argv)
 	if (vmOpt == NULL)
 		return EXIT_FAILURE;
 	memset(vmOpt, 0, sizeof(*vmOpt) * (argc + 1));
+
+	/* Check to see if there are special launching conditions... */
+	isJarLaunch = SJME_JNI_FALSE;
+	for (i = 1; i < argc; i++)
+	{
+		/* Stop at dash because everything is an argument following. */
+		/* Accordingly skip second arguments. */
+		if (argv[i][0] != '-' && !sjme_hasSecondArg(argv[i]))
+			break;
+
+		/* Launching via Jar? */
+		if (0 == strcmp(argv[i], "-jar"))
+		{
+			isJarLaunch = SJME_JNI_TRUE;
+			break;
+		}
+	}
 	
 	/* Convert argc/argv into VM options. */
 	/* Note that the option string is non-const, so duplicate the arguments. */
 	vmArgC = 0;
 	for (i = 1; i < argc; i++)
 	{
+		/* If not launching via a Jar, then pass everything up to the main */
+		/* class and the arguments to the VM creation function. */
 		/* Stop processing when dash arguments stop, as this is the main */
 		/* class and its arguments. */
-		if (argv[i][0] != '-')
+		/* Provided there is no second argument. */
+		if (!isJarLaunch && argv[i][0] != '-' && !sjme_hasSecondArg(argv[i]))
 			break;
 
 		/* Forward argument. */
@@ -92,7 +136,7 @@ int main(int argc, sjme_lpcstr* argv)
 
 			/* Stop if the start is not a dash, since we do not want */
 			/* to parse things passed to main as arguments. */
-			if (argv[i][0] != '-')
+			if (argv[i][0] != '-' && !sjme_hasSecondArg(argv[i]))
 				break;
 
 			/* Okay options? */
@@ -113,8 +157,8 @@ int main(int argc, sjme_lpcstr* argv)
 		SJME_JNI_JVM_TASK(*env)) && SJME_JNI_JVM_TASK(*env) != NULL &&
 		sjme_nvm_isAR(SJME_JNI_JVM_TASK(*env), SJME_NVM_STRUCT_TASK);
 
-	/* Default booting? */
-	if (mainArgC <= 0 || mainArgV == NULL)
+	/* Default booting? Or running via -jar? */
+	if (mainArgC <= 0 || mainArgV == NULL || isJarLaunch)
 	{
 		/* If not SquirrelJME, then we cannot default boot. */
 		if (!isSquirrelJME)

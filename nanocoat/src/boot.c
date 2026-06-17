@@ -748,10 +748,10 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_errorCode error;
 	sjme_jint argAt;
 	sjme_charSeqStatic argSeq;
-	sjme_jboolean jarSpecified;
+	sjme_jboolean jarSpecified, runViaMain;
 	sjme_nal_stdOFunc helpOut;
 	sjme_nal_stdIoFlush helpFlush;
-	sjme_lpcstr bootRom, helpOpt, versionOpt, tempUtf, tempTwo;
+	sjme_lpcstr bootRom, helpOpt, versionOpt, tempUtf, tempTwo, runJar;
 	
 	if (allocPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -769,11 +769,21 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 
 	/* These arguments get filled in. */
 	bootRom = NULL;
+	runJar = NULL;
 	
 	/* Command line format is: */
 	jarSpecified = SJME_JNI_FALSE;
-	for (argAt = 1; argAt < argc; argAt++)
+	for (argAt = 1; argAt < argc && !jarSpecified; argAt++)
 	{
+		/* Cannot have a null argument here. */
+		if (argv[argAt] == NULL)
+			return SJME_ERROR_NULL_ARGUMENTS;
+
+		/* Stop parsing if it does not start with a dash, as this is not */
+		/* an argument. */
+		if (argv[argAt][0] != '-')
+			break;
+
 		/* Setup sequence to wrap argument for parsing. */
 		memset(&argSeq, 0, sizeof(argSeq));
 		if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
@@ -807,7 +817,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			"-Xclutter:"))
 		{
 			/* Debugging? */
-			if (!strcasecmp("debug", &argv[argAt][10]))
+			if (0 == strcasecmp("debug", &argv[argAt][10]))
 				outParam->clutterLevel = SJME_NVM_BOOT_CLUTTER_DEBUG;
 
 			/* Otherwise, consider everything else release. */
@@ -827,8 +837,12 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			"-Xemulator:"))
 		{
 			/* If SpringCoat is specified, assume no optimizations. */
-			if (!strcasecmp("springcoat", &argv[argAt][11]))
+			if (0 == strcasecmp("springcoat", &argv[argAt][11]))
 				outParam->noOptimize = SJME_JNI_TRUE;
+
+			/* Otherwise, if no nanocoat then fail... */
+			else if (0 != strcasecmp("nanocoat", &argv[argAt][11]))
+				return SJME_ERROR_INVALID_ARGUMENT;
 		}
 		
 		/* -Xentry:id */
@@ -953,10 +967,23 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		/* -jar */
 		else if (sjme_charSeq_equalsUtfR(&argSeq, "-jar"))
 		{
+			/* Another argument needs to follow! */
+			if ((argAt + 1) >= argc)
+			{
+				/* Should hopefully help the user. */
+				sjme_message("A jar must be followed by -jar. (%s %s %d %d)",
+					argv[argAt], argv[argAt + 1], argAt, argc);
+
+				/* Fail. */
+				return SJME_ERROR_INVALID_ARGUMENT;
+			}
+
 			/* We are using a Jar now. */
+			/* Anything that follows the name of the Jar is a main argument. */
 			jarSpecified = SJME_JNI_TRUE;
-			
-			sjme_todo("Impl? %s", argv[argAt]);
+
+			/* Set the Jar to run. */
+			runJar = &argv[argAt + 1][0];
 		}
 		
 		/* Invalid, fail. */
@@ -968,25 +995,26 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			return SJME_ERROR_INVALID_ARGUMENT;
 		}
 	}
-	
-	/* Launching a specific Jar? */
-	if (argAt < argc)
+
+	/* Main-class, if not -jar and there are arguments to pass */
+	runViaMain = SJME_JNI_FALSE;
+	if (!jarSpecified && argAt < argc)
 	{
-		/* Main-class, if not -jar */
-		if (!jarSpecified)
-		{
-			sjme_todo("impl?");
-		}
-		
-		/* Arguments... */
-		if (SJME_JNI_TRUE)
-		{
-			sjme_todo("impl?");
-		}
+		/* We are running via main now. */
+		runViaMain = SJME_JNI_TRUE;
+
+		sjme_todo("impl?");
 	}
-	
-	/* Default launching. */
-	else
+
+	/* Arguments to main or -jar? */
+	if (runViaMain || jarSpecified)
+		for (; argAt < argc; argAt++)
+		{
+			sjme_todo("impl?");
+		}
+
+	/* Default launch if not running a main class or using -jar. */
+	if (!runViaMain && !jarSpecified)
 	{
 		outParam->mainArgs = NULL;
 		outParam->mainClass = NULL;
