@@ -204,11 +204,59 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
 
 sjme_errorCode sjme_nvm_rom_resolveLibraryById(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrInPositive sjme_jint inValue,
+	sjme_attrInValue sjme_jint inId,
 	sjme_attrOutNotNull sjme_nvm_rom_library* outLib)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_list(sjme_nvm_rom_library)* suiteLibs;
+	sjme_jint i, n, libId;
+	sjme_nvm_rom_library lib;
+
+	if (inSuite == NULL || outLib == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Obtain the list of libraries within the suite. */
+	suiteLibs = NULL;
+	if (sjme_error_is(error = sjme_nvm_rom_suiteLibraries(inSuite,
+		&suiteLibs)) || suiteLibs == NULL)
+		return sjme_error_default(error);
+
+	/* Go through each suite to look for the ID. */
+	for (n = suiteLibs->length, i = 0; i < n; i++)
+	{
+		/* Skip blank library slots. */
+		lib = suiteLibs->elements[i];
+		if (lib == NULL)
+			continue;
+
+		/* Need to initialize the ID? */
+		libId = lib->id;
+		if (libId == 0)
+		{
+			/* No function? */
+			if (inSuite->functions->libraryId == NULL)
+				return SJME_ERROR_ILLEGAL_STATE;
+
+			/* Get the library ID. */
+			if (sjme_error_is(error = inSuite->functions->libraryId(
+				inSuite, lib, &libId)))
+				return sjme_error_default(error);
+
+			/* Library ID function did not store it? */
+			if (lib->id == 0)
+				lib->id = libId;
+		}
+
+		/* Is this the matching ID? */
+		if (libId == inId)
+		{
+			*outLib = lib;
+			return SJME_ERROR_NONE;
+		}
+	}
+
+	/* Not found. */
+	return SJME_ERROR_LIBRARY_NOT_FOUND;
 }
 
 sjme_errorCode sjme_nvm_rom_resolveLibraryByName(
@@ -216,6 +264,45 @@ sjme_errorCode sjme_nvm_rom_resolveLibraryByName(
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrOutNotNull sjme_nvm_rom_library* outLib)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_list(sjme_nvm_rom_library)* suiteLibs;
+	sjme_jint i, n, wantHash, libHash;
+	sjme_nvm_rom_library lib;
+
+	if (inSuite == NULL || inName == NULL || outLib == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Which hash are we looking for? */
+	wantHash = sjme_string_hash(inName);
+
+	/* Obtain the list of libraries within the suite. */
+	suiteLibs = NULL;
+	if (sjme_error_is(error = sjme_nvm_rom_suiteLibraries(inSuite,
+		&suiteLibs)) || suiteLibs == NULL)
+		return sjme_error_default(error);
+
+	/* Go through each suite to look for the ID. */
+	for (n = suiteLibs->length, i = 0; i < n; i++)
+	{
+		/* Skip blank library slots. */
+		lib = suiteLibs->elements[i];
+		if (lib == NULL)
+			continue;
+
+		/* Get the hash of the library. */
+		libHash = 0;
+		if (sjme_error_is(error = sjme_nvm_rom_libraryHash(lib,
+			&libHash)))
+			return sjme_error_default(error);
+
+		/* Is this a matching library? */
+		if (wantHash == libHash && 0 == strcmp(inName, lib->name))
+		{
+			*outLib = lib;
+			return SJME_ERROR_NONE;
+		}
+	}
+
+	/* Not found. */
+	return SJME_ERROR_LIBRARY_NOT_FOUND;
 }

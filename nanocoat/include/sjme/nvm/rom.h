@@ -523,14 +523,14 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
  * Resolves a single library by its index in the given suite.
  *
  * @param inSuite The suite to look in.
- * @param inValue The index of the library.
+ * @param inId The ID of the library.
  * @param outLib The resultant library.
  * @return Any resultant error, if any.
  * @since 2026/06/17
  */
 sjme_errorCode sjme_nvm_rom_resolveLibraryById(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrInPositive sjme_jint inValue,
+	sjme_attrInValue sjme_jint inId,
 	sjme_attrOutNotNull sjme_nvm_rom_library* outLib);
 
 /**
