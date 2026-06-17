@@ -22,7 +22,7 @@
 	/* Need to map implementation defines? */
 	#if defined(SJME_JNI_IMPLEMENTATION)
 		#if !defined(_JNI_IMPLEMENTATION_)
-				#define _JNI_IMPLEMENTATION_
+			#define _JNI_IMPLEMENTATION_
 		#endif
 	#endif
 

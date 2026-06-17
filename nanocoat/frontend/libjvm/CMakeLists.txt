@@ -44,9 +44,12 @@ squirreljme_multilib_binary_name(libJvm
 squirreljme_target_binary_name(libJvmStatic
 	"squirreljme")
 
-# If using official JNI/JVM headers we need this definition to be set
+# We use our own JNI/JVM headers, however at times things can be a bit
+# confusing when it comes to IDEs
 squirreljme_multilib_compile_definitions(libJvm PRIVATE
-	SJME_JNI_IMPLEMENTATION=1)
+	SJME_JNI_IMPLEMENTATION=1
+	SJME_CONFIG_USE_OWN_JNI=1
+	_JNI_IMPLEMENTATION_=1)
 
 # We need to find all of the includes and such
 squirreljme_multilib_include_directories(libJvm PRIVATE

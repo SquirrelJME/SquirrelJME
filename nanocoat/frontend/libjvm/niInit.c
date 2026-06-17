@@ -21,15 +21,6 @@
 /** The global NVM state for the JNI wrapper. */
 static sjme_atomic(sjme_nvm) sjme_jni_nvm_state;
 
-/**
- * Creates a new Java Virtual Machine.
- * 
- * @param pvm The resultant virtual machine.
- * @param penv The output environment.
- * @param args The arguments to the virtual machine creation.
- * @return If successful, @c JNI_OK .
- * @since 2025/06/25
- */
 jint JNICALL JNI_CreateJavaVM(
 	sjme_attrOutNotNull JavaVM** pvm,
 	sjme_attrOutNotNull void** penv,
