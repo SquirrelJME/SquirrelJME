@@ -14,6 +14,9 @@ sjme_errorCode sjme_nvm_rom_swmLoad(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_nvm_rom_swmManager* outSwmManager)
 {
+	if (allocPool == NULL || inSuite == NULL || outSwmManager == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -26,6 +29,10 @@ sjme_errorCode sjme_nvm_rom_swmResolve(
 	sjme_attrOutNotNull sjme_list(sjme_jint)** outById,
 	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outByName)
 {
+	if (swmManager == NULL || inLibrary == NULL || outMainClass == NULL ||
+		outMainArgs == NULL || outById == NULL || outByName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
