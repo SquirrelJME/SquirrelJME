@@ -25,13 +25,14 @@ public class DrawStyle
 	 */
 	public static int localViewColor(int __id)
 	{
-		switch (Math.abs(__id) & 3)
+		switch (Math.abs(__id))
 		{
-			case 0:		return 0xFF0000;
-			case 1:		return 0x0000FF;
-			case 2:		return 0x00FF00;
-			case 3:
-			default:	return 0xFFFF00;
+			case 0:		return 0x3352E1;
+			case 1:		return 0xDE4949;
+			case 2:		return 0xFFB937;
+			case 3:		return 0x2FB06E;
+			case 4:		return 0x533364;
+			default:	return 0x5A7D8B;
 		}
 	}
 }

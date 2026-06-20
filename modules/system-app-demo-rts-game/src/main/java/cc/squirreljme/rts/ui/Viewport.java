@@ -201,9 +201,10 @@ public class Viewport
 		
 		// Draw player ID color
 		__g.setColor(DrawStyle.localViewColor(this.localId));
-		__g.drawRect(screenX, screenY, screenW - 1, screenH - 1);
-		__g.drawRect(screenX + 1, screenY + 1,
+		__g.drawRect(screenX, screenY,
 			screenW - 2, screenH - 2);
+		__g.drawRect(screenX + 1, screenY + 1,
+			screenW - 3, screenH - 3);
 	}
 	
 	/**
