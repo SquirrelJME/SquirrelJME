@@ -76,29 +76,28 @@ https://github.com/SquirrelJME/SquirrelJME/issues).
 # Core Code Contribution Requirements
 
  1. No AI generated code and/or AI sourced code.
-    * If you are caught breaking this, you will be banned from the project and
-      classified as a copyright violator with the intent of sabotage.
-    * AI has no experience, has no intuition, and has no reasoning ability.
+    * AI currently is not permitted for the project.
+    * If you violate this rule, you will be barred from the project at this
+      time due to legal and copyright considerations.
  2. No copy-and-paste of source code from other projects.
     * Other projects have different quality standards, rules, and what they
-      expect. Just because one project is okay with it, means this project is.
-    * Also, you have no idea what was going through their mind when they
-      wrote that code along with the implications of it.
+      expect. This project has its own requirements on quality that do not
+      match other projects.
  3. Fail-fast always, incomplete code/unknown state is a TODO, never no-op.
     * SquirrelJME aims for 99.9% accuracy, terminating the program with a TODO
       is an effective means of determining when an undefined state is about
       to be entered due to incomplete code. No-ops may allow programs to run
       a bit further, however they are extremely difficult to debug and fixing
       those issues takes much longer on average and requires deeper dives.
-    * Being fail-fast, fixing issues in SquirrelJME tends to be quicker and
-      simpler because I know exactly where they happen.
+    * Being fail-fast, it has been observed that finding and fixing issues
+      in SquirrelJME has been simplified as failure is caught sooner.
  4. Every method that gets implement gets JavaDoc (Java) or Doxygen (C), that
     is originally written by your own thoughts, not from an AI or copy/paste
     from existing documentation including through translation. Fully explain
     everything, including things which may be missing in the original 
     documentation.
-    * Copying documentation verbatim is plagiarism and without writing it
-      can you really say you truly understand what the code does?
+    * Please do not verbatim copy documentation from other sources without
+      writing it yourself. It additionally helps to understand it as well.
  5. Comment code in recipe-like sections, every method is like a recipe that
     does something. 
     * It simplifies the structure and logical operation of what a method is
@@ -106,9 +105,9 @@ https://github.com/SquirrelJME/SquirrelJME/issues).
     * Write it for others and your future self.
     * A project with a quarter million lines of code is huge and gigantic,
       without any kind of logical structure at core logical levels the code
-      would end up being an unmaintainable horrible mess. I _love_ it when
-      others respond that they find the code readable and easy to understand
-      when they look at it, that is a _good thing_.
+      would end up being an unmaintainable horrible mess. Please keep
+      the project structure as it makes it easy to read and understand, this
+      is a _good thing_.
  6. Do not trust inputs, always check inputs and always use exceptions and
     never assertions.
     * Yes documentation says that a method might only be called with values
@@ -119,7 +118,7 @@ https://github.com/SquirrelJME/SquirrelJME/issues).
     * Ignore static code analysis demanding that unused code be removed
       because the conditions will never be met.
     * This also makes debugging issues much easier.
-    * Static code analysis might find a condition where code is unused, but
+    * Static code analysis might find a condition where code is unused, however
       it only knows of it from a single set or a few sets of state.
 
 # Exceptions to Contributing
