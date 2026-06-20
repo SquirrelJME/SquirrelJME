@@ -120,6 +120,9 @@ typedef enum sjme_nvm_structType
 	
 	/** Rom Library. */
 	SJME_NVM_STRUCT_ROM_LIBRARY,
+
+	/** Rom MEEP SWM Dependency Information. */
+	SJME_NVM_STRUCT_ROM_MEEP_SWM,
 	
 	/** Rom Suite. */
 	SJME_NVM_STRUCT_ROM_SUITE,

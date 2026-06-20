@@ -138,10 +138,21 @@ SJME_LIST_DECLARE(sjme_jstring, 0);
 /**
  * List reference.
  *
+ * @param type The list type.
  * @since 2025/10/12
  */
 #define sjme_list(type) \
-	SJME_TOKEN_PASTE_PP(sjme_list_, type)
+	SJME_LIST_NAME(type, 0)
+
+/**
+ * List reference.
+ *
+ * @param type The list type.
+ * @param numPointerStars The number of pointer stars.
+ * @since 2026/06/18
+ */
+#define sjme_listP(type, numPointerStars) \
+	SJME_LIST_NAME(type, numPointerStars)
 
 /** Void list. */
 typedef sjme_list(sjme_jint) sjme_list_void;

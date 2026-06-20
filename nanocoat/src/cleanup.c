@@ -1294,7 +1294,7 @@ static sjme_jboolean sjme_nvm_cleanup_typeIsObject(
 }
 
 sjme_errorCode sjme_nvm_allocR(
-	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_pointer inStateOrAllocPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInValue sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_nvm_common* outCommon
@@ -1303,9 +1303,10 @@ sjme_errorCode sjme_nvm_allocR(
 	sjme_errorCode error;
 	sjme_closeable_closeHandlerFunc postClose;
 	sjme_nvm_common result;
+	sjme_nvm inState;
 	sjme_alloc_pool allocPool;
 	
-	if (inState == NULL || outCommon == NULL)
+	if (inStateOrAllocPool == NULL || outCommon == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inType <= SJME_NVM_STRUCT_UNKNOWN ||
@@ -1317,10 +1318,16 @@ sjme_errorCode sjme_nvm_allocR(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Recover pool, some types can use an aliased pool. */
-	if (((sjme_alloc_pool)inState)->magic == SJME_ALLOC_POOL_MAGIC)
-		allocPool = (sjme_alloc_pool)inState;
-	else if (sjme_nvm_isAR(inState, SJME_NVM_STRUCT_STATE))
+	if (((sjme_alloc_pool)inStateOrAllocPool)->magic == SJME_ALLOC_POOL_MAGIC)
+	{
+		allocPool = (sjme_alloc_pool)inStateOrAllocPool;
+		inState = NULL;
+	}
+	else if (sjme_nvm_isAR(inStateOrAllocPool, SJME_NVM_STRUCT_STATE))
+	{
+		inState = (sjme_nvm)inStateOrAllocPool;
 		allocPool = inState->allocPool;
+	}
 	else
 		return SJME_ERROR_INVALID_ARGUMENT;
 	

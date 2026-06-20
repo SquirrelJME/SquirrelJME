@@ -38,12 +38,116 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * The type of dependency that this is.
+ *
+ * @since 2026/06/18
+ */
+typedef enum sjme_nvm_rom_swmDependencyType
+{
+	/** Unknown. */
+	SJME_NVM_SWM_DEPENDENCY_UNKNOWN,
+
+	/** A CLDC Configuration. */
+	SJME_NVM_SWM_DEPENDENCY_CONFIGURATION,
+
+	/** An internal SquirrelJME name. */
+	SJME_NVM_SWM_DEPENDENCY_INTERNAL_NAME,
+
+	/** A Profile. */
+	SJME_NVM_SWM_DEPENDENCY_PROFILE,
+
+	/** A standard. */
+	SJME_NVM_SWM_DEPENDENCY_STANDARD,
+
+	/** A specific suite. */
+	SJME_NVM_SWM_DEPENDENCY_SUITE,
+
+	/** A typed suite, either to a MIDlet, LIBlet, or API. */
+	SJME_NVM_SWM_DEPENDENCY_TYPED_SUITE,
+
+	/** The number of dependency types. */
+	SJME_NVM_SWM_NUM_DEPENDENCY_TYPES,
+} sjme_nvm_rom_swmDependencyType;
+
+/**
+ * Determines how an entry is to be used, whether it depends on a dependency
+ * or if it provides one.
+ *
+ * @since 2026/06/18
+ */
+typedef enum sjme_nvm_rom_swmEntryUse
+{
+	/** Unknown usage. */
+	SJME_NVM_SWM_USE_UNKNOWN,
+
+	/** A hard dependency. */
+	SJME_NVM_SWM_USE_DEPENDS,
+
+	/** An optional dependency. */
+	SJME_NVM_SWM_USE_DEPENDS_OPTIONAL,
+
+	/** Provides the given dependency. */
+	SJME_NVM_SWM_USE_PROVIDES,
+
+	/** The number of uses for a dependency. */
+	SJME_NVM_SWM_NUM_USE,
+} sjme_nvm_rom_swmEntryUse;
+
+/**
+ * Stores the base dependency information.
+ *
+ * @since 2026/06/18
+ */
+typedef struct sjme_nvm_rom_swmEntryTag
+{
+	/** The type of dependency this is. */
+	sjme_nvm_rom_swmDependencyType type;
+
+	/** The usage of this entry. */
+	sjme_nvm_rom_swmEntryUse use;
+} sjme_nvm_rom_swmEntryTag;
+
+/**
+ * Combined SWM dependency information.
+ *
+ * @since 2026/06/18
+ */
+typedef union sjme_nvm_rom_swmEntryBase sjme_nvm_rom_swmEntry;
+
+union sjme_nvm_rom_swmEntryBase
+{
+	/** The base dependency info. */
+	sjme_nvm_rom_swmEntryTag tag;
+};
+
+/** A list of @link sjme_nvm_rom_swmEntry @endlink. */
+SJME_LIST_DECLARE(sjme_nvm_rom_swmEntry, 0);
+
+/**
+ * Stores information for a single specific library.
+ *
+ * @since 2026/06/18
+ */
+typedef struct sjme_nvm_rom_swmLibrary
+{
+	/** The library this refers to. */
+	sjme_nvm_rom_library library;
+
+	/** Dependency and provided entry list. */
+	sjme_list(sjme_nvm_rom_swmEntry)* entries;
+} sjme_nvm_rom_swmLibrary;
+
+/** A list of @link sjme_nvm_rom_swmLibrary @endlink. */
+SJME_LIST_DECLARE(sjme_nvm_rom_swmLibrary, 0);
+
 struct sjme_nvm_rom_swmManagerBase
 {
 	/** The SWM manager is a bit complicated, so it needs a cleanup helper. */
-	sjme_closeableBase closeable;
+	sjme_nvm_commonBase common;
 
-	sjme_jint todo;
+	/** The libraries which are known about. */
+	sjme_list(sjme_nvm_rom_swmLibrary)* libraries;
 };
 
 /**
@@ -56,7 +160,7 @@ struct sjme_nvm_rom_swmManagerBase
  * to assist in classpath resolution.
  *
  * @param allocPool The allocation pool to use.
- * @param inSuite The suite to setup a manager for.
+ * @param inSuite The suite to set up a manager for.
  * @param outSwmManager The resultant SWM manager.
  * @return Any resultant error, if any.
  * @since 2026/06/16
