@@ -39,15 +39,16 @@ a tool for their own needs. Additionally, it is not possible in any way for
 the project to prevent usage of GenAI proliferation. It is not possible to
 prevent the project from being used by GenAI tools short of closing the source.
 The project itself has no desire to close the source code to prevent its use
-in GenAI tools. This project will not take any efforts to sabotage and/or poison
-itself to make any kind of statement as this causes harm and erodes trust.
-This will project will additionally not offer any suggestions, encouragement,
-opportunity, or pledges to promote sabotage and/or poisoning. Specific
-vocabulary and wording has been intentionally avoided in this reservation. This
-reservation neither condones nor disregards future use of GenAI.
+in GenAI tools. This project will not take any efforts to sabotage and/or
+poison itself to make any kind of statement as this causes harm and erodes 
+trust. This will project will additionally not offer any suggestions, 
+encouragement, opportunity, or pledges to promote sabotage and/or poisoning. 
+Specific vocabulary and wording has been intentionally avoided in this 
+reservation. This reservation neither condones nor disregards future use of 
+GenAI.
 
-Permitted use of GenAI with SquirrelJME with only authorized tools may be accepted
-in the future, if all the following conditions are met:
+Permitted use of GenAI with SquirrelJME with only authorized tools may be 
+accepted in the future, if all the following conditions are met:
 
  * The GenAI models are solely trained on SquirrelJME's source code, notes,
    history, and documentation.
