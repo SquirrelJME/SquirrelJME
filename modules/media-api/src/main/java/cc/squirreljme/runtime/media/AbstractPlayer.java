@@ -767,10 +767,6 @@ public abstract class AbstractPlayer
 	public final long setMediaTime(long __micros)
 		throws MediaException
 	{
-		// Do not allow microseconds to be negative
-		if (__micros < 0)
-			throw new MediaException("NEGV");
-		
 		synchronized (this)
 		{
 			/* {@squirreljme.error EA09 Cannot set the media time on a closed
@@ -779,10 +775,12 @@ public abstract class AbstractPlayer
 			if (state <= Player.UNREALIZED)
 				throw new IllegalStateException("EA09");
 			
-			// If the duration is unknown, then this makes no sense
+			// If the duration is unknown, then all we can really do is move the
+			// media back to the start. Assuming the player doesn't support this
+			// call, we'll get the proper MediaException anyway.
 			long duration = this.getDuration();
 			if (duration == Player.TIME_UNKNOWN)
-				return this.getMediaTime();
+				__micros = 0;
 			
 			// If the clock is set at exactly the end of the track or past it,
 			// set it to just before the track ends otherwise fast-forward
@@ -790,6 +788,11 @@ public abstract class AbstractPlayer
 			// extends to the bound
 			if (__micros >= duration)
 				__micros = duration - 1;
+
+			// Negative microsecond values effectively set media time to 0
+			// according to JSR-135.
+			if (__micros < 0)
+				__micros = 0;
 			
 			// If not started, update the stopped and track time
 			if (state < Player.STARTED)
