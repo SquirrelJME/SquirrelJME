@@ -146,3 +146,7 @@ These settings may be used for compatibility purposes if needed:
      resolution that an application should use and there otherwise are
      graphical glitches or other anomalies due to this.
 
+ * `cc.squirreljme.keymap=vendor` -- Use a vendor's keys in SquirrelJME.
+   * This should be used if an application requires a specific vendor's
+     keycodes in order to function properly. This is often the case with
+     applications developed for Nokia, Siemens, among others.

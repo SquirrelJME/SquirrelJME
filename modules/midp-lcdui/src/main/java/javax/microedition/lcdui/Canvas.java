@@ -9,6 +9,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
@@ -21,6 +22,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
+import cc.squirreljme.runtime.lcdui.event.GenericKeyCodeTranslator;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
@@ -330,10 +332,15 @@ public abstract class Canvas
 		// Before MIDP 3, all pixels are required to be drawn by the
 		// application... otherwise by default the canvas is wiped
 		this._isOpaque = MeepRuntime.versionLeast(3, 0);
+
+		// Setup a generic keycode translator for MIDP2 and lower, if needed.
+		if (MeepRuntime.versionBefore(3, 0))
+			EventTranslate.translatorDefault(
+				GenericKeyCodeTranslator.instance());
 	}
 	
 	/**
-	 * This is called when this is to be painted. The clipping area will
+	 * This is called when this canvas is to be painted. The clipping area will
 	 * be set to the area that needs updating and as such drawing should only
 	 * occur within the region. Any pixels drawn outside the clipping area
 	 * might not be updated and may have no effect when drawing.

@@ -86,5 +86,6 @@ dependencies
 	api project(":modules:gcf")
 	api project(":modules:vendor-api-squirreljme-io")
 	api project(":modules:vendor-api-squirreljme-collections")
+	api project(":modules:vendor-api-squirreljme-csv")
 	api project(":modules:scritch-ui")
 }

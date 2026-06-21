@@ -9,8 +9,11 @@
 
 package cc.squirreljme.runtime.media.nokia;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
+import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
@@ -19,16 +22,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+/**
+ * Decodes Nokia OTA files into audio samples to be sent over scritchaudio.
+ *
+ * @since 2026/05/26
+ */
 @SquirrelJMEVendorApi
 public class NokiaOTADecoder 
 {
 	/** Natural style, small rest between between notes (Default style). */
-	@SquirrelJMEVendorApi
 	private static final int NATURAL_STYLE =
 		0;
 
 	/** Continuous style, notes flow into each other with no rest. */
-	@SquirrelJMEVendorApi
 	private static final int CONTINUOUS_STYLE =
 		1;
 
@@ -36,7 +42,6 @@ public class NokiaOTADecoder
 	 * Staccato style, longer rest between notes compared to
 	 * {@link NokiaOTADecoder#NATURAL_STYLE}.
 	 */
-	@SquirrelJMEVendorApi
 	private static final int STACCATO_STYLE =
 		2;
 
@@ -49,11 +54,9 @@ public class NokiaOTADecoder
 	private byte[] _data;
 
 	/** Marker for the decoder's current position in {@code _data} */
-	@SquirrelJMEVendorApi
 	private int _curPos;
 
 	/** Marker for the decoder's current bit position in {@code _curPos}. */
-	@SquirrelJMEVendorApi
 	private byte _curBitPos;
 
 	/** The note scale multiplier, defaults to 880Hz (1x) */
@@ -107,16 +110,19 @@ public class NokiaOTADecoder
 	/** How many patterns the current Sound block has. */
 	private int _songSequenceLength;
 
-	/** The note's duration, in ms. */
-	private int _noteDurationMs;
+	/** The note's duration, in samples. */
+	private int _noteDurationSmp;
 
-	/** Duration of the rest between notes, in ms. */
-	private int _restDurationMs;
+	/** Duration of the rest between notes, in samples. */
+	private int _restDurationSmp;
 
 	/** The sound output's sampling rate. */
 	private int _sampleRate;
 
-	/** The generated square wave's period ({@code _sampleRate * noteFreq}). */
+	/** The sound output's amount of audio channels. */
+	private int _channels;
+
+	/** The generated square wave's period. */
 	private int _sqWavePeriod;
 
 	/** Master Volume multiplier for parsed notes (0-100% range) */
@@ -142,7 +148,7 @@ public class NokiaOTADecoder
 	{
 		return this._commandLength == 0 && this._instructionsLeft == 0 &&
 			this._loopValue == -1 && this._songSequenceLength == 0 &&
-			this._noteDurationMs == 0 && this._restDurationMs == 0;
+			this._noteDurationSmp == 0 && this._restDurationSmp == 0;
 	}
 
 	/**
@@ -151,18 +157,21 @@ public class NokiaOTADecoder
 	 * 
 	 * @param __fmt The output audio format (see {@link AudioStreamFormat}).
 	 * @param __rate The format's sampling rate (see {@link AudioStreamRate}).
+	 * @param __ch The format's channels (see {@link AudioStreamChannels}).
 	 * @param __buf The output audio buffer.
 	 * @param __off The offset from which to start filling the output buffer.
 	 * @param __len The amount of samples that can be placed into the buffer.
 	 * @param __data The input OTA data array.
 	 * @throws NullPointerException If {@code __data} is null.
 	 * @throws IllegalArgumentException If any of the lower level parse methods
-	 * receive invalid data from the OTA array.
+	 * receive invalid data from the OTA array, {@code __off} is negative,
+	 * {@code __len} is negative, or {@code (__off + __len > __buf.length)}.
 	 * @since 2025/12/24
 	 */
 	public void parseOTA(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@MagicConstant(valuesFromClass = AudioStreamRate.class) int __rate,
+		@MagicConstant(valuesFromClass = AudioStreamChannels.class) int __ch,
 		@Nullable Object __buf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __len,
@@ -176,6 +185,12 @@ public class NokiaOTADecoder
 		if (__buf == null)
 			return;
 
+		if (__off < 0 || __len < 0 || __off + __len < 0)
+			throw new IllegalArgumentException("NEGV");
+
+		if ((__off + __len > ObjectShelf.arrayLength(__buf)))
+			throw new IllegalArgumentException("IOOB");
+
 		// If we're not parsing yet (i.e. we didn't begin parsing and had to
 		// stop in order to wait for a new buffer to arrive after filling the
 		// previous one with audio data), parse from the start of the OTA data.
@@ -183,6 +198,7 @@ public class NokiaOTADecoder
 		{
 			// Validate command length (8 bits)
 			this._sampleRate = __rate;
+			this._channels = __ch;
 			this._data = __data;
 			this._commandLength = this.__readBits(8);
 			this.__parseMainCommand(__fmt, __buf, __off, __len);
@@ -198,7 +214,7 @@ public class NokiaOTADecoder
 		// If any of the note or rest durations are more than 0, that means we
 		// couldn't fit an entire note duration into the buffer, and must thus
 		// populate it with its duration remainder.
-		if (this._noteDurationMs > 0 || this._restDurationMs > 0)
+		if (this._noteDurationSmp > 0 || this._restDurationSmp > 0)
 		{
 			if (this.__generateSamples(__fmt, __buf, __off, __len))
 				return;
@@ -253,8 +269,8 @@ public class NokiaOTADecoder
 		this._commandLength = 0;
 		this._loopValue = -1;
 		this._songSequenceLength = 0;
-		this._noteDurationMs = 0;
-		this._restDurationMs = 0;
+		this._noteDurationSmp = 0;
+		this._restDurationSmp = 0;
 		this._noteVolume = (byte) 160;
 		this._quarterNoteMs = 952;
 		this._curPos = 0;
@@ -291,6 +307,7 @@ public class NokiaOTADecoder
 	 * be corrupted).
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private void __parseMainCommand(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -354,6 +371,7 @@ public class NokiaOTADecoder
 	 * @throws IllegalArgumentException If the parsed command is not valid.
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private void __parseRingingTone(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -387,6 +405,7 @@ public class NokiaOTADecoder
 	 * 
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private void __parseUnicode()
 	{
 		// A unicode is defined in the spec as a 16-bit UCS-2 encoded char
@@ -406,6 +425,7 @@ public class NokiaOTADecoder
 	 * valid, or is not yet supported.
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private void __parseSound(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -461,6 +481,7 @@ public class NokiaOTADecoder
 	 * @param __len The amount of samples that can be placed into the buffer.
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private void __parseBasicSong(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -500,6 +521,7 @@ public class NokiaOTADecoder
 	 * @param __len The amount of samples that can be placed into the buffer.
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private void __parseSongPatternHeader(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -536,6 +558,7 @@ public class NokiaOTADecoder
 	 * @param __len The amount of samples that can be placed into the buffer.
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private void __parseSongPattern(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -620,6 +643,7 @@ public class NokiaOTADecoder
 	 * @throws IllegalArgumentException If the parsed instruction is invalid.
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private boolean __parsePatternInstruction(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -676,6 +700,7 @@ public class NokiaOTADecoder
 	 * that OTA parsing must be paused until the next call.
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private boolean __parseNoteInstruction(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -689,7 +714,8 @@ public class NokiaOTADecoder
 		int noteFreq = this.__getNoteFrequency(noteValue);
 
 		// Period of the square wave
-		this._sqWavePeriod = noteFreq > 0 ? this._sampleRate / noteFreq : 0;
+		this._sqWavePeriod = (noteFreq > 0 ? this._sampleRate / noteFreq *
+			this._channels : 0);
 
 		// Now read its duration and specifier
 		// 3 bits for duration
@@ -697,27 +723,32 @@ public class NokiaOTADecoder
 		// 2 bits for duration specifier
 		int durSpecifier = this.__readBits(2);
 
-		// Calculate final duration in ms 
-		this._noteDurationMs = (int) (this.__durationToMs(duration,
-			durSpecifier) / 1000.0f * this._sampleRate * 1.5f);
+		// Calculate final duration in samples
+		this._noteDurationSmp = ((this.__durationToMs(duration, durSpecifier) *
+			this._sampleRate) * this._channels) / 1000;
+
+		// Check which style is currently being used in order to calculate the
+		// note and rest proportions. Nokia's Smart Messaging documentation does
+		// not disclose the note:rest ratios for the styles, so the values found
+		// in Sony Ericsson's I-Melody are used here, as they do have some
+		// similarities.
 
 		// Set to the CONTINUOUS style rest duration first
-		this._restDurationMs = 0;
+		this._restDurationSmp = 0;
 
 		// STACCATO has shorter notes with longer rest by making a note
-		// end way before the next note begins to play
+		// end way before the next note begins to play.
 		if (this._noteStyle == NokiaOTADecoder.STACCATO_STYLE)
 		{
-			this._restDurationMs = (int) (this._noteDurationMs * 0.4f);
-			this._noteDurationMs = (int) (this._noteDurationMs * 0.6f);
+			this._noteDurationSmp /= 2;
+			this._restDurationSmp = this._noteDurationSmp;
 		}
-			
 
-		// CONTINUOUS has notes flow into each other (no rest)
+		// NATURAL has a small rest between notes
 		else if (this._noteStyle == NokiaOTADecoder.NATURAL_STYLE)
 		{
-			this._restDurationMs = (int) (this._noteDurationMs * 0.2f);
-			this._noteDurationMs = (int) (this._noteDurationMs * 0.8f);
+			this._restDurationSmp = this._noteDurationSmp / 20;
+			this._noteDurationSmp = (this._noteDurationSmp * 20) / 21;
 		}
 
 		return this.__generateSamples(__fmt, __buf, __off, __len);
@@ -733,6 +764,7 @@ public class NokiaOTADecoder
 	 * 
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private void __parseScaleInstruction() 
 	{
 		int scaleValue = this.__readBits(2); // 2 bits are used for scale value
@@ -773,6 +805,7 @@ public class NokiaOTADecoder
 	 * 
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private void __parseStyleInstruction() 
 	{
 		int styleValue = this.__readBits(2); // 2 bits for style value
@@ -806,6 +839,7 @@ public class NokiaOTADecoder
 	 * 
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private void __parseTempoInstruction() 
 	{
 		// Read 5 bits for BPM
@@ -955,6 +989,7 @@ public class NokiaOTADecoder
 	 * 
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private void __parseVolumeInstruction() 
 	{
 		int noteVolume = this.__readBits(4); // 4 bits for volume level
@@ -1043,6 +1078,7 @@ public class NokiaOTADecoder
 	 * @return The frequency of the received note.
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private int __getNoteFrequency(int __noteValue) 
 	{
 		short baseFrequency = 0;
@@ -1174,6 +1210,7 @@ public class NokiaOTADecoder
 	 * @return The resulting ms duration.
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private int __durationToMs(int __duration, int __durSpecifier) 
 	{
 		// Base quarter note duration in ms
@@ -1219,17 +1256,17 @@ public class NokiaOTADecoder
 		{
 				// Dotted note, increase duration by 50%
 			case 0x1:
-				baseDuration = (int) (baseDuration * 1.5);
+				baseDuration = (baseDuration * 15) / 10;
 				break;
 
 				// Double dotted note, increase duration by 75%
 			case 0x2: 
-				baseDuration = (int) (baseDuration * 1.75);
+				baseDuration = (baseDuration * 175) / 100;
 				break;
 
 				// 2/3 length note, reduce duration to about 2/3
 			case 0x3: 
-				baseDuration = (int) (baseDuration * (2.0 / 3.0));
+				baseDuration = (baseDuration * 2) / 3;
 				break;
 
 				// No special duration specifier
@@ -1255,6 +1292,7 @@ public class NokiaOTADecoder
 	 * that OTA parsing must be paused until the next call.
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private boolean __generateSamples(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -1263,8 +1301,8 @@ public class NokiaOTADecoder
 	{
 		boolean filledBuffer = false;
 
-		int genNoteSamples = this._noteDurationMs;
-		int genRestSamples = this._restDurationMs;
+		int genNoteSamples = this._noteDurationSmp;
+		int genRestSamples = this._restDurationSmp;
 
 		int sqWavePeriod = this._sqWavePeriod;
 		byte masterVol = this._masterVolumeMult;
@@ -1341,7 +1379,7 @@ public class NokiaOTADecoder
 			}
 		}
 
-		this._noteDurationMs -= genNoteSamples;
+		this._noteDurationSmp -= genNoteSamples;
 
 		// Only bother with rest duration if there is space left in the buffer
 		if (genNoteSamples < __len) 
@@ -1358,7 +1396,7 @@ public class NokiaOTADecoder
 			// all formats)
 			
 			// Decrement rest duration
-			this._restDurationMs -= genRestSamples;
+			this._restDurationSmp -= genRestSamples;
 		}
 		
 		return filledBuffer;
@@ -1371,6 +1409,7 @@ public class NokiaOTADecoder
 	 * @return An integer representing the read bits.
 	 * @since 2025/12/24
 	 */
+	@KeepWhenCompacting
 	private int __readBits(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __numBits) 
 	{

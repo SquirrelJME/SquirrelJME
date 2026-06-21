@@ -1,32 +1,74 @@
-# SquirrelJME AI Coding Guidelines and Agents Helper
+# SquirrelJME GenAI Coding Guidelines and Agents Policy
 
-AI is not permitted for this project due to legal and ethical concerns.
+GenAI is not permitted for this project due to legal concerns.
 SquirrelJME is not a general 95% project it is an extremely
-specialized project with specialized needs, AI as it exists now is not in
-any way useful for SquirrelJME. AI can never understand the context of what
-SquirrelJME is and what it is for, not what it is meant to be outside of
-the next words it can predict.
+specialized project with specialized needs, GenAI as it exists now is not in
+any way useful for SquirrelJME. GenAI cannot currently understand the context
+of what SquirrelJME is and what it is for.
 
-For those who feel that AI allows them to do something that they would never
+For those who feel that GenAI allows them to do something that they would never
 otherwise do, this is something that we call _Imposter Syndrome_. You can do
 things, it takes time to learn however the learning process, although it can
-at times be frustrating it can be very fulfilling. Do not give up.
+at times be frustrating it can be very fulfilling. It is understood that such
+tools can be used to assist with the learning process, however do remember
+to verify all sources and to take the output with a grain of salt. Do not give
+up.
+
+This policy only applies to Large Language Models (LLMs) and "Chatbots" which
+take human language and/or expression as input to generate an output that
+is not used for the purposes of accessibility.
+
+This policy does not apply to "Traditional" AI such as neutral networks,
+video game "computer" players, and similar technologies.
 
 ## Contributing to SquirrelJME
 
-Note that SquirrelJME does not accept any contributions from which AI has
+Note that SquirrelJME does not accept any contributions from which GenAI has
 been used in any fashion. It is not possible to determine the original
-source of the code as AI being a prediction engine is not original. As
-such, it is too dangerous to the project.
+licensing and copyright of the generated source code, nor with information
+it has assisted with due to patents. GenAI models have been trained upon
+various projects with different code guidelines and licenses.
+As such, the output of the GenAI cannot ultimately be currently verified.
 
- * [contributing.mkd](contributing.mkd)
+## Future Policy Reservation
 
-## Important Licensing Information
+Note that at this current time, use for or against GenAI is being discussed
+heavily by individuals and organizations. This policy has zero intention to
+make any kind of statement in the manner, nor to judge users for evaluating
+a tool for their own needs. Additionally, it is not possible in any way for
+the project to prevent usage of GenAI proliferation. It is not possible to
+prevent the project from being used by GenAI tools short of closing the source.
+The project itself has no desire to close the source code to prevent its use
+in GenAI tools. This project will not take any efforts to sabotage and/or
+poison itself to make any kind of statement as this causes harm and erodes 
+trust. This will project will additionally not offer any suggestions, 
+encouragement, opportunity, or pledges to promote sabotage and/or poisoning. 
+Specific vocabulary and wording has been intentionally avoided in this 
+reservation. This reservation neither condones nor disregards future use of 
+GenAI.
 
- * [license.mkd](license.mkd)
+Permitted use of GenAI with SquirrelJME with only authorized tools may be 
+accepted in the future, if all the following conditions are met:
+
+ * The GenAI models are solely trained on SquirrelJME's source code, notes,
+   history, and documentation.
+ * No generic models or additional models are applied, this includes additional
+   models which provide support for human languages.
+ * It must not train from any other source that is not SquirrelJME.
+ * The use of the GenAI is run on the local device whether that be a CPU,
+   GPU, or NPU without the use of an internet and network connection, it
+   must be fully usable offline.
+ * The models must be fully reproducible and deterministic, the same input
+   must result in the same output.
+ * The models must be able to be trained fully offline on the local device.
+ * The model training, prompt, and all other related software must be under an
+   Open Source Initiative (OSI) license.
+ * The tool has been vetted and approved by the administrators of SquirrelJME.
 
 ## Developing for SquirrelJME
 
- * [developer-guide.mkd](developer-guide.mkd)
  * [building.mkd](building.mkd)
+ * [contributing.mkd](contributing.mkd)
  * [design.mkd](design.mkd)
+ * [developer-guide.mkd](developer-guide.mkd)
+ * [license.mkd](license.mkd)

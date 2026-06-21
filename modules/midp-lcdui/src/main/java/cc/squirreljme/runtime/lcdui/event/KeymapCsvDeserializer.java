@@ -7,32 +7,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.rts.ui;
+package cc.squirreljme.runtime.lcdui.event;
+
+import cc.squirreljme.csv.CsvDeserializer;
+import java.util.Map;
 
 /**
- * Colors, styles, and otherwise.
+ * Handles deserialization of vendor keycode CSVs.
  *
- * @since 2026/06/12
+ * @since 2026/05/14
  */
-public class DrawStyle
+final class KeymapCsvDeserializer
+	implements CsvDeserializer<String[]>
 {
 	/**
-	 * The color used for local views.
-	 *
-	 * @param __id The view ID.
-	 * @return The color used for the ID.
-	 * @since 2026/06/12
+	 * {@inheritDoc}
+	 * @since 2026/05/14
 	 */
-	public static int localViewColor(int __id)
+	@Override
+	public String[] deserialize(Map<String, String> __values)
+		throws NullPointerException
 	{
-		switch (Math.abs(__id))
-		{
-			case 0:		return 0x3352E1;
-			case 1:		return 0xDE4949;
-			case 2:		return 0xFFB937;
-			case 3:		return 0x2FB06E;
-			case 4:		return 0x533364;
-			default:	return 0x5A7D8B;
-		}
+		return new String[] {__values.get("keycode").toLowerCase(),
+			__values.get("value")};
 	}
 }

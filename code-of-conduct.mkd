@@ -9,15 +9,18 @@ This applies to community participation:
  * _No politics at **all**_:
    * This is not a forum for such discussion, this is an open source project.
    * We do not care, it is a waste of time.
+   * This includes current events, technologies, news and otherwise.
  * _Bigotry is not permitted_:
    * If your involvement in the community is intended to antagonize others and
      to make them feel unwelcome, then you are not welcome.
+   * If you treat others with disrespect and expect others to treat you with
+     respect, then you are not welcome.
    * If you feel that the flags and/or color schemes on display within the
      project, which have been in place for many multiple of years, is something
      you feel that you should speak out against due to personal
      gripes and/or issues: It is recommended that you _do not_.
  * _Do not vent_:
-   * This places a burden on others, if you are trouble please do seek
+   * This places a burden on others, if you are in trouble please do seek
      mental health resources.
 
 This community follows a warning then permanent ban procedure, unless your

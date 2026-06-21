@@ -91,8 +91,8 @@ public class NokiaOTAPlayer
 	public void render(int __format, int __rate, int __channels, Object __buf,
 		int __off, int __len)
 	{
-		this._decoder.parseOTA(__format, __rate, __buf, __off, __len,
-			this._data);
+		this._decoder.parseOTA(__format, __rate, __channels, __buf, __off,
+			__len, this._data);
 
 		boolean finished = this._decoder.hasFinished();
 		if (finished)
@@ -175,7 +175,7 @@ public class NokiaOTAPlayer
 
 			// Create the native audio stream
 			this._stream = AbstractPlayer.stream(AudioStreamFormat.AUTOMATIC,
-				AudioStreamRate.AUTOMATIC, AudioStreamChannels.MONO);
+				AudioStreamRate.AUTOMATIC, AudioStreamChannels.AUTOMATIC);
 		}
 	}
 	
@@ -223,7 +223,7 @@ public class NokiaOTAPlayer
 				this._connection =
 					AudioStreamShelf.attach(this._stream, this,
 						AudioStreamFormat.AUTOMATIC, AudioStreamRate.AUTOMATIC,
-						AudioStreamChannels.MONO);
+						AudioStreamChannels.AUTOMATIC);
 			}
 			catch (MLECallError __e)
 			{
