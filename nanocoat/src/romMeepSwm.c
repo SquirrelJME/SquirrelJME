@@ -10,18 +10,69 @@
 #include "sjme/nvm/romMeepSwm.h"
 #include "sjme/nvm/cleanup.h"
 
-static sjme_errorCode sjme_nvm_rom_swmLoadSingle(
+static sjme_errorCode sjme_nvm_rom_swmLoadSingleDoJa(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrInNotNull sjme_nvm_rom_swmLibrary* inOutDepend)
 {
+	sjme_errorCode error;
+
 	if (allocPool == NULL || inSuite == NULL || inLibrary == NULL ||
 		inOutDepend == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_swmLibrary* inOutDepend)
+{
+	sjme_errorCode error;
+
+	if (allocPool == NULL || inSuite == NULL || inLibrary == NULL ||
+		inOutDepend == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nvm_rom_swmLoadSingle(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrInNotNull sjme_nvm_rom_swmLibrary* inOutDepend)
+{
+	sjme_errorCode error;
+
+	if (allocPool == NULL || inSuite == NULL || inLibrary == NULL ||
+		inOutDepend == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Load manifest based information from the Jar directly, or from a */
+	/* discovered KJX prepended manifest. */
+	if (sjme_error_is(error = sjme_nvm_rom_swmLoadSingleManifest(
+		allocPool, inSuite, inLibrary, inOutDepend)))
+	{
+		if (error != SJME_ERROR_NOT_MATCHED)
+			return sjme_error_default(error);
+	}
+
+	/* Load DoJa specific information. */
+	if (sjme_error_is(error = sjme_nvm_rom_swmLoadSingleDoJa(
+		allocPool, inSuite, inLibrary, inOutDepend)))
+	{
+		if (error != SJME_ERROR_NOT_MATCHED)
+			return sjme_error_default(error);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_rom_swmLoad(
