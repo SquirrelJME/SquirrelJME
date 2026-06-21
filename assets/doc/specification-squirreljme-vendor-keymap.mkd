@@ -1,0 +1,77 @@
+# MIDP2 Vendor-Specific Keymap Table Specification
+
+SquirrelJME supports multiple vendor keycodes, which were used by their MIDP2
+devices due to MIDP2's LCDUI not specifying keys other than the numpad and
+basic game keys. For this reason, vendors differed on how they mapped those
+non-standard keys in Java ME, although some specific devices also have a
+different numpad keymap on top of those.
+
+Vendor keycodes are defined in their respective `.csv` file.
+
+Currently, the following vendor keymaps are supported by SquirrelJME:
+ * `com.kddi`
+ * `com.motorola.a1000`
+ * `com.motorola` (also used by SoftBank and Alcatel devices)
+ * `com.motorola.triplets` (also used by Sharp devices)
+ * `com.motorola.v8` (also used by Sharp devices)
+ * `com.nokia` (Also used by Samsung and Sony Ericsson)
+ * `com.nokia.keyboard` (Nokia C/E-Series in numpad mode)
+ * `com.sagem`
+ * `com.siemens`
+ * `kr.co.lge`
+ * `net.rim.blackberry`
+
+## Keymap File Structure (`.csv`)
+
+All CSV files are comma-separated, containing keycode names and their
+corresponding values on each line.
+
+For values that a vendor does not define and/or the default assumed
+mapping is enough, the value must be specified as zero to let SquirrelJME
+use its own internal keymapping default. The mapping may potentially be
+ignored if there is no default keymap available.
+
+The ordering of key/value pairs in the CSV is not important. Any keys whose
+value is unknown for that keymap, or is known to be the same value as the
+default mapping for said key, shall be left as zero.
+
+`haskeybaord` is a special key that indicates whether the device in question
+has a keyboard, and said keyboard is to be set to ASCII input mode. As such,
+not all keyboard mappings will have it set to `1`, as vendors such as
+`nokia.keyboard` do indicate a keyboard device, but the keyboard in that case
+is in numpad mode for games and apps that do not support the full keyboard.
+
+Specific vendors such as Nokia, KDDI, and LG have different names for
+special keys such as _center_ being named _soft3_ and _back_ being named _CLR_.
+SquirrelJME aligns its key names as closely to the main Java ME LCDUI
+specification as it can.
+
+
+## Keymap File Example
+
+This is an example of how valid keymap files are expected to be defined
+(this table reflects `com.nokia.csv`):
+
+| keycode      | value |
+|--------------|-------|
+| keyup        | 1     |
+| keydown      | 6     |
+| keyleft      | 2     |
+| keyright     | 5     |
+| keycenter    | -9    |
+| keysoft1     | -6    |
+| keysoft2     | -7    |
+| keyback      | -88   |
+| keynum0      | 0     |
+| keynum1      | 0     |
+| keynum2      | 0     |
+| keynum3      | 0     |
+| keynum4      | 0     |
+| keynum5      | 0     |
+| keynum6      | 0     |
+| keynum7      | 0     |
+| keynum8      | 0     |
+| keynum9      | 0     |
+| keystar      | 0     |
+| keypound     | 0     |
+| haskeyboard  | 0     |

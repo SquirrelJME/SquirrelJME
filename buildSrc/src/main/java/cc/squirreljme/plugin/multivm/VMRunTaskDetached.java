@@ -132,6 +132,22 @@ public class VMRunTaskDetached
 		// Which command line is used?
 		List<String> procArgs = new ArrayList<>();
 		Map<String, String> sysProps = new LinkedHashMap<>();
+
+		// We need to pass relevant system properties onto the target, otherwise
+		// settings such as screen resolution, scale and vendor-specific keys
+		// won't take effect on the application.
+		if (System.getProperty("cc.squirreljme.frame") != null)
+			sysProps.put("cc.squirreljme.frame",
+				System.getProperty("cc.squirreljme.frame"));
+
+		if (System.getProperty("cc.squirreljme.scale") != null)
+			sysProps.put("cc.squirreljme.scale",
+				System.getProperty("cc.squirreljme.scale"));
+
+		if (System.getProperty("cc.squirreljme.keymap") != null)
+			sysProps.put("cc.squirreljme.keymap",
+				System.getProperty("cc.squirreljme.keymap"));
+
 		if (debugServer != null)
 		{
 			// LLDB Server?

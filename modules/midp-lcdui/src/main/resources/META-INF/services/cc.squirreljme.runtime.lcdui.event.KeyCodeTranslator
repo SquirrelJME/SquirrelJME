@@ -6,5 +6,9 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
+# Generic vendor keycode translator. Not used as a service, it is always
+# available internally given its purpose.
+# cc.squirreljme.runtime.lcdui.event.GenericKeyCodeTranslator
+
 # QWERTY converted dial pad
 cc.squirreljme.runtime.lcdui.event.QwertyDialPad

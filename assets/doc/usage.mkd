@@ -203,6 +203,36 @@ the default scale factor you may specify:
    * Environment Variable:
      * `SQUIRRELJME_SCALE=(multiplier|WxH)`
 
+## Vendor-specific keycodes
+
+SquirrelJME supports adjusting its input keycodes to match those of
+specific vendors.
+
+ * Vendor Keymaps -- Maps native device keys to vendor specific keys.
+   * System property:
+     * `cc.squirreljme.keymap=mapping`
+   * Environment Variable:
+     * `SQUIRRELJME_VENDOR_KEY=mapping`
+   * Where `mapping` -> `cc.squirreljme.[vendorname].[device/series]`
+   * The following vendor mappings are supported at this time:
+     * `com.kddi`
+     * `com.motorola.a1000`
+     * `com.motorola` (also used by SoftBank and Alcatel devices)
+     * `com.motorola.triplets` (also used by Sharp devices)
+     * `com.motorola.v8` (also used by Sharp devices)
+     * `com.nokia` (Also used by Samsung and Sony Ericsson)
+     * `com.nokia.keyboard` (Nokia C/E-Series in numpad mode)
+     * `com.sagem`
+     * `com.siemens`
+     * `kr.co.lge`
+     * `net.rim.blackberry`
+   * These properties' values are case-sensitive.
+   * If a matching CSV cannot be found for the passed argument, SquirrelJME
+     will fail as a result.
+   * Note that the `motorola` key layout is also used by Alcatel and
+     SoftBank, `motorola.triplets` is also used by Sharp devices, and
+     `nokia` is also used by Sony Ericsson and Samsung devices.
+
 ## Special `file:` URIs
 
 These are special `file:` URIs in SquirrelJME, specified by using a special

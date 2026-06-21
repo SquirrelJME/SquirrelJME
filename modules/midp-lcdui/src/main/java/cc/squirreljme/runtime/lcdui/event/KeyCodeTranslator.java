@@ -64,7 +64,10 @@ public interface KeyCodeTranslator
 	 * always start with the root vendor being the most generic device. For
 	 * example {@code cc.squirreljme} would be a generic SquirrelJME device
 	 * while {@code cc.squirreljme.phone.a} would be a SquirrelJME Phone
-	 * Model A, hypothetically.
+	 * Model or Series A, hypothetically. Similarly, vendor devices will be
+	 * qualified as {@code vendor.phone} unless a vendor is known to use a
+	 * single keymap for most or all of its devices, in which case only the
+	 * vendor's name is used, as is the case for {@code com.nokia} for example.
 	 *
 	 * This method is generally used if {@link ServiceLoader} is used to
 	 * access a translator and one is defined.
@@ -109,7 +112,7 @@ public interface KeyCodeTranslator
 		@MagicConstant(valuesFromClass = NonStandardKey.class) int __kc);
 	
 	/**
-	 * Converts a vendor specific key code to a vendor specific game action.
+	 * Converts a vendor specific key code to a game action.
 	 *
 	 * @param __vc The vendor specific key code.
 	 * @param __last If {@code true} this is a last case translation.
