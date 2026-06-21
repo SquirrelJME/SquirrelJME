@@ -466,14 +466,14 @@ sjme_errorCode sjme_nvm_rom_libraryRawSize(
 /**
  * Obtains the given resource as a stream.
  *
- * @param library The library to get the resource from.
+ * @param inLibrary The library to get the resource from.
  * @param outStream The resultant stream.
  * @param rcName The name of the resource to obtain.
  * @return On any errors, if any.
  * @since 2023/12/31
  */
 sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
-	sjme_attrInNotNull sjme_nvm_rom_library library,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr rcName);
 

@@ -33,10 +33,21 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
 	sjme_attrInNotNull sjme_nvm_rom_swmLibrary* inOutDepend)
 {
 	sjme_errorCode error;
+	sjme_jboolean hasManifest;
 
 	if (allocPool == NULL || inSuite == NULL || inLibrary == NULL ||
 		inOutDepend == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Check if a manifest exists. */
+	hasManifest = SJME_JNI_FALSE;
+	if (sjme_error_is(error = sjme_nvm_rom_libraryResourceExists(
+		inLibrary, &hasManifest, "META-INF/MANIFEST.MF")))
+		return sjme_error_default(error);
+
+	/* If there is no manifest, there is no point to continue. */
+	if (!hasManifest)
+		return SJME_ERROR_NOT_MATCHED;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);

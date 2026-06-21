@@ -421,35 +421,49 @@ fail_unsupported:
 }
 
 sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
-	sjme_attrInNotNull sjme_nvm_rom_library library,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr rcName)
 {
 	sjme_nvm_rom_libraryResourceStreamFunc resourceFunc;
 	sjme_stream_input result;
 	sjme_errorCode error;
+	sjme_jboolean exists;
 
-	if (library == NULL || outStream == NULL || rcName == NULL)
+	if (inLibrary == NULL || outStream == NULL || rcName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* These must be set. */
-	if (library->functions == NULL ||
-		library->functions->resourceStream == NULL)
+	if (inLibrary->functions == NULL ||
+		inLibrary->functions->resourceStream == NULL)
 		return sjme_error_notImplemented(0);
+
+	/* Can we see if this entry exists first before we try to load it? */
+	if (inLibrary->functions->resourceExists != NULL)
+	{
+		/* Check to see if the entry exists before we do a scan. */
+		exists = SJME_JNI_FALSE;
+		if (sjme_error_is(error = inLibrary->functions->resourceExists(
+			inLibrary, &exists, rcName)))
+			return sjme_error_default(error);
+
+		/* If it does not exist, do not bother. */
+		return SJME_ERROR_RESOURCE_NOT_FOUND;
+	}
 	
 	/* Lock library. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&library->common.lock)))
+		&inLibrary->common.lock)))
 		return sjme_error_default(error);
 
 	/* Get the resource function. */
-	resourceFunc = library->functions->resourceStream;
+	resourceFunc = inLibrary->functions->resourceStream;
 
 	/* Ask for the resource. */
 	/* Remember to remove any starting slash, because internally everything */
 	/* is treated as absolute. */
 	result = NULL;
-	if (sjme_error_is(error = resourceFunc(library,
+	if (sjme_error_is(error = resourceFunc(inLibrary,
 		&result,
 		(rcName[0] == '/' ? rcName + 1 : rcName))) ||
 		result == NULL)
@@ -457,7 +471,7 @@ sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
 	
 	/* Unlock library. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&library->common.lock, NULL)))
+		&inLibrary->common.lock, NULL)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -466,7 +480,7 @@ sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
 	
 	/* Unlock library. */
 fail_locateResource:
-	sjme_thread_spinLockRelease(&library->common.lock, NULL);
+	sjme_thread_spinLockRelease(&inLibrary->common.lock, NULL);
 	
 	return sjme_error_default(error);
 }
@@ -477,6 +491,7 @@ sjme_errorCode sjme_nvm_rom_libraryResourceExists(
 	sjme_attrInNotNull sjme_lpcstr rcName)
 {
 	sjme_errorCode error;
+	sjme_stream_input tempStream;
 	
 	if (inLibrary == NULL || outExists == NULL || rcName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -487,6 +502,27 @@ sjme_errorCode sjme_nvm_rom_libraryResourceExists(
 			outExists, rcName);
 	
 	/* Otherwise we need to open the actual stream to it. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	tempStream = NULL;
+	if (sjme_error_is(error = sjme_nvm_rom_libraryResourceAsStream(
+		inLibrary, &tempStream, rcName)) || tempStream == NULL)
+	{
+		/* If not found, then say as such. */
+		if (error == SJME_ERROR_RESOURCE_NOT_FOUND)
+		{
+			*outExists = SJME_JNI_FALSE;
+			return SJME_ERROR_NONE;
+		}
+
+		/* Fail otherwise. */
+		return sjme_error_default(error);
+	}
+
+	/* Close the stream. */
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(tempStream))))
+		return sjme_error_default(error);
+
+	/* Since we opened and closed a stream, the resource does exist. */
+	*outExists = SJME_JNI_TRUE;
+	return sjme_error_default(error);
 }
