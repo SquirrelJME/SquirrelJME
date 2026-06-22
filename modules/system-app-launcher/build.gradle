@@ -19,6 +19,7 @@ squirreljme
 	tags += "j2me"
 	tags += "medium"
 	
+	/*
 	// Keep these around for testing
 	proGuardOptions += ["-keep",
 		"class", "cc.squirreljme.runtime.launcher.ui.MidletMain"]
@@ -35,6 +36,7 @@ squirreljme
 	
 	// Ignore warnings here, since things just break?
 	proGuardOptionsTest += ["-ignorewarnings"]
+	 */
 	
 	// Optional dependencies for testing, so that these two projects appear
 	// on the list of applications

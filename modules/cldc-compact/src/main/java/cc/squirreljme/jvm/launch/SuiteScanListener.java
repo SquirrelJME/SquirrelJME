@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.launch;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This is a listener which specifies when a suite has been scanned in.
  * 
@@ -17,6 +19,7 @@ package cc.squirreljme.jvm.launch;
  *
  * @since 2020/12/29
  */
+@SquirrelJMEVendorApi
 public interface SuiteScanListener
 {
 	/**
@@ -27,6 +30,7 @@ public interface SuiteScanListener
 	 * @param __total The total number of JARs scanned.
 	 * @since 2020/12/29
 	 */
+	@SquirrelJMEVendorApi
 	void scanned(Application __app, int __dx, int __total);
 	
 	/**
@@ -37,5 +41,6 @@ public interface SuiteScanListener
 	 * @param __total The total number of JARs scanned.
 	 * @since 2024/12/06
 	 */
+	@SquirrelJMEVendorApi
 	void skipped(int __dx, int __total);
 }

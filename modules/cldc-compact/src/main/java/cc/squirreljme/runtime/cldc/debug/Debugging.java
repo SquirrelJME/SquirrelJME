@@ -41,18 +41,19 @@ import org.jetbrains.annotations.Contract;
 public final class Debugging
 {
 	/** Is debugging enabled? */
-	@SuppressWarnings({"noinspection", "ConstantValue", "UnnecessaryUnboxing",
-		"unused", "PatternValidation"})
-	public static boolean ENABLED =
-		Boolean.valueOf(true).booleanValue();
+	@SuppressWarnings("ConstantExpression")
+	@SquirrelJMEVendorApi
+	public static final boolean ENABLED =
+		__Flags__._ENABLED;
 	
 	/** Verbose debugging messages. */
-	public static boolean VERBOSE =
-		Boolean.getBoolean("cc.squirreljme.verbose");
+	@SquirrelJMEVendorApi
+	public static final boolean VERBOSE =
+		__Flags__._VERBOSE;
 	
 	/** Do not execute exit on the virtual machine. */
 	@SquirrelJMEVendorApi
-	public static boolean NO_EXIT =
+	public static final boolean NO_EXIT =
 		Boolean.getBoolean("cc.squirreljme.noexit");
 	
 	/** Only bytes up to this value are permitted in the output. */
@@ -89,7 +90,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void debugNote(@PrintFormat String __fmt)
 	{
-		if (!Debugging.ENABLED)
+		if (!__Flags__._ENABLED)
 			return;
 		
 		Debugging.__format('D', 'B', __fmt, (Object[])null);
@@ -105,7 +106,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void debugNote(@PrintFormat String __fmt, Object... __args)
 	{
-		if (!Debugging.ENABLED)
+		if (!__Flags__._ENABLED)
 			return;
 		
 		Debugging.__format('D', 'B', __fmt, __args);
@@ -120,7 +121,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void notice(@PrintFormat String __fmt)
 	{
-		if (!Debugging.ENABLED)
+		if (!__Flags__._ENABLED)
 			return;
 		
 		Debugging.__format('\0', '\0', __fmt, (Object[])null);
@@ -136,7 +137,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void notice(@PrintFormat String __fmt, Object... __args)
 	{
-		if (!Debugging.ENABLED)
+		if (!__Flags__._ENABLED)
 			return;
 		
 		Debugging.__format('\0', '\0', __fmt, __args);
@@ -255,7 +256,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void todoNote(@PrintFormat String __fmt)
 	{
-		if (!Debugging.ENABLED)
+		if (!__Flags__._ENABLED)
 			return;
 		
 		Debugging.__format('T', 'D', __fmt, (Object[])null);
@@ -271,7 +272,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void todoNote(@PrintFormat String __fmt, Object... __args)
 	{
-		if (!Debugging.ENABLED)
+		if (!__Flags__._ENABLED)
 			return;
 		
 		Debugging.__format('T', 'D', __fmt, __args);

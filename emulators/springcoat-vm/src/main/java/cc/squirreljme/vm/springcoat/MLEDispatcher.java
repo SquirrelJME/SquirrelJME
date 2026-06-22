@@ -288,6 +288,27 @@ public enum MLEDispatcher
 		// Use the class name
 		if (__arg instanceof Class)
 		{
+			// A primitive type?
+			if (__arg == boolean.class)
+				return "Z";
+			else if (__arg == byte.class)
+				return "B";
+			else if (__arg == short.class)
+				return "S";
+			else if (__arg == char.class)
+				return "C";
+			else if (__arg == int.class)
+				return "I";
+			else if (__arg == long.class)
+				return "J";
+			else if (__arg == float.class)
+				return "F";
+			else if (__arg == double.class)
+				return "D";
+			else if (__arg == void.class)
+				return "V";
+			
+			// Otherwise a normal class
 			Class<?> classy = (Class<?>)__arg;
 			if (classy.isArray())
 				return "[" + MLEDispatcher.__methodArg(

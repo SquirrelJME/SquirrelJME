@@ -126,6 +126,7 @@ public class Font
 	 * @return The ascent of the font.
 	 * @since 2022/10/07
 	 */
+	@Api
 	public int getAscent()
 	{
 		return this._midpFont.getAscent();

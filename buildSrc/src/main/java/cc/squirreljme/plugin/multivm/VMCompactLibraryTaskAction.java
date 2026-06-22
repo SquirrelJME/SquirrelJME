@@ -68,6 +68,9 @@ public class VMCompactLibraryTaskAction
 			"-dontwarn", "org.jetbrains.annotations.**",
 			"-dontwarn", "org.intellij.lang.annotations.**",
 			
+			// Try optimizing multiple times
+			"-optimizationpasses", "4",
+			
 			// Adjust manifest resources
 			"-adaptresourcefilenames", "**",
 			"-adaptresourcefilecontents",
@@ -78,82 +81,6 @@ public class VMCompactLibraryTaskAction
 			"-keepattributes", "RuntimeVisibleAnnotations," +
 				"RuntimeInvisibleAnnotations," +
 				"AnnotationDefault",
-			
-			// Keep interfaces, because with them being used elsewhere and
-			// otherwise things can easily break... also keep the methods they
-			// contain as well
-			"-keep,allowobfuscation", "public", "interface", "*",
-			"-keepclassmembers,allowobfuscation",
-				"public", "interface", "*", "{",
-					"<methods>", ";",
-			"}",
-			
-			// Keep anything with main in it
-			"-keepclasseswithmembers", "class", "*", "{",
-				"public", "static", "void", "main", "(",
-					"java.lang.String[]", ")", ";",
-			"}",
-			
-			// Keep any MIDlet
-			"-keep", "class", "*", "extends",
-				"javax.microedition.midlet.MIDlet",
-			
-			// Keep classes annotation with @Api and
-			"-keep", "public",
-				"@cc.squirreljme.runtime.cldc.annotation.Api",
-				"class", "*", "{",
-				"public", "protected", "*", ";",
-				"}",
-			"-keep", "public",
-				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
-				"class", "*", "{",
-				"public", "protected", "*", ";",
-				"}",
-			"-keep", "public",
-				"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
-				"class", "*", "{",
-				"public", "protected", "*", ";",
-				"}",
-			
-			// Keep the names of these classes as well
-			"-keepnames", "public",
-				"@cc.squirreljme.runtime.cldc.annotation.Api",
-				"class", "*",
-			"-keepnames", "public",
-				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
-				"class", "*",
-			
-			// Keep members with these two annotations
-			"-keepclassmembers", "public", "class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.Api",
-				"public", "protected", "*", ";",
-				"}",
-			"-keepclassmembers", "public", "class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
-				"public", "protected", "*", ";",
-				"}",
-			"-keepclassmembers", "public", "class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
-				"public", "protected", "*", ";",
-				"}",
-			
-			// Keep all clone methods
-			"-keepclassmembers", "class", "*", "{",
-				"public", "java.lang.Object", "clone", "(", ")", ";",
-				"}",
-			"-keepclassmembernames", "class", "*", "{",
-				"public", "java.lang.Object", "clone", "(", ")", ";",
-				"}",
-			
-			// Keep names as well
-			"-keepclassmembernames", "public", "class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.Api",
-				"public", "protected", "*", ";",
-				"}",
-			"-keepclassmembernames", "public", "class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
-				"public", "protected", "*", ";",
-				"}",
 			
 			// Do not trash enumerations as we need those to work properly
 			"-keepclassmembers", "class", "*",
@@ -173,21 +100,39 @@ public class VMCompactLibraryTaskAction
 					"(", "java.lang.String", ")", ";",
 				"}",
 			
-			// Keep constructors, since they can be called and utilized... if
-			// they are removed then some things actually break and stop
-			// working properly
+			// Keep non-static constructors, since they can be called and
+			// utilized... if they are removed then some things actually break
+			// and stop working properly
 			"-keepclassmembers", "class", "*", "{",
-					"void", "<clinit>", "(", ")", ";",
 					"<init>", "(", "...", ")", ";",
 				"}",
 			
 			// Assume the debug flags are always false
 			"-assumevalues",
 				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
-					"public", "static", "boolean", "ENABLED",
+					"static", "boolean", "ENABLED",
 						"=", "false", ";",
-					"public", "static", "boolean", "VERBOSE",
+					"static", "boolean", "VERBOSE",
 						"=", "false", ";",
+				"}",
+			"-assumevalues",
+				"class", "cc.squirreljme.runtime.cldc.debug.__Flags__", "{",
+					"static", "boolean", "_ENABLED",
+						"=", "false", ";",
+					"static", "boolean", "_VERBOSE",
+						"=", "false", ";",
+				"}",
+			"-assumenosideeffects",
+				"class", "cc.squirreljme.runtime.cldc.debug.__Flags__", "{",
+					"void", "<clinit>", "(", ")", ";",
+				"}",
+			"-assumenoexternalsideeffects",
+				"class", "cc.squirreljme.runtime.cldc.debug.__Flags__", "{",
+					"void", "<clinit>", "(", ")", ";",
+				"}",
+			"-assumenoexternalreturnvalues",
+				"class", "cc.squirreljme.runtime.cldc.debug.__Flags__", "{",
+					"void", "<clinit>", "(", ")", ";",
 				"}",
 			
 			// Remove any code that calls these debugging calls
@@ -227,14 +172,32 @@ public class VMCompactLibraryTaskAction
 						"java.lang.String", ",",
 						"java.lang.Object[]", ")", ";",
 				"}",
+			"-assumenoexternalreturnvalues",
+				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
+					"void", "debugNote", "(",
+						"java.lang.String", ")", ";",
+					"void", "debugNote", "(",
+						"java.lang.String", ",",
+						"java.lang.Object[]", ")", ";",
+					"void", "notice", "(",
+						"java.lang.String", ")", ";",
+					"void", "notice", "(",
+						"java.lang.String", ",",
+						"java.lang.Object[]", ")", ";",
+					"void", "todoNote", "(",
+						"java.lang.String", ")", ";",
+					"void", "todoNote", "(",
+						"java.lang.String", ",",
+						"java.lang.Object[]", ")", ";",
+				"}",
 			
 			// Disable some DebugShelf methods
 			"-assumevalues",
 				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
 					"int", "verbose", "(",
-						"int", ")", "=", "0", ";",
+						"int", ")", "return", "0", ";",
 					"int", "verboseInternalThread", "(",
-						"int", ")", "=", "0", ";",
+						"int", ")", "return", "0", ";",
 				"}",
 			"-assumenosideeffects",
 				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
@@ -253,6 +216,69 @@ public class VMCompactLibraryTaskAction
 						"int", ")", ";",
 					"void", "verboseStop", "(",
 						"int", ")", ";",
+				"}",
+			"-assumenoexternalreturnvalues",
+				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
+					"int", "verbose", "(",
+						"int", ")", ";",
+					"int", "verboseInternalThread", "(",
+						"int", ")", ";",
+					"void", "verboseStop", "(",
+						"int", ")", ";",
+				"}",
+			
+			// Keep anything that can be launched
+			"-keepclasseswithmembers", "class", "*", "{",
+				"public", "static", "void", "main", "(",
+					"java.lang.String[]", ")", ";",
+			"}",
+			"-keep", "class", "*", "extends",
+				"javax.microedition.midlet.MIDlet",
+			"-keep", "class", "*", "extends",
+				"com.nttdocomo.ui.IApplication",
+			"-keepnames", "class", "*", "extends",
+				"com.nttdocomo.ui.IApplication",
+			
+			// Keep the class names of any public API
+			"-keep,allowshrinking", "public",
+				"@cc.squirreljme.runtime.cldc.annotation.Api",
+				"class", "*",
+			"-keep,allowshrinking", "public",
+				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
+				"class", "*",
+			
+			// Keep the names of any members
+			"-keepclassmembers,allowshrinking",
+				"class", "*", "{",
+				"@cc.squirreljme.runtime.cldc.annotation.Api",
+					"!private", "*", ";",
+				"}",
+			"-keepclassmembers,allowshrinking", 
+				"class", "*", "{",
+				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
+					"!private", "*", ";",
+				"}",
+			"-keepclasseswithmembers,allowshrinking", 
+				"class", "*", "{",
+				"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
+					"!private", "*", ";",
+				"}",
+			
+			// Any and all callbacks
+			"-keepclasseswithmembernames,includedescriptorclasses", 
+				"class", "*", "implements", "java.lang.Runnable", "{",
+					"public", "void", "run", "(", ")", ";",
+				"}",
+			"-keepclasseswithmembernames,includedescriptorclasses", 
+				"class", "*", "implements",
+				"cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchListener",
+				"{",
+					"public", "void", "run", "(", ")", ";",
+				"}",
+			"-keepclasseswithmembernames,includedescriptorclasses", 
+				"class", "*", "{",
+				"@cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop",
+					"<methods>", ";",
 				"}",
 		};
 	
