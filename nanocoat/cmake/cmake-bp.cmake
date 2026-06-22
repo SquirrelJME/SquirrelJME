@@ -19,11 +19,28 @@ macro(squirreljme_bp_version_test ver set)
 	endif()
 endmacro()
 
+# Which CMake version is this?
+message(STATUS "CMake Version ${CMAKE_VERSION}")
+
 # Version tests
+squirreljme_bp_version_test(3.1 squirreljme_bp_version_3_1)
+squirreljme_bp_version_test(3.3 squirreljme_bp_version_3_3)
 squirreljme_bp_version_test(3.13 squirreljme_bp_version_3_13)
 squirreljme_bp_version_test(3.14 squirreljme_bp_version_3_14)
 squirreljme_bp_version_test(3.23 squirreljme_bp_version_3_23)
 squirreljme_bp_version_test(3.25 squirreljme_bp_version_3_25)
+
+# CMake 3.1+ Policies
+if(squirreljme_bp_version_3_1)
+	# Only interpret if() arguments as variables or keywords when unquoted.
+	cmake_policy(SET CMP0054 YES)
+endif()
+
+# CMake 3.3+ Policies
+if(squirreljme_bp_version_3_3)
+	# Support new if() IN_LIST operator.
+	cmake_policy(SET CMP0057 YES)
+endif()
 
 # squirreljme_bp_return_propagate inOutVariable
 # Propagates a variable into the parent scope then returns
