@@ -22,6 +22,7 @@ endmacro()
 # Version tests
 squirreljme_bp_version_test(3.13 squirreljme_bp_version_3_13)
 squirreljme_bp_version_test(3.14 squirreljme_bp_version_3_14)
+squirreljme_bp_version_test(3.23 squirreljme_bp_version_3_23)
 squirreljme_bp_version_test(3.25 squirreljme_bp_version_3_25)
 
 # squirreljme_bp_return_propagate inOutVariable

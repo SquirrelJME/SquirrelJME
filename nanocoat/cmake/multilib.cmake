@@ -502,9 +502,14 @@ endfunction()
 # Export and install for multilib
 function(squirreljme_multilib_install target)
 	# Set base directories
-	target_sources(${target}
-		PUBLIC FILE_SET HEADERS
-		BASE_DIRS "${CMAKE_SOURCE_DIR}/include")
+	if(squirreljme_bp_version_3_23)
+		target_sources(${target}
+			PUBLIC FILE_SET HEADERS
+			BASE_DIRS "${CMAKE_SOURCE_DIR}/include")
+	else()
+		message(WARNING "This CMake version does not support setting "
+			"a specific base directory for headers.")
+	endif()
 
 	# Export libraries
 	if(SQUIRRELJME_ENABLE_DYLIB)
