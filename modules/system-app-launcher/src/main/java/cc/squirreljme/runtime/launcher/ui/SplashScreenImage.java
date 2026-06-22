@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
@@ -194,11 +195,32 @@ public class SplashScreenImage
 		if (__g == null)
 			throw new NullPointerException("NARG");
 		
+		// Base version coordinate
+		int vx = 238;
+		int vy = 48;
+		
+		// How tall is the font?
+		Font verFont = this._verFont;
+		int vfH = verFont.getHeight();
+		
 		// Draw version number
 		__g.setAlphaColor(255, 0, 0, 0);
-		__g.setFont(this._verFont);
-		__g.drawString(SquirrelJME.RUNTIME_VERSION, 238, 48,
+		__g.setFont(verFont);
+		__g.drawString(SquirrelJME.RUNTIME_VERSION, vx, vy,
 			Graphics.RIGHT | Graphics.TOP);
+		
+		// Is this a debug build? For release builds this is optimized
+		// away by ProGuard
+		__g.setColor(0x000000);
+		if (Debugging.ENABLED)
+			__g.drawString("DEBUG", vx, vy + vfH,
+				Graphics.RIGHT | Graphics.TOP);
+		
+		// Which VM is this actually running on?
+		String vm = System.getProperty("java.vm.name");
+		if (vm != null && vm.length() > 0)
+			__g.drawString(vm, 2, vy + vfH,
+				Graphics.LEFT | Graphics.TOP);
 		
 		// Draw loading and the SquirrelJME string?
 		if (__swip)
