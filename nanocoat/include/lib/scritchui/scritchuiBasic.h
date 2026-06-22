@@ -51,13 +51,6 @@ typedef struct sjme_scritchui_stateBase* sjme_scritchui;
 typedef sjme_pointer sjme_scritchui_handle;
 
 /**
- * ScritchUI Pencil.
- * 
- * @since 2026/01/21
- */
-typedef struct sjme_scritchui_pencilBase sjme_scritchui_pencilBase;
-
-/**
  * Represents a point.
  * 
  * @since 2024/07/12
