@@ -522,8 +522,15 @@ sjme_errorCode sjme_list_newVAR(
 			SJME_BLA(CHARACTER, sjme_jchar, int);
 			SJME_BLA(INTEGER, sjme_jint, sjme_jint);
 			SJME_BLA(LONG, sjme_jlongNative, sjme_jlongNative);
+			
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
 			SJME_BLA(FLOAT, sjme_jfloatNative, sjme_jfloatNative);
+#endif
+			
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
 			SJME_BLA(DOUBLE, sjme_jdoubleNative, sjme_jdoubleNative);
+#endif
+			
 			SJME_BLA(OBJECT, sjme_pointer, sjme_pointer);
 
 				/* Type not implemented. */
