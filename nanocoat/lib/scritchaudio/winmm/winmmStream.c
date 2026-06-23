@@ -124,7 +124,9 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	sjme_errorCode error;
 	MMRESULT mmResult;
 	HWAVEOUT hWaveOut;
+#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_XP)
 	WAVEFORMATEXTENSIBLE format;
+#endif
 
 	if (inState == NULL || inOutStream == NULL || inName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -137,6 +139,7 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	if (inChannels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
 		inChannels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
 
+#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_XP)
 	/* Fill in wave format. */
 	memset(&format, 0, sizeof(format));
 	format.Format.cbSize = sizeof(format);
@@ -222,4 +225,8 @@ fail_any:
 		waveOutClose(hWaveOut);
 
 	return sjme_error_default(error);
+#else
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#endif
 }

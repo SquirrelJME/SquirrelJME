@@ -369,7 +369,8 @@ extern "C" {
 /** Windows NT 4.0 */
 #define SJME_CONFIG_WINDOWS_VERSION_NT_4 0x0400
 
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
 	/* Include the Windows SDK versioning information, if available. */
 	#if defined(SJME_CONFIG_HAS_SDKDDKVER_H)
 		#include <sdkddkver.h>
