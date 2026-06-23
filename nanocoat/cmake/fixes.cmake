@@ -356,17 +356,17 @@ endmacro()
 # Statically link in libgcc?
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	# Plain variant
-	check_linker_flag(C "-static-libgcc"
+	squirreljme_bp_check_linker_flag(C "-static-libgcc"
 		SJME_CONFIG_HAS_STATIC_LIBGCC)
 	message(STATUS "-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC}")
 
 	# -Wl variant
-	check_linker_flag(C "-Wl,-static-libgcc"
+	squirreljme_bp_check_linker_flag(C "-Wl,-static-libgcc"
 			SJME_CONFIG_HAS_STATIC_LIBGCC_WL)
 	message(STATUS "-Wl,-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_WL}")
 
 	# LINKER: variant
-	check_linker_flag(C "LINKER:-static-libgcc"
+	squirreljme_bp_check_linker_flag(C "LINKER:-static-libgcc"
 		SJME_CONFIG_HAS_STATIC_LIBGCC_LINK)
 	message(STATUS
 		"LINKER:-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_LINK}")

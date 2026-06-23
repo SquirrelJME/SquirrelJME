@@ -27,8 +27,15 @@ squirreljme_bp_version_test(3.1 squirreljme_bp_version_3_1)
 squirreljme_bp_version_test(3.3 squirreljme_bp_version_3_3)
 squirreljme_bp_version_test(3.13 squirreljme_bp_version_3_13)
 squirreljme_bp_version_test(3.14 squirreljme_bp_version_3_14)
+squirreljme_bp_version_test(3.17 squirreljme_bp_version_3_17)
+squirreljme_bp_version_test(3.18 squirreljme_bp_version_3_18)
 squirreljme_bp_version_test(3.23 squirreljme_bp_version_3_23)
 squirreljme_bp_version_test(3.25 squirreljme_bp_version_3_25)
+
+# There is no current function list dir, so this needs to be set for some
+# functions in this backport implementation to work.
+# This replaces CMAKE_CURRENT_FUNCTION_LIST_FILE
+set(SQUIRRELJME_BP_LIST_FILE "${CMAKE_CURRENT_LIST_FILE}")
 
 # Only set policies when using the most minimal version of CMake
 if(NOT squirreljme_bp_version_3_13)
@@ -55,6 +62,34 @@ macro(squirreljme_bp_return_propagate inOutVariable)
 		return()
 	endif()
 endmacro()
+
+# squirreljme_bp_check_linker_flag
+# This according to the CMake documentation is a convenience method that
+# > This command temporarily sets the CMAKE_REQUIRED_LINK_OPTIONS variable
+# > and calls the check_source_compiles() command from the CheckSourceCompiles
+# > module. See that module's documentation for a listing of variables that
+# > can otherwise modify the build.
+function(squirreljme_bp_check_linker_flag lang flag outVariable)
+	if(squirreljme_bp_version_3_18)
+		# Use modern CMake version
+		check_linker_flag(${lang} "${flag}" ${outVariable})
+
+		# Return the compilation result
+		squirreljme_bp_return_propagate(${outVariable})
+	else()
+		# Check to see if some source compiles, it should be noted that the
+		# documentation says check_source_compiles() however that is only in
+		# CMake 3.19+. check_source_compilers() is a wrapper around
+		# try_compile(). Note that we have to use the old signature and not
+		# the newer signature.
+		try_compile(${outVariable}
+			SOURCES "${SQUIRRELJME_BP_LIST_FILE}/tryMain.c"
+			LINK_OPTIONS "${CMAKE_${lang}_LINK_FLAGS} ${flag}")
+
+		# Return the compilation result
+		squirreljme_bp_return_propagate(${outVariable})
+	endif()
+endfunction()
 
 # squirreljme_bp_file_size(<filename> <variable>)
 # Determines the size of the given file
