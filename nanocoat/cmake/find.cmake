@@ -127,7 +127,7 @@ else()
 endif()
 
 # snprintf() available?
-squirreljme_try_compile("fdatasync()"
+squirreljme_try_compile("fdatasync() in unistd.h"
 	"tryFDataSync"
 	SJME_CONFIG_HAS_FDATASYNC
 	SJME_CONFIG_HAS_NO_FDATASYNC)
@@ -139,11 +139,11 @@ squirreljme_try_compile("snprintf()"
 	SJME_CONFIG_HAS_NO_SNPRINTF)
 
 # vsnprintf() available?
-squirreljme_try_compile("vsnprintf() with stdarg.h"
+squirreljme_try_compile("vsnprintf() in stdarg.h"
 	"tryVSNPrintFA"
 	SJME_CONFIG_HAS_VSNPRINTFA
 	SJME_CONFIG_HAS_NO_VSNPRINTFA)
-squirreljme_try_compile("vsnprintf() with varargs.h"
+squirreljme_try_compile("vsnprintf() in varargs.h"
 	"tryVSNPrintFV"
 	SJME_CONFIG_HAS_VSNPRINTFV
 	SJME_CONFIG_HAS_NO_VSNPRINTFV)

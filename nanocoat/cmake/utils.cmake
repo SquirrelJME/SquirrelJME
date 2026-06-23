@@ -85,6 +85,8 @@ file(STRINGS "${CMAKE_BINARY_DIR}/first-cmake-version" SJME_FIRST_CMAKE_VER
 string(TOLOWER "${SJME_FIRST_CMAKE_VER}" SJME_FIRST_CMAKE_VER)
 string(REPLACE "cmake version " ""
 	SJME_FIRST_CMAKE_VER "${SJME_FIRST_CMAKE_VER}")
+string(REPLACE REPLACE "[a-z]" ""
+	SJME_FIRST_CMAKE_VER "${SJME_FIRST_CMAKE_VER}")
 
 # If the CMake we found is too old, ignore it and use our current one
 message(STATUS "CMake ${SJME_FIRST_CMAKE} is ${SJME_FIRST_CMAKE_VER}")

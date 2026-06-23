@@ -333,11 +333,11 @@ macro(squirreljme_try_compile noun source yesDef noDef)
 		CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
 			"-DINCLUDE_DIRECTORIES=${CMAKE_SOURCE_DIR}/include"
 		LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT}
-		OUTPUT_VARIABLE ${target}_OUTPUT)
+		OUTPUT_VARIABLE ${yesDef}_OUTPUT)
 
 	# Note that this condition needs to be inverted due to CMake
-	message(DEBUG "${noun}: ${${target}_OUTPUT}")
-	message(STATUS "${noun}: ${${target}}")
+	message(DEBUG "${noun}: ${${yesDef}_OUTPUT}")
+	message(STATUS "${noun}: ${${yesDef}}")
 	if(NOT ${yesDef})
 		add_compile_definitions(
 			${noDef}=1)
