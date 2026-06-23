@@ -17,8 +17,9 @@
     CORENAME: squirreljme
     CMAKE_SOURCE_ROOT: nanocoat
     SQUIRRELJME_SPECIAL_BUILD_LIBRETRO: 1
-    # Binaries are output into the bin directory
-    EXTRA_PATH: bin
+
+    # Place binaries in the root of the build directory
+    SQUIRRELJME_BINARY_OUTPUT_ROOT: 1
 
 # Inclusion templates, required for the build to work
 include:
