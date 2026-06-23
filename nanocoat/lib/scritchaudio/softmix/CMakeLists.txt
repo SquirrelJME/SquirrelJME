@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # Declare library
-add_library(ScritchAudioSoftMix OBJECT
+squirreljme_multilib_add_library(ScritchAudioSoftMix OBJECT
 	softmixCore.c
 	softmixLoop.c
 	softmixMidi.c
@@ -15,9 +15,9 @@ add_library(ScritchAudioSoftMix OBJECT
 	softmixStream.c)
 
 # Include main headers
-target_include_directories(ScritchAudioSoftMix PUBLIC
+squirreljme_multilib_include_directories(ScritchAudioSoftMix PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
 # Export this target
-squirreljme_export(ScritchAudioSoftMix)
+squirreljme_multilib_export(ScritchAudioSoftMix)
 
