@@ -326,6 +326,7 @@ endmacro()
 
 # Quick compilation check
 macro(squirreljme_try_compile noun source yesDef noDef)
+	# Check compile of a specific symbol
 	message(STATUS "Checking compile of ${noun}...")
 	try_compile(${yesDef}
 		"${CMAKE_CURRENT_BINARY_DIR}"

@@ -252,9 +252,13 @@ static sjme_errorCode sjme_stream_outputNetFlush(
 	if (rfd < 0)
 		return SJME_ERROR_IO_EXCEPTION;
 
-#if defined(SJME_CONFIG_HAS_FDATASYNC)
+#if defined(SJME_CONFIG_HAS_FDATASYNC) || defined(SJME_CONFIG_HAS_OS_BSD)
 	/* Sync the data. */
+#if defined(SJME_CONFIG_HAS_OS_BSD)
+	if (fsync(rfd) < 0)
+#elif defined(SJME_CONFIG_HAS_FDATASYNC)
 	if (fdatasync(rfd) < 0)
+#endif
 	{
 		/* Flushing might not be supported for this. */
 		if (sjme_nal_errno(errno) != SJME_ERROR_INVALID_ARGUMENT)
