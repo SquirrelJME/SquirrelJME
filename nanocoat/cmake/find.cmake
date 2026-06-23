@@ -52,7 +52,9 @@ endif()
 # threads.h available?
 check_include_file("threads.h" SJME_CONFIG_HAS_THREADS_H)
 if(NOT SJME_CONFIG_HAS_THREADS_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_C11_THREADS=1)
+	add_compile_definitions(SJME_CONFIG_HAS_NO_THREADS=1)
+else()
+	add_compile_definitions(SJME_CONFIG_HAS_THREADS_H=1)
 endif()
 
 # sys/socket.h available?
