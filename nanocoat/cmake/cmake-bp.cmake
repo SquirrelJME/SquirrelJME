@@ -63,6 +63,11 @@ macro(squirreljme_bp_return_propagate inOutVariable)
 	endif()
 endmacro()
 
+# Needed for linker flag check, if CMake is new enough
+if(squirreljme_bp_version_3_18)
+	include(CheckLinkerFlag)
+endif()
+
 # squirreljme_bp_check_linker_flag
 # This according to the CMake documentation is a convenience method that
 # > This command temporarily sets the CMAKE_REQUIRED_LINK_OPTIONS variable

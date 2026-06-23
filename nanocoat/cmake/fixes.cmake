@@ -12,7 +12,6 @@
 
 # Needed for C compiler checks
 include(CheckCCompilerFlag)
-include(CheckLinkerFlag)
 include(CheckIncludeFile)
 include(CheckLibraryExists)
 include(CheckSymbolExists)
