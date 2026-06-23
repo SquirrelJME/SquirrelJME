@@ -77,6 +77,10 @@ function(squirreljme_bp_check_linker_flag lang flag outVariable)
 		# Return the compilation result
 		squirreljme_bp_return_propagate(${outVariable})
 	else()
+		# Add verbosity since normally CMake emits a status message that this
+		# is being checked
+		message(STATUS "Backport checking ${lang} linker flag ${flag}...")
+
 		# Check to see if some source compiles, it should be noted that the
 		# documentation says check_source_compiles() however that is only in
 		# CMake 3.19+. check_source_compilers() is a wrapper around
@@ -85,6 +89,9 @@ function(squirreljme_bp_check_linker_flag lang flag outVariable)
 		try_compile(${outVariable}
 			SOURCES "${SQUIRRELJME_BP_LIST_FILE}/tryMain.c"
 			LINK_OPTIONS "${CMAKE_${lang}_LINK_FLAGS} ${flag}")
+
+		# What was the result of it?
+		message(STATUS "${lang} linker flag ${flag}: ${outVariable}")
 
 		# Return the compilation result
 		squirreljme_bp_return_propagate(${outVariable})
