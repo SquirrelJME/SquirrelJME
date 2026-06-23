@@ -126,6 +126,11 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	HWAVEOUT hWaveOut;
 #if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_XP)
 	WAVEFORMATEXTENSIBLE format;
+#else
+	struct
+	{
+		WAVEFORMATEX Format;
+	} format;
 #endif
 
 	if (inState == NULL || inOutStream == NULL || inName == NULL)
@@ -139,7 +144,6 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	if (inChannels == SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC)
 		inChannels = SJME_SCRITCHAUDIO_CHANNELS_STEREO;
 
-#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_XP)
 	/* Fill in wave format. */
 	memset(&format, 0, sizeof(format));
 	format.Format.cbSize = sizeof(format);
@@ -147,31 +151,41 @@ sjme_errorCode sjme_scritchaudio_winmm_streamCreate(
 	/* "00000003-0000-0010-8000-00aa00389b71" */
 	if (inFormat == SJME_SCRITCHAUDIO_FORMAT_FLOAT_F32)
 	{
+#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_XP)
 		format.Format.wFormatTag = WAVE_FORMAT_IEEE_FLOAT;
 		sjme_scritchaudio_winmm_guid(&format.SubFormat,
 			0x00000003, 0x0000, 0x0010,
 			0x80, 0x00, 0x00, 0xaa,
 			0x00, 0x38, 0x9b, 0x71);
+#else
+		return SJME_ERROR_UNSUPPORTED_AUDIO_FORMAT;
+#endif
 	}
 
 	/* "00000001-0000-0010-8000-00aa00389b71" */
 	else
 	{
 		format.Format.wFormatTag = WAVE_FORMAT_PCM;
+#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_XP)
 		sjme_scritchaudio_winmm_guid(&format.SubFormat,
 			0x00000001, 0x0000, 0x0010,
 			0x80, 0x00, 0x00, 0xaa,
 			0x00, 0x38, 0x9b, 0x71);
+#endif
 	}
 
 	/* Samples. */
 	format.Format.wBitsPerSample =
 		sjme_scritchaudio_bytesPerSample[inFormat] * 8;
+#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_XP)
 	format.Samples.wValidBitsPerSample = format.Format.wBitsPerSample;
+#endif
 	format.Format.nSamplesPerSec = inRate;
 
 	/* Channels. */
+#if SJME_CONFIG_WINDOWS_VERSION_NT_LEAST(SJME_CONFIG_WINDOWS_VERSION_XP)
 	format.dwChannelMask = (1 << inChannels) - 1;
+#endif
 	format.Format.nChannels = inChannels;
 
 	/* Buffer size and alignment. */
@@ -225,8 +239,4 @@ fail_any:
 		waveOutClose(hWaveOut);
 
 	return sjme_error_default(error);
-#else
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#endif
 }
