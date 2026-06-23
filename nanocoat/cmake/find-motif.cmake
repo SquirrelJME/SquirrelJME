@@ -6,8 +6,5 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Common find support
-squirreljme_include("find.cmake")
-
 # Locate Motif
 find_package(Motif)

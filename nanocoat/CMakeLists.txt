@@ -83,6 +83,9 @@ squirreljme_include("find-threads.cmake")
 # Fixes and otherwise for compatibility
 squirreljme_include("fixes.cmake")
 
+# Common find support
+squirreljme_include("find.cmake")
+
 # Mac OS X Desktop?
 if(SQUIRRELJME_IS_APPLE_OR_GNUSTEP_DESKTOP)
 	enable_language(OBJC)

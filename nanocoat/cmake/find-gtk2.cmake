@@ -6,9 +6,6 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Common find support
-squirreljme_include("find.cmake")
-
 # Force do not use on certain systems
 if(NOT SQUIRRELJME_SYSTEM STREQUAL "wine")
 	# Check pkg-config first

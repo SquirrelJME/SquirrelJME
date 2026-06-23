@@ -30,7 +30,7 @@
 #include <setjmp.h>
 
 /* Floating point header, determines if software floats should be used. */
-#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+#if defined(SJME_CONFIG_HAS_FLOAT_H)
 	#include <float.h>
 #endif
 
@@ -831,7 +831,7 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_MSVC)
 	/** Assuming floating point rounds to nearest. */
 	#define SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST
-#elif !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+#elif defined(SJME_CONFIG_HAS_FLOAT_H)
 	#if defined(FLT_ROUNDS) && FLT_ROUNDS == 1
 		/** Has floating point that rounds to nearest. */
 		#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
@@ -839,7 +839,7 @@ extern "C" {
 #endif
 	
 /* 32-bit floating point matches Java? */
-#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
+#if defined(SJME_CONFIG_HAS_FLOAT_H) && \
 	(defined(SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST) || \
 		defined(SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST)) && \
 	defined(FLT_EVAL_METHOD) && (FLT_EVAL_METHOD == 0) && \
@@ -899,7 +899,7 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_MSVC)
 	/** Assuming floating point rounds to nearest. */
 	#define SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST
-#elif !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+#elif defined(SJME_CONFIG_HAS_FLOAT_H)
 	#if defined(FLT_ROUNDS) && FLT_ROUNDS == 1
 		/** Has floating point that rounds to nearest. */
 		#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
@@ -907,7 +907,7 @@ extern "C" {
 #endif
 	
 /* 32-bit floating point matches Java? */
-#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
+#if defined(SJME_CONFIG_HAS_FLOAT_H) && \
 	(defined(SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST) || \
 		defined(SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST)) && \
 	defined(FLT_EVAL_METHOD) && (FLT_EVAL_METHOD == 0) && \

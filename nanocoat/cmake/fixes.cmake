@@ -310,10 +310,24 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	endif()
 endif()
 
+# Checks if the specific header exists
+macro(squirreljme_check_include_file header yesDef noDef)
+	# Run the check for it
+	check_include_file("${header}" ${yesDef})
+
+	# Note that this condition needs to be inverted due to CMake
+	message(DEBUG "${header}: ${${yesDef}}")
+	if(NOT ${yesDef})
+		add_compile_definitions(${noDef}=1)
+	else()
+		add_compile_definitions(${yesDef}=1)
+	endif()
+endmacro()
+
 # Quick compilation check
-macro(squirreljme_try_compile noun target source cdef)
+macro(squirreljme_try_compile noun source yesDef noDef)
 	message(STATUS "Checking compile of ${noun}...")
-	try_compile(${target}
+	try_compile(${yesDef}
 		"${CMAKE_CURRENT_BINARY_DIR}"
 		SOURCES "${CMAKE_CURRENT_LIST_DIR}/${source}.c"
 		CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
@@ -321,11 +335,15 @@ macro(squirreljme_try_compile noun target source cdef)
 		LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT}
 		OUTPUT_VARIABLE ${target}_OUTPUT)
 
+	# Note that this condition needs to be inverted due to CMake
 	message(DEBUG "${noun}: ${${target}_OUTPUT}")
 	message(STATUS "${noun}: ${${target}}")
-	if(NOT ${target})
+	if(NOT ${yesDef})
 		add_compile_definitions(
-			${cdef}=1)
+			${noDef}=1)
+	else()
+		add_compile_definitions(
+			${yesDef}=1)
 	endif()
 endmacro()
 

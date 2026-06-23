@@ -6,9 +6,6 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Common find support
-squirreljme_include("find.cmake")
-
 # Find headers
 include(CheckIncludeFile)
 
