@@ -14,8 +14,8 @@ function(squirreljme_basename_path dest src)
 	string(FIND "${src}" "\\" bs REVERSE)
 
 	# Bump both up by one, to exclude the slash
-	math(EXPR fs "${fs} + 1")
-	math(EXPR bs "${bs} + 1")
+	math(EXPR fs "(${fs}) + 1")
+	math(EXPR bs "(${bs}) + 1")
 
 	# Has forward slash last
 	if("${fs}" GREATER "${bs}")

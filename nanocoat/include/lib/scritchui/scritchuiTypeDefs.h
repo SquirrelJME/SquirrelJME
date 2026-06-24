@@ -319,7 +319,14 @@ typedef struct sjme_scritchui_loopQueueItem sjme_scritchui_loopQueueItem;
  * 
  * @since 2024/05/01
  */
-typedef sjme_scritchui_pencilBase* sjme_scritchui_pencil;
+typedef struct sjme_scritchui_pencilBase sjme_scritchui_pencilBase; 
+	
+/**
+ * ScritchUI Pencil state.
+ * 
+ * @since 2024/05/01
+ */
+typedef struct sjme_scritchui_pencilBase* sjme_scritchui_pencil;
 
 /**
  * Font structure for ScritchUI Pencil.

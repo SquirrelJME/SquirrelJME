@@ -185,6 +185,18 @@ endfunction()
 
 # Identify the system based on the preprocessor defines
 function(squirreljme_identify_by_defines_list outSystem outArch defines)
+	# CMake before 3.3 does not support IN_LIST, thus this cannot be used!
+	if(NOT squirreljme_bp_version_3_3)
+		message(WARNING "CMake is too old to use #define identification!")
+
+		# Make sure the parent scope has the value
+		set(${outSystem} "unknown" PARENT_SCOPE)
+		set(${outArch} "unknown" PARENT_SCOPE)
+
+		# Stop here
+		return()
+	endif()
+
 	# This is based on what is found in the define list
 	## Determine system
 	### RETROARCH/EMBEDDED SHOULD BE FIRST! ###

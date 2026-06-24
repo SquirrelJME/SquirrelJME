@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # Declare object only library, as this is a fallback library
-add_library(ScritchUiFB OBJECT
+squirreljme_multilib_add_library(ScritchUiFB OBJECT
 	fbChoice.c
 	fbComponent.c
 	fbContainer.c
@@ -27,8 +27,8 @@ add_library(ScritchUiFB OBJECT
 	fbWindow.c)
 
 # Include main headers
-target_include_directories(ScritchUiFB PUBLIC
+squirreljme_multilib_include_directories(ScritchUiFB PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
 
 # Export this target
-squirreljme_export(ScritchUiFB)
+squirreljme_multilib_export(ScritchUiFB)

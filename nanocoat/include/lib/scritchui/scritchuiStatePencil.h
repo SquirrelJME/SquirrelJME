@@ -110,7 +110,7 @@ typedef struct sjme_scritchui_pencilLockState
 	sjme_jboolean isCopy;
 } sjme_scritchui_pencilLockState;
 
-typedef struct sjme_scritchui_pencilBase
+struct sjme_scritchui_pencilBase
 {
 	/** Common data. */
 	sjme_scritchui_uiCommonBase common;
@@ -184,7 +184,7 @@ typedef struct sjme_scritchui_pencilBase
 		/** The number of colors used. */
 		sjme_jint numColors;
 	} palette;
-} sjme_scritchui_pencilBase;
+};
 	
 #pragma endregion(scritchui_pencil)
 	

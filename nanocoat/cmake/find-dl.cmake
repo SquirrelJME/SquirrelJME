@@ -10,6 +10,11 @@
 # Include module
 include(CheckLibraryExists)
 
+# Notice...
+message(STATUS "If the following library check is blank and shows as found, "
+	"dlopen/dlclose may be built-in to your C runtime and not as a "
+	"separate library.")
+
 # Check to see if dl has both of these
 check_library_exists("${SQUIRRELJME_MAYBE_LIBDL}"
 	"dlopen" "" SJME_CONFIG_HAS_DL_DLOPEN)

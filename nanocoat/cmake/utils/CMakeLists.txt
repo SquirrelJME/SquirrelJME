@@ -7,10 +7,16 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Various utilities
 
-# Required minimum
+# Use the best version possible
+# Otherwise, fallback to the lowest viable version
 message(STATUS "Detected CMake (${CMAKE_VERSION})")
-cmake_minimum_required(VERSION 3.12)
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+	cmake_minimum_required(VERSION 3.13..3.31)
+else()
+	cmake_minimum_required(VERSION 3.0)
+endif()
 
+# Debug
 message(STATUS "Util generator is ${CMAKE_GENERATOR}...")
 
 # Declare Project

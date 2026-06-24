@@ -18,8 +18,14 @@ This policy only applies to Large Language Models (LLMs) and "Chatbots" which
 take human language and/or expression as input to generate an output that
 is not used for the purposes of accessibility.
 
-This policy does not apply to "Traditional" AI such as neutral networks,
-video game "computer" players, and similar technologies.
+This policy does not apply to "Traditional" AI such as neural networks,
+video game "computer" players, and similar technologies. This policy does not
+apply to single line code completion, search suggestions, or other basic
+"smart" IDE features such as Search Anywhere, Run Anything, Tab Completion, and
+IntelliSense.
+
+This policy does not apply to dependencies, this is solely for SquirrelJME, it
+is not possible to affect the policy of dependencies in any way.
 
 ## Contributing to SquirrelJME
 

@@ -334,7 +334,7 @@ sjme_errorCode sjme_scritchui_core_fontBuiltin(
 			(sjme_pointer)&sqf_font_sanserif_12)))
 			return sjme_error_default(error);
 
-		/* Valid now, so cache. */
+		/* Valid now, so cache it. */
 		inState->font.builtinFont = sjme_weakUpR(sjme_scritchui_pencilFont,
 			only);
 	}
