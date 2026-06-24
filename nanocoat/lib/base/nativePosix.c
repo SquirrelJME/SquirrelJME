@@ -252,11 +252,12 @@ static sjme_errorCode sjme_stream_outputNetFlush(
 	if (rfd < 0)
 		return SJME_ERROR_IO_EXCEPTION;
 
-#if defined(SJME_CONFIG_HAS_FDATASYNC) || defined(SJME_CONFIG_HAS_OS_BSD)
+#if defined(SJME_CONFIG_HAS_FDATASYNC) || \
+	defined(SJME_CONFIG_HAS_OS_BSD_FAMILY)
 	/* Sync the data. */
-#if defined(SJME_CONFIG_HAS_OS_BSD)
+#if defined(SJME_CONFIG_HAS_OS_BSD_FAMILY)
 	if (fsync(rfd) < 0)
-#elif defined(SJME_CONFIG_HAS_FDATASYNC)
+#else
 	if (fdatasync(rfd) < 0)
 #endif
 	{
