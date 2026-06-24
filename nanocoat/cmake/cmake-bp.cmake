@@ -12,11 +12,15 @@
 
 # Is there at least _THIS_ version?
 macro(squirreljme_bp_version_test ver set)
+	# Should this be set?
 	if(CMAKE_VERSION VERSION_GREATER_EQUAL ${ver})
 		set(${set} YES)
 	else()
 		set(${set} NO)
 	endif()
+
+	# Print the version stage
+	message(STATUS "${set}: ${${set}}")
 endmacro()
 
 # Which CMake version is this?
@@ -103,13 +107,16 @@ function(squirreljme_bp_check_linker_flag lang flag outVariable)
 		# CMake 3.19+. check_source_compiles() is a wrapper around
 		# try_compile(). Note that we have to use the old signature and not
 		# the newer signature.
-		try_compile(${outVariable} "${CMAKE_CURRENT_BINARY_DIR}/${uniq}"
+		try_compile(${outVariable} "${CMAKE_CURRENT_BINARY_DIR}/try/${uniq}"
 			SOURCES "${SQUIRRELJME_BP_LIST_DIR}/tryMain.c"
 			CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
-			LINK_OPTIONS "${CMAKE_${lang}_LINK_FLAGS} ${flag}")
+				"-DCMAKE_BUILD_TYPE=Release"
+			LINK_OPTIONS "${CMAKE_${lang}_LINK_FLAGS} ${flag}"
+			OUTPUT_VARIABLE tryCompileOutput)
 
 		# What was the result of it?
 		message(STATUS "${lang} linker flag ${flag}: ${${outVariable}}")
+		message("${lang} linker flag ${flag}: ${tryCompileOutput}")
 
 		# Return the compilation result
 		squirreljme_bp_return_propagate(${outVariable})
@@ -140,13 +147,28 @@ function(squirreljme_bp_check_compiler_flag lang flag outVariable)
 
 		# As above, check_source_compiles() is CMake 3.19+, so use
 		# try_compile() with the older signature.
-		try_compile(${outVariable} "${CMAKE_CURRENT_BINARY_DIR}/${uniq}"
+		# Note that the generated try_compile() project has the following:
+		# > set(CMAKE_C_FLAGS "")
+		# > set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMPILE_DEFINITIONS}")
+		# while the documentation states that `add_definitions` are used, so
+		# which one is it?
+		try_compile(${outVariable} "${CMAKE_CURRENT_BINARY_DIR}/try/${uniq}"
 			SOURCES "${SQUIRRELJME_BP_LIST_DIR}/tryMain.c"
-			CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
-				"-DCMAKE_${lang}_FLAGS=${CMAKE_${lang}_FLAGS};${flag}")
+			CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE:STRING=EXECUTABLE"
+				"-DCMAKE_BUILD_TYPE=Release"
+				# This may be needed for older CMake where there are no build
+				# types
+				"-DCMAKE_${lang}_FLAGS:STRING=${flag}"
+				# Specifying these, seems to take effect
+				"-DCMAKE_${lang}_FLAGS_INIT:STRING=${flag}"
+				"-DCMAKE_${lang}_FLAGS_DEBUG:STRING=${flag}"
+				"-DCMAKE_${lang}_FLAGS_RELEASE:STRING=${flag}"
+			#COMPILE_DEFINITIONS "${flag}"
+			OUTPUT_VARIABLE tryCompileOutput)
 
 		# What was the result of it?
 		message(STATUS "${lang} compiler flag ${flag}: ${${outVariable}}")
+		message("${lang} compiler flag ${flag}: ${tryCompileOutput}")
 
 		# Return the compilation result
 		squirreljme_bp_return_propagate(${outVariable})
