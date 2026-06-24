@@ -108,6 +108,7 @@ function(squirreljme_bp_check_linker_flag lang flag outVariable)
 		# the newer signature.
 		try_compile(${outVariable} "${CMAKE_CURRENT_BINARY_DIR}/${uniq}"
 			SOURCES "${SQUIRRELJME_BP_LIST_DIR}/tryMain.c"
+			CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
 			LINK_OPTIONS "${CMAKE_${lang}_LINK_FLAGS} ${flag}")
 
 		# What was the result of it?
@@ -144,7 +145,8 @@ function(squirreljme_bp_check_compiler_flag lang flag outVariable)
 		# try_compile() with the older signature.
 		try_compile(${outVariable} "${CMAKE_CURRENT_BINARY_DIR}/${uniq}"
 			SOURCES "${SQUIRRELJME_BP_LIST_DIR}/tryMain.c"
-			CMAKE_FLAGS "-DCMAKE_${lang}_FLAGS=${CMAKE_${lang}_FLAGS};${flag}")
+			CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
+				"-DCMAKE_${lang}_FLAGS=${CMAKE_${lang}_FLAGS};${flag}")
 
 		# What was the result of it?
 		message(STATUS "${lang} compiler flag ${flag}: ${${outVariable}}")
