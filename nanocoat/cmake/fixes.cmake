@@ -281,32 +281,50 @@ if(MSVC AND "${MSVC_VERSION}" LESS_EQUAL 1400)
 	add_definitions(-D_MBCS)
 endif()
 
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	# Turn some warnings into errors
-	check_c_compiler_flag("-Werror=implicit-function-declaration"
-		SQUIRRELJME_HAS_GCC_WERROR_IMPLICIT)
-	if (SQUIRRELJME_HAS_GCC_WERROR_IMPLICIT)
-		add_compile_options("-Werror=implicit-function-declaration")
+# Simplifies checking and setting a compiler flag
+macro(squirreljme_check_set_compiler_flag lang flag yesDef)
+	squirreljme_bp_check_compiler_flag(${lang}
+		${flag}
+		${yesDef})
+	if(${yesDef})
+		set(${yesDef} YES)
+		add_compile_options(${flag})
 	endif()
+endmacro()
+
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	# From the GCC manual: Control whether or not the compiler uses IEEE
+	# floating-point comparisons. These correctly handle the case where the
+	# result of a comparison is unordered.
+	squirreljme_check_set_compiler_flag(C
+		"-mieee-fp"
+		SQUIRRELJME_HAS_GCC_MIEE_FP)
+
+	# From the GCC manual: Set 80387 floating-point precision to 32, 64 or 80
+	# bits.
+	squirreljme_check_set_compiler_flag(C
+		"-mpc64"
+		SQUIRRELJME_HAS_GCC_MPC64)
+
+	# Turn some warnings into errors
+	squirreljme_check_set_compiler_flag(C
+		"-Werror=implicit-function-declaration"
+		SQUIRRELJME_HAS_GCC_WERROR_IMPLICIT)
 
 	# Make symbols hidden by default in GCC, which may prefer them visible
-	check_c_compiler_flag("-fvisibility=hidden"
+	squirreljme_check_set_compiler_flag(C
+		"-fvisibility=hidden"
 		SQUIRRELJME_HAS_GCC_FVISIBILITY_HIDDEN)
-	if(SQUIRRELJME_HAS_GCC_FVISIBILITY_HIDDEN)
-		add_compile_options("-fvisibility=hidden")
-	endif()
 
 	# Pedantic warnings?
-	check_c_compiler_flag("-Wpedantic" SQUIRRELJME_HAS_WARN_PEDANTIC)
-	if(SQUIRRELJME_HAS_WARN_PEDANTIC)
-		add_compile_options("-Wpedantic")
-	endif()
+	squirreljme_check_set_compiler_flag(C
+		"-Wpedantic"
+		SQUIRRELJME_HAS_WARN_PEDANTIC)
 
 	# Can we set the no execute flag for the link?
-	check_c_compiler_flag("-Wl,-z,noexecstack" SQUIRRELJME_HAS_NOEXECSTACK)
-	if(SQUIRRELJME_HAS_NOEXECSTACK)
-		add_compile_options("-Wl,-z,noexecstack")
-	endif()
+	squirreljme_check_set_compiler_flag(C
+		"-Wl,-z,noexecstack"
+		SQUIRRELJME_HAS_NOEXECSTACK)
 endif()
 
 # Checks if the specific header exists

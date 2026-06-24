@@ -36,6 +36,7 @@ squirreljme_bp_version_test(3.25 squirreljme_bp_version_3_25)
 # functions in this backport implementation to work.
 # This replaces CMAKE_CURRENT_FUNCTION_LIST_FILE
 set(SQUIRRELJME_BP_LIST_FILE "${CMAKE_CURRENT_LIST_FILE}")
+set(SQUIRRELJME_BP_LIST_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
 # Only set policies when using the most minimal version of CMake
 if(NOT squirreljme_bp_version_3_13)
@@ -52,6 +53,18 @@ if(NOT squirreljme_bp_version_3_13)
 	endif()
 endif()
 
+# CMake 3.25+ Policies
+if(squirreljme_bp_version_3_25)
+	# The return() command checks its parameters.
+	cmake_policy(SET CMP0140 NEW)
+endif()
+
+if(squirreljme_bp_version_3_18)
+	# Needed for compiler/linker flag check, if CMake is new enough
+	include(CheckLinkerFlag)
+	include(CheckCompilerFlag)
+endif()
+
 # squirreljme_bp_return_propagate inOutVariable
 # Propagates a variable into the parent scope then returns
 macro(squirreljme_bp_return_propagate inOutVariable)
@@ -63,11 +76,6 @@ macro(squirreljme_bp_return_propagate inOutVariable)
 	endif()
 endmacro()
 
-# Needed for linker flag check, if CMake is new enough
-if(squirreljme_bp_version_3_18)
-	include(CheckLinkerFlag)
-endif()
-
 # squirreljme_bp_check_linker_flag
 # This according to the CMake documentation is a convenience method that
 # > This command temporarily sets the CMAKE_REQUIRED_LINK_OPTIONS variable
@@ -75,28 +83,61 @@ endif()
 # > module. See that module's documentation for a listing of variables that
 # > can otherwise modify the build.
 function(squirreljme_bp_check_linker_flag lang flag outVariable)
+	# Add verbosity for the check
+	message(STATUS "Checking ${lang} linker flag ${flag}...")
+
 	if(squirreljme_bp_version_3_18)
 		# Use modern CMake version
 		check_linker_flag(${lang} "${flag}" ${outVariable})
 
+		# What was the result of it?
+		message(STATUS "${lang} linker flag ${flag}: ${${outVariable}}")
+
 		# Return the compilation result
 		squirreljme_bp_return_propagate(${outVariable})
 	else()
-		# Add verbosity since normally CMake emits a status message that this
-		# is being checked
-		message(STATUS "Backport checking ${lang} linker flag ${flag}...")
-
 		# Check to see if some source compiles, it should be noted that the
 		# documentation says check_source_compiles() however that is only in
-		# CMake 3.19+. check_source_compilers() is a wrapper around
+		# CMake 3.19+. check_source_compiles() is a wrapper around
 		# try_compile(). Note that we have to use the old signature and not
 		# the newer signature.
 		try_compile(${outVariable}
-			SOURCES "${SQUIRRELJME_BP_LIST_FILE}/tryMain.c"
+			SOURCES "${SQUIRRELJME_BP_LIST_DIR}/tryMain.c"
 			LINK_OPTIONS "${CMAKE_${lang}_LINK_FLAGS} ${flag}")
 
 		# What was the result of it?
-		message(STATUS "${lang} linker flag ${flag}: ${outVariable}")
+		message(STATUS "${lang} linker flag ${flag}: ${${outVariable}}")
+
+		# Return the compilation result
+		squirreljme_bp_return_propagate(${outVariable})
+	endif()
+endfunction()
+
+# squirreljme_bp_check_compiler_flag
+# Like squirreljme_bp_check_linker_flag() this is also a convenience method
+# around try_compile()
+function(squirreljme_bp_check_compiler_flag lang flag outVariable)
+	# Add verbosity for the check
+	message(STATUS "Checking ${lang} compiler flag ${flag}...")
+
+	if(squirreljme_bp_version_3_18)
+		# Use modern CMake version
+		check_compiler_flag(${lang} "${flag}" ${outVariable})
+
+		# What was the result of it?
+		message(STATUS "${lang} compiler flag ${flag}: ${${outVariable}}")
+
+		# Return the compilation result
+		squirreljme_bp_return_propagate(${outVariable})
+	else()
+		# As above, check_source_compiles() is CMake 3.19+, so use
+		# try_compile() with the older signature.
+		try_compile(${outVariable}
+			SOURCES "${SQUIRRELJME_BP_LIST_DIR}/tryMain.c"
+			CMAKE_FLAGS "-DCMAKE_C_FLAGS=${CMAKE_${lang}_FLAGS};${flag}")
+
+		# What was the result of it?
+		message(STATUS "${lang} compiler flag ${flag}: ${${outVariable}}")
 
 		# Return the compilation result
 		squirreljme_bp_return_propagate(${outVariable})
