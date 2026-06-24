@@ -286,7 +286,7 @@ macro(squirreljme_check_set_compiler_flag lang flag yesDef)
 	squirreljme_bp_check_compiler_flag(${lang}
 		${flag}
 		${yesDef})
-	if(${yesDef})
+	if(${${yesDef}})
 		set(${yesDef} YES)
 		add_compile_options(${flag})
 	endif()

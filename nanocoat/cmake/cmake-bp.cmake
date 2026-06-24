@@ -96,12 +96,17 @@ function(squirreljme_bp_check_linker_flag lang flag outVariable)
 		# Return the compilation result
 		squirreljme_bp_return_propagate(${outVariable})
 	else()
+		# A _unique_ binary directory is required, otherwise this will not
+		# work properly
+		string(MAKE_C_IDENTIFIER "${lang}_${flag}_${outVariable}"
+			uniq)
+
 		# Check to see if some source compiles, it should be noted that the
 		# documentation says check_source_compiles() however that is only in
 		# CMake 3.19+. check_source_compiles() is a wrapper around
 		# try_compile(). Note that we have to use the old signature and not
 		# the newer signature.
-		try_compile(${outVariable}
+		try_compile(${outVariable} "${CMAKE_CURRENT_BINARY_DIR}/${uniq}"
 			SOURCES "${SQUIRRELJME_BP_LIST_DIR}/tryMain.c"
 			LINK_OPTIONS "${CMAKE_${lang}_LINK_FLAGS} ${flag}")
 
@@ -130,11 +135,16 @@ function(squirreljme_bp_check_compiler_flag lang flag outVariable)
 		# Return the compilation result
 		squirreljme_bp_return_propagate(${outVariable})
 	else()
+		# A _unique_ binary directory is required, otherwise this will not
+		# work properly
+		string(MAKE_C_IDENTIFIER "${lang}_${flag}_${outVariable}"
+			uniq)
+
 		# As above, check_source_compiles() is CMake 3.19+, so use
 		# try_compile() with the older signature.
-		try_compile(${outVariable}
+		try_compile(${outVariable} "${CMAKE_CURRENT_BINARY_DIR}/${uniq}"
 			SOURCES "${SQUIRRELJME_BP_LIST_DIR}/tryMain.c"
-			CMAKE_FLAGS "-DCMAKE_C_FLAGS=${CMAKE_${lang}_FLAGS};${flag}")
+			CMAKE_FLAGS "-DCMAKE_${lang}_FLAGS=${CMAKE_${lang}_FLAGS};${flag}")
 
 		# What was the result of it?
 		message(STATUS "${lang} compiler flag ${flag}: ${${outVariable}}")
