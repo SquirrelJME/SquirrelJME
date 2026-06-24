@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/nvm/romMeepSwm.h"
+#include "sjme/util.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/romManifest.h"
 
@@ -106,8 +107,93 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
 		if (step.attr[0] != 0)
 			continue;
 
-		sjme_message("K: %"PRSl" V: %"PRSl"",
-			step.map.key, step.map.value);
+		/* Configurations provided by this library. */
+		if (0 == sjme_string_compareIWAN(step.map.key, -1,
+			"X-SquirrelJME-DefinedConfigurations", -1))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* Profiles provided by this library. */
+		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
+			"X-SquirrelJME-DefinedProfiles", -1))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* Standards provided by this library. */
+		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
+			"X-SquirrelJME-DefinedStandards", -1))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* Internal SquirrelJME library name. */
+		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
+			"X-SquirrelJME-InternalProjectName", -1))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* Java ME Configuration to use. */
+		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
+			"Microedition-Configuration", -1))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* Java ME Profile to use. */
+		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
+			"Microedition-Profile", -1))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* Java ME LIBlet. */
+		else if (0 == sjme_string_compareIWAN(step.map.key, 7,
+			"LIBlet-", 7))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* Java ME MIBlet. */
+		else if (0 == sjme_string_compareIWAN(step.map.key, 7,
+			"MIDlet-", 7))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* MIDxlet, generally JSCL. */
+		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
+			"MIDxlet-api", -1))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+		/* MEXA OpenGL. */
+		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
+			"MIDxlet-opgl", -1))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
+#if defined(SJME_CONFIG_DEBUG)
+		else
+		{
+			sjme_message("Unknown key %"PRSl": %"PRSl"",
+				step.map.key, step.map.value);
+		}
+#endif
 	}
 
 	/* Close the stream. */

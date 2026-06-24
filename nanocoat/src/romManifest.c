@@ -192,6 +192,13 @@ sjme_errorCode sjme_nvm_rom_manifestParseNext(
 				if (!isSection)
 					return SJME_ERROR_NONE;
 
+				/* Is this Name: Value? If not then this is invalid. */
+				if (SJME_JNI_TRUE)
+				{
+					sjme_todo("Impl?");
+					return sjme_error_notImplemented(0);
+				}
+
 				/* Move the value to the section name. */
 				memmove(inOutStep->attr, inOutStep->map.value,
 					sizeof(inOutStep->attr));
