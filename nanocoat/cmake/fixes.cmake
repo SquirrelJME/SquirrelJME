@@ -306,6 +306,11 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 		"-mpc64"
 		SQUIRRELJME_HAS_GCC_MPC64)
 
+	# From the GCC manual: Store float intermediates
+	squirreljme_check_set_compiler_flag(C
+		"-ffloat-store"
+		SQUIRRELJME_HAS_GCC_FFLOAT_STORE)
+
 	# Turn some warnings into errors
 	squirreljme_check_set_compiler_flag(C
 		"-Werror=implicit-function-declaration"
