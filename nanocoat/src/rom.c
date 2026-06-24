@@ -272,6 +272,10 @@ sjme_errorCode sjme_nvm_rom_resolveLibraryByName(
 	if (inSuite == NULL || inName == NULL || outLib == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Never accept a blank library name as valid, it is always not found. */
+	if (strlen(inName) <= 0)
+		return SJME_ERROR_LIBRARY_NOT_FOUND;
+
 	/* Which hash are we looking for? */
 	wantHash = sjme_string_hash(inName);
 

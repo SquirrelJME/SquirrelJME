@@ -448,7 +448,8 @@ sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
 			return sjme_error_default(error);
 
 		/* If it does not exist, do not bother. */
-		return SJME_ERROR_RESOURCE_NOT_FOUND;
+		if (!exists)
+			return SJME_ERROR_RESOURCE_NOT_FOUND;
 	}
 	
 	/* Lock library. */
@@ -524,5 +525,5 @@ sjme_errorCode sjme_nvm_rom_libraryResourceExists(
 
 	/* Since we opened and closed a stream, the resource does exist. */
 	*outExists = SJME_JNI_TRUE;
-	return sjme_error_default(error);
+	return SJME_ERROR_NONE;
 }
