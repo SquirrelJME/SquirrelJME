@@ -38,19 +38,16 @@ squirreljme_bp_version_test(3.25 squirreljme_bp_version_3_25)
 set(SQUIRRELJME_BP_LIST_FILE "${CMAKE_CURRENT_LIST_FILE}")
 set(SQUIRRELJME_BP_LIST_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
-# Only set policies when using the most minimal version of CMake
-if(NOT squirreljme_bp_version_3_13)
-	# CMake 3.1+ Policies
-	if(squirreljme_bp_version_3_1)
-		# Only interpret if() arguments as variables or keywords when unquoted.
-		cmake_policy(SET CMP0054 NEW)
-	endif()
+# CMake 3.1+ Policies
+if(squirreljme_bp_version_3_1)
+	# Only interpret if() arguments as variables or keywords when unquoted.
+	cmake_policy(SET CMP0054 NEW)
+endif()
 
-	# CMake 3.3+ Policies
-	if(squirreljme_bp_version_3_3)
-		# Support new if() IN_LIST operator.
-		cmake_policy(SET CMP0057 NEW)
-	endif()
+# CMake 3.3+ Policies
+if(squirreljme_bp_version_3_3)
+	# Support new if() IN_LIST operator.
+	cmake_policy(SET CMP0057 NEW)
 endif()
 
 # CMake 3.25+ Policies
