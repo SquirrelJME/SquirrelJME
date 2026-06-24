@@ -95,7 +95,7 @@ function(squirreljme_multilib_add_static_library libBase)
 
 	# Static library
 	add_library(${libBase}Static STATIC
-		"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/blank.c"
+		"${SQUIRRELJME_BP_LIST_DIR}/blank.c"
 		"$<TARGET_GENEX_EVAL:${libBase},$<TARGET_OBJECTS:${libBase}>>")
 
 	# Always FPIC
@@ -134,7 +134,7 @@ function(squirreljme_multilib_add_library libBase)
 	if(SQUIRRELJME_ENABLE_DYLIB)
 		# Setup library
 		add_library(${libBase}DyLib SHARED
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/blank.c"
+			"${SQUIRRELJME_BP_LIST_DIR}/blank.c"
 			"$<TARGET_GENEX_EVAL:${libBase},$<TARGET_OBJECTS:${libBase}>>")
 
 		# Always FPIC

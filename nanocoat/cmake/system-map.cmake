@@ -118,6 +118,10 @@ function(squirreljme_defines_gcc gccDefines gccExe)
 		file(TO_NATIVE_PATH
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/tryMain.c"
 			gccMainSource)
+	elseif(EXISTS "${SQUIRRELJME_BP_LIST_DIR}/tryMain.c")
+		file(TO_NATIVE_PATH
+			"${SQUIRRELJME_BP_LIST_DIR}/tryMain.c"
+			gccMainSource)
 	elseif(EXISTS "${CMAKE_SOURCE_DIR}/cmake/tryMain.c")
 		file(TO_NATIVE_PATH
 			"${CMAKE_SOURCE_DIR}/cmake/tryMain.c"

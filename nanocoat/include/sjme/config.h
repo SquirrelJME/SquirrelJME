@@ -268,7 +268,8 @@ extern "C" {
 	
 	/** Windows is available. */
 	#define SJME_CONFIG_HAS_OS_WINDOWS 32
-#elif defined(__APPLE__) && defined(__MACH__)
+#elif (defined(__APPLE__) && defined(__MACH__)) || \
+	defined(SJME_CONFIG_IDENT_OS_MACOSX)
 	/** macOS 10+ is available. */
 	#define SJME_CONFIG_HAS_OS_MACOS
 #elif defined(macintosh)
@@ -303,6 +304,9 @@ extern "C" {
 	defined(__DOS__)
 	/** Is Microsoft Dos. */
 	#define SJME_CONFIG_HAS_OS_PC_DOS
+#elif defined(SJME_CONFIG_IDENT_OS_SUNOS)
+	/** Classic BSD based SunOS. */
+	#define SJME_CONFIG_HAS_OS_SUNOS
 #endif
 	
 /** POSIX 1990. */
@@ -340,6 +344,12 @@ extern "C" {
 		/** POSIX is available. */
 		#define SJME_CONFIG_HAS_OS_POSIX
 	#endif
+#endif
+	
+#if defined(SJME_CONFIG_HAS_OS_BSD) || defined(SJME_CONFIG_HAS_OS_MACOS) || \
+	defined(SJME_CONFIG_HAS_OS_NEXTSTEP) || defined(SJME_CONFIG_HAS_OS_SUNOS)
+	/** This is a BSD family operating system. */
+	#define SJME_CONFIG_HAS_OS_BSD_FAMILY
 #endif
 
 #if defined(SJME_CONFIG_HAS_OS_POSIX)
@@ -662,7 +672,8 @@ extern "C" {
 	#define sjme_alloca_free(ptr) ((void)ptr)
 #endif
 
-#if defined(SJME_CONFIG_HAS_OS_MACOS) && (defined(SJME_CONFIG_HAS_ARCH_IA32) || \
+#if defined(SJME_CONFIG_HAS_OS_MACOS) && \
+	(defined(SJME_CONFIG_HAS_ARCH_IA32) || \
 	defined(SJME_CONFIG_HAS_ARCH_POWERPC))
 	/** Supports macOS Darwin kernel Atomic Access */
 	#define SJME_CONFIG_HAS_ATOMIC_DARWIN
