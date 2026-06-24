@@ -616,9 +616,12 @@ typedef enum sjme_errorCode
 	
 	/** Invalid codepoint. */
 	SJME_ERROR_INVALID_CODEPOINT = -190,
+
+	/** The manifest format is not valid. */
+	SJME_ERROR_INVALID_MANIFEST_FORMAT = -191,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -191,
+	SJME_NUM_ERROR_CODES = -192,
 } sjme_errorCode;
 
 /**

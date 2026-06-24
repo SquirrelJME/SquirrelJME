@@ -465,6 +465,18 @@ sjme_errorCode sjme_stream_inputReadSingle(
 	sjme_attrOutNotNull sjme_attrOutNegativeOnePositive sjme_jint* result);
 
 /**
+ * Reads a single UTF encoded character from the input stream.
+ *
+ * @param stream The stream to read from.
+ * @param outCodePoint The output resultant codepoint.
+ * @return Any resultant error, if any.
+ * @since 2026/06/24
+ */
+sjme_errorCode sjme_stream_inputReadUtfChar(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_jint* outCodePoint);
+
+/**
  * Reads a Java value from the given stream.
  *
  * @param stream The stream to read from.

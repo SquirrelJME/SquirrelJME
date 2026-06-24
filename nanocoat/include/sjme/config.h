@@ -784,7 +784,9 @@ extern "C" {
 #endif
 
 /** Disable all linting of any kind. */
-#define sjme_noLint(what) (what) /* NOLINT */ /* ReSharper disable once all */
+#define sjme_noLint(what) (what) /* NOLINT */ \
+	/* ReSharper disable once all */ \
+	/* ReSharper disable once CppLocalVariableMightNotBeInitialized */
 
 #if defined(SJME_CONFIG_HAS_ARCH_MIPS) || \
 	defined(SJME_CONFIG_HAS_ARCH_POWERPC)

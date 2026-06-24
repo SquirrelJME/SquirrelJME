@@ -444,6 +444,14 @@ extern "C"
 	#endif
 #endif
 
+#if !defined(PRSl)
+	#if defined(SJME_CONFIG_HAS_MSVC)
+		#define PRSl "ws"
+	#else
+		#define PRSl "ls"
+	#endif
+#endif
+
 #pragma endregion(printf)
 #pragma region(intTypes)
 

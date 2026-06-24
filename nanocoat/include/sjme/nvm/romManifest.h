@@ -32,8 +32,11 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/** The maximum length permitted for manifest keys and values. before error. */
-#define SJME_NVM_ROM_MANIFEST_LENGTH 384
+/** The maximum length permitted for manifest keys, before error. */
+#define SJME_NVM_ROM_MANIFEST_KEY_LENGTH 74
+
+/** The maximum length permitted for manifest values, before error. */
+#define SJME_NVM_ROM_MANIFEST_VALUE_LENGTH 384
 
 /**
  * Stores a single manifest key/value mapping.
@@ -43,10 +46,10 @@ extern "C"
 typedef struct sjme_nvm_rom_manifestMap
 {
 	/** The key. */
-	sjme_jchar key[SJME_NVM_ROM_MANIFEST_LENGTH];
+	sjme_jchar key[SJME_NVM_ROM_MANIFEST_KEY_LENGTH];
 
 	/** The value. */
-	sjme_jchar value[SJME_NVM_ROM_MANIFEST_LENGTH];
+	sjme_jchar value[SJME_NVM_ROM_MANIFEST_VALUE_LENGTH];
 } sjme_nvm_rom_manifestMap;
 
 /**
@@ -57,10 +60,17 @@ typedef struct sjme_nvm_rom_manifestMap
 typedef struct sjme_nvm_rom_manifestStep
 {
 	/** Which attribute table is this within? */
-	sjme_jchar attr[SJME_NVM_ROM_MANIFEST_LENGTH];
+	sjme_jchar attr[SJME_NVM_ROM_MANIFEST_VALUE_LENGTH];
 
 	/** The current map value. */
 	sjme_nvm_rom_manifestMap map;
+
+	/** Interstate step state. */
+	struct
+	{
+		/** Look ahead codepoint. */
+		sjme_jint lookahead;
+	} parse;
 } sjme_nvm_rom_manifestStep;
 
 /**

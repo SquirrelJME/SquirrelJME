@@ -289,6 +289,110 @@ sjme_errorCode sjme_stream_inputReadSingle(
 	}
 }
 
+sjme_errorCode sjme_stream_inputReadUtfChar(
+	sjme_attrInNotNull sjme_stream_input stream,
+	sjme_attrOutNotNull sjme_jint* outCodePoint)
+{
+	sjme_errorCode error;
+	sjme_jubyte c;
+	sjme_jint result;
+
+	if (stream == NULL || outCodePoint == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Read first character. */
+	c = 0;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJB(stream,
+		(sjme_jbyte*)&c)))
+	{
+		/* EOF is valid here. */
+		if (error == SJME_ERROR_UNEXPECTED_EOF)
+			return SJME_ERROR_END_OF_FILE;
+
+		return sjme_error_default(error);
+	}
+	c &= 0xFF;
+
+	/* Single byte character? */
+	if ((c & 0x80) == 0)
+		result = c;
+
+	/* Double byte character? */
+	else if ((c & 0xE0) == 0xC0)
+	{
+		/* Upper bits. */
+		result = (c & 0x1F) << 6;
+
+		/* Read next. */
+		c = 0;
+		if (sjme_error_is(error = sjme_stream_inputReadValueJB(stream,
+			(sjme_jbyte*)&c)))
+			return sjme_error_default(error);
+		c &= 0xFF;
+
+		/* Invalid continuation? */
+		if ((c & 0xC0) != 0x80)
+			goto fail_invalid;
+
+		/* Lower bits. */
+		result |= (c & 0x3F);
+
+		/* Too low of a character? */
+		if (result < 0x80 && result != 0)
+			goto fail_invalid;
+	}
+
+	/* Triple byte character. */
+	else if ((c & 0xF0) == 0xE0)
+	{
+		/* Upper bits. */
+		result = (c & 0x0F) << 12;
+
+		/* Read next. */
+		c = 0;
+		if (sjme_error_is(error = sjme_stream_inputReadValueJB(stream,
+			(sjme_jbyte*)&c)))
+			return sjme_error_default(error);
+		c &= 0xFF;
+
+		/* Invalid continuation? */
+		if ((c & 0xC0) != 0x80)
+			goto fail_invalid;
+
+		/* Middle bits. */
+		result |= (c & 0x3F) << 6;
+
+		/* Read next. */
+		c = 0;
+		if (sjme_error_is(error = sjme_stream_inputReadValueJB(stream,
+			(sjme_jbyte*)&c)))
+			return sjme_error_default(error);
+		c &= 0xFF;
+
+		/* Invalid continuation? */
+		if ((c & 0xC0) != 0x80)
+			goto fail_invalid;
+
+		/* Lower bits. */
+		result |= (c & 0x3F);
+
+		/* Too low of a character? */
+		if (result < 0x800)
+			goto fail_invalid;
+	}
+
+	/* Invalid sequence. */
+	else
+		goto fail_invalid;
+
+	/* Return the result. */
+	*outCodePoint = result;
+	return SJME_ERROR_NONE;
+
+fail_invalid:
+	return SJME_ERROR_INVALID_CODEPOINT;
+}
+
 sjme_errorCode sjme_stream_inputReadValueJ(
 	sjme_attrInNotNull sjme_stream_input stream,
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS)

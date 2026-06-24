@@ -99,11 +99,15 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
 				break;
 
 			/* Fail. */
-			return sjme_error_default(error);
+			goto fail_parse;
 		}
 
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Ignore if we are in any subsections. */
+		if (step.attr[0] != 0)
+			continue;
+
+		sjme_message("K: %"PRSl" V: %"PRSl"",
+			step.map.key, step.map.value);
 	}
 
 	/* Close the stream. */
@@ -114,6 +118,7 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
 	/* Success! */
 	return SJME_ERROR_NONE;
 
+fail_parse:
 fail_openRc:
 	if (inputStream != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(inputStream));
@@ -138,7 +143,10 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingle(
 	if (sjme_error_is(error = sjme_nvm_rom_swmLoadSingleManifest(
 		allocPool, inSuite, inLibrary, inOutDepend)))
 	{
-		if (error != SJME_ERROR_NOT_MATCHED)
+		if (error == SJME_ERROR_INVALID_MANIFEST_FORMAT)
+			sjme_message("Manifest for %s was not valid.",
+				inLibrary->name);
+		else if (error != SJME_ERROR_NOT_MATCHED)
 			return sjme_error_default(error);
 	}
 
