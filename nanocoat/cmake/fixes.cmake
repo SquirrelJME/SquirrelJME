@@ -283,11 +283,13 @@ endif()
 
 # Simplifies checking and setting a compiler flag
 macro(squirreljme_check_set_compiler_flag lang flag yesDef)
+	# Is this a valid flag?
 	squirreljme_bp_check_compiler_flag(${lang}
 		${flag}
 		${yesDef})
-	if(${${yesDef}})
-		set(${yesDef} YES)
+
+	# Add compile definition to set this
+	if(${yesDef})
 		add_compile_options(${flag})
 	endif()
 endmacro()
