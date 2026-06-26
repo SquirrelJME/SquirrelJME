@@ -58,7 +58,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 		
 		case SJME_NVM_CLASS_POOL_TYPE_STRING:
 			return sjme_nvm_task_frameStackPushStringP(
-				inFrame, commit, entry->utf.utf);
+				inFrame, commit, entry->constString.value);
 		
 		/* Invalid type. */
 		default:

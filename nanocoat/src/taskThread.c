@@ -40,7 +40,8 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_frame_frameStack* typeStack;
 	sjme_jint i, setSize;
 	sjme_intPointer typeOff[SJME_NVM_STACK_FINAL_ID + 1];
-	sjme_pointer storeBase;
+	sjme_pointer storageBase;
+	sjme_jint storageClaim;
 	
 	if (inState == NULL || inThread == NULL || inFrame == NULL ||
 		targetInfo == NULL)
@@ -50,7 +51,8 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	store = &inThread->stack;
 	stack = &inFrame->stack;
 
-	/* Make sure it is cleared beforehand. */
+	/* Make sure it is cleared beforehand as everything needs to be */
+	/* reinitialized correctly. */
 	memset(stack, 0, sizeof(*stack));
 
 	/* The ordering information can be taken directly from the code info. */
@@ -99,19 +101,30 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 		return sjme_error_vmError(inThread, SJME_ERROR_STACK_OVERFLOW);
 
 	/* Grab a chunk of the stack. */
-	storeBase = SJME_POINTER_OFFSET(store->storage, store->storageTop);
-	stack->storageClaim = typeOff[SJME_NVM_STACK_FINAL_ID];
-	store->storageTop += stack->storageClaim;
+	storageBase = SJME_POINTER_OFFSET(store->storage, store->storageTop);
+	storageClaim = typeOff[SJME_NVM_STACK_FINAL_ID];
+	store->storageTop += storageClaim;
 
-	/* Clear any data which used to be here. */
-	memset(storeBase, 0, stack->storageClaim);
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	sjme_emitB("STACK RF %p: %p[%d] (rel %d + %d = %d)",
+		stack, storageBase, storageClaim,
+		(sjme_jint)((sjme_intPointer)storageBase -
+			(sjme_intPointer)store->storage),
+		storageClaim, store->storageTop);
+#endif
+
+	/* Clear any data which used to be here, since it could be garbage. */
+	stack->storageBase = storageBase;
+	stack->storageClaim = storageClaim;
+	memset(storageBase, 0, storageClaim);
 
 	/* Setup pointers. */
-	stack->order = SJME_POINTER_OFFSET(storeBase, 0);
+	stack->order = SJME_POINTER_OFFSET(storageBase, 0);
 	for (i = 0; i < SJME_NVM_STACK_FINAL_ID; i++)
 	{
 		/* Determine base pointer. */
-		stack->stack[i].set = SJME_POINTER_OFFSET(storeBase, typeOff[i]);
+		stack->stack[i].set = SJME_POINTER_OFFSET(storageBase, typeOff[i]);
 		
 		/* Set the set details. */
 		stack->stack[i].set->type = i;

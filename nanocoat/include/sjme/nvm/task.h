@@ -210,6 +210,9 @@ struct sjme_frame_frameStack
 
 struct sjme_frame_frameStacks
 {
+	/** The storage base of this stack. */
+	sjme_pointer storageBase;
+
 	/** The number of bytes claimed for this frame. */
 	sjme_jint storageClaim;
 	
