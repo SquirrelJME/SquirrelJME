@@ -110,6 +110,20 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLG_(
 	
 	if (SJME_VLG_ <= 0 || SJME_VLG_ >= SJME_NVM_VMFIELD_NUM_VAR)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	if (type == SJME_BASIC_TYPE_ID_OBJECT)
+		sjme_emitB("VLG <- %d %p %p = *%08x:%p",
+			(int)type,
+			(void*)objC, (void*)objP,
+			(*objC), (void*)(*objP));
+	else
+		sjme_emitB("VLG <- %d %p = *0x%08x_%08xL",
+			(int)type,
+			(void*)prim,
+			prim->j.part.hi, prim->j.part.lo);
+#endif
 	
 	/* If getting an object, make sure it did not change on us. */
 	checkObj = NULL;
@@ -335,8 +349,7 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 		}
 		
 		/* Set new object. */
-		if (set.v.l != NULL)
-			(*objC) = set.v.l->identityHash;
+		(*objC) = (set.v.l != NULL ? set.v.l->identityHash : 0);
 		(*objP) = set.v.l;
 	}
 	
@@ -362,6 +375,20 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 				return sjme_error_notImplemented(0);
 		}
 	}
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* Debug. */
+	if (type == SJME_BASIC_TYPE_ID_OBJECT)
+		sjme_emitB("VLS -> %d %p %p = *%08x:%p",
+			(int)type,
+			(void*)objC, (void*)objP,
+			(*objC), (void*)(*objP));
+	else
+		sjme_emitB("VLS -> %d %p = *0x%08x_%08xL",
+			(int)type,
+			(void*)prim,
+			prim->j.part.hi, prim->j.part.lo);
+#endif
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

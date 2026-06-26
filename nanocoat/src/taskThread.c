@@ -101,10 +101,10 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	/* Grab a chunk of the stack. */
 	storeBase = SJME_POINTER_OFFSET(store->storage, store->storageTop);
 	stack->storageClaim = typeOff[SJME_NVM_STACK_FINAL_ID];
-	store->storageTop += typeOff[SJME_NVM_STACK_FINAL_ID];
+	store->storageTop += stack->storageClaim;
 
 	/* Clear any data which used to be here. */
-	memset(storeBase, 0, typeOff[SJME_NVM_STACK_FINAL_ID]);
+	memset(storeBase, 0, stack->storageClaim);
 
 	/* Setup pointers. */
 	stack->order = SJME_POINTER_OFFSET(storeBase, 0);

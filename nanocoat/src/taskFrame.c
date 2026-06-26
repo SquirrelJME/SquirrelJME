@@ -547,7 +547,7 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 	if (newPerTop < perType->front)
 		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
 
-	/* Read in value. */
+	/* Read in value, erase the old value as it is to be wiped. */
 	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
 		inFrame, topType, newPerTop, outValue,
 		SJME_JNI_TRUE)))
