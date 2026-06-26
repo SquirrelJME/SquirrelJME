@@ -7,7 +7,7 @@ please see:
  * [SpringCoat Usage](usage-springcoat.mkd)
  * [NanoCoat Usage](usage-nanocoat.mkd)
 
-## Command Line Usage
+# Command Line Usage
 
 The following may be used at the command line, the format is the same
 as `java`. An option within square brackets `[]` are optional, and
@@ -76,6 +76,8 @@ The available options are:
  * `-Xscritchui:(ui)`
    * Rather than the default, use a specific user interface library.
    * This may also be set by using `cc.squirreljme.scritchui`.
+   * Alternatively, the environment variable `SQUIRRELJME_SCRITCHUI_INTERFACE`
+     may be used.
  * `-Xsnapshot:(path-to-nps)`
    * Profile the virtual machine and store the profile results into the
      given VisualVM snapshot file.
@@ -119,7 +121,7 @@ The available options are:
  * `-zero`
    * Alias for `-Xemulator:springcoat`.
 
-## Default Directories
+# Default Directories
 
 SquirrelJME has a set of default directories, which have a priority order
 and may be overridden by environment variables.
@@ -177,7 +179,7 @@ The directory types and their order of precedence are:
  * _Extra Bucket_
    * `<SQUIRRELJME_BUCKET_EXTRA>` {~}
 
-## Common Issues
+# Common Issues
 
 ***TRYING TO RUN DoJa/Star (i-mode) SOFTWARE?:*** Both
 DoJa and Star require the accompanying `.jam` file to be able
@@ -186,6 +188,17 @@ how to start such titles. Some DoJa/Star software will also
 require the `.sp` (Scratchpad) file as it relies on DLC which
 must have already been downloaded, considering the services
 for downloading such DLC are no longer online.
+
+# Environment and System Properties
+
+System properties and environment variables are additional available in
+specific cases to modify default behavior of SquirrelJME from the command
+line.
+
+Environment variables always take priority over system properties. Note that
+system properties are only available to the runtime, if a system is ultimately
+initialized purely in the native layer then system properties will have no
+effect.
 
 ## Framing/Scaling
 
@@ -202,6 +215,25 @@ the default scale factor you may specify:
      * `cc.squirreljme.scale=(multiplier|WxH)`
    * Environment Variable:
      * `SQUIRRELJME_SCALE=(multiplier|WxH)`
+
+## ScritchUI Interface
+
+ * Preferred Interface -- This is the interface which will be attempted first.
+   * System Property (Standalone):
+     * `cc.squirreljme.scritchui=(name)`
+   * Environment Variable:
+     * `SQUIRRELJME_SCRITCHUI_INTERFACE=(name)`
+
+The following ScritchUI interfaces are provided by SquirrelJME, assuming that
+they are built and included:
+
+ * `win32` -- Windows Win32 API
+ * `gtk2` -- GTK 2.0
+
+It is possible with  the combination of the natives path and/or
+vendor-specific builds of SquirrelJME to have additional libraries available.
+Libraries placed in the natives path should have their name match the system
+that they are for.
 
 ## Vendor-specific keycodes
 
@@ -233,7 +265,7 @@ specific vendors.
      SoftBank, `motorola.triplets` is also used by Sharp devices, and
      `nokia` is also used by Sony Ericsson and Samsung devices.
 
-## Special `file:` URIs
+# Special `file:` URIs
 
 These are special `file:` URIs in SquirrelJME, specified by using a special
 authority. Within each authority, there may be an URI encoded target, this
@@ -276,7 +308,7 @@ An example of referring to a library as a ZIP:
    * `file://!%3Fx-squirreljme-zip%3A%2F%2F%3F!file%3A%2F%2F%21%253Fx-s`
      `quirreljme-library%253A%252F%252F%253F%21example.jar%2F/`
 
-## Using the Media Player from the Command Line
+# Using the Media Player from the Command Line
 
 The media player may be started purely from the command line with the
 specified command:
@@ -366,3 +398,16 @@ States are as followed:
      indicated above.
 
 The song will continue playing until it reaches the end.
+
+# Natives
+
+Natives within SquirrelJME follow the same format as the host system:
+
+ * macOS: `library.dylib`
+ * UNIX-like and POSIX:
+   * Static -- `liblibrary.a`
+   * Dynamic -- `liblibrary.so`
+ * Windows: `library.dll`
+
+This should only be used as a baseline as a vendor and/or specific distribution
+may use a different format.

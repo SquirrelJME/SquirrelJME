@@ -85,7 +85,7 @@ file(STRINGS "${CMAKE_BINARY_DIR}/first-cmake-version" SJME_FIRST_CMAKE_VER
 string(TOLOWER "${SJME_FIRST_CMAKE_VER}" SJME_FIRST_CMAKE_VER)
 string(REPLACE "cmake version " ""
 	SJME_FIRST_CMAKE_VER "${SJME_FIRST_CMAKE_VER}")
-string(REPLACE REPLACE "[a-z]" ""
+string(REGEX REPLACE "[a-z]" ""
 	SJME_FIRST_CMAKE_VER "${SJME_FIRST_CMAKE_VER}")
 
 # If the CMake we found is too old, ignore it and use our current one

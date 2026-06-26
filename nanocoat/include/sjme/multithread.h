@@ -154,6 +154,15 @@ typedef sjme_intPointer sjme_thread_id;
 
 /* clang-format on */ /* @formatter:on */
 /*--------------------------------------------------------------------------*/
+	
+/* No bumping needed? */
+#if !defined(SJME_THREAD_BUMP) && !defined(SJME_THREAD_UNBUMP)
+	/** Bump Thread. */
+	#define SJME_THREAD_BUMP(x) (x)
+
+	/** Unbump Thread. */
+	#define SJME_THREAD_UNBUMP(x) (x)
+#endif
 
 SJME_ATOMIC_DECLARE(sjme_thread, 0);
 

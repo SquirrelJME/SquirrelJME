@@ -30,6 +30,9 @@ include(ExternalProject)
 project(libEmulatorBase
 	LANGUAGES C)
 
+# Settings that adjust the build completely
+squirreljme_include_nanocoat("environment-options.cmake")
+
 # We want to forward as many CMAKE_ commands to the target NanoCoat as
 # possible
 get_cmake_property(allVariables VARIABLES)
@@ -180,6 +183,10 @@ foreach(var IN LISTS allVariables)
 	endif()
 endforeach()
 
+# Determine options to forward
+squirreljme_env_forward(forwardedEnv)
+message("Forwarded options: ${forwardedEnv}")
+
 # Setup NanoCoat Project
 set(SQUIRRELJME_NANOCOAT_BINARY_DIR "${CMAKE_BINARY_DIR}/nanocoat")
 file(MAKE_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
@@ -194,6 +201,7 @@ ExternalProject_Add(SquirrelJME
 		"-A" "${CMAKE_GENERATOR_PLATFORM}"
 		"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
 		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+		"${forwardedEnv}"
 	BUILD_COMMAND ""
 	INSTALL_COMMAND ""
 	TEST_COMMAND ""
@@ -214,6 +222,7 @@ ExternalProject_Add_Step(SquirrelJME RunConfigureStep
 		"-A" "${CMAKE_GENERATOR_PLATFORM}"
 		"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
 		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+		"${forwardedEnv}"
 	INDEPENDENT)
 ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep
 	SquirrelJME-RunConfigureStep)

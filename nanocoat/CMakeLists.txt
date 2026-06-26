@@ -109,6 +109,9 @@ squirreljme_include("doxygen.cmake")
 # To Emily and Near...
 squirreljme_include("i-miss-you.cmake")
 
+# Settings that adjust the build completely
+squirreljme_include("environment-options.cmake")
+
 # Everything is C99
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)

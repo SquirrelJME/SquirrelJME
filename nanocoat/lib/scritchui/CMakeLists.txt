@@ -54,7 +54,7 @@ squirreljme_multilib_add_library(ScritchUiCore
 
 # The base SquirrelJME library is always needed
 squirreljme_multilib_link_libraries_required(ScritchUiCore PUBLIC
-	BaseStatic
+	Base
 	ScritchUiFB)
 
 # Include main headers

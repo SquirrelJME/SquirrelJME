@@ -1449,6 +1449,13 @@ sjme_errorCode sjme_noOptimize sjme_alloc_weakNewR(
 	
 	if (allocPool == NULL || outAddr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Invalid or corrupt allocation pool? */
+	if (allocPool->magic != SJME_ALLOC_POOL_MAGIC)
+	{
+		sjme_alloc_corruptFail(allocPool, NULL, "Wrong pool");
+		return SJME_ERROR_INVALID_ARGUMENT;
+	}
 		
 	/* Take ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(

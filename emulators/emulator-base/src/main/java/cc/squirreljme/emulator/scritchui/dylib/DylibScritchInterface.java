@@ -35,9 +35,13 @@ import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import net.multiphasicapps.collections.UnmodifiableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,6 +61,14 @@ public class DylibScritchInterface
 	 */
 	public static final String PREFER_PROPERTY =
 		"cc.squirreljme.scritchui";
+	
+	/** The preferred ScritchUI interface. */
+	public static final String PREFER_ENV =
+		"SQUIRRELJME_SCRITCHUI_INTERFACE";
+	
+	/** Libraries may be under this environment. */
+	public static final String LIB_JVM_ENV =
+		"SQUIRRELJME_LIB_JVM";
 	
 	/** The internal default order of interfaces. */
 	private static final List<String> _ORDER =
@@ -358,56 +370,101 @@ public class DylibScritchInterface
 		}
 		
 		// Preferred library
-		String prefer = System.getProperty(
+		String prefer = System.getenv(DylibScritchInterface.PREFER_ENV); 
+		if (prefer == null || prefer.isEmpty())
+			prefer = System.getProperty(
 			DylibScritchInterface.PREFER_PROPERTY);
 		
 		// Deferred exceptions for later failing
 		List<Throwable> defer = new ArrayList<>();
 		
+		// Is the SquirrelJME native path specified?
+		String libJvmEnvRaw = System.getenv(DylibScritchInterface.LIB_JVM_ENV);
+		Path libJvmEnv = (libJvmEnvRaw == null ? null :
+			Paths.get(libJvmEnvRaw));
+		
+		// Never allow non-absolute paths
+		if (libJvmEnv != null && !libJvmEnv.isAbsolute())
+			libJvmEnv = null;
+		
+		// Determine the order to check, make sure the preference is always
+		// added first
+		Set<String> checkOrder = new LinkedHashSet<>();
+		if (prefer != null && !prefer.isEmpty())
+			checkOrder.add(prefer);
+		checkOrder.addAll(potentials);
+		
 		// Go through and find all available libraries
+		// Note that if a preference is selected then assume it may always
+		// exist... if libJvm is specified then anything could be used, even
+		// ones unknown to ScritchUI
 		List<Path> libPaths = new ArrayList<>();
 		List<String> libNames = new ArrayList<>();
-		for (String order : DylibScritchInterface._ORDER)
-			if (potentials.contains(order))
+		for (String order : checkOrder)
+		{
+			// What library is used?
+			String libName = System.mapLibraryName(
+				"squirreljme-scritchui-" + order);
+			
+			// Use from environment if available
+			if (libJvmEnv != null)
 			{
-				// What library is used?
-				String libName = System.mapLibraryName(
-					"squirreljme-scritchui-" + order);
-				
-				// Find library to load
-				Path libPath;
-				try
-				{
-					libPath = NativeBinding.libFromResources(
-						libName, false);
-				}
-				
-				// If it fails to extract, skip it
-				catch (LinkageError __e)
-				{
-					defer.add(__e);
-					continue;
-				}
-				
-				// This library path is valid, so store it for later, the
-				// preferred library is always first
-				if (prefer != null && order.equalsIgnoreCase(prefer))
-				{
-					libPaths.add(0, libPath);
-					libNames.add(0, order);
-				}
-				else
-				{
-					libPaths.add(libPath);
-					libNames.add(order);
-				}
+				libPaths.add(libJvmEnv.resolve(libName));
+				libNames.add(order);
 			}
+			
+			// Find library to load
+			Path libPath;
+			try
+			{
+				libPath = NativeBinding.libFromResources(
+					libName, false);
+			}
+			
+			// If it fails to extract, skip it
+			catch (LinkageError __e)
+			{
+				defer.add(__e);
+				continue;
+			}
+			
+			// This library path is valid, so store it for later
+			libPaths.add(libPath);
+			libNames.add(order);
+		}
+		
+		// Reorder to preferred libraries are first
+		if (prefer != null)
+			for (int i = 0, prefSlot = 0; i < libNames.size(); i++)
+				if (prefer.equals(libNames.get(i)))
+				{
+					// Swap with the preference, if not already in the first
+					// slot
+					if (i != prefSlot)
+					{
+						Collections.swap(libPaths, prefSlot, i);
+						Collections.swap(libPaths, prefSlot, i);
+					}
+					
+					// Preference slot moves up, as they can be specified
+					// multiple times!
+					prefSlot++;
+				}
+		
+		// Debug
+		Debugging.debugNote("ScritchUI Order: [%s, %s]",
+			libPaths, libNames);
 		
 		// Use the first one that successfully loads!
 		for (int i = 0; i < libPaths.size(); i++)
 		{
+			// Determine the library to load
 			Path libPath = libPaths.get(i);
 			String libName = libNames.get(i);
+			
+			// Debug
+			Debugging.debugNote("ScritchUI Load: %s from %s",
+				libName, libPath);
 			
 			try
 			{
@@ -419,7 +476,7 @@ public class DylibScritchInterface
 				DylibScritchInterface._INSTANCE = instance;
 				return instance;
 			}
-			catch (RuntimeException __e)
+			catch (RuntimeException|LinkageError|MLECallError __e)
 			{
 				defer.add(__e);
 			}

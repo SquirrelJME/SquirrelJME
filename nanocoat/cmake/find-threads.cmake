@@ -23,7 +23,8 @@ if("${SQUIRRELJME_SYSTEM}" STREQUAL "dos" OR
 
 # On Windows do not use pthreads at all as it has its own threading system
 elseif("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" OR
-	"${SQUIRRELJME_SYSTEM}" STREQUAL "wine")
+	("${SQUIRRELJME_SYSTEM}" STREQUAL "wine" AND
+	SJME_CONFIG_EO_LIBWINE_THREADS))
 	# Notice
 	message(STATUS "Forcing Win32 Threads")
 

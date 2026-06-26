@@ -96,3 +96,9 @@ squirreljme_add_nal_option(THREAD_SLEEP)
 squirreljme_add_nal_option(THREAD_YIELD)
 squirreljme_add_nal_option(USER_HOME)
 squirreljme_add_nal_option(USER_NAME)
+
+# If using native threads, this needs to be known here
+if(SJME_CONFIG_EO_LIBWINE_NATIVE_THREADS)
+	squirreljme_multilib_compile_options(Base PUBLIC
+		"SJME_CONFIG_EO_LIBWINE_NATIVE_THREADS=1")
+endif()

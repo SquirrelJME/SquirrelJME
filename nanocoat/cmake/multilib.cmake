@@ -220,23 +220,120 @@ function(squirreljme_multilib_static_include_directories libBase scope)
 	endif()
 endfunction()
 
+# Add compile definitions to multilib static library
+function(squirreljme_multilib_static_compile_definitions target scope what)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
+	# Load in options
+	set(addOptions "${ARGV}")
+	list(REMOVE_AT addOptions 0)
+	list(REMOVE_AT addOptions 0)
+
+	# Set on object target
+	target_compile_definitions(${target} ${scope}
+		${addOptions})
+
+	# Set on static target
+	target_compile_definitions(${target}Static ${scope}
+		${addOptions})
+endfunction()
+
 # Add compile definitions to multilib library
 function(squirreljme_multilib_compile_definitions target scope what)
 	# Check the scope
 	squirreljme_check_valid_scope(${scope})
 
-	# Set on object target
-	target_compile_definitions(${target} ${scope}
-		${what})
+	# Set on statics
+	squirreljme_multilib_static_compile_definitions(${ARGV})
 
-	# Set on static target
-	target_compile_definitions(${target}Static ${scope}
-		${what})
+	# Load in options
+	set(addOptions "${ARGV}")
+	list(REMOVE_AT addOptions 0)
+	list(REMOVE_AT addOptions 0)
 
-	# And on the library target
+	# And on the shared library
 	if(SQUIRRELJME_ENABLE_DYLIB)
 		target_compile_definitions(${target}DyLib ${scope}
-			${what})
+			${addOptions})
+	endif()
+endfunction()
+
+# Add compile options to multilib static library
+function(squirreljme_multilib_static_compile_options target scope what)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
+	# Load in options
+	set(addOptions "${ARGV}")
+	list(REMOVE_AT addOptions 0)
+	list(REMOVE_AT addOptions 0)
+
+	# Set on object target
+	target_compile_options(${target} ${scope}
+		${addOptions})
+
+	# Set on static target
+	target_compile_options(${target}Static ${scope}
+		${addOptions})
+endfunction()
+
+# Add compile options to multilib library
+function(squirreljme_multilib_compile_options target scope what)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
+	# Set on statics
+	squirreljme_multilib_static_compile_options(${ARGV})
+
+	# Load in options
+	set(addOptions "${ARGV}")
+	list(REMOVE_AT addOptions 0)
+	list(REMOVE_AT addOptions 0)
+
+	# And on the shared library
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		target_compile_options(${target}DyLib ${scope}
+			${addOptions})
+	endif()
+endfunction()
+
+# Add link options to multilib static library
+function(squirreljme_multilib_static_link_options target scope what)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
+	# Load in options
+	set(addOptions "${ARGV}")
+	list(REMOVE_AT addOptions 0)
+	list(REMOVE_AT addOptions 0)
+
+	# Set on object target
+	target_link_options(${target} ${scope}
+		${addOptions})
+
+	# Set on static target
+	target_link_options(${target}Static ${scope}
+		${addOptions})
+endfunction()
+
+# Add link options to multilib library
+function(squirreljme_multilib_link_options target scope what)
+	# Check the scope
+	squirreljme_check_valid_scope(${scope})
+
+	# Set on statics
+	squirreljme_multilib_static_link_options(${ARGV})
+
+	# Load in options
+	set(addOptions "${ARGV}")
+	list(REMOVE_AT addOptions 0)
+	list(REMOVE_AT addOptions 0)
+
+	# And on the shared library
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		target_link_options(${target}DyLib ${scope}
+			${addOptions})
 	endif()
 endfunction()
 
@@ -505,7 +602,7 @@ endfunction()
 # Export multilib targets
 function(squirreljme_multilib_export target)
 	# There are multiple branching paths based on the configuration
-	if(SQUIRRELJME_ENABLE_DYLIB)
+	if(SQUIRRELJME_ENABLE_DYLIB AND TARGET ${target}DyLib)
 		export(TARGETS
 			${target}DyLib
 			${target}Static
