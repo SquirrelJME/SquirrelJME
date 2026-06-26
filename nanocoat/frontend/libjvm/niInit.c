@@ -90,12 +90,15 @@ jint JNICALL JNI_CreateJavaVM(
 			goto fail_noMemory;
 	}
 
+	/* Setup boot parameters. */
+	memset(&bootParam, 0, sizeof(bootParam));
+	bootParam.nal = &sjme_nal_default;
+
 	/* Allow launcher fallback by default, it is possible that command line */
 	/* parsing will set this to false if -jar or a main class is specified. */
 	bootParam.launcherFallback = SJME_JNI_TRUE;
 
 	/* Parse the command line. */
-	memset(&bootParam, 0, sizeof(bootParam));
 	if (sjme_error_is(error = sjme_nvm_parseCommandLine(pool,
 		&sjme_nal_default, &bootParam, argc + 1, argv)))
 	{
@@ -103,9 +106,6 @@ jint JNICALL JNI_CreateJavaVM(
 			return JNI_OK;
 		goto fail_nvmParseArgs;
 	}
-
-	/* Setup boot parameters. */
-	bootParam.nal = &sjme_nal_default;
 
 	/* Always belay main since we are doing this in compatibility with */
 	/* the JVM library. */
