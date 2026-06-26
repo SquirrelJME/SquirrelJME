@@ -1325,55 +1325,52 @@ public class NokiaOTADecoder
 			// time lengths (50% duty cycle). A quick way of generating is
 			// by making half of the samples alternate between high and low
 			// values based on the wave's period. 
-			switch(__fmt)
+			switch (__fmt)
 			{
 				case AudioStreamFormat.BYTE_U8:
 					byte[] bbuf = (byte[])__buf;
 
-					byte byteValMax = (byte) (noteVolume & 0xFF);
+					byte byteValMax = (byte)(noteVolume & 0xFF);
 
 					for (int i = 0; i < genNoteSamples; i++) 
-						bbuf[__off + i] = (i % (sqWavePeriod * 2) <
-							sqWavePeriod) ? byteValMax : 0;
+						bbuf[__off + i] = ((i % (sqWavePeriod * 2) <
+							sqWavePeriod) ? byteValMax : 0);
 					
 					break;
 				
 				case AudioStreamFormat.SHORT_S16:
 					short[] sbuf = (short[])__buf;
 
-					short shortValMin = (short) -((noteVolume << 7) + 128);
-
-					short shortValMax = (short) ((noteVolume << 7) + 127);
+					short shortValMin = (short)(-((noteVolume << 8) + 256));
+					short shortValMax = (short)((noteVolume << 8) + 255);
 
 					for (int i = 0; i < genNoteSamples; i++) 
-						sbuf[__off + i] = (i % (sqWavePeriod * 2) <
-							sqWavePeriod) ? shortValMax : shortValMin;
+						sbuf[__off + i] = ((i % (sqWavePeriod * 2) <
+							sqWavePeriod) ? shortValMax : shortValMin);
 					
 					break;
 
 				case AudioStreamFormat.INT_S32:
 					int[] ibuf = (int[])__buf;
 
-					int intValMin = (int) -((noteVolume << 23) + 8388608);
-
-					int intValMax = (int) ((noteVolume << 23) + 8388607);
+					int intValMin = -((noteVolume << 24) + 16777216);
+					int intValMax = (noteVolume << 24) + 16777215;
 						
 					for (int i = 0; i < genNoteSamples; i++) 
-						ibuf[__off + i] = (i % (sqWavePeriod * 2) <
-							sqWavePeriod) ? intValMax : intValMin;
+						ibuf[__off + i] = ((i % (sqWavePeriod * 2) <
+							sqWavePeriod) ? intValMax : intValMin);
 					
 					break;
 
 				case AudioStreamFormat.FLOAT_F32:
 					float[] fbuf = (float[])__buf;
 
-					float floatValMin = -((float) noteVolume / 255.0f);
-
-					float floatValMax = (float) noteVolume / 255.0f;
+					float floatValMin = -((float)noteVolume / 255.0f);
+					float floatValMax = (float)noteVolume / 255.0f;
 
 					for (int i = 0; i < genNoteSamples; i++) 
-						fbuf[__off + i] = (i % (sqWavePeriod * 2) <
-							sqWavePeriod) ? floatValMax : floatValMin;
+						fbuf[__off + i] = ((i % (sqWavePeriod * 2) <
+							sqWavePeriod) ? floatValMax : floatValMin);
 					
 					break;
 			}

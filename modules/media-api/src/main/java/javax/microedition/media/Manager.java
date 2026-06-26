@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.NullPlayer;
 import cc.squirreljme.runtime.media.SystemNanoTimeBase;
+import cc.squirreljme.runtime.media.ericsson.EricssonMelodyPlayer;
 import cc.squirreljme.runtime.media.midi.MidiControlPlayer;
 import cc.squirreljme.runtime.media.midi.MidiPlayer;
 import cc.squirreljme.runtime.media.mld.IMelodyPlayer;
@@ -137,11 +138,20 @@ public final class Manager
 			case "audio/x-mld":
 				return new IMelodyPlayer(new InputStreamConnection(__in));
 				
+				// WAVE
 			case "audio/vnd.wave":
 			case "audio/wav":
 			case "audio/wave":
 			case "audio/x-wav":
 				return new WavPlayer(new InputStreamConnection(__in));
+
+				// Ericsson Melody formats
+			case "audio/e-melody":
+			case "audio/iMelody":
+			case "text/x-eMelody":
+			case "text/x-iMelody":
+				return new EricssonMelodyPlayer(
+					new InputStreamConnection(__in), __contentType);
 				
 				// Standardized but not yet supported by SquirrelJME
 			case "audio/basic":

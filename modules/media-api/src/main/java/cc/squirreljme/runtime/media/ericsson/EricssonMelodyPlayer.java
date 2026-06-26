@@ -7,42 +7,45 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.media.nokia;
+package cc.squirreljme.runtime.media.ericsson;
 
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
 import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
-import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
+import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import cc.squirreljme.runtime.media.AbstractVolumeControl;
-import java.io.IOException;
+import cc.squirreljme.runtime.media.control.AbstractMetaDataControl;
+import cc.squirreljme.runtime.media.control.AbstractDeviceFeedbackControl;
+import cc.squirreljme.runtime.media.control.DeviceFeedbackControl;
+import cc.squirreljme.runtime.media.control.MetaDataValues;
+import net.multiphasicapps.io.DataEndianess;
+import net.multiphasicapps.io.ExtendedDataInputStream;
+import org.jetbrains.annotations.NotNull;
 import java.io.InputStream;
+import java.io.IOException;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * Player that supports Nokia's OTT/OTA ringtone format.
+ * Player that supports Ericsson's iMelody and eMelody media formats.
  * 
- * @since 2025/12/24
+ * @since 2026/06/01
  */
 @SquirrelJMEVendorApi
-public class NokiaOTAPlayer
+public class EricssonMelodyPlayer 
 	extends AbstractPlayer
 	implements AudioStreamRenderer
 {
-	/** Underlying data containing realized OTA media */
-	@SquirrelJMEVendorApi
-	private byte[] _data;
-
 	/** The audio connection. */
 	@SquirrelJMEVendorApi
 	private volatile AudioConnectionBracket _connection;
@@ -55,75 +58,80 @@ public class NokiaOTAPlayer
 	@SquirrelJMEVendorApi
 	private volatile AudioStreamBracket _stream;
 
-	/** The decoder instance for Nokia OTA Notes/Events */
+	/** The decoder instance for compressed PCM wav data */
 	@SquirrelJMEVendorApi
-	private final NokiaOTADecoder _decoder;
+	private EricssonMelodyDecoder _decoder;
+
+	/** Holds the Melody's metadata. */
+	@SquirrelJMEVendorApi
+	private MetaDataValues _metadata;
 
 	/**
-	 * Creates a new {@link NokiaOTAPlayer} instance from the received
-	 * {@link InputStreamConnection}.
+	 * Creates a new EricssonMelodyPlayer instance from the received
+	 * {@link InputStream}.
 	 * 
-	 * @param __in The data stream to prepare for playback
-	 * @throws MediaException If the data could not be prepared for playback.
+	 * @param __in The wav input data.
 	 * @throws NullPointerException If {@code __in} is null.
-	 * @since 2025/12/24
+	 * @since 2026/05/26
 	 */
 	@SquirrelJMEVendorApi
-	public NokiaOTAPlayer(@NotNull InputStreamConnection __in)
-		throws MediaException, NullPointerException
+	public EricssonMelodyPlayer(@NotNull InputStreamConnection __in,
+		String __type)
+		throws NullPointerException
 	{
-		super("application/vnd.nokia.ota");
+		super(__type);
 
 		if (__in == null)
 			throw new NullPointerException("NARG");
-
-		this._decoder = new NokiaOTADecoder();
 
 		// For later realization
 		this._unrealizedIn = __in;
 
 		if (Debugging.VERBOSE)
-			Debugging.debugNote("NokiaOTAPlayer: init(%s)", __in);
+			Debugging.debugNote("EricssonMelodyPlayer: init(%s)", __in);
 
-		// Register volume control so we can properly set the gain
+		// Register volume control so we can properly set the gain.
 		this.registerControl(new AbstractVolumeControl(this));
+
+		// Ericsson Melody can access the device LEDs, Backlight and Vibrator.
+		this.registerControl(new AbstractDeviceFeedbackControl());
+
+		// Melodies also contain metadata.
+		this._metadata = new MetaDataValues();
+		this.registerControl(new AbstractMetaDataControl(this._metadata));
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/24
+	 * @since 2026/05/26
 	 */
 	@Override
 	public void render(int __format, int __rate, int __channels, Object __buf,
 		int __off, int __len)
 	{
-		this._decoder.parseOTA(__format, __rate, __channels, __buf, __off,
-			__len, this._data);
-
-		boolean finished = this._decoder.hasFinished();
-		if (finished)
+		try
 		{
-			try
-			{
-				if (super.decrementLoop())
-					this.stopViaMedia();
-				
-				// loopViaMedia will emit a STOPPED followed by a STARTED event
-				// despite Nokia Sound not specifying how loop events should
-				// behave in that scenario.
-				else
-					this.loopViaMedia();
-			}
-			catch (MediaException __e)
-			{
-				__e.printStackTrace();
-			}
+			this._decoder.parseMelody(__format, __rate, __channels, __buf,
+				__off, __len);
+
+			if (!this._decoder.hasFinished())
+				return;
+
+			if (super.decrementLoop())
+				this.stopViaMedia();
+			
+			else
+				this.loopViaMedia();
+		}
+		catch (MediaException __e)
+		{
+			__e.printStackTrace();
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/28
+	 * @since 2026/05/26
 	 */
 	@Override
 	public void becomingDeallocated()
@@ -142,7 +150,7 @@ public class NokiaOTAPlayer
 
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/24
+	 * @since 2026/05/26
 	 */
 	@Override
 	protected void becomingPrefetched()
@@ -154,9 +162,14 @@ public class NokiaOTAPlayer
 			if (this._unrealizedIn == null)
 				throw new MediaException("GONE");
 
-			try(InputStream in = this._unrealizedIn.openInputStream())
+			try (InputStream in = this._unrealizedIn.openInputStream())
 			{
-				this._data = StreamUtils.readAll(in);
+				AbstractDeviceFeedbackControl ctrl =
+				(AbstractDeviceFeedbackControl) this.getControl(
+					DeviceFeedbackControl.class.getName());
+
+				this._decoder = new EricssonMelodyDecoder(
+					StreamUtils.readAll(in), ctrl, this._metadata);
 			}
 			catch (IOException __e)
 			{
@@ -169,6 +182,10 @@ public class NokiaOTAPlayer
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/05/26
+	 */
 	@Override
 	protected void becomingPrimed()
 		throws MediaException
@@ -187,15 +204,19 @@ public class NokiaOTAPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/24
+	 * @since 2026/05/26
 	 */
 	@Override
 	protected void becomingRealized()
 		throws MediaException
 	{
-		// Do nothing, Nokia OTA has no realize() equivalent
+		// Do nothing, Ericsson Melody doesn't need this.
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/05/26
+	 */
 	@Override
 	protected void becomingSolvent()
 		throws MediaException
@@ -213,7 +234,7 @@ public class NokiaOTAPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/24
+	 * @since 2026/05/26
 	 */
 	@Override
 	protected boolean becomingStarted()
@@ -240,12 +261,13 @@ public class NokiaOTAPlayer
 				throw mex;
 			}
 		}
+
 		return true;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/24
+	 * @since 2026/05/26
 	 */
 	@Override
 	protected void becomingStopped()
@@ -275,7 +297,7 @@ public class NokiaOTAPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2026/01/02
+	 * @since 2026/05/26
 	 */
 	@Override
 	protected void clockFastForward(long __micros)
@@ -283,46 +305,46 @@ public class NokiaOTAPlayer
 	{
 		this.clockSet(__micros);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/24
+	 * @since 2026/05/26
 	 */
 	@Override
 	protected long clockGet()
 	{
-		// Return start time, Nokia OTA has no getMediaTime() equivalent
-		return 0;
+		// Return start time, Ericsson Melody has no getMediaTime() equivalent
+		return Player.TIME_UNKNOWN;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/24
+	 * @since 2026/05/26
 	 */
 	@Override
 	protected void clockSet(long __micros)
 		throws MediaException
 	{
-		// Always reset to start, Nokia OTA has no setMediaTime() equivalent
-		// and no concept of fast-forwarding to a specific point.
+		// Always reset to start, Ericsson Melody has no setMediaTime()
+		// equivalent and no concept of fast-forwarding to a specific point.
 		this._decoder.reset();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/24
+	 * @since 2026/05/26
 	 */
 	@Override
 	protected long determineDuration()
 		throws MediaException
 	{
-		// Return no duration, Nokia OTA has no getDuration() equivalent
+		// Return no duration, Ericsson Melody has no getDuration() equivalent
 		return Player.TIME_UNKNOWN;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2026/01/02
+	 * @since 2026/05/26
 	 */
 	@Override
 	protected boolean resetFastForward()
@@ -333,7 +355,7 @@ public class NokiaOTAPlayer
 
 	/**
 	 * {@inheritDoc}
-	 * @since 2025/12/24
+	 * @since 2026/05/26
 	 */
 	@Override
 	protected void useVolume(int __volume)
