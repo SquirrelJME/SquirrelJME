@@ -244,8 +244,9 @@ fail_initArgsArray:
 fail_findMainMethod:
 fail_findMainClass:
 fail_findStringClass:
-	/* Cleanup VM before exiting. */
-	(*jvm)->DestroyJavaVM(jvm);
+	/* Cleanup VM before failing. */
+	if (jvm != NULL)
+		(*jvm)->DestroyJavaVM(jvm);
 
 	/* Failed. */
 	return EXIT_FAILURE;

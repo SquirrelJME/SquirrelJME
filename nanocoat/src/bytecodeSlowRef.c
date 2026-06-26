@@ -426,6 +426,7 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 			SJME_F_T(inFrame),
 			desireClass, SJME_O_C(value.v.l)))))
 	{
+		/* Not an actual class cast error but something else? */
 		if (sjme_error_is(error) && error != SJME_ERROR_CLASS_CAST)
 			return sjme_error_default(error);
 		
@@ -792,7 +793,19 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	/* The instance object to call onto, cannot be null. */
 	onThis = rawOnThis.v.l;
 	if (onThis == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
+	{
+		/* Emit the exception. */
+		if (sjme_error_is(error = sjme_nvm_task_threadEmit(SJME_F_T(inFrame),
+			SJME_NVM_COMMON_EXCEPTION_NULL_POINTER,
+			NULL,
+			"NARG")))
+			return sjme_error_vmError(inFrame, error);
+
+		/* Check for recycle, then do nothing except commit. */
+		if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+			pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		goto skip_commit;
+	}
 
 	/* These modify the action to be performed */
 	inSameClass = (currentClass == refClass);
@@ -828,7 +841,8 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 		SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_NVM_CALL_NON_VIRTUAL, refMethod)))
 		return sjme_error_vmError(inFrame, error);
-	
+
+skip_commit:
 	/* Commit GC. */
 	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
@@ -1051,9 +1065,10 @@ SJME_NVM_BYTECODE_SLOW(New)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Setup commit. */
-	memset(&result, 0, sizeof(result));
+	memset(&commit, 0, sizeof(commit));
 	
 	/* Push allocate class to the stack. */
+	memset(&result, 0, sizeof(result));
 	result.t = SJME_JAVA_TYPE_ID_OBJECT;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&commit, &result)))
