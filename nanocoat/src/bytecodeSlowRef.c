@@ -1059,6 +1059,7 @@ SJME_NVM_BYTECODE_SLOW(New)
 
 	/* Allocate new instance of the given object. */
 	memset(&result, 0, sizeof(result));
+	result.t = SJME_JAVA_TYPE_ID_OBJECT;
 	if (sjme_error_is(error = sjme_nvm_instance_objectNew(
 		SJME_F_T(inFrame), -1, SJME_NVM_STRUCT_OBJECT_INSTANCE,
 		&result.v.l, desireClass)) || result.v.l == NULL)
@@ -1067,9 +1068,7 @@ SJME_NVM_BYTECODE_SLOW(New)
 	/* Setup commit. */
 	memset(&commit, 0, sizeof(commit));
 	
-	/* Push allocate class to the stack. */
-	memset(&result, 0, sizeof(result));
-	result.t = SJME_JAVA_TYPE_ID_OBJECT;
+	/* Push allocated object instance to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);

@@ -154,29 +154,53 @@ struct sjme_jfieldIDBase
  */
 typedef enum sjme_nvm_vmField_var
 {
+	/* This is an integer sized enum. */
+	sjme_enumInt(sjme_nvm_vmField_var),
+
+	/** The number of variable types. */
+	SJME_NVM_VMFIELD_RAV_MUN = -7,
+
+	/** @link sjme_jobject* @endlink. */
+	SJME_NVM_VMFIELD_P_TCEJBOJ_RAV = -6,
+
+	/** @link sjme_jobject @endlink. */
+	SJME_NVM_VMFIELD_TCEJBOJ_RAV = -5,
+
+	/** @link sjme_jvalueTyped* @endlink. */
+	SJME_NVM_VMFIELD_P_DEPYT_EULAVJ_RAV = -4,
+
+	/** @link sjme_jvalueTyped @endlink. */
+	SJME_NVM_VMFIELD_DEPYT_EULAVJ_RAV = -3,
+
+	/** @link sjme_jvalue* @endlink. */
+	SJME_NVM_VMFIELD_P_EULAVJ_RAV = -2,
+
+	/** @link sjme_jvalue @endlink. */
+	SJME_NVM_VMFIELD_EULAVJ_RAV = -1,
+
 	/** Not valid. */
-	SJME_NVM_VMFIELD_VAR_INVALID,
+	SJME_NVM_VMFIELD_VAR_INVALID = 0,
 	
 	/** @link sjme_jvalue @endlink. */
-	SJME_NVM_VMFIELD_VAR_JVALUE,
+	SJME_NVM_VMFIELD_VAR_JVALUE = 1,
 	
 	/** @link sjme_jvalue* @endlink. */
-	SJME_NVM_VMFIELD_VAR_JVALUE_P,
+	SJME_NVM_VMFIELD_VAR_JVALUE_P = 2,
 	
 	/** @link sjme_jvalueTyped @endlink. */
-	SJME_NVM_VMFIELD_VAR_JVALUE_TYPED,
+	SJME_NVM_VMFIELD_VAR_JVALUE_TYPED = 3,
 	
 	/** @link sjme_jvalueTyped* @endlink. */
-	SJME_NVM_VMFIELD_VAR_JVALUE_TYPED_P,
+	SJME_NVM_VMFIELD_VAR_JVALUE_TYPED_P = 4,
 	
 	/** @link sjme_jobject @endlink. */
-	SJME_NVM_VMFIELD_VAR_JOBJECT,
+	SJME_NVM_VMFIELD_VAR_JOBJECT = 5,
 	
 	/** @link sjme_jobject* @endlink. */
-	SJME_NVM_VMFIELD_VAR_JOBJECT_P,
+	SJME_NVM_VMFIELD_VAR_JOBJECT_P = 6,
 	
 	/** The number of variable types. */
-	SJME_NVM_VMFIELD_NUM_VAR,
+	SJME_NVM_VMFIELD_NUM_VAR = 7,
 } sjme_nvm_vmField_var;
 
 /**
