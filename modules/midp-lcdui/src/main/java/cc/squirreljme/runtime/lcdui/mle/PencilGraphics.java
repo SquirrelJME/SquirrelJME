@@ -35,6 +35,11 @@ import org.jetbrains.annotations.NotNull;
  * 
  * This utilizes both {@link PencilShelf} and {@link PencilBracket} for native
  * graphics.
+ * 
+ * All pencils must have their {@link PencilGraphics#close()} method be called
+ * to free up any used resources. Note that any pencils which are non-owned
+ * and are passed via paint methods result in non-owned pencils, which do not
+ * call the native close handler.
  *
  * @since 2020/09/25
  */
@@ -58,6 +63,10 @@ public final class PencilGraphics
 	/** Is there an alpha channel? */
 	@SquirrelJMEVendorApi
 	protected final boolean hasAlpha;
+	
+	/** Does this have full ownership over the bracket? */
+	@SquirrelJMEVendorApi
+	protected final boolean isOwned;
 	
 	/** The current pixel format. */
 	private int _pixelFormat;
@@ -95,19 +104,21 @@ public final class PencilGraphics
 	 * @param __sw The surface width.
 	 * @param __sh The surface height.
 	 * @param __hardware The hardware bracket reference for drawing.
+	 * @param __owned Does this have full ownership of the bracket?
 	 * @throws IllegalArgumentException If hardware graphics are not capable
 	 * enough to be used at all.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/25
 	 */
-	@SquirrelJMEVendorApi
-	private PencilGraphics(int __sw, int __sh, PencilBracket __hardware)
+	private PencilGraphics(int __sw, int __sh, PencilBracket __hardware,
+		boolean __owned)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__hardware == null)
 			throw new NullPointerException("NARG");
 		
 		this.hardware = __hardware;
+		this.isOwned = __owned;
 		
 		// These are used to manage the clip
 		this.surfaceW = __sw;
@@ -218,17 +229,23 @@ public final class PencilGraphics
 			this._isClosed = true;
 		}
 		
-		// Close the graphics internally
-		try
-		{
-			PencilShelf.hardwareCloseGraphics(this.hardware);
-		}
+		// Free up any internally kept resources here which are not in
+		// the native layer, as needed...
 		
-		// Unwrap any potential errors.
-		catch (MLECallError e)
-		{
-			throw e.throwDistinct();
-		}
+		// Close the graphics internally, this only applies when owned as
+		// if this wrapper class uses nested pencils or wraps a pencil that
+		// comes from ScritchUI rendering this does not own that pencil
+		if (this.isOwned)
+			try
+			{
+				PencilShelf.hardwareCloseGraphics(this.hardware);
+			}
+			
+			// Unwrap any potential errors.
+			catch (MLECallError e)
+			{
+				throw e.throwDistinct();
+			}
 	}
 
 	/**
@@ -1553,6 +1570,9 @@ public final class PencilGraphics
 	 * Creates a graphics that is capable of drawing on hardware if it is
 	 * supported, but falling back to software level graphics.
 	 * 
+	 * The resultant graphics is owned and must be closed by the consumer, it
+	 * is thus required that {@code try-with-resources} be used.
+	 * 
 	 * @param __pf The {@link UIPixelFormat} used for the draw.
 	 * @param __bw The buffer width, this is the scanline width of the buffer.
 	 * @param __bh The buffer height.
@@ -1574,11 +1594,15 @@ public final class PencilGraphics
 	{
 		return new PencilGraphics(__sw, __sh,
 			DisplayManager.instance().scritch().hardwareGraphics(
-				__pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw, __sh));
+				__pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw, __sh),
+			true);
 	}
 
 	/**
 	 * Initializes a new graphics interface.
+	 * 
+	 * This form should be used a {@link ScritchPencilBracket} is provided
+	 * via a paint event.
 	 *
 	 * @param __hw The hardware graphics to use.
 	 * @param __sw The surface width.
@@ -1595,6 +1619,6 @@ public final class PencilGraphics
 		if (__hw == null)
 			throw new NullPointerException("NARG");
 		
-		return new PencilGraphics(__sw, __sh, __hw);
+		return new PencilGraphics(__sw, __sh, __hw, false);
 	}
 }

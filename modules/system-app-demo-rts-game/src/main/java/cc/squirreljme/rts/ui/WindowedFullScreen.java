@@ -111,7 +111,7 @@ public class WindowedFullScreen
 		
 		// Tell the panel to repaint itself
 		else if (this._madeVisible && this._madeFullscreen)
-			this.scritch.paintable().componentRepaint(this.panelGame);
+			/*this.scritch.paintable().componentRepaint(this.panelGame)*/;
 	}
 	
 	/**

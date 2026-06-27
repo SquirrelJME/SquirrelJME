@@ -75,6 +75,32 @@ public enum MLEPencil
 			}
 		}
 	},
+	
+	/** {@link PencilShelf#hardwareCloseGraphics(PencilBracket)}. */
+	HARDWARE_CLOSE_GRAPHICS(MLEDispatcher.methodKey(
+		"hardwareCloseGraphics",
+		"V", PencilBracket.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/11/25
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				PencilShelf.hardwareCloseGraphics(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
+		}
+	},
 
 	/**
 	 * {@link PencilShelf#hardwareDrawArc(PencilBracket, int, int, int, int,
