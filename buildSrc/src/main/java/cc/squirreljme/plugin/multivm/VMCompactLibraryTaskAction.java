@@ -335,12 +335,11 @@ public class VMCompactLibraryTaskAction
 					"!private", "*", ";",
 			"}",
 			
-			// Never remove nor touch native, bridge, or synthetic
-			"-keepclassmembers,includedescriptorclasses",
+			// Never touch anything that has anything to do with any native
+			// method
+			"-keepclasseswithmembers,includecode,includedescriptorclasses",
 			"class", "*", "{",
 				"native", "<methods>", ";",
-				/*"!private", "bridge", "<methods>", ";",
-				"!private", "synthetic", "<methods>", ";",*/
 			"}",
 			
 			

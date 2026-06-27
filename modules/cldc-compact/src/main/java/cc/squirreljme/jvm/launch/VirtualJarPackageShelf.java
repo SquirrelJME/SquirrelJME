@@ -21,6 +21,7 @@ import java.io.InputStream;
  *
  * @since 2024/01/06
  */
+@SquirrelJMEVendorApi
 public interface VirtualJarPackageShelf
 {
 	/**
@@ -32,6 +33,7 @@ public interface VirtualJarPackageShelf
 	 * @throws MLECallError If either argument is {@code null}.
 	 * @since 2024/01/06
 	 */
+	@SquirrelJMEVendorApi
 	boolean equals(
 		JarPackageBracket __a, JarPackageBracket __b)
 		throws MLECallError;
@@ -42,6 +44,7 @@ public interface VirtualJarPackageShelf
 	 * @return The libraries that are currently available.
 	 * @since 2024/01/06
 	 */
+	@SquirrelJMEVendorApi
 	JarPackageBracket[] libraries();
 	
 	/**
@@ -52,6 +55,7 @@ public interface VirtualJarPackageShelf
 	 * @throws MLECallError If the JAR is not valid.
 	 * @since 2024/01/06
 	 */
+	@SquirrelJMEVendorApi
 	String libraryPath(JarPackageBracket __jar)
 		throws MLECallError;
 	
@@ -66,6 +70,7 @@ public interface VirtualJarPackageShelf
 	 * specified.
 	 * @since 2024/01/06
 	 */
+	@SquirrelJMEVendorApi
 	InputStream openResource(JarPackageBracket __jar, String __rc)
 		throws MLECallError;
 }
