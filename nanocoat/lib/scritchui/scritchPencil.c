@@ -250,18 +250,18 @@ static const sjme_scritchui_pencilUtilFunctions
 	sjme_sm(.applyRotateScale, sjme_scritchpen_coreUtil_applyRotateScale),
 	sjme_sm(.applyTranslate, sjme_scritchpen_coreUtil_applyTranslate),
 	sjme_sm(.blendRGBInto, sjme_scritchpen_coreUtil_blendRGBInto),
-	sjme_sm(.pfScanGet, sjme_scritchpen_coreUtil_pfScanGet),
-	sjme_sm(.pfScanPut, sjme_scritchpen_coreUtil_pfScanPut),
 	sjme_sm(.pfScanBits, sjme_scritchpen_coreUtil_pfScanBits),
 	sjme_sm(.pfScanBytes, sjme_scritchpen_coreUtil_pfScanBytes),
+	sjme_sm(.pfScanGet, sjme_scritchpen_coreUtil_pfScanGet),
+	sjme_sm(.pfScanPut, sjme_scritchpen_coreUtil_pfScanPut),
 	sjme_sm(.pfScanToPf, sjme_scritchpen_coreUtil_pfScanToPf),
 	sjme_sm(.pfScanToRgb, sjme_scritchpen_coreUtil_pfScanToRgb),
+	sjme_sm(.rawScanToRgb, sjme_scritchpen_coreUtil_rawScanToRgb),
 	sjme_sm(.rgbScanFill, sjme_scritchpen_coreUtil_rgbScanFill),
 	sjme_sm(.rgbScanGet, sjme_scritchpen_coreUtil_rgbScanGet),
 	sjme_sm(.rgbScanPut, sjme_scritchpen_coreUtil_rgbScanPut),
 	sjme_sm(.rgbScanToPf, sjme_scritchpen_coreUtil_rgbScanToPf),
 	sjme_sm(.rgbScanToRaw, sjme_scritchpen_coreUtil_rgbScanToRaw),
-	sjme_sm(.rawScanToRgb, sjme_scritchpen_coreUtil_rawScanToRgb),
 };
 
 sjme_errorCode sjme_scritchpen_initStatic(
