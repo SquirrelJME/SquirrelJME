@@ -357,7 +357,9 @@ public class VMCompactLibraryTaskAction
 			"-keep,allowoptimization,allowobfuscation,includecode," +
 				"includedescriptorclasses",
 			"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
-			"class", "*",
+			"class", "*", "{",
+				"!private", "*", ";",
+			"}"
 		};
 	
 	/** Settings for tests. */
