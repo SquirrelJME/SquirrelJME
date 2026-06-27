@@ -345,16 +345,14 @@ public class VMCompactLibraryTaskAction
 			
 			// Use KeepWhenCompacting to optimize and obfuscate, but not to
 			// shrink
-			"-keep,allowoptimization,allowobfuscation,includecode," +
-				"includedescriptorclasses",
+			"-keep,includecode,includedescriptorclasses",
 			"class", "*", "{",
 				"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
 					"!private", "*", ";",
 			"}",
 			
 			// Do the same for fully annotated classes (not recommended)
-			"-keep,allowoptimization,allowobfuscation,includecode," +
-				"includedescriptorclasses",
+			"-keep,includecode,includedescriptorclasses",
 			"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
 			"class", "*", "{",
 				"!private", "*", ";",
