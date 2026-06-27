@@ -12,7 +12,9 @@ package cc.squirreljme.runtime.nttdocomo.io;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
+import cc.squirreljme.runtime.gcf.file.FileEndPointConnection;
 import cc.squirreljme.runtime.gcf.file.pseudo.LibraryEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
@@ -27,7 +29,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 /**
  * Factory to open {@code resource://} URIs.
  *
- * @see ResourceConnection
  * @since 2021/11/30
  */
 @SquirrelJMEVendorApi
@@ -73,6 +74,20 @@ public class ResourceConnectionFactory
 		// ZIP endpoint can be very broken
 		return Connector.open("file:" + base.withPath(part.getPath()),
 			__mode);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/06/27
+	 */
+	@Override
+	public boolean implementsInterface(Class<? extends Connection> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.isAssignableFrom(FileEndPointConnection.class);
 	}
 	
 	/**

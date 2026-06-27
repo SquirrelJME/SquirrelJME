@@ -8,7 +8,7 @@
 
 package cc.squirreljme.runtime.media.midi;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Arrays;
 import javax.microedition.media.MediaException;
@@ -33,7 +33,7 @@ public final class MidiTracker
 	protected final MIDIControl midiControl;
 	
 	/** Stop playing? */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	protected volatile boolean stopPlayback;
 	
 	/** MIDI trackers. */
@@ -90,7 +90,7 @@ public final class MidiTracker
 	 * @param __micros The microseconds to use.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	public void fastForward(long __micros)
 	{
 		long target = __micros * 1_000L;
@@ -139,7 +139,7 @@ public final class MidiTracker
 	 * @return The current microsecond clock.
 	 * @since 2025/06/15
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	protected long micros()
 	{
 		// Just return the MIDI clock
@@ -278,7 +278,7 @@ public final class MidiTracker
 	 * @return The clock where the next event will be at.
 	 * @since 2026/01/02
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	public long tracker(MIDIControl __play, MIDIControl __squelch,
 		long __targetNanos)
 	{
@@ -410,7 +410,7 @@ public final class MidiTracker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/02
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	public static final void squelch(MIDIControl __control, boolean __reset)
 		throws NullPointerException
 	{

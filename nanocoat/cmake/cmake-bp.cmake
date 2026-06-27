@@ -91,6 +91,12 @@ function(squirreljme_bp_check_linker_flag lang flag outVariable)
 		# Use modern CMake version
 		check_linker_flag(${lang} "${flag}" ${outVariable})
 
+		# CMake 3.22 seems to have a bug where the resultant variable is
+		# blank when it fails? Set to some value accordingly if so.
+		if("${${outVariable}}" STREQUAL "")
+			set(${outVariable} FALSE)
+		endif()
+
 		# What was the result of it?
 		message(STATUS "${lang} linker flag ${flag}: ${${outVariable}}")
 
@@ -133,6 +139,12 @@ function(squirreljme_bp_check_compiler_flag lang flag outVariable)
 	if(squirreljme_bp_version_3_18)
 		# Use modern CMake version
 		check_compiler_flag(${lang} "${flag}" ${outVariable})
+
+		# CMake 3.22 seems to have a bug where the resultant variable is
+		# blank when it fails? Set to some value accordingly if so.
+		if("${${outVariable}}" STREQUAL "")
+			set(${outVariable} FALSE)
+		endif()
 
 		# What was the result of it?
 		message(STATUS "${lang} compiler flag ${flag}: ${${outVariable}}")

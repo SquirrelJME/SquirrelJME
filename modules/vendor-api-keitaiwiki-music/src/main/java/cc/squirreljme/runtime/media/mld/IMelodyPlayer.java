@@ -31,6 +31,7 @@ import com.keitaiwiki.music.SamplerProvider;
 import com.keitaiwiki.music.SineSamplerProvider;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.microedition.io.InputConnection;
 import javax.microedition.media.MediaException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -64,7 +65,7 @@ public class IMelodyPlayer
 	private volatile AudioStreamBracket _stream;
 	
 	/** The unrealized data input. */
-	private volatile InputStreamConnection _unrealizedIn;
+	private volatile InputConnection _unrealizedIn;
 	
 	/**
 	 * Initializes the MLD player.
@@ -73,7 +74,7 @@ public class IMelodyPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/05
 	 */
-	public IMelodyPlayer(InputStreamConnection __in)
+	public IMelodyPlayer(InputConnection __in)
 		throws NullPointerException
 	{
 		super("application/x-mld-music");
@@ -97,7 +98,7 @@ public class IMelodyPlayer
 		throws MediaException
 	{
 		// Close the input connection, if it was never read in
-		InputStreamConnection unrealizedIn = this._unrealizedIn;
+		InputConnection unrealizedIn = this._unrealizedIn;
 		if (unrealizedIn != null)
 		{
 			this._unrealizedIn = null;
@@ -164,7 +165,7 @@ public class IMelodyPlayer
 		synchronized (this)
 		{
 			// The connection must still exist
-			InputStreamConnection con = this._unrealizedIn;
+			InputConnection con = this._unrealizedIn;
 			if (con == null)
 				throw new MediaException("GONE");
 			

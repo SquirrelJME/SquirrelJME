@@ -39,6 +39,13 @@ public class MessageConnectionFactory
 		throw Debugging.todo();
 	}
 	
+	@Override
+	public boolean implementsInterface(Class<? extends Connection> __cl)
+		throws NullPointerException
+	{
+		throw Debugging.todo();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2022/02/27

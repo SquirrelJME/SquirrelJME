@@ -252,6 +252,7 @@ public class Arrays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
+	@Api
 	public static int binarySearch(byte[] __a, int __from, int __to,
 		byte __key)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,

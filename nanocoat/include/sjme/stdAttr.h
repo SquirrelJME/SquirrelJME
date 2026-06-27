@@ -318,6 +318,7 @@ extern "C"
 	#define sjme_noOptimize
 #endif
 
+/* If building with libwine, we have to match the system calling convention. */
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS_16)
 	/** SquirrelJME exported calling convention. */
 	#define sjme_attrExportCall FAR PASCAL

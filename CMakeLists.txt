@@ -60,6 +60,9 @@ squirreljme_include("global.cmake")
 # Environment and everything else
 squirreljme_include("environment-depends.cmake")
 
+# Settings that adjust the build completely
+squirreljme_include_nanocoat("environment-options.cmake")
+
 ## Include a specified file such as a configuration?
 #if(DEFINED $ENV{SQUIRRELJME_PIPELINE_CONFIG})
 #	message(STATUS "Including pipeline configuration...")

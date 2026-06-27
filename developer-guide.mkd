@@ -12,19 +12,9 @@ This is mostly intended for maintainers of _SquirrelJME_.
 
 ***TO BE WRITTEN***
 
-### Loading Contributions
+### Applying Patches
 
 ***TO BE WRITTEN***
-
-#### Via Fossil Bundles
-
-***TO BE WRITTEN***
-
-#### Via Git Bundles
-
-***TO BE WRITTEN***
-
- * `git am < my-branch.bun`
 
 ### Merging Branches
 
@@ -36,11 +26,6 @@ To merge a branch locally, do the following:
    * `fossil merge other-branch`
  * Commit the changes:
    * `fossil commit`
-   * Be sure to have a meaningful commit message, if the code is from a
-     merge request on a remote repository, have the following in the commit
-     message:
-     * GitHub: `(GitHub Closes #1234)`
-     * GitLab: `(GitLab Closes !1234)`
  * Synchronize the repositories:
    * `fossil sync -u`
 
@@ -62,7 +47,7 @@ when a release is to be made:
    appropriate places so things are updated.
  * Tag the commit as `0.2.0` or an increasing release version
    (example: `0.2.1`) for each increasing release.
- * Do all the common release stuff.
+ * Do all the common release stuff, noted in a future section.
  * While in `trunk`, do the following:
    * The development version can be bumped in which case
      the version will be incremented by two and will be odd (3, 5, 7, etc.).
@@ -102,7 +87,8 @@ SquirrelJME release and run the following commands:
 
  * Fossil
    * This is done automatically via `fossilUpload`.
-   * Download all of the generated binaries.
+   * Download and test all the generated binaries to make sure they at least
+     function.
    * You will need to edit the download page to add the new version, this
      will be done with `fossil unversion edit download.mkd`.
    * Synchronize the repository with the unversioned space.
@@ -207,7 +193,59 @@ the following commands, _NOTE THAT THIS WILL DELETE EVERYTHING_:
  * Fossil: `fossil clean -x -v`
  * Git: `git clean -x -f -d`
 
-## Custom File Type for Jasmin
+# Environment Options
+
+To account for potential future situations and pitfalls with different systems
+and environments, to account for potential situations may exist yet which have
+not been tested at all:
+
+These options are available for CMake:
+
+ * `SJME_CONFIG_EO_LIBWINE_NATIVE_THREADS` -- Use native threads instead
+   of libwine's implementation of threads.
+
+# Foreign ScritchUI Libraries
+
+It may be useful to use an alternative or additional implementation of
+ScritchUI.
+
+When running SquirrelJME, set the following environment variables:
+
+ * `SQUIRRELJME_LIB_JVM=/path/to/natives`
+ * `SQUIRRELJME_SCRITCHUI_INTERFACE=whattotest`
+
+## libwine in-place of Win32
+
+Quoted from the Wine mailing list, this is not possible to do natively
+with Wine using `dlopen` and equivalent:
+
+> You need to compile and link your entire application with winegcc (or
+> wineg++) and run it through Wine. winegcc will give you a file
+> app.exe.so, which you can run with "wine app.exe.so". It'll also create
+> an app.exe shell script that invokes Wine for you.
+> 
+> The reason why you cannot simply dlopen a Wine DLL and call code from it
+> is that Wine's DLLs depend on having a running wineserver instance to
+> take care of Windows kernel tasks that do not exist on the Linux side,
+> e.g. the registry. Furthermore dependencies between Wine DLLs are
+> resolved via PE exports / imports, so when you dlopen crypt32.dll the
+> required user32.dll, advapi32.dll and bcrypt.dll libs won't be loaded
+> and linked.
+> 
+> A winelib-linked program can call link to and call any Linux shared
+> library. If the Wine-dependent functionality is relatively small and you
+> do not with to have all of Wine loaded whenever your program is running,
+> you could consider making the Wine-dependent bits run in an external
+> process and communicate via pipes, sockets or shared memory with your
+> main program.
+
+***TODO: ScritchUI proxy server?***
+
+## GNUStep in-place of Cocoa
+
+***TODO: To be written, preferably in the wip-cocoa branch.***
+
+# Custom File Type for Jasmin
 
 IntelliJ supports custom file type definitions, the following is for
 Jasmin so that it has much better syntax highlighting.
@@ -225,11 +263,11 @@ Then associated with:
 
  * `*.j`
 
-### Keywords
+## Keywords
 
 The following goes into the keyword fields.
 
-#### 1
+### 1
 
 ```text
 abstract
@@ -244,7 +282,7 @@ transient
 volatile
 ```
 
-#### 2
+### 2
 
 ```text
 default
@@ -258,7 +296,7 @@ float
 double
 ```
 
-#### 3
+### 3
 
 ```text
 .catch
@@ -280,7 +318,7 @@ double
 .var
 ```
 
-#### 4
+### 4
 
 ```text
 aaload

@@ -24,15 +24,19 @@ public final class EntryPoint
 	implements Comparable<EntryPoint>
 {
 	/** The name of the entry point. */
+	@SquirrelJMEVendorApi
 	protected final String name;
 	
 	/** The entry point class. */
+	@SquirrelJMEVendorApi
 	protected final String entry;
 	
 	/** The image used. */
+	@SquirrelJMEVendorApi
 	protected final String imageResource;
 	
 	/** Is this a midlet? */
+	@SquirrelJMEVendorApi
 	protected final boolean isMidlet;
 	
 	/** String representation. */

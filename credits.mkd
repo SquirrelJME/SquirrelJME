@@ -28,6 +28,8 @@ is used, refer to that for library bring-ins.
        * `fillRoundRect()` implementation.
        * Rotation and scaling transformation fixes.
    * WAVE File Playback.
+   * Ericsson's iMelody/eMelody support.
+     * `GameCubeIntro.imy` and `NokiaRingtone.emy` self composed samples.
  * _"crystalct"_
    * RatufaCoat updates related to LibRetro:
      * PS3 Toolchain updates.

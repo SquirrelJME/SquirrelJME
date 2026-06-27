@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.gcf.file;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
@@ -93,6 +94,20 @@ public class FileEndPointConnectionFactory
 		
 		// Not connected to anything yet
 		return connection;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/06/27
+	 */
+	@Override
+	public boolean implementsInterface(Class<? extends Connection> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.isAssignableFrom(FileEndPointConnection.class);
 	}
 	
 	/**

@@ -47,6 +47,14 @@ public class VMCompactLibraryTaskAction
 			// *facepaw*
 			"!method/inlining/*",
 			
+			// There is optimization for object usage and such, however this
+			// is not always correct especially with brackets and native code
+			"!code/simplification/object",
+			
+			// Do the same for field load/store, as these can be used across
+			// native call chains which it has no idea about
+			"!code/simplification/field",
+			
 			// These cause incompatible class change errors if such things
 			// were to be accessed
 			"!class/marking/final",
@@ -59,11 +67,25 @@ public class VMCompactLibraryTaskAction
 			// Do not propagate parameters to method calls nor remove them
 			"!method/propagation/parameter",
 			"!method/removal/parameter",
+			
+			// Never specialize the parameter and return types, this breaks
+			// signatures! For example: Arrays.<T>asList() becomes
+			// java.util.__ArraysList__ asList$158aa2d5(java.lang.Object[])
+			"!method/specialization/class",
+			"!method/specialization/parametertype",
+			"!method/specialization/returntype",
+			// Ditto for fields 
+			// java.lang.__CanSetPrintStream__ err$5f8ce416 -> err$5f8ce416
+			"!field/generalization/class",
+			"!field/specialization/type",
 		};
 	
-	/** Settings to use in the configuration for keeping, etc. */
-	static final String[] _PARSE_SETTINGS = new String[]
+	/** Base configuration. */
+	static final String[] _BASE_CONFIG = new String[]
 		{
+			// Be a bit more descriptive
+			"-verbose",
+			
 			// Ignore all JetBrains IntelliJ related annotations
 			"-dontwarn", "org.jetbrains.annotations.**",
 			"-dontwarn", "org.intellij.lang.annotations.**",
@@ -78,35 +100,12 @@ public class VMCompactLibraryTaskAction
 			
 			// Consumers of the libraries/APIs need to see the annotation
 			// information if it is there, to make sure it is retained
-			"-keepattributes", "RuntimeVisibleAnnotations," +
-				"RuntimeInvisibleAnnotations," +
-				"AnnotationDefault",
-			
-			// Do not trash enumerations as we need those to work properly
-			"-keepclassmembers", "class", "*",
-				"extends", "java.lang.Enum", "{",
-				"<fields>", ";",
-				"public", "static", "**[]", "values",
-					"(", ")", ";",
-				"public", "static", "**", "valueOf",
-					"(", "java.lang.String", ")", ";",
-				"}",
-			"-keepclassmembernames", "class", "*",
-				"extends", "java.lang.Enum", "{",
-				"<fields>", ";",
-				"public", "static", "**[]", "values",
-					"(", ")", ";",
-				"public", "static", "**", "valueOf",
-					"(", "java.lang.String", ")", ";",
-				"}",
-			
-			// Keep non-static constructors, since they can be called and
-			// utilized... if they are removed then some things actually break
-			// and stop working properly
-			"-keepclassmembers", "class", "*", "{",
-					"<init>", "(", "...", ")", ";",
-				"}",
-			
+			"-keepattributes", "*Annotation*,Exceptions,Signature",
+		};
+	
+	/** Settings used to strip debugging. */
+	static final String[] _STRIP_DEBUG = new String[]
+		{
 			// Assume the debug flags are always false
 			"-assumevalues",
 				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
@@ -226,6 +225,35 @@ public class VMCompactLibraryTaskAction
 					"void", "verboseStop", "(",
 						"int", ")", ";",
 				"}",
+		};
+	
+	/** Settings used to help make reflection work properly. */
+	static final String[] _REFLECTION = new String[]
+		{
+			// Do not trash enumerations as we need those to work properly
+			"-keepclassmembers", "class", "*",
+				"extends", "java.lang.Enum", "{",
+				"<fields>", ";",
+				"public", "static", "**[]", "values",
+					"(", ")", ";",
+				"public", "static", "**", "valueOf",
+					"(", "java.lang.String", ")", ";",
+				"}",
+			"-keepclassmembernames", "class", "*",
+				"extends", "java.lang.Enum", "{",
+				"<fields>", ";",
+				"public", "static", "**[]", "values",
+					"(", ")", ";",
+				"public", "static", "**", "valueOf",
+					"(", "java.lang.String", ")", ";",
+				"}",
+			
+			// Keep non-static constructors, since they can be called and
+			// utilized... if they are removed then some things actually break
+			// and stop working properly
+			"-keepclassmembers", "class", "*", "{",
+					"!private", "<init>", "(", "...", ")", ";",
+				"}",
 			
 			// Keep anything that can be launched
 			"-keepclasseswithmembers", "class", "*", "{",
@@ -233,53 +261,110 @@ public class VMCompactLibraryTaskAction
 					"java.lang.String[]", ")", ";",
 			"}",
 			"-keep", "class", "*", "extends",
-				"javax.microedition.midlet.MIDlet",
+				"javax.microedition.midlet.MIDlet", "{",
+				"void", "destroyApp()", ";",
+				"void", "startApp()", ";",
+			"}",
 			"-keep", "class", "*", "extends",
 				"com.nttdocomo.ui.IApplication",
-			"-keepnames", "class", "*", "extends",
-				"com.nttdocomo.ui.IApplication",
-			
-			// Keep the class names of any public API
-			"-keep,allowshrinking", "public",
-				"@cc.squirreljme.runtime.cldc.annotation.Api",
-				"class", "*",
-			"-keep,allowshrinking", "public",
-				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
-				"class", "*",
-			
-			// Keep the names of any members
-			"-keepclassmembers,allowshrinking",
-				"class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.Api",
-					"!private", "*", ";",
-				"}",
-			"-keepclassmembers,allowshrinking", 
-				"class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
-					"!private", "*", ";",
-				"}",
-			"-keepclasseswithmembers,allowshrinking", 
-				"class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
-					"!private", "*", ";",
-				"}",
-			
-			// Any and all callbacks
-			"-keepclasseswithmembernames,includedescriptorclasses", 
-				"class", "*", "implements", "java.lang.Runnable", "{",
-					"public", "void", "run", "(", ")", ";",
-				"}",
-			"-keepclasseswithmembernames,includedescriptorclasses", 
+		};
+	
+	/** Native callbacks. */
+	static final String[] _CALLBACKS = new String[]
+		{
+			// Specific implements
+			"-keep,includecode,includedescriptorclasses", 
+				"class", "*", "implements",
+				"java.lang.Runnable",
+			"-keep,includecode,includedescriptorclasses", 
 				"class", "*", "implements",
 				"cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchListener",
-				"{",
-					"public", "void", "run", "(", ")", ";",
-				"}",
-			"-keepclasseswithmembernames,includedescriptorclasses", 
+			
+			// Specific annotated methods
+			"-keepclasseswithmembers,includecode,includedescriptorclasses", 
 				"class", "*", "{",
 				"@cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop",
 					"<methods>", ";",
 				"}",
+		};
+	
+	/**
+	 * Settings to use in the configuration for keeping, etc.
+	 * 
+	 * The way this works below is that any setting which has
+	 * {@code "@cc.squirreljme.runtime.cldc.annotation.Api"} will be duplicated
+	 * and replaced with
+	 * {@code "@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi"}
+	 * so that rules are not annoyingly duplicated as ProGuard debugging is
+	 * difficult, and vice versa.
+	 */
+	static final String[] _PARSE_SETTINGS = new String[]
+		{
+			// Note, ProGuard says class means both class and interface,
+			// however this does not seem to be the case at all... So, no
+			// idea really!
+			
+			// Do not touch interfaces that are public API _in any way_!
+			// This tends to just break everything...
+			"-keep",
+			"@cc.squirreljme.runtime.cldc.annotation.Api",
+			"public", "interface", "*", "{",
+				"*", ";",
+			"}",
+			
+			// Additionally, do not touch GhostObjects and any extension of
+			// them as they are purely VM synthetic and special
+			"-keep,includecode,includedescriptorclasses",
+			"@cc.squirreljme.jvm.mle.annotation.GhostObject",
+			"public", "interface", "*", "{",
+				"*", ";",
+			"}",
+			"-keep,includecode,includedescriptorclasses",
+			"public", "interface", "*", "implements",
+			"@cc.squirreljme.jvm.mle.annotation.GhostObject", "*", "{",
+				"*", ";",
+			"}",
+			
+			// ProGuard for "-keepclasseswithmembers" says "Specifies classes
+			// and class members to be preserved, on the condition that 
+			// all the specified class members are present."... does this mean
+			// that everything has to match?
+			
+			// Ditto for bridge methods, Override is a source retention
+			// annotation, so it gets discarded. The same goes for synthetic.
+			// I have no idea if ProGuard even works with this flag since it
+			// seems to do nothing
+			
+			// Optimize/shrink anything that is non-public API
+			"-keep,allowoptimization",
+			"@cc.squirreljme.runtime.cldc.annotation.Api",
+			"!interface", "*", "{",
+				"@cc.squirreljme.runtime.cldc.annotation.Api",
+					"!private", "*", ";",
+			"}",
+			
+			// Never touch anything that has anything to do with any native
+			// method
+			"-keepclasseswithmembers,includecode,includedescriptorclasses",
+			"class", "*", "{",
+				"native", "<methods>", ";",
+			"}",
+			
+			
+			// Use KeepWhenCompacting to optimize and obfuscate, but not to
+			// shrink
+			"-keep,includecode,includedescriptorclasses",
+			"class", "*", "{",
+				"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
+					"!private", "*", ";",
+			"}",
+			
+			// Do the same for fully annotated classes (not recommended)
+			"-keep,includecode,includedescriptorclasses",
+			"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
+			"class", "*", "{",
+				"!private", "*", ";",
+			"}"
 		};
 	
 	/** Settings for tests. */
@@ -502,8 +587,61 @@ public class VMCompactLibraryTaskAction
 			
 			// Base options to use
 			List<String> proGuardOptions = new ArrayList<>();
+			// Add base configuration settings
 			proGuardOptions.addAll(
-				Arrays.asList(VMCompactLibraryTaskAction._PARSE_SETTINGS));
+				Arrays.asList(VMCompactLibraryTaskAction._BASE_CONFIG));
+			
+			// API and SquirrelJMEVendorAPI are the same, except using
+			// different labels... it is very annoying to have
+			// duplicate rules for both due to ProGuard limitations
+			List<String> baseApi = new ArrayList<>();
+			List<String> squirrelApi = new ArrayList<>();
+			for (String classy : Arrays.asList("class"/*, "interface"*/))
+				for (String opt : VMCompactLibraryTaskAction._PARSE_SETTINGS)
+				{
+					// Duplicate API to SquirrelJME API?
+					// Do handle situations where it is mistyped
+					if (opt.equals("@cc.squirreljme.runtime.cldc." +
+						"annotation.Api") || opt.equals("@cc.squirreljme." +
+						"runtime.cldc.annotation.SquirrelJMEVendorApi"))
+					{
+						baseApi.add("@cc.squirreljme.runtime.cldc." +
+							"annotation.Api");
+						squirrelApi.add("@cc.squirreljme.runtime.cldc." +
+							"annotation.SquirrelJMEVendorApi");
+					}
+					
+					// Change class to something else?
+					else if (opt.equals("class"))
+					{
+						baseApi.add(classy);
+						squirrelApi.add(classy);
+					}
+					
+					// Otherwise, plainly copy it
+					else
+					{
+						baseApi.add(opt);
+						squirrelApi.add(opt);
+					}
+			}
+			
+			// Base parsed settings, for both API types
+			proGuardOptions.addAll(baseApi);
+			proGuardOptions.addAll(squirrelApi);
+			
+			// Make sure reflection works
+			proGuardOptions.addAll(
+				Arrays.asList(VMCompactLibraryTaskAction._REFLECTION));
+			
+			// Keep all callbacks, since they get stripped as nothing
+			// sees them
+			proGuardOptions.addAll(
+				Arrays.asList(VMCompactLibraryTaskAction._CALLBACKS));
+			
+			// Strip all debug info
+			proGuardOptions.addAll(
+				Arrays.asList(VMCompactLibraryTaskAction._STRIP_DEBUG));
 			
 			// Optimization settings
 			proGuardOptions.add("-optimizations");

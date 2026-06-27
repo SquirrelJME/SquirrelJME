@@ -29,3 +29,18 @@ squirreljme_scritchany_standard_properties(ui Win32)
 # Required libraries
 squirreljme_scritchany_link_libraries(ui Win32 PUBLIC
 	"gdi32")
+
+# If using native threads, this needs to be known here
+if(SJME_CONFIG_EO_LIBWINE_NATIVE_THREADS)
+	squirreljme_scritchany_compile_definitions(ui Win32 PRIVATE
+		"SJME_CONFIG_EO_LIBWINE_NATIVE_THREADS=1")
+endif()
+
+# libwine specific options
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "wine")
+	# Compile as a Windows application?
+	squirreljme_scritchany_compile_options(ui Win32 PRIVATE
+		"-mwindows")
+	squirreljme_scritchany_link_options(ui Win32 PRIVATE
+		"-mwindows")
+endif()

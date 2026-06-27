@@ -36,6 +36,10 @@ macro(squirreljme_natives_build systemNormal archNormal configureRuleName
 		${systemNormal} ${archNormal} "${method}")
 endmacro()
 
+# Determine options to forward
+squirreljme_env_forward(forwardedEnv)
+message("Forwarded options: ${forwardedEnv}")
+
 # Processes a compiler
 macro(squirreljme_natives_compiler systemNormal archNormal compilerPath)
 	# Determine the rule names
@@ -56,6 +60,7 @@ macro(squirreljme_natives_compiler systemNormal archNormal compilerPath)
 		COMMAND "${CMAKE_COMMAND}"
 			"-DCC=${compilerPath}"
 			"-DCMAKE_C_COMPILER=${compilerPath}"
+			"${forwardedEnv}"
 			"-B" "${buildPath}"
 			"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
 		COMMENT "Configuring ${systemNormal}/${archNormal} (compiler)..."

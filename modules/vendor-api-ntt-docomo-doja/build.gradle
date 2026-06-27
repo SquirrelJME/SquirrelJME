@@ -38,5 +38,6 @@ dependencies
 	api project(":modules:vendor-api-squirreljme-zip")
 	api project(":modules:vendor-api-jblend")
 	api project(":modules:media-api")
+	api project(":modules:vendor-api-keitaiwiki-music")
 	api project(":modules:gcf-file")
 }

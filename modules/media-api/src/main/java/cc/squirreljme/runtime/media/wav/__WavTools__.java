@@ -10,7 +10,7 @@
 package cc.squirreljme.runtime.media.wav;
 
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.EOFException;
 import java.io.InputStream;

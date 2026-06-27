@@ -475,17 +475,17 @@ struct sjme_scritchui_pencilUtilFunctions
 	/** @c BlendRGBInto . */
 	SJME_SCRITCHUI_QUICK_PENCIL(BlendRGBInto, blendRGBInto);
 	
-	/** @c PfScanGet . */
-	SJME_SCRITCHUI_QUICK_PENCIL(PfScanGet, pfScanGet);
-	
-	/** @c PfScanPut . */
-	SJME_SCRITCHUI_QUICK_PENCIL(PfScanPut, pfScanPut);
-	
 	/** @c PfScanBits . */
 	SJME_SCRITCHUI_QUICK_PENCIL(PfScanBits, pfScanBits);
 	
 	/** @c PfScanBytes . */
 	SJME_SCRITCHUI_QUICK_PENCIL(PfScanBytes, pfScanBytes);
+	
+	/** @c PfScanGet . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanGet, pfScanGet);
+	
+	/** @c PfScanPut . */
+	SJME_SCRITCHUI_QUICK_PENCIL(PfScanPut, pfScanPut);
 	
 	/** @c PfScanToPf . */
 	SJME_SCRITCHUI_QUICK_PENCIL(PfScanToPf, pfScanToPf);

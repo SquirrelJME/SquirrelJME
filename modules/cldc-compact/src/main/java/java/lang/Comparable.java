@@ -21,8 +21,8 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  *
  * It is recommended to implement this class so that
  * {@code a.compareTo(b) == -b.compareTo(a)} is true, this makes the
- * comparisons consistent. However this might not be feasible for speed
- * purposes so it is highly recommended to at least have comparible negative,
+ * comparisons consistent. However, this might not be feasible for speed
+ * purposes so it is highly recommended to at least have comparable negative,
  * zero, and positive.
  *
  * @param <T> The type to compare.
@@ -35,7 +35,7 @@ public interface Comparable<T>
 	 * Compares this instance to the argument passed, 
 	 *
 	 * Note that {@code NullPointerException} should be thrown for {@code __b}
-	 * since {@code __b.compareTo(this)} would thrown an exception.
+	 * since {@code __b.compareTo(this)} would throw an exception.
 	 *
 	 * @param __b The object to compare against.
 	 * @return The result of the comparison, negative values mean

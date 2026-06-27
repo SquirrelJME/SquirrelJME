@@ -212,6 +212,44 @@ function(squirreljme_scritchany_link_libraries area name scope)
 		${libraries})
 endfunction()
 
+# Add compile options
+function(squirreljme_scritchany_compile_options area name scope)
+	# Check scope
+	squirreljme_check_valid_scope(${scope})
+
+	# Determine the target name
+	squirreljme_scritchany_target_name(target "${area}" "${name}")
+
+	# Determine arguments
+	set(defines "${ARGV}")
+	list(REMOVE_AT defines 0)
+	list(REMOVE_AT defines 0)
+	list(REMOVE_AT defines 0)
+
+	# Add options
+	squirreljme_multilib_compile_options(${target} ${scope}
+		${defines})
+endfunction()
+
+# Add link options
+function(squirreljme_scritchany_link_options area name scope)
+	# Check scope
+	squirreljme_check_valid_scope(${scope})
+
+	# Determine the target name
+	squirreljme_scritchany_target_name(target "${area}" "${name}")
+
+	# Determine arguments
+	set(defines "${ARGV}")
+	list(REMOVE_AT defines 0)
+	list(REMOVE_AT defines 0)
+	list(REMOVE_AT defines 0)
+
+	# Add options
+	squirreljme_multilib_link_options(${target} ${scope}
+		${defines})
+endfunction()
+
 # Binary name and output
 function(squirreljme_scritchany_binary_name_and_output area name)
 	# Determine the target name

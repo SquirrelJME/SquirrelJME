@@ -156,6 +156,20 @@ public class ScratchPadConnectionFactory
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/06/27
+	 */
+	@Override
+	public boolean implementsInterface(Class<? extends Connection> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.isAssignableFrom(ScratchPadConnection.class);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2021/11/30
 	 */
 	@Override

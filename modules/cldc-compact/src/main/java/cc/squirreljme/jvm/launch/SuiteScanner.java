@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.suite.SuiteUtils;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.HashMap;
@@ -30,9 +31,11 @@ import java.util.Map;
 public final class SuiteScanner
 {
 	/** The shelf to access. */
+	@KeepWhenCompacting
 	protected final VirtualJarPackageShelf shelf;
 	
 	/** Allow parallel scanning? */
+	@KeepWhenCompacting
 	protected final boolean parallel;
 	
 	/**
@@ -84,7 +87,7 @@ public final class SuiteScanner
 	 * for them to properly launch.
 	 * 
 	 * @param __listener The listener for suites as they are scanned, used to
-	 * indicate progress.
+	 * indicate progress. This is optional and may be {@code null}.
 	 * @return The state of scanned suites.
 	 * @since 2020/12/29
 	 */

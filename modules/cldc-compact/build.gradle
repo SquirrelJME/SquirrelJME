@@ -28,14 +28,14 @@ squirreljme
 	
 	// Needed for SquirrelJME VMs to start and operate properly, as this is
 	// the entry point into any code that starts and otherwise
-	proGuardOptions += ["-keep", "class", "java.lang.__Start__"]
-	proGuardOptions += ["-keepnames", "class", "java.lang.__Start__"]
-	proGuardOptions += ["-keepclassmembers", "class", 
+	proGuardOptions += ["-keep,includecode", "class", "java.lang.__Start__"]
+	proGuardOptions += ["-keepnames,includecode", "class", "java.lang.__Start__"]
+	proGuardOptions += ["-keepclassmembers,includecode", "class", 
 		"java.lang.__Start__", "{",
 			"void", "__base", "(", ")", ";",
 			"void", "__main", "(", ")", ";",
 		"}"]
-	proGuardOptions += ["-keepclassmembernames", "class",
+	proGuardOptions += ["-keepclassmembernames,includecode", "class",
 		"java.lang.__Start__", "{",
 			"void", "__base", "(", ")", ";",
 			"void", "__main", "(", ")", ";",
