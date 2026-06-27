@@ -181,8 +181,8 @@ static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 	sjme_sm(.drawRect, sjme_scritchpen_core_drawRect),
 	sjme_sm(.drawRegion, sjme_scritchpen_core_drawRegion),
 	sjme_sm(.drawRoundRect, sjme_scritchpen_core_drawRoundRect),
-	sjme_sm(.drawTriangle, sjme_scritchpen_core_drawTriangle),
 	sjme_sm(.drawSubstring, sjme_scritchpen_core_drawSubstring),
+	sjme_sm(.drawTriangle, sjme_scritchpen_core_drawTriangle),
 	sjme_sm(.drawXRGB32Region, sjme_scritchpen_core_drawXRGB32Region),
 	sjme_sm(.fillArc, sjme_scritchpen_core_fillArc),
 	sjme_sm(.fillPolygon, sjme_scritchpen_core_fillPolygon),
@@ -207,7 +207,7 @@ static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 static const sjme_scritchui_pencilFunctions
 	sjme_scritchpen_coreSerial_functions =
 {
-	sjme_sm(.close, sjme_scritchpen_core_close),
+	sjme_sm(.close, sjme_scritchpen_coreSerial_close),
 	sjme_sm(.copyArea, sjme_scritchpen_coreSerial_copyArea),
 	sjme_sm(.drawArc, sjme_scritchpen_coreSerial_drawArc),
 	sjme_sm(.drawChar, sjme_scritchpen_coreSerial_drawChar),
