@@ -443,8 +443,9 @@ public class MLD
 	public double getDuration(boolean withoutLooping)
 	{
 		// TODO: JUMP events tell if partial or complete track looping is used
-		// inside MLD, thus we should process them and see if any of its blocks
-		// have infinite repeat values in order to return POSITIVE_INFINITY.
+		// TODO: inside MLD, thus we should process them and see if any of its blocks
+		// TODO: have infinite repeat values in order to return POSITIVE_INFINITY.
+		Debugging.todoNote("MLD getDuration()");
 		return (withoutLooping ? this.duration :
 			Double.POSITIVE_INFINITY);
 	}
@@ -485,18 +486,20 @@ public class MLD
 		// NOTE: this length includes the next two fields, which are NOT in the
 		// ADPM header.
 		int adpmHeaderLen = reader.u16();
-
-
+		Debugging.todoNote("MLD adpmHeaderLen");
+		
 		// TODO: No idea what these mean yet
 		int dataFormat = reader.u8();
 		int dataAttribute = reader.u8();
-
+		Debugging.todoNote("MLD dF %d, dA %d",
+			dataFormat, dataAttribute);
 
 		// Parse "adpm" chunk data
 		if (reader.u32() != MLD.FOURCC_ADPM)
 			throw new RuntimeException("Missing \"adpm\" chunk.");
 
 		int adpmChunkSize = reader.u16();
+		Debugging.todoNote("MLD adpmChunkSize");
 
 		// Now Read the actual ADPCM data
 
@@ -735,6 +738,7 @@ public class MLD
 		// adjustment, so anything higher (up to 127) is a boost, which we allow
 		// up to a 27% increase in amplitude.
 		// TODO: Values lower than 100 still need to be tweaked.
+		Debugging.todoNote("MLD volume adjust");
 		this.masterVolume = (vol <= 100 ?
 			this.volumeToAmplitude((vol) / 100.0f) :
 			this.volumeToAmplitude((vol) / 100.0f));
@@ -1184,6 +1188,7 @@ public class MLD
 				
 				// TODO: If a cuepoint-end and note both happen on the same tick
 				// and the cuepoint end is "first", does it still play the note?
+				Debugging.todoNote("MLD cuepoint?");
 				
 				// cuepoint end
 				this.tickEnd = tickNow;

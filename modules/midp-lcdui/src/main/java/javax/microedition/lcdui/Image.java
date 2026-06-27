@@ -137,6 +137,8 @@ public class Image
 			throw new IllegalStateException("EB28");
 		
 		// Create hardware accelerated graphics where possible
+		// TODO: WeakReference<> for Graphics to call close()
+		Debugging.todoNote("WR<> Image.getGraphics()");
 		return PencilGraphics.hardwareGraphics(
 			(this._alpha ? UIPixelFormat.INT_ARGB8888 :
 				UIPixelFormat.INT_RGB888),

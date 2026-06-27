@@ -15,7 +15,6 @@ import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
  *
  * @since 2026/05/22
  */
-@KeepWhenCompacting
 enum __VendorKeys__
 {
 	/** Enum indicating the Back/CLR key. */
