@@ -87,7 +87,7 @@ public final class SuiteScanner
 	 * for them to properly launch.
 	 * 
 	 * @param __listener The listener for suites as they are scanned, used to
-	 * indicate progress.
+	 * indicate progress. This is optional and may be {@code null}.
 	 * @return The state of scanned suites.
 	 * @since 2020/12/29
 	 */

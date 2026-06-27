@@ -47,6 +47,14 @@ public class VMCompactLibraryTaskAction
 			// *facepaw*
 			"!method/inlining/*",
 			
+			// There is optimization for object usage and such, however this
+			// is not always correct especially with brackets and native code
+			"!code/simplification/object",
+			
+			// Do the same for field load/store, as these can be used across
+			// native call chains which it has no idea about
+			"!code/simplification/field",
+			
 			// These cause incompatible class change errors if such things
 			// were to be accessed
 			"!class/marking/final",

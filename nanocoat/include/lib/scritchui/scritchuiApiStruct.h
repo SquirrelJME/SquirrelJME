@@ -368,6 +368,12 @@ typedef struct sjme_scritchui_pencilFunctions
 	
 	/** @c DrawLine . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawLine, drawLine);
+
+	/** @c DrawPixel . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixel);
+
+	/** @c DrawPolyline . */
+	SJME_SCRITCHUI_QUICK_PENCIL(DrawPolyline, drawPolyline);
 	
 	/** @c DrawRect . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawRect, drawRect);
@@ -377,12 +383,6 @@ typedef struct sjme_scritchui_pencilFunctions
 
 	/** @c DrawRoundRect . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawRoundRect, drawRoundRect);
-
-	/** @c DrawPixel . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawPixel, drawPixel);
-
-	/** @c DrawPolyline . */
-	SJME_SCRITCHUI_QUICK_PENCIL(DrawPolyline, drawPolyline);
 	
 	/** @c DrawSubstring . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawSubstring, drawSubstring);

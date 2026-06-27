@@ -487,6 +487,9 @@ struct sjme_scritchui_pencilUtilFunctions
 	/** @c PfScanBytes . */
 	SJME_SCRITCHUI_QUICK_PENCIL(PfScanBytes, pfScanBytes);
 	
+	/** @c RgbScanFill . */
+	SJME_SCRITCHUI_QUICK_PENCIL(RgbScanFill, rgbScanFill);
+	
 	/** @c PfScanToPf . */
 	SJME_SCRITCHUI_QUICK_PENCIL(PfScanToPf, pfScanToPf);
 	
@@ -495,9 +498,6 @@ struct sjme_scritchui_pencilUtilFunctions
 	
 	/** @c RawScanToRgb . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RawScanToRgb, rawScanToRgb);
-	
-	/** @c RgbScanFill . */
-	SJME_SCRITCHUI_QUICK_PENCIL(RgbScanFill, rgbScanFill);
 	
 	/** @c RgbScanGet . */
 	SJME_SCRITCHUI_QUICK_PENCIL(RgbScanGet, rgbScanGet);
