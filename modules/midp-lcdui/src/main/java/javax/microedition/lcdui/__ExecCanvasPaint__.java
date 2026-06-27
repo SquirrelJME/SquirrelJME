@@ -50,8 +50,12 @@ class __ExecCanvasPaint__
 		if (canvas == null)
 			return;
 		
-		// Forward paint
-		canvas.__paint(PencilGraphics.of(__g, __sw, __sh),
-			__sw, __sh, __special);
+		// Forward paint, this initializes a non-owned pencil however close
+		// may still need to be called for temporary buffers in memory or
+		// otherwise that are used by PencilGraphics directly
+		try (PencilGraphics g = PencilGraphics.of(__g, __sw, __sh))
+		{
+			canvas.__paint(g, __sw, __sh, __special);
+		}
 	}
 }

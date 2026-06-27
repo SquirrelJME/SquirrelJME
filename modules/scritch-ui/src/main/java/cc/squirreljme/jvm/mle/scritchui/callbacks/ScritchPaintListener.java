@@ -30,7 +30,8 @@ public interface ScritchPaintListener
 	 * Callback that is used to draw the given component.
 	 *
 	 * @param __component The component to draw on.
-	 * @param __g Pencil graphics for drawing.
+	 * @param __g Pencil graphics for drawing, the pencil which is passed may
+	 * be reused for later draw operations and must not be closed.
 	 * @param __sw Surface width.
 	 * @param __sh Surface height.
 	 * @param __special Special value for painting, may be {@code 0} or any

@@ -78,6 +78,8 @@ public final class PencilShelf
 	
 	/**
 	 * Closes the pencil and allows it to be re-used.
+	 * 
+	 * This must be called for fully owned pencils.
 	 *
 	 * @param __g The pencil to close.
 	 * @throws MLECallError If it could not be closed or has already been

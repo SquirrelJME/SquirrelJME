@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -93,6 +94,10 @@ public interface ScritchInterface
 	
 	/**
 	 * Creates a hardware reference bracket to the native hardware graphics.
+	 * 
+	 * If this method is used, then the pencil must
+	 * be {@link PencilShelf#hardwareCloseGraphics(PencilBracket)} for its
+	 * resources to be freed.
 	 * 
 	 * @param __pf The {@link UIPixelFormat} used for the draw.
 	 * @param __bw The buffer width, this is the scanline width of the buffer.
