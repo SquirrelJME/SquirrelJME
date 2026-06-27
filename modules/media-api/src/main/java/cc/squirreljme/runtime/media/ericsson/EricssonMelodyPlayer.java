@@ -12,29 +12,26 @@ package cc.squirreljme.runtime.media.ericsson;
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
 import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
+import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
-import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
-import cc.squirreljme.runtime.gcf.ContentTypeUtil;
-import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import cc.squirreljme.runtime.media.AbstractVolumeControl;
-import cc.squirreljme.runtime.media.control.AbstractMetaDataControl;
 import cc.squirreljme.runtime.media.control.AbstractDeviceFeedbackControl;
+import cc.squirreljme.runtime.media.control.AbstractMetaDataControl;
 import cc.squirreljme.runtime.media.control.DeviceFeedbackControl;
 import cc.squirreljme.runtime.media.control.MetaDataValues;
-import net.multiphasicapps.io.DataEndianess;
-import net.multiphasicapps.io.ExtendedDataInputStream;
-import org.jetbrains.annotations.NotNull;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import javax.microedition.io.InputConnection;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Player that supports Ericsson's iMelody and eMelody media formats.
@@ -52,7 +49,7 @@ public class EricssonMelodyPlayer
 
 	/** The un-realized input stream. */
 	@SquirrelJMEVendorApi
-	private volatile InputStreamConnection _unrealizedIn;
+	private volatile InputConnection _unrealizedIn;
 
 	/** The audio stream used. */
 	@SquirrelJMEVendorApi
@@ -75,7 +72,7 @@ public class EricssonMelodyPlayer
 	 * @since 2026/05/26
 	 */
 	@SquirrelJMEVendorApi
-	public EricssonMelodyPlayer(@NotNull InputStreamConnection __in,
+	public EricssonMelodyPlayer(@NotNull InputConnection __in,
 		String __type)
 		throws NullPointerException
 	{
@@ -140,7 +137,7 @@ public class EricssonMelodyPlayer
 		this._stream = null;
 		
 		// Close the input connection, if it was never read in
-		InputStreamConnection unrealizedIn = this._unrealizedIn;
+		InputConnection unrealizedIn = this._unrealizedIn;
 		if (unrealizedIn != null)
 		{
 			this._unrealizedIn = null;

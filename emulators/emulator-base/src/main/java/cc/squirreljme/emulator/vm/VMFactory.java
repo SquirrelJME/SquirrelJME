@@ -389,6 +389,12 @@ public abstract class VMFactory
 					"Unknown command line switch: %s", item));
 		}
 		
+		// Force the debug clutter level for hosted as it is not possible
+		// to mix release and debug together. This is because the hosted
+		// emulator layer uses the debug libraries.
+		if ("hosted".equalsIgnoreCase(vmName))
+			clutterLevel = "debug";
+		
 		// These options are mutually exclusive...
 		if (internalDebug && (jdwpHost != null || jdwpPort >= 1))
 			throw new IllegalArgumentException(

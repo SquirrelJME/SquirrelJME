@@ -46,6 +46,19 @@ public interface CustomConnectionFactory
 		throws IOException, NullPointerException;
 	
 	/**
+	 * This is used to determine which {@link Connection} interfaces a
+	 * connection implements to determine its capabilities before creation.
+	 *
+	 * @param __cl The {@link Connection} class type to check.
+	 * @return If this connection type implements the given class type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/06/27
+	 */
+	@SquirrelJMEVendorApi
+	boolean implementsInterface(Class<? extends Connection> __cl)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the scheme this factory uses.
 	 * 
 	 * @return The protocol scheme used.

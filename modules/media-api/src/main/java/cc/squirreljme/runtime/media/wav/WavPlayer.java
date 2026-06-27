@@ -17,13 +17,13 @@ import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
-import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import cc.squirreljme.runtime.media.AbstractVolumeControl;
 import cc.squirreljme.runtime.media.pcm.*;
+import javax.microedition.io.InputConnection;
 import net.multiphasicapps.io.DataEndianess;
 import net.multiphasicapps.io.ExtendedDataInputStream;
 import org.jetbrains.annotations.NotNull;
@@ -31,61 +31,61 @@ import java.io.InputStream;
 import java.io.IOException;
 import javax.microedition.media.MediaException;
 
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 public class WavPlayer 
 	extends AbstractPlayer
 	implements AudioStreamRenderer
 {
 	/** The audio connection. */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	private volatile AudioConnectionBracket _connection;
 
 	/** The audio stream used. */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	private volatile AudioStreamBracket _stream;
 
 	/** The decoder instance for compressed PCM wav data */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	private PCMDecoder _decoder;
 
 	/** The un-realized input stream. */
-	@SquirrelJMEVendorApi
-	private volatile InputStreamConnection _unrealizedIn;
+	@KeepWhenCompacting
+	private volatile InputConnection _unrealizedIn;
 
 	/** The sample rate of the wav data in use */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	private int _wavSampleRate;
 
 	/** The amount of audio channels of the wav data in use */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	private byte _wavChannels;
 
 	/** The underlying format of the wav data in use */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	private int _wavFormat;
 
 	/** The amount samples in each frame of the wav data */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	private int _wavFrameSize;
 
 	/** Bit-depth of samples in the wav data in use */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	private byte _wavBits;
 
 	/** How many valid audio samples the wav data in use has */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	private int _wavSampleLen;
 
 	/** How many bytes are used for one second of playback */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	private int _wavBytesPerSec;
 
 	/** Current sample marker for wav audio rendering. */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	private int _curSample;
 
 	/** Volume multiplier for rendered samples (0-100%). */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	private byte _volumeMult;
 
 	/** The wav sample data array. */
@@ -98,8 +98,8 @@ public class WavPlayer
 	 * @throws NullPointerException If {@code __in} is null.
 	 * @since 2025/12/25
 	 */
-	@SquirrelJMEVendorApi
-	public WavPlayer(@NotNull InputStreamConnection __in)
+	@KeepWhenCompacting
+	public WavPlayer(@NotNull InputConnection __in)
 		throws NullPointerException
 	{
 		super("audio/wav");
@@ -490,7 +490,7 @@ public class WavPlayer
 		this._wavData = null;
 		
 		// Close the input connection, if it was never read in
-		InputStreamConnection unrealizedIn = this._unrealizedIn;
+		InputConnection unrealizedIn = this._unrealizedIn;
 		if (unrealizedIn != null)
 		{
 			this._unrealizedIn = null;

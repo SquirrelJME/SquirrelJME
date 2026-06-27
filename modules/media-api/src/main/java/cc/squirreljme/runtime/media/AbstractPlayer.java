@@ -9,7 +9,6 @@
 package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
-import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
 import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamSnoop;
 import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
@@ -19,9 +18,11 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ServiceLoader;
 import javax.microedition.io.Connection;
 import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
@@ -29,6 +30,7 @@ import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 import javax.microedition.media.TimeBase;
+import net.multiphasicapps.collections.UnmodifiableArrayList;
 import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.MagicConstant;
 
@@ -41,6 +43,9 @@ import org.intellij.lang.annotations.MagicConstant;
 public abstract class AbstractPlayer
 	implements Player
 {
+	/** Cached player service providers. */
+	private static volatile PlayerProvider[] _providers;
+	
 	/** Single sourced audio stream. */
 	private static volatile AudioStreamBracket _stream;
 	
@@ -1057,6 +1062,37 @@ public abstract class AbstractPlayer
 			toss.initCause(__e);
 			throw toss;
 		}
+	}
+	
+	/**
+	 * Returns the set of player providers.
+	 *
+	 * @return The set of player providers.
+	 * @since 2026/06/27
+	 */
+	@SquirrelJMEVendorApi
+	public static Iterable<PlayerProvider> providers()
+	{
+		// Do we need to load in the service providers?
+		PlayerProvider[] providers = AbstractPlayer._providers;
+		if (providers == null)
+		{
+			// Load in
+			List<PlayerProvider> all = new ArrayList<>();
+			for (PlayerProvider provider :
+				ServiceLoader.load(PlayerProvider.class))
+				all.add(provider);
+			
+			// Setup static copy
+			providers = all.toArray(new PlayerProvider[all.size()]);
+			synchronized (AbstractPlayer.class)
+			{
+				AbstractPlayer._providers = providers; 
+			}
+		}
+		
+		// Iterate over the providers
+		return UnmodifiableArrayList.<PlayerProvider>of(providers);
 	}
 	
 	/**

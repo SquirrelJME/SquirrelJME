@@ -103,6 +103,20 @@ public class SquirrelJMEWebRootConnectionFactory
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/06/27
+	 */
+	@Override
+	public boolean implementsInterface(Class<? extends Connection> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.isAssignableFrom(DoJaHttpConnectionAdapter.class);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2022/10/07
 	 */
 	@Override

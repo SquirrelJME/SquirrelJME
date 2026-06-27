@@ -16,7 +16,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * When compacting the SquirrelJME runtime, force this class to be kept.
+ * When compacting the SquirrelJME runtime, force this class to be kept, this
+ * is intended for when an interface is not meant to be public in any way
+ * however it is needed in another library within SquirrelJME.
  *
  * @since 2026/06/03
  */

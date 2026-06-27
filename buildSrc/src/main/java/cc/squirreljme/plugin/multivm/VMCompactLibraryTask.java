@@ -119,7 +119,11 @@ public class VMCompactLibraryTask
 		this.getInputs().property("squirreljme.proguardOptionsDefault",
 			this.getProject().provider(() ->
 				Arrays.toString(VMCompactLibraryTaskAction._OPTIMIZATIONS) +
+				Arrays.toString(VMCompactLibraryTaskAction._BASE_CONFIG) +
 				Arrays.toString(VMCompactLibraryTaskAction._PARSE_SETTINGS) +
+				Arrays.toString(VMCompactLibraryTaskAction._STRIP_DEBUG) +
+				Arrays.toString(VMCompactLibraryTaskAction._REFLECTION) +
+				Arrays.toString(VMCompactLibraryTaskAction._CALLBACKS) +
 				Arrays.toString(VMCompactLibraryTaskAction._TEST_SETTINGS)));
 		
 		// The output of this JAR is just where it should be placed, this

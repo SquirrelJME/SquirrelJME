@@ -10,29 +10,34 @@
 package javax.microedition.media;
 
 import cc.squirreljme.jvm.mle.AudioStreamShelf;
-import cc.squirreljme.jvm.mle.RuntimeShelf;
-import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import cc.squirreljme.runtime.gcf.ContentTypeUtil;
+import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
+import cc.squirreljme.runtime.media.AbstractPlayer;
 import cc.squirreljme.runtime.media.NullPlayer;
+import cc.squirreljme.runtime.media.PlayerProvider;
 import cc.squirreljme.runtime.media.SystemNanoTimeBase;
 import cc.squirreljme.runtime.media.ericsson.EricssonMelodyPlayer;
 import cc.squirreljme.runtime.media.midi.MidiControlPlayer;
 import cc.squirreljme.runtime.media.midi.MidiPlayer;
-import cc.squirreljme.runtime.media.mld.IMelodyPlayer;
 import cc.squirreljme.runtime.media.wav.WavPlayer;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.ServiceLoader;
+import java.util.Set;
 import javax.microedition.io.Connection;
 import javax.microedition.io.Connector;
 import javax.microedition.io.InputConnection;
 import javax.microedition.media.control.MIDIControl;
 import javax.microedition.media.protocol.DataSource;
 import org.intellij.lang.annotations.Language;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -61,6 +66,9 @@ public final class Manager
 	/** The system time base, used for song synchronization. */
 	private static final TimeBase _SYSTEM_TIME_BASE = 
 		new SystemNanoTimeBase();
+	
+	/** GCF services, this is needed for supported types. */
+	private static volatile ServiceLoader<CustomConnectionFactory> _gcf;
 	
 	/**
 	 * Not used.
@@ -121,38 +129,17 @@ public final class Manager
 			// An error occurred while determining this
 		}
 		
-		// Depends on the content type
+		// Lookup through services
+		for (PlayerProvider provider : AbstractPlayer.providers())
+			if (provider.acceptsContentType(__contentType) &&
+				provider.acceptsInputConnection())
+				return provider.viaInputConnection(
+					new InputStreamConnection(__in), __contentType);
+		
+		// TODO: Implement these as they are standard Media API, currently
+		// TODO: they use NullPlayer as to not fail
 		switch (__contentType)
 		{
-				// MIDI
-			case "application/x-midi":
-			case "audio/midi":
-			case "audio/x-mid":
-			case "audio/x-midi":
-			case "music/crescendo":
-				return new MidiPlayer(new InputStreamConnection(__in));
-				
-				// i-melody MLD
-			case "application/x-mld":
-			case "application/x-mld-music":
-			case "audio/x-mld":
-				return new IMelodyPlayer(new InputStreamConnection(__in));
-				
-				// WAVE
-			case "audio/vnd.wave":
-			case "audio/wav":
-			case "audio/wave":
-			case "audio/x-wav":
-				return new WavPlayer(new InputStreamConnection(__in));
-
-				// Ericsson Melody formats
-			case "audio/e-melody":
-			case "audio/iMelody":
-			case "text/x-eMelody":
-			case "text/x-iMelody":
-				return new EricssonMelodyPlayer(
-					new InputStreamConnection(__in), __contentType);
-				
 				// Standardized but not yet supported by SquirrelJME
 			case "audio/basic":
 				
@@ -163,8 +150,6 @@ public final class Manager
 				
 			case "audio/mpeg":
 			case "video/mpeg":
-				
-			case "application/x-smaf":
 				Debugging.todoNote("Support media: %s", __contentType);
 				return new NullPlayer(__contentType);
 		}
@@ -237,18 +222,99 @@ public final class Manager
 		throw Debugging.todo(__source);
 	}
 	
+	/**
+	 * Returns the set of content types which are supported by this player for
+	 * the given protocol.
+	 *
+	 * @param __protocol The protocol scheme to check, if {@code null} then
+	 * this will be all protocols.
+	 * @return The set of supported content types.
+	 * @see Manager#getSupportedProtocols(String) 
+	 * @since 2026/06/27
+	 */
 	@Api
-	public static String[] getSupportedContentTypes(String __a)
+	@Language("mime-type-reference")
+	public static String[] getSupportedContentTypes(
+		@Language("http-url-reference") String __protocol)
 	{
-		Debugging.debugNote("getSupportedContentTypes(%s)%n", __a);
-		throw Debugging.todo();
+		// These may be modified based on the protocol type
+		boolean viaInput = false;
+		
+		// No specified protocol, means every type
+		if (__protocol == null)
+		{
+			viaInput = true;
+		}
+		
+		// Otherwise, we need to check the protocols for valid types
+		else
+		{
+			// Go through and find this protocol
+			for (CustomConnectionFactory gcf : Manager.__gcf())
+			{
+				// Wrong one?
+				if (!__protocol.equals(gcf.scheme()))
+					continue;
+				
+				// Is this an input type connection?
+				if (gcf.implementsInterface(InputConnection.class))
+					viaInput = true;
+			}
+		}
+		
+		// Look through player services
+		Set<String> result = new LinkedHashSet<>();
+		for (PlayerProvider provider : AbstractPlayer.providers())
+			if (viaInput && provider.acceptsInputConnection())
+				result.addAll(Arrays.asList(provider.acceptsContentTypes()));
+		
+		// Return all the supported types
+		return result.toArray(new String[result.size()]);
 	}
 	
+	/**
+	 * Returns the set of protocols types which are supported by this player
+	 * for the given content type.
+	 *
+	 * @param __contentType The content type to check, if {@code null} then
+	 * this will be all content types.
+	 * @return The set of supported protocol schemes.
+	 * @see Manager#getSupportedContentTypes(String) 
+	 * @since 2026/06/27
+	 */
 	@Api
-	public static String[] getSupportedProtocols(String __a)
+	@Language("http-url-reference")
+	public static String[] getSupportedProtocols(
+		@Language("mime-type-reference") String __contentType)
 	{
-		Debugging.debugNote("getSupportedProtocols(%s)%n", __a);
-		throw Debugging.todo();
+		// Go through each protocol to determine what it likes
+		Set<String> result = new LinkedHashSet<>();
+		for (PlayerProvider provider : AbstractPlayer.providers())
+		{
+			// Is this the wrong content type if we wanted a specific one?
+			if (__contentType != null &&
+				!provider.acceptsContentType(__contentType))
+				continue;
+			
+			// Need to go through each connection type to find the appropriate
+			// connection types
+			for (CustomConnectionFactory gcf : Manager.__gcf())
+			{
+				boolean hit = false;
+				
+				// Uses an input stream and protocol provides that?
+				if (provider.acceptsInputConnection() &&
+					gcf.implementsInterface(InputConnection.class))
+					hit = true;
+					
+				// Does this meet the criteria?
+				if (hit)
+					result.add(gcf.scheme());
+			}
+		}
+		
+		// Return all the supported types
+		return result.toArray(new String[result.size()]);
 	}
 	
 	/**
@@ -270,6 +336,24 @@ public final class Manager
 		Debugging.todoNote("playTone(%d, %d, %d)",
 			__note, __duration, __volume);
 	}
+	
+	/**
+	 * Returns the services for loading GCF connections.
+	 *
+	 * @return The iteration over the GCF connection service loader.
+	 * @since 2026/06/27
+	 */
+	private static Iterable<CustomConnectionFactory> __gcf()
+	{
+		// Need to load in services?
+		ServiceLoader<CustomConnectionFactory> result = Manager._gcf;
+		if (result == null)
+		{
+			result = ServiceLoader.load(CustomConnectionFactory.class);
+			Manager._gcf = result;
+		}
+		
+		// Iterate over this
+		return result;
+	}
 }
-
-

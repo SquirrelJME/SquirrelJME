@@ -9,12 +9,15 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This interface is used for anything which represents a dependency and as
  * such can be used to check if a provided meets the conditions for a match.
  *
  * @since 2017/12/31
  */
+@SquirrelJMEVendorApi
 public interface MarkedDependency
 {
 	/**
@@ -23,6 +26,7 @@ public interface MarkedDependency
 	 * @return {@code true} if this dependency is optional.
 	 * @since 2017/12/31
 	 */
+	@SquirrelJMEVendorApi
 	boolean isOptional();
 	
 	/**
@@ -34,6 +38,7 @@ public interface MarkedDependency
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/31
 	 */
+	@SquirrelJMEVendorApi
 	boolean matchesProvided(MarkedProvided __mp)
 		throws NullPointerException;
 }

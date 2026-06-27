@@ -23,14 +23,14 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
- * Decodes Nokia OTA files into audio samples to be sent over scritchaudio.
+ * Decodes Nokia OTA files into audio samples to be sent over ScritchAudio.
  *
  * @since 2026/05/26
  */
 @SquirrelJMEVendorApi
 public class NokiaOTADecoder 
 {
-	/** Natural style, small rest between between notes (Default style). */
+	/** Natural style, small rest between notes (Default style). */
 	private static final int NATURAL_STYLE =
 		0;
 

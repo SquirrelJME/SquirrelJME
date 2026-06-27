@@ -9,10 +9,8 @@
 package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
-import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractMidiControl;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import cc.squirreljme.runtime.media.AbstractVolumeControl;
@@ -23,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import javax.microedition.io.InputConnection;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
@@ -33,7 +32,7 @@ import javax.microedition.media.control.MIDIControl;
  *
  * @since 2022/04/24
  */
-@SquirrelJMEVendorApi
+@KeepWhenCompacting
 public class MidiPlayer
 	extends AbstractPlayer
 {
@@ -49,11 +48,11 @@ public class MidiPlayer
 	private static volatile MidiTracker _TRACKER;
 	
 	/** The control used to emit MIDI sounds. */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	protected final AbstractMidiControl midiControl;
 	
 	/** The MIDI player this is using. */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	protected final Player midiPlayer;
 	
 	/** The timing that is shared for all MIDI tracks. */
@@ -66,13 +65,13 @@ public class MidiPlayer
 	private volatile MTrkParser[] _tracks;
 	
 	/** The un-realized input stream. */
-	private volatile InputStreamConnection _unrealizedIn;
+	private volatile InputConnection _unrealizedIn;
 	
 	/** The cached nanosecond duration. */
 	private volatile long _nanoDuration;
 
 	/** master Volume for MIDI notes. */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	volatile MidiVolume _volume;
 	
 	/**
@@ -84,7 +83,7 @@ public class MidiPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
-	public MidiPlayer(InputStreamConnection __in)
+	public MidiPlayer(InputConnection __in)
 		throws IOException, MediaException, NullPointerException
 	{
 		super("audio/midi");
@@ -120,7 +119,7 @@ public class MidiPlayer
 		this._tracks = null;
 		
 		// Close the input connection, if it was never read in
-		InputStreamConnection unrealizedIn = this._unrealizedIn;
+		InputConnection unrealizedIn = this._unrealizedIn;
 		if (unrealizedIn != null)
 		{
 			this._unrealizedIn = null;
@@ -487,7 +486,7 @@ public class MidiPlayer
 	 * @return The nanoseconds per tick division.
 	 * @since 2026/01/01
 	 */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	public static long calculateTickDiv(int __rawTickDiv)
 	{
 		// Determine tick division.. either SMPTE or ppqn

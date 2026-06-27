@@ -11,11 +11,12 @@ squirreljme
 	swmName = "Media API"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "j2me"
+	optionalDependencies += project(":modules:vendor-api-keitaiwiki-music")
 }
 
 dependencies
 {
 	api project(":modules:cldc-compact")
 	api project(":modules:gcf")
-	api project(":modules:vendor-api-keitaiwiki-music")
+	api project(":modules:vendor-api-squirreljme-io")
 }

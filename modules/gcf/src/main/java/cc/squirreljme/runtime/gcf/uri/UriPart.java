@@ -229,6 +229,7 @@ public abstract class UriPart
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/29
 	 */
+	@SquirrelJMEVendorApi
 	public static String encode(String __in)
 		throws NullPointerException
 	{
@@ -414,6 +415,7 @@ public abstract class UriPart
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/29
 	 */
+	@SquirrelJMEVendorApi
 	public static String[] splitDecode(String __in, char __delim)
 		throws InvalidUriException, NullPointerException
 	{
