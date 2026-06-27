@@ -207,7 +207,7 @@ static const sjme_scritchui_pencilFunctions sjme_scritchpen_core_functions =
 static const sjme_scritchui_pencilFunctions
 	sjme_scritchpen_coreSerial_functions =
 {
-	sjme_sm(.close, sjme_scritchpen_core_close),
+	sjme_sm(.close, sjme_scritchpen_coreSerial_close),
 	sjme_sm(.copyArea, sjme_scritchpen_coreSerial_copyArea),
 	sjme_sm(.drawArc, sjme_scritchpen_coreSerial_drawArc),
 	sjme_sm(.drawChar, sjme_scritchpen_coreSerial_drawChar),
