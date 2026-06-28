@@ -17,8 +17,18 @@
 		rel="self" />
 
 	<!-- Update these accordingly! -->
-	<pubDate>Wed, 22 Apr 2026 21:00 EDT</pubDate>
-	<lastBuildDate>Wed, 22 Apr 2026 21:00 EDT</lastBuildDate>
+	<pubDate>Sun, 28 Jun 2026 08:30 EDT</pubDate>
+	<lastBuildDate>Sun, 28 Jun 2026 08:30 EDT</lastBuildDate>
+
+	<item>
+		<guid isPermaLink="false">b68fa1c1-b7f3-495e-977c-92ef3001513e</guid>
+		<link>https://squirreljme.cc/doc/trunk/assets/rss/20260628_0830.mkd</link>
+		<pubDate>Sun, 28 Jun 2026 08:30 EDT</pubDate>
+
+		<title>June Update</title>
+		<description>It has been awhile since the last development update, therefor I will be
+giving this update now!</description>
+	</item>
 
 	<item>
 		<guid isPermaLink="false">f917706b-9041-4e01-8e52-87780dfe4017</guid>

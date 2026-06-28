@@ -1,0 +1,95 @@
+# June Development Update
+
+It has been awhile since the last development update, therefor I will be
+giving this update now!
+
+There is a new CMake based build setup in the root of the project that
+entirely replaces vendor-specific CI/CD installations, scripts, and otherwise.
+This new system is used for the nightly builds on the main website! What this
+means now is that SquirrelJME no longer depends on a specific service for its
+builds and is now running on local hardware. This also means for you, that you
+are now able to replicate the nightly builds from any revision you desire and
+build it on your local system! This should work on Linux, macOS, and Windows!
+The main motivation behind this was supply chain vulnerabilities in existing
+CI/CD platforms such as GitHub Actions and service cost subsidization by
+providers no longer being economically viable due to GenAI proliferation. A
+benefit to running the builds locally, is that they build rather fast and
+can be run more frequently.
+
+Progress slowly continues on NanoCoat, currently the focus is on getting the
+virtual machine in a running state. Then after that, the gauntlet that is
+making sure it is fully working and stable.
+
+A generic media player was added which allows you to play audio file formats
+supported by SquirrelJME directly, even with the ability to rewind and
+skip ahead! You can play files from any JAR and additionally there is built-in
+capability to scan DoJa ScratchPads to find any MLDs or other media which
+is built-in to those raw binaries.
+
+Media Playback through Player has been greatly improved and refactored, all
+Players now have a universal and compatible backing. Ones which already
+existed, or were recently contributed, have been ported to the new system.
+
+AShiningRay has contributed support for various Nokia, Samsung, and Sony
+Ericsson audio formats. Additionally, they have implemented support for WAV
+playback, including ADPCM and G.711! This means that most titles
+which have non-Sun audio formats can now play sounds. Nokia sound support
+includes Nokia OTA Ringtones as well.
+
+ScritchAudio has been very slowly moving, however it still has many issues
+to work out especially on Windows. Software Mixing works to support sound
+cards which do not support simultaneous playback or specific audio formats.
+On Windows, float playback is supported, however this unfortunately requires
+at least Windows XP and your sound card to support this format.
+
+MIME and file-type detection and guessing has been improved, however it is
+limited to only the very start of the file for memory and performance reasons.
+
+The Generic Connection Framework along with Connections has been refactored
+greatly, which includes far greater support and handling for URIs in a more
+generic way. All connection types, if not already, will be moving to this
+generic platform as it handles URIs in an RFC compliant way and overall is
+simpler to debug.
+
+There have been minor DoJa fixes. A discrepancy where disposal was only
+being performed for some images was fixed.
+
+Optimizations with ProGuard have been refactored and fixed, considering this
+is an eternal battle this may not be the last of this. As a part of this, it
+was found that when using Standalone Hosted, it was mixing Release and Debug
+which would result in crashes, odd behavior, or otherwise. However, it should
+be noted that running Hosted is not supported anyway. Regardless, behavior
+should be a bit more stable as ProGuard is now prevented from doing certain
+actions.
+
+Font Support has been improved, with my own self written algorithm I have
+called the _Barcode Bitmap Font Scaling Algorithm_ or _Barcode Font Scaler_ for
+short. This algorithm vertically scales any bitmap font up to a larger size
+so that it may be used where a larger font is requested, however no such
+font exists. Depending on the original font, it is readable up to double scale.
+The algorithm prevents all "chunkiness" from occurring when upscaling fonts,
+so that the fonts appear narrow. One limitation is that it does not perform any
+horizontal scaling. It is quite interesting and novel however, only needing an
+"Aha!" moment while staring at a wall!
+
+Date tags were added all over the repository accordingly, as they have not
+been added in quite a while.
+
+Thread instances are now merged into a single object rather than being two
+objects to represent Java threads and VM threads.
+
+MEEP Cellular has had some of its interfaces defined, mostly for routing to
+enable TODOs for future SMS support.
+
+A Strict No-GenAI Policy for any kind of use was adopted, this does include a
+reservation for a future project-approved fully-offline fully-local
+OSI-approved SquirrelJME specific GenAI if such a tool were to exist in
+the future. This policy was typed out manually and reviewed by neutral 
+unaffiliated parties, with honest feedback and thoughts taken into 
+consideration.
+
+In the past six months, completion has progressed by 1% from 63% (176/287) to
+64% (206/317). This may not seem like much increase, however there has been
+a significant amount of splitting performed in the progress tracker. This is
+ignoring the fact that the progress tracker was implemented only six months
+ago.
