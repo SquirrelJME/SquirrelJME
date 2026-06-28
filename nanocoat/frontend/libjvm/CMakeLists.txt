@@ -49,6 +49,7 @@ squirreljme_target_binary_name(libJvmStatic
 squirreljme_multilib_compile_definitions(libJvm PRIVATE
 	SJME_JNI_IMPLEMENTATION=1
 	SJME_CONFIG_USE_OWN_JNI=1
+	SJME_CONFIG_USE_OWN_JVM=1
 	_JNI_IMPLEMENTATION_=1)
 
 # We need to find all of the includes and such

@@ -27,8 +27,8 @@ jint JNICALL JNI_CreateJavaVM(
 	sjme_attrInNotNull void* args)
 {
 	sjme_errorCode error;
-	struct JNIInvokeInterface_* resultVm;
-	struct JNINativeInterface_* resultEnv;
+	struct JVMNativeInterface* resultVm;
+	struct JNINativeInterface* resultEnv;
 	sjme_alloc_pool pool;
 	sjme_nvm nvmState;
 	JavaVMInitArgs* initArgs;

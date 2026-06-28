@@ -62,9 +62,15 @@ extern "C"
 #define JNI_EINVAL (-6)
 
 #if defined(SJME_JNI_IMPLEMENTATION)
+	/** Exported JNI symbol. */
+	#define JNIEXPORT sjme_attrExport
+
 	/** Calling convention used for JNI calls. */
-	#define JNICALL sjme_attrExport sjme_attrThreadCall
+	#define JNICALL sjme_attrThreadCall
 #else
+	/** Exported JNI symbol. */
+	#define JNIEXPORT
+
 	/** Calling convention used for JNI calls. */
 	#define JNICALL sjme_attrExportCall sjme_attrThreadCall
 #endif

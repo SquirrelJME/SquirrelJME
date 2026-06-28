@@ -34,7 +34,7 @@ extern "C"
 
 /** Constructs a JNI version. */
 #define SJME_JNI_VERSION(major, minor) \
-	((INT32_C(major) << INT32_C(4)) | INT32_C(minor))
+	(((INT32_C(major)) << INT32_C(16)) | (INT32_C(minor)))
 
 /** JNI 1.1. */
 #define JNI_VERSION_1_1 SJME_JNI_VERSION(1, 1)
@@ -107,11 +107,48 @@ SJME_JNI_INCOMPLETE__(jfloatArray);
 /** Double array type. */
 SJME_JNI_INCOMPLETE__(jdoubleArray);
 
+/** Method identifier. */
+SJME_JNI_INCOMPLETE__(jmethodID);
+
+/** Field identifier. */
+SJME_JNI_INCOMPLETE__(jfieldID);
+
 /* No longer needed. */
 #undef SJME_JNI_INCOMPLETE__
 
 #pragma endregion(incompleteTypes)
 #pragma region(standardStructs)
+
+/** Any value. */
+typedef union jvalue
+{
+	/** Boolean. */
+	jboolean z;
+
+	/** Byte. */
+	jbyte b;
+
+	/** Character. */
+	jchar c;
+
+	/** Short. */
+	jshort s;
+
+	/** Integer. */
+	jint i;
+
+	/** Long. */
+	jlong j;
+
+	/** Float. */
+	jfloat f;
+
+	/** Double. */
+	jdouble d;
+
+	/** Object. */
+	jobject l;
+} jvalue;
 
 /**
  * Stores a command line option.
