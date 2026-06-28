@@ -1035,6 +1035,7 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
  * @param inFrame The frame to set the value in.
  * @param typeId The type to read.
  * @param typeIndex The type index to set.
+ * @param commit The garbage collection commit.
  * @param outValue The resultant value.
  * @param eraseOld Erase the old value in the slot?
  * @return Any resultant error, if any.
@@ -1044,6 +1045,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint typeIndex,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
 	sjme_attrInValue sjme_jboolean eraseOld);
 	

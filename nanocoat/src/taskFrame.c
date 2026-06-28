@@ -294,8 +294,8 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
 
 	/* Forward tread read. */
-	return sjme_nvm_task_frameTreadGetT(inFrame, typeId, mappedSlot, outValue,
-		SJME_JNI_FALSE);
+	return sjme_nvm_task_frameTreadGetT(inFrame, typeId, mappedSlot,
+		NULL, outValue, SJME_JNI_FALSE);
 }
 
 sjme_errorCode sjme_nvm_task_frameLocalPush(
@@ -549,7 +549,7 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 
 	/* Read in value, erase the old value as it is to be wiped. */
 	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
-		inFrame, topType, newPerTop, outValue,
+		inFrame, topType, newPerTop, commit, outValue,
 		SJME_JNI_TRUE)))
 		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
 			SJME_ERROR_STACK_INVALID_READ));
@@ -726,7 +726,7 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	readType = stack->order[newTop];
 	memset(&temp, 0, sizeof(temp));
 	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(inFrame, readType,
-		stack->stack[readType].top - sub[readType],
+		stack->stack[readType].top - sub[readType], NULL,
 		&temp, SJME_JNI_FALSE)))
 		return sjme_error_vmError(inFrame, error);
 	
@@ -739,6 +739,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint typeIndex,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
 	sjme_attrInValue sjme_jboolean eraseOld)
 {
@@ -765,7 +766,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 		
 		/* Perform the actual set. */
 		if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
-			inFrame->stack.stack[typeId].set, typeIndex, NULL,
+			inFrame->stack.stack[typeId].set, typeIndex, commit,
 			SJME_VLS_JVALUE_P(&wipe))))
 			return sjme_error_vmError(inFrame, error);
 	}

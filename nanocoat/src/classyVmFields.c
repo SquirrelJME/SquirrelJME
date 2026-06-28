@@ -232,6 +232,7 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 	sjme_errorCode error;
 	sjme_jvalueTyped set;
 	sjme_jobject oldObject;
+	sjme_jint oldHash;
 	sjme_jobject* setObjectP;
 	sjme_jvalueTyped* typedP;
 	sjme_jvalue* valueP;
@@ -316,20 +317,23 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 		if (set.v.l != NULL)
 			if (sjme_error_is(error = sjme_nvm_instance_countUp(set.v.l)))
 				return sjme_error_vmError(NULL, error);
-		
-		/* GC old object? */
+
+		/* Get old object before a GC attempt is made. */
+		oldHash = (*objC);
 		oldObject = (*objP);
+
+		/* Set new object. */
+		(*objC) = (set.v.l != NULL ? set.v.l->identityHash : 0);
+		(*objP) = set.v.l;
+
+		/* GC old object? */
 		if (oldObject != NULL)
 		{
 			/* Value was wrongly GCed, or other memory corruption? */
 			if (!sjme_nvm_isAR(oldObject,
 				SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE) ||
-				(*objC) != oldObject->identityHash)
+				oldHash != oldObject->identityHash)
 				return sjme_error_vmError(NULL, SJME_ERROR_OBJECT_GONE);
-			
-			/* Clear old information here. */
-			(*objC) = 0;
-			(*objP) = NULL;
 			
 			/* Direct GC? */
 			if (commit == NULL)
@@ -347,10 +351,6 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 					return sjme_error_default(error);
 			}
 		}
-		
-		/* Set new object. */
-		(*objC) = (set.v.l != NULL ? set.v.l->identityHash : 0);
-		(*objP) = set.v.l;
 	}
 	
 	/* Non-object. */
