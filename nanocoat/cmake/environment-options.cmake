@@ -46,8 +46,11 @@ macro(squirreljme_env_option key helpText default)
 	if(SJME_CONFIG_MAKE_CONFIG)
 		file(APPEND "${SJME_CONFIG_USE_PATH}.work"
 			"set(${key} ${${key}} CACHE STRING \"\")\n")
-		file(APPEND "${SJME_CONFIG_USE_PATH}.work"
-			"#define ${key} ${${key}}\n")
+
+		if(${key})
+			file(APPEND "${SJME_CONFIG_USE_PATH}.work"
+				"#define ${key} ${${key}}\n")
+		endif()
 	endif()
 endmacro()
 
