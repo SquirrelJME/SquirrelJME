@@ -24,7 +24,7 @@ public abstract class AccessibleImage
 	 * @return The offset into the buffer.
 	 * @since 2022/01/26
 	 */
-	public abstract int squirreljmeDirectOffset();
+	public abstract int squirreljmeDirectOffset__();
 	
 	/**
 	 * Returns the direct buffer to the image.
@@ -32,7 +32,7 @@ public abstract class AccessibleImage
 	 * @return The direct RGB buffer for the image.
 	 * @since 2022/01/26
 	 */
-	public abstract int[] squirreljmeDirectRGBInt();
+	public abstract int[] squirreljmeDirectRGBInt__();
 	
 	/**
 	 * Returns the scanline width of the image.
@@ -40,7 +40,7 @@ public abstract class AccessibleImage
 	 * @return The scanline width of the image.
 	 * @since 2022/01/26
 	 */
-	public abstract int squirreljmeDirectScanLen();
+	public abstract int squirreljmeDirectScanLen__();
 	
 	/**
 	 * Returns if this {@link Image} is directly accessible.
@@ -48,5 +48,5 @@ public abstract class AccessibleImage
 	 * @return Returns {@code true} if this is directly accessible.
 	 * @since 2022/01/26
 	 */
-	public abstract boolean squirreljmeIsDirect();
+	public abstract boolean squirreljmeIsDirect__();
 }

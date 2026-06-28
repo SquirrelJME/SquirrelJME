@@ -11,6 +11,7 @@ package com.nokia.mid.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.GenericKeyCodeTranslator;
 import javax.microedition.lcdui.Canvas;
@@ -84,9 +85,19 @@ public abstract class FullCanvas
 	{
 		// Use generic Nokia vendor for event translation if an override was not
 		// already specified.
-		if (EventTranslate.translatorDefault(
-			GenericKeyCodeTranslator.instance()) == null)
-			EventTranslate.translatorDefault("com.nokia");
+		if (EventTranslate.translator() == null)
+			try
+			{
+				// Load the Nokia translator
+				EventTranslate.translatorDefault(
+					GenericKeyCodeTranslator.load(null, 
+						"com.nokia"));
+			}
+			catch (IllegalArgumentException __e)
+			{
+				// This is actually broken
+				throw Debugging.oops(__e.getMessage());
+			}
 
 		// Nokia API just says to call this instead, so this is done
 		this.setFullScreenMode(true);

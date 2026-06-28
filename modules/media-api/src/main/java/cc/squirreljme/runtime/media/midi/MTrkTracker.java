@@ -318,7 +318,7 @@ public class MTrkTracker
 					int notated32NoteInMidiQuarter = bulk[3];
 					
 					// TODO: ??????
-					Debugging.debugNote("MIDI Time Signature: " +
+					Debugging.todoNote("MIDI Time Signature: " +
 							"num=%d den=%d cpm=%d nnmd=%d",
 						num, den,
 						clocksPerMetronome, notated32NoteInMidiQuarter);

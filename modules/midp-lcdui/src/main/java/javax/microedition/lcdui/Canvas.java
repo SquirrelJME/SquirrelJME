@@ -29,6 +29,7 @@ import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
 import cc.squirreljme.runtime.midlet.MeepRuntime;
+import java.io.IOException;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -333,10 +334,23 @@ public abstract class Canvas
 		// application... otherwise by default the canvas is wiped
 		this._isOpaque = MeepRuntime.versionLeast(3, 0);
 
-		// Setup a generic keycode translator for MIDP2 and lower, if needed.
+		// Set up a generic keycode translator for MIDP2 and lower, if needed.
 		if (MeepRuntime.versionBefore(3, 0))
-			EventTranslate.translatorDefault(
-				GenericKeyCodeTranslator.instance());
+			try
+			{
+				GenericKeyCodeTranslator instance =
+					GenericKeyCodeTranslator.instance();
+				
+				if (instance != null)
+					EventTranslate.translatorDefault(instance);
+			}
+			catch (IllegalArgumentException __e)
+			{
+				__e.printStackTrace();
+				
+				Debugging.notice("Failed to load/parse the generic " +
+					"key translator, it may not be valid.");
+			}
 	}
 	
 	/**

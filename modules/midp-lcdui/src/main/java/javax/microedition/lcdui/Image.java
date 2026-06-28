@@ -41,6 +41,9 @@ public class Image
 	/** Does this have an alpha channel? */
 	private final boolean _alpha;
 	
+	/** Graphics instance for this current pencil. */
+	private volatile PencilGraphics _pencil;
+	
 	Image()
 	{
 		throw Debugging.todo();
@@ -136,13 +139,28 @@ public class Image
 		if (!this.isMutable())
 			throw new IllegalStateException("EB28");
 		
-		// Create hardware accelerated graphics where possible
-		return PencilGraphics.hardwareGraphics(
-			(this._alpha ? UIPixelFormat.INT_ARGB8888 :
-				UIPixelFormat.INT_RGB888),
-			this._width, this._height,
-			this._data, null,
-			0, 0, this._width, this._height);
+		// Setup pencil for this graphics
+		PencilGraphics g = this._pencil;
+		if (g == null)
+		{
+			// Create hardware accelerated graphics where possible
+			g = PencilGraphics.hardwareGraphics(
+				(this._alpha ? UIPixelFormat.INT_ARGB8888 :
+					UIPixelFormat.INT_RGB888),
+				this._width, this._height,
+				this._data, null,
+				0, 0, this._width, this._height);
+			
+			// TODO: WeakReference<> and ReferenceQueue for Graphics to call
+			// TODO: close()
+			Debugging.todoNote("WR<> Image.getGraphics()");
+			this._pencil = g;
+		}
+		
+		// Use pre-existing pencil as its instance is valid still, reset it
+		// completely first before reusing
+		g.initialValues(true, true);
+		return g;
 	}
 	
 	/**
@@ -328,9 +346,9 @@ public class Image
 	 * @since 2022/01/26
 	 */
 	@Override
-	public final int squirreljmeDirectOffset()
+	public final int squirreljmeDirectOffset__()
 	{
-		if (this.squirreljmeIsDirect())
+		if (this.squirreljmeIsDirect__())
 			return 0;
 		return Integer.MIN_VALUE;
 	}
@@ -340,9 +358,9 @@ public class Image
 	 * @since 2022/01/26
 	 */
 	@Override
-	public final int[] squirreljmeDirectRGBInt()
+	public final int[] squirreljmeDirectRGBInt__()
 	{
-		if (this.squirreljmeIsDirect())
+		if (this.squirreljmeIsDirect__())
 			return this._data;
 		return null;
 	}
@@ -352,9 +370,9 @@ public class Image
 	 * @since 2022/01/26
 	 */
 	@Override
-	public final int squirreljmeDirectScanLen()
+	public final int squirreljmeDirectScanLen__()
 	{
-		if (this.squirreljmeIsDirect())
+		if (this.squirreljmeIsDirect__())
 			return this._width;
 		return Integer.MIN_VALUE;
 	}
@@ -364,7 +382,7 @@ public class Image
 	 * @since 2022/01/26
 	 */
 	@Override
-	public final boolean squirreljmeIsDirect()
+	public final boolean squirreljmeIsDirect__()
 	{
 		return !(this.isScalable() || this.isAnimated());
 	}

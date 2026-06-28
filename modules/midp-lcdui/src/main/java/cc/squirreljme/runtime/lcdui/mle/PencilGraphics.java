@@ -22,7 +22,6 @@ import cc.squirreljme.runtime.lcdui.gfx.ExtraGraphics;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.midlet.MeepRuntime;
 import java.io.Closeable;
-import java.io.IOException;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -132,10 +131,7 @@ public final class PencilGraphics
 		
 		// Set initial parameters for the graphics and make sure they are
 		// properly forwarded as well
-		this.setAlphaColor(0xFF000000);
-		this.setBlendingMode(Graphics.SRC_OVER);
-		this.setStrokeStyle(Graphics.SOLID);
-		this.setFont(null);
+		this.initialValues(false, false);
 	}
 
 	/**
@@ -609,11 +605,11 @@ public final class PencilGraphics
 		int[] buf;
 		int offset;
 		int scanLen;
-		if (__src.squirreljmeIsDirect())
+		if (__src.squirreljmeIsDirect__())
 		{
-			buf = __src.squirreljmeDirectRGBInt();
-			offset = __src.squirreljmeDirectOffset();
-			scanLen = __src.squirreljmeDirectScanLen();
+			buf = __src.squirreljmeDirectRGBInt__();
+			offset = __src.squirreljmeDirectOffset__();
+			scanLen = __src.squirreljmeDirectScanLen__();
 		}
 		
 		// Image is not directly accessible, so get a copy of it
@@ -1155,7 +1151,36 @@ public final class PencilGraphics
 		
 		return PencilShelf.hardwareTranslateXY(this.hardware, true);
 	}
-
+	
+	/**
+	 * Sets initial values for the pencil.
+	 * 
+	 * Resetting certain parameters may have unintended side effects, thus
+	 * they are suggested to not be reset unless required.
+	 *
+	 * @param __resetClip Reset the clip?
+	 * @param __resetTrans Reset the translation?
+	 * @since 2026/06/27
+	 */
+	@SquirrelJMEVendorApi
+	public void initialValues(boolean __resetClip, boolean __resetTrans)
+	{
+		// Set initial parameters for the graphics and make sure they are
+		// properly forwarded as well
+		this.setAlphaColor(0xFF000000);
+		this.setBlendingMode(Graphics.SRC_OVER);
+		this.setStrokeStyle(Graphics.SOLID);
+		this.setFont(null);
+		
+		// Reset the clip?
+		if (__resetClip)
+			this.setClip(0, 0, this.surfaceW, this.surfaceH);
+		
+		// Reset translation?
+		if (__resetTrans)
+			this.translate(-this.getTranslateX(), -this.getTranslateY());
+	}
+	
 	/**
 	 * Returns the {@link PencilBracket} that this graphics is currently using
 	 * so that it may be directly used with {@link PencilShelf}.

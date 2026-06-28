@@ -229,6 +229,7 @@ public class AudioClip
 		// MMF apparently accepts looping to -1 in AudioClip. Not stated on the
 		// documentation, but some jars like ClickMan use it for MMF files.
 		// TODO: Add a compatibility flag for MMF AudioClip quirks.
+		Debugging.todoNote("MMF quirks");
 		if (__loop < ((playerFormat == TYPE_MMF) ? -1 : 0) || __loop > 255 ||
 			__volume < 0 || __volume > ((playerFormat == TYPE_MMF) ? 100 : 5))
 			throw new IllegalArgumentException("INVARG");
@@ -247,12 +248,14 @@ public class AudioClip
 				// other jars use the 0-100 range, which is not covered by the
 				// documentation.
 				// TODO: Add a compatibility flag for MMF AudioClip quirks.
+				Debugging.todoNote("MMF quirks");
 				this.__setVolume((playerFormat == TYPE_MMF) ? (__volume <= 5 ?
 					__volume * 20 : __volume) : __volume * 20);
 
 				// Treat 0 and 255 loops as infinite looping to support both MMF
 				// and MIDI/MP3 AudioClip conventions.
 				// TODO: Add a compatibility flag for MMF AudioClip quirks.
+				Debugging.todoNote("MMF quirks");
 				player.setLoopCount((__loop == 255 || __loop == 0) ? -1 :
 					__loop);
 
