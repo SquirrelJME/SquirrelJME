@@ -282,7 +282,7 @@ static sjme_errorCode sjme_path_append(
 	path->length = newLen;
 	path->names[path->nameCount] = newLen;
 
-#if defined(SJME_CONFIG_DEBUG_VERBOSE_PATH)
+#if defined(SJME_CONFIG_DEBUG_PATH) && defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("[%d/%d]: %s <- %.*s",
 		path->length, path->nameCount, path->chars,
 		len, str);

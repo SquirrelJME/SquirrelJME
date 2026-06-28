@@ -111,7 +111,7 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLG_(
 	if (SJME_VLG_ <= 0 || SJME_VLG_ >= SJME_NVM_VMFIELD_NUM_VAR)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VLSVLG)
 	/* Debug. */
 	if (type == SJME_BASIC_TYPE_ID_OBJECT)
 		sjme_emitB("VLG <- %d %p %p = *%08x:%p",
@@ -376,7 +376,7 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 		}
 	}
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_VLSVLG)
 	/* Debug. */
 	if (type == SJME_BASIC_TYPE_ID_OBJECT)
 		sjme_emitB("VLS -> %d %p %p = *%08x:%p",

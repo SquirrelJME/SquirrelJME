@@ -20,6 +20,18 @@
 #ifndef SJME_C_CONFIG_H
 #define SJME_C_CONFIG_H
 
+/* Use a configure file? */
+#if defined(SJME_CONFIG_USE_PATH)
+	/* set() is used by CMake. */
+	#define set(x)
+
+	/* Include the configuration. */
+	#include SJME_CONFIG_USE_PATH
+
+	/* Revert use of set. */
+	#undef set
+#endif
+
 #include <stddef.h>
 
 /* Skip stdlib in certain cases? */

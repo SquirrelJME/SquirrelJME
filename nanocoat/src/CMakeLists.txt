@@ -6,14 +6,6 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Debugging options
-option(SJME_CONFIG_DEBUG_BYTECODES
-	"Debug bytecode instructions?"
-	NO)
-option(SJME_CONFIG_DEBUG_ENTRY
-	"Debug method entry/exit?"
-	NO)
-
 # Declare library
 squirreljme_multilib_add_library(Core
 	access.c
@@ -94,14 +86,4 @@ squirreljme_multilib_link_libraries_required(Core PUBLIC
 squirreljme_multilib_export(Core)
 squirreljme_multilib_install(Core)
 
-# Enable debug options?
-if(SJME_CONFIG_DEBUG_BYTECODES)
-	squirreljme_multilib_compile_definitions(Core PRIVATE
-		SJME_CONFIG_DEBUG_BYTECODES=1)
-endif()
-
-if(SJME_CONFIG_DEBUG_ENTRY)
-	squirreljme_multilib_compile_definitions(Core PRIVATE
-		SJME_CONFIG_DEBUG_ENTRY=1)
-endif()
 
