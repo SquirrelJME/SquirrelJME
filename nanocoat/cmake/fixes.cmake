@@ -289,7 +289,7 @@ macro(squirreljme_check_set_compiler_flag lang flag yesDef)
 		${yesDef})
 
 	# Add compile definition to set this
-	if(${yesDef})
+	if("${${yesDef}}" STREQUAL "1" OR "${${yesDef}}" STREQUAL "TRUE")
 		add_compile_options(${flag})
 	endif()
 endmacro()
