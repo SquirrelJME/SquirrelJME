@@ -13,7 +13,7 @@
 # Is there at least _THIS_ version?
 macro(squirreljme_bp_version_test ver set)
 	# Should this be set?
-	if(CMAKE_VERSION VERSION_GREATER_EQUAL ${ver})
+	if(CMAKE_VERSION VERSION_GREATER_EQUAL "${${ver}}")
 		set(${set} YES)
 	else()
 		set(${set} NO)
@@ -43,20 +43,26 @@ set(SQUIRRELJME_BP_LIST_FILE "${CMAKE_CURRENT_LIST_FILE}")
 set(SQUIRRELJME_BP_LIST_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
 # CMake 3.1+ Policies
-if(squirreljme_bp_version_3_1)
+# Note that before CMP0054 is set, this is not capable of using the variable
+if(squirreljme_bp_version_3_1 OR
+	CMAKE_VERSION VERSION_GREATER_EQUAL "3.1")
 	# Only interpret if() arguments as variables or keywords when unquoted.
+	# This must be set first
+	message(STATUS "Setting policy CMP0054...")
 	cmake_policy(SET CMP0054 NEW)
 endif()
 
 # CMake 3.3+ Policies
 if(squirreljme_bp_version_3_3)
 	# Support new if() IN_LIST operator.
+	message(STATUS "Setting policy CMP0057...")
 	cmake_policy(SET CMP0057 NEW)
 endif()
 
 # CMake 3.25+ Policies
 if(squirreljme_bp_version_3_25)
 	# The return() command checks its parameters.
+	message(STATUS "Setting policy CMP0140...")
 	cmake_policy(SET CMP0140 NEW)
 endif()
 
