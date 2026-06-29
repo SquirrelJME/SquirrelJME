@@ -227,6 +227,9 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		set(hasSystem "switch")
 	elseif("IOS" IN_LIST defines)
 		set(hasSystem "ios")
+	elseif("PSP2_SDK_VERSION" IN_LIST defines OR
+		"__vita__" IN_LIST defines)
+		set(hasSystem "vita")
 	###### PSEUDO SYSTEM/COMPILER TARGETS #####
 	elseif("__WINE__" IN_LIST defines)
 		set(hasSystem "wine")
@@ -391,6 +394,7 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		"__arm32" IN_LIST defines OR
 		"__arm32__" IN_LIST defines OR
 		"_M_ARM" IN_LIST defines OR
+		"ARM9" IN_LIST defines
 		"ARM11" IN_LIST defines)
 		if("__BIG_ENDIAN__" IN_LIST defines)
 			set(hasArch "arm32b")
