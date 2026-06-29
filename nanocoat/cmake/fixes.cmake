@@ -389,7 +389,7 @@ macro(squirreljme_notfound_strip var)
 		unset(${var} CACHE)
 	endif()
 
-	if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.13")
+	if(squirreljme_bp_version_3_13)
 		if("$CACHE{${var}}" MATCHES "-NOTFOUND$")
 			unset(${var} CACHE)
 		endif()

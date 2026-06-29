@@ -10,47 +10,86 @@
 # also for specific embedded toolchains which are out of date or include an
 # old version of CMake and cannot upgrade.
 
+# CMake 3.1+ Policies
+# Note that before CMP0054 is set, this is not capable of using the variable
+# Need to use VERSION_GREATER as VERSION_GREATER_EQUAL does not exist
+if(CMAKE_VERSION VERSION_GREATER "3.0")
+	# Only interpret if() arguments as variables or keywords when unquoted.
+	# This must be set first
+	message(STATUS "Setting policy CMP0054...")
+	cmake_policy(SET CMP0054 NEW)
+endif()
+
+# Spliced version
+set(squirreljme_bp_version_splice "${CMAKE_VERSION}")
+string(REPLACE "." ";"
+	squirreljme_bp_version_splice "${squirreljme_bp_version_splice}")
+list(GET squirreljme_bp_version_splice 0 squirreljme_bp_version_major)
+list(GET squirreljme_bp_version_splice 1 squirreljme_bp_version_minor)
+
+# Basic backport version
+message(STATUS "Reported as CMake ${CMAKE_VERSION}")
+message(STATUS
+	"CMake ${squirreljme_bp_version_major}.${squirreljme_bp_version_minor}")
+
 # Is there at least _THIS_ version?
-macro(squirreljme_bp_version_test ver set)
-	# Should this be set?
-	if(CMAKE_VERSION VERSION_GREATER_EQUAL "${${ver}}")
-		set(${set} YES)
+# Note that VERSION_GREATER_EQUAL was added in CMake 3.7!
+# So this must use VERSION_GREATER or something else
+# Hence, the complication unfortunately
+macro(squirreljme_bp_version_test majorVer minorVer set)
+	if (squirreljme_bp_version_major EQUAL ${majorVer})
+		if(squirreljme_bp_version_minor GREATER ${minorVer})
+			set(${set} YES)
+		elseif(squirreljme_bp_version_minor EQUAL ${minorVer})
+			set(${set} YES)
+		else()
+			set(${set} NO)
+		endif()
 	else()
-		set(${set} NO)
+		if(squirreljme_bp_version_major GREATER ${majorVer})
+			set(${set} YES)
+		else()
+			if(squirreljme_bp_version_minor GREATER ${minorVer})
+				set(${set} YES)
+			elseif(squirreljme_bp_version_minor EQUAL ${minorVer})
+				set(${set} YES)
+			else()
+				set(${set} NO)
+			endif()
+		endif()
 	endif()
 
 	# Print the version stage
-	message(STATUS "${set}: ${${set}}")
+	message(STATUS "CMake ${majorVer}.${minorVer}: ${${set}}")
 endmacro()
 
-# Which CMake version is this?
-message(STATUS "CMake Version ${CMAKE_VERSION}")
-
 # Version tests
-squirreljme_bp_version_test(3.1 squirreljme_bp_version_3_1)
-squirreljme_bp_version_test(3.3 squirreljme_bp_version_3_3)
-squirreljme_bp_version_test(3.13 squirreljme_bp_version_3_13)
-squirreljme_bp_version_test(3.14 squirreljme_bp_version_3_14)
-squirreljme_bp_version_test(3.17 squirreljme_bp_version_3_17)
-squirreljme_bp_version_test(3.18 squirreljme_bp_version_3_18)
-squirreljme_bp_version_test(3.23 squirreljme_bp_version_3_23)
-squirreljme_bp_version_test(3.25 squirreljme_bp_version_3_25)
+squirreljme_bp_version_test(3 1 squirreljme_bp_version_3_1)
+squirreljme_bp_version_test(3 3 squirreljme_bp_version_3_3)
+squirreljme_bp_version_test(3 13 squirreljme_bp_version_3_13)
+squirreljme_bp_version_test(3 14 squirreljme_bp_version_3_14)
+squirreljme_bp_version_test(3 17 squirreljme_bp_version_3_17)
+squirreljme_bp_version_test(3 18 squirreljme_bp_version_3_18)
+squirreljme_bp_version_test(3 23 squirreljme_bp_version_3_23)
+squirreljme_bp_version_test(3 25 squirreljme_bp_version_3_25)
+
+# Future versions
+squirreljme_bp_version_test(4 0 squirreljme_bp_version_4_0)
+squirreljme_bp_version_test(4 1 squirreljme_bp_version_4_1)
+squirreljme_bp_version_test(4 2 squirreljme_bp_version_4_2)
+
+# Note on these future versions
+if(squirreljme_bp_version_4_0 OR
+	squirreljme_bp_version_4_1 OR
+	squirreljme_bp_version_4_2)
+	message(STATUS "CMake 4.0+ may break backwards compatibility with 3.x!")
+endif()
 
 # There is no current function list dir, so this needs to be set for some
 # functions in this backport implementation to work.
 # This replaces CMAKE_CURRENT_FUNCTION_LIST_FILE
 set(SQUIRRELJME_BP_LIST_FILE "${CMAKE_CURRENT_LIST_FILE}")
 set(SQUIRRELJME_BP_LIST_DIR "${CMAKE_CURRENT_LIST_DIR}")
-
-# CMake 3.1+ Policies
-# Note that before CMP0054 is set, this is not capable of using the variable
-if(squirreljme_bp_version_3_1 OR
-	CMAKE_VERSION VERSION_GREATER_EQUAL "3.1")
-	# Only interpret if() arguments as variables or keywords when unquoted.
-	# This must be set first
-	message(STATUS "Setting policy CMP0054...")
-	cmake_policy(SET CMP0054 NEW)
-endif()
 
 # CMake 3.3+ Policies
 if(squirreljme_bp_version_3_3)
