@@ -31,7 +31,7 @@ Players now have a universal and compatible backing. Ones which already
 existed, or were recently contributed, have been ported to the new system.
 
 AShiningRay has contributed support for various Nokia, Samsung, and Sony
-Ericsson audio formats. Additionally, they have implemented support for WAV
+Ericsson audio formats. Additionally, he has implemented support for WAV
 playback, including ADPCM and G.711! This means that most titles
 which have non-Sun audio formats can now play sounds. Nokia sound support
 includes Nokia OTA Ringtones as well.
