@@ -50,11 +50,6 @@ if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 		list(SORT ${lfsList})
 	endmacro()
 
-	# Additional compiler settings
-	macro(add_compile_definitions varVal)
-		add_definitions("-D${varVal}")
-	endmacro()
-
 	# Additional linker options
 	macro(target_link_options)
 		# The target we are interested in...

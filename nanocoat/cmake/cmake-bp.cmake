@@ -125,6 +125,13 @@ macro(squirreljme_bp_return_propagate inOutVariable)
 	endif()
 endmacro()
 
+# Adding compile definitions was done in a slightly different way
+if(NOT squirreljme_bp_version_3_12)
+	macro(add_compile_definitions varVal)
+		add_definitions("-D${varVal}")
+	endmacro()
+endif()
+
 # squirreljme_bp_check_linker_flag
 # This according to the CMake documentation is a convenience method that
 # > This command temporarily sets the CMAKE_REQUIRED_LINK_OPTIONS variable
