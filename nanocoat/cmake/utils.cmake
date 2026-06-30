@@ -15,7 +15,7 @@ find_program(HOST_MAKE "gmake" "make")
 macro(squirreljme_build_util name)
 	# Determine output path
 	set(sjmeUtilDir_${name}
-		"${CMAKE_BINARY_DIR}/util/${name}/")
+		"${CMAKE_BINARY_DIR}/util/${name}")
 	set(sjmeUtilExe_${name}
 		"${sjmeUtilDir_${name}}/${name}${CMAKE_HOST_EXECUTABLE_SUFFIX}")
 
@@ -27,7 +27,10 @@ macro(squirreljme_build_util name)
 		# Use host make where possible
 		if(HOST_MAKE)
 			execute_process(
-				COMMAND "${HOST_MAKE}"
+				COMMAND "${CMAKE_COMMAND}" "-E" "env"
+					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+					"--" "${HOST_MAKE}"
 					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
 					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
 				WORKING_DIRECTORY
@@ -53,7 +56,8 @@ macro(squirreljme_build_util name)
 
 		# Otherwise, fail
 		if(NOT EXISTS "${sjmeUtilExe_${name}}")
-			message(FATAL_ERROR "Could not build host ${name}...")
+			message(FATAL_ERROR
+				"Could not build host ${name} at ${sjmeUtilExe_${name}}...")
 		endif()
 	endif()
 endmacro()
@@ -108,7 +112,8 @@ function(squirreljme_decode_file how
 	endif()
 
 	# Run the command
-	execute_process(COMMAND "${sjmeUtilExe_${decode}}" "${how}"
+	message(STATUS "Bip: ${sjmeUtilExe_decode}")
+	execute_process(COMMAND "${sjmeUtilExe_decode}" "${how}"
 		INPUT_FILE "${inputPath}"
 		OUTPUT_FILE "${outputPath}"
 		RESULT_VARIABLE conversionExitCode
@@ -188,16 +193,16 @@ function(squirreljme_sourceize_file inputPath
 	# Get the base name of the input file
 	get_filename_component(inputPathBaseName
 		"${inputPath}" NAME)
-
+	
 	# Run the command
-	execute_process(COMMAND "${sjmeUtilExe_${sourceize}}"
+	execute_process(COMMAND "${sjmeUtilExe_sourceize}"
 			"${inputPathBaseName}" "C"
 		INPUT_FILE "${inputPath}"
 		OUTPUT_FILE "${outputCPath}"
 		RESULT_VARIABLE sourceizeExitCode
 		TIMEOUT 16)
-	execute_process(COMMAND "${sjmeUtilExe_${sourceize}}"
-		"${inputPathBaseName}" "H"
+	execute_process(COMMAND "${sjmeUtilExe_sourceize}"
+			"${inputPathBaseName}" "H"
 		INPUT_FILE "${inputPath}"
 		OUTPUT_FILE "${outputHPath}"
 		RESULT_VARIABLE sourceizeExitCode
