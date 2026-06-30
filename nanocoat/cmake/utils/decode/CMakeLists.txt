@@ -42,7 +42,7 @@ message(STATUS "Adding decode...")
 add_executable(decode
 	decode.c)
 
-target_include_directories(sourceize PUBLIC
+target_include_directories(decode PUBLIC
 	"${CMAKE_SOURCE_DIR}/..")
 
 target_compile_definitions(decode PUBLIC
