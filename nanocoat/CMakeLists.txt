@@ -32,7 +32,8 @@ squirreljme_include("identify-squirreljme-version-file.cmake")
 squirreljme_include("compiler-shim.cmake")
 
 # Define project
-if(${CMAKE_VERSION} VERSION_LESS "3.12")
+if(NOT squirreljme_bp_version_3_12 OR
+	"${CMAKE_VERSION}" VERSION_LESS "3.12")
 	project(SquirrelJME
 		VERSION ${SQUIRRELJME_VERSION}
 		LANGUAGES C)

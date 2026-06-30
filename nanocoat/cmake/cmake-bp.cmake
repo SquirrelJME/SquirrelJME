@@ -68,6 +68,7 @@ endmacro()
 # Version tests
 squirreljme_bp_version_test(3 1 squirreljme_bp_version_3_1)
 squirreljme_bp_version_test(3 3 squirreljme_bp_version_3_3)
+squirreljme_bp_version_test(3 12 squirreljme_bp_version_3_12)
 squirreljme_bp_version_test(3 13 squirreljme_bp_version_3_13)
 squirreljme_bp_version_test(3 14 squirreljme_bp_version_3_14)
 squirreljme_bp_version_test(3 17 squirreljme_bp_version_3_17)
