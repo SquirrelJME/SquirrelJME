@@ -263,10 +263,10 @@ function(squirreljme_bp_file_size inFileName outVariable)
 
 		# Cut in half
 		if(squirreljme_bp_version_3_13)
-			math(EXPR ${outVariable} "${outVariable} / 2"
+			math(EXPR ${outVariable} "${${outVariable}} / 2"
 				OUTPUT_FORMAT DECIMAL)
 		else()
-			math(EXPR ${outVariable} "${outVariable} / 2")
+			math(EXPR ${outVariable} "${${outVariable}} / 2")
 		endif()
 
 		# Return the resultant size
