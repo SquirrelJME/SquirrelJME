@@ -42,5 +42,8 @@ message(STATUS "Adding decode...")
 add_executable(decode
 	decode.c)
 
+target_include_directories(sourceize PUBLIC
+	"${CMAKE_SOURCE_DIR}/..")
+
 target_compile_definitions(decode PUBLIC
 	SJME_CONFIG_HAS_NO_C11_THREADS=1)

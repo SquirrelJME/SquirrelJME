@@ -42,5 +42,8 @@ message(STATUS "Adding sourceize...")
 add_executable(sourceize
 	sourceize.c)
 
+target_include_directories(sourceize PUBLIC
+	"${CMAKE_SOURCE_DIR}/..")
+
 target_compile_definitions(sourceize PUBLIC
 	SJME_CONFIG_HAS_NO_C11_THREADS=1)
