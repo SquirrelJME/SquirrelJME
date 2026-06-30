@@ -42,7 +42,6 @@ squirreljme_include_nanocoat("identify-squirreljme-version-file.cmake")
 # check for any languages, by default C/C++ are enabled which we do not
 # care for as we are just delegating builds
 project(SquirrelJMEBuild
-	HOMEPAGE_URL https://squirreljme.cc/
 	LANGUAGES)
 
 # Version number for SquirrelJME
