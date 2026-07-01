@@ -94,8 +94,19 @@ macro(squirreljme_find_generator generator toolset platform)
 		endif()
 	endif()
 
+	# Try to actually run the output, since older CMake seems to want to
+	# actually sometimes only configure with certain generators when built
+	execute_process(
+		COMMAND "${CMAKE_COMMAND}"
+			"--build" "${tempBuild}"
+		WORKING_DIRECTORY "${tempBuild}"
+		RESULT_VARIABLE buildResult
+		OUTPUT_QUIET
+		ERROR_QUIET)
+
 	# If successful and the system/arch information exists, register it
 	if("${generatorResult}" EQUAL "0" AND
+		"${buildResult}" EQUAL "0" AND
 		EXISTS "${tempBuild}/system.tgt" AND
 		EXISTS "${tempBuild}/arch__.tgt")
 		# Load the info
@@ -113,6 +124,9 @@ macro(squirreljme_find_generator generator toolset platform)
 		if(NOT "${generatorResult}" EQUAL "0")
 			message(STATUS
 				"Ignoring ${generator}.${toolset}.${platform}... ")
+		elseif(NOT "${buildResult}" EQUAL "0")
+			message(STATUS
+				"Failed ${generator}.${toolset}.${platform}... ")
 		elseif(NOT EXISTS "${tempBuild}/system.tgt")
 			message(STATUS
 				"Unknown system for ${generator}.${toolset}.${platform}... ")

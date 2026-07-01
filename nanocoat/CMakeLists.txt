@@ -17,7 +17,8 @@ endif()
 
 # Easier includes
 set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${CMAKE_SOURCE_DIR}")
-include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
+include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake"
+	NO_POLICY_SCOPE)
 
 # Include backports
 squirreljme_include_nanocoat("cmake-bp.cmake")

@@ -16,7 +16,8 @@ else()
 endif()
 
 # Include backports
-include("${CMAKE_SOURCE_DIR}/../../../nanocoat/cmake/cmake-bp.cmake")
+include("${CMAKE_SOURCE_DIR}/../../../nanocoat/cmake/cmake-bp.cmake"
+	NO_POLICY_SCOPE)
 
 # Declare project
 project(Simple)
@@ -25,7 +26,8 @@ project(Simple)
 enable_language(C)
 
 # System mapping information and identification
-include("${CMAKE_SOURCE_DIR}/../../../nanocoat/cmake/system-map.cmake")
+include("${CMAKE_SOURCE_DIR}/../../../nanocoat/cmake/system-map.cmake"
+	NO_POLICY_SCOPE)
 
 # Add a shared library target
 add_library(Simple SHARED

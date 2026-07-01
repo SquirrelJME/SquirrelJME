@@ -42,7 +42,8 @@ list(REMOVE_AT copyFiles 0)
 list(REMOVE_AT copyFiles 0)
 
 # Include the cache file
-include("${cacheFile}")
+include("${cacheFile}"
+	NO_POLICY_SCOPE)
 
 ## Get the list file and paths
 set(scritchAnyLists)

@@ -18,7 +18,8 @@ endif()
 # Specify NanoCoat directory for includes
 set(SQUIRRELJME_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
 set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${SQUIRRELJME_ROOT_DIR}/nanocoat")
-include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake")
+include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake"
+	NO_POLICY_SCOPE)
 
 # Include backports
 squirreljme_include_nanocoat("cmake-bp.cmake")
