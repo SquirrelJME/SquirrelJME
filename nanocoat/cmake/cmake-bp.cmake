@@ -274,3 +274,141 @@ function(squirreljme_bp_file_size inFileName outVariable)
 		squirreljme_bp_return_propagate(${outVariable})
 	endif()
 endfunction()
+
+# String joining
+function(squirreljme_string_join sjGlue sjOut sjList)
+	if(squirreljme_bp_version_3_13 OR
+		"${CMAKE_VERSION}" VERSION_GREATER "3.12")
+		string(JOIN "${sjGlue}" ${sjOut}
+			"${sjList}")
+		squirreljme_bp_return_propagate(${sjOut})
+	else()
+		# Setup initial blank output
+		set(sjResult "")
+
+		# Go through list
+		list(LENGTH "${sjList}" sjListLen)
+		set(sjAt "0")
+		while("${sjAt}" LESS "${sjListLen}")
+			# Get list item
+			set(sjTemp "")
+			list(GET "${sjList}" "${sjAt}" sjTemp)
+
+			# Append joiner
+			string(APPEND sjResult "${sjGlue}")
+
+			# Append string
+			string(APPEND sjResult "${sjTemp}")
+
+			# Move up
+			math(EXPR sjAt "${sjAt} + 1")
+		endwhile()
+
+		# Set output
+		set(${sjOut} "${sjResult}")
+		squirreljme_bp_return_propagate(${sjOut})
+	endif()
+endfunction()
+
+function(squirreljme_target_link_options target scope)
+	# This is available since CMake 3.13
+	if(squirreljme_bp_version_3_13)
+		target_link_options(${ARGV})
+
+	# Otherwise it must be manually added in
+	else()
+		# The target we are interested in...
+		set(ltoArgs "${ARGV}")
+		list(GET ltoArgs 0 tloTarget)
+
+		# Is there a before?
+		list(GET ltoArgs 1 tloMaybeBefore)
+		if(tloMaybeBefore STREQUAL "BEFORE")
+			# Mark as before
+			set(tloBefore YES)
+
+			# Start pivot point
+			set(tloPivot 2)
+		else()
+			# Mark as not before
+			set(tloBefore No)
+
+			# Start pivot point
+			set(tloPivot 1)
+		endif()
+
+		# Handle the remaining number of items
+		set(tloAt "${tloPivot}")
+		set(tloFlags)
+		while(tloAt LESS ARGC)
+			# Determine indexes
+			math(EXPR tloAtI "${tloAt} + 0")
+			math(EXPR tloAtL "${tloAt} + 1")
+
+			# Extract sub-parameters
+			list(GET ltoArgs "${tloAtI}" tloInstance)
+			list(GET ltoArgs "${tloAtL}" tloFlag)
+
+			# Add library, ignore the instance for it
+			list(APPEND tloFlags "${tloFlag}")
+
+			# Move indexes up for the next items
+			math(EXPR tloAt "${tloAt} + 2")
+		endwhile()
+
+		# Join options together
+		squirreljme_string_join(" " tloStrOpt "${tloFlags}")
+
+		# What should be used for link flags?
+		if(NOT "$<CONFIG>" STREQUAL "")
+			set(tloLinkFlagsName "LINK_FLAGS_$<CONFIG>")
+		else()
+			set(tloLinkFlagsName "LINK_FLAGS")
+		endif()
+
+		# Get old link options to add in the list...
+		get_target_property(tloOldLinkOpt ${tloTarget}
+			LINK_FLAGS)
+		if(tloOldLinkOpt)
+			if(tloBefore)
+				set_target_properties(${tloTarget} PROPERTIES
+					${tloLinkFlagsName} "${tloStrOpt} ${tloOldLinkOpt}")
+			else()
+				set_target_properties(${tloTarget} PROPERTIES
+					${tloLinkFlagsName} "${tloOldLinkOpt} ${tloStrOpt}")
+			endif()
+		else()
+			set_target_properties(${tloTarget} PROPERTIES
+				${tloLinkFlagsName} "${tloStrOpt}")
+		endif()
+	endif()
+endfunction()
+
+# Add link directories to target
+function(squirreljme_target_link_directories target scope)
+	# Determine directories
+	set(directories "${ARGV}")
+	list(REMOVE_AT directories 0)
+	list(REMOVE_AT directories 0)
+
+	# This is available since CMake 3.13
+	if(squirreljme_bp_version_3_13)
+		target_link_directories(${target} ${scope} ${directories})
+	else()
+		# MSVC
+		if(MSVC OR
+			CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
+			CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+			foreach(directory IN ITEMS "${directories}")
+				squirreljme_target_link_options(${target} ${scope}
+					"/LIBPATH:${directory}")
+			endforeach()
+		# Assume POSIX
+		else()
+			foreach(directory IN ITEMS "${directories}")
+				squirreljme_target_link_options(${target} ${scope}
+					"-L${directory}")
+			endforeach()
+		endif()
+	endif()
+endfunction()

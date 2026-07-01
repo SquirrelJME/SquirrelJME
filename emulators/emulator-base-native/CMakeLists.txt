@@ -329,7 +329,7 @@ target_include_directories(libEmulatorBase PRIVATE
 	"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/include/3rdparty/jni")
 
 # Libraries for the build
-target_link_directories(libEmulatorBase PRIVATE
+squirreljme_target_link_directories(libEmulatorBase PRIVATE
 	"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin")
 squirreljme_link_libraries_required(libEmulatorBase PUBLIC
 	"${SQUIRRELJME_REQUIRED_LIBS}"
