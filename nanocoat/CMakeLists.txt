@@ -12,7 +12,7 @@
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
 	cmake_minimum_required(VERSION 3.13..3.31)
 else()
-	cmake_minimum_required(VERSION 3.0)
+	cmake_minimum_required(VERSION 3.1)
 endif()
 
 # Easier includes

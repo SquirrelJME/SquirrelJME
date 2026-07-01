@@ -13,12 +13,10 @@
 # CMake 3.1+ Policies
 # Note that before CMP0054 is set, this is not capable of using the variable
 # Need to use VERSION_GREATER as VERSION_GREATER_EQUAL does not exist
-if(CMAKE_VERSION VERSION_GREATER "3.0")
-	# Only interpret if() arguments as variables or keywords when unquoted.
-	# This must be set first
-	message(STATUS "Setting policy CMP0054...")
-	cmake_policy(SET CMP0054 NEW)
-endif()
+# Only interpret if() arguments as variables or keywords when unquoted.
+# This must be set first
+message(STATUS "Setting policy CMP0054...")
+cmake_policy(SET CMP0054 NEW)
 
 # Spliced version
 set(squirreljme_bp_version_splice "${CMAKE_VERSION}")
