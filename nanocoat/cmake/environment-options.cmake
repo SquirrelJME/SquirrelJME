@@ -13,19 +13,20 @@ define_property(GLOBAL PROPERTY globalEnvOptions
 	FULL_DOCS "globalEnvOptions")
 
 # Used to simplify options
-macro(squirreljme_env_option key value default)
+function(squirreljme_env_option key value default)
 	# Declare the option
 	option(${key} "${value}" ${default})
 
 	# Add this key to the global property list
 	get_property(globalEnvOptions GLOBAL PROPERTY globalEnvOptions)
-	if("${globalEnvOptions}" STREQUAL "globalEnvOptions-NOTFOUND")
+	if("${globalEnvOptions}" STREQUAL "globalEnvOptions-NOTFOUND" OR
+		"${globalEnvOptions}" STREQUAL "")
 		set_property(GLOBAL PROPERTY globalEnvOptions "${key}")
 	else()
 		list(APPEND globalEnvOptions "${key}")
 		set_property(GLOBAL PROPERTY globalEnvOptions "${globalEnvOptions}")
 	endif()
-endmacro()
+endfunction()
 
 # Generate a list of options to forward to another CMake call
 function(squirreljme_env_forward result)
@@ -33,9 +34,9 @@ function(squirreljme_env_forward result)
 	set(${result})
 
 	# Go through each possible property
-	get_property(globalEnvOptions GLOBAL PROPERTY globalEnvOptions)
-	foreach(globalEnvOption IN LISTS globalEnvOptions)
-		list(APPEND ${result} "-D${globalEnvOption}=${${globalEnvOption}}")
+	get_property(keys GLOBAL PROPERTY globalEnvOptions)
+	foreach(key IN ITEMS ${keys})
+		list(APPEND ${result} "-D${key}=${${key}}")
 	endforeach()
 
 	# Return the result
