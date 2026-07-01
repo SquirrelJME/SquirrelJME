@@ -633,9 +633,11 @@ function(squirreljme_multilib_install target)
 	# Export libraries
 	if(SQUIRRELJME_ENABLE_DYLIB)
 		install(TARGETS ${target}DyLib
-			${target}Static)
+			${target}Static
+			LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}")
 	else()
-		install(TARGETS ${target}Static)
+		install(TARGETS ${target}Static
+			LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}")
 	endif()
 endfunction()
 
