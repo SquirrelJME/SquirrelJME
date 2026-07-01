@@ -8,8 +8,8 @@
 # DESCRIPTION: Running of automated tests
 
 # Add testing for each virtual machine type and clutter level
-foreach(jvm IN LISTS SQUIRRELJME_JVM_MAP)
-	foreach(clutter IN LISTS SQUIRRELJME_CLUTTER_MAP)
+foreach(jvm IN ITEMS ${SQUIRRELJME_JVM_MAP})
+	foreach(clutter IN ITEMS ${SQUIRRELJME_CLUTTER_MAP})
 		# Extract proper nouns
 		squirreljme_unmap(jvmNoun 0 "${jvm}")
 		squirreljme_unmap(clutterNoun 0 "${clutter}")
@@ -55,12 +55,12 @@ foreach(jvm IN LISTS SQUIRRELJME_JVM_MAP)
 				SQUIRRELJME_TEST_RESULTS_DIR "${testResultsDir}")
 
 			# Need to make pseudo test target?
-			if(NOT TARGET test)
-				add_custom_target(test)
+			if(NOT TARGET testAll)
+				add_custom_target(testAll)
 			endif()
 
 			# Add to pseudo test target
-			add_dependencies(test
+			add_dependencies(testAll
 				${targetName})
 		endif()
 	endforeach()

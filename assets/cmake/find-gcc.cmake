@@ -9,8 +9,8 @@
 
 # Go through each possible architecture and system and try to find GCC
 # compilers for these
-foreach(systemMap IN LISTS SQUIRRELJME_SYSTEM_MAP)
-	foreach(archMap IN LISTS SQUIRRELJME_ARCH_MAP)
+foreach(systemMap IN ITEMS ${SQUIRRELJME_SYSTEM_MAP})
+	foreach(archMap IN ITEMS ${SQUIRRELJME_ARCH_MAP})
 		# GCC
 		squirreljme_unmap(systemGcc 1 "${systemMap}")
 		squirreljme_unmap(archGcc 1 "${archMap}")
@@ -26,7 +26,19 @@ foreach(systemMap IN LISTS SQUIRRELJME_SYSTEM_MAP)
 		endif()
 
 		# Build GCC compiler name (such as i686-linux-gnu-gcc)
-		set(gccName "${archGcc}-${systemGcc}-gcc")
+		if("${archGcc}" STREQUAL "none")
+			if("${systemGcc}" STREQUAL "none")
+				set(gccName "gcc")
+			else()
+				set(gccName "${systemGcc}-gcc")
+			endif()
+		else()
+			if("${systemGcc}" STREQUAL "none")
+				set(gccName "${archGcc}-gcc")
+			else()
+				set(gccName "${archGcc}-${systemGcc}-gcc")
+			endif()
+		endif()
 
 		# Is this GCC compiler available? Note that for Windows there could
 		# be the win32 variant (prefer Windows threads over Posix threads)

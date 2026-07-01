@@ -29,7 +29,7 @@ set(extractedTemp "${CMAKE_BINARY_DIR}/mergeTemp")
 # Get the ZIPs which should be merged together
 get_property(mergeSet GLOBAL PROPERTY SQUIRRELJME_STANDALONE_MERGE_SET)
 set(mergeZips)
-foreach(mergeItem IN LISTS mergeSet)
+foreach(mergeItem IN ITEMS ${mergeSet})
 	# Get the output
 	get_target_property(targetOutPath ${mergeItem} SQUIRRELJME_OUTPUT_PATH)
 	list(APPEND mergeZips "${targetOutPath}")

@@ -106,7 +106,7 @@ macro(squirreljme_static_executable target)
 		CMAKE_COMPILER_IS_GNUCXX OR
 		CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
 		CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-		target_link_options(${target} BEFORE PRIVATE
+		squirreljme_target_link_options(${target} BEFORE PRIVATE
 			"-static")
 	elseif(MSVC OR
 		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
@@ -117,7 +117,7 @@ macro(squirreljme_static_executable target)
 		#	"/MT")
 
 		# And as such we cannot specify a library to use here
-		#target_link_options(${target} BEFORE PRIVATE
+		#squirreljme_target_link_options(${target} BEFORE PRIVATE
 		#	"/NODEFAULTLIB:library")
 	endif()
 endmacro()
@@ -262,12 +262,12 @@ function(squirreljme_shared_library_exports target)
 	if(SQUIRRELJME_HAS_IMPLIB)
 		# MSVC?
 		if(MSVC)
-			target_link_options(${target} PRIVATE
+			squirreljme_target_link_options(${target} PRIVATE
 				"/IMPLIB:${impLibPath}")
 
 		# Mingw32 or Mingw-w64
 		elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-			target_link_options(${target} PRIVATE
+			squirreljme_target_link_options(${target} PRIVATE
 				"-Wl,--out-implib,${impLibPath}")
 		endif()
 	endif()
@@ -289,7 +289,7 @@ macro(squirreljme_check_set_compiler_flag lang flag yesDef)
 		${yesDef})
 
 	# Add compile definition to set this
-	if(${yesDef})
+	if("${${yesDef}}" STREQUAL "1" OR "${${yesDef}}" STREQUAL "TRUE")
 		add_compile_options(${flag})
 	endif()
 endmacro()
@@ -403,7 +403,7 @@ macro(squirreljme_notfound_strip var)
 		unset(${var} CACHE)
 	endif()
 
-	if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.13")
+	if(squirreljme_bp_version_3_13)
 		if("$CACHE{${var}}" MATCHES "-NOTFOUND$")
 			unset(${var} CACHE)
 		endif()
@@ -470,15 +470,15 @@ function(squirreljme_target_link_fixes target)
 
 	# Static libgcc?
 	if(SJME_CONFIG_HAS_STATIC_LIBGCC)
-		target_link_options(${target} PRIVATE
+		squirreljme_target_link_options(${target} PRIVATE
 			"-static-libgcc")
 	# Static libgcc (-Wl)?
 	elseif(SJME_CONFIG_HAS_STATIC_LIBGCC_WL)
-		target_link_options(${target} PRIVATE
+		squirreljme_target_link_options(${target} PRIVATE
 			"-Wl,-static-libgcc")
 	# Static libgcc (LINKER:)?
 	elseif(SJME_CONFIG_HAS_STATIC_LIBGCC_LINK)
-		target_link_options(${target} PRIVATE
+		squirreljme_target_link_options(${target} PRIVATE
 			"LINKER:-static-libgcc")
 	endif()
 endfunction()

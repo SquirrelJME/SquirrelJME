@@ -34,7 +34,7 @@
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
 	cmake_policy(VERSION 3.13..3.31)
 else()
-	cmake_policy(VERSION 3.0)
+	cmake_policy(VERSION 3.1)
 endif()
 
 # Read in all arguments to a list

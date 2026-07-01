@@ -404,9 +404,15 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 
 	/* If static, refer to the class, otherwise refer to the instance. */
 	if (SJME_NVM_ACC_IS(inMethod->flags, STATIC))
-		result->instance = sjme_weakUp(SJME_AS_JOBJECT(result->inClass));
+		result->instance = SJME_AS_JOBJECT(result->inClass);
 	else if (argV != NULL)
-		result->instance = sjme_weakUp(argV[0].v.l);
+		result->instance = argV[0].v.l;
+	else
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* The instance is always counted up, as this frame now refers to it. */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(result->instance)))
+		return sjme_error_default(error);
 
 	/* Used for final field setting. */
 	result->flags |= (targetInfo->bits & SJME_NVM_CLASS_INIT_ANY);
@@ -455,7 +461,8 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		
 		/* Comma? */
 		if (i > 0)
-			snprintf(&argBuf[argBufLen], (ARG_BUF_SIZE - argBufLen) - 1,
+			snprintf(&argBuf[argBufLen],
+				(ARG_BUF_SIZE - argBufLen) - 1,
 				", ");
 		
 		/* Out of room? */

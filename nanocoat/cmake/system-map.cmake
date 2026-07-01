@@ -7,6 +7,14 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: System and architecture mappings
 
+# CMake 3.3+ Policies
+if(squirreljme_bp_version_3_3 OR
+	"${CMAKE_VERSION}" VERSION_GREATER "3.2")
+	# Support new if() IN_LIST operator.
+	message(STATUS "Setting policy CMP0057...")
+	cmake_policy(SET CMP0057 NEW)
+endif()
+
 # Properties used for all targets
 define_property(TARGET PROPERTY SQUIRRELJME_SYSTEM
 	BRIEF_DOCS "The target SquirrelJME system."
@@ -94,6 +102,7 @@ list(APPEND SQUIRRELJME_SYSTEM_MAP
 	"emscripten!emscripten"
 	"macosx!macosx"
 	"macosx!darwin"
+	"macosx!apple-darwin8"
 	"3ds!3ds"
 	"windowsce!wince-cegcc"
 	"palmos!palmos")
@@ -227,6 +236,9 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		set(hasSystem "switch")
 	elseif("IOS" IN_LIST defines)
 		set(hasSystem "ios")
+	elseif("PSP2_SDK_VERSION" IN_LIST defines OR
+		"__vita__" IN_LIST defines)
+		set(hasSystem "vita")
 	###### PSEUDO SYSTEM/COMPILER TARGETS #####
 	elseif("__WINE__" IN_LIST defines)
 		set(hasSystem "wine")
@@ -391,6 +403,7 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		"__arm32" IN_LIST defines OR
 		"__arm32__" IN_LIST defines OR
 		"_M_ARM" IN_LIST defines OR
+		"ARM9" IN_LIST defines
 		"ARM11" IN_LIST defines)
 		if("__BIG_ENDIAN__" IN_LIST defines)
 			set(hasArch "arm32b")

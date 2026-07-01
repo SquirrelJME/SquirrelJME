@@ -74,7 +74,7 @@ endif()
 # Register multiple targets for Fossil uploading
 macro(squirreljme_fossil_upload_register)
 	set(targetList "${ARGV}")
-	foreach(target IN LISTS targetList)
+	foreach(target IN ITEMS ${targetList})
 		squirreljme_fossil_upload(${target})
 	endforeach()
 endmacro()

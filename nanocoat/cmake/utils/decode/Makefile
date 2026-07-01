@@ -5,17 +5,16 @@
 # SquirrelJME is under the Mozilla Public License Version 2.0.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Soft patching for CMake.
+# DESCRIPTION: Various utilities (backwards compatible make)
 
-# CMake 3.13 added many things!
-if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
-	# Sort list of files
-	macro(squirreljme_list_file_sort lfsList)
-		list(SORT ${lfsList})
-	endmacro()
-else()
-	# Sorting file list
-	macro(squirreljme_list_file_sort lfsList)
-		list(SORT ${lfsList} COMPARE FILE_BASENAME)
-	endmacro()
-endif()
+SJME_CFLAGS=-I../ -I../../../include/ -DSJME_CONFIG_HAS_NO_C11_THREADS=1
+
+$(OUTPUT_DIR)/decode$(HOST_EXE_SUFFIX):		decode.c
+											$(CC) -o "$@" $(SJME_CFLAGS) $<
+
+all:					$(OUTPUT_DIR)/decode$(HOST_EXE_SUFFIX)
+
+clean:
+						rm -f "$(OUTPUT_DIR)/./decode$(HOST_EXE_SUFFIX)"
+
+.PHONY:							all

@@ -12,12 +12,13 @@
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
 	cmake_minimum_required(VERSION 3.13..3.31)
 else()
-	cmake_minimum_required(VERSION 3.0)
+	cmake_minimum_required(VERSION 3.1)
 endif()
 
 # Easier includes
 set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${CMAKE_SOURCE_DIR}")
-include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake" NO_POLICY_SCOPE)
+include("${CMAKE_SOURCE_DIR}/cmake/easier-includes.cmake"
+	NO_POLICY_SCOPE)
 
 # Include backports
 squirreljme_include_nanocoat("cmake-bp.cmake")
@@ -32,7 +33,8 @@ squirreljme_include("identify-squirreljme-version-file.cmake")
 squirreljme_include("compiler-shim.cmake")
 
 # Define project
-if(${CMAKE_VERSION} VERSION_LESS "3.12")
+if(NOT squirreljme_bp_version_3_12 OR
+	"${CMAKE_VERSION}" VERSION_LESS "3.12")
 	project(SquirrelJME
 		VERSION ${SQUIRRELJME_VERSION}
 		LANGUAGES C)

@@ -14,11 +14,18 @@ macro(squirreljme_natives_build systemNormal archNormal configureRuleName
 	set(packagePath
 		"${buildPath}/bin/natives-${systemNormal}-${archNormal}.zip")
 
+	# Make sure the build path exists
+	file(MAKE_DIRECTORY "${buildPath}")
+
 	# Setup rule to build
 	add_custom_target(${buildRuleName}
 		COMMAND "${CMAKE_COMMAND}"
 			"--build" "${buildPath}"
-			"--target" "libEmulatorBase" "bundleNatives"
+			"--target" "libEmulatorBase"
+		COMMAND "${CMAKE_COMMAND}"
+			"--build" "${buildPath}"
+			"--target" "bundleNatives"
+		WORKING_DIRECTORY "${buildPath}"
 		DEPENDS ${configureRuleName}
 		BYPRODUCTS "${packagePath}"
 		COMMENT "Building ${systemNormal}/${archNormal}..."
@@ -56,15 +63,28 @@ macro(squirreljme_natives_compiler systemNormal archNormal compilerPath)
 	file(MAKE_DIRECTORY "${buildPath}")
 
 	# Setup rule to configure
-	add_custom_target(${configureRuleName}
-		COMMAND "${CMAKE_COMMAND}"
-			"-DCC=${compilerPath}"
-			"-DCMAKE_C_COMPILER=${compilerPath}"
-			"${forwardedEnv}"
-			"-B" "${buildPath}"
-			"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
-		COMMENT "Configuring ${systemNormal}/${archNormal} (compiler)..."
-		COMMAND_EXPAND_LISTS)
+	if(squirreljme_bp_version_3_13)
+		add_custom_target(${configureRuleName}
+			COMMAND "${CMAKE_COMMAND}"
+				"-DCC=${compilerPath}"
+				"-DCMAKE_C_COMPILER=${compilerPath}"
+				"${forwardedEnv}"
+				"-B" "${buildPath}"
+				"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
+			WORKING_DIRECTORY "${buildPath}"
+			COMMENT "Configuring ${systemNormal}/${archNormal} (compiler)..."
+			COMMAND_EXPAND_LISTS)
+	else()
+		add_custom_target(${configureRuleName}
+			COMMAND "${CMAKE_COMMAND}"
+				"-DCC=${compilerPath}"
+				"-DCMAKE_C_COMPILER=${compilerPath}"
+				"${forwardedEnv}"
+				"${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
+			WORKING_DIRECTORY "${buildPath}"
+			COMMENT "Configuring ${systemNormal}/${archNormal} (compiler)..."
+			COMMAND_EXPAND_LISTS)
+	endif()
 
 	# Do not build by default
 	set_target_properties(${configureRuleName} PROPERTIES
@@ -114,13 +134,24 @@ macro(squirreljme_natives_generator systemNormal archNormal
 	endif()
 
 	# Setup rule to configure
-	add_custom_target(${configureRuleName}
-		COMMAND "${CMAKE_COMMAND}"
-			"${generatorArgs}"
-			"-B" "${buildPath}"
-			"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
-		COMMENT "Configuring ${systemNormal}/${archNormal} (${method})..."
-		COMMAND_EXPAND_LISTS)
+	if(squirreljme_bp_version_3_13)
+		add_custom_target(${configureRuleName}
+			COMMAND "${CMAKE_COMMAND}"
+				"${generatorArgs}"
+				"-B" "${buildPath}"
+				"-S" "${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
+			WORKING_DIRECTORY "${buildPath}"
+			COMMENT "Configuring ${systemNormal}/${archNormal} (${method})..."
+			COMMAND_EXPAND_LISTS)
+	else()
+		add_custom_target(${configureRuleName}
+			COMMAND "${CMAKE_COMMAND}"
+				"${generatorArgs}"
+				"${CMAKE_SOURCE_DIR}/emulators/emulator-base-native"
+			WORKING_DIRECTORY "${buildPath}"
+			COMMENT "Configuring ${systemNormal}/${archNormal} (${method})..."
+			COMMAND_EXPAND_LISTS)
+	endif()
 
 	# Do not build by default
 	set_target_properties(${configureRuleName} PROPERTIES
@@ -136,7 +167,7 @@ get_property(compilerList GLOBAL PROPERTY
 	SQUIRRELJME_KNOWN_COMPILERS)
 
 # Add rules for each compiler
-foreach(compilerMap IN LISTS compilerList)
+foreach(compilerMap IN ITEMS ${compilerList})
 	# Split fields
 	# "${systemNormal}!${archNormal}!${compilerPath}"
 	squirreljme_unmap(systemNormal 0 "${compilerMap}")
@@ -153,7 +184,7 @@ get_property(generatorList GLOBAL PROPERTY
 	SQUIRRELJME_KNOWN_GENERATORS)
 
 # Add rules for each generator
-foreach(generatorMap IN LISTS generatorList)
+foreach(generatorMap IN ITEMS ${generatorList})
 	# Split fields
 	# "${systemNormal}!${archNormal}!${generator}!${toolset}!${platform}"
 	squirreljme_unmap(systemNormal 0 "${generatorMap}")

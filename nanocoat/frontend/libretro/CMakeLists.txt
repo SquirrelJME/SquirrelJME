@@ -124,10 +124,10 @@ if(retroArchExe AND NOT libRetroIsStatic AND
 		# Add target to run accordingly
 		add_custom_target(GdbSquirreljme_libretro
 			COMMAND "${gdbExe}" "localhost:2345" "${retroArchExe}"
-			"-L" "$<GENEX_EVAL:$<TARGET_FILE:squirreljme_libretro>>"
-			"--no-patch"
-			"--appendconfig=${CMAKE_CURRENT_BINARY_DIR}/test.config"
-			"--log-file=${CMAKE_BINARY_DIR}/libretro.log"
+				"-L" "$<GENEX_EVAL:$<TARGET_FILE:squirreljme_libretro>>"
+				"--no-patch"
+				"--appendconfig=${CMAKE_CURRENT_BINARY_DIR}/test.config"
+				"--log-file=${CMAKE_BINARY_DIR}/libretro.log"
 			DEPENDS squirreljme_libretro
 			USES_TERMINAL)
 

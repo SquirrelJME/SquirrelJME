@@ -309,11 +309,11 @@ function(squirreljme_multilib_static_link_options target scope what)
 	list(REMOVE_AT addOptions 0)
 
 	# Set on object target
-	target_link_options(${target} ${scope}
+	squirreljme_target_link_options(${target} ${scope}
 		${addOptions})
 
 	# Set on static target
-	target_link_options(${target}Static ${scope}
+	squirreljme_target_link_options(${target}Static ${scope}
 		${addOptions})
 endfunction()
 
@@ -332,7 +332,7 @@ function(squirreljme_multilib_link_options target scope what)
 
 	# And on the shared library
 	if(SQUIRRELJME_ENABLE_DYLIB)
-		target_link_options(${target}DyLib ${scope}
+		squirreljme_target_link_options(${target}DyLib ${scope}
 			${addOptions})
 	endif()
 endfunction()
@@ -633,9 +633,11 @@ function(squirreljme_multilib_install target)
 	# Export libraries
 	if(SQUIRRELJME_ENABLE_DYLIB)
 		install(TARGETS ${target}DyLib
-			${target}Static)
+			${target}Static
+			LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}")
 	else()
-		install(TARGETS ${target}Static)
+		install(TARGETS ${target}Static
+			LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}")
 	endif()
 endfunction()
 

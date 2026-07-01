@@ -32,18 +32,31 @@ This release was before the goal-oriented release planning.
 
 ## 0.4.0 (2026 TBD)
 
-As of 2026/01/01: 176 of 278 (63%)
+As of 2026/06/28: 206 of 317 (64%)
 
 ```
 [| 0%...|10%...|20%...|30%...|40%...|50%...|60%...|70%...|80%...|90%...|]
-[||||||||||||||||||||||||||||||||||||||||||||...........................]
+[|||||||||||||||||||||||||||||||||||||||||||||..........................]
 ```
 
+ * [ ] General Project
+   * [ ] Documentation
+     * [X] No-AI Policy
+     * [X] Building Instructions
+     * [X] Documentation Refactors
+     * [ ] Finalize all TODOs
+     * [X] Supply Chain
+   * [X] Root Build
+     * [X] Install4J Installers
+     * [X] Release Process
+     * [X] Natives Building
+     * [X] Source Archives
+     * [X] Standalone Bundling
  * [ ] Runtime Library
    * [ ] Building
-     * [ ] Fonts 
-       * [ ] Convert BDF to SQF
-       * [ ] Place SQFs as a resource
+     * [X] Fonts 
+       * [X] Convert BDF to SQF
+       * [X] Place SQFs as a resource
      * [ ] Improved Pipeline Build using CMake
        * [X] Ability to build everything
        * [ ] Emit warnings for missing release required targets
@@ -63,7 +76,8 @@ As of 2026/01/01: 176 of 278 (63%)
          * [X] SpringCoat
          * [X] NanoCoat
      * [X] TAC Integration
-   * [ ] Implementation  
+     * [X] ProGuard Optimization
+   * [ ] Implementation
      * [X] Collections
      * [X] Compact Stack Traces
      * [X] Corrected MIDI Timings
@@ -74,13 +88,14 @@ As of 2026/01/01: 176 of 278 (63%)
        * [X] Shift-JIS
        * [X] UTF-8
      * [ ] DoJa
-       * [X] Application Detection 
+       * [X] Application Detection
+       * [ ] Dialogs
        * [X] MIDP 3 Introversion
        * [X] MLD Playback Support 
        * [X] Most `Canvas` based applications are supported
        * [X] ScratchPad Support
        * [X] Version Checking (Compatibility)
-     * [ ] Fonts 
+     * [X] Fonts 
        * [X] 12 Strike Font
        * [X] 16 Strike Font
        * [X] Japanese Font (Misaki)
@@ -89,10 +104,12 @@ As of 2026/01/01: 176 of 278 (63%)
        * [X] HTTP Support
        * [ ] Inter-MIDlet Communication
        * [ ] Files
+         * [X] Pseudo Endpoints
+         * [ ] Real Files
        * [ ] TCP/IP
        * [ ] UDP/IP
-     * [X] Images
-       * [X] GIF
+     * [ ] Image Reading Support
+       * [ ] GIF
        * [X] PNG
        * [X] XPM
      * [X] `java.lang`
@@ -154,12 +171,14 @@ As of 2026/01/01: 176 of 278 (63%)
        * [ ] ScritchUI
          * [ ] All Widgets Supported 
          * [ ] ScritchPencil
+         * [X] Base Interfaces
        * [ ] ScritchAudio
          * [ ] Improved MIDI Interfaces
          * [ ] Sinks/Readers (Microphone)
          * [X] Sources/Renderers
        * [X] Tasks
        * [X] Threading
+         * [X] Merged Thread Types
      * [ ] Native optimizations
        * [X] Array operations
        * [ ] `double`
@@ -191,7 +210,7 @@ As of 2026/01/01: 176 of 278 (63%)
        * [X] Stream based
          * [X] Read
          * [X] Write
- * [ ] SpringCoat
+ * [X] SpringCoat
    * [X] Building
      * [X] TAC Support
    * [X] Implementation
@@ -200,6 +219,7 @@ As of 2026/01/01: 176 of 278 (63%)
      * [X] Limit depth of the call-stack
      * [X] Major Refactoring
      * [X] Major Simplification
+     * [X] Merged Thread Types
      * [X] Modern "Mid-Level" API implementations (MLE)
      * [X] NPS Profiling Support
      * [X] Pseudo-proxy layer for future MLE APIs
@@ -217,7 +237,11 @@ As of 2026/01/01: 176 of 278 (63%)
      * [ ] Standard JNI/JVM (libjvm)
        * [ ] Compatible JNI implementation
        * [ ] Self-written `jni.h`
+         * [ ] All Functions
+         * [X] Basic Structure
        * [ ] Self-written `jvm.h`
+         * [ ] All Functions
+         * [X] Basic Structure
        * [X] Standalone Application
        * [X] Standard `java` command line support
      * [ ] RetroArch (libretro)
@@ -298,10 +322,13 @@ As of 2026/01/01: 176 of 278 (63%)
        * [X] Fully synchronized graphics, for compatibility
        * [ ] Fonts
          * [X] Fallback Font
+         * [X] Dynamic Font Scaling
          * [ ] Resource-Based Loading
+         * [ ] Support fallback glyphs into other fonts (logical fonts)
        * [X] Generic raster operations
        * [X] HiDPI Support
      * [ ] Frontends
+       * [ ] Allegro 4
        * [ ] Cocoa (macOS/NeXT) 
        * [X] GTK2
        * [ ] Improvised Framebuffer Fallback Adaptation
@@ -314,10 +341,21 @@ As of 2026/01/01: 176 of 278 (63%)
          * [ ] Text Boxes
            * [ ] ABC Mode Input (2=A, 22=B, 222=C)
            * [ ] Keyboard Input
-       * [ ] Pure Framebuffer
-         * [ ] Front-end Specific Framebuffer
+         * [ ] Fallback Panel Implementation
+         * [ ] Fallback Window and Screen Implementation
        * [X] Win32
+       * [ ] SDL 1
+       * [ ] SDL 2
+       * [ ] SDL 3
        * [ ] X11 (Pure No-Library Implementation)
+ * [X] Unplanned/Extra
+   * [X] Additional Blending Modes
+   * [X] Generic Pixel Format Support 
+   * [X] Generic Key Code Layer
+   * [X] Nokia OTA Support
+   * [X] Nokia Tone Support
+   * [X] Samsung API
+   * [X] WAVE Support
  * [ ] Nice-To-Have (Not Included in Percent)
    * [ ] Bluetooth Stubs
    * [ ] Complete `Calendar` Implementation
@@ -329,7 +367,7 @@ As of 2026/01/01: 176 of 278 (63%)
    * [ ] Linter/Formatter
    * [ ] Modem Stubs
    * [ ] Move `debug-jdwp-vm-host` to `emulator-base`
-   * [ ] SquirrelJME applications under `system-app-*`
+   * [X] SquirrelJME applications under `system-app-*`
      * [X] `launcher` 
      * [X] `lcdui-demo`
    * [ ] SquirrelJME support libraries under `vendor-api-squirreljme-*`
@@ -337,7 +375,7 @@ As of 2026/01/01: 176 of 278 (63%)
      * [ ] `aot-springcoat`
      * [X] `collections`
      * [ ] `common-vm`
-     * [ ] `csv`
+     * [X] `csv`
      * [ ] `debug-jdwp`
      * [X] `io`
      * [ ] `io-file`
@@ -345,11 +383,6 @@ As of 2026/01/01: 176 of 278 (63%)
      * [ ] `tac`
      * [X] `zip`
    * [X] `unzip` equivalent
- * [X] Unplanned/Extra (Not Included in Percent)
-   * [X] Additional Blending Modes
-   * [X] Generic Pixel Format Support 
-   * [X] Nokia Tone Support
-   * [X] WAVE Support
 
 ## 0.6.0 (TBD)
 

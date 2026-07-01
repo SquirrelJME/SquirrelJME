@@ -10,31 +10,84 @@
 # also for specific embedded toolchains which are out of date or include an
 # old version of CMake and cannot upgrade.
 
+# CMake 3.1+ Policies
+# Note that before CMP0054 is set, this is not capable of using the variable
+# Need to use VERSION_GREATER as VERSION_GREATER_EQUAL does not exist
+# Only interpret if() arguments as variables or keywords when unquoted.
+# This must be set first
+message(STATUS "Setting policy CMP0054...")
+cmake_policy(SET CMP0054 NEW)
+
+# Spliced version
+set(squirreljme_bp_version_splice "${CMAKE_VERSION}")
+string(REPLACE "." ";"
+	squirreljme_bp_version_splice "${squirreljme_bp_version_splice}")
+list(GET squirreljme_bp_version_splice 0 squirreljme_bp_version_major)
+list(GET squirreljme_bp_version_splice 1 squirreljme_bp_version_minor)
+
+# Basic backport version
+message(STATUS "Reported as CMake ${CMAKE_VERSION}")
+message(STATUS
+	"CMake ${squirreljme_bp_version_major}.${squirreljme_bp_version_minor}")
+
 # Is there at least _THIS_ version?
-macro(squirreljme_bp_version_test ver set)
-	# Should this be set?
-	if(CMAKE_VERSION VERSION_GREATER_EQUAL ${ver})
+# Note that VERSION_GREATER_EQUAL was added in CMake 3.7!
+# So this must use VERSION_GREATER or something else
+# Hence, the complication unfortunately
+macro(squirreljme_bp_version_test majorVer minorVer set)
+	if("${CMAKE_VERSION}" VERSION_GREATER "${majorVer}.${minorVer}")
 		set(${set} YES)
+	elseif(${squirreljme_bp_version_major} EQUAL ${majorVer})
+		if(${squirreljme_bp_version_minor} GREATER ${minorVer})
+			set(${set} YES)
+		elseif(${squirreljme_bp_version_minor} EQUAL ${minorVer})
+			set(${set} YES)
+		else()
+			set(${set} NO)
+		endif()
 	else()
-		set(${set} NO)
+		if(${squirreljme_bp_version_major} GREATER ${majorVer})
+			set(${set} YES)
+		elseif(${squirreljme_bp_version_major} EQUAL ${majorVer})
+			if(${squirreljme_bp_version_minor} GREATER ${minorVer})
+				set(${set} YES)
+			elseif(${squirreljme_bp_version_minor} EQUAL ${minorVer})
+				set(${set} YES)
+			else()
+				set(${set} NO)
+			endif()
+		else()
+			set(${set} NO)
+		endif()
 	endif()
 
 	# Print the version stage
-	message(STATUS "${set}: ${${set}}")
+	message(STATUS "CMake ${majorVer}.${minorVer}: ${${set}}")
 endmacro()
 
-# Which CMake version is this?
-message(STATUS "CMake Version ${CMAKE_VERSION}")
-
 # Version tests
-squirreljme_bp_version_test(3.1 squirreljme_bp_version_3_1)
-squirreljme_bp_version_test(3.3 squirreljme_bp_version_3_3)
-squirreljme_bp_version_test(3.13 squirreljme_bp_version_3_13)
-squirreljme_bp_version_test(3.14 squirreljme_bp_version_3_14)
-squirreljme_bp_version_test(3.17 squirreljme_bp_version_3_17)
-squirreljme_bp_version_test(3.18 squirreljme_bp_version_3_18)
-squirreljme_bp_version_test(3.23 squirreljme_bp_version_3_23)
-squirreljme_bp_version_test(3.25 squirreljme_bp_version_3_25)
+squirreljme_bp_version_test(3 1 squirreljme_bp_version_3_1)
+squirreljme_bp_version_test(3 3 squirreljme_bp_version_3_3)
+squirreljme_bp_version_test(3 12 squirreljme_bp_version_3_12)
+squirreljme_bp_version_test(3 13 squirreljme_bp_version_3_13)
+squirreljme_bp_version_test(3 14 squirreljme_bp_version_3_14)
+squirreljme_bp_version_test(3 17 squirreljme_bp_version_3_17)
+squirreljme_bp_version_test(3 18 squirreljme_bp_version_3_18)
+squirreljme_bp_version_test(3 20 squirreljme_bp_version_3_20)
+squirreljme_bp_version_test(3 23 squirreljme_bp_version_3_23)
+squirreljme_bp_version_test(3 25 squirreljme_bp_version_3_25)
+
+# Future versions
+squirreljme_bp_version_test(4 0 squirreljme_bp_version_4_0)
+squirreljme_bp_version_test(4 1 squirreljme_bp_version_4_1)
+squirreljme_bp_version_test(4 2 squirreljme_bp_version_4_2)
+
+# Note on these future versions
+if(squirreljme_bp_version_4_0 OR
+	squirreljme_bp_version_4_1 OR
+	squirreljme_bp_version_4_2)
+	message(STATUS "CMake 4.0+ may break backwards compatibility with 3.x!")
+endif()
 
 # There is no current function list dir, so this needs to be set for some
 # functions in this backport implementation to work.
@@ -42,21 +95,18 @@ squirreljme_bp_version_test(3.25 squirreljme_bp_version_3_25)
 set(SQUIRRELJME_BP_LIST_FILE "${CMAKE_CURRENT_LIST_FILE}")
 set(SQUIRRELJME_BP_LIST_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
-# CMake 3.1+ Policies
-if(squirreljme_bp_version_3_1)
-	# Only interpret if() arguments as variables or keywords when unquoted.
-	cmake_policy(SET CMP0054 NEW)
-endif()
-
 # CMake 3.3+ Policies
-if(squirreljme_bp_version_3_3)
+if(squirreljme_bp_version_3_3 OR
+	"${CMAKE_VERSION}" VERSION_GREATER "3.2")
 	# Support new if() IN_LIST operator.
+	message(STATUS "Setting policy CMP0057...")
 	cmake_policy(SET CMP0057 NEW)
 endif()
 
 # CMake 3.25+ Policies
 if(squirreljme_bp_version_3_25)
 	# The return() command checks its parameters.
+	message(STATUS "Setting policy CMP0140...")
 	cmake_policy(SET CMP0140 NEW)
 endif()
 
@@ -76,6 +126,13 @@ macro(squirreljme_bp_return_propagate inOutVariable)
 		return()
 	endif()
 endmacro()
+
+# Adding compile definitions was done in a slightly different way
+if(NOT squirreljme_bp_version_3_12)
+	macro(add_compile_definitions varVal)
+		add_definitions("-D${varVal}")
+	endmacro()
+endif()
 
 # squirreljme_bp_check_linker_flag
 # This according to the CMake documentation is a convenience method that
@@ -208,13 +265,151 @@ function(squirreljme_bp_file_size inFileName outVariable)
 
 		# Cut in half
 		if(squirreljme_bp_version_3_13)
-			math(EXPR ${outVariable} "${outVariable} / 2"
+			math(EXPR ${outVariable} "${${outVariable}} / 2"
 				OUTPUT_FORMAT DECIMAL)
 		else()
-			math(EXPR ${outVariable} "${outVariable} / 2")
+			math(EXPR ${outVariable} "${${outVariable}} / 2")
 		endif()
 
 		# Return the resultant size
 		squirreljme_bp_return_propagate(${outVariable})
+	endif()
+endfunction()
+
+# String joining
+function(squirreljme_string_join sjGlue sjOut sjList)
+	if(squirreljme_bp_version_3_13 OR
+		"${CMAKE_VERSION}" VERSION_GREATER "3.12")
+		string(JOIN "${sjGlue}" ${sjOut}
+			"${sjList}")
+		squirreljme_bp_return_propagate(${sjOut})
+	else()
+		# Setup initial blank output
+		set(sjResult "")
+
+		# Go through list
+		list(LENGTH "${sjList}" sjListLen)
+		set(sjAt "0")
+		while("${sjAt}" LESS "${sjListLen}")
+			# Get list item
+			set(sjTemp "")
+			list(GET "${sjList}" "${sjAt}" sjTemp)
+
+			# Append joiner
+			string(APPEND sjResult "${sjGlue}")
+
+			# Append string
+			string(APPEND sjResult "${sjTemp}")
+
+			# Move up
+			math(EXPR sjAt "${sjAt} + 1")
+		endwhile()
+
+		# Set output
+		set(${sjOut} "${sjResult}")
+		squirreljme_bp_return_propagate(${sjOut})
+	endif()
+endfunction()
+
+function(squirreljme_target_link_options target scope)
+	# This is available since CMake 3.13
+	if(squirreljme_bp_version_3_13)
+		target_link_options(${ARGV})
+
+	# Otherwise it must be manually added in
+	else()
+		# The target we are interested in...
+		set(ltoArgs "${ARGV}")
+		list(GET ltoArgs 0 tloTarget)
+
+		# Is there a before?
+		list(GET ltoArgs 1 tloMaybeBefore)
+		if(tloMaybeBefore STREQUAL "BEFORE")
+			# Mark as before
+			set(tloBefore YES)
+
+			# Start pivot point
+			set(tloPivot 2)
+		else()
+			# Mark as not before
+			set(tloBefore No)
+
+			# Start pivot point
+			set(tloPivot 1)
+		endif()
+
+		# Handle the remaining number of items
+		set(tloAt "${tloPivot}")
+		set(tloFlags)
+		while(tloAt LESS ARGC)
+			# Determine indexes
+			math(EXPR tloAtI "${tloAt} + 0")
+			math(EXPR tloAtL "${tloAt} + 1")
+
+			# Extract sub-parameters
+			list(GET ltoArgs "${tloAtI}" tloInstance)
+			list(GET ltoArgs "${tloAtL}" tloFlag)
+
+			# Add library, ignore the instance for it
+			list(APPEND tloFlags "${tloFlag}")
+
+			# Move indexes up for the next items
+			math(EXPR tloAt "${tloAt} + 2")
+		endwhile()
+
+		# Join options together
+		squirreljme_string_join(" " tloStrOpt "${tloFlags}")
+
+		# What should be used for link flags?
+		if(NOT "$<CONFIG>" STREQUAL "")
+			set(tloLinkFlagsName "LINK_FLAGS_$<CONFIG>")
+		else()
+			set(tloLinkFlagsName "LINK_FLAGS")
+		endif()
+
+		# Get old link options to add in the list...
+		get_target_property(tloOldLinkOpt ${tloTarget}
+			LINK_FLAGS)
+		if(tloOldLinkOpt)
+			if(tloBefore)
+				set_target_properties(${tloTarget} PROPERTIES
+					${tloLinkFlagsName} "${tloStrOpt} ${tloOldLinkOpt}")
+			else()
+				set_target_properties(${tloTarget} PROPERTIES
+					${tloLinkFlagsName} "${tloOldLinkOpt} ${tloStrOpt}")
+			endif()
+		else()
+			set_target_properties(${tloTarget} PROPERTIES
+				${tloLinkFlagsName} "${tloStrOpt}")
+		endif()
+	endif()
+endfunction()
+
+# Add link directories to target
+function(squirreljme_target_link_directories target scope)
+	# Determine directories
+	set(directories "${ARGV}")
+	list(REMOVE_AT directories 0)
+	list(REMOVE_AT directories 0)
+
+	# This is available since CMake 3.13
+	if(squirreljme_bp_version_3_13)
+		target_link_directories(${target} ${scope} ${directories})
+	else()
+		# MSVC
+		if(MSVC OR
+			CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
+			CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+			foreach(directory IN ITEMS "${directories}")
+				squirreljme_target_link_options(${target} ${scope}
+					"/LIBPATH:${directory}")
+			endforeach()
+		# Assume POSIX
+		else()
+			foreach(directory IN ITEMS "${directories}")
+				squirreljme_target_link_options(${target} ${scope}
+					"-L${directory}")
+			endforeach()
+		endif()
 	endif()
 endfunction()

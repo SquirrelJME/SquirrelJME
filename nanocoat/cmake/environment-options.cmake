@@ -56,22 +56,10 @@ endmacro()
 
 # Generate a list of options to forward to another CMake call
 function(squirreljme_env_forward result)
-	if(TRUE)
-		# Use the configure file
-		set(${result} "-C")
-		list(APPEND ${result} "${SJME_CONFIG_USE_PATH}")
-		list(APPEND ${result} "-DSJME_CONFIG_USE_PATH=${SJME_CONFIG_USE_PATH}")
-	else()
-		# Initialize list to nothing
-		set(${result})
-
-		# Go through each possible property
-		get_property(globalEnvOptions GLOBAL PROPERTY globalEnvOptions)
-		foreach(globalEnvOption IN LISTS globalEnvOptions)
-			list(APPEND ${result}
-				"-D${globalEnvOption}=${${globalEnvOption}}")
-		endforeach()
-	endif()
+	# Use the configure file
+	set(${result} "-C")
+	list(APPEND ${result} "${SJME_CONFIG_USE_PATH}")
+	list(APPEND ${result} "-DSJME_CONFIG_USE_PATH=${SJME_CONFIG_USE_PATH}")
 
 	# Return the result
 	squirreljme_bp_return_propagate(${result})
