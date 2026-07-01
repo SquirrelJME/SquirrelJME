@@ -20,6 +20,9 @@ set(SQUIRRELJME_NANOCOAT_SOURCE_DIR
 	"${CMAKE_SOURCE_DIR}/../../../nanocoat")
 include("../easier-includes.cmake")
 
+# Include backports
+squirreljme_include_nanocoat("cmake-bp.cmake")
+
 # Declare project
 project(Simple)
 
