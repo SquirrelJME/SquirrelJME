@@ -51,7 +51,7 @@ macro(squirreljme_natives_download_check systemNormal archNormal)
 endmacro()
 
 # Process each native
-foreach(compilerMap IN LISTS SQUIRRELJME_KNOWN_NATIVES)
+foreach(compilerMap IN ITEMS ${SQUIRRELJME_KNOWN_NATIVES})
 	# Obtain back the system and architecture
 	squirreljme_unmap(systemNormal 0 "${compilerMap}")
 	squirreljme_unmap(archNormal 1 "${compilerMap}")

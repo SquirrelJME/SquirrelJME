@@ -35,7 +35,9 @@ message(STATUS
 # So this must use VERSION_GREATER or something else
 # Hence, the complication unfortunately
 macro(squirreljme_bp_version_test majorVer minorVer set)
-	if (${squirreljme_bp_version_major} EQUAL ${majorVer})
+	if("${CMAKE_VERSION}" VERSION_GREATER "${majorVer}.${minorVer}")
+		set(${set} YES)
+	elseif(${squirreljme_bp_version_major} EQUAL ${majorVer})
 		if(${squirreljme_bp_version_minor} GREATER ${minorVer})
 			set(${set} YES)
 		elseif(${squirreljme_bp_version_minor} EQUAL ${minorVer})
@@ -93,7 +95,8 @@ set(SQUIRRELJME_BP_LIST_FILE "${CMAKE_CURRENT_LIST_FILE}")
 set(SQUIRRELJME_BP_LIST_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
 # CMake 3.3+ Policies
-if(squirreljme_bp_version_3_3)
+if(squirreljme_bp_version_3_3 OR
+	"${CMAKE_VERSION}" VERSION_GREATER "3.2")
 	# Support new if() IN_LIST operator.
 	message(STATUS "Setting policy CMP0057...")
 	cmake_policy(SET CMP0057 NEW)

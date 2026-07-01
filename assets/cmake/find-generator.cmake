@@ -105,6 +105,12 @@ macro(squirreljme_find_generator generator toolset platform)
 		# Track it
 		squirreljme_track_generator(${systemNormal} ${archNormal}
 			${generator} ${toolset} ${platform})
+
+		# Debug
+		message(STATUS "Found ${generator}.${toolset}.${platform}!")
+	else()
+		# Debug
+		message(STATUS "Ignoring ${generator}.${toolset}.${platform}... ")
 	endif()
 
 	# Delete the configuration directory
@@ -119,9 +125,9 @@ macro(squirreljme_find_generators generators toolsets platforms)
 	set(platforms "${platforms}")
 
 	# Process each combination
-	foreach(generator IN LISTS generators)
-		foreach(toolset IN LISTS toolsets)
-			foreach(platform IN LISTS platforms)
+	foreach(generator IN ITEMS ${generators})
+		foreach(toolset IN ITEMS ${toolsets})
+			foreach(platform IN ITEMS ${platforms})
 				squirreljme_find_generator(${generator} ${toolset} ${platform})
 			endforeach()
 		endforeach()

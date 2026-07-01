@@ -164,7 +164,7 @@ get_property(compilerList GLOBAL PROPERTY
 	SQUIRRELJME_KNOWN_COMPILERS)
 
 # Add rules for each compiler
-foreach(compilerMap IN LISTS compilerList)
+foreach(compilerMap IN ITEMS ${compilerList})
 	# Split fields
 	# "${systemNormal}!${archNormal}!${compilerPath}"
 	squirreljme_unmap(systemNormal 0 "${compilerMap}")
@@ -181,7 +181,7 @@ get_property(generatorList GLOBAL PROPERTY
 	SQUIRRELJME_KNOWN_GENERATORS)
 
 # Add rules for each generator
-foreach(generatorMap IN LISTS generatorList)
+foreach(generatorMap IN ITEMS ${generatorList})
 	# Split fields
 	# "${systemNormal}!${archNormal}!${generator}!${toolset}!${platform}"
 	squirreljme_unmap(systemNormal 0 "${generatorMap}")

@@ -9,8 +9,8 @@
 
 # Go through each possible architecture and system and try to find GCC
 # compilers for these
-foreach(systemMap IN LISTS SQUIRRELJME_SYSTEM_MAP)
-	foreach(archMap IN LISTS SQUIRRELJME_ARCH_MAP)
+foreach(systemMap IN ITEMS ${SQUIRRELJME_SYSTEM_MAP})
+	foreach(archMap IN ITEMS ${SQUIRRELJME_ARCH_MAP})
 		# GCC
 		squirreljme_unmap(systemGcc 1 "${systemMap}")
 		squirreljme_unmap(archGcc 1 "${archMap}")
