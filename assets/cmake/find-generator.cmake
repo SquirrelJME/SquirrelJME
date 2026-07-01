@@ -19,39 +19,79 @@ macro(squirreljme_find_generator generator toolset platform)
 	# Try configuring the blank project
 	# If the toolset is none, ignore it
 	unset(generatorResult)
-	if("${toolset}" STREQUAL "none")
-		# Ignore also if the platform is none
-		if("${platform}" STREQUAL "none")
-			execute_process(
-				COMMAND "${CMAKE_COMMAND}"
-					"-G" "${generator}"
-					"-B" "${tempBuild}"
-					"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
-				RESULT_VARIABLE generatorResult
-				OUTPUT_QUIET
-				ERROR_QUIET)
+	if(squirreljme_bp_version_3_13)
+		if("${toolset}" STREQUAL "none")
+			# Ignore also if the platform is none
+			if("${platform}" STREQUAL "none")
+				execute_process(
+					COMMAND "${CMAKE_COMMAND}"
+						"-G" "${generator}"
+						"-B" "${tempBuild}"
+						"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+					WORKING_DIRECTORY "${tempBuild}"
+					RESULT_VARIABLE generatorResult
+					OUTPUT_QUIET
+					ERROR_QUIET)
+			else()
+				execute_process(
+					COMMAND "${CMAKE_COMMAND}"
+						"-G" "${generator}"
+						"-A" "${platform}"
+						"-B" "${tempBuild}"
+						"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+					WORKING_DIRECTORY "${tempBuild}"
+					RESULT_VARIABLE generatorResult
+					OUTPUT_QUIET
+					ERROR_QUIET)
+			endif()
 		else()
 			execute_process(
 				COMMAND "${CMAKE_COMMAND}"
 					"-G" "${generator}"
-					"-A" "${platform}"
+					"-T" "${platform}"
+					"-A" "${toolset}"
 					"-B" "${tempBuild}"
 					"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+				WORKING_DIRECTORY "${tempBuild}"
 				RESULT_VARIABLE generatorResult
 				OUTPUT_QUIET
 				ERROR_QUIET)
 		endif()
 	else()
-		execute_process(
-			COMMAND "${CMAKE_COMMAND}"
-				"-G" "${generator}"
-				"-T" "${platform}"
-				"-A" "${toolset}"
-				"-B" "${tempBuild}"
-				"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
-			RESULT_VARIABLE generatorResult
-			OUTPUT_QUIET
-			ERROR_QUIET)
+		if("${toolset}" STREQUAL "none")
+			# Ignore also if the platform is none
+			if("${platform}" STREQUAL "none")
+				execute_process(
+					COMMAND "${CMAKE_COMMAND}"
+						"-G" "${generator}"
+						"${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+					WORKING_DIRECTORY "${tempBuild}"
+					RESULT_VARIABLE generatorResult
+					OUTPUT_QUIET
+					ERROR_QUIET)
+			else()
+				execute_process(
+					COMMAND "${CMAKE_COMMAND}"
+						"-G" "${generator}"
+						"-A" "${platform}"
+						"${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+					WORKING_DIRECTORY "${tempBuild}"
+					RESULT_VARIABLE generatorResult
+					OUTPUT_QUIET
+					ERROR_QUIET)
+			endif()
+		else()
+			execute_process(
+				COMMAND "${CMAKE_COMMAND}"
+					"-G" "${generator}"
+					"-T" "${platform}"
+					"-A" "${toolset}"
+					"${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+				WORKING_DIRECTORY "${tempBuild}"
+				RESULT_VARIABLE generatorResult
+				OUTPUT_QUIET
+				ERROR_QUIET)
+		endif()
 	endif()
 
 	# If successful and the system/arch information exists, register it

@@ -194,14 +194,7 @@ ExternalProject_Add(SquirrelJME
 	BINARY_DIR "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 	SOURCE_DIR "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
 	CMAKE_CACHE_ARGS allDefines
-	CONFIGURE_COMMAND "${CMAKE_COMMAND}"
-		"-C" "${cacheFile}"
-		"-G" "${CMAKE_GENERATOR}"
-		"-T" "${CMAKE_GENERATOR_TOOLSET}"
-		"-A" "${CMAKE_GENERATOR_PLATFORM}"
-		"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
-		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-		"${forwardedEnv}"
+	CONFIGURE_COMMAND ""
 	BUILD_COMMAND ""
 	INSTALL_COMMAND ""
 	TEST_COMMAND ""
@@ -213,17 +206,32 @@ ExternalProject_Add(SquirrelJME
 # Configure step, since it seems to be missing
 # Cannot be called Configure because build systems with case insensitive rules
 # will clash with built-in "configure"
-ExternalProject_Add_Step(SquirrelJME RunConfigureStep
-	COMMENT "Configuring NanoCoat..."
-	COMMAND "${CMAKE_COMMAND}"
-		"-C" "${cacheFile}"
-		"-G" "${CMAKE_GENERATOR}"
-		"-T" "${CMAKE_GENERATOR_TOOLSET}"
-		"-A" "${CMAKE_GENERATOR_PLATFORM}"
-		"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
-		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-		"${forwardedEnv}"
-	INDEPENDENT)
+if(squirreljme_bp_version_3_13)
+	ExternalProject_Add_Step(SquirrelJME RunConfigureStep
+		COMMENT "Configuring NanoCoat..."
+		COMMAND "${CMAKE_COMMAND}"
+			"-C" "${cacheFile}"
+			"-G" "${CMAKE_GENERATOR}"
+			"-T" "${CMAKE_GENERATOR_TOOLSET}"
+			"-A" "${CMAKE_GENERATOR_PLATFORM}"
+			"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+			"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+			"${forwardedEnv}"
+		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+		INDEPENDENT)
+else()
+	ExternalProject_Add_Step(SquirrelJME RunConfigureStep
+		COMMENT "Configuring NanoCoat..."
+		COMMAND "${CMAKE_COMMAND}"
+			"-C" "${cacheFile}"
+			"-G" "${CMAKE_GENERATOR}"
+			"-T" "${CMAKE_GENERATOR_TOOLSET}"
+			"-A" "${CMAKE_GENERATOR_PLATFORM}"
+			"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+			"${forwardedEnv}"
+		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+		INDEPENDENT)
+endif()
 ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep
 	SquirrelJME-RunConfigureStep)
 
@@ -235,12 +243,27 @@ endif()
 
 # Add macro since these are all the same
 macro(squirreljme_external_step target)
-	ExternalProject_Add_Step(SquirrelJME ${target}
-		COMMENT "Building ${target}..."
-		COMMAND "${CMAKE_COMMAND}"
-			"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-			"--target" ${target}
-		INDEPENDENT)
+	# Make sure the directory exists
+	file(MAKE_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+
+	if(squirreljme_bp_version_3_13)
+		ExternalProject_Add_Step(SquirrelJME ${target}
+			COMMENT "Building ${target}..."
+			COMMAND "${CMAKE_COMMAND}"
+				"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+				"--target" ${target}
+			WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+			INDEPENDENT)
+	else()
+		ExternalProject_Add_Step(SquirrelJME ${target}
+			COMMENT "Building ${target}..."
+			COMMAND "${CMAKE_COMMAND}"
+				"${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+				"--target" ${target}
+			WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+			INDEPENDENT)
+	endif()
+
 	ExternalProject_Add_StepTargets(SquirrelJME ${target}
 		SquirrelJME-${target})
 endmacro()
