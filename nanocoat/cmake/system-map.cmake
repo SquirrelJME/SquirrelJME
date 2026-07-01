@@ -42,6 +42,7 @@ list(SORT SQUIRRELJME_TEST_LEVEL_MAP)
 
 # Architecture mappings (SquirrelJME!gcc)
 list(APPEND SQUIRRELJME_ARCH_MAP
+	"none!none"
 	"ia32!i386"
 	"ia32!i486"
 	"ia32!i586"
@@ -72,6 +73,7 @@ list(SORT SQUIRRELJME_ARCH_MAP)
 
 # System mappings (SquirrelJME!gcc)
 list(APPEND SQUIRRELJME_SYSTEM_MAP
+	"none!none"
 	"linux!linux"
 	"linux!linux-gnu"
 	"linux!linux-gnueabi"
@@ -94,6 +96,7 @@ list(APPEND SQUIRRELJME_SYSTEM_MAP
 	"emscripten!emscripten"
 	"macosx!macosx"
 	"macosx!darwin"
+	"macosx!apple-darwin8"
 	"3ds!3ds"
 	"windowsce!wince-cegcc"
 	"palmos!palmos")
