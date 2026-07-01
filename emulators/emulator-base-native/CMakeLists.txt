@@ -39,7 +39,7 @@ squirreljme_include_nanocoat("environment-options.cmake")
 get_cmake_property(allVariables VARIABLES)
 set(cacheFile "${CMAKE_BINARY_DIR}/forward-cache.cmake")
 file(REMOVE "${cacheFile}")
-file(TOUCH "${cacheFile}")
+file(WRITE "${cacheFile}" "")
 foreach(var IN LISTS allVariables)
 	# Only consider CMAKE_ specific variables
 	# Also SQUIRRELJME_, because anything might be desired to be passed through
