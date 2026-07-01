@@ -218,8 +218,7 @@ if(squirreljme_bp_version_3_13)
 			"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
 			"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 			"${forwardedEnv}"
-		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-		INDEPENDENT)
+		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
 else()
 	ExternalProject_Add_Step(SquirrelJME RunConfigureStep
 		COMMENT "Configuring NanoCoat..."
@@ -230,8 +229,7 @@ else()
 			"-A" "${CMAKE_GENERATOR_PLATFORM}"
 			"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
 			"${forwardedEnv}"
-		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-		INDEPENDENT)
+		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
 endif()
 ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep
 	SquirrelJME-RunConfigureStep)
@@ -252,8 +250,7 @@ macro(squirreljme_external_step target)
 		COMMAND "${CMAKE_COMMAND}"
 			"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 			"--target" ${target}
-		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-		INDEPENDENT)
+		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
 
 	ExternalProject_Add_StepTargets(SquirrelJME ${target}
 		SquirrelJME-${target})
