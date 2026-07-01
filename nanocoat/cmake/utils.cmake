@@ -40,12 +40,20 @@ macro(squirreljme_build_util name)
 		# Otherwise fallback to CMake
 		if(NOT EXISTS "${sjmeUtilExe_${name}}")
 			# Configure first
-			execute_process(
-				COMMAND "${CMAKE_COMMAND}"
-					"-B"
-					"${sjmeUtilDir_${name}}"
-					"-S"
-					"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
+			if(squirreljme_bp_version_3_13)
+				execute_process(
+					COMMAND "${CMAKE_COMMAND}"
+						"-B"
+						"${sjmeUtilDir_${name}}"
+						"-S"
+						"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}"
+					WORKING_DIRECTORY "${sjmeUtilDir_${name}}")
+			else()
+				execute_process(
+					COMMAND "${CMAKE_COMMAND}"
+						"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}"
+					WORKING_DIRECTORY "${sjmeUtilDir_${name}}")
+			endif()
 			
 			# Then build
 			execute_process(

@@ -246,23 +246,13 @@ macro(squirreljme_external_step target)
 	# Make sure the directory exists
 	file(MAKE_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
 
-	if(squirreljme_bp_version_3_13)
-		ExternalProject_Add_Step(SquirrelJME ${target}
-			COMMENT "Building ${target}..."
-			COMMAND "${CMAKE_COMMAND}"
-				"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-				"--target" ${target}
-			WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-			INDEPENDENT)
-	else()
-		ExternalProject_Add_Step(SquirrelJME ${target}
-			COMMENT "Building ${target}..."
-			COMMAND "${CMAKE_COMMAND}"
-				"${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-				"--target" ${target}
-			WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-			INDEPENDENT)
-	endif()
+	ExternalProject_Add_Step(SquirrelJME ${target}
+		COMMENT "Building ${target}..."
+		COMMAND "${CMAKE_COMMAND}"
+			"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+			"--target" ${target}
+		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+		INDEPENDENT)
 
 	ExternalProject_Add_StepTargets(SquirrelJME ${target}
 		SquirrelJME-${target})

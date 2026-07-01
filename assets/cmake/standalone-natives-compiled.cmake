@@ -18,27 +18,15 @@ macro(squirreljme_natives_build systemNormal archNormal configureRuleName
 	file(MAKE_DIRECTORY "${buildPath}")
 
 	# Setup rule to build
-	if(squirreljme_bp_version_3_13)
-		add_custom_target(${buildRuleName}
-			COMMAND "${CMAKE_COMMAND}"
-				"--build" "${buildPath}"
-				"--target" "libEmulatorBase" "bundleNatives"
-			WORKING_DIRECTORY "${buildPath}"
-			DEPENDS ${configureRuleName}
-			BYPRODUCTS "${packagePath}"
-			COMMENT "Building ${systemNormal}/${archNormal}..."
-			COMMAND_EXPAND_LISTS)
-	else()
-		add_custom_target(${buildRuleName}
-			COMMAND "${CMAKE_COMMAND}"
-				"${buildPath}"
-				"--target" "libEmulatorBase" "bundleNatives"
-			WORKING_DIRECTORY "${buildPath}"
-			DEPENDS ${configureRuleName}
-			BYPRODUCTS "${packagePath}"
-			COMMENT "Building ${systemNormal}/${archNormal}..."
-			COMMAND_EXPAND_LISTS)
-	endif()
+	add_custom_target(${buildRuleName}
+		COMMAND "${CMAKE_COMMAND}"
+			"--build" "${buildPath}"
+			"--target" "libEmulatorBase" "bundleNatives"
+		WORKING_DIRECTORY "${buildPath}"
+		DEPENDS ${configureRuleName}
+		BYPRODUCTS "${packagePath}"
+		COMMENT "Building ${systemNormal}/${archNormal}..."
+		COMMAND_EXPAND_LISTS)
 
 	# Register the output path
 	set_target_properties(${buildRuleName} PROPERTIES
