@@ -15,13 +15,8 @@ else()
 	cmake_minimum_required(VERSION 3.1)
 endif()
 
-# Easier include
-set(SQUIRRELJME_NANOCOAT_SOURCE_DIR
-	"${CMAKE_SOURCE_DIR}/../../../nanocoat")
-include("../easier-includes.cmake")
-
 # Include backports
-squirreljme_include_nanocoat("cmake-bp.cmake")
+include("${CMAKE_SOURCE_DIR}/../../../nanocoat/cmake/cmake-bp.cmake")
 
 # Declare project
 project(Simple)
@@ -30,7 +25,7 @@ project(Simple)
 enable_language(C)
 
 # System mapping information and identification
-squirreljme_include_nanocoat("system-map.cmake")
+include("${CMAKE_SOURCE_DIR}/../../../nanocoat/cmake/system-map.cmake")
 
 # Add a shared library target
 add_library(Simple SHARED
