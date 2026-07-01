@@ -112,9 +112,11 @@ if(NOT SQUIRRELJME_EXPORT_OWN_JNI_JVM OR SQUIRRELJME_ENABLE_DYLIB)
 			"${impLibPath}")
 	endif()
 
-	# Allow the JVM export to be used externally
-	set_target_properties(discoveredJvm PROPERTIES
-		LINKER_LANGUAGE C)
+	# Allow the JVM export to be used externally (allowed in 3.20+)
+	if(squirreljme_bp_version_3_20)
+		set_target_properties(discoveredJvm PROPERTIES
+			LINKER_LANGUAGE C)
+	endif()
 
 	# Export it now!
 	export(TARGETS discoveredJvm
