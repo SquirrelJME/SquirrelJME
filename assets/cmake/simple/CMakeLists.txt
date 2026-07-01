@@ -8,7 +8,7 @@
 # DESCRIPTION: Used for testing compilers and generators more quickly...
 
 # Should hopefully work for everything
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.0)
 
 # Easier include
 set(SQUIRRELJME_NANOCOAT_SOURCE_DIR
