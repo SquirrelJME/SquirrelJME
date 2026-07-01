@@ -106,15 +106,24 @@ macro(squirreljme_find_generator generator toolset platform)
 		squirreljme_track_generator(${systemNormal} ${archNormal}
 			${generator} ${toolset} ${platform})
 
-		# Debug
+		# Status that it worked!
 		message(STATUS "Found ${generator}.${toolset}.${platform}!")
 	else()
 		# Debug
-		message(STATUS "Ignoring ${generator}.${toolset}.${platform}... ")
+		if(NOT "${generatorResult}" EQUAL "0")
+			message(STATUS
+				"Ignoring ${generator}.${toolset}.${platform}... ")
+		elseif(NOT EXISTS "${tempBuild}/system.tgt")
+			message(STATUS
+				"Unknown system for ${generator}.${toolset}.${platform}... ")
+		elseif(NOT EXISTS "${tempBuild}/arch__.tgt")
+			message(STATUS
+				"Unknown arch for ${generator}.${toolset}.${platform}... ")
+		else()
+			message(STATUS
+				"Ignoring ${generator}.${toolset}.${platform}... ")
+		endif()
 	endif()
-
-	# Delete the configuration directory
-	file(REMOVE_RECURSE "${tempBuild}")
 endmacro()
 
 # Try a set of generators
