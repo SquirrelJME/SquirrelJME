@@ -7,6 +7,14 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: System and architecture mappings
 
+# CMake 3.3+ Policies
+if(squirreljme_bp_version_3_3 OR
+	"${CMAKE_VERSION}" VERSION_GREATER "3.2")
+	# Support new if() IN_LIST operator.
+	message(STATUS "Setting policy CMP0057...")
+	cmake_policy(SET CMP0057 NEW)
+endif()
+
 # Properties used for all targets
 define_property(TARGET PROPERTY SQUIRRELJME_SYSTEM
 	BRIEF_DOCS "The target SquirrelJME system."
