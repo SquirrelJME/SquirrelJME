@@ -220,16 +220,47 @@ if(squirreljme_bp_version_3_13)
 			"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
 else()
-	ExternalProject_Add_Step(SquirrelJME RunConfigureStep
-		COMMENT "Configuring NanoCoat..."
-		COMMAND "${CMAKE_COMMAND}"
-			"-C" "${cacheFile}"
-			"${forwardedEnv}"
-			"-G" "${CMAKE_GENERATOR}"
-			"-T" "${CMAKE_GENERATOR_TOOLSET}"
-			"-A" "${CMAKE_GENERATOR_PLATFORM}"
-			"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
-		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+	if("${CMAKE_GENERATOR_TOOLSET}" STREQUAL "")
+		if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "")
+			ExternalProject_Add_Step(SquirrelJME RunConfigureStep
+				COMMENT "Configuring NanoCoat..."
+				COMMAND "${CMAKE_COMMAND}"
+					"-C" "${cacheFile}"
+					"-G" "${CMAKE_GENERATOR}"
+					"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+		else()
+			ExternalProject_Add_Step(SquirrelJME RunConfigureStep
+				COMMENT "Configuring NanoCoat..."
+				COMMAND "${CMAKE_COMMAND}"
+					"-C" "${cacheFile}"
+					"-G" "${CMAKE_GENERATOR}"
+					"-A" "${CMAKE_GENERATOR_PLATFORM}"
+					"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+		endif()
+	else()
+		if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "")
+			ExternalProject_Add_Step(SquirrelJME RunConfigureStep
+				COMMENT "Configuring NanoCoat..."
+				COMMAND "${CMAKE_COMMAND}"
+					"-C" "${cacheFile}"
+					"-G" "${CMAKE_GENERATOR}"
+					"-T" "${CMAKE_GENERATOR_TOOLSET}"
+					"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+		else()
+			ExternalProject_Add_Step(SquirrelJME RunConfigureStep
+				COMMENT "Configuring NanoCoat..."
+				COMMAND "${CMAKE_COMMAND}"
+					"-C" "${cacheFile}"
+					"-G" "${CMAKE_GENERATOR}"
+					"-T" "${CMAKE_GENERATOR_TOOLSET}"
+					"-A" "${CMAKE_GENERATOR_PLATFORM}"
+					"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+		endif()
+	endif()
 endif()
 ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep
 	SquirrelJME-RunConfigureStep)
