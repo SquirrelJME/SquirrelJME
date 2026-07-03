@@ -90,22 +90,23 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 			return sjme_error_default(error);
 
 		/* The offset for the next type is the total storage for this type. */
-		typeOff[i + 1] = sjme_util_alignTo(typeOff[i],
-				sjme_nvm_typeMul[i]) +
-			sjme_util_alignTo(setSize, sizeof(sjme_pointer));
+		typeStack->storageClaim = (sjme_jint)sjme_util_alignTo(
+			sjme_util_alignTo(setSize, sizeof(sjme_pointer)),
+				sjme_nvm_typeMul[i]);
+		typeOff[i + 1] = typeOff[i] + typeStack->storageClaim;
 	}
 
 	/* Is there enough memory to even allocate this big of a stack? */
-	if (store->storageTop +
-		typeOff[SJME_NVM_STACK_FINAL_ID] > store->storageLen)
+	storageClaim = (sjme_jint)typeOff[SJME_NVM_STACK_FINAL_ID];
+	if (store->storageTop + storageClaim > store->storageLen ||
+		storageClaim < 0)
 		return sjme_error_vmError(inThread, SJME_ERROR_STACK_OVERFLOW);
 
 	/* Grab a chunk of the stack. */
 	storageBase = SJME_POINTER_OFFSET(store->storage, store->storageTop);
-	storageClaim = typeOff[SJME_NVM_STACK_FINAL_ID];
 	store->storageTop += storageClaim;
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_ENTRY)
 	/* Debug. */
 	sjme_emitB("STACK RF %p: %p[%d] (rel %d + %d = %d)",
 		stack, storageBase, storageClaim,
@@ -319,7 +320,9 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_nvm_frame result;
 	sjme_jboolean isStatic;
 	sjme_jvalueTyped* argVParam;
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_nvm_frame_gcCommit commit;
+#endif
 #if defined(SJME_CONFIG_DEBUG)
 #define ARG_BUF_SIZE 128
 	sjme_jint argBufLen;
@@ -424,8 +427,10 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		sjme_atomic_s(sjme_nvm_frame, &result->parent,
 			inThread->frames->elements[inThread->numFrames - 1]);
 
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/* Setup commit. */
 	memset(&commit, 0, sizeof(commit));
+#endif
 	
 	/* Setup initial locals, which are copied in from arguments. */
 	if (argV != NULL)
@@ -433,7 +438,11 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		{
 			/* Set local value. */
 			if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 				result, &commit, dx, &argV[i])))
+#else
+				result, NULL, dx, &argV[i])))
+#endif
 				return sjme_error_vmError(inThread, error);
 			
 			/* Move wide values up twice. */
@@ -441,10 +450,12 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 				argV[i].t == SJME_JAVA_TYPE_ID_DOUBLE)
 				dx++;
 		}
-	
+
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/* Commit GC. */
 	if (sjme_error_is(error = sjme_nvm_task_frameCommit(result, &commit)))
 		return sjme_error_vmError(result, error);
+#endif
 	
 	/* Set frame as active. */
 	inThread->numFrames++;
@@ -762,17 +773,26 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	if (sjme_error_is(error = sjme_nvm_instance_countDown(topFrame->instance)))
 		return sjme_error_vmError(topFrame, error);
 
-	/* Make the top-most frame  not exist. */
+	/* Make the top-most frame no longer exist. */
 	inThread->numFrames = topIndex;
 
-	/* Reduce the storage claim to free it up. */
+	/* Reduce the storage claim to free the used stack space. */
 	inThread->stack.storageTop -= topFrame->stack.storageClaim;
+
+#if defined(SJME_CONFIG_DEBUG_ENTRY)
+	/* Debug. */
+	sjme_emitB("STACK UF %p: -%d -> %d",
+		topFrame->stack.storageBase,
+		(sjme_jint)topFrame->stack.storageClaim,
+		(sjme_jint)inThread->stack.storageTop);
+#endif
 	
 	/* Clear the frame to a blank state. */
 	memset(&blank, 0, sizeof(blank));
 	memmove(&blank.common, &topFrame->common, sizeof(blank.common));
 	
 	/* Use this resultant blank, keeping the common areas. */
+	/* topFrame IS NOW INVALID AFTER THIS POINT. */
 	memmove(topFrame, &blank, sizeof(*topFrame));
 	
 	/* If this is the last frame, the thread will be terminating unless */

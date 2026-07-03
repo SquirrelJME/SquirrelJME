@@ -200,6 +200,9 @@ struct sjme_frame_frameStack
 	
 	/** The length of this set. */
 	sjme_jint length;
+
+	/** The number of bytes claimed for this frame. */
+	sjme_jint storageClaim;
 	
 	/** The value set. */
 	sjme_nvm_valueSet* set;

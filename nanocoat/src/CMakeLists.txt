@@ -66,6 +66,7 @@ squirreljme_multilib_add_library(Core
 	stringPool.c
 	task.c
 	taskFrame.c
+	taskStore.c
 	taskThread.c
 	tread.c
 	vmConfig.c

@@ -82,6 +82,12 @@ sjme_errorCode sjme_nvm_task_frameCommitPush(
 	if (commit == NULL || pushObject == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+#if defined(SJME_CONFIG_DEBUG_GC)
+	/* Debug. */
+	sjme_emitB("COMMIT %d:%p",
+		pushObject->common.type, pushObject);
+#endif
+
 	/* For direct adding quickly. */
 	freeCommit = NULL;
 	freeIndex = -1;
@@ -560,11 +566,13 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 	stack->orderTop = newTop;
 	perType->top = newPerTop;
 
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/* If this is an object, it needs to be committed later. */
 	if (topType == SJME_BASIC_TYPE_ID_OBJECT && outValue->v.l != NULL)
 		if (sjme_error_is(error = sjme_nvm_task_frameCommitPush(inFrame,
 			commit, outValue->v.l)))
 			return sjme_error_vmError(inFrame, error);
+#endif
 
 	/* Success! */
 	return SJME_ERROR_NONE;
