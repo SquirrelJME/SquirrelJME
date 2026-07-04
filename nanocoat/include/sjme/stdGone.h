@@ -78,6 +78,10 @@
 	#include <ctype.h>
 #endif
 
+#if defined(SJME_CONFIG_HAS_WCTYPE_H)
+	#include <wctype.h>
+#endif
+
 /* Anti-C++. */
 #ifdef __cplusplus
 	#ifndef SJME_CXX_IS_EXTERNED

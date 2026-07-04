@@ -62,6 +62,64 @@ sjme_jint sjme_compare_null(
 	return 1;
 }
 
+sjme_jint sjme_lpwcscmp(sjme_lpcwstr a, sjme_lpcwstr b)
+{
+	/* Compare null. */
+	if (a == NULL || b == NULL)
+		return sjme_compare_null(a, b);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_jint sjme_lpwcsncmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n)
+{
+	/* Compare null. */
+	if (a == NULL || b == NULL)
+		return sjme_compare_null(a, b);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_jint sjme_lpwcscasecmp(sjme_lpcwstr a, sjme_lpcwstr b)
+{
+	/* Compare null. */
+	if (a == NULL || b == NULL)
+		return sjme_compare_null(a, b);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+	
+sjme_jint sjme_lpwcsncasecmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n)
+{
+	/* Compare null. */
+	if (a == NULL || b == NULL)
+		return sjme_compare_null(a, b);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+	
+sjme_jint sjme_lpwcslen(sjme_lpcwstr s)
+{
+	if (s == NULL)
+		return -1;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+	
+sjme_jint sjme_lpwcsnlen(sjme_lpcwstr s, sjme_jint n)
+{
+	if (s == NULL || n < 0)
+		return -1;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_random_init(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jint seedHi,
@@ -209,15 +267,15 @@ sjme_jint sjme_string_compareIN(sjme_lpcstr aString, sjme_jint aLen,
 sjme_jint sjme_string_compareWN(sjme_lpcwstr aString, sjme_jint aLen,
 	sjme_lpcwstr bString, sjme_jint bLen)
 {
-	sjme_string_compareImpl(wcsncmp(aString, bString, limit),
-		wcslen);
+	sjme_string_compareImpl(sjme_lpwcsncmp(aString, bString, limit),
+		sjme_lpwcslen);
 }
 
 sjme_jint sjme_string_compareIWN(sjme_lpcwstr aString, sjme_jint aLen,
 	sjme_lpcwstr bString, sjme_jint bLen)
 {
-	sjme_string_compareImpl(wcsncasecmp(aString, bString, limit),
-		wcslen);
+	sjme_string_compareImpl(sjme_lpwcsncasecmp(aString, bString, limit),
+		sjme_lpwcslen);
 }
 
 sjme_jint sjme_string_compareWAN(
@@ -232,7 +290,7 @@ sjme_jint sjme_string_compareWAN(
 
 	/* Take the string length? */
 	if (aLen == -1)
-		aLen = (sjme_jint)wcslen(aString);
+		aLen = (sjme_jint)sjme_lpwcslen(aString);
 	if (bLen == -1)
 		bLen = (sjme_jint)strlen(bString);
 	
@@ -284,7 +342,7 @@ sjme_jint sjme_string_compareIWAN(
 
 	/* Take the string length? */
 	if (aLen == -1)
-		aLen = (sjme_jint)wcslen(aString);
+		aLen = (sjme_jint)sjme_lpwcslen(aString);
 	if (bLen == -1)
 		bLen = (sjme_jint)strlen(bString);
 

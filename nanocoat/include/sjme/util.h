@@ -138,7 +138,68 @@ typedef struct sjme_tree_findFunc
 sjme_jint sjme_compare_null(
 	sjme_attrInNullable sjme_cpointer a,
 	sjme_attrInNullable sjme_cpointer b);
+	
+/**
+ * Compares two wide strings.
+ * 
+ * @param a The first wide string.
+ * @param b The second wide string.
+ * @return The comparison value.
+ * @since 2026/07/04
+ */
+sjme_jint sjme_lpwcscmp(sjme_lpcwstr a, sjme_lpcwstr b);
 
+/**
+ * Compares two wide strings, up to the given limit.
+ * 
+ * @param a The first wide string.
+ * @param b The second wide string.
+ * @param n The limit to compare up to.
+ * @return The comparison value.
+ * @since 2026/07/04
+ */
+sjme_jint sjme_lpwcsncmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n);
+	
+/**
+ * Compares two wide strings, disregarding case.
+ * 
+ * @param a The first wide string.
+ * @param b The second wide string.
+ * @return The comparison value.
+ * @since 2026/07/04
+ */
+sjme_jint sjme_lpwcscasecmp(sjme_lpcwstr a, sjme_lpcwstr b);
+	
+/**
+ * Compares two wide strings disregarding case, up to the given limit.
+ * 
+ * @param a The first wide string.
+ * @param b The second wide string.
+ * @param n The limit to compare up to.
+ * @return The comparison value.
+ * @since 2026/07/04
+ */
+sjme_jint sjme_lpwcsncasecmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n);
+	
+/**
+ * Return the length of the wide string.
+ * 
+ * @param s The wide string to get the length of.
+ * @return The string length.
+ * @since 2026/07/04
+ */
+sjme_jint sjme_lpwcslen(sjme_lpcwstr s);
+	
+/**
+ * Return the length of the wide string up to the given limit.
+ * 
+ * @param s The wide string to get the length of.
+ * @param n The maximum limit of the string. 
+ * @return The string length.
+ * @since 2026/07/04
+ */
+sjme_jint sjme_lpwcsnlen(sjme_lpcwstr s, sjme_jint n);
+	
 /**
  * Initializes the random number generator.
  * 

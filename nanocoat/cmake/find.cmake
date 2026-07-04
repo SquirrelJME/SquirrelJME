@@ -56,6 +56,11 @@ squirreljme_check_include_file("ctype.h"
 	SJME_CONFIG_HAS_CTYPE_H
 	SJME_CONFIG_HAS_NO_CTYPE_H)
 
+# wctype.h available?
+squirreljme_check_include_file("wctype.h"
+	SJME_CONFIG_HAS_WCTYPE_H
+	SJME_CONFIG_HAS_NO_WCTYPE_H)
+
 # netinet/in.h available?
 squirreljme_check_include_file("netinet/in.h"
 	SJME_CONFIG_HAS_NETINET_IN_H
