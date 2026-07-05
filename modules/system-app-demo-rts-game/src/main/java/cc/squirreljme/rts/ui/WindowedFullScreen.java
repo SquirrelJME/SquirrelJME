@@ -111,7 +111,12 @@ public class WindowedFullScreen
 		
 		// Tell the panel to repaint itself
 		else if (this._madeVisible && this._madeFullscreen)
-			/*this.scritch.paintable().componentRepaint(this.panelGame)*/;
+		{
+			// Only when redraw is latched
+			RateController rate = this.rate.get();
+			if (rate != null && rate.latchRedraw())
+				this.scritch.paintable().componentRepaint(this.panelGame);
+		}
 	}
 	
 	/**

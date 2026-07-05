@@ -23,6 +23,12 @@ public class Viewport
 	/** The local view ID. */
 	protected final int localId;
 	
+	/** The local cursor X position. */
+	protected volatile int localCursorX;
+	
+	/** The local cursor Y position. */
+	protected volatile int localCursorY;
+	
 	/** The screen X coordinate of this viewport. */ 
 	protected volatile int screenX;
 	
@@ -52,6 +58,10 @@ public class Viewport
 	
 	/** The map end Y coordinate. */
 	protected volatile int mapEY;
+	
+	/** Current text to be drawn. */
+	private final TextDrawer _debugText =
+		new TextDrawer();
 	
 	/** Is this viewport dirty? */
 	private volatile boolean _isDirty;
@@ -93,6 +103,37 @@ public class Viewport
 			this.mapEX = this.mapX + this.mapW;
 			this.mapEY = this.mapY + this.mapH;
 		}
+	}
+	
+	/**
+	 * Is this view active?
+	 *
+	 * @return If this view is active.
+	 * @since 2026/07/05
+	 */
+	public boolean isActive()
+	{
+		return true;
+	}
+	
+	/**
+	 * Updates the local cursor.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @return If an update occurred.
+	 * @since 2026/07/05
+	 */
+	public boolean localCursor(int __x, int __y)
+	{
+		// Ignore cursor position if off-screen
+		if (__x < 0 || __y < 0 ||
+			__x >= this.screenW || __y >= this.screenH)
+			return false;
+		
+		this.localCursorX = __x;
+		this.localCursorY = __y;
+		return true;
 	}
 	
 	/**
@@ -178,6 +219,10 @@ public class Viewport
 		for (int y = mapY; y < mapEY; y += Chunk.TILE_TO_PX)
 			for (int x = mapX; x < mapEX; x += Chunk.TILE_TO_PX)
 				__g.drawLine(x, y, x + 1, y);
+		
+		// Draw the local cursor position
+		this._debugText.draw(__g, 4, 4,
+			"LC (%d, %d)", this.localCursorX, this.localCursorY);
 	}
 	
 	/**

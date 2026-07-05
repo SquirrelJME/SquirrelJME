@@ -12,6 +12,8 @@ squirreljme
 	swmVendor = "Stephanie Gawroriski"
 	midlets += new JavaMEMidlet("Real Time Strategy Game", "icon.xpm",
 		"cc.squirreljme.rts.StrategyGame")
+	midlets += new JavaMEMidlet("Real Time Strategy Editor", "icon.xpm",
+		"cc.squirreljme.rts.ui.editor.EditorMain")
 	tags += "games"
 	tags += "demo"
 
