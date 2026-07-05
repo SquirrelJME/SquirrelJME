@@ -363,7 +363,9 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 	
 	/* Disconnect old signal? */
 	if (infoCore->extra != 0)
-		inState->implIntern->disconnectSignal(inState, inWidget, infoCore);
+		if (sjme_error_is(error = inState->implIntern->disconnectSignal(
+			inState, inWidget, infoCore)))
+			return sjme_error_default(error);
 	
 	/* Connect signal. */
 	if (inListener != NULL)
@@ -394,10 +396,10 @@ sjme_errorCode sjme_scritchui_gtk2_intern_reconnectSignal(
 			if (inSignal != NULL)
 			{
 				if (isAfter)
-					infoCore->extra = g_signal_connect_after(inWidget,
+					idList->elements[i] = g_signal_connect_after(inWidget,
 						inSignal, inGtkCallback, inOnWhat);
 				else
-					infoCore->extra = g_signal_connect(inWidget, inSignal,
+					idList->elements[i] = g_signal_connect(inWidget, inSignal,
 						inGtkCallback, inOnWhat);
 			}
 		}

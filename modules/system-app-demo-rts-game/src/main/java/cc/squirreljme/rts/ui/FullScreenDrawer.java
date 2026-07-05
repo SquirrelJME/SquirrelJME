@@ -11,9 +11,12 @@ package cc.squirreljme.rts.ui;
 
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
+import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.rts.map.WorldMap;
 import cc.squirreljme.rts.rate.RateController;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.lang.ref.Reference;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +28,7 @@ import org.jetbrains.annotations.Range;
  * @since 2026/06/10
  */
 public class FullScreenDrawer
-	implements ScritchPaintListener
+	implements ScritchPaintListener, ScritchInputListener
 {
 	/** The maximum number of local viewports. */
 	public static final int MAX_LOCAL_VIEWS =
@@ -62,6 +65,45 @@ public class FullScreenDrawer
 		for (int n = views.length, i = 0; i < n; i++)
 			views[i] = new Viewport(i);
 		this._numViewers = views.length;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/07/04
+	 */
+	@Override
+	public void inputEvent(@NotNull ScritchComponentBracket __component,
+		int __type, long __time, int __a, int __b, int __c, int __d, int __e,
+		int __f, int __g, int __h, int __i, int __j, int __k, int __l)
+	{
+		// Update local cursor position?
+		switch (__type)
+		{
+			case ScritchInputMethodType.MOUSE_MOTION:
+			case ScritchInputMethodType.MOUSE_BUTTON_PRESSED:
+			case ScritchInputMethodType.TOUCH_FINGER_PRESSED:
+			case ScritchInputMethodType.STYLUS_PEN_PRESSED:
+			case ScritchInputMethodType.STYLUS_DRAG_MOTION:
+			case ScritchInputMethodType.STYLUS_HOVER_MOTION:
+				this.localCursor(__c, __d);
+				break;
+		}
+	}
+	
+	/**
+	 * Updates the local cursor.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @since 2026/07/05
+	 */
+	public void localCursor(int __x, int __y)
+	{
+		for (Viewport view : this._views)
+			if (view.isActive() &&
+				__x >= view.screenX && __y >= view.screenY)
+				view.localCursor(__x - view.screenX,
+					__y - view.screenY);
 	}
 	
 	/**
