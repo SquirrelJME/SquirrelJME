@@ -10,7 +10,6 @@
 package cc.squirreljme.rts.rate;
 
 import cc.squirreljme.rts.map.WorldMap;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -38,6 +37,9 @@ public class RateController
 	/** The world map simulation to run. */
 	private volatile WorldMap _worldMap;
 	
+	/** Latch redraw. */
+	private volatile boolean _latchRedraw;
+	
 	/**
 	 * Initializes the rate controller.
 	 *
@@ -47,6 +49,29 @@ public class RateController
 	{
 		// Default to the normal rate
 		this.rate(RateSpeed.NORMAL);
+	}
+	
+	/**
+	 * Latch a redraw.
+	 *
+	 * @since 2026/07/05
+	 */
+	public void doRedraw()
+	{
+		this._latchRedraw = true;
+	}
+	
+	/**
+	 * Checks if a redraw should occur, then clears it.
+	 *
+	 * @return If a redraw should occur.
+	 * @since 2026/07/05
+	 */
+	public boolean latchRedraw()
+	{
+		boolean was = this._latchRedraw;
+		this._latchRedraw = false;
+		return was;
 	}
 	
 	/**

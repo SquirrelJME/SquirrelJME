@@ -81,7 +81,6 @@ public class WindowedFullScreen
 		FullScreenDrawer drawer = new FullScreenDrawer(this.rate);
 		__scritch.paintable().componentSetPaintListener(panelGame,
 			drawer);
-		__scritch.panel().panelSetInputListener(panelGame, drawer);
 		
 		// Terminate the game if the window is closed
 		__scritch.window().windowSetCloseListener(winGame,
@@ -112,7 +111,12 @@ public class WindowedFullScreen
 		
 		// Tell the panel to repaint itself
 		else if (this._madeVisible && this._madeFullscreen)
-			/*this.scritch.paintable().componentRepaint(this.panelGame)*/;
+		{
+			// Only when redraw is latched
+			RateController rate = this.rate.get();
+			if (rate != null && rate.latchRedraw())
+				this.scritch.paintable().componentRepaint(this.panelGame);
+		}
 	}
 	
 	/**

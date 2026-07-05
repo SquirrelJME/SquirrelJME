@@ -121,17 +121,19 @@ public class Viewport
 	 *
 	 * @param __x The X coordinate.
 	 * @param __y The Y coordinate.
+	 * @return If an update occurred.
 	 * @since 2026/07/05
 	 */
-	public void localCursor(int __x, int __y)
+	public boolean localCursor(int __x, int __y)
 	{
 		// Ignore cursor position if off-screen
 		if (__x < 0 || __y < 0 ||
 			__x >= this.screenW || __y >= this.screenH)
-			return;
+			return false;
 		
 		this.localCursorX = __x;
 		this.localCursorY = __y;
+		return true;
 	}
 	
 	/**
