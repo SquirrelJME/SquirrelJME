@@ -678,6 +678,13 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->windowSetCloseListener.inListener,
 		as->windowSetCloseListener.copyFrontEnd));
 
+	SJME_SDU_CASE(windowSetFlags,
+		SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_FLAGS,
+		(state,
+		as->windowSetFlags.inWindow,
+		as->windowSetFlags.setFlags,
+		as->windowSetFlags.actualFlags));
+
 	SJME_SDU_CASE(windowSetMenuBar,
 		SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_MENU_BAR,
 		(state,
@@ -690,6 +697,13 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		as->windowSetMenuItemActivateListener.inWindow,
 		as->windowSetMenuItemActivateListener.inListener,
 		as->windowSetMenuItemActivateListener.copyFrontEnd));
+
+	SJME_SDU_CASE(windowSetState,
+		SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_STATE,
+		(state,
+		as->windowSetState.inWindow,
+		as->windowSetState.setState,
+		as->windowSetState.actualState));
 		
 	SJME_SDU_CASE(windowSetVisible,
 		SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_VISIBLE,
@@ -2094,6 +2108,24 @@ SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(windowSetCloseListener,
 	SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_CLOSE_LISTENER,
 	sjme_scritchui_uiWindow, inWindow, close)
 
+sjme_errorCode sjme_scritchui_coreSerial_windowSetFlags(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_jint setFlags,
+	sjme_attrOutNullable sjme_jint* actualFlags)
+{
+	SJME_SDU_CHUNK(windowSetFlags,
+		SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_FLAGS,
+		(inState, inWindow, setFlags, actualFlags));
+		
+	SJME_SDX_PASS(inWindow);
+	SJME_SDX_PASS(setFlags);
+	SJME_SDX_PASS(actualFlags);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
+
 sjme_errorCode sjme_scritchui_coreSerial_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -2113,6 +2145,24 @@ sjme_errorCode sjme_scritchui_coreSerial_windowSetMenuBar(
 SJME_SCRITCHUI_DISPATCH_GENERIC_LISTENER(windowSetMenuItemActivateListener,
 	SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_MENU_ITEM_ACTIVATE_LISTENER,
 	sjme_scritchui_uiWindow, inWindow, menuItemActivate)
+
+sjme_errorCode sjme_scritchui_coreSerial_windowSetState(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_windowState setState,
+	sjme_attrOutNullable sjme_scritchui_windowState* actualState)
+{
+	SJME_SDU_CHUNK(windowSetState,
+		SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_STATE,
+		(inState, inWindow, setState, actualState));
+		
+	SJME_SDX_PASS(inWindow);
+	SJME_SDX_PASS(setState);
+	SJME_SDX_PASS(actualState);
+	
+	/* Invoke and wait. */
+	SJME_SDX_WAIT;
+}
 
 sjme_errorCode sjme_scritchui_coreSerial_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

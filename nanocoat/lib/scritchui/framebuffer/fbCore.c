@@ -67,7 +67,9 @@ const sjme_scritchui_implFunctions sjme_scritchui_fbFunctions =
 	sjme_sm(.windowGetFrame, sjme_scritchui_fb_windowGetFrame),
 	sjme_sm(.windowNew, sjme_scritchui_fb_windowNew),
 	sjme_sm(.windowSetCloseListener, sjme_scritchui_fb_windowSetCloseListener),
+	sjme_sm(.windowSetFlags, sjme_scritchui_fb_windowSetFlags),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_fb_windowSetMenuBar),
+	sjme_sm(.windowSetState, sjme_scritchui_fb_windowSetState),
 	sjme_sm(.windowSetVisible, sjme_scritchui_fb_windowSetVisible),
 };
 

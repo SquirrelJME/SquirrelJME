@@ -141,6 +141,16 @@ sjme_errorCode sjme_scritchui_core_windowSetCloseListener(
 		copyFrontEnd);
 }
 
+sjme_errorCode sjme_scritchui_core_windowSetFlags(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_jint setFlags,
+	sjme_attrOutNullable sjme_jint* actualFlags)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -213,6 +223,16 @@ sjme_errorCode sjme_scritchui_core_windowSetMenuItemActivateListener(
 			inWindow, menuItemActivate),
 		(sjme_scritchui_voidListenerFunc)inListener,
 		copyFrontEnd);
+}
+
+sjme_errorCode sjme_scritchui_core_windowSetState(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_windowState setState,
+	sjme_attrOutNullable sjme_scritchui_windowState* actualState)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_scritchui_core_windowSetVisible(

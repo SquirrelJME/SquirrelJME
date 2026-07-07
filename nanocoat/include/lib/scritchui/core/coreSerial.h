@@ -41,196 +41,202 @@ typedef enum sjme_scritchui_serialType
 	/** Unknown. */
 	SJME_SCRITCHUI_SERIAL_UI_UNKNOWN,
 	
-	/** @c choiceGetSelectedIndex . */
+	/** @link sjme_scritchui_choiceGetSelectedIndexFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CHOICE_GET_SELECTED_INDEX,
 	
-	/** @c choiceItemGet . */
+	/** @link sjme_scritchui_choiceItemGetFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CHOICE_ITEM_GET,
 	
-	/** @c choiceItemInsert . */
+	/** @link sjme_scritchui_choiceItemInsertFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CHOICE_ITEM_INSERT,
 	
-	/** @c choiceItemRemove . */
+	/** @link sjme_scritchui_choiceItemRemoveFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CHOICE_ITEM_REMOVE,
 	
-	/** @c choiceItemRemoveAll . */
+	/** @link sjme_scritchui_choiceItemRemoveAllFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CHOICE_ITEM_REMOVE_ALL,
 	
-	/** @c choiceItemSetEnabled . */
+	/** @link sjme_scritchui_choiceItemSetEnabledFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CHOICE_ITEM_SET_ENABLED,
 	
-	/** @c choiceItemSetImage . */
+	/** @link sjme_scritchui_choiceItemSetImageFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CHOICE_ITEM_SET_IMAGE,
 	
-	/** @c choiceItemSetSelected . */
+	/** @link sjme_scritchui_choiceItemSetSelectedFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CHOICE_ITEM_SET_SELECTED,
 	
-	/** @c choiceItemSetString . */
+	/** @link sjme_scritchui_choiceItemSetStringFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CHOICE_ITEM_SET_STRING,
 	
-	/** @c choiceLength . */
+	/** @link sjme_scritchui_choiceLengthFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CHOICE_LENGTH,
 	
-	/** @c componentFocusGrab . */
+	/** @link sjme_scritchui_componentFocusGrabFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_COMPONENT_FOCUS_GRAB,
 	
-	/** @c componentFocusHas . */
+	/** @link sjme_scritchui_componentFocusHasFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_COMPONENT_FOCUS_HAS,
 	
-	/** @c componentGetParent . */
+	/** @link sjme_scritchui_componentGetParentFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_COMPONENT_GET_PARENT,
 	
-	/** @c componentPosition . */
+	/** @link sjme_scritchui_componentPositionFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_COMPONENT_POSITION,
 	
-	/** @c componentRepaint . */
+	/** @link sjme_scritchui_componentRepaintFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_COMPONENT_REPAINT,
 	
-	/** @c componentRevalidate . */
+	/** @link sjme_scritchui_componentRevalidateFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_COMPONENT_REVALIDATE,
 	
-	/** @c componentSetActivateListener . */
+	/** @link sjme_scritchui_componentSetActivateListenerFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CHOICE_SET_ACTIVATE_LISTENER,
 	
-	/** @c componentSetInputListener . */
+	/** @link sjme_scritchui_componentSetInputListenerFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_COMPONENT_SET_INPUT_LISTENER,
 	
-	/** @c componentSetPaintListener . */
+	/** @link sjme_scritchui_componentSetPaintListenerFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_COMPONENT_SET_PAINT_LISTENER,
 	
-	/** @c componentSetSizeListener . */
+	/** @link sjme_scritchui_componentSetSizeListenerFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_COMPONENT_SET_SIZE_LISTENER,
 	
-	/** @c componentSetValueUpdateListener . */
+	/** @link sjme_scritchui_componentSetValueUpdateListenerFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_COMPONENT_SET_VALUE_UPDATE_LISTENER,
 	
-	/** @c componentSetVisibleListener . */
+	/** @link sjme_scritchui_componentSetVisibleListenerFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_COMPONENT_SET_VISIBLE_LISTENER,
 	
-	/** @c componentSize . */
+	/** @link sjme_scritchui_componentSizeFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_COMPONENT_SIZE,
 	
-	/** @c containerAdd . */
+	/** @link sjme_scritchui_containerAddFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CONTAINER_ADD,
 	
-	/** @c containerGetFrame . */
+	/** @link sjme_scritchui_containerGetFrameFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CONTAINER_GET_FRAME,
 	
-	/** @c containerRemove . */
+	/** @link sjme_scritchui_containerRemoveFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CONTAINER_REMOVE,
 	
-	/** @c containerRemoveAll . */
+	/** @link sjme_scritchui_containerRemoveAllFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CONTAINER_REMOVE_ALL,
 	
-	/** @c containerSetBounds . */
+	/** @link sjme_scritchui_containerSetBoundsFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_CONTAINER_SET_BOUNDS,
 	
-	/** @c fontBuiltin . */
+	/** @link sjme_scritchui_fontBuiltinFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_FONT_BUILTIN,
 	
-	/** @c fontByFace . */
+	/** @link sjme_scritchui_fontByFaceFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_FONT_BY_FACE,
 
-	/** @c fontCount . */
+	/** @link sjme_scritchui_fontCountFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_FONT_COUNT,
 	
-	/** @c fontDerive . */
+	/** @link sjme_scritchui_fontDeriveFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_FONT_DERIVE,
 	
-	/** @c fontList . */
+	/** @link sjme_scritchui_fontListFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_FONT_LIST,
 	
-	/** @c hardwareGraphics . */
+	/** @link sjme_scritchui_hardwareGraphicsFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_HARDWARE_GRAPHICS,
 	
-	/** @c labelSetString . */
+	/** @link sjme_scritchui_labelSetStringFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_LABEL_SET_STRING,
 	
-	/** @c lafDpiProject. */
+	/** @link sjme_scritchui_lafDpiProjectFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_LAF_DPI_PROJECT,
 	
-	/** @c lafElementColor. */
+	/** @link sjme_scritchui_lafElementColorFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_LAF_ELEMENT_COLOR,
 
-	/** @c lafMetric. */
+	/** @link sjme_scritchui_lafMetricFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_LAF_METRIC,
 		
-	/** @c listNew . */
+	/** @link sjme_scritchui_listNewFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_LIST_NEW,
 		
-	/** @c menuBarNew . */
+	/** @link sjme_scritchui_menuBarNewFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_MENU_BAR_NEW,
 	
-	/** @c menuInsert . */
+	/** @link sjme_scritchui_menuInsertFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_MENU_INSERT,
 		
-	/** @c menuItemNew . */
+	/** @link sjme_scritchui_menuItemNewFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_MENU_ITEM_NEW,
 		
-	/** @c menuNew . */
+	/** @link sjme_scritchui_menuNewFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_MENU_NEW,
 	
-	/** @c menuRemove . */
+	/** @link sjme_scritchui_menuRemoveFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_MENU_REMOVE,
 	
-	/** @c menuRemoveAll . */
+	/** @link sjme_scritchui_menuRemoveAllFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_MENU_REMOVE_ALL,
 	
-	/** @c objectDelete . */
+	/** @link sjme_scritchui_objectDeleteFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_OBJECT_DELETE,
 		
-	/** @c panelEnableFocus . */
+	/** @link sjme_scritchui_panelEnableFocusFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_PANEL_ENABLE_FOCUS,
 		
-	/** @c panelNew . */
+	/** @link sjme_scritchui_panelNewFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_PANEL_NEW,
 	
-	/** @c pseudoGraphics . */
+	/** @link sjme_scritchui_pseudoGraphicsFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_PSEUDO_GRAPHICS,
 	
-	/** @c screenGetBounds . */
+	/** @link sjme_scritchui_screenGetBoundsFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_SCREEN_GET_BOUNDS,
 	
-	/** @c screenSetListener . */
+	/** @link sjme_scritchui_screenSetListenerFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_SCREEN_SET_LISTENER,
 		
-	/** @c screens . */
+	/** @link sjme_scritchui_screensFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_SCREENS,
 	
-	/** @c scrollPanelNew . */
+	/** @link sjme_scritchui_scrollPanelNewFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_SCROLL_PANEL_NEW,
 	
-	/** @c viewGetView . */
+	/** @link sjme_scritchui_viewGetViewFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_VIEW_GET_VIEW,
 	
-	/** @c viewSetArea . */
+	/** @link sjme_scritchui_viewSetAreaFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_VIEW_SET_AREA,
 	
-	/** @c viewSetView . */
+	/** @link sjme_scritchui_viewSetViewFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_VIEW_SET_VIEW,
 	
-	/** @c viewSetSizeSuggestListener . */
+	/** @link sjme_scritchui_viewSetSizeSuggestListenerFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_VIEW_SET_SIZE_SUGGEST_LISTENER,
 	
-	/** @c viewSetViewListener . */
+	/** @link sjme_scritchui_viewSetViewListenerFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_VIEW_SET_VIEW_LISTENER,
 	
-	/** @c windowContentMinimumSize . */
+	/** @link sjme_scritchui_windowContentMinimumSizeFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_WINDOW_CONTENT_MINIMUM_SIZE,
 	
-	/** @c windowNew . */
+	/** @link sjme_scritchui_windowNewFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_WINDOW_NEW,
 	
-	/** @c windowSetCloseListener . */
+	/** @link sjme_scritchui_windowSetCloseListenerFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_CLOSE_LISTENER,
 	
-	/** @c windowSetMenuBar . */
+	/** @link sjme_scritchui_windowSetFlagsFunc @endlink . */
+	SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_FLAGS,
+	
+	/** @link sjme_scritchui_windowSetMenuBarFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_MENU_BAR,
 	
-	/** @c windowSetMenuItemActivateListener . */
+	/** @link sjme_scritchui_windowSetMenuItemActivateListenerFunc @endlink. */
 	SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_MENU_ITEM_ACTIVATE_LISTENER,
 	
-	/** @c windowSetVisible . */
+	/** @link sjme_scritchui_windowSetStateFunc @endlink . */
+	SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_STATE,
+	
+	/** @link sjme_scritchui_windowSetVisibleFunc @endlink . */
 	SJME_SCRITCHUI_SERIAL_UI_WINDOW_SET_VISIBLE,
 	
 	/** @c lock . */
@@ -705,6 +711,11 @@ SDU_STRUCT_DEF(windowSetCloseListener,
 	SDX_VAR(sjme_scritchui_uiWindow, inWindow);
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(close););
 
+SDU_STRUCT_DEF(windowSetFlags,
+	SDX_VAR(sjme_scritchui_uiWindow, inWindow);
+	SDX_VAR(sjme_jint, setFlags);
+	SDX_VARP(sjme_jint, actualFlags););
+
 SDU_STRUCT_DEF(windowSetMenuBar,
 	SDX_VAR(sjme_scritchui_uiWindow, inWindow);
 	SDX_VAR(sjme_scritchui_uiMenuBar, inMenuBar););
@@ -712,6 +723,11 @@ SDU_STRUCT_DEF(windowSetMenuBar,
 SDU_STRUCT_DEF(windowSetMenuItemActivateListener,
 	SDX_VAR(sjme_scritchui_uiWindow, inWindow);
 	SJME_SCRITCHUI_SERIAL_SET_LISTENER(menuItemActivate););
+
+SDU_STRUCT_DEF(windowSetState,
+	SDX_VAR(sjme_scritchui_uiWindow, inWindow);
+	SDX_VAR(sjme_scritchui_windowState, setState);
+	SDX_VARP(sjme_scritchui_windowState, actualState););
 	
 SDU_STRUCT_DEF(windowSetVisible,
 	SDX_VAR(sjme_scritchui_uiWindow, inWindow);
@@ -1170,8 +1186,10 @@ typedef union sjme_scritchui_serialDataUnion
 	SJME_SCRITCHUI_SDU_DEF(windowContentMinimumSize);
 	SJME_SCRITCHUI_SDU_DEF(windowNew);
 	SJME_SCRITCHUI_SDU_DEF(windowSetCloseListener);
+	SJME_SCRITCHUI_SDU_DEF(windowSetFlags);
 	SJME_SCRITCHUI_SDU_DEF(windowSetMenuBar);
 	SJME_SCRITCHUI_SDU_DEF(windowSetMenuItemActivateListener);
+	SJME_SCRITCHUI_SDU_DEF(windowSetState);
 	SJME_SCRITCHUI_SDU_DEF(windowSetVisible);
 /* ------------------------------------------------------------------------ */
 #pragma region(pencil)
@@ -1600,6 +1618,12 @@ sjme_errorCode sjme_scritchui_coreSerial_windowSetCloseListener(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
 	
+sjme_errorCode sjme_scritchui_coreSerial_windowSetFlags(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_jint setFlags,
+	sjme_attrOutNullable sjme_jint* actualFlags);
+	
 sjme_errorCode sjme_scritchui_coreSerial_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -1609,6 +1633,12 @@ sjme_errorCode sjme_scritchui_coreSerial_windowSetMenuItemActivateListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(menuItemActivate));
+	
+sjme_errorCode sjme_scritchui_coreSerial_windowSetState(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_windowState setState,
+	sjme_attrOutNullable sjme_scritchui_windowState* actualState);
 
 sjme_errorCode sjme_scritchui_coreSerial_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

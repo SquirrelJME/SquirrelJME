@@ -12,6 +12,8 @@ package cc.squirreljme.rts.ui.editor;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowFlag;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowState;
 import cc.squirreljme.rts.rate.RateController;
 import cc.squirreljme.rts.rate.ScreenRunnable;
 import cc.squirreljme.rts.ui.TerminateGame;
@@ -83,13 +85,43 @@ public class EditorWindow
 		if (this.__latchVisible())
 			this.scritch.window().windowSetVisible(this.winEditor,
 				true);
+		
+		// Do we need to maximize the window?
+		else if (this.__latchMaximize())
+			this.scritch.window().windowSetState(this.winEditor,
+				ScritchWindowState.MAXIMIZED_HORIZ |
+				ScritchWindowState.MAXIMIZED_VERT);
+	}
+	
+	/**
+	 * Latches setting initial maximization.
+	 *
+	 * @return If the latch should maximize the window.
+	 * @since 2026/07/05
+	 */
+	private boolean __latchMaximize()
+	{
+		// Only latch if we never went maximized
+		if (!this._madeMaximized)
+			synchronized (this)
+			{
+				// Double check
+				if (!this._madeMaximized)
+				{
+					// Set new state
+					this._madeMaximized = true;
+					return true;
+				}
+			}
+		
+		return false;
 	}
 	
 	/**
 	 * Visibility latch.
 	 *
 	 * @return If the latch should make the window visible.
-	 * @since 2026/06/10
+	 * @since 2026/07/05
 	 */
 	private boolean __latchVisible()
 	{

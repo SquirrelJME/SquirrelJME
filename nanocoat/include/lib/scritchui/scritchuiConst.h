@@ -54,6 +54,9 @@ extern "C"
  */
 typedef enum sjme_scritchui_externalAssetType
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_externalAssetType),
+	
 	/** Undefined asset. */
 	SJME_SCRITCHUI_ASSET_TYPE_UNDEFINED = 0,
 	
@@ -74,6 +77,9 @@ typedef enum sjme_scritchui_externalAssetType
  */
 typedef enum sjme_scritchui_uiType
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_uiType),
+	
 	/** Reserved. */
 	SJME_SCRITCHUI_TYPE_RESERVED,
 	
@@ -122,6 +128,9 @@ typedef enum sjme_scritchui_uiType
  */
 typedef enum sjme_scritchui_inputMethodType
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_inputMethodType),
+	
 	/** A dial-pad such as one on a phone. */
 	SJME_SCRITCHUI_INPUT_METHOD_DIAL_PAD = INT32_C(0x1),
 
@@ -166,6 +175,9 @@ typedef enum sjme_scritchui_inputMethodType
  */
 typedef enum sjme_scritchui_screenUpdateType
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_screenUpdateType),
+	
 	/** Unknown. */
 	SJME_SCRITCHUI_SCREEN_UPDATE_UNKNOWN,
 	
@@ -189,6 +201,9 @@ typedef enum sjme_scritchui_screenUpdateType
  */
 typedef enum sjme_scritchui_windowManagerType
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_windowManagerType),
+	
 	/** One frame per screen. */
 	SJME_SCRITCHUI_WM_TYPE_ONE_FRAME_PER_SCREEN = 0,
 	
@@ -206,6 +221,9 @@ typedef enum sjme_scritchui_windowManagerType
  */
 typedef enum sjme_scritchui_choiceType
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_choiceType),
+	
 	/** Only one element may be selected at a time. */
 	SJME_SCRITCHUI_CHOICE_TYPE_EXCLUSIVE = 0,
 	
@@ -229,6 +247,9 @@ typedef enum sjme_scritchui_choiceType
  */
 typedef enum sjme_scritchui_lafPlatformFlag
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_lafPlatformFlag),
+	
 	/** Dark mode is enabled. */
 	SJME_SCRITCHUI_LAF_PLATFORM_DARK_MODE = 1,
 
@@ -249,6 +270,9 @@ typedef enum sjme_scritchui_lafPlatformFlag
  */
 typedef enum sjme_scritchui_lafElementColorType
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_lafElementColorType),
+	
 	/** Background color. */
 	SJME_SCRITCHUI_LAF_ELEMENT_COLOR_BACKGROUND = 0,
 	
@@ -293,6 +317,9 @@ typedef enum sjme_scritchui_lafElementColorType
  */
 typedef enum sjme_scritchui_lafMetricType
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_lafMetricType),
+	
 	/** Unknown metric. */
 	SJME_SCRITCHUI_LAF_METRIC_UNKNOWN = 0,
 
@@ -310,6 +337,9 @@ typedef enum sjme_scritchui_lafMetricType
  */
 typedef enum sjme_scritchui_lafCoordDir
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_lafCoordDir),
+	
 	/** Unspecified direction. */
 	SJME_SCRITCHUI_COORD_DIR_UNSPECIFIED,
 
@@ -348,6 +378,9 @@ typedef enum sjme_scritchui_lafCoordDir
  */
 typedef enum sjme_scritchui_pencilFontFace
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_pencilFontFace),
+	
 	/** Unknown. */
 	SJME_SCRITCHUI_PENCIL_FONT_FACE_UNKNOWN = 0,
 
@@ -377,6 +410,9 @@ typedef enum sjme_scritchui_pencilFontFace
  */
 typedef enum sjme_scritchui_pencilFontStyle
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_pencilFontStyle),
+	
 	/** Plain font style. */
 	SJME_SCRITCHUI_PENCIL_FONT_STYLE_PLAIN = 0,
 	
@@ -406,6 +442,9 @@ typedef enum sjme_scritchui_pencilFontStyle
  */
 typedef enum sjme_scritchui_pencilFontParamIndex
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_pencilFontParamIndex),
+	
 	/** @link sjme_scritchui_pencilFontParam.style @endlink. */
 	SJME_SCRITCHUI_PENCIL_FONT_PARAM_STYLE = 1,
 
@@ -426,6 +465,9 @@ typedef enum sjme_scritchui_pencilFontParamIndex
  */
 typedef enum sjme_scritchui_pencilAnchor
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_pencilAnchor),
+	
 	/** Horizontal center. */
 	SJME_SCRITCHUI_ANCHOR_HCENTER = 1,
 	
@@ -455,6 +497,9 @@ typedef enum sjme_scritchui_pencilAnchor
  */
 typedef enum sjme_scritchui_pencilTranslate
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_pencilTranslate),
+	
 	/** None. */
 	SJME_SCRITCHUI_TRANS_NONE = 0,
 	
@@ -490,6 +535,9 @@ typedef enum sjme_scritchui_pencilTranslate
  */
 typedef enum sjme_scritchui_pencilBlendingMode
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_pencilBlendingMode),
+	
 	/** Blend with source and multiply. */
 	SJME_SCRITCHUI_PENCIL_BLEND_SRC_OVER = 0,
 	
@@ -537,6 +585,9 @@ typedef enum sjme_scritchui_pencilBlendingMode
  */
 typedef enum sjme_scritchui_pencilStrokeMode
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_pencilStrokeMode),
+	
 	/** Solid line. */
 	SJME_SCRITCHUI_PENCIL_STROKE_SOLID,
 	
@@ -554,6 +605,9 @@ typedef enum sjme_scritchui_pencilStrokeMode
  */
 typedef enum sjme_scritchui_transferRegionMode
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_transferRegionMode),
+	
 	/**
 	 * Disregard the current blending mode and force SRC when drawing
 	 * ontop of the destination.
@@ -584,6 +638,9 @@ typedef enum sjme_scritchui_transferRegionMode
  */
 typedef enum sjme_scritchui_listenerClass
 {
+	/** Integer enum. */
+	sjme_enumInt(sjme_scritchui_listenerClass),
+	
 	/** User based listener. */
 	SJME_SCRITCHUI_LISTENER_USER = 0,
 	
@@ -595,6 +652,105 @@ typedef enum sjme_scritchui_listenerClass
 } sjme_scritchui_listenerClass;
 	
 #pragma endregion(scritchui_listener)
+#pragma region(scritchui_window)
+	
+/**
+ * Window flags which affect how a window behaves.
+ * 
+ * Not all ScritchUI implementations may support specific window flags,
+ * additionally ScritchUI may implement some flags in software if the
+ * core implementation does not support it natively.
+ * 
+ * @since 2026/07/05
+ */
+typedef enum sjme_scritchui_windowFlag
+{
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_scritchui_windowFlag),
+	
+	/** Window does not appear in the task switcher. */
+	SJME_SCRITCHUI_WINDOW_FLAG_NO_TASK_SWITCHER = 1,
+	
+	/** Window does not have any frame or window manager elements. */
+	SJME_SCRITCHUI_WINDOW_FLAG_UNDECORATED = 2,
+	
+	/** Window is a utility window. */
+	SJME_SCRITCHUI_WINDOW_FLAG_UTILITY = 4,
+	
+	/** Window is always on top of the draw stack. */
+	SJME_SCRITCHUI_WINDOW_FLAG_ALWAYS_ON_TOP = 8,
+	
+	/** Window is always on the bottom of the draw stack. */
+	SJME_SCRITCHUI_WINDOW_FLAG_ALWAYS_ON_BOTTOM = 16,
+	
+	/** Window does not permit resize. */
+	SJME_SCRITCHUI_WINDOW_FLAG_NO_RESIZE = 32,
+	
+	/** Window does not permit moving. */
+	SJME_SCRITCHUI_WINDOW_FLAG_NO_MOVE = 64,
+	
+	/** Window is floating and cannot be tiled in tiling window managers. */
+	SJME_SCRITCHUI_WINDOW_FLAG_FORCE_FLOATING = 128,
+	
+	/** Window is a dock app to be embedded in a panel or similar. */
+	SJME_SCRITCHUI_WINDOW_FLAG_DOCK_APP = 256,
+	
+	/** Window is part of a torn off menu. */
+	SJME_SCRITCHUI_WINDOW_FLAG_TORN_MENU = 512,
+	
+	/** Window is part of a torn off toolbar. */
+	SJME_SCRITCHUI_WINDOW_FLAG_TORN_TOOLBAR = 1024,
+	
+	/** Disable all glass effects so the window cannot be seen through. */
+	SJME_SCRITCHUI_WINDOW_FLAG_NO_GLASS = 2048,
+	
+	/** Optimize for drawing, this may disable compositing or adjust vsync. */
+	SJME_SCRITCHUI_WINDOW_FLAG_OPTIMIZE_DRAWING = 4096,
+	
+	/** Show window on all desktops. */
+	SJME_SCRITCHUI_WINDOW_FLAG_ALL_DESKTOPS = 8192,
+} sjme_scritchui_windowFlag;
+
+/**
+ * The state that a window may be in.
+ *
+ * Not all ScritchUI implementations may support specific window states,
+ * additionally ScritchUI may implement some states in software if the
+ * core implementation does not support it natively.
+ * 
+ * @since 2026/07/06
+ */
+typedef enum sjme_scritchui_windowState
+{
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_scritchui_windowState),
+	
+	/** Window is "restored" to its default state. */
+	SJME_SCRITCHUI_WINDOW_STATE_RESTORED = 0,
+	
+	/** Window is minimized */
+	SJME_SCRITCHUI_WINDOW_STATE_MINIMIZED = 1,
+	
+	/** Window is maximized horizontally. */
+	SJME_SCRITCHUI_WINDOW_STATE_MAXIMIZED_HORIZ = 2,
+	
+	/** Window is maximized vertically. */
+	SJME_SCRITCHUI_WINDOW_STATE_MAXIMIZED_VERT = 3,
+	
+	/** Window is maximized both horizontally and vertically. */
+	SJME_SCRITCHUI_WINDOW_STATE_MAXIMIZED_BOTH = 4,
+	
+	/** Window is shaded, only the title bar is visible. */
+	SJME_SCRITCHUI_WINDOW_STATE_SHADED = 5,
+	
+	/** Window is fullscreen. */
+	SJME_SCRITCHUI_WINDOW_STATE_FULLSCREEN = 6,
+	
+	/** The number of valid window states. */
+	SJME_SCRITCHUI_WINDOW_NUM_STATES = 7,
+} sjme_scritchui_windowState;
+	
+#pragma endregion(scritchui_window)
 	
 /*--------------------------------------------------------------------------*/
 

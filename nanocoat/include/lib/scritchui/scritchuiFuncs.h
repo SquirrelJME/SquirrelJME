@@ -1298,6 +1298,25 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetCloseListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
+	
+/**
+ * Sets the flags for the specified window.
+ * 
+ * Not all ScritchUI implementations may support specific window flags,
+ * additionally ScritchUI may implement some flags in software if the
+ * core implementation does not support it natively.
+ * 
+ * @param inState The input state.
+ * @param inWindow The window to set for.
+ * @param setFlags The @link sjme_scritchui_windowFlag @endlink flags to set.
+ * @param actualFlags The actual flags that were set, this is optional.
+ * @since 2026/07/05
+ */
+typedef sjme_errorCode (*sjme_scritchui_windowSetFlagsFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_jint setFlags,
+	sjme_attrOutNullable sjme_jint* actualFlags);
 
 /**
  * Sets the menu bar for a window.
@@ -1327,6 +1346,25 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetMenuItemActivateListenerFunc)(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(menuItemActivate));
+	
+/**
+ * Sets the state for the specified window.
+ * 
+ * Not all ScritchUI implementations may support specific window states,
+ * additionally ScritchUI may implement some states in software if the
+ * core implementation does not support it natively.
+ * 
+ * @param inState The input state.
+ * @param inWindow The window to set for.
+ * @param setState The @link sjme_scritchui_windowState @endlink to set.
+ * @param actualState The actual state set, this is optional.
+ * @since 2026/07/05
+ */
+typedef sjme_errorCode (*sjme_scritchui_windowSetStateFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_windowState setState,
+	sjme_attrOutNullable sjme_scritchui_windowState* actualState);
 
 /**
  * Sets the visibility of a window.

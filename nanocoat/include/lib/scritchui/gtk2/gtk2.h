@@ -248,10 +248,22 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetCloseListenerFunc(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
 	
+sjme_errorCode sjme_scritchui_gtk2_windowSetFlags(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_jint setFlags,
+	sjme_attrOutNullable sjme_jint* actualFlags);
+	
 sjme_errorCode sjme_scritchui_gtk2_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar);
+	
+sjme_errorCode sjme_scritchui_gtk2_windowSetState(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_windowState setState,
+	sjme_attrOutNullable sjme_scritchui_windowState* actualState);
 	
 sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

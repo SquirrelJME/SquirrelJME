@@ -63,7 +63,9 @@ static const sjme_scritchui_implFunctions sjme_scritchui_palmosFunctions =
 	sjme_sm(.windowGetFrame, NULL),
 	sjme_sm(.windowNew, NULL),
 	sjme_sm(.windowSetCloseListener, NULL),
+	sjme_sm(.windowSetFlags, NULL),
 	sjme_sm(.windowSetMenuBar, NULL),
+	sjme_sm(.windowSetState, NULL),
 	sjme_sm(.windowSetVisible, NULL),
 };
 

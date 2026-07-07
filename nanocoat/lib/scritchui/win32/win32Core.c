@@ -95,7 +95,9 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	sjme_sm(.windowGetFrame, sjme_scritchui_win32_windowGetFrame),
 	sjme_sm(.windowNew, sjme_scritchui_win32_windowNew),
 	sjme_sm(.windowSetCloseListener, NULL),
+	sjme_sm(.windowSetFlags, sjme_scritchui_win32_windowSetFlags),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_win32_windowSetMenuBar),
+	sjme_sm(.windowSetState, sjme_scritchui_win32_windowSetState),
 	sjme_sm(.windowSetVisible, sjme_scritchui_win32_windowSetVisible),
 };
 

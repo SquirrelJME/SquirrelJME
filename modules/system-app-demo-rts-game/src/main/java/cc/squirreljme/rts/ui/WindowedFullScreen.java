@@ -13,6 +13,8 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowFlag;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowState;
 import cc.squirreljme.rts.rate.RateController;
 import cc.squirreljme.rts.rate.ScreenRunnable;
 import java.lang.ref.Reference;
@@ -100,13 +102,21 @@ public class WindowedFullScreen
 	@Override
 	public void run()
 	{
+		ScritchInterface scritch = this.scritch;
+		
 		// Do we need to set the proper screen size?
 		if (this.__latchFullscreen())
-			this.__makeFullscreen();
+		{
+			scritch.window().windowSetFlags(this.winGame,
+				ScritchWindowFlag.UNDECORATED | 
+				ScritchWindowFlag.OPTIMIZE_DRAWING);
+			scritch.window().windowSetState(this.winGame,
+				ScritchWindowState.FULLSCREEN);
+		}
 		
 		// Do we need to make this visible?
 		else if (this.__latchVisible())
-			this.scritch.window().windowSetVisible(this.winGame,
+			scritch.window().windowSetVisible(this.winGame,
 				true);
 		
 		// Tell the panel to repaint itself
@@ -115,7 +125,7 @@ public class WindowedFullScreen
 			// Only when redraw is latched
 			RateController rate = this.rate.get();
 			if (rate != null && rate.latchRedraw())
-				this.scritch.paintable().componentRepaint(this.panelGame);
+				scritch.paintable().componentRepaint(this.panelGame);
 		}
 	}
 	
@@ -165,48 +175,5 @@ public class WindowedFullScreen
 			}
 		
 		return false;
-	}
-	
-	/**
-	 * Makes the game fullscreen.
-	 *
-	 * @since 2026/06/10
-	 */
-	private void __makeFullscreen()
-	{
-		ScritchInterface scritch = this.scritch;
-		ScritchWindowBracket winGame = this.winGame;
-		ScritchPanelBracket panelGame = this.panelGame;
-		
-		// The discovered resolution of the user's screen
-		int w = 640;
-		int h = 480;
-		
-		// Try to determine the best initial resolution of the game
-		ScritchScreenBracket[] screens = scritch.environment().screens();
-		if (screens != null && screens.length > 0)
-		{
-			// Just use the first screen
-			ScritchScreenBracket screen =  screens[0];
-			
-			// Determine bounds
-			int[] pixels = new int[4];
-			scritch.screen().screenGetBounds(screen, winGame,
-				pixels, null);
-			
-			// Is this actually valid?
-			if (pixels[2] > 0)
-				w = pixels[2];
-			if (pixels[3] > 0)
-				h = pixels[3];
-		}
-		
-		// Set the discovered bounds
-		scritch.container().containerSetBounds(winGame,
-			panelGame, 0, 0, w, h);
-		
-		// Revalidate both
-		scritch.component().componentRevalidate(winGame);
-		scritch.component().componentRevalidate(panelGame);
 	}
 }

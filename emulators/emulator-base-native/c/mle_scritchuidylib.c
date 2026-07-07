@@ -2914,6 +2914,38 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		mle_scritchUiListenerClose);
 }
 
+#define MLE_DESC___windowSetFlags DESC_METHOD(DESC_INT, \
+	DESC_LONG DESC_LONG DESC_INT)
+MLE_FUNC_PROTO(jint, __windowSetFlags,
+	jlong jStateP, jlong jWindowP, jint jFlags)
+{
+	sjme_errorCode error;
+	sjme_scritchui inState;
+	sjme_scritchui_uiWindow inWindow;
+	sjme_jint actual;
+
+	/* Recover state and window. */
+	inState = (sjme_scritchui)jStateP;
+	inWindow = (sjme_scritchui_uiWindow)jWindowP;
+	if (inState == NULL || inWindow == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Forward call. */
+	actual = 0;
+	if (sjme_error_is(error = inState->api->windowSetFlags(inState,
+		inWindow, jFlags, &actual)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return 0;
+	}
+
+	/* Return the actual set flags. */
+	return actual;
+}
+
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__windowSetMenuBar)(JNIEnv* env, jclass classy, jlong stateP,
 	jlong windowP, jlong menuBarP)
@@ -2969,6 +3001,37 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 		mle_scritchUiListenerMenuItemActivate);
 }
 
+#define MLE_DESC___windowSetState DESC_METHOD(DESC_INT, \
+	DESC_LONG DESC_LONG DESC_INT)
+MLE_FUNC_PROTO(jint, __windowSetState,
+	jlong jStateP, jlong jWindowP, jint jState)
+{
+	sjme_errorCode error;
+	sjme_scritchui inState;
+	sjme_scritchui_uiWindow inWindow;
+	sjme_scritchui_windowState actual;
+
+	/* Recover state and window. */
+	inState = (sjme_scritchui)jStateP;
+	inWindow = (sjme_scritchui_uiWindow)jWindowP;
+	if (inState == NULL || inWindow == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return 0;
+	}
+
+	/* Forward call. */
+	actual = 0;
+	if (sjme_error_is(error = inState->api->windowSetState(inState,
+		inWindow, jState, &actual)))
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return 0;
+	}
+
+	/* Return the actual set state. */
+	return actual;
+}
 
 JNIEXPORT void JNICALL FORWARD_FUNC_NAME(NativeScritchDylib,
 	__windowSetVisible)(JNIEnv* env, jclass classy, jlong stateP,
@@ -3068,4 +3131,6 @@ FORWARD_init(mleNativeScritchDylibInit, mleNativeScritchDylibMethods)
 MLE_LIST_BEGIN()
 	MLE_LIST_ITEM(__fontByFace),
 	MLE_LIST_ITEM(__fontDerive),
+	MLE_LIST_ITEM(__windowSetFlags),
+	MLE_LIST_ITEM(__windowSetState),
 MLE_LIST_END()
