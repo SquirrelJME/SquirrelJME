@@ -1310,6 +1310,7 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetCloseListenerFunc)(
  * @param inWindow The window to set for.
  * @param setFlags The @link sjme_scritchui_windowFlag @endlink flags to set.
  * @param actualFlags The actual flags that were set, this is optional.
+ * @return Any resultant error, if any.
  * @since 2026/07/05
  */
 typedef sjme_errorCode (*sjme_scritchui_windowSetFlagsFunc)(
@@ -1358,6 +1359,9 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetMenuItemActivateListenerFunc)(
  * @param inWindow The window to set for.
  * @param setState The @link sjme_scritchui_windowState @endlink to set.
  * @param actualState The actual state set, this is optional.
+ * @return Any resultant error, will
+ * return @link SJME_ERROR_UNSUPPORTED_OPERATION @endlink if the state is
+ * not supported.
  * @since 2026/07/05
  */
 typedef sjme_errorCode (*sjme_scritchui_windowSetStateFunc)(

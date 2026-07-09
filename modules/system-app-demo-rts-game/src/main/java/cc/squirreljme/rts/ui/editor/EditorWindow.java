@@ -9,6 +9,8 @@
 
 package cc.squirreljme.rts.ui.editor;
 
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.exceptions.MLECallErrorCode;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
@@ -88,9 +90,16 @@ public class EditorWindow
 		
 		// Do we need to maximize the window?
 		else if (this.__latchMaximize())
-			this.scritch.window().windowSetState(this.winEditor,
-				ScritchWindowState.MAXIMIZED_HORIZ |
-				ScritchWindowState.MAXIMIZED_VERT);
+			try
+			{
+				this.scritch.window().windowSetState(this.winEditor,
+					ScritchWindowState.MAXIMIZED_BOTH);
+			}
+			catch (MLECallError __e)
+			{
+				if (__e.distinction != MLECallErrorCode.UNSUPPORTED_OPERATION)
+					throw __e;
+			}
 	}
 	
 	/**

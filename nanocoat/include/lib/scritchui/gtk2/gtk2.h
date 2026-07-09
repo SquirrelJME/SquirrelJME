@@ -18,6 +18,7 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
+#include <gtk/gtkwidget.h>
 
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"

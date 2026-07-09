@@ -175,8 +175,23 @@ sjme_errorCode sjme_scritchui_fb_windowSetFlags(
 	sjme_attrInNotNull sjme_jint setFlags,
 	sjme_attrOutNullable sjme_jint* actualFlags)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiWindow wrappedWindow;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedWindow =
+		inWindow->component.common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedWindow == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Forward call. */
+	return wrappedState->apiInThread->windowSetFlags(wrappedState,
+		wrappedWindow, setFlags, actualFlags);
 }
 
 sjme_errorCode sjme_scritchui_fb_windowSetCloseListener(
@@ -252,8 +267,26 @@ sjme_errorCode sjme_scritchui_fb_windowSetState(
 	sjme_attrInNotNull sjme_scritchui_windowState setState,
 	sjme_attrOutNullable sjme_scritchui_windowState* actualState)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_scritchui wrappedState;
+	sjme_scritchui_uiWindow wrappedWindow;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (setState < 0 || setState >= SJME_SCRITCHUI_WINDOW_NUM_STATES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Recover wrapped state. */
+	wrappedState = inState->wrappedState;
+	wrappedWindow =
+		inWindow->component.common.handle[SJME_SUI_FB_H_WRAPPED];
+	
+	if (wrappedState == NULL || wrappedWindow == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Forward call. */
+	return wrappedState->apiInThread->windowSetState(wrappedState,
+		wrappedWindow, setState, actualState);
 }
 
 sjme_errorCode sjme_scritchui_fb_windowSetVisible(

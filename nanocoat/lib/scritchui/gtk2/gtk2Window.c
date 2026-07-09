@@ -440,8 +440,49 @@ sjme_errorCode sjme_scritchui_gtk2_windowSetState(
 	sjme_attrInNotNull sjme_scritchui_windowState setState,
 	sjme_attrOutNullable sjme_scritchui_windowState* actualState)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	GtkWindow* gtkWindow;
+	sjme_errorCode error;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (setState < 0 || setState >= SJME_SCRITCHUI_WINDOW_NUM_STATES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Recover window. */
+	gtkWindow = inWindow->component.common.handle[SJME_SUI_GTK2_H_WIDGET];
+	
+	/* Depends on requested state. */
+	switch (setState)
+	{
+			/* Restore unmaximizes and deiconifies. */
+		case SJME_SCRITCHUI_WINDOW_STATE_RESTORED:
+			gtk_window_deiconify(gtkWindow);
+			gtk_window_unmaximize(gtkWindow);
+			break;
+			
+		case SJME_SCRITCHUI_WINDOW_STATE_MINIMIZED:
+			gtk_window_iconify(gtkWindow);
+			break;
+			
+		case SJME_SCRITCHUI_WINDOW_STATE_MAXIMIZED_BOTH:
+			gtk_window_maximize(gtkWindow);
+			break;
+			
+			/* Not supported. */
+		default:
+			return SJME_ERROR_UNSUPPORTED_OPERATION;
+	}
+	
+	/* Success? */
+	if (sjme_error_is(error = inState->implIntern->checkError(inState, 
+		SJME_ERROR_NONE)))
+		return error;
+	
+	/* Set the resultant state. */
+	if (actualState != NULL)
+		*actualState = setState;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_gtk2_windowSetVisible(
