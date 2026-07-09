@@ -53,7 +53,16 @@ public interface ScritchWindowState
 	byte SHADED =
 		5;
 	
-	/** Window is fullscreen. */
+	/**
+	 * Window is fullscreen.
+	 *
+	 * Note that this does not imply in any way that the window is undecorated
+	 * and/or borderless. Window managers that support native
+	 * fullscreen for applications may provide access to an autohidden
+	 * title bar and/or menu through a screen edge or mnemonic, as such
+	 * this should not be used with the window
+	 * flag {@link ScritchWindowFlag#UNDECORATED}.
+	 */
 	@SquirrelJMEVendorApi
 	byte FULLSCREEN =
 		6;

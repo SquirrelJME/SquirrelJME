@@ -147,8 +147,41 @@ sjme_errorCode sjme_scritchui_core_windowSetFlags(
 	sjme_attrInNotNull sjme_jint setFlags,
 	sjme_attrOutNullable sjme_jint* actualFlags)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jint actual;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If the window flags will be the same, then do nothing. */
+	if (setFlags == inWindow->lastFlags)
+	{
+		if (actualFlags != NULL)
+			*actualFlags = inWindow->lastFlags;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Flags only take effect if the implementation supports such. */
+	if (inState->impl->windowSetFlags == NULL)
+	{
+		if (actualFlags != NULL)
+			*actualFlags = 0;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Forward call. */
+	actual = 0;
+	if (sjme_error_is(error = inState->impl->windowSetFlags(inState,
+		inWindow, setFlags, &actual)))
+		return sjme_error_default(error);
+	
+	/* Store the actually set flags for later. */
+	inWindow->lastFlags = actual;
+	
+	/* Success! */
+	if (actualFlags != NULL)
+		*actualFlags = actual;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
@@ -231,6 +264,13 @@ sjme_errorCode sjme_scritchui_core_windowSetState(
 	sjme_attrInNotNull sjme_scritchui_windowState setState,
 	sjme_attrOutNullable sjme_scritchui_windowState* actualState)
 {
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (setState < 0 || setState >= SJME_SCRITCHUI_WINDOW_NUM_STATES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

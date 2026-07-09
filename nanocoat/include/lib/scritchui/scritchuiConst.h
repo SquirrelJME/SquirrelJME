@@ -204,7 +204,7 @@ typedef enum sjme_scritchui_windowManagerType
 	/** Integer enum. */
 	sjme_enumInt(sjme_scritchui_windowManagerType),
 	
-	/** One frame per screen. */
+	/** One frame/window per screen. */
 	SJME_SCRITCHUI_WM_TYPE_ONE_FRAME_PER_SCREEN = 0,
 	
 	/** Standard desktop interface. */
@@ -671,7 +671,15 @@ typedef enum sjme_scritchui_windowFlag
 	/** Window does not appear in the task switcher. */
 	SJME_SCRITCHUI_WINDOW_FLAG_NO_TASK_SWITCHER = 1,
 	
-	/** Window does not have any frame or window manager elements. */
+	/**
+	 * Window does not have any frame or window manager elements.
+	 * 
+	 * This is alternatively referred to as being a borderless window. This
+	 * should not be used with the window
+	 * state @link SJME_SCRITCHUI_WINDOW_STATE_FULLSCREEN @endlink as this
+	 * flag will break native window manager support for fullscreen
+	 * windows.
+	 */
 	SJME_SCRITCHUI_WINDOW_FLAG_UNDECORATED = 2,
 	
 	/** Window is a utility window. */
@@ -743,7 +751,16 @@ typedef enum sjme_scritchui_windowState
 	/** Window is shaded, only the title bar is visible. */
 	SJME_SCRITCHUI_WINDOW_STATE_SHADED = 5,
 	
-	/** Window is fullscreen. */
+	/**
+	 * Window is fullscreen.
+	 * 
+	 * Note that this does not imply in any way that the window is undecorated
+	 * and/or borderless. Window managers that support native
+	 * fullscreen for applications may provide access to an autohidden
+	 * title bar and/or menu through a screen edge or mnemonic, as such
+	 * this should not be used with the window
+	 * flag @link SJME_SCRITCHUI_WINDOW_FLAG_UNDECORATED @endlink.
+	 */
 	SJME_SCRITCHUI_WINDOW_STATE_FULLSCREEN = 6,
 	
 	/** The number of valid window states. */

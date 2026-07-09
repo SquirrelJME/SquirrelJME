@@ -405,6 +405,12 @@ struct sjme_scritchui_uiWindowBase
 	
 	/** The component that has the focus. */
 	sjme_scritchui_uiComponent focusedComponent;
+	
+	/** The last set @link sjme_scritchui_windowFlag @endlink flags. */
+	sjme_jint lastFlags;
+	
+	/** The last set window state. */
+	sjme_scritchui_windowState lastState;
 };
 	
 #pragma endregion(scritchui_baseScreen)

@@ -596,7 +596,6 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	/* Mirrored vertically */
 	if (xform & 2)
 		*y = dataHeight - *y - *h + 1;
-	
 
 	/* Was rotated 90 degrees clockwise. */
 	if (xform & 4)

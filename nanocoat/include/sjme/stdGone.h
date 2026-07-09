@@ -201,7 +201,7 @@ extern "C"
 	/** Signed 64-bit integer. */
 	typedef int64_t sjme_jlongNative;
 #else
-	#error No sjme_jlongNative
+	#define SJME_CONFIG_HAS_NO_JLONG_NATIVE
 #endif
 	
 #pragma endregion(sjme_jlongNative)
@@ -217,7 +217,7 @@ extern "C"
 	/** Unsigned 64-bit integer. */
 	typedef uint64_t sjme_julongNative;
 #else
-	#error No sjme_julongNative
+	#define SJME_CONFIG_HAS_NO_JULONG_NATIVE
 #endif
 	
 #pragma endregion(sjme_julongNative)

@@ -28,7 +28,15 @@ public interface ScritchWindowFlag
 	byte NO_TASK_SWITCHER =
 		1;
 	
-	/** Window does not have any frame or window manager elements. */
+	/**
+	 * Window does not have any frame or window manager elements.
+	 *
+	 * This is alternatively referred to as being a borderless window. This
+	 * should not be used with the window
+	 * state {@link ScritchWindowState#FULLSCREEN} as this
+	 * flag will break native window manager support for fullscreen
+	 * windows.
+	 */
 	@SquirrelJMEVendorApi
 	byte UNDECORATED =
 		2;

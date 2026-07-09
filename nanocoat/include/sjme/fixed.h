@@ -31,19 +31,46 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /** The number of bits to shift for fractions. */
-#define SJME_FIXED_SHIFT 16
+#define SJME_FIXED_SHIFT INT32_C(16)
 
 /** The number of bits in an entire fixed value. */
-#define SJME_FIXED_FULL_BITS 32
+#define SJME_FIXED_FULL_BITS INT32_C(32)
 
 /** The value one. */
-#define SJME_FIXED_ONE 0x10000
+#define SJME_FIXED_ONE INT32_C(0x10000)
 
 /** The masked for shifted values. */
-#define SJME_FIXED_MASK 0xFFFF
+#define SJME_FIXED_MASK INT32_C(0xFFFF)
+	
+/** 1 Degree in radians. */
+#define SJME_FIXED_RAD_1 INT32_C(1144)
+	
+/** 45 Degree in radians. */
+#define SJME_FIXED_RAD_45 INT32_C(51472)
+	
+/** 90 Degrees in radians. */
+#define SJME_FIXED_RAD_90 INT32_C(102944)
+	
+/** 135 Degrees in radians. */
+#define SJME_FIXED_RAD_135 INT32_C(154415)
+	
+/** 180 Degrees in radians. */
+#define SJME_FIXED_RAD_180 INT32_C(205887)
+	
+/** 225 Degrees in radians. */
+#define SJME_FIXED_RAD_225 INT32_C(257359)
+	
+/** 270 Degrees in radians. */
+#define SJME_FIXED_RAD_270 INT32_C(308831)
+	
+/** 315 Degrees in radians. */
+#define SJME_FIXED_RAD_315 INT32_C(360302)
+	
+/** 360 Degrees in radians. */
+#define SJME_FIXED_RAD_360 INT32_C(411774)
 
 /** The masked for rounding values. */
-#define SJME_FIXED_ROUND_MASK 0x800
+#define SJME_FIXED_ROUND_MASK INT32_C(0x800)
 
 /**
  * Ceiling a fixed point number, removing any fractional value.
@@ -55,6 +82,26 @@ extern "C" {
 sjme_fixed sjme_fixed_ceil(
 	sjme_attrInValue sjme_jint v);
 	
+/**
+ * Calculates @code cos(radAngle) @endcode.
+ * 
+ * @param radAngle The angle in radians.
+ * @return The @code cos(radAngle) @endcode.
+ * @since 2026/07/08
+ */
+sjme_fixed sjme_fixed_cos(
+	sjme_attrInValue sjme_fixed radAngle);
+	
+/**
+ * Converts an angle in degrees to radians.
+ * 
+ * @param degAngle The angle in degrees to convert.
+ * @return The angle in radians.
+ * @since 2026/07/08
+ */
+sjme_fixed sjme_fixed_degToRad(
+	sjme_attrInValue sjme_fixed degAngle);
+
 /**
  * Divides two fixed values.
  * 
@@ -134,6 +181,16 @@ sjme_jint sjme_fixed_intClip(
 sjme_fixed sjme_fixed_mul(
 	sjme_attrInValue sjme_fixed a,
 	sjme_attrInValue sjme_fixed b);
+	
+/**
+ * Converts an angle in radians to degrees.
+ * 
+ * @param radAngle The angle in radians to convert.
+ * @return The angle in degrees.
+ * @since 2026/07/08
+ */
+sjme_fixed sjme_fixed_radToDeg(
+	sjme_attrInValue sjme_fixed radAngle);
 
 /**
  * Rounds a fixed point number, removing any fractional value.
@@ -144,6 +201,16 @@ sjme_fixed sjme_fixed_mul(
  */
 sjme_fixed sjme_fixed_round(
 	sjme_attrInValue sjme_jint v);
+	
+/**
+ * Calculates @code sin(radAngle) @endcode.
+ * 
+ * @param radAngle The angle in radians.
+ * @return The @code sin(radAngle) @endcode.
+ * @since 2026/07/08
+ */
+sjme_fixed sjme_fixed_sin(
+	sjme_attrInValue sjme_fixed radAngle);
 
 /*--------------------------------------------------------------------------*/
 
