@@ -10,6 +10,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.CompatibilityId;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
@@ -49,9 +50,8 @@ public abstract class Canvas
 	extends Displayable
 {
 	/** Force a buffer to be used? */
-	@SquirrelJMEVendorApi
 	private static final boolean _FORCE_BUFFER =
-		false;
+		RuntimeShelf.compatibilityId(CompatibilityId.FORCE_LCDUI_BUFFER);
 	
 	/** The maximum number of times to wait when servicing repaints. */
 	private static final int _REPAINT_STOP =
