@@ -1006,7 +1006,8 @@ typedef sjme_errorCode (*sjme_scritchui_menuBarNewFunc)(
  * 
  * @param inState The ScritchUI state.
  * @param intoMenu The menu to insert into.
- * @param atIndex The index to insert at.
+ * @param atIndex The index to insert at, if this is @code INT32_MAX @endcode
+ * then this will be the final index.
  * @param childItem The child menu item to add.
  * @return Any resultant error, if any.
  * @since 2024/07/23 

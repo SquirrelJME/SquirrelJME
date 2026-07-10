@@ -69,9 +69,12 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 		return SJME_ERROR_HAS_PARENT;
 	
 	/* Out of bounds? */
+	/* Treat maximum int as the end of the menu. */
 	childList = parentMenu->children;
 	n = parentMenu->numChildren;
-	if (atIndex > n)
+	if (atIndex == INT32_MAX)
+		atIndex = n;
+	else if (atIndex > n)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Make sure child is not already in here. */

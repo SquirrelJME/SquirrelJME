@@ -12,9 +12,12 @@ package cc.squirreljme.rts.ui.editor;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.exceptions.MLECallErrorCode;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBarBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasParentBracket;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
-import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowFlag;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowState;
 import cc.squirreljme.rts.rate.RateController;
 import cc.squirreljme.rts.rate.ScreenRunnable;
@@ -74,6 +77,45 @@ public class EditorWindow
 		// Set a proper title
 		__scritch.label().labelSetString(winEditor, 
 			"Scenario Editor");
+		
+		// Setup menus
+		ScritchMenuBarBracket bar = __scritch.menu().menuBarNew();
+		
+		// File menu
+		ScritchMenuBracket menuFile = EditorWindow.__menu(__scritch,
+			bar, "File");
+		EditorWindow.__menuItem(__scritch, menuFile, "New...");
+		EditorWindow.__menuItem(__scritch, menuFile, "Open...");
+		EditorWindow.__menuItem(__scritch, menuFile, "Save");
+		EditorWindow.__menuItem(__scritch, menuFile, "Save As...");
+		EditorWindow.__menuSeparator(__scritch, menuFile);
+		EditorWindow.__menuItem(__scritch, menuFile, "Exit");
+		
+		// Layer menu
+		ScritchMenuBracket menuLayer = EditorWindow.__menu(__scritch,
+			bar, "Layer");
+		EditorWindow.__menuItem(__scritch, menuLayer, "Terrain");
+		EditorWindow.__menuItem(__scritch, menuLayer, "Height");
+		EditorWindow.__menuItem(__scritch, menuLayer, "Unit");
+		EditorWindow.__menuItem(__scritch, menuLayer, "Vision");
+		EditorWindow.__menuItem(__scritch, menuLayer, "Location");
+		
+		// Player menu
+		ScritchMenuBracket menuPlayer = EditorWindow.__menu(__scritch,
+			bar, "Player");
+		
+		// Scenario menu
+		ScritchMenuBracket menuScenario = EditorWindow.__menu(__scritch,
+			bar, "Scenario");
+		EditorWindow.__menuItem(__scritch, menuScenario, "Players");
+		EditorWindow.__menuItem(__scritch, menuScenario, "Triggers");
+		EditorWindow.__menuItem(__scritch, menuScenario, "Objectives");
+		EditorWindow.__menuItem(__scritch, menuScenario, "Alliances");
+		EditorWindow.__menuItem(__scritch, menuScenario, "Unit Tables");
+		EditorWindow.__menuItem(__scritch, menuScenario, "Preview Card");
+		
+		// Build final menu
+		__scritch.window().windowSetMenuBar(winEditor, bar);
 	}
 	
 	/**
@@ -147,5 +189,89 @@ public class EditorWindow
 			}
 		
 		return false;
+	}
+	
+	/**
+	 * Creates a new menu, which contains items, then inserts it into a parent
+	 * menu.
+	 *
+	 * @param __scritch The ScritchUI interface.
+	 * @param __into The menu to insert into.
+	 * @param __label The label for the menu.
+	 * @return The resultant menu.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/07/09
+	 */
+	private static ScritchMenuBracket __menu(ScritchInterface __scritch,
+		ScritchMenuHasChildrenBracket __into, String __label)
+		throws NullPointerException
+	{
+		if (__scritch == null || __into == null || __label == null)
+			throw new NullPointerException("NARG");
+		
+		// Create the new menu
+		ScritchMenuBracket result = __scritch.menu().menuNew();
+		__scritch.label().labelSetString(result, __label);
+		
+		// Insert it into the parent menu at the very end
+		__scritch.menu().menuInsert(__into, Integer.MAX_VALUE, result);
+		
+		// Return the resultant menu
+		return result;
+	}
+	
+	/**
+	 * Creates a new menu item then inserts it into a parent menu.
+	 *
+	 * @param __scritch The ScritchUI interface.
+	 * @param __into The menu to insert into.
+	 * @param __label The label for the menu item.
+	 * @return The resultant menu item.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/07/09
+	 */
+	private static ScritchMenuItemBracket __menuItem(
+		ScritchInterface __scritch, ScritchMenuHasChildrenBracket __into, 
+		String __label)
+	{
+		if (__scritch == null || __into == null || __label == null)
+			throw new NullPointerException("NARG");
+		
+		// Create the new menu item
+		ScritchMenuItemBracket result = __scritch.menu().menuItemNew();
+		__scritch.label().labelSetString(result, __label);
+		
+		// Insert it into the parent menu at the very end
+		__scritch.menu().menuInsert(__into, Integer.MAX_VALUE, result);
+		
+		// Return the resultant menu item
+		return result;
+	}
+	
+	/**
+	 * Creates a new menu separator then inserts it into a parent menu.
+	 *
+	 * @param __scritch The ScritchUI interface.
+	 * @param __into The menu to insert into.
+	 * @return The resultant menu item.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/07/09
+	 */
+	private static ScritchMenuHasParentBracket __menuSeparator(
+		ScritchInterface __scritch, ScritchMenuHasChildrenBracket __into)
+	{
+		if (__scritch == null || __into == null)
+			throw new NullPointerException("NARG");
+		
+		// Create the new menu item
+		Debugging.todoNote("Use actual menu separators");
+		ScritchMenuItemBracket result = __scritch.menu().menuItemNew();
+		__scritch.label().labelSetString(result, "---");
+		
+		// Insert it into the parent menu at the very end
+		__scritch.menu().menuInsert(__into, Integer.MAX_VALUE, result);
+		
+		// Return the resultant menu item
+		return result;
 	}
 }
