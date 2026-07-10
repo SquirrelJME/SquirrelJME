@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
+import cc.squirreljme.runtime.cldc.CleanupHandler;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
@@ -1007,6 +1008,18 @@ public abstract class Canvas
 			
 			// Use the directly passed graphics
 			subGfx = __gfx;
+			
+			// Do not exceed the texture area for the clip as the incoming
+			// paint can have a larger clip than the texture bounds. This can
+			// cause issues for applications which request the size of the
+			// clip to determine the "screen size" rather than using the
+			// actual screen size
+			int clipW = subGfx.getClipWidth();
+			int clipH = subGfx.getClipHeight();
+			if (clipW >= scale.textureMaxW() || clipH >= scale.textureMaxH())
+				subGfx.setClip(subGfx.getClipX(), subGfx.getClipY(),
+					Math.min(clipW, scale.textureMaxW()),
+					Math.min(clipH, scale.textureMaxH()));
 		}
 		
 		// Draw background?
@@ -1072,6 +1085,10 @@ public abstract class Canvas
 					repaintLock.notifyAll();
 				}
 			}
+			
+			// Check for brackets to close, as we have created images
+			if (Canvas._FORCE_BUFFER || scale.requiresBuffer())
+				CleanupHandler.bracketCheck();
 		}
 	}
 }
