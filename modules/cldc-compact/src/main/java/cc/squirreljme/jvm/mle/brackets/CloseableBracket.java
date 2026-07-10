@@ -1,19 +1,24 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
+package cc.squirreljme.jvm.mle.brackets;
+
+import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
- * This package provides support and checks for media playback
+ * Any bracket that can be "closed".
  *
- * @since 2026/04/30
+ * @since 2026/07/09
  */
-
-@ApiStatus.Internal
-package cc.squirreljme.runtime.media;
-
-import org.jetbrains.annotations.ApiStatus;
+@SquirrelJMEVendorApi
+@GhostObject
+public interface CloseableBracket
+{
+}

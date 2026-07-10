@@ -16,7 +16,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import cc.squirreljme.runtime.midlet.ApplicationType;
-import cc.squirreljme.runtime.midlet.CleanupHandler;
+import cc.squirreljme.runtime.cldc.CleanupHandler;
 import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import java.util.Objects;
 

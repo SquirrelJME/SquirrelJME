@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.lcdui.image.MIDPImageLoadHandler;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import cc.squirreljme.runtime.cldc.CleanupHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,9 +41,6 @@ public class Image
 	
 	/** Does this have an alpha channel? */
 	private final boolean _alpha;
-	
-	/** Graphics instance for this current pencil. */
-	private volatile PencilGraphics _pencil;
 	
 	Image()
 	{
@@ -139,26 +137,19 @@ public class Image
 		if (!this.isMutable())
 			throw new IllegalStateException("EB28");
 		
-		// Setup pencil for this graphics
-		PencilGraphics g = this._pencil;
-		if (g == null)
-		{
-			// Create hardware accelerated graphics where possible
-			g = PencilGraphics.hardwareGraphics(
-				(this._alpha ? UIPixelFormat.INT_ARGB8888 :
-					UIPixelFormat.INT_RGB888),
-				this._width, this._height,
-				this._data, null,
-				0, 0, this._width, this._height);
-			
-			// TODO: WeakReference<> and ReferenceQueue for Graphics to call
-			// TODO: close()
-			Debugging.todoNote("WR<> Image.getGraphics()");
-			this._pencil = g;
-		}
+		// Create hardware accelerated graphics where possible
+		PencilGraphics g = PencilGraphics.hardwareGraphics(
+			(this._alpha ? UIPixelFormat.INT_ARGB8888 :
+				UIPixelFormat.INT_RGB888),
+			this._width, this._height,
+			this._data, null,
+			0, 0, this._width, this._height);
 		
-		// Use pre-existing pencil as its instance is valid still, reset it
-		// completely first before reusing
+		// When the graphics is garbage collected without being closed, it
+		// needs to get its close called
+		CleanupHandler.bracketAdd(g, g.pencil());
+		
+		// Make sure the graphics is in its initial state
 		g.initialValues(true, true);
 		return g;
 	}
