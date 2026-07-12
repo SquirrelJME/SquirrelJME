@@ -1,4 +1,4 @@
-# RecordStore Management System Save Format Specification 1.0.0
+# RecordStore Management System Save Format Specification 1.1.0
 
 Any data saved from `RecordStore` is saved to disk in an easy to parse format
 which includes a JSON metadata file along with the individual records in their
@@ -100,7 +100,8 @@ public class BaseNameCalculation
         String base64Encoded = Base64.getEncoder()
             .encodeToString(__recordName.getBytes("utf-8"))
             .toLowerCase()
-            .replace('=', '_');
+            .replace('=', '_')
+            .replace('/', '~');
         
         return String.format("%08x%02d%s",
             __ownerName.hashCode() ^ __ownerVendor.hashCode(),
@@ -139,3 +140,6 @@ or `RecordStore.setRecord()`.
    * `ownerVersion` is now optional and need not be always `0.0.0`.
    * For DoJa, `ownerVendor` is now `Keitai-DoJa` instead
      of `SquirrelJME-DoJa`.
+ * _Version 1.0.0_ to _Version 1.1.0_
+   * Base64 encoding changes `/` to `~` for storage systems which do not
+     support storing into directories.

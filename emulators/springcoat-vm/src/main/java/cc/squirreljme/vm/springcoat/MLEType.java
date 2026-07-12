@@ -103,7 +103,8 @@ public enum MLEType
 	},
 	
 	/** {@link TypeShelf#enumValues(Class)}. */
-	ENUM_VALUES("enumValues:(Ljava/lang/Class;)[Ljava/lang/Enum;")
+	ENUM_VALUES(MLEDispatcher.methodKey("enumValues",
+		Enum[].class, Class.class))
 	{
 		/**
 		 * {@inheritDoc}

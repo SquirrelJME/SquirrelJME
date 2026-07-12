@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/fixed.h"
+#include "sjme/debug.h"
 
 sjme_fixed sjme_fixed_ceil(
 	sjme_attrInValue sjme_jint v)
@@ -20,6 +21,19 @@ sjme_fixed sjme_fixed_ceil(
 	return z;
 }
 
+sjme_fixed sjme_fixed_cos(
+	sjme_attrInValue sjme_fixed radAngle)
+{
+	return sjme_fixed_sin(radAngle + SJME_FIXED_RAD_90);
+}
+
+sjme_fixed sjme_fixed_degToRad(
+	sjme_attrInValue sjme_fixed degAngle)
+{
+	sjme_todo("Impl?");
+	return 0;
+}
+
 sjme_fixed sjme_fixed_div(
 	sjme_attrInValue sjme_fixed num,
 	sjme_attrInValue sjme_fixed den)
@@ -27,7 +41,12 @@ sjme_fixed sjme_fixed_div(
 	if (den == 0)
 		return 0;
 	
+#if !defined(SJME_CONFIG_HAS_NO_JULONG_NATIVE)
 	return (sjme_fixed)((((int64_t)num) << SJME_FIXED_SHIFT) / den);
+#else
+	sjme_todo("Impl?");
+	return 0;
+#endif
 }
 
 sjme_fixed sjme_fixed_floor(
@@ -81,7 +100,19 @@ sjme_fixed sjme_fixed_mul(
 	sjme_attrInValue sjme_fixed a,
 	sjme_attrInValue sjme_fixed b)
 {
+#if !defined(SJME_CONFIG_HAS_NO_JULONG_NATIVE)
 	return (sjme_fixed)(((int64_t)a) * ((int64_t)b) >> SJME_FIXED_SHIFT);
+#else
+	sjme_todo("Impl?");
+	return 0;
+#endif
+}
+
+sjme_fixed sjme_fixed_radToDeg(
+	sjme_attrInValue sjme_fixed radAngle)
+{
+	sjme_todo("Impl?");
+	return 0;
 }
 
 sjme_fixed sjme_fixed_round(
@@ -90,4 +121,11 @@ sjme_fixed sjme_fixed_round(
 	if (((v & SJME_FIXED_ROUND_MASK) != 0) == (v < 0))
 		return sjme_fixed_ceil(v);
 	return sjme_fixed_floor(v);
+}
+
+sjme_fixed sjme_fixed_sin(
+	sjme_attrInValue sjme_fixed radAngle)
+{
+	sjme_todo("Impl?");
+	return 0;
 }

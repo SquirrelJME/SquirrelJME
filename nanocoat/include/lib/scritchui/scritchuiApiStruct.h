@@ -246,12 +246,18 @@ struct sjme_scritchui_apiFunctions
 	
 	/** Sets the close listener for a window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetCloseListener);
+	
+	/** Sets the flags for a window. */
+	SJME_SCRITCHUI_QUICK_API(windowSetFlags);
 
 	/** Sets the menu bar for a window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetMenuBar);
 	
 	/** Sets the activation listener for menu items in a window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetMenuItemActivateListener);
+	
+	/** Sets the state of a window. */
+	SJME_SCRITCHUI_QUICK_API(windowSetState);
 	
 	/** Sets visibility of window. */
 	SJME_SCRITCHUI_QUICK_API(windowSetVisible);

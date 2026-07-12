@@ -57,6 +57,7 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -1169,6 +1170,18 @@ public class ScritchUnifiedWrapper
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2026/07/07
+	 */
+	@Override
+	public int windowSetFlags(@NotNull ScritchWindowBracket __window,
+		int __setFlags)
+		throws MLECallError
+	{
+		return this.window().windowSetFlags(__window, __setFlags);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2024/08/02
 	 */
 	@Override
@@ -1192,6 +1205,18 @@ public class ScritchUnifiedWrapper
 		throws MLECallError
 	{
 		this.api.window().windowSetMenuItemActivateListener(__window, __listener);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/07/07
+	 */
+	@Override
+	public int windowSetState(@NotNull ScritchWindowBracket __window,
+		int __setState)
+		throws MLECallError
+	{
+		return this.window().windowSetState(__window, __setState);
 	}
 	
 	/**

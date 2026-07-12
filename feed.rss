@@ -132,9 +132,7 @@ SquirrelJME's existing save format was created which now both emulators
 implement which means that saves are sharable between the two emulators!
 
 The format consists of a JSON metadata file along with basic binaries of
-record data, so it is very simple and easy to implement.
-
-A specification is available at https://squirreljme.cc/doc/trunk/assets/doc/save-format.mkd.</description>
+record data, so it is very simple and easy to implement.</description>
 	</item>
 
 	<item>

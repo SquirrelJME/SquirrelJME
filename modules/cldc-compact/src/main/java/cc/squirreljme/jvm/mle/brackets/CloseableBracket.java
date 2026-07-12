@@ -13,13 +13,12 @@ import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Represents an active audio connection.
+ * Any bracket that can be "closed".
  *
- * @since 2025/05/18
+ * @since 2026/07/09
  */
 @SquirrelJMEVendorApi
 @GhostObject
-public interface AudioConnectionBracket
-	extends CloseableBracket
+public interface CloseableBracket
 {
 }

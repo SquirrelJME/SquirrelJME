@@ -141,6 +141,49 @@ sjme_errorCode sjme_scritchui_core_windowSetCloseListener(
 		copyFrontEnd);
 }
 
+sjme_errorCode sjme_scritchui_core_windowSetFlags(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_jint setFlags,
+	sjme_attrOutNullable sjme_jint* actualFlags)
+{
+	sjme_errorCode error;
+	sjme_jint actual;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* If the window flags will be the same, then do nothing. */
+	if (setFlags == inWindow->lastFlags)
+	{
+		if (actualFlags != NULL)
+			*actualFlags = inWindow->lastFlags;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Flags only take effect if the implementation supports such. */
+	if (inState->impl->windowSetFlags == NULL)
+	{
+		if (actualFlags != NULL)
+			*actualFlags = 0;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Forward call. */
+	actual = 0;
+	if (sjme_error_is(error = inState->impl->windowSetFlags(inState,
+		inWindow, setFlags, &actual)))
+		return sjme_error_default(error);
+	
+	/* Store the actually set flags for later. */
+	inWindow->lastFlags = actual;
+	
+	/* Success! */
+	if (actualFlags != NULL)
+		*actualFlags = actual;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -213,6 +256,48 @@ sjme_errorCode sjme_scritchui_core_windowSetMenuItemActivateListener(
 			inWindow, menuItemActivate),
 		(sjme_scritchui_voidListenerFunc)inListener,
 		copyFrontEnd);
+}
+
+sjme_errorCode sjme_scritchui_core_windowSetState(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_windowState setState,
+	sjme_attrOutNullable sjme_scritchui_windowState* actualState)
+{
+	sjme_errorCode error;
+	sjme_scritchui_windowState actual;
+	
+	if (inState == NULL || inWindow == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (setState < 0 || setState >= SJME_SCRITCHUI_WINDOW_NUM_STATES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* The user is able to change the window state themselves with their */
+	/* window manager, usually, thus there is no "do nothing" if the same */
+	/* state is being set. */
+	
+	/* State changes only take effect if the implementation supports such. */
+	if (inState->impl->windowSetState == NULL)
+	{
+		if (actualState != NULL)
+			*actualState = 0;
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Forward call. */
+	actual = 0;
+	if (sjme_error_is(error = inState->impl->windowSetState(inState,
+		inWindow, setState, &actual)))
+		return sjme_error_default(error);
+	
+	/* Store the actually set state for later. */
+	inWindow->lastState = actual;
+	
+	/* Success! */
+	if (actualState != NULL)
+		*actualState = actual;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_scritchui_core_windowSetVisible(

@@ -118,7 +118,7 @@ public class Runtime
 	{
 		// Limit how often the garbage collector can run because some
 		// applications really love requesting garbage collection constantly
-		// when that is bad practice and it really does not need to be done
+		// when that is bad practice, and it really does not need to be done
 		long last = Runtime._lastGc;
 		long now = System.nanoTime();
 		if ((now - last) >= Runtime._GC_TIMEOUT || last == Long.MIN_VALUE)

@@ -122,7 +122,8 @@ public final class RecordStoreInfo
 				this._baseName = String.format("%08x%02d%s",
 					__owner.hashCode(), __name.length(),
 					Base64Encoder.encode(__name.getBytes("utf-8"))
-						.toLowerCase().replace('=', '_'));
+						.toLowerCase().replace('=', '_')
+						.replace('/', '~'));
 			this._metaName = this._baseName + ".rms";
 		}
 		catch (IOException __e)

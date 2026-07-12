@@ -808,6 +808,20 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Sets the window flags. 
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __windowP The window pointer.
+	 * @param __setFlags The flags to set.
+	 * @return The actual set flags.
+	 * @throws MLECallError On null arguments or if the flags could not be set.
+	 * @since 2026/07/07
+	 */
+	static native int __windowSetFlags(long __stateP, long __windowP,
+		int __setFlags)
+		throws MLECallError;
+	
+	/**
 	 * Sets the menu bar for the window.
 	 *
 	 * @param __stateP The state pointer.
@@ -833,6 +847,20 @@ public final class NativeScritchDylib
 	 */
 	static native void __windowSetMenuItemActivateListener(long __stateP,
 		long __windowP, ScritchMenuItemActivateListener __listener)
+		throws MLECallError;
+	
+	/**
+	 * Sets the window state. 
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __windowP The window pointer.
+	 * @param __setState The state to set.
+	 * @return The actual set state.
+	 * @throws MLECallError On null arguments or if the state could not be set.
+	 * @since 2026/07/07
+	 */
+	static native int __windowSetState(long __stateP, long __windowP,
+		int __setState)
 		throws MLECallError;
 	
 	/**

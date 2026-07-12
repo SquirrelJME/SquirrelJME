@@ -206,8 +206,14 @@ struct sjme_scritchui_implFunctions
 	/** Set close listener for a window. */
 	SJME_SCRITCHUI_QUICK_SAME(windowSetCloseListener);
 	
+	/** Sets the flags for a window. */
+	SJME_SCRITCHUI_QUICK_SAME(windowSetFlags);
+	
 	/** Sets the menu bar for a window. */
 	SJME_SCRITCHUI_QUICK_SAME(windowSetMenuBar);
+	
+	/** Sets the state of a window. */
+	SJME_SCRITCHUI_QUICK_SAME(windowSetState);
 	
 	/** Sets visibility of the window. */
 	SJME_SCRITCHUI_QUICK_SAME(windowSetVisible);

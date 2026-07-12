@@ -113,9 +113,13 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_serialFunctions =
 	sjme_sm(.windowNew, sjme_scritchui_coreSerial_windowNew),
 	sjme_sm(.windowSetCloseListener, 
 		sjme_scritchui_coreSerial_windowSetCloseListener),
+	sjme_sm(.windowSetFlags, 
+		sjme_scritchui_coreSerial_windowSetFlags),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_coreSerial_windowSetMenuBar),
 	sjme_sm(.windowSetMenuItemActivateListener,
 		sjme_scritchui_coreSerial_windowSetMenuItemActivateListener),
+	sjme_sm(.windowSetState,
+		sjme_scritchui_coreSerial_windowSetState),
 	sjme_sm(.windowSetVisible, sjme_scritchui_coreSerial_windowSetVisible),
 };
 
@@ -198,9 +202,13 @@ static const sjme_scritchui_apiFunctions sjme_scritchUI_coreFunctions =
 	sjme_sm(.windowNew, sjme_scritchui_core_windowNew),
 	sjme_sm(.windowSetCloseListener,
 		sjme_scritchui_core_windowSetCloseListener),
+	sjme_sm(.windowSetFlags,
+		sjme_scritchui_core_windowSetFlags),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_core_windowSetMenuBar),
 	sjme_sm(.windowSetMenuItemActivateListener,
 		sjme_scritchui_core_windowSetMenuItemActivateListener),
+	sjme_sm(.windowSetState,
+		sjme_scritchui_core_windowSetState),
 	sjme_sm(.windowSetVisible, sjme_scritchui_core_windowSetVisible),
 };
 

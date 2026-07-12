@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
@@ -8,12 +8,9 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package provides support and checks for media playback
+ * UI Specifically for the editor.
  *
- * @since 2026/04/30
+ * @since 2026/07/05
  */
 
-@ApiStatus.Internal
-package cc.squirreljme.runtime.media;
-
-import org.jetbrains.annotations.ApiStatus;
+package cc.squirreljme.rts.ui.editor;

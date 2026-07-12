@@ -4,33 +4,33 @@ SquirrelJME aims to be compatible with most programs however there are
 situations and rare edge cases where there will be no compatibility. This is
 to make the implementation easier.
 
-## `Flushable` Interface
+# `Flushable` Interface
 
 The interface `Flushable` does not exist in Java ME and as such it does not
 exist in SquirrelJME.
 
-## LCDUI Display Input
+# LCDUI Display Input
 
 Only the first display (index zero) supports input events such as keyboard,
 buttons, mice, and touchscreen. Any secondary displays which are attached
 will not have events handled for them at all. This is to make it easier to
 implement.
 
-## Limited Network Interface Support
+# Limited Network Interface Support
 
 The Generic Connection Framework (GCF) has API to provide access to various
 system interfaces, WiFi devices, 3GPP/CDMA (Mobile data), and dial-up
 connections. Since supporting all of these are complicated, support for these
 across systems will be limited to an as needed basis.
 
-## `Reader`'s `lock` Is `null`
+# `Reader`'s `lock` Is `null`
 
 Since SquirrelJME uses a reference counted garbage collector the `Reader`'s
 `lock` object in the default constructor is set to `null` instead of `this`.
 This is so that readers do not remain in memory unable to be freed because
 objects still refer to them and such.
 
-## `SUPER` Is Always Set
+# `SUPER` Is Always Set
 
 In all clases the `SUPER` flag is assumed to be set, this flag just modifies
 the behavior of `invokespecial`. When it is not set then that instruction
@@ -42,7 +42,7 @@ J2ME should have classes where this flag is set. As such instead of
 supporting the logic to handle cases where it is not set, the flag will just
 be ignored and assumed to be set.
 
-## Supported Encodings
+# Supported Encodings
 
 Only the following character encodings are supported:
 
@@ -62,7 +62,7 @@ See:
  * <https://unicode.org/faq/utf_bom.html#utf8-4>
  * <https://www.unicode.org/reports/tr26/>
 
-## ScritchUI Graphics Serialization
+# ScritchUI Graphics Serialization
 
 All graphics operations in ScritchUI are serialized and any draw operations
 are hard forced to occur in the graphics drawing thread. Unlike traditional
@@ -75,7 +75,7 @@ This allows software such as _Gradius NEO_ on DoJa to run, and for the
 framerate of _Ratchet and Clank_ on MIDP to be stable and not run absurdly
 fast.
 
-## Configuration/Platform Version Differences
+# Configuration/Platform Version Differences
 
 SquirrelJME will auto-detect the version of the configuration and platform
 from the manifest or a set of other indicators. This is used to determine the
@@ -83,7 +83,7 @@ version of said specific standard or device that software is made for. Without
 this, the subtle changes that occur due to breaking API updates will cause
 software to change behavior.
 
-### MEEP/MIDP Version Differences
+## MEEP/MIDP Version Differences
 
  * _>= 3.0_: The `Canvas` by default is wiped with a background color by
    default unless `setPaintMode()` changes this, previously no implicit
@@ -98,7 +98,7 @@ software to change behavior.
    MEEP 8 however, recycles old IDs as records no longer need to be accessed
    purely by IDs, as there are named aliases and tags.
 
-### DoJa Version Differences 
+## DoJa Version Differences 
 
  * _>= 5.0_: Adds support for looped MLDs and emits `AUDIO_LOOPED`, otherwise
    they will not be emitted at all. The `END_EVENT` is considered to be the 
@@ -137,7 +137,7 @@ software to change behavior.
    when it should not be doing more work than usual while the user is not
    using it.
 
-## Configuration Settings That May Be Used For Compatibility
+# Configuration Settings That May Be Used For Compatibility
 
 These settings may be used for compatibility purposes if needed:
 
@@ -150,3 +150,21 @@ These settings may be used for compatibility purposes if needed:
    * This should be used if an application requires a specific vendor's
      keycodes in order to function properly. This is often the case with
      applications developed for Nokia, Siemens, among others.
+
+# Compatibility Check IDs
+
+Compatibility flags which violate Java ME standards and are very specific
+to single sets of devices and/or applications. These options should rarely,
+if ever, be used and are always disabled by default. Any use of these
+flags indicates a defect in the application you are using, it is
+recommended to contact the vendor of that application and request a fix.
+
+New IDs are always incremental and not a bit-field, due to the large number
+of potential devices, applications, and flags.
+
+ * `1` (_KONAMI_DEMO_CHECK_) -- Some Konami demos perform some checks
+   to ensure that they are running only on specific Konami demo devices.
+   If enabled, this enables support for those checks.
+ * `2` (_FORCE_LCDUI_BUFFER_) -- Some titles violate the LCDUI
+   specification by illegally storing the Graphics context when they
+   should not, this forces a buffer to be used.

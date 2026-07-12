@@ -66,7 +66,9 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	sjme_sm(.windowNew, sjme_scritchui_gtk2_windowNew),
 	sjme_sm(.windowSetCloseListener, 
 		sjme_scritchui_gtk2_windowSetCloseListenerFunc),
+	sjme_sm(.windowSetFlags, sjme_scritchui_gtk2_windowSetFlags),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_gtk2_windowSetMenuBar),
+	sjme_sm(.windowSetState, sjme_scritchui_gtk2_windowSetState),
 	sjme_sm(.windowSetVisible, sjme_scritchui_gtk2_windowSetVisible),
 };
 

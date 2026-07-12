@@ -134,10 +134,26 @@ public class DylibWindowInterface
 		throws MLECallError
 	{
 		if (__window == null)
-			throw new MLECallError("Null arguments.");
+			throw new MLECallError("NARG");
 		
 		NativeScritchDylib.__windowSetCloseListener(this.dyLib._stateP,
 			((DylibWindowObject)__window).objectPointer(), __listener);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/07/07
+	 */
+	@Override
+	public int windowSetFlags(@NotNull ScritchWindowBracket __window,
+		int __setFlags)
+		throws MLECallError
+	{
+		if (__window == null)
+			throw new MLECallError("NARG");
+		
+		return NativeScritchDylib.__windowSetFlags(this.dyLib._stateP,
+			((DylibWindowObject)__window).objectPointer(), __setFlags);
 	}
 	
 	/**
@@ -175,6 +191,22 @@ public class DylibWindowInterface
 		NativeScritchDylib.__windowSetMenuItemActivateListener(
 			this.dyLib._stateP,
 			((DylibWindowObject)__window).objectPointer(), __listener);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/07/07
+	 */
+	@Override
+	public int windowSetState(@NotNull ScritchWindowBracket __window,
+		int __setState)
+		throws MLECallError
+	{
+		if (__window == null)
+			throw new MLECallError("NARG");
+		
+		return NativeScritchDylib.__windowSetState(this.dyLib._stateP,
+			((DylibWindowObject)__window).objectPointer(), __setState);
 	}
 	
 	/**

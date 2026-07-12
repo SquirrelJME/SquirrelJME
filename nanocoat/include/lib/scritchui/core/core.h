@@ -402,6 +402,12 @@ sjme_errorCode sjme_scritchui_core_windowSetCloseListener(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(close));
 	
+sjme_errorCode sjme_scritchui_core_windowSetFlags(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_jint setFlags,
+	sjme_attrOutNullable sjme_jint* actualFlags);
+	
 sjme_errorCode sjme_scritchui_core_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -411,6 +417,12 @@ sjme_errorCode sjme_scritchui_core_windowSetMenuItemActivateListener(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	SJME_SCRITCHUI_SET_LISTENER_ARGS(menuItemActivate));
+	
+sjme_errorCode sjme_scritchui_core_windowSetState(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_windowState setState,
+	sjme_attrOutNullable sjme_scritchui_windowState* actualState);
 
 sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,
