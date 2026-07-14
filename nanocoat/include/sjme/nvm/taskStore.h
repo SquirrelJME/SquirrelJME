@@ -53,9 +53,158 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-typedef struct sjme_nvm_store
+/**
+ * Stores the full set of windows for an entire thread, this is called the
+ * register file.
+ *
+ * @since 2026/07/12
+ */
+typedef struct sjme_nvm_store_file sjme_nvm_store_file;
+
+/**
+ * A single window for a single frame within a thread, this is a partial
+ * segment of a register file.
+ *
+ * @since 2026/07/12
+ */
+typedef struct sjme_nvm_store_window sjme_nvm_store_window;
+
+/**
+ * Register window information that is useful enough for use as a Java stack.
+ *
+ * @since 2026/07/13
+ */
+typedef struct sjme_nvm_store_windowJava sjme_nvm_store_windowJava;
+
+struct sjme_nvm_store_file
 {
-} sjme_nvm_store;
+	/** The total length of the register file. */
+	sjme_jint totalLength;
+
+	/** The number of bytes which have been used in the file. */
+	sjme_jint usedData;
+
+	/** The buffer base. */
+	sjme_pointer bufferBase;
+
+	/** The head register window. */
+	sjme_nvm_store_window* head;
+
+	/** The tail register window. */
+	sjme_nvm_store_window* tail;
+
+	/** Raw register file data. */
+	sjme_alignPointer sjme_jbyte data[sjme_flexibleArrayCount];
+};
+
+struct sjme_nvm_store_windowJava
+{
+	/** The number of variables in this window. */
+	sjme_jint numVars;
+
+	/** The variable splice point between locals/stack. */
+	sjme_jint varSplice;
+
+	/**
+	 * Variable assignments, this determines which slots a given variable is
+	 * assigned too and its length.
+	 */
+	sjme_jubyte* assignedVars;
+};
+
+struct sjme_nvm_store_window
+{
+	/** The total length of the register window. */
+	sjme_jint totalLength;
+
+	/** The number of bytes currently in use for this window. */
+	sjme_jint usedData;
+
+	/** Language related data for this window, if any. */
+	union
+	{
+		/** Specifically Java data. */
+		sjme_nvm_store_windowJava* java;
+	} lang;
+
+	/** The register file which owns this. */
+	sjme_nvm_store_file* file;
+
+	/** The next register window. */
+	sjme_nvm_store_window* next;
+
+	/** Raw register window data. */
+	sjme_alignPointer sjme_jbyte data[sjme_flexibleArrayCount];
+};
+
+/**
+ * Initializes a register file within the given buffer.
+ *
+ * @param outFile The output register file.
+ * @param buf The pointer to the buffer to use.
+ * @param len The length of the buffer.
+ * @return Any resultant error, if any.
+ * @since 2026/07/13
+ */
+sjme_errorCode sjme_nvm_store_initFile(
+	sjme_attrOutNotNull sjme_nvm_store_file** outFile,
+	sjme_attrInNotNull sjme_pointer buf,
+	sjme_attrInPositiveNonZero sjme_jint len);
+
+/**
+ * Allocates raw space within the window.
+ *
+ * @param inWindow The window to allocate within.
+ * @param rawData The raw data of the allocation.
+ * @param numBytes The number of bytes to allocate.
+ * @param alignment The alignment of the data.
+ * @return Any resultant error, if any.
+ * @since 2026/07/13
+ */
+sjme_errorCode sjme_nvm_store_windowAlloca(
+	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
+	sjme_attrOutNotNull sjme_pointer* rawData,
+	sjme_attrInPositiveNonZero sjme_jint numBytes,
+	sjme_attrInPositiveNonZero sjme_jint alignment);
+
+/**
+ * Pops a window from a register file.
+ *
+ * @param inFile The register file to pop a window from.
+ * @return Any resultant error, if any.
+ * @since 2026/07/13
+ */
+sjme_errorCode sjme_nvm_store_windowPop(
+	sjme_attrInNotNull sjme_nvm_store_file* inFile);
+
+/**
+ * Pushes a new window to the register file.
+ *
+ * @param inFile The register file to push a window to.
+ * @param outWindow The resultant window that was newly pushed.
+ * @return Any resultant error, if any.
+ * @since 2026/07/13
+ */
+sjme_errorCode sjme_nvm_store_windowPush(
+	sjme_attrInNotNull sjme_nvm_store_file* inFile,
+	sjme_attrOutNotNull sjme_nvm_store_window** outWindow);
+
+/**
+ * Obtains the slot used for a window and returns a Java compatible value
+ * that may be modified accordingly.
+ *
+ * @param inWindow The window to get the slot for.
+ * @param outValue The resultant pointer to a Java value.
+ * @param inType The type of data to store in the slot.
+ * @param inSlot The slot index.
+ * @return Any resultant error, if any.
+ * @since 2026/07/13
+ */
+sjme_errorCode sjme_nvm_store_windowSlot(
+	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
+	sjme_attrOutNotNull sjme_jvalue** outValue,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId inType,
+	sjme_attrInPositive sjme_jint inSlot);
 
 /*--------------------------------------------------------------------------*/
 
