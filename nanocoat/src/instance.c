@@ -239,11 +239,10 @@ sjme_errorCode sjme_nvm_instance_directPlacement(
 	if (inClass == NULL)
 		return SJME_ERROR_NO_CLASS;
 	
-#if 0
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/* Get the placements to allocate for. */
 	placements = &inClass->fields[SJME_NVM_CLASS_MEMBER_INSTANCE];
-	
-	
+
 	/* Determine the base offset to write at. */
 	into = SJME_POINTER_OFFSET(chunk, placements->offset[type]);
 

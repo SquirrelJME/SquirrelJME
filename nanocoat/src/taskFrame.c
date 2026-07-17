@@ -26,7 +26,7 @@ sjme_errorCode sjme_nvm_task_frameCommit(
 	sjme_nvm_frame_gcCommit* at;
 	sjme_nvm_frame_gcCommit* nextAt;
 	sjme_jint i;
-	
+
 	if (inFrame == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -78,7 +78,7 @@ sjme_errorCode sjme_nvm_task_frameCommitPush(
 	sjme_nvm_frame_gcCommit* at;
 	sjme_nvm_frame_gcCommit* freeCommit;
 	sjme_jint i, freeIndex;
-	
+
 	if (commit == NULL || pushObject == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -137,7 +137,7 @@ sjme_errorCode sjme_nvm_task_frameCommitPush(
 	if (commit->next != NULL)
 		commit->next->prev = freeCommit;
 	commit->next = freeCommit;
-	
+
 	/* Store in the first slot. */
 	freeCommit->objects[0].l = pushObject;
 	freeCommit->objects[0].count = 1;
@@ -155,20 +155,20 @@ sjme_errorCode sjme_nvm_task_frameEmit(
 {
 	sjme_errorCode error;
 	va_list args;
-	
+
 	if (inFrame == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
 	/* Start arguments. */
 	va_start(args, message);
-	
+
 	/* Forward as this is just a convenience method. */
 	error = sjme_nvm_task_threadEmitV(SJME_F_T(inFrame), commonClass, cause,
 		message, args);
-	
+
 	/* End. */
 	va_end(args);
-	
+
 	/* Return the result of the forward. */
 	return error;
 }
@@ -185,7 +185,7 @@ sjme_errorCode sjme_nvm_task_frameHandler(
 	sjme_nvm_vmClass_loader loader;
 	sjme_jclass checkClass, tossedClass;
 	sjme_jint i, n, pc;
-	
+
 	if (inFrame == NULL || tossed == NULL || handled == NULL || pcNew == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -217,7 +217,7 @@ sjme_errorCode sjme_nvm_task_frameHandler(
 				&handler->handles)->descriptor->seq,
 			SJME_JNI_TRUE)) || checkClass == NULL)
 			return sjme_error_vmError(inFrame, error);
-		
+
 		/* Is this the matching handler? */
 		if (tossedClass == checkClass ||
 			!sjme_error_is(sjme_nvm_vmClass_isAssignableFrom(
@@ -235,7 +235,7 @@ sjme_errorCode sjme_nvm_task_frameHandler(
 			return SJME_ERROR_NONE;
 		}
 	}
-	
+
 skip_notHandled:
 	*handled = SJME_JNI_FALSE;
 	pcNew->popFrame = SJME_JNI_TRUE;
@@ -246,11 +246,14 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_errorCode error;
 	sjme_frame_frameStack* stack;
 	sjme_jint index;
 	sjme_jvalueTyped temp;
-	
+
 	if (inFrame == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -268,6 +271,7 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameLocalGet(
@@ -278,20 +282,27 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 {
 	sjme_nvm_class_codePerType* perType;
 	sjme_jint mappedSlot;
-	
+
 	if (inFrame == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
-	
+
 	if (localIndex < 0 || localIndex >=
 		inFrame->inCode->perType[SJME_NVM_CODE_INFO_ALL_TYPES].locals)
 		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
 
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/* The local variable is of the wrong type. */
 	if (inFrame->stack.order[localIndex] != typeId)
 		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INVALID_READ);
+#endif
 
 	/* Determine where this maps from for the read. */
 	perType = &inFrame->inCode->perType[typeId];
@@ -312,7 +323,7 @@ sjme_errorCode sjme_nvm_task_frameLocalPush(
 {
 	sjme_errorCode error;
 	sjme_jvalueTyped tempValue;
-	
+
 	if (inFrame == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -332,12 +343,18 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	sjme_attrInPositive sjme_jint localIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue)
 {
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_errorCode error;
 	sjme_jboolean isWide;
 	sjme_nvm_class_codePerType* perType;
 	sjme_jint mappedSlot;
 	sjme_frame_frameStacks* stack;
-	
+
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -372,6 +389,7 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_nvm_task_framePool(
@@ -388,10 +406,10 @@ sjme_errorCode sjme_nvm_task_framePool(
 	sjme_nvm_class_poolEntry* result;
 	sjme_jint argType;
 	va_list arg;
-	
+
 	if (inFrame == NULL || outEntry == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
 	/* Is the index valid? */
 	pool = inFrame->pool->pool;
 	if (poolIndex <= 0 || poolIndex >= pool->length)
@@ -429,7 +447,7 @@ sjme_errorCode sjme_nvm_task_framePool(
 			break;
 		}
 	}
-	
+
 skip_success:
 	*outEntry = result;
 	return SJME_ERROR_NONE;
@@ -443,10 +461,16 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit)
 {
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_errorCode error;
 	sjme_jvalueTyped temp;
 	sjme_frame_frameStacks* stack;
-	
+
 	if (inFrame == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -468,6 +492,7 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPeek(
@@ -499,13 +524,19 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jvalueTyped* outValue)
 {
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_errorCode error;
 	sjme_frame_frameStacks* stack;
 	sjme_jboolean isWide;
 	sjme_jint newTop, newPerTop;
 	sjme_frame_frameStack* perType;
 	sjme_javaTypeId topType;
-	
+
 	if (inFrame == NULL || commit == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -576,6 +607,7 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPopA(
@@ -587,7 +619,7 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
 {
 	sjme_errorCode error;
 	sjme_jint i;
-	
+
 	if (inFrame == NULL || commit == NULL || argT == NULL || argV == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -609,11 +641,17 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue)
 {
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_frame_frameStacks* stack;
 	sjme_frame_frameStack* perType;
 	sjme_jint pushCount, at;
 	sjme_jboolean isWide;
-	
+
 	if (inFrame == NULL || commit == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -633,13 +671,14 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	stack->order[stack->orderTop++] = inValue->t;
 	if (isWide)
 		stack->order[stack->orderTop++] = SJME_JAVA_TYPE_ID_VOID;
-	
+
 	/* Take slot in the per-type stack. */
 	at = perType->top++;
-	
+
 	/* Forward call. */
 	return sjme_nvm_task_frameTreadSetT(inFrame,
 		commit, at, inValue, NULL);
+#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
@@ -649,7 +688,7 @@ sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
 {
 	sjme_errorCode error;
 	sjme_jvalueTyped value;
-	
+
 	if (inFrame == NULL || inClassName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -660,7 +699,7 @@ sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
 		SJME_F_T(inFrame),
 		inClassName->seq, SJME_JNI_TRUE)) || value.v.l == NULL)
 		return sjme_error_default(error);
-	
+
 	/* Push value. */
 	value.t = SJME_JAVA_TYPE_ID_OBJECT;
 	return sjme_nvm_task_frameStackPush(inFrame, commit, &value);
@@ -673,7 +712,7 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 {
 	sjme_errorCode error;
 	sjme_jvalueTyped value;
-	
+
 	if (inFrame == NULL || inString == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -695,6 +734,12 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	sjme_attrInPositive sjme_jint depth,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue)
 {
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_errorCode error;
 	sjme_frame_frameStacks* stack;
 	sjme_jint newTop;
@@ -741,6 +786,7 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	/* Success! */
 	memmove(outValue, &temp, sizeof(*outValue));
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameTreadGetT(
@@ -751,6 +797,12 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
 	sjme_attrInValue sjme_jboolean eraseOld)
 {
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_errorCode error;
 	sjme_jvalue wipe;
 	
@@ -781,6 +833,7 @@ sjme_errorCode sjme_nvm_task_frameTreadGetT(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameTreadSetT(
@@ -790,6 +843,12 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue,
 	sjme_attrOutNotNull sjme_jvalueTyped* oldValue)
 {
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_errorCode error;
 	sjme_javaTypeId typeId;
 	sjme_jvalueTyped old;
@@ -821,6 +880,7 @@ sjme_errorCode sjme_nvm_task_frameTreadSetT(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameWaitFor(

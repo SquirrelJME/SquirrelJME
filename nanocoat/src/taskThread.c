@@ -32,6 +32,10 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_class_methodInfo targetInfo)
 {
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+
+#if defined(SJME_REMOVE_OLD_CODE)
 	sjme_errorCode error;
 	sjme_nvm_class_codeInfo code;
 	sjme_frame_threadStacks* store;
@@ -134,6 +138,7 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+#endif
 }
 
 sjme_errorCode sjme_nvm_task_threadEmit(
@@ -776,6 +781,7 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	/* Make the top-most frame no longer exist. */
 	inThread->numFrames = topIndex;
 
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/* Reduce the storage claim to free the used stack space. */
 	inThread->stack.storageTop -= topFrame->stack.storageClaim;
 
@@ -786,7 +792,14 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 		(sjme_jint)topFrame->stack.storageClaim,
 		(sjme_jint)inThread->stack.storageTop);
 #endif
-	
+#else
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+#endif
+
 	/* Clear the frame to a blank state. */
 	memset(&blank, 0, sizeof(blank));
 	memmove(&blank.common, &topFrame->common, sizeof(blank.common));
@@ -909,8 +922,16 @@ sjme_errorCode sjme_nvm_task_threadNew(
 		&inState->nextThreadId, 1);
 	result->object.identityHash =
 		sjme_nvm_instance_calcIdentityHash(inTask, result);
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	result->stack.storage = storage;
 	result->stack.storageLen = SJME_NVM_THREAD_STACK_SIZE;
+#else
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl");
+		return sjme_error_notImplemented(0);
+	}
+#endif
 	
 	/* All new threads are considered initially sleeping. */
 	sjme_atomic_s(sjme_nvm_thread_statusType, &result->status,

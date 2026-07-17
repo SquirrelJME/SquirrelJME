@@ -591,8 +591,15 @@ static sjme_errorCode sjme_nvm_cleanup_postThread(
 		SJME_SIMPLE_FREE(thread->frames);
 	}
 
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/* Free stack storage. */
 	SJME_SIMPLE_FREE(thread->stack.storage);
+#endif
 
 	/* Free tossed object, if any. */
 	SJME_SIMPLE_CLOSE_ATOMIC(sjme_jobject, 0, thread->tossed);
