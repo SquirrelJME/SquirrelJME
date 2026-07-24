@@ -18,6 +18,7 @@
 jint JNICALL JVM_GetInterfaceVersion(void)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 void JNICALL JVM_GetVersionInfo(JNIEnv* env,

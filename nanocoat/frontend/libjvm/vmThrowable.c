@@ -17,6 +17,7 @@ void JNICALL JVM_FillInStackTrace(JNIEnv* env, jobject throwable)
 jint JNICALL JVM_GetStackTraceDepth(JNIEnv* env, jobject throwable)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jobject JNICALL JVM_GetStackTraceElement(JNIEnv* env,
@@ -24,4 +25,5 @@ jobject JNICALL JVM_GetStackTraceElement(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }

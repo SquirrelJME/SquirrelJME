@@ -427,7 +427,30 @@ typedef sjme_nvm_class_annotationBase* sjme_nvm_class_annotation;
  * @since 2024/10/27
  */
 typedef struct sjme_nvm_valueSet sjme_nvm_valueSet;
-	
+
+/**
+ * Stores the full set of windows for an entire thread, this is called the
+ * register file.
+ *
+ * @since 2026/07/12
+ */
+typedef struct sjme_nvm_store_file sjme_nvm_store_file;
+
+/**
+ * A single window for a single frame within a thread, this is a partial
+ * segment of a register file.
+ *
+ * @since 2026/07/12
+ */
+typedef struct sjme_nvm_store_window sjme_nvm_store_window;
+
+/**
+ * Register window information that is useful enough for use as a Java stack.
+ *
+ * @since 2026/07/13
+ */
+typedef struct sjme_nvm_store_windowJava sjme_nvm_store_windowJava;
+
 #pragma endregion(NvmTypeDefs)
 #pragma region(TypeOfSpecifiers)
 	

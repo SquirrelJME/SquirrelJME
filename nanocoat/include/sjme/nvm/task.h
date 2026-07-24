@@ -382,6 +382,9 @@ struct sjme_nvm_frameBase
 
 	/** Frame state flags. */
 	sjme_nvm_frame_stateFlags flags;
+
+	/** The register window. */
+	sjme_nvm_store_window* storeWindow;
 };
 
 /** List of stack frames. */
@@ -701,6 +704,9 @@ struct sjme_nvm_threadBase
 
 	/** Thread specific flags. */
 	sjme_nvm_thread_flags flags;
+
+	/** The register file for all stack storage. */
+	sjme_nvm_store_file* storeFile;
 };
 
 /**

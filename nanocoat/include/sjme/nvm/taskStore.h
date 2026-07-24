@@ -53,36 +53,16 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/**
- * Stores the full set of windows for an entire thread, this is called the
- * register file.
- *
- * @since 2026/07/12
- */
-typedef struct sjme_nvm_store_file sjme_nvm_store_file;
-
-/**
- * A single window for a single frame within a thread, this is a partial
- * segment of a register file.
- *
- * @since 2026/07/12
- */
-typedef struct sjme_nvm_store_window sjme_nvm_store_window;
-
-/**
- * Register window information that is useful enough for use as a Java stack.
- *
- * @since 2026/07/13
- */
-typedef struct sjme_nvm_store_windowJava sjme_nvm_store_windowJava;
-
 struct sjme_nvm_store_file
 {
 	/** The total length of the register file. */
-	sjme_jint totalLength;
+	sjme_intPointer totalLength;
 
 	/** The number of bytes which have been used in the file. */
-	sjme_jint usedData;
+	sjme_intPointer usedData;
+
+	/** The number of bytes which are currently free in the file. */
+	sjme_intPointer freeData;
 
 	/** The buffer base. */
 	sjme_pointer bufferBase;
@@ -110,18 +90,21 @@ struct sjme_nvm_store_windowJava
 	 * assigned too and its length.
 	 */
 	sjme_jubyte* assignedVars;
+
+	/** The frame this is associated with. */
+	sjme_nvm_frame inFrame;
 };
 
 struct sjme_nvm_store_window
 {
 	/** The total length of the register window. */
-	sjme_jint totalLength;
+	sjme_intPointer totalLength;
 
 	/** The number of bytes currently in use for this window. */
-	sjme_jint usedData;
+	sjme_intPointer usedData;
 
 	/** Language related data for this window, if any. */
-	union
+	struct
 	{
 		/** Specifically Java data. */
 		sjme_nvm_store_windowJava* java;
@@ -129,6 +112,9 @@ struct sjme_nvm_store_window
 
 	/** The register file which owns this. */
 	sjme_nvm_store_file* file;
+
+	/** The previous register window. */
+	sjme_nvm_store_window* prev;
 
 	/** The next register window. */
 	sjme_nvm_store_window* next;
@@ -168,6 +154,20 @@ sjme_errorCode sjme_nvm_store_windowAlloca(
 	sjme_attrInPositiveNonZero sjme_jint alignment);
 
 /**
+ * Obtains the Java language information from the stack window.
+ *
+ * @param inWindow The window to get the Java information for.
+ * @param outJava The resultant Java language information.
+ * @param inFrame The frame this is for.
+ * @return Any resultant error, if any.
+ * @since 2026/07/22
+ */
+sjme_errorCode sjme_nvm_store_windowLangJava(
+	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
+	sjme_attrOutNotNull sjme_nvm_store_windowJava** outJava,
+	sjme_attrInNotNull sjme_nvm_frame inFrame);
+
+/**
  * Pops a window from a register file.
  *
  * @param inFile The register file to pop a window from.
@@ -192,6 +192,9 @@ sjme_errorCode sjme_nvm_store_windowPush(
 /**
  * Obtains the slot used for a window and returns a Java compatible value
  * that may be modified accordingly.
+ *
+ * If there is no Java information yet initialized, it will be initialized
+ * when this is first called.
  *
  * @param inWindow The window to get the slot for.
  * @param outValue The resultant pointer to a Java value.

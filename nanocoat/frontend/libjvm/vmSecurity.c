@@ -16,14 +16,17 @@ jobject JNICALL JVM_DoPrivileged(JNIEnv* env,
 	jboolean wrapException)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobject JNICALL JVM_GetInheritedAccessControlContext(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobject JNICALL JVM_GetStackAccessControlContext(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }

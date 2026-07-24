@@ -12,11 +12,10 @@
 #include "sjme/nvm/instance.h"
 #include "sjme/stdGone.h"
 #include "sjme/nvm/task.h"
-#include "sjme/nvm/loop.h"
 #include "sjme/debug.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/cleanup.h"
-#include "sjme/stdGone.h"
+#include "sjme/nvm/taskStore.h"
 
 #if defined(SJME_CONFIG_HAS_LOW_MEMORY)
 	/** The size of the thread stack. */
@@ -32,8 +31,24 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_class_methodInfo targetInfo)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_nvm_store_window* window;
+
+	if (inState == NULL || inThread == NULL || inFrame == NULL ||
+		targetInfo == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Only a new window needs to be pushed. */
+	window = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowPush(inThread->storeFile,
+		&window)) || window == NULL)
+		return sjme_error_default(error);
+
+	/* Set the new window. */
+	inFrame->storeWindow = window;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 
 #if defined(SJME_REMOVE_OLD_CODE)
 	sjme_errorCode error;
@@ -893,6 +908,12 @@ sjme_errorCode sjme_nvm_task_threadNew(
 		SJME_NVM_STRUCT_BRACKET_VM_THREAD_INSTANCE,
 		SJME_AS_NVM_COMMONP(&result))))
 		goto fail_allocResult;
+
+	/* Initialize stack storage. */
+	if (sjme_error_is(error = sjme_nvm_store_initFile(
+		&result->storeFile, storage, SJME_NVM_THREAD_STACK_SIZE)) ||
+		result->storeFile == NULL)
+		goto fail_initFile;
 	
 	/* Lock state on the task. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
@@ -925,12 +946,6 @@ sjme_errorCode sjme_nvm_task_threadNew(
 #if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	result->stack.storage = storage;
 	result->stack.storageLen = SJME_NVM_THREAD_STACK_SIZE;
-#else
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl");
-		return sjme_error_notImplemented(0);
-	}
 #endif
 	
 	/* All new threads are considered initially sleeping. */
@@ -1006,6 +1021,7 @@ fail_enterFrame:
 	sjme_error_is(sjme_thread_spinLockRelease(
 		&inTask->object.common.lock, NULL));
 fail_lock:
+fail_initFile:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));

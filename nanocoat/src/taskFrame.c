@@ -17,6 +17,7 @@
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/stdGone.h"
+#include "sjme/nvm/taskStore.h"
 
 sjme_errorCode sjme_nvm_task_frameCommit(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
@@ -641,6 +642,18 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue)
 {
+	sjme_errorCode error;
+	sjme_nvm_store_windowJava* java;
+
+	if (inFrame == NULL || commit == NULL || inValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
+
 	if (SJME_JNI_TRUE)
 	{
 		sjme_todo("Impl?");

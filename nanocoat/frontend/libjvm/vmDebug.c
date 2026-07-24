@@ -12,16 +12,19 @@
 void* JNICALL JVM_RegisterSignal(jint sig, void* handler)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jboolean JNICALL JVM_RaiseSignal(jint sig)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jint JNICALL JVM_FindSignal(const char* name)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jboolean JNICALL JVM_DesiredAssertionStatus(JNIEnv* env,
@@ -29,16 +32,19 @@ jboolean JNICALL JVM_DesiredAssertionStatus(JNIEnv* env,
 	jclass cls)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jobject JNICALL JVM_AssertionStatusDirectives(JNIEnv* env, jclass unused)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jint JNICALL JVM_DTraceGetVersion(JNIEnv* env)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jlong JNICALL JVM_DTraceActivate(JNIEnv* env,
@@ -48,11 +54,13 @@ jlong JNICALL JVM_DTraceActivate(JNIEnv* env,
 	JVM_DTraceProvider* providers)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jboolean JNICALL JVM_DTraceIsProbeEnabled(JNIEnv* env, jmethodID method)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 void JNICALL JVM_DTraceDispose(JNIEnv* env, jlong activation_handle)
@@ -63,9 +71,11 @@ void JNICALL JVM_DTraceDispose(JNIEnv* env, jlong activation_handle)
 jboolean JNICALL JVM_DTraceIsSupported(JNIEnv* env)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jobject JNICALL JVM_InitAgentProperties(JNIEnv* env, jobject agent_props)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }

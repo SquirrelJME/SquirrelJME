@@ -12,11 +12,13 @@
 jclass JNICALL JVM_GetCallerClass(JNIEnv* env, int depth)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jclass JNICALL JVM_FindPrimitiveClass(JNIEnv* env, const char* utf)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 void JNICALL JVM_ResolveClass(JNIEnv* env, jclass cls)
@@ -27,6 +29,7 @@ void JNICALL JVM_ResolveClass(JNIEnv* env, jclass cls)
 jclass JNICALL JVM_FindClassFromBootLoader(JNIEnv* env, const char* name)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jclass JNICALL JVM_FindClassFromCaller(JNIEnv* env,
@@ -36,6 +39,7 @@ jclass JNICALL JVM_FindClassFromCaller(JNIEnv* env,
 	jclass caller)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jclass JNICALL JVM_FindClassFromClassLoader(JNIEnv* env,
@@ -45,6 +49,7 @@ jclass JNICALL JVM_FindClassFromClassLoader(JNIEnv* env,
 	jboolean throwError)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jclass JNICALL JVM_FindClassFromClass(JNIEnv* env,
@@ -53,11 +58,13 @@ jclass JNICALL JVM_FindClassFromClass(JNIEnv* env,
 	jclass from)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jclass JNICALL JVM_FindLoadedClass(JNIEnv* env, jobject loader, jstring name)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jclass JNICALL JVM_DefineClass(JNIEnv* env,
@@ -68,6 +75,7 @@ jclass JNICALL JVM_DefineClass(JNIEnv* env,
 	jobject pd)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jclass JNICALL JVM_DefineClassWithSource(JNIEnv* env,
@@ -79,26 +87,31 @@ jclass JNICALL JVM_DefineClassWithSource(JNIEnv* env,
 	const char* source)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jstring JNICALL JVM_GetClassName(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobjectArray JNICALL JVM_GetClassInterfaces(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jboolean JNICALL JVM_IsInterface(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jobjectArray JNICALL JVM_GetClassSigners(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 void JNICALL JVM_SetClassSigners(JNIEnv* env, jclass cls, jobjectArray signers)
@@ -109,61 +122,73 @@ void JNICALL JVM_SetClassSigners(JNIEnv* env, jclass cls, jobjectArray signers)
 jobject JNICALL JVM_GetProtectionDomain(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jboolean JNICALL JVM_IsArrayClass(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jboolean JNICALL JVM_IsPrimitiveClass(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jclass JNICALL JVM_GetComponentType(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jint JNICALL JVM_GetClassModifiers(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jobjectArray JNICALL JVM_GetDeclaredClasses(JNIEnv* env, jclass ofClass)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jclass JNICALL JVM_GetDeclaringClass(JNIEnv* env, jclass ofClass)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jstring JNICALL JVM_GetClassSignature(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jbyteArray JNICALL JVM_GetClassAnnotations(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jbyteArray JNICALL JVM_GetClassTypeAnnotations(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jbyteArray JNICALL JVM_GetFieldTypeAnnotations(JNIEnv* env, jobject field)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jbyteArray JNICALL JVM_GetMethodTypeAnnotations(JNIEnv* env, jobject method)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobjectArray JNICALL JVM_GetClassDeclaredMethods(JNIEnv* env,
@@ -171,6 +196,7 @@ jobjectArray JNICALL JVM_GetClassDeclaredMethods(JNIEnv* env,
 	jboolean publicOnly)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobjectArray JNICALL JVM_GetClassDeclaredFields(JNIEnv* env,
@@ -178,6 +204,7 @@ jobjectArray JNICALL JVM_GetClassDeclaredFields(JNIEnv* env,
 	jboolean publicOnly)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobjectArray JNICALL JVM_GetClassDeclaredConstructors(JNIEnv* env,
@@ -185,11 +212,13 @@ jobjectArray JNICALL JVM_GetClassDeclaredConstructors(JNIEnv* env,
 	jboolean publicOnly)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jint JNICALL JVM_GetClassAccessFlags(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jobject JNICALL JVM_InvokeMethod(JNIEnv* env,
@@ -198,6 +227,7 @@ jobject JNICALL JVM_InvokeMethod(JNIEnv* env,
 	jobjectArray args0)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobject JNICALL JVM_NewInstanceFromConstructor(JNIEnv* env,
@@ -205,11 +235,13 @@ jobject JNICALL JVM_NewInstanceFromConstructor(JNIEnv* env,
 	jobjectArray args0)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobject JNICALL JVM_GetClassConstantPool(JNIEnv* env, jclass cls)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jint JNICALL JVM_ConstantPoolGetSize(JNIEnv* env,
@@ -217,6 +249,7 @@ jint JNICALL JVM_ConstantPoolGetSize(JNIEnv* env,
 	jobject jcpool)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jclass JNICALL JVM_ConstantPoolGetClassAt(JNIEnv* env,
@@ -225,6 +258,7 @@ jclass JNICALL JVM_ConstantPoolGetClassAt(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jclass JNICALL JVM_ConstantPoolGetClassAtIfLoaded(JNIEnv* env,
@@ -233,6 +267,7 @@ jclass JNICALL JVM_ConstantPoolGetClassAtIfLoaded(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobject JNICALL JVM_ConstantPoolGetMethodAt(JNIEnv* env,
@@ -241,6 +276,7 @@ jobject JNICALL JVM_ConstantPoolGetMethodAt(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobject JNICALL JVM_ConstantPoolGetMethodAtIfLoaded(JNIEnv* env,
@@ -249,6 +285,7 @@ jobject JNICALL JVM_ConstantPoolGetMethodAtIfLoaded(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobject JNICALL JVM_ConstantPoolGetFieldAt(JNIEnv* env,
@@ -257,6 +294,7 @@ jobject JNICALL JVM_ConstantPoolGetFieldAt(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobject JNICALL JVM_ConstantPoolGetFieldAtIfLoaded(JNIEnv* env,
@@ -265,6 +303,7 @@ jobject JNICALL JVM_ConstantPoolGetFieldAtIfLoaded(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobjectArray JNICALL JVM_ConstantPoolGetMemberRefInfoAt(JNIEnv* env,
@@ -273,6 +312,7 @@ jobjectArray JNICALL JVM_ConstantPoolGetMemberRefInfoAt(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jint JNICALL JVM_ConstantPoolGetIntAt(JNIEnv* env,
@@ -281,6 +321,7 @@ jint JNICALL JVM_ConstantPoolGetIntAt(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jlong JNICALL JVM_ConstantPoolGetLongAt(JNIEnv* env,
@@ -289,6 +330,7 @@ jlong JNICALL JVM_ConstantPoolGetLongAt(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jfloat JNICALL JVM_ConstantPoolGetFloatAt(JNIEnv* env,
@@ -297,6 +339,7 @@ jfloat JNICALL JVM_ConstantPoolGetFloatAt(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jdouble JNICALL JVM_ConstantPoolGetDoubleAt(JNIEnv* env,
@@ -305,6 +348,7 @@ jdouble JNICALL JVM_ConstantPoolGetDoubleAt(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jstring JNICALL JVM_ConstantPoolGetStringAt(JNIEnv* env,
@@ -313,6 +357,7 @@ jstring JNICALL JVM_ConstantPoolGetStringAt(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jstring JNICALL JVM_ConstantPoolGetUTF8At(JNIEnv* env,
@@ -321,41 +366,49 @@ jstring JNICALL JVM_ConstantPoolGetUTF8At(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobjectArray JNICALL JVM_GetMethodParameters(JNIEnv* env, jobject method)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jclass JNICALL JVM_CurrentLoadedClass(JNIEnv* env)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobject JNICALL JVM_CurrentClassLoader(JNIEnv* env)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobjectArray JNICALL JVM_GetClassContext(JNIEnv* env)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jint JNICALL JVM_ClassDepth(JNIEnv* env, jstring name)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jint JNICALL JVM_ClassLoaderDepth(JNIEnv* env)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 const char* JNICALL JVM_GetClassNameUTF(JNIEnv* env, jclass cb)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 void JNICALL JVM_GetClassCPTypes(JNIEnv* env, jclass cb, unsigned char* types)
@@ -366,16 +419,19 @@ void JNICALL JVM_GetClassCPTypes(JNIEnv* env, jclass cb, unsigned char* types)
 jint JNICALL JVM_GetClassCPEntriesCount(JNIEnv* env, jclass cb)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jint JNICALL JVM_GetClassFieldsCount(JNIEnv* env, jclass cb)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jint JNICALL JVM_GetClassMethodsCount(JNIEnv* env, jclass cb)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 void JNICALL JVM_GetMethodIxExceptionIndexes(JNIEnv* env,
@@ -391,6 +447,7 @@ jint JNICALL JVM_GetMethodIxExceptionsCount(JNIEnv* env,
 	jint method_index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 void JNICALL JVM_GetMethodIxByteCode(JNIEnv* env,
@@ -406,6 +463,7 @@ jint JNICALL JVM_GetMethodIxByteCodeLength(JNIEnv* env,
 	jint method_index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 void JNICALL JVM_GetMethodIxExceptionTableEntry(JNIEnv* env,
@@ -422,46 +480,55 @@ jint JNICALL JVM_GetMethodIxExceptionTableLength(JNIEnv* env,
 	int index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jint JNICALL JVM_GetFieldIxModifiers(JNIEnv* env, jclass cb, int index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jint JNICALL JVM_GetMethodIxModifiers(JNIEnv* env, jclass cb, int index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jint JNICALL JVM_GetMethodIxLocalsCount(JNIEnv* env, jclass cb, int index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jint JNICALL JVM_GetMethodIxArgsSize(JNIEnv* env, jclass cb, int index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jint JNICALL JVM_GetMethodIxMaxStack(JNIEnv* env, jclass cb, int index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jboolean JNICALL JVM_IsConstructorIx(JNIEnv* env, jclass cb, int index)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jboolean JNICALL JVM_IsVMGeneratedMethodIx(JNIEnv* env, jclass cb, int index)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 const char* JNICALL JVM_GetMethodIxNameUTF(JNIEnv* env, jclass cb, jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 const char* JNICALL JVM_GetMethodIxSignatureUTF(JNIEnv* env,
@@ -469,16 +536,19 @@ const char* JNICALL JVM_GetMethodIxSignatureUTF(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 const char* JNICALL JVM_GetCPFieldNameUTF(JNIEnv* env, jclass cb, jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 const char* JNICALL JVM_GetCPMethodNameUTF(JNIEnv* env, jclass cb, jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 const char* JNICALL JVM_GetCPMethodSignatureUTF(JNIEnv* env,
@@ -486,6 +556,7 @@ const char* JNICALL JVM_GetCPMethodSignatureUTF(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 const char* JNICALL JVM_GetCPFieldSignatureUTF(JNIEnv* env,
@@ -493,11 +564,13 @@ const char* JNICALL JVM_GetCPFieldSignatureUTF(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 const char* JNICALL JVM_GetCPClassNameUTF(JNIEnv* env, jclass cb, jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 const char* JNICALL JVM_GetCPFieldClassNameUTF(JNIEnv* env,
@@ -505,6 +578,7 @@ const char* JNICALL JVM_GetCPFieldClassNameUTF(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 const char* JNICALL JVM_GetCPMethodClassNameUTF(JNIEnv* env,
@@ -512,6 +586,7 @@ const char* JNICALL JVM_GetCPMethodClassNameUTF(JNIEnv* env,
 	jint index)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jint JNICALL JVM_GetCPFieldModifiers(JNIEnv* env,
@@ -520,6 +595,7 @@ jint JNICALL JVM_GetCPFieldModifiers(JNIEnv* env,
 	jclass calledClass)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jint JNICALL JVM_GetCPMethodModifiers(JNIEnv* env,
@@ -528,6 +604,7 @@ jint JNICALL JVM_GetCPMethodModifiers(JNIEnv* env,
 	jclass calledClass)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 void JNICALL JVM_ReleaseUTF(const char* utf)
@@ -540,11 +617,13 @@ jboolean JNICALL JVM_IsSameClassPackage(JNIEnv* env,
 	jclass class2)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jobjectArray JNICALL JVM_GetEnclosingMethodInfo(JNIEnv* env, jclass ofClass)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jboolean JNICALL JVM_KnownToNotExist(JNIEnv* env,
@@ -552,12 +631,14 @@ jboolean JNICALL JVM_KnownToNotExist(JNIEnv* env,
 	const char* classname)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jobjectArray JNICALL JVM_GetResourceLookupCacheURLs(JNIEnv* env,
 	jobject loader)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jintArray JNICALL JVM_GetResourceLookupCache(JNIEnv* env,
@@ -565,4 +646,5 @@ jintArray JNICALL JVM_GetResourceLookupCache(JNIEnv* env,
 	const char* resource_name)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }

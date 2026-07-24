@@ -469,6 +469,7 @@ fail_noMemory:
 jint JNICALL JNI_GetCreatedJavaVMs(JavaVM** vmBuf, jsize bufLen, jsize* nVMs)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 /**

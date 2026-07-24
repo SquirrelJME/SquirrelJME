@@ -27,6 +27,7 @@ void JNICALL JVM_GC(void)
 jlong JNICALL JVM_MaxObjectInspectionAge(void)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 void JNICALL JVM_TraceInstructions(jboolean on)
@@ -42,26 +43,31 @@ void JNICALL JVM_TraceMethodCalls(jboolean on)
 jlong JNICALL JVM_TotalMemory(void)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jlong JNICALL JVM_FreeMemory(void)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jlong JNICALL JVM_MaxMemory(void)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jint JNICALL JVM_ActiveProcessorCount(void)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 void* JNICALL JVM_LoadLibrary(const char* name)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 void JNICALL JVM_UnloadLibrary(void* handle)
@@ -72,9 +78,11 @@ void JNICALL JVM_UnloadLibrary(void* handle)
 void* JNICALL JVM_FindLibraryEntry(void* handle, const char* name)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jboolean JNICALL JVM_IsSupportedJNIVersion(jint version)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }

@@ -227,6 +227,16 @@ sjme_errorCode sjme_scritchui_win32_windowNew(
 	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
 }
 
+sjme_errorCode sjme_scritchui_win32_windowSetFlags(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_jint setFlags,
+	sjme_attrOutNullable sjme_jint* actualFlags)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_scritchui_win32_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
@@ -251,6 +261,16 @@ sjme_errorCode sjme_scritchui_win32_windowSetMenuBar(
 	
 	/* Success? */
 	return inState->implIntern->getLastError(inState, SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchui_win32_windowSetState(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_windowState setState,
+	sjme_attrOutNullable sjme_scritchui_windowState* actualState)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_scritchui_win32_windowSetVisible(
