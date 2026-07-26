@@ -103,6 +103,9 @@ struct sjme_nvm_store_window
 	/** The number of bytes currently in use for this window. */
 	sjme_intPointer usedData;
 
+	/** The number of bytes free for this window. */
+	sjme_intPointer freeData;
+
 	/** Language related data for this window, if any. */
 	struct
 	{

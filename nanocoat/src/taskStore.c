@@ -36,6 +36,9 @@ sjme_errorCode sjme_nvm_store_initFile(
 		len <= (sjme_jint)sizeof(sjme_nvm_store_window))
 		return SJME_ERROR_INVALID_ARGUMENT;
 
+	/* Make sure the file data is cleared first. */
+	memset(result, 0, sizeof(*result));
+
 	/* Remember the base of the buffer for freeing. */
 	result->bufferBase = baseBuf;
 
@@ -44,6 +47,11 @@ sjme_errorCode sjme_nvm_store_initFile(
 	result->totalLength = ((sjme_intPointer)SJME_POINTER_OFFSET(buf, len) -
 		(sjme_intPointer)&result->data[0]);
 	result->freeData = result->totalLength;
+
+#if 1
+	/* Make sure the data buffer is cleared. */
+	memset(&result->data[0], 0, result->totalLength);
+#endif
 
 	/* No other windows exist currently, this is just a blank file until a */
 	/* window eventually gets pushed. */
@@ -63,6 +71,41 @@ sjme_errorCode sjme_nvm_store_windowAlloca(
 	if (numBytes <= 0 || alignment <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
+	/* Sanity check for any corruption. */
+	if (inWindow->totalLength <= 0 || inWindow->usedData < 0 ||
+		inWindow->freeData < 0 ||
+		inWindow->totalLength - inWindow->usedData != inWindow->freeData)
+		return SJME_ERROR_MEMORY_CORRUPTION;
+
+	/* Determine next alignment point. */
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Is there enough free space for this? */
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Grab the next chunk of data. */
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Wipe it and ensure it is initialized to nothing. */
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Return the resultant chunk of data. */
 	sjme_todo("Impl");
 	return sjme_error_notImplemented(0);
 }
@@ -91,8 +134,22 @@ sjme_errorCode sjme_nvm_store_windowLangJava(
 		return SJME_ERROR_NONE;
 	}
 
-	sjme_todo("Impl");
-	return sjme_error_notImplemented(0);
+	/* Allocate storage needed for the Java language. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowAlloca(inWindow,
+		(sjme_pointer*)&result, sizeof(*result),
+		SJME_POINTER_BYTES)) || result == NULL)
+		return sjme_error_default(error);
+
+	/* Link in. */
+	inWindow->lang.java = result;
+
+	/* Set base frame. */
+	result->inFrame = inFrame;
+
+	/* Success! */
+	*outJava = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_store_windowPop(
@@ -135,6 +192,9 @@ sjme_errorCode sjme_nvm_store_windowPush(
 	/* Set the new window at the calculated base. */
 	window = (sjme_nvm_store_window*)&inFile->data[windowBase];
 
+	/* Make sure the window is cleared to nothing. */
+	memset(window, 0, sizeof(*window));
+
 	/* Add to the tail chain? */
 	oldTail = inFile->tail;
 	if (oldTail != NULL)
@@ -160,8 +220,15 @@ sjme_errorCode sjme_nvm_store_windowPush(
 
 	/* Setup main window details. */
 	window->file = inFile;
-	window->totalLength = inFile->totalLength - windowBase;
+	window->totalLength = (inFile->totalLength - windowBase) -
+		sizeof(sjme_nvm_store_window);
 	window->usedData = 0;
+	window->freeData = window->totalLength;
+
+#if 1
+	/* Make sure the window data is cleared. */
+	memset(&window->data[0], 0, window->totalLength);
+#endif
 
 	/* Success! */
 	*outWindow = window;
