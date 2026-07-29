@@ -65,6 +65,9 @@ sjme_errorCode sjme_nvm_store_windowAlloca(
 	sjme_attrInPositiveNonZero sjme_jint numBytes,
 	sjme_attrInPositiveNonZero sjme_jint alignment)
 {
+	sjme_intPointer placeAt;
+	sjme_pointer result;
+
 	if (inWindow == NULL || rawData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -78,36 +81,25 @@ sjme_errorCode sjme_nvm_store_windowAlloca(
 		return SJME_ERROR_MEMORY_CORRUPTION;
 
 	/* Determine next alignment point. */
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
+	placeAt = sjme_util_alignTo(inWindow->usedData, alignment);
 
 	/* Is there enough free space for this? */
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
+	if (placeAt < 0 ||
+		placeAt + numBytes <= 0 || numBytes >= inWindow->freeData ||
+		placeAt + numBytes >= inWindow->totalLength)
+		return SJME_ERROR_STACK_OVERFLOW;
 
 	/* Grab the next chunk of data. */
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
+	result = &inWindow->data[placeAt];
+	inWindow->freeData -= numBytes;
+	inWindow->usedData += numBytes;
 
 	/* Wipe it and ensure it is initialized to nothing. */
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
+	memset(result, 0, numBytes);
 
-	/* Return the resultant chunk of data. */
-	sjme_todo("Impl");
-	return sjme_error_notImplemented(0);
+	/* Success! */
+	*rawData = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_store_windowLangJava(
