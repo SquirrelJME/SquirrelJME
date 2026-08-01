@@ -644,6 +644,8 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 {
 	sjme_errorCode error;
 	sjme_nvm_store_windowJava* java;
+	sjme_jint pushCount, at;
+	sjme_jboolean isWide;
 
 	if (inFrame == NULL || commit == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -662,8 +664,6 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 #if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_frame_frameStacks* stack;
 	sjme_frame_frameStack* perType;
-	sjme_jint pushCount, at;
-	sjme_jboolean isWide;
 
 	if (inFrame == NULL || commit == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

@@ -82,8 +82,11 @@ struct sjme_nvm_store_windowJava
 	/** The number of variables in this window. */
 	sjme_jint numVars;
 
-	/** The variable splice point between locals/stack. */
-	sjme_jint varSplice;
+	/** The maximum number of stack variables. */
+	sjme_jint maxStack;
+
+	/** The maximum number of local variables. */
+	sjme_jint maxLocals;
 
 	/**
 	 * Variable assignments, this determines which slots a given variable is

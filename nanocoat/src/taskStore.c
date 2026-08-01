@@ -136,8 +136,13 @@ sjme_errorCode sjme_nvm_store_windowLangJava(
 	/* Link in. */
 	inWindow->lang.java = result;
 
-	/* Set base frame. */
+	/* Set base frame and associated cached information. */
 	result->inFrame = inFrame;
+	result->maxLocals = inFrame->inCode->
+		perType[SJME_NVM_CODE_INFO_ALL_TYPES].locals;
+	result->maxStack = inFrame->inCode->
+		perType[SJME_NVM_CODE_INFO_ALL_TYPES].stack;
+	result->numVars = result->maxLocals + result->maxStack;
 
 	/* Success! */
 	*outJava = result;
