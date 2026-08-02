@@ -18,6 +18,7 @@
 
 #include "sjme/config.h"
 #include "sjme/stdTypes.h"
+#include "sjme/tokenUtils.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -63,6 +64,82 @@ typedef struct sjme_dispatch_info
 	/** The help printing function. */
 	sjme_dispatch_helpFunc help;
 } sjme_dispatch_info;
+	
+/**
+ * The name of the main method for a command.
+ * 
+ * @param command The command name.
+ * @since 2025/08/01
+ */
+#define sjme_abcd_command_main(command) \
+	SJME_TOKEN_PASTE3_PP(sjme_abcd_, command, _main)
+	
+/**
+ * The function declaration for the command's entry point.
+ * 
+ * @param command The command name.
+ * @since 2025/08/01
+ */
+#define sjme_abcd_command_main_declare(command) \
+	int sjme_abcd_command_main(command)(int argc, char** argv)
+	
+/**
+ * The name of the help method for a command.
+ * 
+ * @param command The command name.
+ * @since 2025/08/01
+ */
+#define sjme_abcd_command_help(command) \
+	SJME_TOKEN_PASTE3_PP(sjme_abcd_, command, _help)
+	
+/**
+ * The function declaration for the command's help.
+ * 
+ * @param command The command name.
+ * @since 2025/08/01
+ */
+#define sjme_abcd_command_help_declare(command) \
+	void sjme_abcd_command_help(command)(void)
+
+/**
+ * Declares the prototypes for a command.
+ * 
+ * @param command The command name.
+ * @since 2025/08/01
+ */
+#define sjme_abcd_command_declare(command) \
+	sjme_abcd_command_main_declare(command); \
+	sjme_abcd_command_help_declare(command)
+	
+#pragma region(commands)
+	
+sjme_abcd_command_declare(ant);
+sjme_abcd_command_declare(cat);
+sjme_abcd_command_declare(device_address);
+sjme_abcd_command_declare(device_manager);
+sjme_abcd_command_declare(doja);
+sjme_abcd_command_declare(doja_g);
+sjme_abcd_command_declare(eclipse);
+sjme_abcd_command_declare(emulator);
+sjme_abcd_command_declare(iconv);
+sjme_abcd_command_declare(jadtool);
+sjme_abcd_command_declare(jar);
+sjme_abcd_command_declare(jar2prc);
+sjme_abcd_command_declare(jasmin);
+sjme_abcd_command_declare(javac);
+sjme_abcd_command_declare(javadoc);
+sjme_abcd_command_declare(javap);
+sjme_abcd_command_declare(jdb);
+sjme_abcd_command_declare(mekeytool);
+sjme_abcd_command_declare(midp);
+sjme_abcd_command_declare(netbeans);
+sjme_abcd_command_declare(preverify);
+sjme_abcd_command_declare(star);
+sjme_abcd_command_declare(touch);
+sjme_abcd_command_declare(wscompile);
+sjme_abcd_command_declare(zip);
+	
+#pragma endregion(commands)
 	
 /*--------------------------------------------------------------------------*/
 
