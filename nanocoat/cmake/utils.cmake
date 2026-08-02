@@ -10,6 +10,12 @@
 # Does the host system have make?
 find_program(HOST_MAKE "gmake" "make")
 
+# Does the host system have a C compiler?
+find_program(HOST_CC "cc" "c99" "gcc" "c99-gcc")
+
+# Does the host have file?
+find_program(HOST_FILE "file")
+
 # Try to find the host's own CMake installation, in the event this is some
 # toolchain build
 find_program(HOST_CMAKE "cmake"
@@ -24,6 +30,18 @@ find_program(HOST_CMAKE "cmake"
 # going on...
 function(squirreljme_build_util_check_probe name)
 	if(EXISTS "${sjmeUtilExe_${name}}")
+		# Notice
+		message(STATUS
+			"Checking if ${sjmeUtilExe_${name}} is executable...")
+
+		# Check using host's file, if it exists, for debugging
+		if(NOT "${HOST_FILE}" STREQUAL "" AND
+			NOT "${HOST_FILE}" STREQUAL "HOST_FILE-NOTFOUND")
+			execute_process(COMMAND "${HOST_FILE}" "${sjmeUtilExe_${name}}"
+				RESULT_VARIABLE probeExitCode
+				TIMEOUT 16)
+		endif()
+
 		# Execute the command
 		execute_process(COMMAND "${sjmeUtilExe_${name}}" "--probe"
 			RESULT_VARIABLE probeExitCode
@@ -60,7 +78,9 @@ macro(squirreljme_build_util name)
 	# Does it need to be built?
 	if(NOT EXISTS "${sjmeUtilExe_${name}}")
 		# Use host make where possible
-		if(HOST_MAKE)
+		if(NOT "${HOST_MAKE}" STREQUAL "" AND
+			NOT "${HOST_MAKE}" STREQUAL "HOST_MAKE-NOTFOUND" AND
+			NOT EXISTS "${sjmeUtilExe_${name}}")
 			# Notice
 			message(STATUS "Building ${name} with ${HOST_MAKE}...")
 
@@ -72,6 +92,32 @@ macro(squirreljme_build_util name)
 					"--" "${HOST_MAKE}"
 					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
 					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+				WORKING_DIRECTORY
+					"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
+
+			# Probe this to see if we can actually execute it
+			squirreljme_build_util_check_probe(${name})
+		endif()
+
+		# Use host make, but with alternative CC?
+		if(NOT "${HOST_MAKE}" STREQUAL "" AND
+			NOT "${HOST_MAKE}" STREQUAL "HOST_MAKE-NOTFOUND" AND
+			NOT "${HOST_CC}" STREQUAL "" AND
+			NOT "${HOST_CC}" STREQUAL "HOST_CC-NOTFOUND" AND
+			NOT EXISTS "${sjmeUtilExe_${name}}")
+			# Notice
+			message(STATUS "Building ${name} with ${HOST_CC}...")
+
+			# Run make
+			execute_process(
+				COMMAND "${CMAKE_COMMAND}" "-E" "env"
+					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+					"CC=${HOST_CC}"
+					"--" "${HOST_MAKE}"
+					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+					"CC=${HOST_CC}"
 				WORKING_DIRECTORY
 					"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
 

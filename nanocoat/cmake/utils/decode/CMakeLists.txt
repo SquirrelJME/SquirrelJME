@@ -47,3 +47,14 @@ target_include_directories(decode PUBLIC
 
 target_compile_definitions(decode PUBLIC
 	SJME_CONFIG_HAS_NO_C11_THREADS=1)
+
+if(MSVC)
+	target_link_options(decode PUBLIC
+		"/MT")
+elseif(CMAKE_COMPILER_IS_GNUCC OR
+	CMAKE_COMPILER_IS_GNUCXX OR
+	CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
+	CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	target_link_options(decode PUBLIC
+		"-static")
+endif()
