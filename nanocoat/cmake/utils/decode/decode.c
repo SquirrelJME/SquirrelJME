@@ -258,6 +258,10 @@ int decodeAsHex(void)
  */
 int main(int argc, char** argv)
 {
+	/* Probe to check if this is executable or not. */
+	if (argc >= 2 && argv[1] != NULL && !strcmp("--probe", argv[1]))
+		return EXIT_SUCCESS;
+	
 	/* Needs HEX or BASE64. */
 	if (argc <= 1)
 	{
