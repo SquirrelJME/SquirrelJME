@@ -76,6 +76,7 @@ squirreljme_bp_version_test(3 18 squirreljme_bp_version_3_18)
 squirreljme_bp_version_test(3 20 squirreljme_bp_version_3_20)
 squirreljme_bp_version_test(3 23 squirreljme_bp_version_3_23)
 squirreljme_bp_version_test(3 25 squirreljme_bp_version_3_25)
+squirreljme_bp_version_test(3 29 squirreljme_bp_version_3_29)
 
 # Future versions
 squirreljme_bp_version_test(4 0 squirreljme_bp_version_4_0)
@@ -400,13 +401,13 @@ function(squirreljme_target_link_directories target scope)
 		if(MSVC OR
 			CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
 			CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-			foreach(directory IN ITEMS "${directories}")
+			foreach(directory IN ITEMS ${directories})
 				squirreljme_target_link_options(${target} ${scope}
 					"/LIBPATH:${directory}")
 			endforeach()
 		# Assume POSIX
 		else()
-			foreach(directory IN ITEMS "${directories}")
+			foreach(directory IN ITEMS ${directories})
 				squirreljme_target_link_options(${target} ${scope}
 					"-L${directory}")
 			endforeach()

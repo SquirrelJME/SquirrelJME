@@ -7,22 +7,64 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Defines the base project and the versioning info
 
+# Finds multiple programs in PATH
+function(squirreljme_find_programs result inNames)
+	# Get names to find
+	set(names "${ARGV}")
+	list(REMOVE_AT names 0)
+	list(REMOVE_AT names 0)
+
+	# Ensure the result is cleared
+	set(${result})
+
+	# Get the system path and convert it to a CMake list
+	set(sysPaths "$ENV{PATH}")
+	file(TO_CMAKE_PATH "${sysPaths}" sysPaths)
+
+	# Go through each system path and try to find a path with each name
+	foreach(sysPath IN ITEMS ${sysPaths})
+		foreach(name IN ITEMS ${names})
+			# Determine the actual path to check
+			file(TO_CMAKE_PATH
+				"${sysPath}/${name}${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+				checkPath)
+
+			# Does this exist?
+			if(EXISTS "${checkPath}")
+				# CMake 3.29+ has executable check
+				if(squirreljme_bp_version_3_29)
+					if(NOT IS_EXECUTABLE "${checkPath}")
+						continue()
+					endif()
+				endif()
+
+				# Add it to the resultant path
+				list(APPEND ${result} "${checkPath}")
+			endif()
+		endforeach()
+	endforeach()
+
+	# Return the found executables
+	squirreljme_bp_return_propagate(${result})
+endfunction()
+
 # Does the host system have make?
-find_program(HOST_MAKE "gmake" "make")
+squirreljme_find_programs(hostMakes
+	"gmake" "make")
 
 # Does the host system have a C compiler?
-find_program(HOST_CC "cc" "c99" "gcc" "c99-gcc")
-
-# Does the host have file?
-find_program(HOST_FILE "file")
+squirreljme_find_programs(hostCompilers
+	"cc" "c99" "c89" "gcc" "c99-gcc" "c89-gcc" "llvm")
 
 # Try to find the host's own CMake installation, in the event this is some
 # toolchain build
-find_program(HOST_CMAKE "cmake"
-	NO_CMAKE_PATH
-	NO_CMAKE_ENVIRONMENT_PATH
-	NO_CMAKE_SYSTEM_PATH
-	NO_CMAKE_INSTALL_PREFIX)
+# Always make sure our current CMake is there
+squirreljme_find_programs(hostCMakes
+	"cmake")
+list(APPEND hostCMakes "${CMAKE_COMMAND}")
+
+# File is used for debugging
+find_program(HOST_FILE "file")
 
 # Checks that the utility can be executed by passing --probe, this does nothing
 # in the utility except returns success always. If this fails to run then
@@ -61,7 +103,7 @@ endfunction()
 
 # Builds the given utility
 # sets sjmeUtilExe_${name}
-macro(squirreljme_build_util name)
+function(squirreljme_build_util name)
 	# Determine output path
 	set(sjmeUtilDir_${name}
 		"${CMAKE_BINARY_DIR}/util/${name}")
@@ -75,127 +117,114 @@ macro(squirreljme_build_util name)
 	# else happened between runs
 	squirreljme_build_util_check_probe(${name})
 
-	# Does it need to be built?
-	if(NOT EXISTS "${sjmeUtilExe_${name}}")
-		# Use host make where possible
-		if(NOT "${HOST_MAKE}" STREQUAL "" AND
-			NOT "${HOST_MAKE}" STREQUAL "HOST_MAKE-NOTFOUND" AND
-			NOT EXISTS "${sjmeUtilExe_${name}}")
-			# Notice
-			message(STATUS "Building ${name} with ${HOST_MAKE}...")
-
-			# Run make
-			execute_process(
-				COMMAND "${CMAKE_COMMAND}" "-E" "env"
-					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
-					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
-					"--" "${HOST_MAKE}"
-					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
-					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
-				WORKING_DIRECTORY
-					"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
-
-			# Probe this to see if we can actually execute it
-			squirreljme_build_util_check_probe(${name})
-		endif()
-
-		# Use host make, but with alternative CC?
-		if(NOT "${HOST_MAKE}" STREQUAL "" AND
-			NOT "${HOST_MAKE}" STREQUAL "HOST_MAKE-NOTFOUND" AND
-			NOT "${HOST_CC}" STREQUAL "" AND
-			NOT "${HOST_CC}" STREQUAL "HOST_CC-NOTFOUND" AND
-			NOT EXISTS "${sjmeUtilExe_${name}}")
-			# Notice
-			message(STATUS "Building ${name} with ${HOST_CC}...")
-
-			# Run make
-			execute_process(
-				COMMAND "${CMAKE_COMMAND}" "-E" "env"
-					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
-					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
-					"CC=${HOST_CC}"
-					"--" "${HOST_MAKE}"
-					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
-					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
-					"CC=${HOST_CC}"
-				WORKING_DIRECTORY
-					"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
-
-			# Probe this to see if we can actually execute it
-			squirreljme_build_util_check_probe(${name})
-		endif()
-
-		# Otherwise fallback to current build CMake
-		if(NOT EXISTS "${sjmeUtilExe_${name}}")
-			# Notice
-			message(STATUS "Building ${name} with ${CMAKE_COMMAND}...")
-
-			# Configure first
-			if(squirreljme_bp_version_3_13)
-				execute_process(
-					COMMAND "${CMAKE_COMMAND}"
-						"-B"
-						"${sjmeUtilDir_${name}}"
-						"-S"
-						"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}"
-					WORKING_DIRECTORY "${sjmeUtilDir_${name}}")
-			else()
-				execute_process(
-					COMMAND "${CMAKE_COMMAND}"
-						"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}"
-					WORKING_DIRECTORY "${sjmeUtilDir_${name}}")
-			endif()
-			
-			# Then build
-			execute_process(
-				COMMAND "${CMAKE_COMMAND}"
-					"--build"
-					"${sjmeUtilDir_${name}}")
-
-			# Probe this to see if we can actually execute it
-			squirreljme_build_util_check_probe(${name})
-		endif()
-
-		# Try the host CMake, if one was found
-		if(NOT "${HOST_CMAKE}" STREQUAL "" AND
-			NOT "${HOST_CMAKE}" STREQUAL "HOST_CMAKE-NOTFOUND" AND
-			NOT EXISTS "${sjmeUtilExe_${name}}")
-			# Notice
-			message(STATUS "Building ${name} with ${HOST_CMAKE}...")
-
-			# Configure first
-			if(squirreljme_bp_version_3_13)
-				execute_process(
-					COMMAND "${HOST_CMAKE}"
-						"-B"
-						"${sjmeUtilDir_${name}}"
-						"-S"
-						"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}"
-					WORKING_DIRECTORY "${sjmeUtilDir_${name}}")
-			else()
-				execute_process(
-					COMMAND "${HOST_CMAKE}"
-						"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}"
-					WORKING_DIRECTORY "${sjmeUtilDir_${name}}")
-			endif()
-
-			# Then build
-			execute_process(
-				COMMAND "${HOST_CMAKE}"
-					"--build"
-					"${sjmeUtilDir_${name}}")
-
-			# Probe this to see if we can actually execute it
-			squirreljme_build_util_check_probe(${name})
-		endif()
-
-		# Otherwise, fail
-		if(NOT EXISTS "${sjmeUtilExe_${name}}")
-			message(FATAL_ERROR
-				"Could not build host ${name} at ${sjmeUtilExe_${name}}...")
-		endif()
+	# Is it valid?
+	if(EXISTS "${sjmeUtilExe_${name}}")
+		squirreljme_bp_return_propagate(sjmeUtilExe_${name})
 	endif()
-endmacro()
+
+	# Use found host makes first
+	foreach(hostMake IN ITEMS ${hostMakes})
+		# Notice
+		message(STATUS
+			"Building ${name} with ${hostMake}...")
+
+		# Run make
+		execute_process(
+			COMMAND "${CMAKE_COMMAND}" "-E" "env"
+				"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+				"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+				"--" "${hostMake}"
+				"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+				"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+			WORKING_DIRECTORY
+				"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
+
+		# Probe this to see if we can actually execute it
+		squirreljme_build_util_check_probe(${name})
+
+		# Is it valid?
+		if(EXISTS "${sjmeUtilExe_${name}}")
+			squirreljme_bp_return_propagate(sjmeUtilExe_${name})
+		endif()
+	endforeach()
+
+	# Try again, but with different found "default" compilers
+	foreach(hostMake IN ITEMS ${hostMakes})
+		foreach(hostCompiler IN ITEMS ${hostCompilers})
+			# Notice
+			message(STATUS
+				"Building ${name} with ${hostMake} and ${hostCompiler}...")
+
+			# Run make
+			execute_process(
+				COMMAND "${CMAKE_COMMAND}" "-E" "env"
+					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+					"CC=${hostCompiler}"
+					"--" "${hostMake}"
+					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+					"CC=${hostCompiler}"
+				WORKING_DIRECTORY
+					"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
+
+			# Probe this to see if we can actually execute it
+			squirreljme_build_util_check_probe(${name})
+
+			# Is it valid?
+			if(EXISTS "${sjmeUtilExe_${name}}")
+				squirreljme_bp_return_propagate(sjmeUtilExe_${name})
+			endif()
+		endforeach()
+	endforeach()
+
+	# Try again with different found CMakes
+	foreach(hostCMake IN ITEMS ${hostCMakes})
+		# Notice
+		message(STATUS "Building ${name} with ${hostCMake}...")
+
+		# Configure first
+		if(squirreljme_bp_version_3_13)
+			execute_process(
+				COMMAND "${hostCMake}"
+					"-B"
+					"${sjmeUtilDir_${name}}"
+					"-S"
+					"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}"
+				WORKING_DIRECTORY "${sjmeUtilDir_${name}}")
+		else()
+			execute_process(
+				COMMAND "${hostCMake}"
+					"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}"
+				WORKING_DIRECTORY "${sjmeUtilDir_${name}}")
+		endif()
+
+		# Then build
+		execute_process(
+			COMMAND "${hostCMake}"
+				"--build"
+				"${sjmeUtilDir_${name}}")
+
+		# Probe this to see if we can actually execute it
+		squirreljme_build_util_check_probe(${name})
+
+		# Is it valid?
+		if(EXISTS "${sjmeUtilExe_${name}}")
+			squirreljme_bp_return_propagate(sjmeUtilExe_${name})
+		endif()
+	endforeach()
+
+	# Sanity final check
+	squirreljme_build_util_check_probe(${name})
+
+	# Does it exist after everything?
+	if(EXISTS "${sjmeUtilExe_${name}}")
+		squirreljme_bp_return_propagate(sjmeUtilExe_${name})
+	endif()
+
+	# Fail otherwise
+	message(FATAL_ERROR "Could not build host utility ${name}...")
+endfunction()
 
 # Only these commands exists
 squirreljme_build_util(decode)
