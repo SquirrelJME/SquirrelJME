@@ -403,7 +403,7 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		"__arm32" IN_LIST defines OR
 		"__arm32__" IN_LIST defines OR
 		"_M_ARM" IN_LIST defines OR
-		"ARM9" IN_LIST defines
+		"ARM9" IN_LIST defines OR
 		"ARM11" IN_LIST defines)
 		if("__BIG_ENDIAN__" IN_LIST defines)
 			set(hasArch "arm32b")
