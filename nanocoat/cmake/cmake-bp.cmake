@@ -75,6 +75,7 @@ squirreljme_bp_version_test(3 17 squirreljme_bp_version_3_17)
 squirreljme_bp_version_test(3 18 squirreljme_bp_version_3_18)
 squirreljme_bp_version_test(3 20 squirreljme_bp_version_3_20)
 squirreljme_bp_version_test(3 23 squirreljme_bp_version_3_23)
+squirreljme_bp_version_test(3 24 squirreljme_bp_version_3_24)
 squirreljme_bp_version_test(3 25 squirreljme_bp_version_3_25)
 squirreljme_bp_version_test(3 29 squirreljme_bp_version_3_29)
 

@@ -12,7 +12,6 @@ function(squirreljme_find_programs result inNames)
 	# Get names to find
 	set(names "${ARGV}")
 	list(REMOVE_AT names 0)
-	list(REMOVE_AT names 0)
 
 	# Ensure the result is cleared
 	set(${result})
@@ -62,6 +61,21 @@ squirreljme_find_programs(hostCompilers
 squirreljme_find_programs(hostCMakes
 	"cmake")
 list(APPEND hostCMakes "${CMAKE_COMMAND}")
+
+# Debugging
+message(STATUS "-- For building host utilities...")
+foreach(hostMake IN ITEMS ${hostMakes})
+	message(STATUS "- Host make: ${hostMake}")
+endforeach()
+
+foreach(hostCompiler IN ITEMS ${hostCompilers})
+	message(STATUS "- Host compiler: ${hostCompiler}")
+endforeach()
+
+foreach(hostCMake IN ITEMS ${hostCMakes})
+	message(STATUS "- Host CMake: ${hostCMake}")
+endforeach()
+message(STATUS "...these were found")
 
 # File is used for debugging
 find_program(HOST_FILE "file")
@@ -129,15 +143,27 @@ function(squirreljme_build_util name)
 			"Building ${name} with ${hostMake}...")
 
 		# Run make
-		execute_process(
-			COMMAND "${CMAKE_COMMAND}" "-E" "env"
-				"OUTPUT_DIR=${sjmeUtilDir_${name}}"
-				"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
-				"--" "${hostMake}"
-				"OUTPUT_DIR=${sjmeUtilDir_${name}}"
-				"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
-			WORKING_DIRECTORY
-				"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
+		if(squirreljme_bp_version_3_24)
+			execute_process(
+				COMMAND "${CMAKE_COMMAND}" "-E" "env"
+					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+					"--" "${hostMake}"
+					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+				WORKING_DIRECTORY
+					"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
+		else()
+			execute_process(
+				COMMAND "${CMAKE_COMMAND}" "-E" "env"
+					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+					"${hostMake}"
+					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+				WORKING_DIRECTORY
+					"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
+		endif()
 
 		# Probe this to see if we can actually execute it
 		squirreljme_build_util_check_probe(${name})
@@ -156,17 +182,31 @@ function(squirreljme_build_util name)
 				"Building ${name} with ${hostMake} and ${hostCompiler}...")
 
 			# Run make
-			execute_process(
-				COMMAND "${CMAKE_COMMAND}" "-E" "env"
-					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
-					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
-					"CC=${hostCompiler}"
-					"--" "${hostMake}"
-					"OUTPUT_DIR=${sjmeUtilDir_${name}}"
-					"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
-					"CC=${hostCompiler}"
-				WORKING_DIRECTORY
-					"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
+			if(squirreljme_bp_version_3_24)
+				execute_process(
+					COMMAND "${CMAKE_COMMAND}" "-E" "env"
+						"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+						"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+						"CC=${hostCompiler}"
+						"--" "${hostMake}"
+						"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+						"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+						"CC=${hostCompiler}"
+					WORKING_DIRECTORY
+						"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
+			else()
+				execute_process(
+					COMMAND "${CMAKE_COMMAND}" "-E" "env"
+						"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+						"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+						"CC=${hostCompiler}"
+						"${hostMake}"
+						"OUTPUT_DIR=${sjmeUtilDir_${name}}"
+						"HOST_EXE_SUFFIX=${CMAKE_HOST_EXECUTABLE_SUFFIX}"
+						"CC=${hostCompiler}"
+					WORKING_DIRECTORY
+						"${SQUIRRELJME_BP_LIST_DIR}/utils/${name}")
+			endif()
 
 			# Probe this to see if we can actually execute it
 			squirreljme_build_util_check_probe(${name})
