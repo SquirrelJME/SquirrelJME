@@ -19,6 +19,87 @@
 #include "sjme/stdGone.h"
 #include "sjme/nvm/taskStore.h"
 
+#if SJME_CONFIG_HAS_POINTER > 32 && SJME_CONFIG_HAS_POINTER <= 64
+	/**
+	 * Determines whether the given Java type needs long storage.
+	 *
+	 * @param javaType The Java type to check.
+	 * @return Whether the type needs long storage.
+	 * @since 2026/08/04
+	 */
+	#define sjme_mod_longType(javaType) \
+		(((javaType) == SJME_JAVA_TYPE_ID_LONG || \
+		(javaType) == SJME_JAVA_TYPE_ID_DOUBLE || \
+		(javaType) == SJME_JAVA_TYPE_ID_OBJECT))
+#elif SJME_CONFIG_HAS_POINTER <= 32
+	/**
+	 * Determines whether the given Java type needs long storage.
+	 *
+	 * @param javaType The Java type to check.
+	 * @return Whether the type needs long storage.
+	 * @since 2026/08/04
+	 */
+	#define sjme_mod_longType(javaType) \
+		(((javaType) == SJME_JAVA_TYPE_ID_LONG || \
+		(javaType) == SJME_JAVA_TYPE_ID_DOUBLE))
+#else
+	#error Support pointers above 64-bit.
+#endif
+
+/**
+ * Returns the top of the stack.
+ *
+ * @return The stack top.
+ * @since 2026/08/04
+ */
+#define sjme_mod_stackTop() \
+	sjme_error_notImplemented(0)
+
+/**
+ * Calculates the top of the stack with the given difference in slots added to
+ * it.
+ *
+ * @param slots The slots to add to the top.
+ * @return The top of the stack with the added @code slots @endcode.
+ * @since 2026/08/04
+ */
+#define sjme_mod_stackTopPlus(slots) \
+	sjme_error_notImplemented(0)
+
+/**
+ * Checks whether the given stack top plus the given slots is valid.
+ *
+ * @param slots The slots to add to the top.
+ * @return If the given stack top plus is not valid.
+ * @since 2026/08/04
+ */
+#define sjme_mod_invalidStackTopPlus(slots) \
+	sjme_error_notImplemented(0)
+
+/**
+ * Returns the pointer to the direct variable storage for stack entries.
+ *
+ * @param javaType The type being accessed.
+ * @param slotIndex The slot index.
+ * @param mode The access mode of the stack variable.
+ * @return The pointer to the direct variable storage for stack entries.
+ * @since 2026/08/04
+ */
+#define sjme_mod_stackVar(javaType, slotIndex, mode) \
+	((sjme_jvalue*)sjme_error_notImplemented(0))
+
+/**
+ * Returns the pointer to the direct variable storage for local entries.
+ *
+ * @param javaType The type being accessed.
+ * @param slotIndex The slot index.
+ * @param mode The access mode of the local variable.
+ * @return The pointer to the direct variable storage for local entries.
+ * @since 2026/08/04
+ */
+#define sjme_mod_localVar(javaType, slotIndex, mode) \
+	((sjme_jvalue*)sjme_error_notImplemented(0))
+
 sjme_errorCode sjme_nvm_task_frameCommit(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit)

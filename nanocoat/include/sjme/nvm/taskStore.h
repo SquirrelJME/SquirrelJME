@@ -130,6 +130,77 @@ struct sjme_nvm_store_window
 };
 
 /**
+ * Access mode flags for variables.
+ *
+ * @since 2026/08/04
+ */
+typedef enum sjme_nvm_store_accessMode
+{
+	/**
+	 * Read a variable, failing if it does not exist or is of an incompatible
+	 * type that is promoted in size.
+	 */
+	SJME_NVM_STORE_READ,
+
+	/**
+	 * Write a variable without performing promotion, if the type is promoted
+	 * then the written value will be adjusted accordingly, otherwise this
+	 * will fail if writing the value requires promotion.
+	 *
+	 * @code write _int_ to _nothing_ -> create _int_ @endcode.
+	 * @code write _int_ to _int_ -> replace _int_ @endcode.
+	 * @code write _int_ to _long_ -> replace _int_ portion of _long_ @endcode.
+	 * @code write _long_ to _int_ -> _fail_ @endcode.
+	 */
+	SJME_NVM_STORE_WRITE,
+
+	/**
+	 * Writes a variable and promotes it in size if it is needed to store
+	 * the appropriate type. This does nothing if the type is already large
+	 * enough to store the given variable.
+	 *
+	 * @code write _int_ to _nothing_ -> create _int_ @endcode.
+	 * @code write _int_ to _int_ -> replace _int_ @endcode.
+	 * @code write _int_ to _long_ -> replace _int_ portion of _long_ @endcode.
+	 * @code write _long_ to _int_ -> create _long_ @endcode.
+	 */
+	SJME_NVM_STORE_WRITE_PROMOTE,
+
+	/**
+	 * Replaces an existing value, not creating it nor promoting a value.
+	 *
+	 * @code write _int_ to _nothing_ -> fail @endcode.
+	 * @code write _int_ to _int_ -> replace _int_ @endcode.
+	 * @code write _int_ to _long_ -> replace _int_ portion of _long_ @endcode.
+	 * @code write _long_ to _int_ -> fail @endcode.
+	 */
+	SJME_NVM_STORE_REPLACE,
+
+	/**
+	 * Replaces an existing value, only promoting a smaller value if needed.
+	 *
+	 * @code write _int_ to _nothing_ -> fail @endcode.
+	 * @code write _int_ to _int_ -> replace _int_ @endcode.
+	 * @code write _int_ to _long_ -> replace _int_ portion of _long_ @endcode.
+	 * @code write _long_ to _int_ -> create _long_ @endcode.
+	 */
+	SJME_NVM_STORE_REPLACE_PROMOTE,
+
+	/**
+	 * Replaces an existing value, it must be of the same exact size.
+	 *
+	 * @code write _int_ to _nothing_ -> fail @endcode.
+	 * @code write _int_ to _int_ -> replace _int_ @endcode.
+	 * @code write _int_ to _long_ -> fail @endcode.
+	 * @code write _long_ to _int_ -> fail @endcode.
+	 */
+	SJME_NVM_STORE_REPLACE_SAME,
+
+	/** The number of access modes. */
+	SJME_NVM_STORE_NUM_ACCESS_MODES,
+} sjme_nvm_store_accessMode;
+
+/**
  * Initializes a register file within the given buffer.
  *
  * @param outFile The output register file.
