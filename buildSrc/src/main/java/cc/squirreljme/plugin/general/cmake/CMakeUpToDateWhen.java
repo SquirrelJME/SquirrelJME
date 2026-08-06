@@ -54,14 +54,15 @@ public class CMakeUpToDateWhen
 		if (CMakeUtils.configureNeeded(cmakeTask))
 		{
 			__task.getLogger().warn(
-				"CMake Configuring: Configure is needed!");
+				"CMake UP-TO-DATE: Configure is needed!");
 			return false;
 		}
 		
 		// Cache directory does not exist?
 		if (!Files.isDirectory(cmakeTask.cmakeBuild))
 		{
-			__task.getLogger().warn("CMake Configuring: Missing BuildDir");
+			__task.getLogger().warn(
+				"CMake UP-TO-DATE: Missing build directory");
 			return false;
 		}
 		
@@ -69,7 +70,8 @@ public class CMakeUpToDateWhen
 		if (cmakeTask.cmakeOutFile != null &&
 			!Files.exists(cmakeTask.cmakeOutFile))
 		{
-			__task.getLogger().warn("CMake Configuring: Missing Output");
+			__task.getLogger().warn(
+				"CMake UP-TO-DATE: Missing Output");
 			return false;
 		}
 		
@@ -77,7 +79,7 @@ public class CMakeUpToDateWhen
 		if (this.rules == null || this.rules.isEmpty())
 		{
 			__task.getLogger().warn(
-				"CMake Configuring: UP-TO-DATE (No rules)!");
+				"CMake UP-TO-DATE: UP-TO-DATE (No rules)!");
 			return true;
 		}
 		
@@ -117,23 +119,31 @@ public class CMakeUpToDateWhen
 					// Force a rebuild since we cannot use these
 				default:
 					__task.getLogger().warn(String.format(
-						"CMake Configuring: Generator %s not known.",
+						"CMake UP-TO-DATE: Generator %s not known.",
 						generator));
 					return false;
 			}
 			
 			// Check via the build system?
 			if (!args.isEmpty())
-				if (CMakeUtils.cmakeExecute(
-					cmakeTask.cmakeBuild,
-					__task.getLogger(),
-					"makefile-check.log",
-					__task.getProject().getBuildDir().toPath(),
-					args.toArray(new String[args.toArray().length])) != 0)
+				try
+				{
+					if (CMakeUtils.cmakeExecute(cmakeTask.cmakeBuild,
+						__task.getLogger(), "makefile-check.log",
+						__task.getProject().getBuildDir().toPath(),
+						args.toArray(new String[args.toArray().length])) != 0)
+					{
+						__task.getLogger().warn(String.format(
+							"CMake UP-TO-DATE: %s Out-of-Date %s", this.rules,
+							generator));
+						return false;
+					}
+				}
+				catch (CMakeException __e)
 				{
 					__task.getLogger().warn(String.format(
-						"CMake Configuring: %s Out-of-Date %s",
-						this.rules, generator));
+						"CMake UP-TO-DATE: Command %s failed: %s",
+						args, __e.getMessage()), __e);
 					return false;
 				}
 		}
@@ -142,13 +152,13 @@ public class CMakeUpToDateWhen
 		catch (IOException|RuntimeException __e)
 		{
 			__task.getLogger().warn(
-				"CMake Configuring: Exception", __e);
+				"CMake UP-TO-DATE: Other Exception", __e);
 			return false;
 		}
 		
 		// Otherwise, success!
 		__task.getLogger().warn(
-			"CMake Configuring: UP-TO-DATE!");
+			"CMake UP-TO-DATE: All checks passed!");
 		return true;
 	}
 }
