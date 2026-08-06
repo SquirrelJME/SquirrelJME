@@ -53,6 +53,19 @@ squirreljme_include_nanocoat("i-miss-you.cmake")
 # Include system mappings
 squirreljme_include_nanocoat("system-map.cmake")
 
+# This will work but may cause builds to break
+if("${CMAKE_GENERATOR}" STREQUAL "Unix Makefiles" OR
+	"${CMAKE_GENERATOR}" STREQUAL "MSYS Makefiles" OR
+	"${CMAKE_GENERATOR}" STREQUAL "MinGW Makefiles")
+	message(STATUS "*************************************************")
+	message(STATUS "* Using this outer build system with CMake's    *")
+	message(STATUS "* Unix/MSYS/MinGW Makefiles will work. However, *")
+	message(STATUS "* due to the Gradle build also calling CMake, it*")
+	message(STATUS "* may never finish if you are using GNU Make    *")
+	message(STATUS "* or a fork of it, due to jobserver deadlocks.  *")
+	message(STATUS "*************************************************")
+endif()
+
 # Global macros, functions, and properties
 squirreljme_include("global.cmake")
 
