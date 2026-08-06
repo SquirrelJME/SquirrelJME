@@ -39,7 +39,7 @@ foreach(mergeItem IN ITEMS ${mergeSet})
 endforeach()
 
 # Merging of the Base Standalone with All Natives
-add_custom_target(standalone.jar
+add_custom_target(standalone.jar ALL
 	COMMAND "${CMAKE_COMMAND}" "-E"
 		"rm" "-rf" "--" "${extractedTemp}"
 	COMMAND "${CMAKE_COMMAND}" "-E"
@@ -50,7 +50,6 @@ add_custom_target(standalone.jar
 			"${mergeZips}"
 	DEPENDS "${mergeSet}"
 	BYPRODUCTS "${SQUIRRELJME_OUTPUT_JAR_PATH}"
-	ALL
 	COMMENT "Merging Standalone Jar into '${SQUIRRELJME_OUTPUT_JAR_PATH}'..."
 	COMMAND_EXPAND_LISTS)
 

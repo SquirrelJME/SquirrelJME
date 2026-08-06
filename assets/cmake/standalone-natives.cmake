@@ -88,8 +88,7 @@ function(squirreljme_natives_append_rule newRule systemNormal archNormal
 			"${newRule} (default)")
 
 		# Add target and its properties
-		add_custom_target(${ruleName}
-			ALL
+		add_custom_target(${ruleName} ALL
 			DEPENDS ${newRule})
 
 		# Make sure it really depends on this
