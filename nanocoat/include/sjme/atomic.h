@@ -171,12 +171,11 @@ extern "C" {
  * @since 2024/01/08
  */
 #define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	typedef volatile struct sjme_alignPointer \
+	typedef volatile sjme_attrOrder(struct, sjme_alignPointer) \
 		SJME_ATOMIC_NAME(type, numPointerStars) \
 	{ \
 		/** The atomic value. */ \
-		SJME_TOKEN_TYPE(type, numPointerStars) \
-			sjme_alignPointer volatile value; \
+		SJME_TOKEN_TYPE(type, numPointerStars) volatile value; \
 	} SJME_ATOMIC_NAME(type, numPointerStars); \
 	typedef SJME_ATOMIC_NAME(type, numPointerStars) \
 		SJME_TOKEN_PASTE_PP(SJME_ATOMIC_NAME(type, numPointerStars), \

@@ -138,7 +138,68 @@ typedef struct sjme_tree_findFunc
 sjme_jint sjme_compare_null(
 	sjme_attrInNullable sjme_cpointer a,
 	sjme_attrInNullable sjme_cpointer b);
+	
+/**
+ * Compares two wide strings.
+ * 
+ * @param a The first wide string.
+ * @param b The second wide string.
+ * @return The comparison value.
+ * @since 2026/07/04
+ */
+sjme_jint sjme_lpwcscmp(sjme_lpcwstr a, sjme_lpcwstr b);
 
+/**
+ * Compares two wide strings, up to the given limit.
+ * 
+ * @param a The first wide string.
+ * @param b The second wide string.
+ * @param n The limit to compare up to.
+ * @return The comparison value.
+ * @since 2026/07/04
+ */
+sjme_jint sjme_lpwcsncmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n);
+	
+/**
+ * Compares two wide strings, disregarding case.
+ * 
+ * @param a The first wide string.
+ * @param b The second wide string.
+ * @return The comparison value.
+ * @since 2026/07/04
+ */
+sjme_jint sjme_lpwcscasecmp(sjme_lpcwstr a, sjme_lpcwstr b);
+	
+/**
+ * Compares two wide strings disregarding case, up to the given limit.
+ * 
+ * @param a The first wide string.
+ * @param b The second wide string.
+ * @param n The limit to compare up to.
+ * @return The comparison value.
+ * @since 2026/07/04
+ */
+sjme_jint sjme_lpwcsncasecmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n);
+	
+/**
+ * Return the length of the wide string.
+ * 
+ * @param s The wide string to get the length of.
+ * @return The string length.
+ * @since 2026/07/04
+ */
+sjme_jint sjme_lpwcslen(sjme_lpcwstr s);
+	
+/**
+ * Return the length of the wide string up to the given limit.
+ * 
+ * @param s The wide string to get the length of.
+ * @param n The maximum limit of the string. 
+ * @return The string length.
+ * @since 2026/07/04
+ */
+sjme_jint sjme_lpwcsnlen(sjme_lpcwstr s, sjme_jint n);
+	
 /**
  * Initializes the random number generator.
  * 
@@ -216,14 +277,119 @@ sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index);
  * in the same order as @link sjme_compare_null() @endlink .
  * 
  * @param aString A string. 
- * @param aLen A length.
+ * @param aLen A length, @code -1 @endcode uses the string length.
  * @param bString B string.
- * @param bLen B length.
+ * @param bLen B length, @code -1 @endcode uses the string length.
  * @return The comparison between the two.
  * @since 2024/02/22
  */
 sjme_jint sjme_string_compareN(sjme_lpcstr aString, sjme_jint aLen,
 	sjme_lpcstr bString, sjme_jint bLen);
+
+/**
+ * Compares two strings up to the given number of characters each disregarding
+ * case, nulls are in the same order as @link sjme_compare_null() @endlink .
+ *
+ * @param aString A string.
+ * @param aLen A length, @code -1 @endcode uses the string length.
+ * @param bString B string.
+ * @param bLen B length, @code -1 @endcode uses the string length.
+ * @return The comparison between the two.
+ * @since 2026/06/24
+ */
+sjme_jint sjme_string_compareIN(sjme_lpcstr aString, sjme_jint aLen,
+	sjme_lpcstr bString, sjme_jint bLen);
+
+/**
+ * Compares two wide strings up to the given number of characters each, nulls
+ * are in the same order as @link sjme_compare_null() @endlink .
+ *
+ * @param aString A string.
+ * @param aLen A length, @code -1 @endcode uses the string length.
+ * @param bString B string.
+ * @param bLen B length, @code -1 @endcode uses the string length.
+ * @return The comparison between the two.
+ * @since 2026/06/24
+ */
+sjme_jint sjme_string_compareWN(sjme_lpcwstr aString, sjme_jint aLen,
+	sjme_lpcwstr bString, sjme_jint bLen);
+
+/**
+ * Compares two wide strings up to the given number of characters each
+ * disregarding case, nulls are in the same order
+ * as @link sjme_compare_null() @endlink .
+ *
+ * @param aString A string.
+ * @param aLen A length, @code -1 @endcode uses the string length.
+ * @param bString B string.
+ * @param bLen B length, @code -1 @endcode uses the string length.
+ * @return The comparison between the two.
+ * @since 2026/06/24
+ */
+sjme_jint sjme_string_compareIWN(sjme_lpcwstr aString, sjme_jint aLen,
+	sjme_lpcwstr bString, sjme_jint bLen);
+
+/**
+ * Compares a wide string and a narrow string up to the given number of
+ * characters each, nulls are in the same order
+ * as @link sjme_compare_null() @endlink .
+ *
+ * @param aString A string.
+ * @param aLen A length, @code -1 @endcode uses the string length.
+ * @param bString B string.
+ * @param bLen B length, @code -1 @endcode uses the string length.
+ * @return The comparison between the two.
+ * @since 2026/06/24
+ */
+sjme_jint sjme_string_compareWAN(
+	sjme_lpcwstr aString, sjme_jint aLen,
+	sjme_lpcstr bString, sjme_jint bLen);
+
+/**
+ * Compares a wide string and a narrow string up to the given number of
+ * characters each disregarding case, nulls are in the same order
+ * as @link sjme_compare_null() @endlink .
+ *
+ * @param aString A string.
+ * @param aLen A length, @code -1 @endcode uses the string length.
+ * @param bString B string.
+ * @param bLen B length, @code -1 @endcode uses the string length.
+ * @return The comparison between the two.
+ * @since 2026/06/24
+ */
+sjme_jint sjme_string_compareIWAN(
+	sjme_lpcwstr aString, sjme_jint aLen,
+	sjme_lpcstr bString, sjme_jint bLen);
+
+/**
+ * Compares a wide string and a narrow string up to the given number of
+ * characters each, nulls are in the same order
+ * as @link sjme_compare_null() @endlink .
+ *
+ * @param aString A string.
+ * @param aLen A length, @code -1 @endcode uses the string length.
+ * @param bString B string.
+ * @param bLen B length, @code -1 @endcode uses the string length.
+ * @return The comparison between the two.
+ * @since 2026/06/24
+ */
+#define sjme_string_compareAWN(aString, aLen, bString, bLen) \
+	(-(sjme_string_compareWAN((bString), (bLen), (aString), (aLen))))
+
+/**
+ * Compares a wide string and a narrow string up to the given number of
+ * characters each disregarding case, nulls are in the same order
+ * as @link sjme_compare_null() @endlink .
+ *
+ * @param aString A string.
+ * @param aLen A length, @code -1 @endcode uses the string length.
+ * @param bString B string.
+ * @param bLen B length, @code -1 @endcode uses the string length.
+ * @return The comparison between the two.
+ * @since 2026/06/24
+*/
+#define sjme_string_compareIAWN(aString, aLen, bString, bLen) \
+	(-(sjme_string_compareIWAN((bString), (bLen), (aString), (aLen))))
 
 /**
  * Decodes the given UTF-8 character.

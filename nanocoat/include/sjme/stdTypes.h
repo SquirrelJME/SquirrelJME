@@ -917,6 +917,14 @@ typedef volatile sjme_alloc_poolBase* sjme_alloc_pool;
  */
 typedef int (*sjme_undefinedFunction)(int ignored, ...);
 
+/**
+ * An unresolved function, with export call.
+ *
+ * @since 2025/07/04
+ */
+typedef int (sjme_attrExportCall *sjme_undefinedExportFunction)(int ignored,
+	...);
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

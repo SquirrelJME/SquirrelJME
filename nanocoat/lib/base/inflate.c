@@ -176,7 +176,7 @@ static sjme_errorCode sjme_inflate_bitWrite(
 		SJME_CIRCLE_BUFFER_TAIL)))
 		return sjme_error_default(error);
 	
-#if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_VERBOSE_INFLATE)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE) && defined(SJME_CONFIG_DEBUG_INFLATE)
 	/* Debug. */
 	sjme_message_hexDump(writeBuf, length);
 #endif
@@ -480,7 +480,7 @@ static sjme_errorCode sjme_inflate_dynamicBuildTree(
 	sjme_attrInPositiveNonZero sjme_jint count,
 	sjme_attrInPositiveNonZero sjme_jint maxCount)
 {
-#if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_VERBOSE_INFLATE)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE) && defined(SJME_CONFIG_DEBUG_INFLATE)
 	sjme_cchar binary[40];
 #endif
 	sjme_errorCode error;
@@ -535,7 +535,7 @@ static sjme_errorCode sjme_inflate_dynamicBuildTree(
 		{
 			nextCodeLen = (nextCode[len])++;
 			
-#if defined(SJME_CONFIG_DEBUG) && defined(SJME_CONFIG_VERBOSE_INFLATE)
+#if defined(SJME_CONFIG_DEBUG_VERBOSE) && defined(SJME_CONFIG_DEBUG_INFLATE)
 			sjme_util_intToBinary(
 				binary, sizeof(binary) - 1,
 				nextCodeLen, len);

@@ -36,6 +36,10 @@
 	#include <threads.h>
 #endif
 
+#if defined(SJME_CONFIG_HAS_WCHAR_H)
+	#include <wchar.h>
+#endif
+
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/* Needed for alloca. */
 	#include <malloc.h>
@@ -72,6 +76,10 @@
 
 #if defined(SJME_CONFIG_HAS_CTYPE_H)
 	#include <ctype.h>
+#endif
+
+#if defined(SJME_CONFIG_HAS_WCTYPE_H)
+	#include <wctype.h>
 #endif
 
 /* Anti-C++. */
@@ -444,6 +452,14 @@ extern "C"
 	#endif
 #endif
 
+#if !defined(PRSl)
+	#if defined(SJME_CONFIG_HAS_MSVC)
+		#define PRSl "ws"
+	#else
+		#define PRSl "ls"
+	#endif
+#endif
+
 #pragma endregion(printf)
 #pragma region(intTypes)
 
@@ -559,6 +575,46 @@ int strncasecmp(const char* a, const char* b, size_t n);
 #endif
 
 #pragma endregion(strcasecmp)
+#pragma region(wcscasecmp)
+
+/* Handle explicit cancelling out. */
+#if defined(SJME_CONFIG_HAS_NO_WCSCASECMP) && \
+	defined(SJME_CONFIG_HAS_WCSCASECMP)
+	#undef SJME_CONFIG_HAS_WCSCASECMP
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_WCSICMP) && \
+	defined(SJME_CONFIG_HAS_WCSICMP)
+	#undef SJME_CONFIG_HAS_WCSICMP
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_WCSCASECMP)
+	#if defined(SJME_CONFIG_HAS_WCSICMP)
+		/** Compare two wide strings without regarding case. */
+		#define wcscasecmp wcsicmp
+
+		/** Compare two wide strings without regarding case, limit length. */
+		#define wcsncasecmp wcsnicmp
+
+		/** @code wcscasecmp() @endcode is aliased by wcsicmp() . */
+		#define SJME_CONFIG_HAS_WCSCASECMP
+
+		/* Clear this as we are now aliasing it. */
+		#undef SJME_CONFIG_HAS_NO_WCSCASECMP
+	#else
+int wcscasecmp(const wchar_t* a, const wchar_t* b);
+int wcsncasecmp(const wchar_t* a, const wchar_t* b, size_t n);
+	#endif
+#endif
+
+#pragma endregion(wcscasecmp)
+#pragma region(strnlen)
+
+#if !defined(SJME_CONFIG_HAS_STRNLEN) || defined(SJME_CONFIG_HAS_NO_STRNLEN)
+size_t strnlen(const char* s, size_t limit);
+#endif
+
+#pragma endregion(strnlen)
 #pragma region(tolower)
 
 /* Handle explicit cancelling out. */
@@ -572,6 +628,19 @@ int tolower(int c);
 #endif
 
 #pragma endregion(tolower)
+#pragma region(towlower)
+
+/* Handle explicit cancelling out. */
+#if defined(SJME_CONFIG_HAS_NO_TOWLOWER) && \
+	defined(SJME_CONFIG_HAS_TOWLOWER)
+	#undef SJME_CONFIG_HAS_TOWLOWER
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_TOWLOWER)
+wint_t towlower(wint_t c);
+#endif
+
+#pragma endregion(towlower)
 #pragma region(toupper)
 
 /* Handle explicit cancelling out. */
@@ -585,6 +654,19 @@ int toupper(int c);
 #endif
 
 #pragma endregion(toupper)
+#pragma region(towupper)
+
+/* Handle explicit cancelling out. */
+#if defined(SJME_CONFIG_HAS_NO_TOWUPPER) && \
+	defined(SJME_CONFIG_HAS_TOWUPPER)
+	#undef SJME_CONFIG_HAS_TOWUPPER
+#endif
+	
+#if defined(SJME_CONFIG_HAS_NO_TOWUPPER)
+wint_t towupper(wint_t c);
+#endif
+
+#pragma endregion(towupper)
 #pragma region(exitFailure)
 	
 #if !defined(EXIT_FAILURE)

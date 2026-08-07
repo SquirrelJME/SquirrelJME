@@ -98,9 +98,27 @@ int tolower(int c)
 	return c;
 }
 #endif
+
+#if defined(SJME_CONFIG_HAS_NO_TOWLOWER)
+wint_t towlower(wint_t c)
+{
+	if (c >= 'A' && c <= 'Z')
+		return 'a' + (c - 'A');
+	return c;
+}
+#endif
 	
 #if defined(SJME_CONFIG_HAS_NO_TOUPPER)
 int toupper(int c)
+{
+	if (c >= 'a' && c <= 'z')
+		return 'A' + (c - 'a');
+	return c;
+}
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_TOWUPPER)
+wint_t towupper(wint_t c)
 {
 	if (c >= 'a' && c <= 'z')
 		return 'A' + (c - 'a');
@@ -151,5 +169,69 @@ int strncasecmp(const char* a, const char* b, size_t n)
 	
 	/* Final comparison. */
 	return tolower(toupper(*b)) - tolower(toupper(*a));
+}
+#endif
+
+#if defined(SJME_CONFIG_HAS_NO_WCSCASECMP)
+int wcscasecmp(const wchar_t* a, const wchar_t* b)
+{
+	int diff;
+
+	if (a == NULL || b == NULL)
+		return -1;
+
+	if (a == b)
+		return 0;
+
+	while ((*a) != '\0' && (*b) != '\0')
+	{
+		diff = towlower(towupper(*(b++))) - towlower(towupper(*(a++)));
+		if (diff != 0)
+			return diff;
+	}
+
+	/* Final comparison. */
+	return towlower(towupper(*b)) - towlower(towupper(*a));
+}
+
+int wcsncasecmp(const wchar_t* a, const wchar_t* b, size_t n)
+{
+	int diff;
+	size_t i;
+
+	if (a == NULL || b == NULL)
+		return -1;
+
+	if (n == 0 || a == b)
+		return 0;
+
+	i = 0;
+	while ((*a) != '\0' && (*b) != '\0' && (i++) < n)
+	{
+		diff = towlower(towupper(*(b++))) - towlower(towupper(*(a++)));
+		if (diff != 0)
+			return diff;
+	}
+
+	/* Final comparison. */
+	return towlower(towupper(*b)) - towlower(towupper(*a));
+}
+#endif
+
+#if !defined(SJME_CONFIG_HAS_STRNLEN) || defined(SJME_CONFIG_HAS_NO_STRNLEN)
+size_t strnlen(const char* s, size_t limit)
+{
+	size_t i;
+
+	if (s == NULL)
+		return 0;
+
+	/* Only check up to the limit. */
+	for (i = 0; i < limit; i++)
+		if (s[i] == '\0')
+			return i;
+
+	/* At the limit. */
+	return limit;
 }
 #endif

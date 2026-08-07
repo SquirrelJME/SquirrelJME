@@ -424,6 +424,36 @@ extern "C"
 		sjme_pointer
 #endif
 
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/**
+	 * Adjusts the order of attributes and a primary token for different
+	 * compilers, such as when one compiler accepts a specific sequence of
+	 * tokens but another compiler fails with that sequence. An example
+	 * would be @code struct sjme_attrAlign32 example @endcode and
+	 * comparatively @code sjme_attrAlign32 struct example @endcode.
+	 *
+	 * @param primary The primary, usually a type such
+	 * as @code struct @endcode.
+	 * @param attr The attributes.
+	 * @since 2026/06/16
+	 */
+	#define sjme_attrOrder(primary, attr) attr primary
+#else
+	/**
+	 * Adjusts the order of attributes and a primary token for different
+	 * compilers, such as when one compiler accepts a specific sequence of
+	 * tokens but another compiler fails with that sequence. An example
+	 * would be @code struct sjme_attrAlign32 example @endcode and
+	 * comparatively @code sjme_attrAlign32 struct example @endcode.
+	 *
+	 * @param primary The primary, usually a type such
+	 * as @code struct @endcode.
+	 * @param attr The attributes.
+	 * @since 2026/06/16
+	 */
+	#define sjme_attrOrder(primary, attr) primary attr
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

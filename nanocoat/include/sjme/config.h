@@ -20,6 +20,18 @@
 #ifndef SJME_C_CONFIG_H
 #define SJME_C_CONFIG_H
 
+/* Use a configure file? */
+#if defined(SJME_CONFIG_USE_PATH)
+	/* set() is used by CMake. */
+	#define set(x)
+
+	/* Include the configuration. */
+	#include SJME_CONFIG_USE_PATH
+
+	/* Revert use of set. */
+	#undef set
+#endif
+
 #include <stddef.h>
 
 /* Skip stdlib in certain cases? */
@@ -795,7 +807,9 @@ extern "C" {
 #endif
 
 /** Disable all linting of any kind. */
-#define sjme_noLint(what) (what) /* NOLINT */ /* ReSharper disable once all */
+#define sjme_noLint(what) (what) /* NOLINT */ \
+	/* ReSharper disable once all */ \
+	/* ReSharper disable once CppLocalVariableMightNotBeInitialized */
 
 #if defined(SJME_CONFIG_HAS_ARCH_MIPS) || \
 	defined(SJME_CONFIG_HAS_ARCH_POWERPC)
@@ -809,6 +823,9 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/* Qualifier used multiple times, as there are volatile typedefs. */
 	#pragma warning(disable: 4114)
+
+	/* "Deprecated" POSIX name. */
+	#pragma warning(disable: 4996)
 #endif
 	
 #if defined(SJME_CONFIG_HAS_SDCC)
@@ -903,6 +920,14 @@ extern "C" {
 	/** Constant-ish struct member set. */
 	#define sjme_sm(dot, val) val
 #endif
+	
+/** Two structure values. */
+#define sjme_sm2(dot, v1, v2) \
+	sjme_sm(dot, {v1 SJME_TOKEN_COMMA v2})
+	
+/** Three structure values. */
+#define sjme_sm3(dot, v1, v2, v3) \
+	sjme_sm(dot, {v1 SJME_TOKEN_COMMA v2 SJME_TOKEN_COMMA v3})
 
 /** Bitfield count for @link sjme_jboolean @endlink . */
 #define sjme_booleanBit 2
@@ -976,6 +1001,11 @@ extern "C" {
 	#if !defined(SJME_CONFIG_DEBUG_BYTECODES)
 		/** Print out bytecodes. */
 		#define SJME_CONFIG_DEBUG_BYTECODES
+	#endif
+	
+	#if !defined(SJME_CONFIG_DEBUG_ENTRY)
+		/** Entry and exit from methods. */
+		#define SJME_CONFIG_DEBUG_ENTRY
 	#endif
 
 	#if !defined(SJME_CONFIG_DEBUG_FIELD)

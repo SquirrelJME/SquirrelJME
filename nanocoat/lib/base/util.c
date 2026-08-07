@@ -62,6 +62,64 @@ sjme_jint sjme_compare_null(
 	return 1;
 }
 
+sjme_jint sjme_lpwcscmp(sjme_lpcwstr a, sjme_lpcwstr b)
+{
+	/* Compare null. */
+	if (a == NULL || b == NULL)
+		return sjme_compare_null(a, b);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_jint sjme_lpwcsncmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n)
+{
+	/* Compare null. */
+	if (a == NULL || b == NULL)
+		return sjme_compare_null(a, b);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_jint sjme_lpwcscasecmp(sjme_lpcwstr a, sjme_lpcwstr b)
+{
+	/* Compare null. */
+	if (a == NULL || b == NULL)
+		return sjme_compare_null(a, b);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+	
+sjme_jint sjme_lpwcsncasecmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n)
+{
+	/* Compare null. */
+	if (a == NULL || b == NULL)
+		return sjme_compare_null(a, b);
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+	
+sjme_jint sjme_lpwcslen(sjme_lpcwstr s)
+{
+	if (s == NULL)
+		return -1;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+	
+sjme_jint sjme_lpwcsnlen(sjme_lpcwstr s, sjme_jint n)
+{
+	if (s == NULL || n < 0)
+		return -1;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_random_init(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jint seedHi,
@@ -133,7 +191,7 @@ sjme_errorCode sjme_random_nextIntMax(
 sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index)
 {
 	sjme_jint at;
-	sjme_jchar c;
+	sjme_jint c;
 	sjme_lpcstr p;
 
 	/* Not valid? */
@@ -160,15 +218,82 @@ sjme_jint sjme_string_charAt(sjme_lpcstr string, sjme_jint index)
 	return -1;
 }
 
+/** All the comparison functions are the same, reduce duplication. */
+#define sjme_string_compareImpl(funcCall, lenCall) \
+	sjme_jint result, limit; \
+	 \
+	/* Compare null. */ \
+	if (aString == NULL || bString == NULL) \
+		return sjme_compare_null(aString, bString); \
+	 \
+	/* Take the string length? */ \
+	if (aLen == -1) \
+		aLen = (sjme_jint)lenCall(aString); \
+	if (bLen == -1) \
+		bLen = (sjme_jint)lenCall(bString); \
+	 \
+	/* Determine the max number of characters to compare. */ \
+	if (aLen < bLen) \
+		limit = aLen; \
+	else \
+		limit = bLen; \
+	 \
+	/* Compare strings up to the limit. */ \
+	result = (funcCall); \
+	if (result != 0) \
+		return result; \
+	 \
+	/* If the lengths differ, smaller is first. */ \
+	if (aLen != bLen) \
+		return aLen - bLen; \
+	 \
+	/* Equal otherwise. */ \
+	return 0;
+
 sjme_jint sjme_string_compareN(sjme_lpcstr aString, sjme_jint aLen,
 	sjme_lpcstr bString, sjme_jint bLen)
 {
-	sjme_jint result, limit;
+	sjme_string_compareImpl(strncmp(aString, bString, limit),
+		strlen);
+}
+
+sjme_jint sjme_string_compareIN(sjme_lpcstr aString, sjme_jint aLen,
+	sjme_lpcstr bString, sjme_jint bLen)
+{
+	sjme_string_compareImpl(strncasecmp(aString, bString, limit),
+		strlen);
+}
+
+sjme_jint sjme_string_compareWN(sjme_lpcwstr aString, sjme_jint aLen,
+	sjme_lpcwstr bString, sjme_jint bLen)
+{
+	sjme_string_compareImpl(sjme_lpwcsncmp(aString, bString, limit),
+		sjme_lpwcslen);
+}
+
+sjme_jint sjme_string_compareIWN(sjme_lpcwstr aString, sjme_jint aLen,
+	sjme_lpcwstr bString, sjme_jint bLen)
+{
+	sjme_string_compareImpl(sjme_lpwcsncasecmp(aString, bString, limit),
+		sjme_lpwcslen);
+}
+
+sjme_jint sjme_string_compareWAN(
+	sjme_lpcwstr aString, sjme_jint aLen,
+	sjme_lpcstr bString, sjme_jint bLen)
+{
+	sjme_jint result, limit, i;
 	
 	/* Compare null. */
 	if (aString == NULL || bString == NULL)
 		return sjme_compare_null(aString, bString);
-		
+
+	/* Take the string length? */
+	if (aLen == -1)
+		aLen = (sjme_jint)sjme_lpwcslen(aString);
+	if (bLen == -1)
+		bLen = (sjme_jint)strlen(bString);
+	
 	/* Determine the max number of characters to compare. */
 	if (aLen < bLen)
 		limit = aLen;
@@ -176,14 +301,84 @@ sjme_jint sjme_string_compareN(sjme_lpcstr aString, sjme_jint aLen,
 		limit = bLen;
 	
 	/* Compare strings up to the limit. */
-	result = strncmp(aString, bString, limit);
-	if (result != 0)
-		return result;
-	
+	for (i = 0; i < limit; i++)
+	{
+		/* Correct end of string length if this has been hit. */
+		if (aString[i] == '\0' || bString[i] == '\0')
+		{
+			if (aString[i] == '\0' && aLen > i)
+				aLen = i;
+			if (bString[i] == '\0' && bLen > i)
+				bLen = i;
+
+			/* A comparison no longer needs to happen becuase an end of */
+			/* string was reached. */
+			break;
+		}
+
+		/* If the character values differ, then these are different. */
+		result = ((sjme_jint)aString[i]) - ((sjme_jint)bString[i]);
+		if (result != 0)
+			return result;
+	}
+
 	/* If the lengths differ, smaller is first. */
 	if (aLen != bLen)
 		return aLen - bLen;
 	
+	/* Equal otherwise. */
+	return 0;
+}
+
+sjme_jint sjme_string_compareIWAN(
+	sjme_lpcwstr aString, sjme_jint aLen,
+	sjme_lpcstr bString, sjme_jint bLen)
+{
+	sjme_jint result, limit, i;
+
+	/* Compare null. */
+	if (aString == NULL || bString == NULL)
+		return sjme_compare_null(aString, bString);
+
+	/* Take the string length? */
+	if (aLen == -1)
+		aLen = (sjme_jint)sjme_lpwcslen(aString);
+	if (bLen == -1)
+		bLen = (sjme_jint)strlen(bString);
+
+	/* Determine the max number of characters to compare. */
+	if (aLen < bLen)
+		limit = aLen;
+	else
+		limit = bLen;
+
+	/* Compare strings up to the limit. */
+	for (i = 0; i < limit; i++)
+	{
+		/* Correct end of string length if this has been hit. */
+		if (aString[i] == '\0' || bString[i] == '\0')
+		{
+			if (aString[i] == '\0' && aLen > i)
+				aLen = i;
+			if (bString[i] == '\0' && bLen > i)
+				bLen = i;
+
+			/* A comparison no longer needs to happen becuase an end of */
+			/* string was reached. */
+			break;
+		}
+
+		/* If the character values differ, then these are different. */
+		result = ((sjme_jint)towlower(aString[i])) -
+			((sjme_jint)tolower(bString[i]));
+		if (result != 0)
+			return result;
+	}
+
+	/* If the lengths differ, smaller is first. */
+	if (aLen != bLen)
+		return aLen - bLen;
+
 	/* Equal otherwise. */
 	return 0;
 }
