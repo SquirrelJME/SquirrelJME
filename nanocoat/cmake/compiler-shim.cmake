@@ -13,21 +13,39 @@ function(squirreljme_basename_path dest src)
 	string(FIND "${src}" "/" fs REVERSE)
 	string(FIND "${src}" "\\" bs REVERSE)
 
-	# Bump both up by one, to exclude the slash
-	math(EXPR fs "(${fs}) + 1")
-	math(EXPR bs "(${bs}) + 1")
+	# Already the base name?
+	# These checks are needed for certain toolchain specific CMakes which are
+	# patched and/or broken in a way where performing math with negative
+	# values happens to be incorrect
+	if("${fs}" STREQUAL "-1" AND "${bs}" STREQUAL "-1")
+		set(result "${src}")
 
-	# Has forward slash last
-	if("${fs}" GREATER "${bs}")
+	# Only forward slash exists
+	elseif("${bs}" STREQUAL "-1")
 		string(SUBSTRING "${src}" ${fs} -1 result)
 
-	# Has backslash last
-	elseif("${bs}" GREATER "${fs}")
+	# Only backwards slash exists
+	elseif("${fs}" STREQUAL "-1")
 		string(SUBSTRING "${src}" ${bs} -1 result)
 
-	# Has neither last, or not found (both -1)
+	# Otherwise
 	else()
-		set(result "${src}")
+		# Bump both up by one, to exclude the slash
+		math(EXPR fs "(${fs}) + 1")
+		math(EXPR bs "(${bs}) + 1")
+
+		# Has forward slash last
+		if("${fs}" GREATER "${bs}")
+			string(SUBSTRING "${src}" ${fs} -1 result)
+
+		# Has backslash last
+		elseif("${bs}" GREATER "${fs}")
+			string(SUBSTRING "${src}" ${bs} -1 result)
+
+		# Has neither last, or not found (both -1)
+		else()
+			set(result "${src}")
+		endif()
 	endif()
 
 	# Return the result of it

@@ -122,6 +122,10 @@ int main(int argc, char** argv)
 	char properName[BUF_SIZE];
 	int i;
 	
+	/* Probe to check if this is executable or not. */
+	if (argc >= 2 && argv[1] != NULL && !strcmp("--probe", argv[1]))
+		return EXIT_SUCCESS;
+	
 	/* Not enough arguments? */
 	if (argc <= 2)
 	{

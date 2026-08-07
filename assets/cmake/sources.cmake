@@ -16,7 +16,7 @@ set(tgzPath "${archiveDir}/${archiveBase}.tgz")
 # Prefer Fossil first
 if(SQUIRRELJME_REPO_FOSSIL)
 	# ZIP
-	add_custom_target(sourceZip
+	add_custom_target(sourceZip ALL
 		COMMAND "${CMAKE_COMMAND}" "-E"
 			"make_directory" "${archiveDir}"
 		COMMAND "${Fossil_EXECUTABLE}" "zip"
@@ -24,12 +24,11 @@ if(SQUIRRELJME_REPO_FOSSIL)
 			"--name" "${archiveBase}"
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${zipPath}"
-		ALL
 		COMMENT "Archiving Zip Source..."
 		COMMAND_EXPAND_LISTS)
 
 	# Tarball
-	add_custom_target(sourceTgz
+	add_custom_target(sourceTgz ALL
 		COMMAND "${CMAKE_COMMAND}" "-E"
 			"make_directory" "${archiveDir}"
 		COMMAND "${Fossil_EXECUTABLE}" "tar"
@@ -37,14 +36,13 @@ if(SQUIRRELJME_REPO_FOSSIL)
 			"--name" "${archiveBase}"
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${tgzPath}"
-		ALL
 		COMMENT "Archiving Tarball Source..."
 		COMMAND_EXPAND_LISTS)
 
 # Otherwise Git
 elseif(SQUIRRELJME_REPO_GIT)
 	# ZIP
-	add_custom_target(sourceZip
+	add_custom_target(sourceZip ALL
 		COMMAND "${CMAKE_COMMAND}" "-E"
 			"make_directory" "${archiveDir}"
 		COMMAND "${Git_EXECUTABLE}" "archive"
@@ -54,12 +52,11 @@ elseif(SQUIRRELJME_REPO_GIT)
 			"${SQUIRRELJME_VERSION_ID_GIT}"
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${zipPath}"
-		ALL
 		COMMENT "Archiving Zip Source..."
 		COMMAND_EXPAND_LISTS)
 
 	# Tarball
-	add_custom_target(sourceTgz
+	add_custom_target(sourceTgz ALL
 		COMMAND "${CMAKE_COMMAND}" "-E"
 			"make_directory" "${archiveDir}"
 		COMMAND "${Git_EXECUTABLE}" "archive"
@@ -69,7 +66,6 @@ elseif(SQUIRRELJME_REPO_GIT)
 			"${SQUIRRELJME_VERSION_ID_GIT}"
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		BYPRODUCTS "${tgzPath}"
-		ALL
 		COMMENT "Archiving Tarball Source..."
 		COMMAND_EXPAND_LISTS)
 endif()

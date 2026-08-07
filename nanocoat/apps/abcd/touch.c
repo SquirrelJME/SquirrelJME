@@ -7,4 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/debug.h"
 #include "dispatch.h"
+
+sjme_abcd_command_main_declare(touch)
+{
+	sjme_todo("Impl?");
+	return EXIT_FAILURE;
+}
+
+sjme_abcd_command_help_declare(touch)
+{
+	sjme_todo("Impl?");
+}
