@@ -36,11 +36,14 @@ function(squirreljme_fossil_upload_single target named outputPath outputType)
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		DEPENDS ${target}
 		COMMENT "Uploading '${outputPath}' to '${uvPath}'..."
-		COMMAND_EXPAND_LISTS)
+		COMMAND_EXPAND_LISTS
+		USES_TERMINAL)
 
 	# Never add to all!
 	set_target_properties(${uploadTarget} PROPERTIES
-		EXCLUDE_FROM_ALL YES)
+		EXCLUDE_FROM_ALL YES
+		JOB_POOL_LINK squirreljme_fossil_pool
+		JOB_POOL_COMPILE squirreljme_fossil_pool)
 
 	# Have the general rules depend on this
 	add_dependencies(fossilUpload
@@ -134,11 +137,14 @@ function(squirreljme_fossil_download ruleName outputType uvPath downloadPath)
 		VERBATIM
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 		COMMENT "Downloading '${uvPath}' to '${downloadPath}'..."
-		COMMAND_EXPAND_LISTS)
+		COMMAND_EXPAND_LISTS
+		USES_TERMINAL)
 
 	# Register the output path
 	set_target_properties(${ruleName} PROPERTIES
 		ADDITIONAL_CLEAN_FILES "${downloadPath}"
 		SQUIRRELJME_OUTPUT_PATH "${downloadPath}"
-		SQUIRRELJME_OUTPUT_TYPE "${outputType}")
+		SQUIRRELJME_OUTPUT_TYPE "${outputType}"
+		JOB_POOL_LINK squirreljme_fossil_pool
+		JOB_POOL_COMPILE squirreljme_fossil_pool)
 endfunction()
