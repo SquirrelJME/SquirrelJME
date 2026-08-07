@@ -51,6 +51,26 @@ define_property(GLOBAL PROPERTY SQUIRRELJME_STANDALONE_SYSTEM_SET
 	BRIEF_DOCS "Systems which are part of the standalone merge set."
 	FULL_DOCS "Systems which are part of the standalone merge set.")
 
+# Checks to see if the system and architecture were ever added previously
+function(squirreljme_natives_check_order result systemNormal archNormal)
+	# Determine the names
+	squirreljme_natives_order_name(orderName ${systemNormal} ${archNormal})
+
+	# Obtain the order list
+	unset(orderList)
+	get_property(orderList GLOBAL PROPERTY ${orderName})
+
+	# Was anything previously added?
+	if("${orderList}" STREQUAL "")
+		set(${result} NO)
+	else()
+		set(${result} YES)
+	endif()
+
+	# Return the result
+	squirreljme_bp_return_propagate(${result})
+endfunction()
+
 # Appends a native rule for a given method with the given system and
 # architecture
 function(squirreljme_natives_append_rule newRule systemNormal archNormal
@@ -69,7 +89,7 @@ function(squirreljme_natives_append_rule newRule systemNormal archNormal
 	unset(orderList)
 	get_property(orderList GLOBAL PROPERTY ${orderName})
 
-	# Is this the first in the order/
+	# Is this the first in the order?
 	if("${orderList}" STREQUAL "")
 		set(firstOrder YES)
 	else()
@@ -136,6 +156,7 @@ function(squirreljme_natives_append_rule newRule systemNormal archNormal
 				squirreljme_fossil_upload(${newRule})
 			endif()
 		endif()
+
 	# Not first order
 	else()
 		# Note it

@@ -8,7 +8,7 @@
 # DESCRIPTION: Configures and builds natives via compiler.
 
 # Final build step for any generator/compiler
-macro(squirreljme_natives_build systemNormal archNormal configureRuleName
+function(squirreljme_natives_build systemNormal archNormal configureRuleName
 	buildRuleName buildPath method)
 	# Where are all the packaged natives placed?
 	set(packagePath
@@ -41,14 +41,20 @@ macro(squirreljme_natives_build systemNormal archNormal configureRuleName
 	# Add to the order
 	squirreljme_natives_append_rule(${buildRuleName}
 		${systemNormal} ${archNormal} "${method}")
-endmacro()
+endfunction()
 
 # Determine options to forward
 squirreljme_env_forward(forwardedEnv)
 message("Forwarded options: ${forwardedEnv}")
 
 # Processes a compiler
-macro(squirreljme_natives_compiler systemNormal archNormal compilerPath)
+function(squirreljme_natives_compiler systemNormal archNormal compilerPath)
+	# Do not try adding potentially multiple valid targets
+	squirreljme_natives_check_order(hasOrder ${systemNormal} ${archNormal})
+	if(${hasOrder})
+		return()
+	endif()
+
 	# Determine the rule names
 	unset(configureRuleName)
 	unset(buildRuleName)
@@ -93,11 +99,17 @@ macro(squirreljme_natives_compiler systemNormal archNormal compilerPath)
 	# The same build setup is used for any compiled target
 	squirreljme_natives_build(${systemNormal} ${archNormal}
 		${configureRuleName} ${buildRuleName} "${buildPath}" "compiler")
-endmacro()
+endfunction()
 
 # Processes a generator
-macro(squirreljme_natives_generator systemNormal archNormal
+function(squirreljme_natives_generator systemNormal archNormal
 	generator toolset platform)
+	# Do not try adding potentially multiple valid targets
+	squirreljme_natives_check_order(hasOrder ${systemNormal} ${archNormal})
+	if(${hasOrder})
+		return()
+	endif()
+
 	# Truncate names
 	squirreljme_truncate_name(truncGenerator "${generator}")
 	squirreljme_truncate_name(truncToolset "${toolset}")
@@ -160,7 +172,7 @@ macro(squirreljme_natives_generator systemNormal archNormal
 	# The same build setup is used for any compiled target
 	squirreljme_natives_build(${systemNormal} ${archNormal}
 		${configureRuleName} ${buildRuleName} "${buildPath}" "${method}")
-endmacro()
+endfunction()
 
 # Get list of compilers
 get_property(compilerList GLOBAL PROPERTY
