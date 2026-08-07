@@ -24,6 +24,7 @@ squirreljme_multilib_add_library(Base
 	fixed.c
 	frontEnd.c
 	inflate.c
+	joptarg.c
 	list.c
 	listUtil.c
 	multithread.c

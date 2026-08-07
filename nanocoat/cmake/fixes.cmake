@@ -348,6 +348,20 @@ macro(squirreljme_check_include_file header yesDef noDef)
 	endif()
 endmacro()
 
+# Checks if the specific symbol exists
+macro(squirreljme_check_symbol_exists symbol header yesDef noDef)
+	# Run the check for it
+	check_symbol_exists("${symbol}" "${header}" ${yesDef})
+
+	# Note that this condition needs to be inverted due to CMake
+	message(DEBUG "${symbol} in ${header}: ${${yesDef}}")
+	if(NOT ${yesDef})
+		add_compile_definitions(${noDef}=1)
+	else()
+		add_compile_definitions(${yesDef}=1)
+	endif()
+endmacro()
+
 # Quick compilation check
 macro(squirreljme_try_compile noun source yesDef noDef)
 	# Check compile of a specific symbol
@@ -623,6 +637,22 @@ function(squirreljme_link_libraries_required target scope)
 
 	# For these to be used, linker fixes need to go in also
 	squirreljme_target_link_fixes(${target})
+endfunction()
+
+# Rewrites a target property
+function(squirreljme_target_property_rewrite target property from to)
+	# Get the option
+	get_target_property(value ${target} ${property})
+
+	# Only change if it was actually found
+	if(NOT "${value}" STREQUAL "value-NOTFOUND")
+		# Perform a standard replace on it
+		string(REGEX REPLACE "${from}" "${to}" result "${value}")
+
+		# Set new property value
+		set_target_properties(${target} PROPERTIES
+			${property} "${result}")
+	endif()
 endfunction()
 
 # Do not use .lib suffix for Windows libraries for mingw32/mingw-w64

@@ -262,6 +262,7 @@ else()
 		endif()
 	endif()
 endif()
+
 ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep
 	SquirrelJME-RunConfigureStep)
 

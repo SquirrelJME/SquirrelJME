@@ -24,6 +24,16 @@ public abstract class TestBiConsumer<A, B>
 	extends __CoreTest__
 {
 	/**
+	 * Implicit constructor, initializes anything as needed.
+	 *
+	 * @since 2026/02/12
+	 */
+	@SquirrelJMEVendorApi
+	public TestBiConsumer()
+	{
+	}
+	
+	/**
 	 * Runs the specified test.
 	 *
 	 * @param __a The first parameter.

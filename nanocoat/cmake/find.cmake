@@ -39,7 +39,12 @@ squirreljme_check_include_file("varargs.h"
 # threads.h available?
 squirreljme_check_include_file("threads.h"
 	SJME_CONFIG_HAS_THREADS_H
-	SJME_CONFIG_HAS_NO_THREADS)
+	SJME_CONFIG_HAS_NO_THREADS_H)
+
+# wchar.h available?
+squirreljme_check_include_file("wchar.h"
+	SJME_CONFIG_HAS_WCHAR_H
+	SJME_CONFIG_HAS_NO_WCHAR_H)
 
 # sys/socket.h available?
 squirreljme_check_include_file("sys/socket.h"
@@ -50,6 +55,11 @@ squirreljme_check_include_file("sys/socket.h"
 squirreljme_check_include_file("ctype.h"
 	SJME_CONFIG_HAS_CTYPE_H
 	SJME_CONFIG_HAS_NO_CTYPE_H)
+
+# wctype.h available?
+squirreljme_check_include_file("wctype.h"
+	SJME_CONFIG_HAS_WCTYPE_H
+	SJME_CONFIG_HAS_NO_WCTYPE_H)
 
 # netinet/in.h available?
 squirreljme_check_include_file("netinet/in.h"
@@ -87,46 +97,50 @@ squirreljme_check_include_file("sdkddkver.h"
 	SJME_CONFIG_HAS_NO_SDKDDKVER_H)
 
 # getenv()?
-check_symbol_exists("getenv" "stdlib.h" SJME_CONFIG_HAS_GETENV)
-if(SJME_CONFIG_HAS_GETENV)
-	add_compile_definitions(SJME_CONFIG_HAS_GETENV=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_NO_GETENV=1)
-endif()
+squirreljme_check_symbol_exists("getenv" "stdlib.h"
+	SJME_CONFIG_HAS_GETENV
+	SJME_CONFIG_HAS_NO_GETENV)
 
 # strcasecmp()?
-check_symbol_exists("strcasecmp" "strings.h" SJME_CONFIG_HAS_STRCASECMP)
-if(SJME_CONFIG_HAS_STRCASECMP)
-	add_compile_definitions(SJME_CONFIG_HAS_STRCASECMP=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_NO_STRCASECMP=1)
-endif()
+squirreljme_check_symbol_exists("strcasecmp" "strings.h"
+	SJME_CONFIG_HAS_STRCASECMP
+	SJME_CONFIG_HAS_NO_STRCASECMP)
 
 # stricmp()?
-check_symbol_exists("stricmp" "string.h" SJME_CONFIG_HAS_STRICMP)
-if(SJME_CONFIG_HAS_STRICMP)
-	add_compile_definitions(SJME_CONFIG_HAS_STRICMP=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_NO_STRICMP=1)
-endif()
+squirreljme_check_symbol_exists("stricmp" "string.h"
+	SJME_CONFIG_HAS_STRICMP
+	SJME_CONFIG_HAS_NO_STRICMP)
 
-# toupper()?
-check_symbol_exists("toupper" "ctype.h" SJME_CONFIG_HAS_TOUPPER)
-if(SJME_CONFIG_HAS_TOUPPER)
-	add_compile_definitions(SJME_CONFIG_HAS_TOUPPER=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_NO_TOUPPER=1)
-endif()
+# wcscasecmp()?
+squirreljme_check_symbol_exists("wcscasecmp" "wchar.h"
+	SJME_CONFIG_HAS_WCSCASECMP
+	SJME_CONFIG_HAS_NO_WCSCASECMP)
 
-# tolower()?
-check_symbol_exists("tolower" "ctype.h" SJME_CONFIG_HAS_TOLOWER)
-if(SJME_CONFIG_HAS_TOLOWER)
-	add_compile_definitions(SJME_CONFIG_HAS_TOLOWER=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_NO_TOLOWER=1)
-endif()
+# wcsicmp()?
+squirreljme_check_symbol_exists("wcsicmp" "wchar.h"
+	SJME_CONFIG_HAS_WCSICMP
+	SJME_CONFIG_HAS_NO_WCSICMP)
 
-# snprintf() available?
+# strnlen()?
+squirreljme_check_symbol_exists("strnlen" "string.h"
+	SJME_CONFIG_HAS_STRNLEN
+	SJME_CONFIG_HAS_NO_STRNLEN)
+
+# C case conversion?
+squirreljme_check_symbol_exists("toupper" "ctype.h"
+	SJME_CONFIG_HAS_TOUPPER
+	SJME_CONFIG_HAS_NO_TOUPPER)
+squirreljme_check_symbol_exists("tolower" "ctype.h"
+	SJME_CONFIG_HAS_TOLOWER
+	SJME_CONFIG_HAS_NO_TOLOWER)
+squirreljme_check_symbol_exists("towupper" "wctype.h"
+	SJME_CONFIG_HAS_TOWUPPER
+	SJME_CONFIG_HAS_NO_TOWUPPER)
+squirreljme_check_symbol_exists("towlower" "wctype.h"
+	SJME_CONFIG_HAS_TOWLOWER
+	SJME_CONFIG_HAS_NO_TOWLOWER)
+
+# fdatasync() available?
 squirreljme_try_compile("fdatasync() in unistd.h"
 	"tryFDataSync"
 	SJME_CONFIG_HAS_FDATASYNC

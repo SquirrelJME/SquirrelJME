@@ -16,6 +16,9 @@
 #ifndef SJME_C_INTERNALS_H
 #define SJME_C_INTERNALS_H
 
+#include "sjme/error.h"
+#include "frontend/libjvm/commonJniJvm.h"
+
 /* Anti-C++. */
 #ifdef __cplusplus
 #ifndef SJME_CXX_IS_EXTERNED
