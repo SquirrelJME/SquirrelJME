@@ -49,7 +49,7 @@ target_compile_definitions(sourceize PUBLIC
 	SJME_CONFIG_HAS_NO_C11_THREADS=1)
 
 if(MSVC)
-	target_link_options(sourceize PUBLIC
+	target_compile_options(sourceize PUBLIC
 		"/MT")
 elseif(CMAKE_COMPILER_IS_GNUCC OR
 	CMAKE_COMPILER_IS_GNUCXX OR

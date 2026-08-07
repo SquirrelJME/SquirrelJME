@@ -262,7 +262,9 @@ else()
 		endif()
 	endif()
 endif()
-ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep)
+
+ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep
+	SquirrelJME-RunConfigureStep)
 
 # Additional clean files for the configuration step
 if(TARGET SquirrelJME-RunConfigureStep)

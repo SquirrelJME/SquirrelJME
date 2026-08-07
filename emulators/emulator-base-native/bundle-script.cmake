@@ -71,7 +71,7 @@ foreach(from IN LISTS copyFiles
 endforeach()
 
 # Add everything to the Zip
-message(STATIC "Adding everything to ${nativesZip}...")
+message(STATUS "Adding everything to ${nativesZip}...")
 execute_process(
 	COMMAND "${CMAKE_COMMAND}" "-E"
 		"tar" "cv" "${nativesZip}" "--format=zip" "--"

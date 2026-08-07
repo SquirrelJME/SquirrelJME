@@ -44,6 +44,11 @@ squirreljme_include_nanocoat("identify-squirreljme-version-file.cmake")
 project(SquirrelJMEBuild
 	LANGUAGES)
 
+# For Ninja anything using Fossil will have issues with concurrency especially
+# if a target modifies the database
+set_property(GLOBAL PROPERTY
+	JOB_POOLS squirreljme_fossil_pool=1)
+
 # Version number for SquirrelJME
 squirreljme_include_nanocoat("identify-squirreljme-version.cmake")
 
