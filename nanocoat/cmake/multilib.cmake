@@ -606,13 +606,11 @@ function(squirreljme_multilib_export target)
 		export(TARGETS
 			${target}DyLib
 			${target}Static
-			${target}
 			FILE "${CMAKE_BINARY_DIR}/export/${target}.cmake"
 			NAMESPACE SquirrelJME::)
 	else()
 		export(TARGETS
 			${target}Static
-			${target}
 			FILE "${CMAKE_BINARY_DIR}/export/${target}.cmake"
 			NAMESPACE SquirrelJME::)
 	endif()
