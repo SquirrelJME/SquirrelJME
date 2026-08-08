@@ -91,8 +91,18 @@ typedef enum sjme_joptarg_method
  */
 typedef enum sjme_joptarg_flag
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_joptarg_flag),
+	
 	/** Handle @code -- @endcode at the end as remaining arguments. */
 	SJME_JOPTARG_FLAG_DASH_DASH = 1,
+	
+	/**
+	 * Read in and handle response files, that is @code \@file @endcode.
+	 * 
+	 * This requires that the NAL be used to access the filesystem.
+	 */
+	SJME_JOPTARG_FLAG_RESPONSE_FILES = 2,
 } sjme_joptarg_flag;
 	
 /**
@@ -145,16 +155,28 @@ sjme_errorCode sjme_joptarg_parse(
 	sjme_attrInValue sjme_joptarg_method method,
 	sjme_attrInNullable const sjme_nal* nal,
 	sjme_attrInNotNull const sjme_joptarg_handler* handlers,
-	sjme_attrInNotNull sjme_pointer handlerData,
+	sjme_attrInNullable sjme_pointer handlerData,
 	sjme_attrInValue sjme_jint flags,
 	sjme_attrInPositive sjme_jint argc,
 	sjme_attrInNotNull const sjme_lpcstr* argv);
 		
 /**
  * This first tokenizes a line of arguments, then passes it 
- * to @link sjme_joptarg_parse @endlink which then parses the arguments.
+ * to @link sjme_joptarg_parse @endlink which then handles the input arguments
+ * accordingly to the @code method @endcode.
  * 
- * This is generally for systems such as Windows.
+ * This is generally for systems such as Windows, however it may not exactly
+ * match the behavior of @code CommandLineToArgvW() @endcode.
+ * 
+ * Backslashes will escape the following character so that they will not be
+ * interpreted in their normal context and only as a normal character. This
+ * as such means that a backslash followed by a double quote will not look
+ * for another double quote for spacing. Additionally, if a space is escaped
+ * then it will not cause another argument to occur.
+ * 
+ * Double quotes (@code \" @endcode), single quotes (@code \' @endcode), and
+ * backticks (@code ` @endcode) group together and will allow other quotation
+ * characters to be used.
  * 
  * @param method The method used.
  * @param nal The NAL to use for output and response file reading.
@@ -169,7 +191,7 @@ sjme_errorCode sjme_joptarg_parseLong(
 	sjme_attrInValue sjme_joptarg_method method,
 	sjme_attrInNullable const sjme_nal* nal,
 	sjme_attrInNotNull const sjme_joptarg_handler* handlers,
-	sjme_attrInNotNull sjme_pointer handlerData,
+	sjme_attrInNullable sjme_pointer handlerData,
 	sjme_attrInValue sjme_jint flags,
 	sjme_attrInNotNull sjme_lpcstr argLine);
 
