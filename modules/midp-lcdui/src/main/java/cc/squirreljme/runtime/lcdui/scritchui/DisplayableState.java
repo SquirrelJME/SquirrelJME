@@ -13,20 +13,36 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.SpecificFlags;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import javax.microedition.lcdui.Displayable;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * State for {@link Displayable}.
+ * 
+ * To get the state of an arbitrary displayable, assuming it has not been
+ * garbage collected, there is {@link DisplayableState#locate(Displayable)}.
  *
  * @since 2024/03/08
  */
 @SquirrelJMEVendorApi
 public final class DisplayableState
 {
+	/** The displayable states that exist. */
+	@KeepWhenCompacting
+	private static final List<Reference<DisplayableState>> _binds =
+		new LinkedList<>();
+	
 	/** The displayable this is linked to. */
 	@SquirrelJMEVendorApi
 	protected final Reference<Displayable> displayable;
@@ -52,6 +68,11 @@ public final class DisplayableState
 	@SquirrelJMEVendorApi
 	private volatile boolean _desireFullScreen;
 	
+	/** Displayable specific flags, defined by {@link Displayable}. */
+	@SquirrelJMEVendorApi
+	@MagicConstant(flagsFromClass = SpecificFlags.class)
+	private volatile int _specificFlags;
+	
 	/**
 	 * Initializes the displayable state.
 	 *
@@ -67,6 +88,13 @@ public final class DisplayableState
 			throw new NullPointerException("NARG");
 		
 		this.displayable = new WeakReference<>(__displayable);
+		
+		// Self bind
+		synchronized (DisplayableState.class)
+		{
+			DisplayableState._binds.add(
+				new WeakReference<DisplayableState>(this));
+		}
 		
 		// Initialize basic panel
 		ScritchInterface scritchApi = DisplayManager.instance().scritch();
@@ -137,6 +165,51 @@ public final class DisplayableState
 	}
 	
 	/**
+	 * Returns the {@link SpecificFlags} set on this {@link Displayable}.
+	 * 
+	 * This should only be called from the event loop, if it is not then
+	 * it is very possible for deadlocks to occur.
+	 *
+	 * @return The {@link SpecificFlags} set on this {@link Displayable}.
+	 * @since 2026/08/09
+	 */
+	@SquirrelJMEVendorApi
+	@ScritchEventLoop
+	@MagicConstant(flagsFromClass = SpecificFlags.class)
+	public int flags()
+	{
+		synchronized (this)
+		{
+			return this._specificFlags;
+		}
+	}
+	
+	/**
+	 * Sets the {@link SpecificFlags} flags which are unique to the
+	 * {@link Displayable} implementation. 
+	 *
+	 * This should only be called from the event loop, if it is not then
+	 * it is very possible for deadlocks to occur.
+	 *
+	 * @param __flags The {@link SpecificFlags} to set.
+	 * @return The specific flags which were previously set.
+	 * @since 2026/08/09
+	 */
+	@SquirrelJMEVendorApi
+	@ScritchEventLoop
+	@MagicConstant(flagsFromClass = SpecificFlags.class)
+	public int flags(
+		@MagicConstant(flagsFromClass = SpecificFlags.class) int __flags)
+	{
+		synchronized (this)
+		{
+			int old = this._specificFlags;
+			this._specificFlags = __flags;
+			return old;
+		}
+	}
+	
+	/**
 	 * Does this use the calculator layout?
 	 *
 	 * @return If this uses the calculator layout.
@@ -203,5 +276,60 @@ public final class DisplayableState
 			if (__parent != null)
 				__parent.__setCurrent(this);
 		}
+	}
+	
+	/**
+	 * Locates the {@link DisplayableState} associated with the given
+	 * {@link Displayable}. This is an expensive call which should be cached
+	 * where possible.
+	 *
+	 * @param __displayable The displayable to locate.
+	 * @return The resultant displayable state.
+	 * @throws NoSuchElementException If either the {@link DisplayableState}
+	 * or {@link Displayable} has been garbage collected, that is nothing
+	 * is referencing it strongly.
+	 * @throws NullPointerException On {@code null} arguments.
+	 * @since 2026/08/09
+	 */
+	@SquirrelJMEVendorApi
+	public static DisplayableState locate(Displayable __displayable)
+		throws NoSuchElementException, NullPointerException
+	{
+		if (__displayable == null)
+			throw new NullPointerException("NARG");
+		
+		// This is an actual linked list, so it is slow
+		List<Reference<DisplayableState>> binds = DisplayableState._binds;
+		synchronized (DisplayableState.class)
+		{
+			// Go through and cleanup where possible, if we can
+			Iterator<Reference<DisplayableState>> it = binds.iterator();
+			while (it.hasNext())
+			{
+				// If the displayable state was GCed, clean it
+				DisplayableState state = it.next().get();
+				if (state == null)
+				{
+					it.remove();
+					continue;
+				}
+				
+				// Was the displayable itself GCed?
+				Displayable result = state.displayable.get();
+				if (result == null)
+				{
+					it.remove();
+					continue;
+				}
+				
+				// Is this the correct displayable? If it is then return
+				// the state
+				if (result == __displayable)
+					return state;
+			}
+		}
+		
+		// Not found
+		throw new NoSuchElementException("GCGC");
 	}
 }

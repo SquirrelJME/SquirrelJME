@@ -17,6 +17,7 @@
 #define SJME_C_SQUIRRELJME_DISPATCH_H
 
 #include "sjme/config.h"
+#include "sjme/native.h"
 #include "sjme/stdTypes.h"
 #include "sjme/tokenUtils.h"
 
@@ -35,11 +36,15 @@ extern "C"
 /**
  * Main function for dispatch.
  * 
+ * @param nal The native abstraction layer to use.
  * @param argc Main argument count.
  * @param argv Main arguments passed.
  * @since 2026/02/22
  */
-typedef int (*sjme_dispatch_mainFunc)(int argc, char** argv);
+typedef int (*sjme_dispatch_mainFunc)(
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInPositive sjme_jint argc,
+	sjme_attrInNotNull const sjme_lpcstr* argv);
 
 /**
  * Prints help.
@@ -81,7 +86,8 @@ typedef struct sjme_dispatch_info
  * @since 2025/08/01
  */
 #define sjme_abcd_command_main_declare(command) \
-	int sjme_abcd_command_main(command)(int argc, char** argv)
+	int sjme_abcd_command_main(command)(const sjme_nal* nal, \
+		sjme_jint argc, const sjme_lpcstr* argv)
 	
 /**
  * The name of the help method for a command.

@@ -12,13 +12,13 @@
 sjme_errorCode sjme_joptarg_parse(
 	sjme_attrInValue sjme_joptarg_method method,
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNotNull const sjme_joptarg_handler* handlers,
+	sjme_attrInNotNull sjme_joptarg_handlerFunc handler,
 	sjme_attrInNullable sjme_pointer handlerData,
 	sjme_attrInValue sjme_jint flags,
 	sjme_attrInPositive sjme_jint argc,
 	sjme_attrInNotNull const sjme_lpcstr* argv)
 {
-	if (handlers == NULL || argv == NULL)
+	if (handler == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (argc < 0 || method < 0 || method >= SJME_OPTARG_NUM_METHODS)
@@ -35,12 +35,12 @@ sjme_errorCode sjme_joptarg_parse(
 sjme_errorCode sjme_joptarg_parseLong(
 	sjme_attrInValue sjme_joptarg_method method,
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNotNull const sjme_joptarg_handler* handlers,
+	sjme_attrInNotNull sjme_joptarg_handlerFunc handler,
 	sjme_attrInNullable sjme_pointer handlerData,
 	sjme_attrInValue sjme_jint flags,
 	sjme_attrInNotNull sjme_lpcstr argLine)
 {
-	if (handlers == NULL || argLine == NULL)
+	if (handler == NULL || argLine == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (method < 0 || method >= SJME_OPTARG_NUM_METHODS)

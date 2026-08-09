@@ -126,7 +126,7 @@ typedef struct sjme_joptarg_state
 	const sjme_lpcstr* argv;
 	
 	/** The generic data to be passed to the handler. */
-	sjme_pointer handlerData;
+	sjme_pointer data;
 } sjme_joptarg_state;
 	
 typedef sjme_errorCode (*sjme_joptarg_handlerFunc)(
@@ -143,7 +143,7 @@ struct sjme_joptarg_handler
  * 
  * @param method The method used.
  * @param nal The NAL to use for output and response file reading.
- * @param handlers The handlers for valid options.
+ * @param handler The handlers for valid options.
  * @param handlerData The data to be passed to handlers.
  * @param flags @link sjme_joptarg_flag @endlink flags.
  * @param argc The argument count.
@@ -154,7 +154,7 @@ struct sjme_joptarg_handler
 sjme_errorCode sjme_joptarg_parse(
 	sjme_attrInValue sjme_joptarg_method method,
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNotNull const sjme_joptarg_handler* handlers,
+	sjme_attrInNotNull sjme_joptarg_handlerFunc handler,
 	sjme_attrInNullable sjme_pointer handlerData,
 	sjme_attrInValue sjme_jint flags,
 	sjme_attrInPositive sjme_jint argc,
@@ -180,7 +180,7 @@ sjme_errorCode sjme_joptarg_parse(
  * 
  * @param method The method used.
  * @param nal The NAL to use for output and response file reading.
- * @param handlers The handlers for valid options.
+ * @param handler The handlers for valid options.
  * @param handlerData The data to be passed to handlers.
  * @param flags @link sjme_joptarg_flag @endlink flags.
  * @param argLine The argument command line, to be tokenized.
@@ -190,7 +190,7 @@ sjme_errorCode sjme_joptarg_parse(
 sjme_errorCode sjme_joptarg_parseLong(
 	sjme_attrInValue sjme_joptarg_method method,
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNotNull const sjme_joptarg_handler* handlers,
+	sjme_attrInNotNull sjme_joptarg_handlerFunc handler,
 	sjme_attrInNullable sjme_pointer handlerData,
 	sjme_attrInValue sjme_jint flags,
 	sjme_attrInNotNull sjme_lpcstr argLine);

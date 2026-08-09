@@ -58,6 +58,11 @@ static const sjme_dispatch_info sjme_abcd_dispatch[] =
 
 int main(int argc, char** argv)
 {
+	const sjme_nal* nal;
+	
+	/* Always use the default NAL. */
+	nal = &sjme_nal_default;
+
 	sjme_todo("Impl?");
 	return EXIT_FAILURE;
 }
