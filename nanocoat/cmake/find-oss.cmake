@@ -35,3 +35,16 @@ elseif("${SQUIRRELJME_SYSTEM}" STREQUAL "bsd" OR
 else()
 	set(OSS_FOUND NO)
 endif()
+
+# Note OSS depends on ioctl to work, so if the system happens to lack ioctl
+# support then we cannot have OSS audio
+if(OSS_FOUND AND SJME_CONFIG_HAS_SYS_IOCTL_H)
+	set(SQUIRRELJME_ENABLE_AUDIO_OSS_DEFAULT ON)
+else()
+	set(SQUIRRELJME_ENABLE_AUDIO_OSS_DEFAULT OFF)
+endif()
+
+# Enable OSS ScritchAudio?
+squirreljme_define_option(SQUIRRELJME_ENABLE_AUDIO_OSS
+	"Enable ScritchAudio: Open Sound System")
+

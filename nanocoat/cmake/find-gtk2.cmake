@@ -52,5 +52,5 @@ if(GTK2_FOUND)
 endif()
 
 # Enable GTK2 ScritchUi?
-option(SQUIRRELJME_ENABLE_GUI_GTK2 "Enable ScritchUi GTK2"
-	"${SQUIRRELJME_ENABLE_GUI_GTK2_DEFAULT}")
+squirreljme_define_option(SQUIRRELJME_ENABLE_GUI_GTK2
+	"Enable ScritchUI GTK2")

@@ -720,20 +720,68 @@ else()
 	set(SQUIRRELJME_IS_BARE_METAL NO)
 endif()
 
-# Retro system?
-if("${SQUIRRELJME_ARCH}" STREQUAL "ia16" OR
+### Historical, Ancient, and Retro (with the absurd) ###
+# The years here are not from a product/business perspective, but more of a
+# technical perspective of the best of the best that was widely available.
+# For example, the Amiga 500 is from 1987 and the Macintosh 128K is from 1984
+# however these two machines are very much in the same class when it comes to
+# capabilities. The NeXT Computer released in 1988 just completely squashes
+# those two systems in capabilities, despite the more limited CPU speed memory,
+# peripheral, and disk wise it would would very much compete CPU wise with
+# a Palm m515 with an SD Card. Another thing to consider is the operating
+# system technology as well, at least the ease and capabilities of it. If there
+# is no SDK, no C headers, and documentation is nothing except poke a bunch
+# of interrupts then it gets bumped down a tier. Basically, I suppose the
+# point here is modern practice separates historic and absurd from ancient
+# and retro. Ancient is more like, "maybe we did not fully figure this out
+# just yet". Absurd systems are not included in this logic, because that would
+# just be absurd as the point is to just like Jurassic Park... just without the
+# dinosaurs, hopefully. This does not give you free reign to port SquirrelJME
+# to every bird in sight as you definitely will egret it.
+
+# Absurd systems... "Yeah, but your scientists were so preoccupied with
+# whether or not they could, they didn't stop to think if they should."
+if ("${SQUIRRELJME_ARCH}" STREQUAL "mos6502" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "conwaylife" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "minecraft" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "msexcel" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "terraria" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "turingtape" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "xkcdrocks")
+	set(SQUIRRELJME_IS_ABSURD YES)
+else()
+	set(SQUIRRELJME_IS_ABSURD NO)
+endif()
+
+# Historic system (Pre-1985)?
+set(SQUIRRELJME_IS_HISTORIC NO)
+
+# Ancient system (Pre-1995)? Historic systems are automatically ancient
+if(SQUIRRELJME_IS_HISTORIC OR
+	"${SQUIRRELJME_ARCH}" STREQUAL "ia16" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "amiga" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "dos" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "win16")
+	set(SQUIRRELJME_IS_ANCIENT YES)
+else()
+	set(SQUIRRELJME_IS_ANCIENT NO)
+endif()
+
+# Retro system (Pre-2005)? Ancient systems are automatically retro
+if(SQUIRRELJME_IS_ANCIENT OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "classicmac" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "palmos" OR
-	"${SQUIRRELJME_SYSTEM}" STREQUAL "win16" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "wince")
 	set(SQUIRRELJME_IS_RETRO YES)
 else()
 	set(SQUIRRELJME_IS_RETRO NO)
 endif()
 
+########################################################
+
 # It's a Windows system?
-if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" OR
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "reactos" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "windows" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "windowsce" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "wine")
 	set(SQUIRRELJME_IS_WINDOWS YES)

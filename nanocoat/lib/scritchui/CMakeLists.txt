@@ -69,8 +69,6 @@ squirreljme_multilib_export(ScritchUiCore)
 add_subdirectory(pure)
 
 # Windows?
-option(SQUIRRELJME_ENABLE_GUI_WIN32 "Enable Win32 GUI"
-	${SQUIRRELJME_ON_IF_WIN32})
 if(SQUIRRELJME_ENABLE_GUI_WIN32)
 	squirreljme_scritchui_build(win32 Win32)
 endif()

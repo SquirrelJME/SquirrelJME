@@ -31,9 +31,8 @@ squirreljme_multilib_static_include_directories(ScritchUiPure PUBLIC
 squirreljme_target_binary_name(ScritchUiPure
 	"squirreljme-scritchui-pure")
 
-# Do not include any of these for RetroArch
-if(NOT DEFINED ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO} OR
-	NOT ENV{SQUIRRELJME_SPECIAL_BUILD_LIBRETRO})
+# In Development
+if(NOT SQUIRRELJME_IS_LIBRETRO)
 	# Allegro 4
 	add_subdirectory(allegro4)
 

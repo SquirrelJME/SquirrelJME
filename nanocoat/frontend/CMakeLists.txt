@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # SquirrelJME Java SE Emulator Front-End
-if(NOT EMSCRIPTEN AND NOT LIBRETRO_REALLY_STATIC)
+if(SQUIRRELJME_ENABLE_FRONTEND_LIBJVM)
 	# Native JVM library to use with OpenJDK?
 	# Or with the native SquirrelJME libjvm launcher?
 	add_subdirectory(libjvm)
@@ -19,8 +19,7 @@ if(SQUIRRELJME_ENABLE_FRONTEND_JRI)
 endif()
 
 # Netscape Plugin API (NPAPI)
-if(SQUIRRELJME_ENABLE_DYLIB AND
-	(SQUIRRELJME_IS_UNIX OR SQUIRRELJME_IS_WINDOWS))
+if(SQUIRRELJME_ENABLE_FRONTEND_NPAPI)
 	add_subdirectory(npapi)
 endif()
 
