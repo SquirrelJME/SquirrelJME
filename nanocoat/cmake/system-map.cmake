@@ -609,6 +609,25 @@ function(squirreljme_identify_by_current outSystem outArch)
 		message(STATUS "Identifying compiler via GCC...")
 		squirreljme_identify_by_gcc(hasSystem hasArch
 			"${CMAKE_C_COMPILER}")
+
+		# If still not found, emit flags for debugging
+		if("${hasSystem}" STREQUAL "unknown" OR
+			"${hasArch}" STREQUAL "unknown")
+			# Get all defines
+			squirreljme_defines_gcc(defines "${gccExe}")
+
+			# Banner
+			message(STATUS "*****************************************")
+			message(STATUS "Did not identify a system/arch, check these:")
+
+			# Emit each define
+			foreach(define IN LISTS defines)
+				message(STATUS " + ${define}")
+			endforeach()
+
+			# Banner
+			message(STATUS "*****************************************")
+		endif()
 	endif()
 
 	# Hope CMake has enough information about the target to determine what
