@@ -15,7 +15,7 @@ if(SQUIRRELJME_IS_LIBRETRO)
 
 	# Disable ScritchUi dynamic libraries
 	add_compile_definitions(SJME_CONFIG_SCRITCHUI_NO_DYLIB=1)
-	set(SQUIRRELJME_SCRITCHUI_NO_DYLIB ON)
+	set(SQUIRRELJME_SCRITCHUI_NO_DYLIB TRUE)
 endif()
 
 # Strip output executable

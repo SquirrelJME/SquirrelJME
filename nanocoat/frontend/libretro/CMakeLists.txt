@@ -8,10 +8,10 @@
 
 # Which type of build is being used?
 if(LIBRETRO_REALLY_STATIC)
-	set(libRetroIsStatic ON)
+	set(libRetroIsStatic TRUE)
 	set(libRetroBuildType STATIC)
 else()
-	set(libRetroIsStatic OFF)
+	set(libRetroIsStatic FALSE)
 	set(libRetroBuildType SHARED)
 endif()
 

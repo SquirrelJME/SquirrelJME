@@ -593,6 +593,39 @@ function(squirreljme_multilib_add_multilib_dependency libBase type)
 	endif()
 endfunction()
 
+# Sets the linker language for a target, if not set
+function(squirreljme_linker_language target lang)
+	# Get the current linker language
+	get_target_property(linkerLang ${target} LINKER_LANGUAGE)
+
+	# Set it, if it is not already set
+	if("${linkerLang}" STREQUAL "linkerLang-NOTFOUND" OR
+		"${linkerLang}" STREQUAL "")
+		set_target_properties(${target} PROPERTIES
+			LINKER_LANGUAGE ${lang})
+	endif()
+endfunction()
+
+# Set linker language for multilib static library, if not set
+function(squirreljme_multilib_static_linker_language libBase lang)
+	# Object Library
+	squirreljme_linker_language(${libBase} ${lang})
+
+	# Static Library
+	squirreljme_linker_language(${libBase}Static ${lang})
+endfunction()
+
+# Set linker language for multilib dynamic library, if not set
+function(squirreljme_multilib_linker_language libBase lang)
+	# Static
+	squirreljme_multilib_static_linker_language(${libBase} ${lang})
+
+	# Dynamic library
+	if(SQUIRRELJME_ENABLE_DYLIB)
+		squirreljme_linker_language(${libBase}DyLib ${lang})
+	endif()
+endfunction()
+
 # Export single target
 function(squirreljme_export target)
 	export(TARGETS ${target}
@@ -600,27 +633,35 @@ function(squirreljme_export target)
 endfunction()
 
 # Export multilib targets
-function(squirreljme_multilib_export target)
+function(squirreljme_multilib_export libBase)
 	# There are multiple branching paths based on the configuration
-	if(SQUIRRELJME_ENABLE_DYLIB AND TARGET ${target}DyLib)
+	if(SQUIRRELJME_ENABLE_DYLIB AND TARGET ${libBase}DyLib)
+		# Set linker language, if not set
+		squirreljme_multilib_linker_language(${libBase} C)
+
+		# Now export
 		export(TARGETS
-			${target}DyLib
-			${target}Static
-			FILE "${CMAKE_BINARY_DIR}/export/${target}.cmake"
+			${libBase}DyLib
+			${libBase}Static
+			FILE "${CMAKE_BINARY_DIR}/export/${libBase}.cmake"
 			NAMESPACE SquirrelJME::)
 	else()
+		# Set linker language, if not set
+		squirreljme_multilib_static_linker_language(${libBase} C)
+
+		# Now export
 		export(TARGETS
-			${target}Static
-			FILE "${CMAKE_BINARY_DIR}/export/${target}.cmake"
+			${libBase}Static
+			FILE "${CMAKE_BINARY_DIR}/export/${libBase}.cmake"
 			NAMESPACE SquirrelJME::)
 	endif()
 endfunction()
 
 # Export and install for multilib
-function(squirreljme_multilib_install target)
+function(squirreljme_multilib_install libBase)
 	# Set base directories
 	if(squirreljme_bp_version_3_23)
-		target_sources(${target}
+		target_sources(${libBase}
 			PUBLIC FILE_SET HEADERS
 			BASE_DIRS "${CMAKE_SOURCE_DIR}/include")
 	else()
@@ -630,12 +671,12 @@ function(squirreljme_multilib_install target)
 
 	# Export libraries
 	if(SQUIRRELJME_ENABLE_DYLIB)
-		install(TARGETS ${target}DyLib
-			${target}Static
+		install(TARGETS ${libBase}DyLib
+			${libBase}Static
 			LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}"
 			ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}")
 	else()
-		install(TARGETS ${target}Static
+		install(TARGETS ${libBase}Static
 			LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}"
 			ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}")
 	endif()

@@ -8,7 +8,7 @@
 
 # Enable prototype developer ScritchUi implementations?
 option(SQUIRRELJME_ENABLE_GUI_DEVELOPER
-	"Enable Developer Prototype GUIs" OFF)
+	"Enable Developer Prototype GUIs" FALSE)
 
 # Framebuffer implementation of ScritchUi, does not require any native
 # libraries other than direct framebuffer access. This library is purely
@@ -77,7 +77,7 @@ endif()
 if(SQUIRRELJME_ENABLE_GUI_DEVELOPER)
 	squirreljme_include("find-motif.cmake")
 
-	option(SQUIRRELJME_ENABLE_GUI_MOTIF "Enable Motif GUI" ON)
+	option(SQUIRRELJME_ENABLE_GUI_MOTIF "Enable Motif GUI" TRUE)
 	if(SQUIRRELJME_ENABLE_GUI_MOTIF)
 		squirreljme_scritchui_build(motif Motif)
 	endif()
@@ -87,7 +87,7 @@ endif()
 if(SQUIRRELJME_ENABLE_GUI_DEVELOPER)
 	squirreljme_include("find-x11.cmake")
 
-	option(SQUIRRELJME_ENABLE_GUI_X11 "Enable X11 GUI" ON)
+	option(SQUIRRELJME_ENABLE_GUI_X11 "Enable X11 GUI" TRUE)
 	if(SQUIRRELJME_ENABLE_GUI_X11)
 		squirreljme_scritchui_build(x11 X11)
 	endif()
@@ -104,7 +104,7 @@ endif()
 if(SQUIRRELJME_ENABLE_GUI_DEVELOPER)
 	squirreljme_include("find-gtk3.cmake")
 
-	option(SQUIRRELJME_ENABLE_GUI_GTK3 "Enable GTK3 GUI" OFF)
+	option(SQUIRRELJME_ENABLE_GUI_GTK3 "Enable GTK3 GUI" FALSE)
 	if(SQUIRRELJME_ENABLE_GUI_GTK3)
 		squirreljme_scritchui_build(gtk3 GTK3)
 	endif()

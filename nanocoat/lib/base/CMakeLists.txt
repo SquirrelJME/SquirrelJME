@@ -76,7 +76,7 @@ macro(squirreljme_add_nal_option upper)
 	# Add option to use vendor specific item
 	option(SQUIRRELJME_NAL_VENDOR_${upper}
 		"Use vendor implementation for ${upper}."
-		OFF)
+		FALSE)
 
 	# Is this option enabled?
 	if(SQUIRRELJME_NAL_VENDOR_${upper})
