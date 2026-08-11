@@ -544,15 +544,25 @@ function(squirreljme_link_libraries target scope)
 				# Object?
 				if("${type}" STREQUAL "OBJECT_LIBRARY")
 					# Add all objects to be linked in
-					list(APPEND objects
+					if(squirreljme_bp_version_3_12)
+						list(APPEND objects
 						"$<TARGET_GENEX_EVAL:${lib},$<TARGET_OBJECTS:${lib}>>")
+					else()
+						list(APPEND objects
+							"$<TARGET_OBJECTS:${lib}>")
+					endif()
 
 				# Static or shared?
 				elseif("${type}" STREQUAL "STATIC_LIBRARY" OR
 					"${type}" STREQUAL "SHARED_LIBRARY")
 					# Just link against the object
-					list(APPEND nonObjects
+					if(squirreljme_bp_version_3_12)
+						list(APPEND nonObjects
 						"$<TARGET_GENEX_EVAL:${lib},$<TARGET_FILE:${lib}>>")
+					else()
+						list(APPEND nonObjects
+							"$<TARGET_FILE:${lib}>")
+					endif()
 
 				# Unknown target
 				else()

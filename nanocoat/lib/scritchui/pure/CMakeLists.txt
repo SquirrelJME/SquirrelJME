@@ -31,6 +31,9 @@ squirreljme_multilib_static_include_directories(ScritchUiPure PUBLIC
 squirreljme_target_binary_name(ScritchUiPure
 	"squirreljme-scritchui-pure")
 
+# Set C language if not set
+squirreljme_multilib_static_linker_language(ScritchUiPure C)
+
 # In Development
 if(NOT SQUIRRELJME_IS_LIBRETRO)
 	# Allegro 4

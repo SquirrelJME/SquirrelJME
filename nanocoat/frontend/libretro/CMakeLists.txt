@@ -102,7 +102,8 @@ file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/test.config"
 find_program(gdbExe "gdbserver")
 if(retroArchExe AND NOT libRetroIsStatic AND
 	NOT EMSCRIPTEN AND
-	NOT SQUIRRELJME_IS_CROSS_COMPILE)
+	NOT SQUIRRELJME_IS_CROSS_COMPILE AND
+	squirreljme_bp_version_3_12)
 	# Add target to run accordingly
 	add_custom_target(RunSquirreljme_libretro
 		COMMAND "${retroArchExe}"

@@ -61,8 +61,13 @@ macro(squirreljme_romLibrary_include sourceSet
 	add_subdirectory("modules/${libIdentifier}")
 
 	# Used for later inclusion
-	list(APPEND squirreljme_dynamic_objLibs
-		"$<GENEX_EVAL:$<TARGET_OBJECTS:${sourceSet}_${clutterLevel}_${libIdentifier}>>")
+	if(squirreljme_bp_version_3_12)
+		list(APPEND squirreljme_dynamic_objLibs
+"$<GENEX_EVAL:$<TARGET_OBJECTS:${sourceSet}_${clutterLevel}_${libIdentifier}>>")
+	else()
+		list(APPEND squirreljme_dynamic_objLibs
+			"$<TARGET_OBJECTS:${sourceSet}_${clutterLevel}_${libIdentifier}>")
+	endif()
 endmacro()
 
 # Declares a class for a library
