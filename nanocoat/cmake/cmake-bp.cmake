@@ -147,7 +147,7 @@ function(squirreljme_bp_check_linker_flag lang flag outVariable)
 	# Add verbosity for the check
 	message(STATUS "Checking ${lang} linker flag ${flag}...")
 
-	if(squirreljme_bp_version_3_18)
+	if(squirreljme_bp_version_3_19)
 		# Use modern CMake version
 		check_linker_flag(${lang} "${flag}" ${outVariable})
 
