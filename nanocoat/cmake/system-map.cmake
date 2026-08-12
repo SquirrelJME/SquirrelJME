@@ -151,7 +151,11 @@ function(squirreljme_defines_gcc gccDefines gccExe)
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 	# Try again, but with no passed flags
-	if(NOT "${gccResult}" EQUAL "0")
+	# Also try again if the output is very short
+	string(LENGTH "${gccOutputRaw}" gccOutputRawLen)
+	if(NOT "${gccResult}" EQUAL "0" OR
+		"${gccOutputRaw}" STREQUAL "" OR
+		"${gccOutputRawLen}" LESS 12)
 		execute_process(
 			COMMAND "${gccExe}"
 				"-E" "-dM" "-c" "${gccMainSource}"
