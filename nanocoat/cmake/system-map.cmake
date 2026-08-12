@@ -610,15 +610,24 @@ function(squirreljme_identify_by_current outSystem outArch)
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "IBMClang" OR
 		"${isGcc}" GREATER_EQUAL "0" OR
 		"${isSDCC}" GREATER_EQUAL "0")
-		message(STATUS "Identifying compiler via GCC...")
+		# Fallback to CC? This can happen in older versions of CMake where CC
+		# is set but CMake has yet to set CMAKE_C_COMPILER for some reason.
+		if("${CMAKE_C_COMPILER}" STREQUAL "")
+			set(useGcc "${CC}")
+		else()
+			set(useGcc "${CMAKE_C_COMPILER}")
+		endif()
+
+		# Identify
+		message(STATUS "Identifying compiler via GCC (${useGcc})...")
 		squirreljme_identify_by_gcc(hasSystem hasArch
-			"${CMAKE_C_COMPILER}")
+			"${useGcc}")
 
 		# If still not found, emit flags for debugging
 		if("${hasSystem}" STREQUAL "unknown" OR
 			"${hasArch}" STREQUAL "unknown")
 			# Get all defines
-			squirreljme_defines_gcc(defines "${gccExe}")
+			squirreljme_defines_gcc(defines "${useGcc}")
 
 			# Banner
 			message(STATUS "*****************************************")
