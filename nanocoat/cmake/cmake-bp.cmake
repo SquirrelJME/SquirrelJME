@@ -112,7 +112,7 @@ if(squirreljme_bp_version_3_25)
 	cmake_policy(SET CMP0140 NEW)
 endif()
 
-if(squirreljme_bp_version_3_18)
+if(squirreljme_bp_version_3_19)
 	# Needed for compiler/linker flag check, if CMake is new enough
 	include(CheckLinkerFlag)
 	include(CheckCompilerFlag)
