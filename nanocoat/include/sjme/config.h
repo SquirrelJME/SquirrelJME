@@ -1112,7 +1112,8 @@ extern "C" {
 	#endif
 #endif
 
-#if !defined(sjme_threadLocal)
+#if !defined(sjme_threadLocal) && \
+	!defined(SJME__CONFIG_CHECK__SJME_THREAD_LOCAL)
 	/** Thread local storage. */
 	#define sjme_threadLocal(type, name) \
 		static sjme_align32 type name

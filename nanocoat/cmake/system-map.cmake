@@ -742,6 +742,13 @@ squirreljme_identify_by_cmake(SQUIRRELJME_HOST_SYSTEM SQUIRRELJME_HOST_ARCH
 message(STATUS "Detected Host System: "
 	"${SQUIRRELJME_HOST_SYSTEM}/${SQUIRRELJME_HOST_ARCH}")
 
+# An unknown system?
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "unknown")
+	set(SQUIRRELJME_IS_UNKNOWN TRUE)
+else()
+	set(SQUIRRELJME_IS_UNKNOWN FALSE)
+endif()
+
 # Bare metal system?
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "bios" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "efi" OR

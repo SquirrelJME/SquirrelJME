@@ -389,6 +389,16 @@ macro(squirreljme_try_compile noun source yesDef noDef)
 	endif()
 endmacro()
 
+# Quick compilation check
+macro(squirreljme_try_compile_no noun noDef)
+	# Debugging
+	message(STATUS "${noun} forced to be not-detected...")
+
+	# Always use the passed no-definition
+	add_compile_definitions(
+		${noDef}=1)
+endmacro()
+
 # Do not set SONAME for a target
 macro(squirreljme_no_soname target)
 	set_target_properties(${target} PROPERTIES
