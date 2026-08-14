@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#define SJME__CONFIG_CHECK__SJME_THREAD_LOCAL
 #include "sjme/config.h"
 
 int main(int argc, char** argv)

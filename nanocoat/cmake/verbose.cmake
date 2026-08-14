@@ -12,9 +12,9 @@ function(squirreljme_verbose_option define helpText)
 	# Define the option, always default off
 	# There is the preprocessor option, but also the standard option
 	option(SJME_CONFIG_DEBUG_${define} "${helpText}"
-		OFF)
+		FALSE)
 	option(SQUIRRELJME_DEBUG_${define} "${helpText}"
-		OFF)
+		FALSE)
 
 	# If enabled, set define
 	if(SJME_CONFIG_DEBUG_${define} OR SQUIRRELJME_DEBUG_${define})

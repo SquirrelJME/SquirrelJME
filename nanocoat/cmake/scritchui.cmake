@@ -57,20 +57,37 @@ macro(squirreljme_scritchany_declare area)
 		"${SQUIRRELJME_BINARY_OUTPUT_DIR}/Scritch${areaNoun}")
 
 	# Setup All Target
-	add_custom_target(${targetAll}
-		COMMAND "${CMAKE_COMMAND}" "-E"
-			"echo"
+	if(squirreljme_bp_version_3_12)
+		add_custom_target(${targetAll}
+			COMMAND "${CMAKE_COMMAND}" "-E"
+				"echo"
 		"$<GENEX_EVAL:$<TARGET_PROPERTY:${targetAll},SCRITCHANY_INTERFACE>>"
-				">" "${basePath}.list"
-		COMMAND "${CMAKE_COMMAND}" "-E"
-			"echo"
+					">" "${basePath}.list"
+			COMMAND "${CMAKE_COMMAND}" "-E"
+				"echo"
 		"$<GENEX_EVAL:$<TARGET_PROPERTY:${targetAll},SCRITCHANY_OUTPUT_PATH>>"
-				">" "${basePath}.paths"
-		BYPRODUCTS "${basePath}.list" "${basePath}.paths"
-		VERBATIM
-		WORKING_DIRECTORY "${SQUIRRELJME_BINARY_OUTPUT_DIR}"
-		COMMENT "Producing Scritch${areaNoun} list..."
-		COMMAND_EXPAND_LISTS)
+					">" "${basePath}.paths"
+			BYPRODUCTS "${basePath}.list" "${basePath}.paths"
+			VERBATIM
+			WORKING_DIRECTORY "${SQUIRRELJME_BINARY_OUTPUT_DIR}"
+			COMMENT "Producing Scritch${areaNoun} list..."
+			COMMAND_EXPAND_LISTS)
+	else()
+		add_custom_target(${targetAll}
+			COMMAND "${CMAKE_COMMAND}" "-E"
+				"echo"
+				"$<TARGET_PROPERTY:${targetAll},SCRITCHANY_INTERFACE>"
+					">" "${basePath}.list"
+			COMMAND "${CMAKE_COMMAND}" "-E"
+				"echo"
+				"$<TARGET_PROPERTY:${targetAll},SCRITCHANY_OUTPUT_PATH>"
+					">" "${basePath}.paths"
+			BYPRODUCTS "${basePath}.list" "${basePath}.paths"
+			VERBATIM
+			WORKING_DIRECTORY "${SQUIRRELJME_BINARY_OUTPUT_DIR}"
+			COMMENT "Producing Scritch${areaNoun} list..."
+			COMMAND_EXPAND_LISTS)
+	endif()
 
 	# Properties for all
 	set_target_properties(${targetAll} PROPERTIES
@@ -355,7 +372,11 @@ macro(squirreljme_scritchany_build area subDir name)
 
 	# Add to the paths
 	get_target_property(outPaths ${targetAll} SCRITCHANY_OUTPUT_PATH)
-	list(APPEND outPaths "$<GENEX_EVAL:$<TARGET_FILE:${realTarget}>>")
+	if(squirreljme_bp_version_3_12)
+		list(APPEND outPaths "$<GENEX_EVAL:$<TARGET_FILE:${realTarget}>>")
+	else()
+		list(APPEND outPaths "$<TARGET_FILE:${realTarget}>")
+	endif()
 	set_target_properties(${targetAll} PROPERTIES
 		SCRITCHANY_OUTPUT_PATH "${outPaths}")
 

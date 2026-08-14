@@ -151,7 +151,11 @@ function(squirreljme_defines_gcc gccDefines gccExe)
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 	# Try again, but with no passed flags
-	if(NOT "${gccResult}" EQUAL "0")
+	# Also try again if the output is very short
+	string(LENGTH "${gccOutputRaw}" gccOutputRawLen)
+	if(NOT "${gccResult}" EQUAL "0" OR
+		"${gccOutputRaw}" STREQUAL "" OR
+		"${gccOutputRawLen}" LESS 12)
 		execute_process(
 			COMMAND "${gccExe}"
 				"-E" "-dM" "-c" "${gccMainSource}"
@@ -232,7 +236,8 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		set(hasSystem "playstation2")
 	elseif("PSP" IN_LIST defines)
 		set(hasSystem "psp")
-	elseif("HAVE_LIBNX" IN_LIST defines)
+	elseif("HAVE_LIBNX" IN_LIST defines OR
+		"__DEVKITA64__" IN_LIST defines)
 		set(hasSystem "switch")
 	elseif("IOS" IN_LIST defines)
 		set(hasSystem "ios")
@@ -606,9 +611,37 @@ function(squirreljme_identify_by_current outSystem outArch)
 		"${CMAKE_C_COMPILER_ID}" STREQUAL "IBMClang" OR
 		"${isGcc}" GREATER_EQUAL "0" OR
 		"${isSDCC}" GREATER_EQUAL "0")
-		message(STATUS "Identifying compiler via GCC...")
+		# Fallback to CC? This can happen in older versions of CMake where CC
+		# is set but CMake has yet to set CMAKE_C_COMPILER for some reason.
+		if("${CMAKE_C_COMPILER}" STREQUAL "")
+			set(useGcc "${CC}")
+		else()
+			set(useGcc "${CMAKE_C_COMPILER}")
+		endif()
+
+		# Identify
+		message(STATUS "Identifying compiler via GCC (${useGcc})...")
 		squirreljme_identify_by_gcc(hasSystem hasArch
-			"${CMAKE_C_COMPILER}")
+			"${useGcc}")
+
+		# If still not found, emit flags for debugging
+		if("${hasSystem}" STREQUAL "unknown" OR
+			"${hasArch}" STREQUAL "unknown")
+			# Get all defines
+			squirreljme_defines_gcc(defines "${useGcc}")
+
+			# Banner
+			message(STATUS "*****************************************")
+			message(STATUS "Did not identify a system/arch, check these:")
+
+			# Emit each define
+			foreach(define IN LISTS defines)
+				message(STATUS " + ${define}")
+			endforeach()
+
+			# Banner
+			message(STATUS "*****************************************")
+		endif()
 	endif()
 
 	# Hope CMake has enough information about the target to determine what
@@ -710,35 +743,90 @@ squirreljme_identify_by_cmake(SQUIRRELJME_HOST_SYSTEM SQUIRRELJME_HOST_ARCH
 message(STATUS "Detected Host System: "
 	"${SQUIRRELJME_HOST_SYSTEM}/${SQUIRRELJME_HOST_ARCH}")
 
+# An unknown system?
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "unknown")
+	set(SQUIRRELJME_IS_UNKNOWN TRUE)
+else()
+	set(SQUIRRELJME_IS_UNKNOWN FALSE)
+endif()
+
 # Bare metal system?
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "bios" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "efi" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "ieee1275of" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "sdcc")
-	set(SQUIRRELJME_IS_BARE_METAL YES)
+	set(SQUIRRELJME_IS_BARE_METAL TRUE)
 else()
-	set(SQUIRRELJME_IS_BARE_METAL NO)
+	set(SQUIRRELJME_IS_BARE_METAL FALSE)
 endif()
 
-# Retro system?
-if("${SQUIRRELJME_ARCH}" STREQUAL "ia16" OR
+### Historical, Ancient, and Retro (with the absurd) ###
+# The years here are not from a product/business perspective, but more of a
+# technical perspective of the best of the best that was widely available.
+# For example, the Amiga 500 is from 1987 and the Macintosh 128K is from 1984
+# however these two machines are very much in the same class when it comes to
+# capabilities. The NeXT Computer released in 1988 just completely squashes
+# those two systems in capabilities, despite the more limited CPU speed memory,
+# peripheral, and disk wise it would would very much compete CPU wise with
+# a Palm m515 with an SD Card. Another thing to consider is the operating
+# system technology as well, at least the ease and capabilities of it. If there
+# is no SDK, no C headers, and documentation is nothing except poke a bunch
+# of interrupts then it gets bumped down a tier. Basically, I suppose the
+# point here is modern practice separates historic and absurd from ancient
+# and retro. Ancient is more like, "maybe we did not fully figure this out
+# just yet". Absurd systems are not included in this logic, because that would
+# just be absurd as the point is to just like Jurassic Park... just without the
+# dinosaurs, hopefully. This does not give you free reign to port SquirrelJME
+# to every bird in sight as you definitely will egret it.
+
+# Absurd systems... "Yeah, but your scientists were so preoccupied with
+# whether or not they could, they didn't stop to think if they should."
+if ("${SQUIRRELJME_ARCH}" STREQUAL "mos6502" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "conwaylife" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "minecraft" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "msexcel" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "terraria" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "turingtape" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "xkcdrocks")
+	set(SQUIRRELJME_IS_ABSURD TRUE)
+else()
+	set(SQUIRRELJME_IS_ABSURD FALSE)
+endif()
+
+# Historic system (Pre-1985)?
+set(SQUIRRELJME_IS_HISTORIC FALSE)
+
+# Ancient system (Pre-1995)? Historic systems are automatically ancient
+if(SQUIRRELJME_IS_HISTORIC OR
+	"${SQUIRRELJME_ARCH}" STREQUAL "ia16" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "amiga" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "dos" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "win16")
+	set(SQUIRRELJME_IS_ANCIENT TRUE)
+else()
+	set(SQUIRRELJME_IS_ANCIENT FALSE)
+endif()
+
+# Retro system (Pre-2005)? Ancient systems are automatically retro
+if(SQUIRRELJME_IS_ANCIENT OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "classicmac" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "palmos" OR
-	"${SQUIRRELJME_SYSTEM}" STREQUAL "win16" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "wince")
-	set(SQUIRRELJME_IS_RETRO YES)
+	set(SQUIRRELJME_IS_RETRO TRUE)
 else()
-	set(SQUIRRELJME_IS_RETRO NO)
+	set(SQUIRRELJME_IS_RETRO FALSE)
 endif()
 
+########################################################
+
 # It's a Windows system?
-if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" OR
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "reactos" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "windows" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "windowsce" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "wine")
-	set(SQUIRRELJME_IS_WINDOWS YES)
+	set(SQUIRRELJME_IS_WINDOWS TRUE)
 else()
-	set(SQUIRRELJME_IS_WINDOWS NO)
+	set(SQUIRRELJME_IS_WINDOWS FALSE)
 endif()
 
 # It's a UNIX system! I know this!
@@ -752,9 +840,9 @@ if(NOT SQUIRRELJME_IS_WINDOWS AND
 	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "switch" AND
 	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "wii" AND
 	NOT "${SQUIRRELJME_SYSTEM}" STREQUAL "wiiu")
-	set(SQUIRRELJME_IS_UNIX YES)
+	set(SQUIRRELJME_IS_UNIX TRUE)
 else()
-	set(SQUIRRELJME_IS_UNIX NO)
+	set(SQUIRRELJME_IS_UNIX FALSE)
 endif()
 
 # Is this on Android?
@@ -762,9 +850,9 @@ if(ANDROID OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "android" OR
 	(DEFINED ANDROID_PLATFORM AND ANDROID_PLATFORM) OR
 	(DEFINED ANDROID_ABI AND ANDROID_ABI))
-	set(SQUIRRELJME_IS_ANDROID YES)
+	set(SQUIRRELJME_IS_ANDROID TRUE)
 else()
-	set(SQUIRRELJME_IS_ANDROID NO)
+	set(SQUIRRELJME_IS_ANDROID FALSE)
 endif()
 
 # Is this cross compiled?
@@ -776,9 +864,9 @@ if (NOT "${SQUIRRELJME_HOST_SYSTEM}" STREQUAL "${SQUIRRELJME_SYSTEM}" OR
 	NOT "${SQUIRRELJME_HOST_ARCH}" STREQUAL "${SQUIRRELJME_ARCH}" OR
 	SQUIRRELJME_IS_ANDROID OR
 	SQUIRRELJME_IS_BARE_METAL)
-	set(SQUIRRELJME_IS_CROSS_COMPILE YES)
+	set(SQUIRRELJME_IS_CROSS_COMPILE TRUE)
 else()
-	set(SQUIRRELJME_IS_CROSS_COMPILE NO)
+	set(SQUIRRELJME_IS_CROSS_COMPILE FALSE)
 endif()
 
 # Used for all builds to identify the system
@@ -837,9 +925,9 @@ file(WRITE "${CMAKE_BINARY_DIR}/arch__.tgt" "${SQUIRRELJME_ARCH}")
 
 # On by default if on Win32?
 if(SQUIRRELJME_IS_WINDOWS)
-	set(SQUIRRELJME_ON_IF_WIN32 ON)
-	set(SQUIRRELJME_OFF_IF_WIN32 OFF)
+	set(SQUIRRELJME_ON_IF_WIN32 TRUE)
+	set(SQUIRRELJME_OFF_IF_WIN32 FALSE)
 else()
-	set(SQUIRRELJME_ON_IF_WIN32 OFF)
-	set(SQUIRRELJME_OFF_IF_WIN32 ON)
+	set(SQUIRRELJME_ON_IF_WIN32 FALSE)
+	set(SQUIRRELJME_OFF_IF_WIN32 TRUE)
 endif()

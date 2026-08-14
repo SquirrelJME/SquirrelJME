@@ -141,10 +141,16 @@ squirreljme_check_symbol_exists("towlower" "wctype.h"
 	SJME_CONFIG_HAS_NO_TOWLOWER)
 
 # fdatasync() available?
-squirreljme_try_compile("fdatasync() in unistd.h"
-	"tryFDataSync"
-	SJME_CONFIG_HAS_FDATASYNC
-	SJME_CONFIG_HAS_NO_FDATASYNC)
+# If the system is unknown, the assume this POSIX function does not exist
+if(SQUIRRELJME_IS_UNKNOWN)
+	squirreljme_try_compile_no("fdatasync()"
+		SJME_CONFIG_HAS_NO_FDATASYNC)
+else()
+	squirreljme_try_compile("fdatasync() in unistd.h"
+		"tryFDataSync"
+		SJME_CONFIG_HAS_FDATASYNC
+		SJME_CONFIG_HAS_NO_FDATASYNC)
+endif()
 
 # snprintf() available?
 squirreljme_try_compile("snprintf()"
@@ -163,7 +169,13 @@ squirreljme_try_compile("vsnprintf() in varargs.h"
 	SJME_CONFIG_HAS_NO_VSNPRINTFV)
 
 # Can use thread local?
-squirreljme_try_compile("sjme_threadLocal"
-	"tryThreadLocal"
-	SJME_CONFIG_HAS_THREAD_LOCAL
-	SJME_CONFIG_HAS_NO_THREAD_LOCAL)
+# If the system is unknown, we cannot rely on this to properly exist
+if(SQUIRRELJME_IS_UNKNOWN)
+	squirreljme_try_compile_no("sjme_threadLocal"
+		SJME_CONFIG_HAS_NO_THREAD_LOCAL)
+else()
+	squirreljme_try_compile("sjme_threadLocal"
+		"tryThreadLocal"
+		SJME_CONFIG_HAS_THREAD_LOCAL
+		SJME_CONFIG_HAS_NO_THREAD_LOCAL)
+endif()

@@ -168,6 +168,10 @@ function(squirreljme_build_util name)
 		# Probe this to see if we can actually execute it
 		squirreljme_build_util_check_probe(${name})
 
+		# Splice
+		message(STATUS
+			"------------------------------------")
+
 		# Is it valid?
 		if(EXISTS "${sjmeUtilExe_${name}}")
 			squirreljme_bp_return_propagate(sjmeUtilExe_${name})
@@ -211,6 +215,10 @@ function(squirreljme_build_util name)
 			# Probe this to see if we can actually execute it
 			squirreljme_build_util_check_probe(${name})
 
+			# Splice
+			message(STATUS
+				"--------------------------------------------------------")
+
 			# Is it valid?
 			if(EXISTS "${sjmeUtilExe_${name}}")
 				squirreljme_bp_return_propagate(sjmeUtilExe_${name})
@@ -247,6 +255,9 @@ function(squirreljme_build_util name)
 
 		# Probe this to see if we can actually execute it
 		squirreljme_build_util_check_probe(${name})
+
+		# Splice
+		message(STATUS "-------------------------------------")
 
 		# Is it valid?
 		if(EXISTS "${sjmeUtilExe_${name}}")

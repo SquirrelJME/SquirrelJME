@@ -71,7 +71,7 @@ if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 				"${JAVA_INCLUDE_PATH2}")
 
 			# Say that we do have it
-			set(SQUIRRELJME_HAS_JAVA_JNI YES)
+			set(SQUIRRELJME_HAS_JAVA_JNI TRUE)
 		endif()
 
 		# Were there actual JVM headers?
@@ -88,16 +88,16 @@ if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 				"${JAVA_INCLUDE_PATH2}")
 
 			# Say that we do have it
-			set(SQUIRRELJME_HAS_JAVA_JVM YES)
+			set(SQUIRRELJME_HAS_JAVA_JVM TRUE)
 		endif()
 	endif()
 
 	# Do not export own JNI/JVM
-	set(SQUIRRELJME_EXPORT_OWN_JNI_JVM NO)
+	set(SQUIRRELJME_EXPORT_OWN_JNI_JVM FALSE)
 
 # Otherwise emit a notice due to cross-compile
 else()
-	set(SQUIRRELJME_EXPORT_OWN_JNI_JVM YES)
+	set(SQUIRRELJME_EXPORT_OWN_JNI_JVM TRUE)
 	message(STATUS "Not using the system JNI due to cross-compilation!")
 endif()
 

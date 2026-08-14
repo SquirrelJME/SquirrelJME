@@ -13,5 +13,5 @@ find_program(DOCKER docker)
 # Do we have Docker?
 if(DOCKER)
 	# Set that we have it
-	set(DOCKER_FOUND ON)
+	set(DOCKER_FOUND TRUE)
 endif()

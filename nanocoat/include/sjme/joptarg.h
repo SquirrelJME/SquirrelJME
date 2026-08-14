@@ -91,8 +91,18 @@ typedef enum sjme_joptarg_method
  */
 typedef enum sjme_joptarg_flag
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_joptarg_flag),
+	
 	/** Handle @code -- @endcode at the end as remaining arguments. */
 	SJME_JOPTARG_FLAG_DASH_DASH = 1,
+	
+	/**
+	 * Read in and handle response files, that is @code \@file @endcode.
+	 * 
+	 * This requires that the NAL be used to access the filesystem.
+	 */
+	SJME_JOPTARG_FLAG_RESPONSE_FILES = 2,
 } sjme_joptarg_flag;
 	
 /**
@@ -116,7 +126,7 @@ typedef struct sjme_joptarg_state
 	const sjme_lpcstr* argv;
 	
 	/** The generic data to be passed to the handler. */
-	sjme_pointer handlerData;
+	sjme_pointer data;
 } sjme_joptarg_state;
 	
 typedef sjme_errorCode (*sjme_joptarg_handlerFunc)(
@@ -133,7 +143,7 @@ struct sjme_joptarg_handler
  * 
  * @param method The method used.
  * @param nal The NAL to use for output and response file reading.
- * @param handlers The handlers for valid options.
+ * @param handler The handlers for valid options.
  * @param handlerData The data to be passed to handlers.
  * @param flags @link sjme_joptarg_flag @endlink flags.
  * @param argc The argument count.
@@ -144,21 +154,33 @@ struct sjme_joptarg_handler
 sjme_errorCode sjme_joptarg_parse(
 	sjme_attrInValue sjme_joptarg_method method,
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNotNull const sjme_joptarg_handler* handlers,
-	sjme_attrInNotNull sjme_pointer handlerData,
+	sjme_attrInNotNull sjme_joptarg_handlerFunc handler,
+	sjme_attrInNullable sjme_pointer handlerData,
 	sjme_attrInValue sjme_jint flags,
 	sjme_attrInPositive sjme_jint argc,
 	sjme_attrInNotNull const sjme_lpcstr* argv);
 		
 /**
  * This first tokenizes a line of arguments, then passes it 
- * to @link sjme_joptarg_parse @endlink which then parses the arguments.
+ * to @link sjme_joptarg_parse @endlink which then handles the input arguments
+ * accordingly to the @code method @endcode.
  * 
- * This is generally for systems such as Windows.
+ * This is generally for systems such as Windows, however it may not exactly
+ * match the behavior of @code CommandLineToArgvW() @endcode.
+ * 
+ * Backslashes will escape the following character so that they will not be
+ * interpreted in their normal context and only as a normal character. This
+ * as such means that a backslash followed by a double quote will not look
+ * for another double quote for spacing. Additionally, if a space is escaped
+ * then it will not cause another argument to occur.
+ * 
+ * Double quotes (@code \" @endcode), single quotes (@code \' @endcode), and
+ * backticks (@code ` @endcode) group together and will allow other quotation
+ * characters to be used.
  * 
  * @param method The method used.
  * @param nal The NAL to use for output and response file reading.
- * @param handlers The handlers for valid options.
+ * @param handler The handlers for valid options.
  * @param handlerData The data to be passed to handlers.
  * @param flags @link sjme_joptarg_flag @endlink flags.
  * @param argLine The argument command line, to be tokenized.
@@ -168,8 +190,8 @@ sjme_errorCode sjme_joptarg_parse(
 sjme_errorCode sjme_joptarg_parseLong(
 	sjme_attrInValue sjme_joptarg_method method,
 	sjme_attrInNullable const sjme_nal* nal,
-	sjme_attrInNotNull const sjme_joptarg_handler* handlers,
-	sjme_attrInNotNull sjme_pointer handlerData,
+	sjme_attrInNotNull sjme_joptarg_handlerFunc handler,
+	sjme_attrInNullable sjme_pointer handlerData,
 	sjme_attrInValue sjme_jint flags,
 	sjme_attrInNotNull sjme_lpcstr argLine);
 

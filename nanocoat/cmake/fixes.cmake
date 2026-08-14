@@ -32,9 +32,9 @@ endif()
 
 # Do not install with RPATH, CMake does relinking in build/install which
 # we do not want as we give away whatever executes and such
-set(CMAKE_SKIP_RPATH YES)
-set(CMAKE_BUILD_WITH_INSTALL_RPATH NO)
-set(CMAKE_SKIP_INSTALL_RPATH YES)
+set(CMAKE_SKIP_RPATH TRUE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+set(CMAKE_SKIP_INSTALL_RPATH TRUE)
 
 # LibRetro build for emscripten can never be static
 if(SQUIRRELJME_IS_LIBRETRO)
@@ -50,16 +50,16 @@ if(SQUIRRELJME_IS_LIBRETRO)
 #		set(CMAKE_CXX_CREATE_STATIC_LIBRARY
 #			"emcc -o <TARGET> -shared <LINK_FLAGS> <OBJECTS>")
 		set(EMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES
-			OFF)
+			FALSE)
 	elseif(LIBRETRO_STATIC)
-		set(LIBRETRO_REALLY_STATIC ON)
+		set(LIBRETRO_REALLY_STATIC TRUE)
 	endif()
 endif()
 
 # If we cannot run the code we are building then we cannot actually test code
 #if(NOT SQUIRRELJME_CROSS_BUILD)
 #	include(CheckCSourceRuns)
-#	set(CMAKE_REQUIRED_QUIET ON)
+#	set(CMAKE_REQUIRED_QUIET TRUE)
 #	check_c_source_runs("${CMAKE_SOURCE_DIR}/cmake/utils/simple.c"
 #		SQUIRRELJME_SIMPLE_SOURCE_RUNS)
 #	if(NOT SQUIRRELJME_SIMPLE_SOURCE_RUNS)
@@ -69,18 +69,18 @@ endif()
 #			"${SQUIRRELJME_SIMPLE_SOURCE_RUNS}), disabling tests.")
 #
 #		# Disable testing
-#		set(SQUIRRELJME_ENABLE_TESTING OFF)
+#		set(SQUIRRELJME_ENABLE_TESTING FALSE)
 #	endif()
 #else()
 #	# Different host, assume we cannot run the target code
-#	set(SQUIRRELJME_ENABLE_TESTING OFF)
+#	set(SQUIRRELJME_ENABLE_TESTING FALSE)
 #endif()
 
 # Are implibs used?
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
-	set(SQUIRRELJME_HAS_IMPLIB YES)
+	set(SQUIRRELJME_HAS_IMPLIB TRUE)
 else()
-	set(SQUIRRELJME_HAS_IMPLIB NO)
+	set(SQUIRRELJME_HAS_IMPLIB FALSE)
 endif()
 
 # CMake 3.13 added many things!
@@ -89,14 +89,14 @@ if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 	if(NOT DEFINED SQUIRRELJME_ENABLE_PACKING)
 		message(WARNING "Disabling packing due to old CMake.")
 
-		set(SQUIRRELJME_ENABLE_PACKING OFF)
+		set(SQUIRRELJME_ENABLE_PACKING FALSE)
 	endif()
 else()
 	# Enable CPacking and
 	if(NOT DEFINED SQUIRRELJME_ENABLE_PACKING)
 		message(STATUS "Enabling packing...")
 
-		set(SQUIRRELJME_ENABLE_PACKING ON)
+		set(SQUIRRELJME_ENABLE_PACKING TRUE)
 	endif()
 endif()
 
@@ -289,7 +289,10 @@ macro(squirreljme_check_set_compiler_flag lang flag yesDef)
 		${yesDef})
 
 	# Add compile definition to set this
-	if("${${yesDef}}" STREQUAL "1" OR "${${yesDef}}" STREQUAL "TRUE")
+	if("${${yesDef}}" STREQUAL "1" OR
+		"${${yesDef}}" STREQUAL "ON" OR
+		"${${yesDef}}" STREQUAL "TRUE" OR
+		"${${yesDef}}" STREQUAL "YES")
 		add_compile_options(${flag})
 	endif()
 endmacro()
@@ -386,11 +389,21 @@ macro(squirreljme_try_compile noun source yesDef noDef)
 	endif()
 endmacro()
 
+# Quick compilation check
+macro(squirreljme_try_compile_no noun noDef)
+	# Debugging
+	message(STATUS "${noun} forced to be not-detected...")
+
+	# Always use the passed no-definition
+	add_compile_definitions(
+		${noDef}=1)
+endmacro()
+
 # Do not set SONAME for a target
 macro(squirreljme_no_soname target)
 	set_target_properties(${target} PROPERTIES
-		NO_SONAME YES
-		NO_SYSTEM_FROM_IMPORTED YES)
+		NO_SONAME TRUE
+		NO_SYSTEM_FROM_IMPORTED TRUE)
 endmacro()
 
 # Used to remove any NOTFOUNDs from variables
@@ -460,7 +473,7 @@ message(STATUS "System Required Libraries: ${SQUIRRELJME_REQUIRED_LIBS}")
 function(squirreljme_always_fpic target)
 	if(SQUIRRELJME_ENABLE_FPIC)
 		set_target_properties(${target} PROPERTIES
-			POSITION_INDEPENDENT_CODE ON)
+			POSITION_INDEPENDENT_CODE TRUE)
 	endif()
 endfunction()
 
@@ -541,15 +554,25 @@ function(squirreljme_link_libraries target scope)
 				# Object?
 				if("${type}" STREQUAL "OBJECT_LIBRARY")
 					# Add all objects to be linked in
-					list(APPEND objects
+					if(squirreljme_bp_version_3_12)
+						list(APPEND objects
 						"$<TARGET_GENEX_EVAL:${lib},$<TARGET_OBJECTS:${lib}>>")
+					else()
+						list(APPEND objects
+							"$<TARGET_OBJECTS:${lib}>")
+					endif()
 
 				# Static or shared?
 				elseif("${type}" STREQUAL "STATIC_LIBRARY" OR
 					"${type}" STREQUAL "SHARED_LIBRARY")
 					# Just link against the object
-					list(APPEND nonObjects
+					if(squirreljme_bp_version_3_12)
+						list(APPEND nonObjects
 						"$<TARGET_GENEX_EVAL:${lib},$<TARGET_FILE:${lib}>>")
+					else()
+						list(APPEND nonObjects
+							"$<TARGET_FILE:${lib}>")
+					endif()
 
 				# Unknown target
 				else()

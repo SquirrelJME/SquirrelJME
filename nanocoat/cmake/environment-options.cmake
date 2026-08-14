@@ -15,9 +15,9 @@ define_property(GLOBAL PROPERTY globalEnvOptions
 # Path to the local configure file
 if(NOT DEFINED SJME_CONFIG_USE_PATH)
 	set(SJME_CONFIG_USE_PATH "${CMAKE_BINARY_DIR}/configure.h")
-	set(SJME_CONFIG_MAKE_CONFIG YES)
+	set(SJME_CONFIG_MAKE_CONFIG TRUE)
 else()
-	set(SJME_CONFIG_MAKE_CONFIG NO)
+	set(SJME_CONFIG_MAKE_CONFIG FALSE)
 endif()
 
 # Erase the configure file if it is being generated
@@ -68,48 +68,48 @@ endfunction()
 # Use Win32 threading when using libwine?
 squirreljme_env_option(SJME_CONFIG_EO_LIBWINE_NATIVE_THREADS
 	"Use libwine threading?"
-	NO)
+	FALSE)
 
 # Debugging options
 squirreljme_env_option(SJME_CONFIG_DEBUG_ALLOC
 	"Debug output: Allocations."
-	NO)
+	FALSE)
 squirreljme_env_option(SJME_CONFIG_DEBUG_BYTECODES
 	"Debug output: Bytecode operations."
-	NO)
+	FALSE)
 squirreljme_env_option(SJME_CONFIG_DEBUG_CIRCLEBUF
 	"Debug output: Circle buffer."
-	NO)
+	FALSE)
 squirreljme_env_option(SJME_CONFIG_DEBUG_CLOSEABLE
 	"Debug output: Closeable."
-	NO)
+	FALSE)
 squirreljme_env_option(SJME_CONFIG_DEBUG_ENTRY
 	"Debug output: Method entry and exit."
-	NO)
+	FALSE)
 squirreljme_env_option(SJME_CONFIG_DEBUG_FIELD
 	"Debug output: Field access."
-	NO)
+	FALSE)
 squirreljme_env_option(SJME_CONFIG_DEBUG_GC
 	"Debug output: Garbage collection."
-	NO)
+	FALSE)
 squirreljme_env_option(SJME_CONFIG_DEBUG_INFLATE
 	"Debug output: Deflate decompression (inflate)."
-	NO)
+	FALSE)
 squirreljme_env_option(SJME_CONFIG_DEBUG_MLE
 	"Debug output: Middle Layer Emulation calls."
-	NO)
+	FALSE)
 squirreljme_env_option(SJME_CONFIG_DEBUG_TREAD
 	"Debug output: Stack treads."
-	NO)
+	FALSE)
 squirreljme_env_option(SJME_CONFIG_DEBUG_VERBOSE
 	"Debug output: Extra verbosity for no longer needed debug messages."
-	NO)
+	FALSE)
 squirreljme_env_option(SJME_CONFIG_DEBUG_VLSVLG
 	"Debug output: Variable length Set and Get."
-	NO)
+	FALSE)
 squirreljme_env_option(SJME_CONFIG_DEBUG_ZIP
 	"Debug output: Zip files."
-	NO)
+	FALSE)
 
 # If we made the configure file, then use whatever was generated
 if(SJME_CONFIG_MAKE_CONFIG)

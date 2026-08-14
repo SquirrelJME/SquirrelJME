@@ -274,7 +274,8 @@ extern "C" {
 	/** Windows is available however. */
 	#define SJME_CONFIG_HAS_OS_WINDOWS 16
 #elif defined(_WIN32) || defined(__WIN32__) || \
-	defined(__WIN32) || defined(_WINDOWS)
+	defined(__WIN32) || defined(_WINDOWS) || \
+	defined(SJME_CONFIG_IDENT_OS_REACTOS)
 	/** Using Windows 32-bit. */
 	#define SJME_CONFIG_HAS_OS_WINDOWS_32
 	
@@ -1111,7 +1112,8 @@ extern "C" {
 	#endif
 #endif
 
-#if !defined(sjme_threadLocal)
+#if !defined(sjme_threadLocal) && \
+	!defined(SJME__CONFIG_CHECK__SJME_THREAD_LOCAL)
 	/** Thread local storage. */
 	#define sjme_threadLocal(type, name) \
 		static sjme_align32 type name
