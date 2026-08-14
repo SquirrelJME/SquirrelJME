@@ -71,7 +71,7 @@ squirreljme_multilib_export(libJvm)
 squirreljme_multilib_install(libJvm)
 
 # Exporting a JVM/JNI implementation?
-if(NOT SQUIRRELJME_EXPORT_OWN_JNI_JVM OR SQUIRRELJME_ENABLE_DYLIB)
+if(SQUIRRELJME_EXPORT_OWN_JNI_JVM)
 	# Declare library
 	add_library(discoveredJvm INTERFACE IMPORTED GLOBAL)
 
@@ -82,7 +82,7 @@ if(NOT SQUIRRELJME_EXPORT_OWN_JNI_JVM OR SQUIRRELJME_ENABLE_DYLIB)
 		"${CMAKE_SOURCE_DIR}/include/sjme/jvm")
 
 	# The implib for the JVM needs to be exported as well!
-	if(SQUIRRELJME_HAS_IMPLIB)
+	if(SQUIRRELJME_HAS_IMPLIB AND SQUIRRELJME_ENABLE_DYLIB)
 		# Determine the name that the implib should use
 		squirreljme_implib_path(impLibPath libJvmDyLib)
 
@@ -97,19 +97,24 @@ if(NOT SQUIRRELJME_EXPORT_OWN_JNI_JVM OR SQUIRRELJME_ENABLE_DYLIB)
 
 	# Create a virtual JNI export for the system
 	# Do not use squirreljme_link_libraries as that is not useful otherwise
-	if(NOT SQUIRRELJME_EXPORT_OWN_JNI_JVM)
+	if(NOT SQUIRRELJME_ENABLE_DYLIB)
 		target_link_libraries(discoveredJvm INTERFACE
 			"${SQUIRRELJME_JAVA_JVM_LIBRARY}")
-	else(SQUIRRELJME_ENABLE_DYLIB)
+	else()
 		# If a generator expression is used here, it will just use that
 		# generator expression
 		squirreljme_library_path(jvmLibPath libJvmDyLib)
 
 		# Note that since we are providing the library, we need to export
 		# the IMPLIB as well, at least for Windows
-		target_link_libraries(discoveredJvm INTERFACE
-			"${jvmLibPath}"
-			"${impLibPath}")
+		if("${impLibPath}" STREQUAL "")
+			target_link_libraries(discoveredJvm INTERFACE
+				"${jvmLibPath}")
+		else()
+			target_link_libraries(discoveredJvm INTERFACE
+				"${jvmLibPath}"
+				"${impLibPath}")
+		endif()
 	endif()
 
 	# Allow the JVM export to be used externally (allowed in 3.20+)
