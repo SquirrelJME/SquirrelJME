@@ -30,6 +30,8 @@ is used, refer to that for library bring-ins.
    * WAVE File Playback.
    * Ericsson's iMelody/eMelody support.
      * `GameCubeIntro.imy` and `NokiaRingtone.emy` self composed samples.
+   * lcdui.game `Sprite`, `Layer`, `TiledLayer`, `LayerManager` implementations.
+   * Generic keycode translator for MIDP2 vendor keycodes.
  * _"crystalct"_
    * RatufaCoat updates related to LibRetro:
      * PS3 Toolchain updates.
