@@ -53,6 +53,31 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+#if SJME_CONFIG_HAS_POINTER > 32 && SJME_CONFIG_HAS_POINTER <= 64
+	/**
+	 * Determines whether the given Java type needs native long storage.
+	 *
+	 * @param javaType The Java type to check.
+	 * @return Whether the type needs long storage.
+	 * @since 2026/08/04
+	 */
+	#define sjme_nvm_store_nativeLongType(javaType) \
+		(SJME_TYPEID_IS_WIDE(javaType) || \
+		(javaType) == SJME_JAVA_TYPE_ID_OBJECT))
+#elif SJME_CONFIG_HAS_POINTER <= 32
+	/**
+	 * Determines whether the given Java type needs native long storage.
+	 *
+	 * @param javaType The Java type to check.
+	 * @return Whether the type needs long storage.
+	 * @since 2026/08/04
+	 */
+	#define sjme_nvm_store_nativeLongType(javaType) \
+		(SJME_TYPEID_IS_WIDE(javaType))
+#else
+	#error Support pointers above 64-bit.
+#endif
+
 struct sjme_nvm_store_file
 {
 	/** The total length of the register file. */
@@ -87,6 +112,9 @@ struct sjme_nvm_store_windowJava
 
 	/** The maximum number of local variables. */
 	sjme_jint maxLocals;
+
+	/** The current top of the stack. */
+	sjme_jint stackTop;
 
 	/**
 	 * Variable assignments, this determines which slots a given variable is
@@ -132,6 +160,8 @@ struct sjme_nvm_store_window
 /**
  * Access mode flags for variables.
  *
+ * This is generally used with @link sjme_nvm_store_windowSlot @endlink.
+ *
  * @since 2026/08/04
  */
 typedef enum sjme_nvm_store_accessMode
@@ -139,6 +169,10 @@ typedef enum sjme_nvm_store_accessMode
 	/**
 	 * Read a variable, failing if it does not exist or is of an incompatible
 	 * type that is promoted in size.
+	 *
+	 * This does not fail if the requested type
+	 * is @link SJME_NUM_JAVA_TYPE_IDS @endlink, as this can be used to
+	 * determine the type for an existing slot.
 	 */
 	SJME_NVM_STORE_READ,
 
@@ -221,6 +255,28 @@ typedef enum sjme_nvm_store_slotType
 } sjme_nvm_store_slotType;
 
 /**
+ * Opaque enumeration for a native slot index.
+ *
+ * @since 2026/08/14
+ */
+typedef enum sjme_nvm_store_nativeSlot
+{
+	/** Integral enum. */
+	sjme_enumInt(sjme_nvm_store_nativeSlot),
+} sjme_nvm_store_nativeSlot;
+
+/**
+ * Opaque enumeration for a Java slot index.
+ *
+ * @since 2026/08/14
+ */
+typedef enum sjme_nvm_store_javaSlot
+{
+	/** Integral enum. */
+	sjme_enumInt(sjme_nvm_store_javaSlot),
+} sjme_nvm_store_javaSlot;
+
+/**
  * Initializes a register file within the given buffer.
  *
  * @param outFile The output register file.
@@ -288,26 +344,35 @@ sjme_errorCode sjme_nvm_store_windowPush(
 
 /**
  * Obtains the slot used for a window and returns a Java compatible value
- * that may be modified accordingly.
+ * that may be read and/or modified accordingly.
  *
- * If there is no Java information yet initialized, it will be initialized
- * when this is first called.
+ * The access mode determines what will occur.
  *
  * @param inWindow The window to get the slot for.
- * @param outValue The resultant pointer to a Java value.
- * @param inType The type of data to store in the slot.
+ * @param inJava The Java type information.
+ * @param outStorage The resultant pointer to a Java value storage.
+ * @param outType The resultant type of the given slot.
  * @param inSlot The slot index.
  * @param inSlotType The type of slot to access.
+ * @param inMode The access mode of the slot.
+ * @param inType The type of data to store in the slot, if the requested
+ * access mode is @link SJME_NVM_STORE_READ @endlink then this may be
+ * instead @link SJME_NUM_JAVA_TYPE_IDS @endlink to indicate that the type
+ * checking for the slot is not important.
  * @return Any resultant error, if any.
  * @since 2026/07/13
  */
 sjme_errorCode sjme_nvm_store_windowSlot(
 	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
-	sjme_attrOutNotNull sjme_jvalue** outValue,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId inType,
-	sjme_attrInPositive sjme_jint inSlot,
+	sjme_attrInNotNull sjme_nvm_store_windowJava* inJava,
+	sjme_attrOutNullable sjme_nvm_value** outStorage,
+	sjme_attrOutNullable sjme_javaTypeId* outType,
+	sjme_attrInPositive sjme_nvm_store_javaSlot inSlot,
 	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
-		sjme_nvm_store_slotType inSlotType);
+		sjme_nvm_store_slotType inSlotType,
+	sjme_attrInRange(0, SJME_NVM_STORE_NUM_ACCESS_MODES)
+		sjme_nvm_store_accessMode inMode,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS + 1) sjme_javaTypeId inType);
 
 /*--------------------------------------------------------------------------*/
 

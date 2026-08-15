@@ -15,20 +15,28 @@
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.36/5a30490a6e14977d97d9c73c924c1f1b5311ea95/lombok-1.18.36.jar" />
         </processorPath>
-        <module name="squirreljme.tools.github-classic-project-dump.main" />
-        <module name="squirreljme.tools.squirreljme-font.main" />
+        <module name="squirreljme.tools.github-classic-project-dump.main~1" />
+        <module name="squirreljme.tools.squirreljme-font.main~1" />
+        <module name="squirreljme.tools.squirreljme-javap.main~1" />
         <module name="squirreljme.buildSrc.main" />
-        <module name="squirreljme.tools.squirreljme-debugger.main" />
-        <module name="squirreljme.tools.squirreljme-javap.main" />
+        <module name="squirreljme.tools.squirreljme-debugger.main~1" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
+      <module name="squirreljme.buildSrc" target="11" />
+      <module name="squirreljme.buildSrc.test" target="11" />
+      <module name="squirreljme.emulators.emulator-base" target="11" />
       <module name="squirreljme.emulators.emulator-base.test~1" target="11" />
+      <module name="squirreljme.emulators.nanocoat-vm" target="11" />
       <module name="squirreljme.emulators.nanocoat-vm.test~1" target="11" />
+      <module name="squirreljme.emulators.springcoat-vm" target="11" />
       <module name="squirreljme.emulators.springcoat-vm.test~1" target="11" />
+      <module name="squirreljme.emulators.standalone" target="11" />
       <module name="squirreljme.emulators.standalone.test~1" target="11" />
+      <module name="squirreljme.sdk" target="11" />
       <module name="squirreljme.sdk.main~1" target="11" />
       <module name="squirreljme.sdk.test~1" target="11" />
+      <module name="squirreljme.tools.github-classic-project-dump" target="11" />
       <module name="squirreljme.tools.github-classic-project-dump.main~1" target="11" />
       <module name="squirreljme.tools.github-classic-project-dump.test~1" target="11" />
       <module name="squirreljme.tools.squirreljme-format" target="11" />
@@ -37,6 +45,7 @@
       <module name="squirreljme.tools.squirreljme-media-player" target="11" />
       <module name="squirreljme.tools.squirreljme-media-player.main" target="11" />
       <module name="squirreljme.tools.squirreljme-media-player.test" target="11" />
+      <module name="squirreljme.tools.txt-to-pbm" target="11" />
       <module name="squirreljme.tools.txt-to-pbm.main~1" target="11" />
       <module name="squirreljme.tools.txt-to-pbm.test~1" target="11" />
     </bytecodeTargetLevel>

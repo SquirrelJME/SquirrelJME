@@ -234,17 +234,57 @@ sjme_errorCode sjme_nvm_store_windowPush(
 
 sjme_errorCode sjme_nvm_store_windowSlot(
 	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
-	sjme_attrOutNotNull sjme_jvalue** outValue,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId inType,
-	sjme_attrInPositive sjme_jint inSlot,
+	sjme_attrInNotNull sjme_nvm_store_windowJava* inJava,
+	sjme_attrOutNullable sjme_nvm_value** outStorage,
+	sjme_attrOutNullable sjme_javaTypeId* outType,
+	sjme_attrInPositive sjme_nvm_store_javaSlot inSlot,
 	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
-		sjme_nvm_store_slotType inSlotType)
+		sjme_nvm_store_slotType inSlotType,
+	sjme_attrInRange(0, SJME_NVM_STORE_NUM_ACCESS_MODES)
+		sjme_nvm_store_accessMode inMode,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS + 1) sjme_javaTypeId inType)
 {
-	if (inWindow == NULL || outValue == NULL)
+	sjme_jint slotLimit;
+
+	if (inWindow == NULL || inJava == NULL ||
+		(outStorage == NULL && outType == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (inType < 0 || inType >= SJME_NUM_JAVA_TYPE_IDS || inSlot < 0)
+	if (inType < 0 || inType > SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (inMode < 0 || inMode >= SJME_NVM_STORE_NUM_ACCESS_MODES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* The "do not care" type is only valid for read. */
+	if (inMode != SJME_NVM_STORE_READ && inType == SJME_NUM_JAVA_TYPE_IDS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	if (inSlotType < 0 || inSlotType >= SJME_NVM_STORE_NUM_SLOT_TYPES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Gather base information on the slot type. */
+	slotLimit = -1;
+	switch (inSlotType)
+	{
+		case SJME_NVM_STORE_SLOT_TYPE_STACK:
+			slotLimit = inJava->maxStack;
+			if (inSlot < 0 || inSlot >= slotLimit)
+				return SJME_ERROR_STACK_INDEX_INVALID;
+
+		case SJME_NVM_STORE_SLOT_TYPE_LOCAL:
+			slotLimit = inJava->maxLocals;
+			if (inSlot < 0 || inSlot >= slotLimit)
+				return SJME_ERROR_LOCAL_INDEX_INVALID;
+
+		case SJME_NVM_STORE_SLOT_TYPE_ABSOLUTE:
+			slotLimit = inJava->numVars;
+			if (inSlot < 0 || inSlot >= slotLimit)
+				return SJME_ERROR_TREAD_INDEX_INVALID;
+
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
 
 	sjme_todo("Impl");
 	return sjme_error_notImplemented(0);

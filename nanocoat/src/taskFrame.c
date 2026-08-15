@@ -19,87 +19,6 @@
 #include "sjme/stdGone.h"
 #include "sjme/nvm/taskStore.h"
 
-#if SJME_CONFIG_HAS_POINTER > 32 && SJME_CONFIG_HAS_POINTER <= 64
-	/**
-	 * Determines whether the given Java type needs long storage.
-	 *
-	 * @param javaType The Java type to check.
-	 * @return Whether the type needs long storage.
-	 * @since 2026/08/04
-	 */
-	#define sjme_mod_longType(javaType) \
-		(((javaType) == SJME_JAVA_TYPE_ID_LONG || \
-		(javaType) == SJME_JAVA_TYPE_ID_DOUBLE || \
-		(javaType) == SJME_JAVA_TYPE_ID_OBJECT))
-#elif SJME_CONFIG_HAS_POINTER <= 32
-	/**
-	 * Determines whether the given Java type needs long storage.
-	 *
-	 * @param javaType The Java type to check.
-	 * @return Whether the type needs long storage.
-	 * @since 2026/08/04
-	 */
-	#define sjme_mod_longType(javaType) \
-		(((javaType) == SJME_JAVA_TYPE_ID_LONG || \
-		(javaType) == SJME_JAVA_TYPE_ID_DOUBLE))
-#else
-	#error Support pointers above 64-bit.
-#endif
-
-/**
- * Returns the top of the stack.
- *
- * @return The stack top.
- * @since 2026/08/04
- */
-#define sjme_mod_stackTop() \
-	sjme_error_notImplemented(0)
-
-/**
- * Calculates the top of the stack with the given difference in slots added to
- * it.
- *
- * @param slots The slots to add to the top.
- * @return The top of the stack with the added @code slots @endcode.
- * @since 2026/08/04
- */
-#define sjme_mod_stackTopPlus(slots) \
-	sjme_error_notImplemented(0)
-
-/**
- * Checks whether the given stack top plus the given slots is valid.
- *
- * @param slots The slots to add to the top.
- * @return If the given stack top plus is not valid.
- * @since 2026/08/04
- */
-#define sjme_mod_invalidStackTopPlus(slots) \
-	sjme_error_notImplemented(0)
-
-/**
- * Returns the pointer to the direct variable storage for stack entries.
- *
- * @param javaType The type being accessed.
- * @param slotIndex The slot index.
- * @param mode The access mode of the stack variable.
- * @return The pointer to the direct variable storage for stack entries.
- * @since 2026/08/04
- */
-#define sjme_mod_stackVar(javaType, slotIndex, mode) \
-	((sjme_jvalue*)sjme_error_notImplemented(0))
-
-/**
- * Returns the pointer to the direct variable storage for local entries.
- *
- * @param javaType The type being accessed.
- * @param slotIndex The slot index.
- * @param mode The access mode of the local variable.
- * @return The pointer to the direct variable storage for local entries.
- * @since 2026/08/04
- */
-#define sjme_mod_localVar(javaType, slotIndex, mode) \
-	((sjme_jvalue*)sjme_error_notImplemented(0))
-
 sjme_errorCode sjme_nvm_task_frameCommit(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit)
@@ -632,7 +551,7 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 
 	/* Determine new top of the stack, check for underflow. */
 	stack = &inFrame->stack;
-	newTop = stack->orderTop - (isWide ? 2 : 1);
+	newTop = stack->orderTop - SJME_TYPEID_SLOTS_BY_WIDE_BOOLEAN(isWide);
 	if (newTop < stack->orderFront)
 		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
 
@@ -727,6 +646,8 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_nvm_store_windowJava* java;
 	sjme_jint pushCount, at;
 	sjme_jboolean isWide;
+	sjme_jint newTop;
+	sjme_nvm_value* write;
 
 	if (inFrame == NULL || commit == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -737,11 +658,31 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 		inFrame->storeWindow, &java, inFrame)) || java == NULL)
 		return sjme_error_default(error);
 
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
+	/* Would the stack overflow pushing this type? */
+	newTop = java->stackTop + SJME_TYPEID_SLOTS_JAVA(inValue->t);
+	if (newTop >= java->maxStack)
+		return SJME_ERROR_STACK_OVERFLOW;
+
+	/* Obtain the slot to write at. */
+	write = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
+		java, &write, NULL, java->stackTop,
+		SJME_NVM_STORE_SLOT_TYPE_STACK,
+		SJME_NVM_STORE_WRITE_PROMOTE,
+		inValue->t)))
+		return sjme_error_default(error);
+
+	/* Write the value. */
+	if (sjme_error_is(error = sjme_nvm_vmField_cisSet(write,
+		inValue->t, commit, SJME_VLS_JVALUE_TYPED_P(inValue))))
+		return sjme_error_default(error);
+
+	/* Bump up the stack. */
+	java->stackTop = newTop;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
 #if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_frame_frameStacks* stack;
 	sjme_frame_frameStack* perType;
@@ -752,7 +693,7 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	/* Will the stack overflow? */
 	stack = &inFrame->stack;
 	isWide = SJME_TYPEID_IS_WIDE(inValue->t);
-	pushCount = (isWide ? 2 : 1);
+	pushCount = SJME_TYPEID_SLOTS_BY_WIDE_BOOLEAN(isWide);
 	if (stack->orderTop + pushCount > stack->orderLength)
 		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_OVERFLOW);
 
