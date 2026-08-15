@@ -31,7 +31,7 @@ Thank you to [Hit Save!](https://hitsave.org/) for sponsoring **SquirrelJME**!
 Please support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
 > Dedicated to _Emily_ (1998-2020), the developer
-> of [Mu](https://github.com/meepingsnesroms/Mu), I valued our friendship
+> of [Mu](https://github.com/SquirrelJME/Mu), I valued our friendship
 > greatly and all the time we would spend together nerding about technical
 > stuff, programming, and random topics. I do miss when we would play SNES
 > and NeoGeo games for hours, they were cherished moments. The times goofing
