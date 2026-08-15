@@ -201,6 +201,26 @@ typedef enum sjme_nvm_store_accessMode
 } sjme_nvm_store_accessMode;
 
 /**
+ * The type of slot being stored.
+ *
+ * @since 2026/08/14
+ */
+typedef enum sjme_nvm_store_slotType
+{
+	/** Local variable. */
+	SJME_NVM_STORE_SLOT_TYPE_LOCAL,
+
+	/** Stack variable. */
+	SJME_NVM_STORE_SLOT_TYPE_STACK,
+
+	/** Absolutely referenced variable. */
+	SJME_NVM_STORE_SLOT_TYPE_ABSOLUTE,
+
+	/** The number of slot types. */
+	SJME_NVM_STORE_NUM_SLOT_TYPES,
+} sjme_nvm_store_slotType;
+
+/**
  * Initializes a register file within the given buffer.
  *
  * @param outFile The output register file.
@@ -277,6 +297,7 @@ sjme_errorCode sjme_nvm_store_windowPush(
  * @param outValue The resultant pointer to a Java value.
  * @param inType The type of data to store in the slot.
  * @param inSlot The slot index.
+ * @param inSlotType The type of slot to access.
  * @return Any resultant error, if any.
  * @since 2026/07/13
  */
@@ -284,7 +305,9 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
 	sjme_attrOutNotNull sjme_jvalue** outValue,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId inType,
-	sjme_attrInPositive sjme_jint inSlot);
+	sjme_attrInPositive sjme_jint inSlot,
+	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
+		sjme_nvm_store_slotType inSlotType);
 
 /*--------------------------------------------------------------------------*/
 

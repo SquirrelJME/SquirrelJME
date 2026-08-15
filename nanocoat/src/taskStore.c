@@ -236,7 +236,9 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
 	sjme_attrOutNotNull sjme_jvalue** outValue,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId inType,
-	sjme_attrInPositive sjme_jint inSlot)
+	sjme_attrInPositive sjme_jint inSlot,
+	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
+		sjme_nvm_store_slotType inSlotType)
 {
 	if (inWindow == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
