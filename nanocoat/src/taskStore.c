@@ -271,16 +271,19 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 			slotLimit = inJava->maxStack;
 			if (inSlot < 0 || inSlot >= slotLimit)
 				return SJME_ERROR_STACK_INDEX_INVALID;
+			break;
 
 		case SJME_NVM_STORE_SLOT_TYPE_LOCAL:
 			slotLimit = inJava->maxLocals;
 			if (inSlot < 0 || inSlot >= slotLimit)
 				return SJME_ERROR_LOCAL_INDEX_INVALID;
+			break;
 
 		case SJME_NVM_STORE_SLOT_TYPE_ABSOLUTE:
 			slotLimit = inJava->numVars;
 			if (inSlot < 0 || inSlot >= slotLimit)
 				return SJME_ERROR_TREAD_INDEX_INVALID;
+			break;
 
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
