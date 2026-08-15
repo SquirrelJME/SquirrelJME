@@ -47,8 +47,13 @@ else()
 	set(SQUIRRELJME_IS_GNUSTEP_DESKTOP FALSE)
 endif()
 
+# Is this capable of dynamic properties?
+get_property(SQUIRRELJME_IS_DYLIB_CAPABLE
+	GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS)
+
 # Output results of what is above
 message(STATUS "?? Cross Compiled? ${SQUIRRELJME_IS_CROSS_COMPILE}")
+message(STATUS "?? Supports DyLibs? ${SQUIRRELJME_IS_DYLIB_CAPABLE}")
 message(STATUS "?? Bare Metal Hardware (No-OS)? ${SQUIRRELJME_IS_BARE_METAL}")
 message(STATUS "?? Absurd System (Xkcd Rocks)? ${SQUIRRELJME_IS_ABSURD}")
 message(STATUS "?? Historic System (Pre-1985)? ${SQUIRRELJME_IS_HISTORIC}")
@@ -64,7 +69,7 @@ message(STATUS "?? Windows-ish? ${SQUIRRELJME_IS_WINDOWS}")
 ## Dynamic libraries?
 # CMake can also tell us if this is not supported
 if(SQUIRRELJME_IS_BARE_METAL OR
-	NOT TARGET_SUPPORTS_SHARED_LIBS OR
+	NOT SQUIRRELJME_IS_DYLIB_CAPABLE OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "amiga" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "emscripten" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "dos" OR
