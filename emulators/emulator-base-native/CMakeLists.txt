@@ -204,6 +204,13 @@ ExternalProject_Add(SquirrelJME
 #		ScritchAudio ScritchUi
 	CONFIGURE_HANDLED_BY_BUILD NO)
 
+# Rule to ensure NanoCoat's binary directory exists
+add_custom_target(NanoCoatBinaryDir
+	COMMAND "${CMAKE_COMMAND}" "-E"
+		"make_directory" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+	COMMENT "Creating ${SQUIRRELJME_NANOCOAT_BINARY_DIR}..."
+	BYPRODUCTS "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+
 # Configure step, since it seems to be missing
 # Cannot be called Configure because build systems with case insensitive rules
 # will clash with built-in "configure"
@@ -263,8 +270,13 @@ else()
 	endif()
 endif()
 
+# Externalize step targets
 ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep
 	SquirrelJME-RunConfigureStep)
+
+# Make sure the binary directory exists first
+ExternalProject_Add_StepDependencies(SquirrelJME RunConfigureStep
+	NanoCoatBinaryDir)
 
 # Additional clean files for the configuration step
 if(TARGET SquirrelJME-RunConfigureStep)
@@ -277,6 +289,7 @@ macro(squirreljme_external_step target)
 	# Make sure the directory exists
 	file(MAKE_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
 
+	# Add the step
 	ExternalProject_Add_Step(SquirrelJME ${target}
 		COMMENT "Building ${target}..."
 		COMMAND "${CMAKE_COMMAND}"
@@ -284,8 +297,13 @@ macro(squirreljme_external_step target)
 			"--target" ${target}
 		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
 
+	# Add targets to build it
 	ExternalProject_Add_StepTargets(SquirrelJME ${target}
 		SquirrelJME-${target})
+
+	# Make sure the binary directory exists first
+	ExternalProject_Add_StepDependencies(SquirrelJME ${target}
+		NanoCoatBinaryDir)
 endmacro()
 
 # Add steps
