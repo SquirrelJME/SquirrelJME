@@ -37,6 +37,8 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * i-melody MLD sequence player. Uses a {@code Sampler} to generate output to a
@@ -48,115 +50,73 @@ import java.util.HashSet;
 @SquirrelJMEVendorApi
 public class MLDPlayer
 {
-	
-	/**
-	 * Event type that notifies when a non-looping sequence finishes.
-	 *
-	 * @see MLDPlayerEvent
-	 */
-	public static final int EVENT_END = 0;
-	
-	/**
-	 * Event type that notifies when a particular key is played.
-	 *
-	 * @see MLDPlayerEvent
-	 */
-	public static final int EVENT_KEY = 2;
-	
-	/**
-	 * Event type that notifies when a sequence loops.
-	 *
-	 * @see MLDPlayerEvent
-	 */
-	public static final int EVENT_LOOP = 1;
-	
-	
-	/**
-	 * Key index bias
-	 */
+	/** Key index bias. */
+	@SquirrelJMEVendorApi
 	static final int A4 = 48;
 	
-	
-	/**
-	 * Playback channels
-	 */
+	/** Playback channels. */
+	@SquirrelJMEVendorApi
 	final MLDChannel[] channels;
 	
-	/**
-	 * Pending events
-	 */
+	/** Pending events. */
+	@SquirrelJMEVendorApi
 	final ArrayList<MLDPlayerEvent> events;
 	
-	/**
-	 * Key events enabled by key
-	 */
+	/** Key events enabled by key. */
 	final HashSet<Integer> evtKeys;
 	
-	/**
-	 * Sequence resource
-	 */
+	/** Sequence resource. */
 	final MLD mld;
 	
-	/**
-	 * Output sampling rate
-	 */
+	/** Output sampling rate. */
 	final float sampleRate;
 	
-	/**
-	 * Sample generator
-	 */
+	/** Sample generator. */
 	@SquirrelJMEVendorApi
 	public final Sampler sampler;
 	
-	/**
-	 * Sequencer state
-	 */
+	/** Sequencer state. */
+	@SquirrelJMEVendorApi
 	final MLDPlayerTrack[] tracks;
 	
-	/**
-	 * Playback events are enabled
-	 */
+	/** Playback events are enabled. */
+	@SquirrelJMEVendorApi
 	boolean evtPlayback;
 	
-	/**
-	 * Sequencer has no more events
-	 */
+	/** Sequencer has no more events. */
+	@SquirrelJMEVendorApi
 	boolean finished;
 	
-	/**
-	 * Output frames in one tick
-	 */
+	/** Output frames in one tick. */
+	@SquirrelJMEVendorApi
 	float framesPerTick;
 	
-	/**
-	 * Output frames to process
-	 */
+	/** Output frames to process. */
+	@SquirrelJMEVendorApi
 	float pendingFrames;
 	
-	/**
-	 * Sequencer ticks to process
-	 */
+	/** Sequencer ticks to process. */
+	@SquirrelJMEVendorApi
 	int pendingTicks;
 	
-	/**
-	 * Sequencer position in frames
-	 */
+	/** Sequencer position in frames. */
+	@SquirrelJMEVendorApi
 	long position;
 	
-	/**
-	 * Processing setTime()
-	 */
+	/** Processing setTime(). */
+	@SquirrelJMEVendorApi
 	boolean seeking;
 	
-	/**
-	 * Sequencer position in ticks
-	 */
+	/** Sequencer position in ticks. */
+	@SquirrelJMEVendorApi
 	long tickNow;
 	
 	/** Looping is enabled. */
+	@SquirrelJMEVendorApi
 	boolean loopEnabled;
 	
 	/** Stop all notes when looping. */
+	@SquirrelJMEVendorApi
 	boolean loopStopAll;
 	
 	/**
@@ -164,27 +124,30 @@ public class MLDPlayer
 	 * conjunction with the given sampling rate to render the sequence to a
 	 * sample buffer.
 	 *
-	 * @param mld The MLD sequence to play.
-	 * @param sampler A {@code Sampler} from which instances will be taken to
+	 * @param __mld The MLD sequence to play.
+	 * @param __sampler A {@code Sampler} from which instances will be taken to
 	 * generate output.
-	 * @param sampleRate The samples per second of the output.
+	 * @param __sampleRate The samples per second of the output.
 	 * @throws NullPointerException if {@code mld} or {@code sampler} is
 	 * {@code null}.
 	 * @throws IllegalArgumentException if {@code sampleRate} is a
 	 * non-number or is less than or equal to zero.
 	 * @see MLD
 	 * @see SamplerProvider
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	public MLDPlayer(MLD mld, SamplerProvider sampler, float sampleRate)
+	public MLDPlayer(@NotNull MLD __mld, @NotNull SamplerProvider __sampler,
+		float __sampleRate)
+		throws IllegalArgumentException, NullPointerException
 	{
-		
 		// Error checking
-		if (mld == null)
+		if (__mld == null)
 			throw new NullPointerException("An MLD is required.");
-		if (sampler == null)
+		if (__sampler == null)
 			throw new NullPointerException("A sampler is required.");
-		if (Float.isInfinite(sampleRate) || sampleRate <= 0.0f)
+
+		if (Float.isInfinite(__sampleRate) || __sampleRate <= 0.0f)
 			throw new IllegalArgumentException("Invalid sampling rate.");
 		
 		this.channels = new MLDChannel[16];
@@ -193,11 +156,11 @@ public class MLDPlayer
 		this.evtPlayback = false;
 		this.loopEnabled = true;
 		this.loopStopAll = true;
-		this.mld = mld;
-		this.sampler = sampler.instance(sampleRate);
-		this.sampleRate = sampleRate;
+		this.mld = __mld;
+		this.sampler = __sampler.instance(__sampleRate);
+		this.sampleRate = __sampleRate;
 		this.seeking = false;
-		this.tracks = new MLDPlayerTrack[mld.tracks.length];
+		this.tracks = new MLDPlayerTrack[__mld.tracks.length];
 		
 		// Channels
 		for (int x = 0; x < this.channels.length; x++)
@@ -225,7 +188,9 @@ public class MLDPlayer
 	 *
 	 * @return {@code true} if looping is enabled.
 	 * @see #setLoopEnabled(boolean)
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	public boolean getLoopEnabled()
 	{
 		return this.loopEnabled;
@@ -236,41 +201,12 @@ public class MLDPlayer
 	 *
 	 * @return {@code true} if all notes are stopped when looping.
 	 * @see #setLoopStopAll(boolean)
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	public boolean getLoopStopAll()
 	{
 		return this.loopStopAll;
-	}
-	
-	/**
-	 * Registers a key to raise events for during rendering. Key number 0 is
-	 * the note A<sub>4</sub>.
-	 *
-	 * @param key A key number to register.
-	 * @see MLDPlayerEvent
-	 * @see #getEvents()
-	 */
-	public void addEventKey(int key)
-	{
-		this.evtKeys.add(key);
-	}
-	
-	/**
-	 * Registers multiple keys to raise events for during rendering. Key
-	 * number
-	 * 0 is the note A<sub>4</sub>.
-	 *
-	 * @param keys A list of key numbers to register.
-	 * @throws NullPointerException if {@code keys} is {@code null}.
-	 * @see MLDPlayerEvent
-	 * @see #getEvents()
-	 */
-	public void addEventKeys(int[] keys)
-	{
-		if (keys == null)
-			throw new NullPointerException("Key array is required.");
-		for (int key : keys)
-			this.evtKeys.add(key);
 	}
 	
 	/**
@@ -279,7 +215,7 @@ public class MLDPlayer
 	 * MLD}
 	 * object.
 	 *
-	 * @param withoutLooping Whether or not to consider looping in the return
+	 * @param __withoutLooping Whether or not to consider looping in the return
 	 * value.
 	 * @return If the sequence does not loop, the number of seconds in the
 	 * sequence. If the sequence loops and {@code withoutLooping} is
@@ -288,13 +224,13 @@ public class MLDPlayer
 	 * loops and {@code withoutLooping} is {@code true}, returns the number of
 	 * seconds in the sequence up until the first loop occurs.
 	 * @see MLD#getDuration(boolean)
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	public double getDuration(boolean withoutLooping)
+	public double getDuration(boolean __withoutLooping)
 	{
-		return this.mld.getDuration(withoutLooping);
+		return this.mld.getDuration(__withoutLooping);
 	}
-	
 	
 	/**
 	 * Retrieve and acknowledge all pending events. If this method is not
@@ -306,6 +242,7 @@ public class MLDPlayer
 	 * @see #addEventKey(int)
 	 * @see #addEventKeys(int[])
 	 * @see #setPlaybackEventsEnabled(boolean)
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
 	public MLDPlayerEvent[] getEvents()
@@ -316,7 +253,6 @@ public class MLDPlayer
 		return ret;
 	}
 	
-	
 	/**
 	 * Retrieve the current playback position in the sequence. The range of
 	 * values represents the start of the sequence at 0.0 and either the
@@ -325,7 +261,9 @@ public class MLDPlayer
 	 *
 	 * @return The proportion of the total sequence for the current playback
 	 * position.
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	public double getPosition()
 	{
 		return (double)this.tickNow / this.mld.tickEnd;
@@ -338,6 +276,7 @@ public class MLDPlayer
 	 * sequence.
 	 * @see #setTime(double)
 	 * @see MLD#getDuration(boolean)
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
 	public double getTime()
@@ -351,7 +290,9 @@ public class MLDPlayer
 	 * has stopped generating samples.
 	 *
 	 * @return {@code true} if all playback has completed.
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	public boolean isFinished()
 	{
 		if (!this.sampler.isFinished())
@@ -365,124 +306,115 @@ public class MLDPlayer
 	}
 	
 	/**
-	 * Unregisters a keys from raising events during rendering.
-	 *
-	 * @param key A key number to unregister.
-	 * @see MLDPlayerEvent
-	 * @see #getEvents()
-	 */
-	public void removeEventKey(int key)
-	{
-		this.evtKeys.remove(key);
-	}
-	
-	/**
-	 * Unregisters multiple keys from raising events during rendering.
-	 *
-	 * @param keys A list of key numbers to unregister.
-	 * @throws NullPointerException if {@code keys} is {@code null}.
-	 * @see MLDPlayerEvent
-	 * @see #getEvents()
-	 */
-	public void removeEventKeys(int[] keys)
-	{
-		if (keys == null)
-			throw new NullPointerException("Key array is required.");
-		for (int key : keys)
-			this.evtKeys.remove(key);
-	}
-	
-	/**
 	 * Generate output samples. This method is equivalent to
-	 * {@code render(samples, offset, frames, 1.0f, 1.0f, true, true)}.<br
-	 * ><br>
-	 * For information regarding the operations of this method, see
-	 * {@link Sampler#render(float[], int, int, float, float, boolean, boolean)}.
-	 *
-	 * @param samples Output sample buffer.
-	 * @param offset Index in {@code samples} of the first audio frame to
-	 * output.
-	 * @param frames The number of audio frames to output.
-	 * @return The number of samples generated, or -1 if playback has
-	 * finished.
-	 * May be less than {@code frames} if playback of the underlying sequence
-	 * completes before all frames have been processed.
-	 * @throws NullPointerException if {@code samples} is {@code null}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code offset} is
-	 * negative, or if {@code offset + frames * 2 > samples.length}.
-	 * @throws IllegalArgumentException if {@code frames} is negative.
-	 * @see #render(float[], int, int, float, float, boolean, boolean)
-	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
-	 */
-	public int render(float[] samples, int offset, int frames)
-	{
-		return this.render(samples, offset, frames, 1.0f, 1.0f, true, true);
-	}
-	
-	/**
-	 * Generate output samples. This method is equivalent to
-	 * {@code render(samples, offset, frames, amplitude, amplitude,
+	 * {@code render(__samples, __offset, __frames, 1.0f, 1.0f,
 	 * true, true)}.<br><br>
 	 * For information regarding the operations of this method, see
 	 * {@link Sampler#render(float[], int, int, float, float, boolean, boolean)}.
 	 *
-	 * @param samples Output sample buffer.
-	 * @param offset Index in {@code samples} of the first audio frame to
+	 * @param __samples Output sample buffer.
+	 * @param __offset Index in {@code __samples} of the first audio frame to
 	 * output.
-	 * @param frames The number of audio frames to output.
-	 * @param amplitude A multiplier that is applied to all samples
-	 * generated.
+	 * @param __frames The number of audio frames to output.
 	 * @return The number of samples generated, or -1 if playback has
 	 * finished.
-	 * May be less than {@code frames} if playback of the underlying sequence
+	 * May be less than {@code __frames} if playback of the underlying sequence
 	 * completes before all frames have been processed.
-	 * @throws NullPointerException if {@code samples} is {@code null}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code offset} is
-	 * negative, or if {@code offset + frames * 2 > samples.length}.
-	 * @throws IllegalArgumentException if {@code frames} is negative, or if
-	 * {@code amplitude} is a non-number or is negative.
+	 * @throws NullPointerException if {@code __samples} is {@code null}.
+	 * @throws ArrayIndexOutOfBoundsException if {@code __offset} is
+	 * negative, or if {@code __offset + __frames * 2 > __samples.length}.
+	 * @throws IllegalArgumentException if {@code __frames} is negative.
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
+	 * @since 2025/05/05
 	 */
-	public int render(float[] samples, int offset, int frames,
-		float amplitude)
+	@SquirrelJMEVendorApi
+	public int render(@NotNull float[] __samples,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __frames)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+		NullPointerException
 	{
-		return this.render(samples, offset, frames, amplitude, amplitude,
-			true,
+		return this.render(__samples, __offset, __frames, 1.0f, 1.0f, true,
 			true);
 	}
 	
 	/**
 	 * Generate output samples. This method is equivalent to
-	 * {@code render(samples, offset, frames, left, right, true, true)}.
-	 * <br><br>
+	 * {@code render(__samples, __offset, __frames, __amplitude, __amplitude,
+	 * true, true)}.<br><br>
 	 * For information regarding the operations of this method, see
 	 * {@link Sampler#render(float[], int, int, float, float, boolean, boolean)}.
 	 *
-	 * @param samples Output sample buffer.
-	 * @param offset Index in {@code samples} of the first audio frame to
+	 * @param __samples Output sample buffer.
+	 * @param __offset Index in {@code __samples} of the first audio frame to
 	 * output.
-	 * @param frames The number of audio frames to output.
-	 * @param left A multiplier that is applied to all left-stereo samples
-	 * generated.
-	 * @param right A multiplier that is applied to all right-stereo samples
+	 * @param __frames The number of audio frames to output.
+	 * @param __amplitude A multiplier that is applied to all samples
 	 * generated.
 	 * @return The number of samples generated, or -1 if playback has
 	 * finished.
-	 * May be less than {@code frames} if playback of the underlying sequence
+	 * May be less than {@code __frames} if playback of the underlying sequence
 	 * completes before all frames have been processed.
-	 * @throws NullPointerException if {@code samples} is {@code null}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code offset} is
-	 * negative, or if {@code offset + frames * 2 > samples.length}.
-	 * @throws IllegalArgumentException if {@code frames} is negative, or if
-	 * {@code left} or {@code right} is a non-number or is negative.
+	 * @throws NullPointerException if {@code __samples} is {@code null}.
+	 * @throws ArrayIndexOutOfBoundsException if {@code __offset} is
+	 * negative, or if {@code __offset + __frames * 2 > __samples.length}.
+	 * @throws IllegalArgumentException if {@code __frames} is negative, or if
+	 * {@code __amplitude} is a non-number or is negative.
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
+	 * @since 2025/05/05
 	 */
-	public int render(float[] samples, int offset, int frames, float left,
-		float right)
+	@SquirrelJMEVendorApi
+	public int render(@NotNull float[] __samples,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
+		float __amplitude)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+		NullPointerException
 	{
-		return this.render(samples, offset, frames, left, right, true, true);
+		return this.render(__samples, __offset, __frames, __amplitude,
+			__amplitude, true, true);
+	}
+	
+	/**
+	 * Generate output samples. This method is equivalent to
+	 * {@code render(__samples, __offset, __frames, __left, __right,
+	 * true, true)}.<br><br>
+	 * For information regarding the operations of this method, see
+	 * {@link Sampler#render(float[], int, int, float, float, boolean, boolean)}.
+	 *
+	 * @param __samples Output sample buffer.
+	 * @param __offset Index in {@code __samples} of the first audio frame to
+	 * output.
+	 * @param __frames The number of audio frames to output.
+	 * @param __left A multiplier that is applied to all left-stereo samples
+	 * generated.
+	 * @param __right A multiplier that is applied to all right-stereo samples
+	 * generated.
+	 * @return The number of samples generated, or -1 if playback has
+	 * finished.
+	 * May be less than {@code __frames} if playback of the underlying sequence
+	 * completes before all frames have been processed.
+	 * @throws NullPointerException if {@code __samples} is {@code null}.
+	 * @throws ArrayIndexOutOfBoundsException if {@code __offset} is
+	 * negative, or if {@code __offset + __frames * 2 > __samples.length}.
+	 * @throws IllegalArgumentException if {@code __frames} is negative, or if
+	 * {@code __left} or {@code __right} is a non-number or is negative.
+	 * @see #render(float[], int, int, float, float, boolean, boolean)
+	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	public int render(@NotNull float[] __samples,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
+		float __left, float __right)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+		NullPointerException
+	{
+		return this.render(__samples, __offset, __frames, __left, __right,
+			true, true);
 	}
 	
 	/**
@@ -492,39 +424,44 @@ public class MLDPlayer
 	 * <br><br>
 	 * If an event is raised during playback, rendering will stop and return
 	 * before generating any more samples. When this happens, the return value
-	 * may be less than {@code frames}. {@link #getEvents()} should be called
+	 * may be less than {@code __frames}. {@link #getEvents()} should be called
 	 * after every call to {@code render()} while events are enabled.
 	 *
-	 * @param samples Output sample buffer.
-	 * @param offset Index in {@code samples} of the first audio frame to
+	 * @param __samples Output sample buffer.
+	 * @param __offset Index in {@code __samples} of the first audio frame to
 	 * output.
-	 * @param frames The number of audio frames to output.
-	 * @param left A multiplier that is applied to all left-stereo samples
+	 * @param __frames The number of audio frames to output.
+	 * @param __left A multiplier that is applied to all left-stereo samples
 	 * generated.
-	 * @param right A multiplier that is applied to all right-stereo samples
+	 * @param __right A multiplier that is applied to all right-stereo samples
 	 * generated.
-	 * @param erase Replace the buffer contents when {@code true}, or add
+	 * @param __erase Replace the buffer contents when {@code true}, or add
 	 * to them when {@code false}
-	 * @param clamp Specifies whether to restrict the sample buffer values
+	 * @param __clamp Specifies whether to restrict the sample buffer values
 	 * to -1.0f to +1.0f inclusive.
 	 * @return The number of samples generated, or -1 if playback has
 	 * finished.
-	 * May be less than {@code frames} if playback of the underlying sequence
+	 * May be less than {@code __frames} if playback of the underlying sequence
 	 * completes before all frames have been processed.
-	 * @throws NullPointerException if {@code samples} is {@code null}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code offset} is
-	 * negative, or if {@code offset + frames * 2 > samples.length}.
-	 * @throws IllegalArgumentException if {@code frames} is negative, or if
-	 * {@code left} or {@code right} is a non-number or is negative.
+	 * @throws NullPointerException if {@code __samples} is {@code null}.
+	 * @throws ArrayIndexOutOfBoundsException if {@code __offset} is
+	 * negative, or if {@code __offset + __frames * 2 > __samples.length}.
+	 * @throws IllegalArgumentException if {@code __frames} is negative, or if
+	 * {@code __left} or {@code __right} is a non-number or is negative.
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 * @see #getEvents()
 	 * @see #render(float[], int, int)
 	 * @see #render(float[], int, int, float)
 	 * @see #render(float[], int, int, float, float)
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	public int render(float[] samples, int offset, int frames, float left,
-		float right, boolean erase, boolean clamp)
+	public int render(@NotNull float[] __samples,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
+		float __left, float __right, boolean __erase, boolean __clamp)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+		NullPointerException
 	{
 		//  Total frames output so far
 		int ret = 0;
@@ -532,29 +469,29 @@ public class MLDPlayer
 		// Error checking
 		if (!this.seeking)
 		{
-			if (samples == null)
+			if (__samples == null)
 				throw new NullPointerException(
 					"A sample buffer is required" + ".");
-			if (frames < 0)
+			if (__frames < 0)
 				throw new IllegalArgumentException("Invalid frames.");
-			if (offset < 0 || offset + frames * 2 > samples.length)
+			if (__offset < 0 || __offset + __frames * 2 > __samples.length)
 			{
 				throw new ArrayIndexOutOfBoundsException(
 					"Invalid range in sample buffer.");
 			}
-			if (Float.isInfinite(left) || left < 0.0f)
+			if (Float.isInfinite(__left) || __left < 0.0f)
 				throw new IllegalArgumentException("Invalid left amplitude.");
-			if (Float.isInfinite(right) || right < 0.0f)
+			if (Float.isInfinite(__right) || __right < 0.0f)
 				throw new IllegalArgumentException(
 					"Invalid right amplitude" + ".");
 		}
 		
 		// Sequencer is not playing
 		if (this.finished)
-			this.pendingFrames = frames;
+			this.pendingFrames = __frames;
 		
 		// Process all output frames
-		while (frames > 0)
+		while (__frames > 0)
 		{
 			
 			// Events are pending
@@ -566,21 +503,20 @@ public class MLDPlayer
 			{
 				
 				// Render the samples
-				int f = Math.min(frames, (int)Math.floor(this.pendingFrames));
+				int f = Math.min(__frames, (int)Math.floor(this.pendingFrames));
 				if (!this.seeking)
-					this.sampler.render(samples, offset, f, left, right,
-						erase,
-						clamp);
+					this.sampler.render(__samples, __offset, f, __left, __right,
+						__erase, __clamp);
 				
 				// State management
-				frames -= f;
-				offset += f * 2;
+				__frames -= f;
+				__offset += f * 2;
 				this.pendingFrames -= f;
 				this.position += f;
 				ret += f;
 				
 				// All output frames have been processed
-				if (frames == 0)
+				if (__frames == 0)
 					return this.finished ? -1 : ret;
 			}
 			
@@ -598,7 +534,7 @@ public class MLDPlayer
 				
 				// Tracks
 				for (MLDPlayerTrack track : this.tracks)
-					this.process(track, this.pendingTicks);
+					this.__process(track, this.pendingTicks);
 				
 				// Remove expired notes
 				for (MLDChannel chan : this.channels)
@@ -615,13 +551,13 @@ public class MLDPlayer
 			}
 			
 			// Determine how many ticks and frames can be processed next
-			int untilTrack = this.untilTrack();
+			int untilTrack = this.__untilTrack();
 			if (untilTrack == -1)
 			{
 				this.finished = true;
 				return ret;
 			}
-			int untilNote = this.untilNote();
+			int untilNote = this.__untilNote();
 			this.pendingTicks = untilNote == -1 ? untilTrack : Math.min(
 				untilTrack, untilNote);
 			this.pendingFrames += (float)Math.floor(
@@ -630,21 +566,100 @@ public class MLDPlayer
 		
 		return ret;
 	}
+
+	/**
+	 * Initialize state in preparation for playback. All notes are stopped and
+	 * all sequencer state is reset to the beginning of the sequence.
+	 *
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	public void reset()
+	{
+		// Instance fields
+		this.pendingFrames = 0;
+		this.pendingTicks = 0;
+		this.position = 0;
+		this.tickNow = 0;
+		this.__setTempo(48, 125);
+		this.events.clear();
+
+		// Initialize sampler
+		this.sampler.reset();
+
+		// Channels
+		for (MLDChannel chan : this.channels)
+		{
+			Arrays.fill(chan.notesOn, null);
+			chan.notesOut.clear();
+		}
+
+		// Tracks
+		for (MLDPlayerTrack track : this.tracks)
+		{
+			track.cuepoint = -1;
+			track.offset = track.mld.cue;
+			track.ticks = 0;
+			track.finished = track.offset >= track.mld.size();
+		}
+
+		// Initialize playback
+		this.finished = true;
+		for (MLDPlayerTrack track : this.tracks)
+		{
+			this.__process(track, 0);
+			this.finished = this.finished && track.finished;
+		}
+
+	}
+
+	/**
+	 * Specify whether to enable looping. When disabled, loop points
+	 * defined in the sequence data will not be processed.
+	 *
+	 * @param __enabled If {@code true}, looping will be enabled.
+	 * @return the value of {@code enabled}
+	 * @see #getLoopEnabled()
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	public boolean setLoopEnabled(boolean __enabled)
+	{
+		return this.loopEnabled = __enabled;
+	}
+
+	/**
+	 * Specify whether to stop all notes when looping. If notes are not
+	 * stopped, it is possible for adjustments to volume or pitch-bend to
+	 * affect ongoing notes in undesirable ways. If notes <i>are</i> stopped,
+	 * it is possible for ongoing notes to be truncated in undesirable ways.
+	 *
+	 * @param __stopAll If {@code true}, all notes will be stopped when looping.
+	 * @return the value of {@code stopAll}
+	 * @see #getLoopStopAll()
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	public boolean setLoopStopAll(boolean __stopAll)
+	{
+		return this.loopStopAll = __stopAll;
+	}
 	
 	/**
 	 * Specify whether or not to raise playback events. Playback events
 	 * include
-	 * {@code EVENT_END} and {@code EVENT_LOOP}.
+	 * {@link MLDPlayerEvent.EVENT_END} and {@link MLDPlayerEvent.EVENT_LOOP}.
 	 *
-	 * @param enabled Whether or not playback events can be raised during
+	 * @param __enabled Whether or not playback events can be raised during
 	 * rendering.
 	 * @see MLDPlayerEvent
 	 * @see #getEvents()
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	public void setPlaybackEventsEnabled(boolean enabled)
+	public void setPlaybackEventsEnabled(boolean __enabled)
 	{
-		this.evtPlayback = enabled;
+		this.evtPlayback = __enabled;
 	}
 	
 	/**
@@ -656,7 +671,7 @@ public class MLDPlayer
 	 * position in the sequence retrieved by subsequent calls to
 	 * {@code getTime()} may be less than {@code seconds}.
 	 *
-	 * @param seconds The number of seconds from the beginning of the
+	 * @param __seconds The number of seconds from the beginning of the
 	 * sequence.
 	 * @return {@code true} if the end of the sequence was encountered during
 	 * the operation.
@@ -664,17 +679,17 @@ public class MLDPlayer
 	 * or is negative.
 	 * @see #getTime()
 	 * @see MLD#getDuration(boolean)
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	public boolean setTime(double seconds)
+	public boolean setTime(double __seconds)
 	{
-		
 		// Error checking
-		if (Double.isInfinite(seconds) || seconds < 0)
+		if (Double.isInfinite(__seconds) || __seconds < 0)
 			throw new IllegalArgumentException("Invalid seconds.");
 		
 		// Compute the target number of frames
-		long target = (long)Math.ceil(seconds * this.sampleRate);
+		long target = (long)Math.ceil(__seconds * this.sampleRate);
 		
 		// Already at the target
 		if (target == this.position)
@@ -691,26 +706,66 @@ public class MLDPlayer
 		this.seeking = false;
 		return this.isFinished();
 	}
-	
-	
+
 	/**
-	 * bank-change
+	 * Registers a key to raise events for during rendering. Key number 0 is
+	 * the note A<sub>4</sub>.
+	 *
+	 * @param __key A key number to register.
+	 * @see MLDPlayerEvent
+	 * @see #getEvents()
+	 * @since 2025/05/05
 	 */
-	void evtBankChange(MLDPlayerTrack track, MLDEvent event)
+	private void __addEventKey(int __key)
 	{
-		this.sampler.bankChange(event.channel, event.bank);
-		this.setTrackOffset(track, track.offset + 1);
+		this.evtKeys.add(__key);
 	}
 	
 	/**
-	 * cuepoint
+	 * Registers multiple keys to raise events for during rendering. Key
+	 * number
+	 * 0 is the note A<sub>4</sub>.
+	 *
+	 * @param __keys A list of key numbers to register.
+	 * @throws NullPointerException if {@code keys} is {@code null}.
+	 * @see MLDPlayerEvent
+	 * @see #getEvents()
+	 * @since 2025/05/05
 	 */
-	void evtCuepoint(MLDPlayerTrack track, MLDEvent event)
+	private void __addEventKeys(@NotNull int[] __keys)
+	{
+		if (__keys == null)
+			throw new NullPointerException("Key array is required.");
+		for (int key : __keys)
+			this.evtKeys.add(key);
+	}
+	
+	/**
+	 * Process a Bank Change event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
+	 */
+	private void __evtBankChange(MLDPlayerTrack __track, MLDEvent __event)
+	{
+		this.sampler.bankChange(__event.channel, __event.bank);
+		this.__setTrackOffset(__track, __track.offset + 1);
+	}
+	
+	/**
+	 * Process a Cuepoint event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
+	 */
+	private void __evtCuepoint(MLDPlayerTrack __track, MLDEvent __event)
 	{
 		// Common processing
-		this.setTrackOffset(track, track.offset + 1);
+		this.__setTrackOffset(__track, __track.offset + 1);
 		
-		if (event.cuepoint == MLD.CUEPOINT_START)
+		if (__event.cuepoint == MLD.EVENT_CUEPOINT_START)
 		{
 			for (MLDPlayerTrack t : this.tracks)
 				t.cuepoint = t.offset;
@@ -718,7 +773,8 @@ public class MLDPlayer
 			return;
 		}
 
-		if (event.cuepoint == MLD.CUEPOINT_END && this.tracks[0].cuepoint != -1)
+		if (__event.cuepoint == MLD.EVENT_CUEPOINT_END &&
+			this.tracks[0].cuepoint != -1)
 		{
 			// Reached CUEPOINT_END, stop playback.
 			this.finished = true;
@@ -726,64 +782,76 @@ public class MLDPlayer
 	}
 	
 	/**
-	 * drum-enable
+	 * Process a Drum enable event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtDrumEnable(MLDPlayerTrack track, MLDEvent event)
+	private void __evtDrumEnable(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		this.sampler.drumEnable(event.channel, event.enable);
-		this.setTrackOffset(track, track.offset + 1);
+		this.sampler.drumEnable(__event.channel, __event.enable);
+		this.__setTrackOffset(__track, __track.offset + 1);
 	}
 	
 	/**
-	 * end-of-track
+	 * Process an End-Of-Track event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtEndOfTrack(MLDPlayerTrack track, MLDEvent event)
+	private void __evtEndOfTrack(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		track.finished = true;
+		__track.finished = true;
 	}
 	
 	/**
-	 * ext-B event
+	 * Process an Ext-B event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtExtB(MLDPlayerTrack track, MLDEvent e)
+	private void __evtExtB(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		switch (e.id)
+		switch (__event.id)
 		{
 			case MLD.EVENT_BANK_CHANGE:
-				this.evtBankChange(track, e);
+				this.__evtBankChange(__track, __event);
 				break;
 			case MLD.EVENT_CUEPOINT:
-				this.evtCuepoint(track, e);
+				this.__evtCuepoint(__track, __event);
 				break;
 			case MLD.EVENT_END_OF_TRACK:
-				this.evtEndOfTrack(track, e);
+				this.__evtEndOfTrack(__track, __event);
 				break;
 			case MLD.EVENT_MASTER_VOLUME:
-				this.evtMasterVolume(track, e);
+				this.__evtMasterVolume(__track, __event);
 				break;
 			case MLD.EVENT_MASTER_TUNE:
-				this.evtMasterTune(track, e);
+				this.__evtMasterTune(__track, __event);
 				break;
 			case MLD.EVENT_PANPOT:
-				this.evtPanPot(track, e);
+				this.__evtPanPot(__track, __event);
 				break;
 			case MLD.EVENT_PITCHBEND:
-				this.evtPitchBend(track, e);
+				this.__evtPitchBend(__track, __event);
 				break;
 			case MLD.EVENT_PITCHBEND_RANGE:
-				this.evtPitchRange(track, e);
+				this.__evtPitchRange(__track, __event);
 				break;
 			case MLD.EVENT_PROGRAM_CHANGE:
-				this.evtProgramChange(track, e);
+				this.__evtProgramChange(__track, __event);
 				break;
 			case MLD.EVENT_TIMEBASE_TEMPO:
-				this.evtTimebaseTempo(track, e);
+				this.__evtTimebaseTempo(__track, __event);
 				break;
 			case MLD.EVENT_VOLUME:
-				this.evtVolume(track, e);
+				this.__evtVolume(__track, __event);
 				break;
 			case MLD.EVENT_X_DRUM_ENABLE:
-				this.evtDrumEnable(track, e);
+				this.__evtDrumEnable(__track, __event);
 				break;
 			
 			// Not implemented
@@ -799,61 +867,77 @@ public class MLDPlayer
 			
 			// Unrecognized events
 			default:
-				this.setTrackOffset(track, track.offset + 1);
+				this.__setTrackOffset(__track, __track.offset + 1);
 		}
 	}
 	
 	/**
-	 * ext-info event
+	 * Process an Ext-Info event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtExtInfo(MLDPlayerTrack track, MLDEvent e)
+	private void __evtExtInfo(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		this.sampler.sysEx(e.data);
-		this.setTrackOffset(track, track.offset + 1);
+		this.sampler.sysEx(__event.data);
+		this.__setTrackOffset(__track, __track.offset + 1);
 	}
 	
 	/**
-	 * master-tune
+	 * Process a Master Tune event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtMasterTune(MLDPlayerTrack track, MLDEvent event)
+	private void __evtMasterTune(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		this.sampler.masterTune(event.semitones);
-		this.setTrackOffset(track, track.offset + 1);
+		this.sampler.masterTune(__event.semitones);
+		this.__setTrackOffset(__track, __track.offset + 1);
 	}
 	
 	/**
-	 * master-volume
+	 * Process a Master Volume event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtMasterVolume(MLDPlayerTrack track, MLDEvent event)
+	private void __evtMasterVolume(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		this.sampler.masterVolume(event.volume);
-		this.setTrackOffset(track, track.offset + 1);
+		this.sampler.masterVolume(__event.volume);
+		this.__setTrackOffset(__track, __track.offset + 1);
 	}
 	
 	/**
-	 * note
+	 * Process a Note event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtNote(MLDPlayerTrack track, MLDEvent event)
+	private void __evtNote(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		MLDChannel chan = this.channels[event.channel];
-		MLDNote note = chan.notesOn[MLDPlayer.A4 + event.key];
+		MLDChannel chan = this.channels[__event.channel];
+		MLDNote note = chan.notesOn[MLDPlayer.A4 + __event.key];
 		
 		// Common processing
-		this.setTrackOffset(track, track.offset + 1);
+		this.__setTrackOffset(__track, __track.offset + 1);
 		
 		// Raise an event
-		if (this.evtKeys.contains(event.key))
+		if (this.evtKeys.contains(__event.key))
 			this.events.add(
-				new MLDPlayerEvent(this.getTime(), MLDPlayer.EVENT_KEY,
-					event.key));
+				new MLDPlayerEvent(this.getTime(), MLDPlayerEvent.EVENT_KEY,
+					__event.key));
 		
 		// Velocity 0 is regarded as key-off
-		if (event.velocity == 0)
+		if (__event.velocity == 0)
 		{
-			this.sampler.keyOff(event.channel, event.key);
+			this.sampler.keyOff(__event.channel, __event.key);
 			if (note != null)
 			{
-				chan.notesOn[MLDPlayer.A4 + event.key] = null;
+				chan.notesOn[MLDPlayer.A4 + __event.key] = null;
 				chan.notesOut.remove(note);
 			}
 			return;
@@ -861,234 +945,226 @@ public class MLDPlayer
 		
 		// Velocity not zero is regarded as key-on
 		if (!this.seeking)
-			this.sampler.keyOn(event.channel, event.key, event.velocity);
+			this.sampler.keyOn(__event.channel, __event.key, __event.velocity);
 		
 		// Get or create the note for this key
 		if (note == null)
 		{
 			note = new MLDNote();
-			note.channel = event.channel;
-			note.key = event.key;
-			chan.notesOn[MLDPlayer.A4 + event.key] = note;
+			note.channel = __event.channel;
+			note.key = __event.key;
+			chan.notesOn[MLDPlayer.A4 + __event.key] = note;
 			chan.notesOut.add(note);
 		}
 		
 		// Reconfigure the note
-		note.gateTime = event.gateTime;
+		note.gateTime = __event.gateTime;
 	}
 	
 	/**
-	 * panpot
+	 * Process a Panning event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtPanPot(MLDPlayerTrack track, MLDEvent event)
+	private void __evtPanPot(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		this.sampler.panpot(event.channel, event.panpot);
-		this.setTrackOffset(track, track.offset + 1);
+		this.sampler.panpot(__event.channel, __event.panpot);
+		this.__setTrackOffset(__track, __track.offset + 1);
 	}
 	
 	/**
-	 * pitchbend
+	 * Process a Pitch Bend event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtPitchBend(MLDPlayerTrack track, MLDEvent event)
+	private void __evtPitchBend(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		this.sampler.pitchBend(event.channel, event.semitones);
-		this.setTrackOffset(track, track.offset + 1);
+		this.sampler.pitchBend(__event.channel, __event.semitones);
+		this.__setTrackOffset(__track, __track.offset + 1);
 	}
 	
 	/**
-	 * pitchbend-range
+	 * Process a Pitch Bend Range event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtPitchRange(MLDPlayerTrack track, MLDEvent event)
+	private void __evtPitchRange(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		this.sampler.pitchBendRange(event.channel, event.range);
-		this.setTrackOffset(track, track.offset + 1);
+		this.sampler.pitchBendRange(__event.channel, __event.range);
+		this.__setTrackOffset(__track, __track.offset + 1);
 	}
 	
 	/**
-	 * program-change
+	 * Process a Program Change event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtProgramChange(MLDPlayerTrack track, MLDEvent event)
+	private void __evtProgramChange(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		this.sampler.programChange(event.channel, event.program);
-		this.setTrackOffset(track, track.offset + 1);
+		this.sampler.programChange(__event.channel, __event.program);
+		this.__setTrackOffset(__track, __track.offset + 1);
 	}
 	
 	/**
-	 * timebase-tempo
+	 * Process a Timebase-Tempo event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtTimebaseTempo(MLDPlayerTrack track, MLDEvent event)
+	private void __evtTimebaseTempo(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		if (event.timebase == -1)
+		if (__event.timebase == -1)
 			return;
 		float prev = this.framesPerTick;
-		this.setTempo(event.timebase, event.tempo);
+		this.__setTempo(__event.timebase, __event.tempo);
 		this.pendingFrames = this.pendingFrames * this.framesPerTick / prev;
-		this.setTrackOffset(track, track.offset + 1);
+		this.__setTrackOffset(__track, __track.offset + 1);
 	}
 	
 	/**
-	 * volume
+	 * Process a Volume event.
+	 *
+	 * @param __track The track that the event belongs to.
+	 * @param __event {@link MLDEvent} object containing event data.
+	 * @since 2025/05/05
 	 */
-	void evtVolume(MLDPlayerTrack track, MLDEvent event)
+	private void __evtVolume(MLDPlayerTrack __track, MLDEvent __event)
 	{
-		this.sampler.volume(event.channel, event.volume);
-		this.setTrackOffset(track, track.offset + 1);
+		this.sampler.volume(__event.channel, __event.volume);
+		this.__setTrackOffset(__track, __track.offset + 1);
 	}
-	
-	
+
 	/**
-	 * Process events on a track
+	 * Process events on a track.
+	 *
+	 * @param __track The track to process.
+	 * @param __ticks The amount of ticks pending to process.
+	 * @since 2025/05/05
 	 */
-	void process(MLDPlayerTrack track, int ticks)
+	private void __process(MLDPlayerTrack __track, int __ticks)
 	{
-		
 		// The track has finished
-		if (track.finished)
+		if (__track.finished)
 			return;
 		
 		// Update state
-		track.ticks -= ticks;
-		if (track.ticks > 0)
+		__track.ticks -= __ticks;
+		if (__track.ticks > 0)
 			return;
 		
 		// Process all events this tick
-		while (track.ticks == 0)
+		while (__track.ticks == 0)
 		{
-			MLDEvent event = track.mld.get(track.offset);
+			MLDEvent event = __track.mld.get(__track.offset);
 			
 			// Process the event
 			switch (event.type)
 			{
 				case MLD.EVENT_TYPE_NOTE:
-					this.evtNote(track, event);
+					this.__evtNote(__track, event);
 					break;
 				case MLD.EVENT_TYPE_EXT_B:
-					this.evtExtB(track, event);
+					this.__evtExtB(__track, event);
 					break;
 				case MLD.EVENT_TYPE_EXT_INFO:
-					this.evtExtInfo(track, event);
+					this.__evtExtInfo(__track, event);
 					break;
 				default:
-					this.setTrackOffset(track, track.offset + 1);
+					this.__setTrackOffset(__track, __track.offset + 1);
 			}
 			
 			// Stop processing events
-			if (track.finished)
+			if (__track.finished)
 				return;
 			
 			// Schedule the next event
-			track.ticks = track.mld.get(track.offset).delta;
+			__track.ticks = __track.mld.get(__track.offset).delta;
 		}
-		
 	}
-	
+
 	/**
-	 * Initialize state in preparation for playback. All notes are stopped and
-	 * all sequencer state is reset to the beginning of the sequence.
-	 */
-	@SquirrelJMEVendorApi
-	public void reset()
-	{
-		// Instance fields
-		this.pendingFrames = 0;
-		this.pendingTicks = 0;
-		this.position = 0;
-		this.tickNow = 0;
-		this.setTempo(48, 125);
-		this.events.clear();
-		
-		// Initialize sampler
-		this.sampler.reset();
-		
-		// Channels
-		for (MLDChannel chan : this.channels)
-		{
-			Arrays.fill(chan.notesOn, null);
-			chan.notesOut.clear();
-		}
-		
-		// Tracks
-		for (MLDPlayerTrack track : this.tracks)
-		{
-			track.cuepoint = -1;
-			track.offset = track.mld.cue;
-			track.ticks = 0;
-			track.finished = track.offset >= track.mld.size();
-		}
-		
-		// Initialize playback
-		this.finished = true;
-		for (MLDPlayerTrack track : this.tracks)
-		{
-			this.process(track, 0);
-			this.finished = this.finished && track.finished;
-		}
-		
-	}
-	
-	/**
-	 * Specify whether to enable looping. When disabled, loop points
-	 * defined in
-	 * the sequence data will not be processed.
+	 * Unregisters a keys from raising events during rendering.
 	 *
-	 * @param enabled If {@code true}, looping will be enabled.
-	 * @return the value of {@code enabled}
-	 * @see #getLoopEnabled()
+	 * @param __key A key number to unregister.
+	 * @see MLDPlayerEvent
+	 * @see #getEvents()
+	 * @since 2025/05/05
 	 */
-	public boolean setLoopEnabled(boolean enabled)
+	private void __removeEventKey(int __key)
 	{
-		return this.loopEnabled = enabled;
+		this.evtKeys.remove(__key);
 	}
 	
 	/**
-	 * Specify whether to stop all notes when looping. If notes are not
-	 * stopped, it is possible for adjustments to volume or pitch-bend to
-	 * affect ongoing notes in undesirable ways. If notes <i>are</i> stopped,
-	 * it is possible for ongoing notes to be truncated in undesirable ways.
+	 * Unregisters multiple keys from raising events during rendering.
 	 *
-	 * @param stopAll If {@code true}, all notes will be stopped when looping.
-	 * @return the value of {@code stopAll}
-	 * @see #getLoopStopAll()
+	 * @param __keys A list of key numbers to unregister.
+	 * @throws NullPointerException if {@code keys} is {@code null}.
+	 * @see MLDPlayerEvent
+	 * @see #getEvents()
+	 * @since 2025/05/05
 	 */
-	public boolean setLoopStopAll(boolean stopAll)
+	private void __removeEventKeys(int[] __keys)
 	{
-		return this.loopStopAll = stopAll;
+		if (__keys == null)
+			throw new NullPointerException("Key array is required.");
+		for (int key : __keys)
+			this.evtKeys.remove(key);
 	}
 	
 	/**
-	 * Compute the number of output frames in one event tick
+	 * Compute the number of output frames in one event tick.
+	 *
+	 * @param __timebase The timebase that events will use.
+	 * @param __tempo The tempo that events will use.
+	 * @since 2025/05/05
 	 */
-	void setTempo(int timebase, int tempo)
+	private void __setTempo(int __timebase, int __tempo)
 	{
-		this.framesPerTick = (60 * this.sampleRate) / (timebase * tempo);
+		this.framesPerTick = (60 * this.sampleRate) / (__timebase * __tempo);
 	}
 	
 	/**
-	 * Specify the event offset of a track
+	 * Specify the event offset of a track.
+	 *
+	 * @param __track The track to set the offset to.
+	 * @param __offset The event offset value.
+	 * @since 2025/05/05
 	 */
-	void setTrackOffset(MLDPlayerTrack track, int offset)
+	private void __setTrackOffset(MLDPlayerTrack __track, int __offset)
 	{
-		
 		// Configure the track
-		track.offset = offset;
-		track.finished = offset >= track.mld.size();
+		__track.offset = __offset;
+		__track.finished = __offset >= __track.mld.size();
 		
 		// Raise an event
-		if (!track.finished || !this.evtPlayback)
+		if (!__track.finished || !this.evtPlayback)
 			return;
 		boolean finished = true;
 		for (MLDPlayerTrack other : this.tracks)
 			finished = finished && other.finished;
 		if (finished)
 			this.events.add(
-				new MLDPlayerEvent(this.getTime(), MLDPlayer.EVENT_END,
+				new MLDPlayerEvent(this.getTime(), MLDPlayerEvent.EVENT_END,
 					0));
 	}
 	
 	/**
-	 * Determine how many ticks can be processed until a note expires
+	 * Determine how many ticks can be processed until a note expires.
+	 *
+	 * @return How many ticks can be processed.
+	 * @since 2025/05/05
 	 */
-	int untilNote()
+	private int __untilNote()
 	{
 		int ret = -1;
 		for (MLDChannel chan : this.channels)
@@ -1099,11 +1175,14 @@ public class MLDPlayer
 			}
 		return ret;
 	}
-	
+
 	/**
-	 * Determine how many ticks can be processed until the next event
+	 * Determine how many ticks can be processed until the next event.
+	 *
+	 * @return How many ticks can be processed.
+	 * @since 2025/05/05
 	 */
-	int untilTrack()
+	private int __untilTrack()
 	{
 		int ret = -1;
 		for (MLDPlayerTrack track : this.tracks)
@@ -1115,6 +1194,4 @@ public class MLDPlayer
 		}
 		return ret;
 	}
-	
-	
 }

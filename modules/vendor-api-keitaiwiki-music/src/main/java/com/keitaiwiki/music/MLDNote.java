@@ -36,23 +36,23 @@ package com.keitaiwiki.music;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * Music note
+ * Represents a music note for MLD data.
+ *
+ * @since 2025/05/05
  */
+@SquirrelJMEVendorApi
 class MLDNote
 	implements BasicNote
 {
-	/**
-	 * Output channel
-	 */
+	/** Output channel, */
+	@SquirrelJMEVendorApi
 	int channel;
 	
-	/**
-	 * Ticks before note expires
-	 */
+	/** Ticks before note expires. */
+	@SquirrelJMEVendorApi
 	int gateTime;
 	
-	/**
-	 * Key index
-	 */
+	/** Key index. */
+	@SquirrelJMEVendorApi
 	int key;
 }

@@ -35,133 +35,130 @@ package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
- * Audio source
+ * Represents a Yamaha MA-3 Audio source.
+ *
+ * @since 2025/05/05
  */
+@SquirrelJMEVendorApi
 class MA3Note
 	implements BasicNote
 {
-	/**
-	 * FM operator algorithm
-	 */
+	/** FM operator algorithm. */
+	@SquirrelJMEVendorApi
 	final MA3Algorithm algorithm;
 	
-	/**
-	 * Encapsulating channel
-	 */
+	/** Encapsulating channel. */
+	@SquirrelJMEVendorApi
 	final MA3Channel channel;
 	
-	/**
-	 * Encapsulating instance
-	 */
+	/** Encapsulating instance. */
+	@SquirrelJMEVendorApi
 	final MA3Sampler instance;
 	
-	/**
-	 * OPL operators
-	 */
+	/** OPL operators. */
+	@SquirrelJMEVendorApi
 	final MA3Operator[] operators;
 	
-	/**
-	 * Current output sample
-	 */
+	/** Current output sample. */
+	@SquirrelJMEVendorApi
 	final float sample;
 	
-	/**
-	 * Frequency advancement when dissociated
-	 */
+	/** Frequency advancement when dissociated. */
+	@SquirrelJMEVendorApi
 	float advance;
 	
-	/**
-	 * Amplitude modulator phase
-	 */
+	/** Amplitude modulator phase. */
+	@SquirrelJMEVendorApi
 	int amPhase;
 	
-	/**
-	 * Effective left stereo amplitude
-	 */
+	/** Effective left stereo amplitude. */
+	@SquirrelJMEVendorApi
 	float ampLeft;
 	
-	/**
-	 * Effective right stereo amplitude
-	 */
+	/** Effective right stereo amplitude. */
+	@SquirrelJMEVendorApi
 	float ampRight;
 	
-	/**
-	 * Octave index
-	 */
+	/** Octave index. */
+	@SquirrelJMEVendorApi
 	int block;
 	
-	/**
-	 * All operator envelopes are finished
-	 */
+	/** All operator envelopes are finished. */
+	@SquirrelJMEVendorApi
 	boolean envDone;
 	
-	/**
-	 * Frequency divider
-	 */
+	/** Frequency divider. */
+	@SquirrelJMEVendorApi
 	int f_number;
 	
-	/**
-	 * Base frequency
-	 */
+	/** Base frequency. */
+	@SquirrelJMEVendorApi
 	float freqBase;
 	
-	/**
-	 * Note is generating output
-	 */
+	/** Note is generating output. */
+	@SquirrelJMEVendorApi
 	boolean playing;
 	
-	/**
-	 * Base volume
-	 */
+	/** Base volume. */
+	@SquirrelJMEVendorApi
 	float volBase;
 	
-	/**
-	 * Left stereo output amplitude
-	 */
+	/** Left stereo output amplitude. */
+	@SquirrelJMEVendorApi
 	float volLeftOut;
 	
-	/**
-	 * Right stereo output amplitude
-	 */
+	/** Right stereo output amplitude. */
+	@SquirrelJMEVendorApi
 	float volRightOut;
 	
 	/** Key index within channel. */
+	@SquirrelJMEVendorApi
 	int key;
 	
-	MA3Note(MA3Channel channel, int key, MA3Algorithm algorithm)
+	/**
+	 * Creates a new audio source for the specified channel, key index and
+	 * FM algorithm.
+	 *
+	 * @param __channel The {@link MA3Channel} to use.
+	 * @param __key The key index within the specified channel.
+	 * @param __algorithm The {@link MA3Algorithm} for audio generation.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	MA3Note(@NotNull MA3Channel __channel, int __key,
+		@NotNull MA3Algorithm __algorithm)
 	{
-		this.algorithm = algorithm;
+		if (__channel == null || __algorithm == null)
+			throw new NullPointerException("NARG");
+
+		this.algorithm = __algorithm;
 		this.envDone = false;
 		this.ampLeft = 0.0f;
 		this.ampRight = 0.0f;
-		this.channel = channel;
-		this.instance = channel.instance;
-		this.key = key;
-		this.operators = new MA3Operator[algorithm.operators.length];
+		this.channel = __channel;
+		this.instance = __channel.instance;
+		this.key = __key;
+		this.operators = new MA3Operator[__algorithm.operators.length];
 		this.playing = true;
 		this.sample = 0.0f;
 		
 		// Operators
 		for (int x = 0; x < this.operators.length; x++)
-			this.operators[x] = new MA3Operator(this, algorithm.operators[x]);
+			this.operators[x] = new MA3Operator(this,
+				__algorithm.operators[x]);
 	}
-	
-	
+
 	/**
-	 * Perform easing on an amplitude controller
+	 * Called whenever a key-off event needs to be processed.
+	 *
+	 * @since 2025/05/05
 	 */
-	float ease(float level, float target)
-	{
-		return level < target ? Math.min(target,
-			level + this.instance.volRate) : level > target ? Math.max(target,
-			level - this.instance.volRate) : level;
-	}
-	
-	/**
-	 * Key-off processing
-	 */
+	@SquirrelJMEVendorApi
 	void off()
 	{
 		// A data-supplied FM algorithm never decays
@@ -187,8 +184,11 @@ class MA3Note
 	}
 	
 	/**
-	 * An envelope has finished
+	 * Called whenever an envelope has finished.
+	 *
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	void onEnvelopeDone()
 	{
 		this.envDone = true;
@@ -211,9 +211,13 @@ class MA3Note
 	}
 	
 	/**
-	 * Frequency has changed
+	 * Called whenever the note frequency changes.
+	 *
+	 * @param __bend The Pitch Bend to apply on the new frequency.
+	 * @since 2025/05/05
 	 */
-	void onFrequency(double bend)
+	@SquirrelJMEVendorApi
+	void onFrequency(double __bend)
 	{
 		
 		// Wave notes don't use oscillators
@@ -222,7 +226,7 @@ class MA3Note
 		
 		// Compute BLOCK and F_NUMBER
 		double freq =
-			this.algorithm.isDrum ? this.freqBase : this.freqBase * bend;
+			this.algorithm.isDrum ? this.freqBase : this.freqBase * __bend;
 		this.block = Math.min(7, Math.max(0, (int)(Math.round(ExtraMath.log(
 			freq / 440) * MA3SamplerProvider.MAGIC_B) + 57) / 12));
 		this.f_number = Math.min(1023, Math.max(0, (int)Math.round(
@@ -232,10 +236,13 @@ class MA3Note
 		for (MA3Operator op : this.operators)
 			op.onFrequency();
 	}
-	
+
 	/**
-	 * Master volume has changed
+	 * Called whenever the Master Volume for playback changes.
+	 *
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	void onVolume()
 	{
 		this.volLeftOut =
@@ -245,8 +252,12 @@ class MA3Note
 	}
 	
 	/**
-	 * Render the next input sample
+	 * Renders the next audio sample.
+	 *
+	 * @return If the note has finished generating output.
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	boolean render()
 	{
 		// Compute desired left and right volume levels
@@ -259,23 +270,60 @@ class MA3Note
 		}
 		
 		// Generate the sample
-		float sample = !this.algorithm.isWave ? this.sampleFM() :
+		float sample = !this.algorithm.isWave ? this.__sampleFM() :
 			this.operators[0].sample(0, false) / 32768.0f;
 		this.instance.smpNext[0] += sample * this.ampLeft;
 		this.instance.smpNext[1] += sample * this.ampRight;
 		
 		// Adjust stereo levels
-		this.ampLeft = this.ease(this.ampLeft, tgtLeft);
-		this.ampRight = this.ease(this.ampRight, tgtRight);
+		this.ampLeft = this.__ease(this.ampLeft, tgtLeft);
+		this.ampRight = this.__ease(this.ampRight, tgtRight);
 		
 		// Indicate whether the note has finished generating output
 		return !this.playing && this.ampLeft == 0 && this.ampRight == 0;
 	}
 	
 	/**
-	 * Generate an FM sample
+	 * Stops playback on this audio source.
+	 *
+	 * @since 2025/05/05
 	 */
-	float sampleFM()
+	@SquirrelJMEVendorApi
+	void stop()
+	{
+		this.envDone = true;
+		this.playing = false;
+		this.volBase = 0.0f;
+		for (MA3Operator op : this.operators)
+		{
+			op.envLevel = 511;
+			op.envStage = MA3SamplerProvider.ENV_DONE;
+		}
+	}
+
+	/**
+	 * Called whenever an easing effect needs to be applied to the amplitude
+	 * controller.
+	 *
+	 * @param __level The base volume level for the easing effect.
+	 * @param __target The target volume level for the easing effect.
+	 * @return The resulting volume level.
+	 * @since 2025/05/05
+	 */
+	private float __ease(float __level, float __target)
+	{
+		return __level < __target ? Math.min(__target,
+			__level + this.instance.volRate) : __level > __target ? Math.max(
+			__target, __level - this.instance.volRate) : __level;
+	}
+
+	/**
+	 * Generates an FM sample based on the current FM algorithm.
+	 *
+	 * @return The generated FM sample.
+	 * @since 2025/05/05
+	 */
+	private float __sampleFM()
 	{
 		MA3Operator[] operators = this.operators;
 		
@@ -338,20 +386,5 @@ class MA3Note
 		}
 		//  Twice the max sample value
 		return ret / 8170.0f;
-	}
-	
-	/**
-	 * Terminate playback
-	 */
-	void stop()
-	{
-		this.envDone = true;
-		this.playing = false;
-		this.volBase = 0.0f;
-		for (MA3Operator op : this.operators)
-		{
-			op.envLevel = 511;
-			op.envStage = MA3SamplerProvider.ENV_DONE;
-		}
 	}
 }

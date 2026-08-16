@@ -36,102 +36,108 @@ package com.keitaiwiki.music;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
- * Output channel
+ * Represents a Yamaha MA-3 Output Channel.
+ *
+ * @since 2025/05/05
  */
+@SquirrelJMEVendorApi
 class MA3Channel
 	implements BasicChannel
 {
-	/**
-	 * Index in sampler
-	 */
+	/** Index in sampler */
+	@SquirrelJMEVendorApi
 	final int index;
 	
-	/**
-	 * Encapsulating instance
-	 */
+	/** Encapsulating instance */
+	@SquirrelJMEVendorApi
 	final MA3Sampler instance;
 	
-	/**
-	 * All notes currently on keys
-	 */
+	/** All notes currently on keys */
+	@SquirrelJMEVendorApi
 	final MA3Note[] notesOn;
 	
+	/** Notes to be rendered. */
+	@SquirrelJMEVendorApi
 	final ArrayList<MA3Note> notesOut;
 	
-	/**
-	 * Pitch bend base ratio
-	 */
+	/** Pitch bend base ratio */
+	@SquirrelJMEVendorApi
 	float bendBase;
 	
-	/**
-	 * Effective channel frequency ratio
-	 */
+	/** Effective channel frequency ratio */
+	@SquirrelJMEVendorApi
 	float bendOut;
 	
-	/**
-	 * Pitch bend magnitude
-	 */
+	/** Pitch bend magnitude */
+	@SquirrelJMEVendorApi
 	float bendRange;
 	
-	/**
-	 * The channel plays drum notes
-	 */
+	/** The channel plays drum notes */
+	@SquirrelJMEVendorApi
 	boolean isDrum;
 	
-	/**
-	 * Program bank
-	 */
+	/** Program bank */
+	@SquirrelJMEVendorApi
 	int prgBank;
 	
-	/**
-	 * Program index in bank
-	 */
+	/** Program index in bank */
+	@SquirrelJMEVendorApi
 	int prgProgram;
 	
-	/**
-	 * Left stereo amplitude
-	 */
+	/** Left stereo amplitude */
+	@SquirrelJMEVendorApi
 	float volLeft;
 	
-	/**
-	 * Left stereo output amplitude
-	 */
+	/** Left stereo output amplitude */
+	@SquirrelJMEVendorApi
 	float volLeftOut;
 	
-	/**
-	 * Channel output amplitude
-	 */
+	/** Channel output amplitude */
+	@SquirrelJMEVendorApi
 	float volLevel;
 	
-	/**
-	 * Stereo level
-	 */
+	/** Stereo level */
+	@SquirrelJMEVendorApi
 	float volPanning;
 	
-	/**
-	 * Right stereo amplitude
-	 */
+	/** Right stereo amplitude */
+	@SquirrelJMEVendorApi
 	float volRight;
 	
-	/**
-	 * Right stereo output amplitude
-	 */
+	/** Right stereo output amplitude */
+	@SquirrelJMEVendorApi
 	float volRightOut;
 	
-	MA3Channel(MA3Sampler instance, int index)
+	/**
+	 * Creates a new MA-3 Output Channel with the specified channel index and
+	 * {@link MA3Sampler} instnce.
+	 *
+	 * @param __instance The {@link MA3Sampler} instance to use for rendering.
+	 * @param __index The channel index this new channel will occupy.
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	MA3Channel(@NotNull MA3Sampler __instance,
+		@Range(from = 0, to = MA3Sampler.NUM_CHANNELS) int __index)
 	{
-		this.index = index;
-		this.instance = instance;
+		this.index = __index;
+		this.instance = __instance;
 		//  C-2 .. G8
 		this.notesOn = new MA3Note[128];
 		this.notesOut = new ArrayList<>();
 	}
 	
 	/**
-	 * Frequency has changed
+	 * This function is called whenever there must be a note frequency change
+	 * in this channel.
+	 *
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	void onFrequency()
 	{
 		float bend = this.instance.bendOut * this.bendOut;
@@ -140,8 +146,12 @@ class MA3Channel
 	}
 	
 	/**
-	 * Volume has changed
+	 * This function is called whenever there must be a volume change in this
+	 * channel.
+	 *
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	void onVolume()
 	{
 		MA3Sampler instance = this.instance;
@@ -153,21 +163,27 @@ class MA3Channel
 	}
 	
 	/**
-	 * Render the next input sample
+	 * Renders the next audio sample.
+	 *
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	void render()
 	{
-		ArrayList<MA3Note> notesOut = this.notesOut;
-		for (int x = 0; x < notesOut.size(); x++)
+		ArrayList<MA3Note> _notesOut = this.notesOut;
+		for (int x = 0; x < _notesOut.size(); x++)
 		{
-			if (notesOut.get(x).render())
-				notesOut.remove(x--);
+			if (_notesOut.get(x).render())
+				_notesOut.remove(x--);
 		}
 	}
-	
+
 	/**
-	 * Initialize state
+	 * Resets this channel to its initial state.
+	 *
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	void reset()
 	{
 		this.bendBase = 0.0f;
@@ -188,5 +204,4 @@ class MA3Channel
 		for (MA3Note note : this.notesOut)
 			note.stop();
 	}
-	
 }

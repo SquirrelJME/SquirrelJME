@@ -35,188 +35,164 @@ package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
- * Individual FM algorithm operator
+ * Individual FM algorithm operator.
+ *
+ * @since 2025/05/05
  */
+@SquirrelJMEVendorApi
 class MA3Operator
 	implements BasicOperator
 {
-	/**
-	 * OPL registers
-	 * Envelope attack rate
-	 */
+	/** Envelope attack rate register. */
+	@SquirrelJMEVendorApi
 	final int ar;
 	
-	/**
-	 * Amplitude modulation depth
-	 */
+	/** Amplitude modulation depth register. */
+	@SquirrelJMEVendorApi
 	final int dam;
 	
-	/**
-	 * Envelope decay rate
-	 */
+	/** Envelope decay rate register. */
+	@SquirrelJMEVendorApi
 	final int dr;
 	
-	/**
-	 * Frequency modulation depth
-	 */
+	/** Frequency modulation depth register. */
+	@SquirrelJMEVendorApi
 	final int dvb;
 	
-	/**
-	 * Enable amplutide modulation
-	 */
+	/** Enable amplutide modulation register. */
+	@SquirrelJMEVendorApi
 	final boolean eam;
 	
-	/**
-	 * Enable frequency modulation
-	 */
+	/** Enable frequency modulation register. */
+	@SquirrelJMEVendorApi
 	final boolean evb;
 	
-	/**
-	 * Envelope release rate
-	 */
+	/** Envelope release rate register. */
+	@SquirrelJMEVendorApi
 	final int rr;
 	
-	/**
-	 * Envelope sustain level
-	 */
+	/** Envelope sustain level register. */
+	@SquirrelJMEVendorApi
 	final int sl;
 	
-	/**
-	 * Envelope sustain rate
-	 */
+	/** Envelope sustain rate register. */
+	@SquirrelJMEVendorApi
 	final int sr;
 	
-	/**
-	 * MIDI Hold 1 is supported
-	 */
+	/** Register indicating if MIDI Hold 1 is supported. */
+	@SquirrelJMEVendorApi
 	final boolean sus;
 	
-	/**
-	 * Envelope attenuation
-	 */
+	/** Envelope attenuation register. */
+	@SquirrelJMEVendorApi
 	final int tl;
 	
-	/**
-	 * Ignore key-off response
-	 */
+	/** Ignore key-off response register. */
+	@SquirrelJMEVendorApi
 	final boolean xof;
 	
-	/**
-	 * Encapsulating algorithm
-	 */
+	/** Encapsulating algorithm */
+	@SquirrelJMEVendorApi
 	final MA3Algorithm algorithm;
 	
-	/**
-	 * u14 Amplitude modulation counter
-	 */
+	/** u14 Amplitude modulation counter. */
+	@SquirrelJMEVendorApi
 	int amPhase;
 	
-	/**
-	 * Detune shift
-	 */
+	/** Detune shift. */
+	@SquirrelJMEVendorApi
 	int dt;
 	
-	/**
-	 * u9  Current envelope level
-	 */
+	/** u9  Current envelope level. */
+	@SquirrelJMEVendorApi
 	int envLevel;
 	
-	/**
-	 * u9  Effective envelope output
-	 */
+	/** u9  Effective envelope output. */
+	@SquirrelJMEVendorApi
 	int envOut;
 	
-	/**
-	 * u15 Envelope phase counter
-	 */
+	/** u15 Envelope phase counter. */
+	@SquirrelJMEVendorApi
 	int envPhase;
 	
-	/**
-	 * Current envelope rate of change
-	 */
+	/** Current envelope rate of change. */
+	@SquirrelJMEVendorApi
 	int envRate;
 	
-	/**
-	 * Envelope rate offset modifier
-	 */
+	/** Envelope rate offset modifier. */
+	@SquirrelJMEVendorApi
 	int envRof;
 	
-	/**
-	 * Envelope processing stage
-	 */
+	/** Envelope processing stage. */
+	@SquirrelJMEVendorApi
 	int envStage;
 	
-	/**
-	 * Feedback rate index
-	 */
+	/** Feedback rate index. */
+	@SquirrelJMEVendorApi
 	int fb;
 	
-	/**
-	 * Most recent output sample
-	 */
+	/** Most recent output sample. */
+	@SquirrelJMEVendorApi
 	int fb0;
 	
-	/**
-	 * Second-most recent output sample
-	 */
+	/** Second-most recent output sample. */
+	@SquirrelJMEVendorApi
 	int fb1;
 	
-	/**
-	 * Encapsulating instance
-	 */
+	/** Encapsulating instance. */
+	@SquirrelJMEVendorApi
 	final MA3Sampler instance;
 	
-	/**
-	 * Wave drum parameters are valid
-	 */
+	/** Wave drum parameters are valid. */
+	@SquirrelJMEVendorApi
 	boolean isValid;
 	
-	/**
-	 * Attenuation index per octave
-	 */
+	/** Attenuation index per octave. */
+	@SquirrelJMEVendorApi
 	int ksl;
 	
-	/**
-	 * KSL attenuation level
-	 */
+	/** KSL attenuation level. */
+	@SquirrelJMEVendorApi
 	int kslOut;
 	
-	/**
-	 * Envelope rate modifier scale
-	 */
+	/** Envelope rate modifier scale. */
+	@SquirrelJMEVendorApi
 	int ksr;
 	
-	/**
-	 * Frequency multiplier
-	 */
+	/** Frequency multiplier. */
+	@SquirrelJMEVendorApi
 	int multi;
 	
-	/**
-	 * Encapsulating note
-	 */
+	/** Encapsulating note. */
+	@SquirrelJMEVendorApi
 	final MA3Note note;
 	
-	/**
-	 * u10 Oscillator counter
-	 */
+	/** u10 Oscillator counter. */
+	@SquirrelJMEVendorApi
 	int oscPhase;
 	
-	/**
-	 * Current wave source sample
-	 */
+	/** Current wave source sample. */
+	@SquirrelJMEVendorApi
 	float wavSample;
 	
-	/**
-	 * Wave function index
-	 */
+	/** Wave function index. */
+	@SquirrelJMEVendorApi
 	int ws;
 	
 	/**
-	 * Template constructor
+	 * Creates a new template Operator with non-sample data.
+	 *
+	 * @param __bytes Data array used to setup this Operator.
+	 * @param __offset The offset to start reading the data array from.
+	 * @since 2025/05/05
 	 */
-	MA3Operator(byte[] bytes, int offset)
+	@SquirrelJMEVendorApi
+	MA3Operator(@NotNull byte[] __bytes,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset)
 	{
 		// Not used for non-samples //
 		this.algorithm = null;
@@ -224,30 +200,36 @@ class MA3Operator
 		this.note = null;
 		//////////////////////////////
 		
-		this.sus = (bytes[offset] >> 3 & 1) != 0;
-		this.ksr = bytes[offset] >> 2 & 1;
-		this.eam = (bytes[offset] >> 1 & 1) != 0;
-		this.evb = (bytes[offset] & 1) != 0;
-		this.multi = bytes[offset + 1] >> 4 & 15;
-		this.dt = bytes[offset + 1] >> 1 & 7;
-		this.xof = (bytes[offset + 1] & 1) != 0;
-		this.ar = bytes[offset + 2] >> 4 & 15;
-		this.dr = bytes[offset + 2] & 15;
-		this.sr = bytes[offset + 3] >> 4 & 15;
-		this.rr = bytes[offset + 3] & 15;
-		this.sl = bytes[offset + 4] >> 4 & 15;
-		this.dam = bytes[offset + 4] >> 2 & 3;
-		this.dvb = bytes[offset + 4] & 3;
-		this.tl = bytes[offset + 5] >> 2 & 63;
-		this.ksl = bytes[offset + 5] & 3;
-		this.fb = bytes[offset + 6] >> 5 & 7;
-		this.ws = bytes[offset + 6] & 31;
+		this.sus = (__bytes[__offset] >> 3 & 1) != 0;
+		this.ksr = __bytes[__offset] >> 2 & 1;
+		this.eam = (__bytes[__offset] >> 1 & 1) != 0;
+		this.evb = (__bytes[__offset] & 1) != 0;
+		this.multi = __bytes[__offset + 1] >> 4 & 15;
+		this.dt = __bytes[__offset + 1] >> 1 & 7;
+		this.xof = (__bytes[__offset + 1] & 1) != 0;
+		this.ar = __bytes[__offset + 2] >> 4 & 15;
+		this.dr = __bytes[__offset + 2] & 15;
+		this.sr = __bytes[__offset + 3] >> 4 & 15;
+		this.rr = __bytes[__offset + 3] & 15;
+		this.sl = __bytes[__offset + 4] >> 4 & 15;
+		this.dam = __bytes[__offset + 4] >> 2 & 3;
+		this.dvb = __bytes[__offset + 4] & 3;
+		this.tl = __bytes[__offset + 5] >> 2 & 63;
+		this.ksl = __bytes[__offset + 5] & 3;
+		this.fb = __bytes[__offset + 6] >> 5 & 7;
+		this.ws = __bytes[__offset + 6] & 31;
 	}
 	
 	/**
-	 * Wave constructor
+	 * Creates a new Operator for Wave data.
+	 *
+	 * @param __offset The offset to start reading the data array from.
+	 * @param __message Data array used to setup this Operator.
+	 * @since 2025/05/05
 	 */
-	MA3Operator(int offset, byte[] message)
+	@SquirrelJMEVendorApi
+	MA3Operator(@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		@NotNull byte[] __message)
 	{
 		// Not used for non-samples //
 		this.algorithm = null;
@@ -256,66 +238,83 @@ class MA3Operator
 		//////////////////////////////
 		
 		int bits;
-		bits = message[offset++] & 0xFF;
+		bits = __message[__offset++] & 0xFF;
 		this.sr = bits >> 4 & 15;
 		this.xof = (bits >> 3 & 1) != 0;
 		this.sus = (bits >> 1 & 1) != 0;
-		bits = message[offset++] & 0xFF;
+		bits = __message[__offset++] & 0xFF;
 		this.rr = bits >> 4 & 15;
 		this.dr = bits & 15;
-		bits = message[offset++] & 0xFF;
+		bits = __message[__offset++] & 0xFF;
 		this.ar = bits >> 4 & 15;
 		this.sl = bits & 15;
-		bits = message[offset++] & 0xFF;
+		bits = __message[__offset++] & 0xFF;
 		this.tl = bits >> 2 & 63;
-		bits = message[offset++] & 0xFF;
+		bits = __message[__offset++] & 0xFF;
 		this.dam = bits >> 5 & 3;
 		this.eam = (bits >> 4 & 1) != 0;
 		this.dvb = bits >> 1 & 3;
 		this.evb = (bits & 1) != 0;
 	}
-	
+
 	/**
-	 * Playback constructor
+	 * Creates a new Operator with the same configuration from another
+	 * {@link MA3Operator} for playback of notes.
+	 *
+	 * @param __note The {@link MA3Note} containing playback data.
+	 * @param __o The {@link MA3Operator} to replicate the config from.
+	 * @since 2025/05/05
 	 */
-	MA3Operator(MA3Note note, MA3Operator o)
+	@SquirrelJMEVendorApi
+	MA3Operator(@NotNull MA3Note __note, @NotNull MA3Operator __o)
 	{
 		
 		// OPL registers
-		this.ar = o.ar;
-		this.dam = o.dam;
-		this.dr = o.dr;
-		this.dt = o.dt;
-		this.dvb = o.dvb;
-		this.eam = o.eam;
-		this.evb = o.evb;
-		this.fb = o.fb;
-		this.ksl = o.ksl;
-		this.ksr = o.ksr;
-		this.multi = o.multi;
-		this.rr = o.rr;
-		this.sl = o.sl;
-		this.sr = o.sr;
-		this.sus = o.sus;
-		this.tl = o.tl;
-		this.ws = o.ws;
-		this.xof = o.xof;
+		this.ar = __o.ar;
+		this.dam = __o.dam;
+		this.dr = __o.dr;
+		this.dt = __o.dt;
+		this.dvb = __o.dvb;
+		this.eam = __o.eam;
+		this.evb = __o.evb;
+		this.fb = __o.fb;
+		this.ksl = __o.ksl;
+		this.ksr = __o.ksr;
+		this.multi = __o.multi;
+		this.rr = __o.rr;
+		this.sl = __o.sl;
+		this.sr = __o.sr;
+		this.sus = __o.sus;
+		this.tl = __o.tl;
+		this.ws = __o.ws;
+		this.xof = __o.xof;
 		
 		
-		this.algorithm = note.algorithm;
-		this.amPhase = note.instance.amPhase;
+		this.algorithm = __note.algorithm;
+		this.amPhase = __note.instance.amPhase;
 		this.envLevel = 511;
 		this.envPhase = 0;
 		this.envRate = this.ar;
 		this.envStage = MA3SamplerProvider.ENV_ATTACK;
-		this.instance = note.instance;
-		this.note = note;
+		this.instance = __note.instance;
+		this.note = __note;
 		this.oscPhase = 0;
 		this.wavSample = 0;
 	}
-	
-	/** SysEx constructor. */
-	MA3Operator(byte[] message, int offset, boolean diff)
+
+	/**
+	 * Creates a new Operator for SysEx messages.
+	 *
+	 * @param __message Data array used to setup this Operator.
+	 * @param __offset The offset to start reading the data array from.
+	 * @param __diff Only really used to differentiate it from other
+	 * constructors.
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	MA3Operator(@NotNull byte[] __message,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		boolean __diff)
 	{
 		// Not used for non-samples //
 		this.algorithm = null;
@@ -324,37 +323,40 @@ class MA3Operator
 		//////////////////////////////
 		
 		int bits;
-		bits = message[offset++] & 0xFF;
+		bits = __message[__offset++] & 0xFF;
 		this.sr = bits >> 4 & 15;
 		this.xof = (bits >> 3 & 1) != 0;
 		this.sus = (bits >> 1 & 1) != 0;
 		this.ksr = bits & 1;
-		bits = message[offset++] & 0xFF;
+		bits = __message[__offset++] & 0xFF;
 		this.rr = bits >> 4 & 15;
 		this.dr = bits & 15;
-		bits = message[offset++] & 0xFF;
+		bits = __message[__offset++] & 0xFF;
 		this.ar = bits >> 4 & 15;
 		this.sl = bits & 15;
-		bits = message[offset++] & 0xFF;
+		bits = __message[__offset++] & 0xFF;
 		this.tl = bits >> 2 & 63;
 		this.ksl = bits & 3;
-		bits = message[offset++] & 0xFF;
+		bits = __message[__offset++] & 0xFF;
 		this.dam = bits >> 5 & 3;
 		this.eam = (bits >> 4 & 1) != 0;
 		this.dvb = bits >> 1 & 3;
 		this.evb = (bits & 1) != 0;
-		bits = message[offset++] & 0xFF;
+		bits = __message[__offset++] & 0xFF;
 		this.multi = bits >> 4 & 15;
 		this.dt = bits & 7;
-		bits = message[offset++] & 0xFF;
+		bits = __message[__offset++] & 0xFF;
 		this.ws = bits >> 3 & 31;
 		this.fb = bits & 7;
 	}
-	
-	
+
 	/**
-	 * Frequency has changed
+	 * Called whenever the note frequency changes. Should only be called for
+	 * FM samples.
+	 *
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	void onFrequency()
 	{
 		// These are only ever used for FM samples, so this failure condition
@@ -370,11 +372,19 @@ class MA3Operator
 			MA3SamplerProvider.KSL_B[this.ksl] * ((note.block << 3) - 
 				MA3SamplerProvider.KSL_F[note.f_number >> 6]));
 	}
-	
+
 	/**
-	 * Generate a sample on an operator
+	 * Generates a sample on an operator.
+	 *
+	 * @param __mod The modifier to apply on the generation sample, may be
+	 * previously generated samples depending on the operator configuration.
+	 * @param __feedback Dictate whether feedback rate must be used for the
+	 * sample's generation.
+	 * @return The generated sample.
+	 * @since 2025/05/05
 	 */
-	int sample(int mod, boolean feedback)
+	@SquirrelJMEVendorApi
+	int sample(int __mod, boolean __feedback)
 	{
 		int[] constSustains = MA3SamplerProvider.SUSTAINS;
 		int[][] constWaves = MA3SamplerProvider.WAVES;
@@ -403,10 +413,10 @@ class MA3Operator
 		// FM sample
 		if (!algorithm.isWave)
 		{
-			if (feedback && this.fb != 0)
-				mod += this.fb0 + this.fb1 >> 9 - this.fb;
+			if (__feedback && this.fb != 0)
+				__mod += this.fb0 + this.fb1 >> 9 - this.fb;
 			this.fb1 = this.fb0;
-			x = constWaves[this.ws][(this.oscPhase >> 9) + mod & 1023] + 
+			x = constWaves[this.ws][(this.oscPhase >> 9) + __mod & 1023] +
 					(this.envOut << 3);
 			this.fb0 =
 				constExp[x & 0xFF] << 1 >> (x >> 8 & 31) ^ x >> 31;
@@ -532,5 +542,4 @@ class MA3Operator
 		
 		return this.fb0;
 	}
-	
 }

@@ -37,58 +37,51 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 
 /**
- * Output channel
+ * Sine Wave Output channel
+ *
+ * @since 2025/05/05
  */
+@SquirrelJMEVendorApi
 class SineChannel
 	implements BasicChannel
 {
-	/**
-	 * Pitch bend base ratio
-	 */
+	/** Pitch bend base ratio. */
+	@SquirrelJMEVendorApi
 	float bendBase;
 	
-	/**
-	 * Effective channel frequency ratio
-	 */
+	/** Effective channel frequency ratio. */
+	@SquirrelJMEVendorApi
 	float bendOut;
 	
-	/**
-	 * Pitch bend magnitude
-	 */
+	/** Pitch bend magnitude. */
+	@SquirrelJMEVendorApi
 	float bendRange;
 	
-	/**
-	 * Index in sampler
-	 */
+	/** Index in sampler. */
+	@SquirrelJMEVendorApi
 	int index;
 	
-	/**
-	 * All notes currently on keys
-	 */
+	/** All notes currently on keys. */
+	@SquirrelJMEVendorApi
 	SineNote[] notesOn;
 	
-	/**
-	 * All notes that are generating output
-	 */
+	/** All notes that are generating output. */
+	@SquirrelJMEVendorApi
 	ArrayList<SineNote> notesOut;
 	
-	/**
-	 * Left stereo amplitude
-	 */
+	/** Left stereo amplitude. */
+	@SquirrelJMEVendorApi
 	float volLeft;
 	
-	/**
-	 * Channel output amplitude
-	 */
+	/** Channel output amplitude. */
+	@SquirrelJMEVendorApi
 	float volLevel;
 	
-	/**
-	 * Stereo level
-	 */
+	/** Stereo level. */
+	@SquirrelJMEVendorApi
 	float volPanning;
 	
-	/**
-	 * Right stereo amplitude
-	 */
+	/** Right stereo amplitude. */
+	@SquirrelJMEVendorApi
 	float volRight;
 }

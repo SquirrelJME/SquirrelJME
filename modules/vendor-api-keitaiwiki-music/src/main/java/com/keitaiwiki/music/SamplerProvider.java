@@ -39,6 +39,8 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * Sample generator for music sequencer players. Invoking {@code instance()}
  * will produce an object that can be used to render the actual samples of
  * audio.
+ *
+ * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
 public interface SamplerProvider
@@ -47,13 +49,14 @@ public interface SamplerProvider
 	 * Produces an instance of this sampler that can be used to render
 	 * samples.
 	 *
-	 * @param sampleRate The output sampling rate of the rendered samples.
+	 * @param __sampleRate The output sampling rate of the rendered samples.
 	 * @return A new sampler instance that can render samples using the
 	 * current
 	 * configuration of this sampler itself.
-	 * @throws IllegalArgumentException if {@code sampleRate} is a
+	 * @throws IllegalArgumentException if {@code __sampleRate} is a
 	 * non-number or is less than or equal to zero.
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	Sampler instance(float sampleRate);
+	Sampler instance(float __sampleRate);
 }

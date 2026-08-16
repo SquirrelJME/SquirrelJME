@@ -37,19 +37,20 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 
 /**
- * Event list
+ * List of {@link MLDEvent} objects.
+ *
+ * @since 2025/05/05
  */
+@SquirrelJMEVendorApi
 class MLDTrack
 	extends ArrayList<MLDEvent>
 	implements BasicTrack
 {
-	/**
-	 * Initial event offset on reset
-	 */
+	/** Initial event offset on reset. */
+	@SquirrelJMEVendorApi
 	int cue;
 	
-	/**
-	 * Channel index base
-	 */
+	/** Channel index base. */
+	@SquirrelJMEVendorApi
 	int index;
 }
