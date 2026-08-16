@@ -33,7 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,81 +41,62 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 class __MA3Note__
 	implements BasicNote
 {
 	/** FM operator algorithm. */
-	@SquirrelJMEVendorApi
-	final __MA3Algorithm__ algorithm;
+	final __MA3Algorithm__ _algorithm;
 	
 	/** Encapsulating channel. */
-	@SquirrelJMEVendorApi
-	final __MA3Channel__ channel;
+	final __MA3Channel__ _channel;
 	
 	/** Encapsulating instance. */
-	@SquirrelJMEVendorApi
-	final MA3Sampler instance;
+	final MA3Sampler _instance;
 	
 	/** OPL operators. */
-	@SquirrelJMEVendorApi
-	final __MA3Operator__[] operators;
+	final __MA3Operator__[] _operators;
 	
 	/** Current output sample. */
-	@SquirrelJMEVendorApi
-	final float sample;
+	final float _sample;
 	
 	/** Frequency advancement when dissociated. */
-	@SquirrelJMEVendorApi
-	float advance;
+	float _advance;
 	
 	/** Amplitude modulator phase. */
-	@SquirrelJMEVendorApi
-	int amPhase;
+	int _amPhase;
 	
 	/** Effective left stereo amplitude. */
-	@SquirrelJMEVendorApi
-	float ampLeft;
+	float _ampLeft;
 	
 	/** Effective right stereo amplitude. */
-	@SquirrelJMEVendorApi
-	float ampRight;
+	float _ampRight;
 	
 	/** Octave index. */
-	@SquirrelJMEVendorApi
-	int block;
+	int _block;
 	
 	/** All operator envelopes are finished. */
-	@SquirrelJMEVendorApi
-	boolean envDone;
+	boolean _envDone;
 	
 	/** Frequency divider. */
-	@SquirrelJMEVendorApi
-	int f_number;
+	int _fNumber;
 	
 	/** Base frequency. */
-	@SquirrelJMEVendorApi
-	float freqBase;
-	
-	/** Note is generating output. */
-	@SquirrelJMEVendorApi
-	boolean playing;
-	
-	/** Base volume. */
-	@SquirrelJMEVendorApi
-	float volBase;
-	
-	/** Left stereo output amplitude. */
-	@SquirrelJMEVendorApi
-	float volLeftOut;
-	
-	/** Right stereo output amplitude. */
-	@SquirrelJMEVendorApi
-	float volRightOut;
+	float _freqBase;
 	
 	/** Key index within channel. */
-	@SquirrelJMEVendorApi
-	int key;
+	int _key;
+	
+	/** Note is generating output. */
+	boolean _playing;
+	
+	/** Base volume. */
+	float _volBase;
+	
+	/** Left stereo output amplitude. */
+	float _volLeftOut;
+	
+	/** Right stereo output amplitude. */
+	float _volRightOut;
 	
 	/**
 	 * Creates a new audio source for the specified channel, key index and
@@ -128,176 +108,27 @@ class __MA3Note__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	__MA3Note__(@NotNull __MA3Channel__ __channel, int __key,
 		@NotNull __MA3Algorithm__ __algorithm)
 	{
 		if (__channel == null || __algorithm == null)
 			throw new NullPointerException("NARG");
 
-		this.algorithm = __algorithm;
-		this.envDone = false;
-		this.ampLeft = 0.0f;
-		this.ampRight = 0.0f;
-		this.channel = __channel;
-		this.instance = __channel.instance;
-		this.key = __key;
-		this.operators = new __MA3Operator__[__algorithm.operators.length];
-		this.playing = true;
-		this.sample = 0.0f;
+		this._algorithm = __algorithm;
+		this._envDone = false;
+		this._ampLeft = 0.0f;
+		this._ampRight = 0.0f;
+		this._channel = __channel;
+		this._instance = __channel._instance;
+		this._key = __key;
+		this._operators = new __MA3Operator__[__algorithm._operators.length];
+		this._playing = true;
+		this._sample = 0.0f;
 		
 		// Operators
-		for (int x = 0; x < this.operators.length; x++)
-			this.operators[x] = new __MA3Operator__(this,
-				__algorithm.operators[x]);
-	}
-
-	/**
-	 * Called whenever a key-off event needs to be processed.
-	 *
-	 * @since 2025/05/05
-	 */
-	@SquirrelJMEVendorApi
-	void off()
-	{
-		// A data-supplied FM algorithm never decays
-		if (this.algorithm.isForever)
-		{
-			this.stop();
-			return;
-		}
-		
-		// Ignore key-off for wave drums
-		// Should apply to certain hi-hat notes, but needs research
-		if (this.algorithm.isWave)
-			return;
-		
-		// Regular processing: switch all operators to release stage
-		for (__MA3Operator__ op : this.operators)
-		{
-			if (op.envStage == MA3SamplerProvider.ENV_DONE || op.xof)
-				continue;
-			op.envRate = op.rr;
-			op.envStage = MA3SamplerProvider.ENV_RELEASE;
-		}
-	}
-	
-	/**
-	 * Called whenever an envelope has finished.
-	 *
-	 * @since 2025/05/05
-	 */
-	@SquirrelJMEVendorApi
-	void onEnvelopeDone()
-	{
-		this.envDone = true;
-		
-		__MA3Operator__[] operators = this.operators;
-		
-		// Test all relevant operators
-		int flags = this.algorithm.isWave ? 1 :
-			MA3SamplerProvider.ENV_FLAGS[this.algorithm.alg];
-		for (int x = 0; x < operators.length; x++, flags >>= 1)
-		{
-			if ((flags & 1) != 0)
-				this.envDone = this.envDone &&
-					operators[x].envStage == MA3SamplerProvider.ENV_DONE;
-		}
-		
-		// If all relevant operators are done, shut off the note
-		if (this.envDone)
-			this.playing = false;
-	}
-	
-	/**
-	 * Called whenever the note frequency changes.
-	 *
-	 * @param __bend The Pitch Bend to apply on the new frequency.
-	 * @since 2025/05/05
-	 */
-	@SquirrelJMEVendorApi
-	void onFrequency(double __bend)
-	{
-		
-		// Wave notes don't use oscillators
-		if (this.algorithm.isWave)
-			return;
-		
-		// Compute BLOCK and F_NUMBER
-		double freq =
-			this.algorithm.isDrum ? this.freqBase : this.freqBase * __bend;
-		this.block = Math.min(7, Math.max(0, (int)(Math.round(ExtraMath.log(
-			freq / 440) * MA3SamplerProvider.MAGIC_B) + 57) / 12));
-		this.f_number = Math.min(1023, Math.max(0, (int)Math.round(
-			freq * (1 << 20 - this.block) * MA3SamplerProvider.MAGIC_F)));
-		
-		// Notify operators
-		for (__MA3Operator__ op : this.operators)
-			op.onFrequency();
-	}
-
-	/**
-	 * Called whenever the Master Volume for playback changes.
-	 *
-	 * @since 2025/05/05
-	 */
-	@SquirrelJMEVendorApi
-	void onVolume()
-	{
-		this.volLeftOut =
-			this.volBase * this.algorithm.volLeft * this.channel.volLeftOut;
-		this.volRightOut =
-			this.volBase * this.algorithm.volRight * this.channel.volRightOut;
-	}
-	
-	/**
-	 * Renders the next audio sample.
-	 *
-	 * @return If the note has finished generating output.
-	 * @since 2025/05/05
-	 */
-	@SquirrelJMEVendorApi
-	boolean render()
-	{
-		// Compute desired left and right volume levels
-		float tgtLeft = 0.0f;
-		float tgtRight = 0.0f;
-		if (!this.envDone)
-		{
-			tgtLeft = this.volLeftOut;
-			tgtRight = this.volRightOut;
-		}
-		
-		// Generate the sample
-		float sample = !this.algorithm.isWave ? this.__sampleFM() :
-			this.operators[0].sample(0, false) / 32768.0f;
-		this.instance.smpNext[0] += sample * this.ampLeft;
-		this.instance.smpNext[1] += sample * this.ampRight;
-		
-		// Adjust stereo levels
-		this.ampLeft = this.__ease(this.ampLeft, tgtLeft);
-		this.ampRight = this.__ease(this.ampRight, tgtRight);
-		
-		// Indicate whether the note has finished generating output
-		return !this.playing && this.ampLeft == 0 && this.ampRight == 0;
-	}
-	
-	/**
-	 * Stops playback on this audio source.
-	 *
-	 * @since 2025/05/05
-	 */
-	@SquirrelJMEVendorApi
-	void stop()
-	{
-		this.envDone = true;
-		this.playing = false;
-		this.volBase = 0.0f;
-		for (__MA3Operator__ op : this.operators)
-		{
-			op.envLevel = 511;
-			op.envStage = MA3SamplerProvider.ENV_DONE;
-		}
+		for (int x = 0; x < this._operators.length; x++)
+			this._operators[x] = new __MA3Operator__(this,
+				__algorithm._operators[x]);
 	}
 
 	/**
@@ -312,8 +143,133 @@ class __MA3Note__
 	private float __ease(float __level, float __target)
 	{
 		return __level < __target ? Math.min(__target,
-			__level + this.instance.volRate) : __level > __target ? Math.max(
-			__target, __level - this.instance.volRate) : __level;
+			__level + this._instance._volRate) : __level > __target ? Math.max(
+			__target, __level - this._instance._volRate) : __level;
+	}
+	
+	/**
+	 * Called whenever a key-off event needs to be processed.
+	 *
+	 * @since 2025/05/05
+	 */
+	void __off()
+	{
+		// A data-supplied FM algorithm never decays
+		if (this._algorithm._isForever)
+		{
+			this.__stop();
+			return;
+		}
+		
+		// Ignore key-off for wave drums
+		// Should apply to certain hi-hat notes, but needs research
+		if (this._algorithm._isWave)
+			return;
+		
+		// Regular processing: switch all operators to release stage
+		for (__MA3Operator__ op : this._operators)
+		{
+			if (op._envStage == MA3SamplerProvider.ENV_DONE || op._xof)
+				continue;
+			op._envRate = op._rr;
+			op._envStage = MA3SamplerProvider.ENV_RELEASE;
+		}
+	}
+	
+	/**
+	 * Called whenever an envelope has finished.
+	 *
+	 * @since 2025/05/05
+	 */
+	void __onEnvelopeDone()
+	{
+		this._envDone = true;
+		
+		__MA3Operator__[] operators = this._operators;
+		
+		// Test all relevant operators
+		int flags = this._algorithm._isWave ? 1 :
+			MA3SamplerProvider.ENV_FLAGS[this._algorithm._alg];
+		for (int x = 0; x < operators.length; x++, flags >>= 1)
+		{
+			if ((flags & 1) != 0)
+				this._envDone = this._envDone &&
+					operators[x]._envStage == MA3SamplerProvider.ENV_DONE;
+		}
+		
+		// If all relevant operators are done, shut off the note
+		if (this._envDone)
+			this._playing = false;
+	}
+
+	/**
+	 * Called whenever the note frequency changes.
+	 *
+	 * @param __bend The Pitch Bend to apply on the new frequency.
+	 * @since 2025/05/05
+	 */
+	void __onFrequency(double __bend)
+	{
+		
+		// Wave notes don't use oscillators
+		if (this._algorithm._isWave)
+			return;
+		
+		// Compute BLOCK and F_NUMBER
+		double freq =
+			this._algorithm._isDrum ? this._freqBase : this._freqBase * __bend;
+		this._block = Math.min(7, Math.max(0, (int)(Math.round(ExtraMath.log(
+			freq / 440) * MA3SamplerProvider.MAGIC_B) + 57) / 12));
+		this._fNumber = Math.min(1023, Math.max(0, (int)Math.round(
+			freq * (1 << 20 - this._block) * MA3SamplerProvider.MAGIC_F)));
+		
+		// Notify operators
+		for (__MA3Operator__ op : this._operators)
+			op.__onFrequency();
+	}
+	
+	/**
+	 * Called whenever the Master Volume for playback changes.
+	 *
+	 * @since 2025/05/05
+	 */
+	void __onVolume()
+	{
+		this._volLeftOut =
+			this._volBase * this._algorithm._volLeft * this._channel._volLeftOut;
+		this._volRightOut =
+			this._volBase * this._algorithm._volRight * this._channel._volRightOut;
+	}
+	
+	/**
+	 * Renders the next audio sample.
+	 *
+	 * @return If the note has finished generating output.
+	 * @since 2025/05/05
+	 */
+	boolean __render()
+	{
+		// Compute desired left and right volume levels
+		float tgtLeft = 0.0f;
+		float tgtRight = 0.0f;
+		if (!this._envDone)
+		{
+			tgtLeft = this._volLeftOut;
+			tgtRight = this._volRightOut;
+		}
+		
+		// Generate the sample
+		float sample = !this._algorithm._isWave ? this.__sampleFM() :
+			this._operators[0].__sample(0, false) / 32768.0f;
+		this._instance._smpNext[0] += sample * this._ampLeft;
+		this._instance._smpNext[1] += sample * this._ampRight;
+		
+		// Adjust stereo levels
+		this._ampLeft = this.__ease(this._ampLeft, tgtLeft);
+		this._ampRight = this.__ease(this._ampRight, tgtRight);
+		
+		// Indicate whether the note has finished generating output
+		return !this._playing && this._ampLeft == 0 && this._ampRight == 0;
 	}
 
 	/**
@@ -324,66 +280,83 @@ class __MA3Note__
 	 */
 	private float __sampleFM()
 	{
-		__MA3Operator__[] operators = this.operators;
+		__MA3Operator__[] operators = this._operators;
 		
 		int out1, out2, out3, out4;
 		int ret = 0;
-		switch (this.algorithm.alg)
+		switch (this._algorithm._alg)
 		{
 			case 0:
-				out1 = operators[0].sample(0, true);
-				out2 = operators[1].sample(out1, false);
+				out1 = operators[0].__sample(0, true);
+				out2 = operators[1].__sample(out1, false);
 				ret = out2;
 				break;
 			case 1:
-				out1 = operators[0].sample(0, true);
-				out2 = operators[1].sample(0, false);
+				out1 = operators[0].__sample(0, true);
+				out2 = operators[1].__sample(0, false);
 				ret = out1 + out2;
 				break;
 			case 2:
-				out1 = operators[0].sample(0, true);
-				out2 = operators[1].sample(0, false);
-				out3 = operators[2].sample(0, true);
-				out4 = operators[3].sample(0, false);
+				out1 = operators[0].__sample(0, true);
+				out2 = operators[1].__sample(0, false);
+				out3 = operators[2].__sample(0, true);
+				out4 = operators[3].__sample(0, false);
 				ret = out1 + out2 + out3 + out4;
 				break;
 			case 3:
-				out1 = operators[0].sample(0, true);
-				out2 = operators[1].sample(0, false);
-				out3 = operators[2].sample(out2, false);
-				out4 = operators[3].sample(out1 + out3, false);
+				out1 = operators[0].__sample(0, true);
+				out2 = operators[1].__sample(0, false);
+				out3 = operators[2].__sample(out2, false);
+				out4 = operators[3].__sample(out1 + out3, false);
 				ret = out4;
 				break;
 			case 4:
-				out1 = operators[0].sample(0, true);
-				out2 = operators[1].sample(out1, false);
-				out3 = operators[2].sample(out2, false);
-				out4 = operators[3].sample(out3, false);
+				out1 = operators[0].__sample(0, true);
+				out2 = operators[1].__sample(out1, false);
+				out3 = operators[2].__sample(out2, false);
+				out4 = operators[3].__sample(out3, false);
 				ret = out4;
 				break;
 			case 5:
-				out1 = operators[0].sample(0, true);
-				out2 = operators[1].sample(out1, false);
-				out3 = operators[2].sample(0, true);
-				out4 = operators[3].sample(out3, false);
+				out1 = operators[0].__sample(0, true);
+				out2 = operators[1].__sample(out1, false);
+				out3 = operators[2].__sample(0, true);
+				out4 = operators[3].__sample(out3, false);
 				ret = out2 + out4;
 				break;
 			case 6:
-				out1 = operators[0].sample(0, true);
-				out2 = operators[1].sample(0, false);
-				out3 = operators[2].sample(out2, false);
-				out4 = operators[3].sample(out3, false);
+				out1 = operators[0].__sample(0, true);
+				out2 = operators[1].__sample(0, false);
+				out3 = operators[2].__sample(out2, false);
+				out4 = operators[3].__sample(out3, false);
 				ret = out1 + out4;
 				break;
 			case 7:
-				out1 = operators[0].sample(0, true);
-				out2 = operators[1].sample(0, false);
-				out3 = operators[2].sample(out2, false);
-				out4 = operators[3].sample(0, false);
+				out1 = operators[0].__sample(0, true);
+				out2 = operators[1].__sample(0, false);
+				out3 = operators[2].__sample(out2, false);
+				out4 = operators[3].__sample(0, false);
 				ret = out1 + out3 + out4;
 				break;
 		}
 		//  Twice the max sample value
 		return ret / 8170.0f;
+	}
+
+	/**
+	 * Stops playback on this audio source.
+	 *
+	 * @since 2025/05/05
+	 */
+	void __stop()
+	{
+		this._envDone = true;
+		this._playing = false;
+		this._volBase = 0.0f;
+		for (__MA3Operator__ op : this._operators)
+		{
+			op._envLevel = 511;
+			op._envStage = MA3SamplerProvider.ENV_DONE;
+		}
 	}
 }

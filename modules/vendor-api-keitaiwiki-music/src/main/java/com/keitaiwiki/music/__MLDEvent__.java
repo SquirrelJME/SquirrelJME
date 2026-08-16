@@ -33,122 +33,92 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Sequencer event data class
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 class __MLDEvent__
 	implements BasicEvent
 {
 	/** Program Bank to set with this event, if it is a Bank Change event. */
-	@SquirrelJMEVendorApi
-	int bank;
+	int _bank;
 	
 	/** Normalized channel ID, out of 32/16 depending on the FM Op count. */
-	@SquirrelJMEVendorApi
-	int channel;
+	int _channel;
 	
 	/** Note channel index (0..3 within parent track). */
-	@SquirrelJMEVendorApi
-	int channelIndex;
+	int _channelIndex;
 	
 	/** Cuepoint for this event, if it is a Cuepoint event. */
-	@SquirrelJMEVendorApi
-	int cuepoint;
+	int _cuepoint;
 
 	/** Byte array for ext-info and unknown events. */
-	@SquirrelJMEVendorApi
-	byte[] data;
+	byte[] _data;
 	
 	/** Number of ticks since last event. */
-	@SquirrelJMEVendorApi
-	int delta;
+	int _delta;
 	
 	/** Enable flag for this event, if it is a Drum Enable event. */
-	@SquirrelJMEVendorApi
-	boolean enable;
+	boolean _enable;
 	
 	/** Number of ticks until note off. */
-	@SquirrelJMEVendorApi
-	int gateTime;
+	int _gateTime;
 	
 	/** Meta event ID. */
-	@SquirrelJMEVendorApi
-	int id;
+	int _id;
 	
 	/** Amount of jumps to do, if this is a Jump event. */
-	@SquirrelJMEVendorApi
-	int jumpCount;
+	int _jumpCount;
 	
 	/** ID of the Jump event. */
-	@SquirrelJMEVendorApi
-	int jumpId;
+	int _jumpId;
 	
 	/** Playback position to jump back to. */
-	@SquirrelJMEVendorApi
-	int jumpPoint;
+	int _jumpPoint;
 	
 	/** Normalized key ID, relative to A4. */
-	@SquirrelJMEVendorApi
-	int key;
+	int _key;
 	
 	/** Base key index. */
-	@SquirrelJMEVendorApi
-	int keyNumber;
+	int _keyNumber;
 	
 	/** Number of octaves to adjust keyNumber by. */
-	@SquirrelJMEVendorApi
-	int octaveShift;
+	int _octaveShift;
 	
 	/** Starting location in MLD resource. */
-	@SquirrelJMEVendorApi
-	int offset;
+	int _offset;
 	
 	/** Panning value, if this is a Panpot event. */
-	@SquirrelJMEVendorApi
-	float panpot;
+	float _panpot;
 	
 	/** Event parameter, effectively the value for a wide range of events. */
-	@SquirrelJMEVendorApi
-	int param;
+	int _param;
 	
 	/** Program to set with this event, if it is a Program Change event. */
-	@SquirrelJMEVendorApi
-	int program;
+	int _program;
 	
 	/** Range to set with this event, if it's a Pitch Bend Range event. */
-	@SquirrelJMEVendorApi
-	float range;
+	float _range;
 	
 	/** Semitone value to set with this event, if it is a Pitch Bend event. */
-	@SquirrelJMEVendorApi
-	float semitones;
+	float _semitones;
 
 	/** Note status. */
-	@SquirrelJMEVendorApi
-	int status;
+	int _status;
 	
 	/** Tempo to set with this event, if it is a Timebase-Tempo event. */
-	@SquirrelJMEVendorApi
-	int tempo;
+	int _tempo;
 	
 	/** Timebase to set with this event, if it is a Timebase-Tempo event. */
-	@SquirrelJMEVendorApi
-	int timebase;
+	int _timebase;
 	
 	/** Event category. */
-	@SquirrelJMEVendorApi
-	int type;
+	int _type;
 	
 	/** Note velocity. */
-	@SquirrelJMEVendorApi
-	float velocity;
+	float _velocity;
 	
 	/** Volume to set with this event, if it is a Volume event. */
-	@SquirrelJMEVendorApi
-	float volume;
+	float _volume;
 }

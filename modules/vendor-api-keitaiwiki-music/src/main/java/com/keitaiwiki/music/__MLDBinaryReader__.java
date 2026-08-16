@@ -34,7 +34,6 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.media.MediaException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -44,24 +43,19 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 class __MLDBinaryReader__
 {
 	/** Backing data store. */
-	@SquirrelJMEVendorApi
-	final byte[] data;
+	final byte[] _data;
 
 	/** Length of current data segment. */
-	@SquirrelJMEVendorApi
-	final int length;
+	final int _length;
 
 	/** Offset of start of current data segment. */
-	@SquirrelJMEVendorApi
-	final int start;
+	final int _start;
 
 	/** Current input offset. */
-	@SquirrelJMEVendorApi
-	int offset;
+	int _offset;
 
 	/**
 	 *
@@ -74,7 +68,6 @@ class __MLDBinaryReader__
 	 * @throws NullPointerException If {@code __data} is {@code null};
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	__MLDBinaryReader__(@NotNull byte[] __data,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __start,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __length)
@@ -87,10 +80,10 @@ class __MLDBinaryReader__
 			(__start + __length) > __data.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 
-		this.data = __data;
-		this.length = __length;
-		this.offset = __start;
-		this.start = __start;
+		this._data = __data;
+		this._length = __length;
+		this._offset = __start;
+		this._start = __start;
 	}
 
 	/**
@@ -103,17 +96,16 @@ class __MLDBinaryReader__
 	 * @since 2025/05/05
 	 */
 	@NotNull
-	@SquirrelJMEVendorApi
-	byte[] bytes(
+	byte[] __bytes(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __length)
 		throws ArrayIndexOutOfBoundsException
 	{
-		if (this.offset + __length > this.start + this.length)
+		if (this._offset + __length > this._start + this._length)
 			throw new ArrayIndexOutOfBoundsException("Unexpected EOF.");
 
 		byte[] ret = new byte[__length];
-		ObjectShelf.arrayCopy(this.data, this.offset, ret, 0, __length);
-		this.offset += __length;
+		ObjectShelf.arrayCopy(this._data, this._offset, ret, 0, __length);
+		this._offset += __length;
 		return ret;
 	}
 
@@ -123,10 +115,9 @@ class __MLDBinaryReader__
 	 * @return If the stream has reached its end.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
-	boolean isEOF()
+	boolean __isEOF()
 	{
-		return this.offset == this.start + this.length;
+		return this._offset == this._start + this._length;
 	}
 
 	/**
@@ -141,18 +132,17 @@ class __MLDBinaryReader__
 	 * @since 2025/05/05
 	 */
 	@NotNull
-	@SquirrelJMEVendorApi
-	__MLDBinaryReader__ reader(
+	__MLDBinaryReader__ __reader(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __length)
 		throws ArrayIndexOutOfBoundsException
 	{
-		if (this.offset + __length > this.start + this.length)
+		if (this._offset + __length > this._start + this._length)
 			throw new ArrayIndexOutOfBoundsException("Unexpected EOF.");
 
-		__MLDBinaryReader__ ret = new __MLDBinaryReader__(this.data, this.offset,
+		__MLDBinaryReader__ ret = new __MLDBinaryReader__(this._data, this._offset,
 			__length);
 
-		this.skip(__length);
+		this.__skip(__length);
 		return ret;
 	}
 
@@ -164,15 +154,14 @@ class __MLDBinaryReader__
 	 * such that {@code (this.offset + __length > this.start + this.length)}.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
-	void skip(
+	void __skip(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __length)
 		throws ArrayIndexOutOfBoundsException
 	{
-		if (this.offset + __length > this.start + this.length)
+		if (this._offset + __length > this._start + this._length)
 			throw new ArrayIndexOutOfBoundsException("Unexpected EOF.");
 
-		this.offset += __length;
+		this._offset += __length;
 	}
 
 	/**
@@ -186,12 +175,11 @@ class __MLDBinaryReader__
 	 * @since 2025/05/05
 	 */
 	@Range(from = 0, to = 0xFFFF)
-	@SquirrelJMEVendorApi
-	int u16()
+	int __u16()
 		throws ArrayIndexOutOfBoundsException, MediaException
 	{
-		int ret = this.u8() << 8;
-		return ret | this.u8();
+		int ret = this.__u8() << 8;
+		return ret | this.__u8();
 	}
 
 	/**
@@ -205,15 +193,14 @@ class __MLDBinaryReader__
 	 * @since 2025/05/05
 	 */
 	@Range(from = 0, to = 0xFFFFFFFF)
-	@SquirrelJMEVendorApi
-	int u32()
+	int __u32()
 		throws ArrayIndexOutOfBoundsException, MediaException
 	{
-		int ret = this.u16() << 16;
+		int ret = this.__u16() << 16;
 		if (ret < 0)
 			throw new MediaException("Unsupported U32 value.");
 
-		return ret | this.u16();
+		return ret | this.__u16();
 	}
 
 	/**
@@ -225,13 +212,12 @@ class __MLDBinaryReader__
 	 * @since 2025/05/05
 	 */
 	@Range(from = 0, to = 0xFF)
-	@SquirrelJMEVendorApi
-	int u8()
+	int __u8()
 		throws ArrayIndexOutOfBoundsException
 	{
-		if (this.offset == this.start + this.length)
+		if (this._offset == this._start + this._length)
 			throw new ArrayIndexOutOfBoundsException("Unexpected EOF.");
 
-		return this.data[this.offset++] & 0xFF;
+		return this._data[this._offset++] & 0xFF;
 	}
 }

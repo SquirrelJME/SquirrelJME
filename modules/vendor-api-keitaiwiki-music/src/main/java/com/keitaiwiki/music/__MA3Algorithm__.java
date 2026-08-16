@@ -33,7 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import javax.microedition.media.MediaException;
 import org.jetbrains.annotations.NotNull;
@@ -44,91 +43,71 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 class __MA3Algorithm__
 	implements BasicAlgorithm
 {
-	/** Key played for drum notes */
-	@SquirrelJMEVendorApi
-	int drumKey;
-
-	/** Is a drum note */
-	@SquirrelJMEVendorApi
-	boolean isDrum;
-
-	/** Envelopes never fully decay. */
-	@SquirrelJMEVendorApi
-	boolean isForever;
-
-	/** Is a wave drum algorithm */
-	@SquirrelJMEVendorApi
-	boolean isWave;
-
 	/** Modulation LFO rate multiplier */
-	@SquirrelJMEVendorApi
-	final int lfo;
+	final int _lfo;
 
 	/** FM operator templates */
-	@SquirrelJMEVendorApi
-	final __MA3Operator__[] operators;
+	final __MA3Operator__[] _operators;
 
 	/** Stereo balance */
-	@SquirrelJMEVendorApi
-	final int panpot;
-
-	/** Unknown significance. */
-	@SquirrelJMEVendorApi
-	boolean pe;
+	final int _panpot;
 
 	/** Operator connection algorithm */
-	@SquirrelJMEVendorApi
-	int alg;
+	int _alg;
+
+	/** Key played for drum notes */
+	int _drumKey;
 
 	/** Wave end point */
-	@SquirrelJMEVendorApi
-	int ep;
+	int _ep;
 
 	/** Drum frequency base */
-	@SquirrelJMEVendorApi
-	float freqBase;
+	float _freqBase;
 
 	/** Wave sampling frequency */
-	@SquirrelJMEVendorApi
-	int fs;
+	int _fs;
+
+	/** Is a drum note */
+	boolean _isDrum;
+
+	/** Envelopes never fully decay. */
+	boolean _isForever;
+
+	/** Is a wave drum algorithm */
+	boolean _isWave;
 
 	/** Wave loop point */
-	@SquirrelJMEVendorApi
-	int lp;
+	int _lp;
+
+	/** Unknown significance. */
+	boolean _pe;
 
 	/** Wave ROM select */
-	@SquirrelJMEVendorApi
-	boolean rm;
+	boolean _rm;
 
 	/** Left stereo amplitude */
-	@SquirrelJMEVendorApi
-	float volLeft;
+	float _volLeft;
 
 	/** Right stereo amplitude */
-	@SquirrelJMEVendorApi
-	float volRight;
+	float _volRight;
 
 	/** Wave samples to advance per output sample */
-	@SquirrelJMEVendorApi
-	float wavAdvance;
+	float _wavAdvance;
 
 	/** Wave ROM index */
-	@SquirrelJMEVendorApi
-	int waveId;
+	int _waveId;
 
 	/**
 	 * Constructs a new FM synth algorithm from a data array.
 	 *
-	 * @param __offset Offset from which the data should start being read from.
-	 * @param __message The data array to construct the algorithm from.
+	 * @param __bytes The byte data.
+	 * @param __isDrum If this is a drum.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	__MA3Algorithm__(@NotNull byte[] __bytes, boolean __isDrum)
 		throws NullPointerException
 	{
@@ -136,21 +115,21 @@ class __MA3Algorithm__
 			throw new NullPointerException("NARG");
 
 		// Decode bits
-		this.lfo = __bytes[0] & 3;
-		this.panpot = __bytes[1] >> 3 & 31;
-		this.alg = __bytes[1] & 7;
-		this.drumKey = __bytes[2] & 127;
+		this._lfo = __bytes[0] & 3;
+		this._panpot = __bytes[1] >> 3 & 31;
+		this._alg = __bytes[1] & 7;
+		this._drumKey = __bytes[2] & 127;
 
 		// operators
-		this.operators = new __MA3Operator__[this.alg < 2 ? 2 : 4];
-		for (int x = 0; x < this.operators.length; x++)
-			this.operators[x] = new __MA3Operator__(__bytes, 3 + x * 7);
+		this._operators = new __MA3Operator__[this._alg < 2 ? 2 : 4];
+		for (int x = 0; x < this._operators.length; x++)
+			this._operators[x] = new __MA3Operator__(__bytes, 3 + x * 7);
 
 
-		this.freqBase = (float)(440 * ExtraMath.pow(2,
-			(this.drumKey - 69) / 12.0));
-		this.isDrum = __isDrum;
-		this.isWave = false;
+		this._freqBase = (float)(440 * ExtraMath.pow(2,
+			(this._drumKey - 69) / 12.0));
+		this._isDrum = __isDrum;
+		this._isWave = false;
 		this.__initPost();
 	}
 
@@ -163,7 +142,6 @@ class __MA3Algorithm__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	__MA3Algorithm__(@NotNull byte[] __message,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset)
 		throws IllegalArgumentException, NullPointerException
@@ -178,34 +156,34 @@ class __MA3Algorithm__
 		int bits;
 
 		// Parse fields
-		this.drumKey = __message[__offset++] & 0xFF;
-		this.fs = (__message[__offset] & 0xFF) << 8 | __message[__offset + 1] &
+		this._drumKey = __message[__offset++] & 0xFF;
+		this._fs = (__message[__offset] & 0xFF) << 8 | __message[__offset + 1] &
 			0xFF;
 		__offset += 2;
 		bits = __message[__offset++] & 0xFF;
-		this.panpot = bits >> 3 & 31;
-		this.pe = (bits & 1) != 0;
+		this._panpot = bits >> 3 & 31;
+		this._pe = (bits & 1) != 0;
 		bits = __message[__offset++] & 0xFF;
-		this.lfo = bits >> 6 & 3;
+		this._lfo = bits >> 6 & 3;
 		// pcm  = bits >> 1 & 1;
-		this.operators = new __MA3Operator__[] {new __MA3Operator__(__offset,
+		this._operators = new __MA3Operator__[] {new __MA3Operator__(__offset,
 			__message)};
 		//  5 for operator, 2 unknown (always zero?)
 		__offset += 7;
-		this.lp = (__message[__offset] & 0xFF) << 8 | __message[__offset + 1] &
+		this._lp = (__message[__offset] & 0xFF) << 8 | __message[__offset + 1] &
 			0xFF;
 		__offset += 2;
-		this.ep = (__message[__offset] & 0xFF) << 8 | __message[__offset + 1] &
+		this._ep = (__message[__offset] & 0xFF) << 8 | __message[__offset + 1] &
 			0xFF;
 		__offset += 2;
 		bits = __message[__offset++] & 0xFF;
-		this.rm = (bits >> 7 & 1) != 0;
-		this.waveId = bits & 7;
+		this._rm = (bits >> 7 & 1) != 0;
+		this._waveId = bits & 7;
 
 
-		this.isDrum = true;
-		this.isWave = true;
-		this.wavAdvance = this.fs / MA3SamplerProvider.SAMPLE_RATE;
+		this._isDrum = true;
+		this._isWave = true;
+		this._wavAdvance = this._fs / MA3SamplerProvider.SAMPLE_RATE;
 		this.__initPost();
 	}
 
@@ -220,7 +198,6 @@ class __MA3Algorithm__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	__MA3Algorithm__(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@NotNull byte[] __message)
@@ -236,20 +213,20 @@ class __MA3Algorithm__
 		int type = __message[__offset] & 0xFF;
 		__offset += 4;
 		bits = __message[__offset++] & 0xFF;
-		this.panpot = bits >> 3 & 31;
+		this._panpot = bits >> 3 & 31;
 		bits = __message[__offset++] & 0xFF;
-		this.lfo = bits >> 6 & 3;
-		this.pe = (bits >> 5 & 1) != 0;
-		this.alg = bits & 7;
+		this._lfo = bits >> 6 & 3;
+		this._pe = (bits >> 5 & 1) != 0;
+		this._alg = bits & 7;
 
-		if (this.alg > 1 && type == 0x01)
+		if (this._alg > 1 && type == 0x01)
 			throw new MediaException("Operator count mismatch");
 
-		this.operators = new __MA3Operator__[this.alg < 2 ? 2 : 4];
+		this._operators = new __MA3Operator__[this._alg < 2 ? 2 : 4];
 		try
 		{
-			for (int x = 0; x < this.operators.length; x++, __offset += 7)
-				this.operators[x] = new __MA3Operator__(__message, __offset, true);
+			for (int x = 0; x < this._operators.length; x++, __offset += 7)
+				this._operators[x] = new __MA3Operator__(__message, __offset, true);
 		}
 		catch (ArrayIndexOutOfBoundsException e)
 		{
@@ -257,6 +234,40 @@ class __MA3Algorithm__
 		}
 
 		this.__initPost();
+	}
+
+	/**
+	 * Initializes this synthesizer algorithm's postprocess settings.
+	 *
+	 * @since 2025/05/05
+	 */
+	private void __initPost()
+	{
+		// Test whether the envelopes fully decay
+		if (!this._isWave /*|| this.lp < this.ep*/)
+		{
+			int flags =
+				this._isWave ? 1 : MA3SamplerProvider.ENV_FLAGS[this._alg];
+			for (int x = 0; !this._isForever && x < this._operators.length; x++,
+				flags >>= 1)
+			{
+				__MA3Operator__ op = this._operators[x];
+				this._isForever = (flags & 1) != 0 && (op._xof ?
+					op._sr == 0 || op._dr == 0 && op._sr != 0 : op._rr == 0);
+			}
+		}
+		this.__initVolume();
+	}
+
+	/**
+	 * Initializes this synthesizer algorithm's volume settings.
+	 *
+	 * @since 2025/05/05
+	 */
+	private void __initVolume()
+	{
+		this._volRight = this._panpot / (this._panpot <= 15 ? 30.0f : 31.0f);
+		this._volLeft = 1 - this._volRight;
 	}
 
 	/**
@@ -270,8 +281,7 @@ class __MA3Algorithm__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
-	static __MA3Algorithm__[] from(@NotNull RomData __defs, boolean __isDrum,
+	static __MA3Algorithm__[] __from(@NotNull RomData __defs, boolean __isDrum,
 		boolean __isWave)
 		throws NullPointerException
 	{
@@ -295,44 +305,10 @@ class __MA3Algorithm__
 			for (int x = 0, n = __defs.count; x < n; x++)
 			{
 				__MA3Algorithm__ alg = new __MA3Algorithm__(__defs.bytes(x), 0);
-				ret[alg.drumKey - 24] = alg;
+				ret[alg._drumKey - 24] = alg;
 			}
 		}
 
 		return ret;
-	}
-
-	/**
-	 * Initializes this synthesizer algorithm's postprocess settings.
-	 *
-	 * @since 2025/05/05
-	 */
-	private void __initPost()
-	{
-		// Test whether the envelopes fully decay
-		if (!this.isWave /*|| this.lp < this.ep*/)
-		{
-			int flags =
-				this.isWave ? 1 : MA3SamplerProvider.ENV_FLAGS[this.alg];
-			for (int x = 0; !this.isForever && x < this.operators.length; x++,
-				flags >>= 1)
-			{
-				__MA3Operator__ op = this.operators[x];
-				this.isForever = (flags & 1) != 0 && (op.xof ?
-					op.sr == 0 || op.dr == 0 && op.sr != 0 : op.rr == 0);
-			}
-		}
-		this.__initVolume();
-	}
-
-	/**
-	 * Initializes this synthesizer algorithm's volume settings.
-	 *
-	 * @since 2025/05/05
-	 */
-	private void __initVolume()
-	{
-		this.volRight = this.panpot / (this.panpot <= 15 ? 30.0f : 31.0f);
-		this.volLeft = 1 - this.volRight;
 	}
 }

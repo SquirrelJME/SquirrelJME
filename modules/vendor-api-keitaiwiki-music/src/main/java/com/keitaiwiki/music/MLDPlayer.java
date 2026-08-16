@@ -52,72 +52,72 @@ public class MLDPlayer
 {
 	/** Key index bias. */
 	@SquirrelJMEVendorApi
-	static final int A4 = 48;
-	
-	/** Playback channels. */
-	@SquirrelJMEVendorApi
-	final __MLDChannel__[] channels;
-	
-	/** Pending events. */
-	@SquirrelJMEVendorApi
-	final ArrayList<MLDPlayerEvent> events;
-	
-	/** Key events enabled by key. */
-	final HashSet<Integer> evtKeys;
-	
-	/** Sequence resource. */
-	final MLD mld;
-	
-	/** Output sampling rate. */
-	final float sampleRate;
+	public static final int A4 = 48;
 	
 	/** Sample generator. */
 	@SquirrelJMEVendorApi
 	public final Sampler sampler;
 	
+	/** Playback channels. */
+	@SquirrelJMEVendorApi
+	final __MLDChannel__[] _channels;
+	
+	/** Pending events. */
+	@SquirrelJMEVendorApi
+	final ArrayList<MLDPlayerEvent> _events;
+	
+	/** Key events enabled by key. */
+	final HashSet<Integer> _evtKeys;
+	
+	/** Sequence resource. */
+	final MLD _mld;
+	
+	/** Output sampling rate. */
+	final float _sampleRate;
+	
 	/** Sequencer state. */
 	@SquirrelJMEVendorApi
-	final __MLDPlayerTrack__[] tracks;
+	final __MLDPlayerTrack__[] _tracks;
 	
 	/** Playback events are enabled. */
 	@SquirrelJMEVendorApi
-	boolean evtPlayback;
+	boolean _evtPlayback;
 	
 	/** Sequencer has no more events. */
 	@SquirrelJMEVendorApi
-	boolean finished;
+	boolean _finished;
 	
 	/** Output frames in one tick. */
 	@SquirrelJMEVendorApi
-	float framesPerTick;
-	
-	/** Output frames to process. */
-	@SquirrelJMEVendorApi
-	float pendingFrames;
-	
-	/** Sequencer ticks to process. */
-	@SquirrelJMEVendorApi
-	int pendingTicks;
-	
-	/** Sequencer position in frames. */
-	@SquirrelJMEVendorApi
-	long position;
-	
-	/** Processing setTime(). */
-	@SquirrelJMEVendorApi
-	boolean seeking;
-	
-	/** Sequencer position in ticks. */
-	@SquirrelJMEVendorApi
-	long tickNow;
+	float _framesPerTick;
 	
 	/** Looping is enabled. */
 	@SquirrelJMEVendorApi
-	boolean loopEnabled;
+	boolean _loopEnabled;
 	
 	/** Stop all notes when looping. */
 	@SquirrelJMEVendorApi
-	boolean loopStopAll;
+	boolean _loopStopAll;
+	
+	/** Output frames to process. */
+	@SquirrelJMEVendorApi
+	float _pendingFrames;
+	
+	/** Sequencer ticks to process. */
+	@SquirrelJMEVendorApi
+	int _pendingTicks;
+	
+	/** Sequencer position in frames. */
+	@SquirrelJMEVendorApi
+	long _position;
+	
+	/** Processing setTime(). */
+	@SquirrelJMEVendorApi
+	boolean _seeking;
+	
+	/** Sequencer position in ticks. */
+	@SquirrelJMEVendorApi
+	long _tickNow;
 	
 	/**
 	 * Begin MLD playback. Instances of a {@code Sampler} are used in
@@ -150,63 +150,37 @@ public class MLDPlayer
 		if (Float.isInfinite(__sampleRate) || __sampleRate <= 0.0f)
 			throw new IllegalArgumentException("Invalid sampling rate.");
 		
-		this.channels = new __MLDChannel__[16];
-		this.events = new ArrayList<>();
-		this.evtKeys = new HashSet<>();
-		this.evtPlayback = false;
-		this.loopEnabled = true;
-		this.loopStopAll = true;
-		this.mld = __mld;
+		this._channels = new __MLDChannel__[16];
+		this._events = new ArrayList<>();
+		this._evtKeys = new HashSet<>();
+		this._evtPlayback = false;
+		this._loopEnabled = true;
+		this._loopStopAll = true;
+		this._mld = __mld;
 		this.sampler = __sampler.instance(__sampleRate);
-		this.sampleRate = __sampleRate;
-		this.seeking = false;
-		this.tracks = new __MLDPlayerTrack__[__mld.tracks.length];
+		this._sampleRate = __sampleRate;
+		this._seeking = false;
+		this._tracks = new __MLDPlayerTrack__[__mld._tracks.length];
 		
 		// Channels
-		for (int x = 0; x < this.channels.length; x++)
+		for (int x = 0; x < this._channels.length; x++)
 		{
-			__MLDChannel__ chan = this.channels[x] = new __MLDChannel__();
+			__MLDChannel__ chan = this._channels[x] = new __MLDChannel__();
 			//  A0 .. C6
-			chan.notesOn = new __MLDNote__[99];
-			chan.notesOut = new ArrayList<>();
+			chan._notesOn = new __MLDNote__[99];
+			chan._notesOut = new ArrayList<>();
 		}
 		
 		// Tracks
-		for (int x = 0; x < this.tracks.length; x++)
+		for (int x = 0; x < this._tracks.length; x++)
 		{
-			__MLDPlayerTrack__ track = this.tracks[x] = new __MLDPlayerTrack__();
-			track.index = x;
-			track.mld = mld.tracks[x];
+			__MLDPlayerTrack__ track = this._tracks[x] = new __MLDPlayerTrack__();
+			track._index = x;
+			track._mld = _mld._tracks[x];
 		}
 		
 		// Prepare for playback
 		this.reset();
-	}
-	
-	/**
-	 * Determine whether looping is enabled.
-	 *
-	 * @return {@code true} if looping is enabled.
-	 * @see #setLoopEnabled(boolean)
-	 * @since 2025/05/05
-	 */
-	@SquirrelJMEVendorApi
-	public boolean getLoopEnabled()
-	{
-		return this.loopEnabled;
-	}
-	
-	/**
-	 * Determine whether notes are stopped when looping.
-	 *
-	 * @return {@code true} if all notes are stopped when looping.
-	 * @see #setLoopStopAll(boolean)
-	 * @since 2025/05/05
-	 */
-	@SquirrelJMEVendorApi
-	public boolean getLoopStopAll()
-	{
-		return this.loopStopAll;
 	}
 	
 	/**
@@ -229,7 +203,7 @@ public class MLDPlayer
 	@SquirrelJMEVendorApi
 	public double getDuration(boolean __withoutLooping)
 	{
-		return this.mld.getDuration(__withoutLooping);
+		return this._mld.getDuration(__withoutLooping);
 	}
 	
 	/**
@@ -239,18 +213,44 @@ public class MLDPlayer
 	 *
 	 * @return An array of all pending events, now acknowledged.
 	 * @see MLDPlayerEvent
-	 * @see #addEventKey(int)
-	 * @see #addEventKeys(int[])
+	 * @see #__addEventKey(int)
+	 * @see #__addEventKeys(int[])
 	 * @see #setPlaybackEventsEnabled(boolean)
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
 	public MLDPlayerEvent[] getEvents()
 	{
-		MLDPlayerEvent[] ret = this.events.toArray(
-			new MLDPlayerEvent[this.events.size()]);
-		this.events.clear();
+		MLDPlayerEvent[] ret = this._events.toArray(
+			new MLDPlayerEvent[this._events.size()]);
+		this._events.clear();
 		return ret;
+	}
+	
+	/**
+	 * Determine whether looping is enabled.
+	 *
+	 * @return {@code true} if looping is enabled.
+	 * @see #setLoopEnabled(boolean)
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	public boolean getLoopEnabled()
+	{
+		return this._loopEnabled;
+	}
+	
+	/**
+	 * Determine whether notes are stopped when looping.
+	 *
+	 * @return {@code true} if all notes are stopped when looping.
+	 * @see #setLoopStopAll(boolean)
+	 * @since 2025/05/05
+	 */
+	@SquirrelJMEVendorApi
+	public boolean getLoopStopAll()
+	{
+		return this._loopStopAll;
 	}
 	
 	/**
@@ -266,7 +266,7 @@ public class MLDPlayer
 	@SquirrelJMEVendorApi
 	public double getPosition()
 	{
-		return (double)this.tickNow / this.mld.tickEnd;
+		return (double)this._tickNow / this._mld._tickEnd;
 	}
 	
 	/**
@@ -281,7 +281,7 @@ public class MLDPlayer
 	@SquirrelJMEVendorApi
 	public double getTime()
 	{
-		return (double)this.position / this.sampleRate;
+		return (double)this._position / this._sampleRate;
 	}
 	
 	/**
@@ -297,9 +297,9 @@ public class MLDPlayer
 	{
 		if (!this.sampler.isFinished())
 			return false;
-		for (__MLDPlayerTrack__ track : this.tracks)
+		for (__MLDPlayerTrack__ track : this._tracks)
 		{
-			if (!track.finished)
+			if (!track._finished)
 				return false;
 		}
 		return true;
@@ -467,7 +467,7 @@ public class MLDPlayer
 		int ret = 0;
 		
 		// Error checking
-		if (!this.seeking)
+		if (!this._seeking)
 		{
 			if (__samples == null)
 				throw new NullPointerException(
@@ -487,65 +487,65 @@ public class MLDPlayer
 		}
 		
 		// Sequencer is not playing
-		if (this.finished)
-			this.pendingFrames = __frames;
+		if (this._finished)
+			this._pendingFrames = __frames;
 		
 		// Process all output frames
 		while (__frames > 0)
 		{
 			
 			// Events are pending
-			if (this.events.size() != 0)
+			if (this._events.size() != 0)
 				return ret;
 			
 			// Process output frames
-			while (this.pendingFrames > 0)
+			while (this._pendingFrames > 0)
 			{
 				
 				// Render the samples
-				int f = Math.min(__frames, (int)Math.floor(this.pendingFrames));
-				if (!this.seeking)
+				int f = Math.min(__frames, (int)Math.floor(this._pendingFrames));
+				if (!this._seeking)
 					this.sampler.render(__samples, __offset, f, __left, __right,
 						__erase, __clamp);
 				
 				// State management
 				__frames -= f;
 				__offset += f * 2;
-				this.pendingFrames -= f;
-				this.position += f;
+				this._pendingFrames -= f;
+				this._position += f;
 				ret += f;
 				
 				// All output frames have been processed
 				if (__frames == 0)
-					return this.finished ? -1 : ret;
+					return this._finished ? -1 : ret;
 			}
 			
 			// Process event ticks
-			if (this.pendingTicks > 0)
+			if (this._pendingTicks > 0)
 			{
 				
 				// Sequencer
-				this.tickNow += this.pendingTicks;
+				this._tickNow += this._pendingTicks;
 				
 				// Notes
-				for (__MLDChannel__ chan : this.channels)
-					for (__MLDNote__ note : chan.notesOut)
-						note.gateTime -= this.pendingTicks;
+				for (__MLDChannel__ chan : this._channels)
+					for (__MLDNote__ note : chan._notesOut)
+						note._gateTime -= this._pendingTicks;
 				
 				// Tracks
-				for (__MLDPlayerTrack__ track : this.tracks)
-					this.__process(track, this.pendingTicks);
+				for (__MLDPlayerTrack__ track : this._tracks)
+					this.__process(track, this._pendingTicks);
 				
 				// Remove expired notes
-				for (__MLDChannel__ chan : this.channels)
-					for (int x = 0; x < chan.notesOut.size(); x++)
+				for (__MLDChannel__ chan : this._channels)
+					for (int x = 0; x < chan._notesOut.size(); x++)
 					{
-						__MLDNote__ note = chan.notesOut.get(x);
-						if (note.gateTime != 0)
+						__MLDNote__ note = chan._notesOut.get(x);
+						if (note._gateTime != 0)
 							continue;
-						this.sampler.keyOff(note.channel, note.key);
-						chan.notesOut.remove(x--);
-						chan.notesOn[MLDPlayer.A4 + note.key] = null;
+						this.sampler.keyOff(note._channel, note._key);
+						chan._notesOut.remove(x--);
+						chan._notesOn[MLDPlayer.A4 + note._key] = null;
 					}
 				
 			}
@@ -554,14 +554,14 @@ public class MLDPlayer
 			int untilTrack = this.__untilTrack();
 			if (untilTrack == -1)
 			{
-				this.finished = true;
+				this._finished = true;
 				return ret;
 			}
 			int untilNote = this.__untilNote();
-			this.pendingTicks = untilNote == -1 ? untilTrack : Math.min(
+			this._pendingTicks = untilNote == -1 ? untilTrack : Math.min(
 				untilTrack, untilNote);
-			this.pendingFrames += (float)Math.floor(
-				this.pendingTicks * this.framesPerTick);
+			this._pendingFrames += (float)Math.floor(
+				this._pendingTicks * this._framesPerTick);
 		}
 		
 		return ret;
@@ -577,38 +577,38 @@ public class MLDPlayer
 	public void reset()
 	{
 		// Instance fields
-		this.pendingFrames = 0;
-		this.pendingTicks = 0;
-		this.position = 0;
-		this.tickNow = 0;
+		this._pendingFrames = 0;
+		this._pendingTicks = 0;
+		this._position = 0;
+		this._tickNow = 0;
 		this.__setTempo(48, 125);
-		this.events.clear();
+		this._events.clear();
 
 		// Initialize sampler
 		this.sampler.reset();
 
 		// Channels
-		for (__MLDChannel__ chan : this.channels)
+		for (__MLDChannel__ chan : this._channels)
 		{
-			Arrays.fill(chan.notesOn, null);
-			chan.notesOut.clear();
+			Arrays.fill(chan._notesOn, null);
+			chan._notesOut.clear();
 		}
 
 		// Tracks
-		for (__MLDPlayerTrack__ track : this.tracks)
+		for (__MLDPlayerTrack__ track : this._tracks)
 		{
-			track.cuepoint = -1;
-			track.offset = track.mld.cue;
-			track.ticks = 0;
-			track.finished = track.offset >= track.mld.size();
+			track._cuepoint = -1;
+			track._offset = track._mld._cue;
+			track._ticks = 0;
+			track._finished = track._offset >= track._mld.size();
 		}
 
 		// Initialize playback
-		this.finished = true;
-		for (__MLDPlayerTrack__ track : this.tracks)
+		this._finished = true;
+		for (__MLDPlayerTrack__ track : this._tracks)
 		{
 			this.__process(track, 0);
-			this.finished = this.finished && track.finished;
+			this._finished = this._finished && track._finished;
 		}
 
 	}
@@ -625,7 +625,7 @@ public class MLDPlayer
 	@SquirrelJMEVendorApi
 	public boolean setLoopEnabled(boolean __enabled)
 	{
-		return this.loopEnabled = __enabled;
+		return this._loopEnabled = __enabled;
 	}
 
 	/**
@@ -642,13 +642,13 @@ public class MLDPlayer
 	@SquirrelJMEVendorApi
 	public boolean setLoopStopAll(boolean __stopAll)
 	{
-		return this.loopStopAll = __stopAll;
+		return this._loopStopAll = __stopAll;
 	}
 	
 	/**
 	 * Specify whether or not to raise playback events. Playback events
 	 * include
-	 * {@link MLDPlayerEvent.EVENT_END} and {@link MLDPlayerEvent.EVENT_LOOP}.
+	 * {@link MLDPlayerEvent#EVENT_END} and {@link MLDPlayerEvent#EVENT_LOOP}.
 	 *
 	 * @param __enabled Whether or not playback events can be raised during
 	 * rendering.
@@ -659,7 +659,7 @@ public class MLDPlayer
 	@SquirrelJMEVendorApi
 	public void setPlaybackEventsEnabled(boolean __enabled)
 	{
-		this.evtPlayback = __enabled;
+		this._evtPlayback = __enabled;
 	}
 	
 	/**
@@ -689,21 +689,21 @@ public class MLDPlayer
 			throw new IllegalArgumentException("Invalid seconds.");
 		
 		// Compute the target number of frames
-		long target = (long)Math.ceil(__seconds * this.sampleRate);
+		long target = (long)Math.ceil(__seconds * this._sampleRate);
 		
 		// Already at the target
-		if (target == this.position)
+		if (target == this._position)
 			return this.isFinished();
 		
 		// Target is earlier than the current frame
-		if (target < this.position)
+		if (target < this._position)
 			this.reset();
 		
 		// Seek forward to the target time
-		this.seeking = true;
-		this.render(null, 0, (int)(target - this.position), 0.0f, 0.0f, false,
+		this._seeking = true;
+		this.render(null, 0, (int)(target - this._position), 0.0f, 0.0f, false,
 			false);
-		this.seeking = false;
+		this._seeking = false;
 		return this.isFinished();
 	}
 
@@ -718,7 +718,7 @@ public class MLDPlayer
 	 */
 	private void __addEventKey(int __key)
 	{
-		this.evtKeys.add(__key);
+		this._evtKeys.add(__key);
 	}
 	
 	/**
@@ -737,7 +737,7 @@ public class MLDPlayer
 		if (__keys == null)
 			throw new NullPointerException("Key array is required.");
 		for (int key : __keys)
-			this.evtKeys.add(key);
+			this._evtKeys.add(key);
 	}
 	
 	/**
@@ -749,8 +749,8 @@ public class MLDPlayer
 	 */
 	private void __evtBankChange(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		this.sampler.bankChange(__event.channel, __event.bank);
-		this.__setTrackOffset(__track, __track.offset + 1);
+		this.sampler.bankChange(__event._channel, __event._bank);
+		this.__setTrackOffset(__track, __track._offset + 1);
 	}
 	
 	/**
@@ -763,21 +763,21 @@ public class MLDPlayer
 	private void __evtCuepoint(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		// Common processing
-		this.__setTrackOffset(__track, __track.offset + 1);
+		this.__setTrackOffset(__track, __track._offset + 1);
 		
-		if (__event.cuepoint == MLD.EVENT_CUEPOINT_START)
+		if (__event._cuepoint == MLD.EVENT_CUEPOINT_START)
 		{
-			for (__MLDPlayerTrack__ t : this.tracks)
-				t.cuepoint = t.offset;
+			for (__MLDPlayerTrack__ t : this._tracks)
+				t._cuepoint = t._offset;
 
 			return;
 		}
 
-		if (__event.cuepoint == MLD.EVENT_CUEPOINT_END &&
-			this.tracks[0].cuepoint != -1)
+		if (__event._cuepoint == MLD.EVENT_CUEPOINT_END &&
+			this._tracks[0]._cuepoint != -1)
 		{
 			// Reached CUEPOINT_END, stop playback.
-			this.finished = true;
+			this._finished = true;
 		}
 	}
 	
@@ -790,8 +790,8 @@ public class MLDPlayer
 	 */
 	private void __evtDrumEnable(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		this.sampler.drumEnable(__event.channel, __event.enable);
-		this.__setTrackOffset(__track, __track.offset + 1);
+		this.sampler.drumEnable(__event._channel, __event._enable);
+		this.__setTrackOffset(__track, __track._offset + 1);
 	}
 	
 	/**
@@ -803,7 +803,7 @@ public class MLDPlayer
 	 */
 	private void __evtEndOfTrack(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		__track.finished = true;
+		__track._finished = true;
 	}
 	
 	/**
@@ -815,7 +815,7 @@ public class MLDPlayer
 	 */
 	private void __evtExtB(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		switch (__event.id)
+		switch (__event._id)
 		{
 			case MLD.EVENT_BANK_CHANGE:
 				this.__evtBankChange(__track, __event);
@@ -867,7 +867,7 @@ public class MLDPlayer
 			
 			// Unrecognized events
 			default:
-				this.__setTrackOffset(__track, __track.offset + 1);
+				this.__setTrackOffset(__track, __track._offset + 1);
 		}
 	}
 	
@@ -880,8 +880,8 @@ public class MLDPlayer
 	 */
 	private void __evtExtInfo(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		this.sampler.sysEx(__event.data);
-		this.__setTrackOffset(__track, __track.offset + 1);
+		this.sampler.sysEx(__event._data);
+		this.__setTrackOffset(__track, __track._offset + 1);
 	}
 	
 	/**
@@ -893,8 +893,8 @@ public class MLDPlayer
 	 */
 	private void __evtMasterTune(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		this.sampler.masterTune(__event.semitones);
-		this.__setTrackOffset(__track, __track.offset + 1);
+		this.sampler.masterTune(__event._semitones);
+		this.__setTrackOffset(__track, __track._offset + 1);
 	}
 	
 	/**
@@ -906,8 +906,8 @@ public class MLDPlayer
 	 */
 	private void __evtMasterVolume(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		this.sampler.masterVolume(__event.volume);
-		this.__setTrackOffset(__track, __track.offset + 1);
+		this.sampler.masterVolume(__event._volume);
+		this.__setTrackOffset(__track, __track._offset + 1);
 	}
 	
 	/**
@@ -919,46 +919,46 @@ public class MLDPlayer
 	 */
 	private void __evtNote(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		__MLDChannel__ chan = this.channels[__event.channel];
-		__MLDNote__ note = chan.notesOn[MLDPlayer.A4 + __event.key];
+		__MLDChannel__ chan = this._channels[__event._channel];
+		__MLDNote__ note = chan._notesOn[MLDPlayer.A4 + __event._key];
 		
 		// Common processing
-		this.__setTrackOffset(__track, __track.offset + 1);
+		this.__setTrackOffset(__track, __track._offset + 1);
 		
 		// Raise an event
-		if (this.evtKeys.contains(__event.key))
-			this.events.add(
+		if (this._evtKeys.contains(__event._key))
+			this._events.add(
 				new MLDPlayerEvent(this.getTime(), MLDPlayerEvent.EVENT_KEY,
-					__event.key));
+					__event._key));
 		
 		// Velocity 0 is regarded as key-off
-		if (__event.velocity == 0)
+		if (__event._velocity == 0)
 		{
-			this.sampler.keyOff(__event.channel, __event.key);
+			this.sampler.keyOff(__event._channel, __event._key);
 			if (note != null)
 			{
-				chan.notesOn[MLDPlayer.A4 + __event.key] = null;
-				chan.notesOut.remove(note);
+				chan._notesOn[MLDPlayer.A4 + __event._key] = null;
+				chan._notesOut.remove(note);
 			}
 			return;
 		}
 		
 		// Velocity not zero is regarded as key-on
-		if (!this.seeking)
-			this.sampler.keyOn(__event.channel, __event.key, __event.velocity);
+		if (!this._seeking)
+			this.sampler.keyOn(__event._channel, __event._key, __event._velocity);
 		
 		// Get or create the note for this key
 		if (note == null)
 		{
 			note = new __MLDNote__();
-			note.channel = __event.channel;
-			note.key = __event.key;
-			chan.notesOn[MLDPlayer.A4 + __event.key] = note;
-			chan.notesOut.add(note);
+			note._channel = __event._channel;
+			note._key = __event._key;
+			chan._notesOn[MLDPlayer.A4 + __event._key] = note;
+			chan._notesOut.add(note);
 		}
 		
 		// Reconfigure the note
-		note.gateTime = __event.gateTime;
+		note._gateTime = __event._gateTime;
 	}
 	
 	/**
@@ -970,8 +970,8 @@ public class MLDPlayer
 	 */
 	private void __evtPanPot(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		this.sampler.panpot(__event.channel, __event.panpot);
-		this.__setTrackOffset(__track, __track.offset + 1);
+		this.sampler.panpot(__event._channel, __event._panpot);
+		this.__setTrackOffset(__track, __track._offset + 1);
 	}
 	
 	/**
@@ -983,8 +983,8 @@ public class MLDPlayer
 	 */
 	private void __evtPitchBend(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		this.sampler.pitchBend(__event.channel, __event.semitones);
-		this.__setTrackOffset(__track, __track.offset + 1);
+		this.sampler.pitchBend(__event._channel, __event._semitones);
+		this.__setTrackOffset(__track, __track._offset + 1);
 	}
 	
 	/**
@@ -996,8 +996,8 @@ public class MLDPlayer
 	 */
 	private void __evtPitchRange(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		this.sampler.pitchBendRange(__event.channel, __event.range);
-		this.__setTrackOffset(__track, __track.offset + 1);
+		this.sampler.pitchBendRange(__event._channel, __event._range);
+		this.__setTrackOffset(__track, __track._offset + 1);
 	}
 	
 	/**
@@ -1009,8 +1009,8 @@ public class MLDPlayer
 	 */
 	private void __evtProgramChange(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		this.sampler.programChange(__event.channel, __event.program);
-		this.__setTrackOffset(__track, __track.offset + 1);
+		this.sampler.programChange(__event._channel, __event._program);
+		this.__setTrackOffset(__track, __track._offset + 1);
 	}
 	
 	/**
@@ -1022,12 +1022,12 @@ public class MLDPlayer
 	 */
 	private void __evtTimebaseTempo(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		if (__event.timebase == -1)
+		if (__event._timebase == -1)
 			return;
-		float prev = this.framesPerTick;
-		this.__setTempo(__event.timebase, __event.tempo);
-		this.pendingFrames = this.pendingFrames * this.framesPerTick / prev;
-		this.__setTrackOffset(__track, __track.offset + 1);
+		float prev = this._framesPerTick;
+		this.__setTempo(__event._timebase, __event._tempo);
+		this._pendingFrames = this._pendingFrames * this._framesPerTick / prev;
+		this.__setTrackOffset(__track, __track._offset + 1);
 	}
 	
 	/**
@@ -1039,8 +1039,8 @@ public class MLDPlayer
 	 */
 	private void __evtVolume(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		this.sampler.volume(__event.channel, __event.volume);
-		this.__setTrackOffset(__track, __track.offset + 1);
+		this.sampler.volume(__event._channel, __event._volume);
+		this.__setTrackOffset(__track, __track._offset + 1);
 	}
 
 	/**
@@ -1053,21 +1053,21 @@ public class MLDPlayer
 	private void __process(__MLDPlayerTrack__ __track, int __ticks)
 	{
 		// The track has finished
-		if (__track.finished)
+		if (__track._finished)
 			return;
 		
 		// Update state
-		__track.ticks -= __ticks;
-		if (__track.ticks > 0)
+		__track._ticks -= __ticks;
+		if (__track._ticks > 0)
 			return;
 		
 		// Process all events this tick
-		while (__track.ticks == 0)
+		while (__track._ticks == 0)
 		{
-			__MLDEvent__ event = __track.mld.get(__track.offset);
+			__MLDEvent__ event = __track._mld.get(__track._offset);
 			
 			// Process the event
-			switch (event.type)
+			switch (event._type)
 			{
 				case MLD.EVENT_TYPE_NOTE:
 					this.__evtNote(__track, event);
@@ -1079,15 +1079,15 @@ public class MLDPlayer
 					this.__evtExtInfo(__track, event);
 					break;
 				default:
-					this.__setTrackOffset(__track, __track.offset + 1);
+					this.__setTrackOffset(__track, __track._offset + 1);
 			}
 			
 			// Stop processing events
-			if (__track.finished)
+			if (__track._finished)
 				return;
 			
 			// Schedule the next event
-			__track.ticks = __track.mld.get(__track.offset).delta;
+			__track._ticks = __track._mld.get(__track._offset)._delta;
 		}
 	}
 
@@ -1101,7 +1101,7 @@ public class MLDPlayer
 	 */
 	private void __removeEventKey(int __key)
 	{
-		this.evtKeys.remove(__key);
+		this._evtKeys.remove(__key);
 	}
 	
 	/**
@@ -1118,7 +1118,7 @@ public class MLDPlayer
 		if (__keys == null)
 			throw new NullPointerException("Key array is required.");
 		for (int key : __keys)
-			this.evtKeys.remove(key);
+			this._evtKeys.remove(key);
 	}
 	
 	/**
@@ -1130,7 +1130,7 @@ public class MLDPlayer
 	 */
 	private void __setTempo(int __timebase, int __tempo)
 	{
-		this.framesPerTick = (60 * this.sampleRate) / (__timebase * __tempo);
+		this._framesPerTick = (60 * this._sampleRate) / (__timebase * __tempo);
 	}
 	
 	/**
@@ -1143,17 +1143,17 @@ public class MLDPlayer
 	private void __setTrackOffset(__MLDPlayerTrack__ __track, int __offset)
 	{
 		// Configure the track
-		__track.offset = __offset;
-		__track.finished = __offset >= __track.mld.size();
+		__track._offset = __offset;
+		__track._finished = __offset >= __track._mld.size();
 		
 		// Raise an event
-		if (!__track.finished || !this.evtPlayback)
+		if (!__track._finished || !this._evtPlayback)
 			return;
 		boolean finished = true;
-		for (__MLDPlayerTrack__ other : this.tracks)
-			finished = finished && other.finished;
+		for (__MLDPlayerTrack__ other : this._tracks)
+			finished = finished && other._finished;
 		if (finished)
-			this.events.add(
+			this._events.add(
 				new MLDPlayerEvent(this.getTime(), MLDPlayerEvent.EVENT_END,
 					0));
 	}
@@ -1167,11 +1167,11 @@ public class MLDPlayer
 	private int __untilNote()
 	{
 		int ret = -1;
-		for (__MLDChannel__ chan : this.channels)
-			for (__MLDNote__ note : chan.notesOut)
+		for (__MLDChannel__ chan : this._channels)
+			for (__MLDNote__ note : chan._notesOut)
 			{
-				if (ret == -1 || note.gateTime < ret)
-					ret = note.gateTime;
+				if (ret == -1 || note._gateTime < ret)
+					ret = note._gateTime;
 			}
 		return ret;
 	}
@@ -1185,12 +1185,12 @@ public class MLDPlayer
 	private int __untilTrack()
 	{
 		int ret = -1;
-		for (__MLDPlayerTrack__ track : this.tracks)
+		for (__MLDPlayerTrack__ track : this._tracks)
 		{
-			if (track.finished)
+			if (track._finished)
 				continue;
-			if (ret == -1 || track.ticks < ret)
-				ret = track.ticks;
+			if (ret == -1 || track._ticks < ret)
+				ret = track._ticks;
 		}
 		return ret;
 	}

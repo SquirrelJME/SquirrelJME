@@ -189,37 +189,37 @@ public class MA3SamplerProvider
 	
 	/** Drum algorithms for Yamaha's MA-2. */
 	@SquirrelJMEVendorApi
-	static final __MA3Algorithm__[] MA2_DRUMS = __MA3Algorithm__.from(
+	static final __MA3Algorithm__[] MA2_DRUMS = __MA3Algorithm__.__from(
 		RomData.MA2_DRUMS, true, false);
 	
 	/** Instrument algorithms for Yamaha's MA-2. */
 	@SquirrelJMEVendorApi
-	static final __MA3Algorithm__[] MA2_INSTRUMENTS = __MA3Algorithm__.from(
+	static final __MA3Algorithm__[] MA2_INSTRUMENTS = __MA3Algorithm__.__from(
 		RomData.MA2_INSTRUMENTS, false, false);
 	
 	/** 2-Operator FM drum algorithms for Yamaha's MA-3. */
 	@SquirrelJMEVendorApi
-	static final __MA3Algorithm__[] MA3_DRUMS_2OP = __MA3Algorithm__.from(
+	static final __MA3Algorithm__[] MA3_DRUMS_2OP = __MA3Algorithm__.__from(
 		RomData.MA3_DRUMS_2OP, true, false);
 	
 	/** 4-Operator FM drum algorithms for Yamaha's MA-3. */
 	@SquirrelJMEVendorApi
-	static final __MA3Algorithm__[] MA3_DRUMS_4OP = __MA3Algorithm__.from(
+	static final __MA3Algorithm__[] MA3_DRUMS_4OP = __MA3Algorithm__.__from(
 		RomData.MA3_DRUMS_4OP, true, false);
 	
 	/** Wave drum algorithms for Yamaha's MA-3. */
 	@SquirrelJMEVendorApi
-	static final __MA3Algorithm__[] MA3_DRUMS_WAVE = __MA3Algorithm__.from(
+	static final __MA3Algorithm__[] MA3_DRUMS_WAVE = __MA3Algorithm__.__from(
 		RomData.MA3_DRUMS_WAVE, true, true);
 	
 	/** 2-Operator FM instrument algorithms for Yamaha's MA-3. */
 	@SquirrelJMEVendorApi
-	static final __MA3Algorithm__[] MA3_INSTRUMENTS_2OP = __MA3Algorithm__.from(
+	static final __MA3Algorithm__[] MA3_INSTRUMENTS_2OP = __MA3Algorithm__.__from(
 		RomData.MA3_INSTRUMENTS_2OP, false, false);
 	
 	/** 4-Operator FM instrument algorithms for Yamaha's MA-3. */
 	@SquirrelJMEVendorApi
-	static final __MA3Algorithm__[] MA3_INSTRUMENTS_4OP = __MA3Algorithm__.from(
+	static final __MA3Algorithm__[] MA3_INSTRUMENTS_4OP = __MA3Algorithm__.__from(
 		RomData.MA3_INSTRUMENTS_4OP, false, false);
 	
 	/** Wave synthesis ROM for Yamaha's MA-3. */
@@ -234,10 +234,6 @@ public class MA3SamplerProvider
 	/** Magic number for F_NUMBER / frequency divider calculations. */
 	@SquirrelJMEVendorApi
 	static final double MAGIC_F = 684 / 33868800.0;
-	
-	/** Wave negative value. */
-	@SquirrelJMEVendorApi
-	static final int WAVE_MINUS = 0x80000000;
 	
 	/** Frequency multipliers, doubled to implement with a right shift. */
 	@SquirrelJMEVendorApi
@@ -259,41 +255,46 @@ public class MA3SamplerProvider
 	@SquirrelJMEVendorApi
 	static final int[] WAVE_ENV;
 	
+	/** Wave negative value. */
+	@SquirrelJMEVendorApi
+	static final int WAVE_MINUS = 0x80000000;
+	
 	/** Minimum wave value. */
 	@SquirrelJMEVendorApi
 	static final int ZERO = 0x1000;
 	
 	/** Array of FM drum algorithms. */
 	@SquirrelJMEVendorApi
-	__MA3Algorithm__[] algDrums;
+	__MA3Algorithm__[] _algDrums;
 	
 	/** Array of FM instrument algorithms. */
 	@SquirrelJMEVendorApi
-	__MA3Algorithm__[] algInstruments;
+	__MA3Algorithm__[] _algInstruments;
 	
 	/** Array of wave drum algorithms */
 	@SquirrelJMEVendorApi
-	__MA3Algorithm__[] algWaveDrums;
+	__MA3Algorithm__[] _algWaveDrums;
 	
 	/** FM drum algorithm type. */
 	@SquirrelJMEVendorApi
-	int prgDrumType;
+	int _prgDrumType;
 	
 	/** FM instrument algorithm type. */
 	@SquirrelJMEVendorApi
-	int prgInstrumentType;
+	int _prgInstrumentType;
 	
 	/** Wave drums algorithm type. */
 	@SquirrelJMEVendorApi
-	int prgWaveDrumType;
+	int _prgWaveDrumType;
 	
-	/**
-	 * Compute lookup tables.
-	 *
-	 * Formulas are courtesy of Gambrell and Niemitalo: "OPLx decapsulated".
-	 */
 	static
 	{
+		/*
+		 * Compute lookup tables.
+		 *
+		 * Formulas are courtesy of Gambrell and Niemitalo: "OPLx decapsulated".
+		 */
+		
 		// Lookup memory
 		AM_LFO_A = new int[52];
 		EXP = new int[256];
@@ -514,7 +515,7 @@ public class MA3SamplerProvider
 		throws IllegalArgumentException
 	{
 		super();
-		this.algWaveDrums = MA3SamplerProvider.MA3_DRUMS_WAVE;
+		this._algWaveDrums = MA3SamplerProvider.MA3_DRUMS_WAVE;
 		this.setInstrumentType(__instrumentType);
 		this.setDrumType(__drumType);
 		this.setWaveDrumType(__waveDrumType);
@@ -532,7 +533,7 @@ public class MA3SamplerProvider
 	@SquirrelJMEVendorApi
 	public int getDrumType()
 	{
-		return this.prgDrumType;
+		return this._prgDrumType;
 	}
 	
 	/**
@@ -547,7 +548,7 @@ public class MA3SamplerProvider
 	@SquirrelJMEVendorApi
 	public int getInstrumentType()
 	{
-		return this.prgInstrumentType;
+		return this._prgInstrumentType;
 	}
 	
 	/**
@@ -562,7 +563,7 @@ public class MA3SamplerProvider
 	@SquirrelJMEVendorApi
 	public int getWaveDrumType()
 	{
-		return this.prgWaveDrumType;
+		return this._prgWaveDrumType;
 	}
 	
 	/**
@@ -614,18 +615,18 @@ public class MA3SamplerProvider
 		switch (__type)
 		{
 			case MA3SamplerProvider.FM_MA2:
-				this.algDrums = MA3SamplerProvider.MA2_DRUMS;
+				this._algDrums = MA3SamplerProvider.MA2_DRUMS;
 				break;
 			case MA3SamplerProvider.FM_MA3_2OP:
-				this.algDrums = MA3SamplerProvider.MA3_DRUMS_2OP;
+				this._algDrums = MA3SamplerProvider.MA3_DRUMS_2OP;
 				break;
 			case MA3SamplerProvider.FM_MA3_4OP:
-				this.algDrums = MA3SamplerProvider.MA3_DRUMS_4OP;
+				this._algDrums = MA3SamplerProvider.MA3_DRUMS_4OP;
 				break;
 			default:
 				throw new IllegalArgumentException("Invalid type.");
 		}
-		return this.prgDrumType = __type;
+		return this._prgDrumType = __type;
 	}
 	
 	/**
@@ -655,18 +656,18 @@ public class MA3SamplerProvider
 		switch (__type)
 		{
 			case MA3SamplerProvider.FM_MA2:
-				this.algInstruments = MA3SamplerProvider.MA2_INSTRUMENTS;
+				this._algInstruments = MA3SamplerProvider.MA2_INSTRUMENTS;
 				break;
 			case MA3SamplerProvider.FM_MA3_2OP:
-				this.algInstruments = MA3SamplerProvider.MA3_INSTRUMENTS_2OP;
+				this._algInstruments = MA3SamplerProvider.MA3_INSTRUMENTS_2OP;
 				break;
 			case MA3SamplerProvider.FM_MA3_4OP:
-				this.algInstruments = MA3SamplerProvider.MA3_INSTRUMENTS_4OP;
+				this._algInstruments = MA3SamplerProvider.MA3_INSTRUMENTS_4OP;
 				break;
 			default:
 				throw new IllegalArgumentException("Invalid type.");
 		}
-		return this.prgInstrumentType = __type;
+		return this._prgInstrumentType = __type;
 	}
 	
 	/**
@@ -693,15 +694,15 @@ public class MA3SamplerProvider
 		switch (__type)
 		{
 			case MA3SamplerProvider.WAVE_DRUM_NONE:
-				this.algWaveDrums = null;
+				this._algWaveDrums = null;
 				break;
 			case MA3SamplerProvider.WAVE_DRUM_MA3:
-				this.algWaveDrums = MA3SamplerProvider.MA3_DRUMS_WAVE;
+				this._algWaveDrums = MA3SamplerProvider.MA3_DRUMS_WAVE;
 				break;
 			default:
 				throw new IllegalArgumentException("Invalid type.");
 		}
-		return this.prgWaveDrumType = __type;
+		return this._prgWaveDrumType = __type;
 	}
 
 	/**
@@ -721,7 +722,7 @@ public class MA3SamplerProvider
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	static int[] decodeAICA(@NotNull byte[] __adpcm,
+	static int[] __decodeAICA(@NotNull byte[] __adpcm,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __length)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
@@ -789,7 +790,7 @@ public class MA3SamplerProvider
 		for (int x = 0, n = __roms.count; x < n; x++)
 		{
 			byte[] adpcm = __roms.bytes(x);
-			ret[x] = MA3SamplerProvider.decodeAICA(adpcm, 0, adpcm.length);
+			ret[x] = MA3SamplerProvider.__decodeAICA(adpcm, 0, adpcm.length);
 		}
 		return ret;
 	}

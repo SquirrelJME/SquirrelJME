@@ -33,7 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;
@@ -44,73 +43,56 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 class __MA3Channel__
 	implements BasicChannel
 {
 	/** Index in sampler */
-	@SquirrelJMEVendorApi
-	final int index;
+	final int _index;
 	
 	/** Encapsulating instance */
-	@SquirrelJMEVendorApi
-	final MA3Sampler instance;
+	final MA3Sampler _instance;
 	
 	/** All notes currently on keys */
-	@SquirrelJMEVendorApi
-	final __MA3Note__[] notesOn;
+	final __MA3Note__[] _notesOn;
 	
 	/** Notes to be rendered. */
-	@SquirrelJMEVendorApi
-	final ArrayList<__MA3Note__> notesOut;
+	final ArrayList<__MA3Note__> _notesOut;
 	
 	/** Pitch bend base ratio */
-	@SquirrelJMEVendorApi
-	float bendBase;
+	float _bendBase;
 	
 	/** Effective channel frequency ratio */
-	@SquirrelJMEVendorApi
-	float bendOut;
+	float _bendOut;
 	
 	/** Pitch bend magnitude */
-	@SquirrelJMEVendorApi
-	float bendRange;
+	float _bendRange;
 	
 	/** The channel plays drum notes */
-	@SquirrelJMEVendorApi
-	boolean isDrum;
+	boolean _isDrum;
 	
 	/** Program bank */
-	@SquirrelJMEVendorApi
-	int prgBank;
+	int _prgBank;
 	
 	/** Program index in bank */
-	@SquirrelJMEVendorApi
-	int prgProgram;
+	int _prgProgram;
 	
 	/** Left stereo amplitude */
-	@SquirrelJMEVendorApi
-	float volLeft;
+	float _volLeft;
 	
 	/** Left stereo output amplitude */
-	@SquirrelJMEVendorApi
-	float volLeftOut;
+	float _volLeftOut;
 	
 	/** Channel output amplitude */
-	@SquirrelJMEVendorApi
-	float volLevel;
+	float _volLevel;
 	
 	/** Stereo level */
-	@SquirrelJMEVendorApi
-	float volPanning;
+	float _volPanning;
 	
 	/** Right stereo amplitude */
-	@SquirrelJMEVendorApi
-	float volRight;
+	float _volRight;
 	
 	/** Right stereo output amplitude */
-	@SquirrelJMEVendorApi
-	float volRightOut;
+	float _volRightOut;
 	
 	/**
 	 * Creates a new MA-3 Output Channel with the specified channel index and
@@ -120,15 +102,14 @@ class __MA3Channel__
 	 * @param __index The channel index this new channel will occupy.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	__MA3Channel__(@NotNull MA3Sampler __instance,
 		@Range(from = 0, to = MA3Sampler.NUM_CHANNELS) int __index)
 	{
-		this.index = __index;
-		this.instance = __instance;
+		this._index = __index;
+		this._instance = __instance;
 		//  C-2 .. G8
-		this.notesOn = new __MA3Note__[128];
-		this.notesOut = new ArrayList<>();
+		this._notesOn = new __MA3Note__[128];
+		this._notesOut = new ArrayList<>();
 	}
 	
 	/**
@@ -137,12 +118,11 @@ class __MA3Channel__
 	 *
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
-	void onFrequency()
+	void __onFrequency()
 	{
-		float bend = this.instance.bendOut * this.bendOut;
-		for (__MA3Note__ note : this.notesOut)
-			note.onFrequency(this.bendOut);
+		float bend = this._instance._bendOut * this._bendOut;
+		for (__MA3Note__ note : this._notesOut)
+			note.__onFrequency(this._bendOut);
 	}
 	
 	/**
@@ -151,15 +131,14 @@ class __MA3Channel__
 	 *
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
-	void onVolume()
+	void __onVolume()
 	{
-		MA3Sampler instance = this.instance;
+		MA3Sampler instance = this._instance;
 		
-		this.volLeftOut = instance.volOut * this.volLeft;
-		this.volRightOut = instance.volOut * this.volRight;
-		for (__MA3Note__ note : this.notesOut)
-			note.onVolume();
+		this._volLeftOut = instance._volOut * this._volLeft;
+		this._volRightOut = instance._volOut * this._volRight;
+		for (__MA3Note__ note : this._notesOut)
+			note.__onVolume();
 	}
 	
 	/**
@@ -167,13 +146,12 @@ class __MA3Channel__
 	 *
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
-	void render()
+	void __render()
 	{
-		ArrayList<__MA3Note__> _notesOut = this.notesOut;
+		ArrayList<__MA3Note__> _notesOut = this._notesOut;
 		for (int x = 0; x < _notesOut.size(); x++)
 		{
-			if (_notesOut.get(x).render())
+			if (_notesOut.get(x).__render())
 				_notesOut.remove(x--);
 		}
 	}
@@ -183,25 +161,24 @@ class __MA3Channel__
 	 *
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
-	void reset()
+	void __reset()
 	{
-		this.bendBase = 0.0f;
-		this.bendOut = 1.0f;
-		this.bendRange = 2.0f;
-		this.isDrum = false;
-		this.prgBank = 0;
-		this.prgProgram = 0;
-		this.volLevel = 1.0f;
-		this.volPanning = 0.5f;
-		this.volLeft = 0.5f;
-		this.volLeftOut = 0.5f;
-		this.volRight = 0.5f;
-		this.volRightOut = 0.5f;
+		this._bendBase = 0.0f;
+		this._bendOut = 1.0f;
+		this._bendRange = 2.0f;
+		this._isDrum = false;
+		this._prgBank = 0;
+		this._prgProgram = 0;
+		this._volLevel = 1.0f;
+		this._volPanning = 0.5f;
+		this._volLeft = 0.5f;
+		this._volLeftOut = 0.5f;
+		this._volRight = 0.5f;
+		this._volRightOut = 0.5f;
 		
-		// Stop playing all notes (not calling note.onFrequency())
-		Arrays.fill(this.notesOn, null);
-		for (__MA3Note__ note : this.notesOut)
-			note.stop();
+		// Stop playing all notes (not calling note.__onFrequency())
+		Arrays.fill(this._notesOn, null);
+		for (__MA3Note__ note : this._notesOut)
+			note.__stop();
 	}
 }

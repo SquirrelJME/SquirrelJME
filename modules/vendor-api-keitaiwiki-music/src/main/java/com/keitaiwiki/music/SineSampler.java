@@ -53,23 +53,23 @@ public class SineSampler
 {
 	/** Channel states. */
 	@SquirrelJMEVendorApi
-	final __SineChannel__[] channels;
+	final __SineChannel__[] _channels;
 	
 	/** Global pitch bend. */
 	@SquirrelJMEVendorApi
-	float masterTune;
+	float _masterTune;
 	
 	/** Global volume. */
 	@SquirrelJMEVendorApi
-	float masterVolume;
+	float _masterVolume;
 	
 	/** Output sampling rate. */
 	@SquirrelJMEVendorApi
-	final float sampleRate;
+	final float _sampleRate;
 	
 	/** Automatic volume adjustment rate. */
 	@SquirrelJMEVendorApi
-	final float volRate;
+	final float _volRate;
 	
 
 	/**
@@ -81,18 +81,18 @@ public class SineSampler
 	@SquirrelJMEVendorApi
 	public SineSampler(float __sampleRate)
 	{
-		this.channels = new __SineChannel__[16];
-		this.sampleRate = __sampleRate;
-		this.volRate = 1 / (__sampleRate * 0.1f);
+		this._channels = new __SineChannel__[16];
+		this._sampleRate = __sampleRate;
+		this._volRate = 1 / (__sampleRate * 0.1f);
 		
 		// Channels
-		for (int x = 0; x < this.channels.length; x++)
+		for (int x = 0; x < this._channels.length; x++)
 		{
-			__SineChannel__ chan = this.channels[x] = new __SineChannel__();
-			chan.index = x;
+			__SineChannel__ chan = this._channels[x] = new __SineChannel__();
+			chan._index = x;
 			//  C-2 .. G8
-			chan.notesOn = new __SineNote__[127];
-			chan.notesOut = new ArrayList<>();
+			chan._notesOn = new __SineNote__[127];
+			chan._notesOut = new ArrayList<>();
 		}
 		
 		// Reset all state
@@ -126,18 +126,18 @@ public class SineSampler
 	@Override
 	public void keyOff(int __channel, int __key)
 	{
-		__SineChannel__[] channels = this.channels;
+		__SineChannel__[] channels = this._channels;
 		if (__channel < 0 || __channel >= channels.length ||
 			SineSamplerProvider.A4 + __key < 0 ||
 			SineSamplerProvider.A4 + __key >= 128)
 			return;
 		
 		__SineChannel__ chan = channels[__channel];
-		__SineNote__ note = chan.notesOn[SineSamplerProvider.A4 + __key];
+		__SineNote__ note = chan._notesOn[SineSamplerProvider.A4 + __key];
 		if (note != null)
 		{
-			note.playing = false;
-			note.volBase = 0;
+			note._playing = false;
+			note._volBase = 0;
 		}
 	}
 	
@@ -148,9 +148,9 @@ public class SineSampler
 	@Override
 	public boolean isFinished()
 	{
-		for (__SineChannel__ chan : this.channels)
+		for (__SineChannel__ chan : this._channels)
 		{
-			if (chan.notesOut.size() != 0)
+			if (chan._notesOut.size() != 0)
 				return false;
 		}
 		return true;
@@ -168,31 +168,31 @@ public class SineSampler
 		if (Float.isInfinite(__velocity) || __velocity < 0.0f)
 			throw new IllegalArgumentException("Invalid velocity.");
 		
-		if (__channel < 0 || __channel >= this.channels.length ||
+		if (__channel < 0 || __channel >= this._channels.length ||
 			SineSamplerProvider.A4 + __key < 0 ||
 			SineSamplerProvider.A4 + __key >= 128)
 			return;
 		
 		// Working variables
-		__SineChannel__ chan = this.channels[__channel];
-		__SineNote__ note = chan.notesOn[SineSamplerProvider.A4 + __key];
+		__SineChannel__ chan = this._channels[__channel];
+		__SineNote__ note = chan._notesOn[SineSamplerProvider.A4 + __key];
 		
 		// No note is currently playing on the specified key
 		if (note == null)
 		{
-			note = chan.notesOn[SineSamplerProvider.A4 + __key] =
+			note = chan._notesOn[SineSamplerProvider.A4 + __key] =
 				new __SineNote__();
-			chan.notesOut.add(note);
-			note.channel = chan;
-			note.volLeftLevel = 0.0f;
-			note.volRightLevel = 0.0f;
-			note.wavPhase = 0.0f;
+			chan._notesOut.add(note);
+			note._channel = chan;
+			note._volLeftLevel = 0.0f;
+			note._volRightLevel = 0.0f;
+			note._wavPhase = 0.0f;
 		}
 		
 		// Configure fields
-		note.freqBase = (float)(440 * ExtraMath.pow(2, __key / 12.0));
-		note.playing = true;
-		note.volBase = __velocity;
+		note._freqBase = (float)(440 * ExtraMath.pow(2, __key / 12.0));
+		note._playing = true;
+		note._volBase = __velocity;
 	}
 	
 	/**
@@ -204,7 +204,7 @@ public class SineSampler
 	{
 		if (Float.isInfinite(__semitones))
 			throw new IllegalArgumentException("Invalid semitones.");
-		this.masterTune = (float)ExtraMath.pow(2, __semitones);
+		this._masterTune = (float)ExtraMath.pow(2, __semitones);
 	}
 	
 	/**
@@ -216,7 +216,7 @@ public class SineSampler
 	{
 		if (Float.isInfinite(__volume) || __volume < 0.0f)
 			throw new IllegalArgumentException("Invalid volume.");
-		this.masterVolume = __volume;
+		this._masterVolume = __volume;
 	}
 	
 	/**
@@ -226,7 +226,7 @@ public class SineSampler
 	@Override
 	public void panpot(int __channel, float __panpot)
 	{
-		__SineChannel__[] channels = this.channels;
+		__SineChannel__[] channels = this._channels;
 		if (Float.isInfinite(__panpot) || __panpot < -1.0f || __panpot > 1.0f)
 			throw new IllegalArgumentException("Invalid panpot.");
 		
@@ -234,9 +234,9 @@ public class SineSampler
 			return;
 		
 		__SineChannel__ chan = channels[__channel];
-		chan.volPanning = (__panpot + 1) / 2;
-		chan.volLeft = (1.0f - chan.volPanning) * chan.volLevel;
-		chan.volRight = chan.volPanning * chan.volLevel;
+		chan._volPanning = (__panpot + 1) / 2;
+		chan._volLeft = (1.0f - chan._volPanning) * chan._volLevel;
+		chan._volRight = chan._volPanning * chan._volLevel;
 	}
 	
 	/**
@@ -246,7 +246,7 @@ public class SineSampler
 	@Override
 	public void pitchBend(int __channel, float __semitones)
 	{
-		__SineChannel__[] channels = this.channels;
+		__SineChannel__[] channels = this._channels;
 		if (Float.isInfinite(__semitones))
 			throw new IllegalArgumentException("Invalid semitones.");
 		
@@ -254,9 +254,9 @@ public class SineSampler
 			return;
 		
 		__SineChannel__ chan = channels[__channel];
-		chan.bendBase = __semitones;
-		chan.bendOut = (float)ExtraMath.pow(2,
-			chan.bendBase * chan.bendRange);
+		chan._bendBase = __semitones;
+		chan._bendOut = (float)ExtraMath.pow(2,
+			chan._bendBase * chan._bendRange);
 	}
 	
 	/**
@@ -266,7 +266,7 @@ public class SineSampler
 	@Override
 	public void pitchBendRange(int __channel, float __range)
 	{
-		__SineChannel__[] channels = this.channels;
+		__SineChannel__[] channels = this._channels;
 		if (Float.isInfinite(__range) || __range < 0.0f)
 			throw new IllegalArgumentException("Invalid range.");
 		
@@ -274,9 +274,9 @@ public class SineSampler
 			return;
 		
 		__SineChannel__ chan = channels[__channel];
-		chan.bendRange = __range;
-		chan.bendOut = (float)ExtraMath.pow(2,
-			chan.bendBase * chan.bendRange);
+		chan._bendRange = __range;
+		chan._bendOut = (float)ExtraMath.pow(2,
+			chan._bendBase * chan._bendRange);
 	}
 	
 	/**
@@ -354,8 +354,8 @@ public class SineSampler
 		}
 		
 		// Render output samples
-		for (__SineChannel__ chan : this.channels)
-			this.chanRender(chan, __samples, __offset, __frames, __left,
+		for (__SineChannel__ chan : this._channels)
+			this.__chanRender(chan, __samples, __offset, __frames, __left,
 			__right);
 		
 		// Clamp the output buffer
@@ -377,13 +377,13 @@ public class SineSampler
 	 */
 	public void stopAll()
 	{
-		for (__SineChannel__ chan : this.channels)
+		for (__SineChannel__ chan : this._channels)
 		{
-			Arrays.fill(chan.notesOn, null);
-			for (__SineNote__ note : chan.notesOut)
+			Arrays.fill(chan._notesOn, null);
+			for (__SineNote__ note : chan._notesOut)
 			{
-				note.playing = false;
-				note.volBase = 0.0f;
+				note._playing = false;
+				note._volBase = 0.0f;
 			}
 		}
 	}
@@ -397,26 +397,26 @@ public class SineSampler
 	{
 		
 		// Global fields
-		this.masterTune = 1.0f;
-		this.masterVolume = 1.0f;
+		this._masterTune = 1.0f;
+		this._masterVolume = 1.0f;
 		
 		// Channels
-		for (__SineChannel__ chan : this.channels)
+		for (__SineChannel__ chan : this._channels)
 		{
-			chan.bendBase = 0.0f;
-			chan.bendOut = 1.0f;
-			chan.bendRange = 2;
-			chan.volLevel = 1.0f;
-			chan.volPanning = 0.5f;
-			chan.volLeft = 0.5f;
-			chan.volRight = 0.5f;
+			chan._bendBase = 0.0f;
+			chan._bendOut = 1.0f;
+			chan._bendRange = 2;
+			chan._volLevel = 1.0f;
+			chan._volPanning = 0.5f;
+			chan._volLeft = 0.5f;
+			chan._volRight = 0.5f;
 			
 			// Stop playing all notes
-			Arrays.fill(chan.notesOn, null);
-			for (__SineNote__ note : chan.notesOut)
+			Arrays.fill(chan._notesOn, null);
+			for (__SineNote__ note : chan._notesOut)
 			{
-				note.playing = false;
-				note.volBase = 0.0f;
+				note._playing = false;
+				note._volBase = 0.0f;
 			}
 		}
 		
@@ -429,7 +429,7 @@ public class SineSampler
 	@Override
 	public float sampleRate()
 	{
-		return this.sampleRate;
+		return this._sampleRate;
 	}
 	
 	/**
@@ -449,7 +449,7 @@ public class SineSampler
 	@Override
 	public void volume(int __channel, float __volume)
 	{
-		__SineChannel__[] channels = this.channels;
+		__SineChannel__[] channels = this._channels;
 		if (Float.isInfinite(__volume) || __volume < 0.0f)
 			throw new IllegalArgumentException("Invalid volume.");
 		
@@ -457,9 +457,9 @@ public class SineSampler
 			return;
 		
 		__SineChannel__ chan = channels[__channel];
-		chan.volLevel = __volume;
-		chan.volLeft = (1.0f - chan.volPanning) * chan.volLevel;
-		chan.volRight = chan.volPanning * chan.volLevel;
+		chan._volLevel = __volume;
+		chan._volLeft = (1.0f - chan._volPanning) * chan._volLevel;
+		chan._volRight = chan._volPanning * chan._volLevel;
 	}
 	
 	/**
@@ -481,7 +481,7 @@ public class SineSampler
 	 * or if {@code __left} or {@code __right} is a non-number or is negative.
 	 * @since 2025/05/05
 	 */
-	void chanRender(@NotNull __SineChannel__ __chan, @NotNull float[] __samples,
+	void __chanRender(@NotNull __SineChannel__ __chan, @NotNull float[] __samples,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
 		float __left, float __right)
@@ -503,25 +503,25 @@ public class SineSampler
 			throw new IllegalArgumentException("Invalid right.");
 
 		// Working variables
-		float bend = this.masterTune * __chan.bendOut;
-		__left *= __chan.volLeft;
-		__right *= __chan.volRight;
+		float bend = this._masterTune * __chan._bendOut;
+		__left *= __chan._volLeft;
+		__right *= __chan._volRight;
 		
 		// Process all notes
-		for (int x = 0; x < __chan.notesOut.size(); x++)
+		for (int x = 0; x < __chan._notesOut.size(); x++)
 		{
-			if (this.noteRender(__chan.notesOut.get(x), __samples, __offset,
-				__frames, __chan.volLeft * __left, __chan.volRight * __right,
+			if (this.__noteRender(__chan._notesOut.get(x), __samples, __offset,
+				__frames, __chan._volLeft * __left, __chan._volRight * __right,
 				bend))
-				__chan.notesOut.remove(x--);
+				__chan._notesOut.remove(x--);
 		}
 		
 		// Disassociate inactive notes
-		for (int x = 0; x < __chan.notesOn.length; x++)
+		for (int x = 0; x < __chan._notesOn.length; x++)
 		{
-			__SineNote__ note = __chan.notesOn[x];
-			if (note != null && !note.playing)
-				__chan.notesOn[x] = null;
+			__SineNote__ note = __chan._notesOn[x];
+			if (note != null && !note._playing)
+				__chan._notesOn[x] = null;
 		}
 		
 	}
@@ -534,12 +534,12 @@ public class SineSampler
 	 * @return The resulting volume level.
 	 * @since 2025/05/05
 	 */
-	float ease(float __level, float __target)
+	float __ease(float __level, float __target)
 	{
 		return __level < __target ?
-			Math.min(__target, __level + this.volRate) :
+			Math.min(__target, __level + this._volRate) :
 			__level > __target ?
-			Math.max(__target, __level - this.volRate) : __level;
+			Math.max(__target, __level - this._volRate) : __level;
 	}
 
 	/**
@@ -563,7 +563,7 @@ public class SineSampler
 	 * or if {@code __left} or {@code __right} is a non-number or is negative.
 	 * @since 2025/05/05
 	 */
-	boolean noteRender(@NotNull __SineNote__ __note, @NotNull float[] __samples,
+	boolean __noteRender(@NotNull __SineNote__ __note, @NotNull float[] __samples,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
 		float __left, float __right, float __bend)
@@ -585,31 +585,31 @@ public class SineSampler
 			throw new IllegalArgumentException("Invalid right.");
 
 		// Working variables
-		float freq = __note.freqBase * __bend;
-		float advance = freq / this.sampleRate;
+		float freq = __note._freqBase * __bend;
+		float advance = freq / this._sampleRate;
 		
 		// Compute desired left and right volume levels
-		__note.volLeftTarget = __note.volBase * __left;
-		__note.volRightTarget = __note.volBase * __right;
+		__note._volLeftTarget = __note._volBase * __left;
+		__note._volRightTarget = __note._volBase * __right;
 		
 		// Process all samples
 		for (int x = 0; x < __frames; x++)
 		{
 			
 			// Generate one sample
-			float sample = this.sample(__note, advance);
-			__samples[__offset++] += sample * __note.volLeftLevel;
-			__samples[__offset++] += sample * __note.volRightLevel;
+			float sample = this.__sample(__note, advance);
+			__samples[__offset++] += sample * __note._volLeftLevel;
+			__samples[__offset++] += sample * __note._volRightLevel;
 			
 			// Adjust stereo levels
-			__note.volLeftLevel = this.ease(__note.volLeftLevel,
-				__note.volLeftTarget);
-			__note.volRightLevel = this.ease(__note.volRightLevel,
-				__note.volRightTarget);
+			__note._volLeftLevel = this.__ease(__note._volLeftLevel,
+				__note._volLeftTarget);
+			__note._volRightLevel = this.__ease(__note._volRightLevel,
+				__note._volRightTarget);
 			
 			// Note has finished
-			if (!__note.playing && __note.volLeftLevel == 0 &&
-				__note.volRightLevel == 0)
+			if (!__note._playing && __note._volLeftLevel == 0 &&
+				__note._volRightLevel == 0)
 				return true;
 		}
 		
@@ -625,14 +625,14 @@ public class SineSampler
 	 * @throws NullPointerException if {@code __note} is {@code null}.
 	 * @since 2025/05/05
 	 */
-	float sample(@NotNull __SineNote__ __note, float __advance)
+	float __sample(@NotNull __SineNote__ __note, float __advance)
 		throws NullPointerException
 	{
 		if (__note == null)
 			throw new NullPointerException("NARG");
 
-		float ret = (float)Math.sin(__note.wavPhase * Math.PI * 2);
-		__note.wavPhase = (__note.wavPhase + __advance) % 1;
+		float ret = (float)Math.sin(__note._wavPhase * Math.PI * 2);
+		__note._wavPhase = (__note._wavPhase + __advance) % 1;
 		return ret;
 	}
 }

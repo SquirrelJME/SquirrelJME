@@ -33,7 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 
 /**
@@ -41,16 +40,13 @@ import java.util.ArrayList;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 class __MLDTrack__
 	extends ArrayList<__MLDEvent__>
 	implements BasicTrack
 {
 	/** Initial event offset on reset. */
-	@SquirrelJMEVendorApi
-	int cue;
+	int _cue;
 	
 	/** Channel index base. */
-	@SquirrelJMEVendorApi
-	int index;
+	int _index;
 }

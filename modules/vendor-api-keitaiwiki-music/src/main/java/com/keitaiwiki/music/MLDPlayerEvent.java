@@ -64,7 +64,7 @@ public class MLDPlayerEvent
 	public static final int EVENT_LOOP = 1;
 
 	/**
-	 * Additional event data, if relevant. For {@link EVENT_KEY} events,
+	 * Additional event data, if relevant. For {@link #EVENT_KEY} events,
 	 * this will be the key number.
 	 */
 	@SquirrelJMEVendorApi
@@ -78,8 +78,8 @@ public class MLDPlayerEvent
 	public final double time;
 	
 	/**
-	 * Indicates the type of event that was raised: {@link EVENT_END},
-	 * {@link EVENT_KEY} or {@link EVENT_LOOP}.
+	 * Indicates the type of event that was raised: {@link #EVENT_END},
+	 * {@link #EVENT_KEY} or {@link #EVENT_LOOP}.
 	 */
 	@SquirrelJMEVendorApi
 	public final int type;
@@ -88,8 +88,8 @@ public class MLDPlayerEvent
 	 * Creates a new player event.
 	 *
 	 * @param __time The time where the event occurred.
-	 * @param __type The event's type. Must be one of: {@link EVENT_END},
-	 * {@link EVENT_KEY} or {@link EVENT_LOOP}.
+	 * @param __type The event's type. Must be one of: {@link #EVENT_END},
+	 * {@link #EVENT_KEY} or {@link #EVENT_LOOP}.
 	 * @param __data Additional event data.
 	 * @since 2025/05/05
 	 */
