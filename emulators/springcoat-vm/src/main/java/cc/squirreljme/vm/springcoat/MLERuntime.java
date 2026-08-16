@@ -70,6 +70,21 @@ public enum MLERuntime
 		}
 	},
 	
+	/** {@link RuntimeShelf#compatibilityId(int)}. */
+	COMPATIBILITY_ID(MLEDispatcher.methodKey("compatibilityId",
+		boolean.class, int.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2026/08/15
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			return RuntimeShelf.compatibilityId((int)__args[0]);
+		}
+	},
+	
 	/** {@link RuntimeShelf#currentTimeMillis()}. */
 	CURRENT_TIME_MILLIS("currentTimeMillis:()J")
 	{
