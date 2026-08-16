@@ -33,111 +33,41 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
- * Sequencer event data class
+ * Sine Wave Music note
+ *
+ * @since 2025/05/05
  */
-class MLDEvent
-	implements BasicEvent
+class __SineNote__
+	implements BasicNote
 {
-	/**
-	 * ext-B fields
-	 */
-	int bank;
+	/** Amount to increment phase per frame. */
+	float _advance;
 	
-	/**
-	 * Normalized channel ID, out of 16
-	 */
-	int channel;
+	/** Encapsulating channel. */
+	__SineChannel__ _channel;
 	
-	/**
-	 * Note fields
-	 * Channel index 0..3 within parent track
-	 */
-	int channelIndex;
+	/** Base frequency. */
+	float _freqBase;
 	
-	int cuepoint;
+	/** Note is currently active on its key. */
+	boolean _playing;
 	
-	/**
-	 * ext-info and unknown event data
-	 */
-	byte[] data;
+	/** Base volume. */
+	float _volBase;
 	
-	/**
-	 * Time delta: number of ticks since last event
-	 */
-	int delta;
+	/** Current left stereo volume. */
+	float _volLeftLevel;
 	
-	boolean enable;
+	/** Target left stereo volume. */
+	float _volLeftTarget;
 	
-	/**
-	 * Number of ticks until note off
-	 */
-	int gateTime;
+	/** Current right stereo volume. */
+	float _volRightLevel;
 	
-	/**
-	 * Meta event ID
-	 */
-	int id;
+	/** Target right stereo volume. */
+	float _volRightTarget;
 	
-	int jumpCount;
-	
-	int jumpId;
-	
-	int jumpPoint;
-	
-	/**
-	 * Normalized key ID, relative to A4
-	 */
-	int key;
-	
-	/**
-	 * Base key index
-	 */
-	int keyNumber;
-	
-	/**
-	 * Number of octaves to adjust keyNumber
-	 */
-	int octaveShift;
-	
-	/**
-	 * Location in MLD asset
-	 */
-	int offset;
-	
-	float panpot;
-	
-	/**
-	 * Event parameter bits
-	 */
-	int param;
-	
-	int program;
-	
-	float range;
-	
-	float semitones;
-	
-	/**
-	 * note-status, second byte of event data
-	 */
-	int status;
-	
-	int tempo;
-	
-	int timebase;
-	
-	/**
-	 * Event category
-	 */
-	int type;
-	
-	/**
-	 * Base volume
-	 */
-	float velocity;
-	
-	float volume;
+	/** Position in wave period. */
+	float _wavPhase;
 }

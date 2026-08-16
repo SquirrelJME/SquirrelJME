@@ -116,7 +116,8 @@
                 <AND>
                   <FIELD>true</FIELD>
                   <FINAL>true</FINAL>
-                  <PUBLIC>true</PUBLIC>
+                  <PACKAGE_PRIVATE>false</PACKAGE_PRIVATE>
+                  <PRIVATE>false</PRIVATE>
                   <STATIC>true</STATIC>
                 </AND>
               </match>
@@ -129,7 +130,36 @@
                 <AND>
                   <FIELD>true</FIELD>
                   <FINAL>true</FINAL>
-                  <PROTECTED>true</PROTECTED>
+                  <PROTECTED>false</PROTECTED>
+                  <PUBLIC>false</PUBLIC>
+                  <STATIC>true</STATIC>
+                </AND>
+              </match>
+              <order>BY_NAME</order>
+            </rule>
+          </section>
+          <section>
+            <rule>
+              <match>
+                <AND>
+                  <FIELD>true</FIELD>
+                  <FINAL>false</FINAL>
+                  <PACKAGE_PRIVATE>false</PACKAGE_PRIVATE>
+                  <PRIVATE>false</PRIVATE>
+                  <STATIC>true</STATIC>
+                </AND>
+              </match>
+              <order>BY_NAME</order>
+            </rule>
+          </section>
+          <section>
+            <rule>
+              <match>
+                <AND>
+                  <FIELD>true</FIELD>
+                  <FINAL>false</FINAL>
+                  <PROTECTED>false</PROTECTED>
+                  <PUBLIC>false</PUBLIC>
                   <STATIC>true</STATIC>
                 </AND>
               </match>
@@ -142,8 +172,9 @@
                 <AND>
                   <FIELD>true</FIELD>
                   <FINAL>true</FINAL>
-                  <PACKAGE_PRIVATE>true</PACKAGE_PRIVATE>
-                  <STATIC>true</STATIC>
+                  <PACKAGE_PRIVATE>false</PACKAGE_PRIVATE>
+                  <PRIVATE>false</PRIVATE>
+                  <STATIC>false</STATIC>
                 </AND>
               </match>
               <order>BY_NAME</order>
@@ -155,8 +186,9 @@
                 <AND>
                   <FIELD>true</FIELD>
                   <FINAL>true</FINAL>
-                  <PRIVATE>true</PRIVATE>
-                  <STATIC>true</STATIC>
+                  <PROTECTED>false</PROTECTED>
+                  <PUBLIC>false</PUBLIC>
+                  <STATIC>false</STATIC>
                 </AND>
               </match>
               <order>BY_NAME</order>
@@ -167,8 +199,10 @@
               <match>
                 <AND>
                   <FIELD>true</FIELD>
-                  <PUBLIC>true</PUBLIC>
-                  <STATIC>true</STATIC>
+                  <FINAL>false</FINAL>
+                  <PACKAGE_PRIVATE>false</PACKAGE_PRIVATE>
+                  <PRIVATE>false</PRIVATE>
+                  <STATIC>false</STATIC>
                 </AND>
               </match>
               <order>BY_NAME</order>
@@ -179,124 +213,10 @@
               <match>
                 <AND>
                   <FIELD>true</FIELD>
-                  <PROTECTED>true</PROTECTED>
-                  <STATIC>true</STATIC>
-                </AND>
-              </match>
-              <order>BY_NAME</order>
-            </rule>
-          </section>
-          <section>
-            <rule>
-              <match>
-                <AND>
-                  <FIELD>true</FIELD>
-                  <PACKAGE_PRIVATE>true</PACKAGE_PRIVATE>
-                  <STATIC>true</STATIC>
-                </AND>
-              </match>
-              <order>BY_NAME</order>
-            </rule>
-          </section>
-          <section>
-            <rule>
-              <match>
-                <AND>
-                  <FIELD>true</FIELD>
-                  <PRIVATE>true</PRIVATE>
-                  <STATIC>true</STATIC>
-                </AND>
-              </match>
-              <order>BY_NAME</order>
-            </rule>
-          </section>
-          <section>
-            <rule>
-              <match>
-                <AND>
-                  <FIELD>true</FIELD>
-                  <FINAL>true</FINAL>
-                  <PUBLIC>true</PUBLIC>
-                </AND>
-              </match>
-              <order>BY_NAME</order>
-            </rule>
-          </section>
-          <section>
-            <rule>
-              <match>
-                <AND>
-                  <FIELD>true</FIELD>
-                  <FINAL>true</FINAL>
-                  <PROTECTED>true</PROTECTED>
-                </AND>
-              </match>
-              <order>BY_NAME</order>
-            </rule>
-          </section>
-          <section>
-            <rule>
-              <match>
-                <AND>
-                  <FIELD>true</FIELD>
-                  <FINAL>true</FINAL>
-                  <PACKAGE_PRIVATE>true</PACKAGE_PRIVATE>
-                </AND>
-              </match>
-              <order>BY_NAME</order>
-            </rule>
-          </section>
-          <section>
-            <rule>
-              <match>
-                <AND>
-                  <FIELD>true</FIELD>
-                  <FINAL>true</FINAL>
-                  <PRIVATE>true</PRIVATE>
-                </AND>
-              </match>
-              <order>BY_NAME</order>
-            </rule>
-          </section>
-          <section>
-            <rule>
-              <match>
-                <AND>
-                  <FIELD>true</FIELD>
-                  <PUBLIC>true</PUBLIC>
-                </AND>
-              </match>
-              <order>BY_NAME</order>
-            </rule>
-          </section>
-          <section>
-            <rule>
-              <match>
-                <AND>
-                  <FIELD>true</FIELD>
-                  <PROTECTED>true</PROTECTED>
-                </AND>
-              </match>
-              <order>BY_NAME</order>
-            </rule>
-          </section>
-          <section>
-            <rule>
-              <match>
-                <AND>
-                  <FIELD>true</FIELD>
-                  <PACKAGE_PRIVATE>true</PACKAGE_PRIVATE>
-                </AND>
-              </match>
-              <order>BY_NAME</order>
-            </rule>
-          </section>
-          <section>
-            <rule>
-              <match>
-                <AND>
-                  <FIELD>true</FIELD>
-                  <PRIVATE>true</PRIVATE>
+                  <FINAL>false</FINAL>
+                  <PROTECTED>false</PROTECTED>
+                  <PUBLIC>false</PUBLIC>
+                  <STATIC>false</STATIC>
                 </AND>
               </match>
               <order>BY_NAME</order>
@@ -322,7 +242,23 @@
           <section>
             <rule>
               <match>
-                <CONSTRUCTOR>true</CONSTRUCTOR>
+                <AND>
+                  <CONSTRUCTOR>true</CONSTRUCTOR>
+                  <PACKAGE_PRIVATE>false</PACKAGE_PRIVATE>
+                  <PRIVATE>false</PRIVATE>
+                </AND>
+              </match>
+              <order>BY_NAME</order>
+            </rule>
+          </section>
+          <section>
+            <rule>
+              <match>
+                <AND>
+                  <CONSTRUCTOR>true</CONSTRUCTOR>
+                  <PROTECTED>false</PROTECTED>
+                  <PUBLIC>false</PUBLIC>
+                </AND>
               </match>
               <order>BY_NAME</order>
             </rule>
@@ -333,6 +269,22 @@
                 <AND>
                   <ABSTRACT>true</ABSTRACT>
                   <METHOD>true</METHOD>
+                  <PACKAGE_PRIVATE>false</PACKAGE_PRIVATE>
+                  <PRIVATE>false</PRIVATE>
+                  <STATIC>false</STATIC>
+                </AND>
+              </match>
+              <order>BY_NAME</order>
+            </rule>
+          </section>
+          <section>
+            <rule>
+              <match>
+                <AND>
+                  <ABSTRACT>true</ABSTRACT>
+                  <METHOD>true</METHOD>
+                  <PROTECTED>false</PROTECTED>
+                  <PUBLIC>false</PUBLIC>
                   <STATIC>false</STATIC>
                 </AND>
               </match>
@@ -359,20 +311,8 @@
                 <AND>
                   <ABSTRACT>false</ABSTRACT>
                   <METHOD>true</METHOD>
-                  <PACKAGE_PRIVATE>true</PACKAGE_PRIVATE>
-                  <STATIC>false</STATIC>
-                </AND>
-              </match>
-              <order>BY_NAME</order>
-            </rule>
-          </section>
-          <section>
-            <rule>
-              <match>
-                <AND>
-                  <ABSTRACT>false</ABSTRACT>
-                  <METHOD>true</METHOD>
-                  <PRIVATE>true</PRIVATE>
+                  <PROTECTED>false</PROTECTED>
+                  <PUBLIC>false</PUBLIC>
                   <STATIC>false</STATIC>
                 </AND>
               </match>
@@ -396,7 +336,7 @@
               <match>
                 <AND>
                   <METHOD>true</METHOD>
-                  <PRIVATE>true</PRIVATE>
+                  <PUBLIC>false</PUBLIC>
                   <STATIC>true</STATIC>
                 </AND>
               </match>

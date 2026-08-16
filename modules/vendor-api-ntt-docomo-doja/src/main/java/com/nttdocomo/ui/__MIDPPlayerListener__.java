@@ -13,7 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.media.mld.IMelodyPlayer;
 import cc.squirreljme.runtime.midlet.DoJaRuntime;
-import com.keitaiwiki.music.MLDPlayer;
+import com.keitaiwiki.music.MLDPlayerEvent;
 import java.lang.ref.Reference;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
@@ -111,7 +111,8 @@ class __MIDPPlayerListener__
 					// If in DoJa 5+ and this media is looping emit a loop
 					// event. Note that looped MLDs do not emit loop events
 					if (DoJaRuntime.versionLeast(5, 0))
-						if (mldPlayer.lastEndType() == MLDPlayer.EVENT_LOOP)
+						if (mldPlayer.lastEndType() ==
+							MLDPlayerEvent.EVENT_LOOP)
 						{
 							listener.mediaAction(presenter,
 								AudioPresenter.AUDIO_LOOPED, 0);

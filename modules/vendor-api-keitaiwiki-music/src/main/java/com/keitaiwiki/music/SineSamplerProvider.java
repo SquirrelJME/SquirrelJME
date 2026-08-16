@@ -40,45 +40,42 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * is intended for basic testing and is not suitable for general use.
  *
  * @see SamplerProvider
+ * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
 public class SineSamplerProvider
 	implements SamplerProvider
 {
-	
-	
-	/**
-	 * Key index bias
-	 */
+	/** Key index bias */
+	@SquirrelJMEVendorApi
 	static final int A4 = 81;
 	
-	
 	/**
-	 * Create a sampler.
+	 * Creates a new Sine Wave sample generator.
+	 *
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
 	public SineSamplerProvider()
 	{
 	}
 	
-	
 	/**
 	 * Produces an instance of this sampler that can be used to render
 	 * samples.
 	 *
-	 * @param sampleRate The output sampling rate of the rendered samples.
+	 * @param __sampleRate The output sampling rate of the rendered samples.
 	 * @return A new sampler instance that can render samples using the
 	 * current
 	 * configuration of this sampler itself.
-	 * @throws IllegalArgumentException if {@code sampleRate} is a
+	 * @throws IllegalArgumentException if {@code __sampleRate} is a
 	 * non-number or is less than or equal to zero.
 	 */
 	@Override
-	public Sampler instance(float sampleRate)
+	public Sampler instance(float __sampleRate)
 	{
-		if (Float.isInfinite(sampleRate) || sampleRate <= 0.0f)
+		if (Float.isInfinite(__sampleRate) || __sampleRate <= 0.0f)
 			throw new IllegalArgumentException("Invalid sampling rate.");
-		return new SineSampler(sampleRate);
+		return new SineSampler(__sampleRate);
 	}
-	
 }

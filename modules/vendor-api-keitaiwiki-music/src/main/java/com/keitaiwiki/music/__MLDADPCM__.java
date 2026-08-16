@@ -33,61 +33,33 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
- * Music note
+ * MLD ADPCM sample data class
+ *
+ * @since 2025/05/05
  */
-class SineNote
-	implements BasicNote
+class __MLDADPCM__
+	implements BasicSampleData
 {
 	/**
-	 * Amount to increment phase per frame
+	 * Bit depth of data, can be either 4-bit (standard ADPCM affair), or
+	 * 2-bit, which was never found in use, and is supposedly for voice data.
 	 */
-	float advance;
-	
+	int _bitDepth;
+
+	/** Data chunk containing the raw ADPCM data. */
+	byte[] _data;
+
+	/** Are the channels interleaved? (never found in use) */
+	boolean _isInterleaved;
+
+	/** Must be 1 for mono or 2 for stereo, other values are unknown. */
+	int _numChannels;
+
 	/**
-	 * Encapsulating channel
+	 * Data sample rate, it's read as an unsigned byte, and multiplied by 1000
+	 * before being assigned into this variable. Usually it's either of 8000Hz,
+	 * 16000Hz, or 32000Hz. No other sample rates have been found in use.
 	 */
-	SineChannel channel;
-	
-	/**
-	 * Base frequency
-	 */
-	float freqBase;
-	
-	/**
-	 * Note is currently active on its key
-	 */
-	boolean playing;
-	
-	/**
-	 * Base volume
-	 */
-	float volBase;
-	
-	/**
-	 * Current left stereo volume
-	 */
-	float volLeftLevel;
-	
-	/**
-	 * Target left stereo volume
-	 */
-	float volLeftTarget;
-	
-	/**
-	 * Current right stereo volume
-	 */
-	float volRightLevel;
-	
-	/**
-	 * Target right stereo volume
-	 */
-	float volRightTarget;
-	
-	/**
-	 * Position in wave period
-	 */
-	float wavPhase;
+	int _sampleRate;
 }

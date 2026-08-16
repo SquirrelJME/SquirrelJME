@@ -33,22 +33,43 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 
 /**
- * Playback channel
+ * Sine Wave Output channel
+ *
+ * @since 2025/05/05
  */
-class MLDChannel
+class __SineChannel__
 	implements BasicChannel
 {
-	/**
-	 * All notes currently on keys
-	 */
-	MLDNote[] notesOn;
+	/** Pitch bend base ratio. */
+	float _bendBase;
 	
-	/**
-	 * All notes that are generating output
-	 */
-	ArrayList<MLDNote> notesOut;
+	/** Effective channel frequency ratio. */
+	float _bendOut;
+	
+	/** Pitch bend magnitude. */
+	float _bendRange;
+	
+	/** Index in sampler. */
+	int _index;
+	
+	/** All notes currently on keys. */
+	__SineNote__[] _notesOn;
+	
+	/** All notes that are generating output. */
+	ArrayList<__SineNote__> _notesOut;
+	
+	/** Left stereo amplitude. */
+	float _volLeft;
+	
+	/** Channel output amplitude. */
+	float _volLevel;
+	
+	/** Stereo level. */
+	float _volPanning;
+	
+	/** Right stereo amplitude. */
+	float _volRight;
 }

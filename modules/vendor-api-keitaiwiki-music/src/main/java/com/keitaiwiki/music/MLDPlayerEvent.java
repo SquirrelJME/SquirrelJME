@@ -35,6 +35,7 @@ package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * Notifies of a scenario that arises during playback. When configured,
@@ -44,14 +45,26 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * acknowledged via {@link MLDPlayer#getEvents()}.
  *
  * @see MLDPlayer#getEvents()
+ * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
 public class MLDPlayerEvent
 	implements BasicEvent
 {
+	/** Event type that notifies when a non-looping sequence finishes. */
+	@SquirrelJMEVendorApi
+	public static final int EVENT_END = 0;
+
+	/** Event type that notifies when a particular key is played. */
+	@SquirrelJMEVendorApi
+	public static final int EVENT_KEY = 2;
 	
+	/** Event type that notifies when a sequence loops. */
+	@SquirrelJMEVendorApi
+	public static final int EVENT_LOOP = 1;
+
 	/**
-	 * Additional event data, if relevant. For {@code EVENT_KEY} events,
+	 * Additional event data, if relevant. For {@link #EVENT_KEY} events,
 	 * this will be the key number.
 	 */
 	@SquirrelJMEVendorApi
@@ -65,20 +78,28 @@ public class MLDPlayerEvent
 	public final double time;
 	
 	/**
-	 * Indicates the type of event that was raised: {@code EVENT_END},
-	 * {@code EVENT_KEY} or {@code EVENT_LOOP}.
+	 * Indicates the type of event that was raised: {@link #EVENT_END},
+	 * {@link #EVENT_KEY} or {@link #EVENT_LOOP}.
 	 */
 	@SquirrelJMEVendorApi
 	public final int type;
 	
 	/**
-	 * Internal constructor
+	 * Creates a new player event.
+	 *
+	 * @param __time The time where the event occurred.
+	 * @param __type The event's type. Must be one of: {@link #EVENT_END},
+	 * {@link #EVENT_KEY} or {@link #EVENT_LOOP}.
+	 * @param __data Additional event data.
+	 * @since 2025/05/05
 	 */
 	@KeepWhenCompacting
-	MLDPlayerEvent(double time, int type, int data)
+	MLDPlayerEvent(double __time,
+		@MagicConstant(valuesFromClass = MLDPlayerEvent.class) int __type,
+		int __data)
 	{
-		this.data = data;
-		this.time = time;
-		this.type = type;
+		this.data = __data;
+		this.time = __time;
+		this.type = __type;
 	}
 }

@@ -33,23 +33,20 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import java.util.ArrayList;
-
 /**
- * Event list
+ * Represents a music note for MLD data.
+ *
+ * @since 2025/05/05
  */
-class MLDTrack
-	extends ArrayList<MLDEvent>
-	implements BasicTrack
+class __MLDNote__
+	implements BasicNote
 {
-	/**
-	 * Initial event offset on reset
-	 */
-	int cue;
+	/** Output channel, */
+	int _channel;
 	
-	/**
-	 * Channel index base
-	 */
-	int index;
+	/** Ticks before note expires. */
+	int _gateTime;
+	
+	/** Key index. */
+	int _key;
 }

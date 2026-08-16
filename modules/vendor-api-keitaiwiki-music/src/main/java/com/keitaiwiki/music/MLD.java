@@ -6,12 +6,12 @@
 // ---------------------------------------------------------------------------
 // This specific file is under the given license:
 // This is free and unencumbered software released into the public domain.
-// 
+//
 // Anyone is free to copy, modify, publish, use, compile, sell, or
 // distribute this software, either in source code form or as a compiled
 // binary, for any purpose, commercial or non-commercial, and by any
 // means.
-// 
+//
 // In jurisdictions that recognize copyright laws, the author or authors
 // of this software dedicate any and all copyright interest in the
 // software to the public domain. We make this dedication for the benefit
@@ -19,7 +19,7 @@
 // successors. We intend this dedication to be an overt act of
 // relinquishment in perpetuity of all present and future rights to this
 // software under copyright law.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -27,7 +27,7 @@
 // OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-// 
+//
 // For more information, please refer to <https://unlicense.org/>
 // ---------------------------------------------------------------------------
 
@@ -36,40 +36,24 @@ package com.keitaiwiki.music;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
+import cc.squirreljme.runtime.media.control.MetaDataValues;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.microedition.media.MediaException;
+import javax.microedition.media.control.MetaDataControl;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Decoder for i-melody MLD sequences.
+ *
+ * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
 public class MLD
 {
-	static final int CUEPOINT_END = 1;
-	
-	/**
-	 * Cuepoints
-	 */
-	static final int CUEPOINT_START = 0;
-	
-	static final int EVENT_BANK_CHANGE = 0xE1;
-	
-	static final int EVENT_CHANNEL_ASSIGN = 0xE5;
-	
-	static final int EVENT_CUEPOINT = 0xD0;
-	
-	static final int EVENT_END_OF_TRACK = 0xDF;
-	
-	static final int EVENT_JUMP = 0xD1;
-	
-	static final int EVENT_MASTER_TUNE = 0xB3;
-	
-	/**
-	 * Event ext-B IDs
-	 */
-
 	/** Ext-B Command depicting PCM audio's 3D information. */
 	static final int EVENT_AUDIO_CHANNEL_3D_INF = 0xF0;
 
@@ -82,309 +66,332 @@ public class MLD
 	/** Ext-B Command depicting PCM audio volume. */
 	static final int EVENT_AUDIO_CHANNEL_VOLUME = 0x80;
 
+	/** Ext-B Command depicting a Bank Change event. */
+	static final int EVENT_BANK_CHANGE = 0xE1;
+
+	/** Ext-B Command depicting a Channel Assign event. */
+	static final int EVENT_CHANNEL_ASSIGN = 0xE5;
+
+	/** Ext-B Command depicting a Cuepoint start or end. */
+	static final int EVENT_CUEPOINT = 0xD0;
+
+	/** EVENT_CUEPOINT parameter indicating a cuepoint end. */
+	static final int EVENT_CUEPOINT_END = 1;
+
+	/** EVENT_CUEPOINT parameter indicating a cuepoint start. */
+	static final int EVENT_CUEPOINT_START = 0;
+
+	/** Ext-B Command depicting End Of Track. */
+	static final int EVENT_END_OF_TRACK = 0xDF;
+
 	/** Ext-B Command depicting an expression change event. */
 	static final int EVENT_EXPRESSION_CHANGE = 0xE6;
+
+	/** Ext-B Command depicting a Jump event. */
+	static final int EVENT_JUMP = 0xD1;
 
 	/** Ext-B Command depicting the global MLD panning. */
 	static final int EVENT_MASTER_BALANCE = 0xB1;
 
+	/** Ext-B Command depicting a Master Tune event. */
+	static final int EVENT_MASTER_TUNE = 0xB3;
+
 	/** Ext-B Command depicting the global MLD volume. */
 	static final int EVENT_MASTER_VOLUME = 0xB0;
-	
+
 	/** Ext-B Command depicting an modulation depth event. */
 	static final int EVENT_MODULATION_DEPTH = 0xEA;
 
 	/** Ext-B Command depicting a NOP (no-op) event. */
 	static final int EVENT_NOP = 0xDE;
-	
+
 	/** Ext-B Command depicting another kind of NOP event. */
 	static final int EVENT_NOP_2 = 0xDC;
 
+	/** Ext-B Command depicting a Panpot event. */
 	static final int EVENT_PANPOT = 0xE3;
-	
+
+	/** Ext-B Command depicting a chip-specific configuration event. */
 	static final int EVENT_PART_CONFIGURATION = 0xB9;
-	
+
+	/** Ext-B Command depicting a Pause event. */
 	static final int EVENT_PAUSE = 0xBD;
-	
+
+	/** Ext-B Command depicting a Pitch Bend event. */
 	static final int EVENT_PITCHBEND = 0xE4;
-	
+
+	/** Ext-B Command depicting a Pitch Bend Range event. */
 	static final int EVENT_PITCHBEND_RANGE = 0xE7;
-	
+
+	/** Ext-B Command depicting a Program Change event. */
 	static final int EVENT_PROGRAM_CHANGE = 0xE0;
-	
+
+	/** Ext-B Command depicting a Reset event. */
 	static final int EVENT_RESET = 0xBF;
-	
+
+	/** Ext-B Command depicting a Stop event. */
 	static final int EVENT_STOP = 0xBE;
-	
+
+	/** Ext-B Command depicting a Timebase-Tempo event. */
 	static final int EVENT_TIMEBASE_TEMPO = 0xC0;
-	
+
+	/** Ext-B event identifier. */
 	static final int EVENT_TYPE_EXT_B = 1;
-	
+
+	/** Ext-Info event identifier. */
 	static final int EVENT_TYPE_EXT_INFO = 2;
-	
+
+	/** Note event identifier. */
 	static final int EVENT_TYPE_NOTE = 0;
-	
-	/**
-	 * Event types
-	 */
+
+	/** Unknown event type. */
 	static final int EVENT_TYPE_UNKNOWN = -1;
 
+	/** Ext-B Command depicting a Volume event. */
 	static final int EVENT_VOLUME = 0xE2;
-	
+
+	/** Ext-B Command depicting a PCM Panpot event. */
 	static final int EVENT_WAVE_CHANNEL_PANPOT = 0xE9;
-	
+
+	/** Ext-B Command depicting a PCM Volume event. */
 	static final int EVENT_WAVE_CHANNEL_VOLUME = 0xE8;
-	
+
+	/** Ext-B Command depicting a Drum Enable event. */
 	static final int EVENT_X_DRUM_ENABLE = 0xBA;
-	
-	/**
-	 * FourCCs
-	 * "adat"
-	 */
+
+	/** FourCCs "adat" */
 	static final int FOURCC_ADAT = 0x61646174;
 
-	/**
-	 * FourCCs
-	 * "adpm"
-	 */
+	/** FourCCs "adpm" */
 	static final int FOURCC_ADPM = 0x6164706D;
-	
-	/**
-	 * "ainf"
-	 */
+
+	/** FourCCs "ainf" */
 	static final int FOURCC_AINF = 0x61696E66;
-	
-	/**
-	 * "auth"
-	 */
+
+	/** FourCCs "auth" */
 	static final int FOURCC_AUTH = 0x61757468;
-	
-	/**
-	 * "copy"
-	 */
+
+	/** FourCCs "copy" */
 	static final int FOURCC_COPY = 0x636F7079;
-	
-	/**
-	 * "cuep"
-	 */
+
+	/** FourCCs "cuep" */
 	static final int FOURCC_CUEP = 0x63756570;
-	
-	/**
-	 * "date"
-	 */
+
+	/** FourCCs "date" */
 	static final int FOURCC_DATE = 0x64617465;
-	
-	/**
-	 * "exst"
-	 */
+
+	/** FourCCs "exst" */
 	static final int FOURCC_EXST = 0x65787374;
-	
-	/**
-	 * "melo"
-	 */
+
+	/** FourCCs "melo" */
 	static final int FOURCC_MELO = 0x6D656C6F;
-	
-	/**
-	 * "note"
-	 */
+
+	/** FourCCs "note" */
 	static final int FOURCC_NOTE = 0x6E6F7465;
-	
-	/**
-	 * "prot"
-	 */
+
+	/** FourCCs "prot" */
 	static final int FOURCC_PROT = 0x70726F74;
-	
-	/**
-	 * "sorc"
-	 */
+
+	/** FourCCs "sorc" */
 	static final int FOURCC_SORC = 0x736F7263;
-	
-	/**
-	 * "supt"
-	 */
+
+	/** FourCCs "supt" */
 	static final int FOURCC_SUPT = 0x73757074;
-	
-	/**
-	 * "thrd"
-	 */
+
+	/** FourCCs "thrd" */
 	static final int FOURCC_THRD = 0x74687264;
-	
-	/**
-	 * "titl"
-	 */
+
+	/** FourCCs "titl" */
 	static final int FOURCC_TITL = 0x7469746C;
-	
-	/**
-	 * "trac"
-	 */
+
+	/** FourCCs "trac" */
 	static final int FOURCC_TRAC = 0x74726163;
-	
-	/**
-	 * "vers"
-	 */
+
+	/** FourCCs "vers" */
 	static final int FOURCC_VERS = 0x76657273;
-	
-	/**
-	 * "note" types
-	 */
+
+	/** 3-Byte note event identifier. */
 	static final int NOTE_3 = 0;
-	
+
+	/** 4-Byte note event identifier. */
 	static final int NOTE_4 = 1;
-	
-	/**
-	 * Sample data
-	 */
-	MLDADPCM[] adpcms;
-	
-	/**
-	 * Header subchunks
-	 */
-	byte[] ainf;
-	
-	byte[] auth;
-	
-	/**
-	 * Content type header fields
-	 */
-	int contentType;
-	
-	String copy;
-	
-	int[] cuep;
+
+	/** Sample data. */
+	__MLDADPCM__[] _adpcms;
+
+	/** Ainf header. */
+	byte[] _ainf;
+
+	/** Auth header. */
+	byte[] _auth;
+
+	/** Content type header field. */
+	int _contentType;
+
+	/** MLD file copy subchunk. */
+	String _copy;
+
+	/** Array of cuepoints if "cuep" chunk is present. */
+	int[] _cuep;
 
 	/**
 	 * Flag that indicates if cuepoint play mode must be used. Enabled if the
 	 * MLD has a CUEPOINT_START event.
 	 */
-	boolean cuepointPlayMode;
+	boolean _cuepointPlayMode;
 
-	String date;
-	
-	/**
-	 * Total runtime in seconds, or POSITIVE_INFINITY
-	 */
-	double duration;
-	
-	byte[] exst;
-	
-	boolean hasFemaleVocals;
-	
-	boolean hasImageData;
-	
-	boolean hasMaleVocals;
-	
-	boolean hasMusicEvents;
-	
-	boolean hasOtherVocals;
-	
-	boolean hasTextData;
-	
-	boolean hasWaveData;
-	
-	/**
-	 * Encoded header chunk
-	 */
-	byte[] header;
-	
-	int note;
-	
-	String prot;
-	
-	int sorc;
-	
-	String supt;
-	
-	byte[] thrd;
-	
-	/**
-	 * Tick count at the end of the last event or cuepoint-end.
-	 */
-	long tickEnd;
-	
+	/** MLD file date subchunk */
+	String _date;
+
+	/** Total runtime in seconds, or POSITIVE_INFINITY. */
+	double _duration;
+
+	/** MLD file exst subchunk. */
+	byte[] _exst;
+
+	/** Does this MLD have female vocals? */
+	boolean _hasFemaleVocals;
+
+	/** Does this MLD have image data? */
+	boolean _hasImageData;
+
+	/** Does this MLD have male vocals? */
+	boolean _hasMaleVocals;
+
+	/** Does this MLD have music events? */
+	boolean _hasMusicEvents;
+
+	/** Does this MLD have other vocals? */
+	boolean _hasOtherVocals;
+
+	/** Does this MLD have text data? */
+	boolean _hasTextData;
+
+	/** Does this MLD have wave data? */
+	boolean _hasWaveData;
+
+	/** Encoded header chunk */
+	byte[] _header;
+
+	/** This MLD file's master volume (-1.0f, 1.0f). */
+	float _masterPan = 0.0f;
+
+	/** This MLD file's master volume (0.0f, 1.0f). */
+	float _masterTune = 1.0f;
+
+	/** This MLD file's master volume (0.0f, 1.0f). */
+	float _masterVolume = 1.0f;
+
+	/** This MLD's metadata. */
+	private MetaDataValues _metadata;
+
+	/** The note byte-size indicator. May be either 3 bytes or 4 bytes long. */
+	int _note;
+
+	/** MLD file prot subchunk */
+	String _prot;
+
+	/** MLD file sorc subchunk */
+	int _sorc;
+
+	/** MLD file supt subchunk */
+	String _supt;
+
+	/** MLD file thrd subchunk */
+	byte[] _thrd;
+
+	/** Tick count at the end of the last event or cuepoint-end. */
+	long _tickEnd;
+
 	/**
 	 * Tick count at the start of the first playback event. Usually 0 unless a
 	 * cuepoint-start event is set at a different tick.
 	 */
-	long tickStart;
-	
-	String titl;
-	
-	/**
-	 * Event lists
-	 */
-	MLDTrack[] tracks;
-	
-	String vers;
+	long _tickStart;
 
-	/** This MLD file's master volume (0.0f, 1.0f). */
-	float masterVolume = 1.0f;
-	
-	/** This MLD file's master volume (-1.0f, 1.0f). */
-	float masterPan = 0.0f;
+	/** MLD file titl subchunk */
+	String _titl;
 
-	/** This MLD file's master volume (0.0f, 1.0f). */
-	float masterTune = 1.0f;
+	/** Event lists. */
+	__MLDTrack__[] _tracks;
 
-	
+	/** MLD file vers subchunk */
+	String _vers;
+
 	/**
 	 * Decode from a byte array. Same as invoking
-	 * {@code MLD(data, 0, data.length)}.
+	 * {@code MLD(__data, 0, __data.length)}.
 	 *
-	 * @param data A byte array contining the MLD resource.
-	 * @throws NullPointerException if {@code data} is {@code null}.
-	 * @throws RuntimeException if an error occurs during decoding.
+	 * @param __data A byte array contining the MLD resource.
+	 * @param __metadata A {@link MetaDataValues} instance to place MLD
+	 * metadata on.
+	 * @throws NullPointerException On null arguments.
+	 * @throws MediaException if an error occurs during decoding.
 	 * @see MLD(byte[],int,int)
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	public MLD(byte[] data)
+	public MLD(@NotNull byte[] __data,
+		@NotNull MetaDataValues __metadata)
+		throws NullPointerException, MediaException
 	{
-		this(data, 0, data.length);
+		this(__data, 0, __data.length, __metadata);
 	}
-	
+
 	/**
 	 * Decode from a byte array. If the {@code length} argument specifies
-	 * bytes
-	 * beyond the end of the MLD resource, the extra bytes will not be
+	 * bytes beyond the end of the MLD resource, the extra bytes will not be
 	 * processed.
 	 *
-	 * @param data A byte array contining the MLD resource.
-	 * @param offset The position in {@code data} of the first byte of the MLD
+	 * @param __data A byte array contining the MLD resource.
+	 * @param __offset The position in {@code data} of the first byte of the MLD
 	 * resource.
-	 * @param length The number of bytes to consider when decoding the MLD
+	 * @param __length The number of bytes to consider when decoding the MLD
 	 * resource. Must be greater than or equal to the size of the MLD.
-	 * @throws NullPointerException if {@code data} is {@code null}.
-	 * @throws IllegalArgumentException if {@code length} is negative.
-	 * @throws ArrayIndexOutOfBoundsException if {@code offset} is negative
-	 * or {@code offset + length > data.length}.
-	 * @throws RuntimeException if an error occurs during decoding.
+	 * @param __metadata A {@link MetaDataValues} instance to place MLD
+	 * metadata on.
+	 * @throws NullPointerException On null arguments.
+	 * @throws IllegalArgumentException if {@code __length} is negative.
+	 * @throws ArrayIndexOutOfBoundsException if {@code __offset} is negative
+	 * or {@code __offset + __length > __data.length}.
+	 * @throws MediaException if an error occurs during decoding.
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	public MLD(byte[] data, int offset, int length)
+	public MLD(@NotNull byte[] __data,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __length,
+		@NotNull MetaDataValues __metadata)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+		NullPointerException, MediaException
 	{
-		
 		// Error checking
-		if (data == null)
+		if (__data == null)
 			throw new NullPointerException("A byte buffer is required.");
-		if (length < 0)
+
+		if (__length < 0)
 			throw new IllegalArgumentException("Invalid length.");
-		if (offset < 0 || length >= 0 && offset + length > data.length)
+		if (__offset < 0 || __length >= 0 &&
+			__offset + __length > __data.length)
 		{
 			throw new ArrayIndexOutOfBoundsException(
 				"Invalid range in byte buffer.");
 		}
-		
+
+		this._metadata = __metadata;
+
 		// Parse the data
-		try (ByteArrayInputStream stream = new ByteArrayInputStream(data,
-			offset, length))
+		try (ByteArrayInputStream stream = new ByteArrayInputStream(__data,
+			__offset, __length))
 		{
-			this.parse(new DataInputStream(stream));
+			this.__parse(new DataInputStream(stream));
 		}
 		catch (IOException e)
 		{
-			throw new RuntimeException(e.getMessage());
+			throw new MediaException(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Decode from an input stream. The data at the current position in the
 	 * stream must be an MLD resource.<br><br>
@@ -392,125 +399,173 @@ public class MLD
 	 * following the MLD data. If an error occurs during decoding, the stream
 	 * position will be indeterminate.
 	 *
-	 * @param in The stream to decode from.
-	 * @throws RuntimeException if an error occurs during decoding.
+	 * @param __in The stream to decode from.
+	 * @param __metadata A {@link MetaDataValues} instance to place MLD
+	 * metadata on.
+	 * @throws NullPointerException On null arguments.
+	 * @throws MediaException if an error occurs during decoding.
 	 * @throws IOException if a stream access error occurs.
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	public MLD(InputStream in)
-		throws IOException
+	public MLD(@NotNull InputStream __in,
+		@NotNull MetaDataValues __metadata)
+		throws IOException, NullPointerException, MediaException
 	{
-		this.parse(in instanceof DataInputStream ? (DataInputStream)in :
-			new DataInputStream(in));
+		if (__in == null)
+			throw new NullPointerException("NARG");
+
+		this._metadata = __metadata;
+
+		this.__parse(__in instanceof DataInputStream ? (DataInputStream) __in :
+			new DataInputStream(__in));
 	}
-	
-	
+
+
 	/**
 	 * Retrieve the copyright of the MLD resource.
 	 *
 	 * @return The copyright text if available, or {@code null} otherwise.
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	public String getCopyright()
 	{
-		return this.copy;
+		return this._copy;
 	}
-	
+
 	/**
 	 * Retrieve the date of the MLD resource.
 	 *
 	 * @return The date text if available, or {@code null} otherwise.
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	public String getDate()
 	{
-		return this.date;
+		return this._date;
 	}
-	
+
 	/**
 	 * Determine the total length of the MLD sequence in seconds.
 	 *
-	 * @param withoutLooping Whether or not to consider looping in the return
+	 * @param __withoutLooping Whether or not to consider looping in the return
 	 * value.
 	 * @return If the sequence does not loop, the number of seconds in the
-	 * sequence. If the sequence loops and {@code withoutLooping} is
+	 * sequence. If the sequence loops and {@code __withoutLooping} is
 	 * {@code false}, returns {@code Double.POSITIVE_INFINITY}. If the
 	 * sequence
-	 * loops and {@code withoutLooping} is {@code true}, returns the number of
+	 * loops and {@code __withoutLooping} is {@code true}, returns the number of
 	 * seconds in the sequence up until the first loop occurs.
 	 * @see MLDPlayer#getTime()
 	 * @see MLDPlayer#setTime(double)
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	public double getDuration(boolean withoutLooping)
+	public double getDuration(boolean __withoutLooping)
 	{
 		// TODO: JUMP events tell if partial or complete track looping is used
 		// TODO: inside MLD, thus we should process them and see if any of its blocks
 		// TODO: have infinite repeat values in order to return POSITIVE_INFINITY.
 		Debugging.todoNote("MLD getDuration()");
-		return (withoutLooping ? this.duration :
+		return (__withoutLooping ? this._duration :
 			Double.POSITIVE_INFINITY);
 	}
-	
+
 	/**
 	 * Retrieve the title of the MLD resource.
 	 *
 	 * @return The title text if available, or {@code null} otherwise.
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	public String getTitle()
 	{
-		return this.titl;
+		return this._titl;
 	}
-	
-	
+
+
 	/**
 	 * Retrieve the version of the MLD resource.
 	 *
 	 * @return The version text if available, or {@code null} otherwise.
 	 */
+	@SquirrelJMEVendorApi
 	public String getVersion()
 	{
-		return this.vers;
+		return this._vers;
 	}
-	
-	
+
+	/**
+	 * Decode a string as Shift_JIS.
+	 *
+	 * @param __bytes The byte array to convert.
+	 * @return The converted String.
+	 * @since 2025/05/05
+	 */
+	private String __ShiftJIS(byte[] __bytes)
+	{
+		try
+		{
+			return new String(__bytes, "Shift_JIS");
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+	}
+
 	/**
 	 * Parse an ADPCM chunk
-	 */
-	MLDADPCM adpcm(MLDBinaryReader reader)
+	 * Parses a Yamaha AICA ADPCM chunk.
+	 *
+	 * @param __reader The binary reader to use for parsing.
+	 * @return A {@link __MLDADPCM__} object containing the ADPCM stream.
+	 * @throws NullPointerException If {@code __reader} is {@code null};
+	 * @throws MediaException If the ADPCM chunk is malformed.
+	 * @since 2025/05/05
+ 	 */
+
+	private __MLDADPCM__ __adpcm(__MLDBinaryReader__ __reader)
+		throws NullPointerException, MediaException
 	{
-		if (reader.u32() != MLD.FOURCC_ADAT)
-			throw new RuntimeException("Missing \"adat\" chunk.");
+		if (__reader == null)
+			throw new NullPointerException("NARG");
+
+		if (__reader.__u32() != MLD.FOURCC_ADAT)
+			throw new MediaException("Missing \"adat\" chunk.");
 
 		// Parse "adat" chunk data
-		int adatChunkSize = reader.u32();
+		int adatChunkSize = __reader.__u32();
 
 		// NOTE: this length includes the next two fields, which are NOT in the
 		// ADPM header.
-		int adpmHeaderLen = reader.u16();
+		int adpmHeaderLen = __reader.__u16();
 		Debugging.todoNote("MLD adpmHeaderLen");
-		
+
 		// TODO: No idea what these mean yet
-		int dataFormat = reader.u8();
-		int dataAttribute = reader.u8();
+		int dataFormat = __reader.__u8();
+		int dataAttribute = __reader.__u8();
 		Debugging.todoNote("MLD dF %d, dA %d",
 			dataFormat, dataAttribute);
 
 		// Parse "adpm" chunk data
-		if (reader.u32() != MLD.FOURCC_ADPM)
-			throw new RuntimeException("Missing \"adpm\" chunk.");
+		if (__reader.__u32() != MLD.FOURCC_ADPM)
+			throw new MediaException("Missing \"adpm\" chunk.");
 
-		int adpmChunkSize = reader.u16();
+		int adpmChunkSize = __reader.__u16();
 		Debugging.todoNote("MLD adpmChunkSize");
 
 		// Now Read the actual ADPCM data
 
-		MLDADPCM ret = new MLDADPCM();
+		__MLDADPCM__ ret = new __MLDADPCM__();
 
-		ret.sampleRate = reader.u8() * 1000;
-		ret.bitDepth = reader.u8();
+		ret._sampleRate = __reader.__u8() * 1000;
+		ret._bitDepth = __reader.__u8();
 
-		int channelData = reader.u8();
-		ret.numChannels = channelData & 0x07;
-		ret.isInterleaved = (channelData & 0x08) != 0;
+		int channelData = __reader.__u8();
+		ret._numChannels = channelData & 0x07;
+		ret._isInterleaved = (channelData & 0x08) != 0;
 
 		// Here, the size of the ADPCM data is equal to the ADAT chunk size
 		// (as ADPM header's size is ONLY for the three fields above), minus 13
@@ -525,84 +580,92 @@ public class MLD
 		// 	1 byte for sampleRate
 		// 	1 byte for bitDepth
 		// 	1 byte for channelData
-		ret.data = reader.bytes(adatChunkSize - 13);
+		ret._data = __reader.__bytes(adatChunkSize - 13);
 
 		return ret;
 	}
-	
-	
+
 	/**
-	 * Parse an event
+	 * Parses a MLD event.
+	 *
+	 * @param __note The note event's byte size (may either be 3 bytes or 4
+	 * bytes long).
+	 * @param __track The track that the event pertains to.
+	 * @param __reader The binary reader to use for parsing.
+	 * @throws MediaException If there was an issue parsing the event data.
+	 * @return The parsed event.
+	 * @since 2025/05/05
 	 */
-	MLDEvent event(int note, int track, MLDBinaryReader reader)
+	private __MLDEvent__ __event(int __note, int __track,
+		@NotNull __MLDBinaryReader__ __reader)
+		throws MediaException
 	{
-		MLDEvent event = new MLDEvent();
-		
+		__MLDEvent__ event = new __MLDEvent__();
+
 		// Common fields
-		event.offset = reader.offset;
-		event.delta = reader.u8();
-		event.status = reader.u8();
-		
+		event._offset = __reader._offset;
+		event._delta = __reader.__u8();
+		event._status = __reader.__u8();
+
 		// Note event
-		if ((event.status & 0x3F) != 63)
-			return this.eventNote(note, track, event, reader);
-		
+		if ((event._status & 0x3F) != 63)
+			return this.__eventNote(__note, __track, event, __reader);
+
 		// Meta event fields
-		event.id = reader.u8();
-		
+		event._id = __reader.__u8();
+
 		// ext-info event
-		if (event.id >= 0xF0)
-			return this.eventExtInfo(event, reader);
-		
+		if (event._id >= 0xF0)
+			return this.__eventExtInfo(event, __reader);
+
 		// Unknown event
-		if (event.id < 0x80)
+		if (event._id < 0x80)
 		{
-			event.type = MLD.EVENT_TYPE_UNKNOWN;
-			event.data = reader.bytes(2);
+			event._type = MLD.EVENT_TYPE_UNKNOWN;
+			event._data = __reader.__bytes(2);
 			return event;
 		}
-		
+
 		// Common ext-B processing
-		event.type = MLD.EVENT_TYPE_EXT_B;
-		event.param = reader.u8();
-		event.channelIndex = event.param >> 6;
-		event.channel = track << 2 | event.channelIndex;
-		
+		event._type = MLD.EVENT_TYPE_EXT_B;
+		event._param = __reader.__u8();
+		event._channelIndex = event._param >> 6;
+		event._channel = __track << 2 | event._channelIndex;
+
 		// timebase-tempo event
-		if ((event.id & 0xF0) == MLD.EVENT_TIMEBASE_TEMPO)
-			return this.eventTimebaseTempo(event);
+		if ((event._id & 0xF0) == MLD.EVENT_TIMEBASE_TEMPO)
+			return this.__eventTimebaseTempo(event);
 
 		// Other event
-		switch (event.id)
+		switch (event._id)
 		{
-			
 			// Events that need further processing
 			case MLD.EVENT_BANK_CHANGE:
-				return this.eventBankChange(event);
+				return this.__eventBankChange(event);
 			case MLD.EVENT_CUEPOINT:
-				return this.eventCuepoint(event);
+				return this.__eventCuepoint(event);
 			case MLD.EVENT_EXPRESSION_CHANGE:
-				return this.eventExpression(event);
+				return this.__eventExpression(event);
 			case MLD.EVENT_JUMP:
-				return this.eventJump(event);
+				return this.__eventJump(event);
 			case MLD.EVENT_MASTER_BALANCE:
-				return this.eventMasterBalance(event);
+				return this.__eventMasterBalance(event);
 			case MLD.EVENT_MASTER_TUNE:
-				return this.eventMasterTune(event);
+				return this.__eventMasterTune(event);
 			case MLD.EVENT_MASTER_VOLUME:
-				return this.eventMasterVolume(event);
+				return this.__eventMasterVolume(event);
 			case MLD.EVENT_PANPOT:
-				return this.eventPanPot(event);
+				return this.__eventPanPot(event);
 			case MLD.EVENT_PITCHBEND:
-				return this.eventPitchBend(event);
+				return this.__eventPitchBend(event);
 			case MLD.EVENT_PITCHBEND_RANGE:
-				return this.eventPitchBendRange(event);
+				return this.__eventPitchBendRange(event);
 			case MLD.EVENT_PROGRAM_CHANGE:
-				return this.eventProgramChange(event);
+				return this.__eventProgramChange(event);
 			case MLD.EVENT_VOLUME:
-				return this.eventVolume(event);
+				return this.__eventVolume(event);
 			case MLD.EVENT_X_DRUM_ENABLE:
-				return this.eventDrumEnable(event);
+				return this.__eventDrumEnable(event);
 
 			// Events that do not need further processing
 			case MLD.EVENT_CHANNEL_ASSIGN:       // Not implemented
@@ -621,80 +684,117 @@ public class MLD
 			case MLD.EVENT_RESET:
 			case MLD.EVENT_STOP:
 				break;
-			
+
 			// Unrecognized events
 			default:
 		}
 		return event;
 	}
-	
+
 	/**
-	 * Parse a bank-change event
+	 * Parse a Bank Change event.
+	 *
+	 * @param __event The Bank Change event to parse.
+	 * @return The constructed event.
+	 * @since 2025/05/05
 	 */
-	MLDEvent eventBankChange(MLDEvent event)
+	private __MLDEvent__ __eventBankChange(__MLDEvent__ __event)
 	{
-		event.bank = event.param & 0x3F;
-		return event;
+		__event._bank = __event._param & 0x3F;
+		return __event;
 	}
-	
+
 	/**
-	 * Parse a cuepoint event
+	 * Parse a Cuepoint event.
+	 *
+	 * @param __event The Cuepoint event to parse.
+	 * @return The constructed event.
+	 * @since 2025/05/05
 	 */
-	MLDEvent eventCuepoint(MLDEvent event)
+	private __MLDEvent__ __eventCuepoint(__MLDEvent__ __event)
 	{
-		event.cuepoint = event.param;
-		return event;
+		__event._cuepoint = __event._param;
+		return __event;
 	}
-	
+
 	/**
-	 * Parse a drum-enable event
+	 * Parse a Drum Enable event.
+	 *
+	 * @param __event The Drum Enable event to parse.
+	 * @return The constructed event.
+	 * @since 2025/05/05
 	 */
-	MLDEvent eventDrumEnable(MLDEvent event)
+	private __MLDEvent__ __eventDrumEnable(__MLDEvent__ __event)
 	{
-		event.channel = event.param >> 3 & 15;
-		event.enable = (event.param & 1) != 0;
-		return event;
+		__event._channel = __event._param >> 3 & 15;
+		__event._enable = (__event._param & 1) != 0;
+		return __event;
 	}
-	
+
 	/**
-	 * Parse an ext-info event
+	 * Parse an Expression event.
+	 *
+	 * @param __event The expression event to parse.
+	 * @return The constructed event.
+	 * @since 2026/04/18
 	 */
-	MLDEvent eventExtInfo(MLDEvent event, MLDBinaryReader reader)
+	private __MLDEvent__ __eventExpression(__MLDEvent__ __event)
+		throws NullPointerException
 	{
-		event.type = MLD.EVENT_TYPE_EXT_INFO;
-		event.data = reader.bytes(reader.u16());
-		return event;
+		if (__event == null)
+			throw new NullPointerException("NARG");
+
+		__event._volume *= this.__volumeToAmplitude(
+			(__event._param & 0x3F) / 63.0f);
+		return __event;
 	}
-	
+
 	/**
-	 * Parse a jump event
+	 * Parses an Ext-info event.
+	 *
+	 * @param __event The event data instance.
+	 * @param __reader The binary reader to use for parsing.
+	 * @throws MediaException If there was an error parsing the event data.
+	 * @return The constructed ext-info event.
+	 * @since 2025/05/05
 	 */
-	MLDEvent eventJump(MLDEvent event)
+	private __MLDEvent__ __eventExtInfo(__MLDEvent__ __event, __MLDBinaryReader__ __reader)
+		throws MediaException
 	{
-		event.jumpCount = event.param & 15;
-		event.jumpId = event.param >> 4 & 3;
-		event.jumpPoint = event.param >> 6;
-		return event;
+		__event._type = MLD.EVENT_TYPE_EXT_INFO;
+		__event._data = __reader.__bytes(__reader.__u16());
+		return __event;
 	}
-	
+
+	/**
+	 * Parse a Jump event.
+	 *
+	 * @param __event The Jump event to parse.
+	 * @return The constructed event.
+	 * @since 2025/05/05
+	 */
+	private __MLDEvent__ __eventJump(__MLDEvent__ __event)
+	{
+		__event._jumpCount = __event._param & 15;
+		__event._jumpId = __event._param >> 4 & 3;
+		__event._jumpPoint = __event._param >> 6;
+		return __event;
+	}
+
 	/**
 	 * Parse a Master Balance event, which is just a panpot event but applied to
 	 * all tracks and subsequent events.
 	 *
 	 * @param __event The Master Balance event to parse.
-	 * @throws NullPointerException On null arguments.
+	 * @return The constructed event.
 	 * @since 2026/04/18
 	 */
-	MLDEvent eventMasterBalance(MLDEvent __event)
-		throws NullPointerException
+	private __MLDEvent__ __eventMasterBalance(__MLDEvent__ __event)
 	{
-		if(__event == null)
-			throw new NullPointerException("NARG");
+		this._masterPan = (__event._param < 64 ? __event._param / 64.0f - 1 :
+			(__event._param - 64) / 63.0f);
 
-		this.masterPan = (__event.param < 64 ? __event.param / 64.0f - 1 :
-			(__event.param - 64) / 63.0f);
-
-		__event.panpot = this.masterPan;
+		__event._panpot = this._masterPan;
 		return __event;
 	}
 
@@ -703,18 +803,14 @@ public class MLD
 	 * to all tracks and subsequent events.
 	 *
 	 * @param __event The Master Tune event to parse.
-	 * @throws NullPointerException On null arguments.
+	 * @return The constructed event.
 	 * @since 2026/04/18
 	 */
-	MLDEvent eventMasterTune(MLDEvent __event)
-		throws NullPointerException
+	private __MLDEvent__ __eventMasterTune(__MLDEvent__ __event)
 	{
-		if (__event == null)
-			throw new NullPointerException("NARG");
+		this._masterTune = ((__event._param & 0x7F) - 64) / 64.0f;
 
-		this.masterTune = ((__event.param & 0x7F) - 64) / 64.0f;
-
-		__event.semitones = this.masterTune;
+		__event._semitones = this._masterTune;
 		return __event;
 	}
 
@@ -723,561 +819,482 @@ public class MLD
 	 * all tracks and subsequent events.
 	 *
 	 * @param __event The Master Volume event to parse.
-	 * @throws NullPointerException On null arguments.
+	 * @return The constructed event.
 	 * @since 2026/04/18
 	 */
-	MLDEvent eventMasterVolume(MLDEvent __event)
-		throws NullPointerException
+	private __MLDEvent__ __eventMasterVolume(__MLDEvent__ __event)
 	{
-		if (__event == null)
-			throw new NullPointerException("NARG");
-
-		int vol = __event.param;
+		int vol = __event._param;
 
 		// According to the CMF specification, a value of 100 is a 0dB
 		// adjustment, so anything higher (up to 127) is a boost, which we allow
 		// up to a 27% increase in amplitude.
 		// TODO: Values lower than 100 still need to be tweaked.
 		Debugging.todoNote("MLD volume adjust");
-		this.masterVolume = (vol <= 100 ?
-			this.volumeToAmplitude((vol) / 100.0f) :
-			this.volumeToAmplitude((vol) / 100.0f));
+		this._masterVolume = (vol <= 100 ?
+			this.__volumeToAmplitude((vol) / 100.0f) :
+			this.__volumeToAmplitude((vol) / 100.0f));
 
-		__event.volume = this.masterVolume;
+		__event._volume = this._masterVolume;
 		return __event;
 	}
 
 	/**
-	 * Parse a note event
+	 * Parses a Note event.
+	 *
+	 * @param __note The note's byte size, may be either 3 or 4 bytes long.
+	 * @param __track The track this note belongs to.
+	 * @param __event The event data instance.
+	 * @param __reader The binary reader to use for parsing.
+	 * @return The constructed note event.
+	 * @since 2025/05/05
 	 */
-	MLDEvent eventNote(int note, int track, MLDEvent event,
-		MLDBinaryReader reader)
+	private __MLDEvent__ __eventNote(int __note, int __track, __MLDEvent__ __event,
+		__MLDBinaryReader__ __reader)
 	{
-		
 		// Common processing
-		event.type = MLD.EVENT_TYPE_NOTE;
-		event.channelIndex = event.status >> 6;
-		event.gateTime = reader.u8();
-		event.keyNumber = event.status & 63;
-		
+		__event._type = MLD.EVENT_TYPE_NOTE;
+		__event._channelIndex = __event._status >> 6;
+		__event._gateTime = __reader.__u8();
+		__event._keyNumber = __event._status & 63;
+
 		// Note events are 3 bytes
-		if (note == MLD.NOTE_3)
+		if (__note == MLD.NOTE_3)
 		{
-			event.octaveShift = 0;
-			event.velocity = 1.0f;
+			__event._octaveShift = 0;
+			__event._velocity = 1.0f;
 		}
-		
+
 		// Note events are 4 bytes
 		else
 		{
-			int bits = reader.u8();
-			event.octaveShift = bits << 30 >> 30;
-			event.velocity = (bits >> 2) / 63.0f;
+			int bits = __reader.__u8();
+			__event._octaveShift = bits << 30 >> 30;
+			__event._velocity = (bits >> 2) / 63.0f;
 		}
-		
+
 		// Compute normalized fields
-		event.channel = track << 2 | event.channelIndex;
-		event.key = event.octaveShift * 12 + event.keyNumber - 24;
-		return event;
-	}
-	
-	/**
-	 * Parse a panpot event
-	 */
-	MLDEvent eventPanPot(MLDEvent event)
-	{
-		int param = event.param & 0x3F;
-		event.panpot = (param < 32 ? param / 32.0f - 1 : (param - 32) / 31.0f) *
-			this.masterPan;
-		return event;
-	}
-	
-	/**
-	 * Parse a pitchbend event
-	 */
-	MLDEvent eventPitchBend(MLDEvent event)
-	{
-		event.semitones = ((event.param & 0x3F) - 32) / 3200.0f *
-			this.masterTune;
-		return event;
-	}
-	
-	/**
-	 * Parse a pitchbend-range event
-	 */
-	MLDEvent eventPitchBendRange(MLDEvent event)
-	{
-		event.range = event.param & 0x3F;
-		return event;
-	}
-	
-	/**
-	 * Parse a program-change event
-	 */
-	MLDEvent eventProgramChange(MLDEvent event)
-	{
-		event.program = event.param & 0x3F;
-		return event;
-	}
-	
-	/**
-	 * Parse a timebase-tempo event
-	 */
-	MLDEvent eventTimebaseTempo(MLDEvent event)
-	{
-		event.bank = event.id;
-		event.tempo = event.param;
-		event.timebase = (event.id & 7) == 7 ? -1 :
-			((event.id & 15) > 7 ? 15 : 6) << (event.id & 7);
-		event.id = MLD.EVENT_TIMEBASE_TEMPO;
-		return event;
-	}
-
-	/**
-	 * Parse an expression event.
-	 *
-	 * @param __event The expression event to parse.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2026/04/18
-	 */
-	MLDEvent eventExpression(MLDEvent __event)
-		throws NullPointerException
-	{
-		if (__event == null)
-			throw new NullPointerException("NARG");
-
-		__event.volume *= this.volumeToAmplitude(
-			(__event.param & 0x3F) / 63.0f);
+		__event._channel = __track << 2 | __event._channelIndex;
+		__event._key = __event._octaveShift * 12 + __event._keyNumber - 24;
 		return __event;
 	}
-	
+
 	/**
-	 * Parse a volume event
+	 * Parse a Panpot event.
+	 *
+	 * @param __event The Panpot event to parse.
+	 * @return The constructed event.
+	 * @since 2025/05/05
 	 */
-	MLDEvent eventVolume(MLDEvent event)
+	private __MLDEvent__ __eventPanPot(__MLDEvent__ __event)
 	{
-		event.volume = this.volumeToAmplitude((event.param & 0x3F) / 63.0f) *
-			this.masterVolume;
-		return event;
+		int param = __event._param & 0x3F;
+		__event._panpot = (param < 32 ? param / 32.0f - 1 :
+			(param - 32) / 31.0f) * this._masterPan;
+		return __event;
 	}
-	
-	
+
 	/**
-	 * Parse the file header
+	 * Parse a Pitch Bend event.
+	 *
+	 * @param __event The Pitch Bend event to parse.
+	 * @return The constructed event.
+	 * @since 2025/05/05
 	 */
-	void header(MLDBinaryReader reader)
+	private __MLDEvent__ __eventPitchBend(__MLDEvent__ __event)
 	{
-		reader = reader.reader(reader.u16());
-		this.header = reader.bytes(reader.length);
-		reader.offset -= reader.length;
-		
+		__event._semitones = ((__event._param & 0x3F) - 32) / 3200.0f *
+			this._masterTune;
+		return __event;
+	}
+
+	/**
+	 * Parse a Pitch Bend Range event.
+	 *
+	 * @param __event The Pitch Bend Range event to parse.
+	 * @return The constructed event.
+	 * @since 2025/05/05
+	 */
+	private __MLDEvent__ __eventPitchBendRange(__MLDEvent__ __event)
+	{
+		__event._range = __event._param & 0x3F;
+		return __event;
+	}
+
+	/**
+	 * Parse a Program Change event.
+	 *
+	 * @param __event The Program Change event to parse.
+	 * @return The constructed event.
+	 * @since 2025/05/05
+	 */
+	private __MLDEvent__ __eventProgramChange(__MLDEvent__ __event)
+	{
+		__event._program = __event._param & 0x3F;
+		return __event;
+	}
+
+	/**
+	 * Parse a Timebase-Tempo event.
+	 *
+	 * @param __event The Timebase-Tempo event to parse.
+	 * @return The constructed event.
+	 * @since 2025/05/05
+	 */
+	private __MLDEvent__ __eventTimebaseTempo(__MLDEvent__ __event)
+	{
+		__event._bank = __event._id;
+		__event._tempo = __event._param;
+		__event._timebase = (__event._id & 7) == 7 ? -1 :
+			((__event._id & 15) > 7 ? 15 : 6) << (__event._id & 7);
+		__event._id = MLD.EVENT_TIMEBASE_TEMPO;
+		return __event;
+	}
+
+	/**
+	 * Parse a Volume event.
+	 *
+	 * @param __event The Volume event to parse.
+	 * @return The constructed event.
+	 * @since 2025/05/05
+	 */
+	private __MLDEvent__ __eventVolume(__MLDEvent__ __event)
+	{
+		__event._volume = this.__volumeToAmplitude(
+			(__event._param & 0x3F) / 63.0f) * this._masterVolume;
+		return __event;
+	}
+
+	/**
+	 * Parse the MLD file's header.
+	 *
+	 * @param __reader The binary reader to use for parsing.
+	 * @throws MediaException If the format is unsupported or the file is
+	 * invalid.
+	 * @since 2025/05/05
+	 */
+	private void __header(__MLDBinaryReader__ __reader)
+		throws MediaException
+	{
+		__reader = __reader.__reader(__reader.__u16());
+		this._header = __reader.__bytes(__reader._length);
+		__reader._offset -= __reader._length;
+
 		// Content type
-		this.contentType = reader.u16();
-		if ((this.contentType & 0xFF00) == 0x0200)
+		this._contentType = __reader.__u16();
+		if ((this._contentType & 0xFF00) == 0x0200)
 		{
-			int bits = this.contentType & 0x00FF;
-			this.hasMusicEvents = (bits & 0x01) != 0;
-			this.hasWaveData = (bits & 0x02) != 0;
-			this.hasTextData = (bits & 0x04) != 0;
-			this.hasImageData = (bits & 0x08) != 0;
-			this.hasFemaleVocals = (bits & 0x10) != 0;
-			this.hasMaleVocals = (bits & 0x20) != 0;
-			this.hasOtherVocals = (bits & 0x40) != 0;
+			int bits = this._contentType & 0x00FF;
+			this._hasMusicEvents = (bits & 0x01) != 0;
+			this._hasWaveData = (bits & 0x02) != 0;
+			this._hasTextData = (bits & 0x04) != 0;
+			this._hasImageData = (bits & 0x08) != 0;
+			this._hasFemaleVocals = (bits & 0x10) != 0;
+			this._hasMaleVocals = (bits & 0x20) != 0;
+			this._hasOtherVocals = (bits & 0x40) != 0;
 		}
-		
+
 		// Error checking
-		if (this.contentType != 0x0101)
+		if (this._contentType != 0x0101)
 		{
-			throw new RuntimeException(
+			throw new MediaException(
 				String.format("Unsupported content type: 0x%04X",
-					this.contentType));
+					this._contentType));
 		}
-		
+
 		// Number of tracks
-		int numTracks = reader.u8();
+		int numTracks = __reader.__u8();
 		if (numTracks > 4)
-			throw new RuntimeException("Invalid track count: " + numTracks);
-		this.cuep = new int[numTracks];
-		this.tracks = new MLDTrack[numTracks];
-		
+			throw new MediaException("Invalid track count: " + numTracks);
+		this._cuep = new int[numTracks];
+		this._tracks = new __MLDTrack__[numTracks];
+
 		// Header subchunks
-		while (!reader.isEOF())
+		while (!__reader.__isEOF())
 		{
-			int id = reader.u32();
-			MLDBinaryReader chunk = reader.reader(reader.u16());
+			int id = __reader.__u32();
+			__MLDBinaryReader__ chunk = __reader.__reader(__reader.__u16());
 			switch (id)
 			{
 				case MLD.FOURCC_AINF:
-					this.headerAINF(chunk);
+					this._ainf = chunk.__bytes(chunk._length);
+					if (this._ainf.length > 0)
+						this._adpcms = new __MLDADPCM__[this._ainf[0] & 0xFF];
 					break;
+
 				case MLD.FOURCC_AUTH:
-					this.headerAUTH(chunk);
+					this._auth = chunk.__bytes(chunk._length);
+					this._metadata.set(MetaDataControl.AUTHOR_KEY,
+						new String(this._auth));
 					break;
+
 				case MLD.FOURCC_COPY:
-					this.headerCOPY(chunk);
+					this._copy = this.__ShiftJIS(chunk.__bytes(chunk._length));
+					this._metadata.set(MetaDataControl.COPYRIGHT_KEY,
+						this._copy);
 					break;
+
 				case MLD.FOURCC_CUEP:
-					this.headerCUEP(chunk);
+					for (int x = 0; x < this._cuep.length; x++)
+						this._cuep[x] = chunk.__u32();
 					break;
+
 				case MLD.FOURCC_DATE:
-					this.headerDATE(chunk);
+					this._date = this.__ShiftJIS(chunk.__bytes(chunk._length));
+					this._metadata.set(MetaDataControl.DATE_KEY, this._date);
 					break;
+
 				case MLD.FOURCC_EXST:
-					this.headerEXST(chunk);
+					this._exst = chunk.__bytes(chunk._length);
 					break;
+
 				case MLD.FOURCC_NOTE:
-					this.headerNOTE(chunk);
-					break;
+					this._note = chunk.__u16();
+					if (this._note >> 1 == 0)
+						break;
+					throw new MediaException(
+						String.format("Invalid \"note\": 0x%04X", this._note));
+
 				case MLD.FOURCC_PROT:
-					this.headerPROT(chunk);
+					this._prot = this.__ShiftJIS(chunk.__bytes(chunk._length));
 					break;
+
 				case MLD.FOURCC_SORC:
-					this.headerSORC(chunk);
+					this._sorc = chunk.__u8();
 					break;
+
 				case MLD.FOURCC_SUPT:
-					this.headerSUPT(chunk);
+					this._supt = this.__ShiftJIS(chunk.__bytes(chunk._length));
 					break;
+
 				case MLD.FOURCC_THRD:
-					this.headerTHRD(chunk);
+					this._thrd = chunk.__bytes(chunk._length);
 					break;
+
 				case MLD.FOURCC_TITL:
-					this.headerTITL(chunk);
+					this._titl = this.__ShiftJIS(chunk.__bytes(chunk._length));
+					this._metadata.set(MetaDataControl.TITLE_KEY, this._titl);
 					break;
+
 				case MLD.FOURCC_VERS:
-					this.headerVERS(chunk);
+					this._vers = this.__ShiftJIS(chunk.__bytes(chunk._length));
 					break;
 			}
 		}
-		
+
 	}
-	
+
 	/**
-	 * Parse a header "ainf" subchunk
+	 * Measure the MLD file's duration and tick counters.
+	 *
+	 * @since 2025/05/05
 	 */
-	void headerAINF(MLDBinaryReader reader)
-	{
-		this.ainf = reader.bytes(reader.length);
-		if (this.ainf.length > 0)
-			this.adpcms = new MLDADPCM[this.ainf[0] & 0xFF];
-	}
-	
-	/**
-	 * Parse a header "auth" subchunk
-	 */
-	void headerAUTH(MLDBinaryReader reader)
-	{
-		this.auth = reader.bytes(reader.length);
-	}
-	
-	/**
-	 * Parse a header "copy" subchunk
-	 */
-	void headerCOPY(MLDBinaryReader reader)
-	{
-		this.copy = this.shiftJIS(reader.bytes(reader.length));
-	}
-	
-	/**
-	 * Parse a header "cuep" subchunk
-	 */
-	void headerCUEP(MLDBinaryReader reader)
-	{
-		for (int x = 0; x < this.cuep.length; x++)
-			this.cuep[x] = reader.u32();
-	}
-	
-	/**
-	 * Parse a header "date" subchunk
-	 */
-	void headerDATE(MLDBinaryReader reader)
-	{
-		this.date = this.shiftJIS(reader.bytes(reader.length));
-	}
-	
-	/**
-	 * Parse a header "exst" subchunk
-	 */
-	void headerEXST(MLDBinaryReader reader)
-	{
-		this.exst = reader.bytes(reader.length);
-	}
-	
-	/**
-	 * Parse a header "note" subchunk
-	 */
-	void headerNOTE(MLDBinaryReader reader)
-	{
-		this.note = reader.u16();
-		if (this.note >> 1 == 0)
-			return;
-		throw new RuntimeException(
-			String.format("Invalid \"note\": 0x%04X", this.note));
-	}
-	
-	/**
-	 * Parse a header "prot" subchunk
-	 */
-	void headerPROT(MLDBinaryReader reader)
-	{
-		this.prot = this.shiftJIS(reader.bytes(reader.length));
-	}
-	
-	/**
-	 * Parse a header "sorc" subchunk
-	 */
-	void headerSORC(MLDBinaryReader reader)
-	{
-		this.sorc = reader.u8();
-	}
-	
-	/**
-	 * Parse a header "supt" subchunk
-	 */
-	void headerSUPT(MLDBinaryReader reader)
-	{
-		this.supt = this.shiftJIS(reader.bytes(reader.length));
-	}
-	
-	/**
-	 * Parse a header "thrd" subchunk
-	 */
-	void headerTHRD(MLDBinaryReader reader)
-	{
-		this.thrd = reader.bytes(reader.length);
-	}
-	
-	/**
-	 * Parse a header "titl" subchunk
-	 */
-	void headerTITL(MLDBinaryReader reader)
-	{
-		this.titl = this.shiftJIS(reader.bytes(reader.length));
-	}
-	
-	/**
-	 * Parse a header "vers" subchunk
-	 */
-	void headerVERS(MLDBinaryReader reader)
-	{
-		this.vers = this.shiftJIS(reader.bytes(reader.length));
-	}
-	
-	/**
-	 * Measure the duration and tick counters
-	 */
-	void inspect()
+	private void __inspect()
 	{
 		double tempo = 60.0 / (48 * 128);
 		long tickNow = 0;
-		int[] trkPos = new int[this.tracks.length];
-		int[] trkUntil = new int[this.tracks.length];
-		
+		int[] trkPos = new int[this._tracks.length];
+		int[] trkUntil = new int[this._tracks.length];
+
 		// Initialize instance fields
-		this.cuepointPlayMode = false;
-		this.duration = 0.0;
-		this.tickEnd = 0;
-		this.tickStart = 0;
-		
+		this._cuepointPlayMode = false;
+		this._duration = 0.0;
+		this._tickEnd = 0;
+		this._tickStart = 0;
+
 		// Record the start time of each track's first event
-		for (int x = 0; x < this.tracks.length; x++)
+		for (int x = 0; x < this._tracks.length; x++)
 		{
-			MLDTrack track = this.tracks[x];
+			__MLDTrack__ track = this._tracks[x];
 			if (track.size() != 0)
 			{
 				trkPos[x] = 0;
-				trkUntil[x] = track.get(0).delta;
+				trkUntil[x] = track.get(0)._delta;
 			}
 			else
 				trkUntil[x] = -1;
 		}
-		
+
 		// Inspect all events
-		for (; ; )
+		for (;;)
 		{
-			
+
 			// Determine the number of ticks until the next event
 			int until = -1;
-			for (int x = 0; x < this.tracks.length; x++)
+			for (int x = 0; x < this._tracks.length; x++)
 			{
 				int tu = trkUntil[x];
 				if (tu != -1 && (until == -1 || tu < until))
 					until = tu;
 			}
-			
+
 			// All tracks have finished
 			if (until == -1)
 				break;
-			
+
 			// Advance to the next event
-			this.duration += until * tempo;
+			this._duration += until * tempo;
 			tickNow += until;
-			this.tickEnd = Math.max(this.tickEnd, tickNow);
-			for (int x = 0; x < this.tracks.length; x++)
+			this._tickEnd = Math.max(this._tickEnd, tickNow);
+			for (int x = 0; x < this._tracks.length; x++)
 			{
 				if (trkUntil[x] != -1)
 					trkUntil[x] -= until;
 			}
-			
+
 			// Process all relevant events that happen right now
-			for (int x = 0; x < this.tracks.length; x++)
+			for (int x = 0; x < this._tracks.length; x++)
 			{
-				
+
 				// No more events right now on this track
 				if (trkUntil[x] != 0)
 					continue;
-				
+
 				// Retrieve the next event
-				MLDTrack track = this.tracks[x];
-				MLDEvent event = track.get(trkPos[x]++);
-				
+				__MLDTrack__ track = this._tracks[x];
+				__MLDEvent__ event = track.get(trkPos[x]++);
+
 				// Additional events on this track
 				if (trkPos[x] < track.size())
-					trkUntil[x] = track.get(trkPos[x]).delta;
-					
+					trkUntil[x] = track.get(trkPos[x])._delta;
+
 					// No more events ever on this track
 				else
 					trkUntil[x] = -1;
-				
+
 				// end-of-track
-				if (event.type == MLD.EVENT_TYPE_EXT_B &&
-					event.id == MLD.EVENT_END_OF_TRACK)
+				if (event._type == MLD.EVENT_TYPE_EXT_B &&
+					event._id == MLD.EVENT_END_OF_TRACK)
 				{
 					trkUntil[x] = -1;
 					continue;
 				}
-				
+
 				// Check this track again next iteration
 				x--;
-				
+
 				// note
-				if (event.type == MLD.EVENT_TYPE_NOTE)
+				if (event._type == MLD.EVENT_TYPE_NOTE)
 				{
-					this.tickEnd = Math.max(this.tickEnd,
-						tickNow + event.gateTime);
+					this._tickEnd = Math.max(this._tickEnd,
+						tickNow + event._gateTime);
 					continue;
 				}
-				
+
 				// Next must be ext-B
-				if (event.type != MLD.EVENT_TYPE_EXT_B)
+				if (event._type != MLD.EVENT_TYPE_EXT_B)
 					continue;
-				
+
 				// timebase-tempo
-				if ((event.id & 0xF0) == MLD.EVENT_TIMEBASE_TEMPO)
+				if ((event._id & 0xF0) == MLD.EVENT_TIMEBASE_TEMPO)
 				{
-					tempo = 60.0 / (event.timebase * event.tempo);
+					tempo = 60.0 / (event._timebase * event._tempo);
 					continue;
 				}
-				
+
 				// Next must be cuepoint
-				if (event.id != MLD.EVENT_CUEPOINT)
+				if (event._id != MLD.EVENT_CUEPOINT)
 					continue;
-				
+
 				// cuepoint start
-				if (event.cuepoint == MLD.CUEPOINT_START)
+				if (event._cuepoint == MLD.EVENT_CUEPOINT_START)
 				{
 					// Decoder must use cue-point play mode
-					this.cuepointPlayMode = true;
-					this.tickStart = tickNow;
+					this._cuepointPlayMode = true;
+					this._tickStart = tickNow;
 					continue;
 				}
-				
+
 				// If we get a cuepoint end, but the start point isn't set,
 				// ignore, as it's not a valid cue-point play mode.
-				if (event.cuepoint == MLD.CUEPOINT_END && !this.cuepointPlayMode)
+				if (event._cuepoint == MLD.EVENT_CUEPOINT_END && !this._cuepointPlayMode)
 					continue;
-				
+
 				// TODO: If a cuepoint-end and note both happen on the same tick
 				// and the cuepoint end is "first", does it still play the note?
 				Debugging.todoNote("MLD cuepoint?");
-				
+
 				// cuepoint end
-				this.tickEnd = tickNow;
+				this._tickEnd = tickNow;
 				return;
 			}
 		}
 	}
-	
+
 	/**
 	 * Parse an MLD file
 	 */
-	void parse(DataInputStream stream)
-		throws IOException
+	private void __parse(DataInputStream __stream)
+		throws IOException, MediaException
 	{
-		
+
 		// File signature
-		if (stream.readInt() != MLD.FOURCC_MELO)
-			throw new RuntimeException("Missing \"melo\" signature.");
-		
+		if (__stream.readInt() != MLD.FOURCC_MELO)
+			throw new MediaException("Missing \"melo\" signature.");
+
 		// File length
-		int length = stream.readInt();
+		int length = __stream.readInt();
 		if (length < 0)
-			throw new RuntimeException("Unsupported file length.");
-		
+			throw new MediaException("Unsupported file length.");
+
 		// Read the file into a byte array
 		byte[] data = new byte[8 + length];
 		int offset = 8;
 		while (offset < data.length)
 		{
-			int readed = stream.read(data, offset, data.length - offset);
+			int readed = __stream.read(data, offset, data.length - offset);
 			if (readed == -1)
-				throw new RuntimeException("Unexpected EOF.");
+				throw new MediaException("Unexpected EOF.");
 			offset += readed;
 		}
-		
+
 		// Default fields
-		this.adpcms = new MLDADPCM[0];
-		this.note = MLD.NOTE_3;
-		
+		this._adpcms = new __MLDADPCM__[0];
+		this._note = MLD.NOTE_3;
+
 		// Working variables
-		MLDBinaryReader reader = new MLDBinaryReader(data, 8, length);
-		
+		__MLDBinaryReader__ reader = new __MLDBinaryReader__(data, 8, length);
+
 		// Parse the file
-		this.header(reader);
-		for (int x = 0; x < this.adpcms.length; x++)
-			this.adpcms[x] = this.adpcm(reader);
-		for (int x = 0; x < this.tracks.length; x++)
-			this.tracks[x] = this.track(this.note, x, reader);
-		
+		this.__header(reader);
+		for (int x = 0; x < this._adpcms.length; x++)
+			this._adpcms[x] = this.__adpcm(reader);
+		for (int x = 0; x < this._tracks.length; x++)
+			this._tracks[x] = this.__track(this._note, x, reader);
+
 		// Measure the duration and tick counters
-		this.inspect();
+		this.__inspect();
 	}
-	
+
 	/**
-	 * Decode a string as Shift_JIS
+	 * Parse a MLD track.
+	 *
+	 * @param __note The note byte size (either 3 bytes or 4 bytes long).
+	 * @param __index The track index for generated events.
+	 * @param __reader The binary reader to use for parsing.
+	 * @throws MediaException If track data is invalid or corrupted.
+	 * @return The constructed track.
+	 * @since 2025/05/05
 	 */
-	String shiftJIS(byte[] bytes)
+	private __MLDTrack__ __track(int __note, int __index,
+		@NotNull __MLDBinaryReader__ __reader)
+		throws MediaException
 	{
-		try
-		{
-			return new String(bytes, "Shift_JIS");
-		}
-		catch (Exception e)
-		{
-			return null;
-		}
-	}
-	
-	/**
-	 * Parse a track
-	 */
-	MLDTrack track(int note, int index, MLDBinaryReader reader)
-	{
-		
 		// Error checking
-		if (reader.u32() != MLD.FOURCC_TRAC)
-			throw new RuntimeException("Missing \"trac\" chunk.");
-		
+		if (__reader.__u32() != MLD.FOURCC_TRAC)
+			throw new MediaException("Missing \"trac\" chunk.");
+
 		// Working variables
-		MLDEvent event;
-		MLDTrack ret = new MLDTrack();
-		ret.index = index;
-		reader = reader.reader(reader.u32());
-		int cue = reader.offset + this.cuep[index];
-		
+		__MLDEvent__ event;
+		__MLDTrack__ ret = new __MLDTrack__();
+		ret._index = __index;
+		__reader = __reader.__reader(__reader.__u32());
+		int cue = __reader._offset + this._cuep[__index];
+
 		// Parse events
-		while (!reader.isEOF())
+		while (!__reader.__isEOF())
 		{
-			event = this.event(note, index, reader);
+			event = this.__event(__note, __index, __reader);
 
 			// Do we have a "cuep" header that defines the cuepoint start of
 			// this track, or have we just parsed a CUEPOINT_START event? If so,
@@ -1300,19 +1317,25 @@ public class MLD
 			// CUEPOINT_START in this case. We do this by just setting the
 			// track's cue to the current position, as MLDPlayer will then begin
 			// from the cue offset.
-			if (reader.offset == cue || (event.id == MLD.EVENT_CUEPOINT &&
-				event.cuepoint == CUEPOINT_START))
-				ret.cue = ret.size();
+			if (__reader._offset == cue || (event._id == MLD.EVENT_CUEPOINT &&
+				event._cuepoint == MLD.EVENT_CUEPOINT_START))
+				ret._cue = ret.size();
 
 			ret.add(event);
 		}
 		return ret;
 	}
-	
-	/** Convert a volume parameter to a linear amplitude. */
-	float volumeToAmplitude(float param)
+
+	/**
+	 * Convert a volume parameter to a linear amplitude.
+	 *
+	 * @param __param The volume parameter to convert.
+	 * @return The resulting linear amplitude.
+	 * @since 2025/05/05
+	 */
+	private float __volumeToAmplitude(float __param)
 	{
-		return param == 0.0f ? 0.0f : (float)ExtraMath.pow(2,
-			(1 - param) * -96 / 20);
+		return __param == 0.0f ? 0.0f : (float)ExtraMath.pow(2,
+			(1 - __param) * -96 / 20);
 	}
 }
