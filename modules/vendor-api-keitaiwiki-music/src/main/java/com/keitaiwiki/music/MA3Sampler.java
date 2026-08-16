@@ -735,23 +735,23 @@ public class MA3Sampler
 	 * algorithm.
 	 * @since 2025/05/05
 	 */
-	__MA3Algorithm__ __getDrumWave(int key)
+	__MA3Algorithm__ __getDrumWave(int __key)
 	{
 		// Error checking
-		if (key < -24)
+		if (__key < -24)
 			return null;
 		
 		// Select the registered wave algorithm, if available
 		__MA3Algorithm__[] algs = this._ma3._algWaveDrums;
 		__MA3Algorithm__ ret = null;
-		if (key < 0)
+		if (__key < 0)
 		{
 			algs = this._wavDrums;
-			key += 24;
+			__key += 24;
 		}
 
-		if (key >= 0 && key < algs.length)
-			ret = algs[key];
+		if (__key >= 0 && __key < algs.length)
+			ret = algs[__key];
 		
 		// Error checking
 		int[] _wavRam = this._wavRam;
@@ -763,9 +763,9 @@ public class MA3Sampler
 	}
 	
 	/** Retrieve an algorithm for playing an FM instrument. */
-	__MA3Algorithm__ __getFMInstrument(int bank, int program)
+	__MA3Algorithm__ __getFMInstrument(int __bank, int __program)
 	{
-		int hashKey = bank << 8 | program;
+		int hashKey = __bank << 8 | __program;
 		__MA3Algorithm__ ret = null;
 		
 		MA3SamplerProvider ma3 = this._ma3;
@@ -782,8 +782,8 @@ public class MA3Sampler
 		// Fallback to preset
 		if (ret == null)
 		{
-			ret = ma3._algInstruments[bank < 2 ? 0 : // Apparent behavior
-				(bank & 1) << 6 | program & 0x3F];
+			ret = ma3._algInstruments[__bank < 2 ? 0 : // Apparent behavior
+				(__bank & 1) << 6 | __program & 0x3F];
 		}
 		
 		return ret;
