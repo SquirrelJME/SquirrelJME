@@ -9,8 +9,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Bridge between SquirrelJME's audio stream support and the library's
  * streaming renderer.

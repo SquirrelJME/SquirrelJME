@@ -41,8 +41,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.microedition.media.control.MetaDataControl;
 import javax.microedition.media.MediaException;
+import javax.microedition.media.control.MetaDataControl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
