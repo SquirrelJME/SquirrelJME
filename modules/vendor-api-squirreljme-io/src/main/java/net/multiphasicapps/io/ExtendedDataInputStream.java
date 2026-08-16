@@ -35,7 +35,7 @@ public class ExtendedDataInputStream
 	
 	/** Is mark supported? */
 	@SquirrelJMEVendorApi
-	protected final boolean canmark;
+	protected final boolean canMark;
 	
 	/** The target endianess. */
 	private volatile DataEndianess _endian;
@@ -44,11 +44,11 @@ public class ExtendedDataInputStream
 	private volatile long _count;
 	
 	/** The mark start position. */
-	private volatile long _markstart =
+	private volatile long _markStart =
 		-1L;
 	
 	/** The mark end position. */
-	private volatile long _markend =
+	private volatile long _markEnd =
 		-1L;
 	
 	/**
@@ -88,7 +88,7 @@ public class ExtendedDataInputStream
 		this._endian = __endian;
 		
 		// Need to know if marking is supported
-		this.canmark = w.markSupported();
+		this.canMark = w.markSupported();
 	}
 	
 	/**
@@ -131,7 +131,7 @@ public class ExtendedDataInputStream
 	public void mark(int __rl)
 	{
 		// Nothing to mark or not supported? Do nothing
-		if (__rl <= 0 || !this.canmark)
+		if (__rl <= 0 || !this.canMark)
 			return;
 		
 		// Mark the sub-stream
@@ -139,8 +139,8 @@ public class ExtendedDataInputStream
 		
 		// Start marker count
 		long count = this._count;
-		this._markstart = count;
-		this._markend = count + __rl;
+		this._markStart = count;
+		this._markEnd = count + __rl;
 	}
 	
 	/**
@@ -150,7 +150,7 @@ public class ExtendedDataInputStream
 	@Override
 	public boolean markSupported()
 	{
-		return this.canmark;
+		return this.canMark;
 	}
 	
 	/**
@@ -487,14 +487,14 @@ public class ExtendedDataInputStream
 		throws IOException
 	{
 		/* {@squirreljme.error BD0u The stream has not been marked.} */
-		long markstart = this._markstart;
+		long markstart = this._markStart;
 		if (markstart < 0)
 			throw new IOException("BD0u");
 		
 		/* {@squirreljme.error BD0v Exceeded the number of bytes specified by
 		mark.} */
 		long count = this._count;
-		long markend = this._markend;
+		long markend = this._markEnd;
 		if (count > markend)
 			throw new IOException("BD0v");
 		

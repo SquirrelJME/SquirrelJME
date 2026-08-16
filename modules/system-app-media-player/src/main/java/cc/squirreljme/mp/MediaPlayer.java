@@ -440,9 +440,13 @@ public class MediaPlayer
 			throw new NullPointerException("NARG");
 		
 		// Load the media in
+		InputStream in = null;
 		Player player;
-		try (InputStream in = __conn.openInputStream())
+		try
 		{
+			// Open the input
+			in = __conn.openInputStream();
+			
 			// Do we know or can we guess the content type?
 			@Language("mime-type-reference")
 			String contentType = null;
@@ -474,6 +478,17 @@ public class MediaPlayer
 		{
 			// Print error
 			__e.printStackTrace();
+			
+			// Failed, so close the input
+			if (in != null)
+				try
+				{
+					in.close();
+				}
+				catch (IOException __f)
+				{
+					__f.printStackTrace();
+				}
 			
 			// Do not change anything
 			return this;
