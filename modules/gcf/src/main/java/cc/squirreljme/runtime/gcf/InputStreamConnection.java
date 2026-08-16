@@ -12,9 +12,13 @@ package cc.squirreljme.runtime.gcf;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
+import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import javax.microedition.io.InputConnection;
 
 /**
@@ -29,6 +33,12 @@ public final class InputStreamConnection
 	/** The stream to source from. */
 	@SquirrelJMEVendorApi
 	protected final InputStream in;
+	
+	/** Is this actually closed? */
+	private volatile boolean _closed;
+	
+	/** The last known data buffer. */
+	private volatile Reference<byte[]> _buffer;
 	
 	/**
 	 * Initializes the input stream connection.
@@ -72,6 +82,16 @@ public final class InputStreamConnection
 	public void close()
 		throws IOException
 	{
+		synchronized (this)
+		{
+			// Latch closed
+			if (this._closed)
+				return;
+			this._closed = true;
+			
+			// Close the underlying stream
+			this.in.close();
+		}
 	}
 	
 	/**
@@ -95,12 +115,35 @@ public final class InputStreamConnection
 	{
 		synchronized (this)
 		{
-			// Always reset the mark
-			InputStream in = this.in;
-			in.reset();
+			// Cannot open if already closed
+			if (this._closed)
+				throw new IOException("CLOS");
 			
-			// Use the stream
-			return in;
+			// Get the cached buffer
+			Reference<byte[]> ref = this._buffer;
+			byte[] buf = null;
+			if (ref != null)
+				buf = ref.get();
+			
+			// If it is not still around, read it in
+			if (buf == null)
+			{
+				// Always reset the mark before reading everything in
+				InputStream in = this.in;
+				in.reset();
+				
+				// Read in all the bytes
+				buf = StreamUtils.readAll(in);
+				
+				// Cache the data so if anyone is no longer referencing the
+				// underlying stream, we can just free the bytes
+				this._buffer = new WeakReference<>(buf);
+			}
+			
+			// Always return a unique stream as otherwise, sharing a stream
+			// will cause issues with marking along with anyone closing it
+			// additionally breaking other users of the stream
+			return new ByteArrayInputStream(buf);
 		}
 	}
 }
