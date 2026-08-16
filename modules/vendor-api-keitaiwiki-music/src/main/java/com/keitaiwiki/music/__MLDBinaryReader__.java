@@ -45,7 +45,7 @@ import org.jetbrains.annotations.Range;
  * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
-class MLDBinaryReader
+class __MLDBinaryReader__
 {
 	/** Backing data store. */
 	@SquirrelJMEVendorApi
@@ -75,7 +75,7 @@ class MLDBinaryReader
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	MLDBinaryReader(@NotNull byte[] __data,
+	__MLDBinaryReader__(@NotNull byte[] __data,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __start,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __length)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
@@ -130,26 +130,26 @@ class MLDBinaryReader
 	}
 
 	/**
-	 * Create a new {@link MLDBinaryReader} that accesses a subset of the data
+	 * Create a new {@link __MLDBinaryReader__} that accesses a subset of the data
 	 * in this one.
 	 *
 	 * @param __length The maximum amount of bytes that the new reader is able
 	 * to access, starting from this one's current data offset.
-	 * @return A new {@link MLDBinaryReader} instance.
+	 * @return A new {@link __MLDBinaryReader__} instance.
 	 * @throws ArrayIndexOutOfBoundsException If {@code __length} is a value
 	 * such that {@code (this.offset + __length > this.start + this.length)}.
 	 * @since 2025/05/05
 	 */
 	@NotNull
 	@SquirrelJMEVendorApi
-	MLDBinaryReader reader(
+	__MLDBinaryReader__ reader(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __length)
 		throws ArrayIndexOutOfBoundsException
 	{
 		if (this.offset + __length > this.start + this.length)
 			throw new ArrayIndexOutOfBoundsException("Unexpected EOF.");
 
-		MLDBinaryReader ret = new MLDBinaryReader(this.data, this.offset,
+		__MLDBinaryReader__ ret = new __MLDBinaryReader__(this.data, this.offset,
 			__length);
 
 		this.skip(__length);

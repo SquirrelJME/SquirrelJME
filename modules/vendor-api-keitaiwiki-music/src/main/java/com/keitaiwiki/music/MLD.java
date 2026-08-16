@@ -217,7 +217,7 @@ public class MLD
 	static final int NOTE_4 = 1;
 
 	/** Sample data. */
-	MLDADPCM[] adpcms;
+	__MLDADPCM__[] adpcms;
 
 	/** Ainf header. */
 	byte[] ainf;
@@ -301,7 +301,7 @@ public class MLD
 	String titl;
 
 	/** Event lists. */
-	MLDTrack[] tracks;
+	__MLDTrack__[] tracks;
 
 	/** MLD file vers subchunk */
 	String vers;
@@ -502,13 +502,13 @@ public class MLD
 	 * Parses a Yamaha AICA ADPCM chunk.
 	 *
 	 * @param __reader The binary reader to use for parsing.
-	 * @return A {@link MLDADPCM} object containing the ADPCM stream.
+	 * @return A {@link __MLDADPCM__} object containing the ADPCM stream.
 	 * @throws NullPointerException If {@code __reader} is {@code null};
 	 * @throws MediaException If the ADPCM chunk is malformed.
 	 * @since 2025/05/05
  	 */
 
-	private MLDADPCM __adpcm(MLDBinaryReader __reader)
+	private __MLDADPCM__ __adpcm(__MLDBinaryReader__ __reader)
 		throws NullPointerException, MediaException
 	{
 		if (__reader == null)
@@ -540,7 +540,7 @@ public class MLD
 
 		// Now Read the actual ADPCM data
 
-		MLDADPCM ret = new MLDADPCM();
+		__MLDADPCM__ ret = new __MLDADPCM__();
 
 		ret.sampleRate = __reader.u8() * 1000;
 		ret.bitDepth = __reader.u8();
@@ -578,11 +578,11 @@ public class MLD
 	 * @return The parsed event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __event(int __note, int __track,
-		@NotNull MLDBinaryReader __reader)
+	private __MLDEvent__ __event(int __note, int __track,
+		@NotNull __MLDBinaryReader__ __reader)
 		throws MediaException
 	{
-		MLDEvent event = new MLDEvent();
+		__MLDEvent__ event = new __MLDEvent__();
 
 		// Common fields
 		event.offset = __reader.offset;
@@ -680,7 +680,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __eventBankChange(MLDEvent __event)
+	private __MLDEvent__ __eventBankChange(__MLDEvent__ __event)
 	{
 		__event.bank = __event.param & 0x3F;
 		return __event;
@@ -693,7 +693,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __eventCuepoint(MLDEvent __event)
+	private __MLDEvent__ __eventCuepoint(__MLDEvent__ __event)
 	{
 		__event.cuepoint = __event.param;
 		return __event;
@@ -706,7 +706,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __eventDrumEnable(MLDEvent __event)
+	private __MLDEvent__ __eventDrumEnable(__MLDEvent__ __event)
 	{
 		__event.channel = __event.param >> 3 & 15;
 		__event.enable = (__event.param & 1) != 0;
@@ -722,7 +722,7 @@ public class MLD
 	 * @return The constructed ext-info event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __eventExtInfo(MLDEvent __event, MLDBinaryReader __reader)
+	private __MLDEvent__ __eventExtInfo(__MLDEvent__ __event, __MLDBinaryReader__ __reader)
 		throws MediaException
 	{
 		__event.type = MLD.EVENT_TYPE_EXT_INFO;
@@ -737,7 +737,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __eventJump(MLDEvent __event)
+	private __MLDEvent__ __eventJump(__MLDEvent__ __event)
 	{
 		__event.jumpCount = __event.param & 15;
 		__event.jumpId = __event.param >> 4 & 3;
@@ -753,7 +753,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2026/04/18
 	 */
-	private MLDEvent __eventMasterBalance(MLDEvent __event)
+	private __MLDEvent__ __eventMasterBalance(__MLDEvent__ __event)
 	{
 		this.masterPan = (__event.param < 64 ? __event.param / 64.0f - 1 :
 			(__event.param - 64) / 63.0f);
@@ -770,7 +770,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2026/04/18
 	 */
-	private MLDEvent __eventMasterTune(MLDEvent __event)
+	private __MLDEvent__ __eventMasterTune(__MLDEvent__ __event)
 	{
 		this.masterTune = ((__event.param & 0x7F) - 64) / 64.0f;
 
@@ -786,7 +786,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2026/04/18
 	 */
-	private MLDEvent __eventMasterVolume(MLDEvent __event)
+	private __MLDEvent__ __eventMasterVolume(__MLDEvent__ __event)
 	{
 		int vol = __event.param;
 
@@ -813,8 +813,8 @@ public class MLD
 	 * @return The constructed note event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __eventNote(int __note, int __track, MLDEvent __event,
-		MLDBinaryReader __reader)
+	private __MLDEvent__ __eventNote(int __note, int __track, __MLDEvent__ __event,
+		__MLDBinaryReader__ __reader)
 	{
 		// Common processing
 		__event.type = MLD.EVENT_TYPE_NOTE;
@@ -850,7 +850,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __eventPanPot(MLDEvent __event)
+	private __MLDEvent__ __eventPanPot(__MLDEvent__ __event)
 	{
 		int param = __event.param & 0x3F;
 		__event.panpot = (param < 32 ? param / 32.0f - 1 :
@@ -865,7 +865,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __eventPitchBend(MLDEvent __event)
+	private __MLDEvent__ __eventPitchBend(__MLDEvent__ __event)
 	{
 		__event.semitones = ((__event.param & 0x3F) - 32) / 3200.0f *
 			this.masterTune;
@@ -879,7 +879,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __eventPitchBendRange(MLDEvent __event)
+	private __MLDEvent__ __eventPitchBendRange(__MLDEvent__ __event)
 	{
 		__event.range = __event.param & 0x3F;
 		return __event;
@@ -892,7 +892,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __eventProgramChange(MLDEvent __event)
+	private __MLDEvent__ __eventProgramChange(__MLDEvent__ __event)
 	{
 		__event.program = __event.param & 0x3F;
 		return __event;
@@ -905,7 +905,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __eventTimebaseTempo(MLDEvent __event)
+	private __MLDEvent__ __eventTimebaseTempo(__MLDEvent__ __event)
 	{
 		__event.bank = __event.id;
 		__event.tempo = __event.param;
@@ -922,7 +922,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2026/04/18
 	 */
-	private MLDEvent __eventExpression(MLDEvent __event)
+	private __MLDEvent__ __eventExpression(__MLDEvent__ __event)
 		throws NullPointerException
 	{
 		if (__event == null)
@@ -940,7 +940,7 @@ public class MLD
 	 * @return The constructed event.
 	 * @since 2025/05/05
 	 */
-	private MLDEvent __eventVolume(MLDEvent __event)
+	private __MLDEvent__ __eventVolume(__MLDEvent__ __event)
 	{
 		__event.volume = this.__volumeToAmplitude(
 			(__event.param & 0x3F) / 63.0f) * this.masterVolume;
@@ -956,7 +956,7 @@ public class MLD
 	 * invalid.
 	 * @since 2025/05/05
 	 */
-	private void __header(MLDBinaryReader __reader)
+	private void __header(__MLDBinaryReader__ __reader)
 		throws MediaException
 	{
 		__reader = __reader.reader(__reader.u16());
@@ -990,19 +990,19 @@ public class MLD
 		if (numTracks > 4)
 			throw new MediaException("Invalid track count: " + numTracks);
 		this.cuep = new int[numTracks];
-		this.tracks = new MLDTrack[numTracks];
+		this.tracks = new __MLDTrack__[numTracks];
 
 		// Header subchunks
 		while (!__reader.isEOF())
 		{
 			int id = __reader.u32();
-			MLDBinaryReader chunk = __reader.reader(__reader.u16());
+			__MLDBinaryReader__ chunk = __reader.reader(__reader.u16());
 			switch (id)
 			{
 				case MLD.FOURCC_AINF:
 					this.ainf = chunk.bytes(chunk.length);
 					if (this.ainf.length > 0)
-						this.adpcms = new MLDADPCM[this.ainf[0] & 0xFF];
+						this.adpcms = new __MLDADPCM__[this.ainf[0] & 0xFF];
 					break;
 
 				case MLD.FOURCC_AUTH:
@@ -1088,7 +1088,7 @@ public class MLD
 		// Record the start time of each track's first event
 		for (int x = 0; x < this.tracks.length; x++)
 		{
-			MLDTrack track = this.tracks[x];
+			__MLDTrack__ track = this.tracks[x];
 			if (track.size() != 0)
 			{
 				trkPos[x] = 0;
@@ -1134,8 +1134,8 @@ public class MLD
 					continue;
 
 				// Retrieve the next event
-				MLDTrack track = this.tracks[x];
-				MLDEvent event = track.get(trkPos[x]++);
+				__MLDTrack__ track = this.tracks[x];
+				__MLDEvent__ event = track.get(trkPos[x]++);
 
 				// Additional events on this track
 				if (trkPos[x] < track.size())
@@ -1232,11 +1232,11 @@ public class MLD
 		}
 
 		// Default fields
-		this.adpcms = new MLDADPCM[0];
+		this.adpcms = new __MLDADPCM__[0];
 		this.note = MLD.NOTE_3;
 
 		// Working variables
-		MLDBinaryReader reader = new MLDBinaryReader(data, 8, length);
+		__MLDBinaryReader__ reader = new __MLDBinaryReader__(data, 8, length);
 
 		// Parse the file
 		this.__header(reader);
@@ -1278,8 +1278,8 @@ public class MLD
 	 * @return The constructed track.
 	 * @since 2025/05/05
 	 */
-	private MLDTrack __track(int __note, int __index,
-		@NotNull MLDBinaryReader __reader)
+	private __MLDTrack__ __track(int __note, int __index,
+		@NotNull __MLDBinaryReader__ __reader)
 		throws MediaException
 	{
 		// Error checking
@@ -1287,8 +1287,8 @@ public class MLD
 			throw new MediaException("Missing \"trac\" chunk.");
 
 		// Working variables
-		MLDEvent event;
-		MLDTrack ret = new MLDTrack();
+		__MLDEvent__ event;
+		__MLDTrack__ ret = new __MLDTrack__();
 		ret.index = __index;
 		__reader = __reader.reader(__reader.u32());
 		int cue = __reader.offset + this.cuep[__index];

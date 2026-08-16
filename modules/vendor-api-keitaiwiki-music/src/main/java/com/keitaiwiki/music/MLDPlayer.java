@@ -56,7 +56,7 @@ public class MLDPlayer
 	
 	/** Playback channels. */
 	@SquirrelJMEVendorApi
-	final MLDChannel[] channels;
+	final __MLDChannel__[] channels;
 	
 	/** Pending events. */
 	@SquirrelJMEVendorApi
@@ -77,7 +77,7 @@ public class MLDPlayer
 	
 	/** Sequencer state. */
 	@SquirrelJMEVendorApi
-	final MLDPlayerTrack[] tracks;
+	final __MLDPlayerTrack__[] tracks;
 	
 	/** Playback events are enabled. */
 	@SquirrelJMEVendorApi
@@ -150,7 +150,7 @@ public class MLDPlayer
 		if (Float.isInfinite(__sampleRate) || __sampleRate <= 0.0f)
 			throw new IllegalArgumentException("Invalid sampling rate.");
 		
-		this.channels = new MLDChannel[16];
+		this.channels = new __MLDChannel__[16];
 		this.events = new ArrayList<>();
 		this.evtKeys = new HashSet<>();
 		this.evtPlayback = false;
@@ -160,21 +160,21 @@ public class MLDPlayer
 		this.sampler = __sampler.instance(__sampleRate);
 		this.sampleRate = __sampleRate;
 		this.seeking = false;
-		this.tracks = new MLDPlayerTrack[__mld.tracks.length];
+		this.tracks = new __MLDPlayerTrack__[__mld.tracks.length];
 		
 		// Channels
 		for (int x = 0; x < this.channels.length; x++)
 		{
-			MLDChannel chan = this.channels[x] = new MLDChannel();
+			__MLDChannel__ chan = this.channels[x] = new __MLDChannel__();
 			//  A0 .. C6
-			chan.notesOn = new MLDNote[99];
+			chan.notesOn = new __MLDNote__[99];
 			chan.notesOut = new ArrayList<>();
 		}
 		
 		// Tracks
 		for (int x = 0; x < this.tracks.length; x++)
 		{
-			MLDPlayerTrack track = this.tracks[x] = new MLDPlayerTrack();
+			__MLDPlayerTrack__ track = this.tracks[x] = new __MLDPlayerTrack__();
 			track.index = x;
 			track.mld = mld.tracks[x];
 		}
@@ -297,7 +297,7 @@ public class MLDPlayer
 	{
 		if (!this.sampler.isFinished())
 			return false;
-		for (MLDPlayerTrack track : this.tracks)
+		for (__MLDPlayerTrack__ track : this.tracks)
 		{
 			if (!track.finished)
 				return false;
@@ -528,19 +528,19 @@ public class MLDPlayer
 				this.tickNow += this.pendingTicks;
 				
 				// Notes
-				for (MLDChannel chan : this.channels)
-					for (MLDNote note : chan.notesOut)
+				for (__MLDChannel__ chan : this.channels)
+					for (__MLDNote__ note : chan.notesOut)
 						note.gateTime -= this.pendingTicks;
 				
 				// Tracks
-				for (MLDPlayerTrack track : this.tracks)
+				for (__MLDPlayerTrack__ track : this.tracks)
 					this.__process(track, this.pendingTicks);
 				
 				// Remove expired notes
-				for (MLDChannel chan : this.channels)
+				for (__MLDChannel__ chan : this.channels)
 					for (int x = 0; x < chan.notesOut.size(); x++)
 					{
-						MLDNote note = chan.notesOut.get(x);
+						__MLDNote__ note = chan.notesOut.get(x);
 						if (note.gateTime != 0)
 							continue;
 						this.sampler.keyOff(note.channel, note.key);
@@ -588,14 +588,14 @@ public class MLDPlayer
 		this.sampler.reset();
 
 		// Channels
-		for (MLDChannel chan : this.channels)
+		for (__MLDChannel__ chan : this.channels)
 		{
 			Arrays.fill(chan.notesOn, null);
 			chan.notesOut.clear();
 		}
 
 		// Tracks
-		for (MLDPlayerTrack track : this.tracks)
+		for (__MLDPlayerTrack__ track : this.tracks)
 		{
 			track.cuepoint = -1;
 			track.offset = track.mld.cue;
@@ -605,7 +605,7 @@ public class MLDPlayer
 
 		// Initialize playback
 		this.finished = true;
-		for (MLDPlayerTrack track : this.tracks)
+		for (__MLDPlayerTrack__ track : this.tracks)
 		{
 			this.__process(track, 0);
 			this.finished = this.finished && track.finished;
@@ -744,10 +744,10 @@ public class MLDPlayer
 	 * Process a Bank Change event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtBankChange(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtBankChange(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		this.sampler.bankChange(__event.channel, __event.bank);
 		this.__setTrackOffset(__track, __track.offset + 1);
@@ -757,17 +757,17 @@ public class MLDPlayer
 	 * Process a Cuepoint event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtCuepoint(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtCuepoint(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		// Common processing
 		this.__setTrackOffset(__track, __track.offset + 1);
 		
 		if (__event.cuepoint == MLD.EVENT_CUEPOINT_START)
 		{
-			for (MLDPlayerTrack t : this.tracks)
+			for (__MLDPlayerTrack__ t : this.tracks)
 				t.cuepoint = t.offset;
 
 			return;
@@ -785,10 +785,10 @@ public class MLDPlayer
 	 * Process a Drum enable event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtDrumEnable(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtDrumEnable(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		this.sampler.drumEnable(__event.channel, __event.enable);
 		this.__setTrackOffset(__track, __track.offset + 1);
@@ -798,10 +798,10 @@ public class MLDPlayer
 	 * Process an End-Of-Track event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtEndOfTrack(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtEndOfTrack(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		__track.finished = true;
 	}
@@ -810,10 +810,10 @@ public class MLDPlayer
 	 * Process an Ext-B event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtExtB(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtExtB(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		switch (__event.id)
 		{
@@ -875,10 +875,10 @@ public class MLDPlayer
 	 * Process an Ext-Info event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtExtInfo(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtExtInfo(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		this.sampler.sysEx(__event.data);
 		this.__setTrackOffset(__track, __track.offset + 1);
@@ -888,10 +888,10 @@ public class MLDPlayer
 	 * Process a Master Tune event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtMasterTune(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtMasterTune(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		this.sampler.masterTune(__event.semitones);
 		this.__setTrackOffset(__track, __track.offset + 1);
@@ -901,10 +901,10 @@ public class MLDPlayer
 	 * Process a Master Volume event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtMasterVolume(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtMasterVolume(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		this.sampler.masterVolume(__event.volume);
 		this.__setTrackOffset(__track, __track.offset + 1);
@@ -914,13 +914,13 @@ public class MLDPlayer
 	 * Process a Note event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtNote(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtNote(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
-		MLDChannel chan = this.channels[__event.channel];
-		MLDNote note = chan.notesOn[MLDPlayer.A4 + __event.key];
+		__MLDChannel__ chan = this.channels[__event.channel];
+		__MLDNote__ note = chan.notesOn[MLDPlayer.A4 + __event.key];
 		
 		// Common processing
 		this.__setTrackOffset(__track, __track.offset + 1);
@@ -950,7 +950,7 @@ public class MLDPlayer
 		// Get or create the note for this key
 		if (note == null)
 		{
-			note = new MLDNote();
+			note = new __MLDNote__();
 			note.channel = __event.channel;
 			note.key = __event.key;
 			chan.notesOn[MLDPlayer.A4 + __event.key] = note;
@@ -965,10 +965,10 @@ public class MLDPlayer
 	 * Process a Panning event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtPanPot(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtPanPot(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		this.sampler.panpot(__event.channel, __event.panpot);
 		this.__setTrackOffset(__track, __track.offset + 1);
@@ -978,10 +978,10 @@ public class MLDPlayer
 	 * Process a Pitch Bend event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtPitchBend(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtPitchBend(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		this.sampler.pitchBend(__event.channel, __event.semitones);
 		this.__setTrackOffset(__track, __track.offset + 1);
@@ -991,10 +991,10 @@ public class MLDPlayer
 	 * Process a Pitch Bend Range event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtPitchRange(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtPitchRange(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		this.sampler.pitchBendRange(__event.channel, __event.range);
 		this.__setTrackOffset(__track, __track.offset + 1);
@@ -1004,10 +1004,10 @@ public class MLDPlayer
 	 * Process a Program Change event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtProgramChange(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtProgramChange(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		this.sampler.programChange(__event.channel, __event.program);
 		this.__setTrackOffset(__track, __track.offset + 1);
@@ -1017,10 +1017,10 @@ public class MLDPlayer
 	 * Process a Timebase-Tempo event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtTimebaseTempo(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtTimebaseTempo(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		if (__event.timebase == -1)
 			return;
@@ -1034,10 +1034,10 @@ public class MLDPlayer
 	 * Process a Volume event.
 	 *
 	 * @param __track The track that the event belongs to.
-	 * @param __event {@link MLDEvent} object containing event data.
+	 * @param __event {@link __MLDEvent__} object containing event data.
 	 * @since 2025/05/05
 	 */
-	private void __evtVolume(MLDPlayerTrack __track, MLDEvent __event)
+	private void __evtVolume(__MLDPlayerTrack__ __track, __MLDEvent__ __event)
 	{
 		this.sampler.volume(__event.channel, __event.volume);
 		this.__setTrackOffset(__track, __track.offset + 1);
@@ -1050,7 +1050,7 @@ public class MLDPlayer
 	 * @param __ticks The amount of ticks pending to process.
 	 * @since 2025/05/05
 	 */
-	private void __process(MLDPlayerTrack __track, int __ticks)
+	private void __process(__MLDPlayerTrack__ __track, int __ticks)
 	{
 		// The track has finished
 		if (__track.finished)
@@ -1064,7 +1064,7 @@ public class MLDPlayer
 		// Process all events this tick
 		while (__track.ticks == 0)
 		{
-			MLDEvent event = __track.mld.get(__track.offset);
+			__MLDEvent__ event = __track.mld.get(__track.offset);
 			
 			// Process the event
 			switch (event.type)
@@ -1140,7 +1140,7 @@ public class MLDPlayer
 	 * @param __offset The event offset value.
 	 * @since 2025/05/05
 	 */
-	private void __setTrackOffset(MLDPlayerTrack __track, int __offset)
+	private void __setTrackOffset(__MLDPlayerTrack__ __track, int __offset)
 	{
 		// Configure the track
 		__track.offset = __offset;
@@ -1150,7 +1150,7 @@ public class MLDPlayer
 		if (!__track.finished || !this.evtPlayback)
 			return;
 		boolean finished = true;
-		for (MLDPlayerTrack other : this.tracks)
+		for (__MLDPlayerTrack__ other : this.tracks)
 			finished = finished && other.finished;
 		if (finished)
 			this.events.add(
@@ -1167,8 +1167,8 @@ public class MLDPlayer
 	private int __untilNote()
 	{
 		int ret = -1;
-		for (MLDChannel chan : this.channels)
-			for (MLDNote note : chan.notesOut)
+		for (__MLDChannel__ chan : this.channels)
+			for (__MLDNote__ note : chan.notesOut)
 			{
 				if (ret == -1 || note.gateTime < ret)
 					ret = note.gateTime;
@@ -1185,7 +1185,7 @@ public class MLDPlayer
 	private int __untilTrack()
 	{
 		int ret = -1;
-		for (MLDPlayerTrack track : this.tracks)
+		for (__MLDPlayerTrack__ track : this.tracks)
 		{
 			if (track.finished)
 				continue;

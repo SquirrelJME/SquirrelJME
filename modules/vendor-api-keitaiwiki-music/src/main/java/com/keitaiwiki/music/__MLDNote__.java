@@ -36,35 +36,23 @@ package com.keitaiwiki.music;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
- * {@link MLDTrack} state tracker.
+ * Represents a music note for MLD data.
  *
  * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
-class MLDPlayerTrack
-	implements BasicTrack
+class __MLDNote__
+	implements BasicNote
 {
-	/** Starting cuepoint. */
+	/** Output channel, */
 	@SquirrelJMEVendorApi
-	int cuepoint;
+	int channel;
 	
-	/** Track has no more events. */
+	/** Ticks before note expires. */
 	@SquirrelJMEVendorApi
-	boolean finished;
+	int gateTime;
 	
-	/** Index within sequencer. */
+	/** Key index. */
 	@SquirrelJMEVendorApi
-	int index;
-	
-	/** Event list. */
-	@SquirrelJMEVendorApi
-	MLDTrack mld;
-	
-	/** Current event offset. */
-	@SquirrelJMEVendorApi
-	int offset;
-	
-	/** Event ticks until next event. */
-	@SquirrelJMEVendorApi
-	int ticks;
+	int key;
 }

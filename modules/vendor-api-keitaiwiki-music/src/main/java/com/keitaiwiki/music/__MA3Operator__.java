@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Range;
  * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
-class MA3Operator
+class __MA3Operator__
 	implements BasicOperator
 {
 	/** Envelope attack rate register. */
@@ -97,7 +97,7 @@ class MA3Operator
 	
 	/** Encapsulating algorithm */
 	@SquirrelJMEVendorApi
-	final MA3Algorithm algorithm;
+	final __MA3Algorithm__ algorithm;
 	
 	/** u14 Amplitude modulation counter. */
 	@SquirrelJMEVendorApi
@@ -169,7 +169,7 @@ class MA3Operator
 	
 	/** Encapsulating note. */
 	@SquirrelJMEVendorApi
-	final MA3Note note;
+	final __MA3Note__ note;
 	
 	/** u10 Oscillator counter. */
 	@SquirrelJMEVendorApi
@@ -191,7 +191,7 @@ class MA3Operator
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	MA3Operator(@NotNull byte[] __bytes,
+	__MA3Operator__(@NotNull byte[] __bytes,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset)
 	{
 		// Not used for non-samples //
@@ -228,7 +228,7 @@ class MA3Operator
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	MA3Operator(@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+	__MA3Operator__(@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@NotNull byte[] __message)
 	{
 		// Not used for non-samples //
@@ -259,14 +259,14 @@ class MA3Operator
 
 	/**
 	 * Creates a new Operator with the same configuration from another
-	 * {@link MA3Operator} for playback of notes.
+	 * {@link __MA3Operator__} for playback of notes.
 	 *
-	 * @param __note The {@link MA3Note} containing playback data.
-	 * @param __o The {@link MA3Operator} to replicate the config from.
+	 * @param __note The {@link __MA3Note__} containing playback data.
+	 * @param __o The {@link __MA3Operator__} to replicate the config from.
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	MA3Operator(@NotNull MA3Note __note, @NotNull MA3Operator __o)
+	__MA3Operator__(@NotNull __MA3Note__ __note, @NotNull __MA3Operator__ __o)
 	{
 		
 		// OPL registers
@@ -312,7 +312,7 @@ class MA3Operator
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	MA3Operator(@NotNull byte[] __message,
+	__MA3Operator__(@NotNull byte[] __message,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		boolean __diff)
 	{
@@ -361,7 +361,7 @@ class MA3Operator
 	{
 		// These are only ever used for FM samples, so this failure condition
 		// should never occur
-		MA3Note note = this.note;
+		__MA3Note__ note = this.note;
 		if (note == null)
 			throw Debugging.oops();
 		
@@ -404,9 +404,9 @@ class MA3Operator
 		
 		// These are only ever used for FM samples, so this failure condition
 		// should never occur
-		MA3Algorithm algorithm = this.algorithm;
+		__MA3Algorithm__ algorithm = this.algorithm;
 		MA3Sampler instance = this.instance;
-		MA3Note note = this.note;
+		__MA3Note__ note = this.note;
 		if (algorithm == null || instance == null || note == null)
 			throw Debugging.oops();
 		

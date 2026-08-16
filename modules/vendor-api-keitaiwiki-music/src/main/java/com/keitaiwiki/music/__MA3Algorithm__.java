@@ -45,7 +45,7 @@ import org.jetbrains.annotations.Range;
  * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
-class MA3Algorithm
+class __MA3Algorithm__
 	implements BasicAlgorithm
 {
 	/** Key played for drum notes */
@@ -70,7 +70,7 @@ class MA3Algorithm
 
 	/** FM operator templates */
 	@SquirrelJMEVendorApi
-	final MA3Operator[] operators;
+	final __MA3Operator__[] operators;
 
 	/** Stereo balance */
 	@SquirrelJMEVendorApi
@@ -129,7 +129,7 @@ class MA3Algorithm
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	MA3Algorithm(@NotNull byte[] __bytes, boolean __isDrum)
+	__MA3Algorithm__(@NotNull byte[] __bytes, boolean __isDrum)
 		throws NullPointerException
 	{
 		if (__bytes == null)
@@ -142,9 +142,9 @@ class MA3Algorithm
 		this.drumKey = __bytes[2] & 127;
 
 		// operators
-		this.operators = new MA3Operator[this.alg < 2 ? 2 : 4];
+		this.operators = new __MA3Operator__[this.alg < 2 ? 2 : 4];
 		for (int x = 0; x < this.operators.length; x++)
-			this.operators[x] = new MA3Operator(__bytes, 3 + x * 7);
+			this.operators[x] = new __MA3Operator__(__bytes, 3 + x * 7);
 
 
 		this.freqBase = (float)(440 * ExtraMath.pow(2,
@@ -164,7 +164,7 @@ class MA3Algorithm
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	MA3Algorithm(@NotNull byte[] __message,
+	__MA3Algorithm__(@NotNull byte[] __message,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -188,7 +188,7 @@ class MA3Algorithm
 		bits = __message[__offset++] & 0xFF;
 		this.lfo = bits >> 6 & 3;
 		// pcm  = bits >> 1 & 1;
-		this.operators = new MA3Operator[] {new MA3Operator(__offset,
+		this.operators = new __MA3Operator__[] {new __MA3Operator__(__offset,
 			__message)};
 		//  5 for operator, 2 unknown (always zero?)
 		__offset += 7;
@@ -221,7 +221,7 @@ class MA3Algorithm
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	MA3Algorithm(
+	__MA3Algorithm__(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@NotNull byte[] __message)
 		throws IllegalArgumentException, MediaException, NullPointerException
@@ -245,11 +245,11 @@ class MA3Algorithm
 		if (this.alg > 1 && type == 0x01)
 			throw new MediaException("Operator count mismatch");
 
-		this.operators = new MA3Operator[this.alg < 2 ? 2 : 4];
+		this.operators = new __MA3Operator__[this.alg < 2 ? 2 : 4];
 		try
 		{
 			for (int x = 0; x < this.operators.length; x++, __offset += 7)
-				this.operators[x] = new MA3Operator(__message, __offset, true);
+				this.operators[x] = new __MA3Operator__(__message, __offset, true);
 		}
 		catch (ArrayIndexOutOfBoundsException e)
 		{
@@ -271,30 +271,30 @@ class MA3Algorithm
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	static MA3Algorithm[] from(@NotNull RomData __defs, boolean __isDrum,
+	static __MA3Algorithm__[] from(@NotNull RomData __defs, boolean __isDrum,
 		boolean __isWave)
 		throws NullPointerException
 	{
 		if (__defs == null)
 			throw new NullPointerException("NARG");
 
-		MA3Algorithm[] ret;
+		__MA3Algorithm__[] ret;
 
 		// FM presets
 		if (!__isWave)
 		{
-			ret = new MA3Algorithm[__defs.count];
+			ret = new __MA3Algorithm__[__defs.count];
 			for (int x = 0, n = __defs.count; x < n; x++)
-				ret[x] = new MA3Algorithm(__defs.bytes(x), __isDrum);
+				ret[x] = new __MA3Algorithm__(__defs.bytes(x), __isDrum);
 		}
 
 		// Wave drum presets
 		else
 		{
-			ret = new MA3Algorithm[61];
+			ret = new __MA3Algorithm__[61];
 			for (int x = 0, n = __defs.count; x < n; x++)
 			{
-				MA3Algorithm alg = new MA3Algorithm(__defs.bytes(x), 0);
+				__MA3Algorithm__ alg = new __MA3Algorithm__(__defs.bytes(x), 0);
 				ret[alg.drumKey - 24] = alg;
 			}
 		}
@@ -317,7 +317,7 @@ class MA3Algorithm
 			for (int x = 0; !this.isForever && x < this.operators.length; x++,
 				flags >>= 1)
 			{
-				MA3Operator op = this.operators[x];
+				__MA3Operator__ op = this.operators[x];
 				this.isForever = (flags & 1) != 0 && (op.xof ?
 					op.sr == 0 || op.dr == 0 && op.sr != 0 : op.rr == 0);
 			}

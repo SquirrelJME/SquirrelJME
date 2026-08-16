@@ -45,7 +45,7 @@ import org.jetbrains.annotations.Range;
  * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
-class MA3Channel
+class __MA3Channel__
 	implements BasicChannel
 {
 	/** Index in sampler */
@@ -58,11 +58,11 @@ class MA3Channel
 	
 	/** All notes currently on keys */
 	@SquirrelJMEVendorApi
-	final MA3Note[] notesOn;
+	final __MA3Note__[] notesOn;
 	
 	/** Notes to be rendered. */
 	@SquirrelJMEVendorApi
-	final ArrayList<MA3Note> notesOut;
+	final ArrayList<__MA3Note__> notesOut;
 	
 	/** Pitch bend base ratio */
 	@SquirrelJMEVendorApi
@@ -121,13 +121,13 @@ class MA3Channel
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	MA3Channel(@NotNull MA3Sampler __instance,
+	__MA3Channel__(@NotNull MA3Sampler __instance,
 		@Range(from = 0, to = MA3Sampler.NUM_CHANNELS) int __index)
 	{
 		this.index = __index;
 		this.instance = __instance;
 		//  C-2 .. G8
-		this.notesOn = new MA3Note[128];
+		this.notesOn = new __MA3Note__[128];
 		this.notesOut = new ArrayList<>();
 	}
 	
@@ -141,7 +141,7 @@ class MA3Channel
 	void onFrequency()
 	{
 		float bend = this.instance.bendOut * this.bendOut;
-		for (MA3Note note : this.notesOut)
+		for (__MA3Note__ note : this.notesOut)
 			note.onFrequency(this.bendOut);
 	}
 	
@@ -158,7 +158,7 @@ class MA3Channel
 		
 		this.volLeftOut = instance.volOut * this.volLeft;
 		this.volRightOut = instance.volOut * this.volRight;
-		for (MA3Note note : this.notesOut)
+		for (__MA3Note__ note : this.notesOut)
 			note.onVolume();
 	}
 	
@@ -170,7 +170,7 @@ class MA3Channel
 	@SquirrelJMEVendorApi
 	void render()
 	{
-		ArrayList<MA3Note> _notesOut = this.notesOut;
+		ArrayList<__MA3Note__> _notesOut = this.notesOut;
 		for (int x = 0; x < _notesOut.size(); x++)
 		{
 			if (_notesOut.get(x).render())
@@ -201,7 +201,7 @@ class MA3Channel
 		
 		// Stop playing all notes (not calling note.onFrequency())
 		Arrays.fill(this.notesOn, null);
-		for (MA3Note note : this.notesOut)
+		for (__MA3Note__ note : this.notesOut)
 			note.stop();
 	}
 }

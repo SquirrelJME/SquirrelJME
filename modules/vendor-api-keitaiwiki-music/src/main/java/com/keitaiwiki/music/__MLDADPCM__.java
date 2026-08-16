@@ -34,22 +34,40 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import java.util.ArrayList;
 
 /**
- * Represents a playback channel for MLD data.
+ * MLD ADPCM sample data class
  *
  * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
-class MLDChannel
-	implements BasicChannel
+class __MLDADPCM__
+	implements BasicSampleData
 {
-	/** All notes currently on keys. */
+	/** Data chunk containing the raw ADPCM data. */
 	@SquirrelJMEVendorApi
-	MLDNote[] notesOn;
-	
-	/** All notes that are generating output. */
+	byte[] data;
+
+	/**
+	 * Bit depth of data, can be either 4-bit (standard ADPCM affair), or
+	 * 2-bit, which was never found in use, and is supposedly for voice data.
+	 */
 	@SquirrelJMEVendorApi
-	ArrayList<MLDNote> notesOut;
+	int bitDepth;
+
+	/** Are the channels interleaved? (never found in use) */
+	@SquirrelJMEVendorApi
+	boolean isInterleaved;
+
+	/** Must be 1 for mono or 2 for stereo, other values are unknown. */
+	@SquirrelJMEVendorApi
+	int numChannels;
+
+	/**
+	 * Data sample rate, it's read as an unsigned byte, and multiplied by 1000
+	 * before being assigned into this variable. Usually it's either of 8000Hz,
+	 * 16000Hz, or 32000Hz. No other sample rates have been found in use.
+	 */
+	@SquirrelJMEVendorApi
+	int sampleRate;
 }

@@ -34,54 +34,37 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import java.util.ArrayList;
 
 /**
- * Sine Wave Output channel
+ * {@link __MLDTrack__} state tracker.
  *
  * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
-class SineChannel
-	implements BasicChannel
+class __MLDPlayerTrack__
+	implements BasicTrack
 {
-	/** Pitch bend base ratio. */
+	/** Starting cuepoint. */
 	@SquirrelJMEVendorApi
-	float bendBase;
+	int cuepoint;
 	
-	/** Effective channel frequency ratio. */
+	/** Track has no more events. */
 	@SquirrelJMEVendorApi
-	float bendOut;
+	boolean finished;
 	
-	/** Pitch bend magnitude. */
-	@SquirrelJMEVendorApi
-	float bendRange;
-	
-	/** Index in sampler. */
+	/** Index within sequencer. */
 	@SquirrelJMEVendorApi
 	int index;
 	
-	/** All notes currently on keys. */
+	/** Event list. */
 	@SquirrelJMEVendorApi
-	SineNote[] notesOn;
+	__MLDTrack__ mld;
 	
-	/** All notes that are generating output. */
+	/** Current event offset. */
 	@SquirrelJMEVendorApi
-	ArrayList<SineNote> notesOut;
+	int offset;
 	
-	/** Left stereo amplitude. */
+	/** Event ticks until next event. */
 	@SquirrelJMEVendorApi
-	float volLeft;
-	
-	/** Channel output amplitude. */
-	@SquirrelJMEVendorApi
-	float volLevel;
-	
-	/** Stereo level. */
-	@SquirrelJMEVendorApi
-	float volPanning;
-	
-	/** Right stereo amplitude. */
-	@SquirrelJMEVendorApi
-	float volRight;
+	int ticks;
 }

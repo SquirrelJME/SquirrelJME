@@ -189,37 +189,37 @@ public class MA3SamplerProvider
 	
 	/** Drum algorithms for Yamaha's MA-2. */
 	@SquirrelJMEVendorApi
-	static final MA3Algorithm[] MA2_DRUMS = MA3Algorithm.from(
+	static final __MA3Algorithm__[] MA2_DRUMS = __MA3Algorithm__.from(
 		RomData.MA2_DRUMS, true, false);
 	
 	/** Instrument algorithms for Yamaha's MA-2. */
 	@SquirrelJMEVendorApi
-	static final MA3Algorithm[] MA2_INSTRUMENTS = MA3Algorithm.from(
+	static final __MA3Algorithm__[] MA2_INSTRUMENTS = __MA3Algorithm__.from(
 		RomData.MA2_INSTRUMENTS, false, false);
 	
 	/** 2-Operator FM drum algorithms for Yamaha's MA-3. */
 	@SquirrelJMEVendorApi
-	static final MA3Algorithm[] MA3_DRUMS_2OP = MA3Algorithm.from(
+	static final __MA3Algorithm__[] MA3_DRUMS_2OP = __MA3Algorithm__.from(
 		RomData.MA3_DRUMS_2OP, true, false);
 	
 	/** 4-Operator FM drum algorithms for Yamaha's MA-3. */
 	@SquirrelJMEVendorApi
-	static final MA3Algorithm[] MA3_DRUMS_4OP = MA3Algorithm.from(
+	static final __MA3Algorithm__[] MA3_DRUMS_4OP = __MA3Algorithm__.from(
 		RomData.MA3_DRUMS_4OP, true, false);
 	
 	/** Wave drum algorithms for Yamaha's MA-3. */
 	@SquirrelJMEVendorApi
-	static final MA3Algorithm[] MA3_DRUMS_WAVE = MA3Algorithm.from(
+	static final __MA3Algorithm__[] MA3_DRUMS_WAVE = __MA3Algorithm__.from(
 		RomData.MA3_DRUMS_WAVE, true, true);
 	
 	/** 2-Operator FM instrument algorithms for Yamaha's MA-3. */
 	@SquirrelJMEVendorApi
-	static final MA3Algorithm[] MA3_INSTRUMENTS_2OP = MA3Algorithm.from(
+	static final __MA3Algorithm__[] MA3_INSTRUMENTS_2OP = __MA3Algorithm__.from(
 		RomData.MA3_INSTRUMENTS_2OP, false, false);
 	
 	/** 4-Operator FM instrument algorithms for Yamaha's MA-3. */
 	@SquirrelJMEVendorApi
-	static final MA3Algorithm[] MA3_INSTRUMENTS_4OP = MA3Algorithm.from(
+	static final __MA3Algorithm__[] MA3_INSTRUMENTS_4OP = __MA3Algorithm__.from(
 		RomData.MA3_INSTRUMENTS_4OP, false, false);
 	
 	/** Wave synthesis ROM for Yamaha's MA-3. */
@@ -265,15 +265,15 @@ public class MA3SamplerProvider
 	
 	/** Array of FM drum algorithms. */
 	@SquirrelJMEVendorApi
-	MA3Algorithm[] algDrums;
+	__MA3Algorithm__[] algDrums;
 	
 	/** Array of FM instrument algorithms. */
 	@SquirrelJMEVendorApi
-	MA3Algorithm[] algInstruments;
+	__MA3Algorithm__[] algInstruments;
 	
 	/** Array of wave drum algorithms */
 	@SquirrelJMEVendorApi
-	MA3Algorithm[] algWaveDrums;
+	__MA3Algorithm__[] algWaveDrums;
 	
 	/** FM drum algorithm type. */
 	@SquirrelJMEVendorApi

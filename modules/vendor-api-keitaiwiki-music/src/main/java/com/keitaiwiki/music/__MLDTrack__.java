@@ -34,53 +34,23 @@
 package com.keitaiwiki.music;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import java.util.ArrayList;
 
 /**
- * Sine Wave Music note
+ * List of {@link __MLDEvent__} objects.
  *
  * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
-class SineNote
-	implements BasicNote
+class __MLDTrack__
+	extends ArrayList<__MLDEvent__>
+	implements BasicTrack
 {
-	/** Amount to increment phase per frame. */
+	/** Initial event offset on reset. */
 	@SquirrelJMEVendorApi
-	float advance;
+	int cue;
 	
-	/** Encapsulating channel. */
+	/** Channel index base. */
 	@SquirrelJMEVendorApi
-	SineChannel channel;
-	
-	/** Base frequency. */
-	@SquirrelJMEVendorApi
-	float freqBase;
-	
-	/** Note is currently active on its key. */
-	@SquirrelJMEVendorApi
-	boolean playing;
-	
-	/** Base volume. */
-	@SquirrelJMEVendorApi
-	float volBase;
-	
-	/** Current left stereo volume. */
-	@SquirrelJMEVendorApi
-	float volLeftLevel;
-	
-	/** Target left stereo volume. */
-	@SquirrelJMEVendorApi
-	float volLeftTarget;
-	
-	/** Current right stereo volume. */
-	@SquirrelJMEVendorApi
-	float volRightLevel;
-	
-	/** Target right stereo volume. */
-	@SquirrelJMEVendorApi
-	float volRightTarget;
-	
-	/** Position in wave period. */
-	@SquirrelJMEVendorApi
-	float wavPhase;
+	int index;
 }

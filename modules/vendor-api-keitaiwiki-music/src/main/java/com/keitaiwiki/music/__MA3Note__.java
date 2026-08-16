@@ -36,7 +36,6 @@ package com.keitaiwiki.music;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 /**
  * Represents a Yamaha MA-3 Audio source.
@@ -44,16 +43,16 @@ import org.jetbrains.annotations.Range;
  * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
-class MA3Note
+class __MA3Note__
 	implements BasicNote
 {
 	/** FM operator algorithm. */
 	@SquirrelJMEVendorApi
-	final MA3Algorithm algorithm;
+	final __MA3Algorithm__ algorithm;
 	
 	/** Encapsulating channel. */
 	@SquirrelJMEVendorApi
-	final MA3Channel channel;
+	final __MA3Channel__ channel;
 	
 	/** Encapsulating instance. */
 	@SquirrelJMEVendorApi
@@ -61,7 +60,7 @@ class MA3Note
 	
 	/** OPL operators. */
 	@SquirrelJMEVendorApi
-	final MA3Operator[] operators;
+	final __MA3Operator__[] operators;
 	
 	/** Current output sample. */
 	@SquirrelJMEVendorApi
@@ -123,15 +122,15 @@ class MA3Note
 	 * Creates a new audio source for the specified channel, key index and
 	 * FM algorithm.
 	 *
-	 * @param __channel The {@link MA3Channel} to use.
+	 * @param __channel The {@link __MA3Channel__} to use.
 	 * @param __key The key index within the specified channel.
-	 * @param __algorithm The {@link MA3Algorithm} for audio generation.
+	 * @param __algorithm The {@link __MA3Algorithm__} for audio generation.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	MA3Note(@NotNull MA3Channel __channel, int __key,
-		@NotNull MA3Algorithm __algorithm)
+	__MA3Note__(@NotNull __MA3Channel__ __channel, int __key,
+		@NotNull __MA3Algorithm__ __algorithm)
 	{
 		if (__channel == null || __algorithm == null)
 			throw new NullPointerException("NARG");
@@ -143,13 +142,13 @@ class MA3Note
 		this.channel = __channel;
 		this.instance = __channel.instance;
 		this.key = __key;
-		this.operators = new MA3Operator[__algorithm.operators.length];
+		this.operators = new __MA3Operator__[__algorithm.operators.length];
 		this.playing = true;
 		this.sample = 0.0f;
 		
 		// Operators
 		for (int x = 0; x < this.operators.length; x++)
-			this.operators[x] = new MA3Operator(this,
+			this.operators[x] = new __MA3Operator__(this,
 				__algorithm.operators[x]);
 	}
 
@@ -174,7 +173,7 @@ class MA3Note
 			return;
 		
 		// Regular processing: switch all operators to release stage
-		for (MA3Operator op : this.operators)
+		for (__MA3Operator__ op : this.operators)
 		{
 			if (op.envStage == MA3SamplerProvider.ENV_DONE || op.xof)
 				continue;
@@ -193,7 +192,7 @@ class MA3Note
 	{
 		this.envDone = true;
 		
-		MA3Operator[] operators = this.operators;
+		__MA3Operator__[] operators = this.operators;
 		
 		// Test all relevant operators
 		int flags = this.algorithm.isWave ? 1 :
@@ -233,7 +232,7 @@ class MA3Note
 			freq * (1 << 20 - this.block) * MA3SamplerProvider.MAGIC_F)));
 		
 		// Notify operators
-		for (MA3Operator op : this.operators)
+		for (__MA3Operator__ op : this.operators)
 			op.onFrequency();
 	}
 
@@ -294,7 +293,7 @@ class MA3Note
 		this.envDone = true;
 		this.playing = false;
 		this.volBase = 0.0f;
-		for (MA3Operator op : this.operators)
+		for (__MA3Operator__ op : this.operators)
 		{
 			op.envLevel = 511;
 			op.envStage = MA3SamplerProvider.ENV_DONE;
@@ -325,7 +324,7 @@ class MA3Note
 	 */
 	private float __sampleFM()
 	{
-		MA3Operator[] operators = this.operators;
+		__MA3Operator__[] operators = this.operators;
 		
 		int out1, out2, out3, out4;
 		int ret = 0;

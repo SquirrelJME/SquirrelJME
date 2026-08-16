@@ -37,20 +37,51 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 
 /**
- * List of {@link MLDEvent} objects.
+ * Sine Wave Output channel
  *
  * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
-class MLDTrack
-	extends ArrayList<MLDEvent>
-	implements BasicTrack
+class __SineChannel__
+	implements BasicChannel
 {
-	/** Initial event offset on reset. */
+	/** Pitch bend base ratio. */
 	@SquirrelJMEVendorApi
-	int cue;
+	float bendBase;
 	
-	/** Channel index base. */
+	/** Effective channel frequency ratio. */
+	@SquirrelJMEVendorApi
+	float bendOut;
+	
+	/** Pitch bend magnitude. */
+	@SquirrelJMEVendorApi
+	float bendRange;
+	
+	/** Index in sampler. */
 	@SquirrelJMEVendorApi
 	int index;
+	
+	/** All notes currently on keys. */
+	@SquirrelJMEVendorApi
+	__SineNote__[] notesOn;
+	
+	/** All notes that are generating output. */
+	@SquirrelJMEVendorApi
+	ArrayList<__SineNote__> notesOut;
+	
+	/** Left stereo amplitude. */
+	@SquirrelJMEVendorApi
+	float volLeft;
+	
+	/** Channel output amplitude. */
+	@SquirrelJMEVendorApi
+	float volLevel;
+	
+	/** Stereo level. */
+	@SquirrelJMEVendorApi
+	float volPanning;
+	
+	/** Right stereo amplitude. */
+	@SquirrelJMEVendorApi
+	float volRight;
 }

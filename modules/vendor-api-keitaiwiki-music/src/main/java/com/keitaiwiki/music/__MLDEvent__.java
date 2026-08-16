@@ -41,7 +41,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2025/05/05
  */
 @SquirrelJMEVendorApi
-class MLDEvent
+class __MLDEvent__
 	implements BasicEvent
 {
 	/** Program Bank to set with this event, if it is a Bank Change event. */
