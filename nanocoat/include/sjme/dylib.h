@@ -44,6 +44,18 @@ extern "C" {
 	/** Symbol is exported through a library. */
 	#define sjme_attrExport
 #endif
+	
+#if defined(SJME_CONFIG_HAS_MSVC)
+	/** Select any symbol (weakly) that exists, if possible. */
+	#define sjme_attrSelectAnyWeak __declspec(selectany)
+#elif defined(SJME_CONFIG_HAS_GCC) || \
+	defined(SJME_CONFIG_HAS_CLANG)
+	/** Select any symbol (weakly) that exists, if possible. */
+	#define sjme_attrSelectAnyWeak __attribute__((weak))
+#else
+	/** Select any symbol (weakly) that exists, if possible. */
+	#define sjme_attrSelectAnyWeak
+#endif
 
 #if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Symbol is hidden in a library. */
