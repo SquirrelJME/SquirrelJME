@@ -314,77 +314,72 @@ function(squirreljme_string_join sjGlue sjOut sjList)
 	endif()
 endfunction()
 
-function(squirreljme_target_link_options target scope)
+function(squirreljme_target_link_options target origScope origOptions)
 	# This is available since CMake 3.13
 	if(squirreljme_bp_version_3_13)
 		target_link_options(${ARGV})
 
-	# Otherwise it must be manually added in
+	# Otherwise, it must be manually added in...
 	else()
-		# The target we are interested in...
-		set(ltoArgs "${ARGV}")
-		list(GET ltoArgs 0 tloTarget)
+		# Note the documentation states that:
+		# > Added in version 3.13: LINK_OPTIONS target property and
+		# > target_link_options() command. For earlier versions of CMake,
+		# > use LINK_FLAGS property instead.
+		# Then LINK_FLAGS states that:
+		# > Additional flags to use when linking this target if it is a shared
+		# > library, module library, or an executable. Static libraries need to
+		# > use STATIC_LIBRARY_OPTIONS or STATIC_LIBRARY_FLAGS properties.
 
-		# Is there a before?
-		list(GET ltoArgs 1 tloMaybeBefore)
-		if(tloMaybeBefore STREQUAL "BEFORE")
-			# Mark as before
-			set(tloBefore TRUE)
-
-			# Start pivot point
-			set(tloPivot 2)
+		# origScope could be BEFORE in which case, options are shifted by an
+		# extra set
+		set(options "${ARGV}")
+		list(REMOVE_AT options 0)
+		if ("${origScope}" STREQUAL "BEFORE")
+			list(REMOVE_AT options 0)
+			set(isBefore TRUE)
 		else()
-			# Mark as not before
-			set(tloBefore No)
-
-			# Start pivot point
-			set(tloPivot 1)
+			set(isBefore FALSE)
 		endif()
 
-		# Handle the remaining number of items
-		set(tloAt "${tloPivot}")
-		set(tloFlags)
-		while(tloAt LESS ARGC)
-			# Determine indexes
-			math(EXPR tloAtI "${tloAt} + 0")
-			math(EXPR tloAtL "${tloAt} + 1")
+		# By default, just be in the "UNKNOWN" mode for now
+		set(mode "UNKNOWN")
 
-			# Extract sub-parameters
-			list(GET ltoArgs "${tloAtI}" tloInstance)
-			list(GET ltoArgs "${tloAtL}" tloFlag)
+		# Keep looping while all options are drained
+		while(NOT "${options}" STREQUAL "")
+			# Get the current option and cut down
+			list(GET options 0 option)
+			list(REMOVE_AT options 0)
 
-			# Add library, ignore the instance for it
-			list(APPEND tloFlags "${tloFlag}")
+			# Is this a mode change?
+			if("${option}" STREQUAL "PUBLIC" OR
+				"${option}" STREQUAL "PRIVATE" OR
+				"${option}" STREQUAL "INTERFACE")
+				# Set the new mode
+				set(mode "${option}")
 
-			# Move indexes up for the next items
-			math(EXPR tloAt "${tloAt} + 2")
-		endwhile()
-
-		# Join options together
-		squirreljme_string_join(" " tloStrOpt "${tloFlags}")
-
-		# What should be used for link flags?
-		if(NOT "$<CONFIG>" STREQUAL "")
-			set(tloLinkFlagsName "LINK_FLAGS_$<CONFIG>")
-		else()
-			set(tloLinkFlagsName "LINK_FLAGS")
-		endif()
-
-		# Get old link options to add in the list...
-		get_target_property(tloOldLinkOpt ${tloTarget}
-			LINK_FLAGS)
-		if(tloOldLinkOpt)
-			if(tloBefore)
-				set_target_properties(${tloTarget} PROPERTIES
-					${tloLinkFlagsName} "${tloStrOpt} ${tloOldLinkOpt}")
-			else()
-				set_target_properties(${tloTarget} PROPERTIES
-					${tloLinkFlagsName} "${tloOldLinkOpt} ${tloStrOpt}")
+				# Not something to actually parse
+				continue()
 			endif()
-		else()
-			set_target_properties(${tloTarget} PROPERTIES
-				${tloLinkFlagsName} "${tloStrOpt}")
-		endif()
+
+			# Get the old link flags
+			get_target_property(oldFlags ${target}
+				LINK_FLAGS)
+			if("${oldFlags}" STREQUAL "" OR
+				"${oldFlags}" STREQUAL "oldFlags-NOTFOUND")
+				set(oldFlags "")
+			endif()
+
+			# Add before or after?
+			if(isBefore)
+				set(newFlags "${option} ${oldFlags}")
+			else()
+				set(newFlags "${oldFlags} ${option}")
+			endif()
+
+			# Set new link flags
+			set_target_properties(${target} PROPERTIES
+				LINK_FLAGS "${newFlags}")
+		endwhile()
 	endif()
 endfunction()
 
@@ -399,20 +394,19 @@ function(squirreljme_target_link_directories target scope)
 	if(squirreljme_bp_version_3_13)
 		target_link_directories(${target} ${scope} ${directories})
 	else()
-		# MSVC
-		if(MSVC OR
-			CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
-			CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-			foreach(directory IN ITEMS ${directories})
+		foreach(directory IN ITEMS ${directories})
+			# MSVC
+			if(MSVC OR
+				CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
+				CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 				squirreljme_target_link_options(${target} ${scope}
 					"/LIBPATH:${directory}")
-			endforeach()
-		# Assume POSIX
-		else()
-			foreach(directory IN ITEMS ${directories})
+
+			# Assume POSIX Otherwise
+			else()
 				squirreljme_target_link_options(${target} ${scope}
 					"-L${directory}")
-			endforeach()
-		endif()
+			endif()
+		endforeach()
 	endif()
 endfunction()
