@@ -18,6 +18,7 @@ endif()
 # Specify NanoCoat directory for includes
 set(SQUIRRELJME_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
 set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${SQUIRRELJME_ROOT_DIR}/nanocoat")
+set(SQUIRRELJME_NANOCOAT_BINARY_DIR "${CMAKE_BINARY_DIR}/nanocoat")
 include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake"
 	NO_POLICY_SCOPE)
 
@@ -189,7 +190,6 @@ squirreljme_env_forward(forwardedEnv)
 message("Forwarded options: ${forwardedEnv}")
 
 # Setup NanoCoat Project
-set(SQUIRRELJME_NANOCOAT_BINARY_DIR "${CMAKE_BINARY_DIR}/nanocoat")
 file(MAKE_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
 ExternalProject_Add(SquirrelJME
 	BINARY_DIR "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
