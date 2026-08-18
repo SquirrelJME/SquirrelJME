@@ -22,7 +22,7 @@ systemname = "Java ME"
 # ID of the primary platform the core uses.
 # Use other core info files as guidance if possible.
 # If blank or not used, a standard core platform will be used (optional):
-systemid = "J2ME"
+systemid = "j2me"
 
 # Name of the database that the core supports (optional):
 database = "J2ME"
