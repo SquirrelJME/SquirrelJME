@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.constants.StandardBucketType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,6 +76,7 @@ public class MidletMain
 		new __ActiveTask__();
 	
 	/** The suites which are mapped to the list. */
+	@KeepWhenCompacting
 	final ArrayList<Application> _listedSuites =
 		new ArrayList<>();
 	
@@ -89,6 +91,7 @@ public class MidletMain
 	private volatile String _autoLaunch;
 	
 	/** Lock for loading. */
+	@KeepWhenCompacting
 	volatile boolean _refreshLock;
 	
 	{

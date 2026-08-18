@@ -1,0 +1,8 @@
+cc.squirreljme.runtime.media.midi.MidiPlayerProvider
+cc.squirreljme.runtime.media.wav.WavPlayerProvider
+
+# TODO: Move this to Nokia vendor API and make optional
+cc.squirreljme.runtime.media.nokia.NokiaOTAPlayerProvider
+
+# TODO: Move this to Ericsson vendor API and make optional
+cc.squirreljme.runtime.media.ericsson.EricssonMelodyPlayerProvider

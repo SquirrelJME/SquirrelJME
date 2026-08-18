@@ -20,11 +20,11 @@ sjme_errorCode sjme_scritchui_core_menuBarNew(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Use generic function. */
-	return sjme_scritchui_coreGeneric_commonNew(inState,
+	return inState->intern->objectNew(inState,
 		(sjme_scritchui_uiCommon*)outMenuBar,
 		sizeof(**outMenuBar),
 		SJME_SCRITCHUI_TYPE_MENU_BAR,
-		(sjme_scritchui_coreGeneric_commonNewImplFunc)
+		(sjme_scritchui_core_intern_objectNewImplFunc)
 			inState->impl->menuBarNew,
 		NULL);
 }
@@ -69,9 +69,12 @@ sjme_errorCode sjme_scritchui_core_menuInsert(
 		return SJME_ERROR_HAS_PARENT;
 	
 	/* Out of bounds? */
+	/* Treat maximum int as the end of the menu. */
 	childList = parentMenu->children;
 	n = parentMenu->numChildren;
-	if (atIndex > n)
+	if (atIndex == INT32_MAX)
+		atIndex = n;
+	else if (atIndex > n)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Make sure child is not already in here. */
@@ -148,11 +151,11 @@ sjme_errorCode sjme_scritchui_core_menuItemNew(
 	init.opaqueId = ++inState->nextMenuItemId;
 		
 	/* Use generic function. */
-	return sjme_scritchui_coreGeneric_commonNew(inState,
+	return inState->intern->objectNew(inState,
 		(sjme_scritchui_uiCommon*)outMenuItem,
 		sizeof(**outMenuItem),
 		SJME_SCRITCHUI_TYPE_MENU_ITEM,
-		(sjme_scritchui_coreGeneric_commonNewImplFunc)
+		(sjme_scritchui_core_intern_objectNewImplFunc)
 			inState->impl->menuItemNew,
 		&init);
 }
@@ -165,11 +168,11 @@ sjme_errorCode sjme_scritchui_core_menuNew(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Use generic function. */
-	return sjme_scritchui_coreGeneric_commonNew(inState,
+	return inState->intern->objectNew(inState,
 		(sjme_scritchui_uiCommon*)outMenu,
 		sizeof(**outMenu),
 		SJME_SCRITCHUI_TYPE_MENU,
-		(sjme_scritchui_coreGeneric_commonNewImplFunc)
+		(sjme_scritchui_core_intern_objectNewImplFunc)
 			inState->impl->menuNew,
 		NULL);
 }

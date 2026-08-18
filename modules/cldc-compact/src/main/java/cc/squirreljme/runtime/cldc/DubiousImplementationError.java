@@ -26,6 +26,15 @@ public class DubiousImplementationError
 	extends Error
 {
 	/**
+	 * Base initialization.
+	 *
+	 * @since 2026/04/11
+	 */
+	public DubiousImplementationError()
+	{
+	}
+	
+	/**
 	 * Initializes the error with the given message and cause.
 	 *
 	 * @param __message The message to use.

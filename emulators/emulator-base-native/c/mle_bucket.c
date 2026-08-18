@@ -10,6 +10,7 @@
 #include "squirreljme.h"
 
 #define FORWARD_CLASS "cc/squirreljme/jvm/mle/BucketShelf"
+#define FORWARD_CLASS_NAME Bucket
 #define FORWARD_NATIVE_CLASS "cc/squirreljme/emulator/EmulatedBucketShelf"
 
 #define FORWARD_DESC_delete \

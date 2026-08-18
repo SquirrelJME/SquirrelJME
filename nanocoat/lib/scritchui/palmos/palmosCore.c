@@ -34,10 +34,12 @@ static const sjme_scritchui_implFunctions sjme_scritchui_palmosFunctions =
 	sjme_sm(.containerAdd, NULL),
 	sjme_sm(.containerRemove, NULL),
 	sjme_sm(.containerSetBounds, NULL),
+	sjme_sm(.fontScanSystem, NULL),
 	sjme_sm(.hardwareGraphics, NULL),
 	sjme_sm(.labelSetString, NULL),
 	sjme_sm(.lafDpiProject, NULL),
 	sjme_sm(.lafElementColor, NULL),
+	sjme_sm(.lafMetric, NULL),
 	sjme_sm(.listNew, NULL),
 	sjme_sm(.loopExecute, NULL),
 	sjme_sm(.loopExecuteLater, NULL),
@@ -61,7 +63,9 @@ static const sjme_scritchui_implFunctions sjme_scritchui_palmosFunctions =
 	sjme_sm(.windowGetFrame, NULL),
 	sjme_sm(.windowNew, NULL),
 	sjme_sm(.windowSetCloseListener, NULL),
+	sjme_sm(.windowSetFlags, NULL),
 	sjme_sm(.windowSetMenuBar, NULL),
+	sjme_sm(.windowSetState, NULL),
 	sjme_sm(.windowSetVisible, NULL),
 };
 

@@ -10,7 +10,7 @@
 # To Emily...
 message("*****************************************************************")
 message("> Dedicated to _Emily_ (1998-2020), the developer               <")
-message("> of [Mu](https://github.com/meepingsnesroms/Mu), I valued our  <")
+message("> of [Mu](https://github.com/SquirrelJME/Mu), I valued our      <")
 message("> friendship greatly and all the time we would spend together   <")
 message("> nerding about technical stuff, programming, and random topics.<")
 message("> I do miss when we would play SNES and NeoGeo games for hours, <")

@@ -46,10 +46,10 @@ sjme_jint sjme_nvm_instance_calcIdentityHash(
 	
 	/* Then based on the pointer. */
 #if defined(SJME_CONFIG_HAS_POINTER64)
-	return base + (((sjme_intPointer)pointer) ^
-		((((sjme_intPointer)pointer)) >> 31));
+	return (sjme_jint)(base + (((sjme_intPointer)pointer) ^
+		((((sjme_intPointer)pointer)) >> 31)));
 #else
-	return base + (sjme_jint)((sjme_intPointer)pointer);
+	return (sjme_jint)(base + (sjme_jint)((sjme_intPointer)pointer));
 #endif
 }
 
@@ -82,7 +82,7 @@ sjme_errorCode sjme_nvm_instance_countBalanceR(
 			/* Debug. */
 			sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
 				"GC LV~0: %p (%s) %d == %d",
-				oldV, 
+				(void*)oldV,
 				(oldV->isClass != NULL ?
 					sjme_charSeq_tempUtf(oldV->isClass->binaryName) :
 					"?"),
@@ -134,7 +134,7 @@ sjme_errorCode sjme_nvm_instance_countDownR(
 	/* Debug. */
 	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
 		"GC DN-1: %p (%s) %d -> %d",
-		object, 
+		(void*)object,
 		(object->isClass != NULL ?
 			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),
 		sjme_atomic_sjme_jint_get(&weak->count) + 1,
@@ -174,7 +174,7 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 	/* Debug. */
 	sjme_messageR(SJME_DEBUG_FILE_LINE_COPY, SJME_JNI_FALSE,
 		"GC UP+1: %p (%s) %d -> %d",
-		object,
+		(void*)object,
 		(object->isClass != NULL ?
 			sjme_charSeq_tempUtf(object->isClass->binaryName) : "?"),
 		sjme_atomic_sjme_jint_get(&weak->count) - 1,
@@ -210,7 +210,7 @@ sjme_nvm_rawFieldValue* sjme_nvm_instance_fieldAccessor(
 
 		/* Values is based on the static chunk. */
 		sjme_message("STATIC %p->%p + %d",
-			instance, ((sjme_jclass)instance)->staticChunk,
+			(void*)instance, ((sjme_jclass)instance)->staticChunk,
 			field->pointerOffset);
 		return SJME_POINTER_OFFSET(((sjme_jclass)instance)->staticChunk,
 			field->pointerOffset);
@@ -226,7 +226,7 @@ sjme_nvm_rawFieldValue* sjme_nvm_instance_fieldAccessor(
 		/* Value is based on the object itself, from the basis of */
 		/* its allocation size. */
 		sjme_message("INSTANCE %p + %d",
-			instance, field->pointerOffset);
+			(void*)instance, field->pointerOffset);
 		return SJME_POINTER_OFFSET((sjme_pointer)instance,
 			field->pointerOffset);
 	}

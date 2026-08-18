@@ -25,7 +25,7 @@ macro(squirreljme_include_nanocoat what)
 		NOT "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}" STREQUAL "")
 		include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/${what}"
 			NO_POLICY_SCOPE)
-	elseif(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.17" AND
+	elseif(squirreljme_bp_version_3_17 AND
 		NOT "${CMAKE_CURRENT_FUNCTION_LIST_DIR}" STREQUAL "")
 		include("${CMAKE_CURRENT_FUNCTION_LIST_DIR}/${what}"
 			NO_POLICY_SCOPE)

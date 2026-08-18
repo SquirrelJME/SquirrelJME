@@ -11,6 +11,8 @@ package cc.squirreljme.jvm.mle.exceptions;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Range;
 
 /**
  * This is thrown when there was an error made during a MLE call.
@@ -21,8 +23,9 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 public class MLECallError
 	extends VirtualMachineError
 {
-	/** the distinctive error code. */
+	/** The distinctive {@link MLECallErrorCode}. */
 	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = MLECallErrorCode.class)
 	public final int distinction;
 	
 	/**
@@ -88,7 +91,8 @@ public class MLECallError
 	 * @since 2023/02/19
 	 */
 	@SquirrelJMEVendorApi
-	public MLECallError(int __dist)
+	public MLECallError(
+		@MagicConstant(valuesFromClass = MLECallErrorCode.class) int __dist)
 	{
 		this.distinction = __dist;
 	}
@@ -101,7 +105,8 @@ public class MLECallError
 	 * @since 2023/02/19
 	 */
 	@SquirrelJMEVendorApi
-	public MLECallError(String __m, int __dist)
+	public MLECallError(String __m,
+		@MagicConstant(valuesFromClass = MLECallErrorCode.class) int __dist)
 	{
 		super(__m);
 		
@@ -117,7 +122,8 @@ public class MLECallError
 	 * @since 2023/02/19
 	 */
 	@SquirrelJMEVendorApi
-	public MLECallError(String __m, Throwable __t, int __dist)
+	public MLECallError(String __m, Throwable __t,
+		@MagicConstant(valuesFromClass = MLECallErrorCode.class) int __dist)
 	{
 		super(__m);
 		
@@ -134,7 +140,8 @@ public class MLECallError
 	 * @since 2023/02/19
 	 */
 	@SquirrelJMEVendorApi
-	public MLECallError(Throwable __t, int __dist)
+	public MLECallError(Throwable __t,
+		@MagicConstant(valuesFromClass = MLECallErrorCode.class) int __dist)
 	{
 		this.initCause(__t);
 		
@@ -149,7 +156,8 @@ public class MLECallError
 	 * @since 2020/11/29
 	 */
 	@SquirrelJMEVendorApi
-	public MLECallError(int __callId, int __code)
+	public MLECallError(int __callId,
+		@MagicConstant(valuesFromClass = MLECallErrorCode.class) int __code)
 	{
 		/* {@squirreljme.error ZZ4k Failed system call. (The ID; The Error)} */
 		super("ZZ4k " + __callId + " " + __code);

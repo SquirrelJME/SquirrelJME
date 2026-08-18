@@ -11,7 +11,9 @@ package javax.microedition.lcdui.game;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.SpecificFlags;
 import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
@@ -55,9 +57,6 @@ public abstract class GameCanvas
 	public static final int UP_PRESSED =
 		2;
 	
-	/** Are game keys being suppressed?. */
-	private volatile boolean _suppressGameKeys;
-	
 	/** Is the buffer preserved after a flush? */
 	private volatile boolean _preserveBuffer;
 	
@@ -98,8 +97,12 @@ public abstract class GameCanvas
 	@Api
 	protected GameCanvas(boolean __suppressGameKeys, boolean __preserveBuffer)
 	{
+		// Set specific flag to suppress game keys, if requested
+		if (__suppressGameKeys)
+			DisplayableState.locate(this).flags(
+				SpecificFlags.CANVAS_SUPPRESS_GAME_KEY);
+		
 		// Set
-		this._suppressGameKeys = __suppressGameKeys;
 		this._preserveBuffer = __preserveBuffer;
 		
 		// Default to full screen mode and where all pixels are modified

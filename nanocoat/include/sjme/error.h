@@ -39,10 +39,13 @@ extern "C"
 typedef enum sjme_errorCode
 {
 	/** No error. */
-	SJME_ERROR_NONE = 1,
+	SJME_ERROR_NONE = 2,
 
-	/** Generic unknown error. */
+	/** Generic unknown error (likely @link SJME_JNI_FALSE @endlink). */
 	SJME_ERROR_UNKNOWN = 0,
+
+	/** Generic unknown error (likely @link SJME_JNI_TRUE @endlink). */
+	SJME_ERROR_UNKNOWN_ONE = 1,
 
 	/** Generic unknown error. */
 	SJME_ERROR_UNKNOWN_NEGATIVE = -1,
@@ -590,11 +593,35 @@ typedef enum sjme_errorCode
 	/** Audio is awaiting streams/sources. */
 	SJME_ERROR_AUDIO_AWAITING = -182,
 	
+	/** NanoTest: Expected value has no value. */
+	SJME_ERROR_NANOTEST_EXPECTED_NO_VALUE = -183,
+	
+	/** NanoTest: Expected value has no static expected field. */
+	SJME_ERROR_NANOTEST_EXPECTED_MISSING = -184,
+	
+	/** NanoTest: Missing annotations on test. */
+	SJME_ERROR_NANOTEST_NO_ANNOTATIONS = -185,
+	
+	/** Class has an invalid annotation tag. */
+	SJME_ERROR_CLASS_UNKNOWN_ANNOTATION_TAG = -186,
+	
 	/** Font is already registered. */
-	SJME_ERROR_FONT_ALREADY_REGISTERED = -183,
+	SJME_ERROR_FONT_ALREADY_REGISTERED = -187,
+	
+	/** Value or object is too large. */
+	SJME_ERROR_TOO_LARGE = -188,
+	
+	/** The rectangle size is not valid. */
+	SJME_ERROR_INVALID_RECT = -189,
+	
+	/** Invalid codepoint. */
+	SJME_ERROR_INVALID_CODEPOINT = -190,
+
+	/** The manifest format is not valid. */
+	SJME_ERROR_INVALID_MANIFEST_FORMAT = -191,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -184,
+	SJME_NUM_ERROR_CODES = -192,
 } sjme_errorCode;
 
 /**

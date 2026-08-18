@@ -68,11 +68,11 @@ public final class MLEObjects
 		// than doing an RGB copy of it
 		int[] buf;
 		int off, len;
-		if (__frame.squirreljmeIsDirect())
+		if (__frame.squirreljmeIsDirect__())
 		{
-			buf = __frame.squirreljmeDirectRGBInt();
-			off = __frame.squirreljmeDirectOffset();
-			len = __frame.squirreljmeDirectScanLen() * __frame.getHeight();
+			buf = __frame.squirreljmeDirectRGBInt__();
+			off = __frame.squirreljmeDirectOffset__();
+			len = __frame.squirreljmeDirectScanLen__() * __frame.getHeight();
 		}
 		
 		// Otherwise, we need to load the RGB data from the image

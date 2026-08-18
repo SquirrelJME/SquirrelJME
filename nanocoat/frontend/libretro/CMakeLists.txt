@@ -8,10 +8,10 @@
 
 # Which type of build is being used?
 if(LIBRETRO_REALLY_STATIC)
-	set(libRetroIsStatic ON)
+	set(libRetroIsStatic TRUE)
 	set(libRetroBuildType STATIC)
 else()
-	set(libRetroIsStatic OFF)
+	set(libRetroIsStatic FALSE)
 	set(libRetroBuildType SHARED)
 endif()
 
@@ -102,7 +102,8 @@ file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/test.config"
 find_program(gdbExe "gdbserver")
 if(retroArchExe AND NOT libRetroIsStatic AND
 	NOT EMSCRIPTEN AND
-	NOT SQUIRRELJME_IS_CROSS_COMPILE)
+	NOT SQUIRRELJME_IS_CROSS_COMPILE AND
+	squirreljme_bp_version_3_12)
 	# Add target to run accordingly
 	add_custom_target(RunSquirreljme_libretro
 		COMMAND "${retroArchExe}"
@@ -124,10 +125,10 @@ if(retroArchExe AND NOT libRetroIsStatic AND
 		# Add target to run accordingly
 		add_custom_target(GdbSquirreljme_libretro
 			COMMAND "${gdbExe}" "localhost:2345" "${retroArchExe}"
-			"-L" "$<GENEX_EVAL:$<TARGET_FILE:squirreljme_libretro>>"
-			"--no-patch"
-			"--appendconfig=${CMAKE_CURRENT_BINARY_DIR}/test.config"
-			"--log-file=${CMAKE_BINARY_DIR}/libretro.log"
+				"-L" "$<GENEX_EVAL:$<TARGET_FILE:squirreljme_libretro>>"
+				"--no-patch"
+				"--appendconfig=${CMAKE_CURRENT_BINARY_DIR}/test.config"
+				"--log-file=${CMAKE_BINARY_DIR}/libretro.log"
 			DEPENDS squirreljme_libretro
 			USES_TERMINAL)
 

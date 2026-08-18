@@ -10,7 +10,13 @@
 # unstable/0.3.0/natives-${systemNormal}-${archNormal}.zip
 # unstable/0.3.0/natives-${systemNormal}-${archNormal}.zip.mkd
 
-macro(squirreljme_natives_download systemNormal archNormal uvPath)
+function(squirreljme_natives_download systemNormal archNormal uvPath)
+	# Do not try adding potentially multiple valid targets
+	squirreljme_natives_check_order(hasOrder ${systemNormal} ${archNormal})
+	if(${hasOrder})
+		return()
+	endif()
+
 	# Determine the rule name
 	unset(ruleName)
 	squirreljme_natives_rule_name(ruleName ${systemNormal} ${archNormal})
@@ -30,10 +36,10 @@ macro(squirreljme_natives_download systemNormal archNormal uvPath)
 	# Add to the order
 	squirreljme_natives_append_rule(${ruleName} ${systemNormal} ${archNormal}
 		"download")
-endmacro()
+endfunction()
 
 # Checks that a download is valid
-macro(squirreljme_natives_download_check systemNormal archNormal)
+function(squirreljme_natives_download_check systemNormal archNormal)
 	# Determine the UV path
 	unset(uvPath)
 	squirreljme_natives_download_uv_path(uvPath ${systemNormal} ${archNormal})
@@ -48,10 +54,10 @@ macro(squirreljme_natives_download_check systemNormal archNormal)
 	else()
 		message(STATUS "No download for ${systemNormal}/${archNormal}!")
 	endif()
-endmacro()
+endfunction()
 
 # Process each native
-foreach(compilerMap IN LISTS SQUIRRELJME_KNOWN_NATIVES)
+foreach(compilerMap IN ITEMS ${SQUIRRELJME_KNOWN_NATIVES})
 	# Obtain back the system and architecture
 	squirreljme_unmap(systemNormal 0 "${compilerMap}")
 	squirreljme_unmap(archNormal 1 "${compilerMap}")

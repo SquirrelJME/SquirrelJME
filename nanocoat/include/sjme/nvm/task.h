@@ -1068,7 +1068,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleOut(
  * @return Any resultant error, if any.
  * @since 2025/06/29
  */
-sjme_jboolean sjme_nvm_task_taskScheduleYes(
+sjme_errorCode sjme_nvm_task_taskScheduleYes(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jboolean* isRunning);

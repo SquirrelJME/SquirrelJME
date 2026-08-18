@@ -23,7 +23,6 @@ import cc.squirreljme.fontcompile.out.rafoces.VectorPoint;
 import cc.squirreljme.fontcompile.util.GlyphId;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -38,31 +37,46 @@ import java.util.Set;
  */
 public class FontCompiler
 {
-	/** Initial reject division. */
-	private static final int _REJECT_DIV =
-		256;
-	
-	/** Limit on the reject division. */
-	private static final int _REJECT_DIV_LIMIT =
-		256;
-	
 	/** The input font. */
 	protected final FontInfo in;
+	
+	/** The initial reject division. */
+	private final int _initRejectDiv;
+	
+	/** The reject division limit. */
+	private final int _rejectDivLimit;
+	
+	/** Perform font compression? */
+	private final boolean doCompress;
 	
 	/**
 	 * Initializes the font compiler.
 	 *
 	 * @param __in The input font.
+	 * @param __doCompress Perform compression?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/19
 	 */
-	public FontCompiler(FontInfo __in)
+	public FontCompiler(FontInfo __in, boolean __doCompress)
 		throws NullPointerException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
 		this.in = __in;
+		this.doCompress = __doCompress;
+		
+		// The reject division depends on compression, or not
+		if (__doCompress)
+		{
+			this._initRejectDiv = 256;
+			this._rejectDivLimit = 32;
+		}
+		else
+		{
+			this._initRejectDiv = 256;
+			this._rejectDivLimit = 256;
+		}
 	}
 	
 	/**
@@ -95,14 +109,25 @@ public class FontCompiler
 		// For tracking
 		int lastOkay = 0;
 		
+		// Notice!
+		if (this.doCompress)
+			Debugging.debugNote(
+				"Compressing large fonts may take awhile!");
+		
+		// Start time
+		long enterTime = System.nanoTime();
+		long totalCycles = 0;
+		
 		// Run while rejects still exist
 		int runCount = 0;
-		int rejectDiv = FontCompiler._REJECT_DIV;
+		int rejectDiv = this._initRejectDiv;
 		while (!runRejects.isEmpty() || !reject.isEmpty())
 		{
 			// On the first run, process all rejects because everything is
 			// basically fresh
-			if (true || runCount > 0)
+			// If not compressing, then everything is a reject
+			// If compressing, only compress in smaller batches
+			if (this.doCompress || runCount > 0)
 			{
 				// Otherwise on subsequent runs, do not run too many glyphs
 				// together, only up to the reject division to try to keep it
@@ -125,13 +150,31 @@ public class FontCompiler
 			}
 			
 			// Progress
-			if (lastOkay + FontCompiler._REJECT_DIV < okay.size())
+			if (true/*runCount == 0 ||
+				lastOkay + this._initRejectDiv < okay.size()*/)
 			{
+				// Where are we at?
+				long cycleTime = System.nanoTime() - enterTime;
+				
+				// Notice
 				Debugging.debugNote(
-					"OKAY % 6d; WAITING % 6d",
-					okay.size(), reject.size());
+					"OKAY %d; RUN %d; WAIT %d; RJD %d; " +
+						"%d Gs/notif (%d ms)",
+					okay.size(),
+					runRejects.size(),
+					reject.size(),
+					rejectDiv,
+					totalCycles,
+					cycleTime / 1_000_000L);
 				lastOkay = okay.size();
+				
+				// Reset
+				enterTime = System.nanoTime();
+				totalCycles = 0;
 			}
+			
+			// Cycle up
+			totalCycles++;
 			
 			// Compile the font
 			CompiledFont compiled = this.__run(runRejects);
@@ -156,7 +199,7 @@ public class FontCompiler
 			
 			// Were enough glyphs okay? We do not want to create too many
 			// huffman tables
-			if (runCount == 0 || (!toOkay.isEmpty() &&
+			if ((!this.doCompress && runCount == 0) || (!toOkay.isEmpty() &&
 				toOkay.size() >= Math.max(1, runRejects.size() / 4)))
 			{
 				for (CompiledGlyph compiledGlyph : toOkay)
@@ -178,7 +221,7 @@ public class FontCompiler
 			if (okayWas == okay.size())
 			{
 				// Tried very hard to compress and nothing really worked
-				if (rejectDiv == FontCompiler._REJECT_DIV_LIMIT)
+				if (rejectDiv == this._rejectDivLimit)
 				{
 					// Just make all of these glyphs okay
 					for (GlyphInfo glyph : runRejects)
@@ -192,25 +235,30 @@ public class FontCompiler
 					}
 					
 					// Debug
-					/*Debugging.debugNote("Forced %d glyphs as okay.",
-						runRejects.size());*/
+					Debugging.debugNote("Forced %d glyphs as okay.",
+						runRejects.size());
 					forced += runRejects.size();
 					
 					// Clear out
 					runRejects.clear();
 					
 					// Reset
-					rejectDiv = FontCompiler._REJECT_DIV;
+					rejectDiv = this._initRejectDiv;
 				}
 					
-				// Try with fewer glyphs
+				// Try with fewer/more glyphs
 				else
-					rejectDiv >>>= 1;
+				{
+					if (rejectDiv >= this._rejectDivLimit)
+						rejectDiv >>>= 1;
+					else
+						rejectDiv <<= 1;
+				}
 			}
 				
 			// Reset the glyph division to grab as much as possible
 			else
-				rejectDiv = FontCompiler._REJECT_DIV;
+				rejectDiv = this._initRejectDiv;
 			
 			// Run counter for further squishing
 			runCount++;

@@ -11,7 +11,9 @@ package com.nokia.mid.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
+import cc.squirreljme.runtime.lcdui.event.GenericKeyCodeTranslator;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -64,7 +66,7 @@ public abstract class FullCanvas
 	@Api
 	public static final int KEY_SOFTKEY2 = -7;
 	
-	/** Soft Key 3. */
+	/** Soft Key 3 / Fire. */
 	@Api
 	public static final int KEY_SOFTKEY3 = -5;
 	
@@ -81,9 +83,22 @@ public abstract class FullCanvas
 	@ApiDefinedDeprecated
 	public FullCanvas()
 	{
-		// Use generic Nokia vendor for event translation
-		EventTranslate.translatorDefault("com.nokia");
-		
+		// Use generic Nokia vendor for event translation if an override was not
+		// already specified.
+		if (EventTranslate.translator() == null)
+			try
+			{
+				// Load the Nokia translator
+				EventTranslate.translatorDefault(
+					GenericKeyCodeTranslator.load(null, 
+						"com.nokia"));
+			}
+			catch (IllegalArgumentException __e)
+			{
+				// This is actually broken
+				throw Debugging.oops(__e.getMessage());
+			}
+
 		// Nokia API just says to call this instead, so this is done
 		this.setFullScreenMode(true);
 		

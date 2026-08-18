@@ -64,7 +64,7 @@ sjme_errorCode sjme_scritchaudio_winmm_apiInit(
 	/* This uses manual polling. */
 	inState->bugs.manualPoll = SJME_JNI_TRUE;
 
-#if 0
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/* Does WinMM support triggering or not? */
 	inState->bugs.noTriggering = SJME_JNI_TRUE;
 #endif

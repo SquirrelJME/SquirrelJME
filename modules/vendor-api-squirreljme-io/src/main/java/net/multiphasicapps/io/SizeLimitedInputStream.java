@@ -45,7 +45,7 @@ public class SizeLimitedInputStream
 	@SquirrelJMEVendorApi
 	private volatile long _current;
 	
-	/** Was this closed? */	
+	/** Was this closed? */
 	@SquirrelJMEVendorApi
 	private volatile boolean _closed;
 	

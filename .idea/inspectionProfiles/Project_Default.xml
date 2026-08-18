@@ -54,6 +54,12 @@
                   <option name="replacement" value="@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting&#10;$1$2$3$4(" />
                   <option name="flags" value="32" />
                 </InspectionPattern>
+                <InspectionPattern>
+                  <option name="regExp" value="@SquirrelJMEVendorApi&#10;(\t*)(void|boolean|byte|short|char|int|long|float|double|[A-Z]\w+){1}(\[\]){0,1}(\s+)(__\w+)([=;])" />
+                  <option name="_fileType" value="JAVA" />
+                  <option name="searchContext" value="EXCEPT_COMMENTS_AND_STRING_LITERALS" />
+                  <option name="replacement" value="@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting&#10;$1$2$3$4$5$6" />
+                </InspectionPattern>
               </list>
             </option>
           </RegExpInspectionConfiguration>
@@ -102,6 +108,7 @@
       <option name="myAdditionalJavadocTags" value="squirreljme.syscallparam,squirreljme.syscallreturn,squirreljme.property,squirreljme.error,squirreljme.property,squirreljme.configtype" />
     </inspection_tool>
     <inspection_tool class="JavaLangImport" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="JavadocBlankLines" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JavadocDeclaration" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ADDITIONAL_TAGS" value="squirreljme.syscallparam,squirreljme.syscallreturn,squirreljme.property,squirreljme.error,squirreljme.property,squirreljme.configtype" />
     </inspection_tool>

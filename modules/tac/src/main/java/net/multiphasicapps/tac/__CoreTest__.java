@@ -45,6 +45,16 @@ abstract class __CoreTest__
 		new TestResultBuilder();
 	
 	/**
+	 * Implicit package-private constructor.
+	 *
+	 * @since 2026/02/12
+	 */
+	@SquirrelJMEVendorApi
+	__CoreTest__()
+	{
+	}
+	
+	/**
 	 * Runs the given test with the given arguments and resulting in the
 	 * given result.
 	 *

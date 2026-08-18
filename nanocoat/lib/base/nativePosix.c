@@ -59,7 +59,8 @@ sjme_errorCode sjme_nal_default_nanoTime(
 		return SJME_ERROR_NATIVE_SYSTEM_CLOCK_FAILURE;
 	
 	/* Translate time. */
-	result->full = spec.tv_nsec + (spec.tv_sec * UINT64_C(1000000000));
+	result->full = spec.tv_nsec + ((sjme_julongNative)spec.tv_sec *
+		UINT64_C(1000000000));
 	return SJME_ERROR_NONE;
 }
 
@@ -252,9 +253,14 @@ static sjme_errorCode sjme_stream_outputNetFlush(
 	if (rfd < 0)
 		return SJME_ERROR_IO_EXCEPTION;
 
-#if defined(SJME_CONFIG_HAS_FDATASYNC)
+#if defined(SJME_CONFIG_HAS_FDATASYNC) || \
+	defined(SJME_CONFIG_HAS_OS_BSD_FAMILY)
 	/* Sync the data. */
+#if defined(SJME_CONFIG_HAS_OS_BSD_FAMILY)
+	if (fsync(rfd) < 0)
+#else
 	if (fdatasync(rfd) < 0)
+#endif
 	{
 		/* Flushing might not be supported for this. */
 		if (sjme_nal_errno(errno) != SJME_ERROR_INVALID_ARGUMENT)

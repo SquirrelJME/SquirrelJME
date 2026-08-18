@@ -47,7 +47,8 @@ public interface ScritchMenuInterface
 	 * Inserts the given menu item to a parent menu.
 	 *
 	 * @param __into The menu to place into.
-	 * @param __at Where to add the item.
+	 * @param __at The index to insert at, if this is {@link Integer#MAX_VALUE}
+	 * then this will be the final index.
 	 * @param __item The item to add.
 	 * @throws MLECallError On null arguments; if the index is not valid; or
 	 * the item already has a parent.

@@ -22,5 +22,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 @SquirrelJMEVendorApi
 @GhostObject
 public interface PipeBracket
+	extends CloseableBracket
 {
 }

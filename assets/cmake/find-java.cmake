@@ -50,7 +50,8 @@ if(SQUIRRELJME_HAS_JAVA)
 	# Add a target which executes Gradle
 	function(squirreljme_add_gradle_target targetName ...)
 		# Extract arguments for the call
-		list(SUBLIST ARGV 1 -1 gradleArgs)
+		set(gradleArgs "${ARGV}")
+		list(REMOVE_AT gradleArgs 0)
 
 		# Now declare the target
 		add_custom_target(${targetName}
@@ -62,7 +63,8 @@ if(SQUIRRELJME_HAS_JAVA)
 				"--stacktrace"
 				"${gradleArgs}"
 			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-			COMMAND_EXPAND_LISTS)
+			COMMAND_EXPAND_LISTS
+			USES_TERMINAL)
 
 			# Set some SquirrelJME specific properties
 			set_target_properties(${targetName} PROPERTIES

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -18,19 +19,24 @@ import java.util.Objects;
  *
  * @since 2017/08/20
  */
+@SquirrelJMEVendorApi
 public final class EntryPoint
 	implements Comparable<EntryPoint>
 {
 	/** The name of the entry point. */
+	@SquirrelJMEVendorApi
 	protected final String name;
 	
 	/** The entry point class. */
+	@SquirrelJMEVendorApi
 	protected final String entry;
 	
 	/** The image used. */
+	@SquirrelJMEVendorApi
 	protected final String imageResource;
 	
 	/** Is this a midlet? */
+	@SquirrelJMEVendorApi
 	protected final boolean isMidlet;
 	
 	/** String representation. */
@@ -46,6 +52,7 @@ public final class EntryPoint
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/20
 	 */
+	@SquirrelJMEVendorApi
 	public EntryPoint(String __name, String __entry, String __imgRc,
 		boolean __mid)
 		throws NullPointerException
@@ -94,6 +101,7 @@ public final class EntryPoint
 	 * @return The entry point class.
 	 * @since 2017/08/20
 	 */
+	@SquirrelJMEVendorApi
 	public String entryPoint()
 	{
 		return this.entry;
@@ -136,6 +144,7 @@ public final class EntryPoint
 	 * @return The image resource or {@code null} if there is none.
 	 * @since 2020/10/31
 	 */
+	@SquirrelJMEVendorApi
 	public String imageResource()
 	{
 		return this.imageResource;
@@ -147,6 +156,7 @@ public final class EntryPoint
 	 * @return If this is a MIDlet or not.
 	 * @since 2017/08/20
 	 */
+	@SquirrelJMEVendorApi
 	public boolean isMidlet()
 	{
 		return this.isMidlet;
@@ -158,6 +168,7 @@ public final class EntryPoint
 	 * @return The entry point name.
 	 * @since 2017/08/20
 	 */
+	@SquirrelJMEVendorApi
 	public String name()
 	{
 		return this.name;

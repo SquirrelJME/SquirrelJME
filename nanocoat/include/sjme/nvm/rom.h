@@ -212,7 +212,6 @@ typedef sjme_errorCode (*sjme_nvm_rom_suiteInitFunc)(
 /**
  * Returns the ID of the library for the given suite.
  *
- * @param functions The suite functions.
  * @param inSuite The current suite being accessed.
  * @param inLibrary The library to get the ID of.
  * @param outId The output library ID, cannot be zero.
@@ -388,7 +387,7 @@ sjme_errorCode sjme_nvm_rom_libraryHash(
  * @param libName The library name.
  * @param data Any data to forward to the initializer.
  * @param inFunctions The functions which define how to access the library.
- * @param inFrontEnd Input front end initialization, is optional.
+ * @param copyFrontEnd Input front end initialization, is optional.
  * @return Any error code.
  * @since 2023/12/29
  */
@@ -533,7 +532,8 @@ sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
  * @param outSuite The output suite.
  * @param inSuites The input suites.
  * @param numInSuites The number of input suites.
- * @return
+ * @return Any resultant error, if any.
+ * @since 2024/08/16
  */
 sjme_errorCode sjme_nvm_rom_suiteFromMerge(
 	sjme_attrInNotNull sjme_alloc_pool pool,

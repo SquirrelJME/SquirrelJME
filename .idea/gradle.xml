@@ -70,6 +70,7 @@
             <option value="$PROJECT_DIR$/modules/scritch-ui" />
             <option value="$PROJECT_DIR$/modules/system-app-demo-hello" />
             <option value="$PROJECT_DIR$/modules/system-app-demo-lcdui" />
+            <option value="$PROJECT_DIR$/modules/system-app-demo-rts-game" />
             <option value="$PROJECT_DIR$/modules/system-app-demo-squirrel-quarrel" />
             <option value="$PROJECT_DIR$/modules/system-app-device-info" />
             <option value="$PROJECT_DIR$/modules/system-app-launcher" />
@@ -98,6 +99,7 @@
             <option value="$PROJECT_DIR$/modules/vendor-api-sprintpcs" />
             <option value="$PROJECT_DIR$/modules/vendor-api-squirreljme-collections" />
             <option value="$PROJECT_DIR$/modules/vendor-api-squirreljme-csv" />
+            <option value="$PROJECT_DIR$/modules/vendor-api-squirreljme-font" />
             <option value="$PROJECT_DIR$/modules/vendor-api-squirreljme-io" />
             <option value="$PROJECT_DIR$/modules/vendor-api-squirreljme-zip" />
             <option value="$PROJECT_DIR$/modules/vendor-api-vodafone" />
@@ -107,8 +109,6 @@
             <option value="$PROJECT_DIR$/tools/c-source-writer" />
             <option value="$PROJECT_DIR$/tools/github-classic-project-dump" />
             <option value="$PROJECT_DIR$/tools/markdown-javadoc" />
-            <option value="$PROJECT_DIR$/tools/pcf-to-sqf" />
-            <option value="$PROJECT_DIR$/tools/sqf-to-c" />
             <option value="$PROJECT_DIR$/tools/squirreljme-debugger" />
             <option value="$PROJECT_DIR$/tools/squirreljme-font" />
             <option value="$PROJECT_DIR$/tools/squirreljme-javap" />

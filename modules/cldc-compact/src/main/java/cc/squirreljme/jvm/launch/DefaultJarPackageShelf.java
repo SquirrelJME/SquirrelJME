@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.launch;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 
@@ -20,6 +21,7 @@ import java.io.InputStream;
  *
  * @since 2024/01/06
  */
+@SquirrelJMEVendorApi
 public class DefaultJarPackageShelf
 	implements VirtualJarPackageShelf
 {

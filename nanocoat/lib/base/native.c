@@ -22,7 +22,7 @@ const sjme_nal sjme_nal_default =
 	sjme_sm(.tcpUdp, sjme_nal_default_tcpUdp),
 	sjme_sm(.threadSleep, sjme_nal_default_threadSleep),
 	sjme_sm(.threadYield, sjme_nal_default_threadYield),
-	{
+	sjme_sm(.stdIo, ){
 		{
 			sjme_sm(.close, NULL),
 			sjme_sm(.in, NULL),
@@ -43,6 +43,7 @@ const sjme_nal sjme_nal_default =
 		},
 	},
 	sjme_sm(.userHome, sjme_nal_default_userHome),
+	sjme_sm(.userName, NULL),
 };
 
 #if defined(SJME_CONFIG_HAS_ERRNO_H)

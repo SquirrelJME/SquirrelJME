@@ -581,10 +581,11 @@ public final class SpringThreadWorker
 		if (self == null)
 			return true;
 		
-		// Allow object and class unlimited access to anything
+		// Allow object, class, and enum unlimited access to anything
 		ClassName cn = self.name();
 		if (cn.toString().equals("java/lang/Object") ||
-			cn.toString().equals("java/lang/Class"))
+			cn.toString().equals("java/lang/Class") ||
+			cn.toString().equals("java/lang/Enum"))
 			return true;
 		
 		// This is ourself so access is always granted

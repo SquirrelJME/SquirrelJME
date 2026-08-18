@@ -321,7 +321,7 @@ sjme_errorCode sjme_scritchui_core_viewSetSizeSuggestListener(
 	/* If this is a container, we should have a size be suggested. */
 	container = NULL;
 	if (sjme_error_is(error = inState->intern->getContainer(inState,
-		inComponent, &container) || container == NULL))
+		inComponent, &container)) || container == NULL)
 	{
 		if (error == SJME_ERROR_INVALID_ARGUMENT)
 			return SJME_ERROR_NONE;

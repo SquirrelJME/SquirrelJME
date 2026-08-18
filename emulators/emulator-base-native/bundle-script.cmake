@@ -42,7 +42,8 @@ list(REMOVE_AT copyFiles 0)
 list(REMOVE_AT copyFiles 0)
 
 # Include the cache file
-include("${cacheFile}")
+include("${cacheFile}"
+	NO_POLICY_SCOPE)
 
 ## Get the list file and paths
 set(scritchAnyLists)
@@ -70,7 +71,7 @@ foreach(from IN LISTS copyFiles
 endforeach()
 
 # Add everything to the Zip
-message(STATIC "Adding everything to ${nativesZip}...")
+message(STATUS "Adding everything to ${nativesZip}...")
 execute_process(
 	COMMAND "${CMAKE_COMMAND}" "-E"
 		"tar" "cv" "${nativesZip}" "--format=zip" "--"

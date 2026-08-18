@@ -7,7 +7,11 @@
 # ---------------------------------------------------------------------------
 
 # Ancient Build Contraption Device
-add_subdirectory(abcd)
+if(SQUIRRELJME_ENABLE_APP_ABCD)
+	add_subdirectory(abcd)
+endif()
 
 # ScritchUi Demo
-add_subdirectory(demo-scritchui)
+if(SQUIRRELJME_ENABLE_APP_DEMO_SCRITCHUI)
+	add_subdirectory(demo-scritchui)
+endif()

@@ -17,8 +17,8 @@ if(SQUIRRELJME_HAS_JAVA)
 	add_custom_target(rom)
 
 	# Create rules for each type of ROM
-	foreach(testMap IN LISTS SQUIRRELJME_TEST_LEVEL_MAP)
-		foreach(clutterMap IN LISTS SQUIRRELJME_CLUTTER_MAP)
+	foreach(testMap IN ITEMS ${SQUIRRELJME_TEST_LEVEL_MAP})
+		foreach(clutterMap IN ITEMS ${SQUIRRELJME_CLUTTER_MAP})
 			# Extract levels
 			squirreljme_unmap(testNoun 0 "${testMap}")
 			squirreljme_unmap(testLow 1 "${testMap}")

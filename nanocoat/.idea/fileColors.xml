@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SharedFileColors">
+    <fileColor scope="JNISquirrelJME" color="163996" />
     <fileColor scope="emulator" color="661b00" />
     <fileColor scope="libretro" color="525f5f" />
     <fileColor scope="BaseLib" color="5f3242" />

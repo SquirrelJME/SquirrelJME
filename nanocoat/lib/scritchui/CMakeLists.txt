@@ -8,7 +8,7 @@
 
 # Enable prototype developer ScritchUi implementations?
 option(SQUIRRELJME_ENABLE_GUI_DEVELOPER
-	"Enable Developer Prototype GUIs" OFF)
+	"Enable Developer Prototype GUIs" FALSE)
 
 # Framebuffer implementation of ScritchUi, does not require any native
 # libraries other than direct framebuffer access. This library is purely
@@ -17,11 +17,14 @@ add_subdirectory(framebuffer)
 
 # Core ScritchUi Library
 squirreljme_multilib_add_library(ScritchUiCore
+	scritchAtomic.c
 	scritchChoice.c
 	scritchComponent.c
 	scritchContainer.c
 	scritchCore.c
 	scritchFallbackFont.c
+	scritchGeneric.c
+	scritchIntern.c
 	scritchLabel.c
 	scritchLaf.c
 	scritchList.c
@@ -33,7 +36,7 @@ squirreljme_multilib_add_library(ScritchUiCore
 	scritchPencilBitLine.c
 	scritchPencilFont.c
 	scritchPencilFontMulti.c
-	scritchPencilFontPseudo.c
+	scritchPencilFontResource.c
 	scritchPencilFontSqf.c
 	scritchPencilRasterBlend.c
 	scritchPencilRasterChunky.c
@@ -51,7 +54,7 @@ squirreljme_multilib_add_library(ScritchUiCore
 
 # The base SquirrelJME library is always needed
 squirreljme_multilib_link_libraries_required(ScritchUiCore PUBLIC
-	BaseStatic
+	Base
 	ScritchUiFB)
 
 # Include main headers
@@ -66,8 +69,6 @@ squirreljme_multilib_export(ScritchUiCore)
 add_subdirectory(pure)
 
 # Windows?
-option(SQUIRRELJME_ENABLE_GUI_WIN32 "Enable Win32 GUI"
-	${SQUIRRELJME_ON_IF_WIN32})
 if(SQUIRRELJME_ENABLE_GUI_WIN32)
 	squirreljme_scritchui_build(win32 Win32)
 endif()
@@ -83,7 +84,7 @@ endif()
 if(SQUIRRELJME_ENABLE_GUI_DEVELOPER)
 	squirreljme_include("find-motif.cmake")
 
-	option(SQUIRRELJME_ENABLE_GUI_MOTIF "Enable Motif GUI" ON)
+	option(SQUIRRELJME_ENABLE_GUI_MOTIF "Enable Motif GUI" TRUE)
 	if(SQUIRRELJME_ENABLE_GUI_MOTIF)
 		squirreljme_scritchui_build(motif Motif)
 	endif()
@@ -93,7 +94,7 @@ endif()
 if(SQUIRRELJME_ENABLE_GUI_DEVELOPER)
 	squirreljme_include("find-x11.cmake")
 
-	option(SQUIRRELJME_ENABLE_GUI_X11 "Enable X11 GUI" ON)
+	option(SQUIRRELJME_ENABLE_GUI_X11 "Enable X11 GUI" TRUE)
 	if(SQUIRRELJME_ENABLE_GUI_X11)
 		squirreljme_scritchui_build(x11 X11)
 	endif()
@@ -110,7 +111,7 @@ endif()
 if(SQUIRRELJME_ENABLE_GUI_DEVELOPER)
 	squirreljme_include("find-gtk3.cmake")
 
-	option(SQUIRRELJME_ENABLE_GUI_GTK3 "Enable GTK3 GUI" OFF)
+	option(SQUIRRELJME_ENABLE_GUI_GTK3 "Enable GTK3 GUI" FALSE)
 	if(SQUIRRELJME_ENABLE_GUI_GTK3)
 		squirreljme_scritchui_build(gtk3 GTK3)
 	endif()

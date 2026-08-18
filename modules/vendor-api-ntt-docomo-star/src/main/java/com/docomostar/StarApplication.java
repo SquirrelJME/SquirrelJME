@@ -10,7 +10,7 @@
 package com.docomostar;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.midlet.CleanupHandler;
+import cc.squirreljme.runtime.cldc.CleanupHandler;
 
 @Api
 public abstract class StarApplication

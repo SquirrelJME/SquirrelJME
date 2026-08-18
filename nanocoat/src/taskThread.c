@@ -254,7 +254,7 @@ sjme_errorCode sjme_nvm_task_threadEnterA(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
 	sjme_attrInNotNull sjme_lpcstr inClass,
-	sjme_attrInRange(0, SJME_ERROR_INVALID_ARGUMENT)
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInNotNull sjme_lpcstr inName,
 	sjme_attrInNotNull sjme_lpcstr inType,
@@ -309,7 +309,7 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame,
 	sjme_attrInNotNull sjme_jclass inClass,
-	sjme_attrInRange(0, SJME_ERROR_INVALID_ARGUMENT)
+	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInNotNull sjme_charSeq inName,
 	sjme_attrInNotNull sjme_charSeq inType,

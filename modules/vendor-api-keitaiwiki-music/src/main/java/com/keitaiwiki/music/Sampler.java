@@ -33,8 +33,9 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Sample-generating instance of a {@code Sampler}. Configurations on the
@@ -63,7 +64,9 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * </table>
  *
  * @see SamplerProvider
+ * @since 2025/05/05
  */
+@SquirrelJMEVendorApi
 public interface Sampler
 {
 	/**
@@ -71,38 +74,46 @@ public interface Sampler
 	 * of programs available to a channel.<br><br>
 	 * The default program bank number on all channels is 0.
 	 *
-	 * @param channel The index of the channel to configure.
-	 * @param bank The bank number.
+	 * @param __channel The index of the channel to configure.
+	 * @param __bank The bank number.
 	 * @see #programChange(int, int)
+	 * @since 2025/05/05
 	 */
-	void bankChange(int channel, int bank);
+	@SquirrelJMEVendorApi
+	void bankChange(int __channel, int __bank);
 	
 	/**
 	 * Specify whether a channel should play drum notes. <br><br>
 	 * The default drums-enabled setting on all channels is {@code false}.
 	 *
-	 * @param channel The index of the channel to configure.
-	 * @param enable Whether to enable drum notes on the channel.
+	 * @param __channel The index of the channel to configure.
+	 * @param __enable Whether to enable drum notes on the channel.
+	 * @since 2025/05/05
 	 */
-	void drumEnable(int channel, boolean enable);
+	@SquirrelJMEVendorApi
+	void drumEnable(int __channel, boolean __enable);
 	
 	/**
 	 * Determine whether or not any notes are producing output.
 	 *
 	 * @return {@code true} if there are no notes generating any output.
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	boolean isFinished();
 	
 	/**
 	 * Deactivate a key that has previoulsy been activated on a channel.
 	 * If no key is currently active on the channel, no action is taken.
 	 *
-	 * @param channel The index of the channel to configure.
-	 * @param key The number of the key to configure. A value of zero
+	 * @param __channel The index of the channel to configure.
+	 * @param __key The number of the key to configure. A value of zero
 	 * corresponds to the note A<sub>4</sub>.
 	 * @see #keyOn(int, int, float)
+	 * @since 2025/05/05
 	 */
-	void keyOff(int channel, int key);
+	@SquirrelJMEVendorApi
+	void keyOff(int __channel, int __key);
 	
 	/**
 	 * Activate a key on a channel. If no key is currently active on the
@@ -122,18 +133,21 @@ public interface Sampler
 	 * contexts such as drum notes, which use the key number to determine
 	 * the exact drum sound to play.
 	 *
-	 * @param channel The index of the channel to configure.
-	 * @param key The number of the key to configure. A value of zero
+	 * @param __channel The index of the channel to configure.
+	 * @param __key The number of the key to configure. A value of zero
 	 * corresponds to the note A<sub>4</sub>.
-	 * @param velocity The overall initial volume level of the note, with
+	 * @param __velocity The overall initial volume level of the note, with
 	 * 0.0f being silence and 1.0f being full-volume.
-	 * @throws IllegalArgumentException if {@code velocity} is a
+	 * @throws IllegalArgumentException if {@code __velocity} is a
 	 * non-number or is negative.
 	 * @see #keyOff(int, int)
 	 * @see #pitchBend(int, float)
 	 * @see #pitchBendRange(int, float)
+	 * @since 2025/05/05
 	 */
-	void keyOn(int channel, int key, float velocity);
+	@SquirrelJMEVendorApi
+	void keyOn(int __channel, int __key, float __velocity)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Specify the global pitch bend. The master tuning is multiplied by
@@ -144,14 +158,17 @@ public interface Sampler
 	 * For informaiton on the underlying mathematics, see
 	 * {@link #keyOn(int, int, float)}.
 	 *
-	 * @param semitones The number of semitones to detune, where 0.0f
+	 * @param __semitones The number of semitones to detune, where 0.0f
 	 * represents no adjustment. Most MIDI specifications express pitch
 	 * bend as a number of cents rather than semitones.
-	 * @throws IllegalArgumentException if {@code semitones} is a
+	 * @throws IllegalArgumentException if {@code __semitones} is a
 	 * non-number.
 	 * @see #pitchBend(int, float)
+	 * @since 2025/05/05
 	 */
-	void masterTune(float semitones);
+	@SquirrelJMEVendorApi
+	void masterTune(float __semitones)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Specify the global volume. The master volume is multiplied by each
@@ -159,13 +176,15 @@ public interface Sampler
 	 * on that note.<br><br>
 	 * The default master volume is 1.0f.
 	 *
-	 * @param volume The volume level, with 0.0f being silence and 1.0f
+	 * @param __volume The volume level, with 0.0f being silence and 1.0f
 	 * being full-volume.
-	 * @throws IllegalArgumentException if {@code volume} is a
+	 * @throws IllegalArgumentException if {@code __volume} is a
 	 * non-number or is negative.
+	 * @since 2025/05/05
 	 */
 	@SquirrelJMEVendorApi
-	void masterVolume(float volume);
+	void masterVolume(float __volume)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Specify stereo panning on a channel. Panning ranges from -1.0f for
@@ -173,12 +192,15 @@ public interface Sampler
 	 * channel.<br><br>
 	 * The default panning on all channels is 0.0f.
 	 *
-	 * @param channel The index of the channel to configure.
-	 * @param panpot The panning level.
-	 * @throws IllegalArgumentException if {@code panpot} is a
+	 * @param __channel The index of the channel to configure.
+	 * @param __panpot The panning level.
+	 * @throws IllegalArgumentException if {@code __panpot} is a
 	 * non-number, is less than -1.0f or is greater than +1.0f.
+	 * @since 2025/05/05
 	 */
-	void panpot(int channel, float panpot);
+	@SquirrelJMEVendorApi
+	void panpot(int __channel, float __panpot)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Specify a channel's pitch bend. The master tuning is multiplied by
@@ -190,16 +212,19 @@ public interface Sampler
 	 * For informaiton on the underlying mathematics, see
 	 * {@link #keyOn(int, int, float)}.
 	 *
-	 * @param channel The index of the channel to configure.
-	 * @param semitones The number of semitones to detune, where 0.0f
+	 * @param __channel The index of the channel to configure.
+	 * @param __semitones The number of semitones to detune, where 0.0f
 	 * represents no adjustment. Most MIDI specifications express pitch
 	 * bend as a number of cents rather than semitones.
-	 * @throws IllegalArgumentException if {@code semitones} is a
+	 * @throws IllegalArgumentException if {@code __semitones} is a
 	 * non-number.
 	 * @see #masterTune(float)
 	 * @see #pitchBendRange(int, float)
+	 * @since 2025/05/05
 	 */
-	void pitchBend(int channel, float semitones);
+	@SquirrelJMEVendorApi
+	void pitchBend(int __channel, float __semitones)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Specify the range of a channel's pitch bend. The channel's pitch
@@ -207,91 +232,117 @@ public interface Sampler
 	 * calculate the effective tuning.<br><br>
 	 * The default pitch bend range on all channels is 2.0f.
 	 *
-	 * @param channel The index of the channel to configure.
-	 * @param range The magnitude of the maximum pitch bend on the
+	 * @param __channel The index of the channel to configure.
+	 * @param __range The magnitude of the maximum pitch bend on the
 	 * channel.
-	 * @throws IllegalArgumentException if {@code range} is a non-number
+	 * @throws IllegalArgumentException if {@code __range} is a non-number
 	 * or is negative.
 	 * @see #pitchBend(int, float)
+	 * @since 2025/05/05
 	 */
-	void pitchBendRange(int channel, float range);
+	@SquirrelJMEVendorApi
+	void pitchBendRange(int __channel, float __range)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Speicfy a channel's program number. The program corresponds to the
 	 * voice or instrument used on the channel.<br><br>
 	 * The default program number on all channels is 0.
 	 *
-	 * @param channel The index of the channel to configure.
-	 * @param program The program number.
+	 * @param __channel The index of the channel to configure.
+	 * @param __program The program number.
 	 * @see #bankChange(int, int)
+	 * @since 2025/05/05
 	 */
-	void programChange(int channel, int program);
+	@SquirrelJMEVendorApi
+	void programChange(int __channel, int __program)
+		throws IllegalArgumentException;
 	
 	/**
 	 * Generate output samples. This method is equivalent to
-	 * {@code render(samples, offset, frames, 1.0f, 1.0f, true, true)}.
+	 * {@code render(__samples, __offset, __frames, 1.0f, 1.0f, true, true)}.
 	 * <br><br>
 	 * For information regarding the operations of this method, see
 	 * {@link #render(float[], int, int, float, float, boolean, boolean)}.
 	 *
-	 * @param samples Output sample buffer.
-	 * @param offset Index in {@code samples} of the first audio frame to
+	 * @param __samples Output sample buffer.
+	 * @param __offset Index in {@code __samples} of the first audio frame to
 	 * output.
-	 * @param frames The number of audio frames to output.
-	 * @throws NullPointerException if {@code samples} is {@code null}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code offset} is
-	 * negative, or if {@code offset + frames * 2 > samples.length}.
-	 * @throws IllegalArgumentException if {@code frames} is negative.
+	 * @param __frames The number of audio frames to output.
+	 * @throws NullPointerException if {@code __samples} is {@code null}.
+	 * @throws ArrayIndexOutOfBoundsException if {@code __offset} is
+	 * negative, or if {@code __offset + __frames * 2 > __samples.length}.
+	 * @throws IllegalArgumentException if {@code __frames} is negative.
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
+	 * @since 2025/05/05
 	 */
-	void render(float[] samples, int offset, int frames);
+	@SquirrelJMEVendorApi
+	void render(@NotNull float[] __samples,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __frames)
+		throws ArrayIndexOutOfBoundsException, NullPointerException,
+		IllegalArgumentException;
 	
 	/**
 	 * Generate output samples. This method is equivalent to
-	 * {@code render(samples, offset, frames, amplitude, amplitude,
+	 * {@code render(__samples, __offset, __frames, __amplitude, __amplitude,
 	 * true, true)}.<br><br>
 	 * For information regarding the operations of this method, see
 	 * {@link #render(float[], int, int, float, float, boolean, boolean)}.
 	 *
-	 * @param samples Output sample buffer.
-	 * @param offset Index in {@code samples} of the first audio frame to
+	 * @param __samples Output sample buffer.
+	 * @param __offset Index in {@code __samples} of the first audio frame to
 	 * output.
-	 * @param frames The number of audio frames to output.
-	 * @param amplitude A multiplier that is applied to all samples
+	 * @param __frames The number of audio frames to output.
+	 * @param __amplitude A multiplier that is applied to all samples
 	 * generated.
-	 * @throws NullPointerException if {@code samples} is {@code null}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code offset} is
-	 * negative, or if {@code offset + frames * 2 > samples.length}.
+	 * @throws NullPointerException if {@code __samples} is {@code null}.
+	 * @throws ArrayIndexOutOfBoundsException if {@code __offset} is
+	 * negative, or if {@code __offset + __frames * 2 > __samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative,
-	 * or if {@code amplitude} is a non-number or is negative.
+	 * or if {@code __amplitude} is a non-number or is negative.
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
+	 * @since 2025/05/05
 	 */
-	void render(float[] samples, int offset, int frames, float amplitude);
+	@SquirrelJMEVendorApi
+	void render(@NotNull float[] __samples,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
+		float __amplitude)
+		throws ArrayIndexOutOfBoundsException, NullPointerException,
+		IllegalArgumentException;
 	
 	/**
 	 * Generate output samples. This method is equivalent to
-	 * {@code render(samples, offset, frames, left, right, true, true)}.
-	 * <br><br>
+	 * {@code render(__samples, __offset, __frames, __left, __right,
+	 * true, true)}.<br><br>
 	 * For information regarding the operations of this method, see
 	 * {@link #render(float[], int, int, float, float, boolean, boolean)}.
 	 *
-	 * @param samples Output sample buffer.
-	 * @param offset Index in {@code samples} of the first audio frame to
+	 * @param __samples Output sample buffer.
+	 * @param __offset Index in {@code __samples} of the first audio frame to
 	 * output.
-	 * @param frames The number of audio frames to output.
-	 * @param left A multiplier that is applied to all left-stereo samples
+	 * @param __frames The number of audio frames to output.
+	 * @param __left A multiplier that is applied to all left-stereo samples
 	 * generated.
-	 * @param right A multiplier that is applied to all right-stereo
+	 * @param __right A multiplier that is applied to all right-stereo
 	 * samples generated.
-	 * @throws NullPointerException if {@code samples} is {@code null}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code offset} is
-	 * negative, or if {@code offset + frames * 2 > samples.length}.
+	 * @throws NullPointerException if {@code __samples} is {@code null}.
+	 * @throws ArrayIndexOutOfBoundsException if {@code __offset} is
+	 * negative, or if {@code __offset + __frames * 2 > __samples.length}.
 	 * @throws IllegalArgumentException if {@code frames} is negative,
-	 * or if {@code left} or {@code right} is a non-number or is negative.
+	 * or if {@code __left} or {@code __right} is a non-number or is negative.
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
+	 * @since 2025/05/05
 	 */
-	void render(float[] samples, int offset, int frames, float left,
-		float right);
+	@SquirrelJMEVendorApi
+	void render(@NotNull float[] __samples,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
+		float __left,
+		float __right)
+		throws ArrayIndexOutOfBoundsException, NullPointerException,
+		IllegalArgumentException;
 	
 	/**
 	 * Generate output samples. Sample values range from -1.0f mininum to
@@ -300,49 +351,59 @@ public interface Sampler
 	 * the right channel. One "frame" of audio represents the samples for
 	 * both stereo channels, and so occupies two consecutive elements in
 	 * the buffer.<br><br>
-	 * All generated samples are multiplied by {@code left} and
-	 * {@code right}.<br><br>
-	 * When {@code erase} is {@code false}, this method will add to the
+	 * All generated samples are multiplied by {@code __left} and
+	 * {@code __right}.<br><br>
+	 * When {@code __erase} is {@code false}, this method will add to the
 	 * current contents of the sample buffer in order to interoperate with
-	 * other audio sources. When {@code erase} is {@code true}, the
+	 * other audio sources. When {@code __erase} is {@code true}, the
 	 * contents of the sample buffer are replaced with the rendering
 	 * output.<br><br>
-	 * When {@code clamp} is {@code false}, the contents of the sample
+	 * When {@code __clamp} is {@code false}, the contents of the sample
 	 * buffer may not be in the range of -1.0f to +1.0f once this method
-	 * returns. When {@code clamp} is {@code true}, the sample buffer is
+	 * returns. When {@code __clamp} is {@code true}, the sample buffer is
 	 * limited to the range of -1.0f to +1.0f inclusive upon this method
 	 * returning.
 	 *
-	 * @param samples Output sample buffer.
-	 * @param offset Index in {@code samples} of the first audio frame to
+	 * @param __samples Output sample buffer.
+	 * @param __offset Index in {@code __samples} of the first audio frame to
 	 * output.
-	 * @param frames The number of audio frames to output.
-	 * @param left A multiplier that is applied to all left-stereo samples
+	 * @param __frames The number of audio frames to output.
+	 * @param __left A multiplier that is applied to all left-stereo samples
 	 * generated.
-	 * @param right A multiplier that is applied to all right-stereo
+	 * @param __right A multiplier that is applied to all right-stereo
 	 * samples generated.
-	 * @param erase Replace the buffer contents when {@code true}, or add
+	 * @param __erase Replace the buffer contents when {@code true}, or add
 	 * to them when {@code false}
-	 * @param clamp Specifies whether to restrict the sample buffer values
+	 * @param __clamp Specifies whether to restrict the sample buffer values
 	 * to -1.0f to +1.0f inclusive.
-	 * @throws NullPointerException if {@code samples} is {@code null}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code offset} is
-	 * negative, or if {@code offset + frames * 2 > samples.length}.
-	 * @throws IllegalArgumentException if {@code frames} is negative,
-	 * or if {@code left} or {@code right} is a non-number or is negative.
+	 * @throws NullPointerException if {@code __samples} is {@code null}.
+	 * @throws ArrayIndexOutOfBoundsException if {@code __offset} is
+	 * negative, or if {@code __offset + __frames * 2 > __samples.length}.
+	 * @throws IllegalArgumentException if {@code __frames} is negative,
+	 * or if {@code __left} or {@code __right} is a non-number or is negative.
 	 * @see #render(float[], int, int)
 	 * @see #render(float[], int, int, float)
 	 * @see #render(float[], int, int, float, float)
+	 * @since 2025/05/05
 	 */
-	void render(float[] samples, int offset, int frames, float left,
-		float right, boolean erase, boolean clamp);
+	@SquirrelJMEVendorApi
+	void render(@NotNull float[] __samples,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
+		float __left,
+		float __right,
+		boolean __erase, boolean __clamp)
+		throws ArrayIndexOutOfBoundsException, NullPointerException,
+		IllegalArgumentException;
 	
 	/**
 	 * Initialize all output state. All currently active notes are
 	 * stopped,
 	 * and all master, channel and sampler-specific configurations are
 	 * reinitialized to their default values.
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	void reset();
 	
 	/**
@@ -351,13 +412,16 @@ public interface Sampler
 	 * @return The sample rate.
 	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	float sampleRate();
 	
 	/**
 	 * Terminate all active notes. This may be needed depending on a
 	 * sequencer's looping logic. This method immediately cancels all notes
 	 * without going through key-off processing.
+	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	void stopAll();
 	
 	/**
@@ -366,9 +430,13 @@ public interface Sampler
 	 * messages. The binary format of a SysEx message depends on the
 	 * vendor and the feature being configured.
 	 *
-	 * @param message The body data of the vendor-exclusive message.
+	 * @param __message The body data of the vendor-exclusive message.
+	 * @throws NullPointerException If {@code __message} is {@code null};
+	 * @since 2025/05/05
 	 */
-	void sysEx(byte[] message);
+	@SquirrelJMEVendorApi
+	void sysEx(@NotNull byte[] __message)
+		throws NullPointerException;
 	
 	/**
 	 * Specify a channel's volume. The master volume is multiplied by each
@@ -376,10 +444,15 @@ public interface Sampler
 	 * on that note.<br><br>
 	 * The default volume on all channels is 1.0f.
 	 *
-	 * @param channel The index of the channel to configure.
-	 * @param volume The volume level, with 0.0f being silence and 1.0f
+	 * @param __channel The index of the channel to configure.
+	 * @param __volume The volume level, with 0.0f being silence and 1.0f
 	 * being full-volume.
+	 * @throws IllegalArgumentException if {@code __volume} is a
+	 * non-number or is negative.
 	 * @see #masterVolume(float)
+	 * @since 2025/05/05
 	 */
-	void volume(int channel, float volume);
+	@SquirrelJMEVendorApi
+	void volume(int __channel, float __volume)
+		throws IllegalArgumentException;
 }

@@ -18,7 +18,9 @@ endif()
 # Specify NanoCoat directory for includes
 set(SQUIRRELJME_ROOT_DIR "${CMAKE_SOURCE_DIR}/../..")
 set(SQUIRRELJME_NANOCOAT_SOURCE_DIR "${SQUIRRELJME_ROOT_DIR}/nanocoat")
-include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake")
+set(SQUIRRELJME_NANOCOAT_BINARY_DIR "${CMAKE_BINARY_DIR}/nanocoat")
+include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake"
+	NO_POLICY_SCOPE)
 
 # Include backports
 squirreljme_include_nanocoat("cmake-bp.cmake")
@@ -30,12 +32,15 @@ include(ExternalProject)
 project(libEmulatorBase
 	LANGUAGES C)
 
+# Settings that adjust the build completely
+squirreljme_include_nanocoat("environment-options.cmake")
+
 # We want to forward as many CMAKE_ commands to the target NanoCoat as
 # possible
 get_cmake_property(allVariables VARIABLES)
 set(cacheFile "${CMAKE_BINARY_DIR}/forward-cache.cmake")
 file(REMOVE "${cacheFile}")
-file(TOUCH "${cacheFile}")
+file(WRITE "${cacheFile}" "")
 foreach(var IN LISTS allVariables)
 	# Only consider CMAKE_ specific variables
 	# Also SQUIRRELJME_, because anything might be desired to be passed through
@@ -180,20 +185,17 @@ foreach(var IN LISTS allVariables)
 	endif()
 endforeach()
 
+# Determine options to forward
+squirreljme_env_forward(forwardedEnv)
+message("Forwarded options: ${forwardedEnv}")
+
 # Setup NanoCoat Project
-set(SQUIRRELJME_NANOCOAT_BINARY_DIR "${CMAKE_BINARY_DIR}/nanocoat")
 file(MAKE_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
 ExternalProject_Add(SquirrelJME
 	BINARY_DIR "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 	SOURCE_DIR "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
 	CMAKE_CACHE_ARGS allDefines
-	CONFIGURE_COMMAND "${CMAKE_COMMAND}"
-		"-C" "${cacheFile}"
-		"-G" "${CMAKE_GENERATOR}"
-		"-T" "${CMAKE_GENERATOR_TOOLSET}"
-		"-A" "${CMAKE_GENERATOR_PLATFORM}"
-		"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
-		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+	CONFIGURE_COMMAND ""
 	BUILD_COMMAND ""
 	INSTALL_COMMAND ""
 	TEST_COMMAND ""
@@ -202,21 +204,79 @@ ExternalProject_Add(SquirrelJME
 #		ScritchAudio ScritchUi
 	CONFIGURE_HANDLED_BY_BUILD NO)
 
+# Rule to ensure NanoCoat's binary directory exists
+add_custom_target(NanoCoatBinaryDir
+	COMMAND "${CMAKE_COMMAND}" "-E"
+		"make_directory" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+	COMMENT "Creating ${SQUIRRELJME_NANOCOAT_BINARY_DIR}..."
+	BYPRODUCTS "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+
 # Configure step, since it seems to be missing
 # Cannot be called Configure because build systems with case insensitive rules
 # will clash with built-in "configure"
-ExternalProject_Add_Step(SquirrelJME RunConfigureStep
-	COMMENT "Configuring NanoCoat..."
-	COMMAND "${CMAKE_COMMAND}"
-		"-C" "${cacheFile}"
-		"-G" "${CMAKE_GENERATOR}"
-		"-T" "${CMAKE_GENERATOR_TOOLSET}"
-		"-A" "${CMAKE_GENERATOR_PLATFORM}"
-		"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
-		"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-	INDEPENDENT)
+if(squirreljme_bp_version_3_13)
+	ExternalProject_Add_Step(SquirrelJME RunConfigureStep
+		COMMENT "Configuring NanoCoat..."
+		COMMAND "${CMAKE_COMMAND}"
+			"-C" "${cacheFile}"
+			"${forwardedEnv}"
+			"-G" "${CMAKE_GENERATOR}"
+			"-T" "${CMAKE_GENERATOR_TOOLSET}"
+			"-A" "${CMAKE_GENERATOR_PLATFORM}"
+			"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+			"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+else()
+	if("${CMAKE_GENERATOR_TOOLSET}" STREQUAL "")
+		if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "")
+			ExternalProject_Add_Step(SquirrelJME RunConfigureStep
+				COMMENT "Configuring NanoCoat..."
+				COMMAND "${CMAKE_COMMAND}"
+					"-C" "${cacheFile}"
+					"-G" "${CMAKE_GENERATOR}"
+					"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+		else()
+			ExternalProject_Add_Step(SquirrelJME RunConfigureStep
+				COMMENT "Configuring NanoCoat..."
+				COMMAND "${CMAKE_COMMAND}"
+					"-C" "${cacheFile}"
+					"-G" "${CMAKE_GENERATOR}"
+					"-A" "${CMAKE_GENERATOR_PLATFORM}"
+					"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+		endif()
+	else()
+		if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "")
+			ExternalProject_Add_Step(SquirrelJME RunConfigureStep
+				COMMENT "Configuring NanoCoat..."
+				COMMAND "${CMAKE_COMMAND}"
+					"-C" "${cacheFile}"
+					"-G" "${CMAKE_GENERATOR}"
+					"-T" "${CMAKE_GENERATOR_TOOLSET}"
+					"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+		else()
+			ExternalProject_Add_Step(SquirrelJME RunConfigureStep
+				COMMENT "Configuring NanoCoat..."
+				COMMAND "${CMAKE_COMMAND}"
+					"-C" "${cacheFile}"
+					"-G" "${CMAKE_GENERATOR}"
+					"-T" "${CMAKE_GENERATOR_TOOLSET}"
+					"-A" "${CMAKE_GENERATOR_PLATFORM}"
+					"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
+				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+		endif()
+	endif()
+endif()
+
+# Externalize step targets
 ExternalProject_Add_StepTargets(SquirrelJME RunConfigureStep
 	SquirrelJME-RunConfigureStep)
+
+# Make sure the binary directory exists first
+ExternalProject_Add_StepDependencies(SquirrelJME RunConfigureStep
+	NanoCoatBinaryDir)
 
 # Additional clean files for the configuration step
 if(TARGET SquirrelJME-RunConfigureStep)
@@ -226,14 +286,24 @@ endif()
 
 # Add macro since these are all the same
 macro(squirreljme_external_step target)
+	# Make sure the directory exists
+	file(MAKE_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+
+	# Add the step
 	ExternalProject_Add_Step(SquirrelJME ${target}
 		COMMENT "Building ${target}..."
 		COMMAND "${CMAKE_COMMAND}"
 			"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 			"--target" ${target}
-		INDEPENDENT)
+		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+
+	# Add targets to build it
 	ExternalProject_Add_StepTargets(SquirrelJME ${target}
 		SquirrelJME-${target})
+
+	# Make sure the binary directory exists first
+	ExternalProject_Add_StepDependencies(SquirrelJME ${target}
+		NanoCoatBinaryDir)
 endmacro()
 
 # Add steps
@@ -306,7 +376,7 @@ target_include_directories(libEmulatorBase PRIVATE
 	"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/include/3rdparty/jni")
 
 # Libraries for the build
-target_link_directories(libEmulatorBase PRIVATE
+squirreljme_target_link_directories(libEmulatorBase PRIVATE
 	"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin")
 squirreljme_link_libraries_required(libEmulatorBase PUBLIC
 	"${SQUIRRELJME_REQUIRED_LIBS}"

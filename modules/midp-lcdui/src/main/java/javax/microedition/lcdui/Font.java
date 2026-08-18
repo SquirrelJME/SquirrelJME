@@ -9,20 +9,25 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.PencilFontShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilFontFace;
+import cc.squirreljme.jvm.mle.constants.PencilFontParam;
+import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.jvm.mle.exceptions.MLECallErrorCode;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
-import cc.squirreljme.runtime.lcdui.mle.PencilFontProvider;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.ApiStatus;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.NotNull;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -33,7 +38,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  */
 @Api
 public final class Font
-	extends PencilFontProvider
 {
 	/** The monospace font. */
 	@Api
@@ -118,6 +122,9 @@ public final class Font
 	/** The bracket used to access the font. */
 	final PencilFontBracket _font;
 	
+	/** The parameters for the font. */
+	final int[] _fontParams;
+	
 	/** The name of this font. */
 	private final String _name;
 	
@@ -142,18 +149,21 @@ public final class Font
 	 *
 	 * @param __scritch The ScritchUI API.
 	 * @param __bracket The bracket to wrap.
+	 * @param __params Font parameters.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/17
 	 */
-	Font(ScritchInterface __scritch, PencilFontBracket __bracket)
+	Font(ScritchInterface __scritch, PencilFontBracket __bracket,
+		int[] __params)
 		throws NullPointerException
 	{
-		if (__scritch == null || __bracket == null)
+		if (__scritch == null || __bracket == null || __params == null)
 			throw new NullPointerException("NARG");
 		
 		// Store for later
 		this._scritch = __scritch;
 		this._font = __bracket;
+		this._fontParams = __params;
 		
 		// Get information on the font
 		this._name = PencilFontShelf.metricFontName(__bracket);
@@ -166,7 +176,8 @@ public final class Font
 			this._face = Font.FACE_PROPORTIONAL;
 		
 		// Get pixel size of font
-		this._pixelsize = PencilFontShelf.metricPixelSize(__bracket);
+		this._pixelsize = PencilFontShelf.metricPixelSize(__bracket,
+			__params, -1);
 		
 		// Font style directly maps
 		this._style = PencilFontShelf.metricFontStyle(__bracket);
@@ -182,7 +193,8 @@ public final class Font
 	@Api
 	public int charWidth(char __c)
 	{
-		return PencilFontShelf.pixelCharWidth(this._font, __c);
+		return PencilFontShelf.pixelCharWidth(this._font, this._fontParams,
+			__c);
 	}
 	
 	/**
@@ -292,10 +304,22 @@ public final class Font
 		if (this._style == __style && this._pixelsize == __pixelSize)
 			return this;
 		
-		// Derive font
+		// Always use the same parameters as a base
+		int[] oldParams = this._fontParams;
+		int[] newParams = new int[PencilFontParam.NUM_PARAMS];
+		ObjectShelf.arrayCopy(oldParams, 0,
+			newParams, 0, PencilFontParam.NUM_PARAMS);
+		
+		// Set new parameters
+		newParams[PencilFontParam.STYLE] = __style;
+		newParams[PencilFontParam.PIXEL_SIZE] = __pixelSize;
+		
+		// Derive natively, we technically do not have to do the native call
+		// however it is possible that there is a better choice of font that
+		// is exactly or closer to the desired font
 		ScritchInterface scritch = this._scritch;
 		return new Font(scritch, scritch.environment()
-			.fontDerive(this._font, __style, __pixelSize));
+			.fontDerive(this._font, newParams, newParams), newParams);
 	}
 	
 	/**
@@ -317,7 +341,8 @@ public final class Font
 		return this._pixelsize == o._pixelsize &&
 			this._style == o._style &&
 			this._name.equals(o._name) &&
-			PencilFontShelf.equals(this._font, o._font);
+			PencilFontShelf.equals(this._font, this._fontParams,
+				o._font, o._fontParams);
 	}
 	
 	/**
@@ -330,7 +355,8 @@ public final class Font
 	@Api
 	public int getAscent()
 	{
-		return PencilFontShelf.metricPixelAscent(this._font, false);
+		return PencilFontShelf.metricPixelAscent(this._font, this._fontParams,
+			false);
 	}
 	
 	/**
@@ -343,7 +369,8 @@ public final class Font
 	@Api
 	public int getBaselinePosition()
 	{
-		return PencilFontShelf.metricPixelBaseline(this._font);
+		return PencilFontShelf.metricPixelBaseline(
+			this._font, this._fontParams);
 	}
 	
 	/**
@@ -356,7 +383,8 @@ public final class Font
 	@Api
 	public int getDescent()
 	{
-		return PencilFontShelf.metricPixelDescent(this._font, false);
+		return PencilFontShelf.metricPixelDescent(
+			this._font, this._fontParams, false);
 	}
 	
 	/**
@@ -418,7 +446,8 @@ public final class Font
 	@Api
 	public int getLeading()
 	{
-		return PencilFontShelf.metricPixelLeading(this._font);
+		return PencilFontShelf.metricPixelLeading(
+			this._font, this._fontParams);
 	}
 	
 	@Api
@@ -547,6 +576,7 @@ public final class Font
 		
 		// Access this font always
 		PencilFontBracket font = this._font;
+		int[] fontParams = this._fontParams;
 		
 		// Basic width calculation
 		int totalW = 0;
@@ -556,22 +586,11 @@ public final class Font
 			char c = __s.charAt(at);
 			
 			// Add to the width
-			totalW += PencilFontShelf.pixelCharWidth(font, c);
+			totalW += PencilFontShelf.pixelCharWidth(font, fontParams, c);
 		}
 		
 		// Give the total
 		return totalW;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/06/25
-	 */
-	@Override
-	@ApiStatus.Internal
-	protected PencilFontBracket __squirreljmePencilFont()
-	{
-		return this._font;
 	}
 	
 	@Api
@@ -602,6 +621,8 @@ public final class Font
 		PencilFontBracket[] builtin = scritch.environment()
 			.builtinFonts();
 		
+		throw Debugging.todo();
+		/*
 		// Wrap built-in fonts
 		int n = builtin.length;
 		rv = new Font[n]; 
@@ -611,6 +632,8 @@ public final class Font
 		// Cache and use
 		Font._BUILTIN_FONTS = rv;
 		return rv.clone();
+		
+		 */
 	}
 	
 	/**
@@ -704,8 +727,13 @@ public final class Font
 		if (rv != null)
 			return rv;
 		
-		// Use the first found font as the default
-		Font._DEFAULT_FONT = (rv = Font.getAvailableFonts()[0]);
+		// Use a sensible default
+		rv = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN,
+			Font.SIZE_MEDIUM);
+		if (rv == null)
+			rv = Font.getAvailableFonts()[0];
+		
+		Font._DEFAULT_FONT = rv;
 		return rv;
 	}
 	
@@ -751,7 +779,9 @@ public final class Font
 	 * @since 2017/05/25
 	 */
 	@Api
-	public static Font getFont(int __face, int __style, int __size)
+	public static Font getFont(
+		@MagicConstant(flagsFromClass = Font.class) int __face,
+		int __style, int __size)
 		throws IllegalArgumentException
 	{
 		/* {@squirreljme.error EB1y Invalid font face specified. (The face)} */
@@ -766,37 +796,16 @@ public final class Font
 			throw new IllegalArgumentException(String.format("EB1z %d",
 				__size));
 		
-		// Get fonts that might exist
-		Font[] scan = Font.getAvailableFonts(__face, __style,
-			FontUtilities.logicalSizeToPixelSize(__size));
+		// Setup parameters for input/output
+		int[] params = new int[PencilFontParam.NUM_PARAMS];
+		params[PencilFontParam.STYLE] = __style;
+		params[PencilFontParam.PIXEL_SIZE] = 
+			FontUtilities.logicalSizeToPixelSize(__size);
 		
-		// If no fonts were found, use a default font with a derived pixel
-		// size as such
-		if (scan.length == 0)
-		{
-			// Try to derive this font to the style and size, but if that
-			// fails then just do the style
-			Font d = Font.getDefaultFont();
-			try
-			{
-				return d.deriveFont(__style,
-					FontUtilities.logicalSizeToPixelSize(__size));
-			}
-			catch (IllegalArgumentException e)
-			{
-				try
-				{
-					return d.deriveFont(__style, d.getPixelSize());
-				}
-				catch (IllegalArgumentException f)
-				{
-					return d;
-				}
-			}
-		}
-		
-		// Use the first font, since it should be correct hopefully
-		return scan[0];
+		// Lookup font
+		return Font.__byFace(FontUtilities.faceToPencil(__face),
+			__style, FontUtilities.logicalSizeToPixelSize(__size), 
+			params);
 	}
 	
 	/**
@@ -818,68 +827,19 @@ public final class Font
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		Font faceOnly = null;
-		Font faceSize = null;
-		Font name = null;
-		Font any = null;
+		// TODO: Use a real font name
+		Debugging.todoNote("Use real font name and derivation.");
 		
-		// Derive the face of the font
-		int face = Font.__commonFace(__name);
+		// Fallback to a logical font in the event the font does not actually
+		// exist in the system
+		// Setup parameters for input/output
+		int[] params = new int[PencilFontParam.NUM_PARAMS];
+		params[PencilFontParam.STYLE] = __style;
+		params[PencilFontParam.PIXEL_SIZE] = __pxs;
 		
-		// Find the closest font then derive it
-		for (Font f : Font.getAvailableFonts())
-		{
-			// Same name?
-			if (Font.__compatibleName(__name, f.getFontName()))
-			{
-				// Exactly the desired size?
-				if (f.getPixelSize() == __pxs)
-					return f;
-				
-				// First font of this name?
-				if (name == null)
-					name = f;
-				
-				// Closest in terms of size?
-				else if (Math.abs(f.getPixelSize() - __pxs) <
-					Math.abs(name.getPixelSize() - __pxs))
-					name = f;
-			}
-			
-			// Same face and same size
-			else if (faceSize == null && f.getFace() == face &&
-				f.getPixelSize() == __pxs)
-				faceSize = f;
-			
-			// Fallback font, assuming the face is the same
-			else if (faceOnly == null && f.getFace() == face)
-				faceOnly = f;
-			
-			// Any font
-			else if (any == null)
-				any = f;
-		}
-		
-		// Derive the closest font
-		if (name != null)
-			return name.deriveFont(__style, __pxs);
-		
-		// First face match with the same size?
-		else if (faceSize != null)
-			return faceSize.deriveFont(__style, __pxs);
-		
-		// Or the first face font?
-		else if (faceOnly != null)
-			return faceOnly.deriveFont(__style, __pxs);
-		
-		// Or the worst case, any available font
-		else if (any != null)
-			return any.deriveFont(__style, __pxs);
-		
-		/* {@squirreljme.error EB20 Could not locate a font by the given
-		name. (The font name; The style; The pixel size)} */
-		throw new IllegalArgumentException(__error__("EB20",
-			__name, __style, __pxs));
+		// Lookup font
+		return Font.__byFace(FontUtilities.faceNameToPencil(__name),
+			__style, __pxs, params);
 	}
 	
 	/**
@@ -933,106 +893,59 @@ public final class Font
 	}
 	
 	/**
-	 * Returns the common face for the given logical font name.
+	 * Locates the given font by face.
 	 *
-	 * @param __name The name of the font to locate.
-	 * @return The face of the logical font, will return {@code -1} if there
-	 * is no corresponding face.
+	 * @param __face The face to locate.
+	 * @param __style The style of the font.
+	 * @param __pixelSize The size of the font.
+	 * @param __params The parameters of the font.
+	 * @return The resultant font.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2024/11/30
+	 * @since 2026/06/15
 	 */
-	private static int __commonFace(String __name)
+	private static @NotNull Font __byFace(
+		@MagicConstant(flagsFromClass = PencilFontFace.class) int __face,
+		int __style, int __pixelSize, int[] __params)
 		throws NullPointerException
 	{
-		if (__name == null)
+		if (__params == null)
 			throw new NullPointerException("NARG");
 		
-		// Proportional
-		if (__name.equalsIgnoreCase("Serif") ||
-			__name.equalsIgnoreCase("SansSerif") ||
-			__name.equalsIgnoreCase("Dialog") ||
-			__name.equalsIgnoreCase("DialogInput") ||
-			__name.equalsIgnoreCase("Helvetica") ||
-			__name.equalsIgnoreCase("Arial") ||
-			__name.equalsIgnoreCase("Times New Roman"))
-			return Font.FACE_PROPORTIONAL;
+		// Try to locate a font with a matching face and parameter set
+		DisplayManager manager = DisplayManager.instance();
+		ScritchInterface scritch = manager.scritch();
+		PencilFontBracket found;
 		
-		// Monospaced
-		else if (__name.equalsIgnoreCase("Monospace") ||
-			__name.equalsIgnoreCase("Monospaced") ||
-			__name.equalsIgnoreCase("Courier") ||
-			__name.equalsIgnoreCase("Courier New"))
-			return Font.FACE_MONOSPACE;
-		
-		// Unknown, do not consider it in a match
-		return -1;
-	}
-	
-	/**
-	 * Is the name of this font compatible?
-	 *
-	 * @param __want The name that is desired.
-	 * @param __font The name of the font.
-	 * @return If this is a compatible name.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2024/12/01
-	 */
-	private static boolean __compatibleName(String __want, String __font)
-		throws NullPointerException
-	{
-		if (__want == null || __font == null)
-			throw new NullPointerException("NARG");
-		
-		// Same exact name
-		if (__want.equalsIgnoreCase(__font))
-			return true;
-		
-		// We can have a copy/paste of names, which is a giant mess, or we
-		// can just boil the names down to integers and compare them. Do note
-		// that the initial values should not be the same in the event there
-		// is no name match!
-		int wantIs = -1;
-		int fontIs = -2;
-		for (int i = 0; i < 2; i++)
+		// Finding a font may fail
+		try
 		{
-			// Determine the class of the font
-			int is = -(i + 1);
-			String with = (i == 0 ? __want : __font);
-			switch (with.toLowerCase())
-			{
-				case "serif":
-				case "times new roman":
-					is = 1;
-					break;
-					
-				case "monospace":
-				case "monospaced":
-				case "courier":
-				case "courier new":
-					is = 2;
-					break;
-					
-				case "sansserif":
-				case "dialog":
-				case "dialoginput":
-				case "helvetica":
-				case "arial":
-					is = 3;
-					break;
-			}
+			found = scritch.environment().fontByFace(__face, __params, 
+				__params);
+		}
+		catch (MLECallError __e)
+		{
+			// Some other distinction?
+			if (__e.distinction != MLECallErrorCode.INVALID_FONT)
+				throw __e;
 			
-			// Remember the class for later comparison
-			if (is > 0)
-			{
-				if (i == 0)
-					wantIs = is;
-				else
-					fontIs = is;
-			}
+			// Consider as not found
+			found = null;
 		}
 		
-		// Same class of font?
-		return wantIs == fontIs;
+		// If not found, fallback to the very baseline fallback font just so
+		// something actually works
+		if (found == null)
+		{
+			// Use this font
+			found = scritch.environment().builtinFonts()[0];
+			
+			// Restore parameters
+			__params[PencilFontParam.STYLE] = __style;
+			__params[PencilFontParam.PIXEL_SIZE] = __pixelSize;
+		}
+		
+		// Setup font otherwise
+		return new Font(scritch, found, __params);
 	}
 }
 

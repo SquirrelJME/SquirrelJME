@@ -54,7 +54,7 @@ class __ExecDisplayClose__
 		throws MLECallError
 	{
 		/* Debug. */
-		Debugging.debugNote("TODO: Check for exit command!");
+		Debugging.todoNote("TODO: Check for exit command!");
 		
 		// Obtain the application we are actually running, since this
 		// could be done different for different ones

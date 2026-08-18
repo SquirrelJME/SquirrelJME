@@ -12,7 +12,6 @@
 
 # Needed for C compiler checks
 include(CheckCCompilerFlag)
-include(CheckLinkerFlag)
 include(CheckIncludeFile)
 include(CheckLibraryExists)
 include(CheckSymbolExists)
@@ -33,9 +32,9 @@ endif()
 
 # Do not install with RPATH, CMake does relinking in build/install which
 # we do not want as we give away whatever executes and such
-set(CMAKE_SKIP_RPATH YES)
-set(CMAKE_BUILD_WITH_INSTALL_RPATH NO)
-set(CMAKE_SKIP_INSTALL_RPATH YES)
+set(CMAKE_SKIP_RPATH TRUE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+set(CMAKE_SKIP_INSTALL_RPATH TRUE)
 
 # LibRetro build for emscripten can never be static
 if(SQUIRRELJME_IS_LIBRETRO)
@@ -51,16 +50,16 @@ if(SQUIRRELJME_IS_LIBRETRO)
 #		set(CMAKE_CXX_CREATE_STATIC_LIBRARY
 #			"emcc -o <TARGET> -shared <LINK_FLAGS> <OBJECTS>")
 		set(EMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES
-			OFF)
+			FALSE)
 	elseif(LIBRETRO_STATIC)
-		set(LIBRETRO_REALLY_STATIC ON)
+		set(LIBRETRO_REALLY_STATIC TRUE)
 	endif()
 endif()
 
 # If we cannot run the code we are building then we cannot actually test code
 #if(NOT SQUIRRELJME_CROSS_BUILD)
 #	include(CheckCSourceRuns)
-#	set(CMAKE_REQUIRED_QUIET ON)
+#	set(CMAKE_REQUIRED_QUIET TRUE)
 #	check_c_source_runs("${CMAKE_SOURCE_DIR}/cmake/utils/simple.c"
 #		SQUIRRELJME_SIMPLE_SOURCE_RUNS)
 #	if(NOT SQUIRRELJME_SIMPLE_SOURCE_RUNS)
@@ -70,18 +69,18 @@ endif()
 #			"${SQUIRRELJME_SIMPLE_SOURCE_RUNS}), disabling tests.")
 #
 #		# Disable testing
-#		set(SQUIRRELJME_ENABLE_TESTING OFF)
+#		set(SQUIRRELJME_ENABLE_TESTING FALSE)
 #	endif()
 #else()
 #	# Different host, assume we cannot run the target code
-#	set(SQUIRRELJME_ENABLE_TESTING OFF)
+#	set(SQUIRRELJME_ENABLE_TESTING FALSE)
 #endif()
 
 # Are implibs used?
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
-	set(SQUIRRELJME_HAS_IMPLIB YES)
+	set(SQUIRRELJME_HAS_IMPLIB TRUE)
 else()
-	set(SQUIRRELJME_HAS_IMPLIB NO)
+	set(SQUIRRELJME_HAS_IMPLIB FALSE)
 endif()
 
 # CMake 3.13 added many things!
@@ -90,14 +89,14 @@ if(${CMAKE_VERSION} VERSION_LESS_EQUAL "3.12")
 	if(NOT DEFINED SQUIRRELJME_ENABLE_PACKING)
 		message(WARNING "Disabling packing due to old CMake.")
 
-		set(SQUIRRELJME_ENABLE_PACKING OFF)
+		set(SQUIRRELJME_ENABLE_PACKING FALSE)
 	endif()
 else()
 	# Enable CPacking and
 	if(NOT DEFINED SQUIRRELJME_ENABLE_PACKING)
 		message(STATUS "Enabling packing...")
 
-		set(SQUIRRELJME_ENABLE_PACKING ON)
+		set(SQUIRRELJME_ENABLE_PACKING TRUE)
 	endif()
 endif()
 
@@ -107,7 +106,7 @@ macro(squirreljme_static_executable target)
 		CMAKE_COMPILER_IS_GNUCXX OR
 		CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
 		CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-		target_link_options(${target} BEFORE PRIVATE
+		squirreljme_target_link_options(${target} BEFORE PRIVATE
 			"-static")
 	elseif(MSVC OR
 		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
@@ -118,7 +117,7 @@ macro(squirreljme_static_executable target)
 		#	"/MT")
 
 		# And as such we cannot specify a library to use here
-		#target_link_options(${target} BEFORE PRIVATE
+		#squirreljme_target_link_options(${target} BEFORE PRIVATE
 		#	"/NODEFAULTLIB:library")
 	endif()
 endmacro()
@@ -246,8 +245,12 @@ endfunction()
 function(squirreljme_implib_path result target)
 	# Determine the name of the library
 	squirreljme_library_path(implibPath ${target})
-	set(${result} "${implibPath}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-		PARENT_SCOPE)
+	string(REPLACE
+		"${CMAKE_SHARED_LIBRARY_SUFFIX}" "${CMAKE_STATIC_LIBRARY_SUFFIX}"
+		implibPath "${implibPath}")
+
+	# Set resultant path
+	set(${result} "${implibPath}" PARENT_SCOPE)
 endfunction()
 
 # Generate exports, mostly for Windows
@@ -259,12 +262,12 @@ function(squirreljme_shared_library_exports target)
 	if(SQUIRRELJME_HAS_IMPLIB)
 		# MSVC?
 		if(MSVC)
-			target_link_options(${target} PRIVATE
+			squirreljme_target_link_options(${target} PRIVATE
 				"/IMPLIB:${impLibPath}")
 
 		# Mingw32 or Mingw-w64
 		elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-			target_link_options(${target} PRIVATE
+			squirreljme_target_link_options(${target} PRIVATE
 				"-Wl,--out-implib,${impLibPath}")
 		endif()
 	endif()
@@ -278,58 +281,129 @@ if(MSVC AND "${MSVC_VERSION}" LESS_EQUAL 1400)
 	add_definitions(-D_MBCS)
 endif()
 
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	# Turn some warnings into errors
-	check_c_compiler_flag("-Werror=implicit-function-declaration"
-		SQUIRRELJME_HAS_GCC_WERROR_IMPLICIT)
-	if (SQUIRRELJME_HAS_GCC_WERROR_IMPLICIT)
-		add_compile_options("-Werror=implicit-function-declaration")
+# Simplifies checking and setting a compiler flag
+macro(squirreljme_check_set_compiler_flag lang flag yesDef)
+	# Is this a valid flag?
+	squirreljme_bp_check_compiler_flag(${lang}
+		${flag}
+		${yesDef})
+
+	# Add compile definition to set this
+	if("${${yesDef}}" STREQUAL "1" OR
+		"${${yesDef}}" STREQUAL "ON" OR
+		"${${yesDef}}" STREQUAL "TRUE" OR
+		"${${yesDef}}" STREQUAL "YES")
+		add_compile_options(${flag})
 	endif()
+endmacro()
+
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	# From the GCC manual: Control whether or not the compiler uses IEEE
+	# floating-point comparisons. These correctly handle the case where the
+	# result of a comparison is unordered.
+	squirreljme_check_set_compiler_flag(C
+		"-mieee-fp"
+		SQUIRRELJME_HAS_GCC_MIEE_FP)
+
+	# From the GCC manual: Set 80387 floating-point precision to 32, 64 or 80
+	# bits.
+	squirreljme_check_set_compiler_flag(C
+		"-mpc64"
+		SQUIRRELJME_HAS_GCC_MPC64)
+
+	# From the GCC manual: Store float intermediates
+	squirreljme_check_set_compiler_flag(C
+		"-ffloat-store"
+		SQUIRRELJME_HAS_GCC_FFLOAT_STORE)
+
+	# Turn some warnings into errors
+	squirreljme_check_set_compiler_flag(C
+		"-Werror=implicit-function-declaration"
+		SQUIRRELJME_HAS_GCC_WERROR_IMPLICIT)
 
 	# Make symbols hidden by default in GCC, which may prefer them visible
-	check_c_compiler_flag("-fvisibility=hidden"
+	squirreljme_check_set_compiler_flag(C
+		"-fvisibility=hidden"
 		SQUIRRELJME_HAS_GCC_FVISIBILITY_HIDDEN)
-	if(SQUIRRELJME_HAS_GCC_FVISIBILITY_HIDDEN)
-		add_compile_options("-fvisibility=hidden")
-	endif()
 
 	# Pedantic warnings?
-	check_c_compiler_flag("-Wpedantic" SQUIRRELJME_HAS_WARN_PEDANTIC)
-	if(SQUIRRELJME_HAS_WARN_PEDANTIC)
-		add_compile_options("-Wpedantic")
-	endif()
+	squirreljme_check_set_compiler_flag(C
+		"-Wpedantic"
+		SQUIRRELJME_HAS_WARN_PEDANTIC)
 
 	# Can we set the no execute flag for the link?
-	check_c_compiler_flag("-Wl,-z,noexecstack" SQUIRRELJME_HAS_NOEXECSTACK)
-	if(SQUIRRELJME_HAS_NOEXECSTACK)
-		add_compile_options("-Wl,-z,noexecstack")
-	endif()
+	squirreljme_check_set_compiler_flag(C
+		"-Wl,-z,noexecstack"
+		SQUIRRELJME_HAS_NOEXECSTACK)
 endif()
 
+# Checks if the specific header exists
+macro(squirreljme_check_include_file header yesDef noDef)
+	# Run the check for it
+	check_include_file("${header}" ${yesDef})
+
+	# Note that this condition needs to be inverted due to CMake
+	message(DEBUG "${header}: ${${yesDef}}")
+	if(NOT ${yesDef})
+		add_compile_definitions(${noDef}=1)
+	else()
+		add_compile_definitions(${yesDef}=1)
+	endif()
+endmacro()
+
+# Checks if the specific symbol exists
+macro(squirreljme_check_symbol_exists symbol header yesDef noDef)
+	# Run the check for it
+	check_symbol_exists("${symbol}" "${header}" ${yesDef})
+
+	# Note that this condition needs to be inverted due to CMake
+	message(DEBUG "${symbol} in ${header}: ${${yesDef}}")
+	if(NOT ${yesDef})
+		add_compile_definitions(${noDef}=1)
+	else()
+		add_compile_definitions(${yesDef}=1)
+	endif()
+endmacro()
+
 # Quick compilation check
-macro(squirreljme_try_compile noun target source cdef)
+macro(squirreljme_try_compile noun source yesDef noDef)
+	# Check compile of a specific symbol
 	message(STATUS "Checking compile of ${noun}...")
-	try_compile(${target}
+	try_compile(${yesDef}
 		"${CMAKE_CURRENT_BINARY_DIR}"
 		SOURCES "${CMAKE_CURRENT_LIST_DIR}/${source}.c"
 		CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
 			"-DINCLUDE_DIRECTORIES=${CMAKE_SOURCE_DIR}/include"
 		LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT}
-		OUTPUT_VARIABLE ${target}_OUTPUT)
+		OUTPUT_VARIABLE ${yesDef}_OUTPUT)
 
-	message(DEBUG "${noun}: ${${target}_OUTPUT}")
-	message(STATUS "${noun}: ${${target}}")
-	if(NOT ${target})
+	# Note that this condition needs to be inverted due to CMake
+	message(DEBUG "${noun}: ${${yesDef}_OUTPUT}")
+	message(STATUS "${noun}: ${${yesDef}}")
+	if(NOT ${yesDef})
 		add_compile_definitions(
-			${cdef}=1)
+			${noDef}=1)
+	else()
+		add_compile_definitions(
+			${yesDef}=1)
 	endif()
+endmacro()
+
+# Quick compilation check
+macro(squirreljme_try_compile_no noun noDef)
+	# Debugging
+	message(STATUS "${noun} forced to be not-detected...")
+
+	# Always use the passed no-definition
+	add_compile_definitions(
+		${noDef}=1)
 endmacro()
 
 # Do not set SONAME for a target
 macro(squirreljme_no_soname target)
 	set_target_properties(${target} PROPERTIES
-		NO_SONAME YES
-		NO_SYSTEM_FROM_IMPORTED YES)
+		NO_SONAME TRUE
+		NO_SYSTEM_FROM_IMPORTED TRUE)
 endmacro()
 
 # Used to remove any NOTFOUNDs from variables
@@ -342,214 +416,27 @@ macro(squirreljme_notfound_strip var)
 		unset(${var} CACHE)
 	endif()
 
-	if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.13")
+	if(squirreljme_bp_version_3_13)
 		if("$CACHE{${var}}" MATCHES "-NOTFOUND$")
 			unset(${var} CACHE)
 		endif()
 	endif()
 endmacro()
 
-# float.h available?
-check_include_file("float.h" SJME_CONFIG_HAS_FLOAT_H)
-if(NOT SJME_CONFIG_HAS_FLOAT_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_FLOAT_H=1)
-endif()
-
-# dlfcn.h available?
-check_include_file("dlfcn.h" SJME_CONFIG_HAS_DLFCN_H)
-if(NOT SJME_CONFIG_HAS_DLFCN_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_DLFCN_H=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_DLFCN_H=1)
-endif()
-
-# stdarg.h available?
-check_include_file("stdarg.h" SJME_CONFIG_HAS_STDARG_H)
-if(NOT SJME_CONFIG_HAS_STDARG_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_STDARG_H=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_STDARG_H=1)
-endif()
-
-# inttypes.h available?
-check_include_file("inttypes.h" SJME_CONFIG_HAS_INTTYPES_H)
-if(NOT SJME_CONFIG_HAS_INTTYPES_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_INTTYPES_H=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_INTTYPES_H=1)
-endif()
-
-# varargs.h available?
-check_include_file("varargs.h" SJME_CONFIG_HAS_VARARGS_H)
-if(NOT SJME_CONFIG_HAS_VARARGS_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_VARARGS_H=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_VARARGS_H=1)
-endif()
-
-# threads.h available?
-check_include_file("threads.h" SJME_CONFIG_HAS_THREADS_H)
-if(NOT SJME_CONFIG_HAS_THREADS_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_C11_THREADS=1)
-endif()
-
-# sys/socket.h available?
-check_include_file("sys/socket.h" SJME_CONFIG_HAS_SYS_SOCKET_H)
-if(NOT SJME_CONFIG_HAS_SYS_SOCKET_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_SYS_SOCKET_H=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_SYS_SOCKET_H=1)
-endif()
-
-# ctype.h available?
-check_include_file("ctype.h" SJME_CONFIG_HAS_CTYPE_H)
-if(NOT SJME_CONFIG_HAS_CTYPE_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_CTYPE_H=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_CTYPE_H=1)
-endif()
-
-# netinet/in.h available?
-check_include_file("netinet/in.h" SJME_CONFIG_HAS_NETINET_IN_H)
-if(NOT SJME_CONFIG_HAS_NETINET_IN_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_NETINET_IN_H=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_NETINET_IN_H=1)
-endif()
-
-# sys/ioctl.h available?
-check_include_file("sys/ioctl.h" SJME_CONFIG_HAS_SYS_IOCTL_H)
-if(NOT SJME_CONFIG_HAS_SYS_IOCTL_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_SYS_IOCTL_H=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_SYS_IOCTL_H=1)
-endif()
-
-# stropts.h available?
-check_include_file("stropts.h" SJME_CONFIG_HAS_STROPTS_H)
-if(NOT SJME_CONFIG_HAS_STROPTS_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_STROPTS_H=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_STROPTS_H=1)
-endif()
-
-# errno.h available?
-check_include_file("errno.h" SJME_CONFIG_HAS_ERRNO_H)
-if(NOT SJME_CONFIG_HAS_ERRNO_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_ERRNO_H=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_ERRNO_H=1)
-endif()
-
-# poll.h available?
-check_include_file("poll.h" SJME_CONFIG_HAS_POLL_H)
-if(NOT SJME_CONFIG_HAS_POLL_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_POLL_H=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_POLL_H=1)
-endif()
-
-# stdint.h available?
-check_include_file("stdint.h" SJME_CONFIG_HAS_STDINT_H)
-if(NOT SJME_CONFIG_HAS_STDINT_H)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_STDINT_H=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_STDINT_H=1)
-endif()
-
-# Is the SDK version header information available?
-check_include_file("sdkddkver.h" WIN32_SDKDDKVER_INCLUDE)
-if(WIN32_SDKDDKVER_INCLUDE)
-	add_compile_definitions(SJME_CONFIG_HAS_SDKDDKVER_H=1)
-endif()
-
-# getenv()?
-check_symbol_exists("getenv" "stdlib.h" SJME_CONFIG_HAS_GETENV)
-if(NOT SJME_CONFIG_HAS_GETENV)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_GETENV=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_GETENV=1)
-endif()
-
-# strcasecmp()?
-check_symbol_exists("strcasecmp" "strings.h" SJME_CONFIG_HAS_STRCASECMP)
-if(NOT SJME_CONFIG_HAS_STRCASECMP)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_STRCASECMP=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_STRCASECMP=1)
-endif()
-
-# stricmp()?
-check_symbol_exists("stricmp" "string.h" SJME_CONFIG_HAS_STRICMP)
-if(NOT SJME_CONFIG_HAS_STRICMP)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_STRICMP=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_STRICMP=1)
-endif()
-
-# toupper()?
-check_symbol_exists("toupper" "ctype.h" SJME_CONFIG_HAS_TOUPPER)
-if(NOT SJME_CONFIG_HAS_TOUPPER)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_TOUPPER=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_TOUPPER=1)
-endif()
-
-# tolower()?
-check_symbol_exists("tolower" "ctype.h" SJME_CONFIG_HAS_TOLOWER)
-if(NOT SJME_CONFIG_HAS_TOLOWER)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_TOLOWER=1)
-else()
-	add_compile_definitions(SJME_CONFIG_HAS_TOLOWER=1)
-endif()
-
-# snprintf() available?
-squirreljme_try_compile("fdatasync()"
-	SJME_CONFIG_HAS_FDATASYNC
-	"tryFDataSync"
-	SJME_CONFIG_HAS_NO_FDATASYNC)
-if(NOT SJME_CONFIG_HAS_NO_FDATASYNC)
-	add_compile_definitions(SJME_CONFIG_HAS_NO_FDATASYNC=1)
-elseif(SJME_CONFIG_HAS_FDATASYNC)
-	add_compile_definitions(SJME_CONFIG_HAS_FDATASYNC=1)
-endif()
-
-# snprintf() available?
-squirreljme_try_compile("snprintf()"
-	SQUIRRELJME_SNPRINTF_TRY_VALID
-	"trySNPrintF"
-	SJME_CONFIG_HAS_NO_SNPRINTF)
-
-# vsnprintf() available?
-squirreljme_try_compile("vsnprintf() with stdarg.h"
-	SQUIRRELJME_VSNPRINTFA_TRY_VALID
-	"tryVSNPrintFA"
-	SJME_CONFIG_HAS_NO_VSNPRINTFA)
-squirreljme_try_compile("vsnprintf() with varargs.h"
-	SQUIRRELJME_VSNPRINTFV_TRY_VALID
-	"tryVSNPrintFV"
-	SJME_CONFIG_HAS_NO_VSNPRINTFV)
-
-# Can use thread local?
-squirreljme_try_compile("sjme_threadLocal"
-	SQUIRRELJME_C11_THREADS_TRY_THREAD_LOCAL
-	"tryThreadLocal"
-	SJME_CONFIG_HAS_NO_THREAD_LOCAL)
-
 # Statically link in libgcc?
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	# Plain variant
-	check_linker_flag(C "-static-libgcc"
+	squirreljme_bp_check_linker_flag(C "-static-libgcc"
 		SJME_CONFIG_HAS_STATIC_LIBGCC)
 	message(STATUS "-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC}")
 
 	# -Wl variant
-	check_linker_flag(C "-Wl,-static-libgcc"
+	squirreljme_bp_check_linker_flag(C "-Wl,-static-libgcc"
 			SJME_CONFIG_HAS_STATIC_LIBGCC_WL)
 	message(STATUS "-Wl,-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_WL}")
 
 	# LINKER: variant
-	check_linker_flag(C "LINKER:-static-libgcc"
+	squirreljme_bp_check_linker_flag(C "LINKER:-static-libgcc"
 		SJME_CONFIG_HAS_STATIC_LIBGCC_LINK)
 	message(STATUS
 		"LINKER:-static-libgcc: ${SJME_CONFIG_HAS_STATIC_LIBGCC_LINK}")
@@ -586,7 +473,7 @@ message(STATUS "System Required Libraries: ${SQUIRRELJME_REQUIRED_LIBS}")
 function(squirreljme_always_fpic target)
 	if(SQUIRRELJME_ENABLE_FPIC)
 		set_target_properties(${target} PROPERTIES
-			POSITION_INDEPENDENT_CODE ON)
+			POSITION_INDEPENDENT_CODE TRUE)
 	endif()
 endfunction()
 
@@ -596,15 +483,15 @@ function(squirreljme_target_link_fixes target)
 
 	# Static libgcc?
 	if(SJME_CONFIG_HAS_STATIC_LIBGCC)
-		target_link_options(${target} PRIVATE
+		squirreljme_target_link_options(${target} PRIVATE
 			"-static-libgcc")
 	# Static libgcc (-Wl)?
 	elseif(SJME_CONFIG_HAS_STATIC_LIBGCC_WL)
-		target_link_options(${target} PRIVATE
+		squirreljme_target_link_options(${target} PRIVATE
 			"-Wl,-static-libgcc")
 	# Static libgcc (LINKER:)?
 	elseif(SJME_CONFIG_HAS_STATIC_LIBGCC_LINK)
-		target_link_options(${target} PRIVATE
+		squirreljme_target_link_options(${target} PRIVATE
 			"LINKER:-static-libgcc")
 	endif()
 endfunction()
@@ -667,15 +554,25 @@ function(squirreljme_link_libraries target scope)
 				# Object?
 				if("${type}" STREQUAL "OBJECT_LIBRARY")
 					# Add all objects to be linked in
-					list(APPEND objects
+					if(squirreljme_bp_version_3_12)
+						list(APPEND objects
 						"$<TARGET_GENEX_EVAL:${lib},$<TARGET_OBJECTS:${lib}>>")
+					else()
+						list(APPEND objects
+							"$<TARGET_OBJECTS:${lib}>")
+					endif()
 
 				# Static or shared?
 				elseif("${type}" STREQUAL "STATIC_LIBRARY" OR
 					"${type}" STREQUAL "SHARED_LIBRARY")
 					# Just link against the object
-					list(APPEND nonObjects
+					if(squirreljme_bp_version_3_12)
+						list(APPEND nonObjects
 						"$<TARGET_GENEX_EVAL:${lib},$<TARGET_FILE:${lib}>>")
+					else()
+						list(APPEND nonObjects
+							"$<TARGET_FILE:${lib}>")
+					endif()
 
 				# Unknown target
 				else()
@@ -765,6 +662,22 @@ function(squirreljme_link_libraries_required target scope)
 	squirreljme_target_link_fixes(${target})
 endfunction()
 
+# Rewrites a target property
+function(squirreljme_target_property_rewrite target property from to)
+	# Get the option
+	get_target_property(value ${target} ${property})
+
+	# Only change if it was actually found
+	if(NOT "${value}" STREQUAL "value-NOTFOUND")
+		# Perform a standard replace on it
+		string(REGEX REPLACE "${from}" "${to}" result "${value}")
+
+		# Set new property value
+		set_target_properties(${target} PROPERTIES
+			${property} "${result}")
+	endif()
+endfunction()
+
 # Do not use .lib suffix for Windows libraries for mingw32/mingw-w64
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" AND
 	NOT (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX))
@@ -782,11 +695,5 @@ if("${SQUIRRELJME_ARCH}" STREQUAL "ia32" OR
 			add_compile_definitions("SJME_CONFIG_HAS_ASM_INTEL=1")
 			add_compile_options("-masm=intel")
 		endif()
-	endif()
-endif()
-
-# Disable SEH on Windows
-if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
-	if(SJME_CONFIG_HAS_SEH_DISABLE_GCC)
 	endif()
 endif()

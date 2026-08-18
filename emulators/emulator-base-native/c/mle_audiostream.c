@@ -13,6 +13,7 @@
 #include "lib/scritchaudio/scritchaudio.h"
 
 #define FORWARD_CLASS "cc/squirreljme/jvm/mle/AudioStreamShelf"
+#define FORWARD_CLASS_NAME AudioStream
 #define FORWARD_NATIVE_CLASS "cc/squirreljme/emulator/EmulatedAudioStreamShelf"
 
 #define FORWARD_DESC_attach \

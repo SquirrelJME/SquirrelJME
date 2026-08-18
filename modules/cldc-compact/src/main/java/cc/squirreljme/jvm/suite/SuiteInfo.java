@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.suite;
 
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -20,21 +21,27 @@ import java.util.Objects;
  *
  * @since 2017/11/30
  */
+@SquirrelJMEVendorApi
 public final class SuiteInfo
 {
 	/** The manifest for this suite. */
+	@SquirrelJMEVendorApi
 	protected final JavaManifest manifest;
 	
 	/** The type of suite this is. */
+	@SquirrelJMEVendorApi
 	protected final SuiteType type;
 	
 	/** The suite name. */
+	@SquirrelJMEVendorApi
 	protected final SuiteName name;
 	
 	/** The suite vendor. */
+	@SquirrelJMEVendorApi
 	protected final SuiteVendor vendor;
 	
 	/** The suite version. */
+	@SquirrelJMEVendorApi
 	protected final SuiteVersion version;
 	
 	/** Required dependency information. */
@@ -54,6 +61,7 @@ public final class SuiteInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/04
 	 */
+	@SquirrelJMEVendorApi
 	public SuiteInfo(JavaManifest __man)
 		throws InvalidSuiteException, NullPointerException
 	{
@@ -92,6 +100,7 @@ public final class SuiteInfo
 	 * @return The dependencies required by this suite.
 	 * @since 2017/12/04
 	 */
+	@SquirrelJMEVendorApi
 	public final DependencyInfo dependencies()
 	{
 		Reference<DependencyInfo> ref = this._dependencies;
@@ -110,6 +119,7 @@ public final class SuiteInfo
 	 * @return The manifest suite.
 	 * @since 2017/12/05
 	 */
+	@SquirrelJMEVendorApi
 	public final JavaManifest manifest()
 	{
 		return this.manifest;
@@ -121,6 +131,7 @@ public final class SuiteInfo
 	 * @return The name.
 	 * @since 2017/12/31
 	 */
+	@SquirrelJMEVendorApi
 	public final SuiteName name()
 	{
 		return this.name;
@@ -132,6 +143,7 @@ public final class SuiteInfo
 	 * @return The provided dependencies for this suite.
 	 * @since 2017/12/04
 	 */
+	@SquirrelJMEVendorApi
 	public final ProvidedInfo provided()
 	{
 		Reference<ProvidedInfo> ref = this._provided;
@@ -150,6 +162,7 @@ public final class SuiteInfo
 	 * @return The suite.
 	 * @since 2017/12/05
 	 */
+	@SquirrelJMEVendorApi
 	public final SuiteIdentifier suite()
 	{
 		Reference<SuiteIdentifier> ref = this._suite;
@@ -168,6 +181,7 @@ public final class SuiteInfo
 	 * @return The type of suite.
 	 * @since 2017/12/04
 	 */
+	@SquirrelJMEVendorApi
 	public final SuiteType type()
 	{
 		return this.type;
@@ -179,6 +193,7 @@ public final class SuiteInfo
 	 * @return The vendor.
 	 * @since 2017/12/31
 	 */
+	@SquirrelJMEVendorApi
 	public final SuiteVendor vendor()
 	{
 		return this.vendor;
@@ -190,6 +205,7 @@ public final class SuiteInfo
 	 * @return The version.
 	 * @since 2017/12/31
 	 */
+	@SquirrelJMEVendorApi
 	public final SuiteVersion version()
 	{
 		return this.version;

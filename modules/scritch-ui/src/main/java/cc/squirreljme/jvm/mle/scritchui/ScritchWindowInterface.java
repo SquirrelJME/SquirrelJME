@@ -15,6 +15,8 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchCloseListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchMenuItemActivateListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowFlag;
+import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowState;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
@@ -121,6 +123,26 @@ public interface ScritchWindowInterface
 		throws MLECallError;
 	
 	/**
+	 * Sets the flags for the specified window.
+	 *
+	 * Not all ScritchUI implementations may support specific window flags,
+	 * additionally ScritchUI may implement some flags in software if the
+	 * core implementation does not support it natively.
+	 *
+	 * @param __window The window to set for.
+	 * @param __setFlags The {@link ScritchWindowFlag}s to set.
+	 * @return The actual flags set.
+	 * @throws MLECallError On null arguments or if the flags could not be set.
+	 * @since 2026/07/07
+	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(flagsFromClass = ScritchWindowFlag.class)
+	int windowSetFlags(@NotNull ScritchWindowBracket __window,
+		@MagicConstant(flagsFromClass = ScritchWindowFlag.class)
+			int __setFlags)
+		throws MLECallError;
+	
+	/**
 	 * Sets the menu bar for a window.
 	 *
 	 * @param __window The window to set the menu bar of.
@@ -147,6 +169,26 @@ public interface ScritchWindowInterface
 	void windowSetMenuItemActivateListener(
 		@NotNull ScritchWindowBracket __window,
 		@Nullable ScritchMenuItemActivateListener __listener)
+		throws MLECallError;
+	
+	/**
+	 * Sets the state for the specified window.
+	 *
+	 * Not all ScritchUI implementations may support specific window states,
+	 * additionally ScritchUI may implement some states in software if the
+	 * core implementation does not support it natively.
+	 *
+	 * @param __window The window to set for.
+	 * @param __setState The {@link ScritchWindowState} to set.
+	 * @return The actual state set.
+	 * @throws MLECallError On null arguments or if the state could not be set.
+	 * @since 2026/07/07
+	 */
+	@SquirrelJMEVendorApi
+	@MagicConstant(valuesFromClass = ScritchWindowState.class)
+	int windowSetState(@NotNull ScritchWindowBracket __window,
+		@MagicConstant(valuesFromClass = ScritchWindowState.class)
+			int __setState)
 		throws MLECallError;
 	
 	/**

@@ -9,11 +9,14 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.jvm.mle.RuntimeShelf;
+import cc.squirreljme.jvm.mle.constants.CompatibilityId;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
+import cc.squirreljme.runtime.cldc.CleanupHandler;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
@@ -21,12 +24,14 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
+import cc.squirreljme.runtime.lcdui.event.GenericKeyCodeTranslator;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
 import cc.squirreljme.runtime.midlet.MeepRuntime;
+import java.io.IOException;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -45,14 +50,13 @@ public abstract class Canvas
 	extends Displayable
 {
 	/** Force a buffer to be used? */
-	@SquirrelJMEVendorApi
 	static final boolean _FORCE_BUFFER =
 		false;
 	
 	/** Force a buffer to not be used? */
 	@SquirrelJMEVendorApi
 	static final boolean _FORCE_NO_BUFFER =
-		false;
+		RuntimeShelf.compatibilityId(CompatibilityId.FORCE_LCDUI_BUFFER);
 	
 	/** The maximum number of times to wait when servicing repaints. */
 	private static final int _REPAINT_STOP =
@@ -335,10 +339,28 @@ public abstract class Canvas
 		// Before MIDP 3, all pixels are required to be drawn by the
 		// application... otherwise by default the canvas is wiped
 		this._isOpaque = MeepRuntime.versionLeast(3, 0);
+
+		// Set up a generic keycode translator for MIDP2 and lower, if needed.
+		if (MeepRuntime.versionBefore(3, 0))
+			try
+			{
+				GenericKeyCodeTranslator instance =
+					GenericKeyCodeTranslator.instance();
+				
+				if (instance != null)
+					EventTranslate.translatorDefault(instance);
+			}
+			catch (IllegalArgumentException __e)
+			{
+				__e.printStackTrace();
+				
+				Debugging.notice("Failed to load/parse the generic " +
+					"key translator, it may not be valid.");
+			}
 	}
 	
 	/**
-	 * This is called when this is to be painted. The clipping area will
+	 * This is called when this canvas is to be painted. The clipping area will
 	 * be set to the area that needs updating and as such drawing should only
 	 * occur within the region. Any pixels drawn outside the clipping area
 	 * might not be updated and may have no effect when drawing.
@@ -993,6 +1015,18 @@ public abstract class Canvas
 			
 			// Use the directly passed graphics
 			subGfx = __gfx;
+			
+			// Do not exceed the texture area for the clip as the incoming
+			// paint can have a larger clip than the texture bounds. This can
+			// cause issues for applications which request the size of the
+			// clip to determine the "screen size" rather than using the
+			// actual screen size
+			int clipW = subGfx.getClipWidth();
+			int clipH = subGfx.getClipHeight();
+			if (clipW >= scale.textureMaxW() || clipH >= scale.textureMaxH())
+				subGfx.setClip(subGfx.getClipX(), subGfx.getClipY(),
+					Math.min(clipW, scale.textureMaxW()),
+					Math.min(clipH, scale.textureMaxH()));
 		}
 		
 		// Draw background?
@@ -1058,6 +1092,10 @@ public abstract class Canvas
 					repaintLock.notifyAll();
 				}
 			}
+			
+			// Check for brackets to close, as we have created images
+			if (Canvas._FORCE_BUFFER || scale.requiresBuffer())
+				CleanupHandler.bracketCheck();
 		}
 	}
 }

@@ -11,7 +11,7 @@ package com.sprintpcs.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.midlet.CleanupHandler;
+import cc.squirreljme.runtime.cldc.CleanupHandler;
 
 /**
  * Spring System Utilities.

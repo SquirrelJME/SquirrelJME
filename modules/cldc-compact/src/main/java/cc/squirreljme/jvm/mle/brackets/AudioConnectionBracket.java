@@ -20,5 +20,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 @SquirrelJMEVendorApi
 @GhostObject
 public interface AudioConnectionBracket
+	extends CloseableBracket
 {
 }

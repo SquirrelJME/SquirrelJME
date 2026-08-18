@@ -10,6 +10,7 @@
 #include "lib/scritchui/scritchui.h"
 #include "lib/scritchui/scritchuiPencil.h"
 #include "lib/scritchui/scritchuiTypes.h"
+#include "lib/scritchui/scritchuiStatePencil.h"
 #include "sjme/debug.h"
 #include "sjme/alloc.h"
 
@@ -268,28 +269,6 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure_sjme_jbyte1(
 
 #include "scritchPencilTemplate.c"
 
-sjme_jboolean sjme_scritchpen_isIndexed(
-	sjme_attrInValue sjme_gfx_pixelFormat pf)
-{
-	switch (pf)
-	{
-		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
-		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
-		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
-		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
-		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
-			return SJME_JNI_TRUE;
-		
-		default:
-			return SJME_JNI_FALSE;
-	}
-}
-
 sjme_jboolean sjme_scritchpen_hasAlpha(
 	sjme_attrInValue sjme_gfx_pixelFormat pf)
 {
@@ -310,69 +289,6 @@ sjme_jboolean sjme_scritchpen_hasAlpha(
 		default:
 			return SJME_JNI_FALSE;
 	}
-}
-
-sjme_errorCode sjme_scritchpen_initBuffer(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
-	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
-	sjme_attrInValue sjme_gfx_pixelFormat pf,
-	sjme_attrInPositiveNonZero sjme_jint bw,
-	sjme_attrInPositiveNonZero sjme_jint bh,
-	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
-	sjme_attrInValue sjme_jint tx,
-	sjme_attrInValue sjme_jint ty,
-	sjme_attrInValue sjme_jint sx,
-	sjme_attrInValue sjme_jint sy,
-	sjme_attrInPositiveNonZero sjme_jint sw,
-	sjme_attrInPositiveNonZero sjme_jint sh,
-	sjme_attrInNotNull sjme_scritchui_pencilFont defaultFont,
-	sjme_attrInNullable const sjme_frontEndBindable* copyFrontEnd)
-{
-	sjme_errorCode error;
-	sjme_scritchui_pencil result;
-	sjme_alloc_weak resultWeak;
-	
-	if (inState == NULL || outPencil == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Allocate pencil. */
-	result = NULL;
-	resultWeak = NULL;
-	if (sjme_error_is(error = sjme_alloc_weakNew(inState->pool,
-		sizeof(*result), NULL, (void**)&result, &resultWeak)) ||
-		result == NULL || resultWeak == NULL)
-		return sjme_error_default(error);
-	
-	/* Initialize it. */
-	if (sjme_error_is(error = sjme_scritchpen_initBufferStatic(
-		result, inState,
-		pf, bw, bh, inLockFuncs, inLockFrontEndCopy,
-		tx, ty,
-		sx, sy, sw, sh, defaultFont, copyFrontEnd)))
-		goto fail_initBuffer;
-	
-	/* Common initialize. */
-	if (sjme_error_is(error = inState->intern->initCommon(inState,
-		SJME_SUI_CAST_COMMON(result), SJME_JNI_FALSE,
-		SJME_SCRITCHUI_TYPE_ROOT_STATE)))
-		goto fail_commonInit;
-	
-	/* Success! */
-	*outPencil = result;
-	if (outWeakPencil != NULL)
-		*outWeakPencil = resultWeak;
-	return SJME_ERROR_NONE;
-
-fail_commonInit:
-fail_initBuffer:
-	/* Free before failing. */
-	if (result != NULL)
-		sjme_alloc_free(result);
-	
-	/* Then fail. */
-	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchpen_initBufferStatic(
@@ -451,8 +367,29 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
 	}
 	
 	/* Forward. */
-	return sjme_scritchpen_initStatic(inOutPencil,
-		inState,
+	return sjme_scritchpen_initStatic(inState, inOutPencil,
 		chosen, inLockFuncs, inLockFrontEndCopy, pf,
 		0, 0, sw, sh, bw, defaultFont, copyFrontEnd);
+}
+
+sjme_jboolean sjme_scritchpen_isIndexed(
+	sjme_attrInValue sjme_gfx_pixelFormat pf)
+{
+	switch (pf)
+	{
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536:
+		case SJME_GFX_PIXEL_FORMAT_SHORT_INDEXED65536A:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256:
+		case SJME_GFX_PIXEL_FORMAT_BYTE_INDEXED256A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED4A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED2A:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1:
+		case SJME_GFX_PIXEL_FORMAT_PACKED_INDEXED1A:
+			return SJME_JNI_TRUE;
+		
+		default:
+			return SJME_JNI_FALSE;
+	}
 }

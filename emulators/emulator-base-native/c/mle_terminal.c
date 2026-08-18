@@ -9,101 +9,54 @@
 
 #include <stdio.h>
 
+/* //// MLE /// */
+#define mleGroupId TerminalShelf
+#define mleShelfClass "cc/squirreljme/jvm/mle/TerminalShelf"
+#define mleProxyTarget "cc/squirreljme/emulator/EmulatedTerminalShelf"
+#include "squirreljmeMle.h"
+/* //////////// */
+
 #include "squirreljme.h"
 
-// The class to forward to
-#define TERMINAL_CLASSNAME "cc/squirreljme/emulator/EmulatedTerminalShelf"
+#define MLE_DESC_available DESC_METHOD(DESC_INT, \
+	DESC_PIPE)
+MLE_FUNC_PROXY_STATIC(jint, available)
 
-#define TERMINAL_AVAILABLE_DESC "(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;)I"
-#define TERMINAL_CLOSE_DESC "(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;)I"
-#define TERMINAL_FLUSH_DESC "(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;)I"
-#define TERMINAL_FROMSTANDARD_DESC "(I)Lcc/squirreljme/jvm/mle/brackets/PipeBracket;"
-#define TERMINAL_READ_SINGLE_DESC DESC_METHOD(DESC_INT, DESC_PIPE)
-#define TERMINAL_READIABIII_DESC "(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;[BII)I"
-#define TERMINAL_WRITEIII_DESC "(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;I)I"
-#define TERMINAL_WRITEIABIII_DESC "(Lcc/squirreljme/jvm/mle/brackets/PipeBracket;[BII)I"
+#define MLE_DESC_close DESC_METHOD(DESC_INT, \
+	DESC_PIPE)
+MLE_FUNC_PROXY_STATIC(jint, close)
 
-JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_available(JNIEnv* env,
-	jclass classy, jobject fd)
-{
-	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
-		"available", TERMINAL_CLOSE_DESC,
-		fd);
-}
+#define MLE_DESC_flush DESC_METHOD(DESC_INT, \
+	DESC_PIPE)
+MLE_FUNC_PROXY_STATIC(jint, flush)
 
-JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_close(JNIEnv* env,
-	jclass classy, jobject fd)
-{
-	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
-		"close", TERMINAL_CLOSE_DESC,
-		fd);
-}
+#define MLE_DESC_fromStandard DESC_METHOD(DESC_PIPE, \
+	DESC_INT)
+MLE_FUNC_PROXY_STATIC(jobject, fromStandard)
 
-JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_flush(JNIEnv* env,
-	jclass classy, jobject fd)
-{
-	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
-		"flush", TERMINAL_FLUSH_DESC,
-		fd);
-}
+#define MLE_DESC_read_single DESC_METHOD(DESC_INT, \
+	DESC_PIPE)
+MLE_FUNC_PROXY_STATIC_ALT(jint, read, single)
 
-JNIEXPORT jobject JNICALL Impl_mle_TerminalShelf_fromStandard(JNIEnv* env,
-	jclass classy, jint fd)
-{
-	return forwardCallStaticObject(env, TERMINAL_CLASSNAME,
-		"fromStandard", TERMINAL_FROMSTANDARD_DESC,
-		fd);
-}
+#define MLE_DESC_read_multi DESC_METHOD(DESC_INT, \
+	DESC_PIPE DESC_ARRAY(DESC_BYTE) DESC_INT DESC_INT)
+MLE_FUNC_PROXY_STATIC_ALT(jint, read, multi)
 
-JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_readSingle(
-	JNIEnv* env, jclass classy, jobject fd)
-{
-	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
-		"read", TERMINAL_READ_SINGLE_DESC,
-		fd);
-}
+#define MLE_DESC_write_single DESC_METHOD(DESC_INT, \
+	DESC_PIPE DESC_INT)
+MLE_FUNC_PROXY_STATIC_ALT(jint, write, single)
 
-JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_readIABIII(
-	JNIEnv* env, jclass classy, jobject fd, jbyteArray buf, jint off, jint len)
-{
-	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
-		"read", TERMINAL_READIABIII_DESC,
-		fd, buf, off, len);
-}
+#define MLE_DESC_write_multi DESC_METHOD(DESC_INT, \
+	DESC_PIPE DESC_ARRAY(DESC_BYTE) DESC_INT DESC_INT)
+MLE_FUNC_PROXY_STATIC_ALT(jint, write, multi)
 
-JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_writeII(JNIEnv* env,
-	jclass classy, jobject fd, jint code)
-{
-	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
-		"write", TERMINAL_WRITEIII_DESC,
-		fd, code);
-}
-
-JNIEXPORT jint JNICALL Impl_mle_TerminalShelf_writeIABIII(
-	JNIEnv* env, jclass classy, jobject fd, jbyteArray buf, jint off, jint len)
-{
-	return forwardCallStaticInteger(env, TERMINAL_CLASSNAME,
-		"write", TERMINAL_WRITEIABIII_DESC,
-		fd, buf, off, len);
-}
-
-static const JNINativeMethod mleTerminalMethods[] =
-{
-	{"available", TERMINAL_AVAILABLE_DESC, (void*)Impl_mle_TerminalShelf_available},
-	{"close", TERMINAL_CLOSE_DESC, (void*)Impl_mle_TerminalShelf_close},
-	{"flush", TERMINAL_FLUSH_DESC, (void*)Impl_mle_TerminalShelf_flush},
-	{"fromStandard", TERMINAL_FROMSTANDARD_DESC, (void*)Impl_mle_TerminalShelf_fromStandard},
-	{"read", TERMINAL_READ_SINGLE_DESC,
-		(void*)Impl_mle_TerminalShelf_readSingle},
-	{"read", TERMINAL_READIABIII_DESC, (void*)Impl_mle_TerminalShelf_readIABIII},
-	{"write", TERMINAL_WRITEIII_DESC, (void*)Impl_mle_TerminalShelf_writeII},
-	{"write", TERMINAL_WRITEIABIII_DESC, (void*)Impl_mle_TerminalShelf_writeIABIII},
-};
-
-jint JNICALL mleTerminalInit(JNIEnv* env, jclass classy)
-{
-	return (*env)->RegisterNatives(env,
-		(*env)->FindClass(env, "cc/squirreljme/jvm/mle/TerminalShelf"),
-		mleTerminalMethods, sizeof(mleTerminalMethods) /
-			sizeof(JNINativeMethod));
-}
+MLE_LIST_BEGIN()
+	MLE_LIST_ITEM(available),
+	MLE_LIST_ITEM(close),
+	MLE_LIST_ITEM(flush),
+	MLE_LIST_ITEM(fromStandard),
+	MLE_LIST_ITEM_ALT(read, single),
+	MLE_LIST_ITEM_ALT(read, multi),
+	MLE_LIST_ITEM_ALT(write, single),
+	MLE_LIST_ITEM_ALT(write, multi),
+MLE_LIST_END()

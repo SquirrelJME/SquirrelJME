@@ -29,7 +29,7 @@ set(extractedTemp "${CMAKE_BINARY_DIR}/mergeTemp")
 # Get the ZIPs which should be merged together
 get_property(mergeSet GLOBAL PROPERTY SQUIRRELJME_STANDALONE_MERGE_SET)
 set(mergeZips)
-foreach(mergeItem IN LISTS mergeSet)
+foreach(mergeItem IN ITEMS ${mergeSet})
 	# Get the output
 	get_target_property(targetOutPath ${mergeItem} SQUIRRELJME_OUTPUT_PATH)
 	list(APPEND mergeZips "${targetOutPath}")
@@ -39,7 +39,7 @@ foreach(mergeItem IN LISTS mergeSet)
 endforeach()
 
 # Merging of the Base Standalone with All Natives
-add_custom_target(standalone.jar
+add_custom_target(standalone.jar ALL
 	COMMAND "${CMAKE_COMMAND}" "-E"
 		"rm" "-rf" "--" "${extractedTemp}"
 	COMMAND "${CMAKE_COMMAND}" "-E"
@@ -50,7 +50,6 @@ add_custom_target(standalone.jar
 			"${mergeZips}"
 	DEPENDS "${mergeSet}"
 	BYPRODUCTS "${SQUIRRELJME_OUTPUT_JAR_PATH}"
-	ALL
 	COMMENT "Merging Standalone Jar into '${SQUIRRELJME_OUTPUT_JAR_PATH}'..."
 	COMMAND_EXPAND_LISTS)
 

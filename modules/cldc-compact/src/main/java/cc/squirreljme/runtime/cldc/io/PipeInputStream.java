@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,6 +121,19 @@ public class PipeInputStream
 	}
 	
 	/**
+	 * Opens a pipe stream from standard input.
+	 *
+	 * @return The resultant pipe.
+	 * @since 2025/07/06
+	 */
+	@SquirrelJMEVendorApi
+	public static PipeInputStream stdIn()
+	{
+		return new PipeInputStream(
+			TerminalShelf.fromStandard(StandardPipeType.STDIN));
+	}
+	
+	/**
 	 * Checks for error result codes from standard input.
 	 * 
 	 * @param __code The code to check.
@@ -128,7 +142,8 @@ public class PipeInputStream
 	 * @throws IOException If the code indicates an error.
 	 * @since 2020/11/22
 	 */
-	private static int __checkError(int __code, boolean __eofOkay)
+	@KeepWhenCompacting
+	static int __checkError(int __code, boolean __eofOkay)
 		throws IOException
 	{
 		if (__code < 0)
@@ -142,18 +157,5 @@ public class PipeInputStream
 		}
 		
 		return __code;
-	}
-	
-	/**
-	 * Opens a pipe stream from standard input.
-	 *
-	 * @return The resultant pipe.
-	 * @since 2025/07/06
-	 */
-	@SquirrelJMEVendorApi
-	public static PipeInputStream stdIn()
-	{
-		return new PipeInputStream(
-			TerminalShelf.fromStandard(StandardPipeType.STDIN));
 	}
 }

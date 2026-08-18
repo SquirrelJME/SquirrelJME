@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
+import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 
 /**
  * Input event handler for canvases.
@@ -54,7 +55,8 @@ class __ExecCanvasInput__
 			return;
 		
 		// Ignore canvases which are not shown
-		DisplayState display = canvas.__state().currentDisplay();
+		DisplayableState state = canvas.__state();
+		DisplayState display = state.currentDisplay();
 		if (display == null)
 			return;
 		

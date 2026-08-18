@@ -9,102 +9,21 @@
 
 #include <string.h>
 
+/* //// MLE /// */
+#define mleGroupId PencilShelf
+#define mleShelfClass "cc/squirreljme/jvm/mle/PencilShelf"
+#define mleProxyTarget "cc/squirreljme/emulator/uiform/SwingPencilShelf"
+#include "squirreljmeMle.h"
+/* //////////// */
+
 #include "sjme/debug.h"
 #include "squirreljme.h"
 #include "lib/scritchui/scritchuiTypes.h"
 #include "lib/scritchui/scritchui.h"
 
-/* The class being implemented. */
-#define FORWARD_CLASS "cc/squirreljme/jvm/mle/PencilShelf"
-#define FORWARD_NATIVE_CLASS "cc/squirreljme/emulator/uiform/SwingPencilShelf"
-
-/* Natives. */
-#define FORWARD_DESC_hardwareCloseGraphics "(" \
-	DESC_PENCIL ")" DESC_VOID
-#define FORWARD_DESC_hardwareCopyArea "(" \
-	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareDrawArc "(" \
-	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareDrawChars "(" \
-	DESC_PENCIL DESC_ARRAY(DESC_CHAR) DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareDrawHoriz "(" \
-	DESC_PENCIL DESC_INT DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareDrawLine "(" \
-	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareDrawPixel "(" \
-	DESC_PENCIL DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareDrawPolyline "(" \
-	DESC_PENCIL DESC_ARRAY(DESC_INT) DESC_INT DESC_ARRAY(DESC_INT) DESC_INT \
-	DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareDrawRect "(" \
-	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareDrawRegion "(" \
-	DESC_PENCIL DESC_INT DESC_OBJECT DESC_INT DESC_INT DESC_BOOLEAN \
-	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareDrawRoundRect "(" \
-	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareDrawTriangle "(" \
-	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareDrawSubstring "(" \
-	DESC_PENCIL DESC_STRING DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareDrawXRGB32Region "(" \
-	DESC_PENCIL DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_BOOLEAN \
-	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareFillArc "(" \
-	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareFillPolygon "(" \
-	DESC_PENCIL DESC_ARRAY(DESC_INT) DESC_INT DESC_ARRAY(DESC_INT) DESC_INT \
-	DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareFillRect "(" \
-	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareFillRoundRect "(" \
-	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareFillTriangle "(" \
-	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
-	DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareGetPixelFormat "(" \
-	DESC_PENCIL ")" DESC_INT
-#define FORWARD_DESC_hardwareGetRegion "(" \
-	DESC_PENCIL DESC_INT DESC_OBJECT DESC_INT DESC_INT DESC_BOOLEAN \
-	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareHasAlpha "(" \
-	DESC_PENCIL ")" DESC_BOOLEAN
-#define FORWARD_DESC_hardwareSetAlphaColor "(" \
-	DESC_PENCIL DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareSetBlendingMode "(" \
-	DESC_PENCIL DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareSetClip "(" \
-	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareSetDefaultFont "(" \
-	DESC_PENCIL ")" DESC_VOID
-#define FORWARD_DESC_hardwareSetFont "(" \
-	DESC_PENCIL DESC_PENCILFONT ")" DESC_VOID
-#define FORWARD_DESC_hardwareSetStrokeStyle "(" \
-	DESC_PENCIL DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareTranslate "(" \
-	DESC_PENCIL DESC_INT DESC_INT ")" DESC_VOID
-#define FORWARD_DESC_hardwareTranslateXY "(" \
-	DESC_PENCIL DESC_BOOLEAN ")" DESC_INT
-
-/* Forwards */
-#define FORWARD_DESC_nativeImageLoadRGBA \
-	"(I[BIILcc/squirreljme/jvm/mle/callbacks/NativeImageLoadCallback;)" \
-	"Ljava/lang/Object;"
-#define FORWARD_DESC_nativeImageLoadTypes "()I"
-
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareCloseGraphics)
-	(JNIEnv* env, jclass classy, jobject g)
+#define MLE_DESC_hardwareCloseGraphics DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL)
+MLE_FUNC_PROTO(void, hardwareCloseGraphics, jobject g)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -122,8 +41,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareCloseGraphics)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareCopyArea)
-	(JNIEnv* env, jclass classy, jobject g, jint sx, jint sy, jint w, jint h,
+#define MLE_DESC_hardwareCopyArea DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT DESC_INT )
+MLE_FUNC_PROTO(void, hardwareCopyArea, jobject g, jint sx, jint sy, jint w, jint h,
 	jint dw, jint dh, jint anchor)
 {
 	sjme_errorCode error;
@@ -143,8 +64,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareCopyArea)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawArc)
-	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h,
+#define MLE_DESC_hardwareDrawArc DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT )
+MLE_FUNC_PROTO(void, hardwareDrawArc, jobject g, jint x, jint y, jint w, jint h,
 	jint startAngle, jint arcAngle)
 {
 	sjme_errorCode error;
@@ -164,8 +87,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawArc)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawChars)
-	(JNIEnv* env, jclass classy, jobject g, jcharArray s, jint o, jint l,
+#define MLE_DESC_hardwareDrawChar DESC_METHOD(DESC_VOID, \
+	DESC_PENCIL DESC_CHAR DESC_INT DESC_INT DESC_INT)
+MLE_FUNC_PROTO(void, hardwareDrawChar, jobject g, jchar c,
 	jint x, jint y, jint anchor)
 {
 	sjme_errorCode error;
@@ -179,11 +103,62 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawChars)
 		return;
 	}
 
-	sjme_todo("Impl?");
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawChar(p,
+		c, x, y, anchor, NULL)))
+		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawHoriz)
-	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w)
+#define MLE_DESC_hardwareDrawChars DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_ARRAY(DESC_CHAR) DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT )
+MLE_FUNC_PROTO(void, hardwareDrawChars, jobject g, jcharArray s, jint o, jint l,
+	jint x, jint y, jint anchor)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil p;
+	jchar* chars;
+	jboolean isCopy;
+	sjme_jint len;
+
+	/* Recover. */
+	p = sjme_jni_recoverPencil(env, g);
+	if (g == NULL || p == NULL || s == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Double check length. */
+	len = (*env)->GetArrayLength(env, s);
+	if (o < 0 || l < 0 || (o + l) > len || (o + l) < 0)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_INDEX_OUT_OF_BOUNDS);
+		return;
+	}
+
+	/* Get character array. */
+	chars = NULL;
+	isCopy = SJME_JNI_FALSE;
+	if (sjme_error_is(error = sjme_jni_arrayGetElements(env, s,
+		(sjme_pointer*)&chars, &isCopy, NULL)) || chars == NULL)
+	{
+		sjme_jni_throwMLECallError(env, error);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = p->api->drawChars(p,
+		&chars[o], 0, l, x, y, anchor)))
+		sjme_jni_throwMLECallError(env, error);
+
+	/* Cleanup. */
+	sjme_jni_arrayReleaseElements(env, s, chars);
+}
+
+#define MLE_DESC_hardwareDrawHoriz DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT )
+MLE_FUNC_PROTO(void, hardwareDrawHoriz, jobject g, jint x, jint y, jint w)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -201,8 +176,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawHoriz)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawLine)
-	(JNIEnv* env, jclass classy, jobject g, jint x1, jint y1, jint x2, jint y2)
+#define MLE_DESC_hardwareDrawLine DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT )
+MLE_FUNC_PROTO(void, hardwareDrawLine, jobject g, jint x1, jint y1, jint x2, jint y2)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -220,8 +196,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawLine)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawPixel)
-	(JNIEnv* env, jclass classy, jobject g, jint x, jint y)
+#define MLE_DESC_hardwareDrawPixel DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT )
+MLE_FUNC_PROTO(void, hardwareDrawPixel, jobject g, jint x, jint y)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -239,8 +216,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawPixel)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawPolyline)
-	(JNIEnv* env, jclass classy, jobject g, jintArray xPoints, jint xOffset,
+#define MLE_DESC_hardwareDrawPolyline DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_ARRAY(DESC_INT) DESC_INT DESC_ARRAY(DESC_INT) DESC_INT \
+	DESC_INT )
+MLE_FUNC_PROTO(void, hardwareDrawPolyline, jobject g, jintArray xPoints, jint xOffset,
 		jintArray yPoints, jint yOffset, jint nPoints)
 {
 	sjme_errorCode error;
@@ -286,8 +265,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawPolyline)
 	(*env)->ReleaseIntArrayElements(env, yPoints, yElements, 0);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRect)
-	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h)
+#define MLE_DESC_hardwareDrawRect DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT )
+MLE_FUNC_PROTO(void, hardwareDrawRect, jobject g, jint x, jint y, jint w, jint h)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -305,8 +285,12 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRect)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRegion)
-	(JNIEnv* env, jclass classy, jobject g, jint pf, jobject data,
+#define MLE_DESC_hardwareDrawRegion DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_OBJECT DESC_INT DESC_INT DESC_BOOLEAN \
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT )
+MLE_FUNC_PROTO(void, hardwareDrawRegion, jobject g, jint pf, jobject data,
 	jint off, jint scanLen, jboolean alpha,
 	jint xSrc, jint ySrc, jint wSrc, jint hSrc, jint trans, jint xDest,
 	jint yDest, jint anchor, jint wDest, jint hDest,
@@ -355,8 +339,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRegion)
 	sjme_jni_arrayReleaseElements(env, data, dataElem);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRoundRect)
-	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h,
+#define MLE_DESC_hardwareDrawRoundRect DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT )
+MLE_FUNC_PROTO(void, hardwareDrawRoundRect, jobject g, jint x, jint y, jint w, jint h,
 	jint arcWidth, jint arcHeight)
 {
 	sjme_errorCode error;
@@ -376,8 +362,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawRoundRect)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawTriangle)
-	(JNIEnv* env, jclass classy, jobject g, jint x1, jint y1, jint x2, jint y2,
+#define MLE_DESC_hardwareDrawTriangle DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT )
+MLE_FUNC_PROTO(void, hardwareDrawTriangle, jobject g, jint x1, jint y1, jint x2, jint y2,
 	jint x3, jint y3)
 {
 	sjme_errorCode error;
@@ -396,19 +384,29 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawTriangle)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
-	(JNIEnv* env, jclass classy, jobject g, jstring s, jint o, jint l,
-	jint x, jint y, jint anchor)
+#define MLE_DESC_hardwareDrawSubstring DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_STRING DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT )
+MLE_FUNC_PROTO(void, hardwareDrawSubstring,
+	jobject jG, jstring s, jint o, jint l, jint x, jint y, jint anchor)
 {
-	sjme_scritchui_pencil p;
+	sjme_scritchui_pencil g;
 	sjme_errorCode error;
 	sjme_charSeqStatic seq;
 
 	/* Recover. */
-	p = sjme_jni_recoverPencil(env, g);
-	if (g == NULL || p == NULL || s == NULL)
+	g = sjme_jni_recoverPencil(env, jG);
+	if (g == NULL || s == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Should be valid. */
+	if (g->api == NULL || g->api->drawSubstring == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE));
 		return;
 	}
 
@@ -418,7 +416,7 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawSubstring)
 		goto fail_makeSeq;
 
 	/* Forward. */
-	if (sjme_error_is(error = p->api->drawSubstring(p,
+	if (sjme_error_is(error = g->api->drawSubstring(g,
 		&seq, o, l, x, y, anchor)))
 		goto fail_drawOp;
 
@@ -435,8 +433,11 @@ fail_makeSeq:
 	sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawXRGB32Region)
-	(JNIEnv* env, jclass classy, jobject g, jintArray data, jint off,
+#define MLE_DESC_hardwareDrawXRGB32Region DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_ARRAY(DESC_INT) DESC_INT DESC_INT DESC_BOOLEAN \
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT )
+MLE_FUNC_PROTO(void, hardwareDrawXRGB32Region, jobject g, jintArray data, jint off,
 	jint scanLen, jboolean alpha, jint xSrc, jint ySrc, jint wSrc, jint hSrc,
 	jint trans, jint xDest, jint yDest, jint anchor, jint wDest, jint hDest,
 	jint origImgWidth, jint origImgHeight)
@@ -481,8 +482,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareDrawXRGB32Region)
 	(*env)->ReleaseIntArrayElements(env, data, elem, 0);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillArc)
-	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h,
+#define MLE_DESC_hardwareFillArc DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT )
+MLE_FUNC_PROTO(void, hardwareFillArc, jobject g, jint x, jint y, jint w, jint h,
 	jint startAngle, jint arcAngle)
 {
 	sjme_errorCode error;
@@ -502,8 +505,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillArc)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillPolygon)
-	(JNIEnv* env, jclass classy, jobject g, jintArray xPoints, jint xOffset,
+#define MLE_DESC_hardwareFillPolygon DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_ARRAY(DESC_INT) DESC_INT DESC_ARRAY(DESC_INT) DESC_INT \
+	DESC_INT )
+MLE_FUNC_PROTO(void, hardwareFillPolygon, jobject g, jintArray xPoints, jint xOffset,
 		jintArray yPoints, jint yOffset, jint nPoints)
 {
 	sjme_errorCode error;
@@ -549,8 +554,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillPolygon)
 	(*env)->ReleaseIntArrayElements(env, yPoints, yElements, 0);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRect)
-	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h)
+#define MLE_DESC_hardwareFillRect DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT )
+MLE_FUNC_PROTO(void, hardwareFillRect, jobject g, jint x, jint y, jint w, jint h)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -568,8 +574,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRect)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRoundRect)
-	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h,
+#define MLE_DESC_hardwareFillRoundRect DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT )
+MLE_FUNC_PROTO(void, hardwareFillRoundRect, jobject g, jint x, jint y, jint w, jint h,
 	jint arcWidth, jint arcHeight)
 {
 	sjme_errorCode error;
@@ -589,8 +597,10 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillRoundRect)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillTriangle)
-	(JNIEnv* env, jclass classy, jobject g, jint x1, jint y1, jint x2, jint y2,
+#define MLE_DESC_hardwareFillTriangle DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT \
+	DESC_INT )
+MLE_FUNC_PROTO(void, hardwareFillTriangle, jobject g, jint x1, jint y1, jint x2, jint y2,
 	jint x3, jint y3)
 {
 	sjme_errorCode error;
@@ -610,9 +620,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareFillTriangle)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilShelf,
-	hardwareGetPixelFormat)
-	(JNIEnv* env, jclass classy, jobject g)
+#define MLE_DESC_hardwareGetPixelFormat DESC_METHOD(DESC_INT,  \
+	DESC_PENCIL )
+MLE_FUNC_PROTO(jint, hardwareGetPixelFormat, jobject g)
 {
 	sjme_scritchui_pencil p;
 
@@ -628,8 +638,10 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilShelf,
 	return p->pixelFormat;
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareGetRegion)
-	(JNIEnv* env, jclass classy, jobject g, jint pf, jobject data,
+#define MLE_DESC_hardwareGetRegion DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_OBJECT DESC_INT DESC_INT DESC_BOOLEAN \
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT )
+MLE_FUNC_PROTO(void, hardwareGetRegion, jobject g, jint pf, jobject data,
 	jint off, jint scanLen, jboolean alpha, jint xSrc,
 	jint ySrc, jint wSrc, jint hSrc, jint anchor)
 {
@@ -668,8 +680,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareGetRegion)
 	sjme_jni_arrayReleaseElements(env, data, dataElem);
 }
 
-JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareHasAlpha)
-	(JNIEnv* env, jclass classy, jobject g)
+#define MLE_DESC_hardwareHasAlpha DESC_METHOD(DESC_BOOLEAN,  \
+	DESC_PENCIL )
+MLE_FUNC_PROTO(jboolean, hardwareHasAlpha, jobject g)
 {
 	sjme_scritchui_pencil p;
 
@@ -685,8 +698,9 @@ JNIEXPORT jboolean JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareHasAlpha)
 	return (p->hasAlpha ? JNI_TRUE : JNI_FALSE);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetAlphaColor)
-	(JNIEnv* env, jclass classy, jobject g, jint argb)
+#define MLE_DESC_hardwareSetAlphaColor DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT )
+MLE_FUNC_PROTO(void, hardwareSetAlphaColor, jobject g, jint argb)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -704,8 +718,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetAlphaColor)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetBlendingMode)
-	(JNIEnv* env, jclass classy, jobject g, jint mode)
+#define MLE_DESC_hardwareSetBlendingMode DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT )
+MLE_FUNC_PROTO(void, hardwareSetBlendingMode, jobject g, jint mode)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -723,8 +738,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetBlendingMode)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetClip)
-	(JNIEnv* env, jclass classy, jobject g, jint x, jint y, jint w, jint h)
+#define MLE_DESC_hardwareSetClip DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT DESC_INT DESC_INT )
+MLE_FUNC_PROTO(void, hardwareSetClip, jobject g, jint x, jint y, jint w, jint h)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -742,8 +758,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetClip)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetDefaultFont)
-	(JNIEnv* env, jclass classy, jobject g)
+#define MLE_DESC_hardwareSetDefaultFont DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL )
+MLE_FUNC_PROTO(void, hardwareSetDefaultFont, jobject g)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -761,29 +778,52 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetDefaultFont)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetFont)
-	(JNIEnv* env, jclass classy, jobject g, jobject font)
+#define MLE_DESC_hardwareSetFont DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_PENCILFONT DESC_ARRAY(DESC_INT))
+MLE_FUNC_PROTO(void, hardwareSetFont, jobject jG, jobject jF,
+	jintArray jFPI)
 {
 	sjme_errorCode error;
-	sjme_scritchui_pencil p;
+	sjme_scritchui_pencil g;
 	sjme_scritchui_pencilFont fp;
+	sjme_scritchui_pencilFontParam fontParams;
 
 	/* Recover. */
-	p = sjme_jni_recoverPencil(env, g);
-	fp = sjme_jni_recoverFont(env, font);
-	if (g == NULL || p == NULL || fp == NULL)
+	g = sjme_jni_recoverPencil(env, jG);
+	fp = sjme_jni_recoverFont(env, jF);
+	if (g == NULL || fp == NULL)
 	{
 		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
 		return;
 	}
 
+	/* Should be valid. */
+	if (g->api == NULL || g->api->setFont == NULL)
+	{
+		sjme_jni_throwMLECallError(env,
+			sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE));
+		return;
+	}
+
+	/* Map params. */
+	memset(&fontParams, 0, sizeof(fontParams));
+	if (jFPI != NULL)
+		if (sjme_error_is(error = sjme_jni_fontParamFromFlat(env,
+			g->common.state, &fontParams, jFPI)))
+		{
+			sjme_jni_throwMLECallError(env, error);
+			return;
+		}
+
 	/* Forward. */
-	if (sjme_error_is(error = p->api->setFont(p, fp)))
+	if (sjme_error_is(error = g->api->setFont(g, fp,
+		(jFPI != NULL ? &fontParams : NULL))))
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetStrokeStyle)
-	(JNIEnv* env, jclass classy, jobject g, jint style)
+#define MLE_DESC_hardwareSetStrokeStyle DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT )
+MLE_FUNC_PROTO(void, hardwareSetStrokeStyle, jobject g, jint style)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -801,8 +841,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareSetStrokeStyle)
 		sjme_jni_throwMLECallError(env, error);
 }
 
-JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareTranslate)
-	(JNIEnv* env, jclass classy, jobject g, jint x, jint y)
+#define MLE_DESC_hardwareTranslate DESC_METHOD(DESC_VOID,  \
+	DESC_PENCIL DESC_INT DESC_INT )
+MLE_FUNC_PROTO(void, hardwareTranslate, jobject g, jint x, jint y)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -819,8 +860,9 @@ JNIEXPORT void JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareTranslate)
 		sjme_jni_throwMLECallError(env, error);\
 }
 
-JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareTranslateXY)
-	(JNIEnv* env, jclass classy, jobject g, jboolean y)
+#define MLE_DESC_hardwareTranslateXY DESC_METHOD(DESC_INT,  \
+	DESC_PENCIL DESC_BOOLEAN )
+MLE_FUNC_PROTO(jint, hardwareTranslateXY, jobject g, jboolean y)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencil p;
@@ -838,48 +880,47 @@ JNIEXPORT jint JNICALL FORWARD_FUNC_NAME(PencilShelf, hardwareTranslateXY)
 	return p->state.translate.x;
 }
 
-FORWARD_IMPL(PencilShelf, nativeImageLoadRGBA, jobject, Object, \
-	FORWARD_IMPL_args(jint type, jbyteArray buf, jint off, jint len, \
-		jobject callback), \
-	FORWARD_IMPL_pass(type, buf, off, len, callback))
-FORWARD_IMPL(PencilShelf, nativeImageLoadTypes, jint, Integer, \
-	FORWARD_IMPL_none(), FORWARD_IMPL_none())
+#define MLE_DESC_nativeImageLoadRGBA DESC_METHOD(DESC_OBJECT, \
+	DESC_INT DESC_ARRAY(DESC_BYTE) DESC_INT DESC_INT \
+	DESC_CLASS("cc/squirreljme/jvm/mle/callbacks/NativeImageLoadCallback"))
+MLE_FUNC_PROXY_STATIC(jobject, nativeImageLoadRGBA)
 
-static const JNINativeMethod mlePencilMethods[] =
-{
-	FORWARD_list(PencilShelf, hardwareCloseGraphics),
-	FORWARD_list(PencilShelf, hardwareCopyArea),
-	FORWARD_list(PencilShelf, hardwareDrawArc),
-	FORWARD_list(PencilShelf, hardwareDrawChars),
-	FORWARD_list(PencilShelf, hardwareDrawHoriz),
-	FORWARD_list(PencilShelf, hardwareDrawLine),
-	FORWARD_list(PencilShelf, hardwareDrawPixel),
-	FORWARD_list(PencilShelf, hardwareDrawPolyline),
-	FORWARD_list(PencilShelf, hardwareDrawRect),
-	FORWARD_list(PencilShelf, hardwareDrawRegion),
-	FORWARD_list(PencilShelf, hardwareDrawRoundRect),
-	FORWARD_list(PencilShelf, hardwareDrawTriangle),
-	FORWARD_list(PencilShelf, hardwareDrawSubstring),
-	FORWARD_list(PencilShelf, hardwareDrawXRGB32Region),
-	FORWARD_list(PencilShelf, hardwareFillArc),
-	FORWARD_list(PencilShelf, hardwareFillPolygon),
-	FORWARD_list(PencilShelf, hardwareFillRect),
-	FORWARD_list(PencilShelf, hardwareFillRoundRect),
-	FORWARD_list(PencilShelf, hardwareFillTriangle),
-	FORWARD_list(PencilShelf, hardwareGetPixelFormat),
-	FORWARD_list(PencilShelf, hardwareGetRegion),
-	FORWARD_list(PencilShelf, hardwareHasAlpha),
-	FORWARD_list(PencilShelf, hardwareSetAlphaColor),
-	FORWARD_list(PencilShelf, hardwareSetBlendingMode),
-	FORWARD_list(PencilShelf, hardwareSetClip),
-	FORWARD_list(PencilShelf, hardwareSetDefaultFont),
-	FORWARD_list(PencilShelf, hardwareSetFont),
-	FORWARD_list(PencilShelf, hardwareSetStrokeStyle),
-	FORWARD_list(PencilShelf, hardwareTranslate),
-	FORWARD_list(PencilShelf, hardwareTranslateXY),
-	FORWARD_list(PencilShelf, nativeImageLoadRGBA),
-	FORWARD_list(PencilShelf, nativeImageLoadTypes),
-};
+#define MLE_DESC_nativeImageLoadTypes DESC_METHOD(DESC_INT, )
+MLE_FUNC_PROXY_STATIC(jobject, nativeImageLoadTypes)
 
-FORWARD_init(mlePencilInit, mlePencilMethods)
+MLE_LIST_BEGIN()
+	MLE_LIST_ITEM(hardwareCloseGraphics),
+	MLE_LIST_ITEM(hardwareCopyArea),
+	MLE_LIST_ITEM(hardwareDrawArc),
+	MLE_LIST_ITEM(hardwareDrawChar),
+	MLE_LIST_ITEM(hardwareDrawChars),
+	MLE_LIST_ITEM(hardwareDrawHoriz),
+	MLE_LIST_ITEM(hardwareDrawLine),
+	MLE_LIST_ITEM(hardwareDrawPixel),
+	MLE_LIST_ITEM(hardwareDrawPolyline),
+	MLE_LIST_ITEM(hardwareDrawRect),
+	MLE_LIST_ITEM(hardwareDrawRegion),
+	MLE_LIST_ITEM(hardwareDrawRoundRect),
+	MLE_LIST_ITEM(hardwareDrawTriangle),
+	MLE_LIST_ITEM(hardwareDrawSubstring),
+	MLE_LIST_ITEM(hardwareDrawXRGB32Region),
+	MLE_LIST_ITEM(hardwareFillArc),
+	MLE_LIST_ITEM(hardwareFillPolygon),
+	MLE_LIST_ITEM(hardwareFillRect),
+	MLE_LIST_ITEM(hardwareFillRoundRect),
+	MLE_LIST_ITEM(hardwareFillTriangle),
+	MLE_LIST_ITEM(hardwareGetPixelFormat),
+	MLE_LIST_ITEM(hardwareGetRegion),
+	MLE_LIST_ITEM(hardwareHasAlpha),
+	MLE_LIST_ITEM(hardwareSetAlphaColor),
+	MLE_LIST_ITEM(hardwareSetBlendingMode),
+	MLE_LIST_ITEM(hardwareSetClip),
+	MLE_LIST_ITEM(hardwareSetDefaultFont),
+	MLE_LIST_ITEM(hardwareSetFont),
+	MLE_LIST_ITEM(hardwareSetStrokeStyle),
+	MLE_LIST_ITEM(hardwareTranslate),
+	MLE_LIST_ITEM(hardwareTranslateXY),
+	MLE_LIST_ITEM(nativeImageLoadRGBA),
+	MLE_LIST_ITEM(nativeImageLoadTypes),
+MLE_LIST_END()
 

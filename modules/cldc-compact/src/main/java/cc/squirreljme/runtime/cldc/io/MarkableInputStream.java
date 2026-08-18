@@ -16,7 +16,8 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 /**
- * This is an input stream which allows for marking input.
+ * This is an input stream which allows for marking input, it performs
+ * an equivalent function to {@code BufferedInputStream}.
  *
  * @since 2021/12/04
  */

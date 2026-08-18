@@ -21,19 +21,19 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 final class __ListenerEvent__
 {
 	/** The player this event came from. */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	final AbstractPlayer _player;
 	
 	/** The event type. */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	final String _eventType;
 	
 	/** The event value. */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	final Object _eventValue;
 	
 	/** The time this event occurred. */
-	@SquirrelJMEVendorApi
+	@KeepWhenCompacting
 	final long _nanoTime;
 	
 	/**

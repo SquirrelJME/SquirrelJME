@@ -24,6 +24,7 @@ squirreljme_multilib_add_library(Base
 	fixed.c
 	frontEnd.c
 	inflate.c
+	joptarg.c
 	list.c
 	listUtil.c
 	multithread.c
@@ -75,7 +76,7 @@ macro(squirreljme_add_nal_option upper)
 	# Add option to use vendor specific item
 	option(SQUIRRELJME_NAL_VENDOR_${upper}
 		"Use vendor implementation for ${upper}."
-		OFF)
+		FALSE)
 
 	# Is this option enabled?
 	if(SQUIRRELJME_NAL_VENDOR_${upper})
@@ -96,3 +97,9 @@ squirreljme_add_nal_option(THREAD_SLEEP)
 squirreljme_add_nal_option(THREAD_YIELD)
 squirreljme_add_nal_option(USER_HOME)
 squirreljme_add_nal_option(USER_NAME)
+
+# If using native threads, this needs to be known here
+if(SJME_CONFIG_EO_LIBWINE_NATIVE_THREADS)
+	squirreljme_multilib_compile_options(Base PUBLIC
+		"SJME_CONFIG_EO_LIBWINE_NATIVE_THREADS=1")
+endif()

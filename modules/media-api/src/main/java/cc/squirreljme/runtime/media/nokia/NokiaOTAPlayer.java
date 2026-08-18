@@ -20,15 +20,21 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
-import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import cc.squirreljme.runtime.media.AbstractVolumeControl;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.microedition.io.InputConnection;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Player that supports Nokia's OTT/OTA ringtone format.
+ * 
+ * @since 2025/12/24
+ */
+@SquirrelJMEVendorApi
 public class NokiaOTAPlayer
 	extends AbstractPlayer
 	implements AudioStreamRenderer
@@ -43,7 +49,7 @@ public class NokiaOTAPlayer
 
 	/** The un-realized input stream. */
 	@SquirrelJMEVendorApi
-	private volatile InputStreamConnection _unrealizedIn;
+	private volatile InputConnection _unrealizedIn;
 
 	/** The audio stream used. */
 	@SquirrelJMEVendorApi
@@ -55,7 +61,7 @@ public class NokiaOTAPlayer
 
 	/**
 	 * Creates a new {@link NokiaOTAPlayer} instance from the received
-	 * {@link InputStreamConnection}.
+	 * {@link InputConnection}.
 	 * 
 	 * @param __in The data stream to prepare for playback
 	 * @throws MediaException If the data could not be prepared for playback.
@@ -63,7 +69,7 @@ public class NokiaOTAPlayer
 	 * @since 2025/12/24
 	 */
 	@SquirrelJMEVendorApi
-	public NokiaOTAPlayer(@NotNull InputStreamConnection __in)
+	public NokiaOTAPlayer(@NotNull InputConnection __in)
 		throws MediaException, NullPointerException
 	{
 		super("application/vnd.nokia.ota");
@@ -91,8 +97,8 @@ public class NokiaOTAPlayer
 	public void render(int __format, int __rate, int __channels, Object __buf,
 		int __off, int __len)
 	{
-		this._decoder.parseOTA(__format, __rate, __buf, __off, __len,
-			this._data);
+		this._decoder.parseOTA(__format, __rate, __channels, __buf, __off,
+			__len, this._data);
 
 		boolean finished = this._decoder.hasFinished();
 		if (finished)
@@ -126,7 +132,7 @@ public class NokiaOTAPlayer
 		this._stream = null;
 		
 		// Close the input connection, if it was never read in
-		InputStreamConnection unrealizedIn = this._unrealizedIn;
+		InputConnection unrealizedIn = this._unrealizedIn;
 		if (unrealizedIn != null)
 		{
 			this._unrealizedIn = null;
@@ -175,7 +181,7 @@ public class NokiaOTAPlayer
 
 			// Create the native audio stream
 			this._stream = AbstractPlayer.stream(AudioStreamFormat.AUTOMATIC,
-				AudioStreamRate.AUTOMATIC, AudioStreamChannels.MONO);
+				AudioStreamRate.AUTOMATIC, AudioStreamChannels.AUTOMATIC);
 		}
 	}
 	
@@ -223,7 +229,7 @@ public class NokiaOTAPlayer
 				this._connection =
 					AudioStreamShelf.attach(this._stream, this,
 						AudioStreamFormat.AUTOMATIC, AudioStreamRate.AUTOMATIC,
-						AudioStreamChannels.MONO);
+						AudioStreamChannels.AUTOMATIC);
 			}
 			catch (MLECallError __e)
 			{

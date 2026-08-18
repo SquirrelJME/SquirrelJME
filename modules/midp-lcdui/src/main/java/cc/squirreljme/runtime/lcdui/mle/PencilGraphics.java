@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.mle;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
@@ -21,7 +22,6 @@ import cc.squirreljme.runtime.lcdui.gfx.ExtraGraphics;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.midlet.MeepRuntime;
 import java.io.Closeable;
-import java.io.IOException;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -34,6 +34,11 @@ import org.jetbrains.annotations.NotNull;
  * 
  * This utilizes both {@link PencilShelf} and {@link PencilBracket} for native
  * graphics.
+ * 
+ * All pencils must have their {@link PencilGraphics#close()} method be called
+ * to free up any used resources. Note that any pencils which are non-owned
+ * and are passed via paint methods result in non-owned pencils, which do not
+ * call the native close handler.
  *
  * @since 2020/09/25
  */
@@ -57,50 +62,39 @@ public final class PencilGraphics
 	/** Is there an alpha channel? */
 	@SquirrelJMEVendorApi
 	protected final boolean hasAlpha;
-
-	/** Single character. */
+	
+	/** Does this have full ownership over the bracket? */
 	@SquirrelJMEVendorApi
-	private final char[] _singleChar =
-		new char[1];
-
+	protected final boolean isOwned;
+	
 	/** The current pixel format. */
-	@SquirrelJMEVendorApi
 	private int _pixelFormat;
 
 	/** The current alpha color. */
-	@SquirrelJMEVendorApi
 	private int _argbColor;
 
 	/** The current blending mode. */
-	@SquirrelJMEVendorApi
 	private int _blendingMode;
 
 	/** The clip height. */
-	@SquirrelJMEVendorApi
 	private int _clipHeight;
 
 	/** The clip width. */
-	@SquirrelJMEVendorApi
 	private int _clipWidth;
 
 	/** The clip X position. */
-	@SquirrelJMEVendorApi
 	private int _clipX;
 
 	/** The clip Y position. */
-	@SquirrelJMEVendorApi
 	private int _clipY;
 
 	/** The current font used. */
-	@SquirrelJMEVendorApi
 	private Font _font;
 
 	/** The current stroke style. */
-	@SquirrelJMEVendorApi
 	private int _strokeStyle;
 
 	/** Has this been closed? */
-	@SquirrelJMEVendorApi
 	private volatile boolean _isClosed;
 
 	/**
@@ -109,19 +103,21 @@ public final class PencilGraphics
 	 * @param __sw The surface width.
 	 * @param __sh The surface height.
 	 * @param __hardware The hardware bracket reference for drawing.
+	 * @param __owned Does this have full ownership of the bracket?
 	 * @throws IllegalArgumentException If hardware graphics are not capable
 	 * enough to be used at all.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/25
 	 */
-	@SquirrelJMEVendorApi
-	private PencilGraphics(int __sw, int __sh, PencilBracket __hardware)
+	private PencilGraphics(int __sw, int __sh, PencilBracket __hardware,
+		boolean __owned)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__hardware == null)
 			throw new NullPointerException("NARG");
 		
 		this.hardware = __hardware;
+		this.isOwned = __owned;
 		
 		// These are used to manage the clip
 		this.surfaceW = __sw;
@@ -135,10 +131,7 @@ public final class PencilGraphics
 		
 		// Set initial parameters for the graphics and make sure they are
 		// properly forwarded as well
-		this.setAlphaColor(0xFF000000);
-		this.setBlendingMode(Graphics.SRC_OVER);
-		this.setStrokeStyle(Graphics.SOLID);
-		this.setFont(null);
+		this.initialValues(false, false);
 	}
 
 	/**
@@ -232,17 +225,23 @@ public final class PencilGraphics
 			this._isClosed = true;
 		}
 		
-		// Close the graphics internally
-		try
-		{
-			PencilShelf.hardwareCloseGraphics(this.hardware);
-		}
+		// Free up any internally kept resources here which are not in
+		// the native layer, as needed...
 		
-		// Unwrap any potential errors.
-		catch (MLECallError e)
-		{
-			throw e.throwDistinct();
-		}
+		// Close the graphics internally, this only applies when owned as
+		// if this wrapper class uses nested pencils or wraps a pencil that
+		// comes from ScritchUI rendering this does not own that pencil
+		if (this.isOwned)
+			try
+			{
+				PencilShelf.hardwareCloseGraphics(this.hardware);
+			}
+			
+			// Unwrap any potential errors.
+			catch (MLECallError e)
+			{
+				throw e.throwDistinct();
+			}
 	}
 
 	/**
@@ -338,15 +337,11 @@ public final class PencilGraphics
 		if (this._isClosed)
 			return;
 		
-		// Fill single character first
-		char[] singleChar = this._singleChar;
-		singleChar[0] = __s;
-		
 		// Forward
 		try
 		{
-			PencilShelf.hardwareDrawChars(this.hardware,
-				singleChar, 0, 1, __x, __y, __anchor);
+			PencilShelf.hardwareDrawChar(this.hardware,
+				__s, __x, __y, __anchor);
 		}
 		catch (MLECallError e)
 		{
@@ -610,11 +605,11 @@ public final class PencilGraphics
 		int[] buf;
 		int offset;
 		int scanLen;
-		if (__src.squirreljmeIsDirect())
+		if (__src.squirreljmeIsDirect__())
 		{
-			buf = __src.squirreljmeDirectRGBInt();
-			offset = __src.squirreljmeDirectOffset();
-			scanLen = __src.squirreljmeDirectScanLen();
+			buf = __src.squirreljmeDirectRGBInt__();
+			offset = __src.squirreljmeDirectOffset__();
+			scanLen = __src.squirreljmeDirectScanLen__();
 		}
 		
 		// Image is not directly accessible, so get a copy of it
@@ -1156,7 +1151,36 @@ public final class PencilGraphics
 		
 		return PencilShelf.hardwareTranslateXY(this.hardware, true);
 	}
-
+	
+	/**
+	 * Sets initial values for the pencil.
+	 * 
+	 * Resetting certain parameters may have unintended side effects, thus
+	 * they are suggested to not be reset unless required.
+	 *
+	 * @param __resetClip Reset the clip?
+	 * @param __resetTrans Reset the translation?
+	 * @since 2026/06/27
+	 */
+	@SquirrelJMEVendorApi
+	public void initialValues(boolean __resetClip, boolean __resetTrans)
+	{
+		// Set initial parameters for the graphics and make sure they are
+		// properly forwarded as well
+		this.setAlphaColor(0xFF000000);
+		this.setBlendingMode(Graphics.SRC_OVER);
+		this.setStrokeStyle(Graphics.SOLID);
+		this.setFont(null);
+		
+		// Reset the clip?
+		if (__resetClip)
+			this.setClip(0, 0, this.surfaceW, this.surfaceH);
+		
+		// Reset translation?
+		if (__resetTrans)
+			this.translate(-this.getTranslateX(), -this.getTranslateY());
+	}
+	
 	/**
 	 * Returns the {@link PencilBracket} that this graphics is currently using
 	 * so that it may be directly used with {@link PencilShelf}.
@@ -1407,24 +1431,21 @@ public final class PencilGraphics
 	 */
 	@Override
 	@SquirrelJMEVendorApi
-	public void setFont(Font __font)
+	public void setFont(Font __base, PencilFontBracket __font, 
+		int[] __fontParams)
 	{
 		// Do nothing if closed
 		if (this._isClosed)
 			return;
 		
-		// Clearing the font?
-		if (__font == null)
-			__font = Font.getDefaultFont();
-		
 		// Cache locally
-		this._font = __font;
+		this._font = __base;
 		
 		// Set font natively from the font details
 		try
 		{
 			PencilShelf.hardwareSetFont(this.hardware,
-				((PencilFontProvider)__font).__squirreljmePencilFont());
+				__font, __fontParams);
 		}
 		
 		// Unwrap any potential errors.
@@ -1574,6 +1595,9 @@ public final class PencilGraphics
 	 * Creates a graphics that is capable of drawing on hardware if it is
 	 * supported, but falling back to software level graphics.
 	 * 
+	 * The resultant graphics is owned and must be closed by the consumer, it
+	 * is thus required that {@code try-with-resources} be used.
+	 * 
 	 * @param __pf The {@link UIPixelFormat} used for the draw.
 	 * @param __bw The buffer width, this is the scanline width of the buffer.
 	 * @param __bh The buffer height.
@@ -1595,11 +1619,15 @@ public final class PencilGraphics
 	{
 		return new PencilGraphics(__sw, __sh,
 			DisplayManager.instance().scritch().hardwareGraphics(
-				__pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw, __sh));
+				__pf, __bw, __bh, __buf, __pal, __sx, __sy, __sw, __sh),
+			true);
 	}
 
 	/**
 	 * Initializes a new graphics interface.
+	 * 
+	 * This form should be used a {@link ScritchPencilBracket} is provided
+	 * via a paint event.
 	 *
 	 * @param __hw The hardware graphics to use.
 	 * @param __sw The surface width.
@@ -1616,6 +1644,6 @@ public final class PencilGraphics
 		if (__hw == null)
 			throw new NullPointerException("NARG");
 		
-		return new PencilGraphics(__sw, __sh, __hw);
+		return new PencilGraphics(__sw, __sh, __hw, false);
 	}
 }

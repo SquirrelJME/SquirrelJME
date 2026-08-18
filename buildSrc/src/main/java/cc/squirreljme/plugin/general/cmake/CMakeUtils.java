@@ -221,12 +221,13 @@ public final class CMakeUtils
 	 * @param __logDir The CMake build directory.
 	 * @param __args CMake arguments.
 	 * @return The CMake exit value.
+	 * @throws CMakeException On any CMake exception.
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/03/15
 	 */
 	public static int cmakeExecute(Path __workDir, Logger __logger,
 		String __logName, Path __logDir, String... __args)
-		throws IOException
+		throws CMakeException, IOException
 	{
 		if (__logDir == null)
 			throw new NullPointerException("NARG");
@@ -268,12 +269,13 @@ public final class CMakeUtils
 	 * @param __workDir The working directory.
 	 * @param __buildType The build type used.
 	 * @param __args CMake arguments.
+	 * @throws CMakeException On any CMake exception.
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/04/01
 	 */
 	public static String cmakeExecuteOutput(Path __workDir, String __buildType,
 		String... __args)
-		throws IOException
+		throws CMakeException, IOException
 	{
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream();
 			ByteArrayOutputStream err = new ByteArrayOutputStream())
@@ -299,13 +301,14 @@ public final class CMakeUtils
 	 * @param __buildType The build type used.
 	 * @param __args CMake arguments.
 	 * @return The CMake exit value.
+	 * @throws CMakeException On any CMake exception.
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/04/01
 	 */
 	public static int cmakeExecutePipe(Path __workDir, InputStream __in,
 		OutputStream __out, OutputStream __err, String __buildType,
 		String... __args)
-		throws IOException
+		throws CMakeException, IOException
 	{
 		return CMakeUtils.cmakeExecutePipe(__workDir, true,
 			__in, __out, __err,
@@ -323,6 +326,7 @@ public final class CMakeUtils
 	 * @param __buildType The build type used.
 	 * @param __args CMake arguments.
 	 * @return The CMake exit value.
+	 * @throws CMakeException On any CMake exception.
 	 * @throws IOException On read/write or execution errors.
 	 * @since 2024/04/01
 	 */
@@ -330,12 +334,12 @@ public final class CMakeUtils
 		InputStream __in,
 		OutputStream __out, OutputStream __err, String __buildType,
 		String... __args)
-		throws IOException
+		throws CMakeException, IOException
 	{
 		// Need CMake
 		Path cmakePath = CMakeUtils.cmakeExePath();
 		if (cmakePath == null)
-			throw new RuntimeException("CMake not found.");
+			throw new CMakeException("CMake not found.");
 		
 		// Determine run arguments
 		List<String> args = new ArrayList<>();
@@ -388,7 +392,7 @@ public final class CMakeUtils
 			// Wait for completion, stop if it takes too long
 			if (!proc.waitFor(15, TimeUnit.MINUTES) ||
 				(__fail && proc.exitValue() != 0))
-				throw new RuntimeException(String.format(
+				throw new CMakeException(String.format(
 					"CMake failed to %s: exit value %d",
 						__buildType, proc.exitValue()));
 			
@@ -397,7 +401,7 @@ public final class CMakeUtils
 		}
 		catch (InterruptedException|IllegalThreadStateException __e)
 		{
-			throw new RuntimeException("CMake timed out or stuck!", __e);
+			throw new CMakeException("CMake timed out or stuck!", __e);
 		}
 		finally
 		{
@@ -410,11 +414,12 @@ public final class CMakeUtils
 	 * Configures the CMake task.
 	 *
 	 * @param __task The task to configure.
+	 * @throws CMakeException On any CMake exception.
 	 * @throws IOException If it could not be configured.
 	 * @since 2025/11/15
 	 */
 	public static void configure(CMakeBuildTask __task)
-		throws IOException
+		throws CMakeException, IOException
 	{
 		CMakeUtils.configure(__task, new String[0]);
 	}
@@ -424,11 +429,12 @@ public final class CMakeUtils
 	 *
 	 * @param __task The task to configure.
 	 * @param __args Extra configure arguments.
+	 * @throws CMakeException On any CMake exception.
 	 * @throws IOException If it could not be configured.
 	 * @since 2025/11/15
 	 */
 	public static void configure(CMakeBuildTask __task, List<String> __args)
-		throws IOException
+		throws CMakeException, IOException
 	{
 		if (__args != null)
 			CMakeUtils.configure(__task,
@@ -442,11 +448,12 @@ public final class CMakeUtils
 	 *
 	 * @param __task The task to configure.
 	 * @param __args Extra configure arguments.
+	 * @throws CMakeException On any CMake exception.
 	 * @throws IOException If it could not be configured.
 	 * @since 2024/04/08
 	 */
 	public static void configure(CMakeBuildTask __task, String... __args)
-		throws IOException
+		throws CMakeException, IOException
 	{
 		Path cmakeBuild = __task.cmakeBuild;
 		Path cmakeSource = __task.cmakeSource;
@@ -558,7 +565,7 @@ public final class CMakeUtils
 				return true;
 			}
 		}
-		catch (IOException __e)
+		catch (IOException|CMakeException __e)
 		{
 			// If this happens, just assume it needs to be done
 			__task.getLogger().warn(

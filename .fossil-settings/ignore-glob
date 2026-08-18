@@ -162,9 +162,12 @@ out-[A-F0-9]*
 nanocoat/rom/squirreljme.jar
 nanocoat/rom/squirreljme-test.jar
 nanocoat/rom/squirreljme-test.list
+nanocoat/rom/squirreljme-test.nano
 nanocoat/rom/squirreljme-fast.jar
 nanocoat/rom/squirreljme-fast-test.jar
 nanocoat/rom/squirreljme-fast-test.list
+nanocoat/rom/squirreljme-fast-test.nano
 nanocoat/rom/squirreljme-slow.jar
 nanocoat/rom/squirreljme-slow-test.jar
 nanocoat/rom/squirreljme-slow-test.list
+nanocoat/rom/squirreljme-slow-test.nano

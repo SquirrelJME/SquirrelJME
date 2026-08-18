@@ -9,12 +9,15 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This interface is associated with anything which can be a provided detail
  * for a dependency.
  *
  * @since 2017/12/31
  */
+@SquirrelJMEVendorApi
 public interface MarkedProvided
 {
 }

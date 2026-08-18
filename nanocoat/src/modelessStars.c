@@ -221,5 +221,5 @@ sjme_errorCode sjme_modelessStars(
 	}
 	
 	/* Handled successfully. */
-	return SJME_JNI_TRUE;
+	return SJME_ERROR_NONE;
 }

@@ -24,7 +24,7 @@ SJME_TEST_DECLARE(testListFlattenArgsNul)
 	/* Zero sequence. */
 	result = NULL;
 	if (sjme_error_is(sjme_list_flattenArgNul(test->pool,
-		(void*)&result, "\0\0") || result == NULL))
+		(void*)&result, "\0\0")) || result == NULL)
 		return sjme_unit_fail(test, "Could not flatten zero?");
 	
 	sjme_unit_equalI(test, 0, result->length,
@@ -33,7 +33,7 @@ SJME_TEST_DECLARE(testListFlattenArgsNul)
 	/* Single sequence. */
 	result = NULL;
 	if (sjme_error_is(sjme_list_flattenArgNul(test->pool,
-		(void*)&result, "a\0\0") || result == NULL))
+		(void*)&result, "a\0\0")) || result == NULL)
 		return sjme_unit_fail(test, "Could not flatten single?");
 	
 	sjme_unit_equalI(test, 1, result->length,
@@ -44,7 +44,7 @@ SJME_TEST_DECLARE(testListFlattenArgsNul)
 	/* Two sequence. */
 	result = NULL;
 	if (sjme_error_is(sjme_list_flattenArgNul(test->pool,
-		(void*)&result, "a\0b\0\0") || result == NULL))
+		(void*)&result, "a\0b\0\0")) || result == NULL)
 		return sjme_unit_fail(test, "Could not flatten two?");
 	
 	sjme_unit_equalI(test, 2, result->length,
@@ -57,7 +57,7 @@ SJME_TEST_DECLARE(testListFlattenArgsNul)
 	/* Three sequence. */
 	result = NULL;
 	if (sjme_error_is(sjme_list_flattenArgNul(test->pool,
-		(void*)&result, "a\0b\0c\0\0") || result == NULL))
+		(void*)&result, "a\0b\0c\0\0")) || result == NULL)
 		return sjme_unit_fail(test, "Could not flatten three?");
 	
 	sjme_unit_equalI(test, 3, result->length,

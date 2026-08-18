@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/config.h"
 #include "lib/scritchui/core/core.h"
 #include "lib/scritchui/win32/win32.h"
 #include "lib/scritchui/win32/win32Intern.h"
@@ -64,10 +65,12 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	sjme_sm(.containerAdd, sjme_scritchui_win32_containerAdd),
 	sjme_sm(.containerRemove, sjme_scritchui_win32_containerRemove),
 	sjme_sm(.containerSetBounds, sjme_scritchui_win32_containerSetBounds),
+	sjme_sm(.fontScanSystem, NULL),
 	sjme_sm(.hardwareGraphics, NULL),
 	sjme_sm(.labelSetString, sjme_scritchui_win32_labelSetString),
 	sjme_sm(.lafDpiProject, NULL),
 	sjme_sm(.lafElementColor, sjme_scritchui_win32_lafElementColor),
+	sjme_sm(.lafMetric, NULL),
 	sjme_sm(.listNew, NULL),
 	sjme_sm(.loopExecute, NULL),
 	sjme_sm(.loopExecuteLater, sjme_scritchui_win32_loopExecuteLater),
@@ -92,7 +95,9 @@ static const sjme_scritchui_implFunctions sjme_scritchui_win32Functions =
 	sjme_sm(.windowGetFrame, sjme_scritchui_win32_windowGetFrame),
 	sjme_sm(.windowNew, sjme_scritchui_win32_windowNew),
 	sjme_sm(.windowSetCloseListener, NULL),
+	sjme_sm(.windowSetFlags, sjme_scritchui_win32_windowSetFlags),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_win32_windowSetMenuBar),
+	sjme_sm(.windowSetState, sjme_scritchui_win32_windowSetState),
 	sjme_sm(.windowSetVisible, sjme_scritchui_win32_windowSetVisible),
 };
 

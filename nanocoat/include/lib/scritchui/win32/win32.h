@@ -17,7 +17,6 @@
 #define SJME_C_WIN32_H
 
 #include "lib/scritchui/scritchui.h"
-#include "lib/scritchui/scritchuiImpl.h"
 #include "lib/scritchui/scritchuiPencil.h"
 
 /* Anti-C++. */
@@ -225,10 +224,22 @@ sjme_errorCode sjme_scritchui_win32_windowNew(
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInNullable sjme_pointer ignored);
 
+sjme_errorCode sjme_scritchui_win32_windowSetFlags(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_jint setFlags,
+	sjme_attrOutNullable sjme_jint* actualFlags);
+
 sjme_errorCode sjme_scritchui_win32_windowSetMenuBar(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInNullable sjme_scritchui_uiMenuBar inMenuBar);
+
+sjme_errorCode sjme_scritchui_win32_windowSetState(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
+	sjme_attrInNotNull sjme_scritchui_windowState setState,
+	sjme_attrOutNullable sjme_scritchui_windowState* actualState);
 
 sjme_errorCode sjme_scritchui_win32_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,

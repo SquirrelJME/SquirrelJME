@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.lcdui.image.MIDPImageLoadHandler;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import cc.squirreljme.runtime.cldc.CleanupHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -137,12 +138,20 @@ public class Image
 			throw new IllegalStateException("EB28");
 		
 		// Create hardware accelerated graphics where possible
-		return PencilGraphics.hardwareGraphics(
+		PencilGraphics g = PencilGraphics.hardwareGraphics(
 			(this._alpha ? UIPixelFormat.INT_ARGB8888 :
 				UIPixelFormat.INT_RGB888),
 			this._width, this._height,
 			this._data, null,
 			0, 0, this._width, this._height);
+		
+		// When the graphics is garbage collected without being closed, it
+		// needs to get its close called
+		CleanupHandler.bracketAdd(g, g.pencil());
+		
+		// Make sure the graphics is in its initial state
+		g.initialValues(true, true);
+		return g;
 	}
 	
 	/**
@@ -328,9 +337,9 @@ public class Image
 	 * @since 2022/01/26
 	 */
 	@Override
-	public final int squirreljmeDirectOffset()
+	public final int squirreljmeDirectOffset__()
 	{
-		if (this.squirreljmeIsDirect())
+		if (this.squirreljmeIsDirect__())
 			return 0;
 		return Integer.MIN_VALUE;
 	}
@@ -340,9 +349,9 @@ public class Image
 	 * @since 2022/01/26
 	 */
 	@Override
-	public final int[] squirreljmeDirectRGBInt()
+	public final int[] squirreljmeDirectRGBInt__()
 	{
-		if (this.squirreljmeIsDirect())
+		if (this.squirreljmeIsDirect__())
 			return this._data;
 		return null;
 	}
@@ -352,9 +361,9 @@ public class Image
 	 * @since 2022/01/26
 	 */
 	@Override
-	public final int squirreljmeDirectScanLen()
+	public final int squirreljmeDirectScanLen__()
 	{
-		if (this.squirreljmeIsDirect())
+		if (this.squirreljmeIsDirect__())
 			return this._width;
 		return Integer.MIN_VALUE;
 	}
@@ -364,7 +373,7 @@ public class Image
 	 * @since 2022/01/26
 	 */
 	@Override
-	public final boolean squirreljmeIsDirect()
+	public final boolean squirreljmeIsDirect__()
 	{
 		return !(this.isScalable() || this.isAnimated());
 	}

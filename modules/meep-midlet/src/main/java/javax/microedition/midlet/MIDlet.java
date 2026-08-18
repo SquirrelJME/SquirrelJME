@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
-import cc.squirreljme.runtime.midlet.CleanupHandler;
+import cc.squirreljme.runtime.cldc.CleanupHandler;
 import cc.squirreljme.runtime.midlet.ManifestSource;
 import cc.squirreljme.runtime.midlet.ManifestSourceType;
 import java.io.IOException;

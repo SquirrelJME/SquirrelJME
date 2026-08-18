@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.MatchResult;
 import cc.squirreljme.jvm.suite.SuiteInfo;
+import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -25,6 +26,7 @@ import java.util.Set;
  *
  * @since 2020/12/29
  */
+@KeepWhenCompacting
 final class __Libraries__
 {
 	/** The available libraries. */
@@ -40,7 +42,8 @@ final class __Libraries__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/31
 	 */
-	public Library[] matchDependencies(DependencyInfo __set, boolean __opt)
+	@KeepWhenCompacting
+	Library[] __matchDependencies(DependencyInfo __set, boolean __opt)
 		throws NullPointerException
 	{
 		if (__set == null)
@@ -70,6 +73,7 @@ final class __Libraries__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/31
 	 */
+	@KeepWhenCompacting
 	static Library[] __matchDependencies(DependencyInfo __set, boolean __opt,
 		Set<Library> __alreadyRoved, Library... __from)
 		throws NullPointerException
@@ -154,6 +158,7 @@ final class __Libraries__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
+	@KeepWhenCompacting
 	void __register(SuiteInfo __info, JarPackageBracket __jar)
 		throws NullPointerException
 	{

@@ -24,10 +24,7 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import java.nio.file.Path;
-import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 /**
  * Native dynamic library that directly wraps the C-based ScritchUI API.
@@ -384,19 +381,34 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Obtains a font by a given face.
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __inFace The face requested.
+	 * @param __inParams The font parameters.
+	 * @param __outParams Output font parameters.
+	 * @return The resultant font pointer.
+	 * @throws MLECallError If the font could not be obtained.
+	 * @since 2026/04/10
+	 */
+	static native long __fontByFace(long __stateP,
+		int __inFace, int[] __inParams, int[] __outParams)
+		throws MLECallError;
+	
+	/**
 	 * Derives the given font.
 	 *
 	 * @param __stateP The state pointer.
 	 * @param __fontP The font to derive.
-	 * @param __style The new style to select.
-	 * @param __pixelSize The pixel size of the font.
+	 * @param __deriveParams The old parameters.
+	 * @param __newParams The new parameters.
 	 * @return The resultant font pointer.
 	 * @throws MLECallError On null arguments, if the style is not valid,
 	 * or the pixel size is zero or negative.
 	 * @since 2024/06/14
 	 */
 	static native long __fontDerive(long __stateP, long __fontP,
-		int __style, int __pixelSize)
+		int[] __deriveParams, int[] __newParams)
 		throws MLECallError;
 	
 	/**
@@ -796,6 +808,20 @@ public final class NativeScritchDylib
 		throws MLECallError;
 	
 	/**
+	 * Sets the window flags. 
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __windowP The window pointer.
+	 * @param __setFlags The flags to set.
+	 * @return The actual set flags.
+	 * @throws MLECallError On null arguments or if the flags could not be set.
+	 * @since 2026/07/07
+	 */
+	static native int __windowSetFlags(long __stateP, long __windowP,
+		int __setFlags)
+		throws MLECallError;
+	
+	/**
 	 * Sets the menu bar for the window.
 	 *
 	 * @param __stateP The state pointer.
@@ -821,6 +847,20 @@ public final class NativeScritchDylib
 	 */
 	static native void __windowSetMenuItemActivateListener(long __stateP,
 		long __windowP, ScritchMenuItemActivateListener __listener)
+		throws MLECallError;
+	
+	/**
+	 * Sets the window state. 
+	 *
+	 * @param __stateP The state pointer.
+	 * @param __windowP The window pointer.
+	 * @param __setState The state to set.
+	 * @return The actual set state.
+	 * @throws MLECallError On null arguments or if the state could not be set.
+	 * @since 2026/07/07
+	 */
+	static native int __windowSetState(long __stateP, long __windowP,
+		int __setState)
 		throws MLECallError;
 	
 	/**

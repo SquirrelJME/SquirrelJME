@@ -3,5 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/cmake/tryFloatH.c" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cmake/tryJvm.c" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cmake/utils/decode/decode.c" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cmake/utils/sourceize/sourceize.c" charset="UTF-8" />
   </component>
 </project>

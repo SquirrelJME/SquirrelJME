@@ -13,3 +13,6 @@ squirreljme_multilib_add_library(ScritchInputCore
 # Include main headers
 squirreljme_multilib_include_directories(ScritchInputCore PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
+
+# Set C language if not set
+squirreljme_multilib_linker_language(ScritchInputCore C)

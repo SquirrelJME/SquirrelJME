@@ -19,43 +19,94 @@ macro(squirreljme_find_generator generator toolset platform)
 	# Try configuring the blank project
 	# If the toolset is none, ignore it
 	unset(generatorResult)
-	if("${toolset}" STREQUAL "none")
-		# Ignore also if the platform is none
-		if("${platform}" STREQUAL "none")
-			execute_process(
-				COMMAND "${CMAKE_COMMAND}"
-					"-G" "${generator}"
-					"-B" "${tempBuild}"
-					"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
-				RESULT_VARIABLE generatorResult
-				OUTPUT_QUIET
-				ERROR_QUIET)
+	if(squirreljme_bp_version_3_13)
+		if("${toolset}" STREQUAL "none")
+			# Ignore also if the platform is none
+			if("${platform}" STREQUAL "none")
+				execute_process(
+					COMMAND "${CMAKE_COMMAND}"
+						"-G" "${generator}"
+						"-B" "${tempBuild}"
+						"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+					WORKING_DIRECTORY "${tempBuild}"
+					RESULT_VARIABLE generatorResult
+					OUTPUT_QUIET
+					ERROR_QUIET)
+			else()
+				execute_process(
+					COMMAND "${CMAKE_COMMAND}"
+						"-G" "${generator}"
+						"-A" "${platform}"
+						"-B" "${tempBuild}"
+						"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+					WORKING_DIRECTORY "${tempBuild}"
+					RESULT_VARIABLE generatorResult
+					OUTPUT_QUIET
+					ERROR_QUIET)
+			endif()
 		else()
 			execute_process(
 				COMMAND "${CMAKE_COMMAND}"
 					"-G" "${generator}"
-					"-A" "${platform}"
+					"-T" "${platform}"
+					"-A" "${toolset}"
 					"-B" "${tempBuild}"
 					"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+				WORKING_DIRECTORY "${tempBuild}"
 				RESULT_VARIABLE generatorResult
 				OUTPUT_QUIET
 				ERROR_QUIET)
 		endif()
 	else()
-		execute_process(
-			COMMAND "${CMAKE_COMMAND}"
-				"-G" "${generator}"
-				"-T" "${platform}"
-				"-A" "${toolset}"
-				"-B" "${tempBuild}"
-				"-S" "${CMAKE_SOURCE_DIR}/assets/cmake/simple"
-			RESULT_VARIABLE generatorResult
-			OUTPUT_QUIET
-			ERROR_QUIET)
+		if("${toolset}" STREQUAL "none")
+			# Ignore also if the platform is none
+			if("${platform}" STREQUAL "none")
+				execute_process(
+					COMMAND "${CMAKE_COMMAND}"
+						"-G" "${generator}"
+						"${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+					WORKING_DIRECTORY "${tempBuild}"
+					RESULT_VARIABLE generatorResult
+					OUTPUT_QUIET
+					ERROR_QUIET)
+			else()
+				execute_process(
+					COMMAND "${CMAKE_COMMAND}"
+						"-G" "${generator}"
+						"-A" "${platform}"
+						"${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+					WORKING_DIRECTORY "${tempBuild}"
+					RESULT_VARIABLE generatorResult
+					OUTPUT_QUIET
+					ERROR_QUIET)
+			endif()
+		else()
+			execute_process(
+				COMMAND "${CMAKE_COMMAND}"
+					"-G" "${generator}"
+					"-T" "${platform}"
+					"-A" "${toolset}"
+					"${CMAKE_SOURCE_DIR}/assets/cmake/simple"
+				WORKING_DIRECTORY "${tempBuild}"
+				RESULT_VARIABLE generatorResult
+				OUTPUT_QUIET
+				ERROR_QUIET)
+		endif()
 	endif()
+
+	# Try to actually run the output, since older CMake seems to want to
+	# actually sometimes only configure with certain generators when built
+	execute_process(
+		COMMAND "${CMAKE_COMMAND}"
+			"--build" "${tempBuild}"
+		WORKING_DIRECTORY "${tempBuild}"
+		RESULT_VARIABLE buildResult
+		OUTPUT_QUIET
+		ERROR_QUIET)
 
 	# If successful and the system/arch information exists, register it
 	if("${generatorResult}" EQUAL "0" AND
+		"${buildResult}" EQUAL "0" AND
 		EXISTS "${tempBuild}/system.tgt" AND
 		EXISTS "${tempBuild}/arch__.tgt")
 		# Load the info
@@ -65,10 +116,28 @@ macro(squirreljme_find_generator generator toolset platform)
 		# Track it
 		squirreljme_track_generator(${systemNormal} ${archNormal}
 			${generator} ${toolset} ${platform})
-	endif()
 
-	# Delete the configuration directory
-	file(REMOVE_RECURSE "${tempBuild}")
+		# Status that it worked!
+		message(STATUS "Found ${generator}.${toolset}.${platform}!")
+	else()
+		# Debug
+		if(NOT "${generatorResult}" EQUAL "0")
+			message(STATUS
+				"Ignoring ${generator}.${toolset}.${platform}... ")
+		elseif(NOT "${buildResult}" EQUAL "0")
+			message(STATUS
+				"Failed ${generator}.${toolset}.${platform}... ")
+		elseif(NOT EXISTS "${tempBuild}/system.tgt")
+			message(STATUS
+				"Unknown system for ${generator}.${toolset}.${platform}... ")
+		elseif(NOT EXISTS "${tempBuild}/arch__.tgt")
+			message(STATUS
+				"Unknown arch for ${generator}.${toolset}.${platform}... ")
+		else()
+			message(STATUS
+				"Ignoring ${generator}.${toolset}.${platform}... ")
+		endif()
+	endif()
 endmacro()
 
 # Try a set of generators
@@ -79,9 +148,9 @@ macro(squirreljme_find_generators generators toolsets platforms)
 	set(platforms "${platforms}")
 
 	# Process each combination
-	foreach(generator IN LISTS generators)
-		foreach(toolset IN LISTS toolsets)
-			foreach(platform IN LISTS platforms)
+	foreach(generator IN ITEMS ${generators})
+		foreach(toolset IN ITEMS ${toolsets})
+			foreach(platform IN ITEMS ${platforms})
 				squirreljme_find_generator(${generator} ${toolset} ${platform})
 			endforeach()
 		endforeach()

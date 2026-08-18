@@ -18,6 +18,9 @@
     CMAKE_SOURCE_ROOT: nanocoat
     SQUIRRELJME_SPECIAL_BUILD_LIBRETRO: 1
 
+    # Place binaries in the root of the build directory
+    SQUIRRELJME_BINARY_OUTPUT_ROOT: 1
+
 # Inclusion templates, required for the build to work
 include:
   - project: 'libretro-infrastructure/ci-templates'
@@ -62,6 +65,8 @@ include:
     file: '/windows-cmake-mingw.yml'
   - project: 'libretro-infrastructure/ci-templates'
     file: '/windows-cmake-msvc19.yml'
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/webos-cmake.yml'
 
 # Stages for building, required
 stages:
@@ -72,6 +77,10 @@ stages:
 # Inclusion of all build types, note that platforms are in the form of:
 # - libretro-build-$PLATFORM
 # - android-ARCH
+
+##############################################################################
+##################################### JOBS ###################################
+##############################################################################
 
 # android-cmake.yml
 android-arm64-v8a:
@@ -248,13 +257,17 @@ libretro-build-windows-x64:
     - .libretro-windows-cmake-x86_64
     - .core-nanocoat
 
-# windows-cmake-msvc19.yml
-#libretro-build-windows-msvc19-i686: # TODO: What should this be called?
+#libretro-build-windows-msvc19-x86:
 #  extends:
 #    - .libretro-windows-msvc19-cmake-x86
 #    - .core-nanocoat
 
-#libretro-build-windows-msvc19-x64: # TODO: What should this be called?
+#libretro-build-windows-msvc19-x64:
 #  extends:
 #    - .libretro-windows-msvc19-cmake-x64
 #    - .core-nanocoat
+
+libretro-build-webos-armv7a:
+  extends:
+    - .libretro-webos-armv7a-cmake
+    - .core-nanocoat

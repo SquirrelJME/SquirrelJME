@@ -62,10 +62,10 @@ typedef sjme_errorCode (*sjme_nal_stdOFunc)(
 typedef struct sjme_nal_stdIo
 {
 	/** Close function. */
-	sjme_jboolean (*close)(void);
+	sjme_errorCode (*close)(void);
 	
 	/** Reads from the input. */
-	sjme_jboolean (*in)(void);
+	sjme_errorCode (*in)(void);
 
 	/** Writes to the output. */
 	sjme_nal_stdOFunc out;

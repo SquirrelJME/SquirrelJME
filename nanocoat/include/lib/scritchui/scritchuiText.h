@@ -18,7 +18,7 @@
 #ifndef SJME_C_SCRITCHUITEXT_H
 #define SJME_C_SCRITCHUITEXT_H
 
-#include "lib/scritchui/scritchui.h"
+#include "lib/scritchui/scritchuiBasic.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -69,4 +69,4 @@ sjme_errorCode sjme_scritchui_textNewStatic(
 	#endif /* #ifdef SJME_CXX_SQUIRRELJME_SCRITCHUITEXT_H */
 #endif     /* #ifdef __cplusplus */
 
-#endif /* SQUIRRELJME_SCRITCHUITEXT_H */
+#endif /* SJME_C_SCRITCHUITEXT_H */

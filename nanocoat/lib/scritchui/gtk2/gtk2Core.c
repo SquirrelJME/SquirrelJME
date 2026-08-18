@@ -29,12 +29,9 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	sjme_sm(.componentRepaint, sjme_scritchui_gtk2_componentRepaint),
 	sjme_sm(.componentRevalidate, sjme_scritchui_gtk2_componentRevalidate),
 	sjme_sm(.componentSetActivateListener, NULL),
-	sjme_sm(.componentSetInputListener,
-		sjme_scritchui_gtk2_componentSetInputListener),
-	sjme_sm(.componentSetPaintListener, 
-		sjme_scritchui_gtk2_componentSetPaintListener),
-	sjme_sm(.componentSetSizeListener, 
-		sjme_scritchui_gtk2_componentSetSizeListener),
+	sjme_sm(.componentSetInputListener, sjme_scritchui_gtk2_componentSetInputListener),
+	sjme_sm(.componentSetPaintListener, sjme_scritchui_gtk2_componentSetPaintListener),
+	sjme_sm(.componentSetSizeListener, sjme_scritchui_gtk2_componentSetSizeListener),
 	sjme_sm(.componentSetVisibleListener, NULL),
 	sjme_sm(.componentSize, sjme_scritchui_gtk2_componentSize),
 	sjme_sm(.containerAdd, sjme_scritchui_gtk2_containerAdd),
@@ -43,6 +40,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	sjme_sm(.labelSetString, sjme_scritchui_gtk2_labelSetString),
 	sjme_sm(.lafDpiProject, NULL),
 	sjme_sm(.lafElementColor, sjme_scritchui_gtk2_lafElementColor),
+	sjme_sm(.lafMetric, NULL),
 	sjme_sm(.listNew, NULL),
 	sjme_sm(.loopExecute, NULL),
 	sjme_sm(.loopExecuteLater, sjme_scritchui_gtk2_loopExecuteLater),
@@ -62,24 +60,15 @@ static const sjme_scritchui_implFunctions sjme_scritchui_gtkFunctions =
 	sjme_sm(.viewSetArea, sjme_scritchui_gtk2_viewSetArea),
 	sjme_sm(.viewSetView, sjme_scritchui_gtk2_viewSetView),
 	sjme_sm(.viewSetViewListener, sjme_scritchui_gtk2_viewSetViewListener),
-<<<<<<< BEGIN MERGE CONFLICT: local copy shown first <<<<<<<<<<<< (line 63)
-	sjme_sm(.windowContentMinimumSize, 
-		sjme_scritchui_gtk2_windowContentMinimumSize),
-####### SUGGESTED CONFLICT RESOLUTION follows ###################
 	sjme_sm(.windowContentMinimumSize, 
 		sjme_scritchui_gtk2_windowContentMinimumSize),
 	sjme_sm(.windowGetFrame, sjme_scritchui_gtk2_windowGetFrame),
-||||||| COMMON ANCESTOR content follows ||||||||||||||||||||||||| (line 60)
-	sjme_sm(.windowContentMinimumSize, sjme_scritchui_gtk2_windowContentMinimumSize),
-======= MERGED IN content follows =============================== (line 62)
-	sjme_sm(.windowContentMinimumSize, 
-		sjme_scritchui_gtk2_windowContentMinimumSize),
-	sjme_sm(.windowGetFrame, sjme_scritchui_gtk2_windowGetFrame),
->>>>>>> END MERGE CONFLICT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	sjme_sm(.windowNew, sjme_scritchui_gtk2_windowNew),
 	sjme_sm(.windowSetCloseListener, 
 		sjme_scritchui_gtk2_windowSetCloseListenerFunc),
+	sjme_sm(.windowSetFlags, sjme_scritchui_gtk2_windowSetFlags),
 	sjme_sm(.windowSetMenuBar, sjme_scritchui_gtk2_windowSetMenuBar),
+	sjme_sm(.windowSetState, sjme_scritchui_gtk2_windowSetState),
 	sjme_sm(.windowSetVisible, sjme_scritchui_gtk2_windowSetVisible),
 };
 

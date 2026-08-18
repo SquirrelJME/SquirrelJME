@@ -20,6 +20,18 @@
 #ifndef SJME_C_CONFIG_H
 #define SJME_C_CONFIG_H
 
+/* Use a configure file? */
+#if defined(SJME_CONFIG_USE_PATH)
+	/* set() is used by CMake. */
+	#define set(x)
+
+	/* Include the configuration. */
+	#include SJME_CONFIG_USE_PATH
+
+	/* Revert use of set. */
+	#undef set
+#endif
+
 #include <stddef.h>
 
 /* Skip stdlib in certain cases? */
@@ -30,7 +42,7 @@
 #include <setjmp.h>
 
 /* Floating point header, determines if software floats should be used. */
-#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+#if defined(SJME_CONFIG_HAS_FLOAT_H)
 	#include <float.h>
 #endif
 
@@ -262,13 +274,15 @@ extern "C" {
 	/** Windows is available however. */
 	#define SJME_CONFIG_HAS_OS_WINDOWS 16
 #elif defined(_WIN32) || defined(__WIN32__) || \
-	defined(__WIN32) || defined(_WINDOWS)
+	defined(__WIN32) || defined(_WINDOWS) || \
+	defined(SJME_CONFIG_IDENT_OS_REACTOS)
 	/** Using Windows 32-bit. */
 	#define SJME_CONFIG_HAS_OS_WINDOWS_32
 	
 	/** Windows is available. */
 	#define SJME_CONFIG_HAS_OS_WINDOWS 32
-#elif defined(__APPLE__) && defined(__MACH__)
+#elif (defined(__APPLE__) && defined(__MACH__)) || \
+	defined(SJME_CONFIG_IDENT_OS_MACOSX)
 	/** macOS 10+ is available. */
 	#define SJME_CONFIG_HAS_OS_MACOS
 #elif defined(macintosh)
@@ -303,6 +317,9 @@ extern "C" {
 	defined(__DOS__)
 	/** Is Microsoft Dos. */
 	#define SJME_CONFIG_HAS_OS_PC_DOS
+#elif defined(SJME_CONFIG_IDENT_OS_SUNOS)
+	/** Classic BSD based SunOS. */
+	#define SJME_CONFIG_HAS_OS_SUNOS
 #endif
 	
 /** POSIX 1990. */
@@ -341,6 +358,12 @@ extern "C" {
 		#define SJME_CONFIG_HAS_OS_POSIX
 	#endif
 #endif
+	
+#if defined(SJME_CONFIG_HAS_OS_BSD) || defined(SJME_CONFIG_HAS_OS_MACOS) || \
+	defined(SJME_CONFIG_HAS_OS_NEXTSTEP) || defined(SJME_CONFIG_HAS_OS_SUNOS)
+	/** This is a BSD family operating system. */
+	#define SJME_CONFIG_HAS_OS_BSD_FAMILY
+#endif
 
 #if defined(SJME_CONFIG_HAS_OS_POSIX)
 	#if defined(_POSIX_C_SOURCE)
@@ -369,7 +392,8 @@ extern "C" {
 /** Windows NT 4.0 */
 #define SJME_CONFIG_WINDOWS_VERSION_NT_4 0x0400
 
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
 	/* Include the Windows SDK versioning information, if available. */
 	#if defined(SJME_CONFIG_HAS_SDKDDKVER_H)
 		#include <sdkddkver.h>
@@ -661,295 +685,8 @@ extern "C" {
 	#define sjme_alloca_free(ptr) ((void)ptr)
 #endif
 
-/* Visual C SAL 2.0 Annotations. */
-#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
-	#include <sal.h>
-
-	/** Return value must be checked. */
-	#define sjme_attrCheckReturn _Must_inspect_result_
-	
-	/** Deprecated. */
-	#define sjme_attrDeprecated __declspec(deprecated)
-	
-	/** Formatted string argument. */
-	#define sjme_attrFormatArg _Printf_format_string_ 
-	
-	/** Input cannot be null. */
-	#define sjme_attrInNotNull _In_
-	
-	/** Input can be null. */
-	#define sjme_attrInNullable _In_opt_
-	
-	/** Takes input and produces output. */
-	#define sjme_attrInOutNotNull _In_ _Out_
-	
-	/** Input value range. */
-	#define sjme_attrInRange(lo, hi) _In_range_((lo), (hi))
-	
-	/** Method takes input. */
-	#define sjme_attrInValue _In_
-	
-	/** Returns nullable value. */
-	#define sjme_attrReturnNullable _Outptr_result_maybenull_z_
-	
-	/** Method gives output. */
-	#define sjme_attrOutNotNull _Out_
-	
-	/** Method output can be null. */
-	#define sjme_attrOutNullable _Out_opt_
-
-	/** Output to buffer. */
-	#define sjme_attrOutNotNullBuf(lenArg) _Out_writes_(lenArg)
-	
-	/** Output value range. */
-	#define sjme_attrOutRange(lo, hi) _Out_range_((lo), (hi))
-
-/* Older Visual C++. */
-#elif SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_6)
-	#include <sal.h>
-
-	/** Return value must be checked. */
-	#define sjme_attrCheckReturn __checkReturn
-
-	/** Formatted string argument. */
-	#define sjme_attrFormatArg __format_string
-
-	/** Input cannot be null. */
-	#define sjme_attrInNotNull __in
-
-	/** Input can be null. */
-	#define sjme_attrInNullable __in_opt
-
-	/** Takes input and produces output. */
-	#define sjme_attrInOutNotNull __in __out
-
-	/** Method takes input. */
-	#define sjme_attrInValue __in
-
-	/** Returns nullable value. */
-	#define sjme_attrReturnNullable __maybenull
-
-	/** Method gives output. */
-	#define sjme_attrOutNotNull __out
-
-	/** Method output can be null. */
-	#define sjme_attrOutNullable __out_opt
-
-#elif defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
-	/* Clang has special analyzer stuff, but also same as GCC otherwise. */
-	#if defined(SJME_CONFIG_HAS_CLANG)
-		/** Returns nullable value. */
-		#define sjme_attrReturnNullable _Nullable_result
-	#endif
-	
-	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
-		/** Artificial function. */
-		#define sjme_attrArtificial __attribute__((artificial))
-	#endif
-	
-	/** Check return value. */
-	#define sjme_attrCheckReturn __attribute__((warn_unused_result))
-	
-	/** Deprecated. */
-	#define sjme_attrDeprecated __attribute__((deprecated))
-
-	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
-		/** Disable optimization. */
-		#define sjme_noOptimize __attribute__((optimize("O0")))
-	#endif
-	
-	/**
-	 * Formatted string.
-	 * 
-	 * @param formatIndex The formatted string index.
-	 * @param vaIndex The index of @c ... or @c va_list .
-	 * @since 2023/08/05
-	 */
-	#define sjme_attrFormatOuter(formatIndex, vaIndex) \
-		__attribute__((__format__(__printf__, formatIndex + 1, vaIndex + 1)))
-	
-	/** Indicates a callback. */
-	#define sjme_attrCallback __attribute__((callback))
-	
-	/** Not used. */
-	#define sjme_attrUnused __attribute__((unused))
-
-	/** Not used enum constant. */
-	#define sjme_attrUnusedEnum(x) x sjme_attrUnused
-#endif
-
-#if !defined(sjme_attrCallback)
-	/** Indicates a callback. */
-	#define sjme_attrCallback
-#endif
-
-#if !defined(sjme_attrCheckReturn)
-	/** Return value must be checked. */
-	#define sjme_attrCheckReturn
-#endif
-
-#if !defined(sjme_attrDeprecated)
-	/** Deprecated. */
-	#define sjme_attrDeprecated
-#endif
-
-#if !defined(sjme_attrFormatArg)
-	/** Formatted string argument. */
-	#define sjme_attrFormatArg
-#endif
-
-#if !defined(sjme_attrFormatOuter)
-	/**
-	 * Formatted string.
-	 * 
-	 * @param formatIndex The formatted string index.
-	 * The index of @c ... or @c va_list .
-	 * @since 2023/08/05
-	 */
-	#define sjme_attrFormatOuter(formatIndex, vaIndex)
-#endif
-
-#if !defined(sjme_attrInValue)
-	/** Method takes input. */
-	#define sjme_attrInValue
-#endif
-
-#if !defined(sjme_attrInRange)
-	/** Input value range. */
-	#define sjme_attrInRange(lo, hi)
-#endif
-
-#if !defined(sjme_attrReturnNullable)
-	/** Returns a nullable value. */
-	#define sjme_attrReturnNullable
-#endif
-
-#if !defined(sjme_attrInValue)
-	/** Takes input value. */
-	#define sjme_attrInValue
-#endif
-
-#if !defined(sjme_attrInNotNull)
-	/** Cannot be null. */
-	#define sjme_attrInNotNull sjme_attrInValue
-#endif
-
-#if !defined(sjme_attrInNullable)
-	/** Nullable. */
-	#define sjme_attrInNullable sjme_attrInValue
-#endif
-
-#if !defined(sjme_attrOutNotNull)
-	/** Method gives output. */
-	#define sjme_attrOutNotNull sjme_attrInNotNull
-#endif
-
-#if !defined(sjme_attrOutNullable)
-	/** Method output can be null. */
-	#define sjme_attrOutNullable sjme_attrInNullable
-#endif
-
-#if !defined(sjme_attrInOutNotNull)
-	/** Takes input and produces output. */
-	#define sjme_attrInOutNotNull sjme_attrInNotNull sjme_attrOutNotNull 
-#endif
-
-#if !defined(sjme_attrInOutNullable)
-	/** Takes input and produces output. */
-	#define sjme_attrInOutNullable sjme_attrInNullable sjme_attrOutNullable 
-#endif
-
-#if !defined(sjme_attrInNotNullBuf)
-	/** Input to buffer. */
-	#define sjme_attrInNotNullBuf(lenArg) sjme_attrInNotNull
-#endif
-
-#if !defined(sjme_attrOutNotNullBuf)
-	/** Output to buffer. */
-	#define sjme_attrOutNotNullBuf(lenArg) sjme_attrOutNotNull
-#endif
-
-#if !defined(sjme_attrInOutNotNullBuf)
-	/** Input/output to/from buffer. */
-	#define sjme_attrInOutNotNullBuf(lenArg) \
-		sjme_attrInNotNullBuf(lenArg) sjme_attrOutNotNullBuf(lenArg)
-#endif
-
-#if !defined(sjme_attrOutRange)
-	/** Output value range. */
-	#define sjme_attrOutRange(lo, hi)
-#endif
-
-/** Positive value. */
-#define sjme_attrInPositive sjme_attrInRange(0, INT32_MAX)
-
-/** Non-zero positive value. */
-#define sjme_attrInPositiveNonZero sjme_attrInRange(1, INT32_MAX)
-
-/** Negative one to positive. */
-#define sjme_attrInNegativeOnePositive sjme_attrInRange(-1, INT32_MAX)
-
-/** Positive value. */
-#define sjme_attrOutPositive sjme_attrOutRange(0, INT32_MAX)
-
-/** Non-zero positive value. */
-#define sjme_attrOutPositiveNonZero sjme_attrOutRange(1, INT32_MAX)
-
-/** Negative one to positive. */
-#define sjme_attrOutNegativeOnePositive sjme_attrOutRange(-1, INT32_MAX)
-
-#if !defined(sjme_flexibleArrayCount)
-	/** Flexible array count, zero by default. */
-	#define sjme_flexibleArrayCount 0
-#endif
-
-#if !defined(sjme_flexibleArrayCountUnion)
-	/** Flexible array count but for unions. */
-	#define sjme_flexibleArrayCountUnion 1
-#endif
-
-#if !defined(sjme_attrUnused)
-	/** Unused value. */
-	#define sjme_attrUnused
-#endif
-
-#if !defined(sjme_attrUnusedEnum)
-	/** Unused enumeration element. */
-	#define sjme_attrUnusedEnum(x) x
-#endif
-
-#if !defined(sjme_attrArtificial)
-	/** Artificial function. */
-	#define sjme_attrArtificial
-#endif
-
-#if !defined(sjme_attrOutModify)
-	/** Modifies the output. */
-	#define sjme_attrOutModify
-#endif
-
-#if !defined(sjme_attrOutOverwrite)
-	/** Overwrites the output. */
-	#define sjme_attrOutOverwrite
-#endif
-
-#if !defined(sjme_inline)
-	#if !defined(SJME_CONFIG_HAS_MSVC) || \
-		SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
-		/** Inline function. */
-		#define sjme_inline inline
-	#else
-		/** Inline function. */
-		#define sjme_inline __inline
-	#endif
-#endif
-
-#if !defined(sjme_noOptimize)
-	/** Disable optimization. */
-	#define sjme_noOptimize
-#endif
-
-#if defined(SJME_CONFIG_HAS_OS_MACOS) && (defined(SJME_CONFIG_HAS_ARCH_IA32) || \
+#if defined(SJME_CONFIG_HAS_OS_MACOS) && \
+	(defined(SJME_CONFIG_HAS_ARCH_IA32) || \
 	defined(SJME_CONFIG_HAS_ARCH_POWERPC))
 	/** Supports macOS Darwin kernel Atomic Access */
 	#define SJME_CONFIG_HAS_ATOMIC_DARWIN
@@ -1033,67 +770,6 @@ extern "C" {
 	#endif
 #endif
 
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS_16)
-	/** SquirrelJME exported calling convention. */
-	#define sjme_attrExportCall FAR PASCAL
-#elif defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
-	defined(SJME_CONFIG_HAS_OS_WINDOWS_32)
-	/** SquirrelJME exported calling convention. */
-	#define sjme_attrExportCall __stdcall
-#else
-	/** SquirrelJME exported calling convention. */
-	#define sjme_attrExportCall
-#endif
-
-#if defined(SJME_CONFIG_HAS_MSVC)
-	/** Align to 32-bit. */
-	#define sjme_align32 __declspec(align(4))
-#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
-	/** Align to 32-bit. */
-	#define sjme_align32 __attribute__((aligned(4)))
-#else
-	/** Align to 32-bit. */
-	#define sjme_align32 
-#endif
-
-#if defined(SJME_CONFIG_HAS_MSVC)
-	/** Align to 64-bit. */
-	#define sjme_align64 __declspec(align(8))
-#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
-	/** Align to 64-bit. */
-	#define sjme_align64 __attribute__((aligned(8)))
-#else
-	/** Align to 64-bit. */
-	#define sjme_align64 
-#endif
-
-#if SJME_CONFIG_HAS_POINTER == 64
-	/** Align to pointer. */
-	#define sjme_alignPointer sjme_align64
-#elif SJME_CONFIG_HAS_POINTER == 32
-	/** Align to pointer. */
-	#define sjme_alignPointer sjme_align32
-#else
-	/** Align to pointer. */
-	#define sjme_alignPointer
-#endif
-
-#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
-	/** Packed enumeration. */
-	#define sjme_attrPackedEnumByte(name) __attribute__((packed)) name
-#else
-	/** Packed enumeration. */
-	#define sjme_attrPackedEnumByte(name) name
-#endif
-	
-#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
-	/** Packed structure. */
-	#define sjme_packed __attribute__((packed))
-#else
-	/** Packed structure. */
-	#define sjme_packed
-#endif
-
 #if !defined(SJME_CONFIG_HAS_NO_ERRNO_H) && \
 	!defined(SJME_CONFIG_HAS_ERRNO_H)
 	#if defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
@@ -1132,26 +808,9 @@ extern "C" {
 #endif
 
 /** Disable all linting of any kind. */
-#define sjme_noLint(what) (what) /* NOLINT */ /* ReSharper disable once all */
-
-#if !defined(SJME_CONFIG_HAS_NO_THREAD_LOCAL)
-	#if defined(SJME_CONFIG_HAS_MSVC)
-		/** Thread local storage. */
-		#define sjme_threadLocal(type, name) \
-			static sjme_align32 type __declspec(thread) name;
-	#elif defined(SJME_CONFIG_HAS_GCC) || \
-		defined(SJME_CONFIG_HAS_CLANG)
-		/** Thread local storage. */
-		#define sjme_threadLocal(type, name) \
-			static sjme_align32 __thread type name
-	#endif
-#endif
-
-#if !defined(sjme_threadLocal)
-	/** Thread local storage. */
-	#define sjme_threadLocal(type, name) \
-		static sjme_align32 type name
-#endif
+#define sjme_noLint(what) (what) /* NOLINT */ \
+	/* ReSharper disable once all */ \
+	/* ReSharper disable once CppLocalVariableMightNotBeInitialized */
 
 #if defined(SJME_CONFIG_HAS_ARCH_MIPS) || \
 	defined(SJME_CONFIG_HAS_ARCH_POWERPC)
@@ -1162,17 +821,12 @@ extern "C" {
 	#define SJME_CONFIG_HAS_NO_UNALIGNED32
 #endif
 
-#if defined(SJME_CONFIG_HAS_ARCH_IA16)
-	/** Full address range pointer. */
-	#define sjme_attrHugeP huge
-#else
-	/** Full address range pointer. */
-	#define sjme_attrHugeP
-#endif
-
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/* Qualifier used multiple times, as there are volatile typedefs. */
 	#pragma warning(disable: 4114)
+
+	/* "Deprecated" POSIX name. */
+	#pragma warning(disable: 4996)
 #endif
 	
 #if defined(SJME_CONFIG_HAS_SDCC)
@@ -1207,7 +861,7 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_MSVC)
 	/** Assuming floating point rounds to nearest. */
 	#define SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST
-#elif !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+#elif defined(SJME_CONFIG_HAS_FLOAT_H)
 	#if defined(FLT_ROUNDS) && FLT_ROUNDS == 1
 		/** Has floating point that rounds to nearest. */
 		#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
@@ -1215,7 +869,7 @@ extern "C" {
 #endif
 	
 /* 32-bit floating point matches Java? */
-#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
+#if defined(SJME_CONFIG_HAS_FLOAT_H) && \
 	(defined(SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST) || \
 		defined(SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST)) && \
 	defined(FLT_EVAL_METHOD) && (FLT_EVAL_METHOD == 0) && \
@@ -1259,17 +913,6 @@ extern "C" {
 	#define SJME_CONFIG_HAS_DOUBLE_SOFT
 #endif
 
-#if defined(SJME_CONFIG_HAS_GCC)
-	/** Optimize this specific function. */
-	#define sjme_attrOptimize __attribute__((optimize("-Os")))
-#elif defined(SJME_CONFIG_HAS_MSVC)
-	/** Optimize this specific function. */
-	#define sjme_attrOptimize __pragma(optimize("t", on))
-#else
-	/** Optimize this specific function. */
-	#define sjme_attrOptimize
-#endif
-
 #if defined(SJME_CONFIG_HAS_C99) || \
 	SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
 	/** Constant-ish struct member set. */
@@ -1278,6 +921,14 @@ extern "C" {
 	/** Constant-ish struct member set. */
 	#define sjme_sm(dot, val) val
 #endif
+	
+/** Two structure values. */
+#define sjme_sm2(dot, v1, v2) \
+	sjme_sm(dot, {v1 SJME_TOKEN_COMMA v2})
+	
+/** Three structure values. */
+#define sjme_sm3(dot, v1, v2, v3) \
+	sjme_sm(dot, {v1 SJME_TOKEN_COMMA v2 SJME_TOKEN_COMMA v3})
 
 /** Bitfield count for @link sjme_jboolean @endlink . */
 #define sjme_booleanBit 2
@@ -1286,7 +937,7 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_MSVC)
 	/** Assuming floating point rounds to nearest. */
 	#define SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST
-#elif !defined(SJME_CONFIG_HAS_NO_FLOAT_H)
+#elif defined(SJME_CONFIG_HAS_FLOAT_H)
 	#if defined(FLT_ROUNDS) && FLT_ROUNDS == 1
 		/** Has floating point that rounds to nearest. */
 		#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
@@ -1294,7 +945,7 @@ extern "C" {
 #endif
 	
 /* 32-bit floating point matches Java? */
-#if !defined(SJME_CONFIG_HAS_NO_FLOAT_H) && \
+#if defined(SJME_CONFIG_HAS_FLOAT_H) && \
 	(defined(SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST) || \
 		defined(SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST)) && \
 	defined(FLT_EVAL_METHOD) && (FLT_EVAL_METHOD == 0) && \
@@ -1351,6 +1002,11 @@ extern "C" {
 	#if !defined(SJME_CONFIG_DEBUG_BYTECODES)
 		/** Print out bytecodes. */
 		#define SJME_CONFIG_DEBUG_BYTECODES
+	#endif
+	
+	#if !defined(SJME_CONFIG_DEBUG_ENTRY)
+		/** Entry and exit from methods. */
+		#define SJME_CONFIG_DEBUG_ENTRY
 	#endif
 
 	#if !defined(SJME_CONFIG_DEBUG_FIELD)
@@ -1440,6 +1096,30 @@ extern "C" {
 	
 /** Nanoseconds as nanos (identity). */
 #define SJME_NANOS_NS(n) INT64_C(n)
+
+#pragma region(threadLocal)
+
+#if !defined(SJME_CONFIG_HAS_NO_THREAD_LOCAL)
+	#if defined(SJME_CONFIG_HAS_MSVC)
+		/** Thread local storage. */
+		#define sjme_threadLocal(type, name) \
+			static sjme_align32 type __declspec(thread) name;
+	#elif defined(SJME_CONFIG_HAS_GCC) || \
+		defined(SJME_CONFIG_HAS_CLANG)
+		/** Thread local storage. */
+		#define sjme_threadLocal(type, name) \
+			static sjme_align32 __thread type name
+	#endif
+#endif
+
+#if !defined(sjme_threadLocal) && \
+	!defined(SJME__CONFIG_CHECK__SJME_THREAD_LOCAL)
+	/** Thread local storage. */
+	#define sjme_threadLocal(type, name) \
+		static sjme_align32 type name
+#endif
+
+#pragma endregion(threadLocal)
 	
 /* Windows header needs to be included everywhere effectively. */
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)

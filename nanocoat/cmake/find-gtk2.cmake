@@ -6,9 +6,6 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 
-# Common find support
-squirreljme_include("find.cmake")
-
 # Force do not use on certain systems
 if(NOT SQUIRRELJME_SYSTEM STREQUAL "wine")
 	# Check pkg-config first
@@ -41,13 +38,13 @@ if(GTK2_FOUND)
 		message(STATUS "GTK2: Detected and linkable")
 
 		# Enable it by default
-		set(SQUIRRELJME_ENABLE_GUI_GTK2_DEFAULT YES)
+		set(SQUIRRELJME_ENABLE_GUI_GTK2_DEFAULT TRUE)
 	else()
 		# Note it
 		message(STATUS "GTK2 Detected, does not link!")
 
 		# Disable it by default, since it is broken
-		set(SQUIRRELJME_ENABLE_GUI_GTK2_DEFAULT NO)
+		set(SQUIRRELJME_ENABLE_GUI_GTK2_DEFAULT FALSE)
 
 		# Make it so GTK2 was not found
 		unset(GTK2_FOUND CACHE)
@@ -55,5 +52,5 @@ if(GTK2_FOUND)
 endif()
 
 # Enable GTK2 ScritchUi?
-option(SQUIRRELJME_ENABLE_GUI_GTK2 "Enable ScritchUi GTK2"
-	"${SQUIRRELJME_ENABLE_GUI_GTK2_DEFAULT}")
+squirreljme_define_option(SQUIRRELJME_ENABLE_GUI_GTK2
+	"Enable ScritchUI GTK2")

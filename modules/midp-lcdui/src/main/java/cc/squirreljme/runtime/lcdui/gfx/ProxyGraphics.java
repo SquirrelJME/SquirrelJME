@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -768,9 +769,10 @@ public final class ProxyGraphics
 	 * @since 2022/02/25
 	 */
 	@Override
-	public void setFont(Font __font)
+	public void setFont(Font __base, PencilFontBracket __font, 
+		int[] __fontParams)
 	{
-		this.__graphics().setFont(__font);
+		this.__extra().setFont(__base, __font, __fontParams);
 	}
 
 	/**

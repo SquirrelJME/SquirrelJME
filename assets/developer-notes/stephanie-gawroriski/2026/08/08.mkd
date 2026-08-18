@@ -1,0 +1,29 @@
+# 2026/08/08
+
+## 14:55
+
+Okay so I definitely want to work on the JavaDoc generation so I can get that
+up and running. Additionally as well, I want to use the tokenization system
+in the future to migrate the gigantic mess of the error system to an error
+list CSV that would just be much better in general. This requires rewriting
+the source code in only the specific locations, not only just parsing it.
+
+For the error list CSV, since these are unique location based errors I was
+just thinking of a plain `0x12345678` indexing for specific ones and leaving
+any negative values for the MLE errors keeping in the same with NanoCoat. This
+way if an error is generic, instead of just `"NARG"` it is the generic MLE
+error code.
+
+For the JavaDoc, I need to go through the documentation as well and find and
+move out any unimportant details for some software titles is removed since that
+is not important for implementation users. At some point I also want to hook
+in using a `libjvm` to be able to call the old documentation doclet or some
+other mechanisms, or using NanoCoat to run a doclet. Regardless, the
+documentation will output a Markdown document but I could also output say a
+JSON document of the tokens and tree of the structure for any processing I
+could potentially do. I would probably use this for the error list conversion
+as I can just load the entire JSON, process it and then just convert and
+rewrite the file. I already have JSON utilities. Having the error conversion
+stuff or the markdown stuff use anything based on the old doclet stuff is just
+absolutely horrible because it is just so bad of an API. So I want something
+that is just not broken in any way.

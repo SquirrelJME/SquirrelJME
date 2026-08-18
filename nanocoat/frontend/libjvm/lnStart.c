@@ -140,7 +140,7 @@ int main(int argc, sjme_lpcstr* argv)
 		memset(mainBuf, 0, sizeof(mainBuf));
 		snprintf(mainBuf, BUF_SIZE - 1, "%s",
 			mainArgV[0]);
-		for (i = 0, n = strlen(mainBuf); i < n; i++)
+		for (i = 0, n = sjme_util_sizeToInt(strlen(mainBuf)); i < n; i++)
 			if (mainBuf[i] == '.')
 				mainBuf[i] = '/';
 		

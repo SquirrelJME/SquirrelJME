@@ -15,7 +15,7 @@ if(SQUIRRELJME_IS_LIBRETRO)
 
 	# Disable ScritchUi dynamic libraries
 	add_compile_definitions(SJME_CONFIG_SCRITCHUI_NO_DYLIB=1)
-	set(SQUIRRELJME_SCRITCHUI_NO_DYLIB ON)
+	set(SQUIRRELJME_SCRITCHUI_NO_DYLIB TRUE)
 endif()
 
 # Strip output executable
@@ -34,7 +34,7 @@ if(SQUIRRELJME_IS_RELEASE)
 		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
 		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 		macro(squirreljme_executable_strip target)
-			target_link_options(${target}
+			squirreljme_target_link_options(${target}
 				"/PDBSTRIPPED"
 				"/DEBUG:NONE")
 		endmacro()

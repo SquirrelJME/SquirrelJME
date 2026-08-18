@@ -9,6 +9,7 @@
 
 #include "sjme/dylibExtra.h"
 #include "sjme/path.h"
+#include "sjme/util.h"
 
 /** ScritchAudio library order. */
 static const sjme_lpcstr sjme_dylib_extraAudio[] =
@@ -134,7 +135,7 @@ sjme_errorCode sjme_dylib_openExtra(
 	/* If a subcomponent is passed, make sure it does not have a wonky */
 	/* set of characters. */
 	if (subComponent != NULL)
-		for (n = strlen(subComponent), i = 0; i < n; i++)
+		for (n = sjme_util_sizeToInt(strlen(subComponent)), i = 0; i < n; i++)
 		{
 			at = subComponent[i];
 			if (at == '\\' || at == '/' || at == ':' || at <= ' ')

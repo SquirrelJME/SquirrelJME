@@ -517,7 +517,7 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	memset(adjustMain, 0, sizeof(adjustMain));
 	snprintf(adjustMain, SJME_NVM_CLASS_NAME_LIMIT - 1,
 		"%s", initConfigCopy->mainClass);
-	for (i = 0, n = strlen(adjustMain); i < n; i++)
+	for (i = 0, n = sjme_util_sizeToInt(strlen(adjustMain)); i < n; i++)
 		if (adjustMain[i] == '.')
 			adjustMain[i] = '/';
 
@@ -1075,7 +1075,7 @@ fail_move:
 	return sjme_error_default(error);
 }
 
-sjme_jboolean sjme_nvm_task_taskScheduleYes(
+sjme_errorCode sjme_nvm_task_taskScheduleYes(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jboolean* isRunning)

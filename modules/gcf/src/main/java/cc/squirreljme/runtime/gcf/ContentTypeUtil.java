@@ -144,6 +144,19 @@ public final class ContentTypeUtil
 		if (a == 'I' && b == 'D' && c == '3' ||
 			((a == (byte) 0xFF) && (b & 0xE0) == 0xE0))
 			return "audio/mpeg";
+
+		// Sony Ericsson eMelody/iMelody
+		if (a == 'B' && b == 'E' && c == 'G' && d == 'I' &&
+			e == 'N' && f == ':')
+		{
+			// Is it eMelody?
+			if (g == 'E' && h == 'M')
+				return "audio/e-melody";
+			
+			// Is it iMelody?
+			if (g == 'I' && h == 'M')
+				return "audio/iMelody";
+		}
 		
 		// GIF? (GIF8)
 		if (a == 'G' && b == 'I' && c == 'F' && d == '8' &&
@@ -397,6 +410,12 @@ public final class ContentTypeUtil
 				
 			case "ota":
 				return "application/vnd.nokia.ota";
+
+			case "emy":
+				return "audio/e-melody";
+
+			case "imy":
+				return "audio/iMelody";
 			
 				// Unknown
 			default:
@@ -609,6 +628,14 @@ public final class ContentTypeUtil
 			
 			case "application/x-smaf":
 				return "smaf";
+
+			case "audio/e-melody":
+			case "text/x-eMelody":
+				return "emy";
+
+			case "audio/iMelody":
+			case "text/x-iMelody":
+				return "imy";
 				
 			case "audio/wave":
 				return "wav";

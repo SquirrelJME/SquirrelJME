@@ -130,7 +130,14 @@ public interface Player
 		throws IllegalArgumentException, IllegalStateException;
 	
 	/**
-	 * Sets the media time of playback in microseconds.
+	 * Sets the media time of playback in microseconds. The actually set time
+	 * may not be entirely accurate to what is requested as players may operate
+	 * in different time intervals.
+	 *
+	 * If {@code __micros} is set to a value beyond the media's duration, this
+	 * method will set the media time to the end of media, and if
+	 * {@code __micros} is set to a negative value, it will be set to 0, which
+	 * is effectively the media's start.
 	 *
 	 * @param __micros The microseconds to start playback at.
 	 * @return The actually set microseconds.
