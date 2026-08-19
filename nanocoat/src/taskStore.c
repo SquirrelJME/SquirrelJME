@@ -109,6 +109,7 @@ sjme_errorCode sjme_nvm_store_windowLangJava(
 {
 	sjme_errorCode error;
 	sjme_nvm_store_windowJava* result;
+	sjme_jint i, n;
 
 	if (inWindow == NULL || outJava == NULL || inFrame == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -143,6 +144,17 @@ sjme_errorCode sjme_nvm_store_windowLangJava(
 	result->maxStack = inFrame->inCode->
 		perType[SJME_NVM_CODE_INFO_ALL_TYPES].stack;
 	result->numVars = result->maxLocals + result->maxStack;
+
+	/* Allocate assigned variable storage. */
+	if (sjme_error_is(error = sjme_nvm_store_windowAlloca(inWindow,
+		(sjme_pointer)&result->assignedVars,
+		sizeof(*result->assignedVars) * result->numVars,
+		SJME_POINTER_BYTES)) || result->assignedVars == NULL)
+		return sjme_error_default(error);
+
+	/* Fill everything with void. */
+	for (i = 0, n = result->numVars; i < n; i++)
+		result->assignedVars[i].type = SJME_NVM_STORE_SLOT_FILL_VOID;
 
 	/* Success! */
 	*outJava = result;
@@ -244,7 +256,7 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 		sjme_nvm_store_accessMode inMode,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS + 1) sjme_javaTypeId inType)
 {
-	sjme_jint slotLimit;
+	sjme_jint slotLimit, realSlot;
 
 	if (inWindow == NULL || inJava == NULL ||
 		(outStorage == NULL && outType == NULL))
@@ -265,21 +277,25 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 
 	/* Gather base information on the slot type. */
 	slotLimit = -1;
+	realSlot = -1;
 	switch (inSlotType)
 	{
 		case SJME_NVM_STORE_SLOT_TYPE_STACK:
+			realSlot = inJava->maxStack - (inSlot + 1);
 			slotLimit = inJava->maxStack;
 			if (inSlot < 0 || inSlot >= slotLimit)
 				return SJME_ERROR_STACK_INDEX_INVALID;
 			break;
 
 		case SJME_NVM_STORE_SLOT_TYPE_LOCAL:
+			realSlot = inJava->maxStack + inSlot;
 			slotLimit = inJava->maxLocals;
 			if (inSlot < 0 || inSlot >= slotLimit)
 				return SJME_ERROR_LOCAL_INDEX_INVALID;
 			break;
 
 		case SJME_NVM_STORE_SLOT_TYPE_ABSOLUTE:
+			realSlot = inSlot;
 			slotLimit = inJava->numVars;
 			if (inSlot < 0 || inSlot >= slotLimit)
 				return SJME_ERROR_TREAD_INDEX_INVALID;
@@ -288,6 +304,12 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
+
+	/* Slot index is not valid? */
+	if (realSlot < 0 || realSlot >= inJava->numVars)
+		return SJME_ERROR_TREAD_INDEX_INVALID;
+
+
 
 	sjme_todo("Impl");
 	return sjme_error_notImplemented(0);

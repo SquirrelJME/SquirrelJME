@@ -672,6 +672,11 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 		inValue->t)))
 		return sjme_error_default(error);
 
+	/* Overfill wide. */
+	if (SJME_TYPEID_IS_WIDE(inValue->t))
+		java->assignedVars[java->stackTop + 1].type =
+			SJME_NVM_STORE_SLOT_FILL_WIDE;
+
 	/* Write the value. */
 	if (sjme_error_is(error = sjme_nvm_vmField_cisSet(write,
 		inValue->t, commit, SJME_VLS_JVALUE_TYPED_P(inValue))))

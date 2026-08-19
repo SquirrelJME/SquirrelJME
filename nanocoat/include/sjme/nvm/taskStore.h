@@ -102,6 +102,26 @@ struct sjme_nvm_store_file
 	sjme_alignPointer sjme_jbyte data[sjme_flexibleArrayCount];
 };
 
+/**
+ * Java variable information.
+ *
+ * @since 2026/08/18
+ */
+typedef struct sjme_nvm_store_windowJavaVar
+{
+	/** The @link sjme_javaTypeId @endlink stored here. */
+	sjme_jubyte type : 3;
+
+	/** The width of this type. */
+	sjme_jubyte width : 1;
+
+	/** Unused. */
+	sjme_jubyte unused : 4;
+
+	/** The offset multiple to the variable. */
+	sjme_jubyte offsetMultiple : 8;
+} sjme_nvm_store_windowJavaVar;
+
 struct sjme_nvm_store_windowJava
 {
 	/** The number of variables in this window. */
@@ -120,7 +140,7 @@ struct sjme_nvm_store_windowJava
 	 * Variable assignments, this determines which slots a given variable is
 	 * assigned too and its length.
 	 */
-	sjme_jubyte* assignedVars;
+	sjme_nvm_store_windowJavaVar* assignedVars;
 
 	/** The frame this is associated with. */
 	sjme_nvm_frame inFrame;
@@ -156,6 +176,15 @@ struct sjme_nvm_store_window
 	/** Raw register window data. */
 	sjme_alignPointer sjme_jbyte data[sjme_flexibleArrayCount];
 };
+
+/** Void fill value. */
+#define SJME_NVM_STORE_SLOT_FILL_VOID 5
+
+/** Unused fill value. */
+#define SJME_NVM_STORE_SLOT_FILL_UNUSED 6
+
+/** Wide fill value. */
+#define SJME_NVM_STORE_SLOT_FILL_WIDE 7
 
 /**
  * Access mode flags for variables.
