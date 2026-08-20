@@ -478,7 +478,7 @@ extern "C"
 #endif
 
 /* Weak does not work on Windows, select_any is an "equivalent". */
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_ATTR_SELECT_ANY)
 	/** Select any symbol weakly, if possible. */
 	#define sjme_attrWeak
 #else
@@ -493,7 +493,7 @@ extern "C"
 #endif
 	
 /* Weak does not work on Windows, select_any is an "equivalent". */
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_ATTR_SELECT_ANY)
 	#if defined(SJME_CONFIG_HAS_MSVC)
 		/** Select any symbol that exists, if possible. */
 		#define sjme_attrSelectAny __declspec(selectany)
@@ -510,7 +510,7 @@ extern "C"
 	#define sjme_attrSelectAny
 #endif
 	
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+#if defined(SJME_CONFIG_HAS_ATTR_SELECT_ANY)
 	/**
 	 * Uses @link sjme_attrSelectAny @endlink or @link sjme_attrWeak @endlink
 	 * based on current the platform.

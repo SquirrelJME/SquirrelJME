@@ -1121,6 +1121,15 @@ extern "C" {
 
 #pragma endregion(threadLocal)
 	
+/* Weak does not work on Windows, select_any is an "equivalent". */
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	/** Enable use of @link sjme_attrSelectAny @endlink. */
+	#define SJME_CONFIG_HAS_ATTR_SELECT_ANY
+#else
+	/** Enable use of @link sjme_attrWeak @endlink. */
+	#define SJME_CONFIG_HAS_ATTR_WEAK
+#endif
+	
 /* Windows header needs to be included everywhere effectively. */
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN 1
