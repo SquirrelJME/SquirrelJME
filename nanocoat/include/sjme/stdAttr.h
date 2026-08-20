@@ -516,12 +516,18 @@ extern "C"
 	 * based on current the platform.
 	 */
 	#define sjme_attrSelectAnyOrWeak sjme_attrSelectAny
-#else
+#elif defined(SJME_CONFIG_HAS_ATTR_WEAK)
 	/**
 	 * Uses @link sjme_attrSelectAny @endlink or @link sjme_attrWeak @endlink
 	 * based on current the platform.
 	 */
 	#define sjme_attrSelectAnyOrWeak sjme_attrWeak
+#else
+	/**
+	 * Uses @link sjme_attrSelectAny @endlink or @link sjme_attrWeak @endlink
+	 * based on current the platform.
+	 */
+	#define sjme_attrSelectAnyOrWeak
 #endif
 
 /*--------------------------------------------------------------------------*/

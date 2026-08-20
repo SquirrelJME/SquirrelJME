@@ -37,7 +37,7 @@ sjme_threadLocal(sjme_thread_mainFunc, sjme_debug_crashFunc);
 /** The parameter to pass to the crash function. */
 sjme_threadLocal(sjme_thread_parameter, sjme_debug_crashFuncParam);
 
-sjme_attrExport sjme_attrWeak
+sjme_attrExport sjme_attrSelectAnyOrWeak
 	sjme_debug_handlerFunctions* sjme_debug_handlers = NULL;
 
 #if defined(SJME_CONFIG_HAS_OS_POSIX)
