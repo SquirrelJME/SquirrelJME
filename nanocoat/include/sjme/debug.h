@@ -387,6 +387,10 @@ typedef struct sjme_debug_handlerFunctions
 	sjme_debug_messageHandlerFunc message;
 } sjme_debug_handlerFunctions;
 
+/** The debug handlers to use. */
+extern sjme_attrExport
+	sjme_debug_handlerFunctions* sjme_debug_handlers;
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
