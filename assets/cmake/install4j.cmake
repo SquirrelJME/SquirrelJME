@@ -229,7 +229,7 @@ foreach(systemMap IN LISTS systemSet)
 
 	# macOS Universal (hopefully) folder
 	elseif("${systemNormal}" STREQUAL "macosx" AND
-		("${archNormal}" STREQUAL "powerpc" OR
+		("${archNormal}" STREQUAL "powerpc32b" OR
 		"${archNormal}" STREQUAL "ia32" OR
 		"${archNormal}" STREQUAL "amd64" OR
 		"${archNormal}" STREQUAL "arm64l"))
