@@ -477,15 +477,22 @@ extern "C"
 	#define sjme_attrHidden
 #endif
 
-#if defined(SJME_CONFIG_HAS_GCC) || \
-	defined(SJME_CONFIG_HAS_CLANG)
-	/** Select any symbol weakly, if possible. */
-	#define sjme_attrWeak __attribute__((weak))
-#else
+/* Weak does not work on Windows, select_any is an "equivalent". */
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/** Select any symbol weakly, if possible. */
 	#define sjme_attrWeak
+#else
+	#if defined(SJME_CONFIG_HAS_GCC) || \
+		defined(SJME_CONFIG_HAS_CLANG)
+		/** Select any symbol weakly, if possible. */
+		#define sjme_attrWeak __attribute__((weak))
+	#else
+		/** Select any symbol weakly, if possible. */
+		#define sjme_attrWeak
+	#endif
 #endif
 	
+/* Weak does not work on Windows, select_any is an "equivalent". */
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	#if defined(SJME_CONFIG_HAS_MSVC)
 		/** Select any symbol that exists, if possible. */
