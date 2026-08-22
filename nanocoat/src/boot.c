@@ -244,10 +244,12 @@ static sjme_errorCode sjme_nvm_printVersion(
 		"SquirrelJME Class Library, Micro Edition (build %s)\n",
 		SQUIRRELJME_VERSION);
 	sjme_nal_stdF(helpOut,
-		"SquirrelJME NanoCoat VM (build %s, %s)\n",
+		"SquirrelJME NanoCoat VM (build %s, %s, %s %s %s/%s)\n",
 		SQUIRRELJME_VERSION,
 		(outParam->noOptimize ? SQUIRRELJME_VERSION_SPRINGCOAT :
-			SQUIRRELJME_VERSION_NANOCOAT));
+			SQUIRRELJME_VERSION_NANOCOAT),
+		SQUIRRELJME_VERSION_STABILITY, SQUIRRELJME_VERSION_ID,
+		SQUIRRELJME_SYSTEM, SQUIRRELJME_ARCH, SJME_CONFIG_HAS_COMPILER);
 
 	/* Flush if possible. */
 	if (helpFlush != NULL)

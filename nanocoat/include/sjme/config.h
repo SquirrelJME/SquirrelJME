@@ -195,6 +195,12 @@ extern "C" {
 	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
 #endif
 	
+/* Fallback if there is no known compiler. */
+#if !defined(SJME_CONFIG_HAS_COMPILER)
+	/** Unknown compiler identifier. */
+	#define SJME_CONFIG_HAS_COMPILER "unknown"
+#endif
+	
 #if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
 	/** Has a GCC-like/clone compiler. */
 	#define SJME_CONFIG_HAS_GCC_CLONE

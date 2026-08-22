@@ -870,8 +870,8 @@ else()
 endif()
 
 # Used for all builds to identify the system
-add_compile_definitions(SQUIRRELJME_SYSTEM=${SQUIRRELJME_SYSTEM})
-add_compile_definitions(SQUIRRELJME_ARCH=${SQUIRRELJME_ARCH})
+add_compile_definitions(SQUIRRELJME_SYSTEM="${SQUIRRELJME_SYSTEM}")
+add_compile_definitions(SQUIRRELJME_ARCH="${SQUIRRELJME_ARCH}")
 
 # Add fixed identifier for the target system/arch, which can be used in
 # special cases as needed
