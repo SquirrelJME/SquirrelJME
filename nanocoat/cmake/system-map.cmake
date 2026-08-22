@@ -93,7 +93,7 @@ list(APPEND SQUIRRELJME_SYSTEM_MAP
 	"beos!beos"
 	"bsd!bsd"
 	"bsd!openbsd"
-	"bsd!freebsd"
+	"freebsd!freebsd"
 	"bsd!netbsd"
 	"cygwin!cygwin"
 	"cygwin!msys2"
