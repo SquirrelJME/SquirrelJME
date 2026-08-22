@@ -257,8 +257,9 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		else()
 			set(hasSystem "macintosh")
 		endif()
+	elseif("__FreeBSD__" IN_LIST defines)
+		set(hasSystem "freebsd")
 	elseif("BSD" IN_LIST defines OR
-		"__FreeBSD__"  IN_LIST defines OR
 		"__NetBSD__"  IN_LIST defines OR
 		"__bsdi__"  IN_LIST defines OR
 		"__DragonFly__"  IN_LIST defines OR
