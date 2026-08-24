@@ -249,6 +249,7 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	sjme_attrInNotNull sjme_nvm_store_windowJava* inJava,
 	sjme_attrOutNullable sjme_nvm_value** outStorage,
 	sjme_attrOutNullable sjme_javaTypeId* outType,
+	sjme_attrOutNullable sjme_nvm_store_windowJavaVarChain* outChain,
 	sjme_attrInPositive sjme_nvm_store_javaSlot inSlot,
 	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
 		sjme_nvm_store_slotType inSlotType,
@@ -257,6 +258,9 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS + 1) sjme_javaTypeId inType)
 {
 	sjme_jint slotLimit, realSlot;
+	sjme_nvm_store_windowJavaVar* at;
+	sjme_nvm_value* atStorage;
+	sjme_jboolean allocNew;
 
 	if (inWindow == NULL || inJava == NULL ||
 		(outStorage == NULL && outType == NULL))
@@ -309,7 +313,97 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	if (realSlot < 0 || realSlot >= inJava->numVars)
 		return SJME_ERROR_TREAD_INDEX_INVALID;
 
+	/* Get the actual store variables here. */
+	at = &inJava->assignedVars[realSlot];
 
+	/* Unallocated? */
+	if (at->offsetMultiple == 0)
+		atStorage = NULL;
+
+	/* At an offset position. */
+	else
+		atStorage = (sjme_pointer)&inWindow->data[
+			4 * (sjme_jint)at->offsetMultiple];
+
+	/* What happens depends on the access mode, as there are different */
+	/* state transitions. */
+	allocNew = SJME_JNI_FALSE;
+	switch (inMode)
+	{
+		case SJME_NVM_STORE_READ:
+			sjme_todo("Impl");
+			return sjme_error_notImplemented(0);
+
+		case SJME_NVM_STORE_WRITE:
+			sjme_todo("Impl");
+			return sjme_error_notImplemented(0);
+
+		case SJME_NVM_STORE_WRITE_PROMOTE:
+			sjme_todo("Impl");
+			return sjme_error_notImplemented(0);
+
+		case SJME_NVM_STORE_REPLACE:
+			sjme_todo("Impl");
+			return sjme_error_notImplemented(0);
+
+		case SJME_NVM_STORE_REPLACE_PROMOTE:
+			sjme_todo("Impl");
+			return sjme_error_notImplemented(0);
+
+		case SJME_NVM_STORE_REPLACE_SAME:
+			sjme_todo("Impl");
+			return sjme_error_notImplemented(0);
+
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+
+	/* Not allocating a new value and there is no actual storage? */
+	if (!allocNew && atStorage == NULL)
+	{
+		/* Cannot write here. */
+		if (inMode != SJME_NVM_STORE_READ)
+			return SJME_ERROR_TREAD_INVALID_WRITE;
+
+		/* Only the metadata was requested. */
+		if (outType != NULL && inType == SJME_NUM_JAVA_TYPE_IDS)
+			goto skip_readMeta;
+
+		/* Fail otherwise. */
+		return SJME_ERROR_TREAD_INVALID_READ;
+	}
+
+	if (SJME_JNI_TRUE)
+	{
+		sjme_todo("Impl");
+		return sjme_error_notImplemented(0);
+	}
+
+skip_readMeta:
+	/* Requested chain variables in the tread? */
+	if (outChain != NULL)
+	{
+		/* Current chain is simple. */
+		outChain->at = at;
+
+		/* Note that stack is top to bottom, and locals are bottom to top. */
+		/* That is, stack previous is to the right while local previous is */
+		/* to the left. */
+		outChain->prev = (inSlot <= 0 ? NULL :
+			&inJava->assignedVars[realSlot +
+				(inSlotType == SJME_NVM_STORE_SLOT_TYPE_STACK ? 1 : -1)]);
+		outChain->next = (inSlot >= (slotLimit - 1) ? NULL :
+			&inJava->assignedVars[realSlot +
+				(inSlotType == SJME_NVM_STORE_SLOT_TYPE_STACK ? -1 : 1)]);
+	}
+
+	/* Requested type? Note that this is just the type here */
+	if (outType != NULL)
+		*outType = at->type;
+
+	/* Requested direct access to the variable storage? */
+	if (outStorage != NULL)
+		*outStorage = atStorage;
 
 	sjme_todo("Impl");
 	return sjme_error_notImplemented(0);

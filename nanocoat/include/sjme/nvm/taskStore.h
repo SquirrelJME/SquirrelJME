@@ -146,6 +146,23 @@ struct sjme_nvm_store_windowJava
 	sjme_nvm_frame inFrame;
 };
 
+/**
+ * Storage for output chain information, as it is not always needed.
+ *
+ * @since 2026/08/19
+ */
+typedef struct sjme_nvm_store_windowJavaVarChain
+{
+	/** The previous in the chain. */
+	sjme_nvm_store_windowJavaVar* prev;
+
+	/** The current index. */
+	sjme_nvm_store_windowJavaVar* at;
+
+	/** The next in the chain. */
+	sjme_nvm_store_windowJavaVar* next;
+} sjme_nvm_store_windowJavaVarChain;
+
 struct sjme_nvm_store_window
 {
 	/** The total length of the register window. */
@@ -381,6 +398,8 @@ sjme_errorCode sjme_nvm_store_windowPush(
  * @param inJava The Java type information.
  * @param outStorage The resultant pointer to a Java value storage.
  * @param outType The resultant type of the given slot.
+ * @param outChain The logical chain variables in the tread, this is
+ * optional, will be @code NULL @endcode if there are no variable.
  * @param inSlot The slot index.
  * @param inSlotType The type of slot to access.
  * @param inMode The access mode of the slot.
@@ -396,6 +415,7 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	sjme_attrInNotNull sjme_nvm_store_windowJava* inJava,
 	sjme_attrOutNullable sjme_nvm_value** outStorage,
 	sjme_attrOutNullable sjme_javaTypeId* outType,
+	sjme_attrOutNullable sjme_nvm_store_windowJavaVarChain* outChain,
 	sjme_attrInPositive sjme_nvm_store_javaSlot inSlot,
 	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
 		sjme_nvm_store_slotType inSlotType,

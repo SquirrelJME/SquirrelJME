@@ -648,6 +648,7 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_jboolean isWide;
 	sjme_jint newTop;
 	sjme_nvm_value* write;
+	sjme_nvm_store_windowJavaVarChain chain;
 
 	if (inFrame == NULL || commit == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -665,17 +666,25 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 
 	/* Obtain the slot to write at. */
 	write = NULL;
+	memset(&chain, 0, sizeof(chain));
 	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
-		java, &write, NULL, java->stackTop,
+		java, &write, NULL, &chain,
+		java->stackTop,
 		SJME_NVM_STORE_SLOT_TYPE_STACK,
 		SJME_NVM_STORE_WRITE_PROMOTE,
-		inValue->t)))
+		inValue->t)) || write == NULL)
 		return sjme_error_default(error);
 
 	/* Overfill wide. */
 	if (SJME_TYPEID_IS_WIDE(inValue->t))
-		java->assignedVars[java->stackTop + 1].type =
-			SJME_NVM_STORE_SLOT_FILL_WIDE;
+	{
+		/* This is considered an overflow as we would be at the very end. */
+		if (chain.next == NULL)
+			return SJME_ERROR_STACK_OVERFLOW;
+
+		/* Set as wide. */
+		chain.next->type = SJME_NVM_STORE_SLOT_FILL_WIDE;
+	}
 
 	/* Write the value. */
 	if (sjme_error_is(error = sjme_nvm_vmField_cisSet(write,
