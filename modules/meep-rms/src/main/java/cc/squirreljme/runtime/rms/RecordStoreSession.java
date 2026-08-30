@@ -54,7 +54,7 @@ public class RecordStoreSession
 	/** The current RMS version format. */
 	@SquirrelJMEVendorApi
 	public static final SuiteVersion CURRENT_RMS_VERSION =
-		new SuiteVersion(1, 0, 0);
+		new SuiteVersion(1, 1, 0);
 	
 	/** The old DoJa record owner vendor. */
 	@SquirrelJMEVendorApi
