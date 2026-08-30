@@ -521,3 +521,64 @@ sipush
 swap
 tableswitch
 ```
+
+# Build Job Scripts
+
+The CI/CD scripts invoke the main primary build system that is in the root
+of the project via CMake. As such, much of the heavy lifting is not needed
+to be specifically handled. These scripts are POSIX compliant and do not
+require _Bash_, only a POSIX compliant shell. This means that _BusyBox_,
+_Ash_, and _Dash_ should be able to execute these scripts without issues.
+
+ * `build-all.sh`
+   * This is the main build script which performs the build.
+ * `build-config.sh`
+   * Additional configure script run in the current shell context, so ensure
+     that the current environment is properly setup and shared.
+ * `build-sync.sh`
+   * This is the synchronization script which uploads and downloads the
+     repository and handles all changes.
+ * `build-vacuum.sh`
+   * This rebuilds and vacuums the Fossil database to reduce disk space and
+     perform general optimizations.
+
+# Build Job Scheduling
+
+Various systems have different scheduling systems available for running
+jobs at specific times. This is generally for systems where `cron` is not
+available or where there are different systems in place for builds. This is
+generally just a reference for future usage.
+
+## `cron`
+
+***TODO***
+
+## Haiku
+
+***TODO***
+
+## macOS `launchd` Jobs
+
+***TODO***
+
+### Files
+
+***TODO***
+
+### Installation
+
+***TODO***
+
+## `systemd` Jobs
+
+### Timer Units
+
+***TODO***
+
+### Installation
+
+***TODO***
+
+## Windows Task Scheduler
+
+***TODO***
