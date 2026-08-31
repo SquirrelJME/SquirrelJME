@@ -123,8 +123,18 @@ https://github.com/SquirrelJME/SquirrelJME/issues).
 
 # Exceptions to Contributing
 
-If you have worked on the following projects for the following companies, you
-are not permitted to contribute to this project due to potential poisoning:
+If you have worked on the following projects for the following companies, this
+project cannot accept individual contributions as they require a copyright
+assignment. Additionally, due to the clean room reverse engineering nature
+of the project you may unknowingly give proprietary information. This exception
+to contributing refers specifically to the development of runtime libraries and
+virtual machines, not to the usage of said runtimes libraries and virtual
+machines. This means that if you have developed applications that for
+example use the Android Runtime this does apply to you, however if you have
+developed the runtime yourself either under Google or via contract/license
+then this exception applies.
+
+Including and not limited to:
 
  * _Apache_:
    * Apache Harmony
@@ -133,7 +143,7 @@ are not permitted to contribute to this project due to potential poisoning:
    * GNU Classpath
    * GNU Interpreter for Java (GIJ)
  * _Google_:
-   * Android
+   * Android Runtime
  * _IBM_:
    * _OpenJ9_
  * _Microsoft_:
@@ -143,6 +153,8 @@ are not permitted to contribute to this project due to potential poisoning:
    * Java (eventually became OpenJDK)
    * OpenJDK and any of its variants
    * PhoneME (also known as `kvm`)
+ * _Telit Cinternion_
+   * Gemalto
 
 Additionally, for legal purposes, code that is derived from the source code
 from these projects cannot be used.
