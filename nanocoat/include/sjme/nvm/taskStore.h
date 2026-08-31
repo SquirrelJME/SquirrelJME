@@ -103,6 +103,14 @@ struct sjme_nvm_store_file
 };
 
 /**
+ * The highest possible multiple permitted.
+ *
+ * At four bytes each, and zero indicating invalid data. Assuming there is no
+ * wasted structure data, with 12-bits this can store 4095 32-bit values.
+ */
+#define SJME_NVM_STORE_MAX_MULTIPLE 4095
+
+/**
  * Java variable information.
  *
  * @since 2026/08/18
@@ -115,11 +123,11 @@ typedef struct sjme_nvm_store_windowJavaVar
 	/** The width of this type. */
 	sjme_jubyte width : 1;
 
-	/** Unused. */
-	sjme_jubyte unused : 4;
-
-	/** The offset multiple to the variable. */
-	sjme_jubyte offsetMultiple : 8;
+	/**
+	 * The offset multiple to the variable, the bit length should always
+	 * be between zero and @link SJME_NVM_STORE_MAX_MULTIPLE @endlink.
+	 */
+	sjme_jushort offsetMultiple : 12;
 } sjme_nvm_store_windowJavaVar;
 
 struct sjme_nvm_store_windowJava
@@ -165,14 +173,8 @@ typedef struct sjme_nvm_store_windowJavaVarChain
 
 struct sjme_nvm_store_window
 {
-	/** The total length of the register window. */
-	sjme_intPointer totalLength;
-
-	/** The number of bytes currently in use for this window. */
-	sjme_intPointer usedData;
-
-	/** The number of bytes free for this window. */
-	sjme_intPointer freeData;
+	/** The extent, or the highest address, of the register window. */
+	sjme_intPointer extent;
 
 	/** Language related data for this window, if any. */
 	struct
@@ -189,9 +191,6 @@ struct sjme_nvm_store_window
 
 	/** The next register window. */
 	sjme_nvm_store_window* next;
-
-	/** Raw register window data. */
-	sjme_alignPointer sjme_jbyte data[sjme_flexibleArrayCount];
 };
 
 /** Void fill value. */

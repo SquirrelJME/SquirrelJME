@@ -9,6 +9,56 @@
 
 #include "sjme/nvm/taskStore.h"
 
+static sjme_errorCode sjme_nvm_store_fileAlloca(
+	sjme_attrInNotNull sjme_nvm_store_file* inFile,
+	sjme_attrOutNotNull sjme_pointer* rawData,
+	sjme_attrInPositiveNonZero sjme_jint numBytes,
+	sjme_attrInPositiveNonZero sjme_jint alignment)
+{
+	sjme_intPointer placeAt;
+	sjme_pointer result;
+
+	if (inFile == NULL || rawData == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (numBytes <= 0 || alignment <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Sanity check for any corruption. */
+	if (inFile->totalLength <= 0 || inFile->usedData < 0 ||
+		inFile->freeData < 0 ||
+		inFile->totalLength - inFile->usedData != inFile->freeData)
+		return SJME_ERROR_MEMORY_CORRUPTION;
+
+	/* Determine next alignment point. */
+	placeAt = sjme_util_alignTo(inFile->usedData, alignment);
+
+	/* Is there enough free space for this? */
+	if (placeAt < 0 ||
+		placeAt + numBytes <= 0 || numBytes >= inFile->freeData ||
+		placeAt + numBytes >= inFile->totalLength)
+		return SJME_ERROR_STACK_OVERFLOW;
+
+	/* Grab the next chunk of data. */
+	result = &inFile->data[placeAt];
+	inFile->usedData = sjme_util_alignTo(inFile->usedData,
+		alignment) + numBytes;
+	inFile->freeData = inFile->totalLength - inFile->usedData;
+
+	/* Wipe it and ensure it is initialized to nothing. */
+	memset(result, 0, numBytes);
+
+	/* Debug. */
+	sjme_message("alloca() -> %08x + %d/%d -> %08x (%08x) ... %08x",
+		placeAt, numBytes, alignment,
+		(sjme_jint)result, (sjme_jint)result - (sjme_jint)&inFile->data[0],
+		inFile->usedData);
+
+	/* Success! */
+	*rawData = result;
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_store_initFile(
 	sjme_attrOutNotNull sjme_nvm_store_file** outFile,
 	sjme_attrInNotNull sjme_pointer buf,
@@ -65,8 +115,9 @@ sjme_errorCode sjme_nvm_store_windowAlloca(
 	sjme_attrInPositiveNonZero sjme_jint numBytes,
 	sjme_attrInPositiveNonZero sjme_jint alignment)
 {
-	sjme_intPointer placeAt;
+	sjme_errorCode error;
 	sjme_pointer result;
+	sjme_intPointer newExtent;
 
 	if (inWindow == NULL || rawData == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -75,27 +126,24 @@ sjme_errorCode sjme_nvm_store_windowAlloca(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Sanity check for any corruption. */
-	if (inWindow->totalLength <= 0 || inWindow->usedData < 0 ||
-		inWindow->freeData < 0 ||
-		inWindow->totalLength - inWindow->usedData != inWindow->freeData)
+	if (inWindow->file == NULL || inWindow->extent < 0)
 		return SJME_ERROR_MEMORY_CORRUPTION;
 
-	/* Determine next alignment point. */
-	placeAt = sjme_util_alignTo(inWindow->usedData, alignment);
-
-	/* Is there enough free space for this? */
-	if (placeAt < 0 ||
-		placeAt + numBytes <= 0 || numBytes >= inWindow->freeData ||
-		placeAt + numBytes >= inWindow->totalLength)
+	/* Can only alloca in the tail window. */
+	if (inWindow != inWindow->file->tail)
 		return SJME_ERROR_STACK_OVERFLOW;
 
-	/* Grab the next chunk of data. */
-	result = &inWindow->data[placeAt];
-	inWindow->freeData -= numBytes;
-	inWindow->usedData += numBytes;
+	/* Allocate within the file. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_fileAlloca(inWindow->file,
+		&result, numBytes, alignment)) || result == NULL)
+		return sjme_error_default(error);
 
-	/* Wipe it and ensure it is initialized to nothing. */
-	memset(result, 0, numBytes);
+	/* Update the extent. */
+	newExtent = ((sjme_intPointer)result -
+		(sjme_intPointer)inWindow->file->data[0]) + numBytes;
+	if (newExtent > inWindow->extent)
+		inWindow->extent = newExtent;
 
 	/* Success! */
 	*rawData = result;
@@ -176,7 +224,6 @@ sjme_errorCode sjme_nvm_store_windowPush(
 	sjme_attrOutNotNull sjme_nvm_store_window** outWindow)
 {
 	sjme_errorCode error;
-	sjme_intPointer windowBase;
 	sjme_nvm_store_window* window;
 	sjme_nvm_store_window* oldTail;
 
@@ -189,35 +236,17 @@ sjme_errorCode sjme_nvm_store_windowPush(
 		inFile->totalLength - inFile->usedData != inFile->freeData)
 		return SJME_ERROR_MEMORY_CORRUPTION;
 
-	/* Determine the base address for the window. */
-	windowBase = sjme_util_alignTo(inFile->usedData,
-		SJME_POINTER_BYTES);
-
-	/* Not enough space for a window? */
-	if (windowBase >= inFile->totalLength ||
-		inFile->freeData <= (sjme_intPointer)sizeof(sjme_nvm_store_window))
-		return SJME_ERROR_STACK_OVERFLOW;
-
-	/* Set the new window at the calculated base. */
-	window = (sjme_nvm_store_window*)&inFile->data[windowBase];
-
-	/* Make sure the window is cleared to nothing. */
-	memset(window, 0, sizeof(*window));
+	/* Try allocating the new window. */
+	window = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_fileAlloca(inFile,
+		(sjme_pointer*)&window, sizeof(*window),
+		SJME_POINTER_BYTES)) || window == NULL)
+		return sjme_error_default(error);
 
 	/* Add to the tail chain? */
 	oldTail = inFile->tail;
 	if (oldTail != NULL)
 	{
-		/* Trim to the new length. */
-		oldTail->totalLength =
-			(sjme_intPointer)window - (sjme_intPointer)&oldTail->data[0];
-
-		/* This should not happen technically, however in the worst of */
-		/* possibilities it may be possible. */
-		if (oldTail->totalLength < 0)
-			return SJME_ERROR_MEMORY_CORRUPTION;
-
-		/* Link in. */
 		oldTail->next = window;
 		window->prev = oldTail;
 	}
@@ -229,15 +258,8 @@ sjme_errorCode sjme_nvm_store_windowPush(
 
 	/* Setup main window details. */
 	window->file = inFile;
-	window->totalLength = (inFile->totalLength - windowBase) -
-		sizeof(sjme_nvm_store_window);
-	window->usedData = 0;
-	window->freeData = window->totalLength;
-
-#if 1
-	/* Make sure the window data is cleared. */
-	memset(&window->data[0], 0, window->totalLength);
-#endif
+	window->extent = ((sjme_intPointer)window + sizeof(*window)) -
+		(sjme_intPointer)inFile->data[0];
 
 	/* Success! */
 	*outWindow = window;
@@ -257,10 +279,14 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 		sjme_nvm_store_accessMode inMode,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS + 1) sjme_javaTypeId inType)
 {
+	sjme_errorCode error;
 	sjme_jint slotLimit, realSlot;
 	sjme_nvm_store_windowJavaVar* at;
 	sjme_nvm_value* atStorage;
 	sjme_jboolean allocNew;
+	sjme_jint inTypeLen, atStorageLen, sizeAlign;
+	sjme_pointer varAt;
+	sjme_intPointer division, windowBase;
 
 	if (inWindow == NULL || inJava == NULL ||
 		(outStorage == NULL && outType == NULL))
@@ -316,14 +342,21 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	/* Get the actual store variables here. */
 	at = &inJava->assignedVars[realSlot];
 
+	/* The window base is the actual window. */
+	windowBase = (sjme_intPointer)inWindow;
+
 	/* Unallocated? */
 	if (at->offsetMultiple == 0)
 		atStorage = NULL;
 
 	/* At an offset position. */
 	else
-		atStorage = (sjme_pointer)&inWindow->data[
-			4 * (sjme_jint)at->offsetMultiple];
+		atStorage = (sjme_pointer)(windowBase +
+			(4 * (sjme_jint)at->offsetMultiple));
+
+	/* Is the input/storage type wide? */
+	inTypeLen = SJME_TYPEID_SLOTS_JAVA(inType);
+	atStorageLen = (atStorage != NULL ? SJME_TYPEID_SLOTS_JAVA(at->type) : 0);
 
 	/* What happens depends on the access mode, as there are different */
 	/* state transitions. */
@@ -335,22 +368,45 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 			return sjme_error_notImplemented(0);
 
 		case SJME_NVM_STORE_WRITE:
-			sjme_todo("Impl");
-			return sjme_error_notImplemented(0);
+			/* Different slot length? */
+			if (inTypeLen != atStorageLen)
+			{
+				/* Something is already here? */
+				if (atStorage != NULL)
+					return SJME_ERROR_TREAD_INVALID_WRITE;
+
+				/* Allocate otherwise. */
+				allocNew = SJME_JNI_TRUE;
+			}
+			break;
 
 		case SJME_NVM_STORE_WRITE_PROMOTE:
-			sjme_todo("Impl");
-			return sjme_error_notImplemented(0);
+			/* Always allocate if the slot length is different. */
+			if (inTypeLen != atStorageLen)
+				allocNew = SJME_JNI_TRUE;
+			break;
 
 		case SJME_NVM_STORE_REPLACE:
+			/* The value must exist and be able to fit. */
+			if (atStorage == NULL || inTypeLen <= atStorageLen)
+				return SJME_ERROR_TREAD_INVALID_WRITE;
+
 			sjme_todo("Impl");
 			return sjme_error_notImplemented(0);
 
 		case SJME_NVM_STORE_REPLACE_PROMOTE:
+			/* The value must exist. */
+			if (atStorage == NULL)
+				return SJME_ERROR_TREAD_INVALID_WRITE;
+
 			sjme_todo("Impl");
 			return sjme_error_notImplemented(0);
 
 		case SJME_NVM_STORE_REPLACE_SAME:
+			/* The value must exist and be the same width. */
+			if (atStorage == NULL || inTypeLen != atStorageLen)
+				return SJME_ERROR_TREAD_INVALID_WRITE;
+
 			sjme_todo("Impl");
 			return sjme_error_notImplemented(0);
 
@@ -373,11 +429,33 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 		return SJME_ERROR_TREAD_INVALID_READ;
 	}
 
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl");
-		return sjme_error_notImplemented(0);
-	}
+	/* Allocate the variable storage, note that it must be aligned to its */
+	/* own size due to pointers and otherwise. */
+	varAt = NULL;
+	sizeAlign = 4 * inTypeLen;
+	if (sjme_error_is(error = sjme_nvm_store_windowAlloca(inWindow,
+		&varAt, sizeAlign, sizeAlign)) || varAt == NULL)
+		return sjme_error_default(error);
+
+	/* Calculate the division, if this is not a multiple of four then */
+	/* something is very wrong with alloca! */
+	division = (sjme_intPointer)varAt - windowBase;
+	if ((division % 4) != 0)
+		return sjme_error_fatal(SJME_ERROR_TREAD_INVALID_WRITE);
+
+	/* If we cannot actually store the multiple because it is too large, */
+	/* or it just overflows, then the stack just overflows. */
+	division /= 4;
+	if (division < 0 || division > SJME_NVM_STORE_MAX_MULTIPLE)
+		return SJME_ERROR_STACK_OVERFLOW;
+
+	/* Set and redetermine the multiple and storage. */
+	at->offsetMultiple = (sjme_jushort)(division);
+
+	/* Note that the storage is at the exact location. This can be done */
+	/* because if we are writing a 64-bit value, we refer to the correct */
+	/* portion of it. Otherwise, the same for a 32-bit value. */
+	atStorage = varAt;
 
 skip_readMeta:
 	/* Requested chain variables in the tread? */
@@ -405,6 +483,6 @@ skip_readMeta:
 	if (outStorage != NULL)
 		*outStorage = atStorage;
 
-	sjme_todo("Impl");
-	return sjme_error_notImplemented(0);
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

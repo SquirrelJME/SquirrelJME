@@ -661,7 +661,7 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 
 	/* Would the stack overflow pushing this type? */
 	newTop = java->stackTop + SJME_TYPEID_SLOTS_JAVA(inValue->t);
-	if (newTop >= java->maxStack)
+	if (newTop > java->maxStack)
 		return SJME_ERROR_STACK_OVERFLOW;
 
 	/* Obtain the slot to write at. */
@@ -696,38 +696,6 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	sjme_frame_frameStacks* stack;
-	sjme_frame_frameStack* perType;
-
-	if (inFrame == NULL || commit == NULL || inValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Will the stack overflow? */
-	stack = &inFrame->stack;
-	isWide = SJME_TYPEID_IS_WIDE(inValue->t);
-	pushCount = SJME_TYPEID_SLOTS_BY_WIDE_BOOLEAN(isWide);
-	if (stack->orderTop + pushCount > stack->orderLength)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_OVERFLOW);
-
-	/* Will the per-type stack overflow? */
-	perType = &stack->stack[inValue->t];
-	if (perType->top + 1 > perType->length)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_OVERFLOW);
-
-	/* Place onto the order, mark top invalid if required. */
-	stack->order[stack->orderTop++] = inValue->t;
-	if (isWide)
-		stack->order[stack->orderTop++] = SJME_JAVA_TYPE_ID_VOID;
-
-	/* Take slot in the per-type stack. */
-	at = perType->top++;
-
-	/* Forward call. */
-	return sjme_nvm_task_frameTreadSetT(inFrame,
-		commit, at, inValue, NULL);
-#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
