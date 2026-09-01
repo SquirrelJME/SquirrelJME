@@ -53,31 +53,6 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-#if SJME_CONFIG_HAS_POINTER > 32 && SJME_CONFIG_HAS_POINTER <= 64
-	/**
-	 * Determines whether the given Java type needs native long storage.
-	 *
-	 * @param javaType The Java type to check.
-	 * @return Whether the type needs long storage.
-	 * @since 2026/08/04
-	 */
-	#define sjme_nvm_store_nativeLongType(javaType) \
-		(SJME_TYPEID_IS_WIDE(javaType) || \
-		(javaType) == SJME_JAVA_TYPE_ID_OBJECT))
-#elif SJME_CONFIG_HAS_POINTER <= 32
-	/**
-	 * Determines whether the given Java type needs native long storage.
-	 *
-	 * @param javaType The Java type to check.
-	 * @return Whether the type needs long storage.
-	 * @since 2026/08/04
-	 */
-	#define sjme_nvm_store_nativeLongType(javaType) \
-		(SJME_TYPEID_IS_WIDE(javaType))
-#else
-	#error Support pointers above 64-bit.
-#endif
-
 struct sjme_nvm_store_file
 {
 	/** The total length of the register file. */
@@ -103,12 +78,27 @@ struct sjme_nvm_store_file
 };
 
 /**
+ * The number of multiples this slot actually consumes, this is independent
+ * of the slot as a 64-bit value can be replaced with a 32-bit value and
+ * this would be inefficient to require a reallocation.
+ */
+#define SJME_NVM_STORE_MAX_WIDTH_MULT 7
+
+/**
+ * The number of bytes this slot actually consumes, this is independent
+ * of the slot as a 64-bit value can be replaced with a 32-bit value and
+ * this would be inefficient to require a reallocation.
+ */
+#define SJME_NVM_STORE_MAX_WIDTH_BYTES \
+	(8 * SJME_NVM_STORE_MAX_WIDTH_MULT)
+
+/**
  * The highest possible multiple permitted.
  *
  * At four bytes each, and zero indicating invalid data. Assuming there is no
- * wasted structure data, with 12-bits this can store 4095 32-bit values.
+ * wasted structure data, with 10-bits this can store 1023 32-bit values.
  */
-#define SJME_NVM_STORE_MAX_MULTIPLE 4095
+#define SJME_NVM_STORE_MAX_MULTIPLE 1023
 
 /**
  * Java variable information.
@@ -117,17 +107,24 @@ struct sjme_nvm_store_file
  */
 typedef struct sjme_nvm_store_windowJavaVar
 {
-	/** The @link sjme_javaTypeId @endlink stored here. */
+	/**
+	 * The @link sjme_javaTypeId @endlink stored here.
+	 *
+	 * This may be @link SJME_NVM_STORE_WIDE_MARKER @endlink for wide types.
+	 */
 	sjme_jubyte type : 3;
 
-	/** The width of this type. */
-	sjme_jubyte width : 1;
+	/**
+	 * The width of this type, the bit length should always be between
+	 * zero and @link SJME_NVM_STORE_MAX_WIDTH @endlink.
+	 */
+	sjme_jubyte width : 3;
 
 	/**
 	 * The offset multiple to the variable, the bit length should always
 	 * be between zero and @link SJME_NVM_STORE_MAX_MULTIPLE @endlink.
 	 */
-	sjme_jushort offsetMultiple : 12;
+	sjme_jushort offsetMultiple : 10;
 } sjme_nvm_store_windowJavaVar;
 
 struct sjme_nvm_store_windowJava
@@ -193,14 +190,14 @@ struct sjme_nvm_store_window
 	sjme_nvm_store_window* next;
 };
 
-/** Void fill value. */
-#define SJME_NVM_STORE_SLOT_FILL_VOID 5
+/** Void slot marker value. */
+#define SJME_NVM_STORE_SLOT_MARKER_VOID 5
 
-/** Unused fill value. */
-#define SJME_NVM_STORE_SLOT_FILL_UNUSED 6
+/** Special value slot marker value. */
+#define SJME_NVM_STORE_SLOT_MARKER_SPECIAL 6
 
-/** Wide fill value. */
-#define SJME_NVM_STORE_SLOT_FILL_WIDE 7
+/** Wide slot marker value. */
+#define SJME_NVM_STORE_SLOT_MARKER_WIDE 7
 
 /**
  * Access mode flags for variables.
@@ -322,6 +319,23 @@ typedef enum sjme_nvm_store_javaSlot
 } sjme_nvm_store_javaSlot;
 
 /**
+ * Used to store output slot information.
+ *
+ * @since 2026/09/01
+ */
+typedef struct sjme_nvm_store_slotInfo
+{
+	/** The Java variable chain. */
+	sjme_nvm_store_windowJavaVarChain chain;
+
+	/** The current storage, if any has been assigned. */
+	sjme_nvm_value* storage;
+
+	/** The type if it is known. */
+	sjme_javaTypeId type;
+} sjme_nvm_store_slotInfo;
+
+/**
  * Initializes a register file within the given buffer.
  *
  * @param outFile The output register file.
@@ -395,9 +409,7 @@ sjme_errorCode sjme_nvm_store_windowPush(
  *
  * @param inWindow The window to get the slot for.
  * @param inJava The Java type information.
- * @param outStorage The resultant pointer to a Java value storage.
- * @param outType The resultant type of the given slot.
- * @param outChain The logical chain variables in the tread, this is
+ * @param outInfo The resultant slot information.
  * optional, will be @code NULL @endcode if there are no variable.
  * @param inSlot The slot index.
  * @param inSlotType The type of slot to access.
@@ -412,15 +424,32 @@ sjme_errorCode sjme_nvm_store_windowPush(
 sjme_errorCode sjme_nvm_store_windowSlot(
 	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
 	sjme_attrInNotNull sjme_nvm_store_windowJava* inJava,
-	sjme_attrOutNullable sjme_nvm_value** outStorage,
-	sjme_attrOutNullable sjme_javaTypeId* outType,
-	sjme_attrOutNullable sjme_nvm_store_windowJavaVarChain* outChain,
+	sjme_attrOutNotNull sjme_nvm_store_slotInfo* outInfo,
 	sjme_attrInPositive sjme_nvm_store_javaSlot inSlot,
 	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
 		sjme_nvm_store_slotType inSlotType,
 	sjme_attrInRange(0, SJME_NVM_STORE_NUM_ACCESS_MODES)
 		sjme_nvm_store_accessMode inMode,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS + 1) sjme_javaTypeId inType);
+
+/**
+ * Obtains the information on the given slot.
+ *
+ * @param inWindow The window to get the slot for.
+ * @param inJava The Java type information.
+ * @param outInfo The resultant slot information.
+ * @param inSlot The slot to request.
+ * @param inSlotType The type of slot to request.
+ * @return Any resultant error, if any.
+ * @since 2026/09/01
+ */
+sjme_errorCode sjme_nvm_store_windowSlotInfo(
+	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
+	sjme_attrInNotNull sjme_nvm_store_windowJava* inJava,
+	sjme_attrOutNotNull sjme_nvm_store_slotInfo* outInfo,
+	sjme_attrInPositive sjme_nvm_store_javaSlot inSlot,
+	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
+		sjme_nvm_store_slotType inSlotType);
 
 /*--------------------------------------------------------------------------*/
 

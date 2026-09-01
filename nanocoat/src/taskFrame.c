@@ -644,11 +644,8 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 {
 	sjme_errorCode error;
 	sjme_nvm_store_windowJava* java;
-	sjme_jint pushCount, at;
-	sjme_jboolean isWide;
 	sjme_jint newTop;
-	sjme_nvm_value* write;
-	sjme_nvm_store_windowJavaVarChain chain;
+	sjme_nvm_store_slotInfo info;
 
 	if (inFrame == NULL || commit == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -665,29 +662,27 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 		return SJME_ERROR_STACK_OVERFLOW;
 
 	/* Obtain the slot to write at. */
-	write = NULL;
-	memset(&chain, 0, sizeof(chain));
+	memset(&info, 0, sizeof(info));
 	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
-		java, &write, NULL, &chain,
-		java->stackTop,
+		java, &info, java->stackTop,
 		SJME_NVM_STORE_SLOT_TYPE_STACK,
 		SJME_NVM_STORE_WRITE_PROMOTE,
-		inValue->t)) || write == NULL)
+		inValue->t)))
 		return sjme_error_default(error);
 
 	/* Overfill wide. */
 	if (SJME_TYPEID_IS_WIDE(inValue->t))
 	{
 		/* This is considered an overflow as we would be at the very end. */
-		if (chain.next == NULL)
+		if (info.chain.next == NULL)
 			return SJME_ERROR_STACK_OVERFLOW;
 
 		/* Set as wide. */
-		chain.next->type = SJME_NVM_STORE_SLOT_FILL_WIDE;
+		info.chain.next->type = SJME_NVM_STORE_SLOT_MARKER_WIDE;
 	}
 
 	/* Write the value. */
-	if (sjme_error_is(error = sjme_nvm_vmField_cisSet(write,
+	if (sjme_error_is(error = sjme_nvm_vmField_cisSet(info.storage,
 		inValue->t, commit, SJME_VLS_JVALUE_TYPED_P(inValue))))
 		return sjme_error_default(error);
 
@@ -751,59 +746,61 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	sjme_attrInPositive sjme_jint depth,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue)
 {
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_errorCode error;
-	sjme_frame_frameStacks* stack;
-	sjme_jint newTop;
-	sjme_javaTypeId readType;
-	sjme_jvalueTyped temp;
-	sjme_jint sub[SJME_NUM_JAVA_TYPE_IDS];
-	
+	sjme_nvm_store_windowJava* java;
+	sjme_jint desiredAt;
+	sjme_nvm_store_slotInfo info;
+
 	if (inFrame == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (depth < 0)
-		return SJME_ERROR_STACK_UNDERFLOW;
+		return SJME_ERROR_INVALID_ARGUMENT;
 
-	/* Set initial position. */
-	stack = &inFrame->stack;
-	newTop = stack->orderTop;
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
 
 	/* Keep eating depth. */
-	memset(&sub, 0, sizeof(sub));
+	desiredAt = java->stackTop;
 	while ((depth--) >= 0)
 	{
 		/* Bump down and check overflow */
-		newTop--;
-		if (newTop < stack->orderFront)
+		desiredAt--;
+		if (desiredAt < 0)
 			return SJME_ERROR_STACK_UNDERFLOW;
 
-		/* Wide? */
-		if (stack->order[newTop] == SJME_JAVA_TYPE_ID_VOID)
-			newTop--;
+		/* Get the slot here. */
+		memset(&info, 0, sizeof(info));
+		if (sjme_error_is(error = sjme_nvm_store_windowSlotInfo(
+			inFrame->storeWindow, java, &info,
+			desiredAt, SJME_NVM_STORE_SLOT_TYPE_STACK)))
+			return sjme_error_default(error);
 
-		/* Increase subtraction count for the given type, this is used */
-		/* to locate the slot on the stack. */
-		sub[stack->order[newTop]]++;
+		/* Skip wide. */
+		if (info.type == SJME_NVM_STORE_SLOT_MARKER_WIDE)
+			desiredAt--;
 	}
 
-	/* Copy out value. */
-	readType = stack->order[newTop];
-	memset(&temp, 0, sizeof(temp));
-	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(inFrame, readType,
-		stack->stack[readType].top - sub[readType], NULL,
-		&temp, SJME_JNI_FALSE)))
-		return sjme_error_vmError(inFrame, error);
-	
+	/* Obtain the slot to read from. */
+	memset(&info, 0, sizeof(info));
+	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
+		java, &info,
+		desiredAt,
+		SJME_NVM_STORE_SLOT_TYPE_STACK,
+		SJME_NVM_STORE_READ,
+		SJME_NUM_JAVA_TYPE_IDS)))
+		return sjme_error_default(error);
+
+	/* Read out the value. */
+	if (sjme_error_is(error = sjme_nvm_vmField_cisGet(info.storage, info.type,
+		SJME_VLG_JVALUE_TYPED_P(outValue))))
+		return sjme_error_default(error);
+
 	/* Success! */
-	memmove(outValue, &temp, sizeof(*outValue));
 	return SJME_ERROR_NONE;
-#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameTreadGetT(

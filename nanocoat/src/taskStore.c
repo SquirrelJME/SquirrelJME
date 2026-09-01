@@ -202,7 +202,7 @@ sjme_errorCode sjme_nvm_store_windowLangJava(
 
 	/* Fill everything with void. */
 	for (i = 0, n = result->numVars; i < n; i++)
-		result->assignedVars[i].type = SJME_NVM_STORE_SLOT_FILL_VOID;
+		result->assignedVars[i].type = SJME_NVM_STORE_SLOT_MARKER_VOID;
 
 	/* Success! */
 	*outJava = result;
@@ -269,9 +269,7 @@ sjme_errorCode sjme_nvm_store_windowPush(
 sjme_errorCode sjme_nvm_store_windowSlot(
 	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
 	sjme_attrInNotNull sjme_nvm_store_windowJava* inJava,
-	sjme_attrOutNullable sjme_nvm_value** outStorage,
-	sjme_attrOutNullable sjme_javaTypeId* outType,
-	sjme_attrOutNullable sjme_nvm_store_windowJavaVarChain* outChain,
+	sjme_attrOutNotNull sjme_nvm_store_slotInfo* outInfo,
 	sjme_attrInPositive sjme_nvm_store_javaSlot inSlot,
 	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
 		sjme_nvm_store_slotType inSlotType,
@@ -280,16 +278,13 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS + 1) sjme_javaTypeId inType)
 {
 	sjme_errorCode error;
-	sjme_jint slotLimit, realSlot;
-	sjme_nvm_store_windowJavaVar* at;
-	sjme_nvm_value* atStorage;
 	sjme_jboolean allocNew;
 	sjme_jint inTypeLen, atStorageLen, sizeAlign;
 	sjme_pointer varAt;
 	sjme_intPointer division, windowBase;
+	sjme_nvm_store_slotInfo workInfo;
 
-	if (inWindow == NULL || inJava == NULL ||
-		(outStorage == NULL && outType == NULL))
+	if (inWindow == NULL || inJava == NULL || outInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inType < 0 || inType > SJME_NUM_JAVA_TYPE_IDS)
@@ -301,6 +296,172 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	/* The "do not care" type is only valid for read. */
 	if (inMode != SJME_NVM_STORE_READ && inType == SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* We can just use the slot information function to just get the */
+	/* details of what we need to perform a function on the variable slot. */
+	/* This also checks for errors, and allows for potential future changes */
+	/* to the slot system without major refactoring. */
+	memset(&workInfo, 0, sizeof(workInfo));
+	if (sjme_error_is(error = sjme_nvm_store_windowSlotInfo(inWindow,
+		inJava, &workInfo, inSlot, inSlotType)))
+		return sjme_error_default(error);
+
+	/* The window base is the actual window. */
+	windowBase = (sjme_intPointer)inWindow;
+
+	/* Is the input/storage type wide? */
+	/* Note that pointers always have the native system length. */
+	inTypeLen = (inType == SJME_JAVA_TYPE_ID_OBJECT ?
+		sjme_max(1, SJME_POINTER_BYTES / 4) :
+		SJME_TYPEID_SLOTS_JAVA(inType));
+	atStorageLen = (workInfo.storage != NULL ?
+		workInfo.chain.at->width : 0);
+
+	/* What happens depends on the access mode, as there are different */
+	/* state transitions. */
+	allocNew = SJME_JNI_FALSE;
+	switch (inMode)
+	{
+		case SJME_NVM_STORE_READ:
+			/* This is only invalid if we care about the type and it is */
+			/* not the type we actually want. */
+			if (inType != SJME_NUM_JAVA_TYPE_IDS &&
+				inType != workInfo.type)
+				return SJME_ERROR_TREAD_INVALID_READ;
+			break;
+
+		case SJME_NVM_STORE_WRITE:
+			/* Different slot length? */
+			if (inTypeLen != atStorageLen)
+			{
+				/* Something is already here? */
+				if (workInfo.storage != NULL)
+					return SJME_ERROR_TREAD_INVALID_WRITE;
+
+				/* Allocate otherwise. */
+				allocNew = SJME_JNI_TRUE;
+			}
+			break;
+
+		case SJME_NVM_STORE_WRITE_PROMOTE:
+			/* Always allocate if the slot length is different. */
+			if (inTypeLen != atStorageLen)
+				allocNew = SJME_JNI_TRUE;
+			break;
+
+		case SJME_NVM_STORE_REPLACE:
+			/* The value must exist and be able to fit. */
+			if (workInfo.storage == NULL || inTypeLen <= atStorageLen)
+				return SJME_ERROR_TREAD_INVALID_WRITE;
+
+			sjme_todo("Impl");
+			return sjme_error_notImplemented(0);
+
+		case SJME_NVM_STORE_REPLACE_PROMOTE:
+			/* The value must exist. */
+			if (workInfo.storage == NULL)
+				return SJME_ERROR_TREAD_INVALID_WRITE;
+
+			sjme_todo("Impl");
+			return sjme_error_notImplemented(0);
+
+		case SJME_NVM_STORE_REPLACE_SAME:
+			/* The value must exist and be the same width. */
+			if (workInfo.storage == NULL || inTypeLen != atStorageLen)
+				return SJME_ERROR_TREAD_INVALID_WRITE;
+
+			sjme_todo("Impl");
+			return sjme_error_notImplemented(0);
+
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+
+	/* Not allocating a new value and there is no actual storage? */
+	if (!allocNew && workInfo.storage == NULL)
+	{
+		/* Cannot write here. */
+		if (inMode != SJME_NVM_STORE_READ)
+			return SJME_ERROR_TREAD_INVALID_WRITE;
+
+		/* Only the metadata was requested. */
+		if (inType == SJME_NUM_JAVA_TYPE_IDS)
+			goto skip_readMeta;
+
+		/* Fail otherwise. */
+		return SJME_ERROR_TREAD_INVALID_READ;
+	}
+
+	/* Cannot write variables which are larger than this size. */
+	sizeAlign = 4 * inTypeLen;
+	if (sizeAlign > SJME_NVM_STORE_MAX_WIDTH_BYTES)
+		return SJME_ERROR_TREAD_INVALID_WRITE;
+
+	/* Allocate the variable storage, note that it must be aligned to its */
+	/* own size due to pointers and otherwise. */
+	/* Unless of course, the size is larger than our pointer size anyway */
+	/* then it does not actually matter. */
+	varAt = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowAlloca(inWindow,
+		&varAt, sizeAlign,
+		sjme_min(SJME_POINTER_BYTES, sizeAlign))) || varAt == NULL)
+		return sjme_error_default(error);
+
+	/* Calculate the division, if this is not a multiple of four then */
+	/* something is very wrong with alloca! */
+	division = (sjme_intPointer)varAt - windowBase;
+	if ((division % 4) != 0)
+		return sjme_error_fatal(SJME_ERROR_TREAD_INVALID_WRITE);
+
+	/* If we cannot actually store the multiple because it is too large, */
+	/* or it just overflows, then the stack just overflows. */
+	division /= 4;
+	if (division < 0 || division > SJME_NVM_STORE_MAX_MULTIPLE)
+		return SJME_ERROR_STACK_OVERFLOW;
+
+	/* Set and redetermine the multiple and storage. */
+	workInfo.chain.at->width = (sjme_jubyte)(sizeAlign / 4);
+	workInfo.chain.at->offsetMultiple = (sjme_jushort)(division);
+
+	/* Always set the new type, this always needs to be a valid type or */
+	/* a marker. If a future mode allows for a type change, then anything */
+	/* that is not a Java type should be special. */
+	if (inType == SJME_STACK_TYPE_WIDE)
+		workInfo.chain.at->type = SJME_NVM_STORE_SLOT_MARKER_WIDE;
+	else if (inType >= 0 && inType < SJME_NUM_JAVA_TYPE_IDS)
+		workInfo.chain.at->type = (sjme_jubyte)inType;
+	else
+		workInfo.chain.at->type = SJME_NVM_STORE_SLOT_MARKER_SPECIAL;
+
+	/* Note that the storage is at the exact location. This can be done */
+	/* because if we are writing a 64-bit value, we refer to the correct */
+	/* portion of it. Otherwise, the same for a 32-bit value. */
+	/* Since we already set the offsetMultiple, we just need to set the */
+	/* workInfo to the up-to-date storage location. */
+	workInfo.storage = varAt;
+
+skip_readMeta:
+	/* Just copy everything to the output info. */
+	memmove(outInfo, &workInfo, sizeof(*outInfo));
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_store_windowSlotInfo(
+	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
+	sjme_attrInNotNull sjme_nvm_store_windowJava* inJava,
+	sjme_attrOutNotNull sjme_nvm_store_slotInfo* outInfo,
+	sjme_attrInPositive sjme_nvm_store_javaSlot inSlot,
+	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
+		sjme_nvm_store_slotType inSlotType)
+{
+	sjme_jint slotLimit, realSlot;
+	sjme_nvm_store_windowJavaVar* at;
+	sjme_intPointer windowBase;
+
+	if (inWindow == NULL || inJava == NULL || outInfo == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inSlotType < 0 || inSlotType >= SJME_NVM_STORE_NUM_SLOT_TYPES)
 		return SJME_ERROR_INVALID_ARGUMENT;
@@ -347,141 +508,25 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 
 	/* Unallocated? */
 	if (at->offsetMultiple == 0)
-		atStorage = NULL;
+		outInfo->storage = NULL;
 
 	/* At an offset position. */
 	else
-		atStorage = (sjme_pointer)(windowBase +
+		outInfo->storage = (sjme_pointer)(windowBase +
 			(4 * (sjme_jint)at->offsetMultiple));
 
-	/* Is the input/storage type wide? */
-	inTypeLen = SJME_TYPEID_SLOTS_JAVA(inType);
-	atStorageLen = (atStorage != NULL ? SJME_TYPEID_SLOTS_JAVA(at->type) : 0);
+	/* The base type of the slot. */
+	outInfo->type = at->type;
 
-	/* What happens depends on the access mode, as there are different */
-	/* state transitions. */
-	allocNew = SJME_JNI_FALSE;
-	switch (inMode)
-	{
-		case SJME_NVM_STORE_READ:
-			sjme_todo("Impl");
-			return sjme_error_notImplemented(0);
-
-		case SJME_NVM_STORE_WRITE:
-			/* Different slot length? */
-			if (inTypeLen != atStorageLen)
-			{
-				/* Something is already here? */
-				if (atStorage != NULL)
-					return SJME_ERROR_TREAD_INVALID_WRITE;
-
-				/* Allocate otherwise. */
-				allocNew = SJME_JNI_TRUE;
-			}
-			break;
-
-		case SJME_NVM_STORE_WRITE_PROMOTE:
-			/* Always allocate if the slot length is different. */
-			if (inTypeLen != atStorageLen)
-				allocNew = SJME_JNI_TRUE;
-			break;
-
-		case SJME_NVM_STORE_REPLACE:
-			/* The value must exist and be able to fit. */
-			if (atStorage == NULL || inTypeLen <= atStorageLen)
-				return SJME_ERROR_TREAD_INVALID_WRITE;
-
-			sjme_todo("Impl");
-			return sjme_error_notImplemented(0);
-
-		case SJME_NVM_STORE_REPLACE_PROMOTE:
-			/* The value must exist. */
-			if (atStorage == NULL)
-				return SJME_ERROR_TREAD_INVALID_WRITE;
-
-			sjme_todo("Impl");
-			return sjme_error_notImplemented(0);
-
-		case SJME_NVM_STORE_REPLACE_SAME:
-			/* The value must exist and be the same width. */
-			if (atStorage == NULL || inTypeLen != atStorageLen)
-				return SJME_ERROR_TREAD_INVALID_WRITE;
-
-			sjme_todo("Impl");
-			return sjme_error_notImplemented(0);
-
-		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
-	}
-
-	/* Not allocating a new value and there is no actual storage? */
-	if (!allocNew && atStorage == NULL)
-	{
-		/* Cannot write here. */
-		if (inMode != SJME_NVM_STORE_READ)
-			return SJME_ERROR_TREAD_INVALID_WRITE;
-
-		/* Only the metadata was requested. */
-		if (outType != NULL && inType == SJME_NUM_JAVA_TYPE_IDS)
-			goto skip_readMeta;
-
-		/* Fail otherwise. */
-		return SJME_ERROR_TREAD_INVALID_READ;
-	}
-
-	/* Allocate the variable storage, note that it must be aligned to its */
-	/* own size due to pointers and otherwise. */
-	varAt = NULL;
-	sizeAlign = 4 * inTypeLen;
-	if (sjme_error_is(error = sjme_nvm_store_windowAlloca(inWindow,
-		&varAt, sizeAlign, sizeAlign)) || varAt == NULL)
-		return sjme_error_default(error);
-
-	/* Calculate the division, if this is not a multiple of four then */
-	/* something is very wrong with alloca! */
-	division = (sjme_intPointer)varAt - windowBase;
-	if ((division % 4) != 0)
-		return sjme_error_fatal(SJME_ERROR_TREAD_INVALID_WRITE);
-
-	/* If we cannot actually store the multiple because it is too large, */
-	/* or it just overflows, then the stack just overflows. */
-	division /= 4;
-	if (division < 0 || division > SJME_NVM_STORE_MAX_MULTIPLE)
-		return SJME_ERROR_STACK_OVERFLOW;
-
-	/* Set and redetermine the multiple and storage. */
-	at->offsetMultiple = (sjme_jushort)(division);
-
-	/* Note that the storage is at the exact location. This can be done */
-	/* because if we are writing a 64-bit value, we refer to the correct */
-	/* portion of it. Otherwise, the same for a 32-bit value. */
-	atStorage = varAt;
-
-skip_readMeta:
-	/* Requested chain variables in the tread? */
-	if (outChain != NULL)
-	{
-		/* Current chain is simple. */
-		outChain->at = at;
-
-		/* Note that stack is top to bottom, and locals are bottom to top. */
-		/* That is, stack previous is to the right while local previous is */
-		/* to the left. */
-		outChain->prev = (inSlot <= 0 ? NULL :
-			&inJava->assignedVars[realSlot +
-				(inSlotType == SJME_NVM_STORE_SLOT_TYPE_STACK ? 1 : -1)]);
-		outChain->next = (inSlot >= (slotLimit - 1) ? NULL :
-			&inJava->assignedVars[realSlot +
-				(inSlotType == SJME_NVM_STORE_SLOT_TYPE_STACK ? -1 : 1)]);
-	}
-
-	/* Requested type? Note that this is just the type here */
-	if (outType != NULL)
-		*outType = at->type;
-
-	/* Requested direct access to the variable storage? */
-	if (outStorage != NULL)
-		*outStorage = atStorage;
+	/* Then the chain that connects each slot, logically depending on */
+	/* the slot type. */
+	outInfo->chain.at = at;
+	outInfo->chain.prev = (inSlot <= 0 ? NULL :
+		&inJava->assignedVars[realSlot +
+			(inSlotType == SJME_NVM_STORE_SLOT_TYPE_STACK ? 1 : -1)]);
+	outInfo->chain.next = (inSlot >= (slotLimit - 1) ? NULL :
+		&inJava->assignedVars[realSlot +
+			(inSlotType == SJME_NVM_STORE_SLOT_TYPE_STACK ? -1 : 1)]);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
