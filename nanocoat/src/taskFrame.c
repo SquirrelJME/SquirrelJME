@@ -344,6 +344,18 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	sjme_attrInPositive sjme_jint localIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue)
 {
+	sjme_errorCode error;
+	sjme_nvm_store_windowJava* java;
+
+	if (inFrame == NULL || inValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
+
 	if (SJME_JNI_TRUE)
 	{
 		sjme_todo("Impl?");
@@ -664,7 +676,7 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	/* Obtain the slot to write at. */
 	memset(&info, 0, sizeof(info));
 	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
-		java, &info, java->stackTop,
+		&info, java->stackTop,
 		SJME_NVM_STORE_SLOT_TYPE_STACK,
 		SJME_NVM_STORE_WRITE_PROMOTE,
 		inValue->t)))
@@ -775,7 +787,7 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 		/* Get the slot here. */
 		memset(&info, 0, sizeof(info));
 		if (sjme_error_is(error = sjme_nvm_store_windowSlotInfo(
-			inFrame->storeWindow, java, &info,
+			inFrame->storeWindow, &info,
 			desiredAt, SJME_NVM_STORE_SLOT_TYPE_STACK)))
 			return sjme_error_default(error);
 
@@ -787,8 +799,7 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	/* Obtain the slot to read from. */
 	memset(&info, 0, sizeof(info));
 	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
-		java, &info,
-		desiredAt,
+		&info, desiredAt,
 		SJME_NVM_STORE_SLOT_TYPE_STACK,
 		SJME_NVM_STORE_READ,
 		SJME_NUM_JAVA_TYPE_IDS)))

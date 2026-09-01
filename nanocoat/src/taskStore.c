@@ -59,6 +59,48 @@ static sjme_errorCode sjme_nvm_store_fileAlloca(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_store_windowLangInit(
+	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInPositive sjme_nvm_store_langType inLangType,
+	sjme_attrInNotNull sjme_pointer langData,
+	sjme_attrInPositive sjme_jint numVars)
+{
+	sjme_errorCode error;
+	sjme_jint i, n;
+
+	if (inWindow == NULL || inFrame == NULL || langData == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (numVars < 0 || inLangType <= SJME_NVM_STORE_LANG_NONE ||
+		inLangType >= SJME_NVM_STORE_NUM_LANG_TYPES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Must always be none! */
+	if (inWindow->lang.type != SJME_NVM_STORE_LANG_NONE)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Allocate assigned variable storage. */
+	if (sjme_error_is(error = sjme_nvm_store_windowAlloca(inWindow,
+		(sjme_pointer)&inWindow->lang.assignedVars,
+		sizeof(*inWindow->lang.assignedVars) * numVars,
+		SJME_POINTER_BYTES)) || inWindow->lang.assignedVars == NULL)
+		return sjme_error_default(error);
+
+	/* Init base data. */
+	inWindow->lang.type = inLangType;
+	inWindow->lang.data.any = langData;
+	inWindow->lang.inFrame = inFrame;
+	inWindow->lang.numVars = numVars;
+
+	/* Fill everything with void. */
+	for (i = 0, n = numVars; i < n; i++)
+		inWindow->lang.assignedVars[i].type = SJME_NVM_STORE_SLOT_MARKER_VOID;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_store_initFile(
 	sjme_attrOutNotNull sjme_nvm_store_file** outFile,
 	sjme_attrInNotNull sjme_pointer buf,
@@ -162,18 +204,22 @@ sjme_errorCode sjme_nvm_store_windowLangJava(
 	if (inWindow == NULL || outJava == NULL || inFrame == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* If this already exists then just use that. */
-	result = inWindow->lang.java;
-	if (result != NULL)
+	/* There already is Java data? */
+	if (inWindow->lang.type == SJME_NVM_STORE_LANG_JAVA)
 	{
-		/* Wrong frame? */
-		if (result->inFrame != inFrame)
+		/* Wrong frame or data is missing? */
+		result = inWindow->lang.data.java;
+		if (inWindow->lang.inFrame != inFrame || result == NULL)
 			return SJME_ERROR_ILLEGAL_STATE;
 
 		/* Perfectly fine! */
 		*outJava = result;
 		return SJME_ERROR_NONE;
 	}
+
+	/* This can only be initialized for none. */
+	if (inWindow->lang.type != SJME_NVM_STORE_LANG_NONE)
+		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Allocate storage needed for the Java language. */
 	result = NULL;
@@ -182,27 +228,17 @@ sjme_errorCode sjme_nvm_store_windowLangJava(
 		SJME_POINTER_BYTES)) || result == NULL)
 		return sjme_error_default(error);
 
-	/* Link in. */
-	inWindow->lang.java = result;
-
-	/* Set base frame and associated cached information. */
-	result->inFrame = inFrame;
+	/* Set Java specific info. */
 	result->maxLocals = inFrame->inCode->
 		perType[SJME_NVM_CODE_INFO_ALL_TYPES].locals;
 	result->maxStack = inFrame->inCode->
 		perType[SJME_NVM_CODE_INFO_ALL_TYPES].stack;
-	result->numVars = result->maxLocals + result->maxStack;
 
-	/* Allocate assigned variable storage. */
-	if (sjme_error_is(error = sjme_nvm_store_windowAlloca(inWindow,
-		(sjme_pointer)&result->assignedVars,
-		sizeof(*result->assignedVars) * result->numVars,
-		SJME_POINTER_BYTES)) || result->assignedVars == NULL)
+	/* Initialize base details. */
+	if (sjme_error_is(error = sjme_nvm_store_windowLangInit(inWindow,
+		inFrame, SJME_NVM_STORE_LANG_JAVA, result,
+		result->maxLocals + result->maxStack)))
 		return sjme_error_default(error);
-
-	/* Fill everything with void. */
-	for (i = 0, n = result->numVars; i < n; i++)
-		result->assignedVars[i].type = SJME_NVM_STORE_SLOT_MARKER_VOID;
 
 	/* Success! */
 	*outJava = result;
@@ -268,7 +304,6 @@ sjme_errorCode sjme_nvm_store_windowPush(
 
 sjme_errorCode sjme_nvm_store_windowSlot(
 	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
-	sjme_attrInNotNull sjme_nvm_store_windowJava* inJava,
 	sjme_attrOutNotNull sjme_nvm_store_slotInfo* outInfo,
 	sjme_attrInPositive sjme_nvm_store_javaSlot inSlot,
 	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
@@ -284,7 +319,7 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	sjme_intPointer division, windowBase;
 	sjme_nvm_store_slotInfo workInfo;
 
-	if (inWindow == NULL || inJava == NULL || outInfo == NULL)
+	if (inWindow == NULL || outInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inType < 0 || inType > SJME_NUM_JAVA_TYPE_IDS)
@@ -303,7 +338,7 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	/* to the slot system without major refactoring. */
 	memset(&workInfo, 0, sizeof(workInfo));
 	if (sjme_error_is(error = sjme_nvm_store_windowSlotInfo(inWindow,
-		inJava, &workInfo, inSlot, inSlotType)))
+		&workInfo, inSlot, inSlotType)))
 		return sjme_error_default(error);
 
 	/* The window base is the actual window. */
@@ -450,21 +485,26 @@ skip_readMeta:
 
 sjme_errorCode sjme_nvm_store_windowSlotInfo(
 	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
-	sjme_attrInNotNull sjme_nvm_store_windowJava* inJava,
 	sjme_attrOutNotNull sjme_nvm_store_slotInfo* outInfo,
 	sjme_attrInPositive sjme_nvm_store_javaSlot inSlot,
 	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
 		sjme_nvm_store_slotType inSlotType)
 {
 	sjme_jint slotLimit, realSlot;
-	sjme_nvm_store_windowJavaVar* at;
+	sjme_nvm_store_windowVar* at;
+	sjme_nvm_store_windowJava* inJava;
 	sjme_intPointer windowBase;
 
-	if (inWindow == NULL || inJava == NULL || outInfo == NULL)
+	if (inWindow == NULL || outInfo == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inSlotType < 0 || inSlotType >= SJME_NVM_STORE_NUM_SLOT_TYPES)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Need the Java language info for possibly stack/local. */
+	inJava = NULL;
+	if (inWindow->lang.type == SJME_NVM_STORE_LANG_JAVA)
+		inJava = inWindow->lang.data.java;
 
 	/* Gather base information on the slot type. */
 	slotLimit = -1;
@@ -472,6 +512,11 @@ sjme_errorCode sjme_nvm_store_windowSlotInfo(
 	switch (inSlotType)
 	{
 		case SJME_NVM_STORE_SLOT_TYPE_STACK:
+			/* Only valid for Java. */
+			if (inJava == NULL)
+				return SJME_ERROR_STACK_INDEX_INVALID;
+
+			/* Obtain the slot otherwise. */
 			realSlot = inJava->maxStack - (inSlot + 1);
 			slotLimit = inJava->maxStack;
 			if (inSlot < 0 || inSlot >= slotLimit)
@@ -479,6 +524,10 @@ sjme_errorCode sjme_nvm_store_windowSlotInfo(
 			break;
 
 		case SJME_NVM_STORE_SLOT_TYPE_LOCAL:
+			/* Only valid for Java. */
+			if (inJava == NULL)
+				return SJME_ERROR_LOCAL_INDEX_INVALID;
+
 			realSlot = inJava->maxStack + inSlot;
 			slotLimit = inJava->maxLocals;
 			if (inSlot < 0 || inSlot >= slotLimit)
@@ -487,7 +536,7 @@ sjme_errorCode sjme_nvm_store_windowSlotInfo(
 
 		case SJME_NVM_STORE_SLOT_TYPE_ABSOLUTE:
 			realSlot = inSlot;
-			slotLimit = inJava->numVars;
+			slotLimit = inWindow->lang.numVars;
 			if (inSlot < 0 || inSlot >= slotLimit)
 				return SJME_ERROR_TREAD_INDEX_INVALID;
 			break;
@@ -497,11 +546,11 @@ sjme_errorCode sjme_nvm_store_windowSlotInfo(
 	}
 
 	/* Slot index is not valid? */
-	if (realSlot < 0 || realSlot >= inJava->numVars)
+	if (realSlot < 0 || realSlot >= inWindow->lang.numVars)
 		return SJME_ERROR_TREAD_INDEX_INVALID;
 
 	/* Get the actual store variables here. */
-	at = &inJava->assignedVars[realSlot];
+	at = &inWindow->lang.assignedVars[realSlot];
 
 	/* The window base is the actual window. */
 	windowBase = (sjme_intPointer)inWindow;
@@ -522,10 +571,10 @@ sjme_errorCode sjme_nvm_store_windowSlotInfo(
 	/* the slot type. */
 	outInfo->chain.at = at;
 	outInfo->chain.prev = (inSlot <= 0 ? NULL :
-		&inJava->assignedVars[realSlot +
+		&inWindow->lang.assignedVars[realSlot +
 			(inSlotType == SJME_NVM_STORE_SLOT_TYPE_STACK ? 1 : -1)]);
 	outInfo->chain.next = (inSlot >= (slotLimit - 1) ? NULL :
-		&inJava->assignedVars[realSlot +
+		&inWindow->lang.assignedVars[realSlot +
 			(inSlotType == SJME_NVM_STORE_SLOT_TYPE_STACK ? -1 : 1)]);
 
 	/* Success! */
