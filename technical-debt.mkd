@@ -1,0 +1,61 @@
+# Technical Debt
+
+This is all the technical debt that exists within _SquirrelJME_ along with
+the potential solution to solving it, which generally should be a simple
+process with the caveat of being a long and drawn out repetitive task.
+
+Any repetitive technical debt could be solved with a script or IntelliJ
+replace intentions.
+
+# Error Code Migration
+
+The error codes in the form of `"NARG"` and `"AA01"` take up memory to store
+strings and otherwise in classes, which just causes more static memory usage
+than is actually needed. NanoCoat uses simplified error codes. The reason these
+error codes were made is that in the early days of the virtual machine it
+was very difficult to debug crashes and stack traces with a library that was
+barely implemented. This effectively acted as a system that could be used to
+reverse to the exact file and line where an error happened. This though is
+useful to find issues, however it could be made to be simpler and more
+efficient in both memory and space.
+
+## Potential Ideas
+
+Go through classes and rewrite `invokestatic` to a special method
+such as `public static int __seq__()` to instead be `bipush`/`sipush` and
+sequentially replace this within the class. Each one could be then placed in
+a CSV for the file and line, along with the nearest description or
+otherwise. The description could be in a comment or annotation. For comments,
+this would depend on a SquirrelJME-specific proprietary Javadoc to get comments
+to lines if they were to be Javadoc tags. Annotations could be associated
+with the `__seq__()` call. Naturally, instructions at a given index can get
+their line determined by the `LineNumberTable` attribute in the code.
+
+## Solution
+
+***TODO***
+
+# `@SquirrelJMEVendorApi` and `@KeepWhenCompacting` Cleanup
+
+With the ProGuard changes there are cases where `@SquirrelJMEVendorApi` was
+added to prevent it from removing a class, which no longer has an effect for
+private and package-private. For those cases where it is needed,
+then `@KeepWhenCompacting` should be used. Otherwise, it should be removed
+completely.
+
+Additionally, `@SquirrelJMEVendorApi` should only be used on APIs that are
+intended to be used by vendors and end-users who want to use specific
+SquirrelJME features, and _not_ public implementations of specific services
+or utilities. An example where it would not apply would be an implementation
+of `Connection`, it needs a `@KeepWhenCompacting` so it is not removed for
+`ServiceLoader` usage however it can be compacted to reduce space usage. This
+also applies for cases where there are native callbacks from the MLE layer
+called to a class, it is appropriate to use `@KeepWhenCompacting`.
+
+## Ideas
+
+***TODO***
+
+## Solution
+
+***TODO***
