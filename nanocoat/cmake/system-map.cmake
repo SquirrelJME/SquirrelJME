@@ -726,12 +726,28 @@ endfunction()
 # reliable way of determining the target system.
 if(NOT DEFINED SQUIRRELJME_SYSTEM OR
 	NOT DEFINED SQUIRRELJME_ARCH)
-	# Try to detect the current system
-	squirreljme_identify_by_current(SQUIRRELJME_SYSTEM SQUIRRELJME_ARCH)
+	if(NOT DEFINED SQUIRRELJME_SYSTEM AND NOT DEFINED SQUIRRELJME_ARCH)
+		# Try to detect the current system
+		squirreljme_identify_by_current(SQUIRRELJME_SYSTEM SQUIRRELJME_ARCH)
 
-	# Emit detection message
-	message(STATUS "Detected Target System: "
-		"${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
+		# Emit detection message
+		message(STATUS "Detected Target System: "
+			"${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
+	elseif(NOT DEFINED SQUIRRELJME_SYSTEM)
+		# Try to detect the current system
+		squirreljme_identify_by_current(SQUIRRELJME_SYSTEM ignoredArchDetect)
+
+		# Emit detection message
+		message(STATUS "Detected/Forced Target System: "
+			"${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
+	else()
+		# Try to detect the current system
+		squirreljme_identify_by_current(ignoredSystemDetect SQUIRRELJME_ARCH)
+
+		# Emit detection message
+		message(STATUS "Forced/Detected Target System: "
+			"${SQUIRRELJME_SYSTEM}/${SQUIRRELJME_ARCH}")
+	endif()
 else()
 	# This was forced!
 	message(STATUS "Forced Target System: "
