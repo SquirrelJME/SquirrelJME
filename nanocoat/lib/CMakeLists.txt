@@ -34,3 +34,6 @@ add_subdirectory(scritchui)
 
 # JNI/SquirrelJME Bridge
 add_subdirectory(jnisjme)
+
+# SquirrelJME Kernel
+add_subdirectory(kernel)
