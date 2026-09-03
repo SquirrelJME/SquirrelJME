@@ -1,7 +1,7 @@
 # The Scope of SquirrelJME
 
 This document defines the scope of SquirrelJME, classes which are to be
-supported and ones which are not to be supported. All of the listed
+supported and ones which are not to be supported. All the listed
 specifications are either planned to be implemented, considering, or out
 of scope for the project.
 
@@ -93,7 +93,7 @@ such require a more complete ScritchUI to handle properly.
 
 # Out of Scope
 
-These specifications will be not be implement at all. Note however, that
+These specifications will be not be implemented at all. Note however, that
 although these specifications are out of scope may potentially be provided by
 third parties libraries.
 
@@ -122,10 +122,10 @@ third parties libraries.
  * **JSR232** -- Mobile Operational Management
    * CDC.
  * **JSR242** -- Digital Set Top Box Profile - "On Ramp to OCAP"
-   * Effectively java SE.
+   * Effectively Java SE.
    * Has TV stuff.
  * **JSR272** -- Mobile Broadcast Service API for Handheld Terminals 1.0
-   * This is for broadcast services, which is completley out of scope.
+   * This is for broadcast services, which is completely out of scope.
  * **JSR302** -- Safety Critical Java Technology
    * Essentially JSR001 for J2ME.
    * Real time does not always mean safe.

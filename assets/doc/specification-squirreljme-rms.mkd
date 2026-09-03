@@ -34,7 +34,7 @@ The following JSON keys are defined:
 
  * `rmsVersion`: versionString
    * The currently defined version of this specification.
-   * Current value is `"1.0.0"`
+   * Current value is `"1.1.0"`
  * `rmsDate`: dateString
    * A human-readable timestamp of the last modification date of the
      record store.

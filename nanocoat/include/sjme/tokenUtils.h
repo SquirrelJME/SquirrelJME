@@ -341,8 +341,10 @@ extern "C"
 #define SJME_TOKEN_HAS_STARS(numPointerStars) \
 	SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_H##numPointerStars)
 
-/** SquirrelJME version string. */
-#define SQUIRRELJME_VERSION SJME_TOKEN_STRING_PP(SQUIRRELJME_VERSION_TRIM)
+#if !defined(SQUIRRELJME_VERSION) && defined(SQUIRRELJME_VERSION_TRIM)
+	/** SquirrelJME version string. */
+	#define SQUIRRELJME_VERSION SJME_TOKEN_STRING_PP(SQUIRRELJME_VERSION_TRIM)
+#endif
 
 /** Description of NanoCoat. */
 #define SQUIRRELJME_VERSION_NANOCOAT \

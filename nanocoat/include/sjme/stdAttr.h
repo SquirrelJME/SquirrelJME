@@ -453,6 +453,82 @@ extern "C"
 	 */
 	#define sjme_attrOrder(primary, attr) primary attr
 #endif
+	
+	
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) && \
+	!defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
+	/** Symbol is exported through a library. */
+	#define sjme_attrExport __declspec(dllexport)
+#elif defined(SJME_CONFIG_HAS_GCC) || \
+	defined(SJME_CONFIG_HAS_CLANG)
+	/** Symbol is exported through a library. */
+	#define sjme_attrExport __attribute__((visibility("default")))
+#else
+	/** Symbol is exported through a library. */
+	#define sjme_attrExport
+#endif
+
+#if defined(SJME_CONFIG_HAS_GCC) || \
+	defined(SJME_CONFIG_HAS_CLANG)
+	/** Symbol is hidden in a library. */
+	#define sjme_attrHidden __attribute__((visibility("hidden")))
+#else
+	/** Symbol is hidden in a library. */
+	#define sjme_attrHidden
+#endif
+
+/* Weak does not work on Windows, select_any is an "equivalent". */
+#if defined(SJME_CONFIG_HAS_ATTR_SELECT_ANY)
+	/** Select any symbol weakly, if possible. */
+	#define sjme_attrWeak
+#else
+	#if defined(SJME_CONFIG_HAS_GCC) || \
+		defined(SJME_CONFIG_HAS_CLANG)
+		/** Select any symbol weakly, if possible. */
+		#define sjme_attrWeak __attribute__((weak))
+	#else
+		/** Select any symbol weakly, if possible. */
+		#define sjme_attrWeak
+	#endif
+#endif
+	
+/* Weak does not work on Windows, select_any is an "equivalent". */
+#if defined(SJME_CONFIG_HAS_ATTR_SELECT_ANY)
+	#if defined(SJME_CONFIG_HAS_MSVC)
+		/** Select any symbol that exists, if possible. */
+		#define sjme_attrSelectAny __declspec(selectany)
+	#elif defined(SJME_CONFIG_HAS_GCC) || \
+		defined(SJME_CONFIG_HAS_CLANG)
+		/** Select any symbol that exists, if possible. */
+		#define sjme_attrSelectAny __attribute__((selectany))
+	#else
+		/** Select any symbol that exists, if possible. */
+		#define sjme_attrSelectAny
+	#endif
+#else
+	/** Select any symbol that exists, if possible. */
+	#define sjme_attrSelectAny
+#endif
+	
+#if defined(SJME_CONFIG_HAS_ATTR_SELECT_ANY)
+	/**
+	 * Uses @link sjme_attrSelectAny @endlink or @link sjme_attrWeak @endlink
+	 * based on current the platform.
+	 */
+	#define sjme_attrSelectAnyOrWeak sjme_attrSelectAny
+#elif defined(SJME_CONFIG_HAS_ATTR_WEAK)
+	/**
+	 * Uses @link sjme_attrSelectAny @endlink or @link sjme_attrWeak @endlink
+	 * based on current the platform.
+	 */
+	#define sjme_attrSelectAnyOrWeak sjme_attrWeak
+#else
+	/**
+	 * Uses @link sjme_attrSelectAny @endlink or @link sjme_attrWeak @endlink
+	 * based on current the platform.
+	 */
+	#define sjme_attrSelectAnyOrWeak
+#endif
 
 /*--------------------------------------------------------------------------*/
 

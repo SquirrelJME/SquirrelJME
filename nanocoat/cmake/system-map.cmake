@@ -93,7 +93,7 @@ list(APPEND SQUIRRELJME_SYSTEM_MAP
 	"beos!beos"
 	"bsd!bsd"
 	"bsd!openbsd"
-	"bsd!freebsd"
+	"freebsd!freebsd"
 	"bsd!netbsd"
 	"cygwin!cygwin"
 	"cygwin!msys2"
@@ -257,8 +257,9 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 		else()
 			set(hasSystem "macintosh")
 		endif()
+	elseif("__FreeBSD__" IN_LIST defines)
+		set(hasSystem "freebsd")
 	elseif("BSD" IN_LIST defines OR
-		"__FreeBSD__"  IN_LIST defines OR
 		"__NetBSD__"  IN_LIST defines OR
 		"__bsdi__"  IN_LIST defines OR
 		"__DragonFly__"  IN_LIST defines OR
@@ -870,8 +871,8 @@ else()
 endif()
 
 # Used for all builds to identify the system
-add_compile_definitions(SQUIRRELJME_SYSTEM=${SQUIRRELJME_SYSTEM})
-add_compile_definitions(SQUIRRELJME_ARCH=${SQUIRRELJME_ARCH})
+add_compile_definitions(SQUIRRELJME_SYSTEM="${SQUIRRELJME_SYSTEM}")
+add_compile_definitions(SQUIRRELJME_ARCH="${SQUIRRELJME_ARCH}")
 
 # Add fixed identifier for the target system/arch, which can be used in
 # special cases as needed

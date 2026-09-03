@@ -195,6 +195,12 @@ extern "C" {
 	#define SJME_CONFIG_GCC_VERSION_LEAST(major, minor) 0
 #endif
 	
+/* Fallback if there is no known compiler. */
+#if !defined(SJME_CONFIG_HAS_COMPILER)
+	/** Unknown compiler identifier. */
+	#define SJME_CONFIG_HAS_COMPILER "unknown"
+#endif
+	
 #if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
 	/** Has a GCC-like/clone compiler. */
 	#define SJME_CONFIG_HAS_GCC_CLONE
@@ -1120,6 +1126,15 @@ extern "C" {
 #endif
 
 #pragma endregion(threadLocal)
+	
+/* Weak does not work on Windows, select_any is an "equivalent". */
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	/** Enable use of @link sjme_attrSelectAny @endlink. */
+	#define SJME_CONFIG_HAS_ATTR_SELECT_ANY
+#else
+	/** Enable use of @link sjme_attrWeak @endlink. */
+	#define SJME_CONFIG_HAS_ATTR_WEAK
+#endif
 	
 /* Windows header needs to be included everywhere effectively. */
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)

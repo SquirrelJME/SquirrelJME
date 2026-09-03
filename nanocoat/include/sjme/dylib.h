@@ -18,6 +18,7 @@
 #define SJME_C_DYLIB_H
 
 #include "sjme/stdTypes.h"
+#include "sjme/stdAttr.h"
 #include "sjme/error.h"
 #include "sjme/debug.h"
 
@@ -31,27 +32,6 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS) && \
-	!defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
-	/** Symbol is exported through a library. */
-	#define sjme_attrExport __declspec(dllexport)
-#elif defined(SJME_CONFIG_HAS_GCC) || \
-	defined(SJME_CONFIG_HAS_CLANG)
-	/** Symbol is exported through a library. */
-	#define sjme_attrExport __attribute__((visibility("default")))
-#else
-	/** Symbol is exported through a library. */
-	#define sjme_attrExport
-#endif
-
-#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
-	/** Symbol is hidden in a library. */
-	#define SJME_DYLIB_HIDDEN __attribute__((visibility("hidden")))
-#else
-	/** Symbol is hidden in a library. */
-	#define SJME_DYLIB_HIDDEN
-#endif
 
 /**
  * Opaque dynamic library type.
@@ -121,10 +101,6 @@ sjme_errorCode sjme_dylib_open(
  */
 sjme_errorCode sjme_dylib_self(
 	sjme_attrInOutNotNull sjme_dylib* outLib);
-
-/** The debug handlers to use. */
-extern sjme_attrExport
-	sjme_debug_handlerFunctions* sjme_debug_handlers;
 
 /*--------------------------------------------------------------------------*/
 

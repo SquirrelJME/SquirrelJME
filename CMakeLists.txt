@@ -154,12 +154,31 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
 	set(SQUIRRELJME_CMAKE_NEW_ENOUGH YES)
 endif()
 
-# Function for printing build capabilities better
+# Function for printing build capabilities better, with a variable specified
 function(squirreljme_build_capability flag yesMessage noMessage)
 	if(${${flag}})
 		message(STATUS "++ ${yesMessage}")
 	else()
 		message(STATUS "-- ${noMessage}")
+	endif()
+endfunction()
+
+# Function for printing build capabilities better, with a target specified
+function(squirreljme_build_capability_target target yesMessage noMessage)
+	if(TARGET ${target})
+		message(STATUS "++ ${yesMessage}")
+	else()
+		message(STATUS "-- ${noMessage}")
+	endif()
+endfunction()
+
+# Function for printing build capabilities better, with a target specified,
+# and for a specific platform
+function(squirreljme_build_capability_target_plat target platform)
+	if(TARGET ${target})
+		message(STATUS "++ Can bundle/distribute ${platform} natives.")
+	else()
+		message(STATUS "-- No ${platform} natives are available.")
 	endif()
 endfunction()
 
@@ -196,18 +215,31 @@ squirreljme_build_capability(SQUIRRELJME_CMAKE_NEW_ENOUGH
 squirreljme_build_capability(SQUIRRELJME_HOST_HAS_COMPILER
 	"Host system has a compiler available, you can build for your own system!"
 	"You cannot build natives for your own system as you lack a C Compiler.")
-squirreljme_build_capability(SQUIRRELJME_CAN_TARGET_WINDOWS_IA32
-	"Can bundle 32-bit Windows natives into Standalone."
-	"No 32-bit Windows natives are available.")
-squirreljme_build_capability(SQUIRRELJME_CAN_TARGET_WINDOWS_AMD64
-	"Can bundle 64-bit Windows natives into Standalone."
-	"No 64-bit Windows natives are available.")
-squirreljme_build_capability(SQUIRRELJME_CAN_TARGET_MACOSX_AMD64
-	"Can bundle 64-bit Intel macOS natives into Standalone."
-	"No 64-bit Intel macOS natives are available.")
-squirreljme_build_capability(SQUIRRELJME_CAN_TARGET_MACOSX_ARM64L
-	"Can bundle ARM M1 macOS natives into Standalone."
-	"No ARM M1 macOS natives are available.")
-squirreljme_build_capability(SQUIRRELJME_CAN_TARGET_LINUX_AMD64
-	"Can bundle 64-bit Linux (amd64) natives into Standalone."
-	"No 64-bit Linux (amd64) natives are available.")
+
+# Windows
+squirreljme_build_capability_target_plat(natives.windows.ia32
+	"32-bit Windows")
+squirreljme_build_capability_target_plat(natives.windows.amd64
+	"64-bit Windows")
+
+# macOS
+squirreljme_build_capability_target_plat(natives.macosx.powerpc32b
+	"PowerMac")
+squirreljme_build_capability_target_plat(natives.macosx.ia32
+	"32-bit Intel macOS")
+squirreljme_build_capability_target_plat(natives.macosx.amd64
+	"64-bit Intel macOS")
+squirreljme_build_capability_target_plat(natives.macosx.arm64l
+	"ARM M1 macOS")
+
+# Linux
+squirreljme_build_capability_target_plat(natives.linux.ia32
+	"Linux (ia32)")
+squirreljme_build_capability_target_plat(natives.linux.amd64
+	"Linux (amd64)")
+
+# FreeBSD
+squirreljme_build_capability_target_plat(natives.freebsd.ia32
+	"FreeBSD (ia32)")
+squirreljme_build_capability_target_plat(natives.freebsd.amd64
+	"FreeBSD (amd64)")

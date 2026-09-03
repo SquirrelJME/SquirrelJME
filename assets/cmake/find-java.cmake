@@ -63,7 +63,8 @@ if(SQUIRRELJME_HAS_JAVA)
 				"--stacktrace"
 				"${gradleArgs}"
 			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-			COMMAND_EXPAND_LISTS)
+			COMMAND_EXPAND_LISTS
+			USES_TERMINAL)
 
 			# Set some SquirrelJME specific properties
 			set_target_properties(${targetName} PROPERTIES
