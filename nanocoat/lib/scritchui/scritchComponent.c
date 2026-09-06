@@ -670,7 +670,7 @@ sjme_errorCode sjme_scritchui_core_componentSetInputListener(
 			(sjme_scritchui_listener_void*)&SJME_SCRITCHUI_LISTENER_CORE(
 				inComponent, input),
 			(sjme_scritchui_voidListenerFunc)coreListener,
-			copyFrontEnd)))
+			NULL)))
 			return sjme_error_default(error);
 	}
 
@@ -737,8 +737,8 @@ sjme_errorCode sjme_scritchui_core_componentSetPaintListener(
 		if (infoCore->callback != coreCallback)
 			if (sjme_error_is(error = inState->intern->setSimpleListener(
 				inState, (sjme_scritchui_listener_void*)infoCore,
-				(sjme_scritchui_voidListenerFunc)inListener,
-				copyFrontEnd)))
+				(sjme_scritchui_voidListenerFunc)coreCallback,
+				NULL)))
 				return sjme_error_default(error);
 	}
 	
