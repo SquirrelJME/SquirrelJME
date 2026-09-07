@@ -239,12 +239,16 @@ libretro-build-wii:
   extends:
     - .libretro-wii-static-cmake-retroarch-master
     - .core-nanocoat
+  variables:
+    CORE_ARGS: -DSQUIRRELJME_SYSTEM=wii
 
 # wiiu-static-cmake.yml
 libretro-build-wiiu:
   extends:
     - .libretro-wiiu-static-cmake-retroarch-master
     - .core-nanocoat
+  variables:
+    CORE_ARGS: -DSQUIRRELJME_SYSTEM=wiiu
 
 # windows-cmake-mingw.yml
 libretro-build-windows-i686:

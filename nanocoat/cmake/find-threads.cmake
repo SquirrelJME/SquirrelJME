@@ -12,10 +12,12 @@ include(CheckSymbolExists)
 
 # These platforms do not support any kind of threading
 # Also consider unknown platforms as unsupported
-if("${SQUIRRELJME_SYSTEM}" STREQUAL "dos" OR
-	"${SQUIRRELJME_SYSTEM}" STREQUAL "3ds" OR
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "3ds" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "dos" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "playstation2" OR
-	"${SQUIRRELJME_SYSTEM}" STREQUAL "unknown")
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "gamecube" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "wii" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "wiiu")
 	message(STATUS "Threads not supported!")
 
 	# Only a single thread is possible
