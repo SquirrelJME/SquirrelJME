@@ -175,6 +175,11 @@ libretro-build-linux-x64:
     - .libretro-linux-cmake-x86_64
     - .core-nanocoat
 
+libretro-build-linux-aarch64:
+  extends:
+    - .libretro-linux-cmake-aarch64
+    - .core-nanocoat
+
 # ngc-static-cmake.yml
 libretro-build-ngc:
   extends:
