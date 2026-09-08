@@ -50,6 +50,67 @@ endif()
 # Enable C (again)
 enable_language(C)
 
+# Is this a GCC compiler?
+if(CMAKE_COMPILER_IS_GNUCC OR
+	CMAKE_COMPILER_IS_GNUCXX OR
+	"${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" OR
+	"${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" OR
+	"${CMAKE_C_COMPILER_ID}" STREQUAL "AppleClang" OR
+	"${CMAKE_C_COMPILER_ID}" STREQUAL "ARMClang" OR
+	"${CMAKE_C_COMPILER_ID}" STREQUAL "CrayClang" OR
+	"${CMAKE_C_COMPILER_ID}" STREQUAL "FujitsuClang" OR
+	"${CMAKE_C_COMPILER_ID}" STREQUAL "TIClang" OR
+	"${CMAKE_C_COMPILER_ID}" STREQUAL "XLClang" OR
+	"${CMAKE_C_COMPILER_ID}" STREQUAL "IBMClang")
+	set(SQUIRRELJME_IS_GCC TRUE)
+else()
+	set(SQUIRRELJME_IS_GCC FALSE)
+endif()
+
+# Needed for language check
+include(CheckLanguage)
+
+# Use GCC as the assembler?
+if(SQUIRRELJME_IS_GCC)
+	# Alias to CC
+	set(CMAKE_ASM_COMPILER "${CMAKE_C_COMPILER}" CACHE STRING "" FORCE)
+	set(CMAKE_ASM_COMPILER "${CMAKE_C_COMPILER}")
+
+# Otherwise look for one
+else()
+	check_language(ASM)
+	if(CMAKE_ASM_COMPILER)
+		enable_language(ASM)
+		set(SQUIRRELJME_HAS_ASM TRUE)
+	else()
+		set(SQUIRRELJME_HAS_ASM FALSE)
+	endif()
+endif()
+
+# Is there Objective-C?
+check_language(OBJC)
+if(CMAKE_OBJC_COMPILER)
+	enable_language(OBJC)
+	set(SQUIRRELJME_HAS_OBJC TRUE)
+else()
+	set(SQUIRRELJME_HAS_OBJC FALSE)
+endif()
+
+# Is there C++?
+check_language(CXX)
+if(CMAKE_CXX_COMPILER)
+	enable_language(CXX)
+	set(SQUIRRELJME_HAS_CXX TRUE)
+else()
+	set(SQUIRRELJME_HAS_CXX FALSE)
+endif()
+
+# Debug the languages
+message(STATUS "C: ${CMAKE_C_COMPILER}")
+message(STATUS "ASM: ${CMAKE_ASM_COMPILER}")
+message(STATUS "OBJC: ${CMAKE_OBJC_COMPILER}")
+message(STATUS "CXX: ${CMAKE_CXX_COMPILER}")
+
 # Determine version information
 squirreljme_include("identify-squirreljme-version.cmake")
 
@@ -91,11 +152,6 @@ squirreljme_include("fixes.cmake")
 # Common find support
 squirreljme_include("find.cmake")
 
-# Mac OS X Desktop?
-if(SQUIRRELJME_IS_APPLE_OR_GNUSTEP_DESKTOP)
-	enable_language(OBJC)
-endif()
-
 # Win32 Options
 squirreljme_include("win32.cmake")
 
@@ -123,10 +179,7 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 
 # Optimization for size, since embedded, if not debugging
 if(SQUIRRELJME_IS_RELEASE)
-	if(CMAKE_COMPILER_IS_GNUCC OR
-		CMAKE_COMPILER_IS_GNUCXX OR
-		CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
-		CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	if(SQUIRRELJME_IS_GCC)
 		add_compile_options("-Os")
 	elseif(MSVC OR
 		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR

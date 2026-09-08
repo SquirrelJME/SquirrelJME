@@ -48,11 +48,13 @@ static sjme_errorCode sjme_nvm_store_fileAlloca(
 	/* Wipe it and ensure it is initialized to nothing. */
 	memset(result, 0, numBytes);
 
+#if defined(SJME_CONFIG_DEBUG_TREAD)
 	/* Debug. */
 	sjme_message("alloca() -> %08x + %d/%d -> %08x (%08x) ... %08x",
 		placeAt, numBytes, alignment,
 		(sjme_jint)result, (sjme_jint)result - (sjme_jint)&inFile->data[0],
 		inFile->usedData);
+#endif
 
 	/* Success! */
 	*rawData = result;

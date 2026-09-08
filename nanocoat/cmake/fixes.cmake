@@ -102,10 +102,7 @@ endif()
 
 # Make static executable
 macro(squirreljme_static_executable target)
-	if(CMAKE_COMPILER_IS_GNUCC OR
-		CMAKE_COMPILER_IS_GNUCXX OR
-		CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
-		CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	if(SQUIRRELJME_IS_GCC)
 		squirreljme_target_link_options(${target} BEFORE PRIVATE
 			"-static")
 	elseif(MSVC OR
@@ -266,7 +263,7 @@ function(squirreljme_shared_library_exports target)
 				"/IMPLIB:${impLibPath}")
 
 		# Mingw32 or Mingw-w64
-		elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+		elseif(SQUIRRELJME_IS_GCC)
 			squirreljme_target_link_options(${target} PRIVATE
 				"-Wl,--out-implib,${impLibPath}")
 		endif()
@@ -297,7 +294,7 @@ macro(squirreljme_check_set_compiler_flag lang flag yesDef)
 	endif()
 endmacro()
 
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+if(SQUIRRELJME_IS_GCC)
 	# From the GCC manual: Control whether or not the compiler uses IEEE
 	# floating-point comparisons. These correctly handle the case where the
 	# result of a comparison is unordered.
@@ -424,7 +421,7 @@ macro(squirreljme_notfound_strip var)
 endmacro()
 
 # Statically link in libgcc?
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+if(SQUIRRELJME_IS_GCC)
 	# Plain variant
 	squirreljme_bp_check_linker_flag(C "-static-libgcc"
 		SJME_CONFIG_HAS_STATIC_LIBGCC)
@@ -680,7 +677,7 @@ endfunction()
 
 # Do not use .lib suffix for Windows libraries for mingw32/mingw-w64
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" AND
-	NOT (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX))
+	NOT SQUIRRELJME_IS_GCC)
 	set(SQUIRRELJME_WIN_LIB_SUFFIX ".lib")
 else()
 	set(SQUIRRELJME_WIN_LIB_SUFFIX "")
@@ -689,7 +686,7 @@ endif()
 # Force Intel syntax to be used
 if("${SQUIRRELJME_ARCH}" STREQUAL "ia32" OR
 	"${SQUIRRELJME_ARCH}" STREQUAL "amd64")
-	if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	if(SQUIRRELJME_IS_GCC)
 		# Breaks with intel syntax
 		if(NOT VALGRIND_FOUND)
 			add_compile_definitions("SJME_CONFIG_HAS_ASM_INTEL=1")

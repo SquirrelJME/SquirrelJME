@@ -283,6 +283,9 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 {
 	sjme_nvm_class_codePerType* perType;
 	sjme_jint mappedSlot;
+	sjme_nvm_store_windowJava* java;
+	sjme_errorCode error;
+	sjme_nvm_store_slotInfo info;
 
 	if (inFrame == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -294,26 +297,28 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 		inFrame->inCode->perType[SJME_NVM_CODE_INFO_ALL_TYPES].locals)
 		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
 
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/* The local variable is of the wrong type. */
-	if (inFrame->stack.order[localIndex] != typeId)
-		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INVALID_READ);
-#endif
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
 
-	/* Determine where this maps from for the read. */
-	perType = &inFrame->inCode->perType[typeId];
-	mappedSlot = perType->localMap[localIndex];
-	if (mappedSlot < 0 || mappedSlot > perType->locals)
-		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
+	/* Obtain the slot to read from. */
+	memset(&info, 0, sizeof(info));
+	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
+		&info, localIndex,
+		SJME_NVM_STORE_SLOT_TYPE_LOCAL,
+		SJME_NVM_STORE_READ,
+		SJME_NUM_JAVA_TYPE_IDS)))
+		return sjme_error_default(error);
 
-	/* Forward tread read. */
-	return sjme_nvm_task_frameTreadGetT(inFrame, typeId, mappedSlot,
-		NULL, outValue, SJME_JNI_FALSE);
+	/* Read out the value. */
+	if (sjme_error_is(error = sjme_nvm_vmField_cisGet(info.storage, info.type,
+		SJME_VLG_JVALUE_TYPED_P(outValue))))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_task_frameLocalPush(
@@ -346,27 +351,7 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 {
 	sjme_errorCode error;
 	sjme_nvm_store_windowJava* java;
-
-	if (inFrame == NULL || inValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Obtain the Java language info. */
-	java = NULL;
-	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
-		inFrame->storeWindow, &java, inFrame)) || java == NULL)
-		return sjme_error_default(error);
-
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	sjme_errorCode error;
-	sjme_jboolean isWide;
-	sjme_nvm_class_codePerType* perType;
-	sjme_jint mappedSlot;
-	sjme_frame_frameStacks* stack;
+	sjme_nvm_store_slotInfo info;
 
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -374,35 +359,39 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	if (inValue->t < 0 || inValue->t >= SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	/* Is this wide? */
-	isWide = SJME_TYPEID_IS_WIDE(inValue->t);
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
 
-	/* Check for complete out of bounds. */
-	if (localIndex < 0 ||
-		((localIndex + (isWide ? 1 : 0)) >=
-			inFrame->inCode->perType[SJME_NVM_CODE_INFO_ALL_TYPES].locals))
-		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
+	/* Obtain the slot to write at. */
+	memset(&info, 0, sizeof(info));
+	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
+		&info, localIndex,
+		SJME_NVM_STORE_SLOT_TYPE_LOCAL,
+		SJME_NVM_STORE_WRITE_PROMOTE,
+		inValue->t)))
+		return sjme_error_default(error);
 
-	/* Is the index still valid on the tread? */
-	perType = &inFrame->inCode->perType[inValue->t];
-	mappedSlot = perType->localMap[localIndex];
-	if (mappedSlot < 0 || mappedSlot >= perType->locals)
-		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
+	/* Overfill wide. */
+	if (SJME_TYPEID_IS_WIDE(inValue->t))
+	{
+		/* This is considered an overflow as we would be at the very end. */
+		if (info.chain.next == NULL)
+			return SJME_ERROR_STACK_OVERFLOW;
 
-	/* Set tread value. */
-	if (sjme_error_is(error = sjme_nvm_task_frameTreadSetT(inFrame,
-		commit, mappedSlot, inValue, NULL)))
-		return sjme_error_vmError(inFrame, error);
+		/* Set as wide. */
+		info.chain.next->type = SJME_NVM_STORE_SLOT_MARKER_WIDE;
+	}
 
-	/* Replace order info. */
-	stack = &inFrame->stack;
-	stack->order[localIndex] = inValue->t;
-	if (isWide)
-		stack->order[localIndex + 1] = SJME_JAVA_TYPE_ID_VOID;
+	/* Write the value. */
+	if (sjme_error_is(error = sjme_nvm_vmField_cisSet(info.storage,
+		inValue->t, commit, SJME_VLS_JVALUE_TYPED_P(inValue))))
+		return sjme_error_default(error);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
-#endif
 }
 
 sjme_errorCode sjme_nvm_task_framePool(
@@ -812,100 +801,6 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_nvm_task_frameTreadGetT(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
-	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean eraseOld)
-{
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	sjme_errorCode error;
-	sjme_jvalue wipe;
-	
-	if (inFrame == NULL || outValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* Use value set read. */
-	if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
-		inFrame->stack.stack[typeId].set, typeIndex,
-		SJME_VLG_JVALUE_TYPED_P(outValue))))
-		return sjme_error_vmError(inFrame, error);
-	
-	/* Wipe the old value? */
-	if (eraseOld)
-	{
-		/* Clear seed value. */
-		memset(&wipe, 0, sizeof(wipe));
-		
-		/* Perform the actual set. */
-		if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
-			inFrame->stack.stack[typeId].set, typeIndex, commit,
-			SJME_VLS_JVALUE_P(&wipe))))
-			return sjme_error_vmError(inFrame, error);
-	}
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
-#endif
-}
-
-sjme_errorCode sjme_nvm_task_frameTreadSetT(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrInNotNull const sjme_jvalueTyped* inValue,
-	sjme_attrOutNotNull sjme_jvalueTyped* oldValue)
-{
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	sjme_errorCode error;
-	sjme_javaTypeId typeId;
-	sjme_jvalueTyped old;
-	
-	if (inFrame == NULL || inValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* We need to know the Type ID first. */
-	typeId = inValue->t;
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* Read old value in first, so we can determine if it changed... */
-	memset(&old, 0, sizeof(old));
-	if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
-		inFrame->stack.stack[typeId].set, typeIndex,
-		SJME_VLG_JVALUE_TYPED_P(&old))))
-		return sjme_error_vmError(inFrame, error);
-	
-	/* Does the caller want the old value? */
-	if (oldValue != NULL)
-		memmove(oldValue, &old, sizeof(old));
-	
-	/* Perform the actual set. */
-	if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
-		inFrame->stack.stack[typeId].set, typeIndex, commit,
-		SJME_VLS_JVALUE_TYPED_P(inValue))))
-		return sjme_error_vmError(inFrame, error);
-	
-	/* Success! */
-	return SJME_ERROR_NONE;
-#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameWaitFor(

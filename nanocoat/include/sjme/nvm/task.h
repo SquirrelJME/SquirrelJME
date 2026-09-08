@@ -1044,46 +1044,6 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint depth,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue);
-	
-/**
- * Gets the value of a variable within a frame using the typed index
- * which is placed within its own frame set.
- * 
- * @param inFrame The frame to set the value in.
- * @param typeId The type to read.
- * @param typeIndex The type index to set.
- * @param commit The garbage collection commit.
- * @param outValue The resultant value.
- * @param eraseOld Erase the old value in the slot?
- * @return Any resultant error, if any.
- * @since 2025/02/16
- */
-sjme_errorCode sjme_nvm_task_frameTreadGetT(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
-	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean eraseOld);
-	
-/**
- * Sets the value of a variable within a frame using the typed index
- * which is placed within its own frame set.
- * 
- * @param inFrame The frame to set the value in.
- * @param commit The GC commit.
- * @param typeIndex The type index to set.
- * @param inValue The value to set.
- * @param oldValue The old value that was in this tread slot.
- * @return Any resultant error, if any.
- * @since 2025/01/04
- */
-sjme_errorCode sjme_nvm_task_frameTreadSetT(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrInNotNull const sjme_jvalueTyped* inValue,
-	sjme_attrOutNotNull sjme_jvalueTyped* oldValue);
 
 /**
  * Specifies that the given frame should wait for the given condition to be

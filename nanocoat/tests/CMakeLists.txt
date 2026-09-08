@@ -154,7 +154,7 @@ foreach(target IN ITEMS BasicTestLib BasicTest NanoTest TACTest)
 	if(CMAKE_BUILD_TYPE STREQUAL "Release" OR
 		CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR
 		CMAKE_BUILD_TYPE STREQUAL "Debug")
-		if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+		if(SQUIRRELJME_IS_GCC)
 			target_compile_options(${target} PRIVATE
 				"-g")
 		elseif(MSVC)
@@ -168,7 +168,7 @@ foreach(target IN ITEMS BasicTestLib BasicTest NanoTest TACTest)
 	if(MSVC)
 		squirreljme_target_property_rewrite(${target} COMPILE_OPTIONS
 			"/W[3210]" "/W0")
-	elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	elseif(SQUIRRELJME_IS_GCC)
 		add_compile_options("-w")
 	endif()
 endforeach()
