@@ -6,6 +6,10 @@ that _SquirrelJME_ is under. You should abide by the
 contribution will not be accepted since it can create a toxic and unwelcoming
 environment for developers and users.
 
+Note that the project does not have an open-door contribution policy in place,
+as such there will be no encouragement for any developers. This passion and
+encouragement must only come from within.
+
  * For instructions on building, see [the building guide](building.mkd).
  * If you wish to maintain or become a maintainer please read the
    [developer guide](developer-guide.mkd)!
@@ -13,7 +17,10 @@ environment for developers and users.
 
 Development can happen on any operating system that has an installation of
 Gradle, a Java JDK, any text editor/IDE (IntelliJ Ultimate is recommended), and
-enough disk space to store the code and repository.
+enough disk space to store the code and repository. For _NanoCoat_, CLion is
+recommended.
+
+SquirrelJME values autonomy and self-determination.
 
 SquirrelJME uses the [Fossil](https://fossil-scm.org/) source control
 system and as such it generally is expected that it is to be used. There also
@@ -53,8 +60,6 @@ repository as a whole.
      so. You must express what the method, class, or otherwise does in your
      own words.
  * Ensure that the tests pass.
-   * Note that submissions on GitHub will automatically be run under CI/CD
-     and if there are any issues arising from this, they must be addressed.
    * You can run all the tests with the `gradlew testHosted` and
      `gradlew testSpringCoat` command.
  * Do not perform mass automatic refactorings.
@@ -158,7 +163,7 @@ is clean room!
 **PERMISSION OF THE EMPLOYER.**
 
 	You grant Stephanie Gawroriski an irrevocable license that:
-    
+	
 	 1.  That you own the contributing work.
 	 2.  Grants a patent license, as per the Mozilla Public License 2.0.
 	 3.  Granting Stephanie Gawroriski permission to redistribute, sell, lease,
@@ -168,13 +173,24 @@ is clean room!
 	     parties supporting the project through this means.
 	 4.  If employed by a company, you have a right by that company to provide
 	     contributions to this project.
+	     a. You are not a contractor and/or third-party performing contracted
+	        work for the employer that the contribution is being made under.
+	     b. The contribution has been developed entirely in-house with no
+	        contractual labor and/or third-party labor.
+	     c. The employee making the contribution and interacting with the
+	        developers of SquirrelJME has significantly developed the
+	        contribution. It is not permitted for a manager, support person,
+	        Human Resources, coworker or otherwise to make the contribution
+	        on the employee's behalf.
+	     d. The employee continues to be employed and responsive while the
+	        review process is in progress.
 	 5.  Have pledged to follow the Code of Conduct.
 	 6.  Have read and understand the Contributor Ettiquite.
 	 7.  Understand that the code will be placed under the MPLv2.
 	 8.  Have not used LLMs and/or GenAIs.
 	     a. This includes but is not limited to: Aider, ChatGPT, Claude,
 	        Codex, Copilot, Cursor, DeepSeek, Gemini, Junie, OpenClaw,
-	        OpenCode, Windsurf.
+	        OpenCode, and Windsurf.
 	 9.  Your contribution is not attached to any additional terms, terms of
 	     service, change of jurisdiction, regulatory requirements,
 	     and/or legal requirements.
