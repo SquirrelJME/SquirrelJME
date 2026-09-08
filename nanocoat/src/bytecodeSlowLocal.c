@@ -35,7 +35,7 @@ static sjme_errorCode sjme_nvm_byteCode_iincAny(
 	/* Read the value. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalGet(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, index, &value)))
+		SJME_JAVA_TYPE_ID_INTEGER, index, &value, NULL)))
 		return sjme_error_default(error);
 	
 	/* Increment. */

@@ -247,6 +247,35 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit)
 {
+	sjme_errorCode error;
+	sjme_nvm_store_windowJava* java;
+	sjme_nvm_store_slotInfo info;
+	sjme_jvalueTyped value;
+	sjme_jint i;
+
+	if (inFrame == NULL || commit == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
+
+	/* Go through all locals. */
+	for (i = 0; i < java->maxLocals; i++)
+	{
+		/* Read in the local. */
+		memset(&java, 0, sizeof(java));
+		memset(&info, 0, sizeof(info));
+		if (sjme_error_is(error = sjme_nvm_task_frameLocalGet(inFrame,
+			SJME_NUM_JAVA_TYPE_IDS, i, &value, &info)))
+			return sjme_error_default(error);
+
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 #if defined(SJME_CONFIG_HAS_BROKEN_CODE)
@@ -279,10 +308,9 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint localIndex,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue)
+	sjme_attrInNotNull sjme_jvalueTyped* outValue,
+	sjme_attrOutNullable sjme_nvm_store_slotInfo* outInfo)
 {
-	sjme_nvm_class_codePerType* perType;
-	sjme_jint mappedSlot;
 	sjme_nvm_store_windowJava* java;
 	sjme_errorCode error;
 	sjme_nvm_store_slotInfo info;
@@ -290,7 +318,7 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 	if (inFrame == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
+	if (typeId < 0 || typeId > SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	if (localIndex < 0 || localIndex >=
@@ -308,14 +336,33 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
 		&info, localIndex,
 		SJME_NVM_STORE_SLOT_TYPE_LOCAL,
-		SJME_NVM_STORE_READ,
-		SJME_NUM_JAVA_TYPE_IDS)))
+		SJME_NVM_STORE_READ, typeId)))
 		return sjme_error_default(error);
 
+	/* Nothing here to read? */
+	if (typeId != SJME_NUM_JAVA_TYPE_IDS && info.storage == NULL)
+		return SJME_ERROR_LOCAL_INVALID_READ;
+
+	/* Wipe the output value if nothing is there. */
+	if (info.storage == NULL)
+	{
+		memset(outValue, 0, sizeof(*outValue));
+		outValue->t = SJME_NUM_JAVA_TYPE_IDS;
+	}
+
 	/* Read out the value. */
-	if (sjme_error_is(error = sjme_nvm_vmField_cisGet(info.storage, info.type,
-		SJME_VLG_JVALUE_TYPED_P(outValue))))
-		return sjme_error_default(error);
+	else
+	{
+		/* Read out. */
+		if (sjme_error_is(error = sjme_nvm_vmField_cisGet(info.storage,
+			info.type,
+			SJME_VLG_JVALUE_TYPED_P(outValue))))
+			return sjme_error_default(error);
+	}
+
+	/* Copy slot info? */
+	if (outInfo != NULL)
+		memmove(outInfo, &info, sizeof(*outInfo));
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -336,7 +383,7 @@ sjme_errorCode sjme_nvm_task_frameLocalPush(
 	/* Read local index. */
 	memset(&tempValue, 0, sizeof(tempValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalGet(inFrame,
-		typeId, localIndex, &tempValue)))
+		typeId, localIndex, &tempValue, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Forward to stack. */
@@ -463,27 +510,26 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit)
 {
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_errorCode error;
 	sjme_jvalueTyped temp;
-	sjme_frame_frameStacks* stack;
+	sjme_nvm_store_windowJava* java;
 
 	if (inFrame == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
+
 	/* Keep draining the stack until nothing is left. */
-	stack = &inFrame->stack;
-	while (stack->orderTop - stack->orderFront)
+	while (java->stackTop > 0)
 	{
 		/* Peek top value. */
 		memset(&temp, 0, sizeof(temp));
 		if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-			0, &temp)))
+			0, &temp, NULL)))
 			return sjme_error_vmError(inFrame, error);
 
 		/* Pop it. */
@@ -494,7 +540,6 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
-#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPeek(
@@ -508,7 +553,7 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
 	/* Peek top value. */
 	memset(&temp, 0, sizeof(temp));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-		0, &temp)))
+		0, &temp, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must be the same type. */
@@ -526,20 +571,12 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jvalueTyped* outValue)
 {
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_errorCode error;
-	sjme_frame_frameStacks* stack;
-	sjme_jboolean isWide;
-	sjme_jint newTop, newPerTop;
-	sjme_frame_frameStack* perType;
-	sjme_javaTypeId topType;
+	sjme_jvalueTyped temp;
+	sjme_nvm_store_windowJava* java;
+	sjme_nvm_store_slotInfo info;
 
-	if (inFrame == NULL || commit == NULL || outValue == NULL)
+	if (inFrame == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if ((typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS) &&
@@ -547,69 +584,49 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 		typeId != SJME_STACK_TYPE_WIDE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	/* Is this wide? */
-	isWide = SJME_TYPEID_IS_WIDE(typeId);
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
 
-	/* Determine new top of the stack, check for underflow. */
-	stack = &inFrame->stack;
-	newTop = stack->orderTop - SJME_TYPEID_SLOTS_BY_WIDE_BOOLEAN(isWide);
-	if (newTop < stack->orderFront)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
+	/* Peek top value. */
+	memset(&temp, 0, sizeof(temp));
+	memset(&info, 0, sizeof(info));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
+		0, &temp, &info)))
+		return sjme_error_vmError(inFrame, error);
 
-	/* Is wide and very top is wrong. */
-	if (isWide && stack->order[newTop + 1] != SJME_JAVA_TYPE_ID_VOID)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
-
-	/* Top of the stack is the wrong type? */
-	topType = stack->order[newTop];
-	if (topType != typeId)
+	/* Must be the same type. */
+	if (typeId != SJME_NUM_JAVA_TYPE_IDS && temp.t != typeId)
 	{
-		/* Wanting neither wide nor narrow. */
-		if (typeId != SJME_STACK_TYPE_NARROW &&
-			typeId != SJME_STACK_TYPE_WIDE)
+		/* If not wanting wide or narrow, then invalid. */
+		if (typeId != SJME_STACK_TYPE_NARROW && typeId != SJME_STACK_TYPE_WIDE)
 			return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
 
-		/* Wanting the incorrect type. */
-		if (((typeId == SJME_JAVA_TYPE_ID_INTEGER ||
-				typeId == SJME_JAVA_TYPE_ID_FLOAT ||
-				typeId == SJME_JAVA_TYPE_ID_OBJECT) !=
-					(typeId == SJME_STACK_TYPE_NARROW)) &&
-			((typeId == SJME_JAVA_TYPE_ID_LONG ||
-				typeId == SJME_JAVA_TYPE_ID_DOUBLE) !=
-					(typeId == SJME_STACK_TYPE_WIDE)))
+		/* Slot width is incorrect? */
+		if (SJME_TYPEID_SLOTS_JAVA(temp.t) != (typeId ==
+			SJME_STACK_TYPE_WIDE ? 2 : 1))
 			return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
 	}
 
-	/* Determine per type slot to remove. */
-	perType = &stack->stack[topType];
-	newPerTop = perType->top - 1;
-	if (newPerTop < perType->front)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
+	/* Commit objects? */
+	if (commit != NULL && temp.t == SJME_JAVA_TYPE_ID_OBJECT)
+		if (sjme_error_is(error = sjme_nvm_task_frameCommitPush(
+			inFrame, commit, temp.v.l)))
+			return sjme_error_default(error);
 
-	/* Read in value, erase the old value as it is to be wiped. */
-	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
-		inFrame, topType, newPerTop, commit, outValue,
-		SJME_JNI_TRUE)))
-		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
-			SJME_ERROR_STACK_INVALID_READ));
+	/* Reduce the stack top. */
+	java->stackTop -= SJME_TYPEID_SLOTS_JAVA(temp.t);
 
-	/* Remove from stack, from the main and on the per-type. */
-	/* Cleanup any values as well. */
-	stack->order[newTop] = SJME_JAVA_TYPE_ID_VOID;
-	stack->orderTop = newTop;
-	perType->top = newPerTop;
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/* If this is an object, it needs to be committed later. */
-	if (topType == SJME_BASIC_TYPE_ID_OBJECT && outValue->v.l != NULL)
-		if (sjme_error_is(error = sjme_nvm_task_frameCommitPush(inFrame,
-			commit, outValue->v.l)))
-			return sjme_error_vmError(inFrame, error);
-#endif
+	/* Wipe the slot. */
+	info.chain.at->type = SJME_NVM_STORE_SLOT_MARKER_VOID;
+	if (SJME_TYPEID_IS_WIDE(temp.t))
+		info.chain.next->type = SJME_NVM_STORE_SLOT_MARKER_VOID;
 
 	/* Success! */
+	memmove(outValue, &temp, sizeof(*outValue));
 	return SJME_ERROR_NONE;
-#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPopA(
@@ -745,7 +762,8 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 sjme_errorCode sjme_nvm_task_frameStackTop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint depth,
-	sjme_attrOutNotNull sjme_jvalueTyped* outValue)
+	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
+	sjme_attrOutNullable sjme_nvm_store_slotInfo* outInfo)
 {
 	sjme_errorCode error;
 	sjme_nvm_store_windowJava* java;
@@ -798,6 +816,10 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	if (sjme_error_is(error = sjme_nvm_vmField_cisGet(info.storage, info.type,
 		SJME_VLG_JVALUE_TYPED_P(outValue))))
 		return sjme_error_default(error);
+
+	/* Wanting a copy of the info? */
+	if (outInfo != NULL)
+		memmove(outInfo, &info, sizeof(*outInfo));
 
 	/* Success! */
 	return SJME_ERROR_NONE;

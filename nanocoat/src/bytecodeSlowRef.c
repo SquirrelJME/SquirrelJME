@@ -40,7 +40,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 {
 	sjme_errorCode error, mleError;
 	sjme_nvm_frame newFrame;
-	sjme_jint argC, i;
+	sjme_jint argC;
 	sjme_jvalueTyped* argV;
 	sjme_jvalueTyped* argVParam;
 	sjme_jvalueTyped mleArgR;
@@ -694,7 +694,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 	/* Read in the reference. */
 	memset(&depthRef, 0, sizeof(depthRef));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame, depth - 1,
-		&depthRef)))
+		&depthRef, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* It must be an object type. */
@@ -787,7 +787,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	memset(&rawOnThis, 0, sizeof(rawOnThis));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
 		entry->member.staticArgSlots,
-		&rawOnThis)))
+		&rawOnThis, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* The instance object to call onto, cannot be null. */

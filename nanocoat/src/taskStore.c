@@ -348,8 +348,9 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 
 	/* Is the input/storage type wide? */
 	/* Note that pointers always have the native system length. */
+	/* Objects have an extra integer for the check value. */
 	inTypeLen = (inType == SJME_JAVA_TYPE_ID_OBJECT ?
-		sjme_max(1, SJME_POINTER_BYTES / 4) :
+		sjme_max(1, SJME_POINTER_BYTES / 4) + 1 :
 		SJME_TYPEID_SLOTS_JAVA(inType));
 	atStorageLen = (workInfo.storage != NULL ?
 		workInfo.chain.at->width : 0);
@@ -365,6 +366,7 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 			if (inType != SJME_NUM_JAVA_TYPE_IDS &&
 				inType != workInfo.type)
 				return SJME_ERROR_TREAD_INVALID_READ;
+
 			break;
 
 		case SJME_NVM_STORE_WRITE:
@@ -428,6 +430,10 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 		/* Fail otherwise. */
 		return SJME_ERROR_TREAD_INVALID_READ;
 	}
+
+	/* If not allocating, skip to reading. */
+	else if (!allocNew)
+		goto skip_readMeta;
 
 	/* Cannot write variables which are larger than this size. */
 	sizeAlign = 4 * inTypeLen;

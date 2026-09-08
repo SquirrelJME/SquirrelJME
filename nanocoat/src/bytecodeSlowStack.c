@@ -23,7 +23,7 @@ SJME_NVM_BYTECODE_SLOW(Dup)
 	memset(&top, 0, sizeof(top));
 	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-		0, &top)))
+		0, &top, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must not be a wide type. */
@@ -93,7 +93,7 @@ SJME_NVM_BYTECODE_SLOW(DupX2)
 	/* Check the item below the top, this determines the variant. */
 	memset(&check, 0, sizeof(check));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-		2, &check)))
+		2, &check, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* If a wide type, rewrite to wide variant of dupx1. */
@@ -128,7 +128,7 @@ SJME_NVM_BYTECODE_SLOW(DupTwo)
 	/* Check the item below the top, this determines the variant. */
 	memset(&check, 0, sizeof(check));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-		1, &check)))
+		1, &check, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* If a wide type, rewrite to wide variant of dup. */
@@ -163,7 +163,7 @@ SJME_NVM_BYTECODE_SLOW(DupTwoX1)
 	/* Check the item below the top, this determines the variant. */
 	memset(&check, 0, sizeof(check));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-		1, &check)))
+		1, &check, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* If a wide type, rewrite to wide variant of dup. */
@@ -234,7 +234,7 @@ SJME_NVM_BYTECODE_SLOW(PopTwo)
 	/* What is the topmost item on the stack? */
 	memset(&top, 0, sizeof(top));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-		1, &top)))
+		1, &top, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* If a wide type, rewrite to pop wide. */

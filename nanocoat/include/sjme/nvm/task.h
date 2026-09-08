@@ -861,6 +861,8 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
  * @param typeId The type to read.
  * @param localIndex The index of the local.
  * @param outValue The output value.
+ * @param outInfo Optional slot information for the local variable, this
+ * may be @code NULL @endcode.
  * @return Any resultant error, if any.
  * @since 2025/07/18
  */
@@ -868,7 +870,8 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint localIndex,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue);
+	sjme_attrInNotNull sjme_jvalueTyped* outValue,
+	sjme_attrOutNullable sjme_nvm_store_slotInfo* outInfo);
 
 /**
  * Pushes the specified local to the stack.
@@ -1037,13 +1040,16 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
  * @param inFrame The frame to get the top of.
  * @param depth The depth from the stack top.
  * @param outValue The resultant value.
+ * @param outInfo Optional copy of the found slot's storage information, this
+ * may be @code NULL @endcode.
  * @return Any resultant error, if any.
  * @since 2025/02/24
  */
 sjme_errorCode sjme_nvm_task_frameStackTop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint depth,
-	sjme_attrOutNotNull sjme_jvalueTyped* outValue);
+	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
+	sjme_attrOutNullable sjme_nvm_store_slotInfo* outInfo);
 
 /**
  * Specifies that the given frame should wait for the given condition to be

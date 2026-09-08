@@ -451,6 +451,13 @@ typedef struct sjme_nvm_store_window sjme_nvm_store_window;
  */
 typedef struct sjme_nvm_store_windowJava sjme_nvm_store_windowJava;
 
+/**
+ * Used to store output slot information.
+ *
+ * @since 2026/09/01
+ */
+typedef struct sjme_nvm_store_slotInfo sjme_nvm_store_slotInfo;
+
 #pragma endregion(NvmTypeDefs)
 #pragma region(TypeOfSpecifiers)
 	

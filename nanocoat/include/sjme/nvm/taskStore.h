@@ -350,12 +350,7 @@ struct sjme_nvm_store_window
 	sjme_nvm_store_window* next;
 };
 
-/**
- * Used to store output slot information.
- *
- * @since 2026/09/01
- */
-typedef struct sjme_nvm_store_slotInfo
+struct sjme_nvm_store_slotInfo
 {
 	/** The Java variable chain. */
 	sjme_nvm_store_windowVarChain chain;
@@ -365,7 +360,7 @@ typedef struct sjme_nvm_store_slotInfo
 
 	/** The type if it is known. */
 	sjme_javaTypeId type;
-} sjme_nvm_store_slotInfo;
+};
 
 /**
  * Initializes a register file within the given buffer.
