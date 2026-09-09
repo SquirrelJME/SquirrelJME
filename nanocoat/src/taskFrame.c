@@ -275,11 +275,9 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
 			SJME_NUM_JAVA_TYPE_IDS, i, &value, &info)))
 			return sjme_error_default(error);
 
-		/* Write an integer value over this so it is wiped. */
-		if (info.storage != NULL)
-			if (sjme_error_is(error = sjme_nvm_vmField_cisSet(info.storage,
-				value.t, commit, SJME_VLS_JVALUE_TYPED_P(&value))))
-				return sjme_error_default(error);
+		/* Wipe the value stored here so that it does not stick around. */
+		if (info.rawP != NULL && info.rawLen > 0)
+			memset(info.rawP, 0, info.rawLen);
 
 		/* Clear type. */
 		info.chain.at->type = SJME_NUM_JAVA_TYPE_IDS;
@@ -599,7 +597,8 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 	}
 
 	/* Commit objects? */
-	if (commit != NULL && temp.t == SJME_JAVA_TYPE_ID_OBJECT)
+	if (commit != NULL && temp.t == SJME_JAVA_TYPE_ID_OBJECT &&
+		temp.v.l != NULL)
 		if (sjme_error_is(error = sjme_nvm_task_frameCommitPush(
 			inFrame, commit, temp.v.l)))
 			return sjme_error_default(error);
@@ -611,6 +610,10 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 	info.chain.at->type = SJME_NVM_STORE_SLOT_MARKER_VOID;
 	if (SJME_TYPEID_IS_WIDE(temp.t))
 		info.chain.next->type = SJME_NVM_STORE_SLOT_MARKER_VOID;
+
+	/* Wipe the value stored here so that it does not stick around. */
+	if (info.rawP != NULL && info.rawLen > 0)
+		memset(info.rawP, 0, info.rawLen);
 
 	/* Success! */
 	memmove(outValue, &temp, sizeof(*outValue));

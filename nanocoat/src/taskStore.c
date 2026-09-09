@@ -524,6 +524,10 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	/* workInfo to the up-to-date storage location. */
 	workInfo.storage = varAt;
 
+	/* The raw pointer needs to be re-calculated as it may have moved. */
+	outInfo->rawP = varAt;
+	outInfo->rawLen = sizeAlign;
+
 skip_readMeta:
 	/* Just copy everything to the output info. */
 	memmove(outInfo, &workInfo, sizeof(*outInfo));
@@ -606,12 +610,25 @@ sjme_errorCode sjme_nvm_store_windowSlotInfo(
 
 	/* Unallocated? */
 	if (at->offsetMultiple == 0)
+	{
 		outInfo->storage = NULL;
+
+		/* No raw pointer. */
+		outInfo->rawP = NULL;
+		outInfo->rawLen = 0;
+	}
 
 	/* At an offset position. */
 	else
+	{
+		/* Storage base is here. */
 		outInfo->storage = (sjme_pointer)(windowBase +
 			(4 * (sjme_jint)at->offsetMultiple));
+
+		/* The raw pointer is in the same location. */
+		outInfo->rawP = outInfo->storage;
+		outInfo->rawLen = 4 * at->width;
+	}
 
 	/* The base type of the slot. */
 	outInfo->type = at->type;

@@ -644,7 +644,7 @@ sjme_errorCode sjme_nvm_vmField_sizeValueSet(
 	if (outSize == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (length < 0 || type < 0 || type >= SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
+	if (length < 0 || type < 0 || type >= SJME_NUM_BASIC_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Calculate the size of all values, make sure there is no overflow. */

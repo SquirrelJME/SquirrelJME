@@ -61,6 +61,15 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 {
 	switch (error)
 	{
+		case SJME_ERROR_NULL_ARGUMENTS:
+		case SJME_ERROR_INVALID_ARGUMENT:
+			return SJME_JNI_TRUE;
+
+			/* Strict virtual machine. */
+		case SJME_ERROR_MEMBER_ACCESS_DENIED:
+			return SJME_JNI_TRUE;
+
+#if 0
 		case SJME_ERROR_ARGUMENT_COUNT_MISMATCH:
 		case SJME_ERROR_ARGUMENT_TYPE_MISMATCH:
 		case SJME_ERROR_CLASS_CHANGED:
@@ -121,6 +130,7 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_INVALID_OBJECT:
 		case SJME_ERROR_OBJECT_MISMATCHED:
 			return SJME_JNI_TRUE;
+#endif
 
 		default:
 			return SJME_JNI_FALSE;
@@ -141,7 +151,15 @@ sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 	{
 		/* Do not double trip this. */
 		if (!sjme_atomic_cs(sjme_jint, &doubleTrip, 0, 1))
+		{
+#if defined(SJME_CONFIG_DEBUG)
+			/* Fail with a TO-DO. */
+			sjme_todoR(file, line, func, "NVM DOUBLEERROR: %d!",
+				(int)error);
+#endif
+
 			return sjme_error_default(error);
+		}
 		
 		/* Emit stack trace, if acceptable. */
 		stateContext = NULL;
@@ -161,11 +179,13 @@ sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 			sjme_nvm_task_stackTraceThread(vmContext);
 		}
 
+#if defined(SJME_CONFIG_DEBUG_TRACE)
 		/* Dump the entire NVM state. */
 		if (stateContext != NULL)
 			if (sjme_error_is(dumpError = sjme_nvm_walk_coreDumpFile(
 				stateContext, &sjme_nal_default, "squirreljme.mem")))
 				sjme_message("NVM DUMP ERROR: %d!", (int)dumpError);
+#endif
 
 #if defined(SJME_CONFIG_DEBUG)
 		/* Fail with a TO-DO. */

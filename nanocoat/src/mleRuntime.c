@@ -26,8 +26,15 @@
 
 SJME_NVM_MLE_FUNCTION_DECL(byteOrder)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+	/* Little endian. */
+	argR->v.i = 1;
+#else
+	/* Big endian. */
+	argR->v.i = 0;
+#endif
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(currentTimeMillis)
@@ -41,7 +48,9 @@ SJME_NVM_MLE_FUNCTION_DECL(encoding)
 	static sjme_atomic(sjme_jint) cached;
 	sjme_nvm_mle_builtInEncodingType encoding;
 	const char* codeType;
-#if defined(SJME_CONFIG_HAS_OS_POSIX)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	UINT cp;
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	sjme_lpcstr set;
 #endif
 
@@ -54,8 +63,28 @@ SJME_NVM_MLE_FUNCTION_DECL(encoding)
 	codeType = NULL;
 	
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Read in the codepage. */
+	cp = GetOEMCP();
+
+	/* Windows codepages need to be mapped to SquirrelJME. */
+#define SJME_CP_MAP(win, sjme) case win: encoding = sjme; break
+	switch (cp)
+	{
+		SJME_CP_MAP(37, SJME_NVM_MLE_ENCODING_IBM037);
+		SJME_CP_MAP(437, SJME_NVM_MLE_ENCODING_ASCII);
+		SJME_CP_MAP(28591, SJME_NVM_MLE_ENCODING_ISO_8859_1);
+		SJME_CP_MAP(28605, SJME_NVM_MLE_ENCODING_ISO_8859_15);
+		SJME_CP_MAP(65001, SJME_NVM_MLE_ENCODING_UTF8);
+
+		/* Shift-JIS Variants. */
+		SJME_CP_MAP(20932, SJME_NVM_MLE_ENCODING_SHIFT_JIS);
+		SJME_CP_MAP(50222, SJME_NVM_MLE_ENCODING_SHIFT_JIS);
+
+		/* 7-bit ASCII. */
+		SJME_CP_MAP(20127, SJME_NVM_MLE_ENCODING_ASCII);
+	}
+#undef SJME_CP_MAP
+
 #elif defined(SJME_CONFIG_HAS_OS_ANDROID)
 	/* Android only does UTF-8. */
 	encoding = SJME_NVM_MLE_ENCODING_UTF8;
@@ -151,7 +180,9 @@ SJME_NVM_MLE_FUNCTION_DECL(locale)
 {
 	static sjme_atomic(sjme_jint) cached;
 	sjme_nvm_mle_builtInLocaleType locale;
-#if defined(SJME_CONFIG_HAS_OS_POSIX)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	LANGID li;
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	sjme_lpcstr set;
 #endif
 
@@ -161,8 +192,23 @@ SJME_NVM_MLE_FUNCTION_DECL(locale)
 		goto skip_cached;
 	
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Locale is per-thread in Windows. */
+	li = GetUserDefaultLangID();
+
+	/* Windows languages need to be mapped to SquirrelJME. */
+#define SJME_LI_MAP(pri, sub, sjme) \
+	case MAKELANGID(pri, sub): locale = sjme; break
+
+	switch (li)
+	{
+		SJME_LI_MAP(LANG_ENGLISH, SUBLANG_ENGLISH_US,
+			SJME_NVM_MLE_LOCALE_US_ENGLISH);
+
+		/* Default English. */
+		SJME_LI_MAP(LANG_ENGLISH, SUBLANG_NEUTRAL,
+			SJME_NVM_MLE_LOCALE_US_ENGLISH);
+	}
+#undef SJME_CP_MAP
 #elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	/* Get the base global locale. */
 	set = setlocale(LC_ALL, "");
@@ -294,8 +340,13 @@ SJME_NVM_MLE_FUNCTION_DECL(vmStatistic)
 SJME_NVM_MLE_FUNCTION_DECL(vmType)
 {
 	/* Always returns this constant value of NanoCoat. */
+	/* Unless pure interpreter is forced. */
 	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->v.i = SJME_NVM_MLE_VM_TYPE_NANOCOAT;
+	if (SJME_F_K(inFrame)->initConfig != NULL &&
+		SJME_F_K(inFrame)->initConfig->noOptimize)
+		argR->v.i = SJME_NVM_MLE_VM_TYPE_SPRINGCOAT;
+	else
+		argR->v.i = SJME_NVM_MLE_VM_TYPE_NANOCOAT;
 
 	return SJME_ERROR_NONE;
 }

@@ -360,6 +360,24 @@ struct sjme_nvm_store_slotInfo
 
 	/** The type if it is known. */
 	sjme_javaTypeId type;
+
+	/**
+	 * Direct pointer to the full raw slot storage value, without regards
+	 * to any type. If a slot has a width of three and the type has a width
+	 * of one, then this with @code rawLen @endcode will fit a slot length
+	 * of three rather than one.
+	 *
+	 * This is generally used to erase the previously stored value here when
+	 * it is no longer needed. This should be used with @code memset() @endcode
+	 * rather than writing a value through the slot system.
+	 *
+	 * If the storage information is not known or is purely virtual then
+	 * this may be @code NULL @endcode.
+	 */
+	sjme_pointer rawP;
+
+	/** Length of the full raw slot storage, in bytes. */
+	sjme_intPointer rawLen;
 };
 
 /**

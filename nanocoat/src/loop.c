@@ -97,7 +97,7 @@ sjme_errorCode sjme_nvm_loop_tick(
 		terminated = SJME_JNI_FALSE;
 		if (sjme_error_is(error = sjme_nvm_task_taskScheduleNext(
 			inState, &runThread, &terminated)))
-			return sjme_error_default(error);
+			return sjme_error_vmError(inState, error);
 
 		/* Terminated? */
 		if (terminated)
@@ -126,7 +126,7 @@ sjme_errorCode sjme_nvm_loop_tick(
 		/* Otherwise execute the single thread. */
 		if (sjme_error_is(error = sjme_nvm_loop_tickThread(
 			runThread, remaining, &remaining, isTerminated)))
-			return sjme_error_default(error);
+			return sjme_error_vmError(runThread, error);
 	}
 
 	/* Success! */
