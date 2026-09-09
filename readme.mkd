@@ -15,10 +15,10 @@ abstraction layer require a native implementation.
 
 There additionally is _NanoCoat_, which is an execution engine written in C
 to allow for running SquirrelJME in a cross-platform way without a dependent
-host virtual machine.
-
-Additionally, there is a port of SquirrelJME to RetroArch which enables the
-ability to play older J2ME software and games designed for flip-phones.
+host virtual machine. This allows you to run SquirrelJME in the same fashion a
+standard Java Virtual Machine that you would find on any desktop system. This
+also includes a _libretro_ front-end which allows SquirrelJME to be used with a
+wide variety of emulation systems such as RetroArch.
 
  * Copyright (C) 2013-2026 Stephanie Gawroriski <xer@multiphasicapps.net>
  * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2026

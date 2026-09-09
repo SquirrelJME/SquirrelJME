@@ -6,8 +6,9 @@ specialized project with specialized needs, GenAI as it exists now is not in
 any way useful for SquirrelJME. GenAI cannot currently understand the context
 of what SquirrelJME is and what it is for.
 
-GenAI is counter to the project's goal and desire to autonomy and
-self-determination.
+GenAI is counter to the project's goal and desire to be autonomous and to act
+with self-determination. Programming is art, and SquirrelJME is made by humans
+for humans.
 
 For those who feel that GenAI allows them to do something that they would never
 otherwise do, this is something that we call _Imposter Syndrome_. You can do
