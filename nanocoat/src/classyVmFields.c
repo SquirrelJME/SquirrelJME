@@ -184,6 +184,18 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLG_(
 				case SJME_JAVA_TYPE_ID_INTEGER:
 					valueP->i = prim->i;
 					break;
+
+				case SJME_JAVA_TYPE_ID_LONG:
+					valueP->j = prim->j;
+					break;
+
+				case SJME_JAVA_TYPE_ID_FLOAT:
+					valueP->f.bits = prim->f.bits;
+					break;
+
+				case SJME_JAVA_TYPE_ID_DOUBLE:
+					valueP->d.bits = prim->d.bits;
+					break;
 				
 				case SJME_JAVA_TYPE_ID_OBJECT:
 					valueP->l = checkObj;
@@ -369,9 +381,21 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 			case SJME_JAVA_TYPE_ID_INTEGER:
 				prim->i = set.v.i;
 				break;
+
+			case SJME_JAVA_TYPE_ID_LONG:
+				prim->j = set.v.j;
+				break;
+
+			case SJME_JAVA_TYPE_ID_FLOAT:
+				prim->f.bits = set.v.f.bits;
+				break;
+
+			case SJME_JAVA_TYPE_ID_DOUBLE:
+				prim->d.longBits = set.v.d.longBits;
+				break;
 			
 			default:
-				sjme_todo("Impl?");
+				sjme_todo("Impl? %d", type);
 				return sjme_error_notImplemented(0);
 		}
 	}

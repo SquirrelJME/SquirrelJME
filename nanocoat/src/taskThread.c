@@ -736,10 +736,12 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 {
 	sjme_errorCode error;
 	sjme_nvm_frame topFrame;
+	sjme_nvm_frame newTop;
 	sjme_jint topIndex;
 	sjme_nvm_frameBase blank;
 	sjme_nvm_frame_gcCommit commit;
 	sjme_jobject uncaught;
+	sjme_jvalueTyped* returned;
 	const sjme_nvm_stateHooks* hooks;
 	
 	if (inThread == NULL)
@@ -758,9 +760,12 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 
 	/* Setup commit. */
 	memset(&commit, 0, sizeof(commit));
-	
-	/* Clear the stack. */
+
+	/* Get frame references. */
 	topFrame = inThread->frames->elements[topIndex];
+	newTop = (topIndex > 0 ? inThread->frames->elements[topIndex - 1] : NULL);
+
+	/* Clear the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackClear(topFrame,
 		&commit)))
 		return sjme_error_vmError(inThread, error);
@@ -796,24 +801,9 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	/* Make the top-most frame no longer exist. */
 	inThread->numFrames = topIndex;
 
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/* Reduce the storage claim to free the used stack space. */
-	inThread->stack.storageTop -= topFrame->stack.storageClaim;
-
-#if defined(SJME_CONFIG_DEBUG_ENTRY)
-	/* Debug. */
-	sjme_emitB("STACK UF %p: -%d -> %d",
-		topFrame->stack.storageBase,
-		(sjme_jint)topFrame->stack.storageClaim,
-		(sjme_jint)inThread->stack.storageTop);
-#endif
-#else
-	if (SJME_JNI_TRUE)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-#endif
+	/* Pop the top-most window. */
+	if (sjme_error_is(error = sjme_nvm_store_windowPop(inThread->storeFile)))
+		return sjme_error_vmError(topFrame, error);
 
 	/* Clear the frame to a blank state. */
 	memset(&blank, 0, sizeof(blank));
@@ -822,6 +812,27 @@ sjme_errorCode sjme_nvm_task_threadLeave(
 	/* Use this resultant blank, keeping the common areas. */
 	/* topFrame IS NOW INVALID AFTER THIS POINT. */
 	memmove(topFrame, &blank, sizeof(*topFrame));
+
+	/* If this is not the last frame, and we are returning a value, we need */
+	/* to push the return value to the stack. */
+	returned = &inThread->returned;
+	if (topIndex > 0 && returned->t != SJME_NUM_JAVA_TYPE_IDS)
+	{
+		/* Push onto the parent stack. */
+		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(newTop,
+			NULL, returned)))
+			return sjme_error_vmError(inThread, error);
+
+		/* Need to count down if an object because return does an extra GC. */
+		if (returned->t == SJME_JAVA_TYPE_ID_OBJECT && returned->v.l != NULL)
+			if (sjme_error_is(error = sjme_nvm_instance_countDown(
+				returned->v.l)))
+				return sjme_error_vmError(inThread, error);
+
+		/* Destroy the return value as it is no longer needed. */
+		memset(returned, 0, sizeof(*returned));
+		returned->t = SJME_NUM_JAVA_TYPE_IDS;
+	}
 	
 	/* If this is the last frame, the thread will be terminating unless */
 	/* it is considered a callback thread. */

@@ -250,11 +250,47 @@ sjme_errorCode sjme_nvm_store_windowLangJava(
 sjme_errorCode sjme_nvm_store_windowPop(
 	sjme_attrInNotNull sjme_nvm_store_file* inFile)
 {
+	sjme_nvm_store_window* tail;
+	sjme_nvm_store_window* prev;
+	sjme_intPointer freeExtent;
+
 	if (inFile == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Impl");
-	return sjme_error_notImplemented(0);
+	/* Get the last tail. */
+	tail = inFile->tail;
+	if (tail == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* Detach the tail. */
+	prev = tail->prev;
+	inFile->tail = prev;
+
+	/* Is there a new tail? */
+	if (prev != NULL)
+	{
+		/* Nothing follows this. */
+		prev->next = NULL;
+
+		/* Get the difference between this extent and the other extent, */
+		/* this will be the amount of space to free. */
+		freeExtent = tail->extent - prev->extent;
+		if (freeExtent < 0)
+			return SJME_ERROR_ILLEGAL_STATE;
+
+		/* Adjust space. */
+		inFile->freeData += freeExtent;
+		inFile->usedData -= freeExtent;
+	}
+
+	/* Sanity check for any corruption. */
+	if (inFile->totalLength <= 0 || inFile->usedData < 0 ||
+		inFile->freeData < 0 ||
+		inFile->totalLength - inFile->usedData != inFile->freeData)
+		return SJME_ERROR_MEMORY_CORRUPTION;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_store_windowPush(
@@ -466,6 +502,9 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	workInfo.chain.at->width = (sjme_jubyte)(sizeAlign / 4);
 	workInfo.chain.at->offsetMultiple = (sjme_jushort)(division);
 
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
+	/* This is broken because this means a type is only set when a slot */
+	/* becomes allocated. */
 	/* Always set the new type, this always needs to be a valid type or */
 	/* a marker. If a future mode allows for a type change, then anything */
 	/* that is not a Java type should be special. */
@@ -475,6 +514,8 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 		workInfo.chain.at->type = (sjme_jubyte)inType;
 	else
 		workInfo.chain.at->type = SJME_NVM_STORE_SLOT_MARKER_SPECIAL;
+	workInfo.type = workInfo.chain.at->type;
+#endif
 
 	/* Note that the storage is at the exact location. This can be done */
 	/* because if we are writing a 64-bit value, we refer to the correct */

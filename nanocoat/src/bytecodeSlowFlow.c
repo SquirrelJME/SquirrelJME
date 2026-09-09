@@ -358,6 +358,7 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 	sjme_javaTypeId desire;
 	sjme_jvalueTyped result;
 	sjme_nvm_frame_gcCommit commit;
+	sjme_jvalueTyped* returned;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Must be returning the same type. */
@@ -365,6 +366,11 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 	if (sjme_atomic_g(sjme_nvm_class_methodInfo,
 		&inFrame->inCode->inMethod)->argR != desire)
 		return sjme_error_vmError(inFrame, SJME_ERROR_WRONG_RETURN_TYPE);
+
+	/* The return value goes here, it needs to always be cleared. */
+	returned = &SJME_F_T(inFrame)->returned;
+	memset(returned, 0, sizeof(*returned));
+	returned->t = SJME_NUM_JAVA_TYPE_IDS;
 
 	/* If not returning void, pop value to return onto the parent stack. */
 	memset(&commit, 0, sizeof(commit));
@@ -380,11 +386,18 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 			desire, &commit, &result)))
 			return sjme_error_vmError(inFrame, error);
 
-		/* Push onto the parent stack. */
-		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-			sjme_atomic_g(sjme_nvm_frame, &inFrame->parent),
-			&commit, &result)))
-			return sjme_error_vmError(inFrame, error);
+		/* Store return value into the thread, as it does need to be stored */
+		/* somewhere. */
+		/* Previously this was pushed directly onto the parent stack, */
+		/* however with the new stack storage system this is no longer */
+		/* permitted. This also means that if the return value is cross */
+		/* language this will work properly in those cases. */
+		memmove(returned, &result, sizeof(*returned));
+
+		/* If this is an object, it must not be GCed before it appears on */
+		/* the parent stack. */
+		if (result.t == SJME_JAVA_TYPE_ID_OBJECT && result.v.l != NULL)
+			sjme_nvm_instance_countUp(result.v.l);
 	}
 
 	/* Pop the current frame. */

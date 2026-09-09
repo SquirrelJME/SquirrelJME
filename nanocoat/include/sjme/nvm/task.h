@@ -693,6 +693,9 @@ struct sjme_nvm_threadBase
 	/** The @link sjme_nvm_threadScheduleMode @endlink of this thread? */
 	sjme_atomic(sjme_nvm_threadScheduleMode) scheduleMode;
 
+	/** The value returned from a thread. */
+	sjme_jvalueTyped returned;
+
 	/** A @c Throwable which has been thrown. */
 	sjme_atomic(sjme_jobject) tossed;
 

@@ -250,11 +250,14 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
 	sjme_errorCode error;
 	sjme_nvm_store_windowJava* java;
 	sjme_nvm_store_slotInfo info;
-	sjme_jvalueTyped value;
+	sjme_jvalueTyped value, none;
 	sjme_jint i;
 
 	if (inFrame == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* None type used for clearing. */
+	memset(&none, 0, sizeof(none));
 
 	/* Obtain the Java language info. */
 	java = NULL;
@@ -266,42 +269,24 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
 	for (i = 0; i < java->maxLocals; i++)
 	{
 		/* Read in the local. */
-		memset(&java, 0, sizeof(java));
+		memset(&value, 0, sizeof(value));
 		memset(&info, 0, sizeof(info));
 		if (sjme_error_is(error = sjme_nvm_task_frameLocalGet(inFrame,
 			SJME_NUM_JAVA_TYPE_IDS, i, &value, &info)))
 			return sjme_error_default(error);
 
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
+		/* Write an integer value over this so it is wiped. */
+		if (info.storage != NULL)
+			if (sjme_error_is(error = sjme_nvm_vmField_cisSet(info.storage,
+				value.t, commit, SJME_VLS_JVALUE_TYPED_P(&value))))
+				return sjme_error_default(error);
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	sjme_errorCode error;
-	sjme_frame_frameStack* stack;
-	sjme_jint index;
-	sjme_jvalueTyped temp;
-
-	if (inFrame == NULL || commit == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Go through and clear out all object locals. */
-	stack = &inFrame->stack.stack[SJME_JAVA_TYPE_ID_OBJECT];
-	for (index = 0; index < stack->front; index++)
-	{
-		/* Blank value here. */
-		memset(&temp, 0, sizeof(temp));
-		temp.t = SJME_JAVA_TYPE_ID_OBJECT;
-		if (sjme_error_is(error = sjme_nvm_task_frameTreadSetT(
-			inFrame, commit, index, &temp, NULL)))
-			return sjme_error_vmError(inFrame, error);
+		/* Clear type. */
+		info.chain.at->type = SJME_NUM_JAVA_TYPE_IDS;
 	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;
-#endif
 }
 
 sjme_errorCode sjme_nvm_task_frameLocalGet(
@@ -436,6 +421,9 @@ sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	if (sjme_error_is(error = sjme_nvm_vmField_cisSet(info.storage,
 		inValue->t, commit, SJME_VLS_JVALUE_TYPED_P(inValue))))
 		return sjme_error_default(error);
+
+	/* Set the type. */
+	info.chain.at->type = (sjme_jubyte)inValue->t;
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -665,7 +653,7 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_jint newTop;
 	sjme_nvm_store_slotInfo info;
 
-	if (inFrame == NULL || commit == NULL || inValue == NULL)
+	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Obtain the Java language info. */
@@ -703,6 +691,9 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 	if (sjme_error_is(error = sjme_nvm_vmField_cisSet(info.storage,
 		inValue->t, commit, SJME_VLS_JVALUE_TYPED_P(inValue))))
 		return sjme_error_default(error);
+
+	/* Set the type. */
+	info.chain.at->type = (sjme_jubyte)inValue->t;
 
 	/* Bump up the stack. */
 	java->stackTop = newTop;
