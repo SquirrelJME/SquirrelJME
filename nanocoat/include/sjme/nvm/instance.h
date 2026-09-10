@@ -262,6 +262,9 @@ struct sjme_jclassBase
 
 	/** The number of dimensions for this array type. */
 	sjme_atomic(sjme_jint) numDimensions;
+
+	/** Special class flags. */
+	sjme_jint special;
 };
 
 struct sjme_jstringBase

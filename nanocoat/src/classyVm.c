@@ -641,6 +641,11 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 		SJME_NVM_ACC_SYNTHETIC;
 	info->isArray = SJME_JNI_TRUE;
 
+	/* Indicate that this is a virtual machine synthetic as we really we */
+	/* would like to know that. There is the synthetic class attribute but */
+	/* this can come from real classes. */
+	inClass->special = SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC;
+
 	/* Set synthetic class info. */
 	inClass->info = sjme_weakUpR(sjme_nvm_class_info, info);
 
@@ -712,6 +717,11 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
 	info->flags = SJME_NVM_ACC_PUBLIC | SJME_NVM_ACC_FINAL |
 		SJME_NVM_ACC_SYNTHETIC;
 
+	/* Indicate that this is a virtual machine synthetic as we really we */
+	/* would like to know that. There is the synthetic class attribute but */
+	/* this can come from real classes. */
+	inClass->special = SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC;
+
 	/* Set synthetic class info. */
 	inClass->info = sjme_weakUpR(sjme_nvm_class_info, info);
 
@@ -728,7 +738,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 	sjme_list(sjme_nvm_rom_library)* classPath;
 	sjme_nvm_class_info info;
 	sjme_nvm_rom_library tryLib;
-	sjme_jint i, n;
+	sjme_jint libIndex, n;
 	sjme_cchar fileName[SJME_NVM_CLASS_NAME_LIMIT];
 	
 	if (inClass == NULL || contextThread == NULL || classLoader == NULL)
@@ -752,10 +762,10 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 	
 	/* Find the class within the classpath. */
 	info = NULL;
-	for (i = 0, n = classPath->length; i < n; i++)
+	for (libIndex = 0, n = classPath->length; libIndex < n; libIndex++)
 	{
 		/* Try this library. */
-		tryLib = classPath->elements[i];
+		tryLib = classPath->elements[libIndex];
 		
 		/* Cache via the library handler itself. */
 		if (sjme_error_is(error = sjme_nvm_rom_libraryCacheClass(
@@ -779,6 +789,24 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 	
 	/* Set class info. */
 	inClass->info = info;
+
+	/* Set special class flags? */
+	if (libIndex == 0)
+	{
+		/* Always a primary class. */
+		inClass->special |= SJME_NVM_ACC_SPECIAL_PRIMARY;
+
+		/* Do these classes have special access roles? */
+		if (sjme_charSeq_equalsUtfR(info->name->seq,
+			"java/lang/Object"))
+			inClass->special |= SJME_NVM_ACC_SPECIAL_OBJECT_CLASS;
+		else if (sjme_charSeq_equalsUtfR(info->name->seq,
+			"java/lang/Class"))
+			inClass->special |= SJME_NVM_ACC_SPECIAL_CLASS_CLASS;
+		else if (sjme_charSeq_equalsUtfR(info->name->seq,
+			"java/lang/Enum"))
+			inClass->special |= SJME_NVM_ACC_SPECIAL_ENUM_CLASS;
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;

@@ -55,7 +55,7 @@ sjme_errorCode sjme_nvm_access_checkEToE(
 	sjme_jclass toClass;
 	sjme_jclass rover;
 	sjme_jboolean checkPP;
-	sjme_jint flags;
+	sjme_jint flags, special;
 	
 	if (from == NULL || to == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -68,6 +68,13 @@ sjme_errorCode sjme_nvm_access_checkEToE(
 	fromClass = sjme_atomic_g(sjme_jclass, &from->inClass);
 	toClass = sjme_atomic_g(sjme_jclass, &to->inClass);
 	if (fromClass == toClass)
+		return SJME_ERROR_NONE;
+
+	/* Allow object, class, and enum unlimited access to anything. */
+	special = fromClass->special;
+	if (SJME_NVM_ACC_IS(special, SPECIAL_OBJECT_CLASS) ||
+		SJME_NVM_ACC_IS(special, SPECIAL_CLASS_CLASS) ||
+		SJME_NVM_ACC_IS(special, SPECIAL_ENUM_CLASS))
 		return SJME_ERROR_NONE;
 
 	/* Target is public? */
@@ -89,7 +96,9 @@ sjme_errorCode sjme_nvm_access_checkEToE(
 	}
 
 	/* Target is package private? */
-	else if (SJME_NVM_ACC_IS(flags, ACCESS_MASK))
+	else if (!SJME_NVM_ACC_IS(flags, PUBLIC) &&
+		!SJME_NVM_ACC_IS(flags, PROTECTED) &&
+		!SJME_NVM_ACC_IS(flags, PRIVATE))
 		checkPP = SJME_JNI_TRUE;
 
 	/* Must be in the same package? */

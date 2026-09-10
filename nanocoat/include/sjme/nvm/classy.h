@@ -91,7 +91,7 @@ SJME_LIST_DECLARE(sjme_nvm_class_exceptionHandler, 0);
  * @since 2025/10/11
  */
 #define SJME_NVM_ACC_IS(bits, acc) \
-	(((bits) & SJME_TOKEN_PASTE_PP(SJME_NVM_ACC_, acc)) != 0)
+	(((bits) & ((sjme_jint)SJME_TOKEN_PASTE_PP(SJME_NVM_ACC_, acc))) != 0)
 
 /**
  * Access flags.
@@ -100,6 +100,9 @@ SJME_LIST_DECLARE(sjme_nvm_class_exceptionHandler, 0);
  */
 typedef enum sjme_nvm_class_accessFlags
 {
+	/** This is an integral enum. */
+	sjme_enumInt(sjme_nvm_class_accessFlags),
+
 	/** Public. */
 	SJME_NVM_ACC_PUBLIC = INT32_C(0x0001),
 
@@ -130,6 +133,9 @@ typedef enum sjme_nvm_class_accessFlags
  */
 typedef enum sjme_nvm_class_classFlags
 {
+	/** This is an integral enum. */
+	sjme_enumInt(sjme_nvm_class_classFlags),
+
 	/** Is the class super? */
 	SJME_NVM_ACC_SUPER = INT32_C(0x0010),
 
@@ -157,6 +163,9 @@ typedef enum sjme_nvm_class_classFlags
  */
 typedef enum sjme_nvm_class_memberFlags
 {
+	/** This is an integral enum. */
+	sjme_enumInt(sjme_nvm_class_memberFlags),
+
 	/** Static member? */
 	SJME_NVM_ACC_STATIC = INT32_C(0x0008),
 
@@ -173,6 +182,9 @@ typedef enum sjme_nvm_class_memberFlags
  */
 typedef enum sjme_nvm_class_fieldFlags
 {
+	/** This is an integral enum. */
+	sjme_enumInt(sjme_nvm_class_fieldFlags),
+
 	/** Is this volatile? */
 	SJME_NVM_ACC_VOLATILE = INT32_C(0x0040),
 
@@ -192,6 +204,9 @@ typedef enum sjme_nvm_class_fieldFlags
  */
 typedef enum sjme_nvm_class_methodFlags
 {
+	/** This is an integral enum. */
+	sjme_enumInt(sjme_nvm_class_methodFlags),
+
 	/** Synchronized, monitor entry/exit on call? */
 	SJME_NVM_ACC_SYNCHRONIZED = INT32_C(0x0020),
 
@@ -215,6 +230,32 @@ typedef enum sjme_nvm_class_methodFlags
 		SJME_NVM_ACC_STRICTFP |
 		SJME_NVM_ACC_MEMBER_MASK,
 } sjme_nvm_class_methodFlags;
+
+/**
+ * Special class flags.
+ *
+ * @since 2026/09/09
+ */
+typedef enum sjme_nvm_class_specialFlags
+{
+	/** This is an integral enum. */
+	sjme_enumInt(sjme_nvm_class_specialFlags),
+
+	/** Is @code java.lang.Object @endcode. */
+	SJME_NVM_ACC_SPECIAL_OBJECT_CLASS = INT32_C(0x00010000),
+
+	/** Is @code java.lang.Class @endcode. */
+	SJME_NVM_ACC_SPECIAL_CLASS_CLASS = INT32_C(0x00020000),
+
+	/** Is @code java.lang.Enum @endcode. */
+	SJME_NVM_ACC_SPECIAL_ENUM_CLASS = INT32_C(0x00040000),
+
+	/** In the boot class library, that is the first index. */
+	SJME_NVM_ACC_SPECIAL_PRIMARY = INT32_C(0x00080000),
+
+	/** Synthetically created by the virtual machine. */
+	SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC = INT32_C(0x00100000),
+} sjme_nvm_class_specialFlags;
 
 /**
  * The type that a constant pool entry may be.
