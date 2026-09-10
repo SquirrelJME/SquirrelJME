@@ -885,9 +885,6 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
 		return SJME_ERROR_NONE;
 	}
-
-	/* Setup commit. */
-	memset(&commit, 0, sizeof(commit));
 	
 	/* Lookup target method. */
 	target = NULL;
@@ -898,6 +895,9 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		SJME_P_M_T(entry)->seq, &target)) ||
 		target == NULL)
 		return sjme_error_vmError(inFrame, error);
+
+	/* Setup commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Perform the invocation. */
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(inFrame,
