@@ -1,0 +1,27 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+import cc.squirreljme.plugin.swm.JavaMEProfile
+import cc.squirreljme.plugin.swm.JavaMEStandard
+import org.iban4j.CountryCode
+
+description = "BlackBerry Api"
+version = rootProject.version
+
+squirreljme
+{
+	javaDocErrorCode = "LE"
+	swmType = JavaMEMidletType.API
+	swmName = "BlackBerry Api"
+	swmVendor = "Stephanie Gawroriski"
+	originalApiVendor = "Research In Motion"
+	originalApiVendorUrl = "www.blackberry.com"
+	originalApiVendorCountry = CountryCode.CA
+	tags += "j2me"
+	tags += "blackberry"
+}
+
+dependencies
+{
+	api project(":modules:cldc-compact")
+	api project(":modules:midp-lcdui")
+	api project(":modules:media-api")
+}
