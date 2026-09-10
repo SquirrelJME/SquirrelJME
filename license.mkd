@@ -27,9 +27,15 @@ their code may be accepted.
 
 If SquirrelJME is distributed within a distribution then it is **highly**
 recommended that the source code is distributed alongside the binary. If this
-software is placed on very limited embedded devices then a CD should also be
-included containing the source code or the entire repository (CDs are really
-cheap to produce).
+software is placed on very limited embedded devices then a CD and/or flash
+drive should also be included containing the source code or the entire 
+repository.
+
+Note that the _MPLv2_ has both a _Disclaimer of Warranty_ section and a
+_Limitation of Liability_ section. **SquirrelJME** runs other software and thus
+due to the complexities and interactions of software and/or hardware, it is
+your responsibility to ensure that the commands, environment, and programs you
+are using have been verified to be safe to the best of your ability.
 
 ## Mozilla Public License 2.0
 

@@ -7,7 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-/** @include{doc} "sjme/nvm/access.h" */
 #include "sjme/nvm/access.h"
 
 sjme_errorCode sjme_nvm_access_checkCompatibleField(

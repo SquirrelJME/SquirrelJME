@@ -31,6 +31,9 @@ public class MTrkTracker
 	
 	/** Do we want an event or a delta? */
 	private volatile boolean _wantEvent;
+
+	/** Flag to track files that use MIDI's Running Status. */
+	private volatile int _runningStatus;
 	
 	/** The timing that is shared for all MIDI tracks. */
 	final MidiTimeDiv _timeDiv;
@@ -63,6 +66,8 @@ public class MTrkTracker
 		this._timeDiv = __timeDiv;
 
 		this._volume = __volume;
+
+		this._runningStatus = 0;
 		
 		// Load byte array from the input
 		ByteArrayInputStream input = __track.inputStream();
@@ -351,19 +356,47 @@ public class MTrkTracker
 		// Determine which data is to be read in
 		int data1 = 0;
 		int data2 = 0;
-		switch (__event & 0b1111_0000)
+		int status;
+
+		// Event is not a status byte. This means that the track is using
+		// running status to chain multiple events with the same status byte.
+		if ((__event & 0b1000_0000) == 0)
+		{
+			// Get our last known status byte and use it instead.
+			status = this._runningStatus;
+
+			// Thus, the "event" byte in this case is already data1.
+			data1 = __event;
+		}
+		else
+		{
+			// Standard Status Byte: update stored running status
+			status = __event;
+
+			// System Real-Time/Common events (0xF0-0xFF) DO NOT
+			// update the running status. Preserve it in such cases.
+			if ((__event & 0b1111_0000) != 0b1111_0000)
+				this._runningStatus = __event;
+		}
+
+		// We need to account for the presence of the Running Status byte here,
+		// so we must only read data1 when it is absent, otherwise the tracker
+		// will desync completely.
+		switch (status & 0b1111_0000)
 		{
 				// One-byte (squelchable)
 			case 0b1100_0000:	// Program change
 			case 0b1101_0000:	// Channel pressure
 				squelchPlay = true;
-				data1 = this.read();
+				if ((__event & 0b1000_0000) != 0)
+					data1 = this.read();
 				break;
 			
 				// Two-byte
 			case 0b1000_0000:	// Note Off
 			case 0b1001_0000:	// Note On
-				data1 = this.read();
+				if ((__event & 0b1000_0000) != 0)
+					data1 = this.read();
 
 				//data2 is velocity, multiply it by the current global volume
 				data2 = this.read() * this._volume._value / 100;
@@ -373,7 +406,9 @@ public class MTrkTracker
 			case 0b1010_0000:	// After touch
 			case 0b1110_0000:	// Pitch wheel
 				squelchPlay = true;
-				data1 = this.read();
+				if ((__event & 0b1000_0000) != 0)
+					data1 = this.read();
+
 				data2 = this.read();
 				break;
 				
@@ -381,38 +416,42 @@ public class MTrkTracker
 				// single byte depending on the message (squelchable)
 			case 0b1011_0000:
 				squelchPlay = true;
-				data1 = this.read();
+				if ((__event & 0b1000_0000) != 0)
+					data1 = this.read();
+
 				data2 = this.read();
 				break;
 			
 				// Special messages (squelchable)
 			case 0b1111_0000:
 				squelchPlay = true;
-				if (__event == 0b1111_0010)
+
+				// Song Position Pointer has two data bytes
+				if (status == 0b1111_0010)
 				{
-					data1 = this.read();
+					if ((__event & 0b1000_0000) != 0)
+						data1 = this.read();
+
 					data2 = this.read();
 				}
-				else if (__event == 0b1111_0011)
-					data1 = this.read();
+
+				// Song Select on the other hand has only one
+				else if (status == 0b1111_0011)
+					if ((__event & 0b1000_0000) != 0)
+						data1 = this.read();
+
 				break;
 				
 			default:
 				// Implied channel zero event
-				squelchPlay = true;
-				if ((__event & 0x80) == 0)
-				{
-					__event = 0b1011_0000;
-					data1 = this.read();
-				}
-				break;
+				Debugging.todoNote("Unknown status: " + status);
 		}
 		
 		// Send event
 		if (__play != null)
-			__play.shortMidiEvent(__event, data1, data2);
+			__play.shortMidiEvent(status, data1, data2);
 		else if (squelchPlay && __squelch != null)
-			__squelch.shortMidiEvent(__event, data1, data2);
+			__squelch.shortMidiEvent(status, data1, data2);
 	}
 	
 	/**

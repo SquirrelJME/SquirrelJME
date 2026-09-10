@@ -6,17 +6,29 @@ specialized project with specialized needs, GenAI as it exists now is not in
 any way useful for SquirrelJME. GenAI cannot currently understand the context
 of what SquirrelJME is and what it is for.
 
+GenAI is counter to the project's goal and desire to be autonomous and to act
+with self-determination. Programming is art, and SquirrelJME is made by humans
+for humans.
+
 For those who feel that GenAI allows them to do something that they would never
 otherwise do, this is something that we call _Imposter Syndrome_. You can do
 things, it takes time to learn however the learning process, although it can
 at times be frustrating it can be very fulfilling. It is understood that such
-tools can be used to assist with the learning process, however do remember
-to verify all sources and to take the output with a grain of salt. Do not give
-up.
+tools could be used to assist with the learning process, however these
+generally replace the process by giving answers in-place of deduction. Do not
+give up.
 
 This policy only applies to Large Language Models (LLMs) and "Chatbots" which
 take human language and/or expression as input to generate an output that
 is not used for the purposes of accessibility.
+
+Bug reports, crashes, code analysis, profiling, or otherwise that have used
+GenAI in any part of their determination are automatically considered as
+invalid.
+
+Potential contributors making determinations and arguments based on the output
+of GenAI will be considered _Non compos mentis_. This project and its
+developers have no desire to be testing surfaces for such technology.
 
 This policy does not apply to "Traditional" AI such as neural networks,
 video game "computer" players, and similar technologies. This policy does not
@@ -25,7 +37,13 @@ apply to single line code completion, search suggestions, or other basic
 IntelliSense.
 
 This policy does not apply to dependencies, this is solely for SquirrelJME, it
-is not possible to affect the policy of dependencies in any way.
+is not possible to affect the policy of dependencies in any way. This policy
+does not apply to operating systems, these are considered the same as
+dependencies.
+
+This policy does not violate the _Open Source Definition_ (OSD) as set out by
+the _Open Source Initiative_ (OSI), the license does not apply to the
+acceptance of contributions. There is no open-door policy.
 
 ## Contributing to SquirrelJME
 
@@ -69,6 +87,9 @@ accepted in the future, if all the following conditions are met:
  * The models must be able to be trained fully offline on the local device.
  * The model training, prompt, and all other related software must be under an
    Open Source Initiative (OSI) license.
+ * All related software is able to be copyright, license, and trademark
+   assigned to SquirrelJME in terms of full ownership with no restrictions.
+   That is, it is donated to the project with no restrictions placed.
  * The tool has been vetted and approved by the administrators of SquirrelJME.
 
 ## Developing for SquirrelJME
