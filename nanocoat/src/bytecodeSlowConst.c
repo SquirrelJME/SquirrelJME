@@ -14,14 +14,16 @@
 
 static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
 	sjme_attrInNotNull sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_class_poolEntry* entry)
 {
+	sjme_errorCode error;
 	sjme_jvalueTyped value;
 	
-	if (inFrame == NULL || entry == NULL || commit == NULL)
+	if (inFrame == NULL || pcNew == NULL || entry == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* What happens, depends on the type. */
@@ -53,8 +55,26 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 				inFrame, commit, &value);
 
 		case SJME_NVM_CLASS_POOL_TYPE_CLASS:
-			return sjme_nvm_task_frameStackPushClassPD(
-				inFrame, commit, SJME_P_C_N(entry));
+			/* Lookup class. */
+			value.t = SJME_JAVA_TYPE_ID_OBJECT;
+			value.v.l = NULL;
+			if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
+				SJME_F_CL(inFrame), SJME_AS_JCLASSP(&value.v.l),
+				SJME_F_T(inFrame),
+				SJME_P_C_N(entry)->seq, SJME_JNI_TRUE)) ||
+				value.v.l == NULL)
+				return sjme_error_default(error);
+
+			/* Check for recycle, that is a class load happened. */
+			if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+			{
+				pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+				return SJME_ERROR_NONE;
+			}
+
+			/* Now push. */
+			return sjme_nvm_task_frameStackPush(
+				inFrame, commit, &value);
 		
 		case SJME_NVM_CLASS_POOL_TYPE_STRING:
 			return sjme_nvm_task_frameStackPushStringP(
@@ -260,7 +280,7 @@ SJME_NVM_BYTECODE_SLOW(Ldc)
 
 	/* Forward to common handler. */
 	memset(&commit, 0, sizeof(commit));
-	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame,
+	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame, pcNew,
 		&commit, id, relRawCode, entry)))
 		return sjme_error_vmError(inFrame, error);
 
@@ -294,7 +314,7 @@ SJME_NVM_BYTECODE_SLOW(LdcW)
 
 	/* Forward to common handler. */
 	memset(&commit, 0, sizeof(commit));
-	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame,
+	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame, pcNew,
 		&commit, id, relRawCode, entry)))
 		return sjme_error_vmError(inFrame, error);
 
@@ -326,7 +346,7 @@ SJME_NVM_BYTECODE_SLOW(LdcWTwo)
 
 	/* Forward to common handler. */
 	memset(&commit, 0, sizeof(commit));
-	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame,
+	if (sjme_error_is(error =  sjme_nvm_byteCode_slowLdcAny(inFrame, pcNew,
 		&commit, id, relRawCode, entry)))
 		return sjme_error_vmError(inFrame, error);
 

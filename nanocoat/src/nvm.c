@@ -63,10 +63,9 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 	{
 		case SJME_ERROR_NULL_ARGUMENTS:
 		case SJME_ERROR_INVALID_ARGUMENT:
-			return SJME_JNI_TRUE;
-
-			/* Strict virtual machine. */
-		case SJME_ERROR_MEMBER_ACCESS_DENIED:
+		case SJME_ERROR_ILLEGAL_STATE:
+		case SJME_ERROR_UNKNOWN_MLE_SHELF:
+		case SJME_ERROR_UNKNOWN_MLE_FUNCTION:
 			return SJME_JNI_TRUE;
 
 #if 0

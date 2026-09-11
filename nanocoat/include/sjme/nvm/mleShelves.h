@@ -188,6 +188,7 @@ extern SJME_NVM_MLE_SHELF_DECLARE(JarPackageShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(MathShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(MidiShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(NativeArchiveShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(NativeScritchUIShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(ObjectShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(PencilFontShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(PencilShelf);

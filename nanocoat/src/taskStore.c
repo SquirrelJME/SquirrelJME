@@ -185,7 +185,7 @@ sjme_errorCode sjme_nvm_store_windowAlloca(
 
 	/* Update the extent. */
 	newExtent = ((sjme_intPointer)result -
-		(sjme_intPointer)inWindow->file->data[0]) + numBytes;
+		(sjme_intPointer)&inWindow->file->data[0]) + numBytes;
 	if (newExtent > inWindow->extent)
 		inWindow->extent = newExtent;
 
@@ -333,7 +333,12 @@ sjme_errorCode sjme_nvm_store_windowPush(
 	/* Setup main window details. */
 	window->file = inFile;
 	window->extent = ((sjme_intPointer)window + sizeof(*window)) -
-		(sjme_intPointer)inFile->data[0];
+		(sjme_intPointer)&inFile->data[0];
+
+	/* This should hopefully never happen. */
+	if (oldTail != NULL)
+		if (window->extent <= oldTail->extent)
+			return SJME_ERROR_MEMORY_CORRUPTION;
 
 	/* Success! */
 	*outWindow = window;

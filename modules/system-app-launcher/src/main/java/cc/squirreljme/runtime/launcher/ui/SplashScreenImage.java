@@ -10,14 +10,12 @@
 package cc.squirreljme.runtime.launcher.ui;
 
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
-import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.Font;

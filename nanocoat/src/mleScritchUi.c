@@ -11,7 +11,7 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
-SJME_NVM_MLE_SHELF_DECLARE(NativeScritchInterface) =
+SJME_NVM_MLE_SHELF_DECLARE(NativeScritchUIShelf) =
 {
 	SJME_NVM_MLE_STOP()
 };

@@ -11,10 +11,14 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+/** Alternative shelf definition. */
+#define SJME_NVM_MLE_SHELF_DEF_ALT(what, className) \
+	{className, \
+	SJME_TOKEN_PASTE(sjme_nvm_mle, what)}
+
 /** Standard shelf definition. */
 #define SJME_NVM_MLE_SHELF_DEF(what) \
-	{"cc/squirreljme/jvm/mle/"#what, \
-	SJME_TOKEN_PASTE(sjme_nvm_mle, what)}
+	SJME_NVM_MLE_SHELF_DEF_ALT(what, "cc/squirreljme/jvm/mle/"#what)
 
 static const sjme_nvm_mle sjme_nvm_mleShelves[] =
 {
@@ -24,6 +28,8 @@ static const sjme_nvm_mle sjme_nvm_mleShelves[] =
 	SJME_NVM_MLE_SHELF_DEF(MathShelf),
 	SJME_NVM_MLE_SHELF_DEF(MidiShelf),
 	SJME_NVM_MLE_SHELF_DEF(NativeArchiveShelf),
+	SJME_NVM_MLE_SHELF_DEF_ALT(NativeScritchUIShelf,
+		"cc/squirreljme/jvm/mle/scritchui/NativeScritchUIShelf"),
 	SJME_NVM_MLE_SHELF_DEF(ObjectShelf),
 	SJME_NVM_MLE_SHELF_DEF(PencilFontShelf),
 	SJME_NVM_MLE_SHELF_DEF(PencilShelf),

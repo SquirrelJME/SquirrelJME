@@ -14,9 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
-import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.io.ByteArrayInputStream;
-import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,7 +65,7 @@ public class TestAlphaBlend
 			throw new IllegalArgumentException();
 		
 		// We need this interface for image operations
-		ScritchInterface scritch = NativeScritchInterface.nativeInterface();
+		ScritchInterface scritch = NativeScritchUIShelf.nativeInterface();
 		
 		// Determine the from and to alpha values
 		int fA = Integer.decode(__fsTs.substring(0, sp)) << 24;

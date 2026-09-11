@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -20,7 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2024/02/29
  */
 @SquirrelJMEVendorApi
-public final class NativeScritchInterface
+public final class NativeScritchUIShelf
 {
 	/**
 	 * Not used.
@@ -28,7 +27,7 @@ public final class NativeScritchInterface
 	 * @since 2024/02/29
 	 */
 	@SquirrelJMEVendorApi
-	private NativeScritchInterface()
+	private NativeScritchUIShelf()
 	{
 	}
 	
