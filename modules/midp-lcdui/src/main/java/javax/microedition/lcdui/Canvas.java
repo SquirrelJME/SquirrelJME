@@ -50,7 +50,12 @@ public abstract class Canvas
 	extends Displayable
 {
 	/** Force a buffer to be used? */
-	private static final boolean _FORCE_BUFFER =
+	static final boolean _FORCE_BUFFER =
+		false;
+	
+	/** Force a buffer to not be used? */
+	@SquirrelJMEVendorApi
+	static final boolean _FORCE_NO_BUFFER =
 		RuntimeShelf.compatibilityId(CompatibilityId.FORCE_LCDUI_BUFFER);
 	
 	/** The maximum number of times to wait when servicing repaints. */
@@ -951,7 +956,8 @@ public abstract class Canvas
 		DisplayScale scale = __parent.display()._scale;
 		
 		// Setup new image with a raw buffer, if scaling is required
-		if (Canvas._FORCE_BUFFER || scale.requiresBuffer())
+		if (!Canvas._FORCE_NO_BUFFER &&
+			(Canvas._FORCE_BUFFER || scale.requiresBuffer()))
 		{
 			// Get the current texture size of the window
 			int w = Math.max(1, scale.textureW());
@@ -989,7 +995,8 @@ public abstract class Canvas
 		// Is a buffer used for scaling?
 		Image buffer;
 		DisplayScale scale = display.display()._scale;
-		if (Canvas._FORCE_BUFFER || scale.requiresBuffer())
+		if (!Canvas._FORCE_NO_BUFFER &&
+			(Canvas._FORCE_BUFFER || scale.requiresBuffer()))
 		{
 			// Use this buffer
 			buffer = this._buffer;

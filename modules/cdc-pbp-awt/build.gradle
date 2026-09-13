@@ -6,18 +6,17 @@ plugins
 }
 
 version = "1.8.$squirreljmeVMVersion"
-description = "Reserved for CDC PBP Heavier AWT Components."
+description = "Reserved for CDC PBP Lighter AWT Components."
 
 squirreljme
 {
-	javaDocErrorCode = "ZI"
+	javaDocErrorCode = "ZJ"
 	swmType = JavaMEMidletType.API
-	swmName = "Connected Device Configuration (Heavy AWT Components)"
+	swmName = "Connected Device Configuration (Lighter AWT Components)"
 	swmVendor = "Stephanie Gawroriski"
 }
 
 dependencies
 {
 	api project(":modules:cdc-pbp")
-	api project(":modules:cdc-pbp-awt")
 }

@@ -1,0 +1,179 @@
+/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// -------------------------------------------------------------------------*/
+
+#include "lib/scritchui/core/core.h"
+#include "lib/scritchui/cocoa/cocoa.h"
+#include "lib/scritchui/cocoa/cocoaIntern.h"
+
+@implementation SJMEMenu : NSMenu
+- (id)init
+{
+	return [super init];
+}
+
+- (BOOL)autoenablesItems
+{
+	/* All items are manually controlled. */
+	return NO;
+}
+
+@end
+
+@implementation SJMEMenuItem : NSMenuItem
+- (id)init
+{
+	return [super init];
+}
+
+@end
+
+sjme_errorCode sjme_scritchui_cocoa_menuBarNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuBar inMenuBar,
+	sjme_attrInNullable sjme_pointer ignored)
+{
+	SJMEMenu* cocoaMenu;
+	SJMEMenuItem* cocoaMenuItem;
+
+	if (inState == NULL || inMenuBar == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Menu bars in Cocoa are just associated with the NSApp but themselves */
+	/* are just plain menus. */
+	cocoaMenu = [SJMEMenu new];
+	cocoaMenu->scritchMenuKind = SJME_SUI_CAST_MENU_KIND(inMenuBar);
+
+	/* Set a basic title. */
+	[cocoaMenu setTitle:@"SquirrelJME"];
+
+	/* Store it. */
+	inMenuBar->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENU] = cocoaMenu;
+
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchui_cocoa_menuInsert(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind intoMenu,
+	sjme_attrInPositive sjme_jint atIndex,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind childItem)
+{
+	SJMEMenu* cocoaMenu;
+	SJMEMenuItem* toAdd;
+
+	if (inState == NULL || intoMenu == NULL || childItem == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Only menus can be added into. */
+	if (intoMenu->common.type != SJME_SCRITCHUI_TYPE_MENU_BAR &&
+		intoMenu->common.type != SJME_SCRITCHUI_TYPE_MENU)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Get menu to add into. */
+	cocoaMenu = intoMenu->common.handle[SJME_SUI_COCOA_H_NSMENU];
+
+	/* Add it in, it is easier to just clear the parent before adding. */
+	toAdd = childItem->common.handle[SJME_SUI_COCOA_H_NSMENUITEM];
+	[cocoaMenu insertItem:toAdd
+		atIndex:atIndex];
+	[cocoaMenu update];
+
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchui_cocoa_menuItemNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuItem inMenuItem,
+	sjme_attrInNotNull const sjme_scritchui_impl_initParamMenuItem* init)
+{
+	SJMEMenuItem* cocoaMenuItem;
+
+	if (inState == NULL || inMenuItem == NULL || init == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Setup new menu. */
+	cocoaMenuItem = [SJMEMenuItem new];
+
+	/* Store it. */
+	cocoaMenuItem->scritchMenuKind = SJME_SUI_CAST_MENU_KIND(inMenuItem);
+	inMenuItem->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENUITEM] =
+		cocoaMenuItem;
+
+	/* Enable by default. */
+	[cocoaMenuItem setEnabled:YES];
+
+#if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5)
+	[cocoaMenuItem setHidden:NO];
+#endif
+
+	/* Set action for activation. */
+	[cocoaMenuItem setAction:@selector(sjmeExecMenuItem:)];
+
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchui_cocoa_menuNew(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenu inMenu,
+	sjme_attrInNullable sjme_pointer ignored)
+{
+	SJMEMenu* cocoaMenu;
+	SJMEMenuItem* cocoaMenuItem;
+
+	if (inState == NULL || inMenu == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Setup new menu, it needs an item as well. */
+	cocoaMenu = [SJMEMenu new];
+	cocoaMenuItem = [SJMEMenuItem new];
+	cocoaMenu->scritchMenuKind = SJME_SUI_CAST_MENU_KIND(inMenu);
+	cocoaMenuItem->scritchMenuKind = SJME_SUI_CAST_MENU_KIND(inMenu);
+
+	/* The item's sub menu is the menu. */
+	[cocoaMenuItem setSubmenu:cocoaMenu];
+
+	/* Enable by default. */
+	[cocoaMenuItem setEnabled:YES];
+
+#if SJME_CONFIG_COCOA_VERSION_LEAST(MAC_OS_X_VERSION_10_5)
+	[cocoaMenuItem setHidden:NO];
+#endif
+
+	/* Store it. */
+	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENU] = cocoaMenu;
+	inMenu->menuKind.common.handle[SJME_SUI_COCOA_H_NSMENUITEM] =
+		cocoaMenuItem;
+
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+}
+
+sjme_errorCode sjme_scritchui_cocoa_menuRemove(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiMenuKind fromMenu,
+	sjme_attrInPositive sjme_jint atIndex)
+{
+	SJMEMenu* cocoaMenu;
+
+	if (inState == NULL || fromMenu == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover menu to remove from. */
+	cocoaMenu = fromMenu->common.handle[SJME_SUI_COCOA_H_NSMENU];
+
+	/* Remove it. */
+	[cocoaMenu removeItemAtIndex:atIndex];
+	[cocoaMenu update];
+
+	/* Success? */
+	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);
+}
