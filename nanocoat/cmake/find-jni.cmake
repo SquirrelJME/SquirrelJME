@@ -127,3 +127,8 @@ message(STATUS "JNI Include: ${SQUIRRELJME_JAVA_JNI_INCLUDE}")
 message(STATUS "Has JVM: ${SQUIRRELJME_HAS_JAVA_JVM}")
 message(STATUS "JVM Include: ${SQUIRRELJME_JAVA_JVM_INCLUDE}")
 message(STATUS "Use SquirrelJME libjvm? ${SQUIRRELJME_EXPORT_OWN_JNI_JVM}")
+
+# More info on libraries
+message(STATUS "JVM Library: ${JAVA_JVM_LIBRARY}")
+message(STATUS "JVM Includes: ${JNI_INCLUDE_DIRS}")
+message(STATUS "JVM Includes: ${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2}")

@@ -331,6 +331,7 @@ squirreljme_include_nanocoat("pre-fixes.cmake")
 squirreljme_include_nanocoat("system-map.cmake")
 squirreljme_include_nanocoat("fixes.cmake")
 squirreljme_include_nanocoat("multilib.cmake")
+squirreljme_include_nanocoat("find-jni.cmake")
 
 # Declare library
 add_library(libEmulatorBase SHARED
@@ -380,8 +381,8 @@ squirreljme_target_link_directories(libEmulatorBase PRIVATE
 	"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin")
 squirreljme_link_libraries_required(libEmulatorBase PUBLIC
 	"${SQUIRRELJME_REQUIRED_LIBS}"
-	BaseStatic
-	jvm)
+	"${JAVA_JVM_LIBRARY}"
+	BaseStatic)
 
 # It is easier to find this when it is in the build root
 squirreljme_target_binary_name(libEmulatorBase
