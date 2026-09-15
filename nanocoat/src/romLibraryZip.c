@@ -6,6 +6,7 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
+
 #include "sjme/nvm/rom.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
@@ -223,6 +224,19 @@ sjme_errorCode sjme_nvm_rom_libraryFromZip(
 fail_refUp:
 fail_libraryNew:
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_rom_libraryFromZipFile(
+	sjme_attrInNotNull sjme_alloc_pool pool,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInNotNull sjme_path* zipPath)
+{
+	if (pool == NULL || outLibrary == NULL || nal == NULL || zipPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_rom_libraryFromZipMemory(

@@ -246,7 +246,7 @@ typedef sjme_errorCode (*sjme_nvm_rom_suiteListLibrariesFunc)(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_list(sjme_nvm_rom_library)** outLibraries);
 
-typedef sjme_errorCode (*sjme_nvm_rom_suiteLoadLibraryFunc)();
+typedef sjme_errorCode (*sjme_nvm_rom_suiteLoadLibraryFunc)(sjme_jint todo);
 
 struct sjme_nvm_rom_libraryFunctions
 {
@@ -345,6 +345,23 @@ sjme_errorCode sjme_nvm_rom_libraryFromZip(
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_lpcstr prefix,
 	sjme_attrInNotNull sjme_zip zip);
+
+/**
+ * Initializes a library from a Zip that is on the disk, this will load the
+ * Zip.
+ *
+ * @param pool The pool to use for allocations.
+ * @param outLibrary The resultant library.
+ * @param nal The Native abstraction layer to use for file access.
+ * @param zipPath The path to the Zip/Jar.
+ * @return Any resultant error, if any.
+ * @since 2026/10/14
+ */
+sjme_errorCode sjme_nvm_rom_libraryFromZipFile(
+	sjme_attrInNotNull sjme_alloc_pool pool,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInNotNull sjme_path* zipPath);
 
 /**
  * Initializes a library from a Zip that is in memory, this will load the Zip.
@@ -582,6 +599,22 @@ sjme_errorCode sjme_nvm_rom_suiteFromMerge(
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNotNull sjme_nvm_rom_suite* inSuites,
 	sjme_attrInPositive sjme_jint numInSuites);
+
+/**
+ * Loads a suite with a single library from the given Zip file.
+ *
+ * @param pool The allocation pool to use.
+ * @param outSuite The resultant suite.
+ * @param nal The native abstraction layer to use.
+ * @param zipPath The path to the Zip/Jar file.
+ * @return Any resultant error, if any.
+ * @since 2026/10/14
+ */
+sjme_errorCode sjme_nvm_rom_suiteFromZipFileSingle(
+	sjme_attrInNotNull sjme_alloc_pool pool,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInNotNull sjme_path* zipPath);
 
 /**
  * Initializes a suite from a Zip.

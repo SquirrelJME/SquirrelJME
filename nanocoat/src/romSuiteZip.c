@@ -421,7 +421,7 @@ fail_openEntry:
 #undef LOCATE_SIZE
 }
 
-static sjme_errorCode sjme_nvm_rom_zipSuiteLoadLibrary()
+static sjme_errorCode sjme_nvm_rom_zipSuiteLoadLibrary(sjme_jint todo)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -437,6 +437,19 @@ static sjme_nvm_rom_suiteFunctions sjme_nvm_rom_zipSuiteFunctions =
 	sjme_sm(.list, sjme_nvm_rom_zipSuiteListLibraries),
 	sjme_sm(.loadLibrary, sjme_nvm_rom_zipSuiteLoadLibrary),
 };
+
+sjme_errorCode sjme_nvm_rom_suiteFromZipFileSingle(
+	sjme_attrInNotNull sjme_alloc_pool pool,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInNotNull sjme_path* zipPath)
+{
+	if (pool == NULL || outSuite == NULL || nal == NULL || zipPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
 
 sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
 	sjme_attrInNotNull sjme_alloc_pool pool,

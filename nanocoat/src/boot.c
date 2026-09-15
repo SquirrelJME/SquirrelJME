@@ -265,7 +265,7 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_attrOutNullable sjme_nvm_task* outInitTask)
 {
 #define FIXED_SUITE_COUNT 16
-	sjme_errorCode error;
+	sjme_errorCode error, deferRunJar;
 	sjme_nvm result;
 	sjme_nvm_rom_suite mergeSuites[FIXED_SUITE_COUNT];
 	sjme_jint numMergeSuites, i, n;
@@ -274,7 +274,9 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_nvm_task initTask;
 	sjme_list(sjme_nvm_rom_library)* classPath;
 	sjme_jlong yieldIn, yieldOut;
+	sjme_nvm_rom_suite jarSuite;
 	sjme_nvm_rom_library jarLibrary;
+	sjme_path runJarPath;
 	
 	if (allocPool == NULL || param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -351,6 +353,30 @@ sjme_errorCode sjme_nvm_boot(
 			mergeSuites[numMergeSuites++] =
 				(sjme_nvm_rom_suite)result->bootParamCopy->librarySuite;
 
+	/* Is a Jar being run? We need to make sure it is actually loaded in */
+	/* otherwise we cannot use it. */
+	deferRunJar = SJME_ERROR_NONE;
+	if (result->bootParamCopy->runJar != NULL)
+	{
+		/* Resolve the path first. */
+		memset(&runJarPath, 0, sizeof(runJarPath));
+		if (sjme_error_is(sjme_path_resolveS(&runJarPath,
+			result->bootParamCopy->runJar)))
+			goto fail_invalidJarPath;
+
+		/* It is possible that loading the library will fail, such as the */
+		/* file not existing. Defer the error for later. */
+		jarSuite = NULL;
+		if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipFileSingle(
+			allocPool, &jarSuite, result->nal, &runJarPath)) ||
+			jarSuite == NULL)
+			deferRunJar = error;
+
+		/* It did actually load. */
+		else
+			mergeSuites[numMergeSuites++] = jarSuite;
+	}
+
 	/* No suites at all? Running with absolutely nothing??? */
 	if (numMergeSuites <= 0)
 	{
@@ -388,7 +414,12 @@ sjme_errorCode sjme_nvm_boot(
 		jarLibrary = NULL;
 		if (sjme_error_is(error = sjme_nvm_rom_resolveLibraryByName(
 			result->suite, bootParamCopy->runJar, &jarLibrary)))
+		{
+			/* If there was an error from the defer, then use that instead. */
+			if (sjme_error_is(deferRunJar))
+				error = deferRunJar;
 			goto fail_resolveJar;
+		}
 
 		/* We have to load the MEEP SWM dependency information for our */
 		/* entire suite of libraries so that dependency resolution works */
@@ -557,6 +588,7 @@ fail_loadMeepSwm:
 fail_resolveJar:
 fail_suiteMerge:
 fail_noSuites:
+fail_invalidJarPath:
 fail_payloadRom:
 fail_bothIdAndName:
 fail_bootParamCopy:
@@ -1012,7 +1044,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			if ((argAt + 1) >= argc)
 			{
 				/* Should hopefully help the user. */
-				sjme_message("A jar must be followed by -jar. (%s %s %d %d)",
+				sjme_message("A jar must follow -jar. (%s %s %d %d)",
 					argv[argAt], argv[argAt + 1], argAt, argc);
 
 				/* Fail. */
