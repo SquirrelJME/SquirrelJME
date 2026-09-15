@@ -10,6 +10,14 @@
 # Find headers
 include(CheckIncludeFile)
 
+# If JAVA_HOME is set it needs to be correctly a CMake path, otherwise FindJNI
+# will probably just break
+if(DEFINED JAVA_HOME)
+	file(TO_CMAKE_PATH "${JAVA_HOME}" JAVA_HOME)
+elseif(DEFINED ENV{JAVA_HOME})
+	file(TO_CMAKE_PATH "$ENV{JAVA_HOME}" JAVA_HOME)
+endif()
+
 # If not cross compiled, try using the system's JVM implementation
 if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 	# Notice
@@ -18,11 +26,13 @@ if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 	# Use standard JNI search from CMake, however it is very possible that it
 	# is broken if your CMake is old enough and your environment is not
 	# configured correctly
+	unset(jniConfigureResult)
 	file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/check-find-jni")
 	execute_process(COMMAND "${CMAKE_COMMAND}"
 			"-DJAVA_HOME=${JAVA_HOME}"
 			"${CMAKE_CURRENT_LIST_DIR}/find-jni"
 		WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/check-find-jni"
+		OUTPUT_VARIABLE jniConfigureOutput
 		RESULT_VARIABLE jniConfigureResult)
 
 	# Only if it is valid should it be used
@@ -36,6 +46,9 @@ if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 		# Otherwise indicate brokenness
 		message(STATUS "CMake's FindJNI() is actually broken...")
 	endif()
+
+	# Debug, because you never know...
+	message(STATUS "CMake FindJNI(): ${jniConfigureOutput}")
 
 	# Found something?
 	if(JNI_FOUND)
@@ -129,6 +142,7 @@ message(STATUS "JVM Include: ${SQUIRRELJME_JAVA_JVM_INCLUDE}")
 message(STATUS "Use SquirrelJME libjvm? ${SQUIRRELJME_EXPORT_OWN_JNI_JVM}")
 
 # More info on libraries
-message(STATUS "JVM Library: ${JAVA_JVM_LIBRARY}")
-message(STATUS "JVM Includes: ${JNI_INCLUDE_DIRS}")
-message(STATUS "JVM Includes: ${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2}")
+message(STATUS "CMake JVM Library: ${JAVA_JVM_LIBRARY}")
+message(STATUS "CMake JVM Include: ${JNI_INCLUDE_DIRS}")
+message(STATUS "CMake JVM Include: ${JAVA_INCLUDE_PATH}")
+message(STATUS "CMake JVM Include: ${JAVA_INCLUDE_PATH2}")
