@@ -48,6 +48,7 @@ squirreljme_multilib_add_library(Core
 	mleReflection.c
 	mleRuntime.c
 	mleScritchUi.c
+	mleScritchUiProxy.c
 	mleString.c
 	mleTask.c
 	mleTerminal.c

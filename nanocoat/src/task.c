@@ -17,6 +17,8 @@
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/stdGone.h"
+#include "sjme/nvm/instanceProxy.h"
+#include "sjme/nvm/mleProxies.h"
 
 /** The number of tasks to grow by. */
 #define SJME_NVM_TASK_GROW 4
@@ -197,7 +199,8 @@ sjme_errorCode sjme_nvm_task_commonClass(
 {
 	sjme_errorCode error;
 	sjme_lpcstr commonName;
-	sjme_jclass result;
+	sjme_nvm_instance_proxyHandlerFunc proxyHandler;
+	sjme_jclass result, baseClass;
 	
 	if (contextThread == NULL)
 		return SJME_ERROR_NONE;
@@ -219,6 +222,7 @@ sjme_errorCode sjme_nvm_task_commonClass(
 	
 	/* What is the name of the common class? */
 	commonName = NULL;
+	proxyHandler = NULL;
 	switch (commonId)
 	{
 		case SJME_NVM_COMMON_CLASS:
@@ -296,6 +300,12 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		case SJME_NVM_COMMON_REFERENCE_WEAK:
 			commonName = "Ljava/lang/ref/WeakReference;";
 			break;
+
+		case SJME_NVM_COMMON_SCRITCH_UI:
+			commonName = "Lcc/squirreljme/jvm/mle/scritchui/"
+				"ScritchUnifiedInterface;";
+			proxyHandler = sjme_nvm_mle_scritchUiProxyHandler;
+			break;
 		
 		case SJME_NVM_COMMON_STRING:
 			commonName = "Ljava/lang/String;";
@@ -320,13 +330,25 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
-	
+
 	/* Load the common class. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
 		SJME_F_CL(contextThread), &result, contextThread,
 		commonName, doInit)) || result == NULL)
 		return sjme_error_vmError(contextThread, error);
+
+	/* If this is a proxy, we need to setup the proxy with the handler. */
+	if (proxyHandler != NULL)
+	{
+		/* Generate the proxy class. */
+		baseClass = result;
+		result = NULL;
+		if (sjme_error_is(error = sjme_nvm_instance_proxyClassV(
+			contextThread, &result, proxyHandler, result, NULL)) ||
+			result == NULL || baseClass == result)
+			return sjme_error_vmError(contextThread, error);
+	}
 
 	/* Count it up once since it is a global class. */
 	if (sjme_error_is(error = sjme_nvm_instance_countUp(

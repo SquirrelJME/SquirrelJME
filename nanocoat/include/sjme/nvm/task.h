@@ -493,6 +493,11 @@ typedef enum sjme_nvm_task_commonClassId
 	/** @code java.lang.ref.WeakReference @endcode . */
 	SJME_NVM_COMMON_REFERENCE_WEAK,
 
+	/**
+	 * @code cc.squirreljme.jvm.mle.scritchui.ScritchUnifiedInterface @endcode.
+	 */
+	SJME_NVM_COMMON_SCRITCH_UI,
+
 	/** @code cc.squirreljme.jvm.mle.brackets.TracePointBracket @endcode . */
 	SJME_NVM_COMMON_TRACE_POINT,
 

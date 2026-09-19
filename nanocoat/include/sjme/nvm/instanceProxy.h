@@ -68,7 +68,7 @@ sjme_errorCode sjme_nvm_instance_proxyClassL(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_jclass* outClass,
 	sjme_attrInNotNull sjme_nvm_instance_proxyHandlerFunc handler,
-	sjme_attrInNotNull sjme_list(sjme_jclass) inInterfaces);
+	sjme_attrInNotNull sjme_list(sjme_jclass)* inInterfaces);
 
 /**
  * Initialize a proxy class which can then be used to initialize new object
