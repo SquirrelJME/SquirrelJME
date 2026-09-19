@@ -496,7 +496,7 @@ typedef enum sjme_nvm_task_commonClassId
 	/**
 	 * @code cc.squirreljme.jvm.mle.scritchui.ScritchUnifiedInterface @endcode.
 	 */
-	SJME_NVM_COMMON_SCRITCH_UI,
+	SJME_NVM_COMMON_SCRITCH_UI_PROXY,
 
 	/** @code cc.squirreljme.jvm.mle.brackets.TracePointBracket @endcode . */
 	SJME_NVM_COMMON_TRACE_POINT,

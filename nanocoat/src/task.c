@@ -301,7 +301,7 @@ sjme_errorCode sjme_nvm_task_commonClass(
 			commonName = "Ljava/lang/ref/WeakReference;";
 			break;
 
-		case SJME_NVM_COMMON_SCRITCH_UI:
+		case SJME_NVM_COMMON_SCRITCH_UI_PROXY:
 			commonName = "Lcc/squirreljme/jvm/mle/scritchui/"
 				"ScritchUnifiedInterface;";
 			proxyHandler = sjme_nvm_mle_scritchUiProxyHandler;
