@@ -28,6 +28,7 @@ squirreljme_multilib_add_library(Core
 	descriptor.c
 	gfx.c
 	instance.c
+	instanceProxy.c
 	jdwp.c
 	jdwpComm.c
 	jdwpLoop.c

@@ -208,7 +208,7 @@ sjme_errorCode sjme_nvm_instance_defaultInit(
 	/* Call the default constructor. */
 	subFrame = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadEnter(contextThread,
-		&subFrame, defaultCon, SJME_NVM_CLASS_MEMBER_INSTANCE,
+		&subFrame, defaultCon, SJME_NVM_CALL_VIRTUAL,
 		callC, callV)) || subFrame == NULL)
 		return sjme_error_vmError(contextThread,
 			sjme_error_defaultOr(error, SJME_ERROR_MLE_CALL));
@@ -268,7 +268,7 @@ sjme_nvm_value* sjme_nvm_instance_fieldAccessor(
 		goto fail_voidless;
 
 	/* Static field? */
-	if ((field->flags & SJME_NVM_ACC_STATIC) != 0)
+	if (SJME_NVM_ACC_IS(field->flags, STATIC) != 0)
 	{
 		/* Cannot read/write to non-classes. */
 		if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_CLASS_INSTANCE))
