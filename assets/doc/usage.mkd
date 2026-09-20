@@ -422,3 +422,54 @@ Natives within SquirrelJME follow the same format as the host system:
 
 This should only be used as a baseline as a vendor and/or specific distribution
 may use a different format.
+
+# System and Architecture Names
+
+SquirrelJME generally follows the proper name for a system and/or architecture
+in the naming scheme.
+
+## Architectures
+
+The following names are used for architectures:
+
+ * `arm(32|64)(b|l)` -- ARM Family.
+ * `amd64` -- AMD 64-bit CPU Family; Intel EM64T Family.
+ * `emcripten` -- Emscripten, compilation to JavaScript/WASM.
+ * `ia16` -- Intel 80286, 16-bit CPU Family.
+ * `ia32` -- Intel 80386, 32-bit CPU Family.
+ * `ia64` -- Itanium CPU Family.
+ * `mips(32|64)(b|l)` -- MIPS Family before R6.
+ * `mips(32|64)(b|l)6` -- MIPSR6 Family.
+ * `powerpc(32|64)(b|l)` -- PowerPC Family.
+ * `riscv64` -- RISC-V.
+
+## Systems
+
+The following names are used for systems:
+
+ * `3ds` -- Nintendo 3DS.
+ * `android` -- Android Mobile Platform.
+ * `bios` -- PC BIOS.
+ * `bsd` -- Any BSD.
+ * `cygwin` -- CygWin, a POSIX-like environment for Windows.
+ * `dos` -- DOS, MS-DOS, FreeDOS.
+ * `efi` -- Extensible Firmware Interface.
+ * `emcripten` -- Emscripten, compilation to JavaScript/WASM.
+ * `freebsd` -- FreeBSD.
+ * `gamecube` -- Nintendo GameCube.
+ * `ieee1275of` -- IEEE 1275, OpenFirmware, OpenBOOT.
+ * `ios` -- iOS, iPadOS; Not iPods.
+ * `linux` -- Linux.
+ * `macintosh` -- Classic Macintosh, previously System Software.
+ * `macosx` -- Mac OS X, or macOS, also known as Darwin.
+ * `palmos` -- PalmOS.
+ * `playstation2` -- Sony PlayStation 2.
+ * `psp` -- Sony PlayStation Portable.
+ * `sdcc` -- Small Device C Compiler Targets.
+ * `switch` -- Nintendo Switch.
+ * `switch2` -- Nintendo Switch 2.
+ * `vita` -- Sony PlayStation Vita.
+ * `wii` -- Nintendo Wii.
+ * `wiiu` -- Nintendo Wii U.
+ * `windows` -- Windows Desktop, not Windows CE.
+ * `windowsce` -- Windows CE, not Windows Desktop nor Windows Mobile.
