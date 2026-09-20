@@ -526,6 +526,23 @@ typedef enum sjme_nvm_task_commonClassId
 	SJME_NVM_TASK_NUM_COMMON_CLASS
 } sjme_nvm_task_commonClassId;
 
+/**
+ * Singleton object instances which exist within a task of the virtual machine.
+ *
+ * @since 2026/09/19
+ */
+typedef enum sjme_nvm_task_singleton
+{
+	/** Null singleton. */
+	SJME_NVM_TASK_SINGLETON_NULL,
+
+	/** ScritchUI @code ScritchUnifiedInterface @endcode. */
+	SJME_NVM_TASK_SINGLETON_SCRITCHUI,
+
+	/** The number of singletons available. */
+	SJME_NVM_TASK_NUM_SINGLETONS,
+} sjme_nvm_task_singleton;
+
 /** A list of Jar package brackets. */ 
 SJME_LIST_DECLARE(sjme_jbracketJarPackage, 0);
 	

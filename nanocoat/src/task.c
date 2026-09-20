@@ -338,7 +338,7 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		commonName, doInit)) || result == NULL)
 		return sjme_error_vmError(contextThread, error);
 
-	/* If this is a proxy, we need to setup the proxy with the handler. */
+	/* If this is a proxy, we need to set up the proxy with the handler. */
 	if (proxyHandler != NULL)
 	{
 		/* Generate the proxy class. */

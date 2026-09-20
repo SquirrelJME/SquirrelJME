@@ -241,20 +241,20 @@ SJME_NVM_MLE_FUNCTION_DECL(newInstance)
 	SJME_NVM_MLE_DEFINE_ALT(arrayCopy, name, \
 		SJME_MD(SJME_MD_V, SJME_MD_A##type SJME_MD_I SJME_MD_A##type \
 			SJME_MD_I SJME_MD_I), \
-		"V", "LILII")
+		SJME_MP(SJME_MP_V, SJME_MP_L SJME_MP_I SJME_MP_L SJME_MP_I SJME_MP_I))
 
 /** Duplicate defines for arrayFile. */
 #define SJME_NVM_MLE_DEFINE_ARRAY_FILL(name, type, promote) \
 	SJME_NVM_MLE_DEFINE_ALT(arrayFill, name, \
 		SJME_MD(SJME_MD_V, SJME_MD_A##type SJME_MD_I SJME_MD_I \
 			SJME_MD_##type), \
-		"V", "LII" #promote)
+		SJME_MP(SJME_MP_V, SJME_MP_L SJME_MP_I SJME_MP_I #promote))
 
 SJME_NVM_MLE_SHELF_DECLARE(ObjectShelf) =
 {
 	SJME_NVM_MLE_DEFINE(arrayClone,
 		SJME_MD(SJME_MD_OBJECT, SJME_MD_OBJECT),
-		"L", "L"),
+		SJME_MP(SJME_MP_L, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE_ARRAY_COPY(boolean, Z),
 	SJME_NVM_MLE_DEFINE_ARRAY_COPY(generic, B),
 	SJME_NVM_MLE_DEFINE_ARRAY_COPY(generic, S),
@@ -273,13 +273,13 @@ SJME_NVM_MLE_SHELF_DECLARE(ObjectShelf) =
 	SJME_NVM_MLE_DEFINE_ARRAY_FILL(generic, D, D),
 	SJME_NVM_MLE_DEFINE(arrayLength,
 		SJME_MD(SJME_MD_I, SJME_MD_OBJECT),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(newInstance,
 		SJME_MD(SJME_MD_OBJECT, SJME_MD_CLASS),
-		"L", "L"),
+		SJME_MP(SJME_MP_L, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(identityHashCode,
 		SJME_MD(SJME_MD_I, SJME_MD_OBJECT),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	
 	SJME_NVM_MLE_STOP()
 };
