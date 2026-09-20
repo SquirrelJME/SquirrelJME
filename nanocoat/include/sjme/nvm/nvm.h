@@ -436,8 +436,11 @@ typedef struct sjme_nvm_stateGlobals
 	/** The display is headless, no ScritchUI is available. */
 	sjme_atomic(sjme_jint) headlessDisplay;
 
-	/** The global ScritchUI state pointer. */
+	/** The global @link sjme_scritchui @endlink state pointer. */
 	sjme_atomic(sjme_pointer) scritchUi;
+
+	/** The global @link sjme_dylib @endlink ScritchUI library handle. */
+	sjme_atomic(sjme_pointer) scritchUiLib;
 } sjme_nvm_stateGlobals;
 	
 struct sjme_nvm_stateBase

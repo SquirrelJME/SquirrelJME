@@ -1131,7 +1131,8 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/** Enable use of @link sjme_attrSelectAny @endlink. */
 	#define SJME_CONFIG_HAS_ATTR_SELECT_ANY
-#else
+#elif defined(SJME_CONFIG_HAS_GCC) || \
+	defined(SJME_CONFIG_HAS_CLANG)
 	/** Enable use of @link sjme_attrWeak @endlink. */
 	#define SJME_CONFIG_HAS_ATTR_WEAK
 #endif

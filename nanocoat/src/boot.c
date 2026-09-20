@@ -6,7 +6,6 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
-#include <sjme/nvm/jdwp.h>
 
 #include "sjme/nvm/boot.h"
 #include "sjme/debug.h"
@@ -17,7 +16,9 @@
 #include "sjme/nvm/cleanup.h"
 #include "sjme/path.h"
 #include "sjme/joptarg.h"
+#include "sjme/nvm/externalWeak.h"
 #include "sjme/nvm/romMeepSwm.h"
+#include "sjme/nvm/jdwp.h"
 
 #if defined(SJME_PATH_SHORT)
 	/** The name of the SquirrelJME Jar. */
@@ -32,6 +33,38 @@
 	/** The name of the SquirrelJME directory. */
 	#define SJME_DIRECTORY_NAME "squirreljme"
 #endif
+
+static const sjme_lpcstr sjme_defaultScritchUi[] =
+{
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	"win32",
+#elif defined(SJME_CONFIG_HAS_OS_MACOS)
+	"cocoa",
+#elif defined(SJME_CONFIG_HAS_OS_POSIX) || \
+	defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_BSD_FAMILY)
+	"wayland",
+	"x11",
+#endif
+
+	/* Every other interface, and future interface, in order. */
+	"cocoa",
+	"gtk2",
+	"gtk3",
+	"gtk4",
+	"motif",
+	"palmos",
+	"qt4"
+	"qt5",
+	"qt6",
+	"tk",
+	"toolbox",
+	"win32",
+	"x11",
+
+	/* End. */
+	NULL,
+};
 
 static const sjme_joptarg_helpParam sjme_joptarg_helpParams[] =
 {
@@ -258,6 +291,66 @@ static sjme_errorCode sjme_nvm_printVersion(
 	return SJME_ERROR_EXIT;
 }
 
+#if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
+static sjme_errorCode sjme_nvm_initScritchUiPath(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNotNull sjme_scritchui* outScritchUi,
+	sjme_attrOutNotNull sjme_dylib* outHandle,
+	sjme_attrInNotNull sjme_path* libPath,
+	sjme_attrInNotNull sjme_lpcstr tryInterface)
+{
+#define BUF_SIZE 64
+	sjme_errorCode error;
+	sjme_dylib handle;
+	sjme_cchar buf[BUF_SIZE];
+	sjme_scritchui_dylibApiFunc apiInit;
+	sjme_scritchui result;
+
+	if (inState == NULL || outScritchUi == NULL || libPath == NULL ||
+		tryInterface == NULL || outHandle == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Try loading in the library. */
+	handle = NULL;
+	if (sjme_error_is(error = sjme_dylib_open(libPath->chars, &handle)) ||
+		handle == NULL)
+		goto fail_open;
+
+	/* What is the API function entrypoint called? */
+	memset(&buf, 0, sizeof(buf));
+	snprintf(buf, BUF_SIZE - 1,
+	SJME_TOKEN_STRING_PP(SJME_SCRITCHUI_DYLIB_SYMBOL()) "%s",
+		tryInterface);
+
+	/* Lookup the function pointer for the call. */
+	apiInit = NULL;
+	if (sjme_error_is(error = sjme_dylib_lookup(handle, buf,
+		(sjme_pointer*)&apiInit)) || apiInit == NULL)
+		goto fail_lookup;
+
+	/* Attempt initialization call. */
+	/* Note that we do not need to bind the event thread to anything JNI */
+	/* or otherwise, because we are the JVM! Yay! */
+	result = NULL;
+	if (sjme_error_is(error = apiInit(inState->allocPool, &result,
+		NULL, NULL, NULL)))
+		goto fail_initApi;
+
+	/* Success! */
+	*outScritchUi = result;
+	*outHandle = handle;
+	return SJME_ERROR_NONE;
+
+fail_initApi:
+fail_lookup:
+fail_open:
+	if (handle != NULL)
+		sjme_dylib_close(handle);
+	return sjme_error_default(error);
+#undef BUF_SIZE
+}
+#endif
+
 /**
  * Initializes ScritchUI so that it can be used by the virtual machine, this
  * is done as early as possible so that the UI can be used immediately. This is
@@ -274,11 +367,129 @@ static sjme_errorCode sjme_nvm_initScritchUi(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNullable sjme_lpcstr prefer)
 {
+	sjme_errorCode error;
+	sjme_jint majorId, minorId;
+	sjme_path majorPath, minorPath;
+	sjme_lpcstr externDefault, tryInterface;
+	sjme_scritchui result;
+	sjme_cchar libName[SJME_MAX_FILE_NAME];
+	sjme_dylib handle;
+
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Is there a hook to initialize ScritchUI? */
+	result = NULL;
+	if (inState->hooks != NULL && inState->hooks->scritchUi != NULL)
+	{
+		/* Call the hook. Note if the hook is set and there is a headless */
+		/* error, then we do not want to perform any default initialization */
+		/* as there may be a reason why a hook is passed. */
+		if (sjme_error_is(error = inState->hooks->scritchUi(inState, &result)))
+			return sjme_error_default(error);
+
+		/* Hook call is valid? */
+		if (result != NULL)
+		{
+			/* Use this as the ScritchUI state. */
+			sjme_atomic_s(sjme_pointer, &inState->globals.scritchUi, result);
+			return SJME_ERROR_NONE;
+		}
+	}
+
+#if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
+	/* What is the external default interface. */
+	externDefault = NULL;
+	if (sjme_error_is(error = sjme_extern_scritchUiInterface(&externDefault)))
+		return sjme_error_default(error);
+
+	/* We need to go through each minor, which is the actual library we want */
+	/* to load. */
+	for (minorId = 0;; minorId++)
+	{
+		/* The first and second are always the preferred and default */
+		/* interfaces. */
+		tryInterface = NULL;
+		if (minorId == 0)
+			tryInterface = prefer;
+		else if (minorId == 1)
+			tryInterface = externDefault;
+
+		/* Otherwise, from a built-in list. */
+		else
+			tryInterface = sjme_defaultScritchUi[minorId - 2];
+
+		/* No interfaces left to try? */
+		if (tryInterface == NULL)
+		{
+			/* Or skip the initial defaults? */
+			if (minorId < 2)
+				continue;
+
+			/* Always headless in this case. */
+			return SJME_ERROR_HEADLESS_DISPLAY;
+		}
+
+		/* What is this library called? */
+		memset(&libName, 0, sizeof(libName));
+		if (sjme_error_is(error = sjme_dylib_name(
+			"squirreljme-scritchui-", tryInterface,
+			libName, SJME_MAX_FILE_NAME - 1)))
+			return sjme_error_default(error);
+
+		/* Go through each library directory in order, as our desired */
+		/* interface in the desired order might be in multiple directories. */
+		for (majorId = 0;; majorId++)
+		{
+			/* Lookup the native directory. */
+			memset(&majorPath, 0, sizeof(majorPath));
+			if (sjme_error_is(error = sjme_path_default(inState->nal,
+				&majorPath, SJME_NVM_DEFAULT_DIRECTORY_NATIVES, majorId)))
+			{
+				/* Path is defined, however checks failed for it. */
+				if (error == SJME_ERROR_PATH_NOT_ABSOLUTE ||
+					error == SJME_ERROR_PATH_TOO_DEEP ||
+					error == SJME_ERROR_PATH_TOO_LONG ||
+					error == SJME_ERROR_PATH_NOT_VALID)
+					continue;
+
+				/* Stop this if this is not a valid path. */
+				if (error == SJME_ERROR_PATH_NOT_DEFINED)
+					break;
+
+				return sjme_error_default(error);
+			}
+
+			/* Build full path to the library. */
+			memmove(&minorPath, &majorPath, sizeof(minorPath));
+			if (sjme_error_is(error = sjme_path_resolveS(&minorPath, libName)))
+				return sjme_error_default(error);
+
+			/* Try loading this specific library. */
+			result = NULL;
+			handle = NULL;
+			if (sjme_error_is(error = sjme_nvm_initScritchUiPath(inState,
+				&result, &handle, &minorPath, tryInterface)) || result == NULL)
+			{
+				/* These two are very possible and not errors. */
+				if (error == SJME_ERROR_HEADLESS_DISPLAY ||
+					error == SJME_ERROR_LIBRARY_NOT_FOUND)
+					continue;
+
+				return sjme_error_default(error);
+			}
+
+			/* Success! */
+			sjme_atomic_s(sjme_pointer, &inState->globals.scritchUi, result);
+			sjme_atomic_s(sjme_pointer, &inState->globals.scritchUiLib,
+				handle);
+			return SJME_ERROR_NONE;
+		}
+	}
+#endif
+
+	/* Could not find anything. */
+	return SJME_ERROR_HEADLESS_DISPLAY;
 }
 
 sjme_errorCode sjme_nvm_boot(
