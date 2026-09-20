@@ -207,8 +207,13 @@ extern "C"
 #define SJME_NVM_MLE_STOP() \
 	{NULL, NULL, NULL, NULL}
 
+/** Determines the name of a shelf. */
+#define SJME_NVM_MLE_SHELF_NAME(what) \
+	SJME_TOKEN_PASTE(sjme_nvm_mle, what)
+
+/** Declares a shelf. */
 #define SJME_NVM_MLE_SHELF_DECLARE(what) \
-	const sjme_nvm_mleShelf SJME_TOKEN_PASTE(sjme_nvm_mle, what)[]
+	const sjme_nvm_mleShelf SJME_NVM_MLE_SHELF_NAME(what)[]
 
 extern SJME_NVM_MLE_SHELF_DECLARE(AtomicShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(DebugShelf);
