@@ -345,7 +345,7 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		baseClass = result;
 		result = NULL;
 		if (sjme_error_is(error = sjme_nvm_instance_proxyClassV(
-			contextThread, &result, proxyHandler, result, NULL)) ||
+			contextThread, &result, proxyHandler, baseClass, NULL)) ||
 			result == NULL || baseClass == result)
 			return sjme_error_vmError(contextThread, error);
 	}

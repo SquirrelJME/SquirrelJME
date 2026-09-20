@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/nvm/instanceProxy.h"
+#include "sjme/nvm/task.h"
 
 sjme_errorCode sjme_nvm_mle_scritchUiProxyHandler(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,

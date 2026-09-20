@@ -568,6 +568,9 @@ typedef struct sjme_nvm_task_globals
 	/** Common classes. */
 	sjme_atomic(sjme_jclass) commonClasses[SJME_NVM_TASK_NUM_COMMON_CLASS];
 
+	/** Singleton class instances. */
+	sjme_atomic(sjme_jobject) singletons[SJME_NVM_TASK_NUM_SINGLETONS];
+
 	/** The default accessor for fields. */
 	sjme_nvm_jfieldAccessFunc accessor;
 
