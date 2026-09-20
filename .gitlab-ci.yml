@@ -108,6 +108,8 @@ libretro-build-ctr:
   extends:
     - .libretro-ctr-static-cmake-retroarch-master
     - .core-nanocoat
+  variables:
+    CORE_ARGS: -DSQUIRRELJME_SYSTEM=3ds
 
 # dingux-cmake.yml
 libretro-build-dingux-mips32:
