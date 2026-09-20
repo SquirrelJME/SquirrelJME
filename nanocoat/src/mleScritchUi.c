@@ -13,6 +13,14 @@
 
 SJME_NVM_MLE_FUNCTION_DECL(nativeInterface)
 {
+	/* If ScritchUI failed to initialized or this is otherwise headless */
+	/* then we can just throw a MLECallError here. */
+	if (sjme_atomic_g(sjme_jint, &SJME_F_S(inFrame)->globals.headlessDisplay))
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

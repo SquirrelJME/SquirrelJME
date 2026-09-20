@@ -27,6 +27,7 @@
 #include "sjme/atomic.h"
 #include "sjme/native.h"
 #include "sjme/nvm/nvmTypeDefs.h"
+#include "lib/scritchui/scritchui.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -242,6 +243,20 @@ typedef sjme_errorCode (*sjme_nvm_stateHookNativeCallFunc)(
 	sjme_attrInNullable sjme_jvalueTyped* argV);
 
 /**
+ * Requests the ScritchUI state via a hook, if one has already been setup
+ * accordingly. This may be used to provide a ScritchUI interface already
+ * rather than attempting to initialize one.
+ *
+ * @param inState The input virtual machine state.
+ * @param outScritchUi The resultant ScritchUI state.
+ * @return Any resultant error, if any.
+ * @since 2026/09/20
+ */
+typedef sjme_errorCode (*sjme_nvm_stateHookScritchUiStateFunc)(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNotNull sjme_scritchui* outScritchUi);
+
+/**
  * This is called when a thread throws an uncaught exception.
  * 
  * @param inThread The thread this occurred for.
@@ -265,6 +280,9 @@ typedef struct sjme_nvm_stateHooks
 
 	/** Perform a native call. */
 	sjme_nvm_stateHookNativeCallFunc nativeCall;
+
+	/** Obtain ScritchUI state. */
+	sjme_nvm_stateHookScritchUiStateFunc scritchUi;
 
 	/** Uncaught exception occurred in thread. */
 	sjme_nvm_stateHookUncaughtFunc uncaught;
@@ -407,6 +425,20 @@ typedef enum sjme_nvm_bootClutterLevel
 	/** Debug clutter level. */
 	SJME_NVM_BOOT_CLUTTER_DEBUG = 1,
 } sjme_nvm_bootClutterLevel;
+
+/**
+ * Globals for the virtual machine state.
+ *
+ * @since 2026/09/20
+ */
+typedef struct sjme_nvm_stateGlobals
+{
+	/** The display is headless, no ScritchUI is available. */
+	sjme_atomic(sjme_jint) headlessDisplay;
+
+	/** The global ScritchUI state pointer. */
+	sjme_atomic(sjme_pointer) scritchUi;
+} sjme_nvm_stateGlobals;
 	
 struct sjme_nvm_stateBase
 {
@@ -472,6 +504,9 @@ struct sjme_nvm_stateBase
 	 * dependency lookup.
 	 */
 	sjme_nvm_rom_swmManager swmManager;
+
+	/** NVM Globals. */
+	sjme_nvm_stateGlobals globals;
 };
 
 /** Type size multiplier. */

@@ -110,6 +110,12 @@ struct sjme_nvm_bootParam
 
 	/** The initial Jar to run, if specified via @code -jar @endcode. */
 	sjme_lpcstr runJar;
+
+	/** Disable ScritchUI. */
+	sjme_jboolean noScritchUi;
+
+	/** Prefer this ScritchUI interface. */
+	sjme_lpcstr preferScritchUi;
 };
 
 /**

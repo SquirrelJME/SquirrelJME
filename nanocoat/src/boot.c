@@ -258,6 +258,29 @@ static sjme_errorCode sjme_nvm_printVersion(
 	return SJME_ERROR_EXIT;
 }
 
+/**
+ * Initializes ScritchUI so that it can be used by the virtual machine, this
+ * is done as early as possible so that the UI can be used immediately. This is
+ * needed by macOS due to threading and event handling issues, as there
+ * traditionally always has been @code -XstartOnFirstThread @endcode. This
+ * parameter should technically always apply.
+ *
+ * @param inState The virtual machine state.
+ * @param prefer The optional interface to prefer.
+ * @return Any resultant error, if any.
+ * @since 2026/09/20
+ */
+static sjme_errorCode sjme_nvm_initScritchUi(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNullable sjme_lpcstr prefer)
+{
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
@@ -542,6 +565,21 @@ sjme_errorCode sjme_nvm_boot(
 	initTaskConfig->noOptimize = result->bootParamCopy->noOptimize;
 	initTaskConfig->classPath = classPath;
 
+	/* Initialize ScritchUI? Or is this headless by default? */
+	if (result->bootParamCopy->noScritchUi)
+		sjme_atomic_s(sjme_jint, &result->globals.headlessDisplay, 1);
+	else
+		if (sjme_error_is(error = sjme_nvm_initScritchUi(result,
+			bootParamCopy->preferScritchUi)))
+		{
+			/* This could be an actual headless system. */
+			if (error != SJME_ERROR_HEADLESS_DISPLAY)
+				goto fail_scritchUiInit;
+
+			/* Set that this is a headless system. */
+			sjme_atomic_s(sjme_jint, &result->globals.headlessDisplay, 1);
+		}
+
 	/* Only create the task if not belaying it. */
 	initTask = NULL;
 	if ((result->bootParamCopy->belay & SJME_NVM_BOOT_BELAY_TASK) == 0)
@@ -578,6 +616,7 @@ sjme_errorCode sjme_nvm_boot(
 
 	/* Failed at specific points... */
 fail_initTask:
+fail_scritchUiInit:
 fail_allocSchedule:
 fail_badClassPath:
 fail_defaultLaunch:
@@ -984,7 +1023,11 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xscritchui:"))
 		{
-			sjme_todo("Impl? %s", argv[argAt]);
+			/* Force headless? */
+			if (0 == strcasecmp("none", &argv[argAt][12]))
+				outParam->noScritchUi = SJME_JNI_TRUE;
+			else
+				outParam->preferScritchUi = &argv[argAt][12];
 		}
 		
 		/* -Xsnapshot:(path-to-nps) */
