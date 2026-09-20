@@ -59,6 +59,14 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 		SJME_JNI_TRUE
 	},
 	{
+		SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
+		"SQUIRRELJME_LIB_JVM_"
+			SQUIRRELJME_SYSTEM_UPPER "_"
+			SQUIRRELJME_ARCH_UPPER,
+		"",
+		SJME_JNI_TRUE
+	},
+	{
 		SJME_NVM_DEFAULT_DIRECTORY_BUCKET_EXTRA,
 		"SQUIRRELJME_BUCKET_EXTRA",
 		"",
@@ -166,6 +174,12 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 		"squirreljme/natives",
 		SJME_JNI_FALSE
 	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
+		"PROGRAMDATA",
+		"squirreljme/natives/" SQUIRRELJME_SYSTEM "/" SQUIRRELJME_ARCH,
+		SJME_JNI_FALSE
+	},
 
 	/* Temporary files. */
 	{
@@ -236,6 +250,12 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 		"/lib/squirreljme/natives",
 		SJME_JNI_FALSE
 	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
+		NULL,
+		"/lib/squirreljme/natives/" SQUIRRELJME_SYSTEM "/" SQUIRRELJME_ARCH,
+		SJME_JNI_FALSE
+	},
 
 	/* Temporary files. */
 	{
@@ -279,8 +299,8 @@ static sjme_errorCode sjme_path_append(
 		sizeof(path->chars[0]) * len);
 	
 	/* Shift up lengths. */
-	path->length = newLen;
-	path->names[path->nameCount] = newLen;
+	path->length = (sjme_jushort)newLen;
+	path->names[path->nameCount] = (sjme_jushort)newLen;
 
 #if defined(SJME_CONFIG_DEBUG_PATH) && defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("[%d/%d]: %s <- %.*s",
@@ -1198,8 +1218,8 @@ sjme_errorCode sjme_path_resolveP(
 	/* Offset names accordingly. */
 	while (result.nameCount <= newCount)
 		result.names[result.nameCount++] += result.length;
-	result.nameCount = newCount;
-	result.length = newLength;
+	result.nameCount = (sjme_jushort)newCount;
+	result.length = (sjme_jushort)newLength;
 
 	/* Make sure the final path is valid. */
 	if (sjme_error_is(error = sjme_path_check(&result)))
@@ -1303,8 +1323,9 @@ sjme_errorCode sjme_path_subPath(
 	/* Determine the actual new name count. */
 	memset(&result, 0, sizeof(result));
 	result.style = inPath->style;
-	result.nameCount = endDx - beginDx;
-	result.length = inPath->names[beginDx + (result.nameCount)] - charBase;
+	result.nameCount = (sjme_jushort)(endDx - beginDx);
+	result.length = (sjme_jushort)(inPath->names[beginDx +
+		(result.nameCount)] - charBase);
 	
 	/* Copy names over, include length end name. */
 	memmove(&result.names[0], &inPath->names[beginDx],

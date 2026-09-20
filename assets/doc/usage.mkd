@@ -132,6 +132,14 @@ and may be overridden by environment variables.
 Any entry with {~} means the first character will be placed by your home
 directory, `<HOME>` on POSIX or `<USERHOME>` on Windows.
 
+The following replacements are intended to be used in multi-arch setups. Note
+that the system and architectures must be of the names used by SquirrelJME.
+
+ * `{system}` -- The name of the current system, all lowercase.
+   * `{SYSTEM}` -- Same as above, except all uppercase.
+ * `{arch}` -- The name of the current architecture, all lowercase.
+   * `{ARCH}` -- Same as above, except all uppercase.
+
 The directory types and their order of precedence are:
 
  * _Cache_
@@ -162,8 +170,11 @@ The directory types and their order of precedence are:
    * `<HOME>/.local/state/squirreljme` (POSIX)
  * _Natives_
    * `<SQUIRRELJME_LIB_JVM>` {~}
+   * `<SQUIRRELJME_LIB_JVM_{SYSTEM}_{ARCH}>` {~}
    * `<PROGRAMDATA>/squirreljme/natives` (Windows)
+   * `<PROGRAMDATA>/squirreljme/natives/{system}/{arch}` (Windows)
    * `/lib/squirreljme/natives` (POSIX)
+   * `/lib/squirreljme/natives/{system}/{arch}` (POSIX)
  * _Executable_
    * This always points to the current executable, if it can be determined.
  * _Temporary_
