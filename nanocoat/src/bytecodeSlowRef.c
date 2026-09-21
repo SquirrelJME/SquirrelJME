@@ -29,6 +29,57 @@ static const sjme_basicTypeId sjme_nvm_byteCode_xArrayType[8] =
 	SJME_BASIC_TYPE_ID_SHORT,
 };
 
+typedef struct sjme_nvm_byteCode_invokeState
+{
+	/** The frame this is called from. */
+	sjme_nvm_frame inFrame;
+	
+	/** The GC commit. */ 
+	sjme_nvm_frame_gcCommit* commit;
+	
+	/** The instance type. */
+	sjme_nvm_class_instanceType instanceType;
+	
+	/** The call type. */
+	sjme_nvm_methodCallType callType;
+	
+	/** The Method ID. */
+	sjme_jmethodID methodId;
+	
+	/** The error state. */
+	sjme_errorCode error;
+	
+	/** The MLE error state. */
+	sjme_errorCode mleError;
+	
+	/** New frame which was craeted. */
+	sjme_nvm_frame newFrame;
+	
+	/** Argument count. */
+	sjme_jint argC;
+	
+	/** Arguments. */
+	sjme_jvalueTyped* argV;
+	
+	/** Argument parameters. */
+	sjme_jvalueTyped* argVParam;
+	
+	/** Return value. */
+	sjme_jvalueTyped mleArgR;
+	
+	/** Is this a static method? */
+	sjme_jboolean isStatic;
+	
+	/** The instance called. */
+	sjme_jobject instance;
+	
+	/** The target method. */
+	sjme_nvm_class_methodInfo target;
+	
+	/** The method ID. */
+	sjme_jmethodID virtualId;
+} sjme_nvm_byteCode_invokeState;
+
 static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
@@ -38,19 +89,19 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		sjme_nvm_methodCallType callType,
 	sjme_attrInNotNull sjme_jmethodID methodId)
 {
-	sjme_errorCode error, mleError;
-	sjme_nvm_frame newFrame;
-	sjme_jint argC;
-	sjme_jvalueTyped* argV;
-	sjme_jvalueTyped* argVParam;
-	sjme_jvalueTyped mleArgR;
-	sjme_jboolean isStatic;
-	sjme_jobject instance;
-	sjme_nvm_class_methodInfo target;
-	sjme_jmethodID virtualId;
+	sjme_errorCode error;
+	sjme_nvm_byteCode_invokeState invoke;
 
 	if (inFrame == NULL || methodId == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Copy state. */
+	memset(&invoke, 0, sizeof(invoke));
+	invoke.inFrame = inFrame;
+	invoke.commit = commit;
+	invoke.instanceType = instanceType;
+	invoke.callType = callType;
+	invoke.methodId = methodId;
 	
 	/* Check access for calling this method. */
 	if (sjme_error_is(error = sjme_nvm_access_checkFToM(
@@ -59,43 +110,43 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			sjme_error_defaultOr(error, SJME_ERROR_CLASS_CHANGED));
 
 	/* Get the non-virtual target info. */
-	target = methodId->info[callType];
+	invoke.target = methodId->info[callType];
 
 	/* Static-ness is wrong? */
-	isStatic = SJME_NVM_ACC_IS(target->flags, STATIC);
-	if (isStatic && instanceType != SJME_NVM_CLASS_MEMBER_STATIC &&
+	invoke.isStatic = SJME_NVM_ACC_IS(invoke.target->flags, STATIC);
+	if (invoke.isStatic && instanceType != SJME_NVM_CLASS_MEMBER_STATIC &&
 		callType != SJME_NVM_CALL_NON_VIRTUAL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 	
 	/* Allocate pushed arguments. */
-	argC = target->argC + (!isStatic ? 1 : 0);
-	argV = sjme_alloca(sizeof(*argV) * (argC + 2));
-	if (argV == NULL)
+	invoke.argC = invoke.target->argC + (!invoke.isStatic ? 1 : 0);
+	invoke.argV = sjme_alloca(sizeof(*invoke.argV) * (invoke.argC + 2));
+	if (invoke.argV == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
-	memset(argV, 0, sizeof(*argV) * (argC + 2));
+	memset(invoke.argV, 0, sizeof(*invoke.argV) * (invoke.argC + 2));
 	
 	/* Pull in stack arguments for the call. */
-	argVParam = (!isStatic ? &argV[1] : argV);
-	if (target->argC != 0)
+	invoke.argVParam = (!invoke.isStatic ? &invoke.argV[1] : invoke.argV);
+	if (invoke.target->argC != 0)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(
 			inFrame, commit,
-			target->argC, target->argT, argVParam)))
+			invoke.target->argC, invoke.target->argT, invoke.argVParam)))
 			return sjme_error_vmError(inFrame, error);
 
 	/* Pop instance. */
-	instance = NULL;
-	virtualId = NULL;
-	if (!isStatic)
+	invoke.instance = NULL;
+	invoke.virtualId = NULL;
+	if (!invoke.isStatic)
 	{
 		/* Pop. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(
 			inFrame, SJME_JAVA_TYPE_ID_OBJECT, commit,
-			&argV[0])))
+			&invoke.argV[0])))
 			return sjme_error_vmError(inFrame, error);
 
 		/* Cannot be null. */
-		instance = argV[0].v.l;
-		if (instance == NULL)
+		invoke.instance = invoke.argV[0].v.l;
+		if (invoke.instance == NULL)
 			return sjme_error_vmError(inFrame,
 				SJME_ERROR_NULL_STACK_POINTER);
 		
@@ -103,7 +154,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
 			SJME_F_T(inFrame),
 			sjme_atomic_g(sjme_jclass, &methodId->member.inClass),
-			SJME_O_C(instance))))
+			SJME_O_C(invoke.instance))))
 		{
 			if (error == SJME_ERROR_CLASS_CAST)
 				return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
@@ -115,17 +166,17 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		{
 			/* Lookup again. */
 			if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
-				sjme_atomic_g(sjme_jclass, &instance->isClass),
+				sjme_atomic_g(sjme_jclass, &invoke.instance->isClass),
 				SJME_F_T(inFrame),
 				SJME_NVM_CLASS_MEMBER_INSTANCE,
 				SJME_JNI_TRUE,
 				methodId->member.name->seq,
-				methodId->member.type->seq, &virtualId)) ||
-				virtualId == NULL)
+				methodId->member.type->seq, &invoke.virtualId)) ||
+				invoke.virtualId == NULL)
 				return sjme_error_vmError(inFrame, error);
 
 			/* Use this one instead. */
-			methodId = virtualId;
+			methodId = invoke.virtualId;
 			
 			/* Since the method has changed, we need to check again that */
 			/* the target is still valid. This is mostly for sanity. */
@@ -133,7 +184,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 				SJME_F_T(inFrame),
 				sjme_atomic_g(sjme_jclass,
 					&methodId->member.inClass),
-				SJME_O_C(instance))))
+				SJME_O_C(invoke.instance))))
 			{
 				if (error == SJME_ERROR_CLASS_CAST)
 					return sjme_error_vmError(inFrame,
@@ -144,24 +195,25 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	}
 
 	/* If native, perform an MLE call. */
-	mleError = SJME_ERROR_NONE;
-	if (SJME_NVM_ACC_IS(target->flags, NATIVE) && isStatic)
+	invoke.mleError = SJME_ERROR_NONE;
+	if (SJME_NVM_ACC_IS(invoke.target->flags, NATIVE) && invoke.isStatic)
 	{
 		/* Perform the native call. */
-		memset(&mleArgR, 0, sizeof(mleArgR));
-		mleArgR.t = SJME_JAVA_TYPE_ID_VOID;
+		memset(&invoke.mleArgR, 0, sizeof(invoke.mleArgR));
+		invoke.mleArgR.t = SJME_JAVA_TYPE_ID_VOID;
 
 		/* Invoke MLE call, if static we use the entry point method */
 		/* unless it has been replaced. */
-		mleError = sjme_mle_mleCall(inFrame,
-			(virtualId != NULL ? virtualId : methodId), target,
-			&mleArgR,
-			argC, argV);
+		invoke.mleError = sjme_mle_mleCall(inFrame,
+			(invoke.virtualId != NULL ? invoke.virtualId : methodId),
+			invoke.target,
+			&invoke.mleArgR,
+			invoke.argC, invoke.argV);
 
 		/* Recover and check MLE error. */
 		/* Ignore cancelled calls. */
 		if (error != SJME_ERROR_CANCEL_MLE_CALL &&
-			sjme_error_is(error = mleError))
+			sjme_error_is(error = invoke.mleError))
 		{
 			/* MLECallError is a valid response. */
 			if (error == SJME_ERROR_MLE_CALL)
@@ -174,9 +226,9 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 #if defined(SJME_CONFIG_DEBUG_MLE)
 				sjme_message("Missing MLE: %s.%s %s",
 					sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
-						&target->inClass)->name->seq),
-					sjme_charSeq_tempUtf(target->name->seq),
-					sjme_charSeq_tempUtf(target->type->seq));
+						&invoke.target->inClass)->name->seq),
+					sjme_charSeq_tempUtf(invoke.target->name->seq),
+					sjme_charSeq_tempUtf(invoke.target->type->seq));
 #endif
 				
 				return sjme_error_vmError(inFrame, error);
@@ -191,9 +243,9 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 					SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR,
 					NULL, "LINK %s.%s %s",
 					sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
-						&target->inClass)->name->seq),
-					sjme_charSeq_tempUtf(target->name->seq),
-					sjme_charSeq_tempUtf(target->type->seq))))
+						&invoke.target->inClass)->name->seq),
+					sjme_charSeq_tempUtf(invoke.target->name->seq),
+					sjme_charSeq_tempUtf(invoke.target->type->seq))))
 					return sjme_error_vmError(inFrame, error);
 			}
 			
@@ -206,12 +258,12 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 		if (error != SJME_ERROR_CANCEL_MLE_CALL)
 		{
 			/* Wrong type? */
-			if (mleArgR.t != target->argR)
+			if (invoke.mleArgR.t != invoke.target->argR)
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_INVALID_METHOD_TYPE);
 
 			/* Is there a return value being pushed to the stack? */
-			if (mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
+			if (invoke.mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
 			{
 #if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 				/* MLE is not responsible for counting objects. */
@@ -221,7 +273,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 				
 				/* Push to the stack. */
 				if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-					inFrame, commit, &mleArgR)))
+					inFrame, commit, &invoke.mleArgR)))
 					return sjme_error_vmError(inFrame, error);
 			}
 		}
@@ -231,17 +283,17 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	else
 	{
 		/* Cannot be native. */
-		if (SJME_NVM_ACC_IS(target->flags, NATIVE))
+		if (SJME_NVM_ACC_IS(invoke.target->flags, NATIVE))
 			return sjme_error_vmError(inFrame, SJME_ERROR_PURE_VIRTUAL_CALL);
 		
 		/* Enter the frame. */
-		newFrame = NULL;
+		invoke.newFrame = NULL;
 		if (sjme_error_is(error = sjme_nvm_task_threadEnter(
 			SJME_F_T(inFrame),
-			&newFrame,
+			&invoke.newFrame,
 			methodId,
 			callType,
-			argC, argV)) || newFrame == NULL)
+			invoke.argC, invoke.argV)) || invoke.newFrame == NULL)
 			return sjme_error_vmError(inFrame, error);
 	}
 
@@ -253,8 +305,8 @@ skip_mleFailed:
 #endif
 
 	/* Success? */
-	if (sjme_error_is(mleError))
-		return sjme_error_default(mleError);
+	if (sjme_error_is(invoke.mleError))
+		return sjme_error_default(invoke.mleError);
 	return SJME_ERROR_NONE;
 }
 
