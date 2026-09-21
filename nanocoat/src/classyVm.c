@@ -1216,16 +1216,42 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	
 	/* Initialize super class now, recursive call. */
 	if (superClass != NULL)
+	{
+		/* Initialize the super class. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
 			superClass, contextThread)))
 			goto fail_initSuper;
+
+		/* The super class must not be final. */
+		/* It also cannot be a proxy. */
+		if (SJME_NVM_ACC_IS(superClass->info->flags, FINAL) ||
+			SJME_NVM_ACC_IS(superClass->info->flags, SPECIAL_PROXY))
+		{
+			error = SJME_ERROR_CLASS_CHANGED;
+			goto fail_superFlags;
+		}
+	}
 	
 	/* Then any interfaces, recursive call. */
 	if (interfaces != NULL)
 		for (i = 0, n = interfaces->length; i < n; i++)
+		{
+			/* Initialize the interface. */
+			interface = interfaces->elements[i];
 			if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
-				interfaces->elements[i], contextThread)))
+				interface, contextThread)))
 				goto fail_initInterface;
+
+			/* Interfaces must be marked as interfaces and not final, */
+			/* It also cannot be a proxy. */
+			if (!SJME_NVM_ACC_IS(interface->info->flags, INTERFACE) ||
+				SJME_NVM_ACC_IS(interface->info->flags, FINAL) ||
+				SJME_NVM_ACC_IS(interface->info->flags, SPECIAL_PROXY))
+			{
+				error = SJME_ERROR_CLASS_CHANGED;
+				goto fail_interfaceFlags;
+			}
+		}
 	
 	/* Lock on this. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
@@ -1398,9 +1424,11 @@ fail_initClassType:
 fail_badState:
 fail_initInterface:
 fail_initSuper:
+fail_interfaceFlags:
 fail_findInterface:
 fail_allocInterfaces:
 fail_findSuper:
+fail_superFlags:
 fail_findClassType:
 fail_releaseLock:
 fail_checkLoad:

@@ -1658,7 +1658,7 @@ sjme_errorCode sjme_nvm_class_parse(
 		/* Determine the type index for its slot. */
 		field = fields->elements[i];
 		field->typedIndex = result->fieldCount[
-			((field->flags & SJME_NVM_ACC_STATIC) != 0 ? 
+			(SJME_NVM_ACC_IS(field->flags, STATIC) ?
 			SJME_NVM_CLASS_MEMBER_STATIC : SJME_NVM_CLASS_MEMBER_INSTANCE)]
 			[field->extendedType]++;
 		
