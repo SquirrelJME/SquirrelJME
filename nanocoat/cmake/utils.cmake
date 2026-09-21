@@ -478,3 +478,17 @@ function(squirreljme_sourceize_dir inputDir outputDir)
 		endif()
 	endforeach()
 endfunction()
+
+# Checks if the specific symbol exists
+macro(squirreljme_check_symbol_exists symbol header yesDef noDef)
+	# Run the check for it
+	check_symbol_exists("${symbol}" "${header}" ${yesDef})
+
+	# Note that this condition needs to be inverted due to CMake
+	message(DEBUG "${symbol} in ${header}: ${${yesDef}}")
+	if(NOT ${yesDef})
+		add_compile_definitions(${noDef}=1)
+	else()
+		add_compile_definitions(${yesDef}=1)
+	endif()
+endmacro()
