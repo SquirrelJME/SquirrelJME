@@ -142,7 +142,7 @@ squirreljme_check_symbol_exists("towlower" "wctype.h"
 
 # fdatasync() available?
 # If the system is unknown, the assume this POSIX function does not exist
-if(SQUIRRELJME_IS_UNKNOWN)
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "unknown")
 	squirreljme_try_compile_no("fdatasync()"
 		SJME_CONFIG_HAS_NO_FDATASYNC)
 else()
@@ -170,7 +170,10 @@ squirreljme_try_compile("vsnprintf() in varargs.h"
 
 # Can use thread local?
 # If the system is unknown, we cannot rely on this to properly exist
-if(SQUIRRELJME_IS_UNKNOWN)
+# This can be ignored on single threaded systems as there will always ever be
+# a single thread (hopefully)
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "unknown" OR
+	SJME_CONFIG_ONLY_THREAD_SINGLE)
 	squirreljme_try_compile_no("sjme_threadLocal"
 		SJME_CONFIG_HAS_NO_THREAD_LOCAL)
 else()

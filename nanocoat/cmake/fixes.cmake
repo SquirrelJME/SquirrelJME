@@ -353,6 +353,17 @@ endmacro()
 
 # Quick compilation check
 macro(squirreljme_try_compile noun source yesDef noDef)
+	# Note that CMAKE_TRY_COMPILE_TARGET_TYPE is only valid since CMake 3.6+
+	# and as such for earlier versions it is whatever CMake decides it wants
+	# to use.
+	if(NOT "${CMAKE_TRY_COMPILE_TARGET_TYPE}" STREQUAL "" AND
+		NOT "${CMAKE_TRY_COMPILE_TARGET_TYPE}" STREQUAL "EXECUTABLE")
+		message(STATUS "CMake try_compile() target is not EXECUTABLE...")
+		message(STATUS "This may cause false-positive detections for broken")
+		message(STATUS "toolchains which have symbols in headers AND NO")
+		message(STATUS "actual implementation.")
+	endif()
+
 	# Check compile of a specific symbol
 	message(STATUS "Checking compile of ${noun}...")
 	try_compile(${yesDef}
