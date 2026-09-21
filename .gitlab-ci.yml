@@ -109,7 +109,9 @@ libretro-build-ctr:
     - .libretro-ctr-static-cmake-retroarch-master
     - .core-nanocoat
   variables:
-    CORE_ARGS: -DSQUIRRELJME_SYSTEM=3ds
+    # The 3DS toolchain is just broken, unfortunately
+    CORE_ARGS: |
+      -DSQUIRRELJME_SYSTEM=3ds -DSJME_CONFIG_HAS_NO_FDATASYNC=TRUE
 
 # dingux-cmake.yml
 libretro-build-dingux-mips32:

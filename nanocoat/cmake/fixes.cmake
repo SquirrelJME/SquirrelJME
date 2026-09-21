@@ -339,22 +339,17 @@ macro(squirreljme_check_include_file header yesDef noDef)
 	# Run the check for it
 	check_include_file("${header}" ${yesDef})
 
-	# Note that this condition needs to be inverted due to CMake
-	message(DEBUG "${header}: ${${yesDef}}")
+	# Normalize condition, makes it easier to read
 	if(NOT ${yesDef})
-		add_compile_definitions(${noDef}=1)
+		set(${yesDef} FALSE)
 	else()
-		add_compile_definitions(${yesDef}=1)
+		set(${yesDef} TRUE)
 	endif()
-endmacro()
 
-# Checks if the specific symbol exists
-macro(squirreljme_check_symbol_exists symbol header yesDef noDef)
-	# Run the check for it
-	check_symbol_exists("${symbol}" "${header}" ${yesDef})
+	# Emit a message, as CMake only emits one if the check is not cached
+	message(STATUS "${header} exists: ${${yesDef}}")
 
 	# Note that this condition needs to be inverted due to CMake
-	message(DEBUG "${symbol} in ${header}: ${${yesDef}}")
 	if(NOT ${yesDef})
 		add_compile_definitions(${noDef}=1)
 	else()
@@ -364,25 +359,62 @@ endmacro()
 
 # Quick compilation check
 macro(squirreljme_try_compile noun source yesDef noDef)
-	# Check compile of a specific symbol
-	message(STATUS "Checking compile of ${noun}...")
-	try_compile(${yesDef}
-		"${CMAKE_CURRENT_BINARY_DIR}"
-		SOURCES "${CMAKE_CURRENT_LIST_DIR}/${source}.c"
-		CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
-			"-DINCLUDE_DIRECTORIES=${CMAKE_SOURCE_DIR}/include"
-		LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT}
-		OUTPUT_VARIABLE ${yesDef}_OUTPUT)
+	# Allow forcing of a specific check to be on/off in the event a toolchain
+	# is broken... or use a cached value
+	if(DEFINED ${noDef} AND ${noDef})
+		# Set yes to no, and indicate that happened
+		set(${yesDef} FALSE)
+		message(STATUS "${noun}: Forced/Cached ${${yesDef}}")
 
-	# Note that this condition needs to be inverted due to CMake
-	message(DEBUG "${noun}: ${${yesDef}_OUTPUT}")
-	message(STATUS "${noun}: ${${yesDef}}")
-	if(NOT ${yesDef})
+		# The no definition is needed
 		add_compile_definitions(
 			${noDef}=1)
-	else()
+	elseif(DEFINED ${yesDef} AND ${yesDef})
+		# Set yes to yes, and force it
+		set(${yesDef} TRUE)
+		message(STATUS "${noun}: Forced/Cached ${${yesDef}}")
+
+		# The yes definition is needed
 		add_compile_definitions(
 			${yesDef}=1)
+
+	# Auto-detect otherwise
+	else()
+		# Note that CMAKE_TRY_COMPILE_TARGET_TYPE is only valid since
+		# CMake 3.6+ and as such for earlier versions it is whatever CMake
+		# decides it wants to use.
+		if(NOT "${CMAKE_TRY_COMPILE_TARGET_TYPE}" STREQUAL "" AND
+			NOT "${CMAKE_TRY_COMPILE_TARGET_TYPE}" STREQUAL "EXECUTABLE")
+			message(STATUS "CMake try_compile() target is not EXECUTABLE...")
+			message(STATUS "This may cause false-positive detections for")
+			message(STATUS "broken toolchains which have symbols in headers")
+			message(STATUS "AND NO implementation. If so, set if incorrect:")
+			message(STATUS " - -D${yesDef}=TRUE")
+			message(STATUS " - -D${noDef}=TRUE")
+		endif()
+
+		# Check compile of a specific symbol
+		message(STATUS "Checking compile of ${noun}...")
+		try_compile(${yesDef}
+			"${CMAKE_CURRENT_BINARY_DIR}"
+			SOURCES "${CMAKE_CURRENT_LIST_DIR}/${source}.c"
+			CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE:STRING=EXECUTABLE"
+				"-DINCLUDE_DIRECTORIES:STRING=${CMAKE_SOURCE_DIR}/include"
+			LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT}
+			OUTPUT_VARIABLE ${yesDef}_OUTPUT)
+
+		# Debug compiler output, just in case
+		message(DEBUG "${noun}: ${${yesDef}_OUTPUT}")
+
+		# Note that this condition needs to be inverted due to CMake
+		message(STATUS "${noun}: ${${yesDef}}")
+		if(NOT ${yesDef})
+			add_compile_definitions(
+				${noDef}=1)
+		else()
+			add_compile_definitions(
+				${yesDef}=1)
+		endif()
 	endif()
 endmacro()
 
@@ -458,9 +490,9 @@ if(SQUIRRELJME_LIBM)
 		"${SQUIRRELJME_LIBM}")
 endif()
 ## Threads
-if(DEFINED CMAKE_THREAD_LIBS_INIT)
+if(DEFINED SQUIRRELJME_LIBTHREADS)
 	list(APPEND SQUIRRELJME_REQUIRED_LIBS
-		"${CMAKE_THREAD_LIBS_INIT}")
+		"${SQUIRRELJME_LIBTHREADS}")
 endif()
 
 # For debugging required libraries

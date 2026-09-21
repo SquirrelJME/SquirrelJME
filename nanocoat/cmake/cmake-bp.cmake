@@ -175,8 +175,8 @@ function(squirreljme_bp_check_linker_flag lang flag outVariable)
 		# the newer signature.
 		try_compile(${outVariable} "${CMAKE_CURRENT_BINARY_DIR}/try/${uniq}"
 			SOURCES "${SQUIRRELJME_BP_LIST_DIR}/tryMain.c"
-			CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE=EXECUTABLE"
-				"-DCMAKE_BUILD_TYPE=Release"
+			CMAKE_FLAGS "-DCMAKE_TRY_COMPILE_TARGET_TYPE:STRING=EXECUTABLE"
+				"-DCMAKE_BUILD_TYPE:STRING=Release"
 			LINK_OPTIONS "${CMAKE_${lang}_LINK_FLAGS} ${flag}"
 			OUTPUT_VARIABLE tryCompileOutput)
 
