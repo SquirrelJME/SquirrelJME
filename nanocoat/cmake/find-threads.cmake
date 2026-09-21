@@ -15,6 +15,7 @@ include(CheckSymbolExists)
 # Do not use any form of threading if building a libretro core, as most of
 # the toolchains used are either out of date and/or broken.
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "dos" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "sdcc" OR
 	SQUIRRELJME_IS_LIBRETRO OR
 	SJME_CONFIG_ONLY_THREAD_SINGLE)
 	# Why?
