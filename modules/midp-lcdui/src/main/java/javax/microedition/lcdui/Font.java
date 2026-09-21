@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallErrorCode;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.cldc.util.CharArrayCharSequence;
 import cc.squirreljme.runtime.lcdui.font.FontUtilities;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import java.io.IOException;
@@ -208,7 +209,7 @@ public final class Font
 	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
 	 * negative or exceed the array bounds.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/06
+	 * @since 2016/09/21
 	 */
 	@Api
 	public int charsWidth(char[] __c, int __o, int __l)
@@ -219,38 +220,8 @@ public final class Font
 		if (__o < 0 || __l < 0 || (__o + __l) < 0 || (__o + __l) > __c.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		throw Debugging.todo();
-		/*
-		SQFFont sqf = this._sqf;
-		
-		// Calculate width
-		int x = 0,
-			max = 0;
-		for (int i = 0; i < __l; i++)
-		{
-			char c = __c[__o++];
-			
-			// Ignore carriage returns
-			if (c == '\r')
-				continue;
-			
-			// Next line?
-			else if (c == '\n')
-			{
-				if (x > max)
-					max = x;
-				x = 0;
-			}
-			
-			// Add character
-			else
-				x += sqf.charWidth(SQFFont.mapChar(c));
-		}
-		
-		// Return the higher of the two
-		return (x > max ? x : max);
-		
-		 */
+		// This is duplicated otherwise
+		return this.__charSeqWidth(new CharArrayCharSequence(__c), __o, __l);
 	}
 	
 	/**
@@ -566,6 +537,33 @@ public final class Font
 	 */
 	@Api
 	public int substringWidth(String __s, int __o, int __l)
+		throws NullPointerException, StringIndexOutOfBoundsException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) < 0 ||
+			(__o + __l) > __s.length())
+			throw new StringIndexOutOfBoundsException("IOOB");
+		
+		// This is duplicated otherwise
+		return this.__charSeqWidth(__s, __o, __l);
+	}
+	
+	
+	/**
+	 * Returns the width of the specified sub-string in pixels.
+	 *
+	 * @param __s The string to get the width.
+	 * @param __o The offset into the string.
+	 * @param __l The number of characters to count.
+	 * @return The width of the string in pixels.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StringIndexOutOfBoundsException If the string index is not
+	 * within bounds.
+	 * @since 2026/09/21
+	 */
+	@Api
+	public int __charSeqWidth(CharSequence __s, int __o, int __l)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
 		if (__s == null)
