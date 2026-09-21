@@ -80,6 +80,203 @@ typedef struct sjme_nvm_byteCode_invokeState
 	sjme_jmethodID virtualId;
 } sjme_nvm_byteCode_invokeState;
 
+static sjme_errorCode sjme_nvm_byteCode_slowInvokeNotStatic(
+	sjme_nvm_byteCode_invokeState* invoke)
+{
+	sjme_errorCode error;
+
+	if (invoke == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Pop. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(
+		invoke->inFrame, SJME_JAVA_TYPE_ID_OBJECT, invoke->commit,
+		&invoke->argV[0])))
+		return sjme_error_vmError(invoke->inFrame, error);
+
+	/* Cannot be null. */
+	invoke->instance = invoke->argV[0].v.l;
+	if (invoke->instance == NULL)
+		return sjme_error_vmError(invoke->inFrame,
+			SJME_ERROR_NULL_STACK_POINTER);
+
+	/* Must be the same or a compatible class as the call site. */
+	if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+		SJME_F_T(invoke->inFrame),
+		sjme_atomic_g(sjme_jclass,
+			&invoke->methodId->member.inClass),
+		SJME_O_C(invoke->instance))))
+	{
+		if (error == SJME_ERROR_CLASS_CAST)
+			return sjme_error_vmError(invoke->inFrame,
+				SJME_ERROR_CLASS_CHANGED);
+		return sjme_error_default(error);
+	}
+
+	/* Need to relookup the method if virtual, to call the right one. */
+	if (invoke->callType == SJME_NVM_CALL_VIRTUAL)
+	{
+		/* Lookup again. */
+		if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
+			sjme_atomic_g(sjme_jclass, &invoke->instance->isClass),
+			SJME_F_T(invoke->inFrame),
+			SJME_NVM_CLASS_MEMBER_INSTANCE,
+			SJME_JNI_TRUE,
+			invoke->methodId->member.name->seq,
+			invoke->methodId->member.type->seq, &invoke->virtualId)) ||
+			invoke->virtualId == NULL)
+			return sjme_error_vmError(invoke->inFrame, error);
+
+		/* Use this one instead. */
+		invoke->methodId = invoke->virtualId;
+
+		/* Since the method has changed, we need to check again that */
+		/* the target is still valid. This is mostly for sanity. */
+		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+			SJME_F_T(invoke->inFrame),
+			sjme_atomic_g(sjme_jclass,
+				&invoke->methodId->member.inClass),
+			SJME_O_C(invoke->instance))))
+		{
+			if (error == SJME_ERROR_CLASS_CAST)
+				return sjme_error_vmError(invoke->inFrame,
+					SJME_ERROR_CLASS_CHANGED);
+			return sjme_error_default(error);
+		}
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_byteCode_slowInvokeNative(
+	sjme_nvm_byteCode_invokeState* invoke,
+	sjme_errorCode error)
+{
+	if (invoke == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Perform the native call. */
+	memset(&invoke->mleArgR, 0, sizeof(invoke->mleArgR));
+	invoke->mleArgR.t = SJME_JAVA_TYPE_ID_VOID;
+
+	/* Invoke MLE call, if static we use the entry point method */
+	/* unless it has been replaced. */
+	invoke->mleError = sjme_mle_mleCall(invoke->inFrame,
+		(invoke->virtualId != NULL ? invoke->virtualId : invoke->methodId),
+		invoke->target,
+		&invoke->mleArgR,
+		invoke->argC, invoke->argV);
+
+	/* Recover and check MLE error. */
+	/* Ignore cancelled calls. */
+	if (error != SJME_ERROR_CANCEL_MLE_CALL &&
+		sjme_error_is(error = invoke->mleError))
+	{
+		/* MLECallError is a valid response. */
+		if (error == SJME_ERROR_MLE_CALL)
+			return sjme_error_default(error);
+
+		/* Unknown/Unimplemented method. */
+		else if (error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
+			error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
+		{
+#if defined(SJME_CONFIG_DEBUG_MLE)
+			sjme_message("Missing MLE: %s.%s %s",
+				sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
+					&invoke->target->inClass)->name->seq),
+				sjme_charSeq_tempUtf(invoke->target->name->seq),
+				sjme_charSeq_tempUtf(invoke->target->type->seq));
+#endif
+
+			return sjme_error_vmError(invoke->inFrame, error);
+		}
+
+		/* Emit linkage error otherwise. */
+		else if (error == SJME_ERROR_UNKNOWN_NATIVE_FUNCTION ||
+			error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
+			error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
+		{
+			if (sjme_error_is(error = sjme_nvm_task_frameEmit(invoke->inFrame,
+				SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR,
+				NULL, "LINK %s.%s %s",
+				sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
+					&invoke->target->inClass)->name->seq),
+				sjme_charSeq_tempUtf(invoke->target->name->seq),
+				sjme_charSeq_tempUtf(invoke->target->type->seq))))
+				return sjme_error_vmError(invoke->inFrame, error);
+		}
+
+		/* Anything else is considered a failure. */
+		else
+			return sjme_error_vmError(invoke->inFrame, error);
+	}
+
+	/* Only push a value if not cancelled. */
+	if (error != SJME_ERROR_CANCEL_MLE_CALL)
+	{
+		/* Wrong type? */
+		if (invoke->mleArgR.t != invoke->target->argR)
+			return sjme_error_vmError(invoke->inFrame,
+				SJME_ERROR_INVALID_METHOD_TYPE);
+
+		/* Is there a return value being pushed to the stack? */
+		if (invoke->mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
+		{
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
+			/* MLE is not responsible for counting objects. */
+			if (mleArgR.t == SJME_JAVA_TYPE_ID_OBJECT)
+				mleArgR.v.l = sjme_weakUp(mleArgR.v.l);
+#endif
+
+			/* Push to the stack. */
+			if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+				invoke->inFrame, invoke->commit, &invoke->mleArgR)))
+				return sjme_error_vmError(invoke->inFrame, error);
+		}
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_byteCode_slowInvokeNormal(
+	sjme_nvm_byteCode_invokeState* invoke)
+{
+	sjme_errorCode error;
+
+	if (invoke == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cannot be native. */
+	if (SJME_NVM_ACC_IS(invoke->target->flags, NATIVE))
+		return sjme_error_vmError(invoke->inFrame,
+			SJME_ERROR_PURE_VIRTUAL_CALL);
+
+	/* Calling a proxy class method? */
+	if (invoke->instance != NULL &&
+		SJME_NVM_ACC_IS(sjme_atomic_g(sjme_jclass,
+			&invoke->instance->isClass)->info->flags, SPECIAL_PROXY) &&
+		SJME_NVM_ACC_IS(invoke->target->flags, ABSTRACT))
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Enter the frame. */
+	invoke->newFrame = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadEnter(
+		SJME_F_T(invoke->inFrame),
+		&invoke->newFrame,
+		invoke->methodId,
+		invoke->callType,
+		invoke->argC, invoke->argV)) || invoke->newFrame == NULL)
+		return sjme_error_vmError(invoke->inFrame, error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
@@ -138,171 +335,30 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	invoke.virtualId = NULL;
 	if (!invoke.isStatic)
 	{
-		/* Pop. */
-		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(
-			inFrame, SJME_JAVA_TYPE_ID_OBJECT, commit,
-			&invoke.argV[0])))
-			return sjme_error_vmError(inFrame, error);
-
-		/* Cannot be null. */
-		invoke.instance = invoke.argV[0].v.l;
-		if (invoke.instance == NULL)
-			return sjme_error_vmError(inFrame,
-				SJME_ERROR_NULL_STACK_POINTER);
-		
-		/* Must be the same or a compatible class as the call site. */
-		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
-			SJME_F_T(inFrame),
-			sjme_atomic_g(sjme_jclass, &methodId->member.inClass),
-			SJME_O_C(invoke.instance))))
-		{
-			if (error == SJME_ERROR_CLASS_CAST)
-				return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+		/* Forward. */
+		if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeNotStatic(
+			&invoke)))
 			return sjme_error_default(error);
-		}
-		
-		/* Need to relookup the method if virtual, to call the right one. */
-		if (callType == SJME_NVM_CALL_VIRTUAL)
-		{
-			/* Lookup again. */
-			if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
-				sjme_atomic_g(sjme_jclass, &invoke.instance->isClass),
-				SJME_F_T(inFrame),
-				SJME_NVM_CLASS_MEMBER_INSTANCE,
-				SJME_JNI_TRUE,
-				methodId->member.name->seq,
-				methodId->member.type->seq, &invoke.virtualId)) ||
-				invoke.virtualId == NULL)
-				return sjme_error_vmError(inFrame, error);
-
-			/* Use this one instead. */
-			methodId = invoke.virtualId;
-			
-			/* Since the method has changed, we need to check again that */
-			/* the target is still valid. This is mostly for sanity. */
-			if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
-				SJME_F_T(inFrame),
-				sjme_atomic_g(sjme_jclass,
-					&methodId->member.inClass),
-				SJME_O_C(invoke.instance))))
-			{
-				if (error == SJME_ERROR_CLASS_CAST)
-					return sjme_error_vmError(inFrame,
-						SJME_ERROR_CLASS_CHANGED);
-				return sjme_error_default(error);
-			}
-		}
 	}
 
 	/* If native, perform an MLE call. */
 	invoke.mleError = SJME_ERROR_NONE;
 	if (SJME_NVM_ACC_IS(invoke.target->flags, NATIVE) && invoke.isStatic)
 	{
-		/* Perform the native call. */
-		memset(&invoke.mleArgR, 0, sizeof(invoke.mleArgR));
-		invoke.mleArgR.t = SJME_JAVA_TYPE_ID_VOID;
-
-		/* Invoke MLE call, if static we use the entry point method */
-		/* unless it has been replaced. */
-		invoke.mleError = sjme_mle_mleCall(inFrame,
-			(invoke.virtualId != NULL ? invoke.virtualId : methodId),
-			invoke.target,
-			&invoke.mleArgR,
-			invoke.argC, invoke.argV);
-
-		/* Recover and check MLE error. */
-		/* Ignore cancelled calls. */
-		if (error != SJME_ERROR_CANCEL_MLE_CALL &&
-			sjme_error_is(error = invoke.mleError))
-		{
-			/* MLECallError is a valid response. */
-			if (error == SJME_ERROR_MLE_CALL)
-				goto skip_mleFailed;
-			
-			/* Unknown/Unimplemented method. */
-			else if (error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
-				error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
-			{
-#if defined(SJME_CONFIG_DEBUG_MLE)
-				sjme_message("Missing MLE: %s.%s %s",
-					sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
-						&invoke.target->inClass)->name->seq),
-					sjme_charSeq_tempUtf(invoke.target->name->seq),
-					sjme_charSeq_tempUtf(invoke.target->type->seq));
-#endif
-				
-				return sjme_error_vmError(inFrame, error);
-			}
-			
-			/* Emit linkage error otherwise. */
-			else if (error == SJME_ERROR_UNKNOWN_NATIVE_FUNCTION ||
-				error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
-				error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
-			{
-				if (sjme_error_is(error = sjme_nvm_task_frameEmit(inFrame,
-					SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR,
-					NULL, "LINK %s.%s %s",
-					sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
-						&invoke.target->inClass)->name->seq),
-					sjme_charSeq_tempUtf(invoke.target->name->seq),
-					sjme_charSeq_tempUtf(invoke.target->type->seq))))
-					return sjme_error_vmError(inFrame, error);
-			}
-			
-			/* Anything else is considered a failure. */
-			else
-				return sjme_error_vmError(inFrame, error);
-		}
-
-		/* Only push a value if not cancelled. */
-		if (error != SJME_ERROR_CANCEL_MLE_CALL)
-		{
-			/* Wrong type? */
-			if (invoke.mleArgR.t != invoke.target->argR)
-				return sjme_error_vmError(inFrame,
-					SJME_ERROR_INVALID_METHOD_TYPE);
-
-			/* Is there a return value being pushed to the stack? */
-			if (invoke.mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
-			{
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-				/* MLE is not responsible for counting objects. */
-				if (mleArgR.t == SJME_JAVA_TYPE_ID_OBJECT)
-					mleArgR.v.l = sjme_weakUp(mleArgR.v.l);
-#endif
-				
-				/* Push to the stack. */
-				if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-					inFrame, commit, &invoke.mleArgR)))
-					return sjme_error_vmError(inFrame, error);
-			}
-		}
+		/* Note that the MLE call can be cancelled. */
+		if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeNative(
+			&invoke, error)))
+			return sjme_error_default(error);
 	}
 
 	/* Enter new stack frame for the target method, or at least try. */
 	else
 	{
-		/* Cannot be native. */
-		if (SJME_NVM_ACC_IS(invoke.target->flags, NATIVE))
-			return sjme_error_vmError(inFrame, SJME_ERROR_PURE_VIRTUAL_CALL);
-		
-		/* Enter the frame. */
-		invoke.newFrame = NULL;
-		if (sjme_error_is(error = sjme_nvm_task_threadEnter(
-			SJME_F_T(inFrame),
-			&invoke.newFrame,
-			methodId,
-			callType,
-			invoke.argC, invoke.argV)) || invoke.newFrame == NULL)
-			return sjme_error_vmError(inFrame, error);
+		/* Normal call. */
+		if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeNormal(
+			&invoke)))
+			return sjme_error_default(error);
 	}
-
-	/* Commit any pending GC objects. */
-skip_mleFailed:
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, commit)))
-		return sjme_error_vmError(inFrame, error);
-#endif
 
 	/* Success? */
 	if (sjme_error_is(invoke.mleError))
