@@ -865,7 +865,7 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	result->initConfig = initConfigCopy;
 
 	/* Initialize identity hashcode generator. */
-	if (sjme_error_is(error = sjme_random_init(&result->idHash,
+	if (sjme_error_is(error = sjme_random_init(&result->globals.idHash,
 		INT32_C(0x43757465), INT32_C(0x53716B21))))
 		goto fail_initIdHash;
 

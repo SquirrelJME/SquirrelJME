@@ -255,6 +255,12 @@ typedef enum sjme_nvm_class_specialFlags
 
 	/** Synthetically created by the virtual machine. */
 	SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC = INT32_C(0x00100000),
+
+	/**
+	 * Is a proxy method and must be called through a handler, or is a proxy
+	 * class and as such has extra restrictions.
+	 */
+	SJME_NVM_ACC_SPECIAL_PROXY = INT32_C(0x00200000),
 } sjme_nvm_class_specialFlags;
 
 /**

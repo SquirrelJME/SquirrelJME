@@ -42,7 +42,7 @@ sjme_jint sjme_nvm_instance_calcIdentityHash(
 	/* Use random base PRNG from task. */
 	base = 0;
 	if (inTask != NULL)
-		base = sjme_random_nextIntR(&inTask->idHash);
+		base = sjme_random_nextIntR(&inTask->globals.idHash);
 	
 	/* Then based on the pointer. */
 #if defined(SJME_CONFIG_HAS_POINTER64)

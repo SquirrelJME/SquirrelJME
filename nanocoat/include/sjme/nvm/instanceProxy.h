@@ -83,6 +83,28 @@ typedef sjme_errorCode (*sjme_nvm_instance_proxyHandlerFunc)(
  * @param contextThread The thread this is initializing under.
  * @param outClass The resultant class.
  * @param handler The handler for proxied calls.
+ * @param numInterfaces The number of interfaces to proxy.
+ * @param inInterfaces The interfaces to be proxied, these must only be
+ * interfaces.
+ * @return Any resultant error, if any.
+ * @since 2026/09/19
+ */
+sjme_errorCode sjme_nvm_instance_proxyClassA(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNotNull sjme_jclass* outClass,
+	sjme_attrInNotNull sjme_nvm_instance_proxyHandlerFunc handler,
+	sjme_attrInPositiveNonZero sjme_jint numInterfaces,
+	sjme_attrInNotNull sjme_jclass* inInterfaces);
+
+/**
+ * Initialize a proxy class which can then be used to initialize new object
+ * instances which call @link sjme_nvm_instance_proxyHandlerFunc @endlink to
+ * handle method calls. This cannot be used to create a proxy class of an
+ * already existing proxy class. Only instance methods are proxied.
+ *
+ * @param contextThread The thread this is initializing under.
+ * @param outClass The resultant class.
+ * @param handler The handler for proxied calls.
  * @param inInterfaces The interfaces to be proxied, these must only be
  * interfaces.
  * @return Any resultant error, if any.

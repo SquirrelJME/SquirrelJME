@@ -582,6 +582,15 @@ typedef struct sjme_nvm_task_globals
 
 	/** No optimization? */
 	sjme_jboolean noOptimize;
+
+	/** The next frame ID for this task, used for JDWP and debugging. */
+	sjme_atomic(sjme_jint) nextFrameId;
+
+	/** The identity hashcode generator. */
+	sjme_random idHash;
+
+	/** The next sequential ID. */
+	sjme_atomic(sjme_jint) sequencedId;
 } sjme_nvm_task_globals;
 
 typedef enum sjme_nvm_task_threadCountType
@@ -640,14 +649,8 @@ struct sjme_nvm_taskBase
 	/** Globals for the task. */
 	sjme_nvm_task_globals globals;
 
-	/** The next frame ID for this task, used for JDWP and debugging. */
-	sjme_atomic(sjme_jint) nextFrameId;
-
 	/** The task initialization configuration. */
 	const sjme_nvm_task_taskNewConfig* initConfig;
-
-	/** The identity hashcode generator. */
-	sjme_random idHash;
 
 	/** Is this the main task. */
 	sjme_jboolean isMain;

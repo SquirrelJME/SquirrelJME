@@ -414,7 +414,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	result->inClass = sjme_weakUp(sjme_atomic_g(sjme_jclass,
 		&inMethod->member.inClass));
 	result->id = sjme_atomic_ga(sjme_jint, 
-		&SJME_T_K(inThread)->nextFrameId, 1) + 1;
+		&SJME_T_K(inThread)->globals.nextFrameId, 1) + 1;
 	result->index = inThread->numFrames;
 	result->inMethod = sjme_weakUp(inMethod);
 	sjme_atomic_s(sjme_nvm, &result->inState, SJME_F_S(inThread));
