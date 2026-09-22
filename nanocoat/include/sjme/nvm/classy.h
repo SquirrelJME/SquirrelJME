@@ -261,6 +261,9 @@ typedef enum sjme_nvm_class_specialFlags
 	 * class and as such has extra restrictions.
 	 */
 	SJME_NVM_ACC_SPECIAL_PROXY = INT32_C(0x00200000),
+
+	/** This is a primitive type. */
+	SJME_NVM_ACC_SPECIAL_PRIMITIVE = INT32_C(0x00400000),
 } sjme_nvm_class_specialFlags;
 
 /**

@@ -8,6 +8,8 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/nvm/instanceProxy.h"
+#include "sjme/nvm/classyVmClass.h"
+#include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/task.h"
 
 sjme_errorCode sjme_nvm_instance_proxyClassA(
@@ -19,11 +21,19 @@ sjme_errorCode sjme_nvm_instance_proxyClassA(
 {
 #define VIRTUAL_NAME_LEN 64
 	sjme_jint i, identityHash, basicIndex, xorHash;
+	sjme_nvm inState;
 	sjme_errorCode error;
 	sjme_jclass* set;
 	sjme_jclass checkClass;
 	sjme_cchar virtualName[VIRTUAL_NAME_LEN];
+	sjme_charSeqStatic virtualSeq;
 	sjme_cchar letter;
+	sjme_alloc_pool allocPool;
+	sjme_nvm_stringPool strings;
+	sjme_nvm_class_info info;
+	sjme_nvm_stringPool_string thisName, superName;
+	sjme_jclass result;
+	sjme_nvm_vmClass_loader classLoader;
 
 	if (contextThread == NULL || outClass == NULL || handler == NULL ||
 		inInterfaces == NULL)
@@ -31,6 +41,15 @@ sjme_errorCode sjme_nvm_instance_proxyClassA(
 
 	if (numInterfaces <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* These are rather useful. */
+	inState = SJME_F_S(contextThread);
+	allocPool = SJME_F_S(contextThread)->allocPool;
+	classLoader = SJME_T_CL(contextThread);
+	strings = classLoader->nullStrings;
+
+	if (inState == NULL || allocPool == NULL || strings == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* Allocate for a defensive copy. */
 	set = sjme_alloca(sizeof(*set) * (numInterfaces + 1));
@@ -85,7 +104,7 @@ sjme_errorCode sjme_nvm_instance_proxyClassA(
 			!sjme_atomic_g(sjme_jint, &checkClass->isInitialized))
 			if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(checkClass,
 				contextThread)))
-				goto fail_initClass;
+				goto fail_initDepend;
 
 		/* XOR in its identity hash to make some unique-ish ID. */
 		xorHash ^= checkClass->object.identityHash;
@@ -106,15 +125,120 @@ sjme_errorCode sjme_nvm_instance_proxyClassA(
 	/* with things in the default package. */
 	memset(virtualName, 0, sizeof(virtualName));
 	snprintf(virtualName, VIRTUAL_NAME_LEN - 1,
-		"$__sjme_x_$%c$_$%08x%02x/$%08x%02x$__",
+		"L$__sjme_x_$%c$_$%08x%02x/$%08x%02x$__;",
 		letter,
 		basicIndex, identityHash & 0xFF,
 		identityHash, basicIndex & 0xFF);
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Make it a sequence. */
+	memset(&virtualSeq, 0, sizeof(virtualSeq));
+	if (sjme_error_is(error = sjme_charSeq_newUtfStatic(&virtualSeq,
+		virtualName, 0, VIRTUAL_NAME_LEN)))
+		goto fail_seqName;
 
-fail_initClass:
+	/* Allocate synthetic result. */
+	info = NULL;
+	if (sjme_error_is(error = sjme_nvm_alloc(inState,
+		sizeof(*info), SJME_NVM_STRUCT_CLASS_INFO,
+		SJME_AS_NVM_COMMONP(&info))) || info == NULL)
+	{
+		error = sjme_error_outOfMemory(inState->allocPool, sizeof(*info));
+		goto fail_allocInfo;
+	}
+
+	/* Lookup self name. */
+	thisName = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
+		strings, &thisName, virtualName, 0, strlen(virtualName))) ||
+		thisName == NULL)
+		goto fail_thisName;
+
+	/* The super class is always Object. */
+	superName = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
+		strings, &superName, "java/lang/Object", 0, -1)) || superName == NULL)
+		goto fail_superName;
+
+	/* Set class information. */
+	info->version = SJME_NVM_CLASS_CLDC_1_8;
+	info->flags = SJME_NVM_ACC_PUBLIC | SJME_NVM_ACC_FINAL |
+		SJME_NVM_ACC_SYNTHETIC | SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC |
+		SJME_NVM_ACC_SPECIAL_PROXY;
+	info->name = sjme_weakUpR(sjme_nvm_stringPool_string, thisName);
+	info->superName = sjme_weakUpR(sjme_nvm_stringPool_string, superName);
+
+	/* Lookup and copy interfaces over. */
+	info->interfaceNames = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_poolNamesLFromClassesA(
+		inState, SJME_JNI_TRUE,
+		&info->interfaceNames, numInterfaces, set)) ||
+		info->interfaceNames == NULL)
+		goto fail_lookupNames;
+
+	/* Basic lock on class loading as we just want to make a class. */
+	if (sjme_error_is(error = sjme_thread_rwLockGrabRead(
+		&classLoader->rwLock)))
+		goto fail_lockRead;
+
+	/* Load in an uninitialized class. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadF(
+		SJME_T_CL(contextThread), &result, contextThread,
+		&virtualSeq, SJME_JNI_FALSE)) || result == NULL)
+		goto fail_loadFillerClass;
+
+	/* Fully lock class load. */
+	if (sjme_error_is(error = sjme_thread_rwLockGrabWrite(
+		&classLoader->rwLock)))
+		goto fail_lockWrite;
+
+	/* Use our virtualized class info. */
+	result->info = info;
+	result->special |= SJME_NVM_ACC_SPECIAL_PROXY |
+		SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC;
+
+	/* Release the write lock. */
+	if (sjme_error_is(error = sjme_thread_rwLockReleaseWrite(
+		&classLoader->rwLock, NULL)))
+		goto fail_releaseWrite;
+
+	/* Release the read lock. */
+	if (sjme_error_is(error = sjme_thread_rwLockReleaseRead(
+		&classLoader->rwLock, NULL)))
+		goto fail_releaseRead;
+
+	/* Now actually initialize the class, independent of everything else */
+	/* note that we never clean up after this state as info is valid. */
+	if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(result,
+		contextThread)))
+		return sjme_error_default(error);
+
+	/* Return the resultant class. */
+	*outClass = result;
+	return SJME_ERROR_NONE;
+
+	/* In both locks. */
+fail_lockWrite:
+	if (classLoader != NULL)
+		sjme_thread_rwLockReleaseWrite(&classLoader->rwLock, NULL);
+
+	/* In only read lock. */
+fail_releaseWrite:
+fail_loadFillerClass:
+fail_lockRead:
+	if (classLoader != NULL)
+		sjme_thread_rwLockReleaseRead(&classLoader->rwLock, NULL);
+
+	/* Outside both lock. */
+fail_releaseRead:
+fail_lookupNames:
+fail_superName:
+fail_thisName:
+fail_allocInfo:
+	if (info != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(info));
+fail_seqName:
+fail_initDepend:
 fail_noClass:
 fail_alloca:
 	if (set != NULL)

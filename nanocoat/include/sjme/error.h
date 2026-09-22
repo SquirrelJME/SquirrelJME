@@ -619,9 +619,12 @@ typedef enum sjme_errorCode
 
 	/** The manifest format is not valid. */
 	SJME_ERROR_INVALID_MANIFEST_FORMAT = -191,
+
+	/** The type of class this is, is not valid. */
+	SJME_ERROR_INVALID_CLASS_TYPE = -192,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -192,
+	SJME_NUM_ERROR_CODES = -193,
 } sjme_errorCode;
 
 /**

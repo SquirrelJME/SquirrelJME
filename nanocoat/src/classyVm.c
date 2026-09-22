@@ -638,7 +638,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	/* Synthesize info for arrays. */
 	info->version = SJME_NVM_CLASS_CLDC_1_8;
 	info->flags = SJME_NVM_ACC_PUBLIC | SJME_NVM_ACC_FINAL |
-		SJME_NVM_ACC_SYNTHETIC;
+		SJME_NVM_ACC_SYNTHETIC | SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC;
 	info->isArray = SJME_JNI_TRUE;
 
 	/* Indicate that this is a virtual machine synthetic as we really we */
@@ -715,12 +715,14 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
 	info->version = SJME_NVM_CLASS_CLDC_1_8;
 	info->superName = NULL;
 	info->flags = SJME_NVM_ACC_PUBLIC | SJME_NVM_ACC_FINAL |
-		SJME_NVM_ACC_SYNTHETIC;
+		SJME_NVM_ACC_SYNTHETIC | SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC |
+		SJME_NVM_ACC_SPECIAL_PRIMITIVE;
 
 	/* Indicate that this is a virtual machine synthetic as we really we */
 	/* would like to know that. There is the synthetic class attribute but */
 	/* this can come from real classes. */
-	inClass->special = SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC;
+	inClass->special = SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC |
+		SJME_NVM_ACC_SPECIAL_PRIMITIVE;
 
 	/* Set synthetic class info. */
 	inClass->info = sjme_weakUpR(sjme_nvm_class_info, info);
@@ -1040,6 +1042,10 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 
 	/* Promote the array type to the stack type. */
 	result->typeId = sjme_nvm_typePromote[result->arrayTypeId];
+
+	/* If this is not an object type, then this is a primitive. */
+	if (result->arrayTypeId != SJME_JAVA_TYPE_ID_OBJECT)
+		result->special |= SJME_NVM_ACC_SPECIAL_PRIMITIVE;
 
 	/* Classes start as never loaded. */
 	autoLoad = SJME_VM_CLASS_INIT_LOAD_NEVER;
@@ -1482,8 +1488,14 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 		SJME_VM_CLASS_INIT_LOAD_CURRENT))
 		goto skip_doubleCalled;
 
+	/* Virtual machine synthetic? */
+	if (SJME_NVM_ACC_IS(inClass->special, SPECIAL_VM_SYNTHETIC))
+	{
+		/* Nothing is done here, the class just "is". */
+	}
+
 	/* Array type? */
-	if (SJME_ERROR_NONE ==
+	else if (SJME_ERROR_NONE ==
 		sjme_charSeq_charAtIs(inClass->fieldName, 0, '['))
 	{
 		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitArray(inClass,
@@ -1499,13 +1511,20 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 			contextThread, classLoader)))
 			goto fail_initSpecific;
 	}
-	
+
 	/* Primitive Type */
+	else if (SJME_NVM_ACC_IS(inClass->special, SPECIAL_PRIMITIVE))
+	{
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitPrimitive(
+			inClass, contextThread, classLoader)))
+			goto fail_initSpecific;
+	}
+
+	/* Invalid. */
 	else
 	{
-		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitPrimitive(inClass,
-			contextThread, classLoader)))
-			goto fail_initSpecific;
+		error = SJME_ERROR_INVALID_CLASS_TYPE;
+		goto fail_invalidClass;
 	}
 
 #if defined(SJME_CONFIG_HAS_BROKEN_CODE)
@@ -1539,6 +1558,7 @@ skip_doubleCalled:
 fail_noClassFound:
 fail_badTryLib:
 fail_allocIsClasses:
+fail_invalidClass:
 fail_initSpecific:
 fail_findClassType:
 	sjme_thread_spinLockRelease(
