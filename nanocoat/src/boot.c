@@ -40,27 +40,35 @@ static const sjme_lpcstr sjme_defaultScritchUi[] =
 	"win32",
 #elif defined(SJME_CONFIG_HAS_OS_MACOS)
 	"cocoa",
-#elif defined(SJME_CONFIG_HAS_OS_POSIX) || \
+#elif defined(SJME_CONFIG_HAS_OS_BSD_FAMILY) || \
+	defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
 	defined(SJME_CONFIG_HAS_OS_LINUX) || \
-	defined(SJME_CONFIG_HAS_OS_BSD_FAMILY)
+	defined(SJME_CONFIG_HAS_OS_POSIX)
 	"wayland",
 	"x11",
 #endif
 
-	/* Every other interface, and future interface, in order. */
-	"cocoa",
-	"gtk2",
-	"gtk3",
-	"gtk4",
-	"motif",
-	"palmos",
-	"qt4"
-	"qt5",
+	/* More Modern. */
 	"qt6",
+	"gtk4",
+	"wayland",
+
+	/* Recent enough. */
+	"qt5",
+	"qt4"
+	"gtk3",
+
+	/* Older. */
+	"gtk2",
+	"motif",
 	"tk",
+	"x11",
+
+	/* System specific interfaces. */
+	"cocoa",
+	"palmos",
 	"toolbox",
 	"win32",
-	"x11",
 
 	/* End. */
 	NULL,
@@ -423,7 +431,7 @@ static sjme_errorCode sjme_nvm_initScritchUi(
 		/* Check XDG or some other env var? */
 		else if (minorId == 2)
 		{
-#if defined(SJME_CONFIG_HAS_OS_BSD) || \
+#if defined(SJME_CONFIG_HAS_OS_BSD_FAMILY) || \
 	defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
 	defined(SJME_CONFIG_HAS_OS_LINUX) || \
 	defined(SJME_CONFIG_HAS_OS_POSIX)
