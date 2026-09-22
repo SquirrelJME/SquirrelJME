@@ -367,13 +367,18 @@ static sjme_errorCode sjme_nvm_initScritchUi(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNullable sjme_lpcstr prefer)
 {
+#define NUM_SUI_FIXED 3
+#define MAX_XDG_NAME 32
 	sjme_errorCode error;
+	sjme_scritchui result;
+#if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
 	sjme_jint majorId, minorId;
 	sjme_path majorPath, minorPath;
 	sjme_lpcstr externDefault, tryInterface;
-	sjme_scritchui result;
 	sjme_cchar libName[SJME_MAX_FILE_NAME];
+	sjme_cchar xdgName[MAX_XDG_NAME];
 	sjme_dylib handle;
+#endif
 
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -415,15 +420,59 @@ static sjme_errorCode sjme_nvm_initScritchUi(
 		else if (minorId == 1)
 			tryInterface = externDefault;
 
+		/* Check XDG or some other env var? */
+		else if (minorId == 2)
+		{
+#if defined(SJME_CONFIG_HAS_OS_BSD) || \
+	defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
+	defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_POSIX)
+			/* Determine a default UI based on the XDG standard. */
+			memset(xdgName, 0, sizeof(xdgName));
+			if (inState->nal != NULL && inState->nal->getEnv != NULL)
+				if (sjme_error_is(error = inState->nal->getEnv(
+					&xdgName[0], MAX_XDG_NAME - 1,
+					"XDG_CURRENT_DESKTOP")))
+				{
+					/* These specific errors are okay and should not cause */
+					/* this to fail. */
+					if (error != SJME_ERROR_NO_SUCH_ELEMENT &&
+						error != SJME_ERROR_INDEX_OUT_OF_BOUNDS &&
+						error != SJME_ERROR_NOT_IMPLEMENTED)
+						return sjme_error_default(error);
+
+					/* Wipe so that it is invalidated. */
+					memset(xdgName, 0, sizeof(xdgName));
+				}
+
+			/* Defaults which seem to make sense. */
+			if (0 == strncasecmp(xdgName, "KDE", MAX_XDG_NAME) ||
+				0 == strncasecmp(xdgName, "LXQt", MAX_XDG_NAME))
+				tryInterface = "qt5";
+			else if (0 == strncasecmp(xdgName, "Cinnamon", MAX_XDG_NAME) ||
+				0 == strncasecmp(xdgName, "GNOME", MAX_XDG_NAME))
+				tryInterface = "gtk3";
+			else if (0 == strncasecmp(xdgName, "LXDE", MAX_XDG_NAME) ||
+				0 == strncasecmp(xdgName, "MATE", MAX_XDG_NAME))
+				tryInterface = "gtk2";
+			else if (0 == strncasecmp(xdgName, "wmaker", MAX_XDG_NAME) ||
+				0 == strncasecmp(xdgName, "windowmaker", MAX_XDG_NAME))
+				tryInterface = "cocoa";
+#else
+			/* XDG is going to be undefined for this system. */
+			tryInterface = NULL;
+#endif
+		}
+
 		/* Otherwise, from a built-in list. */
 		else
-			tryInterface = sjme_defaultScritchUi[minorId - 2];
+			tryInterface = sjme_defaultScritchUi[minorId - NUM_SUI_FIXED];
 
 		/* No interfaces left to try? */
 		if (tryInterface == NULL)
 		{
 			/* Or skip the initial defaults? */
-			if (minorId < 2)
+			if (minorId < NUM_SUI_FIXED)
 				continue;
 
 			/* Always headless in this case. */
@@ -490,6 +539,8 @@ static sjme_errorCode sjme_nvm_initScritchUi(
 
 	/* Could not find anything. */
 	return SJME_ERROR_HEADLESS_DISPLAY;
+#undef NUM_SUI_FIXED
+#undef MAX_XDG_NAME
 }
 
 sjme_errorCode sjme_nvm_boot(
