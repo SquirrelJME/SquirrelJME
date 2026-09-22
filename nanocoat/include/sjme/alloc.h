@@ -43,6 +43,20 @@ extern "C" {
 typedef struct sjme_alloc_linkBase sjme_alloc_linkBase;
 
 /**
+ * Allocation link meta-info.
+ *
+ * @since 2026/09/22
+ */
+typedef struct sjme_alloc_linkMetaBase sjme_alloc_linkMetaBase;
+
+/**
+ * Allocation link meta-info.
+ *
+ * @since 2026/09/22
+ */
+typedef volatile sjme_alloc_linkMetaBase* sjme_alloc_linkMeta;
+
+/**
  * Allocation link chain, each is a chain between each allocation.
  * 
  * @since 2023/11/18
@@ -81,6 +95,9 @@ typedef enum sjme_alloc_linkFlag
 
 	/** Weakly referenced. */
 	SJME_ALLOC_LINK_WEAK = 2,
+
+	/** Has extra meta info (debug). */
+	SJME_ALLOC_LINK_HAS_META = 4,
 } sjme_alloc_linkFlag;
 
 /**
@@ -146,6 +163,24 @@ struct sjme_alloc_weakBase
 	sjme_alignPointer sjme_atomic(sjme_jint) inEnqueue;
 };
 
+struct sjme_alloc_linkMetaBase
+{
+	/** The file of this allocation. */
+	sjme_lpcstr debugFile;
+
+	/** The line of this allocation. */
+	sjme_jint debugLine;
+
+	/** The function of this allocation. */
+	sjme_lpcstr debugFunction;
+
+	/** The size of this structure. */
+	sjme_jint metaSize;
+
+	/** Is there an indicator of meta-information? */
+	sjme_jint metaGuard;
+};
+
 struct sjme_alloc_linkBase
 {
 	/** The front guard. */
@@ -181,22 +216,11 @@ struct sjme_alloc_linkBase
 	/** Link flags. */
 	sjme_jint flags;
 
-#if defined(SJME_CONFIG_DEBUG)
-	/** The file of this allocation. */
-	sjme_lpcstr debugFile;
-	
-	/** The line of this allocation. */
-	sjme_jint debugLine;
-	
-	/** The function of this allocation. */
-	sjme_lpcstr debugFunction;
-#endif
-	
 	/** The back guard. */
 	sjme_jint guardBack;
 	
 	/** The memory block. */
-	sjme_jubyte block[sjme_flexibleArrayCount];
+	sjme_alignPointer sjme_jubyte block[sjme_flexibleArrayCount];
 };
 
 /**
@@ -263,6 +287,9 @@ struct sjme_alloc_poolBase
 	
 	/** Next pool in multi-pool chain allocation. */
 	sjme_alloc_pool nextPool;
+
+	/** The @code sizeof() @endcode @link sjme_alloc_linkMetaBase @endlink. */
+	sjme_jint sizeOfLinkMeta;
 	
 	/** The front chain link. */
 	sjme_atomic(sjme_alloc_link) frontLink;
@@ -490,6 +517,16 @@ sjme_errorCode sjme_alloc_strdupR(
 	sjme_attrOutNotNull sjme_lpstr* outString,
 	sjme_attrInNotNull sjme_lpcstr stringToCopy
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Returns the link meta info.
+ *
+ * @param inLink The link to get the meta info for.
+ * @return The meta info for the link or @code NULL @endcode if there is none.
+ * @since 2026/09/22
+ */
+sjme_alloc_linkMeta sjme_alloc_linkMetaR(
+	sjme_attrInNullable sjme_alloc_link inLink);
 
 /**
  * Returns the count of a weak reference.
