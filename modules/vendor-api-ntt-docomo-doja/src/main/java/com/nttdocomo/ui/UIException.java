@@ -22,48 +22,48 @@ public class UIException
 {
 	@Api
 	public static final int BUSY_RESOURCE = 3;
-	
+
 	@Api
 	public static final int ILLEGAL_STATE = 1;
-	
+
 	@Api
 	public static final int NO_RESOURCES = 2;
-	
+
 	@Api
 	public static final int STATUS_FIRST = 0;
-	
+
 	@Api
 	public static final int STATUS_LAST = 63;
-	
+
 	@Api
 	public static final int UNDEFINED = 0;
-	
+
 	@Api
 	public static final int UNSUPPORTED_FORMAT = 4;
-	
+
 	/** Represents the status of the exception. */
 	private final int _status;
-	
+
 	@Api
 	public UIException()
 	{
 		this(UIException.UNDEFINED);
 	}
-	
+
 	@Api
 	public UIException(int __status)
 	{
 		this(__status, null);
 	}
-	
+
 	@Api
 	public UIException(int __status, String __message)
 	{
 		super(__message);
-		
+
 		this._status = __status;
 	}
-	
+
 	@Api
 	public int getStatus()
 	{
