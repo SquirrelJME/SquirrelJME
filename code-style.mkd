@@ -6,7 +6,18 @@ code and contributions must follow these.
 # Universal
 
 These apply everywhere, including both C and Java, in all files and
-documentation.
+documentation. Enforcing these universal guidelines results in a project that
+is easier to debug, maintain, and understand.
+
+As an example, during development of SpringCoat and NanoCoat these guidelines
+allow otherwise invalid state to be detected where otherwise they would not.
+As time passes within a program, once the program enters an invalid state the
+later it is detected the more difficult and unreliable it will be to debug.
+This is because the original cause of the issue is in the past, whereas the
+program being debugged is in the present. Overall, when an issue occurs in
+the runtime library or the virtual machine, the average time to find and fix
+any issues is _under half an hour_ and some issues _take five minutes_ to be
+fixed. Spending many hours, or even days, on an issue is _rare_.
 
 ## All Inputs/Parameters Must Be Checked, No Assumptions
 
@@ -27,7 +38,7 @@ to debug the caller.
 
 Everything is fail fast, this means that when an error condition or unknown
 state is reached that the program fails at the soonest possible moment. It
-must be belay exceptions nor ignore exceptions unless required to do so.
+must not belay exceptions nor ignore exceptions unless required to do so.
 
 Failing fast allows for more accessible debugging.
 
@@ -41,7 +52,20 @@ Methods which do nothing is a contract that it does nothing, and as such that
 has a side effect of doing nothing and whatever that entails. Failing indicates
 that the program is no longer valid.
 
-Incomplete code is a failure condition and state.
+Incomplete code is a failure condition and a failure state.
+
+## Do It Right The First Time, Patience First
+
+Having a correct implementation and algorithm is more important than having a
+fast one, and also more important than having a quickly written one. If the
+correct solution takes longer compared to a shorter solution, then the longer
+solution is the correct one. Patience is a virtue.
+
+As an example, ScritchUI which completely replaced the old UI subsystem and
+effectively fixed all the bugs and incompatibilities took _six months_ to
+develop. It was very worth it.
+
+Naturally, if this cannot be done then a failing TODO is more effective.
 
 # C
 
