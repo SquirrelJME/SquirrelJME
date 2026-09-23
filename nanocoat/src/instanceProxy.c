@@ -194,6 +194,7 @@ sjme_errorCode sjme_nvm_instance_proxyClassA(
 
 	/* Use our virtualized class info. */
 	result->info = info;
+	result->proxyHandler = handler;
 	result->special |= SJME_NVM_ACC_SPECIAL_PROXY |
 		SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC;
 

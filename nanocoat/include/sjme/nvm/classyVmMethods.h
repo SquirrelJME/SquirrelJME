@@ -49,6 +49,9 @@ typedef enum sjme_nvm_methodCallType
 	
 	/** Virtual super call. */
 	SJME_NVM_CALL_SUPER,
+
+	/** Proxy call. */
+	SJME_NVM_CALL_PROXY,
 	
 	/** The number of call types. */
 	SJME_NVM_NUM_METHOD_CALL_TYPE,
@@ -88,7 +91,8 @@ struct sjme_jmethodIDBase
  * Looks up a method ID from an interface call.
  * 
  * @param contextThread The current context thread.
- * @param required Is this required to be found?
+ * @param allowAbstract Allow an abstract method to be chosen? This is
+ * generally used for selecting proxy targets or for reflective purposes.
  * @param outID The resultant method ID.
  * @param forObject The object this is for.
  * @param forMember The interface this is invoking.
@@ -97,7 +101,7 @@ struct sjme_jmethodIDBase
  */
 sjme_errorCode sjme_nvm_vmMethod_idByInterface(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInValue sjme_jboolean required,
+	sjme_attrInValue sjme_jboolean allowAbstract,
 	sjme_attrOutNotNull sjme_jmethodID* outID,
 	sjme_attrInNotNull sjme_jobject forObject,
 	sjme_attrInNotNull sjme_nvm_class_poolEntryMember* forMember);

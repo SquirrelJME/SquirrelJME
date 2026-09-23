@@ -14,7 +14,7 @@
 
 sjme_errorCode sjme_nvm_vmMethod_idByInterface(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInValue sjme_jboolean required,
+	sjme_attrInValue sjme_jboolean allowAbstract,
 	sjme_attrOutNotNull sjme_jmethodID* outID,
 	sjme_attrInNotNull sjme_jobject forObject,
 	sjme_attrInNotNull sjme_nvm_class_poolEntryMember* forMember)
@@ -110,24 +110,34 @@ sjme_errorCode sjme_nvm_vmMethod_idByInterface(
 	{
 		/* No method is considered valid enough. */
 		if (error == SJME_ERROR_NO_METHOD)
-			goto skip_noMethod;
+			goto skip_lastAttempt;
 			
 		return sjme_error_vmError(contextThread, error);
 	}
 
 	/* Properly found method? */
-	if (selfFound != NULL && SJME_NVM_ACC_IS(selfFound->flags, PUBLIC) &&
-		!SJME_NVM_ACC_IS(selfFound->flags, ABSTRACT))
+	/* Note that if we are not allowing looking of abstract methods, then */
+	/* any method we find is acceptable. */
+	if (selfFound != NULL && SJME_NVM_ACC_IS(selfFound->flags, PUBLIC))
+		if (allowAbstract || (!allowAbstract &&
+			!SJME_NVM_ACC_IS(selfFound->flags, ABSTRACT)))
+		{
+			*outID = selfFound;
+			return SJME_ERROR_NONE;
+		}
+
+skip_lastAttempt:
+	/* If we are allowing abstract methods and we did find a defined */
+	/* interface, we will allow it for reflective/proxy purposes. */
+	if (allowAbstract && interfaceMethod != NULL)
 	{
-		*outID = selfFound;
+		*outID = interfaceMethod;
 		return SJME_ERROR_NONE;
 	}
 	
 	/* Not found. */
 skip_noMethod:
-	if (!required)
-		return SJME_ERROR_NO_METHOD;
-	return sjme_error_vmError(contextThread, SJME_ERROR_NO_METHOD);
+	return SJME_ERROR_NO_METHOD;
 }
 
 sjme_errorCode sjme_nvm_vmMethod_idByNameType(

@@ -33,6 +33,9 @@ typedef struct sjme_nvm_byteCode_invokeState
 {
 	/** The frame this is called from. */
 	sjme_nvm_frame inFrame;
+
+	/** The thread this is being called in. */
+	sjme_nvm_thread inThread;
 	
 	/** The GC commit. */ 
 	sjme_nvm_frame_gcCommit* commit;
@@ -78,6 +81,9 @@ typedef struct sjme_nvm_byteCode_invokeState
 	
 	/** The method ID. */
 	sjme_jmethodID virtualId;
+
+	/** The class this is in, if known. */
+	sjme_jclass isClass;
 } sjme_nvm_byteCode_invokeState;
 
 static sjme_errorCode sjme_nvm_byteCode_slowInvokeNotStatic(
@@ -280,6 +286,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeNormal(
 static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNullable sjme_jobject instance,
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInRange(0, SJME_NVM_NUM_METHOD_CALL_TYPE)
@@ -289,12 +296,17 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	sjme_errorCode error;
 	sjme_nvm_byteCode_invokeState invoke;
 
-	if (inFrame == NULL || methodId == NULL || commit == NULL)
+	if (inFrame == NULL || commit == NULL || methodId == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Proxy calls always need an instance. */
+	if (callType == SJME_NVM_CALL_PROXY && instance == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Copy state. */
 	memset(&invoke, 0, sizeof(invoke));
 	invoke.inFrame = inFrame;
+	invoke.inThread = SJME_F_T(inFrame);
 	invoke.commit = commit;
 	invoke.instanceType = instanceType;
 	invoke.callType = callType;
@@ -307,7 +319,15 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			sjme_error_defaultOr(error, SJME_ERROR_CLASS_CHANGED));
 
 	/* Get the non-virtual target info. */
-	invoke.target = methodId->info[callType];
+	/* Note that proxies are always virtual. */
+	if (callType == SJME_NVM_CALL_PROXY)
+		invoke.target = methodId->info[SJME_NVM_CALL_VIRTUAL];
+	else
+		invoke.target = methodId->info[callType];
+
+	/* Call target information is missing? */
+	if (invoke.target == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Static-ness is wrong? */
 	invoke.isStatic = SJME_NVM_ACC_IS(invoke.target->flags, STATIC);
@@ -330,9 +350,12 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			invoke.target->argC, invoke.target->argT, invoke.argVParam)))
 			return sjme_error_vmError(inFrame, error);
 
-	/* Pop instance. */
+	/* These may be set later. */
 	invoke.instance = NULL;
 	invoke.virtualId = NULL;
+	invoke.mleError = SJME_ERROR_NONE;
+
+	/* Check argument compatibility */
 	if (!invoke.isStatic)
 	{
 		/* Forward. */
@@ -341,9 +364,36 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			return sjme_error_default(error);
 	}
 
+	/* Proxy call? */
+	if (callType == SJME_NVM_CALL_PROXY)
+	{
+		/* Ensure the class has a proxy handler. */
+		invoke.isClass = sjme_atomic_g(sjme_jclass, &instance->isClass);
+		if (invoke.isClass == NULL || invoke.isClass->proxyHandler == NULL)
+			return sjme_error_vmError(inFrame, SJME_ERROR_ILLEGAL_STATE);
+
+		/* Setup return value storage. */
+		memset(&invoke.mleArgR, 0, sizeof(invoke.mleArgR));
+		invoke.mleArgR.t = SJME_JAVA_TYPE_ID_VOID;
+
+		/* Forward proxy call. */
+		if (sjme_error_is(error = invoke.isClass->proxyHandler(inFrame, commit,
+			instance, methodId, &invoke.mleArgR, invoke.argC, invoke.argV)))
+			return sjme_error_vmError(inFrame, error);
+
+		/* Wrong return type? */
+		if (invoke.mleArgR.t != invoke.target->argR)
+			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_METHOD_TYPE);
+
+		/* Push the value to the stack. */
+		if (invoke.mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
+			if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+				inFrame, commit, &invoke.mleArgR)))
+				return sjme_error_vmError(inFrame, error);
+	}
+
 	/* If native, perform an MLE call. */
-	invoke.mleError = SJME_ERROR_NONE;
-	if (SJME_NVM_ACC_IS(invoke.target->flags, NATIVE) && invoke.isStatic)
+	else if (SJME_NVM_ACC_IS(invoke.target->flags, NATIVE) && invoke.isStatic)
 	{
 		/* Note that the MLE call can be cancelled. */
 		if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeNative(
@@ -775,6 +825,9 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 	sjme_nvm_class_poolEntryMember* methodRef;
 	sjme_jvalueTyped depthRef;
 	sjme_nvm_frame_gcCommit commit;
+	sjme_jobject instance;
+	sjme_jclass isClass;
+	sjme_jboolean isProxy, validProxyCall;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Always zero. */
@@ -810,25 +863,49 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* It cannot be null. */
-	if (depthRef.v.l == NULL)
+	instance = depthRef.v.l;
+	if (instance == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
-	
-	/* Lookup interface method. */
+
+	/* If this is a proxy object, then it needs to go through a handler */
+	/* at some point, but we need the real method we are invoking. */
+	isClass = sjme_atomic_g(sjme_jclass, &instance->isClass);
+	isProxy = SJME_NVM_ACC_IS(isClass->special, SPECIAL_PROXY);
+	validProxyCall = SJME_JNI_FALSE;
+
+	/* Lookup interface method, we always want to prioritize concrete */
+	/* methods first. */
 	methodId = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmMethod_idByInterface(
-		SJME_F_T(inFrame), SJME_JNI_TRUE, &methodId,
-		depthRef.v.l, methodRef)) ||
+		SJME_F_T(inFrame), SJME_JNI_FALSE,
+		&methodId, instance, methodRef)) ||
 		methodId == NULL)
-		return sjme_error_vmError(inFrame, error);
-	
+	{
+		/* If this is not a proxy, then we just outright fail here. */
+		if (!isProxy)
+			return sjme_error_vmError(inFrame, error);
+
+		/* We allow abstract methods to be targeted if this is a proxy */
+		/* class, as these classes are meant to have special handling. */
+		if (sjme_error_is(error = sjme_nvm_vmMethod_idByInterface(
+			SJME_F_T(inFrame), SJME_JNI_TRUE,
+			&methodId, instance, methodRef)) ||
+			methodId == NULL)
+			return sjme_error_vmError(inFrame, error);
+
+		/* This is a valid abstract proxy call. */
+		validProxyCall = SJME_JNI_TRUE;
+	}
+
 	/* Perform the invocation. */
 	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(inFrame,
-		&commit,
+		&commit, instance,
 		SJME_NVM_CLASS_MEMBER_INSTANCE,
-		SJME_NVM_CALL_VIRTUAL, methodId)))
+		(validProxyCall ? SJME_NVM_CALL_PROXY : SJME_NVM_CALL_VIRTUAL),
+		methodId)))
 		return sjme_error_vmError(inFrame, error);
-	
+
 	/* Commit GC. */
 	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
@@ -945,7 +1022,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	
 	/* Invoke this method */
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(inFrame,
-		&commit,
+		&commit, onThis,
 		SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_NVM_CALL_NON_VIRTUAL, refMethod)))
 		return sjme_error_vmError(inFrame, error);
@@ -1009,7 +1086,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 
 	/* Perform the invocation. */
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(inFrame,
-		&commit,
+		&commit, NULL,
 		SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_NVM_CALL_NON_VIRTUAL, target)))
 		return sjme_error_vmError(inFrame, error);
@@ -1072,8 +1149,9 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 
 	/* Perform the invocation. */
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(inFrame,
-		&commit,
-		SJME_NVM_CLASS_MEMBER_INSTANCE, SJME_NVM_CALL_VIRTUAL, target)))
+		&commit, NULL,
+		SJME_NVM_CLASS_MEMBER_INSTANCE, SJME_NVM_CALL_VIRTUAL,
+		target)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Commit GC. */

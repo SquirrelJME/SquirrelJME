@@ -32,6 +32,28 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * Handles a call to a proxy method.
+ *
+ * @param inFrame The frame this is being called under.
+ * @param commit The GC commit, if applicable.
+ * @param proxyInstance The instance of the proxy class.
+ * @param proxyMethod The proxied method which is being called.
+ * @param argR Return value for the proxy call.
+ * @param argC The number of passed arguments.
+ * @param argV The arguments passed to the method.
+ * @return Any resultant error, if any.
+ * @since 2026/09/19
+ */
+typedef sjme_errorCode (*sjme_nvm_instance_proxyHandlerFunc)(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNotNull sjme_jobject proxyInstance,
+	sjme_attrInNotNull sjme_jmethodID proxyMethod,
+	sjme_attrInNotNull sjme_jvalueTyped* argR,
+	sjme_attrInNotNull sjme_jint argC,
+	sjme_attrInNotNull sjme_jvalueTyped* argV);
+
 struct sjme_jobjectBase
 {
 	/** Common base for all objects. */
@@ -265,6 +287,9 @@ struct sjme_jclassBase
 
 	/** Special class flags. */
 	sjme_jint special;
+
+	/** The proxy handler, if this is a proxy class. */
+	sjme_nvm_instance_proxyHandlerFunc proxyHandler;
 };
 
 struct sjme_jstringBase

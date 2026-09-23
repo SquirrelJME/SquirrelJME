@@ -34,8 +34,9 @@ extern "C"
 
 sjme_errorCode sjme_nvm_mle_scritchUiProxyHandler(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jobject proxyInstance,
-	sjme_attrInNotNull const sjme_nvm_instance_proxyMethod* proxyMethod,
+	sjme_attrInNotNull sjme_jmethodID proxyMethod,
 	sjme_attrInNotNull sjme_jvalueTyped* argR,
 	sjme_attrInNotNull sjme_jint argC,
 	sjme_attrInNotNull sjme_jvalueTyped* argV);

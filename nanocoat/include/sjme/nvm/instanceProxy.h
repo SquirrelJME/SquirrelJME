@@ -37,44 +37,6 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Any data for the proxied method call, this is for convenience to add more
- * potential fields in the future without requiring major function changes.
- *
- * @since 2026/09/20
- */
-typedef struct sjme_nvm_instance_proxyMethod
-{
-	/** The ID of the method that was called. */
-	sjme_jmethodID id;
-
-	/** The name of the method being called. */
-	sjme_lpcstr methodName;
-
-	/** The type of the method being called. */
-	sjme_lpcstr methodType;
-} sjme_nvm_instance_proxyMethod;
-
-/**
- * Handles a call to a proxy method.
- *
- * @param inFrame The frame this is being called under.
- * @param proxyInstance The instance of the proxy class.
- * @param proxyMethod The proxied method which is being called.
- * @param argR Return value for the proxy call.
- * @param argC The number of passed arguments.
- * @param argV The arguments passed to the method.
- * @return Any resultant error, if any.
- * @since 2026/09/19
- */
-typedef sjme_errorCode (*sjme_nvm_instance_proxyHandlerFunc)(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_jobject proxyInstance,
-	sjme_attrInNotNull const sjme_nvm_instance_proxyMethod* proxyMethod,
-	sjme_attrInNotNull sjme_jvalueTyped* argR,
-	sjme_attrInNotNull sjme_jint argC,
-	sjme_attrInNotNull sjme_jvalueTyped* argV);
-
-/**
  * Initialize a proxy class which can then be used to initialize new object
  * instances which call @link sjme_nvm_instance_proxyHandlerFunc @endlink to
  * handle method calls. This cannot be used to create a proxy class of an

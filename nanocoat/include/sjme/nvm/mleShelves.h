@@ -205,6 +205,7 @@ extern "C"
 
 /** Stop MLE definitions. */
 #define SJME_NVM_MLE_STOP() \
+	{NULL, NULL, NULL, NULL}, \
 	{NULL, NULL, NULL, NULL}
 
 /** Determines the name of a shelf. */

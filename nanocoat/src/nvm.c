@@ -61,6 +61,9 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 {
 	switch (error)
 	{
+		case SJME_ERROR_UNKNOWN:
+		case SJME_ERROR_UNKNOWN_ONE:
+		case SJME_ERROR_UNKNOWN_NEGATIVE:
 		case SJME_ERROR_NULL_ARGUMENTS:
 		case SJME_ERROR_INVALID_ARGUMENT:
 		case SJME_ERROR_ILLEGAL_STATE:
