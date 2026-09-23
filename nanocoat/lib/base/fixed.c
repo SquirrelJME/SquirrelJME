@@ -10,6 +10,14 @@
 #include "sjme/fixed.h"
 #include "sjme/debug.h"
 
+sjme_fixed sjme_fixed_abs(
+	sjme_attrInValue sjme_jint v)
+{
+	if (v < 0)
+		return -v;
+	return v;
+}
+
 sjme_fixed sjme_fixed_ceil(
 	sjme_attrInValue sjme_jint v)
 {
@@ -96,6 +104,30 @@ sjme_jint sjme_fixed_intClip(
 	return v;
 }
 
+sjme_jint sjme_fixed_max(
+	sjme_attrInValue sjme_fixed a,
+	sjme_attrInValue sjme_fixed b)
+{
+	if (a > b)
+		return a;
+	return b;
+}
+	
+sjme_jint sjme_fixed_min(
+	sjme_attrInValue sjme_fixed a,
+	sjme_attrInValue sjme_fixed b)
+{
+	if (a < b)
+		return a;
+	return b;
+}
+
+sjme_fixed sjme_fixed_neg(
+	sjme_attrInValue sjme_fixed v)
+{
+	return -v;
+}
+
 sjme_fixed sjme_fixed_mul(
 	sjme_attrInValue sjme_fixed a,
 	sjme_attrInValue sjme_fixed b)
@@ -106,6 +138,14 @@ sjme_fixed sjme_fixed_mul(
 	sjme_todo("Impl?");
 	return 0;
 #endif
+}
+
+sjme_fixed sjme_fixed_part(
+	sjme_attrInValue sjme_fixed v)
+{
+	if (v < 0)
+		return v | SJME_FIXED_MASK_HI;
+	return v & SJME_FIXED_MASK;
 }
 
 sjme_fixed sjme_fixed_radToDeg(
@@ -121,6 +161,16 @@ sjme_fixed sjme_fixed_round(
 	if (((v & SJME_FIXED_ROUND_MASK) != 0) == (v < 0))
 		return sjme_fixed_ceil(v);
 	return sjme_fixed_floor(v);
+}
+
+sjme_fixed sjme_fixed_signum(
+	sjme_attrInValue sjme_jint v)
+{
+	if (v == 0)
+		return 0;
+	else if (v > 0)
+		return SJME_FIXED_ONE;
+	return -SJME_FIXED_ONE;
 }
 
 sjme_fixed sjme_fixed_sin(
