@@ -148,6 +148,7 @@ public class Hashtable<K, V>
 	 * @return If the map contains the value or not.
 	 * @since 2019/05/05
 	 */
+	@Api
 	@SuppressWarnings("RedundantCollectionOperation")
 	public boolean contains(Object __v)
 	{

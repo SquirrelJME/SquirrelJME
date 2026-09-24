@@ -152,6 +152,7 @@ public class Vector<E>
 	 * @param __v The element to add.
 	 * @since 2019/05/14
 	 */
+	@Api
 	@SuppressWarnings("UnnecessarySuperQualifier")
 	public void addElement(E __v)
 	{
@@ -240,6 +241,7 @@ public class Vector<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/06/24
 	 */
+	@Api
 	@SuppressWarnings("ManualArrayCopy")
 	public void copyInto(Object[] __a)
 		throws ArrayStoreException, IndexOutOfBoundsException,
