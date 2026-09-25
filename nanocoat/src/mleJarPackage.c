@@ -12,6 +12,53 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+SJME_NVM_MLE_FUNCTION_DECL(classPath)
+{
+	sjme_errorCode error;
+	sjme_list(sjme_nvm_rom_library)* libraries;
+	sjme_jint i, n;
+	sjme_jarray result;
+	sjme_jbracketJarPackage bracket;
+
+	/* Something is very wrong! */
+	if (SJME_T_K(inFrame)->classLoader == NULL ||
+		SJME_T_K(inFrame)->classLoader->classPath == NULL)
+		return sjme_error_fatal(SJME_ERROR_NO_SUITES);
+
+	/* Load in the classpath. */
+	libraries = SJME_T_K(inFrame)->classLoader->classPath;
+	n = libraries->length;
+
+	/* Allocate resultant array. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
+		SJME_F_T(inFrame), &result,
+		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+			SJME_NVM_COMMON_JAR_PACKAGE), n)) || result == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* Libraries need to be converted to brackets. */
+	for (i = 0; i < n; i++)
+	{
+		/* Setup bracket. */
+		bracket = NULL;
+		if (sjme_error_is(error = sjme_nvm_task_bracketJarPackage(
+			SJME_F_T(inFrame), libraries->elements[i],
+			&bracket)) || bracket == NULL)
+			return sjme_error_vmError(inFrame, error);
+		
+		/* Set into the array. */
+		if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+			&result->e, i, NULL, SJME_VLS_JOBJECT(bracket))))
+			return sjme_error_vmError(inFrame, error);
+	}
+	
+	/* Success! */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = SJME_AS_JOBJECT(result);
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(openResourcePipe)
 {
 	sjme_errorCode error;
@@ -40,7 +87,7 @@ SJME_NVM_MLE_FUNCTION_DECL(openResourcePipe)
 		return SJME_ERROR_MLE_CALL;
 
 	/* The sequence must be valid. */
-	seq = sjme_atomic_sjme_charSeq_get(&rcName->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &rcName->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 
@@ -83,8 +130,11 @@ SJME_NVM_MLE_FUNCTION_DECL(openResourcePipe)
 
 SJME_NVM_MLE_SHELF_DECLARE(JarPackageShelf) =
 {
+	SJME_NVM_MLE_DEFINE(classPath,
+		SJME_MD(SJME_MD_A(SJME_MD_JAR_PACKAGE), SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_L, SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_DEFINE(openResourcePipe,
 		SJME_MD(SJME_MD_PIPE, SJME_MD_JAR_PACKAGE SJME_MD_STRING),
-		"L", "LL"),
+		SJME_MP(SJME_MP_L, SJME_MP_L SJME_MP_L)),
 	SJME_NVM_MLE_STOP()
 };

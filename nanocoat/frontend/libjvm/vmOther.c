@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/vmOther.h"
 
 jboolean JNICALL JVM_SupportsCX8(void)
 {
@@ -17,4 +18,16 @@ jboolean JNICALL JVM_SupportsCX8(void)
 void* JNICALL JVM_GetManagement(jint version)
 {
 	sjme_todo("Impl?");
+}
+
+int sjme_jni_EnvTodoImpl(int ignored, ...)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+int sjme_jni_JvmTodoImpl(int ignored, ...)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }

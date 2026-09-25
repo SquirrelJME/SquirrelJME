@@ -20,7 +20,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 	sjme_jint count, i, into;
 	sjme_jarray result;
 	sjme_nvm_frame atFrame;
-	sjme_list_sjme_nvm_frame* frames;
+	sjme_list(sjme_nvm_frame)* frames;
 	sjme_jbracketTrace point;
 
 	/* Which thread is being operated one? */
@@ -31,7 +31,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(inThread,
 		&result, sjme_nvm_task_commonClassR(inThread,
-			SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT), count)) || result == NULL)
+			SJME_NVM_COMMON_TRACE_POINT), count)) || result == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Create trace point objects mapped to frames. */
@@ -44,7 +44,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 			continue;
 
 		/* Is there a phantom trace point here? */
-		point = (sjme_jbracketTrace)sjme_atomic_sjme_jobject_get(
+		point = (sjme_jbracketTrace)sjme_atomic_pg(
 			&atFrame->phantomTracePoint);
 		if (point != NULL && sjme_nvm_isAR(point,
 			SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE))
@@ -54,7 +54,9 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 			if (point->frame == atFrame && point->id == atFrame->id)
 			{
 				/* Store into the array. */
-				result->e.l[into] = SJME_AS_JOBJECT(point);
+				if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+					&result->e, into, NULL, SJME_VLS_JOBJECT(point))))
+					goto fail_setPoint;
 				
 				/* No need to create. */
 				continue;
@@ -83,7 +85,9 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 		point->capture.lastIv = atFrame->lastIv;
 		
 		/* Store into the array. */
-		result->e.l[into] = SJME_AS_JOBJECT(point);
+		if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+			&result->e, into, NULL, SJME_VLS_JOBJECT(point))))
+			goto fail_setPoint;
 	}
 
 	/* Return the trace point array. */
@@ -91,6 +95,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 	argR->v.l = SJME_AS_JOBJECT(result);
 	return SJME_ERROR_NONE;
 
+fail_setPoint:
 fail_allocBracket:
 	/* Count down the array so it gets GCed. */
 	if (result != NULL)
@@ -111,10 +116,12 @@ SJME_NVM_MLE_FUNCTION_DECL(traceThrowable)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Must be of the throwable class! */
-	if (!sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
+	if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+		SJME_F_T(inFrame),
 		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
-			SJME_NVM_TASK_COMMON_CLASS_THROWABLE), throwable->object.isClass))
-		return SJME_ERROR_MLE_CALL;
+			SJME_NVM_COMMON_THROWABLE),
+			sjme_atomic_g(sjme_jclass, &throwable->object.isClass))))
+		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
 	/* We can just call the above. */
 	memset(&result, 0, sizeof(result));
@@ -123,7 +130,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceThrowable)
 		return sjme_error_default(error);
 
 	/* Set the throwable special. */
-	sjme_atomic_sjme_intPointer_set(&throwable->object.special,
+	sjme_atomic_s(sjme_intPointer, &throwable->object.special,
 		(sjme_intPointer)result.v.l);
 
 	/* Set the return value. */
@@ -135,10 +142,10 @@ SJME_NVM_MLE_FUNCTION_DECL(traceThrowable)
 SJME_NVM_MLE_SHELF_DECLARE(DebugShelf) =
 {
 	SJME_NVM_MLE_DEFINE(traceStack,
-		SJME_MD(SJME_MD_A(SJME_MD_TRACE), ),
-		"L", ),
+		SJME_MD(SJME_MD_A(SJME_MD_TRACE), SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_L, SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_DEFINE(traceThrowable,
 		SJME_MD(SJME_MD_A(SJME_MD_TRACE), SJME_MD_THROWABLE),
-		"L", "L"),
+		SJME_MP(SJME_MP_L, SJME_MP_L)),
 	SJME_NVM_MLE_STOP()
 };

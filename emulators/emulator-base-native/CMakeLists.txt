@@ -105,6 +105,20 @@ foreach(var IN LISTS allVariables)
 		"${var}" STREQUAL "CMAKE_EXECUTABLE_PREFIX" OR
 		"${var}" STREQUAL "CMAKE_EXECUTABLE_SUFFIX" OR
 		"${var}" STREQUAL "CMAKE_C_ABI_COMPILED" OR
+		"${var}" STREQUAL "JAVA_JVM_LIBRARY" OR
+		"${var}" STREQUAL "JNI_INCLUDE_DIRS" OR
+		"${var}" STREQUAL "JAVA_INCLUDE_PATH" OR
+		"${var}" STREQUAL "JAVA_INCLUDE_PATH2" OR
+		"${var}" STREQUAL "JNI_FOUND" OR
+		"${var}" STREQUAL "SQUIRRELJME_HAS_NATIVE_JNI" OR
+		"${var}" STREQUAL "SQUIRRELJME_HAS_NATIVE_JVM" OR
+		"${var}" STREQUAL "SQUIRRELJME_HAS_JAVA_JVM" OR
+		"${var}" STREQUAL "SQUIRRELJME_EXPORT_OWN_JNI_JVM" OR
+		"${var}" STREQUAL "SQUIRRELJME_HAS_JAVA_JNI" OR
+		"${var}" STREQUAL "SQUIRRELJME_JAVA_JNI_INCLUDE" OR
+		"${var}" STREQUAL "SQUIRRELJME_HAS_JAVA_JVM" OR
+		"${var}" STREQUAL "SQUIRRELJME_JAVA_JVM_INCLUDE" OR
+		"${var}" STREQUAL "SQUIRRELJME_EXPORT_OWN_JNI_JVM" OR
 		"${var}" STREQUAL "__END_OF_EVERYTHING__")
 		continue()
 	endif()
@@ -331,6 +345,7 @@ squirreljme_include_nanocoat("pre-fixes.cmake")
 squirreljme_include_nanocoat("system-map.cmake")
 squirreljme_include_nanocoat("fixes.cmake")
 squirreljme_include_nanocoat("multilib.cmake")
+squirreljme_include_nanocoat("find-jni.cmake")
 
 # Declare library
 add_library(libEmulatorBase SHARED
@@ -380,8 +395,8 @@ squirreljme_target_link_directories(libEmulatorBase PRIVATE
 	"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin")
 squirreljme_link_libraries_required(libEmulatorBase PUBLIC
 	"${SQUIRRELJME_REQUIRED_LIBS}"
-	BaseStatic
-	jvm)
+	"${JAVA_JVM_LIBRARY}"
+	BaseStatic)
 
 # It is easier to find this when it is in the build root
 squirreljme_target_binary_name(libEmulatorBase

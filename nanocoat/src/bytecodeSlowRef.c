@@ -29,27 +29,288 @@ static const sjme_basicTypeId sjme_nvm_byteCode_xArrayType[8] =
 	SJME_BASIC_TYPE_ID_SHORT,
 };
 
+typedef struct sjme_nvm_byteCode_invokeState
+{
+	/** The frame this is called from. */
+	sjme_nvm_frame inFrame;
+
+	/** The thread this is being called in. */
+	sjme_nvm_thread inThread;
+	
+	/** The GC commit. */ 
+	sjme_nvm_frame_gcCommit* commit;
+	
+	/** The instance type. */
+	sjme_nvm_class_instanceType instanceType;
+	
+	/** The call type. */
+	sjme_nvm_methodCallType callType;
+	
+	/** The Method ID. */
+	sjme_jmethodID methodId;
+	
+	/** The error state. */
+	sjme_errorCode error;
+	
+	/** The MLE error state. */
+	sjme_errorCode mleError;
+	
+	/** New frame which was craeted. */
+	sjme_nvm_frame newFrame;
+	
+	/** Argument count. */
+	sjme_jint argC;
+	
+	/** Arguments. */
+	sjme_jvalueTyped* argV;
+	
+	/** Argument parameters. */
+	sjme_jvalueTyped* argVParam;
+	
+	/** Return value. */
+	sjme_jvalueTyped mleArgR;
+	
+	/** Is this a static method? */
+	sjme_jboolean isStatic;
+	
+	/** The instance called. */
+	sjme_jobject instance;
+	
+	/** The target method. */
+	sjme_nvm_class_methodInfo target;
+	
+	/** The method ID. */
+	sjme_jmethodID virtualId;
+
+	/** The class this is in, if known. */
+	sjme_jclass isClass;
+} sjme_nvm_byteCode_invokeState;
+
+static sjme_errorCode sjme_nvm_byteCode_slowInvokeNotStatic(
+	sjme_nvm_byteCode_invokeState* invoke)
+{
+	sjme_errorCode error;
+
+	if (invoke == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Pop. */
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(
+		invoke->inFrame, SJME_JAVA_TYPE_ID_OBJECT, invoke->commit,
+		&invoke->argV[0])))
+		return sjme_error_vmError(invoke->inFrame, error);
+
+	/* Cannot be null. */
+	invoke->instance = invoke->argV[0].v.l;
+	if (invoke->instance == NULL)
+		return sjme_error_vmError(invoke->inFrame,
+			SJME_ERROR_NULL_STACK_POINTER);
+
+	/* Must be the same or a compatible class as the call site. */
+	if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+		SJME_F_T(invoke->inFrame),
+		sjme_atomic_g(sjme_jclass,
+			&invoke->methodId->member.inClass),
+		SJME_O_C(invoke->instance))))
+	{
+		if (error == SJME_ERROR_CLASS_CAST)
+			return sjme_error_vmError(invoke->inFrame,
+				SJME_ERROR_CLASS_CHANGED);
+		return sjme_error_default(error);
+	}
+
+	/* Need to relookup the method if virtual, to call the right one. */
+	if (invoke->callType == SJME_NVM_CALL_VIRTUAL)
+	{
+		/* Lookup again. */
+		if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
+			sjme_atomic_g(sjme_jclass, &invoke->instance->isClass),
+			SJME_F_T(invoke->inFrame),
+			SJME_NVM_CLASS_MEMBER_INSTANCE,
+			SJME_JNI_TRUE,
+			invoke->methodId->member.name->seq,
+			invoke->methodId->member.type->seq, &invoke->virtualId)) ||
+			invoke->virtualId == NULL)
+			return sjme_error_vmError(invoke->inFrame, error);
+
+		/* Use this one instead. */
+		invoke->methodId = invoke->virtualId;
+
+		/* Since the method has changed, we need to check again that */
+		/* the target is still valid. This is mostly for sanity. */
+		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+			SJME_F_T(invoke->inFrame),
+			sjme_atomic_g(sjme_jclass,
+				&invoke->methodId->member.inClass),
+			SJME_O_C(invoke->instance))))
+		{
+			if (error == SJME_ERROR_CLASS_CAST)
+				return sjme_error_vmError(invoke->inFrame,
+					SJME_ERROR_CLASS_CHANGED);
+			return sjme_error_default(error);
+		}
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_byteCode_slowInvokeNative(
+	sjme_nvm_byteCode_invokeState* invoke,
+	sjme_errorCode error)
+{
+	if (invoke == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Perform the native call. */
+	memset(&invoke->mleArgR, 0, sizeof(invoke->mleArgR));
+	invoke->mleArgR.t = SJME_JAVA_TYPE_ID_VOID;
+
+	/* Invoke MLE call, if static we use the entry point method */
+	/* unless it has been replaced. */
+	invoke->mleError = sjme_mle_mleCall(invoke->inFrame,
+		(invoke->virtualId != NULL ? invoke->virtualId : invoke->methodId),
+		invoke->target,
+		&invoke->mleArgR,
+		invoke->argC, invoke->argV);
+
+	/* Recover and check MLE error. */
+	/* Ignore cancelled calls. */
+	if (error != SJME_ERROR_CANCEL_MLE_CALL &&
+		sjme_error_is(error = invoke->mleError))
+	{
+		/* MLECallError is a valid response. */
+		if (error == SJME_ERROR_MLE_CALL)
+			return sjme_error_default(error);
+
+		/* Unknown/Unimplemented method. */
+		else if (error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
+			error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
+		{
+#if defined(SJME_CONFIG_DEBUG_MLE)
+			sjme_message("Missing MLE: %s.%s %s",
+				sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
+					&invoke->target->inClass)->name->seq),
+				sjme_charSeq_tempUtf(invoke->target->name->seq),
+				sjme_charSeq_tempUtf(invoke->target->type->seq));
+#endif
+
+			return sjme_error_vmError(invoke->inFrame, error);
+		}
+
+		/* Emit linkage error otherwise. */
+		else if (error == SJME_ERROR_UNKNOWN_NATIVE_FUNCTION ||
+			error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
+			error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
+		{
+			if (sjme_error_is(error = sjme_nvm_task_frameEmit(invoke->inFrame,
+				SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR,
+				NULL, "LINK %s.%s %s",
+				sjme_charSeq_tempUtf(sjme_atomic_g(sjme_nvm_class_info,
+					&invoke->target->inClass)->name->seq),
+				sjme_charSeq_tempUtf(invoke->target->name->seq),
+				sjme_charSeq_tempUtf(invoke->target->type->seq))))
+				return sjme_error_vmError(invoke->inFrame, error);
+		}
+
+		/* Anything else is considered a failure. */
+		else
+			return sjme_error_vmError(invoke->inFrame, error);
+	}
+
+	/* Only push a value if not cancelled. */
+	if (error != SJME_ERROR_CANCEL_MLE_CALL)
+	{
+		/* Wrong type? */
+		if (invoke->mleArgR.t != invoke->target->argR)
+			return sjme_error_vmError(invoke->inFrame,
+				SJME_ERROR_INVALID_METHOD_TYPE);
+
+		/* Is there a return value being pushed to the stack? */
+		if (invoke->mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
+		{
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
+			/* MLE is not responsible for counting objects. */
+			if (mleArgR.t == SJME_JAVA_TYPE_ID_OBJECT)
+				mleArgR.v.l = sjme_weakUp(mleArgR.v.l);
+#endif
+
+			/* Push to the stack. */
+			if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+				invoke->inFrame, invoke->commit, &invoke->mleArgR)))
+				return sjme_error_vmError(invoke->inFrame, error);
+		}
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_byteCode_slowInvokeNormal(
+	sjme_nvm_byteCode_invokeState* invoke)
+{
+	sjme_errorCode error;
+
+	if (invoke == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cannot be native. */
+	if (SJME_NVM_ACC_IS(invoke->target->flags, NATIVE))
+		return sjme_error_vmError(invoke->inFrame,
+			SJME_ERROR_PURE_VIRTUAL_CALL);
+
+	/* Calling a proxy class method? */
+	if (invoke->instance != NULL &&
+		SJME_NVM_ACC_IS(sjme_atomic_g(sjme_jclass,
+			&invoke->instance->isClass)->info->flags, SPECIAL_PROXY) &&
+		SJME_NVM_ACC_IS(invoke->target->flags, ABSTRACT))
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Enter the frame. */
+	invoke->newFrame = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadEnter(
+		SJME_F_T(invoke->inFrame),
+		&invoke->newFrame,
+		invoke->methodId,
+		invoke->callType,
+		invoke->argC, invoke->argV)) || invoke->newFrame == NULL)
+		return sjme_error_vmError(invoke->inFrame, error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNullable sjme_jobject instance,
 	sjme_attrInRange(0, SJME_NVM_CLASS_NUM_INSTANCE_TYPE)
 		sjme_nvm_class_instanceType instanceType,
 	sjme_attrInRange(0, SJME_NVM_NUM_METHOD_CALL_TYPE)
 		sjme_nvm_methodCallType callType,
 	sjme_attrInNotNull sjme_jmethodID methodId)
 {
-	sjme_errorCode error, mleError;
-	sjme_nvm_frame newFrame;
-	sjme_jint argC, i;
-	sjme_jvalueTyped* argV;
-	sjme_jvalueTyped* argVParam;
-	sjme_jvalueTyped mleArgR;
-	sjme_jboolean isStatic;
-	sjme_jobject instance;
-	sjme_nvm_class_methodInfo target;
-	sjme_jmethodID virtualId;
+	sjme_errorCode error;
+	sjme_nvm_byteCode_invokeState invoke;
 
-	if (inFrame == NULL || methodId == NULL)
+	if (inFrame == NULL || commit == NULL || methodId == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Proxy calls always need an instance. */
+	if (callType == SJME_NVM_CALL_PROXY && instance == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Copy state. */
+	memset(&invoke, 0, sizeof(invoke));
+	invoke.inFrame = inFrame;
+	invoke.inThread = SJME_F_T(inFrame);
+	invoke.commit = commit;
+	invoke.instanceType = instanceType;
+	invoke.callType = callType;
+	invoke.methodId = methodId;
 	
 	/* Check access for calling this method. */
 	if (sjme_error_is(error = sjme_nvm_access_checkFToM(
@@ -58,158 +319,100 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvoke(
 			sjme_error_defaultOr(error, SJME_ERROR_CLASS_CHANGED));
 
 	/* Get the non-virtual target info. */
-	target = methodId->info[callType];
+	/* Note that proxies are always virtual. */
+	if (callType == SJME_NVM_CALL_PROXY)
+		invoke.target = methodId->info[SJME_NVM_CALL_VIRTUAL];
+	else
+		invoke.target = methodId->info[callType];
+
+	/* Call target information is missing? */
+	if (invoke.target == NULL)
+		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Static-ness is wrong? */
-	isStatic = target->flags.member.isStatic;
-	if (isStatic && instanceType != SJME_NVM_CLASS_MEMBER_STATIC &&
+	invoke.isStatic = SJME_NVM_ACC_IS(invoke.target->flags, STATIC);
+	if (invoke.isStatic && instanceType != SJME_NVM_CLASS_MEMBER_STATIC &&
 		callType != SJME_NVM_CALL_NON_VIRTUAL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 	
 	/* Allocate pushed arguments. */
-	argC = target->argC + (!isStatic ? 1 : 0);
-	argV = sjme_alloca(sizeof(*argV) * (argC + 2));
-	if (argV == NULL)
+	invoke.argC = invoke.target->argC + (!invoke.isStatic ? 1 : 0);
+	invoke.argV = sjme_alloca(sizeof(*invoke.argV) * (invoke.argC + 2));
+	if (invoke.argV == NULL)
 		return SJME_ERROR_OUT_OF_MEMORY;
-	memset(argV, 0, sizeof(*argV) * (argC + 2));
+	memset(invoke.argV, 0, sizeof(*invoke.argV) * (invoke.argC + 2));
 	
 	/* Pull in stack arguments for the call. */
-	argVParam = (!isStatic ? &argV[1] : argV);
-	if (target->argC != 0)
+	invoke.argVParam = (!invoke.isStatic ? &invoke.argV[1] : invoke.argV);
+	if (invoke.target->argC != 0)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(
-			inFrame, SJME_JNI_FALSE,
-			NULL, target->argC, target->argT, argVParam)))
+			inFrame, commit,
+			invoke.target->argC, invoke.target->argT, invoke.argVParam)))
 			return sjme_error_vmError(inFrame, error);
 
-	/* Pop instance. */
-	instance = NULL;
-	if (!isStatic)
+	/* These may be set later. */
+	invoke.instance = NULL;
+	invoke.virtualId = NULL;
+	invoke.mleError = SJME_ERROR_NONE;
+
+	/* Check argument compatibility */
+	if (!invoke.isStatic)
 	{
-		/* Pop. */
-		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(
-			inFrame, SJME_JAVA_TYPE_ID_OBJECT, SJME_JNI_FALSE,
-			NULL, &argV[0])))
+		/* Forward. */
+		if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeNotStatic(
+			&invoke)))
+			return sjme_error_default(error);
+	}
+
+	/* Proxy call? */
+	if (callType == SJME_NVM_CALL_PROXY)
+	{
+		/* Ensure the class has a proxy handler. */
+		invoke.isClass = sjme_atomic_g(sjme_jclass, &instance->isClass);
+		if (invoke.isClass == NULL || invoke.isClass->proxyHandler == NULL)
+			return sjme_error_vmError(inFrame, SJME_ERROR_ILLEGAL_STATE);
+
+		/* Setup return value storage. */
+		memset(&invoke.mleArgR, 0, sizeof(invoke.mleArgR));
+		invoke.mleArgR.t = SJME_JAVA_TYPE_ID_VOID;
+
+		/* Forward proxy call. */
+		if (sjme_error_is(error = invoke.isClass->proxyHandler(inFrame, commit,
+			instance, methodId, &invoke.mleArgR, invoke.argC, invoke.argV)))
 			return sjme_error_vmError(inFrame, error);
 
-		/* Cannot be null. */
-		instance = argV[0].v.l;
-		if (instance == NULL)
-			return sjme_error_vmError(inFrame,
-				SJME_ERROR_NULL_STACK_POINTER);
-		
-		/* Must be the same or a compatible class as the call site. */
-		if (!sjme_nvm_vmClass_isAssignableFrom(
-			SJME_F_T(inFrame),
-			methodId->member.inClass,
-			SJME_O_C(instance)))
-			return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
-		
-		/* Need to relookup the method if virtual, to call the right one. */
-		if (callType == SJME_NVM_CALL_VIRTUAL)
-		{
-			/* Lookup again. */
-			virtualId = NULL;
-			if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
-				instance->isClass, SJME_F_T(inFrame),
-				SJME_NVM_CLASS_MEMBER_INSTANCE,
-				SJME_JNI_TRUE,
-				methodId->member.name->seq,
-				methodId->member.type->seq, &virtualId)) ||
-				virtualId == NULL)
-				return sjme_error_vmError(inFrame, error);
+		/* Wrong return type? */
+		if (invoke.mleArgR.t != invoke.target->argR)
+			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_METHOD_TYPE);
 
-			/* Use this one instead. */
-			methodId = virtualId;
-			
-			/* Since the method has changed, we need to check again that */
-			/* the target is still valid. This is mostly for sanity. */
-			if (!sjme_nvm_vmClass_isAssignableFrom(
-				SJME_F_T(inFrame),
-				methodId->member.inClass,
-				SJME_O_C(instance)))
-				return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
-		}
+		/* Push the value to the stack. */
+		if (invoke.mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
+			if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
+				inFrame, commit, &invoke.mleArgR)))
+				return sjme_error_vmError(inFrame, error);
 	}
 
 	/* If native, perform an MLE call. */
-	if (target->flags.native && isStatic)
+	else if (SJME_NVM_ACC_IS(invoke.target->flags, NATIVE) && invoke.isStatic)
 	{
-		/* Perform the native call. */
-		memset(&mleArgR, 0, sizeof(mleArgR));
-		mleArgR.t = SJME_JAVA_TYPE_ID_VOID;
-
-		/* Invoke MLE call. */
-		mleError = sjme_mle_mleCall(inFrame,
-			target->inClass->name->seq,
-			target->name->seq,
-			target->type->seq,
-			&mleArgR,
-			argC, argV);
-
-		/* GC any arguments that are objects, since they are no longer */
-		/* referenced. */
-		for (i = 0; i < argC; i++)
-			if (argV[i].t == SJME_JAVA_TYPE_ID_OBJECT &&
-				argV[i].v.l != NULL)
-				if (sjme_error_is(error = sjme_nvm_instance_countDown(
-					argV[i].v.l)))
-					return sjme_error_vmError(inFrame, error);
-
-		/* Recover and check MLE error. */
-		if (sjme_error_is(error = mleError))
-		{
-			/* MLECallError is a valid response. */
-			if (error == SJME_ERROR_MLE_CALL)
-				return SJME_ERROR_MLE_CALL;
-			
-#if defined(SJME_CONFIG_DEBUG)
-			/* Unknown/Unimplemented method. */
-			else if (error == SJME_ERROR_UNKNOWN_MLE_SHELF ||
-				error == SJME_ERROR_UNKNOWN_MLE_FUNCTION)
-			{
-				sjme_message("Missing MLE: %s.%s %s",
-					sjme_charSeq_tempUtf(target->inClass->name->seq),
-					sjme_charSeq_tempUtf(target->name->seq),
-					sjme_charSeq_tempUtf(target->type->seq));
-				
-				return sjme_error_vmError(inFrame, error);
-			}
-#endif
-
-			/* Anything else is considered a failure. */
-			return sjme_error_vmError(inFrame, error);
-		}
-
-		/* Wrong type? */
-		if (mleArgR.t != target->argR)
-			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_METHOD_TYPE);
-
-		/* Is there a return value being pushed to the stack? */
-		if (mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
-			if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-				inFrame, &mleArgR)))
-				return sjme_error_vmError(inFrame, error);
+		/* Note that the MLE call can be cancelled. */
+		if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeNative(
+			&invoke, error)))
+			return sjme_error_default(error);
 	}
 
 	/* Enter new stack frame for the target method, or at least try. */
 	else
 	{
-		/* Cannot be native. */
-		if (target->flags.native)
-			return sjme_error_vmError(inFrame, SJME_ERROR_PURE_VIRTUAL_CALL);
-		
-		/* Enter the frame. */
-		newFrame = NULL;
-		if (sjme_error_is(error = sjme_nvm_task_threadEnter(
-			SJME_F_T(inFrame),
-			&newFrame,
-			methodId,
-			callType,
-			argC, argV)) || newFrame == NULL)
-			return sjme_error_vmError(inFrame, error);
+		/* Normal call. */
+		if (sjme_error_is(error = sjme_nvm_byteCode_slowInvokeNormal(
+			&invoke)))
+			return sjme_error_default(error);
 	}
 
-	/* Success! */
+	/* Success? */
+	if (sjme_error_is(invoke.mleError))
+		return sjme_error_default(invoke.mleError);
 	return SJME_ERROR_NONE;
 }
 
@@ -269,7 +472,9 @@ static sjme_errorCode sjme_nvm_byteCode_slowNewArrayMultiSub(
 				return sjme_error_vmError(inFrame, error);
 
 			/* Store into this array. */
-			baseArray->e.l[i] = SJME_AS_JOBJECT(sub.v.l);
+			if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+				&baseArray->e, i, NULL, SJME_VLS_JOBJECT(sub.v.l))))
+				return sjme_error_vmError(inFrame, error);
 		}
 	}
 
@@ -279,16 +484,19 @@ static sjme_errorCode sjme_nvm_byteCode_slowNewArrayMultiSub(
 	return SJME_ERROR_NONE;
 }
 
+#pragma region(ArrayLength)
 SJME_NVM_BYTECODE_SLOW(ArrayLength)
 {
 	sjme_jarray array;
 	sjme_jvalueTyped value, result;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Pop single object value. */
 	memset(&value, 0, sizeof(value));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, SJME_JNI_TRUE, NULL, &value)))
+		SJME_JAVA_TYPE_ID_OBJECT, &commit, &value)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Cannot be null. */
@@ -304,15 +512,21 @@ SJME_NVM_BYTECODE_SLOW(ArrayLength)
 	/* Push length onto the stack. */
 	memset(&result, 0, sizeof(result));
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
-	result.v.i = array->length;
+	result.v.i = array->e.length;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&result)))
+		&commit, &result)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(CheckCast)
 SJME_NVM_BYTECODE_SLOW(CheckCast)
 {
 	sjme_jint poolIndex;
@@ -338,28 +552,67 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 		SJME_P_C_N(entry)->seq,
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
+	
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
 
 	/* Pop object from the stack. */
 	memset(&value, 0, sizeof(value));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPeek(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, &value, SJME_JNI_FALSE)))
+		SJME_JAVA_TYPE_ID_OBJECT, &value)))
 		return sjme_error_vmError(inFrame, error);
+
+	/* Debug. */
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
+	sjme_message("Is %s a %s?",
+		(value.v.l == NULL ? "NULL" :
+			sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->fieldName)),
+		(desireClass == NULL ? "NULL" :
+			sjme_charSeq_tempUtf(desireClass->fieldName)));
+#endif
 
 	/* Not a match? */
 	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b) */
+	error = SJME_ERROR_NONE;
 	if (value.v.l != NULL &&
 		!(SJME_O_C(value.v.l) == desireClass ||
-		sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
-			desireClass, SJME_O_C(value.v.l))))
+		sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+			SJME_F_T(inFrame),
+			desireClass, SJME_O_C(value.v.l)))))
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Not an actual class cast error but something else? */
+		if (sjme_error_is(error) && error != SJME_ERROR_CLASS_CAST)
+			return sjme_error_default(error);
+		
+		/* Emit exception. */
+		if (sjme_error_is(error = sjme_nvm_task_threadEmit(SJME_F_T(inFrame),
+			SJME_NVM_COMMON_EXCEPTION_CLASS_CAST,
+			NULL,
+			"CAST %s %s",
+			(value.v.l == NULL ? "NULL" :
+				sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->fieldName)),
+					(desireClass == NULL ? "NULL" :
+				sjme_charSeq_tempUtf(desireClass->fieldName)))))
+			return sjme_error_vmError(inFrame, error);
+		
+		/* Check for recycle, class load and/or static constructor. */
+		if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+		{
+			pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+			return SJME_ERROR_NONE;
+		}
 	}
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(InstanceAccess)
 SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 {
 	sjme_jint poolIndex;
@@ -369,6 +622,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	sjme_jvalueTyped result;
 	sjme_jvalueTyped instance;
 	sjme_jboolean isPut;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Is this a get or a put? */
@@ -389,9 +643,16 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 		SJME_P_M_C(entry)->seq, SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
+	
 	/* Lookup field in the class. */
 	fieldId = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameType(
+	if (sjme_error_is(error = sjme_nvm_vmField_idByNameType(
 		desireClass, SJME_F_T(inFrame),
 		SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_JNI_TRUE,
@@ -401,7 +662,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Not an instance field? */
-	if (fieldId->flags.member.isStatic)
+	if (SJME_NVM_ACC_IS(fieldId->flags, STATIC))
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Check access for calling this method. */
@@ -412,30 +673,32 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 
 	/* Read in value to put. */
 	memset(&result, 0, sizeof(result));
+	memset(&commit, 0, sizeof(commit));
 	if (isPut)
 	{
 		/* Cannot be final unless we are in a static initializer. */
-		if (fieldId->flags.member.final)
+		if (SJME_NVM_ACC_IS(fieldId->flags, FINAL))
 		{
 			/* Cannot write static final fields. */
-			if (fieldId->flags.member.isStatic)
+			if (SJME_NVM_ACC_IS(fieldId->flags, STATIC))
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 			
 			/* Completely different class? */
-			if (fieldId->member.inClass != inFrame->inClass)
+			if (sjme_atomic_g(sjme_jclass, &fieldId->member.inClass) !=
+				inFrame->inClass)
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 
 			/* We must be in an instance initializer. */
-			if (!inFrame->flags.isInstanceInit)
+			if (!SJME_NVM_FRAME_STATE_IS(inFrame->flags, INIT_INSTANCE))
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 		}
 
 		/* Read in the value to write. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			fieldId->javaType, SJME_JNI_TRUE, NULL, &result)))
+			fieldId->javaType, &commit, &result)))
 			return sjme_error_vmError(inFrame, error);
 		
 		/* Make sure this can actually be stored there. */
@@ -448,7 +711,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	/* Read instance to act on. */
 	memset(&instance, 0, sizeof(instance));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, SJME_JNI_TRUE, NULL, &instance)))
+		SJME_JAVA_TYPE_ID_OBJECT, &commit, &instance)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Cannot be null. */
@@ -458,7 +721,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	/* Read/write promotion. */
 	if (sjme_error_is(error = sjme_nvm_instance_fieldAccessStack(
 		SJME_F_T(inFrame),
-		fieldId, instance.v.l, &result, isPut)))
+		&commit, fieldId, instance.v.l, &result, isPut)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push result to the stack. */
@@ -466,20 +729,27 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	{
 		result.t = fieldId->javaType;
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-			inFrame, &result)))
+			inFrame, &commit, &result)))
 			return sjme_error_vmError(inFrame, error);
 	}
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(InstanceOf)
 SJME_NVM_BYTECODE_SLOW(InstanceOf)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jvalueTyped check, result;
 	sjme_jclass desireClass;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Read in pool reference. */
@@ -492,8 +762,9 @@ SJME_NVM_BYTECODE_SLOW(InstanceOf)
 
 	/* Read in object to check. */
 	memset(&check, 0, sizeof(check));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, SJME_JNI_TRUE, NULL, &check)))
+		SJME_JAVA_TYPE_ID_OBJECT, &commit, &check)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Locate target class. */
@@ -506,30 +777,57 @@ SJME_NVM_BYTECODE_SLOW(InstanceOf)
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
+
 	/* Is this the given class? */
 	memset(&result, 0, sizeof(result));
 	if (check.v.l == NULL)
 		result.v.i = SJME_JNI_FALSE;
 	else
-		result.v.i = sjme_nvm_vmClass_isAssignableFrom(SJME_F_T(inFrame),
-			desireClass, SJME_O_C(check.v.l));
+	{
+		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+			SJME_F_T(inFrame),
+			desireClass, SJME_O_C(check.v.l))))
+		{
+			if (error != SJME_ERROR_CLASS_CAST)
+				return sjme_error_default(error);
+			result.v.i = SJME_JNI_FALSE;
+		}
+		else
+			result.v.i = SJME_JNI_TRUE;
+	}
 
 	/* Push result to the stack. */
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&result)))
+		&commit, &result)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(InvokeInterface)
 SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 {
 	sjme_jmethodID methodId;
 	sjme_jint poolIndex, depth;
 	sjme_nvm_class_poolEntryMember* methodRef;
 	sjme_jvalueTyped depthRef;
+	sjme_nvm_frame_gcCommit commit;
+	sjme_jobject instance;
+	sjme_jclass isClass;
+	sjme_jboolean isProxy, validProxyCall;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Always zero. */
@@ -557,7 +855,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 	/* Read in the reference. */
 	memset(&depthRef, 0, sizeof(depthRef));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame, depth - 1,
-		&depthRef, SJME_JNI_FALSE)))
+		&depthRef, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* It must be an object type. */
@@ -565,28 +863,59 @@ SJME_NVM_BYTECODE_SLOW(InvokeInterface)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* It cannot be null. */
-	if (depthRef.v.l == NULL)
+	instance = depthRef.v.l;
+	if (instance == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
-	
-	/* Lookup interface method. */
+
+	/* If this is a proxy object, then it needs to go through a handler */
+	/* at some point, but we need the real method we are invoking. */
+	isClass = sjme_atomic_g(sjme_jclass, &instance->isClass);
+	isProxy = SJME_NVM_ACC_IS(isClass->special, SPECIAL_PROXY);
+	validProxyCall = SJME_JNI_FALSE;
+
+	/* Lookup interface method, we always want to prioritize concrete */
+	/* methods first. */
 	methodId = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByInterface(
-		SJME_F_T(inFrame), SJME_JNI_TRUE, &methodId,
-		depthRef.v.l, methodRef)) ||
+	if (sjme_error_is(error = sjme_nvm_vmMethod_idByInterface(
+		SJME_F_T(inFrame), SJME_JNI_FALSE,
+		&methodId, instance, methodRef)) ||
 		methodId == NULL)
-		return sjme_error_vmError(inFrame, error);
-	
+	{
+		/* If this is not a proxy, then we just outright fail here. */
+		if (!isProxy)
+			return sjme_error_vmError(inFrame, error);
+
+		/* We allow abstract methods to be targeted if this is a proxy */
+		/* class, as these classes are meant to have special handling. */
+		if (sjme_error_is(error = sjme_nvm_vmMethod_idByInterface(
+			SJME_F_T(inFrame), SJME_JNI_TRUE,
+			&methodId, instance, methodRef)) ||
+			methodId == NULL)
+			return sjme_error_vmError(inFrame, error);
+
+		/* This is a valid abstract proxy call. */
+		validProxyCall = SJME_JNI_TRUE;
+	}
+
 	/* Perform the invocation. */
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(inFrame,
+		&commit, instance,
 		SJME_NVM_CLASS_MEMBER_INSTANCE,
-		SJME_NVM_CALL_VIRTUAL,
+		(validProxyCall ? SJME_NVM_CALL_PROXY : SJME_NVM_CALL_VIRTUAL),
 		methodId)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(InvokeSpecial)
 SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 {
 	sjme_jint poolIndex;
@@ -597,6 +926,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	sjme_jvalueTyped rawOnThis;
 	sjme_jobject onThis;
 	sjme_jboolean inSameClass, inSuper, isInit, isPrivate, isPackagePrivate;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Read in pool reference, which refers to the referenced member. */
@@ -617,8 +947,18 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 		SJME_JNI_TRUE)) || refClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Setup commit. */
+	memset(&commit, 0, sizeof(commit));
+
 	/* The target method needs to be found dynamically. */
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+	if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
 		refClass, SJME_F_T(inFrame), SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_JNI_TRUE, SJME_P_M_N(entry)->seq,
 		SJME_P_M_T(entry)->seq, &refMethod)) ||
@@ -632,28 +972,40 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	memset(&rawOnThis, 0, sizeof(rawOnThis));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
 		entry->member.staticArgSlots,
-		&rawOnThis, SJME_JNI_FALSE)))
+		&rawOnThis, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* The instance object to call onto, cannot be null. */
 	onThis = rawOnThis.v.l;
 	if (onThis == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
+	{
+		/* Emit the exception. */
+		if (sjme_error_is(error = sjme_nvm_task_threadEmit(SJME_F_T(inFrame),
+			SJME_NVM_COMMON_EXCEPTION_NULL_POINTER,
+			NULL,
+			"NARG")))
+			return sjme_error_vmError(inFrame, error);
+
+		/* Check for recycle, then do nothing except commit. */
+		if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+			pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		goto skip_commit;
+	}
 
 	/* These modify the action to be performed */
 	inSameClass = (currentClass == refClass);
 	inSuper = sjme_nvm_vmClass_isSuperClass(currentClass,
 		refClass);
-	isInit = refMethod->bits.isInstanceInit;
-	isPrivate = SJME_M_AF(refMethod).private;
-	isPackagePrivate = (!SJME_M_AF(refMethod).private &&
-		!SJME_M_AF(refMethod).protected &&
-		!SJME_M_AF(refMethod).public);
+	isInit = SJME_NVM_CLASS_INIT_IS(refMethod->bits, INSTANCE);
+	isPrivate = SJME_NVM_ACC_IS(SJME_M_AF(refMethod), PRIVATE);
+	isPackagePrivate = (!SJME_NVM_ACC_IS(SJME_M_AF(refMethod), PRIVATE) &&
+		!SJME_NVM_ACC_IS(SJME_M_AF(refMethod), PROTECTED) &&
+		!SJME_NVM_ACC_IS(SJME_M_AF(refMethod), PUBLIC));
 	
 	/* Call superclass method instead? */
 	if ((!isPrivate && !isPackagePrivate) && inSuper && !isInit)
 	{
-		if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+		if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
 			SJME_C_SU(refClass),
 			SJME_F_T(inFrame),
 			SJME_NVM_CLASS_MEMBER_INSTANCE,
@@ -670,21 +1022,29 @@ SJME_NVM_BYTECODE_SLOW(InvokeSpecial)
 	
 	/* Invoke this method */
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(inFrame,
+		&commit, onThis,
 		SJME_NVM_CLASS_MEMBER_INSTANCE,
-		SJME_NVM_CALL_NON_VIRTUAL,
-		refMethod)))
+		SJME_NVM_CALL_NON_VIRTUAL, refMethod)))
+		return sjme_error_vmError(inFrame, error);
+
+skip_commit:
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(InvokeStatic)
 SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jmethodID target;
 	sjme_jclass refClass;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in pool reference. */
@@ -713,7 +1073,7 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 	
 	/* Lookup target method. */
 	target = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+	if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
 		refClass, SJME_F_T(inFrame), SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_JNI_TRUE,
 		SJME_P_M_N(entry)->seq,
@@ -721,23 +1081,33 @@ SJME_NVM_BYTECODE_SLOW(InvokeStatic)
 		target == NULL)
 		return sjme_error_vmError(inFrame, error);
 
+	/* Setup commit. */
+	memset(&commit, 0, sizeof(commit));
+
 	/* Perform the invocation. */
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(inFrame,
+		&commit, NULL,
 		SJME_NVM_CLASS_MEMBER_STATIC,
-		SJME_NVM_CALL_NON_VIRTUAL,
-		target)))
+		SJME_NVM_CALL_NON_VIRTUAL, target)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(InvokeVirtual)
 SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jmethodID target;
 	sjme_jclass refClass;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in pool reference. */
@@ -756,10 +1126,20 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 		SJME_P_M_C(entry)->seq,
 		SJME_JNI_TRUE)) || refClass == NULL)
 		return sjme_error_vmError(inFrame, error);
+
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Setup commit. */
+	memset(&commit, 0, sizeof(commit));
 	
 	/* Lookup target method. */
 	target = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameType(
+	if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameType(
 		refClass, SJME_F_T(inFrame), SJME_NVM_CLASS_MEMBER_INSTANCE,
 		SJME_JNI_TRUE,
 		SJME_P_M_N(entry)->seq,
@@ -769,18 +1149,26 @@ SJME_NVM_BYTECODE_SLOW(InvokeVirtual)
 
 	/* Perform the invocation. */
 	if (sjme_error_is(error = sjme_nvm_byteCode_slowInvoke(inFrame,
-		SJME_NVM_CLASS_MEMBER_INSTANCE,
-		SJME_NVM_CALL_VIRTUAL, target)))
+		&commit, NULL,
+		SJME_NVM_CLASS_MEMBER_INSTANCE, SJME_NVM_CALL_VIRTUAL,
+		target)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(Monitor)
 SJME_NVM_BYTECODE_SLOW(Monitor)
 {
 	sjme_jboolean isExit;
 	sjme_jvalueTyped instance;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Entry or exit? */
@@ -788,8 +1176,9 @@ SJME_NVM_BYTECODE_SLOW(Monitor)
 
 	/* Get the object we are accessing. */
 	memset(&instance, 0, sizeof(instance));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, SJME_JNI_TRUE, NULL, &instance)))
+		SJME_JAVA_TYPE_ID_OBJECT, &commit, &instance)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Cannot be null. */
@@ -809,11 +1198,17 @@ SJME_NVM_BYTECODE_SLOW(Monitor)
 			SJME_F_T(inFrame), instance.v.l)))
 			return sjme_error_vmError(inFrame, error);
 	}
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(New)
 SJME_NVM_BYTECODE_SLOW(New)
 {
 	SJME_NVM_BYTECODE_ENTRY;
@@ -821,6 +1216,7 @@ SJME_NVM_BYTECODE_SLOW(New)
 	sjme_jvalueTyped result;
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jclass desireClass;
+	sjme_nvm_frame_gcCommit commit;
 	
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -839,34 +1235,52 @@ SJME_NVM_BYTECODE_SLOW(New)
 		SJME_P_C_N(entry)->seq,
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
+	
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
 
 	/* Allocate new instance of the given object. */
 	memset(&result, 0, sizeof(result));
+	result.t = SJME_JAVA_TYPE_ID_OBJECT;
 	if (sjme_error_is(error = sjme_nvm_instance_objectNew(
 		SJME_F_T(inFrame), -1, SJME_NVM_STRUCT_OBJECT_INSTANCE,
 		&result.v.l, desireClass)) || result.v.l == NULL)
 		return sjme_error_vmError(inFrame, error);
+
+	/* Setup commit. */
+	memset(&commit, 0, sizeof(commit));
 	
-	/* Push allocate class to the stack. */
-	result.t = SJME_JAVA_TYPE_ID_OBJECT;
+	/* Push allocated object instance to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&result)))
+		&commit, &result)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(NewArray)
 SJME_NVM_BYTECODE_SLOW(NewArray)
 {
 	sjme_jvalueTyped length, array;
 	sjme_basicTypeId arrayType;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in array length. */
 	memset(&length, 0, sizeof(length));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, SJME_JNI_TRUE, NULL, &length)))
+		SJME_JAVA_TYPE_ID_INTEGER, &commit, &length)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Length is not valid. */
@@ -922,13 +1336,19 @@ SJME_NVM_BYTECODE_SLOW(NewArray)
 	/* Push to the stack. */
 	array.t = SJME_JAVA_TYPE_ID_OBJECT;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&array)))
+		&commit, &array)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(NewArrayA)
 SJME_NVM_BYTECODE_SLOW(NewArrayA)
 {
 	sjme_jint poolIndex;
@@ -936,6 +1356,7 @@ SJME_NVM_BYTECODE_SLOW(NewArrayA)
 	sjme_jclass componentType;
 	sjme_jvalueTyped length;
 	sjme_jvalueTyped array;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Read in pool reference. */
@@ -956,10 +1377,18 @@ SJME_NVM_BYTECODE_SLOW(NewArrayA)
 		SJME_JNI_TRUE)) || componentType == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
+	
 	/* Read in array length. */
 	memset(&length, 0, sizeof(length));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, SJME_JNI_TRUE, NULL, &length)))
+		SJME_JAVA_TYPE_ID_INTEGER, &commit, &length)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Length is not valid. */
@@ -976,13 +1405,19 @@ SJME_NVM_BYTECODE_SLOW(NewArrayA)
 	/* Push to the stack. */
 	array.t = SJME_JAVA_TYPE_ID_OBJECT;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&array)))
+		&commit, &array)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(NewArrayMulti)
 SJME_NVM_BYTECODE_SLOW(NewArrayMulti)
 {
 	sjme_nvm_class_poolEntry* entry;
@@ -991,6 +1426,7 @@ SJME_NVM_BYTECODE_SLOW(NewArrayMulti)
 	sjme_jint poolIndex, i, dims;
 	sjme_jvalueTyped result;
 	sjme_jclass rootComponentType;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Read in pool reference. */
@@ -1008,6 +1444,13 @@ SJME_NVM_BYTECODE_SLOW(NewArrayMulti)
 		SJME_P_C_N(entry)->seq, SJME_JNI_TRUE)) ||
 		rootComponentType == NULL)
 		return sjme_error_vmError(inFrame, error);
+	
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
 
 	/* How many dimensions to read? */
 	dims = relRawCode[3] & 0xFF;
@@ -1026,9 +1469,12 @@ SJME_NVM_BYTECODE_SLOW(NewArrayMulti)
 	for (i = 0; i < dims; i++)
 		argT[i] = SJME_JAVA_TYPE_ID_INTEGER;
 
+	/* Setup commit. */
+	memset(&commit, 0, sizeof(commit));
+
 	/* Pop all dimensions at once. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPopA(inFrame,
-		SJME_JNI_TRUE, NULL, dims, argT, argV)))
+		NULL, dims, argT, argV)))
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Recursively allocate sub-dimensions. */
@@ -1039,13 +1485,19 @@ SJME_NVM_BYTECODE_SLOW(NewArrayMulti)
 
 	/* Push final result to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-		inFrame, &result)))
+		inFrame, &commit, &result)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(StaticAccess)
 SJME_NVM_BYTECODE_SLOW(StaticAccess)
 {
 	sjme_jint poolIndex;
@@ -1054,6 +1506,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	sjme_jfieldID fieldId;
 	sjme_jvalueTyped value;
 	sjme_jboolean isPut;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Is this a get or a put? */
@@ -1077,9 +1530,16 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
+	/* Check for recycle, class load and/or static constructor. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
+	
 	/* Lookup field in the class. */
 	fieldId = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_fieldIDByNameType(
+	if (sjme_error_is(error = sjme_nvm_vmField_idByNameType(
 		desireClass, SJME_F_T(inFrame),
 		SJME_NVM_CLASS_MEMBER_STATIC,
 		SJME_JNI_TRUE,
@@ -1089,7 +1549,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Not a static field? */
-	if (!fieldId->flags.member.isStatic)
+	if (!SJME_NVM_ACC_IS(fieldId->flags, STATIC))
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
 	/* Check access for calling this method. */
@@ -1100,30 +1560,32 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	
 	/* Read in value to put. */
 	memset(&value, 0, sizeof(value));
+	memset(&commit, 0, sizeof(commit));
 	if (isPut)
 	{
 		/* Cannot be final unless we are in a static initializer. */
-		if (fieldId->flags.member.final)
+		if (SJME_NVM_ACC_IS(fieldId->flags, FINAL))
 		{
 			/* Cannot write instance final fields. */
-			if (!fieldId->flags.member.isStatic)
+			if (!SJME_NVM_ACC_IS(fieldId->flags, STATIC))
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 			
 			/* Completely different class? */
-			if (fieldId->member.inClass != inFrame->inClass)
+			if (sjme_atomic_g(sjme_jclass, &fieldId->member.inClass) !=
+				inFrame->inClass)
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 
 			/* We must be in a static initializer. */
-			if (!inFrame->flags.isStaticInit)
+			if (!SJME_NVM_FRAME_STATE_IS(inFrame->flags, INIT_STATIC))
 				return sjme_error_vmError(inFrame,
 					SJME_ERROR_MEMBER_ACCESS_DENIED);
 		}
 
 		/* Read in the value to write. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			fieldId->javaType, SJME_JNI_TRUE, NULL, &value)))
+			fieldId->javaType, &commit, &value)))
 			return sjme_error_vmError(inFrame, error);
 		
 		/* Make sure this can actually be stored there. */
@@ -1138,31 +1600,41 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 	/* the class this field truly exists in. */
 	if (sjme_error_is(error = sjme_nvm_instance_fieldAccessStack(
 		SJME_F_T(inFrame),
-		fieldId, SJME_AS_JOBJECT(fieldId->member.inClass), &value, isPut)))
+		&commit, fieldId, SJME_AS_JOBJECT(sjme_atomic_g(sjme_jclass,
+			&fieldId->member.inClass)), &value, isPut)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Push result to the stack. */
 	if (!isPut)
 	{
+		/* Place onto the stack. */
 		value.t = fieldId->javaType;
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-			inFrame, &value)))
+			inFrame, &commit, &value)))
 			return sjme_error_vmError(inFrame, error);
 	}
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(Throw)
 SJME_NVM_BYTECODE_SLOW(Throw)
 {
 	sjme_jvalueTyped toss;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in object to toss. */
 	memset(&toss, 0, sizeof(toss));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, SJME_JNI_TRUE, NULL, &toss)))
+		SJME_JAVA_TYPE_ID_OBJECT, &commit, &toss)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Cannot be null. */
@@ -1170,17 +1642,28 @@ SJME_NVM_BYTECODE_SLOW(Throw)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 
 	/* Set thrown exception. */
-	if (!sjme_atomic_sjme_jobject_compareSet(&SJME_F_T(inFrame)->tossed,
+	if (!sjme_atomic_cs(sjme_jobject, &SJME_F_T(inFrame)->tossed,
 		NULL, toss.v.l))
 		return sjme_error_vmError(inFrame, SJME_ERROR_DOUBLE_TOSS);
 
-	/* Always pop the frame. */
-	pcNew->popFrame = SJME_JNI_TRUE;
+	/* Set the toss level very high as we are not running any implicit */
+	/* constructors! */
+	sjme_atomic_s(sjme_jint, &SJME_F_T(inFrame)->tossedLevel, INT32_MAX);
+
+	/* Count up since it is now also in tossed. */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(toss.v.l)))
+		return sjme_error_vmError(inFrame, error);
+
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(XALoad)
 SJME_NVM_BYTECODE_SLOW(XALoad)
 {
 	sjme_jvalueTyped arrayValue;
@@ -1190,30 +1673,43 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	sjme_jint index;
 	sjme_basicTypeId arrayType;
 	sjme_jclass componentType;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Read in index and array. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&indexValue, 0, sizeof(indexValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, SJME_JNI_TRUE, NULL, &indexValue)))
+		SJME_JAVA_TYPE_ID_INTEGER, &commit, &indexValue)))
 		return sjme_error_vmError(inFrame, error);
 	memset(&arrayValue, 0, sizeof(arrayValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, SJME_JNI_TRUE, NULL, &arrayValue)))
+		SJME_JAVA_TYPE_ID_OBJECT, &commit, &arrayValue)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must not be null. */
 	array = SJME_AS_JARRAY(arrayValue.v.l);
 	if (array == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
+	{
+		/* Emit exception. */
+		if (sjme_error_is(error = sjme_nvm_task_frameEmit(inFrame,
+			SJME_NVM_COMMON_EXCEPTION_NULL_POINTER, NULL,
+			"NULL")))
+			return sjme_error_vmError(inFrame, error);
+		
+		/* Leave early. */
+		goto skip_tossed;
+	}
 
 	/* Make sure the array is actually valid. */
 	arrayType = sjme_nvm_byteCode_xArrayType[id - 46];
-	componentType = sjme_atomic_sjme_jclass_get(
-		&array->object.isClass->componentType);
+	componentType = sjme_atomic_g(sjme_jclass, 
+		&sjme_atomic_g(sjme_jclass,
+			&array->object.isClass)->componentType);
 	if (array == NULL || componentType == NULL ||
 		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		!array->object.isClass->info->isArray ||
+		!sjme_atomic_g(sjme_jclass,
+			&array->object.isClass)->info->isArray ||
 		componentType == NULL)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 
@@ -1227,72 +1723,32 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	
 	/* Check bounds. */
 	index = indexValue.v.i;
-	if (index < 0 || index >= array->length)
+	if (index < 0 || index >= array->e.length)
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
 
-	/* Load value to push. */
+	/* Load value to be pushed. */
 	memset(&pushValue, 0, sizeof(pushValue));
-	pushValue.t = componentType->typeId;
-	switch (componentType->arrayTypeId)
-	{
-		case SJME_BASIC_TYPE_ID_BOOLEAN:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-			
-		case SJME_BASIC_TYPE_ID_BYTE:
-			pushValue.v.i =
-				((sjme_jint)array->e.b[index]) & INT32_C(0xFF);
-			if ((pushValue.v.i & INT32_C(0x80)) != 0)
-				pushValue.v.i |= INT32_C(0xFFFFFF00);
-			break;
-			
-		case SJME_BASIC_TYPE_ID_SHORT:
-			pushValue.v.i =
-				((sjme_jint)array->e.s[index]) & INT32_C(0xFFFF);
-			if ((pushValue.v.i & INT32_C(0x8000)) != 0)
-				pushValue.v.i |= INT32_C(0xFFFF0000);
-			break;
-			
-		case SJME_BASIC_TYPE_ID_CHARACTER:
-			pushValue.v.i =
-				((sjme_jint)array->e.c[index]) & INT32_C(0xFFFF);
-			break;
-			
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			pushValue.v.i = array->e.i[index];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_LONG:
-			pushValue.v.j = array->e.j[index];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			pushValue.v.f = array->e.f[index];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			pushValue.v.d = array->e.d[index];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-			pushValue.v.l = array->e.l[index];
-			break;
-
-		default:
-			return sjme_error_vmError(inFrame,
-				SJME_ERROR_STACK_INVALID_WRITE);
-	}
+	if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
+		&array->e, index, SJME_VLG_JVALUE_TYPED_P(&pushValue))))
+		return sjme_error_vmError(inFrame, error);
 
 	/* Push. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-		inFrame, &pushValue)))
+		inFrame, &commit, &pushValue)))
+		return sjme_error_vmError(inFrame, error);
+
+skip_tossed:
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(XAStore)
 SJME_NVM_BYTECODE_SLOW(XAStore)
 {
 	sjme_jvalueTyped popValue;
@@ -1303,6 +1759,7 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	sjme_basicTypeId arrayType;
 	sjme_javaTypeId promoteType;
 	sjme_jclass componentType;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Determine the type to read from the stack and to store to the array. */
@@ -1311,16 +1768,17 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 
 	/* Read in value, index, and array. */
 	memset(&popValue, 0, sizeof(popValue));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		promoteType, SJME_JNI_TRUE, NULL, &popValue)))
-		return sjme_error_vmError(inFrame, error);
 	memset(&indexValue, 0, sizeof(indexValue));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, SJME_JNI_TRUE, NULL, &indexValue)))
-		return sjme_error_vmError(inFrame, error);
 	memset(&arrayValue, 0, sizeof(arrayValue));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, SJME_JNI_TRUE, NULL, &arrayValue)))
+		promoteType, &commit, &popValue)))
+		return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_INTEGER, &commit, &indexValue)))
+		return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &commit, &arrayValue)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must not be null. */
@@ -1329,7 +1787,7 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
 
 	/* Make sure the array is actually valid. */
-	componentType = sjme_atomic_sjme_jclass_get(
+	componentType = sjme_atomic_g(sjme_jclass, 
 		&SJME_AO_C(array)->componentType);
 	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
 		!SJME_AO_C(array)->info->isArray ||
@@ -1339,60 +1797,21 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 
 	/* Check bounds. */
 	index = indexValue.v.i;
-	if (index < 0 || index >= array->length)
+	if (index < 0 || index >= array->e.length)
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
 
 	/* Store value into the array. */
-	switch (componentType->arrayTypeId)
-	{
-		case SJME_BASIC_TYPE_ID_BOOLEAN:
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-			
-		case SJME_BASIC_TYPE_ID_BYTE:
-			array->e.b[index] = (sjme_jbyte)popValue.v.i;
-			break;
-			
-		case SJME_BASIC_TYPE_ID_SHORT:
-			array->e.s[index] = (sjme_jshort)popValue.v.i;
-			break;
-			
-		case SJME_BASIC_TYPE_ID_CHARACTER:
-			array->e.c[index] = (sjme_jchar)popValue.v.i;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			array->e.i[index] = popValue.v.i;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_LONG:
-			array->e.j[index] = popValue.v.j;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			array->e.f[index] = popValue.v.f;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			array->e.d[index] = popValue.v.d;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-			/* Balance the reference count. */
-			if (sjme_error_is(error = sjme_nvm_instance_countBalance(
-				array->e.l[index], popValue.v.l)))
-				return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+		&array->e, index, &commit,
+		SJME_VLS_JVALUE_TYPED_P(&popValue))))
+		return sjme_error_vmError(inFrame, error);
 
-			/* Set new value. */
-			array->e.l[index] = popValue.v.l;
-			break;
-
-		default:
-			return sjme_error_vmError(inFrame,
-				SJME_ERROR_STACK_INVALID_READ);
-	}
-	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
+		
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()

@@ -144,9 +144,17 @@ public final class TaskInitialization
 			
 		// Generate the list of tests that are available (only tests)
 		if (__sourceSet.equals(SourceSet.TEST_SOURCE_SET_NAME))
+		{
+			// Normal TAC tests
 			__project.getTasks().create("generateTestsList",
-				GenerateTestsListTask.class,
-				processResources, clean);
+				GenerateTestsListTask.class, processResources,
+				clean, false);
+			
+			// NanoCoat Tests
+			__project.getTasks().create("generateNanoTestsList",
+				GenerateTestsListTask.class, processResources,
+				clean, true);
+		}
 		
 		// The current Jar Task
 		String jarTaskName = TaskInitialization.task(

@@ -12,4 +12,5 @@
 jstring JNICALL JVM_InternString(JNIEnv* env, jstring str)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }

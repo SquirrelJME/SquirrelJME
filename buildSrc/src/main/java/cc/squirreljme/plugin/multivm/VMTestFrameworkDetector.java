@@ -124,6 +124,6 @@ public class VMTestFrameworkDetector
 		
 		// Normalize name for SquirrelJME, then check if this is something
 		// we care about
-		return TestDetection.isTest(path.replace('/', '.'));
+		return TestDetection.isTest(path.replace('/', '.'), false);
 	}
 }

@@ -10,6 +10,7 @@
 /**
  * Instances of objects.
  * 
+ * @file
  * @since 2024/09/08
  */
 
@@ -32,76 +33,26 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Raw array values.
+ * Handles a call to a proxy method.
  *
- * @since 2025/03/23
+ * @param inFrame The frame this is being called under.
+ * @param commit The GC commit, if applicable.
+ * @param proxyInstance The instance of the proxy class.
+ * @param proxyMethod The proxied method which is being called.
+ * @param argR Return value for the proxy call.
+ * @param argC The number of passed arguments.
+ * @param argV The arguments passed to the method.
+ * @return Any resultant error, if any.
+ * @since 2026/09/19
  */
-typedef union sjme_nvm_rawArrayValues
-{
-	/** Byte/boolean values. */
-	sjme_jbyte b[sjme_flexibleArrayCountUnion];
-	
-	/** Short values. */
-	sjme_jshort s[sjme_flexibleArrayCountUnion];
-	
-	/** Char values. */
-	sjme_jchar c[sjme_flexibleArrayCountUnion];
-	
-	/** Integer values. */
-	sjme_jint i[sjme_flexibleArrayCountUnion];
-		
-	/** Long values. */
-	sjme_jlong j[sjme_flexibleArrayCountUnion];
-		
-	/** Float values. */
-	sjme_jfloat f[sjme_flexibleArrayCountUnion];
-		
-	/** Double values. */
-	sjme_jdouble d[sjme_flexibleArrayCountUnion];
-		
-	/** Object reference values. */
-	sjme_jobject l[sjme_flexibleArrayCountUnion];
-} sjme_nvm_rawArrayValues;
-	
-/**
- * Raw field values.
- *
- * @since 2024/11/27
- */
-typedef union sjme_nvm_rawFieldValues
-{
-	/** Integer values. */
-	sjme_jint i[sjme_flexibleArrayCountUnion];
-		
-	/** Long values. */
-	sjme_jlong j[sjme_flexibleArrayCountUnion];
-		
-	/** Float values. */
-	sjme_jfloat f[sjme_flexibleArrayCountUnion];
-		
-	/** Double values. */
-	sjme_jdouble d[sjme_flexibleArrayCountUnion];
-		
-	/** Object reference values. */
-	sjme_nvm_fieldObject l[sjme_flexibleArrayCountUnion];
-} sjme_nvm_rawFieldValues;
-
-/**
- * Stores multiple field values for a given type.
- * 
- * @since 2024/10/27
- */
-typedef struct sjme_nvm_fieldValues
-{
-	/** The type of value this stores. */
-	sjme_javaTypeId type;
-	
-	/** The number of items in this tread. */
-	sjme_jint length;
-	
-	/** Values within the tread. */
-	sjme_alignPointer sjme_nvm_rawFieldValues values;
-} sjme_nvm_fieldValues;
+typedef sjme_errorCode (*sjme_nvm_instance_proxyHandlerFunc)(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNotNull sjme_jobject proxyInstance,
+	sjme_attrInNotNull sjme_jmethodID proxyMethod,
+	sjme_attrInNotNull sjme_jvalueTyped* argR,
+	sjme_attrInNotNull sjme_jint argC,
+	sjme_attrInNotNull sjme_jvalueTyped* argV);
 
 struct sjme_jobjectBase
 {
@@ -112,13 +63,13 @@ struct sjme_jobjectBase
 	sjme_jint identityHash;
 	
 	/** The current class that this is. */
-	sjme_jclass isClass;
+	sjme_nonCyclic(sjme_jclass) isClass;
 
 	/** The monitor of monitor counts. */
-	sjme_atomic_sjme_jint monitorCount;
+	sjme_atomic(sjme_jint) monitorCount;
 	
 	/** Special value, if needed. */
-	sjme_atomic_sjme_intPointer special;
+	sjme_atomic(sjme_intPointer) special;
 };
 
 struct sjme_jthrowableBase
@@ -212,7 +163,7 @@ struct sjme_nvm_isClassesBase
 	sjme_nvm_commonBase common;
 	
 	/** The classes that this class @c implements / @c extends . */
-	sjme_list_sjme_jclass* classes;
+	sjme_list(sjme_phantom(sjme_jclass))* classes;
 };
 
 /**
@@ -249,7 +200,7 @@ typedef struct sjme_nvm_jclass_fields
 	sjme_intPointer offset[SJME_NUM_EXTENDED_JAVA_TYPE_IDS];
 	
 	/** Field bindings for this class. */
-	sjme_list_sjme_jfieldID* binds;
+	sjme_list(sjme_jfieldID)* binds;
 
 	/** The allocation size of this class. */
 	sjme_jint allocSize;
@@ -272,7 +223,7 @@ typedef struct sjme_nvm_jclass_methods
 	sjme_jshort count;
 	
 	/** Method bindings for this class. */
-	sjme_list_sjme_jmethodID* binds;
+	sjme_list(sjme_jmethodID)* binds;
 } sjme_nvm_jclass_methods;
 
 struct sjme_jclassBase
@@ -280,29 +231,29 @@ struct sjme_jclassBase
 	/** All classes are objects. */
 	sjme_jobjectBase object;
 	
-	/** The binary name of this class. */
-	sjme_charSeq binaryName;
+	/** The field name of this class. */
+	sjme_charSeq fieldName;
 	
-	/** The has of the binary name. */
-	sjme_jint binaryHash;
+	/** The hash of the field name. */
+	sjme_jint fieldHash;
 	
 	/** Error emitted when loading/initializing. */
-	sjme_atomic_sjme_jint error; 
+	sjme_atomic(sjme_jint) error; 
 	
 	/** Has the backing class data been loaded? */
-	sjme_atomic_sjme_jint isLoaded;
+	sjme_atomic(sjme_jint) isLoaded;
 	
 	/** Is this class initialized? */
-	sjme_atomic_sjme_jint isInitialized;
+	sjme_atomic(sjme_jint) isInitialized;
 	
 	/** The parsed class file information. */
 	sjme_nvm_class_info info;
 	
 	/** The super class of this class. */
-	sjme_atomic_sjme_jclass superClass;
+	sjme_atomic(sjme_jclass) superClass;
 	
 	/** Interface classes for this class. */
-	sjme_list_sjme_jclass* interfaceClasses;
+	sjme_list(sjme_jclass)* interfaceClasses;
 
 	/** Fields. */
 	sjme_nvm_jclass_fields fields[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
@@ -311,7 +262,7 @@ struct sjme_jclassBase
 	sjme_nvm_jclass_methods methods[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 	
 	/** Interface method binds. */
-	sjme_list_sjme_jinterfaceID* interfaceBinds;
+	sjme_list(sjme_jinterfaceID)* interfaceBinds;
 	
 	/** The classes this implements or extends. */
 	sjme_nvm_isClasses isClasses;
@@ -323,13 +274,22 @@ struct sjme_jclassBase
 	sjme_basicTypeId arrayTypeId;
 
 	/** The component type of this class, if it is an array. */
-	sjme_atomic_sjme_jclass componentType;
+	sjme_atomic(sjme_jclass) componentType;
 
 	/** The phantom array type of this class. */
-	sjme_atomic_sjme_jclass phantomArrayType;
+	sjme_phantom(sjme_jclass) phantomArrayType;
 
 	/** Static field data chunk. */
 	sjme_pointer staticChunk;
+
+	/** The number of dimensions for this array type. */
+	sjme_atomic(sjme_jint) numDimensions;
+
+	/** Special class flags. */
+	sjme_jint special;
+
+	/** The proxy handler, if this is a proxy class. */
+	sjme_nvm_instance_proxyHandlerFunc proxyHandler;
 };
 
 struct sjme_jstringBase
@@ -337,8 +297,11 @@ struct sjme_jstringBase
 	/** All strings are objects. */
 	sjme_jobjectBase object;
 
+	/** The string pool this refers to, if this happens to be one. */
+	sjme_phantom(sjme_nvm_stringPool_string) poolString;
+
 	/** The sequence of characters which make up the string. */
-	sjme_atomic_sjme_charSeq seq;
+	sjme_phantom(sjme_charSeq) seq;
 
 	/** Intern based information. */
 	struct
@@ -355,15 +318,9 @@ struct sjme_jarrayBase
 {
 	/** Base object. */
 	sjme_jobjectBase object;
-
-	/** The array type. */
-	sjme_basicTypeId type;
-
-	/** The length of the array. */
-	sjme_jint length;
-
-	/** The elements in the array. */
-	sjme_alignPointer sjme_nvm_rawArrayValues e;
+	
+	/** The elements in the array, along with the type and length. */
+	sjme_alignPointer sjme_nvm_valueSet e;
 };
 
 struct sjme_jweakBase
@@ -372,17 +329,20 @@ struct sjme_jweakBase
 	sjme_jobjectBase object;
 
 	/** Has this been initialized? */
-	sjme_atomic_sjme_jint beenInit;
+	sjme_atomic(sjme_jint) beenInit;
 
 	/** The object this points to. */
-	sjme_atomic_sjme_jobject pointer;
+	sjme_atomic(sjme_jobject) pointer;
+
+	/** The ID of the pointer. */
+	sjme_atomic(sjme_jint) pointerId;
 
 	/** The reference queue. */
-	sjme_atomic_sjme_jobject queue;
+	sjme_atomic(sjme_jobject) queue;
 };
 
 /**
- * Returns the size for @c sjme_nvm_fieldValues for the given number of
+ * Returns the size for @link sjme_nvm_valueSet @endlink for the given number of
  * values.
  * 
  * @param extendedType The Java type to use.
@@ -405,32 +365,6 @@ sjme_jint sjme_nvm_instance_calcIdentityHash(
 	sjme_attrInNotNull sjme_nvm_task inTask,
 	sjme_attrInValue void* pointer);
 	
-/**
- * Balances the counting between @c oldV and @c newV , so that if the values
- * are different they are counted down and up accordingly.
- * 
- * @param oldV The old value.
- * @param newV The new value.
- * @return Any resultant error, if any.
- * @since 2025/07/19
- */
-sjme_errorCode sjme_nvm_instance_countBalanceR(
-	sjme_attrInNullable sjme_jobject oldV,
-	sjme_attrInNullable sjme_jobject newV
-	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
-	
-/**
- * Checks if the given object can be counted down if the old value changes.
- * 
- * @param oldP The old pointer value.
- * @param newV The new value.
- * @return Any resultant error, if any.
- * @since 2025/02/24
- */
-#define sjme_nvm_instance_countBalance(oldP, newV) \
-	(sjme_nvm_instance_countBalanceR((oldP), (newV) \
-	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
-
 /**
  * Counts the given object down.
  * 
@@ -476,6 +410,40 @@ sjme_errorCode sjme_nvm_instance_countUpR(
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**
+ * Calls the default constructor with the given arguments, this will load the
+ * first argument object automatically so it is not needed.
+ * 
+ * @param contextThread The thread this is being called within.
+ * @param outFrame The resultant frame that was entered for the constructor.
+ * @param inObject The object to call the default constructor for.
+ * @param inDesc The descriptor of the constructor to call.
+ * @param argC The argument count.
+ * @param argV The argument values.
+ * @return Any resultant error, if any.
+ * @snce 2025/09/06
+ */
+sjme_errorCode sjme_nvm_instance_defaultInit(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrOutNullable sjme_nvm_frame* outFrame,
+	sjme_attrInNotNull sjme_jobject inObject,
+	sjme_attrInNotNull sjme_lpcstr inDesc,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV);
+
+/**
+ * Returns the pointer to the direct field placements for the given object
+ * and type.
+ * 
+ * @param instance The instance to get the placement for.
+ * @param forType The type to get.
+ * @return Any resultant error, if any.
+ * @since 2026/01/11
+ */
+sjme_errorCode sjme_nvm_instance_directPlacement(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInValue sjme_extendedTypeId forType);
+	
+/**
  * The default accessor for fields.
  * 
  * @param instance The instance to access.
@@ -483,7 +451,7 @@ sjme_errorCode sjme_nvm_instance_countUpR(
  * @return The pointer to the field data directly.
  * @since 2025/06/21
  */
-sjme_nvm_rawFieldValue* sjme_nvm_instance_fieldAccessor(
+sjme_nvm_value* sjme_nvm_instance_fieldAccessor(
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jfieldID field);
 
@@ -502,7 +470,7 @@ sjme_errorCode sjme_nvm_instance_initFields(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_pointer chunk,
-	sjme_attrInNotNull sjme_list_sjme_jfieldID* fields,
+	sjme_attrInNotNull sjme_list(sjme_jfieldID)* fields,
 	sjme_attrInNotNull sjme_nvm_jclass_fields* placements);
 
 /**
@@ -521,6 +489,7 @@ sjme_errorCode sjme_nvm_instance_initFieldsChunk(
  * Reads or writes a field based on a stack based value.
  * 
  * @param contextThread The context thread.
+ * @param commit The GC commit.
  * @param fieldId The field ID.
  * @param instance The instance to access.
  * @param stackType The stack type.
@@ -531,6 +500,7 @@ sjme_errorCode sjme_nvm_instance_initFieldsChunk(
  */
 sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jfieldID fieldId,
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jvalueTyped* stackType,
@@ -570,11 +540,28 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
  * @return Any resultant error, if any.
  * @since 2025/03/17
  */
-sjme_errorCode sjme_nvm_instance_objectArrayNew(
+sjme_errorCode sjme_nvm_instance_objectArrayNewR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_jarray* outObject,
 	sjme_attrInNotNull sjme_jclass componentType,
-	sjme_attrInPositive sjme_jint arrayLength);
+	sjme_attrInPositive sjme_jint arrayLength
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+	
+/**
+ * Allocates a new array object.
+ * 
+ * @param contextThread The thread the allocation is being performed in.
+ * @param outObject The resultant type.
+ * @param componentType The component type of the array.
+ * @param arrayLength The length of the array to allocate.
+ * @return Any resultant error, if any.
+ * @since 2025/03/17
+ */
+#define sjme_nvm_instance_objectArrayNew(contextThread, outObject, \
+		componentType, arrayLength) \
+	(sjme_nvm_instance_objectArrayNewR((contextThread), (outObject), \
+		(componentType), (arrayLength) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**
  * Allocates a new array object.
@@ -586,12 +573,29 @@ sjme_errorCode sjme_nvm_instance_objectArrayNew(
  * @return Any resultant error, if any.
  * @since 2025/03/17
  */
-sjme_errorCode sjme_nvm_instance_objectArrayNewT(
+sjme_errorCode sjme_nvm_instance_objectArrayNewTR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrOutNotNull sjme_jarray* outObject,
 	sjme_attrInRange(0, SJME_NUM_BASIC_TYPE_IDS)
 	sjme_basicTypeId componentType,
-	sjme_attrInPositive sjme_jint arrayLength);
+	sjme_attrInPositive sjme_jint arrayLength
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Allocates a new array object.
+ * 
+ * @param contextThread The thread the allocation is being performed in.
+ * @param outObject The resultant type.
+ * @param componentType The component type of the array.
+ * @param arrayLength The length of the array to allocate.
+ * @return Any resultant error, if any.
+ * @since 2025/03/17
+ */
+#define sjme_nvm_instance_objectArrayNewT(contextThread, outObject, \
+		componentType, arrayLength) \
+	(sjme_nvm_instance_objectArrayNewTR((contextThread), (outObject), \
+		(componentType), (arrayLength) \
+		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 	
 /**
  * Allocates a new object.
@@ -605,12 +609,31 @@ sjme_errorCode sjme_nvm_instance_objectArrayNewT(
  * @return Any resultant error, if any.
  * @since 2025/02/23
  */
-sjme_errorCode sjme_nvm_instance_objectNew(
+sjme_errorCode sjme_nvm_instance_objectNewR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNegativeOnePositive sjme_jint allocSize,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_jobject* outObject,
-	sjme_attrInNotNull sjme_jclass inClass);
+	sjme_attrInNotNull sjme_jclass inClass
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+	
+/**
+ * Allocates a new object.
+ * 
+ * @param contextThread The context thread for the allocation, if a class
+ * initialization is required.
+ * @param allocSize The allocation size.
+ * @param inType The NVM structure type.
+ * @param outObject The resultant object.
+ * @param inClass The class type to use for the object.
+ * @return Any resultant error, if any.
+ * @since 2025/02/23
+ */
+#define sjme_nvm_instance_objectNew(contextThread, allocSize, \
+		inType, outObject, inClass) \
+	(sjme_nvm_instance_objectNewR((contextThread), (allocSize), \
+		(inType), (outObject), (inClass) SJME_DEBUG_ONLY_COMMA \
+		SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**
  * Allocates a bracket based type.
@@ -621,10 +644,24 @@ sjme_errorCode sjme_nvm_instance_objectNew(
  * @return Any resultant error, if any.
  * @since 2025/06/28
  */
-sjme_errorCode sjme_nvm_instance_objectNewBracket(
+sjme_errorCode sjme_nvm_instance_objectNewBracketR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
-	sjme_attrOutNotNull sjme_jobject* outObject);
+	sjme_attrOutNotNull sjme_jobject* outObject
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Allocates a bracket based type.
+ * 
+ * @param contextThread The thread this is allocating within.
+ * @param inType The structure type being allocated.
+ * @param outObject The resultant bracket object.
+ * @return Any resultant error, if any.
+ * @since 2025/06/28
+ */
+#define sjme_nvm_instance_objectNewBracket(contextThread, inType, outObject) \
+	(sjme_nvm_instance_objectNewBracketR((contextThread), (inType), \
+		(outObject) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 	
 /**
  * Allocates a new object.
@@ -666,7 +703,7 @@ sjme_errorCode sjme_nvm_instance_objectNewNU(
 
 /** The object class. */
 #define SJME_O_C(obj) \
-	((obj)->isClass)
+	(sjme_atomic_g(sjme_jclass, &((obj)->isClass)))
 
 /** The array object class. */
 #define SJME_AO_C(arr) \

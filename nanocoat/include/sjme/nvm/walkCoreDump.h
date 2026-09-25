@@ -10,6 +10,7 @@
 /**
  * Core dump support.
  * 
+ * @file
  * @since 2025/07/11
  */
 
@@ -52,7 +53,7 @@ typedef struct sjme_nvm_walk_pointerLink
 } sjme_nvm_walk_pointerLink;
 
 /**
- * Represents a chain of @c sjme_nvm_walk_pointerLink .
+ * Represents a chain of @link sjme_nvm_walk_pointerLink @endlink .
  *
  * @since 2025/07/11
  */

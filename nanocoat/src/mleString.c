@@ -27,7 +27,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has the sequence ever been initialized? */
-	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &string->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 
@@ -61,8 +61,8 @@ SJME_NVM_MLE_FUNCTION_DECL(stringEquals)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Both sequences must be initialized. */
-	seqA = sjme_atomic_sjme_charSeq_get(&a->seq);
-	seqB = sjme_atomic_sjme_charSeq_get(&b->seq);
+	seqA = sjme_atomic_g(sjme_charSeq, &a->seq);
+	seqB = sjme_atomic_g(sjme_charSeq, &b->seq);
 	if (seqA == NULL || seqB == NULL)
 		return SJME_ERROR_MLE_CALL;
 	
@@ -84,7 +84,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringHash)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Has the sequence ever been initialized? */
-	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &string->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 
@@ -112,9 +112,9 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, chars)
 	if (string == NULL || array == NULL ||
 		!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE) ||
 		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		array->type != SJME_BASIC_TYPE_ID_CHARACTER ||
+		array->e.type != SJME_BASIC_TYPE_ID_CHARACTER ||
 		off < 0 || len < 0 || (off + len) < 0 ||
-		(off + len) > array->length)
+		(off + len) > array->e.length)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Lock the string. */
@@ -123,19 +123,19 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, chars)
 		return sjme_error_vmError(inFrame, error);
 
 	/* The sequence must not already be set. */
-	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &string->seq);
 	if (seq != NULL)
 		goto fail_hasSeq;
 
 	/* Setup new sequence. */
 	seq = NULL;
 	if (sjme_error_is(error = sjme_charSeq_newWide(
-		SJME_F_S(inFrame)->allocPool, &seq, &array->e.c[off],
+		SJME_F_S(inFrame)->allocPool, &seq, &array->e.values.c[off],
 		0, len)) || seq == NULL)
 		goto fail_initSeq;
 
 	/* Set sequence. */
-	if (!sjme_atomic_sjme_charSeq_compareSet(&string->seq,
+	if (!sjme_atomic_cs(sjme_charSeq, &string->seq,
 		NULL, seq))
 	{
 		error = SJME_ERROR_ILLEGAL_STATE;
@@ -192,7 +192,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringLength)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has the sequence ever been initialized? */
-	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &string->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 
@@ -228,11 +228,11 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 	if (source == NULL || dest == NULL ||
 		!sjme_nvm_isAR(source, SJME_NVM_STRUCT_STRING_INSTANCE) ||
 		!sjme_nvm_isAR(dest, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		dest->type != SJME_BASIC_TYPE_ID_CHARACTER)
+		dest->e.type != SJME_BASIC_TYPE_ID_CHARACTER)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has the sequence ever been initialized? */
-	seq = sjme_atomic_sjme_charSeq_get(&source->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &source->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 
@@ -240,12 +240,12 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 	if (sourceOff < 0 || destOff < 0 || len < 0 ||
 		(sourceOff + len) < 0 || (destOff + len) < 0 ||
 		(sourceOff + len) > seq->length ||
-		(destOff + len) > dest->length)
+		(destOff + len) > dest->e.length)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Read characters into the target. */
 	for (i = 0, s = sourceOff, d = destOff; i < len; i++)
-		dest->e.c[d++] = sjme_charSeq_charAtR(seq, s++);
+		dest->e.values.c[d++] = sjme_charSeq_charAtR(seq, s++);
 
 	/* Void return. */
 	return SJME_ERROR_NONE;
@@ -269,7 +269,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Must be a char array. */
-	if (array->type != SJME_BASIC_TYPE_ID_CHARACTER)
+	if (array->e.type != SJME_BASIC_TYPE_ID_CHARACTER)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Read offset and length. */
@@ -283,14 +283,15 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 	/* Wrap a wide sequence. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(error = sjme_charSeq_newWideStatic(&seq,
-		(sjme_jchar*)&array->e.c[0], off, array->length)))
+		(sjme_jchar*)&array->e.values.c[0], off, 
+		array->e.length)))
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
 	/* Obtain string value from the sequence. */
 	argR->v.l = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
 		SJME_F_T(inFrame),
-		SJME_AS_JSTRINGP(&argR->v.l), intern, &seq)) ||
+		SJME_AS_JSTRINGP(&argR->v.l), intern, NULL, &seq)) ||
 		argR->v.l == NULL)
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
@@ -316,7 +317,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Has the sequence ever been initialized? */
-	seq = sjme_atomic_sjme_charSeq_get(&string->seq);
+	seq = sjme_atomic_g(sjme_charSeq, &string->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
 
@@ -324,7 +325,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 	argR->v.l = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
 		SJME_F_T(inFrame),
-		SJME_AS_JSTRINGP(&argR->v.l), intern, seq)) ||
+		SJME_AS_JSTRINGP(&argR->v.l), intern, NULL, seq)) ||
 		argR->v.l == NULL)
 		return sjme_error_default(error);
 
@@ -337,37 +338,37 @@ SJME_NVM_MLE_SHELF_DECLARE(StringShelf) =
 {
 	SJME_NVM_MLE_DEFINE(stringCharAt,
 		SJME_MD(SJME_MD_C, SJME_MD_STRING SJME_MD_I),
-		"I", "LI"),
+		SJME_MP(SJME_MP_I, SJME_MP_L SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE(stringEquals,
 		SJME_MD(SJME_MD_Z, SJME_MD_STRING SJME_MD_STRING),
-		"I", "LL"),
+		SJME_MP(SJME_MP_I, SJME_MP_L SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(stringHash,
 		SJME_MD(SJME_MD_I, SJME_MD_STRING),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE_ALT(stringInit, chars,
 		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_AC SJME_MD_I SJME_MD_I),
-		"V", "LLII"),
+		SJME_MP(SJME_MP_V, SJME_MP_L SJME_MP_L SJME_MP_I SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE_ALT(stringInit, emptyOrThis,
 		SJME_MD(SJME_MD_V, SJME_MD_STRING),
-		"V", "L"),
+		SJME_MP(SJME_MP_V, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE_ALT(stringInit, string,
 		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_STRING),
-		"V", "LL"),
+		SJME_MP(SJME_MP_V, SJME_MP_L SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(stringIsIntern,
 		SJME_MD(SJME_MD_Z, SJME_MD_STRING),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(stringLength,
 		SJME_MD(SJME_MD_I, SJME_MD_STRING),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(stringToChar,
 		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_I
 			SJME_MD_AC SJME_MD_I SJME_MD_I),
-		"V", "LILII"),
+		SJME_MP(SJME_MP_V, SJME_MP_L SJME_MP_I SJME_MP_L SJME_MP_I SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE_ALT(stringValueOf, chars,
 		SJME_MD(SJME_MD_STRING, SJME_MD_Z SJME_MD_AC SJME_MD_I SJME_MD_I),
-		"L", "ILII"),
+		SJME_MP(SJME_MP_L, SJME_MP_I SJME_MP_L SJME_MP_I SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE_ALT(stringValueOf, string,
 		SJME_MD(SJME_MD_STRING, SJME_MD_Z SJME_MD_STRING),
-		"L", "IL"),
+		SJME_MP(SJME_MP_L, SJME_MP_I SJME_MP_L)),
 	SJME_NVM_MLE_STOP()
 };

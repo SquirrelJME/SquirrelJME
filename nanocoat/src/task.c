@@ -17,6 +17,8 @@
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/stdGone.h"
+#include "sjme/nvm/instanceProxy.h"
+#include "sjme/nvm/mleProxies.h"
 
 /** The number of tasks to grow by. */
 #define SJME_NVM_TASK_GROW 4
@@ -40,8 +42,8 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 	sjme_nvm_threadSchedule* schedule;
 	sjme_nvm_threadSubSchedule* fromSub;
 	sjme_nvm_threadSubSchedule* toSub;
-	sjme_list_sjme_nvm_thread* fromOrder;
-	sjme_list_sjme_nvm_thread* toOrder;
+	sjme_list(sjme_nvm_thread)* fromOrder;
+	sjme_list(sjme_nvm_thread)* toOrder;
 	sjme_nvm_threadScheduleMode wasMode;
 	sjme_jint i, n, freeSlot;
 	
@@ -54,7 +56,8 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* No change in schedule state? */
-	wasMode = sjme_atomic_sjme_jint_get(&inThread->scheduleMode);
+	wasMode = sjme_atomic_g(sjme_nvm_threadScheduleMode,
+		&inThread->scheduleMode);
 	if (wasMode == modeTo)
 		return SJME_ERROR_NONE;
 
@@ -74,7 +77,8 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 			if (fromOrder->elements[i] == inThread)
 			{
 				/* Set the schedule to undefined as it is not in one. */
-				sjme_atomic_sjme_jint_set(&inThread->scheduleMode,
+				sjme_atomic_s(sjme_nvm_threadScheduleMode,
+					&inThread->scheduleMode,
 					SJME_NVM_THREAD_UNDEFINED_SCHEDULE);
 				fromOrder->elements[i] = NULL;
 
@@ -106,7 +110,8 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 		toSub->order = toOrder;
 
 	/* Mark the thread as being scheduled in the given target. */
-	sjme_atomic_sjme_jint_set(&inThread->scheduleMode, modeTo);
+	sjme_atomic_s(sjme_nvm_threadScheduleMode,
+		&inThread->scheduleMode, modeTo);
 
 	/* Success! */
 skip_noPlace:
@@ -120,7 +125,7 @@ sjme_errorCode sjme_nvm_task_bracketJarPackage(
 {
 	sjme_errorCode error;
 	sjme_nvm_task_globals* globals;
-	sjme_list_sjme_jbracketJarPackage* brackets;
+	sjme_list(sjme_jbracketJarPackage)* brackets;
 	sjme_jbracketJarPackage result;
 	sjme_jint i, n;
 	
@@ -134,12 +139,14 @@ sjme_errorCode sjme_nvm_task_bracketJarPackage(
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(&globals->lock)))
 		return sjme_error_default(error);
 
-	/* Check pre-existing brackets. */
+	/* Check pre-existing brackets, note that it is possible for there */
+	/* to be blank slots for quick ordering. */
 	result = NULL;
 	brackets = globals->jarBrackets;
 	if (brackets != NULL)
 		for (i = 0, n = brackets->length; i < n; i++)
-			if (inLibrary == brackets->elements[i]->library)
+			if (brackets->elements[i] != NULL &&
+				inLibrary == brackets->elements[i]->library)
 			{
 				result = brackets->elements[i];
 				break;
@@ -155,12 +162,8 @@ sjme_errorCode sjme_nvm_task_bracketJarPackage(
 			goto fail_newBracket;
 
 		/* Set details. */
-		result->library = inLibrary;
+		result->library = sjme_weakUpR(sjme_nvm_rom_library, inLibrary);
 
-		/* Count up library. */
-		if (sjme_error_is(error = sjme_alloc_weakRef(inLibrary, NULL)))
-			goto fail_countUp;
-		
 		/* Cache it into the list. */
 		if (sjme_error_is(error = sjme_list_injectGrow(
 			SJME_T_S(contextThread)->allocPool, SJME_NVM_TASK_JAR_GROW,
@@ -196,18 +199,21 @@ sjme_errorCode sjme_nvm_task_commonClass(
 {
 	sjme_errorCode error;
 	sjme_lpcstr commonName;
-	sjme_jclass result;
+	sjme_nvm_instance_proxyHandlerFunc proxyHandler;
+	sjme_jclass result, baseClass;
 	
 	if (contextThread == NULL)
 		return SJME_ERROR_NONE;
 
-	if (commonId <= SJME_NVM_TASK_COMMON_CLASS_NULL ||
+	if (commonId <= SJME_NVM_COMMON_NULL ||
+		commonId == SJME_NVM_COMMON_VERY_IMPORTANT ||
 		commonId >= SJME_NVM_TASK_NUM_COMMON_CLASS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Already cached? */
-	result = sjme_atomic_sjme_jclass_get(
-		&contextThread->inTask->globals.commonClasses[commonId]);
+	result = sjme_atomic_g(sjme_jclass, 
+		&sjme_atomic_g(sjme_nvm_task, &contextThread->inTask)
+		->globals.commonClasses[commonId]);
 	if (result != NULL)
 	{
 		*outClass = result;
@@ -216,92 +222,115 @@ sjme_errorCode sjme_nvm_task_commonClass(
 	
 	/* What is the name of the common class? */
 	commonName = NULL;
+	proxyHandler = NULL;
 	switch (commonId)
 	{
-		case SJME_NVM_TASK_COMMON_CLASS_CLASS:
+		case SJME_NVM_COMMON_CLASS:
 			commonName = "Ljava/lang/Class;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE:
+		case SJME_NVM_COMMON_EXCEPTION_CLASS_CAST:
+			commonName = "Ljava/lang/ClassCastException;";
+			break;
+
+		case SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR:
+			commonName = "Ljava/lang/LinkageError;";
+			break;
+
+		case SJME_NVM_COMMON_EXCEPTION_NULL_POINTER:
+			commonName = "Ljava/lang/NullPointerException;";
+			break;
+
+		case SJME_NVM_COMMON_JAR_PACKAGE:
 			commonName = "Lcc/squirreljme/jvm/mle/brackets/JarPackageBracket;";
 			break;
 		
-		case SJME_NVM_TASK_COMMON_CLASS_OBJECT:
+		case SJME_NVM_COMMON_OBJECT:
 			commonName = "Ljava/lang/Object;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_PIPE:
+		case SJME_NVM_COMMON_PIPE:
 			commonName = "Lcc/squirreljme/jvm/mle/brackets/PipeBracket;";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BOOLEAN:
+		case SJME_NVM_COMMON_PRIMITIVE_BOOLEAN:
 			commonName = "Z";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BYTE:
+		case SJME_NVM_COMMON_PRIMITIVE_BYTE:
 			commonName = "B";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_CHARACTER:
+		case SJME_NVM_COMMON_PRIMITIVE_CHARACTER:
 			commonName = "C";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_DOUBLE:
+		case SJME_NVM_COMMON_PRIMITIVE_DOUBLE:
 			commonName = "D";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_FLOAT:
+		case SJME_NVM_COMMON_PRIMITIVE_FLOAT:
 			commonName = "F";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_INTEGER:
+		case SJME_NVM_COMMON_PRIMITIVE_INTEGER:
 			commonName = "I";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_LONG:
+		case SJME_NVM_COMMON_PRIMITIVE_LONG:
 			commonName = "J";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_SHORT:
+		case SJME_NVM_COMMON_PRIMITIVE_SHORT:
 			commonName = "S";
 			break;
 	
-		case SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_VOID:
+		case SJME_NVM_COMMON_PRIMITIVE_VOID:
 			commonName = "F";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM:
+		case SJME_NVM_COMMON_REFERENCE_PHANTOM:
 			commonName = "Ljava/lang/ref/PhantomReference;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_SOFT:
+		case SJME_NVM_COMMON_REFERENCE_SOFT:
 			commonName = "Ljava/lang/ref/SoftReference;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK:
+		case SJME_NVM_COMMON_REFERENCE_WEAK:
 			commonName = "Ljava/lang/ref/WeakReference;";
 			break;
+
+		case SJME_NVM_COMMON_SCRITCH_UI_PROXY:
+			commonName = "Lcc/squirreljme/jvm/mle/scritchui/"
+				"ScritchUnifiedInterface;";
+			proxyHandler = sjme_nvm_mle_scritchUiProxyHandler;
+			break;
 		
-		case SJME_NVM_TASK_COMMON_CLASS_STRING:
+		case SJME_NVM_COMMON_STRING:
 			commonName = "Ljava/lang/String;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_THREAD:
+		case SJME_NVM_COMMON_THREAD:
 			commonName = "Ljava/lang/Thread;";
 			break;
 		
-		case SJME_NVM_TASK_COMMON_CLASS_THROWABLE:
+		case SJME_NVM_COMMON_THROWABLE:
 			commonName = "Ljava/lang/Throwable;";
 			break;
 
-		case SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT:
+		case SJME_NVM_COMMON_TRACE_POINT:
 			commonName = "Lcc/squirreljme/jvm/mle/brackets/TracePointBracket;";
+			break;
+			
+		case SJME_NVM_COMMON_VM_THREAD:
+			commonName = "Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;";
 			break;
 		
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
-	
+
 	/* Load the common class. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadFU(
@@ -309,10 +338,28 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		commonName, doInit)) || result == NULL)
 		return sjme_error_vmError(contextThread, error);
 
+	/* If this is a proxy, we need to set up the proxy with the handler. */
+	if (proxyHandler != NULL)
+	{
+		/* Generate the proxy class. */
+		baseClass = result;
+		result = NULL;
+		if (sjme_error_is(error = sjme_nvm_instance_proxyClassV(
+			contextThread, &result, proxyHandler, baseClass, NULL)) ||
+			result == NULL || baseClass == result)
+			return sjme_error_vmError(contextThread, error);
+	}
+
+	/* Count it up once since it is a global class. */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(
+		SJME_AS_JOBJECT(result))))
+		return sjme_error_vmError(contextThread, error);
+
 	/* Cache for later. */
-	sjme_atomic_sjme_jclass_compareSet(
-		&contextThread->inTask->globals.commonClasses[commonId],
-		NULL, result);
+	sjme_atomic_cs(sjme_jclass, 
+		&sjme_atomic_g(sjme_nvm_task,
+			&contextThread->inTask)->globals.commonClasses[commonId],
+		NULL, sjme_weakUpR(sjme_jclass, result));
 
 	/* Success! */
 	*outClass = result;
@@ -329,7 +376,8 @@ sjme_jclass sjme_nvm_task_commonClassR(
 	if (contextThread == NULL)
 		return NULL;
 
-	if (commonId <= SJME_NVM_TASK_COMMON_CLASS_NULL ||
+	if (commonId <= SJME_NVM_COMMON_NULL ||
+		commonId == SJME_NVM_COMMON_VERY_IMPORTANT || 
 		commonId >= SJME_NVM_TASK_NUM_COMMON_CLASS)
 		return NULL;
 
@@ -361,24 +409,24 @@ sjme_errorCode sjme_nvm_task_stackTraceStep(
 	/* | IN java.lang.Class (Class.java) */
 	traceState->nowClass = atClass;
 	if (traceState->nowClass != traceState->lastClass)
-		sjme_messageB(" | IN %s (%s)",
-			sjme_charSeq_tempUtf(traceState->nowClass->binaryName),
+		sjme_emitB(" | IN %s (%s)",
+			sjme_charSeq_tempUtf(traceState->nowClass->fieldName),
 				"<UNKNOWN>");
 
 	/* Print method trace. */
 	/*  |- .whatever:(Lboop;)V @0h (:181 INVOKEINTERFACE@15) */
 	traceState->nowCode = atCode;
 	traceState->nowMethod = (traceState->nowCode != NULL ?
-		atCode->inMethod : NULL);
+		sjme_atomic_g(sjme_nvm_class_methodInfo, &atCode->inMethod) : NULL);
 	traceState->pc = atPc;
 	traceState->instructionId = (atIv != 0 ? atIv :
 		(traceState->nowCode != NULL && traceState->pc >= 0 &&
 			traceState->pc < traceState->nowCode->rawCodeLen ?
 			traceState->nowCode->rawCode[traceState->pc] & 0xFF : -1));
 	if (traceState->nowCode == NULL || traceState->nowMethod == NULL)
-		sjme_messageB(" | PURE VIRTUAL");
+		sjme_emitB(" | PURE VIRTUAL");
 	else
-		sjme_messageB(" | .%s:%s @%xh (:%d #%s@%d)",
+		sjme_emitB(" | .%s:%s @%xh (:%d #%s@%d)",
 			sjme_charSeq_tempUtf(traceState->nowMethod->name->seq),
 			sjme_charSeq_tempUtf(traceState->nowMethod->type->seq),
 			traceState->pc,
@@ -433,40 +481,132 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	sjme_errorCode error;
 	sjme_jarray pointArray;
 	sjme_jbracketTrace point;
+	sjme_jclass throwableClass;
 	sjme_nvm_task_stackTraceState traceState;
 	sjme_jint i;
+	sjme_jfieldID messageId, causeId;
+	sjme_jstring message;
+	sjme_nvm_value* accessor;
+	sjme_charSeq messageSeq;
+	sjme_jboolean printedMessage;
 	
 	if (inThrowable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Must be Throwable. */
-	if (!sjme_nvm_vmClass_isAssignableFrom(contextThread,
-		sjme_nvm_task_commonClassR(contextThread,
-			SJME_NVM_TASK_COMMON_CLASS_THROWABLE),
-			inThrowable->object.isClass))
-		return SJME_ERROR_CLASS_CAST;
+	throwableClass = sjme_nvm_task_commonClassR(contextThread,
+		SJME_NVM_COMMON_THROWABLE);
+	if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(contextThread,
+		throwableClass,
+		sjme_atomic_g(sjme_jclass, &inThrowable->object.isClass))))
+		return sjme_error_mask(error, SJME_ERROR_CLASS_CAST);
 
-	/* Must be an array type. */
-	pointArray = (sjme_jarray)sjme_atomic_sjme_intPointer_get(
-		&inThrowable->object.special);
-	if (!sjme_nvm_isAR(pointArray, SJME_NVM_STRUCT_ARRAY_INSTANCE))
-		return SJME_ERROR_CLASS_CAST;
+	/* Locate the message field, if at all possible... */
+	messageId = NULL;
+	if (sjme_error_is(sjme_nvm_vmField_idByNameTypeU(throwableClass,
+		contextThread,
+		SJME_NVM_CLASS_MEMBER_INSTANCE, SJME_JNI_FALSE,
+		"_message", "Ljava/lang/String;", &messageId)))
+		messageId = NULL;
 
-	/* Go through and extract points per each. */
-	memset(&traceState, 0, sizeof(traceState));
-	for (i = 0; i < pointArray->length; i++)
+	/* Locate the cause field as well, if possible... */
+	causeId = NULL;
+	if (sjme_error_is(sjme_nvm_vmField_idByNameTypeU(throwableClass,
+		contextThread,
+		SJME_NVM_CLASS_MEMBER_INSTANCE, SJME_JNI_FALSE,
+		"_cause", "Ljava/lang/Throwable;", &causeId)))
+		causeId = NULL;
+
+	/* Is the message field valid? */
+	printedMessage = SJME_JNI_FALSE;
+	if (messageId != NULL)
 	{
-		/* Must be a trace point. */
-		point = (sjme_jbracketTrace)pointArray->e.l[i];
-		if (!sjme_nvm_isAR(point,
-			SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE))
+		/* Can we get the accessor for the field? */
+		accessor = sjme_nvm_instance_fieldAccessor(
+			SJME_AS_JOBJECT(inThrowable), messageId);
+		if (accessor != NULL && accessor->l.p != NULL)
+		{
+			/* Is this a valid string? */
+			message = SJME_AS_JSTRING(accessor->l.p);
+			if (sjme_nvm_isAR(message, SJME_NVM_STRUCT_STRING_INSTANCE))
+			{
+				/* If the sequence is valid, print it. */
+				messageSeq = sjme_atomic_g(sjme_charSeq, &message->seq);
+				if (messageSeq != NULL)
+				{
+					sjme_emitB("EXCEPTION %s: %s",
+						sjme_charSeq_tempUtf(
+							sjme_atomic_g(sjme_jclass,
+								&inThrowable->object.isClass)->fieldName),
+						sjme_charSeq_tempUtf(messageSeq));
+					printedMessage = SJME_JNI_TRUE;
+				}
+			}
+		}
+	}
+
+	/* If we did not print the message, we can at least print the class. */
+	if (!printedMessage)
+		sjme_emitB("EXCEPTION %s: <NO MESSAGE>",
+			sjme_charSeq_tempUtf(
+				sjme_atomic_g(sjme_jclass,
+					&inThrowable->object.isClass)->fieldName));
+
+	/* There may be trace points in this. */
+	pointArray = (sjme_jarray)sjme_atomic_g(sjme_intPointer, 
+		&inThrowable->object.special);
+	if (pointArray != NULL)
+	{
+		/* Not an array? */
+		if (!sjme_nvm_isAR(pointArray, SJME_NVM_STRUCT_ARRAY_INSTANCE))
 			return SJME_ERROR_CLASS_CAST;
 
-		/* Step trace. */
-		if (sjme_error_is(error = sjme_nvm_task_stackTraceStep(
-			&traceState, point->capture.inClass, point->capture.inCode,
-			point->capture.lastPc, point->capture.lastIv)))
-			return sjme_error_default(error);
+		/* Go through and extract points per each. */
+		memset(&traceState, 0, sizeof(traceState));
+		for (i = 0; i < pointArray->e.length; i++)
+		{
+			/* Read in. */
+			point = NULL;
+			if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
+				&pointArray->e, i, SJME_VLG_JOBJECT_P(&point))))
+				return sjme_error_default(error);
+			
+			/* Ignore NULLs. */
+			if (point == NULL)
+				continue;
+			
+			/* Must be a trace point. */
+			if (!sjme_nvm_isAR(point,
+				SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE))
+				return SJME_ERROR_CLASS_CAST;
+
+			/* Step trace. */
+			if (sjme_error_is(error = sjme_nvm_task_stackTraceStep(
+				&traceState, point->capture.inClass, point->capture.inCode,
+				point->capture.lastPc, point->capture.lastIv)))
+				return sjme_error_default(error);
+		}
+	}
+
+#if defined(SJME_CONFIG_DEBUG)
+	else
+		sjme_message("THROWABLE HAS BLANK TRACE!");
+#endif
+
+	/* Recurse into cause? */
+	if (causeId != NULL)
+	{
+		/* Actually try to access it. */
+		accessor = sjme_nvm_instance_fieldAccessor(
+			SJME_AS_JOBJECT(inThrowable), causeId);
+
+		/* Recurse. */
+		if (accessor != NULL && accessor->l.p != NULL)
+		{
+			sjme_emitB("CAUSED BY:");
+			return sjme_nvm_task_stackTraceThrowable(contextThread,
+				SJME_AS_JTHROWABLE(accessor->l.p));
+		}
 	}
 
 	/* Success! */
@@ -483,7 +623,8 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	sjme_nvm_thread mainThread;
 	sjme_jint i, n;
 	const sjme_nvm_task_taskNewConfig* initConfigCopy;
-	sjme_list_sjme_jstring* argStrings;
+	sjme_list(sjme_jstring)* argStrings;
+	sjme_jstring argString;
 	
 	if (inTask == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -494,11 +635,11 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 		return sjme_error_default(error);
 
 	/* Main thread already set? */
-	if (inTask->globals.mainThread != NULL)
+	if (sjme_atomic_g(sjme_nvm_thread, &inTask->globals.mainThread) != NULL)
 		goto fail_mainExists;
 
 	/* Quicker to reference this way. */
-	inState = inTask->inState;
+	inState = sjme_atomic_g(sjme_nvm, &inTask->inState);
 
 	/* Recover the initial config. */
 	initConfigCopy = inTask->initConfig;
@@ -506,12 +647,9 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	/* Setup main thread, all threads start in java.lang.__Start__! */
 	mainThread = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadNew(inTask,
-		&mainThread, "main")) || mainThread == NULL)
+		&mainThread, "main", SJME_JNI_TRUE)) ||
+		mainThread == NULL)
 		goto fail_taskNewThread;
-
-	/* The main thread gets flagged as the main thread. */
-	inTask->globals.mainThread = mainThread;
-	mainThread->isMain = SJME_JNI_TRUE;
 
 	/* Adjust the main class name, turn periods into slashes. */
 	memset(adjustMain, 0, sizeof(adjustMain));
@@ -522,17 +660,14 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 			adjustMain[i] = '/';
 
 	/* Setup string for main class. */
+	/* Counting does not need to be done because these are both */
+	/* intern strings and when pushed to the stack they get counted. */
 	inTask->globals.mainClassName = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
 		mainThread, &inTask->globals.mainClassName, SJME_JNI_TRUE,
 		adjustMain)) ||
 		inTask->globals.mainClassName == NULL)
 		goto fail_mainClassString;
-
-	/* Count up main class string. */
-	if (sjme_error_is(error = sjme_nvm_instance_countUp(
-		SJME_AS_JOBJECT(inTask->globals.mainClassName))))
-		goto fail_countMainClassString;
 
 	/* Setup strings for main arguments. */
 	argStrings = NULL;
@@ -548,17 +683,14 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 		/* Setup strings for each argument. */
 		for (i = 0; i < n; i++)
 		{
-			/* Create string. */
+			/* Intern argument string. */
+			argString = NULL;
 			if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
-				mainThread, &argStrings->elements[i], SJME_JNI_TRUE,
+				mainThread, &argString, SJME_JNI_TRUE,
 				initConfigCopy->mainArgs->elements[i])) ||
-				argStrings->elements[i] == NULL)
+				argString == NULL)
 				goto fail_mainArgsString;
-			
-			/* Count up string. */
-			if (sjme_error_is(error = sjme_nvm_instance_countUp(
-				SJME_AS_JOBJECT(argStrings->elements[i]))))
-				goto fail_countMainArgString;
+			argStrings->elements[i] = sjme_weakUp(argString);
 		}
 	}
 		
@@ -604,8 +736,8 @@ sjme_errorCode sjme_nvm_task_taskNew(
 	sjme_attrOutNullable sjme_nvm_task* outTask)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_nvm_task* tasks;
-	sjme_list_sjme_nvm_thread* threads;
+	sjme_list(sjme_nvm_task)* tasks;
+	sjme_list(sjme_nvm_thread)* threads;
 	sjme_jint i, n, freeSlot;
 	sjme_nvm_task result;
 	sjme_nvm_vmClass_loader classLoader;
@@ -708,23 +840,32 @@ sjme_errorCode sjme_nvm_task_taskNew(
 		SJME_AS_NVM_COMMONP(&strings))) || strings == NULL)
 		goto fail_allocStrings;
 	
-	/* Initialize a new class loader for the current classpath. */
+	/* Initialize a new class loader for the current classpath, if one */
+	/* has not been passed by the initial task configuration. */
 	classLoader = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_loaderNew(
-		inState, &classLoader,
-		initConfigCopy->classPath)) || classLoader == NULL)
-		goto fail_initClassLoader;
+	if (initConfig->classLoader == NULL)
+	{
+		/* Set one up now. */
+		if (sjme_error_is(error = sjme_nvm_vmClass_loaderNew(
+			inState, &classLoader,
+			initConfigCopy->classPath)) || classLoader == NULL)
+			goto fail_initClassLoader;
+	}
+
+	/* Otherwise, use the specified classloader. */
+	else
+		classLoader = initConfig->classLoader;
 	
 	/* Refer to owning state and set identifier. */
-	result->inState = inState;
-	result->classLoader = classLoader;
-	result->id = 1 + sjme_atomic_sjme_jint_getAdd(
+	sjme_atomic_s(sjme_nvm, &result->inState, inState);
+	result->classLoader = sjme_weakUpR(sjme_nvm_vmClass_loader, classLoader);
+	result->id = 1 + sjme_atomic_ga(sjme_jint, 
 		&inState->nextTaskId, 1);
-	result->strings = strings;
+	result->strings = sjme_weakUpR(sjme_nvm_taskStrings, strings);
 	result->initConfig = initConfigCopy;
 
 	/* Initialize identity hashcode generator. */
-	if (sjme_error_is(error = sjme_random_init(&result->idHash,
+	if (sjme_error_is(error = sjme_random_init(&result->globals.idHash,
 		INT32_C(0x43757465), INT32_C(0x53716B21))))
 		goto fail_initIdHash;
 
@@ -760,12 +901,16 @@ sjme_errorCode sjme_nvm_task_taskNew(
 		goto fail_stateLockRelease;
 	
 	/* Add to the running task count. */
-	sjme_atomic_sjme_jint_getAdd(&inState->numRunningTasks, 1);
+	sjme_atomic_ga(sjme_jint, &inState->numRunningTasks, 1);
 
 	/* Not belaying main start? Then start the main thread. */
 	if ((initConfigCopy->belay & SJME_NVM_BOOT_BELAY_MAIN) == 0)
 		if (sjme_error_is(error = sjme_nvm_task_taskEnterMain(result, NULL)))
 			goto fail_enterMain;
+
+	/* Is this the main/first task? */
+	if (sjme_atomic_pcs(&inState->phantomMainTask, NULL, result))
+		result->isMain = SJME_JNI_TRUE;
 	
 	/* Release task specific lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -805,6 +950,7 @@ fail_copyInitConfig:
 	return sjme_error_default(error);
 
 	/* Post state lock, when accessing state is no longer needed. */
+fail_countLoader:
 fail_enterMain:
 fail_stateLockRelease:
 	/* Unlock task before fail. */
@@ -836,7 +982,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleDelete(
 		return SJME_ERROR_NONE;
 
 	/* Ignore if already deleted. */
-	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
+	if (sjme_atomic_g(sjme_nvm_threadScheduleMode, &inThread->scheduleMode) ==
 		SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
 		return SJME_ERROR_NONE;
 
@@ -885,7 +1031,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleIn(
 		return SJME_ERROR_NONE;
 
 	/* Ignore if already scheduled. */
-	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
+	if (sjme_atomic_g(sjme_nvm_threadScheduleMode, &inThread->scheduleMode) ==
 			SJME_NVM_THREAD_SCHEDULED)
 		return SJME_ERROR_NONE;
 
@@ -921,11 +1067,11 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 {
 	sjme_errorCode error;
 	sjme_nvm_threadSchedule* schedule;
-	sjme_list_sjme_nvm_thread* order;
+	sjme_list(sjme_nvm_thread)* order;
 	sjme_nvm_thread nextThread, checkThread;
 	sjme_jboolean terminated, isRunning;
 	sjme_jint i, n, mode;
-	sjme_list_sjme_nvm_task* tasks;
+	sjme_list(sjme_nvm_task)* tasks;
 	sjme_nvm_task checkTask;
 	
 	if (inState == NULL || runThread == NULL || isTerminated == NULL)
@@ -933,7 +1079,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 	
 	/* Default state. */
 	nextThread = NULL;
-	terminated = sjme_atomic_sjme_jint_get(&inState->terminating);
+	terminated = sjme_atomic_g(sjme_jint, &inState->terminating);
 
 	/* Terminating already? Or no-effect when multithreaded. */
 	if (terminated || inState->threadModel == SJME_NVM_MLE_THREAD_MULTI)
@@ -944,7 +1090,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 	}
 	
 	/* If no tasks are left alive, stop VM execution. */
-	if (sjme_atomic_sjme_jint_get(&inState->numRunningTasks) <= 0)
+	if (sjme_atomic_g(sjme_jint, &inState->numRunningTasks) <= 0)
 	{
 		*runThread = NULL;
 		*isTerminated = SJME_JNI_TRUE;
@@ -1033,7 +1179,8 @@ fail_checkRunning:
 
 sjme_errorCode sjme_nvm_task_taskScheduleOut(
 	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull sjme_nvm_thread inThread)
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInPositive sjme_jint msResting)
 {
 	sjme_errorCode error;
 	sjme_nvm_threadSchedule* schedule;
@@ -1041,13 +1188,16 @@ sjme_errorCode sjme_nvm_task_taskScheduleOut(
 	if (inState == NULL || inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	if (msResting < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
 	/* No effect in multi-threading. */
 	if (SJME_T_S(inThread)->threadModel == SJME_NVM_MLE_THREAD_MULTI)
 		return SJME_ERROR_NONE;
 
 	/* Ignore if already unscheduled. */
-	if (sjme_atomic_sjme_jint_get(&inThread->scheduleMode) ==
-		SJME_NVM_THREAD_UNSCHEDULED)
+	if (sjme_atomic_g(sjme_nvm_threadScheduleMode, &inThread->scheduleMode) ==
+			SJME_NVM_THREAD_UNSCHEDULED)
 		return SJME_ERROR_NONE;
 
 	/* Lock schedule. */
@@ -1089,7 +1239,7 @@ sjme_errorCode sjme_nvm_task_taskScheduleYes(
 	
 	/* If this is a callback thread, only consider if it has at least */
 	/* one actively running frame. */
-	start = sjme_atomic_sjme_jint_get(&inThread->start);
+	start = sjme_atomic_g(sjme_nvm_thread_startType, &inThread->start);
 	if (start == SJME_NVM_THREAD_START_CALLBACK)
 	{
 		if (inThread->numFrames > 0)
@@ -1104,33 +1254,38 @@ sjme_errorCode sjme_nvm_task_taskScheduleYes(
 	else if (start == SJME_NVM_THREAD_START_FINISHING)
 	{
 		/* Mark as finished. */
-		sjme_atomic_sjme_jint_compareSet(&inThread->start,
+		sjme_atomic_cs(sjme_nvm_thread_startType, &inThread->start,
 			SJME_NVM_THREAD_START_FINISHING,
 			SJME_NVM_THREAD_START_FINISHED);
 
 		/* This thread is awaiting termination. */
 		inTask = SJME_T_K(inThread);
-		sjme_atomic_sjme_jint_getAdd(
+		sjme_atomic_ga(sjme_jint, 
 			&inTask->numThreads[SJME_NVM_THREAD_COUNT_AWAIT_CLEANUP],
 			1);
 
+		/* If this is the main thread, then reduce count. */
+		if (inThread->isMain)
+			sjme_atomic_ga(sjme_jint, 
+				&inTask->numThreads[SJME_NVM_THREAD_COUNT_MAIN], -1);
+
 		/* Reduce total thread count. */
-		sjme_atomic_sjme_jint_getAdd(
+		sjme_atomic_ga(sjme_jint, 
 			&inTask->numThreads[SJME_NVM_THREAD_COUNT_ALL], -1);
 
 		/* Non-daemon or daemon thread? */
-		if (inThread->flags.isDaemon)
-			sjme_atomic_sjme_jint_getAdd(
+		if (SJME_NVM_THREAD_CHECK(inThread->flags, IS_DAEMON))
+			sjme_atomic_ga(sjme_jint, 
 				&inTask->numThreads[SJME_NVM_THREAD_COUNT_DAEMON], -1);
 		else
 		{
 			/* How many threads are left? */
-			left = sjme_atomic_sjme_jint_getAdd(
+			left = sjme_atomic_ga(sjme_jint, 
 				&inTask->numThreads[SJME_NVM_THREAD_COUNT_NORMAL], -1) - 1;
 
 			/* If there are no threads left, then start termination. */
 			if (left <= 0)
-				sjme_atomic_sjme_jint_compareSet(&inTask->terminate,
+				sjme_atomic_cs(sjme_jint, &inTask->terminate,
 					SJME_NVM_TERMINATE_NOT,
 					SJME_NVM_TERMINATE_CLEANUP);
 		}

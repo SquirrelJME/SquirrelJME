@@ -6,7 +6,7 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
-#include "sjme/nvm/allocSizeOf.h"
+
 #include "sjme/nvm/boot.h"
 #include "sjme/debug.h"
 #include "sjme/nvm/nvm.h"
@@ -15,6 +15,10 @@
 #include "sjme/native.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/path.h"
+#include "sjme/joptarg.h"
+#include "sjme/nvm/externalWeak.h"
+#include "sjme/nvm/romMeepSwm.h"
+#include "sjme/nvm/jdwp.h"
 
 #if defined(SJME_PATH_SHORT)
 	/** The name of the SquirrelJME Jar. */
@@ -30,21 +34,47 @@
 	#define SJME_DIRECTORY_NAME "squirreljme"
 #endif
 
-/**
- * Help parameter storage.
- * 
- * @since 2024/08/08
- */
-typedef struct sjme_nvm_helpParam
+static const sjme_lpcstr sjme_defaultScritchUi[] =
 {
-	/** The argument. */
-	sjme_lpcstr arg;
-	
-	/** Description of the parameter. */
-	sjme_lpcstr desc;
-} sjme_nvm_helpParam;
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	"win32",
+#elif defined(SJME_CONFIG_HAS_OS_MACOS)
+	"cocoa",
+#elif defined(SJME_CONFIG_HAS_OS_BSD_FAMILY) || \
+	defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
+	defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_POSIX)
+	"wayland",
+	"x11",
+#endif
 
-static const sjme_nvm_helpParam sjme_nvm_helpParams[] =
+	/* More Modern. */
+	"qt6",
+	"gtk4",
+	"wayland",
+
+	/* Recent enough. */
+	"qt5",
+	"qt4"
+	"gtk3",
+
+	/* Older. */
+	"gtk2",
+	"motif",
+	"tk",
+	"x11",
+
+	/* System specific interfaces. */
+	"cocoa",
+	"palmos",
+	"toolbox",
+	"win32",
+
+	/* End. */
+	NULL,
+};
+
+static const sjme_joptarg_helpParam sjme_joptarg_helpParams[] =
 {
 	{"-Xclutter:<release|debug>",
 		"If available, selects the given clutter level."},
@@ -121,37 +151,32 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 	sjme_attrInValue sjme_nvm_bootClutterLevel clutterLevel)
 {
 	sjme_errorCode error;
-	sjme_cchar dataPath[SJME_MAX_PATH];
 	sjme_seekable rom;
 	sjme_nvm_rom_suite result;
+	sjme_path checkPath;
 
 	if (allocPool == NULL || nal == NULL || outSuite == NULL ||
-		basePath == NULL || romName == NULL)
+		(basePath == NULL && romName == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-#if 1
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#else
-	/* Base path here. */
-	memset(&dataPath, 0, sizeof(dataPath));
-	if (strlen(basePath) > 0)
-		if (sjme_error_is(error = sjme_path_resolveAppend(
-			dataPath, SJME_MAX_PATH - 1,
-			basePath, INT32_MAX)))
+
+	/* Determine path to check. */
+	memset(&checkPath, 0, sizeof(checkPath));
+
+	/* Base path first, if any. */
+	if (basePath != NULL && strlen(basePath) > 0)
+		if (sjme_error_is(error = sjme_path_resolveS(
+			&checkPath, basePath)))
 			return sjme_error_default(error);
 	
-	/* Use ROM from here. */
-	if (strlen(romName) > 0)
-		if (sjme_error_is(error = sjme_path_resolveAppend(
-			dataPath, SJME_MAX_PATH - 1,
-			romName, INT32_MAX)))
+	/* Then any ROM which may be directly specified. */
+	if (romName != NULL && strlen(romName) > 0)
+		if (sjme_error_is(error = sjme_path_resolveS(
+			&checkPath, romName)))
 			return sjme_error_default(error);
-#endif
 	
 	/* Open main ROM file. */
 	rom = NULL;
-	if (sjme_error_is(error = nal->fileOpen(allocPool, dataPath,
+	if (sjme_error_is(error = nal->fileOpen(allocPool, checkPath.chars,
 		&rom, SJME_NAL_OPEN_READ)) || rom == NULL)
 		return sjme_error_default(error);
 	
@@ -172,6 +197,21 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 	return SJME_ERROR_NONE;
 }
 
+#if defined(SJME_CONFIG_DEBUG)
+static sjme_jint sjme_nvm_pointerId(
+	sjme_attrInNotNull sjme_pointer p)
+{
+	sjme_nvm_structType typeId;
+
+	/* Try our best to ensure the type is valid. */
+	typeId = sjme_nvm_typeOf(p);
+	if (typeId > SJME_NVM_STRUCT_UNKNOWN &&
+		typeId < SJME_NVM_NUM_STRUCT)
+		return typeId;
+	return -1;
+}
+#endif
+
 static sjme_errorCode sjme_nvm_printHelp(
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrInNotNull sjme_nal_stdOFunc helpOut,
@@ -179,7 +219,7 @@ static sjme_errorCode sjme_nvm_printHelp(
 	sjme_attrInNotNull sjme_lpcstr argSeq,
 	sjme_attrInNotNull sjme_lpcstr programName)
 {
-	const sjme_nvm_helpParam* help;
+	const sjme_joptarg_helpParam* help;
 
 	if (nal == NULL || helpOut == NULL || helpFlush == NULL ||
 		argSeq == NULL || programName == NULL)
@@ -201,7 +241,7 @@ static sjme_errorCode sjme_nvm_printHelp(
 	
 	/* And all the help parameters. */
 	sjme_nal_stdF(helpOut, "Options are:\n");
-	for (help = &sjme_nvm_helpParams[0]; help->arg != NULL; help++)
+	for (help = &sjme_joptarg_helpParams[0]; help->arg != NULL; help++)
 	{
 		sjme_nal_stdF(helpOut, "  %s\n",
 			help->arg);
@@ -259,6 +299,258 @@ static sjme_errorCode sjme_nvm_printVersion(
 	return SJME_ERROR_EXIT;
 }
 
+#if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
+static sjme_errorCode sjme_nvm_initScritchUiPath(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNotNull sjme_scritchui* outScritchUi,
+	sjme_attrOutNotNull sjme_dylib* outHandle,
+	sjme_attrInNotNull sjme_path* libPath,
+	sjme_attrInNotNull sjme_lpcstr tryInterface)
+{
+#define BUF_SIZE 64
+	sjme_errorCode error;
+	sjme_dylib handle;
+	sjme_cchar buf[BUF_SIZE];
+	sjme_scritchui_dylibApiFunc apiInit;
+	sjme_scritchui result;
+
+	if (inState == NULL || outScritchUi == NULL || libPath == NULL ||
+		tryInterface == NULL || outHandle == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Try loading in the library. */
+	handle = NULL;
+	if (sjme_error_is(error = sjme_dylib_open(libPath->chars, &handle)) ||
+		handle == NULL)
+		goto fail_open;
+
+	/* What is the API function entrypoint called? */
+	memset(&buf, 0, sizeof(buf));
+	snprintf(buf, BUF_SIZE - 1,
+	SJME_TOKEN_STRING_PP(SJME_SCRITCHUI_DYLIB_SYMBOL()) "%s",
+		tryInterface);
+
+	/* Lookup the function pointer for the call. */
+	apiInit = NULL;
+	if (sjme_error_is(error = sjme_dylib_lookup(handle, buf,
+		(sjme_pointer*)&apiInit)) || apiInit == NULL)
+		goto fail_lookup;
+
+	/* Attempt initialization call. */
+	/* Note that we do not need to bind the event thread to anything JNI */
+	/* or otherwise, because we are the JVM! Yay! */
+	result = NULL;
+	if (sjme_error_is(error = apiInit(inState->allocPool, &result,
+		NULL, NULL, NULL)))
+		goto fail_initApi;
+
+	/* Success! */
+	*outScritchUi = result;
+	*outHandle = handle;
+	return SJME_ERROR_NONE;
+
+fail_initApi:
+fail_lookup:
+fail_open:
+	if (handle != NULL)
+		sjme_dylib_close(handle);
+	return sjme_error_default(error);
+#undef BUF_SIZE
+}
+#endif
+
+/**
+ * Initializes ScritchUI so that it can be used by the virtual machine, this
+ * is done as early as possible so that the UI can be used immediately. This is
+ * needed by macOS due to threading and event handling issues, as there
+ * traditionally always has been @code -XstartOnFirstThread @endcode. This
+ * parameter should technically always apply.
+ *
+ * @param inState The virtual machine state.
+ * @param prefer The optional interface to prefer.
+ * @return Any resultant error, if any.
+ * @since 2026/09/20
+ */
+static sjme_errorCode sjme_nvm_initScritchUi(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNullable sjme_lpcstr prefer)
+{
+#define NUM_SUI_FIXED 3
+#define MAX_XDG_NAME 32
+	sjme_errorCode error;
+	sjme_scritchui result;
+#if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
+	sjme_jint majorId, minorId;
+	sjme_path majorPath, minorPath;
+	sjme_lpcstr externDefault, tryInterface;
+	sjme_cchar libName[SJME_MAX_FILE_NAME];
+	sjme_cchar xdgName[MAX_XDG_NAME];
+	sjme_dylib handle;
+#endif
+
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Is there a hook to initialize ScritchUI? */
+	result = NULL;
+	if (inState->hooks != NULL && inState->hooks->scritchUi != NULL)
+	{
+		/* Call the hook. Note if the hook is set and there is a headless */
+		/* error, then we do not want to perform any default initialization */
+		/* as there may be a reason why a hook is passed. */
+		if (sjme_error_is(error = inState->hooks->scritchUi(inState, &result)))
+			return sjme_error_default(error);
+
+		/* Hook call is valid? */
+		if (result != NULL)
+		{
+			/* Use this as the ScritchUI state. */
+			sjme_atomic_s(sjme_pointer, &inState->globals.scritchUi, result);
+			return SJME_ERROR_NONE;
+		}
+	}
+
+#if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
+	/* What is the external default interface. */
+	externDefault = NULL;
+	if (sjme_error_is(error = sjme_extern_scritchUiInterface(&externDefault)))
+		return sjme_error_default(error);
+
+	/* We need to go through each minor, which is the actual library we want */
+	/* to load. */
+	for (minorId = 0;; minorId++)
+	{
+		/* The first and second are always the preferred and default */
+		/* interfaces. */
+		tryInterface = NULL;
+		if (minorId == 0)
+			tryInterface = prefer;
+		else if (minorId == 1)
+			tryInterface = externDefault;
+
+		/* Check XDG or some other env var? */
+		else if (minorId == 2)
+		{
+#if defined(SJME_CONFIG_HAS_OS_BSD_FAMILY) || \
+	defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
+	defined(SJME_CONFIG_HAS_OS_LINUX) || \
+	defined(SJME_CONFIG_HAS_OS_POSIX)
+			/* Determine a default UI based on the XDG standard. */
+			memset(xdgName, 0, sizeof(xdgName));
+			if (inState->nal != NULL && inState->nal->getEnv != NULL)
+				if (sjme_error_is(error = inState->nal->getEnv(
+					&xdgName[0], MAX_XDG_NAME - 1,
+					"XDG_CURRENT_DESKTOP")))
+				{
+					/* These specific errors are okay and should not cause */
+					/* this to fail. */
+					if (error != SJME_ERROR_NO_SUCH_ELEMENT &&
+						error != SJME_ERROR_INDEX_OUT_OF_BOUNDS &&
+						error != SJME_ERROR_NOT_IMPLEMENTED)
+						return sjme_error_default(error);
+
+					/* Wipe so that it is invalidated. */
+					memset(xdgName, 0, sizeof(xdgName));
+				}
+
+			/* Defaults which seem to make sense. */
+			if (0 == strncasecmp(xdgName, "KDE", MAX_XDG_NAME) ||
+				0 == strncasecmp(xdgName, "LXQt", MAX_XDG_NAME))
+				tryInterface = "qt5";
+			else if (0 == strncasecmp(xdgName, "Cinnamon", MAX_XDG_NAME) ||
+				0 == strncasecmp(xdgName, "GNOME", MAX_XDG_NAME))
+				tryInterface = "gtk3";
+			else if (0 == strncasecmp(xdgName, "LXDE", MAX_XDG_NAME) ||
+				0 == strncasecmp(xdgName, "MATE", MAX_XDG_NAME))
+				tryInterface = "gtk2";
+			else if (0 == strncasecmp(xdgName, "wmaker", MAX_XDG_NAME) ||
+				0 == strncasecmp(xdgName, "windowmaker", MAX_XDG_NAME))
+				tryInterface = "cocoa";
+#else
+			/* XDG is going to be undefined for this system. */
+			tryInterface = NULL;
+#endif
+		}
+
+		/* Otherwise, from a built-in list. */
+		else
+			tryInterface = sjme_defaultScritchUi[minorId - NUM_SUI_FIXED];
+
+		/* No interfaces left to try? */
+		if (tryInterface == NULL)
+		{
+			/* Or skip the initial defaults? */
+			if (minorId < NUM_SUI_FIXED)
+				continue;
+
+			/* Always headless in this case. */
+			return SJME_ERROR_HEADLESS_DISPLAY;
+		}
+
+		/* What is this library called? */
+		memset(&libName, 0, sizeof(libName));
+		if (sjme_error_is(error = sjme_dylib_name(
+			"squirreljme-scritchui-", tryInterface,
+			libName, SJME_MAX_FILE_NAME - 1)))
+			return sjme_error_default(error);
+
+		/* Go through each library directory in order, as our desired */
+		/* interface in the desired order might be in multiple directories. */
+		for (majorId = 0;; majorId++)
+		{
+			/* Lookup the native directory. */
+			memset(&majorPath, 0, sizeof(majorPath));
+			if (sjme_error_is(error = sjme_path_default(inState->nal,
+				&majorPath, SJME_NVM_DEFAULT_DIRECTORY_NATIVES, majorId)))
+			{
+				/* Path is defined, however checks failed for it. */
+				if (error == SJME_ERROR_PATH_NOT_ABSOLUTE ||
+					error == SJME_ERROR_PATH_TOO_DEEP ||
+					error == SJME_ERROR_PATH_TOO_LONG ||
+					error == SJME_ERROR_PATH_NOT_VALID)
+					continue;
+
+				/* Stop this if this is not a valid path. */
+				if (error == SJME_ERROR_PATH_NOT_DEFINED)
+					break;
+
+				return sjme_error_default(error);
+			}
+
+			/* Build full path to the library. */
+			memmove(&minorPath, &majorPath, sizeof(minorPath));
+			if (sjme_error_is(error = sjme_path_resolveS(&minorPath, libName)))
+				return sjme_error_default(error);
+
+			/* Try loading this specific library. */
+			result = NULL;
+			handle = NULL;
+			if (sjme_error_is(error = sjme_nvm_initScritchUiPath(inState,
+				&result, &handle, &minorPath, tryInterface)) || result == NULL)
+			{
+				/* These two are very possible and not errors. */
+				if (error == SJME_ERROR_HEADLESS_DISPLAY ||
+					error == SJME_ERROR_LIBRARY_NOT_FOUND)
+					continue;
+
+				return sjme_error_default(error);
+			}
+
+			/* Success! */
+			sjme_atomic_s(sjme_pointer, &inState->globals.scritchUi, result);
+			sjme_atomic_s(sjme_pointer, &inState->globals.scritchUiLib,
+				handle);
+			return SJME_ERROR_NONE;
+		}
+	}
+#endif
+
+	/* Could not find anything. */
+	return SJME_ERROR_HEADLESS_DISPLAY;
+#undef NUM_SUI_FIXED
+#undef MAX_XDG_NAME
+}
+
 sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
@@ -266,14 +558,18 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_attrOutNullable sjme_nvm_task* outInitTask)
 {
 #define FIXED_SUITE_COUNT 16
-	sjme_errorCode error;
+	sjme_errorCode error, deferRunJar;
 	sjme_nvm result;
 	sjme_nvm_rom_suite mergeSuites[FIXED_SUITE_COUNT];
-	sjme_jint numMergeSuites;
+	sjme_jint numMergeSuites, i, n;
 	sjme_nvm_task_taskNewConfig* initTaskConfig;
 	const sjme_nvm_bootParam* bootParamCopy;
 	sjme_nvm_task initTask;
-	sjme_list_sjme_nvm_rom_library* classPath;
+	sjme_list(sjme_nvm_rom_library)* classPath;
+	sjme_jlong yieldIn, yieldOut;
+	sjme_nvm_rom_suite jarSuite;
+	sjme_nvm_rom_library jarLibrary;
+	sjme_path runJarPath;
 	
 	if (allocPool == NULL || param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -314,6 +610,8 @@ sjme_errorCode sjme_nvm_boot(
 	/* Set parameters accordingly. */
 	result->allocPool = allocPool;
 	result->nal = param->nal;
+	result->hooks = param->hooks;
+	result->hookData = param->hookData;
 	
 	/* Initialize base for suite merging. */
 	memset(mergeSuites, 0, sizeof(mergeSuites));
@@ -348,6 +646,30 @@ sjme_errorCode sjme_nvm_boot(
 			mergeSuites[numMergeSuites++] =
 				(sjme_nvm_rom_suite)result->bootParamCopy->librarySuite;
 
+	/* Is a Jar being run? We need to make sure it is actually loaded in */
+	/* otherwise we cannot use it. */
+	deferRunJar = SJME_ERROR_NONE;
+	if (result->bootParamCopy->runJar != NULL)
+	{
+		/* Resolve the path first. */
+		memset(&runJarPath, 0, sizeof(runJarPath));
+		if (sjme_error_is(sjme_path_resolveS(&runJarPath,
+			result->bootParamCopy->runJar)))
+			goto fail_invalidJarPath;
+
+		/* It is possible that loading the library will fail, such as the */
+		/* file not existing. Defer the error for later. */
+		jarSuite = NULL;
+		if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipFileSingle(
+			allocPool, &jarSuite, result->nal, &runJarPath)) ||
+			jarSuite == NULL)
+			deferRunJar = error;
+
+		/* It did actually load. */
+		else
+			mergeSuites[numMergeSuites++] = jarSuite;
+	}
+
 	/* No suites at all? Running with absolutely nothing??? */
 	if (numMergeSuites <= 0)
 	{
@@ -374,7 +696,48 @@ sjme_errorCode sjme_nvm_boot(
 			goto fail_suiteMerge;
 	}
 
-	/* Use the classpath of the launcher? If enabled. */
+	/* If we are running a specific Jar, since we have all the dependency */
+	/* info loaded, and otherwise, we can look up the Jar to run and setup */
+	/* the classpath that it needs to start. */
+	if (bootParamCopy->runJar != NULL &&
+		0 != strcmp("", bootParamCopy->runJar))
+	{
+		/* It is possible the Jar passed via -jar does not exist or is just */
+		/* broken. */
+		jarLibrary = NULL;
+		if (sjme_error_is(error = sjme_nvm_rom_resolveLibraryByName(
+			result->suite, bootParamCopy->runJar, &jarLibrary)))
+		{
+			/* If there was an error from the defer, then use that instead. */
+			if (sjme_error_is(deferRunJar))
+				error = deferRunJar;
+			goto fail_resolveJar;
+		}
+
+		/* We have to load the MEEP SWM dependency information for our */
+		/* entire suite of libraries so that dependency resolution works */
+		/* properly. We only need this for -jar usage. */
+		result->swmManager = NULL;
+		if (sjme_error_is(error = sjme_nvm_rom_swmLoad(allocPool,
+			result->suite, &result->swmManager)) ||
+			result->swmManager == NULL)
+			goto fail_loadMeepSwm;
+
+		/* Now that we have, hopefully, loaded all the MEEP SWM */
+		/* dependency information we can perform an actual lookup of */
+		/* whatever was passed via -jar. */
+		if (sjme_error_is(error = sjme_nvm_rom_swmResolve(result->swmManager,
+			jarLibrary,
+			(sjme_lpstr*)&bootParamCopy->mainClass,
+			(sjme_list(sjme_lpstr)**)&bootParamCopy->mainArgs,
+			(sjme_list(sjme_jint)**)&bootParamCopy->mainClassPathById,
+			(sjme_list(sjme_lpstr)**)
+				&bootParamCopy->mainClassPathByName)))
+			goto fail_resolveJarClasspath;
+	}
+
+	/* Use the classpath of the launcher? If enabled and nothing is */
+	/* being launched? */
 	if (bootParamCopy->launcherFallback &&
 		(bootParamCopy->mainClassPathById == NULL &&
 		bootParamCopy->mainClassPathByName == NULL))
@@ -383,9 +746,9 @@ sjme_errorCode sjme_nvm_boot(
 		if (sjme_error_is(error = sjme_nvm_rom_suiteDefaultLaunch(allocPool,
 			result->suite,
 			(sjme_lpstr*)&bootParamCopy->mainClass,
-			(sjme_list_sjme_lpstr**)&bootParamCopy->mainArgs,
-			(sjme_list_sjme_jint**)&bootParamCopy->mainClassPathById,
-			(sjme_list_sjme_lpstr**)
+			(sjme_list(sjme_lpstr)**)&bootParamCopy->mainArgs,
+			(sjme_list(sjme_jint)**)&bootParamCopy->mainClassPathById,
+			(sjme_list(sjme_lpstr)**)
 				&bootParamCopy->mainClassPathByName)))
 			goto fail_defaultLaunch;
 
@@ -419,26 +782,73 @@ sjme_errorCode sjme_nvm_boot(
 			(result->bootParamCopy->mainClassPathById != NULL ?
 				"byId" : "byName"));
 
+		/* Fail. */
 		goto fail_badClassPath;
 	}
+	
+	/* Count up all classpath entries as we are using them now. */
+	for (n = classPath->length, i = 0; i < n; i++)
+		sjme_weakUp(classPath->elements[i]);
 
 	/* Allocate the task scheduler, if applicable. */
 	if (result->threadModel != SJME_NVM_MLE_THREAD_MULTI)
+	{
+		/* Allocate. */
 		if (sjme_error_is(error = sjme_alloc(allocPool,
 			sizeof(*result->schedule), (sjme_pointer*)&result->schedule)) ||
 			result->schedule == NULL)
 			goto fail_allocSchedule;
+		
+		/* Determine the number of yields that occur for a very small slice */
+		/* of time. */
+		memset(&yieldIn, 0, sizeof(yieldIn));
+		memset(&yieldOut, 0, sizeof(yieldOut));
+		result->nal->nanoTime(&yieldIn);
+		for (i = 0; i >= 0; i++)
+		{
+			/* Yield. */
+			sjme_thread_yield();
+			
+			/* How much time has passed? */
+			result->nal->nanoTime(&yieldOut);
+			if ((yieldOut.full - yieldIn.full) >= INT64_C(100000000))
+				break;
+		}
+		
+		/* We want to yield up to this point. */
+		result->schedule->yieldTimer = 0;
+		result->schedule->yieldMax = i;
+		
+		/* Then transition to actual sleeps. */
+		result->schedule->nothingMillis = 100;
+		result->schedule->nothingNanos = 0;
+	}
 
 	/* Setup task details. */
-	initTaskConfig = result->initTaskConfig;
+	initTaskConfig = (sjme_nvm_task_taskNewConfig*)result->initTaskConfig;
 	initTaskConfig->stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
 	initTaskConfig->stdErr = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
-	initTaskConfig->classPath = classPath;
 	initTaskConfig->mainClass = result->bootParamCopy->mainClass;
 	initTaskConfig->mainArgs = result->bootParamCopy->mainArgs;
 	initTaskConfig->sysProps = result->bootParamCopy->sysProps;
 	initTaskConfig->belay = result->bootParamCopy->belay;
 	initTaskConfig->noOptimize = result->bootParamCopy->noOptimize;
+	initTaskConfig->classPath = classPath;
+
+	/* Initialize ScritchUI? Or is this headless by default? */
+	if (result->bootParamCopy->noScritchUi)
+		sjme_atomic_s(sjme_jint, &result->globals.headlessDisplay, 1);
+	else
+		if (sjme_error_is(error = sjme_nvm_initScritchUi(result,
+			bootParamCopy->preferScritchUi)))
+		{
+			/* This could be an actual headless system. */
+			if (error != SJME_ERROR_HEADLESS_DISPLAY)
+				goto fail_scritchUiInit;
+
+			/* Set that this is a headless system. */
+			sjme_atomic_s(sjme_jint, &result->globals.headlessDisplay, 1);
+		}
 
 	/* Only create the task if not belaying it. */
 	initTask = NULL;
@@ -449,6 +859,24 @@ sjme_errorCode sjme_nvm_boot(
 			initTaskConfig, &initTask)) || initTask == NULL)
 			goto fail_initTask;
 	}
+
+#if SJME_CONFIG_DEBUG_VERBOSE && !defined(SJME_CONFIG_NETWORK_NONE)
+	/* Using JDWP for this virtual machine? */
+	if (bootParamCopy->jdwpPort > 0 || bootParamCopy->jdwpAddress != NULL ||
+		bootParamCopy->jdwpListening)
+		if (sjme_error_is(error = sjme_jdwp_sessionNewTcpNetwork(allocPool,
+			result, &result->jdwp,
+			bootParamCopy->jdwpListening,
+			bootParamCopy->jdwpAddress,
+			bootParamCopy->jdwpPort)) || result->jdwp == NULL)
+			sjme_message("Failed to establish JDWP connection: %d", error);
+#endif
+
+#if defined(SJME_CONFIG_DEBUG)
+	/* If debugging, set the pointer ID type. */
+	if (allocPool->pointerIdType == NULL)
+		allocPool->pointerIdType = sjme_nvm_pointerId;
+#endif
 	
 	/* Return newly created VM. */
 	*outState = result;
@@ -458,11 +886,18 @@ sjme_errorCode sjme_nvm_boot(
 
 	/* Failed at specific points... */
 fail_initTask:
+fail_scritchUiInit:
 fail_allocSchedule:
 fail_badClassPath:
 fail_defaultLaunch:
+fail_resolveJarClasspath:
+fail_loadMeepSwm:
+	if (result != NULL && result->swmManager != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result->swmManager));
+fail_resolveJar:
 fail_suiteMerge:
 fail_noSuites:
+fail_invalidJarPath:
 fail_payloadRom:
 fail_bothIdAndName:
 fail_bootParamCopy:
@@ -670,30 +1105,19 @@ sjme_errorCode sjme_nvm_defaultDir(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_destroy(sjme_nvm state, sjme_jint* exitCode)
+sjme_errorCode sjme_nvm_destroy(
+	sjme_attrInNotNull sjme_nvm state,
+	sjme_attrOutNullable sjme_jint* exitCode)
 {
 	if (state == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_message("Implement NVM destroy");
-	return SJME_ERROR_NONE;
-#if 0
-	/* Free sub-structures. */
-	if (SJME_JNI_TRUE)
-		sjme_todo("sjme_nvm_destroy()");
-		
-	/* Free main structure. */
-	if (SJME_JNI_TRUE)
-		sjme_todo("sjme_nvm_destroy()");
+	/* Copy out the exit code, if requested. */
+	if (exitCode != NULL)
+		*exitCode = sjme_atomic_g(sjme_jint, &state->mainExitCode);
 	
-	/* Set exit code, if requested. */
-	if (SJME_JNI_TRUE)
-		sjme_todo("sjme_nvm_destroy()");
-	
-	/* Finished. */
-	sjme_todo("sjme_nvm_destroy()");
-	return sjme_error_notImplemented(0);
-#endif
+	/* Forward to the normal cleanup process. */
+	return sjme_closeable_close(SJME_AS_CLOSEABLE(state));
 }
 
 sjme_errorCode sjme_nvm_parseCommandLine(
@@ -706,10 +1130,10 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_errorCode error;
 	sjme_jint argAt;
 	sjme_charSeqStatic argSeq;
-	sjme_jboolean jarSpecified;
+	sjme_jboolean jarSpecified, runViaMain;
 	sjme_nal_stdOFunc helpOut;
 	sjme_nal_stdIoFlush helpFlush;
-	sjme_lpcstr bootRom, helpOpt, versionOpt;
+	sjme_lpcstr bootRom, helpOpt, versionOpt, tempUtf, tempTwo, runJar;
 	
 	if (allocPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -727,11 +1151,21 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 
 	/* These arguments get filled in. */
 	bootRom = NULL;
+	runJar = NULL;
 	
 	/* Command line format is: */
 	jarSpecified = SJME_JNI_FALSE;
-	for (argAt = 1; argAt < argc; argAt++)
+	for (argAt = 1; argAt < argc && !jarSpecified; argAt++)
 	{
+		/* Cannot have a null argument here. */
+		if (argv[argAt] == NULL)
+			return SJME_ERROR_NULL_ARGUMENTS;
+
+		/* Stop parsing if it does not start with a dash, as this is not */
+		/* an argument. */
+		if (argv[argAt][0] != '-')
+			break;
+
 		/* Setup sequence to wrap argument for parsing. */
 		memset(&argSeq, 0, sizeof(argSeq));
 		if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
@@ -765,7 +1199,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			"-Xclutter:"))
 		{
 			/* Debugging? */
-			if (!strcasecmp("debug", &argv[argAt][10]))
+			if (0 == strcasecmp("debug", &argv[argAt][10]))
 				outParam->clutterLevel = SJME_NVM_BOOT_CLUTTER_DEBUG;
 
 			/* Otherwise, consider everything else release. */
@@ -785,8 +1219,12 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			"-Xemulator:"))
 		{
 			/* If SpringCoat is specified, assume no optimizations. */
-			if (!strcasecmp("springcoat", &argv[argAt][11]))
+			if (0 == strcasecmp("springcoat", &argv[argAt][11]))
 				outParam->noOptimize = SJME_JNI_TRUE;
+
+			/* Otherwise, if no nanocoat then fail... */
+			else if (0 != strcasecmp("nanocoat", &argv[argAt][11]))
+				return SJME_ERROR_INVALID_ARGUMENT;
 		}
 		
 		/* -Xentry:id */
@@ -800,7 +1238,36 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xjdwp:"))
 		{
-			sjme_todo("Impl? %s", argv[argAt]);
+			/* Simpler to use as UTF. */
+			tempUtf = sjme_charSeq_tempUtf(&argSeq);
+			
+			/* Only the port specified? We are listening... */
+			if (sjme_charSeq_charAtR(&argSeq,
+				strlen("-Xjdwp:") == ':'))
+			{
+				outParam->jdwpListening = SJME_JNI_TRUE;
+				outParam->jdwpAddress = NULL;
+				outParam->jdwpPort = atoi(&tempUtf[strlen("-Xjdwp:")]);
+			}
+
+			/* Otherwise we are connecting to an address. */
+			else
+			{
+				/* Find the last colon, in the event of IPv6. */
+				tempTwo = strrchr(tempUtf, ':');
+				if (tempTwo == NULL)
+					return SJME_ERROR_INVALID_ARGUMENT;
+
+				/* Duplicate address. */
+				if (sjme_error_is(error = sjme_alloc_strdup(allocPool,
+					&outParam->jdwpAddress, tempUtf)))
+					return sjme_error_default(error);
+				
+				/* Fill in. */
+				outParam->jdwpListening = SJME_JNI_FALSE;
+				outParam->jdwpAddress[tempTwo - tempUtf] = '\0';
+				outParam->jdwpPort = atoi(&tempTwo[1]);
+			}
 		}
 		
 		/* -Xrom:(path) */
@@ -826,7 +1293,11 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xscritchui:"))
 		{
-			sjme_todo("Impl? %s", argv[argAt]);
+			/* Force headless? */
+			if (0 == strcasecmp("none", &argv[argAt][12]))
+				outParam->noScritchUi = SJME_JNI_TRUE;
+			else
+				outParam->preferScritchUi = &argv[argAt][12];
 		}
 		
 		/* -Xsnapshot:(path-to-nps) */
@@ -878,14 +1349,27 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		{
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
-		
+
 		/* -jar */
 		else if (sjme_charSeq_equalsUtfR(&argSeq, "-jar"))
 		{
+			/* Another argument needs to follow! */
+			if ((argAt + 1) >= argc)
+			{
+				/* Should hopefully help the user. */
+				sjme_message("A jar must follow -jar. (%s %s %d %d)",
+					argv[argAt], argv[argAt + 1], argAt, argc);
+
+				/* Fail. */
+				return SJME_ERROR_INVALID_ARGUMENT;
+			}
+
 			/* We are using a Jar now. */
+			/* Anything that follows the name of the Jar is a main argument. */
 			jarSpecified = SJME_JNI_TRUE;
-			
-			sjme_todo("Impl? %s", argv[argAt]);
+
+			/* Set the Jar to run. */
+			runJar = &argv[++argAt][0];
 		}
 		
 		/* Invalid, fail. */
@@ -897,25 +1381,26 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			return SJME_ERROR_INVALID_ARGUMENT;
 		}
 	}
-	
-	/* Launching a specific Jar? */
-	if (argAt < argc)
+
+	/* Main-class, if not -jar and there are arguments to pass */
+	runViaMain = SJME_JNI_FALSE;
+	if (!jarSpecified && argAt < argc)
 	{
-		/* Main-class, if not -jar */
-		if (!jarSpecified)
-		{
-			sjme_todo("impl?");
-		}
-		
-		/* Arguments... */
-		if (SJME_JNI_TRUE)
-		{
-			sjme_todo("impl?");
-		}
+		/* We are running via main now. */
+		runViaMain = SJME_JNI_TRUE;
+
+		sjme_todo("impl?");
 	}
-	
-	/* Default launching. */
-	else
+
+	/* Arguments to main or -jar? */
+	if (runViaMain || jarSpecified)
+		for (; argAt < argc; argAt++)
+		{
+			sjme_todo("impl?");
+		}
+
+	/* Default launch if not running a main class or using -jar. */
+	if (!runViaMain && !jarSpecified)
 	{
 		outParam->mainArgs = NULL;
 		outParam->mainClass = NULL;
@@ -928,14 +1413,36 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	else if (versionOpt != NULL)
 		return sjme_nvm_printVersion(nal, helpOut, helpFlush,
 			versionOpt, outParam);
+
+	/* No boot ROM was specified? Try to find a default one. */
+	if (bootRom == NULL)
+	{
+		/* This goes through and tries multiple ROM names to try to find */
+		/* one that works. */
+		if (sjme_error_is(error = sjme_nvm_defaultBootSuite(
+			allocPool, nal, &outParam->bootSuite)))
+			return sjme_error_default(error);
+	}
 	
-	/* Load boot ROM? */
-	if (bootRom != NULL)
+	/* Otherwise, attempt to load the specific ROM. */
+	else
+	{
+		/* Just use a "normal" attempt which directly sets and uses the */
+		/* path that was specified. */
 		if (sjme_error_is(error = sjme_nvm_defaultBootSuiteAttempt(
 			allocPool, nal, &outParam->bootSuite,
 			"", bootRom, outParam->clutterLevel)) ||
 			outParam->bootSuite == NULL)
 			return sjme_error_default(error);
+	}
+
+	/* Never fallback to the launcher if main class or -jar were used. */
+	if (jarSpecified || runViaMain)
+		outParam->launcherFallback = SJME_JNI_FALSE;
+
+	/* Set Jar to be used? */
+	if (jarSpecified)
+		outParam->runJar = runJar;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

@@ -14,6 +14,8 @@ sjme_errorCode sjme_nvm_access_checkCompatibleField(
 	sjme_attrInNotNull sjme_jfieldID fieldId,
 	sjme_attrInNotNull sjme_jvalueTyped* checkValue)
 {
+	sjme_errorCode error;
+	
 	if (contextThread == NULL || fieldId == NULL || checkValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -29,9 +31,15 @@ sjme_errorCode sjme_nvm_access_checkCompatibleField(
 			return SJME_ERROR_NONE;
 		
 		/* If this is not assignable, then something is wrong. */
-		if (!sjme_nvm_vmClass_isAssignableFrom(contextThread,
-			fieldId->objectType, checkValue->v.l->isClass))
-			return SJME_ERROR_CLASS_CHANGED;
+		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+			contextThread,
+			sjme_atomic_g(sjme_jclass, &fieldId->objectType),
+			sjme_atomic_g(sjme_jclass, &checkValue->v.l->isClass))))
+		{
+			if (error == SJME_ERROR_CLASS_CAST)
+				return SJME_ERROR_CLASS_CHANGED;
+			return sjme_error_default(error);
+		}
 	}
 	
 	/* Success! */
@@ -46,8 +54,8 @@ sjme_errorCode sjme_nvm_access_checkEToE(
 	sjme_jclass fromClass;
 	sjme_jclass toClass;
 	sjme_jclass rover;
-	sjme_nvm_class_accessFlags* flags;
 	sjme_jboolean checkPP;
+	sjme_jint flags, special;
 	
 	if (from == NULL || to == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -57,19 +65,26 @@ sjme_errorCode sjme_nvm_access_checkEToE(
 		return SJME_ERROR_NONE;
 
 	/* In the same class? */
-	fromClass = from->inClass;
-	toClass = to->inClass;
+	fromClass = sjme_atomic_g(sjme_jclass, &from->inClass);
+	toClass = sjme_atomic_g(sjme_jclass, &to->inClass);
 	if (fromClass == toClass)
 		return SJME_ERROR_NONE;
 
+	/* Allow object, class, and enum unlimited access to anything. */
+	special = fromClass->special;
+	if (SJME_NVM_ACC_IS(special, SPECIAL_OBJECT_CLASS) ||
+		SJME_NVM_ACC_IS(special, SPECIAL_CLASS_CLASS) ||
+		SJME_NVM_ACC_IS(special, SPECIAL_ENUM_CLASS))
+		return SJME_ERROR_NONE;
+
 	/* Target is public? */
-	flags = &toFlags->access;
-	if (flags->public)
+	flags = *toFlags;
+	if (SJME_NVM_ACC_IS(flags, PUBLIC))
 		return SJME_ERROR_NONE;
 
 	/* Target is protected? */
 	checkPP = SJME_JNI_FALSE;
-	if (flags->protected)
+	if (SJME_NVM_ACC_IS(flags, PROTECTED))
 	{
 		/* Must be a superclass of this one. */
 		for (rover = fromClass; rover != NULL; rover = SJME_C_SU(rover))
@@ -80,8 +95,10 @@ sjme_errorCode sjme_nvm_access_checkEToE(
 		checkPP = SJME_JNI_TRUE;
 	}
 
-	/* Target is packing private? */
-	else if (!flags->private && !flags->protected && !flags->public)
+	/* Target is package private? */
+	else if (!SJME_NVM_ACC_IS(flags, PUBLIC) &&
+		!SJME_NVM_ACC_IS(flags, PROTECTED) &&
+		!SJME_NVM_ACC_IS(flags, PRIVATE))
 		checkPP = SJME_JNI_TRUE;
 
 	/* Must be in the same package? */
@@ -112,7 +129,7 @@ sjme_errorCode sjme_nvm_access_checkFToF(
 	return sjme_nvm_access_checkEToE(
 		(sjme_jmemberID)from->inMethod,
 		(sjme_jmemberID)to,
-		&to->flags.member);
+		(sjme_nvm_class_memberFlags*)&to->flags);
 }
 
 sjme_errorCode sjme_nvm_access_checkFToM(
@@ -126,7 +143,7 @@ sjme_errorCode sjme_nvm_access_checkFToM(
 	return sjme_nvm_access_checkEToE(
 		(sjme_jmemberID)from->inMethod,
 		(sjme_jmemberID)to,
-		&to->flags.member);
+		(sjme_nvm_class_memberFlags*)&to->flags);
 }
 
 sjme_errorCode sjme_nvm_access_checkMToM(
@@ -137,5 +154,5 @@ sjme_errorCode sjme_nvm_access_checkMToM(
 	return sjme_nvm_access_checkEToE(
 		(sjme_jmemberID)from,
 		(sjme_jmemberID)to,
-		&to->flags.member);
+		(sjme_nvm_class_memberFlags*)&to->flags);
 }

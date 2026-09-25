@@ -10,6 +10,7 @@
 /**
  * SquirrelJME NanoCoat Virtual Machine Header Definitions.
  * 
+ * @file
  * @since 2023/07/25
  */
 
@@ -18,12 +19,15 @@
 
 #include "sjme/closeable.h"
 #include "sjme/config.h"
+#include "sjme/closeable.h"
 #include "sjme/stdTypes.h"
 #include "sjme/tokenUtils.h"
 #include "sjme/alloc.h"
 #include "sjme/list.h"
 #include "sjme/atomic.h"
 #include "sjme/native.h"
+#include "sjme/nvm/nvmTypeDefs.h"
+#include "lib/scritchui/scritchui.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -35,24 +39,7 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
-
-/**
- * Program counter address.
- * 
- * @since 2023/07/25
- */
-typedef sjme_jint sjme_pcAddr;
-
-/**
- * Static linkage type.
- * 
- * @since 2023/07/25
- */
-typedef sjme_jint sjme_staticLinkageType;
-
-/** Single byte code storage type. */
-typedef sjme_jubyte sjme_byteCode;
-
+	
 typedef union sjme_anyData
 {
 	/** Integer. */
@@ -73,66 +60,7 @@ typedef struct sjme_any
 	/** Data stored within. */
 	sjme_anyData data;
 } sjme_any;
-
-/**
- * Represents an identifier to an interface.
- * 
- * @since 2025/03/26
- */
-typedef struct sjme_jinterfaceIDBase sjme_jinterfaceIDBase;
-
-/**
- * Represents an identifier to an interface.
- * 
- * @since 2025/03/26
- */
-typedef sjme_jinterfaceIDBase* sjme_jinterfaceID;
-
-/**
- * Represents an identifier to a member.
- * 
- * @since 2025/02/26
- */
-typedef struct sjme_jmemberIDBase sjme_jmemberIDBase;
-
-/**
- * Represents an identifier to a member.
- * 
- * @since 2025/02/26
- */
-typedef sjme_jmemberIDBase* sjme_jmemberID;
-
-/**
- * Represents an identifier to a method.
- * 
- * @since 2024/10/19
- */
-typedef struct sjme_jmethodIDBase sjme_jmethodIDBase;
-
-/**
- * Represents an identifier to a method.
- * 
- * @since 2024/10/19
- */
-typedef sjme_jmethodIDBase* sjme_jmethodID;
-
-/**
- * Represents an identifier to a field.
- * 
- * @since 2025/02/26
- */
-typedef struct sjme_jfieldIDBase sjme_jfieldIDBase;
-
-/**
- * Represents an identifier to a field.
- * 
- * @since 2025/02/26
- */
-typedef sjme_jfieldIDBase* sjme_jfieldID;
-
-/** List of fields. */
-SJME_LIST_DECLARE(sjme_jfieldID, 0);
-
+	
 /**
  * The type of structure a type is.
  * 
@@ -143,7 +71,7 @@ typedef enum sjme_nvm_structType
 	/** Unknown. */
 	SJME_NVM_STRUCT_UNKNOWN,
 
-	/** Array instance. */
+	/** Array instance, @link sjme_jarray @endlink. */
 	SJME_NVM_STRUCT_ARRAY_INSTANCE,
 
 	/** A Jar package instance pointer object. */
@@ -162,7 +90,7 @@ typedef enum sjme_nvm_structType
 	SJME_NVM_STRUCT_CLASS_INSTANCE,
 	
 	/** Method code. */
-	SJME_NVM_STRUCT_CODE,
+	SJME_NVM_STRUCT_CODE_INFO,
 
 	/** Field identifier. */
 	SJME_NVM_STRUCT_FIELD_ID,
@@ -193,6 +121,9 @@ typedef enum sjme_nvm_structType
 	
 	/** Rom Library. */
 	SJME_NVM_STRUCT_ROM_LIBRARY,
+
+	/** Rom MEEP SWM Dependency Information. */
+	SJME_NVM_STRUCT_ROM_MEEP_SWM,
 	
 	/** Rom Suite. */
 	SJME_NVM_STRUCT_ROM_SUITE,
@@ -218,8 +149,8 @@ typedef enum sjme_nvm_structType
 	/** Task intern strings. */
 	SJME_NVM_STRUCT_TASK_STRINGS,
 	
-	/** A single thread. */
-	SJME_NVM_STRUCT_THREAD_INSTANCE,
+	/** A single VM thread. */
+	SJME_NVM_STRUCT_BRACKET_VM_THREAD_INSTANCE,
 	
 	/** Class loader. */
 	SJME_NVM_STRUCT_VM_CLASS_LOADER,
@@ -233,20 +164,6 @@ typedef enum sjme_nvm_structType
 	/** Any object instance. */
 	SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE = SJME_NVM_NUM_STRUCT + 3
 } sjme_nvm_structType;
-
-/**
- * Common data structure between all NanoCoat types.
- * 
- * @since 2024/08/09
- */
-typedef struct sjme_nvm_commonBase sjme_nvm_commonBase;
-
-/**
- * Common data structure pointer.
- * 
- * @since 2024/08/10
- */
-typedef sjme_nvm_commonBase* sjme_nvm_common;
 
 /** Cast to array. */
 #define SJME_AS_JARRAY(x) ((sjme_jarray)(x))
@@ -266,8 +183,23 @@ typedef sjme_nvm_commonBase* sjme_nvm_common;
 /** Cast to pointer to object. */
 #define SJME_AS_JCLASSP(x) ((sjme_jclass*)(x))
 
+/** Casts pointer to a @link sjme_jstring @endlink . */
+#define SJME_AS_JSTRING(p) ((sjme_jstring)(p))
+
+/** Casts pointer to a pointer to a @link sjme_jstring @endlink . */
+#define SJME_AS_JSTRINGP(p) ((sjme_jstring*)(p))
+
 /** As a member ID. */
 #define SJME_AS_JMEMBERID(x) ((sjme_jmemberID)(x))
+
+/** As a throwable. */
+#define SJME_AS_JTHROWABLE(x) ((sjme_jthrowable)(x))
+
+/** As a Jar Package Bracket. */
+#define SJME_AS_B_JARPACKAGE(x) ((sjme_jbracketJarPackage)(x))
+
+/** As a pointer to a Jar Package Bracket. */
+#define SJME_AS_B_JARPACKAGEP(x) ((sjme_jbracketJarPackage*)(x))
 
 /** Cast to common type. */
 #define SJME_AS_NVM_COMMON(x) ((sjme_nvm_common)(x))
@@ -276,61 +208,66 @@ typedef sjme_nvm_commonBase* sjme_nvm_common;
 #define SJME_AS_NVM_COMMONP(x) ((sjme_nvm_common*)(x))
 
 /**
- * Represents the virtual machine state.
- * 
- * @since 2023/08/08
- */
-typedef struct sjme_nvm_stateBase sjme_nvm_stateBase;
-
-/**
- * Represents the virtual machine state.
- * 
- * @since 2023/07/28
- */
-typedef sjme_nvm_stateBase* sjme_nvm;
-
-/**
- * Frame of execution within a thread.
- * 
- * @since 2023/08/08
- */
-typedef struct sjme_nvm_frameBase sjme_nvm_frameBase;
-
-/**
- * Frame of execution within a thread.
- * 
- * @since 2023/07/25
- */
-typedef sjme_nvm_frameBase* sjme_nvm_frame;
-
-/**
- * Base structure for virtual machine threads.
- * 
- * @since 2024/08/08
- */
-typedef struct sjme_nvm_threadBase sjme_nvm_threadBase;
-
-/**
- * A thread within SquirrelJME.
- * 
- * @since 2024/08/08
- */
-typedef sjme_nvm_threadBase* sjme_nvm_thread;
-
-/** List of threads. */
-SJME_LIST_DECLARE(sjme_nvm_thread, 0);
-
-/**
  * Hook for garbage collection detection and/or cancel capability.
  * 
  * @param frame The frame this is garbage collecting in.
  * @param gcWhat what is being garbage collected?
- * @return Returns @c SJME_JNI_TRUE if garbage collection should continue.
+ * @return Returns @link SJME_JNI_TRUE @endlink if garbage collection should
+ * continue.
  * @since 2023/11/17
  */
-typedef sjme_jboolean (*sjme_nvm_stateHookGcFunc)(sjme_nvm_frame frame,
-	sjme_jobject gcWhat);
+typedef sjme_jboolean (*sjme_nvm_stateHookGcFunc)(
+	sjme_attrInNotNull sjme_nvm_frame frame,
+	sjme_attrInNotNull sjme_jobject gcWhat);
 
+/**
+ * This is called when a native method does not exist in the MLE layer to
+ * allow for any customized shelves and/or other native method handling as
+ * needed.
+ * 
+ * @param inFrame The frame this is being called from.
+ * @param methodID The method ID being called.
+ * @param methodInfo The method information being called.
+ * @param argR The return value of the call.
+ * @param argC The argument count.
+ * @param argV The argument values.
+ * @return Any resultant error, if any.
+ * @since 2025/09/26
+ */
+typedef sjme_errorCode (*sjme_nvm_stateHookNativeCallFunc)(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_jmethodID methodID,
+	sjme_attrInNotNull sjme_nvm_class_methodInfo methodInfo,
+	sjme_attrInNotNull sjme_jvalueTyped* argR,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV);
+
+/**
+ * Requests the ScritchUI state via a hook, if one has already been setup
+ * accordingly. This may be used to provide a ScritchUI interface already
+ * rather than attempting to initialize one.
+ *
+ * @param inState The input virtual machine state.
+ * @param outScritchUi The resultant ScritchUI state.
+ * @return Any resultant error, if any.
+ * @since 2026/09/20
+ */
+typedef sjme_errorCode (*sjme_nvm_stateHookScritchUiStateFunc)(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNotNull sjme_scritchui* outScritchUi);
+
+/**
+ * This is called when a thread throws an uncaught exception.
+ * 
+ * @param inThread The thread this occurred for.
+ * @param uncaught The exception which was never caught.
+ * @return Any resultant error, if any.
+ * @since 2026/01/11
+ */
+typedef sjme_errorCode (*sjme_nvm_stateHookUncaughtFunc)(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInNotNull sjme_jthrowable uncaught);
+	
 /**
  * Hooks for alternative function.
  * 
@@ -340,52 +277,17 @@ typedef struct sjme_nvm_stateHooks
 {
 	/** Garbage collection. */
 	sjme_nvm_stateHookGcFunc gc;
+
+	/** Perform a native call. */
+	sjme_nvm_stateHookNativeCallFunc nativeCall;
+
+	/** Obtain ScritchUI state. */
+	sjme_nvm_stateHookScritchUiStateFunc scritchUi;
+
+	/** Uncaught exception occurred in thread. */
+	sjme_nvm_stateHookUncaughtFunc uncaught;
 } sjme_nvm_stateHooks;
-
-/**
- * Boot parameters for NanoCoat.
- *
- * @since 2023/07/27
- */
-typedef struct sjme_nvm_bootParam sjme_nvm_bootParam;
-
-/**
- * Standard Suite structure.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_nvm_rom_suiteBase sjme_nvm_rom_suiteBase;
-
-/**
- * Opaque suite structure type.
- *
- * @since 2023/12/22
- */
-typedef sjme_nvm_rom_suiteBase* sjme_nvm_rom_suite;
-
-/**
- * Structure for a single task.
- *
- * @since 2023/12/17
- */
-typedef struct sjme_nvm_taskBase sjme_nvm_taskBase;
-/**
- * Structure for a single task.
- *
- * @since 2023/12/17
- */
-typedef sjme_nvm_taskBase* sjme_nvm_task;
 	
-/** List of tasks. */
-SJME_LIST_DECLARE(sjme_nvm_task, 0);
-	
-/**
- * The configuration that stores the information needed for starting the task.
- *
- * @since 2023/12/17
- */
-typedef struct sjme_nvm_task_taskNewConfig sjme_nvm_task_taskNewConfig;
-
 struct sjme_nvm_commonBase
 {
 	/** Closeable for this NanoCoat object. */
@@ -403,8 +305,8 @@ struct sjme_nvm_commonBase
 	/** The lock to access this common item. */
 	sjme_alignPointer sjme_thread_spinLock lock;
 
-	/** Specific close handler. */
-	sjme_closeable_closeHandlerFunc specificClose;
+	/** Post close after the pre-close initial walk state. */
+	sjme_closeable_closeHandlerFunc postClose;
 };
 
 /**
@@ -427,6 +329,9 @@ typedef enum sjme_nvm_threadScheduleMode
 	SJME_NVM_THREAD_NUM_SCHEDULE_MODE = 3,
 } sjme_nvm_threadScheduleMode;
 
+/** Atomic thread schedule mode. */
+SJME_ATOMIC_DECLARE(sjme_nvm_threadScheduleMode, 0);
+
 /**
  * Sub-schedule for thread scheduling.
  *
@@ -438,7 +343,7 @@ typedef struct sjme_nvm_threadSubSchedule
 	sjme_jint count;
 		
 	/** The list of threads in order. */
-	sjme_list_sjme_nvm_thread* order;
+	sjme_list(sjme_nvm_thread)* order;
 } sjme_nvm_threadSubSchedule;
 	
 /**
@@ -456,6 +361,18 @@ typedef struct sjme_nvm_threadSchedule
 	
 	/** The schedules for each mode. */
 	sjme_nvm_threadSubSchedule mode[SJME_NVM_THREAD_NUM_SCHEDULE_MODE];
+	
+	/** The timer used for yields. */
+	sjme_jint yieldTimer;
+	
+	/** The maximum amount of time to yield for. */
+	sjme_jint yieldMax;
+	
+	/** The millisecond nothing/deadlock time to sleep for. */
+	sjme_jint nothingMillis;
+	
+	/** The nanosecond nothing/deadlock time to sleep for. */
+	sjme_jint nothingNanos;
 } sjme_nvm_threadSchedule;
 
 /**
@@ -508,6 +425,23 @@ typedef enum sjme_nvm_bootClutterLevel
 	/** Debug clutter level. */
 	SJME_NVM_BOOT_CLUTTER_DEBUG = 1,
 } sjme_nvm_bootClutterLevel;
+
+/**
+ * Globals for the virtual machine state.
+ *
+ * @since 2026/09/20
+ */
+typedef struct sjme_nvm_stateGlobals
+{
+	/** The display is headless, no ScritchUI is available. */
+	sjme_atomic(sjme_jint) headlessDisplay;
+
+	/** The global @link sjme_scritchui @endlink state pointer. */
+	sjme_atomic(sjme_pointer) scritchUi;
+
+	/** The global @link sjme_dylib @endlink ScritchUI library handle. */
+	sjme_atomic(sjme_pointer) scritchUiLib;
+} sjme_nvm_stateGlobals;
 	
 struct sjme_nvm_stateBase
 {
@@ -523,6 +457,9 @@ struct sjme_nvm_stateBase
 	/** Hooks for the state. */
 	const sjme_nvm_stateHooks* hooks;
 
+	/** Data for hooks. */
+	sjme_pointer hookData;
+
 	/** The native abstraction layer to use. */
 	const sjme_nal* nal;
 
@@ -530,16 +467,16 @@ struct sjme_nvm_stateBase
 	sjme_nvm_rom_suite suite;
 	
 	/** The tasks that are currently existing. */
-	sjme_list_sjme_nvm_task* tasks;
+	sjme_list(sjme_nvm_task)* tasks;
 
 	/** The number of running tasks. */
-	sjme_atomic_sjme_jint numRunningTasks;
+	sjme_atomic(sjme_jint) numRunningTasks;
 	
 	/** The next identifier for tasks. */
-	sjme_atomic_sjme_jint nextTaskId;
+	sjme_atomic(sjme_jint) nextTaskId;
 	
 	/** The next identifier for tasks. */
-	sjme_atomic_sjme_jint nextThreadId;
+	sjme_atomic(sjme_jint) nextThreadId;
 	
 	/** The thread model in use. */
 	sjme_nvm_mle_threadModel threadModel;
@@ -547,42 +484,33 @@ struct sjme_nvm_stateBase
 	/** The thread schedule. */
 	sjme_nvm_threadSchedule* schedule;
 	
-	/** The state @c sjme_nvm_terminateLevel ? */
-	sjme_atomic_sjme_jint terminating;
+	/** The state @link sjme_nvm_terminateLevel @endlink ? */
+	sjme_atomic(sjme_jint) terminating;
 
 	/** The initial task configuration. */
-	sjme_nvm_task_taskNewConfig* initTaskConfig;
+	const sjme_nvm_task_taskNewConfig* initTaskConfig;
 
 	/** The last emitted exit code. */
-	sjme_atomic_sjme_jint lastExitCode;
+	sjme_atomic(sjme_jint) lastExitCode;
+
+	/** The JDWP debugger state. */
+	sjme_jdwp jdwp;
+
+	/** Main task exit code. */
+	sjme_atomic(sjme_jint) mainExitCode;
+
+	/** Main task reference. */
+	sjme_phantom(sjme_nvm_task) phantomMainTask;
+
+	/**
+	 * An SWM manager that may or may not exist, used for bootstrap
+	 * dependency lookup.
+	 */
+	sjme_nvm_rom_swmManager swmManager;
+
+	/** NVM Globals. */
+	sjme_nvm_stateGlobals globals;
 };
-
-/**
- * Specifies how the PC address should be adjusted.
- *
- * @since 2025/01/11
- */
-typedef struct sjme_nvm_byteCode_pcNew sjme_nvm_byteCode_pcNew;
-
-/**
- * Standard ROM library structure.
- *
- * @since 2023/12/12
- */
-typedef struct sjme_nvm_rom_libraryBase sjme_nvm_rom_libraryBase;
-
-/**
- * Standard ROM library structure.
- *
- * @since 2023/12/12
- */
-typedef sjme_nvm_rom_libraryBase* sjme_nvm_rom_library;
-
-/** List of ROM libraries. */
-SJME_LIST_DECLARE(sjme_nvm_rom_library, 0);
-
-/** The type ID of ROM libraries. */
-#define SJME_TYPEOF_BASIC_sjme_nvm_rom_library SJME_BASIC_TYPE_ID_OBJECT
 
 /** Type size multiplier. */
 extern const sjme_jint sjme_nvm_typeMul[SJME_NUM_BASIC_TYPE_IDS];
@@ -603,9 +531,6 @@ extern const sjme_basicTypeId sjme_nvm_typePromote[SJME_NUM_BASIC_TYPE_IDS];
  * @since 2023/07/25
  */
 #define SJME_NANOCOAT_END_CALL ((sjme_pcAddr)-2)
-
-/** Casts pointer to a pointer to a @c sjme_jstring . */
-#define SJME_AS_JSTRINGP(p) ((sjme_jstring*)(p))
 	
 /**
  * Allows for optional debug abort when a virtual machine error occurs

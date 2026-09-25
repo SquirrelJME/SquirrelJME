@@ -18,14 +18,23 @@
 	#endif
 #endif
 
+#include <sjme/nvm/cleanup.h>
+
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleConst.h"
 #include "sjme/nvm/mleShelves.h"
 
 SJME_NVM_MLE_FUNCTION_DECL(byteOrder)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+#if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
+	/* Little endian. */
+	argR->v.i = 1;
+#else
+	/* Big endian. */
+	argR->v.i = 0;
+#endif
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(currentTimeMillis)
@@ -36,15 +45,17 @@ SJME_NVM_MLE_FUNCTION_DECL(currentTimeMillis)
 
 SJME_NVM_MLE_FUNCTION_DECL(encoding)
 {
-	static sjme_atomic_sjme_jint cached;
+	static sjme_atomic(sjme_jint) cached;
 	sjme_nvm_mle_builtInEncodingType encoding;
 	const char* codeType;
-#if defined(SJME_CONFIG_HAS_OS_POSIX)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	UINT cp;
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	sjme_lpcstr set;
 #endif
 
 	/* Cached? */
-	encoding = sjme_atomic_sjme_jint_get(&cached);
+	encoding = sjme_atomic_g(sjme_jint, &cached);
 	if (encoding != SJME_NVM_MLE_ENCODING_UNSPECIFIED)
 		goto skip_cached;
 
@@ -52,8 +63,28 @@ SJME_NVM_MLE_FUNCTION_DECL(encoding)
 	codeType = NULL;
 	
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Read in the codepage. */
+	cp = GetOEMCP();
+
+	/* Windows codepages need to be mapped to SquirrelJME. */
+#define SJME_CP_MAP(win, sjme) case win: encoding = sjme; break
+	switch (cp)
+	{
+		SJME_CP_MAP(37, SJME_NVM_MLE_ENCODING_IBM037);
+		SJME_CP_MAP(437, SJME_NVM_MLE_ENCODING_ASCII);
+		SJME_CP_MAP(28591, SJME_NVM_MLE_ENCODING_ISO_8859_1);
+		SJME_CP_MAP(28605, SJME_NVM_MLE_ENCODING_ISO_8859_15);
+		SJME_CP_MAP(65001, SJME_NVM_MLE_ENCODING_UTF8);
+
+		/* Shift-JIS Variants. */
+		SJME_CP_MAP(20932, SJME_NVM_MLE_ENCODING_SHIFT_JIS);
+		SJME_CP_MAP(50222, SJME_NVM_MLE_ENCODING_SHIFT_JIS);
+
+		/* 7-bit ASCII. */
+		SJME_CP_MAP(20127, SJME_NVM_MLE_ENCODING_ASCII);
+	}
+#undef SJME_CP_MAP
+
 #elif defined(SJME_CONFIG_HAS_OS_ANDROID)
 	/* Android only does UTF-8. */
 	encoding = SJME_NVM_MLE_ENCODING_UTF8;
@@ -89,7 +120,7 @@ SJME_NVM_MLE_FUNCTION_DECL(encoding)
 	/* Fallback to UTF-8 if unspecified. */
 	if (encoding == SJME_NVM_MLE_ENCODING_UNSPECIFIED)
 		encoding = SJME_NVM_MLE_ENCODING_UTF8;
-	sjme_atomic_sjme_jint_set(&cached, encoding);
+	sjme_atomic_s(sjme_jint, &cached, encoding);
 
 	/* Return the given encoding. */
 skip_cached:
@@ -100,8 +131,24 @@ skip_cached:
 
 SJME_NVM_MLE_FUNCTION_DECL(exit)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_nvm_task inTask;
+
+	/* Set the exit code to use. */
+	inTask = SJME_F_K(inFrame);
+	sjme_atomic_s(sjme_jint, &inTask->exitCode, argV[0].v.i);
+
+	/* If this is the main task, also set the exit code there. */
+	if (inTask->isMain)
+		sjme_atomic_s(sjme_jint, &SJME_F_S(inFrame)->mainExitCode,
+			argV[0].v.i);
+	
+	/* Have this task start termination. */
+	sjme_atomic_cs(sjme_jint, &inTask->terminate,
+		SJME_NVM_TERMINATE_NOT,
+		SJME_NVM_TERMINATE_CLEANUP);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(garbageCollect)
@@ -131,20 +178,37 @@ SJME_NVM_MLE_FUNCTION_DECL(lineEnding)
 
 SJME_NVM_MLE_FUNCTION_DECL(locale)
 {
-	static sjme_atomic_sjme_jint cached;
+	static sjme_atomic(sjme_jint) cached;
 	sjme_nvm_mle_builtInLocaleType locale;
-#if defined(SJME_CONFIG_HAS_OS_POSIX)
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	LANGID li;
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	sjme_lpcstr set;
 #endif
 
 	/* Cached? */
-	locale = sjme_atomic_sjme_jint_get(&cached);
+	locale = sjme_atomic_g(sjme_jint, &cached);
 	if (locale != SJME_NVM_MLE_LOCALE_UNSPECIFIED)
 		goto skip_cached;
 	
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Locale is per-thread in Windows. */
+	li = GetUserDefaultLangID();
+
+	/* Windows languages need to be mapped to SquirrelJME. */
+#define SJME_LI_MAP(pri, sub, sjme) \
+	case MAKELANGID(pri, sub): locale = sjme; break
+
+	switch (li)
+	{
+		SJME_LI_MAP(LANG_ENGLISH, SUBLANG_ENGLISH_US,
+			SJME_NVM_MLE_LOCALE_US_ENGLISH);
+
+		/* Default English. */
+		SJME_LI_MAP(LANG_ENGLISH, SUBLANG_NEUTRAL,
+			SJME_NVM_MLE_LOCALE_US_ENGLISH);
+	}
+#undef SJME_CP_MAP
 #elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	/* Get the base global locale. */
 	set = setlocale(LC_ALL, "");
@@ -163,7 +227,7 @@ SJME_NVM_MLE_FUNCTION_DECL(locale)
 	/* Fallback to US English if unspecified. */
 	if (locale == SJME_NVM_MLE_LOCALE_UNSPECIFIED)
 		locale = SJME_NVM_MLE_LOCALE_US_ENGLISH;
-	sjme_atomic_sjme_jint_set(&cached, locale);
+	sjme_atomic_s(sjme_jint, &cached, locale);
 
 	/* Return the given locale. */
 skip_cached:
@@ -203,8 +267,62 @@ SJME_NVM_MLE_FUNCTION_DECL(systemEnv)
 
 SJME_NVM_MLE_FUNCTION_DECL(systemProperty)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jstring key, loaded;
+	sjme_jint ik, iv, n;
+	const sjme_list(sjme_lpcstr)* sysProps;
+	sjme_charSeq keySeq;
+	sjme_lpcstr keyString, k, v;
+
+	/* Read in key value, must be a valid string! */
+	key = (sjme_jstring)argV[0].v.l;
+	if (!sjme_nvm_isAR(key, SJME_NVM_STRUCT_STRING_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Has the sequence ever been initialized? */
+	keySeq = sjme_atomic_g(sjme_charSeq, &key->seq);
+	if (keySeq == NULL)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Determine the key to use. */
+	keyString = sjme_charSeq_tempUtf(keySeq);
+
+	/* Look within the init config, if it is valid. */
+	sysProps = (SJME_F_K(inFrame)->initConfig != NULL &&
+		SJME_F_K(inFrame)->initConfig->sysProps != NULL ?
+		SJME_F_K(inFrame)->initConfig->sysProps : NULL);
+	if (sysProps != NULL)
+		for (ik = 0, iv = ik + 1, n = sysProps->length; iv < n; ik++, iv++)
+		{
+			/* Load in key and value. */
+			k = sysProps->elements[ik];
+			v = sysProps->elements[iv];
+
+			/* Skip if missing. */
+			if (k == NULL || v == NULL)
+				continue;
+
+			/* Is this a match? */
+			if (strcasecmp(k, v) == 0)
+			{
+				/* Load in string value. */
+				loaded = NULL;
+				if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
+					SJME_F_T(inFrame), &loaded, SJME_JNI_TRUE, v)) ||
+					loaded == NULL)
+					return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
+
+				/* Use the loaded string value. */
+				argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+				argR->v.l = SJME_AS_JOBJECT(loaded);
+				return SJME_ERROR_NONE;
+			}
+		}
+
+	/* Not found. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = NULL;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(vmDescription)
@@ -222,47 +340,64 @@ SJME_NVM_MLE_FUNCTION_DECL(vmStatistic)
 SJME_NVM_MLE_FUNCTION_DECL(vmType)
 {
 	/* Always returns this constant value of NanoCoat. */
+	/* Unless pure interpreter is forced. */
 	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->v.i = SJME_NVM_MLE_VM_TYPE_NANOCOAT;
+	if (SJME_F_K(inFrame)->initConfig != NULL &&
+		SJME_F_K(inFrame)->initConfig->noOptimize)
+		argR->v.i = SJME_NVM_MLE_VM_TYPE_SPRINGCOAT;
+	else
+		argR->v.i = SJME_NVM_MLE_VM_TYPE_NANOCOAT;
 
 	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_SHELF_DECLARE(RuntimeShelf) =
 {
-	SJME_NVM_MLE_DEFINE(byteOrder, "()I",
-		"I", ),
-	SJME_NVM_MLE_DEFINE(currentTimeMillis, "()J",
-		"J", ),
-	SJME_NVM_MLE_DEFINE(encoding, "()I",
-		"I", ),
-	SJME_NVM_MLE_DEFINE(exit, "(I)V",
-		"V", "I"),
-	SJME_NVM_MLE_DEFINE(garbageCollect, "()V",
-		"V", ),
-	SJME_NVM_MLE_DEFINE(lineEnding, "()I",
-		"I", ),
-	SJME_NVM_MLE_DEFINE(locale, "()I",
-		"I", ),
-	SJME_NVM_MLE_DEFINE(memoryProfile, "()I",
-		"I", ),
-	SJME_NVM_MLE_DEFINE(nanoTime, "()J",
-		"J", ),
-	SJME_NVM_MLE_DEFINE(phoneModel, "()J",
-		"J", ),
+	SJME_NVM_MLE_DEFINE(byteOrder,
+		SJME_MD(SJME_MD_I, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_I, SJME_MDMP___NO_ARGS__)),
+	SJME_NVM_MLE_DEFINE(currentTimeMillis,
+		SJME_MD(SJME_MD_J, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_J, SJME_MDMP___NO_ARGS__)),
+	SJME_NVM_MLE_DEFINE(encoding,
+		SJME_MD(SJME_MD_I, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_I, SJME_MDMP___NO_ARGS__)),
+	SJME_NVM_MLE_DEFINE(exit,
+		SJME_MD(SJME_MD_V, SJME_MD_I),
+		SJME_MP(SJME_MP_V, SJME_MP_I)),
+	SJME_NVM_MLE_DEFINE(garbageCollect,
+		SJME_MD(SJME_MD_V, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_V, SJME_MDMP___NO_ARGS__)),
+	SJME_NVM_MLE_DEFINE(lineEnding,
+		SJME_MD(SJME_MD_I, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_I, SJME_MDMP___NO_ARGS__)),
+	SJME_NVM_MLE_DEFINE(locale,
+		SJME_MD(SJME_MD_I, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_I, SJME_MDMP___NO_ARGS__)),
+	SJME_NVM_MLE_DEFINE(memoryProfile,
+		SJME_MD(SJME_MD_I, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_I, SJME_MDMP___NO_ARGS__)),
+	SJME_NVM_MLE_DEFINE(nanoTime,
+		SJME_MD(SJME_MD_J, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_J, SJME_MDMP___NO_ARGS__)),
+	SJME_NVM_MLE_DEFINE(phoneModel,
+		SJME_MD(SJME_MD_J, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_J, SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_DEFINE(systemEnv,
-		"(Ljava/lang/String;)Ljava/lang/String;",
-		"L", "L"),
+		SJME_MD(SJME_MD_STRING, SJME_MD_STRING),
+		SJME_MP(SJME_MP_L, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(systemProperty,
-		"(Ljava/lang/String;)Ljava/lang/String;",
-		"L", "L"),
+		SJME_MD(SJME_MD_STRING, SJME_MD_STRING),
+		SJME_MP(SJME_MP_L, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(vmDescription,
-		"(I)Ljava/lang/String;",
-		"L", "I"),
-	SJME_NVM_MLE_DEFINE(vmStatistic, "(I)J",
-		"J", "I"),
-	SJME_NVM_MLE_DEFINE(vmType, "()I",
-		"I", ),
+		SJME_MD(SJME_MD_I, SJME_MD_STRING),
+		SJME_MP(SJME_MP_L, SJME_MP_I)),
+	SJME_NVM_MLE_DEFINE(vmStatistic,
+		SJME_MD(SJME_MD_J, SJME_MD_I),
+		SJME_MP(SJME_MP_J, SJME_MP_I)),
+	SJME_NVM_MLE_DEFINE(vmType,
+		SJME_MD(SJME_MD_I, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_I, SJME_MDMP___NO_ARGS__)),
 	
 	SJME_NVM_MLE_STOP(),
 };

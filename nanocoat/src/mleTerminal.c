@@ -46,14 +46,47 @@ static sjme_jint sjme_nvm_mleFunc_mleTerminal_mapIoException(
 
 SJME_NVM_MLE_FUNCTION_DECL(available)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jbracketPipe pipe;
+
+	/* Must be an actual pipe. */
+	pipe = (sjme_jbracketPipe)argV[0].v.l;
+	if (!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Not an input pipe? */
+	if (pipe->isOutput)
+		return SJME_ERROR_MLE_CALL;
+	
+	/* Determine number of bytes available. */
+	if (sjme_error_is(error = sjme_stream_inputAvailable(pipe->stream.in,
+		&argR->v.i)))
+		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
+
+	/* Success! */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(close)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jbracketPipe pipe;
+
+	/* Must be an actual pipe. */
+	pipe = (sjme_jbracketPipe)argV[0].v.l;
+	if (!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Close it. */
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(pipe->stream.closeable))))
+		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
+	
+	/* Success! */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = 0;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(flush)
@@ -95,7 +128,7 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 	
 	/* Has a pipe already been created? We want single brackets for each */
 	/* standard pipe that exists. */
-	globals = &inFrame->inTask->globals;
+	globals = &sjme_atomic_g(sjme_nvm_task, &inFrame->inTask)->globals;
 	pipe = globals->stdPipes[type];
 	if (pipe != NULL)
 		goto skip_validPipe;
@@ -118,7 +151,7 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 		pipe->isOutput = (type != SJME_NVM_MLE_STD_PIPE_STDIN);
 		
 		/* Input pipe. */
-		nal = inFrame->inState->nal;
+		nal = sjme_atomic_g(sjme_nvm, &inFrame->inState)->nal;
 		if (type == SJME_NVM_MLE_STD_PIPE_STDIN)
 		{
 			sjme_todo("Impl?");
@@ -129,7 +162,8 @@ SJME_NVM_MLE_FUNCTION_DECL(fromStandard)
 		else
 		{
 			if (sjme_error_is(error = sjme_stream_outputOpenStdIo(
-				inFrame->inState->allocPool, &pipe->stream.out,
+				sjme_atomic_g(sjme_nvm, &inFrame->inState)->allocPool,
+				&pipe->stream.out,
 				(sjme_pointer)&nal->stdIo[type])) ||
 				pipe->stream.out == NULL)
 				goto fail_badOpen;
@@ -205,8 +239,8 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(read, multi)
 	if (pipe == NULL || buf == NULL ||
 		!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE) ||
 		!sjme_nvm_isAR(buf, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		buf->type != SJME_BASIC_TYPE_ID_BYTE ||
-		off < 0 || len < 0 || (off + len) < 0 || (off + len) > buf->length)
+		buf->e.type != SJME_BASIC_TYPE_ID_BYTE ||
+		off < 0 || len < 0 || (off + len) < 0 || (off + len) > buf->e.length)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Not an input pipe? */
@@ -216,7 +250,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(read, multi)
 	/* Read call. */
 	readCount = INT32_MIN;
 	if (sjme_error_is(error = sjme_stream_inputRead(pipe->stream.in,
-		&readCount, &buf->e.b[off], len)) || readCount < 0)
+		&readCount, &buf->e.values.b[off], len)) || readCount < -1)
 		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
 
 	/* Success! */
@@ -270,8 +304,8 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(write, multi)
 	if (pipe == NULL || buf == NULL ||
 		!sjme_nvm_isAR(pipe, SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE) ||
 		!sjme_nvm_isAR(buf, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		buf->type != SJME_BASIC_TYPE_ID_BYTE ||
-		off < 0 || len < 0 || (off + len) < 0 || (off + len) > buf->length)
+		buf->e.type != SJME_BASIC_TYPE_ID_BYTE ||
+		off < 0 || len < 0 || (off + len) < 0 || (off + len) > buf->e.length)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Not an output pipe? */
@@ -280,7 +314,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(write, multi)
 	
 	/* Write call. */
 	if (sjme_error_is(error = sjme_stream_outputWrite(pipe->stream.out,
-		&buf->e.b[off], len)))
+		&buf->e.values.b[off], len)))
 		return sjme_nvm_mleFunc_mleTerminal_mapIoException(error, argR);
 
 	/* Success! */
@@ -293,30 +327,30 @@ SJME_NVM_MLE_SHELF_DECLARE(TerminalShelf) =
 {
 	SJME_NVM_MLE_DEFINE(available,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(close,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(flush,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(fromStandard,
 		SJME_MD(SJME_MD_PIPE, SJME_MD_I),
-		"L", "I"),
+		SJME_MP(SJME_MP_L, SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE_ALT(read, single,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE_ALT(read, multi,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE SJME_MD_A(SJME_MD_B) SJME_MD_I
 			SJME_MD_I),
-		"I", "LLII"),
+		SJME_MP(SJME_MP_I, SJME_MP_L SJME_MP_L SJME_MP_I SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE_ALT(write, single,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE SJME_MD_I),
-		"I", "LI"),
+		SJME_MP(SJME_MP_I, SJME_MP_L SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE_ALT(write, multi,
 		SJME_MD(SJME_MD_I, SJME_MD_PIPE SJME_MD_A(SJME_MD_B)
 			SJME_MD_I SJME_MD_I),
-		"I", "LLII"),
+		SJME_MP(SJME_MP_I, SJME_MP_L SJME_MP_L SJME_MP_I SJME_MP_I)),
 	
 	SJME_NVM_MLE_STOP()
 };

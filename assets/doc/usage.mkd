@@ -132,6 +132,14 @@ and may be overridden by environment variables.
 Any entry with {~} means the first character will be placed by your home
 directory, `<HOME>` on POSIX or `<USERHOME>` on Windows.
 
+The following replacements are intended to be used in multi-arch setups. Note
+that the system and architectures must be of the names used by SquirrelJME.
+
+ * `{system}` -- The name of the current system, all lowercase.
+   * `{SYSTEM}` -- Same as above, except all uppercase.
+ * `{arch}` -- The name of the current architecture, all lowercase.
+   * `{ARCH}` -- Same as above, except all uppercase.
+
 The directory types and their order of precedence are:
 
  * _Cache_
@@ -162,8 +170,11 @@ The directory types and their order of precedence are:
    * `<HOME>/.local/state/squirreljme` (POSIX)
  * _Natives_
    * `<SQUIRRELJME_LIB_JVM>` {~}
+   * `<SQUIRRELJME_LIB_JVM_{SYSTEM}_{ARCH}>` {~}
    * `<PROGRAMDATA>/squirreljme/natives` (Windows)
+   * `<PROGRAMDATA>/squirreljme/natives/{system}/{arch}` (Windows)
    * `/lib/squirreljme/natives` (POSIX)
+   * `/lib/squirreljme/natives/{system}/{arch}` (POSIX)
  * _Executable_
    * This always points to the current executable, if it can be determined.
  * _Temporary_
@@ -411,3 +422,54 @@ Natives within SquirrelJME follow the same format as the host system:
 
 This should only be used as a baseline as a vendor and/or specific distribution
 may use a different format.
+
+# System and Architecture Names
+
+SquirrelJME generally follows the proper name for a system and/or architecture
+in the naming scheme.
+
+## Architectures
+
+The following names are used for architectures:
+
+ * `arm(32|64)(b|l)` -- ARM Family.
+ * `amd64` -- AMD 64-bit CPU Family; Intel EM64T Family.
+ * `emcripten` -- Emscripten, compilation to JavaScript/WASM.
+ * `ia16` -- Intel 80286, 16-bit CPU Family.
+ * `ia32` -- Intel 80386, 32-bit CPU Family.
+ * `ia64` -- Itanium CPU Family.
+ * `mips(32|64)(b|l)` -- MIPS Family before R6.
+ * `mips(32|64)(b|l)6` -- MIPSR6 Family.
+ * `powerpc(32|64)(b|l)` -- PowerPC Family.
+ * `riscv64` -- RISC-V.
+
+## Systems
+
+The following names are used for systems:
+
+ * `3ds` -- Nintendo 3DS.
+ * `android` -- Android Mobile Platform.
+ * `bios` -- PC BIOS.
+ * `bsd` -- Any BSD.
+ * `cygwin` -- CygWin, a POSIX-like environment for Windows.
+ * `dos` -- DOS, MS-DOS, FreeDOS.
+ * `efi` -- Extensible Firmware Interface.
+ * `emcripten` -- Emscripten, compilation to JavaScript/WASM.
+ * `freebsd` -- FreeBSD.
+ * `gamecube` -- Nintendo GameCube.
+ * `ieee1275of` -- IEEE 1275, OpenFirmware, OpenBOOT.
+ * `ios` -- iOS, iPadOS; Not iPods.
+ * `linux` -- Linux.
+ * `macintosh` -- Classic Macintosh, previously System Software.
+ * `macosx` -- Mac OS X, or macOS, also known as Darwin.
+ * `palmos` -- PalmOS.
+ * `playstation2` -- Sony PlayStation 2.
+ * `psp` -- Sony PlayStation Portable.
+ * `sdcc` -- Small Device C Compiler Targets.
+ * `switch` -- Nintendo Switch.
+ * `switch2` -- Nintendo Switch 2.
+ * `vita` -- Sony PlayStation Vita.
+ * `wii` -- Nintendo Wii.
+ * `wiiu` -- Nintendo Wii U.
+ * `windows` -- Windows Desktop, not Windows CE.
+ * `windowsce` -- Windows CE, not Windows Desktop nor Windows Mobile.

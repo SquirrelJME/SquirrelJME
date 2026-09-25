@@ -56,6 +56,9 @@ public class NanoCoatBuiltInTaskAction
 	/** Output tests. */
 	protected final NanoCoatBuiltInTaskOutput outTest;
 	
+	/** Output NanoCoat tests. */
+	protected final NanoCoatBuiltInTaskOutput outNano;
+	
 	/**
 	 * Initializes the task action.
 	 *
@@ -63,12 +66,14 @@ public class NanoCoatBuiltInTaskAction
 	 * @param __outJar The output Jar.
 	 * @param __outSrc The output source.
 	 * @param __outTest Optional output test list.
+	 * @param __outNano Optional output for NanoCoat tests.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/10/12
 	 */
 	public NanoCoatBuiltInTaskAction(NanoCoatBuiltInTaskInput __input,
 		NanoCoatBuiltInTaskOutput __outJar, NanoCoatBuiltInTaskOutput __outSrc,
-		NanoCoatBuiltInTaskOutput __outTest)
+		NanoCoatBuiltInTaskOutput __outTest,
+		NanoCoatBuiltInTaskOutput __outNano)
 		throws NullPointerException
 	{
 		if (__input == null || __outJar == null || __outSrc == null)
@@ -78,6 +83,7 @@ public class NanoCoatBuiltInTaskAction
 		this.outJar = __outJar;
 		this.outSrc = __outSrc;
 		this.outTest = __outTest;
+		this.outNano = __outNano;
 	}
 	
 	/**
@@ -103,11 +109,12 @@ public class NanoCoatBuiltInTaskAction
 			
 			// Output tests list?
 			NanoCoatBuiltInTaskOutput outTest = this.outTest;
-			if (outTest != null)
+			if (outTest != null || outNano != null)
 			{
 				// Load in manifest and test lists
 				Map<String, Manifest> manifests = new TreeMap<>();
 				Map<String, byte[]> tests = new TreeMap<>();
+				Map<String, byte[]> nanoTests = new TreeMap<>();
 				try (ZipFile zip = new ZipFile(this.input.call().toFile()))
 				{
 					// Find all tests and manifests
@@ -128,6 +135,14 @@ public class NanoCoatBuiltInTaskAction
 								tests.put(jarName, VMHelpers.readAll(in));
 							}
 						
+						// NanoTests?
+						else if (name.endsWith(
+							"/META-INF/squirreljme/tests.nano"))
+							try (InputStream in = zip.getInputStream(entry))
+							{
+								nanoTests.put(jarName, VMHelpers.readAll(in));
+							}
+						
 						// Manifest?
 						else if (name.endsWith("/META-INF/MANIFEST.MF"))
 							try (InputStream in = zip.getInputStream(entry))
@@ -137,20 +152,43 @@ public class NanoCoatBuiltInTaskAction
 					}
 				}
 				
-				// Process
-				try (OutputStream outRaw = Files.newOutputStream(sourceTemp,
-					StandardOpenOption.WRITE,
-					StandardOpenOption.TRUNCATE_EXISTING,
-					StandardOpenOption.CREATE); 
-					PrintStream out = new PrintStream(outRaw,
-						true, "utf-8"))
+				// Normal tests?
+				if (outTest != null)
 				{
-					this.__tests(out, manifests, tests);
+					// Process
+					try (OutputStream outRaw = Files.newOutputStream(
+							sourceTemp, StandardOpenOption.WRITE,
+							StandardOpenOption.TRUNCATE_EXISTING,
+							StandardOpenOption.CREATE);
+						PrintStream out =new PrintStream(
+							outRaw, true, "utf-8"))
+					{
+						this.__tests(out, manifests, tests);
+					}
+					
+					// Move it over
+					Files.move(sourceTemp, this.outTest.call(),
+						StandardCopyOption.REPLACE_EXISTING);
 				}
 				
-				// Move it over
-				Files.move(sourceTemp, this.outTest.call(),
-					StandardCopyOption.REPLACE_EXISTING);
+				// NanoCoat tests?
+				if (outNano != null)
+				{
+					// Process
+					try (OutputStream outRaw = Files.newOutputStream(
+							sourceTemp, StandardOpenOption.WRITE,
+							StandardOpenOption.TRUNCATE_EXISTING,
+							StandardOpenOption.CREATE);
+						PrintStream out =new PrintStream(
+							outRaw, true, "utf-8"))
+					{
+						this.__tests(out, manifests, nanoTests);
+					}
+					
+					// Move it over
+					Files.move(sourceTemp, this.outNano.call(),
+						StandardCopyOption.REPLACE_EXISTING);
+				}
 			}
 		}
 		

@@ -252,7 +252,7 @@ sjme_jboolean sjme_mock_doNvmFrame(
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
-#if 0
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	sjme_jint threadIndex, treadMax, tallyLocals, stackBase, desireMaxLocals;
 	sjme_jint tallyStack, desireMaxStack, localIndex;
 	sjme_nvm_thread thread;

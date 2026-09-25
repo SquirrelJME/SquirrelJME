@@ -8,8 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/config.h"
-
-#include "sjme/binary.h"
+#include "sjme/util.h"
 
 /* Include Valgrind if it is available? */
 #if defined(SJME_CONFIG_HAS_VALGRIND)
@@ -17,6 +16,7 @@
 	#include <memcheck.h>
 #endif
 
+#include "sjme/binary.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 #include "sjme/atomic.h"
@@ -35,6 +35,9 @@
 
 /** The back guard value. */
 #define SJME_ALLOC_GUARD_BACK INT32_C(0x6C65783F)
+
+/** The meta guard value. */
+#define SJME_ALLOC_GUARD_META INT32_C(0xDEADBEEF)
 
 #if defined(SJME_CONFIG_DEBUG)
 /**
@@ -99,17 +102,17 @@ static sjme_inline sjme_jboolean sjme_alloc_corruptFail(
 #endif
 
 static sjme_inline sjme_jboolean sjme_alloc_checkCorruptionRange(
-	sjme_alloc_pool pool, uintptr_t poolStart, uintptr_t poolEnd,
+	sjme_alloc_pool pool, sjme_intPointer poolStart, sjme_intPointer poolEnd,
 	sjme_alloc_link atLink)
 {
-	uintptr_t check;
+	sjme_intPointer check;
 
 	/* Ignore null pointers. */
 	if (atLink == NULL)
 		return SJME_JNI_FALSE;
 
 	/* Nominal address of the check pointer. */
-	check = (uintptr_t)atLink;
+	check = (sjme_intPointer)atLink;
 
 	/* Must be in range! */
 	if (check < poolStart || check >= poolEnd)
@@ -132,7 +135,7 @@ static sjme_jboolean sjme_noOptimize sjme_alloc_checkCorruption(
 	sjme_alloc_pool pool,
 	sjme_alloc_link atLink)
 {
-	uintptr_t poolStart, poolEnd;
+	sjme_intPointer poolStart, poolEnd;
 
 	if (pool == NULL)
 		return SJME_JNI_TRUE;
@@ -166,8 +169,8 @@ static sjme_jboolean sjme_noOptimize sjme_alloc_checkCorruption(
 
 	/* Next link is in the wrong location? */
 	if (sjme_atomic_pg(&atLink->next) != NULL &&
-		(uintptr_t)sjme_atomic_pg(&atLink->next) !=
-		(uintptr_t)&atLink->block[atLink->blockSize])
+		(sjme_intPointer)sjme_atomic_pg(&atLink->next) !=
+		(sjme_intPointer)&atLink->block[atLink->blockSize])
 		return sjme_alloc_corruptFail(pool, atLink,
 			"Next not at block end");
 
@@ -195,8 +198,8 @@ static sjme_jboolean sjme_noOptimize sjme_alloc_checkCorruption(
 			"Zero or negative block size");
 
 	/* Used for checking the integrity of pointers. */
-	poolStart = (uintptr_t)pool;
-	poolEnd = (uintptr_t)&pool->block[pool->size];
+	poolStart = (sjme_intPointer)pool;
+	poolEnd = (sjme_intPointer)&pool->block[pool->size];
 
 	/* Free link only. */
 	if (atLink->space == SJME_ALLOC_POOL_SPACE_FREE)
@@ -252,19 +255,62 @@ static sjme_errorCode sjme_alloc_getLinkOptional(
 	sjme_attrInValue sjme_jboolean checkCorruption)
 {
 	sjme_alloc_link link;
+	sjme_intPointer checkAddr, mul;
+	sjme_jint* tryRead;
+	sjme_jint trySize;
 
 	if (addr == NULL || outLink == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Just need to do some reversing math. */
-	link = (sjme_alloc_link)(((uintptr_t)addr) -
-		offsetof(sjme_alloc_linkBase, block));
 
+	/* A block could have meta-data or not. */
+	/* Check to see if this is a valid link with no-metadata. */
+	/* This is a rather vanilla link. */
+	link = (sjme_alloc_link)(((sjme_intPointer)addr) -
+		offsetof(sjme_alloc_linkBase, block[0]));
+	if (link->guardFront == SJME_ALLOC_GUARD_FRONT ||
+		link->guardBack == SJME_ALLOC_GUARD_BACK)
+		goto skip_useLink;
+
+	/* Otherwise, look back one for the meta guard (and size). */
+	for (mul = 1; mul <= SJME_POINTER_BYTES; mul++)
+	{
+		/* Only consider addresses which are aligned. */
+		checkAddr = (sjme_intPointer)addr -
+			((sjme_intPointer)sizeof(sjme_jint) * mul);
+		if (checkAddr != sjme_util_alignTo(checkAddr, sizeof(sjme_jint)))
+			continue;
+
+		/* Is there a valid tag here? */
+		tryRead = (sjme_jint*)checkAddr;
+		if ((*tryRead) == (sjme_jint)SJME_ALLOC_GUARD_META)
+		{
+			/* Move down because this would be the size. */
+			trySize = (*(--tryRead));
+
+			/* Skip if the size seems absurd. */
+			if (trySize < 0 ||
+				trySize > (sjme_jint)(sizeof(sjme_alloc_linkMetaBase) * 2))
+				continue;
+
+			/* Try using this additional size information to get the */
+			/* original link. */
+			link = (sjme_alloc_link)(((sjme_intPointer)addr) -
+				(offsetof(sjme_alloc_linkBase, block[0]) + trySize));
+			if (link->guardFront == SJME_ALLOC_GUARD_FRONT ||
+				link->guardBack == SJME_ALLOC_GUARD_BACK)
+				goto skip_useLink;
+		}
+	}
+
+	/* Cannot be a valid link. */
+	return SJME_ERROR_NOT_ALLOC_LINK;
+
+skip_useLink:
 	/* Check the integrity of the link. */
 	if (checkCorruption)
 		sjme_alloc_checkCorruption(link->pool, link);
 	
-	/* Cannot be a link? */
+	/* Likely was a freed link or some other value still in memory. */
 	if (link->guardFront != SJME_ALLOC_GUARD_FRONT ||
 		link->guardBack != SJME_ALLOC_GUARD_BACK)
 		return SJME_ERROR_NOT_ALLOC_LINK;
@@ -283,8 +329,8 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitMalloc(
 
 	/* Make sure the size is not wonky. */
 	useSize = SJME_SIZEOF_ALLOC_POOL(size);
-	if (outPool == NULL || size <= SJME_ALLOC_MIN_SIZE || useSize <= 0 ||
-		size > useSize)
+	if (outPool == NULL || size <= (sjme_jint)SJME_ALLOC_MIN_SIZE ||
+		useSize <= 0 || size > useSize)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Attempt allocation. */
@@ -310,7 +356,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitStatic(
 	if (outPool == NULL || baseAddr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	if (size <= SJME_ALLOC_MIN_SIZE)
+	if (size <= (sjme_jint)SJME_ALLOC_MIN_SIZE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Initialize memory to nothing. */
@@ -321,6 +367,10 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitStatic(
 	pool->magic = SJME_ALLOC_POOL_MAGIC;
 	pool->rawSize = size;
 	pool->size = (size & (~7)) - SJME_SIZEOF_ALLOC_POOL(0);
+
+	/* Link meta-info, used to generally determine debug info. */
+	pool->sizeOfLinkMeta = sjme_util_alignTo(
+		sizeof(sjme_alloc_linkMetaBase), SJME_POINTER_BYTES);
 
 	/* Use the corrected size. */
 	size = pool->size;
@@ -343,8 +393,8 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitStatic(
 	sjme_atomic_s(sjme_alloc_link, &backLink->prev, midLink);
 	
 	/* Determine size of the middle link, which is free space. */
-	midLink->blockSize = (sjme_jint)((uintptr_t)backLink -
-		(uintptr_t)&midLink->block[0]);
+	midLink->blockSize = (sjme_jint)((sjme_intPointer)backLink -
+		(sjme_intPointer)&midLink->block[0]);
 	
 	/* The mid-link is considered free. */
 	midLink->space = SJME_ALLOC_POOL_SPACE_FREE;
@@ -378,26 +428,11 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitStatic(
 	frontLink->pool = pool;
 	midLink->pool = pool;
 	backLink->pool = pool;
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Debug source line init blocks. */
-	sjme_atomic_g(sjme_alloc_link, &pool->frontLink)->debugFile =
-		"<FRONT LINK>";
-	sjme_atomic_g(sjme_alloc_link, &pool->frontLink)->debugLine = 1;
-	sjme_atomic_g(sjme_alloc_link, &pool->frontLink)->debugFunction =
-		"<FRONT LINK>";
-	
-	sjme_atomic_g(sjme_alloc_link, &pool->backLink)->debugFile =
-		"<BACK LINK>";
-	sjme_atomic_g(sjme_alloc_link, &pool->backLink)->debugLine = 1;
-	sjme_atomic_g(sjme_alloc_link, &pool->backLink)->debugFunction =
-		"<BACK LINK>";
-#endif
 	
 #if defined(SJME_CONFIG_HAS_VALGRIND)
 	/* Reserve front side in Valgrind. */
 	VALGRIND_MAKE_MEM_NOACCESS(baseAddr,
-		((uintptr_t)&midLink->block[0] - (uintptr_t)baseAddr));
+		((sjme_intPointer)&midLink->block[0] - (sjme_intPointer)baseAddr));
 		
 	/* Reserve back side in Valgrind. */
 	VALGRIND_MAKE_MEM_NOACCESS(backLink,
@@ -502,10 +537,13 @@ sjme_errorCode sjme_noOptimize sjme_allocR(
 	sjme_errorCode error;
 	sjme_alloc_link scanLink;
 	sjme_alloc_link rightLink;
-	sjme_jint splitMinSize, roundSize;
+	sjme_jint splitMinSize, roundSize, offsetBase;
 	sjme_jboolean splitBlock, isTiny;
 	sjme_alloc_pool nextPool;
 	sjme_alloc_link nextFree;
+#if defined(SJME_CONFIG_DEBUG)
+	sjme_alloc_linkMeta meta;
+#endif
 	
 	if (pool == NULL || size <= 0 || outAddr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -517,14 +555,34 @@ sjme_errorCode sjme_noOptimize sjme_allocR(
 #endif
 	
 	/* Is this a tiny block? */
-	isTiny = (size <= (sizeof(struct sjme_alloc_weakBase) * 2));
+	/* This is usually reserved for weak info as they will fill up the */
+	/* allocation pool with too many tiny splits. */
+	isTiny = (size <= (sjme_jint)(sizeof(struct sjme_alloc_weakBase) * 2));
 	
 	/* Determine the size this will actually take up, which includes the */
 	/* link to be created following this. */
+#if 1
+	roundSize = sjme_util_alignTo(size, SJME_POINTER_BYTES);
+#else
 	roundSize = (((size & 7) != 0) ? ((size | 7) + 1) : size);
+#endif
+
+	/* If debugging, include space for meta-info. */
+#if defined(SJME_CONFIG_DEBUG)
+	offsetBase = sjme_util_alignTo(sizeof(sjme_alloc_linkMetaBase),
+		SJME_POINTER_BYTES);
+	roundSize = sjme_util_alignTo(roundSize + offsetBase,
+		SJME_POINTER_BYTES);
+#else
+	offsetBase = 0;
+#endif
+
+	/* Include the previous and next link. */
 	splitMinSize = roundSize +
 		(sjme_jint)SJME_SIZEOF_ALLOC_LINK(SJME_ALLOC_SPLIT_MIN_SIZE) +
 		(sjme_jint)SJME_SIZEOF_ALLOC_LINK(0);
+
+	/* Overflows in size? */
 	if (size > splitMinSize || splitMinSize < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 		
@@ -720,10 +778,19 @@ sjme_errorCode sjme_noOptimize sjme_allocR(
 		SJME_SIZEOF_ALLOC_LINK(0);
 
 #if defined(SJME_CONFIG_DEBUG)
+	/* Set meta flag. */
+	scanLink->flags |= SJME_ALLOC_LINK_HAS_META;
+
 	/* Set debug info. */
-	scanLink->debugFile = file;
-	scanLink->debugLine = line;
-	scanLink->debugFunction = func;
+	meta = sjme_alloc_linkMetaR(scanLink);
+	if (meta != NULL)
+	{
+		meta->debugFile = file;
+		meta->debugLine = line;
+		meta->debugFunction = func;
+		meta->metaSize = sizeof(sjme_alloc_linkMetaBase);
+		meta->metaGuard = SJME_ALLOC_GUARD_META;
+	}
 #endif
 
 	/* Make sure we did not cause corruption. */
@@ -745,8 +812,9 @@ sjme_errorCode sjme_noOptimize sjme_allocR(
 		&pool->spinLock, NULL)))
 		return sjme_error_default(error);
 	
-	/* Use the given link. */
-	*outAddr = (sjme_pointer)&scanLink->block[0];
+	/* Use the given link at the offset base, since this may include meta */
+	/* info for debugging. */
+	*outAddr = (sjme_pointer)&scanLink->block[offsetBase];
 	return SJME_ERROR_NONE;
 
 fail_corrupt:
@@ -1036,13 +1104,6 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 	
 	/* Restore allocation size to block size. */
 	link->allocSize = link->blockSize;
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Remove debug information. */
-	link->debugFile = NULL;
-	link->debugLine = 0;
-	link->debugFunction = NULL;
-#endif
 
 	/* Link into free chain. */
 	sjme_atomic_s(sjme_alloc_link, &link->freeNext,
@@ -1676,6 +1737,25 @@ sjme_errorCode sjme_alloc_weakUnRefR(
 	return SJME_ERROR_NONE;
 }
 
+sjme_alloc_linkMeta sjme_alloc_linkMetaR(
+	sjme_attrInNullable sjme_alloc_link inLink)
+{
+	if (inLink == NULL)
+		return NULL;
+
+	/* Corrupt link? */
+	if (inLink->guardFront != SJME_ALLOC_GUARD_FRONT ||
+		inLink->guardBack != SJME_ALLOC_GUARD_BACK)
+		return NULL;
+
+	/* Link has no meta-info? */
+	if ((inLink->flags & SJME_ALLOC_LINK_HAS_META) == 0)
+		return NULL;
+
+	/* Meta-info is always at the start of the block. */
+	return (sjme_pointer)&inLink->block[0];
+}
+
 sjme_jint sjme_alloc_weakRefLeftR(
 	sjme_attrInNotNull sjme_pointer addr)
 {
@@ -1720,6 +1800,7 @@ sjme_errorCode sjme_alloc_poolDump(
 {
 	sjme_alloc_link rover;
 	sjme_jint idType, weakLeft;
+	sjme_alloc_linkMeta meta;
 
 	if (allocPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1742,7 +1823,10 @@ sjme_errorCode sjme_alloc_poolDump(
 			rover->space == SJME_ALLOC_POOL_SPACE_USED)
 			idType = allocPool->pointerIdType((sjme_pointer*)&rover->block[0]);
 		weakLeft = sjme_alloc_weakRefLeftR((sjme_pointer*)&rover->block[0]);
-		
+
+		/* Does the rover have meta info? */
+		meta = sjme_alloc_linkMetaR(rover);
+
 		if (weakLeft >= 0 || weakLeft == INT32_MIN ||
 			(rover->flags & SJME_ALLOC_LINK_WEAK) != 0)
 			sjme_messageB(
@@ -1751,9 +1835,11 @@ sjme_errorCode sjme_alloc_poolDump(
 					(rover->space == SJME_ALLOC_POOL_SPACE_USED ?
 						"USED" : "FREE"),
 					rover->blockSize,
-					rover->debugFunction,
-					sjme_debug_shortenFile(rover->debugFile),
-					rover->debugLine);
+					(meta != NULL ? meta->debugFunction :
+						"<UNKNOWN>"),
+					(meta != NULL ? sjme_debug_shortenFile(meta->debugFile) :
+						"<UNKNOWN>"),
+					(meta != NULL ? meta->debugLine : -1));
 		else
 			sjme_messageB(
 				"Link %d:%p [S]: %s %dB in %s (%s:%d)",
@@ -1761,9 +1847,11 @@ sjme_errorCode sjme_alloc_poolDump(
 					(rover->space == SJME_ALLOC_POOL_SPACE_USED ?
 						"USED" : "FREE"),
 					rover->blockSize,
-					rover->debugFunction,
-					sjme_debug_shortenFile(rover->debugFile),
-					rover->debugLine);
+					(meta != NULL ? meta->debugFunction :
+						"<UNKNOWN>"),
+					(meta != NULL ? sjme_debug_shortenFile(meta->debugFile) :
+						"<UNKNOWN>"),
+					(meta != NULL ? meta->debugLine : -1));
 	}
 
 	return SJME_ERROR_NONE;

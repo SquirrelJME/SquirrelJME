@@ -1,0 +1,506 @@
+/* -*- Mode: C; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the Mozilla Public License Version 2.0.
+// See license.mkd for licensing and copyright information.
+// -------------------------------------------------------------------------*/
+
+/**
+ * Dynamic stack frame storage, which is for the storing of variables within
+ * a thread frame in a fashion that is equivalent to register windows.
+ * Allocation space within a window is only taken when a variable slot is
+ * actually used, this is so that methods which exit early or are overly
+ * large with complex branches do not cause a large chunk of stack memory to
+ * be consumed. Additionally, determining the actual variables which are used
+ * and otherwise is a complex optimization process where it needs to be
+ * determined for each variable along with various jump states. This does mean
+ * that some methods will be optimal while others will not, and if any methods
+ * use many variables they will cause more storage to be used if they
+ * ultimately end up calling other methods. A new window is initialized when
+ * a new frame is entered, which means any old window becomes read-only and
+ * cannot be modified. Each window gets layered on top of each other
+ * accordingly. Each slot that is taken up will be of a specific size so that
+ * it can be reused for types of the same size. If a slot goes from narrow
+ * to wide, then it is invalidated. Any narrow slow can store a value in a
+ * wide slot. Any slots which ultimately are invalidated or cleared, will
+ * remain in their longest historical size. Object wideness matches the
+ * width of pointer, thus on 32-bit or less it will be a narrow slot while
+ * on 64-bit systems it will be a wide slot. Narrow slots are odd indexed,
+ * wide slots are even indexed.
+ *
+ * @file
+ * @since 2026/07/03
+ */
+
+#ifndef SJME_C_SQUIRRELJME_TASKSTORE_H
+#define SJME_C_SQUIRRELJME_TASKSTORE_H
+
+#include "sjme/config.h"
+#include "sjme/nvm/task.h"
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifndef SJME_CXX_IS_EXTERNED
+#define SJME_CXX_IS_EXTERNED
+#define SJME_CXX_SQUIRRELJME_TASKSTORE_H
+
+extern "C"
+{
+#endif /* #ifdef SJME_CXX_IS_EXTERNED */
+#endif /* #ifdef __cplusplus */
+
+/*--------------------------------------------------------------------------*/
+
+/**
+ * The number of multiples this slot actually consumes, this is independent
+ * of the slot as a 64-bit value can be replaced with a 32-bit value and
+ * this would be inefficient to require a reallocation.
+ */
+#define SJME_NVM_STORE_MAX_WIDTH_MULT 7
+
+/**
+ * The number of bytes this slot actually consumes, this is independent
+ * of the slot as a 64-bit value can be replaced with a 32-bit value and
+ * this would be inefficient to require a reallocation.
+ */
+#define SJME_NVM_STORE_MAX_WIDTH_BYTES \
+	(8 * SJME_NVM_STORE_MAX_WIDTH_MULT)
+
+/**
+ * The highest possible multiple permitted.
+ *
+ * At four bytes each, and zero indicating invalid data. Assuming there is no
+ * wasted structure data, with 10-bits this can store 1023 32-bit values.
+ */
+#define SJME_NVM_STORE_MAX_MULTIPLE 1023
+
+/** Void slot marker value. */
+#define SJME_NVM_STORE_SLOT_MARKER_VOID 5
+
+/** Special value slot marker value. */
+#define SJME_NVM_STORE_SLOT_MARKER_SPECIAL 6
+
+/** Wide slot marker value. */
+#define SJME_NVM_STORE_SLOT_MARKER_WIDE 7
+
+/**
+ * The language ID of the storage.
+ *
+ * @since 2026/09/01
+ */
+typedef enum sjme_nvm_store_langType
+{
+	/** No set language. */
+	SJME_NVM_STORE_LANG_NONE,
+
+	/** Generic language of anything. */
+	SJME_NVM_STORE_LANG_GENERIC,
+
+	/** The Java language. */
+	SJME_NVM_STORE_LANG_JAVA,
+
+	/** The number of language types. */
+	SJME_NVM_STORE_NUM_LANG_TYPES,
+} sjme_nvm_store_langType;
+
+/**
+ * Access mode flags for variables.
+ *
+ * This is generally used with @link sjme_nvm_store_windowSlot @endlink.
+ *
+ * @since 2026/08/04
+ */
+typedef enum sjme_nvm_store_accessMode
+{
+	/**
+	 * Read a variable, failing if it does not exist or is of an incompatible
+	 * type that is promoted in size.
+	 *
+	 * This does not fail if the requested type
+	 * is @link SJME_NUM_JAVA_TYPE_IDS @endlink, as this can be used to
+	 * determine the type for an existing slot.
+	 */
+	SJME_NVM_STORE_READ,
+
+	/**
+	 * Write a variable without performing promotion, if the type is promoted
+	 * then the written value will be adjusted accordingly, otherwise this
+	 * will fail if writing the value requires promotion.
+	 *
+	 * @code write _int_ to _nothing_ -> create _int_ @endcode.
+	 * @code write _int_ to _int_ -> replace _int_ @endcode.
+	 * @code write _int_ to _long_ -> replace _int_ portion of _long_ @endcode.
+	 * @code write _long_ to _int_ -> _fail_ @endcode.
+	 */
+	SJME_NVM_STORE_WRITE,
+
+	/**
+	 * Writes a variable and promotes it in size if it is needed to store
+	 * the appropriate type. This does nothing if the type is already large
+	 * enough to store the given variable.
+	 *
+	 * @code write _int_ to _nothing_ -> create _int_ @endcode.
+	 * @code write _int_ to _int_ -> replace _int_ @endcode.
+	 * @code write _int_ to _long_ -> replace _int_ portion of _long_ @endcode.
+	 * @code write _long_ to _int_ -> create _long_ @endcode.
+	 */
+	SJME_NVM_STORE_WRITE_PROMOTE,
+
+	/**
+	 * Replaces an existing value, not creating it nor promoting a value.
+	 *
+	 * @code write _int_ to _nothing_ -> fail @endcode.
+	 * @code write _int_ to _int_ -> replace _int_ @endcode.
+	 * @code write _int_ to _long_ -> replace _int_ portion of _long_ @endcode.
+	 * @code write _long_ to _int_ -> fail @endcode.
+	 */
+	SJME_NVM_STORE_REPLACE,
+
+	/**
+	 * Replaces an existing value, only promoting a smaller value if needed.
+	 *
+	 * @code write _int_ to _nothing_ -> fail @endcode.
+	 * @code write _int_ to _int_ -> replace _int_ @endcode.
+	 * @code write _int_ to _long_ -> replace _int_ portion of _long_ @endcode.
+	 * @code write _long_ to _int_ -> create _long_ @endcode.
+	 */
+	SJME_NVM_STORE_REPLACE_PROMOTE,
+
+	/**
+	 * Replaces an existing value, it must be of the same exact size.
+	 *
+	 * @code write _int_ to _nothing_ -> fail @endcode.
+	 * @code write _int_ to _int_ -> replace _int_ @endcode.
+	 * @code write _int_ to _long_ -> fail @endcode.
+	 * @code write _long_ to _int_ -> fail @endcode.
+	 */
+	SJME_NVM_STORE_REPLACE_SAME,
+
+	/** The number of access modes. */
+	SJME_NVM_STORE_NUM_ACCESS_MODES,
+} sjme_nvm_store_accessMode;
+
+/**
+ * The type of slot being stored.
+ *
+ * @since 2026/08/14
+ */
+typedef enum sjme_nvm_store_slotType
+{
+	/** Local variable. */
+	SJME_NVM_STORE_SLOT_TYPE_LOCAL,
+
+	/** Stack variable. */
+	SJME_NVM_STORE_SLOT_TYPE_STACK,
+
+	/** Absolutely referenced variable. */
+	SJME_NVM_STORE_SLOT_TYPE_ABSOLUTE,
+
+	/** The number of slot types. */
+	SJME_NVM_STORE_NUM_SLOT_TYPES,
+} sjme_nvm_store_slotType;
+
+/**
+ * Opaque enumeration for a native slot index.
+ *
+ * @since 2026/08/14
+ */
+typedef enum sjme_nvm_store_nativeSlot
+{
+	/** Integral enum. */
+	sjme_enumInt(sjme_nvm_store_nativeSlot),
+} sjme_nvm_store_nativeSlot;
+
+/**
+ * Opaque enumeration for a Java slot index.
+ *
+ * @since 2026/08/14
+ */
+typedef enum sjme_nvm_store_javaSlot
+{
+	/** Integral enum. */
+	sjme_enumInt(sjme_nvm_store_javaSlot),
+} sjme_nvm_store_javaSlot;
+
+struct sjme_nvm_store_file
+{
+	/** The total length of the register file. */
+	sjme_intPointer totalLength;
+
+	/** The number of bytes which have been used in the file. */
+	sjme_intPointer usedData;
+
+	/** The number of bytes which are currently free in the file. */
+	sjme_intPointer freeData;
+
+	/** The buffer base. */
+	sjme_pointer bufferBase;
+
+	/** The head register window. */
+	sjme_nvm_store_window* head;
+
+	/** The tail register window. */
+	sjme_nvm_store_window* tail;
+
+	/** Raw register file data. */
+	sjme_alignPointer sjme_jbyte data[sjme_flexibleArrayCount];
+};
+
+/**
+ * Variable information.
+ *
+ * @since 2026/08/18
+ */
+typedef struct sjme_nvm_store_windowVar
+{
+	/**
+	 * The @link sjme_javaTypeId @endlink stored here.
+	 *
+	 * This may be @link SJME_NVM_STORE_SLOT_MARKER_WIDE @endlink for wide
+	 * types.
+	 */
+	sjme_jubyte type : 3;
+
+	/**
+	 * The width of this type, the bit length should always be between
+	 * zero and @link SJME_NVM_STORE_MAX_WIDTH_MULT @endlink, this does not
+	 * exceed the byte size of @link SJME_NVM_STORE_MAX_WIDTH_BYTES @endlink.
+	 */
+	sjme_jubyte width : 3;
+
+	/**
+	 * The offset multiple to the variable, the bit length should always
+	 * be between zero and @link SJME_NVM_STORE_MAX_MULTIPLE @endlink.
+	 */
+	sjme_jushort offsetMultiple : 10;
+} sjme_nvm_store_windowVar;
+
+struct sjme_nvm_store_windowJava
+{
+	/** The maximum number of stack variables. */
+	sjme_jint maxStack;
+
+	/** The maximum number of local variables. */
+	sjme_jint maxLocals;
+
+	/** The current top of the stack. */
+	sjme_jint stackTop;
+};
+
+/**
+ * Storage for output chain information, as it is not always needed.
+ *
+ * @since 2026/08/19
+ */
+typedef struct sjme_nvm_store_windowVarChain
+{
+	/** The previous in the chain. */
+	sjme_nvm_store_windowVar* prev;
+
+	/** The current index. */
+	sjme_nvm_store_windowVar* at;
+
+	/** The next in the chain. */
+	sjme_nvm_store_windowVar* next;
+} sjme_nvm_store_windowVarChain;
+
+struct sjme_nvm_store_window
+{
+	/** The extent, or the highest address, of the register window. */
+	sjme_intPointer extent;
+
+	/** Language related data for this window, if any. */
+	struct
+	{
+		/** The frame this is associated with. */
+		sjme_nvm_frame inFrame;
+
+		/** The currently set language. */
+		sjme_nvm_store_langType type;
+
+		/** The number of variables in this window. */
+		sjme_jint numVars;
+
+		/**
+		 * Variable assignments, this determines which slots a given variable is
+		 * assigned too and its length.
+		 */
+		sjme_nvm_store_windowVar* assignedVars;
+
+		/** Language specific data. */
+		union
+		{
+			/** Anything. */
+			sjme_pointer any;
+
+			/** Specifically Java data. */
+			sjme_nvm_store_windowJava* java;
+		} data;
+	} lang;
+
+	/** The register file which owns this. */
+	sjme_nvm_store_file* file;
+
+	/** The previous register window. */
+	sjme_nvm_store_window* prev;
+
+	/** The next register window. */
+	sjme_nvm_store_window* next;
+};
+
+struct sjme_nvm_store_slotInfo
+{
+	/** The Java variable chain. */
+	sjme_nvm_store_windowVarChain chain;
+
+	/** The current storage, if any has been assigned. */
+	sjme_nvm_value* storage;
+
+	/** The type if it is known. */
+	sjme_javaTypeId type;
+
+	/**
+	 * Direct pointer to the full raw slot storage value, without regards
+	 * to any type. If a slot has a width of three and the type has a width
+	 * of one, then this with @code rawLen @endcode will fit a slot length
+	 * of three rather than one.
+	 *
+	 * This is generally used to erase the previously stored value here when
+	 * it is no longer needed. This should be used with @code memset() @endcode
+	 * rather than writing a value through the slot system.
+	 *
+	 * If the storage information is not known or is purely virtual then
+	 * this may be @code NULL @endcode.
+	 */
+	sjme_pointer rawP;
+
+	/** Length of the full raw slot storage, in bytes. */
+	sjme_intPointer rawLen;
+};
+
+/**
+ * Initializes a register file within the given buffer.
+ *
+ * @param outFile The output register file.
+ * @param buf The pointer to the buffer to use.
+ * @param len The length of the buffer.
+ * @return Any resultant error, if any.
+ * @since 2026/07/13
+ */
+sjme_errorCode sjme_nvm_store_initFile(
+	sjme_attrOutNotNull sjme_nvm_store_file** outFile,
+	sjme_attrInNotNull sjme_pointer buf,
+	sjme_attrInPositiveNonZero sjme_jint len);
+
+/**
+ * Allocates raw space within the window.
+ *
+ * @param inWindow The window to allocate within.
+ * @param rawData The raw data of the allocation.
+ * @param numBytes The number of bytes to allocate.
+ * @param alignment The alignment of the data.
+ * @return Any resultant error, if any.
+ * @since 2026/07/13
+ */
+sjme_errorCode sjme_nvm_store_windowAlloca(
+	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
+	sjme_attrOutNotNull sjme_pointer* rawData,
+	sjme_attrInPositiveNonZero sjme_jint numBytes,
+	sjme_attrInPositiveNonZero sjme_jint alignment);
+
+/**
+ * Obtains the Java language information from the stack window.
+ *
+ * @param inWindow The window to get the Java information for.
+ * @param outJava The resultant Java language information.
+ * @param inFrame The frame this is for.
+ * @return Any resultant error, if any.
+ * @since 2026/07/22
+ */
+sjme_errorCode sjme_nvm_store_windowLangJava(
+	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
+	sjme_attrOutNotNull sjme_nvm_store_windowJava** outJava,
+	sjme_attrInNotNull sjme_nvm_frame inFrame);
+
+/**
+ * Pops a window from a register file.
+ *
+ * @param inFile The register file to pop a window from.
+ * @return Any resultant error, if any.
+ * @since 2026/07/13
+ */
+sjme_errorCode sjme_nvm_store_windowPop(
+	sjme_attrInNotNull sjme_nvm_store_file* inFile);
+
+/**
+ * Pushes a new window to the register file.
+ *
+ * @param inFile The register file to push a window to.
+ * @param outWindow The resultant window that was newly pushed.
+ * @return Any resultant error, if any.
+ * @since 2026/07/13
+ */
+sjme_errorCode sjme_nvm_store_windowPush(
+	sjme_attrInNotNull sjme_nvm_store_file* inFile,
+	sjme_attrOutNotNull sjme_nvm_store_window** outWindow);
+
+/**
+ * Obtains the slot used for a window and returns a Java compatible value
+ * that may be read and/or modified accordingly.
+ *
+ * The access mode determines what will occur.
+ *
+ * @param inWindow The window to get the slot for.
+ * @param outInfo The resultant slot information.
+ * optional, will be @code NULL @endcode if there are no variable.
+ * @param inSlot The slot index.
+ * @param inSlotType The type of slot to access.
+ * @param inMode The access mode of the slot.
+ * @param inType The type of data to store in the slot, if the requested
+ * access mode is @link SJME_NVM_STORE_READ @endlink then this may be
+ * instead @link SJME_NUM_JAVA_TYPE_IDS @endlink to indicate that the type
+ * checking for the slot is not important.
+ * @return Any resultant error, if any.
+ * @since 2026/07/13
+ */
+sjme_errorCode sjme_nvm_store_windowSlot(
+	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
+	sjme_attrOutNotNull sjme_nvm_store_slotInfo* outInfo,
+	sjme_attrInPositive sjme_nvm_store_javaSlot inSlot,
+	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
+		sjme_nvm_store_slotType inSlotType,
+	sjme_attrInRange(0, SJME_NVM_STORE_NUM_ACCESS_MODES)
+		sjme_nvm_store_accessMode inMode,
+	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS + 1) sjme_javaTypeId inType);
+
+/**
+ * Obtains the information on the given slot.
+ *
+ * @param inWindow The window to get the slot for.
+ * @param outInfo The resultant slot information.
+ * @param inSlot The slot to request.
+ * @param inSlotType The type of slot to request.
+ * @return Any resultant error, if any.
+ * @since 2026/09/01
+ */
+sjme_errorCode sjme_nvm_store_windowSlotInfo(
+	sjme_attrInNotNull sjme_nvm_store_window* inWindow,
+	sjme_attrOutNotNull sjme_nvm_store_slotInfo* outInfo,
+	sjme_attrInPositive sjme_nvm_store_javaSlot inSlot,
+	sjme_attrInRange(0, SJME_NVM_STORE_NUM_SLOT_TYPES)
+		sjme_nvm_store_slotType inSlotType);
+
+/*--------------------------------------------------------------------------*/
+
+/* Anti-C++. */
+#ifdef __cplusplus
+#ifdef SJME_CXX_SQUIRRELJME_TASKSTORE_H
+}
+#undef SJME_CXX_SQUIRRELJME_TASKSTORE_H
+#undef SJME_CXX_IS_EXTERNED
+#endif /* #ifdef SJME_CXX_SQUIRRELJME_TASKSTORE_H */
+#endif /* #ifdef __cplusplus */
+
+#endif /* SJME_C_SQUIRRELJME_TASKSTORE_H */

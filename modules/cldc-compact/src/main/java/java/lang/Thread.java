@@ -47,7 +47,7 @@ public class Thread
 	public static final int NORM_PRIORITY =
 		5;
 	
-	/** Second in nano seconds. */
+	/** Second in nanoseconds. */
 	private static final long _NS_SECOND =
 		1_000_000L;
 	

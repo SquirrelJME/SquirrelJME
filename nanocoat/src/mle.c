@@ -11,10 +11,14 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+/** Alternative shelf definition. */
+#define SJME_NVM_MLE_SHELF_DEF_ALT(what, className) \
+	{className, \
+	SJME_TOKEN_PASTE(sjme_nvm_mle, what)}
+
 /** Standard shelf definition. */
 #define SJME_NVM_MLE_SHELF_DEF(what) \
-	{"cc/squirreljme/jvm/mle/"#what, \
-	SJME_TOKEN_PASTE(sjme_nvm_mle, what)}
+	SJME_NVM_MLE_SHELF_DEF_ALT(what, "cc/squirreljme/jvm/mle/"#what)
 
 static const sjme_nvm_mle sjme_nvm_mleShelves[] =
 {
@@ -24,6 +28,8 @@ static const sjme_nvm_mle sjme_nvm_mleShelves[] =
 	SJME_NVM_MLE_SHELF_DEF(MathShelf),
 	SJME_NVM_MLE_SHELF_DEF(MidiShelf),
 	SJME_NVM_MLE_SHELF_DEF(NativeArchiveShelf),
+	SJME_NVM_MLE_SHELF_DEF_ALT(NativeScritchUIShelf,
+		"cc/squirreljme/jvm/mle/scritchui/NativeScritchUIShelf"),
 	SJME_NVM_MLE_SHELF_DEF(ObjectShelf),
 	SJME_NVM_MLE_SHELF_DEF(PencilFontShelf),
 	SJME_NVM_MLE_SHELF_DEF(PencilShelf),
@@ -47,27 +53,45 @@ static const sjme_cchar sjme_nvm_mleTToA[SJME_NUM_JAVA_TYPE_IDS + 2] =
 
 sjme_errorCode sjme_mle_mleCall(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInNotNull sjme_charSeq className,
-	sjme_attrInNotNull sjme_charSeq methodName,
-	sjme_attrInNotNull sjme_charSeq methodType,
+	sjme_attrInNotNull sjme_jmethodID methodID,
+	sjme_attrInNotNull sjme_nvm_class_methodInfo methodInfo,
 	sjme_attrInNotNull sjme_jvalueTyped* argR,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV)
 {
+	sjme_errorCode error;
 	const sjme_nvm_mle* major;
+	sjme_nvm inState;
 	
-	if (inFrame == NULL || className == NULL || methodName == NULL ||
-		methodType == NULL || argR == NULL || (argC > 0 && argV == NULL))
+	if (inFrame == NULL || methodID == NULL || methodInfo == NULL ||
+		argR == NULL || (argC > 0 && argV == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (argC < 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
-
+	
 	/* Look for the shelf. */
 	for (major = sjme_nvm_mleShelves; major->className != NULL; major++)
-		if (sjme_charSeq_equalsUtfR(className, major->className))
-			return sjme_mle_mleCallShelf(inFrame, major, methodName,
-				methodType, argR, argC, argV);
+		if (sjme_charSeq_equalsUtfR(sjme_atomic_g(sjme_nvm_class_info,
+			&methodInfo->inClass)->name->seq,
+			major->className))
+			return sjme_mle_mleCallShelf(inFrame, major,
+				methodInfo->name->seq,
+				methodInfo->type->seq, argR, argC, argV);
+
+	/* If this is reached, then we need to forward to a native handler... */
+	inState = SJME_F_S(inFrame);
+	if (inState->hooks != NULL && inState->hooks->nativeCall != NULL)
+	{
+		/* Perform the native call. */
+		if (sjme_error_is(error = inState->hooks->nativeCall(inFrame,
+			methodID, methodInfo, argR, argC, argV)))
+			return sjme_error_defaultOr(error,
+				SJME_ERROR_UNKNOWN_MLE_SHELF);
+
+		/* Successful otherwise. */
+		return SJME_ERROR_NONE;
+	}
 
 	/* Not found. */
 	return SJME_ERROR_UNKNOWN_MLE_SHELF;
@@ -89,9 +113,11 @@ sjme_errorCode sjme_mle_mleCallFunction(
 		argR == NULL || (argC > 0 && argV == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+#if defined(SJME_CONFIG_DEBUG_MLE)
 	/* Debug. */
 	sjme_message("MLE.%s %s",
 		function->name, function->type);
+#endif
 	
 	/* Check arguments. */
 	for (i = 0; i < argC; i++)
@@ -133,10 +159,31 @@ sjme_errorCode sjme_mle_mleCallShelf(
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNullable sjme_jvalueTyped* argV)
 {
+	if (inFrame == NULL || shelf == NULL || methodName == NULL ||
+		methodType == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	return sjme_mle_mleCallShelfM(inFrame, &shelf->shelf[0],
+		methodName, methodType, argR, argC, argV);
+}
+
+sjme_errorCode sjme_mle_mleCallShelfM(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull const sjme_nvm_mleShelf* shelf,
+	sjme_attrInNotNull sjme_charSeq methodName,
+	sjme_attrInNotNull sjme_charSeq methodType,
+	sjme_attrInNotNull sjme_jvalueTyped* argR,
+	sjme_attrInPositive sjme_jint argC,
+	sjme_attrInNullable sjme_jvalueTyped* argV)
+{
 	const sjme_nvm_mleShelf* minor;
 	
+	if (inFrame == NULL || shelf == NULL || methodName == NULL ||
+		methodType == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
 	/* Look for the function. */
-	for (minor = shelf->shelf; minor->name != NULL; minor++)
+	for (minor = shelf; minor->name != NULL; minor++)
 		if (sjme_charSeq_equalsUtfR(methodName, minor->name) &&
 			sjme_charSeq_equalsUtfR(methodType, minor->type))
 			return sjme_mle_mleCallFunction(inFrame, minor, argR, argC, argV);

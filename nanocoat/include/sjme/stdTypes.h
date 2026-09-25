@@ -643,8 +643,17 @@ typedef sjme_basicTypeId sjme_extendedTypeId;
 
 /** Is the given type ID considered wide? */
 #define SJME_TYPEID_IS_WIDE(t) \
-	((t) == SJME_JAVA_TYPE_ID_LONG || (t) == SJME_JAVA_TYPE_ID_DOUBLE || \
+	((t) == SJME_JAVA_TYPE_ID_LONG || \
+	(t) == SJME_JAVA_TYPE_ID_DOUBLE || \
 	(t) == SJME_STACK_TYPE_WIDE)
+
+/** The number of slots a type consumes, if it is wide or not. */
+#define SJME_TYPEID_SLOTS_BY_WIDE_BOOLEAN(b) \
+	((b) ? 2 : 1)
+
+/** The number of Java slots the given type consumes. */
+#define SJME_TYPEID_SLOTS_JAVA(t) \
+	(SJME_TYPEID_SLOTS_BY_WIDE_BOOLEAN(SJME_TYPEID_IS_WIDE((t))))
 
 /**
  * Represents multiple type IDs.

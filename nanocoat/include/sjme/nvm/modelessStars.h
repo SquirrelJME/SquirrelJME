@@ -10,6 +10,7 @@
 /**
  * Modeless Star Screen.
  * 
+ * @file
  * @since 2023/11/28
  */
 
@@ -105,7 +106,7 @@ typedef struct sjme_modelessStarState
 	sjme_jboolean latchedFirstGo;
 
 	/** The emitted error code. */
-	sjme_atomic_sjme_jint errorCode;
+	sjme_atomic(sjme_jint) errorCode;
 } sjme_modelessStarState;
 
 /**
@@ -117,7 +118,7 @@ typedef struct sjme_modelessStarState
  * @param height The height of the buffer.
  * @param pitch The pitch of the buffer.
  * @param tick The current tick.
- * @return Returns @c SJME_JNI_FALSE if there are issues with inputs.
+ * @return Returns @link SJME_JNI_FALSE @endlink if there are issues with inputs.
  * @since 2023/11/22
  */
 sjme_errorCode sjme_modelessStars(

@@ -9,7 +9,6 @@
 # Declare library
 squirreljme_multilib_add_library(Core
 	access.c
-	allocSizeOf.c
 	boot.c
 	bytecode.c
 	bytecodeFast.c
@@ -23,11 +22,19 @@ squirreljme_multilib_add_library(Core
 	bytecodeSlowStack.c
 	classy.c
 	classyVm.c
+	classyVmClass.c
+	classyVmFields.c
+	classyVmMethods.c
 	cleanup.c
 	descriptor.c
+	externalWeak.c
 	gfx.c
 	instance.c
+	instanceProxy.c
 	jdwp.c
+	jdwpComm.c
+	jdwpLoop.c
+	jdwpTcp.c
 	loop.c
 	mle.c
 	mleAtomic.c
@@ -43,6 +50,7 @@ squirreljme_multilib_add_library(Core
 	mleReflection.c
 	mleRuntime.c
 	mleScritchUi.c
+	mleScritchUiProxy.c
 	mleString.c
 	mleTask.c
 	mleTerminal.c
@@ -50,20 +58,25 @@ squirreljme_multilib_add_library(Core
 	mleType.c
 	modelessStars.c
 	nvm.c
+	nvmAtomic.c
 	rom.c
 	romLibrary.c
 	romLibraryZip.c
+	romManifest.c
+	romMeepSwm.c
 	romSuite.c
 	romSuiteZip.c
 	stackMap.c
 	stringPool.c
 	task.c
 	taskFrame.c
+	taskStore.c
 	taskThread.c
 	tread.c
 	vmConfig.c
 	walk.c
 	walkCoreDump.c
+	walkCustom.c
 	walkDebug.c)
 
 # Include main headers
@@ -77,4 +90,5 @@ squirreljme_multilib_link_libraries_required(Core PUBLIC
 # The core library is rather important!
 squirreljme_multilib_export(Core)
 squirreljme_multilib_install(Core)
+
 

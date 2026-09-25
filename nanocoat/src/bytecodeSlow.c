@@ -533,6 +533,7 @@ const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions
 	/* 255 */ sjme_nvm_byteCode_illegalInstruction,
 };
 
+#pragma region(Wide)
 SJME_NVM_BYTECODE_SLOW(Wide)
 {
 	sjme_byteCode wideIv;
@@ -554,3 +555,4 @@ SJME_NVM_BYTECODE_SLOW(Wide)
 	/* Forward to wide handler. */
 	return lutFunc(inFrame, id, relRawCode, pcNew);
 }
+#pragma endregion()

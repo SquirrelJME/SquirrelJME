@@ -29,11 +29,8 @@ import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
-import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
-import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
-import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchUIShelf;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.util.Map;
@@ -109,7 +106,7 @@ public enum MLEDispatcher
 	RUNTIME("cc/squirreljme/jvm/mle/RuntimeShelf",
 		MLERuntime.values()),
 	
-	/** {@link NativeScritchInterface}. */
+	/** {@link NativeScritchUIShelf}. */
 	SCRITCH_UI("cc/squirreljme/jvm/mle/scritchui/NativeScritchInterface",
 		MLEScritchUI.values()),
 	

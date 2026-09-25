@@ -40,10 +40,11 @@ public final class TestDetection
 	 * Is this considered a test?
 	 *
 	 * @param __className The class name to check.
+	 * @param __nanoTests NanoCoat tests?
 	 * @return If this is considered a test.
 	 * @since 2020/08/28
 	 */
-	public static boolean isTest(String __className)
+	public static boolean isTest(String __className, boolean __nanoTests)
 		throws NullPointerException
 	{	
 		if (__className == null)
@@ -51,8 +52,11 @@ public final class TestDetection
 		
 		// Get base name of the class
 		int ld = __className.lastIndexOf('.');
-		String base = (ld < 0 ? __className : __className.substring(ld + 1));
+		String base = (ld < 0 ? __className :
+			__className.substring(ld + 1));
 		
+		if (__nanoTests)
+			return base.startsWith("NanoTest");
 		return (base.startsWith("Do") || base.startsWith("Test") ||
 			base.endsWith("Test"));
 	}

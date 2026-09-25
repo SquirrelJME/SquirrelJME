@@ -10,7 +10,7 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchUIShelf;
 import cc.squirreljme.jvm.mle.scritchui.ScritchEnvironmentInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScreenInterface;
@@ -307,7 +307,7 @@ public final class DisplayManager
 			try
 			{
 				instance = new DisplayManager(
-					NativeScritchInterface.nativeInterface());
+					NativeScritchUIShelf.nativeInterface());
 				DisplayManager._INSTANCE = instance;
 			}
 			catch (MLECallError __e)

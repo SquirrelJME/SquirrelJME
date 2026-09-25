@@ -59,6 +59,14 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 		SJME_JNI_TRUE
 	},
 	{
+		SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
+		"SQUIRRELJME_LIB_JVM_"
+			SQUIRRELJME_SYSTEM_UPPER "_"
+			SQUIRRELJME_ARCH_UPPER,
+		"",
+		SJME_JNI_TRUE
+	},
+	{
 		SJME_NVM_DEFAULT_DIRECTORY_BUCKET_EXTRA,
 		"SQUIRRELJME_BUCKET_EXTRA",
 		"",
@@ -166,6 +174,12 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 		"squirreljme/natives",
 		SJME_JNI_FALSE
 	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
+		"PROGRAMDATA",
+		"squirreljme/natives/" SQUIRRELJME_SYSTEM "/" SQUIRRELJME_ARCH,
+		SJME_JNI_FALSE
+	},
 
 	/* Temporary files. */
 	{
@@ -236,6 +250,12 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 		"/lib/squirreljme/natives",
 		SJME_JNI_FALSE
 	},
+	{
+		SJME_NVM_DEFAULT_DIRECTORY_NATIVES,
+		NULL,
+		"/lib/squirreljme/natives/" SQUIRRELJME_SYSTEM "/" SQUIRRELJME_ARCH,
+		SJME_JNI_FALSE
+	},
 
 	/* Temporary files. */
 	{
@@ -279,8 +299,8 @@ static sjme_errorCode sjme_path_append(
 		sizeof(path->chars[0]) * len);
 	
 	/* Shift up lengths. */
-	path->length = newLen;
-	path->names[path->nameCount] = newLen;
+	path->length = (sjme_jushort)newLen;
+	path->names[path->nameCount] = (sjme_jushort)newLen;
 
 #if defined(SJME_CONFIG_DEBUG_PATH) && defined(SJME_CONFIG_DEBUG_VERBOSE)
 	sjme_message("[%d/%d]: %s <- %.*s",
@@ -322,7 +342,7 @@ static sjme_errorCode sjme_path_defaultLookup(
 	sjme_attrInNegativeOnePositive sjme_jint index)
 {
 	sjme_errorCode error;
-	sjme_jint i, vi;
+	sjme_jint i, validIndex;
 	const sjme_path_pathEnv* lookup;
 	sjme_lpcstr lastEnv;
 	sjme_jboolean lastTilde;
@@ -350,7 +370,7 @@ static sjme_errorCode sjme_path_defaultLookup(
 	lastEnv = NULL;
 	lastTilde = SJME_JNI_FALSE;
 	error = SJME_ERROR_NONE;
-	for (i = 0, vi = 0;; i++)
+	for (i = 0, validIndex = 0;; i++)
 	{
 		/* Go through the lookup set. */
 		lookup = &sjme_path_pathEnvLookup[i];
@@ -362,10 +382,17 @@ static sjme_errorCode sjme_path_defaultLookup(
 		if (lookup->type != type)
 			continue;
 
-		/* Wanting a specific index? */
-		if (index >= 0)
-			if (index != (vi++))
-				continue;
+		/* There are not enough paths met yet to meet the criteria for an */
+		/* index match. For example, we want 2, we can skip 0 and 1 because */
+		/* even if we calculate them as being valid their outputs will just */
+		/* be ignored anyway. In the case of where path 2 fails this check */
+		/* but ends up being an invalid path, then this check will never */
+		/* be considered as we want the "third" valid path. */
+		if (index >= 0 && validIndex < index)
+		{
+			validIndex++;
+			continue;
+		}
 
 		/* Lookup uses no defined environment variable. */
 		if (lookup->env == NULL)
@@ -387,15 +414,9 @@ static sjme_errorCode sjme_path_defaultLookup(
 					buildPath.chars, SJME_MAX_PATH - 1, lookup->env)))
 			{
 				/* No env set, so ignore this lookup. */
+				/* Skip looking at this path. */
 				if (error == SJME_ERROR_NO_SUCH_ELEMENT)
-				{
-					/* If looking for a specific index? Stop. */
-					if (index >= 0)
-						break;
-
-					/* Skip looking at this path. */
 					continue;
-				}
 
 				/* Fail. */
 				return sjme_error_default(error);
@@ -458,6 +479,16 @@ static sjme_errorCode sjme_path_defaultLookup(
 		/* Success! */
 		if (buildPath.length > 0)
 		{
+			/* This path is valid, however we do not want this specific */
+			/* valid path. This will happen when validIndex >= index which */
+			/* means that paths before us failed to be valid. */
+			if (index >= 0 && index != validIndex)
+			{
+				validIndex++;
+				continue;
+			}
+
+			/* Otherwise, use this path. */
 			memmove(outPath, &buildPath, sizeof(buildPath));
 			return SJME_ERROR_NONE;
 		}
@@ -1187,8 +1218,8 @@ sjme_errorCode sjme_path_resolveP(
 	/* Offset names accordingly. */
 	while (result.nameCount <= newCount)
 		result.names[result.nameCount++] += result.length;
-	result.nameCount = newCount;
-	result.length = newLength;
+	result.nameCount = (sjme_jushort)newCount;
+	result.length = (sjme_jushort)newLength;
 
 	/* Make sure the final path is valid. */
 	if (sjme_error_is(error = sjme_path_check(&result)))
@@ -1292,8 +1323,9 @@ sjme_errorCode sjme_path_subPath(
 	/* Determine the actual new name count. */
 	memset(&result, 0, sizeof(result));
 	result.style = inPath->style;
-	result.nameCount = endDx - beginDx;
-	result.length = inPath->names[beginDx + (result.nameCount)] - charBase;
+	result.nameCount = (sjme_jushort)(endDx - beginDx);
+	result.length = (sjme_jushort)(inPath->names[beginDx +
+		(result.nameCount)] - charBase);
 	
 	/* Copy names over, include length end name. */
 	memmove(&result.names[0], &inPath->names[beginDx],

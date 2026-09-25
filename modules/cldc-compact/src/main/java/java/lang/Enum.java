@@ -11,6 +11,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This is the base class for enum types.
@@ -23,9 +24,11 @@ public abstract class Enum<E extends Enum<E>>
 	implements Comparable<E>
 {
 	/** The name of the enum. */
+	@SquirrelJMEVendorApi
 	private final String _name;
 	
 	/** The ordinal of the enumeration. */
+	@SquirrelJMEVendorApi
 	private final int _ordinal;
 	
 	/**

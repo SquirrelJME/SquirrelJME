@@ -15,6 +15,7 @@ jobject JNICALL JVM_AllocateNewObject(JNIEnv* env,
 	jclass initClass)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobject JNICALL JVM_AllocateNewArray(JNIEnv* env,
@@ -23,21 +24,20 @@ jobject JNICALL JVM_AllocateNewArray(JNIEnv* env,
 	jint length)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobject JNICALL JVM_LatestUserDefinedLoader(JNIEnv* env)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
-/*
- * This function has been deprecated and should not be considered
- * part of the specified JVM interface.
- */
 jclass JNICALL JVM_LoadClass0(JNIEnv* env,
 	jobject obj,
 	jclass currClass,
 	jstring currClassName)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }

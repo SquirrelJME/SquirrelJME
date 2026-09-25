@@ -9,9 +9,16 @@
 
 #include "frontend/libjvm/commonJniJvm.h"
 
+/**
+ * Returns the interface version of the JNI library.
+ * 
+ * @return The JNI library interface version.
+ * @since 2025/10/20
+ */
 jint JNICALL JVM_GetInterfaceVersion(void)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 void JNICALL JVM_GetVersionInfo(JNIEnv* env,

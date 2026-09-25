@@ -12,10 +12,75 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+static sjme_errorCode sjme_nvm_mleFunc_waitForUpdateCheck(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInValue sjme_intPointer condition,
+	sjme_attrOutNotNull sjme_jvalueTyped* stackPush)
+{
+	sjme_errorCode error;
+	
+	if (inFrame == NULL || stackPush == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Was this actually interrupted? */
+	if (sjme_error_is(error = sjme_nvm_task_threadInterruptCheck(
+		SJME_F_T(inFrame), SJME_JNI_TRUE)))
+	{
+		if (error != SJME_ERROR_INTERRUPTED)
+			return sjme_error_default(error);
+
+		/* Return as interrupted! */
+		stackPush->t = SJME_BASIC_TYPE_ID_INTEGER;
+		stackPush->v.i = 1;
+		
+		/* Stop waiting! */
+		return SJME_ERROR_NONE;
+	}
+
+	/* Did the frame count actually change? */
+	if (condition != sjme_atomic_g(sjme_jint,
+		&SJME_F_K(inFrame)->numThreads[SJME_NVM_THREAD_COUNT_ALL]))
+	{
+		/* Not interrupted. */
+		stackPush->t = SJME_BASIC_TYPE_ID_INTEGER;
+		stackPush->v.i = 0;
+		
+		/* Stop waiting! */
+		return SJME_ERROR_NONE;
+	}
+
+	/* Still waiting for it to complete. */
+	return SJME_ERROR_NOT_MATCHED;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(aliveThreadCount)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_jboolean includeMain, includeDaemon;
+	sjme_jint count;
+	sjme_nvm_task inTask;
+
+	/* Including main and/or daemon threads? */
+	includeMain = (argV[0].v.i != 0);
+	includeDaemon = (argV[1].v.i != 0);
+
+	/* Working with the frame's task. */
+	inTask = SJME_F_K(inFrame);
+
+	/* Get the base thread count. */
+	count = sjme_atomic_g(sjme_jint, &inTask->numThreads[
+		(includeDaemon ? SJME_NVM_THREAD_COUNT_ALL :
+			SJME_NVM_THREAD_COUNT_NORMAL)]);
+
+	/* If not including the main thread, reduce by the count which should */
+	/* always be one. */
+	if (!includeMain)
+		count -= sjme_atomic_g(sjme_jint, 
+			&inTask->numThreads[SJME_NVM_THREAD_COUNT_MAIN]);
+
+	/* Return the count. */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+	argR->v.i = count;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(createVMThread)
@@ -26,8 +91,10 @@ SJME_NVM_MLE_FUNCTION_DECL(createVMThread)
 
 SJME_NVM_MLE_FUNCTION_DECL(currentExitCode)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* This is just a read of the value. */
+	argR->t = SJME_BASIC_TYPE_ID_INTEGER;
+	argR->v.i = sjme_atomic_g(sjme_jint, &SJME_F_K(inFrame)->exitCode);
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(currentJavaThread)
@@ -90,7 +157,7 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	sjme_jint i, n;
 
 	/* Recover task. */
-	task = inFrame->inTask;
+	task = sjme_atomic_g(sjme_nvm_task, &inFrame->inTask);
 	if (task == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 
@@ -98,14 +165,14 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	mainClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(task->classLoader,
 		&mainClass, SJME_F_T(inFrame),
-		sjme_atomic_sjme_charSeq_get(
+		sjme_atomic_g(sjme_charSeq, 
 			&task->globals.mainClassName->seq), SJME_JNI_TRUE)) ||
 		mainClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Locate the main method. */
 	mainMethod = NULL;
-	if (sjme_error_is(error = sjme_nvm_vmClass_methodIDByNameTypeU(
+	if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameTypeU(
 		mainClass, SJME_F_T(inFrame),
 		SJME_NVM_CLASS_MEMBER_STATIC, SJME_JNI_TRUE,
 		"main", "([Ljava/lang/String;)V", &mainMethod)) ||
@@ -118,13 +185,15 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNew(
 		SJME_F_T(inFrame), SJME_AS_JARRAYP(&mainArgs),
 		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
-			SJME_NVM_TASK_COMMON_CLASS_STRING), n)))
+			SJME_NVM_COMMON_STRING), n)))
 		return sjme_error_vmError(inFrame, error);
 
-	/* Fill in actual arguments. */
+	/* Fill in array arguments, directly. */
 	for (i = 0; i < n; i++)
-		mainArgs->e.l[i] =
-			SJME_AS_JOBJECT(task->globals.mainArgs->elements[i]);
+		if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+			&mainArgs->e, i, NULL,
+			SJME_VLS_JOBJECT(task->globals.mainArgs->elements[i]))))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Setup arguments. */
 	memset(mainArgV, 0, sizeof(mainArgV));
@@ -134,7 +203,7 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	/* Enter the frame. */
 	ignoreFrame = NULL;
 	return sjme_nvm_task_threadEnter(SJME_F_T(inFrame),
-		&ignoreFrame, mainMethod, SJME_NVM_CALL_VIRTUAL,
+		&ignoreFrame, mainMethod, SJME_NVM_CALL_NON_VIRTUAL,
 		1, mainArgV);
 }
 
@@ -192,8 +261,8 @@ SJME_NVM_MLE_FUNCTION_DECL(vmThreadIsMain)
 	
 	/* Must be a VMThread. */
 	thread = (sjme_nvm_thread)argV[0].v.l;
-	if (thread == NULL ||
-		!sjme_nvm_isAR(thread, SJME_NVM_STRUCT_THREAD_INSTANCE))
+	if (thread == NULL || !sjme_nvm_isAR(thread,
+		SJME_NVM_STRUCT_BRACKET_VM_THREAD_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Is a simple flag get. */
@@ -228,87 +297,149 @@ SJME_NVM_MLE_FUNCTION_DECL(vmThreadTask)
 
 SJME_NVM_MLE_FUNCTION_DECL(waitForUpdate)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_nvm inState;
+	sjme_jboolean interrupted, forget;
+	sjme_jint ms;
+
+	/* How long to rest for? */
+	ms = argV[0].v.i;
+	if (ms < 0)
+		return SJME_ERROR_MLE_CALL;
+
+	/* Forget that we executed this method? */
+	forget = SJME_JNI_FALSE;
+	
+	/* Wait for an update on multithreaded systems. */
+	inState = SJME_F_S(inFrame);
+	if (inState->threadModel == SJME_NVM_MLE_THREAD_MULTI)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Single threaded thread operation. */
+	else
+	{
+		/* Check interrupt pre-sleep. */
+		if (sjme_error_is(error = sjme_nvm_task_threadInterruptCheck(
+			SJME_F_T(inFrame), SJME_JNI_TRUE)))
+		{
+			/* Some other error? */
+			if (error != SJME_ERROR_INTERRUPTED)
+				return sjme_error_default(error);
+
+			/* This was actually interrupted. */
+			argR->v.i = 1;
+			return SJME_ERROR_NONE;
+		}
+		
+		/* Schedule out this thread. */
+		if (sjme_error_is(error =
+			sjme_nvm_task_taskScheduleOut(inState, SJME_F_T(inFrame), ms)))
+			return sjme_error_default(error);
+
+		/* Because we just scheduled out this, this call cannot complete. */
+		forget = SJME_JNI_TRUE;
+	}
+
+	/* Not finishing this call? We need to wait for the count to change */
+	if (forget)
+	{
+		/* Wait for an update to occur. */
+		if (sjme_error_is(error = sjme_nvm_task_frameWaitFor(inFrame,
+			sjme_nvm_mleFunc_waitForUpdateCheck, ms,
+			sjme_atomic_g(sjme_jint,
+				&SJME_F_K(inFrame)->numThreads[SJME_NVM_THREAD_COUNT_ALL]))))
+			return sjme_error_default(error);
+
+		/* We must not push the value to the stack, it is done in the */
+		/* condition. */
+		return SJME_ERROR_CANCEL_MLE_CALL;
+	}
+	
+	/* Not interrupted, and finished. */
+	argR->v.i = 0;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_SHELF_DECLARE(ThreadShelf) =
 {
 	SJME_NVM_MLE_DEFINE(aliveThreadCount,
 		SJME_MD(SJME_MD_I, SJME_MD_Z SJME_MD_Z),
-		"I", "II"),
+		SJME_MP(SJME_MP_I, SJME_MP_I SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE(createVMThread,
 		SJME_MD(SJME_MD_VM_THREAD, SJME_MD_THREAD),
-		"L", "L"),
+		SJME_MP(SJME_MP_L, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(currentExitCode,
-		SJME_MD(SJME_MD_I, ),
-		"I", ),
+		SJME_MD(SJME_MD_I, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_I, SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_DEFINE(currentJavaThread,
-		SJME_MD(SJME_MD_THREAD, ),
-		"L", ),
+		SJME_MD(SJME_MD_THREAD, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_L, SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_DEFINE(currentVMThread,
-		SJME_MD(SJME_MD_VM_THREAD, ),
-		"L", ),
+		SJME_MD(SJME_MD_VM_THREAD, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_L, SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_DEFINE(equals,
 		SJME_MD(SJME_MD_Z, SJME_MD_VM_THREAD SJME_MD_VM_THREAD),
-		"I", "LL"),
+		SJME_MP(SJME_MP_I, SJME_MP_L SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(javaThreadClearInterrupt,
 		SJME_MD(SJME_MD_Z, SJME_MD_THREAD),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(javaThreadRunnable,
 		SJME_MD(SJME_MD_RUNNABLE, SJME_MD_THREAD),
-		"L", "L"),
+		SJME_MP(SJME_MP_L, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(javaThreadSetDaemon,
 		SJME_MD(SJME_MD_V, SJME_MD_THREAD),
-		"V", "L"),
+		SJME_MP(SJME_MP_V, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(model,
-		SJME_MD(SJME_MD_I, ),
-		"I", ),
+		SJME_MD(SJME_MD_I, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_I, SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_DEFINE(runProcessMain,
-		SJME_MD(SJME_MD_V, ),
-		"V", ),
+		SJME_MD(SJME_MD_V, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_V, SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_DEFINE(setCurrentExitCode,
 		SJME_MD(SJME_MD_V, SJME_MD_I),
-		"V", "I"),
+		SJME_MP(SJME_MP_V, SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE(setTrace,
 		SJME_MD(SJME_MD_V, SJME_MD_STRING SJME_MD_A(SJME_MD_TRACE)),
-		"V", "LL"),
+		SJME_MP(SJME_MP_V, SJME_MP_L SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(sleep,
 		SJME_MD(SJME_MD_V, SJME_MD_I SJME_MD_I),
-		"V", "II"),
+		SJME_MP(SJME_MP_V, SJME_MP_I SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE(toJavaThread,
 		SJME_MD(SJME_MD_THREAD, SJME_MD_VM_THREAD),
-		"L", "L"),
+		SJME_MP(SJME_MP_L, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(toVMThread,
 		SJME_MD(SJME_MD_VM_THREAD, SJME_MD_THREAD),
-		"L", "L"),
+		SJME_MP(SJME_MP_L, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(vmThreadId,
 		SJME_MD(SJME_MD_I, SJME_MD_VM_THREAD),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(vmThreadInterrupt,
 		SJME_MD(SJME_MD_V, SJME_MD_VM_THREAD),
-		"V", "L"),
+		SJME_MP(SJME_MP_V, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(vmThreadIsAlive,
 		SJME_MD(SJME_MD_Z, SJME_MD_VM_THREAD),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(vmThreadIsMain,
 		SJME_MD(SJME_MD_Z, SJME_MD_VM_THREAD),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(vmThreadIsStarted,
 		SJME_MD(SJME_MD_Z, SJME_MD_VM_THREAD),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(vmThreadSetPriority,
 		SJME_MD(SJME_MD_V, SJME_MD_VM_THREAD SJME_MD_I),
-		"V", "LI"),
+		SJME_MP(SJME_MP_V, SJME_MP_L SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE(vmThreadStart,
 		SJME_MD(SJME_MD_Z, SJME_MD_VM_THREAD),
-		"I", "L"),
+		SJME_MP(SJME_MP_I, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(vmThreadTask,
 		SJME_MD(SJME_MD_TASK, SJME_MD_VM_THREAD),
-		"L", "L"),
+		SJME_MP(SJME_MP_L, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(waitForUpdate,
 		SJME_MD(SJME_MD_Z, SJME_MD_I),
-		"I", "I"),
+		SJME_MP(SJME_MP_I, SJME_MP_I)),
 	
 	SJME_NVM_MLE_STOP()
 };

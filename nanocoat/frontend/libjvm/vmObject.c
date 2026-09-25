@@ -12,6 +12,7 @@
 jint JNICALL JVM_IHashCode(JNIEnv* env, jobject obj)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 void JNICALL JVM_MonitorWait(JNIEnv* env, jobject obj, jlong ms)
@@ -32,11 +33,13 @@ void JNICALL JVM_MonitorNotifyAll(JNIEnv* env, jobject obj)
 jobject JNICALL JVM_Clone(JNIEnv* env, jobject obj)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 void* JNICALL JVM_RawMonitorCreate(void)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 void JNICALL JVM_RawMonitorDestroy(void* mon)
@@ -47,6 +50,7 @@ void JNICALL JVM_RawMonitorDestroy(void* mon)
 jint JNICALL JVM_RawMonitorEnter(void* mon)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 void JNICALL JVM_RawMonitorExit(void* mon)

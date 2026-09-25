@@ -10,6 +10,7 @@
 /**
  * Tasks support.
  * 
+ * @file
  * @since 2023/07/29
  */
 
@@ -97,6 +98,9 @@ typedef enum sjme_nvm_thread_startType
 	/** The number of thread start types. */
 	SJME_NVM_NUM_THREAD_START_TYPES = 5,
 } sjme_nvm_thread_startType;
+
+/** Atomic sjme_nvm_thread_startType . */
+SJME_ATOMIC_DECLARE(sjme_nvm_thread_startType, 0);
 	
 /**
  * The type of thread status this is.
@@ -118,6 +122,9 @@ typedef enum sjme_nvm_thread_statusType
 	SJME_NVM_THREAD_NUM_STATUS_TYPES
 } sjme_nvm_thread_statusType;
 
+/** Atomic sjme_nvm_thread_statusType . */
+SJME_ATOMIC_DECLARE(sjme_nvm_thread_statusType, 0);
+	
 /**
  * Interned task strings.
  *
@@ -131,7 +138,8 @@ typedef struct sjme_nvm_taskStringsBase sjme_nvm_taskStringsBase;
  * @since 2025/01/25
  */
 typedef sjme_nvm_taskStringsBase* sjme_nvm_taskStrings;
-	
+
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 /**
  * Contains information on all the thread stack frames.
  *
@@ -152,7 +160,27 @@ typedef struct sjme_frame_frameStack sjme_frame_frameStack;
  * @since 2025/02/10
  */
 typedef struct sjme_frame_frameStacks sjme_frame_frameStacks;
+#endif
 
+/**
+ * This is called when a frame is waiting for a condition to be met.
+ *
+ * @param inFrame The frame that is waiting on the condition.
+ * @param condition The condition value that was passed in, this may be
+ * anything.
+ * @param stackPush If the condition should push any value to the stack,
+ * then this should be set to a value other than void.
+ * @return Any resultant error, if
+ * any, @link SJME_ERROR_NOT_MATCHED @endlink means that the condition has not
+ * been met yet.
+ * @since 2025/10/02
+ */
+typedef sjme_errorCode (*sjme_nvm_frame_conditionFunc)(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInValue sjme_intPointer condition,
+	sjme_attrOutNotNull sjme_jvalueTyped* stackPush);
+
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 struct sjme_frame_threadStacks
 {
 	/** The storage for the stack. */
@@ -172,41 +200,25 @@ struct sjme_frame_frameStack
 
 	/** The front of the stack, anything before are local variables. */
 	sjme_jint front;
-
-	/** The length of this stack. */
-	sjme_jint length;
 	
-	/** Pointer bases for the type on the frame. */
-	sjme_alignPointer union
-	{
-		/** Pointer base. */
-		sjme_pointer base;
-		
-		/** Integer values. */
-		sjme_jint* i;
+	/** The length of this set. */
+	sjme_jint length;
 
-		/** Long values. */
-		sjme_jlong* j;
-
-		/** Float values. */
-		sjme_jfloat* f;
-
-		/** Double values. */
-		sjme_jdouble* d;
-
-		/** Object values. */
-		sjme_jobject* l;
-	} base;
+	/** The number of bytes claimed for this frame. */
+	sjme_jint storageClaim;
+	
+	/** The value set. */
+	sjme_nvm_valueSet* set;
 };
 
-/** The object check stack type. */
-#define SJME_NVM_STACK_OBJECT_CHECK_ID SJME_NUM_JAVA_TYPE_IDS
-
 /** Final stack indicator. */
-#define SJME_NVM_STACK_FINAL_ID (SJME_NVM_STACK_OBJECT_CHECK_ID + 1)
+#define SJME_NVM_STACK_FINAL_ID SJME_NUM_JAVA_TYPE_IDS
 
 struct sjme_frame_frameStacks
 {
+	/** The storage base of this stack. */
+	sjme_pointer storageBase;
+
 	/** The number of bytes claimed for this frame. */
 	sjme_jint storageClaim;
 	
@@ -216,7 +228,10 @@ struct sjme_frame_frameStacks
 	/** The order of the stack. */
 	sjme_javaTypeId* order;
 
-	/** The front of the stack, anything before this are local variables. */
+	/**
+	 * The front of the stack, anything before the "front" are local
+	 * variables.
+	 */
 	sjme_jint orderFront;
 
 	/** The top of the order stack. */
@@ -225,16 +240,32 @@ struct sjme_frame_frameStacks
 	/** The maximum size of the order. */
 	sjme_jint orderLength;
 };
+#endif
 
-/**
- * Garbage collection commit for stack popping and otherwise.
- *
- * @since 2025/07/20
- */
-typedef struct sjme_nvm_frame_gcCommit
+/** The number of items to store in a current GC commit. */
+#define SJME_NVM_FRAME_NUM_GC_COMMIT 4
+
+struct sjme_nvm_frame_gcCommit
 {
-	int todo;
-} sjme_nvm_frame_gcCommit;
+	/** The objects waiting to be garbage collected. */
+	struct
+	{
+		/** The object that is waiting. */
+		sjme_jobject l;
+
+		/** The number of times it should be garbage collected. */
+		sjme_jint count;
+	} objects[SJME_NVM_FRAME_NUM_GC_COMMIT];
+
+	/** Is this a dynamically allocated commit? */
+	sjme_jboolean isDynamic;
+
+	/** The previous commit in the chain. */
+	sjme_nvm_frame_gcCommit* prev;
+
+	/** The next commit in the chain if there are more items. */
+	sjme_nvm_frame_gcCommit* next;
+};
 
 /**
  * The type of GC consideration to make.
@@ -253,22 +284,56 @@ typedef enum sjme_nvm_frame_considerGc
 	SJME_NVM_FRAME_CONSIDER_GC_COMMIT,
 } sjme_nvm_frame_considerGc;
 
+/**
+ * Frame state flags.
+ *
+ * @since 2025/10/21
+ */
+typedef enum sjme_nvm_frame_stateFlags
+{
+	/** Is this a static initializer? */
+	SJME_NVM_FRAME_STATE_INIT_STATIC = SJME_NVM_CLASS_INIT_STATIC,
+
+	/** Is this an instance initializer? */
+	SJME_NVM_FRAME_STATE_INIT_INSTANCE = SJME_NVM_CLASS_INIT_INSTANCE,
+
+	/** Is this any static initializer? */
+	SJME_NVM_FRAME_STATE_INIT_ANY = SJME_NVM_CLASS_INIT_ANY,
+	
+	/** Enter synchronization was performed. */
+	SJME_NVM_FRAME_STATE_SYNC_ENTER = INT8_C(0x4),
+
+	/** Exit synchronization was performed. */
+	SJME_NVM_FRAME_STATE_SYNC_EXIT = INT8_C(0x8),
+} sjme_nvm_frame_stateFlags;
+
+/**
+ * Checks if the given bits set a flag state for a frame.
+ * 
+ * @param bits The bits to check.
+ * @param x The check to make.
+ * @return Boolean of whether the given bit is set.
+ * @since 2025/10/21
+ */
+#define SJME_NVM_FRAME_STATE_IS(bits, x) \
+	(((bits) & SJME_TOKEN_PASTE_PP(SJME_NVM_FRAME_STATE_, x)) != 0)
+
 struct sjme_nvm_frameBase
 {
 	/** Common virtual machine structure. */
 	sjme_nvm_commonBase common;
 
 	/** The state this frame is in. */
-	sjme_nvm inState;
+	sjme_phantom(sjme_nvm) inState;
 
 	/** The thread this frame is in. */
-	sjme_nvm_thread inThread;
+	sjme_phantom(sjme_nvm_thread) inThread;
 
 	/** The task this is in. */
-	sjme_nvm_task inTask;
+	sjme_phantom(sjme_nvm_task) inTask;
 
 	/** The parent frame. */
-	sjme_nvm_frame parent;
+	sjme_phantom(sjme_nvm_frame) parent;
 	
 	/** The current program counter. */
 	sjme_pcAddr pc;
@@ -285,8 +350,10 @@ struct sjme_nvm_frameBase
 	/** The code this is executing within. */
 	sjme_nvm_class_codeInfo inCode;
 
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/** Stack information for the frame. */
 	sjme_frame_frameStacks stack;
+#endif
 
 	/** The instance object or class. */
 	sjme_jobject instance;
@@ -301,29 +368,23 @@ struct sjme_nvm_frameBase
 	sjme_jint id;
 
 	/** Phantom tracepoint reference, for recycling. */
-	sjme_atomic_sjme_jobject phantomTracePoint;
+	sjme_phantom(sjme_jbracketTrace) phantomTracePoint;
 
 	/** The index of this frame. */
 	sjme_jint index;
 
-	/** The currrent commit on the frame. */
-	sjme_nvm_frame_gcCommit* commit;
+	/** Waiting condition. */
+	struct
+	{
+		/** The function to call for the condition. */
+		sjme_nvm_frame_conditionFunc function;
+	} condition;
 
 	/** Frame state flags. */
-	sjme_packed struct
-	{
-		/** Enter synchronization was performed. */
-		sjme_jboolean synchronizedEnter;
+	sjme_nvm_frame_stateFlags flags;
 
-		/** Exit synchronization was performed. */
-		sjme_jboolean synchronizedExit;
-
-		/** Is this a static initializer? */
-		sjme_jboolean isStaticInit;
-
-		/** Is this an instance initializer? */
-		sjme_jboolean isInstanceInit;
-	} flags;
+	/** The register window. */
+	sjme_nvm_store_window* storeWindow;
 };
 
 /** List of stack frames. */
@@ -338,19 +399,22 @@ struct sjme_nvm_task_taskNewConfig
 	sjme_nvm_task_pipeRedirectType stdErr;
 
 	/** The class path to use. */
-	sjme_list_sjme_nvm_rom_library* classPath;
+	sjme_list(sjme_nvm_rom_library)* classPath;
 
 	/** Main class to start in. */
 	sjme_lpcstr mainClass;
 
 	/** Main arguments. */
-	const sjme_list_sjme_lpcstr* mainArgs;
+	const sjme_list(sjme_lpcstr)* mainArgs;
 
 	/** System properties. */
-	const sjme_list_sjme_lpcstr* sysProps;
+	const sjme_list(sjme_lpcstr)* sysProps;
 	
 	/** The class loader for this task. */
 	sjme_nvm_vmClass_loader classLoader;
+
+	/** The classpath is a strong reference. */
+	sjme_jboolean strongClassPath;
 
 	/** The belay for the task. */
 	sjme_nvm_bootBelayType belay;
@@ -365,7 +429,7 @@ struct sjme_nvm_taskStringsBase
 	sjme_nvm_commonBase common;
 
 	/** The interned strings. */
-	sjme_list_sjme_jstring* interns;
+	sjme_list(sjme_jstring)* interns;
 };
 
 /**
@@ -376,71 +440,108 @@ struct sjme_nvm_taskStringsBase
 typedef enum sjme_nvm_task_commonClassId
 {
 	/** Null class. */
-	SJME_NVM_TASK_COMMON_CLASS_NULL,
-	
-	/** @c java.lang.Class . */
-	SJME_NVM_TASK_COMMON_CLASS_CLASS,
+	SJME_NVM_COMMON_NULL,
 
-	/** @c cc.squirreljme.jvm.mle.brackets.JarPackageBracket . */
-	SJME_NVM_TASK_COMMON_CLASS_JAR_PACKAGE,
-	
-	/** @c java.lang.Object . */
-	SJME_NVM_TASK_COMMON_CLASS_OBJECT,
+	/** @code java.lang.ClassCastException@endcode . */
+	SJME_NVM_COMMON_EXCEPTION_CLASS_CAST,
 
-	/** @c cc.squirreljme.jvm.mle.brackets.PipeBracket . */
-	SJME_NVM_TASK_COMMON_CLASS_PIPE,
+	/** @code java.lang.LinkageError @endcode . */
+	SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR,
 	
-	/** @c boolean . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BOOLEAN,
-	
-	/** @c byte . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_BYTE,
-	
-	/** @c char . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_CHARACTER,
-	
-	/** @c double . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_DOUBLE,
-	
-	/** @c float . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_FLOAT,
-	
-	/** @c int . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_INTEGER,
-	
-	/** @c long . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_LONG,
-	
-	/** @c short . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_SHORT,
-	
-	/** @c void . */
-	SJME_NVM_TASK_COMMON_CLASS_PRIMITIVE_VOID,
+	/** @code java.lang.NullPointerException @endcode . */
+	SJME_NVM_COMMON_EXCEPTION_NULL_POINTER,
 
-	/** @c java.lang.ref.PhantomReference . */
-	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_PHANTOM,
+	/** @code cc.squirreljme.jvm.mle.brackets.JarPackageBracket @endcode . */
+	SJME_NVM_COMMON_JAR_PACKAGE,
 
-	/** @c java.lang.ref.SoftReference . */
-	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_SOFT,
-
-	/** @c java.lang.ref.WeakReference . */
-	SJME_NVM_TASK_COMMON_CLASS_REFERENCE_WEAK,
+	/** @code cc.squirreljme.jvm.mle.brackets.PipeBracket @endcode . */
+	SJME_NVM_COMMON_PIPE,
 	
-	/** @c java.lang.String . */
-	SJME_NVM_TASK_COMMON_CLASS_STRING,
+	/** @code boolean @endcode . */
+	SJME_NVM_COMMON_PRIMITIVE_BOOLEAN,
+	
+	/** @code byte @endcode . */
+	SJME_NVM_COMMON_PRIMITIVE_BYTE,
+	
+	/** @code char @endcode . */
+	SJME_NVM_COMMON_PRIMITIVE_CHARACTER,
+	
+	/** @code double @endcode . */
+	SJME_NVM_COMMON_PRIMITIVE_DOUBLE,
+	
+	/** @code float @endcode . */
+	SJME_NVM_COMMON_PRIMITIVE_FLOAT,
+	
+	/** @code int @endcode . */
+	SJME_NVM_COMMON_PRIMITIVE_INTEGER,
+	
+	/** @code long @endcode . */
+	SJME_NVM_COMMON_PRIMITIVE_LONG,
+	
+	/** @code short @endcode . */
+	SJME_NVM_COMMON_PRIMITIVE_SHORT,
+	
+	/** @code void @endcode . */
+	SJME_NVM_COMMON_PRIMITIVE_VOID,
 
-	/** @c java.lang.Thread . */
-	SJME_NVM_TASK_COMMON_CLASS_THREAD,
+	/** @code java.lang.ref.PhantomReference @endcode . */
+	SJME_NVM_COMMON_REFERENCE_PHANTOM,
 
-	/** @c java.lang.Throwable . */
-	SJME_NVM_TASK_COMMON_CLASS_THROWABLE,
+	/** @code java.lang.ref.SoftReference @endcode . */
+	SJME_NVM_COMMON_REFERENCE_SOFT,
 
-	/** @c cc.squirreljme.jvm.mle.brackets.TracePointBracket . */
-	SJME_NVM_TASK_COMMON_CLASS_TRACE_POINT,
+	/** @code java.lang.ref.WeakReference @endcode . */
+	SJME_NVM_COMMON_REFERENCE_WEAK,
+
+	/**
+	 * @code cc.squirreljme.jvm.mle.scritchui.ScritchUnifiedInterface @endcode.
+	 */
+	SJME_NVM_COMMON_SCRITCH_UI_PROXY,
+
+	/** @code cc.squirreljme.jvm.mle.brackets.TracePointBracket @endcode . */
+	SJME_NVM_COMMON_TRACE_POINT,
+
+	/** The start of very important classes. */
+	SJME_NVM_COMMON_VERY_IMPORTANT,
+
+	/** @code java.lang.Throwable @endcode . */
+	SJME_NVM_COMMON_THROWABLE,
+
+	/** @code java.lang.Thread @endcode . */
+	SJME_NVM_COMMON_THREAD,
+	
+	/** @code java.lang.String @endcode . */
+	SJME_NVM_COMMON_STRING,
+	
+	/** @code java.lang.Class @endcode . */
+	SJME_NVM_COMMON_CLASS,
+	
+	/** @code java.lang.Object @endcode . */
+	SJME_NVM_COMMON_OBJECT,
+
+	/** @code cc.squirreljme.jvm.mle.brackets.VMThreadBracket @endcode . */
+	SJME_NVM_COMMON_VM_THREAD,
 
 	/** The number of common classes. */
 	SJME_NVM_TASK_NUM_COMMON_CLASS
 } sjme_nvm_task_commonClassId;
+
+/**
+ * Singleton object instances which exist within a task of the virtual machine.
+ *
+ * @since 2026/09/19
+ */
+typedef enum sjme_nvm_task_singleton
+{
+	/** Null singleton. */
+	SJME_NVM_TASK_SINGLETON_NULL,
+
+	/** ScritchUI @code ScritchUnifiedInterface @endcode. */
+	SJME_NVM_TASK_SINGLETON_SCRITCHUI,
+
+	/** The number of singletons available. */
+	SJME_NVM_TASK_NUM_SINGLETONS,
+} sjme_nvm_task_singleton;
 
 /** A list of Jar package brackets. */ 
 SJME_LIST_DECLARE(sjme_jbracketJarPackage, 0);
@@ -462,22 +563,34 @@ typedef struct sjme_nvm_task_globals
 	sjme_jstring mainClassName;
 
 	/** Main arguments, as objects. */
-	sjme_list_sjme_jstring* mainArgs;
+	sjme_list(sjme_jstring)* mainArgs;
 
 	/** Common classes. */
-	sjme_atomic_sjme_jclass commonClasses[SJME_NVM_TASK_NUM_COMMON_CLASS];
+	sjme_atomic(sjme_jclass) commonClasses[SJME_NVM_TASK_NUM_COMMON_CLASS];
+
+	/** Singleton class instances. */
+	sjme_atomic(sjme_jobject) singletons[SJME_NVM_TASK_NUM_SINGLETONS];
 
 	/** The default accessor for fields. */
 	sjme_nvm_jfieldAccessFunc accessor;
 
-	/** Cached @c sjme_jbracketJarPackage for libraries. */
-	sjme_list_sjme_jbracketJarPackage* jarBrackets;
+	/** Cached @link sjme_jbracketJarPackage @endlink for libraries. */
+	sjme_list(sjme_jbracketJarPackage)* jarBrackets;
 	
 	/** The main thread. */
-	sjme_nvm_thread mainThread;
+	sjme_atomic(sjme_nvm_thread) mainThread;
 
 	/** No optimization? */
 	sjme_jboolean noOptimize;
+
+	/** The next frame ID for this task, used for JDWP and debugging. */
+	sjme_atomic(sjme_jint) nextFrameId;
+
+	/** The identity hashcode generator. */
+	sjme_random idHash;
+
+	/** The next sequential ID. */
+	sjme_atomic(sjme_jint) sequencedId;
 } sjme_nvm_task_globals;
 
 typedef enum sjme_nvm_task_threadCountType
@@ -494,8 +607,11 @@ typedef enum sjme_nvm_task_threadCountType
 	/** Await terminate. */
 	SJME_NVM_THREAD_COUNT_AWAIT_CLEANUP = 3,
 
+	/** Count for the main thread. */
+	SJME_NVM_THREAD_COUNT_MAIN = 4,
+
 	/** The number of thread counts. */
-	SJME_NVM_THREAD_NUM_COUNT_TYPE = 4,
+	SJME_NVM_THREAD_NUM_COUNT_TYPE = 5,
 } sjme_nvm_task_threadCountType;
 	
 struct sjme_nvm_taskBase
@@ -507,22 +623,22 @@ struct sjme_nvm_taskBase
 	sjme_jint id;
 	
 	/** The state machine which owns this task. */
-	sjme_nvm inState;
+	sjme_phantom(sjme_nvm) inState;
 	
 	/** The exit code of the task. */
-	sjme_jint exitCode;
+	sjme_atomic(sjme_jint) exitCode;
 	
 	/** The current task status. */
 	sjme_nvm_task_statusType status;
 
-	/** Task @c sjme_nvm_task_terminateLevel level. */
-	sjme_atomic_sjme_jint terminate;
+	/** Task @link sjme_nvm_terminateLevel @endlink level. */
+	sjme_atomic(sjme_jint) terminate;
 
 	/** The number of threads based on the count. */
-	sjme_atomic_sjme_jint numThreads[SJME_NVM_THREAD_NUM_COUNT_TYPE];
+	sjme_atomic(sjme_jint) numThreads[SJME_NVM_THREAD_NUM_COUNT_TYPE];
 	
 	/** The threads within the current task. */
-	sjme_list_sjme_nvm_thread* threads;
+	sjme_list(sjme_nvm_thread)* threads;
 	
 	/** The class loader for this specific task. */
 	sjme_nvm_vmClass_loader classLoader;
@@ -533,15 +649,34 @@ struct sjme_nvm_taskBase
 	/** Globals for the task. */
 	sjme_nvm_task_globals globals;
 
-	/** The next frame ID for this task, used for JDWP and debugging. */
-	sjme_atomic_sjme_jint nextFrameId;
-
 	/** The task initialization configuration. */
 	const sjme_nvm_task_taskNewConfig* initConfig;
 
-	/** The identity hashcode generator. */
-	sjme_random idHash;
+	/** Is this the main task. */
+	sjme_jboolean isMain;
 };
+
+/**
+ * Thread flags.
+ *
+ * @since 2025/10/26
+ */
+typedef enum sjme_nvm_thread_flags
+{
+	/** Is this a daemon thread? */
+	SJME_NVM_THREAD_IS_DAEMON = INT32_C(0x00000001),
+} sjme_nvm_thread_flags;
+	
+/**
+ * Checks if the given thread flag is set.
+ * 
+ * @param bits The flag bits to check.
+ * @param flag The thread flag to check.
+ * @return If the flag is set.
+ * @since 2025/10/26
+ */
+#define SJME_NVM_THREAD_CHECK(bits, flag) \
+	(((bits) & SJME_TOKEN_PASTE_PP(SJME_NVM_THREAD_, flag)) != 0)
 
 struct sjme_nvm_threadBase
 {
@@ -549,50 +684,60 @@ struct sjme_nvm_threadBase
 	sjme_jobjectBase object;
 	
 	/** The VM state this thread is in. */
-	sjme_nvm inState;
+	sjme_phantom(sjme_nvm) inState;
 	
 	/** The owning task. */
-	sjme_nvm_task inTask;
+	sjme_phantom(sjme_nvm_task) inTask;
 
-	/** The @c sjme_nvm_thread_startType of the thread. */
-	sjme_atomic_sjme_jint start;
+	/** The @link sjme_nvm_thread_startType @endlink of the thread. */
+	sjme_atomic(sjme_nvm_thread_startType) start;
 	
 	/** The current thread status. */
-	sjme_nvm_thread_statusType status;
+	sjme_atomic(sjme_nvm_thread_statusType) status;
 	
 	/** The wrapper in the front end. */
 	sjme_frontEnd frontEnd;
+
+	/** The native thread, if applicable. */
+	sjme_atomic(sjme_thread) nativeThread;
 	
 	/** The thread ID. */
 	sjme_jint threadId;
 
 	/** Is this the main thread? */
 	sjme_jboolean isMain;
-
-	/** The @c java.lang.Thread this is bound to. */
-	sjme_jobject vmObject;
 	
 	/** The number of valid frames. */
 	sjme_jint numFrames;
 	
 	/** The stack frames. */
-	sjme_list_sjme_nvm_frame* frames;
+	sjme_list(sjme_nvm_frame)* frames;
 
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	/** The stack information for the entire thread. */
 	sjme_frame_threadStacks stack;
+#endif
 
-	/** What is the @c sjme_nvm_threadScheduleMode of this thread? */
-	sjme_atomic_sjme_jint scheduleMode;
+	/** The @link sjme_nvm_threadScheduleMode @endlink of this thread? */
+	sjme_atomic(sjme_nvm_threadScheduleMode) scheduleMode;
+
+	/** The value returned from a thread. */
+	sjme_jvalueTyped returned;
 
 	/** A @c Throwable which has been thrown. */
-	sjme_atomic_sjme_jobject tossed;
+	sjme_atomic(sjme_jobject) tossed;
+
+	/** The current frame level that the throwable was tossed at. */
+	sjme_atomic(sjme_jint) tossedLevel;
+
+	/** If this thread is interrupted. */
+	sjme_atomic(sjme_jint) interrupted;
 
 	/** Thread specific flags. */
-	struct
-	{
-		/** Is this a daemon thread? */
-		sjme_jboolean isDaemon;
-	} flags;
+	sjme_nvm_thread_flags flags;
+
+	/** The register file for all stack storage. */
+	sjme_nvm_store_file* storeFile;
 };
 
 /**
@@ -666,6 +811,51 @@ sjme_jclass sjme_nvm_task_commonClassR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NVM_TASK_NUM_COMMON_CLASS)
 		sjme_nvm_task_commonClassId commonId);
+
+/**
+ * Commits any pending garbage collection.
+ * 
+ * @param inFrame The frame to commit within.
+ * @param commit Any pending garbage collection actions to be committed.
+ * @return Any resultant error, if any.
+ * @since 2025/09/06
+ */
+sjme_errorCode sjme_nvm_task_frameCommit(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit);
+
+/**
+ * Pushes an object to be commited for later garbage collection.
+ * 
+ * @param contextFrame The frame to push the commit within.
+ * @param commit The commit to push into.
+ * @param pushObject The object to be pushed.
+ * @return Any resultant error, if any.
+ * @since 2025/09/06
+ */
+sjme_errorCode sjme_nvm_task_frameCommitPush(
+	sjme_attrInNullable sjme_nvm_frame contextFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNotNull sjme_jobject pushObject);
+
+
+/**
+ * Emits an exception with the given message.
+ * 
+ * @param inFrame The frame to emit within.
+ * @param commonClass The commit class to emit.
+ * @param cause The cause of this exception, this is optional.
+ * @param message The message to use for the message.
+ * @param ... Any formatted parameters to the message.
+ * @return Any resultant error, if any.
+ * @since 2026/01/11
+ */
+sjme_errorCode sjme_nvm_task_frameEmit(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	...) sjme_attrFormatOuter(3, 4);
 	
 /**
  * Locates the exception handler to use for exceptions.
@@ -684,30 +874,16 @@ sjme_errorCode sjme_nvm_task_frameHandler(
 	sjme_attrInOutNotNull sjme_nvm_byteCode_pcNew* pcNew);
 
 /**
- * Returns the direct address to the local variable.
- * 
- * @param inFrame The thread frame.
- * @param localType The type of local to access.
- * @param localIndex The local index.
- * @param outAddr The direct address to the local value.
- * @return Any resultant error, if any.
- * @since 2025/03/02
- */
-sjme_errorCode sjme_nvm_task_frameLocalAddr(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId localType,
-	sjme_attrInPositive sjme_jint localIndex,
-	sjme_attrOutNotNull sjme_jvalue** outAddr);
-
-/**
  * Clears the entire set of locals for a frame.
  * 
  * @param inFrame The frame to clear.
+ * @param commit The GC commit.
  * @return Any resultant error, if any.
  * @since 2025/07/10
  */
 sjme_errorCode sjme_nvm_task_frameLocalClear(
-	sjme_attrInNotNull sjme_nvm_frame inFrame);
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit);
 
 /**
  * Returns the value of a local variable.
@@ -716,8 +892,8 @@ sjme_errorCode sjme_nvm_task_frameLocalClear(
  * @param typeId The type to read.
  * @param localIndex The index of the local.
  * @param outValue The output value.
- * @param copiedElsewhere Is this value copied elsewhere? This affects
- * reference counting and garbage collection.
+ * @param outInfo Optional slot information for the local variable, this
+ * may be @code NULL @endcode.
  * @return Any resultant error, if any.
  * @since 2025/07/18
  */
@@ -726,12 +902,13 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint localIndex,
 	sjme_attrInNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere);
+	sjme_attrOutNullable sjme_nvm_store_slotInfo* outInfo);
 
 /**
  * Pushes the specified local to the stack.
  * 
  * @param inFrame The frame to push the local to the stack from.
+ * @param commit The GC commit.
  * @param typeId The type of local to push.
  * @param localIndex The index of the local.
  * @return Any resultant error, if any.
@@ -739,6 +916,7 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
  */
 sjme_errorCode sjme_nvm_task_frameLocalPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInValue sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint localIndex);
 	
@@ -747,6 +925,7 @@ sjme_errorCode sjme_nvm_task_frameLocalPush(
  * index, which is the same as the Java index.
  * 
  * @param inFrame The frame to set the value in.
+ * @param commit The GC commit.
  * @param localIndex The local index to set.
  * @param inValue The value to set.
  * @return Any resultant error, if any.
@@ -754,6 +933,7 @@ sjme_errorCode sjme_nvm_task_frameLocalPush(
  */
 sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint localIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue);
 	
@@ -783,37 +963,36 @@ sjme_errorCode sjme_nvm_task_framePool(
  * Clears the entire stack for a frame.
  * 
  * @param inFrame The frame to clear.
+ * @param commit The GC commit.
  * @return Any resultant error, if any.
  * @since 2025/06/29
  */
 sjme_errorCode sjme_nvm_task_frameStackClear(
-	sjme_attrInNotNull sjme_nvm_frame inFrame);
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit);
 	
 /**
  * Peeks a single value from the top of the stack.
  * 
  * @param inFrame The frame to pop from.
- * @param typeId The type ID to pop, if this is @c SJME_NUM_JAVA_TYPE_IDS
+ * @param typeId The type ID to pop, if this is @link SJME_NUM_JAVA_TYPE_IDS
  * then this will disregard the type.
  * @param outValue The resultant value.
- * @param copiedElsewhere Is this value copied elsewhere? That is if this is
- * true, then this will be reference counted.
  * @return Any resultant error, if any.
  * @since 2025/02/17
  */
 sjme_errorCode sjme_nvm_task_frameStackPeek(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere);
+	sjme_attrInNotNull sjme_jvalueTyped* outValue);
 
 /**
  * Pops a value from the top of the stack.
  * 
  * @param inFrame The frame to pop from.
  * @param typeId The type ID to pop.
- * @param copiedElsewhere Is this value copied elsewhere?
- * @param commit
+ * @param commit The commit to the garbage collector when the value is no
+ * longer needed.
  * @param outValue The resultant value.
  * @return Any resultant error, if any.
  * @since 2025/02/16
@@ -821,7 +1000,6 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
 sjme_errorCode sjme_nvm_task_frameStackPop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInValue sjme_jboolean copiedElsewhere,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jvalueTyped* outValue);
 
@@ -830,8 +1008,8 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
  * typed values.
  * 
  * @param inFrame The frame to pop from.
- * @param copiedElsewhere Are these values copied elsewhere?
- * @param commit
+ * @param commit The commit to the garbage collector when the value is no
+ * longer needed.
  * @param argC The number of values to pop.
  * @param argT The types of values to pop.
  * @param argV The resultant values which were popped.
@@ -840,7 +1018,6 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
  */
 sjme_errorCode sjme_nvm_task_frameStackPopA(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInValue sjme_jboolean copiedElsewhere,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNullBuf(argC) sjme_javaTypeId* argT,
@@ -850,36 +1027,42 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
  * Pushes the given value to the stack.
  * 
  * @param inFrame The frame to push to.
+ * @param commit The GC commit.
  * @param inValue The value being pushed.
  * @return Any resultant error, if any.
  * @since 2025/01/11
  */
 sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue);
 	
 /**
  * Pushes the given class, named by the pool string, to the stack.
  * 
  * @param inFrame The frame to push to.
+ * @param commit The GC commit.
  * @param inClassName The name of the class to push.
  * @return Any resultant error, if any.
  * @since 2025/01/11
  */
 sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_nvm_stringPool_string inClassName);
 	
 /**
  * Pushes the given string pool string to the stack.
  * 
- * @param inFrame The frame to push into the stack for. 
+ * @param inFrame The frame to push into the stack for.
+ * @param commit The GC commit.
  * @param inString The string value being pushed.
  * @return Any resultant error, if any.
  * @since 2025/01/11
  */
 sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_nvm_stringPool_string inString);
 
 /**
@@ -888,8 +1071,8 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
  * @param inFrame The frame to get the top of.
  * @param depth The depth from the stack top.
  * @param outValue The resultant value.
- * @param copiedElsewhere Is this value copied elsewhere? That is if this is
- * true, then this will be reference counted.
+ * @param outInfo Optional copy of the found slot's storage information, this
+ * may be @code NULL @endcode.
  * @return Any resultant error, if any.
  * @since 2025/02/24
  */
@@ -897,66 +1080,26 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint depth,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere);
+	sjme_attrOutNullable sjme_nvm_store_slotInfo* outInfo);
 
 /**
- * Returns the direct address to a tread value.
+ * Specifies that the given frame should wait for the given condition to be
+ * met before execution can continue.
  * 
- * @param inFrame The input stack frame.
- * @param typeId The type.
- * @param typeIndex The index into the tread.
- * @param outAddr The resultant address of the value.
- * @param outCheck The output check value if an object.
- * @param outConsiderGc How to consider garbage collection.
- * @return Any resultant value, if any.
- * @since 2025/03/02
- */
-sjme_errorCode sjme_nvm_task_frameTreadAddr(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrOutNotNull sjme_jvalue** outAddr,
-	sjme_attrOutNotNull sjme_jint** outCheck,
-	sjme_attrOutNullable sjme_nvm_frame_considerGc* outConsiderGc);
-
-/**
- * Gets the value of a variable within a frame using the typed index
- * which is placed within its own frame set.
- * 
- * @param inFrame The frame to set the value in.
- * @param typeId The type to read.
- * @param typeIndex The type index to set.
- * @param outValue The resultant value.
- * @param copiedElsewhere Valued is copied elsewhere?
- * @param eraseOld Erase the old value in the slot?
+ * @param inFrame The frame that is waiting for the condition.
+ * @param conditionFunc The condition function to wait on.
+ * @param timeout The timeout before the condition will expire, if this
+ * is @c -1 then this will wait forever.
+ * @param value The condition parameter, this may be anything. 
  * @return Any resultant error, if any.
- * @since 2025/02/16
+ * @since 2025/10/02
  */
-sjme_errorCode sjme_nvm_task_frameTreadGetT(
+sjme_errorCode sjme_nvm_task_frameWaitFor(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere,
-	sjme_attrInValue sjme_jboolean eraseOld);
+	sjme_attrInNotNull sjme_nvm_frame_conditionFunc conditionFunc,
+	sjme_attrInNegativeOnePositive sjme_jint timeout,
+	sjme_attrInValue sjme_intPointer value);
 	
-/**
- * Sets the value of a variable within a frame using the typed index
- * which is placed within its own frame set.
- * 
- * @param inFrame The frame to set the value in.
- * @param typeIndex The type index to set.
- * @param inValue The value to set.
- * @param oldValue The old value that was in this tread slot.
- * @return Any resultant error, if any.
- * @since 2025/01/04
- */
-sjme_errorCode sjme_nvm_task_frameTreadSetT(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrInNotNull const sjme_jvalueTyped* inValue,
-	sjme_attrOutNotNull sjme_jvalueTyped* oldValue);
-
 /**
  * Prints the stack trace for a thread using the standard compact SquirrelJME
  * style stack traces.
@@ -1052,12 +1195,15 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
  * 
  * @param inState The virtual machine state.
  * @param inThread The thread to un-schedule.
+ * @param msResting The time to spend resting at the minimum, if zero then
+ * this is just a yield and the thread will wake back up as soon as possible.
  * @return Any resultant error, if any.
  * @since 2025/06/29
  */
 sjme_errorCode sjme_nvm_task_taskScheduleOut(
 	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrInNotNull sjme_nvm_thread inThread);
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInPositive sjme_jint msResting);
 
 /**
  * Determines if the given thread can be scheduled.
@@ -1072,6 +1218,42 @@ sjme_errorCode sjme_nvm_task_taskScheduleYes(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jboolean* isRunning);
+
+/**
+ * Emits an exception with the given message.
+ * 
+ * @param inThread The thread to emit within.
+ * @param commonClass The commit class to emit.
+ * @param cause The cause of this exception, this is optional.
+ * @param message The message to use for the message.
+ * @param ... Any formatted parameters to the message.
+ * @return Any resultant error, if any.
+ * @since 2025/09/06
+ */
+sjme_errorCode sjme_nvm_task_threadEmit(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	...) sjme_attrFormatOuter(3, 4);
+
+/**
+ * Emits an exception with the given message.
+ * 
+ * @param inThread The thread to emit within.
+ * @param commonClass The commit class to emit.
+ * @param cause The cause of this exception, this is optional.
+ * @param message The message to use for the message.
+ * @param args Any formatted parameters to the message.
+ * @return Any resultant error, if any.
+ * @since 2026/01/11
+ */
+sjme_errorCode sjme_nvm_task_threadEmitV(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	sjme_attrInValue va_list args);
 
 /**
  * Enters a frame for the given exact method within the thread.
@@ -1156,6 +1338,30 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 sjme_errorCode sjme_nvm_task_threadFrameNext(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame);
+
+/**
+ * Interrupts the given thread.
+ * 
+ * @param inThread The thread to interrupt.
+ * @return Any resultant error, if any.
+ * @since 2025/10/02
+ */
+sjme_errorCode sjme_nvm_task_threadInterrupt(
+	sjme_attrInNotNull sjme_nvm_thread inThread);
+
+/**
+ * Checks if the given thread is in the interrupt state, then optionally
+ * clears it.
+ * 
+ * @param inThread The thread to check if interrupted.
+ * @param clear If the interrupt signal should be cleared.
+ * @return Any resultant error, if any, interrupted threads
+ * will be @link SJME_ERROR_INTERRUPTED.
+ * @since 2025/10/02
+ */
+sjme_errorCode sjme_nvm_task_threadInterruptCheck(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_jboolean clear);
 	
 /**
  * Leaves a frame of execution.
@@ -1173,13 +1379,16 @@ sjme_errorCode sjme_nvm_task_threadLeave(
  * @param inTask The task to create the thread in.
  * @param outThread The resultant thread.
  * @param threadName The name of the new thread.
+ * @param isMain Is this the main thread? If a main thread already exists
+ * then this parameter will have no effect.
  * @return On any errors, if any.
  * @since 2024/10/15
  */
 sjme_errorCode sjme_nvm_task_threadNew(
 	sjme_attrInNotNull sjme_nvm_task inTask,
 	sjme_attrOutNotNull sjme_nvm_thread* outThread,
-	sjme_attrInNotNull sjme_lpcstr threadName);
+	sjme_attrInNotNull sjme_lpcstr threadName,
+	sjme_attrInValue sjme_jboolean isMain);
 
 /**
  * Starts the specified thread.
@@ -1198,6 +1407,7 @@ sjme_errorCode sjme_nvm_task_threadStart(
  * initialization.
  * @param outString The resultant string object.
  * @param isIntern Should this be interned?
+ * @param refString The referring string pool string, if applicable.
  * @param inSeq The input sequence.
  * @return Any resultant error, if any.
  * @since 2025/01/25
@@ -1206,6 +1416,7 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfCS(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_jstring* outString,
 	sjme_attrInValue sjme_jboolean isIntern,
+	sjme_attrInNullable sjme_nvm_stringPool_string refString,
 	sjme_attrInNotNull sjme_charSeq inSeq);
 	
 /**
@@ -1241,25 +1452,32 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
 	sjme_attrInNotNull sjme_lpcstr inUtf);
 
 /** Frame thread. */
-#define SJME_F_T(frame) ((frame)->inThread)
+#define SJME_F_T(frame) \
+	sjme_atomic_g(sjme_nvm_thread, &(frame)->inThread)
 
 /** Frame task. */
-#define SJME_F_K(frame) ((frame)->inTask)
+#define SJME_F_K(frame) \
+	sjme_atomic_g(sjme_nvm_task, &(frame)->inTask)
 
 /** Frame classloader. */
-#define SJME_F_CL(frame) ((frame)->inTask->classLoader)
+#define SJME_F_CL(frame) \
+	(sjme_atomic_g(sjme_nvm_task, &(frame)->inTask)->classLoader)
 
 /** Frame state. */
-#define SJME_F_S(frame) ((frame)->inTask->inState)
+#define SJME_F_S(frame) \
+	sjme_atomic_g(sjme_nvm, &SJME_F_K(frame)->inState)
 
 /** Thread state. */
-#define SJME_T_S(thread) ((thread)->inState)
+#define SJME_T_S(thread) \
+	sjme_atomic_g(sjme_nvm, &(thread)->inState)
 
 /** Thread task. */
-#define SJME_T_K(thread) ((thread)->inTask)
+#define SJME_T_K(thread) \
+	sjme_atomic_g(sjme_nvm_task, &(thread)->inTask)
 
 /** Thread classloader. */
-#define SJME_T_CL(thread) ((thread)->inTask->classLoader)
+#define SJME_T_CL(thread) \
+	(sjme_atomic_g(sjme_nvm_task, &(thread)->inTask)->classLoader)
 	
 /*--------------------------------------------------------------------------*/
 
