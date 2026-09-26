@@ -12,8 +12,11 @@ package cc.squirreljme.runtime.nttdocomo.ui;
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraDisplayable;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraStateManager;
 import com.nttdocomo.ui.Canvas;
 import java.lang.ref.WeakReference;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * Handler for any flush operation for drawing.
@@ -161,11 +164,21 @@ public final class LockFlush
 			if (target == null)
 				return;
 			
+			// Can we recover the mapped displayable?
+			ExtraDisplayable extra = ExtraStateManager.locate(
+				ExtraDisplayable.class, target);
+			if (extra == null)
+				return;
+			
+			// This hopefully is still valid
+			Displayable mapped = extra.get();
+			if (!(mapped instanceof javax.microedition.lcdui.Canvas))
+				return;
+			
 			// Tell canvas to repaint itself
 			DoubleBuffer doubleBuffer = this._doubleBuffer;
 			doubleBuffer.flush();
-			((javax.microedition.lcdui.Canvas)((DoJaFrame)target)
-				.__squirreljmeDisplayable()).repaint();
+			((javax.microedition.lcdui.Canvas)(mapped)).repaint();
 		}
 	}
 }

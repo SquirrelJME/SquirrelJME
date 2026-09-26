@@ -12,6 +12,8 @@ package com.nttdocomo.ui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraDisplayable;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraStateManager;
 import java.util.Objects;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Displayable;
@@ -65,7 +67,11 @@ public class Dialog
 		
 		Alert alert = new Alert(__title);
 		
+		// Bind the displayable
 		this._alert = alert;
+		ExtraStateManager.bind(this, ExtraDisplayable.class,
+			new ExtraDisplayable(alert));
+		
 	}
 	
 	@Api
@@ -86,15 +92,5 @@ public class Dialog
 		throws UIException
 	{
 		throw Debugging.todo();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2024/11/28
-	 */
-	@Override
-	protected Displayable __squirreljmeDisplayable()
-	{
-		return this._alert;
 	}
 }

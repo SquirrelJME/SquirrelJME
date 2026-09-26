@@ -12,6 +12,7 @@ package com.nttdocomo.ui;
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * This represents a single display for an application, it is equivalent to
@@ -288,8 +289,8 @@ public class Display
 			// Try changing the display first
 			javax.microedition.lcdui.Display display =
 				Display.__midpDisplay();
-			display.setCurrent(
-				(__frame == null ? null : __frame.__squirreljmeDisplayable()));
+			display.setCurrent((__frame == null ? null :
+				__frame.__displayable(Displayable.class)));
 			
 			// Is now the current frame
 			Display._currentFrame = __frame;

@@ -14,10 +14,13 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraDisplayable;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraStateManager;
 import cc.squirreljme.runtime.nttdocomo.ui.BGColor;
-import cc.squirreljme.runtime.nttdocomo.ui.DoJaFrame;
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandLayoutPolicy;
 import javax.microedition.lcdui.Displayable;
 
 /**
@@ -29,7 +32,6 @@ import javax.microedition.lcdui.Displayable;
  */
 @Api
 public abstract class Frame
-	extends DoJaFrame
 {
 	/** The left soft key. */
 	@Api
@@ -47,6 +49,9 @@ public abstract class Frame
 	
 	/** The background color of the display. */
 	final BGColor _bgColor;
+	
+	/** The cached displayable. */
+	volatile Reference<Displayable> _displayableCache;
 	
 	/**
 	 * Base constructor.
@@ -70,14 +75,6 @@ public abstract class Frame
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2021/11/30
-	 */
-	@SquirrelJMEVendorApi
-	@Override
-	protected abstract Displayable __squirreljmeDisplayable();
-	
-	/**
 	 * Returns the height of the current frame.
 	 *
 	 * @return The height of the current frame.
@@ -86,7 +83,13 @@ public abstract class Frame
 	@Api
 	public int getHeight()
 	{
-		return this.__squirreljmeDisplayable().getHeight();
+		// This should never happen, if it does then this means a subclass
+		// does not have the Displayable stored in a field
+		Displayable d = this.__displayable(Displayable.class);
+		if (d == null)
+			throw Debugging.oops();
+		
+		return d.getHeight();
 	}
 	
 	/**
@@ -98,7 +101,13 @@ public abstract class Frame
 	@Api
 	public int getWidth()
 	{
-		return this.__squirreljmeDisplayable().getWidth();
+		// This should never happen, if it does then this means a subclass
+		// does not have the Displayable stored in a field
+		Displayable d = this.__displayable(Displayable.class);
+		if (d == null)
+			throw Debugging.oops();
+		
+		return d.getWidth();
 	}
 	
 	/**
@@ -126,14 +135,20 @@ public abstract class Frame
 		if (__key < 0 || __key >= Frame._NUM_SOFT_KEYS)
 			throw Debugging.todo("Handle soft key %d?", __key);
 		
-		Displayable displayable = this.__squirreljmeDisplayable();
-		Command softKey = this._softKeys[__key];
+		// This should never happen, if it does then this means a subclass
+		// does not have the Displayable stored in a field
+		Displayable displayable = this.__displayable(Displayable.class);
+		if (displayable == null)
+			throw Debugging.oops();
+		
 		
 		// If a layout policy for the soft keys has not been set, set it now
-		if (displayable.getCommandLayoutPolicy() == null)
+		CommandLayoutPolicy layout = displayable.getCommandLayoutPolicy();
+		if (layout == null)
 			displayable.setCommandLayoutPolicy(new __SoftKeyLayout__());
 		
 		// Setup command and show it
+		Command softKey = this._softKeys[__key];
 		if (__label != null && !__label.isEmpty())
 		{
 			// Change label
@@ -149,6 +164,50 @@ public abstract class Frame
 	}
 	
 	/**
+	 * Returns the {@link Displayable} this wraps.
+	 *
+	 * @param <M> The desired displayable class.
+	 * @param __as The desired displayable class.
+	 * @return The MIDP {@link Displayable} used, or {@code null} if it is not
+	 * known or has been garbage collected.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/09/25
+	 */
+	@SquirrelJMEVendorApi
+	<M extends Displayable> M __displayable(Class<M> __as)
+		throws NullPointerException
+	{
+		if (__as == null)
+			throw new NullPointerException("NARG");
+		
+		// Has this been cached?
+		Reference<Displayable> ref = this._displayableCache;
+		if (ref != null)
+		{
+			Displayable rv = ref.get();
+			if (rv != null)
+				return __as.cast(rv);
+		}
+		
+		// Otherwise, we need to get it from the extra state
+		ExtraDisplayable extra = ExtraStateManager.locate(
+			ExtraDisplayable.class, this);
+		if (extra != null)
+		{
+			// Is this still valid?
+			Displayable rv = extra.get();
+			if (rv != null)
+				this._displayableCache = new WeakReference<>(rv);
+					
+			// Make sure it is the class we want
+			return __as.cast(rv);
+		}
+		
+		// Was GCed
+		return null;
+	}
+	
+	/**
 	 * Must be called after construction so SquirrelJME can implement more
 	 * operations.
 	 *
@@ -156,8 +215,14 @@ public abstract class Frame
 	 */
 	final void __postConstruct()
 	{
+		// Has this been disposed?
+		Displayable displayable = this.__displayable(
+			Displayable.class);
+		if (displayable == null)
+			throw new UIException(UIException.ILLEGAL_STATE, "GCGC");
+		
 		// Add the listener for commands
-		this.__squirreljmeDisplayable().setCommandListener(
+		displayable.setCommandListener(
 			new __ShoulderButtonEmitter__(new WeakReference<>(this)));
 	}
 }

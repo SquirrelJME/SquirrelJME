@@ -11,6 +11,8 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraDisplayable;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraStateManager;
 import cc.squirreljme.runtime.nttdocomo.ui.LockFlush;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -70,6 +72,10 @@ public abstract class Canvas
 	@Api
 	public Canvas()
 	{
+		// Bind the displayable
+		ExtraStateManager.bind(this, ExtraDisplayable.class,
+			new ExtraDisplayable(this._midpCanvas));
+		
 		// Needed to initialize the command listener 
 		this.__postConstruct();
 	}
@@ -153,23 +159,13 @@ public abstract class Canvas
 	@Api
 	public void repaint()
 	{
-		this.__squirreljmeDisplayable().repaint();
+		this._midpCanvas.repaint();
 	}
 	
 	@Api
 	public void repaint(int __x, int __y, int __w, int __h)
 	{
-		this.__squirreljmeDisplayable().repaint(__x, __y, __w, __h);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2021/11/30
-	 */
-	@Override
-	protected __MIDPCanvas__ __squirreljmeDisplayable()
-	{
-		return this._midpCanvas;
+		this._midpCanvas.repaint(__x, __y, __w, __h);
 	}
 	
 	/**

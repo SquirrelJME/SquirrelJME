@@ -32,6 +32,7 @@ import org.intellij.lang.annotations.MagicConstant;
  * 
  * To get the state of an arbitrary displayable, assuming it has not been
  * garbage collected, there is {@link DisplayableState#locate(Displayable)}.
+ * This is specific to SquirrelJME only.
  *
  * @since 2024/03/08
  */
