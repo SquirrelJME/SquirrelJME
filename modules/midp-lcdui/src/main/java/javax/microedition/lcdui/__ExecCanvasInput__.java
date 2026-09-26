@@ -14,10 +14,17 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import cc.squirreljme.runtime.lcdui.SpecificFlags;
 import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayState;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraDisplayable;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraGameKeys;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraStateManager;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import javax.microedition.lcdui.game.GameCanvas;
 
 /**
  * Input event handler for canvases.
@@ -28,6 +35,9 @@ class __ExecCanvasInput__
 	extends __ExecCanvas__
 	implements ScritchInputListener
 {
+	/** The cached game key reference. */
+	private volatile Reference<ExtraGameKeys> _gameKeys;
+	
 	/**
 	 * Initializes the listener.
 	 *
@@ -88,21 +98,10 @@ class __ExecCanvasInput__
 		switch (__type)
 		{
 			case ScritchInputMethodType.KEY_PRESSED:
-				keyDefault.keyPressed(vc, __b);
-				if (keyCustom != null)
-					keyCustom.keyPressed(vc, __b);
-				break;
-				
 			case ScritchInputMethodType.KEY_RELEASED:
-				keyDefault.keyReleased(vc, __b);
-				if (keyCustom != null)
-					keyCustom.keyReleased(vc, __b);
-				break;
-				
 			case ScritchInputMethodType.KEY_REPEATED:
-				keyDefault.keyRepeated(vc, __b);
-				if (keyCustom != null)
-					keyCustom.keyRepeated(vc, __b);
+				this.__keyEvent(__type, vc, __b, keyDefault, keyCustom,
+					canvas);
 				break;
 				
 			case ScritchInputMethodType.MOUSE_MOTION:
@@ -127,6 +126,105 @@ class __ExecCanvasInput__
 					canvas.pointerReleased(
 						scale.textureX(__c),
 						scale.textureY(__d));
+				break;
+		}
+	}
+	
+	/**
+	 * Returns the game key state.
+	 *
+	 * @return The game key state, {@code null} if there is no state.
+	 * @since 2026/09/25
+	 */
+	private ExtraGameKeys __gameKeys()
+	{
+		// Canvas is no longer valid or not a GameCanvas?
+		Canvas canvas = this._canvas.get();
+		if (canvas == null || !(canvas instanceof GameCanvas))
+			return null;
+		
+		// Is a cached reference available?
+		Reference<ExtraGameKeys> gameKeys = this._gameKeys;
+		if (gameKeys != null)
+		{
+			ExtraGameKeys rv = gameKeys.get();
+			if (rv != null)
+				return rv;
+		}
+		
+		// Locate the game keys, assuming there is valid state
+		ExtraGameKeys rv = ExtraStateManager.locate(
+			ExtraGameKeys.class, this._canvas);
+		if (rv != null)
+			this._gameKeys = new WeakReference<>(rv);
+		
+		// Return whatever was found
+		return rv;
+	}
+	
+	/**
+	 * Handles a generic key event.
+	 *
+	 * @param __type The event type.
+	 * @param __vc The virtual key code.
+	 * @param __rc The raw key code.
+	 * @param __keyDefault The default key handler.
+	 * @param __keyCustom The custom key handler.
+	 * @param __canvas The canvas this is being emitted on.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/09/25
+	 */
+	private void __keyEvent(int __type, int __vc, int __rc,
+		KeyListener __keyDefault, KeyListener __keyCustom, Canvas __canvas)
+		throws NullPointerException
+	{
+		if (__keyDefault == null || __canvas == null)
+			throw new NullPointerException("NARG");
+		
+		// Only handle game keys if they are not being suppressed
+		// This only cares about when the keys are actually pressed and not
+		// released, so provided the key is pressed at least once between
+		// the calls to trigger the latch it will return the keys as being set
+		ExtraGameKeys gameKeys = this.__gameKeys();
+		int flags = DisplayableState.locate(__canvas).flags();
+		if ((__type == ScritchInputMethodType.KEY_PRESSED ||
+			__type == ScritchInputMethodType.KEY_REPEATED) &&
+			gameKeys != null &&
+			(flags & SpecificFlags.CANVAS_SUPPRESS_GAME_KEY) == 0)
+		{
+			// Map a virtual key to a game key, only handle the first 32 game
+			// keys as that is the current theoretical limit of LCDUI
+			// Note that zero is not a valid key
+			int gameKey = __canvas.getGameAction(__vc);
+			if (gameKey > 0 && gameKey < 32)
+			{
+				// Change to a mask as it will be raised
+				gameKey = 1 << gameKey;
+				
+				// Raise the latch on the bits
+				gameKeys.raise(gameKey);
+			}
+		}
+		
+		// Now handle the event.
+		switch (__type)
+		{
+			case ScritchInputMethodType.KEY_PRESSED:
+				__keyDefault.keyPressed(__vc, __rc);
+				if (__keyCustom != null)
+					__keyCustom.keyPressed(__vc, __rc);
+				break;
+			
+			case ScritchInputMethodType.KEY_RELEASED:
+				__keyDefault.keyReleased(__vc, __rc);
+				if (__keyCustom != null)
+					__keyCustom.keyReleased(__vc, __rc);
+				break;
+			
+			case ScritchInputMethodType.KEY_REPEATED:
+				__keyDefault.keyRepeated(__vc, __rc);
+				if (__keyCustom != null)
+					__keyCustom.keyRepeated(__vc, __rc);
 				break;
 		}
 	}

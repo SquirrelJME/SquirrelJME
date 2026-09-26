@@ -73,6 +73,7 @@ public final class ExtraStateManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/09/25
 	 */
+	@SquirrelJMEVendorApi
 	public static final <E extends ExtraState> E locate(Class<E> __as,
 		Object __o)
 		throws NullPointerException
