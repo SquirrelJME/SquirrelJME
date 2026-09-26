@@ -342,6 +342,12 @@ public class VMCompactLibraryTaskAction
 				"@cc.squirreljme.runtime.cldc.annotation.Api",
 					"!private", "*", ";",
 			"}",
+			"-keep,allowoptimization",
+			"@cc.squirreljme.runtime.cldc.annotation.Api",
+			"interface", "*", "{",
+				"@cc.squirreljme.runtime.cldc.annotation.Api",
+					"!private", "*", ";",
+			"}",
 			
 			// Never touch anything that has anything to do with any native
 			// method
@@ -349,7 +355,6 @@ public class VMCompactLibraryTaskAction
 			"class", "*", "{",
 				"native", "<methods>", ";",
 			"}",
-			
 			
 			// Use KeepWhenCompacting to optimize and obfuscate, but not to
 			// shrink
