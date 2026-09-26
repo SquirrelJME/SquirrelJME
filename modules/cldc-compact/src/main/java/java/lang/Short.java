@@ -173,22 +173,45 @@ public final class Short
 		throw Debugging.todo();
 	}
 	
+	/**
+	 * Returns the value of the specified string using the given radix, this
+	 * operates the same as {@link Integer#parseInt(String, int)}.
+	 *
+	 * @param __v The string to decode.
+	 * @param __r The radix to use.
+	 * @return The resulting short.
+	 * @throws NumberFormatException If the string is not valid; or the radix
+	 * is outside the valid bounds; or the short is out of bounds.
+	 * @since 2026/09/25
+	 */
 	@Api
-	public static short parseShort(String __a, int __b)
+	public static short parseShort(String __v, int __r)
 		throws NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw Debugging.todo();
+		// Parse this as a normal integer, then make sure it is within the
+		// bounds of an actual short value
+		int check = Integer.parseInt(__v, __r);
+		if (check < Short.MIN_VALUE || check > Short.MAX_VALUE)
+			throw new NumberFormatException("OVER");
+		
+		return (short)check;
 	}
 	
+	/**
+	 * Returns the value of the specified string, this
+	 * operates the same as {@link Integer#parseInt(String)}.
+	 *
+	 * @param __v The String to decode.
+	 * @return The parsed short.
+	 * @throws NumberFormatException If the string is not valid; or the short 
+	 * is out of bounds.
+	 * @since 2026/09/25
+	 */
 	@Api
-	public static short parseShort(String __a)
+	public static short parseShort(String __v)
 		throws NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw Debugging.todo();
+		return Short.parseShort(__v, 10);
 	}
 	
 	/**
