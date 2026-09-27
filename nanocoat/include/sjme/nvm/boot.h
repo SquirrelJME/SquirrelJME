@@ -161,26 +161,8 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 sjme_errorCode sjme_nvm_defaultBootSuiteInDirectory(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
-	sjme_attrInNotNull sjme_lpcstr inDirectory,
+	sjme_attrInNotNull const sjme_path* inDirectory,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite);
-
-/**
- * Obtains the default directory for the given type.
- * 
- * This is the same as @c cc.squirreljme.runtime.cldc.full.SystemPathProvider .
- * 
- * @param type The type of directory to get. 
- * @param nal The native abstraction layer to use.
- * @param outPath The path where the directory is written to.
- * @param outPathLen The length of the path.
- * @return Any resultant error, if any.
- * @since 2024/08/09
- */
-sjme_errorCode sjme_nvm_defaultDir(
-	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
-	sjme_attrInNotNull const sjme_nal* nal,
-	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
-	sjme_attrInPositiveNonZero sjme_jint outPathLen);
 
 /**
  * Destroys the virtual machine.

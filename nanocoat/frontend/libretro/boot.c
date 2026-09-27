@@ -36,6 +36,7 @@ sjme_libretro_globalStruct sjme_libretro_globals =
 	sjme_sm(.vfs, {0}),
 	sjme_sm(.allocPool, NULL),
 	sjme_sm(.inState, NULL),
+	sjme_sm(.tasMode, SJME_JNI_FALSE),
 	sjme_sm(.modelessStars, {0})
 };
 
@@ -173,25 +174,24 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 	sjme_jint i, argC, libStrSize;
 	sjme_lpcstr* argV;
 	sjme_nvm_bootParam bootParam;
-	sjme_lpcstr systemDir;
 	const struct retro_game_info* jarInfo;
 
-	/* Default to out of memory. */
-	error = SJME_ERROR_OUT_OF_MEMORY;
-	
 	/* Allocate arguments to pass in. */
 	argC = 0;
 	argV = sjme_alloca(sizeof(*argV) * (MAX_ARGC + 1));
 	if (argV == NULL)
+	{
+		error = SJME_ERROR_OUT_OF_MEMORY;
 		goto fail_allocArgV;
+	}
 	memset(argV, 0, sizeof(*argV) * (MAX_ARGC + 1));
 
 	/* -Xlibraries? */
 	if (num_info > 1)
 	{
 		/* Determine size of everything. */
-		libStrSize = strlen("-Xlibraries:") + 1;
-		for (i = 1; i < num_info; i++)
+		libStrSize = (sjme_jint)strlen("-Xlibraries:") + 1;
+		for (i = 1; i < (sjme_jint)num_info; i++)
 		{
 			/* Which info are we operating on? */
 			jarInfo = &info[i];
@@ -199,33 +199,33 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 				continue;
 
 			/* Add in. */
-			libStrSize = strlen(jarInfo->path) + 2;
+			libStrSize = (sjme_jint)strlen(jarInfo->path) + 2;
 		}
 
 		/* Allocate. */
 		argV[argC] = sjme_alloca(sizeof(*argV[argC]) * libStrSize);
 		if (argV[argC] == NULL)
+		{
+			error = SJME_ERROR_OUT_OF_MEMORY;
 			goto fail_allocArgV;
+		}
 		memset((void*)argV[argC], 0, sizeof(*argV[argC]) * libStrSize);
 
 		/* Concat everything. */
 		strncpy((char*)argV[argC], "-Xlibraries:", libStrSize);
-		for (i = 1; i < num_info; i++)
+		for (i = 1; i < (sjme_jint)num_info; i++)
 		{
 			/* Which info are we operating on? */
 			jarInfo = &info[i];
 			if (jarInfo->path == NULL)
 				continue;
 
-#if 1
-			sjme_todo("Impl?");
-#else
-			/* Pass it through. */
+			/* Pass it through, note the path separator for libretro */
+			/* is forward slash as that uses the embedded VFAT style. */
 			strncat((char*)argV[argC], jarInfo->path, libStrSize);
-			if ((i + 1) < num_info)
+			if ((i + 1) < (sjme_jint)num_info)
 				strncat((char*)argV[argC],
-					SJME_CONFIG_PATH_SEPARATOR, libStrSize);
-#endif
+					"/", libStrSize);
 		}
 
 		/* Consume it now. */
@@ -247,6 +247,12 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 	memset(&bootParam, 0, sizeof(bootParam));
 	bootParam.nal = &sjme_libretro_nal;
 
+	/* Debug. */
+	sjme_message("Parsing %" PRId32 " virtual command line parameters...",
+		argC);
+	for (i = 0; i < argC; i++)
+		sjme_message("[%" PRId32 "]: %s", i, argV[i]);
+
 	/* Parse main arguments. */
 	if (sjme_error_is(error = sjme_nvm_parseCommandLine(
 		sjme_libretro_globals.allocPool,
@@ -256,37 +262,31 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 	/* If there was no boot suite specified, load a default one. */
 	if (bootParam.bootSuite == NULL)
 	{
-		/* Obtain the system directory. */
-		error = SJME_ERROR_NATIVE_ERROR;
-		systemDir = NULL;
-		if (!sjme_libretro_globals.envCallback(
-			RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &systemDir) ||
-			systemDir == NULL)
-			goto fail_getSystemDir;
+		/* Debug. */
+		sjme_message("Locating the default boot suite...");
 		
 		/* Look it up. */
-		if (sjme_error_is(error = sjme_nvm_defaultBootSuiteInDirectory(
+		if (sjme_error_is(error = sjme_nvm_defaultBootSuite(
 			sjme_libretro_globals.allocPool,
 			bootParam.nal,
-			systemDir,
 			&bootParam.bootSuite)) ||
 			bootParam.bootSuite == NULL)
 			goto fail_bootSuiteBackup;
 	}
 
-	/* Allow launcher fallback. */
-	bootParam.launcherFallback = SJME_JNI_TRUE;
+	/* Debug. */
+	sjme_message("Booting the virtual machine...");
 	
 	/* Boot the virtual machine. */
 	sjme_libretro_globals.inState = NULL;
 	if (sjme_error_is(error = sjme_nvm_boot(
 		sjme_libretro_globals.allocPool,
-		&bootParam, &sjme_libretro_globals.inState, NULL)))
+		&bootParam, &sjme_libretro_globals.inState, NULL)) ||
+		sjme_libretro_globals.inState == NULL)
 		goto fail_boot;
 	
 	/* Success! */
 	return true;
-#undef MAX_ARGC
 
 fail_defaultLaunch:
 fail_boot:
@@ -295,6 +295,7 @@ fail_parseCommandLine:
 fail_getSystemDir:
 fail_allocArgV:
 	return sjme_error_fatal(error) & 0;
+#undef MAX_ARGC
 }
 
 sjme_attrUnused RETRO_API void retro_reset(void)

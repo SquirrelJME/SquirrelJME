@@ -175,6 +175,8 @@ The directory types and their order of precedence are:
    * `<PROGRAMDATA>/squirreljme/natives/{system}/{arch}` (Windows)
    * `/lib/squirreljme/natives` (POSIX)
    * `/lib/squirreljme/natives/{system}/{arch}` (POSIX)
+ * _Runtime Library_
+   * `<SQUIRRELJME_RUNTIME_DIR>` {~}
  * _Executable_
    * This always points to the current executable, if it can be determined.
  * _Temporary_
@@ -189,6 +191,23 @@ The directory types and their order of precedence are:
    * `[State]/data`
  * _Extra Bucket_
    * `<SQUIRRELJME_BUCKET_EXTRA>` {~}
+
+# Runtime Library Order
+
+SquirrelJME will attempt to load its runtime library in this specific order
+in either the `[Runtime Library]` directory or the `[Data]` directory if
+the former is not set.
+
+ * `squirreljme-<VERSION>-fast.jar`
+ * `squirreljme-<VERSION>.jar`
+ * `squirreljme-<VERSION>-test.jar`
+ * `squirreljme-<VERSION>-slow.jar`
+ * `squirreljme-<VERSION>-slow-test.jar`
+ * `squirreljme-fast.jar`
+ * `squirreljme.jar`
+ * `squirreljme-test.jar`
+ * `squirreljme-slow.jar`
+ * `squirreljme-slow-test.jar`
 
 # Common Issues
 

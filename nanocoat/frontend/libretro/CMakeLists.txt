@@ -88,7 +88,7 @@ find_program(retroArchExe "retroarch" NO_CACHE
 		"C:/RetroArch"
 		"$ENV{APPDATA}/RetroArch")
 
-# Set system directoy for RetroArch
+# Set system directory for RetroArch
 file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/run.config")
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/test.config"
 	DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/")

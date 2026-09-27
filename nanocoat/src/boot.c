@@ -146,7 +146,7 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
-	sjme_attrInNotNull sjme_lpcstr basePath,
+	sjme_attrInNotNull const sjme_path* basePath,
 	sjme_attrInNotNull sjme_lpcstr romName,
 	sjme_attrInValue sjme_nvm_bootClutterLevel clutterLevel)
 {
@@ -159,12 +159,16 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 		(basePath == NULL && romName == NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Cannot open files? */
+	if (nal->fileOpen == NULL)
+		return SJME_ERROR_FILE_NOT_FOUND;
+
 	/* Determine path to check. */
 	memset(&checkPath, 0, sizeof(checkPath));
 
 	/* Base path first, if any. */
-	if (basePath != NULL && strlen(basePath) > 0)
-		if (sjme_error_is(error = sjme_path_resolveS(
+	if (basePath != NULL)
+		if (sjme_error_is(error = sjme_path_resolveP(
 			&checkPath, basePath)))
 			return sjme_error_default(error);
 	
@@ -221,7 +225,7 @@ static sjme_errorCode sjme_nvm_printHelp(
 {
 	const sjme_joptarg_helpParam* help;
 
-	if (nal == NULL || helpOut == NULL || helpFlush == NULL ||
+	if (nal == NULL || helpOut == NULL ||
 		argSeq == NULL || programName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -230,6 +234,10 @@ static sjme_errorCode sjme_nvm_printHelp(
 	{
 		helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
 		helpFlush = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].flush;
+
+		/* Printing nowhere? */
+		if (helpOut == NULL)
+			return SJME_ERROR_EXIT;
 	}
 	
 	/* Normal usage. */
@@ -264,7 +272,7 @@ static sjme_errorCode sjme_nvm_printVersion(
 	sjme_attrInNotNull sjme_lpcstr argSeq,
 	sjme_attrInNotNull sjme_nvm_bootParam* outParam)
 {
-	if (nal == NULL || helpOut == NULL || helpFlush == NULL ||
+	if (nal == NULL || helpOut == NULL ||
 		argSeq == NULL || outParam == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -273,6 +281,10 @@ static sjme_errorCode sjme_nvm_printVersion(
 	{
 		helpOut = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].out;
 		helpFlush = nal->stdIo[SJME_NVM_MLE_STD_PIPE_STDOUT].flush;
+
+		/* Printing nowhere? */
+		if (helpOut == NULL)
+			return SJME_ERROR_EXIT;
 	}
 	
 	/* Print version information to stdout. */
@@ -924,7 +936,7 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite)
 {
 	sjme_errorCode error;
-	sjme_cchar dataPath[SJME_MAX_PATH];
+	sjme_path dataPath;
 	
 	if (allocPool == NULL || nal == NULL || outSuite == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -932,23 +944,43 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 	/* We cannot load if filesystem access is not supported. */
 	if (nal->fileOpen == NULL)
 		return sjme_error_notImplemented(0);
-	
-	/* Get default data directory. */
+
+	/* Debug. */
+	sjme_message("Looking for default boot suite...");
+
+	/* There may be a runtime specified directory, which may be used by */
+	/* front-ends to change where libraries exist. */
 	memset(&dataPath, 0, sizeof(dataPath));
-	if (sjme_error_is(error = sjme_nvm_defaultDir(
-		SJME_NVM_DEFAULT_DIRECTORY_DATA, nal,
-		dataPath, SJME_MAX_PATH - 1)))
-		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_path_default(
+		nal, &dataPath, SJME_NVM_DEFAULT_DIRECTORY_RUNTIME, -1)) ||
+		dataPath.chars[0] == '\0')
+	{
+		/* Some other error. */
+		if (error != SJME_ERROR_PATH_NOT_DEFINED)
+			return sjme_error_default(error);
+
+		/* Otherwise, use the default data directory. */
+		memset(&dataPath, 0, sizeof(dataPath));
+		if (sjme_error_is(error = sjme_path_default(
+			nal, &dataPath, SJME_NVM_DEFAULT_DIRECTORY_DATA,
+			-1)) ||
+			dataPath.chars[0] == '\0')
+			return sjme_error_default(error);
+	}
+
+	/* Debug. */
+	sjme_message("Looking for boot suite in `%s`...",
+		dataPath.chars);
 
 	/* Look in this directory. */
 	return sjme_nvm_defaultBootSuiteInDirectory(allocPool, nal,
-		dataPath, outSuite);
+		&dataPath, outSuite);
 }
 
 sjme_errorCode sjme_nvm_defaultBootSuiteInDirectory(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
-	sjme_attrInNotNull sjme_lpcstr inDirectory,
+	sjme_attrInNotNull const sjme_path* inDirectory,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite)
 {
 	sjme_errorCode error;
@@ -968,11 +1000,16 @@ sjme_errorCode sjme_nvm_defaultBootSuiteInDirectory(
 	for (i = 0; sjme_nvm_romNames[i]; i++)
 	{
 		/* Attempt ROM lookup. */
+		result = NULL;
 		if (sjme_error_is(error = sjme_nvm_defaultBootSuiteAttempt(
 			allocPool, nal, &result, inDirectory,
 			sjme_nvm_romNames[i],
-			SJME_NVM_BOOT_CLUTTER_RELEASE)))
+			SJME_NVM_BOOT_CLUTTER_RELEASE)) || result == NULL)
+		{
+			if (error != SJME_ERROR_FILE_NOT_FOUND)
+				return sjme_error_default(error);
 			continue;
+		}
 
 		/* Success! */
 		*outSuite = result;
@@ -980,129 +1017,7 @@ sjme_errorCode sjme_nvm_defaultBootSuiteInDirectory(
 	}
 
 	/* Failed. */
-	return sjme_error_defaultOr(error, SJME_ERROR_NO_SUITES);
-}
-
-sjme_errorCode sjme_nvm_defaultDir(
-	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
-	sjme_attrInNotNull const sjme_nal* nal,
-	sjme_attrOutNotNull sjme_lpstr outPath,
-	sjme_attrInPositiveNonZero sjme_jint outPathLen)
-{
-	sjme_errorCode error;
-	sjme_lpcstr useEnv, insteadSub;
-	sjme_jint limit;
-	sjme_lpstr work;
-	
-	if (nal == NULL || outPath == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (type <= SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN ||
-		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	if (outPathLen <= 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
-	
-	if (nal->getEnv == NULL)
-		return sjme_error_notImplemented(0);
-	
-	/* Initialize. */
-	limit = (SJME_MAX_PATH > outPathLen ? SJME_MAX_PATH : outPathLen);
-	work = sjme_alloca(sizeof(*work) * limit);
-	if (work == NULL)
-		return SJME_ERROR_OUT_OF_MEMORY;
-	memset(work, 0, sizeof(*work) * limit);
-	
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	if (1)
-		sjme_todo("Impl?");
-#elif defined(SJME_CONFIG_HAS_OS_PC_DOS)
-	if (1)
-		sjme_todo("Impl?");
-		
-#elif defined(SJME_CONFIG_HAS_OS_LINUX) || \
-	defined(SJME_CONFIG_HAS_OS_BSD) || \
-	defined(SJME_CONFIG_HAS_OS_MACOS) || \
-	defined(SJME_CONFIG_HAS_OS_CYGWIN)
-	
-	/* Which are we interested in? */
-	useEnv = NULL;
-	insteadSub = NULL;
-	switch (type)
-	{
-		case SJME_NVM_DEFAULT_DIRECTORY_CACHE:
-			useEnv = "XDG_CACHE_HOME";
-			insteadSub = ".cache";
-			break;
-			
-		case SJME_NVM_DEFAULT_DIRECTORY_CONFIG:
-			useEnv = "XDG_CONFIG_HOME";
-			insteadSub = ".config";
-			break;
-			
-		case SJME_NVM_DEFAULT_DIRECTORY_DATA:
-			useEnv = "XDG_DATA_HOME";
-			insteadSub = ".local/share";
-			break;
-			
-		case SJME_NVM_DEFAULT_DIRECTORY_STATE:
-			useEnv = "XDG_STATE_HOME";
-			insteadSub = ".local/state";
-			break;
-		
-			/* Unknown. */
-		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
-	}
-	
-	/* Check if environment variable is available. */
-	if (sjme_error_is(error = nal->getEnv(
-		work, limit - 1, useEnv)))
-	{
-		/* This is not considered an error, we just try something else. */
-		if (error != SJME_ERROR_NO_SUCH_ELEMENT)
-			return sjme_error_default(error);
-		
-		/* Get home variable instead, to add onto. */
-		memset(work, 0, limit);
-		if (sjme_error_is(error = nal->getEnv(
-			work, limit - 1, "HOME")))
-			return sjme_error_default(error);
-		
-#if 1
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-#else
-		/* Append subdirectory path. */
-		if (sjme_error_is(error = sjme_path_resolveAppend(work,
-			limit - 1, insteadSub, INT32_MAX)))
-			return sjme_error_default(error);
-#endif
-	}
-		
-#else
-	return sjme_error_notImplemented(0);
-#endif
-
-#if 1
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-#else
-	/* Append SquirrelJME on top. */
-	if (sjme_error_is(error = sjme_path_resolveAppend(work,
-		limit - 1, SJME_DIRECTORY_NAME, INT32_MAX)))
-		return sjme_error_default(error);
-#endif
-	
-	/* Is there enough room to fit? */
-	limit = strlen(work) + 1;
-	if (limit > outPathLen)
-		return SJME_ERROR_PATH_TOO_LONG;
-	
-	/* Copy it over. */
-	memmove(outPath, work, sizeof(*outPath) * limit);
-	return SJME_ERROR_NONE;
+	return SJME_ERROR_NO_SUITES;
 }
 
 sjme_errorCode sjme_nvm_destroy(
@@ -1134,6 +1049,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_nal_stdOFunc helpOut;
 	sjme_nal_stdIoFlush helpFlush;
 	sjme_lpcstr bootRom, helpOpt, versionOpt, tempUtf, tempTwo, runJar;
+	sjme_path path;
 	
 	if (allocPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1407,12 +1323,20 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	}
 
 	/* Print help options or version? */
-	if (helpOpt != NULL)
-		return sjme_nvm_printHelp(nal, helpOut, helpFlush,
-			helpOpt, argv[0]);
-	else if (versionOpt != NULL)
-		return sjme_nvm_printVersion(nal, helpOut, helpFlush,
-			versionOpt, outParam);
+	if (helpOpt != NULL || versionOpt != NULL)
+	{
+		/* Cannot actually print help text anywhere? */
+		if (helpOut == NULL)
+			return SJME_ERROR_EXIT;
+
+		/* Now print. */
+		if (helpOpt != NULL)
+			return sjme_nvm_printHelp(nal, helpOut, helpFlush,
+				helpOpt, argv[0]);
+		else if (versionOpt != NULL)
+			return sjme_nvm_printVersion(nal, helpOut, helpFlush,
+				versionOpt, outParam);
+	}
 
 	/* No boot ROM was specified? Try to find a default one. */
 	if (bootRom == NULL)
@@ -1427,11 +1351,16 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	/* Otherwise, attempt to load the specific ROM. */
 	else
 	{
+		/* Resolve a "blank" path. */
+		memset(&path, 0, sizeof(path));
+		if (sjme_error_is(error = sjme_path_resolveS(&path, "")))
+			return sjme_error_default(error);
+
 		/* Just use a "normal" attempt which directly sets and uses the */
 		/* path that was specified. */
 		if (sjme_error_is(error = sjme_nvm_defaultBootSuiteAttempt(
 			allocPool, nal, &outParam->bootSuite,
-			"", bootRom, outParam->clutterLevel)) ||
+			&path, bootRom, outParam->clutterLevel)) ||
 			outParam->bootSuite == NULL)
 			return sjme_error_default(error);
 	}

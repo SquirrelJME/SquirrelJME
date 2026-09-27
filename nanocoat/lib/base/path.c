@@ -29,6 +29,12 @@ static const sjme_path_pathEnv sjme_path_pathEnvLookup[] =
 {
 	/* Overrides which take priority first. */
 	{
+		SJME_NVM_DEFAULT_DIRECTORY_RUNTIME,
+		"SQUIRRELJME_RUNTIME_DIR",
+		"",
+		SJME_JNI_TRUE
+	},
+	{
 		SJME_NVM_DEFAULT_DIRECTORY_CACHE,
 		"SQUIRRELJME_CACHE_HOME",
 		"",
