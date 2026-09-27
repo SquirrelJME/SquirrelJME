@@ -154,65 +154,19 @@ extern "C"
 #define SJME_MD_SCRITCH_UI(name) \
 	SJME_MD_L("cc/squirreljme/jvm/mle/scritchui/" #name)
 
+/** ScritchUI Bracket. */
+#define SJME_MD_SCRITCH_UI_BRACKET(name) \
+	SJME_MD_L("cc/squirreljme/jvm/mle/scritchui/brackets/Scritch" \
+		#name "Bracket")
+
 /** ScritchUI Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE \
-	SJME_MD_SCRITCH_UI(ScritchInterface)
+#define SJME_MD_SCRITCH_UI_INTERFACE(name) \
+	SJME_MD_L("cc/squirreljme/jvm/mle/scritchui/Scritch" \
+		#name "Interface")
 
-/** ScritchUI Choice Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_CHOICE \
-	SJME_MD_SCRITCH_UI(ScritchChoiceInterface)
-
-/** ScritchUI Component Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_COMPONENT \
-	SJME_MD_SCRITCH_UI(ScritchComponentInterface)
-
-/** ScritchUI Container Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_CONTAINER \
-	SJME_MD_SCRITCH_UI(ScritchContainerInterface)
-
-/** ScritchUI Environment Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_ENVIRONMENT \
-	SJME_MD_SCRITCH_UI(ScritchEnvironmentInterface)
-
-/** ScritchUI Event Loop Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_EVENT_LOOP \
-	SJME_MD_SCRITCH_UI(ScritchEventLoopInterface)
-
-/** ScritchUI Label Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_LABEL \
-	SJME_MD_SCRITCH_UI(ScritchLabelInterface)
-
-/** ScritchUI List Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_LIST \
-	SJME_MD_SCRITCH_UI(ScritchListInterface)
-
-/** ScritchUI Menu Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_MENU \
-	SJME_MD_SCRITCH_UI(ScritchMenuInterface)
-
-/** ScritchUI Paintable Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_PAINTABLE \
-	SJME_MD_SCRITCH_UI(ScritchPaintableInterface)
-
-/** ScritchUI Panel Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_PANEL \
-	SJME_MD_SCRITCH_UI(ScritchPanelInterface)
-
-/** ScritchUI Screen Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_SCREEN \
-	SJME_MD_SCRITCH_UI(ScritchScreenInterface)
-
-/** ScritchUI Scroll Panel Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_SCROLL_PANEL \
-	SJME_MD_SCRITCH_UI(ScritchScrollPanelInterface)
-
-/** ScritchUI View Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_VIEW \
-	SJME_MD_SCRITCH_UI(ScritchViewInterface)
-
-/** ScritchUI Window Interface. */
-#define SJME_MD_SCRITCH_UI_INTERFACE_WINDOW \
-	SJME_MD_SCRITCH_UI(ScritchWindowInterface)
+/** Root ScritchUI Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_ROOT \
+	SJME_MD_L("cc/squirreljme/jvm/mle/scritchui/ScritchInterface")
 
 /** Builds a promoted type descriptor. */
 #define SJME_MP(rv, args) rv args
