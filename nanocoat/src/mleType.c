@@ -12,6 +12,10 @@
 #include "sjme/nvm/mleShelves.h"
 #include "sjme/nvm/cleanup.h"
 
+#pragma region(mleInfo)
+	#define SJME_NVM_MLE_SHELF TypeShelf
+#pragma endregion(mleInfo)
+
 SJME_NVM_MLE_FUNCTION_DECL(binaryName)
 {
 	sjme_errorCode error;

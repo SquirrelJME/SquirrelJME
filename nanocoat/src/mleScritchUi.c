@@ -11,6 +11,10 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+#pragma region(mleInfo)
+	#define SJME_NVM_MLE_SHELF NativeScritchUIShelf
+#pragma endregion(mleInfo)
+
 SJME_NVM_MLE_FUNCTION_DECL(nativeInterface)
 {
 	sjme_errorCode error;
@@ -69,8 +73,9 @@ SJME_NVM_MLE_FUNCTION_DECL(nativeInterface)
 SJME_NVM_MLE_SHELF_DECLARE(NativeScritchUIShelf) =
 {
 	SJME_NVM_MLE_DEFINE(nativeInterface,
-		SJME_MD(SJME_MD_L("cc/squirreljme/jvm/mle/scritchui/ScritchInterface"),
+		SJME_MD(SJME_MD_SCRITCH_UI_INTERFACE,
 			SJME_MDMP___NO_ARGS__),
-		SJME_MP(SJME_MP_L, SJME_MDMP___NO_ARGS__)),
+		SJME_MP(SJME_MP_L,
+			SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_STOP()
 };

@@ -12,6 +12,10 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+#pragma region(mleInfo)
+	#define SJME_NVM_MLE_SHELF ThreadShelf
+#pragma endregion(mleInfo)
+
 static sjme_errorCode sjme_nvm_mleFunc_waitForUpdateCheck(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInValue sjme_intPointer condition,

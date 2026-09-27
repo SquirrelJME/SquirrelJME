@@ -14,6 +14,10 @@
 #include "sjme/nvm/mleConst.h"
 #include "sjme/nvm/mleShelves.h"
 
+#pragma region(mleInfo)
+	#define SJME_NVM_MLE_SHELF TerminalShelf
+#pragma endregion(mleInfo)
+
 static sjme_jint sjme_nvm_mleFunc_mleTerminal_mapIoException(
 	sjme_attrInValue sjme_errorCode error,
 	sjme_attrOutNotNull sjme_jvalueTyped* argR)

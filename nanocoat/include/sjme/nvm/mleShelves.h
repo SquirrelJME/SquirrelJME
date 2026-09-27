@@ -150,6 +150,70 @@ extern "C"
 #define SJME_MD_VM_THREAD \
 	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/VMThreadBracket")
 
+/** ScritchUI Class. */
+#define SJME_MD_SCRITCH_UI(name) \
+	SJME_MD_L("cc/squirreljme/jvm/mle/scritchui/" #name)
+
+/** ScritchUI Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE \
+	SJME_MD_SCRITCH_UI(ScritchInterface)
+
+/** ScritchUI Choice Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_CHOICE \
+	SJME_MD_SCRITCH_UI(ScritchChoiceInterface)
+
+/** ScritchUI Component Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_COMPONENT \
+	SJME_MD_SCRITCH_UI(ScritchComponentInterface)
+
+/** ScritchUI Container Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_CONTAINER \
+	SJME_MD_SCRITCH_UI(ScritchContainerInterface)
+
+/** ScritchUI Environment Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_ENVIRONMENT \
+	SJME_MD_SCRITCH_UI(ScritchEnvironmentInterface)
+
+/** ScritchUI Event Loop Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_EVENT_LOOP \
+	SJME_MD_SCRITCH_UI(ScritchEventLoopInterface)
+
+/** ScritchUI Label Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_LABEL \
+	SJME_MD_SCRITCH_UI(ScritchLabelInterface)
+
+/** ScritchUI List Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_LIST \
+	SJME_MD_SCRITCH_UI(ScritchListInterface)
+
+/** ScritchUI Menu Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_MENU \
+	SJME_MD_SCRITCH_UI(ScritchMenuInterface)
+
+/** ScritchUI Paintable Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_PAINTABLE \
+	SJME_MD_SCRITCH_UI(ScritchPaintableInterface)
+
+/** ScritchUI Panel Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_PANEL \
+	SJME_MD_SCRITCH_UI(ScritchPanelInterface)
+
+/** ScritchUI Screen Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_SCREEN \
+	SJME_MD_SCRITCH_UI(ScritchScreenInterface)
+
+/** ScritchUI Scroll Panel Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_SCROLL_PANEL \
+	SJME_MD_SCRITCH_UI(ScritchScrollPanelInterface)
+
+/** ScritchUI View Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_VIEW \
+	SJME_MD_SCRITCH_UI(ScritchViewInterface)
+
+/** ScritchUI Window Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_WINDOW \
+	SJME_MD_SCRITCH_UI(ScritchWindowInterface)
+
 /** Builds a promoted type descriptor. */
 #define SJME_MP(rv, args) rv args
 
@@ -176,7 +240,8 @@ extern "C"
 
 /** MLE Function name. */
 #define SJME_NVM_MLE_FUNCTION_NAME(name, alt) \
-	SJME_TOKEN_PASTE4(sjme_nvm_mleFunc_, name, _, alt)
+	SJME_TOKEN_PASTE_PP(SJME_TOKEN_PASTE4(sjme_nvm_mleFunc_, name, _, alt), \
+		SJME_NVM_MLE_SHELF)
 
 /** MLE Function definition. */
 #define SJME_NVM_MLE_FUNCTION_DECL_ALT(name, alt) \

@@ -123,7 +123,8 @@ sjme_errorCode sjme_mle_mleCallFunction(
 	for (i = 0; i < argC; i++)
 		if (function->argX[i + 1] == '\0' ||
 			sjme_nvm_mleTToA[argV[i].t] != function->argX[i + 1])
-			return SJME_ERROR_INCOMPATIBLE_MLE_CALL;
+			return sjme_error_vmError(inFrame,
+				SJME_ERROR_INCOMPATIBLE_MLE_CALL);
 	
 	/* Forward call. */
 	memset(&result, 0, sizeof(result));

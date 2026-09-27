@@ -13,6 +13,10 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+#pragma region(mleInfo)
+	#define SJME_NVM_MLE_SHELF DebugShelf
+#pragma endregion(mleInfo)
+
 SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 {
 	sjme_errorCode error;
@@ -125,8 +129,8 @@ SJME_NVM_MLE_FUNCTION_DECL(traceThrowable)
 
 	/* We can just call the above. */
 	memset(&result, 0, sizeof(result));
-	if (sjme_error_is(error = sjme_nvm_mleFunc_traceStack_none(inFrame,
-		&result, 0, NULL)))
+	if (sjme_error_is(error = SJME_NVM_MLE_FUNCTION_NAME(traceStack, none)(
+		inFrame, &result, 0, NULL)))
 		return sjme_error_default(error);
 
 	/* Set the throwable special. */

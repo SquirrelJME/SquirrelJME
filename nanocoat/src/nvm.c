@@ -70,6 +70,7 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_UNKNOWN_MLE_SHELF:
 		case SJME_ERROR_UNKNOWN_MLE_FUNCTION:
 		case SJME_ERROR_NO_METHOD:
+		case SJME_ERROR_INCOMPATIBLE_MLE_CALL:
 			return SJME_JNI_TRUE;
 
 #if 0

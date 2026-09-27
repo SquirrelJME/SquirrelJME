@@ -11,6 +11,10 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+#pragma region(mleInfo)
+	#define SJME_NVM_MLE_SHELF MathShelf
+#pragma endregion(mleInfo)
+
 SJME_NVM_MLE_FUNCTION_DECL(doublePack)
 {
 	/* Combine to double. */
