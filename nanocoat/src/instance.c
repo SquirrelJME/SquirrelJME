@@ -11,6 +11,7 @@
 #include "sjme/nvm/instance.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/task.h"
+#include "lib/scritchui/scritchuiConst.h"
 
 sjme_jint sjme_nvm_fieldValueSize(
 	sjme_attrInValue sjme_extendedTypeId extendedType,
@@ -818,14 +819,35 @@ sjme_errorCode sjme_nvm_instance_objectNewR(
 sjme_errorCode sjme_nvm_instance_objectNewBracketR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrInNegativeOnePositive sjme_jint subType,
 	sjme_attrOutNotNull sjme_jobject* outObject
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL)
 {
+	sjme_errorCode error;
 	sjme_nvm_task_commonClassId commonId;
 	sjme_jint allocSize;
+	sjme_jobject result;
 	
 	if (contextThread == NULL || outObject == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Only certain brackets have a sub-type */
+	if (inType != SJME_NVM_STRUCT_BRACKET_SCRITCH_UI && subType != -1)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	else if (inType == SJME_NVM_STRUCT_BRACKET_SCRITCH_UI &&
+		(subType <= SJME_SCRITCHUI_TYPE_RESERVED ||
+			subType >= SJME_SCRITCHUI_NUM_UI_TYPES))
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* For ScritchUI */
+#define SJME_NVM_CC_SCRITCHUI_ALT(caps, alt) \
+		case alt: \
+			commonId = SJME_TOKEN_PASTE_PP(SJME_NVM_COMMON_SCRITCH_UI_TYPE_, \
+				caps); \
+			break
+#define SJME_NVM_CC_SCRITCHUI(caps) \
+	SJME_NVM_CC_SCRITCHUI_ALT(caps, \
+		SJME_TOKEN_PASTE_PP(SJME_SCRITCHUI_TYPE_, caps))
 
 	/* Determine size and type. */
 	switch (inType)
@@ -839,6 +861,57 @@ sjme_errorCode sjme_nvm_instance_objectNewBracketR(
 			commonId = SJME_NVM_COMMON_PIPE;
 			allocSize = sizeof(sjme_jbracketPipeBase);
 			break;
+
+			/* ScritchUI types, note that pseudo types such as base, */
+			/* container, and otherwise are not here as they do not truly */
+			/* exist. */
+		case SJME_NVM_STRUCT_BRACKET_SCRITCH_UI:
+			allocSize = sizeof(sjme_jbracketScritchUiBase);
+			switch (subType)
+			{
+				SJME_NVM_CC_SCRITCHUI(LIST);
+				SJME_NVM_CC_SCRITCHUI(MENU_BAR);
+				SJME_NVM_CC_SCRITCHUI(MENU);
+				SJME_NVM_CC_SCRITCHUI(MENU_ITEM);
+				SJME_NVM_CC_SCRITCHUI(PANEL);
+				SJME_NVM_CC_SCRITCHUI(PENCIL);
+				SJME_NVM_CC_SCRITCHUI(SCREEN);
+				SJME_NVM_CC_SCRITCHUI(SCROLL_PANEL);
+				SJME_NVM_CC_SCRITCHUI_ALT(STATE,
+					SJME_SCRITCHUI_TYPE_ROOT_STATE);
+				SJME_NVM_CC_SCRITCHUI(WINDOW);
+
+				/* TODO: not yet implemented. */
+#if defined(SJME_CONFIG_TODO)
+				SJME_NVM_CC_SCRITCHUI(BUTTON);
+				SJME_NVM_CC_SCRITCHUI(COMBOBOX);
+				SJME_NVM_CC_SCRITCHUI(PROGRESSBAR);
+				SJME_NVM_CC_SCRITCHUI(SCROLLBAR);
+				SJME_NVM_CC_SCRITCHUI(SLIDER);
+				SJME_NVM_CC_SCRITCHUI(TEXTBOX);
+#endif
+
+				/* Pseudo types that are not real. */
+#if 0 && SCRITCHUI_THESE_ARE_PSEUDO_TYPES
+				SJME_NVM_CC_SCRITCHUI(BASE);
+				SJME_NVM_CC_SCRITCHUI(CHOICE);
+				SJME_NVM_CC_SCRITCHUI(COMPONENT);
+				SJME_NVM_CC_SCRITCHUI(CONTAINER);
+				SJME_NVM_CC_SCRITCHUI(LABEL);
+				SJME_NVM_CC_SCRITCHUI(MENU_HAS_CHILDREN);
+				SJME_NVM_CC_SCRITCHUI(MENU_HAS_LABEL);
+				SJME_NVM_CC_SCRITCHUI(MENU_HAS_PARENT);
+				SJME_NVM_CC_SCRITCHUI(MENU_KIND);
+				SJME_NVM_CC_SCRITCHUI(PAINTABLE);
+				SJME_NVM_CC_SCRITCHUI(TRIGGER);
+				SJME_NVM_CC_SCRITCHUI(VIEW);
+#endif
+
+				default:
+					sjme_todo("Impl?");
+					return sjme_error_notImplemented(0);
+			}
+			break;
 		
 		case SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE:
 			commonId = SJME_NVM_COMMON_TRACE_POINT;
@@ -849,10 +922,24 @@ sjme_errorCode sjme_nvm_instance_objectNewBracketR(
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
 
+	/* No longer needed. */
+#undef SJME_NVM_CC_SCRITCHUI
+
 	/* Allocate. */
-	return sjme_nvm_instance_objectNewR(contextThread, allocSize,
-		inType, outObject, sjme_nvm_task_commonClassR(contextThread,
-			commonId) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_instance_objectNewR(contextThread,
+		allocSize, inType, &result, sjme_nvm_task_commonClassR(contextThread,
+			commonId) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY)) ||
+			result == NULL)
+		return sjme_error_default(error);
+
+	/* Set subtype? */
+	if (inType == SJME_NVM_STRUCT_BRACKET_SCRITCH_UI)
+		((sjme_jbracketScritchUi)result)->type = subType;
+
+	/* Success! */
+	*outObject = result;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_instance_objectNewN(

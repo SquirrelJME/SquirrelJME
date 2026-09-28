@@ -501,6 +501,93 @@ typedef enum sjme_nvm_task_commonClassId
 	/** @code cc.squirreljme.jvm.mle.brackets.TracePointBracket @endcode . */
 	SJME_NVM_COMMON_TRACE_POINT,
 
+#pragma region(scritchUiTypeIds)
+	/** ScritchUI Base. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_BASE,
+
+	/** ScritchUI Button. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_BUTTON,
+
+	/** ScritchUI Choice. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_CHOICE,
+
+	/** ScritchUI ComboBox. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_COMBOBOX,
+
+	/** ScritchUI Component. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_COMPONENT,
+
+	/** ScritchUI Container. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_CONTAINER,
+
+	/** ScritchUI Label. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_LABEL,
+
+	/** ScritchUI List. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_LIST,
+
+	/** ScritchUI MenuBar. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_MENU_BAR,
+
+	/** ScritchUI Menu. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_MENU,
+
+	/** ScritchUI MenuHasChildren. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_MENU_HAS_CHILDREN,
+
+	/** ScritchUI MenuHasLabel. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_MENU_HAS_LABEL,
+
+	/** ScritchUI MenuHasParent. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_MENU_HAS_PARENT,
+
+	/** ScritchUI MenuItem. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_MENU_ITEM,
+
+	/** ScritchUI MenuKind. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_MENU_KIND,
+
+	/** ScritchUI Paintable. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_PAINTABLE,
+
+	/** ScritchUI Panel. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_PANEL,
+
+	/** ScritchUI Pencil. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_PENCIL,
+
+	/** ScritchUI ProgressBar. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_PROGRESSBAR,
+
+	/** ScritchUI Screen. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_SCREEN,
+
+	/** ScritchUI ScrollBar. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_SCROLLBAR,
+
+	/** ScritchUI ScrollPanel. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_SCROLL_PANEL,
+
+	/** ScritchUI Slider. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_SLIDER,
+
+	/** ScritchUI State. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_STATE,
+
+	/** ScritchUI TextBox. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_TEXTBOX,
+
+	/** ScritchUI Trigger. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_TRIGGER,
+
+	/** ScritchUI View. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_VIEW,
+
+	/** ScritchUI Window. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_WINDOW,
+#pragma endregion(scritchUiTypeIds)
+
+#pragma region(veryImportantCommonIds)
 	/** The start of very important classes. */
 	SJME_NVM_COMMON_VERY_IMPORTANT,
 
@@ -521,6 +608,7 @@ typedef enum sjme_nvm_task_commonClassId
 
 	/** @code cc.squirreljme.jvm.mle.brackets.VMThreadBracket @endcode . */
 	SJME_NVM_COMMON_VM_THREAD,
+#pragma endregion(veryImportantCommonIds)
 
 	/** The number of common classes. */
 	SJME_NVM_TASK_NUM_COMMON_CLASS

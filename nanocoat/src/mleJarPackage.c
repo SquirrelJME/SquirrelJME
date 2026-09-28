@@ -118,7 +118,8 @@ SJME_NVM_MLE_FUNCTION_DECL(openResourcePipe)
 	/* Allocate pipe bracket. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_instance_objectNewBracket(
-		SJME_F_T(inFrame), SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE,
+		SJME_F_T(inFrame),
+		SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE, -1,
 		SJME_AS_JOBJECTP(&result))) || result == NULL)
 		return sjme_error_vmError(inFrame, error);
 

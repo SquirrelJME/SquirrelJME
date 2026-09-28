@@ -73,7 +73,7 @@ SJME_NVM_MLE_FUNCTION_DECL(traceStack)
 		/* It needs to be created. */
 		point = NULL;
 		if (sjme_error_is(error = sjme_nvm_instance_objectNewBracket(inThread,
-			SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE,
+			SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE, -1,
 			SJME_AS_JOBJECTP(&point))) || point == NULL)
 			goto fail_allocBracket;
 

@@ -157,7 +157,8 @@ sjme_errorCode sjme_nvm_task_bracketJarPackage(
 	{
 		/* Initialize bracket. */
 		if (sjme_error_is(error = sjme_nvm_instance_objectNewBracket(
-			contextThread, SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE,
+			contextThread,
+			SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE, -1,
 			SJME_AS_JOBJECTP(&result))) || result == NULL)
 			goto fail_newBracket;
 
@@ -219,6 +220,13 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		*outClass = result;
 		return SJME_ERROR_NONE;
 	}
+
+	/* Used for ScritchUI. */
+#define SJME_NVM_CC_SCRITCHUI(caps, proper) \
+	case SJME_TOKEN_PASTE_PP(SJME_NVM_COMMON_SCRITCH_UI_TYPE_, caps): \
+		commonName = "Lcc/squirreljme/jvm/mle/scritchui/brackets/Scritch" \
+			#proper "Bracket;"; \
+		break;
 	
 	/* What is the name of the common class? */
 	commonName = NULL;
@@ -326,10 +334,43 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		case SJME_NVM_COMMON_VM_THREAD:
 			commonName = "Lcc/squirreljme/jvm/mle/brackets/VMThreadBracket;";
 			break;
+
+			/* ScritchUI Types. */
+		SJME_NVM_CC_SCRITCHUI(BASE, Base);
+		SJME_NVM_CC_SCRITCHUI(BUTTON, Button);
+		SJME_NVM_CC_SCRITCHUI(CHOICE, Choice);
+		SJME_NVM_CC_SCRITCHUI(COMBOBOX, ComboBox);
+		SJME_NVM_CC_SCRITCHUI(COMPONENT, Component);
+		SJME_NVM_CC_SCRITCHUI(CONTAINER, Container);
+		SJME_NVM_CC_SCRITCHUI(LABEL, Label);
+		SJME_NVM_CC_SCRITCHUI(LIST, List);
+		SJME_NVM_CC_SCRITCHUI(MENU_BAR, MenuBar);
+		SJME_NVM_CC_SCRITCHUI(MENU, Menu);
+		SJME_NVM_CC_SCRITCHUI(MENU_HAS_CHILDREN, MenuHasChildren);
+		SJME_NVM_CC_SCRITCHUI(MENU_HAS_LABEL, MenuHasLabel);
+		SJME_NVM_CC_SCRITCHUI(MENU_HAS_PARENT, MenuHasParent);
+		SJME_NVM_CC_SCRITCHUI(MENU_ITEM, MenuItem);
+		SJME_NVM_CC_SCRITCHUI(MENU_KIND, MenuKind);
+		SJME_NVM_CC_SCRITCHUI(PAINTABLE, Paintable);
+		SJME_NVM_CC_SCRITCHUI(PANEL, Panel);
+		SJME_NVM_CC_SCRITCHUI(PENCIL, Pencil);
+		SJME_NVM_CC_SCRITCHUI(PROGRESSBAR, ProgressBar);
+		SJME_NVM_CC_SCRITCHUI(SCREEN, Screen);
+		SJME_NVM_CC_SCRITCHUI(SCROLLBAR, ScrollBar);
+		SJME_NVM_CC_SCRITCHUI(SCROLL_PANEL, ScrollPanel);
+		SJME_NVM_CC_SCRITCHUI(SLIDER, Slider);
+		SJME_NVM_CC_SCRITCHUI(STATE, State);
+		SJME_NVM_CC_SCRITCHUI(TEXTBOX, TextBox);
+		SJME_NVM_CC_SCRITCHUI(TRIGGER, Trigger);
+		SJME_NVM_CC_SCRITCHUI(VIEW, View);
+		SJME_NVM_CC_SCRITCHUI(WINDOW, Window);
 		
 		default:
 			return SJME_ERROR_INVALID_ARGUMENT;
 	}
+
+	/* No longer needed. */
+#undef SJME_NVM_CC_SCRITCHUI
 
 	/* Load the common class. */
 	result = NULL;

@@ -107,6 +107,30 @@ typedef sjme_jbracketPipeBase* sjme_jbracketPipe;
 /** Is a pointer for @link sjme_jbracketPipe @endlink ? */
 #define SJME_TYPEOF_IS_POINTER_sjme_jbracketPipe \
 	SJME_TYPEOF_IS_POINTER_sjme_jobject
+
+/**
+ * ScritchUI bracket.
+ *
+ * @since 2026/09/28
+ */
+typedef struct sjme_jbracketScritchUiBase sjme_jbracketScritchUiBase;
+
+/**
+ * ScritchUI bracket.
+ *
+ * @since 2026/09/28
+ */
+typedef sjme_jbracketScritchUiBase* sjme_jbracketScritchUi;
+
+/** Basic @link sjme_jbracketScritchUi @endlink type identifier. */
+#define SJME_TYPEOF_BASIC_sjme_jbracketScritchUi SJME_TYPEOF_BASIC_sjme_jobject
+
+/** Java @link sjme_jbracketScritchUi @endlink type identifier. */
+#define SJME_TYPEOF_JAVA_sjme_jbracketScritchUi SJME_TYPEOF_JAVA_sjme_jobject
+
+/** Is a pointer for @link sjme_jbracketScritchUi @endlink ? */
+#define SJME_TYPEOF_IS_POINTER_sjme_jbracketScritchUi \
+	SJME_TYPEOF_IS_POINTER_sjme_jobject
 	
 /*--------------------------------------------------------------------------*/
 

@@ -109,6 +109,18 @@ struct sjme_jbracketPipeBase
 	} stream;
 };
 
+struct sjme_jbracketScritchUiBase
+{
+	/** Object base. */
+	sjme_jobjectBase object;
+
+	/** The ScritchUI type. */
+	sjme_scritchui_uiType type;
+
+	/** The @link sjme_scritchui_uiCommon @endlink instance. */
+	sjme_atomic(sjme_pointer) ref;
+};
+
 struct sjme_jbracketTraceBase
 {
 	/** Object base. */
@@ -640,6 +652,9 @@ sjme_errorCode sjme_nvm_instance_objectNewR(
  * 
  * @param contextThread The thread this is allocating within.
  * @param inType The structure type being allocated.
+ * @param subType The subtype of the bracket, this is generally for libraries
+ * such as ScritchAudio and ScritchUI which have more bracket diversity. If
+ * a bracket does not have this distinction, this must be @code -1 @endcode.
  * @param outObject The resultant bracket object.
  * @return Any resultant error, if any.
  * @since 2025/06/28
@@ -647,6 +662,7 @@ sjme_errorCode sjme_nvm_instance_objectNewR(
 sjme_errorCode sjme_nvm_instance_objectNewBracketR(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType,
+	sjme_attrInNegativeOnePositive sjme_jint subType,
 	sjme_attrOutNotNull sjme_jobject* outObject
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
@@ -655,12 +671,17 @@ sjme_errorCode sjme_nvm_instance_objectNewBracketR(
  * 
  * @param contextThread The thread this is allocating within.
  * @param inType The structure type being allocated.
+ * @param subType The subtype of the bracket, this is generally for libraries
+ * such as ScritchAudio and ScritchUI which have more bracket diversity. If
+ * a bracket does not have this distinction, this must be @code -1 @endcode.
  * @param outObject The resultant bracket object.
  * @return Any resultant error, if any.
  * @since 2025/06/28
  */
-#define sjme_nvm_instance_objectNewBracket(contextThread, inType, outObject) \
+#define sjme_nvm_instance_objectNewBracket(contextThread, inType, \
+	subType, outObject) \
 	(sjme_nvm_instance_objectNewBracketR((contextThread), (inType), \
+		(subType), \
 		(outObject) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 	
 /**
