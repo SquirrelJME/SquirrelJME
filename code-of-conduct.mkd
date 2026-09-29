@@ -22,6 +22,12 @@ This applies to community participation:
  * _Do not vent_:
    * This places a burden on others, if you are in trouble please do seek
      mental health resources.
+ * _Rules lawyering_:
+   * Trying to circumvent rules and/or guidelines purely by logic to allow
+     toxic behavior to get a pass is not permitted.
+   * _nuance n: a subtle difference in meaning or opinion or attitude;_
+     _"without understanding the finer nuances you can't enjoy the humor";_
+     _"don't argue about shades of meaning"_
 
 This community follows a warning then permanent ban procedure, unless your
 infraction is grave enough to result in an instant permanent ban. As we are
