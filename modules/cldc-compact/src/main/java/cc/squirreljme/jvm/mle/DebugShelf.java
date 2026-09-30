@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.TestOnly;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * This is the shelf used for accessing the debugging features of SquirrelJME
@@ -141,7 +142,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@SquirrelJMEVendorApi
-	@Nullable
+	@UnknownNullability
 	public static native String pointMethodName(
 		@NotNull TracePointBracket __point);
 	

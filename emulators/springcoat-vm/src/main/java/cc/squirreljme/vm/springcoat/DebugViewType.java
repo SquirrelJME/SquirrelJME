@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.LocalVariableInfo;
 import net.multiphasicapps.classfile.LocalVariableTable;
@@ -546,7 +547,16 @@ public class DebugViewType
 	@Override
 	public String sourceFile(Object __which)
 	{
-		return DebugViewType.__class(__which).file().sourceFile();
+		// Class not valid?
+		SpringClass classy = DebugViewType.__class(__which);
+		if (classy == null)
+			return null;
+		
+		// File not valid? As in this is a virtual class?
+		ClassFile file = classy.file();
+		if (file == null)
+			return null;
+		return file.sourceFile();
 	}
 	
 	/**

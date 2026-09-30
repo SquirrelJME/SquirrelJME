@@ -12,8 +12,13 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.intellij.lang.annotations.Language;
+import org.intellij.lang.annotations.Pattern;
+import org.intellij.lang.annotations.Subst;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * Provides the shelf for types that exist within the JVM.
@@ -41,6 +46,8 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
+	@Pattern("^(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)" +
+		"(/?(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*))*$")
 	public static native String binaryName(@NotNull Class<?> __type)
 		throws MLECallError;
 	
@@ -52,6 +59,8 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
+	@Pattern("^(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)" +
+		"(/?(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*))*$")
 	public static native String binaryPackageName(
 		@NotNull Class<?> __type);
 	
@@ -65,6 +74,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
+	@Nullable
 	public static native Class<?> component(@NotNull Class<?> __type)
 		throws MLECallError;
 	
@@ -78,6 +88,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native Class<?> componentRoot(
 		@NotNull Class<?> __type);
 	
@@ -91,6 +102,7 @@ public final class TypeShelf
 	 * @since 2020/07/06
 	 */
 	@SquirrelJMEVendorApi
+	@Range(from = 0, to = Integer.MAX_VALUE)
 	public static native int dimensions(@NotNull Class<?> __type)
 		throws MLECallError;
 	
@@ -105,6 +117,7 @@ public final class TypeShelf
 	 */
 	@SquirrelJMEVendorApi
 	@SuppressWarnings("rawtypes")
+	@NotNull
 	public static native Enum[] enumValues(@NotNull Class<?> __type)
 		throws MLECallError;
 	
@@ -120,7 +133,9 @@ public final class TypeShelf
 	 * @since 2020/06/04
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean equals(Class<?> __a, Class<?> __b)
+	@CheckReturnValue
+	public static native boolean equals(@NotNull Class<?> __a,
+		@NotNull Class<?> __b)
 		throws MLECallError;
 	
 	/**
@@ -134,7 +149,13 @@ public final class TypeShelf
 	 */
 	@SquirrelJMEVendorApi
 	@Nullable
-	public static native Class<?> findType(@NotNull String __name)
+	public static native Class<?> findType(@NotNull
+		@Subst("java/lang/Object")
+		@Pattern("^(\\p{javaJavaIdentifierStart}" +
+			"\\p{javaJavaIdentifierPart}*)" +
+			"(/?(\\p{javaJavaIdentifierStart}" +
+			"\\p{javaJavaIdentifierPart}*))*$")
+			String __name)
 		throws MLECallError;
 	
 	/**
@@ -169,6 +190,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native Class<?>[] interfaces(@NotNull Class<?> __type)
 		throws MLECallError;
 	
@@ -181,6 +203,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native boolean isArray(@NotNull Class<?> __type)
 		throws MLECallError;
 	
@@ -198,6 +221,7 @@ public final class TypeShelf
 	 * @since 2021/02/07
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native boolean isAssignableFrom(@NotNull Class<?> __this,
 		@NotNull Class<?> __other)
 		throws MLECallError;
@@ -211,6 +235,7 @@ public final class TypeShelf
 	 * @since 2021/01/20
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native boolean isClassInit(@NotNull Class<?> __type)
 		throws MLECallError;
 	
@@ -223,6 +248,7 @@ public final class TypeShelf
 	 * @since 2020/06/28
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native boolean isEnum(@NotNull Class<?> __type)
 		throws MLECallError;
 	
@@ -235,6 +261,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native boolean isInterface(@NotNull Class<?> __type)
 		throws MLECallError;
 	
@@ -247,6 +274,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native boolean isPrimitive(@NotNull Class<?> __type)
 		throws MLECallError;
 	
@@ -259,6 +287,8 @@ public final class TypeShelf
 	 * @since 2020/06/02
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
+	@NotNull
 	public static native Class<?> objectType(@NotNull Object __o)
 		throws MLECallError;
 	
@@ -272,6 +302,9 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
+	@Language("jvm-class-name")
+	@Pattern("^(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)" +
+		"(\\.?(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*))*$")
 	public static native String runtimeName(@NotNull Class<?> __type)
 		throws MLECallError;
 	
@@ -284,6 +317,7 @@ public final class TypeShelf
 	 * @since 2020/06/07
 	 */
 	@SquirrelJMEVendorApi
+	@Nullable
 	public static native Class<?> superClass(@NotNull Class<?> __type)
 		throws MLECallError;
 	
@@ -294,6 +328,7 @@ public final class TypeShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native Class<Boolean> typeOfBoolean();
 	
 	/**
@@ -303,6 +338,7 @@ public final class TypeShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native Class<Byte> typeOfByte();
 	
 	/**
@@ -312,6 +348,7 @@ public final class TypeShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native Class<Short> typeOfShort();
 	
 	/**
@@ -321,6 +358,7 @@ public final class TypeShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native Class<Character> typeOfCharacter();
 	
 	/**
@@ -330,6 +368,7 @@ public final class TypeShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native Class<Integer> typeOfInteger();
 	
 	/**
@@ -339,6 +378,7 @@ public final class TypeShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native Class<Long> typeOfLong();
 	
 	/**
@@ -348,6 +388,7 @@ public final class TypeShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native Class<Float> typeOfFloat();
 	
 	/**
@@ -357,5 +398,6 @@ public final class TypeShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native Class<Double> typeOfDouble();
 }

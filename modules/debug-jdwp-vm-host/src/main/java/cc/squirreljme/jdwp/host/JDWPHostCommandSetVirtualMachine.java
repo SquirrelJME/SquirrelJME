@@ -643,11 +643,16 @@ public enum JDWPHostCommandSetVirtualMachine
 		{
 			Object objectInstance = __viewInstance.instance(object);
 			
+			// Send it over the pipe
 			__controller.writeObject(rv, objectInstance);
 			
-			// Store for later
-			__controller.getState().items.put(object);
-			__controller.getState().items.put(objectInstance);
+			// Store for later, note that we may not know what these objects
+			// truly are yet
+			JDWPHostLinker<Object> items = __controller.getState().items;
+			if (object != null)
+				items.put(object);
+			if (objectInstance != null)
+				items.put(objectInstance);
 		}
 		
 		return rv;

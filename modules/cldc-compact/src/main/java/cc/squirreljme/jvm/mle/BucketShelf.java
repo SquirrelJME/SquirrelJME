@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.constants.StandardBucketType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
+import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -78,7 +79,8 @@ public final class BucketShelf
 	@SquirrelJMEVendorApi
 	public static native boolean exists(
 		@NotNull BucketBracket __bucket,
-		@NotNull String __file)
+		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
+			String __file)
 		throws MLECallError;
 	
 	/**
@@ -94,7 +96,8 @@ public final class BucketShelf
 	@SquirrelJMEVendorApi
 	public static native long lastModifiedTime(
 		@NotNull BucketBracket __bucket,
-		@NotNull String __file)
+		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
+			String __file)
 		throws MLECallError;
 	
 	/**
@@ -109,7 +112,8 @@ public final class BucketShelf
 	@SquirrelJMEVendorApi
 	public static native long length(
 		@NotNull BucketBracket __bucket,
-		@NotNull String __file)
+		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
+			String __file)
 		throws MLECallError;
 	
 	/**
@@ -145,9 +149,12 @@ public final class BucketShelf
 	public static native String[] list(
 		@NotNull BucketBracket __bucket,
 		boolean __not,
-		@Nullable String __prefix,
-		@Nullable String __contains,
-		@Nullable String __suffix)
+		@Nullable @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
+			String __prefix,
+		@Nullable @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
+			String __contains,
+		@Nullable @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
+			String __suffix)
 		throws MLECallError;
 	
 	/**
@@ -161,6 +168,7 @@ public final class BucketShelf
 	 */
 	@SquirrelJMEVendorApi
 	@NotNull
+	@Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
 	public static native String path(@NotNull BucketBracket __bucket)
 		throws MLECallError;
 	
@@ -182,7 +190,8 @@ public final class BucketShelf
 	@SquirrelJMEVendorApi
 	public static native int read(
 		@NotNull BucketBracket __bucket,
-		@NotNull String __file,
+		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
+			String __file,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __fileOff,
 		@NotNull byte[] __buf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
@@ -206,7 +215,8 @@ public final class BucketShelf
 	@SquirrelJMEVendorApi
 	public static native void write(
 		@NotNull BucketBracket __bucket,
-		@NotNull String __file,
+		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
+			String __file,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __fileOff,
 		@NotNull byte[] __buf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off,

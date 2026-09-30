@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.CheckReturnValue;
 
 /**
  * This contains various math functions.
@@ -37,6 +38,7 @@ public final class MathShelf
 	 * @since 2019/06/21
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double doublePack(int __lo, int __hi);
 	
 	/**
@@ -47,6 +49,7 @@ public final class MathShelf
 	 * @since 2020/02/24
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native int doubleUnpackHigh(double __d);
 	
 	/**
@@ -57,6 +60,7 @@ public final class MathShelf
 	 * @since 2020/02/24
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native int doubleUnpackLow(double __d);
 	
 	/**
@@ -68,6 +72,7 @@ public final class MathShelf
 	 * @since 2019/06/21
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native long longPack(int __lo, int __hi);
 	
 	/**
@@ -78,6 +83,7 @@ public final class MathShelf
 	 * @since 2019/06/21
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native int longUnpackHigh(long __v);
 	
 	/**
@@ -88,6 +94,7 @@ public final class MathShelf
 	 * @since 2019/06/21
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native int longUnpackLow(long __v);
 	
 	/**
@@ -98,6 +105,7 @@ public final class MathShelf
 	 * @since 2020/06/18
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native long rawDoubleToLong(double __v);
 	
 	/**
@@ -108,6 +116,7 @@ public final class MathShelf
 	 * @since 2020/06/18
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native int rawFloatToInt(float __v);
 	
 	/**
@@ -118,6 +127,7 @@ public final class MathShelf
 	 * @since 2020/06/18
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native float rawIntToFloat(int __b);
 	
 	/**
@@ -128,5 +138,6 @@ public final class MathShelf
 	 * @since 2020/06/18
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double rawLongToDouble(long __b);
 }

@@ -50,6 +50,7 @@ public final class TaskShelf
 	 * @since 2020/07/09
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native TaskBracket[] active();
 	
 	/**
@@ -59,6 +60,7 @@ public final class TaskShelf
 	 * @since 2020/07/02
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native TaskBracket current();
 	
 	/**
@@ -71,7 +73,8 @@ public final class TaskShelf
 	 * @since 2020/07/02
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean equals(TaskBracket __a, TaskBracket __b)
+	public static native boolean equals(@NotNull TaskBracket __a,
+		@NotNull TaskBracket __b)
 		throws MLECallError;
 	
 	/**

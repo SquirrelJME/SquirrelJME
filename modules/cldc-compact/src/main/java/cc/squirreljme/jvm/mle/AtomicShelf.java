@@ -10,6 +10,8 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.Blocking;
+import org.jetbrains.annotations.CheckReturnValue;
 
 /**
  * This shelf provides helpers for atomic operations.
@@ -36,6 +38,7 @@ public final class AtomicShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native int gcLock();
 	
 	/**
@@ -60,6 +63,7 @@ public final class AtomicShelf
 	 * @since 2020/05/30
 	 */
 	@SquirrelJMEVendorApi
+	@Blocking
 	public static native void spinLock(int __count);
 	
 	/**

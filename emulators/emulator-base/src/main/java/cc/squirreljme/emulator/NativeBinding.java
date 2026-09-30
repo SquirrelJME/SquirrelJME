@@ -23,8 +23,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.regex.Pattern;
+import java.util.Objects;
 import javax.imageio.ImageIO;
+import org.intellij.lang.annotations.Subst;
 
 /**
  * This class manages the native bindings.
@@ -33,6 +34,9 @@ import javax.imageio.ImageIO;
  */
 public final class NativeBinding
 {
+	/** Instance initialized in main. */
+	private static volatile NativeBinding _MAIN_INSTANCE;
+	
 	/** Property for pre-loading libraries. */
 	public static final String LIB_PRELOAD =
 		"squirreljme.emulator.libpath";
@@ -270,19 +274,22 @@ public final class NativeBinding
 	 * @throws Throwable On any exception.
 	 * @since 2022/09/07
 	 */
+	@SuppressWarnings("InstantiationOfUtilityClass")
 	public static void main(String... __args)
 		throws Throwable
 	{
 		// Force this to be initialized
-		new NativeBinding();
+		NativeBinding._MAIN_INSTANCE = new NativeBinding();
 		
 		// Extract main method to call
+		@Subst("java/lang/Object")
 		String targetMain = __args[0];
 		String[] targetArgs =
 			Arrays.copyOfRange(__args, 1, __args.length);
 		
 		// Call main
-		ReflectionShelf.invokeMain(TypeShelf.findType(targetMain), targetArgs);
+		ReflectionShelf.invokeMain(Objects.requireNonNull(
+			TypeShelf.findType(targetMain)), targetArgs);
 	}
 	
 	/**

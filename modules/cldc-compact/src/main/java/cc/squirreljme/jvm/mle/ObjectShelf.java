@@ -482,6 +482,7 @@ public final class ObjectShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
+	@Contract("_ -> new")
 	public static native Object newInstance(@NotNull Class<?> __type);
 	
 	/**

@@ -17,11 +17,8 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchFieldException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringNoSuchMethodException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.ClassFile;
@@ -93,7 +90,7 @@ public class SpringVisClass
 	public SpringClassLoader classLoader()
 		throws IllegalStateException
 	{
-		throw Debugging.todo();
+		return this.machine.classLoader();
 	}
 	
 	/**
@@ -113,6 +110,11 @@ public class SpringVisClass
 	@Override
 	public SpringClass componentType()
 	{
+		// Not an array? Then there is no component
+		Class<?> real = this.real;
+		if (!real.isArray())
+			return null;
+		
 		throw Debugging.todo();
 	}
 	
@@ -146,7 +148,8 @@ public class SpringVisClass
 	@Override
 	public SpringField[] fieldLookup()
 	{
-		throw Debugging.todo();
+		// Use object class instead
+		return this.superClass().fieldLookup();
 	}
 	
 	/**
@@ -156,7 +159,9 @@ public class SpringVisClass
 	@Override
 	public int fieldLookupBase()
 	{
-		throw Debugging.todo();
+		// Always based at zero, since this virtual class has no fields
+		// or methods, everything is inherited from object
+		return 0;
 	}
 	
 	/**
@@ -166,7 +171,8 @@ public class SpringVisClass
 	@Override
 	public SpringField[] fieldsOnlyThisClass()
 	{
-		throw Debugging.todo();
+		// VisClasses have no fields
+		return new SpringField[0];
 	}
 	
 	/**
@@ -176,7 +182,8 @@ public class SpringVisClass
 	@Override
 	public SpringField[] fieldTable()
 	{
-		throw Debugging.todo();
+		// VisClasses have no fields
+		return new SpringField[0];
 	}
 	
 	/**
@@ -186,7 +193,8 @@ public class SpringVisClass
 	@Override
 	public ClassFile file()
 	{
-		throw Debugging.todo();
+		// VisClasses have no class file
+		return null;
 	}
 	
 	/**
@@ -197,7 +205,8 @@ public class SpringVisClass
 	public int findMethodIndex(SpringMethod __method)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		// Use object class instead
+		return this.superClass().findMethodIndex(__method);
 	}
 	
 	/**
@@ -217,7 +226,8 @@ public class SpringVisClass
 	@Override
 	public VMClassLibrary inJar()
 	{
-		throw Debugging.todo();
+		// VisClasses are not in any Jars
+		return null;
 	}
 	
 	/**
@@ -227,7 +237,8 @@ public class SpringVisClass
 	@Override
 	public int instanceFieldCount()
 	{
-		throw Debugging.todo();
+		// VisClasses have no instances
+		return 0;
 	}
 	
 	/**
@@ -303,7 +314,11 @@ public class SpringVisClass
 	public boolean isAssignableFrom(SpringClass __o)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// As this is shared in multiple places, do use split logic
+		return SpringVMClass.isAssignableFrom(this, __o);
 	}
 	
 	/**
@@ -314,7 +329,9 @@ public class SpringVisClass
 	public boolean isCompatible(Object __v)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__v instanceof SpringObject)
+			return this.isAssignableFrom(((SpringObject)__v).type());
+		return false;
 	}
 	
 	/**
@@ -324,7 +341,7 @@ public class SpringVisClass
 	@Override
 	public boolean isEnum()
 	{
-		throw Debugging.todo();
+		return this.real.isEnum();
 	}
 	
 	/**
@@ -368,7 +385,11 @@ public class SpringVisClass
 	public boolean isSuperClass(SpringClass __cl)
 		throws NullPointerException
 	{
-		throw Debugging.todo();
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// This is shared logic
+		return SpringVMClass.isSuperClass(this, __cl);
 	}
 	
 	/**
@@ -378,7 +399,9 @@ public class SpringVisClass
 	@Override
 	public SpringMethod lookupDefaultConstructor()
 	{
-		throw Debugging.todo();
+		// There is no default constructor, these are constructed effectively
+		// with magic
+		return null;
 	}
 	
 	/**
@@ -390,7 +413,8 @@ public class SpringVisClass
 		String __desc)
 		throws NullPointerException, SpringNoSuchFieldException
 	{
-		throw Debugging.todo();
+		// Use object class instead
+		return this.superClass().lookupField(__static, __name, __desc);
 	}
 	
 	/**
@@ -402,7 +426,8 @@ public class SpringVisClass
 		FieldDescriptor __desc)
 		throws NullPointerException, SpringNoSuchFieldException
 	{
-		throw Debugging.todo();
+		// Use object class instead
+		return this.superClass().lookupField(__static, __name, __desc);
 	}
 	
 	/**
@@ -413,7 +438,8 @@ public class SpringVisClass
 	public SpringField lookupField(boolean __static, FieldNameAndType __nat)
 		throws NullPointerException, SpringNoSuchFieldException
 	{
-		throw Debugging.todo();
+		// Use object class instead
+		return this.superClass().lookupField(__static, __nat);
 	}
 	
 	/**
@@ -424,7 +450,8 @@ public class SpringVisClass
 	public SpringField lookupField(int __fieldDx)
 		throws SpringNoSuchFieldException
 	{
-		throw Debugging.todo();
+		// Use object class instead
+		return this.superClass().lookupField(__fieldDx);
 	}
 	
 	/**
@@ -435,9 +462,10 @@ public class SpringVisClass
 	public SpringMethod lookupMethod(boolean __static, MethodName __name,
 		MethodDescriptor __desc)
 		throws NullPointerException, SpringIncompatibleClassChangeException,
-		SpringNoSuchMethodException
+			SpringNoSuchMethodException
 	{
-		throw Debugging.todo();
+		// Use object class instead
+		return this.superClass().lookupMethod(__static, __name, __desc);
 	}
 	
 	/**
@@ -461,7 +489,8 @@ public class SpringVisClass
 	public SpringMethod lookupMethod(int __methodDx)
 		throws SpringNoSuchMethodException
 	{
-		throw Debugging.todo();
+		// Use object class instead
+		return this.superClass().lookupMethod(__methodDx);
 	}
 	
 	/**
@@ -473,8 +502,8 @@ public class SpringVisClass
 		throws NullPointerException, SpringIncompatibleClassChangeException,
 		SpringNoSuchMethodException
 	{
-		// There are no methods
-		return null;
+		// Use object class instead
+		return this.superClass().lookupMethodNonVirtual(__nat);
 	}
 	
 	/**
@@ -484,7 +513,8 @@ public class SpringVisClass
 	@Override
 	public SpringMethod[] methodLookup()
 	{
-		throw Debugging.todo();
+		// Use object class instead
+		return this.superClass().methodLookup();
 	}
 	
 	/**
@@ -494,7 +524,9 @@ public class SpringVisClass
 	@Override
 	public int methodLookupBase()
 	{
-		throw Debugging.todo();
+		// Always based at zero, since this virtual class has no fields
+		// or methods, everything is inherited from object
+		return 0;
 	}
 	
 	/**
@@ -504,7 +536,8 @@ public class SpringVisClass
 	@Override
 	public Map<MethodNameAndType, SpringMethod> methods()
 	{
-		throw Debugging.todo();
+		// Use object class instead
+		return this.superClass().methods();
 	}
 	
 	/**
@@ -534,7 +567,7 @@ public class SpringVisClass
 	public void setInitialized()
 		throws SpringVirtualMachineException
 	{
-		throw Debugging.todo();
+		// Does nothing, this is always initialized
 	}
 	
 	/**
@@ -544,7 +577,9 @@ public class SpringVisClass
 	@Override
 	public int staticFieldBase()
 	{
-		throw Debugging.todo();
+		// Always based at zero, since this virtual class has no fields
+		// or methods, everything is inherited from object
+		return 0;
 	}
 	
 	/**
@@ -554,7 +589,8 @@ public class SpringVisClass
 	@Override
 	public SpringFieldStorage[] staticFields()
 	{
-		throw Debugging.todo();
+		// No static fields can be stored for VisClasses
+		return new SpringFieldStorage[0];
 	}
 	
 	/**
