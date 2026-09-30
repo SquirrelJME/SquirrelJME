@@ -23,7 +23,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 /**
- * This handles the input and output communication of JDWPa.
+ * This handles the input and output communication of JDWP.
  *
  * @since 2021/03/09
  */

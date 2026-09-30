@@ -672,7 +672,8 @@ public class DebugViewType
 	 * @return {@code true} on success.
 	 * @since 2022/09/01
 	 */
-	static boolean __readValue(JDWPHostValue __out, SpringFieldStorage __store,
+	static boolean __readValue(JDWPHostValue __out, 
+		SpringFieldStorage __store,
 		SpringMachine __machine)
 	{
 		Object value = __store.get();

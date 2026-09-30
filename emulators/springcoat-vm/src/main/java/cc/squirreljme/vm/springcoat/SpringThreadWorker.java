@@ -1788,7 +1788,7 @@ public final class SpringThreadWorker
 		// Note that if the thread is exempt from suspension do not single
 		// step or stop on any breakpoint...
 		JDWPHostController jdwp = this.machine.tasks.jdwpController;
-		if (jdwp != null && !thread.noDebugSuspend)
+		if (jdwp != null && !thread.noDebugSuspend(true))
 		{
 			// Check for breakpoints to stop at first, because if our thread
 			// gets suspended we want to know before we check for suspension.
@@ -3718,7 +3718,7 @@ public final class SpringThreadWorker
 		
 		// Disallow any kind of debug suspend, for example if this thread
 		// is created by the debugger for certain tasks or running.
-		if (thread.noDebugSuspend)
+		if (thread.noDebugSuspend(true))
 			return;
 		
 		JDWPHostController jdwp = this.machine.tasks.jdwpController;

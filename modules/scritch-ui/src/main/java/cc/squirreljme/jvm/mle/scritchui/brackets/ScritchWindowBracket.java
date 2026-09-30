@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle.scritchui.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.Debug;
 
 /**
  * Represents a window which is the base for all window types.
@@ -19,6 +20,8 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  */
 @GhostObject
 @SquirrelJMEVendorApi
+@Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
+	hasChildren="false")
 public interface ScritchWindowBracket
 	extends ScritchContainerBracket, ScritchLabelBracket
 {

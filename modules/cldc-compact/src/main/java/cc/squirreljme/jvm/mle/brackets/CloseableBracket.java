@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.Debug;
 
 /**
  * Any bracket that can be "closed".
@@ -19,6 +20,8 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  */
 @SquirrelJMEVendorApi
 @GhostObject
+@Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
+	hasChildren="false")
 public interface CloseableBracket
 {
 }

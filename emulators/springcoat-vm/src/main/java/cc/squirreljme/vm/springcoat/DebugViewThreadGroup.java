@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.host.views.JDWPViewThreadGroup;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMachineExitException;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ConstantValueString;
 
 /**
  * A view over a group of threads, in SpringCoat this is an individual machine.
@@ -89,6 +90,30 @@ public class DebugViewThreadGroup
 		// The context is always our own task object
 		return ((SpringMachine)__threadGroup)
 			.taskObject((SpringMachine)__threadGroup);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since 2026/09/30
+	 */
+	@Override
+	public Object internString(Object __threadGroup, String __string)
+	{
+		// No string or the thread group is invalid?
+		if (__threadGroup == null || __string == null)
+			return null;
+		
+		// This needs to happen in a worker thread that cannot be suspended
+		// as the String is just created out of nowhere without any context
+		// thread
+		try (CallbackThread callback = ((SpringMachine)__threadGroup)
+			.obtainCallbackThread(true))
+		{
+			// We can treat this just as a some intern string
+			return callback.thread()._worker
+				.asVMObject(new ConstantValueString(__string));
+		}
 	}
 	
 	/**

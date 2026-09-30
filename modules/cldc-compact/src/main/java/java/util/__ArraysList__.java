@@ -9,11 +9,14 @@
 
 package java.util;
 
+import org.jetbrains.annotations.Debug;
+
 /**
  * This wraps the given array as a list for {@link Arrays#asList(Object[])}.
  *
  * @since 2016/08/31
  */
+@Debug.Renderer(hasChildren="true", childrenArray="this._wrapped")
 final class __ArraysList__<T>
 	extends AbstractList<T>
 	implements RandomAccess

@@ -4,7 +4,7 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="-Dcc.squirreljme.jdwp.debug=true" />
+      <option name="scriptParameters" value="-Dcc.squirreljme.jdwp.debug=false" />
       <option name="taskDescriptions">
         <list />
       </option>
@@ -13,12 +13,15 @@
           <option value=":fullSpringCoatDebug" />
         </list>
       </option>
-      <option name="vmOptions" value="-Dsquirreljme.jdwp=localhost:5005 -Dcc.squirreljme.jdwp.debug=true -Dsquirreljme.sysprop.cc.squirreljme.jdwp.debug=true" />
+      <option name="vmOptions" value="-Dsquirreljme.jdwp=localhost:5005 -Dcc.squirreljme.jdwp.debug=true -Dsquirreljme.sysprop.cc.squirreljme.jdwp.debug=false" />
     </ExternalSystemSettings>
     <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+    <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
     <DebugAllEnabled>false</DebugAllEnabled>
     <RunAsTest>false</RunAsTest>
+    <GradleProfilingDisabled>false</GradleProfilingDisabled>
+    <GradleCoverageDisabled>false</GradleCoverageDisabled>
     <method v="2" />
   </configuration>
 </component>

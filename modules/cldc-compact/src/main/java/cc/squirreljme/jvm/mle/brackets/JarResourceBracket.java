@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle.brackets;
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.Debug;
 
 /**
  * This represents a resource within a JAR file.
@@ -20,6 +21,8 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  */
 @SquirrelJMEVendorApi
 @GhostObject
+@Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
+	hasChildren="false")
 public interface JarResourceBracket
 {
 }

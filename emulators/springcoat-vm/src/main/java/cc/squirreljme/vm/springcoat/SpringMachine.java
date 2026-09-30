@@ -381,6 +381,26 @@ public final class SpringMachine
 	}
 	
 	/**
+	 * Returns any thread.
+	 *
+	 * @return Any thread, or {@code null} if there are none.
+	 * @since 2026/09/30
+	 */
+	public SpringThread getAnyThread()
+	{
+		// Return the first discovered thread
+		synchronized (this)
+		{
+			for (SpringThread t : this.getThreads())
+				if (t != null)
+					return t;
+		}
+		
+		// No threads found
+		return null;
+	}
+	
+	/**
 	 * Returns the current exit code.
 	 * 
 	 * @return The current exit code.

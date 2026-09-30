@@ -122,7 +122,8 @@ public class DebugViewThread
 	@Override
 	public boolean isDebugCallback(Object __thread)
 	{
-		return ((SpringThread)__thread).noDebugSuspend;
+		// Check the root flag and not the method
+		return ((SpringThread)__thread).noDebugSuspend(false);
 	}
 	
 	/**

@@ -47,6 +47,9 @@ public enum JDWPCommandSetVirtualMachine
 	/** Force exit the virtual machine. */
 	EXIT(10),
 	
+	/** Create a string within the VM. */
+	CREATE_STRING(11),
+	
 	/** Capabilities. */
 	CAPABILITIES(12),
 	

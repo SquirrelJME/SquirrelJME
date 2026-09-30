@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.cldc.util.SynchronizedIterator;
+import org.jetbrains.annotations.Debug;
 
 /**
  * This is similar to {@link ArrayList} except that it is synchronized and
@@ -23,6 +24,7 @@ import cc.squirreljme.runtime.cldc.util.SynchronizedIterator;
  */
 @Api
 @SuppressWarnings("UseOfClone")
+@Debug.Renderer(hasChildren="true", childrenArray="this.elementData")
 public class Vector<E>
 	extends AbstractList<E>
 	implements RandomAccess, Cloneable

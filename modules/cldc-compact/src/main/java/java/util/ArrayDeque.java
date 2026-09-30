@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import org.jetbrains.annotations.Debug;
 
 /**
  * This is a double-ended queue which is backed by an array, this grows
@@ -24,6 +25,7 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 @ImplementationNote("In SquirrelJME, the current implementation is naive " +
 	"in that it uses an ArrayList, a more optimal solution should be added.")
 @Api
+@Debug.Renderer(hasChildren="true", childrenArray="this._elements")
 public class ArrayDeque<E>
 	extends AbstractCollection<E>
 	implements Deque<E>, Cloneable

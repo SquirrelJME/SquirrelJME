@@ -87,7 +87,7 @@ public class CallbackThread
 	 */
 	public boolean noDebugSuspend()
 	{
-		return this._thread.noDebugSuspend;
+		return this._thread.noDebugSuspend(false);
 	}
 	
 	/**

@@ -13,10 +13,13 @@ import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPException;
+import cc.squirreljme.jdwp.JDWPHasId;
+import cc.squirreljme.jdwp.JDWPHasIdKind;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPIdSizes;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.jdwp.host.views.JDWPViewHasInstance;
+import cc.squirreljme.jdwp.host.views.JDWPViewObject;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
 import cc.squirreljme.jdwp.host.views.JDWPViewThreadGroup;
 import cc.squirreljme.jdwp.host.views.JDWPViewType;
@@ -270,6 +273,49 @@ public enum JDWPHostCommandSetVirtualMachine
 				view.suspension(thread).resume();
 			
 			return null;
+		}
+	},
+	
+	/** Create string. */
+	CREATE_STRING(JDWPCommandSetVirtualMachine.CREATE_STRING)
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2026/09/30
+		 */
+		@Override
+		public JDWPPacket execute(JDWPHostController __controller,
+			JDWPPacket __packet)
+			throws JDWPException
+		{
+			String desire = __packet.readString();
+			
+			// Request the string from the first virtual machine that creates
+			// a successful string
+			Object intern = null;
+			JDWPViewThreadGroup viewGroup = __controller.viewThreadGroup();
+			for (Object threadGroup : __controller.allThreadGroups())
+			{
+				// Get the interned string
+				intern = viewGroup.internString(threadGroup, desire);
+				if (intern != null)
+					break;
+			}
+			
+			// No string was available? Indicate an error even if the spec
+			// says the only valid error is a dead VM
+			if (intern == null)
+				return __controller.reply(
+					__packet.id(), JDWPErrorType.ABSENT_INFORMATION);
+			
+			// Return a response with the given string
+			JDWPPacket rv = __controller.reply(
+				__packet.id(), JDWPErrorType.NO_ERROR);
+			
+			// Write the object ID
+			__controller.writeTaggedId(rv, intern);
+			
+			return rv;
 		}
 	},
 	

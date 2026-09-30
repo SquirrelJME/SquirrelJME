@@ -61,7 +61,7 @@ public final class JDWPHostController
 {
 	/** Should debugging be enabled? */
 	static final boolean _DEBUG =
-		Boolean.getBoolean("cc.squirreljme.jdwp.debug");
+		JDWPCommLink.DEBUG;
 	
 	/** Attempts to instance capture. */
 	private static final JDWPViewKind[] _INSTANCE_CAPTURE =

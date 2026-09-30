@@ -70,7 +70,7 @@ public final class SpringThread
 		new SpringThreadFrames();
 	
 	/** Do not allow debug suspension, as in this is a debugger thread. */
-	public final boolean noDebugSuspend;
+	final boolean _noDebugSuspend;
 	
 	/** Inherited verbose flags to use. */
 	int _initVerboseFlags;
@@ -137,7 +137,7 @@ public final class SpringThread
 		this.main = __main;
 		this.name = __n;
 		this.profiler = __profiler;
-		this.noDebugSuspend = __noDebugSuspend;
+		this._noDebugSuspend = __noDebugSuspend;
 	}
 	
 	/**
@@ -502,6 +502,35 @@ public final class SpringThread
 	public final String name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * Checks if this thread is under no-debug suspension, that is it cannot
+	 * be suspended by the debugger in any way.
+	 *
+	 * @param __byFrame If 
+	 * @return If this is under debug suspend.
+	 * @since 2026/09/30
+	 */
+	public final boolean noDebugSuspend(boolean __byFrame)
+	{
+		// Entire thread is in no-debug suspend? Or we just do not want to
+		// check the current frame?
+		// The thread always takes priority
+		boolean threadNoDebugSuspend = this._noDebugSuspend;
+		if (!__byFrame || threadNoDebugSuspend)
+			return threadNoDebugSuspend;
+		
+		// Only if a current frame exists can it be under a no-debug suspend
+		synchronized (this)
+		{
+			SpringThreadFrame frame = this.currentFrame();
+			if (frame != null)
+				return frame._noDebugSuspend;
+		}
+		
+		// No valid frame, so cannot be under no-debug suspend
+		return false;
 	}
 	
 	/**

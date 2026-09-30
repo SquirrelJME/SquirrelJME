@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPCommLink;
 import cc.squirreljme.jdwp.JDWPHasIdKind;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;
@@ -116,8 +117,9 @@ public final class JDWPHostLinker<T>
 			if (!deprecated.contains(realId))
 			{
 				// TODO
-				Debugging.todoNote("Deprecated JDWPHostLinker.get(%d)",
-					__id);
+				if (JDWPCommLink.DEBUG)
+					Debugging.todoNote("Deprecated JDWPHostLinker.get(%d)",
+						__id);
 				
 				// Store it in
 				deprecated.add(realId);
@@ -161,9 +163,10 @@ public final class JDWPHostLinker<T>
 				if (!deprecated.contains(id))
 				{
 					// TODO
-					Debugging.todoNote(
-						"Deprecated JDWPHostLinker.put(%s) -> %s",
-						__t, id);
+					if (JDWPCommLink.DEBUG)
+						Debugging.todoNote(
+							"Deprecated JDWPHostLinker.put(%s) -> %s",
+							__t, id);
 					
 					// Store it in
 					deprecated.add(id);
