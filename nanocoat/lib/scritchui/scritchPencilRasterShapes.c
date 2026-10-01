@@ -15,10 +15,6 @@
 #include "sjme/debug.h"
 #include "sjme/fixed.h"
 
-#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
-	#define SJME_ANGLE_RAD 0.017453292f
-#endif
-
 static sjme_errorCode sjme_scritchpen_core_clipPolygon(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInNotNull const sjme_jint* inXPoints,
@@ -43,19 +39,17 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawArc(
 	sjme_attrInValue sjme_jint arcAngle)
 {
 	sjme_errorCode error;
-	sjme_jint steps, innerX, innerY, firstFillX, lastFillX, firstFillY, i;
-	sjme_jint lastFillY;
+	sjme_jint steps, innerX, innerY, lastFillX, lastFillY, i;
+	sjme_jint centerX, centerY, radiusX, radiusY;
 	sjme_jboolean dot, dotFlip;
 	sjme_scritchui_line* clipLine;
 	sjme_scritchui_pencilDrawPixelFunc drawPixel;
-#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
-	float centerX, centerY, radiusX, radiusY, startAngleRad, endAngleRad;
-	float angle;
-#endif
+	sjme_fixed startAngleRad, endAngleRad;
+	sjme_fixed angleStep, fillCos, fillSin, nextCos, nextSin, stepCos, stepSin;
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
 	error = SJME_ERROR_NONE;
 
 	dot = SJME_JNI_TRUE;
@@ -65,91 +59,97 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawArc(
 
 	/* Get clipping information. */
 	clipLine = &g->state.clipLine;
-	
-	/* Java's coordinate system has positive angles moving counter-clockwise */
+
+	/* Java's coordinate system has positive angles move counter-clockwise */
 	arcAngle = -arcAngle;
 	startAngle = -startAngle;
+
+	/* Cap these to 360 degrees, otherwise we'll overdraw semi-transparent */
+	/* arcs. It also shouldn't matter whether the angle is positive or */
+	/* negative, it just gets clamped to a full circle anyway. */
+	if (arcAngle > 360 || arcAngle < -360)
+		arcAngle = 360;
 
 	/* DrawArc draws an arc of [w+1,h+1] size*/
 	w += 1;
 	h += 1;
 
-#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
 	/* This works similarly to Bresenham's midpoint circle algorithm. */
-	/* "steps" dictates how many iterations are used to draw the circle. A */
-	/* bigger value will result in the same pixels being hit more times (and */
-	/* wasted cycles since they'll be discarded later) but will guarantee a */
-	/* perfectly filled outline, whereas a small value will result in gaps */
-	/* appearing in the circle since less points will be sampled. The */
-	/* current value is a good balance between filling all positions on all */
-	/* kinds of shapes while hitting as few pixels as possible. */
+	/* The number of steps must account for the maximum dimension and arc */
+	/* span, otherwise we get gaps and risk overdraws on oblique ovals. */
+	/* The magic "45" here is just the ideal step density divider of pi/4. */
+	/* Any lower and it causes overdraw, any bigger and gaps show up. */
+	steps = sjme_max(sjme_abs(arcAngle), (sjme_max(w, h) *
+		sjme_abs(arcAngle)) / 45);
 
-	centerX = (x + w / 2.0f);
-	centerY = (y + h / 2.0f);
-	radiusX = (w / 2.0f);
-	radiusY = (h / 2.0f);
-	startAngleRad = (startAngle * SJME_ANGLE_RAD);
-	endAngleRad = ((startAngle + arcAngle) * SJME_ANGLE_RAD) -
+	/* If we don't have at least one step to be drawn, return outright. */
+	if (steps <= 0)
+		return SJME_ERROR_NONE;
+
+	centerX = (x << 1) + w;
+	centerY = (y << 1) + h;
+	radiusX = w;
+	radiusY = h;
+	startAngleRad = sjme_fixed_degToRad(sjme_fixed_hi(startAngle));
+	endAngleRad = sjme_fixed_degToRad(sjme_fixed_hi(startAngle + arcAngle)) -
 		startAngleRad;
-	steps = fabs(arcAngle * ((w + h) / 2.0f) / 50.0f);
-	
-	firstFillX = round(centerX + radiusX * cos(startAngleRad));
-	firstFillY = round(centerY + radiusY * sin(startAngleRad));
+	angleStep = endAngleRad / steps;
+
+	/* DDA, because cos/sin in the inner loop is expensive. Get only the */
+	/* increments for each step as well as starting values, and do simple */
+	/* operations inside the loop. */
+	stepCos = sjme_fixed_cos(angleStep);
+	stepSin = sjme_fixed_sin(angleStep);
+	fillCos = sjme_fixed_cos(startAngleRad);
+	fillSin = sjme_fixed_sin(startAngleRad);
+
+	/* To prevent overdraw here, all we need to do is track the last pixel. */
 	lastFillX = -1;
 	lastFillY = -1;
 
-	/* Make sure we're not drawing out of bounds. */
-	if (firstFillX >= clipLine->s.x || firstFillX < clipLine->e.x ||
-		firstFillY >= clipLine->s.y || firstFillY < clipLine->e.y)
+	for (i = 0; i < steps; i++)
 	{
-		/* If style is DOTTED, rendering will paint and skip pixels 1 by 1. */
-		if (dot)
-			error |= drawPixel(g, firstFillX, firstFillY);
-		dot ^= dotFlip;
-	}
-	
-	/* First pixel was already drawn (if not OOB), so start from step 1. */
-	for (i = 1; i < steps; i++) 
-	{
-		angle = startAngleRad + ((i * endAngleRad) / steps);
-		
-		innerX = round(centerX + radiusX * cos(angle));
-		innerY = round(centerY + radiusY * sin(angle));
-		
-		if (innerX < clipLine->s.x || innerX >= clipLine->e.x ||
-			innerY < clipLine->s.y || innerY >= clipLine->e.y)
-			continue;
+		innerX = (centerX + (sjme_fixed_int(sjme_fixed_mul(
+			sjme_fixed_hi(radiusX), fillCos)))) >> 1;
+		innerY = (centerY + (sjme_fixed_int(sjme_fixed_mul(
+			sjme_fixed_hi(radiusY), fillSin)))) >> 1;
 
 		/* We cannot paint the same pixel more than once (breaks alpha) */
-		if (((lastFillX == innerX) ^ (lastFillY == innerY)) ||
-			(firstFillX == innerX && firstFillY == innerY)) 
+		if (innerX != lastFillX || innerY != lastFillY)
 		{
-			lastFillX = -1;
-			lastFillY = -1;
-			continue; 
-		}
-		
-		lastFillX = innerX;
-		lastFillY = innerY;
+			lastFillX = innerX;
+			lastFillY = innerY;
 
-		if (dot)
-			error |= drawPixel(g, innerX, innerY);
-		dot ^= dotFlip;
+			if (innerX < clipLine->s.x || innerX >= clipLine->e.x ||
+				innerY < clipLine->s.y || innerY >= clipLine->e.y)
+				continue;
+
+			if (dot)
+				error |= drawPixel(g, innerX, innerY);
+
+			dot ^= dotFlip;
+		}
+
+		/* As the cos/sin step increments were calculated out of the loop, */
+		/* all we need to do hare are simple multiply-adds on each step. */
+		nextCos = (sjme_fixed_mul(fillCos, stepCos) -
+			sjme_fixed_mul(fillSin, stepSin));
+		nextSin = (sjme_fixed_mul(fillSin, stepCos) +
+			sjme_fixed_mul(fillCos, stepSin));
+
+		fillCos = nextCos;
+		fillSin = nextSin;
 	}
 
 	/* Failed? */
 	if (sjme_error_is(error))
 		goto fail_any;
-		
+
 	/* Success? */
 	return error;
-	
+
 fail_any:
 	return sjme_error_default(error);
-#else
-	sjme_todo("Fixed Point DrawArc Impl?");
-	return sjme_error_notImplemented(0);
-#endif
 }
 
 sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillArc(
@@ -162,134 +162,172 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillArc(
 	sjme_attrInValue sjme_jint arcAngle)
 {
 	sjme_errorCode error;
-	sjme_jint steps, innerX, innerY, filledZ, i, j, allocSize, zh, zl;
-	sjme_jint zhMask;
-	sjme_jboolean hasAlpha, filledVoid;
-	sjme_jboolean* filledPixels;
+	sjme_jint py, px;
+	sjme_jboolean isFullCircle, isConcave, inSector;
 	sjme_scritchui_line* clipLine;
 	sjme_scritchui_pencilDrawPixelFunc drawPixel;
-#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
-	float centerX, centerY, radiusX, radiusY, startAngleRad, endAngleRad;
-	float maxRad, angle;
-#endif
+	sjme_jint centerX, centerY, radiusX, radiusY;
+	sjme_jint dx, dy, lineStartX, lineEndX, margin, nStart, nEnd;
+	sjme_jint startX, startY, endX, endY;
+	sjme_fixed maxDx, normY, normY2, normDx, cosE, cosS, sinE, sinS;
+	sjme_fixed crossStart, crossEnd, crossYStart, crossYEnd;
 
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Java's coordinate system has positive angles moving counter-clockwise */
-	arcAngle = -arcAngle;
-	startAngle = -startAngle;
-
-	/* How are pixels to be drawn? */
-	hasAlpha = g->hasAlpha;
-	drawPixel = g->prim.drawPixel;
+	
+	/* Initialize for warnings/optimization. */
+	cosS = SJME_FIXED_ONE;
+	sinS = SJME_FIXED_ONE;
+	cosE = SJME_FIXED_ONE;
+	sinE = SJME_FIXED_ONE;
+	crossYStart = 0;
+	crossYEnd = 0;
 
 	/* Get clipping information. */
 	clipLine = &g->state.clipLine;
 
-#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
-	/* Only allocate the alpha buffer if the color isn't opaque. Noticeably */
-	/* improves performance for opaque arcs. 8 pixels of information are */
-	/* packed in a single boolean/byte, noticeably reducing memory usage. */
-	/* Width and height are inclusive, hence the + 1 on each. */
-	if (hasAlpha)
+	/* Figure out the start and end points of the bounding box right away, */
+	/* as we can use the clip rectangle as the direct limits for those. */
+	startX = sjme_max(x, clipLine->s.x);
+	startY = sjme_max(y, clipLine->s.y);
+	endX = sjme_min(x + w, clipLine->e.x);
+	endY = sjme_min(y + h, clipLine->e.y);
+
+	/* If the resulting angle span doesn't paint any pixels, we can skip */
+	/* this entirely. */
+	if (startX >= endX || startY >= endY)
+		return SJME_ERROR_NONE;
+
+	/* Arcs are filled by calculating the arc's bounding box, and painting */
+	/* with a standard scanline raster algorithm. We normalize the */
+	/* coordinates (normDx, normDy) so that ovals match Java SE's behavior */
+	/* of angles scaling with the bounding box for any shape. */
+	radiusX = w >> 1;
+	radiusY = h >> 1;
+	centerX = x + radiusX;
+	centerY = y + radiusY;
+
+	/* Angle vectors setup. These are what we use to actually check if a */
+	/* pixel is within the angle boundaries for drawing. A full circle */
+	/* actually gives us a fast path where we don't even need to check */
+	/* cross products on each scanline. */
+	/* Java's coordinate system has positive angles move counter-clockwise */
+	/* so we also negate the start and arc angles inline when normalizing. */
+	isFullCircle = (sjme_abs(arcAngle) >= 360);
+	nStart = (-startAngle) % 360;
+	nEnd = (-startAngle - arcAngle) % 360;
+	if (nStart < 0)
+		nStart += 360;
+	if (nEnd < 0) 
+		nEnd += 360;
+
+	/* We only need to calculate the sine/cosine of the starting and */
+	/* end angles, as we use vector cross-products to check whether the */
+	/* pixel we're going to paint is inside the arc or not (much better */
+	/* performance than doing these per angle step, and also removes the */
+	/* need for atan2() entirely!), while also being easier to read. */
+	if (!isFullCircle)
 	{
-		allocSize = (w + 1) * (h + 1);
-		filledPixels = sjme_alloca(allocSize);
-		if (filledPixels == NULL)
-		{
-			error = sjme_error_outOfMemory(NULL, allocSize);
-			goto fail_any;
-		}
-
-		/* Set every value to high to indicate that nothing has ever */
-		/* been drawn here. */
-		memset(filledPixels, 0xFF, allocSize);
-
-		/* Allow filledPixels high index to be set with values. */
-		zhMask = INT32_MAX;
+		cosS = sjme_fixed_cos(sjme_fixed_degToRad(sjme_fixed_hi(nStart)));
+		sinS = sjme_fixed_sin(sjme_fixed_degToRad(sjme_fixed_hi(nStart)));
+		cosE = sjme_fixed_cos(sjme_fixed_degToRad(sjme_fixed_hi(nEnd)));
+		sinE = sjme_fixed_sin(sjme_fixed_degToRad(sjme_fixed_hi(nEnd)));
 	}
 
-	/* If not drawing with alpha, filledPixels is still valid however it */
-	/* is filled with nothing. */
-	else
-	{
-		/* Have the array access still be valid, but go nowhere. */
-		filledPixels = &filledVoid;
+	/* Arcs may be either convex or concave, thus we need to adapt */
+	/* drawing accordingly. Convex needs pixels to be after the start AND */
+	/* before the end cross-products, while concave has pixel sweeps going */
+	/* past the arc boundaries, thus the pixels must be after the start OR */
+	/* before the end cross-products. */
+	isConcave = (sjme_abs(arcAngle) > 180);
 
-		/* No pixel is ever considered to have ever been drawn, */
-		/* therefor all pixels are valid. */
-		filledVoid = 0xFF;
+	/* Minor error margin for vector cross-product checks, can't be too */
+	/* strict here or we get arcs that are slightly misaligned because */
+	/* the product causes pixels to evaluate as out of bounds. This one */
+	/* results in 128 in Q16.16 and seems to be the best on a wide range */
+	/* of angles. */
+	margin = SJME_FIXED_FRAC_1_512;
 
-		/* Only the 0th index is valid, thus strip all bits. */
-		/* This is also used when masking zl. */
-		zhMask = 0;
-	}
-
-	/* Calculate arc coordinates. This is effectively similar to */
-	/* how sjme_scritchpen_corePrim_drawArc() renders arcs. */
-	centerX = x + w / 2.0f;
-	centerY = y + h / 2.0f;
-	radiusX = w / 2.0f;
-	radiusY = h / 2.0f;
-	startAngleRad = startAngle * SJME_ANGLE_RAD;
-	endAngleRad = ((startAngle + arcAngle) * SJME_ANGLE_RAD) - startAngleRad;
-
-	maxRad = (radiusX > radiusY ? radiusX : radiusY);
-
-	steps = fabs(arcAngle * ((w + h) / 2.0f) / 50.0f);
-
-	/* Draw arcs in steps. */
+	/* Draw the arc. */
 	error = SJME_ERROR_NONE;
-	for (i = 0; i < steps; i++) 
+	drawPixel = g->prim.drawPixel;
+	for (py = startY; py < endY; py++)
 	{
-		angle = startAngleRad + (i * endAngleRad / steps);
+		dy = centerY - py;
+		normY = sjme_fixed_div(dy, radiusY > 0 ? radiusY : 1);
+		normY2 = sjme_fixed_mul(normY, normY);
 
-		for (j = 0; j < maxRad; j++) 
+		if (normY2 >= SJME_FIXED_ONE)
+			continue;
+
+		/* Find out the arc's boundaries for the current scanline. */
+		maxDx = sjme_fixed_int(radiusX * sjme_fixed_sqrt(SJME_FIXED_ONE -
+			normY2));
+		lineStartX = sjme_max(startX, centerX - maxDx);
+		lineEndX = sjme_min(endX, centerX + maxDx + 1);
+
+		/* Pre-scale normDy for 2D cross-product scanline checks in X loop, */
+		/* otherwise we'd waste cycles doing this per-pixel. */
+		if (!isFullCircle)
 		{
-			innerX = round(centerX + radiusX * cos(angle) * (j / maxRad));
-			innerY = round(centerY + radiusY * sin(angle) * (j / maxRad));
-			
-			/* Make sure we're not drawing out of bounds. Or accessing the */
-			/* alpha buffer at an invalid position with innerX-x or innerY-y */
-			if (innerX < clipLine->s.x || innerX >= clipLine->e.x ||
-				innerY < clipLine->s.y || innerY >= clipLine->e.y  ||
-				innerX - x < 0 || innerY - y < 0)
-				continue;
+			crossYStart = sjme_fixed_mul(normY, cosS);
+			crossYEnd = sjme_fixed_mul(normY, cosE);
+		}
 
-			/* Calculate filledPixels index. */
-			filledZ = ((innerY - y) * w + innerX - x);
-			zh = (filledZ >> 3) & zhMask;
-			zl = (1 << (7 - filledZ & 7));
-			
-			/* Only draw if opaque, or if the alpha buffer is not yet filled */
-			/* for the current position. */
-			if ((filledPixels[zh] & zl) != 0)
-				error |= drawPixel(g, innerX, innerY);
-			filledPixels[zh] ^= (zl & zhMask);
+		for (px = lineStartX; px < lineEndX; px++)
+		{
+			/* Not a full circle? Then we need to verify if this pixel */
+			/* is within the arc's boundaries for this scanline. */
+			if (!isFullCircle)
+			{
+				dx = px - centerX;
+				normDx = sjme_fixed_div(dx, radiusX > 0 ? 
+					radiusX : 1);
+
+				crossStart = sjme_fixed_mul(normDx, sinS) + crossYStart;
+				crossEnd = sjme_fixed_mul(normDx, sinE) + crossYEnd;
+
+				if (!isConcave)
+				{
+					/* For arcs <= 180 degrees, the pixel must be on the */
+					/* correct side of both boundary rays, otherwise we'll */
+					/* have the whole quadrant drawn at the opposite end. */
+					if (arcAngle > 0)
+						inSector = ((crossStart >= -margin) &&
+							(crossEnd <= margin));
+					else
+						inSector = ((crossStart <= margin) &&
+							(crossEnd >= -margin));
+				}
+				else
+				{
+					/* For arcs > 180 degrees (concave), similar idea as */
+					/* above when <= 180 degrees. */
+					if (arcAngle > 0)
+						inSector = ((crossStart >= -margin) ||
+							(crossEnd <= margin));
+					else
+						inSector = ((crossStart <= margin) ||
+							(crossEnd >= -margin));
+				}
+
+				if (!inSector) 
+					continue;
+			}
+
+			error |= drawPixel(g, px, py);
 		}
 	}
-
-	if (hasAlpha)
-		sjme_alloca_free(filledPixels);
 
 	/* Failed? */
 	if (sjme_error_is(error))
 		goto fail_any;
-	
+
 	/* Success? */
 	return error;
-	
+
 fail_any:
-	if (hasAlpha && filledPixels != NULL &&
-		filledPixels != &filledVoid)
-		sjme_alloca_free(filledPixels);
-	
 	return sjme_error_default(error);
-#else
-	sjme_todo("Fixed Point fillArc Impl?");
-	return sjme_error_notImplemented(0);
-#endif
 }
 
 sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(

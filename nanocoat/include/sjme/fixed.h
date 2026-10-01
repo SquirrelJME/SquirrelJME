@@ -36,15 +36,33 @@ extern "C" {
 /** The number of bits in an entire fixed value. */
 #define SJME_FIXED_FULL_BITS INT32_C(32)
 
+/** The value 0.5. */
+#define SJME_FIXED_HALF INT32_C(0x8000)
+
 /** The value one. */
 #define SJME_FIXED_ONE INT32_C(0x10000)
+
+/** The value 1.5. */
+#define SJME_FIXED_ONE_HALF INT32_C(0x18000)
 
 /** The masked for shifted values. */
 #define SJME_FIXED_MASK INT32_C(0xFFFF)
 
 /** The masked for high shifted values. */
 #define SJME_FIXED_MASK_HI (INT32_C(0xFFFF) << SJME_FIXED_SHIFT)
-	
+
+/** 1 Radian in degrees. */
+#define SJME_FIXED_DEG_1 INT32_C(3754936)
+
+/** 1/6 in Q16.16 notation. */
+#define SJME_FIXED_FRAC_1_6 INT32_C(10923)
+
+/** 1/120 in Q16.16 notation. */
+#define SJME_FIXED_FRAC_1_120 INT32_C(546)
+
+/** 1/512 in Q16.16 notation. */
+#define SJME_FIXED_FRAC_1_512 INT32_C(128)
+
 /** 1 Degree in radians. */
 #define SJME_FIXED_RAD_1 INT32_C(1144)
 	
@@ -74,6 +92,9 @@ extern "C" {
 
 /** The masked for rounding values. */
 #define SJME_FIXED_ROUND_MASK INT32_C(0x800)
+
+/* sqrt(2) in Q16.16 notation. */
+#define SJME_FIXED_SQRT2 INT32_C(92681)
 
 /**
  * Returns the absolute value of the input value.
@@ -182,7 +203,17 @@ sjme_jint sjme_fixed_intClip(
 	sjme_attrInValue sjme_jint lo,
 	sjme_attrInValue sjme_fixed val,
 	sjme_attrInValue sjme_jint hi);
-	
+
+/**
+ * Calculates the inverse square root of the input value.
+ *
+ * @param val The value to calculate the inverse square root from.
+ * @return The value's inverse square root.
+ * @since 2026/09/23
+ */
+sjme_fixed sjme_fixed_invSqrt(
+	sjme_attrInValue sjme_fixed val);
+
 /**
  * Returns the larger of two values.
  * 
@@ -280,6 +311,16 @@ sjme_fixed sjme_fixed_signum(
  */
 sjme_fixed sjme_fixed_sin(
 	sjme_attrInValue sjme_fixed radAngle);
+
+/**
+ * Calculates the square root of the input value.
+ *
+ * @param val The value to calculate the square root from.
+ * @return The value's square root.
+ * @since 2026/09/23
+ */
+sjme_fixed sjme_fixed_sqrt(
+	sjme_attrInValue sjme_fixed val);
 
 /*--------------------------------------------------------------------------*/
 

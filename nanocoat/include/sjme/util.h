@@ -32,6 +32,16 @@ extern "C" {
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Returns the absolute value of the given value.
+ *
+ * @param a The value to return an absolute of.
+ * @return The absolute of the given value.
+ * @since 2026/09/23
+ */
+#define sjme_abs(v) \
+	(((v) < (0)) ? (-v) : (v))
+
+/**
  * Clips the value so it is in the given range.
  * 
  * @param l The low value.

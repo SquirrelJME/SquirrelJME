@@ -29,6 +29,7 @@ is used, refer to that for library bring-ins.
        * `fillPoly()` implementation.
        * `fillRoundRect()` implementation.
        * Rotation and scaling transformation fixes.
+       * Fixed-point `invSqrt`, `sqrt`, `sin`, `radToDeg`, `degToRad` functions.
    * WAVE File Playback.
    * Ericsson's iMelody/eMelody support.
      * `GameCubeIntro.imy` and `NokiaRingtone.emy` self composed samples.
