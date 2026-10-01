@@ -17,21 +17,25 @@ void JNICALL JVM_InitializeCompiler(JNIEnv* env, jclass compCls)
 jboolean JNICALL JVM_IsSilentCompiler(JNIEnv* env, jclass compCls)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jboolean JNICALL JVM_CompileClass(JNIEnv* env, jclass compCls, jclass cls)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jboolean JNICALL JVM_CompileClasses(JNIEnv* env, jclass cls, jstring jname)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jobject JNICALL JVM_CompilerCommand(JNIEnv* env, jclass compCls, jobject arg)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 void JNICALL JVM_EnableCompiler(JNIEnv* env, jclass compCls)

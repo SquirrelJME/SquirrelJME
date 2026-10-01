@@ -17,6 +17,162 @@
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/stdGone.h"
+#include "sjme/nvm/taskStore.h"
+
+sjme_errorCode sjme_nvm_task_frameCommit(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit)
+{
+	sjme_errorCode error;
+	sjme_nvm_frame_gcCommit* at;
+	sjme_nvm_frame_gcCommit* nextAt;
+	sjme_jint i;
+
+	if (inFrame == NULL || commit == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Go through the entire chain and garbage collect everything. */
+	for (at = commit, nextAt = NULL; at != NULL; at = nextAt)
+	{
+		/* Since we are unlinking, we need to keep this. */
+		nextAt = at->next;
+
+		/* Go through and GC all commits. */
+		for (i = 0; i < SJME_NVM_FRAME_NUM_GC_COMMIT; i++)
+			while (at->objects[i].l != NULL && at->objects[i].count > 0)
+			{
+				/* Count down. */
+				if (sjme_error_is(error = sjme_nvm_instance_countDown(
+					at->objects[i].l)))
+					return sjme_error_vmError(inFrame, error);
+
+				/* Clear it if the count reaches zero. */
+				if ((--at->objects[i].count) == 0)
+					at->objects[i].l = NULL;
+			}
+
+		/* If this is dynamic, then de-allocate it. */
+		if (at->isDynamic)
+		{
+			/* Unlink first. */
+			if (at->prev != NULL)
+				at->prev->next = at->next;
+			if (at->next != NULL)
+				at->next->prev = at->prev;
+
+			/* Free it. */
+			if (sjme_error_is(error = sjme_alloc_free(at)))
+				return sjme_error_vmError(inFrame, error);
+		}
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_task_frameCommitPush(
+	sjme_attrInNullable sjme_nvm_frame contextFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNotNull sjme_jobject pushObject)
+{
+	sjme_errorCode error;
+	sjme_nvm_frame_gcCommit* at;
+	sjme_nvm_frame_gcCommit* freeCommit;
+	sjme_jint i, freeIndex;
+
+	if (commit == NULL || pushObject == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+#if defined(SJME_CONFIG_DEBUG_GC)
+	/* Debug. */
+	sjme_emitB("COMMIT %d:%p",
+		pushObject->common.type, pushObject);
+#endif
+
+	/* For direct adding quickly. */
+	freeCommit = NULL;
+	freeIndex = -1;
+
+	/* Check to see if the object is already known, to increase the */
+	/* garbage collection count. */
+	for (at = commit; at != NULL; at = at->next)
+		for (i = 0; i < SJME_NVM_FRAME_NUM_GC_COMMIT; i++)
+			if (at->objects[i].l == pushObject)
+			{
+				/* We can just add up here. */
+				at->objects[i].count++;
+
+				/* Success! */
+				return SJME_ERROR_NONE;
+			}
+			else if (at->objects[i].l == NULL && freeIndex < 0)
+			{
+				freeCommit = at;
+				freeIndex = i;
+			}
+
+	/* Can be quickly added here? */
+	if (freeIndex >= 0 && freeCommit != NULL)
+	{
+		/* Store object with its initial GC count of one. */
+		freeCommit->objects[freeIndex].l = pushObject;
+		freeCommit->objects[freeIndex].count = 1;
+
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+
+	/* Allocate a new commit. */
+	freeCommit = NULL;
+	if (sjme_error_is(error = sjme_alloc(SJME_F_S(contextFrame)->allocPool,
+		sizeof(*freeCommit), (sjme_pointer*)&freeCommit)) ||
+		freeCommit == NULL)
+		return sjme_error_vmError(contextFrame, error);
+
+	/* This is dynamically allocated! */
+	freeCommit->isDynamic = SJME_JNI_TRUE;
+
+	/* Link in, just use the start as it is simpler. */
+	freeCommit->prev = commit;
+	freeCommit->next = commit->next;
+	if (commit->next != NULL)
+		commit->next->prev = freeCommit;
+	commit->next = freeCommit;
+
+	/* Store in the first slot. */
+	freeCommit->objects[0].l = pushObject;
+	freeCommit->objects[0].count = 1;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_task_frameEmit(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	...)
+{
+	sjme_errorCode error;
+	va_list args;
+
+	if (inFrame == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Start arguments. */
+	va_start(args, message);
+
+	/* Forward as this is just a convenience method. */
+	error = sjme_nvm_task_threadEmitV(SJME_F_T(inFrame), commonClass, cause,
+		message, args);
+
+	/* End. */
+	va_end(args);
+
+	/* Return the result of the forward. */
+	return error;
+}
 
 sjme_errorCode sjme_nvm_task_frameHandler(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
@@ -25,12 +181,12 @@ sjme_errorCode sjme_nvm_task_frameHandler(
 	sjme_attrInOutNotNull sjme_nvm_byteCode_pcNew* pcNew)
 {
 	sjme_errorCode error;
-	sjme_list_sjme_nvm_class_exceptionHandler* handlers;
+	sjme_list(sjme_nvm_class_exceptionHandler)* handlers;
 	sjme_nvm_class_exceptionHandler* handler;
 	sjme_nvm_vmClass_loader loader;
 	sjme_jclass checkClass, tossedClass;
 	sjme_jint i, n, pc;
-	
+
 	if (inFrame == NULL || tossed == NULL || handled == NULL || pcNew == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -58,13 +214,15 @@ sjme_errorCode sjme_nvm_task_frameHandler(
 		checkClass = NULL;
 		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(loader,
 			&checkClass, SJME_F_T(inFrame),
-			handler->handles->descriptor->seq,
+			sjme_atomic_gP(sjme_nvm_class_poolEntryClass, 1,
+				&handler->handles)->descriptor->seq,
 			SJME_JNI_TRUE)) || checkClass == NULL)
 			return sjme_error_vmError(inFrame, error);
-		
+
 		/* Is this the matching handler? */
-		if (tossedClass == checkClass || sjme_nvm_vmClass_isAssignableFrom(
-			SJME_F_T(inFrame), tossedClass, checkClass))
+		if (tossedClass == checkClass ||
+			!sjme_error_is(sjme_nvm_vmClass_isAssignableFrom(
+				SJME_F_T(inFrame), tossedClass, checkClass)))
 		{
 			/* We are handling this. */
 			*handled = SJME_JNI_TRUE;
@@ -78,72 +236,51 @@ sjme_errorCode sjme_nvm_task_frameHandler(
 			return SJME_ERROR_NONE;
 		}
 	}
-	
+
 skip_notHandled:
 	*handled = SJME_JNI_FALSE;
 	pcNew->popFrame = SJME_JNI_TRUE;
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_task_frameLocalAddr(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId localType,
-	sjme_attrInPositive sjme_jint localIndex,
-	sjme_attrOutNotNull sjme_jvalue** outAddr)
-{
-	sjme_nvm_class_codePerType* perType;
-	sjme_jint mappedSlot;
-	
-	if (inFrame == NULL || outAddr == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (localType < 0 || localType >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-
-	if (localIndex < 0 ||
-		localIndex >= inFrame->inCode->perType[SJME_NVM_CODE_INFO_ALL_TYPES].locals)
-		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
-	
-	/* Determine where this maps from for the read. */
-	perType = &inFrame->inCode->perType[localType];
-	mappedSlot = perType->localMap[localIndex];
-	if (mappedSlot < 0 || mappedSlot > perType->locals)
-		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
-
-	/* Directly access tread address. */
-	return sjme_nvm_task_frameTreadAddr(inFrame,
-		localType, mappedSlot, outAddr, NULL, NULL);
-}
-
 sjme_errorCode sjme_nvm_task_frameLocalClear(
-	sjme_attrInNotNull sjme_nvm_frame inFrame)
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit)
 {
 	sjme_errorCode error;
-	sjme_frame_frameStack* stack;
-	sjme_jint index;
-	sjme_jvalueTyped temp;
-	
-	if (inFrame == NULL)
+	sjme_nvm_store_windowJava* java;
+	sjme_nvm_store_slotInfo info;
+	sjme_jvalueTyped value, none;
+	sjme_jint i;
+
+	if (inFrame == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Go through and clear out all object locals. */
-	stack = &inFrame->stack.stack[SJME_JAVA_TYPE_ID_OBJECT];
-	for (index = 0; index < stack->front; index++)
+	/* None type used for clearing. */
+	memset(&none, 0, sizeof(none));
+
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
+
+	/* Go through all locals. */
+	for (i = 0; i < java->maxLocals; i++)
 	{
-		/* Read value here. */
-		memset(&temp, 0, sizeof(temp));
-		if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
-			inFrame, SJME_JAVA_TYPE_ID_OBJECT, index, &temp,
-			SJME_JNI_FALSE, SJME_JNI_TRUE)))
-			return sjme_error_vmError(inFrame, error);
-		
-		/* Skip nulls. */
-		if (temp.v.l == NULL)
-			continue;
-		
-		/* Count down. */
-		if (sjme_error_is(error = sjme_nvm_instance_countDown(temp.v.l)))
-			return sjme_error_vmError(inFrame, error);
+		/* Read in the local. */
+		memset(&value, 0, sizeof(value));
+		memset(&info, 0, sizeof(info));
+		if (sjme_error_is(error = sjme_nvm_task_frameLocalGet(inFrame,
+			SJME_NUM_JAVA_TYPE_IDS, i, &value, &info)))
+			return sjme_error_default(error);
+
+		/* Wipe the value stored here so that it does not stick around. */
+		if (info.rawP != NULL && info.rawLen > 0)
+			memset(info.rawP, 0, info.rawLen);
+
+		/* Clear type. */
+		info.chain.at->type = SJME_NUM_JAVA_TYPE_IDS;
 	}
 
 	/* Success! */
@@ -155,99 +292,136 @@ sjme_errorCode sjme_nvm_task_frameLocalGet(
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint localIndex,
 	sjme_attrInNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere)
+	sjme_attrOutNullable sjme_nvm_store_slotInfo* outInfo)
 {
-	sjme_nvm_class_codePerType* perType;
-	sjme_jint mappedSlot;
-	
+	sjme_nvm_store_windowJava* java;
+	sjme_errorCode error;
+	sjme_nvm_store_slotInfo info;
+
 	if (inFrame == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
+	if (typeId < 0 || typeId > SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
-	
+
 	if (localIndex < 0 || localIndex >=
 		inFrame->inCode->perType[SJME_NVM_CODE_INFO_ALL_TYPES].locals)
 		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
 
-	/* The local variable is of the wrong type. */
-	if (inFrame->stack.order[localIndex] != typeId)
-		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INVALID_READ);
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
 
-	/* Determine where this maps from for the read. */
-	perType = &inFrame->inCode->perType[typeId];
-	mappedSlot = perType->localMap[localIndex];
-	if (mappedSlot < 0 || mappedSlot > perType->locals)
-		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
+	/* Obtain the slot to read from. */
+	memset(&info, 0, sizeof(info));
+	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
+		&info, localIndex,
+		SJME_NVM_STORE_SLOT_TYPE_LOCAL,
+		SJME_NVM_STORE_READ, typeId)))
+		return sjme_error_default(error);
 
-	/* Forward tread read. */
-	return sjme_nvm_task_frameTreadGetT(inFrame, typeId, mappedSlot, outValue,
-		copiedElsewhere, SJME_JNI_FALSE);
+	/* Nothing here to read? */
+	if (typeId != SJME_NUM_JAVA_TYPE_IDS && info.storage == NULL)
+		return SJME_ERROR_LOCAL_INVALID_READ;
+
+	/* Wipe the output value if nothing is there. */
+	if (info.storage == NULL)
+	{
+		memset(outValue, 0, sizeof(*outValue));
+		outValue->t = SJME_NUM_JAVA_TYPE_IDS;
+	}
+
+	/* Read out the value. */
+	else
+	{
+		/* Read out. */
+		if (sjme_error_is(error = sjme_nvm_vmField_cisGet(info.storage,
+			info.type,
+			SJME_VLG_JVALUE_TYPED_P(outValue))))
+			return sjme_error_default(error);
+	}
+
+	/* Copy slot info? */
+	if (outInfo != NULL)
+		memmove(outInfo, &info, sizeof(*outInfo));
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_task_frameLocalPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInValue sjme_javaTypeId typeId,
 	sjme_attrInPositive sjme_jint localIndex)
 {
 	sjme_errorCode error;
 	sjme_jvalueTyped tempValue;
-	
+
 	if (inFrame == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Read local index. */
 	memset(&tempValue, 0, sizeof(tempValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalGet(inFrame,
-		typeId, localIndex, &tempValue, SJME_JNI_FALSE)))
+		typeId, localIndex, &tempValue, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Forward to stack. */
-	return sjme_nvm_task_frameStackPush(inFrame, &tempValue);
+	return sjme_nvm_task_frameStackPush(inFrame, commit, &tempValue);
 }
 
 sjme_errorCode sjme_nvm_task_frameLocalSetL(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint localIndex,
 	sjme_attrInNotNull const sjme_jvalueTyped* inValue)
 {
 	sjme_errorCode error;
-	sjme_jboolean isWide;
-	sjme_nvm_class_codePerType* perType;
-	sjme_jint mappedSlot;
-	sjme_frame_frameStacks* stack;
-	
+	sjme_nvm_store_windowJava* java;
+	sjme_nvm_store_slotInfo info;
+
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inValue->t < 0 || inValue->t >= SJME_NUM_JAVA_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	/* Is this wide? */
-	isWide = SJME_TYPEID_IS_WIDE(inValue->t);
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
 
-	/* Check for complete out of bounds. */
-	if (localIndex < 0 ||
-		((localIndex + (isWide ? 1 : 0)) >=
-			inFrame->inCode->perType[SJME_NVM_CODE_INFO_ALL_TYPES].locals))
-		return sjme_error_vmError(inFrame, SJME_ERROR_LOCAL_INDEX_INVALID);
+	/* Obtain the slot to write at. */
+	memset(&info, 0, sizeof(info));
+	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
+		&info, localIndex,
+		SJME_NVM_STORE_SLOT_TYPE_LOCAL,
+		SJME_NVM_STORE_WRITE_PROMOTE,
+		inValue->t)))
+		return sjme_error_default(error);
 
-	/* Is the index still valid on the tread? */
-	perType = &inFrame->inCode->perType[inValue->t];
-	mappedSlot = perType->localMap[localIndex];
-	if (mappedSlot < 0 || mappedSlot >= perType->locals)
-		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
+	/* Overfill wide. */
+	if (SJME_TYPEID_IS_WIDE(inValue->t))
+	{
+		/* This is considered an overflow as we would be at the very end. */
+		if (info.chain.next == NULL)
+			return SJME_ERROR_STACK_OVERFLOW;
 
-	/* Set tread value. */
-	if (sjme_error_is(error = sjme_nvm_task_frameTreadSetT(inFrame,
-		mappedSlot, inValue, NULL)))
-		return sjme_error_vmError(inFrame, error);
+		/* Set as wide. */
+		info.chain.next->type = SJME_NVM_STORE_SLOT_MARKER_WIDE;
+	}
 
-	/* Replace order info. */
-	stack = &inFrame->stack;
-	stack->order[localIndex] = inValue->t;
-	if (isWide)
-		stack->order[localIndex + 1] = SJME_JAVA_TYPE_ID_VOID;
+	/* Write the value. */
+	if (sjme_error_is(error = sjme_nvm_vmField_cisSet(info.storage,
+		inValue->t, commit, SJME_VLS_JVALUE_TYPED_P(inValue))))
+		return sjme_error_default(error);
+
+	/* Set the type. */
+	info.chain.at->type = (sjme_jubyte)inValue->t;
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -263,14 +437,14 @@ sjme_errorCode sjme_nvm_task_framePool(
 		sjme_nvm_class_poolType inTypeB,
 	...)
 {
-	sjme_list_sjme_nvm_class_poolEntry* pool;
+	sjme_list(sjme_nvm_class_poolEntry)* pool;
 	sjme_nvm_class_poolEntry* result;
 	sjme_jint argType;
 	va_list arg;
-	
+
 	if (inFrame == NULL || outEntry == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
 	/* Is the index valid? */
 	pool = inFrame->pool->pool;
 	if (poolIndex <= 0 || poolIndex >= pool->length)
@@ -308,7 +482,7 @@ sjme_errorCode sjme_nvm_task_framePool(
 			break;
 		}
 	}
-	
+
 skip_success:
 	*outEntry = result;
 	return SJME_ERROR_NONE;
@@ -319,28 +493,34 @@ fail_notMatched:
 }
 
 sjme_errorCode sjme_nvm_task_frameStackClear(
-	sjme_attrInNotNull sjme_nvm_frame inFrame)
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit)
 {
 	sjme_errorCode error;
 	sjme_jvalueTyped temp;
-	sjme_frame_frameStacks* stack;
-	
-	if (inFrame == NULL)
+	sjme_nvm_store_windowJava* java;
+
+	if (inFrame == NULL || commit == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
+
 	/* Keep draining the stack until nothing is left. */
-	stack = &inFrame->stack;
-	while (stack->orderTop - stack->orderFront)
+	while (java->stackTop > 0)
 	{
 		/* Peek top value. */
 		memset(&temp, 0, sizeof(temp));
 		if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-			0, &temp, SJME_JNI_FALSE)))
+			0, &temp, NULL)))
 			return sjme_error_vmError(inFrame, error);
 
 		/* Pop it. */
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			temp.t, SJME_JNI_FALSE, NULL, &temp)))
+			temp.t, commit, &temp)))
 			return sjme_error_vmError(inFrame, error);
 	}
 
@@ -351,8 +531,7 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
 sjme_errorCode sjme_nvm_task_frameStackPeek(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere)
+	sjme_attrInNotNull sjme_jvalueTyped* outValue)
 {
 	sjme_errorCode error;
 	sjme_jvalueTyped temp;
@@ -360,7 +539,7 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
 	/* Peek top value. */
 	memset(&temp, 0, sizeof(temp));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
-		0, &temp, copiedElsewhere)))
+		0, &temp, NULL)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Must be the same type. */
@@ -375,18 +554,15 @@ sjme_errorCode sjme_nvm_task_frameStackPeek(
 sjme_errorCode sjme_nvm_task_frameStackPop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInValue sjme_jboolean copiedElsewhere,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jvalueTyped* outValue)
 {
 	sjme_errorCode error;
-	sjme_frame_frameStacks* stack;
-	sjme_jboolean isWide;
-	sjme_jint newTop, newPerTop;
-	sjme_frame_frameStack* perType;
-	sjme_javaTypeId topType;
-	
-	if (inFrame == NULL || commit == NULL || outValue == NULL)
+	sjme_jvalueTyped temp;
+	sjme_nvm_store_windowJava* java;
+	sjme_nvm_store_slotInfo info;
+
+	if (inFrame == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if ((typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS) &&
@@ -394,65 +570,58 @@ sjme_errorCode sjme_nvm_task_frameStackPop(
 		typeId != SJME_STACK_TYPE_WIDE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	/* Is this wide? */
-	isWide = SJME_TYPEID_IS_WIDE(typeId);
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
 
-	/* Determine new top of the stack, check for underflow. */
-	stack = &inFrame->stack;
-	newTop = stack->orderTop - (isWide ? 2 : 1);
-	if (newTop < stack->orderFront)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
+	/* Peek top value. */
+	memset(&temp, 0, sizeof(temp));
+	memset(&info, 0, sizeof(info));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackTop(inFrame,
+		0, &temp, &info)))
+		return sjme_error_vmError(inFrame, error);
 
-	/* Is wide and very top is wrong. */
-	if (isWide && stack->order[newTop + 1] != SJME_JAVA_TYPE_ID_VOID)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
-
-	/* Top of the stack is the wrong type? */
-	topType = stack->order[newTop];
-	if (topType != typeId)
+	/* Must be the same type. */
+	if (typeId != SJME_NUM_JAVA_TYPE_IDS && temp.t != typeId)
 	{
-		/* Wanting neither wide nor narrow. */
-		if (typeId != SJME_STACK_TYPE_NARROW &&
-			typeId != SJME_STACK_TYPE_WIDE)
+		/* If not wanting wide or narrow, then invalid. */
+		if (typeId != SJME_STACK_TYPE_NARROW && typeId != SJME_STACK_TYPE_WIDE)
 			return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
 
-		/* Wanting the incorrect type. */
-		if (((typeId == SJME_JAVA_TYPE_ID_INTEGER ||
-				typeId == SJME_JAVA_TYPE_ID_FLOAT ||
-				typeId == SJME_JAVA_TYPE_ID_OBJECT) !=
-					(typeId == SJME_STACK_TYPE_NARROW)) &&
-			((typeId == SJME_JAVA_TYPE_ID_LONG ||
-				typeId == SJME_JAVA_TYPE_ID_DOUBLE) !=
-					(typeId == SJME_STACK_TYPE_WIDE)))
+		/* Slot width is incorrect? */
+		if (SJME_TYPEID_SLOTS_JAVA(temp.t) != (typeId ==
+			SJME_STACK_TYPE_WIDE ? 2 : 1))
 			return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_READ);
 	}
 
-	/* Determine per type slot to remove. */
-	perType = &stack->stack[topType];
-	newPerTop = perType->top - 1;
-	if (newPerTop < perType->front)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_UNDERFLOW);
+	/* Commit objects? */
+	if (commit != NULL && temp.t == SJME_JAVA_TYPE_ID_OBJECT &&
+		temp.v.l != NULL)
+		if (sjme_error_is(error = sjme_nvm_task_frameCommitPush(
+			inFrame, commit, temp.v.l)))
+			return sjme_error_default(error);
 
-	/* Read in value. */
-	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(
-		inFrame, topType, newPerTop, outValue,
-		copiedElsewhere, SJME_JNI_TRUE)))
-		return sjme_error_vmError(inFrame, sjme_error_defaultOr(error,
-			SJME_ERROR_STACK_INVALID_READ));
+	/* Reduce the stack top. */
+	java->stackTop -= SJME_TYPEID_SLOTS_JAVA(temp.t);
 
-	/* Remove from stack, from the main and on the per-type. */
-	/* Cleanup any values as well. */
-	stack->order[newTop] = SJME_JAVA_TYPE_ID_VOID;
-	stack->orderTop = newTop;
-	perType->top = newPerTop;
+	/* Wipe the slot. */
+	info.chain.at->type = SJME_NVM_STORE_SLOT_MARKER_VOID;
+	if (SJME_TYPEID_IS_WIDE(temp.t))
+		info.chain.next->type = SJME_NVM_STORE_SLOT_MARKER_VOID;
+
+	/* Wipe the value stored here so that it does not stick around. */
+	if (info.rawP != NULL && info.rawLen > 0)
+		memset(info.rawP, 0, info.rawLen);
 
 	/* Success! */
+	memmove(outValue, &temp, sizeof(*outValue));
 	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPopA(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInValue sjme_jboolean copiedElsewhere,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInPositive sjme_jint argC,
 	sjme_attrInNotNullBuf(argC) sjme_javaTypeId* argT,
@@ -460,7 +629,7 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
 {
 	sjme_errorCode error;
 	sjme_jint i;
-	
+
 	if (inFrame == NULL || commit == NULL || argT == NULL || argV == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -470,7 +639,7 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
 	/* Always pop from the end first. */
 	for (i = argC - 1; i >= 0; i--)
 		if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-			argT[i], copiedElsewhere, NULL, &argV[i])))
+			argT[i], commit, &argV[i])))
 			return sjme_error_vmError(inFrame, error);
 
 	/* Success! */
@@ -479,48 +648,71 @@ sjme_errorCode sjme_nvm_task_frameStackPopA(
 
 sjme_errorCode sjme_nvm_task_frameStackPush(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue)
 {
-	sjme_frame_frameStacks* stack;
-	sjme_frame_frameStack* perType;
-	sjme_jint pushCount, at;
-	sjme_jboolean isWide;
-	
+	sjme_errorCode error;
+	sjme_nvm_store_windowJava* java;
+	sjme_jint newTop;
+	sjme_nvm_store_slotInfo info;
+
 	if (inFrame == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Will the stack overflow? */
-	stack = &inFrame->stack;
-	isWide = SJME_TYPEID_IS_WIDE(inValue->t);
-	pushCount = (isWide ? 2 : 1);
-	if (stack->orderTop + pushCount > stack->orderLength)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_OVERFLOW);
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
 
-	/* Will the per-type stack overflow? */
-	perType = &stack->stack[inValue->t];
-	if (perType->top + 1 > perType->length)
-		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_OVERFLOW);
+	/* Would the stack overflow pushing this type? */
+	newTop = java->stackTop + SJME_TYPEID_SLOTS_JAVA(inValue->t);
+	if (newTop > java->maxStack)
+		return SJME_ERROR_STACK_OVERFLOW;
 
-	/* Place onto the order, mark top invalid if required. */
-	stack->order[stack->orderTop++] = inValue->t;
-	if (isWide)
-		stack->order[stack->orderTop++] = SJME_JAVA_TYPE_ID_VOID;
-	
-	/* Take slot in the per-type stack. */
-	at = perType->top++;
-	
-	/* Forward call. */
-	return sjme_nvm_task_frameTreadSetT(inFrame,
-		at, inValue, NULL);
+	/* Obtain the slot to write at. */
+	memset(&info, 0, sizeof(info));
+	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
+		&info, java->stackTop,
+		SJME_NVM_STORE_SLOT_TYPE_STACK,
+		SJME_NVM_STORE_WRITE_PROMOTE,
+		inValue->t)))
+		return sjme_error_default(error);
+
+	/* Overfill wide. */
+	if (SJME_TYPEID_IS_WIDE(inValue->t))
+	{
+		/* This is considered an overflow as we would be at the very end. */
+		if (info.chain.next == NULL)
+			return SJME_ERROR_STACK_OVERFLOW;
+
+		/* Set as wide. */
+		info.chain.next->type = SJME_NVM_STORE_SLOT_MARKER_WIDE;
+	}
+
+	/* Write the value. */
+	if (sjme_error_is(error = sjme_nvm_vmField_cisSet(info.storage,
+		inValue->t, commit, SJME_VLS_JVALUE_TYPED_P(inValue))))
+		return sjme_error_default(error);
+
+	/* Set the type. */
+	info.chain.at->type = (sjme_jubyte)inValue->t;
+
+	/* Bump up the stack. */
+	java->stackTop = newTop;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_nvm_stringPool_string inClassName)
 {
 	sjme_errorCode error;
 	sjme_jvalueTyped value;
-	
+
 	if (inFrame == NULL || inClassName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -531,19 +723,20 @@ sjme_errorCode sjme_nvm_task_frameStackPushClassPD(
 		SJME_F_T(inFrame),
 		inClassName->seq, SJME_JNI_TRUE)) || value.v.l == NULL)
 		return sjme_error_default(error);
-	
+
 	/* Push value. */
 	value.t = SJME_JAVA_TYPE_ID_OBJECT;
-	return sjme_nvm_task_frameStackPush(inFrame, &value);
+	return sjme_nvm_task_frameStackPush(inFrame, commit, &value);
 }
 
 sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_nvm_stringPool_string inString)
 {
 	sjme_errorCode error;
 	sjme_jvalueTyped value;
-	
+
 	if (inFrame == NULL || inString == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -556,337 +749,88 @@ sjme_errorCode sjme_nvm_task_frameStackPushStringP(
 		value.v.l == NULL)
 		return sjme_error_vmError(inFrame, error);
 
-	/* Count up string. */
-	if (sjme_error_is(error = sjme_nvm_instance_countUp(value.v.l)))
-		return sjme_error_vmError(inFrame, error);
-
 	/* Push value. */
-	return sjme_nvm_task_frameStackPush(inFrame, &value);
+	return sjme_nvm_task_frameStackPush(inFrame, commit, &value);
 }
 
 sjme_errorCode sjme_nvm_task_frameStackTop(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInPositive sjme_jint depth,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere)
+	sjme_attrOutNullable sjme_nvm_store_slotInfo* outInfo)
 {
 	sjme_errorCode error;
-	sjme_frame_frameStacks* stack;
-	sjme_jint newTop;
-	sjme_javaTypeId readType;
-	sjme_jvalueTyped temp;
-	sjme_jint sub[SJME_NUM_JAVA_TYPE_IDS];
-	
+	sjme_nvm_store_windowJava* java;
+	sjme_jint desiredAt;
+	sjme_nvm_store_slotInfo info;
+
 	if (inFrame == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (depth < 0)
-		return SJME_ERROR_STACK_UNDERFLOW;
+		return SJME_ERROR_INVALID_ARGUMENT;
 
-	/* Set initial position. */
-	stack = &inFrame->stack;
-	newTop = stack->orderTop;
+	/* Obtain the Java language info. */
+	java = NULL;
+	if (sjme_error_is(error = sjme_nvm_store_windowLangJava(
+		inFrame->storeWindow, &java, inFrame)) || java == NULL)
+		return sjme_error_default(error);
 
 	/* Keep eating depth. */
-	memset(&sub, 0, sizeof(sub));
+	desiredAt = java->stackTop;
 	while ((depth--) >= 0)
 	{
 		/* Bump down and check overflow */
-		newTop--;
-		if (newTop < stack->orderFront)
+		desiredAt--;
+		if (desiredAt < 0)
 			return SJME_ERROR_STACK_UNDERFLOW;
 
-		/* Wide? */
-		if (stack->order[newTop] == SJME_JAVA_TYPE_ID_VOID)
-			newTop--;
-
-		/* Increase subtraction count for the given type, this is used */
-		/* to locate the slot on the stack. */
-		sub[stack->order[newTop]]++;
-	}
-
-	/* Copy out value. */
-	readType = stack->order[newTop];
-	memset(&temp, 0, sizeof(temp));
-	if (sjme_error_is(error = sjme_nvm_task_frameTreadGetT(inFrame, readType,
-		stack->stack[readType].top - sub[readType],
-		&temp, SJME_JNI_TRUE, SJME_JNI_FALSE)))
-		return sjme_error_vmError(inFrame, error);
-	
-	/* If copied elsewhere, count object up. */
-	if (copiedElsewhere && readType == SJME_JAVA_TYPE_ID_OBJECT &&
-		temp.v.l != NULL)
-		if (sjme_error_is(error = sjme_nvm_instance_countUp(temp.v.l)))
+		/* Get the slot here. */
+		memset(&info, 0, sizeof(info));
+		if (sjme_error_is(error = sjme_nvm_store_windowSlotInfo(
+			inFrame->storeWindow, &info,
+			desiredAt, SJME_NVM_STORE_SLOT_TYPE_STACK)))
 			return sjme_error_default(error);
-	
-	/* Success! */
-	memmove(outValue, &temp, sizeof(*outValue));
-	return SJME_ERROR_NONE;
-}
 
-sjme_errorCode sjme_nvm_task_frameTreadAddr(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrOutNotNull sjme_jvalue** outAddr,
-	sjme_attrOutNotNull sjme_jint** outCheck,
-	sjme_attrOutNullable sjme_nvm_frame_considerGc* outConsiderGc)
-{
-	sjme_frame_frameStack* perType;
-	
-	if (inFrame == NULL || outAddr == NULL ||
-		(typeId == SJME_JAVA_TYPE_ID_OBJECT && outCheck == NULL))
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* Check the tread index. */
-	perType = &inFrame->stack.stack[typeId];
-	if (typeIndex < 0 || typeIndex >= perType->length)
-		return sjme_error_vmError(inFrame, SJME_ERROR_TREAD_INDEX_INVALID);
-
-	/* Consider garbage collection? */
-	if (outConsiderGc)
-	{
-		if (typeIndex < perType->front)
-			*outConsiderGc = SJME_NVM_FRAME_CONSIDER_GC_ALWAYS;
-		else
-			*outConsiderGc = SJME_NVM_FRAME_CONSIDER_GC_COMMIT;
+		/* Skip wide. */
+		if (info.type == SJME_NVM_STORE_SLOT_MARKER_WIDE)
+			desiredAt--;
 	}
-	
-	/* Operating depends on the type. */
-	switch (typeId)
-	{
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			(*outAddr) = (sjme_jvalue*)&perType->base.i[typeIndex];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_LONG:
-			(*outAddr) = (sjme_jvalue*)&perType->base.j[typeIndex];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			(*outAddr) = (sjme_jvalue*)&perType->base.f[typeIndex];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			(*outAddr) = (sjme_jvalue*)&perType->base.d[typeIndex];
-			break;
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-			(*outAddr) = (sjme_jvalue*)&perType->base.l[typeIndex];
-			(*outCheck) = &inFrame->stack
-				.stack[SJME_NVM_STACK_OBJECT_CHECK_ID].base.i[typeIndex];
-			break;
-			
-		default:
-			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_FIELD_TYPE);
-	}
+
+	/* Obtain the slot to read from. */
+	memset(&info, 0, sizeof(info));
+	if (sjme_error_is(error = sjme_nvm_store_windowSlot(inFrame->storeWindow,
+		&info, desiredAt,
+		SJME_NVM_STORE_SLOT_TYPE_STACK,
+		SJME_NVM_STORE_READ,
+		SJME_NUM_JAVA_TYPE_IDS)))
+		return sjme_error_default(error);
+
+	/* Read out the value. */
+	if (sjme_error_is(error = sjme_nvm_vmField_cisGet(info.storage, info.type,
+		SJME_VLG_JVALUE_TYPED_P(outValue))))
+		return sjme_error_default(error);
+
+	/* Wanting a copy of the info? */
+	if (outInfo != NULL)
+		memmove(outInfo, &info, sizeof(*outInfo));
 
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_task_frameTreadGetT(
+sjme_errorCode sjme_nvm_task_frameWaitFor(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, SJME_NUM_JAVA_TYPE_IDS) sjme_javaTypeId typeId,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrOutNotNull sjme_jvalueTyped* outValue,
-	sjme_attrInValue sjme_jboolean copiedElsewhere,
-	sjme_attrInValue sjme_jboolean eraseOld)
+	sjme_attrInNotNull sjme_nvm_frame_conditionFunc conditionFunc,
+	sjme_attrInNegativeOnePositive sjme_jint timeout,
+	sjme_attrInValue sjme_intPointer value)
 {
-	sjme_errorCode error;
-	sjme_jvalue* treadValue;
-	sjme_jint* treadCheck;
-	sjme_jobject tempObject;
-	sjme_nvm_frame_considerGc considerGc;
-	
-	if (inFrame == NULL || outValue == NULL)
+	if (inFrame == NULL || conditionFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
+	if (timeout < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	/* Obtain direct pointer to the value. */
-	treadValue = NULL;
-	treadCheck = NULL;
-	considerGc = SJME_NVM_FRAME_CONSIDER_GC_NONE;
-	if (sjme_error_is(error = sjme_nvm_task_frameTreadAddr(inFrame,
-			typeId, typeIndex, &treadValue, &treadCheck, &considerGc)) ||
-		treadValue == NULL)
-		return sjme_error_vmError(inFrame, error);
-	
-	/* Operating depends on the type. */
-	switch (typeId)
-	{
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			outValue->v.i = treadValue->i;
-		
-			if (eraseOld)
-				treadValue->i = 0;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_LONG:
-			outValue->v.j = treadValue->j;
-		
-			if (eraseOld)
-				memset(&treadValue->j, 0,
-					sizeof(sjme_jlong));
-			break;
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			outValue->v.f = treadValue->f;
-		
-			if (eraseOld)
-				memset(&treadValue->f, 0,
-					sizeof(sjme_jfloat));
-			break;
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			outValue->v.d = treadValue->d;
-		
-			if (eraseOld)
-				memset(&treadValue->d, 0,
-					sizeof(sjme_jdouble));
-			break;
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-#if defined(SJME_CONFIG_DEBUG)
-			/* Debug. */
-			sjme_messageB("%2d@%3d: [%d] %p ->",
-				inFrame->index, inFrame->pc, typeIndex,
-				treadValue->l);
-#endif
-		
-			/* Load into temporary as we may be erasing the value here. */
-			tempObject = treadValue->l;
-
-			/* Object is gone? */
-			if (tempObject != NULL && (tempObject->isClass == NULL))
-				return sjme_error_vmError(inFrame,
-					SJME_ERROR_OBJECT_GONE);
-			
-			/* Object check mismatch? */
-			if ((tempObject == NULL && *treadCheck != 0) ||
-				(tempObject != NULL &&
-					*treadCheck != tempObject->identityHash))
-				return sjme_error_vmError(inFrame,
-					SJME_ERROR_OBJECT_MISMATCHED);
-
-			/* Is the value in the tread being cleared? */
-			if (eraseOld)
-			{
-				treadValue->l = NULL;
-				*treadCheck = 0;
-			}
-
-			/* Otherwise, we technically have a copy so count up. */
-			/* But only if we copied it elsewhere. */
-			else if (tempObject != NULL && copiedElsewhere && considerGc)
-				if (sjme_error_is(error = sjme_nvm_instance_countUp(
-					tempObject)))
-					return sjme_error_default(error);
-
-			outValue->v.l = tempObject;
-			break;
-			
-		default:
-			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_FIELD_TYPE);
-	}
-
-	/* Success! */
-	outValue->t = typeId;
-	return SJME_ERROR_NONE;
-}
-
-sjme_errorCode sjme_nvm_task_frameTreadSetT(
-	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInPositive sjme_jint typeIndex,
-	sjme_attrInNotNull const sjme_jvalueTyped* inValue,
-	sjme_attrOutNotNull sjme_jvalueTyped* oldValue)
-{
-	sjme_errorCode error;
-	sjme_jvalue* treadValue;
-	sjme_jint* treadCheck;
-	sjme_javaTypeId typeId;
-	sjme_nvm_frame_considerGc considerGc;
-	
-	if (inFrame == NULL || inValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	typeId = inValue->t;
-	if (typeId < 0 || typeId >= SJME_NUM_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* Obtain direct pointer to the value. */
-	treadValue = NULL;
-	treadCheck = NULL;
-	considerGc = SJME_NVM_FRAME_CONSIDER_GC_NONE;
-	if (sjme_error_is(error = sjme_nvm_task_frameTreadAddr(inFrame,
-			typeId, typeIndex, &treadValue, &treadCheck, &considerGc)) ||
-		treadValue == NULL)
-		return sjme_error_vmError(inFrame, error);
-
-	/* Copy the old value here before deletion? */
-	if (oldValue != NULL)
-	{
-		oldValue->t = typeId;
-		memmove(oldValue, treadValue, sjme_nvm_typeMul[typeId]);
-	}
-	
-	/* Operating depends on the type. */
-	switch (typeId)
-	{
-		case SJME_JAVA_TYPE_ID_INTEGER:
-			treadValue->i = inValue->v.i;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_LONG:
-			treadValue->j = inValue->v.j;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_FLOAT:
-			treadValue->f = inValue->v.f;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_DOUBLE:
-			treadValue->d = inValue->v.d;
-			break;
-			
-		case SJME_JAVA_TYPE_ID_OBJECT:
-#if defined(SJME_CONFIG_DEBUG)
-			/* Debug. */
-			sjme_messageB("%2d@%3d: [%d] %p <- %p",
-				inFrame->index, inFrame->pc, typeIndex,
-				treadValue->l, inValue->v.l);
-#endif
-			
-			/* Object check mismatch? */
-			if ((treadValue->l == NULL && *treadCheck != 0) ||
-				(treadValue->l != NULL &&
-					*treadCheck != treadValue->l->identityHash))
-				return sjme_error_vmError(inFrame,
-					SJME_ERROR_OBJECT_MISMATCHED);
-			
-			/* Balance counts. */
-			if (considerGc)
-				if (sjme_error_is(error = sjme_nvm_instance_countBalance(
-					treadValue->l, inValue->v.l)))
-					return sjme_error_vmError(inFrame, error);
-			
-			/* Set. */
-			treadValue->l = inValue->v.l;
-			if (inValue->v.l == NULL)
-				*treadCheck = 0;
-			else
-				*treadCheck = inValue->v.l->identityHash;
-			break;
-			
-		default:
-			return sjme_error_vmError(inFrame, SJME_ERROR_INVALID_FIELD_TYPE);
-	}
-
-	/* Success! */
-	return SJME_ERROR_NONE;
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }

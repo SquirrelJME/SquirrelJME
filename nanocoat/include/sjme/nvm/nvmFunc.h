@@ -10,6 +10,7 @@
 /**
  * NanoCoat Virtual Machine functions.
  * 
+ * @file
  * @since 2023/12/08
  */
 

@@ -10,12 +10,14 @@
 /**
  * Bytecode Execution Support.
  * 
+ * @file
  * @since 2023/11/18
  */
 
 #ifndef SJME_C_BYTECODE_H
 #define SJME_C_BYTECODE_H
 
+#include "sjme/config.h"
 #include "sjme/error.h"
 #include "sjme/nvm/nvm.h"
 

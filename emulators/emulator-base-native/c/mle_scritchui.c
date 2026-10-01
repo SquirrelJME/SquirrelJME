@@ -10,8 +10,8 @@
 #include "squirreljme.h"
 
 /* //// MLE /// */
-#define mleGroupId NativeScritchInterface
-#define mleShelfClass "cc/squirreljme/jvm/mle/scritchui/NativeScritchInterface"
+#define mleGroupId NativeScritchUIShelf
+#define mleShelfClass "cc/squirreljme/jvm/mle/scritchui/NativeScritchUIShelf"
 #define mleProxyTarget "cc/squirreljme/emulator/scritchui/EmulatedNativeScritchInterface"
 #include "squirreljmeMle.h"
 /* //////////// */

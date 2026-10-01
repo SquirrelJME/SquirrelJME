@@ -27,60 +27,6 @@
 /** CLDC 8 max version. */
 #define SJME_NVM_CLASS_CLDC_1_8_MAX INT32_C(3407872)
 
-/** Public. */
-#define SJME_NVM_CLASS_ACC_PUBLIC INT16_C(0x0001)
-
-/** Private. */
-#define SJME_NVM_CLASS_ACC_PRIVATE INT16_C(0x0002)
-
-/** Protected. */
-#define SJME_NVM_CLASS_ACC_PROTECTED INT16_C(0x0004)
-
-/** Static member. */
-#define SJME_NVM_CLASS_ACC_STATIC INT16_C(0x0008)
-
-/** Final class or member. */
-#define SJME_NVM_CLASS_ACC_FINAL INT16_C(0x0010)
-
-/** Alternative @c invokesuper logic. */
-#define SJME_NVM_CLASS_ACC_SUPER INT16_C(0x0020)
-
-/** Synchronized method. */
-#define SJME_NVM_CLASS_ACC_SYNCHRONIZED INT16_C(0x0020)
-
-/** Bridge method. */
-#define SJME_NVM_CLASS_ACC_BRIDGE INT16_C(0x0040)
-
-/** Variable arguments. */
-#define SJME_NVM_CLASS_ACC_VARARGS INT16_C(0x0080)
-
-/** Native method. */
-#define SJME_NVM_CLASS_ACC_NATIVE INT16_C(0x0100)
-
-/** Class is an interface. */
-#define SJME_NVM_CLASS_ACC_INTERFACE INT16_C(0x0200)
-
-/** Abstract class or method. */
-#define SJME_NVM_CLASS_ACC_ABSTRACT INT16_C(0x0400)
-
-/** Strict floating point method. */
-#define SJME_NVM_CLASS_ACC_STRICTFP INT16_C(0x0800)
-
-/** Synthetic class or member. */
-#define SJME_NVM_CLASS_ACC_SYNTHETIC INT16_C(0x1000)
-
-/** Field is volatile. */
-#define SJME_NVM_CLASS_ACC_VOLATILE INT16_C(0x0040)
-
-/** Field is transient. */
-#define SJME_NVM_CLASS_ACC_TRANSIENT INT16_C(0x0080)
-
-/** Class is an annotation. */
-#define SJME_NVM_CLASS_ACC_ANNOTATION INT16_C(0x2000)
-
-/** Class is an enum. */
-#define SJME_NVM_CLASS_ACC_ENUM INT16_C(0x4000)
-
 static sjme_errorCode sjme_nvm_class_readPoolRefIndex(
 	sjme_attrInNotNull sjme_stream_input inStream,
 	sjme_attrInNotNull sjme_nvm_class_poolInfo inClassPool,
@@ -124,8 +70,223 @@ static sjme_errorCode sjme_nvm_class_readPoolRefIndex(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_class_classAnnotations(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_nvm_class_poolInfo inConstPool,
+	sjme_attrInNotNull sjme_nvm_stringPool inStringPool,
+	sjme_attrInNotNull sjme_pointer context,
+	sjme_attrInNotNull sjme_charSeq attrName,
+	sjme_attrInNotNull sjme_stream_input attrStream,
+	sjme_attrInNotNullBuf(attrLen) sjme_pointer attrData,
+	sjme_attrInPositive sjme_jint attrLen)
+{
+	sjme_errorCode error;
+	sjme_nvm_class_info classInfo;
+	sjme_jint i, j, listAt;
+	sjme_jbyte tag;
+	sjme_jshort numAnnotations, numValues;
+	sjme_nvm_class_annotation annotation;
+	sjme_list(sjme_nvm_class_annotation)* annotations;
+	sjme_nvm_class_poolEntry* type;
+	sjme_nvm_class_poolEntry* name;
+	sjme_nvm_class_poolEntry* value;
+	
+	if (allocPool == NULL || inConstPool == NULL || inStringPool == NULL ||
+		attrName == NULL || attrData == NULL ||
+		attrStream == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Recover class. */
+	classInfo = context;
+	if (classInfo == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Read annotation count. */
+	numAnnotations = -1;
+	if (sjme_error_is(error = sjme_stream_inputReadValueJS(attrStream,
+		&numAnnotations)) || numAnnotations < 0)
+		return sjme_error_default(error);
+	
+	/* Start with no annotations, these are dynamically allocated. */
+	annotations = NULL;
+	listAt = 0;
+	
+	/* Read in each annotation. */
+	for (i = 0; i < numAnnotations; i++)
+	{
+		/* Read in the annotation type (the class). */
+		type = NULL;
+		if (sjme_error_is(error = sjme_nvm_class_readPoolRefIndex(attrStream,
+			inConstPool, SJME_NVM_CLASS_POOL_TYPE_UTF,
+			SJME_JNI_FALSE, &type)) || type == NULL)
+			goto fail_readType;
+		
+		/* Read in the number of values. */
+		numValues = -1;
+		if (sjme_error_is(error = sjme_stream_inputReadValueJS(attrStream,
+			&numValues)) || numValues < 0)
+			goto fail_readNumValues;
+		
+		/* No values to add? */
+		if (numValues == 0)
+			continue;
+		
+		/* Grow list. */
+		if (sjme_error_is(error = sjme_list_replace(allocPool,
+			listAt + numValues + 1, &annotations,
+			sjme_nvm_class_annotation, 0)))
+			goto fail_allocList;
+		
+		/* Allocate initial marker annotation, for any without values. */
+		annotation = NULL;
+		if (sjme_error_is(error = sjme_alloc(allocPool,
+			sizeof(*annotation), (sjme_pointer*)&annotation)) ||
+			annotation == NULL)
+			goto fail_allocSingle;
+		
+		/* Store. */
+		annotations->elements[listAt++] = annotation;
+		
+		/* Set its info. */
+		annotation->className = sjme_weakUpR(sjme_nvm_stringPool_string,
+			type->utf.utf);
+		
+		/* Read in each value. */
+		for (j = 0; j < numValues; j++)
+		{
+			/* Read in the annotation name (the field). */
+			name = NULL;
+			if (sjme_error_is(error = sjme_nvm_class_readPoolRefIndex(
+				attrStream, inConstPool, SJME_NVM_CLASS_POOL_TYPE_UTF,
+				SJME_JNI_FALSE, &name)) || name == NULL)
+				goto fail_readName;
+			
+			/* Read in the tag. */
+			tag = -1;
+			if (sjme_error_is(error = sjme_stream_inputReadValueJB(attrStream,
+				&tag)) || tag < 0)
+				goto fail_readTag;
+		
+			/* Allocate and set annotation. */
+			annotation = NULL;
+			if (sjme_error_is(error = sjme_alloc(allocPool,
+				sizeof(*annotation), (sjme_pointer*)&annotation)) ||
+				annotation == NULL)
+				goto fail_allocSingle;
+			
+			/* Store. */
+			annotations->elements[listAt++] = annotation;
+			
+			/* Set its info. */
+			annotation->className = sjme_weakUpR(sjme_nvm_stringPool_string,
+				type->utf.utf);
+			annotation->fieldName = sjme_weakUpR(sjme_nvm_stringPool_string,
+				name->utf.utf); 
+			annotation->tag = tag;
+		
+			/* Which type of value is being read? */
+			switch ((sjme_nvm_class_annotationTag)tag)
+			{
+					/* Integer constant. */
+				case SJME_NVM_CLASS_ANNOTATION_TAG_BYTE:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_CHARACTER:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_SHORT:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_BOOLEAN:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_INTEGER:
+					value = NULL;
+					if (sjme_error_is(error =
+						sjme_nvm_class_readPoolRefIndex(
+						attrStream, inConstPool,
+						SJME_NVM_CLASS_POOL_TYPE_INTEGER,
+						SJME_JNI_FALSE, &value)) || value == NULL)
+						goto fail_readString;
+					
+					/* Copy value. */
+					annotation->valueJava.v.i = value->constInteger.value;
+					break;
+					
+				case SJME_NVM_CLASS_ANNOTATION_TAG_DOUBLE:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_FLOAT:
+				case SJME_NVM_CLASS_ANNOTATION_TAG_LONG:
+					sjme_todo("Impl?");
+					return SJME_ERROR_NOT_IMPLEMENTED;
+					
+					/* String Constant. */
+				case SJME_NVM_CLASS_ANNOTATION_TAG_STRING:
+					value = NULL;
+					if (sjme_error_is(error =
+						sjme_nvm_class_readPoolRefIndex(
+						attrStream, inConstPool,
+						SJME_NVM_CLASS_POOL_TYPE_UTF,
+						SJME_JNI_FALSE, &value)) || value == NULL)
+						goto fail_readString;
+					
+					/* Set string value. */
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
+					annotation->valueString = sjme_weakUpR(
+						sjme_nvm_stringPool_string, value->utf.utf);
+#else
+					/* TODO: Counting up is the correct solution, however */
+					/* TODO: annotations are very new and only used in */
+					/* TODO: testing. So something else seems to be */
+					/* TODO: miscounting. */
+					annotation->valueString = value->utf.utf;
+#endif
+					break;
+					
+				case SJME_NVM_CLASS_ANNOTATION_TAG_ENUM:
+					sjme_todo("Impl?");
+					return SJME_ERROR_NOT_IMPLEMENTED;
+					
+				case SJME_NVM_CLASS_ANNOTATION_TAG_CLASS:
+					sjme_todo("Impl?");
+					return SJME_ERROR_NOT_IMPLEMENTED;
+					
+				case SJME_NVM_CLASS_ANNOTATION_TAG_ANNOTATION:
+					sjme_todo("Impl?");
+					return SJME_ERROR_NOT_IMPLEMENTED;
+					
+				case SJME_NVM_CLASS_ANNOTATION_TAG_ARRAY:
+					sjme_todo("Impl?");
+					return SJME_ERROR_NOT_IMPLEMENTED;
+					
+				default:
+					error = SJME_ERROR_CLASS_UNKNOWN_ANNOTATION_TAG;
+					goto fail_badTag;
+			}
+		}
+	}
+	
+	/* Store final list, if anything was even allocated. */
+	classInfo->annotations = annotations;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_readString:
+fail_readName:
+fail_badTag:
+fail_readTag:
+fail_readNumValues:
+fail_readType:
+fail_allocSingle:
+fail_allocList:
+	if (annotations != NULL)
+	{
+		for (i = 0; i < numAnnotations; i++)
+			if (annotations->elements[i] != NULL)
+				sjme_alloc_free(annotations->elements[i]);
+		sjme_alloc_free(annotations);
+	}
+	
+	return sjme_error_default(error);
+}
+
 static const sjme_nvm_class_parseAttributeHandler sjme_nvm_class_classAttr[] =
 {
+	{"RuntimeVisibleAnnotations",
+		sjme_nvm_class_classAnnotations},
+	
 	{NULL, NULL},
 };
 
@@ -146,30 +307,37 @@ static sjme_errorCode sjme_nvm_class_classFlagsParse(
 		return sjme_error_default(error);
 	
 	/* Translate to bitfield. */
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PUBLIC) != 0)
-		outFlags->access.public = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_FINAL) != 0)
-		outFlags->final = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_SUPER) != 0)
-		outFlags->super = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_INTERFACE) != 0)
-		outFlags->interface = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_ABSTRACT) != 0)
-		outFlags->abstract = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_SYNTHETIC) != 0)
-		outFlags->synthetic = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_ANNOTATION) != 0)
-		outFlags->annotation = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_ENUM) != 0)
-		outFlags->enumeration = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_NVM_ACC_PUBLIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PUBLIC;
+	if ((rawFlags & SJME_NVM_ACC_FINAL) != 0)
+		(*outFlags) |= SJME_NVM_ACC_FINAL;
+	if ((rawFlags & SJME_NVM_ACC_SUPER) != 0)
+		(*outFlags) |= SJME_NVM_ACC_SUPER;
+	if ((rawFlags & SJME_NVM_ACC_INTERFACE) != 0)
+		(*outFlags) |= SJME_NVM_ACC_INTERFACE;
+	if ((rawFlags & SJME_NVM_ACC_ABSTRACT) != 0)
+		(*outFlags) |= SJME_NVM_ACC_ABSTRACT;
+	if ((rawFlags & SJME_NVM_ACC_SYNTHETIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_SYNTHETIC;
+	if ((rawFlags & SJME_NVM_ACC_ANNOTATION) != 0)
+		(*outFlags) |= SJME_NVM_ACC_ANNOTATION;
+	if ((rawFlags & SJME_NVM_ACC_ENUM) != 0)
+		(*outFlags) |= SJME_NVM_ACC_ENUM;
 	
 	/* Cannot be abstract and final. */
+	if (((*outFlags) & (SJME_NVM_ACC_ABSTRACT | SJME_NVM_ACC_FINAL)) ==
+		(SJME_NVM_ACC_ABSTRACT | SJME_NVM_ACC_FINAL))
+		return SJME_ERROR_INVALID_CLASS_FLAGS;
+	
 	/* Annotation must be an interface. */
+	if (((*outFlags) & (SJME_NVM_ACC_ANNOTATION | SJME_NVM_ACC_INTERFACE)) ==
+		SJME_NVM_ACC_ANNOTATION)
+		return SJME_ERROR_INVALID_CLASS_FLAGS;
+	
 	/* Interface must be abstract and not final, super, or enum */
-	if ((outFlags->abstract && outFlags->final) ||
-		(outFlags->annotation && !outFlags->interface) ||
-		(outFlags->interface && (!outFlags->abstract ||
-			outFlags->final || outFlags->super || outFlags->enumeration)))
+	if (((*outFlags) & (SJME_NVM_ACC_INTERFACE)) != 0)
+		if (((*outFlags) & (SJME_NVM_ACC_ABSTRACT | SJME_NVM_ACC_FINAL |
+			SJME_NVM_ACC_SUPER | SJME_NVM_ACC_ENUM)) != SJME_NVM_ACC_ABSTRACT)
 		return SJME_ERROR_INVALID_CLASS_FLAGS;
 	
 	/* Success! */
@@ -302,12 +470,8 @@ static sjme_errorCode sjme_nvm_class_fieldAttrConstantValue(
 	else if (item->type == SJME_NVM_CLASS_POOL_TYPE_STRING)
 	{
 		fieldInfo->constVal.type = SJME_JAVA_TYPE_ID_OBJECT;
-		fieldInfo->constVal.value.string = item->constString.value;
-		
-		/* Count up as we are using it. */
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			fieldInfo->constVal.value.string, NULL)))
-			return sjme_error_default(error);
+		fieldInfo->constVal.value.string =
+			sjme_weakUp(item->constString.value);
 	}
 	
 	/* Invalid! */
@@ -342,31 +506,32 @@ static sjme_errorCode sjme_nvm_class_fieldFlagsParse(
 	
 	/* Translate to bitfield. */
 	memset(outFlags, 0, sizeof(*outFlags));
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PUBLIC) != 0)
-		outFlags->member.access.public = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PRIVATE) != 0)
-		outFlags->member.access.private = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PROTECTED) != 0)
-		outFlags->member.access.protected = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_STATIC) != 0)
-		outFlags->member.isStatic = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_FINAL) != 0)
-		outFlags->member.final = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_VOLATILE) != 0)
-		outFlags->isVolatile = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_TRANSIENT) != 0)
-		outFlags->transient = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_ENUM) != 0)
-		outFlags->enumeration = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_SYNTHETIC) != 0)
-		outFlags->member.synthetic = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_NVM_ACC_PUBLIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PUBLIC;
+	if ((rawFlags & SJME_NVM_ACC_PRIVATE) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PRIVATE;
+	if ((rawFlags & SJME_NVM_ACC_PROTECTED) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PROTECTED;
+	if ((rawFlags & SJME_NVM_ACC_STATIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_STATIC;
+	if ((rawFlags & SJME_NVM_ACC_FINAL) != 0)
+		(*outFlags) |= SJME_NVM_ACC_FINAL;
+	if ((rawFlags & SJME_NVM_ACC_VOLATILE) != 0)
+		(*outFlags) |= SJME_NVM_ACC_VOLATILE;
+	if ((rawFlags & SJME_NVM_ACC_TRANSIENT) != 0)
+		(*outFlags) |= SJME_NVM_ACC_TRANSIENT;
+	if ((rawFlags & SJME_NVM_ACC_ENUM) != 0)
+		(*outFlags) |= SJME_NVM_ACC_ENUM;
+	if ((rawFlags & SJME_NVM_ACC_SYNTHETIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_SYNTHETIC;
 	
 	/* Can only have a single access mode. */
+	if (sjme_util_intBitCountU((*outFlags) & SJME_NVM_ACC_ACCESS_MASK) > 1)
+		return SJME_ERROR_INVALID_FIELD_FLAGS;
+	
 	/* Cannot be both final and volatile. */
-	if (((outFlags->member.access.public +
-		outFlags->member.access.protected +
-		outFlags->member.access.private) > 1) ||
-		(outFlags->member.final && outFlags->isVolatile))
+	if (((*outFlags) & (SJME_NVM_ACC_FINAL | SJME_NVM_ACC_VOLATILE)) ==
+		(SJME_NVM_ACC_FINAL | SJME_NVM_ACC_VOLATILE))
 		return SJME_ERROR_INVALID_FIELD_FLAGS;
 	
 	/* Success! */
@@ -459,10 +624,11 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	sjme_nvm_class_codeInfo result;
 	sjme_jubyte* rawCode;
 	sjme_jubyte* rawCodeUnalign;
-	sjme_list_sjme_nvm_class_exceptionHandler* excepts;
+	sjme_list(sjme_nvm_class_exceptionHandler)* excepts;
 	sjme_nvm_class_exceptionHandler* except;
 	sjme_nvm_class_codePerType* perType;
 	sjme_jshort* localMap;
+	sjme_nvm_class_poolEntryClass* handles;
 	
 	methodInfo = context;
 	if (allocPool == NULL || inConstPool == NULL || inStringPool == NULL ||
@@ -478,12 +644,12 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(
 		(sjme_nvm)allocPool,
-		sizeof(*result), SJME_NVM_STRUCT_CODE,
+		sizeof(*result), SJME_NVM_STRUCT_CODE_INFO,
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 	
 	/* In this method! */
-	result->inMethod = methodInfo;
+	sjme_atomic_s(sjme_nvm_class_methodInfo, &result->inMethod, methodInfo);
 	
 	/* Read in max stack and locals. */
 	maxStack = -1;
@@ -501,6 +667,9 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		sizeof(*localMap) * ((maxLocals * SJME_NUM_JAVA_TYPE_IDS) + 1),
 		(sjme_pointer)&localMap)) || localMap == NULL)
 		goto fail_allocLocalMap;
+
+	/* Store full local map reference. */
+	sjme_atomic_s(sjme_pointer, &result->localMapBase, localMap);
 	
 	/* Set. */
 	result->perType[SJME_NVM_CODE_INFO_ALL_TYPES].stack = maxStack;
@@ -593,13 +762,15 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 				goto fail_exceptShorts;
 			
 			/* Read in handler class. */
-			except->handles = NULL;
+			handles = NULL;
 			if (sjme_error_is(error = sjme_nvm_class_readPoolRefIndex(
 				attrStream, inConstPool,
 				SJME_NVM_CLASS_POOL_TYPE_CLASS,
 				SJME_JNI_TRUE,
-				(sjme_nvm_class_poolEntry**)&except->handles)))
+				(sjme_nvm_class_poolEntry**)&handles)))
 				goto fail_exceptHandles;
+			sjme_atomic_sP(sjme_nvm_class_poolEntryClass, 1,
+				&except->handles, handles);
 		}
 	}
 	
@@ -617,9 +788,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCode(
 		goto fail_allocCode;
 	
 	/* Make sure the code is referenced. */	
-	methodInfo->code = result;
-	if (sjme_error_is(error = sjme_alloc_weakRef(result, NULL)))
-		goto fail_refCode;
+	methodInfo->code = sjme_weakUp(result);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -674,41 +843,42 @@ static sjme_errorCode sjme_nvm_class_methodFlagsParse(
 	
 	/* Translate to bitfield. */
 	memset(outFlags, 0, sizeof(*outFlags));
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PUBLIC) != 0)
-		outFlags->member.access.public = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PRIVATE) != 0)
-		outFlags->member.access.private = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_PROTECTED) != 0)
-		outFlags->member.access.protected = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_STATIC) != 0)
-		outFlags->member.isStatic = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_FINAL) != 0)
-		outFlags->member.final = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_SYNCHRONIZED) != 0)
-		outFlags->synchronized = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_BRIDGE) != 0)
-		outFlags->bridge = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_VARARGS) != 0)
-		outFlags->varargs = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_NATIVE) != 0)
-		outFlags->native = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_ABSTRACT) != 0)
-		outFlags->abstract = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_STRICTFP) != 0)
-		outFlags->strictfp = SJME_JNI_TRUE;
-	if ((rawFlags & SJME_NVM_CLASS_ACC_SYNTHETIC) != 0)
-		outFlags->member.synthetic = SJME_JNI_TRUE;
+	if ((rawFlags & SJME_NVM_ACC_PUBLIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PUBLIC;
+	if ((rawFlags & SJME_NVM_ACC_PRIVATE) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PRIVATE;
+	if ((rawFlags & SJME_NVM_ACC_PROTECTED) != 0)
+		(*outFlags) |= SJME_NVM_ACC_PROTECTED;
+	if ((rawFlags & SJME_NVM_ACC_STATIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_STATIC;
+	if ((rawFlags & SJME_NVM_ACC_FINAL) != 0)
+		(*outFlags) |= SJME_NVM_ACC_FINAL;
+	if ((rawFlags & SJME_NVM_ACC_SYNCHRONIZED) != 0)
+		(*outFlags) |= SJME_NVM_ACC_SYNCHRONIZED;
+	if ((rawFlags & SJME_NVM_ACC_BRIDGE) != 0)
+		(*outFlags) |= SJME_NVM_ACC_BRIDGE;
+	if ((rawFlags & SJME_NVM_ACC_VARARGS) != 0)
+		(*outFlags) |= SJME_NVM_ACC_VARARGS;
+	if ((rawFlags & SJME_NVM_ACC_NATIVE) != 0)
+		(*outFlags) |= SJME_NVM_ACC_NATIVE;
+	if ((rawFlags & SJME_NVM_ACC_ABSTRACT) != 0)
+		(*outFlags) |= SJME_NVM_ACC_ABSTRACT;
+	if ((rawFlags & SJME_NVM_ACC_STRICTFP) != 0)
+		(*outFlags) |= SJME_NVM_ACC_STRICTFP;
+	if ((rawFlags & SJME_NVM_ACC_SYNTHETIC) != 0)
+		(*outFlags) |= SJME_NVM_ACC_SYNTHETIC;
 	
 	/* Can only have a single access mode. */
-	/* Abstract cannot be final, private, static, strict, or synchronized. */
-	if (((outFlags->member.access.public +
-		outFlags->member.access.protected +
-		outFlags->member.access.private) > 1) ||
-		(outFlags->abstract && (outFlags->member.final ||
-			outFlags->native || outFlags->member.access.private ||
-			outFlags->member.isStatic || outFlags->strictfp ||
-			outFlags->synchronized)))
+	if (sjme_util_intBitCountU((*outFlags) & SJME_NVM_ACC_ACCESS_MASK) > 1)
 		return SJME_ERROR_INVALID_METHOD_FLAGS;
+	
+	/* Abstract cannot be final, private, static, strict, or synchronized. */
+	if (SJME_NVM_ACC_IS(*outFlags, ABSTRACT))
+		if (((*outFlags) & (SJME_NVM_ACC_ABSTRACT | SJME_NVM_ACC_FINAL |
+			SJME_NVM_ACC_PRIVATE | SJME_NVM_ACC_STATIC |
+			SJME_NVM_ACC_STRICTFP |
+			SJME_NVM_ACC_SYNCHRONIZED)) != SJME_NVM_ACC_ABSTRACT)
+			return SJME_ERROR_INVALID_METHOD_FLAGS;
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -1263,13 +1433,17 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_nvm_class_poolEntry* thisName;
 	sjme_nvm_class_poolEntry* superName;
 	sjme_nvm_class_poolEntry* interfaceName;
-	sjme_list_sjme_nvm_stringPool_string* interfaceNames;
-	sjme_list_sjme_nvm_class_fieldInfo* fields;
-	sjme_list_sjme_nvm_class_methodInfo* methods;
+	sjme_list(sjme_nvm_stringPool_string)* interfaceNames;
+	sjme_list(sjme_nvm_class_fieldInfo)* fields;
+	sjme_list(sjme_nvm_class_methodInfo)* methods;
 	sjme_nvm_class_fieldInfo field;
 	sjme_nvm_class_methodInfo method;
 	sjme_lpstr packageName;
-	sjme_cchar runtimeName[MAX_RUNTIME_NAME];
+	sjme_cchar runtimeNameRaw[MAX_RUNTIME_NAME];
+	sjme_nvm_stringPool_string inPackage;
+	sjme_nvm_stringPool_string runtimeName;
+	sjme_nvm_class_methodInfo parsedMethod;
+	sjme_nvm_class_fieldInfo parsedField;
 	
 	if (allocPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
@@ -1334,11 +1508,7 @@ sjme_errorCode sjme_nvm_class_parse(
 	if (sjme_error_is(error = sjme_nvm_class_parseConstantPool(
 		allocPool, inStream, inStringPool, &pool)) || pool == NULL)
 		goto fail_parsePool;
-	
-	/* We are using this, so count it up. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(pool, NULL)))
-		goto fail_countPool;
-	result->pool = pool;
+	result->pool = sjme_weakUpR(sjme_nvm_class_poolInfo, pool);
 	
 	/* Read in flags. */
 	if (sjme_error_is(error = sjme_nvm_class_classFlagsParse(
@@ -1354,10 +1524,8 @@ sjme_errorCode sjme_nvm_class_parse(
 		goto fail_readThisName;
 	
 	/* Reference it. */
-	result->name = SJME_P_C_N(thisName);
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->name, NULL)))
-		goto fail_refThisName;
+	result->name = sjme_weakUpR(sjme_nvm_stringPool_string,
+		SJME_P_C_N(thisName));
 		
 	/* Locate the last slash character in the binary name. */
 	lastSlash = result->name->seq->length - 1;
@@ -1385,42 +1553,35 @@ sjme_errorCode sjme_nvm_class_parse(
 		goto fail_inPackage;
 	
 	/* Locate string for package name. */
-	result->inPackage = NULL;
+	inPackage = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
-		inStringPool, &result->inPackage, packageName, 0, lastSlash)) ||
-		result->inPackage == NULL)
+		inStringPool, &inPackage, packageName, 0, lastSlash)) ||
+		inPackage == NULL)
 		goto fail_inPackage;
-	
-	/* Reference it. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->inPackage, NULL)))
-		goto fail_refPackage;
+	result->inPackage = sjme_weakUpR(sjme_nvm_stringPool_string, inPackage);
 
 	/* Translate to the name as it would appear at runtime. */
-	memset(runtimeName, 0, sizeof(runtimeName));
+	memset(runtimeNameRaw, 0, sizeof(runtimeNameRaw));
 	if (sjme_error_is(error = sjme_charSeq_dupToU(result->name->seq,
-		0, runtimeName, 0, MAX_RUNTIME_NAME - 1,
+		0, runtimeNameRaw, 0, MAX_RUNTIME_NAME - 1,
 		-1)))
 		goto fail_dupName;
-	runtimeName[MAX_RUNTIME_NAME - 1] = 0;
+	runtimeNameRaw[MAX_RUNTIME_NAME - 1] = 0;
 	
 	for (i = 0; i < MAX_RUNTIME_NAME; i++)
-		if (runtimeName[i] == '/')
-			runtimeName[i] = '.';
-		else if (runtimeName[i] == '\0')
+		if (runtimeNameRaw[i] == '/')
+			runtimeNameRaw[i] = '.';
+		else if (runtimeNameRaw[i] == '\0')
 			break;
 
 	/* Lookup the runtime string. */
-	result->runtimeName = NULL;
+	runtimeName = NULL;
 	if (sjme_error_is(error = sjme_nvm_stringPool_locateUtf(
-		inStringPool, &result->runtimeName, runtimeName, 0, -1)) ||
-		result->runtimeName == NULL)
+		inStringPool, &runtimeName, runtimeNameRaw, 0, -1)) ||
+		runtimeName == NULL)
 		goto fail_inRuntimeName;
-	
-	/* Reference it. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->runtimeName, NULL)))
-		goto fail_refRuntimeName;
+	result->runtimeName = sjme_weakUpR(sjme_nvm_stringPool_string,
+		runtimeName);
 	
 	/* Read in super name. */
 	superName = NULL;
@@ -1432,12 +1593,8 @@ sjme_errorCode sjme_nvm_class_parse(
 	
 	/* Reference it, if valid. */
 	if (superName != NULL)
-	{
-		result->superName = SJME_P_C_N(superName);
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			result->superName, NULL)))
-			goto fail_refSuperName;
-	}
+		result->superName = sjme_weakUpR(sjme_nvm_stringPool_string,
+			SJME_P_C_N(superName));
 	
 	/* How many interfaces are there? */
 	interfaceCount = -1;
@@ -1466,10 +1623,8 @@ sjme_errorCode sjme_nvm_class_parse(
 			goto fail_readThisName;
 		
 		/* Reference it. */
-		interfaceNames->elements[i] = SJME_P_C_N(interfaceName);
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			interfaceNames->elements[i], NULL)))
-			goto fail_refThisName;
+		interfaceNames->elements[i] = sjme_weakUpR(sjme_nvm_stringPool_string,
+			SJME_P_C_N(interfaceName));
 	}
 	
 	/* Read in field count. */
@@ -1489,16 +1644,12 @@ sjme_errorCode sjme_nvm_class_parse(
 	for (i = 0; i < fieldCount; i++)
 	{
 		/* Parse each field. */
+		parsedField = NULL;
 		if (sjme_error_is(error = sjme_nvm_class_parseField(
 			allocPool, inStream, result->pool, inStringPool,
-			&fields->elements[i])) ||
-			fields->elements[i] == NULL)
+			&parsedField)) || parsedField == NULL)
 			goto fail_parseField;
-		
-		/* We are referencing this. */
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			fields->elements[i], NULL)))
-			goto fail_refField;
+		fields->elements[i] = sjme_weakUp(parsedField);
 	}
 	
 	/* Determine the indexes of all fields. */
@@ -1506,7 +1657,8 @@ sjme_errorCode sjme_nvm_class_parse(
 	{
 		/* Determine the type index for its slot. */
 		field = fields->elements[i];
-		field->typedIndex = result->fieldCount[(field->flags.member.isStatic ? 
+		field->typedIndex = result->fieldCount[
+			(SJME_NVM_ACC_IS(field->flags, STATIC) ?
 			SJME_NVM_CLASS_MEMBER_STATIC : SJME_NVM_CLASS_MEMBER_INSTANCE)]
 			[field->extendedType]++;
 		
@@ -1536,19 +1688,16 @@ sjme_errorCode sjme_nvm_class_parse(
 	for (i = 0; i < methodCount; i++)
 	{
 		/* Parse each method. */
+		parsedMethod = NULL;
 		if (sjme_error_is(error = sjme_nvm_class_parseMethod(
 			allocPool, inStream, result->pool, inStringPool,
-			&methods->elements[i])) ||
-			methods->elements[i] == NULL)
+			&parsedMethod)) || parsedMethod == NULL)
 			goto fail_parseMethod;
-		
-		/* Reference as we are using this. */
-		if (sjme_error_is(error = sjme_alloc_weakRef(
-			methods->elements[i], NULL)))
-			goto fail_refMethod;
+		methods->elements[i] = sjme_weakUp(parsedMethod);
 		
 		/* Link back. */
-		methods->elements[i]->inClass = result;
+		sjme_atomic_s(sjme_nvm_class_info, &methods->elements[i]->inClass,
+			result);
 	}
 	
 	/* Determine the indexes of all methods. */
@@ -1557,7 +1706,7 @@ sjme_errorCode sjme_nvm_class_parse(
 		/* Determine the type index for its slot. */
 		method = methods->elements[i];
 		method->typedIndex = result->methodCount[
-			(method->flags.member.isStatic ? 
+			((method->flags & SJME_NVM_ACC_STATIC) != 0 ? 
 			SJME_NVM_CLASS_MEMBER_STATIC : SJME_NVM_CLASS_MEMBER_INSTANCE)]++;
 		
 		/* Overflowed? */
@@ -1684,7 +1833,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 	sjme_jshort count;
 	sjme_jint index;
 	sjme_jbyte tag;
-	sjme_list_sjme_nvm_class_poolEntry* entries;
+	sjme_list(sjme_nvm_class_poolEntry)* entries;
 	sjme_nvm_class_poolEntry* entry;
 	sjme_nvm_class_poolEntry* target;
 	sjme_nvm_stringPool_string utf;
@@ -1839,13 +1988,11 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 				/* Debug. */
 				sjme_message("Read UTF: %s",
-					utf->chars);
+					sjme_charSeq_tempUtf(utf->seq));
 #endif
 				
 				/* Store and count up entry as we are using it now. */
-				entry->utf.utf = utf;
-				if (sjme_error_is(error = sjme_alloc_weakRef(utf, NULL)))
-					goto fail_readItem;
+				entry->utf.utf = sjme_weakUp(utf);
 				break;
 			
 			default:
@@ -1892,10 +2039,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Refer to it and count up, since we are using it. */
-				SJME_P_C_N(entry) = target->utf.utf;
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					SJME_P_C_N(entry), NULL)))
-					goto fail_initItem;
+				entry->classRef.descriptor = sjme_weakUp(target->utf.utf);
 				break;
 				
 				/* Member reference. */
@@ -1920,8 +2064,9 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Set class. */
-				entry->member.inClass =
-					(const sjme_nvm_class_poolEntryClass*)target;
+				sjme_atomic_sP(sjme_nvm_class_poolEntryClass, 1,
+					&entry->member.inClass,
+					(sjme_nvm_class_poolEntryClass*)target);
 				
 				/* Needs to be a name and type. */
 				target = &entries->elements[entry->member.nameAndTypeIndex];
@@ -1932,8 +2077,9 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Set name and type. */
-				entry->member.nameAndType =
-					(const sjme_nvm_class_poolEntryNameAndType*)target;
+				sjme_atomic_sP(sjme_nvm_class_poolEntryNameAndType, 1,
+					&entry->member.nameAndType,
+					(sjme_nvm_class_poolEntryNameAndType*)target);
 				break;
 			
 			case SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE:
@@ -1955,10 +2101,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Set name. */
-				entry->nameAndType.name = target->utf.utf;
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					entry->nameAndType.name, NULL)))
-					goto fail_initItem;
+				entry->nameAndType.name = sjme_weakUp(target->utf.utf);
 				
 				/* Needs to be UTF. */
 				target = &entries->elements[
@@ -1970,10 +2113,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Set descriptor. */
-				entry->nameAndType.descriptor = target->utf.utf;
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					entry->nameAndType.descriptor, NULL)))
-					goto fail_initItem;
+				entry->nameAndType.descriptor = sjme_weakUp(target->utf.utf);
 				break;
 				
 				/* Constant string. */
@@ -1994,10 +2134,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
 				}
 				
 				/* Refer to it and count up, since we are using it. */
-				entry->constString.value = target->utf.utf;
-				if (sjme_error_is(error = sjme_alloc_weakRef(
-					entry->constString.value, NULL)))
-					goto fail_initItem;
+				entry->constString.value = sjme_weakUp(target->utf.utf);
 				break;
 			
 			default:
@@ -2101,10 +2238,7 @@ sjme_errorCode sjme_nvm_class_parseField(
 		goto fail_readName;
 	
 	/* Reference it. */
-	result->name = name->utf.utf;
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->name, NULL)))
-		goto fail_refName;
+	result->name = sjme_weakUp(name->utf.utf);
 		
 	/* Read in type. */
 	type = NULL;
@@ -2115,10 +2249,7 @@ sjme_errorCode sjme_nvm_class_parseField(
 		goto fail_readType;
 	
 	/* Reference it. */
-	result->type = type->utf.utf;
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->type, NULL)))
-		goto fail_refType;
+	result->type = sjme_weakUp(type->utf.utf);
 		
 	/* Parse attributes. */
 	if (sjme_error_is(error = sjme_nvm_class_parseAttributes(
@@ -2195,10 +2326,7 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 		goto fail_readName;
 	
 	/* Reference it. */
-	result->name = name->utf.utf;
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->name, NULL)))
-		goto fail_refName;
+	result->name = sjme_weakUp(name->utf.utf);
 		
 	/* Read in type. */
 	type = NULL;
@@ -2209,10 +2337,7 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 		goto fail_readType;
 	
 	/* Reference it. */
-	result->type = type->utf.utf;
-	if (sjme_error_is(error = sjme_alloc_weakRef(
-		result->type, NULL)))
-		goto fail_refType;
+	result->type = sjme_weakUp(type->utf.utf);
 		
 	/* Parse attributes. */
 	if (sjme_error_is(error = sjme_nvm_class_parseAttributes(
@@ -2231,10 +2356,10 @@ sjme_errorCode sjme_nvm_class_parseMethod(
 		result->type->seq);
 
 	/* Are these initializers? */
-	result->bits.isStaticInit = sjme_charSeq_equalsUtfR(
-		result->name->seq, "<clinit>");
-	result->bits.isInstanceInit = sjme_charSeq_equalsUtfR(
-		result->name->seq, "<init>");
+	if (sjme_charSeq_equalsUtfR(result->name->seq, "<clinit>"))
+		result->bits |= SJME_NVM_CLASS_INIT_STATIC;
+	else if (sjme_charSeq_equalsUtfR(result->name->seq, "<init>"))
+		result->bits |= SJME_NVM_CLASS_INIT_INSTANCE;
 	
 	/* Success! */
 	*outMethod = result;

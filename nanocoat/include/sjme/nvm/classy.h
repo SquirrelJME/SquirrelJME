@@ -10,6 +10,7 @@
 /**
  * Handling of classes.
  * 
+ * @file
  * @since 2024/01/01
  */
 
@@ -66,111 +67,7 @@ typedef enum sjme_nvm_class_instanceType
 	SJME_NVM_CLASS_NUM_INSTANCE_TYPE = 2,
 } sjme_nvm_class_instanceType;
 
-/**
- * Core class information structure.
- *
- * @since 2024/01/01
- */
-typedef struct sjme_nvm_class_infoCore sjme_nvm_class_infoCore;
-
-/**
- * Opaque class information structure.
- *
- * @since 2024/01/01
- */
-typedef struct sjme_nvm_class_infoBase* sjme_nvm_class_info;
-
-/**
- * List of class information.
- * 
- * @since 2024/10/19
- */
-SJME_LIST_DECLARE(sjme_nvm_class_info, 0);
-
-/**
- * Opaque constant pool information.
- * 
- * @since 2024/09/13
- */
-typedef struct sjme_nvm_class_poolInfoCore sjme_nvm_class_poolInfoCore;
-
-/**
- * A @c SJME_NVM_CLASS_POOL_TYPE_CLASS which represents a class or interface.
- *
- * @since 2024/01/04
- */
-typedef struct sjme_nvm_class_poolEntryClass sjme_nvm_class_poolEntryClass;
-
-/**
- * Opaque constant pool information.
- * 
- * @since 2024/09/13
- */
-typedef struct sjme_nvm_class_poolInfoBase sjme_nvm_class_poolInfoBase;
-
-/**
- * Opaque constant pool information.
- * 
- * @since 2024/09/13
- */
-typedef sjme_nvm_class_poolInfoBase* sjme_nvm_class_poolInfo;
-
-/**
- * Core method information structure.
- *
- * @since 2024/01/03
- */
-typedef struct sjme_nvm_class_methodInfoBase sjme_nvm_class_methodInfoBase;
-
-/**
- * Opaque method information structure.
- *
- * @since 2024/01/03
- */
-typedef sjme_nvm_class_methodInfoBase* sjme_nvm_class_methodInfo;
-
-/**
- * Method list.
- *
- * @since 2024/01/03
- */
-SJME_LIST_DECLARE(sjme_nvm_class_methodInfo, 0);
-
-/** The basic type of @c sjme_nvm_class_methodInfo . */
-#define SJME_TYPEOF_BASIC_sjme_nvm_class_methodInfo \
-	SJME_BASIC_TYPE_ID_OBJECT
-
-/**
- * Base field information structure.
- *
- * @since 2024/01/03
- */
-typedef struct sjme_nvm_class_fieldInfoBase sjme_nvm_class_fieldInfoBase;
-
-/**
- * Opaque field information structure.
- *
- * @since 2024/01/03
- */
-typedef sjme_nvm_class_fieldInfoBase* sjme_nvm_class_fieldInfo;
-
-/**
- * Field list.
- *
- * @since 2024/01/03
- */
-SJME_LIST_DECLARE(sjme_nvm_class_fieldInfo, 0);
-
-/** The basic type of @c sjme_nvm_class_fieldInfo . */
-#define SJME_TYPEOF_BASIC_sjme_nvm_class_fieldInfo \
-	SJME_BASIC_TYPE_ID_OBJECT
-
-/**
- * Exception handling information.
- *
- * @since 2024/01/03
- */
-typedef struct sjme_nvm_class_exceptionHandler
+struct sjme_nvm_class_exceptionHandler
 {
 	/** The range of the exception where it applies. */
 	sjme_rangeShort range;
@@ -179,77 +76,84 @@ typedef struct sjme_nvm_class_exceptionHandler
 	sjme_jshort handlerPc;
 
 	/** The type that this catches. */
-	sjme_nvm_class_poolEntryClass* handles;
-} sjme_nvm_class_exceptionHandler;
+	sjme_phantomP(sjme_nvm_class_poolEntryClass, 1) handles;
+};
 
 /** A list of exceptions. */
 SJME_LIST_DECLARE(sjme_nvm_class_exceptionHandler, 0);
 
-/** The basic type of @c sjme_nvm_class_exceptionHandler . */
-#define SJME_TYPEOF_BASIC_sjme_nvm_class_exceptionHandler \
-	SJME_BASIC_TYPE_ID_OBJECT
-
 /**
- * Method code information structure.
- *
- * @since 2024/01/03
+ * Checks if the given ACC flag is set.
+ * 
+ * @param bits The flag bits to check.
+ * @param acc The ACC flag to check.
+ * @return If the flag is set.
+ * @since 2025/10/11
  */
-typedef struct sjme_nvm_class_codeInfoBase sjme_nvm_class_codeInfoBase;
-
-/**
- * Opaque method code structure.
- *
- * @since 2024/01/03
- */
-typedef sjme_nvm_class_codeInfoBase* sjme_nvm_class_codeInfo;
+#define SJME_NVM_ACC_IS(bits, acc) \
+	(((bits) & ((sjme_jint)SJME_TOKEN_PASTE_PP(SJME_NVM_ACC_, acc))) != 0)
 
 /**
  * Access flags.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_accessFlags
+typedef enum sjme_nvm_class_accessFlags
 {
-	/** Is this public? */
-	sjme_jboolean public;
+	/** This is an integral enum. */
+	sjme_enumInt(sjme_nvm_class_accessFlags),
 
-	/** Is this protected? */
-	sjme_jboolean protected;
+	/** Public. */
+	SJME_NVM_ACC_PUBLIC = INT32_C(0x0001),
+
+	/** Private. */
+	SJME_NVM_ACC_PRIVATE = INT32_C(0x0002),
+
+	/** Protected. */
+	SJME_NVM_ACC_PROTECTED = INT32_C(0x0004),
 	
-	/** Is this private? */
-	sjme_jboolean private;
-} sjme_nvm_class_accessFlags;
+	/** Is the class/field/member final? */
+	SJME_NVM_ACC_FINAL = INT32_C(0x0010),
+	
+	/** Is the class/field/member synthetic? */
+	SJME_NVM_ACC_SYNTHETIC = INT32_C(0x1000),
 
+	/** Is the class abstract? */
+	SJME_NVM_ACC_ABSTRACT = INT32_C(0x0400),
+
+	/** Access flags. */
+	SJME_NVM_ACC_ACCESS_MASK = SJME_NVM_ACC_PUBLIC |
+		SJME_NVM_ACC_PRIVATE | SJME_NVM_ACC_PROTECTED,
+} sjme_nvm_class_accessFlags;
+	
 /**
  * Class flags.
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_classFlags
+typedef enum sjme_nvm_class_classFlags
 {
-	/** Access flags. */
-	sjme_nvm_class_accessFlags access;
-
-	/** Is the class final? */
-	sjme_jboolean final;
+	/** This is an integral enum. */
+	sjme_enumInt(sjme_nvm_class_classFlags),
 
 	/** Is the class super? */
-	sjme_jboolean super;
+	SJME_NVM_ACC_SUPER = INT32_C(0x0010),
 
 	/** Is the class an interface? */
-	sjme_jboolean interface;
-
-	/** Is the class abstract? */
-	sjme_jboolean abstract;
-
-	/** Is the class synthetic? */
-	sjme_jboolean synthetic;
+	SJME_NVM_ACC_INTERFACE = INT32_C(0x0200),
 
 	/** Is the class an annotation? */
-	sjme_jboolean annotation;
+	SJME_NVM_ACC_ANNOTATION = INT32_C(0x2000),
 
 	/** Is the class an enum? */
-	sjme_jboolean enumeration;
+	SJME_NVM_ACC_ENUM = INT32_C(0x4000),
+
+	/** Class flag mask. */
+	SJME_NVM_ACC_CLASS_MASK = SJME_NVM_ACC_SUPER |
+		SJME_NVM_ACC_INTERFACE | SJME_NVM_ACC_ABSTRACT |
+		SJME_NVM_ACC_ANNOTATION | SJME_NVM_ACC_ENUM |
+		SJME_NVM_ACC_FINAL | SJME_NVM_ACC_SYNTHETIC |
+		SJME_NVM_ACC_ABSTRACT | SJME_NVM_ACC_ACCESS_MASK,
 } sjme_nvm_class_classFlags;
 
 /**
@@ -257,19 +161,18 @@ typedef struct sjme_nvm_class_classFlags
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_memberFlags
+typedef enum sjme_nvm_class_memberFlags
 {
-	/** Access flags. */
-	sjme_nvm_class_accessFlags access;
+	/** This is an integral enum. */
+	sjme_enumInt(sjme_nvm_class_memberFlags),
 
 	/** Static member? */
-	sjme_jboolean isStatic;
+	SJME_NVM_ACC_STATIC = INT32_C(0x0008),
 
-	/** Final member? */
-	sjme_jboolean final;
-
-	/** Synthetic member? */
-	sjme_jboolean synthetic;
+	/** Member flag mask. */
+	SJME_NVM_ACC_MEMBER_MASK = SJME_NVM_ACC_STATIC |
+		SJME_NVM_ACC_FINAL | SJME_NVM_ACC_SYNTHETIC |
+		SJME_NVM_ACC_ACCESS_MASK,
 } sjme_nvm_class_memberFlags;
 
 /**
@@ -277,19 +180,21 @@ typedef struct sjme_nvm_class_memberFlags
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_fieldFlags
+typedef enum sjme_nvm_class_fieldFlags
 {
-	/** Common member flags. */
-	sjme_nvm_class_memberFlags member;
+	/** This is an integral enum. */
+	sjme_enumInt(sjme_nvm_class_fieldFlags),
 
 	/** Is this volatile? */
-	sjme_jboolean isVolatile;
+	SJME_NVM_ACC_VOLATILE = INT32_C(0x0040),
 
 	/** Is this transient? */
-	sjme_jboolean transient;
+	SJME_NVM_ACC_TRANSIENT = INT32_C(0x0080),
 
-	/** Is this an enumeration. */
-	sjme_jboolean enumeration;
+	/** Field flag mask. */
+	SJME_NVM_ACC_FIELD_MASK = SJME_NVM_ACC_VOLATILE |
+		SJME_NVM_ACC_TRANSIENT | SJME_NVM_ACC_ENUM |
+		SJME_NVM_ACC_MEMBER_MASK,
 } sjme_nvm_class_fieldFlags;
 
 /**
@@ -297,29 +202,69 @@ typedef struct sjme_nvm_class_fieldFlags
  *
  * @since 2024/01/03
  */
-typedef struct sjme_nvm_class_methodFlags
+typedef enum sjme_nvm_class_methodFlags
 {
-	/** Common member flags. */
-	sjme_nvm_class_memberFlags member;
+	/** This is an integral enum. */
+	sjme_enumInt(sjme_nvm_class_methodFlags),
 
 	/** Synchronized, monitor entry/exit on call? */
-	sjme_jboolean synchronized;
+	SJME_NVM_ACC_SYNCHRONIZED = INT32_C(0x0020),
 
 	/** Bridge method, generated by the compiler? */
-	sjme_jboolean bridge;
+	SJME_NVM_ACC_BRIDGE = INT32_C(0x0040),
 
 	/** Variadic arguments? */
-	sjme_jboolean varargs;
+	SJME_NVM_ACC_VARARGS = INT32_C(0x0080),
 
 	/** Is this a native method? */
-	sjme_jboolean native;
-
-	/** Abstract? */
-	sjme_jboolean abstract;
+	SJME_NVM_ACC_NATIVE = INT32_C(0x0100),
 
 	/** Strict floating point? */
-	sjme_jboolean strictfp;
+	SJME_NVM_ACC_STRICTFP = INT32_C(0x0800),
+
+	/** Method flag mask. */
+	SJME_NVM_ACC_METHOD_MASK = SJME_NVM_ACC_ABSTRACT |
+		SJME_NVM_ACC_FINAL | SJME_NVM_ACC_SYNTHETIC |
+		SJME_NVM_ACC_SYNCHRONIZED | SJME_NVM_ACC_BRIDGE |
+		SJME_NVM_ACC_VARARGS | SJME_NVM_ACC_NATIVE |
+		SJME_NVM_ACC_STRICTFP |
+		SJME_NVM_ACC_MEMBER_MASK,
 } sjme_nvm_class_methodFlags;
+
+/**
+ * Special class flags.
+ *
+ * @since 2026/09/09
+ */
+typedef enum sjme_nvm_class_specialFlags
+{
+	/** This is an integral enum. */
+	sjme_enumInt(sjme_nvm_class_specialFlags),
+
+	/** Is @code java.lang.Object @endcode. */
+	SJME_NVM_ACC_SPECIAL_OBJECT_CLASS = INT32_C(0x00010000),
+
+	/** Is @code java.lang.Class @endcode. */
+	SJME_NVM_ACC_SPECIAL_CLASS_CLASS = INT32_C(0x00020000),
+
+	/** Is @code java.lang.Enum @endcode. */
+	SJME_NVM_ACC_SPECIAL_ENUM_CLASS = INT32_C(0x00040000),
+
+	/** In the boot class library, that is the first index. */
+	SJME_NVM_ACC_SPECIAL_PRIMARY = INT32_C(0x00080000),
+
+	/** Synthetically created by the virtual machine. */
+	SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC = INT32_C(0x00100000),
+
+	/**
+	 * Is a proxy method and must be called through a handler, or is a proxy
+	 * class and as such has extra restrictions.
+	 */
+	SJME_NVM_ACC_SPECIAL_PROXY = INT32_C(0x00200000),
+
+	/** This is a primitive type. */
+	SJME_NVM_ACC_SPECIAL_PRIMITIVE = INT32_C(0x00400000),
+} sjme_nvm_class_specialFlags;
 
 /**
  * The type that a constant pool entry may be.
@@ -405,7 +350,7 @@ struct sjme_nvm_class_poolEntryClass
 };
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_DOUBLE which represents a double constant.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_DOUBLE @endlink which represents a double constant.
  *
  * @since 2024/01/04
  */
@@ -417,20 +362,11 @@ typedef struct sjme_nvm_class_poolEntryDouble
 	/** The constant value. */
 	sjme_align64 sjme_jdouble value;
 } sjme_nvm_class_poolEntryDouble;
-
+	
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_NAME_AND_TYPE which represents a name and type
- * of member without the class.
- *
- * @since 2024/01/04
- */
-typedef struct sjme_nvm_class_poolEntryNameAndType
-	sjme_nvm_class_poolEntryNameAndType;
-
-/**
- * Either @c SJME_NVM_CLASS_POOL_TYPE_FIELD ,
- * @c SJME_NVM_CLASS_POOL_TYPE_METHOD ,
- * or @c SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD which represents a reference
+ * Either @link SJME_NVM_CLASS_POOL_TYPE_FIELD @endlink ,
+ * @link SJME_NVM_CLASS_POOL_TYPE_METHOD @endlink ,
+ * or @link SJME_NVM_CLASS_POOL_TYPE_INTERFACE_METHOD @endlink which represents a reference
  * to a class member.
  *
  * @since 2024/01/04
@@ -444,13 +380,13 @@ typedef struct sjme_nvm_class_poolEntryMember
 	sjme_jshort inClassIndex;
 
 	/** The class this refers to. */
-	const sjme_nvm_class_poolEntryClass* inClass;
+	sjme_phantomP(sjme_nvm_class_poolEntryClass, 1) inClass;
 	
 	/** The index where the name and type is located. */
 	sjme_jshort nameAndTypeIndex;
 
 	/** The name and type used. */
-	const sjme_nvm_class_poolEntryNameAndType* nameAndType;
+	sjme_phantomP(sjme_nvm_class_poolEntryNameAndType, 1) nameAndType;
 
 	/** The number of static arguments slots. */
 	sjme_jint staticArgSlots;
@@ -460,7 +396,7 @@ typedef struct sjme_nvm_class_poolEntryMember
 } sjme_nvm_class_poolEntryMember;
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_FLOAT which represents a float constant.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_FLOAT @endlink which represents a float constant.
  *
  * @since 2024/01/04
  */
@@ -474,7 +410,7 @@ typedef struct sjme_nvm_class_poolEntryFloat
 } sjme_nvm_class_poolEntryFloat;
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_INTEGER which represents an integer constant.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_INTEGER @endlink which represents an integer constant.
  *
  * @since 2024/01/04
  */
@@ -488,7 +424,7 @@ typedef struct sjme_nvm_class_poolEntryInteger
 } sjme_nvm_class_poolEntryInteger;
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_LONG which represents a long constant.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_LONG @endlink which represents a long constant.
  *
  * @since 2024/01/04
  */
@@ -502,7 +438,7 @@ typedef struct sjme_nvm_class_poolEntryLong
 } sjme_nvm_class_poolEntryLong;
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_STRING which represents a string constant.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_STRING @endlink which represents a string constant.
  * 
  * @since 2024/09/20
  */
@@ -540,7 +476,7 @@ struct sjme_nvm_class_poolEntryNameAndType
 };
 
 /**
- * A @c SJME_NVM_CLASS_POOL_TYPE_UTF which is a modified UTF-8 entry.
+ * A @link SJME_NVM_CLASS_POOL_TYPE_UTF @endlink which is a modified UTF-8 entry.
  *
  * @since 2024/01/04
  */
@@ -600,7 +536,7 @@ struct sjme_nvm_class_poolInfoBase
 	sjme_nvm_commonBase common;
 	
 	/** Constant pool entries. */
-	sjme_list_sjme_nvm_class_poolEntry* pool;
+	sjme_list(sjme_nvm_class_poolEntry)* pool;
 };
 
 struct sjme_nvm_class_infoBase
@@ -636,10 +572,10 @@ struct sjme_nvm_class_infoBase
 	sjme_nvm_stringPool_string runtimeName;
 
 	/** The interfaces this class implements. */
-	sjme_list_sjme_nvm_stringPool_string* interfaceNames;
+	sjme_list(sjme_nvm_stringPool_string)* interfaceNames;
 
 	/** Fields within the method. */
-	sjme_list_sjme_nvm_class_fieldInfo* fields;
+	sjme_list(sjme_nvm_class_fieldInfo)* fields;
 	
 	/** The field count per type. */
 	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
@@ -649,13 +585,16 @@ struct sjme_nvm_class_infoBase
 	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 
 	/** Methods within the class. */
-	sjme_list_sjme_nvm_class_methodInfo* methods;
+	sjme_list(sjme_nvm_class_methodInfo)* methods;
 
 	/** Is this an array? */
 	sjme_jboolean isArray;
 
 	/** The library this came from. */
-	sjme_nvm_rom_library library;
+	sjme_phantom(sjme_nvm_rom_library) library;
+	
+	/** The runtime visible annotations of this class. */
+	sjme_list(sjme_nvm_class_annotation)* annotations;
 };
 
 /**
@@ -678,6 +617,74 @@ typedef struct sjme_nvm_class_fieldConstVal
 		sjme_nvm_stringPool_string string;
 	} value;
 } sjme_nvm_class_fieldConstVal;
+
+/**
+ * The tag used for the annotation.
+ * 
+ * @since 2026/01/10
+ */
+typedef enum sjme_nvm_class_annotationTag
+{
+	/** Byte tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_BYTE = 'B',
+	
+	/** Character tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_CHARACTER = 'C',
+	
+	/** Double tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_DOUBLE = 'D',
+	
+	/** Float tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_FLOAT = 'F',
+	
+	/** Integer tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_INTEGER = 'I',
+	
+	/** Long tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_LONG = 'J',
+	
+	/** Short tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_SHORT = 'S',
+	
+	/** Boolean tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_BOOLEAN = 'Z',
+	
+	/** String tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_STRING = 's',
+	
+	/** Enum tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_ENUM = 'e',
+	
+	/** Class tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_CLASS = 'c',
+	
+	/** Annotation tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_ANNOTATION = '@',
+	
+	/** Array tag. */
+	SJME_NVM_CLASS_ANNOTATION_TAG_ARRAY = '[',
+} sjme_nvm_class_annotationTag;
+
+struct sjme_nvm_class_annotationBase
+{
+	/** The class name. */
+	sjme_nvm_stringPool_string className;
+	
+	/** The field name. */
+	sjme_nvm_stringPool_string fieldName;
+	
+	/** The tag for the value. */
+	sjme_nvm_class_annotationTag tag;
+	
+	/** Referenced class. */
+	sjme_nvm_stringPool_string refClass;
+	
+	/** Java value. */
+	sjme_jvalueTyped valueJava;
+	
+	/** String Value. */
+	sjme_nvm_stringPool_string valueString;
+};
 
 struct sjme_nvm_class_fieldInfoBase
 {
@@ -712,15 +719,34 @@ struct sjme_nvm_class_fieldInfoBase
 	sjme_jint typedIndex;
 };
 	
-/** Bits to assist in quicker method determinations. */
-typedef struct sjme_nvm_class_methodInfoBits
+/**
+ * Bits to assist in quicker method determinations.
+ *
+ * @since 2025/07/05
+ */
+typedef enum sjme_nvm_class_methodInfoBits
 {
 	/** Is this a static initializer? */
-	sjme_jboolean isStaticInit;
+	SJME_NVM_CLASS_INIT_STATIC = INT8_C(0x1),
 
 	/** Is this an instance initializer? */
-	sjme_jboolean isInstanceInit;
+	SJME_NVM_CLASS_INIT_INSTANCE = INT8_C(0x2),
+
+	/** Is this any static initializer? */
+	SJME_NVM_CLASS_INIT_ANY = SJME_NVM_CLASS_INIT_STATIC |
+		SJME_NVM_CLASS_INIT_INSTANCE,
 } sjme_nvm_class_methodInfoBits;
+
+/**
+ * Checks if the given bits set a class initializer.
+ * 
+ * @param bits The bits to check.
+ * @param x The check to make.
+ * @return Boolean of whether the given bit is set.
+ * @since 2025/10/21
+ */
+#define SJME_NVM_CLASS_INIT_IS(bits, x) \
+	(((bits) & SJME_TOKEN_PASTE_PP(SJME_NVM_CLASS_INIT_, x)) != 0)
 
 struct sjme_nvm_class_methodInfoBase
 {
@@ -755,7 +781,7 @@ struct sjme_nvm_class_methodInfoBase
 	sjme_jshort typedIndex;
 	
 	/** The class this is in. */
-	sjme_nvm_class_info inClass;
+	sjme_phantom(sjme_nvm_class_info) inClass;
 
 	/** Bits to assist in quicker method determinations. */
 	sjme_nvm_class_methodInfoBits bits;
@@ -791,13 +817,16 @@ struct sjme_nvm_class_codeInfoBase
 	sjme_nvm_commonBase common;
 	
 	/** The method which contains this code. */
-	sjme_nvm_class_methodInfo inMethod;
+	sjme_phantom(sjme_nvm_class_methodInfo) inMethod;
+
+	/** The base for the local map, for later freeing. */
+	sjme_atomic(sjme_pointer) localMapBase;
 	
 	/** Maximum per specific type. */
 	sjme_nvm_class_codePerType perType[SJME_NVM_CODE_INFO_NUM_TYPE_IDS];
 
 	/** Exception table. */
-	sjme_list_sjme_nvm_class_exceptionHandler* exceptions;
+	sjme_list(sjme_nvm_class_exceptionHandler)* exceptions;
 
 	/** The raw code length. */
 	sjme_jint rawCodeLen;
@@ -856,7 +885,7 @@ typedef struct sjme_nvm_class_parseAttributeHandler
 } sjme_nvm_class_parseAttributeHandler;
 
 /**
- * Calculates the @c sjme_javaTypeId for the given method descriptor.
+ * Calculates the @link sjme_javaTypeId @endlink for the given method descriptor.
  * 
  * @param allocPool The allocation pool to use for @c outArgT .
  * @param typeDesc The input method descriptor.
@@ -903,7 +932,7 @@ sjme_errorCode sjme_nvm_class_descriptorMethodSlots(
 	sjme_attrOutNotNull sjme_jint* outRvSlots);
 	
 /**
- * Determines the @c sjme_javaTypeId or @c sjme_basicTypeId type for the
+ * Determines the @link sjme_javaTypeId @endlink or @link sjme_basicTypeId @endlink type for the
  * given descriptor.
  * 
  * @param desc The input descriptor. 
@@ -1027,15 +1056,18 @@ sjme_errorCode sjme_nvm_class_validBinaryName(
 
 /** Pool member entry class. */
 #define SJME_P_M_C(entry) \
-	(SJME_P_M(entry).inClass->descriptor)
+	(sjme_atomic_gP(sjme_nvm_class_poolEntryClass, 1, \
+		&SJME_P_M(entry).inClass)->descriptor)
 
 /** Pool member entry name. */
 #define SJME_P_M_N(entry) \
-	(SJME_P_M(entry).nameAndType->name)
+	(sjme_atomic_gP(sjme_nvm_class_poolEntryNameAndType, 1, \
+		&SJME_P_M(entry).nameAndType)->name)
 
 /** Pool member entry type. */
 #define SJME_P_M_T(entry) \
-	(SJME_P_M(entry).nameAndType->descriptor)
+	(sjme_atomic_gP(sjme_nvm_class_poolEntryNameAndType, 1, \
+		&SJME_P_M(entry).nameAndType)->descriptor)
 
 /** Calculates the identifier hash for a member. */
 #define sjme_nvm_class_idHashMember(name, type) \

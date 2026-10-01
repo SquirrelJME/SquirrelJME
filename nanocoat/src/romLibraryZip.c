@@ -6,6 +6,7 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
+
 #include "sjme/nvm/rom.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
@@ -38,17 +39,18 @@ static sjme_errorCode sjme_nvm_rom_zipLibraryClose(
 	if (inLibrary == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Recover zip, ignore if already closed. */
-	zip = inLibrary->handle;
-	if (zip == NULL)
-		return SJME_ERROR_NONE;
+	/* Does the prefix need to be freed? */
+	if (inLibrary->prefix != NULL)
+	{
+		if (sjme_error_is(error = sjme_alloc_free(
+			(sjme_pointer)inLibrary->prefix)))
+			return sjme_error_default(error);
+		inLibrary->prefix = NULL;
+	}
 	
-	/* Close it. */
-	if (sjme_error_is(error = sjme_closeable_close(
-		SJME_AS_CLOSEABLE(zip))))
+	/* Close the handle to the Zip. */
+	if (sjme_error_is(error = sjme_closeable_close(inLibrary->handle)))
 		return sjme_error_default(error);
-	
-	/* Remove reference to it. */
 	inLibrary->handle = NULL;
 	
 	/* Success! */
@@ -67,7 +69,7 @@ static sjme_errorCode sjme_nvm_rom_zipLibraryInit(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Remember handle to the Zip for accessing later. */
-	inLibrary->handle = init->zip;
+	inLibrary->handle = sjme_weakUp(init->zip);
 
 	/* Setup prefix, if there is one. */
 	if (init->prefix != NULL)
@@ -215,10 +217,6 @@ sjme_errorCode sjme_nvm_rom_libraryFromZip(
 		result == NULL)
 		goto fail_libraryNew;
 	
-	/* Count up Zip, since we are using it now. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(zip, NULL)))
-		goto fail_refUp;
-	
 	/* Success! */
 	*outLibrary = result;
 	return SJME_ERROR_NONE;
@@ -226,6 +224,19 @@ sjme_errorCode sjme_nvm_rom_libraryFromZip(
 fail_refUp:
 fail_libraryNew:
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_rom_libraryFromZipFile(
+	sjme_attrInNotNull sjme_alloc_pool pool,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInNotNull sjme_path* zipPath)
+{
+	if (pool == NULL || outLibrary == NULL || nal == NULL || zipPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_rom_libraryFromZipMemory(

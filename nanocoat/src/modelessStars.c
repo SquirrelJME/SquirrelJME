@@ -35,7 +35,7 @@ sjme_errorCode sjme_modelessStars(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Are we in an error state? */
-	inError = sjme_atomic_sjme_jint_get(&state->errorCode);
+	inError = sjme_atomic_g(sjme_jint, &state->errorCode);
 	if (inError == 0)
 		inError = SJME_ERROR_NONE;
 	

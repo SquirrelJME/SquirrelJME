@@ -331,7 +331,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	/* Allocate state. */
 	state = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(allocPool, sizeof(*state),
-		NULL, (void**)&state, NULL)) || state == NULL)
+		NULL, (sjme_pointer*)&state, NULL)) || state == NULL)
 		goto fail_alloc;
 	
 	/* Seed state. */

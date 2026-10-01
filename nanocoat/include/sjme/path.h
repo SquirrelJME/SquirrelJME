@@ -156,6 +156,9 @@ typedef enum sjme_path_styleType
 
 	/** Windows paths, VFAT + UNC. */
 	SJME_PATH_STYLE_WINDOWS = 4,
+
+	/** Embedded VFAT paths, similar to FatFS, rootless with forward slash. */
+	SJME_PATH_STYLE_VFAT_EMBEDDED = 5,
 	
 	/** The number of path styles. */
 	SJME_NUM_PATH_STYLES,

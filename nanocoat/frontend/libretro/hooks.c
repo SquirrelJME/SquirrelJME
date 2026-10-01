@@ -11,6 +11,7 @@
 
 #include "sjme/native.h"
 #include "frontend/libretro/shared.h"
+#include "sjme/path.h"
 
 sjme_errorCode sjme_libretro_vfsClose(
 	sjme_attrInNotNull sjme_seekable inSeekable,
@@ -72,7 +73,7 @@ sjme_errorCode sjme_libretro_vfsRead(
 	/* Seek to the position. */
 	/* Note that we just check for a seek error here as before */
 	/* RetroArch #18073 there is a bug with memory mapped files */
-	newPos = iface->seek(handle, base,
+	newPos = (sjme_jint)iface->seek(handle, base,
 		RETRO_VFS_SEEK_POSITION_START);
 	if (newPos < 0)
 		return SJME_ERROR_IO_EXCEPTION;
@@ -107,11 +108,11 @@ sjme_errorCode sjme_libretro_vfsSize(
 	/* need to do manual seek. */
 	/* This is the case when RETRO_VFS_FILE_ACCESS_HINT_FREQUENT_ACCESS is */
 	/* set and valid for the platform. */
-	result = iface->size(handle);
+	result = (sjme_jint)iface->size(handle);
 	if (result <= 0)
 	{
 		/* Seek to the end. */
-		result = iface->seek(handle, 0,
+		result = (sjme_jint)iface->seek(handle, 0,
 			RETRO_VFS_SEEK_POSITION_END);
 		
 		/* RetroArch before #18073 has a bug where only set works properly. */
@@ -124,7 +125,7 @@ sjme_errorCode sjme_libretro_vfsSize(
 				/* Try the limit position. */
 				iface->seek(handle, limit,
 					RETRO_VFS_SEEK_POSITION_START);
-				attempt = iface->read(handle, &ignored, 1);
+				attempt = (sjme_jint)iface->read(handle, &ignored, 1);
 				
 				/* If it was valid, we need to bump the limit up. */
 				if (attempt == 1)
@@ -181,7 +182,40 @@ static const sjme_seekable_functions sjme_libretro_vfsFunctions =
 	sjme_sm(.size, sjme_libretro_vfsSize),
 };
 
-sjme_errorCode sjme_libretro_fileOpen(
+static sjme_errorCode sjme_libretro_currentTimeMillis(
+	sjme_attrOutNotNull sjme_jlong* result)
+{
+	if (result == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* If in TAS mode, do not use the real-time clock. */
+	if (sjme_libretro_globals.tasMode)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Otherwise, use the OS implementation. */
+	if (sjme_nal_default.currentTimeMillis != NULL)
+		return sjme_nal_default.currentTimeMillis(result);
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_libretro_execPath(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* This is always not implemented. */
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_libretro_fileOpen(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
@@ -225,11 +259,129 @@ sjme_errorCode sjme_libretro_fileOpen(
 		handle, NULL);
 }
 
+static sjme_errorCode sjme_libretro_pathStyle(
+	sjme_attrOutNotNull const sjme_path_style** outStyle)
+{
+	if (outStyle == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Use the embedded VFAT variant. */
+	*outStyle = &sjme_path_styles[SJME_PATH_STYLE_VFAT_EMBEDDED];
+	return SJME_ERROR_NONE;
+}
+
+
+static sjme_errorCode sjme_libretro_nanoTime(
+	sjme_attrOutNotNull sjme_jlong* result)
+{
+	if (result == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* If in TAS mode, do not use the system monotonic clock. */
+	if (sjme_libretro_globals.tasMode)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Otherwise, use the OS implementation. */
+	if (sjme_nal_default.nanoTime != NULL)
+		return sjme_nal_default.nanoTime(result);
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+static sjme_errorCode sjme_libretro_threadSleep(
+	sjme_attrInPositive sjme_jint millis,
+	sjme_attrInPositive sjme_jint nanos)
+{
+	/* Not sleeping for any duration? */
+	if (millis < 0 || nanos < 0 || (millis == 0 && nanos == 0))
+		return SJME_ERROR_NONE;
+
+	/* Never yield in TAS mode. */
+	if (sjme_libretro_globals.tasMode)
+		return SJME_ERROR_NONE;
+
+	/* Otherwise, use the OS implementation. */
+	if (sjme_nal_default.threadSleep != NULL)
+		return sjme_nal_default.threadSleep(millis, nanos);
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_libretro_threadYield(void)
+{
+	/* Never yield in TAS mode. */
+	if (sjme_libretro_globals.tasMode)
+		return SJME_ERROR_NONE;
+
+	/* Otherwise, use the OS implementation. */
+	if (sjme_nal_default.threadYield != NULL)
+		return sjme_nal_default.threadYield();
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_libretro_userHome(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* The home directory is always just /home, this should be somewhere */
+	/* on the VFS. */
+	strncat(out, "/home", outLen);
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_libretro_userName(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* The username here is always libretro */
+	strncat(out, "libretro", outLen);
+	return SJME_ERROR_NONE;
+}
+
 const sjme_nal sjme_libretro_nal =
 {
-	sjme_sm(.currentTimeMillis, NULL),
+	sjme_sm(.currentTimeMillis, sjme_libretro_currentTimeMillis),
+	sjme_sm(.execPath, sjme_libretro_execPath),
 	sjme_sm(.fileOpen, sjme_libretro_fileOpen),
 	sjme_sm(.getEnv, NULL),
-	sjme_sm(.nanoTime, NULL),
-	sjme_sm(.stdIo, {0}),
+	sjme_sm(.nanoTime, sjme_libretro_nanoTime),
+	sjme_sm(.pathStyle, sjme_libretro_pathStyle),
+	sjme_sm(.tcpUdp, NULL),
+	sjme_sm(.threadSleep, sjme_libretro_threadSleep),
+	sjme_sm(.threadYield, sjme_libretro_threadYield),
+	sjme_sm(.stdIo, ){
+		{
+			sjme_sm(.close, NULL),
+			sjme_sm(.in, NULL),
+			sjme_sm(.out, NULL),
+			sjme_sm(.flush, NULL),
+		},
+		{
+			sjme_sm(.close, NULL),
+			sjme_sm(.in, NULL),
+			sjme_sm(.out, NULL),
+			sjme_sm(.flush, NULL),
+		},
+		{
+			sjme_sm(.close, NULL),
+			sjme_sm(.in, NULL),
+			sjme_sm(.out, NULL),
+			sjme_sm(.flush, NULL),
+		},
+	},
+	sjme_sm(.userHome, sjme_libretro_userHome),
+	sjme_sm(.userName, sjme_libretro_userName),
 };

@@ -9,7 +9,7 @@
 
 package cc.squirreljme.rts.ui.editor;
 
-import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchUIShelf;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.rts.map.WorldMapGenerator;
 import cc.squirreljme.rts.rate.RateController;
@@ -47,7 +47,7 @@ public class EditorMain
 		throws MIDletStateChangeException
 	{
 		// Get the native ScritchUI interface
-		ScritchInterface scritch = NativeScritchInterface.nativeInterface();
+		ScritchInterface scritch = NativeScritchUIShelf.nativeInterface();
 		if (scritch == null)
 			throw new MIDletStateChangeException("NOUI");
 		

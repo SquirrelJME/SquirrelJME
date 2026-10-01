@@ -10,21 +10,18 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
-import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
-import cc.squirreljme.jvm.mle.scritchui.extra.ScritchUnifiedWrapper;
-import cc.squirreljme.vm.springcoat.callbacks.ScritchUnifiedProxy;
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchUIShelf;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
 /**
- * SpringCoat layer for {@link NativeScritchInterface}.
+ * SpringCoat layer for {@link NativeScritchUIShelf}.
  *
  * @since 2024/03/07
  */
 public enum MLEScritchUI
 	implements MLEFunction
 {
-	/** {@link NativeScritchInterface#nativeInterface()}. */
+	/** {@link NativeScritchUIShelf#nativeInterface()}. */
 	NATIVE_INTERFACE("nativeInterface:" +
 		"()Lcc/squirreljme/jvm/mle/scritchui/ScritchInterface;")
 	{
@@ -38,7 +35,7 @@ public enum MLEScritchUI
 			try
 			{
 				return __thread.machine.virtualizeObject(
-					NativeScritchInterface.nativeInterface());
+					NativeScritchUIShelf.nativeInterface());
 			}
 			catch (MLECallError __e)
 			{

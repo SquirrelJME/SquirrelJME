@@ -105,22 +105,60 @@ sjme_errorCode sjme_nal_test_stdOut(
 	return sjme_nal_test_stdErr(buf, off, len);
 }
 
+sjme_errorCode sjme_nal_test_execPath(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nal_test_userHome(sjme_lpstr out,
+	sjme_jint out_len)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nal_test_userName(sjme_lpstr out,
+	sjme_jint out_len)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 const sjme_nal sjme_nal_test =
 {
-	.currentTimeMillis = sjme_nal_test_currentTimeMillis,
-	.fileOpen = sjme_nal_test_fileOpen,
-	.getEnv = sjme_nal_test_getEnv,
-	.nanoTime = sjme_nal_test_nanoTime,
-	.threadSleep = sjme_nal_default_threadSleep,
-	.threadYield = sjme_nal_default_threadYield,
+	sjme_sm(.currentTimeMillis, sjme_nal_test_currentTimeMillis),
+	sjme_sm(.execPath, sjme_nal_test_execPath),
+	sjme_sm(.fileOpen, sjme_nal_test_fileOpen),
+	sjme_sm(.getEnv, sjme_nal_test_getEnv),
+	sjme_sm(.nanoTime, sjme_nal_default_nanoTime),
+	sjme_sm(.pathStyle, sjme_nal_default_pathStyle),
+	sjme_sm(.tcpUdp, sjme_nal_default_tcpUdp),
+	sjme_sm(.threadSleep, sjme_nal_default_threadSleep),
+	sjme_sm(.threadYield, sjme_nal_default_threadYield),
+	sjme_sm(.stdIo, )
 	{
 		{
+			sjme_sm(.close, NULL),
+			sjme_sm(.in, NULL),
+			sjme_sm(.out, NULL),
+			sjme_sm(.flush, NULL),
 		},
 		{
-			.out = sjme_nal_test_stdOut,
+			sjme_sm(.close, NULL),
+			sjme_sm(.in, NULL),
+			sjme_sm(.out, sjme_nal_test_stdOut),
+			sjme_sm(.flush, NULL),
 		},
 		{
-			.out = sjme_nal_test_stdErr,
-		},
-	}
+			sjme_sm(.close, NULL),
+			sjme_sm(.in, NULL),
+			sjme_sm(.out, sjme_nal_test_stdErr),
+			sjme_sm(.flush, NULL),
+		}
+	},
+	sjme_sm(.userHome, sjme_nal_test_userHome),
+	sjme_sm(.userName, sjme_nal_test_userName),
 };

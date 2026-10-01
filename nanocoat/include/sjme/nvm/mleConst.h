@@ -10,6 +10,7 @@
 /**
  * MLE constants.
  * 
+ * @file
  * @since 2025/02/23
  */
 
@@ -216,9 +217,12 @@ typedef enum sjme_nvm_defaultDirectoryType
 
 	/** The extra bucket directory. */
 	SJME_NVM_DEFAULT_DIRECTORY_BUCKET_EXTRA = 10,
+
+	/** The runtime library directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_RUNTIME = 11,
 	
 	/** The number of default directory types. */
-	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES = 11,
+	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES = 12,
 } sjme_nvm_defaultDirectoryType;
 
 /**
@@ -309,11 +313,11 @@ typedef enum sjme_nvm_vmDescriptionType
 	/** The extra bucket directory. */
 	SJME_NVM_VM_DESC_DEFAULT_DIR_BUCKET_EXTRA = 25,
 	
-	/** The number of default directory types. */
-	SJME_NVM_VM_DESC_DEFAULT_DIR_NUM_TYPES = 26,
+	/** Runtime library directory. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_RUNTIME = 26,
 	
-	/** Default directory reserved: 12. */
-	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_12 = 27,
+	/** The number of default directory types. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_NUM_TYPES = 27,
 	
 	/** Default directory reserved: 13. */
 	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_13 = 28,

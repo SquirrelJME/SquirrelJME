@@ -12,13 +12,13 @@ import net.multiphasicapps.tac.TestRunnable;
 public class ${NAME}
 	extends TestRunnable
 {
-    /**
-     * {@inheritDoc}
-     * @since ${YEAR}/${MONTH}/${DAY}
-     */
-    @Override
-    public void test()
-    {
-        this.secondary("key", "value");
-    }
+	/**
+	 * {@inheritDoc}
+	 * @since ${YEAR}/${MONTH}/${DAY}
+	 */
+	@Override
+	public void test()
+	{
+		this.secondary("key", "value");
+	}
 }

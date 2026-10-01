@@ -10,6 +10,7 @@
 /**
  * Class patching system.
  * 
+ * @file
  * @since 2024/09/13
  */
 
