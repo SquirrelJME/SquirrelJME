@@ -550,6 +550,13 @@ jobs at specific times. This is generally for systems where `cron` is not
 available or where there are different systems in place for builds. This is
 generally just a reference for future usage.
 
+It is recommended for `sync` to occur before `all`. Builds done with `all` may
+be run as frequent as you are comfortable, officially this is done every
+six hours. Otherwise, `vacuum` is a minor task used to save on disk space and
+as such at a maximum only needs to be run weekly, however due to how long it
+can take it can be run monthly. You should run `all` and `vacuum` to gauge
+how often and the times you should schedule them.
+
 ## `cron`
 
 ***TODO***
@@ -560,15 +567,99 @@ generally just a reference for future usage.
 
 ## macOS `launchd` Jobs
 
-***TODO***
+These `.plist` files are generally placed in `/Library/LaunchDaemons/`.
 
-### Files
+Jobs on macOS will not run unless the system is unlocked and decrypted, whether
+that is done through login or if _FileVault_ is disabled. If a personal system
+is being used for building, it is not recommended to disable _FileVault_. You
+will have to log in as any user to unlock the system. Otherwise, it is
+suggested to keep the system in a secure and monitored location where it
+is tethered to a sturdy support if you are considering disabling _FileVault_.
 
-***TODO***
+### Configuring the Time
 
-### Installation
+The `<key>StartCalendarInterval</key>` value may contain multiple values within
+the `<array>`, such as:
 
-***TODO***
+```xml
+<array>
+	<dict>
+		<key>Hour</key>
+			<integer>3</integer>
+		<key>Minute</key>
+			<integer>30</integer>
+	</dict>
+	<dict>
+		<key>Hour</key>
+			<integer>7</integer>
+		<key>Minute</key>
+			<integer>30</integer>
+	</dict>
+	<dict>
+		<key>Hour</key>
+			<integer>13</integer>
+		<key>Minute</key>
+			<integer>30</integer>
+	</dict>
+	<dict>
+		<key>Hour</key>
+			<integer>17</integer>
+		<key>Minute</key>
+			<integer>30</integer>
+	</dict>
+	<dict>
+		<key>Hour</key>
+			<integer>22</integer>
+		<key>Minute</key>
+			<integer>30</integer>
+	</dict>
+</array>
+```
+
+### `cc.squirreljme.build.WHAT.plist`:
+
+Replace `WHAT` with script names accordingly, along with time adjustments.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+		<string>cc.squirreljme.build.WHAT</string>
+	<key>UserName</key>
+		<string>squirreljme</string>
+	<key>Program</key>
+		<string>/Users/squirreljme/build-WHAT.sh</string>
+	<key>WorkingDirectory</key>
+		<string>/Users/squirreljme/</string>
+	<key>RunAtLoad</key>
+		<true/>
+	
+	<!-- Do not consume all system resources. -->
+	<key>Nice</key>
+		<integer>19</integer>
+	<key>ProcessType</key>
+		<string>Background</string>
+	<key>LowPriorityIO</key>
+		<true/>
+	<key>LowPriorityBackgroundIO</key>
+		<true/>
+	
+	<!-- Adjust the time accordingly. -->
+	<key>StartCalendarInterval</key>
+		<array>
+			<dict>
+				<key>Hour</key>
+					<integer>12</integer>
+				<key>Minute</key>
+					<integer>00</integer>
+			</dict>
+		</array>
+</dict>
+</plist>
+```
 
 ## `systemd` Jobs
 

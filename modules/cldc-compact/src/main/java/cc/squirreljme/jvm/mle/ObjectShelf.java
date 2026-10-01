@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -481,6 +482,7 @@ public final class ObjectShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
+	@Contract("_ -> new")
 	public static native Object newInstance(@NotNull Class<?> __type);
 	
 	/**

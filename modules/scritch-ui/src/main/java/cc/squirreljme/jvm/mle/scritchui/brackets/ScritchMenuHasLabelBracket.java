@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle.scritchui.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.Debug;
 
 /**
  * A menu item which may have a label set.
@@ -19,6 +20,8 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  */
 @GhostObject
 @SquirrelJMEVendorApi
+@Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
+	hasChildren="false")
 public interface ScritchMenuHasLabelBracket
 	extends ScritchMenuKindBracket, ScritchLabelBracket
 {

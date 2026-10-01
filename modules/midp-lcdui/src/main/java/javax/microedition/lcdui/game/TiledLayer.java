@@ -110,8 +110,9 @@ public class TiledLayer
 		this._visible = true;
 
 		// Now we can create the Tile Set
-		this.__createTiles(__baseImage, (__baseImage.getWidth() / __tileWidth)
-			* (__baseImage.getHeight() / __tileHeight) + 1, __tileWidth,
+		this.__createTiles(__baseImage, 
+			(__baseImage.getWidth() / __tileWidth) *
+			(__baseImage.getHeight() / __tileHeight) + 1, __tileWidth,
 			__tileHeight);
 	}
 
@@ -137,18 +138,21 @@ public class TiledLayer
 	{
 		if (__staticTileIndex < 0 || __staticTileIndex >= this._numTiles)
 			throw new IndexOutOfBoundsException("IOOB");
-
+		
+		ArrayList<Integer> animatedTiles = this._animatedTiles;
 		if (this._animatedTiles == null)
 		{
-			this._animatedTiles = new ArrayList<Integer>();
+			animatedTiles = new ArrayList<Integer>();
+			this._animatedTiles = animatedTiles;
+			
 			// Animated tiles start from index -1. Pad the first array position
 			// so we don't have to constantly add + or -1 when managing it.
-			this._animatedTiles.add(0);
+			animatedTiles.add(0);
 		}
+		
+		animatedTiles.add(__staticTileIndex);
 
-		this._animatedTiles.add(__staticTileIndex);
-
-		return -(this._animatedTiles.size()-1);
+		return -(animatedTiles.size()-1);
 	}
 
 	/**
@@ -177,7 +181,8 @@ public class TiledLayer
 		@Range(from = 0, to = Integer.MAX_VALUE) int __row,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __numCols,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __numRows,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __tileIndex)
+		@Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE)
+			int __tileIndex)
 		throws IllegalArgumentException, IndexOutOfBoundsException
 	{
 		if (__numCols < 1 || __numRows < 1)
@@ -189,15 +194,19 @@ public class TiledLayer
 			throw new IndexOutOfBoundsException("IOOB");
 
 		if (__tileIndex > 0)
+		{
 			if (__tileIndex >= this._numTiles)
 				throw new IndexOutOfBoundsException("IOOB");
+		}
 		else if (__tileIndex < 0)
+		{
 			if (this._animatedTiles == null ||
 				-__tileIndex >= this._animatedTiles.size())
 				throw new IndexOutOfBoundsException("IOOB");
+		}
 
 		for (int curRow = __row; curRow < __row + __numRows; curRow++)
-			ObjectShelf.arrayFill(this._tiles[curRow], __col, __col + __numCols,
+			ObjectShelf.arrayFill(this._tiles[curRow], __col, __numCols,
 				__tileIndex);
 	}
 
@@ -415,7 +424,8 @@ public class TiledLayer
 	public void setCell(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __col,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __row,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __tileIndex)
+		@Range(from = Integer.MIN_VALUE, to = Integer.MAX_VALUE)
+			int __tileIndex)
 		throws IndexOutOfBoundsException
 	{
 		if (__col < 0 || __col >= this._cols || __row < 0 || __row >=
@@ -493,8 +503,8 @@ public class TiledLayer
 			for (int row = 0; row < this._tiles.length; row++)
 				Arrays.fill(this._tiles[row], 0);
 
-			this.__createTiles(__baseImage, numTiles + 1, __tileWidth,
-				__tileHeight);
+			this.__createTiles(__baseImage, numTiles + 1,
+				__tileWidth, __tileHeight);
 		}
 	}
 

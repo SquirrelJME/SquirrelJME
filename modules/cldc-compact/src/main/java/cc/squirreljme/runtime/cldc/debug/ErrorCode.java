@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.PrintFormat;
+import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -205,6 +206,7 @@ public final class ErrorCode
 			TracePointBracket point = trace[i];
 			
 			// Ignore unknown classes
+			@Subst("java/lang/Object")
 			String atClass = DebugShelf.pointClass(point);
 			if (atClass == null)
 				continue;

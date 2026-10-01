@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.ThreadShelf;
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.Debug;
 
 /**
  * This bracket represents extra information regarding threads and otherwise.
@@ -22,6 +23,8 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  */
 @SquirrelJMEVendorApi
 @GhostObject
+@Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
+	hasChildren="false")
 public interface VMThreadBracket
 {
 }

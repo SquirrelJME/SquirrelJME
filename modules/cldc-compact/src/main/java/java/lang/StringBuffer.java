@@ -146,6 +146,7 @@ public final class StringBuffer
 	 */
 	@Api
 	@Override
+	@SuppressWarnings("Since15")
 	public StringBuffer append(CharSequence __a, int __b, int __c)
 	{
 		synchronized (this)
@@ -222,6 +223,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	@Override
 	public StringBuffer append(char __a)
 	{
@@ -322,6 +324,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	@Override
 	public char charAt(int __a)
 	{
@@ -696,6 +699,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	@Override
 	public int length()
 	{
@@ -779,6 +783,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	@Override
 	public CharSequence subSequence(int __a, int __b)
 	{
@@ -827,6 +832,7 @@ public final class StringBuffer
 	 * @return Same as linked documentation.
 	 * @since 2018/12/08
 	 */
+	@Api
 	@Override
 	public String toString()
 	{

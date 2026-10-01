@@ -20,6 +20,7 @@ import org.intellij.lang.annotations.Flow;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.Blocking;
+import org.jetbrains.annotations.BlockingExecutor;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -70,6 +71,8 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
+	@Flow(source = "this._exitCode")
 	public static native int currentExitCode();
 	
 	/**
@@ -101,8 +104,8 @@ public final class ThreadShelf
 	 * @since 2021/05/08
 	 */
 	@SquirrelJMEVendorApi
-	public static native boolean equals(VMThreadBracket __a,
-		VMThreadBracket __b)
+	public static native boolean equals(@NotNull VMThreadBracket __a,
+		@NotNull VMThreadBracket __b)
 		throws MLECallError;
 	
 	/**
@@ -128,9 +131,8 @@ public final class ThreadShelf
 	 */
 	
 	@SquirrelJMEVendorApi
-	@Flow(source = "this._runnable")
 	public static native Runnable javaThreadRunnable(
-		@NotNull Thread __javaThread)
+		@NotNull @Flow(source = "this._runnable") Thread __javaThread)
 		throws MLECallError;
 	
 	/**
@@ -162,6 +164,7 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
+	@Async.Execute
 	public static native void runProcessMain();
 	
 	/**
@@ -171,7 +174,8 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	public static native void setCurrentExitCode(int __code);
+	public static native void setCurrentExitCode(
+		@Flow(target = "this._exitCode") int __code);
 	
 	/**
 	 * Sets the trace of the current task so that it can be requested by
@@ -234,9 +238,8 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	@SquirrelJMEVendorApi
-	@Flow(source = "this._vmThread") 
 	public static native VMThreadBracket toVMThread(
-		@NotNull Thread __thread)
+		@NotNull @Flow(source = "__thread._vmThread") Thread __thread)
 		throws MLECallError;
 	
 	/**
@@ -299,9 +302,8 @@ public final class ThreadShelf
 	 * @since 2025/03/07
 	 */
 	@SquirrelJMEVendorApi
-	@Flow(source = "this._started")
 	public static native boolean vmThreadIsStarted(
-		@NotNull VMThreadBracket __vmThread)
+		@NotNull @Flow(source = "this._started") VMThreadBracket __vmThread)
 		throws MLECallError;
 	
 	/**

@@ -470,12 +470,15 @@ public final class Integer
 	
 	/**
 	 * Returns the value of the specified string using the given radix.
+	 * 
+	 * The string may be prefixed with a plus ({@code +}) or minus ({@code -}),
+	 * which will return an appropriate positive or negative value.
 	 *
 	 * @param __v The String to decode.
 	 * @param __r The radix to use.
 	 * @return The resulting integer.
 	 * @throws NumberFormatException If the string is not valid or the radix
-	 * is outside of the valid bounds.
+	 * is outside the valid bounds.
 	 * @since 2018/10/12
 	 */
 	@Api
@@ -485,7 +488,11 @@ public final class Integer
 		/* {@squirreljme.error ZZ19 The radix is out of bounds. (The radix)} */
 		if (__r < Character.MIN_RADIX || __r > Character.MAX_RADIX)
 			throw new NumberFormatException("ZZ19 " + __r);
-			
+		
+		// Yes this does throw NumberFormatException and not
+		// NullPointerException, I believe because this is intended to treat
+		// a null string as "null" although a high enough radix would make
+		// this valid... however this is just speculation
 		if (__v == null)
 			throw new NumberFormatException("ZZ1a");
 		

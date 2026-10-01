@@ -247,6 +247,7 @@ shadowJar {
 	
 	dependencies {
 		// Exclude IntelliJ Annotations, they are not needed
+		exclude(dependency("org.jetbrains:annotations:.*"))
 		exclude(dependency("org.jetbrains:annotations-java5:.*"))
 	}
 }

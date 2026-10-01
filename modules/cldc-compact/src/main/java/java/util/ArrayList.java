@@ -11,6 +11,7 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
+import org.jetbrains.annotations.Debug;
 
 /**
  * This is a resizeable list which is backed by an array.
@@ -25,6 +26,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2018/09/15
  */
 @Api
+@Debug.Renderer(hasChildren="true", childrenArray="this._elements")
 public class ArrayList<E>
 	extends AbstractList<E>
 	implements List<E>, RandomAccess, Cloneable

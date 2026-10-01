@@ -14,6 +14,8 @@ import cc.squirreljme.jvm.mle.brackets.NativeArchiveEntryBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.InputStream;
+import org.intellij.lang.annotations.Language;
+import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -61,7 +63,8 @@ public final class NativeArchiveShelf
 	@Nullable
 	public static native NativeArchiveEntryBracket archiveEntry(
 		@NotNull NativeArchiveBracket __archive,
-		@NotNull String __name)
+		@NotNull @Language("file-reference")
+			@Pattern("^[^\\\\v\\t]+$") String __name)
 		throws MLECallError;
 	
 	/**

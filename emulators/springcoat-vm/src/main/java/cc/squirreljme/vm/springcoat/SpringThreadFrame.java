@@ -46,6 +46,9 @@ public class SpringThreadFrame
 	/** The stack. */
 	private final Object[] _stack;
 	
+	/** Is this frame under a no-debug suspend? */
+	boolean _noDebugSuspend;
+	
 	/** Profiled frame. */
 	volatile ProfiledFrame _profiler;
 	

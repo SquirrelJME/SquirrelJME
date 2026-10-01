@@ -13,8 +13,10 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * This provides the interface for references which are used to weakly refer
@@ -37,6 +39,7 @@ public final class ReferenceShelf
 	 * @since 2025/06/21
 	 */
 	@SquirrelJMEVendorApi
+	@UnknownNullability
 	public native static <T> T weakGet(
 		@NotNull Reference<T> __ref)
 		throws MLECallError;
@@ -68,6 +71,7 @@ public final class ReferenceShelf
 	 * @since 2025/06/21
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public native static boolean weakIsEnqueued(
 		@NotNull Reference<?> __ref)
 		throws MLECallError;
@@ -82,6 +86,7 @@ public final class ReferenceShelf
 	 * @since 2025/06/21
 	 */
 	@SquirrelJMEVendorApi
+	@UnknownNullability
 	public native static <T> ReferenceQueue<? super T> weakUnlinkAndClear(
 		@NotNull Reference<T> __ref)
 		throws MLECallError;

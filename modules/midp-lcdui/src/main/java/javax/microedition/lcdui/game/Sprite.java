@@ -256,7 +256,7 @@ public class Sprite
 		int thisTop = this._y + this._collRectY;
 		int thisRight = thisLeft + this._collRectW;
 		int thisBottom = thisTop + this._collRectH;
-		
+
 		int otherRight = __x + __image.getWidth();
 		int otherBottom = __y + __image.getHeight();
 
@@ -843,7 +843,7 @@ public class Sprite
 
 		if (sequenceLength < 1)
 			throw new IllegalArgumentException("INVL");
-		
+
 		for (int __i : __sequence)
 			if (__i < 0 || __i >= this._numFrames)
 				throw new ArrayIndexOutOfBoundsException("IOOB");
@@ -973,6 +973,10 @@ public class Sprite
 		@MagicConstant(valuesFromClass = Sprite.class) int __transform)
 		throws IllegalArgumentException
 	{
+		if(__transform < Sprite.TRANS_NONE ||
+			__transform > Sprite.TRANS_MIRROR_ROT90)
+			throw new IllegalArgumentException("INVL");
+
 		this._x = this._x + this.__getTopLeftCorner(this._refX, this._refY,
 			this._curTrans, true) - this.__getTopLeftCorner(this._refX,
 			this._refY, __transform, true);
@@ -1076,7 +1080,7 @@ public class Sprite
 	{
 		if (__width < 1 || __height < 1)
 			throw new IllegalArgumentException("INVL");
-		
+
 		if (__transform < 0 || __transform > Sprite.TRANS_MIRROR_ROT90)
 			throw new IllegalArgumentException("INVL");
 
@@ -1182,7 +1186,7 @@ public class Sprite
 		int __rect2y2)
 	{
 		// If one is to the left of the other = no collision
-		if (__rect1x2 < __rect2x1 || __rect1x1 > __rect2x2)
+		if (__rect1x2 <= __rect2x1 || __rect1x1 >= __rect2x2)
 			return false;
 
 		// If one is above the other = also no collision

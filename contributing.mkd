@@ -1,4 +1,4 @@
-# Contributing
+# Contributing to SquirrelJME
 
 Before you contribute you should read and understand the [license](license.mkd)
 that _SquirrelJME_ is under. You should abide by the
@@ -8,12 +8,14 @@ environment for developers and users.
 
 Note that the project does not have an open-door contribution policy in place,
 as such there will be no encouragement for any developers. This passion and
-encouragement must only come from within.
+encouragement must only come from within. For clarification, your contribution
+may be rejected with no reason given.
 
  * For instructions on building, see [the building guide](building.mkd).
  * If you wish to maintain or become a maintainer please read the
    [developer guide](developer-guide.mkd)!
- * No AI Use is permitted, please read [the AI Policy](ai-policy.mkd).
+ * No AI Use is permitted, please read the [AI Policy](ai-policy.mkd) for
+   more in-depth details and reasoning.
 
 Development can happen on any operating system that has an installation of
 Gradle, a Java JDK, any text editor/IDE (IntelliJ Ultimate is recommended), and
@@ -28,7 +30,8 @@ are [GitHub Pull Requests](https://github.com/SquirrelJME/SquirrelJME/pulls)
 however since the GitHub is a mirror of another repository it cannot be
 directly committed to as those commits will be erased, however Pull Requests
 can still be made. Any pull requests made on GitHub will be converted to
-Fossil then merged in accordingly.
+Fossil then merged in accordingly. Otherwise, it is recommended to send your
+patches via e-mail or by personal message.
 
 Continue reading below for the contributing guide. Additionally, be sure to
 follow the [Code Style Guidelines](code-style.mkd).
@@ -76,7 +79,8 @@ repository as a whole.
 
 If there are any issues regarding these, please open an issue describing in
 detail the problem and a proposed solution if there is one on [GitHub](
-https://github.com/SquirrelJME/SquirrelJME/issues).
+https://github.com/SquirrelJME/SquirrelJME/issues) or [CodeBerg](
+https://codeberg.org/SquirrelJME/SquirrelJME/issues).
 
 # Core Code Contribution Requirements
 
@@ -153,7 +157,8 @@ Additionally, for legal purposes, code that is derived from the source code
 from these projects cannot be used.
 
 You are however, free to give advice and insights! Just remember that this
-is clean room!
+is clean room! Use of GenAI and/or LLMs is not considered clean room as these
+have been trained from unknown and/or unverified sources.
 
 # Contributor Agreement
 

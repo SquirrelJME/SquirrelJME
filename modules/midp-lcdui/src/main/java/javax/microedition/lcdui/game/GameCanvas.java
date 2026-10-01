@@ -10,10 +10,11 @@
 package javax.microedition.lcdui.game;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SpecificFlags;
 import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraGameKeys;
+import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraStateManager;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
@@ -64,6 +65,10 @@ public abstract class GameCanvas
 	private final DoubleBuffer _doubleBuffer =
 		new DoubleBuffer(0xFFFFFFFF);
 	
+	/** Game key state. */
+	private final ExtraGameKeys _gameKeys =
+		new ExtraGameKeys();
+	
 	/**
 	 * Initializes the game canvas.
 	 *
@@ -101,6 +106,10 @@ public abstract class GameCanvas
 		if (__suppressGameKeys)
 			DisplayableState.locate(this).flags(
 				SpecificFlags.CANVAS_SUPPRESS_GAME_KEY);
+		
+		// Register game keys
+		ExtraStateManager.bind(this, ExtraGameKeys.class,
+			this._gameKeys);
 		
 		// Set
 		this._preserveBuffer = __preserveBuffer;
@@ -171,10 +180,27 @@ public abstract class GameCanvas
 			this.getWidth(), this.getHeight());
 	}
 	
+	/**
+	 * This returns the best-guess current state of the game keys since the
+	 * last time this method was called, which this can be used to determine
+	 * if a key was pressed and/or released accordingly. A key's bit will
+	 * be set if it has been pressed at least once during the last call to
+	 * this method, otherwise if the key has never been pressed then that
+	 * key's bit will be unset. This has the effect of if rapid pressing of
+	 * a key between calls to cause the bit to remain high.
+	 * 
+	 * All keys are initially in the unpressed state.
+	 * 
+	 * Not all devices support multiple keys being pressed at any one time,
+	 * as such it is not recommended to rely on this behavior.
+	 *
+	 * @return The game key states.
+	 * @since 2026/09/25
+	 */
 	@Api
 	public int getKeyStates()
 	{
-		throw Debugging.todo();
+		return this._gameKeys.trigger();
 	}
 	
 	/**

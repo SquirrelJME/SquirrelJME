@@ -98,6 +98,7 @@ public final class TerminalShelf
 	 * @since 2022/03/19
 	 */
 	@SquirrelJMEVendorApi
+	@NotNull
 	public static native PipeBracket fromStandard(
 		@MagicConstant(valuesFromClass = StandardPipeType.class) int __fd)
 		throws MLECallError;

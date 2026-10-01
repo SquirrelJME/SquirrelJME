@@ -9,11 +9,13 @@
 
 package cc.squirreljme.jvm.mle.annotation;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.jetbrains.annotations.Debug;
 
 /**
  * When used with an interface this represents that the object has no real
@@ -24,6 +26,13 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(value=RetentionPolicy.CLASS)
 @Target(value={ElementType.TYPE})
+@SquirrelJMEVendorApi
+@Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
+	hasChildren="false")
 public @interface GhostObject
 {
+	/** IntelliJ renderer string. */
+	@SquirrelJMEVendorApi
+	String INTELLIJ_RENDERER =
+		"\"<NATIVE>\"";
 }

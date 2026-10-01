@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.constants.MathAccelFlag;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.CheckReturnValue;
 
 /**
  * Hardware math support.
@@ -38,6 +39,7 @@ public class MathAccelShelf
 	 */
 	@SquirrelJMEVendorApi
 	@MagicConstant(flagsFromClass = MathAccelFlag.class)
+	@CheckReturnValue
 	public static native int accel();
 	
 	/**
@@ -48,6 +50,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double acos(double __v);
 	
 	/**
@@ -58,6 +61,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double asin(double __v);
 	
 	/**
@@ -68,6 +72,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double atan(double __v);
 	
 	/**
@@ -79,6 +84,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double atan2(double __a, double __b);
 	
 	/**
@@ -89,6 +95,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double ceil(double __v);
 	
 	/**
@@ -99,6 +106,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double cos(double __v);
 	
 	/**
@@ -109,6 +117,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double exp(double __v);
 	
 	/**
@@ -119,6 +128,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double floor(double __v);
 	
 	/**
@@ -140,6 +150,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double pow(double __x, double __y);
 	
 	/**
@@ -150,6 +161,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native long round(double __v);
 	
 	/**
@@ -160,6 +172,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double signum(double __v);
 	
 	/**
@@ -170,6 +183,7 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double sin(double __v);
 	
 	/**
@@ -180,6 +194,7 @@ public class MathAccelShelf
 	 * @since 2018/11/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double sqrt(double __v);
 	
 	/**
@@ -190,5 +205,6 @@ public class MathAccelShelf
 	 * @since 2025/05/03
 	 */
 	@SquirrelJMEVendorApi
+	@CheckReturnValue
 	public static native double tan(double __v);
 }

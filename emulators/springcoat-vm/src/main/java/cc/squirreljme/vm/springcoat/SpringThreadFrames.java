@@ -84,14 +84,11 @@ public final class SpringThreadFrames
 		SpringMethod __inMethod, Object[] __vmArgs)
 	{
 		// Lock on frames as a new one is added
-		List<SpringThreadFrame> frames = this._frames;
 		SpringThreadFrame rv;
 		synchronized (this)
 		{
-			rv = new SpringThreadFrame(frames.size(), __inClass,
-				__inMethod, __vmArgs);
-			
-			frames.add(rv);
+			rv = this.__enterFrame(new SpringThreadFrame(this._frames.size(),
+				__inClass, __inMethod, __vmArgs));
 		}
 		
 		return rv;
@@ -108,20 +105,13 @@ public final class SpringThreadFrames
 	public SpringThreadFrame enterBlank()
 		throws SpringVirtualMachineException
 	{
-		// Setup blank frame
-		List<SpringThreadFrame> frames = this._frames;
-		
 		// Lock on frames as a new one is added
 		SpringThreadFrame rv;
 		synchronized (this)
 		{
-			/* {@squirreljme.error BK1j Stack overflow.} */
-			if (frames.size() >= SpringThread.MAX_STACK_DEPTH)
-				throw new SpringVirtualMachineException("BK1j");
-			
-			rv = new SpringThreadFrame(frames.size());
-			
-			frames.add(rv);
+			// Setup blank frame
+			rv = this.__enterFrame(
+				new SpringThreadFrame(this._frames.size()));
 		}
 		
 		return rv;
@@ -162,5 +152,39 @@ public final class SpringThreadFrames
 			
 			return frames.remove(n - 1);
 		}
+	}
+	
+	
+	/**
+	 * Common frame entering.
+	 *
+	 * @param __frame The frame to enter.
+	 * @return Always {@code __frame}.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringVirtualMachineException If the stack overflows.
+	 * @since 2026/09/30
+	 */
+	private SpringThreadFrame __enterFrame(SpringThreadFrame __frame)
+		throws NullPointerException, SpringVirtualMachineException
+	{
+		if (__frame == null)
+			throw new NullPointerException("NARG");
+		
+		/* {@squirreljme.error BK1j Stack overflow.} */
+		List<SpringThreadFrame> frames = this._frames;
+		int n = frames.size();
+		if (n >= SpringThread.MAX_STACK_DEPTH)
+			throw new SpringVirtualMachineException("BK1j");
+		
+		// Always inherit the no debug suspend from the previous frame so that
+		// all child frames are under no debug suspend
+		if (n > 0)
+			__frame._noDebugSuspend = frames.get(n - 1)._noDebugSuspend;
+		
+		// Add in the frame
+		frames.add(__frame);
+		
+		// Return the added frame
+		return __frame;
 	}
 }

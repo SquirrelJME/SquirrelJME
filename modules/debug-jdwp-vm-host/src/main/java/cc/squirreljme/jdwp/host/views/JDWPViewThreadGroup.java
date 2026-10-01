@@ -56,6 +56,17 @@ public interface JDWPViewThreadGroup
 	Object instance(Object __threadGroup);
 	
 	/**
+	 * Returns the identifier object for the given interned string.
+	 *
+	 * @param __threadGroup The context thread group.
+	 * @param __string The string to get the identifier for.
+	 * @return The VM string object, or {@code null} if there is
+	 * none.
+	 * @since 2026/09/30
+	 */
+	Object internString(Object __threadGroup, String __string);
+	
+	/**
 	 * Returns the name of the thread group.
 	 * 
 	 * @param __which Which thread group to get the name of?
@@ -71,5 +82,5 @@ public interface JDWPViewThreadGroup
 	 * @return The threads that are part of this thread group.
 	 * @since 2021/04/10
 	 */
-	Object[] threads(Object __which);
+	Object[] threads(Object __which);;
 }

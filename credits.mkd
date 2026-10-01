@@ -29,11 +29,13 @@ is used, refer to that for library bring-ins.
        * `fillPoly()` implementation.
        * `fillRoundRect()` implementation.
        * Rotation and scaling transformation fixes.
+       * Fixed-point `invSqrt`, `sqrt`, `sin`, `radToDeg`, `degToRad` functions.
    * WAVE File Playback.
    * Ericsson's iMelody/eMelody support.
      * `GameCubeIntro.imy` and `NokiaRingtone.emy` self composed samples.
    * lcdui.game `Sprite`, `Layer`, `TiledLayer`, `LayerManager` implementations.
    * Generic keycode translator for MIDP2 vendor keycodes.
+   * Additional DoJa `PhoneSystem` stubs.
  * _"crystalct"_
    * RatufaCoat updates related to LibRetro:
      * PS3 Toolchain updates.

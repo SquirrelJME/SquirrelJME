@@ -18,6 +18,8 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.lang.ClassAssertion;
 import java.io.InputStream;
 import org.intellij.lang.annotations.Language;
+import org.intellij.lang.annotations.Pattern;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This class is the in-language representation of a Java class, the CLDC
@@ -207,7 +209,9 @@ public final class Class<T>
 	 * @since 2016/03/01
 	 */
 	@Api
-	public InputStream getResourceAsStream(String __name)
+	public InputStream getResourceAsStream(
+		@NotNull @Language("file-reference")
+			@Pattern("^[^\\\\v\\t]+$") String __name)
 		throws NullPointerException
 	{
 		// Check
@@ -395,6 +399,7 @@ public final class Class<T>
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2016/03/01
 	 */
+	@SuppressWarnings("PatternValidation")
 	@Api
 	public static Class<?> forName(
 		@Language("jvm-class-name") String __n)

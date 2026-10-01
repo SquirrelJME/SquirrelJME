@@ -113,7 +113,7 @@ public final class SpringVMClass
 	 * Initializes the spring class.
 	 *
 	 * @param __super The super class of this class.
-	 * @param __interfaces The the interfaces this class implements.
+	 * @param __interfaces The interfaces this class implements.
 	 * @param __cf The class file for this class.
 	 * @param __ct The component type.
 	 * @param __inJar The JAR this class is in.
@@ -521,37 +521,8 @@ public final class SpringVMClass
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		// Go through target superclasses to find this class
-		for (SpringClass r = __o; r != null; r = r.superClass())
-		{
-			if (r == this)
-				return true;
-		
-			// Go through interfaces for the class to find this class
-			for (SpringClass i : r.interfaceClasses())
-				if (this.isAssignableFrom(i))
-					return true;
-		}
-		
-		// Need to cast from one array type to another
-		int thisDims = this.dimensions();
-		int otherDims = __o.dimensions();
-		if (thisDims > 0 || otherDims > 0)
-		{
-			// If this is an array and the other type is an array with the same
-			// number of dimensions, then compare the base type so that say
-			// Number[] is assignable from Integer[].
-			if (otherDims == thisDims)
-				return SpringVMClass.rootType(this).isAssignableFrom(
-					SpringVMClass.rootType(((SpringVMClass)__o)));
-			
-			// We can cast down to Object array types if there are less
-			// dimensions ([[[[Integer -> [Object)
-			return SpringVMClass.rootType(this).isObjectClass() && thisDims < otherDims;
-		}
-		
-		// Not compatible
-		return false;
+		// As this is shared in multiple places, do use split logic
+		return SpringVMClass.isAssignableFrom(this, __o);
 	}
 	
 	/**
@@ -673,15 +644,8 @@ public final class SpringVMClass
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// The current class is never a super-class
-		if (this == __cl)
-			return false;
-		
-		for (SpringClass r = this.superclass; r != null; r = r.superClass())
-			if (r == __cl)
-				return true;
-		
-		return true;
+		// This is shared logic
+		return SpringVMClass.isSuperClass(this, __cl);
 	}
 	
 	/**
@@ -1085,12 +1049,92 @@ public final class SpringVMClass
 	 * @return The root type of this type.
 	 * @since 2018/09/27
 	 */
-	public static SpringClass rootType(SpringVMClass __class)
+	public static SpringClass rootType(SpringClass __class)
 	{
 		SpringClass rv = __class;
 		for (SpringClass r = __class; r != null; r = r.componentType())
 			rv = r;
 		return rv;
+	}
+	
+	/**
+	 * Checks if this class can be assigned from the target class, that is
+	 * {@code this = (ThisClass)__o}.
+	 *
+	 * This is the same as {@link Class#isInstance(Object)} except it works
+	 * only on class representations.
+	 *
+	 * @param __this The "this" class.
+	 * @param __o The other class to check.
+	 * @return If the other class can be assigned as this class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/09/29
+	 */
+	public static boolean isAssignableFrom(SpringClass __this, SpringClass __o)
+		throws NullPointerException
+	{
+		if (__this == null || __o == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through target superclasses to find this class
+		for (SpringClass r = __o; r != null; r = r.superClass())
+		{
+			if (r == __this)
+				return true;
+		
+			// Go through interfaces for the class to find this class
+			for (SpringClass i : r.interfaceClasses())
+				if (__this.isAssignableFrom(i))
+					return true;
+		}
+		
+		// Need to cast from one array type to another
+		int thisDims = __this.dimensions();
+		int otherDims = __o.dimensions();
+		if (thisDims > 0 || otherDims > 0)
+		{
+			// If this is an array and the other type is an array with the same
+			// number of dimensions, then compare the base type so that say
+			// Number[] is assignable from Integer[].
+			if (otherDims == thisDims)
+				return SpringVMClass.rootType(__this).isAssignableFrom(
+					SpringVMClass.rootType(((SpringVMClass)__o)));
+			
+			// We can cast down to Object array types if there are less
+			// dimensions ([[[[Integer -> [Object)
+			return SpringVMClass.rootType(__this).isObjectClass() && 
+				thisDims < otherDims;
+		}
+		
+		// Not compatible
+		return false;
+	}
+	
+	/**
+	 * Checks if the given class is a super class of this class.
+	 *
+	 * @param __this The "this" class.
+	 * @param __cl The class to check.
+	 * @return {@code true} if it is a superclass.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/09/29
+	 */
+	public static boolean isSuperClass(SpringClass __this, SpringClass __cl)
+		throws NullPointerException
+	{
+		if (__this == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		// The current class is never a super-class
+		if (__this == __cl)
+			return false;
+		
+		for (SpringClass r = __this.superClass(); r != null;
+			r = r.superClass())
+			if (r == __cl)
+				return true;
+		
+		return true;
 	}
 }
 

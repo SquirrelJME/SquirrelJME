@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle.scritchui.brackets;
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import org.jetbrains.annotations.Debug;
 
 /**
  * ScritchUI native pencil drawing.
@@ -20,6 +21,8 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  */
 @GhostObject
 @SquirrelJMEVendorApi
+@Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
+	hasChildren="false")
 public interface ScritchPencilBracket
 	extends PencilBracket
 {
