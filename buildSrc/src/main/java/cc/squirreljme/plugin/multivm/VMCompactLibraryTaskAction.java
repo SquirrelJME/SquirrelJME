@@ -435,29 +435,32 @@ public class VMCompactLibraryTaskAction
 			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS, 
 			"class", "*", "implements",
 				"java.lang.Runnable", "{",
+				"public", "void", "run", "(", ")", ";",
 			"}",
 			
 			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
 			"class", "*", "implements",
 				"cc.squirreljme.jvm.mle.callbacks.ShelfCallback", "{",
+				"!private", "<methods>", ";",
 			"}",
 			
 			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
 			"class", "*", "implements",
 			"cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchListener", "{",
+				"!private", "<methods>", ";",
 			"}",
 			
 			// Specific annotated methods
 			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
 			"class", "*", "{",
 			"@cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop",
-				"<methods>", ";",
+				"!private", "<methods>", ";",
 			"}",
 			
 			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
 			"class", "*", "{",
 				"@cc.squirreljme.runtime.lcdui.SerializedEvent",
-				"<methods>", ";",
+				"!private", "<methods>", ";",
 			"}",
 			
 			// Keep anything that has a native method
