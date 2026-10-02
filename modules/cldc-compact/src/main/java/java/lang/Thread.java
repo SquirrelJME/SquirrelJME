@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Range;
  * @since 2018/12/07
  */
 @Api
+@KeepAbsolutelyEverything
 public class Thread
 	implements Runnable
 {

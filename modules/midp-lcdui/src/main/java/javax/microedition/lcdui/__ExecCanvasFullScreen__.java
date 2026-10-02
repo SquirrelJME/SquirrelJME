@@ -22,7 +22,6 @@ import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
  *
  * @since 2025/12/23
  */
-@KeepWhenCompacting
 final class __ExecCanvasFullScreen__
 	implements Runnable
 {
@@ -32,7 +31,6 @@ final class __ExecCanvasFullScreen__
 	/** Is full-screen being set? */
 	private final boolean _isFull;
 	
-	@KeepWhenCompacting
 	__ExecCanvasFullScreen__(Canvas __canvas, boolean __isFull)
 	{
 		this._canvas = __canvas;

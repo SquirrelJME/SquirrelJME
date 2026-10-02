@@ -15,6 +15,7 @@ import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.PipeOutputStream;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.Contract;
  * @since 2018/10/14
  */
 @Api
+@KeepAbsolutelyEverything
 @SuppressWarnings("ClassWithOnlyPrivateConstructors")
 public class Runtime
 {

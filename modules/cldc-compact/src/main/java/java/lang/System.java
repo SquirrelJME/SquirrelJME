@@ -42,6 +42,7 @@ import org.jetbrains.annotations.Range;
  * @since 2018/10/14
  */
 @Api
+@KeepAbsolutelyEverything
 public final class System
 {
 	/** Standard error stream (stderr). */

@@ -67,23 +67,35 @@ public class VMCompactLibraryTaskAction
 			"!code/simplification/object",
 			"!code/simplification/field",
 			
+			// Do not optimize casts, as those can be used for class casts
+			// but also there seems to be a bug where casting an unknown type
+			// to a known type will cause issues
+			"!code/simplification/cast",
+			
+			// Assume all objects and branches are taken, this is similar to
+			// above as there needs to be checks for everything and considering
+			// that this is library code this could remove those checks. It
+			// can also assume that because no other part of the library calls
+			// into this code, that the code is dead anyway.
+			"!code/removal/advanced",
+			"!code/simplification/object",
+			"!code/simplification/branch",
+			
+			// Variable optimization seems to be broken at times as well
+			"!code/allocation/variable",
+			
 			// Never remove fields
 			"!field/removal/writeonly",
 			
-//			// Do not remove any code using the advanced methods as it usually
-//			// gets things wrong
-//			"code/removal/simple",
-//			"!code/removal/advanced",
-//			
-//			// Unique and tail recursion inlines generally exist for a reason
-//			"!method/inlining/unique",
-//			"!method/inlining/tailrecursion",
+			// Inlining methods does usually increase code size, but it also
+			// can cause issues where behavior gets changed
+			"!method/inlining/*",
 			
 			// Do not merge classes together, either vertically or
 			// horizontally... this otherwise has Number optimized away despite
 			// being marked as @Api because it is only extended from and has
 			// nothing of its own
-			//"!class/merging/*",
+			"!class/merging/*",
 		};
 	
 	/** Base configuration. */
@@ -613,6 +625,10 @@ public class VMCompactLibraryTaskAction
 			// Base options to use
 			List<String> proGuardOptions = new ArrayList<>();
 			
+			// Strip all debug info
+			proGuardOptions.addAll(
+				Arrays.asList(VMCompactLibraryTaskAction._STRIP_DEBUG));
+			
 			// Add base configuration settings
 			proGuardOptions.addAll(
 				Arrays.asList(VMCompactLibraryTaskAction._BASE_CONFIG));
@@ -699,15 +715,19 @@ public class VMCompactLibraryTaskAction
 			// Consumers of the libraries/APIs need to see the annotation
 			// information if it is there, to make sure it is retained
 			if (!isTesting)
-				config.keepAttributes = Arrays.asList("*Annotation*",
-					"Exceptions", "Signature");
+				config.keepAttributes = Arrays.asList(
+					"RuntimeInvisibleAnnotations",
+					"RuntimeVisibleAnnotations",
+					"Exceptions",
+					"Signature");
 				
 			// Keep more debugging attributes, so we can more easily figure
 			// things out when debugging
 			else
 				config.keepAttributes = Arrays.asList("*Annotation*",
 					"Exceptions", "Signature", "LineNumberTable",
-					"LocalVariableTable", "SourceFile");
+					"LocalVariableTable", "LocalVariableTypeTable",
+					"SourceFile");
 			
 			// Do not skip parsing classes
 			config.skipNonPublicLibraryClasses = false;
@@ -723,8 +743,8 @@ public class VMCompactLibraryTaskAction
 			config.dontProcessKotlinMetadata = true;
 			
 			// Reduce space and obfuscate
-			config.shrink = true;
-			config.obfuscate = true;
+			config.shrink = !isTesting;
+			config.obfuscate = !isTesting;
 			config.optimize = !isTesting;
 			config.optimizationPasses = 6;
 			config.flattenPackageHierarchy = "$" +

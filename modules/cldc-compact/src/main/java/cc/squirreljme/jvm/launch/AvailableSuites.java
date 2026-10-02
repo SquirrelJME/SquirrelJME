@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.launch;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.List;
  * @since 2020/12/28
  */
 @SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public final class AvailableSuites
 {
 	/** The shelf to use when accessing Jars. */

@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.SuiteInfo;
 import cc.squirreljme.jvm.suite.SuiteUtils;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.InputStream;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Map;
  *
  * @since 2024/01/06
  */
+@KeepAbsolutelyEverything
 public final class ApplicationParserState
 {
 	/** The current Jar. */
