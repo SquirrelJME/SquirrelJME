@@ -28,8 +28,10 @@ import java.lang.annotation.Target;
 	ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PACKAGE,
 	ElementType.PARAMETER, ElementType.TYPE})
 @SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public @interface ApiDefinedDeprecated
 {
 	/** The reason this is deprecated. */
+	@SquirrelJMEVendorApi
 	String value() default "";
 }

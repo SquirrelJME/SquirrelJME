@@ -23,5 +23,6 @@ import org.jetbrains.annotations.Debug;
 @Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")
 public interface PencilFontBracket
+	extends Bracket
 {
 }

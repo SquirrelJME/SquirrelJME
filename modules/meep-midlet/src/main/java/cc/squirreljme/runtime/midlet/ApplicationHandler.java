@@ -29,6 +29,7 @@ import javax.microedition.midlet.MIDlet;
 public final class ApplicationHandler
 {
 	/** Undefined application name. */
+	@SquirrelJMEVendorApi
 	public static final String UNDEFINED_NAME =
 		"UndefinedName";
 	
@@ -36,23 +37,18 @@ public final class ApplicationHandler
 	private static volatile ApplicationInterface<?> _CURRENT_INTERFACE;
 	
 	/** The current application instance. */
-	@SquirrelJMEVendorApi
 	private static volatile Object _CURRENT_INSTANCE;
 	
 	/** The current idle task. */
-	@SquirrelJMEVendorApi
 	private static volatile Runnable _idleTask;
 	
 	/** The identifier for this suite. */
-	@SquirrelJMEVendorApi
 	private static volatile SuiteIdentifier _identifier;
 	
 	/** The current vendor. */
-	@SquirrelJMEVendorApi
 	private static volatile String _CURRENT_VENDOR;
 	
 	/** The current name. */
-	@SquirrelJMEVendorApi
 	private static volatile String _CURRENT_NAME;
 	
 	/** The time to wait after termination. */

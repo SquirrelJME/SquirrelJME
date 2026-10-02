@@ -42,6 +42,7 @@ public final class ContentTypeUtil
 	 * @since 2022/04/24
 	 */
 	@Language("mime-type-reference")
+	@SquirrelJMEVendorApi
 	public static String guess(InputStream __in)
 		throws IOException, NullPointerException
 	{
@@ -73,6 +74,7 @@ public final class ContentTypeUtil
 	 * @since 2026/01/03
 	 */
 	@Language("mime-type-reference")
+	@SquirrelJMEVendorApi
 	public static String guess(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{

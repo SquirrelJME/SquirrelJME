@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
 import cc.squirreljme.jvm.mle.TypeShelf;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
@@ -42,6 +43,7 @@ import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
  * @since 2019/05/08
  */
 @SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public final class TestResult
 {
 	/** Return value result. */

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.csv;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,6 +17,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2023/09/12
  */
+@SquirrelJMEVendorApi
 public final class CsvSerializerResult
 {
 	/** The headers used. */
@@ -35,6 +37,7 @@ public final class CsvSerializerResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
+	@SquirrelJMEVendorApi
 	public void headers(String... __headers)
 		throws IllegalStateException, NullPointerException
 	{
@@ -60,6 +63,7 @@ public final class CsvSerializerResult
 	 * @throws IllegalStateException If this was already called.
 	 * @since 2023/09/12
 	 */
+	@SquirrelJMEVendorApi
 	public void endRow()
 		throws IllegalStateException
 	{
@@ -82,6 +86,7 @@ public final class CsvSerializerResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
+	@SquirrelJMEVendorApi
 	public void value(String __key, String __value)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException

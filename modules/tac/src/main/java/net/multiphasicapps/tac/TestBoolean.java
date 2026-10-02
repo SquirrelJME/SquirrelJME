@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.junit.Test;
 
@@ -18,6 +19,7 @@ import org.junit.Test;
  * @since 2019/12/25
  */
 @SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public abstract class TestBoolean
 	extends __CoreTest__
 {

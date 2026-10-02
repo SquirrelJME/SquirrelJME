@@ -9,11 +9,14 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
+
 /**
  * Runs a single test.
  *
  * @since 2020/03/07
  */
+@KeepAbsolutelyEverything
 public class MainSingleRunner
 {
 	/**

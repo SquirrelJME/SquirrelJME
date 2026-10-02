@@ -50,12 +50,13 @@ public final class ListenerDispatch
 		if (__player == null || __eventType == null)
 			throw new NullPointerException("NARG");
 		
-		// Player is not permitted to dispatch events
-		synchronized (__player)
-		{
-			if (__player._ffNoDispatch)
-				return;
-		}
+		// Player is not permitted to dispatch events?
+		if (__player._ffNoDispatch)
+			synchronized (__player)
+			{
+				if (__player._ffNoDispatch)
+					return;
+			}
 		
 		// Does the dispatch thread need to be created?
 		Thread thread = ListenerDispatch._THREAD;
@@ -87,9 +88,9 @@ public final class ListenerDispatch
 			
 			// Notify any monitors
 			ListenerDispatch.class.notifyAll();
+			
+			// Event was dispatched so interrupt the thread
+			thread.interrupt();
 		}
-		
-		// Event was dispatched so interrupt the thread
-		thread.interrupt();
 	}
 }

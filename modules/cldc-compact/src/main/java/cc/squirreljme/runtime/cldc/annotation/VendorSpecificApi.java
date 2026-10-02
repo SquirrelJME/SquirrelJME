@@ -31,5 +31,6 @@ import java.lang.annotation.Target;
 public @interface VendorSpecificApi
 {
 	/** The API this belongs to. */
+	@SquirrelJMEVendorApi
 	String value() default "";
 }

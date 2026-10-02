@@ -32,7 +32,6 @@ final class __DispatchRunner__
 	{
 		Queue<__ListenerEvent__> queue = ListenerDispatch._QUEUE;
 		for (;;)
-		{
 			synchronized (ListenerDispatch.class)
 			{
 				// Get the next event
@@ -48,14 +47,16 @@ final class __DispatchRunner__
 					{
 					}
 					
-					// Try reading the next event
-					continue;
+					// Try reading the next event, this may cause a double
+					// poll, but we do stay in the lock
+					event = queue.poll();
+					if (event == null)
+						continue;
 				}
 				
 				// Handle event
 				event._player.__handleEvent(event._eventType,
 					event._eventValue, event._nanoTime);
 			}
-		}
 	}
 }

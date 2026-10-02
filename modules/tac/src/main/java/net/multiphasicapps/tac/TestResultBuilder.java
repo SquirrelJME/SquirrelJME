@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
@@ -23,6 +24,7 @@ import java.util.Map;
  * @since 2019/05/08
  */
 @SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public final class TestResultBuilder
 {
 	/** Secondary test values. */

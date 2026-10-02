@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Range;
  */
 @SquirrelJMEVendorApi
 public interface AudioStreamSnoop
+	extends ShelfCallback
 {
 	/**
 	 * This is called when a MIDI event occurs.

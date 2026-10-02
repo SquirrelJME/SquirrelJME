@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -19,6 +20,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2023/07/10
  */
 @KeepWhenCompacting
+@KeepAbsolutelyEverything
 final class __Drop__
 {
 	/**

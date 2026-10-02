@@ -9,6 +9,7 @@
 
 package org.junit;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -21,6 +22,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@KeepAbsolutelyEverything
 public @interface Test
 {
 	/** Not used. */

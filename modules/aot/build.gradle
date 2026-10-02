@@ -11,16 +11,6 @@ squirreljme
 	swmName = "Ahead-Of-Time Support"
 	swmVendor = "Stephanie Gawroriski"
 	tags += "aot-compiler"
-	
-	// These classes break ProGuard since it tries to pull it in but fails
-	proGuardOptionsTestFixtures += [
-	    "-keep", "class", "**",
-		"-dontwarn", "**"
-	]
-	proGuardOptionsTest += [
-	    "-keep", "class", "**",
-		"-dontwarn", "**"
-	]
 }
 
 dependencies

@@ -56,6 +56,7 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeSuggestListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.NotNull;
@@ -131,6 +132,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/08/02
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void choiceDeleteAll(ScritchChoiceBracket __choice)
 		throws MLECallError
 	{
@@ -407,6 +409,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2025/12/23
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void containerGetFrame(@NotNull ScritchContainerBracket __container,
 		@Nullable int[] __contentSize, @Nullable int[] __frameBound,
 		@Nullable int[] __contentBound)
@@ -471,6 +474,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2026/04/11
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public @Nullable PencilFontBracket fontByFace(int __inFace,
 		@Nullable int[] __inParams, @Nullable int[] __outParams)
 		throws MLECallError
@@ -540,6 +544,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2024/12/22
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean iterate()
 		throws MLECallError
 	{
@@ -887,21 +892,10 @@ public class ScritchUnifiedWrapper
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2024/08/02
-	 */
-	@Override
-	public int screenId(
-		ScritchScreenBracket __screen)
-		throws MLECallError
-	{
-		return this.api.screen().screenId(__screen);
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2025/12/23
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void screenGetBounds(@NotNull ScritchScreenBracket __screen,
 		@Nullable ScritchComponentBracket __for,
 		@NotNull int[] __pixels, @NotNull int[] __mm)
@@ -909,6 +903,19 @@ public class ScritchUnifiedWrapper
 	{
 		this.api.screen().screenGetBounds(__screen, __for,
 			__pixels, __mm);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2024/08/02
+	 */
+	@Override
+	@SquirrelJMEVendorApi
+	public int screenId(
+		ScritchScreenBracket __screen)
+		throws MLECallError
+	{
+		return this.api.screen().screenId(__screen);
 	}
 	
 	/**
@@ -1173,6 +1180,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2026/07/07
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int windowSetFlags(@NotNull ScritchWindowBracket __window,
 		int __setFlags)
 		throws MLECallError
@@ -1212,6 +1220,7 @@ public class ScritchUnifiedWrapper
 	 * @since 2026/07/07
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int windowSetState(@NotNull ScritchWindowBracket __window,
 		int __setState)
 		throws MLECallError

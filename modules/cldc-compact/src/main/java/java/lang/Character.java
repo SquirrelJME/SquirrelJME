@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.StringShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

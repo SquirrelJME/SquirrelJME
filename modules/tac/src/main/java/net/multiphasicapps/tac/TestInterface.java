@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -18,6 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2020/02/23
  */
 @SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface TestInterface
 {
@@ -28,5 +30,6 @@ public interface TestInterface
 	 * @return The execution result of the test.
 	 * @since 2020/02/23
 	 */
+	@SquirrelJMEVendorApi
 	TestExecution runExecution(String... __mainargs);
 }

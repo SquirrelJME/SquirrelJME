@@ -16,19 +16,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * When compacting the SquirrelJME runtime, force this class to be kept, this
- * is intended for when an interface is not meant to be public in any way
- * however it is needed in another library within SquirrelJME.
+ * Disable all release optimization, compaction, and shrinking; everything
+ * about the class is kept as-is. This should only be used for very-important
+ * classes that the virtual machine requires to operate correctly.
+ * 
+ * This should rarely be used except in cases where ProGuard is having
+ * extreme difficulty with keeping a class around.
  *
- * @since 2026/06/03
+ * @since 2026/10/01
  */
 @Documented
 @Retention(value=RetentionPolicy.RUNTIME)
-@Target(value={ElementType.CONSTRUCTOR, ElementType.FIELD,
-	ElementType.METHOD, ElementType.TYPE})
+@Target(value={ElementType.TYPE})
 @SquirrelJMEVendorApi
 @KeepAbsolutelyEverything
-public @interface KeepWhenCompacting
+public @interface KeepAbsolutelyEverything
 {
 }
 

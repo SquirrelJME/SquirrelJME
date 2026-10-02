@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**

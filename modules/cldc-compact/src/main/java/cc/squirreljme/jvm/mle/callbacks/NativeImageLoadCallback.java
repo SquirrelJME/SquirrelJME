@@ -22,6 +22,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  */
 @SquirrelJMEVendorApi
 public interface NativeImageLoadCallback
+	extends ShelfCallback
 {
 	/**
 	 * Adds an image to the image, this may be called multiple times for

@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -18,6 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2020/11/08
  */
 @SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface OptionalFirstParameter
 {

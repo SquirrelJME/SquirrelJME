@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.scritchui.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
+import cc.squirreljme.jvm.mle.brackets.Bracket;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.Debug;
 
@@ -23,5 +24,6 @@ import org.jetbrains.annotations.Debug;
 @Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")
 public interface ScritchBaseBracket
+	extends Bracket
 {
 }

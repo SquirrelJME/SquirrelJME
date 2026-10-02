@@ -1,6 +1,6 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
-// SquirrelJME
+// Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the Mozilla Public License Version 2.0.
@@ -10,20 +10,18 @@
 package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
-import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.Debug;
 
 /**
- * This represents a resource within a JAR file.
+ * Base for all bracket types.
  *
- * @since 2020/06/07
+ * @since 2026/10/01
  */
 @SquirrelJMEVendorApi
 @GhostObject
-@Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
+@Debug.Renderer(text= GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")
-public interface JarResourceBracket
-	extends Bracket
+public interface Bracket
 {
 }

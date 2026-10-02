@@ -371,10 +371,7 @@ As of 2026/06/28: 206 of 317 (64%)
      * [X] `launcher` 
      * [X] `lcdui-demo`
    * [ ] SquirrelJME support libraries under `vendor-api-squirreljme-*`
-     * [ ] `aot`
-     * [ ] `aot-springcoat`
      * [X] `collections`
-     * [ ] `common-vm`
      * [X] `csv`
      * [ ] `debug-jdwp`
      * [X] `io`

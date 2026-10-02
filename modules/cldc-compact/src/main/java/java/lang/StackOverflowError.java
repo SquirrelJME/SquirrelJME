@@ -9,6 +9,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 
 /**
@@ -19,6 +20,7 @@ import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
  * @since 2023/07/09
  */
 @Deprecated
+@Api
 @ApiDefinedDeprecated("CLDC does not have this error.")
 public class StackOverflowError
 	extends VirtualMachineError
@@ -29,6 +31,7 @@ public class StackOverflowError
 	 * @since 2023/07/09
 	 */
 	@Deprecated
+	@Api
 	@ApiDefinedDeprecated("CLDC does not have this error.")
 	public StackOverflowError()
 	{
@@ -42,6 +45,7 @@ public class StackOverflowError
 	 * @since 2023/07/09
 	 */
 	@Deprecated
+	@Api
 	@ApiDefinedDeprecated("CLDC does not have this error.")
 	public StackOverflowError(String __m)
 	{

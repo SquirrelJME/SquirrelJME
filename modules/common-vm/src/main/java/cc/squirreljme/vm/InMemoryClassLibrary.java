@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,10 +26,12 @@ import net.multiphasicapps.zip.streamreader.ZipStreamReader;
  *
  * @since 2018/12/08
  */
+@SquirrelJMEVendorApi
 public final class InMemoryClassLibrary
 	implements VMClassLibrary
 {
 	/** The name of this library. */
+	@SquirrelJMEVendorApi
 	protected final String name;
 	
 	/** The cache. */
@@ -42,6 +45,7 @@ public final class InMemoryClassLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/08
 	 */
+	@SquirrelJMEVendorApi
 	public InMemoryClassLibrary(String __n, Map<String, byte[]> __m)
 		throws NullPointerException
 	{
@@ -57,6 +61,7 @@ public final class InMemoryClassLibrary
 	 * @since 2019/04/21
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String[] listResources()
 	{
 		Collection<String> names = this._cache.keySet();
@@ -68,6 +73,7 @@ public final class InMemoryClassLibrary
 	 * @since 2018/12/08
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String name()
 	{
 		return this.name;
@@ -78,6 +84,7 @@ public final class InMemoryClassLibrary
 	 * @since 2021/06/13
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public Path path()
 	{
 		return null;
@@ -88,6 +95,7 @@ public final class InMemoryClassLibrary
 	 * @since 2018/12/08
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final InputStream resourceAsStream(String __rc)
 		throws IOException, NullPointerException
 	{
@@ -114,6 +122,7 @@ public final class InMemoryClassLibrary
 	 * @since 2018/12/08
 	 */
 	@SuppressWarnings("resource")
+	@SquirrelJMEVendorApi
 	public static final InMemoryClassLibrary loadZip(String __n,
 		ZipStreamReader __in)
 		throws IOException, NullPointerException

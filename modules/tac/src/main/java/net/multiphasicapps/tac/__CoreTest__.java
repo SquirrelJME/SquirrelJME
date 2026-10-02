@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMType;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.IncompleteCodeError;
@@ -33,6 +34,7 @@ import org.junit.Test;
  * @since 2018/10/06
  */
 @SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 abstract class __CoreTest__
 	implements TestInterface
 {

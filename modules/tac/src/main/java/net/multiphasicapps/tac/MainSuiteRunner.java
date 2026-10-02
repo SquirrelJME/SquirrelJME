@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,6 +17,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2020/03/07
  */
+@KeepAbsolutelyEverything
 public class MainSuiteRunner
 {
 	/**
