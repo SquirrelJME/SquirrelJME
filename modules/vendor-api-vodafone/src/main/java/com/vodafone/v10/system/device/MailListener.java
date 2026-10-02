@@ -11,6 +11,7 @@ package com.vodafone.v10.system.device;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 
+@Api
 public interface MailListener
 {
 	@Api

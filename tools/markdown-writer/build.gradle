@@ -1,17 +1,21 @@
-import cc.squirreljme.plugin.swm.JavaMEMidletType
+plugins
+{
+	id "java-library"
+}
 
 description = "This project contains a formatted markdown " +
 	"writer which allows documents to be written to a standard stream yet " +
 	"have state on which properties to apply to the output."
 version = rootProject.version
 
-squirreljme
-{
-	javaDocErrorCode = "CG"
-	swmType = JavaMEMidletType.LIBRARY
-	swmName = "Markdown Writer"
-	swmVendor = "Stephanie Gawroriski"
-	tags += "extra"
+// The Java versions this works with
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_8
+
+jar {
+}
+
+compileJava {
 }
 
 dependencies

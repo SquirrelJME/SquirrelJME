@@ -32,9 +32,9 @@ dependencies {
 		implementation files(rootProject.ext.squirreljmeToolsJar)
 	}
 	
-	implementation project(":modules:io-file")
+	implementation project(":tools:io-file")
 	implementation project(":modules:vendor-api-oracle-json")
-	implementation project(":modules:markdown-writer")
-	implementation project(":modules:tool-classfile")
+	implementation project(":tools:markdown-writer")
+	implementation project(":emulators:tool-classfile")
 }
 

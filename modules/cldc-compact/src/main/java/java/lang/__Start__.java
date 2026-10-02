@@ -27,6 +27,7 @@ import java.util.Objects;
  * @since 2020/05/31
  */
 @SuppressWarnings("unused")
+@KeepAbsolutelyEverything
 final class __Start__
 {
 	/** The time to wait between each termination. */

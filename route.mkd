@@ -366,14 +366,13 @@ As of 2026/06/28: 206 of 317 (64%)
    * [X] `javap` equivalent
    * [ ] Linter/Formatter
    * [ ] Modem Stubs
-   * [ ] Move `debug-jdwp-vm-host` to `emulator-base`
+   * [X] Move `debug-jdwp-vm-host` to `emulators/`
    * [X] SquirrelJME applications under `system-app-*`
      * [X] `launcher` 
      * [X] `lcdui-demo`
    * [ ] SquirrelJME support libraries under `vendor-api-squirreljme-*`
      * [X] `collections`
      * [X] `csv`
-     * [ ] `debug-jdwp`
      * [X] `io`
      * [ ] `io-file`
      * [ ] `scritchui`

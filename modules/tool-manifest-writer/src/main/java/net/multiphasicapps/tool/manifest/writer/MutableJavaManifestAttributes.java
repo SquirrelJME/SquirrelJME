@@ -11,6 +11,7 @@ package net.multiphasicapps.tool.manifest.writer;
 
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,10 +22,12 @@ import java.util.Set;
  *
  * @since 2016/09/19
  */
+@SquirrelJMEVendorApi
 public class MutableJavaManifestAttributes
 	extends AbstractMap<JavaManifestKey, String>
 {
 	/** The manifest values. */
+	@SquirrelJMEVendorApi
 	protected final Map<JavaManifestKey, String> values =
 		new LinkedHashMap<>();
 	
@@ -33,6 +36,7 @@ public class MutableJavaManifestAttributes
 	 *
 	 * @since 2017/11/19
 	 */
+	@SquirrelJMEVendorApi
 	public MutableJavaManifestAttributes()
 	{
 	}
@@ -44,6 +48,7 @@ public class MutableJavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/19
 	 */
+	@SquirrelJMEVendorApi
 	public MutableJavaManifestAttributes(JavaManifestAttributes __a)
 		throws NullPointerException
 	{
@@ -60,6 +65,7 @@ public class MutableJavaManifestAttributes
 	 * @return {@code true} if a value is defined.
 	 * @since 2017/12/04
 	 */
+	@SquirrelJMEVendorApi
 	public boolean definesValue(JavaManifestKey __k)
 	{
 		return this.containsKey(__k);
@@ -72,6 +78,7 @@ public class MutableJavaManifestAttributes
 	 * @return {@code true} if a value is defined.
 	 * @since 2017/12/04
 	 */
+	@SquirrelJMEVendorApi
 	public boolean definesValue(String __k)
 	{
 		return this.containsKey(__k == null ? null : new JavaManifestKey(__k));
@@ -82,6 +89,7 @@ public class MutableJavaManifestAttributes
 	 * @since 2016/09/19
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final Set<Map.Entry<JavaManifestKey, String>> entrySet()
 	{
 		return this.values.entrySet();
@@ -95,6 +103,7 @@ public class MutableJavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/04
 	 */
+	@SquirrelJMEVendorApi
 	public String getValue(JavaManifestKey __k)
 	{
 		if (__k == null)
@@ -111,6 +120,7 @@ public class MutableJavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/21
 	 */
+	@SquirrelJMEVendorApi
 	public String getValue(String __s)
 		throws NullPointerException
 	{
@@ -132,6 +142,7 @@ public class MutableJavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
+	@SquirrelJMEVendorApi
 	public String getValue(JavaManifestKey __k, String __dv)
 		throws NullPointerException
 	{
@@ -154,6 +165,7 @@ public class MutableJavaManifestAttributes
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
+	@SquirrelJMEVendorApi
 	public String getValue(String __k, String __dv)
 		throws NullPointerException
 	{
@@ -171,6 +183,7 @@ public class MutableJavaManifestAttributes
 	 * @since 2016/09/19
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public String put(JavaManifestKey __k, String __v)
 		throws NullPointerException
 	{
@@ -190,6 +203,7 @@ public class MutableJavaManifestAttributes
 	 * @return The old value.
 	 * @since 2016/12/27
 	 */
+	@SquirrelJMEVendorApi
 	public String putValue(String __k, String __v)
 	{
 		// Check
@@ -205,6 +219,7 @@ public class MutableJavaManifestAttributes
 	 * @since 2016/09/29
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public String remove(Object __k)
 	{
 		return this.values.remove(__k);

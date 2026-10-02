@@ -11,13 +11,17 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/emulators" />
+            <option value="$PROJECT_DIR$/emulators/aot" />
+            <option value="$PROJECT_DIR$/emulators/aot-springcoat" />
+            <option value="$PROJECT_DIR$/emulators/common-vm" />
+            <option value="$PROJECT_DIR$/emulators/debug-jdwp" />
+            <option value="$PROJECT_DIR$/emulators/debug-jdwp-vm-host" />
             <option value="$PROJECT_DIR$/emulators/emulator-base" />
             <option value="$PROJECT_DIR$/emulators/nanocoat-vm" />
             <option value="$PROJECT_DIR$/emulators/springcoat-vm" />
             <option value="$PROJECT_DIR$/emulators/standalone" />
+            <option value="$PROJECT_DIR$/emulators/tool-classfile" />
             <option value="$PROJECT_DIR$/modules" />
-            <option value="$PROJECT_DIR$/modules/aot" />
-            <option value="$PROJECT_DIR$/modules/aot-springcoat" />
             <option value="$PROJECT_DIR$/modules/bluetooth" />
             <option value="$PROJECT_DIR$/modules/cdc" />
             <option value="$PROJECT_DIR$/modules/cdc-applet" />
@@ -26,9 +30,6 @@
             <option value="$PROJECT_DIR$/modules/cdc-xlet" />
             <option value="$PROJECT_DIR$/modules/cldc" />
             <option value="$PROJECT_DIR$/modules/cldc-compact" />
-            <option value="$PROJECT_DIR$/modules/common-vm" />
-            <option value="$PROJECT_DIR$/modules/debug-jdwp" />
-            <option value="$PROJECT_DIR$/modules/debug-jdwp-vm-host" />
             <option value="$PROJECT_DIR$/modules/dio" />
             <option value="$PROJECT_DIR$/modules/dio-adc" />
             <option value="$PROJECT_DIR$/modules/dio-atcmd" />
@@ -45,9 +46,7 @@
             <option value="$PROJECT_DIR$/modules/dio-watchdog" />
             <option value="$PROJECT_DIR$/modules/gcf" />
             <option value="$PROJECT_DIR$/modules/gcf-file" />
-            <option value="$PROJECT_DIR$/modules/io-file" />
             <option value="$PROJECT_DIR$/modules/m3g" />
-            <option value="$PROJECT_DIR$/modules/markdown-writer" />
             <option value="$PROJECT_DIR$/modules/media-api" />
             <option value="$PROJECT_DIR$/modules/meep-cellular" />
             <option value="$PROJECT_DIR$/modules/meep-concurrency" />
@@ -74,7 +73,6 @@
             <option value="$PROJECT_DIR$/modules/system-app-media-player" />
             <option value="$PROJECT_DIR$/modules/tac" />
             <option value="$PROJECT_DIR$/modules/tango-icon-theme" />
-            <option value="$PROJECT_DIR$/modules/tool-classfile" />
             <option value="$PROJECT_DIR$/modules/tool-manifest-writer" />
             <option value="$PROJECT_DIR$/modules/vendor-api-danger-hiptop" />
             <option value="$PROJECT_DIR$/modules/vendor-api-jblend" />
@@ -105,7 +103,9 @@
             <option value="$PROJECT_DIR$/tools" />
             <option value="$PROJECT_DIR$/tools/c-source-writer" />
             <option value="$PROJECT_DIR$/tools/github-classic-project-dump" />
+            <option value="$PROJECT_DIR$/tools/io-file" />
             <option value="$PROJECT_DIR$/tools/markdown-javadoc" />
+            <option value="$PROJECT_DIR$/tools/markdown-writer" />
             <option value="$PROJECT_DIR$/tools/squirreljme-debugger" />
             <option value="$PROJECT_DIR$/tools/squirreljme-font" />
             <option value="$PROJECT_DIR$/tools/squirreljme-javap" />

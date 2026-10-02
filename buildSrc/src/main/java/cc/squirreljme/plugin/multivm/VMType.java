@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -777,13 +778,13 @@ public enum VMType
 		Collection<Task> rv = new LinkedList<>();
 		
 		Project project = __task.getProject().getRootProject()
-			.findProject(":modules:aot-" +
+			.findProject(":emulators:aot-" +
 				this.vmName(VMNameFormat.LOWERCASE));
 		
 		// If there is no AOT, then fallback to SpringCoat
 		if (project == null)
 			project = __task.getProject().getRootProject()
-				.findProject(":modules:aot-springcoat");
+				.findProject(":emulators:aot-springcoat");
 		
 		// Make sure the AOT compiler is always up-to-date when this is
 		// ran, otherwise things can be very weird if it is not updated
@@ -799,10 +800,7 @@ public enum VMType
 			// anything the AOT compiler uses. If the compiler changes we
 			// need to make sure the updated compiler is used!
 			rv.add(taskProject.getTasks().getByName("classes"));
-			rv.add(taskProject.getTasks().getByName("jar"));
-			
-			// The library that makes up the task is important
-			rv.add(taskProject.getTasks().getByName(task.task));
+			rv.add(taskProject.getTasks().getByName("shadowJar"));
 		}
 		
 		// Make sure the hosted environment is working since it needs to
@@ -1033,13 +1031,17 @@ public enum VMType
 		if (__task == null || __command == null)
 			throw new NullPointerException("NARG");
 		
+		// Which project is being targetted?
+		Project aotProject = __task.getProject().getRootProject().project(
+			":emulators:aot-" + this.vmName(VMNameFormat.LOWERCASE));
+		
 		// Class path is of the compiler target, it does not matter
-		Path[] classPath = VMHelpers.runClassPath(__task.getProject()
-			.getRootProject().project(":modules:aot-" +
-				this.vmName(VMNameFormat.LOWERCASE)),
-			new SourceTargetClassifier(
-				SourceSet.MAIN_SOURCE_SET_NAME, VMType.HOSTED,
-				BangletVariant.NONE, ClutterLevel.DEBUG));
+		List<Path> classPath = new ArrayList<>();
+		classPath.addAll(Arrays.asList(VMHelpers.runClassPath(aotProject,
+			new SourceTargetClassifier(SourceSet.MAIN_SOURCE_SET_NAME,
+				VMType.HOSTED, BangletVariant.NONE, ClutterLevel.DEBUG))));
+		classPath.add(aotProject.getTasks().getByName("shadowJar")
+			.getOutputs().getFiles().getSingleFile().toPath());
 		
 		// Setup arguments for compilation
 		Collection<String> args = new ArrayList<>();
@@ -1092,8 +1094,8 @@ public enum VMType
 					simple,
 					"cc.squirreljme.jvm.aot.Main",
 					null, Collections.emptyMap(),
-					classPath,
-					classPath,
+					classPath.toArray(new Path[classPath.size()]),
+					classPath.toArray(new Path[classPath.size()]),
 					args.toArray(new String[args.size()]));
 				
 				// Set arguments to use

@@ -17,12 +17,12 @@ description = "This library provides the base support for testing and " +
 dependencies
 {
 	api project(":modules:cldc-compact")
-	api project(":modules:common-vm")
+	api project(":emulators:common-vm")
 	api project(":modules:vendor-api-squirreljme-io")
 	api project(":modules:tac")
 	api project(":modules:vendor-api-squirreljme-zip")
-	api project(":modules:debug-jdwp")
-	api project(":modules:debug-jdwp-vm-host")
+	api project(":emulators:debug-jdwp")
+	api project(":emulators:debug-jdwp-vm-host")
 	api project(":modules:scritch-ui")
 }
 
