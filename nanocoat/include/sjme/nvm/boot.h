@@ -116,6 +116,15 @@ struct sjme_nvm_bootParam
 
 	/** Prefer this ScritchUI interface. */
 	sjme_lpcstr preferScritchUi;
+
+	/**
+	 * Start argument zero, for platforms that do not use it to store the
+	 * name of the executable that is being launched.
+	 *
+	 * Note that if this is true, then @link sjme_nal_execPathFunc @endlink
+	 * will need to be used to determine the executable path if possible.
+	 */
+	sjme_jboolean startAtArgZero;
 };
 
 /**

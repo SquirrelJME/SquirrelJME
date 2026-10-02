@@ -254,6 +254,9 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 		sjme_message("[%" PRId32 "]: %s", i, argV[i]);
 
 	/* Parse main arguments. */
+	/* libretro has no executable at the start, so the first argument is */
+	/* always the start of the arguments. */
+	bootParam.startAtArgZero = SJME_JNI_TRUE;
 	if (sjme_error_is(error = sjme_nvm_parseCommandLine(
 		sjme_libretro_globals.allocPool,
 		bootParam.nal, &bootParam, argC, argV)))

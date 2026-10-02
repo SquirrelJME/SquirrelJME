@@ -1070,8 +1070,10 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	runJar = NULL;
 	
 	/* Command line format is: */
+	/* Note that this can possible start at argument zero. */
 	jarSpecified = SJME_JNI_FALSE;
-	for (argAt = 1; argAt < argc && !jarSpecified; argAt++)
+	for (argAt = (outParam->startAtArgZero ? 0 : 1);
+		argAt < argc && !jarSpecified; argAt++)
 	{
 		/* Cannot have a null argument here. */
 		if (argv[argAt] == NULL)
