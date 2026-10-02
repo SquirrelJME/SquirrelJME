@@ -45,12 +45,14 @@ public class StringKeyHashtable
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public final Object put(Object var1, Object var2)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	protected final void rehash()
 	{

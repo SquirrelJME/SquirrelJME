@@ -9,29 +9,35 @@
 
 package com.jblend.micro.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Graphics;
 
+@Api
 public class CalendarImpl implements CalendarInterface {
 	
+	@Api
 	@Override
 	public void initCalendarValues(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public void paint(Graphics var1, int var2, int var3, int var4, int var5, int var6, int var7)
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public String getBackCommand()
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public String getSaveCommand()
 	{

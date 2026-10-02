@@ -9,6 +9,9 @@
 
 package com.jblend.util;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public class NativeSyncObject
 {
 }

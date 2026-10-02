@@ -36,6 +36,7 @@ public class LibraryEndPointFactory
 	 * @since 2025/12/29
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public FileEndPoint connect(UriGenericPart __uri,
 		@MagicConstant(flagsFromClass = Connector.class) int __mode,
 		UriGenericPart __dotDot)
@@ -121,6 +122,7 @@ public class LibraryEndPointFactory
 	 * @since 2025/12/29
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean handleAuthority(UriAuthority __auth)
 		throws NullPointerException
 	{

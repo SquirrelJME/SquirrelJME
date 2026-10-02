@@ -21,6 +21,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 @Api
+@KeepAbsolutelyEverything
 public final class Long
 	extends Number
 	implements Comparable<Long>

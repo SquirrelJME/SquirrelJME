@@ -25,6 +25,7 @@ import java.lang.ref.WeakReference;
  * @since 2019/05/11
  */
 @Api
+@KeepAbsolutelyEverything
 public final class Integer
 	extends Number
 	implements Comparable<Integer>

@@ -70,15 +70,18 @@ public final class SimpleStack
 		throw Debugging.todo();
 	}
 	
+	@Api
 	static final class SimpleStackEnumerator
 		implements Enumeration
 	{
+		@Api
 		@Override
 		public boolean hasMoreElements()
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		@Override
 		public Object nextElement()
 		{

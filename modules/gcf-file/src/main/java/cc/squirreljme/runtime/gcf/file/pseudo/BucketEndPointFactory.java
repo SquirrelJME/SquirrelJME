@@ -39,6 +39,7 @@ public class BucketEndPointFactory
 	 * @since 2026/01/16
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public FileEndPoint connect(UriGenericPart __uri, int __mode,
 		@Nullable UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, NullPointerException
@@ -110,6 +111,7 @@ public class BucketEndPointFactory
 	 * @since 2026/01/16
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean handleAuthority(UriAuthority __auth)
 		throws NullPointerException
 	{

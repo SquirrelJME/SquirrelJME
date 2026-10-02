@@ -12,6 +12,7 @@ package com.jblend.io;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class ConnectorImpl
 {
 	@Api

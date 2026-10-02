@@ -141,6 +141,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public FileTime creationTime()
 	{
 		// Default to epoch time
@@ -165,6 +166,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int getPosixGroupId()
 	{
 		// No group (root)
@@ -176,6 +178,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int getPosixUserId()
 	{
 		// No user (root)
@@ -187,6 +190,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isDirectory()
 	{
 		int flags = this.flags();
@@ -198,6 +202,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isDosArchivable()
 	{
 		int flags = this.flags();
@@ -209,6 +214,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isDosHidden()
 	{
 		int flags = this.flags();
@@ -220,6 +226,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isDosReadOnly()
 	{
 		int flags = this.flags();
@@ -231,6 +238,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isDosSystem()
 	{
 		int flags = this.flags();
@@ -242,6 +250,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isOther()
 	{
 		int flags = this.flags();
@@ -253,6 +262,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPosixGroupExecute()
 	{
 		int flags = this.flags();
@@ -264,6 +274,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPosixGroupRead()
 	{
 		int flags = this.flags();
@@ -275,6 +286,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPosixGroupSUID()
 	{
 		int flags = this.flags();
@@ -286,6 +298,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPosixGroupWrite()
 	{
 		int flags = this.flags();
@@ -297,6 +310,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPosixOtherExecute()
 	{
 		int flags = this.flags();
@@ -308,6 +322,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPosixOtherRead()
 	{
 		int flags = this.flags();
@@ -319,6 +334,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPosixOtherWrite()
 	{
 		int flags = this.flags();
@@ -330,6 +346,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPosixRestrictedDelete()
 	{
 		int flags = this.flags();
@@ -342,6 +359,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPosixUserExecute()
 	{
 		int flags = this.flags();
@@ -353,6 +371,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPosixUserRead()
 	{
 		int flags = this.flags();
@@ -364,6 +383,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPosixUserSUID()
 	{
 		int flags = this.flags();
@@ -375,6 +395,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isPosixUserWrite()
 	{
 		int flags = this.flags();
@@ -386,6 +407,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isRegularFile()
 	{
 		int flags = this.flags();
@@ -397,6 +419,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean isSymbolicLink()
 	{
 		int flags = this.flags();
@@ -408,6 +431,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public FileTime lastAccessTime()
 	{
 		// Default to epoch time
@@ -419,6 +443,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public FileTime lastModifiedTime()
 	{
 		// Default to epoch time
@@ -430,6 +455,7 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public long size()
 	{
 		// Default to no size

@@ -9,59 +9,70 @@
 
 package com.jblend.micro.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Graphics;
 
+@Api
 public class GaugeImpl implements GaugeInterface {
 	
+	@Api
 	@Override
 	public void init(boolean var1, int var2, int var3, int var4)
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public void setValue(int var1)
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public int getValue()
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public void setMaxValue(int var1)
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public int getMaxValue()
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public void paint(boolean var1, Graphics var2, int var3, int var4)
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public int processEvent(int var1, int var2, int var3, int var4)
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public synchronized int getWidth()
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public synchronized int getHeight()
 	{

@@ -9,9 +9,8 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,14 +22,17 @@ import javax.microedition.io.SocketConnection;
  *
  * @since 2019/05/06
  */
+@SquirrelJMEVendorApi
 public abstract class TCPClientConnection
 	extends AbstractStreamConnection
 	implements SocketConnection
 {
 	/** The used IP address. */
+	@SquirrelJMEVendorApi
 	protected final IPAddress ipaddr;
 	
 	/** State tracker. */
+	@SquirrelJMEVendorApi
 	protected final ConnectionStateTracker tracker =
 		new ConnectionStateTracker();
 	
@@ -42,6 +44,7 @@ public abstract class TCPClientConnection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/12
 	 */
+	@SquirrelJMEVendorApi
 	public TCPClientConnection(IPAddress __ip, int __mode)
 		throws NullPointerException
 	{
@@ -59,6 +62,7 @@ public abstract class TCPClientConnection
 	 * @throws IOException If it could not be closed.
 	 * @since 2019/05/13
 	 */
+	@SquirrelJMEVendorApi
 	protected abstract void doClose()
 		throws IOException;
 	
@@ -69,6 +73,7 @@ public abstract class TCPClientConnection
 	 * @throws IOException If it could not be opened.
 	 * @since 2019/05/13
 	 */
+	@SquirrelJMEVendorApi
 	protected abstract InputStream doOpenInputStream()
 		throws IOException;
 	
@@ -79,6 +84,7 @@ public abstract class TCPClientConnection
 	 * @throws IOException If it could not be opened.
 	 * @since 2019/05/13
 	 */
+	@SquirrelJMEVendorApi
 	protected abstract OutputStream doOpenOutputStream()
 		throws IOException;
 	
@@ -91,6 +97,7 @@ public abstract class TCPClientConnection
 	 * @throws IOException If it could not be set.
 	 * @since 2019/05/12
 	 */
+	@SquirrelJMEVendorApi
 	protected abstract void doSetSocketOption(byte __o, int __v)
 		throws IllegalArgumentException, IOException;
 	
@@ -99,6 +106,7 @@ public abstract class TCPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	protected final void becomingClosed()
 		throws IOException
 	{
@@ -107,7 +115,7 @@ public abstract class TCPClientConnection
 		
 		// Close input
 		IOException supin = null;
-		if (!tracker._inclosed)
+		if (!tracker.inClosed)
 			try
 			{
 				this.openInputStream().close();
@@ -119,7 +127,7 @@ public abstract class TCPClientConnection
 		
 		// Close output
 		IOException supout = null;
-		if (!tracker._outclosed)
+		if (!tracker.outClosed)
 			try
 			{
 				this.openOutputStream().close();
@@ -141,8 +149,8 @@ public abstract class TCPClientConnection
 		}
 		
 		// Set tracker as closed
-		tracker._inclosed = true;
-		tracker._outclosed = true;
+		tracker.inClosed = true;
+		tracker.outClosed = true;
 		
 		// Exceptions were thrown?
 		if (supin != null || supout != null || supclo != null)
@@ -169,6 +177,7 @@ public abstract class TCPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final AccessPoint getAccessPoint()
 		throws IOException
 	{
@@ -180,6 +189,7 @@ public abstract class TCPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getAddress()
 		throws IOException
 	{
@@ -191,6 +201,7 @@ public abstract class TCPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getLocalAddress()
 		throws IOException
 	{
@@ -202,6 +213,7 @@ public abstract class TCPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int getLocalPort()
 		throws IOException
 	{
@@ -213,6 +225,7 @@ public abstract class TCPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int getPort()
 		throws IOException
 	{
@@ -224,6 +237,7 @@ public abstract class TCPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int getSocketOption(byte __o)
 		throws IllegalArgumentException, IOException
 	{
@@ -235,12 +249,13 @@ public abstract class TCPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final InputStream openInputStream()
 		throws IOException
 	{
 		/* {@squirreljme.error EC0l The input has been closed.} */
 		ConnectionStateTracker tracker = this.tracker;
-		if (tracker._inclosed)
+		if (tracker.inClosed)
 			throw new IOException("EC0l");
 		return new TrackedInputStream(tracker, this.doOpenInputStream());
 	}
@@ -250,12 +265,13 @@ public abstract class TCPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final OutputStream openOutputStream()
 		throws IOException
 	{
 		/* {@squirreljme.error EC0m The output has been closed.} */
 		ConnectionStateTracker tracker = this.tracker;
-		if (tracker._outclosed)
+		if (tracker.outClosed)
 			throw new IOException("EC0m");
 		return new TrackedOutputStream(tracker, this.doOpenOutputStream());
 	}
@@ -265,6 +281,7 @@ public abstract class TCPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void setSocketOption(byte __o, int __v)
 		throws IllegalArgumentException, IOException
 	{

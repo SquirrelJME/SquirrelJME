@@ -12,6 +12,7 @@ package com.jblend.io;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import java.io.IOException;
 
+@Api
 public interface SimpleSerializable
 {
 	@Api

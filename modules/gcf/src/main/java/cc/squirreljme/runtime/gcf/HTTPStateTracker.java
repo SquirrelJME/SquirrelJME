@@ -9,16 +9,20 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This is used to track the state of the HTTP connection since it must be
  * shared across many classes for HTTP.
  *
  * @since 2019/05/13
  */
+@SquirrelJMEVendorApi
 public final class HTTPStateTracker
 {
 	/** The state of this connection. */
-	HTTPState _state =
+	@SquirrelJMEVendorApi
+	public volatile HTTPState state =
 		HTTPState.SETUP;
 }
 

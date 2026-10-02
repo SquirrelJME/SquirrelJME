@@ -24,6 +24,7 @@ import java.lang.ref.WeakReference;
  * @since 2018/10/13
  */
 @Api
+@KeepAbsolutelyEverything
 public final class Character
 	implements Comparable<Character>
 {

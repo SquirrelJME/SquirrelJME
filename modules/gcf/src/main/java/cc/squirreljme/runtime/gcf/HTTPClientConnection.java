@@ -9,9 +9,8 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,18 +27,22 @@ import org.intellij.lang.annotations.MagicConstant;
  *
  * @since 2019/05/06
  */
+@SquirrelJMEVendorApi
 public class HTTPClientConnection
 	extends AbstractStreamConnection
 	implements HttpConnection
 {
 	/** The remote address. */
+	@SquirrelJMEVendorApi
 	protected final HTTPAddress address;
 	
 	/** Tracker for the HTTP state. */
+	@SquirrelJMEVendorApi
 	protected final HTTPStateTracker tracker =
 		new HTTPStateTracker();
 	
 	/** The target HTTP agent which contains the response. */
+	@SquirrelJMEVendorApi
 	protected final HTTPAgent agent;
 	
 	/** Request builder for outgoing connections. */
@@ -54,6 +57,7 @@ public class HTTPClientConnection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/12
 	 */
+	@SquirrelJMEVendorApi
 	public HTTPClientConnection(HTTPAddress __addr,
 		HTTPAgentConnector __connector,
 		@MagicConstant(flagsFromClass = Connector.class) int __mode)
@@ -80,11 +84,12 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	protected final void becomingClosed()
 		throws IOException
 	{
 		// Transition to the closed state
-		this.tracker._state = HTTPState.CLOSED;
+		this.tracker.state = HTTPState.CLOSED;
 	}
 	
 	/**
@@ -92,6 +97,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final AccessPoint getAccessPoint()
 		throws IOException
 	{
@@ -114,6 +120,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getEncoding()
 	{
 		throw Debugging.todo();
@@ -124,6 +131,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final long getExpiration()
 		throws IOException
 	{
@@ -135,6 +143,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getFile()
 	{
 		throw Debugging.todo();
@@ -145,6 +154,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getHeaderField(String __a)
 		throws IOException
 	{
@@ -156,6 +166,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getHeaderField(int __a)
 		throws IOException
 	{
@@ -167,6 +178,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final long getHeaderFieldDate(String __a, long __b)
 		throws IOException
 	{
@@ -178,6 +190,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int getHeaderFieldInt(String __a, int __b)
 		throws IOException
 	{
@@ -189,6 +202,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getHeaderFieldKey(int __a)
 		throws IOException
 	{
@@ -200,6 +214,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getHost()
 	{
 		throw Debugging.todo();
@@ -210,6 +225,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final long getLastModified()
 		throws IOException
 	{
@@ -221,6 +237,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final long getLength()
 	{
 		throw Debugging.todo();
@@ -231,6 +248,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int getPort()
 	{
 		throw Debugging.todo();
@@ -241,6 +259,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getProtocol()
 	{
 		throw Debugging.todo();
@@ -251,6 +270,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getQuery()
 	{
 		throw Debugging.todo();
@@ -261,6 +281,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getRef()
 	{
 		throw Debugging.todo();
@@ -271,6 +292,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getRequestMethod()
 	{
 		throw Debugging.todo();
@@ -281,6 +303,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getRequestProperty(String __a)
 	{
 		throw Debugging.todo();
@@ -291,6 +314,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int getResponseCode()
 		throws IOException
 	{
@@ -302,6 +326,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getResponseMessage()
 		throws IOException
 	{
@@ -313,6 +338,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getType()
 	{
 		throw Debugging.todo();
@@ -323,6 +349,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String getURL()
 	{
 		throw Debugging.todo();
@@ -333,6 +360,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final InputStream openInputStream()
 		throws IOException
 	{
@@ -345,6 +373,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final OutputStream openOutputStream()
 		throws IOException
 	{
@@ -357,6 +386,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void setRequestMethod(String __m)
 		throws IOException, NullPointerException
 	{
@@ -372,6 +402,7 @@ public class HTTPClientConnection
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void setRequestProperty(String __k, String __v)
 		throws IOException, NullPointerException
 	{
@@ -394,7 +425,7 @@ public class HTTPClientConnection
 		throws IOException
 	{
 		/* {@squirreljme.error EC03 Cannot access the request} */
-		if (this.tracker._state != HTTPState.SETUP)
+		if (this.tracker.state != HTTPState.SETUP)
 		{
 			// Clear before it is thrown
 			this._request = null;
@@ -421,7 +452,7 @@ public class HTTPClientConnection
 		
 		// Depends on the state
 		HTTPStateTracker tracker = this.tracker;
-		switch (tracker._state)
+		switch (tracker.state)
 		{
 				// Need to connect to the server, fall through to get the
 				// agent response. Closing the request will send the HTTP
@@ -449,6 +480,7 @@ public class HTTPClientConnection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/06
 	 */
+	@SquirrelJMEVendorApi
 	public static final HTTPClientConnection connectDefault(
 		HTTPAddress __addr, int __mode)
 		throws NullPointerException

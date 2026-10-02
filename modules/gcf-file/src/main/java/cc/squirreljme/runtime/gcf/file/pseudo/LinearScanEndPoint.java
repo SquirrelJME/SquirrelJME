@@ -99,6 +99,7 @@ public class LinearScanEndPoint
 	 * @since 2026/01/03
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	protected ExtraFileAttributes attachedAttributes()
 		throws SecurityException
 	{
@@ -112,6 +113,7 @@ public class LinearScanEndPoint
 	 * @since 2026/01/03
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	protected FileStore attachedFileStore()
 		throws SecurityException
 	{
@@ -124,6 +126,7 @@ public class LinearScanEndPoint
 	 * @since 2026/01/03
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	protected FileSystem attachedFileSystem()
 		throws SecurityException
 	{
@@ -136,6 +139,7 @@ public class LinearScanEndPoint
 	 * @since 2026/01/03
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void close()
 		throws IOException
 	{
@@ -148,6 +152,7 @@ public class LinearScanEndPoint
 	 * @since 2026/01/03
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	protected void listDirectory(@NotNull Map<String, UriGenericPart> __into)
 		throws IOException, NullPointerException, SecurityException
 	{
@@ -249,6 +254,7 @@ public class LinearScanEndPoint
 	 * @since 2026/01/03
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	protected InputStream openInputStream()
 		throws IOException, SecurityException
 	{

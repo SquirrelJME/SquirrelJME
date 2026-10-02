@@ -37,6 +37,7 @@ import org.intellij.lang.annotations.PrintFormat;
  * @since 2018/09/16
  */
 @Api
+@KeepAbsolutelyEverything
 @SuppressWarnings({"StringOperationCanBeSimplified",
 	"JavaExistingMethodCanBeUsed", "ClassWithTooManyConstructors"})
 public final class String

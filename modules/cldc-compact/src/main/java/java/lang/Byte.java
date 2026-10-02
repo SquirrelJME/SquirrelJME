@@ -21,6 +21,7 @@ import java.lang.ref.WeakReference;
  * @since 2018/12/07
  */
 @Api
+@KeepAbsolutelyEverything
 public final class Byte
 	extends Number
 	implements Comparable<Byte>

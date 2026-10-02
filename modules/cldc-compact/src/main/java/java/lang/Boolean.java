@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
  * @since 2018/12/07
  */
 @Api
+@KeepAbsolutelyEverything
 public final class Boolean
 	implements Comparable<Boolean>
 {

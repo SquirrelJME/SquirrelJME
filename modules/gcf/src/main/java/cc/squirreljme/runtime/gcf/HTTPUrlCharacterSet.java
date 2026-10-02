@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -16,36 +17,47 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2022/10/11
  */
+@SquirrelJMEVendorApi
 public enum HTTPUrlCharacterSet
 {
 	/** Host part of the address. */
+	@SquirrelJMEVendorApi
 	NET_LOCATOR,
 	
 	/** Path part of the address. */
+	@SquirrelJMEVendorApi
 	PATH,
 	
 	/** Query or parameters. */
+	@SquirrelJMEVendorApi
 	QUERY_OR_FRAGMENT,
 	
 	/** Unreserved characters. */
+	@SquirrelJMEVendorApi
 	HTTP_UNRESERVED,
 	
 	/** Reserved characters. */
+	@SquirrelJMEVendorApi
 	HTTP_RESERVED,
 	
 	/** Path characters. */
+	@SquirrelJMEVendorApi
 	HTTP_PCHAR,
 	
 	/** Uchar characters. */
+	@SquirrelJMEVendorApi
 	HTTP_UCHAR,
 	
 	/** Safe characters. */
+	@SquirrelJMEVendorApi
 	HTTP_SAFE,
 	
 	/** Extra characters. */
+	@SquirrelJMEVendorApi
 	HTTP_EXTRA,
 	
 	/** Alphanumeric characters. */
+	@SquirrelJMEVendorApi
 	HTTP_ALPHANUMERIC,
 	
 	/* End. */
@@ -58,6 +70,7 @@ public enum HTTPUrlCharacterSet
 	 * @return If this character is valid within the set.
 	 * @since 2022/10/11
 	 */
+	@SquirrelJMEVendorApi
 	public final boolean isValid(char __c)
 	{
 		switch (this)

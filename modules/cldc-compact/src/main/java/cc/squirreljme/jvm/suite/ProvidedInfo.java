@@ -77,6 +77,7 @@ public final class ProvidedInfo
 	 * @since 2017/12/31
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final boolean equals(Object __o)
 	{
 		if (this == __o)
@@ -93,6 +94,7 @@ public final class ProvidedInfo
 	 * @since 2017/12/31
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int hashCode()
 	{
 		return Arrays.asList(this._provided).hashCode();
@@ -103,6 +105,7 @@ public final class ProvidedInfo
 	 * @since 2021/01/31
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public Iterator<MarkedProvided> iterator()
 	{
 		return UnmodifiableIterator.of(this._provided);
@@ -113,6 +116,7 @@ public final class ProvidedInfo
 	 * @since 2017/12/31
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String toString()
 	{
 		Reference<String> ref = this._string;

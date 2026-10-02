@@ -9,13 +9,12 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import javax.microedition.io.Connector;
-import javax.microedition.io.SocketConnection;
 import javax.microedition.io.StreamConnection;
 
 /**
@@ -24,16 +23,20 @@ import javax.microedition.io.StreamConnection;
  *
  * @since 2019/05/13
  */
+@SquirrelJMEVendorApi
 public final class HTTPAgent
 	implements HTTPSignalListener
 {
 	/** The remote address. */
+	@SquirrelJMEVendorApi
 	protected final HTTPAddress address;
 	
 	/** The state tracker. */
+	@SquirrelJMEVendorApi
 	protected final HTTPStateTracker tracker;
 	
 	/** The connector used. */
+	@SquirrelJMEVendorApi
 	protected final HTTPAgentConnector connector;
 	
 	/** The HTTP response. */
@@ -48,6 +51,7 @@ public final class HTTPAgent
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/13
 	 */
+	@SquirrelJMEVendorApi
 	public HTTPAgent(HTTPAddress __addr, HTTPStateTracker __t,
 		HTTPAgentConnector __connector)
 		throws NullPointerException
@@ -65,6 +69,7 @@ public final class HTTPAgent
 	 * @since 2019/05/13
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void requestReady(byte[] __data)
 		throws IOException, NullPointerException
 	{
@@ -123,7 +128,7 @@ public final class HTTPAgent
 		this._response = HTTPResponse.parse(response);
 		
 		// Enter the connected state
-		this.tracker._state = HTTPState.CONNECTED;
+		this.tracker.state = HTTPState.CONNECTED;
 	}
 }
 

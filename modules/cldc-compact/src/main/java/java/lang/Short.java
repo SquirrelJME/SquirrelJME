@@ -17,6 +17,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 @Api
+@KeepAbsolutelyEverything
 public final class Short
 	extends Number
 	implements Comparable<Short>

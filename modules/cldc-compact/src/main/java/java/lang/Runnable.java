@@ -22,6 +22,7 @@ import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
  * @since 2018/09/19
  */
 @Api
+@KeepAbsolutelyEverything
 public interface Runnable
 {
 	/**

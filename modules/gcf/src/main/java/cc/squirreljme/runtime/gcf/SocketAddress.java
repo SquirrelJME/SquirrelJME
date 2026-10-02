@@ -9,11 +9,14 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+
 /**
  * This interface represents a generic address type.
  *
  * @since 2019/05/06
  */
+@SquirrelJMEVendorApi
 public interface SocketAddress
 {
 	/**
@@ -21,6 +24,7 @@ public interface SocketAddress
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	boolean equals(Object __o);
 	
 	/**
@@ -28,6 +32,7 @@ public interface SocketAddress
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	int hashCode();
 	
 	/**
@@ -35,6 +40,7 @@ public interface SocketAddress
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	String toString();
 }
 

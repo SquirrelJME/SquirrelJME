@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.gcf;
 
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
@@ -27,6 +28,7 @@ import java.util.Map;
  *
  * @since 2019/05/12
  */
+@SquirrelJMEVendorApi
 public final class HTTPRequestBuilder
 	extends OutputStream
 {
@@ -38,12 +40,15 @@ public final class HTTPRequestBuilder
 		"Profile/MIDP-2.1 Profile/MIDP-3.0 Profile/MEEP-8.0";
 	
 	/** The remote address. */
+	@SquirrelJMEVendorApi
 	protected final HTTPAddress address;
 	
 	/** The listener when the connection is closed. */
+	@SquirrelJMEVendorApi
 	protected final HTTPSignalListener listener;
 	
 	/** State tracker for connections. */
+	@SquirrelJMEVendorApi
 	protected final HTTPStateTracker tracker;
 	
 	/** Byte data output. */
@@ -67,6 +72,7 @@ public final class HTTPRequestBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/13
 	 */
+	@SquirrelJMEVendorApi
 	public HTTPRequestBuilder(HTTPAddress __addr, HTTPStateTracker __st,
 		HTTPSignalListener __l)
 		throws NullPointerException
@@ -84,11 +90,12 @@ public final class HTTPRequestBuilder
 	 * @since 2019/05/12
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void close()
 		throws IOException
 	{
 		// Only close once
-		if (this.tracker._state != HTTPState.SETUP)
+		if (this.tracker.state != HTTPState.SETUP)
 			return;
 		
 		// Send the agent out request bytes
@@ -100,11 +107,12 @@ public final class HTTPRequestBuilder
 	 * @since 2019/05/12
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void flush()
 		throws IOException
 	{
 		/* {@squirreljme.error EC04 Cannot flush closed HTTP stream.} */
-		if (this.tracker._state != HTTPState.SETUP)
+		if (this.tracker.state != HTTPState.SETUP)
 			throw new IOException("EC04");
 		
 		// Note
@@ -118,6 +126,7 @@ public final class HTTPRequestBuilder
 	 * @throws IOException If they could not be set.
 	 * @since 2019/05/13
 	 */
+	@SquirrelJMEVendorApi
 	public final byte[] getBytes()
 		throws IOException
 	{
@@ -177,6 +186,7 @@ public final class HTTPRequestBuilder
 	 * @throws NullPointerException If no method was specified.
 	 * @since 2019/05/13
 	 */
+	@SquirrelJMEVendorApi
 	public final void setRequestMethod(String __m)
 		throws IOException, NullPointerException
 	{
@@ -198,6 +208,7 @@ public final class HTTPRequestBuilder
 	 * @throws NullPointerException If the key was null.
 	 * @since 2019/05/13
 	 */
+	@SquirrelJMEVendorApi
 	public final void setRequestProperty(String __k, String __v)
 		throws IOException
 	{
@@ -222,11 +233,12 @@ public final class HTTPRequestBuilder
 	 * @since 2019/05/12
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void write(int __b)
 		throws IOException
 	{
 		/* {@squirreljme.error EC05 Cannot write more HTTP data.} */
-		if (this.tracker._state != HTTPState.SETUP)
+		if (this.tracker.state != HTTPState.SETUP)
 			throw new IOException("EC05");
 		
 		// Write to bytes
@@ -238,6 +250,7 @@ public final class HTTPRequestBuilder
 	 * @since 2019/05/13
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void write(byte[] __a)
 		throws IOException, NullPointerException
 	{
@@ -249,6 +262,7 @@ public final class HTTPRequestBuilder
 	 * @since 2019/05/12
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void write(byte[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
@@ -259,7 +273,7 @@ public final class HTTPRequestBuilder
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		/* {@squirreljme.error EC06 Cannot write more HTTP data.} */
-		if (this.tracker._state != HTTPState.SETUP)
+		if (this.tracker.state != HTTPState.SETUP)
 			throw new IOException("EC06");
 		
 		// Write to bytes
@@ -273,6 +287,7 @@ public final class HTTPRequestBuilder
 	 * @return The resultant user agent.
 	 * @since 2022/07/21
 	 */
+	@SquirrelJMEVendorApi
 	public static String buildUserAgent(String __existing)
 	{
 		// This really depends on our current interface

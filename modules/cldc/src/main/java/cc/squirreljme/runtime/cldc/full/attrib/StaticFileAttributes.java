@@ -183,6 +183,7 @@ public class StaticFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int getPosixUserId()
 	{
 		return this.posixUserId;
@@ -193,6 +194,7 @@ public class StaticFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public FileTime lastModifiedTime()
 	{
 		return this.lastModifiedTime;
@@ -203,6 +205,7 @@ public class StaticFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public FileTime lastAccessTime()
 	{
 		return this.lastAccessTime;
@@ -213,6 +216,7 @@ public class StaticFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public long size()
 	{
 		return this.size;

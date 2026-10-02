@@ -38,6 +38,7 @@ public class LinearScanEndPointFactory
 	 * @since 2026/01/03
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public FileEndPoint connect(UriGenericPart __uri, int __mode,
 		UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, NullPointerException
@@ -79,6 +80,7 @@ public class LinearScanEndPointFactory
 	 * @since 2026/01/03
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean handleAuthority(UriAuthority __auth)
 		throws NullPointerException
 	{
@@ -94,5 +96,4 @@ public class LinearScanEndPointFactory
 		// authority by specifying the URI after the ://
 		return host.startsWith(LinearScanEndPoint.DECODED_HOST);
 	}
-	
 }

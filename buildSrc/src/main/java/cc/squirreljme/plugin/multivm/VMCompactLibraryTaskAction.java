@@ -42,49 +42,123 @@ public class VMCompactLibraryTaskAction
 	/** The optimizations to use. */
 	static final String[] _OPTIMIZATIONS = new String[]
 		{
+			// AVOID: Violates the specification
 			"!class/marking/final",
-			"!class/merging/horizontal",
-			"!class/merging/vertical",
-			"!class/merging/wrapper",
-			"!class/unboxing/enum",
 			
-			"!code/allocation/variable",
-			"!code/merging",
-			"!code/removal/advanced",
-			"!code/removal/exception",
-			"!code/removal/simple",
-			"!code/removal/variable",
-			"!code/simplification/advanced",
-			"!code/simplification/arithmetic",
-			"!code/simplification/branch",
-			"!code/simplification/cast",
-			"!code/simplification/field",
-			"!code/simplification/math",
-			"!code/simplification/object",
-			"!code/simplification/string",
-			"!code/simplification/variable",
+			// UNKNOWN: ???
+			"class/merging/horizontal",
 			
+			// UNKNOWN: ???
+			"class/merging/vertical",
+			
+			// UNKNOWN: ???
+			"class/merging/wrapper",
+			
+			// UNKNOWN: ???
+			"class/unboxing/enum",
+			
+			// UNKNOWN: ???
+			"code/allocation/variable",
+			
+			// UNKNOWN: ???
+			"code/merging",
+			
+			// UNKNOWN: ???
+			"code/removal/advanced",
+			
+			// UNKNOWN: ???
+			"code/removal/exception",
+			
+			// UNKNOWN: ???
+			"code/removal/simple",
+			
+			// UNKNOWN: ???
+			"code/removal/variable",
+			
+			// UNKNOWN: ???
+			"code/simplification/advanced",
+			
+			// UNKNOWN: ???
+			"code/simplification/arithmetic",
+			
+			// UNKNOWN: ???
+			"code/simplification/branch",
+			
+			// UNKNOWN: ???
+			"code/simplification/cast",
+			
+			// UNKNOWN: ???
+			"code/simplification/field",
+			
+			// UNKNOWN: ???
+			"code/simplification/math",
+			
+			// UNKNOWN: ???
+			"code/simplification/object",
+			
+			// UNKNOWN: ???
+			"code/simplification/string",
+			
+			// UNKNOWN: ???
+			"code/simplification/variable",
+			
+			// AVOID: Violates the specification
 			"!field/generalization/class",
+			
+			// AVOID: Violates the specification
 			"!field/marking/private",
-			"!field/propagation/value",
+			
+			// UNKNOWN: ???
+			"field/propagation/value",
+			
+			// AVOID: Violates the specification
 			"!field/removal/writeonly",
+			
+			// AVOID: Violates the specification
 			"!field/specialization/type",
 			
+			// AVOID: Violates the specification
 			"!method/generalization/class",
-			"!method/inlining/short",
-			"!method/inlining/tailrecursion",
-			"!method/inlining/unique",
+			
+			// UNKNOWN: ???
+			"method/inlining/short",
+			
+			// UNKNOWN: ???
+			"method/inlining/tailrecursion",
+			
+			// UNKNOWN: ???
+			"method/inlining/unique",
+			
+			// AVOID: Violates the specification
 			"!method/marking/final",
+			
+			// AVOID: Violates the specification
 			"!method/marking/private",
+			
+			// AVOID: Violates the specification
 			"!method/marking/static",
+			
+			// AVOID: Violates the specification
 			"!method/marking/synchronized",
-			"!method/propagation/parameter",
-			"!method/propagation/returnvalue",
+			
+			// UNKNOWN: ???
+			"method/propagation/parameter",
+			
+			// UNKNOWN: ???
+			"method/propagation/returnvalue",
+			
+			// AVOID: Violates the specification
+			// Double.toString() -> public static String toString$6f5372eb()
 			"!method/removal/parameter",
+			
+			// AVOID: Violates the specification
 			"!method/specialization/parametertype",
+			
+			// AVOID: Violates the specification
 			"!method/specialization/returntype",
 			
-			"!withcode/removal/advanced",
+			// UNKNOWN: ???
+			"withcode/removal/advanced",
 			
 			/*
 			// Never allow access flag changes
@@ -147,8 +221,8 @@ public class VMCompactLibraryTaskAction
 	/** Base configuration. */
 	static final String[] _BASE_CONFIG = new String[]
 		{
-			// Be a bit more descriptive
-			"-verbose",
+			// Be a bit more descriptive (this prints the config)
+			//"-verbose",
 			
 			// Ignore all JetBrains IntelliJ related annotations
 			"-dontwarn", "org.jetbrains.annotations.**",
@@ -409,12 +483,18 @@ public class VMCompactLibraryTaskAction
 			
 			// Anything that is a bracket must be kept, no matter what
 			VMCompactLibraryTaskAction.STANZA_KEEP_ALL, 
-				"class", "*", "implements",
+			"class", "*", "implements",
 				"cc.squirreljme.jvm.mle.brackets.Bracket", "{",
 			"}",
 			
+			// All permission types must be kept, no matter what
+			VMCompactLibraryTaskAction.STANZA_KEEP_ALL, 
+			"class", "*", "implements",
+				"java.security.Permission", "{",
+			"}",
+			
 			// Standard API
-			VMCompactLibraryTaskAction.STANZA_API_NO_DESC,
+			VMCompactLibraryTaskAction.STANZA_API,
 			"@cc.squirreljme.runtime.cldc.annotation.Api",
 			"public", "class", "*", "{",
 				"@cc.squirreljme.runtime.cldc.annotation.Api",
@@ -422,7 +502,7 @@ public class VMCompactLibraryTaskAction
 			"}",
 			
 			// SquirrelJMEVendorApi
-			VMCompactLibraryTaskAction.STANZA_API_NO_DESC,
+			VMCompactLibraryTaskAction.STANZA_API,
 			"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
 			"public", "class", "*", "{",
 				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
@@ -439,6 +519,11 @@ public class VMCompactLibraryTaskAction
 			
 			// KeepAbsolutelyEverything
 			VMCompactLibraryTaskAction.STANZA_KEEP_ALL,
+			"@cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything",
+			"class", "*", "{",
+				"*", ";",
+			"}",
+			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
 			"@cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything",
 			"class", "*", "{",
 				"*", ";",
@@ -498,76 +583,101 @@ public class VMCompactLibraryTaskAction
 	public void execute(Task __task)
 	{
 		// It is possible for ProGuard to run out of memory
-		try
-		{
-			// Try to run normally
-			this.__execute(__task);
-		}
-		
-		// ProGuard has actually run out of memory, note that it
-		// erroneously wraps it in RuntimeException as well
-		catch (RuntimeException|OutOfMemoryError __oom)
-		{
-			// We need to find if this was ever thrown up the exception tree
-			// as ProGuard wraps errors when it should not
-			Throwable found = null;
-			if (__oom instanceof OutOfMemoryError)
-				found = __oom;
-			else if (__oom instanceof RuntimeException)
-				do
-				{
-					found = (found == null ? __oom.getCause() :
-						found.getCause());
-				} while (found != null &&
-					!(found instanceof OutOfMemoryError));
-			
-			// Did not find an out of memory error?
-			if (!(found instanceof OutOfMemoryError))
-				throw __oom;
-			
-			// Double-GC to force it to run, hopefully since we did have an
-			// actual out of memory event
-			Runtime.getRuntime().gc();
-			System.gc();
-			
-			// Get the task being worked on
-			VMCompactLibraryTask compactTask = (VMCompactLibraryTask)__task;
-			
-			// Where are we reading/writing to/from?
-			Path inputJarPath = compactTask.inputBaseJarPath().get();
-			Path outputJarPath = compactTask.outputJarPath().get();
-			Path outputMapPath = compactTask.outputMapPath().get();
-			
-			// Could fail
+		for (int attempt = 0; attempt < 3; attempt++)
 			try
 			{
-				// Copy the input to the output
-				Files.copy(inputJarPath, outputJarPath,
-					StandardCopyOption.REPLACE_EXISTING);
+				// Force a double GC because pre-existing ProGuard runs and
+				// caches just leave stuff in memory that just causes ProGuard
+				// to fail more often than not, even with 4GiB+ memory assigned
+				Runtime.getRuntime().gc();
+				System.gc();
 				
-				// Initialize a blank mapping file
-				Files.write(outputMapPath, new byte[0],
-					StandardOpenOption.CREATE, StandardOpenOption.WRITE,
-					StandardOpenOption.TRUNCATE_EXISTING);
+				// Try to run normally, or with less aggression
+				if (attempt == 0 || attempt == 1)
+					this.__execute(__task, attempt == 0);
+				
+				// Fallback to just copy the library
+				else
+				{
+					// Get the task being worked on
+					VMCompactLibraryTask compactTask =
+						(VMCompactLibraryTask)__task;
+					
+					// Where are we reading/writing to/from?
+					Path inputJarPath = compactTask.inputBaseJarPath().get();
+					Path outputJarPath = compactTask.outputJarPath().get();
+					Path outputMapPath = compactTask.outputMapPath().get();
+					
+					// Could fail
+					try
+					{
+						// Copy the input to the output
+						Files.copy(inputJarPath, outputJarPath,
+							StandardCopyOption.REPLACE_EXISTING);
+						
+						// Initialize a blank mapping file
+						Files.write(outputMapPath, new byte[0],
+							StandardOpenOption.CREATE,
+							StandardOpenOption.WRITE,
+							StandardOpenOption.TRUNCATE_EXISTING);
+					}
+					
+					// Just forward out write failures
+					catch (IOException __e)
+					{
+						throw new RuntimeException(__e.getMessage(), __e);
+					}
+				}
+				
+				// Success!
+				return;
 			}
 			
-			// Just forward out write failures
-			catch (IOException __e)
+			// ProGuard has actually run out of memory, note that it
+			// erroneously wraps it in RuntimeException as well
+			catch (RuntimeException|OutOfMemoryError|StackOverflowError __oom)
 			{
-				throw new RuntimeException(__e.getMessage(), __e);
+				// Print it out just to be verbose
+				__oom.printStackTrace();
+				
+				// We need to find if this was ever thrown up the exception tree
+				// as ProGuard wraps errors when it should not
+				Throwable found = null;
+				if (__oom instanceof OutOfMemoryError)
+					found = __oom;
+				if (__oom instanceof StackOverflowError)
+					found = __oom;
+				else if (__oom instanceof RuntimeException)
+					do
+					{
+						found = (found == null ? __oom.getCause() :
+							found.getCause());
+					} while (found != null &&
+						!(found instanceof OutOfMemoryError));
+				
+				// Did not find an out of memory error?
+				if (!(found instanceof OutOfMemoryError) &&
+					!(found instanceof StackOverflowError))
+					throw __oom;
+				
+				// Double-GC to force it to run, hopefully since we did have an
+				// actual out of memory event
+				Runtime.getRuntime().gc();
+				System.gc();
 			}
-		}
 	}
 	
 	/**
 	 * The actual execution of the ask.
 	 * 
 	 * @param __task The task being executed.
+	 * @param __aggressive Optimize aggressively.
 	 * @throws OutOfMemoryError If this ran out of memory.
+	 * @throws StackOverflowError If the stack overflows.
 	 * @since 2023/02/01
 	 */
-	private void __execute(Task __task)
-		throws OutOfMemoryError
+	private void __execute(Task __task, boolean __aggressive)
+		throws OutOfMemoryError, StackOverflowError
 	{
 		VMCompactLibraryTask compactTask = (VMCompactLibraryTask)__task;
 		
@@ -792,18 +902,40 @@ public class VMCompactLibraryTaskAction
 			config.shrink = !isTesting;
 			config.obfuscate = !isTesting;
 			config.optimize = !isTesting;
-			config.optimizationPasses = 6;
 			config.flattenPackageHierarchy = "$" +
 				(projectConfig.javaDocErrorCode == null ? "??" :
 				projectConfig.javaDocErrorCode);
 			config.repackageClasses = config.flattenPackageHierarchy;
 			
-			// For mapping files, members do need to be unique
-			config.useUniqueClassMemberNames = true;
+			// Aggressive?
+			if (__aggressive)
+			{
+				config.optimizationPasses = 8;
+				config.optimizeConservatively = false;
+			}
 			
-			// Do not use mix case class names, so that more strings can
-			// be compacted together accordingly
-			config.useMixedCaseClassNames = false;
+			// If not, we likely crashed and/or ran out of memory
+			else
+			{
+				config.optimizationPasses = 4;
+				config.optimizeConservatively = true;
+			}
+			
+			if (false)
+			{
+				// For mapping files, members do need to be unique
+				// Do not use mix case class names, so that more strings can
+				// be compacted together accordingly
+				config.useUniqueClassMemberNames = true;
+				config.useMixedCaseClassNames = false;
+			}
+			else
+			{
+				// More compact, but also seems to be more compatible with
+				// how ProGuard operates
+				config.useUniqueClassMemberNames = false;
+				config.useMixedCaseClassNames = true;
+			}
 			
 			// Write mapping to the output file, since we will use it later on
 			config.printMapping = tempOutputMapFile.toFile();
@@ -814,10 +946,10 @@ public class VMCompactLibraryTaskAction
 				config.applyMapping = tempInputMapFile.toFile();
 			
 			// Be noisy
-			config.verbose = true;
+			config.verbose = false;
 			//config.dump = Configuration.STD_OUT;
 			//config.printUsage = Configuration.STD_OUT;
-			config.printConfiguration = Configuration.STD_OUT;
+			//config.printConfiguration = Configuration.STD_OUT;
 			
 			// Use whatever libraries were found
 			config.libraryJars = libraryJars;

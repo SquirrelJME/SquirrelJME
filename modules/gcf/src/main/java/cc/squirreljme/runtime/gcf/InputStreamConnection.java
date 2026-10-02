@@ -47,6 +47,7 @@ public final class InputStreamConnection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/05
 	 */
+	@SquirrelJMEVendorApi
 	public InputStreamConnection(InputStream __in)
 		throws NullPointerException
 	{
@@ -79,6 +80,7 @@ public final class InputStreamConnection
 	 * @since 2025/05/05
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void close()
 		throws IOException
 	{
@@ -99,6 +101,7 @@ public final class InputStreamConnection
 	 * @since 2025/05/05
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public DataInputStream openDataInputStream()
 		throws IOException
 	{
@@ -110,6 +113,7 @@ public final class InputStreamConnection
 	 * @since 2025/05/05
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public InputStream openInputStream()
 		throws IOException
 	{

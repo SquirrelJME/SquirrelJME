@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -18,13 +19,16 @@ import java.io.OutputStream;
  *
  * @since 2019/05/13
  */
+@SquirrelJMEVendorApi
 public final class TrackedOutputStream
 	extends OutputStream
 {
 	/** The tracker used. */
+	@SquirrelJMEVendorApi
 	protected final ConnectionStateTracker tracker;
 	
 	/** The wrapped stream. */
+	@SquirrelJMEVendorApi
 	protected final OutputStream out;
 	
 	/**
@@ -35,6 +39,7 @@ public final class TrackedOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/13
 	 */
+	@SquirrelJMEVendorApi
 	public TrackedOutputStream(ConnectionStateTracker __t, OutputStream __out)
 		throws NullPointerException
 	{
@@ -50,6 +55,7 @@ public final class TrackedOutputStream
 	 * @since 2019/05/13
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void close()
 		throws IOException
 	{
@@ -57,7 +63,7 @@ public final class TrackedOutputStream
 		this.out.close();
 		
 		// Set stream as closed
-		this.tracker._outclosed = true;
+		this.tracker.outClosed = true;
 	}
 	
 	/**
@@ -65,11 +71,12 @@ public final class TrackedOutputStream
 	 * @since 2019/05/13
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void flush()
 		throws IOException
 	{
 		/* {@squirreljme.error EC0v The output has been closed.} */
-		if (this.tracker._outclosed)
+		if (this.tracker.outClosed)
 			throw new IOException("EC0v");
 		
 		// Forward
@@ -81,11 +88,12 @@ public final class TrackedOutputStream
 	 * @since 2019/05/13
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void write(int __b)
 		throws IOException
 	{
 		/* {@squirreljme.error EC0w The output has been closed.} */
-		if (this.tracker._outclosed)
+		if (this.tracker.outClosed)
 			throw new IOException("EC0w");
 		
 		// Forward
@@ -97,11 +105,12 @@ public final class TrackedOutputStream
 	 * @since 2019/05/13
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void write(byte[] __b)
 		throws IOException, NullPointerException
 	{
 		/* {@squirreljme.error EC0x The output has been closed.} */
-		if (this.tracker._outclosed)
+		if (this.tracker.outClosed)
 			throw new IOException("EC0x");
 		
 		// Forward
@@ -113,11 +122,12 @@ public final class TrackedOutputStream
 	 * @since 2019/05/13
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final void write(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
 		/* {@squirreljme.error EC0y The output has been closed.} */
-		if (this.tracker._outclosed)
+		if (this.tracker.outClosed)
 			throw new IOException("EC0y");
 		
 		// Forward

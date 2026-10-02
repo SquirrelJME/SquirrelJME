@@ -33,6 +33,7 @@ public class ZipEndPointFactory
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public FileEndPoint connect(UriGenericPart __uri, int __mode,
 		UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, NullPointerException
@@ -63,6 +64,7 @@ public class ZipEndPointFactory
 	 * @since 2025/12/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean handleAuthority(UriAuthority __auth)
 		throws NullPointerException
 	{
@@ -78,5 +80,4 @@ public class ZipEndPointFactory
 		// authority by specifying the URI after the ://
 		return host.startsWith(ZipEndPoint.DECODED_HOST);
 	}
-	
 }

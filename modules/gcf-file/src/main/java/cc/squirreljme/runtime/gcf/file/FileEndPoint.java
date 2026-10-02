@@ -138,6 +138,7 @@ public abstract class FileEndPoint
 	 * @return If this is a directory.
 	 * @since 2025/12/30
 	 */
+	@SquirrelJMEVendorApi
 	public final boolean isDirectory()
 	{
 		// This is a directory if this ends with a slash

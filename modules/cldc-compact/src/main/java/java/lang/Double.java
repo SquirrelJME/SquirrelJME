@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 @Api
+@KeepAbsolutelyEverything
 public final class Double
 	extends Number
 	implements Comparable<Double>

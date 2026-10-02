@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.suite;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -20,18 +21,22 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/02/22
  */
+@SquirrelJMEVendorApi
 public final class SuiteVersionRange
 	implements Comparable<SuiteVersionRange>
 {
 	/** Any version. */
+	@SquirrelJMEVendorApi
 	public static final SuiteVersionRange ANY_VERSION =
 		new SuiteVersionRange(SuiteVersion.MIN_VERSION,
 			SuiteVersion.MAX_VERSION);
 	
 	/** The starting range, inclusive. */
+	@SquirrelJMEVendorApi
 	protected final SuiteVersion from;
 	
 	/** Tne ending range, inclusive. */
+	@SquirrelJMEVendorApi
 	protected final SuiteVersion to;
 	
 	/** String representation. */
@@ -45,6 +50,7 @@ public final class SuiteVersionRange
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
+	@SquirrelJMEVendorApi
 	public SuiteVersionRange(SuiteVersion __from, SuiteVersion __to)
 		throws NullPointerException
 	{
@@ -76,6 +82,7 @@ public final class SuiteVersionRange
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
+	@SquirrelJMEVendorApi
 	public SuiteVersionRange(String __s)
 		throws InvalidSuiteException, NullPointerException
 	{
@@ -173,6 +180,7 @@ public final class SuiteVersionRange
 	 * @since 2017/11/30
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int compareTo(SuiteVersionRange __o)
 	{
 		// From version is always first
@@ -188,6 +196,7 @@ public final class SuiteVersionRange
 	 * @since 2017/02/22
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean equals(Object __o)
 	{
 		// Check
@@ -205,6 +214,7 @@ public final class SuiteVersionRange
 	 * @return The range start.
 	 * @since 2017/02/22
 	 */
+	@SquirrelJMEVendorApi
 	public SuiteVersion from()
 	{
 		return this.from;
@@ -215,6 +225,7 @@ public final class SuiteVersionRange
 	 * @since 2017/02/22
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public int hashCode()
 	{
 		return this.to.hashCode() ^ (~this.from.hashCode());
@@ -228,6 +239,7 @@ public final class SuiteVersionRange
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
+	@SquirrelJMEVendorApi
 	public boolean inRange(SuiteVersion __v)
 		throws NullPointerException
 	{
@@ -248,6 +260,7 @@ public final class SuiteVersionRange
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/27
 	 */
+	@SquirrelJMEVendorApi
 	public boolean inRange(SuiteVersionRange __r)
 		throws NullPointerException
 	{
@@ -263,6 +276,7 @@ public final class SuiteVersionRange
 	 * @return The range end.
 	 * @since 2017/02/22
 	 */
+	@SquirrelJMEVendorApi
 	public SuiteVersion to()
 	{
 		return this.to;
@@ -273,6 +287,7 @@ public final class SuiteVersionRange
 	 * @since 2017/02/22
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public String toString()
 	{
 		// Get
@@ -347,6 +362,7 @@ public final class SuiteVersionRange
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/26
 	 */
+	@SquirrelJMEVendorApi
 	public static final SuiteVersionRange atMost(SuiteVersion __v)
 		throws NullPointerException
 	{
@@ -364,6 +380,7 @@ public final class SuiteVersionRange
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/26
 	 */
+	@SquirrelJMEVendorApi
 	public static final SuiteVersionRange exactly(SuiteVersion __v)
 		throws NullPointerException
 	{

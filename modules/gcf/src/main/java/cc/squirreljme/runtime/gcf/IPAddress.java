@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -19,17 +20,21 @@ import java.lang.ref.WeakReference;
  *
  * @since 2019/05/06
  */
+@SquirrelJMEVendorApi
 public final class IPAddress
 	implements SocketAddress
 {
 	/** System assigned port. */
+	@SquirrelJMEVendorApi
 	public static final int ASSIGNED_PORT =
 		-1;
 	
 	/** The hostname. */
+	@SquirrelJMEVendorApi
 	public final String hostname;
 	
 	/** The port. */
+	@SquirrelJMEVendorApi
 	public final int port;
 	
 	/** The string reference. */
@@ -42,7 +47,8 @@ public final class IPAddress
 	 * @param __p The port, may be {@link #ASSIGNED_PORT}.
 	 * @throws IllegalArgumentException If the hostname or port is not valid.
 	 * @since 2019/05/06
-	 */                                                                       
+	 */
+	@SquirrelJMEVendorApi
 	public IPAddress(String __h, int __p)
 		throws IllegalArgumentException
 	{
@@ -101,6 +107,7 @@ public final class IPAddress
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final boolean equals(Object __o)
 	{
 		throw Debugging.todo();
@@ -111,6 +118,7 @@ public final class IPAddress
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final int hashCode()
 	{
 		throw Debugging.todo();
@@ -122,6 +130,7 @@ public final class IPAddress
 	 * @return If this is a server connection.
 	 * @since 2019/05/06
 	 */
+	@SquirrelJMEVendorApi
 	public final boolean isServer()
 	{
 		return this.hostname == null;
@@ -132,6 +141,7 @@ public final class IPAddress
 	 * @since 2019/05/06
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final String toString()
 	{
 		Reference<String> ref = this._string;
@@ -165,6 +175,7 @@ public final class IPAddress
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/06
 	 */
+	@SquirrelJMEVendorApi
 	public static final IPAddress fromUriPart(String __part)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -189,6 +200,7 @@ public final class IPAddress
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/06
 	 */
+	@SquirrelJMEVendorApi
 	public static final IPAddress of(String __s)
 		throws IllegalArgumentException, NullPointerException
 	{

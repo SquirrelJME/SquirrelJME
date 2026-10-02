@@ -100,15 +100,18 @@ public final class SimpleVector
 		throw Debugging.todo();
 	}
 	
+	@Api
 	static final class SimpleVectorEnumerator
 		implements Enumeration
 	{
+		@Api
 		@Override
 		public boolean hasMoreElements()
 		{
 			throw Debugging.todo();
 		}
 		
+		@Api
 		@Override
 		public Object nextElement()
 		{

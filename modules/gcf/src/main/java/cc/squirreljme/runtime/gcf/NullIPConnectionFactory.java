@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import javax.microedition.io.ConnectionNotFoundException;
 
@@ -20,6 +21,7 @@ import javax.microedition.io.ConnectionNotFoundException;
  * @since 2019/05/12
  */
 @SuppressWarnings("DuplicateThrows")
+@SquirrelJMEVendorApi
 public final class NullIPConnectionFactory
 	extends IPConnectionFactory
 {
@@ -28,6 +30,7 @@ public final class NullIPConnectionFactory
 	 * @since 2019/05/12
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final IPAddress resolveAddress(IPAddress __addr)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
@@ -40,6 +43,7 @@ public final class NullIPConnectionFactory
 	 * @since 2019/05/12
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public final TCPClientConnection tcpClientConnect(IPAddress __addr)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{

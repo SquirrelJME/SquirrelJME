@@ -12,6 +12,7 @@ package com.jblend.micro.lcdui;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import javax.microedition.lcdui.Graphics;
 
+@Api
 @SuppressWarnings({"FieldNamingConvention", "InterfaceWithOnlyOneDirectInheritor"})
 public interface CalendarInterface
 {

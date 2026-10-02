@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import javax.microedition.io.StreamConnection;
 
@@ -18,6 +19,7 @@ import javax.microedition.io.StreamConnection;
  *
  * @since 2022/10/07
  */
+@SquirrelJMEVendorApi
 public interface HTTPAgentConnector
 {
 	/**
@@ -29,6 +31,7 @@ public interface HTTPAgentConnector
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/10/07
 	 */
+	@SquirrelJMEVendorApi
 	StreamConnection connectStream(HTTPAddress __address)
 		throws IOException, NullPointerException;
 }
