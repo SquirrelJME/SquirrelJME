@@ -42,6 +42,51 @@ public class VMCompactLibraryTaskAction
 	/** The optimizations to use. */
 	static final String[] _OPTIMIZATIONS = new String[]
 		{
+			"!class/marking/final",
+			"!class/merging/horizontal",
+			"!class/merging/vertical",
+			"!class/merging/wrapper",
+			"!class/unboxing/enum",
+			
+			"!code/allocation/variable",
+			"!code/merging",
+			"!code/removal/advanced",
+			"!code/removal/exception",
+			"!code/removal/simple",
+			"!code/removal/variable",
+			"!code/simplification/advanced",
+			"!code/simplification/arithmetic",
+			"!code/simplification/branch",
+			"!code/simplification/cast",
+			"!code/simplification/field",
+			"!code/simplification/math",
+			"!code/simplification/object",
+			"!code/simplification/string",
+			"!code/simplification/variable",
+			
+			"!field/generalization/class",
+			"!field/marking/private",
+			"!field/propagation/value",
+			"!field/removal/writeonly",
+			"!field/specialization/type",
+			
+			"!method/generalization/class",
+			"!method/inlining/short",
+			"!method/inlining/tailrecursion",
+			"!method/inlining/unique",
+			"!method/marking/final",
+			"!method/marking/private",
+			"!method/marking/static",
+			"!method/marking/synchronized",
+			"!method/propagation/parameter",
+			"!method/propagation/returnvalue",
+			"!method/removal/parameter",
+			"!method/specialization/parametertype",
+			"!method/specialization/returntype",
+			
+			"!withcode/removal/advanced",
+			
+			/*
 			// Never allow access flag changes
 			"!class/marking/*",
 			"!field/marking/*",
@@ -96,6 +141,7 @@ public class VMCompactLibraryTaskAction
 			// being marked as @Api because it is only extended from and has
 			// nothing of its own
 			"!class/merging/*",
+			 */
 		};
 	
 	/** Base configuration. */
