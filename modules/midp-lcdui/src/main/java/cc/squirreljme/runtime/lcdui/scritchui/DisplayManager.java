@@ -18,6 +18,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
@@ -35,7 +36,7 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2024/03/09
  */
-@SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public final class DisplayManager
 {
 	/** The number of available desktop windows. */

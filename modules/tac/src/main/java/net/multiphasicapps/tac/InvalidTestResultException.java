@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2018/10/06
  */
-@SquirrelJMEVendorApi
 @KeepAbsolutelyEverything
 public class InvalidTestResultException
 	extends InvalidTestException

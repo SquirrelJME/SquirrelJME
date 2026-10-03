@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/03/16
  */
-@SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public interface ScritchEventLoopInterface
 	extends ScritchApiInterface
 {
@@ -36,7 +36,7 @@ public interface ScritchEventLoopInterface
 	/**
 	 * Iterates a single run of the event loop.
 	 *
-	 * @return
+	 * @return If this iterated within the loops.
 	 * @throws MLECallError If the event loop encountered an error.
 	 * @since 2024/12/22
 	 */

@@ -18,7 +18,6 @@ import org.junit.Test;
  *
  * @since 2019/12/24
  */
-@SquirrelJMEVendorApi
 @KeepAbsolutelyEverything
 public abstract class TestInteger
 	extends __CoreTest__

@@ -22,7 +22,6 @@ import java.util.List;
  *
  * @since 2020/12/28
  */
-@SquirrelJMEVendorApi
 @KeepAbsolutelyEverything
 public final class AvailableSuites
 {

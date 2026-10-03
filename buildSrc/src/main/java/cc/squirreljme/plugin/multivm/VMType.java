@@ -287,20 +287,20 @@ public enum VMType
 				String xjdwpProp = Objects.toString(
 					System.getProperty("squirreljme.xjdwp"),
 					__sysProps.get("squirreljme.jdwp.jvm.jdwp"));
-				String jdwpProp = (xjdwpProp != null ? xjdwpProp :
+				/*String jdwpProp = (xjdwpProp != null ? xjdwpProp :
 					Objects.toString(System.getProperty("squirreljme.jdwp"),
-						__sysProps.get("squirreljme.jdwp")));
+						__sysProps.get("squirreljme.jdwp")));*/
 				if ((xjdwpProp != null && !xjdwpProp.isEmpty()) ||
-					(!hasDebug && jdwpProp != null && !jdwpProp.isEmpty()))
+					(!hasDebug && xjdwpProp != null && !xjdwpProp.isEmpty()))
 				{
 					// Figure the hostname/port split
-					int lastCol = jdwpProp.lastIndexOf(':');
+					int lastCol = xjdwpProp.lastIndexOf(':');
 					if (lastCol >= 0)
 					{
 						// Split hostname and port
-						String host = jdwpProp.substring(0, lastCol);
+						String host = xjdwpProp.substring(0, lastCol);
 						int port = Integer.parseInt(
-							jdwpProp.substring(lastCol + 1));
+							xjdwpProp.substring(lastCol + 1));
 						
 						// Listen on a given port?
 						if (host.isEmpty())
@@ -932,7 +932,9 @@ public enum VMType
 		// Enable JDWP debugging?
 		if (__debugEligible)
 		{
-			String jdwpProp = System.getProperty("squirreljme.jdwp");
+			String jdwpProp = Objects.toString(
+				System.getProperty("squirreljme.jdwp"),
+				__sysProps.get("squirreljme.jdwp"));
 			if (jdwpProp != null)
 				vmArgs.add("-Xjdwp:" + jdwpProp);
 		}

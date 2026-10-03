@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Display;
@@ -22,7 +23,7 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2024/03/08
  */
-@SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public final class DisplayState
 {
 	/** The display this is linked to. */

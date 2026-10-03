@@ -20,7 +20,6 @@ import org.junit.Test;
  * @param <R> The result type.
  * @since 2018/10/06
  */
-@SquirrelJMEVendorApi
 @KeepAbsolutelyEverything
 public abstract class TestFunction<A, R>
 	extends __CoreTest__

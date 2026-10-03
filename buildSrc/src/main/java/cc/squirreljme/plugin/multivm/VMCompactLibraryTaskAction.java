@@ -45,14 +45,17 @@ public class VMCompactLibraryTaskAction
 			// AVOID: Violates the specification
 			"!class/marking/final",
 			
-			// UNKNOWN: ???
-			"class/merging/horizontal",
+			// AVOID: Merging appears to be broken
+			// https://github.com/Guardsquare/proguard/issues/37
+			"!class/merging/horizontal",
 			
-			// UNKNOWN: ???
-			"class/merging/vertical",
+			// AVOID: Merging appears to be broken
+			// https://github.com/Guardsquare/proguard/issues/37
+			"!class/merging/vertical",
 			
-			// UNKNOWN: ???
-			"class/merging/wrapper",
+			// AVOID: Merging appears to be broken
+			// https://github.com/Guardsquare/proguard/issues/37
+			"!class/merging/wrapper",
 			
 			// UNKNOWN: ???
 			"class/unboxing/enum",
@@ -109,7 +112,9 @@ public class VMCompactLibraryTaskAction
 			"!field/marking/private",
 			
 			// UNKNOWN: ???
-			"field/propagation/value",
+			// This appears to remove null checks:
+			// https://github.com/Guardsquare/proguard/issues/128
+			"!field/propagation/value",
 			
 			// AVOID: Violates the specification
 			"!field/removal/writeonly",
@@ -120,14 +125,14 @@ public class VMCompactLibraryTaskAction
 			// AVOID: Violates the specification
 			"!method/generalization/class",
 			
-			// UNKNOWN: ???
-			"method/inlining/short",
+			// MAYBE: Seems to break things?
+			"!method/inlining/short",
 			
-			// UNKNOWN: ???
-			"method/inlining/tailrecursion",
+			// MAYBE: Seems to break things?
+			"!method/inlining/tailrecursion",
 			
-			// UNKNOWN: ???
-			"method/inlining/unique",
+			// MAYBE: Seems to break things?
+			"!method/inlining/unique",
 			
 			// AVOID: Violates the specification
 			"!method/marking/final",
@@ -158,7 +163,7 @@ public class VMCompactLibraryTaskAction
 			"!method/specialization/returntype",
 			
 			// UNKNOWN: ???
-			"withcode/removal/advanced",
+			"code/removal/advanced",
 			
 			/*
 			// Never allow access flag changes
@@ -251,12 +256,17 @@ public class VMCompactLibraryTaskAction
 		"-keep,allowoptimization,allowobfuscation";
 	
 	/** Stanza for keeping everything. */
-	public static final String STANZA_KEEP_ALL =
+	public static final String STANZA_KEEP_ALL_NO_OPTIMIZE =
 		"-keep,includecode";
 	
 	/** Stanza for keeping everything, but only members. */
 	public static final String STANZA_KEEP_ALL_ONLY_MEMBERS =
-		"-keepclasseswithmembers,includecode";
+		"-keepclasseswithmembers,includecode,allowoptimization";
+	
+	/** Stanza for keeping with obfuscate, but only members. */
+	public static final String STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE =
+		"-keepclasseswithmembers,includecode,allowoptimization," +
+		"allowobfuscation";
 	
 	/** Settings used to strip debugging. */
 	static final String[] _STRIP_DEBUG = new String[]
@@ -432,41 +442,35 @@ public class VMCompactLibraryTaskAction
 	static final String[] _CALLBACKS = new String[]
 		{
 			// Specific implements
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS, 
+			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE, 
 			"class", "*", "implements",
 				"java.lang.Runnable", "{",
 				"public", "void", "run", "(", ")", ";",
 			"}",
 			
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
+			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE,
 			"class", "*", "implements",
 				"cc.squirreljme.jvm.mle.callbacks.ShelfCallback", "{",
-				"!private", "<methods>", ";",
+				"<methods>", ";",
 			"}",
 			
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
+			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE,
 			"class", "*", "implements",
 			"cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchListener", "{",
-				"!private", "<methods>", ";",
+				"<methods>", ";",
 			"}",
 			
 			// Specific annotated methods
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
+			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE,
 			"class", "*", "{",
 			"@cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop",
-				"!private", "<methods>", ";",
+				"<methods>", ";",
 			"}",
 			
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
+			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE,
 			"class", "*", "{",
 				"@cc.squirreljme.runtime.lcdui.SerializedEvent",
-				"!private", "<methods>", ";",
-			"}",
-			
-			// Keep anything that has a native method
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
-			"class", "*", "{",
-				"native", "<methods>", ";",
+				"<methods>", ";",
 			"}",
 		};
 	
@@ -485,13 +489,13 @@ public class VMCompactLibraryTaskAction
 			// duplication here
 			
 			// Anything that is a bracket must be kept, no matter what
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL, 
+			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_NO_OPTIMIZE, 
 			"class", "*", "implements",
 				"cc.squirreljme.jvm.mle.brackets.Bracket", "{",
 			"}",
 			
 			// All permission types must be kept, no matter what
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL, 
+			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_NO_OPTIMIZE, 
 			"class", "*", "implements",
 				"java.security.Permission", "{",
 			"}",
@@ -513,20 +517,15 @@ public class VMCompactLibraryTaskAction
 			"}",
 			
 			// KeepWhenCompacting
-			VMCompactLibraryTaskAction.STANZA_COMPACT,
-			"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
+			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
+			//"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
 			"class", "*", "{",
 				"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
 				"*", ";",
 			"}",
 			
 			// KeepAbsolutelyEverything
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL,
-			"@cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything",
-			"class", "*", "{",
-				"*", ";",
-			"}",
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
+			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_NO_OPTIMIZE,
 			"@cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything",
 			"class", "*", "{",
 				"*", ";",
@@ -901,9 +900,16 @@ public class VMCompactLibraryTaskAction
 			config.keepKotlinMetadata = false;
 			config.dontProcessKotlinMetadata = true;
 			
+			// ZIPs do not need to be aligned, make them as small as possible
+			config.zipAlign = 1;
+			
+			// Target Java 7
+			config.preverify = true;
+			config.targetClassVersion = (51 << 16);
+			
 			// Reduce space and obfuscate
-			config.shrink = !isTesting;
-			config.obfuscate = !isTesting;
+			config.shrink = true;
+			config.obfuscate = true;
 			config.optimize = !isTesting;
 			config.flattenPackageHierarchy = "$" +
 				(projectConfig.javaDocErrorCode == null ? "??" :

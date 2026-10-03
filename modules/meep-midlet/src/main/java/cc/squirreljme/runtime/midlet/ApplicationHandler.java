@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.jvm.suite.SuiteName;
 import cc.squirreljme.jvm.suite.SuiteVendor;
 import cc.squirreljme.jvm.suite.SuiteVersion;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.midlet.MIDlet;
@@ -25,7 +26,7 @@ import javax.microedition.midlet.MIDlet;
  * @see ApplicationInterface
  * @since 2021/11/30
  */
-@SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public final class ApplicationHandler
 {
 	/** Undefined application name. */

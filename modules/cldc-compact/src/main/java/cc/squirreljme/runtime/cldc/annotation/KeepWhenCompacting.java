@@ -26,7 +26,6 @@ import java.lang.annotation.Target;
 @Retention(value=RetentionPolicy.RUNTIME)
 @Target(value={ElementType.CONSTRUCTOR, ElementType.FIELD,
 	ElementType.METHOD, ElementType.TYPE})
-@SquirrelJMEVendorApi
 @KeepAbsolutelyEverything
 public @interface KeepWhenCompacting
 {

@@ -18,7 +18,6 @@ import org.junit.Test;
  *
  * @since 2018/10/06
  */
-@SquirrelJMEVendorApi
 @KeepAbsolutelyEverything
 public abstract class TestRunnable
 	extends __CoreTest__

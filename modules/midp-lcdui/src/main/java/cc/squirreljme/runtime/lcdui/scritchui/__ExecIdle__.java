@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -20,12 +21,11 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/12/22
  */
-@KeepWhenCompacting
+@KeepAbsolutelyEverything
 final class __ExecIdle__
 	implements Runnable
 {
 	/** The loop interface. */
-	@SquirrelJMEVendorApi
 	final ScritchEventLoopInterface loop;
 	
 	/**

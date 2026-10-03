@@ -10,6 +10,11 @@ dependencies
 	// This is not used at runtime, but is required for testing in the hosted
 	// environment to work as the emulator needs to exist.
 	testImplementation project(":emulators:emulator-base")
+
+	testImplementation project(":emulators:tool-classfile")
+	testImplementation project(":emulators:common-vm")
+	testImplementation project(":emulators:debug-jdwp")
+	testImplementation project(":emulators:debug-jdwp-vm-host")
 }
 
 // Include Common Testing Configuration

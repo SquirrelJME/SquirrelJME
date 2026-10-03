@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -22,7 +23,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @param <L> The listener type to use.
  * @since 2024/07/18
  */
-@SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public abstract class ObjectTracker<T, L>
 {
 	/** The event loop used. */
@@ -30,11 +31,9 @@ public abstract class ObjectTracker<T, L>
 	protected final ScritchEventLoopInterface loop;
 	
 	/** The current value. */
-	@SquirrelJMEVendorApi
 	volatile T _value;
 	
 	/** The currently attached listener. */
-	@SquirrelJMEVendorApi
 	volatile L _listener;
 	
 	/**

@@ -26,7 +26,6 @@ import java.util.List;
  *
  * @since 2019/01/20
  */
-@SquirrelJMEVendorApi
 @KeepAbsolutelyEverything
 public final class DataSerialization
 {

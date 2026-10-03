@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.mle.brackets.NativeArchiveBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
@@ -36,6 +37,7 @@ import java.util.Queue;
  * @since 2020/07/03
  */
 @SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public final class CleanupHandler
 {
 	/** Queue of handles waiting to be closed. */

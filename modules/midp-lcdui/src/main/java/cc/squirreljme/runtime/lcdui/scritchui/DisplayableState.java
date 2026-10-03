@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -36,11 +37,10 @@ import org.intellij.lang.annotations.MagicConstant;
  *
  * @since 2024/03/08
  */
-@SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public final class DisplayableState
 {
 	/** The displayable states that exist. */
-	@KeepWhenCompacting
 	private static final List<Reference<DisplayableState>> _binds =
 		new LinkedList<>();
 	
@@ -70,7 +70,6 @@ public final class DisplayableState
 	private volatile boolean _desireFullScreen;
 	
 	/** Displayable specific flags, defined by {@link Displayable}. */
-	@SquirrelJMEVendorApi
 	@MagicConstant(flagsFromClass = SpecificFlags.class)
 	private volatile int _specificFlags;
 	

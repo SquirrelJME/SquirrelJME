@@ -90,7 +90,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void debugNote(@PrintFormat String __fmt)
 	{
-		if (!__Flags__._ENABLED)
+		if (!__Flags__._ENABLED || !Debugging.ENABLED)
 			return;
 		
 		Debugging.__format('D', 'B', __fmt, (Object[])null);
@@ -106,7 +106,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void debugNote(@PrintFormat String __fmt, Object... __args)
 	{
-		if (!__Flags__._ENABLED)
+		if (!__Flags__._ENABLED || !Debugging.ENABLED)
 			return;
 		
 		Debugging.__format('D', 'B', __fmt, __args);
@@ -121,7 +121,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void notice(@PrintFormat String __fmt)
 	{
-		if (!__Flags__._ENABLED)
+		if (!__Flags__._ENABLED || !Debugging.ENABLED)
 			return;
 		
 		Debugging.__format('\0', '\0', __fmt, (Object[])null);
@@ -137,7 +137,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void notice(@PrintFormat String __fmt, Object... __args)
 	{
-		if (!__Flags__._ENABLED)
+		if (!__Flags__._ENABLED || !Debugging.ENABLED)
 			return;
 		
 		Debugging.__format('\0', '\0', __fmt, __args);
@@ -256,7 +256,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void todoNote(@PrintFormat String __fmt)
 	{
-		if (!__Flags__._ENABLED)
+		if (!__Flags__._ENABLED || !Debugging.ENABLED)
 			return;
 		
 		Debugging.__format('T', 'D', __fmt, (Object[])null);
@@ -272,7 +272,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void todoNote(@PrintFormat String __fmt, Object... __args)
 	{
-		if (!__Flags__._ENABLED)
+		if (!__Flags__._ENABLED || !Debugging.ENABLED)
 			return;
 		
 		Debugging.__format('T', 'D', __fmt, __args);

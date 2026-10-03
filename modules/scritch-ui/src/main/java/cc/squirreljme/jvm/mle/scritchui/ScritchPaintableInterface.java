@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2024/03/19
  */
-@SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public interface ScritchPaintableInterface
 	extends ScritchApiInterface
 {

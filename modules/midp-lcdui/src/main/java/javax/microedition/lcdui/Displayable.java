@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.exceptions.MLECallErrorCode;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -42,6 +43,7 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
  * @since 2016/10/08
  */
 @Api
+@KeepAbsolutelyEverything
 @SuppressWarnings("OverlyComplexClass")
 public abstract class Displayable
 	extends MenuActionNodeOnly

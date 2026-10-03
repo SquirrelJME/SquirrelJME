@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.Async;
@@ -18,12 +19,10 @@ import org.jetbrains.annotations.Async;
  *
  * @since 2024/07/21
  */
-@KeepWhenCompacting
 final class __ExecUpdateMenuTree__
 	implements Runnable
 {
 	/** The menu root to update. */
-	@SquirrelJMEVendorApi
 	protected final MenuActionNode root;
 	
 	/**
@@ -33,7 +32,6 @@ final class __ExecUpdateMenuTree__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/21
 	 */
-	@KeepWhenCompacting
 	__ExecUpdateMenuTree__(MenuActionNode __root)
 		throws NullPointerException
 	{

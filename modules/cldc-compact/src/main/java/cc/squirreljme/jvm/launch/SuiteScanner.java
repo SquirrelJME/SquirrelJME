@@ -28,7 +28,6 @@ import java.util.Map;
  *
  * @since 2020/12/28
  */
-@SquirrelJMEVendorApi
 @KeepAbsolutelyEverything
 public final class SuiteScanner
 {

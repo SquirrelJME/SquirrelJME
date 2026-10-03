@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -19,7 +20,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @see ApplicationHandler
  * @since 2021/11/30
  */
-@SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public interface ApplicationInterface<A>
 {
 	/**

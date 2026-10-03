@@ -28,7 +28,6 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(value=RetentionPolicy.RUNTIME)
 @Target(value={ElementType.TYPE})
-@SquirrelJMEVendorApi
 @KeepAbsolutelyEverything
 public @interface KeepAbsolutelyEverything
 {

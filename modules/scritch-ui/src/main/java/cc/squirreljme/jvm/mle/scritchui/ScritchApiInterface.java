@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.callbacks.ShelfCallback;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
@@ -17,7 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/07/16
  */
-@SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public interface ScritchApiInterface
 	extends ShelfCallback
 {

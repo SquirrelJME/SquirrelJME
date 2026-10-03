@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/02/23
  */
-@SquirrelJMEVendorApi
 @KeepAbsolutelyEverything
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface TestInterface

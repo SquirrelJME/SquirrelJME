@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.midlet.MIDlet;
 
@@ -18,7 +19,7 @@ import javax.microedition.midlet.MIDlet;
  *
  * @since 2017/02/26
  */
-@SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public final class ActiveMidlet
 {
 	/** Lock to prevent multiple midlets from running. */
