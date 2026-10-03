@@ -9,11 +9,14 @@
 
 package cc.squirreljme.jvm.launch;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
+
 /**
  * Counter for the suite scanner.
  *
  * @since 2022/10/03
  */
+@KeepAbsolutelyEverything
 final class __SuiteScannerCounter__
 {
 	/** The count. */

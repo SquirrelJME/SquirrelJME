@@ -9,11 +9,14 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
+
 /**
  * Are the addresses and sizes considered dirty?
  *
  * @since 2019/08/25
  */
+@KeepAbsolutelyEverything
 final class __Dirty__
 {
 	/** Flag used to store the dirty state. */

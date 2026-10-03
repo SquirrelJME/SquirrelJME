@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.MatchResult;
 import cc.squirreljme.jvm.suite.SuiteInfo;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -26,7 +27,7 @@ import java.util.Set;
  *
  * @since 2020/12/29
  */
-@KeepWhenCompacting
+@KeepAbsolutelyEverything
 final class __Libraries__
 {
 	/** The available libraries. */

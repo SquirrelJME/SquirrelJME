@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractList;
 import java.util.Iterator;
@@ -30,7 +31,7 @@ public abstract class UnmodifiableList<V>
 {
 	/** The list to wrap. */
 	@SquirrelJMEVendorApi
-	protected final List<V> wrapped;	
+	protected final List<V> wrapped;
 	
 	/**
 	 * Initializes the list which cannot be modified.
@@ -145,6 +146,7 @@ public abstract class UnmodifiableList<V>
 	 * @param <V> The type of value in the list.
 	 * @since 2016/05/12
 	 */
+	@KeepAbsolutelyEverything
 	private static final class __ListIterator__<V>
 		implements ListIterator<V>
 	{
@@ -268,6 +270,7 @@ public abstract class UnmodifiableList<V>
 	 * @param <V> The type to contain.
 	 * @since 2016/04/28
 	 */
+	@KeepAbsolutelyEverything
 	private static final class __Random__<V>
 		extends UnmodifiableList<V>
 		implements RandomAccess
@@ -292,6 +295,7 @@ public abstract class UnmodifiableList<V>
 	 * @param <V> The type to contain.
 	 * @since 2016/04/28
 	 */
+	@KeepAbsolutelyEverything
 	private static final class __Sequential__<V>
 		extends UnmodifiableList<V>
 	{

@@ -35,10 +35,10 @@ dependencies {
 	implementation "ca.mcgill.sable:jasmin:3.0.3"
 	
 	// ProGuard, minification
-	// This was previous 7.6.1, however that seems to have introduced a number
-	// of issues with Java 8 classes
+	// This was previously 7.6.1, however that seems to have introduced a
+	// number of issues with Java 8 classes
 	// Debian: libproguard-java
-	implementation "com.guardsquare:proguard-base:7.4.2"
+	implementation "com.guardsquare:proguard-base:7.3.2"
 	
 	// Country codes, this is the last version supporting Java 8
 	implementation 'org.iban4j:iban4j:3.2.7-RELEASE'

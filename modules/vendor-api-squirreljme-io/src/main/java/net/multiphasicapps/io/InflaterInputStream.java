@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1210,6 +1211,7 @@ public class InflaterInputStream
 	 *
 	 * @since 2017/02/25
 	 */
+	@KeepAbsolutelyEverything
 	private final class __BitSource__
 		implements BitSource
 	{

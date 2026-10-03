@@ -16,6 +16,7 @@ import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.EntryPoint;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.InputStream;
@@ -28,7 +29,7 @@ import java.util.Objects;
  *
  * @since 2021/06/13
  */
-@SquirrelJMEVendorApi
+@KeepAbsolutelyEverything
 public abstract class Application
 {
 	/** Property for overriding the encoding. */

@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.zip.blockreader;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.Closeable;
 import java.io.IOException;
@@ -436,6 +437,7 @@ public class ZipBlockReader
 	 *
 	 * @since 2016/12/31
 	 */
+	@KeepAbsolutelyEverything
 	private class __Iterator__
 		implements Iterator<ZipBlockEntry>
 	{

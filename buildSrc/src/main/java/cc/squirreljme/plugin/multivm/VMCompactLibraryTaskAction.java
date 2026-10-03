@@ -874,6 +874,7 @@ public class VMCompactLibraryTaskAction
 			// information if it is there, to make sure it is retained
 			if (!isTesting)
 				config.keepAttributes = Arrays.asList(
+					"InnerClasses",
 					"RuntimeInvisibleAnnotations",
 					"RuntimeVisibleAnnotations",
 					"Exceptions",
@@ -882,9 +883,14 @@ public class VMCompactLibraryTaskAction
 			// Keep more debugging attributes, so we can more easily figure
 			// things out when debugging
 			else
-				config.keepAttributes = Arrays.asList("*Annotation*",
-					"Exceptions", "Signature", "LineNumberTable",
-					"LocalVariableTable", "LocalVariableTypeTable",
+				config.keepAttributes = Arrays.asList(
+					"InnerClasses",
+					"*Annotation*",
+					"Exceptions", 
+					"Signature", 
+					"LineNumberTable",
+					"LocalVariableTable", 
+					"LocalVariableTypeTable",
 					"SourceFile");
 			
 			// Do not skip parsing classes
@@ -898,7 +904,7 @@ public class VMCompactLibraryTaskAction
 			// Not Kotlin
 			config.enableKotlinAsserter = false;
 			config.keepKotlinMetadata = false;
-			config.dontProcessKotlinMetadata = true;
+			/*config.dontProcessKotlinMetadata = true;*/
 			
 			// ZIPs do not need to be aligned, make them as small as possible
 			config.zipAlign = 1;
@@ -920,14 +926,14 @@ public class VMCompactLibraryTaskAction
 			if (__aggressive)
 			{
 				config.optimizationPasses = 8;
-				config.optimizeConservatively = false;
+				/*config.optimizeConservatively = false;*/
 			}
 			
 			// If not, we likely crashed and/or ran out of memory
 			else
 			{
 				config.optimizationPasses = 4;
-				config.optimizeConservatively = true;
+				/*config.optimizeConservatively = true;*/
 			}
 			
 			if (false)
