@@ -123,11 +123,11 @@ public class VMCompactLibraryTaskAction
 			// AVOID: Violates the specification
 			"!field/marking/private",
 			
-			// AVOID: Inlining increases code size, but also forces a specific
-			// object instance to be used if it thinks it is known
+			// KEEP?: This appears to work, it does remove the majority of
+			// debug checks.
 			// This appears to remove null checks:
 			// https://github.com/Guardsquare/proguard/issues/128
-			"!field/propagation/value",
+			"field/propagation/value",
 			
 			// AVOID: Violates the specification
 			"!field/removal/writeonly",
@@ -138,9 +138,8 @@ public class VMCompactLibraryTaskAction
 			// AVOID: Violates the specification
 			"!method/generalization/class",
 			
-			// AVOID: Inlining increases code size, but also forces a specific
-			// object instance to be used if it thinks it is known
-			"!method/inlining/short",
+			// KEEP: This can be used to remove some instances of debug calls
+			"method/inlining/short",
 			
 			// AVOID: Inlining increases code size, but also forces a specific
 			// object instance to be used if it thinks it is known
