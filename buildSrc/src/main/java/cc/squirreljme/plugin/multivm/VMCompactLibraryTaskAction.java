@@ -73,6 +73,9 @@ public class VMCompactLibraryTaskAction
 			// Simplifies code based on control flow analysis and data flow
 			// analysis. Removes dead code based on control flow analysis and
 			// data flow analysis.
+			// ProGuard says this should be used with
+			// code/simplification/advanced, however this specific rule here
+			// breaks everything as above
 			"!code/removal/advanced",
 			
 			// UNKNOWN: ???
@@ -84,13 +87,11 @@ public class VMCompactLibraryTaskAction
 			// UNKNOWN: ???
 			"code/removal/variable",
 			
-			// AVOID: Dead code removal based on this kind of determination
-			// does not work well across native method calls as everything is
-			// outside what ProGuard sees
-			// Simplifies code based on control flow analysis and data flow
-			// analysis. Removes dead code based on control flow analysis and
-			// data flow analysis.
-			"!code/simplification/advanced",
+			// KEEP: Although ProGuard says this should be used with
+			// code/removal/advanced, and that this does simplification based
+			// on dead code. Having this on and the other off seems to work
+			// just fine.
+			"code/simplification/advanced",
 			
 			// UNKNOWN: ???
 			"code/simplification/arithmetic",
@@ -210,32 +211,6 @@ public class VMCompactLibraryTaskAction
 	/** Stanza for keeping everything. */
 	public static final String STANZA_DO_NOT_TOUCH =
 		"-keep,includecode";
-	
-	/** Stanza for keeping everything. */
-	@Deprecated
-	public static final String STANZA_KEEP_ALL_NO_OPTIMIZE =
-		"-keep,includecode,includedescriptorclasses";
-	
-	/** Obfuscates everything about the class. */
-	@Deprecated
-	public static final String STANZA_OBFUSCATE_ALL =
-		"-keepclassmembers,allowoptimization,allowobfuscation";
-	
-	/** Stanza for compacting APIs. */
-	@Deprecated
-	public static final String STANZA_COMPACT =
-		"-keep,allowoptimization,allowobfuscation";
-	
-	/** Stanza for keeping everything, but only members. */
-	@Deprecated
-	public static final String STANZA_KEEP_ALL_ONLY_MEMBERS =
-		"-keepclasseswithmembers,includecode,allowoptimization";
-	
-	/** Stanza for keeping with obfuscate, but only members. */
-	@Deprecated
-	public static final String STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE =
-		"-keepclasseswithmembers,includecode,allowoptimization," +
-		"allowobfuscation,includedescriptorclasses";
 	
 	/** Settings used to strip debugging. */
 	static final String[] _STRIP_DEBUG = new String[]
@@ -365,47 +340,11 @@ public class VMCompactLibraryTaskAction
 				"com.nttdocomo.ui.IApplication",
 		};
 	
-	/** Native callbacks. */
-	static final String[] _CALLBACKS = new String[]
-		{
-			// Specific implements
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE, 
-			"class", "*", "implements",
-				"java.lang.Runnable", "{",
-				"public", "void", "run", "(", ")", ";",
-			"}",
-			
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE,
-			"class", "*", "implements",
-				"cc.squirreljme.jvm.mle.callbacks.ShelfCallback", "{",
-				"<methods>", ";",
-			"}",
-			
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE,
-			"class", "*", "implements",
-			"cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchListener", "{",
-				"<methods>", ";",
-			"}",
-			
-			// Specific annotated methods
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE,
-			"class", "*", "{",
-			"@cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop",
-				"<methods>", ";",
-			"}",
-			
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE,
-			"class", "*", "{",
-				"@cc.squirreljme.runtime.lcdui.SerializedEvent",
-				"<methods>", ";",
-			"}",
-		};
-	
 	/**
 	 * Newer settings to be parsed which effectively keeps everything that
 	 * is public for the most part, due to the vast number of ProGuard issues.
 	 */
-	static final String[] _PARSE_SETTINGS_NEW = new String[]
+	static final String[] _PARSE_SETTINGS = new String[]
 		{
 			// Keep any class that is public
 			VMCompactLibraryTaskAction.STANZA_API,
@@ -425,77 +364,6 @@ public class VMCompactLibraryTaskAction
 			"}",
 			
 			VMCompactLibraryTaskAction.STANZA_DO_NOT_TOUCH,
-			"@cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything",
-			"class", "*", "{",
-				"*", ";",
-			"}",
-			
-			// Obfuscate and optimize anything not public
-			/*VMCompactLibraryTaskAction.STANZA_OBFUSCATE_MEMBERS,
-			"public", "class", "*", "{",
-				// Obfuscate private members
-				"!public", "<init>", "(", "...", ")", ";",
-				"!public", "<methods>", ";",
-				"!public", "<fields>", ";",
-				"!protected", "<init>", "(", "...", ")", ";",
-				"!protected", "<methods>", ";",
-				"!protected", "<fields>", ";",
-			"}",*/
-		};
-	
-	/**
-	 * Settings to use in the configuration for keeping, etc.
-	 * 
-	 * The way this works below is that any setting which will replace all
-	 * occurrences of class with interface and enum.
-	 */
-	@Deprecated
-	static final String[] _PARSE_SETTINGS = new String[]
-		{
-			// NOTE: ProGuard says "class" includes classes and interfaces
-			// in its documentation... however, observation says otherwise
-			// There is code below that will change all "class" to "enum"
-			// and "interface" so they are all shared and there is no
-			// duplication here
-			
-			// Anything that is a bracket must be kept, no matter what
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_NO_OPTIMIZE, 
-			"class", "*", "implements",
-				"cc.squirreljme.jvm.mle.brackets.Bracket", "{",
-			"}",
-			
-			// All permission types must be kept, no matter what
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_NO_OPTIMIZE, 
-			"class", "*", "implements",
-				"java.security.Permission", "{",
-			"}",
-			
-			// Standard API
-			VMCompactLibraryTaskAction.STANZA_API,
-			"@cc.squirreljme.runtime.cldc.annotation.Api",
-			"public", "class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.Api",
-				"!private", "*", ";",
-			"}",
-			
-			// SquirrelJMEVendorApi
-			VMCompactLibraryTaskAction.STANZA_API,
-			"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
-			"public", "class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi",
-				"!private", "*", ";",
-			"}",
-			
-			// KeepWhenCompacting
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_ONLY_MEMBERS,
-			//"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
-			"class", "*", "{",
-				"@cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting",
-				"*", ";",
-			"}",
-			
-			// KeepAbsolutelyEverything
-			VMCompactLibraryTaskAction.STANZA_KEEP_ALL_NO_OPTIMIZE,
 			"@cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything",
 			"class", "*", "{",
 				"*", ";",
@@ -745,11 +613,6 @@ public class VMCompactLibraryTaskAction
 				// Make sure reflection works, at the minimum
 				proGuardOptions.addAll(
 					Arrays.asList(VMCompactLibraryTaskAction._REFLECTION));
-				
-				// Keep all callbacks, since they get stripped as nothing
-				// sees them and everything just breaks
-				proGuardOptions.addAll(
-					Arrays.asList(VMCompactLibraryTaskAction._CALLBACKS));
 			}
 			
 			// API and SquirrelJMEVendorAPI are the same, except using
@@ -759,7 +622,7 @@ public class VMCompactLibraryTaskAction
 			List<String> baseApi = new ArrayList<>();
 			for (String classy : Arrays.asList("class", "interface", "enum"))
 				for (String opt :
-					VMCompactLibraryTaskAction._PARSE_SETTINGS_NEW)
+					VMCompactLibraryTaskAction._PARSE_SETTINGS)
 				{
 					// Change class to something else?
 					if (opt.equals("class"))
