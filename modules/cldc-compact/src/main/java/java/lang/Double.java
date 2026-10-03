@@ -17,7 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 @Api
-@KeepAbsolutelyEverything
+@KeepAbsolutelyEverything("Boxed types cannot be optimized!")
 public final class Double
 	extends Number
 	implements Comparable<Double>

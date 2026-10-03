@@ -23,7 +23,6 @@ import java.util.Map;
  *
  * @since 2019/05/08
  */
-@KeepAbsolutelyEverything
 public final class TestResultBuilder
 {
 	/** Secondary test values. */

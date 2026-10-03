@@ -23,7 +23,6 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2024/03/08
  */
-@KeepAbsolutelyEverything
 public final class DisplayState
 {
 	/** The display this is linked to. */

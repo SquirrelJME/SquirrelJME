@@ -20,7 +20,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2023/07/10
  */
 @KeepWhenCompacting
-@KeepAbsolutelyEverything
 final class __Drop__
 {
 	/**

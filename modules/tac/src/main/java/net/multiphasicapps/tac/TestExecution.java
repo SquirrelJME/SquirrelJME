@@ -18,7 +18,6 @@ import java.io.PrintStream;
  *
  * @since 2020/02/23
  */
-@KeepAbsolutelyEverything
 public final class TestExecution
 {
 	/** Print the resultant output manifest? */

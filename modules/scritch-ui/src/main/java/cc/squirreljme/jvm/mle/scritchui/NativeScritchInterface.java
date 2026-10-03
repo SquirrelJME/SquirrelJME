@@ -20,7 +20,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/02/29
  */
-@KeepAbsolutelyEverything
 public final class NativeScritchInterface
 {
 	/**

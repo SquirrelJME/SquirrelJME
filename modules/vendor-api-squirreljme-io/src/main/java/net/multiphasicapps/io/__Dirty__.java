@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
  *
  * @since 2019/08/25
  */
-@KeepAbsolutelyEverything
 final class __Dirty__
 {
 	/** Flag used to store the dirty state. */

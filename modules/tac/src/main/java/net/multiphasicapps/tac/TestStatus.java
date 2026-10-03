@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2018/10/07
  */
-@KeepAbsolutelyEverything
 public enum TestStatus
 {
 	/** Success. */

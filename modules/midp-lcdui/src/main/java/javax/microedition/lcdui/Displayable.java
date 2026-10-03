@@ -43,7 +43,6 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
  * @since 2016/10/08
  */
 @Api
-@KeepAbsolutelyEverything
 @SuppressWarnings("OverlyComplexClass")
 public abstract class Displayable
 	extends MenuActionNodeOnly

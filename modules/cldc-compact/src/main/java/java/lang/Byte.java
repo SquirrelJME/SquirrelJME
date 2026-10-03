@@ -21,7 +21,7 @@ import java.lang.ref.WeakReference;
  * @since 2018/12/07
  */
 @Api
-@KeepAbsolutelyEverything
+@KeepAbsolutelyEverything("Boxed types cannot be optimized!")
 public final class Byte
 	extends Number
 	implements Comparable<Byte>

@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
  * @since 2018/12/07
  */
 @Api
-@KeepAbsolutelyEverything
+@KeepAbsolutelyEverything("Boxed types cannot be optimized!")
 public final class Boolean
 	implements Comparable<Boolean>
 {

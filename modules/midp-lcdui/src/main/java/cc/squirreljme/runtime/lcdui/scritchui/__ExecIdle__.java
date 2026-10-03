@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/12/22
  */
-@KeepAbsolutelyEverything
 final class __ExecIdle__
 	implements Runnable
 {

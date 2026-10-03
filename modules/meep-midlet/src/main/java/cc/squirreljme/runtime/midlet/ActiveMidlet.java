@@ -19,7 +19,6 @@ import javax.microedition.midlet.MIDlet;
  *
  * @since 2017/02/26
  */
-@KeepAbsolutelyEverything
 public final class ActiveMidlet
 {
 	/** Lock to prevent multiple midlets from running. */

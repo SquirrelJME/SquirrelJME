@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2024/07/22
  */
-@KeepAbsolutelyEverything
 public interface ScritchLabelInterface
 	extends ScritchApiInterface
 {

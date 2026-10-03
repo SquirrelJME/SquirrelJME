@@ -36,7 +36,6 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2024/03/09
  */
-@KeepAbsolutelyEverything
 public final class DisplayManager
 {
 	/** The number of available desktop windows. */

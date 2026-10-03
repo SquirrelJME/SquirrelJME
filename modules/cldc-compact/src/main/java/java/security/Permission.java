@@ -24,7 +24,7 @@ import java.lang.ref.WeakReference;
  * @since 2018/12/08
  */
 @Api
-@KeepAbsolutelyEverything
+@KeepAbsolutelyEverything("Lightweight 'Security' permission system.")
 public abstract class Permission
 {
 	/** The permission name. */

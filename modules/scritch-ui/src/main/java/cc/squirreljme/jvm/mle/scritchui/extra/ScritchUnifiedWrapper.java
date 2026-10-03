@@ -67,7 +67,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2024/08/02
  */
-@KeepAbsolutelyEverything
 public class ScritchUnifiedWrapper
 	implements ScritchUnifiedInterface
 {

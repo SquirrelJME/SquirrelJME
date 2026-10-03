@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/16
  */
-@KeepAbsolutelyEverything
 public interface ScritchComponentInterface
 	extends ScritchApiInterface
 {

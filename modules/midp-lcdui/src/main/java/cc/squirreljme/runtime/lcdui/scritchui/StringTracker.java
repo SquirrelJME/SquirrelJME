@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Async;
  *
  * @since 2024/07/18
  */
-@KeepAbsolutelyEverything
 public final class StringTracker
 	extends ObjectTracker<String, StringTrackerListener>
 {

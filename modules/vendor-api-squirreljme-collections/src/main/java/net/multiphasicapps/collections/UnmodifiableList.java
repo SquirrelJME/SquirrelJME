@@ -146,7 +146,6 @@ public abstract class UnmodifiableList<V>
 	 * @param <V> The type of value in the list.
 	 * @since 2016/05/12
 	 */
-	@KeepAbsolutelyEverything
 	private static final class __ListIterator__<V>
 		implements ListIterator<V>
 	{
@@ -270,7 +269,6 @@ public abstract class UnmodifiableList<V>
 	 * @param <V> The type to contain.
 	 * @since 2016/04/28
 	 */
-	@KeepAbsolutelyEverything
 	private static final class __Random__<V>
 		extends UnmodifiableList<V>
 		implements RandomAccess
@@ -295,7 +293,6 @@ public abstract class UnmodifiableList<V>
 	 * @param <V> The type to contain.
 	 * @since 2016/04/28
 	 */
-	@KeepAbsolutelyEverything
 	private static final class __Sequential__<V>
 		extends UnmodifiableList<V>
 	{

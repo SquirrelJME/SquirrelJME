@@ -21,7 +21,6 @@ import org.junit.Test;
  * @param <R> The result type.
  * @since 2018/10/06
  */
-@KeepAbsolutelyEverything
 public abstract class TestBiFunction<A, B, R>
 	extends __CoreTest__
 {

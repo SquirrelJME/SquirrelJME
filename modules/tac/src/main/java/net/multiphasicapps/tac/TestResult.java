@@ -42,7 +42,6 @@ import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
  *
  * @since 2019/05/08
  */
-@KeepAbsolutelyEverything
 public final class TestResult
 {
 	/** Return value result. */

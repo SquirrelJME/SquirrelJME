@@ -26,7 +26,6 @@ import java.lang.ref.WeakReference;
  * @param <V> The value type.
  * @since 2018/10/07
  */
-@KeepAbsolutelyEverything
 final class __BucketMap__<K, V>
 	//extends AbstractMap<K, V>
 {
@@ -579,7 +578,6 @@ final class __BucketMap__<K, V>
 	 *
 	 * @since 2018/11/01
 	 */
-	@KeepAbsolutelyEverything
 	final class __EntrySet__
 		extends AbstractSet<Map.Entry<K, V>>
 	{
@@ -619,7 +617,6 @@ final class __BucketMap__<K, V>
 	 *
 	 * @since 2018/11/01
 	 */
-	@KeepAbsolutelyEverything
 	abstract class __IteratorBase__
 		implements Iterator<Map.Entry<K, V>>
 	{
@@ -648,7 +645,6 @@ final class __BucketMap__<K, V>
 	 *
 	 * @since 2018/10/13
 	 */
-	@KeepAbsolutelyEverything
 	final class __IteratorBucketOrder__
 		extends __IteratorBase__
 	{
@@ -785,7 +781,6 @@ final class __BucketMap__<K, V>
 	 *
 	 * @since 2018/11/01
 	 */
-	@KeepAbsolutelyEverything
 	final class __IteratorLinkedOrder__
 		extends __IteratorBase__
 	{

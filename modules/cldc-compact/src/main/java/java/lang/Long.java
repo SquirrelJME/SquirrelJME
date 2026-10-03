@@ -21,7 +21,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 @Api
-@KeepAbsolutelyEverything
+@KeepAbsolutelyEverything("Boxed types cannot be optimized!")
 public final class Long
 	extends Number
 	implements Comparable<Long>

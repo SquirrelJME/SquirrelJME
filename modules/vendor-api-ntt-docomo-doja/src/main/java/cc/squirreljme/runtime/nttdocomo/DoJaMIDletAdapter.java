@@ -29,7 +29,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
  *
  * @since 2024/07/28
  */
-@KeepAbsolutelyEverything
 public class DoJaMIDletAdapter
 	extends MIDlet
 {

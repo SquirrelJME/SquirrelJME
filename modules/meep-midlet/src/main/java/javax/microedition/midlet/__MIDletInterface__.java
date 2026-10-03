@@ -22,7 +22,6 @@ import cc.squirreljme.runtime.midlet.ApplicationType;
  *
  * @since 2021/11/30
  */
-@KeepAbsolutelyEverything
 final class __MIDletInterface__
 	implements ApplicationInterface<MIDlet>
 {

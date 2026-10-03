@@ -33,7 +33,6 @@ import org.junit.Test;
  *
  * @since 2018/10/06
  */
-@KeepAbsolutelyEverything
 abstract class __CoreTest__
 	implements TestInterface
 {

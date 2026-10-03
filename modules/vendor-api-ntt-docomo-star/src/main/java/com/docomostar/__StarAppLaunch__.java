@@ -9,6 +9,7 @@
 
 package com.docomostar;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 
 /**
@@ -16,6 +17,7 @@ import cc.squirreljme.runtime.midlet.ApplicationHandler;
  *
  * @since 2022/02/28
  */
+@KeepAbsolutelyEverything("Internal Launcher for Star")
 final class __StarAppLaunch__
 {
 	/**

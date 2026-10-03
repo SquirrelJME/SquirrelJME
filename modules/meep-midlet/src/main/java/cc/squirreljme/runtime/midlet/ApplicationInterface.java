@@ -20,7 +20,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @see ApplicationHandler
  * @since 2021/11/30
  */
-@KeepAbsolutelyEverything
 public interface ApplicationInterface<A>
 {
 	/**

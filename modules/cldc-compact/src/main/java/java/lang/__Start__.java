@@ -27,7 +27,7 @@ import java.util.Objects;
  * @since 2020/05/31
  */
 @SuppressWarnings("unused")
-@KeepAbsolutelyEverything
+@KeepAbsolutelyEverything("Entry point for all virtual machines!")
 final class __Start__
 {
 	/** The time to wait between each termination. */

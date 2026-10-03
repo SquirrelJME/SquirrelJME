@@ -19,7 +19,6 @@ import org.junit.Test;
  * @param <A> The first argument type.
  * @since 2018/10/06
  */
-@KeepAbsolutelyEverything
 public abstract class TestConsumer<A>
 	extends __CoreTest__
 {

@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/07/16
  */
-@KeepAbsolutelyEverything
 public interface ScritchListInterface
 	extends ScritchApiInterface
 {

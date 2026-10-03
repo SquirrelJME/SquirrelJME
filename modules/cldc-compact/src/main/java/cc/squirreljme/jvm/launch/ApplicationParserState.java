@@ -25,7 +25,6 @@ import java.util.Map;
  *
  * @since 2024/01/06
  */
-@KeepAbsolutelyEverything
 public final class ApplicationParserState
 {
 	/** The current Jar. */

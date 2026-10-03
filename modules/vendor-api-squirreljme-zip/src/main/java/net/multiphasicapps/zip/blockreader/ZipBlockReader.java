@@ -437,7 +437,6 @@ public class ZipBlockReader
 	 *
 	 * @since 2016/12/31
 	 */
-	@KeepAbsolutelyEverything
 	private class __Iterator__
 		implements Iterator<ZipBlockEntry>
 	{

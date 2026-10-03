@@ -20,7 +20,6 @@ import org.junit.Test;
  * @param <B> The second argument type.
  * @since 2018/10/06
  */
-@KeepAbsolutelyEverything
 public abstract class TestBiConsumer<A, B>
 	extends __CoreTest__
 {

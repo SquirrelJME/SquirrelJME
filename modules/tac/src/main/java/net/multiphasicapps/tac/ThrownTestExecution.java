@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/02/26
  */
-@KeepAbsolutelyEverything
 public class ThrownTestExecution
 	extends RuntimeException
 {

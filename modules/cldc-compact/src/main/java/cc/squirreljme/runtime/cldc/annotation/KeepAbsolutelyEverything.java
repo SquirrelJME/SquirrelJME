@@ -28,8 +28,9 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(value=RetentionPolicy.RUNTIME)
 @Target(value={ElementType.TYPE})
-@KeepAbsolutelyEverything
 public @interface KeepAbsolutelyEverything
 {
+	/** The reason why this is kept. */
+	String value() default "";
 }
 

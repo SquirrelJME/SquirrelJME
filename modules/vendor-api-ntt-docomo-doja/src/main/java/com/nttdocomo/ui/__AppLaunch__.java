@@ -9,6 +9,7 @@
 
 package com.nttdocomo.ui;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
@@ -22,7 +23,7 @@ import java.util.Deque;
  *
  * @since 2021/06/13
  */
-@KeepWhenCompacting
+@KeepAbsolutelyEverything("Internal Launcher for DoJa")
 final class __AppLaunch__
 {
 	/**

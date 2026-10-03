@@ -29,7 +29,6 @@ import java.util.Objects;
  *
  * @since 2021/06/13
  */
-@KeepAbsolutelyEverything
 public abstract class Application
 {
 	/** Property for overriding the encoding. */

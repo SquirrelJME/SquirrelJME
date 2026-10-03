@@ -19,7 +19,6 @@ import org.junit.Test;
  * @param <R> The return type.
  * @since 2018/10/06
  */
-@KeepAbsolutelyEverything
 public abstract class TestSupplier<R>
 	extends __CoreTest__
 {

@@ -26,7 +26,6 @@ import javax.microedition.midlet.MIDlet;
  * @see ApplicationInterface
  * @since 2021/11/30
  */
-@KeepAbsolutelyEverything
 public final class ApplicationHandler
 {
 	/** Undefined application name. */

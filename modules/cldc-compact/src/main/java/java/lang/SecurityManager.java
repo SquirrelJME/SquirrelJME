@@ -25,7 +25,7 @@ import java.util.PropertyPermission;
  * @since 2020/07/02
  */
 @Api
-@KeepAbsolutelyEverything
+@KeepAbsolutelyEverything("Lightweight 'Security' permission system.")
 public class SecurityManager
 {
 	/** The current security manager, defaults to the system one. */

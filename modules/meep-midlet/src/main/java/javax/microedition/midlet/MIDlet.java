@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 @Api
-@KeepAbsolutelyEverything
 public abstract class MIDlet
 {
 	/** This is the prefix used to override settings. */

@@ -18,7 +18,6 @@ import org.junit.Test;
  *
  * @since 2019/12/25
  */
-@KeepAbsolutelyEverything
 public abstract class TestBoolean
 	extends __CoreTest__
 {

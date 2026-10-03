@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/11/08
  */
-@KeepAbsolutelyEverything
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface OptionalFirstParameter
 {

@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2024/08/02
  */
 @SuppressWarnings("OverlyCoupledClass")
-@KeepAbsolutelyEverything
 public interface ScritchUnifiedInterface
 	extends ScritchChoiceInterface,
 		ScritchComponentInterface,

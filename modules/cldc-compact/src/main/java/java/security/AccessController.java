@@ -12,6 +12,7 @@ package java.security;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -39,6 +40,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * @since 2018/09/18
  */
 @Api
+@KeepAbsolutelyEverything("Lightweight 'Security' permission system.")
 public final class AccessController
 {
 	/**

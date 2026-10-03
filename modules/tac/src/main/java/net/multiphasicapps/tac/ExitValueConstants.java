@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/03/07
  */
-@KeepAbsolutelyEverything
 public interface ExitValueConstants
 {
 	/** Test passes. */

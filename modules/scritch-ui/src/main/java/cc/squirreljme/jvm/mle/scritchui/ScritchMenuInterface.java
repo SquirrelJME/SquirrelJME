@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/07/20
  */
-@KeepAbsolutelyEverything
 public interface ScritchMenuInterface
 	extends ScritchApiInterface
 {

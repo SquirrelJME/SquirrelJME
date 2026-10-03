@@ -37,7 +37,6 @@ import org.intellij.lang.annotations.MagicConstant;
  *
  * @since 2024/03/08
  */
-@KeepAbsolutelyEverything
 public final class DisplayableState
 {
 	/** The displayable states that exist. */

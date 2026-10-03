@@ -18,7 +18,6 @@ import org.junit.Test;
  *
  * @since 2019/12/24
  */
-@KeepAbsolutelyEverything
 public abstract class TestLong
 	extends __CoreTest__
 {

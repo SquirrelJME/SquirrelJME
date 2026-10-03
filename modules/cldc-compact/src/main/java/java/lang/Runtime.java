@@ -31,8 +31,8 @@ import org.jetbrains.annotations.Contract;
  * @since 2018/10/14
  */
 @Api
-@KeepAbsolutelyEverything
 @SuppressWarnings("ClassWithOnlyPrivateConstructors")
+@KeepAbsolutelyEverything("Touching this will generally break the VMs.")
 public class Runtime
 {
 	/** There is only a single instance of the run-time. */

@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Async;
  * @param <L> The listener type to use.
  * @since 2024/07/18
  */
-@KeepAbsolutelyEverything
 final class __ExecObjectTracker__<T, L>
 	implements Runnable
 {

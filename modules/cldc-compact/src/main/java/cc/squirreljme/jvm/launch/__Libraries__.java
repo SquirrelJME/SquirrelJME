@@ -27,7 +27,6 @@ import java.util.Set;
  *
  * @since 2020/12/29
  */
-@KeepAbsolutelyEverything
 final class __Libraries__
 {
 	/** The available libraries. */

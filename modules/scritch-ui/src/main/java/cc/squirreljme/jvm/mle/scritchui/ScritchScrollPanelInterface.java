@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/07/29
  */
-@KeepAbsolutelyEverything
 public interface ScritchScrollPanelInterface
 	extends ScritchApiInterface, ScritchViewBracket, ScritchContainerBracket
 {

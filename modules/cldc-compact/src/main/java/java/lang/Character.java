@@ -24,7 +24,7 @@ import java.lang.ref.WeakReference;
  * @since 2018/10/13
  */
 @Api
-@KeepAbsolutelyEverything
+@KeepAbsolutelyEverything("Boxed types cannot be optimized!")
 public final class Character
 	implements Comparable<Character>
 {

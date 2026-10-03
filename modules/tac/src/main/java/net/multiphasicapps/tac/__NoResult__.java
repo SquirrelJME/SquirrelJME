@@ -19,7 +19,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2018/10/06
  */
 @KeepWhenCompacting
-@KeepAbsolutelyEverything
 final class __NoResult__
 {
 	/**

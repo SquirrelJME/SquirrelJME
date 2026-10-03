@@ -27,7 +27,6 @@ import java.lang.annotation.Target;
 @Target(value={ElementType.CONSTRUCTOR, ElementType.FIELD,
 	ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PACKAGE,
 	ElementType.PARAMETER, ElementType.TYPE})
-@KeepAbsolutelyEverything
 public @interface ApiDefinedDeprecated
 {
 	/** The reason this is deprecated. */

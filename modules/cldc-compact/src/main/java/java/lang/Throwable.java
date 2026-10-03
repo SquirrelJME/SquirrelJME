@@ -33,6 +33,7 @@ import java.util.Arrays;
  * @since 2018/09/15
  */
 @Api
+@KeepAbsolutelyEverything("All VMs rely on internal fields and logic.")
 public class Throwable
 {
 	/** The message for this exception. */

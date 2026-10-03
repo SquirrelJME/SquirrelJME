@@ -15,7 +15,7 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Enumeration;
 
 @Api
-@KeepAbsolutelyEverything
+@KeepAbsolutelyEverything("Lightweight 'Security' permission system.")
 public abstract class PermissionCollection
 {
 	@Api

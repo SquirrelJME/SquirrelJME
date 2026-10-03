@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/07/16
  */
-@KeepAbsolutelyEverything
 public interface ScritchApiInterface
 	extends ShelfCallback
 {

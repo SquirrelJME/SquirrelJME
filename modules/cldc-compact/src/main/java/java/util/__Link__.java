@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
  * @param <E> The type to store.
  * @since 2018/10/29
  */
-@KeepAbsolutelyEverything
 final class __Link__<E>
 {
 	/** The previous link. */

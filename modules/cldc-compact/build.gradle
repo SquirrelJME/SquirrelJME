@@ -1,3 +1,4 @@
+import cc.squirreljme.plugin.multivm.VMCompactLibraryTaskAction
 import cc.squirreljme.plugin.swm.JavaMEConfiguration
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 
@@ -25,6 +26,27 @@ squirreljme
 	tags += "required"
 	tags += "lite"
 	noEmitConfiguration = true
+	
+	// Never touch these classes
+	proGuardOptions += [
+		VMCompactLibraryTaskAction.STANZA_DO_NOT_TOUCH,
+			"class", "java.lang.__Start__", 
+				"{", "*", ";", "}",
+		VMCompactLibraryTaskAction.STANZA_DO_NOT_TOUCH,
+			"class", "java.lang.Runtime", 
+				"{", "*", ";", "}", 
+		VMCompactLibraryTaskAction.STANZA_DO_NOT_TOUCH,
+			"class", "java.lang.SecurityManager",
+				"{", "*", ";", "}", 
+		VMCompactLibraryTaskAction.STANZA_DO_NOT_TOUCH,
+			"class", "java.lang.System", 
+				"{", "*", ";", "}",
+		VMCompactLibraryTaskAction.STANZA_DO_NOT_TOUCH,
+			"class", "java.lang.Thread", 
+				"{", "*", ";", "}",
+		VMCompactLibraryTaskAction.STANZA_DO_NOT_TOUCH,
+			"class", "java.lang.Throwable",
+				"{", "*", ";", "}",]
 		
 	// The test method that takes 255 arguments completely breaks ProGuard
 	// so disable optimizations for it

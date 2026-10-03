@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Range;
  * @since 2018/12/07
  */
 @Api
-@KeepAbsolutelyEverything
+@KeepAbsolutelyEverything("All VMs rely on internal fields and logic.")
 public class Thread
 	implements Runnable
 {

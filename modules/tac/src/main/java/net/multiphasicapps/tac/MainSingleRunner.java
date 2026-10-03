@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
  *
  * @since 2020/03/07
  */
-@KeepAbsolutelyEverything
 public class MainSingleRunner
 {
 	/**

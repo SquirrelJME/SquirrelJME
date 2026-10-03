@@ -18,7 +18,7 @@ import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 @Api
-@KeepAbsolutelyEverything
+@KeepAbsolutelyEverything("Boxed types cannot be optimized!")
 public final class Float
 	extends Number
 	implements Comparable<Float>

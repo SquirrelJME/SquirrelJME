@@ -28,7 +28,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 @SquirrelJMEVendorApi
-@KeepAbsolutelyEverything
 public @interface SerializedEvent
 {
 }

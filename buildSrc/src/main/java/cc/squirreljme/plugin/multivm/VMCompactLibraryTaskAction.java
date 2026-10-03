@@ -63,11 +63,17 @@ public class VMCompactLibraryTaskAction
 			// UNKNOWN: ???
 			"code/allocation/variable",
 			
-			// UNKNOWN: ???
+			// AVOID: Merging appears to be broken
+			// https://github.com/Guardsquare/proguard/issues/37
 			"code/merging",
 			
-			// UNKNOWN: ???
-			"code/removal/advanced",
+			// AVOID: Dead code removal based on this kind of determination
+			// does not work well across native method calls as everything is
+			// outside what ProGuard sees
+			// Simplifies code based on control flow analysis and data flow
+			// analysis. Removes dead code based on control flow analysis and
+			// data flow analysis.
+			"!code/removal/advanced",
 			
 			// UNKNOWN: ???
 			"code/removal/exception",
@@ -78,8 +84,13 @@ public class VMCompactLibraryTaskAction
 			// UNKNOWN: ???
 			"code/removal/variable",
 			
-			// UNKNOWN: ???
-			"code/simplification/advanced",
+			// AVOID: Dead code removal based on this kind of determination
+			// does not work well across native method calls as everything is
+			// outside what ProGuard sees
+			// Simplifies code based on control flow analysis and data flow
+			// analysis. Removes dead code based on control flow analysis and
+			// data flow analysis.
+			"!code/simplification/advanced",
 			
 			// UNKNOWN: ???
 			"code/simplification/arithmetic",
@@ -111,7 +122,8 @@ public class VMCompactLibraryTaskAction
 			// AVOID: Violates the specification
 			"!field/marking/private",
 			
-			// UNKNOWN: ???
+			// AVOID: Inlining increases code size, but also forces a specific
+			// object instance to be used if it thinks it is known
 			// This appears to remove null checks:
 			// https://github.com/Guardsquare/proguard/issues/128
 			"!field/propagation/value",
@@ -125,13 +137,16 @@ public class VMCompactLibraryTaskAction
 			// AVOID: Violates the specification
 			"!method/generalization/class",
 			
-			// MAYBE: Seems to break things?
+			// AVOID: Inlining increases code size, but also forces a specific
+			// object instance to be used if it thinks it is known
 			"!method/inlining/short",
 			
-			// MAYBE: Seems to break things?
+			// AVOID: Inlining increases code size, but also forces a specific
+			// object instance to be used if it thinks it is known
 			"!method/inlining/tailrecursion",
 			
-			// MAYBE: Seems to break things?
+			// AVOID: Inlining increases code size, but also forces a specific
+			// object instance to be used if it thinks it is known
 			"!method/inlining/unique",
 			
 			// AVOID: Violates the specification
@@ -146,11 +161,15 @@ public class VMCompactLibraryTaskAction
 			// AVOID: Violates the specification
 			"!method/marking/synchronized",
 			
-			// UNKNOWN: ???
-			"method/propagation/parameter",
+			// AVOID: Inlining increases code size, but also forces a specific
+			// object instance to be used if it thinks it is known
+			"!method/propagation/parameter",
 			
-			// UNKNOWN: ???
-			"method/propagation/returnvalue",
+			// AVOID: Inlining increases code size, but also forces a specific
+			// object instance to be used if it thinks it is known
+			// Propagates the values of method return values from methods to
+			// their invocations.
+			"!method/propagation/returnvalue",
 			
 			// AVOID: Violates the specification
 			// Double.toString() -> public static String toString$6f5372eb()
@@ -161,74 +180,11 @@ public class VMCompactLibraryTaskAction
 			
 			// AVOID: Violates the specification
 			"!method/specialization/returntype",
-			
-			// UNKNOWN: ???
-			"code/removal/advanced",
-			
-			/*
-			// Never allow access flag changes
-			"!class/marking/*",
-			"!field/marking/*",
-			"!method/marking/*",
-			
-			// Never allow generalizing/specialization from one type to another
-			// For example: Arrays.<T>asList() becomes
-			// java.util.List
-			"!field/generalization/*",
-			"!method/generalization/*",
-			// java.util.__ArraysList__ asList$158aa2d5(java.lang.Object[])
-			// java.lang.__CanSetPrintStream__ err$5f8ce416 -> err$5f8ce416
-			"!field/specialization/*",
-			"!method/specialization/*",
-			
-			// Never remove parameters, signatures must remain the same
-			"!method/removal/parameter",
-			
-			// There is optimization for object usage and such, however this
-			// is not always correct especially with brackets and native code
-			// Do the same for field load/store, as these can be used across
-			// native call chains which it has no idea about
-			"!code/simplification/object",
-			"!code/simplification/field",
-			
-			// Do not optimize casts, as those can be used for class casts
-			// but also there seems to be a bug where casting an unknown type
-			// to a known type will cause issues
-			"!code/simplification/cast",
-			
-			// Assume all objects and branches are taken, this is similar to
-			// above as there needs to be checks for everything and considering
-			// that this is library code this could remove those checks. It
-			// can also assume that because no other part of the library calls
-			// into this code, that the code is dead anyway.
-			"!code/removal/advanced",
-			"!code/simplification/object",
-			"!code/simplification/branch",
-			
-			// Variable optimization seems to be broken at times as well
-			"!code/allocation/variable",
-			
-			// Never remove fields
-			"!field/removal/writeonly",
-			
-			// Inlining methods does usually increase code size, but it also
-			// can cause issues where behavior gets changed
-			"!method/inlining/*",
-			
-			// Do not merge classes together, either vertically or
-			// horizontally... this otherwise has Number optimized away despite
-			// being marked as @Api because it is only extended from and has
-			// nothing of its own
-			"!class/merging/*",
-			 */
 		};
 	
 	/** Base configuration. */
 	static final String[] _BASE_CONFIG = new String[]
 		{
-			// Be a bit more descriptive (this prints the config)
-			//"-verbose",
-			
 			// Ignore all JetBrains IntelliJ related annotations
 			"-dontwarn", "org.jetbrains.annotations.**",
 			"-dontwarn", "org.intellij.lang.annotations.**",
@@ -245,25 +201,38 @@ public class VMCompactLibraryTaskAction
 	
 	/** Stanza for keeping standard APIs. */
 	public static final String STANZA_API =
-		"-keep,allowoptimization,includedescriptorclasses";
-	
-	/** Stanza for keeping standard APIs, with less pulling in. */
-	public static final String STANZA_API_NO_DESC =
 		"-keep,allowoptimization";
 	
-	/** Stanza for compacting APIs. */
-	public static final String STANZA_COMPACT =
-		"-keep,allowoptimization,allowobfuscation";
+	/** Obfuscates specified class members. */ 
+	public static final String STANZA_OBFUSCATE_MEMBERS =
+		"-keepclassmembers,allowoptimization,allowobfuscation";
 	
 	/** Stanza for keeping everything. */
+	public static final String STANZA_DO_NOT_TOUCH =
+		"-keep,includecode";
+	
+	/** Stanza for keeping everything. */
+	@Deprecated
 	public static final String STANZA_KEEP_ALL_NO_OPTIMIZE =
 		"-keep,includecode,includedescriptorclasses";
 	
+	/** Obfuscates everything about the class. */
+	@Deprecated
+	public static final String STANZA_OBFUSCATE_ALL =
+		"-keepclassmembers,allowoptimization,allowobfuscation";
+	
+	/** Stanza for compacting APIs. */
+	@Deprecated
+	public static final String STANZA_COMPACT =
+		"-keep,allowoptimization,allowobfuscation";
+	
 	/** Stanza for keeping everything, but only members. */
+	@Deprecated
 	public static final String STANZA_KEEP_ALL_ONLY_MEMBERS =
 		"-keepclasseswithmembers,includecode,allowoptimization";
 	
 	/** Stanza for keeping with obfuscate, but only members. */
+	@Deprecated
 	public static final String STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE =
 		"-keepclasseswithmembers,includecode,allowoptimization," +
 		"allowobfuscation,includedescriptorclasses";
@@ -475,6 +444,48 @@ public class VMCompactLibraryTaskAction
 		};
 	
 	/**
+	 * Newer settings to be parsed which effectively keeps everything that
+	 * is public for the most part, due to the vast number of ProGuard issues.
+	 */
+	static final String[] _PARSE_SETTINGS_NEW = new String[]
+		{
+			// Keep any class that is public
+			VMCompactLibraryTaskAction.STANZA_API,
+			"public", "class", "*", "{",
+				// Keep public members
+				"public", "<init>", "(", "...", ")", ";",
+				"public", "<methods>", ";",
+				"public", "<fields>", ";",
+				
+				// Keep protected members 
+				"protected", "<init>", "(", "...", ")", ";",
+				"protected", "<methods>", ";",
+				"protected", "<fields>", ";",
+				
+				// Keep native methods
+				"native", "<methods>", ";",
+			"}",
+			
+			VMCompactLibraryTaskAction.STANZA_DO_NOT_TOUCH,
+			"@cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything",
+			"class", "*", "{",
+				"*", ";",
+			"}",
+			
+			// Obfuscate and optimize anything not public
+			/*VMCompactLibraryTaskAction.STANZA_OBFUSCATE_MEMBERS,
+			"public", "class", "*", "{",
+				// Obfuscate private members
+				"!public", "<init>", "(", "...", ")", ";",
+				"!public", "<methods>", ";",
+				"!public", "<fields>", ";",
+				"!protected", "<init>", "(", "...", ")", ";",
+				"!protected", "<methods>", ";",
+				"!protected", "<fields>", ";",
+			"}",*/
+		};
+	
+	/**
 	 * Settings to use in the configuration for keeping, etc.
 	 * 
 	 * The way this works below is that any setting which will replace all
@@ -535,27 +546,6 @@ public class VMCompactLibraryTaskAction
 	/** Settings for tests. */
 	static final String[] _TEST_SETTINGS =
 		{
-			// Do not optimize here, we want to keep everything around
-			"-dontoptimize",
-			"-dontshrink",
-			
-			// Tests can break things in specific ways that ProGuard does
-			// not like much
-			"-dontwarn",
-			
-			// This keeps everything about tests but will use pre-existing
-			// mappings and otherwise if we are using obfuscated classes
-			// This is the only thing I have found that works
-			"-keep", "class", "*",
-			"-keepnames", "class", "*",
-			"-keepclassmembers", "class", "*", "{",
-				"<fields>", ";",
-				"<methods>", ";",
-				"}",
-			"-keepclassmembernames", "class", "*", "{",
-				"<fields>", ";",
-				"<methods>", ";",
-			"}",
 		};
 	
 	/** The source set used. */
@@ -791,14 +781,17 @@ public class VMCompactLibraryTaskAction
 			proGuardOptions.addAll(
 				Arrays.asList(VMCompactLibraryTaskAction._BASE_CONFIG));
 			
-			// Make sure reflection works, at the minimum
-			proGuardOptions.addAll(
-				Arrays.asList(VMCompactLibraryTaskAction._REFLECTION));
-			
-			// Keep all callbacks, since they get stripped as nothing
-			// sees them and everything just breaks
-			proGuardOptions.addAll(
-				Arrays.asList(VMCompactLibraryTaskAction._CALLBACKS));
+			if (false)
+			{
+				// Make sure reflection works, at the minimum
+				proGuardOptions.addAll(
+					Arrays.asList(VMCompactLibraryTaskAction._REFLECTION));
+				
+				// Keep all callbacks, since they get stripped as nothing
+				// sees them and everything just breaks
+				proGuardOptions.addAll(
+					Arrays.asList(VMCompactLibraryTaskAction._CALLBACKS));
+			}
 			
 			// API and SquirrelJMEVendorAPI are the same, except using
 			// different labels... it is very annoying to have
@@ -806,7 +799,8 @@ public class VMCompactLibraryTaskAction
 			// Has to be done for enum as well
 			List<String> baseApi = new ArrayList<>();
 			for (String classy : Arrays.asList("class", "interface", "enum"))
-				for (String opt : VMCompactLibraryTaskAction._PARSE_SETTINGS)
+				for (String opt :
+					VMCompactLibraryTaskAction._PARSE_SETTINGS_NEW)
 				{
 					// Change class to something else?
 					if (opt.equals("class"))
@@ -913,8 +907,10 @@ public class VMCompactLibraryTaskAction
 			config.preverify = true;
 			config.targetClassVersion = (51 << 16);
 			
-			// Reduce space and obfuscate
-			config.shrink = true;
+			// Reduce space by obfuscating
+			// Note that shrinking will delete classes and methods, this must
+			// not occur... ProGuard is just too broken to handle this.
+			config.shrink = false;
 			config.obfuscate = true;
 			config.optimize = !isTesting;
 			config.flattenPackageHierarchy = "$" +
@@ -961,7 +957,7 @@ public class VMCompactLibraryTaskAction
 				config.applyMapping = tempInputMapFile.toFile();
 			
 			// Be noisy
-			config.verbose = false;
+			config.verbose = true;
 			//config.dump = Configuration.STD_OUT;
 			//config.printUsage = Configuration.STD_OUT;
 			//config.printConfiguration = Configuration.STD_OUT;

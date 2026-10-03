@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
  *
  * @since 2022/10/03
  */
-@KeepAbsolutelyEverything
 final class __SuiteScannerCounter__
 {
 	/** The count. */

@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/03/16
  */
-@KeepAbsolutelyEverything
 public interface ScritchEventLoopInterface
 	extends ScritchApiInterface
 {

@@ -42,7 +42,7 @@ import org.jetbrains.annotations.Range;
  * @since 2018/10/14
  */
 @Api
-@KeepAbsolutelyEverything
+@KeepAbsolutelyEverything("Touching this will generally break the VMs.")
 public final class System
 {
 	/** Standard error stream (stderr). */
@@ -619,7 +619,8 @@ public final class System
 			throw new NullPointerException("NARG");
 		
 		// Not allowed to do this?
-		System.getSecurityManager().checkPermission(new RuntimePermission("setIO"));
+		System.getSecurityManager().checkPermission(
+			new RuntimePermission("setIO"));
 		
 		// Use a wrapped class to prevent final abuse.
 		((__CanSetPrintStream__)System.err).__set(__a);

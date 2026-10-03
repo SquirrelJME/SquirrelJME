@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
  * @param <S> The class type.
  * @since 2018/12/06
  */
-@KeepAbsolutelyEverything
 final class __ServiceLoaderCache__<S>
 {
 	/** The cache of services. */

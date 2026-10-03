@@ -37,7 +37,6 @@ import java.util.Queue;
  * @since 2020/07/03
  */
 @SquirrelJMEVendorApi
-@KeepAbsolutelyEverything
 public final class CleanupHandler
 {
 	/** Queue of handles waiting to be closed. */
