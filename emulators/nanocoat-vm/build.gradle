@@ -19,9 +19,6 @@ dependencies
 	api project(":tools:squirreljme-debugger")
 	
 	api project(":emulators:tool-classfile")
-	api project(":emulators:common-vm")
-	api project(":emulators:debug-jdwp")
-	api project(":emulators:debug-jdwp-vm-host")
 }
 
 java {

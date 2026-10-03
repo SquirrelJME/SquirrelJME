@@ -14,8 +14,6 @@
             <option value="$PROJECT_DIR$/emulators/aot" />
             <option value="$PROJECT_DIR$/emulators/aot-springcoat" />
             <option value="$PROJECT_DIR$/emulators/common-vm" />
-            <option value="$PROJECT_DIR$/emulators/debug-jdwp" />
-            <option value="$PROJECT_DIR$/emulators/debug-jdwp-vm-host" />
             <option value="$PROJECT_DIR$/emulators/emulator-base" />
             <option value="$PROJECT_DIR$/emulators/nanocoat-vm" />
             <option value="$PROJECT_DIR$/emulators/springcoat-vm" />

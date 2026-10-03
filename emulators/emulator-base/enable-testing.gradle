@@ -12,9 +12,6 @@ dependencies
 	testImplementation project(":emulators:emulator-base")
 
 	testImplementation project(":emulators:tool-classfile")
-	testImplementation project(":emulators:common-vm")
-	testImplementation project(":emulators:debug-jdwp")
-	testImplementation project(":emulators:debug-jdwp-vm-host")
 }
 
 // Include Common Testing Configuration

@@ -14,12 +14,10 @@ dependencies
 	api project(":modules:cldc-compact")
 	api project(":modules:meep-swm")
 	api project(":modules:scritch-ui")
+	api project(":modules:midp-lcdui")
 	api project(":tools:squirreljme-debugger")
 
 	api project(":emulators:tool-classfile")
-	api project(":emulators:common-vm")
-	api project(":emulators:debug-jdwp")
-	api project(":emulators:debug-jdwp-vm-host")
 }
 
 java {
