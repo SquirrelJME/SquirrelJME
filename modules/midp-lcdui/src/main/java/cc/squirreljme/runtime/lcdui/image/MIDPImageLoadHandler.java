@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.image;
 
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.microedition.lcdui.Image;
  *
  * @since 2022/06/28
  */
+@SquirrelJMEVendorApi
 public final class MIDPImageLoadHandler
 	implements NativeImageLoadCallback
 {
@@ -63,6 +65,7 @@ public final class MIDPImageLoadHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/06/28
 	 */
+	@SquirrelJMEVendorApi
 	public MIDPImageLoadHandler(ImageFactory<AnimatedImage, Image> __factory)
 		throws NullPointerException
 	{
@@ -77,6 +80,7 @@ public final class MIDPImageLoadHandler
 	 * @since 2022/06/28
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void addImage(int[] __buf, int __off, int __len, int __frameDelay,
 		boolean __hasAlpha)
 	{
@@ -101,6 +105,7 @@ public final class MIDPImageLoadHandler
 	 * @since 2024/01/14
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void cancel()
 	{
 		synchronized (this)
@@ -114,6 +119,7 @@ public final class MIDPImageLoadHandler
 	 * @since 2022/06/28
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public Object finish()
 	{
 		List<Image> images = this._images;
@@ -146,6 +152,7 @@ public final class MIDPImageLoadHandler
 	 * @since 2022/06/28
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void initialize(int __width, int __height, boolean __animated,
 		boolean __scalable)
 	{
@@ -163,6 +170,7 @@ public final class MIDPImageLoadHandler
 	 * @since 2022/06/28
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public void setLoopCount(int __loopCount)
 	{
 		synchronized (this)
@@ -176,6 +184,7 @@ public final class MIDPImageLoadHandler
 	 * @since 2024/01/14
 	 */
 	@Override
+	@SquirrelJMEVendorApi
 	public boolean setPalette(int[] __colors, int __off, int __len,
 		boolean __hasAlpha, int __transDx)
 	{

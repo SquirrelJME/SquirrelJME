@@ -257,7 +257,7 @@ public class VMCompactLibraryTaskAction
 	
 	/** Stanza for keeping everything. */
 	public static final String STANZA_KEEP_ALL_NO_OPTIMIZE =
-		"-keep,includecode";
+		"-keep,includecode,includedescriptorclasses";
 	
 	/** Stanza for keeping everything, but only members. */
 	public static final String STANZA_KEEP_ALL_ONLY_MEMBERS =
@@ -266,7 +266,7 @@ public class VMCompactLibraryTaskAction
 	/** Stanza for keeping with obfuscate, but only members. */
 	public static final String STANZA_KEEP_ALL_ONLY_MEMBERS_OBFUSCATE =
 		"-keepclasseswithmembers,includecode,allowoptimization," +
-		"allowobfuscation";
+		"allowobfuscation,includedescriptorclasses";
 	
 	/** Settings used to strip debugging. */
 	static final String[] _STRIP_DEBUG = new String[]
