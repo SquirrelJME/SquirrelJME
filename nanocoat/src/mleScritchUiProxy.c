@@ -11,6 +11,7 @@
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
+#include "sjme/nvm/instance.h"
 
 #pragma region(mleInfo)
 	#define SJME_NVM_MLE_SHELF ScritchUiProxy
@@ -53,12 +54,91 @@ SJME_NVM_MLE_SCRITCH_UI_RETURN_THIS(view)
 SJME_NVM_MLE_SCRITCH_UI_RETURN_THIS(window)
 
 #pragma endregion(returnThis)
+#pragma region(general)
+
+static sjme_errorCode sjme_nvm_mle_scritchUiNew(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInNotNull sjme_scritchui scritchUi,
+	sjme_attrInNotNull sjme_scritchui_uiCommon uiCommon,
+	sjme_attrInValue sjme_scritchui_uiType subType,
+	sjme_attrOutNotNull sjme_jbracketScritchUi* outBracket)
+{
+	sjme_errorCode error;
+	sjme_jbracketScritchUi result;
+
+	if (inFrame == NULL || scritchUi == NULL || uiCommon == NULL ||
+		outBracket == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (subType <= SJME_SCRITCHUI_TYPE_RESERVED ||
+		subType >= SJME_SCRITCHUI_NUM_UI_TYPES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Initialize the new bracket. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_instance_objectNewBracket(
+		SJME_F_T(inFrame), SJME_NVM_STRUCT_BRACKET_SCRITCH_UI,
+		subType, SJME_AS_JOBJECTP(&result))) || result == NULL)
+		return sjme_error_default(error);
+
+	/* Fill in the bracket details. */
+	result->type = subType;
+	sjme_atomic_s(sjme_pointer, &result->ref,
+		sjme_weakUpR(sjme_jbracketScritchUi, uiCommon));
+
+	/* Success! */
+	*outBracket = result;
+	return SJME_ERROR_NONE;
+}
+
+#pragma endregion(general)
 #pragma region(panel)
 
 SJME_NVM_MLE_FUNCTION_DECL(panelNew)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_scritchui scritchUi;
+	sjme_scritchui_uiPanel ui;
+	sjme_jbracketScritchUi bracket;
+
+	/* Recover ScritchUI instance. */
+	scritchUi = sjme_atomic_g(sjme_pointer,
+		&SJME_F_S(inFrame)->globals.scritchUi);
+	if (scritchUi == NULL)
+		return sjme_error_mask(SJME_ERROR_HEADLESS_DISPLAY,
+			SJME_ERROR_MLE_CALL);
+
+	/* Create new panel. */
+	ui = NULL;
+	if (sjme_error_is(error = scritchUi->api->panelNew(scritchUi,
+		&ui)) || ui == NULL)
+	{
+		error = sjme_error_mask(error, SJME_ERROR_MLE_CALL);
+		goto fail_scritchNew;
+	}
+
+	/* Create wrapper object. */
+	bracket = NULL;
+	if (sjme_error_is(sjme_nvm_mle_scritchUiNew(inFrame, scritchUi,
+		SJME_SUI_CAST_COMMON(ui), SJME_SCRITCHUI_TYPE_PANEL,
+		&bracket)))
+	{
+		error = sjme_error_mask(error, SJME_ERROR_MLE_CALL);
+		goto fail_bracketNew;
+	}
+
+	/* Return the created object. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)bracket;
+	return SJME_ERROR_NONE;
+
+fail_bracketNew:
+	if (bracket != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(bracket));
+fail_scritchNew:
+	if (ui != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(ui));
+	return sjme_error_default(error);
 }
 
 #pragma endregion(panel)
@@ -126,6 +206,12 @@ sjme_errorCode sjme_nvm_mle_scritchUiProxyHandler(
 		sjme_charSeq_tempUtf(proxyMethod->member.name->seq),
 		sjme_charSeq_tempUtf(proxyMethod->member.type->seq));
 #endif
+
+	/* If ScritchUI is not initialized, then this always fails. */
+	if (sjme_atomic_g(sjme_pointer,
+		&SJME_F_S(inFrame)->globals.scritchUi) == NULL)
+		return sjme_error_mask(SJME_ERROR_HEADLESS_DISPLAY,
+			SJME_ERROR_MLE_CALL);
 
 	/* Forward to minor shelf handling, this already exists and thus we do */
 	/* not need to duplicate this functionality. */

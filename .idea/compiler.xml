@@ -19,6 +19,7 @@
         <module name="squirreljme.tools.squirreljme-font.main~1" />
         <module name="squirreljme.tools.squirreljme-javap.main~1" />
         <module name="squirreljme.buildSrc.main" />
+        <module name="squirreljme.tools.squirreljme-debugger.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
