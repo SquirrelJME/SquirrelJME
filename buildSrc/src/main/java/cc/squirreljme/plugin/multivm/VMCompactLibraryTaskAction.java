@@ -631,10 +631,8 @@ public class VMCompactLibraryTaskAction
 					Arrays.asList(VMCompactLibraryTaskAction._REFLECTION));
 			}
 			
-			// API and SquirrelJMEVendorAPI are the same, except using
-			// different labels... it is very annoying to have
-			// duplicate rules for both due to ProGuard limitations
-			// Has to be done for enum as well
+			// Treat all classes the same, ProGuard's documentation says this is
+			// the case however that does not seem to be the case
 			List<String> baseApi = new ArrayList<>();
 			for (String classy : Arrays.asList("class", "interface", "enum"))
 				for (String opt :

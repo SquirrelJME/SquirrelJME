@@ -7,8 +7,6 @@ package nano;// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Used for expected NanoTest results.
  *
