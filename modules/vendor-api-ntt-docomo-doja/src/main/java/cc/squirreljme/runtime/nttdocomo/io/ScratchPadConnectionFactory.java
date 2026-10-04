@@ -28,7 +28,6 @@ import javax.microedition.io.ConnectionOption;
  * @see ScratchPadConnection
  * @since 2021/11/30
  */
-@SquirrelJMEVendorApi
 public class ScratchPadConnectionFactory
 	implements CustomConnectionFactory
 {
@@ -37,7 +36,6 @@ public class ScratchPadConnectionFactory
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
@@ -173,7 +171,6 @@ public class ScratchPadConnectionFactory
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public String scheme()
 	{
 		return "scratchpad";

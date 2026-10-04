@@ -20,13 +20,11 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2026/06/10
  */
-@SquirrelJMEVendorApi
 public class AbstractMetaDataControl
 	extends AbstractControl<MetaDataControl>
 	implements MetaDataControl
 {
 	/** The composer of the media. */
-	@SquirrelJMEVendorApi
 	public static final String COMPOSER_KEY =
 		MetaDataControl.AUTHOR_KEY;
 	
@@ -40,7 +38,6 @@ public class AbstractMetaDataControl
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
 	public AbstractMetaDataControl(@NotNull MetaDataValues __values)
 		throws NullPointerException
 	{

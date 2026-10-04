@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Async;
  *
  * @since 2024/07/20
  */
-@SquirrelJMEVendorApi
 public final class ImageTracker
 	extends ObjectTracker<Image, ImageTrackerListener>
 {
@@ -34,7 +33,6 @@ public final class ImageTracker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
-	@SquirrelJMEVendorApi
 	public ImageTracker(ScritchEventLoopInterface __loop, Image __init)
 		throws NullPointerException
 	{
@@ -45,7 +43,6 @@ public final class ImageTracker
 	 * {@inheritDoc}
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	@Async.Execute
 	@Override
 	protected void exec(ImageTrackerListener __listener, Image __value)

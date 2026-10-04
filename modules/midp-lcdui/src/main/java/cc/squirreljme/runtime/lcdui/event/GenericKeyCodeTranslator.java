@@ -33,17 +33,14 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2026/05/13
  */
-@SquirrelJMEVendorApi
 public class GenericKeyCodeTranslator
 	implements KeyCodeTranslator
 {
 	/** Specific vendor event translator system property. */
-	@SquirrelJMEVendorApi
 	public static final String KEY_VENDOR_PROPERTY =
 		"cc.squirreljme.keymap";
 
 	/** Specific vendor event translator environment property. */
-	@SquirrelJMEVendorApi
 	public static final String KEY_VENDOR_ENV =
 		"SQUIRRELJME_VENDOR_KEY";
 
@@ -75,7 +72,6 @@ public class GenericKeyCodeTranslator
 	 * @since 2026/05/13
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public boolean accepts(String __identifier, boolean __exact)
 		throws NullPointerException
 	{
@@ -90,7 +86,6 @@ public class GenericKeyCodeTranslator
 	 * @since 2026/05/13
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int gameActionToVendor(int __ga, boolean __last)
 	{
 		int[] vendorKeys = this._vendorKeys;
@@ -133,7 +128,6 @@ public class GenericKeyCodeTranslator
 	 * @since 2026/05/13
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int keyCodeToVendor(int __kc)
 	{
 		int[] vendorKeys = this._vendorKeys;
@@ -223,7 +217,6 @@ public class GenericKeyCodeTranslator
 	 * @since 2026/05/13
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int vendorToGameAction(int __vc, boolean __last)
 	{
 		int[] vendorKeys = this._vendorKeys;
@@ -264,7 +257,6 @@ public class GenericKeyCodeTranslator
 	 * @since 2026/05/13
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int vendorToKeyCode(int __vc)
 	{
 		int[] vendorKeys = this._vendorKeys;
@@ -344,7 +336,6 @@ public class GenericKeyCodeTranslator
 	 * @since 2026/05/22
 	 */
 	@Nullable
-	@SquirrelJMEVendorApi
 	public static GenericKeyCodeTranslator instance()
 		throws IllegalArgumentException
 	{
@@ -376,7 +367,6 @@ public class GenericKeyCodeTranslator
 	 * @throws NullPointerException
 	 * @since 2026/06/27
 	 */
-	@SquirrelJMEVendorApi
 	public static GenericKeyCodeTranslator load(Class<?> __pivot,
 		String __rfqdn)
 		throws IllegalArgumentException, NullPointerException

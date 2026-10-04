@@ -24,11 +24,9 @@ public abstract class PalettedImage
 	extends Image
 {
 	/** The overriding palette. */
-	@SquirrelJMEVendorApi
 	volatile Palette _paletteOverride;
 	
 	/** Override transparent index? */
-	@SquirrelJMEVendorApi
 	volatile int _overrideTransDx =
 		-1;
 	
@@ -37,7 +35,6 @@ public abstract class PalettedImage
 	 * 
 	 * @since 2024/01/14
 	 */
-	@SquirrelJMEVendorApi
 	protected PalettedImage()
 	{
 	}

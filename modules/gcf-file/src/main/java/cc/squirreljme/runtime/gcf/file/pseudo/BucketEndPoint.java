@@ -30,17 +30,14 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2026/01/16
  */
-@SquirrelJMEVendorApi
 public class BucketEndPoint
 	extends FileEndPoint
 {
 	/** Decoded host. */
-	@SquirrelJMEVendorApi
 	public static final String DECODED_HOST =
 		"!?x-squirreljme-bucket://?!";
 	
 	/** Host. */
-	@SquirrelJMEVendorApi
 	public static final String HOST =
 		"!%3Fx-squirreljme-bucket%3A%2F%2F%3F!";
 	
@@ -57,7 +54,6 @@ public class BucketEndPoint
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/16
 	 */
-	@SquirrelJMEVendorApi
 	protected BucketEndPoint(@NotNull UriGenericPart __part, int __mode,
 		@Nullable UriGenericPart __dotDot, BucketBracket __bracket)
 		throws NullPointerException
@@ -75,7 +71,6 @@ public class BucketEndPoint
 	 * @since 2026/01/16
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected ExtraFileAttributes attachedAttributes()
 		throws SecurityException
 	{
@@ -90,7 +85,6 @@ public class BucketEndPoint
 	 * @since 2026/01/16
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected FileStore attachedFileStore()
 		throws SecurityException
 	{
@@ -103,7 +97,6 @@ public class BucketEndPoint
 	 * @since 2026/01/16
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected FileSystem attachedFileSystem()
 		throws SecurityException
 	{
@@ -116,7 +109,6 @@ public class BucketEndPoint
 	 * @since 2026/01/16
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void close()
 		throws IOException
 	{
@@ -128,7 +120,6 @@ public class BucketEndPoint
 	 * @since 2026/01/16
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected void listDirectory(@NotNull Map<String, UriGenericPart> __into)
 		throws IOException, NullPointerException, SecurityException
 	{
@@ -149,7 +140,6 @@ public class BucketEndPoint
 	 * @since 2026/01/16
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected InputStream openInputStream()
 		throws IOException, SecurityException
 	{

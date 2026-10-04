@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2023/09/12
  */
-@SquirrelJMEVendorApi
 public interface CsvDeserializerSerializer<T>
 	extends CsvDeserializer<T>, CsvSerializer<T>
 {

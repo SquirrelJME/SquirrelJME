@@ -66,7 +66,6 @@ public class EmulatedAudioStreamShelf
 	 * be registered.
 	 * @since 2025/05/04
 	 */
-	@SquirrelJMEVendorApi
 	public static AudioConnectionBracket attach(
 		@NotNull AudioStreamBracket __stream,
 		@NotNull AudioStreamRenderer __renderer,
@@ -111,7 +110,6 @@ public class EmulatedAudioStreamShelf
 	 * @throws MLECallError If the decoder could not be created.
 	 * @since 2025/05/04
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	public static AudioStreamPlayer decoder(
 		@Nullable String __urlOrFile,
@@ -147,7 +145,6 @@ public class EmulatedAudioStreamShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean decoderSupports(
 		@NotNull @Language("mime-type-reference") String __contentType)
 		throws MLECallError
@@ -172,7 +169,6 @@ public class EmulatedAudioStreamShelf
 	 * be disconnected.
 	 * @since 2025/05/25
 	 */
-	@SquirrelJMEVendorApi
 	public static void disconnect(
 		@NotNull AudioConnectionBracket __conn)
 		throws MLECallError
@@ -203,7 +199,6 @@ public class EmulatedAudioStreamShelf
 	 * support MIDI playback.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	public static MidiPortBracket midiPort(
 		@NotNull @Language("mime-type-reference") String __mimeType,
@@ -238,7 +233,6 @@ public class EmulatedAudioStreamShelf
 	 * one that is managed by audio streams.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	public static AudioStreamRenderer midiRenderer(
 		@NotNull MidiPortBracket __midiPort)
@@ -262,7 +256,6 @@ public class EmulatedAudioStreamShelf
 	 * @since 2025/05/04
 	 */
 	@NotNull
-	@SquirrelJMEVendorApi
 	public static AudioStreamBracket stream(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
 			int __format,
@@ -400,7 +393,6 @@ public class EmulatedAudioStreamShelf
 	 * @param __channels The channels.
 	 * @since 2025/05/31
 	 */
-	@SquirrelJMEVendorApi
 	static void __render(AudioStreamRenderer __conn, ByteBuffer __buf,
 		long __clock, int __samples, int __totalSamples, int __bytesPerSample,
 		int __bufSize, int __format, int __rate, int __channels)

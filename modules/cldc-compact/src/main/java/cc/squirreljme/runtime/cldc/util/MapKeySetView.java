@@ -21,16 +21,13 @@ import java.util.Map;
  * @param <V> The value stored.
  * @since 2018/10/10
  */
-@SquirrelJMEVendorApi
 public final class MapKeySetView<K, V>
 	extends AbstractSet<K>
 {
 	/** The backing map. */
-	@SquirrelJMEVendorApi
 	protected final Map<K, V> map;
 	
 	/** Is adding allowed? */
-	@SquirrelJMEVendorApi
 	protected final boolean allowAdd;
 	
 	/**
@@ -41,7 +38,6 @@ public final class MapKeySetView<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/01
 	 */
-	@SquirrelJMEVendorApi
 	public MapKeySetView(Map<K, V> __map, boolean __allowAdd)
 		throws NullPointerException
 	{

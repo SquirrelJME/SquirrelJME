@@ -61,7 +61,6 @@ public final class AvailableSuites
 	 * @return The detected applications.
 	 * @since 2024/01/06
 	 */
-	@SquirrelJMEVendorApi
 	public Application[] applications()
 	{
 		return this._apps.clone();
@@ -75,7 +74,6 @@ public final class AvailableSuites
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/06
 	 */
-	@SquirrelJMEVendorApi
 	public Application[] findApplications(JarPackageBracket __jar)
 		throws NullPointerException
 	{

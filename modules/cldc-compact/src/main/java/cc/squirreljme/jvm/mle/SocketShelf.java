@@ -28,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
  * @see DatagramShelf
  * @since 2026/05/17
  */
-@SquirrelJMEVendorApi
 public final class SocketShelf
 {
 	/**

@@ -19,30 +19,24 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/28
  */
-@SquirrelJMEVendorApi
 public final class UriGenericPart
 	extends UriPart
 	implements UriPartAuthority, UriPartFragment, UriPartPath,
 		UriPartPathParameter, UriPartQueryParameter
 {
 	/** The authority. */
-	@SquirrelJMEVendorApi
 	protected final UriAuthority authority;
 	
 	/** The decoded fragment. */
-	@SquirrelJMEVendorApi
 	protected final String fragment;
 	
 	/** The decoded path parameters. */
-	@SquirrelJMEVendorApi
 	protected final String rawPathParams;
 	
 	/** The query parameters. */
-	@SquirrelJMEVendorApi
 	protected final String rawQueryParams;
 	
 	/** The URI path. */
-	@SquirrelJMEVendorApi
 	protected final String path;
 	
 	/** The decoded path parameters. */
@@ -59,7 +53,6 @@ public final class UriGenericPart
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public UriGenericPart(String __part)
 		throws InvalidUriException, NullPointerException
 	{
@@ -284,7 +277,6 @@ public final class UriGenericPart
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/01
 	 */
-	@SquirrelJMEVendorApi
 	public UriGenericPart withPath(String __path)
 		throws InvalidUriException, NullPointerException
 	{

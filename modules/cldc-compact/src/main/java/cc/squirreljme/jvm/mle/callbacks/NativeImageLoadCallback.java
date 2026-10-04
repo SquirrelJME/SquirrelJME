@@ -20,7 +20,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2022/06/28
  */
-@SquirrelJMEVendorApi
 public interface NativeImageLoadCallback
 	extends ShelfCallback
 {
@@ -35,7 +34,6 @@ public interface NativeImageLoadCallback
 	 * @param __hasAlpha Does this image have alpha?
 	 * @since 2022/06/28
 	 */
-	@SquirrelJMEVendorApi
 	void addImage(int[] __buf, int __off, int __len, int __frameDelay,
 		boolean __hasAlpha);
 	
@@ -46,7 +44,6 @@ public interface NativeImageLoadCallback
 	 *
 	 * @since 2024/01/14
 	 */
-	@SquirrelJMEVendorApi
 	void cancel();
 	
 	/**
@@ -56,7 +53,6 @@ public interface NativeImageLoadCallback
 	 * {@code null}.
 	 * @since 2022/06/28
 	 */
-	@SquirrelJMEVendorApi
 	Object finish();
 	
 	/**
@@ -68,7 +64,6 @@ public interface NativeImageLoadCallback
 	 * @param __scalable Is this image scalable?
 	 * @since 2022/06/28
 	 */
-	@SquirrelJMEVendorApi
 	void initialize(int __width, int __height, boolean __animated,
 		boolean __scalable);
 	
@@ -78,7 +73,6 @@ public interface NativeImageLoadCallback
 	 * @param __loopCount The loop count.
 	 * @since 2022/06/28
 	 */
-	@SquirrelJMEVendorApi
 	void setLoopCount(int __loopCount);
 	
 	/**
@@ -93,7 +87,6 @@ public interface NativeImageLoadCallback
 	 * adding an image.
 	 * @since 2024/01/14
 	 */
-	@SquirrelJMEVendorApi
 	boolean setPalette(int[] __colors, int __off, int __len,
 		boolean __hasAlpha, int __transDx);
 }

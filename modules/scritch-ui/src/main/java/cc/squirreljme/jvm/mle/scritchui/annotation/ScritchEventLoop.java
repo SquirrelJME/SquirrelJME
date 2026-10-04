@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Async;
 @Documented
 @Retention(value= RetentionPolicy.RUNTIME)
 @Target(value={ElementType.METHOD})
-@SquirrelJMEVendorApi
 public @interface ScritchEventLoop
 {
 }

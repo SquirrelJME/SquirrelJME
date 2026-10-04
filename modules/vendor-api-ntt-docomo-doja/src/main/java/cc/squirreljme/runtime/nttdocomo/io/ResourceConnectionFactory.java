@@ -31,7 +31,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2021/11/30
  */
-@SquirrelJMEVendorApi
 public class ResourceConnectionFactory
 	implements CustomConnectionFactory
 {
@@ -41,7 +40,6 @@ public class ResourceConnectionFactory
 	 */
 	@SuppressWarnings("resource")
 	@Override
-	@SquirrelJMEVendorApi
 	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
@@ -95,7 +93,6 @@ public class ResourceConnectionFactory
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public String scheme()
 	{
 		return "resource";

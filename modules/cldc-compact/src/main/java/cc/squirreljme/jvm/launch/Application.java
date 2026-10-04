@@ -32,17 +32,14 @@ import java.util.Objects;
 public abstract class Application
 {
 	/** Property for overriding the encoding. */
-	@SquirrelJMEVendorApi
 	public static final String OVERRIDE_ENCODING =
 		"cc.squirreljme.override.encoding";
 	
 	/** Property for overriding the locale. */
-	@SquirrelJMEVendorApi
 	public static final String OVERRIDE_LOCALE =
 		"cc.squirreljme.override.locale";
 	
 	/** The microedition profiles in use. */
-	@SquirrelJMEVendorApi
 	public static final String MICROEDITION_PROFILES = 
 		"microedition.profiles";
 	
@@ -78,7 +75,6 @@ public abstract class Application
 	 * @return The display name of the application.
 	 * @since 2020/12/29
 	 */
-	@SquirrelJMEVendorApi
 	public abstract String displayName();
 	
 	/**
@@ -87,7 +83,6 @@ public abstract class Application
 	 * @return The entry point that represents this application.
 	 * @since 2020/12/29
 	 */
-	@SquirrelJMEVendorApi
 	public abstract EntryPoint entryPoint();
 	
 	/**
@@ -96,7 +91,6 @@ public abstract class Application
 	 * @return Dependencies needed for loading.
 	 * @since 2021/06/13
 	 */
-	@SquirrelJMEVendorApi
 	public abstract DependencyInfo loaderDependencies();
 	
 	/**
@@ -105,7 +99,6 @@ public abstract class Application
 	 * @return Entry point arguments for loading.
 	 * @since 2021/06/13
 	 */
-	@SquirrelJMEVendorApi
 	public abstract String[] loaderEntryArgs();
 	
 	/**
@@ -115,7 +108,6 @@ public abstract class Application
 	 * starting the application.
 	 * @since 2021/06/13
 	 */
-	@SquirrelJMEVendorApi
 	public abstract String loaderEntryClass();
 	
 	/**
@@ -124,7 +116,6 @@ public abstract class Application
 	 * @return The classpath for the application.
 	 * @since 2024/01/06
 	 */
-	@SquirrelJMEVendorApi
 	public final JarPackageBracket[] classPath()
 	{
 		// Find libraries to base off
@@ -149,7 +140,6 @@ public abstract class Application
 	 * no icon.
 	 * @since 2020/12/29
 	 */
-	@SquirrelJMEVendorApi
 	public final InputStream iconStream()
 	{
 		String imgRc = this.entryPoint().imageResource();
@@ -165,7 +155,6 @@ public abstract class Application
 	 * @return If this should not appear on the launcher.
 	 * @since 2020/12/29
 	 */
-	@SquirrelJMEVendorApi
 	public boolean isNoLauncher()
 	{
 		return false;
@@ -177,7 +166,6 @@ public abstract class Application
 	 * @return If Java main should not appear on the launcher.
 	 * @since 2026/01/16
 	 */
-	@SquirrelJMEVendorApi
 	public boolean isNoJavaMainLauncher()
 	{
 		return false;
@@ -189,7 +177,6 @@ public abstract class Application
 	 * @return The bracket for the task.
 	 * @since 2020/12/29
 	 */
-	@SquirrelJMEVendorApi
 	public final TaskBracket launch()
 	{
 		// Load in any system properties that can be used or declared by
@@ -224,7 +211,6 @@ public abstract class Application
 	 * @return The system properties to use for the application.
 	 * @since 2021/12/01
 	 */
-	@SquirrelJMEVendorApi
 	public Map<String, String> loaderSystemProperties()
 	{
 		return null;
@@ -236,7 +222,6 @@ public abstract class Application
 	 * @return The SquirrelJME name of the application.
 	 * @since 2020/12/29
 	 */
-	@SquirrelJMEVendorApi
 	public final String squirrelJMEName()
 	{
 		String fromName = Objects.toString(this.displayName(),

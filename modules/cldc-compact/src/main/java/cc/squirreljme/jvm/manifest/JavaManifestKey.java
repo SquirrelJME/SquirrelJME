@@ -17,15 +17,12 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2016/05/29
  */
-@SquirrelJMEVendorApi
 public final class JavaManifestKey
 {
 	/** The used string. */
-	@SquirrelJMEVendorApi
 	protected final String string;
 	
 	/** The actual input string. */
-	@SquirrelJMEVendorApi
 	protected final String inputString;
 	
 	/**
@@ -35,7 +32,6 @@ public final class JavaManifestKey
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/29
 	 */
-	@SquirrelJMEVendorApi
 	public JavaManifestKey(String __s)
 		throws NullPointerException
 	{
@@ -84,7 +80,6 @@ public final class JavaManifestKey
 	 * @return The input string.
 	 * @since 2017/11/26
 	 */
-	@SquirrelJMEVendorApi
 	public String inputString()
 	{
 		return this.inputString;

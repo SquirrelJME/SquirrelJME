@@ -16,12 +16,10 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/11/29
  */
-@SquirrelJMEVendorApi
 public final class ChunkForwardedFuture
 	implements ChunkFuture
 {
 	/** Initialized to zero? */
-	@SquirrelJMEVendorApi
 	protected final boolean zeroInit;
 	
 	/** The future to get the value from. */
@@ -35,7 +33,6 @@ public final class ChunkForwardedFuture
 	 * 
 	 * @since 2021/01/20
 	 */
-	@SquirrelJMEVendorApi
 	public ChunkForwardedFuture()
 	{
 		this(false);
@@ -47,7 +44,6 @@ public final class ChunkForwardedFuture
 	 * @param __zeroInit Is this initialized to zero?
 	 * @since 2021/09/06
 	 */
-	@SquirrelJMEVendorApi
 	public ChunkForwardedFuture(boolean __zeroInit)
 	{
 		this.zeroInit = __zeroInit;
@@ -60,7 +56,6 @@ public final class ChunkForwardedFuture
 	 * @param __offset The potential offset.
 	 * @since 2021/01/20
 	 */
-	@SquirrelJMEVendorApi
 	public ChunkForwardedFuture(ChunkFuture __future, ChunkFuture __offset)
 	{
 		this._future = __future;
@@ -102,7 +97,6 @@ public final class ChunkForwardedFuture
 	 * @return If this is set or not.
 	 * @since 2020/12/06
 	 */
-	@SquirrelJMEVendorApi
 	public boolean isSet()
 	{
 		synchronized (this)
@@ -118,7 +112,6 @@ public final class ChunkForwardedFuture
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/11/29
 	 */
-	@SquirrelJMEVendorApi
 	public void set(ChunkFuture __future)
 		throws NullPointerException
 	{
@@ -133,7 +126,6 @@ public final class ChunkForwardedFuture
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/17
 	 */
-	@SquirrelJMEVendorApi
 	public void set(ChunkFuture __future, int __off)
 		throws NullPointerException
 	{
@@ -148,7 +140,6 @@ public final class ChunkForwardedFuture
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/01/17
 	 */
-	@SquirrelJMEVendorApi
 	public void set(ChunkFuture __future, ChunkFuture __off)
 		throws NullPointerException
 	{
@@ -169,7 +160,6 @@ public final class ChunkForwardedFuture
 	 * @return The generated future.
 	 * @since 2020/12/06
 	 */
-	@SquirrelJMEVendorApi
 	public ChunkFutureInteger setInt(int __value)
 	{
 		ChunkFutureInteger future = new ChunkFutureInteger(__value);

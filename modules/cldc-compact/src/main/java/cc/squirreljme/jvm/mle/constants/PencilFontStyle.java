@@ -17,26 +17,21 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/05/17
  */
-@SquirrelJMEVendorApi
 public interface PencilFontStyle
 {
 	/** Bold text. */
-	@SquirrelJMEVendorApi
 	byte BOLD =
 		1;
 	
 	/** Italic (slanted) text. */
-	@SquirrelJMEVendorApi
 	byte ITALIC =
 		2;
 	
 	/** Underlined text. */
-	@SquirrelJMEVendorApi
 	byte UNDERLINED =
 		4;
 	
 	/** Special case for automatic style selection. */
-	@SquirrelJMEVendorApi
 	byte AUTOMATIC =
 		8;
 }

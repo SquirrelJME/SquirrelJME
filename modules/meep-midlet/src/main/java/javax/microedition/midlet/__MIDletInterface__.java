@@ -49,7 +49,6 @@ final class __MIDletInterface__
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void destroy(MIDlet __instance, Throwable __thrown)
 		throws NullPointerException, Throwable
 	{
@@ -76,7 +75,6 @@ final class __MIDletInterface__
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public MIDlet newInstance()
 		throws Throwable
 	{
@@ -124,7 +122,6 @@ final class __MIDletInterface__
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void startApp(MIDlet __instance)
 		throws NullPointerException, Throwable
 	{
@@ -139,7 +136,6 @@ final class __MIDletInterface__
 	 * @since 2022/07/21
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public ApplicationType type()
 	{
 		return ApplicationType.MIDLET;

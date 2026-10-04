@@ -20,7 +20,6 @@ import java.util.Set;
  *
  * @since 2025/06/19
  */
-@SquirrelJMEVendorApi
 public class ClassAssertion
 {
 	/** This is the prefix that is used for assertion checks. */
@@ -51,7 +50,6 @@ public class ClassAssertion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/13
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean desiredAssertionStatus(Class<?> __class)
 		throws NullPointerException
 	{

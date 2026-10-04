@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/03/08
  */
-@SquirrelJMEVendorApi
 public final class StringNotifier
 {
 	/** The string being referenced. */

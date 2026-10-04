@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2017/12/31
  */
-@SquirrelJMEVendorApi
 public interface MarkedProvided
 {
 }

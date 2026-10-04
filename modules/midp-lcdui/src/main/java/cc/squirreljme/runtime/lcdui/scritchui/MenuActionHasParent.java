@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/07/20
  */
-@SquirrelJMEVendorApi
 public interface MenuActionHasParent
 	extends MenuActionApplicable
 {

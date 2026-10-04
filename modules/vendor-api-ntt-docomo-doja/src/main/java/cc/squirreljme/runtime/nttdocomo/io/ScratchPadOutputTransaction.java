@@ -20,7 +20,6 @@ import java.io.OutputStream;
  *
  * @since 2021/12/02
  */
-@SquirrelJMEVendorApi
 public final class ScratchPadOutputTransaction
 	extends OutputStream
 {
@@ -73,7 +72,6 @@ public final class ScratchPadOutputTransaction
 	 * @since 2021/12/02
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void close()
 		throws IOException
 	{
@@ -94,7 +92,6 @@ public final class ScratchPadOutputTransaction
 	 * @since 2021/12/02
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void flush()
 		throws IOException
 	{
@@ -114,7 +111,6 @@ public final class ScratchPadOutputTransaction
 	 * @since 2021/12/02
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void write(int __b)
 		throws IOException
 	{

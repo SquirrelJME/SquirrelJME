@@ -18,11 +18,9 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2025/04/18
  */
-@SquirrelJMEVendorApi
 public final class CachedChoice
 {
 	/** The cached string. */
-	@SquirrelJMEVendorApi
 	public final String string;
 	
 	/**

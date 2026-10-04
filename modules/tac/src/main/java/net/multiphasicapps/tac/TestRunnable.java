@@ -26,7 +26,6 @@ public abstract class TestRunnable
 	 *
 	 * @since 2026/02/12
 	 */
-	@SquirrelJMEVendorApi
 	public TestRunnable()
 	{
 	}
@@ -38,7 +37,6 @@ public abstract class TestRunnable
 	 * @since 2018/10/06
 	 */
 	@Test
-	@SquirrelJMEVendorApi
 	public abstract void test()
 		throws Throwable;
 	
@@ -47,7 +45,6 @@ public abstract class TestRunnable
 	 * @since 2018/10/06
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

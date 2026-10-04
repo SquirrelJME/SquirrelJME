@@ -20,16 +20,13 @@ import java.io.IOException;
  *
  * @since 2024/02/04
  */
-@SquirrelJMEVendorApi
 public abstract class ForwardStream
 	implements Closeable, Runnable
 {
 	/** The stream to read from. */
-	@SquirrelJMEVendorApi
 	protected final Closeable from;
 	
 	/** The stream to write to. */
-	@SquirrelJMEVendorApi
 	protected final Closeable to;
 	
 	/** The thread that is doing work, if one exists. */
@@ -43,7 +40,6 @@ public abstract class ForwardStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/04
 	 */
-	@SquirrelJMEVendorApi
 	public ForwardStream(Closeable __from, Closeable __to)
 		throws NullPointerException
 	{
@@ -81,7 +77,6 @@ public abstract class ForwardStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/02/04
 	 */
-	@SquirrelJMEVendorApi
 	public final Thread runThread(String __name)
 		throws IllegalStateException, NullPointerException
 	{

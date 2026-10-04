@@ -49,7 +49,6 @@ abstract class __CoreTest__
 	 *
 	 * @since 2026/02/12
 	 */
-	@SquirrelJMEVendorApi
 	__CoreTest__()
 	{
 	}
@@ -64,7 +63,6 @@ abstract class __CoreTest__
 	 * @since 2018/10/06
 	 */
 	@Test
-	@SquirrelJMEVendorApi
 	abstract Object __runTest(Object... __args)
 		throws Throwable;
 	
@@ -73,7 +71,6 @@ abstract class __CoreTest__
 	 *
 	 * @since 2025/04/23
 	 */
-	@SquirrelJMEVendorApi
 	public final void fail()
 	{
 		throw new AssertionError();
@@ -219,7 +216,6 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2018/10/07
 	 */
-	@SquirrelJMEVendorApi
 	public final void secondary(String __key, Object __v)
 		throws NullPointerException
 	{
@@ -235,7 +231,6 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/16
 	 */
-	@SquirrelJMEVendorApi
 	public final void secondary(String __key, boolean __v)
 		throws NullPointerException
 	{
@@ -251,7 +246,6 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public final void secondary(String __key, byte __v)
 		throws NullPointerException
 	{
@@ -267,7 +261,6 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public final void secondary(String __key, short __v)
 		throws NullPointerException
 	{
@@ -283,7 +276,6 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public final void secondary(String __key, char __v)
 		throws NullPointerException
 	{
@@ -299,7 +291,6 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/16
 	 */
-	@SquirrelJMEVendorApi
 	public final void secondary(String __key, int __v)
 		throws NullPointerException
 	{
@@ -315,7 +306,6 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/16
 	 */
-	@SquirrelJMEVendorApi
 	public final void secondary(String __key, long __v)
 		throws NullPointerException
 	{
@@ -331,7 +321,6 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/16
 	 */
-	@SquirrelJMEVendorApi
 	public final void secondary(String __key, float __v)
 		throws NullPointerException
 	{
@@ -347,7 +336,6 @@ abstract class __CoreTest__
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2021/06/16
 	 */
-	@SquirrelJMEVendorApi
 	public final void secondary(String __key, double __v)
 		throws NullPointerException
 	{

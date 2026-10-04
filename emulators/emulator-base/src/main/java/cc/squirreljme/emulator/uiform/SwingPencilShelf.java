@@ -29,7 +29,6 @@ import javax.imageio.ImageIO;
  *
  * @since 2020/09/26
  */
-@SquirrelJMEVendorApi
 public final class SwingPencilShelf
 {
 	/**
@@ -57,7 +56,6 @@ public final class SwingPencilShelf
 	 * @see NativeImageLoadCallback
 	 * @since 2024/01/14
 	 */
-	@SquirrelJMEVendorApi
 	public static Object nativeImageLoadRGBA(
 		int __type, byte[] __b, int __o, int __l,
 		NativeImageLoadCallback __callback)
@@ -182,7 +180,6 @@ public final class SwingPencilShelf
 	 * natively loaded.
 	 * @since 2024/01/14
 	 */
-	@SquirrelJMEVendorApi
 	public static int nativeImageLoadTypes()
 	{
 		return NativeImageLoadType.LOAD_JPEG |

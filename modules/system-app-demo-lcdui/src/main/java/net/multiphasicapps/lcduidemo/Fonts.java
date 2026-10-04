@@ -25,7 +25,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
  *
  * @since 2026/01/15
  */
-@SquirrelJMEVendorApi
 public class Fonts
 	extends MIDlet
 {

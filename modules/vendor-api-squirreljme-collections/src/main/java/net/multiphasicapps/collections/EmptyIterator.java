@@ -20,7 +20,6 @@ import java.util.NoSuchElementException;
  *
  * @since 2016/04/10
  */
-@SquirrelJMEVendorApi
 public final class EmptyIterator
 	implements Iterator
 {

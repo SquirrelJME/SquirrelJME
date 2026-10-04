@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2025/12/28
  */
-@SquirrelJMEVendorApi
 public interface UriPartPath
 {
 	/**
@@ -26,7 +25,6 @@ public interface UriPartPath
 	 * @return The path component or {@code null} if there is none.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	String getPath();
 	
 	/**
@@ -35,6 +33,5 @@ public interface UriPartPath
 	 * @return If this ends in a slash.
 	 * @since 2026/01/16
 	 */
-	@SquirrelJMEVendorApi
 	boolean isDirectory();
 }

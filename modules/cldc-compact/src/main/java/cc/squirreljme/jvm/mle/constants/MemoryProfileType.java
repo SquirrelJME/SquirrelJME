@@ -16,16 +16,13 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2021/02/19
  */
-@SquirrelJMEVendorApi
 public interface MemoryProfileType
 {
 	/** Minimal memory. */
-	@SquirrelJMEVendorApi
 	byte MINIMAL =
 		-1;
 	
 	/** Normal memory. */
-	@SquirrelJMEVendorApi
 	byte NORMAL =
 		0;
 }

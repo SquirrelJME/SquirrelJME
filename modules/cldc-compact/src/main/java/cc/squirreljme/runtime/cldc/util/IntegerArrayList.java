@@ -19,13 +19,11 @@ import java.util.RandomAccess;
  *
  * @since 2020/07/11
  */
-@SquirrelJMEVendorApi
 public class IntegerArrayList
 	extends AbstractList<Integer>
 	implements RandomAccess
 {
 	/** The backing array. */
-	@SquirrelJMEVendorApi
 	protected final IntegerArray array;
 	
 	/**
@@ -35,7 +33,6 @@ public class IntegerArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
-	@SquirrelJMEVendorApi
 	public IntegerArrayList(int[] __a)
 		throws NullPointerException
 	{
@@ -53,7 +50,6 @@ public class IntegerArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/11
 	 */
-	@SquirrelJMEVendorApi
 	public IntegerArrayList(int[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -98,7 +94,6 @@ public class IntegerArrayList
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2020/07/11
 	 */
-	@SquirrelJMEVendorApi
 	public int set(int __i, int __v)
 		throws IndexOutOfBoundsException
 	{
@@ -143,7 +138,6 @@ public class IntegerArrayList
 	 * @return The boxed list type.
 	 * @since 2020/07/11
 	 */
-	@SquirrelJMEVendorApi
 	public static List<Integer> asList(int... __array)
 	{
 		return new IntegerArrayList(__array);
@@ -156,7 +150,6 @@ public class IntegerArrayList
 	 * @return The array as a string or {@code "null"} if {@code null}.
 	 * @since 2022/02/04
 	 */
-	@SquirrelJMEVendorApi
 	public static String toString(int... __ints)
 	{
 		if (__ints == null)

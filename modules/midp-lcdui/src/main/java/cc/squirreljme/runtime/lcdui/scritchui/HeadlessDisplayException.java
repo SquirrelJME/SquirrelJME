@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/08/07
  */
-@SquirrelJMEVendorApi
 public class HeadlessDisplayException
 	extends RuntimeException
 {
@@ -26,7 +25,6 @@ public class HeadlessDisplayException
 	 * @param __c The cause of it.
 	 * @since 2024/08/07
 	 */
-	@SquirrelJMEVendorApi
 	public HeadlessDisplayException(Throwable __c)
 	{
 		super(__c);

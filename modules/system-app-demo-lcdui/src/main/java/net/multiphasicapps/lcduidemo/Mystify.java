@@ -23,7 +23,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
  *
  * @since 2018/11/22
  */
-@SquirrelJMEVendorApi
 public class Mystify
 	extends MIDlet
 {

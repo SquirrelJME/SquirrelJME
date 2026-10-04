@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2019/04/15
  */
-@SquirrelJMEVendorApi
 public final class XPMDemo
 	extends AbstractImageDemo
 {

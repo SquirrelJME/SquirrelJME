@@ -16,26 +16,21 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/07/02
  */
-@SquirrelJMEVendorApi
 public interface TaskStatusType
 {
 	/** The task has exited. */
-	@SquirrelJMEVendorApi
 	byte EXITED =
 		0;
 	
 	/** The task is alive. */
-	@SquirrelJMEVendorApi
 	byte ALIVE =
 		1;
 	
 	/** The task is alive, but in the background. */
-	@SquirrelJMEVendorApi
 	byte BACKGROUND =
 		2;
 	
 	/** The number of status types. */
-	@SquirrelJMEVendorApi
 	byte NUM_TASK_STATUSES =
 		3;
 }

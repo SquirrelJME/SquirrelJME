@@ -16,21 +16,17 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/06/22
  */
-@SquirrelJMEVendorApi
 public interface MonitorResultType
 {
 	/** NOT_INTERRUPTED. */
-	@SquirrelJMEVendorApi
 	byte NOT_INTERRUPTED =
 		1;
 	
 	/** Interrupted. */
-	@SquirrelJMEVendorApi
 	byte INTERRUPTED =
 		0;
 	
 	/** The object is not owned. */
-	@SquirrelJMEVendorApi
 	byte NOT_OWNED =
 		-1;
 }

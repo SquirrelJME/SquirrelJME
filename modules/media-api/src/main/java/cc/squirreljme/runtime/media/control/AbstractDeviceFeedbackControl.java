@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.media.AbstractControl;
  *
  * @since 2026/06/10
  */
-@SquirrelJMEVendorApi
 public class AbstractDeviceFeedbackControl
 	extends AbstractControl<DeviceFeedbackControl>
 	implements DeviceFeedbackControl

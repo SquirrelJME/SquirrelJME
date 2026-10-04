@@ -34,7 +34,6 @@ public interface ScritchChoiceInterface
 	 * not valid.
 	 * @since 2024/07/25
 	 */
-	@SquirrelJMEVendorApi
 	void choiceDelete(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex)
 		throws MLECallError;
@@ -47,7 +46,6 @@ public interface ScritchChoiceInterface
 	 * not valid.
 	 * @since 2024/07/25
 	 */
-	@SquirrelJMEVendorApi
 	void choiceDeleteAll(@NotNull ScritchChoiceBracket __choice)
 		throws MLECallError;
 	
@@ -59,7 +57,6 @@ public interface ScritchChoiceInterface
 	 * @throws MLECallError If the choice is not valid.
 	 * @since 2024/07/28
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = -1, to = Integer.MAX_VALUE)
 	int choiceGetSelectedIndex(@NotNull ScritchChoiceBracket __choice)
 		throws MLECallError;
@@ -74,7 +71,6 @@ public interface ScritchChoiceInterface
 	 * not valid.
 	 * @since 2024/07/25
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int choiceInsert(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex)
@@ -88,7 +84,6 @@ public interface ScritchChoiceInterface
 	 * @throws MLECallError If the choice is not valid.
 	 * @since 2024/07/28
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int choiceLength(@Nullable ScritchChoiceBracket __choice)
 		throws MLECallError;
@@ -103,7 +98,6 @@ public interface ScritchChoiceInterface
 	 * not valid.
 	 * @since 2024/07/25
 	 */
-	@SquirrelJMEVendorApi
 	void choiceSetEnabled(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex,
 		boolean __enabled)
@@ -124,7 +118,6 @@ public interface ScritchChoiceInterface
 	 * not valid; or the image parameters are not valid.
 	 * @since 2024/07/25
 	 */
-	@SquirrelJMEVendorApi
 	void choiceSetImage(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex,
 		@Nullable int[] __data,
@@ -144,7 +137,6 @@ public interface ScritchChoiceInterface
 	 * not valid.
 	 * @since 2024/07/25
 	 */
-	@SquirrelJMEVendorApi
 	void choiceSetSelected(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex,
 		boolean __selected)
@@ -160,7 +152,6 @@ public interface ScritchChoiceInterface
 	 * not valid.
 	 * @since 2024/07/25
 	 */
-	@SquirrelJMEVendorApi
 	void choiceSetString(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex,
 		@Nullable String __string)

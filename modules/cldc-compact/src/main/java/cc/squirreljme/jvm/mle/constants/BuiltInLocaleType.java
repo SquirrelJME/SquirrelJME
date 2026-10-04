@@ -16,16 +16,13 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/06/11
  */
-@SquirrelJMEVendorApi
 public interface BuiltInLocaleType
 {
 	/** Unspecified. */
-	@SquirrelJMEVendorApi
 	byte UNSPECIFIED =
 		0;
 	
 	/** English, US. */
-	@SquirrelJMEVendorApi
 	byte ENGLISH_US =
 		1;
 }

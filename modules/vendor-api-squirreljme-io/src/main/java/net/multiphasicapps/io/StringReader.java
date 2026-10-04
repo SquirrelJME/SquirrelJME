@@ -19,16 +19,13 @@ import java.io.Reader;
  *
  * @since 2018/11/04
  */
-@SquirrelJMEVendorApi
 public class StringReader
 	extends Reader
 {
 	/** The string to read from. */
-	@SquirrelJMEVendorApi
 	protected final String string;
 	
 	/** The string length. */
-	@SquirrelJMEVendorApi
 	protected final int length;
 	
 	/** The current position. */
@@ -41,7 +38,6 @@ public class StringReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
-	@SquirrelJMEVendorApi
 	public StringReader(String __s)
 		throws NullPointerException
 	{

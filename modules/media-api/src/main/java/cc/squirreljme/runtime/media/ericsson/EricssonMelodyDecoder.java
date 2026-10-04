@@ -32,7 +32,6 @@ import javax.microedition.media.control.MetaDataControl;
  * 
  * @since 2026/05/26
  */
-@SquirrelJMEVendorApi
 public class EricssonMelodyDecoder
 {
 	/** Array of note frequencies. Ericsson Melody maps to MIDI. */
@@ -128,7 +127,6 @@ public class EricssonMelodyDecoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/05/26
 	 */
-	@SquirrelJMEVendorApi
 	public EricssonMelodyDecoder(@NotNull byte[] __input,
 		@NotNull AbstractDeviceFeedbackControl __control,
 		@NotNull MetaDataValues __metadata)
@@ -156,7 +154,6 @@ public class EricssonMelodyDecoder
 	 * @return {@code true} if parsing has finished.
 	 * @since 2026/05/26
 	 */
-	@SquirrelJMEVendorApi
 	public boolean hasFinished()
 		throws NullPointerException
 	{
@@ -180,7 +177,6 @@ public class EricssonMelodyDecoder
 	 * one of its multi-byte events is malformed.
 	 * @since 2026/05/26
 	 */
-	@SquirrelJMEVendorApi
 	public void parseMelody(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@MagicConstant(valuesFromClass = AudioStreamRate.class) int __rate,
@@ -232,7 +228,6 @@ public class EricssonMelodyDecoder
 	 * 
 	 * @since 2026/05/26
 	 */
-	@SquirrelJMEVendorApi
 	public void reset()
 	{
 		// Reset all variables to parse back from the melody's beginning
@@ -252,7 +247,6 @@ public class EricssonMelodyDecoder
 	 * @param __volume The volume to set.
 	 * @since 2026/05/26
 	 */
-	@SquirrelJMEVendorApi
 	public void setMasterVolume(
 		@Range(from = 0, to = 100) int __volume)
 	{

@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2018/10/29
  */
-@SquirrelJMEVendorApi
 public final class UncaughtExceptionHandler
 {
 	/** Exit status for when this is hit. */
@@ -41,7 +40,6 @@ public final class UncaughtExceptionHandler
 	 * @param __t The throwable to handle.
 	 * @since 2018/10/29
 	 */
-	@SquirrelJMEVendorApi
 	public static void handle(Throwable __t)
 	{
 		// Make sure this does not cause the thread to die again

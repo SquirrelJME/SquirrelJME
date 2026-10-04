@@ -19,7 +19,6 @@ import java.util.Map;
  *
  * @since 2026/06/10
  */
-@SquirrelJMEVendorApi
 public final class MetaDataValues
 {
 	/** Values stored within the mapping. */
@@ -43,7 +42,6 @@ public final class MetaDataValues
 	 * @throws NullPointerException If the key is {@code null}.
 	 * @since 2026/06/10
 	 */
-	@SquirrelJMEVendorApi
 	public final void set(String __k, String __v)
 		throws NullPointerException
 	{

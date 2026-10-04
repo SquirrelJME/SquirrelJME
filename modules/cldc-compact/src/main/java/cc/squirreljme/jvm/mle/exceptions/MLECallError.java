@@ -19,12 +19,10 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2020/06/22
  */
-@SquirrelJMEVendorApi
 public class MLECallError
 	extends VirtualMachineError
 {
 	/** The distinctive {@link MLECallErrorCode}. */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = MLECallErrorCode.class)
 	public final int distinction;
 	
@@ -33,7 +31,6 @@ public class MLECallError
 	 *
 	 * @since 2020/06/22
 	 */
-	@SquirrelJMEVendorApi
 	public MLECallError()
 	{
 		this.distinction = 0;
@@ -45,7 +42,6 @@ public class MLECallError
 	 * @param __m The message.
 	 * @since 2020/06/22
 	 */
-	@SquirrelJMEVendorApi
 	public MLECallError(String __m)
 	{
 		super(__m);
@@ -60,7 +56,6 @@ public class MLECallError
 	 * @param __t The cause.
 	 * @since 2020/06/22
 	 */
-	@SquirrelJMEVendorApi
 	public MLECallError(String __m, Throwable __t)
 	{
 		super(__m);
@@ -76,7 +71,6 @@ public class MLECallError
 	 * @param __t The cause.
 	 * @since 2020/06/22
 	 */
-	@SquirrelJMEVendorApi
 	public MLECallError(Throwable __t)
 	{
 		this.initCause(__t);
@@ -90,7 +84,6 @@ public class MLECallError
 	 * @param __dist The distinction used.
 	 * @since 2023/02/19
 	 */
-	@SquirrelJMEVendorApi
 	public MLECallError(
 		@MagicConstant(valuesFromClass = MLECallErrorCode.class) int __dist)
 	{
@@ -104,7 +97,6 @@ public class MLECallError
 	 * @param __dist The distinction used.
 	 * @since 2023/02/19
 	 */
-	@SquirrelJMEVendorApi
 	public MLECallError(String __m,
 		@MagicConstant(valuesFromClass = MLECallErrorCode.class) int __dist)
 	{
@@ -121,7 +113,6 @@ public class MLECallError
 	 * @param __dist The distinction used.
 	 * @since 2023/02/19
 	 */
-	@SquirrelJMEVendorApi
 	public MLECallError(String __m, Throwable __t,
 		@MagicConstant(valuesFromClass = MLECallErrorCode.class) int __dist)
 	{
@@ -139,7 +130,6 @@ public class MLECallError
 	 * @param __dist The distinction used.
 	 * @since 2023/02/19
 	 */
-	@SquirrelJMEVendorApi
 	public MLECallError(Throwable __t,
 		@MagicConstant(valuesFromClass = MLECallErrorCode.class) int __dist)
 	{
@@ -155,7 +145,6 @@ public class MLECallError
 	 * @param __code The {@link MLECallErrorCode}.
 	 * @since 2020/11/29
 	 */
-	@SquirrelJMEVendorApi
 	public MLECallError(int __callId,
 		@MagicConstant(valuesFromClass = MLECallErrorCode.class) int __code)
 	{
@@ -175,7 +164,6 @@ public class MLECallError
 	 * or would end up being a checked exception.
 	 * @since 2024/07/25
 	 */
-	@SquirrelJMEVendorApi
 	public RuntimeException throwDistinct()
 		throws Error, RuntimeException
 	{

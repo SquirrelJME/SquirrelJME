@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Range;
  * @since 2020/06/07
  */
 @SuppressWarnings("UnstableApiUsage")
-@SquirrelJMEVendorApi
 public final class JarPackageShelf
 {
 	/**
@@ -37,7 +36,6 @@ public final class JarPackageShelf
 	 * @return The classpath of the current program.
 	 * @since 2020/06/07
 	 */
-	@SquirrelJMEVendorApi
 	public static native JarPackageBracket[] classPath();
 	
 	/**
@@ -49,7 +47,6 @@ public final class JarPackageShelf
 	 * @throws MLECallError If either argument is {@code null}.
 	 * @since 2020/07/02
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean equals(
 		@NotNull JarPackageBracket __a,
 		@NotNull JarPackageBracket __b)
@@ -61,7 +58,6 @@ public final class JarPackageShelf
 	 * @return The libraries that are currently available.
 	 * @since 2020/10/31
 	 */
-	@SquirrelJMEVendorApi
 	public static native JarPackageBracket[] libraries();
 	
 	/**
@@ -72,7 +68,6 @@ public final class JarPackageShelf
 	 * @throws MLECallError If the library is not valid.
 	 * @since 2023/12/18
 	 */
-	@SquirrelJMEVendorApi
 	public static native int libraryId(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 	
@@ -88,7 +83,6 @@ public final class JarPackageShelf
 	 * @throws MLECallError If the JAR is not valid.
 	 * @since 2020/10/31
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	public static native String libraryPath(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
@@ -102,7 +96,6 @@ public final class JarPackageShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2026/01/01
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	public static native String[] list(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
@@ -118,7 +111,6 @@ public final class JarPackageShelf
 	 * specified.
 	 * @since 2025/07/06
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	public static final InputStream openResource(
 		@NotNull JarPackageBracket __jar,
@@ -146,7 +138,6 @@ public final class JarPackageShelf
 	 * specified.
 	 * @since 2020/06/07
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	public static native PipeBracket openResourcePipe(
 		@NotNull JarPackageBracket __jar,
@@ -162,7 +153,6 @@ public final class JarPackageShelf
 	 * @throws MLECallError If {@code __jar} is null.
 	 * @since 2023/07/19
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = -1, to = 1296)
 	public static native int prefixCode(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
@@ -182,7 +172,6 @@ public final class JarPackageShelf
 	 * exceed the array bounds.
 	 * @since 2022/03/04
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
 	public static native int rawData(@NotNull JarPackageBracket __jar,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __jarOffset,
@@ -201,7 +190,6 @@ public final class JarPackageShelf
 	 * @throws MLECallError If {@code __jar} is null.
 	 * @since 2022/03/04
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
 	public static native int rawSize(@NotNull JarPackageBracket __jar)
 		throws MLECallError;

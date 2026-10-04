@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2021/12/26
  */
-@SquirrelJMEVendorApi
 public class EmulatedObjectShelf
 {
 	/**
@@ -32,7 +31,6 @@ public class EmulatedObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayCopyZ(
 		boolean[] __src,
 		int __srcOff,
@@ -61,7 +59,6 @@ public class EmulatedObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayCopyB(
 		byte[] __src,
 		int __srcOff,
@@ -90,7 +87,6 @@ public class EmulatedObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayCopyS(
 		short[] __src,
 		int __srcOff,
@@ -119,7 +115,6 @@ public class EmulatedObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayCopyC(
 		char[] __src,
 		int __srcOff,
@@ -148,7 +143,6 @@ public class EmulatedObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayCopyI(
 		int[] __src,
 		int __srcOff,
@@ -177,7 +171,6 @@ public class EmulatedObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayCopyJ(
 		long[] __src,
 		int __srcOff,
@@ -206,7 +199,6 @@ public class EmulatedObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayCopyF(
 		float[] __src,
 		int __srcOff,
@@ -235,7 +227,6 @@ public class EmulatedObjectShelf
 	 * @param __len The elements to copy.
 	 * @since 2020/06/22
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayCopyD(
 		 double[] __src,
 		int __srcOff,
@@ -264,7 +255,6 @@ public class EmulatedObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayFill(boolean[] __b, int __o, int __l,
 		boolean __v)
 		throws MLECallError
@@ -287,7 +277,6 @@ public class EmulatedObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayFill(byte[] __b, int __o, int __l,
 		byte __v)
 		throws MLECallError
@@ -310,7 +299,6 @@ public class EmulatedObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayFill(short[] __b, int __o, int __l,
 		short __v)
 		throws MLECallError
@@ -333,7 +321,6 @@ public class EmulatedObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayFill(char[] __b, int __o, int __l,
 		char __v)
 		throws MLECallError
@@ -356,7 +343,6 @@ public class EmulatedObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayFill(int[] __b, int __o, int __l,
 		int __v)
 		throws MLECallError
@@ -379,7 +365,6 @@ public class EmulatedObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayFill(long[] __b, int __o, int __l,
 		long __v)
 		throws MLECallError
@@ -402,7 +387,6 @@ public class EmulatedObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayFill(float[] __b, int __o, int __l,
 		float __v)
 		throws MLECallError
@@ -425,7 +409,6 @@ public class EmulatedObjectShelf
 	 * and/or length exceed the array bounds.
 	 * @since 2021/12/26
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayFill(double[] __b, int __o, int __l,
 		double __v)
 		throws MLECallError
@@ -449,7 +432,6 @@ public class EmulatedObjectShelf
 	 * are negative or exceed the array bounds.
 	 * @since 2025/01/24
 	 */
-	@SquirrelJMEVendorApi
 	public static void arrayIntsToBytes(
 		int[] __source, int __sourceOff,
 		byte[] __dest, int __destOff, int __len)

@@ -30,6 +30,5 @@ import java.lang.annotation.Target;
 public @interface ApiDefinedDeprecated
 {
 	/** The reason this is deprecated. */
-	@SquirrelJMEVendorApi
 	String value() default "";
 }

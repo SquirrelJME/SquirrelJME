@@ -17,11 +17,9 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2019/05/13
  */
-@SquirrelJMEVendorApi
 public final class HTTPStateTracker
 {
 	/** The state of this connection. */
-	@SquirrelJMEVendorApi
 	public volatile HTTPState state =
 		HTTPState.SETUP;
 }

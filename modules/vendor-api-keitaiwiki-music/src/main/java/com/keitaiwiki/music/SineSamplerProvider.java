@@ -42,12 +42,10 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @see SamplerProvider
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public class SineSamplerProvider
 	implements SamplerProvider
 {
 	/** Key index bias */
-	@SquirrelJMEVendorApi
 	static final int A4 = 81;
 	
 	/**
@@ -55,7 +53,6 @@ public class SineSamplerProvider
 	 *
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public SineSamplerProvider()
 	{
 	}

@@ -16,36 +16,29 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2021/12/05
  */
-@SquirrelJMEVendorApi
 public interface NativeImageLoadType
 {
 	/** Native loading of PNGs. */
-	@SquirrelJMEVendorApi
 	int LOAD_PNG =
 		1;
 	
 	/** Native loading of GIFs. */
-	@SquirrelJMEVendorApi
 	int LOAD_GIF =
 		2;
 	
 	/** Native loading of JPEGs. */
-	@SquirrelJMEVendorApi
 	int LOAD_JPEG =
 		4;
 	
 	/** Native loading of XPMs. */
-	@SquirrelJMEVendorApi
 	int LOAD_XPM =
 		8;
 	
 	/** SVG. */
-	@SquirrelJMEVendorApi
 	int LOAD_SVG =
 		16;
 	
 	/** All types. */
-	@SquirrelJMEVendorApi
 	int ALL_TYPES =
 		NativeImageLoadType.LOAD_PNG |
 		NativeImageLoadType.LOAD_GIF | NativeImageLoadType.LOAD_JPEG |

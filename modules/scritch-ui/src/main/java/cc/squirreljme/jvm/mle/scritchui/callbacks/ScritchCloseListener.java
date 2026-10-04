@@ -19,7 +19,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/05/13
  */
-@SquirrelJMEVendorApi
 public interface ScritchCloseListener
 	extends ScritchListener
 {
@@ -31,7 +30,6 @@ public interface ScritchCloseListener
 	 * @throws MLECallError If the window could not be closed.
 	 * @since 2024/05/13
 	 */
-	@SquirrelJMEVendorApi
 	@ScritchEventLoop
 	boolean closed(ScritchWindowBracket __window)
 		throws MLECallError;

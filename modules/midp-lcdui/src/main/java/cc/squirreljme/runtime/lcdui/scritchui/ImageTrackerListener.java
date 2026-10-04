@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Async;
  *
  * @since 2024/07/20
  */
-@SquirrelJMEVendorApi
 public interface ImageTrackerListener
 {
 	/**

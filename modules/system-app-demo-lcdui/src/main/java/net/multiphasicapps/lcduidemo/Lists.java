@@ -21,7 +21,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
  *
  * @since 2018/12/02
  */
-@SquirrelJMEVendorApi
 public class Lists
 	extends MIDlet
 {

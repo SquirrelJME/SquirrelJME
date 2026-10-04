@@ -24,13 +24,11 @@ import org.jetbrains.annotations.UnmodifiableView;
  * @param <V> The type of value the list stores.
  * @since 2016/03/03
  */
-@SquirrelJMEVendorApi
 @UnmodifiableView
 public abstract class UnmodifiableList<V>
 	extends AbstractList<V>
 {
 	/** The list to wrap. */
-	@SquirrelJMEVendorApi
 	protected final List<V> wrapped;
 	
 	/**
@@ -40,7 +38,6 @@ public abstract class UnmodifiableList<V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/03
 	 */
-	@SquirrelJMEVendorApi
 	private UnmodifiableList(List<V> __l)
 		throws NullPointerException
 	{
@@ -57,7 +54,6 @@ public abstract class UnmodifiableList<V>
 	 * @since 2016/05/12
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public boolean contains(Object __o)
 	{
 		return this.wrapped.contains(__o);
@@ -68,7 +64,6 @@ public abstract class UnmodifiableList<V>
 	 * @since 2016/03/03
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final V get(int __i)
 	{
 		return this.wrapped.get(__i);
@@ -79,7 +74,6 @@ public abstract class UnmodifiableList<V>
 	 * @since 2016/05/12
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int indexOf(Object __o)
 	{
 		return this.wrapped.indexOf(__o);
@@ -90,7 +84,6 @@ public abstract class UnmodifiableList<V>
 	 * @since 2016/05/12
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public boolean isEmpty()
 	{
 		return this.wrapped.isEmpty();
@@ -101,7 +94,6 @@ public abstract class UnmodifiableList<V>
 	 * @since 2016/05/12
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int lastIndexOf(Object __o)
 	{
 		return this.wrapped.lastIndexOf(__o);
@@ -112,7 +104,6 @@ public abstract class UnmodifiableList<V>
 	 * @since 2016/03/03
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final int size()
 	{
 		return this.wrapped.size();
@@ -126,7 +117,6 @@ public abstract class UnmodifiableList<V>
 	 * @return An unmodifiable view of the list.
 	 * @since 2016/03/03
 	 */
-	@SquirrelJMEVendorApi
 	public static <V> UnmodifiableList<V> of(List<V> __l)
 	{
 		// If already one, return it

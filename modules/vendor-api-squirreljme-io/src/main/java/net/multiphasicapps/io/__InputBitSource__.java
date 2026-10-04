@@ -78,7 +78,6 @@ final class __InputBitSource__
 	 * @throws IOException On read errors.
 	 * @since 2017/02/25
 	 */
-	@SquirrelJMEVendorApi
 	public int readBits(int __n, boolean __msb)
 		throws IOException
 	{

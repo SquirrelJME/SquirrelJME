@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2025/05/04
  */
-@SquirrelJMEVendorApi
 public interface AudioStreamRenderer
 	extends ShelfCallback
 {
@@ -36,7 +35,6 @@ public interface AudioStreamRenderer
 	 * @param __len The length of the buffer.
 	 * @since 2025/05/04
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = AudioRenderResult.class)
 	void render(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __format,

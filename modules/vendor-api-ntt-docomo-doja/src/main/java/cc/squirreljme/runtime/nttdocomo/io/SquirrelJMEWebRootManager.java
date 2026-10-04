@@ -30,11 +30,9 @@ import java.io.InputStream;
  *
  * @since 2022/10/07
  */
-@SquirrelJMEVendorApi
 public class SquirrelJMEWebRootManager
 {
 	/** The JAR that makes up our webroot. */
-	@SquirrelJMEVendorApi
 	protected final JarPackageBracket jar;
 	
 	/**
@@ -44,7 +42,6 @@ public class SquirrelJMEWebRootManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/10/11
 	 */
-	@SquirrelJMEVendorApi
 	public SquirrelJMEWebRootManager(JarPackageBracket __jar)
 		throws NullPointerException
 	{
@@ -63,7 +60,6 @@ public class SquirrelJMEWebRootManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/10/11
 	 */
-	@SquirrelJMEVendorApi
 	public boolean pathExists(FileAddress __file)
 		throws IOException, NullPointerException
 	{

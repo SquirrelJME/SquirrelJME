@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
  *
  * @since 2018/09/20
  */
-@SquirrelJMEVendorApi
 public final class DefaultLocale
 {
 	/** The locale to use for conversion in cases where one is not used. */
@@ -48,7 +47,6 @@ public final class DefaultLocale
 	 * @return The built-in locale.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static Locale builtInLocale(int __id)
 	{
 		switch (__id)
@@ -70,7 +68,6 @@ public final class DefaultLocale
 	 * @return The default locale, this value should not be cached.
 	 * @since 2018/09/20
 	 */
-	@SquirrelJMEVendorApi
 	public static Locale defaultLocale()
 	{
 		Locale rv = DefaultLocale._defaultLocale;
@@ -86,7 +83,6 @@ public final class DefaultLocale
 	 * @return The no-locale.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static Locale noLocale()
 	{
 		Locale rv = DefaultLocale._noLocale;
@@ -104,7 +100,6 @@ public final class DefaultLocale
 	 * @throws NoSuchElementException If the locale is unsupported.
 	 * @since 2024/07/24
 	 */
-	@SquirrelJMEVendorApi
 	public static int toBuiltIn(String __locale)
 		throws NullPointerException, NoSuchElementException
 	{
@@ -133,7 +128,6 @@ public final class DefaultLocale
 	 * @throws IllegalArgumentException If the built-in encoding is unknown.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	@SuppressWarnings("SwitchStatementWithTooFewBranches")
 	public static String toString(int __builtIn)
 		throws IllegalArgumentException

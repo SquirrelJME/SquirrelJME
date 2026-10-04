@@ -29,7 +29,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/29
  */
-@SquirrelJMEVendorApi
 public class FileEndPointConnectionFactory
 	implements CustomConnectionFactory
 {
@@ -38,7 +37,6 @@ public class FileEndPointConnectionFactory
 	 * @since 2025/12/29
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
@@ -116,7 +114,6 @@ public class FileEndPointConnectionFactory
 	 * @since 2025/12/29
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public String scheme()
 	{
 		return "file";

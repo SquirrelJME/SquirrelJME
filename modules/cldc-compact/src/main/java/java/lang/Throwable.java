@@ -46,7 +46,6 @@ public class Throwable
 	private boolean _initCause;
 	
 	/** The stack trace for this throwable. */
-	@SquirrelJMEVendorApi
 	volatile TracePointBracket[] _stackTrace;
 	
 	/**

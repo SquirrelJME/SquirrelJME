@@ -37,7 +37,6 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/07/29
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	ScritchComponentBracket componentGetParent(
 		@NotNull ScritchComponentBracket __component)
@@ -51,7 +50,6 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/18
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int componentGetHeight(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
@@ -63,7 +61,6 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/17
 	 */
-	@SquirrelJMEVendorApi
 	void componentRevalidate(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 	
@@ -75,7 +72,6 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments or the component is not valid.
 	 * @since 2024/07/17
 	 */
-	@SquirrelJMEVendorApi
 	void componentSetActivateListener(ScritchComponentBracket __component,
 		ScritchActivateListener __listener)
 		throws MLECallError;
@@ -88,7 +84,6 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments or the component is not valid.
 	 * @since 2024/04/28
 	 */
-	@SquirrelJMEVendorApi
 	void componentSetSizeListener(ScritchComponentBracket __component,
 		ScritchSizeListener __listener)
 		throws MLECallError;
@@ -101,7 +96,6 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments or the component is not valid.
 	 * @since 2024/07/17
 	 */
-	@SquirrelJMEVendorApi
 	void componentSetValueUpdateListener(ScritchComponentBracket __component,
 		ScritchValueUpdateListener __listener)
 		throws MLECallError;
@@ -114,7 +108,6 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError If the component is not valid.
 	 * @since 2024/06/28
 	 */
-	@SquirrelJMEVendorApi
 	void componentSetVisibleListener(ScritchComponentBracket __component,
 		ScritchVisibleListener __listener)
 		throws MLECallError;
@@ -127,7 +120,6 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/18
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int componentWidth(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;

@@ -27,7 +27,6 @@ import org.intellij.lang.annotations.MagicConstant;
  *
  * @since 2024/03/09
  */
-@SquirrelJMEVendorApi
 public final class ScritchLcdUiUtils
 {
 	/**
@@ -48,7 +47,6 @@ public final class ScritchLcdUiUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/18
 	 */
-	@SquirrelJMEVendorApi
 	public static int lcduiDisplaySize(DisplayableState __state,
 		boolean __height)
 		throws NullPointerException
@@ -87,7 +85,6 @@ public final class ScritchLcdUiUtils
 	 * @return A line style from {@link Graphics}.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = Graphics.class)
 	public static int lcduiLineStyle(
 		@MagicConstant(valuesFromClass = ScritchLineStyle.class) int __style)
@@ -103,7 +100,6 @@ public final class ScritchLcdUiUtils
 	 * @return One of {@link ScritchLAFElementColor}.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ScritchLAFElementColor.class)
 	public static int scritchElementColor(
 		@MagicConstant(valuesFromClass = Display.class) int __c)
@@ -146,7 +142,6 @@ public final class ScritchLcdUiUtils
 	 * @since 2024/03/09
 	 */
 	@MagicConstant(valuesFromClass = ScritchLAFImageElementType.class)
-	@SquirrelJMEVendorApi
 	public static int scritchElementType(
 		@MagicConstant(valuesFromClass = Display.class) int __in)
 		throws IllegalArgumentException

@@ -29,7 +29,6 @@ class __8BitImage__
 	extends PalettedImage
 {
 	/** The image that is currently stored here. */
-	@SquirrelJMEVendorApi
 	volatile EightBitImageStore _store;
 	
 	/**

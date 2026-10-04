@@ -19,21 +19,17 @@ import java.util.RandomAccess;
  *
  * @since 2020/01/01
  */
-@SquirrelJMEVendorApi
 public class LongArrayList
 	extends AbstractList<Long>
 	implements RandomAccess
 {
 	/** The backing array. */
-	@SquirrelJMEVendorApi
 	protected final long[] array;
 	
 	/** The offset. */
-	@SquirrelJMEVendorApi
 	protected final int offset;
 	
 	/** The cached size. */
-	@SquirrelJMEVendorApi
 	protected final int size;
 	
 	/**
@@ -43,7 +39,6 @@ public class LongArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/01
 	 */
-	@SquirrelJMEVendorApi
 	public LongArrayList(long[] __a)
 		throws NullPointerException
 	{
@@ -61,7 +56,6 @@ public class LongArrayList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/01/01
 	 */
-	@SquirrelJMEVendorApi
 	public LongArrayList(long[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -147,7 +141,6 @@ public class LongArrayList
 	 * @return The boxed list type.
 	 * @since 2020/07/11
 	 */
-	@SquirrelJMEVendorApi
 	public static List<Long> asList(long... __array)
 	{
 		return new LongArrayList(__array);

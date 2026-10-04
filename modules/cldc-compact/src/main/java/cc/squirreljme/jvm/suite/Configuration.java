@@ -22,20 +22,16 @@ import java.util.Objects;
  *
  * @since 2016/12/14
  */
-@SquirrelJMEVendorApi
 public final class Configuration
 	implements Comparable<Configuration>, MarkedDependency, MarkedProvided
 {
 	/** Name. */
-	@SquirrelJMEVendorApi
 	protected final APIName name;
 	
 	/** Version. */
-	@SquirrelJMEVendorApi
 	protected final SuiteVersion version;
 	
 	/** Is this configuration compact? */
-	@SquirrelJMEVendorApi
 	protected final boolean compact;
 	
 	/** String representation. */
@@ -50,7 +46,6 @@ public final class Configuration
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
-	@SquirrelJMEVendorApi
 	public Configuration(APIName __n, SuiteVersion __v, boolean __c)
 		throws NullPointerException
 	{
@@ -70,7 +65,6 @@ public final class Configuration
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
-	@SquirrelJMEVendorApi
 	public Configuration(String __n)
 		throws NullPointerException
 	{
@@ -155,7 +149,6 @@ public final class Configuration
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/09
 	 */
-	@SquirrelJMEVendorApi
 	public boolean is(String __key)
 		throws NullPointerException
 	{
@@ -195,7 +188,6 @@ public final class Configuration
 	 * @return The API name.
 	 * @since 2025/04/09
 	 */
-	@SquirrelJMEVendorApi
 	public APIName name()
 	{
 		return this.name;
@@ -225,7 +217,6 @@ public final class Configuration
 	 * @return The configuration version.
 	 * @since 2017/12/05
 	 */
-	@SquirrelJMEVendorApi
 	public SuiteVersion version()
 	{
 		return this.version;

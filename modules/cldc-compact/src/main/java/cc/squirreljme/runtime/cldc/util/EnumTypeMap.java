@@ -19,12 +19,10 @@ import java.util.Set;
  *
  * @since 2021/03/13
  */
-@SquirrelJMEVendorApi
 public final class EnumTypeMap<E extends Enum<E>, V>
 	extends AbstractMap<E, V>
 {
 	/** The type of value to store. */
-	@SquirrelJMEVendorApi
 	protected final Class<E> type;
 	
 	/** The stored keys. */
@@ -41,7 +39,6 @@ public final class EnumTypeMap<E extends Enum<E>, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/03/13
 	 */
-	@SquirrelJMEVendorApi
 	public EnumTypeMap(Class<E> __type, E... __keys)
 		throws NullPointerException
 	{

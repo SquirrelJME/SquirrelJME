@@ -23,12 +23,10 @@ import java.io.Reader;
  *
  * @since 2023/09/12
  */
-@SquirrelJMEVendorApi
 public class CsvReaderInputStream
 	implements CsvInputStream
 {
 	/** The input reader. */
-	@SquirrelJMEVendorApi
 	public final Reader in;
 	
 	/**
@@ -38,7 +36,6 @@ public class CsvReaderInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
-	@SquirrelJMEVendorApi
 	public CsvReaderInputStream(ByteArrayOutputStream __in)
 		throws NullPointerException
 	{
@@ -52,7 +49,6 @@ public class CsvReaderInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
-	@SquirrelJMEVendorApi
 	public CsvReaderInputStream(byte[] __in)
 		throws NullPointerException
 	{
@@ -66,7 +62,6 @@ public class CsvReaderInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
-	@SquirrelJMEVendorApi
 	public CsvReaderInputStream(InputStream __in)
 		throws NullPointerException
 	{
@@ -82,7 +77,6 @@ public class CsvReaderInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
-	@SquirrelJMEVendorApi
 	public CsvReaderInputStream(InputStream __in, String __encoding)
 		throws IOException, NullPointerException
 	{
@@ -96,7 +90,6 @@ public class CsvReaderInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
-	@SquirrelJMEVendorApi
 	public CsvReaderInputStream(Reader __in)
 		throws NullPointerException
 	{
@@ -111,7 +104,6 @@ public class CsvReaderInputStream
 	 * @since 2023/09/14
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void close()
 		throws IOException
 	{
@@ -123,7 +115,6 @@ public class CsvReaderInputStream
 	 * @since 2023/09/12
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public boolean next(StringBuilder __line)
 		throws IOException, NullPointerException
 	{

@@ -23,30 +23,24 @@ import javax.microedition.lcdui.Image;
  * @see MenuActionHasParent
  * @since 2018/03/31
  */
-@SquirrelJMEVendorApi
 public abstract class MenuAction
 	extends MenuActionNodeOnly
 	implements MenuActionApplicable
 {
 	/** The priority to use for menu items. */
-	@SquirrelJMEVendorApi
 	static final int _MENU_PRIORITY =
 		Integer.MIN_VALUE;
 	
 	/** The short label. */
-	@SquirrelJMEVendorApi
 	final StringTracker _shortLabel;
 	
 	/** The long label. */
-	@SquirrelJMEVendorApi
 	final StringTracker _longLabel;
 	
 	/** The image used. */
-	@SquirrelJMEVendorApi
 	final ImageTracker _image;
 	
 	/** The last calculated approximated depth for this action. */
-	@SquirrelJMEVendorApi
 	volatile int _approxDepth;
 	
 	/**
@@ -57,7 +51,6 @@ public abstract class MenuAction
 	 * @param __image The image to use for the action.
 	 * @since 2024/07/18
 	 */
-	@SquirrelJMEVendorApi
 	protected MenuAction(String __short, String __long, Image __image)
 	{
 		ScritchInterface scritch = DisplayManager.instance().scritch();
@@ -82,7 +75,6 @@ public abstract class MenuAction
 	 * @param __e If the parent is enabled or disabled.
 	 * @since 2018/04/01
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void onParentEnabled(boolean __e);
 	
 	/**
@@ -93,7 +85,6 @@ public abstract class MenuAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/27
 	 */
-	@SquirrelJMEVendorApi
 	public static int getPriority(MenuAction __action)
 		throws NullPointerException
 	{
@@ -115,7 +106,6 @@ public abstract class MenuAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/19
 	 */
-	@SquirrelJMEVendorApi
 	protected static int approxDepth(MenuAction __action)
 		throws NullPointerException
 	{
@@ -134,7 +124,6 @@ public abstract class MenuAction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/27
 	 */
-	@SquirrelJMEVendorApi
 	protected static void setLabel(MenuAction __action, boolean __long,
 		String __string)
 		throws NullPointerException

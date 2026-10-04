@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2025/12/29
  */
-@SquirrelJMEVendorApi
 public interface FileEndPointFactory
 {
 	/**
@@ -42,7 +41,6 @@ public interface FileEndPointFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/29
 	 */
-	@SquirrelJMEVendorApi
 	FileEndPoint connect(UriGenericPart __uri,
 		@MagicConstant(flagsFromClass = Connector.class) int __mode,
 		@Nullable UriGenericPart __dotDot)
@@ -57,7 +55,6 @@ public interface FileEndPointFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/29
 	 */
-	@SquirrelJMEVendorApi
 	boolean handleAuthority(UriAuthority __auth)
 		throws NullPointerException;
 }

@@ -27,7 +27,6 @@ import java.util.Set;
  * @param <V> The type of value to store.
  * @since 2016/09/06
  */
-@SquirrelJMEVendorApi
 public class SortedTreeMap<K, V>
 	extends AbstractMap<K, V>
 {
@@ -59,7 +58,6 @@ public class SortedTreeMap<K, V>
 	 *
 	 * @since 2016/09/06
 	 */
-	@SquirrelJMEVendorApi
 	public SortedTreeMap()
 	{
 		this(NaturalComparator.<K>instance());
@@ -74,7 +72,6 @@ public class SortedTreeMap<K, V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked"})
-	@SquirrelJMEVendorApi
 	public SortedTreeMap(Map<? extends Comparable<K>, ? extends V> __m)
 		throws NullPointerException
 	{
@@ -90,7 +87,6 @@ public class SortedTreeMap<K, V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked"})
-	@SquirrelJMEVendorApi
 	public SortedTreeMap(Comparator<? extends K> __comp)
 		throws NullPointerException
 	{
@@ -112,7 +108,6 @@ public class SortedTreeMap<K, V>
 	 * @since 2016/09/06
 	 */
 	@SuppressWarnings({"unchecked"})
-	@SquirrelJMEVendorApi
 	public SortedTreeMap(Comparator<? extends K> __comp,
 		Map<? extends K, ? extends V> __m)
 		throws NullPointerException

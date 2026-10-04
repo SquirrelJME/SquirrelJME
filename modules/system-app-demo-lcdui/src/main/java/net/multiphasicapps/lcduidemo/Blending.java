@@ -28,7 +28,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
  *
  * @since 2025/12/22
  */
-@SquirrelJMEVendorApi
 public class Blending
 	extends MIDlet
 {

@@ -31,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2020/06/09
  */
-@SquirrelJMEVendorApi
 public final class RuntimeShelf
 {
 	/**
@@ -51,7 +50,6 @@ public final class RuntimeShelf
 	 * @throws MLECallError On null arguments or if the path is invalid.
 	 * @since 2025/04/29
 	 */
-	@SquirrelJMEVendorApi
 	public static native void browseLocal(boolean __create,
 		@NotNull String __path)
 		throws MLECallError;
@@ -62,7 +60,6 @@ public final class RuntimeShelf
 	 * @return The {@link ByteOrderType} of the system.
 	 * @since 2021/02/09
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ByteOrderType.class)
 	public static native int byteOrder();
 	
@@ -73,7 +70,6 @@ public final class RuntimeShelf
 	 * @return If the flag is set or not.
 	 * @since 2025/11/27
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean compatibilityId(
 		@MagicConstant(valuesFromClass = CompatibilityId.class) int __flag);
 	
@@ -83,7 +79,6 @@ public final class RuntimeShelf
 	 * @return The current time in milliseconds since UTC.
 	 * @since 2020/06/18
 	 */
-	@SquirrelJMEVendorApi
 	public static native long currentTimeMillis();
 	
 	/**
@@ -93,7 +88,6 @@ public final class RuntimeShelf
 	 * @see BuiltInEncodingType
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = BuiltInEncodingType.class)
 	public static native int encoding();
 	
@@ -103,7 +97,6 @@ public final class RuntimeShelf
 	 * @param __code The exit code.
 	 * @since 2020/06/16
 	 */
-	@SquirrelJMEVendorApi
 	@Contract("_ -> fail")
 	public static native void exit(int __code);
 	
@@ -113,7 +106,6 @@ public final class RuntimeShelf
 	 * 
 	 * @since 2021/01/04
 	 */
-	@SquirrelJMEVendorApi
 	@Blocking
 	public static native void garbageCollect();
 	
@@ -124,7 +116,6 @@ public final class RuntimeShelf
 	 * @see LineEndingType
 	 * @since 2020/06/09
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = LineEndingType.class)
 	public static native int lineEnding();
 	
@@ -135,7 +126,6 @@ public final class RuntimeShelf
 	 * @see BuiltInLocaleType
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = BuiltInLocaleType.class)
 	public static native int locale();
 	
@@ -146,7 +136,6 @@ public final class RuntimeShelf
 	 * @return The {@link MemoryProfileType} of the system.
 	 * @since 2021/02/19
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = MemoryProfileType.class)
 	public static native int memoryProfile();
 	
@@ -156,7 +145,6 @@ public final class RuntimeShelf
 	 * @return The monotonic nanosecond clock.
 	 * @since 2020/06/18
 	 */
-	@SquirrelJMEVendorApi
 	public static native long nanoTime();
 	
 	/**
@@ -165,7 +153,6 @@ public final class RuntimeShelf
 	 * @return The {@link PhoneModelType}.
 	 * @since 2022/02/14
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PhoneModelType.class)
 	public static native int phoneModel();
 	
@@ -180,7 +167,6 @@ public final class RuntimeShelf
 	 * @throws MLECallError If key is {@code null}.
 	 * @since 2023/02/02
 	 */
-	@SquirrelJMEVendorApi
 	public static native String systemEnv(@NotNull String __key)
 		throws MLECallError;
 	
@@ -192,7 +178,6 @@ public final class RuntimeShelf
 	 * @throws MLECallError If {@code __key} is {@code null}.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native String systemProperty(@NotNull String __key)
 		throws MLECallError;
 	
@@ -205,7 +190,6 @@ public final class RuntimeShelf
 	 * @throws MLECallError If {@code __type} is not valid.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native String vmDescription(
 		@MagicConstant(valuesFromClass = VMDescriptionType.class) int __type)
 		throws MLECallError;
@@ -218,7 +202,6 @@ public final class RuntimeShelf
 	 * @throws MLECallError If {@code __type} is not valid.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native long vmStatistic(
 		@MagicConstant(valuesFromClass = VMStatisticType.class) int __type)
 		throws MLECallError;
@@ -229,7 +212,6 @@ public final class RuntimeShelf
 	 * @return The current {@link VMType}.
 	 * @since 2020/06/16
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = VMType.class)
 	public static native int vmType();
 }

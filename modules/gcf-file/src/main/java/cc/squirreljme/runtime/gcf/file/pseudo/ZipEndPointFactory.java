@@ -24,7 +24,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/30
  */
-@SquirrelJMEVendorApi
 public class ZipEndPointFactory
 	implements FileEndPointFactory
 {
@@ -33,7 +32,6 @@ public class ZipEndPointFactory
 	 * @since 2025/12/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public FileEndPoint connect(UriGenericPart __uri, int __mode,
 		UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, NullPointerException
@@ -64,7 +62,6 @@ public class ZipEndPointFactory
 	 * @since 2025/12/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public boolean handleAuthority(UriAuthority __auth)
 		throws NullPointerException
 	{

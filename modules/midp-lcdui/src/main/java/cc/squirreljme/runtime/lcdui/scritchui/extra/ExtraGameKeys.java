@@ -19,7 +19,6 @@ import javax.microedition.lcdui.game.GameCanvas;
  *
  * @since 2026/09/25
  */
-@SquirrelJMEVendorApi
 public final class ExtraGameKeys
 	implements ExtraState
 {
@@ -34,7 +33,6 @@ public final class ExtraGameKeys
 	 *
 	 * @since 2026/09/25
 	 */
-	@SquirrelJMEVendorApi
 	public void clear()
 	{
 		synchronized (this)
@@ -51,7 +49,6 @@ public final class ExtraGameKeys
 	 * @return The actual bits which were affected.
 	 * @since 2026/09/25
 	 */
-	@SquirrelJMEVendorApi
 	public int raise(int __bits)
 	{
 		synchronized (this)
@@ -74,7 +71,6 @@ public final class ExtraGameKeys
 	 * @return The bits which have been latched and changed state.
 	 * @since 2026/09/25
 	 */
-	@SquirrelJMEVendorApi
 	public int trigger()
 	{
 		synchronized (this)

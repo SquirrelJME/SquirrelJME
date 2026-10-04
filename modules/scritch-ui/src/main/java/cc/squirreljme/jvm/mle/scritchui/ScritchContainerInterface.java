@@ -34,7 +34,6 @@ public interface ScritchContainerInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/17
 	 */
-	@SquirrelJMEVendorApi
 	void containerAdd(@NotNull ScritchContainerBracket __container,
 		@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
@@ -52,7 +51,6 @@ public interface ScritchContainerInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/12/23
 	 */
-	@SquirrelJMEVendorApi
 	void containerGetFrame(@NotNull ScritchContainerBracket __container,
 		@Nullable int[] __contentSize,
 		@Nullable int[] __frameBound,
@@ -66,7 +64,6 @@ public interface ScritchContainerInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/17
 	 */
-	@SquirrelJMEVendorApi
 	void containerRemoveAll(@NotNull ScritchContainerBracket __container)
 		throws MLECallError;
 	
@@ -83,7 +80,6 @@ public interface ScritchContainerInterface
 	 * are not valid.
 	 * @since 2024/03/26
 	 */
-	@SquirrelJMEVendorApi
 	void containerSetBounds(@NotNull ScritchContainerBracket __container,
 		@NotNull ScritchComponentBracket __component,
 		int __x, int __y,

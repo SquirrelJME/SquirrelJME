@@ -17,15 +17,12 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2016/07/10
  */
-@SquirrelJMEVendorApi
 public enum DataEndianess
 {
 	/** Big endian. */
-	@SquirrelJMEVendorApi
 	BIG,
 	
 	/** Little endian. */
-	@SquirrelJMEVendorApi
 	LITTLE,
 	
 	/** End. */

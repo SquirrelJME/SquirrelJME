@@ -22,17 +22,14 @@ import java.io.OutputStream;
  *
  * @since 2018/12/08
  */
-@SquirrelJMEVendorApi
 public class PipeOutputStream
 	extends OutputStream
 	implements Appendable
 {
 	/** the file descriptor to write to. */
-	@SquirrelJMEVendorApi
 	protected final PipeBracket pipe;
 	
 	/** Is the output always flushed? */
-	@SquirrelJMEVendorApi
 	protected final boolean alwaysFlush;
 	
 	/**
@@ -43,7 +40,6 @@ public class PipeOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/03/19
 	 */
-	@SquirrelJMEVendorApi
 	public PipeOutputStream(PipeBracket __pipe, boolean __alwaysFlush)
 		throws NullPointerException
 	{
@@ -194,7 +190,6 @@ public class PipeOutputStream
 	 * @return The output stream for standard error.
 	 * @since 2025/07/06
 	 */
-	@SquirrelJMEVendorApi
 	public static PipeOutputStream stdErr()
 	{
 		return new PipeOutputStream(TerminalShelf.fromStandard(
@@ -207,7 +202,6 @@ public class PipeOutputStream
 	 * @return The output stream for standard output.
 	 * @since 2025/07/06
 	 */
-	@SquirrelJMEVendorApi
 	public static PipeOutputStream stdOut()
 	{
 		return new PipeOutputStream(TerminalShelf.fromStandard(

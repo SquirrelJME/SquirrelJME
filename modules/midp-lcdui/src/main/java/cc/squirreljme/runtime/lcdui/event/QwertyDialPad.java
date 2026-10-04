@@ -17,7 +17,6 @@ import javax.microedition.lcdui.Canvas;
  *
  * @since 2026/05/13
  */
-@SquirrelJMEVendorApi
 public class QwertyDialPad
 	implements KeyCodeTranslator
 {

@@ -27,7 +27,6 @@ public abstract class TestSupplier<R>
 	 *
 	 * @since 2026/02/12
 	 */
-	@SquirrelJMEVendorApi
 	public TestSupplier()
 	{
 	}
@@ -40,7 +39,6 @@ public abstract class TestSupplier<R>
 	 * @since 2018/10/06
 	 */
 	@Test
-	@SquirrelJMEVendorApi
 	public abstract R test()
 		throws Throwable;
 	
@@ -49,7 +47,6 @@ public abstract class TestSupplier<R>
 	 * @since 2018/10/06
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

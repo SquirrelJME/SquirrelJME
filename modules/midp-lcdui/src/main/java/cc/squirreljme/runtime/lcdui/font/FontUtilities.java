@@ -19,7 +19,6 @@ import org.intellij.lang.annotations.MagicConstant;
  *
  * @since 2018/11/24
  */
-@SquirrelJMEVendorApi
 public final class FontUtilities
 {
 	/**
@@ -108,7 +107,6 @@ public final class FontUtilities
 	 * @since 2018/11/24
 	 */
 	@SuppressWarnings("MagicNumber")
-	@SquirrelJMEVendorApi
 	public static int logicalSizeToPixelSize(int __lsz)
 		throws IllegalArgumentException
 	{
@@ -136,7 +134,6 @@ public final class FontUtilities
 	 * @return The logical size.
 	 * @since 2018/11/24
 	 */
-	@SquirrelJMEVendorApi
 	public static int pixelSizeToLogicalSize(int __psz)
 	{
 		if (__psz < 10)

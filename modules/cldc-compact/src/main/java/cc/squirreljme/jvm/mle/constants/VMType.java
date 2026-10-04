@@ -18,36 +18,29 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/06/16
  */
-@SquirrelJMEVendorApi
 public interface VMType
 {
 	/** Not known. */
-	@SquirrelJMEVendorApi
 	byte UNKNOWN =
 		0;
 	
 	/** Running on Standard Java SE. */
-	@SquirrelJMEVendorApi
 	byte JAVA_SE =
 		1;
 	
 	/** Running on SpringCoat. */
-	@SquirrelJMEVendorApi
 	byte SPRINGCOAT =
 		2;
 	
 	/** Running on SummerCoat. */
-	@SquirrelJMEVendorApi
 	byte SUMMERCOAT =
 		3;
 	
 	/** Running on NanoCoat. */
-	@SquirrelJMEVendorApi
 	byte NANOCOAT =
 		4;
 	
 	/** The number of VM types. */
-	@SquirrelJMEVendorApi
 	byte NUM_VMTYPES =
 		5;
 }

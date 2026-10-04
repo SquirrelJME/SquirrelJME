@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/19
  */
-@SquirrelJMEVendorApi
 public interface ScritchPaintListener
 	extends ScritchListener
 {
@@ -38,7 +37,6 @@ public interface ScritchPaintListener
 	 * other value if it is meaningful to what is being painted.
 	 * @since 2024/03/19
 	 */
-	@SquirrelJMEVendorApi
 	@ScritchEventLoop
 	void paint(@NotNull ScritchComponentBracket __component,
 		@NotNull ScritchPencilBracket __g,

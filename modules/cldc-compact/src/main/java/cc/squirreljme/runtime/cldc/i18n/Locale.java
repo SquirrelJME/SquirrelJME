@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2018/09/20
  */
-@SquirrelJMEVendorApi
 public interface Locale
 {
 	/**
@@ -26,7 +25,6 @@ public interface Locale
 	 * @return The lowercased character.
 	 * @since 2018/09/20
 	 */
-	@SquirrelJMEVendorApi
 	char toLowerCase(char __c);
 	
 	/**
@@ -36,7 +34,6 @@ public interface Locale
 	 * @return The uppercased character.
 	 * @since 2018/09/28
 	 */
-	@SquirrelJMEVendorApi
 	char toUpperCase(char __c);
 }
 

@@ -21,7 +21,6 @@ import org.intellij.lang.annotations.Language;
  *
  * @since 2019/04/15
  */
-@SquirrelJMEVendorApi
 public final class NullPlayer
 	extends AbstractPlayer
 {
@@ -32,7 +31,6 @@ public final class NullPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
-	@SquirrelJMEVendorApi
 	public NullPlayer(@Language("mime-type-reference") String __mime)
 		throws NullPointerException
 	{
@@ -46,7 +44,6 @@ public final class NullPlayer
 	 * @since 2022/04/24
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected void becomingPrefetched()
 		throws MediaException
 	{
@@ -69,7 +66,6 @@ public final class NullPlayer
 	 * @since 2022/04/24
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected void becomingRealized()
 	{
 		// Does nothing
@@ -91,7 +87,6 @@ public final class NullPlayer
 	 * @since 2022/04/24
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected boolean becomingStarted()
 		throws MediaException
 	{
@@ -104,7 +99,6 @@ public final class NullPlayer
 	 * @since 2022/04/27
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected void becomingStopped()
 		throws MediaException
 	{
@@ -148,7 +142,6 @@ public final class NullPlayer
 	 * @since 2025/12/28
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final void becomingDeallocated()
 	{
 		// There is nothing to be done here, as NullPlayer allocates nothing.
@@ -159,7 +152,6 @@ public final class NullPlayer
 	 * @since 2022/04/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected long determineDuration()
 	{
 		// There is no duration for null media

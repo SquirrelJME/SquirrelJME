@@ -20,7 +20,6 @@ import java.util.Iterator;
  * @see IteratorToEnumeration
  * @since 2025/12/30
  */
-@SquirrelJMEVendorApi
 public final class EnumerationToIterator<E>
 	implements Iterator<E>
 {
@@ -34,7 +33,6 @@ public final class EnumerationToIterator<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public EnumerationToIterator(Enumeration<E> __it)
 		throws NullPointerException
 	{

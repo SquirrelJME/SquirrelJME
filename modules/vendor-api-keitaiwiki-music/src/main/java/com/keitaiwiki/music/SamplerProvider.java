@@ -42,7 +42,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public interface SamplerProvider
 {
 	/**
@@ -57,6 +56,5 @@ public interface SamplerProvider
 	 * non-number or is less than or equal to zero.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	Sampler instance(float __sampleRate);
 }

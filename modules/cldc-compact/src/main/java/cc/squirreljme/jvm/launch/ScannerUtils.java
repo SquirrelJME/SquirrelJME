@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/01/06
  */
-@SquirrelJMEVendorApi
 public final class ScannerUtils
 {
 	/**
@@ -38,7 +37,6 @@ public final class ScannerUtils
 	 * @since 2023/04/10
 	 */
 	@SuppressWarnings("SystemGetProperty")
-	@SquirrelJMEVendorApi
 	public static String siblingByExt(String __jar, String __ext)
 	{
 		// Get . and /, so we can determine how to handle the name

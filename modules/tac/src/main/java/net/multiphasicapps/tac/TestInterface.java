@@ -28,6 +28,5 @@ public interface TestInterface
 	 * @return The execution result of the test.
 	 * @since 2020/02/23
 	 */
-	@SquirrelJMEVendorApi
 	TestExecution runExecution(String... __mainargs);
 }

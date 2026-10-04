@@ -27,7 +27,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/27
  */
-@SquirrelJMEVendorApi
 public class LibraryEndPointFactory
 	implements FileEndPointFactory
 {
@@ -36,7 +35,6 @@ public class LibraryEndPointFactory
 	 * @since 2025/12/29
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public FileEndPoint connect(UriGenericPart __uri,
 		@MagicConstant(flagsFromClass = Connector.class) int __mode,
 		UriGenericPart __dotDot)
@@ -122,7 +120,6 @@ public class LibraryEndPointFactory
 	 * @since 2025/12/29
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public boolean handleAuthority(UriAuthority __auth)
 		throws NullPointerException
 	{

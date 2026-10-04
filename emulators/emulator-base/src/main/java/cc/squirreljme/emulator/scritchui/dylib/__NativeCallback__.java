@@ -23,15 +23,12 @@ final class __NativeCallback__
 	implements Runnable
 {
 	/** The anything pointer. */
-	@SquirrelJMEVendorApi
 	protected final long anythingP;
 	
 	/** The function pointer. */
-	@SquirrelJMEVendorApi
 	protected final long funcP;
 	
 	/** The state pointer. */
-	@SquirrelJMEVendorApi
 	protected final long stateP;
 	
 	/**
@@ -75,7 +72,6 @@ final class __NativeCallback__
 	 * @return Any resultant error code.
 	 * @since 2024/12/16
 	 */
-	@SquirrelJMEVendorApi
 	private static native int __invoke(long __stateP, long __funcP,
 		long __anythingP); 
 }

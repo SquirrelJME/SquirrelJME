@@ -36,7 +36,6 @@ public interface ScritchViewInterface
 	 * is missing or not at least size 4.
 	 * @since 2024/07/29
 	 */
-	@SquirrelJMEVendorApi
 	void viewGetView(@NotNull ScritchViewBracket __view,
 		@NotNull int[] __outRect)
 		throws MLECallError;
@@ -51,7 +50,6 @@ public interface ScritchViewInterface
 	 * height are zero or negative.
 	 * @since 2024/07/29
 	 */
-	@SquirrelJMEVendorApi
 	void viewSetArea(@NotNull ScritchViewBracket __view,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __width,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __height)
@@ -69,7 +67,6 @@ public interface ScritchViewInterface
 	 * invalid.
 	 * @since 2024/07/29
 	 */
-	@SquirrelJMEVendorApi
 	void viewSetView(@NotNull ScritchViewBracket __view,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __x,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __y,
@@ -85,7 +82,6 @@ public interface ScritchViewInterface
 	 * @throws MLECallError If the view is invalid.
 	 * @since 2024/07/29
 	 */
-	@SquirrelJMEVendorApi
 	void viewSetSizeSuggestListener(@NotNull ScritchViewBracket __view,
 		@Nullable ScritchSizeSuggestListener __listener)
 		throws MLECallError;
@@ -99,7 +95,6 @@ public interface ScritchViewInterface
 	 * @throws MLECallError If the view is invalid.
 	 * @since 2024/07/29
 	 */
-	@SquirrelJMEVendorApi
 	void viewSetViewListener(@NotNull ScritchViewBracket __view,
 		@Nullable ScritchViewListener __listener)
 		throws MLECallError;

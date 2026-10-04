@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/04/28
  */
-@SquirrelJMEVendorApi
 public interface ScritchSizeListener
 	extends ScritchListener
 {
@@ -30,7 +29,6 @@ public interface ScritchSizeListener
 	 * @param __newHeight The new height.
 	 * @since 2024/04/28
 	 */
-	@SquirrelJMEVendorApi
 	@ScritchEventLoop
 	void sizeChanged(ScritchComponentBracket __component,
 		int __newWidth, int __newHeight);

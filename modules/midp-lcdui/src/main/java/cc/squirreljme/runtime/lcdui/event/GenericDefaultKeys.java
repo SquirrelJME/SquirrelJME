@@ -17,46 +17,37 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2026/05/12
  */
-@SquirrelJMEVendorApi
 public interface GenericDefaultKeys
 {
 	/** Down arrow. */
-	@SquirrelJMEVendorApi
 	int ARROW_DOWN =
 		NonStandardKey.KEY_DOWN;
 
 	/** Left arrow. */
-	@SquirrelJMEVendorApi
 	int ARROW_LEFT =
 		NonStandardKey.KEY_LEFT;
 
 	/** Right arrow. */
-	@SquirrelJMEVendorApi
 	int ARROW_RIGHT =
 		NonStandardKey.KEY_RIGHT;
 
 	/** Up arrow. */
-	@SquirrelJMEVendorApi
 	int ARROW_UP =
 		NonStandardKey.KEY_UP;
 
 	/** Back/CLR key. */
-	@SquirrelJMEVendorApi
 	int MENU_BACK =
 		NonStandardKey.SHIFT;
 
 	/** First menu item. */
-	@SquirrelJMEVendorApi
 	int MENU_ITEM_1 =
 		NonStandardKey.F1;
 	
 	/** Second menu item. */
-	@SquirrelJMEVendorApi
 	int MENU_ITEM_2 =
 		NonStandardKey.F2;
 	
 	/** Third menu item. */
-	@SquirrelJMEVendorApi
 	int MENU_ITEM_3 =
 		NonStandardKey.F3;
 }

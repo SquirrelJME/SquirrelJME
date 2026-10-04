@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/04/30
  */
-@SquirrelJMEVendorApi
 public interface ScritchFocusListener
 	extends ScritchListener
 {

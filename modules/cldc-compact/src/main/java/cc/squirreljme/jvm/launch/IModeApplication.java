@@ -36,12 +36,10 @@ import java.util.Objects;
  *
  * @since 2021/06/13
  */
-@SquirrelJMEVendorApi
 public class IModeApplication
 	extends Application
 {
 	/** The vendor for DoJa applications. */
-	@SquirrelJMEVendorApi
 	public static final String VENDOR =
 		"Keitai-DoJa";
 	

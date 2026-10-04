@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2025/01/20
  */
-@SquirrelJMEVendorApi
 public final class StringShelf
 {
 	/**
@@ -40,7 +39,6 @@ public final class StringShelf
 	 * @throws MLECallError On null arguments, or if the index is not valid.
 	 * @since 2025/01/20
 	 */
-	@SquirrelJMEVendorApi
 	public static native char stringCharAt(@NotNull String __string,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __index)
 		throws MLECallError;
@@ -54,7 +52,6 @@ public final class StringShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/01/23
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean stringEquals(@NotNull String __a,
 		@NotNull String __b)
 		throws MLECallError;
@@ -67,7 +64,6 @@ public final class StringShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/01/20
 	 */
-	@SquirrelJMEVendorApi
 	public static native int stringHash(@NotNull String __string)
 		throws MLECallError;
 	
@@ -79,7 +75,6 @@ public final class StringShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/01/22
 	 */
-	@SquirrelJMEVendorApi
 	public static native void stringInit(@NotNull String __this)
 		throws MLECallError;
 	
@@ -91,7 +86,6 @@ public final class StringShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/01/22
 	 */
-	@SquirrelJMEVendorApi
 	public static native void stringInit(@NotNull String __this,
 		@NotNull String __string)
 		throws MLECallError;
@@ -107,7 +101,6 @@ public final class StringShelf
 	 * exceed the array bounds.
 	 * @since 2025/01/22
 	 */
-	@SquirrelJMEVendorApi
 	public static native void stringInit(@NotNull String __this,
 		@NotNull char[] __c,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
@@ -122,7 +115,6 @@ public final class StringShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/01/21
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean stringIsIntern(@NotNull String __string)
 		throws MLECallError;
 	
@@ -134,7 +126,6 @@ public final class StringShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/01/20
 	 */
-	@SquirrelJMEVendorApi
 	public static native int stringLength(@NotNull String __string)
 		throws MLECallError;
 	
@@ -150,7 +141,6 @@ public final class StringShelf
 	 * length are outside the bounds of the string and/or array.
 	 * @since 2025/01/23
 	 */
-	@SquirrelJMEVendorApi
 	public static native void stringToChar(@NotNull String __source,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __sourceOff,
 		@NotNull char[] __dest,
@@ -167,7 +157,6 @@ public final class StringShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/01/20
 	 */
-	@SquirrelJMEVendorApi
 	public static native String stringValueOf(boolean __intern,
 		@NotNull String __string)
 		throws MLECallError;
@@ -184,7 +173,6 @@ public final class StringShelf
 	 * exceed the array bounds.
 	 * @since 2025/01/20
 	 */
-	@SquirrelJMEVendorApi
 	public static native String stringValueOf(boolean __intern,
 		@NotNull char[] __c,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,

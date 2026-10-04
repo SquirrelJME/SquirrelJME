@@ -28,11 +28,9 @@ import org.jetbrains.annotations.UnknownNullability;
  *
  * @since 2020/06/11
  */
-@SquirrelJMEVendorApi
 public final class DebugShelf
 {
 	/** Verbose ID for internal threads. */
-	@SquirrelJMEVendorApi
 	public static final int INTERNAL_THREAD_VERBOSE_ID =
 		Integer.MIN_VALUE;
 	
@@ -52,7 +50,6 @@ public final class DebugShelf
 	 *
 	 * @since 2024/01/30
 	 */
-	@SquirrelJMEVendorApi
 	public static native void breakpoint();
 	
 	/**
@@ -62,7 +59,6 @@ public final class DebugShelf
 	 * @return The trace that was within the given throwable.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static native TracePointBracket[] getThrowableTrace(
 		@NotNull Throwable __t);
 	
@@ -73,7 +69,6 @@ public final class DebugShelf
 	 * @return The address.
 	 * @since 2020/06/16
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = -1, to = Long.MAX_VALUE)
 	public static native long pointAddress(@NotNull TracePointBracket __point);
 	
@@ -84,7 +79,6 @@ public final class DebugShelf
 	 * @return The class.
 	 * @since 2020/06/16
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	public static native String pointClass(@NotNull TracePointBracket __point);
 	
@@ -95,7 +89,6 @@ public final class DebugShelf
 	 * @return The file.
 	 * @since 2020/06/16
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	public static native String pointFile(@NotNull TracePointBracket __point);
 	
@@ -106,7 +99,6 @@ public final class DebugShelf
 	 * @return The Java address.
 	 * @since 2020/06/16
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = -1, to = Long.MAX_VALUE)
 	public static native int pointJavaAddress(
 		@NotNull TracePointBracket __point);
@@ -118,7 +110,6 @@ public final class DebugShelf
 	 * @return The Java operation.
 	 * @since 2020/06/16
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = -1, to = 255)
 	public static native int pointJavaOperation(
 		@NotNull TracePointBracket __point);
@@ -130,7 +121,6 @@ public final class DebugShelf
 	 * @return The line.
 	 * @since 2020/06/16
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = -1, to = Integer.MAX_VALUE)
 	public static native int pointLine(@NotNull TracePointBracket __point);
 	
@@ -141,7 +131,6 @@ public final class DebugShelf
 	 * @return The method name.
 	 * @since 2020/06/16
 	 */
-	@SquirrelJMEVendorApi
 	@UnknownNullability
 	public static native String pointMethodName(
 		@NotNull TracePointBracket __point);
@@ -153,7 +142,6 @@ public final class DebugShelf
 	 * @return The method type.
 	 * @since 2020/06/16
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	public static native String pointMethodType(
 		@NotNull TracePointBracket __point);
@@ -165,7 +153,6 @@ public final class DebugShelf
 	 * @return The stack trace.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static native TracePointBracket[] traceStack();
 	
 	/**
@@ -177,7 +164,6 @@ public final class DebugShelf
 	 * not a {@link Throwable}.
 	 * @since 2025/07/05
 	 */
-	@SquirrelJMEVendorApi
 	public static native TracePointBracket[] traceThrowable(
 		@NotNull Throwable __throwable)
 		throws MLECallError;
@@ -195,7 +181,6 @@ public final class DebugShelf
 	 * @return An integer to be passed to {@link DebugShelf#verboseStop(int)}.
 	 * @since 2020/07/11
 	 */
-	@SquirrelJMEVendorApi
 	@TestOnly
 	public static native int verbose(
 		@MagicConstant(flagsFromClass = VerboseDebugFlag.class) int __flags);
@@ -216,7 +201,6 @@ public final class DebugShelf
 	 * can be passed to {@link DebugShelf#verboseStop(int)}.
 	 * @since 2022/06/12
 	 */
-	@SquirrelJMEVendorApi
 	@TestOnly
 	public static native int verboseInternalThread(
 		@MagicConstant(flagsFromClass = VerboseDebugFlag.class) int __flags);
@@ -232,7 +216,6 @@ public final class DebugShelf
 	 * threads.
 	 * @since 2020/07/11
 	 */
-	@SquirrelJMEVendorApi
 	@TestOnly
 	public static native void verboseStop(int __code);
 }

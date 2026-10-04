@@ -33,7 +33,6 @@ import java.util.Map;
 public enum ApplicationParser
 {
 	/** Java Applications. */
-	@SquirrelJMEVendorApi
 	JAVA
 	{
 		/**
@@ -111,7 +110,6 @@ public enum ApplicationParser
 	},
 	
 	/** I-mode/i-appli. */
-	@SquirrelJMEVendorApi
 	I_MODE
 	{
 		/**
@@ -195,7 +193,6 @@ public enum ApplicationParser
 	},
 	
 	/** I-Mode JV-Lite 2. */
-	@SquirrelJMEVendorApi
 	I_MODE_JV_LITE2
 	{
 		/**
@@ -285,7 +282,6 @@ public enum ApplicationParser
 	;
 	
 	/** Data resource name. */
-	@SquirrelJMEVendorApi
 	public static final String DATA_RESOURCE =
 		"$DATA$";
 	
@@ -297,7 +293,6 @@ public enum ApplicationParser
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/06
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract boolean parse(ApplicationParserState __state)
 		throws NullPointerException;
 	

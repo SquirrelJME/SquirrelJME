@@ -38,7 +38,6 @@ public interface ScritchMenuInterface
 	 * @throws MLECallError If the menu bar could not be created.
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchMenuBarBracket menuBarNew()
 		throws MLECallError;
@@ -54,7 +53,6 @@ public interface ScritchMenuInterface
 	 * the item already has a parent.
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
 	void menuInsert(@NotNull ScritchMenuHasChildrenBracket __into,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __at,
 		@NotNull ScritchMenuHasParentBracket __item)
@@ -67,7 +65,6 @@ public interface ScritchMenuInterface
 	 * @throws MLECallError If the menu item could not be created.
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchMenuItemBracket menuItemNew()
 		throws MLECallError;
@@ -82,7 +79,6 @@ public interface ScritchMenuInterface
 	 * or modifiers are not valid.
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
 	void menuItemSetKey(@NotNull ScritchMenuItemBracket __item,
 		@MagicConstant(valuesFromClass = NonStandardKey.class)
 			@Range(from = 0, to = 65536) int __key,
@@ -97,7 +93,6 @@ public interface ScritchMenuInterface
 	 * @throws MLECallError If the menu could not be created.
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchMenuBracket menuNew()
 		throws MLECallError;
@@ -109,7 +104,6 @@ public interface ScritchMenuInterface
 	 * @throws MLECallError If the menu is not valid.
 	 * @since 2024/07/23
 	 */
-	@SquirrelJMEVendorApi
 	void menuRemoveAll(@NotNull ScritchMenuHasChildrenBracket __menuKind)
 		throws MLECallError;
 }

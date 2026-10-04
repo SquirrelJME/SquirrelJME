@@ -20,15 +20,12 @@ import java.util.Map;
  *
  * @since 2019/05/13
  */
-@SquirrelJMEVendorApi
 public final class HTTPResponseHeader
 {
 	/** The response code. */
-	@SquirrelJMEVendorApi
 	public final int code;
 	
 	/** The response message. */
-	@SquirrelJMEVendorApi
 	public final String message;
 	
 	/** Header key/values. */
@@ -43,7 +40,6 @@ public final class HTTPResponseHeader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/13
 	 */
-	@SquirrelJMEVendorApi
 	public HTTPResponseHeader(int __rcode, String __rmesg,
 		Map<String, String> __hkvs)
 		throws NullPointerException
@@ -79,7 +75,6 @@ public final class HTTPResponseHeader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/13
 	 */
-	@SquirrelJMEVendorApi
 	public final String header(String __k)
 		throws NullPointerException
 	{
@@ -98,7 +93,6 @@ public final class HTTPResponseHeader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/13
 	 */
-	@SquirrelJMEVendorApi
 	public static final HTTPResponseHeader parse(InputStream __in)
 		throws IOException, NullPointerException
 	{

@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/06/21
  */
-@SquirrelJMEVendorApi
 public final class ProtectedPackages
 {
 	/**
@@ -41,7 +40,6 @@ public final class ProtectedPackages
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/21
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isProtectedPackage(String __name)
 		throws IllegalArgumentException, NullPointerException
 	{

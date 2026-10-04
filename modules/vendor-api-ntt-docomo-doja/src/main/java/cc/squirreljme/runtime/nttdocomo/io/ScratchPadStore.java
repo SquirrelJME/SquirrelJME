@@ -32,7 +32,6 @@ import javax.microedition.rms.RecordStoreException;
  *
  * @since 2021/12/02
  */
-@SquirrelJMEVendorApi
 public final class ScratchPadStore
 {
 	/** The static set of stores. */
@@ -126,7 +125,6 @@ public final class ScratchPadStore
 	 * @throws IOException If it could not be flushed.
 	 * @since 2021/12/02
 	 */
-	@SquirrelJMEVendorApi
 	public void flush()
 		throws IOException
 	{
@@ -164,7 +162,6 @@ public final class ScratchPadStore
 	 * @throws IndexOutOfBoundsException If the read is outside of bounds.
 	 * @since 2021/12/02
 	 */
-	@SquirrelJMEVendorApi
 	public InputStream inputStream(int __pos, int __length)
 		throws IndexOutOfBoundsException
 	{
@@ -191,7 +188,6 @@ public final class ScratchPadStore
 	 * @throws IOException On data copy errors.
 	 * @since 2021/12/02
 	 */
-	@SquirrelJMEVendorApi
 	public OutputStream outputStream(int __pos, int __len)
 		throws IndexOutOfBoundsException, IOException
 	{
@@ -217,7 +213,6 @@ public final class ScratchPadStore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/02
 	 */
-	@SquirrelJMEVendorApi
 	public void write(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{

@@ -21,12 +21,10 @@ import java.util.Arrays;
  *
  * @since 2021/12/04
  */
-@SquirrelJMEVendorApi
 public class MarkableInputStream
 	extends InputStream
 {
 	/** The stream to wrap. */
-	@SquirrelJMEVendorApi
 	protected final InputStream in;
 	
 	/** Single byte read. */
@@ -61,7 +59,6 @@ public class MarkableInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/04
 	 */
-	@SquirrelJMEVendorApi
 	public MarkableInputStream(InputStream __in)
 		throws NullPointerException
 	{

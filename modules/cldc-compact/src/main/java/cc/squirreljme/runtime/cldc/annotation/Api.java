@@ -28,7 +28,6 @@ import java.lang.annotation.Target;
 public @interface Api
 {
 	/** @return The API version. */
-	@SquirrelJMEVendorApi
 	String value() default "";
 }
 

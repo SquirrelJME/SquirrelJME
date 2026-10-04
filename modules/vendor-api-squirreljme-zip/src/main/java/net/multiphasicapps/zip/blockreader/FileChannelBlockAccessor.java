@@ -23,12 +23,10 @@ import java.nio.file.StandardOpenOption;
  * @since 2016/12/27
  */
 @SuppressWarnings("DuplicateThrows")
-@SquirrelJMEVendorApi
 public class FileChannelBlockAccessor
 	implements BlockAccessor
 {
 	/** The file channel to wrap. */
-	@SquirrelJMEVendorApi
 	protected final FileChannel channel;
 	
 	/**
@@ -39,7 +37,6 @@ public class FileChannelBlockAccessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/29
 	 */
-	@SquirrelJMEVendorApi
 	public FileChannelBlockAccessor(Path __p)
 		throws IOException, NullPointerException
 	{
@@ -54,7 +51,6 @@ public class FileChannelBlockAccessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/27
 	 */
-	@SquirrelJMEVendorApi
 	public FileChannelBlockAccessor(FileChannel __fc)
 		throws IOException, NullPointerException
 	{

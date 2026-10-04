@@ -52,15 +52,12 @@ final class __ExecChoiceUpsert__
 	private final int _imageHeight;
 	
 	/** The return value from insert. */
-	@SquirrelJMEVendorApi
 	volatile int _result;
 	
 	/** If there was an exception. */
-	@SquirrelJMEVendorApi
 	volatile MLECallError _error;
 	
 	/** The cache to store into. */
-	@SquirrelJMEVendorApi
 	private final ArrayList<CachedChoice> _cache;
 	
 	/**
@@ -127,7 +124,6 @@ final class __ExecChoiceUpsert__
 	 * @since 2024/07/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void run()
 	{
 		ScritchChoiceInterface choiceApi = this._scritchApi.choice();

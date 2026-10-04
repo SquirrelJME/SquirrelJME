@@ -26,12 +26,10 @@ import java.io.InputStream;
  *
  * @since 2020/11/22
  */
-@SquirrelJMEVendorApi
 public class PipeInputStream
 	extends InputStream
 {
 	/** The pipe to read from. */
-	@SquirrelJMEVendorApi
 	protected final PipeBracket pipe;
 	
 	/**
@@ -41,7 +39,6 @@ public class PipeInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/07/06
 	 */
-	@SquirrelJMEVendorApi
 	public PipeInputStream(PipeBracket __pipe)
 		throws NullPointerException
 	{
@@ -126,7 +123,6 @@ public class PipeInputStream
 	 * @return The resultant pipe.
 	 * @since 2025/07/06
 	 */
-	@SquirrelJMEVendorApi
 	public static PipeInputStream stdIn()
 	{
 		return new PipeInputStream(

@@ -26,7 +26,6 @@ final class __ExpireStore__
 	private final Reference<Timer> _owner;
 	
 	/** The current timer listener. */
-	@SquirrelJMEVendorApi
 	volatile TimerListener _listener;
 	
 	/**

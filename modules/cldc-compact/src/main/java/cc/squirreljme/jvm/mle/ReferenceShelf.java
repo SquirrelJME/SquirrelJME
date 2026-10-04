@@ -24,7 +24,6 @@ import org.jetbrains.annotations.UnknownNullability;
  *
  * @since 2020/05/30
  */
-@SquirrelJMEVendorApi
 public final class ReferenceShelf
 {
 	/**
@@ -38,7 +37,6 @@ public final class ReferenceShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/06/21
 	 */
-	@SquirrelJMEVendorApi
 	@UnknownNullability
 	public native static <T> T weakGet(
 		@NotNull Reference<T> __ref)
@@ -55,7 +53,6 @@ public final class ReferenceShelf
 	 * already been initialized.
 	 * @since 2025/06/21
 	 */
-	@SquirrelJMEVendorApi
 	public native static void weakInit(
 		@NotNull Reference<?> __ref,
 		@NotNull Object __value,
@@ -70,7 +67,6 @@ public final class ReferenceShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/06/21
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
 	public native static boolean weakIsEnqueued(
 		@NotNull Reference<?> __ref)
@@ -85,7 +81,6 @@ public final class ReferenceShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/06/21
 	 */
-	@SquirrelJMEVendorApi
 	@UnknownNullability
 	public native static <T> ReferenceQueue<? super T> weakUnlinkAndClear(
 		@NotNull Reference<T> __ref)

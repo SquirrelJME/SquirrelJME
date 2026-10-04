@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/12/28
  */
-@SquirrelJMEVendorApi
 public interface UriPartSchemeSpecific
 {
 	/**
@@ -25,6 +24,5 @@ public interface UriPartSchemeSpecific
 	 * @return The scheme specific part.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	String getSchemeSpecific();
 }

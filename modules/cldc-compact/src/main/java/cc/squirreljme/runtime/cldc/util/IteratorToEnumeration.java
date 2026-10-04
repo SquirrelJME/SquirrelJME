@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
  * @see EnumerationToIterator
  * @since 2019/05/05
  */
-@SquirrelJMEVendorApi
 public final class IteratorToEnumeration<E>
 	implements Enumeration<E>
 {
@@ -35,7 +34,6 @@ public final class IteratorToEnumeration<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public IteratorToEnumeration(Iterator<E> __it)
 		throws NullPointerException
 	{

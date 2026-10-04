@@ -33,7 +33,6 @@ public interface ScritchPaintableInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/19
 	 */
-	@SquirrelJMEVendorApi
 	void componentRepaint(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 	
@@ -45,7 +44,6 @@ public interface ScritchPaintableInterface
 	 * @throws MLECallError If {@code __panel} is {@code null}.
 	 * @since 2024/03/19
 	 */
-	@SquirrelJMEVendorApi
 	void componentSetPaintListener(
 		@NotNull ScritchPaintableBracket __component,
 		@Nullable ScritchPaintListener __listener)

@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/07/25
  */	
-@SquirrelJMEVendorApi
 public interface DylibChoiceObject
 	extends DylibHasObjectPointer
 {

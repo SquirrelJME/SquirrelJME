@@ -28,7 +28,6 @@ import net.multiphasicapps.zip.ZipException;
  *
  * @since 2016/07/19
  */
-@SquirrelJMEVendorApi
 public final class ZipStreamEntry
 	extends InputStream
 	implements ArchiveStreamEntry
@@ -46,7 +45,6 @@ public final class ZipStreamEntry
 		0x08074B50;
 	
 	/** CRC calculation. */
-	@SquirrelJMEVendorApi
 	protected final CRC32Calculator crc =
 		new CRC32Calculator(ZipCRCConstants.CRC_REFLECT_DATA,
 			ZipCRCConstants.CRC_REFLECT_REMAINDER,
@@ -54,43 +52,33 @@ public final class ZipStreamEntry
 			ZipCRCConstants.CRC_FINALXOR);
 	
 	/** The owning stream reader. */
-	@SquirrelJMEVendorApi
 	protected final ZipStreamReader zipreader;
 	
 	/** The name of the file. */
-	@SquirrelJMEVendorApi
 	protected final String filename;
 	
 	/** The compression method. */
-	@SquirrelJMEVendorApi
 	protected final ZipCompressionType method;
 	
 	/** The dynamic input stream to read from. */
-	@SquirrelJMEVendorApi
 	protected final DynamicHistoryInputStream dhin;
 	
 	/** The compressed stream which also has counting. */
-	@SquirrelJMEVendorApi
 	protected final DecompressionInputStream cin;
 	
 	/** Is the content length undefined? */
-	@SquirrelJMEVendorApi
 	protected final boolean undefined;
 	
 	/** Is EOF detected? */
-	@SquirrelJMEVendorApi
 	protected final boolean detectseof;
 	
 	/** The expected CRC. */
-	@SquirrelJMEVendorApi
 	protected final int expectedcrc;
 	
 	/** The expected file uncompressed size. */
-	@SquirrelJMEVendorApi
 	protected final int expecteduncompsize;
 	
 	/** The expected file compressed size. */
-	@SquirrelJMEVendorApi
 	protected final int expectedcompsize;
 	
 	/** Single byte read. */
@@ -184,7 +172,6 @@ public final class ZipStreamEntry
 	 * @return The compression type.
 	 * @since 2016/07/19
 	 */
-	@SquirrelJMEVendorApi
 	public ZipCompressionType compressionType()
 	{
 		return this.method;

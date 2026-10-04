@@ -33,7 +33,6 @@ final class __AppLaunch__
 	 * @throws Throwable On any exception.
 	 * @since 2020/02/29
 	 */
-	@SquirrelJMEVendorApi
 	public static void main(String... __args)
 		throws Throwable
 	{

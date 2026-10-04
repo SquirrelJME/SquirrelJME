@@ -31,18 +31,15 @@ import org.intellij.lang.annotations.Language;
  * @see SquirrelJMEWebRootManager
  * @since 2022/10/07
  */
-@SquirrelJMEVendorApi
 public class SquirrelJMEWebRootConnectionFactory
 	implements CustomConnectionFactory
 {
 	/** The base scheme for this connection. */
 	@Language("http-url-reference")
-	@SquirrelJMEVendorApi
 	public static final String URI_SCHEME =
 		"++++";
 	
 	/** Webroot suffix. */
-	@SquirrelJMEVendorApi
 	public static final String WEBROOT_EXTENSION =
 		"webroot";
 	
@@ -54,7 +51,6 @@ public class SquirrelJMEWebRootConnectionFactory
 	 * @since 2022/10/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
@@ -120,7 +116,6 @@ public class SquirrelJMEWebRootConnectionFactory
 	 * @since 2022/10/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public String scheme()
 	{
 		return SquirrelJMEWebRootConnectionFactory.URI_SCHEME;

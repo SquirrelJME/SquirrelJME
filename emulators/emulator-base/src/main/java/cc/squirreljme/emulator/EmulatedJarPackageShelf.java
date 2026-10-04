@@ -129,7 +129,6 @@ public final class EmulatedJarPackageShelf
 	 * @throws MLECallError If the library is not valid.
 	 * @since 2023/12/18
 	 */
-	@SquirrelJMEVendorApi
 	public static int libraryId(@NotNull JarPackageBracket __jar)
 		throws MLECallError
 	{
@@ -169,7 +168,6 @@ public final class EmulatedJarPackageShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2026/01/01
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	public static String[] list(@NotNull JarPackageBracket __jar)
 		throws MLECallError

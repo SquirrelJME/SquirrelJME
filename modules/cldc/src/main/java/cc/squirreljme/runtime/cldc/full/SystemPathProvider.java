@@ -24,7 +24,6 @@ import org.intellij.lang.annotations.MagicConstant;
  *
  * @since 2024/02/25
  */
-@SquirrelJMEVendorApi
 public final class SystemPathProvider
 {
 	/** The single instance. */
@@ -45,7 +44,6 @@ public final class SystemPathProvider
 	 * @return The bucket data path.
 	 * @since 2026/01/16
 	 */
-	@SquirrelJMEVendorApi
 	public Path bucketData()
 	{
 		return SystemPathProvider.__vmDesc(
@@ -70,7 +68,6 @@ public final class SystemPathProvider
 	 * @return The cache path.
 	 * @since 2024/02/25
 	 */
-	@SquirrelJMEVendorApi
 	public Path cache()
 	{
 		return SystemPathProvider.__vmDesc(
@@ -83,7 +80,6 @@ public final class SystemPathProvider
 	 * @return The config path.
 	 * @since 2024/02/25
 	 */
-	@SquirrelJMEVendorApi
 	public Path config()
 	{
 		return SystemPathProvider.__vmDesc(
@@ -96,7 +92,6 @@ public final class SystemPathProvider
 	 * @return The cache path.
 	 * @since 2024/02/25
 	 */
-	@SquirrelJMEVendorApi
 	public Path data()
 	{
 		return SystemPathProvider.__vmDesc(
@@ -109,7 +104,6 @@ public final class SystemPathProvider
 	 * @return The library paths.
 	 * @since 2026/01/16
 	 */
-	@SquirrelJMEVendorApi
 	public Path libraries()
 	{
 		return SystemPathProvider.__vmDesc(
@@ -122,7 +116,6 @@ public final class SystemPathProvider
 	 * @return The state path.
 	 * @since 2024/02/25
 	 */
-	@SquirrelJMEVendorApi
 	public Path state()
 	{
 		return SystemPathProvider.__vmDesc(
@@ -139,7 +132,6 @@ public final class SystemPathProvider
 	 * rewritten at some point.
 	 * @since 2024/02/25
 	 */
-	@SquirrelJMEVendorApi
 	@Deprecated
 	public final Path of(SystemPath __path)
 		throws NullPointerException
@@ -176,7 +168,6 @@ public final class SystemPathProvider
 	 * rewritten at some point.
 	 * @since 2024/02/25
 	 */
-	@SquirrelJMEVendorApi
 	@Deprecated
 	public final Path ofFallback(SystemPath __path)
 		throws NullPointerException
@@ -201,7 +192,6 @@ public final class SystemPathProvider
 	 * @return The system path provider.
 	 * @since 2024/02/25
 	 */
-	@SquirrelJMEVendorApi
 	public static SystemPathProvider provider()
 	{
 		// Already exists?

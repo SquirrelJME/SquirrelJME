@@ -17,11 +17,9 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @param <T> The type of value to wrap.
  * @since 2017/12/28
  */
-@SquirrelJMEVendorApi
 public final class Identity<T>
 {
 	/** The wrapped object. */
-	@SquirrelJMEVendorApi
 	protected final T value;
 	
 	/**
@@ -31,7 +29,6 @@ public final class Identity<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public Identity(T __v)
 		throws NullPointerException
 	{
@@ -63,7 +60,6 @@ public final class Identity<T>
 	 * @return The wrapped object.
 	 * @since 2017/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public final T get()
 	{
 		return this.value;

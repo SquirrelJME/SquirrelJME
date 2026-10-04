@@ -33,7 +33,6 @@ import org.jetbrains.annotations.Range;
  * @since 2020/06/17
  */
 @SuppressWarnings("UnstableApiUsage")
-@SquirrelJMEVendorApi
 public final class ThreadShelf
 {
 	/**
@@ -44,7 +43,6 @@ public final class ThreadShelf
 	 * @return The number of alive threads.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	public static native int aliveThreadCount(boolean __includeMain,
 		boolean __includeDaemon);
@@ -58,7 +56,6 @@ public final class ThreadShelf
 	 * @throws MLECallError If {@code __javaThread} is null.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native VMThreadBracket createVMThread(
 		@Flow(target = "this._vmThread") @NotNull Thread __javaThread,
 		@Nullable String __name)
@@ -70,7 +67,6 @@ public final class ThreadShelf
 	 * @return The exit code for the current process.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
 	@Flow(source = "this._exitCode")
 	public static native int currentExitCode();
@@ -81,7 +77,6 @@ public final class ThreadShelf
 	 * @return The current {@link Thread}.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native Thread currentJavaThread();
 	
 	/**
@@ -90,7 +85,6 @@ public final class ThreadShelf
 	 * @return The current virtual machine thread.
 	 * @since 2021/05/08
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	public static native VMThreadBracket currentVMThread();
 	
@@ -103,7 +97,6 @@ public final class ThreadShelf
 	 * @throws MLECallError If either arguments are null.
 	 * @since 2021/05/08
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean equals(@NotNull VMThreadBracket __a,
 		@NotNull VMThreadBracket __b)
 		throws MLECallError;
@@ -116,7 +109,6 @@ public final class ThreadShelf
 	 * @throws MLECallError If {@code __javaThread} is null.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean javaThreadClearInterrupt(
 		@NotNull Thread __javaThread)
 		throws MLECallError;
@@ -130,7 +122,6 @@ public final class ThreadShelf
 	 * @since 2020/06/17
 	 */
 	
-	@SquirrelJMEVendorApi
 	public static native Runnable javaThreadRunnable(
 		@NotNull @Flow(source = "this._runnable") Thread __javaThread)
 		throws MLECallError;
@@ -143,7 +134,6 @@ public final class ThreadShelf
 	 * started.
 	 * @since 2020/09/12
 	 */
-	@SquirrelJMEVendorApi
 	public static native void javaThreadSetDaemon(@NotNull Thread __javaThread)
 		throws MLECallError;
 	
@@ -153,7 +143,6 @@ public final class ThreadShelf
 	 * @return The {@link ThreadModelType} of the virtual machine.
 	 * @since 2021/05/07
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ThreadModelType.class)
 	public static native int model();
 	
@@ -163,7 +152,6 @@ public final class ThreadShelf
 	 *
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	@Async.Execute
 	public static native void runProcessMain();
 	
@@ -173,7 +161,6 @@ public final class ThreadShelf
 	 * @param __code The exit code to use.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native void setCurrentExitCode(
 		@Flow(target = "this._exitCode") int __code);
 	
@@ -187,7 +174,6 @@ public final class ThreadShelf
 	 * {@code __trace} or any element within is {@code null}.
 	 * @since 2020/07/02
 	 */
-	@SquirrelJMEVendorApi
 	public static native void setTrace(@NotNull String __message,
 		@NotNull TracePointBracket[] __trace)
 		throws MLECallError;
@@ -209,7 +195,6 @@ public final class ThreadShelf
 	 * out of range.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	@Blocking
 	public static native boolean sleep(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __ms,
@@ -224,7 +209,6 @@ public final class ThreadShelf
 	 * @throws MLECallError If {@code __thread} is null.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native Thread toJavaThread(
 		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
@@ -237,7 +221,6 @@ public final class ThreadShelf
 	 * @throws MLECallError If {@code __thread} is null.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native VMThreadBracket toVMThread(
 		@NotNull @Flow(source = "__thread._vmThread") Thread __thread)
 		throws MLECallError;
@@ -250,7 +233,6 @@ public final class ThreadShelf
 	 * @throws MLECallError If {@code __vmThread} is null.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native int vmThreadId(
 		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
@@ -262,7 +244,6 @@ public final class ThreadShelf
 	 * @throws MLECallError If {@code __vmThread} is null.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native void vmThreadInterrupt(
 		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
@@ -275,7 +256,6 @@ public final class ThreadShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/03/07
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean vmThreadIsAlive(
 		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
@@ -288,7 +268,6 @@ public final class ThreadShelf
 	 * @throws MLECallError If {@code __vmThread} is null.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean vmThreadIsMain(
 		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
@@ -301,7 +280,6 @@ public final class ThreadShelf
 	 * @throws MLECallError If {@code __vmThread} is null.
 	 * @since 2025/03/07
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean vmThreadIsStarted(
 		@NotNull @Flow(source = "this._started") VMThreadBracket __vmThread)
 		throws MLECallError;
@@ -321,7 +299,6 @@ public final class ThreadShelf
 	 * inclusive.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native void vmThreadSetPriority(
 		@NotNull VMThreadBracket __vmThread,
 		@Range(from = Thread.MIN_PRIORITY, to = Thread.MAX_PRIORITY) int __p)
@@ -335,7 +312,6 @@ public final class ThreadShelf
 	 * @throws MLECallError If {@code __vmThread} is null.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean vmThreadStart(
 		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
@@ -348,7 +324,6 @@ public final class ThreadShelf
 	 * @throws MLECallError If the thread is not valid.
 	 * @since 2021/05/08
 	 */
-	@SquirrelJMEVendorApi
 	public static native TaskBracket vmThreadTask(
 		@NotNull VMThreadBracket __vmThread)
 		throws MLECallError;
@@ -368,7 +343,6 @@ public final class ThreadShelf
 	 * @throws MLECallError If {@code __ms} is negative.
 	 * @since 2020/06/17
 	 */
-	@SquirrelJMEVendorApi
 	@Blocking
 	public static native boolean waitForUpdate(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __ms)

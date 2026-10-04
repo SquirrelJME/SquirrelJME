@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2022/10/11
  */
-@SquirrelJMEVendorApi
 public final class HTTPUtils
 {
 	/**
@@ -40,7 +39,6 @@ public final class HTTPUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/06
 	 */
-	@SquirrelJMEVendorApi
 	public static String stringDecode(HTTPUrlCharacterSet __charSet,
 		String __p)
 		throws IllegalArgumentException, NullPointerException

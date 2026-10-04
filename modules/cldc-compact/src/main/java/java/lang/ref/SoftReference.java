@@ -19,7 +19,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @param <T> The type used.
  * @since 2022/06/19
  */
-@SquirrelJMEVendorApi
 public class SoftReference<T>
 	extends WeakReference<T>
 {
@@ -30,7 +29,6 @@ public class SoftReference<T>
 	 * @deprecated Only in SquirrelJME, not in standard Java ME 8.
 	 * @since 2022/06/19
 	 */
-	@SquirrelJMEVendorApi
 	public SoftReference(T __v)
 	{
 		super(__v, null);
@@ -48,7 +46,6 @@ public class SoftReference<T>
 	 * @deprecated Only in SquirrelJME, not in standard Java ME 8.
 	 * @since 2022/06/19
 	 */
-	@SquirrelJMEVendorApi
 	public SoftReference(T __v, ReferenceQueue<? super T> __q)
 	{
 		super(__v, __q);

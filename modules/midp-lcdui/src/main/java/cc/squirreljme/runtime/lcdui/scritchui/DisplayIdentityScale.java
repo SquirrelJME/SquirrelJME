@@ -19,20 +19,16 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/03/09
  */
-@SquirrelJMEVendorApi
 public class DisplayIdentityScale
 	extends DisplayScale
 {
 	/** The base screen. */
-	@SquirrelJMEVendorApi
 	protected final ScritchScreenBracket screen;
 	
 	/** The base window. */
-	@SquirrelJMEVendorApi
 	protected final ScritchWindowBracket window;
 	
 	/** The scritch interface to use. */
-	@SquirrelJMEVendorApi
 	protected final ScritchInterface scritch;
 	
 	/** Content area storage for ScritchUI calls. */
@@ -52,7 +48,6 @@ public class DisplayIdentityScale
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/11
 	 */
-	@SquirrelJMEVendorApi
 	public DisplayIdentityScale(ScritchInterface __scritch,
 		ScritchScreenBracket __screen,
 		ScritchWindowBracket __window)
@@ -71,7 +66,6 @@ public class DisplayIdentityScale
 	 * @since 2024/05/12
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public boolean requiresBuffer()
 	{
 		return false;
@@ -82,7 +76,6 @@ public class DisplayIdentityScale
 	 * @since 2024/03/09
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int screenX(int __x)
 	{
 		return __x;
@@ -93,7 +86,6 @@ public class DisplayIdentityScale
 	 * @since 2024/03/09
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int screenY(int __y)
 	{
 		return __y;
@@ -104,7 +96,6 @@ public class DisplayIdentityScale
 	 * @since 2024/03/18
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int textureH()
 	{
 		// This is determined from ScritchUI
@@ -121,7 +112,6 @@ public class DisplayIdentityScale
 	 * @since 2024/03/11
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int textureMaxH()
 	{
 		// Get bounds from ScritchUI
@@ -138,7 +128,6 @@ public class DisplayIdentityScale
 	 * @since 2024/03/11
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int textureMaxW()
 	{
 		// Get bounds from ScritchUI
@@ -155,7 +144,6 @@ public class DisplayIdentityScale
 	 * @since 2024/03/18
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int textureW()
 	{
 		// This is determined from ScritchUI
@@ -172,7 +160,6 @@ public class DisplayIdentityScale
 	 * @since 2024/03/09
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int textureX(int __x)
 	{
 		return __x;
@@ -183,7 +170,6 @@ public class DisplayIdentityScale
 	 * @since 2024/03/09
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int textureY(int __y)
 	{
 		return __y;

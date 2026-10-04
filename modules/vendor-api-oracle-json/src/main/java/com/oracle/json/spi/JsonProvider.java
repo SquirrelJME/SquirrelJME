@@ -49,7 +49,6 @@ import java.util.ServiceLoader;
 public abstract class JsonProvider
 {
 	/** Default provider for JSR353. */
-	@SquirrelJMEVendorApi
 	static final String DEFAULT_PROVIDER =
 		"net.multiphasicapps.jsr353.ImplProvider";
 	

@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2016/08/11
  */
-@SquirrelJMEVendorApi
 public interface GettableEndianess
 {
 	/**
@@ -25,7 +24,6 @@ public interface GettableEndianess
 	 * @return The current endianess.
 	 * @since 2016/07/10
 	 */
-	@SquirrelJMEVendorApi
 	DataEndianess getEndianess();
 }
 

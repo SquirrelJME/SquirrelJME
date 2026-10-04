@@ -27,7 +27,6 @@ import org.intellij.lang.annotations.Language;
  *
  * @since 2025/12/26
  */
-@SquirrelJMEVendorApi
 public class MidletMain
 	extends MIDlet
 {

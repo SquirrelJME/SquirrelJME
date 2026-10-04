@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Debug;
  * @since 2024/05/14
  */
 @GhostObject
-@SquirrelJMEVendorApi
 @Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")
 public interface PencilFontBracket

@@ -21,7 +21,6 @@ import java.io.InputStream;
  *
  * @since 2024/01/06
  */
-@SquirrelJMEVendorApi
 public class DefaultJarPackageShelf
 	implements VirtualJarPackageShelf
 {

@@ -23,7 +23,6 @@ import java.io.InputStream;
  *
  * @since 2017/03/04
  */
-@SquirrelJMEVendorApi
 public class ZLibDecompressor
 	extends DecompressionInputStream
 {
@@ -77,7 +76,6 @@ public class ZLibDecompressor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/04
 	 */
-	@SquirrelJMEVendorApi
 	public ZLibDecompressor(InputStream __in)
 		throws NullPointerException
 	{

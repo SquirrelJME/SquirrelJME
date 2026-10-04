@@ -19,7 +19,6 @@ import javax.microedition.midlet.MIDlet;
  *
  * @since 2025/04/18
  */
-@SquirrelJMEVendorApi
 public final class MeepRuntime
 {
 	/** The cached DoJa version. */
@@ -40,7 +39,6 @@ public final class MeepRuntime
 	 * @return The MEEP version.
 	 * @since 2025/04/09
 	 */
-	@SquirrelJMEVendorApi
 	public static SuiteVersion version()
 	{
 		// Already cached?
@@ -80,7 +78,6 @@ public final class MeepRuntime
 	 * @return If this is before the given DoJa version.
 	 * @since 2025/04/18
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean versionBefore(int __major, int __minor)
 	{
 		return !MeepRuntime.version().atLeast(__major, __minor);
@@ -94,7 +91,6 @@ public final class MeepRuntime
 	 * @return If this is at least the given DoJa version.
 	 * @since 2025/04/18
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean versionLeast(int __major, int __minor)
 	{
 		return MeepRuntime.version().atLeast(__major, __minor);

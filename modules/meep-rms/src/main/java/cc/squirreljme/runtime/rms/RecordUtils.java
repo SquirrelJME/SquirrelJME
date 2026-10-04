@@ -17,7 +17,6 @@ import javax.microedition.rms.RecordStoreException;
  *
  * @since 2025/04/20
  */
-@SquirrelJMEVendorApi
 public class RecordUtils
 {
 	/**
@@ -30,7 +29,6 @@ public class RecordUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/18
 	 */
-	@SquirrelJMEVendorApi
 	public static <E extends RecordStoreException> E wrap(E __e, Throwable __t)
 		throws NullPointerException
 	{

@@ -16,11 +16,9 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/10/17
  */
-@SquirrelJMEVendorApi
 public interface UIListType
 {
 	/** Only one element may be selected at a time. */
-	@SquirrelJMEVendorApi
 	byte EXCLUSIVE =
 		0;
 	
@@ -28,17 +26,14 @@ public interface UIListType
 	 * The item that is focused is always the only one selected, pressing an
 	 * action key (like enter/space) will activate the item.
 	 */
-	@SquirrelJMEVendorApi
 	byte IMPLICIT =
 		1;
 	
 	/** Any number of items may be selected. */
-	@SquirrelJMEVendorApi
 	byte MULTIPLE =
 		2;
 	
 	/** The number of list types. */
-	@SquirrelJMEVendorApi
 	byte NUM_LIST_TYPES =
 		3;
 }

@@ -17,26 +17,21 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/05/15
  */
-@SquirrelJMEVendorApi
 public interface ScritchLAFPlatformFlag
 {
 	/** Dark mode is enabled. */
-	@SquirrelJMEVendorApi
 	byte DARK_MODE =
 		1;
 
 	/** The number pad follows the calculator layout. */
-	@SquirrelJMEVendorApi
 	byte NUMPAD_CALC_LAYOUT =
 		2;
 
 	/** Panel only interface. */
-	@SquirrelJMEVendorApi
 	byte PANEL_ONLY =
 		4;
 
 	/** Are native alerts available? */
-	@SquirrelJMEVendorApi
 	byte HAS_ALERTS =
 		8;
 }

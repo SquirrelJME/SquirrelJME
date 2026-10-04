@@ -16,31 +16,25 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/05/04
  */
-@SquirrelJMEVendorApi
 public interface AudioStreamChannels
 {
 	/** Automatic. */
-	@SquirrelJMEVendorApi
 	byte AUTOMATIC =
 		-1;
 	
 	/** Mono audio. */
-	@SquirrelJMEVendorApi
 	byte MONO =
 		1;
 	
 	/** Stereo. */
-	@SquirrelJMEVendorApi
 	byte STEREO =
 		2;
 	
 	/** Basic surround sound. */
-	@SquirrelJMEVendorApi
 	byte BASIC_SURROUND =
 		4;
 	
 	/** Full surround sound. */
-	@SquirrelJMEVendorApi
 	byte FULL_SURROUND =
 		8;
 }

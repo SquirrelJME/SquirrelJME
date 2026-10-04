@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Debug;
  * @since 2022/04/21
  */
 @GhostObject
-@SquirrelJMEVendorApi
 @Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")
 public interface MidiDeviceBracket

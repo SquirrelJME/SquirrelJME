@@ -21,11 +21,9 @@ import java.io.UnsupportedEncodingException;
  *
  * @since 2018/09/16
  */
-@SquirrelJMEVendorApi
 public final class CodecFactory
 {
 	/** The encoding to use if it is unknown or not set anywhere. */
-	@SquirrelJMEVendorApi
 	public static final String FALLBACK_ENCODING =
 		"utf-8";
 	
@@ -46,7 +44,6 @@ public final class CodecFactory
 	 * @throws UnsupportedEncodingException If the encoding is invalid.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static Decoder decoder(int __builtIn)
 		throws UnsupportedEncodingException
 	{
@@ -90,7 +87,6 @@ public final class CodecFactory
 	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/10/13
 	 */
-	@SquirrelJMEVendorApi
 	public static Decoder decoder(String __enc)
 		throws NullPointerException, UnsupportedEncodingException
 	{
@@ -103,7 +99,6 @@ public final class CodecFactory
 	 * @return The default decoder.
 	 * @since 2018/10/13
 	 */
-	@SquirrelJMEVendorApi
 	public static Decoder defaultDecoder()
 	{
 		try
@@ -124,7 +119,6 @@ public final class CodecFactory
 	 * @return The default encoder.
 	 * @since 2018/09/16
 	 */
-	@SquirrelJMEVendorApi
 	public static Encoder defaultEncoder()
 	{
 		try
@@ -147,7 +141,6 @@ public final class CodecFactory
 	 * @throws UnsupportedEncodingException If the encoder is not valid.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static Encoder encoder(int __builtIn)
 		throws UnsupportedEncodingException
 	{
@@ -188,7 +181,6 @@ public final class CodecFactory
 	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/09/17
 	 */
-	@SquirrelJMEVendorApi
 	public static Encoder encoder(String __enc)
 		throws NullPointerException, UnsupportedEncodingException
 	{
@@ -202,7 +194,6 @@ public final class CodecFactory
 	 * @return The built-in encoding.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static int toBuiltIn(String __enc)
 		throws UnsupportedEncodingException
 	{
@@ -236,7 +227,6 @@ public final class CodecFactory
 	 * @throws IllegalArgumentException If the encoding is not valid.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static String toString(int __builtIn)
 		throws IllegalArgumentException
 	{

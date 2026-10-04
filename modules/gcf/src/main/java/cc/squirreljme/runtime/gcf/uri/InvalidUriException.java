@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/12/28
  */
-@SquirrelJMEVendorApi
 public class InvalidUriException
 	extends RuntimeException
 {
@@ -26,7 +25,6 @@ public class InvalidUriException
 	 * @param __m The message.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public InvalidUriException(String __m)
 	{
 		super(__m);
@@ -39,7 +37,6 @@ public class InvalidUriException
 	 * @param __c The cause.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public InvalidUriException(String __m, Throwable __c)
 	{
 		super(__m, __c);

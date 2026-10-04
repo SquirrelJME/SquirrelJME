@@ -27,16 +27,13 @@ import net.multiphasicapps.collections.UnmodifiableMap;
  * @param <T> The type of value to read.
  * @since 2023/09/12
  */
-@SquirrelJMEVendorApi
 public final class CsvReader<T>
 	implements Closeable
 {
 	/** The deserializer for incoming lines. */
-	@SquirrelJMEVendorApi
 	protected final CsvDeserializer<T> deserializer;
 	
 	/** The input stream for CSV lines. */
-	@SquirrelJMEVendorApi
 	protected final CsvInputStream input;
 	
 	/** Temporary reading buffer. */
@@ -70,7 +67,6 @@ public final class CsvReader<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
-	@SquirrelJMEVendorApi
 	public CsvReader(CsvDeserializer<T> __deserializer,
 		CsvInputStream __input)
 		throws NullPointerException
@@ -87,7 +83,6 @@ public final class CsvReader<T>
 	 * @since 2023/09/14
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void close()
 		throws IOException
 	{
@@ -102,7 +97,6 @@ public final class CsvReader<T>
 	 * @throws IOException On read errors.
 	 * @since 2023/09/12
 	 */
-	@SquirrelJMEVendorApi
 	public T read()
 		throws NoSuchElementException, IOException
 	{
@@ -234,7 +228,6 @@ public final class CsvReader<T>
 	 * @throws IOException On read errors.
 	 * @since 2023/09/12
 	 */
-	@SquirrelJMEVendorApi
 	public List<T> readAll()
 		throws IOException
 	{
@@ -251,7 +244,6 @@ public final class CsvReader<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
-	@SquirrelJMEVendorApi
 	public <C extends Collection<? super T>> C readAll(C __into)
 		throws IOException, NullPointerException
 	{

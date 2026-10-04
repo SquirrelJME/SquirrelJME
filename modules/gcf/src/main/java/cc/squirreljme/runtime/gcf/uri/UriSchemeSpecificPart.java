@@ -20,7 +20,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/28
  */
-@SquirrelJMEVendorApi
 public final class UriSchemeSpecificPart
 	extends UriPart
 	implements UriPartFragment, UriPartSchemeSpecific
@@ -39,7 +38,6 @@ public final class UriSchemeSpecificPart
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public UriSchemeSpecificPart(String __part)
 		throws InvalidUriException, NullPointerException
 	{

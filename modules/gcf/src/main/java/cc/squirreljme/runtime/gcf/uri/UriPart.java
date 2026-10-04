@@ -23,12 +23,10 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/28
  */
-@SquirrelJMEVendorApi
 public abstract class UriPart
 	implements Comparable<UriPart>
 {
 	/** The original full part. */
-	@SquirrelJMEVendorApi
 	protected final String original;
 	
 	/**
@@ -68,7 +66,6 @@ public abstract class UriPart
 	 * @throws InvalidUriException If this is not a generic URI.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public final UriGenericPart asGeneric()
 		throws InvalidUriException
 	{
@@ -149,7 +146,6 @@ public abstract class UriPart
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public static String decode(String __in)
 		throws InvalidUriException, NullPointerException
 	{
@@ -229,7 +225,6 @@ public abstract class UriPart
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/29
 	 */
-	@SquirrelJMEVendorApi
 	public static String encode(String __in)
 		throws NullPointerException
 	{
@@ -287,7 +282,6 @@ public abstract class UriPart
 	 * @return If this is valid or not.
 	 * @since 2025/12/29
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isAny(char __c)
 	{
 		return __c == ':' || __c == '#' || __c == '[' || __c == ']' || 
@@ -307,7 +301,6 @@ public abstract class UriPart
 	 * @return If this is valid or not.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isGenDelim(char __c)
 	{
 		return __c == ':' || __c == '/' || __c == '?' || __c == '#' ||
@@ -321,14 +314,12 @@ public abstract class UriPart
 	 * @return If this is valid or not.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isHexDigit(char __c)
 	{
 		return (__c >= 'a' && __c <= 'f') || (__c >= 'A' && __c <= 'F') ||
 			(__c >= '0' && __c <= '9');
 	}
 	
-	@SquirrelJMEVendorApi
 	public static boolean isQuery(char __c)
 	{
 		return __c == '/' || __c == '?' || UriPart.isPChar(__c);
@@ -341,7 +332,6 @@ public abstract class UriPart
 	 * @return If this is valid or not.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isPChar(char __c)
 	{
 		return UriPart.isUnreserved(__c) || UriPart.isHexDigit(__c) ||
@@ -355,7 +345,6 @@ public abstract class UriPart
 	 * @return If this is valid or not.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isReserved(char __c)
 	{
 		return UriPart.isGenDelim(__c) || UriPart.isSubDelim(__c);
@@ -368,7 +357,6 @@ public abstract class UriPart
 	 * @return If this is valid or not.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isFragment(char __c)
 	{
 		return __c == '/' || __c == '?' || UriPart.isPChar(__c);
@@ -382,7 +370,6 @@ public abstract class UriPart
 	 * @return If this is valid or not.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isSubDelim(char __c)
 	{
 		return __c == '!' || __c == '$' || __c == '&' || __c == '\'' ||
@@ -397,7 +384,6 @@ public abstract class UriPart
 	 * @return If this is valid or not.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isUnreserved(char __c)
 	{
 		return (__c >= 'a' && __c <= 'z') || (__c >= 'A' && __c <= 'Z') ||
@@ -415,7 +401,6 @@ public abstract class UriPart
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/29
 	 */
-	@SquirrelJMEVendorApi
 	public static String[] splitDecode(String __in, char __delim)
 		throws InvalidUriException, NullPointerException
 	{

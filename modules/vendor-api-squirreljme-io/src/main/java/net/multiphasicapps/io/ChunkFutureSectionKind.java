@@ -16,15 +16,12 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2019/08/17
  */
-@SquirrelJMEVendorApi
 public enum ChunkFutureSectionKind
 {
 	/** Address. */
-	@SquirrelJMEVendorApi
 	ADDRESS,
 	
 	/** Size. */
-	@SquirrelJMEVendorApi
 	SIZE,
 	
 	/* End. */

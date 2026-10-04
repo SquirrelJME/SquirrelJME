@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/11/29
  */
-@SquirrelJMEVendorApi
 public interface ChunkFuture
 {
 	/**
@@ -25,6 +24,5 @@ public interface ChunkFuture
 	 * @return The value of this future.
 	 * @since 2020/11/29
 	 */
-	@SquirrelJMEVendorApi
 	int get();
 }

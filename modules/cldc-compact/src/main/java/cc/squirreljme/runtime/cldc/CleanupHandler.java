@@ -36,7 +36,6 @@ import java.util.Queue;
  *
  * @since 2020/07/03
  */
-@SquirrelJMEVendorApi
 public final class CleanupHandler
 {
 	/** Queue of handles waiting to be closed. */
@@ -68,7 +67,6 @@ public final class CleanupHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/07/03
 	 */
-	@SquirrelJMEVendorApi
 	public static void add(AutoCloseable __task)
 		throws NullPointerException
 	{
@@ -89,7 +87,6 @@ public final class CleanupHandler
 	 * no longer being referenced by any other object.
 	 * @since 2026/07/09
 	 */
-	@SquirrelJMEVendorApi
 	public static void bracketAdd(Object __object, CloseableBracket __bracket)
 		throws NullPointerException
 	{
@@ -112,7 +109,6 @@ public final class CleanupHandler
 	 *
 	 * @since 2026/07/09
 	 */
-	@SquirrelJMEVendorApi
 	public static void bracketCheck()
 	{
 		Map<Reference<? super Object>, CloseableBracket> brackets =
@@ -157,7 +153,6 @@ public final class CleanupHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/07/09
 	 */
-	@SquirrelJMEVendorApi
 	public static void bracketClose(CloseableBracket __bracket)
 		throws MLECallError, NullPointerException
 	{
@@ -183,7 +178,6 @@ public final class CleanupHandler
 	 * 
 	 * @since 2020/07/03
 	 */
-	@SquirrelJMEVendorApi
 	public static void runAll()
 	{
 		// Check brackets

@@ -21,12 +21,10 @@ import java.io.OutputStream;
  *
  * @since 2018/05/14
  */
-@SquirrelJMEVendorApi
 public final class IndentedOutputStream
 	extends OutputStream
 {
 	/** The output stream to write to. */
-	@SquirrelJMEVendorApi
 	protected final OutputStream out;
 	
 	/** The indentation character. */
@@ -47,7 +45,6 @@ public final class IndentedOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/14
 	 */
-	@SquirrelJMEVendorApi
 	public IndentedOutputStream(OutputStream __out)
 		throws NullPointerException
 	{
@@ -62,7 +59,6 @@ public final class IndentedOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/14
 	 */
-	@SquirrelJMEVendorApi
 	public IndentedOutputStream(OutputStream __out, char __c)
 		throws NullPointerException
 	{
@@ -89,7 +85,6 @@ public final class IndentedOutputStream
 	 *
 	 * @since 2018/05/14
 	 */
-	@SquirrelJMEVendorApi
 	public final void decrement()
 	{
 		int level = this._level;
@@ -102,7 +97,6 @@ public final class IndentedOutputStream
 	 * @since 2018/05/14
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final void flush()
 		throws IOException
 	{
@@ -114,7 +108,6 @@ public final class IndentedOutputStream
 	 *
 	 * @since 2018/05/14
 	 */
-	@SquirrelJMEVendorApi
 	public final void increment()
 	{
 		int level = this._level;
@@ -129,7 +122,6 @@ public final class IndentedOutputStream
 	 * @throws IllegalArgumentException If the level is negative.
 	 * @since 2018/05/14
 	 */
-	@SquirrelJMEVendorApi
 	public final void setLevel(int __i)
 		throws IllegalArgumentException
 	{

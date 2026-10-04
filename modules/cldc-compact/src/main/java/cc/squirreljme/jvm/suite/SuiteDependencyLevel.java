@@ -17,15 +17,12 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2017/02/22
  */
-@SquirrelJMEVendorApi
 public enum SuiteDependencyLevel
 {
 	/** Required. */
-	@SquirrelJMEVendorApi
 	REQUIRED,
 	
 	/** Optional. */
-	@SquirrelJMEVendorApi
 	OPTIONAL,
 	
 	/** End. */
@@ -37,7 +34,6 @@ public enum SuiteDependencyLevel
 	 * @return {@code true} if this is an optional dependency level.
 	 * @since 2017/11/22
 	 */
-	@SquirrelJMEVendorApi
 	public boolean isOptional()
 	{
 		return this == SuiteDependencyLevel.OPTIONAL;
@@ -49,7 +45,6 @@ public enum SuiteDependencyLevel
 	 * @return {@code true} if this is an required dependency level.
 	 * @since 2017/11/22
 	 */
-	@SquirrelJMEVendorApi
 	public boolean isRequired()
 	{
 		return this == SuiteDependencyLevel.REQUIRED;
@@ -60,7 +55,6 @@ public enum SuiteDependencyLevel
 	 * @since 2017/02/22
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public String toString()
 	{
 		// Convert string
@@ -82,7 +76,6 @@ public enum SuiteDependencyLevel
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
-	@SquirrelJMEVendorApi
 	public static SuiteDependencyLevel of(String __s)
 		throws IllegalArgumentException, NullPointerException
 	{

@@ -25,7 +25,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
  *
  * @since 2018/12/01
  */
-@SquirrelJMEVendorApi
 public class Events
 	extends MIDlet
 {

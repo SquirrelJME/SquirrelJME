@@ -19,7 +19,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/07/30
  */
-@SquirrelJMEVendorApi
 public interface ScritchMenuItemActivateListener
 	extends ScritchListener
 {
@@ -30,7 +29,6 @@ public interface ScritchMenuItemActivateListener
 	 * @param __menuItem The menu item that was activated.
 	 * @since 2024/07/30
 	 */
-	@SquirrelJMEVendorApi
 	@ScritchEventLoop
 	void menuItemActivate(ScritchWindowBracket __window,
 		ScritchMenuKindBracket __menuItem);

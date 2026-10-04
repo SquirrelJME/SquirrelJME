@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2018/10/13
  */
-@SquirrelJMEVendorApi
 public interface Decoder
 	extends NamedCodec
 {
@@ -41,7 +40,6 @@ public interface Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/13
 	 */
-	@SquirrelJMEVendorApi
 	int decode(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException;
 }

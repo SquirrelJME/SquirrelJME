@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/05/04
  */
-@SquirrelJMEVendorApi
 public interface AudioStreamPlayer
 	extends AudioStreamRenderer
 {

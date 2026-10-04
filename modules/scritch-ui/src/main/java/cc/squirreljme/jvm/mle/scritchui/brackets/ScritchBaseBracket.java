@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Debug;
  * @since 2024/04/30
  */
 @GhostObject
-@SquirrelJMEVendorApi
 @Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")
 public interface ScritchBaseBracket

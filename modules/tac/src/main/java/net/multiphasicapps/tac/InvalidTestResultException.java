@@ -25,7 +25,6 @@ public class InvalidTestResultException
 	 *
 	 * @since 2018/10/06
 	 */
-	@SquirrelJMEVendorApi
 	public InvalidTestResultException()
 	{
 	}
@@ -36,7 +35,6 @@ public class InvalidTestResultException
 	 * @param __m The message.
 	 * @since 2018/10/06
 	 */
-	@SquirrelJMEVendorApi
 	public InvalidTestResultException(String __m)
 	{
 		super(__m);
@@ -49,7 +47,6 @@ public class InvalidTestResultException
 	 * @param __c The cause.
 	 * @since 2018/10/06
 	 */
-	@SquirrelJMEVendorApi
 	public InvalidTestResultException(String __m, Throwable __c)
 	{
 		super(__m, __c);
@@ -61,7 +58,6 @@ public class InvalidTestResultException
 	 * @param __c The cause.
 	 * @since 2018/10/06
 	 */
-	@SquirrelJMEVendorApi
 	public InvalidTestResultException(Throwable __c)
 	{
 		super(__c);

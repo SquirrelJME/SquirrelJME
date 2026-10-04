@@ -19,7 +19,6 @@ import org.intellij.lang.annotations.Language;
  *
  * @since 2025/12/27
  */
-@SquirrelJMEVendorApi
 public final class ContentTypeUtil
 {
 	/**
@@ -42,7 +41,6 @@ public final class ContentTypeUtil
 	 * @since 2022/04/24
 	 */
 	@Language("mime-type-reference")
-	@SquirrelJMEVendorApi
 	public static String guess(InputStream __in)
 		throws IOException, NullPointerException
 	{
@@ -74,7 +72,6 @@ public final class ContentTypeUtil
 	 * @since 2026/01/03
 	 */
 	@Language("mime-type-reference")
-	@SquirrelJMEVendorApi
 	public static String guess(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -290,7 +287,6 @@ public final class ContentTypeUtil
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/27
 	 */
-	@SquirrelJMEVendorApi
 	@Language("mime-type-reference")
 	public static String guessByPath(String __path)
 		throws NullPointerException
@@ -433,7 +429,6 @@ public final class ContentTypeUtil
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isMedia(
 		@Language("mime-type-reference") String __type)
 		throws NullPointerException
@@ -454,7 +449,6 @@ public final class ContentTypeUtil
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isMediaAudio(
 		@Language("mime-type-reference") String __type)
 		throws NullPointerException
@@ -491,7 +485,6 @@ public final class ContentTypeUtil
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isMediaImage(
 		@Language("mime-type-reference") String __type)
 		throws NullPointerException
@@ -528,7 +521,6 @@ public final class ContentTypeUtil
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isMediaVideo(
 		@Language("mime-type-reference") String __type)
 		throws NullPointerException
@@ -558,7 +550,6 @@ public final class ContentTypeUtil
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/03
 	 */
-	@SquirrelJMEVendorApi
 	public static String toExtension(
 		@Language("mime-type-reference") String __type)
 		throws NullPointerException

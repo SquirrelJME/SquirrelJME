@@ -23,11 +23,9 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/11/27
  */
-@SquirrelJMEVendorApi
 public interface CompatibilityId
 {
 	/** Unknown compatibility flag. */
-	@SquirrelJMEVendorApi
 	byte UNKNOWN =
 		0;
 	
@@ -36,7 +34,6 @@ public interface CompatibilityId
 	 * to ensure that they are running only on specific Konami demo devices.
 	 * If enabled, this enables support for those checks.}
 	 */
-	@SquirrelJMEVendorApi
 	byte KONAMI_DEMO_CHECK =
 		1;
 	
@@ -45,7 +42,6 @@ public interface CompatibilityId
 	 * specification by illegally storing the Graphics context when they
 	 * should not, this forces a buffer to be used.}
 	 */
-	@SquirrelJMEVendorApi
 	byte FORCE_LCDUI_BUFFER =
 		2;
 }

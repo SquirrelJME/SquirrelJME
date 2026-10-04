@@ -26,7 +26,6 @@ import java.util.NoSuchElementException;
  *
  * @since 2017/02/24
  */
-@SquirrelJMEVendorApi
 public class InflaterInputStream
 	extends DecompressionInputStream
 {
@@ -62,20 +61,16 @@ public class InflaterInputStream
 		};
 	
 	/** The deflated compressed stream to be decompressed. */
-	@SquirrelJMEVendorApi
 	protected final InputStream in;
 	
 	/** Sliding window for accessing old bytes. */
-	@SquirrelJMEVendorApi
 	protected final SlidingByteWindow window;
 	
 	/** If the output cannot be filled, bytes are written here instead. */
-	@SquirrelJMEVendorApi
 	protected final ByteDeque overflow =
 		new ByteDeque();
 	
 	/** When bytes are read, a checksum will be calculated for it, optional. */
-	@SquirrelJMEVendorApi
 	protected final Checksum checksum;
 	
 	/** The bit source for reading. */
@@ -147,7 +142,6 @@ public class InflaterInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/24
 	 */
-	@SquirrelJMEVendorApi
 	public InflaterInputStream(InputStream __in)
 		throws NullPointerException
 	{
@@ -163,7 +157,6 @@ public class InflaterInputStream
 	 * @throws NullPointerException On null arguments, except for {@code __cs}.
 	 * @since 2017/02/24
 	 */
-	@SquirrelJMEVendorApi
 	public InflaterInputStream(InputStream __in, Checksum __cs)
 		throws NullPointerException
 	{
@@ -179,7 +172,6 @@ public class InflaterInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/04
 	 */
-	@SquirrelJMEVendorApi
 	public InflaterInputStream(InputStream __in, int __sls)
 	{
 		this(__in, __sls, null);
@@ -199,7 +191,6 @@ public class InflaterInputStream
 	 * {@code __checksum}.
 	 * @since 2017/08/22
 	 */
-	@SquirrelJMEVendorApi
 	public InflaterInputStream(InputStream __in, int __sls,
 		Checksum __checksum)
 	{

@@ -16,16 +16,13 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2021/02/09
  */
-@SquirrelJMEVendorApi
 public interface ByteOrderType
 {
 	/** Big endian. */
-	@SquirrelJMEVendorApi
 	byte BIG_ENDIAN =
 		0;
 		
 	/** Little endian. */
-	@SquirrelJMEVendorApi
 	byte LITTLE_ENDIAN =
 		1;
 }

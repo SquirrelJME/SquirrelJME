@@ -25,23 +25,18 @@ import javax.microedition.lcdui.List;
  *
  * @since 2024/03/27
  */
-@SquirrelJMEVendorApi
 public final class ChoiceManager
 {
 	/** The type of list this is. */
-	@SquirrelJMEVendorApi
 	public final int type;
 	
 	/** The widget to manage. */
-	@SquirrelJMEVendorApi
 	final ScritchChoiceBracket _widget;
 	
 	/** The API for calling ScritchUI functions. */
-	@SquirrelJMEVendorApi
 	protected final ScritchInterface scritchApi;
 	
 	/** The cached choice items. */
-	@SquirrelJMEVendorApi
 	final ArrayList<CachedChoice> _cache =
 		new ArrayList<>();
 	
@@ -54,7 +49,6 @@ public final class ChoiceManager
 	 * @throws IllegalArgumentException If the type is not valid.
 	 * @since 2024/07/24
 	 */
-	@SquirrelJMEVendorApi
 	public ChoiceManager(int __type, ScritchInterface __scritchApi,
 		ScritchChoiceBracket __widget)
 		throws IllegalArgumentException, NullPointerException
@@ -79,7 +73,6 @@ public final class ChoiceManager
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2024/07/24
 	 */
-	@SquirrelJMEVendorApi
 	public void delete(int __atIndex)
 		throws IndexOutOfBoundsException
 	{
@@ -111,7 +104,6 @@ public final class ChoiceManager
 	 *
 	 * @since 2024/07/24
 	 */
-	@SquirrelJMEVendorApi
 	public void deleteAll()
 	{
 		// Perform upsert operation
@@ -142,7 +134,6 @@ public final class ChoiceManager
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2025/04/18
 	 */
-	@SquirrelJMEVendorApi
 	public CachedChoice getCached(int __i)
 		throws IndexOutOfBoundsException
 	{
@@ -161,7 +152,6 @@ public final class ChoiceManager
 	 * @return The first selected index, returns {@code -1} if there is none.
 	 * @since 2024/07/28
 	 */
-	@SquirrelJMEVendorApi
 	public int getSelectedIndex()
 	{
 		try
@@ -187,7 +177,6 @@ public final class ChoiceManager
 	 * @throws NullPointerException If no string was specified.
 	 * @since 2024/07/24
 	 */
-	@SquirrelJMEVendorApi
 	public int insert(int __atIndex, String __str, Image __img)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -229,7 +218,6 @@ public final class ChoiceManager
 	 * @throws NullPointerException If no string was specified.
 	 * @since 2024/07/24
 	 */
-	@SquirrelJMEVendorApi
 	public void set(int __atIndex, String __str, Image __img)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -269,7 +257,6 @@ public final class ChoiceManager
 	 * list bounds.
 	 * @since 2024/07/25
 	 */
-	@SquirrelJMEVendorApi
 	public void setEnabled(int __atIndex, boolean __enabled)
 		throws IndexOutOfBoundsException
 	{
@@ -296,7 +283,6 @@ public final class ChoiceManager
 	 * list bounds.
 	 * @since 2024/07/25
 	 */
-	@SquirrelJMEVendorApi
 	public void setSelected(int __atIndex, boolean __selected)
 		throws IndexOutOfBoundsException
 	{
@@ -323,7 +309,6 @@ public final class ChoiceManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/28
 	 */
-	@SquirrelJMEVendorApi
 	public void setSelectedFlags(boolean[] __flags)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -364,7 +349,6 @@ public final class ChoiceManager
 	 * @return The number of available choices.
 	 * @since 2024/07/28
 	 */
-	@SquirrelJMEVendorApi
 	public int size()
 	{
 		try

@@ -22,7 +22,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2020/12/28
  */
-@SquirrelJMEVendorApi
 public final class JavaApplication
 	extends Application
 {
@@ -35,11 +34,9 @@ public final class JavaApplication
 		"X-SquirrelJME-NoJavaMainLauncher";
 	
 	/** The suite information. */
-	@SquirrelJMEVendorApi
 	protected final SuiteInfo info;
 	
 	/** The entry point used. */
-	@SquirrelJMEVendorApi
 	protected final EntryPoint entryPoint;
 	
 	/**

@@ -16,11 +16,9 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2022/02/14
  */
-@SquirrelJMEVendorApi
 public final class BGColor
 {
 	/** The background color. */
-	@SquirrelJMEVendorApi
 	public volatile int bgColor;
 	
 	/**
@@ -29,7 +27,6 @@ public final class BGColor
 	 * @param __bgColor The background color used.
 	 * @since 2022/02/14
 	 */
-	@SquirrelJMEVendorApi
 	public BGColor(int __bgColor)
 	{
 		this.bgColor = __bgColor;

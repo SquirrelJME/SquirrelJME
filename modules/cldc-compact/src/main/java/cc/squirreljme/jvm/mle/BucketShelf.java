@@ -34,7 +34,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2025/04/14
  */
-@SquirrelJMEVendorApi
 public final class BucketShelf
 {
 	/**
@@ -46,7 +45,6 @@ public final class BucketShelf
 	 * supported.
 	 * @since 2025/04/14
 	 */
-	@SquirrelJMEVendorApi
 	public static native BucketBracket bucket(
 		@MagicConstant(valuesFromClass = StandardBucketType.class)
 			int __type)
@@ -61,7 +59,6 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/14
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean delete(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
@@ -76,7 +73,6 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean exists(
 		@NotNull BucketBracket __bucket,
 		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
@@ -93,7 +89,6 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/17
 	 */
-	@SquirrelJMEVendorApi
 	public static native long lastModifiedTime(
 		@NotNull BucketBracket __bucket,
 		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
@@ -109,7 +104,6 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/14
 	 */
-	@SquirrelJMEVendorApi
 	public static native long length(
 		@NotNull BucketBracket __bucket,
 		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
@@ -124,7 +118,6 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/16
 	 */
-	@SquirrelJMEVendorApi
 	public static native String[] list(
 		@NotNull BucketBracket __bucket)
 		throws MLECallError;
@@ -145,7 +138,6 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/16
 	 */
-	@SquirrelJMEVendorApi
 	public static native String[] list(
 		@NotNull BucketBracket __bucket,
 		boolean __not,
@@ -166,7 +158,6 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/29
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	@Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
 	public static native String path(@NotNull BucketBracket __bucket)
@@ -187,7 +178,6 @@ public final class BucketShelf
 	 * out of bounds or negative.
 	 * @since 2025/04/14
 	 */
-	@SquirrelJMEVendorApi
 	public static native int read(
 		@NotNull BucketBracket __bucket,
 		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
@@ -212,7 +202,6 @@ public final class BucketShelf
 	 * out of bounds or negative.
 	 * @since 2025/04/14
 	 */
-	@SquirrelJMEVendorApi
 	public static native void write(
 		@NotNull BucketBracket __bucket,
 		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")

@@ -25,7 +25,6 @@ public class InvalidTestParameterException
 	 *
 	 * @since 2018/10/06
 	 */
-	@SquirrelJMEVendorApi
 	public InvalidTestParameterException()
 	{
 	}
@@ -36,7 +35,6 @@ public class InvalidTestParameterException
 	 * @param __m The message.
 	 * @since 2018/10/06
 	 */
-	@SquirrelJMEVendorApi
 	public InvalidTestParameterException(String __m)
 	{
 		super(__m);
@@ -49,7 +47,6 @@ public class InvalidTestParameterException
 	 * @param __c The cause.
 	 * @since 2018/10/06
 	 */
-	@SquirrelJMEVendorApi
 	public InvalidTestParameterException(String __m, Throwable __c)
 	{
 		super(__m, __c);
@@ -61,7 +58,6 @@ public class InvalidTestParameterException
 	 * @param __c The cause.
 	 * @since 2018/10/06
 	 */
-	@SquirrelJMEVendorApi
 	public InvalidTestParameterException(Throwable __c)
 	{
 		super(__c);

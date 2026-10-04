@@ -21,7 +21,6 @@ import java.util.Map;
  *
  * @since 2024/01/06
  */
-@SquirrelJMEVendorApi
 public final class SuiteUtils
 {
 	/**
@@ -42,7 +41,6 @@ public final class SuiteUtils
 	 * @since 2024/01/06
 	 */
 	@SuppressWarnings("SystemGetProperty")
-	@SquirrelJMEVendorApi
 	public static String baseName(String __name)
 		throws NullPointerException
 	{
@@ -106,7 +104,6 @@ public final class SuiteUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/17
 	 */
-	@SquirrelJMEVendorApi
 	public static JarPackageBracket findName(
 		Iterable<JarPackageBracket> __in, String __name)
 		throws NullPointerException
@@ -149,7 +146,6 @@ public final class SuiteUtils
 	 * @return If it is a Jar or resource.
 	 * @since 2024/01/06
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isAny(String __name)
 	{
 		return SuiteUtils.isJar(__name) || SuiteUtils.isResource(__name);
@@ -162,7 +158,6 @@ public final class SuiteUtils
 	 * @return If it is a Jar.
 	 * @since 2024/01/06
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isJar(String __name)
 	{
 		return __name.endsWith(".jar") || __name.endsWith(".JAR") ||
@@ -176,7 +171,6 @@ public final class SuiteUtils
 	 * @return If it is an archive.
 	 * @since 2026/01/16
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isArchive(String __name)
 	{
 		return SuiteUtils.isJar(__name) ||
@@ -190,7 +184,6 @@ public final class SuiteUtils
 	 * @return If it is a resource.
 	 * @since 2024/01/06
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isResource(String __name)
 	{
 		// Standard Jar

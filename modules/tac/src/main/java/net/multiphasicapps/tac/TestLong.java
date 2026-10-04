@@ -26,7 +26,6 @@ public abstract class TestLong
 	 *
 	 * @since 2026/02/12
 	 */
-	@SquirrelJMEVendorApi
 	public TestLong()
 	{
 	}
@@ -39,7 +38,6 @@ public abstract class TestLong
 	 * @since 2019/12/24
 	 */
 	@Test
-	@SquirrelJMEVendorApi
 	public abstract long test()
 		throws Throwable;
 	
@@ -48,7 +46,6 @@ public abstract class TestLong
 	 * @since 2019/12/24
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

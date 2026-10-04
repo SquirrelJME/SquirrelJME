@@ -30,7 +30,6 @@ public final class DataDeserialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
-	@SquirrelJMEVendorApi
 	public static String decodeKey(String __key)
 		throws NullPointerException
 	{
@@ -102,7 +101,6 @@ public final class DataDeserialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/06
 	 */
-	@SquirrelJMEVendorApi
 	public static String decodeString(String __s)
 		throws NullPointerException
 	{
@@ -223,7 +221,6 @@ public final class DataDeserialization
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/06
 	 */
-	@SquirrelJMEVendorApi
 	@SuppressWarnings("UnnecessaryBoxing")
 	public static Object deserialize(String __s)
 		throws InvalidTestParameterException, NullPointerException

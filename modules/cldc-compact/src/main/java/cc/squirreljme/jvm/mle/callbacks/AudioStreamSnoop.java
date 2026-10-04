@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2026/01/08
  */
-@SquirrelJMEVendorApi
 public interface AudioStreamSnoop
 	extends ShelfCallback
 {
@@ -33,7 +32,6 @@ public interface AudioStreamSnoop
 	 * @param __data2 Second data byte.
 	 * @since 2026/01/08
 	 */
-	@SquirrelJMEVendorApi
 	void midiEvent(int __type, int __data1, int __data2);
 	
 	/**
@@ -48,7 +46,6 @@ public interface AudioStreamSnoop
 	 * @param __len The length of the buffer.
 	 * @since 2026/01/08
 	 */
-	@SquirrelJMEVendorApi
 	void pcmBuffer(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __format,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __rate,

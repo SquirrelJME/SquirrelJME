@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Debug;
  * @since 2024/08/02
  */
 @GhostObject
-@SquirrelJMEVendorApi
 @Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")
 public interface ScritchStateBracket

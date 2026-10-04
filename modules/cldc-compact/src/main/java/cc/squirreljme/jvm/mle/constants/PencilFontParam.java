@@ -17,21 +17,17 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2026/04/10
  */
-@SquirrelJMEVendorApi
 public interface PencilFontParam
 {
 	/** The {@link PencilFontStyle} of the font. */
-	@SquirrelJMEVendorApi
 	byte STYLE =
 		1;
 	
 	/** The pixel size of the font. */
-	@SquirrelJMEVendorApi
 	byte PIXEL_SIZE =
 		2;
 	
 	/** The number of available font parameters. */
-	@SquirrelJMEVendorApi
 	byte NUM_PARAMS = 
 		3;
 }

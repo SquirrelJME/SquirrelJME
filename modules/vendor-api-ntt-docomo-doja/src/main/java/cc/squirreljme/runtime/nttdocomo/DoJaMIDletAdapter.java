@@ -37,7 +37,6 @@ public class DoJaMIDletAdapter
 	 * @since 2024/07/28
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected void destroyApp(boolean __uc)
 		throws MIDletStateChangeException
 	{
@@ -49,7 +48,6 @@ public class DoJaMIDletAdapter
 	 * @since 2024/07/28
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected void startApp()
 		throws MIDletStateChangeException
 	{

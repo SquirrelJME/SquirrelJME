@@ -42,29 +42,23 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2020/09/25
  */
-@SquirrelJMEVendorApi
 public final class PencilGraphics
 	extends Graphics
 	implements Closeable, ExtraGraphics
 {
 	/** The hardware bracket reference. */
-	@SquirrelJMEVendorApi
 	protected final PencilBracket hardware;
 
 	/** Surface width. */
-	@SquirrelJMEVendorApi
 	protected final int surfaceW;
 
 	/** Surface height. */
-	@SquirrelJMEVendorApi
 	protected final int surfaceH;
 
 	/** Is there an alpha channel? */
-	@SquirrelJMEVendorApi
 	protected final boolean hasAlpha;
 	
 	/** Does this have full ownership over the bracket? */
-	@SquirrelJMEVendorApi
 	protected final boolean isOwned;
 	
 	/** The current pixel format. */
@@ -139,7 +133,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void clipRect(int __x, int __y, int __w, int __h)
 	{
 		// Do nothing if closed
@@ -249,7 +242,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void copyArea(int __sx, int __sy, int __w, int __h, int __dx,
 		int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException
@@ -287,7 +279,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawArc(int __x, int __y, int __w, int __h, int __startAngle,
 		int __arcAngle)
 	{
@@ -313,7 +304,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawARGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
@@ -330,7 +320,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawChar(char __s, int __x, int __y, int __anchor)
 	{
 		// Do nothing if closed
@@ -354,7 +343,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawChars(char[] __s, int __o, int __l, int __x, int __y,
 		int __anchor)
 		throws IllegalArgumentException, IndexOutOfBoundsException,
@@ -387,7 +375,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawImage(Image __i, int __x, int __y, int __anchor)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -402,7 +389,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
 		// Do nothing if closed
@@ -461,7 +447,6 @@ public final class PencilGraphics
 	 * {@inheritDoc}
 	 * @since 2025/12/20
 	 */
-	@SquirrelJMEVendorApi
 	public void drawPolyline(int[] __xp, int __xo, int[] __yp, int __yo,
 		int __n)
 	{
@@ -495,7 +480,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawRGB(int[] __data, int __off, int __scanlen, int __x,
 		int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
@@ -525,7 +509,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawRGB16(short[] __data, int __off, int __scanlen,
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
@@ -542,7 +525,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawRect(int __x, int __y, int __w, int __h)
 	{
 		// Do nothing if closed
@@ -567,7 +549,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
 		int __anch)
@@ -587,7 +568,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawRegion(Image __src, int __xsrc, int __ysrc,
 		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
 		int __anch, int __wdest, int __hdest)
@@ -648,7 +628,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __arcWidth, int __arcHeight)
 	{
@@ -675,7 +654,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawString(String __s, int __x, int __y, int __anchor)
 		throws NullPointerException
 	{
@@ -703,7 +681,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawSubstring(String __s, int __o, int __l,
 		int __x, int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
@@ -734,7 +711,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawText(Text __t, int __x, int __y)
 	{
 		// Do nothing if closed
@@ -748,7 +724,6 @@ public final class PencilGraphics
 	 * {@inheritDoc}
 	 * @since 2025/12/20
 	 */
-	@SquirrelJMEVendorApi
 	public void drawTriangle(int __x1, int __y1, int __x2, int __y2, int __x3,
 		int __y3)
 	{
@@ -774,7 +749,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void fillArc(int __x, int __y, int __w, int __h, int __startAngle,
 		int __arcAngle)
 	{
@@ -799,7 +773,6 @@ public final class PencilGraphics
 	 * {@inheritDoc}
 	 * @since 2025/12/20
 	 */
-	@SquirrelJMEVendorApi
 	public void fillPolygon(int[] __xp, int __xo, int[] __yp, int __yo,
 		int __n)
 	{
@@ -833,7 +806,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void fillRect(int __x, int __y, int __w, int __h)
 	{
 		// Do nothing if closed
@@ -858,7 +830,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __arcWidth, int __arcHeight)
 	{
@@ -885,7 +856,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3)
 	{
@@ -912,7 +882,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getAlpha()
 	{
 		return (this._argbColor >> 24) & 0xFF;
@@ -923,7 +892,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getAlphaColor()
 	{
 		return this._argbColor;
@@ -934,7 +902,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getBlendingMode()
 	{
 		return this._blendingMode;
@@ -945,7 +912,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getBlueComponent()
 	{
 		return (this._argbColor) & 0xFF;
@@ -956,7 +922,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getClipHeight()
 	{
 		return this._clipHeight;
@@ -967,7 +932,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getClipWidth()
 	{
 		return this._clipWidth;
@@ -978,7 +942,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getClipX()
 	{
 		return this._clipX - this.getTranslateX();
@@ -989,7 +952,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getClipY()
 	{
 		return this._clipY - this.getTranslateY();
@@ -1000,7 +962,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getColor()
 	{
 		return this._argbColor & 0xFFFFFF;
@@ -1011,7 +972,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getDisplayColor(int __rgb)
 	{
 		throw Debugging.todo();
@@ -1025,7 +985,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public Font getFont()
 	{
 		return this._font;
@@ -1036,7 +995,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getGrayScale()
 	{
 		return (((this._argbColor >> 16) & 0xFF) +
@@ -1049,7 +1007,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getGreenComponent()
 	{
 		return (this._argbColor >> 8) & 0xFF;
@@ -1059,7 +1016,6 @@ public final class PencilGraphics
 	 * {@inheritDoc}
 	 * @since 2025/12/20
 	 */
-	@SquirrelJMEVendorApi
 	public void getPfRegion(int __pf, @NotNull Object __data, int __off, int __scanLen,
 		boolean __alpha, int __xSrc, int __ySrc, int __wSrc, int __hSrc,
 		int __anchor)
@@ -1094,7 +1050,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getPixelFormat()
 	{
 		return this._pixelFormat;
@@ -1105,7 +1060,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getRedComponent()
 	{
 		return (this._argbColor >> 16) & 0xFF;
@@ -1116,7 +1070,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getStrokeStyle()
 	{
 		return this._strokeStyle;
@@ -1127,7 +1080,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getTranslateX()
 	{
 		// If closed, return an unknown value
@@ -1142,7 +1094,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getTranslateY()
 	{
 		// If closed, return an unknown value
@@ -1162,7 +1113,6 @@ public final class PencilGraphics
 	 * @param __resetTrans Reset the translation?
 	 * @since 2026/06/27
 	 */
-	@SquirrelJMEVendorApi
 	public void initialValues(boolean __resetClip, boolean __resetTrans)
 	{
 		// Set initial parameters for the graphics and make sure they are
@@ -1189,7 +1139,6 @@ public final class PencilGraphics
 	 * @throws IllegalStateException If this graphics instance is closed.
 	 * @since 2025/11/25
 	 */
-	@SquirrelJMEVendorApi
 	public PencilBracket pencil()
 		throws IllegalStateException
 	{
@@ -1207,7 +1156,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void setAlpha(int __a)
 		throws IllegalArgumentException
 	{
@@ -1226,7 +1174,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void setAlphaColor(int __argb)
 	{
 		this.setAlphaColor(__argb, false);
@@ -1236,7 +1183,6 @@ public final class PencilGraphics
 	 * {@inheritDoc}
 	 * @since 2025/12/20
 	 */
-	@SquirrelJMEVendorApi
 	public void setAlphaColor(int __argb, boolean __alphaBypass)
 	{
 		// Do nothing if closed
@@ -1259,7 +1205,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
@@ -1283,7 +1228,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
@@ -1338,7 +1282,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void setClip(int __x, int __y, int __w, int __h)
 	{
 		// Do nothing if closed
@@ -1398,7 +1341,6 @@ public final class PencilGraphics
 	 */
 	@SuppressWarnings("MagicNumber")
 	@Override
-	@SquirrelJMEVendorApi
 	public void setColor(int __rgb)
 	{
 		// Do nothing if closed
@@ -1414,7 +1356,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
@@ -1430,7 +1371,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void setFont(Font __base, PencilFontBracket __font, 
 		int[] __fontParams)
 	{
@@ -1460,7 +1400,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void setGrayScale(int __v)
 	{
 		// Do nothing if closed
@@ -1475,7 +1414,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void setStrokeStyle(int __style)
 		throws IllegalArgumentException
 	{
@@ -1528,7 +1466,6 @@ public final class PencilGraphics
 	 * @since 2020/09/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void translate(int __x, int __y)
 	{
 		// Do nothing if closed
@@ -1569,7 +1506,6 @@ public final class PencilGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/01/26
 	 */
-	@SquirrelJMEVendorApi
 	private void __drawRegion(int[] __data, int __off, int __scanlen,
 		boolean __alpha, int __xsrc, int __ysrc, int __wsrc, int __hsrc,
 		int __trans, int __xdest, int __ydest, int __anch, int __wdest,
@@ -1611,7 +1547,6 @@ public final class PencilGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/09/25
 	 */
-	@SquirrelJMEVendorApi
 	public static PencilGraphics hardwareGraphics(int __pf, int __bw,
 		int __bh, Object __buf, int[] __pal, int __sx, int __sy,
 		int __sw, int __sh)
@@ -1636,7 +1571,6 @@ public final class PencilGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/05/12
 	 */
-	@SquirrelJMEVendorApi
 	public static PencilGraphics of(ScritchPencilBracket __hw,
 		int __sw, int __sh)
 		throws NullPointerException

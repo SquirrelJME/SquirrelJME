@@ -17,7 +17,6 @@ import javax.microedition.media.Control;
  *
  * @since 2026/06/10
  */
-@SquirrelJMEVendorApi
 public interface DeviceFeedbackControl
 	extends Control
 {
@@ -28,7 +27,6 @@ public interface DeviceFeedbackControl
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/06/10
 	 */
-	@SquirrelJMEVendorApi
 	void addListener(DeviceFeedbackListener __listener)
 		throws NullPointerException;
 	
@@ -40,7 +38,6 @@ public interface DeviceFeedbackControl
 	 * @throws IllegalArgumentException If the event length is negative.
 	 * @since 2026/06/10
 	 */
-	@SquirrelJMEVendorApi
 	void emitLight(boolean __large, int __ms)
 		throws IllegalArgumentException;
 	
@@ -51,7 +48,6 @@ public interface DeviceFeedbackControl
 	 * @throws IllegalArgumentException If the event length is negative.
 	 * @since 2026/06/10
 	 */
-	@SquirrelJMEVendorApi
 	void emitVibrate(int __ms)
 		throws IllegalArgumentException;
 	
@@ -62,7 +58,6 @@ public interface DeviceFeedbackControl
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/06/10
 	 */
-	@SquirrelJMEVendorApi
 	void removeListener(DeviceFeedbackListener __listener)
 		throws NullPointerException;
 }

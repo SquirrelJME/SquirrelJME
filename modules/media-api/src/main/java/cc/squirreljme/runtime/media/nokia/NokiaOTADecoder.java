@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2026/05/26
  */
-@SquirrelJMEVendorApi
 public class NokiaOTADecoder 
 {
 	/** Natural style, small rest between notes (Default style). */

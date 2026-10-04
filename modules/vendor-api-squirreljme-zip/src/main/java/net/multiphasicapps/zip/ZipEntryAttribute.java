@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2016/08/07
  */
-@SquirrelJMEVendorApi
 public interface ZipEntryAttribute
 {
 }

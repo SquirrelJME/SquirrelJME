@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2021/12/05
  */
-@SquirrelJMEVendorApi
 public class GIFDemo
 	extends AbstractImageDemo
 {

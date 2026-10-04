@@ -38,7 +38,6 @@ final class __ExecChoiceSelectedFlags__
 	private final int _type;
 	
 	/** If there was an exception. */
-	@SquirrelJMEVendorApi
 	volatile Throwable _error;
 	
 	/**
@@ -70,7 +69,6 @@ final class __ExecChoiceSelectedFlags__
 	 * @since 2024/07/28
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void run()
 	{
 		ScritchChoiceInterface choiceApi = this._scritchApi.choice();

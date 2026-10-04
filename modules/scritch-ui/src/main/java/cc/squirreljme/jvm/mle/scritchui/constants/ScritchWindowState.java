@@ -20,36 +20,29 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2026/07/06
  */
-@SquirrelJMEVendorApi
 public interface ScritchWindowState
 {
 	/** Window is "restored" to its default state. */
-	@SquirrelJMEVendorApi
 	byte RESTORED =
 		0;
 	
 	/** Window is minimized */
-	@SquirrelJMEVendorApi
 	byte MINIMIZED =
 		1;
 	
 	/** Window is maximized horizontally. */
-	@SquirrelJMEVendorApi
 	byte MAXIMIZED_HORIZ =
 		2;
 	
 	/** Window is maximized vertically. */
-	@SquirrelJMEVendorApi
 	byte MAXIMIZED_VERT =
 		3;
 	
 	/** Window is maximized both horizontally and vertically. */
-	@SquirrelJMEVendorApi
 	byte MAXIMIZED_BOTH =
 		4;
 	
 	/** Window is shaded, only the title bar is visible. */
-	@SquirrelJMEVendorApi
 	byte SHADED =
 		5;
 	
@@ -63,12 +56,10 @@ public interface ScritchWindowState
 	 * this should not be used with the window
 	 * flag {@link ScritchWindowFlag#UNDECORATED}.
 	 */
-	@SquirrelJMEVendorApi
 	byte FULLSCREEN =
 		6;
 	
 	/** The number of valid window states. */
-	@SquirrelJMEVendorApi
 	byte NUM_STATES =
 		7;
 }

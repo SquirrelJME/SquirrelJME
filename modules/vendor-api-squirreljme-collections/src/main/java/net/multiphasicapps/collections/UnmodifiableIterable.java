@@ -62,7 +62,6 @@ public final class UnmodifiableIterable<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/25
 	 */
-	@SquirrelJMEVendorApi
 	public static <T> Iterable<T> of(Iterable<T> __it)
 		throws NullPointerException
 	{

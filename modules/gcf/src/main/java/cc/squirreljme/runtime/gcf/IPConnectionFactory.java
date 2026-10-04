@@ -20,7 +20,6 @@ import javax.microedition.io.ConnectionNotFoundException;
  *
  * @since 2019/05/12
  */
-@SquirrelJMEVendorApi
 public abstract class IPConnectionFactory
 {
 	/** The existing connection factory. */
@@ -36,7 +35,6 @@ public abstract class IPConnectionFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/12
 	 */
-	@SquirrelJMEVendorApi
 	public abstract IPAddress resolveAddress(IPAddress __addr)
 		throws ConnectionNotFoundException, IOException, NullPointerException;
 	
@@ -50,7 +48,6 @@ public abstract class IPConnectionFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/06
 	 */
-	@SquirrelJMEVendorApi
 	public abstract TCPClientConnection tcpClientConnect(IPAddress __addr)
 		throws ConnectionNotFoundException, IOException, NullPointerException;
 	
@@ -60,7 +57,6 @@ public abstract class IPConnectionFactory
 	 * @return The IP connection factory.
 	 * @since 2019/05/12
 	 */
-	@SquirrelJMEVendorApi
 	public static IPConnectionFactory factory()
 	{
 		// Already created?

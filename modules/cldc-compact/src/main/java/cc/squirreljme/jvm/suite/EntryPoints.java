@@ -22,7 +22,6 @@ import java.util.List;
  *
  * @since 2017/08/20
  */
-@SquirrelJMEVendorApi
 public class EntryPoints
 	extends AbstractList<EntryPoint>
 {
@@ -36,7 +35,6 @@ public class EntryPoints
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
-	@SquirrelJMEVendorApi
 	public EntryPoints(JavaManifest __man)
 		throws NullPointerException
 	{
@@ -50,7 +48,6 @@ public class EntryPoints
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/20
 	 */
-	@SquirrelJMEVendorApi
 	public EntryPoints(JavaManifestAttributes __attr)
 		throws NullPointerException
 	{

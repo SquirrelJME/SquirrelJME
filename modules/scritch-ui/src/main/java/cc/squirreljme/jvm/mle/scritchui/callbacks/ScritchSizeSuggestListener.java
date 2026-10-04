@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2024/07/29
  */
-@SquirrelJMEVendorApi
 public interface ScritchSizeSuggestListener
 	extends ScritchListener
 {
@@ -37,7 +36,6 @@ public interface ScritchSizeSuggestListener
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/29
 	 */
-	@SquirrelJMEVendorApi
 	@ScritchEventLoop
 	void sizeSuggest(@NotNull ScritchViewBracket __view,
 		@Nullable ScritchComponentBracket __subComponent,

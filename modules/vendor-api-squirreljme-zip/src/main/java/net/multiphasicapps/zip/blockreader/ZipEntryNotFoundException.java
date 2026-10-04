@@ -17,7 +17,6 @@ import net.multiphasicapps.zip.ZipException;
  *
  * @since 2017/01/22
  */
-@SquirrelJMEVendorApi
 public class ZipEntryNotFoundException
 	extends ZipException
 {
@@ -26,7 +25,6 @@ public class ZipEntryNotFoundException
 	 *
 	 * @since 2017/01/22
 	 */
-	@SquirrelJMEVendorApi
 	public ZipEntryNotFoundException()
 	{
 	}
@@ -37,7 +35,6 @@ public class ZipEntryNotFoundException
 	 * @param __m The message.
 	 * @since 2017/01/22
 	 */
-	@SquirrelJMEVendorApi
 	public ZipEntryNotFoundException(String __m)
 	{
 		super(__m);
@@ -50,7 +47,6 @@ public class ZipEntryNotFoundException
 	 * @param __c The cause.
 	 * @since 2017/01/22
 	 */
-	@SquirrelJMEVendorApi
 	public ZipEntryNotFoundException(String __m, Throwable __c)
 	{
 		super(__m, __c);
@@ -62,7 +58,6 @@ public class ZipEntryNotFoundException
 	 * @param __c The cause.
 	 * @since 2017/01/22
 	 */
-	@SquirrelJMEVendorApi
 	public ZipEntryNotFoundException(Throwable __c)
 	{
 		super(__c);

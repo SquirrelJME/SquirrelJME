@@ -36,7 +36,6 @@ import java.util.Map;
  *
  * @since 2014/08/01
  */
-@SquirrelJMEVendorApi
 public class ImplProvider
 	extends JsonProvider
 {

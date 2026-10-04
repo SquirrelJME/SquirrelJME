@@ -17,7 +17,6 @@ import java.nio.file.attribute.BasicFileAttributes;
  *
  * @since 2025/12/30
  */
-@SquirrelJMEVendorApi
 public interface ExtraFileAttributes
 	extends BasicFileAttributes
 {
@@ -27,7 +26,6 @@ public interface ExtraFileAttributes
 	 * @return The POSIX group ID.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	int getPosixGroupId();
 	
 	/**
@@ -36,7 +34,6 @@ public interface ExtraFileAttributes
 	 * @return The POSIX user ID.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	int getPosixUserId();
 	
 	/**
@@ -45,7 +42,6 @@ public interface ExtraFileAttributes
 	 * @return If this is archivable in DOS.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isDosArchivable();
 	
 	/**
@@ -54,7 +50,6 @@ public interface ExtraFileAttributes
 	 * @return If this is hidden.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isDosHidden();
 	
 	/**
@@ -63,7 +58,6 @@ public interface ExtraFileAttributes
 	 * @return If this is read-only in DOS.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isDosReadOnly();
 	
 	/**
@@ -72,7 +66,6 @@ public interface ExtraFileAttributes
 	 * @return If this is a system file in DOS.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isDosSystem();
 	
 	/**
@@ -81,7 +74,6 @@ public interface ExtraFileAttributes
 	 * @return If this is group executable in POSIX.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isPosixGroupExecute();
 	
 	/**
@@ -90,7 +82,6 @@ public interface ExtraFileAttributes
 	 * @return If this is group readable in POSIX.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isPosixGroupRead();
 	
 	/**
@@ -99,7 +90,6 @@ public interface ExtraFileAttributes
 	 * @return If this is set group ID in POSIX.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isPosixGroupSUID();
 	
 	/**
@@ -108,7 +98,6 @@ public interface ExtraFileAttributes
 	 * @return If this is group writable in POSIX.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isPosixGroupWrite();
 	
 	/**
@@ -117,7 +106,6 @@ public interface ExtraFileAttributes
 	 * @return If this is other executable in POSIX.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isPosixOtherExecute();
 	
 	/**
@@ -126,7 +114,6 @@ public interface ExtraFileAttributes
 	 * @return If this is other readable in POSIX.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isPosixOtherRead();
 	
 	/**
@@ -135,7 +122,6 @@ public interface ExtraFileAttributes
 	 * @return If this is other writable in POSIX.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isPosixOtherWrite();
 	
 	/**
@@ -144,7 +130,6 @@ public interface ExtraFileAttributes
 	 * @return If the restricted deletion (sticky) bit is set.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isPosixRestrictedDelete();
 	
 	/**
@@ -153,7 +138,6 @@ public interface ExtraFileAttributes
 	 * @return If this is user executable in POSIX.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isPosixUserExecute();
 	
 	/**
@@ -162,7 +146,6 @@ public interface ExtraFileAttributes
 	 * @return If this is user readable in POSIX.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isPosixUserRead();
 	
 	/**
@@ -171,7 +154,6 @@ public interface ExtraFileAttributes
 	 * @return If this is set user ID in POSIX.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isPosixUserSUID();
 	
 	/**
@@ -180,6 +162,5 @@ public interface ExtraFileAttributes
 	 * @return If this is user writable in POSIX.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	boolean isPosixUserWrite();
 }

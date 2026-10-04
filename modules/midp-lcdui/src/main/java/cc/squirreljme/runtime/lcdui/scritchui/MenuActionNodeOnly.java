@@ -17,17 +17,14 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2024/07/20
  */
-@SquirrelJMEVendorApi
 public abstract class MenuActionNodeOnly
 	implements MenuActionApplicable
 {
 	/** The node of this menu. */
-	@SquirrelJMEVendorApi
 	final MenuActionNode _menuNode =
 		new MenuActionNode(this);
 	
 	/** Root menu tree state. */
-	@SquirrelJMEVendorApi
 	final MenuActionTree _menuRootTree;
 	
 	/**
@@ -35,7 +32,6 @@ public abstract class MenuActionNodeOnly
 	 *
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
 	protected MenuActionNodeOnly()
 	{
 		if (this instanceof Displayable)
@@ -52,7 +48,6 @@ public abstract class MenuActionNodeOnly
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	public static MenuActionNode node(MenuActionApplicable __action)
 		throws NullPointerException
 	{
@@ -70,7 +65,6 @@ public abstract class MenuActionNodeOnly
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/23
 	 */
-	@SquirrelJMEVendorApi
 	public static MenuActionTree rootTree(MenuActionNodeOnly __action)
 		throws NullPointerException
 	{

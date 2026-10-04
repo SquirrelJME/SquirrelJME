@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Debug;
  *
  * @since 2020/06/07
  */
-@SquirrelJMEVendorApi
 @GhostObject
 @Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")

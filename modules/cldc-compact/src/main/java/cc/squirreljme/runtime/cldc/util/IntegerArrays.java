@@ -21,7 +21,6 @@ import java.util.RandomAccess;
  *
  * @since 2018/10/28
  */
-@SquirrelJMEVendorApi
 public final class IntegerArrays
 {
 	/**
@@ -49,7 +48,6 @@ public final class IntegerArrays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/28
 	 */
-	@SquirrelJMEVendorApi
 	public static int binarySearch(IntegerArray __a, int __from, int __to,
 		int __key)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
@@ -126,7 +124,6 @@ public final class IntegerArrays
 	 * @see ShellSort#sort(List, int, int, Comparator) 
 	 * @since 2018/10/28
 	 */
-	@SquirrelJMEVendorApi
 	public static void sort(IntegerArray __a, int __from, int __to)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
@@ -182,7 +179,6 @@ public final class IntegerArrays
 	 * a {@code null} value.
 	 * @since 2023/08/09
 	 */
-	@SquirrelJMEVendorApi
 	public static int[] toIntArray(Collection<Integer> __list)
 		throws NullPointerException
 	{
@@ -212,7 +208,6 @@ public final class IntegerArrays
 	 * a {@code null} value.
 	 * @since 2023/08/09
 	 */
-	@SquirrelJMEVendorApi
 	public static int[] toIntArray(List<Integer> __list)
 		throws NullPointerException
 	{

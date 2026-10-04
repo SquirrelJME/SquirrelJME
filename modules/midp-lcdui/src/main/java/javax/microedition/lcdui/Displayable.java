@@ -49,16 +49,13 @@ public abstract class Displayable
 	implements MenuActionHasChildren
 {
 	/** The displayable state. */
-	@SquirrelJMEVendorApi
 	private final DisplayableState _state;
 	
 	/** The command listener to call into when commands are generated. */
-	@SquirrelJMEVendorApi
 	volatile CommandListener _cmdListener;
 	
 	/** The ticker of the displayable. */
 	@Deprecated
-	@SquirrelJMEVendorApi
 	volatile Ticker _ticker;
 	
 	/** The layout policy of this displayable. */
@@ -66,16 +63,13 @@ public abstract class Displayable
 	private CommandLayoutPolicy _layoutPolicy;
 	
 	/** The tracker for title text. */
-	@SquirrelJMEVendorApi
 	final StringTracker _trackerTitle;
 	
 	/** The lock for layout editing and otherwise. */
-	@SquirrelJMEVendorApi
 	final MenuLayoutLock _layoutLock =
 		new MenuLayoutLock();
 	
 	/** The default menu. */
-	@SquirrelJMEVendorApi
 	final Menu _menuDefault;
 	
 	/**
@@ -563,7 +557,6 @@ public abstract class Displayable
 	 * @return The owning display or {@code null} if not found.
 	 * @since 2017/07/18
 	 */
-	@SquirrelJMEVendorApi
 	private Display __getCurrentDisplay()
 	{
 		DisplayState display = this.__state().currentDisplay();
@@ -763,7 +756,6 @@ public abstract class Displayable
 	 * @throws IllegalStateException If it has been garbage collected.
 	 * @since 2024/08/13
 	 */
-	@SquirrelJMEVendorApi
 	final DisplayableState __state()
 		throws IllegalStateException
 	{
@@ -776,7 +768,6 @@ public abstract class Displayable
 	 * @return Application default title.
 	 * @since 2019/05/16
 	 */
-	@SquirrelJMEVendorApi
 	static String __defaultTitle()
 	{
 		// Try getting a sensible name from a system property

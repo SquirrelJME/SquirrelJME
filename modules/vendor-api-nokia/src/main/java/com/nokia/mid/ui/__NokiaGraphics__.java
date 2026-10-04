@@ -51,7 +51,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawImage(Image __img, int __x, int __y, int __anchor,
 		int __manipulation)
 	{
@@ -66,7 +65,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawPixels(byte[] __pixels, byte[] __alphaMask,
 		int __offset, int __scanlength, int __x, int __y, int __w, int __h,
 		int __manipulation, int __format)
@@ -282,7 +280,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawPixels(short[] __pixels, boolean __transparency,
 		int __offset, int __scanlength, int __x, int __y, int __w, int __h,
 		int __manipulation, int __format)
@@ -326,7 +323,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawPixels(int[] __pixels, boolean __transparency,
 		int __offset, int __scanlength, int __x, int __y, int __w, int __h,
 		@MagicConstant(flagsFromClass = DirectGraphics.class) 
@@ -372,7 +368,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawPolygon(int[] __xPoints, int __xOffset, int[] __yPoints,
 		int __yOffset, int __nPoints, int __argbColor)
 	{
@@ -398,7 +393,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void drawTriangle(int __x1, int __y1, int __x2, int __y2, int __x3,
 		int __y3, int __argbColor)
 	{
@@ -415,7 +409,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void fillPolygon(int[] __xPoints, int __xOffset, int[] __yPoints,
 		int __yOffset, int __nPoints, int __argbColor)
 	{
@@ -441,7 +434,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void fillTriangle(int __x1, int __y1, int __x2, int __y2, int __x3,
 		int __y3, int __argbColor)
 	{
@@ -458,7 +450,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getAlphaComponent()
 	{
 		return this._graphics.getAlpha();
@@ -469,7 +460,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getNativePixelFormat()
 	{
 		ExtraGraphics graphics = (ExtraGraphics)this._graphics;
@@ -483,7 +473,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void getPixels(byte[] __pixels, byte[] __alphaMask,
 		int __offset, int __scanlength, int __x, int __y, int __w, int __h,
 		int __format)
@@ -654,7 +643,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void getPixels(int[] __pixels, int __offset, int __scanlength,
 		int __x, int __y, int __w, int __h, int __format)
 	{
@@ -669,7 +657,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void getPixels(short[] __pixels, int __offset, int __scanlength,
 		int __x, int __y, int __w, int __h, int __format)
 	{
@@ -684,7 +671,6 @@ class __NokiaGraphics__
 	 * @since 2025/12/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void setARGBColor(int __argbColor)
 	{
 		ExtraGraphics graphics = (ExtraGraphics)this._graphics;

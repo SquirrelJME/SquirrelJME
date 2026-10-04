@@ -23,17 +23,14 @@ import org.jetbrains.annotations.UnmodifiableView;
  * @since 2018/05/13
  */
 @UnmodifiableView
-@SquirrelJMEVendorApi
 public final class UnmodifiableArrayList<T>
 	extends AbstractList<T>
 	implements RandomAccess
 {
 	/** The element offset. */
-	@SquirrelJMEVendorApi
 	protected final int offset;
 	
 	/** The element length. */
-	@SquirrelJMEVendorApi
 	protected final int length;
 	
 	/** The source elements. */
@@ -98,7 +95,6 @@ public final class UnmodifiableArrayList<T>
 	 * @since 2018/05/13
 	 */
 	@SuppressWarnings({"unchecked"})
-	@SquirrelJMEVendorApi
 	public static <T> List<T> of(T... __a)
 		throws NullPointerException
 	{
@@ -121,7 +117,6 @@ public final class UnmodifiableArrayList<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/13
 	 */
-	@SquirrelJMEVendorApi
 	public static <T> List<T> of(T[] __a, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{

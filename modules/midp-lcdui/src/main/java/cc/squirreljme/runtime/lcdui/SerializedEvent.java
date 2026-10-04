@@ -27,7 +27,6 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-@SquirrelJMEVendorApi
 public @interface SerializedEvent
 {
 }

@@ -26,13 +26,11 @@ import org.jetbrains.annotations.Debug;
 @Documented
 @Retention(value=RetentionPolicy.CLASS)
 @Target(value={ElementType.TYPE})
-@SquirrelJMEVendorApi
 @Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")
 public @interface GhostObject
 {
 	/** IntelliJ renderer string. */
-	@SquirrelJMEVendorApi
 	String INTELLIJ_RENDERER =
 		"\"<NATIVE>\"";
 }

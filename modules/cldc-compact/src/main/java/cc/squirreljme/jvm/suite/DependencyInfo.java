@@ -27,7 +27,6 @@ import java.util.Set;
  *
  * @since 2017/11/30
  */
-@SquirrelJMEVendorApi
 public final class DependencyInfo
 	implements Iterable<MarkedDependency>
 {
@@ -43,7 +42,6 @@ public final class DependencyInfo
 	 * @param __deps The dependencies to depend on.
 	 * @since 2017/12/31
 	 */
-	@SquirrelJMEVendorApi
 	public DependencyInfo(MarkedDependency... __deps)
 	{
 		this(Arrays.<MarkedDependency>asList((__deps == null ?
@@ -57,7 +55,6 @@ public final class DependencyInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/31
 	 */
-	@SquirrelJMEVendorApi
 	public DependencyInfo(Collection<MarkedDependency> __deps)
 		throws NullPointerException
 	{
@@ -79,7 +76,6 @@ public final class DependencyInfo
 	 * @return The number of dependencies.
 	 * @since 2022/02/03
 	 */
-	@SquirrelJMEVendorApi
 	public int count()
 	{
 		return this._depends.size();
@@ -117,7 +113,6 @@ public final class DependencyInfo
 	 * @return If the dependency info is empty.
 	 * @since 2017/11/30
 	 */
-	@SquirrelJMEVendorApi
 	public final boolean isEmpty()
 	{
 		return this._depends.isEmpty();
@@ -142,7 +137,6 @@ public final class DependencyInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/30
 	 */
-	@SquirrelJMEVendorApi
 	public final MatchResult match(ProvidedInfo __prov)
 		throws NullPointerException
 	{
@@ -179,7 +173,6 @@ public final class DependencyInfo
 	 * @return Dependency information with no optionals.
 	 * @since 2017/11/30
 	 */
-	@SquirrelJMEVendorApi
 	public final DependencyInfo noOptionals()
 	{
 		// Ignore if there are no dependencies

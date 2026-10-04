@@ -19,20 +19,16 @@ import org.jetbrains.annotations.Debug;
  *
  * @since 2018/10/28
  */
-@SquirrelJMEVendorApi
 public final class IntegerIntegerArray
 	extends AbstractIntegerArray
 {
 	/** The backed array. */
-	@SquirrelJMEVendorApi
 	protected final int[] array;
 	
 	/** The offset. */
-	@SquirrelJMEVendorApi
 	protected final int offset;
 	
 	/** The length. */
-	@SquirrelJMEVendorApi
 	protected final int length;
 	
 	/**
@@ -42,7 +38,6 @@ public final class IntegerIntegerArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/28
 	 */
-	@SquirrelJMEVendorApi
 	public IntegerIntegerArray(int[] __a)
 		throws NullPointerException
 	{
@@ -60,7 +55,6 @@ public final class IntegerIntegerArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/09
 	 */
-	@SquirrelJMEVendorApi
 	public IntegerIntegerArray(int[] __a, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -86,7 +80,6 @@ public final class IntegerIntegerArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/08/09
 	 */
-	@SquirrelJMEVendorApi
 	public void copyFrom(int __srcOff,
 		int[] __dest, int __destOff, int __len)
 		throws IndexOutOfBoundsException, NullPointerException

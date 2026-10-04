@@ -37,7 +37,6 @@ public interface ScritchEnvironmentInterface
 	 * @return The internal built-in fonts.
 	 * @since 2024/06/12
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	PencilFontBracket[] builtinFonts();
 	
@@ -52,7 +51,6 @@ public interface ScritchEnvironmentInterface
 	 * are not correct.
 	 * @since 2026/04/10
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	PencilFontBracket fontByFace(
 		@MagicConstant(flagsFromClass = PencilFontFace.class) int __inFace,
@@ -71,7 +69,6 @@ public interface ScritchEnvironmentInterface
 	 * not valid.
 	 * @since 2024/06/14
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	PencilFontBracket fontDerive(@NotNull PencilFontBracket __font,
 		@Nullable int[] __deriveParams,
@@ -84,7 +81,6 @@ public interface ScritchEnvironmentInterface
 	 * @return If sleep is being inhibited.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	boolean isInhibitingSleep();
 	
 	/**
@@ -93,7 +89,6 @@ public interface ScritchEnvironmentInterface
 	 * @return The look and feel interface.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchLAFInterface lookAndFeel();
 	
@@ -104,7 +99,6 @@ public interface ScritchEnvironmentInterface
 	 * @since 2024/03/07
 	 */
 	@NotNull
-	@SquirrelJMEVendorApi
 	ScritchScreenBracket[] screens();
 	
 	/**
@@ -122,7 +116,6 @@ public interface ScritchEnvironmentInterface
 	 * @see ScritchWindowManagerType
 	 * @since 2024/03/07
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = ScritchWindowManagerType.NUM_TYPES)
 	@MagicConstant(valuesFromClass = ScritchWindowManagerType.class)
 	int windowManagerType();

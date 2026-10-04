@@ -24,7 +24,6 @@ import java.io.PrintStream;
  *
  * @since 2025/04/07
  */
-@SquirrelJMEVendorApi
 public final class PrintVersion
 {
 	/**
@@ -41,7 +40,6 @@ public final class PrintVersion
 	 * @param __args Main arguments.
 	 * @since 2025/04/07
 	 */
-	@SquirrelJMEVendorApi
 	public static void main(String... __args)
 		throws IOException
 	{
@@ -69,7 +67,6 @@ public final class PrintVersion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/06/14
 	 */
-	@SquirrelJMEVendorApi
 	public static void print(Appendable __out)
 		throws IOException, NullPointerException
 	{

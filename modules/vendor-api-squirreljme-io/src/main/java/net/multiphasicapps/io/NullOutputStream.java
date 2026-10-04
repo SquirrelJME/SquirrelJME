@@ -17,7 +17,6 @@ import java.io.OutputStream;
  *
  * @since 2019/06/30
  */
-@SquirrelJMEVendorApi
 public final class NullOutputStream
 	extends OutputStream
 {

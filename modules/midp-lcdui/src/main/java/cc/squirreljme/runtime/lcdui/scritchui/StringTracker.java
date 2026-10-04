@@ -33,7 +33,6 @@ public final class StringTracker
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/18
 	 */
-	@SquirrelJMEVendorApi
 	public StringTracker(ScritchEventLoopInterface __loop, String __init)
 		throws NullPointerException
 	{
@@ -44,7 +43,6 @@ public final class StringTracker
 	 * {@inheritDoc}
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	@Async.Execute
 	@Override
 	protected void exec(StringTrackerListener __listener, String __value)

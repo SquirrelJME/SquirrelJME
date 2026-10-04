@@ -21,12 +21,10 @@ import javax.microedition.io.StreamConnection;
  *
  * @since 2022/10/07
  */
-@SquirrelJMEVendorApi
 public class SquirrelJMEWebRootHTTPAgentConnector
 	implements HTTPAgentConnector
 {
 	/** This manager this accesses. */
-	@SquirrelJMEVendorApi
 	protected final SquirrelJMEWebRootManager manager;
 	
 	/**
@@ -36,7 +34,6 @@ public class SquirrelJMEWebRootHTTPAgentConnector
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/10/07
 	 */
-	@SquirrelJMEVendorApi
 	public SquirrelJMEWebRootHTTPAgentConnector(
 		SquirrelJMEWebRootManager __manager)
 		throws NullPointerException
@@ -52,7 +49,6 @@ public class SquirrelJMEWebRootHTTPAgentConnector
 	 * @since 2022/10/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public StreamConnection connectStream(HTTPAddress __address)
 		throws IOException, NullPointerException
 	{

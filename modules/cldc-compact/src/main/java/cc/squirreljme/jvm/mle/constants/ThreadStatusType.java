@@ -16,21 +16,17 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2021/03/15
  */
-@SquirrelJMEVendorApi
 public interface ThreadStatusType
 {
 	/** Running. */
-	@SquirrelJMEVendorApi
 	byte RUNNING =
 		0;
 	
 	/** Sleeping. */
-	@SquirrelJMEVendorApi
 	byte SLEEPING =
 		1;
 	
 	/** Waiting on a monitor. */
-	@SquirrelJMEVendorApi
 	byte MONITOR_WAIT =
 		2;
 }

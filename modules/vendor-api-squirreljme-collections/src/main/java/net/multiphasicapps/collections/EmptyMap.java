@@ -22,7 +22,6 @@ import java.util.Set;
  *
  * @since 2016/05/12
  */
-@SquirrelJMEVendorApi
 public class EmptyMap
 	extends AbstractMap
 {

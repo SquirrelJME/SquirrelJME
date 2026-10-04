@@ -22,12 +22,10 @@ import java.util.Iterator;
  * @param <T> The element type.
  * @since 2022/08/27
  */
-@SquirrelJMEVendorApi
 public final class ReferenceIterator<T>
 	implements Iterator<T>
 {
 	/** The iterator used. */
-	@SquirrelJMEVendorApi
 	protected final Iterator<Reference<T>> iterator;
 	
 	/**
@@ -37,7 +35,6 @@ public final class ReferenceIterator<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/27
 	 */
-	@SquirrelJMEVendorApi
 	public ReferenceIterator(Iterator<Reference<T>> __iterator)
 		throws NullPointerException
 	{

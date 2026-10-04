@@ -19,7 +19,6 @@ import java.io.IOException;
  *
  * @since 2016/12/27
  */
-@SquirrelJMEVendorApi
 public interface BlockAccessor
 	extends Closeable
 {
@@ -32,7 +31,6 @@ public interface BlockAccessor
 	 * @throws IOException On read/write errors.
 	 * @since 2016/12/29
 	 */
-	@SquirrelJMEVendorApi
 	byte read(long __addr)
 		throws EOFException, IOException;
 	
@@ -51,7 +49,6 @@ public interface BlockAccessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/27
 	 */
-	@SquirrelJMEVendorApi
 	int read(long __addr, byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, IOException,
 			NullPointerException;
@@ -63,7 +60,6 @@ public interface BlockAccessor
 	 * @throws IOException If it could not be determined.
 	 * @since 2016/12/27
 	 */
-	@SquirrelJMEVendorApi
 	long size()
 		throws IOException;
 }

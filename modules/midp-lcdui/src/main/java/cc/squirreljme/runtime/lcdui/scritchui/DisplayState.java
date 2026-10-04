@@ -26,27 +26,21 @@ import javax.microedition.lcdui.Displayable;
 public final class DisplayState
 {
 	/** The display this is linked to. */
-	@SquirrelJMEVendorApi
 	protected final Display lcduiDisplay;
 	
 	/** The scritch window which this display represents. */
-	@SquirrelJMEVendorApi
 	protected final ScritchWindowBracket scritchWindow;
 	
 	/** The screen this represents. */
-	@SquirrelJMEVendorApi
 	protected final ScritchScreenBracket scritchScreen;
 	
 	/** The displayable currently showing on this. */
-	@SquirrelJMEVendorApi
 	volatile DisplayableState _current;
 	
 	/** The display to show on exit. */
-	@SquirrelJMEVendorApi
 	private volatile DisplayableState _onExit;
 	
 	/** The current displayable hold. */
-	@SquirrelJMEVendorApi
 	private volatile Displayable _currentHold;
 	
 	/**
@@ -58,7 +52,6 @@ public final class DisplayState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/08
 	 */
-	@SquirrelJMEVendorApi
 	public DisplayState(Display __display,
 		ScritchWindowBracket __window, ScritchScreenBracket __screen)
 		throws NullPointerException
@@ -77,7 +70,6 @@ public final class DisplayState
 	 * @return The current displayable.
 	 * @since 2024/07/27
 	 */
-	@SquirrelJMEVendorApi
 	public final DisplayableState current()
 	{
 		synchronized (this)
@@ -92,7 +84,6 @@ public final class DisplayState
 	 * @return The associated display.
 	 * @since 2024/03/08
 	 */
-	@SquirrelJMEVendorApi
 	public final Display display()
 	{
 		return this.lcduiDisplay;
@@ -104,7 +95,6 @@ public final class DisplayState
 	 * @return If this uses the calculator layout.
 	 * @since 2025/05/15
 	 */
-	@SquirrelJMEVendorApi
 	public boolean isCalcLayout()
 	{
 		DisplayableState current = this.current();
@@ -119,7 +109,6 @@ public final class DisplayState
 	 * @return The ScritchUI window.
 	 * @since 2024/03/17
 	 */
-	@SquirrelJMEVendorApi
 	public final ScritchWindowBracket scritchWindow()
 	{
 		return this.scritchWindow;

@@ -21,7 +21,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2024/01/13
  */
-@SquirrelJMEVendorApi
 public class DubiousImplementationError
 	extends Error
 {
@@ -41,7 +40,6 @@ public class DubiousImplementationError
 	 * @param __cause The cause to use.
 	 * @since 2024/01/13
 	 */
-	@SquirrelJMEVendorApi
 	public DubiousImplementationError(String __message, Throwable __cause)
 	{
 		super(__message, __cause);

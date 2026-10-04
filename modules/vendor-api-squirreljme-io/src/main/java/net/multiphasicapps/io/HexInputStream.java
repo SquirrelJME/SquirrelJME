@@ -21,12 +21,10 @@ import java.io.Reader;
  *
  * @since 2016/05/15
  */
-@SquirrelJMEVendorApi
 public class HexInputStream
 	extends InputStream
 {
 	/** The source stream. */
-	@SquirrelJMEVendorApi
 	protected final Reader source;
 	
 	/** EOF? */
@@ -39,7 +37,6 @@ public class HexInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/05/15
 	 */
-	@SquirrelJMEVendorApi
 	public HexInputStream(Reader __s)
 		throws NullPointerException
 	{
@@ -58,7 +55,6 @@ public class HexInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/25
 	 */
-	@SquirrelJMEVendorApi
 	public HexInputStream(InputStream __is)
 		throws NullPointerException
 	{
@@ -74,7 +70,6 @@ public class HexInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/25
 	 */
-	@SquirrelJMEVendorApi
 	public HexInputStream(InputStream __is, String __cs)
 		throws IOException, NullPointerException
 	{

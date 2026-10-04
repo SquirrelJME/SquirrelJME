@@ -66,7 +66,6 @@ import org.jetbrains.annotations.Range;
  * @see SamplerProvider
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public class MA3SamplerProvider
 	implements SamplerProvider
 {
@@ -77,7 +76,6 @@ public class MA3SamplerProvider
 	 * @see #setDrumType(int) 
 	 * @see #setInstrumentType(int) 
 	 */
-	@SquirrelJMEVendorApi
 	public static final int FM_MA2 = 2;
 	
 	/**
@@ -87,7 +85,6 @@ public class MA3SamplerProvider
 	 * @see #setDrumType(int)
 	 * @see #setInstrumentType(int)
 	 */
-	@SquirrelJMEVendorApi
 	public static final int FM_MA3_2OP = 1;
 	
 	/**
@@ -97,7 +94,6 @@ public class MA3SamplerProvider
 	 * @see #setDrumType(int) 
 	 * @see #setInstrumentType(int) 
 	 */
-	@SquirrelJMEVendorApi
 	public static final int FM_MA3_4OP = 0;
 	
 	/**
@@ -107,7 +103,6 @@ public class MA3SamplerProvider
 	 * produce.
 	 * @see #instance(float)
 	 */
-	@SquirrelJMEVendorApi
 	public static final float SAMPLE_RATE = 33868800.0f / 684;
 	
 	/**
@@ -116,7 +111,6 @@ public class MA3SamplerProvider
 	 * @see MA3SamplerProvider (int,int,int)
 	 * @see #setWaveDrumType(int) 
 	 */
-	@SquirrelJMEVendorApi
 	public static final int WAVE_DRUM_MA3 = 0;
 	
 	/**
@@ -126,117 +120,91 @@ public class MA3SamplerProvider
 	 * @see MA3SamplerProvider (int,int,int)
 	 * @see #setWaveDrumType(int) 
 	 */
-	@SquirrelJMEVendorApi
 	public static final int WAVE_DRUM_NONE = -1;
 	
 	/** Key index bias. */
-	@SquirrelJMEVendorApi
 	static final int A4 = 81;
 	
 	/** YAMAHA AICA ADPCM quantization step size lookup table. */
-	@SquirrelJMEVendorApi
 	static final int[] AICA_STEPS = {230, 230, 230, 230, 307, 409, 512, 614};
 	
 	/** Amplitude modulation levels. */
-	@SquirrelJMEVendorApi
 	static final int[] AM_LFO_A;
 	
 	/** Amplitude modulation LFO phase-advance. */
-	@SquirrelJMEVendorApi
 	static final int[] AM_LFO_B = {8, 18, 26, 31};
 	
 	/** Envelope attack stage bit flag. */
-	@SquirrelJMEVendorApi
 	static final int ENV_ATTACK = 0;
 	
 	/** Envelope decay stage bit flag. */
-	@SquirrelJMEVendorApi
 	static final int ENV_DECAY = 1;
 	
 	/** Envelope finished stage bit flag. */
-	@SquirrelJMEVendorApi
 	static final int ENV_DONE = 4;
 	
 	/** Bit flags indicating which FM operators control the final output. */
-	@SquirrelJMEVendorApi
 	static final int[] ENV_FLAGS =
 		{0b10, 0b11, 0b1111, 0b1000, 0b1000, 0b1010, 0b1001, 0b1101};
 	
 	/** Envelope release stage bit flag. */
-	@SquirrelJMEVendorApi
 	static final int ENV_RELEASE = 3;
 	
 	/** Envelope sustain stage bit flag. */
-	@SquirrelJMEVendorApi
 	static final int ENV_SUSTAIN = 2;
 	
 	/** Binary exponent. */
-	@SquirrelJMEVendorApi
 	static final int[] EXP;
 	
 	/** Wave maximum. */
-	@SquirrelJMEVendorApi
 	static final int FULL = 0;
 	
 	/** Envelope attenuation parameters by BLOCK, used with KSL. */
-	@SquirrelJMEVendorApi
 	static final int[] KSL_B = {0, 2, 1, 4};
 	
 	/** Envelope attenuation parameters by F_NUMBER, used with KSL. */
-	@SquirrelJMEVendorApi
 	static final int[] KSL_F =
 		{56, 32, 24, 19, 16, 13, 11, 9, 8, 6, 5, 4, 3, 2, 1, 0};
 	
 	/** Drum algorithms for Yamaha's MA-2. */
-	@SquirrelJMEVendorApi
 	static final __MA3Algorithm__[] MA2_DRUMS = __MA3Algorithm__.__from(
 		RomData.MA2_DRUMS, true, false);
 	
 	/** Instrument algorithms for Yamaha's MA-2. */
-	@SquirrelJMEVendorApi
 	static final __MA3Algorithm__[] MA2_INSTRUMENTS = __MA3Algorithm__.__from(
 		RomData.MA2_INSTRUMENTS, false, false);
 	
 	/** 2-Operator FM drum algorithms for Yamaha's MA-3. */
-	@SquirrelJMEVendorApi
 	static final __MA3Algorithm__[] MA3_DRUMS_2OP = __MA3Algorithm__.__from(
 		RomData.MA3_DRUMS_2OP, true, false);
 	
 	/** 4-Operator FM drum algorithms for Yamaha's MA-3. */
-	@SquirrelJMEVendorApi
 	static final __MA3Algorithm__[] MA3_DRUMS_4OP = __MA3Algorithm__.__from(
 		RomData.MA3_DRUMS_4OP, true, false);
 	
 	/** Wave drum algorithms for Yamaha's MA-3. */
-	@SquirrelJMEVendorApi
 	static final __MA3Algorithm__[] MA3_DRUMS_WAVE = __MA3Algorithm__.__from(
 		RomData.MA3_DRUMS_WAVE, true, true);
 	
 	/** 2-Operator FM instrument algorithms for Yamaha's MA-3. */
-	@SquirrelJMEVendorApi
 	static final __MA3Algorithm__[] MA3_INSTRUMENTS_2OP = __MA3Algorithm__.__from(
 		RomData.MA3_INSTRUMENTS_2OP, false, false);
 	
 	/** 4-Operator FM instrument algorithms for Yamaha's MA-3. */
-	@SquirrelJMEVendorApi
 	static final __MA3Algorithm__[] MA3_INSTRUMENTS_4OP = __MA3Algorithm__.__from(
 		RomData.MA3_INSTRUMENTS_4OP, false, false);
 	
 	/** Wave synthesis ROM for Yamaha's MA-3. */
-	@SquirrelJMEVendorApi
 	static final int[][] MA3_WAVEROM = MA3SamplerProvider.__waveRom(
 		RomData.MA3_WAVEROM);
 	
 	/** Magic number for BLOCK / octave index calculations. */
-	@SquirrelJMEVendorApi
 	static final double MAGIC_B = 12 / ExtraMath.log(2);
 	
 	/** Magic number for F_NUMBER / frequency divider calculations. */
-	@SquirrelJMEVendorApi
 	static final double MAGIC_F = 684 / 33868800.0;
 	
 	/** Frequency multipliers, doubled to implement with a right shift. */
-	@SquirrelJMEVendorApi
 	static final int[] MULTIS =
 		{1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 20, 24, 24, 30, 30};
 	
@@ -244,47 +212,36 @@ public class MA3SamplerProvider
 	static final int NTS = 1;
 	
 	/** Array of sustain levels. */
-	@SquirrelJMEVendorApi
 	static final int[] SUSTAINS;
 	
 	/** Waveform set. */
-	@SquirrelJMEVendorApi
 	static final int[][] WAVES;
 	
 	/** Array of Wave drum envelope levels. */
-	@SquirrelJMEVendorApi
 	static final int[] WAVE_ENV;
 	
 	/** Wave negative value. */
-	@SquirrelJMEVendorApi
 	static final int WAVE_MINUS = 0x80000000;
 	
 	/** Minimum wave value. */
-	@SquirrelJMEVendorApi
 	static final int ZERO = 0x1000;
 	
 	/** Array of FM drum algorithms. */
-	@SquirrelJMEVendorApi
 	__MA3Algorithm__[] _algDrums;
 	
 	/** Array of FM instrument algorithms. */
-	@SquirrelJMEVendorApi
 	__MA3Algorithm__[] _algInstruments;
 	
 	/** Array of wave drum algorithms */
-	@SquirrelJMEVendorApi
 	__MA3Algorithm__[] _algWaveDrums;
 	
 	/** FM drum algorithm type. */
-	@SquirrelJMEVendorApi
 	int _prgDrumType;
 	
 	/** FM instrument algorithm type. */
-	@SquirrelJMEVendorApi
 	int _prgInstrumentType;
 	
 	/** Wave drums algorithm type. */
-	@SquirrelJMEVendorApi
 	int _prgWaveDrumType;
 	
 	static
@@ -474,7 +431,6 @@ public class MA3SamplerProvider
 	 * @see MA3SamplerProvider (int,int,int)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public MA3SamplerProvider()
 	{
 		this(MA3SamplerProvider.FM_MA3_4OP, MA3SamplerProvider.FM_MA3_4OP,
@@ -504,7 +460,6 @@ public class MA3SamplerProvider
 	 * @see #setWaveDrumType(int)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public MA3SamplerProvider(
 		@MagicConstant(valuesFromClass = MA3SamplerProvider.class)
 			int __instrumentType,
@@ -530,7 +485,6 @@ public class MA3SamplerProvider
 	 * @see #setDrumType(int)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public int getDrumType()
 	{
 		return this._prgDrumType;
@@ -545,7 +499,6 @@ public class MA3SamplerProvider
 	 * @see #setInstrumentType(int)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public int getInstrumentType()
 	{
 		return this._prgInstrumentType;
@@ -560,7 +513,6 @@ public class MA3SamplerProvider
 	 * @see #setWaveDrumType(int)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public int getWaveDrumType()
 	{
 		return this._prgWaveDrumType;
@@ -607,7 +559,6 @@ public class MA3SamplerProvider
 	 * @see #setWaveDrumType(int)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public int setDrumType(
 		@MagicConstant(valuesFromClass = MA3SamplerProvider.class) int __type)
 		throws IllegalArgumentException
@@ -648,7 +599,6 @@ public class MA3SamplerProvider
 	 * @see #setWaveDrumType(int)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public int setInstrumentType(
 		@MagicConstant(valuesFromClass = MA3SamplerProvider.class) int __type)
 		throws IllegalArgumentException
@@ -686,7 +636,6 @@ public class MA3SamplerProvider
 	 * @see #setInstrumentType(int)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public int setWaveDrumType(
 		@MagicConstant(valuesFromClass = MA3SamplerProvider.class) int __type)
 		throws IllegalArgumentException
@@ -721,7 +670,6 @@ public class MA3SamplerProvider
 	 * @throws NullPointerException If {@code __adpcm} is {@code null}.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	static int[] __decodeAICA(@NotNull byte[] __adpcm,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __length)

@@ -23,7 +23,6 @@ import java.nio.file.StandardOpenOption;
  *
  * @since 2025/12/31
  */
-@SquirrelJMEVendorApi
 public class Main
 {
 	/**
@@ -34,7 +33,6 @@ public class Main
 	 * @since 2025/12/31
 	 */
 	@SuppressWarnings("JvmTaintAnalysis")
-	@SquirrelJMEVendorApi
 	public static void main(String... __args)
 		throws IOException
 	{

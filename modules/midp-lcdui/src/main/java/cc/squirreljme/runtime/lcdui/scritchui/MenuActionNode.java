@@ -26,16 +26,13 @@ import net.multiphasicapps.collections.IdentityHashSet;
  *
  * @since 2024/07/20
  */
-@SquirrelJMEVendorApi
 public final class MenuActionNode
 	implements StringTrackerListener, ImageTrackerListener
 {
 	/** The item that owns this node. */
-	@SquirrelJMEVendorApi
 	protected final Reference<MenuActionApplicable> owner;
 	
 	/** The ScritchUI API to use for updates. */
-	@SquirrelJMEVendorApi
 	protected final ScritchInterface scritch;
 	
 	/** Children actions. */
@@ -51,7 +48,6 @@ public final class MenuActionNode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	public MenuActionNode(MenuActionApplicable __ref)
 		throws NullPointerException
 	{
@@ -84,7 +80,6 @@ public final class MenuActionNode
 	 * @throws IllegalStateException If this does not support children.
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
 	public MenuActionHasParent[] children()
 		throws IllegalStateException
 	{
@@ -102,7 +97,6 @@ public final class MenuActionNode
 	 * @return The children nodes or {@code null} if not supported.
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
 	public MenuActionHasParent[] childrenOptional()
 	{
 		// Must have children
@@ -123,7 +117,6 @@ public final class MenuActionNode
 	 * @since 2024/07/20
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void imageUpdated(Image __image)
 	{
 		// Enqueue an update of the entire menu tree
@@ -144,7 +137,6 @@ public final class MenuActionNode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	public final int insert(int __dx, MenuActionHasParent __item)
 		throws IllegalArgumentException, IllegalStateException,
 			IndexOutOfBoundsException, NullPointerException
@@ -209,7 +201,6 @@ public final class MenuActionNode
 	 * @throws IllegalStateException If the owner was garbage collected.
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	public final MenuActionApplicable owner()
 		throws IllegalStateException
 	{
@@ -230,7 +221,6 @@ public final class MenuActionNode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	public final <M extends MenuActionApplicable> M owner(Class<M> __cl)
 		throws ClassCastException, IllegalStateException, NullPointerException
 	{
@@ -248,7 +238,6 @@ public final class MenuActionNode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/08/11
 	 */
-	@SquirrelJMEVendorApi
 	public void remove(MenuActionHasParent __item)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -303,7 +292,6 @@ public final class MenuActionNode
 	 * @since 2024/07/20
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final void stringUpdated(String __s)
 	{
 		// Enqueue an update of the entire menu tree

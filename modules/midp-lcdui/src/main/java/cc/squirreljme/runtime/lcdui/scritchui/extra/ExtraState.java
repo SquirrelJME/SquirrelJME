@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2026/09/25
  */
-@SquirrelJMEVendorApi
 public interface ExtraState
 {
 }

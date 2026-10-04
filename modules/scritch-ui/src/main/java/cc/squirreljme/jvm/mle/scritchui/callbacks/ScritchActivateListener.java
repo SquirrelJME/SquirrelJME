@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/07/17
  */
-@SquirrelJMEVendorApi
 public interface ScritchActivateListener
 	extends ScritchListener
 {
@@ -28,7 +27,6 @@ public interface ScritchActivateListener
 	 * @param __component The component that was activated.
 	 * @since 2024/07/28
 	 */
-	@SquirrelJMEVendorApi
 	@ScritchEventLoop
 	void activate(ScritchComponentBracket __component);
 }

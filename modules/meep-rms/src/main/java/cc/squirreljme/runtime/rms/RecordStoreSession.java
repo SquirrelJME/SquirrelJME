@@ -47,92 +47,74 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/04/20
  */
-@SquirrelJMEVendorApi
 public class RecordStoreSession
 	extends RecordSession
 {
 	/** The current RMS version format. */
-	@SquirrelJMEVendorApi
 	public static final SuiteVersion CURRENT_RMS_VERSION =
 		new SuiteVersion(1, 1, 0);
 	
 	/** The old DoJa record owner vendor. */
-	@SquirrelJMEVendorApi
 	public static final String OLD_DOJA_VENDOR =
 		"SquirrelJME-DoJa";
 	
 	/** The version of the record store format. */
-	@SquirrelJMEVendorApi
 	public static final String RMS_VERSION =
 		"rmsVersion";
 	
 	/** The authentication key. */
-	@SquirrelJMEVendorApi
 	public static final String AUTHENTICATION =
 		"authentication";
 	
 	/** The base name used for files. */
-	@SquirrelJMEVendorApi
 	public static final String BASE_NAME =
 		"baseName";
 	
 	/** Record IDs. */
-	@SquirrelJMEVendorApi
 	public static final String IDS =
 		"ids";
 	
 	/** The modification count of the record. */
-	@SquirrelJMEVendorApi
 	public static final String MODIFICATION_COUNT =
 		"modificationCount";
 	
 	/** The last modification time. */
-	@SquirrelJMEVendorApi
 	public static final String LAST_MODIFIED =
 		"lastModified";
 	
 	/** The other write key. */
-	@SquirrelJMEVendorApi
 	public static final String OTHER_WRITE =
 		"otherWrite";
 	
 	/** The owner name. */
-	@SquirrelJMEVendorApi
 	public static final String OWNER_NAME =
 		"ownerName";
 	
 	/** The owner vendor. */
-	@SquirrelJMEVendorApi
 	public static final String OWNER_VENDOR =
 		"ownerVendor";
 	
 	/** The owner version. */
-	@SquirrelJMEVendorApi
 	public static final String OWNER_VERSION =
 		"ownerVersion";
 	
 	/** The password key. */
-	@SquirrelJMEVendorApi
 	public static final String PASSWORD =
 		"password";
 	
 	/** The name of this record. */
-	@SquirrelJMEVendorApi
 	public static final String RECORD_NAME =
 		"recordName";
 	
 	/** Tag prefix. */
-	@SquirrelJMEVendorApi
 	public static final String TAG_PREFIX =
 		"tag:";
 	
 	/** Compatible last ID for older MIDP. */
-	@SquirrelJMEVendorApi
 	public static final String COMPATIBLE_LAST_ID =
 		"compatibleLastId";
 	
 	/** The base name used for records. */
-	@SquirrelJMEVendorApi
 	protected final String baseName;
 	
 	/** Newly overwritten keys. */
@@ -160,7 +142,6 @@ public class RecordStoreSession
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/20
 	 */
-	@SquirrelJMEVendorApi
 	public RecordStoreSession(BucketBracket __bucket, String __fileName,
 		Object __lock, SuiteIdentifier __owner, String __name,
 		boolean __readOnly)
@@ -203,7 +184,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If the record could not be deleted.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public void delete(int __id)
 		throws RecordStoreException
 	{
@@ -326,7 +306,6 @@ public class RecordStoreSession
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/20
 	 */
-	@SquirrelJMEVendorApi
 	public JsonArray getArray(String __key)
 		throws RecordStoreException, NullPointerException
 	{
@@ -346,7 +325,6 @@ public class RecordStoreSession
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/20
 	 */
-	@SquirrelJMEVendorApi
 	public int getInteger(String __key, int __default)
 		throws RecordStoreException, NullPointerException
 	{
@@ -370,7 +348,6 @@ public class RecordStoreSession
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/20
 	 */
-	@SquirrelJMEVendorApi
 	public String getString(String __key, String __default)
 		throws RecordStoreException, NullPointerException
 	{
@@ -391,7 +368,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If the tag could not be obtained.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public int getTag(int __id)
 		throws RecordStoreException
 	{
@@ -417,7 +393,6 @@ public class RecordStoreSession
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/20
 	 */
-	@SquirrelJMEVendorApi
 	public <V extends JsonValue> V getValue(Class<V> __cl, String __key)
 		throws RecordStoreException, NullPointerException
 	{
@@ -467,7 +442,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If the IDs could not be determined.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public int[] ids()
 		throws RecordStoreException
 	{
@@ -500,7 +474,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If this information is not known.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public String name()
 		throws RecordStoreException
 	{
@@ -642,7 +615,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If this information is not known.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public SuiteIdentifier owner()
 		throws RecordStoreException
 	{
@@ -686,7 +658,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If this could not be purged.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public void purge()
 		throws RecordStoreException
 	{
@@ -712,7 +683,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If the key could not be set.
 	 * @since 2025/04/20
 	 */
-	@SquirrelJMEVendorApi
 	public void set(String __key, int __val)
 		throws NullPointerException, RecordStoreException
 	{
@@ -732,7 +702,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If the key could not be set.
 	 * @since 2025/05/29
 	 */
-	@SquirrelJMEVendorApi
 	public void set(String __key, long __val)
 		throws NullPointerException, RecordStoreException
 	{
@@ -752,7 +721,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If the key could not be set.
 	 * @since 2025/04/20
 	 */
-	@SquirrelJMEVendorApi
 	public void set(String __key, String __val)
 		throws NullPointerException, RecordStoreException
 	{
@@ -772,7 +740,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If the key could not be set.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public void set(String __key, JsonValue __val)
 		throws NullPointerException, RecordStoreException
 	{
@@ -841,7 +808,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If the record could not be opened.
 	 * @since 2025/04/16
 	 */
-	@SquirrelJMEVendorApi
 	public void setAccess(int __auth, boolean __otherWrite, String __pass)
 		throws RecordStoreException
 	{
@@ -883,7 +849,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If the tag could not be set.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public void setTag(int __id, int __tag)
 		throws RecordStoreException
 	{
@@ -903,7 +868,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If the size could not be determined.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public long totalSize()
 		throws RecordStoreException
 	{
@@ -934,7 +898,6 @@ public class RecordStoreSession
 	 * @throws RecordStoreException If this could not be determined.
 	 * @since 2025/04/16
 	 */
-	@SquirrelJMEVendorApi
 	public boolean valid()
 		throws RecordStoreException
 	{
@@ -1012,7 +975,6 @@ public class RecordStoreSession
 	 * @return All record stores that were found during an iteration.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public static RecordIteration[] locateAll()
 	{
 		return RecordStoreSession.locateAll(BucketShelf.bucket(
@@ -1026,7 +988,6 @@ public class RecordStoreSession
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public static RecordIteration[] locateAll(BucketBracket __bucket)
 		throws NullPointerException
 	{

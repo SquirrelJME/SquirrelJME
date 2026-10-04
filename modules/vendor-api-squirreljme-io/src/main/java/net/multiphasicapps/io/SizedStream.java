@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2016/07/10
  */
-@SquirrelJMEVendorApi
 public interface SizedStream
 {
 	/**
@@ -26,7 +25,6 @@ public interface SizedStream
 	 * @return The number of read or written bytes.
 	 * @since 2016/07/10
 	 */
-	@SquirrelJMEVendorApi
 	long size();
 }
 

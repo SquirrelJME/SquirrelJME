@@ -19,7 +19,6 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2026/09/25
  */
-@SquirrelJMEVendorApi
 public final class ExtraDisplayable
 	implements ExtraState
 {
@@ -48,7 +47,6 @@ public final class ExtraDisplayable
 	 * @return The mapped displayable, or {@code null} if it has been GCed.
 	 * @since 2026/09/25
 	 */
-	@SquirrelJMEVendorApi
 	public final Displayable get()
 	{
 		return this._ref.get();

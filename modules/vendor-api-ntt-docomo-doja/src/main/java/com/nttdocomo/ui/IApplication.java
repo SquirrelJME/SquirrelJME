@@ -196,11 +196,9 @@ public abstract class IApplication
 		16384;
 
 	/** The last application created. */
-	@SquirrelJMEVendorApi
 	static volatile IApplication _lastApp;
 	
 	/** Application args, these are injected within. */
-	@SquirrelJMEVendorApi
 	static volatile String[] _appArgs;
 	
 	/** The source URL for this application. */

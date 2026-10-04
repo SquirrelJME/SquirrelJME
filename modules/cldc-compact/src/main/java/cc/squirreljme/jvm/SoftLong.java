@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2019/05/24
  */
-@SquirrelJMEVendorApi
 @SuppressWarnings("MagicNumber")
 public final class SoftLong
 {
@@ -41,7 +40,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long add(int __al, int __ah, int __bl, int __bh)
 	{
 		// Add the higher/lower parts
@@ -65,7 +63,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static long add(long __a, long __b)
 	{
 		return SoftLong.add(MathShelf.longUnpackLow(__a),
@@ -84,7 +81,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long and(int __al, int __ah, int __bl, int __bh)
 	{
 		return MathShelf.longPack(__al & __bl, __ah & __bh);
@@ -98,7 +94,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static long and(long __a, long __b)
 	{
 		return SoftLong.add(MathShelf.longUnpackLow(__a),
@@ -117,7 +112,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static int cmp(int __al, int __ah, int __bl, int __bh)
 	{
 		// Compare high values firsts
@@ -144,7 +138,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static int cmp(long __a, long __b)
 	{
 		return SoftLong.cmp(MathShelf.longUnpackLow(__a),
@@ -163,7 +156,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long div(int __al, int __ah, int __bl, int __bh)
 	{
 		// Dividing by zero?
@@ -181,7 +173,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static long div(long __a, long __b)
 	{
 		return SoftLong.div(MathShelf.longUnpackLow(__a),
@@ -200,7 +191,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long mul(int __al, int __ah, int __bl, int __bh)
 	{
 		// Are both sides negative?
@@ -234,7 +224,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static long mul(long __a, long __b)
 	{
 		return SoftLong.mul(MathShelf.longUnpackLow(__a),
@@ -251,7 +240,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long neg(int __al, int __ah)
 	{
 		// Negate and check for overflow
@@ -271,7 +259,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static long neg(long __a)
 	{
 		return SoftLong.mul(MathShelf.longUnpackLow(__a),
@@ -288,7 +275,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long or(int __al, int __ah, int __bl, int __bh)
 	{
 		return MathShelf.longPack(__al | __bl, __ah | __bh);
@@ -302,7 +288,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static long or(long __a, long __b)
 	{
 		return SoftLong.or(MathShelf.longUnpackLow(__a),
@@ -321,7 +306,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long rem(int __al, int __ah, int __bl, int __bh)
 	{
 		// Dividing by zero?
@@ -339,7 +323,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static long rem(long __a, long __b)
 	{
 		return SoftLong.rem(MathShelf.longUnpackLow(__a),
@@ -357,7 +340,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long shl(int __al, int __ah, int __s)
 	{
 		// Mask the shift amount
@@ -384,7 +366,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static long shl(long __a, int __s)
 	{
 		return SoftLong.shl(MathShelf.longUnpackLow(__a),
@@ -400,7 +381,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long shr(int __al, int __ah, int __s)
 	{
 		// Mask the shift amount
@@ -428,7 +408,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static long shr(long __a, int __s)
 	{
 		return SoftLong.shr(MathShelf.longUnpackLow(__a),
@@ -445,7 +424,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long sub(int __al, int __ah, int __bl, int __bh)
 	{
 		// The same as add, but the second operand is negated
@@ -476,7 +454,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static long sub(long __a, long __b)
 	{
 		return SoftLong.sub(MathShelf.longUnpackLow(__a),
@@ -493,7 +470,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static double toDouble(int __al, int __ah)
 	{
 		throw Debugging.todo();
@@ -506,7 +482,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static double toDouble(long __a)
 	{
 		return SoftLong.toDouble(MathShelf.longUnpackLow(__a),
@@ -521,7 +496,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static float toFloat(int __al, int __ah)
 	{
 		throw Debugging.todo();
@@ -534,7 +508,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static float toFloat(long __a)
 	{
 		return SoftLong.toFloat(MathShelf.longUnpackLow(__a),
@@ -549,7 +522,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static int toInteger(int __al, @SuppressWarnings("unused") int __ah)
 	{
 		// Just return the low order bits
@@ -563,7 +535,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static int toInteger(long __a)
 	{
 		return SoftLong.toInteger(MathShelf.longUnpackLow(__a),
@@ -579,7 +550,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long ushr(int __al, int __ah, int __s)
 	{
 		// Mask the shift amount
@@ -606,7 +576,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static long ushr(long __a, int __s)
 	{
 		return SoftLong.ushr(MathShelf.longUnpackLow(__a),
@@ -623,7 +592,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long xor(int __al, int __ah, int __bl, int __bh)
 	{
 		return MathShelf.longPack(__al ^ __bl, __ah ^ __bh);
@@ -637,7 +605,6 @@ public final class SoftLong
 	 * @return The result.
 	 * @since 2023/08/02
 	 */
-	@SquirrelJMEVendorApi
 	public static long xor(long __a, long __b)
 	{
 		return SoftLong.xor(MathShelf.longUnpackLow(__a),

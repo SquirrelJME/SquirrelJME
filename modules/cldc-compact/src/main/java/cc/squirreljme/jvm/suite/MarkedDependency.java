@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2017/12/31
  */
-@SquirrelJMEVendorApi
 public interface MarkedDependency
 {
 	/**
@@ -26,7 +25,6 @@ public interface MarkedDependency
 	 * @return {@code true} if this dependency is optional.
 	 * @since 2017/12/31
 	 */
-	@SquirrelJMEVendorApi
 	boolean isOptional();
 	
 	/**
@@ -38,7 +36,6 @@ public interface MarkedDependency
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/31
 	 */
-	@SquirrelJMEVendorApi
 	boolean matchesProvided(MarkedProvided __mp)
 		throws NullPointerException;
 }

@@ -34,7 +34,6 @@ public interface ScritchScreenInterface
 	 * @throws MLECallError If the screen is null or not valid.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int screenDpi(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
@@ -51,7 +50,6 @@ public interface ScritchScreenInterface
 	 * valid.
 	 * @since 2025/12/23
 	 */
-	@SquirrelJMEVendorApi
 	void screenGetBounds(@NotNull ScritchScreenBracket __screen,
 		@Nullable ScritchComponentBracket __for,
 		@NotNull int[] __pixels, @NotNull int[] __mm)
@@ -65,7 +63,6 @@ public interface ScritchScreenInterface
 	 * @throws MLECallError If the screen is null or not valid.
 	 * @since 2024/03/10
 	 */
-	@SquirrelJMEVendorApi
 	boolean screenIsBuiltIn(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 	
@@ -77,7 +74,6 @@ public interface ScritchScreenInterface
 	 * @throws MLECallError If the screen is null or not valid.
 	 * @since 2024/03/11
 	 */
-	@SquirrelJMEVendorApi
 	boolean screenIsPortrait(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 	
@@ -89,7 +85,6 @@ public interface ScritchScreenInterface
 	 * @throws MLECallError If the screen is null or not valid.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int screenId(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;

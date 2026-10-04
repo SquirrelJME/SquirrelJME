@@ -38,29 +38,23 @@ import org.jetbrains.annotations.NotNull;
  * 
  * @since 2026/06/01
  */
-@SquirrelJMEVendorApi
 public class EricssonMelodyPlayer 
 	extends AbstractPlayer
 	implements AudioStreamRenderer
 {
 	/** The audio connection. */
-	@SquirrelJMEVendorApi
 	private volatile AudioConnectionBracket _connection;
 
 	/** The un-realized input stream. */
-	@SquirrelJMEVendorApi
 	private volatile InputConnection _unrealizedIn;
 
 	/** The audio stream used. */
-	@SquirrelJMEVendorApi
 	private volatile AudioStreamBracket _stream;
 
 	/** The decoder instance for compressed PCM wav data */
-	@SquirrelJMEVendorApi
 	private EricssonMelodyDecoder _decoder;
 
 	/** Holds the Melody's metadata. */
-	@SquirrelJMEVendorApi
 	private MetaDataValues _metadata;
 
 	/**
@@ -71,7 +65,6 @@ public class EricssonMelodyPlayer
 	 * @throws NullPointerException If {@code __in} is null.
 	 * @since 2026/05/26
 	 */
-	@SquirrelJMEVendorApi
 	public EricssonMelodyPlayer(@NotNull InputConnection __in,
 		String __type)
 		throws NullPointerException

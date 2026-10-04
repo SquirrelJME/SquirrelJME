@@ -32,7 +32,6 @@ public interface ScritchLabelInterface
 	 * @throws MLECallError If the label is not valid.
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
 	void labelSetString(@NotNull ScritchLabelBracket __label,
 		@Nullable String __string)
 		throws MLECallError;

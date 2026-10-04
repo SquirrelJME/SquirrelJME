@@ -21,7 +21,6 @@ import javax.microedition.io.StreamConnection;
  *
  * @since 2022/10/07
  */
-@SquirrelJMEVendorApi
 public class SocketHTTPAgentConnector
 	implements HTTPAgentConnector
 {
@@ -30,7 +29,6 @@ public class SocketHTTPAgentConnector
 	 * @since 2022/10/07
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public StreamConnection connectStream(HTTPAddress __address)
 		throws IOException, NullPointerException
 	{

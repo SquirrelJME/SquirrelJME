@@ -23,11 +23,9 @@ import java.lang.ref.WeakReference;
  *
  * @since 2021/12/01
  */
-@SquirrelJMEVendorApi
 public final class ScratchPadParams
 {
 	/** The maximum number of allowed scratch pads. */
-	@SquirrelJMEVendorApi
 	public static final int MAX_SCRATCH_PADS = 16;
 	
 	/** Declared parameters. */
@@ -43,7 +41,6 @@ public final class ScratchPadParams
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/01
 	 */
-	@SquirrelJMEVendorApi
 	public ScratchPadParams(int... __sizes)
 		throws NullPointerException
 	{
@@ -59,7 +56,6 @@ public final class ScratchPadParams
 	 * @return The number of scratch pads available.
 	 * @since 2021/12/01
 	 */
-	@SquirrelJMEVendorApi
 	public int count()
 	{
 		return this._sizes.length;
@@ -73,7 +69,6 @@ public final class ScratchPadParams
 	 * @throws IndexOutOfBoundsException If this is not a valid scratchpad.
 	 * @since 2021/12/01
 	 */
-	@SquirrelJMEVendorApi
 	public int getLength(int __i)
 		throws IndexOutOfBoundsException
 	{

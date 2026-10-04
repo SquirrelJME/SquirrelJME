@@ -17,7 +17,6 @@ import javax.microedition.media.TimeBase;
  *
  * @since 2019/04/15
  */
-@SquirrelJMEVendorApi
 public final class SystemNanoTimeBase
 	implements TimeBase
 {
@@ -26,7 +25,6 @@ public final class SystemNanoTimeBase
 	 * @since 2019/04/15
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final long getTime()
 	{
 		// Measured in microseconds

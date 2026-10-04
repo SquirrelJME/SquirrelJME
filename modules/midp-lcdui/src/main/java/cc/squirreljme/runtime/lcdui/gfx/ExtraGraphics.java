@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2025/12/20
  */
-@SquirrelJMEVendorApi
 public interface ExtraGraphics
 {
 	/**
@@ -55,7 +54,6 @@ public interface ExtraGraphics
 	 * pixel format is not valid.
 	 * @since 2025/12/07
 	 */
-	@SquirrelJMEVendorApi
 	void drawPfRegion(
 		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
 		@NotNull Object __data,
@@ -85,7 +83,6 @@ public interface ExtraGraphics
 	 * go out of bounds for {@code __xp} and {@code __yp} respectively.
 	 * @since 2025/12/20
 	 */
-	@SquirrelJMEVendorApi
 	void drawPolyline(@NotNull int[] __xp,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __xo,
 		@NotNull int[] __yp,
@@ -103,7 +100,6 @@ public interface ExtraGraphics
 	 * @param __y3 Y coordinate of the third vertex.
 	 * @since 2025/12/20
 	 */
-	@SquirrelJMEVendorApi
 	void drawTriangle(int __x1, int __y1, int __x2, int __y2, int __x3,
 		int __y3);
 	
@@ -125,7 +121,6 @@ public interface ExtraGraphics
 	 * go out of bounds for {@code __xp} and {@code __yp} respectively.
 	 * @since 2025/12/20
 	 */
-	@SquirrelJMEVendorApi
 	void fillPolygon(@NotNull int[] __xp,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __xo,
 		@NotNull int[] __yp,
@@ -143,7 +138,6 @@ public interface ExtraGraphics
 	 * @param __y3 Y coordinate of the third vertex.
 	 * @since 2025/12/20
 	 */
-	@SquirrelJMEVendorApi
 	void fillTriangle(int __x1, int __y1, int __x2, int __y2, int __x3,
 		int __y3);
 	
@@ -153,7 +147,6 @@ public interface ExtraGraphics
 	 * @return The color in the form of {@code @0xAARRGGBB}.
 	 * @since 2025/12/20
 	 */
-	@SquirrelJMEVendorApi
 	int getAlphaColor();
 	
 	/**
@@ -164,7 +157,6 @@ public interface ExtraGraphics
 	 * {@link UIPixelFormat}, like {@link UIPixelFormat#INT_ARGB8888}.
 	 * @since 2025/12/07
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = UIPixelFormat.class)
 	int getPixelFormat();
 	
@@ -194,7 +186,6 @@ public interface ExtraGraphics
 	 * pixel format is not valid.
 	 * @since 2025/12/20
 	 */
-	@SquirrelJMEVendorApi
 	void getPfRegion(
 		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
 		@NotNull Object __data,
@@ -217,7 +208,6 @@ public interface ExtraGraphics
 	 * MIDP version.
 	 * @since 2025/12/20
 	 */
-	@SquirrelJMEVendorApi
 	void setAlphaColor(int __argb, boolean __bypass);
 	
 	/**
@@ -227,7 +217,6 @@ public interface ExtraGraphics
 	 * @throws IllegalArgumentException If the blending mode is not valid.
 	 * @since 2025/12/22
 	 */
-	@SquirrelJMEVendorApi
 	void setBlendingModeEx(
 		@MagicConstant(valuesFromClass = PencilBlendingMode.class) int __mode)
 		throws IllegalArgumentException;
@@ -240,7 +229,6 @@ public interface ExtraGraphics
 	 * @param __fontParams The font parameters.
 	 * @since 2026/04/21
 	 */
-	@SquirrelJMEVendorApi
 	void setFont(Font __base, PencilFontBracket __font, int[] __fontParams);
 	
 	/**
@@ -249,7 +237,6 @@ public interface ExtraGraphics
 	 * @return The surface width.
 	 * @since 2025/12/21
 	 */
-	@SquirrelJMEVendorApi
 	int surfaceWidth();
 	
 	/**
@@ -258,6 +245,5 @@ public interface ExtraGraphics
 	 * @return The surface height.
 	 * @since 2025/12/21
 	 */
-	@SquirrelJMEVendorApi
 	int surfaceHeight();
 }

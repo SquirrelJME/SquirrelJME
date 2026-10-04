@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/12/28
  */
-@SquirrelJMEVendorApi
 public interface UriPartPathParameter
 	extends UriPartPath
 {
@@ -28,7 +27,6 @@ public interface UriPartPathParameter
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	String pathParam(int __dx)
 		throws IndexOutOfBoundsException;
 	
@@ -38,7 +36,6 @@ public interface UriPartPathParameter
 	 * @return The path parameter count.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	int pathParamCount();
 	
 	/**
@@ -47,6 +44,5 @@ public interface UriPartPathParameter
 	 * @return The path parameters.
 	 * @since 2025/12/29
 	 */
-	@SquirrelJMEVendorApi
 	String pathParams();
 }

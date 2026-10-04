@@ -20,7 +20,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
  *
  * @since 2025/12/06
  */
-@SquirrelJMEVendorApi
 public class Main
 	extends MIDlet
 {

@@ -26,7 +26,6 @@ public class UntestableException
 	 *
 	 * @since 2019/03/04
 	 */
-	@SquirrelJMEVendorApi
 	public UntestableException()
 	{
 	}
@@ -37,7 +36,6 @@ public class UntestableException
 	 * @param __m The message.
 	 * @since 2019/03/04
 	 */
-	@SquirrelJMEVendorApi
 	public UntestableException(String __m)
 	{
 		super(__m);
@@ -50,7 +48,6 @@ public class UntestableException
 	 * @param __c The cause.
 	 * @since 2019/03/04
 	 */
-	@SquirrelJMEVendorApi
 	public UntestableException(String __m, Throwable __c)
 	{
 		super(__m, __c);
@@ -62,7 +59,6 @@ public class UntestableException
 	 * @param __c The cause.
 	 * @since 2019/03/04
 	 */
-	@SquirrelJMEVendorApi
 	public UntestableException(Throwable __c)
 	{
 		super(__c);

@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/03/07
  */
-@SquirrelJMEVendorApi
 public interface ScritchInputListener
 	extends ScritchListener
 {
@@ -45,7 +44,6 @@ public interface ScritchInputListener
 	 * @param __l Value 12.
 	 * @since 2024/06/29
 	 */
-	@SquirrelJMEVendorApi
 	@ScritchEventLoop
 	void inputEvent(
 		@NotNull ScritchComponentBracket __component,

@@ -51,11 +51,9 @@ public class AudioClip
 	public static final int TYPE_MIDI = 3;
 
 	/** Actual Player for MIDI, SMAF and MP3 audio. */
-	@SquirrelJMEVendorApi
 	volatile Player _player;
 
 	/** Parsed player format, used to adjust internal playback logic. */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = AudioClip.class)
 	private int _playerFormat;
 
@@ -393,7 +391,6 @@ public class AudioClip
 	 * @throws IOException If {@code __input} could not be opened.
 	 * @since 2026/04/07
 	 */
-	@SquirrelJMEVendorApi
 	private void __initialize(@NotNull InputStream __input)
 		throws IllegalArgumentException, IOException
 	{
@@ -457,7 +454,6 @@ public class AudioClip
 	 * @param __volume The volume to be set.
 	 * @since 2026/04/07
 	 */
-	@SquirrelJMEVendorApi
 	private void __setVolume(
 		@Range(from = 0, to = 100) int __volume)
 	{

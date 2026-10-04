@@ -18,16 +18,13 @@ import com.nttdocomo.ui.PhoneSystem;
  * @see PhoneSystem
  * @since 2022/02/14
  */
-@SquirrelJMEVendorApi
 public interface VendorPhoneSystem
 {
 	/** Vibrate attribute for F503i and So503i. */
-	@SquirrelJMEVendorApi
 	byte VIBRATE_ATTRIBUTE_F503I_SO503I = 
 		64;
 	
 	/** Vibration attribute for P503i.. */
-	@SquirrelJMEVendorApi
 	byte VIBRATE_ATTRIBUTE_P503I = 
 		120;
 }

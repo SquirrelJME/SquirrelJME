@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2026/06/10
  */
-@SquirrelJMEVendorApi
 public interface DeviceFeedbackListener
 {
 }

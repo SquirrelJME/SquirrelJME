@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/06/28
  */
-@SquirrelJMEVendorApi
 public interface ScritchVisibleListener
 	extends ScritchListener
 {
@@ -30,7 +29,6 @@ public interface ScritchVisibleListener
 	 * @param __to The current visibility.
 	 * @since 2024/06/28
 	 */
-	@SquirrelJMEVendorApi
 	@ScritchEventLoop
 	void visibilityChanged(ScritchComponentBracket __component,
 		boolean __from, boolean __to);

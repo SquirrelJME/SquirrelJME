@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/12/28
  */
-@SquirrelJMEVendorApi
 public interface UriPartQueryParameter
 {
 	/**
@@ -27,7 +26,6 @@ public interface UriPartQueryParameter
 	 * @throws IndexOutOfBoundsException If the index is not valid.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	String queryParam(int __dx)
 		throws IndexOutOfBoundsException;
 	
@@ -37,7 +35,6 @@ public interface UriPartQueryParameter
 	 * @return The query parameter count.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	int queryParamCount();
 	
 	/**
@@ -46,6 +43,5 @@ public interface UriPartQueryParameter
 	 * @return The query parameters.
 	 * @since 2025/12/29
 	 */
-	@SquirrelJMEVendorApi
 	String queryParams();
 }

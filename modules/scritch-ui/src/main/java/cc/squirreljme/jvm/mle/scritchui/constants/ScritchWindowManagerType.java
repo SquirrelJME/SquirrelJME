@@ -16,21 +16,17 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/03/07
  */
-@SquirrelJMEVendorApi
 public interface ScritchWindowManagerType
 {
 	/** One frame per screen. */
-	@SquirrelJMEVendorApi
 	byte ONE_FRAME_PER_SCREEN = 
 		0;
 	
 	/** Standard desktop interface. */
-	@SquirrelJMEVendorApi
 	byte STANDARD_DESKTOP =
 		1;
 	
 	/** The number of display types. */
-	@SquirrelJMEVendorApi
 	byte NUM_TYPES =
 		2;
 }

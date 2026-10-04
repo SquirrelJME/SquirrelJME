@@ -173,7 +173,6 @@ public abstract class Frame
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/09/25
 	 */
-	@SquirrelJMEVendorApi
 	<M extends Displayable> M __displayable(Class<M> __as)
 		throws NullPointerException
 	{

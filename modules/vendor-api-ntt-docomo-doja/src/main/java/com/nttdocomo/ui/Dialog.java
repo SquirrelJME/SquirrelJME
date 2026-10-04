@@ -51,7 +51,6 @@ public class Dialog
 	public static final int	DIALOG_YESNOCANCEL = 4;
 	
 	/** The alert to use for the dialog. */
-	@SquirrelJMEVendorApi
 	final Alert _alert;
 	
 	@Api

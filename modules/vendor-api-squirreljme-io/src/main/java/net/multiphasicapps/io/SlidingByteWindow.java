@@ -24,15 +24,12 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2016/03/10
  */
-@SquirrelJMEVendorApi
 public class SlidingByteWindow
 {
 	/** The backing byte buffer. */
-	@SquirrelJMEVendorApi
 	protected final ByteDeque deque;
 	
 	/** The window size. */
-	@SquirrelJMEVendorApi
 	protected final int windowsize;
 	
 	/** Single byte for forcing bulk operations. */
@@ -48,7 +45,6 @@ public class SlidingByteWindow
 	 * @param __wsz The size of the sliding window.
 	 * @since 2016/03/10
 	 */
-	@SquirrelJMEVendorApi
 	public SlidingByteWindow(int __wsz)
 		throws IllegalArgumentException
 	{
@@ -71,7 +67,6 @@ public class SlidingByteWindow
 	 * @param __b The byte to add to the window.
 	 * @since 2016/03/10
 	 */
-	@SquirrelJMEVendorApi
 	public void append(byte __b)
 	{
 		byte[] solo = this._solo;
@@ -86,7 +81,6 @@ public class SlidingByteWindow
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	@SquirrelJMEVendorApi
 	public void append(byte[] __b)
 		throws NullPointerException
 	{
@@ -110,7 +104,6 @@ public class SlidingByteWindow
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/10
 	 */
-	@SquirrelJMEVendorApi
 	public void append(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -154,7 +147,6 @@ public class SlidingByteWindow
 	 * bounds of the sliding window.
 	 * @since 2017/03/04
 	 */
-	@SquirrelJMEVendorApi
 	public byte get(int __ago)
 		throws IndexOutOfBoundsException
 	{
@@ -180,7 +172,6 @@ public class SlidingByteWindow
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/13
 	 */
-	@SquirrelJMEVendorApi
 	public void get(int __ago, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -216,7 +207,6 @@ public class SlidingByteWindow
 	 * @return The total number of bytes in the window.
 	 * @since 2016/03/28
 	 */
-	@SquirrelJMEVendorApi
 	public int size()
 	{
 		return this._total;

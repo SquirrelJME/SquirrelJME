@@ -24,17 +24,14 @@ import java.nio.file.StandardOpenOption;
  *
  * @since 2021/06/13
  */
-@SquirrelJMEVendorApi
 public class DataContainerLibrary
 	implements RawVMClassLibrary
 {
 	/** Data resource name. */
-	@SquirrelJMEVendorApi
 	public static final String RESOURCE_NAME =
 		ApplicationParser.DATA_RESOURCE;
 	
 	/** The path to the ROM. */
-	@SquirrelJMEVendorApi
 	protected final Path path;
 	
 	/**
@@ -44,7 +41,6 @@ public class DataContainerLibrary
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/06/13
 	 */
-	@SquirrelJMEVendorApi
 	public DataContainerLibrary(Path __path)
 		throws NullPointerException
 	{
@@ -61,7 +57,6 @@ public class DataContainerLibrary
 	 * @throws IOException If it could not be opened.
 	 * @since 2021/09/04
 	 */
-	@SquirrelJMEVendorApi
 	public final InputStream asStream()
 		throws IOException
 	{
@@ -73,7 +68,6 @@ public class DataContainerLibrary
 	 * @since 2021/06/13
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public String[] listResources()
 	{
 		// There is only ever a single resource
@@ -85,7 +79,6 @@ public class DataContainerLibrary
 	 * @since 2021/06/13
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public String name()
 	{
 		return this.path.getFileName().toString();
@@ -96,7 +89,6 @@ public class DataContainerLibrary
 	 * @since 2021/06/13
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public Path path()
 	{
 		return this.path;
@@ -107,7 +99,6 @@ public class DataContainerLibrary
 	 * @since 2023/12/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void rawData(int __jarOffset, byte[] __b, int __o, int __l)
 		throws IllegalStateException, IndexOutOfBoundsException,
 		NullPointerException
@@ -147,7 +138,6 @@ public class DataContainerLibrary
 	 * @since 2023/12/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int rawSize()
 		throws IllegalStateException
 	{
@@ -166,7 +156,6 @@ public class DataContainerLibrary
 	 * @since 2021/06/13
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public InputStream resourceAsStream(String __rc)
 		throws IOException, NullPointerException
 	{
@@ -185,7 +174,6 @@ public class DataContainerLibrary
 	 * @since 2021/06/13
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final String toString()
 	{
 		return this.path.toString();

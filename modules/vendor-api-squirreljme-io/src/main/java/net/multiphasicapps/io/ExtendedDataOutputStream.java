@@ -29,7 +29,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2016/07/10
  */
-@SquirrelJMEVendorApi
 public class ExtendedDataOutputStream
 	extends OutputStream
 	implements DataOutput, SettableEndianess, SizedStream
@@ -51,7 +50,6 @@ public class ExtendedDataOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/10
 	 */
-	@SquirrelJMEVendorApi
 	public ExtendedDataOutputStream(OutputStream __os)
 		throws NullPointerException
 	{
@@ -73,7 +71,6 @@ public class ExtendedDataOutputStream
 	 * @throws IOException On write errors.
 	 * @since 2016/09/11
 	 */
-	@SquirrelJMEVendorApi
 	public void align(int __n)
 		throws IndexOutOfBoundsException, IOException
 	{
@@ -228,7 +225,6 @@ public class ExtendedDataOutputStream
 	 * @throws IOException On out of range or other write errors.
 	 * @since 2016/09/14
 	 */
-	@SquirrelJMEVendorApi
 	public final void writeByteExact(int __v)
 		throws IOException
 	{
@@ -405,7 +401,6 @@ public class ExtendedDataOutputStream
 	 * @throws IOException On out of range or other write errors.
 	 * @since 2016/09/14
 	 */
-	@SquirrelJMEVendorApi
 	public final void writeShortExact(int __v)
 		throws IOException
 	{
@@ -424,7 +419,6 @@ public class ExtendedDataOutputStream
 	 * @throws IOException On out of range or other write errors.
 	 * @since 2016/09/14
 	 */
-	@SquirrelJMEVendorApi
 	public final void writeUnsignedByteExact(int __v)
 		throws IOException
 	{
@@ -443,7 +437,6 @@ public class ExtendedDataOutputStream
 	 * @throws IOException On out of range or other write errors.
 	 * @since 2016/09/14
 	 */
-	@SquirrelJMEVendorApi
 	public final void writeUnsignedShortExact(int __v)
 		throws IOException
 	{

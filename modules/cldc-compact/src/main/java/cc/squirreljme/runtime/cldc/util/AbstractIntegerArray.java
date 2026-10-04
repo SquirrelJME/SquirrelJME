@@ -18,7 +18,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2023/08/09
  */
-@SquirrelJMEVendorApi
 public abstract class AbstractIntegerArray
 	implements IntegerArray
 {

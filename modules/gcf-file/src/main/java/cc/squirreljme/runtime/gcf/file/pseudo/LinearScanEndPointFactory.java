@@ -29,7 +29,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2026/01/02
  */
-@SquirrelJMEVendorApi
 public class LinearScanEndPointFactory
 	implements FileEndPointFactory
 {
@@ -38,7 +37,6 @@ public class LinearScanEndPointFactory
 	 * @since 2026/01/03
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public FileEndPoint connect(UriGenericPart __uri, int __mode,
 		UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, NullPointerException
@@ -80,7 +78,6 @@ public class LinearScanEndPointFactory
 	 * @since 2026/01/03
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public boolean handleAuthority(UriAuthority __auth)
 		throws NullPointerException
 	{

@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2026/04/30
  */
-@SquirrelJMEVendorApi
 public final class AudioSystem
 {
 	/**
@@ -35,7 +34,6 @@ public final class AudioSystem
 	 * @return Whether audio playback is supported.
 	 * @since 2026/04/30
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean available()
 	{
 		Debugging.todoNote("AudioAvailability");

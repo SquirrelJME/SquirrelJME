@@ -20,37 +20,29 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2025/12/30
  */
-@SquirrelJMEVendorApi
 public class StaticFileAttributes
 	extends AbstractFileAttributes
 {
 	/** File flags. */
-	@SquirrelJMEVendorApi
 	@MagicConstant(flagsFromClass = AbstractFileAttributes.class)
 	protected final int flags;
 	
 	/** The creation time. */
-	@SquirrelJMEVendorApi
 	protected final FileTime creationTime;
 	
 	/** The last access time. */
-	@SquirrelJMEVendorApi
 	protected final FileTime lastAccessTime;
 	
 	/** The last modified time. */
-	@SquirrelJMEVendorApi
 	protected final FileTime lastModifiedTime;
 	
 	/** The POSIX group id. */
-	@SquirrelJMEVendorApi
 	protected final int posixGroupId;
 	
 	/** The POSIX user id. */
-	@SquirrelJMEVendorApi
 	protected final int posixUserId;
 	
 	/** The size on disk. */
-	@SquirrelJMEVendorApi
 	protected final long size;
 	
 	/**
@@ -60,7 +52,6 @@ public class StaticFileAttributes
 	 * @param __size The file size.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public StaticFileAttributes(
 		@MagicConstant(flagsFromClass = AbstractFileAttributes.class)
 			int __flags, long __size)
@@ -79,7 +70,6 @@ public class StaticFileAttributes
 	 * @param __posixUserId The POSIX user ID.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public StaticFileAttributes(
 		@MagicConstant(flagsFromClass = AbstractFileAttributes.class)
 			int __flags, long __size,
@@ -100,7 +90,6 @@ public class StaticFileAttributes
 	 * @param __lastModifiedTime The last modified time.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public StaticFileAttributes(
 		@MagicConstant(flagsFromClass = AbstractFileAttributes.class)
 			int __flags, long __size,
@@ -125,7 +114,6 @@ public class StaticFileAttributes
 	 * @param __posixUserId The POSIX user ID.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public StaticFileAttributes(
 		@MagicConstant(flagsFromClass = AbstractFileAttributes.class)
 			int __flags, long __size,
@@ -183,7 +171,6 @@ public class StaticFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int getPosixUserId()
 	{
 		return this.posixUserId;
@@ -194,7 +181,6 @@ public class StaticFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public FileTime lastModifiedTime()
 	{
 		return this.lastModifiedTime;
@@ -205,7 +191,6 @@ public class StaticFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public FileTime lastAccessTime()
 	{
 		return this.lastAccessTime;
@@ -216,7 +201,6 @@ public class StaticFileAttributes
 	 * @since 2025/12/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public long size()
 	{
 		return this.size;

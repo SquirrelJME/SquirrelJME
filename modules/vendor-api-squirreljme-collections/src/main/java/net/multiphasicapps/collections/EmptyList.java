@@ -23,7 +23,6 @@ import java.util.RandomAccess;
  *
  * @since 2016/04/10
  */
-@SquirrelJMEVendorApi
 public final class EmptyList
 	extends AbstractList
 	implements RandomAccess

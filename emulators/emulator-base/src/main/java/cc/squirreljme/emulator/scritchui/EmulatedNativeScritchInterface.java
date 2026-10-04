@@ -29,7 +29,6 @@ public class EmulatedNativeScritchInterface
 	 * @throws MLECallError If there is no support for the native interface.
 	 * @since 2024/02/29
 	 */
-	@SquirrelJMEVendorApi
 	public static ScritchInterface nativeInterface()
 		throws MLECallError
 	{

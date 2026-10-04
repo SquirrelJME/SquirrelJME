@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2026/04/10
  */
-@SquirrelJMEVendorApi
 public final class ModificationCounter
 {
 	/** The current modification count. */
@@ -29,7 +28,6 @@ public final class ModificationCounter
 	 * @return The current modification count.
 	 * @since 2026/04/10
 	 */
-	@SquirrelJMEVendorApi
 	public int current()
 	{
 		synchronized (this)
@@ -43,7 +41,6 @@ public final class ModificationCounter
 	 *
 	 * @since 2026/04/10
 	 */
-	@SquirrelJMEVendorApi
 	public void increment()
 	{
 		synchronized (this)

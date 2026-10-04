@@ -37,22 +37,18 @@ import org.jetbrains.annotations.Contract;
  *
  * @since 2020/03/21
  */
-@SquirrelJMEVendorApi
 public final class Debugging
 {
 	/** Is debugging enabled? */
 	@SuppressWarnings("ConstantExpression")
-	@SquirrelJMEVendorApi
 	static final boolean _ENABLED =
 		__Flags__._ENABLED;
 	
 	/** Verbose debugging messages. */
-	@SquirrelJMEVendorApi
 	static final boolean _VERBOSE =
 		__Flags__._VERBOSE;
 	
 	/** Do not execute exit on the virtual machine. */
-	@SquirrelJMEVendorApi
 	public static final boolean NO_EXIT =
 		Boolean.getBoolean("cc.squirreljme.noexit");
 	
@@ -87,7 +83,6 @@ public final class Debugging
 	 * @param __fmt The format.
 	 * @since 2020/05/13
 	 */
-	@SquirrelJMEVendorApi
 	public static void debugNote(@PrintFormat String __fmt)
 	{
 		if (!Debugging.enabled())
@@ -103,7 +98,6 @@ public final class Debugging
 	 * @param __args The arguments to the string.
 	 * @since 2020/03/27
 	 */
-	@SquirrelJMEVendorApi
 	public static void debugNote(@PrintFormat String __fmt, Object... __args)
 	{
 		if (!Debugging.enabled())
@@ -131,7 +125,6 @@ public final class Debugging
 	 * @param __fmt The format.
 	 * @since 2023/02/10
 	 */
-	@SquirrelJMEVendorApi
 	public static void notice(@PrintFormat String __fmt)
 	{
 		if (!Debugging.enabled())
@@ -147,7 +140,6 @@ public final class Debugging
 	 * @param __args The arguments to the string.
 	 * @since 2021/01/18
 	 */
-	@SquirrelJMEVendorApi
 	public static void notice(@PrintFormat String __fmt, Object... __args)
 	{
 		if (!Debugging.enabled())
@@ -162,7 +154,6 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/12/31
 	 */
-	@SquirrelJMEVendorApi
 	public static Error oops()
 	{
 		return Debugging.__fail(Debugging._OOPS, (Object[])null);
@@ -175,7 +166,6 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/22
 	 */
-	@SquirrelJMEVendorApi
 	@Contract("_ -> fail")
 	public static Error oops(Object... __args)
 	{
@@ -238,7 +228,6 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/21
 	 */
-	@SquirrelJMEVendorApi
 	public static Error todo()
 	{
 		return Debugging.__fail(Debugging._TODO, (Object[])null);
@@ -251,7 +240,6 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/21
 	 */
-	@SquirrelJMEVendorApi
 	@SuppressWarnings({"StaticVariableUsedBeforeInitialization", 
 		"squirreljme_thrownErrorToDo"})
 	@Contract("_ -> fail")
@@ -266,7 +254,6 @@ public final class Debugging
 	 * @param __fmt Format string.
 	 * @since 2020/05/13
 	 */
-	@SquirrelJMEVendorApi
 	public static void todoNote(@PrintFormat String __fmt)
 	{
 		if (!Debugging.enabled())
@@ -282,7 +269,6 @@ public final class Debugging
 	 * @param __args Arguments.
 	 * @since 2020/03/31
 	 */
-	@SquirrelJMEVendorApi
 	public static void todoNote(@PrintFormat String __fmt, Object... __args)
 	{
 		if (!Debugging.enabled())
@@ -299,7 +285,6 @@ public final class Debugging
 	 * @return Never returns.
 	 * @since 2020/04/09
 	 */
-	@SquirrelJMEVendorApi
 	public static <T> T todoObject(Object... __args)
 	{
 		throw Debugging.todo(__args);
@@ -327,7 +312,6 @@ public final class Debugging
 	 * @return The generated error.
 	 * @since 2020/03/21
 	 */
-	@SquirrelJMEVendorApi
 	@SuppressWarnings({"StaticVariableUsedBeforeInitialization", 
 		"squirreljme_thrownErrorToDo"})
 	@Contract("_ -> fail")

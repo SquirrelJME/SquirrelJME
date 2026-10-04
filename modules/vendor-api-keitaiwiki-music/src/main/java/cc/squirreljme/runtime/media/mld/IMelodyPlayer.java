@@ -44,7 +44,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public class IMelodyPlayer
 	extends AbstractPlayer
 	implements AudioStreamRenderer
@@ -353,7 +352,6 @@ public class IMelodyPlayer
 	 * @return The last ending type.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
 	public final int lastEndType()
 	{
 		synchronized (this)

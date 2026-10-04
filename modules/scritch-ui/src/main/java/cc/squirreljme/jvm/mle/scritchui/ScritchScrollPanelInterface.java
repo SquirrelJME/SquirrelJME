@@ -32,7 +32,6 @@ public interface ScritchScrollPanelInterface
 	 * @throws MLECallError If the scroll panel could not be created.
 	 * @since 2024/07/29
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchScrollPanelBracket scrollPanelNew()
 		throws MLECallError;

@@ -21,14 +21,12 @@ import javax.microedition.media.PlayerListener;
  *
  * @since 2025/06/03
  */
-@SquirrelJMEVendorApi
 public final class ListenerDispatch
 {
 	/** The dispatch thread. */
 	private static volatile Thread _THREAD;
 	
 	/** The event queue. */
-	@SquirrelJMEVendorApi
 	static final Queue<__ListenerEvent__> _QUEUE =
 		new ArrayDeque<>();
 	
@@ -42,7 +40,6 @@ public final class ListenerDispatch
 	 * @since 2025/06/03
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
-	@SquirrelJMEVendorApi
 	public static void dispatch(AbstractPlayer __player, String __eventType,
 		Object __eventValue)
 		throws NullPointerException

@@ -33,7 +33,6 @@ public interface ScritchListInterface
 	 * @throws MLECallError If the type is not valid.
 	 * @since 2024/07/16
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchListBracket listNew(
 		@MagicConstant(valuesFromClass = UIListType.class) int __type)

@@ -36,7 +36,6 @@ public interface ScritchInterface
 	 * @return The generic choice interface.
 	 * @since 2024/07/16
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchChoiceInterface choice();
 	
@@ -46,7 +45,6 @@ public interface ScritchInterface
 	 * @return The generic component interface.
 	 * @since 2024/03/16
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchComponentInterface component();
 	
@@ -56,7 +54,6 @@ public interface ScritchInterface
 	 * @return The generic container interface.
 	 * @since 2024/03/16
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchContainerInterface container();
 	
@@ -68,7 +65,6 @@ public interface ScritchInterface
 	 * deleted.
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	void objectDelete(@NotNull ScritchBaseBracket __object)
 		throws MLECallError;
 	
@@ -78,7 +74,6 @@ public interface ScritchInterface
 	 * @return The environment interface.
 	 * @since 2024/03/07
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchEnvironmentInterface environment();
 	
@@ -88,7 +83,6 @@ public interface ScritchInterface
 	 * @return The event loop interface.
 	 * @since 2024/03/16
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchEventLoopInterface eventLoop();
 	
@@ -113,7 +107,6 @@ public interface ScritchInterface
 	 * @throws MLECallError If the requested graphics are not valid.
 	 * @since 2020/09/25
 	 */
-	@SquirrelJMEVendorApi
 	PencilBracket hardwareGraphics(
 		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
@@ -131,7 +124,6 @@ public interface ScritchInterface
 	 * @return The label interface.
 	 * @since 2024/07/22
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchLabelInterface label();
 	
@@ -141,7 +133,6 @@ public interface ScritchInterface
 	 * @return The interface for lists.
 	 * @since 2024/07/16
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchListInterface list();
 	
@@ -151,7 +142,6 @@ public interface ScritchInterface
 	 * @return The menu manipulation Api.
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchMenuInterface menu();
 	
@@ -161,7 +151,6 @@ public interface ScritchInterface
 	 * @return Returns the interface for generic paintables.
 	 * @since 2024/07/16
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchPaintableInterface paintable();
 	
@@ -171,7 +160,6 @@ public interface ScritchInterface
 	 * @return The panel interface.
 	 * @since 2024/03/16
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchPanelInterface panel();
 	
@@ -181,7 +169,6 @@ public interface ScritchInterface
 	 * @return The screen interface.
 	 * @since 2024/03/10
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchScreenInterface screen();
 	
@@ -191,7 +178,6 @@ public interface ScritchInterface
 	 * @return The scroll panel interface.
 	 * @since 2024/07/29
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchScrollPanelInterface scrollPanel();
 	
@@ -201,7 +187,6 @@ public interface ScritchInterface
 	 * @return The viewport interface.
 	 * @since 2024/07/29
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchViewInterface view();
 	
@@ -211,7 +196,6 @@ public interface ScritchInterface
 	 * @return The window interface.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	ScritchWindowInterface window();
 }

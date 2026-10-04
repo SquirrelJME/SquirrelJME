@@ -27,7 +27,6 @@ public final class NativeScritchInterface
 	 *
 	 * @since 2024/02/29
 	 */
-	@SquirrelJMEVendorApi
 	private NativeScritchInterface()
 	{
 	}
@@ -39,7 +38,6 @@ public final class NativeScritchInterface
 	 * @throws MLECallError If there is no support for the native interface.
 	 * @since 2024/02/29
 	 */
-	@SquirrelJMEVendorApi
 	public static native ScritchInterface nativeInterface()
 		throws MLECallError;
 }

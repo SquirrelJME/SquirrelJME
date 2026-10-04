@@ -22,12 +22,10 @@ import org.jetbrains.annotations.UnmodifiableView;
  * @since 2016/02/28
  */
 @UnmodifiableView
-@SquirrelJMEVendorApi
 public final class UnmodifiableSet<T>
 	extends AbstractSet<T>
 {
 	/** The set to wrap. */
-	@SquirrelJMEVendorApi
 	protected final Set<T> wrapped;
 	
 	/**
@@ -130,7 +128,6 @@ public final class UnmodifiableSet<T>
 	 * @return An unmodifiable view of the set.
 	 * @since 2016/02/28
 	 */
-	@SquirrelJMEVendorApi
 	public static <T> Set<T> of(Set<T> __s)
 	{
 		// If already one, return that set

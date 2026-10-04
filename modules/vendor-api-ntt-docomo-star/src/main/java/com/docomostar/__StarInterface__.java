@@ -57,7 +57,6 @@ final class __StarInterface__
 	 * @since 2022/02/28
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void destroy(StarApplication __instance, Throwable __thrown)
 		throws NullPointerException, Throwable
 	{
@@ -75,7 +74,6 @@ final class __StarInterface__
 	 * @since 2022/02/28
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public StarApplication newInstance()
 		throws Throwable
 	{
@@ -140,7 +138,6 @@ final class __StarInterface__
 	 * @since 2022/02/28
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void startApp(StarApplication __instance)
 		throws NullPointerException, Throwable
 	{
@@ -156,7 +153,6 @@ final class __StarInterface__
 	 * @since 2022/07/21
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public ApplicationType type()
 	{
 		return ApplicationType.NTT_DOCOMO_STAR;

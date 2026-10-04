@@ -21,12 +21,10 @@ import java.io.InterruptedIOException;
  * @see ByteDequeOutputStream
  * @since 2024/01/19
  */
-@SquirrelJMEVendorApi
 public class ByteDequeInputStream
 	extends InputStream
 {
 	/** The byte deque to access. */
-	@SquirrelJMEVendorApi
 	protected final ByteDeque queue;
 	
 	/**
@@ -36,7 +34,6 @@ public class ByteDequeInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	@SquirrelJMEVendorApi
 	public ByteDequeInputStream(ByteDeque __queue)
 		throws NullPointerException
 	{

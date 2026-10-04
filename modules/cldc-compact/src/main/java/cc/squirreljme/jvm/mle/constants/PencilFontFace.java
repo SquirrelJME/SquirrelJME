@@ -17,36 +17,29 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/05/17
  */
-@SquirrelJMEVendorApi
 public interface PencilFontFace
 {
 	/** Monospaced. */
-	@SquirrelJMEVendorApi
 	byte MONOSPACE =
 		1;
 	
 	/** Serifs. */
-	@SquirrelJMEVendorApi
 	byte SERIF =
 		2;
 	
 	/** Symbol. */
-	@SquirrelJMEVendorApi
 	byte SYMBOL =
 		4;
 	
 	/** Normal, nothing different from anything. */
-	@SquirrelJMEVendorApi
 	byte NORMAL =
 		8;
 	
 	/** Special case for automatic font selection. */
-	@SquirrelJMEVendorApi
 	byte AUTOMATIC =
 		16;
 	
 	/** Stylistic and artistic fonts. */
-	@SquirrelJMEVendorApi
 	byte STYLISTIC =
 		32;
 }

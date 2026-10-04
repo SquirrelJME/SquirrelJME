@@ -30,26 +30,21 @@ import net.multiphasicapps.io.ExtendedDataInputStream;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public abstract class AbstractMediaResource
 	implements MediaResource
 {
 	/** Properties for the resource. */
-	@SquirrelJMEVendorApi
 	final Map<String, String> _properties =
 		new HashMap<>();
 	
 	/** The source data. */
-	@SquirrelJMEVendorApi
 	protected byte[] _source;
 	
 	/** Can this be redistributed? */
-	@SquirrelJMEVendorApi
 	volatile boolean _redistribute =
 		true;
 	
 	/** The number of times this has been used. */
-	@SquirrelJMEVendorApi
 	volatile int _useCount;
 	
 	/**
@@ -90,7 +85,6 @@ public abstract class AbstractMediaResource
 	 * @throws UIException If the data could not be read.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void becomingRealized(InputStream __in,
 		MediaResource __copy)
 		throws NullPointerException, UIException;
@@ -100,7 +94,6 @@ public abstract class AbstractMediaResource
 	 *
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void becomingDeallocated();
 	
 	/**
@@ -111,7 +104,6 @@ public abstract class AbstractMediaResource
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract boolean validKey(String __key)
 		throws NullPointerException;
 	

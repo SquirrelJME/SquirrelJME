@@ -39,7 +39,6 @@ public interface ScritchLAFInterface
 	 * @throws MLECallError If the requested element is not valid.
 	 * @since 2024/05/17
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	PencilFontBracket lafFont(
 		@MagicConstant(valuesFromClass = ScritchLAFFontElementType.class)
@@ -56,7 +55,6 @@ public interface ScritchLAFInterface
 	 * @throws MLECallError If the constant is not valid.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	int lafElementColor(@Nullable ScritchComponentBracket __context,
 		@MagicConstant(valuesFromClass = ScritchLAFElementColor.class)
 		int __element)
@@ -69,7 +67,6 @@ public interface ScritchLAFInterface
 	 * @return The resultant border style, one of {@link ScritchLineStyle}.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ScritchLineStyle.class)
 	int lafFocusBorderStyle(boolean __focused);
 	
@@ -83,7 +80,6 @@ public interface ScritchLAFInterface
 	 * @throws MLECallError If the element is not valid.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	int lafImageSize(
 		@MagicConstant(valuesFromClass = ScritchLAFImageElementType.class)
@@ -96,7 +92,6 @@ public interface ScritchLAFInterface
 	 * @return The platform flags used.
 	 * @since 2025/05/15
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ScritchLAFPlatformFlag.class)
 	int lafPlatformFlags();
 }

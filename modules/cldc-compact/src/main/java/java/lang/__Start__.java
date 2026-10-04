@@ -31,12 +31,10 @@ import java.util.Objects;
 final class __Start__
 {
 	/** The time to wait between each termination. */
-	@SquirrelJMEVendorApi
 	private static final int _TERM_WAIT_TIME =
 		30_000;
 	
 	/** Exit code for un-handled main exceptions. */
-	@SquirrelJMEVendorApi
 	private static final int _UNHANDLED_EXIT_CODE =
 		61;
 	
@@ -47,7 +45,6 @@ final class __Start__
 	 * @since 2020/05/31
 	 */
 	@SuppressWarnings("CallToThreadRun")
-	@SquirrelJMEVendorApi
 	static void __base()
 	{
 		// We will need to catch any exceptions that the thread throws and
@@ -99,7 +96,6 @@ final class __Start__
 	 *
 	 * @since 2020/05/31
 	 */
-	@SquirrelJMEVendorApi
 	static void __main()
 	{
 		// Debug

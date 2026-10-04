@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/05
  */
-@SquirrelJMEVendorApi
 public final class NativeArchiveShelf
 {
 	/**
@@ -45,7 +44,6 @@ public final class NativeArchiveShelf
 	 * was {@code null}.
 	 * @since 2024/03/05
 	 */
-	@SquirrelJMEVendorApi
 	public static native void archiveClose(
 		@NotNull NativeArchiveBracket __archive)
 		throws MLECallError;
@@ -59,7 +57,6 @@ public final class NativeArchiveShelf
 	 * @throws MLECallError If the archive is not valid.
 	 * @since 2024/03/05
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	public static native NativeArchiveEntryBracket archiveEntry(
 		@NotNull NativeArchiveBracket __archive,
@@ -79,7 +76,6 @@ public final class NativeArchiveShelf
 	 * the array bounds.
 	 * @since 2024/03/05
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	public static native NativeArchiveBracket archiveOpenZip(
 		@NotNull byte[] __buf,
@@ -95,7 +91,6 @@ public final class NativeArchiveShelf
 	 * @throws MLECallError If the entry is not valid.
 	 * @since 2024/03/05
 	 */
-	@SquirrelJMEVendorApi
 	public static native boolean entryIsDirectory(
 		@NotNull NativeArchiveEntryBracket __entry)
 		throws MLECallError;
@@ -108,7 +103,6 @@ public final class NativeArchiveShelf
 	 * @throws MLECallError If the entry is not valid, or it is a directory.
 	 * @since 2024/03/05
 	 */
-	@SquirrelJMEVendorApi
 	public static native InputStream entryOpen(
 		@NotNull NativeArchiveEntryBracket __entry)
 		throws MLECallError;
@@ -121,7 +115,6 @@ public final class NativeArchiveShelf
 	 * @throws MLECallError If the entry is not valid.
 	 * @since 2024/03/05
 	 */
-	@SquirrelJMEVendorApi
 	public static native long entryUncompressedSize(
 		@NotNull NativeArchiveEntryBracket __entry)
 		throws MLECallError;

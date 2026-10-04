@@ -18,7 +18,6 @@ import java.io.IOException;
  *
  * @since 2023/09/12
  */
-@SquirrelJMEVendorApi
 public interface CsvInputStream
 	extends Closeable
 {
@@ -31,7 +30,6 @@ public interface CsvInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/09/12
 	 */
-	@SquirrelJMEVendorApi
 	boolean next(StringBuilder __line)
 		throws IOException, NullPointerException;
 }

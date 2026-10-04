@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/07/03
  */
-@SquirrelJMEVendorApi
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface ShelfCallback
 {

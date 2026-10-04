@@ -18,23 +18,18 @@ import javax.microedition.lcdui.Display;
  *
  * @since 2017/10/27
  */
-@SquirrelJMEVendorApi
 public enum DisplayOrientation
 {
 	/** Landscape. */
-	@SquirrelJMEVendorApi
 	LANDSCAPE,
 	
 	/** Landscape, rotated 180 degrees. */
-	@SquirrelJMEVendorApi
 	LANDSCAPE_180,
 	
 	/** Portrait. */
-	@SquirrelJMEVendorApi
 	PORTRAIT,
 	
 	/** Portrait, rotated 180 degrees. */
-	@SquirrelJMEVendorApi
 	PORTRAIT_180,
 	
 	/** End. */
@@ -46,7 +41,6 @@ public enum DisplayOrientation
 	 * @return The LCDUI value.
 	 * @since 2017/10/27
 	 */
-	@SquirrelJMEVendorApi
 	public final int lcduiValue()
 	{
 		switch (this)

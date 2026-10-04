@@ -29,7 +29,6 @@ public abstract class TestBiFunction<A, B, R>
 	 *
 	 * @since 2026/02/12
 	 */
-	@SquirrelJMEVendorApi
 	public TestBiFunction()
 	{
 	}
@@ -44,7 +43,6 @@ public abstract class TestBiFunction<A, B, R>
 	 * @since 2018/10/06
 	 */
 	@Test
-	@SquirrelJMEVendorApi
 	public abstract R test(A __a, B __b)
 		throws Throwable;
 	
@@ -54,7 +52,6 @@ public abstract class TestBiFunction<A, B, R>
 	 */
 	@Override
 	@SuppressWarnings({"unchecked"})
-	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

@@ -32,12 +32,10 @@ public abstract class Canvas
 	extends Frame
 {
 	/** The number of key groups. */
-	@SquirrelJMEVendorApi
 	private static final byte _KEY_GROUPS =
 		2;
 	
 	/** The max number of permitted keys. */
-	@SquirrelJMEVendorApi
 	private static final byte _MAX_KEYS =
 		32 * Canvas._KEY_GROUPS;
 	
@@ -179,7 +177,6 @@ public abstract class Canvas
 	 * @param __id The key ID.
 	 * @since 2024/08/12
 	 */
-	@SquirrelJMEVendorApi
 	final void __key(boolean __press, int __id)
 	{
 		// Store in key groups?

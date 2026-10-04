@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2026/04/11
  */
-@SquirrelJMEVendorApi
 public class OopsCodeError
 	extends Error
 {
@@ -25,7 +24,6 @@ public class OopsCodeError
 	 *
 	 * @since 2026/04/11
 	 */
-	@SquirrelJMEVendorApi
 	public OopsCodeError()
 	{
 	}

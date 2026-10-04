@@ -23,7 +23,6 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2024/06/24
  */
-@SquirrelJMEVendorApi
 public final class LockFlush
 {
 	/** The double buffer to access. */
@@ -46,7 +45,6 @@ public final class LockFlush
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/24
 	 */
-	@SquirrelJMEVendorApi
 	public LockFlush(Canvas __canvas, DoubleBuffer __doubleBuffer)
 		throws NullPointerException
 	{
@@ -65,7 +63,6 @@ public final class LockFlush
 	 * @return {@code this}.
 	 * @since 2025/04/09
 	 */
-	@SquirrelJMEVendorApi
 	public LockFlush checkThread()
 	{
 		// Flag if we are not in the event thread
@@ -84,7 +81,6 @@ public final class LockFlush
 	 * @return Whether this is locked or not.
 	 * @since 2025/04/09
 	 */
-	@SquirrelJMEVendorApi
 	public boolean isLocked()
 	{
 		synchronized (this)
@@ -99,7 +95,6 @@ public final class LockFlush
 	 *
 	 * @since 2024/06/24
 	 */
-	@SquirrelJMEVendorApi
 	public void lock()
 	{
 		synchronized (this)
@@ -115,7 +110,6 @@ public final class LockFlush
 	 * @return Whether this was claimed outside the ScritchUI thread.
 	 * @since 2025/04/09
 	 */
-	@SquirrelJMEVendorApi
 	public boolean outOfThread()
 	{
 		synchronized (this)
@@ -132,7 +126,6 @@ public final class LockFlush
 	 * zero, otherwise this will only draw when the lock count is zero. 
 	 * @since 2024/06/24
 	 */
-	@SquirrelJMEVendorApi
 	public void unlock(boolean __forced)
 	{
 		// If we are in the event loop, do not lock

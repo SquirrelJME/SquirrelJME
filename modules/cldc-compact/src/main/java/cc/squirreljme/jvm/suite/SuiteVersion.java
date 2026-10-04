@@ -18,30 +18,24 @@ import java.lang.ref.WeakReference;
  *
  * @since 2016/10/12
  */
-@SquirrelJMEVendorApi
 public final class SuiteVersion
 	implements Comparable<SuiteVersion>
 {
 	/** The minimum version number. */
-	@SquirrelJMEVendorApi
 	public static final SuiteVersion MIN_VERSION =
 		new SuiteVersion(0, 0, 0);
 	
 	/** The maximum version number. */
-	@SquirrelJMEVendorApi
 	public static final SuiteVersion MAX_VERSION =
 		new SuiteVersion(99, 99, 99);
 	
 	/** The major version. */
-	@SquirrelJMEVendorApi
 	protected final int major;
 	
 	/** The minor version. */
-	@SquirrelJMEVendorApi
 	protected final int minor;
 	
 	/** The release version. */
-	@SquirrelJMEVendorApi
 	protected final int release;
 	
 	/** The string representation. */
@@ -57,7 +51,6 @@ public final class SuiteVersion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	@SquirrelJMEVendorApi
 	public SuiteVersion(String __v)
 		throws InvalidSuiteException, NullPointerException
 	{
@@ -75,7 +68,6 @@ public final class SuiteVersion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	@SquirrelJMEVendorApi
 	public SuiteVersion(int[] __v)
 		throws InvalidSuiteException, NullPointerException
 	{
@@ -96,7 +88,6 @@ public final class SuiteVersion
 	 * range value.
 	 * @since 2016/10/13
 	 */
-	@SquirrelJMEVendorApi
 	public SuiteVersion(boolean __hash, int __maj)
 		throws InvalidSuiteException
 	{
@@ -112,7 +103,6 @@ public final class SuiteVersion
 	 * @throws IllegalArgumentException If any value is out of range.
 	 * @since 2016/10/12
 	 */
-	@SquirrelJMEVendorApi
 	public SuiteVersion(int __maj)
 	{
 		this(__maj, 0, 0);
@@ -126,7 +116,6 @@ public final class SuiteVersion
 	 * @throws IllegalArgumentException If any value is out of range.
 	 * @since 2016/10/12
 	 */
-	@SquirrelJMEVendorApi
 	public SuiteVersion(int __maj, int __min)
 	{
 		this(__maj, __min, 0);
@@ -141,7 +130,6 @@ public final class SuiteVersion
 	 * @throws InvalidSuiteException If any value is out of range.
 	 * @since 2016/10/12
 	 */
-	@SquirrelJMEVendorApi
 	public SuiteVersion(int __maj, int __min, int __rel)
 		throws InvalidSuiteException
 	{
@@ -167,7 +155,6 @@ public final class SuiteVersion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/12
 	 */
-	@SquirrelJMEVendorApi
 	public boolean atLeast(SuiteVersion __v)
 		throws NullPointerException
 	{
@@ -187,7 +174,6 @@ public final class SuiteVersion
 	 * @return {@code true} if this version is at least the other.
 	 * @since 2025/04/09
 	 */
-	@SquirrelJMEVendorApi
 	public boolean atLeast(int __major, int __minor)
 	{
 		return this.major > __major ||
@@ -259,7 +245,6 @@ public final class SuiteVersion
 	 * @return The major version.
 	 * @since 2017/02/22
 	 */
-	@SquirrelJMEVendorApi
 	public int major()
 	{
 		return this.major;
@@ -271,7 +256,6 @@ public final class SuiteVersion
 	 * @return The minor version.
 	 * @since 2017/02/22
 	 */
-	@SquirrelJMEVendorApi
 	public int minor()
 	{
 		return this.minor;
@@ -283,7 +267,6 @@ public final class SuiteVersion
 	 * @return The release version.
 	 * @since 2017/02/22
 	 */
-	@SquirrelJMEVendorApi
 	public int release()
 	{
 		return this.release;

@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Debug;
  * @see ThreadShelf
  * @since 2020/06/17
  */
-@SquirrelJMEVendorApi
 @GhostObject
 @Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")

@@ -36,11 +36,9 @@ final class __ExecChoiceDelete__
 	private final int _atIndex;
 	
 	/** If there was an exception. */
-	@SquirrelJMEVendorApi
 	volatile MLECallError _error;
 	
 	/** The cache to delete from. */
-	@SquirrelJMEVendorApi
 	private final ArrayList<CachedChoice> _cache;
 	
 	/**

@@ -16,16 +16,13 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/05/04
  */
-@SquirrelJMEVendorApi
 public interface AudioRenderResult
 {
 	/** Continue rendering. */
-	@SquirrelJMEVendorApi
 	byte CONTINUE =
 		0;
 	
 	/** Stop rendering. */
-	@SquirrelJMEVendorApi
 	byte STOP =
 		1;
 }

@@ -27,7 +27,6 @@ import java.util.Set;
  *
  * @since 2017/11/30
  */
-@SquirrelJMEVendorApi
 public final class ProvidedInfo
 	implements Iterable<MarkedProvided>
 {
@@ -43,7 +42,6 @@ public final class ProvidedInfo
 	 * @param __provs The provided set.
 	 * @since 2017/12/31
 	 */
-	@SquirrelJMEVendorApi
 	public ProvidedInfo(MarkedProvided... __provs)
 	{
 		// Defensive copy
@@ -64,7 +62,6 @@ public final class ProvidedInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/31
 	 */
-	@SquirrelJMEVendorApi
 	public ProvidedInfo(Collection<MarkedProvided> __provs)
 		throws NullPointerException
 	{
@@ -77,7 +74,6 @@ public final class ProvidedInfo
 	 * @since 2017/12/31
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final boolean equals(Object __o)
 	{
 		if (this == __o)
@@ -94,7 +90,6 @@ public final class ProvidedInfo
 	 * @since 2017/12/31
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final int hashCode()
 	{
 		return Arrays.asList(this._provided).hashCode();
@@ -105,7 +100,6 @@ public final class ProvidedInfo
 	 * @since 2021/01/31
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public Iterator<MarkedProvided> iterator()
 	{
 		return UnmodifiableIterator.of(this._provided);
@@ -116,7 +110,6 @@ public final class ProvidedInfo
 	 * @since 2017/12/31
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final String toString()
 	{
 		Reference<String> ref = this._string;
@@ -139,7 +132,6 @@ public final class ProvidedInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/20
 	 */
-	@SquirrelJMEVendorApi
 	public static ProvidedInfo of(SuiteInfo __info)
 		throws InvalidSuiteException, NullPointerException
 	{

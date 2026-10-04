@@ -38,17 +38,14 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/27
  */
-@SquirrelJMEVendorApi
 public class AllVolumesEndPoint
 	extends FileEndPoint
 {
 	/** Host. */
-	@SquirrelJMEVendorApi
 	public static final String HOST =
 		"!%3Fx-squirreljme-all-volumes%3A%2F%2F%3F!";
 	
 	/** Decoded host. */
-	@SquirrelJMEVendorApi
 	public static final String DECODED_HOST =
 		"!?x-squirreljme-all-volumes://?!";
 	
@@ -61,7 +58,6 @@ public class AllVolumesEndPoint
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	protected AllVolumesEndPoint(@NotNull UriGenericPart __part, int __mode,
 		@Nullable UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, NullPointerException
@@ -81,7 +77,6 @@ public class AllVolumesEndPoint
 	 * @since 2025/12/27
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected ExtraFileAttributes attachedAttributes()
 		throws SecurityException
 	{
@@ -93,7 +88,6 @@ public class AllVolumesEndPoint
 	 * @since 2025/12/27
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected FileStore attachedFileStore()
 		throws SecurityException
 	{
@@ -106,7 +100,6 @@ public class AllVolumesEndPoint
 	 * @since 2025/12/27
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected FileSystem attachedFileSystem()
 		throws SecurityException
 	{
@@ -119,7 +112,6 @@ public class AllVolumesEndPoint
 	 * @since 2025/12/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void close()
 		throws IOException
 	{
@@ -131,7 +123,6 @@ public class AllVolumesEndPoint
 	 * {@inheritDoc}
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	protected String[] directoryListParts(boolean __includeHidden)
 		throws IOException, SecurityException
 	{
@@ -146,7 +137,6 @@ public class AllVolumesEndPoint
 	 * @since 2025/12/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected void listDirectory(@NotNull Map<String, UriGenericPart> __into)
 		throws IOException, NullPointerException, SecurityException
 	{
@@ -200,7 +190,6 @@ public class AllVolumesEndPoint
 	 * @since 2026/01/01
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	protected InputStream openInputStream()
 		throws IOException, SecurityException
 	{

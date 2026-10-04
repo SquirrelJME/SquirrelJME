@@ -22,7 +22,6 @@ import java.util.Set;
  *
  * @since 2016/04/10
  */
-@SquirrelJMEVendorApi
 public final class EmptySet
 	extends AbstractSet
 {
@@ -96,7 +95,6 @@ public final class EmptySet
 	 * @since 2016/04/10
 	 */
 	@SuppressWarnings({"unchecked"})
-	@SquirrelJMEVendorApi
 	public static <V> Set<V> empty()
 	{
 		// Get reference

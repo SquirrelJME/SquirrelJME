@@ -17,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/03/09
  */
-@SquirrelJMEVendorApi
 public class EventThrottle
 {
 }

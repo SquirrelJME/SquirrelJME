@@ -19,7 +19,6 @@ import javax.microedition.io.InputConnection;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public abstract class AbstractMediaImage
 	extends AbstractMediaResource
 	implements MediaImage

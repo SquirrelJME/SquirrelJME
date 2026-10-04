@@ -29,7 +29,6 @@ public interface ScritchEventLoopInterface
 	 * @return If the current thread is the event loop thread.
 	 * @since 2024/03/16
 	 */
-	@SquirrelJMEVendorApi
 	boolean inLoop();
 	
 	/**
@@ -39,7 +38,6 @@ public interface ScritchEventLoopInterface
 	 * @throws MLECallError If the event loop encountered an error.
 	 * @since 2024/12/22
 	 */
-	@SquirrelJMEVendorApi
 	boolean iterate()
 		throws MLECallError;
 	
@@ -52,7 +50,6 @@ public interface ScritchEventLoopInterface
 	 * failed.
 	 * @since 2024/03/16
 	 */
-	@SquirrelJMEVendorApi
 	@Async.Execute
 	@Async.Schedule
 	void loopExecute(@NotNull Runnable __task)
@@ -65,7 +62,6 @@ public interface ScritchEventLoopInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/04/25
 	 */
-	@SquirrelJMEVendorApi
 	@Async.Schedule
 	void loopExecuteLater(@NotNull Runnable __task)
 		throws MLECallError;
@@ -80,7 +76,6 @@ public interface ScritchEventLoopInterface
 	 * failed.
 	 * @since 2024/04/17
 	 */
-	@SquirrelJMEVendorApi
 	@Async.Execute
 	@Async.Schedule
 	void loopExecuteWait(@NotNull Runnable __task)

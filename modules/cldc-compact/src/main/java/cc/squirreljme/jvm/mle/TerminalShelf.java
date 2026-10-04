@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Range;
  * @since 2020/06/14
  */
 @SuppressWarnings("UnstableApiUsage")
-@SquirrelJMEVendorApi
 public final class TerminalShelf
 {
 	/**
@@ -49,7 +48,6 @@ public final class TerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2020/11/22
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class,
 		intValues = {0, -1})
 	@NonBlocking
@@ -65,7 +63,6 @@ public final class TerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2020/07/02
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Blocking
 	@CheckReturnValue
@@ -80,7 +77,6 @@ public final class TerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2018/12/08
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Blocking
 	@CheckReturnValue
@@ -97,7 +93,6 @@ public final class TerminalShelf
 	 * valid.
 	 * @since 2022/03/19
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	public static native PipeBracket fromStandard(
 		@MagicConstant(valuesFromClass = StandardPipeType.class) int __fd)
@@ -113,7 +108,6 @@ public final class TerminalShelf
 	 * {@code null}.
 	 * @since 2025/07/06
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Range(from = -2, to = 255)
 	@Blocking
@@ -134,7 +128,6 @@ public final class TerminalShelf
 	 * {@code null}.
 	 * @since 2018/12/05
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Range(from = -2, to = Integer.MAX_VALUE)
 	@Blocking
@@ -154,7 +147,6 @@ public final class TerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2018/09/21
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class,
 		intValues = {1})
 	@Range(from = -2, to = 1)
@@ -177,7 +169,6 @@ public final class TerminalShelf
 	 * {@code null}.
 	 * @since 2018/12/05
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class,
 		intValues = {1})
 	@Range(from = -2, to = Integer.MAX_VALUE)

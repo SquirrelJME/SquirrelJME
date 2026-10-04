@@ -26,7 +26,6 @@ public abstract class TestBoolean
 	 *
 	 * @since 2026/02/12
 	 */
-	@SquirrelJMEVendorApi
 	public TestBoolean()
 	{
 	}
@@ -39,7 +38,6 @@ public abstract class TestBoolean
 	 * @since 2019/12/25
 	 */
 	@Test
-	@SquirrelJMEVendorApi
 	public abstract boolean test()
 		throws Throwable;
 	
@@ -48,7 +46,6 @@ public abstract class TestBoolean
 	 * @since 2019/12/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

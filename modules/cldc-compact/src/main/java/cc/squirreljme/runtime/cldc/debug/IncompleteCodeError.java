@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/03/27
  */
-@SquirrelJMEVendorApi
 public class IncompleteCodeError
 	extends Error
 {
@@ -25,7 +24,6 @@ public class IncompleteCodeError
 	 *
 	 * @since 2025/03/27
 	 */
-	@SquirrelJMEVendorApi
 	public IncompleteCodeError()
 	{
 		super("TODO");

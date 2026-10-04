@@ -44,7 +44,6 @@ public final class SuiteScanner
 	 * @param __parallel Allow parallel scanning?
 	 * @since 2020/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public SuiteScanner(boolean __parallel)
 	{
 		this(__parallel, new DefaultJarPackageShelf());
@@ -58,7 +57,6 @@ public final class SuiteScanner
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/06
 	 */
-	@SquirrelJMEVendorApi
 	public SuiteScanner(boolean __parallel, VirtualJarPackageShelf __shelf)
 		throws NullPointerException
 	{
@@ -76,7 +74,6 @@ public final class SuiteScanner
 	 * @return The state of scanned suites.
 	 * @since 2020/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public AvailableSuites scanSuites()
 	{
 		return this.scanSuites(null);
@@ -91,7 +88,6 @@ public final class SuiteScanner
 	 * @return The state of scanned suites.
 	 * @since 2020/12/29
 	 */
-	@SquirrelJMEVendorApi
 	public AvailableSuites scanSuites(SuiteScanListener __listener)
 	{
 		// Get all the available libraries

@@ -46,7 +46,6 @@ public final class EmulatedNativeArchiveShelf
 	 * was {@code null}.
 	 * @since 2024/03/05
 	 */
-	@SquirrelJMEVendorApi
 	public static void archiveClose(
 		@NotNull NativeArchiveBracket __archive)
 		throws MLECallError
@@ -73,7 +72,6 @@ public final class EmulatedNativeArchiveShelf
 	 * @throws MLECallError If the archive is not valid.
 	 * @since 2024/03/05
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	public static NativeArchiveEntryBracket archiveEntry(
 		@NotNull NativeArchiveBracket __archive,
@@ -98,7 +96,6 @@ public final class EmulatedNativeArchiveShelf
 	 * the array bounds.
 	 * @since 2024/03/05
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	public static NativeArchiveBracket archiveOpenZip(
 		@NotNull byte[] __buf,

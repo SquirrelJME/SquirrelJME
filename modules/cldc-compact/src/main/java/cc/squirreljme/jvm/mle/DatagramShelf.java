@@ -19,7 +19,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @see DatagramBracket
  * @since 2026/05/17
  */
-@SquirrelJMEVendorApi
 public final class DatagramShelf
 {
 	/**

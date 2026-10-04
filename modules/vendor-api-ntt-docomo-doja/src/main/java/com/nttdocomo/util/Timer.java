@@ -42,7 +42,6 @@ public final class Timer
 		1;
 	
 	/** The expiration store to use. */
-	@SquirrelJMEVendorApi
 	final __ExpireStore__ _expire;
 	
 	/** The current interval, in milliseconds. */
@@ -50,7 +49,6 @@ public final class Timer
 		Timer._MIN_TIME_INTERVAL;
 	
 	/** Does this timer repeat? */
-	@SquirrelJMEVendorApi
 	volatile boolean _repeats;
 	
 	/** Has this been disposed? */
