@@ -77,6 +77,7 @@ As of 2026/06/28: 206 of 317 (64%)
          * [X] NanoCoat
      * [X] TAC Integration
      * [X] ProGuard Optimization
+       * [X] `@SquirrelJMEVendorAPI` and `@KeepWhenCompacting` removal.
    * [ ] Implementation
      * [X] Collections
      * [X] Compact Stack Traces
@@ -170,7 +171,7 @@ As of 2026/06/28: 206 of 317 (64%)
        * [ ] Network TCP/UDP Pipe
        * [ ] ScritchUI
          * [ ] All Widgets Supported 
-         * [ ] ScritchPencil
+         * [X] ScritchPencil
          * [X] Base Interfaces
        * [ ] ScritchAudio
          * [ ] Improved MIDI Interfaces
