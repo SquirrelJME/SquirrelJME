@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * The result of an audio rendering.
  *

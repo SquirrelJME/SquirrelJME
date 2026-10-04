@@ -9,14 +9,13 @@
 
 package cc.squirreljme.runtime.gcf;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.ConnectionClosedException;
 import javax.microedition.io.file.IllegalModeException;
 import org.intellij.lang.annotations.MagicConstant;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**

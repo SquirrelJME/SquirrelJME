@@ -10,7 +10,6 @@
 package com.oracle.json.spi;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonBuilderFactory;

@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.mle.constants;
 
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Parameters for {@link PencilFontBracket}.

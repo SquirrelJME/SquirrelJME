@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Set;

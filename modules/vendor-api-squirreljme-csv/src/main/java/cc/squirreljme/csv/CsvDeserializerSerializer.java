@@ -9,8 +9,6 @@
 
 package cc.squirreljme.csv;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Helper interface which implements all serializers.
  *

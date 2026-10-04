@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.lcduidemo;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is the XPM demo.
  *

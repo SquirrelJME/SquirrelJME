@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.full.attrib;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.nio.file.attribute.FileTime;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Nullable;

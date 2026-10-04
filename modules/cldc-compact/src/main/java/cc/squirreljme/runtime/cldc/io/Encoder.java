@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This interface represents an encoder that is used to turn characters into
  * potentially multiple bytes.

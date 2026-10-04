@@ -17,8 +17,6 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasParentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
-import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;

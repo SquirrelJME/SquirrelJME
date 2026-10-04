@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.cldc.lang;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.IntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
 import java.util.ArrayList;

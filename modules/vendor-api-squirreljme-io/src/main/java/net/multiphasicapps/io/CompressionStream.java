@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.Closeable;
 
 /**

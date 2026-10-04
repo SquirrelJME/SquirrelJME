@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.file;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.Closeable;

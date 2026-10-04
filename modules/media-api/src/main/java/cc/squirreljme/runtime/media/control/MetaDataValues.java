@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.media.control;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.CharSequenceUtils;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Map;

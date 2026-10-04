@@ -24,7 +24,6 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
 import java.nio.file.Path;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Native dynamic library that directly wraps the C-based ScritchUI API.

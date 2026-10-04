@@ -11,8 +11,6 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.launch.IModeApplication;
 import cc.squirreljme.jvm.launch.IModeProperty;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import cc.squirreljme.runtime.midlet.ApplicationType;
@@ -25,7 +23,6 @@ import java.util.Objects;
  *
  * @since 2021/11/30
  */
-@KeepWhenCompacting
 final class __IAppliInterface__
 	implements ApplicationInterface<IApplication>
 {

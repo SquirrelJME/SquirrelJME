@@ -13,18 +13,16 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.CharSequenceUtils;
 import cc.squirreljme.runtime.media.control.AbstractDeviceFeedbackControl;
 import cc.squirreljme.runtime.media.control.MetaDataValues;
+import javax.microedition.media.MediaException;
+import javax.microedition.media.control.MetaDataControl;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import javax.microedition.media.MediaException;
-import javax.microedition.media.control.MetaDataControl;
 
 /**
  * Decodes Ericsson eMelody/iMelody files into audio samples to be sent over
@@ -267,7 +265,6 @@ public class EricssonMelodyDecoder
 	 * multi-byte events is malformed.
 	 * @since 2026/05/26
 	 */
-	@KeepWhenCompacting
 	private void __decodeMelodyHeader()
 		throws MediaException
 	{
@@ -380,7 +377,6 @@ public class EricssonMelodyDecoder
 	 * multi-byte events is malformed.
 	 * @since 2026/05/26
 	 */
-	@KeepWhenCompacting
 	private void __decodeMelodyBlocks(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -719,7 +715,6 @@ public class EricssonMelodyDecoder
 	 * that OTA parsing must be paused until the next call.
 	 * @since 2026/05/26
 	 */
-	@KeepWhenCompacting
 	private boolean __generateSamples(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -838,7 +833,6 @@ public class EricssonMelodyDecoder
 	 * @throws MediaException If {@code __duration} is negative.
 	 * @since 2026/06/10
 	 */
-	@KeepWhenCompacting
 	private int __getDurationSpecifier(char __char,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __duration)
 		throws MediaException
@@ -876,7 +870,6 @@ public class EricssonMelodyDecoder
 	 * @throws MediaException If the duration is invalid.
 	 * @since 2026/05/26
 	 */
-	@KeepWhenCompacting
 	private int __getNoteDuration(
 		@Range(from = 0, to = 5) int __duration)
 		throws MediaException
@@ -909,7 +902,6 @@ public class EricssonMelodyDecoder
 	 * 
 	 * @since 2026/06/10
 	 */
-	@KeepWhenCompacting
 	private void __noteStyle()
 	{
 		switch (this._style)
@@ -943,7 +935,6 @@ public class EricssonMelodyDecoder
 	 * to the Melody data array.
 	 * @since 2026/06/10
 	 */
-	@KeepWhenCompacting
 	private boolean __seqCheck(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off, char __what)
 		throws MediaException
@@ -967,7 +958,6 @@ public class EricssonMelodyDecoder
 	 * goes out of bounds in regards to the Melody data array.
 	 * @since 2026/06/10
 	 */
-	@KeepWhenCompacting
 	private boolean __seqCheck(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off, String __what)
 		throws MediaException
@@ -996,7 +986,6 @@ public class EricssonMelodyDecoder
 	 * the end of the Melody data array.
 	 * @since 2026/06/10
 	 */
-	@KeepWhenCompacting
 	private char __seqNext(boolean __preIncrement)
 		throws MediaException
 	{
@@ -1018,7 +1007,6 @@ public class EricssonMelodyDecoder
 	 * to the Melody data array.
 	 * @since 2026/06/10
 	 */
-	@KeepWhenCompacting
 	private char __seqPeek(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off)
 		throws MediaException
@@ -1038,7 +1026,6 @@ public class EricssonMelodyDecoder
 	 * or larger than the Melody array's length.
 	 * @since 2026/06/10
 	 */
-	@KeepWhenCompacting
 	private void __seqSet(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __pos)
 		throws MediaException
@@ -1059,7 +1046,6 @@ public class EricssonMelodyDecoder
 	 * to the Melody data array.
 	 * @since 2026/06/10
 	 */
-	@KeepWhenCompacting
 	private void __seqSkip(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __num)
 		throws MediaException
@@ -1082,7 +1068,6 @@ public class EricssonMelodyDecoder
 	 * or {@code '-'}. Any other characters are ignored.
 	 * @since 2026/06/07
 	 */
-	@KeepWhenCompacting
 	private void __updateVolume(char __modifier)
 	{
 		switch (__modifier)
@@ -1110,7 +1095,6 @@ public class EricssonMelodyDecoder
 	 * @throws MediaException If the base note character is invalid.
 	 * @since 2026/05/26
 	 */
-	@KeepWhenCompacting
 	private static int __getNoteFreq(char __note,
 		@Range(from = 0, to = 8) int __octave,
 		@Range(from = -1, to = 1) int __modifier)
@@ -1142,7 +1126,6 @@ public class EricssonMelodyDecoder
 	 * @return {@code true} If the parsed character is a note.
 	 * @since 2026/05/26
 	 */
-	@KeepWhenCompacting
 	private static boolean __isNoteCharacter(char __c)
 	{ 
 		return (__c >= 'a' && __c <= 'g') || (__c >= 'A' && __c <= 'G');

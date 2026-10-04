@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.midlet;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.midlet.MIDlet;
 
 /**

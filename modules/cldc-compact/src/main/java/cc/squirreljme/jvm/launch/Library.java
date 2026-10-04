@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.ProvidedInfo;
 import cc.squirreljme.jvm.suite.SuiteInfo;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This represents a library that can be used as a dependency, this includes

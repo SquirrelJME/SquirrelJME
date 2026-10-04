@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * A MIDP widget that has {@link MenuAction}s as children.
  *

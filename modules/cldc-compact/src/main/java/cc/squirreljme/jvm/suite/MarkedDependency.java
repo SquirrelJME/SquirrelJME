@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.suite;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This interface is used for anything which represents a dependency and as
  * such can be used to check if a provided meets the conditions for a match.

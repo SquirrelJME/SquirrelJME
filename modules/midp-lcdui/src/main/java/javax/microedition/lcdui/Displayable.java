@@ -13,9 +13,6 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.exceptions.MLECallErrorCode;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
@@ -29,8 +26,6 @@ import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutLock;
 import cc.squirreljme.runtime.lcdui.scritchui.StringTracker;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import javax.microedition.midlet.MIDlet;
 import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -489,7 +484,6 @@ public abstract class Displayable
 	@ScritchEventLoop
 	@SerializedEvent
 	@Async.Execute
-	@KeepWhenCompacting
 	void __execMenuRebuild()
 	{
 		throw Debugging.todo();
@@ -505,7 +499,6 @@ public abstract class Displayable
 	@SerializedEvent
 	@Async.Execute
 	@MustBeInvokedByOverriders
-	@KeepWhenCompacting
 	void __execRevalidate(DisplayState __parent)
 	{
 		// Reparent the display
@@ -542,7 +535,6 @@ public abstract class Displayable
 	 * @return The command listener.
 	 * @since 2024/07/28
 	 */
-	@KeepWhenCompacting
 	CommandListener __getCommandListener()
 	{
 		synchronized (this)

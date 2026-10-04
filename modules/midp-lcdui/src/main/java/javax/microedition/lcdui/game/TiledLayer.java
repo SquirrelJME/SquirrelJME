@@ -11,7 +11,6 @@ package javax.microedition.lcdui.game;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -518,7 +517,6 @@ public class TiledLayer
 	 * @param __tileHeight The new static tile set's height.
 	 * @since 2026/08/09
 	 */
-	@KeepWhenCompacting
 	private void __createTiles(@NotNull Image __baseImage,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __numTiles,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __tileWidth,
@@ -552,7 +550,6 @@ public class TiledLayer
 	 * @return The image that contains the tile data.
 	 * @since 2026/08/09
 	 */
-	@KeepWhenCompacting
 	@NotNull
 	Image __getImage()
 	{
@@ -567,7 +564,6 @@ public class TiledLayer
 	 * @return The array containing the tile's X and Y translation.
 	 * @since 2026/08/09
 	 */
-	@KeepWhenCompacting
 	@NotNull
 	int[] __getTileCoord(int __tileIndex)
 	{

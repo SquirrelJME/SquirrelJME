@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.manifest;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;

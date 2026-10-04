@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Represents the format of an audio stream.
  *

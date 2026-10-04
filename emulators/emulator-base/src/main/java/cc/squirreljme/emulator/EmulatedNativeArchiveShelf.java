@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.NativeArchiveShelf;
 import cc.squirreljme.jvm.mle.brackets.NativeArchiveBracket;
 import cc.squirreljme.jvm.mle.brackets.NativeArchiveEntryBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;

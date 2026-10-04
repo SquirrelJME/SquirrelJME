@@ -9,8 +9,6 @@
 
 package com.nttdocomo.ui.graphics3d;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 public class Figure
 	extends DrawableObject3D
 {

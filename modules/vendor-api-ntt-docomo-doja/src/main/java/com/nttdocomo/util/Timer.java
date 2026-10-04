@@ -10,7 +10,6 @@
 package com.nttdocomo.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import com.nttdocomo.ui.Canvas;
 import com.nttdocomo.ui.ShortTimer;
 import com.nttdocomo.ui.UIException;

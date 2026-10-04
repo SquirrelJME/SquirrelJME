@@ -14,11 +14,9 @@ import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import javax.microedition.midlet.MIDlet;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for display scaling.

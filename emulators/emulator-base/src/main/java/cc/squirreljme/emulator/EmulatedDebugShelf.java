@@ -12,8 +12,6 @@ package cc.squirreljme.emulator;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import java.lang.reflect.Method;
 import org.jetbrains.annotations.NotNull;
 
 /**

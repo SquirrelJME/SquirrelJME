@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This interface is used for classes which can get their endianess obtained.
  *

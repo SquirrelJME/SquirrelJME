@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.lcdui.gfx;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import org.intellij.lang.annotations.MagicConstant;

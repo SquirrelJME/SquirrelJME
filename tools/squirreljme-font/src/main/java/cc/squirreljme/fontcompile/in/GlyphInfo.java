@@ -11,7 +11,6 @@ package cc.squirreljme.fontcompile.in;
 
 import cc.squirreljme.fontcompile.util.GlyphBitmap;
 import cc.squirreljme.fontcompile.util.GlyphId;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Base class for glyph information.

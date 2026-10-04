@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.nttdocomo.media;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.nttdocomo.ui.MediaImage;
 import javax.microedition.io.InputConnection;
 

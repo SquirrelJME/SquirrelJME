@@ -9,11 +9,8 @@
 
 package cc.squirreljme.jvm.suite;
 
-import cc.squirreljme.jvm.launch.ScannerUtils;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Map;
 
 /**

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.HTTPAddress;
 import cc.squirreljme.runtime.gcf.HTTPAgentConnector;

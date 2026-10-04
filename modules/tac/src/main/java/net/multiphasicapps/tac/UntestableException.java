@@ -9,9 +9,6 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is thrown when the test cannot be ran perhaps due to lack of support
  * or otherwise a virtual machine which does not support things.

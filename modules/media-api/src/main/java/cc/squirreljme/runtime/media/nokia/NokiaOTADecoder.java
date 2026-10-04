@@ -13,8 +13,6 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import org.intellij.lang.annotations.MagicConstant;
@@ -306,7 +304,6 @@ public class NokiaOTADecoder
 	 * be corrupted).
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private void __parseMainCommand(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -370,7 +367,6 @@ public class NokiaOTADecoder
 	 * @throws IllegalArgumentException If the parsed command is not valid.
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private void __parseRingingTone(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -404,7 +400,6 @@ public class NokiaOTADecoder
 	 * 
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private void __parseUnicode()
 	{
 		// A unicode is defined in the spec as a 16-bit UCS-2 encoded char
@@ -424,7 +419,6 @@ public class NokiaOTADecoder
 	 * valid, or is not yet supported.
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private void __parseSound(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -480,7 +474,6 @@ public class NokiaOTADecoder
 	 * @param __len The amount of samples that can be placed into the buffer.
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private void __parseBasicSong(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -520,7 +513,6 @@ public class NokiaOTADecoder
 	 * @param __len The amount of samples that can be placed into the buffer.
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private void __parseSongPatternHeader(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -557,7 +549,6 @@ public class NokiaOTADecoder
 	 * @param __len The amount of samples that can be placed into the buffer.
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private void __parseSongPattern(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -642,7 +633,6 @@ public class NokiaOTADecoder
 	 * @throws IllegalArgumentException If the parsed instruction is invalid.
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private boolean __parsePatternInstruction(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -699,7 +689,6 @@ public class NokiaOTADecoder
 	 * that OTA parsing must be paused until the next call.
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private boolean __parseNoteInstruction(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -763,7 +752,6 @@ public class NokiaOTADecoder
 	 * 
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private void __parseScaleInstruction() 
 	{
 		int scaleValue = this.__readBits(2); // 2 bits are used for scale value
@@ -804,7 +792,6 @@ public class NokiaOTADecoder
 	 * 
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private void __parseStyleInstruction() 
 	{
 		int styleValue = this.__readBits(2); // 2 bits for style value
@@ -838,7 +825,6 @@ public class NokiaOTADecoder
 	 * 
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private void __parseTempoInstruction() 
 	{
 		// Read 5 bits for BPM
@@ -988,7 +974,6 @@ public class NokiaOTADecoder
 	 * 
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private void __parseVolumeInstruction() 
 	{
 		int noteVolume = this.__readBits(4); // 4 bits for volume level
@@ -1077,7 +1062,6 @@ public class NokiaOTADecoder
 	 * @return The frequency of the received note.
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private int __getNoteFrequency(int __noteValue) 
 	{
 		short baseFrequency = 0;
@@ -1209,7 +1193,6 @@ public class NokiaOTADecoder
 	 * @return The resulting ms duration.
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private int __durationToMs(int __duration, int __durSpecifier) 
 	{
 		// Base quarter note duration in ms
@@ -1291,7 +1274,6 @@ public class NokiaOTADecoder
 	 * that OTA parsing must be paused until the next call.
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private boolean __generateSamples(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __fmt,
 		@Nullable Object __buf,
@@ -1405,7 +1387,6 @@ public class NokiaOTADecoder
 	 * @return An integer representing the read bits.
 	 * @since 2025/12/24
 	 */
-	@KeepWhenCompacting
 	private int __readBits(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __numBits) 
 	{

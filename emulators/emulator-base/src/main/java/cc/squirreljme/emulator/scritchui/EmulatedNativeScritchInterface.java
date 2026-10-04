@@ -13,7 +13,6 @@ import cc.squirreljme.emulator.scritchui.dylib.DylibScritchInterface;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Emulated version of {@link NativeScritchInterface}.

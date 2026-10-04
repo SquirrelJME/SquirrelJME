@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.cldc.lang;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.LineEndingType;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.rms;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.rms.RecordStoreException;
 
 /**

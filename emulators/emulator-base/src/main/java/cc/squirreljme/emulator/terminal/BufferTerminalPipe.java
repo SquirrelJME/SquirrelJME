@@ -10,8 +10,6 @@
 package cc.squirreljme.emulator.terminal;
 
 import cc.squirreljme.emulator.MLECallWouldFail;
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import net.multiphasicapps.io.ByteDeque;

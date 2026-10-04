@@ -9,8 +9,6 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Dynamic library object for choices.
  *

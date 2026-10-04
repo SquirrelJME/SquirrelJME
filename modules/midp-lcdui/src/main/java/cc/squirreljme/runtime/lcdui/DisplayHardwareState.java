@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This represents the state of the display hardware.
  *

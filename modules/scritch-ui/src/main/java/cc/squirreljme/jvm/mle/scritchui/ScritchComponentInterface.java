@@ -15,8 +15,6 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchActivateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
-import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;

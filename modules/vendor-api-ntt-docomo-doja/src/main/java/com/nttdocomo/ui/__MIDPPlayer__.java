@@ -9,13 +9,9 @@
 
 package com.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import cc.squirreljme.runtime.nttdocomo.media.AbstractMediaSound;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import javax.microedition.io.InputConnection;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;

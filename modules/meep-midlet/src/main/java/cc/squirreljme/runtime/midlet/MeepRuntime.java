@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.midlet;
 
 import cc.squirreljme.jvm.suite.Profile;
 import cc.squirreljme.jvm.suite.SuiteVersion;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.midlet.MIDlet;
 
 /**

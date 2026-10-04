@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.zip.blockreader;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.Closeable;
 import java.io.EOFException;
 import java.io.IOException;

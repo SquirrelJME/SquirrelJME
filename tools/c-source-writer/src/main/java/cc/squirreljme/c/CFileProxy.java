@@ -11,7 +11,6 @@ package cc.squirreljme.c;
 
 import cc.squirreljme.c.out.CPivotPoint;
 import cc.squirreljme.c.std.CFunctionProvider;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.List;
 

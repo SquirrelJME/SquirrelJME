@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.classfile;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.io.DataInputStream;
 import java.io.IOException;

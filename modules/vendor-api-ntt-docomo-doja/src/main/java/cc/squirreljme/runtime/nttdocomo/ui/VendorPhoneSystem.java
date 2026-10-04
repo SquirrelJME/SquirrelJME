@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import com.nttdocomo.ui.PhoneSystem;
 
 /**

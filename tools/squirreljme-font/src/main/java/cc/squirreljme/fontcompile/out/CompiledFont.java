@@ -17,7 +17,6 @@ import cc.squirreljme.fontcompile.out.rafoces.HuffTable;
 import cc.squirreljme.fontcompile.out.rafoces.VectorChain;
 import cc.squirreljme.fontcompile.out.rafoces.VectorPoint;
 import cc.squirreljme.fontcompile.util.GlyphId;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Iterator;
 import java.util.List;

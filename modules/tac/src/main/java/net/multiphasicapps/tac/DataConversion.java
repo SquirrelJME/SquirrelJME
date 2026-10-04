@@ -10,7 +10,6 @@
 package net.multiphasicapps.tac;
 
 import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This class contains helpers for data conversion.

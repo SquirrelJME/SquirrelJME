@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.file;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.gcf.AbstractStreamConnection;
@@ -28,7 +26,6 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
-import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.ConnectionClosedException;
@@ -37,6 +34,7 @@ import javax.microedition.io.file.IllegalModeException;
 import net.multiphasicapps.collections.UnmodifiableArrayList;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -456,7 +454,6 @@ public final class FileEndPointConnection
 	 * @since 2025/12/28
 	 */
 	@SuppressWarnings("resource")
-	@KeepWhenCompacting
 	FileEndPointConnection __changeEndPoint(UriGenericPart __part,
 		UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, IOException, SecurityException

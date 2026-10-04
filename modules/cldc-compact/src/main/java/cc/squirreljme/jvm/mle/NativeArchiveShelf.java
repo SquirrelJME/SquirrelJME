@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.brackets.NativeArchiveBracket;
 import cc.squirreljme.jvm.mle.brackets.NativeArchiveEntryBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.InputStream;
 import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.Pattern;

@@ -9,9 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
-import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.jvm.mle.callbacks.ShelfCallback;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Base interface for all ScritchUI listeners.

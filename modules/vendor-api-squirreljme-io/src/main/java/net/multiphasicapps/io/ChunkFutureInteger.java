@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Future value storage with {@link ChunkWriter}.
  *

@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.scritchui.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Element type for ScritchUI look and feel.
  *

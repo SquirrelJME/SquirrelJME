@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.gcf;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is used to track the state of the HTTP connection since it must be
  * shared across many classes for HTTP.

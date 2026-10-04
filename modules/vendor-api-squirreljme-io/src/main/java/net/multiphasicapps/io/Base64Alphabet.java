@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This represents the alphabet that is used for Base64.
  *

@@ -9,9 +9,7 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.c.out.CTokenOutput;
 import cc.squirreljme.c.out.StringCollectionCTokenOutput;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

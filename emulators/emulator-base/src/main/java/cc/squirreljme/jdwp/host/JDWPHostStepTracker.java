@@ -13,7 +13,6 @@ import cc.squirreljme.jdwp.JDWPStepDepth;
 import cc.squirreljme.jdwp.JDWPStepSize;
 import cc.squirreljme.jdwp.host.views.JDWPViewFrame;
 import cc.squirreljme.jdwp.host.views.JDWPViewThread;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * This is a tracker for stepping events.

@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import javax.microedition.media.PlayerListener;

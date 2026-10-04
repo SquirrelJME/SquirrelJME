@@ -8,7 +8,6 @@
 
 package cc.squirreljme.runtime.media;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.media.midi.MidiUtils;
 import javax.microedition.media.MediaException;

@@ -11,8 +11,6 @@ package cc.squirreljme.runtime.cldc.io;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.BuiltInEncodingType;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.UnsupportedEncodingException;
 
 /**

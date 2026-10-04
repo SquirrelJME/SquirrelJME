@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui.extra;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;

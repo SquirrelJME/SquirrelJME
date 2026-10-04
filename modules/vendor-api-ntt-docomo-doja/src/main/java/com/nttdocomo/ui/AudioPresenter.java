@@ -10,8 +10,6 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import com.nttdocomo.io.ConnectionException;
@@ -728,7 +726,6 @@ public class AudioPresenter
 	 * @return Whether the player is currently paused or not.
 	 * @since 2026/05/09
 	 */
-	@KeepWhenCompacting
 	boolean __isPaused()
 	{
 		return this._paused;

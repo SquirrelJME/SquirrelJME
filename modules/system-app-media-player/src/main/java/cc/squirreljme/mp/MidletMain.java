@@ -9,18 +9,9 @@
 
 package cc.squirreljme.mp;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.IOException;
-import javax.microedition.io.Connection;
-import javax.microedition.io.Connector;
-import javax.microedition.io.InputConnection;
-import javax.microedition.io.file.FileConnection;
 import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
-import org.intellij.lang.annotations.Language;
 
 /**
  * Main entry point for the media player.

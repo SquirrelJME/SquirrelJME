@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.lcduidemo;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.List;

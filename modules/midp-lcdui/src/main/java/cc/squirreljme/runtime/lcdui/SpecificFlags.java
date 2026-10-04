@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;

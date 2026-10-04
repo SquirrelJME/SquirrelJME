@@ -17,7 +17,6 @@ import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
 import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.media.AbstractPlayer;
@@ -31,61 +30,47 @@ import java.io.InputStream;
 import java.io.IOException;
 import javax.microedition.media.MediaException;
 
-@KeepWhenCompacting
 public class WavPlayer 
 	extends AbstractPlayer
 	implements AudioStreamRenderer
 {
 	/** The audio connection. */
-	@KeepWhenCompacting
 	private volatile AudioConnectionBracket _connection;
 
 	/** The audio stream used. */
-	@KeepWhenCompacting
 	private volatile AudioStreamBracket _stream;
 
 	/** The decoder instance for compressed PCM wav data */
-	@KeepWhenCompacting
 	private PCMDecoder _decoder;
 
 	/** The un-realized input stream. */
-	@KeepWhenCompacting
 	private volatile InputConnection _unrealizedIn;
 
 	/** The sample rate of the wav data in use */
-	@KeepWhenCompacting
 	private int _wavSampleRate;
 
 	/** The amount of audio channels of the wav data in use */
-	@KeepWhenCompacting
 	private byte _wavChannels;
 
 	/** The underlying format of the wav data in use */
-	@KeepWhenCompacting
 	private int _wavFormat;
 
 	/** The amount samples in each frame of the wav data */
-	@KeepWhenCompacting
 	private int _wavFrameSize;
 
 	/** Bit-depth of samples in the wav data in use */
-	@KeepWhenCompacting
 	private byte _wavBits;
 
 	/** How many valid audio samples the wav data in use has */
-	@KeepWhenCompacting
 	private int _wavSampleLen;
 
 	/** How many bytes are used for one second of playback */
-	@KeepWhenCompacting
 	private int _wavBytesPerSec;
 
 	/** Current sample marker for wav audio rendering. */
-	@KeepWhenCompacting
 	private int _curSample;
 
 	/** Volume multiplier for rendered samples (0-100%). */
-	@KeepWhenCompacting
 	private byte _volumeMult;
 
 	/** The wav sample data array. */
@@ -98,7 +83,6 @@ public class WavPlayer
 	 * @throws NullPointerException If {@code __in} is null.
 	 * @since 2025/12/25
 	 */
-	@KeepWhenCompacting
 	public WavPlayer(@NotNull InputConnection __in)
 		throws NullPointerException
 	{

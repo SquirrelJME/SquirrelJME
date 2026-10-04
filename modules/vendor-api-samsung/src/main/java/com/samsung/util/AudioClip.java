@@ -10,8 +10,6 @@
 package com.samsung.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import cc.squirreljme.runtime.media.AudioSystem;
@@ -354,7 +352,6 @@ public class AudioClip
 	 *
 	 * @since 2026/04/07
 	 */
-	@KeepWhenCompacting
 	void __close()
 	{
 		synchronized (this)

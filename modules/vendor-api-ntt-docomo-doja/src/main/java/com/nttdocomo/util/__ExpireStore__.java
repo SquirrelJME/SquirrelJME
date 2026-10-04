@@ -9,8 +9,6 @@
 
 package com.nttdocomo.util;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 
 /**
@@ -18,7 +16,6 @@ import java.lang.ref.Reference;
  *
  * @since 2024/12/05
  */
-@KeepWhenCompacting
 final class __ExpireStore__
 	implements Runnable
 {
@@ -35,7 +32,6 @@ final class __ExpireStore__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/12/05
 	 */
-	@KeepWhenCompacting
 	__ExpireStore__(Reference<Timer> __owner)
 		throws NullPointerException
 	{
@@ -70,7 +66,6 @@ final class __ExpireStore__
 	 * @param __listener The lister to call on expiration.
 	 * @since 2024/12/05
 	 */
-	@KeepWhenCompacting
 	void __set(TimerListener __listener)
 	{
 		synchronized (this)

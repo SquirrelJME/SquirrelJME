@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This wraps a character array and provides integer access to it.
  *

@@ -9,9 +9,6 @@
 
 package cc.squirreljme.runtime.cldc;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * This is thrown when the implementation is based on documentation where an
  * assumption is made on what happens but where the documentation and

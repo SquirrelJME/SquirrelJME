@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Flags representing the type of input method that may be available, this can
  * be used to allow for text and dial-pad input on less capable devices.

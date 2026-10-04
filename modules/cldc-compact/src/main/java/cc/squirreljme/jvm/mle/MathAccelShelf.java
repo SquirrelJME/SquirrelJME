@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.constants.MathAccelFlag;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.CheckReturnValue;
 

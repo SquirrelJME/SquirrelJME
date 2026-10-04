@@ -33,8 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 
 /**
@@ -86,7 +84,6 @@ public class MLDPlayerEvent
 	 * @param __data Additional event data.
 	 * @since 2025/05/05
 	 */
-	@KeepWhenCompacting
 	MLDPlayerEvent(double __time,
 		@MagicConstant(valuesFromClass = MLDPlayerEvent.class) int __type,
 		int __data)

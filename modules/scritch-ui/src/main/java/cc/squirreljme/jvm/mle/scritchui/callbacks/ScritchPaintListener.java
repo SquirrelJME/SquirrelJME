@@ -12,8 +12,6 @@ package cc.squirreljme.jvm.mle.scritchui.callbacks;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 

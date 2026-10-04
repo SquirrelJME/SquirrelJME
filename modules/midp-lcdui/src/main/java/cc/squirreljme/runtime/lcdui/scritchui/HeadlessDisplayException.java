@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is thrown when ScritchUI is not supported.
  *

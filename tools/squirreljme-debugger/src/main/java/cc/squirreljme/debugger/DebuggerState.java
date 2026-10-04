@@ -10,13 +10,13 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPCommLink;
+import cc.squirreljme.jdwp.JDWPCommand;
+import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPCommandSetEventRequest;
 import cc.squirreljme.jdwp.JDWPCommandSetThreadReference;
 import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPEventKind;
-import cc.squirreljme.jdwp.JDWPCommand;
-import cc.squirreljme.jdwp.JDWPCommandSet;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;

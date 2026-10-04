@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.nttdocomo.io;
 
 import cc.squirreljme.jvm.launch.IModeProperty;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
 import cc.squirreljme.runtime.cldc.util.StringUtils;

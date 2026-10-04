@@ -11,8 +11,6 @@ package net.multiphasicapps.lcduidemo;
 
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.lcdui.gfx.ExtraGraphics;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.io.IOException;
 import java.io.InputStream;

@@ -9,13 +9,12 @@
 
 package com.nokia.mid.ui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.gfx.ExtraGraphics;
+import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
-import javax.microedition.lcdui.Graphics;
 import org.intellij.lang.annotations.MagicConstant;
 
 /**

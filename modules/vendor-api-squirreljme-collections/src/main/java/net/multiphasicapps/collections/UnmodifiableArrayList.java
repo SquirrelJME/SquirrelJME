@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
@@ -47,7 +45,6 @@ public final class UnmodifiableArrayList<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/13
 	 */
-	@KeepWhenCompacting
 	UnmodifiableArrayList(T[] __a, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{

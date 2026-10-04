@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.zip;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is used to describe the compatibility that attributes within the ZIP
  * file are compatible with.

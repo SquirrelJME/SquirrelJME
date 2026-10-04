@@ -33,8 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Sample generator for music sequencer players. Invoking {@code instance()}
  * will produce an object that can be used to render the actual samples of

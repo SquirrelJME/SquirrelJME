@@ -9,7 +9,6 @@
 package cc.squirreljme.runtime.media.midi;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.media.AbstractMidiControl;
 import cc.squirreljme.runtime.media.AbstractPlayer;
@@ -32,7 +31,6 @@ import javax.microedition.media.control.MIDIControl;
  *
  * @since 2022/04/24
  */
-@KeepWhenCompacting
 public class MidiPlayer
 	extends AbstractPlayer
 {
@@ -48,11 +46,9 @@ public class MidiPlayer
 	private static volatile MidiTracker _TRACKER;
 	
 	/** The control used to emit MIDI sounds. */
-	@KeepWhenCompacting
 	protected final AbstractMidiControl midiControl;
 	
 	/** The MIDI player this is using. */
-	@KeepWhenCompacting
 	protected final Player midiPlayer;
 	
 	/** The timing that is shared for all MIDI tracks. */
@@ -71,7 +67,6 @@ public class MidiPlayer
 	private volatile long _nanoDuration;
 
 	/** master Volume for MIDI notes. */
-	@KeepWhenCompacting
 	volatile MidiVolume _volume;
 	
 	/**
@@ -486,7 +481,6 @@ public class MidiPlayer
 	 * @return The nanoseconds per tick division.
 	 * @since 2026/01/01
 	 */
-	@KeepWhenCompacting
 	public static long calculateTickDiv(int __rawTickDiv)
 	{
 		// Determine tick division.. either SMPTE or ppqn

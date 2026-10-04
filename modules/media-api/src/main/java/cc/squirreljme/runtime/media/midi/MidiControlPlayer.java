@@ -11,8 +11,6 @@ package cc.squirreljme.runtime.media.midi;
 import cc.squirreljme.jvm.mle.MidiShelf;
 import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.media.AbstractMidiControl;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import javax.microedition.media.MediaException;
@@ -22,7 +20,6 @@ import javax.microedition.media.MediaException;
  *
  * @since 2022/04/24
  */
-@KeepWhenCompacting
 public class MidiControlPlayer
 	extends AbstractPlayer
 {
@@ -30,7 +27,6 @@ public class MidiControlPlayer
 	 * {@squirreljme.property cc.squirreljme.midi.device=name/id Use the
 	 * selected MIDI device to play audio, if found. May be a name or number.}
 	 */
-	@KeepWhenCompacting
 	public static final String MIDI_DEVICE_PROPERTY =
 		"cc.squirreljme.midi.device";
 	
@@ -38,7 +34,6 @@ public class MidiControlPlayer
 	 * {@squirreljme.property cc.squirreljme.midi.port=id Use the given port
 	 * number for the selected MIDI device.}
 	 */
-	@KeepWhenCompacting
 	public static final String MIDI_PORT_PROPERTY =
 		"cc.squirreljme.midi.port";
 	
@@ -52,7 +47,6 @@ public class MidiControlPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
-	@KeepWhenCompacting
 	public MidiControlPlayer(AbstractMidiControl __control)
 		throws NullPointerException
 	{
@@ -72,7 +66,6 @@ public class MidiControlPlayer
 	 * @since 2025/12/28
 	 */
 	@Override
-	@KeepWhenCompacting
 	public void becomingDeallocated()
 	{
 		// Nothing needs to be done
@@ -217,7 +210,6 @@ public class MidiControlPlayer
 	 * @throws MediaException If no MIDI is supported.
 	 * @since 2022/04/24
 	 */
-	@KeepWhenCompacting
 	public static MidiControlPlayer newMidiPlayer()
 		throws MediaException
 	{

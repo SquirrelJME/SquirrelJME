@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.scritchui.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * The type of element for lookup of fonts.
  *

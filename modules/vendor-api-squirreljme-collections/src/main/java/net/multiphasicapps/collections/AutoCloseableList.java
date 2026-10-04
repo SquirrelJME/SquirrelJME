@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 
 /**

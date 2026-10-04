@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.zip.queue;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.io.Closeable;
 import java.io.IOException;

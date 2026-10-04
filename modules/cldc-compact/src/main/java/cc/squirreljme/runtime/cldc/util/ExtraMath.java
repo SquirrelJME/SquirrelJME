@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.jvm.mle.MathAccelShelf;
 import cc.squirreljme.jvm.mle.constants.MathAccelFlag;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**

@@ -17,8 +17,6 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchMenuItemActivateListene
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowFlag;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowState;
-import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

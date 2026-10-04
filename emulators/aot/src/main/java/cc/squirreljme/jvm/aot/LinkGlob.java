@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.aot;
 import cc.squirreljme.jvm.manifest.JavaManifest;
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 /**

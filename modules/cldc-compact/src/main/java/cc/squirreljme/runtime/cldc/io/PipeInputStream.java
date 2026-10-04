@@ -13,8 +13,6 @@ import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -138,7 +136,6 @@ public class PipeInputStream
 	 * @throws IOException If the code indicates an error.
 	 * @since 2020/11/22
 	 */
-	@KeepWhenCompacting
 	static int __checkError(int __code, boolean __eofOkay)
 		throws IOException
 	{

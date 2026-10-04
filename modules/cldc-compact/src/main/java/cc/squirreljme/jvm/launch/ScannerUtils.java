@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.launch;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Utilities for the suite scanner.
  *

@@ -16,7 +16,6 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasLabelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasParentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuKindBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -10,13 +10,6 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPId;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.lang.ref.Reference;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Information storage for a single type.

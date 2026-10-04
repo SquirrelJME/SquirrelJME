@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui.extra;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Displayable;
 

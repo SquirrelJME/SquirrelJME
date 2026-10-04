@@ -9,8 +9,6 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * A comparison within C.
  *

@@ -9,16 +9,11 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * A callback that can run natively.
  *
  * @since 2024/12/16
  */
-@KeepWhenCompacting
 final class __NativeCallback__
 	implements Runnable
 {
@@ -39,7 +34,6 @@ final class __NativeCallback__
 	 * @param __anythingP The anything pointer.
 	 * @since 2024/12/16
 	 */
-	@KeepWhenCompacting
 	__NativeCallback__(long __stateP, long __funcP, long __anythingP)
 	{
 		this.stateP = __stateP;

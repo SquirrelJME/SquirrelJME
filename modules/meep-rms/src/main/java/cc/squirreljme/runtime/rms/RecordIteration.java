@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.rms;
 
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.suite.SuiteIdentifier;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Represents a single iteration to allow access over

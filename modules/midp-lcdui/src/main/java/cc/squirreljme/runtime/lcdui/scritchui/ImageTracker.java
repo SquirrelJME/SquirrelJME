@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Image;
 import org.jetbrains.annotations.Async;
 

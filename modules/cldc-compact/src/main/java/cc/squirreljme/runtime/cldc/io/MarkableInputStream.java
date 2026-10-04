@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.cldc.io;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;

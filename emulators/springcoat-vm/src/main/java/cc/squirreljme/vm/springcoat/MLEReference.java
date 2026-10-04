@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.ReferenceShelf;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;

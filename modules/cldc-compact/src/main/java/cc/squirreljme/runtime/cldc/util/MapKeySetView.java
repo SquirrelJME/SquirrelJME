@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;

@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.nttdocomo.ui;
 
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraDisplayable;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraStateManager;

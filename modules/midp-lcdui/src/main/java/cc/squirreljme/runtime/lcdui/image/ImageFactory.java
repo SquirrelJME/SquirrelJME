@@ -8,8 +8,6 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This factory is used for creating images.
  *

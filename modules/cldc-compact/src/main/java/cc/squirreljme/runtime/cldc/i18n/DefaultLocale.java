@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.cldc.i18n;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.BuiltInLocaleType;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.NoSuchElementException;
 
 /**

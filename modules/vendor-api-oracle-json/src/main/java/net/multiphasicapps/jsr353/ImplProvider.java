@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.jsr353;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonBuilderFactory;

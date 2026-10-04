@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.mle.callbacks;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Callback to be used with

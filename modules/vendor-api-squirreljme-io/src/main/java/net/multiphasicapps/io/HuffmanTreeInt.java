@@ -10,7 +10,6 @@
 package net.multiphasicapps.io;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.NoSuchElementException;

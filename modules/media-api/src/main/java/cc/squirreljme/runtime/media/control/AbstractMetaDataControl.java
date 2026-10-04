@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.media.control;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.media.AbstractControl;
 import javax.microedition.media.control.MetaDataControl;
 import org.jetbrains.annotations.NotNull;

@@ -9,10 +9,7 @@
 
 package cc.squirreljme.fontcompile.out.source;
 
-import cc.squirreljme.c.CArrayBlock;
-import cc.squirreljme.c.CArrayType;
 import cc.squirreljme.c.CBasicExpression;
-import cc.squirreljme.c.CExpression;
 import cc.squirreljme.c.CFile;
 import cc.squirreljme.c.CIdentifier;
 import cc.squirreljme.c.CPrimitiveType;

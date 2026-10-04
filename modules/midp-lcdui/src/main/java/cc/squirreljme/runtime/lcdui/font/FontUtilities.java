@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.lcdui.font;
 
 import cc.squirreljme.jvm.mle.constants.PencilFontFace;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Font;
 import org.intellij.lang.annotations.MagicConstant;
 

@@ -17,8 +17,6 @@ import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.mle.constants.TaskStatusType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.Closeable;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.CheckReturnValue;

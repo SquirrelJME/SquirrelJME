@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 

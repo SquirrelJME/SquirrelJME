@@ -9,9 +9,7 @@
 
 package cc.squirreljme.jvm.aot;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.tac.TestRunnable;
 
 /**
  * Tests a fake backend.

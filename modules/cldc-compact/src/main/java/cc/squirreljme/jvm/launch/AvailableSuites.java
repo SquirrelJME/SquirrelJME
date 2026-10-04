@@ -9,11 +9,7 @@
 
 package cc.squirreljme.jvm.launch;
 
-import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +38,6 @@ public final class AvailableSuites
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
-	@KeepWhenCompacting
 	AvailableSuites(VirtualJarPackageShelf __shelf, __Libraries__ __libs,
 		Application... __apps)
 		throws NullPointerException

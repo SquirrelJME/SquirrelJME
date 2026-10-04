@@ -10,7 +10,6 @@
 package net.multiphasicapps.classfile;
 
 import cc.squirreljme.runtime.cldc.util.IntegerArrays;
-import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Map;
 import net.multiphasicapps.collections.UnmodifiableMap;

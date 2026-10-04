@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Holds the background color.
  *

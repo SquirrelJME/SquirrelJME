@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.scritchui.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Window flags which affect state and visibility.
  *

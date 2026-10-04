@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.lang;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

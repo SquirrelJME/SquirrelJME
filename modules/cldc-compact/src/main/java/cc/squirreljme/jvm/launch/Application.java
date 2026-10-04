@@ -16,9 +16,6 @@ import cc.squirreljme.jvm.mle.brackets.TaskBracket;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.EntryPoint;
-import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
@@ -44,7 +41,6 @@ public abstract class Application
 		"microedition.profiles";
 	
 	/** The JAR this references. */
-	@KeepWhenCompacting
 	protected final JarPackageBracket jar;
 	
 	/** The library information. */
@@ -58,7 +54,6 @@ public abstract class Application
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/06/13
 	 */
-	@KeepWhenCompacting
 	Application(JarPackageBracket __jar, __Libraries__ __libs)
 		throws NullPointerException
 	{

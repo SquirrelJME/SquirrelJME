@@ -18,7 +18,6 @@ import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.jvm.suite.SuiteName;
 import cc.squirreljme.jvm.suite.SuiteVendor;
 import cc.squirreljme.jvm.suite.SuiteVersion;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import com.oracle.json.Json;
 import com.oracle.json.JsonArray;
@@ -40,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**

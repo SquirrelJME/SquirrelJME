@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is called before and after the value of an item has changed.
  *

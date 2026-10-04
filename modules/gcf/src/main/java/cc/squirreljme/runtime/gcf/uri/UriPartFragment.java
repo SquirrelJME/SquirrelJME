@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.uri;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Uri part has a fragment.
  *

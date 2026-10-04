@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.lcduidemo;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.Random;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;

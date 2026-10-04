@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This interface represents integer arrays.
  *

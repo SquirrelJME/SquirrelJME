@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This class contains math methods which are derived from the Freely

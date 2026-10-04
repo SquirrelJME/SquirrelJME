@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.lcduidemo;
 
-import cc.squirreljme.jvm.mle.ThreadShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;

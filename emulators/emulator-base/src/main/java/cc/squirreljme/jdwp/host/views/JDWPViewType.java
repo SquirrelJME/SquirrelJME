@@ -9,8 +9,8 @@
 
 package cc.squirreljme.jdwp.host.views;
 
-import cc.squirreljme.jdwp.host.JDWPHostValue;
 import cc.squirreljme.jdwp.JDWPLocalVariable;
+import cc.squirreljme.jdwp.host.JDWPHostValue;
 import cc.squirreljme.jdwp.host.trips.JDWPTripBreakpoint;
 
 /**

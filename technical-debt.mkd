@@ -7,6 +7,9 @@ process with the caveat of being a long and drawn out repetitive task.
 Any repetitive technical debt could be solved with a script or IntelliJ
 replace intentions.
 
+Any solved solution will remain here so that issues that come from the past
+are not repeated.
+
 # Error Code Migration
 
 The error codes in the form of `"NARG"` and `"AA01"` take up memory to store
@@ -31,11 +34,11 @@ to lines if they were to be Javadoc tags. Annotations could be associated
 with the `__seq__()` call. Naturally, instructions at a given index can get
 their line determined by the `LineNumberTable` attribute in the code.
 
-## Solution
+## Resultant Solution
 
 ***TODO***
 
-# `@SquirrelJMEVendorApi` and `@KeepWhenCompacting` Cleanup
+# `@SquirrelJMEVendorApi` and `@KeepWhenCompacting` Cleanup (Done)
 
 With the ProGuard changes there are cases where `@SquirrelJMEVendorApi` was
 added to prevent it from removing a class, which no longer has an effect for
@@ -52,10 +55,63 @@ of `Connection`, it needs a `@KeepWhenCompacting` so it is not removed for
 also applies for cases where there are native callbacks from the MLE layer
 called to a class, it is appropriate to use `@KeepWhenCompacting`.
 
-## Ideas
+## Potential Ideas
 
-***TODO***
+Mostly just seeing what works and what does not.
 
-## Solution
+## Resultant Solution
 
-***TODO***
+The ProGuard rules were redone to effectively never shrink, ProGuard's term
+for removing classes, and only optimize and obfuscate. This means that there
+is now never a worry for a class being deleted. What followed was effectively
+going through ProGuard's set of optimizations, each likely one that would break
+code would be flipped and SpringCoat Release would be run to ensure that it
+still runs the launcher and reaches the main list. The mystify and hello
+demos were also run to ensure that this operated correctly. This took about
+four days on and off.
+
+Once everything worked, removing the debug code required more optimizations
+to be flipped, naturally being checked to make sure everything still ran. The
+check for debugging was also turned into a method as some `javac` compilers
+seem to inline static fields and otherwise; or ProGuard seems to just have an
+easier time overall if a method is called rather than a field being accessed.
+This removes virtually all debugging output, which results in slightly smaller
+code sizes.
+
+Note that class and member names are still always unique and that type clashing
+has been specifically disabled in ProGuard. Although this slightly does
+reduce the ability to make everything smaller, it does allow for better
+debugging for release builds along with more sane stack traces. I would rather
+have that than smaller code. It also is easier to figure out exactly which
+method is being called as well.
+
+Thus from all of this, `@SquirrelJMEVendorApi` and `@KeepWhenCompacting` are
+no longer needed and thus have been deleted.
+
+There is now `@KeepAbsolutelyEverything` to force ProGuard to keep everything
+for a specific class. This is only set at the top of the class level and
+affects all members so it only needs to be specified once.
+
+For reference, the initial classes to be flagged are as followed for the
+given reason:
+
+ * `AccessController` -- "Security".
+ * `Boolean` -- Boxed type.
+ * `Byte` -- Boxed type.
+ * `Character` -- Boxed type.
+ * `Double` -- Boxed type.
+ * `Float` -- Boxed type.
+ * `Integer` -- Boxed type.
+ * `Long` -- Boxed type.
+ * `Permission` -- "Security".
+ * `PermissionCollection` -- "Security".
+ * `Runtime` -- VM internals are needed by SpringCoat/NanoCoat.
+ * `SecurityManager` -- "Security".
+ * `Short` -- Boxed type.
+ * `System` -- VM internals are needed by SpringCoat/NanoCoat.
+ * `Thread` -- VM internals are needed by SpringCoat/NanoCoat.
+ * `Throwable` -- VM internals are needed by SpringCoat/NanoCoat.
+ * `__AppLaunch__` -- Main entry point.
+ * `__MainHandler__` -- Main entry point.
+ * `__StarAppLaunch__` -- Main entry point.
+ * `__Start__` -- Main entry point.

@@ -13,8 +13,6 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScrollPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchViewBracket;
-import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
 
 /**

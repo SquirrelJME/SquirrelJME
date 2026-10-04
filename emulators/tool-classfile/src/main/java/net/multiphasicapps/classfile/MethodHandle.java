@@ -11,7 +11,6 @@ package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.lang.ref.WeakReference;
 
 /**
  * This represents a method's class, name, and type.

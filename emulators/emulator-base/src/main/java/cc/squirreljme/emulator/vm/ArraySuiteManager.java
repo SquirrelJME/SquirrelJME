@@ -9,7 +9,6 @@
 
 package cc.squirreljme.emulator.vm;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.nio.file.Path;
@@ -17,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * This is a suite manager which is just a group of already specified

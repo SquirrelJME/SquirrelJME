@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.zip.blockreader;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import net.multiphasicapps.zip.ZipException;
 
 /**

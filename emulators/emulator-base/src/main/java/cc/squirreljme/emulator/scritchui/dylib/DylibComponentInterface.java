@@ -11,9 +11,9 @@ package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchComponentInterface;
+import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchActivateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeListener;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;

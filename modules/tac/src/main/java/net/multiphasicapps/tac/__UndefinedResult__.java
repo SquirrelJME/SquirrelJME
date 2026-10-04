@@ -9,16 +9,11 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This represents a result which has not been defined.
  *
  * @since 2018/10/06
  */
-@KeepWhenCompacting
 final class __UndefinedResult__
 {
 	/**

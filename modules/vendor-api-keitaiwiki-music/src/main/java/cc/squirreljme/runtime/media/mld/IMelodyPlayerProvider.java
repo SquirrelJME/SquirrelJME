@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.media.mld;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.media.PlayerProvider;
 import javax.microedition.io.InputConnection;
 import javax.microedition.media.MediaException;
@@ -21,7 +19,6 @@ import javax.microedition.media.Player;
  *
  * @since 2026/06/27
  */
-@KeepWhenCompacting
 public class IMelodyPlayerProvider
 	implements PlayerProvider
 {

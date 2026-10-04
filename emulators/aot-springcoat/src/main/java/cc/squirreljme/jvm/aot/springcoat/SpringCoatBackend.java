@@ -14,17 +14,17 @@ import cc.squirreljme.jvm.aot.Backend;
 import cc.squirreljme.jvm.aot.CompileSettings;
 import cc.squirreljme.jvm.aot.LinkGlob;
 import cc.squirreljme.jvm.aot.RomSettings;
-import java.io.DataOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import net.multiphasicapps.zip.queue.ArchiveOutputQueue;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.vm.VMClassLibrary;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.zip.queue.ArchiveOutputQueue;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**

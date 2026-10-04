@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.i18n;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This class represents the interface used to perform locale based operations.
  *

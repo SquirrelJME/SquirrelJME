@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.zip.streamreader;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.archive.ArchiveStreamEntry;
 import java.io.IOException;
 import java.io.InputStream;

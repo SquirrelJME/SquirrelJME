@@ -9,10 +9,7 @@
 
 package cc.squirreljme.jvm.mle.exceptions;
 
-import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
-import org.jetbrains.annotations.Range;
 
 /**
  * This is thrown when there was an error made during a MLE call.

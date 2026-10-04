@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

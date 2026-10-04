@@ -1,4 +1,3 @@
-import cc.squirreljme.plugin.swm.JavaMEConfiguration
 import cc.squirreljme.plugin.swm.JavaMEMidletType
 import cc.squirreljme.plugin.swm.JavaMEStandard
 

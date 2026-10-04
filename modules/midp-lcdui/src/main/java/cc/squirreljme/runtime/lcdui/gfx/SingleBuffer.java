@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.lcdui.gfx;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
 import java.util.Arrays;
 import javax.microedition.lcdui.Graphics;

@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.media;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.Queue;
 
 /**
@@ -18,7 +16,6 @@ import java.util.Queue;
  *
  * @since 2025/06/03
  */
-@KeepWhenCompacting
 final class __DispatchRunner__
 	implements Runnable
 {

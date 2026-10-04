@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import org.jetbrains.annotations.CheckReturnValue;

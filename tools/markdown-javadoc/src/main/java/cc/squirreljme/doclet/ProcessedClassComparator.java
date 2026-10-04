@@ -9,7 +9,6 @@
 
 package cc.squirreljme.doclet;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Comparator;
 
 /**

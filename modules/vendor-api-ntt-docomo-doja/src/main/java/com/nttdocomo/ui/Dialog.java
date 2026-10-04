@@ -10,13 +10,11 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraDisplayable;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraStateManager;
 import java.util.Objects;
 import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.Displayable;
 import org.intellij.lang.annotations.MagicConstant;
 
 @Api

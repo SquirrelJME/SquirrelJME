@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Compatibility flags which violate Java ME standards and are very specific
  * to single sets of devices and/or applications. These options should rarely,

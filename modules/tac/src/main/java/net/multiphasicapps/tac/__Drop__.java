@@ -9,17 +9,11 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Drop value from expectations.
  * 
  * @since 2023/07/10
  */
-@KeepWhenCompacting
 final class __Drop__
 {
 	/**

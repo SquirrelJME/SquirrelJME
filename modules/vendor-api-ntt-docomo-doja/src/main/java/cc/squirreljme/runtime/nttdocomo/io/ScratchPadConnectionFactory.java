@@ -9,9 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import cc.squirreljme.runtime.gcf.uri.UriPart;

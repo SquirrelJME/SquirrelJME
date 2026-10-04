@@ -9,13 +9,11 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import net.multiphasicapps.classfile.ClassName;
 
 /**

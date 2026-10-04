@@ -10,7 +10,6 @@
 package javax.microedition.lcdui.game;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -1016,7 +1015,6 @@ public class Sprite
 	 * the image data.
 	 * @since 2026/08/09
 	 */
-	@KeepWhenCompacting
 	private int __getDataTopLeft(int __x1, int __y1, int __x2, int __y2,
 		boolean __isX)
 	{
@@ -1071,7 +1069,6 @@ public class Sprite
 	 * {@code __height} are less than 1, or {@code __transform} is invalid.
 	 * @since 2026/08/09
 	 */
-	@KeepWhenCompacting
 	private int[] __getIncrAndStartPos(
 		@MagicConstant(valuesFromClass = Sprite.class) int __transform,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __width,
@@ -1127,7 +1124,6 @@ public class Sprite
 	 * @throws IllegalArgumentException If {@code __transform} is invalid.
 	 * @since 2026/08/09
 	 */
-	@KeepWhenCompacting
 	private int __getTopLeftCorner(int __coordX, int __coordY,
 		@MagicConstant(valuesFromClass = Sprite.class) int __transform,
 		boolean __isX)
@@ -1180,7 +1176,6 @@ public class Sprite
 	 * @param __rect2y2 First rect's bottom coordinate.
 	 * @since 2026/08/09
 	 */
-	@KeepWhenCompacting
 	private boolean __intersects(int __rect1x1, int __rect1y1, int __rect1x2,
 		int __rect1y2, int __rect2x1, int __rect2y1, int __rect2x2,
 		int __rect2y2)
@@ -1215,7 +1210,6 @@ public class Sprite
 	 * are less than 1.
 	 * @since 2026/08/09
 	 */
-	@KeepWhenCompacting
 	private boolean __pixelCollision(int __x1, int __y1, int __x2,
 		int __y2, @NotNull Image __image1,
 		@MagicConstant(valuesFromClass = Sprite.class) int __transform1,
@@ -1259,7 +1253,6 @@ public class Sprite
 	 * {@code __frameHeight} are less than 1.
 	 * @since 2026/08/09
 	 */
-	@KeepWhenCompacting
 	private void __prepareFrames(@NotNull Image __image,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __frameWidth,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __frameHeight,

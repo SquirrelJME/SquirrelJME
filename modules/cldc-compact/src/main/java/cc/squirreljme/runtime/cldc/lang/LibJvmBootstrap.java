@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.lang;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Bootstrap main for the JVM library.
  *

@@ -10,16 +10,12 @@
 package cc.squirreljme.fontcompile.util;
 
 import cc.squirreljme.fontcompile.InvalidFontException;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
-import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**

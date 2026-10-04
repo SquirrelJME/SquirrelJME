@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Listener to be called when focus changes.
  *

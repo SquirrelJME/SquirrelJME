@@ -9,9 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Abstract implementation of {@link IntegerArray}, two of these arrays are
  * considered equal even if their type varies.

@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This class is used to throttle events in order to limit the framerate of
  * applications that are linked to rendering and event speeds.

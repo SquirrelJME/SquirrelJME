@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.full.attrib.AbstractFileAttributes;
 import cc.squirreljme.runtime.cldc.full.attrib.StaticFileAttributes;
 

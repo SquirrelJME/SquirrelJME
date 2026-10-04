@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.zip;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This class constants constants which are used to initialize the CRC
  * algorithm parameters.

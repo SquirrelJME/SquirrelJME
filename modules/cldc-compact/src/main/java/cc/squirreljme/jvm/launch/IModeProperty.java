@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.launch;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Properties for DoJa/Star Applications.
  *

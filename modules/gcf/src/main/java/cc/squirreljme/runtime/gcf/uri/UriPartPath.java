@@ -9,9 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.uri;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * URI which has a path.
  *

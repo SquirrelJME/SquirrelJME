@@ -9,8 +9,6 @@
 
 package cc.squirreljme.mp;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.EnumerationToIterator;
 import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import java.io.IOException;

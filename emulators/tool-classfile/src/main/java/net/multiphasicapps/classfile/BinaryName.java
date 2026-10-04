@@ -9,14 +9,11 @@
 
 package net.multiphasicapps.classfile;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;

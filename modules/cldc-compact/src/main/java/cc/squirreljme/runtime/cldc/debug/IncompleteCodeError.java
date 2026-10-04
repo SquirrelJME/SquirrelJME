@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.debug;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Indicates that code is incomplete.
  *

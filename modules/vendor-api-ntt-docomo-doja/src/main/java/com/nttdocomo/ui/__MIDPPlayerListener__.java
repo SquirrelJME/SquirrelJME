@@ -9,8 +9,6 @@
 
 package com.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.media.mld.IMelodyPlayer;
 import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import com.keitaiwiki.music.MLDPlayerEvent;
@@ -23,7 +21,6 @@ import javax.microedition.media.PlayerListener;
  *
  * @since 2025/06/03
  */
-@KeepWhenCompacting
 class __MIDPPlayerListener__
 	implements PlayerListener
 {

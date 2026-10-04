@@ -13,8 +13,6 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchChoiceInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchChoiceBracket;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import javax.microedition.lcdui.Image;
 
@@ -23,7 +21,6 @@ import javax.microedition.lcdui.Image;
  *
  * @since 2024/07/25
  */
-@KeepWhenCompacting
 final class __ExecChoiceUpsert__
 	implements Runnable
 {
@@ -73,7 +70,6 @@ final class __ExecChoiceUpsert__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/25
 	 */
-	@KeepWhenCompacting
 	__ExecChoiceUpsert__(ScritchInterface __scritchApi,
 		ScritchChoiceBracket __widget, boolean __insert,
 		int __atIndex, String __str, Image __img,

@@ -9,8 +9,6 @@ package cc.squirreljme.runtime.gcf.uri;
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is thrown when a URI is not valid.
  *

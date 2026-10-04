@@ -8,7 +8,6 @@
 
 package cc.squirreljme.vm.springcoat.brackets;
 
-import cc.squirreljme.jvm.mle.brackets.MidiDeviceBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 import cc.squirreljme.vm.springcoat.SpringMachine;

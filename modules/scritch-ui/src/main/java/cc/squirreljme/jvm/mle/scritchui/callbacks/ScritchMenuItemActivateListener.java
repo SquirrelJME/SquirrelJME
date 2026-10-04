@@ -12,7 +12,6 @@ package cc.squirreljme.jvm.mle.scritchui.callbacks;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuKindBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Listener for when a menu item is activated.

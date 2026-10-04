@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.media;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import javax.microedition.media.PlayerListener;

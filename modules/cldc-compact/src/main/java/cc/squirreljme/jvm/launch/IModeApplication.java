@@ -21,8 +21,6 @@ import cc.squirreljme.jvm.suite.MarkedDependency;
 import cc.squirreljme.jvm.suite.Profile;
 import cc.squirreljme.jvm.suite.SuiteUtils;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,7 +61,6 @@ public class IModeApplication
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/06/13
 	 */
-	@KeepWhenCompacting
 	IModeApplication(JarPackageBracket __jar, __Libraries__ __libs,
 		Map<String, String> __adfProps, String __jarPath)
 		throws InvalidSuiteException, NullPointerException
@@ -83,7 +80,6 @@ public class IModeApplication
 	 * @throws NullPointerException On null arguments.
 	 * @since 2023/04/13
 	 */
-	@KeepWhenCompacting
 	IModeApplication(JarPackageBracket __jar, __Libraries__ __libs,
 		Map<String, String> __adfProps, String __jarPath, 
 		Map<String, String> __sysProps)

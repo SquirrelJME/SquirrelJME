@@ -1,7 +1,5 @@
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask
 import cc.squirreljme.plugin.util.GradleLoggerOutputStream
-import cc.squirreljme.plugin.util.JavaExecSpecFiller
-import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller
 import lombok.Getter
 
 import javax.inject.Inject

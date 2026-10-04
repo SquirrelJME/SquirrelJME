@@ -9,11 +9,6 @@
 
 package cc.squirreljme.vm;
 
-import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
-
 /**
  * A {@link VMClassLibrary} which also provides direct raw access to resources.
  *

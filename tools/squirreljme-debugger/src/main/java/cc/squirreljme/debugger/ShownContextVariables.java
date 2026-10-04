@@ -14,7 +14,6 @@ import java.awt.BorderLayout;
 import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 /**
  * Shows variable information.

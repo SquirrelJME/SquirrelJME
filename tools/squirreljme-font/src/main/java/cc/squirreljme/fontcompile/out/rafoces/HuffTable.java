@@ -9,12 +9,10 @@
 
 package cc.squirreljme.fontcompile.out.rafoces;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Iterator;
 import java.util.Map;
 import net.multiphasicapps.collections.UnmodifiableMap;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Huffman table used for compression.

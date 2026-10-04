@@ -9,10 +9,8 @@
 
 package cc.squirreljme.c;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 /**
  * Base class for non-basic C types.

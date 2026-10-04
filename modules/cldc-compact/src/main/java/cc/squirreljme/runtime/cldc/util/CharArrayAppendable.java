@@ -9,10 +9,7 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * An {@link Appendable} on a fixed {@code char[]} array.

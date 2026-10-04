@@ -9,8 +9,6 @@
 
 package java.lang.ref;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * In SquirrelJME this is just a {@link WeakReference}, note that this is not
  * in Java ME at all and should not be used.

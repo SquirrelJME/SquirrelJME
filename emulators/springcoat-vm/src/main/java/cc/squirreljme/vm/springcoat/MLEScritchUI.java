@@ -11,9 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
-import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
-import cc.squirreljme.jvm.mle.scritchui.extra.ScritchUnifiedWrapper;
-import cc.squirreljme.vm.springcoat.callbacks.ScritchUnifiedProxy;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
 /**

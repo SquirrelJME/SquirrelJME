@@ -9,10 +9,8 @@
 
 package net.multiphasicapps.classfile;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.util.Iterator;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a pair of stack map tables, for input and output.

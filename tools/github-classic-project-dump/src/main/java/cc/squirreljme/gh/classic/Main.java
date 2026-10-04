@@ -9,7 +9,6 @@
 
 package cc.squirreljme.gh.classic;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;

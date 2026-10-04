@@ -1,7 +1,3 @@
-import cc.squirreljme.plugin.general.cmake.CMakeBuildTask
-
-import java.nio.file.Files
-
 plugins
 {
 	id "java-library"

@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This wraps an object and allows comparison of the object by value only.
  *

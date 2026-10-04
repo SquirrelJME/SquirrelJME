@@ -10,11 +10,6 @@
 package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchEventLoopInterface;
-import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Runs loop iteration for ScritchUI.
@@ -34,7 +29,6 @@ final class __ExecIdle__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/12/22
 	 */
-	@KeepWhenCompacting
 	__ExecIdle__(ScritchEventLoopInterface __loop)
 		throws NullPointerException
 	{

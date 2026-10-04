@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is a decoder which is able to decode input characters and return
  * characters for the input sequence.

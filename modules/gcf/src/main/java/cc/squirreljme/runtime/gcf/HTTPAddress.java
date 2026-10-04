@@ -9,10 +9,8 @@
 
 package cc.squirreljme.runtime.gcf;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import net.multiphasicapps.collections.EmptyList;
 import net.multiphasicapps.collections.UnmodifiableList;

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.suite;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.NaturalComparator;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.lang.ref.Reference;

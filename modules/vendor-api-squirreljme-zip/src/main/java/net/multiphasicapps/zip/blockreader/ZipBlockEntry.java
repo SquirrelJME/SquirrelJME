@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.zip.blockreader;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;

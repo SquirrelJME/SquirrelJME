@@ -12,7 +12,6 @@ package cc.squirreljme.emulator.scritchui.dylib;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchScrollPanelInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScrollPanelBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import org.jetbrains.annotations.NotNull;
 

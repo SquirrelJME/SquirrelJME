@@ -10,9 +10,6 @@
 package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import org.jetbrains.annotations.Debug;
 
 /**
  * Wraps an integer array for access.

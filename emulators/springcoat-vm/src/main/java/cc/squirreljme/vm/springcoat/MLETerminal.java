@@ -13,7 +13,6 @@ import cc.squirreljme.emulator.MLECallWouldFail;
 import cc.squirreljme.jvm.mle.TerminalShelf;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.PipeObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import java.io.IOException;

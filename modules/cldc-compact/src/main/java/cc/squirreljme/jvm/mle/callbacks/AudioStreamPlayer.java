@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.callbacks;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * An extension of {@link AudioStreamRenderer} which allows for control of
  * playback.

@@ -9,13 +9,11 @@
 
 package cc.squirreljme.mp;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.Image;
 import javax.microedition.media.Player;
 import org.freedesktop.tango.TangoIconLoader;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Utilities.

@@ -9,8 +9,6 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This represents the type of SquirrelJME virtual machine that is currently
  * being used, this is used for example to see which set of MLE calls are

@@ -10,15 +10,12 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.runtime.cldc.SquirrelJME;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.launcher.ui.SplashScreenImage;
 import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.io.IOException;

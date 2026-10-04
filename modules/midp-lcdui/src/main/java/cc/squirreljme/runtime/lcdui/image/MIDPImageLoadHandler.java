@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.lcdui.image;
 
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.IntegerList;
 import java.util.ArrayList;
 import java.util.List;

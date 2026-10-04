@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm;
 
 import cc.squirreljme.jvm.mle.MathShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**

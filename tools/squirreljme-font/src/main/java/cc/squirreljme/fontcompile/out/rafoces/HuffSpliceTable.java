@@ -9,8 +9,6 @@
 
 package cc.squirreljme.fontcompile.out.rafoces;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;

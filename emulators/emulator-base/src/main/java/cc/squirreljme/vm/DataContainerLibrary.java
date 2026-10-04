@@ -10,8 +10,6 @@
 package cc.squirreljme.vm;
 
 import cc.squirreljme.jvm.launch.ApplicationParser;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;

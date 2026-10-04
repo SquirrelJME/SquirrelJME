@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.lcdui.event;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Canvas;
 import org.intellij.lang.annotations.MagicConstant;
 

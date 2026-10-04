@@ -11,7 +11,6 @@ package cc.squirreljme.jvm.mle.callbacks;
 
 import cc.squirreljme.jvm.mle.constants.AudioRenderResult;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;

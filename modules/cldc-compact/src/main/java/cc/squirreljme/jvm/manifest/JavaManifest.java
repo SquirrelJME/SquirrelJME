@@ -9,7 +9,6 @@
 
 package cc.squirreljme.jvm.manifest;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

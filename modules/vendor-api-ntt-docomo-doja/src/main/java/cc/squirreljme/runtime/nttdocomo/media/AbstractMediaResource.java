@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.nttdocomo.media;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import com.nttdocomo.io.ConnectionException;
@@ -20,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import javax.microedition.io.Connection;
 import javax.microedition.io.InputConnection;
 import net.multiphasicapps.io.DataEndianess;
 import net.multiphasicapps.io.ExtendedDataInputStream;

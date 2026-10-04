@@ -1,7 +1,5 @@
-import cc.squirreljme.plugin.general.CollateResourceJarsTask
 import cc.squirreljme.plugin.multivm.*
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 import java.nio.file.Files
 import java.nio.file.Paths

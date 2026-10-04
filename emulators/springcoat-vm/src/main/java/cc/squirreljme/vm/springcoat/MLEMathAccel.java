@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.MathAccelShelf;
-import cc.squirreljme.jvm.mle.MathShelf;
 
 /**
  * Functions for {@link MLEMathAccel}.

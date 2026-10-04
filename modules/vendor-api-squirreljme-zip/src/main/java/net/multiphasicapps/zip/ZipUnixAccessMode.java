@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.zip;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This represents UNIX access modes which may be declared in the ZIP.
  *

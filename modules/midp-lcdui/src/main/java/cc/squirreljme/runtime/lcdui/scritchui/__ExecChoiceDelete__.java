@@ -12,9 +12,6 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchChoiceBracket;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 
 /**
@@ -22,7 +19,6 @@ import java.util.ArrayList;
  *
  * @since 2025/04/18
  */
-@KeepWhenCompacting
 final class __ExecChoiceDelete__
 	implements Runnable
 {
@@ -51,7 +47,6 @@ final class __ExecChoiceDelete__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/18
 	 */
-	@KeepWhenCompacting
 	__ExecChoiceDelete__(ScritchInterface __api,
 		ScritchChoiceBracket __widget, int __atIndex,
 		ArrayList<CachedChoice> __cache)

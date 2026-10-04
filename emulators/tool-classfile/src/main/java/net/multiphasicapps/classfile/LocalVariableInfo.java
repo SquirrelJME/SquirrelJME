@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.classfile;
 
-import java.util.Objects;
-
 /**
  * Contains local variable information.
  *

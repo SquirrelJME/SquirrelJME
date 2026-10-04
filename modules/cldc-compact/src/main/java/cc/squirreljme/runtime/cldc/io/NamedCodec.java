@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is used to get the name of the encoder or decoder that was used.
  *

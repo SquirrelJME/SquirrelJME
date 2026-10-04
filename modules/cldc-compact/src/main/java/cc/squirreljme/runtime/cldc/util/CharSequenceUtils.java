@@ -9,10 +9,8 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Map;
 
 /**
  * This contains utilities which operate on character sequences.

@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.cldc.debug;
 
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import java.io.IOException;
 

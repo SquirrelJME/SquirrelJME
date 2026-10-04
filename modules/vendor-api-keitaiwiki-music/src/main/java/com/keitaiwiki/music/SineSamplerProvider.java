@@ -33,8 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Rudimentary sample generator that uses sine waves for everything. This class
  * is intended for basic testing and is not suitable for general use.

@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jdwp.host;
 
+import cc.squirreljme.jdwp.JDWPClassPatternMatcher;
 import cc.squirreljme.jdwp.JDWPCommand;
 import cc.squirreljme.jdwp.JDWPCommandSetEventRequest;
 import cc.squirreljme.jdwp.JDWPErrorType;
@@ -16,14 +17,13 @@ import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPEventModifierKind;
 import cc.squirreljme.jdwp.JDWPException;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.jdwp.JDWPSuspendPolicy;
-import cc.squirreljme.jdwp.host.event.JDWPHostCallStackStepping;
-import cc.squirreljme.jdwp.JDWPClassPatternMatcher;
-import cc.squirreljme.jdwp.host.event.JDWPHostExceptionOnly;
-import cc.squirreljme.jdwp.host.event.JDWPHostFieldOnly;
-import cc.squirreljme.jdwp.host.event.JDWPHostEventFilter;
 import cc.squirreljme.jdwp.JDWPStepDepth;
 import cc.squirreljme.jdwp.JDWPStepSize;
+import cc.squirreljme.jdwp.JDWPSuspendPolicy;
+import cc.squirreljme.jdwp.host.event.JDWPHostCallStackStepping;
+import cc.squirreljme.jdwp.host.event.JDWPHostEventFilter;
+import cc.squirreljme.jdwp.host.event.JDWPHostExceptionOnly;
+import cc.squirreljme.jdwp.host.event.JDWPHostFieldOnly;
 
 /**
  * Event request command set.

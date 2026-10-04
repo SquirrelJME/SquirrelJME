@@ -9,9 +9,7 @@
 
 package com.nttdocomo.ui;
 
-import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraDisplayable;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraStateManager;

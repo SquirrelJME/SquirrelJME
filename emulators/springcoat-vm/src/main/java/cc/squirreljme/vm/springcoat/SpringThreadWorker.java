@@ -11,8 +11,8 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.emulator.profiler.ProfiledFrame;
 import cc.squirreljme.emulator.vm.VMTraceFlagTracker;
-import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.JDWPClassStatus;
+import cc.squirreljme.jdwp.JDWPEventKind;
 import cc.squirreljme.jdwp.host.JDWPHostController;
 import cc.squirreljme.jdwp.host.JDWPHostStepTracker;
 import cc.squirreljme.jdwp.host.JDWPHostThreadSuspension;
