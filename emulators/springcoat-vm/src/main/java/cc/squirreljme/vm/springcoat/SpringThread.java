@@ -360,7 +360,7 @@ public final class SpringThread
 				}
 				catch (InvalidClassFormatException __e)
 				{
-					if (Debugging.VERBOSE)
+					if (Debugging.verbose())
 						__e.printStackTrace();
 				}
 				

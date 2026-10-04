@@ -313,7 +313,7 @@ final class __StackMapParser__
 		/* {@squirreljme.error JC47 Could not chop off all local variables
 		because there are no variables remaining to be chopped. (The
 		remaining variables to remove)} */
-		if (__chops > 0 && Debugging.VERBOSE)
+		if (__chops > 0 && Debugging.verbose())
 			new InvalidClassFormatException(
 				String.format("JC47 %d", __chops), this).printStackTrace();
 		

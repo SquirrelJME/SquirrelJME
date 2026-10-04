@@ -260,7 +260,7 @@ class __WavTools__
 			
 		}
 
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 		{
 			Debugging.debugNote("%s WAV HEADER_START",
 				audioFormat == __WavTools__.FORMAT_IMA_ADPCM ? "IMA ADPCM" :

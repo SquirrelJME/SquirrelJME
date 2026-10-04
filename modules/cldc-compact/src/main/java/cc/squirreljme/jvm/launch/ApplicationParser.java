@@ -57,7 +57,7 @@ public enum ApplicationParser
 				// If no manifest exists, might not be a JAR
 				if (rc == null)
 				{
-					if (Debugging.VERBOSE)
+					if (Debugging.verbose())
 						Debugging.debugNote(
 							"No META-INF/MANIFEST.MF in %s...",
 							__state.libraryPath());
@@ -72,7 +72,7 @@ public enum ApplicationParser
 			// Prevent bad JARs and files from messing things up
 			catch (IOException | InvalidSuiteException | MLECallError e)
 			{
-				if (Debugging.VERBOSE)
+				if (Debugging.verbose())
 					e.printStackTrace();
 				return false;
 			}
@@ -135,7 +135,7 @@ public enum ApplicationParser
 			// If there is no JAM file, this cannot be an i-mode application
 			if (jam == null)
 			{
-				if (Debugging.VERBOSE)
+				if (Debugging.verbose())
 					Debugging.debugNote("No JAM found for %s.",
 						jarName);
 				return false;
@@ -162,7 +162,7 @@ public enum ApplicationParser
 			}
 			catch (IOException e)
 			{
-				if (Debugging.VERBOSE)
+				if (Debugging.verbose())
 					e.printStackTrace();
 				return false;
 			}
@@ -185,7 +185,7 @@ public enum ApplicationParser
 			}
 			catch (InvalidSuiteException e)
 			{
-				if (Debugging.VERBOSE)
+				if (Debugging.verbose())
 					e.printStackTrace();
 			}
 			
@@ -219,7 +219,7 @@ public enum ApplicationParser
 			// If there is no ADF file, this cannot be an i-mode application
 			if (binaryAdf == null)
 			{
-				if (Debugging.VERBOSE)
+				if (Debugging.verbose())
 					Debugging.debugNote("No Binary ADF found for %s.",
 						jarName);
 				return false;
@@ -239,7 +239,7 @@ public enum ApplicationParser
 			}
 			catch (IOException e)
 			{
-				if (Debugging.VERBOSE)
+				if (Debugging.verbose())
 					e.printStackTrace();
 				return false;
 			}
@@ -272,7 +272,7 @@ public enum ApplicationParser
 			}
 			catch (InvalidSuiteException e)
 			{
-				if (Debugging.VERBOSE)
+				if (Debugging.verbose())
 					e.printStackTrace();
 			}
 			

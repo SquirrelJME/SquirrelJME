@@ -224,7 +224,7 @@ public final class MidiTracker
 					try
 					{
 						// Debug
-						if (Debugging.VERBOSE)
+						if (Debugging.verbose())
 							Debugging.debugNote(
 								"Sleep %d = (%d - %d) / %d",
 								waitMidi, nextMidi, deltaMidi,

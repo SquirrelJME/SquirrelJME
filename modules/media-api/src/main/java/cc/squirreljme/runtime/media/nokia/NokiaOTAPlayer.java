@@ -82,7 +82,7 @@ public class NokiaOTAPlayer
 		// For later realization
 		this._unrealizedIn = __in;
 
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("NokiaOTAPlayer: init(%s)", __in);
 
 		// Register volume control so we can properly set the gain

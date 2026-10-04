@@ -618,7 +618,7 @@ public class AudioPresenter
 				}
 				catch (ConnectionException __e)
 				{
-					if (Debugging.VERBOSE)
+					if (Debugging.verbose())
 						__e.printStackTrace();
 					
 					UIException toss = new UIException(
@@ -704,7 +704,7 @@ public class AudioPresenter
 			}
 			catch (IllegalStateException|MediaException __e)
 			{
-				if (Debugging.VERBOSE)
+				if (Debugging.verbose())
 					__e.printStackTrace();
 				
 				UIException toss = new UIException(

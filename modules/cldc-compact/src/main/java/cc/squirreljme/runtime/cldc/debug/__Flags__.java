@@ -18,7 +18,8 @@ class __Flags__
 {
 	/** Debugging is enabled. */
 	static final boolean _ENABLED =
-		Boolean.parseBoolean("true");
+		__Flags__.class.getName()
+			.equals("cc.squirreljme.runtime.cldc.debug.__Flags__");
 	
 	/** Verbose debugging is enabled. */
 	static final boolean _VERBOSE =

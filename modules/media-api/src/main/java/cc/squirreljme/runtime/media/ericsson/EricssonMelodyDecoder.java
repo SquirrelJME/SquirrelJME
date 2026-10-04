@@ -281,7 +281,7 @@ public class EricssonMelodyDecoder
 		char c;
 		StringBuilder nextString = new StringBuilder();
 
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("------------EMS Header------------");
 
 		// Parse the header. Blocks are separated by a newline.
@@ -295,7 +295,7 @@ public class EricssonMelodyDecoder
 				!CharSequenceUtils.startsWith(nextString, "MELODY:", 0));
 
 			// Print debug lines for the whole header, if allowed.
-			if (Debugging.VERBOSE)
+			if (Debugging.verbose())
 				Debugging.debugNote(nextString.toString());
 
 			// Only name, composer and copyright are actual media metadata
@@ -410,7 +410,7 @@ public class EricssonMelodyDecoder
 			{
 				this.__seqSet(input.length);
 
-				if (Debugging.VERBOSE)
+				if (Debugging.verbose())
 					Debugging.debugNote("REACHED END:MELODY");
 
 				return;

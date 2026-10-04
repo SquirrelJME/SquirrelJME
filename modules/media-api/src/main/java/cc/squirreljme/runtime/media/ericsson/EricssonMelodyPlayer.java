@@ -84,7 +84,7 @@ public class EricssonMelodyPlayer
 		// For later realization
 		this._unrealizedIn = __in;
 
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("EricssonMelodyPlayer: init(%s)", __in);
 
 		// Register volume control so we can properly set the gain.

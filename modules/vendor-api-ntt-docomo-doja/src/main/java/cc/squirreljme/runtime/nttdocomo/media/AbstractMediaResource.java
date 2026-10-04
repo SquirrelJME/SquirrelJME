@@ -264,7 +264,7 @@ public abstract class AbstractMediaResource
 			catch (NullPointerException | UIException __e)
 			{
 				// Debugging for DoJa applications
-				if (Debugging.ENABLED)
+				if (Debugging.enabled())
 					__e.printStackTrace();
 				
 				UIException toss = new UIException(

@@ -57,15 +57,15 @@ public class VMCompactLibraryTaskAction
 			// https://github.com/Guardsquare/proguard/issues/37
 			"!class/merging/wrapper",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"class/unboxing/enum",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"code/allocation/variable",
 			
 			// AVOID: Merging appears to be broken
 			// https://github.com/Guardsquare/proguard/issues/37
-			"code/merging",
+			"!code/merging",
 			
 			// AVOID: Dead code removal based on this kind of determination
 			// does not work well across native method calls as everything is
@@ -78,13 +78,13 @@ public class VMCompactLibraryTaskAction
 			// breaks everything as above
 			"!code/removal/advanced",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"code/removal/exception",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"code/removal/simple",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"code/removal/variable",
 			
 			// KEEP: Although ProGuard says this should be used with
@@ -93,28 +93,28 @@ public class VMCompactLibraryTaskAction
 			// just fine.
 			"code/simplification/advanced",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"code/simplification/arithmetic",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"code/simplification/branch",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"code/simplification/cast",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"code/simplification/field",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"code/simplification/math",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"code/simplification/object",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"code/simplification/string",
 			
-			// UNKNOWN: ???
+			// Untouched and unchecked, seems to be fine
 			"code/simplification/variable",
 			
 			// AVOID: Violates the specification
@@ -145,9 +145,11 @@ public class VMCompactLibraryTaskAction
 			// object instance to be used if it thinks it is known
 			"!method/inlining/tailrecursion",
 			
-			// AVOID: Inlining increases code size, but also forces a specific
-			// object instance to be used if it thinks it is known
-			"!method/inlining/unique",
+			// KEEP?: Seems to be needed for this
+			// public static final boolean enabled() {
+			// boolean var10000 = false;
+			// return true; }
+			"method/inlining/unique",
 			
 			// AVOID: Violates the specification
 			"!method/marking/final",
@@ -161,15 +163,13 @@ public class VMCompactLibraryTaskAction
 			// AVOID: Violates the specification
 			"!method/marking/synchronized",
 			
-			// AVOID: Inlining increases code size, but also forces a specific
-			// object instance to be used if it thinks it is known
-			"!method/propagation/parameter",
+			// KEEP?: Seems to work fine?
+			"method/propagation/parameter",
 			
-			// AVOID: Inlining increases code size, but also forces a specific
-			// object instance to be used if it thinks it is known
+			// KEEP?: Seems to work fine?
 			// Propagates the values of method return values from methods to
 			// their invocations.
-			"!method/propagation/returnvalue",
+			"method/propagation/returnvalue",
 			
 			// AVOID: Violates the specification
 			// Double.toString() -> public static String toString$6f5372eb()
@@ -217,16 +217,16 @@ public class VMCompactLibraryTaskAction
 			// Assume the debug flags are always false
 			"-assumevalues",
 				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
-					"public", "static", "boolean", "ENABLED",
+					"static", "final", "boolean", "_ENABLED",
 						"=", "false", ";",
-					"public", "static", "boolean", "VERBOSE",
+					"static", "final", "boolean", "_VERBOSE",
 						"=", "false", ";",
 				"}",
 			"-assumevalues",
 				"class", "cc.squirreljme.runtime.cldc.debug.__Flags__", "{",
-					"public", "static", "boolean", "_ENABLED",
+					"static", "final", "boolean", "_ENABLED",
 						"=", "false", ";",
-					"public", "static", "boolean", "_VERBOSE",
+					"static", "final", "boolean", "_VERBOSE",
 						"=", "false", ";",
 				"}",
 			"-assumenosideeffects",
@@ -245,51 +245,68 @@ public class VMCompactLibraryTaskAction
 			// Remove any code that calls these debugging calls
 			"-assumenosideeffects",
 				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
-					"public", "void", "debugNote", "(", "...", ")", ";",
-					"public", "void", "notice", "(", "...", ")", ";",
-					"public", "void", "todoNote", "(", "...", ")", ";",
+					"public", "static", "void", "debugNote", 
+						"(", "...", ")", ";",
+					"public", "static", "void", "notice", "(", "...", ")", ";",
+					"public", "static", "void", "todoNote", 
+						"(", "...", ")", ";",
 				"}",
 			"-assumenoexternalsideeffects",
 				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
-					"public", "void", "debugNote", "(", "...", ")", ";",
-					"public", "void", "notice", "(", "...", ")", ";",
-					"public", "void", "todoNote", "(", "...", ")", ";",
+					"public", "static", "void", "debugNote", 
+						"(", "...", ")", ";",
+					"public", "static", "void", "notice", "(", "...", ")", ";",
+					"public", "static", "void", "todoNote", 
+						"(", "...", ")", ";",
 				"}",
 			"-assumenoexternalreturnvalues",
 				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
-					"public", "void", "debugNote", "(", "...", ")", ";",
-					"public", "void", "notice", "(", "...", ")", ";",
-					"public", "void", "todoNote", "(", "...", ")", ";",
+					"public", "static", "void", "debugNote", 
+						"(", "...", ")", ";",
+					"public", "static", "void", "notice", "(", "...", ")", ";",
+					"public", "static", "void", "todoNote", 
+						"(", "...", ")", ";",
+				"}",
+			"-assumevalues",
+				"class", "cc.squirreljme.runtime.cldc.debug.Debugging", "{",
+					"public", "static", "boolean", "enabled", "(", "...", ")", 
+						"return", "false", ";",
+					"public", "static", "boolean", "verbose", "(", "...", ")", 
+						"return", "false", ";",
 				"}",
 			
 			// Disable some DebugShelf methods
 			"-assumevalues",
 				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
-					"public", "int", "verbose", "(", "...", ")",
+					"public", "static", "int", "verbose", "(", "...", ")",
 						"return", "0", ";",
-					"public", "int", "verboseInternalThread", "(", "...", ")",
+					"public", "static", "int", "verboseInternalThread", 
+						"(", "...", ")",
 						"return", "0", ";",
 				"}",
 			"-assumenosideeffects",
 				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
-					"public", "int", "verbose", "(", "...", ")", ";",
-					"public", "int", "verboseInternalThread", 
+					"public", "static", "int", "verbose", "(", "...", ")", ";",
+					"public", "static", "int", "verboseInternalThread", 
 						"(", "...", ")", ";",
-					"public", "void", "verboseStop", "(", "...", ")", ";",
+					"public", "static", "void", "verboseStop", 
+						"(", "...", ")", ";",
 				"}",
 			"-assumenoexternalsideeffects",
 				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
-					"public", "int", "verbose", "(", "...", ")", ";",
-					"public", "int", "verboseInternalThread", 
+					"public", "static", "int", "verbose", "(", "...", ")", ";",
+					"public", "static", "int", "verboseInternalThread", 
 						"(", "...", ")", ";",
-					"public", "void", "verboseStop", "(", "...", ")", ";",
+					"public", "static", "void", "verboseStop", 
+						"(", "...", ")", ";",
 				"}",
 			"-assumenoexternalreturnvalues",
 				"class", "cc.squirreljme.jvm.mle.DebugShelf", "{",
-					"public", "int", "verbose", "(", "...", ")", ";",
-					"public", "int", "verboseInternalThread", 
+					"public", "static", "int", "verbose", "(", "...", ")", ";",
+					"public", "static", "int", "verboseInternalThread", 
 						"(", "...", ")", ";",
-					"public", "void", "verboseStop", "(", "...", ")", ";",
+					"public", "static", "void", "verboseStop", 
+						"(", "...", ")", ";",
 				"}",
 		};
 	

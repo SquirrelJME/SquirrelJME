@@ -123,7 +123,7 @@ public final class ScratchPadParams
 				}
 				catch (NumberFormatException __e)
 				{
-					if (Debugging.ENABLED)
+					if (Debugging.enabled())
 						__e.printStackTrace();
 					
 					// {@squirreljme.error AH07 Scratch pad property is badly

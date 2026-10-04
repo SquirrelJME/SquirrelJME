@@ -254,7 +254,7 @@ public class RecordStoreSession
 		if (this.readOnly)
 			return;
 		
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("flush()");
 		
 		synchronized (this.lock)
@@ -395,7 +395,7 @@ public class RecordStoreSession
 	public int getTag(int __id)
 		throws RecordStoreException
 	{
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("getTag(%d)", __id);
 		
 		synchronized (this.lock)
@@ -424,7 +424,7 @@ public class RecordStoreSession
 		if (__cl == null || __key == null)
 			throw new NullPointerException("NARG");
 		
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("getValue(%s)", __key);
 		
 		synchronized (this.lock)
@@ -471,7 +471,7 @@ public class RecordStoreSession
 	public int[] ids()
 		throws RecordStoreException
 	{
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("ids()");
 		
 		synchronized (this.lock)
@@ -504,7 +504,7 @@ public class RecordStoreSession
 	public String name()
 		throws RecordStoreException
 	{
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("name()");
 		
 		// From manifest info?
@@ -542,7 +542,7 @@ public class RecordStoreSession
 	public int nextId(boolean __allocate, boolean __compatible)
 		throws RecordStoreException
 	{
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("nextId(%b, %b)", __allocate,
 				__compatible);
 		
@@ -623,7 +623,7 @@ public class RecordStoreSession
 		if (__id < 0)
 			throw new RecordStoreException("NEGV");
 		
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("open(%d)", __id);
 		
 		synchronized (this.lock)
@@ -646,7 +646,7 @@ public class RecordStoreSession
 	public SuiteIdentifier owner()
 		throws RecordStoreException
 	{
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("owner()");
 		
 		// From manifest info?
@@ -784,7 +784,7 @@ public class RecordStoreSession
 			throw new RecordStoreException("RORO");
 		
 		// Debug
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("setValue(%s, %s)", __key, __val);
 		
 		synchronized (this.lock)
@@ -846,7 +846,7 @@ public class RecordStoreSession
 		throws RecordStoreException
 	{
 		// Debug
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("setAccess(%d, %b, %s)",
 				__auth, __otherWrite, __pass);
 		
@@ -887,7 +887,7 @@ public class RecordStoreSession
 	public void setTag(int __id, int __tag)
 		throws RecordStoreException
 	{
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("setTag(%d, %d)", __id, __tag);
 		
 		synchronized (this.lock)

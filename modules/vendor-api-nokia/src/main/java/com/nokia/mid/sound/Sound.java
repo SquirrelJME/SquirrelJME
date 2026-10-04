@@ -272,7 +272,7 @@ public class Sound
 			this.__convertFreqToNote(__freq) < 0)
 			throw new IllegalArgumentException("Invalid frequency/duration");
 		
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("Nokia Sound, single note:%d for:%d", 
 				__freq, __duration);
 

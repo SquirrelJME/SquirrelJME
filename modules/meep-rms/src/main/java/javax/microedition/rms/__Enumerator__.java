@@ -449,7 +449,7 @@ final class __Enumerator__
 					}
 					catch (__FailedCompare__ __e)
 					{
-						if (Debugging.VERBOSE)
+						if (Debugging.verbose())
 							__e.printStackTrace(System.err);
 					}
 				

@@ -121,7 +121,7 @@ public class ScratchPadConnectionFactory
 		// part)}
 		catch (NumberFormatException __e)
 		{
-			if (Debugging.ENABLED)
+			if (Debugging.enabled())
 				__e.printStackTrace();
 			
 			throw new ConnectionNotFoundException("AH0b " + __part);
@@ -145,7 +145,7 @@ public class ScratchPadConnectionFactory
 					params.getLength(wantPad)));
 		
 		// Final connection
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("Opened %d at [%x+%d] (from %s %s %s)",
 				wantPad, wantPos, wantLen,
 				__part, part.getPath(), part.pathParams());

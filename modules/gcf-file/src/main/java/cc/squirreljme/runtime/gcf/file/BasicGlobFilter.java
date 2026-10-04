@@ -186,7 +186,7 @@ public final class BasicGlobFilter
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("%s ?~= %s", Arrays.asList(this._order),
 				__maybe);
 		

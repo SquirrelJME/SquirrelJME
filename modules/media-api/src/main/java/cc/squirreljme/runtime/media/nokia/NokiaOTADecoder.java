@@ -46,7 +46,7 @@ public class NokiaOTADecoder
 		2;
 
 	/** Debugging array for printing readable note values */
-	private static final String[] NOTE_STRINGS = (Debugging.ENABLED ?
+	private static final String[] NOTE_STRINGS = (Debugging.enabled() ?
 		new String[] {"Pause", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#",
 		"A", "A#", "H", "RESERVED", "RESERVED", "RESERVED"} : null);
 
@@ -347,7 +347,7 @@ public class NokiaOTADecoder
 
 				// Indicates the end of every parsing procedure.
 			case 0x0:
-				if (Debugging.VERBOSE)
+				if (Debugging.verbose())
 					Debugging.debugNote("OTA: Parsing finished!");
 				break;
 
@@ -410,7 +410,7 @@ public class NokiaOTADecoder
 	{
 		// A unicode is defined in the spec as a 16-bit UCS-2 encoded char
 		short unicode = (short) this.__readBits(16);
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("Unicode:%s", unicode);
 	}
 
@@ -498,7 +498,7 @@ public class NokiaOTADecoder
 			title.append(character);
 		}
 		
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("Title Length:%d | Basic Song Title: %s",
 					titleLength, title);
 		
@@ -1154,7 +1154,7 @@ public class NokiaOTADecoder
 				// values. Let's just return a pause instead of causing issues
 				// for OTA playback.
 			default:
-				if (Debugging.VERBOSE)
+				if (Debugging.verbose())
 					Debugging.debugNote(
 						"Parsed Note: %s. Returning a pause instead.",
 						NokiaOTADecoder.NOTE_STRINGS[__noteValue]);
@@ -1173,7 +1173,7 @@ public class NokiaOTADecoder
 
 		// Let's only spend time with this calculation if we really need to
 		// print it for debugging
-		if (Debugging.VERBOSE) 
+		if (Debugging.verbose()) 
 		{
 			int octave = (int) Math.floor(ExtraMath.log(this._noteScale) /
 				ExtraMath.log(2));

@@ -43,12 +43,12 @@ public final class Debugging
 	/** Is debugging enabled? */
 	@SuppressWarnings("ConstantExpression")
 	@SquirrelJMEVendorApi
-	public static final boolean ENABLED =
+	static final boolean _ENABLED =
 		__Flags__._ENABLED;
 	
 	/** Verbose debugging messages. */
 	@SquirrelJMEVendorApi
-	public static final boolean VERBOSE =
+	static final boolean _VERBOSE =
 		__Flags__._VERBOSE;
 	
 	/** Do not execute exit on the virtual machine. */
@@ -90,7 +90,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void debugNote(@PrintFormat String __fmt)
 	{
-		if (!__Flags__._ENABLED || !Debugging.ENABLED)
+		if (!Debugging.enabled())
 			return;
 		
 		Debugging.__format('D', 'B', __fmt, (Object[])null);
@@ -106,10 +106,23 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void debugNote(@PrintFormat String __fmt, Object... __args)
 	{
-		if (!__Flags__._ENABLED || !Debugging.ENABLED)
+		if (!Debugging.enabled())
 			return;
 		
 		Debugging.__format('D', 'B', __fmt, __args);
+	}
+	
+	/**
+	 * Is debugging enabled?
+	 *
+	 * @return If debugging is enabled.
+	 * @since 2026/10/03
+	 */
+	public static final boolean enabled()
+	{
+		// Both cases must be true, this is mostly to ensure that obfuscation
+		// has occurred
+		return __Flags__._ENABLED && Debugging._ENABLED;
 	}
 	
 	/**
@@ -121,7 +134,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void notice(@PrintFormat String __fmt)
 	{
-		if (!__Flags__._ENABLED || !Debugging.ENABLED)
+		if (!Debugging.enabled())
 			return;
 		
 		Debugging.__format('\0', '\0', __fmt, (Object[])null);
@@ -137,7 +150,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void notice(@PrintFormat String __fmt, Object... __args)
 	{
-		if (!__Flags__._ENABLED || !Debugging.ENABLED)
+		if (!Debugging.enabled())
 			return;
 		
 		Debugging.__format('\0', '\0', __fmt, __args);
@@ -256,7 +269,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void todoNote(@PrintFormat String __fmt)
 	{
-		if (!__Flags__._ENABLED || !Debugging.ENABLED)
+		if (!Debugging.enabled())
 			return;
 		
 		Debugging.__format('T', 'D', __fmt, (Object[])null);
@@ -272,7 +285,7 @@ public final class Debugging
 	@SquirrelJMEVendorApi
 	public static void todoNote(@PrintFormat String __fmt, Object... __args)
 	{
-		if (!__Flags__._ENABLED || !Debugging.ENABLED)
+		if (!Debugging.enabled())
 			return;
 		
 		Debugging.__format('T', 'D', __fmt, __args);
@@ -290,6 +303,20 @@ public final class Debugging
 	public static <T> T todoObject(Object... __args)
 	{
 		throw Debugging.todo(__args);
+	}
+	
+	/**
+	 * Is verbose debugging enabled?
+	 *
+	 * @return If verbose debugging is enabled.
+	 * @since 2026/10/03
+	 */
+	public static final boolean verbose()
+	{
+		// Both field conditions must be true to ensure that obfuscation is
+		// working
+		return Debugging.enabled() &&
+			(__Flags__._VERBOSE && Debugging._VERBOSE);
 	}
 	
 	/**

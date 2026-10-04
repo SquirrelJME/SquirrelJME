@@ -212,7 +212,7 @@ public class SplashScreenImage
 		// Is this a debug build? For release builds this is optimized
 		// away by ProGuard
 		__g.setColor(0x000000);
-		if (Debugging.ENABLED)
+		if (Debugging.enabled())
 			__g.drawString("DEBUG", vx, vy + vfH,
 				Graphics.RIGHT | Graphics.TOP);
 		

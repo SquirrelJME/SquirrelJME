@@ -1189,7 +1189,7 @@ public abstract class AbstractPlayer
 			}
 			catch (MLECallError __e)
 			{
-				if (Debugging.ENABLED)
+				if (Debugging.enabled())
 					__e.printStackTrace();
 				
 				MediaException toss = new MediaException(__e.getMessage());
@@ -1229,7 +1229,7 @@ public abstract class AbstractPlayer
 				}
 				catch (MLECallError __e)
 				{
-					if (Debugging.ENABLED)
+					if (Debugging.enabled())
 						__e.printStackTrace();
 					
 					MediaException toss = new MediaException(__e.getMessage());

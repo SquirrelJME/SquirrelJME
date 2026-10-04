@@ -54,7 +54,7 @@ public final class __JarWalker__
 	public FileVisitResult visitFile(Path __path, BasicFileAttributes __attrib)
 		throws IOException
 	{
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("Wildcard checking: %s", __path);
 		
 		// If this is a Jar or resource, we will grab it

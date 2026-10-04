@@ -74,7 +74,7 @@ class __ExecCanvasInput__
 		KeyListener keyCustom = canvas._keyListener;
 		
 		// Debug
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote(
 				"Event %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
 				__type, __time, __a, __b, __c, __d, __e, __f, __g, __h,

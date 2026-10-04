@@ -96,7 +96,7 @@ public final class ScratchPadStore
 				}
 				catch (RecordStoreException __e)
 				{
-					if (Debugging.ENABLED)
+					if (Debugging.enabled())
 						__e.printStackTrace();
 					
 					needSeed = true;
@@ -111,7 +111,7 @@ public final class ScratchPadStore
 		// the record store.}
 		catch (RecordStoreException __e)
 		{
-			if (Debugging.ENABLED)
+			if (Debugging.enabled())
 				__e.printStackTrace();
 			
 			IOException toss = new ConnectionNotFoundException("AH0m");
@@ -147,7 +147,7 @@ public final class ScratchPadStore
 			// record store.}
 			catch (RecordStoreException __e)
 			{
-				if (Debugging.ENABLED)
+				if (Debugging.enabled())
 					__e.printStackTrace();
 				
 				throw new IOException("AH0l", __e);
@@ -413,7 +413,7 @@ public final class ScratchPadStore
 			}
 			catch (IOException __e)
 			{
-				if (Debugging.ENABLED)
+				if (Debugging.enabled())
 					__e.printStackTrace();
 				
 				// Ignore
