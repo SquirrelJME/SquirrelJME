@@ -129,10 +129,6 @@ public enum InfoVmDescription
 	DEFAULT_DIR_NUM_TYPES("Directory: Runtime Library",
 		VMDescriptionType.DEFAULT_DIR_RUNTIME),
 	
-	/** Default directory reserved: 12. */
-	DEFAULT_DIR_RESERVED_12("Directory: Reserved 12",
-		VMDescriptionType.DEFAULT_DIR_RESERVED_12),
-	
 	/** Default directory reserved: 13. */
 	DEFAULT_DIR_RESERVED_13("Directory: Reserved 13",
 		VMDescriptionType.DEFAULT_DIR_RESERVED_13),

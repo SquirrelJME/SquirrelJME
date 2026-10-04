@@ -14,7 +14,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/09/24
  */
-@SquirrelJMEVendorApi
 public final class NanoShelf
 {
 	/**
@@ -32,7 +31,6 @@ public final class NanoShelf
 	 * @return {@code null}.
 	 * @since 2026/01/10
 	 */
-	@SquirrelJMEVendorApi
 	public static native String[] makeArrayNull();
 	
 	/**
@@ -42,7 +40,6 @@ public final class NanoShelf
 	 * @return The resultant string array.
 	 * @since 2026/01/05
 	 */
-	@SquirrelJMEVendorApi
 	public static native String[] makeArrayString(int __n);
 	
 	/**
@@ -50,7 +47,6 @@ public final class NanoShelf
 	 *
 	 * @since 2025/09/24
 	 */
-	@SquirrelJMEVendorApi
 	public static native void result();
 	
 	/**
@@ -59,7 +55,6 @@ public final class NanoShelf
 	 * @param __v The result value.
 	 * @since 2025/09/24
 	 */
-	@SquirrelJMEVendorApi
 	public static native void result(int __v);
 	
 	/**
@@ -68,7 +63,6 @@ public final class NanoShelf
 	 * @param __v The result value.
 	 * @since 2025/09/24
 	 */
-	@SquirrelJMEVendorApi
 	public static native void result(float __v);
 	
 	/**
@@ -77,7 +71,6 @@ public final class NanoShelf
 	 * @param __v The result value.
 	 * @since 2025/09/24
 	 */
-	@SquirrelJMEVendorApi
 	public static native void result(long __v);
 	
 	/**
@@ -86,7 +79,6 @@ public final class NanoShelf
 	 * @param __v The result value.
 	 * @since 2025/09/24
 	 */
-	@SquirrelJMEVendorApi
 	public static native void result(double __v);
 	
 	/**
@@ -95,7 +87,6 @@ public final class NanoShelf
 	 * @param __v The result value.
 	 * @since 2025/09/24
 	 */
-	@SquirrelJMEVendorApi
 	public static native void result(String __v);
 	
 	/**
@@ -103,6 +94,5 @@ public final class NanoShelf
 	 *
 	 * @since 2025/11/26
 	 */
-	@SquirrelJMEVendorApi
 	public static native void todo();
 }

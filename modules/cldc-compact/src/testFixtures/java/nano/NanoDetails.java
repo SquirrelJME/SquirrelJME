@@ -23,29 +23,23 @@ import org.jetbrains.annotations.VisibleForTesting;
  * @since 2026/01/10
  */
 @VisibleForTesting
-@SquirrelJMEVendorApi
 @Documented
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.TYPE})
 public @interface NanoDetails
 {
 	/** Expected void value. */
-	@SquirrelJMEVendorApi
 	boolean expectedVoid() default false;
 	
 	/** Expected integer value. */
-	@SquirrelJMEVendorApi
 	int expectedInteger() default Integer.MIN_VALUE;
 	
 	/** Expected long value. */
-	@SquirrelJMEVendorApi
 	long expectedLong() default Long.MIN_VALUE;
 	
 	/** Expected string value. */
-	@SquirrelJMEVendorApi
 	String expectedString() default "";
 	
 	/** Expected exception. */
-	@SquirrelJMEVendorApi
 	String expectedException() default "";
 }

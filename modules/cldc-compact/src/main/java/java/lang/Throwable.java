@@ -36,15 +36,12 @@ import java.util.Arrays;
 public class Throwable
 {
 	/** The message for this exception. */
-	@SquirrelJMEVendorApi
 	final String _message;
 	
 	/** Suppressed exceptions. */
-	@SquirrelJMEVendorApi
 	Throwable[] _suppressed;
 	
 	/** Was a cause initialized already? */
-	@SquirrelJMEVendorApi
 	boolean _initCause;
 	
 	/** The stack trace for this throwable. */
@@ -56,7 +53,6 @@ public class Throwable
 	 * of the class library which did not have a cause specified in the
 	 * constructor.
 	 */
-	@SquirrelJMEVendorApi
 	Throwable _cause;
 	
 	/**

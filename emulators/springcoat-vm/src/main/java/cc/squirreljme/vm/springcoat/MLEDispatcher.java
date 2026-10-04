@@ -107,7 +107,7 @@ public enum MLEDispatcher
 		MLERuntime.values()),
 	
 	/** {@link NativeScritchUIShelf}. */
-	SCRITCH_UI("cc/squirreljme/jvm/mle/scritchui/NativeScritchInterface",
+	SCRITCH_UI("cc/squirreljme/jvm/mle/scritchui/NativeScritchUIShelf",
 		MLEScritchUI.values()),
 	
 	/** {@link StringShelf}. */
