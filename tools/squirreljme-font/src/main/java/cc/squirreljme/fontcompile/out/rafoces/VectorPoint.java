@@ -9,8 +9,6 @@
 
 package cc.squirreljme.fontcompile.out.rafoces;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Represents a single point vector.
  *

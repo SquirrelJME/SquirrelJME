@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.lcdui.event;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -28,7 +27,6 @@ import org.intellij.lang.annotations.MagicConstant;
  * @see KeyCodeTranslator
  * @since 2018/12/09
  */
-@SquirrelJMEVendorApi
 public final class EventTranslate
 {
 	/** Event translators. */
@@ -56,7 +54,6 @@ public final class EventTranslate
 	 * processing.
 	 * @since 2026/05/12
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = NonStandardKey.class)
 	public static int gameActionToVendor(int __ga)
 	{
@@ -114,7 +111,6 @@ public final class EventTranslate
 	 * processing.
 	 * @since 2022/02/03
 	 */
-	@SquirrelJMEVendorApi
 	public static int keyCodeToVendor(
 		@MagicConstant(valuesFromClass = NonStandardKey.class) int __kc)
 	{
@@ -138,7 +134,6 @@ public final class EventTranslate
 	 * @return The current translator.
 	 * @since 2026/05/13
 	 */
-	@SquirrelJMEVendorApi
 	public static KeyCodeTranslator translator()
 	{
 		synchronized (EventTranslate.class)
@@ -158,7 +153,6 @@ public final class EventTranslate
 	 * @see KeyCodeTranslator#accepts(String, boolean)
 	 * @since 2026/05/13
 	 */
-	@SquirrelJMEVendorApi
 	public static KeyCodeTranslator translator(
 		@Language("rfqdn") String __identifier)
 		throws NullPointerException
@@ -193,7 +187,6 @@ public final class EventTranslate
 	 * clear it.
 	 * @since 2026/05/13
 	 */
-	@SquirrelJMEVendorApi
 	public static void translator(KeyCodeTranslator __translator)
 	{
 		synchronized (EventTranslate.class)
@@ -215,7 +208,6 @@ public final class EventTranslate
 	 * @see EventTranslate#translator(String)
 	 * @since 2026/05/13
 	 */
-	@SquirrelJMEVendorApi
 	public static KeyCodeTranslator translatorDefault(
 		@Language("rfqdn") String __identifier)
 		throws NullPointerException
@@ -244,7 +236,6 @@ public final class EventTranslate
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/05/13
 	 */
-	@SquirrelJMEVendorApi
 	public static KeyCodeTranslator translatorDefault(
 		KeyCodeTranslator __translator)
 		throws NullPointerException
@@ -279,7 +270,6 @@ public final class EventTranslate
 	 * processing.
 	 * @since 2022/02/03
 	 */
-	@SquirrelJMEVendorApi
 	public static int vendorToGameAction(int __vc)
 	{
 		// Check primary translator
@@ -368,7 +358,6 @@ public final class EventTranslate
 	 * processing.
 	 * @since 2026/05/12
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = NonStandardKey.class)
 	public static int vendorToKeyCode(int __vc)
 	{
@@ -393,7 +382,6 @@ public final class EventTranslate
 	 * @return The adapters which are available.
 	 * @since 2022/02/03
 	 */
-	@SquirrelJMEVendorApi
 	private static KeyCodeTranslator[] __translators()
 	{
 		// Already cached?

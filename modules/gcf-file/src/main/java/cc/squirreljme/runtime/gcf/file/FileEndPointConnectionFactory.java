@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.file;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
@@ -18,10 +16,10 @@ import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
 import cc.squirreljme.runtime.gcf.uri.UriSchemeSpecificPart;
 import java.io.IOException;
-import java.util.Objects;
 import javax.microedition.io.Connection;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.ConnectionOption;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -29,7 +27,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/29
  */
-@SquirrelJMEVendorApi
 public class FileEndPointConnectionFactory
 	implements CustomConnectionFactory
 {

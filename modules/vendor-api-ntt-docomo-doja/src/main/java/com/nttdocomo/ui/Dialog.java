@@ -10,13 +10,11 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraDisplayable;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraStateManager;
 import java.util.Objects;
 import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.Displayable;
 import org.intellij.lang.annotations.MagicConstant;
 
 @Api
@@ -51,7 +49,6 @@ public class Dialog
 	public static final int	DIALOG_YESNOCANCEL = 4;
 	
 	/** The alert to use for the dialog. */
-	@SquirrelJMEVendorApi
 	final Alert _alert;
 	
 	@Api

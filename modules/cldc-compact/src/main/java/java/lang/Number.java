@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 
 /**
  * A number represents any kind of number which may be transformed to other

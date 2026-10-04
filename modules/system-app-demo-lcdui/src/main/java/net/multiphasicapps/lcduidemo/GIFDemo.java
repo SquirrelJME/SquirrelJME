@@ -9,14 +9,11 @@
 
 package net.multiphasicapps.lcduidemo;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Demos a GIF.
  *
  * @since 2021/12/05
  */
-@SquirrelJMEVendorApi
 public class GIFDemo
 	extends AbstractImageDemo
 {

@@ -9,6 +9,9 @@
 
 package com.mexa.opgl;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+
+@Api
 public abstract class Buffer
 {
 }

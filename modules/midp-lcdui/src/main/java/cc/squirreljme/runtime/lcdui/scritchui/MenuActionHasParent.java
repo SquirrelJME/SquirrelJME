@@ -9,14 +9,11 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * A {@link MenuAction} that has a parent.
  *
  * @since 2024/07/20
  */
-@SquirrelJMEVendorApi
 public interface MenuActionHasParent
 	extends MenuActionApplicable
 {

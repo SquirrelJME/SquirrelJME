@@ -15,7 +15,6 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFImageElementType;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLineStyle;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import javax.microedition.lcdui.Display;
@@ -27,7 +26,6 @@ import org.intellij.lang.annotations.MagicConstant;
  *
  * @since 2024/03/09
  */
-@SquirrelJMEVendorApi
 public final class ScritchLcdUiUtils
 {
 	/**
@@ -48,7 +46,6 @@ public final class ScritchLcdUiUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/18
 	 */
-	@SquirrelJMEVendorApi
 	public static int lcduiDisplaySize(DisplayableState __state,
 		boolean __height)
 		throws NullPointerException
@@ -87,7 +84,6 @@ public final class ScritchLcdUiUtils
 	 * @return A line style from {@link Graphics}.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = Graphics.class)
 	public static int lcduiLineStyle(
 		@MagicConstant(valuesFromClass = ScritchLineStyle.class) int __style)
@@ -103,7 +99,6 @@ public final class ScritchLcdUiUtils
 	 * @return One of {@link ScritchLAFElementColor}.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ScritchLAFElementColor.class)
 	public static int scritchElementColor(
 		@MagicConstant(valuesFromClass = Display.class) int __c)
@@ -146,7 +141,6 @@ public final class ScritchLcdUiUtils
 	 * @since 2024/03/09
 	 */
 	@MagicConstant(valuesFromClass = ScritchLAFImageElementType.class)
-	@SquirrelJMEVendorApi
 	public static int scritchElementType(
 		@MagicConstant(valuesFromClass = Display.class) int __in)
 		throws IllegalArgumentException

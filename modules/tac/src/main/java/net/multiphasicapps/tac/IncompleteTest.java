@@ -9,14 +9,11 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * An incomplete test, which allows for failure to occur.
  *
  * @since 2025/03/27
  */
-@SquirrelJMEVendorApi
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface IncompleteTest
 {

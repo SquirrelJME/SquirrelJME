@@ -10,10 +10,12 @@
 package java.security;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Enumeration;
 
 @Api
+@KeepAbsolutelyEverything("Lightweight 'Security' permission system.")
 public abstract class PermissionCollection
 {
 	@Api

@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.gcf.file.pseudo;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.file.FileEndPointFactory;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
@@ -20,6 +19,7 @@ import java.io.IOException;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.Connector;
 import org.intellij.lang.annotations.MagicConstant;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -27,7 +27,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/27
  */
-@SquirrelJMEVendorApi
 public class LibraryEndPointFactory
 	implements FileEndPointFactory
 {

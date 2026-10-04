@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.Async;
 
 /**
@@ -20,12 +18,10 @@ import org.jetbrains.annotations.Async;
  * @param <L> The listener type to use.
  * @since 2024/07/18
  */
-@KeepWhenCompacting
 final class __ExecObjectTracker__<T, L>
 	implements Runnable
 {
 	/** The tracker used. */
-	@SquirrelJMEVendorApi
 	protected final ObjectTracker<T, L> tracker;
 	
 	/**
@@ -35,7 +31,6 @@ final class __ExecObjectTracker__<T, L>
 	 * @throws NullPointerException If no tracker was specified.
 	 * @since 2024/07/18
 	 */
-	@KeepWhenCompacting
 	__ExecObjectTracker__(ObjectTracker<T, L> __tracker)
 		throws NullPointerException
 	{
@@ -51,7 +46,6 @@ final class __ExecObjectTracker__<T, L>
 	 */
 	@Override
 	@Async.Execute
-	@SquirrelJMEVendorApi
 	public void run()
 	{
 		ObjectTracker<T, L> tracker = this.tracker;

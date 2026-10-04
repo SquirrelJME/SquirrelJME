@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import javax.microedition.lcdui.Image;
 import org.jetbrains.annotations.Async;
@@ -19,7 +18,6 @@ import org.jetbrains.annotations.Async;
  *
  * @since 2024/07/20
  */
-@SquirrelJMEVendorApi
 public interface ImageTrackerListener
 {
 	/**

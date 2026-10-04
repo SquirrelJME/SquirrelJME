@@ -12,10 +12,8 @@ package cc.squirreljme.runtime.gcf.file.pseudo;
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.mle.constants.StandardBucketType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.suite.SuiteUtils;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
@@ -38,17 +36,14 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/27
  */
-@SquirrelJMEVendorApi
 public class AllVolumesEndPoint
 	extends FileEndPoint
 {
 	/** Host. */
-	@SquirrelJMEVendorApi
 	public static final String HOST =
 		"!%3Fx-squirreljme-all-volumes%3A%2F%2F%3F!";
 	
 	/** Decoded host. */
-	@SquirrelJMEVendorApi
 	public static final String DECODED_HOST =
 		"!?x-squirreljme-all-volumes://?!";
 	
@@ -61,7 +56,6 @@ public class AllVolumesEndPoint
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	protected AllVolumesEndPoint(@NotNull UriGenericPart __part, int __mode,
 		@Nullable UriGenericPart __dotDot)
 		throws ConnectionNotFoundException, NullPointerException

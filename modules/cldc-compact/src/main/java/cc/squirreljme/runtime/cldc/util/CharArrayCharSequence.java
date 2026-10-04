@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -17,7 +16,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2022/06/29
  */
-@SquirrelJMEVendorApi
 public final class CharArrayCharSequence
 	implements CharSequence
 {
@@ -37,7 +35,6 @@ public final class CharArrayCharSequence
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/06/29
 	 */
-	@SquirrelJMEVendorApi
 	public CharArrayCharSequence(char[] __c)
 		throws NullPointerException
 	{
@@ -55,7 +52,6 @@ public final class CharArrayCharSequence
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/06/29
 	 */
-	@SquirrelJMEVendorApi
 	public CharArrayCharSequence(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{

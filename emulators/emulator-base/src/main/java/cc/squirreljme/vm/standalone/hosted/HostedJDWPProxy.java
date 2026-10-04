@@ -11,7 +11,6 @@ package cc.squirreljme.vm.standalone.hosted;
 
 import cc.squirreljme.emulator.vm.VMException;
 import cc.squirreljme.jdwp.host.JDWPHostFactory;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;

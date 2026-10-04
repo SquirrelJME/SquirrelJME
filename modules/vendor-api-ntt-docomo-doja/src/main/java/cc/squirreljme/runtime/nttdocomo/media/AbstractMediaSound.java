@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.nttdocomo.media;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import com.nttdocomo.ui.MediaSound;
 import javax.microedition.io.InputConnection;
 
@@ -18,7 +17,6 @@ import javax.microedition.io.InputConnection;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public abstract class AbstractMediaSound
 	extends AbstractMediaResource
 	implements MediaSound

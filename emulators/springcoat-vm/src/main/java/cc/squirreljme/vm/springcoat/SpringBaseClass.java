@@ -9,7 +9,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.ClassName;
 
 /**

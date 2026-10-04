@@ -11,7 +11,6 @@ package com.nokia.mid.sound;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import cc.squirreljme.runtime.gcf.InputStreamConnection;
@@ -21,9 +20,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import javax.microedition.media.Manager;
+import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
-import javax.microedition.media.MediaException;
 import javax.microedition.media.control.VolumeControl;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
@@ -76,20 +75,16 @@ public class Sound
 	private static final byte _TONE_MAX_VOLUME = 127;
 
 	/** Wraps MIDP PlayerListener events to SoundListener ones. */
-	@SquirrelJMEVendorApi
 	private final __MIDPPlayerListener__ _playerListener =
 		new __MIDPPlayerListener__(new WeakReference<>(this));
 
 	/** Actual Player for Nokia Smart Messaging tones and WAV data. */
-	@SquirrelJMEVendorApi
 	volatile Player _player;
 
 	/** Sound listener to send media events to. */
-	@SquirrelJMEVendorApi
 	SoundListener _listener;
 
 	/** Currently set gain. */
-	@SquirrelJMEVendorApi
 	private int _gain;
 
 	/**
@@ -272,7 +267,7 @@ public class Sound
 			this.__convertFreqToNote(__freq) < 0)
 			throw new IllegalArgumentException("Invalid frequency/duration");
 		
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("Nokia Sound, single note:%d for:%d", 
 				__freq, __duration);
 
@@ -580,7 +575,6 @@ public class Sound
 	 * @throws IllegalArgumentException If {@code __freq} is invalid.
 	 * @since 2025/12/24
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = 127)
 	private int __convertFreqToNote(int __freq)
 	{ 
@@ -597,7 +591,6 @@ public class Sound
 	 * @param __volume The volume to be set.
 	 * @since 2025/12/24
 	 */
-	@SquirrelJMEVendorApi
 	private void __setVolume(
 		@Range(from = 0, to = 100) int __volume)
 	{

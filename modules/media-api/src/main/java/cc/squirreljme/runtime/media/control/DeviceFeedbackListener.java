@@ -9,14 +9,11 @@
 
 package cc.squirreljme.runtime.media.control;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Listens to device feedback.
  *
  * @since 2026/06/10
  */
-@SquirrelJMEVendorApi
 public interface DeviceFeedbackListener
 {
 }

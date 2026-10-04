@@ -8,8 +8,6 @@
 // ---------------------------------------------------------------------------
 package cc.squirreljme.runtime.lcdui.event;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-
 /**
  * Enumeration of vendor keys for use within the keycode translators.
  *

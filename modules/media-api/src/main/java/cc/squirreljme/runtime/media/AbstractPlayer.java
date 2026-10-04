@@ -15,7 +15,6 @@ import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +38,6 @@ import org.intellij.lang.annotations.MagicConstant;
  *
  * @since 2022/04/24
  */
-@SquirrelJMEVendorApi
 public abstract class AbstractPlayer
 	implements Player
 {
@@ -68,7 +66,6 @@ public abstract class AbstractPlayer
 		AudioStreamChannels.AUTOMATIC;
 	
 	/** The current track position. */
-	@SquirrelJMEVendorApi
 	protected final TrackPosition trackPosition =
 		new TrackPosition();
 	
@@ -116,7 +113,6 @@ public abstract class AbstractPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/24
 	 */
-	@SquirrelJMEVendorApi
 	protected AbstractPlayer(@Language("mime-type-reference") String __mime)
 		throws NullPointerException
 	{
@@ -133,7 +129,6 @@ public abstract class AbstractPlayer
 	 * @see #becomingRealized()
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void becomingDeallocated()
 		throws MediaException;
 	
@@ -143,7 +138,6 @@ public abstract class AbstractPlayer
 	 * @throws MediaException If the player cannot be prefetched.
 	 * @since 2022/04/24
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void becomingPrefetched()
 		throws MediaException;
 	
@@ -156,7 +150,6 @@ public abstract class AbstractPlayer
 	 * @see #becomingSolvent()
 	 * @since 2026/01/03
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void becomingPrimed()
 		throws MediaException;
 	
@@ -167,7 +160,6 @@ public abstract class AbstractPlayer
 	 * @see #becomingDeallocated()
 	 * @since 2022/04/24
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void becomingRealized()
 		throws MediaException;
 	
@@ -178,7 +170,6 @@ public abstract class AbstractPlayer
 	 * @see #becomingPrimed()
 	 * @since 2026/01/03
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void becomingSolvent()
 		throws MediaException;
 	
@@ -190,7 +181,6 @@ public abstract class AbstractPlayer
 	 * @see #becomingStopped()
 	 * @since 2022/04/24
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract boolean becomingStarted()
 		throws MediaException;
 	
@@ -201,7 +191,6 @@ public abstract class AbstractPlayer
 	 * @see #becomingStarted()
 	 * @since 2022/04/24
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void becomingStopped()
 		throws MediaException;
 	
@@ -217,7 +206,6 @@ public abstract class AbstractPlayer
 	 * @throws MediaException If the clock could not be set.
 	 * @since 2026/01/01
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void clockFastForward(long __micros)
 		throws MediaException;
 	
@@ -228,7 +216,6 @@ public abstract class AbstractPlayer
 	 * not valid.
 	 * @since 2025/06/15
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract long clockGet();
 	
 	/**
@@ -238,7 +225,6 @@ public abstract class AbstractPlayer
 	 * @throws MediaException If the clock could not be set.
 	 * @since 2025/06/15
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void clockSet(long __micros)
 		throws MediaException;
 	
@@ -250,7 +236,6 @@ public abstract class AbstractPlayer
 	 * properly play.
 	 * @since 2026/01/02
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract boolean resetFastForward();
 	
 	/**
@@ -301,7 +286,6 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final void deallocate()
 		throws IllegalStateException
 	{
@@ -338,7 +322,6 @@ public abstract class AbstractPlayer
 	 * @return The media length in microseconds.
 	 * @since 2022/04/25
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract long determineDuration()
 		throws MediaException;
 	
@@ -348,7 +331,6 @@ public abstract class AbstractPlayer
 	 * @param __volume The volume to use.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void useVolume(int __volume);
 	
 	/**
@@ -356,7 +338,6 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final void addPlayerListener(PlayerListener __l)
 	{
 		// Ignore?
@@ -382,7 +363,6 @@ public abstract class AbstractPlayer
 	 * @return If the loop has reached zero.
 	 * @since 2024/02/26
 	 */
-	@SquirrelJMEVendorApi
 	public final boolean decrementLoop()
 	{
 		synchronized (this)
@@ -436,7 +416,6 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	@Language("mime-type-reference")
 	public final String getContentType()
 	{
@@ -497,7 +476,6 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/25
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final long getDuration()
 		throws IllegalStateException
 	{
@@ -542,7 +520,6 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final long getMediaTime()
 	{
 		synchronized (this)
@@ -580,7 +557,6 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final int getState()
 	{
 		synchronized (this)
@@ -594,7 +570,6 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final TimeBase getTimeBase()
 	{
 		// Use the default time base, if there is no current one
@@ -611,7 +586,6 @@ public abstract class AbstractPlayer
 	 * @throws MediaException If looping could not be indicated.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
 	public final void loopViaMedia()
 		throws MediaException
 	{
@@ -632,7 +606,6 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final void prefetch()
 		throws MediaException
 	{
@@ -661,7 +634,6 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final void realize()
 		throws MediaException
 	{
@@ -689,7 +661,6 @@ public abstract class AbstractPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
 	protected final void registerControl(AbstractControl<?> __control)
 		throws NullPointerException
 	{
@@ -719,7 +690,6 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final void removePlayerListener(PlayerListener __l)
 	{
 		// Ignore?
@@ -742,7 +712,6 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/24
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final void setLoopCount(int __count)
 		throws IllegalArgumentException, IllegalStateException
 	{
@@ -768,7 +737,6 @@ public abstract class AbstractPlayer
 	 * @since 2019/04/15
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final long setMediaTime(long __micros)
 		throws MediaException
 	{
@@ -836,7 +804,6 @@ public abstract class AbstractPlayer
 	 * @throws IllegalArgumentException If the state is not valid.
 	 * @since 2022/04/24
 	 */
-	@SquirrelJMEVendorApi
 	protected final void setState(
 		@MagicConstant(valuesFromClass = Player.class) int __state)
 		throws IllegalArgumentException
@@ -862,7 +829,6 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/24
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final void setTimeBase(TimeBase __timeBase)
 	{
 		this._currentTimebase = __timeBase;
@@ -874,7 +840,6 @@ public abstract class AbstractPlayer
 	 */
 	@SuppressWarnings("AssignmentUsedAsCondition")
 	@Override
-	@SquirrelJMEVendorApi
 	public final void start()
 		throws MediaException
 	{
@@ -933,7 +898,6 @@ public abstract class AbstractPlayer
 	 * @since 2022/04/27
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public final void stop()
 		throws MediaException
 	{
@@ -970,7 +934,6 @@ public abstract class AbstractPlayer
 	 * @throws MediaException On any error.
 	 * @since 2024/02/26
 	 */
-	@SquirrelJMEVendorApi
 	public final void stopViaMedia()
 		throws MediaException
 	{
@@ -1001,7 +964,6 @@ public abstract class AbstractPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
 	final void __handleEvent(String __eventType, Object __eventValue,
 		long __nanoTime)
 		throws NullPointerException
@@ -1044,7 +1006,6 @@ public abstract class AbstractPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/31
 	 */
-	@SquirrelJMEVendorApi
 	public static final void closeConnection(Connection __in)
 		throws MediaException, NullPointerException
 	{
@@ -1070,7 +1031,6 @@ public abstract class AbstractPlayer
 	 * @return The set of player providers.
 	 * @since 2026/06/27
 	 */
-	@SquirrelJMEVendorApi
 	public static Iterable<PlayerProvider> providers()
 	{
 		// Do we need to load in the service providers?
@@ -1101,7 +1061,6 @@ public abstract class AbstractPlayer
 	 * @return The current audio snoop.
 	 * @since 2026/01/08
 	 */
-	@SquirrelJMEVendorApi
 	public static AudioStreamSnoop snoop()
 	{
 		return AbstractPlayer._snoop;
@@ -1113,7 +1072,6 @@ public abstract class AbstractPlayer
 	 * @param __snoop The snoop to set, {@code null} clears it.
 	 * @since 2026/01/08
 	 */
-	@SquirrelJMEVendorApi
 	public static void snoop(AudioStreamSnoop __snoop)
 	{
 		// Clear
@@ -1137,7 +1095,6 @@ public abstract class AbstractPlayer
 	 * @throws MediaException If the stream could not be opened.
 	 * @since 2026/01/08
 	 */
-	@SquirrelJMEVendorApi
 	public static AudioStreamBracket stream(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
 			int __format,
@@ -1189,7 +1146,7 @@ public abstract class AbstractPlayer
 			}
 			catch (MLECallError __e)
 			{
-				if (Debugging.ENABLED)
+				if (Debugging.enabled())
 					__e.printStackTrace();
 				
 				MediaException toss = new MediaException(__e.getMessage());
@@ -1208,7 +1165,6 @@ public abstract class AbstractPlayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/08
 	 */
-	@SquirrelJMEVendorApi
 	public static void streamDisconnect(AudioStreamBracket __stream,
 		boolean __force)
 		throws MediaException, NullPointerException
@@ -1229,7 +1185,7 @@ public abstract class AbstractPlayer
 				}
 				catch (MLECallError __e)
 				{
-					if (Debugging.ENABLED)
+					if (Debugging.enabled())
 						__e.printStackTrace();
 					
 					MediaException toss = new MediaException(__e.getMessage());

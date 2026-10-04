@@ -13,7 +13,6 @@ import cc.squirreljme.emulator.scritchui.dylib.DylibScritchInterface;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchUIShelf;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * Emulated version of {@link NativeScritchUIShelf}.
@@ -29,7 +28,6 @@ public class EmulatedNativeScritchInterface
 	 * @throws MLECallError If there is no support for the native interface.
 	 * @since 2024/02/29
 	 */
-	@SquirrelJMEVendorApi
 	public static ScritchInterface nativeInterface()
 		throws MLECallError
 	{

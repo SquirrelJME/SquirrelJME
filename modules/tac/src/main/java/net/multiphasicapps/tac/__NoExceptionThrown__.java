@@ -9,15 +9,11 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Indicates that no exception was thrown.
  *
  * @since 2018/10/06
  */
-@KeepWhenCompacting
 final class __NoExceptionThrown__
 {
 	/**

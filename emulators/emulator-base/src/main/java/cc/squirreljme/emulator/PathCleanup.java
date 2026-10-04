@@ -44,7 +44,7 @@ public final class PathCleanup
 	public final void run()
 	{
 		// Notice
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("Cleaning up temporary libraries...");
 		
 		// Cleanup

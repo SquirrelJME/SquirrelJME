@@ -13,8 +13,6 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SpecificFlags;
 import java.lang.ref.Reference;
@@ -22,7 +20,6 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import javax.microedition.lcdui.Displayable;
 import org.intellij.lang.annotations.MagicConstant;
@@ -36,41 +33,32 @@ import org.intellij.lang.annotations.MagicConstant;
  *
  * @since 2024/03/08
  */
-@SquirrelJMEVendorApi
 public final class DisplayableState
 {
 	/** The displayable states that exist. */
-	@KeepWhenCompacting
 	private static final List<Reference<DisplayableState>> _binds =
 		new LinkedList<>();
 	
 	/** The displayable this is linked to. */
-	@SquirrelJMEVendorApi
 	protected final Reference<Displayable> displayable;
 	
 	/** The title of this displayable. */
-	@SquirrelJMEVendorApi
 	protected final StringNotifier title =
 		new StringNotifier();
 	
 	/** The panel to use for this specific displayable. */
-	@SquirrelJMEVendorApi
 	protected final ScritchPanelBracket panel;
 	
 	/** The API in use. */
-	@SquirrelJMEVendorApi
 	protected final ScritchInterface scritchApi;
 	
 	/** The display this is showing on. */
-	@SquirrelJMEVendorApi
 	private volatile DisplayState _current;
 	
 	/** Is full screen being desired? */
-	@SquirrelJMEVendorApi
 	private volatile boolean _desireFullScreen;
 	
 	/** Displayable specific flags, defined by {@link Displayable}. */
-	@SquirrelJMEVendorApi
 	@MagicConstant(flagsFromClass = SpecificFlags.class)
 	private volatile int _specificFlags;
 	
@@ -81,7 +69,6 @@ public final class DisplayableState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/08
 	 */
-	@SquirrelJMEVendorApi
 	public DisplayableState(Displayable __displayable)
 		throws NullPointerException
 	{
@@ -109,7 +96,6 @@ public final class DisplayableState
 	 * @return The current display.
 	 * @since 2024/03/18
 	 */
-	@SquirrelJMEVendorApi
 	public final DisplayState currentDisplay()
 	{
 		synchronized (this)
@@ -124,7 +110,6 @@ public final class DisplayableState
 	 * @return If fullscreen is desired or not.
 	 * @since 2025/12/23
 	 */
-	@SquirrelJMEVendorApi
 	public boolean desireFullScreen()
 	{
 		synchronized (this)
@@ -139,7 +124,6 @@ public final class DisplayableState
 	 * @param __isFull Should full-screen be used?
 	 * @since 2025/12/23
 	 */
-	@SquirrelJMEVendorApi
 	public void desireFullScreen(boolean __isFull)
 	{
 		synchronized (this)
@@ -155,7 +139,6 @@ public final class DisplayableState
 	 * @throws IllegalStateException If it was garbage collected.
 	 * @since 2024/03/08
 	 */
-	@SquirrelJMEVendorApi
 	public final Displayable displayable()
 		throws IllegalStateException
 	{
@@ -174,7 +157,6 @@ public final class DisplayableState
 	 * @return The {@link SpecificFlags} set on this {@link Displayable}.
 	 * @since 2026/08/09
 	 */
-	@SquirrelJMEVendorApi
 	@ScritchEventLoop
 	@MagicConstant(flagsFromClass = SpecificFlags.class)
 	public int flags()
@@ -196,7 +178,6 @@ public final class DisplayableState
 	 * @return The specific flags which were previously set.
 	 * @since 2026/08/09
 	 */
-	@SquirrelJMEVendorApi
 	@ScritchEventLoop
 	@MagicConstant(flagsFromClass = SpecificFlags.class)
 	public int flags(
@@ -216,7 +197,6 @@ public final class DisplayableState
 	 * @return If this uses the calculator layout.
 	 * @since 2025/05/15
 	 */
-	@SquirrelJMEVendorApi
 	public boolean isCalcLayout()
 	{
 		return (this.scritchApi.environment()
@@ -230,7 +210,6 @@ public final class DisplayableState
 	 * @return The ScritchUI interface in use.
 	 * @since 2024/03/19
 	 */
-	@SquirrelJMEVendorApi
 	public ScritchInterface scritchApi()
 	{
 		return this.scritchApi;
@@ -242,7 +221,6 @@ public final class DisplayableState
 	 * @return The panel used for this {@link Displayable}.
 	 * @since 2024/03/17
 	 */
-	@SquirrelJMEVendorApi
 	public ScritchPanelBracket scritchPanel()
 	{
 		return this.panel;
@@ -254,7 +232,6 @@ public final class DisplayableState
 	 * @param __parent The parent display.
 	 * @since 2024/03/18
 	 */
-	@SquirrelJMEVendorApi
 	@ScritchEventLoop
 	public void setParent(DisplayState __parent)
 	{
@@ -292,7 +269,6 @@ public final class DisplayableState
 	 * @throws NullPointerException On {@code null} arguments.
 	 * @since 2026/08/09
 	 */
-	@SquirrelJMEVendorApi
 	public static DisplayableState locate(Displayable __displayable)
 		throws NoSuchElementException, NullPointerException
 	{

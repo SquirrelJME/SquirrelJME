@@ -9,14 +9,11 @@
 
 package cc.squirreljme.runtime.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Tracks modification counts.
  *
  * @since 2026/04/10
  */
-@SquirrelJMEVendorApi
 public final class ModificationCounter
 {
 	/** The current modification count. */
@@ -29,7 +26,6 @@ public final class ModificationCounter
 	 * @return The current modification count.
 	 * @since 2026/04/10
 	 */
-	@SquirrelJMEVendorApi
 	public int current()
 	{
 		synchronized (this)
@@ -43,7 +39,6 @@ public final class ModificationCounter
 	 *
 	 * @since 2026/04/10
 	 */
-	@SquirrelJMEVendorApi
 	public void increment()
 	{
 		synchronized (this)

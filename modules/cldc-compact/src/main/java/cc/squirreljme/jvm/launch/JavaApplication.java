@@ -13,16 +13,12 @@ import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.DependencyInfo;
 import cc.squirreljme.jvm.suite.EntryPoint;
 import cc.squirreljme.jvm.suite.SuiteInfo;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Represents a single application that can be launched.
  *
  * @since 2020/12/28
  */
-@SquirrelJMEVendorApi
 public final class JavaApplication
 	extends Application
 {
@@ -35,11 +31,9 @@ public final class JavaApplication
 		"X-SquirrelJME-NoJavaMainLauncher";
 	
 	/** The suite information. */
-	@SquirrelJMEVendorApi
 	protected final SuiteInfo info;
 	
 	/** The entry point used. */
-	@SquirrelJMEVendorApi
 	protected final EntryPoint entryPoint;
 	
 	/**
@@ -52,7 +46,6 @@ public final class JavaApplication
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
-	@KeepWhenCompacting
 	JavaApplication(SuiteInfo __info, JarPackageBracket __jar,
 		__Libraries__ __libs, EntryPoint __entryPoint)
 		throws NullPointerException

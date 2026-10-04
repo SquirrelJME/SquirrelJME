@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.StringShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.CharArrayCharSequence;
 import cc.squirreljme.runtime.cldc.util.CharSequenceUtils;
@@ -167,6 +168,7 @@ public final class StringBuilder
 	 * {@inheritDoc}
 	 * @since 2018/09/22
 	 */
+	@Api
 	@Override
 	public StringBuilder append(CharSequence __v)
 	{
@@ -181,6 +183,7 @@ public final class StringBuilder
 	 * {@inheritDoc}
 	 * @since 2018/09/22
 	 */
+	@Api
 	@Override
 	public StringBuilder append(CharSequence __v, int __s, int __e)
 		throws IndexOutOfBoundsException
@@ -282,6 +285,7 @@ public final class StringBuilder
 	 * {@inheritDoc}
 	 * @since 2018/09/22
 	 */
+	@Api
 	@Override
 	public StringBuilder append(char __v)
 	{
@@ -371,6 +375,7 @@ public final class StringBuilder
 	 * bounds.
 	 * @since 2018/09/29
 	 */
+	@Api
 	@Override
 	public char charAt(int __dx)
 		throws IndexOutOfBoundsException
@@ -806,6 +811,7 @@ public final class StringBuilder
 	 * @return The string length.
 	 * @since 2018/09/29
 	 */
+	@Api
 	@Override
 	public int length()
 	{
@@ -909,6 +915,7 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2019/05/11
 	 */
+	@Api
 	@Override
 	public CharSequence subSequence(int __s, int __e)
 		throws IndexOutOfBoundsException
@@ -965,6 +972,7 @@ public final class StringBuilder
 	 * {@inheritDoc}
 	 * @since 2018/09/22
 	 */
+	@Api
 	@Override
 	public String toString()
 	{
@@ -996,7 +1004,6 @@ public final class StringBuilder
 	 * @return The buffer.
 	 * @since 2018/09/23
 	 */
-	@Api
 	private char[] __buffer(int __l)
 	{
 		// Get buffer properties

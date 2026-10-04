@@ -12,7 +12,7 @@ package cc.squirreljme.jvm.mle.scritchui;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchInputListener;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2024/03/16
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchPanelInterface
 	extends ScritchApiInterface
 {
@@ -34,7 +34,7 @@ public interface ScritchPanelInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/24
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void panelEnableFocus(ScritchPanelBracket __panel, boolean __enabled,
 		boolean __default)
 		throws MLECallError;
@@ -46,8 +46,8 @@ public interface ScritchPanelInterface
 	 * @throws MLECallError If the panel could not be created.
 	 * @since 2024/03/16
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchPanelBracket panelNew()
 		throws MLECallError;
 	
@@ -60,7 +60,7 @@ public interface ScritchPanelInterface
 	 * could not be set.
 	 * @since 2024/06/30
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void panelSetInputListener(@NotNull ScritchPanelBracket __panel,
 		@Nullable ScritchInputListener __listener)
 		throws MLECallError;

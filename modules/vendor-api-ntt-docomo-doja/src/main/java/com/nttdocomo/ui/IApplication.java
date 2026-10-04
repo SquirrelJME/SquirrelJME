@@ -14,7 +14,6 @@ import cc.squirreljme.jvm.mle.TaskShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.constants.TaskStatusType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import cc.squirreljme.runtime.nttdocomo.io.SquirrelJMEWebRootConnectionFactory;
@@ -196,11 +195,9 @@ public abstract class IApplication
 		16384;
 
 	/** The last application created. */
-	@SquirrelJMEVendorApi
 	static volatile IApplication _lastApp;
 	
 	/** Application args, these are injected within. */
-	@SquirrelJMEVendorApi
 	static volatile String[] _appArgs;
 	
 	/** The source URL for this application. */

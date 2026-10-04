@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * This represents the types of redirects that may occur for a launched task
@@ -17,26 +17,26 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/07/02
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface TaskPipeRedirectType
 {
 	/** Discard all program output. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte DISCARD =
 		0;
 	
 	/** Buffer the resultant program's output. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte BUFFER =
 		1;
 	
 	/** Send the output to the virtual machine's terminal output. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte TERMINAL =
 		2;
 	
 	/** The number of redirect types. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_REDIRECT_TYPES =
 		3;
 }

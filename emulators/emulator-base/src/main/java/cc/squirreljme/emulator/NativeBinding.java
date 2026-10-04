@@ -99,7 +99,7 @@ public final class NativeBinding
 			NativeBinding.loadedLibPath = libFile;
 				
 			// Debug
-			if (Debugging.VERBOSE)
+			if (Debugging.verbose())
 			{
 				System.err.printf("Java Version: %s%n",
 					System.getProperty("java.version"));
@@ -110,7 +110,7 @@ public final class NativeBinding
 			System.load(libFile.toString());
 			
 			// Debug
-			if (Debugging.VERBOSE)
+			if (Debugging.verbose())
 				System.err.printf("Java Over-Layer: Binding methods...%n");
 			
 			// Bind methods
@@ -118,7 +118,7 @@ public final class NativeBinding
 				throw new RuntimeException("Could not bind methods!");
 			
 			// Debug
-			if (Debugging.VERBOSE)
+			if (Debugging.verbose())
 				System.err.printf("Java Over-Layer: Methods bound!%n");
 		}
 		catch (LinkageError e)
@@ -129,7 +129,7 @@ public final class NativeBinding
 		// Track execution time
 		finally
 		{
-			if (Debugging.VERBOSE)
+			if (Debugging.verbose())
 				System.err.printf("Java Over-Layer: Loading took %dms%n",
 					(System.nanoTime() - loadNs) / 1_000_000L);
 		}
@@ -162,7 +162,7 @@ public final class NativeBinding
 			libName = __libBaseName;
 		
 		// Debug
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			System.err.printf("Java Over-Layer: Locating %s...%n", libName);
 		
 		// Timing for extraction
@@ -190,7 +190,7 @@ public final class NativeBinding
 			libFile = tempDir.resolve(libName);
 			
 			// Debug
-			if (Debugging.VERBOSE)
+			if (Debugging.verbose())
 				System.err.printf("Java Over-Layer: Extracting %s...%n",
 					libName);
 			
@@ -221,7 +221,7 @@ public final class NativeBinding
 				new PathCleanup(libFile, tempDir));
 		
 			// Debug
-			if (Debugging.VERBOSE)
+			if (Debugging.verbose())
 				System.err.printf("Java Over-Layer: Extracted to %s...%n",
 					libFile);
 			
@@ -250,7 +250,7 @@ public final class NativeBinding
 		// Track execution time
 		finally
 		{
-			if (Debugging.VERBOSE)
+			if (Debugging.verbose())
 				System.err.printf("Java Over-Layer: Extraction took %dms%n",
 					(System.nanoTime() - startNs) / 1_000_000L);
 		}

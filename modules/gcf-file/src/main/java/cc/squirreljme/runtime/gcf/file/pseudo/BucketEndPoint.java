@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.gcf.file.pseudo;
 import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
@@ -30,17 +29,14 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2026/01/16
  */
-@SquirrelJMEVendorApi
 public class BucketEndPoint
 	extends FileEndPoint
 {
 	/** Decoded host. */
-	@SquirrelJMEVendorApi
 	public static final String DECODED_HOST =
 		"!?x-squirreljme-bucket://?!";
 	
 	/** Host. */
-	@SquirrelJMEVendorApi
 	public static final String HOST =
 		"!%3Fx-squirreljme-bucket%3A%2F%2F%3F!";
 	

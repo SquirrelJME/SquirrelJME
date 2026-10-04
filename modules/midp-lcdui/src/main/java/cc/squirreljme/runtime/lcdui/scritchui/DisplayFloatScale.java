@@ -9,43 +9,33 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Floating point scaling for displays.
  *
  * @since 2024/03/09
  */
-@SquirrelJMEVendorApi
 public class DisplayFloatScale
 	extends DisplayScale
 {
 	/** The base scale to use. */
-	@SquirrelJMEVendorApi
 	protected final DisplayScale base;
 	
 	/** Source texture width. */
-	@SquirrelJMEVendorApi
 	private final int textureW;
 	
 	/** Source texture height. */
-	@SquirrelJMEVendorApi
 	private final int textureH;
 	
 	/** Scaled target width. */
-	@SquirrelJMEVendorApi
 	private final int scaledW;
 	
 	/** Scaled target height. */
-	@SquirrelJMEVendorApi
 	private final int scaledH;
 	
 	/** X multiplier. */
-	@SquirrelJMEVendorApi
 	private final float mulX;
 	
 	/** Y multiplier. */
-	@SquirrelJMEVendorApi
 	private final float mulY;
 	
 	/**
@@ -58,7 +48,6 @@ public class DisplayFloatScale
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/11
 	 */
-	@SquirrelJMEVendorApi
 	public DisplayFloatScale(DisplayScale __base,
 		int __scaledW, int __scaledH)
 		throws IllegalArgumentException, NullPointerException
@@ -80,7 +69,6 @@ public class DisplayFloatScale
 	 * @since 2024/05/12
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public boolean requiresBuffer()
 	{
 		return true;
@@ -91,7 +79,6 @@ public class DisplayFloatScale
 	 * @since 2024/03/09
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int screenX(int __x)
 	{
 		return (int)(__x * this.mulX);
@@ -102,7 +89,6 @@ public class DisplayFloatScale
 	 * @since 2024/03/09
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int screenY(int __y)
 	{
 		return (int)(__y * this.mulY);
@@ -113,7 +99,6 @@ public class DisplayFloatScale
 	 * @since 2024/03/18
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int textureH()
 	{
 		return this.textureH;
@@ -124,7 +109,6 @@ public class DisplayFloatScale
 	 * @since 2024/03/11
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int textureMaxH()
 	{
 		return this.textureH;
@@ -135,7 +119,6 @@ public class DisplayFloatScale
 	 * @since 2024/03/11
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int textureMaxW()
 	{
 		return this.textureW;
@@ -146,7 +129,6 @@ public class DisplayFloatScale
 	 * @since 2024/03/18
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int textureW()
 	{
 		return this.textureW;
@@ -157,7 +139,6 @@ public class DisplayFloatScale
 	 * @since 2024/03/09
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int textureX(int __x)
 	{
 		return (int)(__x / this.mulX);
@@ -168,7 +149,6 @@ public class DisplayFloatScale
 	 * @since 2024/03/09
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public int textureY(int __y)
 	{
 		return (int)(__y / this.mulY);

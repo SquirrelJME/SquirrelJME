@@ -9,31 +9,23 @@
 
 package cc.squirreljme.runtime.media;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Stores event information.
  *
  * @since 2025/06/03
  */
-@KeepWhenCompacting
 final class __ListenerEvent__
 {
 	/** The player this event came from. */
-	@KeepWhenCompacting
 	final AbstractPlayer _player;
 	
 	/** The event type. */
-	@KeepWhenCompacting
 	final String _eventType;
 	
 	/** The event value. */
-	@KeepWhenCompacting
 	final Object _eventValue;
 	
 	/** The time this event occurred. */
-	@KeepWhenCompacting
 	final long _nanoTime;
 	
 	/**

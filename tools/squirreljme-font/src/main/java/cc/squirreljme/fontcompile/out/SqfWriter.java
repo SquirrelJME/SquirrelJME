@@ -10,7 +10,6 @@
 package cc.squirreljme.fontcompile.out;
 
 import cc.squirreljme.fontcompile.out.struct.SqfFontStruct;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
 

@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -19,19 +18,15 @@ import java.io.OutputStream;
  *
  * @since 2024/01/19
  */
-@SquirrelJMEVendorApi
 public class UnidirectionalPipe
 {
 	/** The input end of the pipe. */
-	@SquirrelJMEVendorApi
 	protected final InputStream in;
 	
 	/** The output end of the pipe. */
-	@SquirrelJMEVendorApi
 	protected final OutputStream out;
 	
 	/** The byte deque used for communication. */
-	@SquirrelJMEVendorApi
 	protected final ByteDeque queue;
 	
 	/**
@@ -39,7 +34,6 @@ public class UnidirectionalPipe
 	 *
 	 * @since 2024/01/19
 	 */
-	@SquirrelJMEVendorApi
 	public UnidirectionalPipe()
 	{
 		// Setup initial stream
@@ -57,7 +51,6 @@ public class UnidirectionalPipe
 	 * @return The pipe input end.
 	 * @since 2024/01/19
 	 */
-	@SquirrelJMEVendorApi
 	public InputStream in()
 	{
 		return this.in;
@@ -69,7 +62,6 @@ public class UnidirectionalPipe
 	 * @return The pipe input end.
 	 * @since 2024/01/19
 	 */
-	@SquirrelJMEVendorApi
 	public OutputStream out()
 	{
 		return this.out;

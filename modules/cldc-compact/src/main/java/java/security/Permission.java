@@ -10,6 +10,7 @@
 package java.security;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -23,6 +24,7 @@ import java.lang.ref.WeakReference;
  * @since 2018/12/08
  */
 @Api
+@KeepAbsolutelyEverything("Lightweight 'Security' permission system.")
 public abstract class Permission
 {
 	/** The permission name. */

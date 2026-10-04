@@ -11,6 +11,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 
 /**
  * This is a boxed boolean value.
@@ -18,6 +19,7 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
  * @since 2018/12/07
  */
 @Api
+@KeepAbsolutelyEverything("Boxed types cannot be optimized!")
 public final class Boolean
 	implements Comparable<Boolean>
 {

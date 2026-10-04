@@ -10,7 +10,6 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
@@ -24,7 +23,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 public class Font
 {
 	/** No selection was made, use a default. */
-	@SquirrelJMEVendorApi
 	private static final int _NONE =
 		0x7000_0000;
 	

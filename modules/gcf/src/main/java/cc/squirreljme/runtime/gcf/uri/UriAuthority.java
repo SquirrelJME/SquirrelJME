@@ -9,9 +9,9 @@
 
 package cc.squirreljme.runtime.gcf.uri;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.NotNull;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -20,24 +20,19 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/29
  */
-@SquirrelJMEVendorApi
 public final class UriAuthority
 	implements Comparable<UriAuthority>
 {
 	/** The original authority. */
-	@SquirrelJMEVendorApi
 	protected final String original;
 	
 	/** The specified user. */
-	@SquirrelJMEVendorApi
 	protected final String user;
 	
 	/** The host. */
-	@SquirrelJMEVendorApi
 	protected final String host;
 	
 	/** The port. */
-	@SquirrelJMEVendorApi
 	protected final int port;
 	
 	/**
@@ -145,7 +140,6 @@ public final class UriAuthority
 	 * @return The specified host.
 	 * @since 2025/12/29
 	 */
-	@SquirrelJMEVendorApi
 	public String host()
 	{
 		return this.host;
@@ -157,7 +151,6 @@ public final class UriAuthority
 	 * @return The port.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public int port()
 	{
 		return this.port;
@@ -179,7 +172,6 @@ public final class UriAuthority
 	 * @return The user.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public String user()
 	{
 		return this.user;

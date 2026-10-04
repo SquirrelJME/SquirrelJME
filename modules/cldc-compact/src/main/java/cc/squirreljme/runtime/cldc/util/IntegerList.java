@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.AbstractList;
 import java.util.Arrays;
@@ -23,7 +22,6 @@ import java.util.RandomAccess;
  *
  * @since 2017/11/26
  */
-@SquirrelJMEVendorApi
 public final class IntegerList
 	extends AbstractList<Integer>
 	implements RandomAccess
@@ -43,7 +41,6 @@ public final class IntegerList
 	 *
 	 * @since 2017/11/26
 	 */
-	@SquirrelJMEVendorApi
 	public IntegerList()
 	{
 	}
@@ -55,7 +52,6 @@ public final class IntegerList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/26
 	 */
-	@SquirrelJMEVendorApi
 	public IntegerList(Collection<Integer> __v)
 		throws NullPointerException
 	{
@@ -80,7 +76,6 @@ public final class IntegerList
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/26
 	 */
-	@SquirrelJMEVendorApi
 	public IntegerList(int... __v)
 		throws NullPointerException
 	{
@@ -130,7 +125,6 @@ public final class IntegerList
 	 * @return {@code true} if the list has changed.
 	 * @since 2017/11/26
 	 */
-	@SquirrelJMEVendorApi
 	public boolean addInteger(int __v)
 	{
 		this.addInteger(this._size, __v);
@@ -146,7 +140,6 @@ public final class IntegerList
 	 * the array bounds.
 	 * @since 2017/11/26
 	 */
-	@SquirrelJMEVendorApi
 	public void addInteger(int __i, int __v)
 		throws IndexOutOfBoundsException
 	{
@@ -213,7 +206,6 @@ public final class IntegerList
 	 * @return {@code true} if the list contains the given integer.
 	 * @since 2017/11/26
 	 */
-	@SquirrelJMEVendorApi
 	public boolean containsInteger(int __v)
 	{
 		return this.indexOfInteger(__v) >= 0;
@@ -269,7 +261,6 @@ public final class IntegerList
 	 * contains no such value.
 	 * @since 2017/11/26
 	 */
-	@SquirrelJMEVendorApi
 	public int indexOfInteger(int __v)
 	{
 		int[] values = this._values;
@@ -312,7 +303,6 @@ public final class IntegerList
 	 * contains no such value.
 	 * @since 2017/11/26
 	 */
-	@SquirrelJMEVendorApi
 	public int lastIndexOfInteger(int __v)
 	{
 		int[] values = this._values;
@@ -374,7 +364,6 @@ public final class IntegerList
 	 * @throws IndexOutOfBoundsException If the index is not within bounds.
 	 * @since 2017/11/26
 	 */
-	@SquirrelJMEVendorApi
 	public int setInteger(int __i, int __v)
 		throws IndexOutOfBoundsException
 	{
@@ -403,7 +392,6 @@ public final class IntegerList
 	 * @return This list as an integer array.
 	 * @since 2017/11/26
 	 */
-	@SquirrelJMEVendorApi
 	public int[] toIntegerArray()
 	{
 		int[] values = this._values;

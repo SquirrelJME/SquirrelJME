@@ -9,14 +9,11 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * A future value that constants a long value.
  *
  * @since 2021/01/17
  */
-@SquirrelJMEVendorApi
 public interface ChunkFutureLong
 	extends ChunkFuture
 {
@@ -26,6 +23,5 @@ public interface ChunkFutureLong
 	 * @return The value of this future.
 	 * @since 2021/01/17
 	 */
-	@SquirrelJMEVendorApi
 	long getLong();
 }

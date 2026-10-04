@@ -11,8 +11,6 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.launch.IModeApplication;
 import cc.squirreljme.jvm.launch.IModeProperty;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import cc.squirreljme.runtime.midlet.ApplicationInterface;
 import cc.squirreljme.runtime.midlet.ApplicationType;
@@ -25,16 +23,13 @@ import java.util.Objects;
  *
  * @since 2021/11/30
  */
-@KeepWhenCompacting
 final class __IAppliInterface__
 	implements ApplicationInterface<IApplication>
 {
 	/** Main application class. */
-	@SquirrelJMEVendorApi
 	protected final String mainClass;
 	
 	/** Arguments to the class. */
-	@SquirrelJMEVendorApi
 	private final String[] _args;
 	
 	/**
@@ -45,7 +40,6 @@ final class __IAppliInterface__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/11/30
 	 */
-	@SquirrelJMEVendorApi
 	public __IAppliInterface__(String __mainClass, String... __args)
 		throws NullPointerException
 	{
@@ -61,7 +55,6 @@ final class __IAppliInterface__
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void destroy(IApplication __instance, Throwable __thrown)
 		throws NullPointerException, Throwable
 	{
@@ -83,7 +76,6 @@ final class __IAppliInterface__
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public IApplication newInstance()
 		throws Throwable
 	{
@@ -147,7 +139,6 @@ final class __IAppliInterface__
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void startApp(IApplication __instance)
 		throws NullPointerException, Throwable
 	{
@@ -163,7 +154,6 @@ final class __IAppliInterface__
 	 * @since 2022/07/21
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public ApplicationType type()
 	{
 		return ApplicationType.NTT_DOCOMO_DOJA;

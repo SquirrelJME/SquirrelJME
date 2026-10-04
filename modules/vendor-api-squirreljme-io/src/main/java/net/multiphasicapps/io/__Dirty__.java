@@ -9,6 +9,8 @@
 
 package net.multiphasicapps.io;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
+
 /**
  * Are the addresses and sizes considered dirty?
  *

@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This is used to obtain the system's native ScritchUI interface, assuming
@@ -18,7 +17,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2024/02/29
  */
-@SquirrelJMEVendorApi
 public final class NativeScritchUIShelf
 {
 	/**
@@ -26,7 +24,6 @@ public final class NativeScritchUIShelf
 	 *
 	 * @since 2024/02/29
 	 */
-	@SquirrelJMEVendorApi
 	private NativeScritchUIShelf()
 	{
 	}
@@ -38,7 +35,6 @@ public final class NativeScritchUIShelf
 	 * @throws MLECallError If there is no support for the native interface.
 	 * @since 2024/02/29
 	 */
-	@SquirrelJMEVendorApi
 	public static native ScritchInterface nativeInterface()
 		throws MLECallError;
 }

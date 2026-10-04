@@ -57,7 +57,7 @@ public final class TrackedOutputStream
 		this.out.close();
 		
 		// Set stream as closed
-		this.tracker._outclosed = true;
+		this.tracker.outClosed = true;
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public final class TrackedOutputStream
 		throws IOException
 	{
 		/* {@squirreljme.error EC0v The output has been closed.} */
-		if (this.tracker._outclosed)
+		if (this.tracker.outClosed)
 			throw new IOException("EC0v");
 		
 		// Forward
@@ -85,7 +85,7 @@ public final class TrackedOutputStream
 		throws IOException
 	{
 		/* {@squirreljme.error EC0w The output has been closed.} */
-		if (this.tracker._outclosed)
+		if (this.tracker.outClosed)
 			throw new IOException("EC0w");
 		
 		// Forward
@@ -101,7 +101,7 @@ public final class TrackedOutputStream
 		throws IOException, NullPointerException
 	{
 		/* {@squirreljme.error EC0x The output has been closed.} */
-		if (this.tracker._outclosed)
+		if (this.tracker.outClosed)
 			throw new IOException("EC0x");
 		
 		// Forward
@@ -117,7 +117,7 @@ public final class TrackedOutputStream
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
 		/* {@squirreljme.error EC0y The output has been closed.} */
-		if (this.tracker._outclosed)
+		if (this.tracker.outClosed)
 			throw new IOException("EC0y");
 		
 		// Forward

@@ -11,14 +11,14 @@ package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Listener for resize events within ScritchUI.
  *
  * @since 2024/04/28
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchSizeListener
 	extends ScritchListener
 {
@@ -30,8 +30,8 @@ public interface ScritchSizeListener
 	 * @param __newHeight The new height.
 	 * @since 2024/04/28
 	 */
-	@SquirrelJMEVendorApi
 	@ScritchEventLoop
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void sizeChanged(ScritchComponentBracket __component,
 		int __newWidth, int __newHeight);
 }

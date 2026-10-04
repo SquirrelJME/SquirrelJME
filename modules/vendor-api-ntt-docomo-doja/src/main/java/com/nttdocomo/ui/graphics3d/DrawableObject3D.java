@@ -9,9 +9,6 @@
 
 package com.nttdocomo.ui.graphics3d;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
-@SquirrelJMEVendorApi
 public abstract class DrawableObject3D
 	extends Object3D
 {

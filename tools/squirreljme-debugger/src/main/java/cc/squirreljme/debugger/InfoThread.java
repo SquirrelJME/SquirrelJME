@@ -16,8 +16,6 @@ import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -11,8 +11,6 @@ package cc.squirreljme.runtime.nttdocomo.io;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.file.FileEndPointConnection;
 import cc.squirreljme.runtime.gcf.file.pseudo.LibraryEndPoint;
@@ -31,7 +29,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2021/11/30
  */
-@SquirrelJMEVendorApi
 public class ResourceConnectionFactory
 	implements CustomConnectionFactory
 {
@@ -41,7 +38,6 @@ public class ResourceConnectionFactory
 	 */
 	@SuppressWarnings("resource")
 	@Override
-	@SquirrelJMEVendorApi
 	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
@@ -95,7 +91,6 @@ public class ResourceConnectionFactory
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public String scheme()
 	{
 		return "resource";

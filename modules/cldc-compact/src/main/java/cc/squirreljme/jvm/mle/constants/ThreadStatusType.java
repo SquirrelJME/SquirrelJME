@@ -9,28 +9,28 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * The status on what a {@link Thread} is doing.
  *
  * @since 2021/03/15
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ThreadStatusType
 {
 	/** Running. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte RUNNING =
 		0;
 	
 	/** Sleeping. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte SLEEPING =
 		1;
 	
 	/** Waiting on a monitor. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MONITOR_WAIT =
 		2;
 }

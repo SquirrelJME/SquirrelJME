@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm.mle.scritchui.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.Debug;
 
 /**
@@ -18,10 +18,10 @@ import org.jetbrains.annotations.Debug;
  *
  * @since 2024/03/10
  */
-@SquirrelJMEVendorApi
 @GhostObject
 @Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchScreenBracket
 	extends ScritchBaseBracket
 {

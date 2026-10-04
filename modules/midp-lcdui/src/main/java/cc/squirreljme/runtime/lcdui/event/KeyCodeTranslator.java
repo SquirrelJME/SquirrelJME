@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.lcdui.event;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ServiceLoader;
 import javax.microedition.lcdui.Canvas;
 import org.intellij.lang.annotations.Language;
@@ -46,14 +45,12 @@ import org.intellij.lang.annotations.MagicConstant;
  * 
  * @since 2022/02/23
  */
-@SquirrelJMEVendorApi
 public interface KeyCodeTranslator
 {
 	/**
 	 * If this is returned by any method, the conversion processor should just
 	 * flat out fail and treat the key as non-existent.
 	 */
-	@SquirrelJMEVendorApi
 	int IMMEDIATE_FAIL =
 		Integer.MIN_VALUE;
 	
@@ -79,7 +76,6 @@ public interface KeyCodeTranslator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/05/13
 	 */
-	@SquirrelJMEVendorApi
 	boolean accepts(@Language("rfqdn") String __identifier, boolean __exact)
 		throws NullPointerException;
 	
@@ -93,7 +89,6 @@ public interface KeyCodeTranslator
 	 * a value of {@link #IMMEDIATE_FAIL} will stop all processing.
 	 * @since 2026/05/12
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = NonStandardKey.class)
 	int gameActionToVendor(int __ga, boolean __last);
 	
@@ -107,7 +102,6 @@ public interface KeyCodeTranslator
 	 * a value of {@link #IMMEDIATE_FAIL} will stop all processing.
 	 * @since 2022/02/03
 	 */
-	@SquirrelJMEVendorApi
 	int keyCodeToVendor(
 		@MagicConstant(valuesFromClass = NonStandardKey.class) int __kc);
 	
@@ -122,7 +116,6 @@ public interface KeyCodeTranslator
 	 * a value of {@link #IMMEDIATE_FAIL} will stop all processing.
 	 * @since 2022/02/03
 	 */
-	@SquirrelJMEVendorApi
 	int vendorToGameAction(int __vc, boolean __last);
 	
 	/**
@@ -133,7 +126,6 @@ public interface KeyCodeTranslator
 	 * a value of {@link #IMMEDIATE_FAIL} will stop all processing.
 	 * @since 2026/05/12
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = NonStandardKey.class)
 	int vendorToKeyCode(int __vc);
 }

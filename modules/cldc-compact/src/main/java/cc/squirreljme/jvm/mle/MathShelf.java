@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.CheckReturnValue;
 
 /**
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.CheckReturnValue;
  *
  * @since 2020/06/18
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class MathShelf
 {
 	/**
@@ -37,8 +37,8 @@ public final class MathShelf
 	 * @return The double value.
 	 * @since 2019/06/21
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native double doublePack(int __lo, int __hi);
 	
 	/**
@@ -48,8 +48,8 @@ public final class MathShelf
 	 * @return The unpacked high value.
 	 * @since 2020/02/24
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int doubleUnpackHigh(double __d);
 	
 	/**
@@ -59,8 +59,8 @@ public final class MathShelf
 	 * @return The unpacked low value.
 	 * @since 2020/02/24
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int doubleUnpackLow(double __d);
 	
 	/**
@@ -71,8 +71,8 @@ public final class MathShelf
 	 * @return The long value.
 	 * @since 2019/06/21
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native long longPack(int __lo, int __hi);
 	
 	/**
@@ -82,8 +82,8 @@ public final class MathShelf
 	 * @return The unpacked fragment.
 	 * @since 2019/06/21
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int longUnpackHigh(long __v);
 	
 	/**
@@ -93,8 +93,8 @@ public final class MathShelf
 	 * @return The unpacked fragment.
 	 * @since 2019/06/21
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int longUnpackLow(long __v);
 	
 	/**
@@ -104,8 +104,8 @@ public final class MathShelf
 	 * @return The raw bits.
 	 * @since 2020/06/18
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native long rawDoubleToLong(double __v);
 	
 	/**
@@ -115,8 +115,8 @@ public final class MathShelf
 	 * @return The raw bits.
 	 * @since 2020/06/18
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int rawFloatToInt(float __v);
 	
 	/**
@@ -126,8 +126,8 @@ public final class MathShelf
 	 * @return The value.
 	 * @since 2020/06/18
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native float rawIntToFloat(int __b);
 	
 	/**
@@ -137,7 +137,7 @@ public final class MathShelf
 	 * @return The value.
 	 * @since 2020/06/18
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native double rawLongToDouble(long __b);
 }

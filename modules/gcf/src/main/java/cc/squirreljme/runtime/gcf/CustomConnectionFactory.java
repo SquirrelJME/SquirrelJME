@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.gcf;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
 import java.io.IOException;
 import java.util.ServiceLoader;
@@ -25,7 +24,6 @@ import javax.microedition.io.Connector;
  *
  * @since 2021/11/30
  */
-@SquirrelJMEVendorApi
 public interface CustomConnectionFactory
 {
 	/**
@@ -40,7 +38,6 @@ public interface CustomConnectionFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/11/30
 	 */
-	@SquirrelJMEVendorApi
 	Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException;
@@ -54,7 +51,6 @@ public interface CustomConnectionFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/06/27
 	 */
-	@SquirrelJMEVendorApi
 	boolean implementsInterface(Class<? extends Connection> __cl)
 		throws NullPointerException;
 	
@@ -64,6 +60,5 @@ public interface CustomConnectionFactory
 	 * @return The protocol scheme used.
 	 * @since 2021/11/30
 	 */
-	@SquirrelJMEVendorApi
 	String scheme();
 }

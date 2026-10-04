@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.mle.constants.BucketWriteMode;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.ByteArrayInputStream;
 import javax.microedition.rms.RecordStoreException;
 
@@ -22,7 +21,6 @@ import javax.microedition.rms.RecordStoreException;
  *
  * @since 2025/04/20
  */
-@SquirrelJMEVendorApi
 public class RecordSession
 	implements AutoCloseable
 {
@@ -31,23 +29,18 @@ public class RecordSession
 		new byte[0];
 	
 	/** The bucket to access. */
-	@SquirrelJMEVendorApi
 	protected final BucketBracket bucket;
 	
 	/** The file name within the bucket. */
-	@SquirrelJMEVendorApi
 	protected final String fileName;
 	
 	/** The access lock. */
-	@SquirrelJMEVendorApi
 	protected final Object lock;
 	
 	/** The record ID. */
-	@SquirrelJMEVendorApi
 	protected final int id;
 	
 	/** Is this session read-only? */
-	@SquirrelJMEVendorApi
 	protected final boolean readOnly;
 	
 	/**
@@ -61,7 +54,6 @@ public class RecordSession
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/04/20
 	 */
-	@SquirrelJMEVendorApi
 	public RecordSession(BucketBracket __bucket, String __fileName,
 		Object __lock, int __id, boolean __readOnly)
 		throws NullPointerException
@@ -95,7 +87,6 @@ public class RecordSession
 	 * @throws RecordStoreException If it could not be flushed.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public void flush()
 		throws RecordStoreException
 	{
@@ -108,7 +99,6 @@ public class RecordSession
 	 * @throws RecordStoreException If the record is not valid.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public long lastModified()
 		throws RecordStoreException
 	{
@@ -130,7 +120,6 @@ public class RecordSession
 	 * @throws RecordStoreException If the length could not be determined.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public int length()
 		throws RecordStoreException
 	{
@@ -155,7 +144,6 @@ public class RecordSession
 	 * @throws RecordStoreException If the data could not be read.
 	 * @since 2025/04/20
 	 */
-	@SquirrelJMEVendorApi
 	public final ByteArrayInputStream read()
 		throws RecordStoreException
 	{
@@ -178,7 +166,6 @@ public class RecordSession
 	 * negative or exceed the array bounds.
 	 * @since 2025/04/20
 	 */
-	@SquirrelJMEVendorApi
 	public final int read(byte[] __buf, int __off, int __len)
 		throws NullPointerException, IndexOutOfBoundsException
 	{
@@ -201,7 +188,6 @@ public class RecordSession
 	 * @throws RecordStoreException If the data could not be read.
 	 * @since 2025/04/20
 	 */
-	@SquirrelJMEVendorApi
 	public byte[] readAll()
 		throws RecordStoreException
 	{
@@ -236,7 +222,6 @@ public class RecordSession
 	 * @throws RecordStoreException If the data could not be written.
 	 * @since 2025/04/20
 	 */
-	@SquirrelJMEVendorApi
 	public void writeAll(byte[] __buf)
 		throws NullPointerException, RecordStoreException
 	{
@@ -259,7 +244,6 @@ public class RecordSession
 	 * @throws RecordStoreException If the data could not be written.
 	 * @since 2025/04/21
 	 */
-	@SquirrelJMEVendorApi
 	public void writeAll(byte[] __buf, int __off, int __len)
 		throws IndexOutOfBoundsException, NullPointerException,
 			RecordStoreException

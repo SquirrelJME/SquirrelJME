@@ -9,15 +9,10 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.JDWPCommandSet;
-import cc.squirreljme.jdwp.JDWPCommandSetReferenceType;
 import cc.squirreljme.jdwp.JDWPId;
-import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.Pool;
 
 /**

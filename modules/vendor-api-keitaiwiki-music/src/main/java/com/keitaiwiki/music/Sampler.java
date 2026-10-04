@@ -33,7 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -66,7 +65,6 @@ import org.jetbrains.annotations.Range;
  * @see SamplerProvider
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public interface Sampler
 {
 	/**
@@ -79,7 +77,6 @@ public interface Sampler
 	 * @see #programChange(int, int)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void bankChange(int __channel, int __bank);
 	
 	/**
@@ -90,7 +87,6 @@ public interface Sampler
 	 * @param __enable Whether to enable drum notes on the channel.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void drumEnable(int __channel, boolean __enable);
 	
 	/**
@@ -99,7 +95,6 @@ public interface Sampler
 	 * @return {@code true} if there are no notes generating any output.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	boolean isFinished();
 	
 	/**
@@ -112,7 +107,6 @@ public interface Sampler
 	 * @see #keyOn(int, int, float)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void keyOff(int __channel, int __key);
 	
 	/**
@@ -145,7 +139,6 @@ public interface Sampler
 	 * @see #pitchBendRange(int, float)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void keyOn(int __channel, int __key, float __velocity)
 		throws IllegalArgumentException;
 	
@@ -166,7 +159,6 @@ public interface Sampler
 	 * @see #pitchBend(int, float)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void masterTune(float __semitones)
 		throws IllegalArgumentException;
 	
@@ -182,7 +174,6 @@ public interface Sampler
 	 * non-number or is negative.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void masterVolume(float __volume)
 		throws IllegalArgumentException;
 	
@@ -198,7 +189,6 @@ public interface Sampler
 	 * non-number, is less than -1.0f or is greater than +1.0f.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void panpot(int __channel, float __panpot)
 		throws IllegalArgumentException;
 	
@@ -222,7 +212,6 @@ public interface Sampler
 	 * @see #pitchBendRange(int, float)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void pitchBend(int __channel, float __semitones)
 		throws IllegalArgumentException;
 	
@@ -240,7 +229,6 @@ public interface Sampler
 	 * @see #pitchBend(int, float)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void pitchBendRange(int __channel, float __range)
 		throws IllegalArgumentException;
 	
@@ -254,7 +242,6 @@ public interface Sampler
 	 * @see #bankChange(int, int)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void programChange(int __channel, int __program)
 		throws IllegalArgumentException;
 	
@@ -276,7 +263,6 @@ public interface Sampler
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void render(@NotNull float[] __samples,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __frames)
@@ -304,7 +290,6 @@ public interface Sampler
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void render(@NotNull float[] __samples,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
@@ -335,7 +320,6 @@ public interface Sampler
 	 * @see #render(float[], int, int, float, float, boolean, boolean)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void render(@NotNull float[] __samples,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
@@ -386,7 +370,6 @@ public interface Sampler
 	 * @see #render(float[], int, int, float, float)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void render(@NotNull float[] __samples,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
@@ -403,7 +386,6 @@ public interface Sampler
 	 * reinitialized to their default values.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void reset();
 	
 	/**
@@ -412,7 +394,6 @@ public interface Sampler
 	 * @return The sample rate.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	float sampleRate();
 	
 	/**
@@ -421,7 +402,6 @@ public interface Sampler
 	 * without going through key-off processing.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void stopAll();
 	
 	/**
@@ -434,7 +414,6 @@ public interface Sampler
 	 * @throws NullPointerException If {@code __message} is {@code null};
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void sysEx(@NotNull byte[] __message)
 		throws NullPointerException;
 	
@@ -452,7 +431,6 @@ public interface Sampler
 	 * @see #masterVolume(float)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	void volume(int __channel, float __volume)
 		throws IllegalArgumentException;
 }

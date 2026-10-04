@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.file;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.Closeable;
@@ -29,21 +28,17 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2025/12/29
  */
-@SquirrelJMEVendorApi
 public abstract class FileEndPoint
 	implements Closeable
 {
 	/** The mode this end point is opened in. */
-	@SquirrelJMEVendorApi
 	@MagicConstant(flagsFromClass = Connector.class)
 	protected final int mode;
 	
 	/** The URI part of this endpoint. */
-	@SquirrelJMEVendorApi
 	protected final UriGenericPart part;
 	
 	/** The return point for this endpoint. */
-	@SquirrelJMEVendorApi
 	protected final @Nullable UriGenericPart dotDot;
 	
 	/**
@@ -55,7 +50,6 @@ public abstract class FileEndPoint
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	protected FileEndPoint(@NotNull UriGenericPart __part,
 		@MagicConstant(flagsFromClass = Connector.class) int __mode,
 		@Nullable UriGenericPart __dotDot)
@@ -76,7 +70,6 @@ public abstract class FileEndPoint
 	 * @throws SecurityException If this operation is not permitted.
 	 * @since 2025/12/27
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract ExtraFileAttributes attachedAttributes()
 		throws SecurityException;
 	
@@ -87,7 +80,6 @@ public abstract class FileEndPoint
 	 * @throws SecurityException If this operation is not permitted.
 	 * @since 2025/12/27
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract FileStore attachedFileStore()
 		throws SecurityException;
 	
@@ -98,7 +90,6 @@ public abstract class FileEndPoint
 	 * @throws SecurityException If this operation is not permitted.
 	 * @since 2025/12/27
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract FileSystem attachedFileSystem()
 		throws SecurityException;
 	
@@ -113,7 +104,6 @@ public abstract class FileEndPoint
 	 * @throws SecurityException If this operation is not permitted.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void listDirectory(
 		@NotNull Map<String, UriGenericPart> __into)
 		throws IOException, NullPointerException, SecurityException;
@@ -128,7 +118,6 @@ public abstract class FileEndPoint
 	 * @throws SecurityException If this operation is not permitted.
 	 * @since 2026/01/01
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract InputStream openInputStream()
 		throws IOException, SecurityException;
 	

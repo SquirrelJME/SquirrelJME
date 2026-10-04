@@ -9,9 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
@@ -28,7 +26,6 @@ import javax.microedition.io.ConnectionOption;
  * @see ScratchPadConnection
  * @since 2021/11/30
  */
-@SquirrelJMEVendorApi
 public class ScratchPadConnectionFactory
 	implements CustomConnectionFactory
 {
@@ -37,7 +34,6 @@ public class ScratchPadConnectionFactory
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
@@ -121,7 +117,7 @@ public class ScratchPadConnectionFactory
 		// part)}
 		catch (NumberFormatException __e)
 		{
-			if (Debugging.ENABLED)
+			if (Debugging.enabled())
 				__e.printStackTrace();
 			
 			throw new ConnectionNotFoundException("AH0b " + __part);
@@ -145,7 +141,7 @@ public class ScratchPadConnectionFactory
 					params.getLength(wantPad)));
 		
 		// Final connection
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("Opened %d at [%x+%d] (from %s %s %s)",
 				wantPad, wantPos, wantLen,
 				__part, part.getPath(), part.pathParams());
@@ -173,7 +169,6 @@ public class ScratchPadConnectionFactory
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public String scheme()
 	{
 		return "scratchpad";

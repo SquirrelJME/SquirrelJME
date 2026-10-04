@@ -9,19 +9,15 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This wraps a character array and provides integer access to it.
  *
  * @since 2018/10/28
  */
-@SquirrelJMEVendorApi
 public final class CharacterIntegerArray
 	extends AbstractIntegerArray
 {
 	/** The backed array. */
-	@SquirrelJMEVendorApi
 	protected final char[] array;
 	
 	/**
@@ -31,7 +27,6 @@ public final class CharacterIntegerArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/28
 	 */
-	@SquirrelJMEVendorApi
 	public CharacterIntegerArray(char[] __a)
 		throws NullPointerException
 	{

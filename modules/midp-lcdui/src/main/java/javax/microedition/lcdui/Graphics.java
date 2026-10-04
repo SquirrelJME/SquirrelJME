@@ -127,7 +127,9 @@ public abstract class Graphics
 	}
 	
 	/**
-	 * This reduces the clipping area of the drawing so that 
+	 * This reduces the clipping area of the drawing so that only the
+	 * intersection of the current clip area, and the rectangle specified
+	 * in this call is valid for drawing.
 	 *
 	 * This is only used to reduce the clipping area, to make it larger use
 	 * {@link Graphics#setClip(int, int, int, int)}.

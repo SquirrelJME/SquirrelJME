@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.mle;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.Range;
 
@@ -18,16 +17,13 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2022/02/14
  */
-@SquirrelJMEVendorApi
 public final class Vibration
 {
 
 	/* The highest vibration strength allowed. */
-	@SquirrelJMEVendorApi
 	public static final int MAX_STR = 100;
 
 	/* The lowest vibration strength allowed, which is just no vibration. */
-	@SquirrelJMEVendorApi
 	public static final int MIN_STR = 0;
 
 	/**
@@ -46,7 +42,6 @@ public final class Vibration
 	 * otherwise.
 	 * @since 2026/04/19
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean available()
 	{
 		throw Debugging.todo("VibrationAvailability");
@@ -73,7 +68,6 @@ public final class Vibration
 	 * @throws IllegalArgumentException If the duration is negative.
 	 * @since 2022/02/14
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean vibrate(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __d)
 		throws IllegalArgumentException
@@ -104,7 +98,6 @@ public final class Vibration
 	 * is less than 0 or more than 100.
 	 * @since 2026/04/30
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean vibrate(
 		@Range(from = 0, to = Integer.MAX_VALUE) int __d,
 		@Range(from = Vibration.MIN_STR, to = Vibration.MAX_STR) int __s)
@@ -129,7 +122,6 @@ public final class Vibration
 	 * the display is active and the vibration was stopped.
 	 * @since 2026/04/30
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean stopVibrate()
 	{
 		Debugging.todoNote("stopVibrate?");

@@ -13,7 +13,5 @@
  * @since 2024/11/03
  */
 
-@SquirrelJMEVendorApi
 package com.nttdocomo.ui.graphics3d;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;

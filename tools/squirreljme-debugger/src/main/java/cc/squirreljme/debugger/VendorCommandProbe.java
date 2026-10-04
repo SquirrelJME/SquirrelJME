@@ -11,12 +11,10 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPErrorType;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.Dimension;
 import java.util.Objects;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 /**
  * Dialog for showing the disk probe.

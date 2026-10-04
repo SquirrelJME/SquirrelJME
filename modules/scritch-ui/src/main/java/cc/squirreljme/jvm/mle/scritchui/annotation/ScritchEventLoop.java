@@ -9,13 +9,11 @@
 
 package cc.squirreljme.jvm.mle.scritchui.annotation;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.jetbrains.annotations.Async;
 
 /**
  * This is a tagging annotation which indicates that the given method must be
@@ -26,9 +24,8 @@ import org.jetbrains.annotations.Async;
  * @since 2024/02/29
  */
 @Documented
-@Retention(value= RetentionPolicy.CLASS)
+@Retention(value= RetentionPolicy.RUNTIME)
 @Target(value={ElementType.METHOD})
-@SquirrelJMEVendorApi
 public @interface ScritchEventLoop
 {
 }

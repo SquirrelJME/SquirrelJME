@@ -9,7 +9,6 @@
 
 package cc.squirreljme.fontcompile.util;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.Closeable;

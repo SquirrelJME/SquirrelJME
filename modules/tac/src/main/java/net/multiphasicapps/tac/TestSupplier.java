@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.junit.Test;
 
 /**
@@ -18,7 +17,6 @@ import org.junit.Test;
  * @param <R> The return type.
  * @since 2018/10/06
  */
-@SquirrelJMEVendorApi
 public abstract class TestSupplier<R>
 	extends __CoreTest__
 {
@@ -27,7 +25,6 @@ public abstract class TestSupplier<R>
 	 *
 	 * @since 2026/02/12
 	 */
-	@SquirrelJMEVendorApi
 	public TestSupplier()
 	{
 	}
@@ -40,7 +37,6 @@ public abstract class TestSupplier<R>
 	 * @since 2018/10/06
 	 */
 	@Test
-	@SquirrelJMEVendorApi
 	public abstract R test()
 		throws Throwable;
 	
@@ -49,7 +45,6 @@ public abstract class TestSupplier<R>
 	 * @since 2018/10/06
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

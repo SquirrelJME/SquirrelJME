@@ -37,6 +37,7 @@ public abstract class GCFPermission
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public PermissionCollection newPermissionCollection()
 	{

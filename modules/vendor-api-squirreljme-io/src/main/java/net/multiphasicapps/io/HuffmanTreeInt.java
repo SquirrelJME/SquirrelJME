@@ -10,7 +10,6 @@
 package net.multiphasicapps.io;
 
 import cc.squirreljme.jvm.mle.ObjectShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -28,7 +27,6 @@ import java.util.NoSuchElementException;
  *
  * @since 2016/03/10
  */
-@SquirrelJMEVendorApi
 public class HuffmanTreeInt
 {
 	/** The huffman table. */
@@ -48,7 +46,6 @@ public class HuffmanTreeInt
 	 *
 	 * @since 2016/03/10
 	 */
-	@SquirrelJMEVendorApi
 	public HuffmanTreeInt()
 	{
 		// Initially add table space so that it is always initially valid but
@@ -69,7 +66,6 @@ public class HuffmanTreeInt
 	 * or has zero gaps.
 	 * @since 2016/03/28
 	 */
-	@SquirrelJMEVendorApi
 	public final int add(int __v, int __sym, int __mask)
 		throws IllegalArgumentException
 	{
@@ -193,7 +189,6 @@ public class HuffmanTreeInt
 	 *
 	 * @since 2017/02/25
 	 */
-	@SquirrelJMEVendorApi
 	public void clear()
 	{
 		// Reset parameters
@@ -215,7 +210,6 @@ public class HuffmanTreeInt
 	 * @throws NoSuchElementException If no sequence was found.
 	 * @since 2016/08/24
 	 */
-	@SquirrelJMEVendorApi
 	public final long findSequence(int __i)
 		throws NoSuchElementException
 	{
@@ -246,7 +240,6 @@ public class HuffmanTreeInt
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/16
 	 */
-	@SquirrelJMEVendorApi
 	public final int getValue(BitSource __bs)
 		throws IOException, NoSuchElementException, NullPointerException
 	{
@@ -281,7 +274,6 @@ public class HuffmanTreeInt
 	 * @return The maximum number of used bits.
 	 * @since 2016/03/28
 	 */
-	@SquirrelJMEVendorApi
 	public final int maximumBits()
 	{
 		return this._maxbits;

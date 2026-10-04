@@ -9,8 +9,6 @@
 
 package cc.squirreljme.vm.springcoat.exceptions;
 
-import cc.squirreljme.vm.springcoat.SpringException;
-
 /**
  * This is thrown when an object cannot be mapped.
  *

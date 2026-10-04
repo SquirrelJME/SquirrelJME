@@ -11,15 +11,10 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPCapability;
 import cc.squirreljme.jdwp.JDWPCommandSet;
-import cc.squirreljme.jdwp.JDWPCommandSetClassType;
 import cc.squirreljme.jdwp.JDWPCommandSetMethod;
-import cc.squirreljme.jdwp.JDWPCommandSetReferenceType;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.MethodDescriptor;
-import net.multiphasicapps.classfile.MethodFlag;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.Pool;

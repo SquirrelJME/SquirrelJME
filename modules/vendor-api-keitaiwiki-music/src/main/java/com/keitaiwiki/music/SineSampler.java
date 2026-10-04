@@ -33,7 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,29 +45,23 @@ import org.jetbrains.annotations.Range;
  * @see Sampler
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public class SineSampler
 	extends AbstractSampler
 	implements Sampler
 {
 	/** Channel states. */
-	@SquirrelJMEVendorApi
 	final __SineChannel__[] _channels;
 	
 	/** Global pitch bend. */
-	@SquirrelJMEVendorApi
 	float _masterTune;
 	
 	/** Global volume. */
-	@SquirrelJMEVendorApi
 	float _masterVolume;
 	
 	/** Output sampling rate. */
-	@SquirrelJMEVendorApi
 	final float _sampleRate;
 	
 	/** Automatic volume adjustment rate. */
-	@SquirrelJMEVendorApi
 	final float _volRate;
 	
 
@@ -78,7 +71,6 @@ public class SineSampler
 	 * @param __sampleRate The audio sample rate.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public SineSampler(float __sampleRate)
 	{
 		this._channels = new __SineChannel__[16];

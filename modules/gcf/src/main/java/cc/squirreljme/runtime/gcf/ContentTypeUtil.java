@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.gcf;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import org.intellij.lang.annotations.Language;
@@ -19,7 +18,6 @@ import org.intellij.lang.annotations.Language;
  *
  * @since 2025/12/27
  */
-@SquirrelJMEVendorApi
 public final class ContentTypeUtil
 {
 	/**
@@ -288,7 +286,6 @@ public final class ContentTypeUtil
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/27
 	 */
-	@SquirrelJMEVendorApi
 	@Language("mime-type-reference")
 	public static String guessByPath(String __path)
 		throws NullPointerException
@@ -431,7 +428,6 @@ public final class ContentTypeUtil
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isMedia(
 		@Language("mime-type-reference") String __type)
 		throws NullPointerException
@@ -452,7 +448,6 @@ public final class ContentTypeUtil
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isMediaAudio(
 		@Language("mime-type-reference") String __type)
 		throws NullPointerException
@@ -489,7 +484,6 @@ public final class ContentTypeUtil
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isMediaImage(
 		@Language("mime-type-reference") String __type)
 		throws NullPointerException
@@ -526,7 +520,6 @@ public final class ContentTypeUtil
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isMediaVideo(
 		@Language("mime-type-reference") String __type)
 		throws NullPointerException
@@ -556,7 +549,6 @@ public final class ContentTypeUtil
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/03
 	 */
-	@SquirrelJMEVendorApi
 	public static String toExtension(
 		@Language("mime-type-reference") String __type)
 		throws NullPointerException

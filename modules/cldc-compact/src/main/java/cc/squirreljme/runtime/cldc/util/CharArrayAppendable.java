@@ -9,17 +9,13 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * An {@link Appendable} on a fixed {@code char[]} array.
  *
  * @since 2026/07/05
  */
-@SquirrelJMEVendorApi
 public final class CharArrayAppendable
 	implements Appendable, CharSequence
 {
@@ -36,7 +32,6 @@ public final class CharArrayAppendable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/07/05
 	 */
-	@SquirrelJMEVendorApi
 	public CharArrayAppendable(char[] __chars)
 		throws NullPointerException
 	{
@@ -53,7 +48,6 @@ public final class CharArrayAppendable
 	 * @throws ArrayIndexOutOfBoundsException If the array size is negative.
 	 * @since 2026/07/05
 	 */
-	@SquirrelJMEVendorApi
 	public CharArrayAppendable(int __n)
 		throws ArrayIndexOutOfBoundsException
 	{
@@ -149,7 +143,6 @@ public final class CharArrayAppendable
 	 * @return The character array.
 	 * @since 2026/07/05
 	 */
-	@SquirrelJMEVendorApi
 	public char[] charArray()
 	{
 		return this._chars;
@@ -172,7 +165,6 @@ public final class CharArrayAppendable
 	 * @return The appendable position.
 	 * @since 2026/07/05
 	 */
-	@SquirrelJMEVendorApi
 	public int position()
 	{
 		return this._position;
@@ -183,7 +175,6 @@ public final class CharArrayAppendable
 	 *
 	 * @since 2026/07/05
 	 */
-	@SquirrelJMEVendorApi
 	public void reset()
 	{
 		this._position = 0;

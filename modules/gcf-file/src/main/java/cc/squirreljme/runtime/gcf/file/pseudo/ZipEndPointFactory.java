@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
 import cc.squirreljme.runtime.gcf.file.FileEndPointFactory;
@@ -17,6 +16,7 @@ import cc.squirreljme.runtime.gcf.uri.UriAuthority;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.IOException;
 import javax.microedition.io.ConnectionNotFoundException;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -24,7 +24,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/30
  */
-@SquirrelJMEVendorApi
 public class ZipEndPointFactory
 	implements FileEndPointFactory
 {
@@ -78,5 +77,4 @@ public class ZipEndPointFactory
 		// authority by specifying the URI after the ://
 		return host.startsWith(ZipEndPoint.DECODED_HOST);
 	}
-	
 }

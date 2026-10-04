@@ -9,9 +9,6 @@
 
 package cc.squirreljme.runtime.cldc;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * This is thrown when the implementation is based on documentation where an
  * assumption is made on what happens but where the documentation and
@@ -21,7 +18,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2024/01/13
  */
-@SquirrelJMEVendorApi
 public class DubiousImplementationError
 	extends Error
 {
@@ -41,7 +37,6 @@ public class DubiousImplementationError
 	 * @param __cause The cause to use.
 	 * @since 2024/01/13
 	 */
-	@SquirrelJMEVendorApi
 	public DubiousImplementationError(String __message, Throwable __cause)
 	{
 		super(__message, __cause);

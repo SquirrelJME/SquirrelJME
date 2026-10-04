@@ -9,7 +9,6 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.awt.Window;
 
 /**

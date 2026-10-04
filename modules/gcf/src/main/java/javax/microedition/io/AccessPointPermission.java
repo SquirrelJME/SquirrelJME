@@ -25,6 +25,7 @@ public final class AccessPointPermission
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public boolean implies(Permission __a)
 	{

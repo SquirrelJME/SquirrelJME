@@ -10,8 +10,6 @@
 package cc.squirreljme.emulator.scritchui.dylib;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Base class for basic pencil buffers.

@@ -534,7 +534,7 @@ public abstract class VMFactory
 				continue;
 			
 			// Note it
-			if (Debugging.VERBOSE)
+			if (Debugging.verbose())
 				Debugging.debugNote("Registering %s (%s)",
 					normalName, path);
 			
@@ -683,7 +683,7 @@ public abstract class VMFactory
 		int exitCode = -1;
 		try
 		{
-			if (Debugging.VERBOSE)
+			if (Debugging.verbose())
 			{
 				// Debug
 				Debugging.debugNote("Starting virtual machine (in %s)...",

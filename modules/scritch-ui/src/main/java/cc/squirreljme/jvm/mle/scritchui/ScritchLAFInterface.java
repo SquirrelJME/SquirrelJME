@@ -17,7 +17,7 @@ import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFFontElementType;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFImageElementType;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFPlatformFlag;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLineStyle;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/09
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchLAFInterface
 	extends ScritchApiInterface
 {
@@ -39,8 +39,8 @@ public interface ScritchLAFInterface
 	 * @throws MLECallError If the requested element is not valid.
 	 * @since 2024/05/17
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
+	@SquirrelJMENativeApi(min = "0.4.0")
 	PencilFontBracket lafFont(
 		@MagicConstant(valuesFromClass = ScritchLAFFontElementType.class)
 			int __element)
@@ -56,7 +56,7 @@ public interface ScritchLAFInterface
 	 * @throws MLECallError If the constant is not valid.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int lafElementColor(@Nullable ScritchComponentBracket __context,
 		@MagicConstant(valuesFromClass = ScritchLAFElementColor.class)
 		int __element)
@@ -69,8 +69,8 @@ public interface ScritchLAFInterface
 	 * @return The resultant border style, one of {@link ScritchLineStyle}.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ScritchLineStyle.class)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int lafFocusBorderStyle(boolean __focused);
 	
 	/**
@@ -83,8 +83,8 @@ public interface ScritchLAFInterface
 	 * @throws MLECallError If the element is not valid.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int lafImageSize(
 		@MagicConstant(valuesFromClass = ScritchLAFImageElementType.class)
 		int __elem, boolean __height)
@@ -96,7 +96,7 @@ public interface ScritchLAFInterface
 	 * @return The platform flags used.
 	 * @since 2025/05/15
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ScritchLAFPlatformFlag.class)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int lafPlatformFlags();
 }

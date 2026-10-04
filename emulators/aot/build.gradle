@@ -1,0 +1,29 @@
+plugins
+{
+	id "java-library"
+}
+
+version = "1.8.$squirreljmeVMVersion"
+description = "Support for Ahead-Of-Time Compilers"
+
+// The Java versions this works with
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_8
+
+jar {
+}
+
+compileJava {
+}
+
+dependencies
+{
+	api project(":modules:cldc")
+	api project(":modules:vendor-api-squirreljme-zip")
+	api project(":modules:vendor-api-squirreljme-io")
+	api project(":modules:vendor-api-squirreljme-collections")
+	api project(":modules:tool-manifest-writer")
+	
+	api project(":emulators:emulator-base")
+	/*testFixturesApi project(":modules:tac")*/
+}

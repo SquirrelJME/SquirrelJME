@@ -33,7 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import cc.squirreljme.runtime.media.control.MetaDataValues;
@@ -51,7 +50,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public class MLD
 {
 	/** Ext-B Command depicting PCM audio's 3D information. */
@@ -330,7 +328,6 @@ public class MLD
 	 * @see MLD(byte[],int,int)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public MLD(@NotNull byte[] __data,
 		@NotNull MetaDataValues __metadata)
 		throws NullPointerException, MediaException
@@ -357,7 +354,6 @@ public class MLD
 	 * @throws MediaException if an error occurs during decoding.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public MLD(@NotNull byte[] __data,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __length,
@@ -407,7 +403,6 @@ public class MLD
 	 * @throws IOException if a stream access error occurs.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public MLD(@NotNull InputStream __in,
 		@NotNull MetaDataValues __metadata)
 		throws IOException, NullPointerException, MediaException
@@ -428,7 +423,6 @@ public class MLD
 	 * @return The copyright text if available, or {@code null} otherwise.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public String getCopyright()
 	{
 		return this._copy;
@@ -440,7 +434,6 @@ public class MLD
 	 * @return The date text if available, or {@code null} otherwise.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public String getDate()
 	{
 		return this._date;
@@ -461,7 +454,6 @@ public class MLD
 	 * @see MLDPlayer#setTime(double)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public double getDuration(boolean __withoutLooping)
 	{
 		// TODO: JUMP events tell if partial or complete track looping is used
@@ -478,7 +470,6 @@ public class MLD
 	 * @return The title text if available, or {@code null} otherwise.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public String getTitle()
 	{
 		return this._titl;
@@ -490,7 +481,6 @@ public class MLD
 	 *
 	 * @return The version text if available, or {@code null} otherwise.
 	 */
-	@SquirrelJMEVendorApi
 	public String getVersion()
 	{
 		return this._vers;

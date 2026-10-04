@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import org.jetbrains.annotations.CheckReturnValue;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.UnknownNullability;
  *
  * @since 2020/05/30
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class ReferenceShelf
 {
 	/**
@@ -38,7 +38,6 @@ public final class ReferenceShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/06/21
 	 */
-	@SquirrelJMEVendorApi
 	@UnknownNullability
 	public native static <T> T weakGet(
 		@NotNull Reference<T> __ref)
@@ -55,7 +54,6 @@ public final class ReferenceShelf
 	 * already been initialized.
 	 * @since 2025/06/21
 	 */
-	@SquirrelJMEVendorApi
 	public native static void weakInit(
 		@NotNull Reference<?> __ref,
 		@NotNull Object __value,
@@ -70,7 +68,6 @@ public final class ReferenceShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/06/21
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
 	public native static boolean weakIsEnqueued(
 		@NotNull Reference<?> __ref)
@@ -85,7 +82,6 @@ public final class ReferenceShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/06/21
 	 */
-	@SquirrelJMEVendorApi
 	@UnknownNullability
 	public native static <T> ReferenceQueue<? super T> weakUnlinkAndClear(
 		@NotNull Reference<T> __ref)

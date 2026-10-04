@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm;
 
 import cc.squirreljme.jvm.mle.MathShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -18,7 +17,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2019/05/27
  */
-@SquirrelJMEVendorApi
 @SuppressWarnings("MagicNumber")
 public final class SoftInteger
 {
@@ -38,7 +36,6 @@ public final class SoftInteger
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static double toDouble(int __a)
 	{
 		throw Debugging.todo();
@@ -51,7 +48,6 @@ public final class SoftInteger
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static float toFloat(int __a)
 	{
 		boolean sign = (__a < 0);
@@ -79,7 +75,6 @@ public final class SoftInteger
 	 * @return The result.
 	 * @since 2019/05/24
 	 */
-	@SquirrelJMEVendorApi
 	public static long toLong(int __a)
 	{
 		// If the integer has the sign bit, then it will be sign extended

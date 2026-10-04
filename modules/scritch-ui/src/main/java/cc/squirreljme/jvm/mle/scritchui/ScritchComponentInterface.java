@@ -15,7 +15,7 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchActivateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchValueUpdateListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchVisibleListener;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/16
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchComponentInterface
 	extends ScritchApiInterface
 {
@@ -37,8 +37,8 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/07/29
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchComponentBracket componentGetParent(
 		@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
@@ -51,8 +51,8 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/18
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int componentGetHeight(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 	
@@ -63,7 +63,7 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/17
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void componentRevalidate(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 	
@@ -75,7 +75,7 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments or the component is not valid.
 	 * @since 2024/07/17
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void componentSetActivateListener(ScritchComponentBracket __component,
 		ScritchActivateListener __listener)
 		throws MLECallError;
@@ -88,7 +88,7 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments or the component is not valid.
 	 * @since 2024/04/28
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void componentSetSizeListener(ScritchComponentBracket __component,
 		ScritchSizeListener __listener)
 		throws MLECallError;
@@ -101,7 +101,7 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments or the component is not valid.
 	 * @since 2024/07/17
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void componentSetValueUpdateListener(ScritchComponentBracket __component,
 		ScritchValueUpdateListener __listener)
 		throws MLECallError;
@@ -114,7 +114,7 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError If the component is not valid.
 	 * @since 2024/06/28
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void componentSetVisibleListener(ScritchComponentBracket __component,
 		ScritchVisibleListener __listener)
 		throws MLECallError;
@@ -127,8 +127,8 @@ public interface ScritchComponentInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/18
 	 */
-	@SquirrelJMEVendorApi
 	@Range(from = 0, to = Integer.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int componentWidth(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 }

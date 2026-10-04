@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2022/09/07
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class ReflectionShelf
 {
 	/**
@@ -26,7 +26,6 @@ public final class ReflectionShelf
 	 * 
 	 * @since 2022/09/07
 	 */
-	@SquirrelJMEVendorApi
 	private ReflectionShelf()
 	{
 	}
@@ -40,7 +39,7 @@ public final class ReflectionShelf
 	 * @throws Throwable Any exception thrown by the target.
 	 * @since 2022/09/07
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void invokeMain(@NotNull Class<?> __type,
 		@NotNull String... __args)
 		throws MLECallError, Throwable;

@@ -10,7 +10,7 @@
 package cc.squirreljme.jvm.mle.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.Debug;
 
 /**
@@ -19,10 +19,11 @@ import org.jetbrains.annotations.Debug;
  *
  * @since 2026/05/17
  */
-@SquirrelJMEVendorApi
 @GhostObject
 @Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface DatagramBracket
+	extends Bracket
 {
 }

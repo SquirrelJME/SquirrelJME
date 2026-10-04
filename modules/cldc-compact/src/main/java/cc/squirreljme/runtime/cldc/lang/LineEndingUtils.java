@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.cldc.lang;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.LineEndingType;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -22,7 +21,6 @@ import java.io.Writer;
  * @see LineEndingType
  * @since 2020/06/11
  */
-@SquirrelJMEVendorApi
 public final class LineEndingUtils
 {
 	/**
@@ -42,7 +40,6 @@ public final class LineEndingUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static void append(Appendable __out)
 		throws IOException, NullPointerException
 	{
@@ -58,7 +55,6 @@ public final class LineEndingUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static void append(Appendable __out, int __type)
 		throws IOException, NullPointerException
 	{
@@ -80,7 +76,6 @@ public final class LineEndingUtils
 	 * @return If an {@link IOException} was thrown.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean appendWrap(Appendable __out)
 		throws NullPointerException
 	{
@@ -96,7 +91,6 @@ public final class LineEndingUtils
 	 * @return If an {@link IOException} was thrown.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean appendWrap(Appendable __out, int __type)
 		throws NullPointerException
 	{
@@ -120,7 +114,6 @@ public final class LineEndingUtils
 	 * @throws IllegalArgumentException If the line ending type is not valid.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static char toChar(int __type, int __index)
 		throws IllegalArgumentException
 	{
@@ -153,7 +146,6 @@ public final class LineEndingUtils
 	 * @throws IllegalArgumentException If the line ending type is not valid.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static String toString(int __type)
 		throws IllegalArgumentException
 	{
@@ -178,7 +170,6 @@ public final class LineEndingUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/13
 	 */
-	@SquirrelJMEVendorApi
 	public static int toType(String __string)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -205,7 +196,6 @@ public final class LineEndingUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static void write(OutputStream __out)
 		throws IOException, NullPointerException
 	{
@@ -221,7 +211,6 @@ public final class LineEndingUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static void write(OutputStream __out, int __type)
 		throws IOException, NullPointerException
 	{
@@ -243,7 +232,6 @@ public final class LineEndingUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static void write(Writer __out)
 		throws IOException, NullPointerException
 	{
@@ -259,7 +247,6 @@ public final class LineEndingUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/11
 	 */
-	@SquirrelJMEVendorApi
 	public static void write(Writer __out, int __type)
 		throws IOException, NullPointerException
 	{

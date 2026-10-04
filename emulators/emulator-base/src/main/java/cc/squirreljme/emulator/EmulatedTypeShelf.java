@@ -13,7 +13,6 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +69,6 @@ public class EmulatedTypeShelf
 	 * @return The root component of the type.
 	 * @since 2023/07/19
 	 */
-	@SquirrelJMEVendorApi
 	public static Class<?> componentRoot(
 		@NotNull Class<?> __type)
 	{
@@ -116,7 +114,6 @@ public class EmulatedTypeShelf
 	 * is not within any JAR.
 	 * @since 2023/07/19
 	 */
-	@SquirrelJMEVendorApi
 	public static JarPackageBracket inJar(Class<?> __type)
 	{
 		if (__type == null)
@@ -189,7 +186,6 @@ public class EmulatedTypeShelf
 	 * @throws MLECallError If {@code __type} is {@code null}.
 	 * @since 2023/07/19
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isArray(Class<?> __type)
 		throws MLECallError
 	{

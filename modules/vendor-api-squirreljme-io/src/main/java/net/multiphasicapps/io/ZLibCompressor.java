@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -22,13 +21,11 @@ import java.io.OutputStream;
  *
  * @since 2018/11/11
  */
-@SquirrelJMEVendorApi
 public final class ZLibCompressor
 	extends OutputStream
 	implements CompressionStream
 {
 	/** The stream to forward to. */
-	@SquirrelJMEVendorApi
 	protected final OutputStream out;
 	
 	/** The deflater used. */
@@ -51,7 +48,6 @@ public final class ZLibCompressor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/11
 	 */
-	@SquirrelJMEVendorApi
 	public ZLibCompressor(OutputStream __os)
 		throws NullPointerException
 	{
@@ -66,7 +62,6 @@ public final class ZLibCompressor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/11
 	 */
-	@SquirrelJMEVendorApi
 	public ZLibCompressor(OutputStream __os, CompressionLevel __cl)
 		throws NullPointerException
 	{

@@ -9,14 +9,11 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Future value storage with {@link ChunkWriter}.
  *
  * @since 2020/11/29
  */
-@SquirrelJMEVendorApi
 public final class ChunkFutureInteger
 	implements ChunkFuture
 {
@@ -28,7 +25,6 @@ public final class ChunkFutureInteger
 	 * 
 	 * @since 2020/12/06
 	 */
-	@SquirrelJMEVendorApi
 	public ChunkFutureInteger()
 	{
 	}
@@ -39,7 +35,6 @@ public final class ChunkFutureInteger
 	 * @param __value The value.
 	 * @since 2020/12/06
 	 */
-	@SquirrelJMEVendorApi
 	public ChunkFutureInteger(int __value)
 	{
 		this._value = __value;
@@ -66,7 +61,6 @@ public final class ChunkFutureInteger
 	 * @param __v The value to set.
 	 * @since 2020/11/29
 	 */
-	@SquirrelJMEVendorApi
 	public final void set(int __v)
 	{
 		synchronized (this)

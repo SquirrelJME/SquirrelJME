@@ -9,7 +9,6 @@
 
 package cc.squirreljme.fontcompile.out.rafoces;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 

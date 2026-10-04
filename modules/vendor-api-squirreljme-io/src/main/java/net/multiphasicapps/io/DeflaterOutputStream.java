@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,13 +22,11 @@ import java.io.OutputStream;
  *
  * @since 2018/11/10
  */
-@SquirrelJMEVendorApi
 public class DeflaterOutputStream
 	extends OutputStream
 	implements CompressionStream
 {
 	/** Stream to write compressed data to. */
-	@SquirrelJMEVendorApi
 	protected final OutputStream out;
 	
 	/** The block size to compress for. */
@@ -63,7 +60,6 @@ public class DeflaterOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/10
 	 */
-	@SquirrelJMEVendorApi
 	public DeflaterOutputStream(OutputStream __os)
 		throws NullPointerException
 	{
@@ -78,7 +74,6 @@ public class DeflaterOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/10
 	 */
-	@SquirrelJMEVendorApi
 	public DeflaterOutputStream(OutputStream __os, CompressionLevel __cl)
 		throws NullPointerException
 	{

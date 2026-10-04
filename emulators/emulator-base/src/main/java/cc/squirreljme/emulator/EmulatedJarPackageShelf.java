@@ -14,7 +14,6 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import cc.squirreljme.vm.DataContainerLibrary;
@@ -24,16 +23,13 @@ import cc.squirreljme.vm.VMClassLibrary;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 /**
  * Handlers for {@link JarPackageShelf}.
@@ -129,7 +125,6 @@ public final class EmulatedJarPackageShelf
 	 * @throws MLECallError If the library is not valid.
 	 * @since 2023/12/18
 	 */
-	@SquirrelJMEVendorApi
 	public static int libraryId(@NotNull JarPackageBracket __jar)
 		throws MLECallError
 	{
@@ -169,7 +164,6 @@ public final class EmulatedJarPackageShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2026/01/01
 	 */
-	@SquirrelJMEVendorApi
 	@Nullable
 	public static String[] list(@NotNull JarPackageBracket __jar)
 		throws MLECallError

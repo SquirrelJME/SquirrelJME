@@ -9,14 +9,11 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is used to get the name of the encoder or decoder that was used.
  *
  * @since 2018/10/13
  */
-@SquirrelJMEVendorApi
 public interface NamedCodec
 {
 	/**
@@ -26,7 +23,6 @@ public interface NamedCodec
 	 * @return The average sequence length.
 	 * @since 2018/11/06
 	 */
-	@SquirrelJMEVendorApi
 	double averageSequenceLength();
 	
 	/**
@@ -35,7 +31,6 @@ public interface NamedCodec
 	 * @return The encoding name.
 	 * @since 2018/10/13
 	 */
-	@SquirrelJMEVendorApi
 	String encodingName();
 	
 	/**
@@ -45,7 +40,6 @@ public interface NamedCodec
 	 * @return The maximum sequence length for decoding.
 	 * @since 2018/10/13
 	 */
-	@SquirrelJMEVendorApi
 	int maximumSequenceLength();
 }
 

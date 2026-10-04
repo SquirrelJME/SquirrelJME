@@ -12,7 +12,7 @@ package java.lang;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.CallTraceUtils;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -32,6 +32,7 @@ import java.util.Arrays;
  * @since 2018/09/15
  */
 @Api
+@KeepAbsolutelyEverything("All VMs rely on internal fields and logic.")
 public class Throwable
 {
 	/** The message for this exception. */
@@ -47,7 +48,6 @@ public class Throwable
 	boolean _initCause;
 	
 	/** The stack trace for this throwable. */
-	@SquirrelJMEVendorApi
 	volatile TracePointBracket[] _stackTrace;
 	
 	/**

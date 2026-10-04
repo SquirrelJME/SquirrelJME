@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 
 /**
  * This is the base class for non-checked errors.

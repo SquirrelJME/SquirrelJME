@@ -170,7 +170,6 @@ public final class Profile
 	@Override
 	public String toString()
 	{
-		
 		Reference<String> ref = this._string;
 		String rv;
 		

@@ -9,33 +9,33 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Standard pipe descriptor identifiers.
  *
  * @since 2020/06/14
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface StandardPipeType
 {
 	/** Standard input. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte STDIN =
 		0;
 	
 	/** Standard output. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte STDOUT =
 		1;
 	
 	/** Standard error. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte STDERR =
 		2;
 	
 	/** The number of standard pipes. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_STANDARD_PIPES =
 		3;
 }

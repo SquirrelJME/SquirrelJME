@@ -9,6 +9,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
+
 /**
  * Represents a single link in the linked list. This is just a basic
  * structure like object with public fields for simple access.

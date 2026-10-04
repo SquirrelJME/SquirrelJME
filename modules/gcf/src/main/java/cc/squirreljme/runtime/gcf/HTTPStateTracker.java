@@ -18,7 +18,7 @@ package cc.squirreljme.runtime.gcf;
 public final class HTTPStateTracker
 {
 	/** The state of this connection. */
-	HTTPState _state =
+	public volatile HTTPState state =
 		HTTPState.SETUP;
 }
 

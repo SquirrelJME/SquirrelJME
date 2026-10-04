@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.cldc;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +23,6 @@ import java.io.PrintStream;
  *
  * @since 2025/04/07
  */
-@SquirrelJMEVendorApi
 public final class PrintVersion
 {
 	/**
@@ -41,7 +39,6 @@ public final class PrintVersion
 	 * @param __args Main arguments.
 	 * @since 2025/04/07
 	 */
-	@SquirrelJMEVendorApi
 	public static void main(String... __args)
 		throws IOException
 	{
@@ -69,7 +66,6 @@ public final class PrintVersion
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/06/14
 	 */
-	@SquirrelJMEVendorApi
 	public static void print(Appendable __out)
 		throws IOException, NullPointerException
 	{

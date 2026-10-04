@@ -10,7 +10,6 @@
 package com.nttdocomo.util;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import com.nttdocomo.ui.Canvas;
 import com.nttdocomo.ui.ShortTimer;
 import com.nttdocomo.ui.UIException;
@@ -42,7 +41,6 @@ public final class Timer
 		1;
 	
 	/** The expiration store to use. */
-	@SquirrelJMEVendorApi
 	final __ExpireStore__ _expire;
 	
 	/** The current interval, in milliseconds. */
@@ -50,7 +48,6 @@ public final class Timer
 		Timer._MIN_TIME_INTERVAL;
 	
 	/** Does this timer repeat? */
-	@SquirrelJMEVendorApi
 	volatile boolean _repeats;
 	
 	/** Has this been disposed? */

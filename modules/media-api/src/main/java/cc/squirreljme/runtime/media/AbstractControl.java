@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.media;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.media.Control;
 
 /**
@@ -18,12 +17,10 @@ import javax.microedition.media.Control;
  * @param <C> The control being implemented.
  * @since 2025/06/03
  */
-@SquirrelJMEVendorApi
 public abstract class AbstractControl<C extends Control>
 	implements Control
 {
 	/** The class this implements. */
-	@SquirrelJMEVendorApi
 	protected final Class<C> type;
 	
 	/**
@@ -33,7 +30,6 @@ public abstract class AbstractControl<C extends Control>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
 	protected AbstractControl(Class<C> __type)
 		throws NullPointerException
 	{
@@ -51,7 +47,6 @@ public abstract class AbstractControl<C extends Control>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
 	public final boolean matches(String __name)
 		throws NullPointerException
 	{

@@ -9,14 +9,11 @@
 
 package cc.squirreljme.runtime.cldc.debug;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Indicates that code is incomplete.
  *
  * @since 2025/03/27
  */
-@SquirrelJMEVendorApi
 public class IncompleteCodeError
 	extends Error
 {
@@ -25,7 +22,6 @@ public class IncompleteCodeError
 	 *
 	 * @since 2025/03/27
 	 */
-	@SquirrelJMEVendorApi
 	public IncompleteCodeError()
 	{
 		super("TODO");

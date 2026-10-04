@@ -9,9 +9,7 @@
 
 package cc.squirreljme.c;
 
-import java.util.Arrays;
 import java.util.List;
-import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * Represents a C expression, which is a group of tokens that does something.

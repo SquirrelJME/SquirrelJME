@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.junit.Test;
 
 /**
@@ -19,7 +18,6 @@ import org.junit.Test;
  * @param <R> The result type.
  * @since 2018/10/06
  */
-@SquirrelJMEVendorApi
 public abstract class TestFunction<A, R>
 	extends __CoreTest__
 {
@@ -28,7 +26,6 @@ public abstract class TestFunction<A, R>
 	 *
 	 * @since 2026/02/12
 	 */
-	@SquirrelJMEVendorApi
 	public TestFunction()
 	{
 	}
@@ -42,7 +39,6 @@ public abstract class TestFunction<A, R>
 	 * @since 2018/10/06
 	 */
 	@Test
-	@SquirrelJMEVendorApi
 	public abstract R test(A __a)
 		throws Throwable;
 	
@@ -52,7 +48,6 @@ public abstract class TestFunction<A, R>
 	 */
 	@Override
 	@SuppressWarnings({"unchecked"})
-	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

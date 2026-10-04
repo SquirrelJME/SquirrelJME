@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ListIterator;
@@ -21,12 +20,10 @@ import java.util.ListIterator;
  * @param <T> The type to use.
  * @since 2022/08/27
  */
-@SquirrelJMEVendorApi
 public final class ReferenceListIterator<T>
 	implements ListIterator<T>
 {
 	/** The iterator used. */
-	@SquirrelJMEVendorApi
 	protected final ListIterator<Reference<T>> iterator;
 	
 	/**
@@ -36,7 +33,6 @@ public final class ReferenceListIterator<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/08/27
 	 */
-	@SquirrelJMEVendorApi
 	public ReferenceListIterator(ListIterator<Reference<T>> __iterator)
 		throws NullPointerException
 	{

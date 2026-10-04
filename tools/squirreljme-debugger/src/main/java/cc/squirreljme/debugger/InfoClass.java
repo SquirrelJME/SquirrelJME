@@ -10,12 +10,11 @@
 package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPCapability;
-import cc.squirreljme.jdwp.JDWPCommandSetReferenceType;
 import cc.squirreljme.jdwp.JDWPCommandSet;
+import cc.squirreljme.jdwp.JDWPCommandSetReferenceType;
+import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.jdwp.JDWPIdKind;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.jdwp.JDWPId;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;

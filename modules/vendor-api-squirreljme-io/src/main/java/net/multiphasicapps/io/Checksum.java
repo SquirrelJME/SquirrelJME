@@ -9,15 +9,12 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This interface is implemented by checksum calculators and may be used to
  * assist in the calculation of checksums.
  *
  * @since 2017/03/05
  */
-@SquirrelJMEVendorApi
 public interface Checksum
 {
 	/**
@@ -26,7 +23,6 @@ public interface Checksum
 	 * @return The current checksum value.
 	 * @since 2017/03/05
 	 */
-	@SquirrelJMEVendorApi
 	int checksum();
 	
 	/**
@@ -35,7 +31,6 @@ public interface Checksum
 	 * @param __b The byte to offer.
 	 * @since 2017/03/05
 	 */
-	@SquirrelJMEVendorApi
 	void offer(byte __b);
 	
 	/**
@@ -45,7 +40,6 @@ public interface Checksum
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/05
 	 */
-	@SquirrelJMEVendorApi
 	void offer(byte[] __b)
 		throws NullPointerException;
 	
@@ -60,7 +54,6 @@ public interface Checksum
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/05
 	 */
-	@SquirrelJMEVendorApi
 	void offer(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException;
 	
@@ -69,7 +62,6 @@ public interface Checksum
 	 *
 	 * @since 2017/03/05
 	 */
-	@SquirrelJMEVendorApi
 	void reset();
 }
 

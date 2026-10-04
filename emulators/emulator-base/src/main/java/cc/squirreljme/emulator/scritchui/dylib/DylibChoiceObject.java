@@ -9,14 +9,11 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Dynamic library object for choices.
  *
  * @since 2024/07/25
  */	
-@SquirrelJMEVendorApi
 public interface DylibChoiceObject
 	extends DylibHasObjectPointer
 {

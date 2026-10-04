@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.media;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -17,7 +16,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2026/04/30
  */
-@SquirrelJMEVendorApi
 public final class AudioSystem
 {
 	/**
@@ -35,7 +33,6 @@ public final class AudioSystem
 	 * @return Whether audio playback is supported.
 	 * @since 2026/04/30
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean available()
 	{
 		Debugging.todoNote("AudioAvailability");

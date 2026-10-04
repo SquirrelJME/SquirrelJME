@@ -22,25 +22,29 @@ public class WatchImpl
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public void initWatchValues(int var1, int var2)
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public void paint(Graphics var1, int var2, int var3, int var4)
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public String getBackCommand()
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public String getSaveCommand()
 	{

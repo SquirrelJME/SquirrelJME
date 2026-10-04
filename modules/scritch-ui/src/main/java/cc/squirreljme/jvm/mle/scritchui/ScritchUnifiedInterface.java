@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Unified interface which has all ScritchUI interfaces.
@@ -17,7 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2024/08/02
  */
 @SuppressWarnings("OverlyCoupledClass")
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchUnifiedInterface
 	extends ScritchChoiceInterface,
 		ScritchComponentInterface,

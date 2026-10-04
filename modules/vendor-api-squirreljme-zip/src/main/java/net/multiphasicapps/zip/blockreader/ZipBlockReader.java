@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.zip.blockreader;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +23,6 @@ import net.multiphasicapps.zip.ZipException;
  *
  * @since 2016/12/27
  */
-@SquirrelJMEVendorApi
 public class ZipBlockReader
 	implements Iterable<ZipBlockEntry>, Closeable
 {
@@ -76,11 +74,9 @@ public class ZipBlockReader
 	protected final BlockAccessor accessor;
 	
 	/** The number of entries in this ZIP. */
-	@SquirrelJMEVendorApi
 	protected final int numentries;
 	
 	/** The base address for the central directory. */
-	@SquirrelJMEVendorApi
 	protected final long cdirbase;
 	
 	/** The actual start position for the ZIP file. */
@@ -103,7 +99,6 @@ public class ZipBlockReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/27
 	 */
-	@SquirrelJMEVendorApi
 	public ZipBlockReader(byte[] __b)
 		throws IOException, NullPointerException
 	{
@@ -122,7 +117,6 @@ public class ZipBlockReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/27
 	 */
-	@SquirrelJMEVendorApi
 	public ZipBlockReader(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, IOException,
 			NullPointerException
@@ -139,7 +133,6 @@ public class ZipBlockReader
 	 * @throws ZipException If the ZIP is malformed.
 	 * @since 2016/12/27
 	 */
-	@SquirrelJMEVendorApi
 	public ZipBlockReader(BlockAccessor __b)
 		throws IOException, NullPointerException, ZipException
 	{
@@ -218,7 +211,6 @@ public class ZipBlockReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public boolean contains(String __s)
 		throws IOException, NullPointerException
 	{
@@ -243,7 +235,6 @@ public class ZipBlockReader
 	 * @throws ZipEntryNotFoundException If the entry does not exist.
 	 * @since 2016/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public ZipBlockEntry get(String __s)
 		throws IOException, NullPointerException, ZipEntryNotFoundException
 	{
@@ -283,7 +274,6 @@ public class ZipBlockReader
 	 * @throws ZipEntryNotFoundException If the entry could not be found.
 	 * @since 2016/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public InputStream open(String __s)
 		throws IOException, NullPointerException, ZipEntryNotFoundException
 	{
@@ -303,7 +293,6 @@ public class ZipBlockReader
 	 * @return The number of entries in the ZIP.
 	 * @since 2016/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public int size()
 	{
 		return this.numentries;

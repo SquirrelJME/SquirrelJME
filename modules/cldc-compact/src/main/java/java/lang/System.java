@@ -20,6 +20,7 @@ import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
@@ -41,6 +42,7 @@ import org.jetbrains.annotations.Range;
  * @since 2018/10/14
  */
 @Api
+@KeepAbsolutelyEverything("Touching this will generally break the VMs.")
 public final class System
 {
 	/** Standard error stream (stderr). */
@@ -617,7 +619,8 @@ public final class System
 			throw new NullPointerException("NARG");
 		
 		// Not allowed to do this?
-		System.getSecurityManager().checkPermission(new RuntimePermission("setIO"));
+		System.getSecurityManager().checkPermission(
+			new RuntimePermission("setIO"));
 		
 		// Use a wrapped class to prevent final abuse.
 		((__CanSetPrintStream__)System.err).__set(__a);

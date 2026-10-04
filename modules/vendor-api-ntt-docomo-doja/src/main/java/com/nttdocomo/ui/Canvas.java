@@ -10,7 +10,7 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraDisplayable;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraStateManager;
 import cc.squirreljme.runtime.nttdocomo.ui.LockFlush;
@@ -30,12 +30,10 @@ public abstract class Canvas
 	extends Frame
 {
 	/** The number of key groups. */
-	@SquirrelJMEVendorApi
 	private static final byte _KEY_GROUPS =
 		2;
 	
 	/** The max number of permitted keys. */
-	@SquirrelJMEVendorApi
 	private static final byte _MAX_KEYS =
 		32 * Canvas._KEY_GROUPS;
 	
@@ -56,15 +54,6 @@ public abstract class Canvas
 		new LockFlush(this, this._midpCanvas._doubleBuffer);
 	
 	/**
-	 * Paints the given canvas.
-	 *
-	 * @param __g The graphics to use for drawing.
-	 * @since 2024/03/05
-	 */
-	@Api
-	public abstract void paint(Graphics __g);
-	
-	/**
 	 * Initializes the base canvas.
 	 *
 	 * @since 2022/02/14
@@ -79,6 +68,16 @@ public abstract class Canvas
 		// Needed to initialize the command listener 
 		this.__postConstruct();
 	}
+	
+	/**
+	 * Paints the given canvas.
+	 *
+	 * @param __g The graphics to use for drawing.
+	 * @since 2024/03/05
+	 */
+	@Api
+	@SerializedEvent
+	public abstract void paint(Graphics __g);
 	
 	/**
 	 * Returns the graphics object that is used for drawing onto the canvas.
@@ -150,6 +149,7 @@ public abstract class Canvas
 	 * @since 2024/06/24
 	 */
 	@Api
+	@SerializedEvent
 	public void processEvent(int __type, int __param)
 	{
 		// This is implemented by subclasses and as such does nothing
@@ -175,7 +175,6 @@ public abstract class Canvas
 	 * @param __id The key ID.
 	 * @since 2024/08/12
 	 */
-	@SquirrelJMEVendorApi
 	final void __key(boolean __press, int __id)
 	{
 		// Store in key groups?

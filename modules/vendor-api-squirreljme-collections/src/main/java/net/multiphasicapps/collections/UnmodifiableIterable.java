@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.util.Iterator;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -62,7 +61,6 @@ public final class UnmodifiableIterable<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/04/25
 	 */
-	@SquirrelJMEVendorApi
 	public static <T> Iterable<T> of(Iterable<T> __it)
 		throws NullPointerException
 	{

@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.Method;
-import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**

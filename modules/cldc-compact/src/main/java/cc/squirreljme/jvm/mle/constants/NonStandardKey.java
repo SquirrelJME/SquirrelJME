@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * This interface contains identifiers for non-standard keys.
@@ -17,431 +17,431 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @since 2017/02/12
  */
 @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface NonStandardKey
 {
 	/** Star key. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte KEY_STAR =
 		42;
 	
 	/** Pound key. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte KEY_POUND =
 		35;
 	
 	/** Unknown, zero is the invalid index so always make it known. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte UNKNOWN =
 		0;
 	
 	/** The up arrow key. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte KEY_UP =
 		-1;
 	
 	/** Down arrow key. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte KEY_DOWN =
 		-2;
 	
 	/** Left arrow key. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte KEY_LEFT =
 		-3;
 	
 	/** Right arrow key. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte KEY_RIGHT =
 		-4;
 	
 	/** Game Up. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VGAME_UP =
 		-9;
 	
 	/** Game Down. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VGAME_DOWN =
 		-10;
 	
 	/** Game Left. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VGAME_LEFT =
 		-11;
 	
 	/** Game Right. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VGAME_RIGHT =
 		-12;
 	
 	/** Game fire. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VGAME_FIRE =
 		-13;
 	
 	/** Game A. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VGAME_A =
 		-14;
 	
 	/** Game B. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VGAME_B =
 		-15;
 	
 	/** Game C. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VGAME_C =
 		-16;
 	
 	/** Game D. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VGAME_D =
 		-17;
 	
 	/** Shift. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte SHIFT =
 		-18;
 	
 	/** Control. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte CONTROL =
 		-19;
 	
 	/** Alt. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte ALT =
 		-20;
 	
 	/** Logo. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte LOGO =
 		-21;
 	
 	/** Caps lock. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte CAPSLOCK =
 		-22;
 	
 	/** Context menu. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte CONTEXT_MENU =
 		-23;
 	
 	/** Home. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte HOME =
 		-24;
 	
 	/** End. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte END =
 		-25;
 	
 	/** Page Up. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte PAGE_UP =
 		-26;
 	
 	/** Page Down. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte PAGE_DOWN =
 		-27;
 	
 	/** Meta. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte META =
 		-28;
 	
 	/** Numlock. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMLOCK =
 		-29;
 	
 	/** Pause. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte PAUSE =
 		-30;
 	
 	/** Print Screen. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte PRINTSCREEN =
 		-31;
 	
 	/** Scroll lock. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte SCROLLLOCK =
 		-32;
 	
 	/** Insert. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte INSERT =
 		-33;
 	
 	/** Game Virtual Left Command. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VGAME_COMMAND_LEFT =
 		-34;
 	
 	/** Game Virtual Right Command. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VGAME_COMMAND_RIGHT =
 		-35;
 	
 	/** Game virtual Center Command. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VGAME_COMMAND_CENTER =
 		-36;
 	
 	/** Reserved 37. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte RESERVED_37 =
 		-37;
 	
 	/** Number pad divide. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_DIVIDE =
 		-38;
 	
 	/** Number pad multiply. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_MULTIPLY =
 		-39;
 	
 	/** Number pad minus. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_MINUS =
 		-40;
 	
 	/** Number pad plus. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_PLUS =
 		-41;
 	
 	/** Number pad decimal. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_DECIMAL =
 		-42;
 	
 	/** Number pad enter. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_ENTER =
 		-43;
 	
 	/** Number pad 0. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_0 =
 		-50;
 	
 	/** Number pad 1. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_1 =
 		-51;
 	
 	/** Number pad 2. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_2 =
 		-52;
 	
 	/** Number pad 3. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_3 =
 		-53;
 	
 	/** Number pad 4. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_4 =
 		-54;
 	
 	/** Number pad 5. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_5 =
 		-55;
 	
 	/** Number pad 6. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_6 =
 		-56;
 	
 	/** Number pad 7. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_7 =
 		-57;
 	
 	/** Number pad 8. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_8 =
 		-58;
 	
 	/** Number pad 9. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_9 =
 		-59;
 	
 	/** F24. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F24 =
 		-64;
 	
 	/** F23. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F23 =
 		-65;
 	
 	/** F22. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F22 =
 		-66;
 	
 	/** F21. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F21 =
 		-67;
 	
 	/** F20. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F20 =
 		-68;
 	
 	/** F19. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F19 =
 		-69;
 	
 	/** F18. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F18 =
 		-70;
 	
 	/** F17. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F17 =
 		-71;
 	
 	/** F16. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F16 =
 		-72;
 	
 	/** F15. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F15 =
 		-73;
 	
 	/** F14. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F14 =
 		-74;
 	
 	/** F13. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F13 =
 		-75;
 	
 	/** F12. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F12 =
 		-76;
 	
 	/** F11. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F11 =
 		-77;
 	
 	/** F10. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F10 =
 		-78;
 	
 	/** F9. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F9 =
 		-79;
 	
 	/** F8. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F8 =
 		-80;
 	
 	/** F7. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F7 =
 		-81;
 	
 	/** F6. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F6 =
 		-82;
 	
 	/** F5. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F5 =
 		-83;
 	
 	/** F4. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F4 =
 		-84;
 	
 	/** F3. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F3 =
 		-85;
 	
 	/** F2. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F2 =
 		-86;
 	
 	/** F1. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte F1 =
 		-87;
 	
 	/** Camera Shutter. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte CAMERA_SHUTTER =
 		-88;
 	
 	/** Increase volume. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VOLUME_INCREASE =
 		-89;
 	
 	/** Decrease volume. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte VOLUME_DECREASE =
 		-90;
 	
 	/** Toggle Power. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte POWER_TOGGLE =
 		-91;
 	
 	/** Toggle On. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte POWER_ON =
 		-92;
 	
 	/** Toggle Off. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte POWER_OFF =
 		-93;
 	
 	/** Accept call. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte CALL_ACCEPT =
 		-94;
 	
 	/** Deny call. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte CALL_DENY =
 		-95;
 	
 	/** Disconnect call. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte CALL_DISCONNECT =
 		-96;
 }

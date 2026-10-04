@@ -9,15 +9,12 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This interface represents an encoder that is used to turn characters into
  * potentially multiple bytes.
  *
  * @since 2018/09/16
  */
-@SquirrelJMEVendorApi
 public interface Encoder
 	extends NamedCodec
 {
@@ -35,7 +32,6 @@ public interface Encoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/21
 	 */
-	@SquirrelJMEVendorApi
 	int encode(char __c, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException;
 }

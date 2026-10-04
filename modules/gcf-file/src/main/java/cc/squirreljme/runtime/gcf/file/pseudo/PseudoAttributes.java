@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.full.attrib.AbstractFileAttributes;
 import cc.squirreljme.runtime.cldc.full.attrib.StaticFileAttributes;
 
@@ -18,11 +17,9 @@ import cc.squirreljme.runtime.cldc.full.attrib.StaticFileAttributes;
  *
  * @since 2026/01/03
  */
-@SquirrelJMEVendorApi
 public interface PseudoAttributes
 {
 	/** Attributes for any directory. */
-	@SquirrelJMEVendorApi
 	StaticFileAttributes DIRECTORY =
 		new StaticFileAttributes(
 			AbstractFileAttributes.IS_DIRECTORY |
@@ -35,7 +32,6 @@ public interface PseudoAttributes
 			AbstractFileAttributes.IS_POSIX_OTHER_EXECUTE, 0);
 	
 	/** Attributes for any file. */
-	@SquirrelJMEVendorApi
 	StaticFileAttributes FILE =
 		new StaticFileAttributes(
 			AbstractFileAttributes.IS_DOS_READ_ONLY |

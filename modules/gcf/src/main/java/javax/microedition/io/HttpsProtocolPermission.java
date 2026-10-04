@@ -24,24 +24,28 @@ public final class HttpsProtocolPermission
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public boolean equals(Object __a)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public String getActions()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public int hashCode()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	@Override
 	public boolean implies(Permission __a)
 	{

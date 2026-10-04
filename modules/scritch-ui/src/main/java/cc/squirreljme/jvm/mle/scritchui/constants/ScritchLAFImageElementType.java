@@ -9,53 +9,53 @@
 
 package cc.squirreljme.jvm.mle.scritchui.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Element type for ScritchUI look and feel.
  *
  * @since 2024/03/09
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchLAFImageElementType
 {
 	/** List elements. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte LIST_ELEMENT =
 		0;
 	
 	/** Choice groups. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte CHOICE_GROUP =
 		1;
 	
 	/** Alert icons. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte ALERT =
 		2;
 	
 	/** Tab items. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte TAB =
 		3;
 	
 	/** Command items. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte COMMAND =
 		4;
 	
 	/** Notification. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NOTIFICATION =
 		5;
 	
 	/** Menu. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MENU =
 		6;
 	
 	/** The number of look and feel element types. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_LAF_ELEMENT_TYPES =
 		7;
 }

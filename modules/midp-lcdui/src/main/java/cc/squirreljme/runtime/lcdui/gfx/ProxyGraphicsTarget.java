@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -17,11 +16,9 @@ import javax.microedition.lcdui.Graphics;
  *
  * @since 2022/02/25
  */
-@SquirrelJMEVendorApi
 public final class ProxyGraphicsTarget
 {
 	/** The target graphics object. */
-	@SquirrelJMEVendorApi
 	volatile Graphics _target;
 	
 	/**
@@ -31,7 +28,6 @@ public final class ProxyGraphicsTarget
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/25
 	 */
-	@SquirrelJMEVendorApi
 	public ProxyGraphicsTarget(Graphics __g)
 		throws NullPointerException
 	{
@@ -47,7 +43,6 @@ public final class ProxyGraphicsTarget
 	 * @return The current {@link Graphics} target.
 	 * @since 2025/11/25
 	 */
-	@SquirrelJMEVendorApi
 	public Graphics getGraphics()
 	{
 		synchronized (this)
@@ -63,7 +58,6 @@ public final class ProxyGraphicsTarget
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/25
 	 */
-	@SquirrelJMEVendorApi
 	public void setGraphics(Graphics __g)
 		throws NullPointerException
 	{

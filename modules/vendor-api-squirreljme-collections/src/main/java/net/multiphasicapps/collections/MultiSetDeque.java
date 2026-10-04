@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -34,7 +33,6 @@ import java.util.Set;
  * @param <V> The type of value to store in the dequeues.
  * @since 2016/09/03
  */
-@SquirrelJMEVendorApi
 public class MultiSetDeque<V>
 {
 	/** Sub-queue list. */
@@ -50,7 +48,6 @@ public class MultiSetDeque<V>
 	 *
 	 * @since 2017/03/25
 	 */
-	@SquirrelJMEVendorApi
 	public final void clear()
 	{
 		// Clear the global set
@@ -68,7 +65,6 @@ public class MultiSetDeque<V>
 	 * @return {@code true} if the element is any in deque.
 	 * @since 2017/04/25
 	 */
-	@SquirrelJMEVendorApi
 	public final boolean contains(V __v)
 	{
 		return this._global.contains(__v);
@@ -105,7 +101,6 @@ public class MultiSetDeque<V>
 	 * @return {@code true} if it was in any {@link Deque}.
 	 * @since 2016/09/03
 	 */
-	@SquirrelJMEVendorApi
 	public final boolean remove(V __v)
 	{
 		// Null will never be in this deque
@@ -137,7 +132,6 @@ public class MultiSetDeque<V>
 	 * @return A new deque which shares the set restrictions.
 	 * @since 2016/09/03
 	 */
-	@SquirrelJMEVendorApi
 	public final Deque<V> subDeque()
 	{
 		return this.subDeque(Integer.MAX_VALUE);
@@ -152,7 +146,6 @@ public class MultiSetDeque<V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/15
 	 */
-	@SquirrelJMEVendorApi
 	public final Deque<V> subDeque(Collection<V> __c)
 		throws NullPointerException
 	{
@@ -175,7 +168,6 @@ public class MultiSetDeque<V>
 	 * @throws IllegalArgumentException If the limit is zero or negative.
 	 * @since 2016/09/03
 	 */
-	@SquirrelJMEVendorApi
 	public final Deque<V> subDeque(int __l)
 		throws IllegalArgumentException
 	{

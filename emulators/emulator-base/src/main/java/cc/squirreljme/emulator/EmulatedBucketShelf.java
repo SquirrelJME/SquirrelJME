@@ -14,7 +14,6 @@ import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.mle.constants.BucketWriteMode;
 import cc.squirreljme.jvm.mle.constants.StandardBucketType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.SystemPathProvider;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
@@ -59,7 +58,6 @@ public class EmulatedBucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/14
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean delete(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
@@ -92,7 +90,6 @@ public class EmulatedBucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/17
 	 */
-	@SquirrelJMEVendorApi
 	public static long lastModifiedTime(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
@@ -124,7 +121,6 @@ public class EmulatedBucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/17
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean exists(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
@@ -146,7 +142,6 @@ public class EmulatedBucketShelf
 	 * supported.
 	 * @since 2025/04/14
 	 */
-	@SquirrelJMEVendorApi
 	public static BucketBracket bucket(
 		@MagicConstant(valuesFromClass = StandardBucketType.class)
 			int __type)
@@ -191,7 +186,6 @@ public class EmulatedBucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/16
 	 */
-	@SquirrelJMEVendorApi
 	public static String[] list(
 		@NotNull BucketBracket __bucket)
 		throws MLECallError
@@ -216,7 +210,6 @@ public class EmulatedBucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/16
 	 */
-	@SquirrelJMEVendorApi
 	public static String[] list(
 		@NotNull BucketBracket __bucket,
 		boolean __not,
@@ -293,7 +286,6 @@ public class EmulatedBucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/14
 	 */
-	@SquirrelJMEVendorApi
 	public static long length(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
@@ -328,7 +320,6 @@ public class EmulatedBucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/29
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
 	public static String path(@NotNull BucketBracket __bucket)
 		throws MLECallError
@@ -355,7 +346,6 @@ public class EmulatedBucketShelf
 	 * out of bounds or negative.
 	 * @since 2025/04/14
 	 */
-	@SquirrelJMEVendorApi
 	public static int read(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file,
@@ -400,7 +390,6 @@ public class EmulatedBucketShelf
 	 * out of bounds or negative.
 	 * @since 2025/04/14
 	 */
-	@SquirrelJMEVendorApi
 	public static void write(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file,

@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.nttdocomo.io;
 
 import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.FileAddress;
 import java.io.IOException;
@@ -30,11 +29,9 @@ import java.io.InputStream;
  *
  * @since 2022/10/07
  */
-@SquirrelJMEVendorApi
 public class SquirrelJMEWebRootManager
 {
 	/** The JAR that makes up our webroot. */
-	@SquirrelJMEVendorApi
 	protected final JarPackageBracket jar;
 	
 	/**
@@ -44,7 +41,6 @@ public class SquirrelJMEWebRootManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/10/11
 	 */
-	@SquirrelJMEVendorApi
 	public SquirrelJMEWebRootManager(JarPackageBracket __jar)
 		throws NullPointerException
 	{
@@ -63,7 +59,6 @@ public class SquirrelJMEWebRootManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/10/11
 	 */
-	@SquirrelJMEVendorApi
 	public boolean pathExists(FileAddress __file)
 		throws IOException, NullPointerException
 	{

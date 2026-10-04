@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import org.jetbrains.annotations.Async;
 
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.Async;
  *
  * @since 2024/07/18
  */
-@SquirrelJMEVendorApi
 public interface StringTrackerListener
 {
 	/**

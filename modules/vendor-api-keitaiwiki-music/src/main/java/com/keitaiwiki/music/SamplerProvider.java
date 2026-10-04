@@ -33,8 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Sample generator for music sequencer players. Invoking {@code instance()}
  * will produce an object that can be used to render the actual samples of
@@ -42,7 +40,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public interface SamplerProvider
 {
 	/**
@@ -57,6 +54,5 @@ public interface SamplerProvider
 	 * non-number or is less than or equal to zero.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	Sampler instance(float __sampleRate);
 }

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.emulator.vm;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;

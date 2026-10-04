@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayableState;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
@@ -30,11 +29,9 @@ import javax.microedition.lcdui.game.GameCanvas;
  *
  * @since 2026/08/09
  */
-@SquirrelJMEVendorApi
 public interface SpecificFlags
 {
 	/** {@link Canvas}: Suppress key events. */
-	@SquirrelJMEVendorApi
 	byte CANVAS_SUPPRESS_GAME_KEY =
 		1;
 }

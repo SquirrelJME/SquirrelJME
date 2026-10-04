@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -17,7 +16,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2024/07/18
  */
-@SquirrelJMEVendorApi
 public final class MenuLayoutLock
 	implements AutoCloseable
 {
@@ -26,7 +24,6 @@ public final class MenuLayoutLock
 	 * @since 2024/07/18
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void close()
 	{
 		throw Debugging.todo();
@@ -40,7 +37,6 @@ public final class MenuLayoutLock
 	 * @throws IllegalStateException If the lock could not obtained.
 	 * @since 2024/07/18
 	 */
-	@SquirrelJMEVendorApi
 	public MenuLayoutLock open(boolean __root)
 		throws IllegalStateException
 	{

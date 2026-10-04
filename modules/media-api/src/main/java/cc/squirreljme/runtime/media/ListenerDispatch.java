@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.media;
 
 import cc.squirreljme.jvm.mle.ThreadShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import javax.microedition.media.PlayerListener;
@@ -21,14 +20,12 @@ import javax.microedition.media.PlayerListener;
  *
  * @since 2025/06/03
  */
-@SquirrelJMEVendorApi
 public final class ListenerDispatch
 {
 	/** The dispatch thread. */
 	private static volatile Thread _THREAD;
 	
 	/** The event queue. */
-	@SquirrelJMEVendorApi
 	static final Queue<__ListenerEvent__> _QUEUE =
 		new ArrayDeque<>();
 	
@@ -42,7 +39,6 @@ public final class ListenerDispatch
 	 * @since 2025/06/03
 	 */
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
-	@SquirrelJMEVendorApi
 	public static void dispatch(AbstractPlayer __player, String __eventType,
 		Object __eventValue)
 		throws NullPointerException
@@ -50,12 +46,13 @@ public final class ListenerDispatch
 		if (__player == null || __eventType == null)
 			throw new NullPointerException("NARG");
 		
-		// Player is not permitted to dispatch events
-		synchronized (__player)
-		{
-			if (__player._ffNoDispatch)
-				return;
-		}
+		// Player is not permitted to dispatch events?
+		if (__player._ffNoDispatch)
+			synchronized (__player)
+			{
+				if (__player._ffNoDispatch)
+					return;
+			}
 		
 		// Does the dispatch thread need to be created?
 		Thread thread = ListenerDispatch._THREAD;
@@ -87,9 +84,9 @@ public final class ListenerDispatch
 			
 			// Notify any monitors
 			ListenerDispatch.class.notifyAll();
+			
+			// Event was dispatched so interrupt the thread
+			thread.interrupt();
 		}
-		
-		// Event was dispatched so interrupt the thread
-		thread.interrupt();
 	}
 }

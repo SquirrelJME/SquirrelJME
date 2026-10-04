@@ -10,8 +10,6 @@
 package cc.squirreljme.runtime.gcf;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -107,7 +105,7 @@ public abstract class TCPClientConnection
 		
 		// Close input
 		IOException supin = null;
-		if (!tracker._inclosed)
+		if (!tracker.inClosed)
 			try
 			{
 				this.openInputStream().close();
@@ -119,7 +117,7 @@ public abstract class TCPClientConnection
 		
 		// Close output
 		IOException supout = null;
-		if (!tracker._outclosed)
+		if (!tracker.outClosed)
 			try
 			{
 				this.openOutputStream().close();
@@ -141,8 +139,8 @@ public abstract class TCPClientConnection
 		}
 		
 		// Set tracker as closed
-		tracker._inclosed = true;
-		tracker._outclosed = true;
+		tracker.inClosed = true;
+		tracker.outClosed = true;
 		
 		// Exceptions were thrown?
 		if (supin != null || supout != null || supclo != null)
@@ -240,7 +238,7 @@ public abstract class TCPClientConnection
 	{
 		/* {@squirreljme.error EC0l The input has been closed.} */
 		ConnectionStateTracker tracker = this.tracker;
-		if (tracker._inclosed)
+		if (tracker.inClosed)
 			throw new IOException("EC0l");
 		return new TrackedInputStream(tracker, this.doOpenInputStream());
 	}
@@ -255,7 +253,7 @@ public abstract class TCPClientConnection
 	{
 		/* {@squirreljme.error EC0m The output has been closed.} */
 		ConnectionStateTracker tracker = this.tracker;
-		if (tracker._outclosed)
+		if (tracker.outClosed)
 			throw new IOException("EC0m");
 		return new TrackedOutputStream(tracker, this.doOpenOutputStream());
 	}

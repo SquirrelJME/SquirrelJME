@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.manifest.JavaManifest;
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
 import cc.squirreljme.jvm.manifest.JavaManifestKey;
 import cc.squirreljme.jvm.mle.TypeShelf;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import cc.squirreljme.runtime.cldc.util.SortedTreeSet;
@@ -41,7 +41,6 @@ import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
  *
  * @since 2019/05/08
  */
-@SquirrelJMEVendorApi
 public final class TestResult
 {
 	/** Return value result. */
@@ -69,7 +68,6 @@ public final class TestResult
 	 * contains a null value.
 	 * @since 2019/05/09
 	 */
-	@SquirrelJMEVendorApi
 	public TestResult(String __rv, String __tv, Map<String, String> __sec)
 		throws NullPointerException
 	{
@@ -124,7 +122,6 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/06/16
 	 */
-	@SquirrelJMEVendorApi
 	public final String getSecondaryRawValue(String __key)
 		throws NullPointerException
 	{
@@ -157,7 +154,6 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/03/01
 	 */
-	@SquirrelJMEVendorApi
 	public final boolean isSatisfiedBy(TestResult __o)
 		throws NullPointerException
 	{
@@ -178,7 +174,6 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
-	@SquirrelJMEVendorApi
 	public final void printComparison(PrintStream __ps, TestResult __o)
 		throws NullPointerException
 	{
@@ -257,7 +252,6 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/08
 	 */
-	@SquirrelJMEVendorApi
 	@SuppressWarnings({"FeatureEnvy", "resource"})
 	public final void writeAsManifest(OutputStream __os)
 		throws IOException, NullPointerException
@@ -293,7 +287,6 @@ public final class TestResult
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2019/05/08
 	 */
-	@SquirrelJMEVendorApi
 	@SuppressWarnings("FeatureEnvy")
 	public static TestResult loadForClass(Class<?> __cl,
 		Map<String, String> __otherKeys, String __multiParam)
@@ -364,7 +357,6 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09 
 	 */
-	@SquirrelJMEVendorApi
 	public static List<String> throwableList(String __ts)
 		throws NullPointerException
 	{
@@ -424,7 +416,6 @@ public final class TestResult
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/06
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean valueEquals(String __act, String __exp)
 		throws InvalidTestParameterException, NullPointerException
 	{

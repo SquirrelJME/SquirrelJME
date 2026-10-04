@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -17,16 +16,13 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2021/11/30
  */
-@SquirrelJMEVendorApi
 public final class BacklightControl
 {
 	/** The minimum backlight level. */
-	@SquirrelJMEVendorApi
 	public static final byte MIN_LEVEL =
 		0;
 	
 	/** The maximum backlight level. */
-	@SquirrelJMEVendorApi
 	public static final byte MAX_LEVEL =
 		100;
 	
@@ -41,7 +37,6 @@ public final class BacklightControl
 	 * otherwise.
 	 * @since 2026/04/19
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean available()
 	{
 		throw Debugging.todo("BacklightAvailability");
@@ -54,7 +49,6 @@ public final class BacklightControl
 	 * capped accordingly.
 	 * @since 2021/11/30
 	 */
-	@SquirrelJMEVendorApi
 	public static void setLevel(int __level)
 	{
 		if (BacklightControl._lastLevel != __level)

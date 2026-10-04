@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.OutputStream;
 
 /**
@@ -19,12 +18,10 @@ import java.io.OutputStream;
  * @see ByteDequeInputStream
  * @since 2024/01/19
  */
-@SquirrelJMEVendorApi
 public class ByteDequeOutputStream
 	extends OutputStream
 {
 	/** The byte deque to access. */
-	@SquirrelJMEVendorApi
 	protected final ByteDeque queue;
 	
 	/**
@@ -34,7 +31,6 @@ public class ByteDequeOutputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/19
 	 */
-	@SquirrelJMEVendorApi
 	public ByteDequeOutputStream(ByteDeque __queue)
 		throws NullPointerException
 	{

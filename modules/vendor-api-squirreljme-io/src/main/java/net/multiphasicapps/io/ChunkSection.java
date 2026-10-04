@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,7 +26,6 @@ import java.util.List;
  *
  * @since 2019/08/11
  */
-@SquirrelJMEVendorApi
 public final class ChunkSection
 	extends OutputStream
 	implements DataOutput
@@ -37,15 +35,12 @@ public final class ChunkSection
 		512;
 	
 	/** The fixed size of this section. */
-	@SquirrelJMEVendorApi
 	protected final int fixedSize;
 	
 	/** The alignment of this section. */
-	@SquirrelJMEVendorApi
 	protected final int alignment;
 	
 	/** Is this a variable size section? */
-	@SquirrelJMEVendorApi
 	protected final boolean isVariable;
 	
 	/** Futures and where they go. */
@@ -121,7 +116,6 @@ public final class ChunkSection
 	 * @return A copy of the byte array that makes up this data.
 	 * @since 2020/12/16
 	 */
-	@SquirrelJMEVendorApi
 	public byte[] currentBytes()
 	{
 		return Arrays.copyOf(this._data, this._size);
@@ -134,7 +128,6 @@ public final class ChunkSection
 	 * @return An input stream of the current buffer data.
 	 * @since 2020/12/13
 	 */
-	@SquirrelJMEVendorApi
 	public final InputStream currentStream()
 	{
 		return new ByteArrayInputStream(this._data, 0, this._size);
@@ -156,7 +149,6 @@ public final class ChunkSection
 	 * @return The future.
 	 * @since 2020/12/04
 	 */
-	@SquirrelJMEVendorApi
 	public final ChunkFutureSection futureAddress()
 	{
 		return this.futureAddress(0);
@@ -169,7 +161,6 @@ public final class ChunkSection
 	 * @return The future.
 	 * @since 2020/12/04
 	 */
-	@SquirrelJMEVendorApi
 	public final ChunkFutureSection futureAddress(int __off)
 	{
 		return new ChunkFutureSection(
@@ -182,7 +173,6 @@ public final class ChunkSection
 	 * @return The future.
 	 * @since 2020/12/04
 	 */
-	@SquirrelJMEVendorApi
 	public final ChunkFutureSection futureSize()
 	{
 		return this.futureSize(0);
@@ -195,7 +185,6 @@ public final class ChunkSection
 	 * @return The future.
 	 * @since 2020/12/04
 	 */
-	@SquirrelJMEVendorApi
 	public final ChunkFutureSection futureSize(int __off)
 	{
 		return new ChunkFutureSection(
@@ -208,7 +197,6 @@ public final class ChunkSection
 	 * @return The current section size.
 	 * @since 2019/08/11
 	 */
-	@SquirrelJMEVendorApi
 	public final int size()
 	{
 		return this._size;
@@ -309,7 +297,6 @@ public final class ChunkSection
 	 * @throws IOException On write errors.
 	 * @since 2019/08/11
 	 */
-	@SquirrelJMEVendorApi
 	public final int writeAlignment(int __n)
 		throws IllegalArgumentException, IOException
 	{
@@ -422,7 +409,6 @@ public final class ChunkSection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/04
 	 */
-	@SquirrelJMEVendorApi
 	public final void writeFuture(ChunkDataType __dt, ChunkFuture __val)
 		throws IOException, NullPointerException
 	{
@@ -476,7 +462,6 @@ public final class ChunkSection
 	 * @throws IOException On write errors.
 	 * @since 2019/08/11
 	 */
-	@SquirrelJMEVendorApi
 	public final void writePadding(int __n)
 		throws IOException
 	{
@@ -492,7 +477,6 @@ public final class ChunkSection
 	 * @throws IOException On write errors.
 	 * @since 2019/08/11
 	 */
-	@SquirrelJMEVendorApi
 	public final void writePadding(int __n, int __v)
 		throws IllegalArgumentException, IOException
 	{
@@ -530,7 +514,6 @@ public final class ChunkSection
 	 * exceeds the range of a short value.
 	 * @since 2019/08/11
 	 */
-	@SquirrelJMEVendorApi
 	public final void writeShortChecked(int __v)
 		throws IOException
 	{
@@ -552,7 +535,6 @@ public final class ChunkSection
 	 * exceeds the range of an unsigned short value.
 	 * @since 2019/08/11
 	 */
-	@SquirrelJMEVendorApi
 	public final void writeUnsignedShortChecked(int __v)
 		throws IOException
 	{

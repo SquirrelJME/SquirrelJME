@@ -54,7 +54,7 @@ public final class TrackedInputStream
 		throws IOException
 	{
 		/* {@squirreljme.error EC0r The input has been closed.} */
-		if (this.tracker._inclosed)
+		if (this.tracker.inClosed)
 			throw new IOException("EC0r");
 		
 		return this.in.available();
@@ -72,7 +72,7 @@ public final class TrackedInputStream
 		this.in.close();
 		
 		// Set stream as closed
-		this.tracker._inclosed = true;
+		this.tracker.inClosed = true;
 	}
 	
 	/**
@@ -84,7 +84,7 @@ public final class TrackedInputStream
 		throws IOException
 	{
 		/* {@squirreljme.error EC0s The input has been closed.} */
-		if (this.tracker._inclosed)
+		if (this.tracker.inClosed)
 			throw new IOException("EC0s");
 		
 		// Read data
@@ -103,7 +103,7 @@ public final class TrackedInputStream
 		throws IOException
 	{
 		/* {@squirreljme.error EC0t The input has been closed.} */
-		if (this.tracker._inclosed)
+		if (this.tracker.inClosed)
 			throw new IOException("EC0t");
 		
 		// Read data
@@ -122,7 +122,7 @@ public final class TrackedInputStream
 		throws IOException
 	{
 		/* {@squirreljme.error EC0u The input has been closed.} */
-		if (this.tracker._inclosed)
+		if (this.tracker.inClosed)
 			throw new IOException("EC0u");
 		
 		// Read data

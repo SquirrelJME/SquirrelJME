@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.event;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Canvas;
 
 /**
@@ -17,7 +16,6 @@ import javax.microedition.lcdui.Canvas;
  *
  * @since 2026/05/13
  */
-@SquirrelJMEVendorApi
 public class QwertyDialPad
 	implements KeyCodeTranslator
 {

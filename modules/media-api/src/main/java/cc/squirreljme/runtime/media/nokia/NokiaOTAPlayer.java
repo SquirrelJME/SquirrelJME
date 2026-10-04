@@ -17,7 +17,6 @@ import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.media.AbstractPlayer;
@@ -34,29 +33,23 @@ import org.jetbrains.annotations.NotNull;
  * 
  * @since 2025/12/24
  */
-@SquirrelJMEVendorApi
 public class NokiaOTAPlayer
 	extends AbstractPlayer
 	implements AudioStreamRenderer
 {
 	/** Underlying data containing realized OTA media */
-	@SquirrelJMEVendorApi
 	private byte[] _data;
 
 	/** The audio connection. */
-	@SquirrelJMEVendorApi
 	private volatile AudioConnectionBracket _connection;
 
 	/** The un-realized input stream. */
-	@SquirrelJMEVendorApi
 	private volatile InputConnection _unrealizedIn;
 
 	/** The audio stream used. */
-	@SquirrelJMEVendorApi
 	private volatile AudioStreamBracket _stream;
 
 	/** The decoder instance for Nokia OTA Notes/Events */
-	@SquirrelJMEVendorApi
 	private final NokiaOTADecoder _decoder;
 
 	/**
@@ -68,7 +61,6 @@ public class NokiaOTAPlayer
 	 * @throws NullPointerException If {@code __in} is null.
 	 * @since 2025/12/24
 	 */
-	@SquirrelJMEVendorApi
 	public NokiaOTAPlayer(@NotNull InputConnection __in)
 		throws MediaException, NullPointerException
 	{
@@ -82,7 +74,7 @@ public class NokiaOTAPlayer
 		// For later realization
 		this._unrealizedIn = __in;
 
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("NokiaOTAPlayer: init(%s)", __in);
 
 		// Register volume control so we can properly set the gain

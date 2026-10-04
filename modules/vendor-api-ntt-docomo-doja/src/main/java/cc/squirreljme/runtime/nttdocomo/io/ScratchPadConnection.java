@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.nttdocomo.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -25,7 +24,6 @@ import javax.microedition.io.StreamConnection;
  *
  * @since 2021/11/30
  */
-@SquirrelJMEVendorApi
 public class ScratchPadConnection
 	implements StreamConnection
 {
@@ -51,7 +49,6 @@ public class ScratchPadConnection
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/01
 	 */
-	@SquirrelJMEVendorApi
 	public ScratchPadConnection(ScratchPadParams __params, int __pad,
 		int __pos, int __len)
 		throws NullPointerException
@@ -70,7 +67,6 @@ public class ScratchPadConnection
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public void close()
 		throws IOException
 	{
@@ -82,7 +78,6 @@ public class ScratchPadConnection
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public DataInputStream openDataInputStream()
 		throws IOException
 	{
@@ -94,7 +89,6 @@ public class ScratchPadConnection
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public DataOutputStream openDataOutputStream()
 		throws IOException
 	{
@@ -106,7 +100,6 @@ public class ScratchPadConnection
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public OutputStream openOutputStream()
 		throws IOException
 	{
@@ -119,7 +112,6 @@ public class ScratchPadConnection
 	 * @since 2021/11/30
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public InputStream openInputStream()
 		throws IOException
 	{

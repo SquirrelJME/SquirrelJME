@@ -24,8 +24,8 @@ jar.dependsOn("mimeDecode")
 
 dependencies {
 	implementation project(":emulators:emulator-base")
-	implementation project(":modules:tool-classfile")
-	implementation project(":modules:markdown-writer")
+	implementation project(":emulators:tool-classfile")
+	implementation project(":tools:markdown-writer")
 	
 	// Lombok for simpler getters/setters
 	implementation 'org.projectlombok:lombok:1.18.36'

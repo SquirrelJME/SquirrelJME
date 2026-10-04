@@ -10,16 +10,12 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringFatalException;
-import cc.squirreljme.vm.springcoat.exceptions.SpringUnmappableObjectException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 

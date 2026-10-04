@@ -9,14 +9,11 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Math utilities.
  *
  * @since 2024/03/17
  */
-@SquirrelJMEVendorApi
 public final class MathUtils
 {
 	/**
@@ -35,7 +32,6 @@ public final class MathUtils
 	 * @return The resultant rounded value.
 	 * @since 2024/03/17
 	 */
-	@SquirrelJMEVendorApi
 	public static int nearestPowerOfTwo(int __val)
 	{
 		int hi = Math.max(1, Integer.highestOneBit(__val));

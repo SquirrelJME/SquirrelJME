@@ -23,11 +23,10 @@ import java.lang.annotation.Target;
  * @since 2022/08/28
  */
 @Documented
-@Retention(value= RetentionPolicy.SOURCE)
+@Retention(value= RetentionPolicy.RUNTIME)
 @Target(value={ElementType.CONSTRUCTOR, ElementType.FIELD,
 	ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PACKAGE,
 	ElementType.PARAMETER, ElementType.TYPE})
-@SquirrelJMEVendorApi
 public @interface VendorSpecificApi
 {
 	/** The API this belongs to. */

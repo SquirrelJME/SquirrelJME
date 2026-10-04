@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.nttdocomo.ui;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import com.nttdocomo.ui.Palette;
 import javax.microedition.lcdui.Image;
 
@@ -19,27 +17,21 @@ import javax.microedition.lcdui.Image;
  *
  * @since 2024/01/14
  */
-@SquirrelJMEVendorApi
 public final class EightBitImageStore
 {
 	/** The image width. */
-	@SquirrelJMEVendorApi
 	protected final int width;
 	
 	/** The image height. */
-	@SquirrelJMEVendorApi
 	protected final int height;
 	
 	/** Is there an alpha channel? */
-	@SquirrelJMEVendorApi
 	protected final boolean hasAlpha;
 	
 	/** Image pixel data. */
-	@SquirrelJMEVendorApi
 	private final byte[] _pixels;
 	
 	/** Cached MIDP image. */
-	@SquirrelJMEVendorApi
 	private volatile Image _image;
 	
 	/** Internal Image palette. */
@@ -69,7 +61,6 @@ public final class EightBitImageStore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/14
 	 */
-	@KeepWhenCompacting
 	EightBitImageStore(byte[] __pixels, int __width, int __height,
 		int[] __palette, boolean __hasAlpha, int __transIndex)
 		throws NullPointerException
@@ -98,7 +89,6 @@ public final class EightBitImageStore
 	 * @return The image height.
 	 * @since 2024/01/14
 	 */
-	@SquirrelJMEVendorApi
 	public int getHeight()
 	{
 		return this.height;
@@ -110,7 +100,6 @@ public final class EightBitImageStore
 	 * @return The palette of the image store.
 	 * @since 2024/01/14
 	 */
-	@SquirrelJMEVendorApi
 	public Palette getPalette()
 	{
 		synchronized (this)
@@ -141,7 +130,6 @@ public final class EightBitImageStore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/14
 	 */
-	@SquirrelJMEVendorApi
 	public void getRGB(int[] __b, int __o, int __sl, Palette __palette,
 		int __x, int __y, int __w, int __h, int __transparentIndex)
 		throws IllegalArgumentException, NullPointerException,
@@ -192,7 +180,6 @@ public final class EightBitImageStore
 	 * @return The transparent color image or {@code -1} if not valid.
 	 * @since 2024/01/15
 	 */
-	@SquirrelJMEVendorApi
 	public int getTransparentIndex()
 	{
 		synchronized (this)
@@ -207,7 +194,6 @@ public final class EightBitImageStore
 	 * @return The image width.
 	 * @since 2024/01/14
 	 */
-	@SquirrelJMEVendorApi
 	public int getWidth()
 	{
 		return this.width;
@@ -219,7 +205,6 @@ public final class EightBitImageStore
 	 * @return The MIDP image from the data.
 	 * @since 2024/08/11
 	 */
-	@SquirrelJMEVendorApi
 	public Image midpImage()
 	{
 		// Get the modification count of the current palette
@@ -264,7 +249,6 @@ public final class EightBitImageStore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/04/10
 	 */
-	@SquirrelJMEVendorApi
 	public void setPalette(Palette __palette, ModificationCounter __modCount)
 		throws NullPointerException
 	{
@@ -292,7 +276,6 @@ public final class EightBitImageStore
 	 * @param __index The index to use for transparency.
 	 * @since 2026/04/10
 	 */
-	@SquirrelJMEVendorApi
 	public void setTransparentIndex(int __index)
 	{
 		synchronized (this)

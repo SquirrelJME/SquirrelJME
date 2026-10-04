@@ -10,8 +10,6 @@
 package com.nttdocomo.ui;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import com.nttdocomo.io.ConnectionException;
@@ -133,62 +131,49 @@ public class AudioPresenter
 		64;
 	
 	/** The maximum number of explicit ports. */
-	@SquirrelJMEVendorApi
 	private static final int _MAX_PORT_DIFF =
 		24;
 	
 	/** The ID for automatic ports. */
-	@SquirrelJMEVendorApi
 	private static final int _AUTO_PORT_START =
 		Integer.MAX_VALUE - AudioPresenter._MAX_PORT_DIFF;
 	
 	/** Port differential. */
-	@SquirrelJMEVendorApi
 	private static volatile int _portDiff;
 	
 	/** The port this presenter is on. */
-	@SquirrelJMEVendorApi
 	final int _port;
 	
 	/** Is this an automatic presenter? */
-	@SquirrelJMEVendorApi
 	final boolean _isAuto;
 	
 	/** The listener to use for media events. */
-	@SquirrelJMEVendorApi
 	volatile MediaListener _listener;
 	
 	/** The current audio player. */
-	@SquirrelJMEVendorApi
 	volatile Player _current;
 	
 	/** The priority of this presenter. */
-	@SquirrelJMEVendorApi
 	volatile int _priority =
 		AudioPresenter.NORM_PRIORITY;
 
 	/** Indicates if media has been paused by calling pause() */
-	@SquirrelJMEVendorApi
 	volatile boolean _paused =
 		false;
 	
 	/** The volume scale. */
-	@SquirrelJMEVendorApi
 	volatile int _volume =
 		100;
 	
 	/** The loop count to use, note this is off by one compared to MIDP. */
-	@SquirrelJMEVendorApi
 	volatile int _loopCount =
 		0;
 	
 	/** Wraps MIDP PlayerListener to DoJa MediaListener. */
-	@SquirrelJMEVendorApi
 	private final __MIDPPlayerListener__ _playerListener =
 		new __MIDPPlayerListener__(new WeakReference<>(this));
 	
 	/** The current media being played. */
-	@SquirrelJMEVendorApi
 	private volatile MediaResource _currentMedia;
 	
 	/**
@@ -618,7 +603,7 @@ public class AudioPresenter
 				}
 				catch (ConnectionException __e)
 				{
-					if (Debugging.VERBOSE)
+					if (Debugging.verbose())
 						__e.printStackTrace();
 					
 					UIException toss = new UIException(
@@ -704,7 +689,7 @@ public class AudioPresenter
 			}
 			catch (IllegalStateException|MediaException __e)
 			{
-				if (Debugging.VERBOSE)
+				if (Debugging.verbose())
 					__e.printStackTrace();
 				
 				UIException toss = new UIException(
@@ -722,7 +707,6 @@ public class AudioPresenter
 	 * @throws UIException If there is no current player.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	private Player __current()
 		throws UIException
 	{
@@ -742,7 +726,6 @@ public class AudioPresenter
 	 * @return Whether the player is currently paused or not.
 	 * @since 2026/05/09
 	 */
-	@KeepWhenCompacting
 	boolean __isPaused()
 	{
 		return this._paused;

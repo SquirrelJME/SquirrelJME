@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractMap;
@@ -22,7 +21,6 @@ import java.util.Set;
  *
  * @since 2016/05/12
  */
-@SquirrelJMEVendorApi
 public class EmptyMap
 	extends AbstractMap
 {

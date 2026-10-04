@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPaintableBracket;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchPaintListener;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2024/03/19
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchPaintableInterface
 	extends ScritchApiInterface
 {
@@ -33,7 +33,7 @@ public interface ScritchPaintableInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/19
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void componentRepaint(@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
 	
@@ -45,7 +45,7 @@ public interface ScritchPaintableInterface
 	 * @throws MLECallError If {@code __panel} is {@code null}.
 	 * @since 2024/03/19
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void componentSetPaintListener(
 		@NotNull ScritchPaintableBracket __component,
 		@Nullable ScritchPaintListener __listener)

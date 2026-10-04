@@ -33,7 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -47,23 +46,18 @@ import org.jetbrains.annotations.Range;
  * @see MLD
  * @see SamplerProvider
  */
-@SquirrelJMEVendorApi
 public class MLDPlayer
 {
 	/** Key index bias. */
-	@SquirrelJMEVendorApi
 	public static final int A4 = 48;
 	
 	/** Sample generator. */
-	@SquirrelJMEVendorApi
 	public final Sampler sampler;
 	
 	/** Playback channels. */
-	@SquirrelJMEVendorApi
 	final __MLDChannel__[] _channels;
 	
 	/** Pending events. */
-	@SquirrelJMEVendorApi
 	final ArrayList<MLDPlayerEvent> _events;
 	
 	/** Key events enabled by key. */
@@ -76,47 +70,36 @@ public class MLDPlayer
 	final float _sampleRate;
 	
 	/** Sequencer state. */
-	@SquirrelJMEVendorApi
 	final __MLDPlayerTrack__[] _tracks;
 	
 	/** Playback events are enabled. */
-	@SquirrelJMEVendorApi
 	boolean _evtPlayback;
 	
 	/** Sequencer has no more events. */
-	@SquirrelJMEVendorApi
 	boolean _finished;
 	
 	/** Output frames in one tick. */
-	@SquirrelJMEVendorApi
 	float _framesPerTick;
 	
 	/** Looping is enabled. */
-	@SquirrelJMEVendorApi
 	boolean _loopEnabled;
 	
 	/** Stop all notes when looping. */
-	@SquirrelJMEVendorApi
 	boolean _loopStopAll;
 	
 	/** Output frames to process. */
-	@SquirrelJMEVendorApi
 	float _pendingFrames;
 	
 	/** Sequencer ticks to process. */
-	@SquirrelJMEVendorApi
 	int _pendingTicks;
 	
 	/** Sequencer position in frames. */
-	@SquirrelJMEVendorApi
 	long _position;
 	
 	/** Processing setTime(). */
-	@SquirrelJMEVendorApi
 	boolean _seeking;
 	
 	/** Sequencer position in ticks. */
-	@SquirrelJMEVendorApi
 	long _tickNow;
 	
 	/**
@@ -136,7 +119,6 @@ public class MLDPlayer
 	 * @see SamplerProvider
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public MLDPlayer(@NotNull MLD __mld, @NotNull SamplerProvider __sampler,
 		float __sampleRate)
 		throws IllegalArgumentException, NullPointerException
@@ -200,7 +182,6 @@ public class MLDPlayer
 	 * @see MLD#getDuration(boolean)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public double getDuration(boolean __withoutLooping)
 	{
 		return this._mld.getDuration(__withoutLooping);
@@ -218,7 +199,6 @@ public class MLDPlayer
 	 * @see #setPlaybackEventsEnabled(boolean)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public MLDPlayerEvent[] getEvents()
 	{
 		MLDPlayerEvent[] ret = this._events.toArray(
@@ -234,7 +214,6 @@ public class MLDPlayer
 	 * @see #setLoopEnabled(boolean)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public boolean getLoopEnabled()
 	{
 		return this._loopEnabled;
@@ -247,7 +226,6 @@ public class MLDPlayer
 	 * @see #setLoopStopAll(boolean)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public boolean getLoopStopAll()
 	{
 		return this._loopStopAll;
@@ -263,7 +241,6 @@ public class MLDPlayer
 	 * position.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public double getPosition()
 	{
 		return (double)this._tickNow / this._mld._tickEnd;
@@ -278,7 +255,6 @@ public class MLDPlayer
 	 * @see MLD#getDuration(boolean)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public double getTime()
 	{
 		return (double)this._position / this._sampleRate;
@@ -292,7 +268,6 @@ public class MLDPlayer
 	 * @return {@code true} if all playback has completed.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public boolean isFinished()
 	{
 		if (!this.sampler.isFinished())
@@ -328,7 +303,6 @@ public class MLDPlayer
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public int render(@NotNull float[] __samples,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __frames)
@@ -365,7 +339,6 @@ public class MLDPlayer
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public int render(@NotNull float[] __samples,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
@@ -405,7 +378,6 @@ public class MLDPlayer
 	 * @see Sampler#render(float[], int, int, float, float, boolean, boolean)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public int render(@NotNull float[] __samples,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
@@ -455,7 +427,6 @@ public class MLDPlayer
 	 * @see #render(float[], int, int, float, float)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public int render(@NotNull float[] __samples,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __frames,
@@ -573,7 +544,6 @@ public class MLDPlayer
 	 *
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public void reset()
 	{
 		// Instance fields
@@ -622,7 +592,6 @@ public class MLDPlayer
 	 * @see #getLoopEnabled()
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public boolean setLoopEnabled(boolean __enabled)
 	{
 		return this._loopEnabled = __enabled;
@@ -639,7 +608,6 @@ public class MLDPlayer
 	 * @see #getLoopStopAll()
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public boolean setLoopStopAll(boolean __stopAll)
 	{
 		return this._loopStopAll = __stopAll;
@@ -656,7 +624,6 @@ public class MLDPlayer
 	 * @see #getEvents()
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public void setPlaybackEventsEnabled(boolean __enabled)
 	{
 		this._evtPlayback = __enabled;
@@ -681,7 +648,6 @@ public class MLDPlayer
 	 * @see MLD#getDuration(boolean)
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public boolean setTime(double __seconds)
 	{
 		// Error checking

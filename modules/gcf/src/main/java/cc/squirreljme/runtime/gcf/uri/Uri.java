@@ -9,9 +9,9 @@
 
 package cc.squirreljme.runtime.gcf.uri;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import org.jetbrains.annotations.NotNull;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -19,7 +19,6 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/28
  */
-@SquirrelJMEVendorApi
 public final class Uri
 	implements Comparable<Uri>
 {
@@ -37,7 +36,6 @@ public final class Uri
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public Uri(String __uri)
 		throws InvalidUriException, NullPointerException
 	{
@@ -53,7 +51,6 @@ public final class Uri
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public Uri(String __scheme, String __part)
 		throws InvalidUriException, NullPointerException
 	{
@@ -69,7 +66,6 @@ public final class Uri
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public Uri(String __scheme, UriPart __part)
 		throws InvalidUriException, NullPointerException
 	{
@@ -110,7 +106,6 @@ public final class Uri
 	 * @return The URI part.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public UriPart getPart()
 	{
 		return this.part;
@@ -122,7 +117,6 @@ public final class Uri
 	 * @return The URI scheme.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	public String getScheme()
 	{
 		return this.scheme;

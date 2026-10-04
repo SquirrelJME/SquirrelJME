@@ -88,7 +88,7 @@ public final class HTTPRequestBuilder
 		throws IOException
 	{
 		// Only close once
-		if (this.tracker._state != HTTPState.SETUP)
+		if (this.tracker.state != HTTPState.SETUP)
 			return;
 		
 		// Send the agent out request bytes
@@ -104,7 +104,7 @@ public final class HTTPRequestBuilder
 		throws IOException
 	{
 		/* {@squirreljme.error EC04 Cannot flush closed HTTP stream.} */
-		if (this.tracker._state != HTTPState.SETUP)
+		if (this.tracker.state != HTTPState.SETUP)
 			throw new IOException("EC04");
 		
 		// Note
@@ -226,7 +226,7 @@ public final class HTTPRequestBuilder
 		throws IOException
 	{
 		/* {@squirreljme.error EC05 Cannot write more HTTP data.} */
-		if (this.tracker._state != HTTPState.SETUP)
+		if (this.tracker.state != HTTPState.SETUP)
 			throw new IOException("EC05");
 		
 		// Write to bytes
@@ -259,7 +259,7 @@ public final class HTTPRequestBuilder
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		/* {@squirreljme.error EC06 Cannot write more HTTP data.} */
-		if (this.tracker._state != HTTPState.SETUP)
+		if (this.tracker.state != HTTPState.SETUP)
 			throw new IOException("EC06");
 		
 		// Write to bytes

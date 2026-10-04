@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.OutputStream;
 
 /**
@@ -17,7 +16,6 @@ import java.io.OutputStream;
  *
  * @since 2019/06/30
  */
-@SquirrelJMEVendorApi
 public final class NullOutputStream
 	extends OutputStream
 {

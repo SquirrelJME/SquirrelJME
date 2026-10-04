@@ -13,8 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.CheckReturnValue;
@@ -28,7 +27,7 @@ import org.jetbrains.annotations.Range;
  * @since 2020/06/14
  */
 @SuppressWarnings("UnstableApiUsage")
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class TerminalShelf
 {
 	/**
@@ -49,11 +48,11 @@ public final class TerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2020/11/22
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class,
 		intValues = {0, -1})
 	@NonBlocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int available(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
@@ -65,10 +64,10 @@ public final class TerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2020/07/02
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Blocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int close(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
@@ -80,10 +79,10 @@ public final class TerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2018/12/08
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Blocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int flush(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
@@ -97,8 +96,8 @@ public final class TerminalShelf
 	 * valid.
 	 * @since 2022/03/19
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native PipeBracket fromStandard(
 		@MagicConstant(valuesFromClass = StandardPipeType.class) int __fd)
 		throws MLECallError;
@@ -113,11 +112,11 @@ public final class TerminalShelf
 	 * {@code null}.
 	 * @since 2025/07/06
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Range(from = -2, to = 255)
 	@Blocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int read(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
@@ -134,11 +133,11 @@ public final class TerminalShelf
 	 * {@code null}.
 	 * @since 2018/12/05
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Range(from = -2, to = Integer.MAX_VALUE)
 	@Blocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int read(@NotNull PipeBracket __fd,
 		@NotNull byte[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
@@ -154,12 +153,12 @@ public final class TerminalShelf
 	 * @throws MLECallError If {@code __fd} is not valid.
 	 * @since 2018/09/21
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class,
 		intValues = {1})
 	@Range(from = -2, to = 1)
 	@Blocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int write(@NotNull PipeBracket __fd,
 		@Range(from = 0, to = 255) int __c)
 		throws MLECallError;
@@ -177,12 +176,12 @@ public final class TerminalShelf
 	 * {@code null}.
 	 * @since 2018/12/05
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = PipeErrorType.class,
 		intValues = {1})
 	@Range(from = -2, to = Integer.MAX_VALUE)
 	@Blocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int write(@NotNull PipeBracket __fd,
 		@NotNull byte[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,

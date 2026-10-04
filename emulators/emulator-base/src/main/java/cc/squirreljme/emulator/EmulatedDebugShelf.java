@@ -12,8 +12,6 @@ package cc.squirreljme.emulator;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import java.lang.reflect.Method;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -31,7 +29,6 @@ public class EmulatedDebugShelf
 	 *
 	 * @since 2024/01/30
 	 */
-	@SquirrelJMEVendorApi
 	public static void breakpoint()
 	{
 		try
@@ -51,7 +48,6 @@ public class EmulatedDebugShelf
 	 * @return The class.
 	 * @since 2020/06/16
 	 */
-	@SquirrelJMEVendorApi
 	public static String pointClass(@NotNull TracePointBracket __point)
 	{
 		if (__point == null)
@@ -67,7 +63,6 @@ public class EmulatedDebugShelf
 	 * @return The stack trace.
 	 * @since 2023/07/19
 	 */
-	@SquirrelJMEVendorApi
 	public static TracePointBracket[] traceStack()
 	{
 		StackTraceElement[] trace = new Throwable().getStackTrace();

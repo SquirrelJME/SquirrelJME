@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
@@ -40,32 +39,26 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2026/01/02
  */
-@SquirrelJMEVendorApi
 public class LinearScanEndPoint
 	extends FileEndPoint
 {
 	/** The number of bytes to scan attempt at once. */
-	@SquirrelJMEVendorApi
 	public static final int SCAN_LEN =
 		12;
 	
 	/** The number of bytes to skip at once. */
-	@SquirrelJMEVendorApi
 	public static final int SKIP =
 		4;
 	
 	/** Host. */
-	@SquirrelJMEVendorApi
 	public static final String HOST =
 		"!%3Fx-squirreljme-linear-scan%3A%2F%2F%3F!";
 	
 	/** Decoded host. */
-	@SquirrelJMEVendorApi
 	public static final String DECODED_HOST =
 		"!?x-squirreljme-linear-scan://?!";
 	
 	/** The connection to wrap. */
-	@SquirrelJMEVendorApi
 	protected final InputConnection wrapped;
 	
 	/** The scanned contents and magic numbers. */
@@ -81,7 +74,6 @@ public class LinearScanEndPoint
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/02
 	 */
-	@SquirrelJMEVendorApi
 	public LinearScanEndPoint(@NotNull UriGenericPart __part, int __mode,
 		InputConnection __wrapped, @Nullable UriGenericPart __dotDot)
 		throws NullPointerException

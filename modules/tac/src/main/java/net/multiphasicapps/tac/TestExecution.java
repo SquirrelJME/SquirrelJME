@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import java.io.IOException;
 import java.io.PrintStream;
 

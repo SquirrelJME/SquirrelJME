@@ -9,9 +9,6 @@
 
 package com.nttdocomo.ui.graphics3d;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
-@SquirrelJMEVendorApi
 public abstract class Object3D
 {
 }

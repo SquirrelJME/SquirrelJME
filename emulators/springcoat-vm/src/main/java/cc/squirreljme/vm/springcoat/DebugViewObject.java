@@ -12,7 +12,6 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.jdwp.host.JDWPHostState;
 import cc.squirreljme.jdwp.host.JDWPHostValue;
 import cc.squirreljme.jdwp.host.views.JDWPViewObject;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 
 /**

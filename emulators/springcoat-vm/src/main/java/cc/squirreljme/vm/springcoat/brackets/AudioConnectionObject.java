@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat.brackets;
 
 import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
-import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 import cc.squirreljme.vm.springcoat.SpringMachine;
 

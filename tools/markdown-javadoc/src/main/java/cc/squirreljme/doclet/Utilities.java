@@ -12,7 +12,6 @@ package cc.squirreljme.doclet;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.markdownwriter.MarkdownWriter;
 
 /**

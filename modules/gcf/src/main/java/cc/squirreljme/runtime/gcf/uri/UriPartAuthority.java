@@ -9,15 +9,11 @@
 
 package cc.squirreljme.runtime.gcf.uri;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * A URI which contains an authority.
  *
  * @since 2025/12/28
  */
-@SquirrelJMEVendorApi
 public interface UriPartAuthority
 {
 	/**
@@ -26,6 +22,5 @@ public interface UriPartAuthority
 	 * @return The authority or {@code null} if there is none.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	UriAuthority getAuthority();
 }

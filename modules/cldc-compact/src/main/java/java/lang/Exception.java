@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 
 /**
  * For any exceptions which extend this class and not {@link RuntimeException}

@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.jsr353;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonBuilderFactory;
@@ -36,7 +35,6 @@ import java.util.Map;
  *
  * @since 2014/08/01
  */
-@SquirrelJMEVendorApi
 public class ImplProvider
 	extends JsonProvider
 {

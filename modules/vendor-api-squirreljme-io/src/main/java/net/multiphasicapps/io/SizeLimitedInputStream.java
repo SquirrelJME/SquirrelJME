@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -21,32 +20,25 @@ import java.io.InputStream;
  *
  * @since 2016/03/09
  */
-@SquirrelJMEVendorApi
 public class SizeLimitedInputStream
 	extends InputStream
 {
 	/** The wrapped stream. */
-	@SquirrelJMEVendorApi
 	protected final InputStream wrapped;
 	
 	/** Exact size? */
-	@SquirrelJMEVendorApi
 	protected final boolean exact;
 	
 	/** The read limit. */
-	@SquirrelJMEVendorApi
 	protected final long limit;
 	
 	/** If {@code true} then close propagates to the wrapped stream. */
-	@SquirrelJMEVendorApi
 	protected final boolean propagate;
 	
 	/** The current read size. */
-	@SquirrelJMEVendorApi
 	private volatile long _current;
 	
 	/** Was this closed? */
-	@SquirrelJMEVendorApi
 	private volatile boolean _closed;
 	
 	/**
@@ -64,7 +56,6 @@ public class SizeLimitedInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/03/09
 	 */
-	@SquirrelJMEVendorApi
 	public SizeLimitedInputStream(InputStream __is, long __li, boolean __ex)
 		throws IllegalArgumentException, NullPointerException
 	{
@@ -87,7 +78,6 @@ public class SizeLimitedInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/08/28
 	 */
-	@SquirrelJMEVendorApi
 	public SizeLimitedInputStream(InputStream __is, long __li, boolean __ex,
 		boolean __prop)
 		throws IllegalArgumentException, NullPointerException

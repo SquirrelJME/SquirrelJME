@@ -9,33 +9,33 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * This represents the thread model type.
  *
  * @since 2021/05/07
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ThreadModelType
 {
 	/** Single cooperatively threaded. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte SINGLE_THREAD_COOP =
 		0;
 	
 	/** Single threaded, with preemption. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte SINGLE_THREAD_PREEMPT =
 		1;
 	
 	/** Simultaneous Multi-threaded. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MULTI_THREAD =
 		2;
 	
 	/** The number of threading models. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_MODELS =
 		3;
 }

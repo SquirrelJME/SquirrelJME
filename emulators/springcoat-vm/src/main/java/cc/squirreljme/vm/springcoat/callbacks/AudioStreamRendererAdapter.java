@@ -10,8 +10,6 @@
 package cc.squirreljme.vm.springcoat.callbacks;
 
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
-import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.SpringCallbackAdapter;
 import cc.squirreljme.vm.springcoat.SpringMachine;
 import cc.squirreljme.vm.springcoat.SpringObject;

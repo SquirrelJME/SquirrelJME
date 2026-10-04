@@ -11,9 +11,7 @@ package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.DatagramBracket;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import org.jetbrains.annotations.NotNull;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * This shelf provides access to the system's native socket interfaces which
@@ -28,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  * @see DatagramShelf
  * @since 2026/05/17
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class SocketShelf
 {
 	/**

@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
@@ -26,7 +25,6 @@ import java.util.NoSuchElementException;
  *
  * @since 2017/02/24
  */
-@SquirrelJMEVendorApi
 public class InflaterInputStream
 	extends DecompressionInputStream
 {
@@ -62,33 +60,24 @@ public class InflaterInputStream
 		};
 	
 	/** The deflated compressed stream to be decompressed. */
-	@SquirrelJMEVendorApi
 	protected final InputStream in;
 	
 	/** Sliding window for accessing old bytes. */
-	@SquirrelJMEVendorApi
 	protected final SlidingByteWindow window;
 	
 	/** If the output cannot be filled, bytes are written here instead. */
-	@SquirrelJMEVendorApi
 	protected final ByteDeque overflow =
 		new ByteDeque();
 	
-	/** When bytes are read, a checkum will be calculated for it, optional. */
-	@SquirrelJMEVendorApi
+	/** When bytes are read, a checksum will be calculated for it, optional. */
 	protected final Checksum checksum;
+	
+	/** The bit source for reading. */
+	private final __InputBitSource__ _bitSource;
 	
 	/** Single byte read. */
 	private final byte[] _solo =
 		new byte[1];
-	
-	/** The read-in buffer which is used to bulk read input bytes. */
-	private final byte[] _readin =
-		new byte[4];
-	
-	/** The bit source for reading. */
-	private final BitSource _bitsource =
-		new __BitSource__();
 	
 	/**
 	 * Raw code lengths (allocated once), the size is the max code length
@@ -112,9 +101,6 @@ public class InflaterInputStream
 	private final int[] _nextcode =
 		new int[InflaterInputStream._MAX_BITS + 1];
 	
-	/** The number of compressed bytes. */
-	private long _compressedsize;
-	
 	/** The number of uncompressed bytes. */
 	private long _uncompressedsize;
 	
@@ -129,17 +115,6 @@ public class InflaterInputStream
 	
 	/** Window reader. */
 	private Reference<byte[]> _readwindow;
-	
-	/**
-	 * The miniature read window, it stores a 32-bit value and is given input
-	 * bytes to read along with being used as output. This is an int because it
-	 * is faster to work with integer values rather than bytes. It also means
-	 * that it is much simpler to work with.
-	 */
-	private int _miniwindow;
-	
-	/** Represents the number of bits in the mini window. */
-	private int _minisize;
 	
 	/** The output write window, this is used to shift out writes as needed. */
 	private int _writewindow;
@@ -166,7 +141,6 @@ public class InflaterInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/24
 	 */
-	@SquirrelJMEVendorApi
 	public InflaterInputStream(InputStream __in)
 		throws NullPointerException
 	{
@@ -182,7 +156,6 @@ public class InflaterInputStream
 	 * @throws NullPointerException On null arguments, except for {@code __cs}.
 	 * @since 2017/02/24
 	 */
-	@SquirrelJMEVendorApi
 	public InflaterInputStream(InputStream __in, Checksum __cs)
 		throws NullPointerException
 	{
@@ -198,7 +171,6 @@ public class InflaterInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/04
 	 */
-	@SquirrelJMEVendorApi
 	public InflaterInputStream(InputStream __in, int __sls)
 	{
 		this(__in, __sls, null);
@@ -218,7 +190,6 @@ public class InflaterInputStream
 	 * {@code __checksum}.
 	 * @since 2017/08/22
 	 */
-	@SquirrelJMEVendorApi
 	public InflaterInputStream(InputStream __in, int __sls,
 		Checksum __checksum)
 	{
@@ -228,6 +199,7 @@ public class InflaterInputStream
 		
 		// Set
 		this.in = __in;
+		this._bitSource = new __InputBitSource__(__in);
 		this.window = new SlidingByteWindow(__sls);
 		this.checksum = __checksum;
 	}
@@ -264,7 +236,7 @@ public class InflaterInputStream
 	@Override
 	public long compressedBytes()
 	{
-		return this._compressedsize;
+		return this._bitSource._compressedsize;
 	}
 	
 	/**
@@ -408,14 +380,16 @@ public class InflaterInputStream
 		if (this._eof)
 			return -1;
 		
+		__InputBitSource__ bitSource = this._bitSource;
+		
 		// The target offset on entry
 		int enteroff = this._targoff;
 		
 		// Read the final bit which determines if this is the last block
-		int finalhit = this.__readBits(1, false);
+		int finalhit = bitSource.readBits(1, false);
 		
 		// Read the window type
-		int type = this.__readBits(2, false);
+		int type = bitSource.readBits(2, false);
 		switch (type)
 		{
 				// None
@@ -464,10 +438,12 @@ public class InflaterInputStream
 	private void __decompressDynamic()
 		throws IOException
 	{
+		__InputBitSource__ bitSource = this._bitSource;
+		
 		// Read the code length parameters
-		int dhlit = this.__readBits(5, false) + 257;
-		int dhdist = this.__readBits(5, false) + 1;
-		int dhclen = this.__readBits(4, false) + 4;
+		int dhlit = bitSource.readBits(5, false) + 257;
+		int dhdist = bitSource.readBits(5, false) + 1;
+		int dhclen = bitSource.readBits(4, false) + 4;
 		
 		// Read the code length tree
 		HuffmanTreeInt codelentree = this.__decompressDynamicLoadLenTree(dhclen);
@@ -482,7 +458,7 @@ public class InflaterInputStream
 		for (;;)
 		{
 			// Read code
-			int code = literaltree.getValue(this._bitsource);
+			int code = literaltree.getValue(bitSource);
 			
 			// Literal byte value
 			if (code >= 0 && code <= 255)
@@ -495,7 +471,7 @@ public class InflaterInputStream
 			// Window based result
 			else if (code >= 257 && code <= 285)
 				this.__decompressWindow(this.__handleLength(code),
-					distancetree.getValue(this._bitsource));
+					distancetree.getValue(bitSource));
 			
 			/* {@squirreljme.error BD18 Illegal dynamic huffman code. (The
 			code.)} */
@@ -573,9 +549,10 @@ public class InflaterInputStream
 		
 		// Read lengths, they are just 3 bits but their placement values are
 		// shuffled since some sequences are more common than others
+		__InputBitSource__ bitSource = this._bitSource;
 		byte[] hsbits = InflaterInputStream._SHUFFLE_BITS;
 		for (int next = 0; next < __dhclen; next++)
-			rawcodelens[hsbits[next]] = this.__readBits(3, false);
+			rawcodelens[hsbits[next]] = bitSource.readBits(3, false);
 		
 		// Thunk the tree and return it
 		return this.__thunkCodeLengthTree(codelentree, rawcodelens, 0,
@@ -627,15 +604,17 @@ public class InflaterInputStream
 	private void __decompressNone()
 		throws IOException
 	{
+		__InputBitSource__ bitSource = this._bitSource;
+		
 		// Throw out bits that have been read so that the following reads are
 		// aligned to byte boundaries
-		int minisub = this._minisize & 7;
+		int minisub = bitSource._minisize & 7;
 		if (minisub > 0)
-			this.__readBits(minisub, false);
+			bitSource.readBits(minisub, false);
 		
 		// Read length and the one's complement of it
-		int len = this.__readBits(16, false);
-		int com = this.__readBits(16, false);
+		int len = bitSource.readBits(16, false);
+		int com = bitSource.readBits(16, false);
 		
 		// The complemented length must be equal to the complement
 		/* {@squirreljme.error BD1c Value mismatch reading the number of
@@ -647,7 +626,7 @@ public class InflaterInputStream
 		
 		// Read all bytes
 		for (int i = 0; i < len; i++)
-			this.__write(this.__readBits(8, false),
+			this.__write(bitSource.readBits(8, false),
 				8, false);
 	}
 	
@@ -709,9 +688,11 @@ public class InflaterInputStream
 	private int __handleDistance(int __code)
 		throws IOException
 	{
+		__InputBitSource__ bitSource = this._bitSource;
+		
 		// Read distance
 		if (__code == Integer.MIN_VALUE)
-			__code = this.__readBits(5, true);
+			__code = bitSource.readBits(5, true);
 		
 		/* {@squirreljme.error BD1e Illegal fixed distance code. (The distance
 		code)} */
@@ -735,7 +716,7 @@ public class InflaterInputStream
 		// is used as an additional distance value
 		int extrabits = ((__code / 2) - 1);
 		if (extrabits > 0)
-			rv += this.__readBits(extrabits, false);
+			rv += bitSource.readBits(extrabits, false);
 		
 		// Return it
 		return rv;
@@ -779,7 +760,8 @@ public class InflaterInputStream
 		// Add extra bits which are used to modify the amount of data read
 		int extrabits = (base / 4) - 1;
 		if (extrabits > 0)
-			rv += (extrabits = this.__readBits(extrabits, false));
+			rv += (extrabits = this._bitSource.readBits(extrabits, 
+				false));
 		
 		// Return the length
 		return rv;
@@ -864,80 +846,6 @@ public class InflaterInputStream
 	}
 	
 	/**
-	 * Reads bits from the input stream.
-	 *
-	 * @param __n The number of bits to read.
-	 * @param __msb If {@code true} the most significant bits are first
-	 * @return The read data.
-	 * @throws IOException On read errors.
-	 * @since 2017/02/25
-	 */
-	int __readBits(int __n, boolean __msb)
-		throws IOException
-	{
-		// Nothing to read
-		if (__n == 0)
-			return 0;
-		
-		// Get the mini window information
-		int miniwindow = this._miniwindow,
-			minisize = this._minisize;
-		
-		// Not enough bits to read the value
-		while (minisize < __n)
-		{
-			// The number of bytes to be read
-			int bc = (__n - minisize) / 8;
-			if (bc == 0)
-				bc = 1;
-			
-			// Read input bytes
-			byte[] readin = this._readin;
-			int rc = this.in.read(readin, 0, bc);
-			
-			/* {@squirreljme.error BD1g Reached EOF while reading bytes to
-			decompress. (Bits in the queue; Requested number of bits)} */
-			if (rc < 0)
-				throw new IOException(String.format("BD1g %d %d", minisize,
-					__n));
-			
-			// Shift in the read bytes to the higher positions
-			for (int i = 0; i < rc; i++)
-			{
-				miniwindow |= ((readin[i] & 0xFF) << minisize);
-				minisize += 8;
-			}
-			
-			// Count the number of compressed bytes
-			this._compressedsize += rc;
-		}
-		
-		// Mask in the value, which is always at the lower bits
-		int rv = miniwindow & ((1 << __n) - 1);
-		
-		// Shift down the mini window for the next read
-		// Make sure the shift down is unsigned so that zeroes are in the
-		// higher bits for the filling OR operation.
-		miniwindow >>>= __n;
-		minisize -= __n;
-		
-		// Store for next run
-		this._miniwindow = miniwindow;
-		this._minisize = minisize;
-		
-		// Want MSB to be first, need to swap all the bits so the lowest ones
-		// are at the highest positions
-		// Luckily such a method already exists and it could potentially be
-		// inlined by the JVM or converted to native code if such an
-		// instruction exists.
-		if (__msb)
-			return Integer.reverse(rv) >>> (32 - __n);
-		
-		// Return read result
-		return rv;
-	}
-	
-	/**
 	 * Reads code bits using the given huffman tree and into the specified
 	 * array.
 	 *
@@ -957,9 +865,11 @@ public class InflaterInputStream
 		if (__codes == null || __out == null)
 			throw new NullPointerException("NARG");
 		
+		__InputBitSource__ bitSource = this._bitSource;
+		
 		// Read in code based on an input huffman tree
 		int basenext = __next;
-		int code = __codes.getValue(this._bitsource);
+		int code = __codes.getValue(bitSource);
 		
 		// Literal length, the input is used
 		if (code >= 0 && code < 16)
@@ -986,7 +896,7 @@ public class InflaterInputStream
 				repval = __out[lastlendx];
 				
 				// Read the repeat count
-				repfor = 3 + this.__readBits(2, false);
+				repfor = 3 + bitSource.readBits(2, false);
 			}
 			
 			// Repeat zero for 3-10 times
@@ -996,7 +906,7 @@ public class InflaterInputStream
 				repval = 0;
 				
 				// Read 3 bits
-				repfor = 3 + this.__readBits(3, false);
+				repfor = 3 + bitSource.readBits(3, false);
 			}
 			
 			// Repeat zero for 11-138 times
@@ -1006,7 +916,7 @@ public class InflaterInputStream
 				repval = 0;
 				
 				// Read 7 bits
-				repfor = 11 + this.__readBits(7, false);
+				repfor = 11 + bitSource.readBits(7, false);
 			}
 			
 			/* {@squirreljme.error BD1i Illegal code. (The code)} */
@@ -1048,32 +958,34 @@ public class InflaterInputStream
 	private int __readFixedHuffman()
 		throws IOException
 	{
+		__InputBitSource__ bitSource = this._bitSource;
+		
 		// The long if statement block
-		if (this.__readBits(1, true) != 0)
-			if (this.__readBits(1, true) != 0)
-				if (this.__readBits(1, true) != 0)
-					return 192 + this.__readBits(6, true);
+		if (bitSource.readBits(1, true) != 0)
+			if (bitSource.readBits(1, true) != 0)
+				if (bitSource.readBits(1, true) != 0)
+					return 192 + bitSource.readBits(6, true);
 				else
-					if (this.__readBits(1, true) != 0)
-						return 160 + this.__readBits(5, true);
+					if (bitSource.readBits(1, true) != 0)
+						return 160 + bitSource.readBits(5, true);
 					else
-						if (this.__readBits(1, true) != 0)
-							return 144 + this.__readBits(4, true);
+						if (bitSource.readBits(1, true) != 0)
+							return 144 + bitSource.readBits(4, true);
 						else
-							return 280 + this.__readBits(3, true);
+							return 280 + bitSource.readBits(3, true);
 			else
-				return 80 + this.__readBits(6, true);
+				return 80 + bitSource.readBits(6, true);
 		else
-			if (this.__readBits(1, true) != 0)
-				return 16 + this.__readBits(6, true);
+			if (bitSource.readBits(1, true) != 0)
+				return 16 + bitSource.readBits(6, true);
 			else
-				if (this.__readBits(1, true) != 0)
-					if (this.__readBits(1, true) != 0)
-						return 0 + this.__readBits(4, true);
+				if (bitSource.readBits(1, true) != 0)
+					if (bitSource.readBits(1, true) != 0)
+						return 0 + bitSource.readBits(4, true);
 					else
-						return 272 + this.__readBits(3, true);
+						return 272 + bitSource.readBits(3, true);
 				else
-					return 256 + this.__readBits(4, true);
+					return 256 + bitSource.readBits(4, true);
 	}
 	
 	/**
@@ -1203,26 +1115,6 @@ public class InflaterInputStream
 		// Store the write window info
 		this._writewindow = writewindow;
 		this._writesize = writesize;
-	}
-	
-	/**
-	 * Bit source for huffman reads.
-	 *
-	 * @since 2017/02/25
-	 */
-	private final class __BitSource__
-		implements BitSource
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/25
-		 */
-		@Override
-		public boolean nextBit()
-			throws IOException
-		{
-			return 0 != InflaterInputStream.this.__readBits(1, true);
-		}
 	}
 }
 

@@ -13,8 +13,6 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.exceptions.MLECallErrorCode;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayScale;
@@ -28,8 +26,6 @@ import cc.squirreljme.runtime.lcdui.scritchui.MenuLayoutLock;
 import cc.squirreljme.runtime.lcdui.scritchui.StringTracker;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import javax.microedition.midlet.MIDlet;
 import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -48,16 +44,13 @@ public abstract class Displayable
 	implements MenuActionHasChildren
 {
 	/** The displayable state. */
-	@SquirrelJMEVendorApi
 	private final DisplayableState _state;
 	
 	/** The command listener to call into when commands are generated. */
-	@SquirrelJMEVendorApi
 	volatile CommandListener _cmdListener;
 	
 	/** The ticker of the displayable. */
 	@Deprecated
-	@SquirrelJMEVendorApi
 	volatile Ticker _ticker;
 	
 	/** The layout policy of this displayable. */
@@ -65,16 +58,13 @@ public abstract class Displayable
 	private CommandLayoutPolicy _layoutPolicy;
 	
 	/** The tracker for title text. */
-	@SquirrelJMEVendorApi
 	final StringTracker _trackerTitle;
 	
 	/** The lock for layout editing and otherwise. */
-	@SquirrelJMEVendorApi
 	final MenuLayoutLock _layoutLock =
 		new MenuLayoutLock();
 	
 	/** The default menu. */
-	@SquirrelJMEVendorApi
 	final Menu _menuDefault;
 	
 	/**
@@ -494,7 +484,6 @@ public abstract class Displayable
 	@ScritchEventLoop
 	@SerializedEvent
 	@Async.Execute
-	@KeepWhenCompacting
 	void __execMenuRebuild()
 	{
 		throw Debugging.todo();
@@ -510,7 +499,6 @@ public abstract class Displayable
 	@SerializedEvent
 	@Async.Execute
 	@MustBeInvokedByOverriders
-	@KeepWhenCompacting
 	void __execRevalidate(DisplayState __parent)
 	{
 		// Reparent the display
@@ -547,7 +535,6 @@ public abstract class Displayable
 	 * @return The command listener.
 	 * @since 2024/07/28
 	 */
-	@KeepWhenCompacting
 	CommandListener __getCommandListener()
 	{
 		synchronized (this)
@@ -562,7 +549,6 @@ public abstract class Displayable
 	 * @return The owning display or {@code null} if not found.
 	 * @since 2017/07/18
 	 */
-	@SquirrelJMEVendorApi
 	private Display __getCurrentDisplay()
 	{
 		DisplayState display = this.__state().currentDisplay();
@@ -762,7 +748,6 @@ public abstract class Displayable
 	 * @throws IllegalStateException If it has been garbage collected.
 	 * @since 2024/08/13
 	 */
-	@SquirrelJMEVendorApi
 	final DisplayableState __state()
 		throws IllegalStateException
 	{
@@ -775,7 +760,6 @@ public abstract class Displayable
 	 * @return Application default title.
 	 * @since 2019/05/16
 	 */
-	@SquirrelJMEVendorApi
 	static String __defaultTitle()
 	{
 		// Try getting a sensible name from a system property

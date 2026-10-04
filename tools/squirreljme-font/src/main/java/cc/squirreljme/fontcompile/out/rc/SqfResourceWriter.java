@@ -11,8 +11,6 @@ package cc.squirreljme.fontcompile.out.rc;
 
 import cc.squirreljme.fontcompile.out.SqfWriter;
 import cc.squirreljme.fontcompile.out.struct.SqfFontStruct;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;

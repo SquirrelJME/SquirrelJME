@@ -9,28 +9,28 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * The type of signal generated from the monitor.
  *
  * @since 2020/06/22
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface MonitorResultType
 {
 	/** NOT_INTERRUPTED. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NOT_INTERRUPTED =
 		1;
 	
 	/** Interrupted. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte INTERRUPTED =
 		0;
 	
 	/** The object is not owned. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NOT_OWNED =
 		-1;
 }

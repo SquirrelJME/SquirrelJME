@@ -9,7 +9,6 @@
 
 package cc.squirreljme.vm.springcoat;
 
-import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayIndexOutOfBoundsException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringArrayStoreException;

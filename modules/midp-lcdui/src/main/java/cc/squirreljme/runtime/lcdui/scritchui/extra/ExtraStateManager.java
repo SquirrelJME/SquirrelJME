@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui.extra;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +18,6 @@ import java.util.List;
  *
  * @since 2026/09/25
  */
-@SquirrelJMEVendorApi
 public final class ExtraStateManager
 {
 	/** Extra state pairs. */
@@ -46,7 +43,6 @@ public final class ExtraStateManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/09/25
 	 */
-	@SquirrelJMEVendorApi
 	public static final <E extends ExtraState> void bind(Object __o,
 		Class<E> __as, E __state)
 		throws NullPointerException
@@ -73,7 +69,6 @@ public final class ExtraStateManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/09/25
 	 */
-	@SquirrelJMEVendorApi
 	public static final <E extends ExtraState> E locate(Class<E> __as,
 		Object __o)
 		throws NullPointerException

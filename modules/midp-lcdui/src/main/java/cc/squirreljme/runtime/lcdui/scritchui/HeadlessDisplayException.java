@@ -9,14 +9,11 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is thrown when ScritchUI is not supported.
  *
  * @since 2024/08/07
  */
-@SquirrelJMEVendorApi
 public class HeadlessDisplayException
 	extends RuntimeException
 {
@@ -26,7 +23,6 @@ public class HeadlessDisplayException
 	 * @param __c The cause of it.
 	 * @since 2024/08/07
 	 */
-	@SquirrelJMEVendorApi
 	public HeadlessDisplayException(Throwable __c)
 	{
 		super(__c);

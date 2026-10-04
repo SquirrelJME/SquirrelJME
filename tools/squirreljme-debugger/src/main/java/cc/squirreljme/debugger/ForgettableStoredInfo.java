@@ -12,7 +12,6 @@ package cc.squirreljme.debugger;
 import cc.squirreljme.jdwp.JDWPId;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

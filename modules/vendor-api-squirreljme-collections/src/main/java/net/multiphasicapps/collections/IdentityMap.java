@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +20,6 @@ import java.util.Set;
  * @param <V> The value type.
  * @since 2021/11/28
  */
-@SquirrelJMEVendorApi
 public final class IdentityMap<K, V>
 	extends AbstractMap<K, V>
 {
@@ -35,7 +33,6 @@ public final class IdentityMap<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/11/28
 	 */
-	@SquirrelJMEVendorApi
 	public IdentityMap(Map<Identity<K>, V> __backing)
 		throws NullPointerException
 	{

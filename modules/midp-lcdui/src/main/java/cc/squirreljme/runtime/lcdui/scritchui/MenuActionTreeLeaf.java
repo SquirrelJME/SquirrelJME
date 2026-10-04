@@ -11,8 +11,6 @@ package cc.squirreljme.runtime.lcdui.scritchui;
 
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuKindBracket;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Menu;
 
@@ -21,15 +19,12 @@ import javax.microedition.lcdui.Menu;
  *
  * @since 2024/07/21
  */
-@SquirrelJMEVendorApi
 public final class MenuActionTreeLeaf
 {
 	/** The node this maps to. */
-	@SquirrelJMEVendorApi
 	final MenuActionNode _node;
 	
 	/** The ScritchUI bracket used. */
-	@SquirrelJMEVendorApi
 	final ScritchMenuKindBracket _scritch;
 	
 	/**
@@ -39,7 +34,6 @@ public final class MenuActionTreeLeaf
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/21
 	 */
-	@KeepWhenCompacting
 	MenuActionTreeLeaf(MenuActionNode __node)
 		throws NullPointerException
 	{
@@ -69,7 +63,6 @@ public final class MenuActionTreeLeaf
 	 * @return The leaf's owner.
 	 * @since 2024/07/30
 	 */
-	@SquirrelJMEVendorApi
 	public final MenuActionApplicable owner()
 	{
 		return this._node.owner();
@@ -84,7 +77,6 @@ public final class MenuActionTreeLeaf
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/23
 	 */
-	@SquirrelJMEVendorApi
 	public <K extends ScritchMenuKindBracket> K scritchWidget(
 		Class<? extends K> __cl)
 		throws NullPointerException

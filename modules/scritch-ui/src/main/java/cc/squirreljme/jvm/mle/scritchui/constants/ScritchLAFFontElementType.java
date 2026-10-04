@@ -9,48 +9,48 @@
 
 package cc.squirreljme.jvm.mle.scritchui.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * The type of element for lookup of fonts.
  *
  * @since 2024/05/17
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchLAFFontElementType
 {
 	/** The font to use for terminals. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte TERMINAL =
 		1;
 	
 	/** The font to use for widget controls such as buttons. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte WIDGET_CONTROLS =
 		2;
 	
 	/** The font to use for title bars. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte TITLE_BAR =
 		3;
 	
 	/** The font to use for menu bars. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MENU_BAR =
 		4;
 	
 	/** The font to use for toolbars. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte TOOL_BAR =
 		5;
 	
 	/** The font to use for small text. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte SMALL =
 		6;
 	
 	/** The number of valid element types. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_LAF_FONT_ELEMENT_TYPES =
 		7;
 }

@@ -12,15 +12,11 @@ package cc.squirreljme.debugger;
 import cc.squirreljme.jdwp.JDWPCapability;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SpringLayout;
-import javax.swing.border.Border;
 
 /**
  * Capability inspection dialog.

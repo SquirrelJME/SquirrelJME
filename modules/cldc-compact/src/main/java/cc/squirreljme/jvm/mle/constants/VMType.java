@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * This represents the type of SquirrelJME virtual machine that is currently
@@ -18,36 +18,36 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2020/06/16
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface VMType
 {
 	/** Not known. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte UNKNOWN =
 		0;
 	
 	/** Running on Standard Java SE. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte JAVA_SE =
 		1;
 	
 	/** Running on SpringCoat. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte SPRINGCOAT =
 		2;
 	
 	/** Running on SummerCoat. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte SUMMERCOAT =
 		3;
 	
 	/** Running on NanoCoat. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NANOCOAT =
 		4;
 	
 	/** The number of VM types. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_VMTYPES =
 		5;
 }

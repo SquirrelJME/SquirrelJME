@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
  *
  * @since 2017/11/28
  */
-@SquirrelJMEVendorApi
 public class CloseableList<T extends Closeable>
 	extends ArrayList<T>
 	implements Closeable
@@ -63,7 +61,6 @@ public class CloseableList<T extends Closeable>
 	 * @return {@code __t}.
 	 * @since 2017/11/28
 	 */
-	@SquirrelJMEVendorApi
 	public final T addThis(T __t)
 	{
 		this.add(__t);
@@ -80,7 +77,6 @@ public class CloseableList<T extends Closeable>
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2017/11/28
 	 */
-	@SquirrelJMEVendorApi
 	public final <E extends T> E addThis(E __t, Class<E> __cl)
 		throws NullPointerException
 	{

@@ -46,7 +46,6 @@ public final class DefaultLocale
 	 * @return The built-in locale.
 	 * @since 2020/06/11
 	 */
-	@SuppressWarnings("SwitchStatementWithTooFewBranches")
 	public static Locale builtInLocale(int __id)
 	{
 		switch (__id)

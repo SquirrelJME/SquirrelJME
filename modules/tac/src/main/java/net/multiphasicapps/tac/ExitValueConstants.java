@@ -9,14 +9,11 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Constants used to define what happens when an exit value is given.
  *
  * @since 2020/03/07
  */
-@SquirrelJMEVendorApi
 public interface ExitValueConstants
 {
 	/** Test passes. */

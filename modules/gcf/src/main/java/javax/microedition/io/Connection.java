@@ -27,6 +27,7 @@ public interface Connection
 	 * {@inheritDoc}
 	 * @since 2019/05/06
 	 */
+	@Api
 	@Override
 	void close()
 		throws IOException;

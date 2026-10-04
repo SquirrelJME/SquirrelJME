@@ -11,7 +11,6 @@ package cc.squirreljme.debugger;
 
 import cc.squirreljme.jdwp.JDWPEventModifierKind;
 import cc.squirreljme.jdwp.JDWPPacket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Not Described.

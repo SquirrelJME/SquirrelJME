@@ -14,42 +14,34 @@ import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import javax.microedition.midlet.MIDlet;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for display scaling.
  *
  * @since 2024/03/09
  */
-@SquirrelJMEVendorApi
 public abstract class DisplayScale
 {
 	/** Display scale system property. */
-	@SquirrelJMEVendorApi
 	public static final String SCALE_PROPERTY =
 		"cc.squirreljme.scale";
 	
 	/** Display scale environment. */
-	@SquirrelJMEVendorApi
 	public static final String SCALE_ENV =
 		"SQUIRRELJME_SCALE";
 	
 	/** Display frame system property. */
-	@SquirrelJMEVendorApi
 	public static final String FRAME_PROPERTY =
 		"cc.squirreljme.frame";
 	
 	/** Display frame environment. */
-	@SquirrelJMEVendorApi
 	public static final String FRAME_ENV =
 		"SQUIRRELJME_FRAME";
 	
 	/** The default scaling. */
-	@SquirrelJMEVendorApi
 	public static final byte SCALE_DEFAULT =
 		2;
 	
@@ -59,7 +51,6 @@ public abstract class DisplayScale
 	 * @return If a buffer is required for scaling.
 	 * @since 2024/05/12
 	 */
-	@SquirrelJMEVendorApi
 	public abstract boolean requiresBuffer();
 	
 	/**
@@ -69,7 +60,6 @@ public abstract class DisplayScale
 	 * @return The output screen coordinate.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	public abstract int screenX(int __x);
 	
 	/**
@@ -79,7 +69,6 @@ public abstract class DisplayScale
 	 * @return The output screen coordinate.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	public abstract int screenY(int __y);
 	
 	/**
@@ -88,7 +77,6 @@ public abstract class DisplayScale
 	 * @return The current texture height.
 	 * @since 2024/03/18
 	 */
-	@SquirrelJMEVendorApi
 	public abstract int textureH();
 	
 	/**
@@ -97,7 +85,6 @@ public abstract class DisplayScale
 	 * @return The target texture height.
 	 * @since 2024/03/11
 	 */
-	@SquirrelJMEVendorApi
 	public abstract int textureMaxH();
 	
 	/**
@@ -106,7 +93,6 @@ public abstract class DisplayScale
 	 * @return The target texture width.
 	 * @since 2024/03/11
 	 */
-	@SquirrelJMEVendorApi
 	public abstract int textureMaxW();
 	
 	/**
@@ -115,7 +101,6 @@ public abstract class DisplayScale
 	 * @return The current texture width.
 	 * @since 2024/03/18
 	 */
-	@SquirrelJMEVendorApi
 	public abstract int textureW();
 	
 	/**
@@ -125,7 +110,6 @@ public abstract class DisplayScale
 	 * @return The output texture coordinate.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	public abstract int textureX(int __x);
 	
 	/**
@@ -135,7 +119,6 @@ public abstract class DisplayScale
 	 * @return The output texture coordinate.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	public abstract int textureY(int __y);
 	
 	/**
@@ -147,7 +130,6 @@ public abstract class DisplayScale
 	 * @return The resultant application scale.
 	 * @since 2024/03/21
 	 */
-	@SquirrelJMEVendorApi
 	public static DisplayScale applicationScale(ScritchInterface __scritch,
 		ScritchScreenBracket __screen, ScritchWindowBracket __window)
 		throws NullPointerException
@@ -227,7 +209,6 @@ public abstract class DisplayScale
 	 * @return The resultant scale.
 	 * @since 2024/03/21
 	 */
-	@SquirrelJMEVendorApi
 	public static DisplayScale currentScale(ScritchInterface __scritch,
 		ScritchScreenBracket __screen, ScritchWindowBracket __window)
 		throws NullPointerException

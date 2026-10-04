@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.media;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import javax.microedition.media.PlayerListener;
@@ -20,13 +19,11 @@ import javax.microedition.media.control.VolumeControl;
  *
  * @since 2025/06/03
  */
-@SquirrelJMEVendorApi
 public class AbstractVolumeControl
 	extends AbstractControl<VolumeControl>
 	implements VolumeControl
 {
 	/** The player to reference. */
-	@SquirrelJMEVendorApi
 	protected final Reference<AbstractPlayer> player;
 	
 	/** The last volume set. */
@@ -48,7 +45,6 @@ public class AbstractVolumeControl
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
 	public AbstractVolumeControl(AbstractPlayer __player)
 		throws NullPointerException
 	{

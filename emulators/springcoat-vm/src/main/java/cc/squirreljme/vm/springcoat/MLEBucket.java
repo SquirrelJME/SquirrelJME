@@ -11,7 +11,6 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.BucketShelf;
 import cc.squirreljme.jvm.mle.brackets.BucketBracket;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
  * Wrapper for {@link BucketShelf}.

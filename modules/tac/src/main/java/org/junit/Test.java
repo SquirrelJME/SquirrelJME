@@ -9,6 +9,7 @@
 
 package org.junit;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

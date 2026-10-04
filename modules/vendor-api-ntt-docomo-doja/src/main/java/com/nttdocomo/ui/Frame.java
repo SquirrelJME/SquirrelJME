@@ -11,7 +11,6 @@ package com.nttdocomo.ui;
 
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraDisplayable;
@@ -173,7 +172,6 @@ public abstract class Frame
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/09/25
 	 */
-	@SquirrelJMEVendorApi
 	<M extends Displayable> M __displayable(Class<M> __as)
 		throws NullPointerException
 	{

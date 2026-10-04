@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  * @since 2017/08/19
  */
 @Documented
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface SerializedEvent
 {

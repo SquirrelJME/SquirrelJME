@@ -9,15 +9,12 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui.extra;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Base interface for stored extra state which is needed for some shared
  * information between user interface elements.
  *
  * @since 2026/09/25
  */
-@SquirrelJMEVendorApi
 public interface ExtraState
 {
 }

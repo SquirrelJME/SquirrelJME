@@ -11,7 +11,6 @@ package cc.squirreljme.fontcompile.out.rafoces;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * This represents a chain list, which has a starting point and vector codes.

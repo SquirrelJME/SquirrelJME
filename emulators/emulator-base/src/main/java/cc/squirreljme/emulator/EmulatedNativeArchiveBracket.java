@@ -10,7 +10,6 @@
 package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.brackets.NativeArchiveBracket;
-import cc.squirreljme.jvm.mle.brackets.NativeArchiveEntryBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import java.io.Closeable;
 

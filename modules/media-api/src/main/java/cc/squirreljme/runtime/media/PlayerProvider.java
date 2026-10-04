@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.media;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.util.ServiceLoader;
 import javax.microedition.io.InputConnection;
@@ -25,7 +24,6 @@ import org.intellij.lang.annotations.Language;
  *
  * @since 2026/06/26
  */
-@SquirrelJMEVendorApi
 public interface PlayerProvider
 {
 	/**
@@ -36,7 +34,6 @@ public interface PlayerProvider
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/06/27
 	 */
-	@SquirrelJMEVendorApi
 	boolean acceptsContentType(
 		@Language("mime-type-reference") String __contentType)
 		throws NullPointerException;
@@ -48,7 +45,6 @@ public interface PlayerProvider
 	 * @since 2026/06/27
 	 */
 	@Language("mime-type-reference")
-	@SquirrelJMEVendorApi
 	String[] acceptsContentTypes();
 	
 	/**
@@ -57,7 +53,6 @@ public interface PlayerProvider
 	 * @return If this accepts player connections.
 	 * @since 2026/06/27
 	 */
-	@SquirrelJMEVendorApi
 	boolean acceptsInputConnection();
 	
 	/**
@@ -72,7 +67,6 @@ public interface PlayerProvider
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/06/27
 	 */
-	@SquirrelJMEVendorApi
 	Player viaInputConnection(InputConnection __in,
 		String __contentType)
 		throws IOException, MediaException, NullPointerException;

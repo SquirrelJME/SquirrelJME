@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.midlet;
 import cc.squirreljme.jvm.launch.IModeProperty;
 import cc.squirreljme.jvm.suite.Profile;
 import cc.squirreljme.jvm.suite.SuiteVersion;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -21,16 +20,13 @@ import java.util.Map;
  *
  * @since 2024/07/28
  */
-@SquirrelJMEVendorApi
 public final class DoJaRuntime
 {
 	/** Key which specifies the launch type. */
-	@SquirrelJMEVendorApi
 	public static final String LAUNCH_TYPE =
 		"X-SquirrelJME-DoJa-LaunchType";
 	
 	/** The source URL from where the application came from. */
-	@SquirrelJMEVendorApi
 	public static final String SOURCE_URL =
 		"X-SquirrelJME-DoJa-SourceUrl";
 	
@@ -61,7 +57,6 @@ public final class DoJaRuntime
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/28
 	 */
-	@SquirrelJMEVendorApi
 	public static String getProperty(String __key)
 		throws NullPointerException
 	{
@@ -87,7 +82,6 @@ public final class DoJaRuntime
 	 * @return If this is DoJa.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean isDoJa()
 	{
 		synchronized (DoJaRuntime.class)
@@ -104,7 +98,6 @@ public final class DoJaRuntime
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/28
 	 */
-	@SquirrelJMEVendorApi
 	public static void putProperty(String __key, String __value)
 		throws NullPointerException
 	{
@@ -123,7 +116,6 @@ public final class DoJaRuntime
 	 * @param __set The value to set.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
 	public static void setDoJa(boolean __set)
 	{
 		synchronized (DoJaRuntime.class)
@@ -138,7 +130,6 @@ public final class DoJaRuntime
 	 * @return The DoJa version.
 	 * @since 2025/04/09
 	 */
-	@SquirrelJMEVendorApi
 	public static SuiteVersion version()
 	{
 		// Already cached?
@@ -167,7 +158,6 @@ public final class DoJaRuntime
 	 * @return If this is before the given DoJa version.
 	 * @since 2025/04/09
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean versionBefore(int __major, int __minor)
 	{
 		return DoJaRuntime.isDoJa() &&
@@ -182,7 +172,6 @@ public final class DoJaRuntime
 	 * @return If this is at least the given DoJa version.
 	 * @since 2025/04/09
 	 */
-	@SquirrelJMEVendorApi
 	public static boolean versionLeast(int __major, int __minor)
 	{
 		return DoJaRuntime.isDoJa() &&

@@ -9,28 +9,28 @@
 
 package cc.squirreljme.jvm.mle.scritchui.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Represents the type of window manager used by Scritch.
  *
  * @since 2024/03/07
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchWindowManagerType
 {
 	/** One frame per screen. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte ONE_FRAME_PER_SCREEN = 
 		0;
 	
 	/** Standard desktop interface. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte STANDARD_DESKTOP =
 		1;
 	
 	/** The number of display types. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_TYPES =
 		2;
 }

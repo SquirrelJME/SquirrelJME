@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.media.control;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.CharSequenceUtils;
 import cc.squirreljme.runtime.cldc.util.SortedTreeMap;
 import java.util.Map;
@@ -19,7 +18,6 @@ import java.util.Map;
  *
  * @since 2026/06/10
  */
-@SquirrelJMEVendorApi
 public final class MetaDataValues
 {
 	/** Values stored within the mapping. */
@@ -43,7 +41,6 @@ public final class MetaDataValues
 	 * @throws NullPointerException If the key is {@code null}.
 	 * @since 2026/06/10
 	 */
-	@SquirrelJMEVendorApi
 	public final void set(String __k, String __v)
 		throws NullPointerException
 	{

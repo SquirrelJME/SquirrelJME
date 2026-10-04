@@ -9,8 +9,6 @@
 
 package cc.squirreljme.c.out;
 
-import java.io.IOException;
-
 /**
  * Wraps the output and makes it very compact.
  *

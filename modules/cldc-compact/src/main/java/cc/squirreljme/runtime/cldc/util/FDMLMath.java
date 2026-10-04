@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 
 /**
  * This class contains math methods which are derived from the Freely
@@ -33,7 +32,6 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 @ImplementationNote("This code is derived from the Freely " +
 	"Distributable Math Library (http://www.netlib.org/fdlibm/). " +
 	"Additionally this class is strictfp to keep math consistent.")
-@SquirrelJMEVendorApi
 public final strictfp class FDMLMath
 {
 	/** The sign bit value. */
@@ -109,7 +107,6 @@ public final strictfp class FDMLMath
 	 * @since 2018/11/02
 	 */
 	@ImplementationNote("Source http://www.netlib.org/fdlibm/e_log.c")
-	@SquirrelJMEVendorApi
 	public static strictfp double log(double __v)
 	{
 		double hfsq, f, s, z, r, w, t1, t2, dk;
@@ -217,7 +214,6 @@ public final strictfp class FDMLMath
 	 * @since 2018/11/02
 	 */
 	@ImplementationNote("Source: http://www.netlib.org/fdlibm/e_sqrt.c")
-	@SquirrelJMEVendorApi
 	public static strictfp double sqrt(double __v)
 	{
 		double z;

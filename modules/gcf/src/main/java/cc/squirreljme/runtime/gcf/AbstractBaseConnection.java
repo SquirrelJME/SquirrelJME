@@ -9,14 +9,13 @@
 
 package cc.squirreljme.runtime.gcf;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import javax.microedition.io.Connection;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.ConnectionClosedException;
 import javax.microedition.io.file.IllegalModeException;
 import org.intellij.lang.annotations.MagicConstant;
+
 import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
 
 /**
@@ -24,12 +23,10 @@ import static cc.squirreljme.runtime.cldc.debug.ErrorCode.__error__;
  *
  * @since 2025/12/27
  */
-@SquirrelJMEVendorApi
 public abstract class AbstractBaseConnection
 	implements Connection
 {
 	/** The mode this connection is opened in. */
-	@SquirrelJMEVendorApi
 	@MagicConstant(flagsFromClass = Connector.class)
 	protected final int mode;
 	
@@ -43,7 +40,6 @@ public abstract class AbstractBaseConnection
 	 * @throws IllegalArgumentException If the connection mode is not valid.
 	 * @since 2025/12/27
 	 */
-	@SquirrelJMEVendorApi
 	protected AbstractBaseConnection(
 		@MagicConstant(flagsFromClass = Connector.class) int __mode)
 		throws IllegalArgumentException
@@ -62,7 +58,6 @@ public abstract class AbstractBaseConnection
 	 * @throws IOException If this failed to close.
 	 * @since 2025/12/27
 	 */
-	@SquirrelJMEVendorApi
 	protected abstract void becomingClosed()
 		throws IOException;
 	
@@ -72,7 +67,6 @@ public abstract class AbstractBaseConnection
 	 * @throws ConnectionClosedException If the connection is closed.
 	 * @since 2025/12/27
 	 */
-	@SquirrelJMEVendorApi
 	protected final void checkClosed()
 		throws ConnectionClosedException
 	{
@@ -89,7 +83,6 @@ public abstract class AbstractBaseConnection
 	 * @throws IllegalModeException If the readable mode is not set.
 	 * @since 2025/12/27
 	 */
-	@SquirrelJMEVendorApi
 	protected final void checkRead()
 		throws IllegalModeException
 	{

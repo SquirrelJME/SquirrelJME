@@ -9,10 +9,7 @@
 
 package cc.squirreljme.emulator;
 
-import cc.squirreljme.jvm.mle.brackets.NativeArchiveBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.Closeable;
 import java.io.IOException;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;

@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.gcf;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.io.MarkableInputStream;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.ByteArrayInputStream;
@@ -26,12 +24,10 @@ import javax.microedition.io.InputConnection;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public final class InputStreamConnection
 	implements InputConnection
 {
 	/** The stream to source from. */
-	@SquirrelJMEVendorApi
 	protected final InputStream in;
 	
 	/** Is this actually closed? */

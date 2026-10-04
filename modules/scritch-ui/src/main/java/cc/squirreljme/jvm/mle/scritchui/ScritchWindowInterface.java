@@ -17,7 +17,7 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchMenuItemActivateListene
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowFlag;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowState;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/09
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchWindowInterface
 	extends ScritchApiInterface
 {
@@ -40,7 +40,7 @@ public interface ScritchWindowInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void windowCallAttention(@NotNull ScritchWindowBracket __window)
 		throws MLECallError;
 	
@@ -54,7 +54,7 @@ public interface ScritchWindowInterface
 	 * are zero or negative.
 	 * @since 2024/03/18
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void windowContentMinimumSize(@NotNull ScritchWindowBracket __window,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __w,
 		@Range(from = 1, to = Integer.MAX_VALUE) int __h)
@@ -68,7 +68,7 @@ public interface ScritchWindowInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	boolean windowHasFocus(@NotNull ScritchWindowBracket __window)
 		throws MLECallError;
 	
@@ -80,7 +80,7 @@ public interface ScritchWindowInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	boolean windowIsVisible(@NotNull ScritchWindowBracket __window)
 		throws MLECallError;
 	
@@ -93,8 +93,8 @@ public interface ScritchWindowInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/11
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ScritchInputMethodType.class)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int windowInputTypes(@NotNull ScritchWindowBracket __window)
 		throws MLECallError;
 	
@@ -104,8 +104,8 @@ public interface ScritchWindowInterface
 	 * @return A new empty window.
 	 * @since 2024/03/13
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchWindowBracket windowNew();
 	
 	/**
@@ -117,7 +117,7 @@ public interface ScritchWindowInterface
 	 * @throws MLECallError If it could not be set.
 	 * @since 2024/05/13
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void windowSetCloseListener(@NotNull ScritchWindowBracket __window,
 		@Nullable ScritchCloseListener __listener)
 		throws MLECallError;
@@ -135,8 +135,8 @@ public interface ScritchWindowInterface
 	 * @throws MLECallError On null arguments or if the flags could not be set.
 	 * @since 2026/07/07
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(flagsFromClass = ScritchWindowFlag.class)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int windowSetFlags(@NotNull ScritchWindowBracket __window,
 		@MagicConstant(flagsFromClass = ScritchWindowFlag.class)
 			int __setFlags)
@@ -151,7 +151,7 @@ public interface ScritchWindowInterface
 	 * bar could not be set or cleared.
 	 * @since 2024/07/23
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void windowSetMenuBar(@NotNull ScritchWindowBracket __window,
 		@Nullable ScritchMenuBarBracket __menuBar)
 		throws MLECallError;
@@ -165,7 +165,7 @@ public interface ScritchWindowInterface
 	 * could not be set.
 	 * @since 2024/07/30
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void windowSetMenuItemActivateListener(
 		@NotNull ScritchWindowBracket __window,
 		@Nullable ScritchMenuItemActivateListener __listener)
@@ -184,8 +184,8 @@ public interface ScritchWindowInterface
 	 * @throws MLECallError On null arguments or if the state could not be set.
 	 * @since 2026/07/07
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = ScritchWindowState.class)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int windowSetState(@NotNull ScritchWindowBracket __window,
 		@MagicConstant(valuesFromClass = ScritchWindowState.class)
 			int __setState)
@@ -199,7 +199,7 @@ public interface ScritchWindowInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/17
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void windowSetVisible(@NotNull ScritchWindowBracket __window,
 		boolean __visible)
 		throws MLECallError;

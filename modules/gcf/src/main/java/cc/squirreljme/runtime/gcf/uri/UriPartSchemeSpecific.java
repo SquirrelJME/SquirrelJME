@@ -9,14 +9,11 @@
 
 package cc.squirreljme.runtime.gcf.uri;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * URI has a scheme specific part.
  *
  * @since 2025/12/28
  */
-@SquirrelJMEVendorApi
 public interface UriPartSchemeSpecific
 {
 	/**
@@ -25,6 +22,5 @@ public interface UriPartSchemeSpecific
 	 * @return The scheme specific part.
 	 * @since 2025/12/28
 	 */
-	@SquirrelJMEVendorApi
 	String getSchemeSpecific();
 }

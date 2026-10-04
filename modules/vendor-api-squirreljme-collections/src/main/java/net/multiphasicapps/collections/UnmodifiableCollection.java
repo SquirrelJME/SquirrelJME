@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
@@ -23,12 +22,10 @@ import org.jetbrains.annotations.UnmodifiableView;
  * @since 2017/10/09
  */
 @UnmodifiableView
-@SquirrelJMEVendorApi
 public final class UnmodifiableCollection<T>
 	extends AbstractCollection<T>
 {
 	/** The collection to wrap. */
-	@SquirrelJMEVendorApi
 	protected final Collection<T> wrapped;
 	
 	/**
@@ -133,7 +130,6 @@ public final class UnmodifiableCollection<T>
 	 * @return An unmodifiable view of the collection.
 	 * @since 2017/10/09
 	 */
-	@SquirrelJMEVendorApi
 	public static <T> Collection<T> of(Collection<T> __c)
 	{
 		// If already one, return that collection

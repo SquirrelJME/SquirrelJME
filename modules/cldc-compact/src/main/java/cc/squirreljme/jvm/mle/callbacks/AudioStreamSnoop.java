@@ -10,8 +10,7 @@
 package cc.squirreljme.jvm.mle.callbacks;
 
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
-import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -21,8 +20,9 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2026/01/08
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface AudioStreamSnoop
+	extends ShelfCallback
 {
 	/**
 	 * This is called when a MIDI event occurs.
@@ -32,7 +32,7 @@ public interface AudioStreamSnoop
 	 * @param __data2 Second data byte.
 	 * @since 2026/01/08
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void midiEvent(int __type, int __data1, int __data2);
 	
 	/**
@@ -47,7 +47,7 @@ public interface AudioStreamSnoop
 	 * @param __len The length of the buffer.
 	 * @since 2026/01/08
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void pcmBuffer(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class) int __format,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __rate,

@@ -10,7 +10,6 @@
 package cc.squirreljme.runtime.lcdui.event;
 
 import cc.squirreljme.jvm.mle.constants.NonStandardKey;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import javax.microedition.lcdui.Canvas;
 import org.intellij.lang.annotations.MagicConstant;
 
@@ -19,7 +18,6 @@ import org.intellij.lang.annotations.MagicConstant;
  *
  * @since 2017/02/12
  */
-@SquirrelJMEVendorApi
 public final class KeyNames
 {
 	/**
@@ -39,7 +37,6 @@ public final class KeyNames
 	 * @throws IllegalArgumentException If the key is not valid.
 	 * @since 2017/02/12
 	 */
-	@SquirrelJMEVendorApi
 	public static String getKeyName(
 		@MagicConstant(valuesFromClass = NonStandardKey.class) int __c)
 		throws IllegalArgumentException

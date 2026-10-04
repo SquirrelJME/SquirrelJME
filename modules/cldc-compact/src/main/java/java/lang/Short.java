@@ -11,11 +11,13 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 @Api
+@KeepAbsolutelyEverything("Boxed types cannot be optimized!")
 public final class Short
 	extends Number
 	implements Comparable<Short>

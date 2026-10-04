@@ -9,88 +9,88 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Supported hardware math functions.
  *
  * @since 2025/05/03
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface MathAccelFlag
 {
 	/** acos. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte ACOS =
 		0x01;
 	
 	/** asin. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte ASIN =
 		0x02;
 	
 	/** atan. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte ATAN =
 		0x04;
 	
 	/** atan2. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte ATAN2 =
 		0x08;
 	
 	/** ceil. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte CEIL =
 		0x10;
 	
 	/** cos. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte COS =
 		0x20;
 	
 	/** floor. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte FLOOR =
 		0x40;
 	
 	/** log. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short LOG =
 		0x80;
 	
 	/** pow. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short POW =
 		0x100;
 	
 	/** round. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short ROUND =
 		0x200;
 	
 	/** signum. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short SIGNUM =
 		0x400;
 	
 	/** sin. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short SIN =
 		0x800;
 	
 	/** sqrt. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short SQRT =
 		0x1000;
 	
 	/** tan. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short TAN =
 		0x2000;
 	
 	/** exp. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short EXP =
 		0x4000;
 }

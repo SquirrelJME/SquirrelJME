@@ -10,7 +10,6 @@
 package com.oracle.json.spi;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import com.oracle.json.JsonArray;
 import com.oracle.json.JsonArrayBuilder;
 import com.oracle.json.JsonBuilderFactory;
@@ -49,7 +48,6 @@ import java.util.ServiceLoader;
 public abstract class JsonProvider
 {
 	/** Default provider for JSR353. */
-	@SquirrelJMEVendorApi
 	static final String DEFAULT_PROVIDER =
 		"net.multiphasicapps.jsr353.ImplProvider";
 	

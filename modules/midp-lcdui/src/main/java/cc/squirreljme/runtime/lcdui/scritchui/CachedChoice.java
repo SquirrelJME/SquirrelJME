@@ -9,20 +9,14 @@
 
 package cc.squirreljme.runtime.lcdui.scritchui;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
-
 /**
  * Represents a choice item that is cached.
  *
  * @since 2025/04/18
  */
-@SquirrelJMEVendorApi
 public final class CachedChoice
 {
 	/** The cached string. */
-	@SquirrelJMEVendorApi
 	public final String string;
 	
 	/**
@@ -31,7 +25,6 @@ public final class CachedChoice
 	 * @param __string The string value.
 	 * @since 2025/04/18
 	 */
-	@KeepWhenCompacting
 	CachedChoice(String __string)
 	{
 		this.string = __string;

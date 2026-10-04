@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.zip.blockreader;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.EOFException;
 import java.io.IOException;
 
@@ -20,20 +19,16 @@ import java.io.IOException;
  * @since 2016/12/27
  */
 @SuppressWarnings("DuplicateThrows")
-@SquirrelJMEVendorApi
 public class ArrayBlockAccessor
 	implements BlockAccessor
 {
 	/** The internal buffer. */
-	@SquirrelJMEVendorApi
 	protected final byte[] buffer;
 	
 	/** The offset into the buffer. */
-	@SquirrelJMEVendorApi
 	protected final int offset;
 	
 	/** The number of bytes available. */
-	@SquirrelJMEVendorApi
 	protected final int length;
 	
 	/**
@@ -43,7 +38,6 @@ public class ArrayBlockAccessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/27
 	 */
-	@SquirrelJMEVendorApi
 	public ArrayBlockAccessor(byte[] __b)
 		throws NullPointerException
 	{
@@ -61,7 +55,6 @@ public class ArrayBlockAccessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/27
 	 */
-	@SquirrelJMEVendorApi
 	public ArrayBlockAccessor(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;

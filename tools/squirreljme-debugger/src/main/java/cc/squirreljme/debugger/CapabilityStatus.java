@@ -9,9 +9,9 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
 import cc.squirreljme.jdwp.JDWPCapability;
 import cc.squirreljme.jdwp.JDWPCommandSet;
+import cc.squirreljme.jdwp.JDWPCommandSetVirtualMachine;
 import cc.squirreljme.jdwp.JDWPPacket;
 import java.util.HashSet;
 import java.util.Set;

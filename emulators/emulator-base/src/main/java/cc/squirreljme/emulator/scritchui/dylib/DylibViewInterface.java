@@ -16,9 +16,6 @@ import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchSizeSuggestListener;
 import cc.squirreljme.jvm.mle.scritchui.callbacks.ScritchViewListener;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 /**
  * Interface for views.

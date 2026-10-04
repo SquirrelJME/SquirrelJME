@@ -15,7 +15,6 @@ import cc.squirreljme.fontcompile.util.FontUtils;
 import cc.squirreljme.fontcompile.util.GlyphBitmap;
 import cc.squirreljme.fontcompile.util.GlyphId;
 import cc.squirreljme.fontcompile.util.LineTokenizer;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.util.Arrays;
 

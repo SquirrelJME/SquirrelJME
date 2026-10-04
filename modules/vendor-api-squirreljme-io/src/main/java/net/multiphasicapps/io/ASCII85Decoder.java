@@ -9,8 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.debug.ErrorCode;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +19,6 @@ import java.io.Reader;
  *
  * @since 2024/06/09
  */
-@SquirrelJMEVendorApi
 public class ASCII85Decoder
 	extends InputStream
 {
@@ -58,7 +55,6 @@ public class ASCII85Decoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/06/09
 	 */
-	@SquirrelJMEVendorApi
 	public ASCII85Decoder(Reader __in)
 		throws NullPointerException
 	{

@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractMap;
@@ -27,12 +26,10 @@ import org.jetbrains.annotations.UnmodifiableView;
  * @since 2016/02/29
  */
 @UnmodifiableView
-@SquirrelJMEVendorApi
 public final class UnmodifiableMap<K, V>
 	extends AbstractMap<K, V>
 {
 	/** The existing map to wrap. */
-	@SquirrelJMEVendorApi
 	protected final Map<K, V> wrapped;
 	
 	/** Entry set cache, since it is not always needed. */
@@ -139,7 +136,6 @@ public final class UnmodifiableMap<K, V>
 	 * @return An unmodifiable view of the map.
 	 * @since 2016/02/28
 	 */
-	@SquirrelJMEVendorApi
 	public static <K, V> Map<K, V> of(Map<K, V> __m)
 	{
 		// If already one, return it

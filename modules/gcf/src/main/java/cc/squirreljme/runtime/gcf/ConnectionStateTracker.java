@@ -17,9 +17,9 @@ package cc.squirreljme.runtime.gcf;
 public final class ConnectionStateTracker
 {
 	/** Has the input been closed? */
-	boolean _inclosed;
+	volatile boolean inClosed;
 	
 	/** Has the output been closed? */
-	boolean _outclosed;
+	volatile boolean outClosed;
 }
 

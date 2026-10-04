@@ -11,6 +11,7 @@ package com.jblend.io.j2me.events;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 
+@Api
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface EventDispatcherInterface
 {

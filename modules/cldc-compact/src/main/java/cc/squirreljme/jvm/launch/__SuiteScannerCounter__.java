@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.launch;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
+
 /**
  * Counter for the suite scanner.
  *

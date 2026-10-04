@@ -10,8 +10,6 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.cldc.annotation.Api;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -22,16 +20,13 @@ import java.io.InputStream;
  *
  * @since 2022/03/04
  */
-@SquirrelJMEVendorApi
 public class RawJarPackageBracketInputStream
 	extends InputStream
 {
 	/** The given library. */
-	@SquirrelJMEVendorApi
 	protected final JarPackageBracket jar;
 	
 	/** The size of the JAR. */
-	@SquirrelJMEVendorApi
 	protected final int jarSize;
 	
 	/** Single byte read, as only bulk read is supported. */
@@ -50,7 +45,6 @@ public class RawJarPackageBracketInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/03/04
 	 */
-	@SquirrelJMEVendorApi
 	public RawJarPackageBracketInputStream(JarPackageBracket __jar)
 		throws IOException, NullPointerException
 	{
@@ -68,7 +62,6 @@ public class RawJarPackageBracketInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/04/09
 	 */
-	@SquirrelJMEVendorApi
 	public RawJarPackageBracketInputStream(JarPackageBracket __jar,
 		int __offset)
 		throws IndexOutOfBoundsException, IOException, NullPointerException

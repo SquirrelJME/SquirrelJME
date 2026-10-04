@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.CheckReturnValue;
 
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.CheckReturnValue;
  * @since 2020/05/30
  */
 @SuppressWarnings("UnstableApiUsage")
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class AtomicShelf
 {
 	/**
@@ -37,8 +37,8 @@ public final class AtomicShelf
 	 * @return The locking key if locked, otherwise {@code 0} when busy.
 	 * @since 2020/05/30
 	 */
-	@SquirrelJMEVendorApi
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int gcLock();
 	
 	/**
@@ -49,7 +49,7 @@ public final class AtomicShelf
 	 * collector.
 	 * @since 2020/05/30
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void gcUnlock(int __key);
 	
 	/**
@@ -62,8 +62,8 @@ public final class AtomicShelf
 	 * @param __count The number of times the lock has spun.
 	 * @since 2020/05/30
 	 */
-	@SquirrelJMEVendorApi
 	@Blocking
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void spinLock(int __count);
 	
 	/**
@@ -75,6 +75,6 @@ public final class AtomicShelf
 	 * other than equality.
 	 * @since 2020/05/03
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int tick();
 }

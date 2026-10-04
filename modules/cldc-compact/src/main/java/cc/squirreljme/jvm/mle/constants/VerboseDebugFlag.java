@@ -9,118 +9,118 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Verbosity flags.
  *
  * @since 2020/07/11
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface VerboseDebugFlag
 {
 	/** All verbosity settings, except for exclusionary ones. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int ALL =
 		~(0x4_0000 | 0x8_0000);
 	
 	/** Be verbose on the called instructions. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte INSTRUCTIONS =
 		0x01;
 	
 	/** Be verbose on the entered methods. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte METHOD_ENTRY =
 		0x02;
 	
 	/** Be verbose on exited methods. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte METHOD_EXIT =
 		0x04;
 	
 	/** Be verbose on MLE calls. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MLE_CALL =
 		0x08;
 	
 	/** Be verbose on static invocations. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte INVOKE_STATIC =
 		0x10;
 	
 	/** Be verbose on allocations. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte ALLOCATION =
 		0x20;
 	
 	/** Be verbose on class initializations. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte CLASS_INITIALIZE =
 		0x40;
 	
 	/** Virtual machine exceptions. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short VM_EXCEPTION =
 		0x80;
 	
 	/** Class lookup failures. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short MISSING_CLASS =
 		0x100;
 	
 	/** Monitor entry. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short MONITOR_ENTER =
 		0x200;
 	
 	/** Monitor exit. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short MONITOR_EXIT =
 		0x400;
 	
 	/** Wait on monitor. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short MONITOR_WAIT =
 		0x800;
 	
 	/** Notify on a monitor. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short MONITOR_NOTIFY =
 		0x1000;
 	
 	/** Inherit the current verbose checks to another thread. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short INHERIT_VERBOSE_FLAGS =
 		0x2000;
 	
 	/** New thread is created. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	short THREAD_NEW =
 		0x4000;
 	
 	/** Implicit exceptions being generated. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int IMPLICIT_EXCEPTION =
 		0x8000;
 	
 	/** Method with many execution cycles. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int METHOD_CYCLES =
 		0x1_0000;
 	
 	/** Ignored exception. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int IGNORED_EXCEPTION =
 		0x2_0000;
 	
 	/** Not on the main thread. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int NOT_MAIN_THREAD =
 		0x4_0000;
 	
 	/** Only in the default package. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int DEFAULT_PACKAGE =
 		0x8_0000;
 }

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.vm.springcoat.brackets;
 
-import cc.squirreljme.jvm.mle.brackets.NativeArchiveBracket;
 import cc.squirreljme.jvm.mle.brackets.NativeArchiveEntryBracket;
 import cc.squirreljme.vm.springcoat.AbstractGhostObject;
 import cc.squirreljme.vm.springcoat.SpringMachine;

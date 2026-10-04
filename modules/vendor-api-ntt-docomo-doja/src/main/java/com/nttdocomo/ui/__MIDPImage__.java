@@ -66,7 +66,7 @@ final class __MIDPImage__
 			catch (IOException __e)
 			{
 				// Debug, as DoJa applications will drop exceptions
-				if (Debugging.ENABLED)
+				if (Debugging.enabled())
 					__e.printStackTrace();
 				
 				UIException toss = new UIException(

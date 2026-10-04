@@ -33,8 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 
 /**
@@ -47,41 +45,34 @@ import org.intellij.lang.annotations.MagicConstant;
  * @see MLDPlayer#getEvents()
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public class MLDPlayerEvent
 	implements BasicEvent
 {
 	/** Event type that notifies when a non-looping sequence finishes. */
-	@SquirrelJMEVendorApi
 	public static final int EVENT_END = 0;
 
 	/** Event type that notifies when a particular key is played. */
-	@SquirrelJMEVendorApi
 	public static final int EVENT_KEY = 2;
 	
 	/** Event type that notifies when a sequence loops. */
-	@SquirrelJMEVendorApi
 	public static final int EVENT_LOOP = 1;
 
 	/**
 	 * Additional event data, if relevant. For {@link #EVENT_KEY} events,
 	 * this will be the key number.
 	 */
-	@SquirrelJMEVendorApi
 	public final int data;
 	
 	/**
 	 * Time in seconds since the beginning of playback when the event was
 	 * raised.
 	 */
-	@SquirrelJMEVendorApi
 	public final double time;
 	
 	/**
 	 * Indicates the type of event that was raised: {@link #EVENT_END},
 	 * {@link #EVENT_KEY} or {@link #EVENT_LOOP}.
 	 */
-	@SquirrelJMEVendorApi
 	public final int type;
 	
 	/**
@@ -93,7 +84,6 @@ public class MLDPlayerEvent
 	 * @param __data Additional event data.
 	 * @since 2025/05/05
 	 */
-	@KeepWhenCompacting
 	MLDPlayerEvent(double __time,
 		@MagicConstant(valuesFromClass = MLDPlayerEvent.class) int __type,
 		int __data)

@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;
@@ -23,7 +22,6 @@ import java.util.RandomAccess;
  *
  * @since 2016/04/10
  */
-@SquirrelJMEVendorApi
 public final class EmptyList
 	extends AbstractList
 	implements RandomAccess

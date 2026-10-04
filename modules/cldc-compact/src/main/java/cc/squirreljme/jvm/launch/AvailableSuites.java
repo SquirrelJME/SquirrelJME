@@ -9,10 +9,7 @@
 
 package cc.squirreljme.jvm.launch;
 
-import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +18,6 @@ import java.util.List;
  *
  * @since 2020/12/28
  */
-@SquirrelJMEVendorApi
 public final class AvailableSuites
 {
 	/** The shelf to use when accessing Jars. */
@@ -42,7 +38,6 @@ public final class AvailableSuites
 	 * @throws NullPointerException On null arguments.
 	 * @since 2020/12/29
 	 */
-	@KeepWhenCompacting
 	AvailableSuites(VirtualJarPackageShelf __shelf, __Libraries__ __libs,
 		Application... __apps)
 		throws NullPointerException
@@ -61,7 +56,6 @@ public final class AvailableSuites
 	 * @return The detected applications.
 	 * @since 2024/01/06
 	 */
-	@SquirrelJMEVendorApi
 	public Application[] applications()
 	{
 		return this._apps.clone();
@@ -75,7 +69,6 @@ public final class AvailableSuites
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/01/06
 	 */
-	@SquirrelJMEVendorApi
 	public Application[] findApplications(JarPackageBracket __jar)
 		throws NullPointerException
 	{

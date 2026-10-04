@@ -9,7 +9,6 @@
 
 package cc.squirreljme.lint;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +22,6 @@ import java.nio.file.StandardOpenOption;
  *
  * @since 2025/12/31
  */
-@SquirrelJMEVendorApi
 public class Main
 {
 	/**
@@ -34,7 +32,6 @@ public class Main
 	 * @since 2025/12/31
 	 */
 	@SuppressWarnings("JvmTaintAnalysis")
-	@SquirrelJMEVendorApi
 	public static void main(String... __args)
 		throws IOException
 	{

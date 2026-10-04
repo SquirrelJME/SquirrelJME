@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.media;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -19,29 +18,23 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2026/01/03
  */
-@SquirrelJMEVendorApi
 public final class PlayerClock
 {
 	/** The number of tracks this keeps track of. */
-	@SquirrelJMEVendorApi
 	public final int numTracks;
 	
 	/** Nanosecond time when the next event occurs on a given track. */
-	@SquirrelJMEVendorApi
 	volatile long[] _trackNext;
 	
 	/** The current track duration. */
-	@SquirrelJMEVendorApi
 	volatile long _durationNano =
 		AbstractPlayer.TIME_UNKNOWN;
 	
 	/** The current clock time. */
-	@SquirrelJMEVendorApi
 	volatile long _currentNano =
 		AbstractPlayer.TIME_UNKNOWN;
 	
 	/** The time to seek/fast-forward to. */
-	@SquirrelJMEVendorApi
 	volatile long _seekNano =
 		AbstractPlayer.TIME_UNKNOWN;
 	
@@ -53,7 +46,6 @@ public final class PlayerClock
 	 * negative.
 	 * @since 2026/01/03
 	 */
-	@SquirrelJMEVendorApi
 	public PlayerClock(int __numTracks)
 		throws IllegalArgumentException
 	{
@@ -69,7 +61,6 @@ public final class PlayerClock
 	 * @return The current time in microseconds.
 	 * @since 2026/01/03
 	 */
-	@SquirrelJMEVendorApi
 	public final long currentMicros()
 	{
 		throw Debugging.todo();
@@ -81,7 +72,6 @@ public final class PlayerClock
 	 * @return The current time in nanoseconds.
 	 * @since 2026/01/03
 	 */
-	@SquirrelJMEVendorApi
 	public final long currentNanos()
 	{
 		throw Debugging.todo();
@@ -93,7 +83,6 @@ public final class PlayerClock
 	 * @return The current duration.
 	 * @since 2026/01/03
 	 */
-	@SquirrelJMEVendorApi
 	public final long duration()
 	{
 		throw Debugging.todo();
@@ -106,7 +95,6 @@ public final class PlayerClock
 	 * @return The newly set duration.
 	 * @since 2026/01/03
 	 */
-	@SquirrelJMEVendorApi
 	public final long duration(long __nanos)
 	{
 		throw Debugging.todo();
@@ -119,7 +107,6 @@ public final class PlayerClock
 	 * @return Equivalent of {@link #currentNanos()}.
 	 * @since 2026/01/03
 	 */
-	@SquirrelJMEVendorApi
 	public final long progressByNano(long __nano)
 	{
 		throw Debugging.todo();
@@ -130,7 +117,6 @@ public final class PlayerClock
 	 * 
 	 * @since 2026/01/03
 	 */
-	@SquirrelJMEVendorApi
 	public final void reset()
 	{
 		throw Debugging.todo();
@@ -142,7 +128,6 @@ public final class PlayerClock
 	 * @return The next event timings for all tracks.
 	 * @since 2026/01/03
 	 */
-	@SquirrelJMEVendorApi
 	public final long[] trackNext()
 	{
 		return this._trackNext;

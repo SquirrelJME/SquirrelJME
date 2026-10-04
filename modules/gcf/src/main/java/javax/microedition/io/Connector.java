@@ -261,7 +261,7 @@ public class Connector
 			IOException, NullPointerException, SecurityException
 	{
 		// Debug
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("Open %s", __uri);
 		
 		// Used to debug connections

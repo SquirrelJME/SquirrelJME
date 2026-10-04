@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.full.attrib;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.nio.file.attribute.FileTime;
 import org.intellij.lang.annotations.MagicConstant;
 
@@ -18,112 +17,90 @@ import org.intellij.lang.annotations.MagicConstant;
  *
  * @since 2025/12/30
  */
-@SquirrelJMEVendorApi
 public abstract class AbstractFileAttributes
 	implements ExtraFileAttributes
 {
 	/** Is a directory. */
-	@SquirrelJMEVendorApi
 	public static final byte IS_DIRECTORY =
 		1;
 	
 	/** Is some other type of file. */
-	@SquirrelJMEVendorApi
 	public static final byte IS_OTHER =
 		2;
 	
 	/** Is a regular file. */
-	@SquirrelJMEVendorApi
 	public static final byte IS_REGULAR_FILE =
 		4;
 	
 	/** Is a symbolic link. */
-	@SquirrelJMEVendorApi
 	public static final byte IS_SYMBOLIC_LINK =
 		8;
 	
 	/** Is DOS archivable. */
-	@SquirrelJMEVendorApi
 	public static final byte IS_DOS_ARCHIVABLE = 
 		16;
 	
 	/** Is DOS hidden. */
-	@SquirrelJMEVendorApi
 	public static final byte IS_DOS_HIDDEN = 
 		32;
 	
 	/** Is DOS read-only. */
-	@SquirrelJMEVendorApi
 	public static final byte IS_DOS_READ_ONLY = 
 		64;
 	
 	/** Is DOS system file. */
-	@SquirrelJMEVendorApi
 	public static final short IS_DOS_SYSTEM = 
 		128;
 	
 	/** Is POSIX group executable. */
-	@SquirrelJMEVendorApi
 	public static final short IS_POSIX_GROUP_EXECUTE = 
 		256;
 	
 	/** Is POSIX group readable. */
-	@SquirrelJMEVendorApi
 	public static final short IS_POSIX_GROUP_READ = 
 		512;
 	
 	/** Is POSIX set group ID. */
-	@SquirrelJMEVendorApi
 	public static final short IS_POSIX_GROUP_SUID = 
 		1024;
 	
 	/** Is POSIX group writable. */
-	@SquirrelJMEVendorApi
 	public static final short IS_POSIX_GROUP_WRITE = 
 		2048;
 	
 	/** Is POSIX other executable. */
-	@SquirrelJMEVendorApi
 	public static final short IS_POSIX_OTHER_EXECUTE = 
 		4096;
 	
 	/** Is POSIX other readable. */
-	@SquirrelJMEVendorApi
 	public static final short IS_POSIX_OTHER_READ =
 		8192;
 	
 	/** Is POSIX other writable. */
-	@SquirrelJMEVendorApi
 	public static final short IS_POSIX_OTHER_WRITE = 
 		16384;
 	
 	/** Is POSIX restricted deletion. */
-	@SquirrelJMEVendorApi
 	public static final int IS_POSIX_RESTRICTED_DELETE = 
 		32768;
 	
 	/** Is POSIX user executable. */
-	@SquirrelJMEVendorApi
 	public static final int IS_POSIX_USER_EXECUTE = 
 		65536;
 	
 	/** Is POSIX user readable. */
-	@SquirrelJMEVendorApi
 	public static final int IS_POSIX_USER_READ = 
 		131072;
 	
 	/** Is POSIX is user set ID. */
-	@SquirrelJMEVendorApi
 	public static final int IS_POSIX_USER_SUID = 
 		262144;
 	
 	/** Is POSIX is user writable. */
-	@SquirrelJMEVendorApi
 	public static final int IS_POSIX_USER_WRITE = 
 		524288;
 	
 	/** Epoch based file time. */
-	@SquirrelJMEVendorApi
 	public static FileTime EPOCH_TIME =
 		FileTime.fromMillis(0);
 	
@@ -154,7 +131,6 @@ public abstract class AbstractFileAttributes
 	 * @since 2025/12/30
 	 */
 	@SuppressWarnings("override")
-	@SquirrelJMEVendorApi
 	public final Object fileKey()
 	{
 		return null;

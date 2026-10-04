@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.AccessController;
 import java.security.Permission;
@@ -24,6 +25,7 @@ import java.util.PropertyPermission;
  * @since 2020/07/02
  */
 @Api
+@KeepAbsolutelyEverything("Lightweight 'Security' permission system.")
 public class SecurityManager
 {
 	/** The current security manager, defaults to the system one. */

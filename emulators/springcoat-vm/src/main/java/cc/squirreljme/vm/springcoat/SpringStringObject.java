@@ -10,7 +10,6 @@
 package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
-import java.util.Objects;
 
 /**
  * Represents a wrapped string.

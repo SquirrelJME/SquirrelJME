@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.mle.callbacks;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * An extension of {@link AudioStreamRenderer} which allows for control of
@@ -17,7 +17,7 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/05/04
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface AudioStreamPlayer
 	extends AudioStreamRenderer
 {

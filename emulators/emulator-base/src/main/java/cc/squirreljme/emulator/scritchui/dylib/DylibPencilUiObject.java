@@ -9,8 +9,6 @@
 
 package cc.squirreljme.emulator.scritchui.dylib;
 
-import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
-
 /**
  * Dynamic library based pencil drawing state.
  *

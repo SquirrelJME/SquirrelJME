@@ -9,7 +9,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.ExtraMath;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,86 +22,66 @@ import org.jetbrains.annotations.Range;
  * @see Sampler
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public class MA3Sampler
 	extends AbstractSampler
 	implements Sampler
 {
 	/** The amount of channels the MA-3 has. */
-	@SquirrelJMEVendorApi
 	public static final byte NUM_CHANNELS =
 		32;
 
 	/** Channel states. */
-	@SquirrelJMEVendorApi
 	final __MA3Channel__[] _channels;
 	
 	/** The sample generator used for audio rendering. */
-	@SquirrelJMEVendorApi
 	private final MA3SamplerProvider _ma3;
 	
 	/** Output sampling rate. */
-	@SquirrelJMEVendorApi
 	final float _sampleRate;
 	
 	/** Next input sample. */
-	@SquirrelJMEVendorApi
 	final float[] _smpNext;
 	
 	/** Previous input sample. */
-	@SquirrelJMEVendorApi
 	final float[] _smpPrev;
 	
 	/** Number of input samples per output sample. */
-	@SquirrelJMEVendorApi
 	final float _smpWidth;
 	
 	/** Automatic volume adjustment rate. */
-	@SquirrelJMEVendorApi
 	final float _volRate;
 	
 	/** Registered wave drums. */
-	@SquirrelJMEVendorApi
 	final __MA3Algorithm__[] _wavDrums;
 	
 	/** Amplitude modulator phase. */
-	@SquirrelJMEVendorApi
 	int _amPhase;
 	
 	/** Global pitch bend. */
-	@SquirrelJMEVendorApi
 	float _bendOut;
 	
 	/** 2-operator instruments. */
-	@SquirrelJMEVendorApi
 	Map<Integer, __MA3Algorithm__> _fm2ops;
 	
 	/** 4-operator instruments. */
-	@SquirrelJMEVendorApi
 	Map<Integer, __MA3Algorithm__> _fm4pos;
 	
 	/** Position between input samples. */
-	@SquirrelJMEVendorApi
 	float _smpPosition;
 	
 	/** Frequency modulator phase. */
-	@SquirrelJMEVendorApi
 	int _vibPhase;
 	
 	/** Global attenuation. */
-	@SquirrelJMEVendorApi
 	float _volFade;
 	
 	/** Global volume. */
-	@SquirrelJMEVendorApi
 	float _volLevel;
 	
 	/** Effective global volume. */
-	@SquirrelJMEVendorApi
 	float _volOut;
 	
 	/** Wave RAM, decoded from ADPCM. */
-	@SquirrelJMEVendorApi
 	int[] _wavRam;
 	
 	/**
@@ -113,7 +92,6 @@ public class MA3Sampler
 	 * @throws NullPointerException If {@code __ma3} is {@code null}.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public MA3Sampler(@NotNull MA3SamplerProvider __ma3, float __sampleRate)
 		throws NullPointerException
 	{

@@ -9,6 +9,7 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 
 /**
@@ -17,6 +18,7 @@ import cc.squirreljme.runtime.midlet.ApplicationHandler;
  *
  * @since 2020/02/29
  */
+@KeepAbsolutelyEverything("Launched MIDlet entry point")
 final class __MainHandler__
 {
 	/** One second in milliseconds. */

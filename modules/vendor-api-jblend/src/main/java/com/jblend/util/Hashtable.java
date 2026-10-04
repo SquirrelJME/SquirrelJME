@@ -34,14 +34,16 @@ public class Hashtable
 		
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public void writeObject(SimpleObjectOutputStream var1)
 		throws IOException
 	{
 		throw Debugging.todo();
 	}
-
+	
+	@Api
 	@Override
 	public void readObject(SimpleObjectInputStream var1)
 		throws IOException

@@ -11,7 +11,6 @@ package cc.squirreljme.runtime.cldc.util;
 
 import cc.squirreljme.jvm.mle.MathAccelShelf;
 import cc.squirreljme.jvm.mle.constants.MathAccelFlag;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 /**
@@ -19,7 +18,6 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  *
  * @since 2025/05/03
  */
-@SquirrelJMEVendorApi
 public final class ExtraMath
 {
 	/**
@@ -38,7 +36,6 @@ public final class ExtraMath
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static strictfp double exp(double __v)
 	{
 		if ((MathAccelShelf.accel() & MathAccelFlag.EXP) != 0)
@@ -53,7 +50,6 @@ public final class ExtraMath
 	 * @return The logarithm for the given value.
 	 * @since 2018/11/03
 	 */
-	@SquirrelJMEVendorApi
 	public static strictfp double log(double __v)
 	{
 		if ((MathAccelShelf.accel() & MathAccelFlag.LOG) != 0)
@@ -69,7 +65,6 @@ public final class ExtraMath
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static strictfp double pow(double __x, double __y)
 	{
 		// Use normal acceleration

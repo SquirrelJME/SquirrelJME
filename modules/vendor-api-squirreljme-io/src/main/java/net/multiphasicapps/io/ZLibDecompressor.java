@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +22,6 @@ import java.io.InputStream;
  *
  * @since 2017/03/04
  */
-@SquirrelJMEVendorApi
 public class ZLibDecompressor
 	extends DecompressionInputStream
 {
@@ -77,7 +75,6 @@ public class ZLibDecompressor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/04
 	 */
-	@SquirrelJMEVendorApi
 	public ZLibDecompressor(InputStream __in)
 		throws NullPointerException
 	{

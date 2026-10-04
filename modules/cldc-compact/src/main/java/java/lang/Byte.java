@@ -11,6 +11,7 @@ package java.lang;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -20,6 +21,7 @@ import java.lang.ref.WeakReference;
  * @since 2018/12/07
  */
 @Api
+@KeepAbsolutelyEverything("Boxed types cannot be optimized!")
 public final class Byte
 	extends Number
 	implements Comparable<Byte>

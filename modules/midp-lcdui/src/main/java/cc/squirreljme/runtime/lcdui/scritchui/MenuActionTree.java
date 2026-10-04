@@ -16,7 +16,6 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasLabelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasParentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuKindBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,11 +27,9 @@ import org.jetbrains.annotations.Async;
  *
  * @since 2024/07/21
  */
-@SquirrelJMEVendorApi
 public final class MenuActionTree
 {
 	/** Mapping of nodes to leafs, to keep track of natives. */
-	@SquirrelJMEVendorApi
 	private final List<MenuActionTreeLeaf> _mappings =
 		new ArrayList<>();
 	
@@ -73,7 +70,6 @@ public final class MenuActionTree
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
 	public final MenuActionTreeLeaf map(MenuActionNode __node)
 		throws NullPointerException
 	{
@@ -110,7 +106,6 @@ public final class MenuActionTree
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
 	@Async.Execute
 	public void update(MenuActionNode __context)
 		throws NullPointerException

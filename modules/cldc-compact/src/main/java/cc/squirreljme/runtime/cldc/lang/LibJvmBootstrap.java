@@ -9,14 +9,11 @@
 
 package cc.squirreljme.runtime.cldc.lang;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Bootstrap main for the JVM library.
  *
  * @since 2025/07/14
  */
-@SquirrelJMEVendorApi
 public final class LibJvmBootstrap
 {
 	/**
@@ -27,7 +24,6 @@ public final class LibJvmBootstrap
 	 * @throws Throwable Any thrown throwable.
 	 * @since 2025/07/14
 	 */
-	@SquirrelJMEVendorApi
 	public static native void main(String... __ignored)
 		throws Throwable;
 }

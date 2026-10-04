@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 /**
  * Shown context frame.

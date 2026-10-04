@@ -9,14 +9,14 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Specifies the write mode for a bucket.
  *
  * @since 2025/04/16
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface BucketWriteMode
 {
 	/**
@@ -24,17 +24,17 @@ public interface BucketWriteMode
 	 * added at the end, files remain a constant size. Writes outside will
 	 * cause the write to fail.
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte OVERWRITE =
 		0;
 	
 	/** The data in the file is replaced, the offset must be at zero. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte TRUNCATE =
 		1;
 	
 	/** The number of bucket writing modes. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_MODES =
 		2;
 }

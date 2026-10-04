@@ -1,7 +1,3 @@
-import cc.squirreljme.plugin.general.cmake.CMakeBuildTask
-
-import java.nio.file.Files
-
 plugins
 {
 	id "java-library"
@@ -15,12 +11,10 @@ dependencies
 	api project(":emulators:emulator-base")
 	
 	api project(":modules:cldc-compact")
-	api project(":modules:common-vm")
 	api project(":modules:meep-swm")
-	api project(":modules:tool-classfile")
-	api project(":modules:debug-jdwp")
-	api project(":modules:debug-jdwp-vm-host")
 	api project(":tools:squirreljme-debugger")
+	
+	api project(":emulators:tool-classfile")
 }
 
 java {

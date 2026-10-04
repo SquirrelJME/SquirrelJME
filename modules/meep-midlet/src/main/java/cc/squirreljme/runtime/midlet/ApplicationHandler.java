@@ -14,7 +14,6 @@ import cc.squirreljme.jvm.suite.SuiteIdentifier;
 import cc.squirreljme.jvm.suite.SuiteName;
 import cc.squirreljme.jvm.suite.SuiteVendor;
 import cc.squirreljme.jvm.suite.SuiteVersion;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.midlet.MIDlet;
 
@@ -25,7 +24,6 @@ import javax.microedition.midlet.MIDlet;
  * @see ApplicationInterface
  * @since 2021/11/30
  */
-@SquirrelJMEVendorApi
 public final class ApplicationHandler
 {
 	/** Undefined application name. */
@@ -36,23 +34,18 @@ public final class ApplicationHandler
 	private static volatile ApplicationInterface<?> _CURRENT_INTERFACE;
 	
 	/** The current application instance. */
-	@SquirrelJMEVendorApi
 	private static volatile Object _CURRENT_INSTANCE;
 	
 	/** The current idle task. */
-	@SquirrelJMEVendorApi
 	private static volatile Runnable _idleTask;
 	
 	/** The identifier for this suite. */
-	@SquirrelJMEVendorApi
 	private static volatile SuiteIdentifier _identifier;
 	
 	/** The current vendor. */
-	@SquirrelJMEVendorApi
 	private static volatile String _CURRENT_VENDOR;
 	
 	/** The current name. */
-	@SquirrelJMEVendorApi
 	private static volatile String _CURRENT_NAME;
 	
 	/** The time to wait after termination. */
@@ -73,7 +66,6 @@ public final class ApplicationHandler
 	 * @return The current application interface.
 	 * @since 2022/02/14
 	 */
-	@SquirrelJMEVendorApi
 	public static ApplicationInterface<?> currentInterface()
 	{
 		return ApplicationHandler._CURRENT_INTERFACE;
@@ -85,7 +77,6 @@ public final class ApplicationHandler
 	 * @return The current application instance.
 	 * @since 2022/02/14
 	 */
-	@SquirrelJMEVendorApi
 	public static Object currentInstance()
 	{
 		return ApplicationHandler._CURRENT_INSTANCE;
@@ -97,7 +88,6 @@ public final class ApplicationHandler
 	 * @return The current name.
 	 * @since 2019/04/14
 	 */
-	@SquirrelJMEVendorApi
 	public static String currentName()
 	{
 		String rv;
@@ -137,7 +127,6 @@ public final class ApplicationHandler
 	 * @return The current vendor.
 	 * @since 2019/04/14
 	 */
-	@SquirrelJMEVendorApi
 	public static String currentVendor()
 	{
 		String rv;
@@ -181,7 +170,6 @@ public final class ApplicationHandler
 	 * @since 2021/11/30
 	 */
 	@SuppressWarnings("ConfusingMainMethod")
-	@SquirrelJMEVendorApi
 	public static <T> void main(ApplicationInterface<T> __ai)
 		throws NullPointerException, Throwable
 	{
@@ -306,7 +294,6 @@ public final class ApplicationHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/12/22
 	 */
-	@SquirrelJMEVendorApi
 	public static void setIdleTask(Runnable __run)
 		throws NullPointerException
 	{
@@ -327,7 +314,6 @@ public final class ApplicationHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/02
 	 */
-	@SquirrelJMEVendorApi
 	public static void setNameAndVendor(String __name, String __vend)
 		throws NullPointerException
 	{
@@ -347,7 +333,6 @@ public final class ApplicationHandler
 	 * @return The suite identifier for this application.
 	 * @since 2025/04/15
 	 */
-	@SquirrelJMEVendorApi
 	public static SuiteIdentifier suiteIdentifier()
 	{
 		// Already cached?

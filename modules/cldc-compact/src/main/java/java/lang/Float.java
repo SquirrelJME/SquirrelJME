@@ -13,10 +13,12 @@ import cc.squirreljme.jvm.SoftFloat;
 import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 @Api
+@KeepAbsolutelyEverything("Boxed types cannot be optimized!")
 public final class Float
 	extends Number
 	implements Comparable<Float>

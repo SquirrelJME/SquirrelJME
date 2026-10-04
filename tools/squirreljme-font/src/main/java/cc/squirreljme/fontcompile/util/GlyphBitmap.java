@@ -11,7 +11,6 @@ package cc.squirreljme.fontcompile.util;
 
 import cc.squirreljme.fontcompile.InvalidFontException;
 import cc.squirreljme.fontcompile.out.rafoces.HuffBits;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;

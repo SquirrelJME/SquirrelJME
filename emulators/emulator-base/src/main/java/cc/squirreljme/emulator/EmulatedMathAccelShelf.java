@@ -10,7 +10,6 @@
 package cc.squirreljme.emulator;
 
 import cc.squirreljme.jvm.mle.constants.MathAccelFlag;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.intellij.lang.annotations.MagicConstant;
 
 /**
@@ -18,7 +17,6 @@ import org.intellij.lang.annotations.MagicConstant;
  *
  * @since 2025/05/03
  */
-@SquirrelJMEVendorApi
 public class EmulatedMathAccelShelf
 {
 	/**
@@ -36,7 +34,6 @@ public class EmulatedMathAccelShelf
 	 * @return The accelerated math functions.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	@MagicConstant(valuesFromClass = MathAccelFlag.class)
 	public static int accel()
 	{
@@ -50,7 +47,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double acos(double __v)
 	{
 		return Math.acos(__v);
@@ -63,7 +59,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double asin(double __v)
 	{
 		return Math.asin(__v);
@@ -76,7 +71,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double atan(double __v)
 	{
 		return Math.atan(__v);
@@ -90,7 +84,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double atan2(double __a, double __b)
 	{
 		return Math.atan2(__a, __b);
@@ -103,7 +96,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double ceil(double __v)
 	{
 		return Math.ceil(__v);
@@ -116,7 +108,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double cos(double __v)
 	{
 		return Math.cos(__v);
@@ -129,7 +120,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double exp(double __v)
 	{
 		return Math.exp(__v);
@@ -142,7 +132,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double floor(double __v)
 	{
 		return Math.floor(__v);
@@ -155,7 +144,6 @@ public class EmulatedMathAccelShelf
 	 * @return The logarithm for the given value.
 	 * @since 2018/11/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double log(double __v)
 	{
 		return Math.log(__v);
@@ -169,7 +157,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double pow(double __x, double __y)
 	{
 		return Math.pow(__x, __y);
@@ -182,7 +169,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static long round(double __v)
 	{
 		return Math.round(__v);
@@ -195,7 +181,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double signum(double __v)
 	{
 		return Math.signum(__v);
@@ -208,7 +193,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double sin(double __v)
 	{
 		return Math.sin(__v);
@@ -221,7 +205,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2018/11/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double sqrt(double __v)
 	{
 		return Math.sqrt(__v);
@@ -234,7 +217,6 @@ public class EmulatedMathAccelShelf
 	 * @return The resultant value.
 	 * @since 2025/05/03
 	 */
-	@SquirrelJMEVendorApi
 	public static double tan(double __v)
 	{
 		return Math.tan(__v);

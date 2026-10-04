@@ -9,7 +9,7 @@
 
 package cc.squirreljme.jvm.mle.scritchui.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Platform flags which define how a ScritchUI interface operates on a
@@ -17,26 +17,26 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  *
  * @since 2025/05/15
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchLAFPlatformFlag
 {
 	/** Dark mode is enabled. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte DARK_MODE =
 		1;
 
 	/** The number pad follows the calculator layout. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUMPAD_CALC_LAYOUT =
 		2;
 
 	/** Panel only interface. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte PANEL_ONLY =
 		4;
 
 	/** Are native alerts available? */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte HAS_ALERTS =
 		8;
 }

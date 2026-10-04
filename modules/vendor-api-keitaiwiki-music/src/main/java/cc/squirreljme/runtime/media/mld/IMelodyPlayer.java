@@ -17,13 +17,10 @@ import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.gcf.InputStreamConnection;
 import cc.squirreljme.runtime.media.AbstractPlayer;
 import cc.squirreljme.runtime.media.AbstractVolumeControl;
 import cc.squirreljme.runtime.media.control.AbstractMetaDataControl;
-import cc.squirreljme.runtime.media.control.DeviceFeedbackControl;
 import cc.squirreljme.runtime.media.control.MetaDataValues;
 import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import com.keitaiwiki.music.MA3SamplerProvider;
@@ -44,7 +41,6 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public class IMelodyPlayer
 	extends AbstractPlayer
 	implements AudioStreamRenderer
@@ -353,7 +349,6 @@ public class IMelodyPlayer
 	 * @return The last ending type.
 	 * @since 2025/06/03
 	 */
-	@SquirrelJMEVendorApi
 	public final int lastEndType()
 	{
 		synchronized (this)

@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.zip.streamwriter;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.Closeable;
 import java.io.IOException;
@@ -32,7 +31,6 @@ import net.multiphasicapps.zip.ZipCompressionType;
  *
  * @since 2016/07/09
  */
-@SquirrelJMEVendorApi
 public class ZipStreamWriter
 	implements Closeable
 {
@@ -61,7 +59,6 @@ public class ZipStreamWriter
 		(1 << 3) | (1 << 11);
 	
 	/** The output stream to write to. */
-	@SquirrelJMEVendorApi
 	protected final ExtendedDataOutputStream output;
 	
 	/** Table of contents. */
@@ -88,7 +85,6 @@ public class ZipStreamWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/09
 	 */
-	@SquirrelJMEVendorApi
 	public ZipStreamWriter(OutputStream __os)
 		throws NullPointerException
 	{
@@ -229,7 +225,6 @@ public class ZipStreamWriter
 	 * @throws IOException If it could not be flushed.
 	 * @since 2016/07/09
 	 */
-	@SquirrelJMEVendorApi
 	public void flush()
 		throws IOException
 	{
@@ -247,7 +242,6 @@ public class ZipStreamWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/12/27
 	 */
-	@SquirrelJMEVendorApi
 	public OutputStream nextEntry(String __name)
 		throws IOException, NullPointerException
 	{
@@ -265,7 +259,6 @@ public class ZipStreamWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/07/15
 	 */
-	@SquirrelJMEVendorApi
 	public OutputStream nextEntry(String __name, ZipCompressionType __comp)
 		throws IOException, NullPointerException
 	{

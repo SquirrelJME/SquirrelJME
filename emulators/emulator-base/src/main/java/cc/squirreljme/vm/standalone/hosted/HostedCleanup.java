@@ -49,7 +49,7 @@ public class HostedCleanup
 	public void run()
 	{
 		// Note
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 			Debugging.debugNote("Cleaning up...");
 		
 		try

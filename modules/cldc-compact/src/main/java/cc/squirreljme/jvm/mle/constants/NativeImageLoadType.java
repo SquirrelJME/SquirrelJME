@@ -9,43 +9,43 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Represents the types of images that are supported in image load.
  *
  * @since 2021/12/05
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface NativeImageLoadType
 {
 	/** Native loading of PNGs. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int LOAD_PNG =
 		1;
 	
 	/** Native loading of GIFs. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int LOAD_GIF =
 		2;
 	
 	/** Native loading of JPEGs. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int LOAD_JPEG =
 		4;
 	
 	/** Native loading of XPMs. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int LOAD_XPM =
 		8;
 	
 	/** SVG. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int LOAD_SVG =
 		16;
 	
 	/** All types. */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int ALL_TYPES =
 		NativeImageLoadType.LOAD_PNG |
 		NativeImageLoadType.LOAD_GIF | NativeImageLoadType.LOAD_JPEG |

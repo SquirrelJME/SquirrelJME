@@ -14,8 +14,6 @@ import cc.squirreljme.jvm.mle.JarPackageShelf;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.suite.SuiteUtils;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.DoJaRuntime;
 import java.io.ByteArrayInputStream;
@@ -32,7 +30,6 @@ import javax.microedition.rms.RecordStoreException;
  *
  * @since 2021/12/02
  */
-@SquirrelJMEVendorApi
 public final class ScratchPadStore
 {
 	/** The static set of stores. */
@@ -67,7 +64,6 @@ public final class ScratchPadStore
 	 * @throws IOException On read errors.
 	 * @since 2021/12/02
 	 */
-	@KeepWhenCompacting
 	ScratchPadStore(int __pad, int __length)
 		throws IOException
 	{
@@ -96,7 +92,7 @@ public final class ScratchPadStore
 				}
 				catch (RecordStoreException __e)
 				{
-					if (Debugging.ENABLED)
+					if (Debugging.enabled())
 						__e.printStackTrace();
 					
 					needSeed = true;
@@ -111,7 +107,7 @@ public final class ScratchPadStore
 		// the record store.}
 		catch (RecordStoreException __e)
 		{
-			if (Debugging.ENABLED)
+			if (Debugging.enabled())
 				__e.printStackTrace();
 			
 			IOException toss = new ConnectionNotFoundException("AH0m");
@@ -126,7 +122,6 @@ public final class ScratchPadStore
 	 * @throws IOException If it could not be flushed.
 	 * @since 2021/12/02
 	 */
-	@SquirrelJMEVendorApi
 	public void flush()
 		throws IOException
 	{
@@ -147,7 +142,7 @@ public final class ScratchPadStore
 			// record store.}
 			catch (RecordStoreException __e)
 			{
-				if (Debugging.ENABLED)
+				if (Debugging.enabled())
 					__e.printStackTrace();
 				
 				throw new IOException("AH0l", __e);
@@ -164,7 +159,6 @@ public final class ScratchPadStore
 	 * @throws IndexOutOfBoundsException If the read is outside of bounds.
 	 * @since 2021/12/02
 	 */
-	@SquirrelJMEVendorApi
 	public InputStream inputStream(int __pos, int __length)
 		throws IndexOutOfBoundsException
 	{
@@ -191,7 +185,6 @@ public final class ScratchPadStore
 	 * @throws IOException On data copy errors.
 	 * @since 2021/12/02
 	 */
-	@SquirrelJMEVendorApi
 	public OutputStream outputStream(int __pos, int __len)
 		throws IndexOutOfBoundsException, IOException
 	{
@@ -217,7 +210,6 @@ public final class ScratchPadStore
 	 * @throws NullPointerException On null arguments.
 	 * @since 2021/12/02
 	 */
-	@SquirrelJMEVendorApi
 	public void write(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
@@ -413,7 +405,7 @@ public final class ScratchPadStore
 			}
 			catch (IOException __e)
 			{
-				if (Debugging.ENABLED)
+				if (Debugging.enabled())
 					__e.printStackTrace();
 				
 				// Ignore

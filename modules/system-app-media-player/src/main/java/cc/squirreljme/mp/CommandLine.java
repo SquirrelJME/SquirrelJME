@@ -9,8 +9,6 @@
 
 package cc.squirreljme.mp;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.EnumerationToIterator;
 import cc.squirreljme.runtime.gcf.ContentTypeUtil;
 import java.io.IOException;
@@ -32,7 +30,6 @@ import org.intellij.lang.annotations.PrintFormat;
  *
  * @since 2026/01/04
  */
-@SquirrelJMEVendorApi
 public class CommandLine
 {
 	/**
@@ -42,7 +39,6 @@ public class CommandLine
 	 * @param __args The arguments to the format.
 	 * @since 2026/01/16
 	 */
-	@SquirrelJMEVendorApi
 	public static void fail(@PrintFormat String __format, Object... __args)
 	{
 		// Print error text
@@ -93,7 +89,6 @@ public class CommandLine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/16
 	 */
-	@SquirrelJMEVendorApi
 	public static void list(@Language("http-url-reference") String __url)
 		throws IOException, NullPointerException
 	{
@@ -152,7 +147,6 @@ public class CommandLine
 	 * @throws MediaException If media could not be played.
 	 * @since 2026/01/04
 	 */
-	@SquirrelJMEVendorApi
 	public static void main(String... __args)
 		throws InterruptedException, IOException, MediaException
 	{
@@ -232,7 +226,6 @@ public class CommandLine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/16
 	 */
-	@SquirrelJMEVendorApi
 	public static void play(@Language("http-url-reference") String __url,
 		@Language("mime-type-reference") String __contentType)
 		throws InterruptedException, IOException,
@@ -318,7 +311,6 @@ public class CommandLine
 	 *
 	 * @since 2026/01/04
 	 */
-	@SquirrelJMEVendorApi
 	public static void printHelp()
 	{
 		PrintStream out = System.err;
@@ -344,7 +336,6 @@ public class CommandLine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2026/01/16
 	 */
-	@SquirrelJMEVendorApi
 	public static void printProgress(PrintStream __out, String __playerType,
 		Player __player, String __formatDur)
 		throws NullPointerException

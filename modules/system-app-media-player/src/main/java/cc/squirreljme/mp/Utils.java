@@ -9,20 +9,17 @@
 
 package cc.squirreljme.mp;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.microedition.lcdui.Image;
 import javax.microedition.media.Player;
 import org.freedesktop.tango.TangoIconLoader;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Utilities.
  *
  * @since 2025/12/30
  */
-@SquirrelJMEVendorApi
 public class Utils
 {
 	/**
@@ -32,7 +29,6 @@ public class Utils
 	 * @return The resultant icon data.
 	 * @since 2025/12/30
 	 */
-	@SquirrelJMEVendorApi
 	public static Image tangoIcon(String __name)
 		throws NullPointerException
 	{
@@ -62,7 +58,6 @@ public class Utils
 	 * @return The human-readable time.
 	 * @since 2026/01/16
 	 */
-	@SquirrelJMEVendorApi
 	public static String formatTime(long __micros)
 	{
 		if (__micros < 0)
@@ -113,7 +108,6 @@ public class Utils
 	 * @return The formatted state.
 	 * @since 2026/01/16
 	 */
-	@SquirrelJMEVendorApi
 	public static String formatState(int __id)
 	{
 		switch (__id)

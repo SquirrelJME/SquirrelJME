@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.file;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.gcf.uri.UriAuthority;
 import cc.squirreljme.runtime.gcf.uri.UriGenericPart;
 import java.io.IOException;
@@ -26,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2025/12/29
  */
-@SquirrelJMEVendorApi
 public interface FileEndPointFactory
 {
 	/**
@@ -42,7 +40,6 @@ public interface FileEndPointFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/29
 	 */
-	@SquirrelJMEVendorApi
 	FileEndPoint connect(UriGenericPart __uri,
 		@MagicConstant(flagsFromClass = Connector.class) int __mode,
 		@Nullable UriGenericPart __dotDot)
@@ -57,7 +54,6 @@ public interface FileEndPointFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/29
 	 */
-	@SquirrelJMEVendorApi
 	boolean handleAuthority(UriAuthority __auth)
 		throws NullPointerException;
 }

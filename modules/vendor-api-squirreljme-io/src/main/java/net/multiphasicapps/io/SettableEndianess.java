@@ -9,15 +9,12 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is used by both data streams to indicate that they allow their default
  * endianess to be set and obtained.
  *
  * @since 2016/07/10
  */
-@SquirrelJMEVendorApi
 public interface SettableEndianess
 	extends GettableEndianess
 {
@@ -29,7 +26,6 @@ public interface SettableEndianess
 	 * @throws NullPointerException If no endianess was specified.
 	 * @since 2016/07/10
 	 */
-	@SquirrelJMEVendorApi
 	DataEndianess setEndianess(DataEndianess __end)
 		throws NullPointerException;
 }

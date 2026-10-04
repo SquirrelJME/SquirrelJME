@@ -12,7 +12,7 @@ package cc.squirreljme.jvm.mle.scritchui;
 import cc.squirreljme.jvm.mle.constants.UIListType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchListBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/07/16
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchListInterface
 	extends ScritchApiInterface
 {
@@ -33,8 +33,8 @@ public interface ScritchListInterface
 	 * @throws MLECallError If the type is not valid.
 	 * @since 2024/07/16
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchListBracket listNew(
 		@MagicConstant(valuesFromClass = UIListType.class) int __type)
 		throws MLECallError;

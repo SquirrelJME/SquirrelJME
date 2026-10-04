@@ -17,7 +17,7 @@ import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasChildrenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuHasParentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuItemBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/07/20
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchMenuInterface
 	extends ScritchApiInterface
 {
@@ -38,8 +38,8 @@ public interface ScritchMenuInterface
 	 * @throws MLECallError If the menu bar could not be created.
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchMenuBarBracket menuBarNew()
 		throws MLECallError;
 	
@@ -54,7 +54,7 @@ public interface ScritchMenuInterface
 	 * the item already has a parent.
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void menuInsert(@NotNull ScritchMenuHasChildrenBracket __into,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __at,
 		@NotNull ScritchMenuHasParentBracket __item)
@@ -67,8 +67,8 @@ public interface ScritchMenuInterface
 	 * @throws MLECallError If the menu item could not be created.
 	 * @since 2024/07/20
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchMenuItemBracket menuItemNew()
 		throws MLECallError;
 	
@@ -82,7 +82,7 @@ public interface ScritchMenuInterface
 	 * or modifiers are not valid.
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void menuItemSetKey(@NotNull ScritchMenuItemBracket __item,
 		@MagicConstant(valuesFromClass = NonStandardKey.class)
 			@Range(from = 0, to = 65536) int __key,
@@ -97,8 +97,8 @@ public interface ScritchMenuInterface
 	 * @throws MLECallError If the menu could not be created.
 	 * @since 2024/07/21
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchMenuBracket menuNew()
 		throws MLECallError;
 	
@@ -109,7 +109,7 @@ public interface ScritchMenuInterface
 	 * @throws MLECallError If the menu is not valid.
 	 * @since 2024/07/23
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void menuRemoveAll(@NotNull ScritchMenuHasChildrenBracket __menuKind)
 		throws MLECallError;
 }

@@ -11,8 +11,6 @@ package cc.squirreljme.runtime.lcdui.gfx;
 
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -27,13 +25,11 @@ import org.jetbrains.annotations.NotNull;
  * @see ProxyGraphicsTarget
  * @since 2022/02/25
  */
-@SquirrelJMEVendorApi
 public final class ProxyGraphics
 	extends Graphics
 	implements ExtraGraphics
 {
 	/** The target graphics to draw into. */
-	@SquirrelJMEVendorApi
 	protected final ProxyGraphicsTarget target;
 
 	/** The current alpha color. */
@@ -87,7 +83,6 @@ public final class ProxyGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2022/02/25
 	 */
-	@SquirrelJMEVendorApi
 	public ProxyGraphics(ProxyGraphicsTarget __target, int __width,
 		int __height)
 		throws NullPointerException
@@ -827,7 +822,6 @@ public final class ProxyGraphics
 	 * @return The target holder for this {@link ProxyGraphics}.
 	 * @since 2025/11/25
 	 */
-	@SquirrelJMEVendorApi
 	public ProxyGraphicsTarget target()
 	{
 		return this.target;

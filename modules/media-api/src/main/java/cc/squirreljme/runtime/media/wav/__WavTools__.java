@@ -9,8 +9,6 @@
 
 package cc.squirreljme.runtime.media.wav;
 
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.io.EOFException;
 import java.io.InputStream;
@@ -22,7 +20,6 @@ import net.multiphasicapps.io.ExtendedDataInputStream;
  *
  * @since 2025/12/31
  */
-@KeepWhenCompacting
 class __WavTools__ 
 {
 	/** The standard size of a PCM WAV's header. */
@@ -260,7 +257,7 @@ class __WavTools__
 			
 		}
 
-		if (Debugging.VERBOSE)
+		if (Debugging.verbose())
 		{
 			Debugging.debugNote("%s WAV HEADER_START",
 				audioFormat == __WavTools__.FORMAT_IMA_ADPCM ? "IMA ADPCM" :

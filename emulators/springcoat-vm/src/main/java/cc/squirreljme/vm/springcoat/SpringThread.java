@@ -24,9 +24,7 @@ import cc.squirreljme.vm.springcoat.exceptions.SpringVirtualMachineException;
 import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -360,7 +358,7 @@ public final class SpringThread
 				}
 				catch (InvalidClassFormatException __e)
 				{
-					if (Debugging.VERBOSE)
+					if (Debugging.verbose())
 						__e.printStackTrace();
 				}
 				

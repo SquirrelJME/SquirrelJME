@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -24,6 +25,7 @@ import java.lang.ref.WeakReference;
  * @since 2019/05/11
  */
 @Api
+@KeepAbsolutelyEverything("Boxed types cannot be optimized!")
 public final class Integer
 	extends Number
 	implements Comparable<Integer>

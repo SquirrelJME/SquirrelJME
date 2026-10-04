@@ -9,9 +9,7 @@
 
 package cc.squirreljme.debugger;
 
-import cc.squirreljme.runtime.cldc.debug.Debugging;
 import net.multiphasicapps.classfile.Instruction;
-import net.multiphasicapps.classfile.InstructionMnemonics;
 
 /**
  * A standard instruction viewer using SquirrelJME's {@link Instruction}.

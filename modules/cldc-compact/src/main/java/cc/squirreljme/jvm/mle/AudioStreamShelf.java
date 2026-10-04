@@ -9,8 +9,8 @@
 
 package cc.squirreljme.jvm.mle;
 
-import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.brackets.AudioConnectionBracket;
+import cc.squirreljme.jvm.mle.brackets.AudioStreamBracket;
 import cc.squirreljme.jvm.mle.brackets.MidiPortBracket;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamPlayer;
 import cc.squirreljme.jvm.mle.callbacks.AudioStreamRenderer;
@@ -18,7 +18,7 @@ import cc.squirreljme.jvm.mle.constants.AudioStreamChannels;
 import cc.squirreljme.jvm.mle.constants.AudioStreamFormat;
 import cc.squirreljme.jvm.mle.constants.AudioStreamRate;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2025/05/04
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class AudioStreamShelf
 {
 	/**
@@ -58,7 +58,7 @@ public final class AudioStreamShelf
 	 * be attached.
 	 * @since 2025/05/04
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native AudioConnectionBracket attach(
 		@NotNull AudioStreamBracket __stream,
 		@NotNull AudioStreamRenderer __renderer,
@@ -90,8 +90,8 @@ public final class AudioStreamShelf
 	 * @throws MLECallError If the decoder could not be created.
 	 * @since 2025/05/04
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native AudioStreamPlayer decoder(
 		@Nullable String __urlOrFile,
 		@Nullable @Language("mime-type-reference") String __mimeType,
@@ -114,7 +114,7 @@ public final class AudioStreamShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native boolean decoderSupports(
 		@NotNull @Language("mime-type-reference") String __contentType)
 		throws MLECallError;
@@ -127,7 +127,7 @@ public final class AudioStreamShelf
 	 * be disconnected.
 	 * @since 2025/05/25
 	 */
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void disconnect(
 		@NotNull AudioConnectionBracket __conn)
 		throws MLECallError;
@@ -150,8 +150,8 @@ public final class AudioStreamShelf
 	 * support MIDI playback.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native MidiPortBracket midiPort(
 		@NotNull @Language("mime-type-reference") String __mimeType,
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
@@ -172,8 +172,8 @@ public final class AudioStreamShelf
 	 * one that is managed by audio streams.
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native AudioStreamRenderer midiRenderer(
 		@NotNull MidiPortBracket __midiPort)
 		throws MLECallError;
@@ -195,7 +195,7 @@ public final class AudioStreamShelf
 	 * @since 2025/05/04
 	 */
 	@NotNull
-	@SquirrelJMEVendorApi
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native AudioStreamBracket stream(
 		@MagicConstant(valuesFromClass = AudioStreamFormat.class)
 			int __format,

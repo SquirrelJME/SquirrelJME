@@ -33,8 +33,6 @@
 
 package com.keitaiwiki.music;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * Rudimentary sample generator that uses sine waves for everything. This class
  * is intended for basic testing and is not suitable for general use.
@@ -42,12 +40,10 @@ import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
  * @see SamplerProvider
  * @since 2025/05/05
  */
-@SquirrelJMEVendorApi
 public class SineSamplerProvider
 	implements SamplerProvider
 {
 	/** Key index bias */
-	@SquirrelJMEVendorApi
 	static final int A4 = 81;
 	
 	/**
@@ -55,7 +51,6 @@ public class SineSamplerProvider
 	 *
 	 * @since 2025/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public SineSamplerProvider()
 	{
 	}

@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.gcf.file.pseudo;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.full.attrib.ExtraFileAttributes;
 import cc.squirreljme.runtime.gcf.file.FileEndPoint;
@@ -27,17 +26,14 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2025/12/30
  */
-@SquirrelJMEVendorApi
 public class ZipEndPoint
 	extends FileEndPoint
 {
 	/** Decoded host. */
-	@SquirrelJMEVendorApi
 	public static final String DECODED_HOST =
 		"!?x-squirreljme-zip://?!";
 	
 	/** Host. */
-	@SquirrelJMEVendorApi
 	public static final String HOST =
 		"!%3Fx-squirreljme-zip%3A%2F%2F%3F!";
 	
@@ -50,7 +46,6 @@ public class ZipEndPoint
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/27
 	 */
-	@SquirrelJMEVendorApi
 	protected ZipEndPoint(@NotNull UriGenericPart __part, int __mode,
 		@Nullable UriGenericPart __dotDot)
 		throws NullPointerException

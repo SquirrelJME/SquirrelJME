@@ -10,8 +10,6 @@
 package cc.squirreljme.runtime.gcf;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -84,7 +82,7 @@ public class HTTPClientConnection
 		throws IOException
 	{
 		// Transition to the closed state
-		this.tracker._state = HTTPState.CLOSED;
+		this.tracker.state = HTTPState.CLOSED;
 	}
 	
 	/**
@@ -394,7 +392,7 @@ public class HTTPClientConnection
 		throws IOException
 	{
 		/* {@squirreljme.error EC03 Cannot access the request} */
-		if (this.tracker._state != HTTPState.SETUP)
+		if (this.tracker.state != HTTPState.SETUP)
 		{
 			// Clear before it is thrown
 			this._request = null;
@@ -421,7 +419,7 @@ public class HTTPClientConnection
 		
 		// Depends on the state
 		HTTPStateTracker tracker = this.tracker;
-		switch (tracker._state)
+		switch (tracker.state)
 		{
 				// Need to connect to the server, fall through to get the
 				// agent response. Closing the request will send the HTTP

@@ -9,26 +9,32 @@
 
 package com.mexa.opgl;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
+@Api
 public class FloatBuffer
 	extends Buffer
 {
+	@Api
 	public float[] get(int __a, float[] __b, int __c, int __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public int length()
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public void put(int __a, float[] __b, int __c, int __d)
 	{
 		throw Debugging.todo();
 	}
 	
+	@Api
 	public static FloatBuffer allocateDirect(int __a)
 	{
 		throw Debugging.todo();

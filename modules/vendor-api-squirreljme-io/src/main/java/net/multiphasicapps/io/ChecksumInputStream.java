@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -19,16 +18,13 @@ import java.io.InputStream;
  *
  * @since 2017/03/05
  */
-@SquirrelJMEVendorApi
 public class ChecksumInputStream
 	extends InputStream
 {
 	/** The checksum Calculator used. */
-	@SquirrelJMEVendorApi
 	protected final Checksum checksum;
 	
 	/** Input stream. */
-	@SquirrelJMEVendorApi
 	protected final InputStream in;
 	
 	/**
@@ -39,7 +35,6 @@ public class ChecksumInputStream
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
-	@SquirrelJMEVendorApi
 	public ChecksumInputStream(Checksum __calc, InputStream __in)
 		throws NullPointerException
 	{

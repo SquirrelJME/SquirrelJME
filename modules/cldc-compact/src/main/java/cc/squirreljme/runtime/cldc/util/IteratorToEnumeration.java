@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -21,7 +20,6 @@ import java.util.NoSuchElementException;
  * @see EnumerationToIterator
  * @since 2019/05/05
  */
-@SquirrelJMEVendorApi
 public final class IteratorToEnumeration<E>
 	implements Enumeration<E>
 {
@@ -35,7 +33,6 @@ public final class IteratorToEnumeration<E>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/05
 	 */
-	@SquirrelJMEVendorApi
 	public IteratorToEnumeration(Iterator<E> __it)
 		throws NullPointerException
 	{

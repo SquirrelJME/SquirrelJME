@@ -10,10 +10,8 @@
 package cc.squirreljme.fontcompile.out.rafoces;
 
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * This is a list of chain codes which can be used in a table to repeat

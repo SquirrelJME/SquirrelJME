@@ -18,7 +18,6 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchWindowInterface;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.midlet.ApplicationHandler;
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2024/03/09
  */
-@SquirrelJMEVendorApi
 public final class DisplayManager
 {
 	/** The number of available desktop windows. */
@@ -46,11 +44,9 @@ public final class DisplayManager
 	private static volatile DisplayManager _INSTANCE;
 	
 	/** The ScritchUI interface used. */
-	@SquirrelJMEVendorApi
 	protected final ScritchInterface scritch;
 	
 	/** The mapping of displays. */
-	@SquirrelJMEVendorApi
 	private final Map<Integer, DisplayState> _displays =
 		new LinkedHashMap<>();
 	
@@ -77,7 +73,6 @@ public final class DisplayManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	public void displayListenerAdd(DisplayListener __dl)
 		throws NullPointerException
 	{
@@ -94,7 +89,6 @@ public final class DisplayManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	public void displayListenerRemove(DisplayListener __dl)
 		throws NullPointerException
 	{
@@ -114,7 +108,6 @@ public final class DisplayManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/15
 	 */
-	@SquirrelJMEVendorApi
 	public DisplayState locate(Display __d)
 		throws NullPointerException
 	{
@@ -153,7 +146,6 @@ public final class DisplayManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2025/12/15
 	 */
-	@SquirrelJMEVendorApi
 	public DisplayState locate(Displayable __d)
 		throws NullPointerException
 	{
@@ -189,7 +181,6 @@ public final class DisplayManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	public Display[] mapScreens(DisplayFactory __factory)
 		throws NullPointerException
 	{
@@ -235,7 +226,6 @@ public final class DisplayManager
 	 * @return The ScritchUI interface.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	public ScritchInterface scritch()
 	{
 		return this.scritch;
@@ -288,7 +278,6 @@ public final class DisplayManager
 	 * @return The tracker for displays.
 	 * @since 2024/03/09
 	 */
-	@SquirrelJMEVendorApi
 	public static DisplayManager instance()
 	{
 		DisplayManager instance = DisplayManager._INSTANCE;

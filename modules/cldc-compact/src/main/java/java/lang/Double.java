@@ -13,9 +13,11 @@ import cc.squirreljme.jvm.SoftDouble;
 import cc.squirreljme.jvm.mle.MathShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
 @Api
+@KeepAbsolutelyEverything("Boxed types cannot be optimized!")
 public final class Double
 	extends Number
 	implements Comparable<Double>

@@ -11,11 +11,9 @@ package cc.squirreljme.emulator.vm;
 
 import cc.squirreljme.vm.ResourceBasedClassLibrary;
 import cc.squirreljme.vm.VMClassLibrary;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,7 +1,5 @@
-import cc.squirreljme.plugin.general.CollateResourceJarsTask
 import cc.squirreljme.plugin.multivm.*
 import cc.squirreljme.plugin.multivm.ident.SourceTargetClassifier
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -26,6 +24,8 @@ mainClassName = "cc.squirreljme.vm.standalone.main.Main"
 dependencies {
 	implementation project(":emulators:springcoat-vm")
 	implementation project(":emulators:nanocoat-vm")
+
+	implementation project(":emulators:tool-classfile")
 	
 	// Debugger tool for quick usage
 	implementation project(":tools:squirreljme-debugger")

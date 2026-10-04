@@ -9,7 +9,6 @@
 
 package cc.squirreljme.runtime.messaging;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.gcf.CustomConnectionFactory;
 import cc.squirreljme.runtime.gcf.uri.UriPart;
@@ -22,7 +21,6 @@ import javax.microedition.io.ConnectionOption;
  *
  * @since 2022/02/27
  */
-@SquirrelJMEVendorApi
 public class MessageConnectionFactory
 	implements CustomConnectionFactory
 {
@@ -31,7 +29,6 @@ public class MessageConnectionFactory
 	 * @since 2022/02/27
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public Connection connect(UriPart __part, int __mode, boolean __timeouts,
 		ConnectionOption<?>[] __opts)
 		throws IOException, NullPointerException
@@ -51,7 +48,6 @@ public class MessageConnectionFactory
 	 * @since 2022/02/27
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	public String scheme()
 	{
 		return "sms";

@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.io;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,12 +26,10 @@ import java.io.UnsupportedEncodingException;
  *
  * @since 2018/03/05
  */
-@SquirrelJMEVendorApi
 public final class MIMEFileDecoder
 	extends InputStream
 {
 	/** The input base64 data. */
-	@SquirrelJMEVendorApi
 	protected Base64Decoder mime;
 	
 	/** The read mode. */
@@ -49,7 +46,6 @@ public final class MIMEFileDecoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/30
 	 */
-	@SquirrelJMEVendorApi
 	public MIMEFileDecoder(InputStream __in)
 		throws NullPointerException
 	{
@@ -65,7 +61,6 @@ public final class MIMEFileDecoder
 	 * @throws UnsupportedEncodingException If the encoding is not supported.
 	 * @since 2018/11/30
 	 */
-	@SquirrelJMEVendorApi
 	public MIMEFileDecoder(InputStream __in, String __enc)
 		throws NullPointerException, UnsupportedEncodingException
 	{
@@ -79,7 +74,6 @@ public final class MIMEFileDecoder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/05
 	 */
-	@SquirrelJMEVendorApi
 	public MIMEFileDecoder(Reader __in)
 		throws NullPointerException
 	{
@@ -120,7 +114,6 @@ public final class MIMEFileDecoder
 	 * been read yet or has not been specified.
 	 * @since 2018/03/05
 	 */
-	@SquirrelJMEVendorApi
 	public final String filename()
 	{
 		return this._filename;
@@ -133,7 +126,6 @@ public final class MIMEFileDecoder
 	 * been read yet.
 	 * @since 2018/03/05
 	 */
-	@SquirrelJMEVendorApi
 	public final int mode()
 	{
 		return this._mode;

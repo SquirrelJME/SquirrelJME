@@ -9,7 +9,6 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import org.junit.Test;
 
 /**
@@ -17,7 +16,6 @@ import org.junit.Test;
  *
  * @since 2019/12/24
  */
-@SquirrelJMEVendorApi
 public abstract class TestInteger
 	extends __CoreTest__
 {
@@ -26,7 +24,6 @@ public abstract class TestInteger
 	 *
 	 * @since 2026/02/12
 	 */
-	@SquirrelJMEVendorApi
 	public TestInteger()
 	{
 	}
@@ -39,7 +36,6 @@ public abstract class TestInteger
 	 * @since 2019/12/24
 	 */
 	@Test
-	@SquirrelJMEVendorApi
 	public abstract int test()
 		throws Throwable;
 	
@@ -48,7 +44,6 @@ public abstract class TestInteger
 	 * @since 2019/12/24
 	 */
 	@Override
-	@SquirrelJMEVendorApi
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{

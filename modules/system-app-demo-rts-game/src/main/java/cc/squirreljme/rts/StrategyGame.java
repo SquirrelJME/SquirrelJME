@@ -14,7 +14,6 @@ import cc.squirreljme.jvm.mle.scritchui.ScritchInterface;
 import cc.squirreljme.rts.map.WorldMapGenerator;
 import cc.squirreljme.rts.rate.RateController;
 import cc.squirreljme.rts.ui.WindowedFullScreen;
-import cc.squirreljme.runtime.cldc.annotation.KeepWhenCompacting;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
@@ -24,7 +23,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
  *
  * @since 2026/06/10
  */
-@KeepWhenCompacting
 public class StrategyGame
 	extends MIDlet
 {

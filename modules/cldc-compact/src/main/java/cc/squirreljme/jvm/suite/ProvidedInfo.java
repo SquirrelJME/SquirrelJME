@@ -10,7 +10,6 @@
 package cc.squirreljme.jvm.suite;
 
 import cc.squirreljme.jvm.manifest.JavaManifestAttributes;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
 import cc.squirreljme.runtime.cldc.util.StringUtils;
 import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.lang.ref.Reference;
@@ -27,7 +26,6 @@ import java.util.Set;
  *
  * @since 2017/11/30
  */
-@SquirrelJMEVendorApi
 public final class ProvidedInfo
 	implements Iterable<MarkedProvided>
 {
@@ -43,7 +41,6 @@ public final class ProvidedInfo
 	 * @param __provs The provided set.
 	 * @since 2017/12/31
 	 */
-	@SquirrelJMEVendorApi
 	public ProvidedInfo(MarkedProvided... __provs)
 	{
 		// Defensive copy
@@ -64,7 +61,6 @@ public final class ProvidedInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/31
 	 */
-	@SquirrelJMEVendorApi
 	public ProvidedInfo(Collection<MarkedProvided> __provs)
 		throws NullPointerException
 	{
@@ -135,7 +131,6 @@ public final class ProvidedInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/20
 	 */
-	@SquirrelJMEVendorApi
 	public static ProvidedInfo of(SuiteInfo __info)
 		throws InvalidSuiteException, NullPointerException
 	{

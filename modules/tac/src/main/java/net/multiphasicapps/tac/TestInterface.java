@@ -9,15 +9,12 @@
 
 package net.multiphasicapps.tac;
 
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
-
 /**
  * This is an interface for anything which is something that can be tested
  * within the SquirrelJME test framework.
  *
  * @since 2020/02/23
  */
-@SquirrelJMEVendorApi
 @SuppressWarnings("InterfaceWithOnlyOneDirectInheritor")
 public interface TestInterface
 {

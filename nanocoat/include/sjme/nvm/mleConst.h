@@ -346,8 +346,11 @@ typedef enum sjme_nvm_vmDescriptionType
 	/** The number of reserved directories. */
 	SJME_NVM_VM_DESC_DEFAULT_DIR_NUM_RESERVED = 36,
 	
+	/** SquirrelJME Native API Version. */
+	SJME_NVM_VM_DESC_SQUIRRELJME_API_VERSION = 37,
+	
 	/** The current number of properties. */
-	SJME_NVM_VM_DESC_NUM_TYPES = 37,
+	SJME_NVM_VM_DESC_NUM_TYPES = 38,
 } sjme_nvm_vmDescriptionType;
 
 /**

@@ -13,7 +13,7 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScrollPanelBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchViewBracket;
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMEVendorApi;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/07/29
  */
-@SquirrelJMEVendorApi
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchScrollPanelInterface
 	extends ScritchApiInterface, ScritchViewBracket, ScritchContainerBracket
 {
@@ -32,8 +32,8 @@ public interface ScritchScrollPanelInterface
 	 * @throws MLECallError If the scroll panel could not be created.
 	 * @since 2024/07/29
 	 */
-	@SquirrelJMEVendorApi
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchScrollPanelBracket scrollPanelNew()
 		throws MLECallError;
 }

@@ -1,7 +1,5 @@
 import cc.squirreljme.plugin.tasks.MimeDecodeResourcesTask
 import cc.squirreljme.plugin.util.GradleLoggerOutputStream
-import cc.squirreljme.plugin.util.JavaExecSpecFiller
-import cc.squirreljme.plugin.util.SimpleJavaExecSpecFiller
 import lombok.Getter
 
 import javax.inject.Inject
@@ -36,7 +34,7 @@ dependencies {
 	implementation project(":modules:cldc-compact")
 	implementation project(":tools:c-source-writer")
 	implementation project(":modules:vendor-api-squirreljme-io")
-	implementation project(":modules:io-file")
+	implementation project(":tools:io-file")
 	implementation project(":modules:vendor-api-squirreljme-zip")
 	
 	// Lombok for simpler getters/setters
