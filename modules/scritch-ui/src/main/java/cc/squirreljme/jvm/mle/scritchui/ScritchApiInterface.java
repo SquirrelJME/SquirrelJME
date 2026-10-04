@@ -10,12 +10,14 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.callbacks.ShelfCallback;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Base flagging for any ScritchUI interface.
  *
  * @since 2024/07/16
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchApiInterface
 	extends ShelfCallback
 {

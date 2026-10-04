@@ -9,90 +9,113 @@
 
 package cc.squirreljme.jvm.mle.scritchui.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
+
 /**
  * Input method flag types supported for ScritchUI.
  *
  * @since 2024/03/07
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchInputMethodType
 {
 	/** Unknown event. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int UNKNOWN =
 		0;
 	
 	/** Key event: Pressed. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int KEY_PRESSED =
 		1;
 	
 	/** Key event: Released. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int KEY_RELEASED =
 		2;
 	
 	/** Key event: Repeated. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int KEY_REPEATED =
 		4;
 	
 	/** Mouse event: Button pressed. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int MOUSE_BUTTON_PRESSED =
 		8;
 	
 	/** Mouse event: Button released. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int MOUSE_BUTTON_RELEASED =
 		16;
 	
 	/** Mouse event: Motion. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int MOUSE_MOTION =
 		32;
 	
 	/** Gamepad event: Button pressed. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int GAMEPAD_BUTTON_PRESSED =
 		64;
 	
 	/** Gamepad event: Button released. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int GAMEPAD_BUTTON_RELEASED =
 		128;
 	
 	/** Gamepad event: Motion on axis. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int GAMEPAD_AXIS_MOTION =
 		256;
 	
 	/** Touch event: Finger pressed. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int TOUCH_FINGER_PRESSED =
 		512;
 	
 	/** Touch event: Finger released. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int TOUCH_FINGER_RELEASED =
 		1024;
 	
 	/** Touch event: Drag motion. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int TOUCH_DRAG_MOTION =
 		2048;
 	
 	/** Stylus event: Pressed. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int STYLUS_PEN_PRESSED =
 		4096;
 	
 	/** Stylus event: Released. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int STYLUS_PEN_RELEASED =
 		8192;
 	
 	/** Stylus event: Dragging motion. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int STYLUS_DRAG_MOTION =
 		16384;
 	
 	/** Stylus event: Hovering over display. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int STYLUS_HOVER_MOTION =
 		32768;
 	
 	/** Gyroscope event: Axis motion. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int GYRO_AXIS_MOTION =
 		65536;
 	
 	/** Device action (flip open/close, shaken, not stirred). */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int DEVICE_ACTION =
 		131072;
 	
 	/** A keyboard character was typed. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int KEY_CHAR_PRESSED =
 		262144;
 }

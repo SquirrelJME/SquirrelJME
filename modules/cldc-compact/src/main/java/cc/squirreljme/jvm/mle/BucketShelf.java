@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.BucketBracket;
 import cc.squirreljme.jvm.mle.constants.BucketWriteMode;
 import cc.squirreljme.jvm.mle.constants.StandardBucketType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +34,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2025/04/14
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class BucketShelf
 {
 	/**
@@ -44,6 +46,7 @@ public final class BucketShelf
 	 * supported.
 	 * @since 2025/04/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native BucketBracket bucket(
 		@MagicConstant(valuesFromClass = StandardBucketType.class)
 			int __type)
@@ -58,6 +61,7 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native boolean delete(
 		@NotNull BucketBracket __bucket,
 		@NotNull String __file)
@@ -72,6 +76,7 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/17
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native boolean exists(
 		@NotNull BucketBracket __bucket,
 		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
@@ -88,6 +93,7 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/17
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native long lastModifiedTime(
 		@NotNull BucketBracket __bucket,
 		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
@@ -103,6 +109,7 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native long length(
 		@NotNull BucketBracket __bucket,
 		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
@@ -117,6 +124,7 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/16
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native String[] list(
 		@NotNull BucketBracket __bucket)
 		throws MLECallError;
@@ -137,6 +145,7 @@ public final class BucketShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/04/16
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native String[] list(
 		@NotNull BucketBracket __bucket,
 		boolean __not,
@@ -159,6 +168,7 @@ public final class BucketShelf
 	 */
 	@NotNull
 	@Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native String path(@NotNull BucketBracket __bucket)
 		throws MLECallError;
 	
@@ -177,6 +187,7 @@ public final class BucketShelf
 	 * out of bounds or negative.
 	 * @since 2025/04/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int read(
 		@NotNull BucketBracket __bucket,
 		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")
@@ -201,6 +212,7 @@ public final class BucketShelf
 	 * out of bounds or negative.
 	 * @since 2025/04/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void write(
 		@NotNull BucketBracket __bucket,
 		@NotNull @Pattern("([^\"*/:<>?|+,.;=\\[\\]]+|\\w+|\\d+)")

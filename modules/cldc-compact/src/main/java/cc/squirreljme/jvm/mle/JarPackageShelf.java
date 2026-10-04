@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
 import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import cc.squirreljme.runtime.cldc.io.PipeInputStream;
 import java.io.InputStream;
 import org.jetbrains.annotations.CheckReturnValue;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.Range;
  * @since 2020/06/07
  */
 @SuppressWarnings("UnstableApiUsage")
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class JarPackageShelf
 {
 	/**
@@ -33,6 +35,7 @@ public final class JarPackageShelf
 	 * @return The classpath of the current program.
 	 * @since 2020/06/07
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native JarPackageBracket[] classPath();
 	
 	/**
@@ -44,6 +47,7 @@ public final class JarPackageShelf
 	 * @throws MLECallError If either argument is {@code null}.
 	 * @since 2020/07/02
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native boolean equals(
 		@NotNull JarPackageBracket __a,
 		@NotNull JarPackageBracket __b)
@@ -55,6 +59,7 @@ public final class JarPackageShelf
 	 * @return The libraries that are currently available.
 	 * @since 2020/10/31
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native JarPackageBracket[] libraries();
 	
 	/**
@@ -65,6 +70,7 @@ public final class JarPackageShelf
 	 * @throws MLECallError If the library is not valid.
 	 * @since 2023/12/18
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int libraryId(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 	
@@ -81,6 +87,7 @@ public final class JarPackageShelf
 	 * @since 2020/10/31
 	 */
 	@Nullable
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native String libraryPath(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 	
@@ -94,6 +101,7 @@ public final class JarPackageShelf
 	 * @since 2026/01/01
 	 */
 	@Nullable
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native String[] list(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 	
@@ -136,6 +144,7 @@ public final class JarPackageShelf
 	 * @since 2020/06/07
 	 */
 	@Nullable
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native PipeBracket openResourcePipe(
 		@NotNull JarPackageBracket __jar,
 		@NotNull String __rc)
@@ -151,6 +160,7 @@ public final class JarPackageShelf
 	 * @since 2023/07/19
 	 */
 	@Range(from = -1, to = 1296)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int prefixCode(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 	
@@ -170,6 +180,7 @@ public final class JarPackageShelf
 	 * @since 2022/03/04
 	 */
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int rawData(@NotNull JarPackageBracket __jar,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __jarOffset,
 		@NotNull byte[] __b,
@@ -188,6 +199,7 @@ public final class JarPackageShelf
 	 * @since 2022/03/04
 	 */
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int rawSize(@NotNull JarPackageBracket __jar)
 		throws MLECallError;
 }

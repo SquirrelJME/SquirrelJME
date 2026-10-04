@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchLabelBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2024/07/22
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchLabelInterface
 	extends ScritchApiInterface
 {
@@ -30,6 +32,7 @@ public interface ScritchLabelInterface
 	 * @throws MLECallError If the label is not valid.
 	 * @since 2024/07/21
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void labelSetString(@NotNull ScritchLabelBracket __label,
 		@Nullable String __string)
 		throws MLECallError;

@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle.scritchui;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchContainerBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/16
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchContainerInterface
 	extends ScritchApiInterface
 {
@@ -32,6 +34,7 @@ public interface ScritchContainerInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/17
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void containerAdd(@NotNull ScritchContainerBracket __container,
 		@NotNull ScritchComponentBracket __component)
 		throws MLECallError;
@@ -49,6 +52,7 @@ public interface ScritchContainerInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2025/12/23
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void containerGetFrame(@NotNull ScritchContainerBracket __container,
 		@Nullable int[] __contentSize,
 		@Nullable int[] __frameBound,
@@ -62,6 +66,7 @@ public interface ScritchContainerInterface
 	 * @throws MLECallError On null arguments.
 	 * @since 2024/03/17
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void containerRemoveAll(@NotNull ScritchContainerBracket __container)
 		throws MLECallError;
 	
@@ -78,6 +83,7 @@ public interface ScritchContainerInterface
 	 * are not valid.
 	 * @since 2024/03/26
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void containerSetBounds(@NotNull ScritchContainerBracket __container,
 		@NotNull ScritchComponentBracket __component,
 		int __x, int __y,

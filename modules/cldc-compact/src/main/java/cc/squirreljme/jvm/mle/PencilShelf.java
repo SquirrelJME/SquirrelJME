@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.Range;
  * @since 2020/09/25
  */
 @SuppressWarnings("UnstableApiUsage")
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class PencilShelf
 {
 	/**
@@ -65,6 +67,7 @@ public final class PencilShelf
 	 * does not support this operation.
 	 * @since 2023/02/19
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareCopyArea(@NotNull PencilBracket __g,
 		int __sx, int __sy,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
@@ -82,6 +85,7 @@ public final class PencilShelf
 	 * closed.
 	 * @since 2025/02/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareCloseGraphics(@NotNull PencilBracket __g)
 		throws MLECallError;
 	
@@ -117,6 +121,7 @@ public final class PencilShelf
 	 * to draw is not valid.
 	 * @since 2024/07/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawArc(@NotNull PencilBracket __g,
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
@@ -137,6 +142,7 @@ public final class PencilShelf
 	 * offset and/or length are out of bounds.
 	 * @since 2026/01/16
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawChar(@NotNull PencilBracket __g,
 		char __s, int __x, int __y, int __anchor)
 		throws MLECallError;
@@ -156,6 +162,7 @@ public final class PencilShelf
 	 * offset and/or length are out of bounds.
 	 * @since 2023/02/19
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawChars(@NotNull PencilBracket __g,
 		@NotNull char[] __s,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
@@ -174,6 +181,7 @@ public final class PencilShelf
 	 * the width is negative.
 	 * @since 2024/05/17
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawHoriz(@NotNull PencilBracket __g,
 		int __x, int __y, @Range(from = 1, to = Integer.MAX_VALUE) int __w)
 		throws MLECallError;
@@ -189,6 +197,7 @@ public final class PencilShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawLine(@NotNull PencilBracket __g,
 		int __x1, int __y1, int __x2, int __y2)
 		throws MLECallError;
@@ -202,6 +211,7 @@ public final class PencilShelf
 	 * @throws MLECallError On null arguments or if the pencil is not valid.
 	 * @since 2024/05/17
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawPixel(@NotNull PencilBracket __g,
 		int __x, int __y)
 		throws MLECallError;
@@ -219,6 +229,7 @@ public final class PencilShelf
 	 * are not valid.
 	 * @since 2024/07/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawPolyline(@NotNull PencilBracket __g,
 		@NotNull int[] __x,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __xOff,
@@ -243,6 +254,7 @@ public final class PencilShelf
 	 * the given operation.
 	 * @since 2023/02/16
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawRect(@NotNull PencilBracket __g,
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
@@ -275,6 +287,7 @@ public final class PencilShelf
 	 * pixel format is not valid, or if the pencil is not valid.
 	 * @since 2025/12/07
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawRegion(
 		@NotNull PencilBracket __hardware,
 		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
@@ -306,6 +319,7 @@ public final class PencilShelf
 	 * round rectangle is not valid.
 	 * @since 2025/11/30
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawRoundRect(@NotNull PencilBracket __g,
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
@@ -329,6 +343,7 @@ public final class PencilShelf
 	 * negative or exceed the string bounds.
 	 * @since 2023/02/19
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawSubstring(@NotNull PencilBracket __g,
 		@NotNull String __s,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o, 
@@ -351,6 +366,7 @@ public final class PencilShelf
 	 * not actually support the given operation.
 	 * @since 2025/11/30
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawTriangle(@NotNull PencilBracket __g,
 		int __x1, int __y1, int __x2, int __y2, int __x3, int __y3)
 		throws MLECallError;
@@ -379,6 +395,7 @@ public final class PencilShelf
 	 * @throws MLECallError On null arguments.
 	 * @since 2022/01/26
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareDrawXRGB32Region(
 		@NotNull PencilBracket __hardware, @NotNull int[] __data,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __off,
@@ -417,6 +434,7 @@ public final class PencilShelf
 	 * @since 2024/07/14
 	 */
 	@Api
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareFillArc(@NotNull PencilBracket __g,
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
@@ -439,6 +457,7 @@ public final class PencilShelf
 	 * are not valid; or if the values are out of bounds of the array.
 	 * @since 2025/11/30
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareFillPolygon(@NotNull PencilBracket __g,
 		@NotNull int[] __x,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __xOff,
@@ -458,6 +477,7 @@ public final class PencilShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareFillRect(@NotNull PencilBracket __g,
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
@@ -484,6 +504,7 @@ public final class PencilShelf
 	 * @since 2025/11/30
 	 */
 	@Api
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareFillRoundRect(@NotNull PencilBracket __g,
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
@@ -507,6 +528,7 @@ public final class PencilShelf
 	 * not actually support the given operation.
 	 * @since 2023/02/16
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareFillTriangle(@NotNull PencilBracket __g,
 		int __x1, int __y1, int __x2, int __y2, int __x3, int __y3)
 		throws MLECallError;
@@ -520,6 +542,7 @@ public final class PencilShelf
 	 * @since 2025/12/07
 	 */
 	@MagicConstant(valuesFromClass = UIPixelFormat.class)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int hardwareGetPixelFormat(
 		@NotNull PencilBracket __g)
 		throws MLECallError;
@@ -550,6 +573,7 @@ public final class PencilShelf
 	 * pixel format is not valid, or if the pencil is not valid.
 	 * @since 2025/12/04
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareGetRegion(@NotNull PencilBracket __g,
 		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
 		@NotNull Object __data,
@@ -569,6 +593,7 @@ public final class PencilShelf
 	 * @throws MLECallError On null arguments or if the pencil is not valid.
 	 * @since 2024/05/12
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native boolean hardwareHasAlpha(@NotNull PencilBracket __g)
 		throws MLECallError;
 	
@@ -580,6 +605,7 @@ public final class PencilShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareSetAlphaColor(@NotNull PencilBracket __g,
 		int __argb)
 		throws MLECallError;
@@ -592,6 +618,7 @@ public final class PencilShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareSetBlendingMode(
 		@NotNull PencilBracket __g,
 		@MagicConstant(valuesFromClass = PencilBlendingMode.class) int __mode)
@@ -608,6 +635,7 @@ public final class PencilShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareSetClip(@NotNull PencilBracket __g,
 		int __x, int __y,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
@@ -622,6 +650,7 @@ public final class PencilShelf
 	 * this operation.
 	 * @since 2023/02/19
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareSetDefaultFont(
 		@NotNull PencilBracket __g)
 		throws MLECallError;
@@ -636,6 +665,7 @@ public final class PencilShelf
 	 * this operation.
 	 * @since 2023/02/19
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareSetFont(@NotNull PencilBracket __g,
 		@NotNull PencilFontBracket __font, @Nullable int[] __fontParams)
 		throws MLECallError;
@@ -648,6 +678,7 @@ public final class PencilShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareSetStrokeStyle(
 		@NotNull PencilBracket __g,
 		int __style)
@@ -662,6 +693,7 @@ public final class PencilShelf
 	 * @throws MLECallError On {@code null} arguments.
 	 * @since 2021/12/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void hardwareTranslate(@NotNull PencilBracket __g,
 		int __x, int __y)
 		throws MLECallError;
@@ -675,6 +707,7 @@ public final class PencilShelf
 	 * @throws MLECallError If the pencil is not valid.
 	 * @since 2024/08/11
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int hardwareTranslateXY(@NotNull PencilBracket __g,
 		boolean __y)
 		throws MLECallError;
@@ -695,6 +728,7 @@ public final class PencilShelf
 	 * @since 2021/12/05
 	 */
 	@Nullable
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native Object nativeImageLoadRGBA(
 		@MagicConstant(valuesFromClass = NativeImageLoadType.class) int __type,
 		@NotNull byte[] __b,
@@ -714,5 +748,6 @@ public final class PencilShelf
 	 */
 	@CheckReturnValue
 	@MagicConstant(valuesFromClass = NativeImageLoadType.class)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int nativeImageLoadTypes();
 }

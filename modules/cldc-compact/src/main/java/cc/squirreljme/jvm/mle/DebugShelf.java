@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.brackets.TracePointBracket;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.UnknownNullability;
  *
  * @since 2020/06/11
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class DebugShelf
 {
 	/** Verbose ID for internal threads. */
@@ -47,6 +49,7 @@ public final class DebugShelf
 	 *
 	 * @since 2024/01/30
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void breakpoint();
 	
 	/**
@@ -56,6 +59,7 @@ public final class DebugShelf
 	 * @return The trace that was within the given throwable.
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native TracePointBracket[] getThrowableTrace(
 		@NotNull Throwable __t);
 	
@@ -67,6 +71,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@Range(from = -1, to = Long.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native long pointAddress(@NotNull TracePointBracket __point);
 	
 	/**
@@ -77,6 +82,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@Nullable
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native String pointClass(@NotNull TracePointBracket __point);
 	
 	/**
@@ -87,6 +93,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@Nullable
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native String pointFile(@NotNull TracePointBracket __point);
 	
 	/**
@@ -97,6 +104,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@Range(from = -1, to = Long.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int pointJavaAddress(
 		@NotNull TracePointBracket __point);
 	
@@ -108,6 +116,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@Range(from = -1, to = 255)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int pointJavaOperation(
 		@NotNull TracePointBracket __point);
 	
@@ -119,6 +128,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@Range(from = -1, to = Integer.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int pointLine(@NotNull TracePointBracket __point);
 	
 	/**
@@ -129,6 +139,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@UnknownNullability
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native String pointMethodName(
 		@NotNull TracePointBracket __point);
 	
@@ -140,6 +151,7 @@ public final class DebugShelf
 	 * @since 2020/06/16
 	 */
 	@Nullable
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native String pointMethodType(
 		@NotNull TracePointBracket __point);
 	
@@ -150,6 +162,7 @@ public final class DebugShelf
 	 * @return The stack trace.
 	 * @since 2020/06/11
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native TracePointBracket[] traceStack();
 	
 	/**
@@ -161,6 +174,7 @@ public final class DebugShelf
 	 * not a {@link Throwable}.
 	 * @since 2025/07/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native TracePointBracket[] traceThrowable(
 		@NotNull Throwable __throwable)
 		throws MLECallError;
@@ -179,6 +193,7 @@ public final class DebugShelf
 	 * @since 2020/07/11
 	 */
 	@TestOnly
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int verbose(
 		@MagicConstant(flagsFromClass = VerboseDebugFlag.class) int __flags);
 	
@@ -199,6 +214,7 @@ public final class DebugShelf
 	 * @since 2022/06/12
 	 */
 	@TestOnly
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int verboseInternalThread(
 		@MagicConstant(flagsFromClass = VerboseDebugFlag.class) int __flags);
 	
@@ -214,5 +230,6 @@ public final class DebugShelf
 	 * @since 2020/07/11
 	 */
 	@TestOnly
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void verboseStop(int __code);
 }

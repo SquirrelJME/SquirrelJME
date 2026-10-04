@@ -56,6 +56,10 @@ MLE_FUNC_PROTO(jstring, vmDescription, jint id)
 	char fileName[SJME_MAX_PATH];
 	sjme_path fullPath;
 
+	// SquirrelJME API Version
+	if (id == SJME_NVM_VM_DESC_SQUIRRELJME_API_VERSION)
+		return (*env)->NewStringUTF(env, SQUIRRELJME_VERSION);
+
 	// Executable path of the VM binary (EXECUTABLE_PATH)
 	if (id == SJME_NVM_VM_DESC_EXECUTABLE_PATH)
 	{

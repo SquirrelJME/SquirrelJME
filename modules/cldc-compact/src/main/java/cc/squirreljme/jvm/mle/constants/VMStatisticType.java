@@ -9,26 +9,33 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
+
 /**
  * Used to get a statistic from the VM.
  *
  * @since 2020/06/17
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface VMStatisticType
 {
 	/** Unspecified. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte UNSPECIFIED =
 		0;
 	
 	/** The amount of free memory. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MEM_FREE =
 		1;
 	
 	/** The maximum amount of memory. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MEM_MAX =
 		2;
 	
 	/** The amount of used memory. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MEM_USED =
 		3;
 	
@@ -37,6 +44,7 @@ public interface VMStatisticType
 	 * {@link ThreadModelType#SINGLE_THREAD_COOP} then this should always
 	 * return 1.
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte CPU_THREAD_COUNT =
 		4;
 	
@@ -48,10 +56,12 @@ public interface VMStatisticType
 	 * thread, a different thread, or a different thread will have the same
 	 * root instance ID.
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte ROOT_INSTANCE_ID =
 		5;
 	
 	/** The number of statistics. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_STATISTICS =
 		6;
 }

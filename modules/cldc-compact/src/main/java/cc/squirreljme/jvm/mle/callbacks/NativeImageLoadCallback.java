@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.callbacks;
 
 import cc.squirreljme.jvm.mle.PencilShelf;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Callback to be used with
@@ -19,6 +20,7 @@ import cc.squirreljme.jvm.mle.PencilShelf;
  *
  * @since 2022/06/28
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface NativeImageLoadCallback
 	extends ShelfCallback
 {
@@ -33,6 +35,7 @@ public interface NativeImageLoadCallback
 	 * @param __hasAlpha Does this image have alpha?
 	 * @since 2022/06/28
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void addImage(int[] __buf, int __off, int __len, int __frameDelay,
 		boolean __hasAlpha);
 	
@@ -43,6 +46,7 @@ public interface NativeImageLoadCallback
 	 *
 	 * @since 2024/01/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void cancel();
 	
 	/**
@@ -52,6 +56,7 @@ public interface NativeImageLoadCallback
 	 * {@code null}.
 	 * @since 2022/06/28
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	Object finish();
 	
 	/**
@@ -63,6 +68,7 @@ public interface NativeImageLoadCallback
 	 * @param __scalable Is this image scalable?
 	 * @since 2022/06/28
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void initialize(int __width, int __height, boolean __animated,
 		boolean __scalable);
 	
@@ -72,6 +78,7 @@ public interface NativeImageLoadCallback
 	 * @param __loopCount The loop count.
 	 * @since 2022/06/28
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void setLoopCount(int __loopCount);
 	
 	/**
@@ -86,6 +93,7 @@ public interface NativeImageLoadCallback
 	 * adding an image.
 	 * @since 2024/01/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	boolean setPalette(int[] __colors, int __off, int __len,
 		boolean __hasAlpha, int __transDx);
 }

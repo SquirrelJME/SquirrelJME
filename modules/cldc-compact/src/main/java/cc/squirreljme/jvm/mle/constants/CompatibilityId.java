@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
+
 /**
  * Compatibility flags which violate Java ME standards and are very specific
  * to single sets of devices and/or applications. These options should rarely,
@@ -21,9 +23,11 @@ package cc.squirreljme.jvm.mle.constants;
  *
  * @since 2025/11/27
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface CompatibilityId
 {
 	/** Unknown compatibility flag. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte UNKNOWN =
 		0;
 	
@@ -32,6 +36,7 @@ public interface CompatibilityId
 	 * to ensure that they are running only on specific Konami demo devices.
 	 * If enabled, this enables support for those checks.}
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte KONAMI_DEMO_CHECK =
 		1;
 	
@@ -40,6 +45,7 @@ public interface CompatibilityId
 	 * specification by illegally storing the Graphics context when they
 	 * should not, this forces a buffer to be used.}
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte FORCE_LCDUI_BUFFER =
 		2;
 }

@@ -17,6 +17,7 @@ import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.constants.TaskPipeRedirectType;
 import cc.squirreljme.jvm.mle.constants.TaskStatusType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import java.io.Closeable;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.CheckReturnValue;
@@ -29,6 +30,7 @@ import org.jetbrains.annotations.Range;
  * @since 2020/07/02
  */
 @SuppressWarnings("UnstableApiUsage")
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class TaskShelf
 {
 	/**
@@ -47,6 +49,7 @@ public final class TaskShelf
 	 * @since 2020/07/09
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native TaskBracket[] active();
 	
 	/**
@@ -56,6 +59,7 @@ public final class TaskShelf
 	 * @since 2020/07/02
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native TaskBracket current();
 	
 	/**
@@ -67,6 +71,7 @@ public final class TaskShelf
 	 * @throws MLECallError If either argument is {@code null}.
 	 * @since 2020/07/02
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native boolean equals(@NotNull TaskBracket __a,
 		@NotNull TaskBracket __b)
 		throws MLECallError;
@@ -81,6 +86,7 @@ public final class TaskShelf
 	 * @since 2020/07/02
 	 */
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int exitCode(@NotNull TaskBracket __task)
 		throws MLECallError;
 	
@@ -94,6 +100,7 @@ public final class TaskShelf
 	 * if {@code __outMessage} is too small.
 	 * @since 2020/07/02
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native TracePointBracket[] getTrace(
 		@NotNull TaskBracket __task,
 		@NotNull String[] __outMessage)
@@ -124,6 +131,7 @@ public final class TaskShelf
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Range(from = -2, to = Integer.MAX_VALUE)
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int read(@NotNull TaskBracket __task,
 		@MagicConstant(valuesFromClass = StandardPipeType.class) int __fd,
 		@NotNull byte[] __b,
@@ -160,6 +168,7 @@ public final class TaskShelf
 	 * are not valid.
 	 * @since 2020/07/02
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native TaskBracket start(
 		@NotNull JarPackageBracket[] __classPath, @NotNull String __mainClass,
 		@NotNull String[] __args,
@@ -179,6 +188,7 @@ public final class TaskShelf
 	 * @since 2020/07/02
 	 */
 	@MagicConstant(valuesFromClass = TaskStatusType.class)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int status(@NotNull TaskBracket __task)
 		throws MLECallError;
 }

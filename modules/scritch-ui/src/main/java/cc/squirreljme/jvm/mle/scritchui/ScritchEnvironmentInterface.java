@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.constants.PencilFontFace;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchWindowManagerType;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/07
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchEnvironmentInterface
 	extends ScritchApiInterface
 {
@@ -35,6 +37,7 @@ public interface ScritchEnvironmentInterface
 	 * @since 2024/06/12
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	PencilFontBracket[] builtinFonts();
 	
 	/**
@@ -49,6 +52,7 @@ public interface ScritchEnvironmentInterface
 	 * @since 2026/04/10
 	 */
 	@Nullable
+	@SquirrelJMENativeApi(min = "0.4.0")
 	PencilFontBracket fontByFace(
 		@MagicConstant(flagsFromClass = PencilFontFace.class) int __inFace,
 		@Nullable int[] __inParams,
@@ -67,6 +71,7 @@ public interface ScritchEnvironmentInterface
 	 * @since 2024/06/14
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	PencilFontBracket fontDerive(@NotNull PencilFontBracket __font,
 		@Nullable int[] __deriveParams,
 		@Nullable int[] __newParams)
@@ -78,6 +83,7 @@ public interface ScritchEnvironmentInterface
 	 * @return If sleep is being inhibited.
 	 * @since 2024/03/09
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	boolean isInhibitingSleep();
 	
 	/**
@@ -87,6 +93,7 @@ public interface ScritchEnvironmentInterface
 	 * @since 2024/03/09
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchLAFInterface lookAndFeel();
 	
 	/**
@@ -104,6 +111,7 @@ public interface ScritchEnvironmentInterface
 	 * @param __inhibit If sleep and/or screen saver should be inhibited.
 	 * @since 2024/03/09
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void setInhibitSleep(boolean __inhibit);
 	
 	/**
@@ -115,5 +123,6 @@ public interface ScritchEnvironmentInterface
 	 */
 	@Range(from = 0, to = ScritchWindowManagerType.NUM_TYPES)
 	@MagicConstant(valuesFromClass = ScritchWindowManagerType.class)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int windowManagerType();
 }

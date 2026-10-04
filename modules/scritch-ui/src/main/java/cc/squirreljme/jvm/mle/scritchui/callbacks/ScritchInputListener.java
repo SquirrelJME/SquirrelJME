@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle.scritchui.callbacks;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchInputMethodType;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/03/07
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchInputListener
 	extends ScritchListener
 {
@@ -44,6 +46,7 @@ public interface ScritchInputListener
 	 * @since 2024/06/29
 	 */
 	@ScritchEventLoop
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void inputEvent(
 		@NotNull ScritchComponentBracket __component,
 		@MagicConstant(valuesFromClass = ScritchInputMethodType.class)

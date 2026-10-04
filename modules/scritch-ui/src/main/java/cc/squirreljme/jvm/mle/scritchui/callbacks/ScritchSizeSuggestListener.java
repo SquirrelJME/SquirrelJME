@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle.scritchui.callbacks;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchViewBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 2024/07/29
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchSizeSuggestListener
 	extends ScritchListener
 {
@@ -35,6 +37,7 @@ public interface ScritchSizeSuggestListener
 	 * @since 2024/07/29
 	 */
 	@ScritchEventLoop
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void sizeSuggest(@NotNull ScritchViewBracket __view,
 		@Nullable ScritchComponentBracket __subComponent,
 		int __w, int __h)

@@ -9,14 +9,18 @@
 
 package cc.squirreljme.jvm.mle.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
+
 /**
  * The type of list to use.
  *
  * @since 2020/10/17
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface UIListType
 {
 	/** Only one element may be selected at a time. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte EXCLUSIVE =
 		0;
 	
@@ -24,14 +28,17 @@ public interface UIListType
 	 * The item that is focused is always the only one selected, pressing an
 	 * action key (like enter/space) will activate the item.
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte IMPLICIT =
 		1;
 	
 	/** Any number of items may be selected. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MULTIPLE =
 		2;
 	
 	/** The number of list types. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_LIST_TYPES =
 		3;
 }

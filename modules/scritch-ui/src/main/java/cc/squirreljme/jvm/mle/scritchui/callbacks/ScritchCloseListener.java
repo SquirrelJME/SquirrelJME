@@ -12,12 +12,14 @@ package cc.squirreljme.jvm.mle.scritchui.callbacks;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Listener which is called when a window is requested to be closed.
  *
  * @since 2024/05/13
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchCloseListener
 	extends ScritchListener
 {
@@ -30,6 +32,7 @@ public interface ScritchCloseListener
 	 * @since 2024/05/13
 	 */
 	@ScritchEventLoop
+	@SquirrelJMENativeApi(min = "0.4.0")
 	boolean closed(ScritchWindowBracket __window)
 		throws MLECallError;
 }

@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle.scritchui;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchScreenBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/07
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchScreenInterface
 	extends ScritchApiInterface
 {
@@ -33,6 +35,7 @@ public interface ScritchScreenInterface
 	 * @since 2024/03/09
 	 */
 	@Range(from = 0, to = Integer.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int screenDpi(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 	
@@ -48,6 +51,7 @@ public interface ScritchScreenInterface
 	 * valid.
 	 * @since 2025/12/23
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void screenGetBounds(@NotNull ScritchScreenBracket __screen,
 		@Nullable ScritchComponentBracket __for,
 		@NotNull int[] __pixels, @NotNull int[] __mm)
@@ -61,6 +65,7 @@ public interface ScritchScreenInterface
 	 * @throws MLECallError If the screen is null or not valid.
 	 * @since 2024/03/10
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	boolean screenIsBuiltIn(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 	
@@ -72,6 +77,7 @@ public interface ScritchScreenInterface
 	 * @throws MLECallError If the screen is null or not valid.
 	 * @since 2024/03/11
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	boolean screenIsPortrait(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 	
@@ -84,6 +90,7 @@ public interface ScritchScreenInterface
 	 * @since 2024/03/09
 	 */
 	@Range(from = 0, to = Integer.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int screenId(@NotNull ScritchScreenBracket __screen)
 		throws MLECallError;
 }

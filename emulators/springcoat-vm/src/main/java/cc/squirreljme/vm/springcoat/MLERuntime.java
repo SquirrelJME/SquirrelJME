@@ -19,6 +19,7 @@ import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.lang.LineEndingUtils;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 
@@ -325,6 +326,9 @@ public enum MLERuntime
 					
 				case VMDescriptionType.PATH_SEPARATOR:
 					return System.getProperty("file.separator");
+					
+				case VMDescriptionType.SQUIRRELJME_API_VERSION:
+					return SquirrelJME.RUNTIME_VERSION;
 			}
 			
 			return null;

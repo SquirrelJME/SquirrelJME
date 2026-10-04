@@ -9,12 +9,15 @@
 
 package cc.squirreljme.jvm.mle.callbacks;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
+
 /**
  * An extension of {@link AudioStreamRenderer} which allows for control of
  * playback.
  *
  * @since 2025/05/04
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface AudioStreamPlayer
 	extends AudioStreamRenderer
 {

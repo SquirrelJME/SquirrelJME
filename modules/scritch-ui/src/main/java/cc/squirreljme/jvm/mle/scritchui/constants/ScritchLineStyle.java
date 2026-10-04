@@ -9,11 +9,14 @@
 
 package cc.squirreljme.jvm.mle.scritchui.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
+
 /**
  * Represents the style of line used.
  *
  * @since 2024/03/09
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchLineStyle
 {
 }

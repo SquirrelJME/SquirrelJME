@@ -112,3 +112,17 @@ message(STATUS
 	"Build ID (if any): ${SQUIRRELJME_VERSION_BUILD}")
 message(STATUS
 	"Stability: ${SQUIRRELJME_VERSION_STABILITY}")
+
+# Declare Version
+add_compile_definitions(
+	SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
+add_compile_definitions(
+	SQUIRRELJME_VERSION_BUILD="${SQUIRRELJME_VERSION_BUILD}")
+add_compile_definitions(
+	SQUIRRELJME_VERSION_STABILITY="${SQUIRRELJME_VERSION_STABILITY}")
+add_compile_definitions(
+	SQUIRRELJME_VERSION_ID="${SQUIRRELJME_VERSION_ID}")
+
+# Trim is the version without quotes
+add_compile_definitions(
+	SQUIRRELJME_VERSION_TRIM=${SQUIRRELJME_VERSION})

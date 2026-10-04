@@ -12,6 +12,7 @@ package cc.squirreljme.jvm.mle;
 import cc.squirreljme.jvm.mle.brackets.NativeArchiveBracket;
 import cc.squirreljme.jvm.mle.brackets.NativeArchiveEntryBracket;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import java.io.InputStream;
 import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.Pattern;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/03/05
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class NativeArchiveShelf
 {
 	/**
@@ -43,6 +45,7 @@ public final class NativeArchiveShelf
 	 * was {@code null}.
 	 * @since 2024/03/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void archiveClose(
 		@NotNull NativeArchiveBracket __archive)
 		throws MLECallError;
@@ -57,6 +60,7 @@ public final class NativeArchiveShelf
 	 * @since 2024/03/05
 	 */
 	@Nullable
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native NativeArchiveEntryBracket archiveEntry(
 		@NotNull NativeArchiveBracket __archive,
 		@NotNull @Language("file-reference")
@@ -76,6 +80,7 @@ public final class NativeArchiveShelf
 	 * @since 2024/03/05
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native NativeArchiveBracket archiveOpenZip(
 		@NotNull byte[] __buf,
 		@Range(from=0, to=Integer.MAX_VALUE) int __off,
@@ -90,6 +95,7 @@ public final class NativeArchiveShelf
 	 * @throws MLECallError If the entry is not valid.
 	 * @since 2024/03/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native boolean entryIsDirectory(
 		@NotNull NativeArchiveEntryBracket __entry)
 		throws MLECallError;
@@ -102,6 +108,7 @@ public final class NativeArchiveShelf
 	 * @throws MLECallError If the entry is not valid, or it is a directory.
 	 * @since 2024/03/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native InputStream entryOpen(
 		@NotNull NativeArchiveEntryBracket __entry)
 		throws MLECallError;
@@ -114,6 +121,7 @@ public final class NativeArchiveShelf
 	 * @throws MLECallError If the entry is not valid.
 	 * @since 2024/03/05
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native long entryUncompressedSize(
 		@NotNull NativeArchiveEntryBracket __entry)
 		throws MLECallError;

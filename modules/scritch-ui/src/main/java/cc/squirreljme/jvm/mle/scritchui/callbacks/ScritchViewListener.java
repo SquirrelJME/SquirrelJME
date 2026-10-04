@@ -9,11 +9,14 @@
 
 package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
+
 /**
  * Listener for changes to the viewport.
  *
  * @since 2024/07/29
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchViewListener
 	extends ScritchListener
 {

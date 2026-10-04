@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
 import cc.squirreljme.jvm.mle.scritchui.ScritchLAFInterface;
 import cc.squirreljme.jvm.mle.scritchui.constants.ScritchLAFElementColor;
+import cc.squirreljme.jvm.suite.SuiteVersion;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.mle.PencilGraphics;
@@ -20,6 +21,7 @@ import cc.squirreljme.runtime.lcdui.scritchui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.scritchui.ScritchLcdUiUtils;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -203,17 +205,37 @@ public class SplashScreenImage
 		Font verFont = this._verFont;
 		int vfH = verFont.getHeight();
 		
-		// Draw version number
+		// It is possible for the runtime and API versions to differ
+		SuiteVersion runtimeVer = SquirrelJME.versionRuntime();
+		SuiteVersion apiVer = SquirrelJME.versionApi();
+		
+		// Draw runtime version number
 		__g.setAlphaColor(255, 0, 0, 0);
 		__g.setFont(verFont);
-		__g.drawString(SquirrelJME.RUNTIME_VERSION, vx, vy,
-			Graphics.RIGHT | Graphics.TOP);
+		if (!Objects.equals(runtimeVer, apiVer))
+			__g.drawString("RT " + runtimeVer, vx, vy,
+				Graphics.RIGHT | Graphics.TOP);
+		else
+			__g.drawString(runtimeVer.toString(), vx, vy,
+				Graphics.RIGHT | Graphics.TOP);
+		
+		// Is this on a newer/older version of SquirrelJME, API wise?
+		int addStep = 0;
+		if (!Objects.equals(runtimeVer, apiVer))
+		{
+			// Draw the API version
+			__g.drawString("API " + apiVer,
+				vx, vy + vfH + addStep,
+				Graphics.RIGHT | Graphics.TOP);
+			
+			// Make sure the debug mark is on drawing over this
+			addStep = vfH;
+		}
 		
 		// Is this a debug build? For release builds this is optimized
 		// away by ProGuard
-		__g.setColor(0x000000);
 		if (Debugging.enabled())
-			__g.drawString("DEBUG", vx, vy + vfH,
+			__g.drawString("DEBUG", vx, vy + vfH + addStep,
 				Graphics.RIGHT | Graphics.TOP);
 		
 		// Which VM is this actually running on?

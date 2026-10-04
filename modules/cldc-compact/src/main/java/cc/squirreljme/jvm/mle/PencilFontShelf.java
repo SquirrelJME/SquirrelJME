@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilFontFace;
 import cc.squirreljme.jvm.mle.constants.PencilFontStyle;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.Range;
  * @since 2024/05/14
  */
 @SuppressWarnings("UnstableApiUsage")
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class PencilFontShelf
 {
 	/**
@@ -46,6 +48,7 @@ public final class PencilFontShelf
 	 * @return If the two fonts are the same.
 	 * @since 2024/05/17
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native boolean equals(
 		@Nullable PencilFontBracket __a, @Nullable int[] __aParams,
 		@Nullable PencilFontBracket __b, @Nullable int[] __bParams);
@@ -60,6 +63,7 @@ public final class PencilFontShelf
 	 * @since 2024/05/14
 	 */
 	@Range(from = -1, to = 1)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int metricCharDirection(
 		@NotNull PencilFontBracket __font,
 		int __c)
@@ -75,6 +79,7 @@ public final class PencilFontShelf
 	 * @throws MLECallError On null arguments or if the font is not valid.
 	 * @since 2024/05/17
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native boolean metricCharValid(
 		@NotNull PencilFontBracket __font,
 		int __c)
@@ -89,6 +94,7 @@ public final class PencilFontShelf
 	 * @since 2024/05/17
 	 */
 	@MagicConstant(flagsFromClass = PencilFontFace.class)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int metricFontFace(
 		@NotNull PencilFontBracket __font)
 		throws MLECallError;
@@ -102,6 +108,7 @@ public final class PencilFontShelf
 	 * @since 2024/05/17
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native String metricFontName(
 		@NotNull PencilFontBracket __font)
 		throws MLECallError;
@@ -115,6 +122,7 @@ public final class PencilFontShelf
 	 * @since 2024/05/17
 	 */
 	@MagicConstant(flagsFromClass = PencilFontStyle.class)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int metricFontStyle(
 		@NotNull PencilFontBracket __font)
 		throws MLECallError;
@@ -129,6 +137,7 @@ public final class PencilFontShelf
 	 * @throws MLECallError If the font is not valid.
 	 * @since 2024/05/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int metricPixelAscent(
 		@NotNull PencilFontBracket __font,
 		@Nullable int[] __params,
@@ -144,6 +153,7 @@ public final class PencilFontShelf
 	 * @throws MLECallError If the font is not valid.
 	 * @since 2024/05/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int metricPixelBaseline(
 		@NotNull PencilFontBracket __font,
 		@Nullable int[] __params)
@@ -159,6 +169,7 @@ public final class PencilFontShelf
 	 * @throws MLECallError If the font is not valid.
 	 * @since 2024/05/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int metricPixelDescent(
 		@NotNull PencilFontBracket __font,
 		@Nullable int[] __params,
@@ -174,6 +185,7 @@ public final class PencilFontShelf
 	 * @throws MLECallError If the font is not valid.
 	 * @since 2024/05/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int metricPixelLeading(
 		@NotNull PencilFontBracket __font,
 		@Nullable int[] __params)
@@ -190,6 +202,7 @@ public final class PencilFontShelf
 	 * @since 2024/05/17
 	 */
 	@Range(from = 1, to = Integer.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int metricPixelSize(
 		@NotNull PencilFontBracket __font,
 		@Nullable int[] __params,
@@ -207,6 +220,7 @@ public final class PencilFontShelf
 	 * @since 2024/05/14
 	 */
 	@Range(from = 0, to = Integer.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int pixelCharWidth(
 		@NotNull PencilFontBracket __font,
 		@Nullable int[] __params,
@@ -231,6 +245,7 @@ public final class PencilFontShelf
 	 * if the positions and/or offsets are negative or out of bounds.
 	 * @since 2024/05/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void renderBitmap(
 		@NotNull PencilFontBracket __font,
 		@Nullable int[] __params,
@@ -259,6 +274,7 @@ public final class PencilFontShelf
 	 * the pencil is not valid.
 	 * @since 2024/05/14
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void renderChar(
 		@NotNull PencilFontBracket __font,
 		@Nullable int[] __params,

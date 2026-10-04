@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 2024/03/16
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchEventLoopInterface
 	extends ScritchApiInterface
 {
@@ -27,6 +29,7 @@ public interface ScritchEventLoopInterface
 	 * @return If the current thread is the event loop thread.
 	 * @since 2024/03/16
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	boolean inLoop();
 	
 	/**
@@ -36,6 +39,7 @@ public interface ScritchEventLoopInterface
 	 * @throws MLECallError If the event loop encountered an error.
 	 * @since 2024/12/22
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	boolean iterate()
 		throws MLECallError;
 	
@@ -50,6 +54,7 @@ public interface ScritchEventLoopInterface
 	 */
 	@Async.Execute
 	@Async.Schedule
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void loopExecute(@NotNull Runnable __task)
 		throws MLECallError;
 	
@@ -61,6 +66,7 @@ public interface ScritchEventLoopInterface
 	 * @since 2024/04/25
 	 */
 	@Async.Schedule
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void loopExecuteLater(@NotNull Runnable __task)
 		throws MLECallError;
 	
@@ -76,6 +82,7 @@ public interface ScritchEventLoopInterface
 	 */
 	@Async.Execute
 	@Async.Schedule
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void loopExecuteWait(@NotNull Runnable __task)
 		throws MLECallError;
 }

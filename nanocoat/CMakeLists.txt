@@ -154,20 +154,6 @@ if(MSVC)
 	add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
 endif()
 
-# Declare Version
-add_compile_definitions(
-	SQUIRRELJME_VERSION="${SQUIRRELJME_VERSION}")
-add_compile_definitions(
-	SQUIRRELJME_VERSION_BUILD="${SQUIRRELJME_VERSION_BUILD}")
-add_compile_definitions(
-	SQUIRRELJME_VERSION_STABILITY="${SQUIRRELJME_VERSION_STABILITY}")
-add_compile_definitions(
-	SQUIRRELJME_VERSION_ID="${SQUIRRELJME_VERSION_ID}")
-
-# Trim is the version without quotes
-add_compile_definitions(
-	SQUIRRELJME_VERSION_TRIM=${SQUIRRELJME_VERSION})
-
 # Debugging?
 if(SQUIRRELJME_IS_DEBUG)
 	if(SQUIRRELJME_ENABLE_TESTING)

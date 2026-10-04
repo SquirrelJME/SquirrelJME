@@ -9,6 +9,7 @@
 
 package cc.squirreljme.jvm.mle;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.CheckReturnValue;
 
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.CheckReturnValue;
  * @since 2020/05/30
  */
 @SuppressWarnings("UnstableApiUsage")
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class AtomicShelf
 {
 	/**
@@ -36,6 +38,7 @@ public final class AtomicShelf
 	 * @since 2020/05/30
 	 */
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int gcLock();
 	
 	/**
@@ -46,6 +49,7 @@ public final class AtomicShelf
 	 * collector.
 	 * @since 2020/05/30
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void gcUnlock(int __key);
 	
 	/**
@@ -59,6 +63,7 @@ public final class AtomicShelf
 	 * @since 2020/05/30
 	 */
 	@Blocking
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native void spinLock(int __count);
 	
 	/**
@@ -70,5 +75,6 @@ public final class AtomicShelf
 	 * other than equality.
 	 * @since 2020/05/03
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int tick();
 }

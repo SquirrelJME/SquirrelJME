@@ -12,12 +12,14 @@ package cc.squirreljme.jvm.mle.scritchui.callbacks;
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchMenuKindBracket;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchWindowBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Listener for when a menu item is activated.
  *
  * @since 2024/07/30
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchMenuItemActivateListener
 	extends ScritchListener
 {
@@ -29,6 +31,7 @@ public interface ScritchMenuItemActivateListener
 	 * @since 2024/07/30
 	 */
 	@ScritchEventLoop
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void menuItemActivate(ScritchWindowBracket __window,
 		ScritchMenuKindBracket __menuItem);
 }

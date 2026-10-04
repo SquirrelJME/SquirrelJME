@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchBaseBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/02/29
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchInterface
 	extends ScritchApiInterface
 {
@@ -35,6 +37,7 @@ public interface ScritchInterface
 	 * @since 2024/07/16
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchChoiceInterface choice();
 	
 	/**
@@ -44,6 +47,7 @@ public interface ScritchInterface
 	 * @since 2024/03/16
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchComponentInterface component();
 	
 	/**
@@ -53,6 +57,7 @@ public interface ScritchInterface
 	 * @since 2024/03/16
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchContainerInterface container();
 	
 	/**
@@ -63,6 +68,7 @@ public interface ScritchInterface
 	 * deleted.
 	 * @since 2024/07/20
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void objectDelete(@NotNull ScritchBaseBracket __object)
 		throws MLECallError;
 	
@@ -73,6 +79,7 @@ public interface ScritchInterface
 	 * @since 2024/03/07
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchEnvironmentInterface environment();
 	
 	/**
@@ -82,6 +89,7 @@ public interface ScritchInterface
 	 * @since 2024/03/16
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchEventLoopInterface eventLoop();
 	
 	/**
@@ -105,6 +113,7 @@ public interface ScritchInterface
 	 * @throws MLECallError If the requested graphics are not valid.
 	 * @since 2020/09/25
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	PencilBracket hardwareGraphics(
 		@MagicConstant(valuesFromClass = UIPixelFormat.class) int __pf,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __bw,
@@ -123,6 +132,7 @@ public interface ScritchInterface
 	 * @since 2024/07/22
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchLabelInterface label();
 	
 	/**
@@ -132,6 +142,7 @@ public interface ScritchInterface
 	 * @since 2024/07/16
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchListInterface list();
 	
 	/**
@@ -141,6 +152,7 @@ public interface ScritchInterface
 	 * @since 2024/07/20
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchMenuInterface menu();
 	
 	/**
@@ -150,6 +162,7 @@ public interface ScritchInterface
 	 * @since 2024/07/16
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchPaintableInterface paintable();
 	
 	/**
@@ -159,6 +172,7 @@ public interface ScritchInterface
 	 * @since 2024/03/16
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchPanelInterface panel();
 	
 	/**
@@ -168,6 +182,7 @@ public interface ScritchInterface
 	 * @since 2024/03/10
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchScreenInterface screen();
 	
 	/**
@@ -177,6 +192,7 @@ public interface ScritchInterface
 	 * @since 2024/07/29
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchScrollPanelInterface scrollPanel();
 	
 	/**
@@ -186,6 +202,7 @@ public interface ScritchInterface
 	 * @since 2024/07/29
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchViewInterface view();
 	
 	/**
@@ -195,5 +212,6 @@ public interface ScritchInterface
 	 * @since 2024/03/09
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	ScritchWindowInterface window();
 }

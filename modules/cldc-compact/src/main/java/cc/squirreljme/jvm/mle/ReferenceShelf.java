@@ -10,6 +10,7 @@
 package cc.squirreljme.jvm.mle;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import org.jetbrains.annotations.CheckReturnValue;
@@ -23,6 +24,7 @@ import org.jetbrains.annotations.UnknownNullability;
  *
  * @since 2020/05/30
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class ReferenceShelf
 {
 	/**

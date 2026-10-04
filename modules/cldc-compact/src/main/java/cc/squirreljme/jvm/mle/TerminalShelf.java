@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.brackets.PipeBracket;
 import cc.squirreljme.jvm.mle.constants.PipeErrorType;
 import cc.squirreljme.jvm.mle.constants.StandardPipeType;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.CheckReturnValue;
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.Range;
  * @since 2020/06/14
  */
 @SuppressWarnings("UnstableApiUsage")
+@SquirrelJMENativeApi(min = "0.4.0")
 public final class TerminalShelf
 {
 	/**
@@ -50,6 +52,7 @@ public final class TerminalShelf
 		intValues = {0, -1})
 	@NonBlocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int available(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
@@ -64,6 +67,7 @@ public final class TerminalShelf
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Blocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int close(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
@@ -78,6 +82,7 @@ public final class TerminalShelf
 	@MagicConstant(valuesFromClass = PipeErrorType.class)
 	@Blocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int flush(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
@@ -92,6 +97,7 @@ public final class TerminalShelf
 	 * @since 2022/03/19
 	 */
 	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native PipeBracket fromStandard(
 		@MagicConstant(valuesFromClass = StandardPipeType.class) int __fd)
 		throws MLECallError;
@@ -110,6 +116,7 @@ public final class TerminalShelf
 	@Range(from = -2, to = 255)
 	@Blocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int read(@NotNull PipeBracket __fd)
 		throws MLECallError;
 	
@@ -130,6 +137,7 @@ public final class TerminalShelf
 	@Range(from = -2, to = Integer.MAX_VALUE)
 	@Blocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int read(@NotNull PipeBracket __fd,
 		@NotNull byte[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,
@@ -150,6 +158,7 @@ public final class TerminalShelf
 	@Range(from = -2, to = 1)
 	@Blocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int write(@NotNull PipeBracket __fd,
 		@Range(from = 0, to = 255) int __c)
 		throws MLECallError;
@@ -172,6 +181,7 @@ public final class TerminalShelf
 	@Range(from = -2, to = Integer.MAX_VALUE)
 	@Blocking
 	@CheckReturnValue
+	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native int write(@NotNull PipeBracket __fd,
 		@NotNull byte[] __b,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __o,

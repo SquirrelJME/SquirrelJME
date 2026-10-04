@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.mle.scritchui.constants;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
+
 /**
  * The state that a window may be in.
  *
@@ -18,29 +20,36 @@ package cc.squirreljme.jvm.mle.scritchui.constants;
  *
  * @since 2026/07/06
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchWindowState
 {
 	/** Window is "restored" to its default state. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte RESTORED =
 		0;
 	
 	/** Window is minimized */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MINIMIZED =
 		1;
 	
 	/** Window is maximized horizontally. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MAXIMIZED_HORIZ =
 		2;
 	
 	/** Window is maximized vertically. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MAXIMIZED_VERT =
 		3;
 	
 	/** Window is maximized both horizontally and vertically. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte MAXIMIZED_BOTH =
 		4;
 	
 	/** Window is shaded, only the title bar is visible. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte SHADED =
 		5;
 	
@@ -54,10 +63,12 @@ public interface ScritchWindowState
 	 * this should not be used with the window
 	 * flag {@link ScritchWindowFlag#UNDECORATED}.
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte FULLSCREEN =
 		6;
 	
 	/** The number of valid window states. */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_STATES =
 		7;
 }

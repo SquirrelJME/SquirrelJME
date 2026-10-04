@@ -32,6 +32,9 @@ include(ExternalProject)
 project(libEmulatorBase
 	LANGUAGES C)
 
+# Identify the SquirrelJME verison
+squirreljme_include_nanocoat("identify-squirreljme-version.cmake")
+
 # Settings that adjust the build completely
 squirreljme_include_nanocoat("environment-options.cmake")
 

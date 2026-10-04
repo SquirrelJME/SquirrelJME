@@ -11,12 +11,14 @@ package cc.squirreljme.jvm.mle.scritchui.callbacks;
 
 import cc.squirreljme.jvm.mle.scritchui.annotation.ScritchEventLoop;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchComponentBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 
 /**
  * Listener for changes in component visibility.
  *
  * @since 2024/06/28
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchVisibleListener
 	extends ScritchListener
 {
@@ -29,6 +31,7 @@ public interface ScritchVisibleListener
 	 * @since 2024/06/28
 	 */
 	@ScritchEventLoop
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void visibilityChanged(ScritchComponentBracket __component,
 		boolean __from, boolean __to);
 }

@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle.scritchui.brackets;
 
 import cc.squirreljme.jvm.mle.annotation.GhostObject;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.Debug;
 
 /**
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.Debug;
 @GhostObject
 @Debug.Renderer(text=GhostObject.INTELLIJ_RENDERER,
 	hasChildren="false")
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchPencilBracket
 	extends PencilBracket
 {

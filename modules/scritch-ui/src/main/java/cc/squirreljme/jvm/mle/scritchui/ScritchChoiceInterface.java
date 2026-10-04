@@ -11,6 +11,7 @@ package cc.squirreljme.jvm.mle.scritchui;
 
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchChoiceBracket;
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/07/16
  */
+@SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchChoiceInterface
 	extends ScritchApiInterface
 {
@@ -32,6 +34,7 @@ public interface ScritchChoiceInterface
 	 * not valid.
 	 * @since 2024/07/25
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void choiceDelete(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex)
 		throws MLECallError;
@@ -44,6 +47,7 @@ public interface ScritchChoiceInterface
 	 * not valid.
 	 * @since 2024/07/25
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void choiceDeleteAll(@NotNull ScritchChoiceBracket __choice)
 		throws MLECallError;
 	
@@ -56,6 +60,7 @@ public interface ScritchChoiceInterface
 	 * @since 2024/07/28
 	 */
 	@Range(from = -1, to = Integer.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int choiceGetSelectedIndex(@NotNull ScritchChoiceBracket __choice)
 		throws MLECallError;
 	
@@ -70,6 +75,7 @@ public interface ScritchChoiceInterface
 	 * @since 2024/07/25
 	 */
 	@Range(from = 0, to = Integer.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int choiceInsert(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex)
 		throws MLECallError;
@@ -83,6 +89,7 @@ public interface ScritchChoiceInterface
 	 * @since 2024/07/28
 	 */
 	@Range(from = 0, to = Integer.MAX_VALUE)
+	@SquirrelJMENativeApi(min = "0.4.0")
 	int choiceLength(@Nullable ScritchChoiceBracket __choice)
 		throws MLECallError;
 	
@@ -96,6 +103,7 @@ public interface ScritchChoiceInterface
 	 * not valid.
 	 * @since 2024/07/25
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void choiceSetEnabled(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex,
 		boolean __enabled)
@@ -116,6 +124,7 @@ public interface ScritchChoiceInterface
 	 * not valid; or the image parameters are not valid.
 	 * @since 2024/07/25
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void choiceSetImage(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex,
 		@Nullable int[] __data,
@@ -135,6 +144,7 @@ public interface ScritchChoiceInterface
 	 * not valid.
 	 * @since 2024/07/25
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void choiceSetSelected(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex,
 		boolean __selected)
@@ -150,6 +160,7 @@ public interface ScritchChoiceInterface
 	 * not valid.
 	 * @since 2024/07/25
 	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
 	void choiceSetString(@NotNull ScritchChoiceBracket __choice,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __atIndex,
 		@Nullable String __string)

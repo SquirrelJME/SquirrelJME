@@ -9,6 +9,8 @@
 
 package cc.squirreljme.jvm.mle.exceptions;
 
+import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
+
 /**
  * MLE call error codes.
  *
