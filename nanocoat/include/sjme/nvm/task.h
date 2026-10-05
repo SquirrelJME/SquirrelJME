@@ -594,6 +594,9 @@ typedef enum sjme_nvm_task_commonClassId
 	/** @code java.lang.Throwable @endcode . */
 	SJME_NVM_COMMON_THROWABLE,
 
+	/** @code java.lang.Runnable @endcode . */
+	SJME_NVM_COMMON_RUNNABLE,
+
 	/** @code java.lang.Thread @endcode . */
 	SJME_NVM_COMMON_THREAD,
 	
@@ -679,6 +682,9 @@ typedef struct sjme_nvm_task_globals
 
 	/** The next sequential ID. */
 	sjme_atomic(sjme_jint) sequencedId;
+
+	/** The thread for running ScritchUI events. */
+	sjme_atomic(sjme_nvm_thread) scritchUiThread;
 } sjme_nvm_task_globals;
 
 typedef enum sjme_nvm_task_threadCountType
@@ -751,8 +757,17 @@ struct sjme_nvm_taskBase
  */
 typedef enum sjme_nvm_thread_flags
 {
+	/* This is an int based enumeration. */
+	sjme_enumInt(sjme_nvm_thread_flags),
+
 	/** Is this a daemon thread? */
-	SJME_NVM_THREAD_IS_DAEMON = INT32_C(0x00000001),
+	SJME_NVM_THREAD_IS_DAEMON = INT32_C(0x0001),
+
+	/**
+	 * Explicitly scheduled thread? If this is set then scheduling
+	 * system will never consider this thread for scheduling ever.
+	 */
+	SJME_NVM_THREAD_IS_EXPLICIT = INT32_C(0x0002),
 } sjme_nvm_thread_flags;
 	
 /**

@@ -417,7 +417,8 @@ static sjme_errorCode sjme_nvm_initScritchUi(
 		if (result != NULL)
 		{
 			/* Use this as the ScritchUI state. */
-			sjme_atomic_s(sjme_pointer, &inState->globals.scritchUi, result);
+			sjme_atomic_s(sjme_pointer, &inState->globals.scritchUi,
+				sjme_weakUpR(sjme_pointer, result));
 			return SJME_ERROR_NONE;
 		}
 	}
@@ -582,6 +583,8 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_nvm_rom_suite jarSuite;
 	sjme_nvm_rom_library jarLibrary;
 	sjme_path runJarPath;
+	sjme_scritchui scritchUi;
+	sjme_jboolean cancelScritchUi;
 	
 	if (allocPool == NULL || param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -851,6 +854,8 @@ sjme_errorCode sjme_nvm_boot(
 	if (result->bootParamCopy->noScritchUi)
 		sjme_atomic_s(sjme_jint, &result->globals.headlessDisplay, 1);
 	else
+	{
+		/* Try initializing ScritchUI. */
 		if (sjme_error_is(error = sjme_nvm_initScritchUi(result,
 			bootParamCopy->preferScritchUi)))
 		{
@@ -861,6 +866,40 @@ sjme_errorCode sjme_nvm_boot(
 			/* Set that this is a headless system. */
 			sjme_atomic_s(sjme_jint, &result->globals.headlessDisplay, 1);
 		}
+
+		/* Get whatever ScritchUI as initialized. */
+		scritchUi = sjme_atomic_g(sjme_pointer, &result->globals.scritchUi);
+
+		/* Sanity checks to determine if ScritchUI can be used. */
+		cancelScritchUi = SJME_JNI_FALSE;
+		if (scritchUi != NULL)
+		{
+#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+			/* Was ScritchUI initialized, and we ended up in a very */
+			/* difficult threading combination that effectively will make */
+			/* ScritchUI pretty useless? */
+			/* Note that multithreaded NanoCoat can use a single-threaded */
+			/* ScritchUI, just that it will have limited interface support */
+			/* as most systems expect multiple threads. */
+			if (!scritchUi->bugs.onlyThreadSingle)
+				cancelScritchUi = SJME_JNI_TRUE;
+#endif
+		}
+
+		/* This was determined to be true, we must cancel ScritchUI. */
+		if (cancelScritchUi)
+		{
+			/* Clear reference to it. */
+			sjme_atomic_s(sjme_pointer, &result->globals.scritchUi,
+				NULL);
+
+			/* Count down, if this does reach zero then no other virtual */
+			/* machine is using ScritchUI. */
+			if (sjme_error_is(error = sjme_closeable_close(
+				SJME_AS_CLOSEABLE(scritchUi))))
+				goto fail_scritchUiDeInit;
+		}
+	}
 
 	/* Only create the task if not belaying it. */
 	initTask = NULL;
@@ -898,6 +937,7 @@ sjme_errorCode sjme_nvm_boot(
 
 	/* Failed at specific points... */
 fail_initTask:
+fail_scritchUiDeInit:
 fail_scritchUiInit:
 fail_allocSchedule:
 fail_badClassPath:

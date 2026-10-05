@@ -668,8 +668,15 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	/* Check access for calling this method. */
 	if (sjme_error_is(error = sjme_nvm_access_checkFToF(
 		inFrame, fieldId)))
+	{
+		/* Some other error? */
+		if (error != SJME_ERROR_MEMBER_ACCESS_DENIED)
+			return sjme_error_default(error);
+
+		/* Emit throwable. */
 		return sjme_error_vmError(inFrame,
 			SJME_ERROR_CLASS_CHANGED);
+	}
 
 	/* Read in value to put. */
 	memset(&result, 0, sizeof(result));

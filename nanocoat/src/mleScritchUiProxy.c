@@ -56,6 +56,22 @@ SJME_NVM_MLE_SCRITCH_UI_RETURN_THIS(window)
 #pragma endregion(returnThis)
 #pragma region(general)
 
+#define sjme_nvm_mle_selfInterface (argV[0].v.l)
+
+static sjme_thread_result sjme_attrThreadCall
+	sjme_nvm_mle_scritchUiLoopExecute(
+	sjme_attrInNotNull sjme_thread_parameter anything)
+{
+	sjme_jobject runnable;
+
+	runnable = (sjme_jobject)anything;
+	if (runnable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_nvm_mle_scritchUiNew(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_scritchui scritchUi,
@@ -92,6 +108,48 @@ static sjme_errorCode sjme_nvm_mle_scritchUiNew(
 }
 
 #pragma endregion(general)
+#pragma region(event)
+
+SJME_NVM_MLE_FUNCTION_DECL(loopExecute)
+{
+	sjme_errorCode error;
+	sjme_scritchui scritchUi;
+	sjme_jobject runnable;
+
+	runnable = argV[1].v.l;
+	if (sjme_nvm_mle_selfInterface == NULL || runnable == NULL)
+		return sjme_error_mleCall(inFrame, SJME_ERROR_NULL_ARGUMENTS);
+
+	/* Not a runnable? */
+	if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+		SJME_F_T(inFrame),
+		sjme_nvm_task_commonClassR(SJME_F_T(inFrame),
+			SJME_NVM_COMMON_RUNNABLE),
+		sjme_atomic_g(sjme_jclass, &runnable->isClass))))
+	{
+		if (error != SJME_ERROR_CLASS_CAST)
+			return sjme_error_default(error);
+		return sjme_error_mleCall(inFrame, SJME_ERROR_CLASS_CAST);
+	}
+
+	/* Recover ScritchUI instance. */
+	scritchUi = sjme_atomic_g(sjme_pointer,
+		&SJME_F_S(inFrame)->globals.scritchUi);
+	if (scritchUi == NULL)
+		return sjme_error_mleCall(inFrame, SJME_ERROR_HEADLESS_DISPLAY);
+
+	/* Send it forward for execution, it does need to be counted so */
+	/* it does not get GCed between callbacks. */
+	if (sjme_error_is(error = scritchUi->api->loopExecute(
+		scritchUi, sjme_nvm_mle_scritchUiLoopExecute,
+		sjme_weakUpR(sjme_jobject, runnable))))
+		return sjme_error_mleCall(inFrame, error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+#pragma endregion(event)
 #pragma region(panel)
 
 SJME_NVM_MLE_FUNCTION_DECL(panelNew)
@@ -101,19 +159,21 @@ SJME_NVM_MLE_FUNCTION_DECL(panelNew)
 	sjme_scritchui_uiPanel ui;
 	sjme_jbracketScritchUi bracket;
 
+	if (sjme_nvm_mle_selfInterface == NULL)
+		return sjme_error_mleCall(inFrame, SJME_ERROR_NULL_ARGUMENTS);
+
 	/* Recover ScritchUI instance. */
 	scritchUi = sjme_atomic_g(sjme_pointer,
 		&SJME_F_S(inFrame)->globals.scritchUi);
 	if (scritchUi == NULL)
-		return sjme_error_mask(SJME_ERROR_HEADLESS_DISPLAY,
-			SJME_ERROR_MLE_CALL);
+		return sjme_error_mleCall(inFrame, SJME_ERROR_HEADLESS_DISPLAY);
 
 	/* Create new panel. */
 	ui = NULL;
 	if (sjme_error_is(error = scritchUi->api->panelNew(scritchUi,
 		&ui)) || ui == NULL)
 	{
-		error = sjme_error_mask(error, SJME_ERROR_MLE_CALL);
+		error = sjme_error_mleCall(inFrame, error);
 		goto fail_scritchNew;
 	}
 
@@ -123,7 +183,7 @@ SJME_NVM_MLE_FUNCTION_DECL(panelNew)
 		SJME_SUI_CAST_COMMON(ui), SJME_SCRITCHUI_TYPE_PANEL,
 		&bracket)))
 	{
-		error = sjme_error_mask(error, SJME_ERROR_MLE_CALL);
+		error = sjme_error_mleCall(inFrame, error);
 		goto fail_bracketNew;
 	}
 
@@ -176,6 +236,13 @@ SJME_NVM_MLE_SHELF_DECLARE(ScritchUiProxy) =
 	SJME_NVM_MLE_SCRITCH_UI_DEFINE_THIS(window,
 		SJME_MD_SCRITCH_UI_INTERFACE(Window)),
 
+	/* Event interface. */
+	SJME_NVM_MLE_DEFINE(loopExecute,
+		SJME_MD(SJME_MD_V,
+			SJME_MD_RUNNABLE),
+		SJME_MP(SJME_MP_L,
+			SJME_MP_L SJME_MP_L)),
+
 	/* Panel interface. */
 	SJME_NVM_MLE_DEFINE(panelNew,
 		SJME_MD(SJME_MD_SCRITCH_UI_BRACKET(Panel),
@@ -210,8 +277,7 @@ sjme_errorCode sjme_nvm_mle_scritchUiProxyHandler(
 	/* If ScritchUI is not initialized, then this always fails. */
 	if (sjme_atomic_g(sjme_pointer,
 		&SJME_F_S(inFrame)->globals.scritchUi) == NULL)
-		return sjme_error_mask(SJME_ERROR_HEADLESS_DISPLAY,
-			SJME_ERROR_MLE_CALL);
+		return sjme_error_mleCall(inFrame, SJME_ERROR_HEADLESS_DISPLAY);
 
 	/* Forward to minor shelf handling, this already exists and thus we do */
 	/* not need to duplicate this functionality. */

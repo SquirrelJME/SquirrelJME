@@ -46,26 +46,17 @@ sjme_errorCode sjme_nvm_access_checkCompatibleField(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_access_checkEToE(
-	sjme_attrInNotNull sjme_jmemberID from,
-	sjme_attrInNotNull sjme_jmemberID to,
-	sjme_attrInNotNull sjme_nvm_class_memberFlags* toFlags)
+sjme_errorCode sjme_nvm_access_checkCToE(
+	sjme_attrInNotNull sjme_jclass fromClass,
+	sjme_attrInNotNull sjme_jmemberID to)
 {
-	sjme_jclass fromClass;
 	sjme_jclass toClass;
-	sjme_jclass rover;
-	sjme_jboolean checkPP;
-	sjme_jint flags, special;
-	
-	if (from == NULL || to == NULL)
+	sjme_jint special;
+
+	if (fromClass == NULL || to == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	/* Refers to the same exact method? */
-	if (from == to)
-		return SJME_ERROR_NONE;
-
 	/* In the same class? */
-	fromClass = sjme_atomic_g(sjme_jclass, &from->inClass);
 	toClass = sjme_atomic_g(sjme_jclass, &to->inClass);
 	if (fromClass == toClass)
 		return SJME_ERROR_NONE;
@@ -75,6 +66,72 @@ sjme_errorCode sjme_nvm_access_checkEToE(
 	if (SJME_NVM_ACC_IS(special, SPECIAL_OBJECT_CLASS) ||
 		SJME_NVM_ACC_IS(special, SPECIAL_CLASS_CLASS) ||
 		SJME_NVM_ACC_IS(special, SPECIAL_ENUM_CLASS))
+		return SJME_ERROR_NONE;
+
+	/* Class is public? It is always accessible and all members are */
+	/* visible at the public level provided the individual members are */
+	/* visible themselves. */
+	if (SJME_NVM_ACC_IS(toClass->info->flags, PUBLIC))
+		return SJME_ERROR_NONE;
+
+	/* Otherwise, the class is package private, even if the members are */
+	/* public they cannot be accessed in this way. Thus, these classes must */
+	/* be in the same package. */
+	/* This is so that you cannot access public static methods in a class */
+	/* which is package private. */
+	if (sjme_charSeq_equalsR(fromClass->info->inPackage->seq,
+		toClass->info->inPackage->seq))
+		return SJME_ERROR_NONE;
+
+	/* Otherwise, access is denied. */
+	return SJME_ERROR_MEMBER_ACCESS_DENIED;
+}
+
+sjme_errorCode sjme_nvm_access_checkCToF(
+	sjme_attrInNotNull sjme_jclass fromClass,
+	sjme_attrInNotNull sjme_jfieldID to)
+{
+	if (fromClass == NULL || to == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* This is just an alias. */
+	return sjme_nvm_access_checkCToE(fromClass, (sjme_jmemberID)to);
+}
+
+sjme_errorCode sjme_nvm_access_checkCToM(
+	sjme_attrInNotNull sjme_jclass fromClass,
+	sjme_attrInNotNull sjme_jmethodID to)
+{
+	if (fromClass == NULL || to == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* This is just an alias. */
+	return sjme_nvm_access_checkCToE(fromClass, (sjme_jmemberID)to);
+}
+
+sjme_errorCode sjme_nvm_access_checkEToE(
+	sjme_attrInNotNull sjme_jmemberID from,
+	sjme_attrInNotNull sjme_jmemberID to,
+	sjme_attrInNotNull sjme_nvm_class_memberFlags* toFlags)
+{
+	sjme_errorCode error;
+	sjme_jclass fromClass;
+	sjme_jclass toClass;
+	sjme_jclass rover;
+	sjme_jboolean checkPP;
+	sjme_jint flags;
+	
+	if (from == NULL || to == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Refers to the same exact method? */
+	if (from == to)
+		return SJME_ERROR_NONE;
+
+	/* Trivially the same class? */
+	fromClass = sjme_atomic_g(sjme_jclass, &from->inClass);
+	toClass = sjme_atomic_g(sjme_jclass, &to->inClass);
+	if (fromClass == toClass)
 		return SJME_ERROR_NONE;
 
 	/* Target is public? */

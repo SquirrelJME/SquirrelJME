@@ -1272,10 +1272,15 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	
 	/* The number of methods in this class for each type. */
 	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
+#if defined(SJME_CONFIG_HAS_BUGGY_CODE)
 		inClass->methods[i].count = info->methodCount[i] +
 			(superClass != NULL && i != SJME_NVM_CLASS_MEMBER_STATIC ?
 				superClass->methods[i].count : 0);
-	
+#else
+		inClass->methods[i].count = info->methodCount[i] +
+			(superClass != NULL ? superClass->methods[i].count : 0);
+#endif
+
 	/* Bind instance and static methods. */
 	for (i = 0; i < SJME_NVM_CLASS_NUM_INSTANCE_TYPE; i++)
 	{

@@ -703,6 +703,16 @@ sjme_errorCode sjme_error_mask(
 	sjme_attrInValue sjme_errorCode error,
 	sjme_attrInValue sjme_errorCode mask);
 
+/**
+ * Masks and/or wraps an MLE Call Error.
+ *
+ * @param contextFrame The frame this is the context of.
+ * @param error The error to wrap.
+ * @since 2026/10/05
+ */
+#define sjme_error_mleCall(contextFrame, error) \
+	(sjme_error_mask((error), SJME_ERROR_MLE_CALL))
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

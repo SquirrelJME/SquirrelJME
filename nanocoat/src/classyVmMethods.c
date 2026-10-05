@@ -9,6 +9,7 @@
 
 #include "sjme/nvm/classyVmMethods.h"
 #include "sjme/util.h"
+#include "sjme/nvm/access.h"
 #include "sjme/nvm/instance.h"
 #include "sjme/nvm/task.h"
 
@@ -171,7 +172,8 @@ sjme_errorCode sjme_nvm_vmMethod_idByNameType(
 	/* Calculate the hash to lookup. */
 	wantHash = sjme_nvm_class_idHashMember(inName, inType);
 		
-	/* Look through all methods. */
+	/* Look through all methods, scan through back to front so that */
+	/* overridden methods take priority first. */
 	methods = inClass->methods[instanceType].binds;
 	for (i = methods->length - 1; i >= 0; i--)
 	{
@@ -192,7 +194,19 @@ sjme_errorCode sjme_nvm_vmMethod_idByNameType(
 			if (SJME_NVM_CLASS_INIT_IS(method->bits, STATIC) &&
 				sjme_atomic_g(sjme_jclass, &method->member.inClass) != inClass)
 				continue;
-			
+
+			/* If we are wanting a static method, any other static method */
+			/* that we do not have access to is invisible to this class. */
+			if (instanceType == SJME_NVM_CLASS_MEMBER_STATIC)
+				if (sjme_error_is(error = sjme_nvm_access_checkCToM(
+					inClass, method)))
+				{
+					if (error == SJME_ERROR_MEMBER_ACCESS_DENIED)
+						continue;
+					return sjme_error_default(error);
+				}
+
+			/* This is a valid method to choose! */
 			*outID = method;
 			return SJME_ERROR_NONE;
 		}

@@ -309,6 +309,10 @@ sjme_errorCode sjme_nvm_task_commonClass(
 			commonName = "Ljava/lang/ref/WeakReference;";
 			break;
 
+		case SJME_NVM_COMMON_RUNNABLE:
+			commonName = "Ljava/lang/Runnable;";
+			break;
+
 		case SJME_NVM_COMMON_SCRITCH_UI_PROXY:
 			commonName = "Lcc/squirreljme/jvm/mle/scritchui/"
 				"ScritchUnifiedInterface;";
@@ -661,11 +665,12 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	sjme_errorCode error;
 	sjme_nvm inState;
 	sjme_cchar adjustMain[SJME_NVM_CLASS_NAME_LIMIT];
-	sjme_nvm_thread mainThread;
+	sjme_nvm_thread mainThread, scritchUiThread;
 	sjme_jint i, n;
 	const sjme_nvm_task_taskNewConfig* initConfigCopy;
 	sjme_list(sjme_jstring)* argStrings;
 	sjme_jstring argString;
+	sjme_scritchui scritchUi;
 	
 	if (inTask == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -691,6 +696,42 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 		&mainThread, "main", SJME_JNI_TRUE)) ||
 		mainThread == NULL)
 		goto fail_taskNewThread;
+
+	/* Setup special ScritchUI thread? */
+	scritchUiThread = NULL;
+	scritchUi = sjme_atomic_g(sjme_pointer, &inState->globals.scritchUi);
+	if (scritchUi != NULL)
+	{
+		/* Create new thread specifically for ScritchUI. */
+		if (sjme_error_is(error = sjme_nvm_task_threadNew(inTask,
+			&scritchUiThread, "scritchUiThread",
+			SJME_JNI_FALSE)) ||
+			scritchUiThread == NULL)
+			goto fail_taskNewThread;
+
+		/* This is always a daemon thread. */
+		scritchUiThread->flags |= SJME_NVM_THREAD_IS_DAEMON;
+
+		/* This is a callback type thread, it never gets deleted. */
+		sjme_atomic_s(sjme_nvm_thread_startType, &scritchUiThread->start,
+			SJME_NVM_THREAD_START_CALLBACK);
+
+		/* If ScritchUI uses an event thread that is independent, then it */
+		/* uses explicit handling which is called from the callback. */
+		/* This will never be scheduled cooperatively. */
+		if (!sjme_thread_equal(scritchUi->loopThread,
+			SJME_THREAD_NULL))
+			scritchUiThread->flags |= SJME_NVM_THREAD_IS_EXPLICIT;
+
+		/* Store ScritchUI thread */
+		sjme_atomic_s(sjme_nvm_thread, &inTask->globals.scritchUiThread,
+			sjme_weakUpR(sjme_nvm_thread, scritchUiThread));
+	}
+
+	/* No thread is available. */
+	else
+		sjme_atomic_s(sjme_nvm_thread, &inTask->globals.scritchUiThread,
+			NULL);
 
 	/* Adjust the main class name, turn periods into slashes. */
 	memset(adjustMain, 0, sizeof(adjustMain));
@@ -1022,6 +1063,11 @@ sjme_errorCode sjme_nvm_task_taskScheduleDelete(
 	if (SJME_T_S(inThread)->threadModel == SJME_NVM_MLE_THREAD_MULTI)
 		return SJME_ERROR_NONE;
 
+	/* Cannot schedule explicit threads, they must be explicitly */
+	/* executed when needed. */
+	if ((inThread->flags & SJME_NVM_THREAD_IS_EXPLICIT) != 0)
+		return SJME_ERROR_NONE;
+
 	/* Ignore if already deleted. */
 	if (sjme_atomic_g(sjme_nvm_threadScheduleMode, &inThread->scheduleMode) ==
 		SJME_NVM_THREAD_NUM_SCHEDULE_MODE)
@@ -1069,6 +1115,11 @@ sjme_errorCode sjme_nvm_task_taskScheduleIn(
 
 	/* No effect in multi-threading. */
 	if (SJME_T_S(inThread)->threadModel == SJME_NVM_MLE_THREAD_MULTI)
+		return SJME_ERROR_NONE;
+
+	/* Cannot schedule explicit threads, they must be explicitly */
+	/* executed when needed. */
+	if ((inThread->flags & SJME_NVM_THREAD_IS_EXPLICIT) != 0)
 		return SJME_ERROR_NONE;
 
 	/* Ignore if already scheduled. */
@@ -1236,6 +1287,11 @@ sjme_errorCode sjme_nvm_task_taskScheduleOut(
 	if (SJME_T_S(inThread)->threadModel == SJME_NVM_MLE_THREAD_MULTI)
 		return SJME_ERROR_NONE;
 
+	/* Cannot schedule explicit threads, they must be explicitly */
+	/* executed when needed. */
+	if ((inThread->flags & SJME_NVM_THREAD_IS_EXPLICIT) != 0)
+		return SJME_ERROR_NONE;
+
 	/* Ignore if already unscheduled. */
 	if (sjme_atomic_g(sjme_nvm_threadScheduleMode, &inThread->scheduleMode) ==
 			SJME_NVM_THREAD_UNSCHEDULED)
@@ -1277,6 +1333,10 @@ sjme_errorCode sjme_nvm_task_taskScheduleYes(
 	
 	if (inState == NULL || inThread == NULL || isRunning == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Explicitly scheduled threads can never be scheduled. */
+	if ((inThread->flags & SJME_NVM_THREAD_IS_EXPLICIT) != 0)
+		goto skip_not;
 	
 	/* If this is a callback thread, only consider if it has at least */
 	/* one actively running frame. */
