@@ -264,6 +264,12 @@ typedef enum sjme_nvm_class_specialFlags
 
 	/** This is a primitive type. */
 	SJME_NVM_ACC_SPECIAL_PRIMITIVE = INT32_C(0x00400000),
+
+	/** Is @code java.lang.Thread @endcode. */
+	SJME_NVM_ACC_SPECIAL_THREAD_CLASS = INT32_C(0x00800000),
+
+	/** Is a subclass of @code java.lang.Thread @endcode. */
+	SJME_NVM_ACC_SPECIAL_THREAD_SUBCLASS = INT32_C(0x01000000),
 } sjme_nvm_class_specialFlags;
 
 /**

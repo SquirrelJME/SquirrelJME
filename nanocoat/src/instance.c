@@ -222,40 +222,6 @@ sjme_errorCode sjme_nvm_instance_defaultInit(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_nvm_instance_directPlacement(
-	sjme_attrInNotNull sjme_jobject instance,
-	sjme_attrInValue sjme_extendedTypeId forType)
-{
-	sjme_jclass inClass;
-	sjme_nvm_jclass_fields* placements;
-	
-	if (instance == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	if (forType < 0 || forType >= SJME_NUM_EXTENDED_JAVA_TYPE_IDS)
-		return SJME_ERROR_INVALID_ARGUMENT;
-	
-	/* There must be a class here. */
-	inClass = sjme_atomic_g(sjme_jclass, &instance->isClass);
-	if (inClass == NULL)
-		return SJME_ERROR_NO_CLASS;
-	
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/* Get the placements to allocate for. */
-	placements = &inClass->fields[SJME_NVM_CLASS_MEMBER_INSTANCE];
-
-	/* Determine the base offset to write at. */
-	into = SJME_POINTER_OFFSET(chunk, placements->offset[type]);
-
-	/* Set details for the partition. */
-	into->type = type;
-	into->length = placements->count[type];
-#endif
-
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
 sjme_nvm_value* sjme_nvm_instance_fieldAccessor(
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jfieldID field)
@@ -775,6 +741,25 @@ sjme_errorCode sjme_nvm_instance_objectNewR(
 		{
 			inType = SJME_NVM_STRUCT_STRING_INSTANCE;
 			allocSize = sizeof(sjme_jstringBase);
+		}
+
+		/* Remap Thread */
+		else if (inClass == sjme_nvm_task_commonClassR(contextThread,
+			SJME_NVM_COMMON_THREAD))
+		{
+			inType = SJME_NVM_STRUCT_THREAD_INSTANCE;
+			allocSize = sizeof(sjme_nvm_threadBase);
+		}
+
+		/* Remap Thread subclass. */
+		/* This becomes the actual allocation size of the subclass as this */
+		/* can get a number of fields added to it. */
+		/* Thus, these become actual threads, magically. */
+		else if (SJME_NVM_ACC_IS(inClass->special, SPECIAL_THREAD_SUBCLASS))
+		{
+			inType = SJME_NVM_STRUCT_THREAD_INSTANCE;
+			allocSize =
+				inClass->fields[SJME_NVM_CLASS_MEMBER_INSTANCE].allocSize;
 		}
 		
 		/* Remap @c Reference based classes, however specifically */

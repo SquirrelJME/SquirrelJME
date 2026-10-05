@@ -89,6 +89,21 @@ SJME_NVM_MLE_FUNCTION_DECL(aliveThreadCount)
 
 SJME_NVM_MLE_FUNCTION_DECL(createVMThread)
 {
+	sjme_jobject rawObject;
+	sjme_jstring name;
+
+	/* This cannot be null, but it must also be an actual thread instance. */
+	rawObject = argV[0].v.l;
+	if (rawObject == NULL ||
+		!sjme_nvm_isAR(rawObject, SJME_NVM_STRUCT_THREAD_INSTANCE))
+		return sjme_error_mleCall(inFrame, SJME_ERROR_CLASS_CAST);
+
+	/* Optional thread name. */
+	name = (sjme_jstring)argV[1].v.l;
+	if (name != NULL && !sjme_nvm_isAR(name,
+		SJME_NVM_STRUCT_STRING_INSTANCE))
+		return sjme_error_mleCall(inFrame, SJME_ERROR_CLASS_CAST);
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
@@ -373,8 +388,8 @@ SJME_NVM_MLE_SHELF_DECLARE(ThreadShelf) =
 		SJME_MD(SJME_MD_I, SJME_MD_Z SJME_MD_Z),
 		SJME_MP(SJME_MP_I, SJME_MP_I SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE(createVMThread,
-		SJME_MD(SJME_MD_VM_THREAD, SJME_MD_THREAD),
-		SJME_MP(SJME_MP_L, SJME_MP_L)),
+		SJME_MD(SJME_MD_VM_THREAD, SJME_MD_THREAD SJME_MD_STRING),
+		SJME_MP(SJME_MP_L, SJME_MP_L SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(currentExitCode,
 		SJME_MD(SJME_MD_I, SJME_MDMP___NO_ARGS__),
 		SJME_MP(SJME_MP_I, SJME_MDMP___NO_ARGS__)),

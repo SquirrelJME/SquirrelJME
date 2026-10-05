@@ -593,7 +593,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
+static sjme_errorCode sjme_nvm_vmClass_checkLoadArray(
 	sjme_attrOutNotNull sjme_jclass inClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_nvm_vmClass_loader classLoader)
@@ -677,7 +677,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitArray(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
+static sjme_errorCode sjme_nvm_vmClass_checkLoadPrimitive(
 	sjme_attrOutNotNull sjme_jclass inClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_nvm_vmClass_loader classLoader)
@@ -731,7 +731,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitPrimitive(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
+static sjme_errorCode sjme_nvm_vmClass_checkLoadStandard(
 	sjme_attrOutNotNull sjme_jclass inClass,
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_nvm_vmClass_loader classLoader)
@@ -808,6 +808,9 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitStandard(
 		else if (sjme_charSeq_equalsUtfR(info->name->seq,
 			"java/lang/Enum"))
 			inClass->special |= SJME_NVM_ACC_SPECIAL_ENUM_CLASS;
+		else if (sjme_charSeq_equalsUtfR(info->name->seq,
+			"java/lang/Thread"))
+			inClass->special |= SJME_NVM_ACC_SPECIAL_THREAD_CLASS;
 	}
 
 	/* Success! */
@@ -1188,6 +1191,12 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		/* Set superclass. */
 		sjme_atomic_s(sjme_jclass, &inClass->superClass,
 			sjme_weakUpR(sjme_jclass, superClass));
+
+		/* If the super-class is Thread, set that this is a Thread */
+		/* subclass. Otherwise, also inherit being a Thread subclass. */
+		if (SJME_NVM_ACC_IS(superClass->special, SPECIAL_THREAD_CLASS) ||
+			SJME_NVM_ACC_IS(superClass->special, SPECIAL_THREAD_SUBCLASS))
+			inClass->special |= SJME_NVM_ACC_SPECIAL_THREAD_SUBCLASS;
 	}
 	
 	/* If there are interfaces, they need to be found as well. */
@@ -1297,11 +1306,15 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 	{
 		/* Determine base allocation size, and extra base. */
 		/* Static field storage always has zero base. */
+		/* Note that classes may extend Thread, so that must be considered */
+		/* here. */
 		singleFields = &inClass->fields[i];
 		if (i == SJME_NVM_CLASS_MEMBER_STATIC)
 			allocSize = 0;
 		else if (superClass == NULL)
 			allocSize = sizeof(sjme_jobjectBase);
+		else if (SJME_NVM_ACC_IS(inClass->special, SPECIAL_THREAD_CLASS))
+			allocSize = sizeof(sjme_nvm_threadBase);
 		else
 			allocSize = superClass->fields[i].allocSize;
 	
@@ -1503,7 +1516,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	else if (SJME_ERROR_NONE ==
 		sjme_charSeq_charAtIs(inClass->fieldName, 0, '['))
 	{
-		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitArray(inClass,
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkLoadArray(inClass,
 			contextThread, classLoader)))
 			goto fail_initSpecific;
 	}
@@ -1512,7 +1525,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	else if (SJME_ERROR_NONE ==
 		sjme_charSeq_charAtIs(inClass->fieldName, 0, 'L'))
 	{
-		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitStandard(inClass,
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkLoadStandard(inClass,
 			contextThread, classLoader)))
 			goto fail_initSpecific;
 	}
@@ -1520,7 +1533,7 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 	/* Primitive Type */
 	else if (SJME_NVM_ACC_IS(inClass->special, SPECIAL_PRIMITIVE))
 	{
-		if (sjme_error_is(error = sjme_nvm_vmClass_checkInitPrimitive(
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkLoadPrimitive(
 			inClass, contextThread, classLoader)))
 			goto fail_initSpecific;
 	}
