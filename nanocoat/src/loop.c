@@ -69,6 +69,105 @@ fail_loop:
 	return sjme_error_default(error);
 }
 
+sjme_errorCode sjme_nvm_loop_tickExplicit(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrOutNullable sjme_jvalueTyped* argRCopy)
+{
+	sjme_errorCode error;
+	sjme_jboolean vmDead;
+	sjme_jint minFrameLevel, ticLimit;
+	sjme_nvm inState;
+
+	if (inThread == NULL || inFrame == NULL)
+		return SJME_ERROR_NONE;
+
+	inState = SJME_T_S(inThread);
+	if (inState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	if (SJME_F_T(inFrame) != inThread)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Get the frame level now, because if the frame is GCed or popped then */
+	/* we cannot read it while it runs. */
+	minFrameLevel = inFrame->index;
+
+	/* If this is not an explicit thread, it is possible we may be able to */
+	/* do nested thread scheduling to handle this call cooperatively. */
+	/* This is only done in these specific cases, otherwise the VM destroys */
+	/* itself or enters some kind of deadlock. */
+	/* This is generally used for callback threads from supporting libraries */
+	/* that have additional threads that are outside the VM thread logic. */
+	if ((inThread->flags & SJME_NVM_THREAD_IS_EXPLICIT) == 0)
+	{
+		/* The current thread model is cooperate or pre-emptive. */
+		if (inState->threadModel == SJME_NVM_MLE_THREAD_SINGLE_COOP ||
+			inState->threadModel == SJME_NVM_MLE_THREAD_SINGLE_PREEMPT)
+		{
+			/* If this is not the current thread, then we are in some other */
+			/* thread... only bad stuff will happen here. */
+			if (!sjme_thread_equal(sjme_thread_currentR(),
+				sjme_atomic_g(sjme_thread, &inThread->nativeThread)))
+				return SJME_ERROR_INVALID_EXPLICIT_NEST;
+
+			/* We cannot just keep running forever, otherwise this will just */
+			/* never exit until some unspecified condition just happens. */
+			/* Thus, there needs to be a tic limit. */
+			if (inState->globals.ticLimit > 0)
+				ticLimit = inState->globals.ticLimit;
+			else
+				ticLimit = SJME_CONFIG_NESTED_THREAD_TIC_LIMIT;
+
+			/* We just keep running every thread and scheduling until the */
+			/* thread we actually care about falls below the frame level. */
+			vmDead = SJME_JNI_FALSE;
+			while (inThread->numFrames >= minFrameLevel && !vmDead)
+			{
+				if (sjme_error_is(error = sjme_nvm_loop_tick(inState,
+						ticLimit, NULL, &vmDead)))
+					return sjme_error_default(error);
+			}
+
+			/* Always capture the return value at the end, if desired. */
+			goto skip_captureReturn;
+		}
+	}
+
+	/* Run the thread explicitly. */
+	vmDead = SJME_JNI_FALSE;
+	while (!vmDead)
+	{
+		/* Tick this thread as much as possible. */
+		if (sjme_error_is(error = sjme_nvm_loop_tickThread(inThread,
+			-1, minFrameLevel, NULL, &vmDead)))
+		{
+			/* Any other error. */
+			if (error != SJME_ERROR_MINIMUM_FRAME_LEVEL)
+				return sjme_error_default(error);
+
+			/* Minimum frame level means we must stop, as this could */
+			/* actually be a nested loop execution, in which case things */
+			/* will go very wrong if we start executing a higher level. */
+			goto skip_captureReturn;
+		}
+
+		/* Yield to let other threads run. */
+		sjme_thread_yield();
+	}
+
+skip_captureReturn:
+	/* Capture the return value? */
+	if (argRCopy != NULL)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_loop_tick(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInValue sjme_attrInNegativeOnePositive sjme_jint maxTics,
@@ -85,6 +184,10 @@ sjme_errorCode sjme_nvm_loop_tick(
 
 	if (maxTics < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Use the default tic limit? That is, do not run forever? */
+	if (maxTics == -1 && inState->globals.ticLimit > 0)
+		maxTics = inState->globals.ticLimit;
 
 	/* Calculate initial remaining tics. */
 	remaining = (maxTics < 0 ? -1 : maxTics);
@@ -125,7 +228,8 @@ sjme_errorCode sjme_nvm_loop_tick(
 
 		/* Otherwise execute the single thread. */
 		if (sjme_error_is(error = sjme_nvm_loop_tickThread(
-			runThread, remaining, &remaining, isTerminated)))
+			runThread, remaining, -1,
+			&remaining, isTerminated)))
 			return sjme_error_vmError(runThread, error);
 	}
 
@@ -136,10 +240,11 @@ sjme_errorCode sjme_nvm_loop_tick(
 sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrInValue sjme_attrInNegativeOnePositive sjme_jint maxTics,
+	sjme_attrInValue sjme_attrInNegativeOnePositive sjme_jint minFrameLevel,
 	sjme_attrOutNullable sjme_jint* ticRemainder,
 	sjme_attrOutNullable sjme_jboolean* isTerminated)
 {
-	sjme_errorCode error;
+	sjme_errorCode error, success;
 	sjme_jint frameIndex, remaining, tossedLevel;
 	sjme_nvm_frame currentFrame;
 	sjme_nvm_class_codeInfo currentCode;
@@ -160,7 +265,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (maxTics < -1)
+	if (maxTics < -1 || minFrameLevel < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Set crash context thread. */
@@ -168,6 +273,10 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 
 	/* The remaining execution count is always at the max tic count. */
 	remaining = maxTics;
+
+	/* The error to emit on success, in the event there is another condition */
+	/* such as the frame level being hit. */
+	success = SJME_ERROR_NONE;
 
 	/* Initialized to make the linter not noisy. */
 	currentFrame = NULL;
@@ -246,6 +355,16 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 			currentFrame = inThread->frames->elements[frameIndex];
 			currentCode = currentFrame->inCode;
 			rawCode = currentCode->rawCode;
+		}
+
+		/* Thread is below the desired thread level? */
+		if (minFrameLevel >= 0 && (currentFrame == NULL ||
+			currentFrame->index < minFrameLevel))
+		{
+			/* Successful, but we still want the number of remaining tics */
+			/* as that could be used for counting/throttling. */
+			success = SJME_ERROR_MINIMUM_FRAME_LEVEL;
+			goto skip_done;
 		}
 
 		/* If the frame is waiting for a condition to be met, then */
@@ -462,7 +581,7 @@ skip_done:
 	/* Give remaining, if requested. */
 	if (ticRemainder != NULL)
 		*ticRemainder = remaining;
-	return SJME_ERROR_NONE;
+	return success;
 	
 fail_any:
 	/* Clear crash context. */

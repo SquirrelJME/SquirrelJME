@@ -766,8 +766,14 @@ typedef enum sjme_nvm_thread_flags
 	/**
 	 * Explicitly scheduled thread? If this is set then scheduling
 	 * system will never consider this thread for scheduling ever.
+	 *
+	 * Explicit threads cannot sleep, although it is possible for them to
+	 * deadlock due to program bugs.
 	 */
 	SJME_NVM_THREAD_IS_EXPLICIT = INT32_C(0x0002),
+
+	/** Never debug suspend this thread. */
+	SJME_NVM_THREAD_NO_DEBUG_SUSPEND = INT32_C(0x0004),
 } sjme_nvm_thread_flags;
 	
 /**

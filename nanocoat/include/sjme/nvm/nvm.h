@@ -153,7 +153,7 @@ typedef enum sjme_nvm_structType
 	SJME_NVM_STRUCT_TASK_STRINGS,
 	
 	/** A single VM thread. */
-	SJME_NVM_STRUCT_BRACKET_VM_THREAD_INSTANCE,
+	SJME_NVM_STRUCT_THREAD_INSTANCE,
 	
 	/** Class loader. */
 	SJME_NVM_STRUCT_VM_CLASS_LOADER,
@@ -447,6 +447,12 @@ typedef struct sjme_nvm_stateGlobals
 
 	/** The global @link sjme_dylib @endlink ScritchUI library handle. */
 	sjme_atomic(sjme_pointer) scritchUiLib;
+
+	/**
+	 * The tic limit to use for the virtual machine, all calls
+	 * to @link sjme_nvm_loop_tick @endlink will use this.
+	 */
+	sjme_jint ticLimit;
 } sjme_nvm_stateGlobals;
 	
 struct sjme_nvm_stateBase

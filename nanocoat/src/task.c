@@ -723,6 +723,15 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 			SJME_THREAD_NULL))
 			scritchUiThread->flags |= SJME_NVM_THREAD_IS_EXPLICIT;
 
+		/* ScritchUI is in our thread, so we need to inline it accordingly. */
+		/* It effectively needs to own the VM execution and run everything */
+		/* in it for the most part. */
+		else
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+
 		/* Store ScritchUI thread */
 		sjme_atomic_s(sjme_nvm_thread, &inTask->globals.scritchUiThread,
 			sjme_weakUpR(sjme_nvm_thread, scritchUiThread));

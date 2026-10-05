@@ -72,6 +72,9 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_NO_METHOD:
 		case SJME_ERROR_INCOMPATIBLE_MLE_CALL:
 		case SJME_ERROR_CLASS_CHANGED:
+		case SJME_ERROR_LOCAL_INVALID_WRITE:
+		case SJME_ERROR_STACK_INVALID_WRITE:
+		case SJME_ERROR_TREAD_INVALID_WRITE:
 			return SJME_JNI_TRUE;
 
 #if 0
@@ -176,7 +179,7 @@ sjme_errorCode sjme_error_vmErrorR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 					&((sjme_nvm_frame)vmContext)->inThread));
 		}
 		else if (sjme_nvm_isAR(vmContext,
-			SJME_NVM_STRUCT_BRACKET_VM_THREAD_INSTANCE))
+			SJME_NVM_STRUCT_THREAD_INSTANCE))
 		{
 			stateContext = sjme_atomic_g(sjme_nvm,
 				&((sjme_nvm_thread)vmContext)->inState);

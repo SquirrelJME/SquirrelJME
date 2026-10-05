@@ -13,6 +13,7 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 #include "sjme/nvm/instance.h"
+#include "sjme/nvm/loop.h"
 
 #pragma region(mleInfo)
 	#define SJME_NVM_MLE_SHELF ScritchUiProxy
@@ -63,9 +64,14 @@ static sjme_thread_result sjme_attrThreadCall
 	sjme_nvm_mle_scritchUiLoopExecute(
 	sjme_attrInNotNull sjme_thread_parameter anything)
 {
+	sjme_errorCode error;
 	sjme_jobject runnable;
 	sjme_nvm nvmState;
 	sjme_nvm_task nvmTask;
+	sjme_nvm_thread uiThread;
+	sjme_jmethodID methodId;
+	sjme_nvm_frame nvmFrame;
+	sjme_jvalueTyped argV[2];
 
 	runnable = (sjme_jobject)anything;
 	if (runnable == NULL)
@@ -77,10 +83,65 @@ static sjme_thread_result sjme_attrThreadCall
 	if (nvmState == NULL || nvmTask == NULL ||
 		!sjme_nvm_isAR(nvmState, SJME_NVM_STRUCT_STATE) ||
 		!sjme_nvm_isAR(nvmTask, SJME_NVM_STRUCT_TASK))
-		return SJME_ERROR_ILLEGAL_STATE;
+	{
+		error = SJME_ERROR_ILLEGAL_STATE;
+		goto fail_recover;
+	}
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Recover the callback thread. */
+	uiThread = sjme_atomic_g(sjme_nvm_thread,
+		&nvmTask->globals.scritchUiThread);
+	if (uiThread == NULL ||
+		!sjme_nvm_isAR(nvmState, SJME_NVM_STRUCT_THREAD_INSTANCE))
+	{
+		error = SJME_ERROR_ILLEGAL_STATE;
+		goto fail_recover;
+	}
+
+	/* Lookup the run method. */
+	methodId = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmMethod_idByNameTypeU(
+		sjme_atomic_g(sjme_jclass, &runnable->isClass),
+		uiThread,
+		SJME_NVM_CLASS_MEMBER_INSTANCE,
+		SJME_JNI_TRUE,
+		"run", "()V",
+		&methodId)) || methodId == NULL)
+		goto fail_findMethod;
+
+	/* Setup arguments. */
+	memset(&argV, 0, sizeof(argV));
+	argV[0].t = SJME_JAVA_TYPE_ID_OBJECT;
+	argV[0].v.l = runnable;
+
+	/* Enter the call. */
+	nvmFrame = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadEnter(uiThread,
+		&nvmFrame, methodId, SJME_NVM_CALL_VIRTUAL,
+		1, &argV[0])) || nvmFrame == NULL)
+		goto fail_enterFrame;
+
+	/* Explicitly tick the thread, we do not care for a return value. */
+	if (sjme_error_is(error = sjme_nvm_loop_tickExplicit(uiThread,
+		nvmFrame, NULL)))
+		goto fail_loopThread;
+
+	/* This was counted up before being passed here, so cleanup. */
+	if (runnable != NULL)
+		sjme_nvm_instance_countDown(runnable);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_loopThread:
+fail_enterFrame:
+fail_findMethod:
+fail_recover:
+	/* This was counted up before being passed here, so cleanup. */
+	if (runnable != NULL)
+		sjme_nvm_instance_countDown(runnable);
+
+	return sjme_error_default(error);
 }
 
 static sjme_errorCode sjme_nvm_mle_scritchUiNew(
@@ -251,7 +312,7 @@ SJME_NVM_MLE_SHELF_DECLARE(ScritchUiProxy) =
 	SJME_NVM_MLE_DEFINE(loopExecute,
 		SJME_MD(SJME_MD_V,
 			SJME_MD_RUNNABLE),
-		SJME_MP(SJME_MP_L,
+		SJME_MP(SJME_MP_V,
 			SJME_MP_L SJME_MP_L)),
 
 	/* Panel interface. */

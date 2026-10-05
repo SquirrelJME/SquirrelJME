@@ -1146,6 +1146,11 @@ extern "C" {
 	
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"
+
+#if !defined(SJME_CONFIG_NESTED_THREAD_TIC_LIMIT)
+	/** Nested thread tic limit, to prevent nested threads from blocking. */
+	#define SJME_CONFIG_NESTED_THREAD_TIC_LIMIT INT32_C(8192)
+#endif
 	
 /*--------------------------------------------------------------------------*/
 

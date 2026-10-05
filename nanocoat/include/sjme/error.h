@@ -622,9 +622,15 @@ typedef enum sjme_errorCode
 
 	/** The type of class this is, is not valid. */
 	SJME_ERROR_INVALID_CLASS_TYPE = -192,
+
+	/** Minimum frame level has been reached. */
+	SJME_ERROR_MINIMUM_FRAME_LEVEL = -193,
+
+	/** This type of thread cannot be called in a nested matter. */
+	SJME_ERROR_INVALID_EXPLICIT_NEST = -194,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -193,
+	SJME_NUM_ERROR_CODES = -195,
 } sjme_errorCode;
 
 /**
