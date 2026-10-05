@@ -67,6 +67,9 @@ struct sjme_jobjectBase
 
 	/** The monitor of monitor counts. */
 	sjme_atomic(sjme_jint) monitorCount;
+
+	/** The task which owns this object. */
+	sjme_phantom(sjme_nvm_task) phantomTask;
 	
 	/** Special value, if needed. */
 	sjme_atomic(sjme_intPointer) special;

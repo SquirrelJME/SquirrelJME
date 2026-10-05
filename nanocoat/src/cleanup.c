@@ -1428,6 +1428,10 @@ sjme_errorCode sjme_nvm_allocR(
 	result->magic = SJME_NVM_OBJECT_MAGIC;
 	result->postClose = postClose;
 
+	/* Set state, which could be self. */
+	sjme_atomic_s(sjme_nvm, &result->phantomState,
+		(inType == SJME_NVM_STRUCT_STATE ? (sjme_nvm)result : inState));
+
 #if defined(SJME_CONFIG_DEBUG_VERBOSE)
 	/* Debug. */
 	sjme_messageR(file, line, func, SJME_JNI_FALSE,

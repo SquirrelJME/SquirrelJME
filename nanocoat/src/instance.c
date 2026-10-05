@@ -810,6 +810,10 @@ sjme_errorCode sjme_nvm_instance_objectNewR(
 	sjme_atomic_s(sjme_jclass, &result->isClass, sjme_weakUp(inClass));
 	result->identityHash = sjme_nvm_instance_calcIdentityHash(
 		SJME_T_K(contextThread), result);
+
+	/* Remember the task as it may need to be recovered later. */
+	sjme_atomic_s(sjme_nvm_task, &result->phantomTask,
+		SJME_T_K(contextThread));
 	
 	/* Success! */
 	*outObject = result;

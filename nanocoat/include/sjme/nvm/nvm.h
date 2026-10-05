@@ -310,6 +310,9 @@ struct sjme_nvm_commonBase
 
 	/** Post close after the pre-close initial walk state. */
 	sjme_closeable_closeHandlerFunc postClose;
+
+	/** The phantom state reference. */
+	sjme_phantom(sjme_nvm) phantomState;
 };
 
 /**

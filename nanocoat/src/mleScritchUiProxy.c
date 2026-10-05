@@ -7,6 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/instanceProxy.h"
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/mle.h"
@@ -63,10 +64,20 @@ static sjme_thread_result sjme_attrThreadCall
 	sjme_attrInNotNull sjme_thread_parameter anything)
 {
 	sjme_jobject runnable;
+	sjme_nvm nvmState;
+	sjme_nvm_task nvmTask;
 
 	runnable = (sjme_jobject)anything;
 	if (runnable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Recover phantom state and task. */
+	nvmState = sjme_atomic_g(sjme_nvm, &runnable->common.phantomState);
+	nvmTask = sjme_atomic_g(sjme_nvm_task, &runnable->phantomTask);
+	if (nvmState == NULL || nvmTask == NULL ||
+		!sjme_nvm_isAR(nvmState, SJME_NVM_STRUCT_STATE) ||
+		!sjme_nvm_isAR(nvmTask, SJME_NVM_STRUCT_TASK))
+		return SJME_ERROR_ILLEGAL_STATE;
 
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
