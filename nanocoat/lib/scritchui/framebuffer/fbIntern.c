@@ -12,6 +12,30 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "lib/scritchui/framebuffer/fbIntern.h"
 
+#if defined(SJME_CONFIG_DEBUG)
+
+/** Declares the debug marker. */
+#define sjme_scritchui_fb_markerDeclare() sjme_jint line
+
+/** Emits a debug marker. */
+#define sjme_scritchui_fb_marker() line = __LINE__
+
+/** Uses a debug marker. */
+#define sjme_scritchui_fb_markerUse() (line)
+
+#else
+
+/** Declares the debug marker. */
+#define sjme_scritchui_fb_markerDeclare() (void)
+
+/** Emits a debug marker. */
+#define sjme_scritchui_fb_marker() (void)
+
+/** Uses a debug marker. */
+#define sjme_scritchui_fb_markerUse() (-1)
+
+#endif
+
 static sjme_errorCode sjme_scritchui_fb_selLock(
 	sjme_attrInNotNull sjme_scritchui_pencil g)
 {
@@ -362,6 +386,11 @@ sjme_errorCode sjme_scritchui_fb_intern_lightweightInit(
 		paintListener, NULL)))
 		return sjme_error_default(error);
 	
+	sjme_message("SoftPaint! %p (%p) %p %p", wrappedPanel,
+		wrappedPanel->component.common.frontEnd.base.wrapper,
+		wrappedPanel->paint.listeners[0].paint.callback,
+		wrappedPanel->paint.listeners[1].paint.callback);
+	
 	/* Success! */
 	*outWState = wState;
 	return SJME_ERROR_NONE;
@@ -522,6 +551,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	sjme_scritchui_lafElementColorType colorType;
 	sjme_scritchui_rect useFocusRect;
 	sjme_scritchui_dim suggestDim;
+	sjme_scritchui_fb_markerDeclare();
 	
 	if (inState == NULL || g == NULL || dlFull == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -542,6 +572,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		wState = inComponent->common.handle[SJME_SUI_FB_H_WSTATE];
 	
 		/* Read in component size. */
+		sjme_scritchui_fb_marker();
 		if (sjme_error_is(error = inState->apiInThread->componentSize(
 			inState, inComponent, &cW, &cH)))
 			goto fail_componentSize;
@@ -555,8 +586,9 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	memset(&useFocusRect, 0, sizeof(useFocusRect));
 	
 	/* Does the selection buffer need initializing? */
+	sjme_scritchui_fb_marker();
 	sg = NULL;
-	if (wState != NULL)
+	if (wState != NULL && inComponent != NULL)
 		if (sjme_error_is(error = sjme_scritchui_fb_intern_makeSelBuf(
 			inState, inComponent, wState, &sg, cW, cH)))
 			goto fail_selBufInit;
@@ -567,7 +599,7 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 	/* Obtain all the look and feel colors, if any fail fallback to default. */
 	memset(lafColors, 0, sizeof(lafColors));
 	for (i = 0; i < SJME_SCRITCHUI_NUM_LAF_ELEMENT_COLOR; i++)
-		if (sjme_error_is(error = inState->apiInThread->lafElementColor(
+		if (sjme_error_is(inState->apiInThread->lafElementColor(
 			inState, inComponent,
 			&lafColors[i], i)))
 			lafColors[i] = 0xFF000000;
@@ -652,11 +684,13 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 		if (sg != NULL && doSel)
 		{
 			/* Copy all the translation and otherwise here. */
+			sjme_scritchui_fb_marker();
 			if (sjme_error_is(error = sg->apiInThread->setParametersFrom(sg,
 				g)))
 				goto fail_sgCopyParam;
 			
 			/* The color is the selection index. */
+			sjme_scritchui_fb_marker();
 			if (sjme_error_is(error = sg->apiInThread->setAlphaColor(sg,
 				0xFF000000 | dlAt->selection)))
 				goto fail_sgSelColor;
@@ -687,7 +721,8 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 					/* Load in string. */
 					memset(&seq, 0, sizeof(seq));
 					if (sjme_error_is(error = sjme_charSeq_newUtfStatic(
-						&seq, dlAt->data.text.string, 0, -1)))
+						&seq, dlAt->data.text.string,
+						0, -1)))
 						goto fail_charSeqLoad;
 					
 					/* Determine how long the string is. */
@@ -702,7 +737,8 @@ sjme_errorCode sjme_scritchui_fb_intern_render(
 					
 					/* Selection buffer. */
 					if (sg != NULL && doSel)
-						sg->apiInThread->drawSubstring(sg, &seq, 0, seqLen,
+						sg->apiInThread->drawSubstring(sg, &seq, 0,
+							seqLen,
 							0, 0, 0);
 					
 					/* If disabled, cross it out. */
@@ -766,7 +802,8 @@ fail_lafColor:
 fail_selBufInit:
 fail_componentSize:
 	/* Debug. */
-	sjme_message("FB Render Failed: %d", error);
+	sjme_message("FB Render Failed: %d %d",
+		error, sjme_scritchui_fb_markerUse());
 	
 	return sjme_error_default(error);
 }

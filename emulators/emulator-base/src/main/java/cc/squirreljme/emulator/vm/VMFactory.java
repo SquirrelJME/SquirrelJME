@@ -375,8 +375,11 @@ public abstract class VMFactory
 			// ScritchUI library
 			else if (item.startsWith("-Xscritchui:"))
 			{
-				systemProperties.put("cc.squirreljme.scritchui",
-					item.substring("-Xscritchui:".length()));
+				String target = item.substring("-Xscritchui:".length());
+				
+				// Make sure it is really used
+				systemProperties.put("cc.squirreljme.scritchui", target);
+				System.setProperty("cc.squirreljme.scritchui", target);
 			}
 			
 			// Version information (stdout/stderr)
