@@ -10,6 +10,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import java.security.AccessController;
@@ -17,14 +18,26 @@ import java.security.Permission;
 import java.util.PropertyPermission;
 
 /**
- * This is the security manager which controls access to various functions of
- * the virtual machine.
+ * This is Java's Security Manager which is a software userspace access control
+ * and permission checking system, and has since been permanently disabled in
+ * Java SE 24. This system is only as secure as it's weakest link and is not
+ * to be relied upon for any meaningful security beyond only the most
+ * well-behaved, well-written, and securely-written applications. Malicious
+ * or insecurely written programs will not be phased by this class.
  * 
- * Access is checked by {@link AccessController#checkPermission(Permission)}. 
+ * In SquirrelJME, this is only here for compatibility purposes with legacy
+ * applications. This should never be used for real security applications. If
+ * you desire as such, please do investigate virtual machines, secure
+ * computing, signature verification, and encrypted memory as examples. Apart
+ * from the minimum required for legacy applications to operate, this will
+ * remain a minimal application.
+ * 
+ * Access is checked by {@link AccessController#checkPermission(Permission)}.
  * 
  * @since 2020/07/02
  */
 @Api
+@ApiDefinedDeprecated
 @KeepAbsolutelyEverything("Lightweight 'Security' permission system.")
 public class SecurityManager
 {
@@ -40,6 +53,7 @@ public class SecurityManager
 	 * @since 2018/09/18 
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public SecurityManager()
 		throws SecurityException
 	{
@@ -56,6 +70,7 @@ public class SecurityManager
 	}
 	
 	@Api
+	@ApiDefinedDeprecated
 	public void checkAccept(String __a, int __b)
 	{
 		throw Debugging.todo();
@@ -69,6 +84,7 @@ public class SecurityManager
 	 * @since 2018/11/21
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public void checkAccess(Thread __t)
 		throws SecurityException
 	{
@@ -76,12 +92,14 @@ public class SecurityManager
 	}
 	
 	@Api
+	@ApiDefinedDeprecated
 	public void checkConnect(String __a, int __b)
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
+	@ApiDefinedDeprecated
 	public void checkDelete(String __a)
 	{
 		throw Debugging.todo();
@@ -95,6 +113,7 @@ public class SecurityManager
 	 * @since 2018/10/13
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public void checkExit(int __code)
 		throws SecurityException
 	{
@@ -102,6 +121,7 @@ public class SecurityManager
 	}
 	
 	@Api
+	@ApiDefinedDeprecated
 	public void checkListen(int __a)
 	{
 		throw Debugging.todo();
@@ -116,6 +136,7 @@ public class SecurityManager
 	 * @since 2018/09/18
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public void checkPermission(Permission __p)
 		throws NullPointerException, SecurityException
 	{
@@ -135,6 +156,7 @@ public class SecurityManager
 	 * @since 2018/09/18
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public void checkPropertyAccess(String __key)
 		throws IllegalArgumentException, NullPointerException,
 			SecurityException
@@ -152,12 +174,14 @@ public class SecurityManager
 	}
 	
 	@Api
+	@ApiDefinedDeprecated
 	public void checkRead(String __a)
 	{
 		throw Debugging.todo();
 	}
 	
 	@Api
+	@ApiDefinedDeprecated
 	public void checkWrite(String __a)
 	{
 		throw Debugging.todo();
