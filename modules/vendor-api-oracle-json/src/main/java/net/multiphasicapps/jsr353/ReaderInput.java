@@ -149,7 +149,7 @@ public class ReaderInput
 		throws IOException
 	{
 		// Reading loop
-		for (; ; )
+		for (;;)
 		{
 			// Read character
 			JsonLocation jl = this.getLocation();
@@ -166,19 +166,19 @@ public class ReaderInput
 				return new BaseDecoderData(BaseDecoderType.START_OBJECT,
 					null);
 				
-				// End object
+			// End object
 			else if (c == '}')
 				return new BaseDecoderData(BaseDecoderType.END_OBJECT, null);
 				
-				// Start array
+			// Start array
 			else if (c == '[')
 				return new BaseDecoderData(BaseDecoderType.START_ARRAY, null);
 				
-				// End array
+			// End array
 			else if (c == ']')
 				return new BaseDecoderData(BaseDecoderType.END_ARRAY, null);
 				
-				// String
+			// String
 			else if (c == '\"')
 			{
 				StringBuilder sb = new StringBuilder();
@@ -209,7 +209,8 @@ public class ReaderInput
 										jl);
 								
 								// Read hex digit
-								int dig = Character.digit((char)hex[i], 16);
+								int dig = Character.digit((char)hex[i], 
+									16);
 								
 								// Not a digit
 								if (dig < 0)
@@ -221,8 +222,8 @@ public class ReaderInput
 							}
 							
 							// Build sequence
-							c =
-								(hex[0] << 12) | (hex[1] << 8) | (hex[2] << 4) | hex[3];
+							c = (hex[0] << 12) | (hex[1] << 8) | 
+									(hex[2] << 4) | hex[3];
 						}
 						
 						// Not complex
@@ -311,7 +312,8 @@ public class ReaderInput
 						throw new JsonParsingException("eoflit", jl);
 					
 					// Bad character
-					if (!(c == '-' || c == '+' || (c >= '0' && c <= '9') || c == 'e' || c == 'E' || c == '.'))
+					if (!(c == '-' || c == '+' || (c >= '0' && c <= '9') ||
+						c == 'e' || c == 'E' || c == '.'))
 						throw new JsonParsingException(
 							String.format("illgnum", (char)c), jl);
 					
@@ -321,7 +323,8 @@ public class ReaderInput
 					// Peek next character, if it is a numerical form then
 					// continue
 					c = this.__peek();
-					if (c == '-' || c == '+' || (c >= '0' && c <= '9') || c == 'e' || c == 'E' || c == '.')
+					if (c == '-' || c == '+' || (c >= '0' && c <= '9') || 
+						c == 'e' || c == 'E' || c == '.')
 					{
 						// Make big E, a little e
 						if (c == 'E')
@@ -449,7 +452,7 @@ public class ReaderInput
 		throws IOException
 	{
 		// Loop for queue
-		for (; ; )
+		for (;;)
 		{
 			// In queue
 			if (this._peek > Integer.MIN_VALUE)

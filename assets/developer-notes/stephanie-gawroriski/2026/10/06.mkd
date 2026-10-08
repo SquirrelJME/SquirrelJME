@@ -1,0 +1,52 @@
+# 2026/10/06
+
+## 00:27
+
+I have very much been neglecting notes. Considering the major push for AI
+and project isolation, and lack of quality and acceptance of any reasoning
+even if wrong... I need to get back into this again. It really helps me.
+
+The following has been sitting on my blackboard forever, for about a month:
+
+ * Move Var Serialization to struct type names instead of constants. More
+   flexible and easier to debug.
+ * Use `__LINE__` for integral values perhaps?
+ * Support bitfields or generic `&/sizeof()`.
+ * Need super custom as well.
+ * Super or interface cannot be a proxy.
+
+The first, is moving walking/serialization for dumps to be less manual and
+to effectively be as automatic as possible. Duplicating all of the structure
+members along with their types is just untenable. Of course this is only for
+VM snapshots and save states.
+
+The second, this is related to generic serialization. Effectively to detect
+changed types or structure info, they are tied to their source line.
+
+The third, instead of having custom handlers for the primitive data types and
+for enumerations, use a generic integral handler.
+
+The fourth, this should be a rare only case for serialization where if a type
+really needs very specific handling to be serialized/deserialized.
+
+The fifth, unrelated, a sanity measure for proxies.
+
+## 00:36
+
+Regardless, as of now I do have execution of byte code which is working well
+at least until there are GC issues or an MLE call is not implemented. Thinking
+back on SpringCoat, this is when I implemented NPS snapshots. I should actually
+pause what I am doing and implement all of the debugging related stuff for
+NanoCoat as the difficulty and complexity will only increase as the program
+state becomes more complicated. Unlike SpringCoat though, I definitely do need
+to write a native debugger, even if it ends up being a more basic one. Of
+course, it should be in ScritchUI through `abcd` because I very much would
+like to replace the Swing based one... which stalls and breaks anyway due
+to Swing issues.
+
+## 00:40
+
+When it comes to garbage collection though, I do need a dot graph and/or
+timeline for object instances with code locations for where instances get
+counted up or down. VisualVM does not provide this, so I need to look a bit
+further.
