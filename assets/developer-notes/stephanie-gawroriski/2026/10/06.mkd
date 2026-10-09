@@ -50,3 +50,10 @@ When it comes to garbage collection though, I do need a dot graph and/or
 timeline for object instances with code locations for where instances get
 counted up or down. VisualVM does not provide this, so I need to look a bit
 further.
+
+## 00:51
+
+Seems what I want with objects is <https://web.archive.org/web/20231226184055/
+https://hg.openjdk.org/jdk6/jdk6/jdk/
+raw-file/tip/src/share/demo/jvmti/hprof/manual.html>. Will have to check
+further when not tired.
