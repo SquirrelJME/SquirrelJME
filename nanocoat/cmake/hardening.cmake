@@ -7,17 +7,6 @@
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Various hardening options.
 
-# For RetroArch disable specific features so they cannot be used
-if(SQUIRRELJME_IS_LIBRETRO)
-	# Disable dynamic library support, we do not want to allow loading
-	# native libraries of any kind
-	add_compile_definitions(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT=1)
-
-	# Disable ScritchUi dynamic libraries
-	add_compile_definitions(SJME_CONFIG_SCRITCHUI_NO_DYLIB=1)
-	set(SQUIRRELJME_SCRITCHUI_NO_DYLIB TRUE)
-endif()
-
 # Strip output executable
 if(SQUIRRELJME_IS_RELEASE)
 	if(SQUIRRELJME_IS_GCC)

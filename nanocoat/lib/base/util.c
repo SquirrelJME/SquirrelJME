@@ -311,7 +311,7 @@ sjme_jint sjme_string_compareWAN(
 			if (bString[i] == '\0' && bLen > i)
 				bLen = i;
 
-			/* A comparison no longer needs to happen becuase an end of */
+			/* A comparison no longer needs to happen because an end of */
 			/* string was reached. */
 			break;
 		}
@@ -363,7 +363,7 @@ sjme_jint sjme_string_compareIWAN(
 			if (bString[i] == '\0' && bLen > i)
 				bLen = i;
 
-			/* A comparison no longer needs to happen becuase an end of */
+			/* A comparison no longer needs to happen because an end of */
 			/* string was reached. */
 			break;
 		}
@@ -472,27 +472,9 @@ sjme_jint sjme_string_hash(sjme_lpcstr string)
 	
 	if (string == NULL)
 		return 0;
-	
-	/* Initial result. */
-	result = 0;
-	
-	/* Read until end of string. */
-	for (p = string; *p != 0;)
-	{
-		/* Decode character. */
-		c = sjme_string_decodeChar(p, &p);
 
-		/* Not valid. */
-		if (c < 0)
-			return -1;
-		
-		/* Calculate the hashCode(), the JavaDoc gives the following formula:
-		 * == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes! */
-		result = ((result << 5) - result) + (sjme_jint)c;
-	}
-	
-	/* Return calculated result. */
-	return result;
+	/* Forward to the other variant, as these would otherwise be the same. */
+	return sjme_string_hashN(string, (sjme_jint)strlen(string));
 }
 
 sjme_jint sjme_string_hashN(sjme_lpcstr string, sjme_jint limit)
@@ -1080,6 +1062,17 @@ sjme_jint* sjme_util_memUnaligned32W(void* addr, sjme_jint v)
 
 sjme_jint sjme_util_sizeToInt(size_t in)
 {
+#if defined(SJME_CONFIG_HAS_SDCC)
+	sjme_jint result;
+
+	/* If casting to and then back results in a different value, then */
+	/* there was an overflow. */
+	result = (sjme_jint)in;
+	if (in != (size_t)result)
+		return INT32_MAX;
+
+	return result;
+#else
 	/* size_t is an unsigned value that generally is larger than int. */
 	/* However, this may not always be the case as a compiler could say */
 	/* support only 16-bit size_t with a 32-bit sjme_jint which is long. */
@@ -1087,6 +1080,7 @@ sjme_jint sjme_util_sizeToInt(size_t in)
 	if (sjme_noLint(sizeof(size_t) < sizeof(sjme_jint)) || in < INT32_MAX)
 		return (sjme_jint)in;
 	return INT32_MAX;
+#endif
 }
 
 #endif

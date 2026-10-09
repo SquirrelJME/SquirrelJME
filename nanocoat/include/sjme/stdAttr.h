@@ -409,9 +409,10 @@ extern "C"
 	#define sjme_fp(funcPtr)
 #endif
 
-/** Force specific size for an enum. */
+/** Force specific size for an enum, must be int sized. */
 #define sjme_enumInt(type) \
-	SJME__enum_##type##_MAXV = INT32_MAX, \
+	SJME__enum_##type##_MINV = INT_MIN, \
+	SJME__enum_##type##_MAXV = INT_MAX, \
 	SJME__enum_##type##_ZERO = 0
 
 #if SJME_CONFIG_GCC_VERSION_LEAST(9, 0)

@@ -671,6 +671,8 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	sjme_list(sjme_jstring)* argStrings;
 	sjme_jstring argString;
 	sjme_scritchui scritchUi;
+
+	/* TODO FIXME: Optimize/shrink for SDCC. */
 	
 	if (inTask == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

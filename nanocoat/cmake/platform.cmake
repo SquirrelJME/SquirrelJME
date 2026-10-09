@@ -76,7 +76,8 @@ if(SQUIRRELJME_IS_BARE_METAL OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "emscripten" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "dos" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "palmos" OR
-	LIBRETRO_STATIC OR ENV{LIBRETRO_STATIC})
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "sdcc" OR
+	LIBRETRO_STATIC OR ENV{LIBRETRO_STATIC} OR SQUIRRELJME_IS_LIBRETRO)
 	set(SQUIRRELJME_ENABLE_DYLIB_DEFAULT FALSE)
 else()
 	set(SQUIRRELJME_ENABLE_DYLIB_DEFAULT TRUE)
@@ -219,3 +220,13 @@ squirreljme_define_option(SQUIRRELJME_ENABLE_AUDIO_WINMM
 squirreljme_define_option(SQUIRRELJME_ENABLE_GUI_WIN32
 	"Enable ScritchUI: Win32")
 
+# Dynamic libraries are not supported
+if(NOT SQUIRRELJME_ENABLE_DYLIB)
+	# Disable dynamic library support, this system is not capable of dynamic
+	# libraries at all
+	add_compile_definitions(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT=1)
+
+	# Disable ScritchUi dynamic libraries as they cannot be used anyway
+	add_compile_definitions(SJME_CONFIG_SCRITCHUI_NO_DYLIB=1)
+	set(SQUIRRELJME_SCRITCHUI_NO_DYLIB TRUE)
+endif()

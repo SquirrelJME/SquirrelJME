@@ -88,8 +88,11 @@ else()
 endif()
 
 # Is there Objective-C?
+message(STATUS "Checking for Objective-C...")
 check_language(OBJC)
 if(CMAKE_OBJC_COMPILER)
+	message(STATUS "CMake indicated Objective-C is available!")
+
 	enable_language(OBJC)
 	set(SQUIRRELJME_HAS_OBJC TRUE)
 else()
@@ -97,8 +100,11 @@ else()
 endif()
 
 # Is there C++?
+message(STATUS "Checking for C++...")
 check_language(CXX)
 if(CMAKE_CXX_COMPILER)
+	message(STATUS "CMake indicated C++ is available!")
+
 	enable_language(CXX)
 	set(SQUIRRELJME_HAS_CXX TRUE)
 else()

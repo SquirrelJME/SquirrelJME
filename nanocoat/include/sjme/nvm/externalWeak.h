@@ -19,6 +19,7 @@
 
 #include "sjme/config.h"
 #include "sjme/error.h"
+#include "sjme/dylibExtra.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -34,14 +35,17 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
- * Potentially returns the default ScritchUI interface to use.
+ * Potentially returns the default extra family interface to use.
  *
- * @param outInterface The resultant default ScritchUI interface,
+ * @param family The library family to use.
+ * @param outInterface The resultant default extra family interface,
  * or @code NULL @endcode if none is used.
  * @return Any resultant error, if any.
  * @since 2026/09/20
  */
-sjme_errorCode sjme_extern_scritchUiInterface(
+sjme_errorCode sjme_extern_extraFamilyDefault(
+	sjme_attrInRange(0, SJME_DYLIB_NUM_EXTRA_FAMILY)
+		sjme_dylib_extraFamily family,
 	sjme_attrOutNotNull sjme_lpcstr* outInterface);
 
 /*--------------------------------------------------------------------------*/

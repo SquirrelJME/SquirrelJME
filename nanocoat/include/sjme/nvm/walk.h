@@ -31,6 +31,8 @@ extern "C"
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif /* #ifdef __cplusplus */
 
+#if !defined(SJME_CONFIG_DISABLE_WALK)
+
 /*--------------------------------------------------------------------------*/
 
 /**
@@ -656,6 +658,8 @@ sjme_errorCode sjme_nvm_walk_coreDumpStream(
 	sjme_attrInNotNull sjme_stream_output outStream);
 	
 /*--------------------------------------------------------------------------*/
+
+#endif
 
 /* Anti-C++. */
 #ifdef __cplusplus

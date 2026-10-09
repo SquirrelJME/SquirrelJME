@@ -34,46 +34,6 @@
 	#define SJME_DIRECTORY_NAME "squirreljme"
 #endif
 
-static const sjme_lpcstr sjme_defaultScritchUi[] =
-{
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	"win32",
-#elif defined(SJME_CONFIG_HAS_OS_MACOS)
-	"cocoa",
-#elif defined(SJME_CONFIG_HAS_OS_BSD_FAMILY) || \
-	defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
-	defined(SJME_CONFIG_HAS_OS_LINUX) || \
-	defined(SJME_CONFIG_HAS_OS_POSIX)
-	"wayland",
-	"x11",
-#endif
-
-	/* More Modern. */
-	"qt6",
-	"gtk4",
-	"wayland",
-
-	/* Recent enough. */
-	"qt5",
-	"qt4"
-	"gtk3",
-
-	/* Older. */
-	"gtk2",
-	"motif",
-	"tk",
-	"x11",
-
-	/* System specific interfaces. */
-	"cocoa",
-	"palmos",
-	"toolbox",
-	"win32",
-
-	/* End. */
-	NULL,
-};
-
 static const sjme_joptarg_helpParam sjme_joptarg_helpParams[] =
 {
 	{"-Xclutter:<release|debug>",
@@ -311,66 +271,6 @@ static sjme_errorCode sjme_nvm_printVersion(
 	return SJME_ERROR_EXIT;
 }
 
-#if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
-static sjme_errorCode sjme_nvm_initScritchUiPath(
-	sjme_attrInNotNull sjme_nvm inState,
-	sjme_attrOutNotNull sjme_scritchui* outScritchUi,
-	sjme_attrOutNotNull sjme_dylib* outHandle,
-	sjme_attrInNotNull sjme_path* libPath,
-	sjme_attrInNotNull sjme_lpcstr tryInterface)
-{
-#define BUF_SIZE 64
-	sjme_errorCode error;
-	sjme_dylib handle;
-	sjme_cchar buf[BUF_SIZE];
-	sjme_scritchui_dylibApiFunc apiInit;
-	sjme_scritchui result;
-
-	if (inState == NULL || outScritchUi == NULL || libPath == NULL ||
-		tryInterface == NULL || outHandle == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Try loading in the library. */
-	handle = NULL;
-	if (sjme_error_is(error = sjme_dylib_open(libPath->chars, &handle)) ||
-		handle == NULL)
-		goto fail_open;
-
-	/* What is the API function entrypoint called? */
-	memset(&buf, 0, sizeof(buf));
-	snprintf(buf, BUF_SIZE - 1,
-	SJME_TOKEN_STRING_PP(SJME_SCRITCHUI_DYLIB_SYMBOL()) "%s",
-		tryInterface);
-
-	/* Lookup the function pointer for the call. */
-	apiInit = NULL;
-	if (sjme_error_is(error = sjme_dylib_lookup(handle, buf,
-		(sjme_pointer*)&apiInit)) || apiInit == NULL)
-		goto fail_lookup;
-
-	/* Attempt initialization call. */
-	/* Note that we do not need to bind the event thread to anything JNI */
-	/* or otherwise, because we are the JVM! Yay! */
-	result = NULL;
-	if (sjme_error_is(error = apiInit(inState->allocPool, &result,
-		NULL, NULL, NULL)))
-		goto fail_initApi;
-
-	/* Success! */
-	*outScritchUi = result;
-	*outHandle = handle;
-	return SJME_ERROR_NONE;
-
-fail_initApi:
-fail_lookup:
-fail_open:
-	if (handle != NULL)
-		sjme_dylib_close(handle);
-	return sjme_error_default(error);
-#undef BUF_SIZE
-}
-#endif
-
 /**
  * Initializes ScritchUI so that it can be used by the virtual machine, this
  * is done as early as possible so that the UI can be used immediately. This is
@@ -387,17 +287,14 @@ static sjme_errorCode sjme_nvm_initScritchUi(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNullable sjme_lpcstr prefer)
 {
-#define NUM_SUI_FIXED 3
-#define MAX_XDG_NAME 32
+#define BUF_SIZE 64
 	sjme_errorCode error;
 	sjme_scritchui result;
 #if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
-	sjme_jint majorId, minorId;
-	sjme_path majorPath, minorPath;
-	sjme_lpcstr externDefault, tryInterface;
-	sjme_cchar libName[SJME_MAX_FILE_NAME];
-	sjme_cchar xdgName[MAX_XDG_NAME];
 	sjme_dylib handle;
+	sjme_cchar buf[BUF_SIZE];
+	sjme_scritchui_dylibApiFunc apiInit;
+	sjme_lpcstr actualSubComponent;
 #endif
 
 	if (inState == NULL)
@@ -424,144 +321,58 @@ static sjme_errorCode sjme_nvm_initScritchUi(
 	}
 
 #if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
-	/* What is the external default interface. */
-	externDefault = NULL;
-	if (sjme_error_is(error = sjme_extern_scritchUiInterface(&externDefault)))
-		return sjme_error_default(error);
-
-	/* We need to go through each minor, which is the actual library we want */
-	/* to load. */
-	for (minorId = 0;; minorId++)
+	/* Load in the ScritchUI library that we find first. */
+	actualSubComponent = NULL;
+	if (sjme_error_is(error = sjme_dylib_openExtra(
+		inState->nal, SJME_DYLIB_EXTRA_FAMILY_SCRITCHUI, NULL, &handle,
+		&actualSubComponent)) ||
+		handle == NULL)
 	{
-		/* The first and second are always the preferred and default */
-		/* interfaces. */
-		tryInterface = NULL;
-		if (minorId == 0)
-			tryInterface = prefer;
-		else if (minorId == 1)
-			tryInterface = externDefault;
-
-		/* Check XDG or some other env var? */
-		else if (minorId == 2)
-		{
-#if defined(SJME_CONFIG_HAS_OS_BSD_FAMILY) || \
-	defined(SJME_CONFIG_HAS_OS_CYGWIN) || \
-	defined(SJME_CONFIG_HAS_OS_LINUX) || \
-	defined(SJME_CONFIG_HAS_OS_POSIX)
-			/* Determine a default UI based on the XDG standard. */
-			memset(xdgName, 0, sizeof(xdgName));
-			if (inState->nal != NULL && inState->nal->getEnv != NULL)
-				if (sjme_error_is(error = inState->nal->getEnv(
-					&xdgName[0], MAX_XDG_NAME - 1,
-					"XDG_CURRENT_DESKTOP")))
-				{
-					/* These specific errors are okay and should not cause */
-					/* this to fail. */
-					if (error != SJME_ERROR_NO_SUCH_ELEMENT &&
-						error != SJME_ERROR_INDEX_OUT_OF_BOUNDS &&
-						error != SJME_ERROR_NOT_IMPLEMENTED)
-						return sjme_error_default(error);
-
-					/* Wipe so that it is invalidated. */
-					memset(xdgName, 0, sizeof(xdgName));
-				}
-
-			/* Defaults which seem to make sense. */
-			if (0 == strncasecmp(xdgName, "KDE", MAX_XDG_NAME) ||
-				0 == strncasecmp(xdgName, "LXQt", MAX_XDG_NAME))
-				tryInterface = "qt5";
-			else if (0 == strncasecmp(xdgName, "Cinnamon", MAX_XDG_NAME) ||
-				0 == strncasecmp(xdgName, "GNOME", MAX_XDG_NAME))
-				tryInterface = "gtk3";
-			else if (0 == strncasecmp(xdgName, "LXDE", MAX_XDG_NAME) ||
-				0 == strncasecmp(xdgName, "MATE", MAX_XDG_NAME))
-				tryInterface = "gtk2";
-			else if (0 == strncasecmp(xdgName, "wmaker", MAX_XDG_NAME) ||
-				0 == strncasecmp(xdgName, "windowmaker", MAX_XDG_NAME))
-				tryInterface = "cocoa";
-#else
-			/* XDG is going to be undefined for this system. */
-			tryInterface = NULL;
-#endif
-		}
-
-		/* Otherwise, from a built-in list. */
-		else
-			tryInterface = sjme_defaultScritchUi[minorId - NUM_SUI_FIXED];
-
-		/* No interfaces left to try? */
-		if (tryInterface == NULL)
-		{
-			/* Or skip the initial defaults? */
-			if (minorId < NUM_SUI_FIXED)
-				continue;
-
-			/* Always headless in this case. */
+		if (error == SJME_ERROR_COULD_NOT_LOAD_LIBRARY ||
+			error == SJME_ERROR_LIBRARY_NOT_FOUND)
 			return SJME_ERROR_HEADLESS_DISPLAY;
-		}
 
-		/* What is this library called? */
-		memset(&libName, 0, sizeof(libName));
-		if (sjme_error_is(error = sjme_dylib_name(
-			"squirreljme-scritchui-", tryInterface,
-			libName, SJME_MAX_FILE_NAME - 1)))
-			return sjme_error_default(error);
-
-		/* Go through each library directory in order, as our desired */
-		/* interface in the desired order might be in multiple directories. */
-		for (majorId = 0;; majorId++)
-		{
-			/* Lookup the native directory. */
-			memset(&majorPath, 0, sizeof(majorPath));
-			if (sjme_error_is(error = sjme_path_default(inState->nal,
-				&majorPath, SJME_NVM_DEFAULT_DIRECTORY_NATIVES, majorId)))
-			{
-				/* Path is defined, however checks failed for it. */
-				if (error == SJME_ERROR_PATH_NOT_ABSOLUTE ||
-					error == SJME_ERROR_PATH_TOO_DEEP ||
-					error == SJME_ERROR_PATH_TOO_LONG ||
-					error == SJME_ERROR_PATH_NOT_VALID)
-					continue;
-
-				/* Stop this if this is not a valid path. */
-				if (error == SJME_ERROR_PATH_NOT_DEFINED)
-					break;
-
-				return sjme_error_default(error);
-			}
-
-			/* Build full path to the library. */
-			memmove(&minorPath, &majorPath, sizeof(minorPath));
-			if (sjme_error_is(error = sjme_path_resolveS(&minorPath, libName)))
-				return sjme_error_default(error);
-
-			/* Try loading this specific library. */
-			result = NULL;
-			handle = NULL;
-			if (sjme_error_is(error = sjme_nvm_initScritchUiPath(inState,
-				&result, &handle, &minorPath, tryInterface)) || result == NULL)
-			{
-				/* These two are very possible and not errors. */
-				if (error == SJME_ERROR_HEADLESS_DISPLAY ||
-					error == SJME_ERROR_LIBRARY_NOT_FOUND)
-					continue;
-
-				return sjme_error_default(error);
-			}
-
-			/* Success! */
-			sjme_atomic_s(sjme_pointer, &inState->globals.scritchUi, result);
-			sjme_atomic_s(sjme_pointer, &inState->globals.scritchUiLib,
-				handle);
-			return SJME_ERROR_NONE;
-		}
+		return sjme_error_default(error);
 	}
+
+	/* What is the API function entrypoint called? */
+	memset(&buf, 0, sizeof(buf));
+	snprintf(buf, BUF_SIZE - 1,
+	SJME_TOKEN_STRING_PP(SJME_SCRITCHUI_DYLIB_SYMBOL()) "%s",
+		(actualSubComponent != NULL ? actualSubComponent : ""));
+
+	/* Lookup the function pointer for the call. */
+	apiInit = NULL;
+	if (sjme_error_is(error = sjme_dylib_lookup(handle, buf,
+		(sjme_pointer*)&apiInit)) || apiInit == NULL)
+		goto fail_lookup;
+
+	/* Attempt initialization call. */
+	/* Note that we do not need to bind the event thread to anything JNI */
+	/* or otherwise, because we are the JVM! Yay! */
+	result = NULL;
+	if (sjme_error_is(error = apiInit(inState->allocPool, &result,
+		NULL, NULL, NULL)))
+		goto fail_initApi;
+
+	/* Success! */
+	sjme_atomic_s(sjme_pointer, &inState->globals.scritchUi, result);
+	sjme_atomic_s(sjme_pointer, &inState->globals.scritchUiLib,
+		handle);
+	return SJME_ERROR_NONE;
+
+fail_initApi:
+fail_lookup:
+fail_open:
+	if (handle != NULL)
+		sjme_dylib_close(handle);
+	return sjme_error_default(error);
+#else
+	/* No dynamic library support. */
+	return SJME_ERROR_HEADLESS_DISPLAY;
 #endif
 
-	/* Could not find anything. */
-	return SJME_ERROR_HEADLESS_DISPLAY;
-#undef NUM_SUI_FIXED
-#undef MAX_XDG_NAME
+#undef BUF_SIZE
 }
 
 sjme_errorCode sjme_nvm_boot(

@@ -89,13 +89,17 @@ SJME_NVM_MLE_FUNCTION_DECL(aliveThreadCount)
 
 SJME_NVM_MLE_FUNCTION_DECL(createVMThread)
 {
-	sjme_jobject rawObject;
+	sjme_errorCode error;
+	sjme_nvm_thread thread;
 	sjme_jstring name;
+	sjme_charSeq seq;
+	sjme_nvm_stringPool_string poolString;
+	sjme_cchar threadName[SJME_MAX_FILE_NAME];
 
 	/* This cannot be null, but it must also be an actual thread instance. */
-	rawObject = argV[0].v.l;
-	if (rawObject == NULL ||
-		!sjme_nvm_isAR(rawObject, SJME_NVM_STRUCT_THREAD_INSTANCE))
+	thread = (sjme_nvm_thread)argV[0].v.l;
+	if (thread == NULL ||
+		!sjme_nvm_isAR(thread, SJME_NVM_STRUCT_THREAD_INSTANCE))
 		return sjme_error_mleCall(inFrame, SJME_ERROR_CLASS_CAST);
 
 	/* Optional thread name. */
@@ -104,8 +108,44 @@ SJME_NVM_MLE_FUNCTION_DECL(createVMThread)
 		SJME_NVM_STRUCT_STRING_INSTANCE))
 		return sjme_error_mleCall(inFrame, SJME_ERROR_CLASS_CAST);
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Was a name specified? */
+	memset(threadName, 0, sizeof(threadName));
+	if (name != NULL)
+	{
+		/* Is the pool string valid? */
+		seq = NULL;
+		poolString = sjme_atomic_g(sjme_nvm_stringPool_string,
+			&name->poolString);
+		if (poolString != NULL)
+			seq = poolString->seq;
+
+		/* Try the normal sequence otherwise */
+		if (seq == NULL)
+			seq = sjme_atomic_g(sjme_charSeq, &name->seq);
+
+		/* Try using this name if it is valid. */
+		if (seq != NULL)
+			snprintf(threadName, SJME_MAX_FILE_NAME - 1,
+				"%s",
+				sjme_charSeq_tempUtf(seq));
+	}
+
+	/* Make something up if the thread name is blank still. */
+	if (threadName[0] == '\0')
+		snprintf(threadName, SJME_MAX_FILE_NAME - 1,
+			"Thread@%" PRIx32 "",
+			(sjme_jint)thread->object.identityHash);
+	threadName[SJME_MAX_FILE_NAME - 1] = '\0';
+
+	/* Initialize the thread. */
+	if (sjme_error_is(error = sjme_nvm_task_threadInit(SJME_F_K(inFrame),
+		thread, threadName)))
+		return sjme_error_mleCall(inFrame, error);
+
+	/* Success! */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)thread;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(currentExitCode)

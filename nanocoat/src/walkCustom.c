@@ -9,6 +9,8 @@
 
 #include "sjme/nvm/walkCustom.h"
 
+#if !defined(SJME_CONFIG_DISABLE_WALK)
+
 sjme_errorCode sjme_nvm_walk_customRawArrayValues(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
@@ -18,3 +20,5 @@ sjme_errorCode sjme_nvm_walk_customRawArrayValues(
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+
+#endif

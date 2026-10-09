@@ -81,6 +81,8 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	sjme_list(sjme_jint)* ints;
 	sjme_lpcstr clutterPrefix;
 	sjme_cchar locate[LOCATE_SIZE];
+
+	/* TODO FIXME: Optimize/shrink for SDCC. */
 	
 	if (allocPool == NULL || inSuite == NULL || outMainClass == NULL ||
 		outMainArgs == NULL || outById == NULL || outByName == NULL)

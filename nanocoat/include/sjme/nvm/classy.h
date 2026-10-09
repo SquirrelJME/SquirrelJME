@@ -38,17 +38,19 @@ extern "C" {
  * 
  * @since 2024/09/13
  */
-typedef enum sjme_nvm_class_version
-{
-	/** CLDC 1.1 (JSR 30). */
-	SJME_NVM_CLASS_CLDC_1_0 = 2949123,
-	
-	/** CLDC 1.1 (JSR 139). */
-	SJME_NVM_CLASS_CLDC_1_1 = 3080192,
-	
-	/** CLDC 8. */
-	SJME_NVM_CLASS_CLDC_1_8 = 3342336,
-} sjme_nvm_class_version;
+typedef sjme_jint sjme_nvm_class_version;
+
+/** CLDC 1.1 (JSR 30). */
+#define SJME_NVM_CLASS_CLDC_1_0 \
+	((sjme_nvm_class_version)INT32_C(2949123))
+
+/** CLDC 1.1 (JSR 139). */
+#define SJME_NVM_CLASS_CLDC_1_1 \
+	((sjme_nvm_class_version)INT32_C(3080192))
+
+/** CLDC 8. */
+#define SJME_NVM_CLASS_CLDC_1_8 \
+	((sjme_nvm_class_version)INT32_C(3342336))
 
 /**
  * The number of member index sets possible.
@@ -57,6 +59,9 @@ typedef enum sjme_nvm_class_version
  */
 typedef enum sjme_nvm_class_instanceType
 {
+	/** This is an integer based enum. */
+	sjme_enumInt(sjme_nvm_class_instanceType),
+
 	/** Static members. */
 	SJME_NVM_CLASS_MEMBER_STATIC = 0,
 	
@@ -131,30 +136,31 @@ typedef enum sjme_nvm_class_accessFlags
  *
  * @since 2024/01/03
  */
-typedef enum sjme_nvm_class_classFlags
-{
-	/** This is an integral enum. */
-	sjme_enumInt(sjme_nvm_class_classFlags),
+typedef sjme_jint sjme_nvm_class_classFlags;
 
-	/** Is the class super? */
-	SJME_NVM_ACC_SUPER = INT32_C(0x0010),
+/** Is the class super? */
+#define SJME_NVM_ACC_SUPER \
+	((sjme_nvm_class_classFlags)INT32_C(0x0010))
 
-	/** Is the class an interface? */
-	SJME_NVM_ACC_INTERFACE = INT32_C(0x0200),
+/** Is the class an interface? */
+#define SJME_NVM_ACC_INTERFACE \
+	((sjme_nvm_class_classFlags)INT32_C(0x0200))
 
-	/** Is the class an annotation? */
-	SJME_NVM_ACC_ANNOTATION = INT32_C(0x2000),
+/** Is the class an annotation? */
+#define SJME_NVM_ACC_ANNOTATION \
+	((sjme_nvm_class_classFlags)INT32_C(0x2000))
 
-	/** Is the class an enum? */
-	SJME_NVM_ACC_ENUM = INT32_C(0x4000),
+/** Is the class an enum? */
+#define SJME_NVM_ACC_ENUM \
+	((sjme_nvm_class_classFlags)INT32_C(0x4000))
 
-	/** Class flag mask. */
-	SJME_NVM_ACC_CLASS_MASK = SJME_NVM_ACC_SUPER |
-		SJME_NVM_ACC_INTERFACE | SJME_NVM_ACC_ABSTRACT |
-		SJME_NVM_ACC_ANNOTATION | SJME_NVM_ACC_ENUM |
-		SJME_NVM_ACC_FINAL | SJME_NVM_ACC_SYNTHETIC |
-		SJME_NVM_ACC_ABSTRACT | SJME_NVM_ACC_ACCESS_MASK,
-} sjme_nvm_class_classFlags;
+/** Class flag mask. */
+#define SJME_NVM_ACC_CLASS_MASK \
+	(SJME_NVM_ACC_SUPER | \
+	SJME_NVM_ACC_INTERFACE | SJME_NVM_ACC_ABSTRACT | \
+	SJME_NVM_ACC_ANNOTATION | SJME_NVM_ACC_ENUM | \
+	SJME_NVM_ACC_FINAL | SJME_NVM_ACC_SYNTHETIC | \
+	SJME_NVM_ACC_ABSTRACT | SJME_NVM_ACC_ACCESS_MASK)
 
 /**
  * Common member flags.
@@ -236,41 +242,46 @@ typedef enum sjme_nvm_class_methodFlags
  *
  * @since 2026/09/09
  */
-typedef enum sjme_nvm_class_specialFlags
-{
-	/** This is an integral enum. */
-	sjme_enumInt(sjme_nvm_class_specialFlags),
+typedef sjme_jint sjme_nvm_class_specialFlags;
 
-	/** Is @code java.lang.Object @endcode. */
-	SJME_NVM_ACC_SPECIAL_OBJECT_CLASS = INT32_C(0x00010000),
+/** Is @code java.lang.Object @endcode. */
+#define SJME_NVM_ACC_SPECIAL_OBJECT_CLASS \
+	((sjme_nvm_class_specialFlags)INT32_C(0x00010000))
 
-	/** Is @code java.lang.Class @endcode. */
-	SJME_NVM_ACC_SPECIAL_CLASS_CLASS = INT32_C(0x00020000),
+/** Is @code java.lang.Class @endcode. */
+#define SJME_NVM_ACC_SPECIAL_CLASS_CLASS \
+	((sjme_nvm_class_specialFlags)INT32_C(0x00020000))
 
-	/** Is @code java.lang.Enum @endcode. */
-	SJME_NVM_ACC_SPECIAL_ENUM_CLASS = INT32_C(0x00040000),
+/** Is @code java.lang.Enum @endcode. */
+#define SJME_NVM_ACC_SPECIAL_ENUM_CLASS \
+	((sjme_nvm_class_specialFlags)INT32_C(0x00040000))
 
-	/** In the boot class library, that is the first index. */
-	SJME_NVM_ACC_SPECIAL_PRIMARY = INT32_C(0x00080000),
+/** In the boot class library, that is the first index. */
+#define SJME_NVM_ACC_SPECIAL_PRIMARY \
+	((sjme_nvm_class_specialFlags)INT32_C(0x00080000))
 
-	/** Synthetically created by the virtual machine. */
-	SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC = INT32_C(0x00100000),
+/** Synthetically created by the virtual machine. */
+#define SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC \
+	((sjme_nvm_class_specialFlags)INT32_C(0x00100000))
 
-	/**
-	 * Is a proxy method and must be called through a handler, or is a proxy
-	 * class and as such has extra restrictions.
-	 */
-	SJME_NVM_ACC_SPECIAL_PROXY = INT32_C(0x00200000),
+/**
+ * Is a proxy method and must be called through a handler, or is a proxy
+ * class and as such has extra restrictions.
+ */
+#define SJME_NVM_ACC_SPECIAL_PROXY \
+	((sjme_nvm_class_specialFlags)INT32_C(0x00200000))
 
-	/** This is a primitive type. */
-	SJME_NVM_ACC_SPECIAL_PRIMITIVE = INT32_C(0x00400000),
+/** This is a primitive type. */
+#define SJME_NVM_ACC_SPECIAL_PRIMITIVE \
+	((sjme_nvm_class_specialFlags)INT32_C(0x00400000))
 
-	/** Is @code java.lang.Thread @endcode. */
-	SJME_NVM_ACC_SPECIAL_THREAD_CLASS = INT32_C(0x00800000),
+/** Is @code java.lang.Thread @endcode. */
+#define SJME_NVM_ACC_SPECIAL_THREAD_CLASS \
+	((sjme_nvm_class_specialFlags)INT32_C(0x00800000))
 
-	/** Is a subclass of @code java.lang.Thread @endcode. */
-	SJME_NVM_ACC_SPECIAL_THREAD_SUBCLASS = INT32_C(0x01000000),
-} sjme_nvm_class_specialFlags;
+/** Is a subclass of @code java.lang.Thread @endcode. */
+#define SJME_NVM_ACC_SPECIAL_THREAD_SUBCLASS \
+	((sjme_nvm_class_specialFlags)INT32_C(0x01000000))
 
 /**
  * The type that a constant pool entry may be.
@@ -279,6 +290,9 @@ typedef enum sjme_nvm_class_specialFlags
  */
 typedef enum sjme_nvm_class_poolType
 {
+	/** This is an integer based enum. */
+	sjme_enumInt(sjme_nvm_class_poolType),
+
 	/** Null entry. */
 	SJME_NVM_CLASS_POOL_TYPE_NULL = 0,
 
@@ -732,6 +746,9 @@ struct sjme_nvm_class_fieldInfoBase
  */
 typedef enum sjme_nvm_class_methodInfoBits
 {
+	/** This is an integer based enum. */
+	sjme_enumInt(sjme_nvm_class_methodInfoBits),
+
 	/** Is this a static initializer? */
 	SJME_NVM_CLASS_INIT_STATIC = INT8_C(0x1),
 

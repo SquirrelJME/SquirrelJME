@@ -886,44 +886,6 @@ sjme_errorCode sjme_alloc_copyWeakR(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_alloc_formatR(
-	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_lpstr* outString,
-	SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL SJME_DEBUG_ONLY_COMMA
-	sjme_attrInNotNull sjme_attrFormatArg const char* format,
-	...)
-{
-#define BUF_SIZE 512
-	char buf[BUF_SIZE];
-	va_list arg;
-	int len;
-
-	if (allocPool == NULL || outString == NULL || format == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Start variable arguments. */
-	va_start(arg, format);
-
-	/* Format string to the buffer. */
-	memset(buf, 0, sizeof(buf));
-	vsnprintf(buf, BUF_SIZE - 1, format, arg);
-
-	/* Force to end with a NUL. */
-	buf[BUF_SIZE - 1] = 0;
-
-	/* End them. */
-	va_end(arg);
-
-	/* Calculate length of string for copying. */
-	len = strlen(buf);
-
-	/* Copy it. */
-	return sjme_alloc_copyR(allocPool, len + 1,
-		(sjme_pointer*)outString, buf
-		SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_COPY);
-#undef BUF_SIZE
-}
-
 sjme_errorCode sjme_alloc_grow(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_pointer* inOutAddr,

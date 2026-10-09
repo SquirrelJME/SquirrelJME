@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/config.h"
+#include "sjme/intern/nal.h"
 
 #if defined(SJME_CONFIG_HAS_OS_POSIX)
 	#include <locale.h>
@@ -162,19 +163,16 @@ SJME_NVM_MLE_FUNCTION_DECL(garbageCollect)
 
 SJME_NVM_MLE_FUNCTION_DECL(lineEnding)
 {
+	const sjme_nal* nal;
+
+	nal = SJME_F_S(inFrame)->nal;
+
+	/* Use the system defined line ending. */
 	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
-	
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
-	defined(SJME_CONFIG_HAS_OS_WINDOWS_16) || \
-	defined(SJME_CONFIG_HAS_OS_WINDOWS_32) || \
-	defined(SJME_CONFIG_HAS_OS_PALMOS) || \
-	defined(SJME_CONFIG_HAS_OS_PC_DOS)
-	argR->v.i = SJME_NVM_MLE_LINE_ENDING_CRLF;
-#elif defined(SJME_CONFIG_HAS_OS_MACOS_CLASSIC)
-	argR->v.i = SJME_NVM_MLE_LINE_ENDING_CR;
-#else
-	argR->v.i = SJME_NVM_MLE_LINE_ENDING_LF;
-#endif
+	if (nal != NULL && nal->lineEnding != NULL)
+		argR->v.i = nal->lineEnding();
+	else
+		argR->v.i = sjme_nal_default_lineEnding();
 
 	return SJME_ERROR_NONE;
 }

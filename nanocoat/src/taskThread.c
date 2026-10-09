@@ -675,6 +675,174 @@ sjme_errorCode sjme_nvm_task_threadFrameNext(
 #undef SJME_NVM_FRAME_GROW_SIZE
 }
 
+sjme_errorCode sjme_nvm_task_threadInit(
+	sjme_attrInNotNull sjme_nvm_task inTask,
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInNotNull sjme_lpcstr threadName)
+{
+	sjme_errorCode error;
+	sjme_nvm_frame firstFrame;
+	sjme_nvm inState;
+	sjme_jint freeSlot, i, n;
+	sjme_pointer storage;
+	sjme_jclass threadType;
+
+	if (inTask == NULL || inThread == NULL || threadName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Cannot start a new thread if terminating. */
+	if (sjme_atomic_g(sjme_jint, &inTask->terminate) !=
+		SJME_NVM_TERMINATE_NOT)
+		return SJME_ERROR_INVALID_THREAD_STATE;
+
+	/* Lock the thread object. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&inThread->object.common.lock)))
+		goto fail_lockThread;
+
+	/* Already initialized? */
+	if (!sjme_atomic_cs(sjme_jint, &inThread->isInitialized, 0, 1))
+	{
+		error = SJME_ERROR_INVALID_THREAD_STATE;
+		goto fail_alreadyInit;
+	}
+
+	/* Allocate stack storage. */
+	storage = NULL;
+	inState = SJME_T_S(inTask);
+	if (sjme_error_is(error = sjme_alloc(inState->allocPool,
+		SJME_NVM_THREAD_STACK_SIZE, &storage)) || storage == NULL)
+		goto fail_allocStorage;
+
+	/* Initialize stack storage. */
+	if (sjme_error_is(error = sjme_nvm_store_initFile(
+		&inThread->storeFile, storage, SJME_NVM_THREAD_STACK_SIZE)) ||
+		inThread->storeFile == NULL)
+		goto fail_initFile;
+
+	/* Lock state on the task. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&inTask->object.common.lock)))
+		goto fail_lock;
+
+	/* Find free slot in the thread list. */
+	freeSlot = -1;
+	for (i = 0, n = inTask->threads->length; i < n; i++)
+		if (inTask->threads->elements[i] == NULL)
+		{
+			freeSlot = i;
+			break;
+		}
+
+	/* Need to grow the list? */
+	if (freeSlot < 0)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Fill out basic details. */
+	sjme_atomic_s(sjme_nvm, &inThread->inState, inState);
+	sjme_atomic_s(sjme_nvm_task, &inThread->inTask, inTask);
+	inThread->threadId = 1 + sjme_atomic_ga(sjme_jint,
+		&inState->nextThreadId, 1);
+	inThread->object.identityHash =
+		sjme_nvm_instance_calcIdentityHash(inTask, inThread);
+#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
+	inThread->stack.storage = storage;
+	inThread->stack.storageLen = SJME_NVM_THREAD_STACK_SIZE;
+#endif
+
+	/* All new threads are considered initially sleeping. */
+	sjme_atomic_s(sjme_nvm_thread_statusType, &inThread->status,
+		SJME_NVM_THREAD_STATUS_SLEEPING);
+
+	/* Soft load the VM thread bracket class. */
+	threadType = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_commonClass(inThread,
+		SJME_NVM_COMMON_VM_THREAD,
+		&threadType,
+		SJME_JNI_FALSE)) || threadType == NULL)
+		goto fail_loadThreadClass;
+	sjme_atomic_s(sjme_jclass, &inThread->object.isClass,
+		sjme_weakUp(threadType));
+
+	/* All threads have an initial frame within java.lang.__Start__. */
+	firstFrame = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadEnterA(
+		inThread, &firstFrame,
+		"java/lang/__Start__",
+		SJME_NVM_CLASS_MEMBER_STATIC,
+		"__main", "()V",
+		0, NULL)))
+		goto fail_enterFrame;
+
+	/* Count up. */
+	if (sjme_error_is(error = sjme_nvm_instance_countUp(
+		SJME_AS_JOBJECT(inThread))))
+		goto fail_countUp;
+
+	/* Store thread for future referencing. */
+	inTask->threads->elements[freeSlot] =
+		sjme_weakUpR(sjme_nvm_thread, inThread);
+
+	/* Increase task thread count, for both all and normal. Normal gets */
+	/* an add because a thread gets daemon being set later. */
+	sjme_atomic_ga(sjme_jint,
+		&inTask->numThreads[SJME_NVM_THREAD_COUNT_ALL], 1);
+	sjme_atomic_ga(sjme_jint,
+		&inTask->numThreads[SJME_NVM_THREAD_COUNT_NORMAL], 1);
+
+	/* The main thread gets flagged as the main thread. */
+	if (inThread->isMain)
+	{
+		/* Set the main thread, if not set. */
+		if (sjme_atomic_cs(sjme_nvm_thread,
+			&inTask->globals.mainThread, NULL, inThread))
+		{
+			/* Record that this is the actual main thread. */
+			inThread->isMain = SJME_JNI_TRUE;
+
+			/* Make sure the count is just one. */
+			sjme_atomic_ga(sjme_jint,
+				&inTask->numThreads[SJME_NVM_THREAD_COUNT_MAIN], 1);
+		}
+	}
+
+	/* Release the thread object. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&inThread->object.common.lock, NULL)))
+		goto fail_unlockThread;
+
+	/* Release task specific lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&inTask->object.common.lock, NULL)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+
+fail_countUp:
+fail_enterFrame:
+	if (firstFrame != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(firstFrame));
+
+	/* Unlock before fail. */
+	sjme_error_is(sjme_thread_spinLockRelease(
+		&inTask->object.common.lock, NULL));
+fail_lock:
+fail_initFile:
+fail_allocStorage:
+	sjme_alloc_free(storage);
+
+fail_loadThreadClass:
+fail_alreadyInit:
+fail_lockThread:
+	sjme_thread_spinLockRelease(&inThread->object.common.lock, NULL);
+fail_unlockThread:
+	return sjme_error_default(error);
+}
+
 sjme_errorCode sjme_nvm_task_threadInterrupt(
 	sjme_attrInNotNull sjme_nvm_thread inThread)
 {
@@ -892,11 +1060,6 @@ sjme_errorCode sjme_nvm_task_threadNew(
 {
 	sjme_errorCode error;
 	sjme_nvm_thread result;
-	sjme_nvm_frame firstFrame;
-	sjme_nvm inState;
-	sjme_jint freeSlot, i, n;
-	sjme_pointer storage;
-	sjme_jclass threadType;
 	
 	if (inTask == NULL || outThread == NULL || threadName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -906,140 +1069,30 @@ sjme_errorCode sjme_nvm_task_threadNew(
 		SJME_NVM_TERMINATE_NOT)
 		return SJME_ERROR_INVALID_THREAD_STATE;
 
-	/* Allocate stack storage. */
-	storage = NULL;
-	inState = SJME_T_S(inTask);
-	if (sjme_error_is(error = sjme_alloc(inState->allocPool,
-		SJME_NVM_THREAD_STACK_SIZE, &storage)) || storage == NULL)
-		goto fail_allocStorage;
-	
 	/* Allocate thread structure. */
 	result = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(inState, sizeof(*result),
+	if (sjme_error_is(error = sjme_nvm_alloc(SJME_T_S(inTask),
+		sizeof(*result),
 		SJME_NVM_STRUCT_THREAD_INSTANCE,
-		SJME_AS_NVM_COMMONP(&result))))
+		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_allocResult;
 
-	/* Initialize stack storage. */
-	if (sjme_error_is(error = sjme_nvm_store_initFile(
-		&result->storeFile, storage, SJME_NVM_THREAD_STACK_SIZE)) ||
-		result->storeFile == NULL)
-		goto fail_initFile;
-	
-	/* Lock state on the task. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&inTask->object.common.lock)))
-		goto fail_lock;
-	
-	/* Find free slot in the thread list. */
-	freeSlot = -1;
-	for (i = 0, n = inTask->threads->length; i < n; i++)
-		if (inTask->threads->elements[i] == NULL)
-		{
-			freeSlot = i;
-			break;
-		}
-	
-	/* Need to grow the list? */
-	if (freeSlot < 0)
-	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
-	}
-	
-	/* Fill out basic details. */
-	sjme_atomic_s(sjme_nvm, &result->inState, inState);
-	sjme_atomic_s(sjme_nvm_task, &result->inTask, inTask);
-	result->threadId = 1 + sjme_atomic_ga(sjme_jint, 
-		&inState->nextThreadId, 1);
-	result->object.identityHash =
-		sjme_nvm_instance_calcIdentityHash(inTask, result);
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	result->stack.storage = storage;
-	result->stack.storageLen = SJME_NVM_THREAD_STACK_SIZE;
-#endif
-	
-	/* All new threads are considered initially sleeping. */
-	sjme_atomic_s(sjme_nvm_thread_statusType, &result->status,
-		SJME_NVM_THREAD_STATUS_SLEEPING);
-	
-	/* Soft load the VM thread bracket class. */
-	threadType = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_commonClass(result,
-		SJME_NVM_COMMON_VM_THREAD,
-		&threadType,
-		SJME_JNI_FALSE)) || threadType == NULL)
-		goto fail_loadThreadClass;
-	sjme_atomic_s(sjme_jclass, &result->object.isClass,
-		sjme_weakUp(threadType));
-	
-	/* All threads have an initial frame within java.lang.__Start__. */
-	firstFrame = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_threadEnterA(
-		result, &firstFrame,
-		"java/lang/__Start__",
-		SJME_NVM_CLASS_MEMBER_STATIC,
-		"__main", "()V",
-		0, NULL)))
-		goto fail_enterFrame;
-	
-	/* Count up. */
-	if (sjme_error_is(error = sjme_nvm_instance_countUp(
-		SJME_AS_JOBJECT(result))))
-		goto fail_countUp;
-	
-	/* Store thread for future referencing. */
-	inTask->threads->elements[freeSlot] = result;
+	/* Set main thread. */
+	result->isMain = isMain;
 
-	/* Increase task thread count, for both all and normal. Normal gets */
-	/* an add because a thread gets daemon being set later. */
-	sjme_atomic_ga(sjme_jint, 
-		&inTask->numThreads[SJME_NVM_THREAD_COUNT_ALL], 1);
-	sjme_atomic_ga(sjme_jint, 
-		&inTask->numThreads[SJME_NVM_THREAD_COUNT_NORMAL], 1);
-	
-	/* The main thread gets flagged as the main thread. */
-	if (isMain)
-	{
-		/* Set the main thread, if not set. */
-		if (sjme_atomic_cs(sjme_nvm_thread, 
-			&inTask->globals.mainThread, NULL, result))
-		{
-			/* Record that this is the actual main thread. */
-			result->isMain = SJME_JNI_TRUE;
+	/* Call the thread initializer. */
+	if (sjme_error_is(error = sjme_nvm_task_threadInit(inTask,
+		result, threadName)))
+		goto fail_initThread;
 
-			/* Make sure the count is just one. */
-			sjme_atomic_ga(sjme_jint, 
-				&inTask->numThreads[SJME_NVM_THREAD_COUNT_MAIN], 1);
-		}
-	}
-	
-	/* Release task specific lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&inTask->object.common.lock, NULL)))
-		return sjme_error_default(error);
-	
 	/* Success! */
 	*outThread = result;
 	return SJME_ERROR_NONE;
-	
-fail_countUp:
-fail_enterFrame:
-	if (firstFrame != NULL)
-		sjme_closeable_close(SJME_AS_CLOSEABLE(firstFrame));
-	
-	/* Unlock before fail. */
-	sjme_error_is(sjme_thread_spinLockRelease(
-		&inTask->object.common.lock, NULL));
-fail_lock:
-fail_initFile:
+
+fail_initThread:
 fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
-fail_allocStorage:
-	sjme_alloc_free(storage);
-
-fail_loadThreadClass:
 	return sjme_error_default(error);
 }
 

@@ -176,7 +176,7 @@ SJME_NVM_BYTECODE_SLOW(CastIntToX)
 			out.t = SJME_JAVA_TYPE_ID_LONG;
 			out.v.j.part.lo = in.v.i;
 			if ((in.v.i & INT32_C(0x80000000)) != 0)
-				out.v.j.part.hi = INT32_C(0xFFFFFFFF);
+				out.v.j.part.hi = INT32_C(-1);
 			break;
 
 		case SJME_NVM_BYTECODE_JAVA_I2F:

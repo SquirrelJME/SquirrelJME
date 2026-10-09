@@ -72,29 +72,14 @@ typedef enum sjme_nvm_mle_builtInLocaleType
 	/** English, US. */
 	SJME_NVM_MLE_LOCALE_US_ENGLISH = 1,
 } sjme_nvm_mle_builtInLocaleType;
-	
+
+
 /**
  * The type of line ending the system uses.
  *
  * @since 2025/03/02
  */
-typedef enum sjme_nvm_mle_lineEndingType
-{
-	/** Unknown. */
-	SJME_NVM_MLE_LINE_ENDING_UNSPECIFIED = 0,
-	
-	/** LF. */
-	SJME_NVM_MLE_LINE_ENDING_LF = 1,
-	
-	/** CR. */
-	SJME_NVM_MLE_LINE_ENDING_CR = 2,
-	
-	/** CRLF. */
-	SJME_NVM_MLE_LINE_ENDING_CRLF = 3,
-		
-	/** Number of line ending types. */
-	SJME_NVM_MLE_NUM_LINE_ENDINGS = 4,
-} sjme_nvm_mle_lineEndingType;
+typedef enum sjme_nal_lineEndingType sjme_nvm_mle_lineEndingType;
 
 /**
  * The memory profiles available.
@@ -103,6 +88,9 @@ typedef enum sjme_nvm_mle_lineEndingType
  */
 typedef enum sjme_nvm_mle_memoryProfileType
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_mle_memoryProfileType),
+
 	/** Minimal memory usage. */
 	SJME_NVM_MLE_MEMORY_PROFILE_MINIMAL = -1,
 
@@ -117,6 +105,9 @@ typedef enum sjme_nvm_mle_memoryProfileType
  */
 typedef enum sjme_nvm_mle_standardPipeType
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_mle_standardPipeType),
+
 	/** Standard input. */
 	SJME_NVM_MLE_STD_PIPE_STDIN = 0,
 	

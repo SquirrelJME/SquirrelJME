@@ -998,9 +998,29 @@ extern "C" {
 	defined(SJME_CONFIG_HAS_OS_WINDOWS_16) || \
 	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE) || \
 	defined(SJME_CONFIG_HAS_OS_PALMOS) || \
-	defined(SJME_CONFIG_HAS_OS_BAREMETAL)
+	defined(SJME_CONFIG_HAS_OS_BAREMETAL) || \
+	defined(SJME_CONFIG_HAS_SDCC)
 	/** Use a minimal amount of memory. */
 	#define SJME_CONFIG_HAS_LOW_MEMORY
+#endif
+
+#if defined(SJME_CONFIG_HAS_LOW_MEMORY)
+	/** Disable walking/snapshot support. */
+	#define SJME_CONFIG_DISABLE_WALK
+#endif
+
+#if defined(SJME_CONFIG_HAS_SDCC)
+	/** Modeless stars are not needed here. */
+	#define SJME_CONFIG_DISABLE_MODELESS_STARS
+#endif
+
+/* These were not set by CMake? */
+#if defined(SJME_CONFIG_HAS_OS_PALMOS) || \
+	defined(SJME_CONFIG_HAS_SDCC)
+	#if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
+		/** No dynamic libraries are supported. */
+		#define SJME_CONFIG_HAS_NO_DYLIB_SUPPORT
+	#endif
 #endif
 
 /* More verbosity? */

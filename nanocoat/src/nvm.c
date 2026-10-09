@@ -76,6 +76,7 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_STACK_INVALID_WRITE:
 		case SJME_ERROR_TREAD_INVALID_WRITE:
 		case SJME_ERROR_MLE_CALL:
+		case SJME_ERROR_OBJECT_GONE:
 			return SJME_JNI_TRUE;
 
 #if 0

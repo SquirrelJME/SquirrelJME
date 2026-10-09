@@ -66,6 +66,8 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
 	sjme_stream_input inputStream;
 	sjme_nvm_rom_manifestStep step;
 
+	/* TODO FIXME: Optimize/shrink for SDCC. */
+
 	if (allocPool == NULL || inSuite == NULL || inLibrary == NULL ||
 		inOutDepend == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

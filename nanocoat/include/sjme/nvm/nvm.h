@@ -68,6 +68,9 @@ typedef struct sjme_any
  */
 typedef enum sjme_nvm_structType
 {
+	/** This is an integer based enum. */
+	sjme_enumInt(sjme_nvm_structType),
+
 	/** Unknown. */
 	SJME_NVM_STRUCT_UNKNOWN,
 
@@ -322,6 +325,9 @@ struct sjme_nvm_commonBase
  */
 typedef enum sjme_nvm_threadScheduleMode
 {
+	/** This is an integer based enum. */
+	sjme_enumInt(sjme_nvm_threadScheduleMode),
+
 	/** Thread is undefined schedule. */
 	SJME_NVM_THREAD_UNDEFINED_SCHEDULE = 0,
 	

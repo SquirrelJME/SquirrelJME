@@ -22,10 +22,16 @@ function(squirreljme_basename_path dest src)
 
 	# Only forward slash exists
 	elseif("${bs}" STREQUAL "-1")
+		# Remove the slash
+		math(EXPR fs "(${fs}) + 1")
+
 		string(SUBSTRING "${src}" ${fs} -1 result)
 
 	# Only backwards slash exists
 	elseif("${fs}" STREQUAL "-1")
+		# Remove the slash
+		math(EXPR bs "(${bs}) + 1")
+
 		string(SUBSTRING "${src}" ${bs} -1 result)
 
 	# Otherwise
@@ -60,9 +66,11 @@ endif()
 
 # Determine basename of the C compiler
 squirreljme_basename_path(cCompilerBase "${CMAKE_C_COMPILER}")
+message(STATUS "Compiler `${CMAKE_C_COMPILER}` -> `${cCompilerBase}`...")
 
 # SDCC?
-if("${cCompilerBase}" STREQUAL "sdcc${CMAKE_EXECUTABLE_SUFFIX}")
+if("${cCompilerBase}" STREQUAL "sdcc${CMAKE_EXECUTABLE_SUFFIX}" OR
+	"${cCompilerBase}" STREQUAL "sdcc.exe")
 	message(STATUS "Shimming SDCC...")
 	squirreljme_include_nanocoat("compiler-shim-sdcc.cmake")
 endif()

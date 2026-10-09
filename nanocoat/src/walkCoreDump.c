@@ -21,6 +21,8 @@
 #include "sjme/nvm/walk.h"
 #include "sjme/nvm/walkCoreDump.h"
 
+#if !defined(SJME_CONFIG_DISABLE_WALK)
+
 static sjme_errorCode sjme_nvm_walk_coreMetaMember(
 	sjme_attrInNotNull sjme_nvm_walk_state* at,
 	sjme_attrInNotNull sjme_nvm_walk_coreState* coreState)
@@ -613,3 +615,5 @@ sjme_errorCode sjme_nvm_walk_coreDumpStream(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+
+#endif

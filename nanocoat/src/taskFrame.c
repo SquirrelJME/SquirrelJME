@@ -463,7 +463,8 @@ sjme_errorCode sjme_nvm_task_framePool(
 		goto skip_success;
 
 	/* Check continual multi-type checks, until zero */
-	for (va_start(arg, inTypeB);;)
+	va_start(arg, inTypeB);
+	for (;;)
 	{
 		/* Read in. */
 		argType = va_arg(arg, int);

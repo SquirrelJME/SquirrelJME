@@ -453,24 +453,6 @@ sjme_errorCode sjme_alloc_copyWeakR(
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
- * Allocates a formatted string.
- *
- * @param allocPool The pool to allocate within.
- * @param outString The output string.
- * @param format The format string.
- * @param ...
- * @return Any resultant error.
- * @since 2023/12/22
- */
-sjme_errorCode sjme_alloc_formatR(
-	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_lpstr* outString,
-	SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL SJME_DEBUG_ONLY_COMMA
-	sjme_attrInNotNull sjme_attrFormatArg const char* format,
-	...) SJME_DEBUG_TERNARY(sjme_attrFormatOuter(5, 6),
-		sjme_attrFormatOuter(2, 3));
-
-/**
  * Grows the given allocation.
  * 
  * @param allocPool The allocation pool to allocate under.
@@ -644,21 +626,6 @@ sjme_errorCode sjme_alloc_weakRefER(
 	sjme_alloc_copyWeakR((pool), (size), (inEnqueue), (inEnqueueData), \
 	(outAddr), (inAddr), (outWeak) \
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
-
-/**
- * Allocates a formatted string.
- *
- * @param allocPool The pool to allocate within.
- * @param outString The output string.
- * @param format The format string.
- * @param ...
- * @return Any resultant error.
- * @since 2023/12/22
- */
-#define sjme_alloc_format(allocPool, outString, ...) \
-	sjme_alloc_formatR((allocPool), (outString) \
-	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL, \
-		__VA_ARGS__)
 
 /**
  * Reallocates memory, either growing it or shrinking... the pointer will be

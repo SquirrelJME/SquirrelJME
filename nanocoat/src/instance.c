@@ -571,6 +571,8 @@ sjme_errorCode sjme_nvm_instance_objectArrayNewR(
 	sjme_jint allocSize;
 	sjme_cchar buf[SJME_NVM_CLASS_NAME_LIMIT];
 	sjme_jint setSize;
+
+	/* TODO FIXME: Optimize/shrink for SDCC. */
 	
 	if (contextThread == NULL || outObject == NULL || componentType == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -584,7 +586,7 @@ sjme_errorCode sjme_nvm_instance_objectArrayNewR(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Determine value set size. */
-	setSize = -1;
+	setSize = INT32_C(-1);
 	if (sjme_error_is(error = sjme_nvm_vmField_sizeValueSet(
 		&setSize, componentType->arrayTypeId, arrayLength)))
 		return sjme_error_vmError(contextThread, error);

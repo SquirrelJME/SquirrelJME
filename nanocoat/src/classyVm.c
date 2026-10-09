@@ -606,6 +606,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkLoadArray(
 	sjme_nvm_stringPool_string thisName, superName;
 	sjme_jclass componentType;
 	sjme_nvm inState;
+
+	/* TODO FIXME: Optimize/shrink for SDCC. */
 	
 	if (inClass == NULL || contextThread == NULL || classLoader == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

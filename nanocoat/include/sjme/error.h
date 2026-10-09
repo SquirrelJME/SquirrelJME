@@ -38,6 +38,9 @@ extern "C"
  */
 typedef enum sjme_errorCode
 {
+	/** This is an integer based enum. */
+	sjme_enumInt(sjme_errorCode),
+
 	/** No error. */
 	SJME_ERROR_NONE = 2,
 

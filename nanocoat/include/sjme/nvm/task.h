@@ -815,6 +815,9 @@ struct sjme_nvm_threadBase
 
 	/** Is this the main thread? */
 	sjme_jboolean isMain;
+
+	/** Has this been initialized? */
+	sjme_atomic(sjme_jint) isInitialized;
 	
 	/** The number of valid frames. */
 	sjme_jint numFrames;
@@ -1447,6 +1450,20 @@ sjme_errorCode sjme_nvm_task_threadEnterC(
 sjme_errorCode sjme_nvm_task_threadFrameNext(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrOutNotNull sjme_nvm_frame* outFrame);
+
+/**
+ * Initializes a thread within the given task.
+ *
+ * @param inTask The task the thread exists in.
+ * @param inThread The thread to be initialized.
+ * @param threadName The name of the new thread.
+ * @return On any errors, if any.
+ * @since 2026/10/05
+ */
+sjme_errorCode sjme_nvm_task_threadInit(
+	sjme_attrInNotNull sjme_nvm_task inTask,
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInNotNull sjme_lpcstr threadName);
 
 /**
  * Interrupts the given thread.

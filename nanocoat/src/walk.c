@@ -14,6 +14,8 @@
 #include "sjme/nvm/walkCustom.h"
 #include "sjme/nvm/classy.h"
 
+#if !defined(SJME_CONFIG_DISABLE_WALK)
+
 #pragma region(supportMacros)
 
 #define SJME_WALK_SELECT(cType, inStructType) \
@@ -1673,3 +1675,5 @@ sjme_errorCode sjme_nvm_walk_start(
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
+
+#endif

@@ -357,6 +357,7 @@ const sjme_nal sjme_libretro_nal =
 	sjme_sm(.execPath, sjme_libretro_execPath),
 	sjme_sm(.fileOpen, sjme_libretro_fileOpen),
 	sjme_sm(.getEnv, NULL),
+	sjme_sm(.lineEnding, sjme_nal_default_lineEnding),
 	sjme_sm(.nanoTime, sjme_libretro_nanoTime),
 	sjme_sm(.pathStyle, sjme_libretro_pathStyle),
 	sjme_sm(.tcpUdp, NULL),

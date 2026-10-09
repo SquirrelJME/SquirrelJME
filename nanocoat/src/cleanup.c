@@ -86,6 +86,8 @@
 /** The magic number for NVM objects. */
 #define SJME_NVM_OBJECT_MAGIC UINT32_C(0x4E764D3F)
 
+#if !defined(SJME_CONFIG_DISABLE_WALK)
+
 static sjme_errorCode sjme_nvm_cleanup_walkStep(
 	sjme_attrInNotNull sjme_nvm_walk_state* root,
 	sjme_attrInNotNull sjme_nvm_walk_state* parent,
@@ -199,6 +201,8 @@ static const sjme_nvm_walk_functions sjme_nvm_cleanup_walkFunctions =
 	sjme_sm(.step, sjme_nvm_cleanup_walkStep),
 };
 
+#endif
+
 static sjme_errorCode sjme_nvm_cleanup_close(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
@@ -221,10 +225,12 @@ static sjme_errorCode sjme_nvm_cleanup_close(
 		return sjme_error_default(error);
 
 #if defined(SJME_CONFIG_HAS_BROKEN_CODE)
+#if !defined(SJME_CONFIG_DISABLE_WALK)
 	/* Perform a generic walk close. */
 	if (sjme_error_is(error = sjme_nvm_walk_start(common, common->type,
 		&sjme_nvm_cleanup_walkFunctions, NULL)))
 		goto fail_walk;
+#endif
 #endif
 
 	/* Is there a post-close handler for this? */

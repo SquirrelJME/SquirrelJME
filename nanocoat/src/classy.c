@@ -1444,6 +1444,8 @@ sjme_errorCode sjme_nvm_class_parse(
 	sjme_nvm_stringPool_string runtimeName;
 	sjme_nvm_class_methodInfo parsedMethod;
 	sjme_nvm_class_fieldInfo parsedField;
+
+	/* TODO FIXME: Optimize/shrink for SDCC. */
 	
 	if (allocPool == NULL || inStream == NULL || inStringPool == NULL ||
 		outClass == NULL)
@@ -1482,7 +1484,8 @@ sjme_errorCode sjme_nvm_class_parse(
 		goto fail_readMajor;
 	
 	/* Compose and find matching version. */
-	fullVersion = (major << 16) | (minor & 0xFFFF);
+	fullVersion = (((sjme_jint)major) << 16) |
+		(((sjme_jint)minor) & 0xFFFF);
 	if (fullVersion >= SJME_NVM_CLASS_CLDC_1_0 &&
 		fullVersion <= SJME_NVM_CLASS_CLDC_1_0_MAX)
 		actualVersion = SJME_NVM_CLASS_CLDC_1_0;

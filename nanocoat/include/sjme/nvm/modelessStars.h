@@ -29,6 +29,8 @@ extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif     /* #ifdef __cplusplus */
 
+#if !defined(SJME_CONFIG_DISABLE_MODELESS_STARS)
+
 /*--------------------------------------------------------------------------*/
 
 /** Modeless color info. */
@@ -130,6 +132,8 @@ sjme_errorCode sjme_modelessStars(
 	sjme_attrInValue sjme_jint tick);
 
 /*--------------------------------------------------------------------------*/
+
+#endif
 
 /* Anti-C++. */
 #ifdef __cplusplus

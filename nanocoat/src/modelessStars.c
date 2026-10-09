@@ -9,6 +9,8 @@
 
 #include "sjme/nvm/modelessStars.h"
 
+#if !defined(SJME_CONFIG_DISABLE_MODELESS_STARS)
+
 sjme_errorCode sjme_modelessStars(
 	sjme_attrInOutNotNull sjme_modelessStarState* state,
 	sjme_attrInNotNull uint32_t* buf,
@@ -223,3 +225,5 @@ sjme_errorCode sjme_modelessStars(
 	/* Handled successfully. */
 	return SJME_ERROR_NONE;
 }
+
+#endif
