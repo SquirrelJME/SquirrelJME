@@ -195,8 +195,8 @@ typedef enum sjme_nvm_byteCode_mathFunc
 } sjme_nvm_byteCode_mathFunc;
 	
 /** Narrow slow bytecode handlers. */
-extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
-	[SJME_NVM_NUM_JAVA_BYTECODES];
+extern const sjme_nvm_byteCode_lutTableType
+	sjme_nvm_byteCode_slowNarrowFunctions;
 
 /** Wide slow bytecode handlers. */
 extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions

@@ -41,6 +41,9 @@ extern "C"
  */
 typedef enum sjme_nvm_methodCallType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_methodCallType),
+
 	/** Non-virtual, special, call. */
 	SJME_NVM_CALL_NON_VIRTUAL,
 	

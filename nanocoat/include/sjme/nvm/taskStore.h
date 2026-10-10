@@ -92,6 +92,9 @@ extern "C"
  */
 typedef enum sjme_nvm_store_langType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_store_langType),
+
 	/** No set language. */
 	SJME_NVM_STORE_LANG_NONE,
 
@@ -114,6 +117,9 @@ typedef enum sjme_nvm_store_langType
  */
 typedef enum sjme_nvm_store_accessMode
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_store_accessMode),
+
 	/**
 	 * Read a variable, failing if it does not exist or is of an incompatible
 	 * type that is promoted in size.
@@ -189,6 +195,9 @@ typedef enum sjme_nvm_store_accessMode
  */
 typedef enum sjme_nvm_store_slotType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_store_slotType),
+
 	/** Local variable. */
 	SJME_NVM_STORE_SLOT_TYPE_LOCAL,
 

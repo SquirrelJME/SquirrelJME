@@ -11,8 +11,7 @@
 #include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/bytecodeSlow.h"
 
-const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
-	[SJME_NVM_NUM_JAVA_BYTECODES] =
+const sjme_nvm_byteCode_lutTableType sjme_nvm_byteCode_slowNarrowFunctions =
 {
 	/* ..0 */ SJME_NVM_BYTECODE_SLOW_NAME(NoOp),
 	/* ..1 */ SJME_NVM_BYTECODE_SLOW_NAME(AConstNull),

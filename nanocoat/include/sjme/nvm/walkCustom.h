@@ -29,6 +29,8 @@ extern "C"
 #endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif /* #ifdef __cplusplus */
 
+#if !defined(SJME_CONFIG_DISABLE_WALK)
+
 /*--------------------------------------------------------------------------*/
 
 sjme_errorCode sjme_nvm_walk_customRawArrayValues(
@@ -38,6 +40,8 @@ sjme_errorCode sjme_nvm_walk_customRawArrayValues(
 	sjme_attrInNotNull sjme_nvm_walk_stepHandlerFunc function);
 
 /*--------------------------------------------------------------------------*/
+
+#endif
 
 /* Anti-C++. */
 #ifdef __cplusplus

@@ -994,24 +994,33 @@ extern "C" {
 	#define SJME_FLOAT_BD(bin, dec) (dec)
 #endif
 
+#if defined(SJME_CONFIG_HAS_SDCC)
+	/**
+	 * This is a microcontroller, so remove as much optional stuff as
+	 * possible.
+	 */
+	#define SJME_CONFIG_HAS_MICROCONTROLLER
+#endif
+
 #if defined(SJME_CONFIG_HAS_AMIGA) || \
 	defined(SJME_CONFIG_HAS_OS_WINDOWS_16) || \
 	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE) || \
 	defined(SJME_CONFIG_HAS_OS_PALMOS) || \
 	defined(SJME_CONFIG_HAS_OS_BAREMETAL) || \
-	defined(SJME_CONFIG_HAS_SDCC)
+	defined(SJME_CONFIG_HAS_MICROCONTROLLER)
 	/** Use a minimal amount of memory. */
 	#define SJME_CONFIG_HAS_LOW_MEMORY
 #endif
 
-#if defined(SJME_CONFIG_HAS_LOW_MEMORY)
+#if defined(SJME_CONFIG_HAS_MICROCONTROLLER)
 	/** Disable walking/snapshot support. */
 	#define SJME_CONFIG_DISABLE_WALK
-#endif
 
-#if defined(SJME_CONFIG_HAS_SDCC)
-	/** Modeless stars are not needed here. */
+	/** Modeless stars are not needed for microcontrollers. */
 	#define SJME_CONFIG_DISABLE_MODELESS_STARS
+
+	/** Disable bitline LUTs, as these are huge. */
+	#define SJME_CONFIG_DISABLE_BITLINE_LUT
 #endif
 
 /* These were not set by CMake? */

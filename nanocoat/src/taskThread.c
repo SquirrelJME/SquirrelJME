@@ -199,6 +199,8 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 	sjme_jvalueTyped argV[1];
 	sjme_cchar buf[BUF_SIZE];
 	va_list copy;
+
+	/* TODO FIXME: Optimize/shrink for SDCC. */
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

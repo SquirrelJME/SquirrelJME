@@ -12,6 +12,7 @@
 #include "sjme/native.h"
 #include "frontend/libretro/shared.h"
 #include "sjme/path.h"
+#include "sjme/intern/nal.h"
 
 sjme_errorCode sjme_libretro_vfsClose(
 	sjme_attrInNotNull sjme_seekable inSeekable,

@@ -33,10 +33,14 @@ extern "C" {
 /** The internal builtin fallback font. */
 extern sjme_attrExport const
 	struct sjme_scritchui_sqfCodepage sqf_font_sanserif_12;
+
+#if !defined(SJME_CONFIG_DISABLE_BITLINE_LUT)
 	
 /** The bit-line functions which are available. */
 extern const sjme_scritchui_pencilBitLineFunc
 	sjme_scritchui_pencilBitLines[256];
+
+#endif
 
 /*--------------------------------------------------------------------------*/
 

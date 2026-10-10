@@ -573,7 +573,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCodeOpLenVerify(
 		
 		/* This must always refer to a slow instruction, as byte codes are */
 		/* always pre-JIT. */
-		if (sjme_nvm_byteCode_lutTable[iv] !=
+		if (sjme_nvm_byteCodeLutTable(iv) !=
 			&sjme_nvm_byteCode_slowNarrowFunctions)
 			return SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION;
 

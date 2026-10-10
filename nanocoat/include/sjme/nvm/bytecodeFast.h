@@ -100,8 +100,7 @@ SJME_NVM_BYTECODE_FAST(PopWide);
 /* clang-format on */ /* @formatter:on */
 
 /** Fast bytecode instructions. */
-extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_fastFunctions
-	[SJME_NVM_NUM_JAVA_BYTECODES];
+extern const sjme_nvm_byteCode_lutTableType sjme_nvm_byteCode_fastFunctions;
 
 /*--------------------------------------------------------------------------*/
 

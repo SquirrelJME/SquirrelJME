@@ -400,7 +400,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		}
 
 		/* Which LUT table to use? */
-		lut = sjme_nvm_byteCode_lutTable[iv];
+		lut = sjme_nvm_byteCodeLutTable(iv);
 		if (lut == NULL)
 		{
 			error = SJME_ERROR_INVALID_INSTRUCTION;
