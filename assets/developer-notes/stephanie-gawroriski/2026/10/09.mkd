@@ -1,0 +1,8 @@
+# 2026/10/09
+
+## 21:07
+
+So in the `wip-running` branch, SquirrelJME for the most part compiles with
+SDCC except for some huge methods that need to be split up but those are
+only about eight in number. I do have a eZ80 kit, it would be interesting
+to run SquirrelJME on it... albeit despite it being very limited.
