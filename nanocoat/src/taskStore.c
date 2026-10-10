@@ -212,7 +212,7 @@ sjme_errorCode sjme_nvm_store_windowLangJava(
 		/* Wrong frame or data is missing? */
 		result = inWindow->lang.data.java;
 		if (inWindow->lang.inFrame != inFrame || result == NULL)
-			return SJME_ERROR_ILLEGAL_STATE;
+			return sjme_error_vmError(inFrame, SJME_ERROR_ILLEGAL_STATE);
 
 		/* Perfectly fine! */
 		*outJava = result;
@@ -221,14 +221,14 @@ sjme_errorCode sjme_nvm_store_windowLangJava(
 
 	/* This can only be initialized for none. */
 	if (inWindow->lang.type != SJME_NVM_STORE_LANG_NONE)
-		return SJME_ERROR_ILLEGAL_STATE;
+		return sjme_error_vmError(inFrame, SJME_ERROR_ILLEGAL_STATE);
 
 	/* Allocate storage needed for the Java language. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_store_windowAlloca(inWindow,
 		(sjme_pointer*)&result, sizeof(*result),
 		SJME_POINTER_BYTES)) || result == NULL)
-		return sjme_error_default(error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Set Java specific info. */
 	result->maxLocals = inFrame->inCode->
@@ -240,7 +240,7 @@ sjme_errorCode sjme_nvm_store_windowLangJava(
 	if (sjme_error_is(error = sjme_nvm_store_windowLangInit(inWindow,
 		inFrame, SJME_NVM_STORE_LANG_JAVA, result,
 		result->maxLocals + result->maxStack)))
-		return sjme_error_default(error);
+		return sjme_error_vmError(inFrame, error);
 
 	/* Success! */
 	*outJava = result;

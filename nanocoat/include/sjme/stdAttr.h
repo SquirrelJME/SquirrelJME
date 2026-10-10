@@ -413,7 +413,7 @@ extern "C"
 #define sjme_enumInt(type) \
 	SJME__enum_##type##_MINV = INT_MIN, \
 	SJME__enum_##type##_MAXV = INT_MAX, \
-	SJME__enum_##type##_ZERO = 0
+	SJME__enum_##type##_INIT = -1
 
 #if SJME_CONFIG_GCC_VERSION_LEAST(9, 0)
 	/** Generic pointer which should really be the given type. */

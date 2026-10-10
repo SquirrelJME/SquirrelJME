@@ -27,7 +27,6 @@ squirreljme_multilib_add_library(Core
 	classyVmMethods.c
 	cleanup.c
 	descriptor.c
-	externalWeak.c
 	gfx.c
 	instance.c
 	instanceProxy.c

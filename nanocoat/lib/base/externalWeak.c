@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/nvm/externalWeak.h"
+#include "sjme/externalWeak.h"
 
 sjme_attrWeak sjme_errorCode sjme_extern_extraFamilyDefault(
 	sjme_attrInRange(0, SJME_DYLIB_NUM_EXTRA_FAMILY)

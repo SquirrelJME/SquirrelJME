@@ -10,7 +10,7 @@
 #include "sjme/dylibExtra.h"
 #include "sjme/path.h"
 #include "sjme/util.h"
-#include "sjme/nvm/externalWeak.h"
+#include "sjme/externalWeak.h"
 
 #if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
 

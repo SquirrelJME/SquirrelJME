@@ -16,7 +16,7 @@
 #include "sjme/nvm/cleanup.h"
 #include "sjme/path.h"
 #include "sjme/joptarg.h"
-#include "sjme/nvm/externalWeak.h"
+#include "sjme/externalWeak.h"
 #include "sjme/nvm/romMeepSwm.h"
 #include "sjme/nvm/jdwp.h"
 
