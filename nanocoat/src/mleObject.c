@@ -54,7 +54,7 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
 			/* Read the reference. */
 			copyRef = NULL;
 			if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
-				&clone->e, i, SJME_VLS_JOBJECT_P(&copyRef))))
+				&clone->e, i, SJME_VLG_JOBJECT_P(&copyRef))))
 				goto fail_readRef;
 			
 			/* Set the reference. */
