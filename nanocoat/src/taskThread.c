@@ -748,12 +748,17 @@ sjme_errorCode sjme_nvm_task_threadInit(
 	sjme_atomic_s(sjme_nvm_task, &inThread->inTask, inTask);
 	inThread->threadId = 1 + sjme_atomic_ga(sjme_jint,
 		&inState->nextThreadId, 1);
-	inThread->object.identityHash =
-		sjme_nvm_instance_calcIdentityHash(inTask, inThread);
 #if defined(SJME_CONFIG_HAS_BROKEN_CODE)
 	inThread->stack.storage = storage;
 	inThread->stack.storageLen = SJME_NVM_THREAD_STACK_SIZE;
 #endif
+
+	/* Only calculate the identity hash if it has not already been */
+	/* calculated for this object. This can happen if this is a sub-class */
+	/* of Thread that was newed. */
+	if (inThread->object.identityHash == 0)
+		inThread->object.identityHash =
+			sjme_nvm_instance_calcIdentityHash(inTask, inThread);
 
 	/* All new threads are considered initially sleeping. */
 	sjme_atomic_s(sjme_nvm_thread_statusType, &inThread->status,

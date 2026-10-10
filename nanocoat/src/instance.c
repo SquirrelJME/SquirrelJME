@@ -47,11 +47,14 @@ sjme_jint sjme_nvm_instance_calcIdentityHash(
 	
 	/* Then based on the pointer. */
 #if defined(SJME_CONFIG_HAS_POINTER64)
-	return base + (((sjme_intPointer)pointer) ^
+	base += (((sjme_intPointer)pointer) ^
 		((((sjme_intPointer)pointer)) >> 31));
 #else
-	return base + (sjme_jint)((sjme_intPointer)pointer);
+	base += (sjme_jint)((sjme_intPointer)pointer);
 #endif
+
+	/* Never allow zero to be a valid identity hash. */
+	return (base == 0 ? INT32_C(0x01) : base);
 }
 
 sjme_errorCode sjme_nvm_instance_countDownR(

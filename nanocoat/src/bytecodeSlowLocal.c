@@ -133,7 +133,8 @@ SJME_NVM_BYTECODE_SLOW(XLoadZ)
 
 	/* Push copy of the local to the stack. */
 	index = ((id - 26) & 3);
-	type = sjme_nvm_byteCode_xLoadType[(id - 26) >> 2];
+	type = sjme_nvm_byteCode_xLoadType[
+		((id - 26) >> 2) % SJME_NUM_JAVA_TYPE_IDS];
 	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalPush(
 		inFrame, &commit, type, index)))
