@@ -25,11 +25,8 @@ public class NanoCoatBuiltInTaskOutput
 	/** The base path. */
 	protected final Provider<Path> base;
 	
-	/** Is this the source for this? */
-	protected final boolean isSource;
-	
-	/** Is this for tests? */
-	protected final boolean isTest;
+	/** The type of output to use. */
+	protected final NanoCoatBuiltInOutputType type;
 	
 	/** The classifier used. */
 	protected final SourceTargetClassifier classifier;
@@ -39,22 +36,20 @@ public class NanoCoatBuiltInTaskOutput
 	 *
 	 * @param __classifier The classifier to use.
 	 * @param __base The base path.
-	 * @param __source Is this the source for it?
-	 * @param __test Is this for tests?
+	 * @param __type The type of output to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2024/10/12
 	 */
 	public NanoCoatBuiltInTaskOutput(SourceTargetClassifier __classifier,
-		Provider<Path> __base, boolean __source, boolean __test)
+		Provider<Path> __base, NanoCoatBuiltInOutputType __type)
 		throws NullPointerException
 	{
-		if (__classifier == null || __base == null)
+		if (__classifier == null || __base == null || __type == null)
 			throw new NullPointerException("NARG");
 		
 		this.classifier = __classifier;
 		this.base = __base;
-		this.isSource = __source;
-		this.isTest = __test;
+		this.type = __type;
 	}
 	
 	/**
@@ -66,19 +61,34 @@ public class NanoCoatBuiltInTaskOutput
 		throws Exception
 	{
 		Path result = this.jar();
+		String baseName = result.getFileName().toString();
 		
-		// Use source?
-		if (this.isSource)
-			return result.resolveSibling(result.getFileName().toString()
-				.replace(".jar", ".c"));
+		// Determine the replacement to use
+		String replacement;
+		switch (this.type)
+		{
+			case SOURCE:
+				replacement = baseName.replace(".jar",
+					".c");
+				break;
+				
+			case TEST:
+				replacement = baseName.replace(".jar",
+					".list");
+				break;
+				
+			case NANO_TEST:
+				replacement = baseName.replace(".jar",
+					".nano");
+				break;
+				
+			case JAR:
+			default:
+				replacement = baseName;
+				break;
+		}
 		
-		// Is test?
-		else if (this.isTest)
-			return result.resolveSibling(result.getFileName().toString()
-				.replace(".jar", ".list"));
-		
-		// Just use normal Jar
-		return result;
+		return result.resolveSibling(replacement);
 	}
 	
 	/**

@@ -889,6 +889,12 @@ endif()
 add_compile_definitions(SQUIRRELJME_SYSTEM="${SQUIRRELJME_SYSTEM}")
 add_compile_definitions(SQUIRRELJME_ARCH="${SQUIRRELJME_ARCH}")
 
+# Additionally all-uppercase for env vars or otherwise
+string(TOUPPER "${SQUIRRELJME_SYSTEM}" SQUIRRELJME_SYSTEM_UPPER)
+string(TOUPPER "${SQUIRRELJME_ARCH}" SQUIRRELJME_ARCH_UPPER)
+add_compile_definitions(SQUIRRELJME_SYSTEM_UPPER="${SQUIRRELJME_SYSTEM_UPPER}")
+add_compile_definitions(SQUIRRELJME_ARCH_UPPER="${SQUIRRELJME_ARCH_UPPER}")
+
 # Add fixed identifier for the target system/arch, which can be used in
 # special cases as needed
 string(MAKE_C_IDENTIFIER "SJME_CONFIG_IDENT_OS_${SQUIRRELJME_SYSTEM}"

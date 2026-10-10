@@ -61,6 +61,10 @@
 	#include <inttypes.h>
 #endif
 
+#if defined(SJME_CONFIG_HAS_LIITS_H)
+	#include <limits.h>
+#endif
+
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/* Needed for alloca(). */
 	#include <malloc.h>

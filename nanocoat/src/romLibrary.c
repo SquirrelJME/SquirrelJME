@@ -21,7 +21,7 @@
 #define SJME_NVM_ROM_CLASS_INFO_GROW 16
 
 static sjme_errorCode sjme_nvm_rom_libraryCacheClassCheck(
-	sjme_attrInNotNull sjme_list_sjme_pointer* inList,
+	sjme_attrInNotNull sjme_list(sjme_pointer)* inList,
 	sjme_attrInPositive sjme_jint checkIndex,
 	sjme_attrInNotNull sjme_pointer checkP,
 	sjme_attrInValue sjme_jint againstI,
@@ -47,9 +47,9 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 {
 	sjme_errorCode error;
 	sjme_jboolean exists;
-	sjme_jint freeSlot;
+	sjme_jint freeSlot, newLen;
 	sjme_nvm_class_info maybe;
-	sjme_list_sjme_nvm_class_info* classInfos;
+	sjme_list(sjme_nvm_class_info)* classInfos;
 	sjme_stream_input stream;
 	sjme_lpstr dupFileName;
 	
@@ -94,6 +94,7 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 	
 	/* The free slot might have been taken by something else if we got */
 	/* unlucky in the lock cycle. */
+	freeSlot = -1;
 	if (sjme_error_is(error = sjme_listUtil_findFree(
 		SJME_AS_LIST_POINTER(classInfos), &freeSlot)))
 		goto fail_findFree;
@@ -105,10 +106,11 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 		goto fail_openRc;
 	
 	/* Parse class information. */
+	maybe = NULL;
 	if (sjme_error_is(error = sjme_nvm_class_parse(
 		inLibrary->allocPool,
 		stream, inLibrary->stringPool,
-		&maybe)))
+		&maybe)) || maybe == NULL)
 		goto fail_parseClass;
 	
 	/* Can close the stream now. */
@@ -123,20 +125,32 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
 		&dupFileName, fileName)) ||
 		dupFileName == NULL)
 		goto fail_dupName;
-	
-	/* Reference for keeping. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(maybe, NULL)))
-		goto fail_countUp;
 
 	/* The library this came from. */
-	maybe->library = inLibrary;
+	sjme_atomic_s(sjme_nvm_rom_library, &maybe->library, inLibrary);
 	
 	/* File name is needed for caching. */
 	maybe->fileName = dupFileName;
 	maybe->fileNameHash = sjme_string_hash(dupFileName);
+
+	/* Need to grow the list? */
+	if (freeSlot < 0)
+	{
+		/* Grow. */
+		newLen = (classInfos == NULL ? 0 :
+			classInfos->length) + SJME_NVM_ROM_CLASS_INFO_GROW;
+		if (sjme_error_is(error = sjme_list_replace(inLibrary->allocPool,
+			newLen, &inLibrary->classInfos, sjme_nvm_class_info, 0)) ||
+			inLibrary->classInfos == NULL)
+			return sjme_error_default(error);
+		
+		/* Regrab the list. */
+		classInfos = inLibrary->classInfos;
+		freeSlot = newLen - SJME_NVM_ROM_CLASS_INFO_GROW;
+	}
 	
 	/* Store info in for later caching. */
-	classInfos->elements[freeSlot] = maybe;
+	classInfos->elements[freeSlot] = sjme_weakUpR(sjme_nvm_class_info, maybe);
 	
 	/* Release the write lock. */
 	if (sjme_error_is(error = sjme_thread_rwLockReleaseWrite(
@@ -152,8 +166,7 @@ skip_foundInfo:
 	/* Success! */
 	*outClassInfo = maybe;
 	return SJME_ERROR_NONE;
-	
-fail_countUp:
+
 fail_dupName:
 	if (dupFileName != NULL)
 	{
@@ -171,7 +184,7 @@ fail_openRc:
 fail_findFree:
 	/* Release write lock before failing. */
 	sjme_thread_rwLockReleaseWrite(&inLibrary->rwLock, NULL);
-	
+
 fail_findItem:
 fail_releaseGrab:
 fail_releaseWrite:
@@ -214,7 +227,7 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 {
 	sjme_errorCode error;
 	sjme_nvm_rom_library result;
-	sjme_list_sjme_nvm_class_info* classInfos;
+	sjme_list(sjme_nvm_class_info)* classInfos;
 	sjme_nvm_stringPool stringPool;
 
 	if (allocPool == NULL || outLibrary == NULL || inFunctions == NULL ||
@@ -233,12 +246,6 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 		&classInfos, sjme_nvm_class_info, 0)) || classInfos == NULL)
 		goto fail_allocInfos;
 	
-	/* Allocate string pool. */
-	stringPool = NULL;
-	if (sjme_error_is(error = sjme_nvm_stringPool_new(allocPool,
-		&stringPool)) || stringPool == NULL)
-		goto fail_allocStringPool;
-	
 	/* Allocate result. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_alloc(
@@ -247,12 +254,18 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 		SJME_AS_NVM_COMMONP(&result))) || result == NULL)
 		goto fail_alloc;
 	
+	/* Allocate string pool for this specific library. */
+	stringPool = NULL;
+	if (sjme_error_is(error = sjme_nvm_stringPool_new(allocPool,
+		&stringPool)) || stringPool == NULL)
+		goto fail_allocStringPool;
+	
 	/* Setup result. */
 	result->allocPool = allocPool;
 	result->functions = inFunctions;
 	result->rwLock.read = &result->common.lock;
 	result->classInfos = classInfos;
-	result->stringPool = stringPool;
+	result->stringPool = sjme_weakUpR(sjme_nvm_stringPool, stringPool);
 	
 	/* Copy front end? */
 	if (copyFrontEnd != NULL)
@@ -273,16 +286,16 @@ sjme_errorCode sjme_nvm_rom_libraryNew(
 	*outLibrary = result;
 	return SJME_ERROR_NONE;
 
-fail_refUp:
+fail_countUp:
 fail_strdup:
 fail_init:
 fail_commonInit:
-fail_alloc:
-	if (result != NULL)
-		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 fail_allocStringPool:
 	if (stringPool != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(stringPool));
+fail_alloc:
+	if (result != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 fail_allocInfos:
 	if (classInfos != NULL)
 		sjme_alloc_free(classInfos);
@@ -408,35 +421,50 @@ fail_unsupported:
 }
 
 sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
-	sjme_attrInNotNull sjme_nvm_rom_library library,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr rcName)
 {
 	sjme_nvm_rom_libraryResourceStreamFunc resourceFunc;
 	sjme_stream_input result;
 	sjme_errorCode error;
+	sjme_jboolean exists;
 
-	if (library == NULL || outStream == NULL || rcName == NULL)
+	if (inLibrary == NULL || outStream == NULL || rcName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* These must be set. */
-	if (library->functions == NULL ||
-		library->functions->resourceStream == NULL)
+	if (inLibrary->functions == NULL ||
+		inLibrary->functions->resourceStream == NULL)
 		return sjme_error_notImplemented(0);
+
+	/* Can we see if this entry exists first before we try to load it? */
+	if (inLibrary->functions->resourceExists != NULL)
+	{
+		/* Check to see if the entry exists before we do a scan. */
+		exists = SJME_JNI_FALSE;
+		if (sjme_error_is(error = inLibrary->functions->resourceExists(
+			inLibrary, &exists, rcName)))
+			return sjme_error_default(error);
+
+		/* If it does not exist, do not bother. */
+		if (!exists)
+			return SJME_ERROR_RESOURCE_NOT_FOUND;
+	}
 	
 	/* Lock library. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&library->common.lock)))
+		&inLibrary->common.lock)))
 		return sjme_error_default(error);
 
 	/* Get the resource function. */
-	resourceFunc = library->functions->resourceStream;
+	resourceFunc = inLibrary->functions->resourceStream;
 
 	/* Ask for the resource. */
 	/* Remember to remove any starting slash, because internally everything */
 	/* is treated as absolute. */
 	result = NULL;
-	if (sjme_error_is(error = resourceFunc(library,
+	if (sjme_error_is(error = resourceFunc(inLibrary,
 		&result,
 		(rcName[0] == '/' ? rcName + 1 : rcName))) ||
 		result == NULL)
@@ -444,7 +472,7 @@ sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
 	
 	/* Unlock library. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&library->common.lock, NULL)))
+		&inLibrary->common.lock, NULL)))
 		return sjme_error_default(error);
 	
 	/* Success! */
@@ -453,7 +481,7 @@ sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
 	
 	/* Unlock library. */
 fail_locateResource:
-	sjme_thread_spinLockRelease(&library->common.lock, NULL);
+	sjme_thread_spinLockRelease(&inLibrary->common.lock, NULL);
 	
 	return sjme_error_default(error);
 }
@@ -464,6 +492,7 @@ sjme_errorCode sjme_nvm_rom_libraryResourceExists(
 	sjme_attrInNotNull sjme_lpcstr rcName)
 {
 	sjme_errorCode error;
+	sjme_stream_input tempStream;
 	
 	if (inLibrary == NULL || outExists == NULL || rcName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -474,6 +503,27 @@ sjme_errorCode sjme_nvm_rom_libraryResourceExists(
 			outExists, rcName);
 	
 	/* Otherwise we need to open the actual stream to it. */
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	tempStream = NULL;
+	if (sjme_error_is(error = sjme_nvm_rom_libraryResourceAsStream(
+		inLibrary, &tempStream, rcName)) || tempStream == NULL)
+	{
+		/* If not found, then say as such. */
+		if (error == SJME_ERROR_RESOURCE_NOT_FOUND)
+		{
+			*outExists = SJME_JNI_FALSE;
+			return SJME_ERROR_NONE;
+		}
+
+		/* Fail otherwise. */
+		return sjme_error_default(error);
+	}
+
+	/* Close the stream. */
+	if (sjme_error_is(error = sjme_closeable_close(
+		SJME_AS_CLOSEABLE(tempStream))))
+		return sjme_error_default(error);
+
+	/* Since we opened and closed a stream, the resource does exist. */
+	*outExists = SJME_JNI_TRUE;
+	return SJME_ERROR_NONE;
 }

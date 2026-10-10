@@ -35,68 +35,87 @@ extern "C" {
  * 
  * @since 2024/06/28
  */
-typedef enum sjme_scritchinput_type
-{
-	/** Unknown event. */
-	SJME_SCRITCHINPUT_TYPE_UNKNOWN = 0,
-	
-	/** Key event: Pressed. */
-	SJME_SCRITCHINPUT_TYPE_KEY_PRESSED = 1,
-	
-	/** Key event: Released. */
-	SJME_SCRITCHINPUT_TYPE_KEY_RELEASED = 2,
-	
-	/** Key event: Repeated. */
-	SJME_SCRITCHINPUT_TYPE_KEY_REPEATED = 4,
-	
-	/** Mouse event: Button pressed. */
-	SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED = 8,
-	
-	/** Mouse event: Button released. */
-	SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED = 16,
-	
-	/** Mouse event: Motion. */
-	SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION = 32,
-	
-	/** Gamepad event: Button pressed. */
-	SJME_SCRITCHINPUT_TYPE_GAMEPAD_BUTTON_PRESSED = 64,
-	
-	/** Gamepad event: Button released. */
-	SJME_SCRITCHINPUT_TYPE_GAMEPAD_BUTTON_RELEASED = 128,
-	
-	/** Gamepad event: Motion on axis. */
-	SJME_SCRITCHINPUT_TYPE_GAMEPAD_AXIS_MOTION = 256,
-	
-	/** Touch event: Finger pressed. */
-	SJME_SCRITCHINPUT_TYPE_TOUCH_FINGER_PRESSED = 512,
-	
-	/** Touch event: Finger released. */
-	SJME_SCRITCHINPUT_TYPE_TOUCH_FINGER_RELEASED = 1024,
-	
-	/** Touch event: Drag motion. */
-	SJME_SCRITCHINPUT_TYPE_TOUCH_DRAG_MOTION = 2048,
-	
-	/** Stylus event: Pressed. */
-	SJME_SCRITCHINPUT_TYPE_STYLUS_PEN_PRESSED = 4096,
-	
-	/** Stylus event: Released. */
-	SJME_SCRITCHINPUT_TYPE_STYLUS_PEN_RELEASED = 8192,
-	
-	/** Stylus event: Dragging motion. */
-	SJME_SCRITCHINPUT_TYPE_STYLUS_DRAG_MOTION = 16384,
-	
-	/** Stylus event: Hovering over display. */
-	SJME_SCRITCHINPUT_TYPE_STYLUS_HOVER_MOTION = 32768,
-	
-	/** Gyroscope event: Axis motion. */
-	SJME_SCRITCHINPUT_TYPE_GYRO_AXIS_MOTION = 65536,
-	
-	/** Device action (flip open/close, shaken, not stirred). */
-	SJME_SCRITCHINPUT_TYPE_DEVICE_ACTION = 131072,
-	
-	/** A character key was pressed. */
-	SJME_SCRITCHINPUT_TYPE_KEY_CHAR_PRESSED = 262144,
-} sjme_scritchinput_type;
+typedef sjme_jint sjme_scritchinput_type;
+
+/** Unknown event. */
+#define SJME_SCRITCHINPUT_TYPE_UNKNOWN \
+	((sjme_scritchinput_type)INT32_C(0))
+
+/** Key event: Pressed. */
+#define SJME_SCRITCHINPUT_TYPE_KEY_PRESSED \
+	((sjme_scritchinput_type)INT32_C(1))
+
+/** Key event: Released. */
+#define SJME_SCRITCHINPUT_TYPE_KEY_RELEASED \
+	((sjme_scritchinput_type)INT32_C(2))
+
+/** Key event: Repeated. */
+#define SJME_SCRITCHINPUT_TYPE_KEY_REPEATED \
+	((sjme_scritchinput_type)INT32_C(4))
+
+/** Mouse event: Button pressed. */
+#define SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_PRESSED \
+	((sjme_scritchinput_type)INT32_C(8))
+
+/** Mouse event: Button released. */
+#define SJME_SCRITCHINPUT_TYPE_MOUSE_BUTTON_RELEASED \
+	((sjme_scritchinput_type)INT32_C(16))
+
+/** Mouse event: Motion. */
+#define SJME_SCRITCHINPUT_TYPE_MOUSE_MOTION \
+	((sjme_scritchinput_type)INT32_C(32))
+
+/** Gamepad event: Button pressed. */
+#define SJME_SCRITCHINPUT_TYPE_GAMEPAD_BUTTON_PRESSED \
+	((sjme_scritchinput_type)INT32_C(64))
+
+/** Gamepad event: Button released. */
+#define SJME_SCRITCHINPUT_TYPE_GAMEPAD_BUTTON_RELEASED \
+	((sjme_scritchinput_type)INT32_C(128))
+
+/** Gamepad event: Motion on axis. */
+#define SJME_SCRITCHINPUT_TYPE_GAMEPAD_AXIS_MOTION \
+	((sjme_scritchinput_type)INT32_C(256))
+
+/** Touch event: Finger pressed. */
+#define SJME_SCRITCHINPUT_TYPE_TOUCH_FINGER_PRESSED \
+	((sjme_scritchinput_type)INT32_C(512))
+
+/** Touch event: Finger released. */
+#define SJME_SCRITCHINPUT_TYPE_TOUCH_FINGER_RELEASED \
+	((sjme_scritchinput_type)INT32_C(1024))
+
+/** Touch event: Drag motion. */
+#define SJME_SCRITCHINPUT_TYPE_TOUCH_DRAG_MOTION \
+	((sjme_scritchinput_type)INT32_C(2048))
+
+/** Stylus event: Pressed. */
+#define SJME_SCRITCHINPUT_TYPE_STYLUS_PEN_PRESSED \
+	((sjme_scritchinput_type)INT32_C(4096))
+
+/** Stylus event: Released. */
+#define SJME_SCRITCHINPUT_TYPE_STYLUS_PEN_RELEASED \
+	((sjme_scritchinput_type)INT32_C(8192))
+
+/** Stylus event: Dragging motion. */
+#define SJME_SCRITCHINPUT_TYPE_STYLUS_DRAG_MOTION \
+	((sjme_scritchinput_type)INT32_C(16384))
+
+/** Stylus event: Hovering over display. */
+#define SJME_SCRITCHINPUT_TYPE_STYLUS_HOVER_MOTION \
+	((sjme_scritchinput_type)INT32_C(32768))
+
+/** Gyroscope event: Axis motion. */
+#define SJME_SCRITCHINPUT_TYPE_GYRO_AXIS_MOTION \
+	((sjme_scritchinput_type)INT32_C(65536))
+
+/** Device action (flip open/close, shaken, not stirred). */
+#define SJME_SCRITCHINPUT_TYPE_DEVICE_ACTION \
+	((sjme_scritchinput_type)INT32_C(131072))
+
+/** A character key was pressed. */
+#define SJME_SCRITCHINPUT_TYPE_KEY_CHAR_PRESSED \
+	((sjme_scritchinput_type)INT32_C(262144))
 
 /**
  * Input keycodes for ScritchUI, these should map away.
@@ -105,6 +124,9 @@ typedef enum sjme_scritchinput_type
  */
 typedef enum sjme_scritchinput_key
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_scritchinput_key),
+
 	/** Backspace. */
 	SJME_SCRITCHINPUT_KEY_BACKSPACE = 8,
 		
@@ -357,29 +379,35 @@ typedef enum sjme_scritchinput_key
  * 
  * @since 2024/06/28
  */
-typedef enum sjme_scritchinput_modifier
-{
-	/** Modifier status not supported. */
-	SJME_SCRITCHINPUT_MODIFIER_UNSUPPORTED = -1,
+typedef sjme_jint sjme_scritchinput_modifier;
+
+/** Modifier status not supported. */
+#define SJME_SCRITCHINPUT_MODIFIER_UNSUPPORTED \
+	((sjme_scritchinput_modifier)INT32_C(-1))
+
+/** Alt key modifier. */
+#define SJME_SCRITCHINPUT_MODIFIER_ALT \
+	((sjme_scritchinput_modifier)INT32_C(65536))
 	
-	/** Alt key modifier. */
-	SJME_SCRITCHINPUT_MODIFIER_ALT = 65536,
-		
-	/** Function (Fn/Chr) key modifier. */
-	SJME_SCRITCHINPUT_MODIFIER_CHR = 8388608,
-	
-	/** Command key modifier. */
-	SJME_SCRITCHINPUT_MODIFIER_COMMAND = 4194304,
-	
-	/** Ctrl key modifier. */
-	SJME_SCRITCHINPUT_MODIFIER_CTRL = 262144,
-	
-	/** Shift key modifier. */
-	SJME_SCRITCHINPUT_MODIFIER_SHIFT = 131072,
-	
-	/** Mask for all the modifier keys. */
-	SJME_SCRITCHINPUT_MODIFIER_MASK = 13041664,
-} sjme_scritchinput_modifier;
+/** Function (Fn/Chr) key modifier. */
+#define SJME_SCRITCHINPUT_MODIFIER_CHR \
+	((sjme_scritchinput_modifier)INT32_C(8388608))
+
+/** Command key modifier. */
+#define SJME_SCRITCHINPUT_MODIFIER_COMMAND \
+	((sjme_scritchinput_modifier)INT32_C(4194304))
+
+/** Ctrl key modifier. */
+#define SJME_SCRITCHINPUT_MODIFIER_CTRL \
+	((sjme_scritchinput_modifier)INT32_C(262144))
+
+/** Shift key modifier. */
+#define SJME_SCRITCHINPUT_MODIFIER_SHIFT \
+	((sjme_scritchinput_modifier)INT32_C(131072))
+
+/** Mask for all the modifier keys. */
+#define SJME_SCRITCHINPUT_MODIFIER_MASK \
+	((sjme_scritchinput_modifier)INT32_C(13041664))
 
 typedef struct sjme_scritchinput_eventDataUnknown
 {

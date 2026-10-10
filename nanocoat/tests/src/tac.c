@@ -14,6 +14,15 @@
 #include "sjme/nvm/loop.h"
 #include "test.h"
 
+/**
+ * Main entry for TAC tests, these are higher level and are more complex
+ * requiring a fully working Java environment.
+ * 
+ * @param argc Argument count.
+ * @param argv Arguments.
+ * @return Standard exit codes.
+ * @since 2025/09/24
+ */
 int main(int argc, sjme_lpstr* argv)
 {
 	sjme_errorCode error;
@@ -22,8 +31,8 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_jint exitCode, i, n;
 	sjme_seekable bootSeek;
 	sjme_nvm_rom_suite bootSuite;
-	sjme_list_sjme_lpstr* classpath;
-	sjme_list_sjme_lpstr* mainArgs;
+	sjme_list(sjme_lpstr)* classpath;
+	sjme_list(sjme_lpstr)* mainArgs;
 	sjme_nvm inState;
 	sjme_jboolean terminated;
 	const sjme_nal* nal;
@@ -49,7 +58,7 @@ int main(int argc, sjme_lpstr* argv)
 	/* Allocate main pool. */
 	pool = NULL;
 	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&pool,
-		1048576 * 16)) || pool == NULL)
+		1048576 * 32)) || pool == NULL)
 		goto fail_poolInit;
 	
 	/* Open seekable to the boot Jar. */
@@ -102,8 +111,13 @@ int main(int argc, sjme_lpstr* argv)
 	bootParam.nal = &sjme_nal_test;
 	bootParam.bootSuite = bootSuite;
 	bootParam.mainClass = "net.multiphasicapps.tac.MainSingleRunner";
-	bootParam.mainClassPathByName = (const sjme_list_sjme_lpcstr*)classpath;
-	bootParam.mainArgs = (const sjme_list_sjme_lpcstr*)mainArgs;
+	bootParam.mainClassPathByName = (const sjme_list(sjme_lpcstr)*)classpath;
+	bootParam.mainArgs = (const sjme_list(sjme_lpcstr)*)mainArgs;
+
+	/* JDWP Debugging. */
+	bootParam.jdwpAddress = "localhost";
+	bootParam.jdwpPort = 5005;
+	bootParam.jdwpListening = SJME_JNI_FALSE;
 	
 	/* Boot the virtual machine. */
 	inState = NULL;

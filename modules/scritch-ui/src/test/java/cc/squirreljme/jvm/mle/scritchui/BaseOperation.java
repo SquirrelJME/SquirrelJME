@@ -65,7 +65,7 @@ public abstract class BaseOperation
 		
 		// Setup pencil graphics for drawing
 		int pixelFormat = BaseOperation.__nameToFormat(__pf);
-		PencilBracket g = NativeScritchInterface.nativeInterface()
+		PencilBracket g = NativeScritchUIShelf.nativeInterface()
 			.hardwareGraphics(
 				pixelFormat,
 				BaseOperation.WIDTH, BaseOperation.HEIGHT,

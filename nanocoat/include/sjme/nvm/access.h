@@ -10,6 +10,7 @@
 /**
  * Access checking.
  * 
+ * @file
  * @since 2025/06/19
  */
 
@@ -45,6 +46,45 @@ sjme_errorCode sjme_nvm_access_checkCompatibleField(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jfieldID fieldId,
 	sjme_attrInNotNull sjme_jvalueTyped* checkValue);
+
+/**
+ * Checks access from a specific class to the specified member.
+ *
+ * @param fromClass The source class.
+ * @param to The destination member.
+ * @return Any resultant error, if any. If access is denied
+ * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
+ * @since 2026/10/04
+ */
+sjme_errorCode sjme_nvm_access_checkCToE(
+	sjme_attrInNotNull sjme_jclass fromClass,
+	sjme_attrInNotNull sjme_jmemberID to);
+
+/**
+ * Checks access from a specific class to the specified field.
+ *
+ * @param fromClass The source class.
+ * @param to The destination field.
+ * @return Any resultant error, if any. If access is denied
+ * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
+ * @since 2026/10/04
+ */
+sjme_errorCode sjme_nvm_access_checkCToF(
+	sjme_attrInNotNull sjme_jclass fromClass,
+	sjme_attrInNotNull sjme_jfieldID to);
+
+/**
+ * Checks access from a specific class to the specified method.
+ *
+ * @param fromClass The source class.
+ * @param to The destination method.
+ * @return Any resultant error, if any. If access is denied
+ * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
+ * @since 2026/10/04
+ */
+sjme_errorCode sjme_nvm_access_checkCToM(
+	sjme_attrInNotNull sjme_jclass fromClass,
+	sjme_attrInNotNull sjme_jmethodID to);
 	
 /**
  * Determines whether the current member has access to the given member.
@@ -52,7 +92,8 @@ sjme_errorCode sjme_nvm_access_checkCompatibleField(
  * @param from The source member.
  * @param to The destination member.
  * @param toFlags The flags of the destination member.
- * @return Any resultant error, if any.
+ * @return Any resultant error, if any. If access is denied
+ * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
  * @since 2025/06/21
  */
 sjme_errorCode sjme_nvm_access_checkEToE(
@@ -65,7 +106,8 @@ sjme_errorCode sjme_nvm_access_checkEToE(
  * 
  * @param from The source frame.
  * @param to The destination field.
- * @return Any resultant error, if any.
+ * @return Any resultant error, if any. If access is denied
+ * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
  * @since 2025/06/19
  */
 sjme_errorCode sjme_nvm_access_checkFToF(
@@ -77,7 +119,8 @@ sjme_errorCode sjme_nvm_access_checkFToF(
  * 
  * @param from The source frame.
  * @param to The destination method.
- * @return Any resultant error, if any.
+ * @return Any resultant error, if any. If access is denied
+ * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
  * @since 2025/06/19
  */
 sjme_errorCode sjme_nvm_access_checkFToM(
@@ -89,7 +132,8 @@ sjme_errorCode sjme_nvm_access_checkFToM(
  * 
  * @param from The source method.
  * @param to The destination method.
- * @return Any resultant error, if any.
+ * @return Any resultant error, if any. If access is denied
+ * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
  * @since 2025/06/19
  */
 sjme_errorCode sjme_nvm_access_checkMToM(

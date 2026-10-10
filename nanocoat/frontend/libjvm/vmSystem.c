@@ -12,11 +12,13 @@
 jlong JNICALL JVM_CurrentTimeMillis(JNIEnv* env, jclass ignored)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jlong JNICALL JVM_NanoTime(JNIEnv* env, jclass ignored)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 void JNICALL JVM_ArrayCopy(JNIEnv* env,
@@ -33,4 +35,5 @@ void JNICALL JVM_ArrayCopy(JNIEnv* env,
 jobject JNICALL JVM_InitProperties(JNIEnv* env, jobject p)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }

@@ -125,13 +125,9 @@ public enum InfoVmDescription
 	DEFAULT_DIR_BUCKET_EXTRA("Directory: Bucket: Extra",
 		VMDescriptionType.DEFAULT_DIR_BUCKET_EXTRA),
 	
-	/** The number of default directory types. */
-	DEFAULT_DIR_NUM_TYPES("Directory: Reserved 11",
-		VMDescriptionType.DEFAULT_DIR_NUM_TYPES),
-	
-	/** Default directory reserved: 12. */
-	DEFAULT_DIR_RESERVED_12("Directory: Reserved 12",
-		VMDescriptionType.DEFAULT_DIR_RESERVED_12),
+	/** The runtime library directory. */
+	DEFAULT_DIR_NUM_TYPES("Directory: Runtime Library",
+		VMDescriptionType.DEFAULT_DIR_RUNTIME),
 	
 	/** Default directory reserved: 13. */
 	DEFAULT_DIR_RESERVED_13("Directory: Reserved 13",

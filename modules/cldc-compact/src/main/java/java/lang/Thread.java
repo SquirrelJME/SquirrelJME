@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Range;
 @Api
 @KeepAbsolutelyEverything("All VMs rely on internal fields and logic.")
 public class Thread
-	implements Runnable
+	implements Runnable, VMThreadBracket
 {
 	/** Maximum supported priority. */
 	@Api
@@ -49,7 +49,7 @@ public class Thread
 	public static final int NORM_PRIORITY =
 		5;
 	
-	/** Second in nano seconds. */
+	/** Second in nanoseconds. */
 	private static final long _NS_SECOND =
 		1_000_000L;
 	
@@ -140,9 +140,14 @@ public class Thread
 		if (__hasName && __name == null)
 			throw new NullPointerException("NARG");
 		
+		// This may potentially refer to "this", so we do not want to have
+		// a strong reference to our own thread
 		VMThreadBracket vmThread = ThreadShelf.createVMThread(this,
 			__name);
-		this._vmThread = vmThread;
+		if (vmThread != this)
+			this._vmThread = vmThread;
+		else
+			this._vmThread = null;
 		
 		this._runnable = __runnable;
 		this._name = Thread.__defaultName(__name, vmThread);
@@ -172,7 +177,12 @@ public class Thread
 	@Api
 	public long getId()
 	{
-		return ThreadShelf.vmThreadId(this._vmThread);
+		// Fallback to self if there is no separate thread instance
+		VMThreadBracket vmThread = this._vmThread;
+		if (vmThread == null)
+			vmThread = this;
+		
+		return ThreadShelf.vmThreadId(vmThread);
 	}
 	
 	/**
@@ -221,8 +231,13 @@ public class Thread
 		// Signal software interrupt
 		this._interrupted = true;
 		
+		// Fallback to self if there is no separate thread instance
+		VMThreadBracket vmThread = this._vmThread;
+		if (vmThread == null)
+			vmThread = this;
+		
 		// Signal hardware interrupt
-		ThreadShelf.vmThreadInterrupt(this._vmThread);
+		ThreadShelf.vmThreadInterrupt(vmThread);
 	}
 	
 	/**
@@ -234,7 +249,12 @@ public class Thread
 	@Api
 	public final boolean isAlive()
 	{
-		return ThreadShelf.vmThreadIsAlive(this._vmThread);
+		// Fallback to self if there is no separate thread instance
+		VMThreadBracket vmThread = this._vmThread;
+		if (vmThread == null)
+			vmThread = this;
+		
+		return ThreadShelf.vmThreadIsAlive(vmThread);
 	}
 	
 	/**
@@ -309,6 +329,11 @@ public class Thread
 		long end = (__ms == 0 && __ns == 0 ? Long.MAX_VALUE :
 			System.nanoTime() + (__ms * Thread._NS_SECOND) + __ns);
 		
+		// Fallback to self if there is no separate thread instance
+		VMThreadBracket vmThread = this._vmThread;
+		if (vmThread == null)
+			vmThread = this;
+		
 		// Lock on self
 		synchronized (this)
 		{
@@ -321,7 +346,7 @@ public class Thread
 					return;
 				
 				// Did the thread die yet?
-				if (ThreadShelf.vmThreadIsStarted(this._vmThread) &&
+				if (ThreadShelf.vmThreadIsStarted(vmThread) &&
 					!this.isAlive())
 					return;
 				
@@ -392,8 +417,13 @@ public class Thread
 		// Store for later
 		this._priority = __p;
 		
+		// Fallback to self if there is no separate thread instance
+		VMThreadBracket vmThread = this._vmThread;
+		if (vmThread == null)
+			vmThread = this;
+		
 		// Set the thread's hardware priority
-		ThreadShelf.vmThreadSetPriority(this._vmThread, __p);
+		ThreadShelf.vmThreadSetPriority(vmThread, __p);
 	}
 	
 	/**
@@ -407,14 +437,19 @@ public class Thread
 	public void start()
 		throws IllegalThreadStateException
 	{
+		// Fallback to self if there is no separate thread instance
+		VMThreadBracket vmThread = this._vmThread;
+		if (vmThread == null)
+			vmThread = this;
+		
 		synchronized (this)
 		{
 			/* {@squirreljme.error ZZ21 A thread may only be started once.} */
-			if (ThreadShelf.vmThreadIsStarted(this._vmThread))
+			if (ThreadShelf.vmThreadIsStarted(vmThread))
 				throw new IllegalThreadStateException("ZZ21");
 			
 			/* {@squirreljme.error ZZ22 Failed to start the thread.} */
-			if (!ThreadShelf.vmThreadStart(this._vmThread))
+			if (!ThreadShelf.vmThreadStart(vmThread))
 				throw new IllegalThreadStateException("ZZ22");
 		}
 	}

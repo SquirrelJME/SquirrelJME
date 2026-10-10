@@ -19,18 +19,20 @@ import org.jetbrains.annotations.Async;
  * This class is thread safe and multiple threads may interact with this
  * class.
  *
- * This class is not real-time and offers no gaurantee that tasks will execute
+ * This class is not real-time and offers no guarantee that tasks will execute
  * on time.
- *
- * All instances of this class create a background thread.
+ * 
+ * In SquirrelJME, to reduce thread contention and optimize for embedded
+ * and cooperative threaded use, this utilizes only a single thread for all
+ * timer instances.
  *
  * @since 2018/12/11
  */
 @Api
 public class Timer
 {
-	/** The thread which runs the task of running things. */
-	final __TimerThread__ _thread;
+	/** The name of this timer. */
+	final String _name;
 	
 	/**
 	 * Initializes a timer.
@@ -57,10 +59,13 @@ public class Timer
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup thread and start it
-		__TimerThread__ thread;
-		this._thread = (thread = new __TimerThread__(__s));
-		thread.start();
+		// Note that this does not set up a thread at all and just waits until
+		// an actual schedule occurs. There are a number of Java ME titles
+		// which make a bunch of timers and thus never actually schedule
+		// them, thus wasting thread space.
+		
+		// Store the name
+		this._name = __s;
 	}
 	
 	/**
@@ -71,36 +76,18 @@ public class Timer
 	@Api
 	public void cancel()
 	{
-		__TimerThread__ thread = this._thread;
-		synchronized (thread)
-		{
-			// Cancel and interrupt the thread so it checks and wakes up
-			if (!thread._cancel)
-			{
-				thread._cancel = true;
-				thread.interrupt();
-			}
-		}
+		__PeriodicTimers__.__instance().__cancel(this);
 	}
 	
 	/**
-	 * Purges all of the cancelled tasks so that they become garbage collected.
+	 * Purges all the cancelled tasks so that they become garbage collected.
 	 *
 	 * @since 2018/12/11
 	 */
 	@Api
 	public void purge()
 	{
-		// Lock to prevent adds
-		__TimerThread__ thread = this._thread;
-		synchronized (thread)
-		{
-			// Remove every task which has been cancelled
-			for (Iterator<TimerTask> it = thread._tasks.iterator();
-				it.hasNext();)
-				if (it.next()._cancel)
-					it.remove();
-		}
+		__PeriodicTimers__.__instance().__purge(this);
 	}
 	
 	/**
@@ -120,8 +107,14 @@ public class Timer
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this._thread.__schedule(__task, __time, false,
-			false, 0);
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		// Use generic periodic forward
+		__PeriodicTimers__.__instance().__schedule(
+			new __PeriodicTimer__(this, __task, __time,
+				Long.MIN_VALUE,
+				false, false, 0));
 	}
 	
 	/**
@@ -144,7 +137,16 @@ public class Timer
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this._thread.__schedule(__task, __time, true, false, __period);
+		if (__task == null || __time == null)
+			throw new NullPointerException("NARG");
+		
+		if (__period <= 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		// Use generic periodic forward
+		__PeriodicTimers__.__instance().__schedule(
+			new __PeriodicTimer__(this, __task, __time,
+				Long.MIN_VALUE, true, false, __period));
 	}
 	
 	/**
@@ -164,7 +166,16 @@ public class Timer
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this._thread.__schedule(__task, __delay, false, false, 0);
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		if (__delay < 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		// Use generic periodic forward
+		__PeriodicTimers__.__instance().__schedule(
+			new __PeriodicTimer__(this, __task, null, __delay,
+				false, false, 0));
 	}
 	
 	/**
@@ -187,7 +198,16 @@ public class Timer
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this._thread.__schedule(__task, __delay, true, false, __period);
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		if (__delay < 0 || __period <= 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		// Use generic periodic forward
+		__PeriodicTimers__.__instance().__schedule(
+			new __PeriodicTimer__(this, __task, null, __delay,
+				true, false, __period));
 	}
 	
 	/**
@@ -212,8 +232,16 @@ public class Timer
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this._thread.__schedule(__task, __first, true, true,
-			__period);
+		if (__task == null || __first == null)
+			throw new NullPointerException("NARG");
+		
+		if (__period <= 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		// Use generic periodic forward
+		__PeriodicTimers__.__instance().__schedule(
+			new __PeriodicTimer__(this, __task, __first,
+				Long.MIN_VALUE, true, true, __period));
 	}
 	
 	/**
@@ -237,7 +265,16 @@ public class Timer
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this._thread.__schedule(__task, __delay, true, true, __period);
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		if (__delay < 0 || __period <= 0)
+			throw new IllegalArgumentException("NEGV");
+		
+		// Use generic periodic forward
+		__PeriodicTimers__.__instance().__schedule(
+			new __PeriodicTimer__(this, __task, null, __delay,
+				true, true, __period));
 	}
 }
 

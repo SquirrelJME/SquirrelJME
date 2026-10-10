@@ -10,6 +10,7 @@
 /**
  * ROM related structures, this replicates what is in @c JarPackageShelf.
  * 
+ * @file
  * @since 2023/12/12
  */
 
@@ -88,7 +89,7 @@ struct sjme_nvm_rom_libraryBase
 	sjme_thread_rwLock rwLock;
 	
 	/** Class information that has already been loaded for this library. */
-	sjme_list_sjme_nvm_class_info* classInfos;
+	sjme_list(sjme_nvm_class_info)* classInfos;
 	
 	/** The string pool for this specific library. */
 	sjme_nvm_stringPool stringPool;
@@ -178,6 +179,16 @@ typedef sjme_errorCode (*sjme_nvm_rom_libraryResourceStreamFunc)(
 	sjme_attrInNotNull sjme_lpcstr resourceName);
 
 /**
+ * Special handling for any closing that needs to be performed for a suite.
+ *
+ * @param inSuite The suite to be closed.
+ * @return Any resultant error, if any.
+ * @since 2025/11/09
+ */
+typedef sjme_errorCode (*sjme_nvm_rom_suiteCloseFunc)(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite);
+
+/**
  * Obtains the default launch parameters from the given suite.
  * 
  * @param allocPool The pool to allocate within.
@@ -193,9 +204,9 @@ typedef sjme_errorCode (*sjme_nvm_rom_suiteDefaultLaunchFunc)(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
-	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outByName);
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outMainArgs,
+	sjme_attrOutNotNull sjme_list(sjme_jint)** outById,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outByName);
 
 /**
  * Function used to initialize the suite.
@@ -233,9 +244,9 @@ typedef sjme_errorCode (*sjme_nvm_rom_suiteLibraryIdFunc)(
  */
 typedef sjme_errorCode (*sjme_nvm_rom_suiteListLibrariesFunc)(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibraries);
+	sjme_attrOutNotNull sjme_list(sjme_nvm_rom_library)** outLibraries);
 
-typedef sjme_errorCode (*sjme_nvm_rom_suiteLoadLibraryFunc)();
+typedef sjme_errorCode (*sjme_nvm_rom_suiteLoadLibraryFunc)(sjme_jint todo);
 
 struct sjme_nvm_rom_libraryFunctions
 {
@@ -263,6 +274,9 @@ struct sjme_nvm_rom_libraryFunctions
 
 struct sjme_nvm_rom_suiteFunctions
 {
+	/** Close the suite. */
+	sjme_nvm_rom_suiteCloseFunc close;
+	
 	/** Optional default launch parameters. */
 	sjme_nvm_rom_suiteDefaultLaunchFunc defaultLaunch;
 	
@@ -294,7 +308,7 @@ struct sjme_nvm_rom_suiteBase
 	sjme_pointer handle;
 	
 	/** Libraries that exist within the suite. */
-	sjme_list_sjme_nvm_rom_library* libraries;
+	sjme_list(sjme_nvm_rom_library)* libraries;
 
 	/** The clutter level to use. */
 	sjme_nvm_bootClutterLevel clutterLevel;
@@ -331,6 +345,23 @@ sjme_errorCode sjme_nvm_rom_libraryFromZip(
 	sjme_attrInNotNull sjme_lpcstr libName,
 	sjme_attrInNullable sjme_lpcstr prefix,
 	sjme_attrInNotNull sjme_zip zip);
+
+/**
+ * Initializes a library from a Zip that is on the disk, this will load the
+ * Zip.
+ *
+ * @param pool The pool to use for allocations.
+ * @param outLibrary The resultant library.
+ * @param nal The Native abstraction layer to use for file access.
+ * @param zipPath The path to the Zip/Jar.
+ * @return Any resultant error, if any.
+ * @since 2026/10/14
+ */
+sjme_errorCode sjme_nvm_rom_libraryFromZipFile(
+	sjme_attrInNotNull sjme_alloc_pool pool,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInNotNull sjme_path* zipPath);
 
 /**
  * Initializes a library from a Zip that is in memory, this will load the Zip.
@@ -452,14 +483,14 @@ sjme_errorCode sjme_nvm_rom_libraryRawSize(
 /**
  * Obtains the given resource as a stream.
  *
- * @param library The library to get the resource from.
+ * @param inLibrary The library to get the resource from.
  * @param outStream The resultant stream.
  * @param rcName The name of the resource to obtain.
  * @return On any errors, if any.
  * @since 2023/12/31
  */
 sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
-	sjme_attrInNotNull sjme_nvm_rom_library library,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_stream_input* outStream,
 	sjme_attrInNotNull sjme_lpcstr rcName);
 
@@ -488,8 +519,8 @@ sjme_errorCode sjme_nvm_rom_libraryResourceExists(
  */
 sjme_errorCode sjme_nvm_rom_resolveClassPathById(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrInNotNull const sjme_list_sjme_jint* inIds,
-	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs);
+	sjme_attrInNotNull const sjme_list(sjme_jint)* inIds,
+	sjme_attrOutNotNull sjme_list(sjme_nvm_rom_library)** outLibs);
 
 /**
  * Resolves the class path library by their name.
@@ -502,8 +533,36 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathById(
  */
 sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrInNotNull const sjme_list_sjme_lpcstr* inNames,
-	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs);
+	sjme_attrInNotNull const sjme_list(sjme_lpcstr)* inNames,
+	sjme_attrOutNotNull sjme_list(sjme_nvm_rom_library)** outLibs);
+
+/**
+ * Resolves a single library by its index in the given suite.
+ *
+ * @param inSuite The suite to look in.
+ * @param inId The ID of the library.
+ * @param outLib The resultant library.
+ * @return Any resultant error, if any.
+ * @since 2026/06/17
+ */
+sjme_errorCode sjme_nvm_rom_resolveLibraryById(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrInValue sjme_jint inId,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLib);
+
+/**
+ * Resolves a single library by name in the given suite.
+ *
+ * @param inSuite The suite to look in.
+ * @param inName The name of the library to lookup.
+ * @param outLib The resultant library.
+ * @return Any resultant error, if any.
+ * @since 2026/06/17
+ */
+sjme_errorCode sjme_nvm_rom_resolveLibraryByName(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrInNotNull sjme_lpcstr inName,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLib);
 
 /**
  * Obtains the default launch parameters from the given suite.
@@ -521,9 +580,9 @@ sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
-	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outByName);
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outMainArgs,
+	sjme_attrOutNotNull sjme_list(sjme_jint)** outById,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outByName);
 
 /**
  * Combines multiple suites into one.
@@ -540,6 +599,22 @@ sjme_errorCode sjme_nvm_rom_suiteFromMerge(
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
 	sjme_attrInNotNull sjme_nvm_rom_suite* inSuites,
 	sjme_attrInPositive sjme_jint numInSuites);
+
+/**
+ * Loads a suite with a single library from the given Zip file.
+ *
+ * @param pool The allocation pool to use.
+ * @param outSuite The resultant suite.
+ * @param nal The native abstraction layer to use.
+ * @param zipPath The path to the Zip/Jar file.
+ * @return Any resultant error, if any.
+ * @since 2026/10/14
+ */
+sjme_errorCode sjme_nvm_rom_suiteFromZipFileSingle(
+	sjme_attrInNotNull sjme_alloc_pool pool,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInNotNull sjme_path* zipPath);
 
 /**
  * Initializes a suite from a Zip.
@@ -567,7 +642,7 @@ sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
  */
 sjme_errorCode sjme_nvm_rom_suiteLibraries(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibs);
+	sjme_attrOutNotNull sjme_list(sjme_nvm_rom_library)** outLibs);
 
 /**
  * Makes a virtual suite from the given functions.

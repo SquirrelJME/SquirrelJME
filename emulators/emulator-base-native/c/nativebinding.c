@@ -10,8 +10,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <jni.h>
 
-#include "jni.h"
 #include "cc_squirreljme_emulator_NativeBinding.h"
 #include "squirreljme.h"
 #include "sjme/dylib.h"
@@ -114,7 +114,7 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 
 	/* MLE */
 	MLE_INIT_FUNC_CALL(NativeScritchDylibEx);
-	MLE_INIT_FUNC_CALL(NativeScritchInterface);
+	MLE_INIT_FUNC_CALL(NativeScritchUIShelf);
 	MLE_INIT_FUNC_CALL(PencilFontShelf);
 	MLE_INIT_FUNC_CALL(PencilShelf);
 	MLE_INIT_FUNC_CALL(RuntimeShelf);

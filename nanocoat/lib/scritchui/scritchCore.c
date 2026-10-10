@@ -331,8 +331,13 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	/* Allocate state. */
 	state = NULL;
 	if (sjme_error_is(error = sjme_alloc_weakNew(allocPool, sizeof(*state),
-		NULL, (void**)&state, NULL)) || state == NULL)
+		NULL, (sjme_pointer*)&state, NULL)) || state == NULL)
 		goto fail_alloc;
+
+	/* Compiled with only single threaded support? */
+#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	state->bugs.onlyThreadSingle = SJME_JNI_TRUE;
+#endif
 	
 	/* Seed state. */
 	state->pool = allocPool;
@@ -483,6 +488,11 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 		NULL, NULL, externals)) ||
 		wrappedState == NULL)
 		return sjme_error_default(error);
+
+	/* Compiled with only single threaded support? */
+#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	wrappedState->bugs.onlyThreadSingle = SJME_JNI_TRUE;
+#endif
 	
 	/* Debug. */
 	sjme_message("Pre-call init loop belay...");
@@ -504,6 +514,11 @@ sjme_errorCode sjme_scritchui_core_apiInit(
 		loopExecute, initFrontEnd, wrappedState, externals)) ||
 		state == NULL)
 		return sjme_error_default(error);
+
+	/* Compiled with only single threaded support? */
+#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	state->bugs.onlyThreadSingle = SJME_JNI_TRUE;
+#endif
 	
 	/* Success! */
 	*outState = state;

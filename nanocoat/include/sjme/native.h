@@ -51,6 +51,32 @@ typedef enum sjme_nal_openMode
 	/** Write and truncate file. */
 	SJME_NAL_OPEN_WRITE_TRUNCATE = 3,
 } sjme_nal_openMode;
+
+/**
+ * The type of line ending the system uses.
+ *
+ * @since 2025/03/02
+ */
+typedef enum sjme_nal_lineEndingType
+{
+	/** This is an integer based enumeration. */
+	sjme_enumInt(sjme_nal_lineEndingType),
+
+	/** Unknown. */
+	SJME_NAL_LINE_ENDING_UNSPECIFIED = 0,
+
+	/** LF. */
+	SJME_NAL_LINE_ENDING_LF = 1,
+
+	/** CR. */
+	SJME_NAL_LINE_ENDING_CR = 2,
+
+	/** CRLF. */
+	SJME_NAL_LINE_ENDING_CRLF = 3,
+
+	/** Number of line ending types. */
+	SJME_NAL_NUM_LINE_ENDINGS = 4,
+} sjme_nal_lineEndingType;
 	
 /**
  * Represents a specific style of paths which are compatible with each other
@@ -113,7 +139,15 @@ typedef sjme_errorCode (*sjme_nal_fileOpenFunc)(
 typedef sjme_errorCode (*sjme_nal_getEnvFunc)(
 	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) sjme_lpstr buf,
 	sjme_attrInPositiveNonZero sjme_jint bufLen,
-	sjme_attrInNotNull sjme_lpcstr env); 
+	sjme_attrInNotNull sjme_lpcstr env);
+
+/**
+ * Returns the line ending type.
+ *
+ * @return The line ending type.
+ * @since 2026/10/09
+ */
+typedef sjme_nal_lineEndingType (*sjme_nal_lineEndingFunc)(void);
 
 /**
  * Returns the current nanosecond monotonic class as per the Java
@@ -223,6 +257,9 @@ typedef struct sjme_nal
 	
 	/** Get environment variable. */
 	sjme_nal_getEnvFunc getEnv;
+
+	/** The line ending that the system uses. */
+	sjme_nal_lineEndingFunc lineEnding;
 	
 	/** Get the current monotonic nanosecond time. */
 	sjme_nal_nanoTimeFunc nanoTime;
@@ -251,6 +288,9 @@ typedef struct sjme_nal
 
 /** Default native abstraction layer. */
 extern const sjme_nal sjme_nal_default;
+
+/** Default line ending specifiers. */
+extern const sjme_lpcstr sjme_nal_lineEndings[SJME_NAL_NUM_LINE_ENDINGS];
 
 #if !defined(SJME_CONFIG_HAS_NO_ERRNO_H)
 

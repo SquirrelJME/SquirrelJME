@@ -10,6 +10,7 @@
 /**
  * Cleaning functions.
  * 
+ * @file
  * @since 2024/08/09
  */
 
@@ -34,14 +35,15 @@ extern "C"
 /**
  * Allocates virtual machine structure type.
  * 
- * @param inState The state this is allocating within.
+ * @param inStateOrAllocPool The @link sjme_nvm @endlink state or
+ * the specific @link sjme_alloc_pool @endlink this is allocating within.
  * @param inType The type of structure this is.
  * @param outCommon The resultant common structure. 
  * @return On any resultant error, if any.
  * @since 2024/09/28
  */
 sjme_errorCode sjme_nvm_allocR(
-	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInNotNull sjme_pointer inStateOrAllocPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
 	sjme_attrInValue sjme_nvm_structType inType,
 	sjme_attrOutNotNull sjme_nvm_common* outCommon
@@ -58,7 +60,7 @@ sjme_errorCode sjme_nvm_allocR(
  * @since 2024/09/29
  */
 #define sjme_nvm_alloc(inState, allocSize, inType, outCommon) \
-	(sjme_nvm_allocR((inState), (allocSize), (inType), \
+	(sjme_nvm_allocR((sjme_pointer)(inState), (allocSize), (inType), \
 	(outCommon) SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /**
@@ -86,6 +88,16 @@ sjme_errorCode sjme_nvm_isA(
 sjme_jboolean sjme_nvm_isAR(
 	sjme_attrInNullable sjme_pointer inWhat,
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType);
+
+/**
+ * Returns the type of the given pointer.
+ * 
+ * @param inWhat What to get the type of.
+ * @return The type of the given pointer.
+ * @since 2025/10/24
+ */
+sjme_nvm_structType sjme_nvm_typeOf(
+	sjme_attrInNullable sjme_pointer inWhat);
 	
 /*--------------------------------------------------------------------------*/
 

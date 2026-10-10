@@ -300,8 +300,9 @@ static sjme_errorCode sjme_path_posix_parseRoot(
 	c = (strLen >= 3 ? (*walkPath)[2] : '\0');
 	
 	/* Double slash root? This is only valid with only two slashes. */
-	/* Ignore with the generic none path style. */
+	/* Ignore with the generic none path style and VFAT embedded. */
 	if (path->style->type != SJME_PATH_STYLE_NONE &&
+		path->style->type != SJME_PATH_STYLE_VFAT_EMBEDDED &&
 		a == '/' && b == '/' && c != '/')
 	{
 		/* Use the base. */
@@ -446,5 +447,19 @@ const sjme_path_style sjme_path_styles[SJME_NUM_PATH_STYLES] =
 		sjme_sm(.requireAbsolute, SJME_JNI_FALSE),
 		sjme_sm(.dot, sjme_fs(1, ".", 2, ".\\")),
 		sjme_sm(.dotDot, sjme_fs(2, "..", 3, "..\\")),
+	},
+
+	/** @link SJME_PATH_STYLE_VFAT_EMBEDDED @endlink . */
+	{
+		sjme_sm(.type, SJME_PATH_STYLE_VFAT_EMBEDDED),
+		sjme_sm(.check, sjme_path_vfat_check),
+		sjme_sm(.parseRoot, sjme_path_posix_parseRoot),
+		sjme_sm(.parseName, sjme_path_generic_parseName),
+		sjme_sm(.parseFinalize, sjme_path_generic_finalize),
+		sjme_sm(.dirSep, sjme_fs(1, "/", 1, "/")),
+		sjme_sm(.pathSep, sjme_ds(1, ";")),
+		sjme_sm(.requireAbsolute, SJME_JNI_FALSE),
+		sjme_sm(.dot, sjme_fs(1, ".", 2, "./")),
+		sjme_sm(.dotDot, sjme_fs(2, "..", 3, "../")),
 	},
 };

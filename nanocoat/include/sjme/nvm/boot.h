@@ -10,6 +10,7 @@
 /**
  * Virtual machine booting.
  * 
+ * @file
  * @since 2023/07/29
  */
 
@@ -38,23 +39,41 @@ struct sjme_nvm_bootParam
 	/** The boot suite to use. */
 	sjme_nvm_rom_suite bootSuite;
 
+	/** Should the boot suite be freed? */
+	sjme_jboolean freeBootSuite;
+
 	/** The suite to use for the library set. */
 	sjme_nvm_rom_suite librarySuite;
 
+	/** Free the library set? */
+	sjme_jboolean freeLibrarySuite;
+
 	/** The class path for main by library IDs. */
-	const sjme_list_sjme_jint* mainClassPathById;
+	const sjme_list(sjme_jint)* mainClassPathById;
+
+	/** Free @c mainClassPathById ? */
+	sjme_jboolean freeMainClassPathById;
 
 	/** The class path for main by names. */
-	const sjme_list_sjme_lpcstr* mainClassPathByName;
+	const sjme_list(sjme_lpcstr)* mainClassPathByName;
+
+	/** Free @c mainClassPathByName ? */
+	sjme_jboolean freeMainClassPathByName;
 
 	/** Main class to start in. */
 	sjme_lpcstr mainClass;
 
 	/** Main arguments. */
-	const sjme_list_sjme_lpcstr* mainArgs;
+	const sjme_list(sjme_lpcstr)* mainArgs;
+
+	/** Free @c mainArgs ? */
+	sjme_jboolean freeMainArgs;
 
 	/** System properties. */
-	const sjme_list_sjme_lpcstr* sysProps;
+	const sjme_list(sjme_lpcstr)* sysProps;
+
+	/** Free @c sysProps ? */
+	sjme_jboolean freeSysProps;
 	
 	/** The native abstraction layer to use. */
 	const sjme_nal* nal;
@@ -70,6 +89,42 @@ struct sjme_nvm_bootParam
 
 	/** Do not optimize. */
 	sjme_jboolean noOptimize;
+
+	/** Is JDWP listening for a connection? */
+	sjme_jboolean jdwpListening;
+
+	/** The address for JDWP. */
+	sjme_lpstr jdwpAddress;
+
+	/** The port for JDWP. */
+	sjme_jint jdwpPort;
+	
+	/** Hooks for the state. */
+	const sjme_nvm_stateHooks* hooks;
+
+	/** Optional hook data. */
+	sjme_pointer hookData;
+
+	/** An extra handle to close on destruction. */
+	sjme_closeable extraCloseHandle;
+
+	/** The initial Jar to run, if specified via @code -jar @endcode. */
+	sjme_lpcstr runJar;
+
+	/** Disable ScritchUI. */
+	sjme_jboolean noScritchUi;
+
+	/** Prefer this ScritchUI interface. */
+	sjme_lpcstr preferScritchUi;
+
+	/**
+	 * Start argument zero, for platforms that do not use it to store the
+	 * name of the executable that is being launched.
+	 *
+	 * Note that if this is true, then @link sjme_nal_execPathFunc @endlink
+	 * will need to be used to determine the executable path if possible.
+	 */
+	sjme_jboolean startAtArgZero;
 };
 
 /**
@@ -115,26 +170,8 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
 sjme_errorCode sjme_nvm_defaultBootSuiteInDirectory(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nal* nal,
-	sjme_attrInNotNull sjme_lpcstr inDirectory,
+	sjme_attrInNotNull const sjme_path* inDirectory,
 	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite);
-
-/**
- * Obtains the default directory for the given type.
- * 
- * This is the same as @c cc.squirreljme.runtime.cldc.full.SystemPathProvider .
- * 
- * @param type The type of directory to get. 
- * @param nal The native abstraction layer to use.
- * @param outPath The path where the directory is written to.
- * @param outPathLen The length of the path.
- * @return Any resultant error, if any.
- * @since 2024/08/09
- */
-sjme_errorCode sjme_nvm_defaultDir(
-	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
-	sjme_attrInNotNull const sjme_nal* nal,
-	sjme_attrOutNotNullBuf(outPathLen) sjme_lpstr outPath,
-	sjme_attrInPositiveNonZero sjme_jint outPathLen);
 
 /**
  * Destroys the virtual machine.
@@ -157,8 +194,8 @@ sjme_errorCode sjme_nvm_destroy(
  * @param outParam The output parameters.
  * @param argc The argument count.
  * @param argv The arguments.
- * @return Any resultant error, if any. Returns @c SJME_ERROR_EXIT if the
- * parsing should just exit.
+ * @return Any resultant error, if any.
+ * Returns @link SJME_ERROR_EXIT @endlink if the parsing should just exit.
  * @since 2024/08/08
  */
 sjme_errorCode sjme_nvm_parseCommandLine(

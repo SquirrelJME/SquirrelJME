@@ -38,6 +38,9 @@ extern "C"
  */
 typedef enum sjme_errorCode
 {
+	/** This is an integer based enum. */
+	sjme_enumInt(sjme_errorCode),
+
 	/** No error. */
 	SJME_ERROR_NONE = 2,
 
@@ -619,9 +622,18 @@ typedef enum sjme_errorCode
 
 	/** The manifest format is not valid. */
 	SJME_ERROR_INVALID_MANIFEST_FORMAT = -191,
+
+	/** The type of class this is, is not valid. */
+	SJME_ERROR_INVALID_CLASS_TYPE = -192,
+
+	/** Minimum frame level has been reached. */
+	SJME_ERROR_MINIMUM_FRAME_LEVEL = -193,
+
+	/** This type of thread cannot be called in a nested matter. */
+	SJME_ERROR_INVALID_EXPLICIT_NEST = -194,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -192,
+	SJME_NUM_ERROR_CODES = -195,
 } sjme_errorCode;
 
 /**
@@ -699,6 +711,16 @@ sjme_errorCode sjme_error_defaultOr(
 sjme_errorCode sjme_error_mask(
 	sjme_attrInValue sjme_errorCode error,
 	sjme_attrInValue sjme_errorCode mask);
+
+/**
+ * Masks and/or wraps an MLE Call Error.
+ *
+ * @param contextFrame The frame this is the context of.
+ * @param error The error to wrap.
+ * @since 2026/10/05
+ */
+#define sjme_error_mleCall(contextFrame, error) \
+	(sjme_error_mask((error), SJME_ERROR_MLE_CALL))
 
 /*--------------------------------------------------------------------------*/
 

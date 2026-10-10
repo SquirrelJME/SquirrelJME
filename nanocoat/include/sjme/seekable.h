@@ -85,6 +85,9 @@ struct sjme_seekable_lockBase
  */
 typedef enum sjme_seekable_unlockAction
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_seekable_unlockAction),
+
 	/** Discard any bytes that were written. */
 	SJME_SEEKABLE_UNLOCK_ACTION_DISCARD,
 

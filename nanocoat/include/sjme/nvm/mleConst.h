@@ -10,6 +10,7 @@
 /**
  * MLE constants.
  * 
+ * @file
  * @since 2025/02/23
  */
 
@@ -71,29 +72,14 @@ typedef enum sjme_nvm_mle_builtInLocaleType
 	/** English, US. */
 	SJME_NVM_MLE_LOCALE_US_ENGLISH = 1,
 } sjme_nvm_mle_builtInLocaleType;
-	
+
+
 /**
  * The type of line ending the system uses.
  *
  * @since 2025/03/02
  */
-typedef enum sjme_nvm_mle_lineEndingType
-{
-	/** Unknown. */
-	SJME_NVM_MLE_LINE_ENDING_UNSPECIFIED = 0,
-	
-	/** LF. */
-	SJME_NVM_MLE_LINE_ENDING_LF = 1,
-	
-	/** CR. */
-	SJME_NVM_MLE_LINE_ENDING_CR = 2,
-	
-	/** CRLF. */
-	SJME_NVM_MLE_LINE_ENDING_CRLF = 3,
-		
-	/** Number of line ending types. */
-	SJME_NVM_MLE_NUM_LINE_ENDINGS = 4,
-} sjme_nvm_mle_lineEndingType;
+typedef enum sjme_nal_lineEndingType sjme_nvm_mle_lineEndingType;
 
 /**
  * The memory profiles available.
@@ -102,6 +88,9 @@ typedef enum sjme_nvm_mle_lineEndingType
  */
 typedef enum sjme_nvm_mle_memoryProfileType
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_mle_memoryProfileType),
+
 	/** Minimal memory usage. */
 	SJME_NVM_MLE_MEMORY_PROFILE_MINIMAL = -1,
 
@@ -116,6 +105,9 @@ typedef enum sjme_nvm_mle_memoryProfileType
  */
 typedef enum sjme_nvm_mle_standardPipeType
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_mle_standardPipeType),
+
 	/** Standard input. */
 	SJME_NVM_MLE_STD_PIPE_STDIN = 0,
 	
@@ -216,9 +208,12 @@ typedef enum sjme_nvm_defaultDirectoryType
 
 	/** The extra bucket directory. */
 	SJME_NVM_DEFAULT_DIRECTORY_BUCKET_EXTRA = 10,
+
+	/** The runtime library directory. */
+	SJME_NVM_DEFAULT_DIRECTORY_RUNTIME = 11,
 	
 	/** The number of default directory types. */
-	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES = 11,
+	SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES = 12,
 } sjme_nvm_defaultDirectoryType;
 
 /**
@@ -309,11 +304,11 @@ typedef enum sjme_nvm_vmDescriptionType
 	/** The extra bucket directory. */
 	SJME_NVM_VM_DESC_DEFAULT_DIR_BUCKET_EXTRA = 25,
 	
-	/** The number of default directory types. */
-	SJME_NVM_VM_DESC_DEFAULT_DIR_NUM_TYPES = 26,
+	/** Runtime library directory. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_RUNTIME = 26,
 	
-	/** Default directory reserved: 12. */
-	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_12 = 27,
+	/** The number of default directory types. */
+	SJME_NVM_VM_DESC_DEFAULT_DIR_NUM_TYPES = 27,
 	
 	/** Default directory reserved: 13. */
 	SJME_NVM_VM_DESC_DEFAULT_DIR_RESERVED_13 = 28,

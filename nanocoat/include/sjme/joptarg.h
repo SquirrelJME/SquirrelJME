@@ -55,6 +55,9 @@ typedef struct sjme_joptarg_helpParam
  */
 typedef enum sjme_joptarg_method
 {
+	/** Use integer sized enum for this. */
+	sjme_enumInt(sjme_joptarg_method),
+
 	/**
 	 * POSIX Parsing Method.
 	 * 

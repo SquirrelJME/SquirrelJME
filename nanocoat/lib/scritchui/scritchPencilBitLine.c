@@ -12,6 +12,8 @@
 #include "lib/scritchui/scritchuiTypes.h"
 #include "sjme/debug.h"
 
+#if !defined(SJME_CONFIG_DISABLE_BITLINE_LUT)
+
 #define SJME_BITLINE_SET_USE(id) \
 	SJME_TOKEN_PASTE_PP(sjme_scritchui_bitLine, id)
 
@@ -3175,3 +3177,5 @@ const sjme_scritchui_pencilBitLineFunc sjme_scritchui_pencilBitLines[256] =
 	SJME_BITLINE_SET_USE(254),
 	SJME_BITLINE_SET_USE(255),
 };
+
+#endif
