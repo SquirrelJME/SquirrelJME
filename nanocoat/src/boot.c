@@ -345,7 +345,20 @@ static sjme_errorCode sjme_nvm_initScritchUi(
 	apiInit = NULL;
 	if (sjme_error_is(error = sjme_dylib_lookup(handle, buf,
 		(sjme_pointer*)&apiInit)) || apiInit == NULL)
+	{
+		/* Some other library is here instead, or this is the wrong */
+		/* type of interface library? */
+		if (error == SJME_ERROR_INVALID_LIBRARY_SYMBOL)
+		{
+			/* Close before failing. */
+			if (sjme_error_is(error = sjme_dylib_close(handle)))
+				return sjme_error_default(error);
+			return SJME_ERROR_HEADLESS_DISPLAY;
+		}
+
+		/* Some other failure. */
 		goto fail_lookup;
+	}
 
 	/* Attempt initialization call. */
 	/* Note that we do not need to bind the event thread to anything JNI */

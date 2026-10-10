@@ -40,6 +40,9 @@ extern "C"
  */
 typedef enum sjme_dylib_extraFamily
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_dylib_extraFamily),
+
 	/** Unknown. */
 	SJME_DYLIB_EXTRA_FAMILY_UNKNOWN = 0,
 

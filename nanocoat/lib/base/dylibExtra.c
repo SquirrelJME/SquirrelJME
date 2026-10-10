@@ -113,8 +113,12 @@ static sjme_errorCode sjme_dylib_openExtraScritchAny(
 			break;
 
 		/* This is the subcomponent that would be used, if this was */
-		/* successful */
-		actualSubComponent = subComponent;
+		/* successful. Do remove the dash though. */
+		actualSubComponent = strchr(orderComponent, '-');
+		if (actualSubComponent != NULL)
+			actualSubComponent++;
+		else
+			actualSubComponent = orderComponent;
 
 		/* Determine dynamic library name. */
 		memset(tempName, 0, sizeof(tempName));
