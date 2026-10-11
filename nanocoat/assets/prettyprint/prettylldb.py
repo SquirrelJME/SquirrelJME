@@ -59,6 +59,17 @@ class LLDBValue(PrettyValue):
 	def __init__(self, debug_value: Any):
 		super().__init__(debug_value)
 
+	def address(self) -> int:
+		maybe = self.debug_value.GetAddress().GetFileAddress()
+		if maybe == 0 or maybe == -1 or maybe == 0xFFFFFFFF:
+			maybe = self.debug_value.GetAddress().GetOffset()
+		if maybe == 0 or maybe == -1 or maybe == 0xFFFFFFFF:
+			data = self.debug_value.GetData()
+			if data is not None:
+				error = lldb.SBError()
+				maybe = data.GetAddress(error, 0)
+		return maybe
+
 	def cast_to(self, other: PrettyType) -> List['PrettyValue']:
 		raise Exception("TODO")
 

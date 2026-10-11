@@ -41,6 +41,9 @@ class GDBValue(PrettyValue):
 	def __init__(self, debug_value: Any):
 		super().__init__(debug_value)
 
+	def address(self) -> int:
+		raise Exception("TODO")
+
 	def cast_to(self, other: PrettyType) -> List['PrettyValue']:
 		raise Exception("TODO")
 

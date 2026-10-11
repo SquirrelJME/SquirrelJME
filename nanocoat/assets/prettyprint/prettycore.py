@@ -54,6 +54,13 @@ class PrettyValue(abc.ABC):
 		self.debug_value = debug_value
 
 	@abc.abstractmethod
+	def address(self) -> int:
+		"""
+		Returns the object address
+		"""
+		pass
+
+	@abc.abstractmethod
 	def cast_to(self, other: PrettyType) -> List['PrettyValue']:
 		"""
 		Casts this value to another type.
@@ -175,6 +182,10 @@ def pretty_sjme_char_seq(value: PrettyValue) -> str:
 	# Some other type?
 	return "<???>"
 
+def pretty_sjme_any_object(value: PrettyValue) -> str:
+	# Unknown or invalid object?
+	return f"<OBJECT @0x{value.address():08x}?>"
+
 # ---------------------------------------------------------------------------
 
 def register_all_types(maker: PrettyMaker,
@@ -186,7 +197,23 @@ def register_all_types(maker: PrettyMaker,
 	:param register: The debug registration system.
 	"""
 	# sjme_charSeq and variants
-	register.register_string(maker.make_type("sjme_charSeq"),
-		pretty_sjme_char_seq)
-	register.register_string(maker.make_type("sjme_charSeqStatic"),
-		pretty_sjme_char_seq)
+	for object_type in list[str](["sjme_charSeq",
+		"sjme_charSeqStatic"]):
+		register.register_string(maker.make_type(object_type),
+			pretty_sjme_char_seq)
+
+	# Objects and all of their variants
+	for object_type in list[str](["sjme_jobject",
+		"sjme_jclass",
+		"sjme_jstring",
+		"sjme_jthrowable",
+		"sjme_jarray",
+		"sjme_jweak",
+		"sjme_nvm_thread"]):
+		# The base type
+		register.register_string(maker.make_type(object_type + "Base"),
+			pretty_sjme_any_object)
+
+		# The aliased pointer type
+		register.register_string(maker.make_type(object_type),
+			pretty_sjme_any_object)
