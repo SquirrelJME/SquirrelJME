@@ -44,6 +44,12 @@ class GDBValue(PrettyValue):
 	def address(self) -> int:
 		raise Exception("TODO")
 
+	def as_dereference(self) -> List['PrettyValue']:
+		raise Exception("TODO")
+
+	def as_pointer(self) -> List['PrettyValue']:
+		raise Exception("TODO")
+
 	def cast_to(self, other: PrettyType) -> List['PrettyValue']:
 		raise Exception("TODO")
 

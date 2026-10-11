@@ -61,6 +61,54 @@ class PrettyValue(abc.ABC):
 		pass
 
 	@abc.abstractmethod
+	def as_dereference(self) -> List['PrettyValue']:
+		"""
+		Returns this value dereferenced
+		"""
+		pass
+
+	@final
+	def as_dereference_if_not(self) -> List['PrettyValue']:
+		"""
+		Returns self dereferenced if this is not a non-pointer already.
+		"""
+		if not self.pretty_type().is_pointer():
+			return self
+		return self.as_dereference()
+
+	@final
+	def as_dereference_if_not_all(self) -> List['PrettyValue']:
+		"""
+		Returns self dereferenced as much as possible
+		"""
+		maybe = self
+		while maybe.pretty_type().is_pointer():
+			# Dereference
+			was = maybe
+			maybe = maybe.as_dereference()
+
+			# Unchanged? Do not want to loop forever here
+			if was == maybe:
+				return maybe
+		return maybe
+
+	@abc.abstractmethod
+	def as_pointer(self) -> List['PrettyValue']:
+		"""
+		Returns this value as a pointer
+		"""
+		pass
+
+	@final
+	def as_pointer_if_not(self) -> List['PrettyValue']:
+		"""
+		Returns self as a pointer if this is not a pointer already.
+		"""
+		if self.pretty_type().is_pointer():
+			return self
+		return self.as_pointer()
+
+	@abc.abstractmethod
 	def cast_to(self, other: PrettyType) -> List['PrettyValue']:
 		"""
 		Casts this value to another type.
@@ -112,7 +160,7 @@ class PrettyMaker(abc.ABC):
 class PrettyRegister(abc.ABC):
 	@abc.abstractmethod
 	def register_string(self, debug_type: PrettyType,
-			func: Callable[[PrettyValue], str]) -> None:
+			func: Callable[[PrettyMaker, PrettyValue], str]) -> None:
 		"""
 		Registers a type which returns a string to represent its value.
 
@@ -123,12 +171,12 @@ class PrettyRegister(abc.ABC):
 
 # ---------------------------------------------------------------------------
 
-def pretty_sjme_char_seq(value: PrettyValue) -> str:
+def pretty_sjme_char_seq(maker: PrettyMaker, value: PrettyValue) -> str:
 	# Everything is in the data member
 	data_member: PrettyValue = value.member("data")
 	type_member: PrettyValue = value.member("type")
 	if data_member is None or type_member is None:
-		return "<???>"
+		return "<A???>"
 
 	# And how this is interpreted is based on the type
 	match type_member.int_value():
@@ -148,43 +196,74 @@ def pretty_sjme_char_seq(value: PrettyValue) -> str:
 		case 3:
 			value = data_member.member("bytes")
 			if value is None:
-				return "<???>"
+				return "<3???>"
 			return value.str_value()
 
 		# Wide
 		case 4:
 			value = data_member.member("chars")
 			if value is None:
-				return "<???>"
+				return "<4???>"
 			return value.str_value()
 
 		# UTF
 		case 5:
 			value = data_member.member("bytes")
 			if value is None:
-				return "<???>"
+				return "<5???>"
 			return value.str_value()
 
 		# Static UTF
 		case 6:
 			value = data_member.member("staticUtf")
 			if value is None:
-				return "<???>"
+				return "<6???>"
 			return value.str_value()
 
 		# Static Wide
 		case 7:
 			value = data_member.member("staticWide")
 			if value is None:
-				return "<???>"
+				return "<7???>"
 			return value.str_value()
 
 	# Some other type?
-	return "<???>"
+	return "<Z???>"
 
-def pretty_sjme_any_object(value: PrettyValue) -> str:
+def pretty_sjme_any_object(maker: PrettyMaker, value: PrettyValue) -> str:
+	# If this object ends up being invalid, use an invalid string
+	invalid: str = f"<OBJECT @0x{value.address():08x}?>"
+
+	# There always is "object" if this has an object base
+	# If it does not, we can just use the base object
+	cast = value.member("object")
+	if cast is None:
+		cast = value
+		invalid += "<->"
+	else:
+		invalid += "<+>"
+
+	# Get the class this is, note that this is a non-cyclic
+	is_class = cast.member("isClass")
+	if is_class is None:
+		return invalid + "<A>"
+	is_class = is_class.member("value")
+	if is_class is None:
+		return invalid + "<B>"
+
+	# Get the name of this class
+	field_name = is_class.member("fieldName")
+	if field_name is None:
+		return invalid + "<C>"
+
+	# Get the charSeq value from this
+	char_seq = pretty_sjme_char_seq(maker,
+		field_name.as_dereference_if_not_all())
+	if char_seq is not None and char_seq != "<???>" and char_seq != "":
+		return f"OBJECT {char_seq} @0x{value.address():08x}"
+
 	# Unknown or invalid object?
-	return f"<OBJECT @0x{value.address():08x}?>"
+	return invalid + "<Z>"
 
 # ---------------------------------------------------------------------------
 

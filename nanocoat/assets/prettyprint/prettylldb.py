@@ -41,7 +41,7 @@ class LLDBRegister(PrettyRegister):
 		(lldb.debugger.GetCommandInterpreter()
 			.HandleCommand(f"type summary add "
 				f"--python-script "
-				f"\"return {func.__name__}(LLDBValue(valobj))\" "
+				f"\"return {func.__name__}(LLDBMaker(), LLDBValue(valobj))\" "
 				f"{debug_type.name()}",
 			do_not_care))
 
@@ -50,7 +50,7 @@ class LLDBType(PrettyType):
 		super().__init__(debug_type, optimal_name)
 
 	def is_pointer(self) -> bool:
-		raise Exception("TODO")
+		return self.debug_type.is_pointer
 
 	def names(self) -> list[str]:
 		raise Exception("TODO")
@@ -70,8 +70,14 @@ class LLDBValue(PrettyValue):
 				maybe = data.GetAddress(error, 0)
 		return maybe
 
+	def as_dereference(self) -> List['PrettyValue']:
+		return LLDBValue(self.debug_value.Dereference())
+
+	def as_pointer(self) -> List['PrettyValue']:
+		return LLDBValue(self.debug_value.AddressOf())
+
 	def cast_to(self, other: PrettyType) -> List['PrettyValue']:
-		raise Exception("TODO")
+		return LLDBValue(self.debug_value.Cast(other.debug_type))
 
 	def int_value(self) -> int:
 		return self.debug_value.GetValueAsSigned(0)
@@ -83,7 +89,9 @@ class LLDBValue(PrettyValue):
 		return LLDBValue(child)
 
 	def pretty_type(self) -> PrettyType:
-		raise Exception("TODO")
+		# Do set the display type name, so it is kept where possible
+		return LLDBType(self.debug_value.GetType(),
+			self.debug_value.GetDisplayTypeName())
 
 	def str_value(self) -> str:
 		# If this is a pointer, maybe we can treat this as a string
