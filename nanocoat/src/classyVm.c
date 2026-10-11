@@ -1700,6 +1700,14 @@ sjme_errorCode sjme_nvm_vmClass_isAssignableFrom(
 			&fromClasses->elements[i]))
 			return SJME_ERROR_NONE;
 
+	/* If the target is an interface, we need to check further as a direct */
+	/* class match failed. */
+	if (SJME_NVM_ACC_IS(canAssignTo->info->flags, INTERFACE))
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
 	/* Failed to find a match. */
 	return SJME_ERROR_CLASS_CAST;
 }
