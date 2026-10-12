@@ -147,6 +147,13 @@ class PrettyValue(abc.ABC):
 		"""
 		pass
 
+	@abc.abstractmethod
+	def str_wide_value(self) -> str:
+		"""
+		Returns the best-guess wide string value for this type.
+		"""
+		pass
+
 class PrettyMaker(abc.ABC):
 	@abc.abstractmethod
 	def make_type(self, type_name: str) -> PrettyType | None:
@@ -170,6 +177,10 @@ class PrettyRegister(abc.ABC):
 		pass
 
 # ---------------------------------------------------------------------------
+
+def pretty_sjme_lpcwstr(maker: PrettyMaker, value: PrettyValue) -> str:
+	# This is just a direct wide string value
+	return value.str_wide_value()
 
 def pretty_sjme_char_seq(maker: PrettyMaker, value: PrettyValue) -> str:
 	# Everything is in the data member
@@ -204,7 +215,7 @@ def pretty_sjme_char_seq(maker: PrettyMaker, value: PrettyValue) -> str:
 			value = data_member.member("chars")
 			if value is None:
 				return "<4???>"
-			return value.str_value()
+			return value.str_wide_value()
 
 		# UTF
 		case 5:
@@ -225,7 +236,7 @@ def pretty_sjme_char_seq(maker: PrettyMaker, value: PrettyValue) -> str:
 			value = data_member.member("staticWide")
 			if value is None:
 				return "<7???>"
-			return value.str_value()
+			return value.str_wide_value()
 
 	# Some other type?
 	return "<Z???>"
@@ -275,6 +286,14 @@ def register_all_types(maker: PrettyMaker,
 	:param maker: The type maker.
 	:param register: The debug registration system.
 	"""
+	# sjme_jchar* and sjme_lpcwstr
+	for object_type in list[str](["sjme_jchar*",
+		"sjme_jchar[]",
+		"sjme_jchar[*]",
+		"sjme_lpcwstr"]):
+		register.register_string(maker.make_type(object_type),
+			pretty_sjme_lpcwstr)
+
 	# sjme_charSeq and variants
 	for object_type in list[str](["sjme_charSeq",
 		"sjme_charSeqStatic"]):

@@ -42,6 +42,9 @@ extern "C" {
  */
 typedef enum sjme_nal_openMode
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nal_openMode),
+
 	/** Read. */
 	SJME_NAL_OPEN_READ = 1,
 
@@ -151,7 +154,9 @@ typedef sjme_nal_lineEndingType (*sjme_nal_lineEndingFunc)(void);
 
 /**
  * Returns the current nanosecond monotonic class as per the Java
- * method @c System::nanoTime() .
+ * method @c System::nanoTime() . Note that the resultant time should never
+ * in any situation return a value that is before any previous value, this
+ * will break all applications as they are now subject to time travel.
  * 
  * @param result The resultant time.
  * @return Any resultant error code.

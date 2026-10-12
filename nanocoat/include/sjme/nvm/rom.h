@@ -312,6 +312,12 @@ struct sjme_nvm_rom_suiteBase
 
 	/** The clutter level to use. */
 	sjme_nvm_bootClutterLevel clutterLevel;
+
+	/** Any extra data as needed. */
+	sjme_pointer extra;
+
+	/** Should extra be freed if not @code NULL @endcode? */
+	sjme_jboolean freeExtra;
 };
 
 /**
@@ -633,7 +639,26 @@ sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
 	sjme_attrInValue sjme_nvm_bootClutterLevel clutterLevel);
 
 /**
- * Returns all of the libraries which are available within this suite.
+ * Initializes a suite that wraps a single Zip file.
+ *
+ * @param pool The pool to use for allocations.
+ * @param outSuite The resultant suite.
+ * @param seekable The seekable to access the Zip through.
+ * @param suitePath The path of the suite, if this is @code NULL @endcode then
+ * this will be set to @code suiteName @endcode.
+ * @param suiteName The name of the suite.
+ * @return Any resultant error, if any.
+ * @since 2026/10/11
+ */
+sjme_errorCode sjme_nvm_rom_suiteFromZipSeekableSingle(
+	sjme_attrInNotNull sjme_alloc_pool pool,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrInNullable sjme_lpcstr suitePath,
+	sjme_attrInNotNull sjme_lpcstr suiteName);
+
+/**
+ * Returns all the libraries which are available within this suite.
  *
  * @param inSuite The input suite.
  * @param outLibs The resultant libraries.

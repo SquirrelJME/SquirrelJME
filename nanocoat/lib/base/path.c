@@ -833,6 +833,29 @@ sjme_errorCode sjme_path_default(
 	return SJME_ERROR_NONE;
 }
 
+sjme_lpcstr sjme_path_getBaseNameR(
+	sjme_attrInNotNull const sjme_path* inPath)
+{
+	sjme_jint dx, nc;
+
+	/* An invalid path? */
+	if (inPath == NULL || sjme_error_is(sjme_path_check(inPath)))
+		return NULL;
+
+	/* Name count out of bounds? */
+	nc = inPath->nameCount;
+	if (nc < 0)
+		return NULL;
+
+	/* Name is out of bounds? */
+	dx = inPath->names[nc - 1];
+	if (dx < 0 || dx > inPath->length)
+		return NULL;
+
+	/* Directly return the name. */
+	return &inPath->chars[dx];
+}
+
 sjme_errorCode sjme_path_getName(
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInNotNull const sjme_path* inPath,

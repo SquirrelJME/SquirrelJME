@@ -106,18 +106,25 @@ sjme_jint sjme_lpwcslen(sjme_lpcwstr s)
 {
 	if (s == NULL)
 		return -1;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Forward to the other handler. */
+	return sjme_lpwcsnlen(s, INT32_MAX);
 }
 	
 sjme_jint sjme_lpwcsnlen(sjme_lpcwstr s, sjme_jint n)
 {
+	sjme_jint i;
+
 	if (s == NULL || n < 0)
 		return -1;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Find the NUL terminator. */
+	for (i = 0; i < n; i++)
+		if (s[i] == '\0')
+			return i;
+
+	/* Was the end of the string. */
+	return sjme_min(i, n);
 }
 
 sjme_errorCode sjme_random_init(

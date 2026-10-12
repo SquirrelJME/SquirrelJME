@@ -899,6 +899,7 @@ static sjme_errorCode sjme_nvm_cleanup_postRomSuite(
 	sjme_list(sjme_nvm_rom_library)* libraries;
 	sjme_jint i, n;
 	sjme_nvm_rom_library library;
+	sjme_pointer extra;
 	SJME_CLEANUP_DECL;
 
 	/* Recover. */
@@ -922,6 +923,18 @@ static sjme_errorCode sjme_nvm_cleanup_postRomSuite(
 	if (suite->functions != NULL && suite->functions->close != NULL)
 		if (sjme_error_is(error = suite->functions->close(suite)))
 			return sjme_error_default(error);
+
+	/* Free the extra data? */
+	if (suite->freeExtra && suite->extra != NULL)
+	{
+		/* Clear pointer first. */
+		extra = suite->extra;
+		suite->extra = NULL;
+
+		/* De-allocate now. */
+		if (sjme_error_is(error = sjme_alloc_free(extra)))
+			return sjme_error_default(error);
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;

@@ -187,7 +187,9 @@ sjme_errorCode sjme_nvm_destroy(
 	sjme_attrOutNullable sjme_jint* exitCode);
 
 /**
- * Parses a standard command line sequence.
+ * Parses a standard command line sequence, to fill
+ * in @link sjme_nvm_bootParam @endlink with standard Java parameters such
+ * as @code -classpath @endcode or @code -Xsomething @endcode.
  * 
  * @param allocPool The pool to allocate values within.
  * @param nal The native abstraction layer to use.

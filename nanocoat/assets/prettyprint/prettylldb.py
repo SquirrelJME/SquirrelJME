@@ -131,6 +131,44 @@ class LLDBValue(PrettyValue):
 		# Could not determine any value
 		return "<???>"
 
+	def str_wide_value(self) -> str:
+		# If this is a pointer, maybe we can treat this as a string
+		# I cannot find a way to have LLDB have actual strings... so this
+		# will just have to read memory byte by byte sadly
+		sub = self.debug_value.GetType()
+		if sub.IsPointerType() or sub.IsArrayType():
+			result = "\""
+			error = lldb.SBError()
+			for i in range(0, 128):
+				child = self.debug_value.GetChildAtIndex(i, 0, True)
+				if child is not None:
+					char = child.GetData().GetUnsignedInt16(error, 0)
+					if char == 0:
+						break
+					result += chr(char)
+				else:
+					break
+
+			result += "\""
+			return result
+
+		# There can be nothing here
+		data = self.debug_value.GetData()
+		if data is not None:
+			# Try getting as a string first
+			error = lldb.SBError()
+			maybe = data.GetString(error, 0)
+			if maybe is not None and maybe != "None":
+				return maybe
+
+		# And there can also be no summary
+		summary = self.debug_value.GetSummary()
+		if summary is not None and summary != "None":
+			return summary
+
+		# Could not determine any value
+		return "<W???>"
+
 # ---------------------------------------------------------------------------
 
 # Register all base types

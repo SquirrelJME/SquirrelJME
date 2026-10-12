@@ -182,6 +182,9 @@ typedef sjme_nvm_threadBase* sjme_nvm_thread;
 /**
  * Boot parameters for NanoCoat.
  *
+ * This may be filled in with @link sjme_nvm_parseCommandLine() @endlink,
+ * however it is not required.
+ *
  * @since 2023/07/27
  */
 typedef struct sjme_nvm_bootParam sjme_nvm_bootParam;

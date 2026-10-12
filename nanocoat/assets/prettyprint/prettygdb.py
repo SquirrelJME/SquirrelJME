@@ -65,6 +65,9 @@ class GDBValue(PrettyValue):
 	def str_value(self) -> str:
 		raise Exception("TODO")
 
+	def str_wide_value(self) -> str:
+		raise Exception("TODO")
+
 # ---------------------------------------------------------------------------
 
 # Register all base types

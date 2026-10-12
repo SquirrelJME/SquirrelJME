@@ -346,6 +346,15 @@ sjme_errorCode sjme_path_default(
 	sjme_attrInNegativeOnePositive sjme_jint index);
 
 /**
+ * Directly returns the base name of the given path.
+ *
+ * @param inPath The input path to get the name of.
+ * @return The input base name, or @code NULL @endcode if invalid.
+ */
+sjme_lpcstr sjme_path_getBaseNameR(
+	sjme_attrInNotNull const sjme_path* inPath);
+
+/**
  * Gets the specific name index for the given path.
  * 
  * @param outPath The output path.
