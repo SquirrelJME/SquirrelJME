@@ -1178,4 +1178,251 @@ changes in `trunk`.
 
 ### 2025
 
+This was written _October 2026_, thus very late and almost two years later.
+
+#### January
+
+The branch `wip-nanocoatexec` was continued on, although this branch did not
+focus on all code execution aspects as intended it did put in much of the
+groundwork that is still in NanoCoat as of today (_October 2026_). There
+were some byte code implemented such as `ldc`, however much of that was limited
+as previously stated. This is also where `StringShelf` started existing which
+completely redid how strings are handled in SquirrelJME. This effectively
+just made strings just better. Naturally this was cherry-picked into `trunk`.
+
+Unrelated, `wip-calendar` got some merges from trunk to keep the branch alive
+although nothing else.
+
+Regarding `trunk`, it received a minor `ServiceLoader` improvement around
+caching along with a limiter on `System.gc()` as some titles love to call
+that method.
+
+[I also posted about SpringCoat](assets/rss/20250128_2020.mkd).
+
+#### February
+
+I did find out that `DataInputStream.readUTF()` was completely broken after
+reading single byte characters across `read()` barriers. Such barrier is hit
+when two characters are attempted to be read for a multibyte character, however
+there is no character yet available in the input stream. This is a fix to
+old code from 2018.
+
+ScritchUI got some buffer overflow fixes, which is always good. There also
+were improvements cherry-picked from `wip-cocoa`, which as of
+today (October 2026) is still around in a branch. Graphics can also be closed.
+
+A very important thing however is `wip-serialpen` which is exactly what it says
+on the tin. It serialized ScritchPencil, effectively meaning that it is now
+part of the ScritchUI event loop and drawing is inlined and correct for the
+most part. It is effectively how OpenGL and such operate, so whenever that
+happens it will be ready for it.
+
+There was also module cleanup and refactoring, I started prefixing modules
+so that SquirrelJME specific libraries that are not SquirrelJME Runtime
+specific, but can be used by anyone, are prefixed by `vendor-api-squirreljme-`.
+
+Then `wip-nanocoatexec` continued along. More instructions were implemented
+such as invoking methods and loading variables. Command line parsing started
+to get implemented. Much of the basis for the stack was implemented as well.
+Of course later on, how stacks work would be redone. The very basis for
+MLE calls also started being a thing as well.
+
+The JSON library, from before SquirrelJME even existed (!) from 2014, got
+more methods implemented along with a refactor to support base Java ME so it
+could be used internally.
+
+There were additionally a number of compiler specific checks and fixes for
+all the various environment configurations. Along with the very primitive
+basis for CMake patching.
+
+#### March
+
+Some related test fixes and organization, mostly brought about by SpringCoat.
+
+More work on `wip-nanocoatexec`. The foundation of what became character
+sequences and strings was started here, after a large refactor. This was
+because character sequences were just a huge mess. It is now subtype based
+and is able to be expanded further for new formats and otherwise. Although,
+as of today (October 2026) that is not so likely.
+
+Surprisingly, Cocoa got a minor amount of work and fixes. I do really need
+to get more work on that in and do get that done and merged for macOS support.
+
+Whatever I had in `wip-calendar` got merged into `trunk`, I deemed it good
+enough.
+
+This is also around the time where ProGuard was giving me issues, which is
+not something I would solve until much, _much_, later.
+
+For CI/CD builds, I made a Universal Standalone Jar.
+
+[Also said this](assets/rss/20250330_0400.mkd).
+
+#### April
+
+Naturally, `wip-nanocoatexec`. I added GDB renderers. Ironically, I just
+recently (October 2026) reworked these for LLDB and need to go back to get them
+working again for GDB. Otherwise, NanoCoat got some more instructions
+implemented such as array and stack operations. Later on, object allocation
+appeared. Due to the divergence of this branch, there was a major
+cherry-picking into trunk.
+
+Locks and atomics all became aligned.
+
+DoJa obtained a new compatibility checker since there have been breaking
+changes between the various DoJa versions, especially with transparency and
+how events are handled. This is also used to make older DoJa titles just
+run better overall. MIDP also got this treatment as well, as it handles
+background transparency slightly differently between versions. 
+
+CircleCI was also starting to annoy me here as well as they slowly started
+their dive into AI.
+
+Then suddenly, MEEP RMS 2.0 for SquirrelJME which effectively overhauled how
+records worked along with `BucketShelf` being added for arbitrary data bits
+and otherwise. [This format](assets/doc/specification-squirreljme-rms.mkd)
+would eventually also be later adopted by FreeJ2ME-Plus. Otherwise, this
+was a much better and nicer way of storing records and was very reliable. It
+also helped that the JSON library was improved previously. This also
+facilitated fixes for DoJa scratchpads by allowing broken titles to do
+broken things to them, such as reading out of bounds.
+
+Randomly, an AntiMicroX configuration appeared at the request of someone.
+
+ScritchUI got some improvements. It can clip now, along with Windows not having
+the hourglass cursor everywhere.
+
+The launcher got a single menu option to open the library directory as there
+was a complaint that finding the directory was difficult.
+
+#### May
+
+This is when the Keitai Wiki Music implementation was donated to SquirrelJME.
+A very huge thank you to _Guy Perfect_, who worked on this with my input on
+getting this working well. Once ready, this got merged into SquirrelJME. This
+was followed by a cleanup and a refactor as I said I would do as such. It was
+not a full cleanup/refactor, but it was quite a bump from the initial code.
+
+ScritchAudio and much of its supporting code was implemented as well.
+
+Native math acceleration in `MathAccelShelf` was added to facilitate the newly
+donated library.
+
+`Canvas` now understands the number pad keys. There also is an option for
+having a calculator layout, or not, so that it can be mapped to a dial pad
+which uses an upside-down layout.
+
+I did add some Install4J installers for Standalone, mostly for convenience.
+Once NanoCoat is done I will need to determine if these can be recycled or
+not, I do hope they can.
+
+The following quote has also happened:
+
+> This format would eventually also be later adopted by FreeJ2ME-Plus.
+
+#### June
+
+_AI contributions in SquirrelJME were officially banned this month, joy!_
+
+Importing of the donated Keitai Wiki Music library along with ScritchAudio
+continues. WinMM support was added, along with OSS. This did actually get
+merged in though after the first week of the month! Naturally, a bug in
+SpringCoat was found where `dcmpg` was popping floats instead of doubles, this
+was fixed.
+
+Randomly as well, Eclipse Adoptium removed response file support. So a check
+actually had to be added in to see if the JVM supports them. I am assuming this
+was done for security reasons.
+
+I added Visual C++ 8 support, for no reason. This also means the addition of
+the `sjme_sm()` macro, although this is needed for C89 anyway.
+
+For `wip-nanocoatexec`, I did more cherry-picking and much more of it as well.
+Bytecodes got a gigantic LUT for execution for both slow and fast bytecodes.
+Fast bytecodes are anything that could be optimized.
+
+DoJa saw some minor improvements such as single pixel drawing and more
+edge cases of deliberate scratchpad overflows. There were however major
+improvements to `AudioPresenter` and related classes as those are very
+version specific and they work in an extremely specific way.
+
+_As a note I am rather sleepy looking at 2025/06/15, I will return to this_
+_at a later date. Hopefully tomorrow._
+
 ...
+
+#### July
+
+...
+
+#### August
+
+...
+
+#### September
+
+...
+
+#### October
+
+...
+
+#### November
+
+...
+
+#### December
+
+...
+
+### 2026
+
+...
+
+### January
+
+...
+
+### February
+
+...
+
+### March
+
+...
+
+### April
+
+...
+
+### May
+
+...
+
+### June
+
+...
+
+### July
+
+...
+
+### August
+
+...
+
+### September
+
+...
+
+### October
+
+...
+
+### November
+
+... IN THE FUTURE AS OF OCTOBER 2026 ...
+
+### December
+
+... IN THE FUTURE AS OF OCTOBER 2026 ...
