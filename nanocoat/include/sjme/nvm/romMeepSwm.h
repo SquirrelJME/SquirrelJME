@@ -45,25 +45,28 @@ extern "C"
  */
 typedef enum sjme_nvm_rom_swmDependencyType
 {
+	/** This is an integer based enum. */
+	sjme_enumInt(sjme_nvm_rom_swmDependencyType),
+
 	/** Unknown. */
 	SJME_NVM_SWM_DEPENDENCY_UNKNOWN,
 
-	/** A CLDC Configuration. */
+	/** A @link sjme_nvm_swmInfoNameVersion @endlink. */
 	SJME_NVM_SWM_DEPENDENCY_CONFIGURATION,
 
-	/** An internal SquirrelJME name. */
+	/** A @link sjme_nvm_swmInfoNameOnly @endlink */
 	SJME_NVM_SWM_DEPENDENCY_INTERNAL_NAME,
 
-	/** A Profile. */
+	/** A @link sjme_nvm_swmInfoNameVersion @endlink. */
 	SJME_NVM_SWM_DEPENDENCY_PROFILE,
 
-	/** A standard. */
+	/** A @link sjme_nvm_swmInfoAll @endlink. */
 	SJME_NVM_SWM_DEPENDENCY_STANDARD,
 
-	/** A specific suite. */
+	/** A @link sjme_nvm_swmInfoAll @endlink. */
 	SJME_NVM_SWM_DEPENDENCY_SUITE,
 
-	/** A typed suite, either to a MIDlet, LIBlet, or API. */
+	/** A @link sjme_nvm_swmInfoTypedAll @endlink. */
 	SJME_NVM_SWM_DEPENDENCY_TYPED_SUITE,
 
 	/** The number of dependency types. */
@@ -78,6 +81,9 @@ typedef enum sjme_nvm_rom_swmDependencyType
  */
 typedef enum sjme_nvm_rom_swmEntryUse
 {
+	/** This is an integer based enum. */
+	sjme_enumInt(sjme_nvm_rom_swmEntryUse),
+
 	/** Unknown usage. */
 	SJME_NVM_SWM_USE_UNKNOWN,
 
@@ -95,6 +101,32 @@ typedef enum sjme_nvm_rom_swmEntryUse
 } sjme_nvm_rom_swmEntryUse;
 
 /**
+ * The type of suite this is.
+ *
+ * @since 2026/10/11
+ */
+typedef enum sjme_nvm_swmSuiteType
+{
+	/** This is an integer based enum. */
+	sjme_enumInt(sjme_nvm_swmSuiteType),
+
+	/** Unknown. */
+	SJME_NVM_SWM_SUITE_UNKNOWN,
+
+	/** MIDlet. */
+	SJME_NVM_SWM_SUITE_MIDLET,
+
+	/** LIBlet. */
+	SJME_NVM_SWM_SUITE_LIBLET,
+
+	/** SquirrelJME API. */
+	SJME_NVM_SWM_SUITE_SQUIRRELJME_API,
+
+	/** The number of suite types. */
+	SJME_NVM_NUM_SWM_SUITE_TYPES,
+} sjme_nvm_swmSuiteType;
+
+/**
  * Stores the base dependency information.
  *
  * @since 2026/06/18
@@ -109,6 +141,105 @@ typedef struct sjme_nvm_rom_swmEntryTag
 } sjme_nvm_rom_swmEntryTag;
 
 /**
+ * A simplified SWM version, from @code 0.0.0 @endcode
+ * to @code 99.99.99 @endcode.
+ *
+ * @since 2026/10/11
+ */
+typedef struct sjme_nvm_swmVersion
+{
+	/** The major version. */
+	sjme_jubyte major;
+
+	/** The minor version. */
+	sjme_jubyte minor;
+
+	/** The minor version. */
+	sjme_jubyte release;
+} sjme_nvm_swmVersion;
+
+/**
+ * Stores an internal name dependency or a provider, this name is specific only
+ * to SquirrelJME and should not be used elsewhere. Generally, this is used
+ * internally to speed up dependency resolution in the internal suites despite
+ * it technically not being needed.
+ *
+ * @since 2026/10/11
+ */
+typedef struct sjme_nvm_swmInfoNameOnly
+{
+	/** The base dependency info. */
+	sjme_nvm_rom_swmEntryTag tag;
+
+	/** The name of the suite. */
+	sjme_jchar name[SJME_MAX_FILE_NAME];
+} sjme_nvm_swmInfoNameOnly;
+
+/**
+ * Stores a name and a version, this is generally used for CLDC configurations
+ * and profiles.
+ *
+ * @since 2026/10/11
+ */
+typedef struct sjme_nvm_swmInfoNameVersion
+{
+	/** The base dependency info. */
+	sjme_nvm_rom_swmEntryTag tag;
+
+	/** The referred to name. */
+	sjme_jchar name[SJME_MAX_FILE_NAME];
+
+	/** The version. */
+	sjme_nvm_swmVersion version;
+} sjme_nvm_swmInfoNameVersion;
+
+/**
+ * Stores a name, a vendor, and a version, this is generally used for actual
+ * suite references and standards.
+ *
+ * @since 2026/10/11
+ */
+typedef struct sjme_nvm_swmInfoAll
+{
+	/** The base dependency info. */
+	sjme_nvm_rom_swmEntryTag tag;
+
+	/** The referred to vendor. */
+	sjme_jchar vendor[SJME_MAX_FILE_NAME];
+
+	/** The version. */
+	sjme_nvm_swmVersion version;
+
+	/** The referred to name. */
+	sjme_jchar name[SJME_MAX_FILE_NAME];
+} sjme_nvm_swmInfoAll;
+
+/**
+ * Stores a target type, a name, a vendor, and a version, this is generally
+ * used to refer to specific suites. Specific suites such as MIDlets, LIBlets,
+ * or APIs.
+ *
+ * @since 2026/10/11
+ */
+typedef struct sjme_nvm_swmInfoTypedAll
+{
+	/** The base dependency info. */
+	sjme_nvm_rom_swmEntryTag tag;
+
+	/** The referred to vendor. */
+	sjme_jchar vendor[SJME_MAX_FILE_NAME];
+
+	/** The version. */
+	sjme_nvm_swmVersion version;
+
+	/** The referred to name. */
+	sjme_jchar name[SJME_MAX_FILE_NAME];
+
+	/** The suite type. */
+	sjme_nvm_swmSuiteType suiteType;
+} sjme_nvm_swmInfoTypedAll;
+
+/**
  * Combined SWM dependency information.
  *
  * @since 2026/06/18
@@ -119,6 +250,24 @@ union sjme_nvm_rom_swmEntryBase
 {
 	/** The base dependency info. */
 	sjme_nvm_rom_swmEntryTag tag;
+
+	/** A CLDC Configuration. */
+	sjme_nvm_swmInfoNameVersion configuration;
+
+	/** The internal suite name. */
+	sjme_nvm_swmInfoNameOnly internalName;
+
+	/** A CLDC Profile. */
+	sjme_nvm_swmInfoNameVersion profile;
+
+	/** A standard. */
+	sjme_nvm_swmInfoAll standard;
+
+	/** A suite. */
+	sjme_nvm_swmInfoAll suite;
+
+	/** A typed suite. */
+	sjme_nvm_swmInfoTypedAll typedSuite;
 };
 
 /** A list of @link sjme_nvm_rom_swmEntry @endlink. */
