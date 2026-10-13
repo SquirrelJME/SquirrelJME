@@ -23,6 +23,10 @@ class GDBRegister(PrettyRegister):
 	def __init__(self):
 		super().__init__()
 
+	def register_list(self, debug_type: PrettyType,
+			func: Callable[[PrettyMaker, PrettyValue], PrettyList]) -> None:
+		raise Exception("TODO")
+
 	def register_string(self, debug_type: PrettyType,
 			func: Callable[[PrettyValue], str]) -> None:
 		raise Exception("TODO")
@@ -51,6 +55,12 @@ class GDBValue(PrettyValue):
 		raise Exception("TODO")
 
 	def cast_to(self, other: PrettyType) -> List['PrettyValue']:
+		raise Exception("TODO")
+
+	def index(self, index: int) -> List['PrettyValue'] | None:
+		raise Exception("TODO")
+
+	def index_unsafe(self, index: int) -> List['PrettyValue'] | None:
 		raise Exception("TODO")
 
 	def int_value(self) -> int:

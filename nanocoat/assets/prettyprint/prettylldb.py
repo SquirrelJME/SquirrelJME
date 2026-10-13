@@ -30,6 +30,11 @@ class LLDBRegister(PrettyRegister):
 	def __init__(self):
 		super().__init__()
 
+	def register_list(self, debug_type: PrettyType,
+			func: Callable[[PrettyMaker, PrettyValue], PrettyList]) -> None:
+		#raise Exception("TODO")
+		pass
+
 	def register_string(self, debug_type: PrettyType,
 			func: Callable[[PrettyValue], str]) -> None:
 		# lldb uses commands to do this as follows:
@@ -78,6 +83,18 @@ class LLDBValue(PrettyValue):
 
 	def cast_to(self, other: PrettyType) -> List['PrettyValue']:
 		return LLDBValue(self.debug_value.Cast(other.debug_type))
+
+	def index(self, index: int) -> List['PrettyValue'] | None:
+		child = self.debug_value.GetChildAtIndex(index)
+		if child is None:
+			return None
+		return LLDBValue(child)
+
+	def index_unsafe(self, index: int) -> List['PrettyValue'] | None:
+		child = self.debug_value.GetChildAtIndex(index, 0, True)
+		if child is None:
+			return None
+		return LLDBValue(child)
 
 	def int_value(self) -> int:
 		return self.debug_value.GetValueAsSigned(0)

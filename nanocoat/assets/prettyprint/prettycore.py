@@ -118,6 +118,24 @@ class PrettyValue(abc.ABC):
 		pass
 
 	@abc.abstractmethod
+	def index(self, index: int) -> List['PrettyValue'] | None:
+		"""
+		Returns the index of a sub-member.
+
+		:param index: The member index to get.
+		"""
+		pass
+
+	@abc.abstractmethod
+	def index_unsafe(self, index: int) -> List['PrettyValue'] | None:
+		"""
+		Returns the index of a sub-member, using an unsafe method.
+
+		:param index: The member index to get.
+		"""
+		pass
+
+	@abc.abstractmethod
 	def int_value(self) -> int:
 		"""
 		Returns the best-guess integer value for this type.
@@ -154,6 +172,27 @@ class PrettyValue(abc.ABC):
 		"""
 		pass
 
+class PrettyList(abc.ABC):
+	def __init__(self, maker: List['PrettyMaker'], value: PrettyValue):
+		self.maker = maker
+		self.value = value
+
+	@abc.abstractmethod
+	def list_length(self) -> int:
+		"""
+		Returns the length of the list.
+		"""
+		pass
+
+	@abc.abstractmethod
+	def list_index(self, index: int) -> PrettyValue | None:
+		"""
+		Returns the value of a given index.
+
+		:param index: The index to get the value of.
+		"""
+		pass
+
 class PrettyMaker(abc.ABC):
 	@abc.abstractmethod
 	def make_type(self, type_name: str) -> PrettyType | None:
@@ -165,6 +204,17 @@ class PrettyMaker(abc.ABC):
 		pass
 
 class PrettyRegister(abc.ABC):
+	@abs.abstractmethod
+	def register_list(self, debug_type: PrettyType,
+		func: Callable[[PrettyMaker, PrettyValue], PrettyList]) -> None:
+		"""
+		Registers a type which returns a list to represent its value.
+
+		:param debug_type: The type to register.
+		:param func: The function to be called.
+		"""
+		pass
+
 	@abc.abstractmethod
 	def register_string(self, debug_type: PrettyType,
 			func: Callable[[PrettyMaker, PrettyValue], str]) -> None:
@@ -276,6 +326,26 @@ def pretty_sjme_any_object(maker: PrettyMaker, value: PrettyValue) -> str:
 	# Unknown or invalid object?
 	return invalid + "<Z>"
 
+class AdapterList(PrettyList):
+	def __init__(self, maker: List['PrettyMaker'], value: PrettyValue):
+		super().__init__(maker, value)
+
+	def list_length(self) -> int:
+		len: PrettyValue = self.value.member("length")
+		if len is None:
+			return 0
+		return len.int_value()
+
+	def list_index(self, index: int) -> PrettyValue | None:
+		elements: PrettyValue = self.value.member("elements")
+		if elements is None:
+			return None
+		return elements.index(index)
+
+def pretty_sjme_any_sjme_list(maker: PrettyMaker,
+		value: PrettyValue) -> PrettyList:
+	return AdapterList(maker, value)
+
 # ---------------------------------------------------------------------------
 
 def register_all_types(maker: PrettyMaker,
@@ -315,3 +385,48 @@ def register_all_types(maker: PrettyMaker,
 		# The aliased pointer type
 		register.register_string(maker.make_type(object_type),
 			pretty_sjme_any_object)
+
+	# Every list type, and what is currently known
+	register.register_list(maker.make_type("sjme_list"),
+		pretty_sjme_any_sjme_list)
+	register.register_list(maker.make_type("sjme_list_*"),
+		pretty_sjme_any_sjme_list)
+	for object_type in list[str](["sjme_intPointer",
+		"sjme_jbracketJarPackage",
+		"sjme_jclass",
+		"sjme_jfieldID",
+		"sjme_jint",
+		"sjme_jinterfaceID",
+		"sjme_jintPP",
+		"sjme_jmethodID",
+		"sjme_jstring",
+		"sjme_lpcstr",
+		"sjme_lpstr",
+		"sjme_nvm_class_annotation",
+		"sjme_nvm_class_exceptionHandler",
+		"sjme_nvm_class_fieldInfo",
+		"sjme_nvm_class_info",
+		"sjme_nvm_class_methodInfo",
+		"sjme_nvm_class_poolEntry",
+		"sjme_nvm_frame",
+		"sjme_nvm_rom_library",
+		"sjme_nvm_rom_swmEntry",
+		"sjme_nvm_rom_swmLibrary",
+		"sjme_nvm_stringPool_string",
+		"sjme_nvm_task",
+		"sjme_nvm_thread",
+		"sjme_pointer",
+		"sjme_scritchaudio_connection",
+		"sjme_scritchaudio_midiPort",
+		"sjme_scritchaudio_source",
+		"sjme_scritchui_pencilFont",
+		"sjme_scritchui_uiChoiceItem",
+		"sjme_scritchui_uiComponent",
+		"sjme_scritchui_uiMenuKind",
+		"sjme_scritchui_uiScreen"]):
+		register.register_list(
+			maker.make_type("sjme_list_" + object_type),
+			pretty_sjme_any_sjme_list)
+		register.register_list(
+			maker.make_type("sjme_list_" + object_type + "*"),
+			pretty_sjme_any_sjme_list)
