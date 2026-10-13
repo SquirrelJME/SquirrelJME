@@ -1349,75 +1349,721 @@ version specific and they work in an extremely specific way.
 _As a note I am rather sleepy looking at 2025/06/15, I will return to this_
 _at a later date. Hopefully tomorrow._
 
-...
+_And I return, not sleepy but tired._
+
+Continuing, NanoCoat received much more work. Virtually all of it was
+foundational for it. Monitor entering and exiting, static field initialization,
+reference queues, MLE improvements, instance field access, temporary character
+sequences, invalid bytecode checking, more MLE implementations, `lookupswitch`,
+`tableswitch`, value conversion bytecodes, identity hashcode, math functions,
+virtual method re-lookup to invoke the correct method, basis for JVM and JNI
+compatibility layers, stack bytecodes, POSIX signal catchers when debugging,
+trace points, stack dumps, thread scheduling, exception handling, float and
+double comparison, `multianewarray`, and atomic improvements.
+
+On the otherwise, `WeakReference` was refactored to be simpler and to remove
+an issue that has been around for a very long time where it would just get
+stuck in a loop checking itself. Also, `ObjectShelf.arrayClone()` was added
+which effectively makes array cloning faster. RMS was additionally 100%
+implemented, making it the first to reach such.
 
 #### July
 
-...
+This is where I decided that `wip-nanocoatexec` was good enough with its large
+set of changes and base implementation that I wanted to get it merged in
+so it did not become this gigantic branch. I also wanted to work on other
+branches without them having to wait, in essence I was being driven sane. Thus,
+the merging to `trunk` happened.
+
+There were a number of general optimizations, build fixes, and refactors.
+
+Dependabot was officially nuked, it was annoying and rather useless for
+SquirrelJME anyway.
+
+The type system was unified, thus removing `TypeBracket` and only having
+`Class`. The appropriate `ObjectShelf` methods were used in places where manual
+array operations were being performed. Terminal pipes received a number of
+corrections.
+
+Standalone and NanoCoat ROMs have been semi-unified. NanoCoat can use any
+Standalone ROM that includes SpringCoat and such.
+
+In NanoCoat, string comparison stopped checking a string against itself along
+with the wrong length being returned for non-intern strings. A simpler abort
+handler was added, garbage collection improvements, the basis for walking
+and core dumps. The walking code effectively is serialization of SquirrelJME's
+state, although it does need a major refactor as of today (October 2026).
+More option parsing was implemented. 
+
+In SpringCoat, `TerminalShelf.available()` was implemented, which is very
+nice to have.
+
+`TypeShelf.inJar()` was added to locate which specific Jar a `Class` resides
+in. This is mostly just used for determining if a given class is a SquirrelJME
+provided classes or not, also if it is in `cldc-compact`.
+
+A branch `wip-stackcache` was made for stack caching, however that would
+later be abandoned.
 
 #### August
 
-...
+Virtually and almost nothing happened this month.
+
+The `wip-stackcache` branch was abandoned.
+
+I made the `wip-concourse` branch which was my idea into switching CI/CD
+systems from CircleCI as it was getting more and more broken due to it
+embracing AI. Nothing was done in this branch.
+
+At the very end of the month, Cocoa got a merge in from `trunk` so that it
+would be updated. There were some fixes to menu bars, as there is the primary
+main menu bar at the top of the screen and application specific menu bars.
 
 #### September
 
-...
+Cocoa saw some additional fixes in its branch, but I only had worked on it
+for a few days at the start of the month.
+
+I created the `wip-running` branch (_As a note in October 2026, I just_
+_actually went "Oh..." as I realized this branch has been alive for an_
+_entire year... Well then. I should actually finish what I am working on_
+_and splice at this point, just merging things in_).
+
+NanoCoat received more bytecode implementations, constructor initialization,
+more GC fixes, basis for JDWP entry points, debug messages, NanoTests and
+their templates, and finally verbosity macros.
 
 #### October
 
-...
+NanoCoat received allocation pool fixes and optimizations, improved atomic
+operations, thread refactors, closeables, more walking implementation, GC
+fixes because of walking, phantom atomics because of walking, attempts at
+Doxygen, JNI header selection, super class counting, allocation pool dumping,
+code walking, fixes for main argument counting, non-cyclic atomics because
+of walking, logical error fixes, and more GC fixes.
+
+Otherwise, Ratchet and Clank 2 was fixed and there was a Nokia display size
+fix with scaling. The ability to get `String` characters with the new system
+was implemented as well.
 
 #### November
 
-...
+FlatPak support was dropped, because their build system setup to make the
+actual FlatPaks is very horrible.
+
+NanoCoat received class loader GC fixes, a major string pool refactor which
+fixed many issues, `isClasses` refactors, freeing static field storage,
+refactors to NAL, and more GC fixes.
+
+In the second half of the month:
+
+At this time, the CI/CD pipelines on CircleCI were completely falling apart
+and there was not much I could do to fix them. My goal with this was to have
+an independent build system that could build the entirety of SquirrelJME and
+run on any system or setup. Rather than duplicating the rules to every build
+system, I just have an outer build system which is called by a pipeline. This
+is so I can have whatever setup I want. There were also a bunch of compilation
+fixes as now everything was being built. I wrote a system and compiler
+identification system, which works well to this day (October 2026).
+Additionally, ProGuard loves memory, so it can retry again if it runs out.
+The build pipeline is also able to call Fossil and upload/download as needed
+for any natives. It can also generate source archives. Also, CMake's `FindJNI`
+can be very broken so that got a check to make sure it was not. The installers
+received the ability to be built if _Install4J_ was installed. There were
+also some random MIDP 2/3 fixes as well in this branch, along with 
+`ProxyGraphics` for wrapping another graphics context.
+
+Then all of this was merged in on the 26th!
+
+C23 `enum` packing stopped being used.
+
+A large cherry-pick from `wip-running`, using the description would probably
+be best here:
+
+> Cherry pick the non-NanoCoat related changes from wip-running: Doxygen 
+> generation; check for sys/socket.h; short forms for sjme_list and
+> sjme_atomic; NT define mix around; Phantom atomic type; Split off of atomic
+> implementations; An emit to console that does not go away in release mode;
+> Refactoring of NAL functions in a more vendor/platform-split way, and also
+> allow for more easier fallback in the event of not-implemented; Correct
+> VERSION macros; Correct Doxygen tag usage; Base for blank TCP/UDP stream;
+> Allocation system is more atomic, along with an edge of memory fix where it
+> would give a block past valid memory; Improved weak reference handling,
+> performing more validity checks and tends to work better; Makes closeables
+> not refCounting enabled, they are always ref counted via weak; Deletion of
+> character sequences; Correct reference counting in some base classes (due to
+> GC correctness work); Add sjme_thread_wake(), which might not always work;
+> Various seekable fixes around cleanup; Use instrinsic for popcount, if
+> available; Correct counting in ZIPs (from GC correctness work).
+
+Differences between DoJa and MIDP were documented.
+
+Display scaling had additional fallbacks added. Fonts could get their character
+width determined.
+
+A short-lived branch called `wip-pfscan` was made to generally pixel formats
+and scans. This was mostly so _AShiningRay_ could work on some graphics related
+code, of which I did not want everything done only in RGBA. The PF system
+allows any pixel format to be used in an agnostic way. It was done in a day.
+GTK2's colors also were fixed once the correct color mechanisms were put in
+place. (_As of October 2026, I am very happy with the PF scan system_).
+
+NanoCoat additionally received more fixes, and a large number of tests
+totalling 359 for every bytecode and their variant, and a threading refactor. 
+
+Install4J got SquirrelJME's icons.
+
+_AShiningRay_ contributed an implementation of ScritchPencil `copyArea()`.
 
 #### December
 
-...
+NanoCoat received a TCP/UDP reorganization.
+
+_AShiningRay_ contributed transformation fixes, also had this to say:
+
+> Previously those were broken due to certain transforms not being processed at
+> all, or under the assumption they'd reach the same result as another (was
+> seemingly the case for ROT_180 and TRANS_MIRROR_ROT180). Furthermore, after
+> those transforms were processed, even if the matrix transforms themselves
+> were correct, the end result would still be incorrect on screen due to the
+> source/destination positions and sizes not being updated to reflect the
+> transformed data. This commit fixes that, all transforms seem to be done
+> properly now, in all cases known, passing the internal image tests as well as
+> games such as CastleVania: Dawn of Sorrow (K800i version) and Sonic 2 Crash
+> (also for K800i), both of which, together, use all the available transforms
+> with a myriad of clipping and image width/heights. Do note that Sonic 2 Crash
+> will not yet boot at the current tree state due to SquirrelJME missing Nokia
+> DirectGraphics' implementations as well as fillArc and fillRoundRect, those
+> will be coming soon.
+
+The contributing guide was updated.
+
+I started the base for the `wip-tk` branch, although I probably should finish
+the Cocoa branch first.
+
+I had an idea for an RSS triggered pipeline build, but that would involve
+more work and a simple cron job would do for now. So I decided against that.
+
+_AShiningRay_ contributed graphics primitives and had this to say:
+
+> This commit implements the following methods in Software: - drawArc - 
+> drawRoundRect - fillArc - fillRoundRect - fillTriangle - fillPolygon (will be
+> used by DirectGraphics and DoJa) - drawTriangle - drawPolyline Thus making
+> SquirrelJME's graphics subsystem a lot more robust and removing many cases
+> where it would previously fail with a TODO call. Fixes games such as Sonic 2
+> (won't boot without the staged DirectGraphics work), Landers, Bounce Tales
+> (also needs DirectGraphics), among others. Furthermore, new corePrim_ methods
+> were added for those, and fill/drawRect as well, in order to facilitate
+> Hardware implementations for them when the time comes.
+
+Palette transformation is now always performed for indexed colors, this is
+because if two paletted images use a different palette they would draw or
+reference the incorrect color.
+
+`meep-cellular` saw stubs being added.
+
+A bunch of native POSIX fixes happened, such as support for TCP/UDP
+address family fallback (`AI_PASSIVE`/`AI_ALL`), network polling is also now
+possible due to `FIONREAD` assuming it is available to begin with. 
+
+Modules and applications were renamed to fit the new, and more organized,
+naming scheme.
+
+I did start a blank base for a ScritchUI Demo in NanoCoat, _still unfinished_
+_as of October 2026_.
+
+Path handling in SquirrelJME was completely refactored and made completely
+system independent. The end result is that any path can be used on any system
+which is very flexible. _This is something I am very happy with as of today_.
+This was merged later in the same month.
+
+_AShiningRay_ implemented random Nokia APIs for odd color formats with some
+polygon fixes. Not much was said other than the obvious.
+
+Official OSS headers were included from BSD, if the system does not have them.
+This was mostly due to _AShiningRay_ not having the proper OSS headers from
+Arch. This fixed things, somewhat.
+
+DoJa and Star applications starting working properly with certain properties
+as they actually got them from the appropriate location.
+
+_AShiningRay_ added support for Nokia `DirectGraphics` and had this to say:
+
+> Implement Nokia's DirectGraphics and add methods to read from screen 
+> SquirrelJME now supports Nokia DirectGraphics and screen reading!
+> DirectGraphics wasn't implemented yet, and is used by quite a few J2ME
+> applications, even those not actually meant to run on Nokia devices, like
+> some Sony Ericsson ones. This commit solves that and also adds some new
+> methods for reading and drawing to the screen from any supported pixel
+> format: - drawRegion() - getRegion() Both of which are now available to the
+> Java side. Also, it is now possible to access the native pixel format of the
+> pencil from Java, as it is required by DirectGraphics. Some reworks were done
+> to SquirrelJME's base Graphics stack as well, such as the addition of an
+> 'ExtraGraphics' interface, to be extended with more vendor-specific
+> operations in the future.
+
+_Despite the comment, due to how SquirrelJME is designed as a whole there have_
+_been no vendor-specific operations added to `ExtraGraphics`. They have_
+_never been needed._
+
+Since polygons were now supported, I updated DoJa to draw said polygons along
+with some general graphics refactors.
+
+A branch `fun-lexinspace` was started, this is a demo game that I have an
+idea of making. A kind of cross between _No Man's Sky_, _Starbound_, and
+_Terraria_.
+
+All the blending modes were implemented along with means to add more, despite
+nothing actually needing them in any way.
+
+Proper HiDPI and scaling support was added to SquirrelJME, although a chunk
+of this code was from the Cocoa branch which requires it.
+
+At the very end of the month I started a refactor of MIDI playback with the
+help of my wonderful wife who I love very much.
+
+But before the year was over on the final hour of the final day of the year,
+_AShiningRay_ sent a patch to implement the Nokia Sound API and a bunch of 
+playback surrounding it. He had this to say:
+
+> media-api: Improvements to deallocate and close methods. Close must be a
+> no-op if the player in question is already closed, and deallocate() should
+> throw an IllegalStateException if the player is closed, while resolving to a
+> no-op if it's either REALIZED or UNREALIZED... and it also shouldn't be
+> setting the player to the CLOSED state like it was doing before, instead, it
+> must go into either REALIZED or UNREALIZED. Rather than copying all these
+> checks into all players extending AbstractPlayer, deallocate() is now
+> implemented in AbstractPlayer itself, while extending players must override a
+> new becomingDeallocated method to manage internal deallocations.
+> ...
+> Implement Nokia Sound API. This commit implements Nokia Sound with OTA
+> Ringtone decoder! The player was built so as to reuse as many bits of MIDP as
+> possible, since Nokia Sound will also make use of the future WAV Player that
+> is part of the standard set of MIDP Media Players.
+> ...
+> media-api: Bring in WAV support! A vast chunk of J2ME applications use WAV
+> for all sorts of effects, so this commit implements not only base PCM WAV,
+> but also brings decoders for IMA ADPCM and G.711 (u-Law and A-Law). GSM 06.10
+> (Full Rate), GSM 06.60 (Enhanced Full Rate) as well as the AMR (Adaptive
+> Multi-Rate) family of codecs should also be supported down the line, since
+> they are also used by applications, AMR being especially common on Nokia
+> apps... however, decoding them is far more complex and taxing on the device
+> as well, making their implementations better suited to reside in native code.
+> As such, those are left for a later date.
+
+Happy just before the New Year!
 
 ### 2026
 
-...
+Happy New Year!
 
 ### January
 
-...
+I added a route and completion tracker to show progress within the repository
+in more meaningful terms.
+
+ScritchUI received `transferRegion()` to replace `copyArea()`. Luckily this
+is PF agnostic, which means it can translate between formats.
+
+The sound and MIDI refactor was finished early and I had this to say:
+
+> Merge in sound refactoring, yay! This adds a media player, which will be very
+> helpful! There is the ability to play media files, including files in DoJa
+> scratchpads via a linear scan method to find any MLDs which happen to exist
+> (not perfect but good enough); With the help of my wonderful wife, MIDI is no
+> longer broken and timings are now accurate, along with almost all MIDIs being
+> able to play now unlike before; URIs have been added and connections use the
+> new URI framework to be more conforming and standard, DoJa Scratchpads can
+> now come in different formats because URIs are now smarter than before;
+> Additionally, there have been pseudo-file: URI implementations to access the
+> libraries that SquirrelJME knows about so you can play media from any
+> library; ScritchAudio has been refactored greatly, the loop handling is
+> reversed so that polled audio is called directly instead of going through the
+> software mixer loop handler; Software mixing will only perform mixing when
+> the audio format is different and/or there are more than one attached
+> renderers; AbstractPlayer has an additional becomingPrimed() and
+> becomingSolvent() so that any audio streams can be created and kept around
+> longer rather than constantly creating and disconnecting streams, which
+> should reduce sound card popping; ObjectShelf.arrayCopy() for SpringCoat now
+> emits MLECallError correctly; Audio streams now expose a default rate and
+> longer are implicitly created on initialization; Add EnumerationToIterator
+> for the reverse operation, needed for FileConnection; Refactor MIME type
+> detection and add more types; General Connection refactoring; Differentiate
+> fast forward and set time, for tracker based formats; AbstractPlayer can now
+> handle starting from the time of last playback and time adjustments while
+> stopped/prefetched; Refactor state checks in AbstractPlayer; MIDI playback no
+> longer produces garbage notes when stopping; IMelodyPlayer properly returns
+> unknown time when the time is actually unknown; Correct some various
+> annotations; Implement missing ExtendedDataInputStream methods.
+
+And when I say my wife helped me, I really mean it:
+
+> Wife is solving all my MIDI problems; Squelch play during fast-forward should
+> NOT reset all controls.
+
+There also is a shiny new Media Player which allows you to play any media type
+that SquirrelJME supports, from any media source SquirrelJME supports. This
+even supports DoJa ScratchPads via scanning!
+
+With the new `AbstractPlayer`, the other players including the pretty new
+Nokia and WAV players were ported over to the new system.
+
+I changed how `ResourceConnection` for DoJa works for Hosted so that LoN/PoN
+can actually run in it. Mutable and immutable images were fixed as well.
+
+Time on Windows also progresses and is no longer forever stuck on the same
+instant in the past. This was mostly to get audio working as there also were
+a number of ScritchAudio refactors. There were also more additional attempts
+to get ScritchAudio working in general.
+
+NanoCoat saw test simplifications, static call fixes, a few tests passing,
+questioning of my insanity, instance AND static field cleanup, a value get/set
+refactor in the form of `cisGetS()`/`cisSetS()` (_there will later be a_
+_transGet and transSet for far more complicated value access, but this_
+_will mostly be for JDWP and quirky libjvm/JNI stuff. Also, trans rights!_).
+
+I started work on the Many Fonts branch to clean up font handling, I mostly
+started writing the Barcode Bitmap Font Scaling Algorithm that I thought of
+on my own.
+
+Extra data buckets were added, if you remember the RMS refactor.
+
+The new pipeline build system saw some improvements regarding natives, to
+bundle and package them together better.
+
+_AI still banned from the repository._
 
 ### February
 
-...
+Pipeline build system improvement and refactors continued.
+
+I closed a bunch of dead branches and added a bunch of date tags in the
+appropriate places.
+
+I did attempt merging `Thread` and `VMThread` into one, but that failed. I
+did cherry-pick the stuff I liked though, which was very minor and stubs for
+a unified command program called _ABCD_.
 
 ### March
 
-...
+NanoCoat received CMake fixes, cancelling out define contradictions, fixes
+for Windows due to implibs, MSVC fixes.
+
+Many Fonts received a flat mapping.
 
 ### April
 
-...
+More work on Many Fonts, added the basis for font derivation, improved
+how scaling works, and fonts are placed in the Jar differently now.
+
+_AShiningRay_ contributed more audio format support, he had this to say,
+_Note the error note I put in_:
+
+> WavPlayer: Major reworks to both player and decoders. Following Nokia OTA,
+> WavPlayer now conforms to the newer Abstract Player layout as well. But
+> beyond that, quite a few improvements were made like separating all PCM
+> decoders into their separate package so that other container formats can use
+> them, improvements to wav header parsing and duration/time calculations, as
+> well as IMA ADPCM decoding.
+> 
+> runtime.media: Bring the now-separated PCM decoders. My previous patch seemed
+> to not have been fully applied, and the entire pcm subfolder was missing.
+> That's good in a way, since it better separates the wavPlayer reworks from
+> these decoders. (Stephanie: This was an error on my part, forgot to add the
+> newly patched files! I did bring in this new description however.)
+
+DoJa saw some minor fixes around palette updates, _AShiningRay_ also noticed
+that `clipRect()` was not implemented for DoJa while I was working on the
+palette fixes.
+
+I added stubs for the cellular network API.
+
+I made a WebRing button.
+
+_AI still banned from the repository._
 
 ### May
 
-...
+_AShiningRay_ at the start of the month contributed some Samsung APIs, he
+had this to say:
+
+> modules: Implement important bits of Samsung API 1.0 This commit brings in
+> all of the classes defined by the Samsung API 1.0 spec: AudioClip, LCDLight,
+> SM, SMS and Vibration. SM and SMS are complete TODOs at the moment since SMS
+> capability is likely not going to be a concern anytime soon, whereas
+> AudioClip, LightLCD and Vibration are already setup to use SquirrelJME's
+> available structures, including a few new ones.
+
+Many Fonts received glyph fallback support.
+
+I refactored key code translation to be much simpler and able to support
+multiple different vendors, although this would later be refactored again. A
+generic QWERTY dial-pad layout was added as well.
+
+_AShiningRay_ also fixed some MLD issues, he had this to say:
+
+> DoJa/MLD: Multiple improvements to MLD management and playback A few more MLD
+> commands are now supported and ADPCM chunks finally get properly parsed (the
+> player is not set to play them yet, quite a bit of rework is needed and this
+> commit would get too big). MLDPlayer events such as EVENT_LOOP and EVENT_END
+> are also handled and emitted in a more proper way with this commit, solving
+> many cases where MLDs were always looping indefinitely. DoJa also got some
+> improvements in how it handles said events, and some cleanups and renames
+> were done to bring it up to par with the other players that were recently
+> refactored. We must also keep a local copy of the data received by
+> AbstractMediaResource, as otherwise SquirrelJME would throw NPEs whenever the
+> player for that resource was deallocated/unrealized, then realized and
+> prefetched again.
+
+Supply chain documentation was added, so that in this AI hellscape it is known
+what SquirrelJME's dependencies are. Luckily there are very few.
 
 ### June
 
-...
+The basis for a JNI/SquirrelJME was added, this is so that the reverse can
+happen where someone else's JNI is on SquirrelJME. Mostly started this so that
+`emulator-base` which is a horrible mess gets less and less specific code as
+that can be reused elsewhere.
+
+I made the pipeline build nicer by being a bit more verbose about what is
+and what is not available.
+
+_ProGuard_ has become the bane of my existence.
+
+There were general player fixes, mostly around timing.
+
+NanoCoat saw more argument parsing, along with an initial blank base for
+MEEP SWM in native code which is needed for `-jar`, library loading, suite
+loading, manifest parsing, narrow and wide string comparisons, more debugging,
+blanks for libjvm, and GC correctness.
+
+_AShiningRay_ contributed a generic key mapper along with Nokia OTA Decoding,
+he had this to say:
+
+> Player + NokiaOTADecoder: Minor improvements to playback. NokiaOTADecoder got
+> some clarity improvements and dropped its usage of floats on almost all
+> scenarios. Now it only uses floats if the received audio format is FLOAT_F32.
+> .. it also allows AUTOMATIC channel amounts. Furthermore, AbstractPlayer's
+> setMediaTime(int) now allows its argument to be negative (it sets media time
+> to 0 in these cases), and for media whose duration cannot be ascertained, it
+> simply sets the media time to 0 no matter the time argument as opposed to
+> doing nothing and just returning getMediaTime(). It makes more sense this
+> way, as AbstractPlayer should pass that work onto the underlying Player
+> implementation, and that one, in turn, may throw MediaException if it does
+> not support setting media time.
+> Support screen and keycode System/Environment properties for tasks Also,
+> bring in other vendors' keycodes such as Motorola, LG, Siemens, etc. while
+> also reworking how those are processed in order to properly apply vendor
+> keycodes over Canvas ones when needed. The previous system of having a
+> translator for each vendor in its own module subdirectory was dropped in
+> favor of a generic translator which handles all known MIDP2 vendors
+> currently, since they follow the same concepts. Other, more specialized 
+> translators can still be created later if needed. A few more keys were added
+> to GenericDefaultKeys in order to better accommodate for all vendor keys that
+> deviate from MIDP.
+
+Support for ancient CMake 3.1 was added, this was mostly for older systems and
+the very out of date libretro build systems. There was much writing of
+backport handlers and shims for stuff that was added later, although it could
+be handled entirely by macros and/or functions. Neat.
+
+_AShiningRay_ also contributed eMelody and iMelody support, he had this to say:
+
+> media-api: Implement support for Ericsson's eMelody and iMelody These are
+> plain text formats, not too difficult to introduce support for. However, some
+> files found online do seem to go off-spec a bit (like adding volume
+> information on the tempo section of the header or looping blocks without
+> clearly separating them with parentheses), so their decoders cannot fully
+> adhere to the official spec due to that. Also, Backlight, Vibration and LED
+> control are wired to device controls, but those are not implemented yet, so
+> those commands are effectively ignored for the time being. As a small extra, 
+> some of the code on this decoder was ported to Nokia's OTA, fixing a few
+> issues and improving readability.
+
+Selecting a different ScritchUI library is possible now, before it was fixed
+for a specific system.
+
+_AI still banned from the repository._
 
 ### July
 
-...
+CMake was properly fully ported to version 3.1, there were some additional
+supporting scripts which were missed along with the pipeline build not being
+yet ported.
+
+NanoCoat received the ability to default launch, and stack allocation.
+
+The RMS save format was updated to encode forward slashes.
+
+Enum was granted unlimited access to all classes, very powerful indeed.
 
 ### August
 
-...
+The pipeline was adjusted to add a `--probe` argument so I could see if the
+actual executables that were compiled by the build system actually ran on
+the host system. If they did not, it would try more compilers. There were also
+other CMake fixes as well. Mostly for libretro and RetroArch, but mostly for
+RetroArch as it continues to degrade further and the pipelines break more
+and more (_AI_).
+
+Mu's repository URL was updated and is now under SquirrelJME's organization.
+
+I found out that GNU Make is broken when it comes to the jobserver and nested
+processes, fun.
+
+A major cherry-pick from `wip-running`!
+
+NanoCoat received the initial start of a rework of the stack variable storage
+system as it was very horrible, and a stack overflow detection off-by-one fix.
+
+_AShiningRay_ finished most of `GameCanvas`, he had this to say:
+
+> lcdui.game: Implement most of MIDP2 lcdui.game This commit implements Sprite,
+> Layer, TiledLayer and LayerManager. Almost everything is here aside from
+> Sprite's per-pixel collision, note that GameCanvas needs its getKeyStates()
+> function implemented later as well, it's commonly used by apps that use
+> lcdui.game.
+
+Then out of nowhere, _AShiningRay_ also moved the Keitai Wiki Music
+implementation very much in line with SquirrelJME's code style, he had this
+to say:
+
+> modules: keitaiwiki-music: Follow the project's code style. This commit
+> overhauls the entire package, aiming at bringing it up to par with the rest
+> of SquirrelJME's code style. Lots of additional documentation was added as
+> well. Renaming the fields and package-private classes was left for later, if
+> needed, as otherwise the surface area for mistakes would be way too big.
+
+From that, I did make the rename refactors to finish the cleanup work he did,
+since I do have IntelliJ 2025.
+
+Cocoa saw a merge from `trunk`, I said "it has been awhile" and it has been
+awhile indeed.
+
+There were fixes to Windows and BSD pipeline builds.
+
+On the final day, the backup Tor mirror was revived.
+
+_AI still banned from the repository._
 
 ### September
 
-...
+A document detailing the technical debt in SquirrelJME that has been around
+for years was added, so I could think about it for later.
+
+NanoCoat received the refactored stack storage code which is much nicer,
+threads were then switched to this new and better system, more MLE functions
+were implemented, package private was fixed, a recycling fix (_I never made_
+_a note of when recycling was added, but effectively this is a check that if_
+_a class has been loaded the instruction re-runs_), loading of the ScritchUI
+library, blank bases for loading single suites, an implementation of proxy
+interfaces which is needed for `ScritchInterface` to work, being allowed to
+use multi-arch libraries even on Windows, checking the current desktop manager
+to see which ScritchUI interface to prefer along with a default order, a
+separate runtime library path, an embedded VFAT style which is effectively a
+POSIX path style VFAT, libretro NAL refactoring, MLE refactoring, and
+design documents.
+
+More fixes for CMake. The pipeline build shell scripts were made and setup
+instructions for `launchd` were added because copy and pasting from one system
+to another is painful when you have to set up four different macOS systems.
+
+More fixes for the libretro/RetroArch pipelines, mostly around 3DS.
+
+_AShiningRay_ had contributed a small MIDI fix:
+
+> MIDI: MTrkTracker: Handle running status bytes. Previously there was no such
+> handling, and tracks that send multiple events without repeated status values
+> made track parsing desync completely.
+
+Apparently, `Font.charsWidth()` was never implemented, so I implemented that.
+
+This also extended to `Short.parseShort()`, so I implemented that.
+
+_AShiningRay_ also contributed a small DoJa fix:
+
+> DoJa: Bring PhoneSystem up to par with DoJa 5.1. Many device features from
+> newer DoJa were missing, and the same was true for the more recent class
+> methods. Additionally, optional phone system attribute IDs (range 128-255)
+> are now considered and separated into their own class, like it is done for
+> vendor-specific attributes.
+
+ProGuard continues to be the thorn.
+
+API violations in MIDP and DoJa were removed by adding a separate class which
+could be used to grab needed sharable global state, similar to how `Player`
+controls work.
+
+Debug renderers for some classes when used with JDWP, mostly for IntelliJ.
+
+_AI still banned from the repository, despite a drop in reading comprehension._
+_I specifically quoted "Do It Right The First Time, Patience First"._
+
+I also had to say:
+
+> Unfortunately, these documentation additions are for the GenAI and LLMs users
+> that must rely on an agent to understand a project's contribution guidelines
+> and are unable to reason the guidelines themselves.
 
 ### October
 
-...
+NanoCoat received an option to change how the 0th argument is handled, proper
+static method access, ScritchUI loop runnables running, SDCC fixes, thread
+unification at least for NanoCoat only, Thread subclass handling which is
+done via a flag, and LLDB pretty printers (_GDB to come next_). 
+
+_AShiningRay_ started this month off with two graphics related patches, one
+for converting floating point arc/circle drawing to use SquirrelJME's fixed
+point library, and another to implement and refactor some bits of DoJa's
+graphics. He had this to say:
+
+> ScritchPencilRasterShapes: Move arc drawing code to fixed-point. The hardware
+> float guards were removed entirely from there as all architectures can use
+> these now. drawArc got some optimizations bundled in by the means of DDA
+> usage so that sin/cos is no longer calculated for each step, and fillArc,
+> which was the biggest bottleneck previously, got swapped to a scanline
+> algorithm that runs orders of magnitude faster while also dropping the need
+> for that temporary "alpha buffer". As a bonus, some extra FP functions were
+> also implemented. Not all of them are needed for arc drawing, but it's good
+> to have them there for whenever something actually does.
+> 
+> DoJa: Update Graphics, Image, and Sprite classes. ImageMap and Sprites were
+> initially introduced as optional packages in DoJa, but as of DoJa 3.5, they
+> were made part of the core specification, going from 'opt.ui' to 'ui'. This
+> commit implements them as their newer versions. What this means is that
+> opt.ui.Graphics2 should now link its SpriteSet and ImageMap drawing methods
+> to ui.Graphics, and the older opt.ui versions of SpriteSet and ImageMap
+> should be redirected to their ui equivalents now. A few methods in Graphics2,
+> Graphics and Image were also implemented based on their specifications, with
+> notes being kept on sections where the specification is not clear about what
+> happens when OOB access is attempted.
+
+Modules that did not belong in modules were moved to tools or emulators, which
+makes everything smaller because nothing in the runtime will ever use them.
+
+The beast named _ProGuard_ has been defeated. I hope. I ripped all the
+settings to shreds and started from virtually nothing, although everything I
+had in place which wrapped and called ProGuard was untouched. I effectively
+just disabled shrinking, and made it so anything `public` is never obfuscated.
+Any that is not `public` can be shrunk and obfuscated. Optimization generally
+always happens. This means that `@SquirrelJMEVendorApi` and
+`@KeepWhenCompacting` are now gone! There is `@KeepAbsolutelyEverything` which
+keeps everything as-is and does not optimize, but this is mostly for entry
+points and very important things.
+
+Java 24 killed `SecurityManager` so I did as well, except I will be keeping it
+around just for legacy compatibility. It only worked for well behaving
+applications regardless.
+
+_A note from before for later: pivot_ `wip-running` _to just run the hello_
+_demo program and just output the text that exists, since it has been_
+_worked on for an entire year... it really needs to be merged. I dislike_
+_branches being out for this long._
+
+... HALF DONE AS OF OCTOBER 2026, on the 13th ...
+
+_AI still banned from the repository, despite a drop in reading comprehension._
+_Yes, this keeps coming up._
 
 ### November
 
