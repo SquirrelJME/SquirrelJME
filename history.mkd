@@ -2065,6 +2065,23 @@ _branches being out for this long._
 _AI still banned from the repository, despite a drop in reading comprehension._
 _Yes, this keeps coming up._
 
+Reflecting back on what I wrote back in 2018:
+
+> This release was mostly just a demo to show that SquirrelJME exists and that
+> it is being worked on. It is very primitive and not much can be done with it.
+> From the release though there has been slowly increasing interest in the
+> project since there are not many emulators that support J2ME that exist and
+> are actively worked on.
+
+With _AI_ this has changed, there are now 30-40 dead emulators (and counting)
+and SquirrelJME is the sole active emulator which does not accept any AI
+contributions. There are even less active projects now if you do not consider
+the ones that die in a few weeks. It is ironic that a decade later the
+situation has not changed much at all, except for the ever-growing pile of
+lit corpses strewn about haphazardly in multiple dumpster fires. Java ME truly
+is niche, and nobody gets famous _or_ rich in emulator development, nor should
+it be expected.
+
 ### November
 
 ... IN THE FUTURE AS OF OCTOBER 2026 ...
