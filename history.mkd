@@ -1657,7 +1657,7 @@ Happy just before the New Year!
 
 Happy New Year!
 
-### January
+#### January
 
 I added a route and completion tracker to show progress within the repository
 in more meaningful terms.
@@ -1733,7 +1733,7 @@ bundle and package them together better.
 
 _AI still banned from the repository._
 
-### February
+#### February
 
 Pipeline build system improvement and refactors continued.
 
@@ -1744,14 +1744,14 @@ I did attempt merging `Thread` and `VMThread` into one, but that failed. I
 did cherry-pick the stuff I liked though, which was very minor and stubs for
 a unified command program called _ABCD_.
 
-### March
+#### March
 
 NanoCoat received CMake fixes, cancelling out define contradictions, fixes
 for Windows due to implibs, MSVC fixes.
 
 Many Fonts received a flat mapping.
 
-### April
+#### April
 
 More work on Many Fonts, added the basis for font derivation, improved
 how scaling works, and fonts are placed in the Jar differently now.
@@ -1782,7 +1782,7 @@ I made a WebRing button.
 
 _AI still banned from the repository._
 
-### May
+#### May
 
 _AShiningRay_ at the start of the month contributed some Samsung APIs, he
 had this to say:
@@ -1818,7 +1818,7 @@ _AShiningRay_ also fixed some MLD issues, he had this to say:
 Supply chain documentation was added, so that in this AI hellscape it is known
 what SquirrelJME's dependencies are. Luckily there are very few.
 
-### June
+#### June
 
 The basis for a JNI/SquirrelJME was added, this is so that the reverse can
 happen where someone else's JNI is on SquirrelJME. Mostly started this so that
@@ -1885,7 +1885,7 @@ for a specific system.
 
 _AI still banned from the repository._
 
-### July
+#### July
 
 CMake was properly fully ported to version 3.1, there were some additional
 supporting scripts which were missed along with the pipeline build not being
@@ -1897,7 +1897,7 @@ The RMS save format was updated to encode forward slashes.
 
 Enum was granted unlimited access to all classes, very powerful indeed.
 
-### August
+#### August
 
 The pipeline was adjusted to add a `--probe` argument so I could see if the
 actual executables that were compiled by the build system actually ran on
@@ -1946,7 +1946,7 @@ On the final day, the backup Tor mirror was revived.
 
 _AI still banned from the repository._
 
-### September
+#### September
 
 A document detailing the technical debt in SquirrelJME that has been around
 for years was added, so I could think about it for later.
@@ -2005,7 +2005,7 @@ I also had to say:
 > that must rely on an agent to understand a project's contribution guidelines
 > and are unable to reason the guidelines themselves.
 
-### October
+#### October
 
 NanoCoat received an option to change how the 0th argument is handled, proper
 static method access, ScritchUI loop runnables running, SDCC fixes, thread
@@ -2082,10 +2082,10 @@ lit corpses strewn about haphazardly in multiple dumpster fires. Java ME truly
 is niche, and nobody gets famous _or_ rich in emulator development, nor should
 it be expected.
 
-### November
+#### November
 
 ... IN THE FUTURE AS OF OCTOBER 2026 ...
 
-### December
+#### December
 
 ... IN THE FUTURE AS OF OCTOBER 2026 ...
