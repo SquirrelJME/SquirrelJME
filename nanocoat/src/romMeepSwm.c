@@ -8,9 +8,146 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/nvm/romMeepSwm.h"
+#include "sjme/listUtil.h"
 #include "sjme/util.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/romManifest.h"
+
+#pragma region(swmHandlerDefs)
+
+typedef sjme_errorCode (*sjme_nvm_rom_swmKeyMapFunc)(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrInOutNotNull sjme_nvm_rom_swmEntry* tempEntry,
+	sjme_attrInNotNull const sjme_nvm_rom_manifestStep* step,
+	sjme_attrInOutNotNull sjme_lpcwstr* lpwv);
+
+typedef struct sjme_nvm_rom_swmKeyMapHandler
+{
+	/** The key being handled. */
+	sjme_lpcstr key;
+
+	/** The key length to compare, @code -1 @endcode is all characters. */
+	sjme_jint keyLen;
+
+	/** The function to actually handle the key. */
+	sjme_nvm_rom_swmKeyMapFunc handler;
+} sjme_nvm_rom_swmKeyMapHandler;
+
+/** Function prototype for handling keys. */
+#define SJME_MEEP_SWM_FUNC(func) \
+	sjme_errorCode SJME_TOKEN_PASTE(sjme_nvm_rom_swmKey_, func)( \
+		sjme_attrInNotNull sjme_nvm_rom_suite inSuite, \
+		sjme_attrInNotNull sjme_nvm_rom_library inLibrary, \
+		sjme_attrInOutNotNull sjme_nvm_rom_swmEntry* tempEntry, \
+		sjme_attrInNotNull const sjme_nvm_rom_manifestStep* step, \
+		sjme_attrInOutNotNull sjme_lpcwstr* lpwv)
+
+#define SJME_MEEP_SWM_SHORT(key, keyLen, func) \
+	{ \
+		key, keyLen, \
+		SJME_TOKEN_PASTE(sjme_nvm_rom_swmKey_, func), \
+	}
+
+#pragma endregion(swmHandlerDefs)
+#pragma region(swmHandlers)
+
+SJME_MEEP_SWM_FUNC(definedConfigs)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_MEEP_SWM_FUNC(definedProfiles)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_MEEP_SWM_FUNC(definedStandards)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_MEEP_SWM_FUNC(internalName)
+{
+	/* Set details. */
+	tempEntry->tag.type = SJME_NVM_SWM_DEPENDENCY_INTERNAL_NAME;
+	tempEntry->tag.use = SJME_NVM_SWM_USE_PROVIDES;
+
+	/* Copy over. */
+	sjme_lpwcsncat(tempEntry->internalName.name, step->map.value,
+		SJME_NVM_SWM_FIELD_LENGTH - 1);
+
+	/* Nothing more needs to be done. */
+	return SJME_ERROR_NONE;
+}
+
+SJME_MEEP_SWM_FUNC(microConfig)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_MEEP_SWM_FUNC(microProfile)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_MEEP_SWM_FUNC(liblet)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_MEEP_SWM_FUNC(midlet)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_MEEP_SWM_FUNC(midxletApi)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+SJME_MEEP_SWM_FUNC(midxletOpgl)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static const sjme_nvm_rom_swmKeyMapHandler sjme_nvm_rom_swmKeyMapHandlers[] =
+{
+	SJME_MEEP_SWM_SHORT("X-SquirrelJME-DefinedConfigurations", -1,
+		definedConfigs),
+	SJME_MEEP_SWM_SHORT("X-SquirrelJME-DefinedProfiles", -1,
+		definedProfiles),
+	SJME_MEEP_SWM_SHORT("X-SquirrelJME-DefinedStandards", -1,
+		definedStandards),
+	SJME_MEEP_SWM_SHORT("X-SquirrelJME-InternalProjectName", -1,
+		internalName),
+	SJME_MEEP_SWM_SHORT("Microedition-Configuration", -1,
+		microConfig),
+	SJME_MEEP_SWM_SHORT("Microedition-Profile", -1,
+		microProfile),
+	SJME_MEEP_SWM_SHORT("LIBlet-", 7,
+		liblet),
+	SJME_MEEP_SWM_SHORT("MIDlet-", 7,
+		midlet),
+	SJME_MEEP_SWM_SHORT("MIDxlet-api", -1,
+		midxletApi),
+	SJME_MEEP_SWM_SHORT("MIDxlet-opgl", -1,
+		midxletOpgl),
+
+	/* End. */
+	{NULL, 0, NULL},
+};
+
+#pragma endregion(swmHandlers)
 
 static sjme_errorCode sjme_nvm_rom_swmLoadSingleDoJa(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
@@ -61,10 +198,16 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
 	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrInNotNull sjme_nvm_rom_swmLibrary* inOutDepend)
 {
+#define SJME_ENTRY_GROW_LEN 8
 	sjme_errorCode error;
-	sjme_jboolean hasManifest;
+	sjme_jboolean hasManifest, halt;
 	sjme_stream_input inputStream;
+	sjme_nvm_rom_swmEntry tempEntry;
 	sjme_nvm_rom_manifestStep step;
+	sjme_lpcwstr lpwv;
+	sjme_jint freeSlot;
+	const sjme_nvm_rom_swmKeyMapHandler* handler;
+	sjme_list(sjme_nvm_rom_swmEntry)* entries;
 
 	/* TODO FIXME: Optimize/shrink for SDCC. */
 
@@ -89,6 +232,9 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
 		inputStream == NULL)
 		goto fail_openRc;
 
+	/* This is used a bunch. */
+	entries = inOutDepend->entries;
+
 	/* Parse keys accordingly. */
 	memset(&step, 0, sizeof(step));
 	for (;;)
@@ -109,93 +255,95 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
 		if (step.attr[0] != 0)
 			continue;
 
-		/* Configurations provided by this library. */
-		if (0 == sjme_string_compareIWAN(step.map.key, -1,
-			"X-SquirrelJME-DefinedConfigurations", -1))
+		/* Ignore blank values. */
+		if (step.map.value[0] == '\0')
+			continue;
+
+		/* Find the handler for the given key. */
+		for (handler = &sjme_nvm_rom_swmKeyMapHandlers[0];
+			handler->key != NULL && handler->handler != NULL;
+			handler++)
 		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			/* This is the one? */
+			if (0 == sjme_string_compareIWAN(step.map.key, -1,
+				handler->key, handler->keyLen))
+				break;
 		}
 
-		/* Profiles provided by this library. */
-		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
-			"X-SquirrelJME-DefinedProfiles", -1))
+		/* Not valid. */
+		if (handler->key == NULL || handler->handler == NULL)
 		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
-
-		/* Standards provided by this library. */
-		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
-			"X-SquirrelJME-DefinedStandards", -1))
-		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
-
-		/* Internal SquirrelJME library name. */
-		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
-			"X-SquirrelJME-InternalProjectName", -1))
-		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
-
-		/* Java ME Configuration to use. */
-		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
-			"Microedition-Configuration", -1))
-		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
-
-		/* Java ME Profile to use. */
-		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
-			"Microedition-Profile", -1))
-		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
-
-		/* Java ME LIBlet. */
-		else if (0 == sjme_string_compareIWAN(step.map.key, 7,
-			"LIBlet-", 7))
-		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
-
-		/* Java ME MIBlet. */
-		else if (0 == sjme_string_compareIWAN(step.map.key, 7,
-			"MIDlet-", 7))
-		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
-
-		/* MIDxlet, generally JSCL. */
-		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
-			"MIDxlet-api", -1))
-		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
-
-		/* MEXA OpenGL. */
-		else if (0 == sjme_string_compareIWAN(step.map.key, -1,
-			"MIDxlet-opgl", -1))
-		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
-		}
-
 #if defined(SJME_CONFIG_DEBUG)
-		else
-		{
+			/* Emit a message if debugging, otherwise do not care. */
 			sjme_message("Unknown key %"PRSl": %"PRSl"",
 				step.map.key, step.map.value);
-		}
 #endif
+
+			/* Skip. */
+			continue;
+		}
+
+		/* This is used by the handlers to determine if more needs to be */
+		/* done, potentially. */
+		lpwv = (sjme_lpcwstr)&step.map.value;
+
+		/* Keep handling the key until it reports nothing is left. */
+		halt = SJME_JNI_TRUE;
+		do
+		{
+			/* Something is here, so clear the temporary key. */
+			memset(&tempEntry, 0, sizeof(tempEntry));
+
+			/* Perform the handler step. */
+			if (sjme_error_is(error = handler->handler(inSuite, inLibrary,
+				&tempEntry, &step, &lpwv)))
+			{
+				/* The only valid error is to continue. */
+				if (error != SJME_ERROR_CONTINUE)
+					goto fail_parse;
+
+				/* Forget halting. */
+				halt = SJME_JNI_FALSE;
+			}
+
+			/* Otherwise, halt. */
+			else
+				halt = SJME_JNI_TRUE;
+
+			/* Entry is valid, so it gets added. */
+			if (tempEntry.tag.type != SJME_NVM_SWM_DEPENDENCY_UNKNOWN &&
+				tempEntry.tag.use != SJME_NVM_SWM_USE_UNKNOWN)
+			{
+				/* Find the first free slot in the list. */
+				freeSlot = -1;
+				if (entries != NULL)
+					if (sjme_error_is(error = sjme_listUtil_findFree(
+						SJME_AS_LIST_POINTER(&entries), &freeSlot)))
+						return sjme_error_default(error);
+
+				/* Need to grow the list? */
+				if (freeSlot < 0)
+				{
+					/* The free slot is at the end of the list. */
+					freeSlot = (entries == NULL ? 0 : entries->length);
+
+					/* Grow the list. */
+					if (sjme_error_is(error = sjme_list_replace(
+						allocPool,
+						freeSlot + SJME_ENTRY_GROW_LEN,
+						&entries, sjme_nvm_rom_swmEntry, 0)) ||
+						entries == NULL)
+						goto fail_growList;
+
+					/* Set new list. */
+					inOutDepend->entries = entries;
+				}
+
+				/* Copy item details. */
+				memmove(&entries->elements[freeSlot], &tempEntry,
+					sizeof(entries->elements[freeSlot]));
+			}
+		} while (!halt);
 	}
 
 	/* Close the stream. */
@@ -206,12 +354,14 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
 	/* Success! */
 	return SJME_ERROR_NONE;
 
+fail_growList:
 fail_parse:
 fail_openRc:
 	if (inputStream != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(inputStream));
 
 	return sjme_error_default(error);
+#undef SJME_ENTRY_GROW_LEN
 }
 
 static sjme_errorCode sjme_nvm_rom_swmLoadSingle(

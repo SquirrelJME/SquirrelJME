@@ -126,6 +126,9 @@ typedef enum sjme_nvm_swmSuiteType
 	SJME_NVM_NUM_SWM_SUITE_TYPES,
 } sjme_nvm_swmSuiteType;
 
+/** The length of individual MEEP SWM fields. */
+#define SJME_NVM_SWM_FIELD_LENGTH 96
+
 /**
  * Stores the base dependency information.
  *
@@ -172,7 +175,7 @@ typedef struct sjme_nvm_swmInfoNameOnly
 	sjme_nvm_rom_swmEntryTag tag;
 
 	/** The name of the suite. */
-	sjme_jchar name[SJME_MAX_FILE_NAME];
+	sjme_jchar name[SJME_NVM_SWM_FIELD_LENGTH];
 } sjme_nvm_swmInfoNameOnly;
 
 /**
@@ -187,7 +190,7 @@ typedef struct sjme_nvm_swmInfoNameVersion
 	sjme_nvm_rom_swmEntryTag tag;
 
 	/** The referred to name. */
-	sjme_jchar name[SJME_MAX_FILE_NAME];
+	sjme_jchar name[SJME_NVM_SWM_FIELD_LENGTH];
 
 	/** The version. */
 	sjme_nvm_swmVersion version;
@@ -205,13 +208,13 @@ typedef struct sjme_nvm_swmInfoAll
 	sjme_nvm_rom_swmEntryTag tag;
 
 	/** The referred to vendor. */
-	sjme_jchar vendor[SJME_MAX_FILE_NAME];
+	sjme_jchar vendor[SJME_NVM_SWM_FIELD_LENGTH];
 
 	/** The version. */
 	sjme_nvm_swmVersion version;
 
 	/** The referred to name. */
-	sjme_jchar name[SJME_MAX_FILE_NAME];
+	sjme_jchar name[SJME_NVM_SWM_FIELD_LENGTH];
 } sjme_nvm_swmInfoAll;
 
 /**
@@ -227,13 +230,13 @@ typedef struct sjme_nvm_swmInfoTypedAll
 	sjme_nvm_rom_swmEntryTag tag;
 
 	/** The referred to vendor. */
-	sjme_jchar vendor[SJME_MAX_FILE_NAME];
+	sjme_jchar vendor[SJME_NVM_SWM_FIELD_LENGTH];
 
 	/** The version. */
 	sjme_nvm_swmVersion version;
 
 	/** The referred to name. */
-	sjme_jchar name[SJME_MAX_FILE_NAME];
+	sjme_jchar name[SJME_NVM_SWM_FIELD_LENGTH];
 
 	/** The suite type. */
 	sjme_nvm_swmSuiteType suiteType;
@@ -246,7 +249,7 @@ typedef struct sjme_nvm_swmInfoTypedAll
  */
 typedef union sjme_nvm_rom_swmEntryBase sjme_nvm_rom_swmEntry;
 
-union sjme_nvm_rom_swmEntryBase
+typedef union sjme_nvm_rom_swmEntryBase
 {
 	/** The base dependency info. */
 	sjme_nvm_rom_swmEntryTag tag;
@@ -268,7 +271,7 @@ union sjme_nvm_rom_swmEntryBase
 
 	/** A typed suite. */
 	sjme_nvm_swmInfoTypedAll typedSuite;
-};
+} sjme_nvm_rom_swmEntryBase;
 
 /** A list of @link sjme_nvm_rom_swmEntry @endlink. */
 SJME_LIST_DECLARE(sjme_nvm_rom_swmEntry, 0);

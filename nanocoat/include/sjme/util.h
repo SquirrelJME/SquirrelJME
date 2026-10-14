@@ -179,7 +179,26 @@ sjme_jint sjme_lpwcsncmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n);
  * @since 2026/07/04
  */
 sjme_jint sjme_lpwcscasecmp(sjme_lpcwstr a, sjme_lpcwstr b);
-	
+
+/**
+ * Concatenates @code src @endcode onto @code dest @code with the destination
+ * limited to @code limit @code characters, a trailing @code NUL @endcode is
+ * always added.
+ *
+ * Neither string should overlap, however this implementation
+ * uses @code memmove() @endcode so technically it can overlap and the
+ * arguments can even be the same.
+ *
+ * @param dest The destination string.
+ * @param src The source string.
+ * @param limit The maximum number of characters to copy.
+ * @return Always @code dest @endcode.
+ * @since 2026/10/14
+ */
+sjme_lpcwstr sjme_lpwcsncat(sjme_lpwstr dest,
+	sjme_lpcwstr src,
+	sjme_jint limit);
+
 /**
  * Compares two wide strings disregarding case, up to the given limit.
  * 

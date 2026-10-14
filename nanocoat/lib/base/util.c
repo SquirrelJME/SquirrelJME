@@ -91,6 +91,43 @@ sjme_jint sjme_lpwcscasecmp(sjme_lpcwstr a, sjme_lpcwstr b)
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+
+sjme_lpcwstr sjme_lpwcsncat(sjme_lpwstr dest,
+	sjme_lpcwstr src,
+	sjme_jint limit)
+{
+	sjme_jint srcLen, destLen, catLimit;
+
+	if (dest == NULL || src == NULL)
+		return NULL;
+
+	/* Cannot actually copy anything? */
+	if (limit <= 0)
+		return dest;
+
+	/* How long are these strings? */
+	/* Note that we can only ever copy up to limit, hence the use of limit. */
+	destLen = sjme_lpwcsnlen(dest, limit);
+
+	/* We can only concat this many characters at most. */
+	catLimit = sjme_max(0, limit - destLen);
+	srcLen = sjme_lpwcsnlen(src, catLimit);
+
+	/* The source string is completely blank, or copying it will end up */
+	/* completely overflowing dest? */
+	if (catLimit <= 0 || srcLen <= 0)
+		return dest;
+
+	/* Since we know where everything is now, we can just copy everything. */
+	/* Either we copy as much as we can, or only as large as src. */
+	memmove(&dest[destLen], &src[0], sjme_min(srcLen, catLimit));
+
+	/* Always end in NUL. */
+	dest[limit - 1] = '\0';
+
+	/* Always returns dest. */
+	return dest;
+}
 	
 sjme_jint sjme_lpwcsncasecmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n)
 {
@@ -117,6 +154,10 @@ sjme_jint sjme_lpwcsnlen(sjme_lpcwstr s, sjme_jint n)
 
 	if (s == NULL || n < 0)
 		return -1;
+
+	/* A bit pointless to even bother doing anything else. */
+	if (n == 0)
+		return 0;
 
 	/* Find the NUL terminator. */
 	for (i = 0; i < n; i++)
