@@ -36,12 +36,20 @@ typedef struct sjme_nvm_rom_swmKeyMapHandler
 
 /** Function prototype for handling keys. */
 #define SJME_MEEP_SWM_FUNC(func) \
-	sjme_errorCode SJME_TOKEN_PASTE(sjme_nvm_rom_swmKey_, func)( \
+	static sjme_errorCode SJME_TOKEN_PASTE(sjme_nvm_rom_swmKey_, func)( \
 		sjme_attrInNotNull sjme_nvm_rom_suite inSuite, \
 		sjme_attrInNotNull sjme_nvm_rom_library inLibrary, \
 		sjme_attrInOutNotNull sjme_nvm_rom_swmEntry* tempEntry, \
 		sjme_attrInNotNull const sjme_nvm_rom_manifestStep* step, \
 		sjme_attrInOutNotNull sjme_lpcwstr* lpwv)
+
+/** Generic input checks. */
+#define SJME_MEEP_SWM_FUNC_CHECK() \
+	do { \
+		if (inSuite == NULL || inLibrary == NULL || tempEntry == NULL || \
+			step == NULL || lpwv == NULL) \
+			return SJME_ERROR_NULL_ARGUMENTS; \
+	} while (0)
 
 #define SJME_MEEP_SWM_SHORT(key, keyLen, func) \
 	{ \
@@ -52,26 +60,114 @@ typedef struct sjme_nvm_rom_swmKeyMapHandler
 #pragma endregion(swmHandlerDefs)
 #pragma region(swmHandlers)
 
-SJME_MEEP_SWM_FUNC(definedConfigs)
+static sjme_errorCode sjme_nvm_rom_swmParseVersion(
+	sjme_attrOutNotNull sjme_nvm_swmVersion* outVer,
+	sjme_attrInNotNull sjme_lpcwstr in,
+	sjme_attrInPositiveNonZero sjme_jint inLen)
 {
+	if (outVer == NULL || in == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
+}
+
+SJME_MEEP_SWM_FUNC(definedConfigs)
+{
+	sjme_errorCode error;
+	sjme_lpcwstr end, dash;
+
+	/* X-SquirrelJME-DefinedConfigurations: CLDC-1.8.0-compact CLDC-1.1 */
+	/*  .1 CLDC-1.1.0 CLDC-1.0.0 */
+
+	SJME_MEEP_SWM_FUNC_CHECK();
+
+	/* Skip leading whitespace. */
+	while (isspace(**lpwv))
+		(*lpwv)++;
+
+	/* Find the end of this token, if not the last. */
+	end = sjme_lpwcschr(*lpwv, ' ');
+	if (end == NULL)
+		end = &(*lpwv)[sjme_lpwcslen(*lpwv)];
+
+	/* There needs to be a dash, if not then this is not going to be a */
+	/* configuration of any kind. */
+	dash = sjme_lpwcschr(*lpwv, '-');
+	if (dash == NULL || dash > end)
+	{
+		*lpwv = end;
+		goto skip_otherwise;
+	}
+
+	/* Copy over the configuration name. */
+	sjme_lpwcsncat(tempEntry->configuration.name, *lpwv,
+		sjme_lpwcsnlen(*lpwv, (dash - (*lpwv)) + 1));
+
+	/* Parse the version number. */
+	if (sjme_error_is(error = sjme_nvm_rom_swmParseVersion(
+		&tempEntry->configuration.version,
+		(dash + 1), (end - dash) - 1)))
+		return sjme_error_default(error);
+
+	/* Set details last, as everything is valid now. */
+	tempEntry->tag.type = SJME_NVM_SWM_DEPENDENCY_CONFIGURATION;
+	tempEntry->tag.use = SJME_NVM_SWM_USE_PROVIDES;
+
+	/* Continue if the end of key has not been reached yet. */
+skip_otherwise:
+	if (**lpwv != '\0')
+		return SJME_ERROR_CONTINUE;
+	return SJME_ERROR_NONE;
 }
 
 SJME_MEEP_SWM_FUNC(definedProfiles)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+
+	/* X-SquirrelJME-DefinedProfiles: MIDP-3.1 MEEP-8 */
+
+	SJME_MEEP_SWM_FUNC_CHECK();
+
+	/* This is effectively the same as this. */
+	if (sjme_error_is(error = sjme_nvm_rom_swmKey_definedConfigs(
+		inSuite, inLibrary, tempEntry, step, lpwv)))
+	{
+		/* Note, continue is not an error. */
+		if (error != SJME_ERROR_CONTINUE)
+			return sjme_error_default(error);
+	}
+
+	/* If a configuration entry was created, then change to profile. */
+	if (tempEntry->tag.type == SJME_NVM_SWM_DEPENDENCY_CONFIGURATION)
+	{
+		tempEntry->tag.type = SJME_NVM_SWM_DEPENDENCY_PROFILE;
+		tempEntry->tag.use = SJME_NVM_SWM_USE_PROVIDES;
+	}
+
+	/* Use the original error. */
+	return error;
 }
 
 SJME_MEEP_SWM_FUNC(definedStandards)
 {
+	/* X-SquirrelJME-DefinedStandards: ??? */
+
+	SJME_MEEP_SWM_FUNC_CHECK();
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 SJME_MEEP_SWM_FUNC(internalName)
 {
+	/* X-SquirrelJME-InternalProjectName: cldc-compact */
+
+	SJME_MEEP_SWM_FUNC_CHECK();
+
 	/* Set details. */
 	tempEntry->tag.type = SJME_NVM_SWM_DEPENDENCY_INTERNAL_NAME;
 	tempEntry->tag.use = SJME_NVM_SWM_USE_PROVIDES;
@@ -86,36 +182,60 @@ SJME_MEEP_SWM_FUNC(internalName)
 
 SJME_MEEP_SWM_FUNC(microConfig)
 {
+	/* Microedition-Configuration: CLDC-1.8-compact */
+
+	SJME_MEEP_SWM_FUNC_CHECK();
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 SJME_MEEP_SWM_FUNC(microProfile)
 {
+	/* Microedition-Profile: MEEP-8 */
+
+	SJME_MEEP_SWM_FUNC_CHECK();
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 SJME_MEEP_SWM_FUNC(liblet)
 {
+	/* LIBlet-n: ??? */
+
+	SJME_MEEP_SWM_FUNC_CHECK();
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 SJME_MEEP_SWM_FUNC(midlet)
 {
+	/* MIDlet-n: ??? */
+
+	SJME_MEEP_SWM_FUNC_CHECK();
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 SJME_MEEP_SWM_FUNC(midxletApi)
 {
+	/* MIDxlet-api: ??? */
+
+	SJME_MEEP_SWM_FUNC_CHECK();
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
 
 SJME_MEEP_SWM_FUNC(midxletOpgl)
 {
+	/* MIDxlet-opgl: ??? */
+
+	SJME_MEEP_SWM_FUNC_CHECK();
+
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }

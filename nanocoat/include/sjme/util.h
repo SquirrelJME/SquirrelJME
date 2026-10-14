@@ -148,7 +148,18 @@ typedef struct sjme_tree_findFunc
 sjme_jint sjme_compare_null(
 	sjme_attrInNullable sjme_cpointer a,
 	sjme_attrInNullable sjme_cpointer b);
-	
+
+/**
+ * Searches for the given wide character in the given wide string.
+ *
+ * @param within The string to search within.
+ * @param what The character to find.
+ * @return The first occurrence of @code what @endcode,
+ * otherwise @code NULL @endcode.
+ * @since 2026/10/14
+ */
+sjme_lpcwstr sjme_lpwcschr(sjme_lpcwstr within, sjme_jchar what);
+
 /**
  * Compares two wide strings.
  * 

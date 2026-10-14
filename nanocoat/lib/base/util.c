@@ -62,6 +62,23 @@ sjme_jint sjme_compare_null(
 	return 1;
 }
 
+sjme_lpcwstr sjme_lpwcschr(sjme_lpcwstr within, sjme_jchar what)
+{
+	if (within == NULL)
+		return NULL;
+
+	/* Look through every character. */
+	do
+	{
+		/* Did we find our character? */
+		if ((*within) == what)
+			return within;
+	} while ((*(within++)) != '\0');
+
+	/* Not found. */
+	return NULL;
+}
+
 sjme_jint sjme_lpwcscmp(sjme_lpcwstr a, sjme_lpcwstr b)
 {
 	/* Compare null. */
@@ -120,7 +137,8 @@ sjme_lpcwstr sjme_lpwcsncat(sjme_lpwstr dest,
 
 	/* Since we know where everything is now, we can just copy everything. */
 	/* Either we copy as much as we can, or only as large as src. */
-	memmove(&dest[destLen], &src[0], sjme_min(srcLen, catLimit));
+	memmove(&dest[destLen], &src[0],
+		sizeof(sjme_jchar) * sjme_min(srcLen, catLimit));
 
 	/* Always end in NUL. */
 	dest[limit - 1] = '\0';

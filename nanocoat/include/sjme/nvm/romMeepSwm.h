@@ -159,6 +159,9 @@ typedef struct sjme_nvm_swmVersion
 
 	/** The minor version. */
 	sjme_jubyte release;
+
+	/** Is this compact? */
+	sjme_jboolean isCompact;
 } sjme_nvm_swmVersion;
 
 /**
