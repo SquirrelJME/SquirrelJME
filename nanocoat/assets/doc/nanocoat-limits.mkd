@@ -9,6 +9,10 @@ error level of up to 5% depending on the system environment.
      * _static_/_instance_ _per-Java-type_ in entire chain: `32767`
    * Methods:
      * _static_/_instance_ in entire chain: `32767`
+ * Method Stack:
+   * Single variable allocations are limited to 256-bits (32 bytes), this
+     is to support an address space of up to 256-bits when referring to
+     objects.
  * Memory:
    * Arrays:
      * `Object`: `536,870,911 members` or `268,435,455 members`

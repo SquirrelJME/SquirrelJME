@@ -153,14 +153,14 @@ public interface VMDescriptionType
 	byte DEFAULT_DIR_BUCKET_EXTRA =
 		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 10;
 	
+	/** The runtime library directory. */
+	@SquirrelJMENativeApi(min = "0.4.0")
+	byte DEFAULT_DIR_RUNTIME =
+		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 11;
+	
 	/** The number of default directory types. */
 	@SquirrelJMENativeApi(min = "0.4.0")
 	byte DEFAULT_DIR_NUM_TYPES =
-		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 11;
-	
-	/** Default directory reserved: 12. */
-	@SquirrelJMENativeApi(min = "0.4.0")
-	byte DEFAULT_DIR_RESERVED_12 =
 		VMDescriptionType.DEFAULT_DIR_UNKNOWN + 12;
 	
 	/** Default directory reserved: 13. */

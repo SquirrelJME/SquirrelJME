@@ -10,6 +10,7 @@
 /**
  * Virtual machine configuration.
  * 
+ * @file
  * @since 2023/12/03
  */
 

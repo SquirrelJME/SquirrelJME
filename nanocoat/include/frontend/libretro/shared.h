@@ -94,6 +94,9 @@ typedef struct sjme_libretro_globalStruct
 	/** The global VM state. */
 	sjme_nvm inState;
 
+	/** Are we in TAS mode? */
+	sjme_jboolean tasMode;
+
 	/** Modeless stars. */
 	sjme_modelessStarState modelessStars;
 } sjme_libretro_globalStruct;

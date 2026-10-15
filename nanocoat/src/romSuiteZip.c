@@ -43,13 +43,35 @@
 #define SJME_NVM_ROM_SUITES_LIST_DEBUG \
 	SJME_NVM_ROM_PREFIX_DEBUG "/" SJME_NVM_ROM_SUITES_LIST
 
+#pragma region(zipSuiteShared)
+
+static sjme_errorCode sjme_nvm_rom_zipSuiteClose(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite)
+{
+	sjme_errorCode error;
+
+	if (inSuite == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Close the handle to the Zip. */
+	if (sjme_error_is(error = sjme_closeable_close(inSuite->handle)))
+		return sjme_error_default(error);
+	inSuite->handle = NULL;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+#pragma endregion(zipSuiteShared)
+#pragma region(zipSuite)
+
 static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_lpstr* outMainClass,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outMainArgs,
-	sjme_attrOutNotNull sjme_list_sjme_jint** outById,
-	sjme_attrOutNotNull sjme_list_sjme_lpstr** outByName)
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outMainArgs,
+	sjme_attrOutNotNull sjme_list(sjme_jint)** outById,
+	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outByName)
 {
 #define BUF_SIZE 256
 #define LOCATE_SIZE 128
@@ -60,10 +82,12 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	sjme_jint valid;
 	sjme_cchar buf[BUF_SIZE];
 	sjme_lpstr str;
-	sjme_list_sjme_lpstr* strings;
-	sjme_list_sjme_jint* ints;
+	sjme_list(sjme_lpstr)* strings;
+	sjme_list(sjme_jint)* ints;
 	sjme_lpcstr clutterPrefix;
 	sjme_cchar locate[LOCATE_SIZE];
+
+	/* TODO FIXME: Optimize/shrink for SDCC. */
 	
 	if (allocPool == NULL || inSuite == NULL || outMainClass == NULL ||
 		outMainArgs == NULL || outById == NULL || outByName == NULL)
@@ -199,7 +223,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteInit(
 	
 	/* Set handle, which is the Zip itself. */
 	zip = data;
-	inSuite->handle = zip;
+	inSuite->handle = sjme_weakUp(zip);
 
 	/* By default, assume both exist unless otherwise determined. */
 	noRelease = SJME_JNI_FALSE;
@@ -254,7 +278,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteLibraryId(
 	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrOutNotNull sjme_jint* outId)
 {
-	sjme_list_sjme_nvm_rom_library* libs;
+	sjme_list(sjme_nvm_rom_library)* libs;
 	sjme_jint i, n;
 	
 	if (inSuite == NULL || inLibrary == NULL || outId == NULL)
@@ -279,7 +303,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteLibraryId(
 
 static sjme_errorCode sjme_nvm_rom_zipSuiteListLibraries(
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_list_sjme_nvm_rom_library** outLibraries)
+	sjme_attrOutNotNull sjme_list(sjme_nvm_rom_library)** outLibraries)
 {
 #define LOCATE_SIZE 128
 	sjme_errorCode error;
@@ -287,8 +311,8 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteListLibraries(
 	sjme_zip_entry zipEntry;
 	sjme_stream_input inputStream;
 	sjme_alloc_pool allocPool;
-	sjme_list_sjme_lpstr* suiteNames;
-	sjme_list_sjme_nvm_rom_library* result;
+	sjme_list(sjme_lpstr)* suiteNames;
+	sjme_list(sjme_nvm_rom_library)* result;
 	sjme_nvm_rom_library lib;
 	sjme_jint n, i;
 	sjme_cchar prefix[SJME_MAX_PATH];
@@ -362,7 +386,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteListLibraries(
 			goto fail_loadLibrary;
 		
 		/* Use it! */
-		result->elements[i] = lib;
+		result->elements[i] = sjme_weakUpR(sjme_nvm_rom_library, lib);
 	}
 	
 	/* We no longer need the names. */
@@ -404,7 +428,7 @@ fail_openEntry:
 #undef LOCATE_SIZE
 }
 
-static sjme_errorCode sjme_nvm_rom_zipSuiteLoadLibrary()
+static sjme_errorCode sjme_nvm_rom_zipSuiteLoadLibrary(sjme_jint todo)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -413,12 +437,117 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteLoadLibrary()
 /** Functions for Zip based suites. */
 static sjme_nvm_rom_suiteFunctions sjme_nvm_rom_zipSuiteFunctions =
 {
+	sjme_sm(.close, sjme_nvm_rom_zipSuiteClose),
 	sjme_sm(.defaultLaunch, sjme_nvm_rom_zipSuiteDefaultLaunch),
 	sjme_sm(.init, sjme_nvm_rom_zipSuiteInit),
 	sjme_sm(.libraryId, sjme_nvm_rom_zipSuiteLibraryId),
 	sjme_sm(.list, sjme_nvm_rom_zipSuiteListLibraries),
 	sjme_sm(.loadLibrary, sjme_nvm_rom_zipSuiteLoadLibrary),
 };
+
+#pragma endregion(zipSuite)
+#pragma region(zipSingleSuite)
+
+static sjme_errorCode sjme_nvm_rom_zipSingleSuiteInit(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrInNullable sjme_pointer data)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nvm_rom_zipSingleSuiteLibraryId(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_jint* outId)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nvm_rom_zipSingleSuiteListLibraries(
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrOutNotNull sjme_list(sjme_nvm_rom_library)** outLibraries)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_errorCode sjme_nvm_rom_zipSingleSuiteLoadLibrary(
+	sjme_jint todo)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+static sjme_nvm_rom_suiteFunctions sjme_nvm_rom_zipSingleSuiteFunctions =
+{
+	sjme_sm(.close, sjme_nvm_rom_zipSuiteClose),
+	sjme_sm(.defaultLaunch, NULL),
+	sjme_sm(.init, sjme_nvm_rom_zipSingleSuiteInit),
+	sjme_sm(.libraryId, sjme_nvm_rom_zipSingleSuiteLibraryId),
+	sjme_sm(.list, sjme_nvm_rom_zipSingleSuiteListLibraries),
+	sjme_sm(.loadLibrary, sjme_nvm_rom_zipSingleSuiteLoadLibrary),
+};
+
+#pragma endregion(zipSingleSuite)
+
+typedef struct sjme_nvm_rom_suiteZipSingleData
+{
+	/** The single ZIP this is wrapping. */
+	sjme_zip zip;
+
+	/** The suite path. */
+	sjme_cchar suitePath[SJME_MAX_PATH];
+
+	/** The suite name. */
+	sjme_cchar suiteName[SJME_MAX_FILE_NAME];
+} sjme_nvm_rom_suiteZipSingleData;
+
+sjme_errorCode sjme_nvm_rom_suiteFromZipFileSingle(
+	sjme_attrInNotNull sjme_alloc_pool pool,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
+	sjme_attrInNotNull const sjme_nal* nal,
+	sjme_attrInNotNull sjme_path* zipPath)
+{
+	sjme_errorCode error;
+	sjme_seekable seekable;
+	sjme_nvm_rom_suite result;
+
+	if (pool == NULL || outSuite == NULL || nal == NULL || zipPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Use default NAL? */
+	if (nal == NULL)
+		nal = &sjme_nal_default;
+
+	/* Files not supported? */
+	if (nal->fileOpen == NULL)
+		return SJME_ERROR_FILE_NOT_FOUND;
+
+	/* Open the file. */
+	seekable = NULL;
+	if (sjme_error_is(error = nal->fileOpen(pool,
+		&zipPath->chars[0], &seekable, SJME_NAL_OPEN_READ)) ||
+		seekable == NULL)
+		goto fail_open;
+
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_rom_suiteFromZipSeekableSingle(pool,
+		&result, seekable, &zipPath->chars[0],
+		sjme_path_getBaseNameR(zipPath))) || result == NULL)
+		goto fail_fromZip;
+
+	/* Success! */
+	*outSuite = result;
+	return SJME_ERROR_NONE;
+
+fail_fromZip:
+fail_open:
+	if (seekable != NULL)
+		sjme_closeable_close(SJME_AS_CLOSEABLE(seekable));
+	return sjme_error_default(error);
+}
 
 sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
 	sjme_attrInNotNull sjme_alloc_pool pool,
@@ -448,10 +577,6 @@ sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
 		result == NULL)
 		goto fail_suiteNew;
 	
-	/* Count up Zip as we are using it. */
-	if (sjme_error_is(error = sjme_alloc_weakRef(zip, NULL)))
-		goto fail_refUp;
-	
 	/* Success! */
 	*outSuite = result;
 	return SJME_ERROR_NONE;
@@ -461,5 +586,68 @@ fail_suiteNew:
 	/* Close the zip before failing. */
 	sjme_closeable_close(SJME_AS_CLOSEABLE(zip));
 	
+	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_rom_suiteFromZipSeekableSingle(
+	sjme_attrInNotNull sjme_alloc_pool pool,
+	sjme_attrOutNotNull sjme_nvm_rom_suite* outSuite,
+	sjme_attrInNotNull sjme_seekable seekable,
+	sjme_attrInNullable sjme_lpcstr suitePath,
+	sjme_attrInNotNull sjme_lpcstr suiteName)
+{
+	sjme_errorCode error;
+	sjme_zip zip;
+	sjme_nvm_rom_suiteZipSingleData data;
+	sjme_nvm_rom_suite result;
+
+	if (pool == NULL || outSuite == NULL || seekable == NULL ||
+		suiteName == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* If there is no path, it just becomes the suite name. */
+	if (suitePath == NULL)
+		suitePath = suiteName;
+
+	if (pool == NULL || outSuite == NULL || seekable == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Try opening as a Zip file. */
+	zip = NULL;
+	if (sjme_error_is(error = sjme_zip_openSeekable(pool, &zip,
+		seekable)) || zip == NULL)
+		return sjme_error_default(error);
+
+	/* Fill in data. */
+	memset(&data, 0, sizeof(data));
+	data.zip = zip;
+
+	/* Copy the full path. */
+	strncat(&data.suitePath[0], suitePath, SJME_MAX_PATH - 1);
+	data.suitePath[SJME_MAX_PATH - 1] = '\0';
+
+	/* Copy the base suite name. */
+	strncat(&data.suiteName[0], suiteName, SJME_MAX_FILE_NAME - 1);
+	data.suiteName[SJME_MAX_FILE_NAME - 1] = '\0';
+
+	/* Setup new suite. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_rom_suiteNew(pool,
+		&result, &data,
+		&sjme_nvm_rom_zipSingleSuiteFunctions,
+		SJME_NVM_BOOT_CLUTTER_RELEASE,
+		NULL)) ||
+		result == NULL)
+		goto fail_suiteNew;
+
+	/* Success! */
+	*outSuite = result;
+	return SJME_ERROR_NONE;
+
+fail_refUp:
+fail_suiteNew:
+	/* Close the zip before failing. */
+	sjme_closeable_close(SJME_AS_CLOSEABLE(zip));
+
 	return sjme_error_default(error);
 }

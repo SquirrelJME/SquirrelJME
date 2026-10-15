@@ -45,6 +45,8 @@ sjme_errorCode sjme_nal_default_fileOpen(
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
 	sjme_attrInValue sjme_nal_openMode openMode);
 
+sjme_nal_lineEndingType sjme_nal_default_lineEnding(void);
+
 sjme_errorCode sjme_nal_default_getEnv(
 	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) sjme_lpstr buf,
 	sjme_attrInPositiveNonZero sjme_jint bufLen,

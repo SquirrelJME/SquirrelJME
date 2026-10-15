@@ -397,7 +397,7 @@ static sjme_errorCode sjme_inflate_dynamicBuildReadCode(
 		return sjme_error_default(error);
 	
 	/* Input is used literally. */
-	if (code >= 0 && code < 16)
+	if (/*code >= 0 &&*/ code < 16)
 	{
 		if ((*i) >= maxCount)
 			return SJME_ERROR_INFLATE_INDEX_OVERFLOW;
@@ -645,7 +645,7 @@ static sjme_errorCode sjme_inflate_fixedReadCode(
 	nineBase = INT32_MAX;
 		
 	/* 256 - 279 / 0000000.. - 0010111.. */
-	if (nine >= 0x000 && nine <= 0x05F)
+	if (/*nine >= 0x000 &&*/ nine <= 0x05F)
 	{
 		codeBase = 256;
 		nextBits = 0;
@@ -1014,6 +1014,8 @@ static sjme_errorCode sjme_inflate_stepDynamicSetup(
 	sjme_juint rawLit[SJME_INFLATE_NUM_LIT_LENS];
 	sjme_juint rawDist[SJME_INFLATE_NUM_DIST_LENS];
 	sjme_juint hLit, hDist, hcLen, raw;
+
+	/* TODO FIXME: Optimize/shrink for SDCC. */
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1166,7 +1168,7 @@ static sjme_errorCode sjme_inflate_stepInflateFromTree(
 		}
 		
 		/* Literal byte value. */
-		else if (code >= 0 && code <= 255)
+		else if (/*code >= 0 &&*/ code <= 255)
 		{
 			/* Standard write. */
 			if (sjme_error_is(error = sjme_bitStream_outputWrite(

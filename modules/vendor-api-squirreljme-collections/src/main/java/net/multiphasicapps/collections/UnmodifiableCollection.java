@@ -9,6 +9,7 @@
 
 package net.multiphasicapps.collections;
 
+import cc.squirreljme.runtime.cldc.util.UnmodifiableIterator;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
@@ -73,42 +74,7 @@ public final class UnmodifiableCollection<T>
 	@Override
 	public Iterator<T> iterator()
 	{
-		return new Iterator<T>()
-			{
-				/** The base iterator. */
-				final Iterator<T> _base =
-					UnmodifiableCollection.this.wrapped.iterator();
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2017/10/09
-				 */
-				@Override
-				public boolean hasNext()
-				{
-					return this._base.hasNext();
-				}
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2017/10/09
-				 */
-				@Override
-				public T next()
-				{
-					return this._base.next();
-				}
-				
-				/**
-				 * {@inheritDoc}
-				 * @since 2017/10/09
-				 */
-				@Override
-				public void remove()
-				{
-					throw new UnsupportedOperationException("RORO");
-				}
-			};
+		return UnmodifiableIterator.of(this.wrapped.iterator());
 	}
 	
 	/**

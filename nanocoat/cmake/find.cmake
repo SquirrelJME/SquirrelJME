@@ -31,6 +31,11 @@ squirreljme_check_include_file("inttypes.h"
 	SJME_CONFIG_HAS_INTTYPES_H
 	SJME_CONFIG_HAS_NO_INTTYPES_H)
 
+# limits.h available?
+squirreljme_check_include_file("limits.h"
+	SJME_CONFIG_HAS_LIMITS_H
+	SJME_CONFIG_HAS_NO_LIMITS_H)
+
 # varargs.h available?
 squirreljme_check_include_file("varargs.h"
 	SJME_CONFIG_HAS_VARARGS_H

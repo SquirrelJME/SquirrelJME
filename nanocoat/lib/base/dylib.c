@@ -59,7 +59,7 @@ sjme_errorCode sjme_dylib_close(
 sjme_errorCode sjme_dylib_lookup(
 	sjme_attrInNotNull sjme_dylib inLib,
 	sjme_attrInNotNull sjme_lpcstr inSymbol,
-	sjme_pointer* outPtr)
+	sjme_attrOutNotNull sjme_pointer* outPtr)
 {
 #if defined(SJME_CONFIG_HAS_DLFCN_H)
 	sjme_pointer handle;
@@ -77,7 +77,7 @@ sjme_errorCode sjme_dylib_lookup(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 #if defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
-	return SJME_ERROR_UNSUPPORTED_OPERATION;
+	return SJME_ERROR_INVALID_LIBRARY_SYMBOL;
 #elif defined(SJME_CONFIG_HAS_DLFCN_H)
 	/* Attempt symbol lookup. */
 	handle = dlsym(inLib, inSymbol);
@@ -120,7 +120,7 @@ sjme_errorCode sjme_dylib_lookup(
 	}
 	
 	/* Success! */
-	*outPtr = handle;
+	*outPtr = (sjme_pointer)handle;
 	return SJME_ERROR_NONE;
 #if defined(SJME_CONFIG_HAS_ARCH_IA32)
 #undef BUF_SIZE

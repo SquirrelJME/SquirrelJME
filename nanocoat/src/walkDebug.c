@@ -9,8 +9,12 @@
 
 #include "sjme/nvm/walk.h"
 
+#if !defined(SJME_CONFIG_DISABLE_WALK)
+
 const sjme_nvm_walk_functions sjme_nvm_walk_printDumpFunctions =
 {
 	sjme_sm(.pre, NULL),
 	sjme_sm(.step, NULL),
 };
+
+#endif

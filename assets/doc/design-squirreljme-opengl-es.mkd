@@ -1,0 +1,14 @@
+# OpenGL ES
+
+Baseline goals:
+
+ * General implementation
+ * Outer MLE layer implementation that is similar to ScritchUI so that
+   JVM calls are simplified and platform-agnostic.
+ * Support both `float` and `fixed`, even if the native platform implementation
+   only supports one.
+   * Flags will be checked for support, then if not supported a conversion
+     will be performed followed by the appropriate forwarded function call
+     along with any mapped return value.
+
+***TODO***

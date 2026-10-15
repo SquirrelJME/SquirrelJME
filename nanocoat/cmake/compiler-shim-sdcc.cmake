@@ -13,6 +13,32 @@ set(CMAKE_SYSTEM_NAME "Generic")
 # Try compiling static libraries
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 
+# If the generator is not makefile based or Ninja, force one of those
+if ("${CMAKE_GENERATOR}" STREQUAL "Borland Makefiles" OR
+	"${CMAKE_GENERATOR}" STREQUAL "MSYS Makefiles" OR
+	"${CMAKE_GENERATOR}" STREQUAL "MinGW Makefiles" OR
+	"${CMAKE_GENERATOR}" STREQUAL "Unix Makefiles" OR
+	"${CMAKE_GENERATOR}" STREQUAL "Watcom WMake" OR
+	"${CMAKE_GENERATOR}" STREQUAL "Ninja" OR
+	"${CMAKE_GENERATOR}" STREQUAL "Ninja Multi-Config")
+	message(STATUS "SDCC is using a proper generator (${CMAKE_GENERATOR})...")
+else()
+	message(STATUS "Adjusting generator for SDCC...")
+
+	if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Windows" OR
+		WIN32)
+		set(CMAKE_GENERATOR "MinGW Makefiles"
+			CACHE STRING "" FORCE)
+	else()
+		set(CMAKE_GENERATOR "Unix Makefiles"
+			CACHE STRING "" FORCE)
+	endif()
+endif()
+
+# Force unset of C++ compiler if it was set
+set(CMAKE_CXX_COMPILER ""
+	CACHE STRING "" FORCE)
+
 # Use specific flags
 set(CMAKE_C_LINK_EXECUTABLE
 	"<CMAKE_C_COMPILER> -o <TARGET> <LINK_LIBRARIES> <CMAKE_C_LINK_FLAGS> \

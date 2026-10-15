@@ -180,6 +180,9 @@ SJME_LIST_DECLARE(sjme_scritchaudio_connection, 0);
  */
 typedef enum sjme_scritchaudio_format
 {
+	/** This is an enum based int. */
+	sjme_enumInt(sjme_scritchaudio_format),
+	
 	/** Automatic. */
 	SJME_SCRITCHAUDIO_FORMAT_AUTOMATIC = -1,
 	
@@ -208,35 +211,43 @@ extern const sjme_jint sjme_scritchaudio_bytesPerSample
  *
  * @since 2025/05/08
  */
-typedef enum sjme_scritchaudio_rate
-{
-	/** Automatic. */
-	SJME_SCRITCHAUDIO_RATE_AUTOMATIC = -1,
-	
-	/** 8000 Hz. */
-	SJME_SCRITCHAUDIO_RATE_HZ_8000 = 8000,
-	
-	/** 11025 Hz. */
-	SJME_SCRITCHAUDIO_RATE_HZ_11025 = 11025,
-	
-	/** 16000 Hz. */
-	SJME_SCRITCHAUDIO_RATE_HZ_16000 = 16000,
-	
-	/** 22050 Hz. */
-	SJME_SCRITCHAUDIO_RATE_HZ_22050 = 22050,
-	
-	/** 24000 Hz. */
-	SJME_SCRITCHAUDIO_RATE_HZ_24000 = 24000,
-	
-	/** 44100 Hz. */
-	SJME_SCRITCHAUDIO_RATE_HZ_44100 = 44100,
-	
-	/** 48000 Hz. */
-	SJME_SCRITCHAUDIO_RATE_HZ_48000 = 48000,
-	
-	/** Maximum supported sample rate. */
-	SJME_SCRITCHAUDIO_RATE_MAX_SAMPLE_RATE = 384000,
-} sjme_scritchaudio_rate;
+typedef sjme_jint sjme_scritchaudio_rate;
+
+/** Automatic. */
+#define SJME_SCRITCHAUDIO_RATE_AUTOMATIC \
+	((sjme_scritchaudio_rate)INT32_C(-1))
+
+/** 8000 Hz. */
+#define SJME_SCRITCHAUDIO_RATE_HZ_8000 \
+	((sjme_scritchaudio_rate)INT32_C(8000))
+
+/** 11025 Hz. */
+#define SJME_SCRITCHAUDIO_RATE_HZ_11025 \
+	((sjme_scritchaudio_rate)INT32_C(11025))
+
+/** 16000 Hz. */
+#define SJME_SCRITCHAUDIO_RATE_HZ_16000 \
+	((sjme_scritchaudio_rate)INT32_C(16000))
+
+/** 22050 Hz. */
+#define SJME_SCRITCHAUDIO_RATE_HZ_22050 \
+	((sjme_scritchaudio_rate)INT32_C(22050))
+
+/** 24000 Hz. */
+#define SJME_SCRITCHAUDIO_RATE_HZ_24000 \
+	((sjme_scritchaudio_rate)INT32_C(24000))
+
+/** 44100 Hz. */
+#define SJME_SCRITCHAUDIO_RATE_HZ_44100 \
+	((sjme_scritchaudio_rate)INT32_C(44100))
+
+/** 48000 Hz. */
+#define SJME_SCRITCHAUDIO_RATE_HZ_48000 \
+	((sjme_scritchaudio_rate)INT32_C(48000))
+
+/** Maximum supported sample rate. */
+#define SJME_SCRITCHAUDIO_RATE_MAX_SAMPLE_RATE \
+	((sjme_scritchaudio_rate)INT32_C(384000))
 
 /**
  * The output channels.
@@ -245,6 +256,9 @@ typedef enum sjme_scritchaudio_rate
  */
 typedef enum sjme_scritchaudio_channels
 {
+	/** This is an enum based int. */
+	sjme_enumInt(sjme_scritchaudio_channels),
+	
 	/** Automatic. */
 	SJME_SCRITCHAUDIO_CHANNELS_AUTOMATIC = -1,
 	

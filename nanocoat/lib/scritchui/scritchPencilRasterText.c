@@ -30,7 +30,12 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	sjme_jint cw, ch, area, dx, dy, sx, sy, v, scanLen, baseline;
 	sjme_jint offX, offY;
 	sjme_jubyte* bitmap;
+#if !defined(SJME_CONFIG_DISABLE_BITLINE_LUT)
 	sjme_scritchui_pencilBitLineFunc bitline;
+#else
+	sjme_jubyte bitChunk;
+	sjme_jint sp;
+#endif
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -119,12 +124,28 @@ sjme_errorCode sjme_scritchpen_core_drawChar(
 	for (sy = 0, dy = y + offY, v = 0; sy < ch; sy++, dy++)
 		for (sx = 0, dx = x + offX; sx < scanLen; sx++, dx += 8, v++)
 		{
+#if !defined(SJME_CONFIG_DISABLE_BITLINE_LUT)
 			/* Which bitline to use? */
 			bitline = sjme_scritchui_pencilBitLines[bitmap[v]];
-			
+
 			/* Render the bitline. */
 			if (sjme_error_is(error = bitline(g, dx, dy)))
 				goto fail_anyInLock;
+#else
+			/* We only need to keep drawing when pixels are visible. */
+			sp = 0;
+			bitChunk = bitmap[v];
+			while (bitChunk != 0)
+			{
+				/* Are we drawing this pixel? */
+				if ((bitChunk & 0x1) != 0)
+					g->apiInThread->drawPixel(g, dx + sp, dy);
+
+				/* Shift down for the next pixel. */
+				bitChunk >>= 1;
+				sp++;
+			}
+#endif
 		}
 		
 	/* Release lock. */

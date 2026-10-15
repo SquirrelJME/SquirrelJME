@@ -65,7 +65,7 @@ public class TestAlphaBlend
 			throw new IllegalArgumentException();
 		
 		// We need this interface for image operations
-		ScritchInterface scritch = NativeScritchInterface.nativeInterface();
+		ScritchInterface scritch = NativeScritchUIShelf.nativeInterface();
 		
 		// Determine the from and to alpha values
 		int fA = Integer.decode(__fsTs.substring(0, sp)) << 24;

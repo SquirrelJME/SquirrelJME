@@ -11,60 +11,77 @@
 #include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/bytecodeFast.h"
 
+#pragma region(DupTwoNarrow)
 SJME_NVM_BYTECODE_FAST(DupTwoNarrow)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+#pragma endregion()
 
+#pragma region(DupWide)
 SJME_NVM_BYTECODE_FAST(DupWide)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+#pragma endregion()
 
+#pragma region(DupTwoX1Narrow)
 SJME_NVM_BYTECODE_FAST(DupTwoX1Narrow)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+#pragma endregion()
 
+#pragma region(DupTwoX1Wide)
 SJME_NVM_BYTECODE_FAST(DupTwoX1Wide)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+#pragma endregion()
 
+#pragma region(DupX1Wide)
 SJME_NVM_BYTECODE_FAST(DupX1Wide)
 {
 	sjme_jvalueTyped a, b;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop the top two items on the stack. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_WIDE, SJME_JNI_TRUE, NULL, &b)))
-		return sjme_error_vmError(inFrame, error);
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_WIDE, SJME_JNI_TRUE, NULL, &a)))
+		SJME_STACK_TYPE_WIDE, &commit, &b)))
+		return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_STACK_TYPE_WIDE, &commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Push them back, duplicate the first popped item. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&b)))
+		&commit, &b)))
 		return sjme_error_vmError(inFrame, error);
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&a)))
+		&commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
-		&b)))
+		&commit, &b)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(DupX2Narrow)
 SJME_NVM_BYTECODE_FAST(DupX2Narrow)
 {
 	SJME_NVM_BYTECODE_ENTRY;
@@ -74,36 +91,53 @@ SJME_NVM_BYTECODE_FAST(DupX2Narrow)
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(PopTwoNarrow)
 SJME_NVM_BYTECODE_FAST(PopTwoNarrow)
 {
 	sjme_jvalueTyped a, b;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Pop value and discard. */
+	memset(&commit, 0, sizeof(commit));
 	memset(&a, 0, sizeof(a));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_NARROW, SJME_JNI_TRUE, NULL, &a)))
-		return sjme_error_vmError(inFrame, error);
 	memset(&b, 0, sizeof(b));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_NARROW, SJME_JNI_TRUE, NULL, &b)))
+		SJME_STACK_TYPE_NARROW, &commit, &a)))
+		return sjme_error_vmError(inFrame, error);
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
+		SJME_STACK_TYPE_NARROW, &commit, &b)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()
 
+#pragma region(PopWide)
 SJME_NVM_BYTECODE_FAST(PopWide)
 {
 	sjme_jvalueTyped top;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop value and discard. */
 	memset(&top, 0, sizeof(top));
+	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_STACK_TYPE_WIDE, SJME_JNI_TRUE, NULL, &top)))
+		SJME_STACK_TYPE_WIDE, &commit, &top)))
+		return sjme_error_vmError(inFrame, error);
+	
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
 }
+#pragma endregion()

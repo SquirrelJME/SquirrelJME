@@ -8,6 +8,7 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/config.h"
+#include "sjme/native.h"
 
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN 1
@@ -28,8 +29,13 @@
 #include "sjme/alloc.h"
 #include "sjme/dylib.h"
 
-/** Debug buffer size for messages. */
-#define DEBUG_BUF 512
+#if defined(SJME_CONFIG_HAS_LOW_MEMORY)
+	/** Debug buffer size for messages. */
+	#define DEBUG_BUF 64
+#else
+	/** Debug buffer size for messages. */
+	#define DEBUG_BUF 512
+#endif
 
 /** The crash function to call. */
 sjme_threadLocal(sjme_thread_mainFunc, sjme_debug_crashFunc);
@@ -217,50 +223,84 @@ void sjme_genericMessage(sjme_lpcstr file, int line,
 {
 #if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	va_list copy;
-	char buf[DEBUG_BUF];
-	char fullBuf[DEBUG_BUF];
-	int hasPrefix;
+	sjme_cchar fullBuf[DEBUG_BUF];
+	sjme_jint hasPrefix, fullBufAt, left;
 	sjme_jboolean handled;
-	
-	/* Need to copy because this works differently on other arches. */
-	va_copy(copy, args);
-	
-	/* Load message buffer. */
-	if (format == NULL)
-		strncpy(buf, "No message", DEBUG_BUF);
-	else
-	{
-		memset(buf, 0, sizeof(buf));
-		vsnprintf(buf, DEBUG_BUF - 1, format, copy);
-	}
-	
-	/* Cleanup the copy. */
-	va_end(copy);
+	const sjme_nal_stdIo* stdErr;
+	sjme_nal_lineEndingType lineEnd;
 	
 	/* Print output message. */
 	hasPrefix = (prefix != NULL && strlen(prefix) > 0);
 	memset(fullBuf, 0, sizeof(fullBuf));
 	if (file != NULL || line > 0 || func != NULL)
 		snprintf(fullBuf, DEBUG_BUF - 1,
-			"%s%s(%s:%d in %s()): %s",
+			"%s%s(%s:%d in %s()): ",
 			prefix, (hasPrefix ? " " : ""),
-			sjme_debug_shortenFile(file), line, func, buf);
+			sjme_debug_shortenFile(file), line, func);
 	else
 		snprintf(fullBuf, DEBUG_BUF - 1,
-			"%s%s%s",
-			prefix, (hasPrefix ? " " : ""), buf);
+			"%s%s",
+			prefix, (hasPrefix ? " " : ""));
+	fullBuf[DEBUG_BUF - 1] = '\0';
+
+	/* How much was written to the buffer? */
+	/* And how much can we write? */
+	fullBufAt = (sjme_jint)strlen(fullBuf);
+	left = (DEBUG_BUF - 1) - fullBufAt;
+	if (left < 0)
+		left = 0;
+
+	/* Need to copy because this works differently on other arches. */
+	va_copy(copy, args);
+
+	/* Only fill in if there is room. */
+	if (left > 0)
+	{
+		/* Load message buffer. */
+		if (format == NULL)
+			strncpy(&fullBuf[fullBufAt], "No message", left);
+		else
+		{
+			vsnprintf(&fullBuf[fullBufAt], left,
+				format, copy);
+		}
+		fullBuf[DEBUG_BUF - 1] = '\0';
+	}
+
+	/* Cleanup the copy. */
+	va_end(copy);
 		
 	/* First try to print to the frontend callback, if any. */
 	handled = SJME_JNI_FALSE;
 	if (sjme_debug_handlers != NULL && sjme_debug_handlers->message != NULL)
 		handled = sjme_debug_handlers->message(
-			fullBuf, buf);
+			fullBuf, &fullBuf[fullBufAt]);
 
 	/* Make sure it gets written somewhere. */
 	if (!handled)
 	{
-		fprintf(stderr, "%s\n", fullBuf);
-		fflush(stderr);
+		/* Write the output. */
+		stdErr = &sjme_nal_default.stdIo[SJME_NVM_MLE_STD_PIPE_STDERR];
+		if (stdErr->out != NULL)
+		{
+			/* Which line ending is used? */
+			lineEnd = 0;
+			if (sjme_nal_default.lineEnding != NULL)
+				lineEnd = sjme_nal_default.lineEnding();
+
+			/* Keep it valid. */
+			if (lineEnd < 0 || lineEnd >= SJME_NAL_NUM_LINE_ENDINGS)
+				lineEnd = 0;
+
+			stdErr->out(fullBuf, 0,
+				(sjme_jint)strlen(fullBuf));
+			stdErr->out(sjme_nal_lineEndings[lineEnd], 0,
+				(sjme_jint)strlen(sjme_nal_lineEndings[lineEnd]));
+		}
+
+		/* Flush where possible. */
+		if (stdErr->flush != NULL)
+			stdErr->flush();
 	}
 #endif
 }
@@ -314,7 +354,7 @@ static void sjme_message_hexDumpChar(sjme_lpstr* w, sjme_lpstr end,
 	sjme_jint c)
 {
 	if ((*w) < end)
-		*((*w)++) = c;
+		*((*w)++) = (sjme_cchar)c;
 }
 
 static void sjme_message_hexDumpHex(sjme_lpstr* w, sjme_lpstr end,

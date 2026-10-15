@@ -994,13 +994,42 @@ extern "C" {
 	#define SJME_FLOAT_BD(bin, dec) (dec)
 #endif
 
+#if defined(SJME_CONFIG_HAS_SDCC)
+	/**
+	 * This is a microcontroller, so remove as much optional stuff as
+	 * possible.
+	 */
+	#define SJME_CONFIG_HAS_MICROCONTROLLER
+#endif
+
 #if defined(SJME_CONFIG_HAS_AMIGA) || \
 	defined(SJME_CONFIG_HAS_OS_WINDOWS_16) || \
 	defined(SJME_CONFIG_HAS_OS_WINDOWS_CE) || \
 	defined(SJME_CONFIG_HAS_OS_PALMOS) || \
-	defined(SJME_CONFIG_HAS_OS_BAREMETAL)
+	defined(SJME_CONFIG_HAS_OS_BAREMETAL) || \
+	defined(SJME_CONFIG_HAS_MICROCONTROLLER)
 	/** Use a minimal amount of memory. */
 	#define SJME_CONFIG_HAS_LOW_MEMORY
+#endif
+
+#if defined(SJME_CONFIG_HAS_MICROCONTROLLER)
+	/** Disable walking/snapshot support. */
+	#define SJME_CONFIG_DISABLE_WALK
+
+	/** Modeless stars are not needed for microcontrollers. */
+	#define SJME_CONFIG_DISABLE_MODELESS_STARS
+
+	/** Disable bitline LUTs, as these are huge. */
+	#define SJME_CONFIG_DISABLE_BITLINE_LUT
+#endif
+
+/* These were not set by CMake? */
+#if defined(SJME_CONFIG_HAS_OS_PALMOS) || \
+	defined(SJME_CONFIG_HAS_SDCC)
+	#if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
+		/** No dynamic libraries are supported. */
+		#define SJME_CONFIG_HAS_NO_DYLIB_SUPPORT
+	#endif
 #endif
 
 /* More verbosity? */
@@ -1131,7 +1160,8 @@ extern "C" {
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/** Enable use of @link sjme_attrSelectAny @endlink. */
 	#define SJME_CONFIG_HAS_ATTR_SELECT_ANY
-#else
+#elif defined(SJME_CONFIG_HAS_GCC) || \
+	defined(SJME_CONFIG_HAS_CLANG)
 	/** Enable use of @link sjme_attrWeak @endlink. */
 	#define SJME_CONFIG_HAS_ATTR_WEAK
 #endif
@@ -1145,6 +1175,11 @@ extern "C" {
 	
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"
+
+#if !defined(SJME_CONFIG_NESTED_THREAD_TIC_LIMIT)
+	/** Nested thread tic limit, to prevent nested threads from blocking. */
+	#define SJME_CONFIG_NESTED_THREAD_TIC_LIMIT INT32_C(8192)
+#endif
 	
 /*--------------------------------------------------------------------------*/
 

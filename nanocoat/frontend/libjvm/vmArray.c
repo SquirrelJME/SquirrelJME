@@ -12,11 +12,13 @@
 jint JNICALL JVM_GetArrayLength(JNIEnv* env, jobject arr)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jobject JNICALL JVM_GetArrayElement(JNIEnv* env, jobject arr, jint index)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 jvalue JNICALL JVM_GetPrimitiveArrayElement(JNIEnv* env,
@@ -24,7 +26,10 @@ jvalue JNICALL JVM_GetPrimitiveArrayElement(JNIEnv* env,
 	jint index,
 	jint wCode)
 {
+	jvalue result;
+
 	sjme_todo("Impl?");
+	return result;
 }
 
 void JNICALL JVM_SetArrayElement(JNIEnv* env,
@@ -47,9 +52,11 @@ void JNICALL JVM_SetPrimitiveArrayElement(JNIEnv* env,
 jobject JNICALL JVM_NewArray(JNIEnv* env, jclass eltClass, jint length)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobject JNICALL JVM_NewMultiArray(JNIEnv* env, jclass eltClass, jintArray dim)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }

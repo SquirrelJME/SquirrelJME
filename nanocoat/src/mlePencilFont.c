@@ -11,6 +11,10 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
+#pragma region(mleInfo)
+	#define SJME_NVM_MLE_SHELF PencilFontShelf
+#pragma endregion(mleInfo)
+
 SJME_NVM_MLE_SHELF_DECLARE(PencilFontShelf) =
 {
 	SJME_NVM_MLE_STOP()

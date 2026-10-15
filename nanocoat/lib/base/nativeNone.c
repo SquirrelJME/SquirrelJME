@@ -11,7 +11,6 @@
 #include "sjme/intern/nal.h"
 #include "sjme/path.h"
 
-
 #pragma region(execPath)
 #if (SJME_CONFIG_NAL_EXEC_PATH == SJME_CONFIG_NAL_IMPLEMENT_NONE)
 

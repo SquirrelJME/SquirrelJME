@@ -17,6 +17,7 @@ const sjme_nal sjme_nal_default =
 	sjme_sm(.execPath, sjme_nal_default_execPath),
 	sjme_sm(.fileOpen, sjme_nal_default_fileOpen),
 	sjme_sm(.getEnv, sjme_nal_default_getEnv),
+	sjme_sm(.lineEnding, sjme_nal_default_lineEnding),
 	sjme_sm(.nanoTime, sjme_nal_default_nanoTime),
 	sjme_sm(.pathStyle, sjme_nal_default_pathStyle),
 	sjme_sm(.tcpUdp, sjme_nal_default_tcpUdp),
@@ -44,6 +45,14 @@ const sjme_nal sjme_nal_default =
 	},
 	sjme_sm(.userHome, sjme_nal_default_userHome),
 	sjme_sm(.userName, NULL),
+};
+
+const sjme_lpcstr sjme_nal_lineEndings[SJME_NAL_NUM_LINE_ENDINGS] =
+{
+	"?",
+	"\n",
+	"\r",
+	"\r\n",
 };
 
 #if defined(SJME_CONFIG_HAS_ERRNO_H)
@@ -83,6 +92,21 @@ sjme_errorCode sjme_nal_errno(sjme_jint errNum)
 }
 #endif
 
+sjme_nal_lineEndingType sjme_nal_default_lineEnding(void)
+{
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_16) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_32) || \
+	defined(SJME_CONFIG_HAS_OS_PALMOS) || \
+	defined(SJME_CONFIG_HAS_OS_PC_DOS)
+	return SJME_NAL_LINE_ENDING_CRLF;
+#elif defined(SJME_CONFIG_HAS_OS_MACOS_CLASSIC)
+	return SJME_NAL_LINE_ENDING_CR;
+#else
+	return SJME_NAL_LINE_ENDING_LF;
+#endif
+}
+
 sjme_errorCode sjme_nal_stdF(
 	sjme_attrInNotNull sjme_nal_stdOFunc outFunc,
 	sjme_attrInNotNull sjme_lpcstr format,
@@ -117,7 +141,7 @@ sjme_errorCode sjme_nal_stdF(
 
 	/* Send to the output. */
 #if !defined(SJME_CONFIG_HAS_NO_STDIO)
-	return outFunc(buf, 0, strlen(buf));
+	return outFunc(buf, 0, (sjme_jint)strlen(buf));
 #undef BUF_SIZE
 #else
 	/* Just say success */

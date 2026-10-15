@@ -9,7 +9,7 @@
 
 package cc.squirreljme.runtime.nttdocomo.ui;
 
-import cc.squirreljme.jvm.mle.scritchui.NativeScritchInterface;
+import cc.squirreljme.jvm.mle.scritchui.NativeScritchUIShelf;
 import cc.squirreljme.runtime.lcdui.gfx.DoubleBuffer;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraDisplayable;
 import cc.squirreljme.runtime.lcdui.scritchui.extra.ExtraStateManager;
@@ -65,7 +65,7 @@ public final class LockFlush
 	public LockFlush checkThread()
 	{
 		// Flag if we are not in the event thread
-		if (!NativeScritchInterface.nativeInterface().eventLoop().inLoop())
+		if (!NativeScritchUIShelf.nativeInterface().eventLoop().inLoop())
 			synchronized (this)
 			{
 				this._outOfThread = true;
@@ -128,7 +128,7 @@ public final class LockFlush
 	public void unlock(boolean __forced)
 	{
 		// If we are in the event loop, do not lock
-		if (NativeScritchInterface.nativeInterface().eventLoop().inLoop())
+		if (NativeScritchUIShelf.nativeInterface().eventLoop().inLoop())
 			return;
 		
 		// Count down

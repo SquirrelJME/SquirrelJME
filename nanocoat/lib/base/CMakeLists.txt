@@ -21,6 +21,7 @@ squirreljme_multilib_add_library(Base
 	dylib.c
 	dylibExtra.c
 	error.c
+	externalWeak.c
 	fixed.c
 	frontEnd.c
 	inflate.c
