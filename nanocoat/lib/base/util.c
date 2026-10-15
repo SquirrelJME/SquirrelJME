@@ -186,6 +186,83 @@ sjme_jint sjme_lpwcsnlen(sjme_lpcwstr s, sjme_jint n)
 	return sjme_min(i, n);
 }
 
+sjme_intMax sjme_lpwcstoimax(sjme_attrInNotNull sjme_lpcwstr str,
+	sjme_attrOutNullable sjme_lpcwstr* endP,
+	sjme_attrInRange(2, 36) sjme_jint base)
+{
+	sjme_intMax result, add, mul, div;
+	sjme_jchar c;
+	sjme_jboolean negate;
+
+	/* Invalid inputs? */
+	if (str == NULL || base < 2 || base > 36)
+		return INTMAX_MIN;
+
+	/* Should this be negated? */
+	if ((*str) != '-')
+		negate = SJME_JNI_FALSE;
+	else
+	{
+		str++;
+		negate = SJME_JNI_TRUE;
+	}
+
+	/* Set base result. */
+	result = 0;
+
+	/* Parse values until an invalid character is hit. */
+	for (;;)
+	{
+		/* Determine the base add value. */
+		c = (*str);
+		if (c >= '0' && c <= '9')
+			add = c - '0';
+		else if (c >= 'a' && c <= 'z')
+			add = (c - 'a') + 10;
+		else if (c >= 'A' && c <= 'Z')
+			add = (c - 'A') + 10;
+
+		/* If none were met, this is an invalid base. */
+		else
+			break;
+
+		/* Is the base out of range? */
+		if (add < 0 || add >= base)
+			break;
+
+		/* Multiply by the base, then divide again to check for overflow. */
+		mul = result * base;
+		div = mul / base;
+
+		/* If these two values are different, we did overflow. */
+		if (result != div)
+			return INTMAX_MIN;
+
+		/* Add in the decoded digit. */
+		mul += add;
+
+		/* Divide again to check if we overflowed. */
+		div = mul / base;
+		if (result != div)
+			return INTMAX_MIN;
+
+		/* Did not overflow, so use the new value. */
+		result = mul;
+
+		/* Move to the next character. */
+		str++;
+	}
+
+	/* If the end was desired, return it. */
+	if (endP != NULL)
+		*endP = str;
+
+	/* Negate the final value? */
+	if (negate)
+		return -result;
+	return result;
+}
+
 sjme_errorCode sjme_random_init(
 	sjme_attrInOutNotNull sjme_random* outRandom,
 	sjme_attrInValue sjme_jint seedHi,

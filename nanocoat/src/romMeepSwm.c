@@ -65,20 +65,110 @@ static sjme_errorCode sjme_nvm_rom_swmParseVersion(
 	sjme_attrInNotNull sjme_lpcwstr in,
 	sjme_attrInPositiveNonZero sjme_jint inLen)
 {
+	sjme_lpcwstr end, left, right, term;
+	sjme_lpcwstr majP, minP, relP;
+	sjme_intMax maj, min, rel;
+
 	if (outVer == NULL || in == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inLen <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* This is used for disregarding values. */
+	end = &in[inLen];
+
+	/* Find the left dot. */
+	left = sjme_lpwcschr(in, '.');
+	if (left == NULL || left >= end)
+		return SJME_ERROR_INVALID_MANIFEST_VALUE;
+
+	/* Find the right dot. */
+	right = sjme_lpwcschr(left + 1, '.');
+	if (right == NULL || right >= end)
+		return SJME_ERROR_INVALID_MANIFEST_VALUE;
+
+	/* Is there a dash terminator for -compact? */
+	term = sjme_lpwcschr(right + 1, '-');
+	if (term == NULL || term >= end)
+		term = end;
+
+	/* Used to check for extra garbage values. */
+	majP = NULL;
+	minP = NULL;
+	relP = NULL;
+
+	/* Parse the individual values. */
+	maj = sjme_lpwcstoimax(in, &majP, 10);
+	min = sjme_lpwcstoimax(left + 1, &minP, 10);
+	rel = sjme_lpwcstoimax(right + 1, &relP, 10);
+
+	/* Are any of these invalid? */
+	/* Note that the end pointers must land exactly on their right side. */
+	if (maj > 99 || min > 99 || rel > 99 ||
+		maj < 0 || min < 0 || rel < 0 ||
+		majP == NULL || minP == NULL || relP == NULL ||
+		majP != left || minP != right || relP != term)
+		return SJME_ERROR_INVALID_MANIFEST_VALUE;
+
+	/* Fill in. */
+	outVer->major = (sjme_jubyte)maj;
+	outVer->minor = (sjme_jubyte)min;
+	outVer->release = (sjme_jubyte)rel;
+
+	/* Is this compact? */
+	if (term != end)
+		outVer->isCompact = (0 == sjme_string_compareIAWN(
+			"-compact", -1,
+			term, end - term));
+	else
+		outVer->isCompact = SJME_JNI_FALSE;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_rom_swmParseNamedVersion(
+	sjme_attrOutNotNull sjme_nvm_swmInfoNameVersion* outNameVer,
+	sjme_attrInNotNull sjme_lpcwstr in,
+	sjme_attrInPositiveNonZero sjme_jint inLen)
+{
+	sjme_errorCode error;
+	sjme_lpcwstr end, dash;
+
+	if (outNameVer == NULL || in == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* End is always here. */
+	end = &in[inLen];
+
+	/* There needs to be a dash, if not then this is not going to be a */
+	/* configuration/profile of any kind. */
+	dash = sjme_lpwcschr(in, '-');
+	if (dash == NULL || dash > end)
+		return SJME_ERROR_INVALID_MANIFEST_VALUE;
+
+	/* Copy over the configuration name. */
+	sjme_lpwcsncat(outNameVer->name, in,
+		sjme_lpwcsnlen(in, (dash - in) + 1));
+
+	/* Parse the version number. */
+	if (sjme_error_is(error = sjme_nvm_rom_swmParseVersion(
+		&outNameVer->version,
+		(dash + 1), (end - dash) - 1)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 SJME_MEEP_SWM_FUNC(definedConfigs)
 {
 	sjme_errorCode error;
-	sjme_lpcwstr end, dash;
+	sjme_lpcwstr end;
 
 	/* X-SquirrelJME-DefinedConfigurations: CLDC-1.8.0-compact CLDC-1.1 */
 	/*  .1 CLDC-1.1.0 CLDC-1.0.0 */
@@ -94,24 +184,14 @@ SJME_MEEP_SWM_FUNC(definedConfigs)
 	if (end == NULL)
 		end = &(*lpwv)[sjme_lpwcslen(*lpwv)];
 
-	/* There needs to be a dash, if not then this is not going to be a */
-	/* configuration of any kind. */
-	dash = sjme_lpwcschr(*lpwv, '-');
-	if (dash == NULL || dash > end)
-	{
-		*lpwv = end;
-		goto skip_otherwise;
-	}
-
-	/* Copy over the configuration name. */
-	sjme_lpwcsncat(tempEntry->configuration.name, *lpwv,
-		sjme_lpwcsnlen(*lpwv, (dash - (*lpwv)) + 1));
-
-	/* Parse the version number. */
-	if (sjme_error_is(error = sjme_nvm_rom_swmParseVersion(
-		&tempEntry->configuration.version,
-		(dash + 1), (end - dash) - 1)))
+	/* Parse named version. */
+	if (sjme_error_is(error = sjme_nvm_rom_swmParseNamedVersion(
+		&tempEntry->configuration,
+		(*lpwv), (end - (*lpwv)))))
 		return sjme_error_default(error);
+
+	/* Move the pointer over since it is valid. */
+	*lpwv = end;
 
 	/* Set details last, as everything is valid now. */
 	tempEntry->tag.type = SJME_NVM_SWM_DEPENDENCY_CONFIGURATION;

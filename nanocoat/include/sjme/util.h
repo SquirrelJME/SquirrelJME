@@ -239,7 +239,29 @@ sjme_jint sjme_lpwcslen(sjme_lpcwstr s);
  * @since 2026/07/04
  */
 sjme_jint sjme_lpwcsnlen(sjme_lpcwstr s, sjme_jint n);
-	
+
+/**
+ * Converts a wide string to an integral value.
+ *
+ * The return value of @code INTMAX_MIN @endcode does differ from the
+ * traditional @code 0 @endcode, however it is more likely that zero will
+ * be more of a valid value than the smallest possible value. Additionally,
+ * there is no @code errno @endcode available. If there must be no doubt that
+ * such smallest possible value is not parsed then @code endP @endcode can be
+ * used as this implementation will never set it if parsing fails.
+ *
+ * @param str The string to convert.
+ * @param endP The resultant end pointer which points to the end of
+ * the actually parsed value, this is optional.
+ * @param base The number base to parse.
+ * @return The resultant value, or @code INTMAX_MIN @endcode if it could
+ * not be parsed.
+ * @since 2026/10/14
+ */
+sjme_intMax sjme_lpwcstoimax(sjme_attrInNotNull sjme_lpcwstr str,
+	sjme_attrOutNullable sjme_lpcwstr* endP,
+	sjme_attrInRange(2, 36) sjme_jint base);
+
 /**
  * Initializes the random number generator.
  * 
