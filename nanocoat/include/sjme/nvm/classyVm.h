@@ -141,7 +141,7 @@ typedef struct sjme_nvm_fieldObject
 	sjme_jint check;
 	
 	/** The pointer to the object. */
-	sjme_alignPointer(sjme_jobject p);
+	sjme_alignPointer sjme_jobject p;
 } sjme_nvm_fieldObject;
 
 /**

@@ -67,7 +67,7 @@ extern "C" {
 		sjme_jint elementOffset; \
 	 \
 		/** The elements in the list. */ \
-		sjme_alignPointer() SJME_TOKEN_TYPE(type, numPointerStars) \
+		sjme_alignPointer SJME_TOKEN_TYPE(type, numPointerStars) \
 			elements[sjme_flexibleArrayCount]; \
 	} SJME_LIST_NAME(type, numPointerStars)
 
