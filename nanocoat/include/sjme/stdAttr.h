@@ -402,7 +402,7 @@ extern "C"
 	#define sjme_alignPointerL
 	
 	/** Align to Pointer (right append). */
-	#define sjme_alignPointerR sjme_alignPointerR
+	#define sjme_alignPointerR sjme_alignPointer
 #endif
 
 /** Align to 32-bits (wrapped). */

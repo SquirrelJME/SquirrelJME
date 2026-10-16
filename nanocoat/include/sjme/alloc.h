@@ -128,13 +128,13 @@ SJME_ATOMIC_DECLARE(sjme_alloc_link, 0);
 struct sjme_alloc_weakBase
 {
 	/** Is this weak reference valid? */
-	sjme_alignPointer sjme_atomic(sjme_jint) valid;
+	sjme_alignPointerL sjme_atomic(sjme_jint) valid sjme_alignPointerR;
 	
 	/** The link this points to, @c NULL if freed. */
 	sjme_atomic(sjme_alloc_link) link;
 	
 	/** The count for this weak reference, zero will free this reference. */
-	sjme_alignPointer sjme_atomic(sjme_jint) count;
+	sjme_alignPointerL sjme_atomic(sjme_jint) count sjme_alignPointerR;
 	
 	/** The pointer this points to, @c NULL if freed. */
 	sjme_atomic(sjme_pointer) pointer;
@@ -143,7 +143,7 @@ struct sjme_alloc_weakBase
 	sjme_alloc_weakEnqueueFunc enqueue;
 	
 	/** Is this in an enqueue? */
-	sjme_alignPointer sjme_atomic(sjme_jint) inEnqueue;
+	sjme_alignPointerL sjme_atomic(sjme_jint) inEnqueue sjme_alignPointerR;
 };
 
 struct sjme_alloc_linkBase
@@ -246,7 +246,7 @@ struct sjme_alloc_poolBase
 	sjme_alloc_pointerIdTypeFunc pointerIdType;
 	
 	/** Whole pool spin lock. */
-	sjme_alignPointer sjme_thread_spinLock spinLock;
+	sjme_alignPointerL sjme_thread_spinLock spinLock sjme_alignPointerR;
 	
 	/** Free and used space information. */
 	struct
@@ -277,7 +277,8 @@ struct sjme_alloc_poolBase
 	sjme_atomic(sjme_alloc_link) freeLastLink;
 	
 	/** The memory block. */
-	sjme_jubyte block[sjme_flexibleArrayCount];
+	sjme_alignPointerL sjme_jubyte block[sjme_flexibleArrayCount]
+		sjme_alignPointerR;
 };
 
 /**

@@ -185,13 +185,13 @@ typedef sjme_thread_result (sjme_attrThreadCall *sjme_thread_mainFunc)(
 typedef volatile struct sjme_alignPointerL sjme_thread_spinLock
 {
 	/** The thread that is currently poking this lock. */
-	sjme_alignPointer sjme_atomic(sjme_thread) poke;
+	sjme_alignPointerL sjme_atomic(sjme_thread) poke sjme_alignPointerR;
 	
 	/** The thread that owns this lock. */
-	sjme_alignPointer sjme_atomic(sjme_thread) owner;
+	sjme_alignPointerL sjme_atomic(sjme_thread) owner sjme_alignPointerR;
 	
 	/** Lock count. */
-	sjme_alignPointer sjme_atomic(sjme_jint) count;
+	sjme_alignPointerL sjme_atomic(sjme_jint) count sjme_alignPointerR;
 } sjme_alignPointerR sjme_thread_spinLock;
 
 /**

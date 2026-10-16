@@ -160,7 +160,7 @@ struct sjme_frontEnd
 	sjme_frontEndData data;
 	
 	/** The lock when binding/releasing is being performed on this. */
-	sjme_alignPointer sjme_thread_spinLock bindLock;
+	sjme_alignPointerL sjme_thread_spinLock bindLock sjme_alignPointerR;
 	
 	/** The binding type used. */
 	sjme_frontEnd_bindType bindType;
