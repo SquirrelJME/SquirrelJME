@@ -363,6 +363,59 @@ extern "C"
 	/** Align to pointer. */
 	#define sjme_alignPointer
 #endif
+	
+/* Newer GCC and MSVC allow attributes anywhere. */
+#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0) || \
+	defined(SJME_CONFIG_HAS_CLANG) || \
+	defined(SJME_CONFIG_HAS_MSVC)
+	/** Align to 32-bits (left append). */
+	#define sjme_align32L sjme_align32
+	
+	/** Align to 32-bits (right append). */
+	#define sjme_align32R
+	
+	/** Align to 64-bits (left append). */
+	#define sjme_align64L sjme_align64
+	
+	/** Align to 64-bits (right append). */
+	#define sjme_align64R
+	
+	/** Align to pointer (left append). */
+	#define sjme_alignPointerL sjme_alignPointer
+	
+	/** Align to Pointer (right append). */
+	#define sjme_alignPointerR
+#else
+	/** Align to 32-bits (left append). */
+	#define sjme_align32L
+	
+	/** Align to 32-bits (right append). */
+	#define sjme_align32R sjme_align32
+	
+	/** Align to 64-bits (left append). */
+	#define sjme_align64L
+	
+	/** Align to 64-bits (right append). */
+	#define sjme_align64R sjme_align64
+	
+	/** Align to pointer (left append). */
+	#define sjme_alignPointerL
+	
+	/** Align to Pointer (right append). */
+	#define sjme_alignPointerR sjme_alignPointerR
+#endif
+
+/** Align to 32-bits (wrapped). */
+#define sjme_align32W(var) \
+	sjme_align32L var sjme_align32R
+
+/** Align to 64-bits (wrapped). */
+#define sjme_align64W(var) \
+	sjme_align64L var sjme_align64R
+
+/** Align to pointer (wrapped). */
+#define sjme_alignPointerW(var) \
+	sjme_alignPointerL var sjme_alignPointerR
 
 #if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Packed enumeration. */

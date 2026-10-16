@@ -130,7 +130,7 @@ struct sjme_charSeqStatic
 	sjme_atomic(sjme_jint) hash;
 
 	/** The sequence data. */
-	sjme_alignPointer union
+	sjme_alignPointerL union
 	{
 		/** The bytes stored in the sequence. */
 		sjme_jbyte bytes[sjme_flexibleArrayCountUnion];
@@ -156,7 +156,7 @@ struct sjme_charSeqStatic
 
 		/** Static wide pointer. */
 		sjme_lpcwstr staticWide;
-	} data;
+	} sjme_alignPointerR data;
 };
 
 /**
