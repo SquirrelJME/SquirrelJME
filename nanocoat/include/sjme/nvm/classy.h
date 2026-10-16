@@ -415,7 +415,7 @@ typedef struct sjme_nvm_class_poolEntryDouble
 	sjme_nvm_class_poolType type;
 	
 	/** The constant value. */
-	sjme_align64 sjme_jdouble value;
+	sjme_align64(sjme_jdouble value);
 } sjme_nvm_class_poolEntryDouble;
 
 /**
@@ -498,7 +498,7 @@ typedef struct sjme_nvm_class_poolEntryLong
 	sjme_nvm_class_poolType type;
 	
 	/** The constant value. */
-	sjme_align64 sjme_jlong value;
+	sjme_align64(sjme_jlong value);
 } sjme_nvm_class_poolEntryLong;
 
 /**

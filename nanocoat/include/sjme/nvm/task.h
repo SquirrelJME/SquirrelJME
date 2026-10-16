@@ -177,7 +177,7 @@ struct sjme_frame_frameStack
 	sjme_jint length;
 	
 	/** Pointer bases for the type on the frame. */
-	sjme_alignPointer union
+	sjme_alignPointer() union
 	{
 		/** Pointer base. */
 		sjme_pointer base;

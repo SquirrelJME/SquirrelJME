@@ -128,13 +128,13 @@ SJME_ATOMIC_DECLARE(sjme_alloc_link, 0);
 struct sjme_alloc_weakBase
 {
 	/** Is this weak reference valid? */
-	sjme_alignPointer sjme_atomic(sjme_jint) valid;
+	sjme_alignPointer(sjme_atomic(sjme_jint) valid);
 	
 	/** The link this points to, @c NULL if freed. */
 	sjme_atomic(sjme_alloc_link) link;
 	
 	/** The count for this weak reference, zero will free this reference. */
-	sjme_alignPointer sjme_atomic(sjme_jint) count;
+	sjme_alignPointer(sjme_atomic(sjme_jint) count);
 	
 	/** The pointer this points to, @c NULL if freed. */
 	sjme_atomic(sjme_pointer) pointer;
@@ -143,7 +143,7 @@ struct sjme_alloc_weakBase
 	sjme_alloc_weakEnqueueFunc enqueue;
 	
 	/** Is this in an enqueue? */
-	sjme_alignPointer sjme_atomic(sjme_jint) inEnqueue;
+	sjme_alignPointer(sjme_atomic(sjme_jint) inEnqueue);
 };
 
 struct sjme_alloc_linkBase
@@ -246,7 +246,7 @@ struct sjme_alloc_poolBase
 	sjme_alloc_pointerIdTypeFunc pointerIdType;
 	
 	/** Whole pool spin lock. */
-	sjme_alignPointer sjme_thread_spinLock spinLock;
+	sjme_alignPointer(sjme_thread_spinLock spinLock);
 	
 	/** Free and used space information. */
 	struct

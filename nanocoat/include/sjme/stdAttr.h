@@ -333,35 +333,35 @@ extern "C"
 
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/** Align to 32-bit. */
-	#define sjme_align32 __declspec(align(4))
+	#define sjme_align32(var) __declspec(align(4)) var
 #elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Align to 32-bit. */
-	#define sjme_align32 __attribute__((aligned(4)))
+	#define sjme_align32(var) var __attribute__((aligned(4)))
 #else
 	/** Align to 32-bit. */
-	#define sjme_align32
+	#define sjme_align32(var)
 #endif
 
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/** Align to 64-bit. */
-	#define sjme_align64 __declspec(align(8))
+	#define sjme_align64(var) __declspec(align(8)) var
 #elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Align to 64-bit. */
-	#define sjme_align64 __attribute__((aligned(8)))
+	#define sjme_align64(var) var __attribute__((aligned(8)))
 #else
 	/** Align to 64-bit. */
-	#define sjme_align64
+	#define sjme_align64(var) var
 #endif
 
 #if SJME_CONFIG_HAS_POINTER == 64
 	/** Align to pointer. */
-	#define sjme_alignPointer sjme_align64
+	#define sjme_alignPointer(var) sjme_align64(var)
 #elif SJME_CONFIG_HAS_POINTER == 32
 	/** Align to pointer. */
-	#define sjme_alignPointer sjme_align32
+	#define sjme_alignPointer(var) sjme_align32(var)
 #else
 	/** Align to pointer. */
-	#define sjme_alignPointer
+	#define sjme_alignPointer(var) var
 #endif
 
 #if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
@@ -388,7 +388,7 @@ extern "C"
 	#define sjme_attrHugeP
 #endif
 
-#if defined(SJME_CONFIG_HAS_GCC)
+#if defined(SJME_CONFIG_HAS_GCC) && SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
 	/** Optimize this specific function. */
 	#define sjme_attrOptimize __attribute__((optimize("-Os")))
 #elif defined(SJME_CONFIG_HAS_MSVC)

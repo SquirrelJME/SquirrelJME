@@ -58,7 +58,7 @@ typedef enum sjme_traverse_createMode
  * 
  * @since 2024/08/22
  */
-typedef union sjme_alignPointer sjme_traverse_node
+typedef union sjme_alignPointer() sjme_traverse_node
 	sjme_traverse_node;
 
 #if SJME_CONFIG_HAS_POINTER == 64
@@ -85,7 +85,7 @@ typedef union sjme_alignPointer sjme_traverse_node
  * 
  * @since 2024/09/02
  */
-typedef sjme_alignPointer struct sjme_traverse_nodeNode
+typedef sjme_alignPointer() struct sjme_traverse_nodeNode
 {
 	/** Zero branch. */
 	sjme_traverse_node* zero;
@@ -99,22 +99,22 @@ typedef sjme_alignPointer struct sjme_traverse_nodeNode
  * 
  * @since 2024/09/02
  */
-typedef sjme_alignPointer struct sjme_traverse_nodeLeaf
+typedef sjme_alignPointer() struct sjme_traverse_nodeLeaf
 {
 	/** Node type identifier. */
 	sjme_intPointer key;
 	
 	/** Leaf value. */
-	sjme_alignPointer sjme_jubyte value[sjme_flexibleArrayCountUnion];
+	sjme_alignPointer(sjme_jubyte value[sjme_flexibleArrayCountUnion]);
 } sjme_traverse_nodeLeaf;
 
-union sjme_alignPointer sjme_traverse_node
+union sjme_alignPointer() sjme_traverse_node
 {
 	/** Data if a node. */
-	sjme_alignPointer sjme_traverse_nodeNode node;
+	sjme_alignPointer(sjme_traverse_nodeNode node);
 	
 	/** Data if a leaf. */
-	sjme_alignPointer sjme_traverse_nodeLeaf leaf;
+	sjme_alignPointer(sjme_traverse_nodeLeaf leaf);
 };
 
 /**
@@ -152,7 +152,7 @@ typedef struct sjme_traverse_base
 	sjme_jint storageBytes;
 	
 	/** Storage for tree nodes. */
-	sjme_alignPointer sjme_jubyte storage[sjme_flexibleArrayCount];
+	sjme_alignPointer(sjme_jubyte storage[sjme_flexibleArrayCount]);
 } sjme_traverse_base;
 
 /**

@@ -10,14 +10,24 @@
 # Used to determine if certain symbols exist
 include(CheckSymbolExists)
 
+# Platforms that support threading, however there is no supported threading
+# implementation yet
+set(SJME_CONFIG_HAS_THREADING_TODO NO)
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "haiku")
+	set(SJME_CONFIG_HAS_THREADING_TODO YES)
+endif()
+
 # These platforms do not support any kind of threading just by their nature
 # Previously a comment existed that specified that unknown platforms
 # Do not use any form of threading if building a libretro core, as most of
 # the toolchains used are either out of date and/or broken.
+# Alternatively as well, if there is native threading for the system and it
+# is not yet implemented there is that
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "dos" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "sdcc" OR
 	SQUIRRELJME_IS_LIBRETRO OR
-	SJME_CONFIG_ONLY_THREAD_SINGLE)
+	SJME_CONFIG_ONLY_THREAD_SINGLE OR
+	SJME_CONFIG_HAS_THREADING_TODO)
 	# Why?
 	if(SJME_CONFIG_ONLY_THREAD_SINGLE)
 		message(STATUS "A configuration flag disabled threading!")

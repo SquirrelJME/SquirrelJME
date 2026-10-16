@@ -288,6 +288,8 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 	elseif("__SDCC" IN_LIST defines OR
 		"SDCC" IN_LIST defines)
 		set(hasSystem "sdcc")
+	elseif("__HAIKU__" IN_LIST defined)
+		set(hasSystem "haiku")
 	else()
 		set(hasSystem "unknown")
 	endif()
@@ -380,12 +382,17 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 			set(hasArch "ia16")
 		endif()
 	elseif("i386" IN_LIST defines OR
+		"i586" IN_LIST defines OR
 		"__i386" IN_LIST defines OR
+		"__i586" IN_LIST defines OR
 		"__i386__" IN_LIST defines OR
 		"__i486__" IN_LIST defines OR
 		"__i586__" IN_LIST defines OR
 		"__i686__" IN_LIST defines OR
 		"__IA32__" IN_LIST defines OR
+		"pentium" IN_LIST defines OR
+		"__pentium" IN_LIST defines OR
+		"__pentium__" IN_LIST defines OR
 		"_M_I86" IN_LIST defines OR
 		"_M_IX86" IN_LIST defines OR
 		"__X86__" IN_LIST defines OR
