@@ -16,6 +16,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Range;
 
 /**
  * This is an implementation of Nokia's graphic interface which allows for
@@ -74,6 +75,9 @@ class __NokiaGraphics__
 		if (__pixels == null)
 			throw new NullPointerException("NARG");
 
+		this.__validateArrayBounds(__offset, __scanlength, __w, __h, 
+			__pixels.length * __NokiaGraphics__.__nokiaPixPerByte(__format));
+
 		// Check if the manipulation is valid and fail early if not
 		__NokiaGraphics__.__nokiaToMIDPTransform(__manipulation);
 
@@ -106,12 +110,7 @@ class __NokiaGraphics__
 						c = ((__pixels[line + x] >> bit) & 1);
 
 						if (__alphaMask != null)
-						{
-							a = ((__alphaMask[line + x] >> bit) & 1)
-								<< 1;
-
-							a *= 255;
-						}
+							a = ((__alphaMask[line + x] >> bit) & 1) * 255;
 
 						c = (1 - c) * 255;
 
@@ -134,12 +133,8 @@ class __NokiaGraphics__
 						c = ((__pixels[(line + x) / 8] >> bit) & 1);
 
 						if (__alphaMask != null)
-						{
-							a = ((__alphaMask[(line + x) / 8] >> bit)
-								& 1) << 1;
-
-							a *= 255;
-						}
+							a = ((__alphaMask[(line + x) / 8] >> bit) & 1) *
+								255;
 
 						c = (1 - c) * 255;
 
@@ -289,6 +284,9 @@ class __NokiaGraphics__
 		if (__pixels == null)
 			throw new NullPointerException("NARG");
 
+		this.__validateArrayBounds(__offset, __scanlength, __w, __h, 
+			__pixels.length);
+
 		// Check if the manipulation is valid and fail early if not
 		__NokiaGraphics__.__nokiaToMIDPTransform(__manipulation);
 
@@ -333,6 +331,9 @@ class __NokiaGraphics__
 
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("EB0b");
+
+		this.__validateArrayBounds(__offset, __scanlength, __w, __h, 
+			__pixels.length);
 
 		// Check if the manipulation is valid and fail early if not
 		__NokiaGraphics__.__nokiaToMIDPTransform(__manipulation);
@@ -479,8 +480,11 @@ class __NokiaGraphics__
 		if (__pixels == null)
 			throw new NullPointerException("NARG");
 
+		this.__validateArrayBounds(__offset, __scanlength, __w, __h, 
+			__pixels.length * __NokiaGraphics__.__nokiaPixPerByte(__format));
+
 		int x, y, pixelPos, pixelIndex, pixelValue, byteIndex, bitIndex, c, a;
-		int r, g, b;
+		int r, g, b, rowOffset, bitShift;
 		int[] data = new int[__w * __h];
 		ExtraGraphics graphics = (ExtraGraphics)this._graphics;
 
@@ -502,17 +506,19 @@ class __NokiaGraphics__
 						pixelValue = data[pixelIndex];
 
 						// Store pixel value as a bit in the pixels array
-						byteIndex = (__offset + y) * __scanlength + (x / 8);
-						bitIndex = x % 8;
+						rowOffset = (__offset / __scanlength) + y;
+						byteIndex = (rowOffset / 8) * __scanlength +
+							(__offset % __scanlength) + x;
+						bitShift = 7 - (rowOffset % 8);
 
 						// Set the bit in the current byte to the scaled value.
-						__pixels[byteIndex] |= ((pixelValue & 0xFF) != 0 ? 0 :
-							1) << (7 - bitIndex);
+						__pixels[byteIndex] |= ((pixelValue & 0xFF) != 0 ? 1 :
+							0) << bitShift;
 
 						if (__alphaMask != null)
 							__alphaMask[byteIndex] |=
-								((pixelValue & 0xFF000000) != 0 ? 0 : 1)
-								<< (7 - bitIndex);
+								((pixelValue & 0xFF000000) != 0 ? 1 : 0) <<
+								bitShift;
 					}
 				}
 				break;
@@ -524,15 +530,15 @@ class __NokiaGraphics__
 					{
 						pixelIndex = (__y + y) * __w + (__x + x);
 						pixelValue = data[pixelIndex];
-						byteIndex = (__offset / 8) + ((y * __w + x) / 8);
-						bitIndex = (y * __w + x) % 8;
+						byteIndex = (__offset + (y * __scanlength) + x) / 8;
+						bitIndex = (__offset + (y * __scanlength) + x) % 8;
 
-						__pixels[byteIndex] |= ((pixelValue & 0xFF) != 0 ? 0 :
-							1) << (7 - bitIndex);
+						__pixels[byteIndex] |= ((pixelValue & 0xFF) != 0 ? 1 :
+							0) << (7 - bitIndex);
 
 						if (__alphaMask != null)
 							__alphaMask[byteIndex] |=
-								((pixelValue & 0xFF000000) != 0 ? 0 : 1)
+								((pixelValue & 0xFF000000) != 0 ? 1 : 0)
 								<< (7 - bitIndex);
 					}
 				}
@@ -791,6 +797,40 @@ class __NokiaGraphics__
 	}
 
 	/**
+	 * Returns how many pixels can fit in a single byte for the given
+	 * {@link DirectGraphics} pixel format.
+	 *
+	 * @param __format The {@link DirectGraphics} pixel format, to return the
+	 * amount of pixels that can be packed inside a byte.
+	 * @return The amount of pixels a byte can hold for the given format.
+	 * @throws IllegalArgumentException If the received format is not one of
+	 * the byte formats supported by {@link DirectGraphics}.
+	 * @since 2026/10/17
+	 */
+	private static int __nokiaPixPerByte(int __format)
+	{
+		switch (__format)
+		{
+			case DirectGraphics.TYPE_BYTE_1_GRAY_VERTICAL:
+			case DirectGraphics.TYPE_BYTE_1_GRAY:
+				return 8;
+
+			case DirectGraphics.TYPE_BYTE_2_GRAY:
+				return 4;
+
+			case DirectGraphics.TYPE_BYTE_4_GRAY:
+				return 2;
+
+			case DirectGraphics.TYPE_BYTE_332_RGB:
+			case DirectGraphics.TYPE_BYTE_8_GRAY:
+				return 1;
+
+			default:
+				throw new IllegalArgumentException("INVL");
+		}
+	}
+
+	/**
 	 * Converts {@link DirectGraphics} transforms into their MIDP
 	 * {@link Sprite} counterparts, in order to facilitate usage of standard
 	 * Graphics API calls within a DirectGraphics object. Note that
@@ -852,5 +892,36 @@ class __NokiaGraphics__
 			default:
 				throw new IllegalArgumentException("EB3k: " + __trans);
 		}
+	}
+
+	/**
+	 * Checks if the provided arguments access a valid region within the
+	 * specified {@code __maxLength} pixel array size.
+	 *
+	 * @param __offset The starting position's offset in the array.
+	 * @param __scanlength The offset between different rows of data (treat it
+	 * as the "width" of the image in the array).
+	 * @param __w The width of the region to be accessed.
+	 * @param __h The height of the region to be accessed.
+	 * @param __maxLength The total size of the pixel array.
+	 * @throws ArrayIndexOutOfBoundsException If the resulting area goes out 
+	 * of bounds.
+	 * @since 2026/10/17
+	 */
+	private static final void __validateArrayBounds(
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		int __scanlength,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __maxLength)
+		throws ArrayIndexOutOfBoundsException
+	{
+		if (__offset < 0)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+
+		int reqLen = (__offset + (__h - 1) * __scanlength) + __w;
+
+		if (reqLen < 0 || reqLen > __maxLength)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
 	}
 }

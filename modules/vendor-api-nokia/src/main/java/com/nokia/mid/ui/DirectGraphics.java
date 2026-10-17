@@ -143,7 +143,8 @@ public interface DirectGraphics
 	 * @param __offset The point where array reads (for both __pixels and
 	 * __alphaMask) will begin.
 	 * @param __scanlength The offset between different rows of data (treat it
-	 * as the "width" of the image in the array).
+	 * as the "width" of the image in the array). Can be negative as long as
+	 * the resulting region is entirely within bounds.
 	 * @param __x X position of the graphics object (adds to translation)
 	 * @param __y Y position of the graphics object (adds to translation)
 	 * @param __w Width of the area to be drawn.
@@ -174,7 +175,8 @@ public interface DirectGraphics
 	 * @param __transparency Indicates whether transparency has to be processed
 	 * @param __offset The point where array reads will begin.
 	 * @param __scanlength The offset between different rows of data (treat it
-	 * as the "width" of the image in the array).
+	 * as the "width" of the image in the array). Can be negative as long as
+	 * the resulting region is entirely within bounds.
 	 * @param __x X position of the graphics object (adds to translation)
 	 * @param __y Y position of the graphics object (adds to translation)
 	 * @param __w Width of the area to be drawn.
@@ -205,7 +207,8 @@ public interface DirectGraphics
 	 * @param __transparency Indicates whether transparency has to be processed
 	 * @param __offset The point where array reads will begin.
 	 * @param __scanlength The offset between different rows of data (treat it
-	 * as the "width" of the image in the array).
+	 * as the "width" of the image in the array). Can be negative as long as
+	 * the resulting region is entirely within bounds.
 	 * @param __x X position of the graphics object (adds to translation)
 	 * @param __y Y position of the graphics object (adds to translation)
 	 * @param __w Width of the area to be drawn.
@@ -355,8 +358,9 @@ public interface DirectGraphics
 	 * data into.
 	 * @param __offset The starting offset from which to place data into the
 	 * received byte buffer.
-	 * @param __scanlength The scanlength (each row's width) of the received
-	 * byte buffer.
+	 * @param __scanlength The offset between different rows of data (treat it
+	 * as the "width" of the image in the array). Can be negative as long as
+	 * the resulting region is entirely within bounds.
 	 * @param __x The starting X position of the context region to be read.
 	 * @param __y The starting Y position of the context region to be read.
 	 * @param __w The width of the context region to be read.
@@ -387,8 +391,9 @@ public interface DirectGraphics
 	 * data into.
 	 * @param __offset The starting offset from which to place data into the
 	 * received int buffer.
-	 * @param __scanlength The scanlength (each row's width) of the received
-	 * int buffer.
+	 * @param __scanlength The offset between different rows of data (treat it
+	 * as the "width" of the image in the array). Can be negative as long as
+	 * the resulting region is entirely within bounds.
 	 * @param __x The starting X position of the context region to be read.
 	 * @param __y The starting Y position of the context region to be read.
 	 * @param __w The width of the context region to be read.
@@ -417,8 +422,9 @@ public interface DirectGraphics
 	 * @param __pixels The short buffer to save the context's data into
 	 * @param __offset The starting offset from which to place data into the
 	 * received short buffer.
-	 * @param __scanlength The scanlength (each row's width) of the received
-	 * short buffer.
+	 * @param __scanlength The offset between different rows of data (treat it
+	 * as the "width" of the image in the array). Can be negative as long as
+	 * the resulting region is entirely within bounds.
 	 * @param __x The starting X position of the context region to be read.
 	 * @param __y The starting Y position of the context region to be read.
 	 * @param __w The width of the context region to be read.
@@ -445,4 +451,3 @@ public interface DirectGraphics
 	@Api
 	void setARGBColor(int __argbColor);
 }
-
