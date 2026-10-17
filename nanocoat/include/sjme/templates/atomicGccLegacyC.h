@@ -34,7 +34,7 @@ sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
 	sjme_atomic_typeName* atomic,
 	sjme_atomic_valueName add)
 {
-	return __sync_fetch_and_add(
+	return (sjme_atomic_valueName)__sync_fetch_and_add(
 		(volatile sjme_atomic_storageType*)&atomic->value, 
 		(sjme_atomic_storageType)add);
 }

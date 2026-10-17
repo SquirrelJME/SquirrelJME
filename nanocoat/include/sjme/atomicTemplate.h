@@ -98,7 +98,7 @@
  * 
  * @since 2026/10/15
  */
-typedef volatile struct sjme_alignPointerL sjme_atomic_typeName
+typedef sjme_attrVolatileStruct struct sjme_alignPointerL sjme_atomic_typeName
 {
 #if defined(SJME_CONFIG_HAS_ATOMIC_C11)
 	/** Atomic value. */
@@ -113,6 +113,16 @@ typedef volatile struct sjme_alignPointerL sjme_atomic_typeName
 #endif
 #endif
 } sjme_atomic_typeName sjme_alignPointerR;
+
+#if sjme_atomic_isPointer == 1
+	/** Non-cyclic type. */
+	typedef sjme_atomic_typeName \
+		SJME_TOKEN_PASTE_PP(sjme_atomic_typeName, _nonCyclic);
+
+	/** Phantom type. */
+	typedef sjme_atomic_typeName \
+		SJME_TOKEN_PASTE_PP(sjme_atomic_typeName, _nonCyclic);
+#endif
 
 /**
  * Compares the atomic with the @code expected @endcode value and if it is
