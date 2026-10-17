@@ -247,6 +247,8 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 	elseif("__WINE__" IN_LIST defines)
 		set(hasSystem "wine")
 	###########################################
+	elseif("__HAIKU__" IN_LIST defines)
+		set(hasSystem "haiku")
 	elseif("__APPLE__" IN_LIST defines)
 		if("TARGET_IPHONE_SIMULATOR" IN_LIST defines OR
 			"TARGET_OS_IPHONE" IN_LIST defines)
@@ -288,8 +290,6 @@ function(squirreljme_identify_by_defines_list outSystem outArch defines)
 	elseif("__SDCC" IN_LIST defines OR
 		"SDCC" IN_LIST defines)
 		set(hasSystem "sdcc")
-	elseif("__HAIKU__" IN_LIST defined)
-		set(hasSystem "haiku")
 	else()
 		set(hasSystem "unknown")
 	endif()
@@ -497,6 +497,9 @@ function(squirreljme_identify_by_cmake outSystem outArch inSystem inArch)
 	elseif("${inSystem}" STREQUAL "Windows" OR
 		"${inSystem}" STREQUAL "WindowsStore")
 		set(hasSystem "windows")
+	elseif("${inSystem}" STREQUAL "Haiku" OR
+		"${inSystem}" STREQUAL "Haiku")
+		set(hasSystem "haiku")
 	else()
 		set(hasSystem "unknown")
 	endif()
@@ -708,17 +711,34 @@ function(squirreljme_identify_by_current outSystem outArch)
 
 		# Use standard CMake variables defined after project()
 		else()
-			squirreljme_identify_by_cmake(hasSystem hasArch
+			# We may have previously properly detected an architecture or
+			# system via defines but do not know more details about this
+			# system, so we need to not overwrite a previous detection
+			squirreljme_identify_by_cmake(hasSystemCMake hasArchCMake
 				"${CMAKE_SYSTEM_NAME}" "${CMAKE_SYSTEM_PROCESSOR}")
+
+			# Result system was valid?
+			if(NOT "${hasSystemCMake}" STREQUAL "" AND
+				NOT "${hasSystemCMake}" STREQUAL "unknown")
+				set(hasSystem "${hasSystemCMake}")
+			endif()
+
+			# Result arch was valid?
+			if(NOT "${hasArchCMake}" STREQUAL "" AND
+				NOT "${hasArchCMake}" STREQUAL "unknown")
+				set(hasArch "${hasArchCMake}")
+			endif()
 		endif()
 	endif()
 
 	# If blank, set to unknown
-	if("${hasSystem}" STREQUAL "")
+	if("${hasSystem}" STREQUAL "" OR
+		"${hasSystem}" STREQUAL "unknown")
 		set(hasSystem "unknown")
 	endif()
 
-	if("${hasArch}" STREQUAL "")
+	if("${hasArch}" STREQUAL "" OR
+		"${hasArch}" STREQUAL "unknown")
 		set(hasArch "unknown")
 	endif()
 
