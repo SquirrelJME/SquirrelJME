@@ -53,6 +53,7 @@ get_property(SQUIRRELJME_IS_DYLIB_CAPABLE
 
 # Output results of what is above
 message(STATUS "?? Cross Compiled? ${SQUIRRELJME_IS_CROSS_COMPILE}")
+message(STATUS "?? Cross Compatible? ${SQUIRRELJME_IS_CROSS_COMPATIBLE}")
 message(STATUS "?? Supports DyLibs? ${SQUIRRELJME_IS_DYLIB_CAPABLE}")
 message(STATUS "?? Bare Metal Hardware (No-OS)? ${SQUIRRELJME_IS_BARE_METAL}")
 message(STATUS "?? Absurd System (Xkcd Rocks)? ${SQUIRRELJME_IS_ABSURD}")
