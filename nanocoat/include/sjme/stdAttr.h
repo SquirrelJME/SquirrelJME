@@ -119,8 +119,10 @@ extern "C"
 	/** Check return value. */
 	#define sjme_attrCheckReturn __attribute__((warn_unused_result))
 
-	/** Deprecated. */
-	#define sjme_attrDeprecated __attribute__((deprecated))
+	#if SJME_CONFIG_GCC_VERSION_LEAST(3, 4)
+		/** Deprecated. */
+		#define sjme_attrDeprecated __attribute__((deprecated))
+	#endif
 
 	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
 		/** Disable optimization. */
@@ -457,7 +459,7 @@ extern "C"
 	#define sjme_attrHugeP
 #endif
 
-#if defined(SJME_CONFIG_HAS_GCC)
+#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
 	/** Optimize this specific function. */
 	#define sjme_attrOptimize __attribute__((optimize("-Os")))
 #elif defined(SJME_CONFIG_HAS_MSVC)
