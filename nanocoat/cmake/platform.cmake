@@ -117,6 +117,18 @@ else()
 	set(SQUIRRELJME_ENABLE_TESTING_DEFAULT TRUE)
 endif()
 
+## Use self-hosted libjvm?
+# This is for any platforms which are not supported OpenJDK or any recent JDK
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "aix" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "linux" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "macosx" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "solaris" OR
+	"${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+	set(SQUIRRELJME_SELF_HOSTED_LIBJVM_DEFAULT NO)
+else()
+	set(SQUIRRELJME_SELF_HOSTED_LIBJVM_DEFAULT YES)
+endif()
+
 ## FPIC?
 if("${SQUIRRELJME_SYSTEM}" STREQUAL "playstation2" OR
 	"${SQUIRRELJME_SYSTEM}" STREQUAL "psp" OR
@@ -202,6 +214,8 @@ squirreljme_define_option(SQUIRRELJME_ENABLE_FPIC
 	"Enable FPIC")
 squirreljme_define_option(SQUIRRELJME_ENABLE_TESTING
 	"Enable Host System Tests")
+squirreljme_define_option(SQUIRRELJME_SELF_HOSTED_LIBJVM
+	"Enable Self-Hosted libjvm")
 
 # Applications
 squirreljme_define_option(SQUIRRELJME_ENABLE_APP_ABCD

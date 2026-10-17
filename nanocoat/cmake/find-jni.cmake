@@ -10,8 +10,23 @@
 # Find headers
 include(CheckIncludeFile)
 
+# Use self-hosted libjvm?
+if(SQUIRRELJME_SELF_HOSTED_LIBJVM)
+	# Export our own JNI interfaces
+	set(SQUIRRELJME_EXPORT_OWN_JNI_JVM TRUE)
+
+	# Set includes
+	set(SQUIRRELJME_JAVA_JNI_INCLUDE
+		"${CMAKE_CURRENT_LIST_DIR}/../include/sjme/jvm")
+	set(SQUIRRELJME_JAVA_JVM_INCLUDE
+		"${CMAKE_CURRENT_LIST_DIR}/../include/sjme/jvm")
+
+	# We mostly have these
+	set(SQUIRRELJME_HAS_JAVA_JNI MOSTLY)
+	set(SQUIRRELJME_HAS_JAVA_JVM MOSTLY)
+
 # If not cross compiled, try using the system's JVM implementation
-if(NOT SQUIRRELJME_IS_CROSS_COMPILE)
+elseif(NOT SQUIRRELJME_IS_CROSS_COMPILE)
 	# Notice
 	message(STATUS "Checking if CMake's FindJNI() is broken...")
 
@@ -101,24 +116,27 @@ else()
 	message(STATUS "Not using the system JNI due to cross-compilation!")
 endif()
 
-# If JNI was not found, use our own
-if(NOT SQUIRRELJME_HAS_JAVA_JNI)
-	# Set include
-	set(SQUIRRELJME_JAVA_JNI_INCLUDE
-		"${CMAKE_CURRENT_LIST_DIR}/../include/3rdparty/jni")
+# Do not use Sun's/OpenJDK's headers if we are self-hosted libjvm
+if(NOT SQUIRRELJME_SELF_HOSTED_LIBJVM)
+	# If JNI was not found, use our own
+	if(NOT SQUIRRELJME_HAS_JAVA_JNI)
+		# Set include
+		set(SQUIRRELJME_JAVA_JNI_INCLUDE
+			"${CMAKE_CURRENT_LIST_DIR}/../include/3rdparty/jni")
 
-	# Say that we do have it
-	set(SQUIRRELJME_HAS_JAVA_JNI MOSTLY)
-endif()
+		# Say that we do have it
+		set(SQUIRRELJME_HAS_JAVA_JNI MOSTLY)
+	endif()
 
-# If JVM was not found, use our own
-if(NOT SQUIRRELJME_HAS_JAVA_JVM)
-	# Set include
-	set(SQUIRRELJME_JAVA_JVM_INCLUDE
-		"${CMAKE_CURRENT_LIST_DIR}/../include/3rdparty/jni")
+	# If JVM was not found, use our own
+	if(NOT SQUIRRELJME_HAS_JAVA_JVM)
+		# Set include
+		set(SQUIRRELJME_JAVA_JVM_INCLUDE
+			"${CMAKE_CURRENT_LIST_DIR}/../include/3rdparty/jni")
 
-	# Say that we do have it
-	set(SQUIRRELJME_HAS_JAVA_JVM MOSTLY)
+		# Say that we do have it
+		set(SQUIRRELJME_HAS_JAVA_JVM MOSTLY)
+	endif()
 endif()
 
 # Emit whatever was found of this
@@ -127,3 +145,4 @@ message(STATUS "JNI Include: ${SQUIRRELJME_JAVA_JNI_INCLUDE}")
 message(STATUS "Has JVM: ${SQUIRRELJME_HAS_JAVA_JVM}")
 message(STATUS "JVM Include: ${SQUIRRELJME_JAVA_JVM_INCLUDE}")
 message(STATUS "Use SquirrelJME libjvm? ${SQUIRRELJME_EXPORT_OWN_JNI_JVM}")
+message(STATUS "Self-hosted libjvm? ${SQUIRRELJME_SELF_HOSTED_LIBJVM}")
