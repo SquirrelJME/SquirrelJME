@@ -7,40 +7,57 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/atomicImpl.h"
 #include "sjme/nvm/mleBrackets.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/classy.h"
 
-SJME_ATOMIC_FUNCTION(sjme_jbracketTrace, 0)
+#define sjme_atomic_type sjme_jbracketTrace
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm, 0)
+#define sjme_atomic_type sjme_nvm
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_common, 0)
+#define sjme_atomic_type sjme_nvm_common
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_class_info, 0)
+#define sjme_atomic_type sjme_nvm_class_info
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_class_methodInfo, 0)
+#define sjme_atomic_type sjme_nvm_class_methodInfo
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_frame, 0)
+#define sjme_atomic_type sjme_nvm_frame
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_rom_library, 0)
+#define sjme_atomic_type sjme_nvm_rom_library
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_task, 0)
+#define sjme_atomic_type sjme_nvm_task
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_thread, 0)
+#define sjme_atomic_type sjme_nvm_thread
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_vmClass_loader, 0)
+#define sjme_atomic_type sjme_nvm_vmClass_loader
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_class_poolEntryClass, 1)
+#define sjme_atomic_type sjme_nvm_class_poolEntryClass
+#define sjme_atomic_refs 1
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_class_poolEntryNameAndType, 1)
+#define sjme_atomic_type sjme_nvm_class_poolEntryNameAndType
+#define sjme_atomic_refs 1
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_threadScheduleMode, 0)
+#define sjme_atomic_type sjme_nvm_threadScheduleMode
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_thread_startType, 0)
+#define sjme_atomic_type sjme_nvm_thread_startType
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_thread_statusType, 0)
+#define sjme_atomic_type sjme_nvm_thread_statusType
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_nvm_stringPool_string, 0)
+#define sjme_atomic_type sjme_nvm_stringPool_string
+#include "sjme/atomicTemplateC.h"
