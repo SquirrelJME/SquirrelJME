@@ -758,6 +758,11 @@ static sjme_errorCode sjme_scritchui_renderBitmapScaled(
 		sp = &src[syInt * scanLen];
 		
 #if defined(SJME_CONFIG_SCRITCHUI_FONT_BARCODE)
+		/* One day I was staring at the ceiling and thought: */
+		/* "Barcode readers would make a great font scaling" */
+		/* "algorithm, with tweaks". And thusly, the Barcode Font Scaling */
+		/* Algorithm was born. */
+		
 		/* Use a new set of suppressor bits? */
 		/* The suppressor bits are used so that only when the barcode bits */
 		/* change, they are actually drawn. Suppressed bits get drawn in */

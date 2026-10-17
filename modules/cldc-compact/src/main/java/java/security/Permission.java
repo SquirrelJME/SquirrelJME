@@ -10,20 +10,24 @@
 package java.security;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * This is the base class for all permissions.
+ * This is the base class for all permission types, in SquirrelJME this only
+ * exists for compatibility purposes.
  *
  * Permissions have a name and may have multiple actions.
  *
- * Actions are comma separated and they must be returned in a fixed order.
+ * Actions are comma separated, they must be returned in a fixed order.
  *
+ * @see SecurityManager
  * @since 2018/12/08
  */
 @Api
+@ApiDefinedDeprecated
 @KeepAbsolutelyEverything("Lightweight 'Security' permission system.")
 public abstract class Permission
 {
@@ -40,6 +44,7 @@ public abstract class Permission
 	 * @since 2018/09/18
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public Permission(String __name)
 	{
 		this._name = __name;
@@ -50,6 +55,7 @@ public abstract class Permission
 	 * @since 2018/12/08
 	 */
 	@Override
+	@ApiDefinedDeprecated
 	public abstract boolean equals(Object __a);
 	
 	/**
@@ -59,6 +65,7 @@ public abstract class Permission
 	 * @since 2018/12/08
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public abstract String getActions();
 	
 	/**
@@ -76,6 +83,7 @@ public abstract class Permission
 	 * @since 2018/12/08
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public abstract boolean implies(Permission __p);
 	
 	/**
@@ -85,6 +93,7 @@ public abstract class Permission
 	 * @since 2018/12/08
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public final String getName()
 	{
 		return this._name;
@@ -104,6 +113,7 @@ public abstract class Permission
 	 * @since 2018/12/08
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public PermissionCollection newPermissionCollection()
 	{
 		return null;
@@ -113,7 +123,9 @@ public abstract class Permission
 	 * {@inheritDoc}
 	 * @since 2018/12/08
 	 */
+	@Api
 	@Override
+	@ApiDefinedDeprecated
 	public String toString()
 	{
 		Reference<String> ref = this._string;

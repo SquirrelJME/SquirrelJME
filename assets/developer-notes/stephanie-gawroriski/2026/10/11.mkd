@@ -1,0 +1,48 @@
+# 2026/10/11
+
+## 22:12
+
+Yknow, rather than getting default launch working which relies on the launcher
+I should perhaps get the Hello Demo working. This only outputs on `stdout` so
+it would make more sense. It would also probably be faster overall once I get
+everything done there and working to get the actual launcher working as well.
+This does mean I have to get the MEEP SWM implementation working in NanoCoat
+since it needs it for `-jar`.
+
+On the otherwise, the default launch gives the following trace:
+
+```
+DB: Starting main thread...
+TD TODO HIT (src\classyVm.c:1707 in sjme_nvm_vmClass_isAssignableFrom()): Impl?
+ | IN Lcc/squirreljme/runtime/lcdui/scritchui/MenuActionNode; (<UNKNOWN>)
+ | .<init>:(Lcc/squirreljme/runtime/lcdui/scritchui/MenuActionApplicable;)V 
+@43h (:-1 #INSTANCEOF@67)
+ | IN Lcc/squirreljme/runtime/lcdui/scritchui/MenuActionNodeOnly; (<UNKNOWN>)
+ | .<init>:()V @ah (:-1 #INVOKESPECIAL@10)
+ | IN Lcc/squirreljme/runtime/lcdui/scritchui/MenuAction; (<UNKNOWN>)
+ | .<init>:
+(Ljava/lang/String;Ljava/lang/String;Ljavax/microedition/lcdui/Image;)V @1h 
+(:-1 #INVOKESPECIAL@1)
+ | IN Ljavax/microedition/lcdui/Command; (<UNKNOWN>)
+ | .<init>:
+(Ljava/lang/String;Ljava/lang/String;Ljavax/microedition/lcdui/Image;IIZ)V @4h 
+(:-1 #INVOKESPECIAL@4)
+ | .<init>:(Ljava/lang/String;II)V @7h (:-1 #INVOKESPECIAL@7)
+ | IN Lcc/squirreljme/runtime/launcher/ui/MidletMain; (<UNKNOWN>)
+ | .<clinit>:()V @9h (:-1 #INVOKESPECIAL@9)
+ | IN Ljava/lang/Class; (<UNKNOWN>)
+ | .forName:(Ljava/lang/String;)Ljava/lang/Class; @14h (:-1 #INVOKESTATIC@20)
+ | IN Ljavax/microedition/midlet/__MIDletInterface__; (<UNKNOWN>)
+ | .newInstance:()Ljavax/microedition/midlet/MIDlet; @6h (:-1 #INVOKESTATIC@6)
+ | .newInstance:()Ljava/lang/Object; @1h (:-1 #INVOKEVIRTUAL@1)
+ | IN Lcc/squirreljme/runtime/midlet/ApplicationHandler; (<UNKNOWN>)
+ | .main:(Lcc/squirreljme/runtime/midlet/ApplicationInterface;)V @fh (:-1 
+#INVOKEINTERFACE@15)
+ | IN Ljavax/microedition/midlet/__MainHandler__; (<UNKNOWN>)
+ | .main:([Ljava/lang/String;)V @24h (:-1 #INVOKESTATIC@36)
+ | IN Ljava/lang/__Start__; (<UNKNOWN>)
+ | .__base:()V @bh (:-1 #INVOKESTATIC@11)
+ | .__main:()V @5h (:-1 #INVOKESTATIC@5)
+```
+
+So as you can see, progress is definitely happening.

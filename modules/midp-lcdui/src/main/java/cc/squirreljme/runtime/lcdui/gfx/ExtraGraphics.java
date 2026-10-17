@@ -48,9 +48,9 @@ public interface ExtraGraphics
 	 * @param __hDest The destination height.
 	 * @param __origImgWidth Original image width.
 	 * @param __origImgHeight Original image height.
-	 * @throws NullPointerException If {@code __data} is null.
 	 * @throws IllegalArgumentException If the region is not valid, or the
 	 * pixel format is not valid.
+	 * @throws NullPointerException If {@code __data} is null.
 	 * @since 2025/12/07
 	 */
 	void drawPfRegion(
@@ -65,7 +65,8 @@ public interface ExtraGraphics
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wDest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __hDest,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __origImgWidth,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __origImgHeight);
+		@Range(from = 0, to = Integer.MAX_VALUE) int __origImgHeight)
+		throws IllegalArgumentException, NullPointerException;
 	
 	/**
 	 * Draws a polyline using the received coordinates.
@@ -75,18 +76,19 @@ public interface ExtraGraphics
 	 * @param __yp An array of x coordinates for the vertices
 	 * @param __yo The offset from which Y positions should be read
 	 * @param __n How many points/vertices should be drawn
-	 * @throws NullPointerException If {@code __xp} or {@code __yp} are null.
 	 * @throws IllegalArgumentException If any of {@code __xo, __yo, __n} are
 	 * less than zero, or the sum of either {@code __xo, __yo} with {@code
 	 * __n}
 	 * go out of bounds for {@code __xp} and {@code __yp} respectively.
+	 * @throws NullPointerException If {@code __xp} or {@code __yp} are null.
 	 * @since 2025/12/20
 	 */
 	void drawPolyline(@NotNull int[] __xp,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __xo,
 		@NotNull int[] __yp,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __yo,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __n);
+		@Range(from = 0, to = Integer.MAX_VALUE) int __n)
+		throws IllegalArgumentException, NullPointerException;
 	
 	/**
 	 * Draws a triangle using the received coordinates.
@@ -112,19 +114,20 @@ public interface ExtraGraphics
 	 * @param __yp An array of x coordinates for the vertices
 	 * @param __yo The offset from which Y positions should be read
 	 * @param __n How many points/vertices should be drawn
-	 * @throws NullPointerException If {@code __xp} or {@code __yp}
-	 * are null.
 	 * @throws IllegalArgumentException If any of {@code __xo, __yo, __n} are
 	 * less than zero, or the sum of either {@code __xo, __yo} with {@code
 	 * __n}
 	 * go out of bounds for {@code __xp} and {@code __yp} respectively.
+	 * @throws NullPointerException If {@code __xp} or {@code __yp}
+	 * are null.
 	 * @since 2025/12/20
 	 */
 	void fillPolygon(@NotNull int[] __xp,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __xo,
 		@NotNull int[] __yp,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __yo,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __n);
+		@Range(from = 0, to = Integer.MAX_VALUE) int __n)
+		throws IllegalArgumentException, NullPointerException;
 	
 	/**
 	 * Draws a filled a triangle using the received coordinates.
@@ -180,9 +183,9 @@ public interface ExtraGraphics
 	 * @param __wSrc The width of the source region.
 	 * @param __hSrc The height of the source region.
 	 * @param __anchor The anchor point.
-	 * @throws NullPointerException If {@code __data} is null.
 	 * @throws IllegalArgumentException If the region is not valid, or the
 	 * pixel format is not valid.
+	 * @throws NullPointerException If {@code __data} is null.
 	 * @since 2025/12/20
 	 */
 	void getPfRegion(
@@ -192,7 +195,8 @@ public interface ExtraGraphics
 		@Range(from = 0, to = Integer.MAX_VALUE) int __scanLen,
 		boolean __alpha, int __xSrc, int __ySrc,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __wSrc,
-		@Range(from = 0, to = Integer.MAX_VALUE) int __hSrc, int __anchor);
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hSrc, int __anchor)
+		throws IllegalArgumentException, NullPointerException;
 	
 	/**
 	 * Sets the alpha color to draw with along with the color to use.
@@ -228,7 +232,8 @@ public interface ExtraGraphics
 	 * @param __fontParams The font parameters.
 	 * @since 2026/04/21
 	 */
-	void setFont(Font __base, PencilFontBracket __font, int[] __fontParams);
+	void setFont(Font __base, PencilFontBracket __font, 
+		int[] __fontParams);
 	
 	/**
 	 * Returns the surface width.

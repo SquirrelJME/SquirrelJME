@@ -12,6 +12,7 @@ package java.security;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.annotation.ApiDefinedDeprecated;
 import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -34,12 +35,15 @@ import cc.squirreljme.runtime.cldc.debug.Debugging;
  * The other level of control is with the system property
  * {@code cc.squirreljme.policy} which is in the same format.
  * 
- * Compared to Java SE, SquirrelJME uses a more simplified security policy
- * format that while more limited is simpler to write.
+ * Compared to Java SE, which no longer has a functional Security Manager,
+ * SquirrelJME uses a more simplified security policy format that while more
+ * limited is simpler to write.
  *
+ * @see SecurityManager
  * @since 2018/09/18
  */
 @Api
+@ApiDefinedDeprecated
 @KeepAbsolutelyEverything("Lightweight 'Security' permission system.")
 public final class AccessController
 {
@@ -62,6 +66,7 @@ public final class AccessController
 	 * @since 2018/09/18
 	 */
 	@Api
+	@ApiDefinedDeprecated
 	public static void checkPermission(Permission __p)
 		throws AccessControlException, NullPointerException
 	{

@@ -46,13 +46,14 @@ extern "C"
 	SJME_TYPEOF_BASIC_sjme_pointer
 	
 /** @link sjme_scritchui_pencil @endlink is a pointer. */
-#define SJME_TYPEOF_IS_POINTER_sjme_scritchui_pencil 1
+#define SJME_TYPEOF_IS_POINTER_sjme_scritchui_pencil \
+	SJME_TYPEOF_IS_POINTER_sjme_pointer
 	
 #pragma endregion(scritchui_other)
 #pragma region(scritchui_lists)
 	
-/** Atomic pencil reference. */
-SJME_ATOMIC_DECLARE(sjme_scritchui_pencil, 0);
+#define sjme_atomic_type sjme_scritchui_pencil
+#include "sjme/atomicTemplate.h"
 	
 /** List of component. */
 SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);

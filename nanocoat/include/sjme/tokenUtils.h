@@ -286,6 +286,17 @@ extern "C"
 #define SJME_TOKEN_STARS_8 ********
 #define SJME_TOKEN_STARS_9 *********
 
+#define SJME_TOKEN_STARS_M1_0
+#define SJME_TOKEN_STARS_M1_1 
+#define SJME_TOKEN_STARS_M1_2 *
+#define SJME_TOKEN_STARS_M1_3 **
+#define SJME_TOKEN_STARS_M1_4 ***
+#define SJME_TOKEN_STARS_M1_5 ****
+#define SJME_TOKEN_STARS_M1_6 *****
+#define SJME_TOKEN_STARS_M1_7 ******
+#define SJME_TOKEN_STARS_M1_8 *******
+#define SJME_TOKEN_STARS_M1_9 ********
+
 #define SJME_TOKEN_STARS_C0
 #define SJME_TOKEN_STARS_C1 P
 #define SJME_TOKEN_STARS_C2 PP

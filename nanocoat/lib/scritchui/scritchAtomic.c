@@ -7,9 +7,11 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include "sjme/atomicImpl.h"
+/* ReSharper disable CppUnusedIncludeDirective */
+
 #include "lib/scritchui/scritchuiTypeDefs.h"
 #include "lib/scritchui/scritchuiTypesSub.h"
 
-/** Atomic pencil reference. */
-SJME_ATOMIC_FUNCTION(sjme_scritchui_pencil, 0);
+#define sjme_atomic_type sjme_scritchui_pencil
+#include "sjme/atomicTemplateC.h"
+

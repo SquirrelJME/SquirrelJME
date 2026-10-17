@@ -142,9 +142,8 @@ public class ImplValueNumber
 	}
 	
 	/**
-	 * Checks whether the specified value is an integer,
-	 * {@code numberValue().scale()} is used and if the scale is zero it is
-	 * considered an integer.
+	 * Checks whether the specified value is an integer, that is there is
+	 * no fractional or decimal point value.
 	 *
 	 * @return {@code true} if this is an integer.
 	 * @since 2014/08/07
@@ -152,7 +151,23 @@ public class ImplValueNumber
 	@Override
 	public boolean isIntegral()
 	{
-		throw Debugging.todo();
+		// These are already integral, so simple to determine here
+		Number val = this._val;
+		if (val instanceof Long ||
+			val instanceof Integer ||
+			val instanceof Short ||
+			val instanceof Byte)
+			return true;
+		
+		// Otherwise, we need to check the double/float
+		// It also cannot be a NaN or infinite
+		// Negative/Postive floor/ceil direction does need to be checked
+		// because floor is always <= and ceil is >=
+		double check = val.doubleValue();
+		return !Double.isInfinite(check) &&
+			!Double.isNaN(check) &&
+			(Math.signum(check) >= 0 ? Math.floor(check) == check :
+				Math.ceil(check) == check);
 	}
 	
 	/**
@@ -177,8 +192,30 @@ public class ImplValueNumber
 	 */
 	@Override
 	public long longValueExact()
+		throws ArithmeticException
 	{
-		throw Debugging.todo();
+		// If this is already a long, or a smaller type, then use that
+		Number val = this._val;
+		if (val instanceof Long ||
+			val instanceof Integer ||
+			val instanceof Short ||
+			val instanceof Byte)
+			return val.longValue();
+		
+		// If this is not an integral value, i.e. a float/double with a
+		// decimal value, this cannot cleanly be a long
+		if (!this.isIntegral())
+			throw new ArithmeticException("ARIT");
+		
+		// If casting back to the double value from the long value results
+		// in a different value, then there likely was some kind of overflow
+		// or underflow
+		long actual = val.longValue();
+		if ((double)actual != val.doubleValue())
+			throw new ArithmeticException("ARIT");
+		
+		// This value is valid
+		return actual;
 	}
 	
 	/**

@@ -7,9 +7,12 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+/* ReSharper disable CppUnusedIncludeDirective */
+
 #include "sjme/alloc.h"
-#include "sjme/atomicImpl.h"
 
-SJME_ATOMIC_FUNCTION(sjme_alloc_weak, 0)
+#define sjme_atomic_type sjme_alloc_weak
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_alloc_link, 0)
+#define sjme_atomic_type sjme_alloc_link
+#include "sjme/atomicTemplateC.h"

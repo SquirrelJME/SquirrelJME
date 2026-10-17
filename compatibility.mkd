@@ -168,3 +168,13 @@ of potential devices, applications, and flags.
  * `2` (_FORCE_LCDUI_BUFFER_) -- Some titles violate the LCDUI
    specification by illegally storing the Graphics context when they
    should not, this forces a buffer to be used.
+
+# `SecurityManager`
+
+Since Java SE 17, `SecurityManager` has been deprecated and since Java SE 24
+it has been permanently disabled. Considering that this is software userspace
+defined security that only works with well-behaved applications, SquirrelJME
+will only contain a minimal legacy interface on an as needed basis so that
+legacy applications still run. If you rely on a secure infrastructure, it is
+recommended to investigate a more secure environment setup such as signing
+software, encrypting memory, and writing secure code.

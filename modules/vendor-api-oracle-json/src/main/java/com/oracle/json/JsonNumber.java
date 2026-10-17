@@ -100,7 +100,8 @@ public interface JsonNumber
 	 * @since 2014/07/25
 	 */
 	@Api
-	long longValueExact();
+	long longValueExact()
+		throws ArithmeticException;
 	
 	/**
 	 * Returns the value that represents this value.

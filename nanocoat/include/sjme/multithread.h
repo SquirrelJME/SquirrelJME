@@ -45,7 +45,7 @@ typedef sjme_intPointer sjme_thread_id;
 	
 #if defined(SJME_CONFIG_HAS_THREADS_PTHREAD)
 	/** A single thread. */
-	typedef pthread_t sjme_alignPointer sjme_thread;
+	typedef pthread_t sjme_alignPointerL sjme_thread sjme_alignPointerR;
 
 	/* On these systems pthread_t is a pointer. */
 	#if defined(SJME_CONFIG_HAS_OS_MACOS) || \
@@ -165,7 +165,8 @@ typedef sjme_intPointer sjme_thread_id;
 	#define SJME_THREAD_UNBUMP(x) (x)
 #endif
 
-SJME_ATOMIC_DECLARE(sjme_thread, 0);
+#define sjme_atomic_type sjme_thread
+#include "sjme/atomicTemplate.h"
 
 /**
  * Main thread function type.
@@ -182,24 +183,24 @@ typedef sjme_thread_result (sjme_attrThreadCall *sjme_thread_mainFunc)(
  * 
  * @since 2024/07/19
  */
-typedef volatile struct sjme_alignPointer sjme_thread_spinLock
+typedef volatile struct sjme_alignPointerL sjme_thread_spinLock
 {
 	/** The thread that is currently poking this lock. */
-	sjme_alignPointer sjme_atomic(sjme_thread) poke;
+	sjme_alignPointerL sjme_atomic(sjme_thread) poke sjme_alignPointerR;
 	
 	/** The thread that owns this lock. */
-	sjme_alignPointer sjme_atomic(sjme_thread) owner;
+	sjme_alignPointerL sjme_atomic(sjme_thread) owner sjme_alignPointerR;
 	
 	/** Lock count. */
-	sjme_alignPointer sjme_atomic(sjme_jint) count;
-} sjme_thread_spinLock;
+	sjme_alignPointerL sjme_atomic(sjme_jint) count sjme_alignPointerR;
+} sjme_alignPointerR sjme_thread_spinLock;
 
 /**
  * Read/write lock.
  * 
  * @since 2024/10/22
  */
-typedef volatile struct sjme_alignPointer sjme_thread_rwLock
+typedef volatile struct sjme_alignPointerL sjme_thread_rwLock
 {
 	/** Pointer to the lock responsible for reading. */
 	sjme_alignPointer sjme_thread_spinLock* read;
@@ -209,7 +210,7 @@ typedef volatile struct sjme_alignPointer sjme_thread_rwLock
 	
 	/** The write specific lock. */
 	sjme_alignPointer sjme_thread_spinLock write;
-} sjme_thread_rwLock;
+} sjme_alignPointerR sjme_thread_rwLock;
 
 /**
  * Returns the current thread.

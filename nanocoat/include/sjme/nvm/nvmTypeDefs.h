@@ -532,70 +532,72 @@ SJME_LIST_DECLARE(sjme_jfieldID, 0);
 
 /** List of tasks. */
 SJME_LIST_DECLARE(sjme_nvm_task, 0);
-	
-/** Atomic @link sjme_nvm_class_methodInfo @endlink . */
-SJME_ATOMIC_DECLARE(sjme_nvm_class_methodInfo, 0);
-	
+
 /** List of threads. */
 SJME_LIST_DECLARE(sjme_nvm_thread, 0);
-
-/** Atomic NVM thread. */
-SJME_ATOMIC_DECLARE(sjme_nvm_thread, 0);
-
-/** Atomic NVM State. */
-SJME_ATOMIC_DECLARE(sjme_nvm, 0);
-
-/** Atomic NVM Common. */
-SJME_ATOMIC_DECLARE(sjme_nvm_common, 0);
-
-/** Atomic NVM task. */
-SJME_ATOMIC_DECLARE(sjme_nvm_task, 0);
-
-/** Atomic NVM frame. */
-SJME_ATOMIC_DECLARE(sjme_nvm_frame, 0);
-
-/** Atomic class loader. */
-SJME_ATOMIC_DECLARE(sjme_nvm_vmClass_loader, 0);
 
 /** List of ROM libraries. */
 SJME_LIST_DECLARE(sjme_nvm_rom_library, 0);
 
-/** Atomic ROM library reference. */
-SJME_ATOMIC_DECLARE(sjme_nvm_rom_library, 0);
-
 /** Field list. */
 SJME_LIST_DECLARE(sjme_nvm_class_fieldInfo, 0);
 
-/** Atomic pointer to a @link sjme_nvm_class_poolEntryClass @endlink . */
-SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryClass, 1);
-
-/** List of class information. */
-SJME_LIST_DECLARE(sjme_nvm_class_info, 0);
-	
-/** Atomic pointer to a @link sjme_nvm_class_info @endlink . */
-SJME_ATOMIC_DECLARE(sjme_nvm_class_info, 0);
-	
-/** Method list. */
-SJME_LIST_DECLARE(sjme_nvm_class_methodInfo, 0);
-	
-/** Atomic string pool string reference. */
-SJME_ATOMIC_DECLARE(sjme_nvm_stringPool_string, 0);
-
-/** List of phantom string pool strings. */
-SJME_LIST_DECLARE(sjme_phantom(sjme_nvm_stringPool_string), 0);
-
-/** Atomic pointer to a @link sjme_nvm_class_poolEntryNameAndType @endlink . */
-SJME_ATOMIC_DECLARE(sjme_nvm_class_poolEntryNameAndType, 1);
-	
 /** A list of @link sjme_nvm_class_annotation @endlink . */
 SJME_LIST_DECLARE(sjme_nvm_class_annotation, 0);
-	
+
 /** List of method binds. */
 SJME_LIST_DECLARE(sjme_jmethodID, 0);
 
 /** List of interface binds. */
 SJME_LIST_DECLARE(sjme_jinterfaceID, 0);
-	
+
+/** List of class information. */
+SJME_LIST_DECLARE(sjme_nvm_class_info, 0);
+
+/** Method list. */
+SJME_LIST_DECLARE(sjme_nvm_class_methodInfo, 0);
+
+/** List of phantom string pool strings. */
+SJME_LIST_DECLARE(sjme_phantom(sjme_nvm_stringPool_string), 0);
+
+#define sjme_atomic_type sjme_nvm_class_methodInfo
+#include "sjme/atomicTemplate.h"
+
+#define sjme_atomic_type sjme_nvm_thread
+#include "sjme/atomicTemplate.h"
+
+#define sjme_atomic_type sjme_nvm
+#include "sjme/atomicTemplate.h"
+
+#define sjme_atomic_type sjme_nvm_common
+#include "sjme/atomicTemplate.h"
+
+#define sjme_atomic_type sjme_nvm_task
+#include "sjme/atomicTemplate.h"
+
+#define sjme_atomic_type sjme_nvm_frame
+#include "sjme/atomicTemplate.h"
+
+#define sjme_atomic_type sjme_nvm_vmClass_loader
+#include "sjme/atomicTemplate.h"
+
+#define sjme_atomic_type sjme_nvm_rom_library
+#include "sjme/atomicTemplate.h"
+
+#define sjme_atomic_type sjme_nvm_class_info
+#include "sjme/atomicTemplate.h"
+
+#define sjme_atomic_type sjme_nvm_stringPool_string
+#include "sjme/atomicTemplate.h"
+
+#define sjme_atomic_type sjme_nvm_class_poolEntryClass
+#define sjme_atomic_refs 1
+#include "sjme/atomicTemplate.h"
+
+#define sjme_atomic_type sjme_nvm_class_poolEntryNameAndType
+#define sjme_atomic_refs 1
+#include "sjme/atomicTemplate.h"
+
 /**
  * A list of classes.
  * 

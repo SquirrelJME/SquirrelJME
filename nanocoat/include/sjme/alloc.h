@@ -110,8 +110,8 @@ typedef struct sjme_alloc_weakBase* sjme_alloc_weak;
 /** Weak links are pointers. */
 #define SJME_TYPEOF_IS_POINTER_sjme_alloc_weak 1
 
-/** Atomic weak link. */
-SJME_ATOMIC_DECLARE(sjme_alloc_weak, 0);
+#define sjme_atomic_type sjme_alloc_weak
+#include "sjme/atomicTemplate.h"
 
 /**
  * This is called when a weak reference has been freed or is about to be
@@ -139,19 +139,19 @@ typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
 /** Allocation links are pointers. */
 #define SJME_TYPEOF_IS_POINTER_sjme_alloc_link 1
 
-/** Atomic debug link. */
-SJME_ATOMIC_DECLARE(sjme_alloc_link, 0);
+#define sjme_atomic_type sjme_alloc_link
+#include "sjme/atomicTemplate.h"
 
 struct sjme_alloc_weakBase
 {
 	/** Is this weak reference valid? */
-	sjme_alignPointer sjme_atomic(sjme_jint) valid;
+	sjme_alignPointerL sjme_atomic(sjme_jint) valid sjme_alignPointerR;
 	
 	/** The link this points to, @c NULL if freed. */
 	sjme_atomic(sjme_alloc_link) link;
 	
 	/** The count for this weak reference, zero will free this reference. */
-	sjme_alignPointer sjme_atomic(sjme_jint) count;
+	sjme_alignPointerL sjme_atomic(sjme_jint) count sjme_alignPointerR;
 	
 	/** The pointer this points to, @c NULL if freed. */
 	sjme_atomic(sjme_pointer) pointer;
@@ -160,7 +160,7 @@ struct sjme_alloc_weakBase
 	sjme_alloc_weakEnqueueFunc enqueue;
 	
 	/** Is this in an enqueue? */
-	sjme_alignPointer sjme_atomic(sjme_jint) inEnqueue;
+	sjme_alignPointerL sjme_atomic(sjme_jint) inEnqueue sjme_alignPointerR;
 };
 
 struct sjme_alloc_linkMetaBase
@@ -270,7 +270,7 @@ struct sjme_alloc_poolBase
 	sjme_alloc_pointerIdTypeFunc pointerIdType;
 	
 	/** Whole pool spin lock. */
-	sjme_alignPointer sjme_thread_spinLock spinLock;
+	sjme_alignPointerL sjme_thread_spinLock spinLock sjme_alignPointerR;
 	
 	/** Free and used space information. */
 	struct
@@ -304,7 +304,8 @@ struct sjme_alloc_poolBase
 	sjme_atomic(sjme_alloc_link) freeLastLink;
 	
 	/** The memory block. */
-	sjme_jubyte block[sjme_flexibleArrayCount];
+	sjme_alignPointerL sjme_jubyte block[sjme_flexibleArrayCount]
+		sjme_alignPointerR;
 };
 
 /**
