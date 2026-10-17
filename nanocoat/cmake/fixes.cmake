@@ -331,6 +331,11 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 		"-Wpedantic"
 		SQUIRRELJME_HAS_WARN_PEDANTIC)
 
+	# Has Intel Syntax assembly?
+	squirreljme_check_set_compiler_flag(C
+		"-masm=intel"
+		SQUIRRELJME_HAS_MASM_INTEL)
+
 	# noexecstack is very new
 	if(DEFINED CMAKE_C_COMPILER_VERSION AND
 		NOT "${CMAKE_C_COMPILER_VERSION}" STREQUAL "" AND
@@ -728,7 +733,7 @@ if("${SQUIRRELJME_ARCH}" STREQUAL "ia32" OR
 	"${SQUIRRELJME_ARCH}" STREQUAL "amd64")
 	if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 		# Breaks with intel syntax
-		if(NOT VALGRIND_FOUND)
+		if(NOT VALGRIND_FOUND AND SQUIRRELJME_HAS_MASM_INTEL)
 			add_compile_definitions("SJME_CONFIG_HAS_ASM_INTEL=1")
 			add_compile_options("-masm=intel")
 		endif()
