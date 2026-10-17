@@ -816,11 +816,11 @@ SJME_NVM_BYTECODE_SLOW(Monitor)
 
 SJME_NVM_BYTECODE_SLOW(New)
 {
-	SJME_NVM_BYTECODE_ENTRY;
 	sjme_jint poolIndex;
 	sjme_jvalueTyped result;
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jclass desireClass;
+	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));

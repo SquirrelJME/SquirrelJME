@@ -910,8 +910,8 @@ sjme_errorCode sjme_nvm_byteCode_notImplemented(
 /** Common entry for byte code. */
 #define SJME_NVM_BYTECODE_ENTRY \
 	sjme_errorCode error; \
-	if (inFrame == NULL || relRawCode == NULL || pcNew == NULL) \
-		return SJME_ERROR_NULL_ARGUMENTS
+	do {if (inFrame == NULL || relRawCode == NULL || pcNew == NULL) \
+		return SJME_ERROR_NULL_ARGUMENTS; } while (0)
 
 /** Common exit for byte code. */
 #define SJME_NVM_BYTECODE_EXIT \
