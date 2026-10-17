@@ -366,7 +366,7 @@ typedef union sjme_jfloat
  */
 typedef union sjme_jdouble
 {
-	struct sjme_packed
+	struct sjme_packedL
 	{
 #if defined(SJME_CONFIG_HAS_LITTLE_ENDIAN)
 		/** Low value. */
@@ -381,7 +381,7 @@ typedef union sjme_jdouble
 		/** Low value. */
 		sjme_juint lo;
 #endif
-	} bits;
+	} sjme_packedR bits;
 
 	/** Long bits. */
 	int64_t longBits;

@@ -92,10 +92,10 @@ struct sjme_scritchui_pencilFontBase
 typedef struct sjme_scritchui_pencilLockState
 {
 	/** Spin lock for access to the buffer. */
-	sjme_alignPointer sjme_thread_spinLock spinLock;
+	sjme_alignPointerL sjme_thread_spinLock spinLock sjme_alignPointerR;
 	
 	/** The times this was opened. */
-	sjme_alignPointer sjme_atomic(sjme_jint) count;
+	sjme_alignPointerL sjme_atomic(sjme_jint) count sjme_alignPointerR;
 	
 	/** The front end source for drawing. */
 	sjme_frontEndBindable source;

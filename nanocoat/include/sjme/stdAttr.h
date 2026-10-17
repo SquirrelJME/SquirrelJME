@@ -119,8 +119,10 @@ extern "C"
 	/** Check return value. */
 	#define sjme_attrCheckReturn __attribute__((warn_unused_result))
 
-	/** Deprecated. */
-	#define sjme_attrDeprecated __attribute__((deprecated))
+	#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
+		/** Deprecated. */
+		#define sjme_attrDeprecated __attribute__((deprecated))
+	#endif
 
 	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
 		/** Disable optimization. */
@@ -140,8 +142,10 @@ extern "C"
 	/** Indicates a callback. */
 	#define sjme_attrCallback __attribute__((callback))
 
-	/** Not used. */
-	#define sjme_attrUnused __attribute__((unused))
+	#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
+		/** Not used. */
+		#define sjme_attrUnused __attribute__((unused))
+	#endif
 
 	/** Not used enum constant. */
 	#define sjme_attrUnusedEnum(x) x sjme_attrUnused
@@ -331,6 +335,22 @@ extern "C"
 	#define sjme_attrExportCall
 #endif
 
+#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	/** Packed enumeration. */
+	#define sjme_attrPackedEnumByte(name) __attribute__((packed)) name
+#else
+	/** Packed enumeration. */
+	#define sjme_attrPackedEnumByte(name) name
+#endif
+
+#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
+	/** Packed structure. */
+	#define sjme_packed __attribute__((packed))
+#else
+	/** Packed structure. */
+	#define sjme_packed
+#endif
+
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/** Align to 32-bit. */
 	#define sjme_align32 __declspec(align(4))
@@ -385,6 +405,12 @@ extern "C"
 	
 	/** Align to Pointer (right append). */
 	#define sjme_alignPointerR
+	
+	/** Packed structure (left append). */
+	#define sjme_packedL sjme_packed
+	
+	/** Packed structure (right append). */
+	#define sjme_packedR
 #else
 	/** Align to 32-bits (left append). */
 	#define sjme_align32L
@@ -403,6 +429,12 @@ extern "C"
 	
 	/** Align to Pointer (right append). */
 	#define sjme_alignPointerR sjme_alignPointer
+	
+	/** Packed structure (left append). */
+	#define sjme_packedL
+	
+	/** Packed structure (right append). */
+	#define sjme_packedR sjme_packed
 #endif
 
 /** Align to 32-bits (wrapped). */
@@ -417,21 +449,9 @@ extern "C"
 #define sjme_alignPointerW(var) \
 	sjme_alignPointerL var sjme_alignPointerR
 
-#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
-	/** Packed enumeration. */
-	#define sjme_attrPackedEnumByte(name) __attribute__((packed)) name
-#else
-	/** Packed enumeration. */
-	#define sjme_attrPackedEnumByte(name) name
-#endif
-
-#if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
-	/** Packed structure. */
-	#define sjme_packed __attribute__((packed))
-#else
-	/** Packed structure. */
-	#define sjme_packed
-#endif
+/** Packed structure (wrapped). */
+#define sjme_packedW(var) \
+	sjme_packedL var sjme_packedR
 
 #if defined(SJME_CONFIG_HAS_ARCH_IA16)
 	/** Full address range pointer. */
@@ -441,7 +461,7 @@ extern "C"
 	#define sjme_attrHugeP
 #endif
 
-#if defined(SJME_CONFIG_HAS_GCC)
+#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
 	/** Optimize this specific function. */
 	#define sjme_attrOptimize __attribute__((optimize("-Os")))
 #elif defined(SJME_CONFIG_HAS_MSVC)
@@ -513,7 +533,7 @@ extern "C"
 	!defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
 	/** Symbol is exported through a library. */
 	#define sjme_attrExport __declspec(dllexport)
-#elif defined(SJME_CONFIG_HAS_GCC) || \
+#elif SJME_CONFIG_GCC_VERSION_LEAST(3, 0) || \
 	defined(SJME_CONFIG_HAS_CLANG)
 	/** Symbol is exported through a library. */
 	#define sjme_attrExport __attribute__((visibility("default")))
@@ -522,7 +542,7 @@ extern "C"
 	#define sjme_attrExport
 #endif
 
-#if defined(SJME_CONFIG_HAS_GCC) || \
+#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0) || \
 	defined(SJME_CONFIG_HAS_CLANG)
 	/** Symbol is hidden in a library. */
 	#define sjme_attrHidden __attribute__((visibility("hidden")))

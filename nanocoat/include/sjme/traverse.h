@@ -85,14 +85,14 @@ typedef union sjme_alignPointerL sjme_traverse_node
  * 
  * @since 2024/09/02
  */
-typedef sjme_alignPointer struct sjme_traverse_nodeNode
+typedef sjme_alignPointerL struct sjme_traverse_nodeNode
 {
 	/** Zero branch. */
 	sjme_traverse_node* zero;
 	
 	/** One branch. */
 	sjme_traverse_node* one;
-} sjme_traverse_nodeNode;
+} sjme_alignPointerR sjme_traverse_nodeNode;
 
 /**
  * Leaf type storage.
@@ -105,16 +105,17 @@ typedef struct sjme_alignPointerL sjme_traverse_nodeLeaf
 	sjme_intPointer key;
 	
 	/** Leaf value. */
-	sjme_alignPointer sjme_jubyte value[sjme_flexibleArrayCountUnion];
+	sjme_alignPointerL sjme_jubyte value[sjme_flexibleArrayCountUnion]
+		sjme_alignPointerR;
 } sjme_alignPointerR sjme_traverse_nodeLeaf;
 
 union sjme_alignPointerL sjme_traverse_node
 {
 	/** Data if a node. */
-	sjme_alignPointer sjme_traverse_nodeNode node;
+	sjme_alignPointerL sjme_traverse_nodeNode node sjme_alignPointerR;
 	
 	/** Data if a leaf. */
-	sjme_alignPointer sjme_traverse_nodeLeaf leaf;
+	sjme_alignPointerL sjme_traverse_nodeLeaf leaf sjme_alignPointerR;
 } sjme_alignPointerR;
 
 /**
@@ -152,7 +153,8 @@ typedef struct sjme_traverse_base
 	sjme_jint storageBytes;
 	
 	/** Storage for tree nodes. */
-	sjme_alignPointer sjme_jubyte storage[sjme_flexibleArrayCount];
+	sjme_alignPointerL sjme_jubyte storage[sjme_flexibleArrayCount]
+		sjme_alignPointerR;
 } sjme_traverse_base;
 
 /**

@@ -67,7 +67,7 @@ typedef sjme_errorCode (*sjme_closeable_closeHandlerFunc)(
 struct sjme_closeableBase
 {
 	/** Has this been closed? */
-	sjme_alignPointer sjme_atomic(sjme_jint) isClosed;
+	sjme_alignPointerL sjme_atomic(sjme_jint) isClosed sjme_alignPointerR;
 	
 	/** The handler for close. */
 	sjme_closeable_closeHandlerFunc closeHandler;

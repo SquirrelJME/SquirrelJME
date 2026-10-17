@@ -106,7 +106,7 @@ typedef sjme_attrVolatileStruct struct sjme_alignPointerL sjme_atomic_typeName
 #else
 #if sjme_atomic_refs > 0
 	/** Atomic value. */
-	sjme_alignPointerL sjme_atomic_valueName value volatile sjme_alignPointerR;
+	sjme_alignPointerL sjme_atomic_valueName volatile value sjme_alignPointerR;
 #else
 	/** Atomic value. */
 	sjme_alignPointerL volatile sjme_atomic_valueName value sjme_alignPointerR;

@@ -16,7 +16,8 @@
 #ifndef SJME_C_SQUIRRELJME_USEJVM_H
 #define SJME_C_SQUIRRELJME_USEJVM_H
 
-#if defined(SJME_CONFIG_USE_OWN_JNI)
+#if defined(SJME_CONFIG_USE_OWN_JNI) || \
+	defined(SQUIRRELJME_SELF_HOSTED_LIBJVM)
 	#include "sjme/jvm/jvm.h"
 #else
 	/* Need to map implementation defines? */

@@ -222,7 +222,7 @@ struct sjme_scritchui_uiPaintableBase
 	sjme_intPointer extra;
 	
 	/** Is this currently in paint? */
-	sjme_alignPointer sjme_atomic(sjme_jint) inPaint;
+	sjme_alignPointerL sjme_atomic(sjme_jint) inPaint sjme_alignPointerR;
 	
 	/** Belayed painting. */
 	sjme_scritchui_rect belayRect;
@@ -529,7 +529,7 @@ typedef struct sjme_scritchui_impl_initParamMenuItem
 typedef struct sjme_scritchui_loopQueue
 {
 	/** The lock for the queue items. */
-	sjme_alignPointer sjme_thread_spinLock lock;
+	sjme_alignPointerL sjme_thread_spinLock lock sjme_alignPointerR;
 	
 	/** The first chunk. */
 	sjme_scritchui_loopQueueChunk* firstChunk;

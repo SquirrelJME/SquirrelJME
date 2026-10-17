@@ -309,7 +309,7 @@ struct sjme_nvm_commonBase
 	sjme_frontEnd frontEnd;
 	
 	/** The lock to access this common item. */
-	sjme_alignPointer sjme_thread_spinLock lock;
+	sjme_alignPointerL sjme_thread_spinLock lock sjme_alignPointerR;
 
 	/** Post close after the pre-close initial walk state. */
 	sjme_closeable_closeHandlerFunc postClose;

@@ -47,6 +47,7 @@ squirreljme_target_binary_name(libJvmStatic
 # We use our own JNI/JVM headers, however at times things can be a bit
 # confusing when it comes to IDEs
 squirreljme_multilib_compile_definitions(libJvm PRIVATE
+	SQUIRRELJME_SELF_HOSTED_LIBJVM=1
 	SJME_JNI_IMPLEMENTATION=1
 	SJME_CONFIG_USE_OWN_JNI=1
 	SJME_CONFIG_USE_OWN_JVM=1

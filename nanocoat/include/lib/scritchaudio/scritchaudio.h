@@ -756,7 +756,7 @@ struct sjme_scritchaudioBase
 	sjme_scritchaudio wrappedState;
 	
 	/** Reference to the owning state. */
-	sjme_alignPointer sjme_atomic(sjme_pointer) topState;
+	sjme_alignPointerL sjme_atomic(sjme_pointer) topState sjme_alignPointerR;
 
 	/** Bugs. */
 	sjme_scritchaudio_bugs bugs;
