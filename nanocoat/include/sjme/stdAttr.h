@@ -582,6 +582,17 @@ extern "C"
 	 */
 	#define sjme_attrSelectAnyOrWeak
 #endif
+	
+/* Some compilers support typedef volatile struct, others do not. */
+#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0) || \
+	defined(SJME_CONFIG_HAS_CLANG) || \
+	defined(SJME_CONFIG_HAS_MSVC)
+	/** Volatile struct type. */
+	#define sjme_attrVolatileStruct volatile
+#else
+	/** Volatile struct type. */
+	#define sjme_attrVolatileStruct
+#endif
 
 /*--------------------------------------------------------------------------*/
 

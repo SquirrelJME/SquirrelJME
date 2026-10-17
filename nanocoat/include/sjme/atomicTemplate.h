@@ -98,7 +98,7 @@
  * 
  * @since 2026/10/15
  */
-typedef volatile struct sjme_alignPointerL sjme_atomic_typeName
+typedef sjme_attrVolatileStruct struct sjme_alignPointerL sjme_atomic_typeName
 {
 #if defined(SJME_CONFIG_HAS_ATOMIC_C11)
 	/** Atomic value. */
