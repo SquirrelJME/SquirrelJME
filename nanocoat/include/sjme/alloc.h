@@ -93,8 +93,8 @@ typedef struct sjme_alloc_weakBase* sjme_alloc_weak;
 /** Weak links are pointers. */
 #define SJME_TYPEOF_IS_POINTER_sjme_alloc_weak 1
 
-/** Atomic weak link. */
-SJME_ATOMIC_DECLARE(sjme_alloc_weak, 0);
+#define sjme_atomic_type sjme_alloc_weak
+#include "sjme/atomicTemplate.h"
 
 /**
  * This is called when a weak reference has been freed or is about to be
@@ -122,8 +122,8 @@ typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
 /** Allocation links are pointers. */
 #define SJME_TYPEOF_IS_POINTER_sjme_alloc_link 1
 
-/** Atomic debug link. */
-SJME_ATOMIC_DECLARE(sjme_alloc_link, 0);
+#define sjme_atomic_type sjme_alloc_link
+#include "sjme/atomicTemplate.h"
 
 struct sjme_alloc_weakBase
 {

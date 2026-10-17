@@ -7,31 +7,39 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+/* ReSharper disable CppUnusedIncludeDirective */
+
 #include "sjme/atomic.h"
-#include "sjme/atomicImpl.h"
 
 /* clang-format off */ /* @formatter:off */
 /* ------------------------------------------------------------------------ */
 
-SJME_ATOMIC_FUNCTION(sjme_jint, 0)
+#define sjme_atomic_type sjme_jint
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_juint, 0)
+#define sjme_atomic_type sjme_juint
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_lpstr, 0) /* NOLINT(*-non-const-parameter) */
+#define sjme_atomic_type sjme_lpstr
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_lpcstr, 0) /* NOLINT(*-non-const-parameter) */
+#define sjme_atomic_type sjme_lpcstr
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_jobject, 0)
+#define sjme_atomic_type sjme_jobject
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_jclass, 0)
+#define sjme_atomic_type sjme_jclass
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_pointer, 0)
+#define sjme_atomic_type sjme_pointer
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_intPointer, 0)
+#define sjme_atomic_type sjme_intPointer
+#include "sjme/atomicTemplateC.h"
 
-SJME_ATOMIC_FUNCTION(sjme_thread, 0)
-
-SJME_ATOMIC_FUNCTION(sjme_charSeq, 0)
+#define sjme_atomic_type sjme_charSeq
+#include "sjme/atomicTemplateC.h"
 
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */

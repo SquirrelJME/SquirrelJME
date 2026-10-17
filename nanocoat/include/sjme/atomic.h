@@ -47,176 +47,32 @@ extern "C" {
 	#define sjme_atomic_barrier() do {} while(0)
 #endif
 
-/**
- * Determines the name of an atomic type.
- *
- * @param type The type used.
- * @param numPointerStars The number of pointer stars.
- * @since 2024/01/08
- */
-#define SJME_ATOMIC_NAME(type, numPointerStars) \
-	SJME_TOKEN_PASTE_PP(sjme_atomic_, SJME_TOKEN_PASTE_PP(type, \
-		SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars)))
+#define sjme_atomic_type sjme_jint
+#include "sjme/atomicTemplate.h"
 
-/**
- * Determines the name for an atomic function.
- *
- * @param type The type used.
- * @param numPointerStars The number of pointer stars.
- * @param name The name to use.
- * @since 2024/01/08
- */
-#define SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, name) \
-	SJME_TOKEN_PASTE_PP(SJME_ATOMIC_NAME(type, numPointerStars), name)
+#define sjme_atomic_type sjme_juint
+#include "sjme/atomicTemplate.h"
 
-/**
- * Prototype for the atomic compare and set function.
- *
- * @param type The type used.
- * @param numPointerStars The number of pointer stars.
- * @since 2024/01/09
- */
-#define SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars) \
-	sjme_jboolean SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
-		_compareSet) \
-		(SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
-		SJME_TOKEN_TYPE(type, numPointerStars) expected, \
-		SJME_TOKEN_TYPE(type, numPointerStars) set)
+#define sjme_atomic_type sjme_lpstr
+#include "sjme/atomicTemplate.h"
 
-/**
- * Prototype for the atomic get then add function.
- *
- * @param type The type used.
- * @param numPointerStars The number of pointer stars.
- * @since 2024/01/09
- */
-#define SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars) \
-	SJME_TOKEN_TYPE(type, numPointerStars) \
-		SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
-			_getAdd) \
-		(SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
-		SJME_TYPEOF_IF_NOT_POINTER_OR(type, numPointerStars, \
-			SJME_TOKEN_TYPE(type, numPointerStars), intptr_t) add)
+#define sjme_atomic_type sjme_lpcstr
+#include "sjme/atomicTemplate.h"
 
-/**
- * Prototype for the atomic set function.
- *
- * @param type The type used.
- * @param numPointerStars The number of pointer stars.
- * @since 2024/01/09
- */
-#define SJME_ATOMIC_PROTOTYPE_SET(type, numPointerStars) \
-	SJME_TOKEN_TYPE(type, numPointerStars) \
-		SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
-			_set) \
-		(SJME_ATOMIC_NAME(type, numPointerStars)* atomic, \
-		SJME_TOKEN_TYPE(type, numPointerStars) value)
+#define sjme_atomic_type sjme_jobject
+#include "sjme/atomicTemplate.h"
 
-/**
- * Prototype for the atomic get function.
- *
- * @param type The type used.
- * @param numPointerStars The number of pointer stars.
- * @since 2024/01/09
- */
-#define SJME_ATOMIC_PROTOTYPE_GET(type, numPointerStars) \
-	SJME_TOKEN_TYPE(type, numPointerStars) \
-		SJME_ATOMIC_FUNCTION_NAME(type, numPointerStars, \
-			_get) \
-		(SJME_ATOMIC_NAME(type, numPointerStars)* atomic)
+#define sjme_atomic_type sjme_jclass
+#include "sjme/atomicTemplate.h"
 
-/**
- * Common atomic function sets.
- *
- * @param type The type used.
- * @param numPointerStars The number of pointer stars.
- * @since 2024/01/09
- */
-#define SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars) \
-	SJME_ATOMIC_PROTOTYPE_COMPARE_SET(type, numPointerStars); \
-	SJME_ATOMIC_PROTOTYPE_GET_ADD(type, numPointerStars); \
-	SJME_ATOMIC_PROTOTYPE_SET(type, numPointerStars); \
-	SJME_ATOMIC_PROTOTYPE_GET(type, numPointerStars)
+#define sjme_atomic_type sjme_pointer
+#include "sjme/atomicTemplate.h"
 
-#if defined(SJME_CONFIG_HAS_ATOMIC_C11)
+#define sjme_atomic_type sjme_intPointer
+#include "sjme/atomicTemplate.h"
 
-/**
- * Declares an atomic type.
- *
- * @param type The type used.
- * @param numPointerStars The number of pointer stars.
- * @since 2024/01/08
- */
-#define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	typedef volatile struct sjme_alignPointerL \
-		SJME_ATOMIC_NAME(type, numPointerStars) \
-	{ \
-		/** The atomic type. */ \
-		SJME_TOKEN_TYPE(type, numPointerStars) \
-			sjme_alignPointer _Atomic value; \
-	} sjme_alignPointerR SJME_ATOMIC_NAME(type, numPointerStars); \
-	SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars)
-
-#elif defined(SJME_CONFIG_HAS_ATOMIC_DARWIN) || \
-	defined(SJME_CONFIG_HAS_ATOMIC_WIN32) || \
-	defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
-	defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY) || \
-	defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
-
-/**
- * Declares an atomic type.
- *
- * @param type The type used.
- * @param numPointerStars The number of pointer stars.
- * @since 2024/01/08
- */
-#define SJME_ATOMIC_DECLARE(type, numPointerStars) \
-	typedef volatile sjme_attrOrder(struct, sjme_alignPointerL) \
-		SJME_ATOMIC_NAME(type, numPointerStars) \
-	{ \
-		/** The atomic value. */ \
-		SJME_TOKEN_TYPE(type, numPointerStars) volatile value; \
-	} sjme_alignPointerR SJME_ATOMIC_NAME(type, numPointerStars); \
-	typedef SJME_ATOMIC_NAME(type, numPointerStars) \
-		SJME_TOKEN_PASTE_PP(SJME_ATOMIC_NAME(type, numPointerStars), \
-		_phantom); \
-	typedef SJME_ATOMIC_NAME(type, numPointerStars) \
-		SJME_TOKEN_PASTE_PP(SJME_ATOMIC_NAME(type, numPointerStars), \
-		_nonCyclic); \
-	SJME_ATOMIC_PROTOTYPE_COMMON(type, numPointerStars)
-
-#else
-
-#error Atomic definitions missing.
-
-#endif
-
-/** Atomic @link sjme_jint. */
-SJME_ATOMIC_DECLARE(sjme_jint, 0);
-
-/** Atomic @link sjme_juint. */
-SJME_ATOMIC_DECLARE(sjme_juint, 0);
-
-/** Atomic @link sjme_lpstr. */
-SJME_ATOMIC_DECLARE(sjme_lpstr, 0);
-
-/** Atomic @link sjme_lpcstr. */
-SJME_ATOMIC_DECLARE(sjme_lpcstr, 0);
-
-/** Atomic @link sjme_pointer. */
-SJME_ATOMIC_DECLARE(sjme_pointer, 0);
-
-/** Atomic pointer declaration. */
-SJME_ATOMIC_DECLARE(sjme_intPointer , 0);
-
-/** Atomic @link sjme_jobject. */
-SJME_ATOMIC_DECLARE(sjme_jobject, 0);
-
-/** Atomic @link sjme_jclass. */
-SJME_ATOMIC_DECLARE(sjme_jclass, 0);
-
-/** Atomic @link sjme_charSeq. */
-SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
+#define sjme_atomic_type sjme_charSeq
+#include "sjme/atomicTemplate.h"
 
 /**
  * Atomic reference.
@@ -318,8 +174,9 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
  * @param ref The atomic reference.
  * @param cmp The value to compare against.
  * @param set The value to set, if the existing value is the given value.
- * @return If the value matched then @link SJME_JNI_TRUE @endlink and the new value will
- * be set, otherwise @link SJME_JNI_FALSE @endlink and there are no changes.
+ * @return If the value matched then @link SJME_JNI_TRUE @endlink and the new 
+ * value will be set, otherwise @link SJME_JNI_FALSE @endlink and there are 
+ * no changes.
  * @since 2025/10/02
  */
 #define sjme_atomic_cs(type, ref, cmp, set) \
@@ -369,12 +226,14 @@ SJME_ATOMIC_DECLARE(sjme_charSeq, 0);
  * @param ref The atomic pointer reference.
  * @param cmp The value to compare against.
  * @param set The value to set, if the existing value is the given value.
- * @return If the value matched then @link SJME_JNI_TRUE @endlink and the new value will
- * be set, otherwise @link SJME_JNI_FALSE @endlink and there are no changes.
+ * @return If the value matched then @link SJME_JNI_TRUE @endlink and the new 
+ * value will be set, otherwise @link SJME_JNI_FALSE @endlink and there are 
+ * no changes.
  * @since 2025/10/02
  */
 #define sjme_atomic_pcs(ref, cmp, set) \
-	sjme_atomic_cs(sjme_pointer, (sjme_atomic(sjme_pointer)*)(ref), (cmp), (set))
+	sjme_atomic_cs(sjme_pointer, \
+	(sjme_atomic(sjme_pointer)*)(ref), (cmp), (set))
 	
 /**
  * Returns the pointer value of an atomic, disregarding type. This is mostly

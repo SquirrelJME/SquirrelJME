@@ -81,7 +81,7 @@ SJME_TEST_DECLARE(testAtomic)
 
 	/* Add to it. */
 	sjme_unit_equalP(test,
-		P(456), sjme_atomic_ga(sjme_pointer, &atomPtr, 2),
+		P(456), sjme_atomic_ga(sjme_pointer, &atomPtr, (sjme_pointer)2),
 		"Pointer old value was not set second?");
 
 	/* Try changing it but failing. */

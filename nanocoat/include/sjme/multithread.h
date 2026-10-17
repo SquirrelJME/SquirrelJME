@@ -165,7 +165,8 @@ typedef sjme_intPointer sjme_thread_id;
 	#define SJME_THREAD_UNBUMP(x) (x)
 #endif
 
-SJME_ATOMIC_DECLARE(sjme_thread, 0);
+#define sjme_atomic_type sjme_thread
+#include "sjme/atomicTemplate.h"
 
 /**
  * Main thread function type.

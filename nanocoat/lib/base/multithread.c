@@ -12,6 +12,13 @@
 #include "sjme/native.h"
 #include "sjme/debug.h"
 
+#pragma region(atomics)
+
+#define sjme_atomic_type sjme_thread
+#include "sjme/atomicTemplateC.h"
+
+#pragma endregion(atomics)
+
 sjme_thread sjme_thread_currentR(void)
 {
 	sjme_thread result;
