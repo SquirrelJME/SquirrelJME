@@ -23,6 +23,7 @@
 
 MLE_INIT_FUNC_PROTO(NativeScritchDylibEx);
 MLE_INIT_FUNC_PROTO(NativeScritchInterface);
+MLE_INIT_FUNC_PROTO(ObjectShelf);
 MLE_INIT_FUNC_PROTO(PencilFontShelf);
 MLE_INIT_FUNC_PROTO(PencilShelf);
 MLE_INIT_FUNC_PROTO(RuntimeShelf);

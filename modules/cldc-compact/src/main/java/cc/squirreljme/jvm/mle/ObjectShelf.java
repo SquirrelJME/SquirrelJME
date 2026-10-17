@@ -38,6 +38,27 @@ public final class ObjectShelf
 	}
 	
 	/**
+	 * Copies and converts a char array to a byte array.
+	 *
+	 * @param __source The source char array.
+	 * @param __sourceOff The source offset.
+	 * @param __dest The destination byte array.
+	 * @param __destOff The destination offset.
+	 * @param __len The number of values to copy and convert,
+	 * @throws MLECallError On null arguments; or if the offset and/or lengths
+	 * are negative or exceed the array bounds.
+	 * @since 2026/10/17
+	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
+	public static native void arrayCharsToBytes(
+		@NotNull char[] __source,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sourceOff,
+		@NotNull byte[] __dest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
+		throws MLECallError;
+	
+	/**
 	 * Checks if the given object can be stored in the specified array.
 	 * 
 	 * @param __array The array to check.
@@ -426,6 +447,27 @@ public final class ObjectShelf
 	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native <T> T arrayNew(@NotNull Class<?> __type,
 		@Range(from = 0, to = Integer.MAX_VALUE) int __len);
+	
+	/**
+	 * Copies and converts a short array to a byte array.
+	 *
+	 * @param __source The source short array.
+	 * @param __sourceOff The source offset.
+	 * @param __dest The destination byte array.
+	 * @param __destOff The destination offset.
+	 * @param __len The number of values to copy and convert,
+	 * @throws MLECallError On null arguments; or if the offset and/or lengths
+	 * are negative or exceed the array bounds.
+	 * @since 2026/10/17
+	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
+	public static native void arrayShortsToBytes(
+		@NotNull short[] __source,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __sourceOff,
+		@NotNull byte[] __dest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __destOff,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __len)
+		throws MLECallError;
 	
 	/**
 	 * Checks if the given thread holds the lock on the given method.

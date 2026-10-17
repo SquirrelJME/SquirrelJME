@@ -115,6 +115,7 @@ JNIEXPORT jint JNICALL sjme_attrUnused
 	/* MLE */
 	MLE_INIT_FUNC_CALL(NativeScritchDylibEx);
 	MLE_INIT_FUNC_CALL(NativeScritchInterface);
+	MLE_INIT_FUNC_CALL(ObjectShelf);
 	MLE_INIT_FUNC_CALL(PencilFontShelf);
 	MLE_INIT_FUNC_CALL(PencilShelf);
 	MLE_INIT_FUNC_CALL(RuntimeShelf);

@@ -9,6 +9,7 @@
 
 package java.io;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 
@@ -335,8 +336,9 @@ public class DataOutputStream
 					
 					// Convert to bytes
 					byte[] chunk = new byte[xl];
-					for (int o = 0; o < xl; o++, i++)
-						chunk[o] = (byte)chars[i];
+					ObjectShelf.arrayCharsToBytes(chars, i,
+						chunk, 0, xl);
+					i += xl;
 					
 					// Write all at once
 					out.write(chunk, 0, xl);
