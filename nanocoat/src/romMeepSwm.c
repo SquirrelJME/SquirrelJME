@@ -83,10 +83,10 @@ static sjme_errorCode sjme_nvm_rom_swmParseVersion(
 	if (left == NULL || left >= end)
 		return SJME_ERROR_INVALID_MANIFEST_VALUE;
 
-	/* Find the right dot. */
+	/* Find the right dot, this is optional. */
 	right = sjme_lpwcschr(left + 1, '.');
 	if (right == NULL || right >= end)
-		return SJME_ERROR_INVALID_MANIFEST_VALUE;
+		right = end;
 
 	/* Is there a dash terminator for -compact? */
 	term = sjme_lpwcschr(right + 1, '-');
@@ -101,14 +101,25 @@ static sjme_errorCode sjme_nvm_rom_swmParseVersion(
 	/* Parse the individual values. */
 	maj = sjme_lpwcstoimax(in, &majP, 10);
 	min = sjme_lpwcstoimax(left + 1, &minP, 10);
-	rel = sjme_lpwcstoimax(right + 1, &relP, 10);
+
+	/* The release is an optional value. */
+	if (right != end && right + 1 != end)
+	{
+		rel = sjme_lpwcstoimax(right + 1, &relP, 10);
+
+		/* Did not parse a version? */
+		if (relP == NULL || relP != term)
+			return SJME_ERROR_INVALID_MANIFEST_VALUE;
+	}
+	else
+		rel = 0;
 
 	/* Are any of these invalid? */
 	/* Note that the end pointers must land exactly on their right side. */
 	if (maj > 99 || min > 99 || rel > 99 ||
 		maj < 0 || min < 0 || rel < 0 ||
-		majP == NULL || minP == NULL || relP == NULL ||
-		majP != left || minP != right || relP != term)
+		majP == NULL || minP == NULL ||
+		majP != left || minP != right)
 		return SJME_ERROR_INVALID_MANIFEST_VALUE;
 
 	/* Fill in. */
@@ -136,6 +147,8 @@ static sjme_errorCode sjme_nvm_rom_swmParseSuite(
 	sjme_errorCode error;
 	sjme_lpcwstr end, semiA, semiB;
 
+	/* bluetooth.api;;1.0.0 */
+
 	if (outSuite == NULL || in == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -145,8 +158,42 @@ static sjme_errorCode sjme_nvm_rom_swmParseSuite(
 	/* End is always here. */
 	end = &in[inLen];
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Find first semicolon, this is required. */
+	semiA = sjme_lpwcschr(in, ';');
+	if (semiA == NULL || semiA == in || semiA >= end)
+		return SJME_ERROR_INVALID_MANIFEST_VALUE;
+
+	/* Find second semicolon, this is optional. */
+	semiB = sjme_lpwcschr(semiA + 1, ';');
+	if (semiB == NULL || semiB >= end)
+		return SJME_ERROR_INVALID_MANIFEST_VALUE;
+
+	/* Parse version, which is optional. */
+	if (semiB != end && semiB + 1 !=  end)
+	{
+		if (sjme_error_is(error = sjme_nvm_rom_swmParseVersion(
+			&outSuite->version, semiB + 1, (end - semiB) - 1)))
+			return sjme_error_default(error);
+	}
+
+	/* Otherwise, set version to zero. */
+	else
+	{
+		outSuite->version.major = 0;
+		outSuite->version.minor = 0;
+		outSuite->version.release = 0;
+		outSuite->version.isCompact = SJME_JNI_FALSE;
+	}
+
+	/* Copy name. */
+	sjme_lpwcsncat(outSuite->name, in, semiA - in);
+
+	/* Copy vendor, if it is provided. */
+	if (semiA != semiB && semiB + 1 != semiA)
+		sjme_lpwcsncat(outSuite->name, semiA + 1, (semiB - semiA) - 1);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 static sjme_errorCode sjme_nvm_rom_swmParseNamedVersion(
@@ -278,8 +325,9 @@ SJME_MEEP_SWM_FUNC(definedStandards)
 		(*lpwv), (end - (*lpwv)))))
 		return sjme_error_default(error);
 
-	/* Move the pointer over since it is valid. */
-	*lpwv = end;
+	/* Move the pointer over since it is valid, note the command needs */
+	/* to be skipped here. */
+	*lpwv = end + 1;
 
 	/* Set details last, as everything is valid now. */
 	tempEntry->tag.type = SJME_NVM_SWM_DEPENDENCY_STANDARD;
@@ -329,9 +377,9 @@ SJME_MEEP_SWM_FUNC(microConfig)
 		end = &(*lpwv)[sjme_lpwcslen(*lpwv)];
 
 	/* There must only be whitespace following this. */
-	for (checkEnd = 0; (*checkEnd) != '\0'; checkEnd++)
+	for (checkEnd = end; (*checkEnd) != '\0'; checkEnd++)
 		if (!isspace(*checkEnd))
-			return SJME_ERROR_INVALID_MANIFEST_FORMAT;
+			return SJME_ERROR_INVALID_MANIFEST_VALUE;
 
 	/* Parse named version. */
 	if (sjme_error_is(error = sjme_nvm_rom_swmParseNamedVersion(
@@ -564,7 +612,7 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
 		/* Not valid. */
 		if (handler->key == NULL || handler->handler == NULL)
 		{
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_MANIFEST)
 			/* Emit a message if debugging, otherwise do not care. */
 			sjme_message("Unknown key %"PRSl": %"PRSl"",
 				step.map.key, step.map.value);
@@ -672,8 +720,9 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingle(
 	if (sjme_error_is(error = sjme_nvm_rom_swmLoadSingleManifest(
 		allocPool, inSuite, inLibrary, inOutDepend)))
 	{
-		if (error == SJME_ERROR_INVALID_MANIFEST_FORMAT)
-			sjme_message("Manifest for %s was not valid.",
+		if (error == SJME_ERROR_INVALID_MANIFEST_FORMAT ||
+			error == SJME_ERROR_INVALID_MANIFEST_VALUE)
+			sjme_message("Manifest for %s is bad!",
 				inLibrary->name);
 		else if (error != SJME_ERROR_NOT_MATCHED)
 			return sjme_error_default(error);
@@ -744,7 +793,16 @@ sjme_errorCode sjme_nvm_rom_swmLoad(
 		/* Parse this library's dependency information. */
 		if (sjme_error_is(error = sjme_nvm_rom_swmLoadSingle(allocPool,
 			inSuite, library, suiteDependency)))
-			goto fail_parseDepends;
+		{
+			/* The manifest could have errors in it. */
+			if (error != SJME_ERROR_INVALID_MANIFEST_VALUE)
+				goto fail_parseDepends;
+
+#if defined(SJME_CONFIG_DEBUG)
+			sjme_message("Library %s has invalid manifest data.",
+				library->name);
+#endif
+		}
 	}
 
 	/* Return the resultant dependency information. */

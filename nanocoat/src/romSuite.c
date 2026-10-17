@@ -89,7 +89,8 @@ sjme_errorCode sjme_nvm_rom_suiteLibraries(
 	/* Has this been processed already? */
 	if (inSuite->libraries != NULL)
 	{
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_MANIFEST) && \
+	defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("Using existing cache: %p", inSuite->libraries);
 #endif

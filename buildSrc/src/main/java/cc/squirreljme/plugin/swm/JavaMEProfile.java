@@ -89,9 +89,25 @@ public final class JavaMEProfile
 	@Override
 	public int compareTo(JavaMEProfile __o)
 	{
-		int rv = this.name.compareTo(__o.name);
+		APIName name = this.name;
+		int rv = name.compareTo(__o.name);
 		if (rv != 0)
+		{
+			// MEEP and MIDP need to be resorted
+			if (name.isMeep() != __o.name.isMeep() &&
+				(name.isMidp() || __o.name.isMidp()))
+			{
+				// MEEP is always after MIDP
+				if (name.isMeep() && __o.name.isMidp())
+					return 1;
+				
+				// MIDP is always before MEEP
+				else if (name.isMidp() && __o.name.isMeep())
+					return -1;
+			}
+			
 			return rv;
+		}
 		
 		SuiteVersion a = this.version,
 			b = __o.version;

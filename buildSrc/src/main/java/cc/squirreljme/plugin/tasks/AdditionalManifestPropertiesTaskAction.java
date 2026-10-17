@@ -504,7 +504,8 @@ public class AdditionalManifestPropertiesTaskAction
 	}
 	
 	/**
-	 * Adds the given profile to the profile list.
+	 * Adds the given profile, replacing the existing one if the new
+	 * version is higher.
 	 * 
 	 * @param __attributes The attributes to add into.
 	 * @param __profile The profile to add.
@@ -519,17 +520,21 @@ public class AdditionalManifestPropertiesTaskAction
 			throw new NullPointerException("NARG");
 		
 		// Load all the existing profiles
-		Set<JavaMEProfile> existing = new LinkedHashSet<>();
+		JavaMEProfile existing = null;
 		String rawExisting =
 			__attributes.getValue("Microedition-Profile");
 		if (rawExisting != null)
-			existing.addAll(JavaMEProfile.parseProfiles(rawExisting));
+			existing = new JavaMEProfile(rawExisting);
 		
-		// Add to profile set
-		existing.add(__profile);
+		// There is only one, or the existing one is newer than the
+		// one to set? Use that
+		if (existing != null && __profile.compareTo(existing) < 0)
+			__attributes.putValue("Microedition-Profile",
+				existing.toString());
 		
-		// Store all of them
-		__attributes.putValue("Microedition-Profile",
-			JavaMEProfile.toString(existing));
+		// Otherwise, use the new version
+		else
+			__attributes.putValue("Microedition-Profile",
+				__profile.toString());
 	}
 }

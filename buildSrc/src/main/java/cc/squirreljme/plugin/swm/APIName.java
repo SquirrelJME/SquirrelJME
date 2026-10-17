@@ -88,6 +88,28 @@ public final class APIName
 	}
 	
 	/**
+	 * Is this MIDP?
+	 *
+	 * @return If this is MIDP.
+	 * @since 2026/10/17
+	 */
+	protected boolean isMidp()
+	{
+		return this.string.equalsIgnoreCase("MIDP");
+	}
+	
+	/**
+	 * Is this MEEP?
+	 *
+	 * @return If this is MEEP.
+	 * @since 2026/10/17
+	 */
+	protected boolean isMeep()
+	{
+		return this.string.equalsIgnoreCase("MEEP");
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/11/30
 	 */
