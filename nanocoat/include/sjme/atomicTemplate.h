@@ -114,6 +114,16 @@ typedef volatile struct sjme_alignPointerL sjme_atomic_typeName
 #endif
 } sjme_atomic_typeName sjme_alignPointerR;
 
+#if sjme_atomic_isPointer == 1
+	/** Non-cyclic type. */
+	typedef sjme_atomic_typeName \
+		SJME_TOKEN_PASTE_PP(sjme_atomic_typeName, _nonCyclic);
+
+	/** Phantom type. */
+	typedef sjme_atomic_typeName \
+		SJME_TOKEN_PASTE_PP(sjme_atomic_typeName, _nonCyclic);
+#endif
+
 /**
  * Compares the atomic with the @code expected @endcode value and if it is
  * said value, it will atomically be set to @code set @endcode.

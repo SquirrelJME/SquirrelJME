@@ -725,9 +725,6 @@ extern "C" {
 #elif defined(SJME_CONFIG_HAS_C11) && !defined(__STDC_NO_ATOMICS__)
 	/** Supports C11 atomics. */
 	#define SJME_CONFIG_HAS_ATOMIC_C11
-#elif defined(SJME_CONFIG_HAS_CLANG)
-	/** CLang is based off GCC's newer __atomic family. */
-	#define SJME_CONFIG_HAS_ATOMIC_GCC
 #elif defined(SJME_CONFIG_HAS_GCC)
 	/* GCC 4.7 introduces the __atomic family. */
 	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 7)
@@ -737,6 +734,9 @@ extern "C" {
 		/** GCC Legacy Atomics. */
 		#define SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY
 	#endif
+#elif defined(SJME_CONFIG_HAS_CLANG)
+	/** CLang is based off GCC's newer __atomic family. */
+	#define SJME_CONFIG_HAS_ATOMIC_GCC
 #endif
 
 #if !defined(SJME_CONFIG_HAS_ATOMIC)
