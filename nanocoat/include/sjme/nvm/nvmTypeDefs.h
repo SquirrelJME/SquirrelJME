@@ -557,9 +557,6 @@ SJME_LIST_DECLARE(sjme_nvm_class_info, 0);
 /** Method list. */
 SJME_LIST_DECLARE(sjme_nvm_class_methodInfo, 0);
 
-/** List of phantom string pool strings. */
-SJME_LIST_DECLARE(sjme_phantom(sjme_nvm_stringPool_string), 0);
-
 #define sjme_atomic_type sjme_nvm_class_methodInfo
 #include "sjme/atomicTemplate.h"
 
@@ -597,6 +594,9 @@ SJME_LIST_DECLARE(sjme_phantom(sjme_nvm_stringPool_string), 0);
 #define sjme_atomic_type sjme_nvm_class_poolEntryNameAndType
 #define sjme_atomic_refs 1
 #include "sjme/atomicTemplate.h"
+
+/** List of phantom string pool strings. */
+SJME_LIST_DECLARE(sjme_phantom(sjme_nvm_stringPool_string), 0);
 
 /**
  * A list of classes.
