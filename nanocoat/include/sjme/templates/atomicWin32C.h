@@ -23,7 +23,7 @@
 #endif
 
 sjme_jboolean SJME_TOKEN_PASTE3_PP(
-		sjme_atomic_, sjme_atomic_type, _compareSet)(
+		sjme_atomic_, sjme_atomic_subName, _compareSet)(
 	sjme_atomic_typeName* atomic,
 	sjme_atomic_valueName expected,
 	sjme_atomic_valueName set)
@@ -50,7 +50,7 @@ sjme_jboolean SJME_TOKEN_PASTE3_PP(
 }
 
 sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
-		sjme_atomic_, sjme_atomic_type, _getAdd)(
+		sjme_atomic_, sjme_atomic_subName, _getAdd)(
 	sjme_atomic_typeName* atomic,
 	sjme_atomic_valueName add)
 {
@@ -68,7 +68,7 @@ sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
 }
 
 sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
-		sjme_atomic_, sjme_atomic_type, _get)(
+		sjme_atomic_, sjme_atomic_subName, _get)(
 	sjme_atomic_typeName* atomic)
 {
 #if sjme_atomic_typeWidth == 8
@@ -85,7 +85,7 @@ sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
 }
 
 sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
-		sjme_atomic_, sjme_atomic_type, _set)(
+		sjme_atomic_, sjme_atomic_subName, _set)(
 	sjme_atomic_typeName* atomic,
 	sjme_atomic_valueName value)
 {
