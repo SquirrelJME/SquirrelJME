@@ -23,7 +23,7 @@ if(SQUIRRELJME_IS_RELEASE)
 	if(CMAKE_COMPILER_IS_GNUCC OR
 		CMAKE_COMPILER_IS_GNUCXX OR
 		CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
-		CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+		CMAKE_C_COMPILER_ID STREQUAL "Clang")
 		macro(squirreljme_executable_strip target)
 			add_custom_command(TARGET ${target} POST_BUILD
 				DEPENDS ${target}

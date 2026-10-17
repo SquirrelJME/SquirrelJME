@@ -105,7 +105,7 @@ macro(squirreljme_static_executable target)
 	if(CMAKE_COMPILER_IS_GNUCC OR
 		CMAKE_COMPILER_IS_GNUCXX OR
 		CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
-		CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+		CMAKE_C_COMPILER_ID STREQUAL "Clang")
 		squirreljme_target_link_options(${target} BEFORE PRIVATE
 			"-static")
 	elseif(MSVC OR
@@ -331,10 +331,15 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 		"-Wpedantic"
 		SQUIRRELJME_HAS_WARN_PEDANTIC)
 
-	# Can we set the no execute flag for the link?
-	squirreljme_check_set_compiler_flag(C
-		"-Wl,-z,noexecstack"
-		SQUIRRELJME_HAS_NOEXECSTACK)
+	# noexecstack is very new
+	if(DEFINED CMAKE_C_COMPILER_VERSION AND
+		NOT "${CMAKE_C_COMPILER_VERSION}" STREQUAL "" AND
+		"${CMAKE_C_COMPILER_VERSION}" VERSION_GREATER "3.0")
+		# Can we set the no execute flag for the link?
+		squirreljme_check_set_compiler_flag(C
+			"-Wl,-z,noexecstack"
+			SQUIRRELJME_HAS_NOEXECSTACK)
+	endif()
 endif()
 
 # Checks if the specific header exists

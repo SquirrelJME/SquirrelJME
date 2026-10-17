@@ -10,7 +10,7 @@
 # Use the best version possible
 # Otherwise, fallback to the lowest viable version
 message(STATUS "Detected CMake (${CMAKE_VERSION})")
-if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+if(CMAKE_VERSION VERSION_GREATER 3.12)
 	cmake_minimum_required(VERSION 3.13..3.31)
 else()
 	cmake_minimum_required(VERSION 3.1)
@@ -54,7 +54,7 @@ if(MSVC)
 elseif(CMAKE_COMPILER_IS_GNUCC OR
 	CMAKE_COMPILER_IS_GNUCXX OR
 	CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
-	CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	target_link_options(sourceize PUBLIC
 		"-static")
 endif()
