@@ -164,9 +164,13 @@ typedef sjme_intPointer sjme_thread_id;
 	/** Unbump Thread. */
 	#define SJME_THREAD_UNBUMP(x) (x)
 #endif
+	
+#pragma region(atomics)
 
 #define sjme_atomic_type sjme_thread
 #include "sjme/atomicTemplate.h"
+	
+#pragma endregion(atomics)
 
 /**
  * Main thread function type.

@@ -91,7 +91,7 @@
 /*--------------------------------------------------------------------------*/
 
 /* These are only important in headers. */
-#if !defined(sjme_atomic_sourceImpl)
+#if !defined(sjme_atomic_sourceImpl) && sjme_atomic_sourceImpl == 0
 
 /**
  * Atomic value storage.
@@ -121,7 +121,7 @@ typedef sjme_attrVolatileStruct struct sjme_alignPointerL sjme_atomic_typeName
 
 	/** Phantom type. */
 	typedef sjme_atomic_typeName \
-		SJME_TOKEN_PASTE_PP(sjme_atomic_typeName, _nonCyclic);
+		SJME_TOKEN_PASTE_PP(sjme_atomic_typeName, _phantom);
 #endif
 
 /**
@@ -183,7 +183,7 @@ sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
 /*--------------------------------------------------------------------------*/
 
 /* Clear definitions for next include, if not source impl. */
-#if !defined(sjme_atomic_sourceImpl)
+#if !defined(sjme_atomic_sourceImpl) && sjme_atomic_sourceImpl == 0
 	#undef sjme_atomic_type
 	#undef sjme_atomic_refs
 	#undef sjme_atomic_starsP

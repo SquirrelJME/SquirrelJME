@@ -19,8 +19,9 @@
 
 /* Include the atomic template header to grab all the defines for */
 /* implementations. */
-#define sjme_atomic_sourceImpl
+#define sjme_atomic_sourceImpl 1
 #include "sjme/atomicTemplate.h"
+#undef sjme_atomic_sourceImpl
 
 /* ReSharper disable once CppMissingIncludeGuard */
 /*--------------------------------------------------------------------------*/
@@ -39,9 +40,6 @@
 
 /* ReSharper disable once CppMissingIncludeGuard */
 /*--------------------------------------------------------------------------*/
-
-/* No longer a source implementation. */
-#undef sjme_atomic_sourceImpl
 
 /* Undefine everything the header would have done normally. */
 #undef sjme_atomic_type
