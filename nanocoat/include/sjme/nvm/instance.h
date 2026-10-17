@@ -100,7 +100,7 @@ typedef struct sjme_nvm_fieldValues
 	sjme_jint length;
 	
 	/** Values within the tread. */
-	sjme_alignPointer sjme_nvm_rawFieldValues values;
+	sjme_alignPointerL sjme_nvm_rawFieldValues values sjme_alignPointerR;
 } sjme_nvm_fieldValues;
 
 struct sjme_jobjectBase
@@ -363,7 +363,7 @@ struct sjme_jarrayBase
 	sjme_jint length;
 
 	/** The elements in the array. */
-	sjme_alignPointer sjme_nvm_rawArrayValues e;
+	sjme_alignPointerL sjme_nvm_rawArrayValues e sjme_alignPointerR;
 };
 
 struct sjme_jweakBase

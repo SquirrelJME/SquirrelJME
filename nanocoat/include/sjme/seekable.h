@@ -247,7 +247,7 @@ struct sjme_seekableBase
 	const sjme_seekable_functions* functions;
 	
 	/** Spinlock for stream access. */
-	sjme_alignPointer sjme_thread_spinLock lock;
+	sjme_alignPointerL sjme_thread_spinLock lock sjme_alignPointerR;
 	
 	/** The pool this is in. */
 	sjme_alloc_pool allocPool;

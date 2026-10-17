@@ -99,7 +99,8 @@ struct sjme_scritchui_stateBase
 	sjme_thread_mainFunc loopThreadInit;
 	
 	/** Indicator that the main loop is ready for execution. */
-	sjme_alignPointer sjme_atomic(sjme_jint) loopThreadReady;
+	sjme_alignPointerL sjme_atomic(sjme_jint) loopThreadReady
+		sjme_alignPointerR;
 	
 	/** The available screens. */
 	sjme_list(sjme_scritchui_uiScreen)* screens;
@@ -114,7 +115,7 @@ struct sjme_scritchui_stateBase
 	sjme_scritchui wrappedState;
 	
 	/** Reference to owning state. */
-	sjme_alignPointer sjme_atomic(sjme_pointer) topState;
+	sjme_alignPointerL sjme_atomic(sjme_pointer) topState sjme_alignPointerR;
 	
 	/** The next ID for opaque menu items. */
 	sjme_jint nextMenuItemId;
@@ -123,7 +124,7 @@ struct sjme_scritchui_stateBase
 	sjme_scritchui_bugs bugs;
 
 	/** The loop queue for manual event loops. */
-	sjme_alignPointer sjme_scritchui_loopQueue loopQueue;
+	sjme_alignPointerL sjme_scritchui_loopQueue loopQueue sjme_alignPointerR;
 
 	/** Platform flags (@link sjme_scritchui_lafPlatformFlag @endlink ). */
 	sjme_jint platformFlags;

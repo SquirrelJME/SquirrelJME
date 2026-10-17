@@ -177,7 +177,7 @@ struct sjme_frame_frameStack
 	sjme_jint length;
 	
 	/** Pointer bases for the type on the frame. */
-	sjme_alignPointer union
+	sjme_alignPointerL union
 	{
 		/** Pointer base. */
 		sjme_pointer base;
@@ -196,7 +196,7 @@ struct sjme_frame_frameStack
 
 		/** Object values. */
 		sjme_jobject* l;
-	} base;
+	} sjme_alignPointerR base;
 };
 
 /** The object check stack type. */
