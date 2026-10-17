@@ -338,7 +338,7 @@ static sjme_errorCode sjme_nvm_initScritchUi(
 	/* What is the API function entrypoint called? */
 	memset(&buf, 0, sizeof(buf));
 	snprintf(buf, BUF_SIZE - 1,
-	SJME_TOKEN_STRING_PP(SJME_SCRITCHUI_DYLIB_SYMBOL()) "%s",
+	SJME_TOKEN_STRING_PP(SJME_SCRITCHUI_DYLIB_SYMBOL_PREFIX) "%s",
 		(actualSubComponent != NULL ? actualSubComponent : ""));
 
 	/* Lookup the function pointer for the call. */
