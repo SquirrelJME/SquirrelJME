@@ -119,7 +119,7 @@ extern "C"
 	/** Check return value. */
 	#define sjme_attrCheckReturn __attribute__((warn_unused_result))
 
-	#if SJME_CONFIG_GCC_VERSION_LEAST(3, 4)
+	#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
 		/** Deprecated. */
 		#define sjme_attrDeprecated __attribute__((deprecated))
 	#endif
@@ -142,8 +142,10 @@ extern "C"
 	/** Indicates a callback. */
 	#define sjme_attrCallback __attribute__((callback))
 
-	/** Not used. */
-	#define sjme_attrUnused __attribute__((unused))
+	#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
+		/** Not used. */
+		#define sjme_attrUnused __attribute__((unused))
+	#endif
 
 	/** Not used enum constant. */
 	#define sjme_attrUnusedEnum(x) x sjme_attrUnused
