@@ -24,6 +24,34 @@ import net.multiphasicapps.classfile.MethodDescriptor;
 public enum MLEObject
 	implements MLEFunction
 {
+	
+	/** 
+	 * {@link ObjectShelf#arrayCharsToBytes(char[], int, byte[], 
+	 * int, int)}.
+	 */
+	ARRAY_CHARS_TO_BYTES("arrayCharsToBytes:([CI[BII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/01/24
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringArrayObjectChar source = MLEObjects.notNull(
+				SpringArrayObjectChar.class, __args[0]);
+			int sourceOff = (Integer)__args[1];
+			SpringArrayObjectByte dest = MLEObjects.notNull(
+				SpringArrayObjectByte.class, __args[2]);
+			int destOff = (Integer)__args[3];
+			int len = (Integer)__args[4];
+			
+			ObjectShelf.arrayCharsToBytes(source.array(), sourceOff,
+				dest.array(), destOff, len);
+			return null;
+		}
+	},
+	
 	/** {@link ObjectShelf#arrayCheckStore(Object, Object)}. */
 	ARRAY_CHECK_STORE("arrayCheckStore:(Ljava/lang/Object;" +
 		"Ljava/lang/Object;)Z")
@@ -440,6 +468,33 @@ public enum MLEObject
 				throw new SpringMLECallError("Type not an array.");
 			
 			return __thread.allocateArray(type, len);
+		}
+	},
+	
+	/** 
+	 * {@link ObjectShelf#arrayShortsToBytes(short[], int, byte[], 
+	 * int, int)}.
+	 */
+	ARRAY_SHORTS_TO_BYTES("arrayShortsToBytes:([SI[BII)V")
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2025/01/24
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringArrayObjectShort source = MLEObjects.notNull(
+				SpringArrayObjectShort.class, __args[0]);
+			int sourceOff = (Integer)__args[1];
+			SpringArrayObjectByte dest = MLEObjects.notNull(
+				SpringArrayObjectByte.class, __args[2]);
+			int destOff = (Integer)__args[3];
+			int len = (Integer)__args[4];
+			
+			ObjectShelf.arrayShortsToBytes(source.array(), sourceOff,
+				dest.array(), destOff, len);
+			return null;
 		}
 	},
 	

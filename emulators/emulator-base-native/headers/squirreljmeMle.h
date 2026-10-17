@@ -8,8 +8,9 @@
 // -------------------------------------------------------------------------*/
 
 /**
+ * Newer and simplified emulator-base MLE bridge.
  *
- *
+ * @since 2026/03/30
  */
 
 #ifndef LIBEMULATORBASE_SQUIRRELJMEMLE_H

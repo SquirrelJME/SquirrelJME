@@ -9,6 +9,7 @@
 
 package com.nokia.mid.ui;
 
+import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.lcdui.gfx.ExtraGraphics;
@@ -16,6 +17,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.Range;
 
 /**
  * This is an implementation of Nokia's graphic interface which allows for
@@ -28,7 +30,7 @@ class __NokiaGraphics__
 {
 	/** The raw graphics to use. */
 	final Graphics _graphics;
-	
+
 	/**
 	 * Initializes the Nokia Graphics wrapper.
 	 *
@@ -41,10 +43,10 @@ class __NokiaGraphics__
 	{
 		if (__g == null)
 			throw new NullPointerException("NARG");
-		
+
 		this._graphics = __g;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/07
@@ -58,7 +60,7 @@ class __NokiaGraphics__
 			__NokiaGraphics__.__nokiaToMIDPTransform(__manipulation),
 			__x, __y, __anchor);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/07
@@ -74,9 +76,14 @@ class __NokiaGraphics__
 		if (__pixels == null)
 			throw new NullPointerException("NARG");
 
-		// Check if the manipulation is valid and fail early if not
-		__NokiaGraphics__.__nokiaToMIDPTransform(__manipulation);
+		__NokiaGraphics__.__checkBounds(__offset, __scanlength, __w, __h,
+			__pixels.length *
+				__NokiaGraphics__.__nokiaPixPerByte(__format));
 
+		// Check if the manipulation is valid and fail early if not
+		int midpTransform = __NokiaGraphics__.__nokiaToMIDPTransform(
+			__manipulation);
+		
 		// Nothing to draw, so we can exit early
 		if (__w == 0 || __h == 0)
 			return;
@@ -106,12 +113,7 @@ class __NokiaGraphics__
 						c = ((__pixels[line + x] >> bit) & 1);
 
 						if (__alphaMask != null)
-						{
-							a = ((__alphaMask[line + x] >> bit) & 1)
-								<< 1;
-
-							a *= 255;
-						}
+							a = ((__alphaMask[line + x] >> bit) & 1) * 255;
 
 						c = (1 - c) * 255;
 
@@ -134,12 +136,8 @@ class __NokiaGraphics__
 						c = ((__pixels[(line + x) / 8] >> bit) & 1);
 
 						if (__alphaMask != null)
-						{
-							a = ((__alphaMask[(line + x) / 8] >> bit)
-								& 1) << 1;
-
-							a *= 255;
-						}
+							a = ((__alphaMask[(line + x) / 8] >> bit) & 1) *
+								255;
 
 						c = (1 - c) * 255;
 
@@ -269,11 +267,10 @@ class __NokiaGraphics__
 		graphics.drawPfRegion(
 			__NokiaGraphics__.__convertFormat(
 			DirectGraphics.TYPE_INT_8888_ARGB, true), data, 0, __w,
-			__alphaMask != null, 0, 0, __w, __h,
-			__NokiaGraphics__.__nokiaToMIDPTransform(__manipulation),
+			__alphaMask != null, 0, 0, __w, __h, midpTransform,
 			__x, __y, Graphics.TOP | Graphics.LEFT, __w, __h, __w, __h);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/07
@@ -285,38 +282,40 @@ class __NokiaGraphics__
 	{
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("EB0b");
-		
+
 		if (__pixels == null)
 			throw new NullPointerException("NARG");
 
-		// Check if the manipulation is valid and fail early if not
-		__NokiaGraphics__.__nokiaToMIDPTransform(__manipulation);
+		__NokiaGraphics__.__checkBounds(__offset, __scanlength, __w, __h,
+			__pixels.length);
 
+		// Check if the manipulation is valid and fail early if not
+		int midpTransform = __NokiaGraphics__.__nokiaToMIDPTransform(
+			__manipulation);
+		
 		// Nothing to draw, so we can exit early
 		if (__w == 0 || __h == 0)
 			return;
 
 		short[] data = new short[__w * __h];
-		int srcIndex, y, x, line;
 		ExtraGraphics graphics = (ExtraGraphics)this._graphics;
 
 		// Prepare the pixel data
-		for (y = 0; y < __h; y++)
+		for (int y = 0; y < __h; y++)
 		{
-			line = y * __w;
-			srcIndex = __offset + (y * __scanlength);
-			for (x = 0; x < __w; x++)
-			{
-				data[line + x] = __pixels[srcIndex + x];
-			}
+			int line = y * __w;
+			int srcIndex = __offset + (y * __scanlength);
+			ObjectShelf.arrayCopy(__pixels, srcIndex,
+				data, line, __w);
 		}
 
 		graphics.drawPfRegion(__NokiaGraphics__.__convertFormat(__format,
-			true), data, 0, __w, __transparency, 0, 0, __w, __h,
-			__NokiaGraphics__.__nokiaToMIDPTransform(__manipulation),
-			__x, __y, Graphics.TOP | Graphics.LEFT, __w, __h, __w, __h);
+			true), data, 0, __w, __transparency, 
+			0, 0, __w, __h, midpTransform,
+			__x, __y, Graphics.TOP | Graphics.LEFT, 
+			__w, __h, __w, __h);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/07
@@ -324,7 +323,7 @@ class __NokiaGraphics__
 	@Override
 	public void drawPixels(int[] __pixels, boolean __transparency,
 		int __offset, int __scanlength, int __x, int __y, int __w, int __h,
-		@MagicConstant(flagsFromClass = DirectGraphics.class) 
+		@MagicConstant(flagsFromClass = DirectGraphics.class)
 		int __manipulation,
 		@MagicConstant(valuesFromClass = DirectGraphics.class) int __format)
 	{
@@ -334,39 +333,42 @@ class __NokiaGraphics__
 		if (__w < 0 || __h < 0)
 			throw new IllegalArgumentException("EB0b");
 
+		__NokiaGraphics__.__checkBounds(__offset, __scanlength, __w, __h,
+			__pixels.length);
+
 		// Check if the manipulation is valid and fail early if not
-		__NokiaGraphics__.__nokiaToMIDPTransform(__manipulation);
+		int midpTransform = __NokiaGraphics__.__nokiaToMIDPTransform(
+			__manipulation);
 
 		// Nothing to draw, so we can exit early
 		if (__w == 0 || __h == 0)
 			return;
 
 		int[] data = new int[__w * __h];
-		int srcIndex, y, x, line;
 		ExtraGraphics graphics = (ExtraGraphics)this._graphics;
 
 		// Prepare the pixel data
-		for (y = 0; y < __h; y++)
+		for (int y = 0; y < __h; y++)
 		{
-			line = y * __w;
-			srcIndex = __offset + (y * __scanlength);
-			for (x = 0; x < __w; x++)
-			{
-				data[line + x] = __pixels[srcIndex + x];
-			}
+			int line = y * __w;
+			int srcIndex = __offset + (y * __scanlength);
+			ObjectShelf.arrayCopy(__pixels, srcIndex,
+				data, line, __w);
 		}
 
 		graphics.drawPfRegion(__NokiaGraphics__.__convertFormat(__format,
-			true), data, 0, __w, __transparency, 0, 0, __w, __h,
-			__NokiaGraphics__.__nokiaToMIDPTransform(__manipulation),
-			__x, __y, Graphics.TOP | Graphics.LEFT, __w, __h, __w, __h);
+			true), data, 0, __w, __transparency,
+			0, 0, __w, __h, midpTransform,
+			__x, __y, Graphics.TOP | Graphics.LEFT,
+			__w, __h, __w, __h);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/07
 	 */
 	@Override
+	@SuppressWarnings("DuplicatedCode")
 	public void drawPolygon(int[] __xPoints, int __xOffset, int[] __yPoints,
 		int __yOffset, int __nPoints, int __argbColor)
 	{
@@ -386,7 +388,7 @@ class __NokiaGraphics__
 			__nPoints);
 		graphics.setAlphaColor(oldColor, true);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/07
@@ -402,12 +404,13 @@ class __NokiaGraphics__
 		graphics.drawTriangle(__x1, __y1, __x2, __y2, __x3, __y3);
 		graphics.setAlphaColor(oldColor, true);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/07
 	 */
 	@Override
+	@SuppressWarnings("DuplicatedCode")
 	public void fillPolygon(int[] __xPoints, int __xOffset, int[] __yPoints,
 		int __yOffset, int __nPoints, int __argbColor)
 	{
@@ -427,7 +430,7 @@ class __NokiaGraphics__
 			__nPoints);
 		graphics.setAlphaColor(oldColor, true);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/07
@@ -443,7 +446,7 @@ class __NokiaGraphics__
 		graphics.fillTriangle(__x1, __y1, __x2, __y2, __x3, __y3);
 		graphics.setAlphaColor(oldColor, true);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/07
@@ -479,8 +482,12 @@ class __NokiaGraphics__
 		if (__pixels == null)
 			throw new NullPointerException("NARG");
 
+		__NokiaGraphics__.__checkBounds(__offset, __scanlength, __w, __h,
+			__pixels.length *
+				__NokiaGraphics__.__nokiaPixPerByte(__format));
+
 		int x, y, pixelPos, pixelIndex, pixelValue, byteIndex, bitIndex, c, a;
-		int r, g, b;
+		int r, g, b, rowOffset, bitShift;
 		int[] data = new int[__w * __h];
 		ExtraGraphics graphics = (ExtraGraphics)this._graphics;
 
@@ -502,17 +509,19 @@ class __NokiaGraphics__
 						pixelValue = data[pixelIndex];
 
 						// Store pixel value as a bit in the pixels array
-						byteIndex = (__offset + y) * __scanlength + (x / 8);
-						bitIndex = x % 8;
+						rowOffset = (__offset / __scanlength) + y;
+						byteIndex = (rowOffset / 8) * __scanlength +
+							(__offset % __scanlength) + x;
+						bitShift = 7 - (rowOffset % 8);
 
 						// Set the bit in the current byte to the scaled value.
-						__pixels[byteIndex] |= ((pixelValue & 0xFF) != 0 ? 0 :
-							1) << (7 - bitIndex);
+						__pixels[byteIndex] |= (byte)((
+							(pixelValue & 0xFF) != 0 ? 1 : 0) << bitShift);
 
 						if (__alphaMask != null)
-							__alphaMask[byteIndex] |=
-								((pixelValue & 0xFF000000) != 0 ? 0 : 1)
-								<< (7 - bitIndex);
+							__alphaMask[byteIndex] |= (byte)(
+								((pixelValue & 0xFF000000) != 0 ? 1 : 0) <<
+								bitShift);
 					}
 				}
 				break;
@@ -524,16 +533,17 @@ class __NokiaGraphics__
 					{
 						pixelIndex = (__y + y) * __w + (__x + x);
 						pixelValue = data[pixelIndex];
-						byteIndex = (__offset / 8) + ((y * __w + x) / 8);
-						bitIndex = (y * __w + x) % 8;
+						byteIndex = (__offset + (y * __scanlength) + x) / 8;
+						bitIndex = (__offset + (y * __scanlength) + x) % 8;
 
-						__pixels[byteIndex] |= ((pixelValue & 0xFF) != 0 ? 0 :
-							1) << (7 - bitIndex);
+						__pixels[byteIndex] |= (byte)((
+							(pixelValue & 0xFF) != 0 ? 1 :
+							0) << (7 - bitIndex));
 
 						if (__alphaMask != null)
-							__alphaMask[byteIndex] |=
-								((pixelValue & 0xFF000000) != 0 ? 0 : 1)
-								<< (7 - bitIndex);
+							__alphaMask[byteIndex] |= (byte)(
+								((pixelValue & 0xFF000000) != 0 ? 1 : 0)
+								<< (7 - bitIndex));
 					}
 				}
 				break;
@@ -551,12 +561,13 @@ class __NokiaGraphics__
 
 						c = (pixelValue & 0xFF) / 85;
 
-						__pixels[byteIndex] |= c << (6 - (2 * pixelPos));
+						__pixels[byteIndex] |= 
+							(byte)(c << (6 - (2 * pixelPos)));
 						if (__alphaMask != null)
 						{
 							a = ((pixelValue >> 24) & 0xFF) / 85;
-							__alphaMask[byteIndex] |= a << (6 -
-								(2 * pixelPos));
+							__alphaMask[byteIndex] |= (byte)(a << (6 -
+								(2 * pixelPos)));
 						}
 					}
 				}
@@ -599,12 +610,13 @@ class __NokiaGraphics__
 
 						c = (pixelValue & 0xFF) / 17;
 
-						__pixels[byteIndex] |= c << (4 * (1 - pixelPos));
+						__pixels[byteIndex] |= (byte)(
+							c << (4 * (1 - pixelPos)));
 						if (__alphaMask != null)
 						{
 							a = ((pixelValue >> 24) & 0xFF) / 17;
-							__alphaMask[byteIndex] |= a << (4 * (1 -
-								pixelPos));
+							__alphaMask[byteIndex] |= (byte)(a << (4 * (1 -
+								pixelPos)));
 						}
 					}
 				}
@@ -664,7 +676,7 @@ class __NokiaGraphics__
 		graphics.getPfRegion(__NokiaGraphics__.__convertFormat(__format, true),
 			__pixels, __offset, __scanlength, true, __x, __y, __w, __h, 0);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2025/12/07
@@ -678,12 +690,43 @@ class __NokiaGraphics__
 	}
 
 	/**
+	 * Checks if the provided arguments access a valid region within the
+	 * specified {@code __maxLength} pixel array size.
+	 *
+	 * @param __offset The starting position's offset in the array.
+	 * @param __scanlength The offset between different rows of data (treat it
+	 * as the "width" of the image in the array).
+	 * @param __w The width of the region to be accessed.
+	 * @param __h The height of the region to be accessed.
+	 * @param __maxLength The total size of the pixel array.
+	 * @throws ArrayIndexOutOfBoundsException If the resulting area goes out
+	 * of bounds.
+	 * @since 2026/10/17
+	 */
+	private static final void __checkBounds(
+		@Range(from = 0, to = Integer.MAX_VALUE) int __offset,
+		int __scanlength,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __w,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __h,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __maxLength)
+		throws ArrayIndexOutOfBoundsException
+	{
+		if (__offset < 0)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+
+		int reqLen = (__offset + (__h - 1) * __scanlength) + __w;
+
+		if (reqLen < 0 || reqLen > __maxLength)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+	}
+
+	/**
 	 * Converts a format between {@link DirectGraphics} formats and their
 	 * SquirrelJME's {@link UIPixelFormat} counterparts, in order to facilitate
 	 * usage of native calls for image manipulations.
 	 *
 	 * @param __format The {@link DirectGraphics} format to be swapped for its
-	 * {@link UIPixelFormat} equivalent or vice-versa.
+	 * {@link UIPixelFormat} equivalent or vice versa.
 	 * @param __nokiaToSJME Dictates if the format is {@link DirectGraphics}
 	 * and has to be converted to {@link UIPixelFormat}, or the opposite.
 	 * @return A {@link UIPixelFormat} equivalent format of the one requested
@@ -693,7 +736,8 @@ class __NokiaGraphics__
 	 * supported by either {@link DirectGraphics} or {@link UIPixelFormat}.
 	 * @since 2025/12/07
 	 */
-	private static final int __convertFormat(int __format,
+	@MagicConstant(valuesFromClass = DirectGraphics.class)
+	private static int __convertFormat(int __format,
 		boolean __nokiaToSJME)
 	{
 		if (!__nokiaToSJME)
@@ -742,52 +786,86 @@ class __NokiaGraphics__
 				default:
 					throw new IllegalArgumentException("EB0k: " + __format);
 			}
-		else
-			switch (__format)
-			{
-				case DirectGraphics.TYPE_INT_8888_ARGB:
-					return UIPixelFormat.INT_ARGB8888;
+		
+		switch (__format)
+		{
+			case DirectGraphics.TYPE_INT_8888_ARGB:
+				return UIPixelFormat.INT_ARGB8888;
 
-				case DirectGraphics.TYPE_INT_888_RGB:
-					return UIPixelFormat.INT_RGB888;
+			case DirectGraphics.TYPE_INT_888_RGB:
+				return UIPixelFormat.INT_RGB888;
 
-				case DirectGraphics.TYPE_USHORT_4444_ARGB:
-					return UIPixelFormat.SHORT_ARGB4444;
+			case DirectGraphics.TYPE_USHORT_4444_ARGB:
+				return UIPixelFormat.SHORT_ARGB4444;
 
-				case DirectGraphics.TYPE_USHORT_565_RGB:
-					return UIPixelFormat.SHORT_RGB565;
+			case DirectGraphics.TYPE_USHORT_565_RGB:
+				return UIPixelFormat.SHORT_RGB565;
 
-				case DirectGraphics.TYPE_USHORT_555_RGB:
-					return UIPixelFormat.SHORT_RGB555;
+			case DirectGraphics.TYPE_USHORT_555_RGB:
+				return UIPixelFormat.SHORT_RGB555;
 
-				case DirectGraphics.TYPE_BYTE_8_GRAY:
-					return UIPixelFormat.BYTE_INDEXED256;
+			case DirectGraphics.TYPE_BYTE_8_GRAY:
+				return UIPixelFormat.BYTE_INDEXED256;
 
-				case DirectGraphics.TYPE_BYTE_4_GRAY:
-					return UIPixelFormat.PACKED_INDEXED4;
+			case DirectGraphics.TYPE_BYTE_4_GRAY:
+				return UIPixelFormat.PACKED_INDEXED4;
 
-				case DirectGraphics.TYPE_BYTE_2_GRAY:
-					return UIPixelFormat.PACKED_INDEXED2;
+			case DirectGraphics.TYPE_BYTE_2_GRAY:
+				return UIPixelFormat.PACKED_INDEXED2;
 
-				case DirectGraphics.TYPE_BYTE_1_GRAY:
-					return UIPixelFormat.PACKED_INDEXED1;
+			case DirectGraphics.TYPE_BYTE_1_GRAY:
+				return UIPixelFormat.PACKED_INDEXED1;
 
-				case DirectGraphics.TYPE_BYTE_1_GRAY_VERTICAL:
-					return UIPixelFormat.PACKED_INDEXED1_VERTICAL;
+			case DirectGraphics.TYPE_BYTE_1_GRAY_VERTICAL:
+				return UIPixelFormat.PACKED_INDEXED1_VERTICAL;
 
-				case DirectGraphics.TYPE_USHORT_444_RGB:
-					return UIPixelFormat.SHORT_RGB444;
+			case DirectGraphics.TYPE_USHORT_444_RGB:
+				return UIPixelFormat.SHORT_RGB444;
 
-				case DirectGraphics.TYPE_USHORT_1555_ARGB:
-					return UIPixelFormat.SHORT_ARGB1555;
+			case DirectGraphics.TYPE_USHORT_1555_ARGB:
+				return UIPixelFormat.SHORT_ARGB1555;
 
-				case DirectGraphics.TYPE_BYTE_332_RGB:
-					throw Debugging.todo("Support RGB_332 format");
+			case DirectGraphics.TYPE_BYTE_332_RGB:
+				throw Debugging.todo("Support RGB_332 format");
 
-					// Format is unsupported
-				default:
-					throw new IllegalArgumentException("EB0k: " + __format);
-			}
+				// Format is unsupported
+			default:
+				throw new IllegalArgumentException("EB0k: " + __format);
+		}
+	}
+
+	/**
+	 * Returns how many pixels can fit in a single byte for the given
+	 * {@link DirectGraphics} pixel format.
+	 *
+	 * @param __format The {@link DirectGraphics} pixel format, to return the
+	 * amount of pixels that can be packed inside a byte.
+	 * @return The amount of pixels a byte can hold for the given format.
+	 * @throws IllegalArgumentException If the received format is not one of
+	 * the byte formats supported by {@link DirectGraphics}.
+	 * @since 2026/10/17
+	 */
+	private static int __nokiaPixPerByte(int __format)
+	{
+		switch (__format)
+		{
+			case DirectGraphics.TYPE_BYTE_1_GRAY_VERTICAL:
+			case DirectGraphics.TYPE_BYTE_1_GRAY:
+				return 8;
+
+			case DirectGraphics.TYPE_BYTE_2_GRAY:
+				return 4;
+
+			case DirectGraphics.TYPE_BYTE_4_GRAY:
+				return 2;
+
+			case DirectGraphics.TYPE_BYTE_332_RGB:
+			case DirectGraphics.TYPE_BYTE_8_GRAY:
+				return 1;
+
+			default:
+				throw new IllegalArgumentException("INVL");
+		}
 	}
 
 	/**
@@ -807,14 +885,14 @@ class __NokiaGraphics__
 	 * @since 2025/11/25
 	 */
 	@MagicConstant(flagsFromClass = Sprite.class)
-	private static final int __nokiaToMIDPTransform(
+	private static int __nokiaToMIDPTransform(
 		@MagicConstant(flagsFromClass = DirectGraphics.class) int __trans)
 	{
 		// Return early if there's no manipulation to be done
 		if (__trans == 0 ||
 			__trans == (DirectGraphics.FLIP_HORIZONTAL |
 				DirectGraphics.FLIP_VERTICAL | DirectGraphics.ROTATE_180))
-			return 0;
+			return Sprite.TRANS_NONE;
 
 		switch (__trans)
 		{

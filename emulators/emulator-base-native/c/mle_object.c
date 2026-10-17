@@ -9,6 +9,13 @@
 
 #include "squirreljme.h"
 
+/* //// MLE /// */
+#define mleGroupId ObjectShelf
+#define mleShelfClass "cc/squirreljme/jvm/mle/ObjectShelf"
+#define mleProxyTarget "cc/squirreljme/emulator/EmulatedObjectShelf"
+#include "squirreljmeMle.h"
+/* //////////// */
+
 // The class to forward to
 #define OBJECTSHELF_CLASSNAME "cc/squirreljme/emulator/EmulatedObjectShelf"
 
@@ -42,8 +49,8 @@
 	DESC_INT DESC_INT )
 
 #define FORWARD_DESC_arrayIntsToBytes DESC_METHOD(DESC_VOID,  \
-    DESC_ARRAY(DESC_INT) DESC_INT \
-    DESC_ARRAY(DESC_BYTE) DESC_INT DESC_INT \
+	DESC_ARRAY(DESC_INT) DESC_INT \
+	DESC_ARRAY(DESC_BYTE) DESC_INT DESC_INT \
 	)
 
 #define ARRAY_FILL(javaType, desc) \
@@ -200,3 +207,18 @@ jint JNICALL mleObjectInit(JNIEnv* env, jclass classy)
 		mleObjectMethods, sizeof(mleObjectMethods) /
 			sizeof(JNINativeMethod));
 }
+
+#define MLE_DESC_arrayCharsToBytes \
+	DESC_METHOD(DESC_VOID, DESC_ARRAY(DESC_CHAR) DESC_INT \
+	DESC_ARRAY(DESC_BYTE) DESC_INT DESC_INT)
+MLE_FUNC_PROXY_STATIC(void, arrayCharsToBytes)
+
+#define MLE_DESC_arrayShortsToBytes \
+	DESC_METHOD(DESC_VOID, DESC_ARRAY(DESC_SHORT) DESC_INT \
+	DESC_ARRAY(DESC_BYTE) DESC_INT DESC_INT)
+MLE_FUNC_PROXY_STATIC(void, arrayShortsToBytes)
+
+MLE_LIST_BEGIN()
+	MLE_LIST_ITEM(arrayCharsToBytes),
+	MLE_LIST_ITEM(arrayShortsToBytes),
+MLE_LIST_END()

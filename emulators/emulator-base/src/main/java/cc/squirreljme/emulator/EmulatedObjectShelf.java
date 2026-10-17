@@ -17,8 +17,39 @@ import cc.squirreljme.jvm.mle.exceptions.MLECallError;
  *
  * @since 2021/12/26
  */
+@SuppressWarnings({"unused", "DuplicatedCode"})
 public class EmulatedObjectShelf
 {
+	
+	/**
+	 * Copies and converts a short array to a byte array.
+	 *
+	 * @param __source The source short array.
+	 * @param __sourceOff The source offset.
+	 * @param __dest The destination byte array.
+	 * @param __destOff The destination offset.
+	 * @param __len The number of values to copy and convert,
+	 * @throws MLECallError On null arguments; or if the offset and/or lengths
+	 * are negative or exceed the array bounds.
+	 * @since 2026/10/17
+	 */
+	public static void arrayCharsToBytes(
+		char[] __source, int __sourceOff,
+		byte[] __dest, int __destOff, int __len)
+		throws MLECallError
+	{
+		if (__source == null || __dest == null)
+			throw new MLECallError("Null arguments.");
+		if (__sourceOff < 0 || __destOff < 0 ||
+			(__sourceOff + __len) < 0 || (__destOff + __len) < 0 ||
+			(__sourceOff + __len) > __source.length ||
+			(__destOff + __len) > __dest.length)
+			throw new MLECallError("Index out of bounds.");
+		
+		for (int i = 0; i < __len; i++)
+			__dest[__destOff++] = (byte)__source[__sourceOff++];
+	}
+	
 	/**
 	 * Copies the given arrays. If the source and destination are the same
 	 * array, the copy operation will not collide with itself.
@@ -433,6 +464,35 @@ public class EmulatedObjectShelf
 	 */
 	public static void arrayIntsToBytes(
 		int[] __source, int __sourceOff,
+		byte[] __dest, int __destOff, int __len)
+		throws MLECallError
+	{
+		if (__source == null || __dest == null)
+			throw new MLECallError("Null arguments.");
+		if (__sourceOff < 0 || __destOff < 0 ||
+			(__sourceOff + __len) < 0 || (__destOff + __len) < 0 ||
+			(__sourceOff + __len) > __source.length ||
+			(__destOff + __len) > __dest.length)
+			throw new MLECallError("Index out of bounds.");
+		
+		for (int i = 0; i < __len; i++)
+			__dest[__destOff++] = (byte)__source[__sourceOff++];
+	}
+	
+	/**
+	 * Copies and converts a short array to a byte array.
+	 *
+	 * @param __source The source short array.
+	 * @param __sourceOff The source offset.
+	 * @param __dest The destination byte array.
+	 * @param __destOff The destination offset.
+	 * @param __len The number of values to copy and convert,
+	 * @throws MLECallError On null arguments; or if the offset and/or lengths
+	 * are negative or exceed the array bounds.
+	 * @since 2026/10/17
+	 */
+	public static void arrayShortsToBytes(
+		short[] __source, int __sourceOff,
 		byte[] __dest, int __destOff, int __len)
 		throws MLECallError
 	{
