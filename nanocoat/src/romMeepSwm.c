@@ -128,6 +128,27 @@ static sjme_errorCode sjme_nvm_rom_swmParseVersion(
 	return SJME_ERROR_NONE;
 }
 
+static sjme_errorCode sjme_nvm_rom_swmParseSuite(
+	sjme_attrOutNotNull sjme_nvm_swmInfoAll* outSuite,
+	sjme_attrInNotNull sjme_lpcwstr in,
+	sjme_attrInPositiveNonZero sjme_jint inLen)
+{
+	sjme_errorCode error;
+	sjme_lpcwstr end, semiA, semiB;
+
+	if (outSuite == NULL || in == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* End is always here. */
+	end = &in[inLen];
+
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
 static sjme_errorCode sjme_nvm_rom_swmParseNamedVersion(
 	sjme_attrOutNotNull sjme_nvm_swmInfoNameVersion* outNameVer,
 	sjme_attrInNotNull sjme_lpcwstr in,
@@ -234,12 +255,41 @@ SJME_MEEP_SWM_FUNC(definedProfiles)
 
 SJME_MEEP_SWM_FUNC(definedStandards)
 {
-	/* X-SquirrelJME-DefinedStandards: ??? */
+	sjme_errorCode error;
+	sjme_lpcwstr end;
+
+	/* X-SquirrelJME-DefinedStandards: bluetooth.api;;1.0.0,bluetooth.api;;1 */
+	/* .1.0 */
 
 	SJME_MEEP_SWM_FUNC_CHECK();
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Skip leading whitespace. */
+	while (isspace(**lpwv))
+		(*lpwv)++;
+
+	/* Find the end of this token, if not the last. */
+	end = sjme_lpwcschr(*lpwv, ',');
+	if (end == NULL)
+		end = &(*lpwv)[sjme_lpwcslen(*lpwv)];
+
+	/* Parse named version. */
+	if (sjme_error_is(error = sjme_nvm_rom_swmParseSuite(
+		&tempEntry->standard,
+		(*lpwv), (end - (*lpwv)))))
+		return sjme_error_default(error);
+
+	/* Move the pointer over since it is valid. */
+	*lpwv = end;
+
+	/* Set details last, as everything is valid now. */
+	tempEntry->tag.type = SJME_NVM_SWM_DEPENDENCY_STANDARD;
+	tempEntry->tag.use = SJME_NVM_SWM_USE_PROVIDES;
+
+	/* Continue if the end of key has not been reached yet. */
+skip_otherwise:
+	if (**lpwv != '\0')
+		return SJME_ERROR_CONTINUE;
+	return SJME_ERROR_NONE;
 }
 
 SJME_MEEP_SWM_FUNC(internalName)
@@ -262,22 +312,63 @@ SJME_MEEP_SWM_FUNC(internalName)
 
 SJME_MEEP_SWM_FUNC(microConfig)
 {
+	sjme_errorCode error;
+	sjme_lpcwstr end, checkEnd;
+
 	/* Microedition-Configuration: CLDC-1.8-compact */
 
 	SJME_MEEP_SWM_FUNC_CHECK();
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Skip leading whitespace. */
+	while (isspace(**lpwv))
+		(*lpwv)++;
+
+	/* Find the end of this token, if not the last. */
+	end = sjme_lpwcschr(*lpwv, ' ');
+	if (end == NULL)
+		end = &(*lpwv)[sjme_lpwcslen(*lpwv)];
+
+	/* There must only be whitespace following this. */
+	for (checkEnd = 0; (*checkEnd) != '\0'; checkEnd++)
+		if (!isspace(*checkEnd))
+			return SJME_ERROR_INVALID_MANIFEST_FORMAT;
+
+	/* Parse named version. */
+	if (sjme_error_is(error = sjme_nvm_rom_swmParseNamedVersion(
+		&tempEntry->configuration,
+		(*lpwv), (end - (*lpwv)))))
+		return sjme_error_default(error);
+
+	/* This depends on this configuration. */
+	tempEntry->tag.type = SJME_NVM_SWM_DEPENDENCY_CONFIGURATION;
+	tempEntry->tag.use = SJME_NVM_SWM_USE_DEPENDS;
+
+	/* Nothing more needs to be done. */
+	return SJME_ERROR_NONE;
 }
 
 SJME_MEEP_SWM_FUNC(microProfile)
 {
+	sjme_errorCode error;
+
 	/* Microedition-Profile: MEEP-8 */
 
 	SJME_MEEP_SWM_FUNC_CHECK();
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* This is effectively the same as this. */
+	if (sjme_error_is(error = sjme_nvm_rom_swmKey_microConfig(
+		inSuite, inLibrary, tempEntry, step, lpwv)))
+		return sjme_error_default(error);
+
+	/* If a configuration entry was created, then change to profile. */
+	if (tempEntry->tag.type == SJME_NVM_SWM_DEPENDENCY_CONFIGURATION)
+	{
+		tempEntry->tag.type = SJME_NVM_SWM_DEPENDENCY_PROFILE;
+		tempEntry->tag.use = SJME_NVM_SWM_USE_DEPENDS;
+	}
+
+	/* Use the original error. */
+	return error;
 }
 
 SJME_MEEP_SWM_FUNC(liblet)
