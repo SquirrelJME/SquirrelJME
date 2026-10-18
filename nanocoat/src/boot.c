@@ -519,7 +519,7 @@ sjme_errorCode sjme_nvm_boot(
 		sjme_message("No suites are available, cannot run.");
 
 		/* Fail. */
-		error = SJME_ERROR_NO_SUITES;
+		error = sjme_error_vmError(NULL, SJME_ERROR_NO_SUITES);
 		goto fail_noSuites;
 	}
 
@@ -621,7 +621,7 @@ sjme_errorCode sjme_nvm_boot(
 		if (runTarget.byId == NULL &&
 			runTarget.mainClass == NULL)
 		{
-			error = SJME_ERROR_NO_SUITES;
+			error = sjme_error_vmError(NULL, SJME_ERROR_NO_SUITES);
 			goto fail_defaultLaunch;
 		}
 
@@ -853,8 +853,8 @@ sjme_errorCode sjme_nvm_copyRunTarget(
 
 	/* Is this even valid if we want to know that? */
 	if (checkValid)
-		if (src->mainClass != NULL &&
-			(src->byId != NULL || src->byName != NULL))
+		if (src->mainClass == NULL ||
+			(src->byId == NULL && src->byName == NULL))
 			return SJME_ERROR_NOT_MATCHED;
 
 	/* Defensive copy makes a copy of absolutely everything. */

@@ -188,6 +188,20 @@ typedef struct sjme_nvm_swmInfoNameOnly
 } sjme_nvm_swmInfoNameOnly;
 
 /**
+ * Stores the main class entry point.
+ *
+ * @since 2026/06/17
+ */
+typedef struct sjme_nvm_swmInfoMainClass
+{
+	/** The base dependency info. */
+	sjme_nvm_rom_swmEntryTag tag;
+
+	/** The name of the suite. */
+	sjme_cchar name[SJME_NVM_SWM_FIELD_LENGTH];
+} sjme_nvm_swmInfoMainClass;
+
+/**
  * Stores a name and a version, this is generally used for CLDC configurations
  * and profiles.
  *
@@ -263,6 +277,18 @@ typedef union sjme_nvm_rom_swmEntryBase
 	/** The base dependency info. */
 	sjme_nvm_rom_swmEntryTag tag;
 
+	/** @link sjme_nvm_swmInfoNameOnly @endlink. */
+	sjme_nvm_swmInfoNameOnly nameOnly;
+
+	/** @link sjme_nvm_swmInfoNameVersion @endlink. */
+	sjme_nvm_swmInfoNameVersion nameVersion;
+
+	/** @link sjme_nvm_swmInfoAll @endlink. */
+	sjme_nvm_swmInfoAll all;
+
+	/** @link sjme_nvm_swmInfoTypedAll @endlink. */
+	sjme_nvm_swmInfoTypedAll typedAll;
+
 	/** A CLDC Configuration. */
 	sjme_nvm_swmInfoNameVersion configuration;
 
@@ -282,7 +308,7 @@ typedef union sjme_nvm_rom_swmEntryBase
 	sjme_nvm_swmInfoTypedAll typedSuite;
 
 	/** Main class entry point. */
-	sjme_nvm_swmInfoNameOnly mainClass;
+	sjme_nvm_swmInfoMainClass mainClass;
 } sjme_nvm_rom_swmEntryBase;
 
 /** A list of @link sjme_nvm_rom_swmEntry @endlink. */
@@ -310,9 +336,56 @@ struct sjme_nvm_rom_swmManagerBase
 	/** The SWM manager is a bit complicated, so it needs a cleanup helper. */
 	sjme_nvm_commonBase common;
 
+	/** The suite this belongs to. */
+	sjme_nvm_rom_suite inSuite;
+
 	/** The libraries which are known about. */
 	sjme_list(sjme_nvm_rom_swmLibrary)* libraries;
 };
+
+/**
+ * Compares a SWM configuration.
+ *
+ * @param a The first name.
+ * @param aV The first version.
+ * @param b The second name.
+ * @param bV The second version.
+ * @return The resultant comparison.
+ * @since 2026/10/18
+ */
+sjme_jint sjme_nvm_rom_compareConfiguration(
+	sjme_attrInNullable sjme_lpcwstr a,
+	sjme_attrInNullable const sjme_nvm_swmVersion* aV,
+	sjme_attrInNullable sjme_lpcwstr b,
+	sjme_attrInNullable const sjme_nvm_swmVersion* bV);
+
+/**
+ * Compares a SWM profile.
+ *
+ * @param a The first name.
+ * @param aV The first version.
+ * @param b The second name.
+ * @param bV The second version.
+ * @return The resultant comparison.
+ * @since 2026/10/18
+ */
+sjme_jint sjme_nvm_rom_compareProfile(
+	sjme_attrInNullable sjme_lpcwstr a,
+	sjme_attrInNullable const sjme_nvm_swmVersion* aV,
+	sjme_attrInNullable sjme_lpcwstr b,
+	sjme_attrInNullable const sjme_nvm_swmVersion* bV);
+
+/**
+ * Compares a SWM version.
+ *
+ * @param a The first version.
+ * @param b The second version.
+ * @return The resultant comparison.
+ * @since 2026/10/18
+ */
+sjme_jint sjme_nvm_rom_compareVersion(
+	sjme_attrInNullable const sjme_nvm_swmVersion* a,
+	sjme_attrInNullable const sjme_nvm_swmVersion* b);
 
 /**
  * Loads all the MEEP SWM related information from the library suite so that
@@ -354,6 +427,23 @@ sjme_errorCode sjme_nvm_rom_swmResolve(
 	sjme_attrInNullable sjme_list(sjme_lpcstr)* inMainArgs,
 	sjme_attrInNegativeOnePositive sjme_jint entryId,
 	sjme_attrOutNotNull sjme_nvm_rom_suiteRunTarget* outTarget);
+
+/**
+ * Resolves the given dependency.
+ *
+ * @param swmManager The suite manager.
+ * @param inLibrary The library that is doing the searching, this is optional
+ * and if it is passed then self is not considered.
+ * @param inMatching The entry to match.
+ * @param outLibrary The resultant library.
+ * @return Any resultant error, if any.
+ * @since 2026/10/17
+ */
+sjme_errorCode sjme_nvm_rom_swmResolveDependency(
+	sjme_attrInNotNull sjme_nvm_rom_swmManager swmManager,
+	sjme_attrInNullable sjme_nvm_rom_library inLibrary,
+	sjme_attrInNotNull const sjme_nvm_rom_swmEntry* inMatching,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary);
 
 /*--------------------------------------------------------------------------*/
 

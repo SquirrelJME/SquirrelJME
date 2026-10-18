@@ -67,6 +67,8 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_NULL_ARGUMENTS:
 		case SJME_ERROR_INVALID_ARGUMENT:
 		case SJME_ERROR_ILLEGAL_STATE:
+		case SJME_ERROR_INDEX_OUT_OF_BOUNDS:
+		case SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS:
 		case SJME_ERROR_UNKNOWN_MLE_SHELF:
 		case SJME_ERROR_UNKNOWN_MLE_FUNCTION:
 		case SJME_ERROR_NO_METHOD:
@@ -77,6 +79,8 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_TREAD_INVALID_WRITE:
 		case SJME_ERROR_MLE_CALL:
 		case SJME_ERROR_OBJECT_GONE:
+		case SJME_ERROR_FILE_NOT_FOUND:
+		case SJME_ERROR_NO_SUITES:
 			return SJME_JNI_TRUE;
 
 #if 0

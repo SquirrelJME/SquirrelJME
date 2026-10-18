@@ -17,7 +17,10 @@
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/access.h"
 
-static const sjme_basicTypeId sjme_nvm_byteCode_xArrayType[8] =
+#define SJME_NVM_NUM_XARRAY 8
+
+static const sjme_basicTypeId sjme_nvm_byteCode_xArrayType
+	[SJME_NVM_NUM_XARRAY] =
 {
 	SJME_JAVA_TYPE_ID_INTEGER,
 	SJME_JAVA_TYPE_ID_LONG,
@@ -482,6 +485,18 @@ static sjme_errorCode sjme_nvm_byteCode_slowNewArrayMultiSub(
 	result->t = SJME_JAVA_TYPE_ID_OBJECT;
 	result->v.l = SJME_AS_JOBJECT(baseArray);
 	return SJME_ERROR_NONE;
+}
+
+static sjme_jboolean sjme_nvm_checkArray(sjme_jclass componentType,
+	sjme_basicTypeId arrayType)
+{
+	/* Boolean and byte are considered the same. */
+	if (arrayType == SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE)
+		if (componentType->arrayTypeId == SJME_BASIC_TYPE_ID_BOOLEAN ||
+			componentType->arrayTypeId == SJME_BASIC_TYPE_ID_BYTE)
+			return SJME_JNI_TRUE;
+
+	return componentType->arrayTypeId == arrayType;
 }
 
 #pragma region(ArrayLength)
@@ -1709,7 +1724,7 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	}
 
 	/* Make sure the array is actually valid. */
-	arrayType = sjme_nvm_byteCode_xArrayType[id - 46];
+	arrayType = sjme_nvm_byteCode_xArrayType[(id - 46) % SJME_NVM_NUM_XARRAY];
 	componentType = sjme_atomic_g(sjme_jclass, 
 		&sjme_atomic_g(sjme_jclass,
 			&array->object.isClass)->componentType);
@@ -1717,15 +1732,8 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
 		!sjme_atomic_g(sjme_jclass,
 			&array->object.isClass)->info->isArray ||
+		!sjme_nvm_checkArray(componentType, arrayType) ||
 		componentType == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
-
-	/* Boolean and byte reads are considered the same. */
-	if ((arrayType == SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE &&
-		(componentType->arrayTypeId != SJME_BASIC_TYPE_ID_BOOLEAN &&
-		componentType->arrayTypeId != SJME_BASIC_TYPE_ID_BYTE)) ||
-		(arrayType != SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE &&
-		componentType->arrayTypeId != arrayType))
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 	
 	/* Check bounds. */
@@ -1770,7 +1778,7 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Determine the type to read from the stack and to store to the array. */
-	arrayType = sjme_nvm_byteCode_xArrayType[id - 79];
+	arrayType = sjme_nvm_byteCode_xArrayType[(id - 79) % SJME_NVM_NUM_XARRAY];
 	promoteType = sjme_nvm_typePromote[arrayType];
 
 	/* Read in value, index, and array. */
@@ -1798,7 +1806,8 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 		&SJME_AO_C(array)->componentType);
 	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
 		!SJME_AO_C(array)->info->isArray ||
-		componentType == NULL || componentType->arrayTypeId != arrayType ||
+		componentType == NULL ||
+		!sjme_nvm_checkArray(componentType, arrayType) ||
 		popValue.t != componentType->typeId)
 		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
 

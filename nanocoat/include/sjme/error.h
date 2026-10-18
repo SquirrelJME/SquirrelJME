@@ -634,9 +634,12 @@ typedef enum sjme_errorCode
 
 	/** Invalid manifest value. */
 	SJME_ERROR_INVALID_MANIFEST_VALUE = -195,
+
+	/** The main runtime library is missing. */
+	SJME_ERROR_MISSING_MAIN_RUNTIME = -196,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -196,
+	SJME_NUM_ERROR_CODES = -197,
 } sjme_errorCode;
 
 /**

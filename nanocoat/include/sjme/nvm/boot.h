@@ -37,7 +37,7 @@ extern "C" {
 struct sjme_nvm_rom_suiteRunTarget
 {
 	/** The main class to launch. */
-	sjme_lpstr mainClass;
+	sjme_lpcstr mainClass;
 
 	/** The arguments to pass to the main class. */
 	sjme_list(sjme_lpcstr)* mainArgs;

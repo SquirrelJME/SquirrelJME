@@ -374,6 +374,18 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLS_(
 		
 		switch (type)
 		{
+			case SJME_BASIC_TYPE_ID_BOOLEAN:
+				prim->z = (set.v.i == 0 ? SJME_JNI_FALSE : SJME_JNI_TRUE);
+				break;
+
+			case SJME_BASIC_TYPE_ID_BYTE:
+				prim->b = (sjme_jbyte)(set.v.i & 0xFF);
+				break;
+
+			case SJME_BASIC_TYPE_ID_SHORT:
+				prim->s = (sjme_jshort)(set.v.i & 0xFFFF);
+				break;
+
 			case SJME_BASIC_TYPE_ID_CHARACTER:
 				prim->c = (sjme_jchar)(set.v.i & 0xFFFF);
 				break;

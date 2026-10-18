@@ -2022,7 +2022,7 @@ fail_findFail:
 	sjme_thread_rwLockReleaseRead(&inLoader->rwLock, NULL);
 
 	if (error == SJME_ERROR_NOT_MATCHED)
-		error = SJME_ERROR_NO_CLASS;
+		error = sjme_error_vmError(contextThread, SJME_ERROR_NO_CLASS);
 	return sjme_error_vmError(contextThread, error);
 }
 
@@ -2196,7 +2196,10 @@ sjme_errorCode sjme_nvm_vmClass_loaderNew(
 	
 	/* There needs to be this. */
 	if (cldcCompact < 0)
+	{
+		error = sjme_error_vmError(NULL, SJME_ERROR_MISSING_MAIN_RUNTIME);
 		goto fail_noCldcCompact;
+	}
 	
 	/* cldc-compact.jar must always be first, so swap it! */
 	if (cldcCompact != 0)

@@ -10,6 +10,7 @@
 #include "sjme/nvm/romMeepSwm.h"
 #include "sjme/listUtil.h"
 #include "sjme/util.h"
+#include "sjme/nvm/boot.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/romManifest.h"
 
@@ -59,6 +60,15 @@ typedef struct sjme_nvm_rom_swmKeyMapHandler
 
 #pragma endregion(swmHandlerDefs)
 #pragma region(swmHandlers)
+
+/** Zero version number. */
+static const sjme_nvm_swmVersion sjme_nvm_rom_zeroVersion =
+{
+	0,
+	0,
+	0,
+	SJME_JNI_FALSE,
+};
 
 static sjme_errorCode sjme_nvm_rom_swmParseVersion(
 	sjme_attrOutNotNull sjme_nvm_swmVersion* outVer,
@@ -461,6 +471,9 @@ SJME_MEEP_SWM_FUNC(midxletOpgl)
 
 SJME_MEEP_SWM_FUNC(mainClass)
 {
+	sjme_errorCode error;
+	sjme_charSeqStatic seq;
+
 	/* Main-Class: cc.squirreljme.boop.Main */
 
 	SJME_MEEP_SWM_FUNC_CHECK();
@@ -469,8 +482,16 @@ SJME_MEEP_SWM_FUNC(mainClass)
 	tempEntry->tag.type = SJME_NVM_SWM_DEPENDENCY_MAIN_CLASS;
 	tempEntry->tag.use = SJME_NVM_SWM_USE_ENTRY_POINT;
 
-	/* Copy over. */
-	sjme_lpwcsncat(tempEntry->mainClass.name, step->map.value,
+	/* Copy over, note the name needs converting. */
+	memset(&seq, 0, sizeof(seq));
+	if (sjme_error_is(error = sjme_charSeq_newWideStatic(
+		&seq, step->map.value, 0,
+		sjme_lpwcslen(step->map.value))))
+		return sjme_error_default(error);
+
+	/* Copy over the class name. */
+	strncat(tempEntry->mainClass.name,
+		sjme_charSeq_tempUtf(&seq),
 		SJME_NVM_SWM_FIELD_LENGTH - 1);
 
 	/* Success! */
@@ -564,7 +585,7 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
 	sjme_nvm_rom_swmEntry tempEntry;
 	sjme_nvm_rom_manifestStep step;
 	sjme_lpcwstr lpwv;
-	sjme_jint freeSlot;
+	sjme_jint freeSlot, i, n;
 	const sjme_nvm_rom_swmKeyMapHandler* handler;
 	sjme_list(sjme_nvm_rom_swmEntry)* entries;
 
@@ -676,9 +697,13 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingleManifest(
 				/* Find the first free slot in the list. */
 				freeSlot = -1;
 				if (entries != NULL)
-					if (sjme_error_is(error = sjme_listUtil_findFree(
-						SJME_AS_LIST_POINTER(&entries), &freeSlot)))
-						return sjme_error_default(error);
+					for (i = 0, n = entries->length; i < n; i++)
+						if (entries->elements[i].tag.type == 0 ||
+							entries->elements[i].tag.use == 0)
+						{
+							freeSlot = i;
+							break;
+						}
 
 				/* Need to grow the list? */
 				if (freeSlot < 0)
@@ -745,7 +770,7 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingle(
 			sjme_message("Manifest for %s is bad!",
 				inLibrary->name);
 		else if (error != SJME_ERROR_NOT_MATCHED)
-			return sjme_error_default(error);
+			return sjme_error_vmError(NULL, sjme_error_default(error));
 	}
 
 	/* Load DoJa specific information. */
@@ -753,11 +778,292 @@ static sjme_errorCode sjme_nvm_rom_swmLoadSingle(
 		allocPool, inSuite, inLibrary, inOutDepend)))
 	{
 		if (error != SJME_ERROR_NOT_MATCHED)
-			return sjme_error_default(error);
+			return sjme_error_vmError(NULL, sjme_error_default(error));
 	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_rom_injectId(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_nvm_rom_suiteRunTarget* outTarget,
+	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary)
+{
+	sjme_errorCode error;
+	sjme_jint i, n, libId;
+
+	if (allocPool == NULL || outTarget == NULL || inLibrary == NULL ||
+		inSuite == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Get the library ID. */
+	libId = 0;
+	if (sjme_error_is(error = inSuite->functions->libraryId(
+		inSuite, inLibrary, &libId)))
+		return sjme_error_default(error);
+
+	/* Was this library already included? */
+	n = (outTarget->byId == NULL ? 0 : outTarget->byId->length);
+	for (i = 0; i < n; i++)
+		if (outTarget->byId->elements[i] == libId)
+			return SJME_ERROR_CONTINUE;
+
+	/* Grow the list. */
+	if (sjme_error_is(error = sjme_list_replace(allocPool,
+		n + 1,
+		&outTarget->byId, sjme_jint, 0)) ||
+		outTarget->byId == NULL)
+		return sjme_error_default(error);
+
+	/* Shift everything right so that dependencies added later appear */
+	/* earlier. */
+	if (n > 0)
+	{
+		memmove(&outTarget->byId->elements[1],
+			&outTarget->byId->elements[0],
+			sizeof(outTarget->byId->elements[0]) * n);
+	}
+
+	/* Set ID. */
+	outTarget->byId->elements[0] = libId;
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+static sjme_errorCode sjme_nvm_rom_swmResolveSub(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_nvm_rom_swmManager swmManager,
+	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
+	sjme_attrInValue sjme_jboolean isPrimary,
+	sjme_attrInNegativeOnePositive sjme_jint entryId,
+	sjme_attrOutNotNull sjme_nvm_rom_suiteRunTarget* outTarget)
+{
+	sjme_errorCode error;
+	sjme_list_sjme_nvm_rom_swmLibrary* swmLibraries;
+	sjme_list_sjme_nvm_rom_swmEntry* swmEntries;
+	sjme_nvm_rom_swmLibrary* swmInfo;
+	sjme_nvm_rom_swmEntry* swmEntry;
+	sjme_jint i, n, foundEntryId, atEntryId;
+	sjme_nvm_rom_library foundLibrary;
+
+	if (swmManager == NULL || inLibrary == NULL || outTarget == NULL ||
+		allocPool == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Inject self to the ID list. */
+	if (sjme_error_is(error = sjme_nvm_rom_injectId(allocPool,
+		outTarget, swmManager->inSuite, inLibrary)))
+	{
+		/* Some other error. */
+		if (error != SJME_ERROR_CONTINUE)
+			return sjme_error_default(error);
+
+		/* We already looked at this, so do not infinite recurse. */
+		return SJME_ERROR_NONE;
+	}
+
+	/* Find our library first. */
+	swmInfo = NULL;
+	swmLibraries = swmManager->libraries;
+	for (i = 0, n = swmLibraries->length; i < n; i++)
+	{
+		/* Find our specific library. */
+		swmInfo = &swmLibraries->elements[i];
+		if (swmInfo->library == inLibrary)
+			break;
+
+		/* Forget this info. */
+		swmInfo = NULL;
+	}
+
+	/* This library is not managed by this manager? */
+	if (swmInfo == NULL)
+		return SJME_ERROR_LIBRARY_NOT_FOUND;
+
+	/* Used to track entry IDs. */
+	foundEntryId = -1;
+
+	/* Look through each entry to find matches. */
+	swmEntries = swmInfo->entries;
+	for (i = 0, n = swmEntries->length; i < n; i++)
+	{
+		/* Skip invalid entries. */
+		swmEntry = &swmEntries->elements[i];
+		if (swmEntry->tag.use <= SJME_NVM_SWM_USE_UNKNOWN ||
+			swmEntry->tag.use >= SJME_NVM_SWM_NUM_USE ||
+			swmEntry->tag.type <= SJME_NVM_SWM_DEPENDENCY_UNKNOWN ||
+			swmEntry->tag.type >= SJME_NVM_SWM_NUM_DEPENDENCY_TYPES)
+			continue;
+
+		/* Is this an entry point? */
+		if (swmEntry->tag.use == SJME_NVM_SWM_USE_ENTRY_POINT)
+		{
+			/* We already found an entry point? */
+			/* Or this is not a primary dependency. */
+			if (foundEntryId == INT32_MAX ||
+				foundEntryId == INT32_MIN ||
+				!isPrimary)
+				continue;
+
+			/* Is this an entry point we care about? */
+			atEntryId = ++foundEntryId;
+			if (entryId >= 0 && atEntryId != entryId)
+				continue;
+
+			/* Since we found this, do not consider any more entries. */
+			foundEntryId = INT32_MAX;
+
+			/* Main class entry point? */
+			if (swmEntry->tag.type <= SJME_NVM_SWM_DEPENDENCY_MAIN_CLASS)
+			{
+				outTarget->mainClass = &swmEntry->mainClass.name[0];
+			}
+
+			else
+			{
+				sjme_todo("Impl?");
+				return sjme_error_notImplemented(0);
+			}
+		}
+
+		/* Is this a needed dependency? */
+		else if (swmEntry->tag.use == SJME_NVM_SWM_USE_DEPENDS)
+		{
+			/* Locate the target library based on this dependency. */
+			foundLibrary = NULL;
+			if (sjme_error_is(error = sjme_nvm_rom_swmResolveDependency(
+				swmManager, inLibrary, swmEntry, &foundLibrary)))
+				return sjme_error_default(error);
+
+			/* Recurse into self to handle dependencies of this library. */
+			/* This also injects self. */
+			if (sjme_error_is(error = sjme_nvm_rom_swmResolveSub(
+				allocPool, swmManager, foundLibrary,
+				SJME_JNI_FALSE, INT32_MAX, outTarget)))
+				return sjme_error_default(error);
+		}
+	}
+
+	/* Nothing more to be done. */
+	return SJME_ERROR_NONE;
+}
+
+sjme_jint sjme_nvm_rom_compareConfiguration(
+	sjme_attrInNullable sjme_lpcwstr a,
+	sjme_attrInNullable const sjme_nvm_swmVersion* aV,
+	sjme_attrInNullable sjme_lpcwstr b,
+	sjme_attrInNullable const sjme_nvm_swmVersion* bV)
+{
+	sjme_jint rv;
+
+	/* Compare nulls first. */
+	rv = sjme_compare_null(a, b);
+	if (rv != 0)
+		return rv;
+
+	/* Fallback to zero. */
+	if (aV == NULL)
+		aV = &sjme_nvm_rom_zeroVersion;
+	if (bV == NULL)
+		bV = &sjme_nvm_rom_zeroVersion;
+
+	/* CLDC before CDC. */
+	if (sjme_string_compareIWAN(a, -1, "CLDC", -1) &&
+		sjme_string_compareIWAN(b, -1, "CDC", -1))
+		return -1;
+
+	/* CDC after CLDC. */
+	if (sjme_string_compareIWAN(a, -1, "CDC", -1) &&
+		sjme_string_compareIWAN(b, -1, "CLDC", -1))
+		return 1;
+
+	/* Otherwise compare based on string. */
+	rv = sjme_lpwcscmp(a, b);
+	if (rv != 0)
+		return 0;
+
+	/* Then the version. */
+	return sjme_nvm_rom_compareVersion(aV, bV);
+}
+
+sjme_jint sjme_nvm_rom_compareProfile(
+	sjme_attrInNullable sjme_lpcwstr a,
+	sjme_attrInNullable const sjme_nvm_swmVersion* aV,
+	sjme_attrInNullable sjme_lpcwstr b,
+	sjme_attrInNullable const sjme_nvm_swmVersion* bV)
+{
+	sjme_jint rv;
+
+	/* Compare nulls first. */
+	rv = sjme_compare_null(a, b);
+	if (rv != 0)
+		return rv;
+
+	/* Fallback to zero. */
+	if (aV == NULL)
+		aV = &sjme_nvm_rom_zeroVersion;
+	if (bV == NULL)
+		bV = &sjme_nvm_rom_zeroVersion;
+
+	/* MIDP before MEEP. */
+	if (sjme_string_compareIWAN(a, -1, "MIDP", -1) &&
+		sjme_string_compareIWAN(b, -1, "MEEP", -1))
+		return -1;
+
+	/* MEEP after MIDP. */
+	if (sjme_string_compareIWAN(a, -1, "MEEP", -1) &&
+		sjme_string_compareIWAN(b, -1, "MIDP", -1))
+		return 1;
+
+	/* Otherwise compare based on string. */
+	rv = sjme_lpwcscmp(a, b);
+	if (rv != 0)
+		return 0;
+
+	/* Then the version. */
+	return sjme_nvm_rom_compareVersion(aV, bV);
+}
+
+sjme_jint sjme_nvm_rom_compareVersion(
+	sjme_attrInNullable const sjme_nvm_swmVersion* a,
+	sjme_attrInNullable const sjme_nvm_swmVersion* b)
+{
+	sjme_jint nulls;
+
+	/* Compare nulls first. */
+	nulls = sjme_compare_null(a, b);
+	if (nulls != 0)
+		return nulls;
+
+	/* Major version. */
+	if (a->major < b->major)
+		return -1;
+	else if (a->major > b->major)
+		return 1;
+
+	/* Minor version. */
+	if (a->minor < b->minor)
+		return -1;
+	else if (a->minor > b->minor)
+		return 1;
+
+	/* Release version. */
+	if (a->release < b->release)
+		return -1;
+	else if (a->release > b->release)
+		return 1;
+
+	/* Compact before not. */
+	if (a->isCompact && !b->isCompact)
+		return -1;
+	else if (!a->isCompact && b->isCompact)
+		return 1;
+
+	/* Otherwise these are the same. */
+	return 0;
 }
 
 sjme_errorCode sjme_nvm_rom_swmLoad(
@@ -783,6 +1089,9 @@ sjme_errorCode sjme_nvm_rom_swmLoad(
 		SJME_AS_NVM_COMMONP(&result))) ||
 		result == NULL)
 		goto fail_allocResult;
+
+	/* Set suite. */
+	result->inSuite = sjme_weakUpR(sjme_nvm_rom_suite, inSuite);
 
 	/* We need the library list to process everything. */
 	libraries = NULL;
@@ -846,10 +1155,141 @@ sjme_errorCode sjme_nvm_rom_swmResolve(
 	sjme_attrInNegativeOnePositive sjme_jint entryId,
 	sjme_attrOutNotNull sjme_nvm_rom_suiteRunTarget* outTarget)
 {
+	sjme_errorCode error;
+	sjme_nvm_rom_suiteRunTarget result;
+
 	if (swmManager == NULL || inLibrary == NULL || outTarget == NULL ||
 		allocPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (entryId < -1 || entryId == INT32_MAX)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Use recursive resolution. */
+	memset(&result, 0, sizeof(result));
+	if (sjme_error_is(error = sjme_nvm_rom_swmResolveSub(
+		allocPool, swmManager, inLibrary,
+		SJME_JNI_TRUE, entryId, &result)))
+		return sjme_error_default(error);
+
+	/* Copy main arguments over. */
+	result.mainArgs = inMainArgs;
+
+	/* Copy target. */
+	if (sjme_error_is(error = sjme_nvm_copyRunTarget(
+		allocPool, outTarget, &result,
+		SJME_JNI_FALSE, SJME_JNI_FALSE)))
+		return sjme_error_default(error);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_rom_swmResolveDependency(
+	sjme_attrInNotNull sjme_nvm_rom_swmManager swmManager,
+	sjme_attrInNullable sjme_nvm_rom_library inLibrary,
+	sjme_attrInNotNull const sjme_nvm_rom_swmEntry* inMatching,
+	sjme_attrOutNotNull sjme_nvm_rom_library* outLibrary)
+{
+	sjme_errorCode error;
+	sjme_list_sjme_nvm_rom_swmLibrary* swmLibraries;
+	sjme_list_sjme_nvm_rom_swmEntry* swmEntries;
+	sjme_nvm_rom_swmLibrary* swmInfo;
+	sjme_nvm_rom_swmEntry* swmEntry;
+	sjme_jint i, n, j, m;
+	sjme_jboolean matched;
+
+	if (swmManager == NULL || inMatching == NULL || outLibrary == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (inMatching->tag.use != SJME_NVM_SWM_USE_DEPENDS &&
+		inMatching->tag.use != SJME_NVM_SWM_USE_DEPENDS_OPTIONAL)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Look through every library. */
+	swmLibraries = swmManager->libraries;
+	for (i = 0, n = swmLibraries->length; i < n; i++)
+	{
+		/* Find our specific library. */
+		swmInfo = &swmLibraries->elements[i];
+		if (swmInfo->library == inLibrary)
+			break;
+
+		/* Look through each entry to find matches. */
+		swmEntries = swmInfo->entries;
+		for (j = 0, m = swmEntries->length; j < m; j++)
+		{
+			/* Skip invalid entries. */
+			swmEntry = &swmEntries->elements[j];
+			if (swmEntry->tag.use <= SJME_NVM_SWM_USE_UNKNOWN ||
+				swmEntry->tag.use >= SJME_NVM_SWM_NUM_USE ||
+				swmEntry->tag.type <= SJME_NVM_SWM_DEPENDENCY_UNKNOWN ||
+				swmEntry->tag.type >= SJME_NVM_SWM_NUM_DEPENDENCY_TYPES)
+				continue;
+
+			/* If this is not a providing type entry then we do not */
+			/* care for it. */
+			if (swmEntry->tag.use != SJME_NVM_SWM_USE_PROVIDES)
+				continue;
+
+			/* This must be a matching request to the type. */
+			if (inMatching->tag.type != swmEntry->tag.type)
+				continue;
+
+			/* Find the appropriate match. */
+			matched = SJME_JNI_FALSE;
+			switch (inMatching->tag.type)
+			{
+					/* sjme_nvm_swmInfoTypedAll */
+				case SJME_NVM_SWM_DEPENDENCY_TYPED_SUITE:
+					sjme_todo("Impl?");
+					return sjme_error_notImplemented(0);
+
+					/* sjme_nvm_swmInfoAll */
+				case SJME_NVM_SWM_DEPENDENCY_STANDARD:
+				case SJME_NVM_SWM_DEPENDENCY_SUITE:
+					sjme_todo("Impl?");
+					return sjme_error_notImplemented(0);
+
+				case SJME_NVM_SWM_DEPENDENCY_CONFIGURATION:
+					if (sjme_nvm_rom_compareConfiguration(
+						inMatching->nameVersion.name,
+						&inMatching->nameVersion.version,
+						swmEntry->nameVersion.name,
+						&swmEntry->nameVersion.version) >= 0)
+						matched |= SJME_JNI_TRUE;
+					break;
+
+				case SJME_NVM_SWM_DEPENDENCY_PROFILE:
+					if (sjme_nvm_rom_compareProfile(
+						inMatching->nameVersion.name,
+						&inMatching->nameVersion.version,
+						swmEntry->nameVersion.name,
+						&swmEntry->nameVersion.version) >= 0)
+						matched |= SJME_JNI_TRUE;
+					break;
+
+				case SJME_NVM_SWM_DEPENDENCY_INTERNAL_NAME:
+					if (0 == sjme_lpwcscmp(
+						inMatching->nameOnly.name,
+						swmEntry->nameOnly.name))
+						matched |= SJME_JNI_TRUE;
+					break;
+
+					/* Something not known about. */
+				default:
+					continue;
+			}
+
+			/* If this was matched, this is the dependency! */
+			if (matched)
+			{
+				*outLibrary = swmInfo->library;
+				return SJME_ERROR_NONE;
+			}
+		}
+	}
+
+	/* No library found. */
+	return SJME_ERROR_LIBRARY_NOT_FOUND;
 }
