@@ -992,6 +992,12 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 			bootParam->librarySuite);
 		
 		/* Main application. */
+		if (SJME_JNI_TRUE)
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+#if 0
 		SJME_FLAGGED_FREE(bootParam->freeMainClassPathById,
 			bootParam->mainClassPathById);
 		SJME_FLAGGED_FREE(bootParam->freeMainClassPathByName,
@@ -1002,6 +1008,7 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 			bootParam->mainArgs);
 		SJME_FLAGGED_FREE(bootParam->freeSysProps,
 			bootParam->sysProps);
+#endif
 
 		/* Close an extra handle? */
 		SJME_SIMPLE_CLOSE(bootParam->extraCloseHandle);
@@ -1341,7 +1348,7 @@ sjme_errorCode sjme_nvm_allocR(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* This is an error, likely sizeof(result) instead of sizeof(*result). */ 
-	if (allocSize < sizeof(sjme_nvm_commonBase))
+	if (allocSize < (sjme_jint)sizeof(sjme_nvm_commonBase))
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Recover pool, some types can use an aliased pool. */

@@ -19,15 +19,11 @@
 sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_lpstr* outMainClass,
-	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outMainArgs,
-	sjme_attrOutNotNull sjme_list(sjme_jint)** outById,
-	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outByName)
+	sjme_attrOutNotNull sjme_nvm_rom_suiteRunTarget* outTarget)
 {
 	sjme_errorCode error;
 	
-	if (allocPool == NULL || inSuite == NULL || outMainClass == NULL ||
-		outMainArgs == NULL || outById == NULL || outByName == NULL)
+	if (allocPool == NULL || inSuite == NULL || outTarget == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Not supported internally? */
@@ -41,7 +37,7 @@ sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
 	
 	/* Forward call. */
 	error = inSuite->functions->defaultLaunch(allocPool,
-		inSuite, outMainClass, outMainArgs, outById, outByName);
+		inSuite, outTarget);
 		
 	/* Unlock suite. */
 	if (sjme_error_is(sjme_thread_spinLockRelease(

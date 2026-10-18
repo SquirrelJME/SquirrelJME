@@ -69,6 +69,9 @@ typedef enum sjme_nvm_rom_swmDependencyType
 	/** A @link sjme_nvm_swmInfoTypedAll @endlink. */
 	SJME_NVM_SWM_DEPENDENCY_TYPED_SUITE,
 
+	/** A @link sjme_nvm_swmInfoNameOnly @endlink. */
+	SJME_NVM_SWM_DEPENDENCY_MAIN_CLASS,
+
 	/** The number of dependency types. */
 	SJME_NVM_SWM_NUM_DEPENDENCY_TYPES,
 } sjme_nvm_rom_swmDependencyType;
@@ -95,6 +98,9 @@ typedef enum sjme_nvm_rom_swmEntryUse
 
 	/** Provides the given dependency. */
 	SJME_NVM_SWM_USE_PROVIDES,
+
+	/** An entry point for an application. */
+	SJME_NVM_SWM_USE_ENTRY_POINT,
 
 	/** The number of uses for a dependency. */
 	SJME_NVM_SWM_NUM_USE,
@@ -274,6 +280,9 @@ typedef union sjme_nvm_rom_swmEntryBase
 
 	/** A typed suite. */
 	sjme_nvm_swmInfoTypedAll typedSuite;
+
+	/** Main class entry point. */
+	sjme_nvm_swmInfoNameOnly mainClass;
 } sjme_nvm_rom_swmEntryBase;
 
 /** A list of @link sjme_nvm_rom_swmEntry @endlink. */
@@ -328,22 +337,23 @@ sjme_errorCode sjme_nvm_rom_swmLoad(
 /**
  * Looks up the library and all of its dependencies
  *
+ * @param allocPool The allocation pool to use.
  * @param swmManager The suite to get the launch parameters from.
  * @param inLibrary The library being resolved.
- * @param outMainClass The main class to launch.
- * @param outMainArgs The arguments to pass to the main class.
- * @param outById The main class path by ID.
- * @param outByName The main class path by name.
+ * @param inMainArgs The main arguments to the application being launched.
+ * @param entryId The entry point to launch, if this is @code -1 @endcode this
+ * means any entry point is chosen.
+ * @param outTarget The target class and libraries to run.
  * @return Any resultant error, if any.
  * @since 2026/06/17
  */
 sjme_errorCode sjme_nvm_rom_swmResolve(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_swmManager swmManager,
 	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
-	sjme_attrOutNotNull sjme_lpstr* outMainClass,
-	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outMainArgs,
-	sjme_attrOutNotNull sjme_list(sjme_jint)** outById,
-	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outByName);
+	sjme_attrInNullable sjme_list(sjme_lpcstr)* inMainArgs,
+	sjme_attrInNegativeOnePositive sjme_jint entryId,
+	sjme_attrOutNotNull sjme_nvm_rom_suiteRunTarget* outTarget);
 
 /*--------------------------------------------------------------------------*/
 

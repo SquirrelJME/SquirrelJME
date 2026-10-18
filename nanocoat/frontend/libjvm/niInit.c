@@ -151,7 +151,7 @@ jint JNICALL JNI_CreateJavaVM(
 		classPath = NULL;
 		if (sjme_error_is(error = sjme_nvm_rom_resolveClassPathByName(
 			nvmState->suite,
-			bootParam.mainClassPathByName, &classPath)))
+			bootParam.runTarget.byName, &classPath)))
 			goto fail_searchClasspath;
 		
 		/* Setup class loader for the task. */
@@ -168,9 +168,9 @@ jint JNICALL JNI_CreateJavaVM(
 		taskConfig.belay = bootParam.belay;
 
 		/* Arguments. */
-		taskConfig.mainClass = bootParam.mainClass;
-		taskConfig.mainArgs = bootParam.mainArgs;
-		taskConfig.sysProps = bootParam.sysProps;
+		taskConfig.mainClass = bootParam.runTarget.mainClass;
+		taskConfig.mainArgs = bootParam.runTarget.mainArgs;
+		taskConfig.sysProps = bootParam.runTarget.sysProps;
 
 		/* Terminal configuration. */
 		taskConfig.stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;

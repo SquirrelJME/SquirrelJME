@@ -459,6 +459,24 @@ SJME_MEEP_SWM_FUNC(midxletOpgl)
 	return sjme_error_notImplemented(0);
 }
 
+SJME_MEEP_SWM_FUNC(mainClass)
+{
+	/* Main-Class: cc.squirreljme.boop.Main */
+
+	SJME_MEEP_SWM_FUNC_CHECK();
+
+	/* Set details. */
+	tempEntry->tag.type = SJME_NVM_SWM_DEPENDENCY_MAIN_CLASS;
+	tempEntry->tag.use = SJME_NVM_SWM_USE_ENTRY_POINT;
+
+	/* Copy over. */
+	sjme_lpwcsncat(tempEntry->mainClass.name, step->map.value,
+		SJME_NVM_SWM_FIELD_LENGTH - 1);
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static const sjme_nvm_rom_swmKeyMapHandler sjme_nvm_rom_swmKeyMapHandlers[] =
 {
 	SJME_MEEP_SWM_SHORT("X-SquirrelJME-DefinedConfigurations", -1,
@@ -481,6 +499,8 @@ static const sjme_nvm_rom_swmKeyMapHandler sjme_nvm_rom_swmKeyMapHandlers[] =
 		midxletApi),
 	SJME_MEEP_SWM_SHORT("MIDxlet-opgl", -1,
 		midxletOpgl),
+	SJME_MEEP_SWM_SHORT("Main-Class", -1,
+		mainClass),
 
 	/* End. */
 	{NULL, 0, NULL},
@@ -819,15 +839,15 @@ fail_allocResult:
 }
 
 sjme_errorCode sjme_nvm_rom_swmResolve(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_swmManager swmManager,
 	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
-	sjme_attrOutNotNull sjme_lpstr* outMainClass,
-	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outMainArgs,
-	sjme_attrOutNotNull sjme_list(sjme_jint)** outById,
-	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outByName)
+	sjme_attrInNullable sjme_list(sjme_lpcstr)* inMainArgs,
+	sjme_attrInNegativeOnePositive sjme_jint entryId,
+	sjme_attrOutNotNull sjme_nvm_rom_suiteRunTarget* outTarget)
 {
-	if (swmManager == NULL || inLibrary == NULL || outMainClass == NULL ||
-		outMainArgs == NULL || outById == NULL || outByName == NULL)
+	if (swmManager == NULL || inLibrary == NULL || outTarget == NULL ||
+		allocPool == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	sjme_todo("Impl?");

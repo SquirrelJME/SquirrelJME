@@ -190,6 +190,14 @@ typedef sjme_nvm_threadBase* sjme_nvm_thread;
 typedef struct sjme_nvm_bootParam sjme_nvm_bootParam;
 
 /**
+ * The suite run target information which contains all the needed classpath
+ * libraries and the entry point to launch.
+ *
+ * @since 2026/06/17
+ */
+typedef struct sjme_nvm_rom_suiteRunTarget sjme_nvm_rom_suiteRunTarget;
+
+/**
  * Contains basic information that is enough for initial bootstrapping of
  * MEEP SWM related information.
  *

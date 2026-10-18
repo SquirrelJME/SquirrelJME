@@ -16,6 +16,7 @@
 #include "sjme/zip.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/listUtil.h"
+#include "sjme/nvm/boot.h"
 
 /** The prefix for release ROMs. */
 #define SJME_NVM_ROM_PREFIX_RELEASE "SQUIRRELJME.SQC"
@@ -68,10 +69,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteClose(
 static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_lpstr* outMainClass,
-	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outMainArgs,
-	sjme_attrOutNotNull sjme_list(sjme_jint)** outById,
-	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outByName)
+	sjme_attrOutNotNull sjme_nvm_rom_suiteRunTarget* outTarget)
 {
 #define BUF_SIZE 256
 #define LOCATE_SIZE 128
@@ -89,8 +87,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 
 	/* TODO FIXME: Optimize/shrink for SDCC. */
 	
-	if (allocPool == NULL || inSuite == NULL || outMainClass == NULL ||
-		outMainArgs == NULL || outById == NULL || outByName == NULL)
+	if (allocPool == NULL || inSuite == NULL || outTarget == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Recover Zip. */
@@ -131,7 +128,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 			return sjme_error_default(error);
 		
 		/* Give it. */
-		*outMainClass = str;
+		outTarget->mainClass = str;
 		
 		/* Close. */
 		if (sjme_error_is(error = sjme_closeable_close(
@@ -163,7 +160,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 			return sjme_error_default(error);
 		
 		/* Give it. */
-		*outMainArgs = strings;
+		outTarget->mainArgs = strings;
 		
 		/* Close. */
 		if (sjme_error_is(error = sjme_closeable_close(
@@ -195,7 +192,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 			return sjme_error_default(error);
 		
 		/* Give it. */
-		*outById = ints;
+		outTarget->byId = ints;
 		
 		/* Close. */
 		if (sjme_error_is(error = sjme_closeable_close(

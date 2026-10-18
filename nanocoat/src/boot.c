@@ -400,7 +400,7 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_nvm_rom_suite mergeSuites[FIXED_SUITE_COUNT];
 	sjme_jint numMergeSuites, i, n;
 	sjme_nvm_task_taskNewConfig* initTaskConfig;
-	const sjme_nvm_bootParam* bootParamCopy;
+	sjme_nvm_bootParam* bootParamCopy;
 	sjme_nvm_task initTask;
 	sjme_list(sjme_nvm_rom_library)* classPath;
 	sjme_jlong yieldIn, yieldOut;
@@ -409,6 +409,7 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_path runJarPath;
 	sjme_scritchui scritchUi;
 	sjme_jboolean cancelScritchUi;
+	sjme_nvm_rom_suiteRunTarget runTarget;
 	
 	if (allocPool == NULL || param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -425,13 +426,13 @@ sjme_errorCode sjme_nvm_boot(
 		goto fail_resultAlloc;
 	
 	/* Make a defensive copy of the boot parameters. */
-	result->bootParamCopy = NULL;
+	bootParamCopy = NULL;
 	if (sjme_error_is(error = sjme_alloc_copy(allocPool,
 		sizeof(*result->bootParamCopy),
-		(sjme_pointer*)&result->bootParamCopy,
-		(sjme_pointer)param)) || result->bootParamCopy == NULL)
+		(sjme_pointer*)&bootParamCopy,
+		(sjme_pointer)param)) || bootParamCopy == NULL)
 		goto fail_bootParamCopy;
-	bootParamCopy = result->bootParamCopy;
+	result->bootParamCopy = bootParamCopy;
 
 	/* Make defensive init of the initial task configuration. */
 	result->initTaskConfig = NULL;
@@ -442,8 +443,8 @@ sjme_errorCode sjme_nvm_boot(
 		goto fail_allocInitTaskConfig;
 
 	/* Can only use one or the other to get the class path. */
-	if (result->bootParamCopy->mainClassPathById != NULL &&
-		result->bootParamCopy->mainClassPathByName != NULL)
+	if (result->bootParamCopy->runTarget.byId != NULL &&
+		result->bootParamCopy->runTarget.byName != NULL)
 		goto fail_bothIdAndName;
 
 	/* Set parameters accordingly. */
@@ -451,6 +452,8 @@ sjme_errorCode sjme_nvm_boot(
 	result->nal = param->nal;
 	result->hooks = param->hooks;
 	result->hookData = param->hookData;
+
+	/* TODO FIXME: vvvvvv HANDLE MERGE IN ANOTHER FUNCTION. */
 	
 	/* Initialize base for suite merging. */
 	memset(mergeSuites, 0, sizeof(mergeSuites));
@@ -535,10 +538,23 @@ sjme_errorCode sjme_nvm_boot(
 			goto fail_suiteMerge;
 	}
 
+	/* TODO FIXME: ^^^^^^ HANDLE MERGE IN ANOTHER FUNCTION. */
+	/* TODO FIXME: vvvvvv SPLIT OFF BRANCHES INDIVIDUALLY. */
+
+	/* Running a specific main class. */
+	if (bootParamCopy->runMain != NULL &&
+		0 != strcmp("", bootParamCopy->runMain))
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* TODO FIXME: Splice! */
+
 	/* If we are running a specific Jar, since we have all the dependency */
 	/* info loaded, and otherwise, we can look up the Jar to run and setup */
 	/* the classpath that it needs to start. */
-	if (bootParamCopy->runJar != NULL &&
+	else if (bootParamCopy->runJar != NULL &&
 		0 != strcmp("", bootParamCopy->runJar))
 	{
 		/* It is possible the Jar passed via -jar does not exist or is just */
@@ -565,51 +581,75 @@ sjme_errorCode sjme_nvm_boot(
 		/* Now that we have, hopefully, loaded all the MEEP SWM */
 		/* dependency information we can perform an actual lookup of */
 		/* whatever was passed via -jar. */
-		if (sjme_error_is(error = sjme_nvm_rom_swmResolve(result->swmManager,
+		memset(&runTarget, 0, sizeof(runTarget));
+		if (sjme_error_is(error = sjme_nvm_rom_swmResolve(
+			allocPool,
+			result->swmManager,
 			jarLibrary,
-			(sjme_lpstr*)&bootParamCopy->mainClass,
-			(sjme_list(sjme_lpstr)**)&bootParamCopy->mainArgs,
-			(sjme_list(sjme_jint)**)&bootParamCopy->mainClassPathById,
-			(sjme_list(sjme_lpstr)**)
-				&bootParamCopy->mainClassPathByName)))
+			bootParamCopy->runArgs,
+			bootParamCopy->runEntryId,
+			&runTarget)))
 			goto fail_resolveJarClasspath;
+
+		/* Set this run target, if it is valid. */
+		if (sjme_error_is(error = sjme_nvm_copyRunTarget(allocPool,
+			&bootParamCopy->runTarget,
+			&runTarget,
+			SJME_JNI_TRUE, SJME_JNI_FALSE)))
+		{
+			/* Some other error? */
+			if (error != SJME_ERROR_NOT_MATCHED)
+				goto fail_resolveJarClasspath;
+		}
 	}
+
+	/* TODO FIXME: Splice! */
 
 	/* Use the classpath of the launcher? If enabled and nothing is */
 	/* being launched? */
 	if (bootParamCopy->launcherFallback &&
-		(bootParamCopy->mainClassPathById == NULL &&
-		bootParamCopy->mainClassPathByName == NULL))
+		(bootParamCopy->runTarget.byId == NULL &&
+		bootParamCopy->runTarget.byName == NULL))
 	{
 		/* Determine the default boot suite. */
+		memset(&runTarget, 0, sizeof(runTarget));
 		if (sjme_error_is(error = sjme_nvm_rom_suiteDefaultLaunch(allocPool,
-			result->suite,
-			(sjme_lpstr*)&bootParamCopy->mainClass,
-			(sjme_list(sjme_lpstr)**)&bootParamCopy->mainArgs,
-			(sjme_list(sjme_jint)**)&bootParamCopy->mainClassPathById,
-			(sjme_list(sjme_lpstr)**)
-				&bootParamCopy->mainClassPathByName)))
+			result->suite, &runTarget)))
 			goto fail_defaultLaunch;
 
 		/* No default launcher found? */
-		if (bootParamCopy->mainClassPathById == NULL &&
-			bootParamCopy->mainClassPathByName == NULL)
+		if (runTarget.byId == NULL &&
+			runTarget.mainClass == NULL)
 		{
 			error = SJME_ERROR_NO_SUITES;
 			goto fail_defaultLaunch;
 		}
+
+		/* Set this run target, if it is valid. */
+		if (sjme_error_is(error = sjme_nvm_copyRunTarget(allocPool,
+			&bootParamCopy->runTarget,
+			&runTarget,
+			SJME_JNI_TRUE, SJME_JNI_FALSE)))
+		{
+			/* Some other error? */
+			if (error != SJME_ERROR_NOT_MATCHED)
+				goto fail_resolveJarClasspath;
+		}
 	}
+
+	/* TODO FIXME: ^^^^^^ SPLIT OFF BRANCHES INDIVIDUALLY. */
+	/* TODO FIXME: vvvvvv FINALIZE RESOLUTION IN ANOTHER FUNCTION. */
 
 	/* Resolve class path libraries. */
 	classPath = NULL;
 	error = SJME_ERROR_NO_SUITES;
-	if (result->bootParamCopy->mainClassPathById != NULL)
+	if (result->bootParamCopy->runTarget.byId != NULL)
 		error = sjme_nvm_rom_resolveClassPathById(result->suite,
-			result->bootParamCopy->mainClassPathById,
+			result->bootParamCopy->runTarget.byId,
 			&classPath);
-	else if (result->bootParamCopy->mainClassPathByName != NULL)
+	else if (result->bootParamCopy->runTarget.byName != NULL)
 		error = sjme_nvm_rom_resolveClassPathByName(result->suite,
-			result->bootParamCopy->mainClassPathByName,
+			(sjme_list(sjme_lpcstr)*)result->bootParamCopy->runTarget.byName,
 			&classPath);
 
 	/* Failed to resolve? */
@@ -618,7 +658,7 @@ sjme_errorCode sjme_nvm_boot(
 		/* Debug. */
 		sjme_message("Classpath resolve failure: %d %p %s",
 			error, classPath,
-			(result->bootParamCopy->mainClassPathById != NULL ?
+			(result->bootParamCopy->runTarget.byId != NULL ?
 				"byId" : "byName"));
 
 		/* Fail. */
@@ -628,6 +668,8 @@ sjme_errorCode sjme_nvm_boot(
 	/* Count up all classpath entries as we are using them now. */
 	for (n = classPath->length, i = 0; i < n; i++)
 		sjme_weakUp(classPath->elements[i]);
+
+	/* TODO FIXME: ^^^^^^ FINALIZE RESOLUTION IN ANOTHER FUNCTION. */
 
 	/* Allocate the task scheduler, if applicable. */
 	if (result->threadModel != SJME_NVM_MLE_THREAD_MULTI)
@@ -663,13 +705,16 @@ sjme_errorCode sjme_nvm_boot(
 		result->schedule->nothingNanos = 0;
 	}
 
+	/* TODO FIXME: vvvvvv SPLIT OFF INITIAL TASK SETUP. */
+
 	/* Setup task details. */
 	initTaskConfig = (sjme_nvm_task_taskNewConfig*)result->initTaskConfig;
 	initTaskConfig->stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
 	initTaskConfig->stdErr = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
-	initTaskConfig->mainClass = result->bootParamCopy->mainClass;
-	initTaskConfig->mainArgs = result->bootParamCopy->mainArgs;
-	initTaskConfig->sysProps = result->bootParamCopy->sysProps;
+	initTaskConfig->mainClass = result->bootParamCopy->runTarget.mainClass;
+	initTaskConfig->mainArgs =
+		(sjme_list(sjme_lpcstr)*)result->bootParamCopy->runTarget.mainArgs;
+	initTaskConfig->sysProps = result->bootParamCopy->runTarget.sysProps;
 	initTaskConfig->belay = result->bootParamCopy->belay;
 	initTaskConfig->noOptimize = result->bootParamCopy->noOptimize;
 	initTaskConfig->classPath = classPath;
@@ -735,6 +780,8 @@ sjme_errorCode sjme_nvm_boot(
 			goto fail_initTask;
 	}
 
+	/* TODO FIXME: ^^^^^^ SPLIT OFF INITIAL TASK SETUP. */
+
 #if SJME_CONFIG_DEBUG_VERBOSE && !defined(SJME_CONFIG_NETWORK_NONE)
 	/* Using JDWP for this virtual machine? */
 	if (bootParamCopy->jdwpPort > 0 || bootParamCopy->jdwpAddress != NULL ||
@@ -792,6 +839,37 @@ fail_reservedPoolAlloc:
 
 	/* Use whatever error code. */
 	return sjme_error_defaultOr(error, SJME_ERROR_BOOT_FAILURE);
+}
+
+sjme_errorCode sjme_nvm_copyRunTarget(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_nvm_rom_suiteRunTarget* dest,
+	sjme_attrInNotNull const sjme_nvm_rom_suiteRunTarget* src,
+	sjme_attrInValue sjme_jboolean checkValid,
+	sjme_attrInValue sjme_jboolean defensive)
+{
+	if ((allocPool == NULL && defensive) || dest == NULL || src == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Is this even valid if we want to know that? */
+	if (checkValid)
+		if (src->mainClass != NULL &&
+			(src->byId != NULL || src->byName != NULL))
+			return SJME_ERROR_NOT_MATCHED;
+
+	/* Defensive copy makes a copy of absolutely everything. */
+	if (defensive)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Otherwise, straight copy. */
+	else
+		memmove(dest, src, sizeof(*dest));
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_defaultBootSuite(
@@ -932,6 +1010,9 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	/* These arguments get filled in. */
 	bootRom = NULL;
 	runJar = NULL;
+
+	/* Reset the entry ID to be anything. */
+	outParam->runEntryId = -1;
 	
 	/* Command line format is: */
 	/* Note that this can possible start at argument zero. */
@@ -1175,6 +1256,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	}
 
 	/* Arguments to main or -jar? */
+	outParam->runArgs = NULL;
 	if (runViaMain || jarSpecified)
 		for (; argAt < argc; argAt++)
 		{
@@ -1184,8 +1266,8 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	/* Default launch if not running a main class or using -jar. */
 	if (!runViaMain && !jarSpecified)
 	{
-		outParam->mainArgs = NULL;
-		outParam->mainClass = NULL;
+		outParam->runTarget.mainArgs = NULL;
+		outParam->runTarget.mainClass = NULL;
 	}
 
 	/* Print help options or version? */

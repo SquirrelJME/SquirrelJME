@@ -117,7 +117,7 @@ typedef sjme_errorCode (*sjme_nvm_rom_libraryInitFunc)(
 	sjme_attrInNotNull sjme_nvm_rom_library inLibrary,
 	sjme_attrInNullable sjme_pointer data);
 
-typedef sjme_errorCode (*sjme_nvm_rom_libraryPathFunc)();
+typedef sjme_errorCode (*sjme_nvm_rom_libraryPathFunc)(void);
 
 /**
  * Access the direct raw data of a given library.
@@ -193,20 +193,14 @@ typedef sjme_errorCode (*sjme_nvm_rom_suiteCloseFunc)(
  * 
  * @param allocPool The pool to allocate within.
  * @param inSuite The suite to get the launch parameters from.
- * @param outMainClass The main class to launch.
- * @param outMainArgs The arguments to pass to the main class.
- * @param outById The main class path by ID.
- * @param outByName The main class path by name.
+ * @param outTarget The target class and libraries to run.
  * @return Any resultant error, if any.
  * @since 2024/08/16
  */
 typedef sjme_errorCode (*sjme_nvm_rom_suiteDefaultLaunchFunc)(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_lpstr* outMainClass,
-	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outMainArgs,
-	sjme_attrOutNotNull sjme_list(sjme_jint)** outById,
-	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outByName);
+	sjme_attrOutNotNull sjme_nvm_rom_suiteRunTarget* outTarget);
 
 /**
  * Function used to initialize the suite.
@@ -575,20 +569,14 @@ sjme_errorCode sjme_nvm_rom_resolveLibraryByName(
  * 
  * @param allocPool The pool to allocate within.
  * @param inSuite The suite to get the launch parameters from.
- * @param outMainClass The main class to launch.
- * @param outMainArgs The arguments to pass to the main class.
- * @param outById The main class path by ID.
- * @param outByName The main class path by name.
+ * @param outTarget The target classes and libraries to run.
  * @return Any resultant error, if any.
  * @since 2024/08/16
  */
 sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
-	sjme_attrOutNotNull sjme_lpstr* outMainClass,
-	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outMainArgs,
-	sjme_attrOutNotNull sjme_list(sjme_jint)** outById,
-	sjme_attrOutNotNull sjme_list(sjme_lpstr)** outByName);
+	sjme_attrOutNotNull sjme_nvm_rom_suiteRunTarget* outTarget);
 
 /**
  * Combines multiple suites into one.

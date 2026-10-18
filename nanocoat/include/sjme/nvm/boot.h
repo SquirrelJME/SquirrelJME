@@ -33,6 +33,24 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+
+struct sjme_nvm_rom_suiteRunTarget
+{
+	/** The main class to launch. */
+	sjme_lpstr mainClass;
+
+	/** The arguments to pass to the main class. */
+	sjme_list(sjme_lpcstr)* mainArgs;
+
+	/** System properties. */
+	sjme_list(sjme_lpcstr)* sysProps;
+
+	/** The main class path by ID. */
+	sjme_list(sjme_jint)* byId;
+
+	/** The main class path by name. */
+	sjme_list(sjme_lpcstr)* byName;
+};
 	
 struct sjme_nvm_bootParam
 {
@@ -48,32 +66,11 @@ struct sjme_nvm_bootParam
 	/** Free the library set? */
 	sjme_jboolean freeLibrarySuite;
 
-	/** The class path for main by library IDs. */
-	const sjme_list(sjme_jint)* mainClassPathById;
+	/** The run target to select. */
+	sjme_nvm_rom_suiteRunTarget runTarget;
 
-	/** Free @c mainClassPathById ? */
-	sjme_jboolean freeMainClassPathById;
-
-	/** The class path for main by names. */
-	const sjme_list(sjme_lpcstr)* mainClassPathByName;
-
-	/** Free @c mainClassPathByName ? */
-	sjme_jboolean freeMainClassPathByName;
-
-	/** Main class to start in. */
-	sjme_lpcstr mainClass;
-
-	/** Main arguments. */
-	const sjme_list(sjme_lpcstr)* mainArgs;
-
-	/** Free @c mainArgs ? */
-	sjme_jboolean freeMainArgs;
-
-	/** System properties. */
-	const sjme_list(sjme_lpcstr)* sysProps;
-
-	/** Free @c sysProps ? */
-	sjme_jboolean freeSysProps;
+	/** If @code runTarget @endcode should be freed. */
+	sjme_jboolean freeRunTarget;
 	
 	/** The native abstraction layer to use. */
 	const sjme_nal* nal;
@@ -108,8 +105,17 @@ struct sjme_nvm_bootParam
 	/** An extra handle to close on destruction. */
 	sjme_closeable extraCloseHandle;
 
+	/** The initial main class to run. */
+	sjme_lpcstr runMain;
+
 	/** The initial Jar to run, if specified via @code -jar @endcode. */
 	sjme_lpcstr runJar;
+
+	/** The arguments to run for the main class or Jar. */
+	sjme_list(sjme_lpcstr)* runArgs;
+
+	/** The entry point to enter. */
+	sjme_jint runEntryId;
 
 	/** Disable ScritchUI. */
 	sjme_jboolean noScritchUi;
@@ -142,6 +148,27 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
 	sjme_attrOutNotNull sjme_nvm* outState,
 	sjme_attrOutNullable sjme_nvm_task* outInitTask);
+
+/**
+ * Copies one run target to another, replacing it, optionally making a
+ * defensive copy of all values.
+ *
+ * @param allocPool The allocation pool to use, required if a defensive copy
+ * is performed.
+ * @param dest The destination.
+ * @param src The source.
+ * @param checkValid If the source is valid before copying, otherwise if
+ * not then @link SJME_ERROR_NOT_MATCHED @endlink is returned.
+ * @param defensive If this should be a defensive copy.
+ * @return Any resultant error, if any.
+ * @since 2026/06/17
+ */
+sjme_errorCode sjme_nvm_copyRunTarget(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrOutNotNull sjme_nvm_rom_suiteRunTarget* dest,
+	sjme_attrInNotNull const sjme_nvm_rom_suiteRunTarget* src,
+	sjme_attrInValue sjme_jboolean checkValid,
+	sjme_attrInValue sjme_jboolean defensive);
 
 /**
  * Locates the default boot suite.
