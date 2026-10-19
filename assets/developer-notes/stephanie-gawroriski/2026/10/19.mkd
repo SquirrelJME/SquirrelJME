@@ -1,0 +1,46 @@
+# 2026/10/19
+
+## 00:07
+
+`wip-running` has this, it does eventually crash with a stack trace but at
+this point it does mostly what I want it to do! I do like that. At this
+point though, I need to step back, add debugging, implement all of the
+tests to see which instruction is failing.. I have an intuition that it is a
+branch instruction. But this branch has lived for basically an entire year,
+and more, at this point. Although I am sleepy, I think this is the point
+where I review and note glaring spots and get it merged in. Because otherwise
+I will go sane, and I would just like to get this in at this point as it is
+way too big.
+
+```
+DB: Starting main thread...
+java.version: 1.8.0
+java.vendor: Stephanie Gawroriski
+java.vendor.email: xerthesquirrel@gmail.com
+java.vendor.url: http://squirreljme.cc/
+java.vm.name: SquirrelJME NanoCoat VM
+java.vm.version: 0.3.0
+java.vm.vendor: Stephanie Gawroriski
+java.vm.vendor.email: xer@multiphasicapps.net
+java.vm.vendor.url: https://squirreljme.cc/
+java.runtime.name: SquirrelJME
+java.runtime.version: 0.3.0
+os.name: windows
+os.arch: ia32
+os.version: 10 22H2
+microedition.encoding: ascii
+ | IN Ljava/lang/StringBuilder; (<UNKNOWN>)
+ | .append:(Ljava/lang/CharSequence;II)Ljava/lang/StringBuilder; @51h (:-1 
+#INVOKESTATIC@81)
+ | .append:(Ljava/lang/String;)Ljava/lang/StringBuilder; @eh (:-1 
+#INVOKEVIRTUAL@14)
+ | IN Ljava/lang/Class; (<UNKNOWN>)
+ | .forName:(Ljava/lang/String;)Ljava/lang/Class; @2dh (:-1 #INVOKEVIRTUAL@45)
+ | IN Ljava/lang/System; (<UNKNOWN>)
+ | .getProperty:(Ljava/lang/String;)Ljava/lang/String; @4c4h (:-1 
+#INVOKESTATIC@1220)
+ | IN Lnet/multiphasicapps/demo/hello/Hello; (<UNKNOWN>)
+ | .main:([Ljava/lang/String;)V @52h (:-1 #INVOKESTATIC@82)
+ | IN Ljava/lang/__Start__; (<UNKNOWN>)
+ | .__base:()V @11h (:-1 #INVOKESTATIC@17)
+```
