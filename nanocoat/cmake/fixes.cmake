@@ -329,9 +329,11 @@ if(SQUIRRELJME_IS_GCC)
 		SQUIRRELJME_HAS_WARN_PEDANTIC)
 
 	# Has Intel Syntax assembly?
-	squirreljme_check_set_compiler_flag(C
-		"-masm=intel"
-		SQUIRRELJME_HAS_MASM_INTEL)
+	if(SQUIRRELJME_ENABLE_MASM_INTEL)
+		squirreljme_check_set_compiler_flag(C
+			"-masm=intel"
+			SQUIRRELJME_HAS_MASM_INTEL)
+	endif()
 
 	# noexecstack is very new
 	if(DEFINED CMAKE_C_COMPILER_VERSION AND
