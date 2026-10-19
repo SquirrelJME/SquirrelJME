@@ -789,7 +789,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkLoadStandard(
 	
 	/* No class exists. */
 	if (info == NULL)
-		return sjme_error_vmError(contextThread, SJME_ERROR_NO_CLASS);
+		return SJME_ERROR_NO_CLASS;
 	
 	/* Set class info. */
 	inClass->info = info;

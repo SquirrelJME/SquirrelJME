@@ -201,9 +201,8 @@ public final class StringBuilder
 		int len = __e - __s;
 		
 		// Get buffer properties
-		int limit = this._buffer.length;
 		int at = this._at;
-		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
+		char[] buffer = this.__buffer(len);
 		
 		// Can natively write string here?
 		if (__v instanceof String)
@@ -628,9 +627,8 @@ public final class StringBuilder
 		int len = __e - __s;
 		
 		// Get buffer properties
-		int limit = this._buffer.length;
 		int at = this._at;
-		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
+		char[] buffer = this.__buffer(len);
 		
 		/* {@squirreljme.error ZZ1q The index of insertion exceeds the
 		length of the current string. (The insertion index; The string

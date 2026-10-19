@@ -108,7 +108,8 @@ SJME_NVM_BYTECODE_SLOW(XLoad)
 	}
 
 	/* Push copy of the local to the stack. */
-	type = sjme_nvm_byteCode_xLoadType[id - 21];
+	type = sjme_nvm_byteCode_xLoadType[
+		abs(id - 21) % SJME_NUM_JAVA_TYPE_IDS];
 	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalPush(
 		inFrame, &commit, type, index)))
@@ -134,7 +135,7 @@ SJME_NVM_BYTECODE_SLOW(XLoadZ)
 	/* Push copy of the local to the stack. */
 	index = ((id - 26) & 3);
 	type = sjme_nvm_byteCode_xLoadType[
-		((id - 26) >> 2) % SJME_NUM_JAVA_TYPE_IDS];
+		abs((id - 26) >> 2) % SJME_NUM_JAVA_TYPE_IDS];
 	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalPush(
 		inFrame, &commit, type, index)))
@@ -175,7 +176,8 @@ SJME_NVM_BYTECODE_SLOW(XStore)
 	/* Pop object from the stack. */
 	memset(&popped, 0, sizeof(popped));
 	memset(&commit, 0, sizeof(commit));
-	type = sjme_nvm_byteCode_xLoadType[id - 54];
+	type = sjme_nvm_byteCode_xLoadType[
+		abs(id - 54) % SJME_NUM_JAVA_TYPE_IDS];
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		type, &commit, &popped)))
 		return sjme_error_vmError(inFrame, error);
@@ -206,7 +208,8 @@ SJME_NVM_BYTECODE_SLOW(XStoreZ)
 	/* Pop object from the stack. */
 	memset(&popped, 0, sizeof(popped));
 	memset(&commit, 0, sizeof(commit));
-	type = sjme_nvm_byteCode_xLoadType[(id - 59) >> 2];
+	type = sjme_nvm_byteCode_xLoadType[
+		abs((id - 59) >> 2) % SJME_NUM_JAVA_TYPE_IDS];
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		type, &commit, &popped)))
 		return sjme_error_vmError(inFrame, error);

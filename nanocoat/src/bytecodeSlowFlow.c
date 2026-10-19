@@ -76,13 +76,19 @@ static sjme_jboolean sjme_nvm_byteCode_compareINe(
 	return a != b;
 }
 
-static const sjme_nvm_byteCode_compareAFunc sjme_nvm_byteCode_compareAs[2] =
+#define SJME_NUM_A_COMPARE 2
+
+static const sjme_nvm_byteCode_compareAFunc sjme_nvm_byteCode_compareAs[
+	SJME_NUM_A_COMPARE] =
 {
 	sjme_nvm_byteCode_compareAEq,
 	sjme_nvm_byteCode_compareANe,
 };
 
-static const sjme_nvm_byteCode_compareIFunc sjme_nvm_byteCode_compareIs[6] =
+#define SJME_NUM_I_COMPARE 6
+
+static const sjme_nvm_byteCode_compareIFunc sjme_nvm_byteCode_compareIs
+	[SJME_NUM_I_COMPARE] =
 {
 	sjme_nvm_byteCode_compareIEq,
 	sjme_nvm_byteCode_compareINe,
@@ -92,7 +98,10 @@ static const sjme_nvm_byteCode_compareIFunc sjme_nvm_byteCode_compareIs[6] =
 	sjme_nvm_byteCode_compareILe,
 };
 
-static const sjme_javaTypeId sjme_nvm_byteCode_returnTypes[6] =
+#define SJME_NUM_RETVALS 6
+
+static const sjme_javaTypeId sjme_nvm_byteCode_returnTypes
+	[SJME_NUM_RETVALS] =
 {
 	SJME_JAVA_TYPE_ID_INTEGER,
 	SJME_JAVA_TYPE_ID_LONG,
@@ -117,7 +126,8 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
-	if (sjme_nvm_byteCode_compareAs[id - 198](value.v.l, NULL))
+	if (sjme_nvm_byteCode_compareAs[
+		abs(id - 198) % SJME_NUM_A_COMPARE](value.v.l, NULL))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 		pcNew->adjust = sjme_big_short(
@@ -135,19 +145,20 @@ SJME_NVM_BYTECODE_SLOW(IfAX)
 #pragma region(IfX)
 SJME_NVM_BYTECODE_SLOW(IfX)
 {
-	sjme_jvalueTyped value;
 	sjme_nvm_frame_gcCommit commit;
+	sjme_jvalueTyped a;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Pop single integer value. */
-	memset(&value, 0, sizeof(value));
 	memset(&commit, 0, sizeof(commit));
+	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_INTEGER, &commit, &value)))
+		SJME_JAVA_TYPE_ID_INTEGER, &commit, &a)))
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
-	if (sjme_nvm_byteCode_compareIs[id - 153](value.v.i, 0))
+	if (sjme_nvm_byteCode_compareIs[
+		abs(id - 153) % SJME_NUM_I_COMPARE](a.v.i, 0))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 		pcNew->adjust = sjme_big_short(
@@ -181,7 +192,8 @@ SJME_NVM_BYTECODE_SLOW(IfICmpX)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
-	if (sjme_nvm_byteCode_compareIs[id - 159](a.v.i, b.v.i))
+	if (sjme_nvm_byteCode_compareIs[
+		abs(id - 159) % SJME_NUM_I_COMPARE](a.v.i, b.v.i))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 		pcNew->adjust = sjme_big_short(
@@ -215,7 +227,8 @@ SJME_NVM_BYTECODE_SLOW(IfACmpX)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Successful branch? */
-	if (sjme_nvm_byteCode_compareAs[id - 165](a.v.l, b.v.l))
+	if (sjme_nvm_byteCode_compareAs[
+		abs(id - 165) % SJME_NUM_A_COMPARE](a.v.l, b.v.l))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
 		pcNew->adjust = sjme_big_short(
@@ -362,7 +375,8 @@ SJME_NVM_BYTECODE_SLOW(ReturnX)
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Must be returning the same type. */
-	desire = sjme_nvm_byteCode_returnTypes[id - 172];
+	desire = sjme_nvm_byteCode_returnTypes[
+		abs(id - 172) % SJME_NUM_RETVALS];
 	if (sjme_atomic_g(sjme_nvm_class_methodInfo,
 		&inFrame->inCode->inMethod)->argR != desire)
 		return sjme_error_vmError(inFrame, SJME_ERROR_WRONG_RETURN_TYPE);

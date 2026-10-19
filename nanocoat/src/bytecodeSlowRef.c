@@ -1724,7 +1724,8 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	}
 
 	/* Make sure the array is actually valid. */
-	arrayType = sjme_nvm_byteCode_xArrayType[(id - 46) % SJME_NVM_NUM_XARRAY];
+	arrayType = sjme_nvm_byteCode_xArrayType[
+		abs(id - 46) % SJME_NVM_NUM_XARRAY];
 	componentType = sjme_atomic_g(sjme_jclass, 
 		&sjme_atomic_g(sjme_jclass,
 			&array->object.isClass)->componentType);
@@ -1778,7 +1779,8 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	SJME_NVM_BYTECODE_ENTRY;
 
 	/* Determine the type to read from the stack and to store to the array. */
-	arrayType = sjme_nvm_byteCode_xArrayType[(id - 79) % SJME_NVM_NUM_XARRAY];
+	arrayType = sjme_nvm_byteCode_xArrayType[
+		abs(id - 79) % SJME_NVM_NUM_XARRAY];
 	promoteType = sjme_nvm_typePromote[arrayType];
 
 	/* Read in value, index, and array. */

@@ -455,17 +455,17 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 	switch (SJME_NVM_BYTECODE_BINARY_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_SHL:
-			result.v.i = a.v.i << (b.v.i & INT32_C(0x1F));
+			result.v.i = sjme_util_intOverShift(a.v.i, b.v.i & 0x1F);
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_SHR:
-			result.v.i = a.v.i >> (b.v.i & INT32_C(0x1F));
+			result.v.i = sjme_util_intOverShift(a.v.i, -(b.v.i & 0x1F));
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_USHR:
 			/* Reverse masking so that the entire operation happens */
 			/* purely with signed values. */
-			result.v.i = sjme_util_intOverShift(a.v.i, b.v.i & 0xF);
+			result.v.i = sjme_util_intOverShiftU(a.v.i, b.v.i & 0x1F);
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_AND:

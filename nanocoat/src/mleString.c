@@ -242,7 +242,8 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 
 	/* Check bounds. */
 	if (sourceOff < 0 || destOff < 0 || len < 0 ||
-		(sourceOff + len) < 0 || (destOff + len) < 0 ||
+		(sourceOff + len) < 0 ||
+		(destOff + len) < 0 ||
 		(sourceOff + len) > seq->length ||
 		(destOff + len) > dest->e.length)
 		return SJME_ERROR_MLE_CALL;

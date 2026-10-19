@@ -983,18 +983,16 @@ sjme_jint sjme_util_intOverShift(
 	if (sh < 0)
 		return v >> (-sh);
 	return v << sh;
-
-#if 0
-	result.v.i = INT32_C(0x7FFFFFFF) >> (b.v.i & 0x1F);
-	result.v.i = INT32_C(1) << (31 - (b.v.i & 0x1F));
-	result.v.i &= a.v.i >> (b.v.i & 0x1F);
-#endif
 }
 
 sjme_juint sjme_util_intOverShiftU(
 	sjme_attrInValue sjme_juint v,
 	sjme_attrInRange(-32, 32) sjme_jint sh)
 {
+	/* result.v.i = INT32_C(0x7FFFFFFF) >> (b.v.i & 0x1F); */
+	/* result.v.i = INT32_C(1) << (31 - (b.v.i & 0x1F)); */
+	/* result.v.i &= a.v.i >> (b.v.i & 0x1F); */
+
 	/* Shifting more than this always results in zero. */
 	if (sh <= -32 || sh >= 32)
 		return 0;

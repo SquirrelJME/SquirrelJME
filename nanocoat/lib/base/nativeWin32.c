@@ -162,8 +162,8 @@ sjme_errorCode sjme_nal_default_osVersion(
 		/* From the SDK, the version returned depends on the manifest */
 		/* version, which we do not actually care about. */
 		/* https://stackoverflow.com/questions/32115255/ */
-		if ((version.dwMinorVersion == 6 && version.dwMinorVersion >= 2) ||
-			version.dwMinorVersion >= 10)
+		if ((version.dwMajorVersion == 6 && version.dwMinorVersion >= 2) ||
+			version.dwMajorVersion >= 10)
 		{
 			/* Need to get this from the kernel directly. */
 			ntDll = GetModuleHandleA("ntdll");
@@ -217,7 +217,7 @@ sjme_errorCode sjme_nal_default_osVersion(
 			SJME_WIN10_BUILD("1511", 10586)
 
 			/* Another Windows 10. */
-			else if (exVerW.dwMinorVersion == 10 ||
+			else if (exVerW.dwMajorVersion == 10 ||
 				exVerW.dwBuildNumber >= 10240)
 				basicStr = "10";
 
@@ -232,7 +232,7 @@ sjme_errorCode sjme_nal_default_osVersion(
 		}
 
 		/* Windows 7. */
-		else if (version.dwMinorVersion == 6 && version.dwMinorVersion == 1)
+		else if (version.dwMajorVersion == 6 && version.dwMinorVersion == 1)
 		{
 			if (servicePack == 1)
 				basicStr = "7 SP1";
@@ -241,7 +241,7 @@ sjme_errorCode sjme_nal_default_osVersion(
 		}
 
 		/* Windows Vista. */
-		else if (version.dwMinorVersion == 6 && version.dwMinorVersion == 0)
+		else if (version.dwMajorVersion == 6 && version.dwMinorVersion == 0)
 		{
 			if (servicePack == 2)
 				basicStr = "Vista SP2";
@@ -252,7 +252,7 @@ sjme_errorCode sjme_nal_default_osVersion(
 		}
 
 		/* Windows Server 2003. */
-		else if (version.dwMinorVersion == 5 && version.dwMinorVersion == 2)
+		else if (version.dwMajorVersion == 5 && version.dwMinorVersion == 2)
 		{
 			/* ReactOS? This is based on a forum posts: */
 			/* https://reactos.org/forum/viewtopic.php?t=1401 */
@@ -266,7 +266,7 @@ sjme_errorCode sjme_nal_default_osVersion(
 		}
 
 		/* Windows XP. */
-		else if (version.dwMinorVersion == 5 && version.dwMinorVersion == 1)
+		else if (version.dwMajorVersion == 5 && version.dwMinorVersion == 1)
 		{
 			if (version.dwBuildNumber >= 2710 &&
 				servicePack == 0)
@@ -304,7 +304,7 @@ sjme_errorCode sjme_nal_default_osVersion(
 		{
 			snprintf(out, outLen - 1,
 				"NT %d.%d",
-				(int)version.dwMinorVersion, (int)version.dwMinorVersion);
+				(int)version.dwMajorVersion, (int)version.dwMinorVersion);
 		}
 	}
 
