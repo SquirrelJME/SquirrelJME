@@ -40,7 +40,8 @@ sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
 	sjme_atomic_interruptsDisable();
 	
 	result = atomic->value;
-	atomic->value = (type)(((intptr_t)result) + add);
+	atomic->value = (sjme_atomic_valueName)
+		(((intptr_t)result) + (intptr_t)add);
 	
 	sjme_atomic_interruptsEnable();
 	
