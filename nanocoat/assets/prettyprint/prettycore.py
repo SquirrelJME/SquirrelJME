@@ -204,7 +204,7 @@ class PrettyMaker(abc.ABC):
 		pass
 
 class PrettyRegister(abc.ABC):
-	@abs.abstractmethod
+	@abc.abstractmethod
 	def register_list(self, debug_type: PrettyType,
 		func: Callable[[PrettyMaker, PrettyValue], PrettyList]) -> None:
 		"""
