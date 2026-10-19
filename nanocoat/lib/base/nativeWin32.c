@@ -187,14 +187,17 @@ sjme_errorCode sjme_nal_default_osVersion(
 	else if (exVerW.dwBuildNumber >= (min)) { basicStr = "10 " what;}
 
 			/* Something newer than Windows 11? */
-			if (exVerW.dwBuildNumber > 26300)
-				snprintf(out, outLen - 1, "NT 10 Build %d",
+			if (exVerW.dwBuildNumber > 28000)
+				snprintf(out, outLen - 1, "NT '10' Build %d",
 					(int)exVerW.dwBuildNumber);
 
 			/* Windows 11... and all of its builds. */
 			/* https://stackoverflow.com/questions/74645458/ */
-			SJME_WIN11_BUILD("26H2", 26300)
+			/* vvv This is not an error, 26H1 has a newer kernel than */
+			/*     26H2. Why? Only Microsoft truly knows. */
 			SJME_WIN11_BUILD("26H1", 28000)
+			SJME_WIN11_BUILD("26H2", 26300)
+			/* ^^^ */
 			SJME_WIN11_BUILD("25H2", 26200)
 			SJME_WIN11_BUILD("24H2", 26100)
 			SJME_WIN11_BUILD("23H2", 22631)
@@ -303,8 +306,10 @@ sjme_errorCode sjme_nal_default_osVersion(
 		else
 		{
 			snprintf(out, outLen - 1,
-				"NT %d.%d",
-				(int)version.dwMajorVersion, (int)version.dwMinorVersion);
+				"NT %d.%d Build %d",
+				(int)version.dwMajorVersion,
+				(int)version.dwMinorVersion,
+				(int)version.dwBuildNumber);
 		}
 	}
 
