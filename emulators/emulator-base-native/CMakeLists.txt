@@ -32,11 +32,16 @@ include(ExternalProject)
 project(libEmulatorBase
 	LANGUAGES C)
 
-# Identify the SquirrelJME verison
+# Identify the SquirrelJME version
 squirreljme_include_nanocoat("identify-squirreljme-version.cmake")
 
 # Settings that adjust the build completely
 squirreljme_include_nanocoat("environment-options.cmake")
+
+# We need to know what is available or not
+squirreljme_include_nanocoat("utils.cmake")
+squirreljme_include_nanocoat("fixes.cmake")
+squirreljme_include_nanocoat("find.cmake")
 
 # We want to forward as many CMAKE_ commands to the target NanoCoat as
 # possible
