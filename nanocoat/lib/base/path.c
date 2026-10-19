@@ -421,7 +421,8 @@ static sjme_errorCode sjme_path_defaultLookup(
 			{
 				/* No env set, so ignore this lookup. */
 				/* Skip looking at this path. */
-				if (error == SJME_ERROR_NO_SUCH_ELEMENT)
+				if (error == SJME_ERROR_NO_SUCH_ELEMENT ||
+					error == SJME_ERROR_NOT_IMPLEMENTED)
 					continue;
 
 				/* Fail. */
