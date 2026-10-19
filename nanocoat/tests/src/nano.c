@@ -187,20 +187,20 @@ SJME_NVM_MLE_SHELF_DECLARE(NanoShelf) =
 {
 	SJME_NVM_MLE_DEFINE(makeArrayNull,
 		SJME_MD(SJME_MD_A(SJME_MD_STRING), ),
-		"L", ""),
+		SJME_MP("L", "")),
 	SJME_NVM_MLE_DEFINE(makeArrayString,
 		SJME_MD(SJME_MD_A(SJME_MD_STRING), SJME_MD_I),
-		"L", "I"),
+		SJME_MP("L", "I")),
 	
 	SJME_NVM_MLE_DEFINE_ALT(result, integer,
 		SJME_MD(SJME_MD_V, SJME_MD_I),
-		"V", "I"),
+		SJME_MP("V", "I")),
 	SJME_NVM_MLE_DEFINE_ALT(result, string,
 		SJME_MD(SJME_MD_V, SJME_MD_STRING),
-		"V", "L"),
+		SJME_MP("V", "L")),
 	SJME_NVM_MLE_DEFINE_ALT(result, void,
 		SJME_MD(SJME_MD_V, ),
-		"V", ""),
+		SJME_MP("V", "")),
 	
 	SJME_NVM_MLE_STOP()
 };
@@ -406,11 +406,15 @@ int main(int argc, sjme_lpstr* argv)
 	bootParam.nal = &sjme_nal_test;
 	bootParam.bootSuite = bootSuite;
 	bootParam.freeBootSuite = SJME_JNI_TRUE;
-	bootParam.mainClass = argv[4];
-	bootParam.mainClassPathByName = (const sjme_list(sjme_lpcstr)*)classpath;
+	bootParam.runTarget.mainClass = argv[4];
+	bootParam.runTarget.byName = (sjme_list(sjme_lpcstr)*)classpath;
+#if 0
 	bootParam.freeMainClassPathByName = SJME_JNI_TRUE;
-	bootParam.mainArgs = (const sjme_list(sjme_lpcstr)*)mainArgs;
+#endif
+	bootParam.runTarget.mainArgs = (sjme_list(sjme_lpcstr)*)mainArgs;
+#if 0
 	bootParam.freeMainArgs = SJME_JNI_TRUE;
+#endif
 	bootParam.extraCloseHandle = SJME_AS_CLOSEABLE(bootSeek);
 
 	/* Hooks specifically for NanoTest. */

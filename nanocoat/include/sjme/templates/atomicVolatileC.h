@@ -64,7 +64,7 @@ sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
 }
 
 sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
-		sjme_atomic_, sjme_atomic_type, _set)(
+		sjme_atomic_, sjme_atomic_subName, _set)(
 	sjme_atomic_typeName* atomic,
 	sjme_atomic_valueName value)
 {

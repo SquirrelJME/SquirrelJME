@@ -491,13 +491,7 @@ sjme_jboolean sjme_mock_doRomLibrary(
 	if (data->name != NULL)
 		library->name = data->name;
 	else
-	{
-		if (sjme_error_is(sjme_alloc_format(inState->allocPool,
-			(sjme_lpstr*)&library->name,
-			"unnamed%d.jar", (int)(inData->current.indexType + 1))) ||
-			library->name == NULL)
-			return sjme_die("Could not set default library name.");
-	}
+		library->name = "unnamed.jar";
 
 	/* Store in mock data. */
 	inState->romLibraries[inState->numRomLibraries++] = library;
