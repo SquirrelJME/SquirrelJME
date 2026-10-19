@@ -140,7 +140,7 @@ public class AboutDialog
 		
 		// E-Mail
 		JLabel email = new JLabel(
-			"<xerthesquirrel@gmail.com>");
+			"<xer@multiphasicapps.net>");
 		email.setHorizontalAlignment(SwingConstants.CENTER);
 		email.setFont(email.getFont().deriveFont(Font.PLAIN));
 		sequence.add(email);
