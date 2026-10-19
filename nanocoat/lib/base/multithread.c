@@ -15,7 +15,7 @@
 #pragma region(atomics)
 
 #define sjme_atomic_type sjme_thread
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */
 
 #pragma endregion(atomics)
 

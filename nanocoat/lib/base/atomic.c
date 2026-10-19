@@ -15,31 +15,31 @@
 /* ------------------------------------------------------------------------ */
 
 #define sjme_atomic_type sjme_jint
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_juint
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_lpstr
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_lpcstr
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_jobject
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_jclass
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_pointer
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_intPointer
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_charSeq
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */
 
 /* ------------------------------------------------------------------------ */
 /* clang-format on */ /* @formatter:on */

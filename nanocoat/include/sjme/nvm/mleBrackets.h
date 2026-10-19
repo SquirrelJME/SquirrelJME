@@ -83,7 +83,7 @@ typedef sjme_jbracketTraceBase* sjme_jbracketTrace;
 
 /** Atomic trace points. */
 #define sjme_atomic_type sjme_jbracketTrace
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 	
 /**
  * Pipe bracket.

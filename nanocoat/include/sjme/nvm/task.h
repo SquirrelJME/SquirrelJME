@@ -101,7 +101,7 @@ typedef enum sjme_nvm_thread_startType
 
 /** Atomic sjme_nvm_thread_startType . */
 #define sjme_atomic_type sjme_nvm_thread_startType
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 	
 /**
  * The type of thread status this is.
@@ -124,7 +124,7 @@ typedef enum sjme_nvm_thread_statusType
 } sjme_nvm_thread_statusType;
 
 #define sjme_atomic_type sjme_nvm_thread_statusType
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 	
 /**
  * Interned task strings.
