@@ -78,7 +78,7 @@ sjme_errorCode sjme_nal_default_osVersion(
 	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
 	sjme_attrInPositiveNonZero sjme_jint outLen)
 {
-	struct utsname* result;
+	struct utsname result;
 
 	if (out == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -92,7 +92,7 @@ sjme_errorCode sjme_nal_default_osVersion(
 		sjme_nal_errno(errno);
 
 	/* Directly copy the version over. */
-	strncpy(out, result->version, outLen - 1);
+	strncpy(out, result.version, outLen - 1);
 	out[outLen - 1] = '\0';
 
 	/* Success! */
