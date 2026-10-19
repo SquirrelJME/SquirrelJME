@@ -476,6 +476,7 @@ The following names are used for systems:
  * `emcripten` -- Emscripten, compilation to JavaScript/WASM.
  * `freebsd` -- FreeBSD.
  * `gamecube` -- Nintendo GameCube.
+ * `haiku` -- Haiku.
  * `ieee1275of` -- IEEE 1275, OpenFirmware, OpenBOOT.
  * `ios` -- iOS, iPadOS; Not iPods.
  * `linux` -- Linux.
