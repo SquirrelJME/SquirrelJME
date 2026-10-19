@@ -14,7 +14,7 @@
 #include "sjme/path.h"
 #include "sjme/intern/nal.h"
 
-sjme_errorCode sjme_libretro_vfsClose(
+static sjme_errorCode sjme_libretro_vfsClose(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState)
 {
@@ -36,7 +36,7 @@ sjme_errorCode sjme_libretro_vfsClose(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_libretro_vfsInit(
+static sjme_errorCode sjme_libretro_vfsInit(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState,
 	sjme_attrInNullable sjme_pointer data)
@@ -53,7 +53,7 @@ sjme_errorCode sjme_libretro_vfsInit(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_libretro_vfsRead(
+static sjme_errorCode sjme_libretro_vfsRead(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState,
 	sjme_attrOutNotNullBuf(length) sjme_buffer outBuf,
@@ -87,7 +87,7 @@ sjme_errorCode sjme_libretro_vfsRead(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_libretro_vfsSize(
+static sjme_errorCode sjme_libretro_vfsSize(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState,
 	sjme_attrOutNotNull sjme_jint* outSize)
@@ -260,6 +260,20 @@ static sjme_errorCode sjme_libretro_fileOpen(
 		handle, NULL);
 }
 
+static sjme_errorCode sjme_libretro_getEnv(
+	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) sjme_lpstr buf,
+	sjme_attrInPositiveNonZero sjme_jint bufLen,
+	sjme_attrInNotNull sjme_lpcstr env)
+{
+	if (buf == NULL || env == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (bufLen < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
 static sjme_errorCode sjme_libretro_osVersion(
 	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
 	sjme_attrInPositiveNonZero sjme_jint outLen)
@@ -372,7 +386,7 @@ const sjme_nal sjme_libretro_nal =
 	sjme_sm(.currentTimeMillis, sjme_libretro_currentTimeMillis),
 	sjme_sm(.execPath, sjme_libretro_execPath),
 	sjme_sm(.fileOpen, sjme_libretro_fileOpen),
-	sjme_sm(.getEnv, NULL),
+	sjme_sm(.getEnv, sjme_libretro_getEnv),
 	sjme_sm(.lineEnding, sjme_nal_default_lineEnding),
 	sjme_sm(.nanoTime, sjme_libretro_nanoTime),
 	sjme_sm(.osVersion, sjme_libretro_osVersion),

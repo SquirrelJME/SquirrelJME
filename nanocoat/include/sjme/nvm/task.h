@@ -101,7 +101,7 @@ typedef enum sjme_nvm_thread_startType
 
 /** Atomic sjme_nvm_thread_startType . */
 #define sjme_atomic_type sjme_nvm_thread_startType
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 	
 /**
  * The type of thread status this is.
@@ -124,7 +124,7 @@ typedef enum sjme_nvm_thread_statusType
 } sjme_nvm_thread_statusType;
 
 #define sjme_atomic_type sjme_nvm_thread_statusType
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 	
 /**
  * Interned task strings.
@@ -440,6 +440,9 @@ struct sjme_nvm_taskStringsBase
  */
 typedef enum sjme_nvm_task_commonClassId
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_task_commonClassId),
+	
 	/** Null class. */
 	SJME_NVM_COMMON_NULL,
 
@@ -502,7 +505,6 @@ typedef enum sjme_nvm_task_commonClassId
 	/** @code cc.squirreljme.jvm.mle.brackets.TracePointBracket @endcode . */
 	SJME_NVM_COMMON_TRACE_POINT,
 
-#pragma region(scritchUiTypeIds)
 	/** ScritchUI Base. */
 	SJME_NVM_COMMON_SCRITCH_UI_TYPE_BASE,
 
@@ -586,9 +588,7 @@ typedef enum sjme_nvm_task_commonClassId
 
 	/** ScritchUI Window. */
 	SJME_NVM_COMMON_SCRITCH_UI_TYPE_WINDOW,
-#pragma endregion(scritchUiTypeIds)
 
-#pragma region(veryImportantCommonIds)
 	/** The start of very important classes. */
 	SJME_NVM_COMMON_VERY_IMPORTANT,
 
@@ -612,7 +612,6 @@ typedef enum sjme_nvm_task_commonClassId
 
 	/** @code cc.squirreljme.jvm.mle.brackets.VMThreadBracket @endcode . */
 	SJME_NVM_COMMON_VM_THREAD,
-#pragma endregion(veryImportantCommonIds)
 
 	/** The number of common classes. */
 	SJME_NVM_TASK_NUM_COMMON_CLASS

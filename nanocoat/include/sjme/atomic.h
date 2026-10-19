@@ -48,31 +48,31 @@ extern "C" {
 #endif
 
 #define sjme_atomic_type sjme_jint
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_juint
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_lpstr
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_lpcstr
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_jobject
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_jclass
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_pointer
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_intPointer
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_charSeq
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 /**
  * Atomic reference.

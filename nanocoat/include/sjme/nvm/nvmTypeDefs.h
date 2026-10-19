@@ -566,42 +566,42 @@ SJME_LIST_DECLARE(sjme_nvm_class_info, 0);
 SJME_LIST_DECLARE(sjme_nvm_class_methodInfo, 0);
 
 #define sjme_atomic_type sjme_nvm_class_methodInfo
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_nvm_thread
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_nvm
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_nvm_common
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_nvm_task
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_nvm_frame
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_nvm_vmClass_loader
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_nvm_rom_library
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_nvm_class_info
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_nvm_stringPool_string
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_nvm_class_poolEntryClass
 #define sjme_atomic_refs 1
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_nvm_class_poolEntryNameAndType
 #define sjme_atomic_refs 1
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 /** List of phantom string pool strings. */
 SJME_LIST_DECLARE(sjme_phantom(sjme_nvm_stringPool_string), 0);

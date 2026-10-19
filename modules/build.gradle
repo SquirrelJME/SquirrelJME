@@ -142,14 +142,14 @@ subprojects {
 						developer {
 							id = "stephanie.gawroriski"
 							name = "Stephanie Gawroriski"
-							email = "xerthesquirrel@gmail.com"
+							email = "xer@multiphasicapps.net"
 						}
 					}
 					
 					contributors {
 						contributor {
 							name = "Stephanie Gawroriski"
-							email = "xerthesquirrel@gmail.com"
+							email = "xer@multiphasicapps.net"
 							roles = [ "Primary Developer" ]
 							timezone = "America/New_York"
 							url = "https://shadowtail.dev/"

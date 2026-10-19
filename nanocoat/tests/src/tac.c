@@ -110,9 +110,9 @@ int main(int argc, sjme_lpstr* argv)
 	memset(&bootParam, 0, sizeof(bootParam));
 	bootParam.nal = &sjme_nal_test;
 	bootParam.bootSuite = bootSuite;
-	bootParam.mainClass = "net.multiphasicapps.tac.MainSingleRunner";
-	bootParam.mainClassPathByName = (const sjme_list(sjme_lpcstr)*)classpath;
-	bootParam.mainArgs = (const sjme_list(sjme_lpcstr)*)mainArgs;
+	bootParam.runTarget.mainClass = "net.multiphasicapps.tac.MainSingleRunner";
+	bootParam.runTarget.byName = (sjme_list(sjme_lpcstr)*)classpath;
+	bootParam.runTarget.mainArgs = (sjme_list(sjme_lpcstr)*)mainArgs;
 
 	/* JDWP Debugging. */
 	bootParam.jdwpAddress = "localhost";

@@ -111,7 +111,7 @@ typedef struct sjme_alloc_weakBase* sjme_alloc_weak;
 #define SJME_TYPEOF_IS_POINTER_sjme_alloc_weak 1
 
 #define sjme_atomic_type sjme_alloc_weak
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 /**
  * This is called when a weak reference has been freed or is about to be
@@ -140,7 +140,7 @@ typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
 #define SJME_TYPEOF_IS_POINTER_sjme_alloc_link 1
 
 #define sjme_atomic_type sjme_alloc_link
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 struct sjme_alloc_weakBase
 {

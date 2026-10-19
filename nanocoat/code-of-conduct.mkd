@@ -86,7 +86,7 @@ appointed representative at an online or offline event.
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement at:
 
- * Via E-mail: <xerthesquirrel@gmail.com> or <xer@multiphasicapps.net>
+ * Via E-mail: <xer@multiphasicapps.net>
  * Chat Channels:
    * Discord: The `@Moderator` (a specific role) team on Discord.
    * LiberaChat: You may private message me from `#squirreljme`.

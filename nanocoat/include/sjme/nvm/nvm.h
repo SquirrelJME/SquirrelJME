@@ -343,7 +343,7 @@ typedef enum sjme_nvm_threadScheduleMode
 
 /** Atomic thread schedule mode. */
 #define sjme_atomic_type sjme_nvm_threadScheduleMode
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 /**
  * Sub-schedule for thread scheduling.

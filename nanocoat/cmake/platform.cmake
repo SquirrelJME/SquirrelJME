@@ -198,6 +198,9 @@ set(SQUIRRELJME_ENABLE_APP_ABCD_DEFAULT
 set(SQUIRRELJME_ENABLE_APP_DEMO_SCRITCHUI_DEFAULT
 	"${SQUIRRELJME_ENABLE_APP_DEFAULTS}")
 
+# MASM Intel by default, where possible
+set(SQUIRRELJME_ENABLE_MASM_INTEL_DEFAULT YES)
+
 # Macro for defining and debugging options
 macro(squirreljme_define_option baseVar description)
 	# Define the option
@@ -226,6 +229,8 @@ squirreljme_define_option(SQUIRRELJME_ENABLE_TESTING
 	"Enable Host System Tests")
 squirreljme_define_option(SQUIRRELJME_SELF_HOSTED_LIBJVM
 	"Enable Self-Hosted libjvm")
+squirreljme_define_option(SQUIRRELJME_ENABLE_MASM_INTEL
+	"Use MASM Intel by default (disables valgrind)")
 
 # Applications
 squirreljme_define_option(SQUIRRELJME_ENABLE_APP_ABCD
