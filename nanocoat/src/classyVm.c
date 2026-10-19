@@ -813,6 +813,9 @@ static sjme_errorCode sjme_nvm_vmClass_checkLoadStandard(
 		else if (sjme_charSeq_equalsUtfR(info->name->seq,
 			"java/lang/Thread"))
 			inClass->special |= SJME_NVM_ACC_SPECIAL_THREAD_CLASS;
+		else if (sjme_charSeq_equalsUtfR(info->name->seq,
+			"java/lang/__Start__"))
+			inClass->special |= SJME_NVM_ACC_SPECIAL_START_CLASS;
 	}
 
 	/* Success! */

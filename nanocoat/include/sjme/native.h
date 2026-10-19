@@ -166,6 +166,18 @@ typedef sjme_errorCode (*sjme_nal_nanoTimeFunc)(
 	sjme_attrOutNotNull sjme_jlong* result);
 
 /**
+ * Returns the operating system version name.
+ *
+ * @param out The output path.
+ * @param outLen The length of the output operating system version.
+ * @return Any resultant error, if any.
+ * @since 2026/10/18
+ */
+typedef sjme_errorCode (*sjme_nal_osVersionFunc)(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen);
+
+/**
  * Returns the path style that the current system uses.
  *
  * @param outStyle The output path style.
@@ -268,6 +280,9 @@ typedef struct sjme_nal
 	
 	/** Get the current monotonic nanosecond time. */
 	sjme_nal_nanoTimeFunc nanoTime;
+
+	/** The operating system version. */
+	sjme_nal_osVersionFunc osVersion;
 
 	/** Returns the system path style. */
 	sjme_nal_pathStyleFunc pathStyle;

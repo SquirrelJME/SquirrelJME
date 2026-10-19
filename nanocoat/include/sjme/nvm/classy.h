@@ -264,6 +264,10 @@ typedef sjme_jint sjme_nvm_class_specialFlags;
 #define SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC \
 	((sjme_nvm_class_specialFlags)INT32_C(0x00100000))
 
+/** Virtual machine start class. */
+#define SJME_NVM_ACC_SPECIAL_START_CLASS \
+	((sjme_nvm_class_specialFlags)INT32_C(0x00200000))
+
 /**
  * Is a proxy method and must be called through a handler, or is a proxy
  * class and as such has extra restrictions.

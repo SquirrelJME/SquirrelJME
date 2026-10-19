@@ -828,6 +828,14 @@ sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
 	return addr + (align - mod);
 }
 
+sjme_jint sjme_util_byteToInt(
+	sjme_attrInValue sjme_jint v)
+{
+	if ((v & INT32_C(0x80)) != 0)
+		return v | INT32_C(0xFFFFFF80);
+	return v & INT32_C(0x7F);
+}
+
 sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v)
 {
@@ -975,6 +983,12 @@ sjme_jint sjme_util_intOverShift(
 	if (sh < 0)
 		return v >> (-sh);
 	return v << sh;
+
+#if 0
+	result.v.i = INT32_C(0x7FFFFFFF) >> (b.v.i & 0x1F);
+	result.v.i = INT32_C(1) << (31 - (b.v.i & 0x1F));
+	result.v.i &= a.v.i >> (b.v.i & 0x1F);
+#endif
 }
 
 sjme_juint sjme_util_intOverShiftU(
@@ -1037,7 +1051,7 @@ sjme_errorCode sjme_util_intToBinary(
 		bitCount = 32;
 	
 	/* 0b([01]*32). */
-	if (destLen <= (3 + bitCount))
+	if (destLen <= (sjme_jint)(3 + bitCount))
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Start with the prefix. */
@@ -1200,6 +1214,14 @@ sjme_jint* sjme_util_memUnaligned32W(void* addr, sjme_jint v)
 }
 
 #endif
+
+sjme_jint sjme_util_shortToInt(
+	sjme_attrInValue sjme_jint v)
+{
+	if ((v & INT32_C(0x8000)) != 0)
+		return v | INT32_C(0xFFFF8000);
+	return v & INT32_C(0x7FFF);
+}
 
 #if !defined(SJME_CONFIG_SIZEOF_SIZE_T) || SJME_CONFIG_SIZEOF_SIZE_T != 4
 

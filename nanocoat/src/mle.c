@@ -137,8 +137,9 @@ sjme_errorCode sjme_mle_mleCallFunction(
 	charR = function->argX[0];
 	
 	/* Did not write the correct return value? */
-	if ((charR == 'V' &&
-			result.t != SJME_NUM_BASIC_TYPE_IDS + SJME_NUM_JAVA_TYPE_IDS) ||
+	if ((charR == 'V' && (result.t != SJME_NUM_BASIC_TYPE_IDS +
+			SJME_NUM_JAVA_TYPE_IDS &&
+			result.t != SJME_JAVA_TYPE_ID_VOID)) ||
 		(charR != 'V' && charR != sjme_nvm_mleTToA[result.t]))
 		return sjme_error_vmError(inFrame, SJME_ERROR_STACK_INVALID_WRITE);
 

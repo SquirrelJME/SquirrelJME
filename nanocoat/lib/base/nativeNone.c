@@ -18,9 +18,6 @@ sjme_errorCode sjme_nal_default_execPath(
 	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
 	sjme_attrInPositiveNonZero sjme_jint outLen)
 {
-	sjme_lpstr temp;
-	sjme_jint tempLen, procLen;
-
 	if (out == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
@@ -68,6 +65,26 @@ sjme_errorCode sjme_nal_default_nanoTime(
 
 #endif
 #pragma endregion(nanotime)
+
+#pragma region(osVersion)
+#if (SJME_CONFIG_NAL_OS_VERSION == SJME_CONFIG_NAL_IMPLEMENT_NONE)
+
+sjme_errorCode sjme_nal_default_osVersion(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Not available here. */
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+#endif
+#pragma endregion(osVersion)
 
 #pragma region(seekable)
 #if (SJME_CONFIG_NAL_SEEKABLE == SJME_CONFIG_NAL_IMPLEMENT_NONE)

@@ -328,8 +328,144 @@ SJME_NVM_MLE_FUNCTION_DECL(systemProperty)
 
 SJME_NVM_MLE_FUNCTION_DECL(vmDescription)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_cchar buf[SJME_MAX_PATH];
+	const sjme_path_style* pathStyle;
+	sjme_lpcstr str;
+	const sjme_nal* nal;
+	sjme_jint key;
+	sjme_path path;
+	sjme_jstring result;
+
+	/* Recover the NAL. */
+	nal = SJME_F_S(inFrame)->nal;
+	if (nal == NULL)
+		nal = &sjme_nal_default;
+
+	/* There can be multiple possibilities! */
+	memset(buf, 0, sizeof(buf));
+	memset(&path, 0, sizeof(path));
+	str = NULL;
+	pathStyle = NULL;
+
+	/* Which key is being requested? */
+	key = argV[0].v.i;
+	switch (argV[0].v.i)
+	{
+		case SJME_NVM_VM_DESC_VM_VERSION:
+		case SJME_NVM_VM_DESC_SQUIRRELJME_API_VERSION:
+			str = SQUIRRELJME_VERSION;
+			break;
+
+		case SJME_NVM_VM_DESC_VM_NAME:
+			str = "SquirrelJME NanoCoat VM";
+			break;
+
+		case SJME_NVM_VM_DESC_VM_VENDOR:
+			str = "Stephanie Gawroriski";
+			break;
+
+		case SJME_NVM_VM_DESC_VM_EMAIL:
+			str = "xer@multiphasicapps.net";
+			break;
+
+		case SJME_NVM_VM_DESC_VM_URL:
+			str = "https://squirreljme.cc/";
+			break;
+
+		case SJME_NVM_VM_DESC_VM_INFO:
+			if (SJME_F_K(inFrame)->globals.noOptimize)
+				str = "native pure interpreter";
+			else
+				str = "native interpreter w/ optimizations";
+			break;
+
+		case SJME_NVM_VM_DESC_OS_NAME:
+			str = SQUIRRELJME_SYSTEM;
+			break;
+
+		case SJME_NVM_VM_DESC_OS_ARCH:
+			str = SQUIRRELJME_ARCH;
+			break;
+
+		case SJME_NVM_VM_DESC_OS_VERSION:
+			if (nal->osVersion != NULL)
+				nal->osVersion(buf, SJME_MAX_PATH - 1);
+			else
+				str = "Unknown";
+			break;
+
+		case SJME_NVM_VM_DESC_EXECUTABLE_PATH:
+			/* Ignore failure. */
+			if (nal->execPath != NULL)
+				nal->execPath(buf, SJME_MAX_PATH - 1);
+			break;
+
+		case SJME_NVM_VM_DESC_PATH_SEPARATOR:
+			pathStyle = NULL;
+			if (nal->pathStyle != NULL)
+			{
+				nal->pathStyle(&pathStyle);
+				if (pathStyle != NULL)
+					str = pathStyle->pathSep.str;
+			}
+			break;
+
+		case SJME_NVM_VM_DESC_VM_SECURITY_POLICY:
+			str = "";
+			break;
+
+#if defined(SJME_THIRD_PARTY_LEGAL_LINE)
+		case SJME_NVM_VM_DESC_THIRD_PARTY_LEGAL_LINE:
+			str = SJME_THIRD_PARTY_LEGAL_LINE;
+			break;
+#endif
+
+#if defined(SJME_THIRD_PARTY_LEGAL_DOCUMENT)
+		case SJME_NVM_VM_DESC_THIRD_PARTY_LEGAL_DOCUMENT:
+			str = SJME_THIRD_PARTY_LEGAL_DOCUMENT;
+			break;
+#endif
+
+		default:
+			/* A directory reference? */
+			if (key >= SJME_NVM_VM_DESC_DEFAULT_DIR_UNKNOWN &&
+				key <= SJME_NVM_VM_DESC_DEFAULT_DIR_NUM_RESERVED)
+			{
+				if (!sjme_error_is(sjme_path_default(nal, &path,
+					key - SJME_NVM_VM_DESC_DEFAULT_DIR_UNKNOWN, -1)))
+					strncat(buf, path.chars, SJME_MAX_PATH - 1);
+			}
+			break;
+	}
+
+	/* Has a valid path? */
+	if (path.chars[0] != '\0')
+		str = &path.chars[0];
+
+	/* Has a valid buffer? */
+	else if (buf[0] != '\0')
+		str = &buf[0];
+
+	/* Nothing to return? */
+	if (str == NULL)
+	{
+		argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+		argR->v.l = NULL;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Make a string from it. */
+	result = NULL;
+	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
+		SJME_F_T(inFrame), &result, SJME_JNI_TRUE, str)) ||
+		result == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* Return the string. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = SJME_AS_JOBJECT(result);
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(vmStatistic)
@@ -391,7 +527,7 @@ SJME_NVM_MLE_SHELF_DECLARE(RuntimeShelf) =
 		SJME_MD(SJME_MD_STRING, SJME_MD_STRING),
 		SJME_MP(SJME_MP_L, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(vmDescription,
-		SJME_MD(SJME_MD_I, SJME_MD_STRING),
+		SJME_MD(SJME_MD_STRING, SJME_MD_I),
 		SJME_MP(SJME_MP_L, SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE(vmStatistic,
 		SJME_MD(SJME_MD_J, SJME_MD_I),

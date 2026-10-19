@@ -21,7 +21,9 @@ import cc.squirreljme.jvm.mle.constants.ThreadModelType;
 import cc.squirreljme.jvm.mle.constants.ThreadStatusType;
 import cc.squirreljme.jvm.mle.constants.VerboseDebugFlag;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.VMThreadObject;
+import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodNameAndType;
@@ -313,6 +315,30 @@ public enum MLEThread
 			
 			// No value is returned
 			return null;
+		}
+	},
+	
+	/** {@link ThreadShelf#mainClass()}. */
+	MAIN_CLASS(MLEDispatcher.methodKey("mainClass",
+		Class.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2026/10/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				SpringMachine machine = __thread.machine;
+				return __thread.resolveClass(
+					machine.bootClass.replace('.', '/'));
+			}
+			catch (SpringClassNotFoundException __e)
+			{
+				throw new SpringMLECallError(__e.getMessage(), __e);
+			}
 		}
 	},
 	

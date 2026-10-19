@@ -150,6 +150,26 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 	return SJME_ERROR_NONE;
 }
 
+SJME_NVM_MLE_FUNCTION_DECL(initClass)
+{
+	sjme_errorCode error;
+	sjme_jclass inType;
+
+	/* Must be an actual class type. */
+	inType = (sjme_jclass)argV[0].v.l;
+	if (!sjme_nvm_isAR(inType, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		return SJME_ERROR_MLE_CALL;
+
+	/* Perform initialization on it. */
+	if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(inType,
+		SJME_F_T(inFrame))))
+		return sjme_error_mleCall(inFrame, error);
+
+	/* Success! */
+	argR->t = SJME_BASIC_TYPE_ID_VOID;
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(inJar)
 {
 	sjme_errorCode error;
@@ -408,11 +428,9 @@ SJME_NVM_MLE_SHELF_DECLARE(TypeShelf) =
 	SJME_NVM_MLE_DEFINE(findType,
 		SJME_MD(SJME_MD_CLASS, SJME_MD_STRING),
 		SJME_MP(SJME_MP_L, SJME_MP_L)),
-#if 0
 	SJME_NVM_MLE_DEFINE(initClass,
-		SJME_MD(,),
-		""),
-#endif
+		SJME_MD(SJME_MD_V, SJME_MD_CLASS),
+		SJME_MP(SJME_MP_V, SJME_MP_L)),
 	SJME_NVM_MLE_DEFINE(inJar,
 		SJME_MD(SJME_MD_JAR_PACKAGE, SJME_MD_CLASS),
 		SJME_MP(SJME_MP_L, SJME_MP_L)),

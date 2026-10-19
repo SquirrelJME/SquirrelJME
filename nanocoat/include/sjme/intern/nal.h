@@ -54,6 +54,10 @@ sjme_errorCode sjme_nal_default_getEnv(
 	
 sjme_errorCode sjme_nal_default_nanoTime(
 	sjme_attrOutNotNull sjme_jlong* result);
+
+sjme_errorCode sjme_nal_default_osVersion(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen);
 	
 sjme_errorCode sjme_nal_default_pathStyle(
 	sjme_attrOutNotNull const sjme_path_style** outStyle);

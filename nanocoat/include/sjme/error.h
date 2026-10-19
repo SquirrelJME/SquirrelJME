@@ -637,9 +637,12 @@ typedef enum sjme_errorCode
 
 	/** The main runtime library is missing. */
 	SJME_ERROR_MISSING_MAIN_RUNTIME = -196,
+
+	/** Main class is not initialized. */
+	SJME_ERROR_CLASS_NOT_INITIALIZED = -197,
 	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -197,
+	SJME_NUM_ERROR_CODES = -198,
 } sjme_errorCode;
 
 /**

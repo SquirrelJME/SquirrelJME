@@ -201,9 +201,7 @@ SJME_NVM_BYTECODE_SLOW(CastIntToX)
 
 		case SJME_NVM_BYTECODE_JAVA_I2B:
 			out.t = SJME_JAVA_TYPE_ID_INTEGER;
-			out.v.i = in.v.i & INT32_C(0xFF);
-			if ((in.v.i & INT32_C(0x80)) != 0)
-				out.v.i |= INT32_C(0xFFFFFF00);
+			out.v.i = sjme_util_byteToInt(in.v.i);
 			break;
 
 		case SJME_NVM_BYTECODE_JAVA_I2C:
@@ -213,9 +211,7 @@ SJME_NVM_BYTECODE_SLOW(CastIntToX)
 
 		case SJME_NVM_BYTECODE_JAVA_I2S:
 			out.t = SJME_JAVA_TYPE_ID_INTEGER;
-			out.v.i = in.v.i & INT32_C(0xFFFF);
-			if ((in.v.i & INT32_C(0x8000)) != 0)
-				out.v.i |= INT32_C(0xFFFF0000);
+			out.v.i = sjme_util_shortToInt(in.v.i);
 			break;
 		
 		default:
@@ -459,19 +455,17 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 	switch (SJME_NVM_BYTECODE_BINARY_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_SHL:
-			result.v.i = a.v.i << (b.v.i & 0x1F);
+			result.v.i = a.v.i << (b.v.i & INT32_C(0x1F));
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_SHR:
-			result.v.i = a.v.i >> (b.v.i & 0x1F);
+			result.v.i = a.v.i >> (b.v.i & INT32_C(0x1F));
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_USHR:
 			/* Reverse masking so that the entire operation happens */
 			/* purely with signed values. */
-			result.v.i = INT32_C(0x7FFFFFFF) >> (b.v.i & 0x1F);
-			result.v.i = INT32_C(1) << (31 - (b.v.i & 0x1F));
-			result.v.i &= a.v.i >> (b.v.i & 0x1F);
+			result.v.i = sjme_util_intOverShift(a.v.i, b.v.i & 0xF);
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_AND:

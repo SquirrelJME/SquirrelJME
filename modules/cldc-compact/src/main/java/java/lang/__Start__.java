@@ -12,6 +12,7 @@ package java.lang;
 import cc.squirreljme.jvm.mle.DebugShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.ThreadShelf;
+import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.VMThreadBracket;
 import cc.squirreljme.runtime.cldc.annotation.KeepAbsolutelyEverything;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
@@ -53,7 +54,13 @@ final class __Start__
 			// Execute the thread, if we are the main thread we use an
 			// alternative run
 			if (ThreadShelf.vmThreadIsMain(vmThread))
+			{
+				// Make sure the main class is initialized
+				TypeShelf.initClass(ThreadShelf.mainClass());
+				
+				// Run the main class
 				ThreadShelf.runProcessMain();
+			}
 			
 			// Use normal run logic
 			else

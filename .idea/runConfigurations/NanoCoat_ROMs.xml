@@ -10,7 +10,6 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":clean" />
           <option value=":romTestSpringCoatReleaseNanoCoat" />
           <option value=":romTestSpringCoatDebugNanoCoat" />
         </list>

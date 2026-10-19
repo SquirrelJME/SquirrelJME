@@ -260,6 +260,21 @@ static sjme_errorCode sjme_libretro_fileOpen(
 		handle, NULL);
 }
 
+static sjme_errorCode sjme_libretro_osVersion(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Always libretro. */
+	strncpy(out, "libretro", outLen);
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_libretro_pathStyle(
 	sjme_attrOutNotNull const sjme_path_style** outStyle)
 {
@@ -333,7 +348,7 @@ static sjme_errorCode sjme_libretro_userHome(
 
 	/* The home directory is always just /home, this should be somewhere */
 	/* on the VFS. */
-	strncat(out, "/home", outLen);
+	strncpy(out, "/home", outLen);
 	return SJME_ERROR_NONE;
 }
 
@@ -348,7 +363,7 @@ static sjme_errorCode sjme_libretro_userName(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* The username here is always libretro */
-	strncat(out, "libretro", outLen);
+	strncpy(out, "libretro", outLen);
 	return SJME_ERROR_NONE;
 }
 
@@ -360,6 +375,7 @@ const sjme_nal sjme_libretro_nal =
 	sjme_sm(.getEnv, NULL),
 	sjme_sm(.lineEnding, sjme_nal_default_lineEnding),
 	sjme_sm(.nanoTime, sjme_libretro_nanoTime),
+	sjme_sm(.osVersion, sjme_libretro_osVersion),
 	sjme_sm(.pathStyle, sjme_libretro_pathStyle),
 	sjme_sm(.tcpUdp, NULL),
 	sjme_sm(.threadSleep, sjme_libretro_threadSleep),

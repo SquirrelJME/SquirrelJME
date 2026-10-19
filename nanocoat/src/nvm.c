@@ -81,6 +81,7 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_OBJECT_GONE:
 		case SJME_ERROR_FILE_NOT_FOUND:
 		case SJME_ERROR_NO_SUITES:
+		case SJME_ERROR_NULL_STACK_POINTER:
 			return SJME_JNI_TRUE;
 
 #if 0
@@ -137,7 +138,6 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE:
 		case SJME_ERROR_WRONG_RETURN_TYPE:
 		case SJME_ERROR_INVALID_CODE_ADDRESS:
-		case SJME_ERROR_NULL_STACK_POINTER:
 		case SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS:
 		case SJME_ERROR_MEMBER_ACCESS_DENIED:
 		case SJME_ERROR_INVALID_OBJECT:

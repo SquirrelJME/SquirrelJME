@@ -61,11 +61,13 @@ sjme_errorCode sjme_nvm_access_checkCToE(
 	if (fromClass == toClass)
 		return SJME_ERROR_NONE;
 
-	/* Allow object, class, and enum unlimited access to anything. */
+	/* Allow object, class, enum, and __Start__ unlimited access to */
+	/* anything so that the VM can actually operate. */
 	special = fromClass->special;
 	if (SJME_NVM_ACC_IS(special, SPECIAL_OBJECT_CLASS) ||
 		SJME_NVM_ACC_IS(special, SPECIAL_CLASS_CLASS) ||
-		SJME_NVM_ACC_IS(special, SPECIAL_ENUM_CLASS))
+		SJME_NVM_ACC_IS(special, SPECIAL_ENUM_CLASS) ||
+		SJME_NVM_ACC_IS(special, SPECIAL_START_CLASS))
 		return SJME_ERROR_NONE;
 
 	/* Class is public? It is always accessible and all members are */

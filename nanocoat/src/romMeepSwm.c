@@ -490,7 +490,7 @@ SJME_MEEP_SWM_FUNC(mainClass)
 		return sjme_error_default(error);
 
 	/* Copy over the class name. */
-	strncat(tempEntry->mainClass.name,
+	strncpy(tempEntry->mainClass.name,
 		sjme_charSeq_tempUtf(&seq),
 		SJME_NVM_SWM_FIELD_LENGTH - 1);
 

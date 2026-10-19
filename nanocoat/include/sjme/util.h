@@ -635,7 +635,17 @@ sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
  */
 #define sjme_util_alignToP(addr, align) \
 	((sjme_pointer)sjme_util_alignTo(((sjme_intPointer)(addr)), (align)))
-	
+
+/**
+ * Sign extends a byte to an integer.
+ *
+ * @param v The input value.
+ * @return The resultant sign extended integer.
+ * @since 2026/10/18
+ */
+sjme_jint sjme_util_byteToInt(
+	sjme_attrInValue sjme_jint v);
+
 /**
  * Returns the number of bits in the value.
  * 
@@ -889,6 +899,16 @@ sjme_jint* sjme_util_memUnaligned32W(void* addr, sjme_jint v);
 #define sjme_util_memUnaligned32W(addr, v) (*((sjme_jint*)(addr)) = (v))
 	
 #endif
+
+/**
+ * Sign extends a short to an integer.
+ *
+ * @param v The input value.
+ * @return The resultant sign extended integer.
+ * @since 2026/10/18
+ */
+sjme_jint sjme_util_shortToInt(
+	sjme_attrInValue sjme_jint v);
 
 #if defined(SJME_CONFIG_SIZEOF_SIZE_T) && SJME_CONFIG_SIZEOF_SIZE_T == 4
 

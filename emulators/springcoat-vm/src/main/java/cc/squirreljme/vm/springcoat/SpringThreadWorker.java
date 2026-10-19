@@ -585,7 +585,8 @@ public final class SpringThreadWorker
 		ClassName cn = self.name();
 		if (cn.toString().equals("java/lang/Object") ||
 			cn.toString().equals("java/lang/Class") ||
-			cn.toString().equals("java/lang/Enum"))
+			cn.toString().equals("java/lang/Enum") ||
+			cn.toString().equals("java/lang/__Start__"))
 			return true;
 		
 		// This is ourself so access is always granted

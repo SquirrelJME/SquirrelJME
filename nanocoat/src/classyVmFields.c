@@ -181,6 +181,22 @@ static sjme_errorCode sjme_nvm_vmField_operate_SJME_VLG_(
 			/* Depending on the input type, we need to promote. */
 			switch (type)
 			{
+				case SJME_BASIC_TYPE_ID_BOOLEAN:
+					valueP->i = (prim->z ? 1 : 0);
+					break;
+
+				case SJME_BASIC_TYPE_ID_BYTE:
+					valueP->i = sjme_util_byteToInt(prim->b);
+					break;
+
+				case SJME_BASIC_TYPE_ID_SHORT:
+					valueP->i = sjme_util_shortToInt(prim->s);
+					break;
+
+				case SJME_BASIC_TYPE_ID_CHARACTER:
+					valueP->i = ((sjme_jint)(prim->c)) & INT32_C(0xFFFF);
+					break;
+
 				case SJME_JAVA_TYPE_ID_INTEGER:
 					valueP->i = prim->i;
 					break;

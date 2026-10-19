@@ -198,6 +198,46 @@ SJME_NVM_MLE_FUNCTION_DECL(javaThreadSetDaemon)
 	return sjme_error_notImplemented(0);
 }
 
+SJME_NVM_MLE_FUNCTION_DECL(mainClass)
+{
+	sjme_errorCode error;
+	sjme_nvm_task task;
+	sjme_jclass mainClass;
+	sjme_jarray mainArgs;
+	sjme_jmethodID mainMethod;
+	sjme_nvm_frame ignoreFrame;
+	sjme_jvalueTyped mainArgV[1];
+	sjme_jint i, n;
+
+	/* Recover task. */
+	task = sjme_atomic_g(sjme_nvm_task, &inFrame->inTask);
+	if (task == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	/* There is no main class? */
+	if (task->globals.mainClassName == NULL)
+	{
+		argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+		argR->v.l = NULL;
+		return SJME_ERROR_NONE;
+	}
+
+	/* Locate the main class, do not initialize. */
+	mainClass = NULL;
+	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(task->classLoader,
+		&mainClass, SJME_F_T(inFrame),
+		sjme_atomic_g(sjme_charSeq,
+			&task->globals.mainClassName->seq),
+			SJME_JNI_FALSE)) ||
+			mainClass == NULL)
+		return sjme_error_vmError(inFrame, error);
+
+	/* Return whatever main class was found. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = SJME_AS_JOBJECT(mainClass);
+	return SJME_ERROR_NONE;
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(model)
 {
 	sjme_todo("Impl?");
@@ -225,9 +265,15 @@ SJME_NVM_MLE_FUNCTION_DECL(runProcessMain)
 	if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(task->classLoader,
 		&mainClass, SJME_F_T(inFrame),
 		sjme_atomic_g(sjme_charSeq, 
-			&task->globals.mainClassName->seq), SJME_JNI_TRUE)) ||
+			&task->globals.mainClassName->seq), SJME_JNI_FALSE)) ||
 		mainClass == NULL)
 		return sjme_error_vmError(inFrame, error);
+
+	/* The class needs to be initialized first. */
+	if (sjme_atomic_g(sjme_jint, &mainClass->isInitialized) !=
+		SJME_VM_CLASS_INIT_LOAD_DONE)
+		return sjme_error_mleCall(inFrame,
+			SJME_ERROR_CLASS_NOT_INITIALIZED);
 
 	/* Locate the main method. */
 	mainMethod = NULL;
@@ -451,6 +497,9 @@ SJME_NVM_MLE_SHELF_DECLARE(ThreadShelf) =
 	SJME_NVM_MLE_DEFINE(javaThreadSetDaemon,
 		SJME_MD(SJME_MD_V, SJME_MD_THREAD),
 		SJME_MP(SJME_MP_V, SJME_MP_L)),
+	SJME_NVM_MLE_DEFINE(mainClass,
+		SJME_MD(SJME_MD_CLASS, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_L, SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_DEFINE(model,
 		SJME_MD(SJME_MD_I, SJME_MDMP___NO_ARGS__),
 		SJME_MP(SJME_MP_I, SJME_MDMP___NO_ARGS__)),

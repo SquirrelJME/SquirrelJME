@@ -16,6 +16,10 @@
 	#include <time.h>
 #endif
 
+#if (SJME_CONFIG_NAL_OS_VERSION == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+	#include <sys/utsname.h>
+#endif
+
 #if (SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_POSIX) || \
 	(SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_POSIX_OLD)
 	#include <sys/socket.h>
@@ -66,6 +70,37 @@ sjme_errorCode sjme_nal_default_nanoTime(
 
 #endif
 #pragma endregion(nanotime)
+
+#pragma region(osVersion)
+#if (SJME_CONFIG_NAL_OS_VERSION == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+
+sjme_errorCode sjme_nal_default_osVersion(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	struct utsname* result;
+
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Get this from uname. */
+	memset(&result, 0, sizeof(result));
+	if (uname(&result) < 0)
+		sjme_nal_errno(errno);
+
+	/* Directly copy the version over. */
+	strncpy(out, result->version, outLen - 1);
+	out[outLen - 1] = '\0';
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(osVersion)
 
 #pragma region(pathStyle)
 #if (SJME_CONFIG_NAL_PATH_STYLE == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
