@@ -53,7 +53,8 @@ SJME_NVM_MLE_FUNCTION_DECL(encoding)
 	sjme_nvm_mle_builtInEncodingType encoding;
 	const char* codeType;
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	UINT cp;
+	UINT cp, acp;
+	sjme_jint i;
 #elif defined(SJME_CONFIG_HAS_OS_POSIX)
 	sjme_lpcstr set;
 #endif
@@ -68,24 +69,33 @@ SJME_NVM_MLE_FUNCTION_DECL(encoding)
 	
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/* Read in the codepage. */
+	acp = GetACP();
 	cp = GetOEMCP();
 
 	/* Windows codepages need to be mapped to SquirrelJME. */
 #define SJME_CP_MAP(win, sjme) case win: encoding = sjme; break
-	switch (cp)
+	for (i = 0; i < 2; i++)
 	{
-		SJME_CP_MAP(37, SJME_NVM_MLE_ENCODING_IBM037);
-		SJME_CP_MAP(437, SJME_NVM_MLE_ENCODING_ASCII);
-		SJME_CP_MAP(28591, SJME_NVM_MLE_ENCODING_ISO_8859_1);
-		SJME_CP_MAP(28605, SJME_NVM_MLE_ENCODING_ISO_8859_15);
-		SJME_CP_MAP(65001, SJME_NVM_MLE_ENCODING_UTF8);
+		switch ((i == 0 ? acp : cp))
+		{
+			SJME_CP_MAP(37, SJME_NVM_MLE_ENCODING_IBM037);
+			SJME_CP_MAP(437, SJME_NVM_MLE_ENCODING_ASCII);
+			SJME_CP_MAP(1252, SJME_NVM_MLE_ENCODING_ISO_8859_1);
+			SJME_CP_MAP(28591, SJME_NVM_MLE_ENCODING_ISO_8859_1);
+			SJME_CP_MAP(28605, SJME_NVM_MLE_ENCODING_ISO_8859_15);
+			SJME_CP_MAP(65001, SJME_NVM_MLE_ENCODING_UTF8);
 
-		/* Shift-JIS Variants. */
-		SJME_CP_MAP(20932, SJME_NVM_MLE_ENCODING_SHIFT_JIS);
-		SJME_CP_MAP(50222, SJME_NVM_MLE_ENCODING_SHIFT_JIS);
+			/* Shift-JIS Variants. */
+			SJME_CP_MAP(20932, SJME_NVM_MLE_ENCODING_SHIFT_JIS);
+			SJME_CP_MAP(50222, SJME_NVM_MLE_ENCODING_SHIFT_JIS);
 
-		/* 7-bit ASCII. */
-		SJME_CP_MAP(20127, SJME_NVM_MLE_ENCODING_ASCII);
+			/* 7-bit ASCII. */
+			SJME_CP_MAP(20127, SJME_NVM_MLE_ENCODING_ASCII);
+		}
+		
+		/* Found codepage, so use that. */
+		if (encoding != SJME_NVM_MLE_ENCODING_UNSPECIFIED)
+			break;
 	}
 #undef SJME_CP_MAP
 
