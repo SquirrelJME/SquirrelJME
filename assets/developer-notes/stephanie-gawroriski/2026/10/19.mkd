@@ -44,3 +44,131 @@ microedition.encoding: ascii
  | IN Ljava/lang/__Start__; (<UNKNOWN>)
  | .__base:()V @11h (:-1 #INVOKESTATIC@17)
 ```
+
+## 16:17
+
+Self reviewed `wip-running`, have these things to do:
+
+ * [ ] I need to fix the runtime email
+ * [ ] and the runtime http to https URL
+ * [ ] Haiku needs added to system names
+ * [ ] Need to also swap 26H1 and 26H2 and put in a comment why
+ * [ ] Fix other Windows logic because of this
+ * [ ] emulator base cmake needs self hosted flag check to be excluded
+ * [ ] Need to finish Timer refactor
+ * [ ] Need to update route
+ * [ ] JNI function pointer bind can be a static struct
+ * [ ] The sjme_jni in vmOther to the jnisjme lib?
+ * [ ] libretro should just use boot param directly instead of parsing
+       arguments
+ * [ ] libretro NAL needs noop getenv
+ * [ ] Check SpringCoat/Hosted runs still
+ * [ ] Check nested thread tic limit is used for coop threads
+ * [ ] Copy all error codes to the Java side
+ * [ ] Add at file to missing doxygen headers
+ * [ ] runTarget free/copy flags
+ * [ ] refactor list like what I did to atomics
+ * [ ] Annotation tag enum int
+ * [ ] Refactor redo walk, refactor redo cleanup
+ * [ ] JDWP command set enum int and more
+ * [ ] Actually implement GDB type renderers
+ * [ ] default dir enum int
+ * [ ] See if CLion can be told to ignore unused atomic template warnings
+ * [ ] Frame state flags enum int
+ * [ ] Nuke frame stacks
+ * [ ] Nuke any code between broken code markers?
+ * [ ] Thread count type enum int
+ * [ ] Definitely walk needs a good nuke
+ * [ ] Move long shl, shr, ushr into helpers
+ * [ ] Put the memory based defined in one spot
+ * [ ] Add LFCR and RS line ending types
+ * [ ] Actually check if bitline disabled drawning works correctly
+ * [ ] Add fix for toolchains that do not have INT_MIN and INT_MAX
+ * [ ] Fix limits.h inclusion typo, it is missing an M
+ * [ ] Later: Write the MLE document
+ * [ ] Finish pretty printing for lists
+ * [ ] Do a general CLion/clang issue scan
+ * [ ] enum int nvm common class ID?
+ * [ ] sjme_nvm_boot() splicing
+ * [ ] Check that all SpringCoat tests pass
+ * [ ] For sjme_nvm class flag parsing use SJME_NVM_ACC_IS()
+ * [ ] Ditto for fields
+ * [ ] Ditto for methods
+ * [ ] Interface fallback sjme_nvm_vmClass_isAssignableFrom()
+ * [ ] Windows CP1252 to ISO-8859-1
+ * [ ] Use more than GetOEMCP(), use GetACP() first
+ * [ ] Move encoding to NAL
+ * [ ] Move locale to NAL
+ * [ ] For SWM Profile comparison, MIDP/MEEP after everything (VSCL)
+ * [ ] Add blank native for BeOS/Haiku
+ * [ ] Check linux build
+ * [ ] Check macOS build
+ * [ ] Check Haiku build
+ * [ ] Check Windows build
+
+Then once done, a merge happens! Of course will get this in a branch of
+a branch so I do not forget anything.
+
+## 19:12
+
+Working through these, did these so far:
+
+ * [X] I need to fix the runtime email
+ * [X] and the runtime http to https URL
+ * [X] Haiku needs added to system names
+ * [X] Need to also swap 26H1 and 26H2 and put in a comment why
+ * [X] Fix other Windows logic because of this
+ * [X] emulator base cmake needs self hosted flag check to be excluded
+ * [ ] Need to finish Timer refactor
+ * [ ] Need to update route
+ * [ ] JNI function pointer bind can be a static struct
+ * [ ] The sjme_jni in vmOther to the jnisjme lib?
+ * [ ] libretro should just use boot param directly instead of parsing
+       arguments
+ * [X] libretro NAL needs noop getenv
+ * [-] Check SpringCoat/Hosted runs still
+ * [ ] Check nested thread tic limit is used for coop threads
+ * [ ] Copy all error codes to the Java side
+ * [ ] Add at file to missing doxygen headers
+ * [ ] runTarget free/copy flags
+ * [ ] refactor list like what I did to atomics
+ * [ ] Annotation tag enum int
+ * [ ] Refactor redo walk, refactor redo cleanup
+ * [ ] JDWP command set enum int and more
+ * [ ] Actually implement GDB type renderers
+ * [ ] default dir enum int
+ * [X] See if CLion can be told to ignore unused atomic template warnings
+ * [ ] Frame state flags enum int
+ * [ ] Nuke frame stacks
+ * [ ] Nuke any code between broken code markers?
+ * [ ] Thread count type enum int
+ * [ ] Definitely walk needs a good nuke
+ * [ ] Move long shl, shr, ushr into helpers
+ * [ ] Put the memory based defined in one spot
+ * [ ] Add LFCR and RS line ending types
+ * [ ] Actually check if bitline disabled drawning works correctly
+ * [ ] Add fix for toolchains that do not have INT_MIN and INT_MAX
+ * [X] Fix limits.h inclusion typo, it is missing an M
+ * [ ] Later: Write the MLE document
+ * [ ] Finish pretty printing for lists
+ * [ ] Do a general CLion/clang issue scan
+ * [ ] enum int nvm common class ID?
+ * [ ] sjme_nvm_boot() splicing
+ * [ ] Check that all SpringCoat tests pass
+ * [ ] For sjme_nvm class flag parsing use SJME_NVM_ACC_IS()
+ * [ ] Ditto for fields
+ * [ ] Ditto for methods
+ * [ ] Interface fallback sjme_nvm_vmClass_isAssignableFrom()
+ * [X] Windows CP1252 to ISO-8859-1
+ * [X] Use more than GetOEMCP(), use GetACP() first
+ * [ ] Move encoding to NAL
+ * [ ] Move locale to NAL
+ * [X] For SWM Profile comparison, MIDP/MEEP after everything (VSCL)
+ * [X] Add blank native for BeOS/Haiku
+ * [ ] Check linux build
+ * [ ] Check macOS build
+ * [ ] Check Haiku build
+ * [ ] Check Windows build
+
+Still a bunch to do, and considering that this took 1.5 years to get to this
+point going through all this will take a few days especially with work.
