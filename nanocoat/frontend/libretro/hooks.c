@@ -202,6 +202,12 @@ static sjme_errorCode sjme_libretro_currentTimeMillis(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
+static sjme_nal_encodingType sjme_libretro_encoding(void)
+{
+	/* Always UTF-8 (Netplay). */
+	return SJME_NAL_ENCODING_UTF8;
+}
+
 static sjme_errorCode sjme_libretro_execPath(
 	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
 	sjme_attrInPositiveNonZero sjme_jint outLen)
@@ -274,6 +280,18 @@ static sjme_errorCode sjme_libretro_getEnv(
 	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
+static sjme_nal_lineEndingType sjme_libretro_lineEnding(void)
+{
+	/* Always LF (Netplay). */
+	return SJME_NAL_LINE_ENDING_LF;
+}
+
+static sjme_nal_localeType sjme_libretro_locale(void)
+{
+	/* Always US English (Netplay). */
+	return SJME_NAL_LOCALE_US_ENGLISH;
+}
+
 static sjme_errorCode sjme_libretro_osVersion(
 	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
 	sjme_attrInPositiveNonZero sjme_jint outLen)
@@ -299,7 +317,6 @@ static sjme_errorCode sjme_libretro_pathStyle(
 	*outStyle = &sjme_path_styles[SJME_PATH_STYLE_VFAT_EMBEDDED];
 	return SJME_ERROR_NONE;
 }
-
 
 static sjme_errorCode sjme_libretro_nanoTime(
 	sjme_attrOutNotNull sjme_jlong* result)
@@ -384,10 +401,12 @@ static sjme_errorCode sjme_libretro_userName(
 const sjme_nal sjme_libretro_nal =
 {
 	sjme_sm(.currentTimeMillis, sjme_libretro_currentTimeMillis),
+	sjme_sm(.encoding, sjme_libretro_encoding),
 	sjme_sm(.execPath, sjme_libretro_execPath),
 	sjme_sm(.fileOpen, sjme_libretro_fileOpen),
 	sjme_sm(.getEnv, sjme_libretro_getEnv),
-	sjme_sm(.lineEnding, sjme_nal_default_lineEnding),
+	sjme_sm(.lineEnding, sjme_libretro_lineEnding),
+	sjme_sm(.locale, sjme_libretro_locale),
 	sjme_sm(.nanoTime, sjme_libretro_nanoTime),
 	sjme_sm(.osVersion, sjme_libretro_osVersion),
 	sjme_sm(.pathStyle, sjme_libretro_pathStyle),

@@ -9,16 +9,6 @@
 
 #include "sjme/config.h"
 #include "sjme/intern/nal.h"
-
-#if defined(SJME_CONFIG_HAS_OS_POSIX)
-	#include <locale.h>
-
-	/* Android does not have langinfo. */
-	#if !defined(SJME_CONFIG_HAS_OS_ANDROID)
-		#include <langinfo.h>
-	#endif
-#endif
-
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleConst.h"
@@ -49,97 +39,17 @@ SJME_NVM_MLE_FUNCTION_DECL(currentTimeMillis)
 
 SJME_NVM_MLE_FUNCTION_DECL(encoding)
 {
-	static sjme_atomic(sjme_jint) cached;
-	sjme_nvm_mle_builtInEncodingType encoding;
-	const char* codeType;
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	UINT cp, acp;
-	sjme_jint i;
-#elif defined(SJME_CONFIG_HAS_OS_POSIX)
-	sjme_lpcstr set;
-#endif
-
-	/* Cached? */
-	encoding = sjme_atomic_g(sjme_jint, &cached);
-	if (encoding != SJME_NVM_MLE_ENCODING_UNSPECIFIED)
-		goto skip_cached;
-
-	/* Reset codetype based string. */
-	codeType = NULL;
+	sjme_nvm inState;
 	
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	/* Read in the codepage. */
-	acp = GetACP();
-	cp = GetOEMCP();
-
-	/* Windows codepages need to be mapped to SquirrelJME. */
-#define SJME_CP_MAP(win, sjme) case win: encoding = sjme; break
-	for (i = 0; i < 2; i++)
-	{
-		switch ((i == 0 ? acp : cp))
-		{
-			SJME_CP_MAP(37, SJME_NVM_MLE_ENCODING_IBM037);
-			SJME_CP_MAP(437, SJME_NVM_MLE_ENCODING_ASCII);
-			SJME_CP_MAP(1252, SJME_NVM_MLE_ENCODING_ISO_8859_1);
-			SJME_CP_MAP(28591, SJME_NVM_MLE_ENCODING_ISO_8859_1);
-			SJME_CP_MAP(28605, SJME_NVM_MLE_ENCODING_ISO_8859_15);
-			SJME_CP_MAP(65001, SJME_NVM_MLE_ENCODING_UTF8);
-
-			/* Shift-JIS Variants. */
-			SJME_CP_MAP(20932, SJME_NVM_MLE_ENCODING_SHIFT_JIS);
-			SJME_CP_MAP(50222, SJME_NVM_MLE_ENCODING_SHIFT_JIS);
-
-			/* 7-bit ASCII. */
-			SJME_CP_MAP(20127, SJME_NVM_MLE_ENCODING_ASCII);
-		}
-		
-		/* Found codepage, so use that. */
-		if (encoding != SJME_NVM_MLE_ENCODING_UNSPECIFIED)
-			break;
-	}
-#undef SJME_CP_MAP
-
-#elif defined(SJME_CONFIG_HAS_OS_ANDROID)
-	/* Android only does UTF-8. */
-	encoding = SJME_NVM_MLE_ENCODING_UTF8;
-#elif defined(SJME_CONFIG_HAS_OS_POSIX)
-	/* Get the base global locale. */
-	set = setlocale(LC_ALL, "");
-	if (set != NULL)
-		codeType = nl_langinfo(CODESET);
-#endif
-
-	/* Base on the code type string? */
-	if (encoding == SJME_NVM_MLE_ENCODING_UNSPECIFIED && codeType != NULL)
-	{
-		if (strcasecmp(codeType, "UTF-8") == 0)
-			encoding = SJME_NVM_MLE_ENCODING_UTF8;
-		else if (strcasecmp(codeType, "ASCII") == 0 ||
-			strcasecmp(codeType, "ANSI_X3.4-1968") == 0)
-			encoding = SJME_NVM_MLE_ENCODING_ASCII;
-		else if (strcasecmp(codeType, "IBM037") == 0 ||
-			strcasecmp(codeType, "EBCDIC-US") == 0)
-			encoding = SJME_NVM_MLE_ENCODING_IBM037;
-		else if (strcasecmp(codeType, "ISO-8859-1") == 0)
-			encoding = SJME_NVM_MLE_ENCODING_ISO_8859_1;
-		else if (strcasecmp(codeType, "ISO-8859-15") == 0)
-			encoding = SJME_NVM_MLE_ENCODING_ISO_8859_15;
-		else if (strcasecmp(codeType, "SHIFT_JIS") == 0 ||
-			strcasecmp(codeType, "SHIFT_JISX0213") == 0)
-			encoding = SJME_NVM_MLE_ENCODING_SHIFT_JIS;
-		else if (strcasecmp(codeType, "IBM437") == 0)
-			encoding = SJME_NVM_MLE_ENCODING_IBM437;
-	}
+	/* Obtain from the NAL */
+	inState = SJME_F_S(inFrame);
+	if (inState != NULL && inState->nal != NULL &&
+		inState->nal->encoding != NULL)
+		argR->v.i = SJME_F_S(inFrame)->nal->encoding();
+	else
+		argR->v.i = SJME_NAL_ENCODING_UNSPECIFIED;
 	
-	/* Fallback to UTF-8 if unspecified. */
-	if (encoding == SJME_NVM_MLE_ENCODING_UNSPECIFIED)
-		encoding = SJME_NVM_MLE_ENCODING_UTF8;
-	sjme_atomic_s(sjme_jint, &cached, encoding);
-
-	/* Return the given encoding. */
-skip_cached:
 	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->v.i = encoding;
 	return SJME_ERROR_NONE;
 }
 
@@ -189,61 +99,17 @@ SJME_NVM_MLE_FUNCTION_DECL(lineEnding)
 
 SJME_NVM_MLE_FUNCTION_DECL(locale)
 {
-	static sjme_atomic(sjme_jint) cached;
-	sjme_nvm_mle_builtInLocaleType locale;
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	LANGID li;
-#elif defined(SJME_CONFIG_HAS_OS_POSIX)
-	sjme_lpcstr set;
-#endif
-
-	/* Cached? */
-	locale = sjme_atomic_g(sjme_jint, &cached);
-	if (locale != SJME_NVM_MLE_LOCALE_UNSPECIFIED)
-		goto skip_cached;
+	sjme_nvm inState;
 	
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	/* Locale is per-thread in Windows. */
-	li = GetUserDefaultLangID();
-
-	/* Windows languages need to be mapped to SquirrelJME. */
-#define SJME_LI_MAP(pri, sub, sjme) \
-	case MAKELANGID(pri, sub): locale = sjme; break
-
-	switch (li)
-	{
-		SJME_LI_MAP(LANG_ENGLISH, SUBLANG_ENGLISH_US,
-			SJME_NVM_MLE_LOCALE_US_ENGLISH);
-
-		/* Default English. */
-		SJME_LI_MAP(LANG_ENGLISH, SUBLANG_NEUTRAL,
-			SJME_NVM_MLE_LOCALE_US_ENGLISH);
-	}
-#undef SJME_CP_MAP
-#elif defined(SJME_CONFIG_HAS_OS_POSIX)
-	/* Get the base global locale. */
-	set = setlocale(LC_ALL, "");
-	if (set != NULL)
-	{
-		/* US English. */
-		if (strncasecmp(set, "en_US", 5))
-			locale = SJME_NVM_MLE_LOCALE_US_ENGLISH;
-
-		/* Default English (US). */
-		else if (strncasecmp(set, "en", 2))
-			locale = SJME_NVM_MLE_LOCALE_US_ENGLISH;
-	}
-#endif
+	/* Obtain from the NAL */
+	inState = SJME_F_S(inFrame);
+	if (inState != NULL && inState->nal != NULL &&
+		inState->nal->locale != NULL)
+		argR->v.i = SJME_F_S(inFrame)->nal->locale();
+	else
+		argR->v.i = SJME_NAL_LOCALE_UNSPECIFIED;
 	
-	/* Fallback to US English if unspecified. */
-	if (locale == SJME_NVM_MLE_LOCALE_UNSPECIFIED)
-		locale = SJME_NVM_MLE_LOCALE_US_ENGLISH;
-	sjme_atomic_s(sjme_jint, &cached, locale);
-
-	/* Return the given locale. */
-skip_cached:
 	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->v.i = locale;
 	return SJME_ERROR_NONE;
 }
 

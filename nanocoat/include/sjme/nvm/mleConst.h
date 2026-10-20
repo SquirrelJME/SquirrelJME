@@ -29,56 +29,6 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-typedef enum sjme_nvm_mle_builtInEncodingType
-{
-	/** This is an enum based int. */
-	sjme_enumInt(sjme_nvm_mle_builtInEncodingType),
-	
-	/** Unspecified, use defined property or assume UTF-8. */
-	SJME_NVM_MLE_ENCODING_UNSPECIFIED = 0,
-	
-	/** UTF-8. */
-	SJME_NVM_MLE_ENCODING_UTF8 = 1,
-	
-	/** ASCII. */
-	SJME_NVM_MLE_ENCODING_ASCII = 2,
-	
-	/** IBM037 (EBCDIC). */
-	SJME_NVM_MLE_ENCODING_IBM037 = 3,
-	
-	/** ISO-8859-1. */
-	SJME_NVM_MLE_ENCODING_ISO_8859_1 = 4,
-	
-	/** ISO-8859-15. */
-	SJME_NVM_MLE_ENCODING_ISO_8859_15 = 5,
-	
-	/** Shift-JIS. */
-	SJME_NVM_MLE_ENCODING_SHIFT_JIS = 6,
-	
-	/** IBM437. */
-	SJME_NVM_MLE_ENCODING_IBM437 = 7,
-	
-	/** The number of built-in encodings. */
-	SJME_NVM_MLE_ENCODING_NUM_BUILTIN = 8,
-} sjme_nvm_mle_builtInEncodingType;
-	
-/**
- * The built-in locales which are supported.
- *
- * @since 2025/06/22
- */
-typedef enum sjme_nvm_mle_builtInLocaleType
-{
-	/** This is an enum based int. */
-	sjme_enumInt(sjme_nvm_mle_builtInLocaleType),
-	
-	/** Unspecified. */
-	SJME_NVM_MLE_LOCALE_UNSPECIFIED = 0,
-
-	/** English, US. */
-	SJME_NVM_MLE_LOCALE_US_ENGLISH = 1,
-} sjme_nvm_mle_builtInLocaleType;
-
 /**
  * The memory profiles available.
  *

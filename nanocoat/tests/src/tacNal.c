@@ -130,10 +130,12 @@ sjme_errorCode sjme_nal_test_userName(sjme_lpstr out,
 const sjme_nal sjme_nal_test =
 {
 	sjme_sm(.currentTimeMillis, sjme_nal_test_currentTimeMillis),
+	sjme_sm(.encoding, sjme_nal_default_encoding),
 	sjme_sm(.execPath, sjme_nal_test_execPath),
 	sjme_sm(.fileOpen, sjme_nal_test_fileOpen),
 	sjme_sm(.getEnv, sjme_nal_test_getEnv),
 	sjme_sm(.lineEnding, sjme_nal_default_lineEnding),
+	sjme_sm(.locale, sjme_nal_default_locale),
 	sjme_sm(.nanoTime, sjme_nal_default_nanoTime),
 	sjme_sm(.osVersion, sjme_nal_default_osVersion),
 	sjme_sm(.pathStyle, sjme_nal_default_pathStyle),
