@@ -8,7 +8,6 @@
 // -------------------------------------------------------------------------*/
 
 #include "sjme/debug.h"
-
 #include "lib/jnisjme/jsInputStream.h"
 
 /**
