@@ -119,6 +119,9 @@ typedef enum sjme_basicTypeId
  */
 typedef enum sjme_jboolean
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_jboolean),
+
 	/** False. */
 	SJME_JNI_FALSE = 0,
 	

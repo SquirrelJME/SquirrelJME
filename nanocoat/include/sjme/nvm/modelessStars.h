@@ -72,6 +72,9 @@ typedef struct sjme_modelessStar
 /** Modeless color options. */
 typedef enum sjme_modelessStarColorId
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_modelessStarColorId),
+
 	/** Starting color. */
 	SJME_MODELESS_STAR_COLOR_ID_START,
 	

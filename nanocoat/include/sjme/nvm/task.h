@@ -43,6 +43,9 @@ extern "C" {
  */
 typedef enum sjme_nvm_task_pipeRedirectType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_task_pipeRedirectType),
+	
 	/** Discard everything. */
 	SJME_NVM_TASK_PIPE_REDIRECT_TYPE_DISCARD = 0,
 
@@ -63,6 +66,9 @@ typedef enum sjme_nvm_task_pipeRedirectType
  */
 typedef enum sjme_nvm_task_statusType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_task_statusType),
+	
 	/** Task has exited. */
 	SJME_NVM_TASK_STATUS_EXITED = 0,
 	
@@ -80,6 +86,9 @@ typedef enum sjme_nvm_task_statusType
  */
 typedef enum sjme_nvm_thread_startType
 {
+	/** This is an enum based int. */
+	sjme_enumInt(sjme_nvm_thread_startType),
+	
 	/** Thread was never started. */
 	SJME_NVM_THREAD_START_NEVER = 0,
 
@@ -110,6 +119,9 @@ typedef enum sjme_nvm_thread_startType
  */
 typedef enum sjme_nvm_thread_statusType
 {
+	/** This is an enum based int. */
+	sjme_enumInt(sjme_nvm_thread_statusType),
+	
 	/** Running. */
 	SJME_NVM_THREAD_STATUS_RUNNING = 0,
 	
@@ -275,6 +287,9 @@ struct sjme_nvm_frame_gcCommit
  */
 typedef enum sjme_nvm_frame_considerGc
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_frame_considerGc),
+	
 	/** Do not garbage collect. */
 	SJME_NVM_FRAME_CONSIDER_GC_NONE,
 
@@ -292,6 +307,9 @@ typedef enum sjme_nvm_frame_considerGc
  */
 typedef enum sjme_nvm_frame_stateFlags
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_frame_stateFlags),
+	
 	/** Is this a static initializer? */
 	SJME_NVM_FRAME_STATE_INIT_STATIC = SJME_NVM_CLASS_INIT_STATIC,
 
@@ -624,6 +642,9 @@ typedef enum sjme_nvm_task_commonClassId
  */
 typedef enum sjme_nvm_task_singleton
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_task_singleton),
+	
 	/** Null singleton. */
 	SJME_NVM_TASK_SINGLETON_NULL,
 
@@ -689,6 +710,9 @@ typedef struct sjme_nvm_task_globals
 
 typedef enum sjme_nvm_task_threadCountType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_task_threadCountType),
+	
 	/** All. */
 	SJME_NVM_THREAD_COUNT_ALL = 0,
 	

@@ -38,6 +38,9 @@ extern "C" {
  */
 typedef enum sjme_nvm_vmConfig_settingType
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_vmConfig_settingType),
+
 	/** The number of setting types. */
 	SJME_NUM_VM_CONFIG_SETTING_TYPES
 } sjme_nvm_vmConfig_settingType;
@@ -49,6 +52,9 @@ typedef enum sjme_nvm_vmConfig_settingType
  */
 typedef enum sjme_nvm_vmConfig_categoryType
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_vmConfig_categoryType),
+
 	/** The number of category types available. */
 	SJME_NUM_VM_CONFIG_CATEGORY_TYPES
 } sjme_nvm_vmConfig_categoryType;
@@ -60,6 +66,9 @@ typedef enum sjme_nvm_vmConfig_categoryType
  */
 typedef enum sjme_nvm_vmConfig_flag
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_vmConfig_flag),
+
 	/** Default value is defined. */
 	SJME_VM_CONFIG_FLAG_DEFAULT = 1,
 

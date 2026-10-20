@@ -395,6 +395,9 @@ typedef struct sjme_nvm_threadSchedule
  */
 typedef enum sjme_nvm_terminateLevel
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_terminateLevel),
+
 	/** Not terminating. */
 	SJME_NVM_TERMINATE_NOT = 0,
 
@@ -412,6 +415,9 @@ typedef enum sjme_nvm_terminateLevel
  */
 typedef enum sjme_nvm_bootBelayType
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_bootBelayType),
+
 	/** No belay on boot. */
 	SJME_NVM_BOOT_BELAY_NONE = 0,
 
@@ -432,6 +438,9 @@ typedef enum sjme_nvm_bootBelayType
  */
 typedef enum sjme_nvm_bootClutterLevel
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_bootClutterLevel),
+
 	/** Release clutter level. */
 	SJME_NVM_BOOT_CLUTTER_RELEASE = 0,
 	

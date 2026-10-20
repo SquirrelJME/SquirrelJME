@@ -70,6 +70,9 @@ typedef volatile sjme_alloc_linkBase* sjme_alloc_link;
  */
 typedef enum sjme_alloc_poolSpace
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_alloc_poolSpace),
+	
 	/** Invalid space. */
 	SJME_ALLOC_POOL_SPACE_INVALID,
 	
@@ -90,6 +93,9 @@ typedef enum sjme_alloc_poolSpace
  */
 typedef enum sjme_alloc_linkFlag
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_alloc_linkFlag),
+	
 	/** Nested allocation pool. */
 	SJME_ALLOC_LINK_FLAG_NESTED_POOL = 1,
 

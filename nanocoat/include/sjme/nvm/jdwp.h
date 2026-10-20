@@ -39,6 +39,9 @@ extern "C" {
  */
 typedef enum sjme_jdwp_commandSet
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_jdwp_commandSet),
+	
 	/** Unknown. */
 	SJME_JDWP_COMMAND_SET_UNKNOWN = -1,
 	
@@ -89,6 +92,9 @@ typedef enum sjme_jdwp_commandSet
  */
 typedef enum sjme_jdwp_command
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_jdwp_command),
+	
 	/** Unknown. */
 	SJME_JDWP_COMMAND_UNKNOWN = -1,
 } sjme_jdwp_command;
@@ -100,6 +106,9 @@ typedef enum sjme_jdwp_command
  */
 typedef enum sjme_jdwp_packetFlag
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_jdwp_packetFlag),
+	
 	/** The packet is a reply. */
 	SJME_JDWP_FLAG_REPLY = 0x80,
 } sjme_jdwp_packetFlag;

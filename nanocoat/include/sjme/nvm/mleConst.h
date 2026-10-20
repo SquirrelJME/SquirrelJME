@@ -31,6 +31,9 @@ extern "C"
 
 typedef enum sjme_nvm_mle_builtInEncodingType
 {
+	/** This is an enum based int. */
+	sjme_enumInt(sjme_nvm_mle_builtInEncodingType),
+	
 	/** Unspecified, use defined property or assume UTF-8. */
 	SJME_NVM_MLE_ENCODING_UNSPECIFIED = 0,
 	
@@ -66,20 +69,15 @@ typedef enum sjme_nvm_mle_builtInEncodingType
  */
 typedef enum sjme_nvm_mle_builtInLocaleType
 {
+	/** This is an enum based int. */
+	sjme_enumInt(sjme_nvm_mle_builtInLocaleType),
+	
 	/** Unspecified. */
 	SJME_NVM_MLE_LOCALE_UNSPECIFIED = 0,
 
 	/** English, US. */
 	SJME_NVM_MLE_LOCALE_US_ENGLISH = 1,
 } sjme_nvm_mle_builtInLocaleType;
-
-
-/**
- * The type of line ending the system uses.
- *
- * @since 2025/03/02
- */
-typedef enum sjme_nal_lineEndingType sjme_nvm_mle_lineEndingType;
 
 /**
  * The memory profiles available.
@@ -128,6 +126,9 @@ typedef enum sjme_nvm_mle_standardPipeType
  */
 typedef enum sjme_nvm_mle_threadModel
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_mle_threadModel),
+
 	/** Single cooperatively threaded. */
 	SJME_NVM_MLE_THREAD_SINGLE_COOP = 0,
 	
@@ -148,6 +149,9 @@ typedef enum sjme_nvm_mle_threadModel
  */
 typedef enum sjme_nvm_mle_vmType
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_mle_vmType),
+
 	/** Not known. */
 	SJME_NVM_MLE_VM_TYPE_UNKNOWN = 0,
 	
@@ -176,6 +180,9 @@ typedef enum sjme_nvm_mle_vmType
  */
 typedef enum sjme_nvm_defaultDirectoryType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_defaultDirectoryType),
+	
 	/** Unknown. */
 	SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN = 0,
 	
@@ -223,6 +230,9 @@ typedef enum sjme_nvm_defaultDirectoryType
  */
 typedef enum sjme_nvm_vmDescriptionType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_vmDescriptionType),
+	
 	/** Unspecified. */
 	SJME_NVM_VM_DESC_UNSPECIFIED = 0,
 	
@@ -351,6 +361,9 @@ typedef enum sjme_nvm_vmDescriptionType
  */
 typedef enum sjme_nvm_vmStatisticType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_vmStatisticType),
+	
 	/** Unspecified. */
 	SJME_NVM_VM_STAT_UNSPECIFIED = 0,
 	

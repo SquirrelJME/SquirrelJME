@@ -46,6 +46,9 @@ extern "C"
  */
 typedef enum sjme_nvm_byteCode_fastInstruction
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_byteCode_fastInstruction),
+	
 	/** Dup2_x1 on narrow. */
 	SJME_NVM_BYTECODE_FAST_DUP_TWO_X1_NARROW = 248,
 	

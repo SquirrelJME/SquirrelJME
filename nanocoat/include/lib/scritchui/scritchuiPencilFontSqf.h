@@ -40,6 +40,9 @@ extern "C" {
  */
 typedef enum sjme_scritchui_sqfFlag
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_scritchui_sqfFlag),
+	
 	/** Character is valid. */
 	SJME_SCRITCHUI_SQF_FLAG_VALID = 1,
 	
@@ -54,6 +57,9 @@ typedef enum sjme_scritchui_sqfFlag
  */
 typedef enum sjme_scritchui_sqfFamily
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_scritchui_sqfFamily),
+	
 	/** Regular font. */
 	SJME_SCRITCHUI_SQF_FAMILY_REGULAR,
 	

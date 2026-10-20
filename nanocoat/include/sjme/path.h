@@ -246,6 +246,9 @@ struct sjme_path_style
  */
 typedef enum sjme_path_flags
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_path_flags),
+
 	/** Does this path represent a directory? */
 	SJME_PATH_IS_DIRECTORY = INT32_C(0x01),
 

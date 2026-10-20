@@ -45,6 +45,9 @@ extern const sjme_nal sjme_nal_test;
  */
 typedef enum sjme_testResult
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_testResult),
+
 	/** The test passed. */
 	SJME_TEST_RESULT_PASS = 0,
 	

@@ -55,6 +55,9 @@ typedef sjme_pointer sjme_frontEndData;
  */
 typedef enum sjme_frontEnd_bindAction
 {	
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_frontEnd_bindAction),
+	
 	/** Obtain the binding. */
 	SJME_FRONTEND_BIND,
 	
@@ -72,6 +75,9 @@ typedef enum sjme_frontEnd_bindAction
  */
 typedef enum sjme_frontEnd_bindType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_frontEnd_bindType),
+	
 	/** Cannot be bound. */
 	SJME_FRONTEND_BINDLESS,
 	
