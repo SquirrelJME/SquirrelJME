@@ -236,6 +236,16 @@ have been trained from unknown and/or unverified sources.
 	        xii.  The model, source code, binary code, and/or software that
 	              provides access to the model is not under a singular
 	              copyright or license.
+	        xiii. The model, source code, binary code, and/or software that
+	              provides access to the model requires a subscription, service
+	              fee, membership, or other agreement such as a terms of
+	              service to access.
+	        xiv.  The model, source code, binary code, and/or software that
+	              provides access to the model enforces access to an online
+	              service and is unable to be obtained through physical means
+	              such as a flash storage media, hard drive, compact disc, or
+	              magnetic storage media via international postage to be used
+	              for auditing purposes.
 
 # Committing and Submitting Changes
 
