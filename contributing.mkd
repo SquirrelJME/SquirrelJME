@@ -251,6 +251,8 @@ have been trained from unknown and/or unverified sources.
 	        xiii. Does not have safeguards in place to prevent use outside of
 	              strict tool usage such as taking on a human persona or
 	              other fictional character.
+	        xiv.  Has not been vetted and approved by the developers of 
+	              SquirrelJME and Stephanie Gawroriski.
 
 # Committing and Submitting Changes
 
