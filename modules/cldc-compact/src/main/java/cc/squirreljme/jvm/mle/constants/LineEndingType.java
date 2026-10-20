@@ -38,9 +38,19 @@ public interface LineEndingType
 	@SquirrelJMENativeApi(min = "0.4.0")
 	byte CRLF =
 		3;
+	
+	/** LFCR. */
+	@SquirrelJMENativeApi(min = "0.4.0")
+	byte LFCR =
+		4;
+	
+	/** RS. */
+	@SquirrelJMENativeApi(min = "0.4.0")
+	byte RS =
+		5;
 		
 	/** Number of line ending types. */
 	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_LINE_ENDINGS =
-		4;
+		6;
 }

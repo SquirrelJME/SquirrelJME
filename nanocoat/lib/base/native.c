@@ -54,6 +54,8 @@ const sjme_lpcstr sjme_nal_lineEndings[SJME_NAL_NUM_LINE_ENDINGS] =
 	"\n",
 	"\r",
 	"\r\n",
+	"\n\r",
+	"\036",
 };
 
 #if defined(SJME_CONFIG_HAS_ERRNO_H)

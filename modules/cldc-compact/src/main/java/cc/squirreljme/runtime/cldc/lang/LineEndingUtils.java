@@ -154,6 +154,8 @@ public final class LineEndingUtils
 			case LineEndingType.CR:		return "\r";
 			case LineEndingType.LF:		return "\n";
 			case LineEndingType.CRLF:	return "\r\n";
+			case LineEndingType.LFCR:	return "\n\r";
+			case LineEndingType.RS:		return "\036";
 			
 			/* {@squirreljme.error ZZ29 Unknown line ending type. (Type)} */
 			default:
@@ -181,6 +183,8 @@ public final class LineEndingUtils
 			case "\r":		return LineEndingType.CR;
 			case "\n":		return LineEndingType.LF;
 			case "\r\n":	return LineEndingType.CRLF;
+			case "\n\r":	return LineEndingType.LFCR;
+			case "\036":	return LineEndingType.RS;
 			
 				/* {@squirreljme.error ZZ3w Unknown line ending string.} */
 			default:

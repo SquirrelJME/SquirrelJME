@@ -77,8 +77,14 @@ typedef enum sjme_nal_lineEndingType
 	/** CRLF. */
 	SJME_NAL_LINE_ENDING_CRLF = 3,
 
+	/** LFCR. */
+	SJME_NAL_LINE_ENDING_LFCR = 4,
+
+	/** RS. */
+	SJME_NAL_LINE_ENDING_RS = 5,
+
 	/** Number of line ending types. */
-	SJME_NAL_NUM_LINE_ENDINGS = 4,
+	SJME_NAL_NUM_LINE_ENDINGS = 6,
 } sjme_nal_lineEndingType;
 	
 /**
