@@ -1201,6 +1201,9 @@ extern "C" {
 	#define SJME_CONFIG_NESTED_THREAD_TIC_LIMIT INT32_C(8192)
 #endif
 	
+/* Memory limits. */
+#include "sjme/configMemory.h"
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

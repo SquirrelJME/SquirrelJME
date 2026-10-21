@@ -17,14 +17,6 @@
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/taskStore.h"
 
-#if defined(SJME_CONFIG_HAS_LOW_MEMORY)
-	/** The size of the thread stack. */
-	#define SJME_NVM_THREAD_STACK_SIZE 8192
-#else
-	/** The size of the thread stack. */
-	#define SJME_NVM_THREAD_STACK_SIZE 65536
-#endif
-
 static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
