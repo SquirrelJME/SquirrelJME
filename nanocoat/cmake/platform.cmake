@@ -199,7 +199,13 @@ set(SQUIRRELJME_ENABLE_APP_DEMO_SCRITCHUI_DEFAULT
 	"${SQUIRRELJME_ENABLE_APP_DEFAULTS}")
 
 # MASM Intel by default, where possible
-set(SQUIRRELJME_ENABLE_MASM_INTEL_DEFAULT YES)
+if("${SQUIRRELJME_ARCH}" STREQUAL "ia16" OR
+	"${SQUIRRELJME_ARCH}" STREQUAL "ia32" OR
+	"${SQUIRRELJME_ARCH}" STREQUAL "amd64")
+	set(SQUIRRELJME_ENABLE_MASM_INTEL_DEFAULT YES)
+else()
+	set(SQUIRRELJME_ENABLE_MASM_INTEL_DEFAULT NO)
+endif()
 
 # Macro for defining and debugging options
 macro(squirreljme_define_option baseVar description)
