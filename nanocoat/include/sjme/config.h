@@ -236,7 +236,8 @@ extern "C" {
 #endif
 
 /* The current operating system. */
-#if defined(SJME_CONFIG_IDENT_OS_SDCC) || defined(SJME_CONFIG_HAS_SDCC) || \
+#if defined(SJME_CONFIG_IDENT_OS_SDCC) || \
+	defined(SJME_CONFIG_HAS_SDCC) || \
 	defined(SJME_CONFIG_IDENT_OS_BIOS) || \
 	defined(SJME_CONFIG_IDENT_OS_EFI) || \
 	defined(SJME_CONFIG_IDENT_OS_IEEE1275OF)
@@ -507,8 +508,20 @@ extern "C" {
 	
 	/** Has PowerPC 32-bit. */
 	#define SJME_CONFIG_HAS_ARCH_POWERPC_32
-#elif defined(__mips__) || defined(__mips) || defined(__MIPS__)
-	#if defined(SJME_CONFIG_HAS_LP64)
+#elif defined(__mips__) || defined(__mips) || defined(__MIPS__) || \
+	defined(SJME_CONFIG_IDENT_ARCH_MIPS32L) || \
+	defined(SJME_CONFIG_IDENT_ARCH_MIPS32B) || \
+	defined(SJME_CONFIG_IDENT_ARCH_MIPS64L) || \
+	defined(SJME_CONFIG_IDENT_ARCH_MIPS64B) || \
+	defined(SJME_CONFIG_IDENT_ARCH_MIPS32L6) || \
+	defined(SJME_CONFIG_IDENT_ARCH_MIPS32B6) || \
+	defined(SJME_CONFIG_IDENT_ARCH_MIPS64L6) || \
+	defined(SJME_CONFIG_IDENT_ARCH_MIPS64B6)
+	#if defined(SJME_CONFIG_HAS_LP64) || \
+		defined(SJME_CONFIG_IDENT_ARCH_MIPS64L) || \
+		defined(SJME_CONFIG_IDENT_ARCH_MIPS64B) || \
+		defined(SJME_CONFIG_IDENT_ARCH_MIPS64L6) || \
+		defined(SJME_CONFIG_IDENT_ARCH_MIPS64B6)
 		/** Has MIPS. */
 		#define SJME_CONFIG_HAS_ARCH_MIPS 64
 		
@@ -1129,14 +1142,6 @@ extern "C" {
 /** Include code that should work. */
 #define SJME_CONFIG_CODE_SHOULD_WORK 1
 
-#if defined(SJME_CONFIG_HAS_MSVC)
-	#define sjme_asm(x) __asm {x}
-#elif defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
-	#define sjme_asm(x) __asm__ {x}
-#else
-	#define sjme_asm(x) sjme_execInlineAsm(#x)
-#endif
-
 /** Milliseconds as nanos. */
 #define SJME_NANOS_MS(n) INT64_C(n##000000)
 	
@@ -1198,6 +1203,24 @@ extern "C" {
 /* Memory limits. */
 #include "sjme/configMemory.h"
 	
+#if defined(SJME_CONFIG_HAS_GCC) || \
+	defined(SJME_CONFIG_HAS_CLANG)
+	/** Inline assembly is available. */
+	#define SJME_CONFIG_HAS_ASM
+	
+	/** Inline assembly statement. */
+	#define sjme_asm(...) #__VA_ARGS__
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Inline assembly is available. */
+	#define SJME_CONFIG_HAS_ASM
+	
+	/** Inline assembly statement (inner guard). */
+	#define sjme_asmInner__(x) 
+	
+	/** Inline assembly statement. */
+	#define sjme_asm(x) __asm { __VA_ARGS__ }
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */
