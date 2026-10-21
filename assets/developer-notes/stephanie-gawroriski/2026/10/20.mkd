@@ -1,0 +1,68 @@
+# 2026/10/20
+
+## 21:40
+
+Currently... at this point I am good to merge after a year. I did fix all
+of this and I should hold off doing the bigger things lest another year
+happens!
+
+ * [X] I need to fix the runtime email
+ * [X] and the runtime http to https URL
+ * [X] Haiku needs added to system names
+ * [X] Need to also swap 26H1 and 26H2 and put in a comment why
+ * [X] Fix other Windows logic because of this
+ * [X] emulator base cmake needs self hosted flag check to be excluded
+ * [X] The sjme_jni in vmOther to the jnisjme lib?
+ * [X] libretro NAL needs noop getenv
+ * [X] Check SpringCoat/Hosted runs still
+ * [X] Check nested thread tic limit is used for coop threads
+ * [X] Copy all error codes to the Java side
+ * [ ] runTarget free/copy flags
+ * [X] Annotation tag enum int
+ * [X] JDWP command set enum int and more
+ * [X] default dir enum int
+ * [X] See if CLion can be told to ignore unused atomic template warnings
+ * [X] Frame state flags enum int
+ * [X] Nuke frame stacks
+ * [X] Nuke any code between broken code markers?
+ * [X] Thread count type enum int
+ * [X] Put the memory based defined in one spot
+ * [X] Add LFCR and RS line ending types
+ * [X] Actually check if bitline disabled drawning works correctly
+ * [X] Fix limits.h inclusion typo, it is missing an M
+ * [X] enum int nvm common class ID? Was already done!
+ * [ ] Check that all SpringCoat tests pass (Stack overflow test fails
+       because a VM exception is generated rather than a throwable one)
+ * [X] For sjme_nvm class flag parsing use SJME_NVM_ACC_IS()
+ * [X] Ditto for fields
+ * [X] Ditto for methods
+ * [ ] Interface fallback sjme_nvm_vmClass_isAssignableFrom()
+ * [X] Windows CP1252 to ISO-8859-1
+ * [X] Use more than GetOEMCP(), use GetACP() first
+ * [X] Move encoding to NAL
+ * [X] Move locale to NAL
+ * [X] For SWM Profile comparison, MIDP/MEEP after everything (VSCL)
+ * [X] Add blank native for BeOS/Haiku
+ * [X] Check linux build
+ * [ ] Check macOS build (hopefully it works)
+ * [ ] Check Haiku build
+ * [X] Check Windows build
+
+Otherwise, this is for another bunch of branches:
+
+ * [ ] Refactor redo walk, refactor redo cleanup
+ * [ ] Actually implement GDB type renderers
+ * [ ] Later: Write the MLE document
+ * [ ] Finish pretty printing for lists
+ * [ ] sjme_nvm_boot() splicing
+ * [ ] Need to finish Timer refactor
+ * [ ] Need to update route
+ * [ ] JNI function pointer bind can be a static struct
+ * [ ] refactor list like what I did to atomics
+ * [ ] Add fix for toolchains that do not have INT_MIN and INT_MAX
+ * [ ] Do a general CLion/clang issue scan
+ * [ ] libretro should just use boot param directly instead of parsing
+       arguments
+ * [ ] Add at file to missing doxygen headers
+ * [ ] Definitely walk needs a good nuke
+ * [ ] Move long shl, shr, ushr into helpers
