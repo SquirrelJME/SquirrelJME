@@ -391,7 +391,7 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	/* Note that pointers always have the native system length. */
 	/* Objects have an extra integer for the check value. */
 	inTypeLen = (inType == SJME_JAVA_TYPE_ID_OBJECT ?
-		sjme_max(1, SJME_POINTER_BYTES / 4) + 1 :
+		sjme_max(1, sizeof(sjme_nvm_valueObject) / 4) :
 		SJME_TYPEID_SLOTS_JAVA(inType));
 	atStorageLen = (workInfo.storage != NULL ?
 		workInfo.chain.at->width : 0);
