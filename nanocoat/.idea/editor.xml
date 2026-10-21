@@ -29,8 +29,8 @@
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppConstValueFunctionReturnType/@EntryIndexedValue" value="SUGGESTION" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppCoroutineCallResolveError/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFAArrayIndexOutOfBounds/@EntryIndexedValue" value="WARNING" type="string" />
-    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFAConstantConditions/@EntryIndexedValue" value="WARNING" type="string" />
-    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFAConstantFunctionResult/@EntryIndexedValue" value="WARNING" type="string" />
+    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFAConstantConditions/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
+    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFAConstantFunctionResult/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFAConstantParameter/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFADeletedPointer/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFAEndlessLoop/@EntryIndexedValue" value="WARNING" type="string" />
@@ -43,7 +43,7 @@
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFANotInitializedField/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFANullDereference/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFATimeOver/@EntryIndexedValue" value="HINT" type="string" />
-    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFAUnreachableCode/@EntryIndexedValue" value="WARNING" type="string" />
+    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFAUnreachableCode/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFAUnreachableFunctionCall/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFAUnreadVariable/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppDFAUnusedValue/@EntryIndexedValue" value="WARNING" type="string" />
@@ -140,10 +140,10 @@
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppNotAllPathsReturnValue/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppObjectMemberMightNotBeInitialized/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppOutParameterMustBeWritten/@EntryIndexedValue" value="WARNING" type="string" />
-    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppParameterMayBeConst/@EntryIndexedValue" value="HINT" type="string" />
-    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppParameterMayBeConstPtrOrRef/@EntryIndexedValue" value="SUGGESTION" type="string" />
+    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppParameterMayBeConst/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
+    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppParameterMayBeConstPtrOrRef/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppParameterNamesMismatch/@EntryIndexedValue" value="HINT" type="string" />
-    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppParameterNeverUsed/@EntryIndexedValue" value="HINT" type="string" />
+    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppParameterNeverUsed/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppPassValueParameterByConstReference/@EntryIndexedValue" value="SUGGESTION" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppPointerConversionDropsQualifiers/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppPointerToIntegralConversion/@EntryIndexedValue" value="WARNING" type="string" />
@@ -172,7 +172,7 @@
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantDereferencingAndTakingAddress/@EntryIndexedValue" value="SUGGESTION" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantElaboratedTypeSpecifier/@EntryIndexedValue" value="HINT" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantElseKeyword/@EntryIndexedValue" value="HINT" type="string" />
-    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantElseKeywordInsideCompoundStatement/@EntryIndexedValue" value="HINT" type="string" />
+    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantElseKeywordInsideCompoundStatement/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantEmptyDeclaration/@EntryIndexedValue" value="HINT" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantEmptyStatement/@EntryIndexedValue" value="HINT" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantExportKeyword/@EntryIndexedValue" value="WARNING" type="string" />
@@ -181,7 +181,7 @@
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantLambdaParameterList/@EntryIndexedValue" value="HINT" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantMemberInitializer/@EntryIndexedValue" value="SUGGESTION" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantNamespaceDefinition/@EntryIndexedValue" value="SUGGESTION" type="string" />
-    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantParentheses/@EntryIndexedValue" value="HINT" type="string" />
+    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantParentheses/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantQualifier/@EntryIndexedValue" value="HINT" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantQualifierADL/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantStaticSpecifierOnMemberAllocationFunction/@EntryIndexedValue" value="HINT" type="string" />
@@ -193,7 +193,7 @@
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRedundantZeroInitializerInAggregateInitialization/@EntryIndexedValue" value="SUGGESTION" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppReinterpretCastFromVoidPtr/@EntryIndexedValue" value="SUGGESTION" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppRemoveRedundantBraces/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
-    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppReplaceMemsetWithZeroInitialization/@EntryIndexedValue" value="SUGGESTION" type="string" />
+    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppReplaceMemsetWithZeroInitialization/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppReplaceTieWithStructuredBinding/@EntryIndexedValue" value="SUGGESTION" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppReturnNoValueInNonVoidFunction/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppSmartPointerVsMakeFunction/@EntryIndexedValue" value="SUGGESTION" type="string" />
@@ -208,7 +208,7 @@
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppTemplateParameterNeverUsed/@EntryIndexedValue" value="HINT" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppTemplateParameterShadowing/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppThrowExpressionCanBeReplacedWithRethrow/@EntryIndexedValue" value="WARNING" type="string" />
-    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppTooWideScope/@EntryIndexedValue" value="SUGGESTION" type="string" />
+    <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppTooWideScope/@EntryIndexedValue" value="DO_NOT_SHOW" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppTooWideScopeInitStatement/@EntryIndexedValue" value="HINT" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppTypeAliasNeverUsed/@EntryIndexedValue" value="WARNING" type="string" />
     <option name="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppUninitializedDependentBaseClass/@EntryIndexedValue" value="WARNING" type="string" />
