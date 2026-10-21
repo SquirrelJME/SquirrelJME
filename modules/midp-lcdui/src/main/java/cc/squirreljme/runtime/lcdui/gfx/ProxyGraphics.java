@@ -9,13 +9,17 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
+import cc.squirreljme.jvm.mle.constants.TransferRegionMode;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
+import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * This is a proxy version of {@link Graphics} where each instance can
@@ -613,6 +617,17 @@ public final class ProxyGraphics
 	{
 		return this._transY;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/10/20
+	 */
+	public PencilBracket pencil()
+		throws IllegalStateException
+	{
+		// Get the pencil of the target graphics
+		return this.__extra().pencil();
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -825,6 +840,32 @@ public final class ProxyGraphics
 	public ProxyGraphicsTarget target()
 	{
 		return this.target;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/10/20
+	 */
+	public void transferRegion(
+		@NotNull ExtraGraphics __srcPencil,
+		boolean __alpha,
+		int __xSrc, int __ySrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wSrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hSrc,
+		int __trans,
+		int __xDest, int __yDest,
+		int __anchor,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wDest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hDest,
+		@MagicConstant(flagsFromClass = TransferRegionMode.class) int __mode)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__srcPencil == null)
+			throw new NullPointerException("NARG");
+		
+		this.__extra().transferRegion(__srcPencil, __alpha, __xSrc, __ySrc,
+			__wSrc, __hSrc, __trans, __xDest, __yDest, __anchor,
+			__wDest, __hDest, __mode);
 	}
 
 	/**

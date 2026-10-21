@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.PencilShelf;
 import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
+import cc.squirreljme.jvm.mle.constants.TransferRegionMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.jvm.mle.scritchui.brackets.ScritchPencilBracket;
@@ -26,7 +27,9 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
 import javax.microedition.lcdui.game.Sprite;
+import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * This delegates drawing operations to the hardware graphics layer.
@@ -1131,11 +1134,7 @@ public final class PencilGraphics
 	}
 	
 	/**
-	 * Returns the {@link PencilBracket} that this graphics is currently using
-	 * so that it may be directly used with {@link PencilShelf}.
-	 *
-	 * @return The direct {@link PencilBracket}.
-	 * @throws IllegalStateException If this graphics instance is closed.
+	 * {@inheritDoc}
 	 * @since 2025/11/25
 	 */
 	public PencilBracket pencil()
@@ -1144,7 +1143,7 @@ public final class PencilGraphics
 		synchronized (this)
 		{
 			if (this._isClosed)
-				throw new IllegalStateException();
+				throw new IllegalStateException("CLOS");
 			
 			return this.hardware;
 		}
@@ -1458,6 +1457,46 @@ public final class PencilGraphics
 	public int surfaceWidth()
 	{
 		return this.surfaceW;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2026/10/20
+	 */
+	public void transferRegion(
+		@NotNull ExtraGraphics __srcPencil,
+		boolean __alpha,
+		int __xSrc, int __ySrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wSrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hSrc,
+		int __trans,
+		int __xDest, int __yDest,
+		int __anchor,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wDest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hDest,
+		@MagicConstant(flagsFromClass = TransferRegionMode.class) int __mode)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__srcPencil == null)
+			throw new NullPointerException("NARG");
+		
+		// Do nothing if closed
+		if (this._isClosed)
+			return;
+		
+		try
+		{
+			PencilShelf.hardwareTransferRegion(this.hardware,
+				__srcPencil.pencil(), __alpha, __xSrc, __ySrc,
+				__wSrc, __hSrc, __trans, __xDest, __yDest, __anchor,
+				__wDest, __hDest, __mode);
+		}
+		
+		// Unwrap any potential errors.
+		catch (MLECallError e)
+		{
+			throw e.throwDistinct();
+		}
 	}
 
 	/**

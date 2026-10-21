@@ -9,8 +9,10 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.jvm.mle.brackets.PencilBracket;
 import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
+import cc.squirreljme.jvm.mle.constants.TransferRegionMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -199,6 +201,17 @@ public interface ExtraGraphics
 		throws IllegalArgumentException, NullPointerException;
 	
 	/**
+	 * Returns the {@link PencilBracket} that this graphics is currently using
+	 * so that it may be directly used with {@link PencilShelf}.
+	 *
+	 * @return The direct {@link PencilBracket}.
+	 * @throws IllegalStateException If this graphics instance is closed.
+	 * @since 2025/11/25
+	 */
+	PencilBracket pencil()
+		throws IllegalStateException;
+	
+	/**
 	 * Sets the alpha color to draw with along with the color to use.
 	 *
 	 * @param __argb The color in the form of {@code 0xAARRGGBB}.
@@ -250,4 +263,52 @@ public interface ExtraGraphics
 	 * @since 2025/12/21
 	 */
 	int surfaceHeight();
+	
+	/**
+	 * Transfers pixel data from one pencil to another and draws it onto the
+	 * current pencil, this is a helper function to reduce the need to load
+	 * pixel data from another pencil and then draw it onto another.
+	 * 
+	 * Note that both pencils must be under the same ScritchUI state as the
+	 * source pencil does need to be locked accordingly.
+	 * 
+	 * Reading from the source pencil follows the same semantics as the
+	 * functions {@link Graphics#copyArea(int, int, int, int, int, int, int)}
+	 * and {@link ExtraGraphics#getPfRegion(int, Object, int, int, boolean,
+	 * int, int, int, int, int)}, if the source
+	 * pencil does not support reading pixel data then what is drawn onto the
+	 * destination is undefined.
+	 *
+	 * @param __srcPencil The pencil to copy from, this can be the same
+	 * as {@code __destPencil} to copy to the same graphics.
+	 * @param __alpha Drawing with the alpha channel?
+	 * @param __xSrc The source X position.
+	 * @param __ySrc The source Y position.
+	 * @param __wSrc The width of the source region.
+	 * @param __hSrc The height of the source region.
+	 * @param __trans Sprite translation and/or rotation,
+	 * see {@code javax.microedition.lcdui.game.Sprite}.
+	 * @param __xDest The destination X position, is translated.
+	 * @param __yDest The destination Y position, is translated.
+	 * @param __anchor The anchor point.
+	 * @param __wDest The destination width.
+	 * @param __hDest The destination height.
+	 * @param __mode The region transfer mode.
+	 * @throws IllegalArgumentException If input parameters are not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2026/10/20
+	 */
+	void transferRegion(
+		@NotNull ExtraGraphics __srcPencil,
+		boolean __alpha,
+		int __xSrc, int __ySrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wSrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hSrc,
+		int __trans,
+		int __xDest, int __yDest,
+		int __anchor,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wDest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hDest,
+		@MagicConstant(flagsFromClass = TransferRegionMode.class) int __mode)
+		throws IllegalArgumentException, NullPointerException;
 }

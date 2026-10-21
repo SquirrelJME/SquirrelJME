@@ -14,6 +14,7 @@ import cc.squirreljme.jvm.mle.brackets.PencilFontBracket;
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.jvm.mle.constants.NativeImageLoadType;
 import cc.squirreljme.jvm.mle.constants.PencilBlendingMode;
+import cc.squirreljme.jvm.mle.constants.TransferRegionMode;
 import cc.squirreljme.jvm.mle.constants.UIPixelFormat;
 import cc.squirreljme.jvm.mle.exceptions.MLECallError;
 import cc.squirreljme.runtime.cldc.annotation.Api;
@@ -54,6 +55,13 @@ public final class PencilShelf
 	 * If the source and destination overlap then it must be as if they did not
 	 * overlap at all, this means that the destination will be an exact copy of
 	 * the source.
+	 * 
+	 * For more advanced and complicated graphics drawing operations, involving
+	 * those which need to copy a region from one pencil to another, along
+	 * with other alpha composite operations should
+	 * use {@link #hardwareTransferRegion(PencilBracket, PencilBracket,
+	 * boolean, int, int, int, int, int, int, int, int, int, int, int)}
+	 * instead of this one.
 	 *
 	 * @param __g The hardware graphics to draw with.
 	 * @param __sx The source X position, will be translated.
@@ -65,6 +73,8 @@ public final class PencilShelf
 	 * @param __anchor The anchor point of the destination.
 	 * @throws MLECallError If the call is not valid or the native graphics
 	 * does not support this operation.
+	 * @see #hardwareTransferRegion(PencilBracket, PencilBracket, boolean, int,
+	 * int, int, int, int, int, int, int, int, int, int)
 	 * @since 2023/02/19
 	 */
 	@SquirrelJMENativeApi(min = "0.4.0")
@@ -683,6 +693,56 @@ public final class PencilShelf
 		@NotNull PencilBracket __g,
 		int __style)
 		throws MLECallError;
+	
+	/**
+	 * Transfers pixel data from one pencil to another and draws it onto the
+	 * current pencil, this is a helper function to reduce the need to load
+	 * pixel data from another pencil and then draw it onto another.
+	 * 
+	 * Note that both pencils must be under the same ScritchUI state as the
+	 * source pencil does need to be locked accordingly.
+	 * 
+	 * Reading from the source pencil follows the same semantics as the
+	 * functions {@link #hardwareCopyArea(PencilBracket, int, int, int, int, 
+	 * int, int, int)} and {@link #hardwareGetRegion(PencilBracket, int, 
+	 * Object, int, int, boolean, int, int, int, int, int)} , if the source
+	 * pencil does not support reading pixel data then what is drawn onto the
+	 * destination is undefined.
+	 *
+	 * @param __destPencil The hardware graphics to draw onto.
+	 * @param __srcPencil The pencil to copy from, this can be the same
+	 * as {@code __destPencil} to copy to the same graphics.
+	 * @param __alpha Drawing with the alpha channel?
+	 * @param __xSrc The source X position.
+	 * @param __ySrc The source Y position.
+	 * @param __wSrc The width of the source region.
+	 * @param __hSrc The height of the source region.
+	 * @param __trans Sprite translation and/or rotation,
+	 * see {@code javax.microedition.lcdui.game.Sprite}.
+	 * @param __xDest The destination X position, is translated.
+	 * @param __yDest The destination Y position, is translated.
+	 * @param __anchor The anchor point.
+	 * @param __wDest The destination width.
+	 * @param __hDest The destination height.
+	 * @param __mode The region transfer mode.
+	 * @throws MLECallError On null arguments, or if any input parameter is
+	 * not correct.
+	 * @since 2026/10/20
+	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
+	public static native void hardwareTransferRegion(
+		@NotNull PencilBracket __destPencil,
+		@NotNull PencilBracket __srcPencil,
+		boolean __alpha,
+		int __xSrc, int __ySrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wSrc,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hSrc,
+		int __trans,
+		int __xDest, int __yDest,
+		int __anchor,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __wDest,
+		@Range(from = 0, to = Integer.MAX_VALUE) int __hDest,
+		@MagicConstant(flagsFromClass = TransferRegionMode.class) int __mode);
 	
 	/**
 	 * Translates drawing operations.

@@ -1845,12 +1845,9 @@ typedef sjme_errorCode (*sjme_scritchui_pencilCloseFunc)(
  * @param anchor The anchor point of the destination.
  * @return An error if the call is not valid or the native graphics
  * does not support this operation.
- * @deprecated Use @link sjme_scritchui_pencilTransferRegionFunc @endlink 
- * with direct copy mapping.
  * @since 2024/05/01
  */
-typedef sjme_errorCode sjme_attrDeprecated
-	(*sjme_scritchui_pencilCopyAreaFunc)(
+typedef sjme_errorCode (*sjme_scritchui_pencilCopyAreaFunc)(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,

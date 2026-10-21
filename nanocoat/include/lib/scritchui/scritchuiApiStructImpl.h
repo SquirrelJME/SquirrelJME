@@ -365,7 +365,7 @@ typedef struct sjme_scritchui_pencilImplFunctions
 	SJME_SCRITCHUI_QUICK_PENCIL(Close, close);
 	
 	/** @c CopyArea . */
-	sjme_attrDeprecated SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
+	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 	
 	/** @c DrawHoriz , direct source. */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawHoriz, drawHorizSrc);

@@ -841,6 +841,36 @@ MLE_FUNC_PROTO(void, hardwareSetStrokeStyle, jobject g, jint style)
 		sjme_jni_throwMLECallError(env, error);
 }
 
+#define MLE_DESC_hardwareTransferRegion DESC_METHOD(DESC_VOID, \
+	DESC_PENCIL DESC_PENCIL DESC_BOOLEAN DESC_INT DESC_INT DESC_INT \
+	DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT DESC_INT)
+MLE_FUNC_PROTO(void, hardwareTransferRegion, jobject destG,
+	jobject srcG, jboolean alpha, jint xSrc, jint ySrc, jint wSrc, jint hSrc,
+	jint trans, jint xDest, jint yDest, jint anchor, jint wDest, jint hDest,
+	jint mode)
+{
+	sjme_errorCode error;
+	sjme_scritchui_pencil destP;
+	sjme_scritchui_pencil srcP;
+
+	/* Recover. */
+	destP = sjme_jni_recoverPencil(env, destG);
+	srcP = sjme_jni_recoverPencil(env, srcG);
+	if (destG == NULL || destP == NULL ||
+		srcG == NULL || srcP == NULL)
+	{
+		sjme_jni_throwMLECallError(env, SJME_ERROR_NULL_ARGUMENTS);
+		return;
+	}
+
+	/* Forward. */
+	if (sjme_error_is(error = destP->api->transferRegion(
+		destP, srcP,
+		alpha, xSrc, ySrc, wSrc, hSrc, trans, xDest, yDest, anchor, wDest,
+		hDest, mode)))
+		sjme_jni_throwMLECallError(env, error);
+}
+
 #define MLE_DESC_hardwareTranslate DESC_METHOD(DESC_VOID,  \
 	DESC_PENCIL DESC_INT DESC_INT )
 MLE_FUNC_PROTO(void, hardwareTranslate, jobject g, jint x, jint y)
@@ -857,7 +887,7 @@ MLE_FUNC_PROTO(void, hardwareTranslate, jobject g, jint x, jint y)
 	}
 
 	if (sjme_error_is(error = p->api->translate(p, x, y)))
-		sjme_jni_throwMLECallError(env, error);\
+		sjme_jni_throwMLECallError(env, error);
 }
 
 #define MLE_DESC_hardwareTranslateXY DESC_METHOD(DESC_INT,  \
@@ -918,6 +948,7 @@ MLE_LIST_BEGIN()
 	MLE_LIST_ITEM(hardwareSetDefaultFont),
 	MLE_LIST_ITEM(hardwareSetFont),
 	MLE_LIST_ITEM(hardwareSetStrokeStyle),
+	MLE_LIST_ITEM(hardwareTransferRegion),
 	MLE_LIST_ITEM(hardwareTranslate),
 	MLE_LIST_ITEM(hardwareTranslateXY),
 	MLE_LIST_ITEM(nativeImageLoadRGBA),

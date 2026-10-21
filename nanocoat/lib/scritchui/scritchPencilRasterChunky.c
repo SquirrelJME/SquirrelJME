@@ -70,7 +70,7 @@ static void sjme_scritchpen_core_clipRightBottom(
 	}
 }
 
-sjme_errorCode sjme_attrDeprecated sjme_scritchpen_core_copyArea(
+sjme_errorCode sjme_scritchpen_core_copyArea(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
 	sjme_attrInValue sjme_jint sx,
 	sjme_attrInValue sjme_jint sy,
@@ -84,6 +84,10 @@ sjme_errorCode sjme_attrDeprecated sjme_scritchpen_core_copyArea(
 	sjme_jint scanlineBytes, copiedBytes;
 	sjme_pointer copiedArea, areaP;
 	sjme_jint y, zy;
+	
+	/* copyArea() was previously deprecated, but it is going to be kept */
+	/* around due to its simple usage. For anything that is far more */
+	/* complex, transferRegion() should be used instead. */
 	
 	if (g == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;

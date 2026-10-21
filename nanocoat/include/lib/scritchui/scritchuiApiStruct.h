@@ -358,7 +358,7 @@ typedef struct sjme_scritchui_pencilFunctions
 	SJME_SCRITCHUI_QUICK_PENCIL(Close, close);
 	
 	/** @c CopyArea . */
-	sjme_attrDeprecated SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
+	SJME_SCRITCHUI_QUICK_PENCIL(CopyArea, copyArea);
 
 	/** @c DrawArc . */
 	SJME_SCRITCHUI_QUICK_PENCIL(DrawArc, drawArc);
