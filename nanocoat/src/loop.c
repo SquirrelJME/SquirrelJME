@@ -11,6 +11,7 @@
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/loop.h"
+#include "sjme/nvm/jdwp.h"
 #include "sjme/debug.h"
 
 static sjme_thread_result sjme_attrThreadCall sjme_nvm_loop_tickCrash(
@@ -59,13 +60,112 @@ sjme_errorCode sjme_nvm_loop_main(
 
 	/* Success! */
 	if (exitCode != NULL)
-		*exitCode = sjme_atomic_sjme_jint_get(&inState->lastExitCode);
+		*exitCode = sjme_atomic_g(sjme_jint, &inState->lastExitCode);
 	return SJME_ERROR_NONE;
 	
 fail_loop:
 	if (exitCode != NULL)
-		*exitCode = sjme_atomic_sjme_jint_get(&inState->lastExitCode);
+		*exitCode = sjme_atomic_g(sjme_jint, &inState->lastExitCode);
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_loop_tickExplicit(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrOutNullable sjme_jvalueTyped* argRCopy)
+{
+	sjme_errorCode error;
+	sjme_jboolean vmDead;
+	sjme_jint minFrameLevel, ticLimit;
+	sjme_nvm inState;
+
+	if (inThread == NULL || inFrame == NULL)
+		return SJME_ERROR_NONE;
+
+	inState = SJME_T_S(inThread);
+	if (inState == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+
+	if (SJME_F_T(inFrame) != inThread)
+		return SJME_ERROR_INVALID_ARGUMENT;
+
+	/* Get the frame level now, because if the frame is GCed or popped then */
+	/* we cannot read it while it runs. */
+	minFrameLevel = inFrame->index;
+
+	/* If this is not an explicit thread, it is possible we may be able to */
+	/* do nested thread scheduling to handle this call cooperatively. */
+	/* This is only done in these specific cases, otherwise the VM destroys */
+	/* itself or enters some kind of deadlock. */
+	/* This is generally used for callback threads from supporting libraries */
+	/* that have additional threads that are outside the VM thread logic. */
+	if ((inThread->flags & SJME_NVM_THREAD_IS_EXPLICIT) == 0)
+	{
+		/* The current thread model is cooperate or pre-emptive. */
+		if (inState->threadModel == SJME_NVM_MLE_THREAD_SINGLE_COOP ||
+			inState->threadModel == SJME_NVM_MLE_THREAD_SINGLE_PREEMPT)
+		{
+			/* If this is not the current thread, then we are in some other */
+			/* thread... only bad stuff will happen here. */
+			if (!sjme_thread_equal(sjme_thread_currentR(),
+				sjme_atomic_g(sjme_thread, &inThread->nativeThread)))
+				return SJME_ERROR_INVALID_EXPLICIT_NEST;
+
+			/* We cannot just keep running forever, otherwise this will just */
+			/* never exit until some unspecified condition just happens. */
+			/* Thus, there needs to be a tic limit. */
+			if (inState->globals.ticLimit > 0)
+				ticLimit = inState->globals.ticLimit;
+			else
+				ticLimit = SJME_CONFIG_NESTED_THREAD_TIC_LIMIT;
+
+			/* We just keep running every thread and scheduling until the */
+			/* thread we actually care about falls below the frame level. */
+			vmDead = SJME_JNI_FALSE;
+			while (inThread->numFrames >= minFrameLevel && !vmDead)
+			{
+				if (sjme_error_is(error = sjme_nvm_loop_tick(inState,
+						ticLimit, NULL, &vmDead)))
+					return sjme_error_default(error);
+			}
+
+			/* Always capture the return value at the end, if desired. */
+			goto skip_captureReturn;
+		}
+	}
+
+	/* Run the thread explicitly. */
+	vmDead = SJME_JNI_FALSE;
+	while (!vmDead)
+	{
+		/* Tick this thread as much as possible. */
+		if (sjme_error_is(error = sjme_nvm_loop_tickThread(inThread,
+			-1, minFrameLevel, NULL, &vmDead)))
+		{
+			/* Any other error. */
+			if (error != SJME_ERROR_MINIMUM_FRAME_LEVEL)
+				return sjme_error_default(error);
+
+			/* Minimum frame level means we must stop, as this could */
+			/* actually be a nested loop execution, in which case things */
+			/* will go very wrong if we start executing a higher level. */
+			goto skip_captureReturn;
+		}
+
+		/* Yield to let other threads run. */
+		sjme_thread_yield();
+	}
+
+skip_captureReturn:
+	/* Capture the return value? */
+	if (argRCopy != NULL)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_loop_tick(
@@ -85,6 +185,10 @@ sjme_errorCode sjme_nvm_loop_tick(
 	if (maxTics < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
+	/* Use the default tic limit? That is, do not run forever? */
+	if (maxTics == -1 && inState->globals.ticLimit > 0)
+		maxTics = inState->globals.ticLimit;
+
 	/* Calculate initial remaining tics. */
 	remaining = (maxTics < 0 ? -1 : maxTics);
 
@@ -96,7 +200,7 @@ sjme_errorCode sjme_nvm_loop_tick(
 		terminated = SJME_JNI_FALSE;
 		if (sjme_error_is(error = sjme_nvm_task_taskScheduleNext(
 			inState, &runThread, &terminated)))
-			return sjme_error_default(error);
+			return sjme_error_vmError(inState, error);
 
 		/* Terminated? */
 		if (terminated)
@@ -105,14 +209,28 @@ sjme_errorCode sjme_nvm_loop_tick(
 		/* Nothing to run? Give up CPU slice and re-run. */
 		if (runThread == NULL)
 		{
-			sjme_thread_yield();
+			/* Yield instead of a longer sleep delay? */
+			if (++inState->schedule->yieldTimer < 
+				inState->schedule->yieldMax)
+				sjme_thread_yield();
+			
+			/* Sleep instead of yield. */
+			else
+				sjme_thread_sleep(inState->schedule->nothingMillis,
+					inState->schedule->nothingNanos);
+			
+			/* Run again. */
 			continue;
 		}
+		
+		/* Reset the yield timer. */
+		inState->schedule->yieldTimer = 0;
 
 		/* Otherwise execute the single thread. */
 		if (sjme_error_is(error = sjme_nvm_loop_tickThread(
-			runThread, remaining, &remaining, isTerminated)))
-			return sjme_error_default(error);
+			runThread, remaining, -1,
+			&remaining, isTerminated)))
+			return sjme_error_vmError(runThread, error);
 	}
 
 	/* Success! */
@@ -122,11 +240,12 @@ sjme_errorCode sjme_nvm_loop_tick(
 sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrInValue sjme_attrInNegativeOnePositive sjme_jint maxTics,
+	sjme_attrInValue sjme_attrInNegativeOnePositive sjme_jint minFrameLevel,
 	sjme_attrOutNullable sjme_jint* ticRemainder,
 	sjme_attrOutNullable sjme_jboolean* isTerminated)
 {
-	sjme_errorCode error;
-	sjme_jint frameIndex, remaining;
+	sjme_errorCode error, success;
+	sjme_jint frameIndex, remaining, tossedLevel;
 	sjme_nvm_frame currentFrame;
 	sjme_nvm_class_codeInfo currentCode;
 	sjme_byteCode* rawCode;
@@ -140,11 +259,13 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_jvalueTyped push;
 	sjme_nvm_task inTask;
 	sjme_nvm inState;
+	sjme_jdwp jdwp;
+	sjme_nvm_frame_gcCommit commit;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (maxTics < -1)
+	if (maxTics < -1 || minFrameLevel < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Set crash context thread. */
@@ -153,20 +274,32 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	/* The remaining execution count is always at the max tic count. */
 	remaining = maxTics;
 
+	/* The error to emit on success, in the event there is another condition */
+	/* such as the frame level being hit. */
+	success = SJME_ERROR_NONE;
+
 	/* Initialized to make the linter not noisy. */
 	currentFrame = NULL;
 	currentCode = NULL;
 	rawCode = NULL;
+	tossed = NULL;
+	tossedLevel = -1;
 	
 	/* Continuous code execution. */
 	inTask = SJME_T_K(inThread);
 	inState = SJME_T_S(inThread);
 	frameIndex = -2;
+	jdwp = inState->jdwp;
 	memset(&pcNew, 0, sizeof(pcNew));
 	while sjme_noLint(remaining == -1 || remaining > 0)
 	{
+		/* Is there a debugger attached? If so we should poll it. */
+		if (jdwp != NULL)
+			if (sjme_error_is(error = sjme_jdwp_sessionPoll(jdwp)))
+				return sjme_error_default(error);
+			
 		/* If this task is terminating, unwind everything. */
-		if (sjme_atomic_sjme_jint_get(&inTask->terminate) !=
+		if (sjme_atomic_g(sjme_jint, &inTask->terminate) !=
 			SJME_NVM_TERMINATE_NOT)
 		{
 			/* Leave all thread frames. */
@@ -175,7 +308,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 					goto fail_any;
 
 			/* All threads have been cleaned up? */
-			if ((sjme_atomic_sjme_jint_getAdd(
+			if ((sjme_atomic_ga(sjme_jint, 
 				&inTask->numThreads[SJME_NVM_THREAD_COUNT_AWAIT_CLEANUP],
 				-1) - 1) <= 0)
 			{
@@ -184,13 +317,13 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 					*isTerminated = SJME_JNI_TRUE;
 
 				/* Flag task as cleaned up. */
-				sjme_atomic_sjme_jint_compareSet(&inTask->terminate,
+				sjme_atomic_cs(sjme_jint, &inTask->terminate,
 					SJME_NVM_TERMINATE_CLEANUP,
 					SJME_NVM_TERMINATE_COMPLETE);
 
 				/* Reduce the running task count. */
-				/* This might be the final thread to reduce this to zero. */
-				if ((sjme_atomic_sjme_jint_getAdd(&inState->numRunningTasks,
+				/* This might be the final thread so reduce this to zero. */
+				if ((sjme_atomic_ga(sjme_jint, &inState->numRunningTasks,
 					-1) - 1) <= 0)
 				{
 					if (isTerminated)
@@ -203,7 +336,8 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		}
 		
 		/* Thread has entered a sleeping state? */
-		if (inThread->status != SJME_NVM_THREAD_STATUS_RUNNING)
+		if (sjme_atomic_g(sjme_nvm_thread_statusType,
+			&inThread->status) != SJME_NVM_THREAD_STATUS_RUNNING)
 			break;
 		
 		/* Tick down. */
@@ -221,6 +355,25 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 			currentFrame = inThread->frames->elements[frameIndex];
 			currentCode = currentFrame->inCode;
 			rawCode = currentCode->rawCode;
+		}
+
+		/* Thread is below the desired thread level? */
+		if (minFrameLevel >= 0 && (currentFrame == NULL ||
+			currentFrame->index < minFrameLevel))
+		{
+			/* Successful, but we still want the number of remaining tics */
+			/* as that could be used for counting/throttling. */
+			success = SJME_ERROR_MINIMUM_FRAME_LEVEL;
+			goto skip_done;
+		}
+
+		/* If the frame is waiting for a condition to be met, then */
+		/* everything else must not be done until that is actually met. */
+		/* This will force sleep until such is met. */
+		if (sjme_noLint(currentFrame)->condition.function != NULL)
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
 		}
 
 		/* Read instruction vector. */
@@ -247,7 +400,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		}
 
 		/* Which LUT table to use? */
-		lut = sjme_nvm_byteCode_lutTable[iv];
+		lut = sjme_nvm_byteCodeLutTable(iv);
 		if (lut == NULL)
 		{
 			error = SJME_ERROR_INVALID_INSTRUCTION;
@@ -267,34 +420,46 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		currentFrame->lastIv = iv;
 
 		/* Do not handle the instruction if there is an exception waiting. */
-		tossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);
-		if (tossed != NULL)
+		/* But as long as we are still below the toss level. */
+		tossed = sjme_atomic_g(sjme_jobject, &inThread->tossed);
+		tossedLevel = sjme_atomic_g(sjme_jint, &inThread->tossedLevel);
+		if (tossed != NULL && (tossedLevel < 0 ||
+			inThread->numFrames < tossedLevel))
 			goto skip_thrown;
 
-#if defined(SJME_CONFIG_DEBUG)
+#if defined(SJME_CONFIG_DEBUG_BYTECODES)
 		/* Debug. */
-		sjme_messageB("%2d@%3d: %s", 
-			frameIndex, currentFrame->pc, sjme_nvm_byteCode_names[iv]);
+		sjme_messageB("%2d@%3d: %s (%s.%s %s)", 
+			frameIndex, currentFrame->pc, sjme_nvm_byteCode_names[iv],
+			sjme_charSeq_tempUtf(currentFrame->inClass->fieldName),
+			sjme_charSeq_tempUtf(currentFrame->inMethod->member.name->seq),
+			sjme_charSeq_tempUtf(currentFrame->inMethod->member.type->seq));
 #endif
 
 		/* Execute handler. */
 		memmove(&pcNew, &pcDefault, sizeof(pcNew));
 		if (sjme_error_is(error = lutFunc(currentFrame, iv, ev, &pcNew)))
 			goto fail_any;
+		
+		/* Has an exception been thrown? */
+		tossed = sjme_atomic_g(sjme_jobject, &inThread->tossed);
+		tossedLevel = sjme_atomic_g(sjme_jint, &inThread->tossedLevel);
 
-		/* If recycling, do not actually make any progress, just re-run. */
+		/* If recycling, we can skip handling exceptions here. */
 		if (pcNew.type == SJME_NVM_BYTECODE_PC_RECYCLE)
 			continue;
 		
-		/* Every instruction is required to fully GC commit! */
-		if (currentFrame->commit != NULL)
-			return sjme_error_vmError(inThread, SJME_ERROR_ACTIVE_GC_COMMIT);
-
-		/* Has an exception been thrown? */
-		tossed = sjme_atomic_sjme_jobject_get(&inThread->tossed);
 skip_thrown:
-		if (tossed != NULL)
+		/* Are we handling an exception, and we are running below any */
+		/* implicit initialization frames? */
+		if (tossed != NULL && (tossedLevel >= 0 &&
+			inThread->numFrames <= tossedLevel))
 		{
+			/* We are finished running the constructor, so set the toss */
+			/* level to a very high amount so any sub-calls are not done */
+			/* freely. */
+			sjme_atomic_s(sjme_jint, &inThread->tossedLevel, INT32_MAX);
+			
 			/* Find exception handler to jump to. */
 			handled = SJME_JNI_FALSE;
 			if (sjme_error_is(error = sjme_nvm_task_frameHandler(
@@ -305,13 +470,17 @@ skip_thrown:
 			if (handled)
 			{
 				/* No longer handle the exception. */
-				if (!sjme_atomic_sjme_jobject_compareSet(&inThread->tossed,
+				if (!sjme_atomic_cs(sjme_jobject, &inThread->tossed,
 					tossed, NULL))
 					goto fail_any;
 
+				/* Clear the tossed level. */
+				sjme_atomic_s(sjme_jint, &inThread->tossedLevel, -1);
+
 				/* Clear the stack. */
+				memset(&commit, 0, sizeof(commit));
 				if (sjme_error_is(error = sjme_nvm_task_frameStackClear(
-					currentFrame)))
+					currentFrame, &commit)))
 					goto fail_any;
 
 				/* Push the exception to the stack. */
@@ -319,10 +488,53 @@ skip_thrown:
 				push.t = SJME_JAVA_TYPE_ID_OBJECT;
 				push.v.l = tossed;
 				if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
-					currentFrame, &push)))
+					currentFrame, &commit, &push)))
 					goto fail_any;
+
+				/* Lower the count as it is now on the stack and now gone */
+				/* from tossed. */
+				if (sjme_error_is(error = sjme_nvm_instance_countDown(tossed)))
+					goto fail_any;
+				
+				/* Commit GC. */
+				if (sjme_error_is(error = sjme_nvm_task_frameCommit(
+					currentFrame, &commit)))
+					return sjme_error_vmError(currentFrame, error);
+			}
+
+			/* If not handled, pop the frame so we put the exception onto */
+			/* the caller's stack. */
+			else
+			{
+				/* If there is an uncaught exception in a static initializer */
+				/* then we need to set an actual linkage error here. */
+				if (SJME_NVM_FRAME_STATE_IS(currentFrame->flags, INIT_STATIC))
+				{
+					/* Mark the class as bad. */
+					sjme_atomic_cs(sjme_jint, 
+						&currentFrame->inClass->error,
+						SJME_ERROR_NONE,
+						sjme_error_default(SJME_ERROR_LINKAGE_ERROR));
+					
+					/* Emit the exception to the caller. */
+					if (sjme_error_is(error = sjme_nvm_task_threadEmit(
+						inThread,
+						SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR,
+						SJME_AS_JTHROWABLE(tossed),
+						"Uncaught in <clinit>.")))
+						goto fail_any;
+				}
+				
+				/* Leave the frame. */
+				pcNew.popFrame = SJME_JNI_TRUE;
 			}
 		}
+		
+		/* If recycling, do not commit to actually making progress. This is */
+		/* here in the event we entered a default constructor for an */
+		/* implicit exception, and it has to initialize a class. */
+		if (pcNew.type == SJME_NVM_BYTECODE_PC_RECYCLE)
+			continue;
 
 		/* Popping the current frame? */
 		if (pcNew.popFrame)
@@ -369,7 +581,7 @@ skip_done:
 	/* Give remaining, if requested. */
 	if (ticRemainder != NULL)
 		*ticRemainder = remaining;
-	return SJME_ERROR_NONE;
+	return success;
 	
 fail_any:
 	/* Clear crash context. */

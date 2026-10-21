@@ -10,6 +10,7 @@
 /**
  * Slow bytecodes.
  * 
+ * @file
  * @since 2025/01/08
  */
 
@@ -145,6 +146,9 @@ SJME_NVM_BYTECODE_SLOW(Swap);
  */
 typedef enum sjme_nvm_byteCode_mathBinaryFunc
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_byteCode_mathBinaryFunc),
+	
 	/** Shift left. */
 	SJME_NVM_BYTECODE_MATH_SHL,
 
@@ -174,6 +178,9 @@ typedef enum sjme_nvm_byteCode_mathBinaryFunc
  */
 typedef enum sjme_nvm_byteCode_mathFunc
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_byteCode_mathFunc),
+	
 	/** Add. */
 	SJME_NVM_BYTECODE_MATH_ADD,
 
@@ -194,8 +201,8 @@ typedef enum sjme_nvm_byteCode_mathFunc
 } sjme_nvm_byteCode_mathFunc;
 	
 /** Narrow slow bytecode handlers. */
-extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowNarrowFunctions
-	[SJME_NVM_NUM_JAVA_BYTECODES];
+extern const sjme_nvm_byteCode_lutTableType
+	sjme_nvm_byteCode_slowNarrowFunctions;
 
 /** Wide slow bytecode handlers. */
 extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_slowWideFunctions

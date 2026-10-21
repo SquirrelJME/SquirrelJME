@@ -89,9 +89,36 @@ public final class JavaMEProfile
 	@Override
 	public int compareTo(JavaMEProfile __o)
 	{
-		int rv = this.name.compareTo(__o.name);
+		APIName aName = this.name;
+		APIName bName = __o.name;
+		
+		int rv = aName.compareTo(bName);
 		if (rv != 0)
+		{
+			// MIDP and MEEP, after everything else
+			// This is so VSCL does not take priority for example
+			if ((aName.isMeep() || aName.isMidp()) &&
+				!(bName.isMeep() || bName.isMidp()))
+				return 1;
+			else if (!(aName.isMeep() || aName.isMidp()) &&
+				(bName.isMeep() || bName.isMidp()))
+				return -1;
+			
+			// MEEP and MIDP need to be resorted
+			if (aName.isMeep() != bName.isMeep() &&
+				(aName.isMidp() || bName.isMidp()))
+			{
+				// MEEP is always after MIDP
+				if (aName.isMeep() && bName.isMidp())
+					return 1;
+				
+				// MIDP is always before MEEP
+				else if (aName.isMidp() && bName.isMeep())
+					return -1;
+			}
+			
 			return rv;
+		}
 		
 		SuiteVersion a = this.version,
 			b = __o.version;

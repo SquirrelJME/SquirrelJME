@@ -1,0 +1,6 @@
+# For this to be loaded, there needs to be a .lldbinit in HOME with:
+# settings set target.load-cwd-lldbinit true
+
+# Load in pretty printer
+command script import assets.prettyprint.prettylldb
+script from assets.prettyprint.prettylldb import *

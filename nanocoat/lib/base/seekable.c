@@ -27,12 +27,6 @@ static sjme_errorCode sjme_seekable_closeHandler(
 		if (sjme_error_is(error = seekable->functions->close(seekable,
 			&seekable->implState)))
 			return sjme_error_default(error);
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/* Deallocate self. */
-	if (sjme_error_is(error = sjme_alloc_free(seekable)))
-		return sjme_error_default(error);
-#endif
 	
 	/* Success!. */
 	return SJME_ERROR_NONE;

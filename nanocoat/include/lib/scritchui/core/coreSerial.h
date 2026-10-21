@@ -38,6 +38,9 @@ extern "C" {
  */
 typedef enum sjme_scritchui_serialType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_scritchui_serialType),
+	
 	/** Unknown. */
 	SJME_SCRITCHUI_SERIAL_UI_UNKNOWN,
 	

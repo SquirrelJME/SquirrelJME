@@ -10,16 +10,17 @@
 /**
  * String pool.
  * 
+ * @file
  * @since 2024/09/14
  */
 
 #ifndef SJME_C_STRINGPOOL_H
 #define SJME_C_STRINGPOOL_H
 
-#include "sjme/charSeq.h"
-#include "sjme/list.h"
 #include "sjme/nvm/nvm.h"
+#include "sjme/charSeq.h"
 #include "sjme/stream.h"
+#include "sjme/list.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -33,38 +34,10 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/**
- * Represents a pool of strings.
- * 
- * @since 2024/09/14
- */
-typedef struct sjme_nvm_stringPool_base sjme_nvm_stringPool_base;
-
-/**
- * Represents a pool of strings.
- * 
- * @since 2024/09/14
- */
-typedef sjme_nvm_stringPool_base* sjme_nvm_stringPool;
-
-/**
- * Represents a single pooled string.
- * 
- * @since 2024/09/14
- */
-typedef struct sjme_nvm_stringPool_stringBase sjme_nvm_stringPool_stringBase;
-
-/**
- * Represents a single pooled string.
- * 
- * @since 2024/09/14
- */
-typedef sjme_nvm_stringPool_stringBase* sjme_nvm_stringPool_string;
-
 /** A list of string pool strings. */
 SJME_LIST_DECLARE(sjme_nvm_stringPool_string, 0);
 
-struct sjme_nvm_stringPool_base
+struct sjme_nvm_stringPoolBase
 {
 	/** The virtual machine common base. */
 	sjme_nvm_commonBase common;
@@ -73,7 +46,7 @@ struct sjme_nvm_stringPool_base
 	sjme_alloc_pool allocPool;
 	
 	/** Strings which are in the pool. */
-	sjme_list_sjme_nvm_stringPool_string* strings;
+	sjme_list(sjme_phantom(sjme_nvm_stringPool_string))* strings;
 };
 
 struct sjme_nvm_stringPool_stringBase
@@ -191,9 +164,23 @@ sjme_errorCode sjme_nvm_stringPool_locateUtfR(
  * @return Any resultant error, if any,
  * @since 2024/09/14
  */
-sjme_errorCode sjme_nvm_stringPool_new(
+sjme_errorCode sjme_nvm_stringPool_newR(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_nvm_stringPool* outStringPool);
+	sjme_attrOutNotNull sjme_nvm_stringPool* outStringPool
+	SJME_DEBUG_ONLY_COMMA
+	SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Creates a new string pool for managing constant strings.
+ * 
+ * @param allocPool The pool to allocate within.
+ * @param outStringPool The resultant string pool.
+ * @return Any resultant error, if any,
+ * @since 2024/09/14
+ */
+#define sjme_nvm_stringPool_new(allocPool, outStringPool) \
+	(sjme_nvm_stringPool_newR((allocPool), (outStringPool) \
+	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL))
 
 /*--------------------------------------------------------------------------*/
 

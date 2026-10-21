@@ -53,7 +53,7 @@ extern "C"
 #pragma region(scritchui_lists)
 	
 #define sjme_atomic_type sjme_scritchui_pencil
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 	
 /** List of component. */
 SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);

@@ -97,15 +97,15 @@ Information:
 
 ## Repository
 
- * [Online repository](http://squirreljme.cc/)
-   ([HTTPS](https://squirreljme.cc/),
+ * [Online repository](https://squirreljme.cc/)
+   ([No SSL](http://nossl.squirreljme.cc/),
    [Tor (A)](http://vzwveldr7djnlpg7ujslaqre632htbl3unkmfbltpgumevw63jn47dad.onion/),
    [Tor (B)](http://4rd6eqm43yxqtjwfgavv6bdfviklh2xuzgk4zvmdlee4kss2oojh2dyd.onion/))
  * SquirrelJME uses `fossil` <http://fossil-scm.org/>.
  * The repository may be cloned using Fossil:
    * One of these commands:
-     * `fossil clone -u http://squirreljme.cc/ squirreljme.fossil`
      * `fossil clone -u https://squirreljme.cc/ squirreljme.fossil`
+     * `fossil clone -u http://nossl.squirreljme.cc/ squirreljme.fossil`
      * Alternatively via the _Tor Onion_ network:
        * `fossil clone -u http://vzwveldr7djnlpg7ujslaqre632htbl3unkmfbltpgumevw63jn47dad.onion/ squirreljme.fossil`
        * `fossil clone -u http://4rd6eqm43yxqtjwfgavv6bdfviklh2xuzgk4zvmdlee4kss2oojh2dyd.onion/ squirreljme.fossil`

@@ -148,7 +148,18 @@ typedef struct sjme_tree_findFunc
 sjme_jint sjme_compare_null(
 	sjme_attrInNullable sjme_cpointer a,
 	sjme_attrInNullable sjme_cpointer b);
-	
+
+/**
+ * Searches for the given wide character in the given wide string.
+ *
+ * @param within The string to search within.
+ * @param what The character to find.
+ * @return The first occurrence of @code what @endcode,
+ * otherwise @code NULL @endcode.
+ * @since 2026/10/14
+ */
+sjme_lpcwstr sjme_lpwcschr(sjme_lpcwstr within, sjme_jchar what);
+
 /**
  * Compares two wide strings.
  * 
@@ -179,7 +190,26 @@ sjme_jint sjme_lpwcsncmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n);
  * @since 2026/07/04
  */
 sjme_jint sjme_lpwcscasecmp(sjme_lpcwstr a, sjme_lpcwstr b);
-	
+
+/**
+ * Concatenates @code src @endcode onto @code dest @code with the destination
+ * limited to @code limit @code characters, a trailing @code NUL @endcode is
+ * always added.
+ *
+ * Neither string should overlap, however this implementation
+ * uses @code memmove() @endcode so technically it can overlap and the
+ * arguments can even be the same.
+ *
+ * @param dest The destination string.
+ * @param src The source string.
+ * @param limit The maximum number of characters to copy.
+ * @return Always @code dest @endcode.
+ * @since 2026/10/14
+ */
+sjme_lpcwstr sjme_lpwcsncat(sjme_lpwstr dest,
+	sjme_lpcwstr src,
+	sjme_jint limit);
+
 /**
  * Compares two wide strings disregarding case, up to the given limit.
  * 
@@ -209,7 +239,29 @@ sjme_jint sjme_lpwcslen(sjme_lpcwstr s);
  * @since 2026/07/04
  */
 sjme_jint sjme_lpwcsnlen(sjme_lpcwstr s, sjme_jint n);
-	
+
+/**
+ * Converts a wide string to an integral value.
+ *
+ * The return value of @code INTMAX_MIN @endcode does differ from the
+ * traditional @code 0 @endcode, however it is more likely that zero will
+ * be more of a valid value than the smallest possible value. Additionally,
+ * there is no @code errno @endcode available. If there must be no doubt that
+ * such smallest possible value is not parsed then @code endP @endcode can be
+ * used as this implementation will never set it if parsing fails.
+ *
+ * @param str The string to convert.
+ * @param endP The resultant end pointer which points to the end of
+ * the actually parsed value, this is optional.
+ * @param base The number base to parse.
+ * @return The resultant value, or @code INTMAX_MIN @endcode if it could
+ * not be parsed.
+ * @since 2026/10/14
+ */
+sjme_intMax sjme_lpwcstoimax(sjme_attrInNotNull sjme_lpcwstr str,
+	sjme_attrOutNullable sjme_lpcwstr* endP,
+	sjme_attrInRange(2, 36) sjme_jint base);
+
 /**
  * Initializes the random number generator.
  * 
@@ -583,7 +635,17 @@ sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
  */
 #define sjme_util_alignToP(addr, align) \
 	((sjme_pointer)sjme_util_alignTo(((sjme_intPointer)(addr)), (align)))
-	
+
+/**
+ * Sign extends a byte to an integer.
+ *
+ * @param v The input value.
+ * @return The resultant sign extended integer.
+ * @since 2026/10/18
+ */
+sjme_jint sjme_util_byteToInt(
+	sjme_attrInValue sjme_jint v);
+
 /**
  * Returns the number of bits in the value.
  * 
@@ -837,6 +899,16 @@ sjme_jint* sjme_util_memUnaligned32W(void* addr, sjme_jint v);
 #define sjme_util_memUnaligned32W(addr, v) (*((sjme_jint*)(addr)) = (v))
 	
 #endif
+
+/**
+ * Sign extends a short to an integer.
+ *
+ * @param v The input value.
+ * @return The resultant sign extended integer.
+ * @since 2026/10/18
+ */
+sjme_jint sjme_util_shortToInt(
+	sjme_attrInValue sjme_jint v);
 
 #if defined(SJME_CONFIG_SIZEOF_SIZE_T) && SJME_CONFIG_SIZEOF_SIZE_T == 4
 

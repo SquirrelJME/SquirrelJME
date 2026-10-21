@@ -14,8 +14,7 @@
 /** A fast bytecode which is free to use. */
 #define sjme_nvm_byteCode_fastFree sjme_nvm_byteCode_illegalInstruction
 
-const sjme_nvm_byteCode_func sjme_nvm_byteCode_fastFunctions
-	[SJME_NVM_NUM_JAVA_BYTECODES] =
+const sjme_nvm_byteCode_lutTableType sjme_nvm_byteCode_fastFunctions =
 {
 	/* ..0 */ sjme_nvm_byteCode_illegalInstruction,
 	/* ..1 */ sjme_nvm_byteCode_illegalInstruction,

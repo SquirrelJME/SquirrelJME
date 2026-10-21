@@ -10,6 +10,7 @@
 /**
  * Modeless Star Screen.
  * 
+ * @file
  * @since 2023/11/28
  */
 
@@ -27,6 +28,8 @@
 extern "C" {
 	#endif /* #ifdef SJME_CXX_IS_EXTERNED */
 #endif     /* #ifdef __cplusplus */
+
+#if !defined(SJME_CONFIG_DISABLE_MODELESS_STARS)
 
 /*--------------------------------------------------------------------------*/
 
@@ -69,6 +72,9 @@ typedef struct sjme_modelessStar
 /** Modeless color options. */
 typedef enum sjme_modelessStarColorId
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_modelessStarColorId),
+
 	/** Starting color. */
 	SJME_MODELESS_STAR_COLOR_ID_START,
 	
@@ -105,7 +111,7 @@ typedef struct sjme_modelessStarState
 	sjme_jboolean latchedFirstGo;
 
 	/** The emitted error code. */
-	sjme_atomic_sjme_jint errorCode;
+	sjme_atomic(sjme_jint) errorCode;
 } sjme_modelessStarState;
 
 /**
@@ -117,7 +123,7 @@ typedef struct sjme_modelessStarState
  * @param height The height of the buffer.
  * @param pitch The pitch of the buffer.
  * @param tick The current tick.
- * @return Returns @c SJME_JNI_FALSE if there are issues with inputs.
+ * @return Returns @link SJME_JNI_FALSE @endlink if there are issues with inputs.
  * @since 2023/11/22
  */
 sjme_errorCode sjme_modelessStars(
@@ -129,6 +135,8 @@ sjme_errorCode sjme_modelessStars(
 	sjme_attrInValue sjme_jint tick);
 
 /*--------------------------------------------------------------------------*/
+
+#endif
 
 /* Anti-C++. */
 #ifdef __cplusplus

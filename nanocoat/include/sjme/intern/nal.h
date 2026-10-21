@@ -35,6 +35,8 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+sjme_nal_encodingType sjme_nal_default_encoding(void);
+	
 sjme_errorCode sjme_nal_default_execPath(
 	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
 	sjme_attrInPositiveNonZero sjme_jint outLen);
@@ -49,9 +51,17 @@ sjme_errorCode sjme_nal_default_getEnv(
 	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) sjme_lpstr buf,
 	sjme_attrInPositiveNonZero sjme_jint bufLen,
 	sjme_attrInNotNull sjme_lpcstr env);
+
+sjme_nal_lineEndingType sjme_nal_default_lineEnding(void);
+
+sjme_nal_localeType sjme_nal_default_locale(void);
 	
 sjme_errorCode sjme_nal_default_nanoTime(
 	sjme_attrOutNotNull sjme_jlong* result);
+
+sjme_errorCode sjme_nal_default_osVersion(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen);
 	
 sjme_errorCode sjme_nal_default_pathStyle(
 	sjme_attrOutNotNull const sjme_path_style** outStyle);

@@ -29,7 +29,8 @@ int main(int argc, char** argv)
 	/* Load the ScritchUI library. */
 	lib = NULL;
 	if (sjme_error_is(error = sjme_dylib_openExtra(NULL,
-		SJME_DYLIB_EXTRA_FAMILY_SCRITCHUI, NULL, &lib)) || lib == NULL)
+		SJME_DYLIB_EXTRA_FAMILY_SCRITCHUI, NULL, &lib, NULL)) ||
+		lib == NULL)
 		goto fail_openDyLib;
 
 	/* Grab the API initializer from the library. */

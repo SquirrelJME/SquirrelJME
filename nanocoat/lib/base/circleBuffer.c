@@ -18,6 +18,9 @@
  */
 typedef enum sjme_circleBuffer_operation
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_circleBuffer_operation),
+
 	/** Push operation, queue. */
 	SJME_CIRCLE_BUFFER_PUSH_QUEUE,
 	

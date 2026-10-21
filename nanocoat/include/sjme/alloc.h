@@ -43,6 +43,20 @@ extern "C" {
 typedef struct sjme_alloc_linkBase sjme_alloc_linkBase;
 
 /**
+ * Allocation link meta-info.
+ *
+ * @since 2026/09/22
+ */
+typedef struct sjme_alloc_linkMetaBase sjme_alloc_linkMetaBase;
+
+/**
+ * Allocation link meta-info.
+ *
+ * @since 2026/09/22
+ */
+typedef volatile sjme_alloc_linkMetaBase* sjme_alloc_linkMeta;
+
+/**
  * Allocation link chain, each is a chain between each allocation.
  * 
  * @since 2023/11/18
@@ -56,6 +70,9 @@ typedef volatile sjme_alloc_linkBase* sjme_alloc_link;
  */
 typedef enum sjme_alloc_poolSpace
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_alloc_poolSpace),
+	
 	/** Invalid space. */
 	SJME_ALLOC_POOL_SPACE_INVALID,
 	
@@ -76,11 +93,17 @@ typedef enum sjme_alloc_poolSpace
  */
 typedef enum sjme_alloc_linkFlag
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_alloc_linkFlag),
+	
 	/** Nested allocation pool. */
 	SJME_ALLOC_LINK_FLAG_NESTED_POOL = 1,
 
 	/** Weakly referenced. */
 	SJME_ALLOC_LINK_WEAK = 2,
+
+	/** Has extra meta info (debug). */
+	SJME_ALLOC_LINK_HAS_META = 4,
 } sjme_alloc_linkFlag;
 
 /**
@@ -94,7 +117,7 @@ typedef struct sjme_alloc_weakBase* sjme_alloc_weak;
 #define SJME_TYPEOF_IS_POINTER_sjme_alloc_weak 1
 
 #define sjme_atomic_type sjme_alloc_weak
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 /**
  * This is called when a weak reference has been freed or is about to be
@@ -123,7 +146,7 @@ typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
 #define SJME_TYPEOF_IS_POINTER_sjme_alloc_link 1
 
 #define sjme_atomic_type sjme_alloc_link
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 struct sjme_alloc_weakBase
 {
@@ -144,6 +167,24 @@ struct sjme_alloc_weakBase
 	
 	/** Is this in an enqueue? */
 	sjme_alignPointerL sjme_atomic(sjme_jint) inEnqueue sjme_alignPointerR;
+};
+
+struct sjme_alloc_linkMetaBase
+{
+	/** The file of this allocation. */
+	sjme_lpcstr debugFile;
+
+	/** The line of this allocation. */
+	sjme_jint debugLine;
+
+	/** The function of this allocation. */
+	sjme_lpcstr debugFunction;
+
+	/** The size of this structure. */
+	sjme_jint metaSize;
+
+	/** Is there an indicator of meta-information? */
+	sjme_jint metaGuard;
 };
 
 struct sjme_alloc_linkBase
@@ -181,22 +222,11 @@ struct sjme_alloc_linkBase
 	/** Link flags. */
 	sjme_jint flags;
 
-#if defined(SJME_CONFIG_DEBUG)
-	/** The file of this allocation. */
-	sjme_lpcstr debugFile;
-	
-	/** The line of this allocation. */
-	sjme_jint debugLine;
-	
-	/** The function of this allocation. */
-	sjme_lpcstr debugFunction;
-#endif
-	
 	/** The back guard. */
 	sjme_jint guardBack;
 	
 	/** The memory block. */
-	sjme_jubyte block[sjme_flexibleArrayCount];
+	sjme_alignPointer sjme_jubyte block[sjme_flexibleArrayCount];
 };
 
 /**
@@ -263,6 +293,9 @@ struct sjme_alloc_poolBase
 	
 	/** Next pool in multi-pool chain allocation. */
 	sjme_alloc_pool nextPool;
+
+	/** The @code sizeof() @endcode @link sjme_alloc_linkMetaBase @endlink. */
+	sjme_jint sizeOfLinkMeta;
 	
 	/** The front chain link. */
 	sjme_atomic(sjme_alloc_link) frontLink;
@@ -427,24 +460,6 @@ sjme_errorCode sjme_alloc_copyWeakR(
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
 
 /**
- * Allocates a formatted string.
- *
- * @param allocPool The pool to allocate within.
- * @param outString The output string.
- * @param format The format string.
- * @param ...
- * @return Any resultant error.
- * @since 2023/12/22
- */
-sjme_errorCode sjme_alloc_formatR(
-	sjme_attrInNotNull sjme_alloc_pool allocPool,
-	sjme_attrOutNotNull sjme_lpstr* outString,
-	SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL SJME_DEBUG_ONLY_COMMA
-	sjme_attrInNotNull sjme_attrFormatArg const char* format,
-	...) SJME_DEBUG_TERNARY(sjme_attrFormatOuter(5, 6),
-		sjme_attrFormatOuter(2, 3));
-
-/**
  * Grows the given allocation.
  * 
  * @param allocPool The allocation pool to allocate under.
@@ -491,6 +506,16 @@ sjme_errorCode sjme_alloc_strdupR(
 	sjme_attrOutNotNull sjme_lpstr* outString,
 	sjme_attrInNotNull sjme_lpcstr stringToCopy
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_DECL_FILE_LINE_FUNC_OPTIONAL);
+
+/**
+ * Returns the link meta info.
+ *
+ * @param inLink The link to get the meta info for.
+ * @return The meta info for the link or @code NULL @endcode if there is none.
+ * @since 2026/09/22
+ */
+sjme_alloc_linkMeta sjme_alloc_linkMetaR(
+	sjme_attrInNullable sjme_alloc_link inLink);
 
 /**
  * Returns the count of a weak reference.
@@ -608,21 +633,6 @@ sjme_errorCode sjme_alloc_weakRefER(
 	sjme_alloc_copyWeakR((pool), (size), (inEnqueue), (inEnqueueData), \
 	(outAddr), (inAddr), (outWeak) \
 	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL)
-
-/**
- * Allocates a formatted string.
- *
- * @param allocPool The pool to allocate within.
- * @param outString The output string.
- * @param format The format string.
- * @param ...
- * @return Any resultant error.
- * @since 2023/12/22
- */
-#define sjme_alloc_format(allocPool, outString, ...) \
-	sjme_alloc_formatR((allocPool), (outString) \
-	SJME_DEBUG_ONLY_COMMA SJME_DEBUG_FILE_LINE_FUNC_OPTIONAL, \
-		__VA_ARGS__)
 
 /**
  * Reallocates memory, either growing it or shrinking... the pointer will be

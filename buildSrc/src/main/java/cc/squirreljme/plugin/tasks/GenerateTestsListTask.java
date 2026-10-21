@@ -45,20 +45,27 @@ public class GenerateTestsListTask
 		Paths.get("META-INF", "services",
 			"net.multiphasicapps.tac.TestInterface");
 	
+	/** NanoCoat tests? */
+	protected final boolean nanoTests;
+	
 	/**
 	 * Initializes the task.
 	 *
 	 * @param __processTask The resource task.
 	 * @param __cleanTask The clean task.
+	 * @param __nanoTests NanoCoat Tests?
 	 * @since 2020/02/28
 	 */
 	@Inject
 	public GenerateTestsListTask(ProcessResources __processTask,
-		Task __cleanTask)
+		Task __cleanTask, boolean __nanoTests)
 	{
 		// Set details of this task
 		this.setGroup("squirreljme");
 		this.setDescription("Builds the list of tests which are available.");
+		
+		// Set
+		this.nanoTests = __nanoTests;
 		
 		// Configure inputs and outputs
 		Project project = this.getProject();
@@ -110,7 +117,7 @@ public class GenerateTestsListTask
 			{
 				// Every available test becomes the name of every test
 				for (String name : VMHelpers.availableTests(this.getProject(),
-					SourceSet.TEST_SOURCE_SET_NAME).keySet())
+					SourceSet.TEST_SOURCE_SET_NAME, this.nanoTests).keySet())
 					out.println(name);
 				
 				// Make sure the output is written
@@ -171,7 +178,8 @@ public class GenerateTestsListTask
 		Collection<FileLocation> inputs = new LinkedList<>();
 		
 		for (CandidateTestFiles file : VMHelpers.availableTests(
-			this.getProject(), SourceSet.TEST_SOURCE_SET_NAME).values())
+			this.getProject(), SourceSet.TEST_SOURCE_SET_NAME,
+			this.nanoTests).values())
 		{
 			if (file.sourceCode != null)
 				inputs.add(file.sourceCode);
@@ -206,6 +214,10 @@ public class GenerateTestsListTask
 	 */
 	private Path __taskOutput()
 	{
+		if (this.nanoTests)
+			return this.__outputPath().resolve("META-INF")
+				.resolve("squirreljme")
+				.resolve("tests.nano");
 		return this.__outputPath().resolve(
 			GenerateTestsListTask.SERVICE_LIST_PATH);
 	}

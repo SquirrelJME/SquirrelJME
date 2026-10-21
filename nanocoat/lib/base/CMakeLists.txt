@@ -21,6 +21,7 @@ squirreljme_multilib_add_library(Base
 	dylib.c
 	dylibExtra.c
 	error.c
+	externalWeak.c
 	fixed.c
 	frontEnd.c
 	inflate.c
@@ -32,6 +33,7 @@ squirreljme_multilib_add_library(Base
 	multithreadPosix.c
 	multithreadWin32.c
 	native.c
+	nativeBeOS.c
 	nativeBsd.c
 	nativeDarwin.c
 	nativeLinux.c

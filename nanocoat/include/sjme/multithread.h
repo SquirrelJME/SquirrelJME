@@ -168,7 +168,7 @@ typedef sjme_intPointer sjme_thread_id;
 #pragma region(atomics)
 
 #define sjme_atomic_type sjme_thread
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 	
 #pragma endregion(atomics)
 

@@ -38,6 +38,9 @@ extern "C" {
  */
 typedef enum sjme_unit_operator
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_unit_operator),
+
 	/** Equality, @c ==. */
 	SJME_UNIT_OPERATOR_EQUAL,
 	
@@ -311,7 +314,7 @@ sjme_testResult sjme_unit_operatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		SJME_UNIT_OPERATOR_EQUAL, __VA_ARGS__)
 
 /**
- * Is the given value @c SJME_JNI_TRUE ?
+ * Is the given value @link SJME_JNI_TRUE @endlink ?
  * 
  * @param test The test data.
  * @param value The value to check.
@@ -325,7 +328,7 @@ sjme_testResult sjme_unit_operatorZR(SJME_DEBUG_DECL_FILE_LINE_FUNC,
 		SJME_UNIT_OPERATOR_EQUAL, test, SJME_JNI_TRUE, value, __VA_ARGS__)
 
 /**
- * Is the given value @c SJME_JNI_FALSE ?
+ * Is the given value @link SJME_JNI_FALSE @endlink ?
  * 
  * @param test The test data.
  * @param value The value to check.

@@ -146,6 +146,19 @@ public final class ThreadShelf
 		throws MLECallError;
 	
 	/**
+	 * Returns the main class.
+	 *
+	 * @return The main class, will return {@code null} if there is no main
+	 * class in the event that it is not set for the current VM.
+	 * @throws MLECallError If this could not be obtained.
+	 * @since 2026/10/18
+	 */
+	@NotNull
+	@SquirrelJMENativeApi(min = "0.4.0")
+	public static native Class<?> mainClass()
+		throws MLECallError;
+	
+	/**
 	 * Returns the {@link ThreadModelType} of the virtual machine.
 	 * 
 	 * @return The {@link ThreadModelType} of the virtual machine.

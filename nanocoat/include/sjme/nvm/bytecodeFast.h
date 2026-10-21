@@ -10,6 +10,7 @@
 /**
  * Fast bytecodes.
  * 
+ * @file
  * @since 2025/06/26
  */
 
@@ -45,6 +46,9 @@ extern "C"
  */
 typedef enum sjme_nvm_byteCode_fastInstruction
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_byteCode_fastInstruction),
+	
 	/** Dup2_x1 on narrow. */
 	SJME_NVM_BYTECODE_FAST_DUP_TWO_X1_NARROW = 248,
 	
@@ -99,8 +103,7 @@ SJME_NVM_BYTECODE_FAST(PopWide);
 /* clang-format on */ /* @formatter:on */
 
 /** Fast bytecode instructions. */
-extern const sjme_nvm_byteCode_func sjme_nvm_byteCode_fastFunctions
-	[SJME_NVM_NUM_JAVA_BYTECODES];
+extern const sjme_nvm_byteCode_lutTableType sjme_nvm_byteCode_fastFunctions;
 
 /*--------------------------------------------------------------------------*/
 

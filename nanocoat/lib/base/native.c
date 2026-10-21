@@ -14,10 +14,14 @@
 const sjme_nal sjme_nal_default =
 {
 	sjme_sm(.currentTimeMillis, NULL),
+	sjme_sm(.encoding, sjme_nal_default_encoding),
 	sjme_sm(.execPath, sjme_nal_default_execPath),
 	sjme_sm(.fileOpen, sjme_nal_default_fileOpen),
 	sjme_sm(.getEnv, sjme_nal_default_getEnv),
+	sjme_sm(.lineEnding, sjme_nal_default_lineEnding),
+	sjme_sm(.locale, sjme_nal_default_locale),
 	sjme_sm(.nanoTime, sjme_nal_default_nanoTime),
+	sjme_sm(.osVersion, sjme_nal_default_osVersion),
 	sjme_sm(.pathStyle, sjme_nal_default_pathStyle),
 	sjme_sm(.tcpUdp, sjme_nal_default_tcpUdp),
 	sjme_sm(.threadSleep, sjme_nal_default_threadSleep),
@@ -44,6 +48,16 @@ const sjme_nal sjme_nal_default =
 	},
 	sjme_sm(.userHome, sjme_nal_default_userHome),
 	sjme_sm(.userName, NULL),
+};
+
+const sjme_lpcstr sjme_nal_lineEndings[SJME_NAL_NUM_LINE_ENDINGS] =
+{
+	"?",
+	"\n",
+	"\r",
+	"\r\n",
+	"\n\r",
+	"\036",
 };
 
 #if defined(SJME_CONFIG_HAS_ERRNO_H)
@@ -117,7 +131,7 @@ sjme_errorCode sjme_nal_stdF(
 
 	/* Send to the output. */
 #if !defined(SJME_CONFIG_HAS_NO_STDIO)
-	return outFunc(buf, 0, strlen(buf));
+	return outFunc(buf, 0, (sjme_jint)strlen(buf));
 #undef BUF_SIZE
 #else
 	/* Just say success */

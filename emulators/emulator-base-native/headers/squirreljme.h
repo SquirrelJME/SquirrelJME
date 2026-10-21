@@ -12,6 +12,7 @@
 
 #include <jni.h>
 
+#include "sjme/stdGone.h"
 #include "lib/scritchui/scritchui.h"
 #include "sjme/debug.h"
 #include "sjme/charSeq.h"
@@ -22,7 +23,7 @@
 		Init)(JNIEnv* env, jclass classy)
 
 MLE_INIT_FUNC_PROTO(NativeScritchDylibEx);
-MLE_INIT_FUNC_PROTO(NativeScritchInterface);
+MLE_INIT_FUNC_PROTO(NativeScritchUIShelf);
 MLE_INIT_FUNC_PROTO(ObjectShelf);
 MLE_INIT_FUNC_PROTO(PencilFontShelf);
 MLE_INIT_FUNC_PROTO(PencilShelf);
@@ -43,7 +44,7 @@ jint JNICALL mleMidiInit(JNIEnv* env, jclass classy);
 jint JNICALL mleNativeArchiveInit(JNIEnv* env, jclass classy);
 jint JNICALL mleNativeScritchCallbackInit(JNIEnv* env, jclass classy);
 jint JNICALL mleNativeScritchDylibInit(JNIEnv* env, jclass classy);
-jint JNICALL mleNativeScritchInterfaceInit(JNIEnv* env, jclass classy);
+jint JNICALL mleNativeScritchUIInit(JNIEnv* env, jclass classy);
 jint JNICALL mleObjectInit(JNIEnv* env, jclass classy);
 jint JNICALL mlePencilInit(JNIEnv* env, jclass classy);
 jint JNICALL mlePencilFontInit(JNIEnv* env, jclass classy);

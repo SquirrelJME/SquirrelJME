@@ -363,6 +363,9 @@ sjme_errorCode sjme_list_injectGrowR(
 	if (elementSize <= 0 || elementOffset < 0 || growSize <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
+	/* May potentially be used, or not. */
+	nothing = NULL;
+
 	/* There is no list here? */
 	freeSlot = -1;
 	n = 0;
@@ -403,7 +406,8 @@ skip_store:
 		injectValuePtr, elementSize);
 	
 	/* Cleanup. */
-	sjme_alloca_free(nothing);
+	if (nothing != NULL)
+		sjme_alloca_free(nothing);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

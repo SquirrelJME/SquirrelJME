@@ -35,53 +35,6 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/** The maximum file name length in SquirrelJME. */
-#define SJME_MAX_FILE_NAME 128
-
-/** The maximum path length in SquirrelJME. */
-#define SJME_MAX_PATH 1024
-
-/**
- * The maximum path depth in SquirrelJME, this should be able to store the
- * most reasonable amount of names.
- *
- * On my current Debian system, /var has:
- * @code
- *      1 /
- *     12 //
- *    193 ///
- *    225 ////
- *    181 /////
- *    371 //////
- *    133 ///////
- *    238 ////////
- *    655 /////////
- *    992 //////////
- *   2238 ///////////
- *   4128 ////////////
- *   6868 /////////////
- *   5679 //////////////
- *   5504 ///////////////
- *   3693 ////////////////
- *   1663 /////////////////
- *   1131 //////////////////
- *    740 ///////////////////
- *    209 ////////////////////
- *    100 /////////////////////
- *     40 //////////////////////
- *     23 ///////////////////////
- *     19 ////////////////////////
- *      1 /////////////////////////
- *      1 ////////////////////////// <-- 26
- * @endcode
- */
-#define SJME_MAX_PATH_DEPTH 32
-
-#if defined(SJME_CONFIG_HAS_OS_PC_DOS)
-	/** Short paths. */
-	#define SJME_PATH_SHORT
-#endif
-	
 /**
  * Generic file system path.
  *
@@ -142,6 +95,9 @@ typedef struct sjme_path_styleSub
  */
 typedef enum sjme_path_styleType
 {
+	/** This is an integer based enum. */
+	sjme_enumInt(sjme_path_styleType),
+
 	/** None path style, all paths are not valid. */
 	SJME_PATH_STYLE_NONE = 0,
 
@@ -156,6 +112,9 @@ typedef enum sjme_path_styleType
 
 	/** Windows paths, VFAT + UNC. */
 	SJME_PATH_STYLE_WINDOWS = 4,
+
+	/** Embedded VFAT paths, similar to FatFS, rootless with forward slash. */
+	SJME_PATH_STYLE_VFAT_EMBEDDED = 5,
 	
 	/** The number of path styles. */
 	SJME_NUM_PATH_STYLES,
@@ -211,6 +170,9 @@ struct sjme_path_style
  */
 typedef enum sjme_path_flags
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_path_flags),
+
 	/** Does this path represent a directory? */
 	SJME_PATH_IS_DIRECTORY = INT32_C(0x01),
 
@@ -309,6 +271,15 @@ sjme_errorCode sjme_path_default(
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
 	sjme_attrInValue sjme_nvm_defaultDirectoryType type,
 	sjme_attrInNegativeOnePositive sjme_jint index);
+
+/**
+ * Directly returns the base name of the given path.
+ *
+ * @param inPath The input path to get the name of.
+ * @return The input base name, or @code NULL @endcode if invalid.
+ */
+sjme_lpcstr sjme_path_getBaseNameR(
+	sjme_attrInNotNull const sjme_path* inPath);
 
 /**
  * Gets the specific name index for the given path.

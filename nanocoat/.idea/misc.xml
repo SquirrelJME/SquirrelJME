@@ -34,6 +34,9 @@
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
   </component>
+  <component name="ProjectResources">
+    <resource url="https://raw.githubusercontent.com/microsoft/vscode-cpptools/e38cfef2b93322bee30f7b8a3912bb54ad107890/Documentation/Debugger/natvis/natvis.xsd" location="$USER_HOME$/AppData/Local/JetBrains/CLion2025.3/extResources/9e0e24f_natvis.xsd" />
+  </component>
   <component name="PyPackaging">
     <option name="earlyReleasesAsUpgrades" value="true" />
   </component>

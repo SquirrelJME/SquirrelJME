@@ -51,7 +51,11 @@ typedef struct sjme_scritchui_bugs
 	
 	/** It is unknown when a window is visible or not. */
 	sjme_jboolean windowVisibilityUnknown;
+
+	/** ScritchUI was compiled with SJME_CONFIG_ONLY_THREAD_SINGLE. */
+	sjme_jboolean onlyThreadSingle;
 } sjme_scritchui_bugs;
+
 /**
  * Stores the mouse state.
  * 

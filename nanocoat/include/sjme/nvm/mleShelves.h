@@ -10,6 +10,7 @@
 /**
  * Contains references to the MLE shelves.
  * 
+ * @file
  * @since 2025/02/22
  */
 
@@ -45,6 +46,9 @@ extern "C"
 
 /** Builds a type descriptor. */
 #define SJME_MD(rv, args) "(" args ")" rv
+
+/** No arguments. */
+#define SJME_MDMP___NO_ARGS__
 
 /** Array type. */
 #define SJME_MD_A(component) "[" component
@@ -146,9 +150,52 @@ extern "C"
 #define SJME_MD_VM_THREAD \
 	SJME_MD_L("cc/squirreljme/jvm/mle/brackets/VMThreadBracket")
 
+/** ScritchUI Class. */
+#define SJME_MD_SCRITCH_UI(name) \
+	SJME_MD_L("cc/squirreljme/jvm/mle/scritchui/" #name)
+
+/** ScritchUI Bracket. */
+#define SJME_MD_SCRITCH_UI_BRACKET(name) \
+	SJME_MD_L("cc/squirreljme/jvm/mle/scritchui/brackets/Scritch" \
+		#name "Bracket")
+
+/** ScritchUI Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE(name) \
+	SJME_MD_L("cc/squirreljme/jvm/mle/scritchui/Scritch" \
+		#name "Interface")
+
+/** Root ScritchUI Interface. */
+#define SJME_MD_SCRITCH_UI_INTERFACE_ROOT \
+	SJME_MD_L("cc/squirreljme/jvm/mle/scritchui/ScritchInterface")
+
+/** Builds a promoted type descriptor. */
+#define SJME_MP(rv, args) rv args
+
+/** Promoted Integer type. */
+#define SJME_MP_I "I"
+
+/** Promoted Long type. */
+#define SJME_MP_J "J"
+
+/** Promoted Float type. */
+#define SJME_MP_F "F"
+
+/** Promoted Double type. */
+#define SJME_MP_D "D"
+
+/** Promoted Void Type. */
+#define SJME_MP_V "V"
+
+/** Promoted Object Type. */
+#define SJME_MP_L "L"
+
+/** Alias for promoted Object type. */
+#define SJME_MP_OBJECT SJME_MP_L
+
 /** MLE Function name. */
 #define SJME_NVM_MLE_FUNCTION_NAME(name, alt) \
-	SJME_TOKEN_PASTE4(sjme_nvm_mleFunc_, name, _, alt)
+	SJME_TOKEN_PASTE_PP(SJME_TOKEN_PASTE4(sjme_nvm_mleFunc_, name, _, alt), \
+		SJME_NVM_MLE_SHELF)
 
 /** MLE Function definition. */
 #define SJME_NVM_MLE_FUNCTION_DECL_ALT(name, alt) \
@@ -163,23 +210,30 @@ extern "C"
 	SJME_NVM_MLE_FUNCTION_DECL_ALT(name, none)
 
 /** Defines an MLE function. */
-#define SJME_NVM_MLE_DEFINE_ALT(name, alt, type, argXR, argXA) \
+#define SJME_NVM_MLE_DEFINE_ALT(name, alt, type, mpType) \
 	{ \
-		#name, type, \
-		argXR argXA, \
+		#name, \
+		type, \
+		mpType, \
 		SJME_NVM_MLE_FUNCTION_NAME(name, alt) \
 	}
 
 /** Defines an MLE function. */
-#define SJME_NVM_MLE_DEFINE(name, type, argXR, argXA) \
-	SJME_NVM_MLE_DEFINE_ALT(name, none, type, argXR, argXA)
+#define SJME_NVM_MLE_DEFINE(name, type, mpType) \
+	SJME_NVM_MLE_DEFINE_ALT(name, none, type, mpType)
 
 /** Stop MLE definitions. */
 #define SJME_NVM_MLE_STOP() \
+	{NULL, NULL, NULL, NULL}, \
 	{NULL, NULL, NULL, NULL}
 
+/** Determines the name of a shelf. */
+#define SJME_NVM_MLE_SHELF_NAME(what) \
+	SJME_TOKEN_PASTE(sjme_nvm_mle, what)
+
+/** Declares a shelf. */
 #define SJME_NVM_MLE_SHELF_DECLARE(what) \
-	const sjme_nvm_mleShelf SJME_TOKEN_PASTE(sjme_nvm_mle, what)[]
+	const sjme_nvm_mleShelf SJME_NVM_MLE_SHELF_NAME(what)[]
 
 extern SJME_NVM_MLE_SHELF_DECLARE(AtomicShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(DebugShelf);
@@ -187,6 +241,7 @@ extern SJME_NVM_MLE_SHELF_DECLARE(JarPackageShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(MathShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(MidiShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(NativeArchiveShelf);
+extern SJME_NVM_MLE_SHELF_DECLARE(NativeScritchUIShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(ObjectShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(PencilFontShelf);
 extern SJME_NVM_MLE_SHELF_DECLARE(PencilShelf);

@@ -57,6 +57,16 @@ extern "C"
 	
 /** Select Vendor. */
 #define SJME_CONFIG_NAL_IMPLEMENT_VENDOR 127
+	
+#if !defined(SJME_CONFIG_NAL_ENCODING)
+	#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+		/** Get encoding through Windows APIs. */
+		#define SJME_CONFIG_NAL_ENCODING SJME_CONFIG_NAL_IMPLEMENT_WIN32
+#elif defined(SJME_CONFIG_HAS_OS_POSIX)
+		/** Get encoding through POSIX APIs. */
+		#define SJME_CONFIG_NAL_ENCODING SJME_CONFIG_NAL_IMPLEMENT_POSIX
+	#endif
+#endif
 
 #if !defined(SJME_CONFIG_NAL_EXEC_PATH)
 	#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
@@ -83,14 +93,35 @@ extern "C"
 		#define SJME_CONFIG_NAL_GETENV SJME_CONFIG_NAL_IMPLEMENT_STDC
 	#endif
 #endif
+	
+#if !defined(SJME_CONFIG_NAL_LOCALE)
+	#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+		/** Get locale through Windows APIs. */
+		#define SJME_CONFIG_NAL_LOCALE SJME_CONFIG_NAL_IMPLEMENT_WIN32
+	#elif defined(SJME_CONFIG_HAS_OS_POSIX) && \
+		!defined(SJME_CONFIG_HAS_OS_ANDROID)
+		/** Get locale through POSIX APIs. */
+		#define SJME_CONFIG_NAL_LOCALE SJME_CONFIG_NAL_IMPLEMENT_POSIX
+	#endif
+#endif
 
 #if !defined(SJME_CONFIG_NAL_NANOTIME)
-	#if defined(SJME_CONFIG_HAS_OS_LINUX) || defined(SJME_CONFIG_HAS_OS_BSD)
+	#if defined(SJME_CONFIG_HAS_OS_POSIX)
 		/** Use POSIX nanotime implementation. */
 		#define SJME_CONFIG_NAL_NANOTIME SJME_CONFIG_NAL_IMPLEMENT_POSIX
 	#elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 		/** Use Windows nanotime implementation. */
 		#define SJME_CONFIG_NAL_NANOTIME SJME_CONFIG_NAL_IMPLEMENT_WIN32
+	#endif
+#endif
+
+#if !defined(SJME_CONFIG_NAL_OS_VERSION)
+	#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+		/** Use Windows version implementation. */
+		#define SJME_CONFIG_NAL_OS_VERSION SJME_CONFIG_NAL_IMPLEMENT_WIN32
+	#elif defined(SJME_CONFIG_HAS_OS_POSIX)
+		/** Use POSIX version implementation. */
+		#define SJME_CONFIG_NAL_OS_VERSION SJME_CONFIG_NAL_IMPLEMENT_POSIX
 	#endif
 #endif
 
@@ -181,6 +212,11 @@ extern "C"
 #endif
 
 #pragma region(none)
+	
+#if !defined(SJME_CONFIG_NAL_ENCODING)
+	/** Not implemented. */
+	#define SJME_CONFIG_NAL_ENCODING SJME_CONFIG_NAL_IMPLEMENT_NONE
+#endif
 
 #if !defined(SJME_CONFIG_NAL_EXEC_PATH)
 	/** Not implemented. */
@@ -191,6 +227,16 @@ extern "C"
 	/** Not implemented. */
 	#define SJME_CONFIG_NAL_GETENV SJME_CONFIG_NAL_IMPLEMENT_NONE
 #endif
+	
+#if !defined(SJME_CONFIG_NAL_LINE_ENDING)
+	/** Use default implementation. */
+	#define SJME_CONFIG_NAL_LINE_ENDING SJME_CONFIG_NAL_IMPLEMENT_NONE
+#endif
+	
+#if !defined(SJME_CONFIG_NAL_LOCALE)
+	/** Not implemented. */
+	#define SJME_CONFIG_NAL_LOCALE SJME_CONFIG_NAL_IMPLEMENT_NONE
+#endif
 
 #if !defined(SJME_CONFIG_NAL_NANOTIME)
 	/** Not implemented. */
@@ -200,6 +246,11 @@ extern "C"
 #if !defined(SJME_CONFIG_NAL_PATH_STYLE)
 	/** Use default implementation. */
 	#define SJME_CONFIG_NAL_PATH_STYLE SJME_CONFIG_NAL_IMPLEMENT_NONE
+#endif
+
+#if !defined(SJME_CONFIG_NAL_OS_VERSION)
+	/** Not implemented. */
+	#define SJME_CONFIG_NAL_OS_VERSION SJME_CONFIG_NAL_IMPLEMENT_NONE
 #endif
 
 #if !defined(SJME_CONFIG_NAL_PIPE)
@@ -239,10 +290,14 @@ extern "C"
 
 #pragma endregion(none)
 
-#if (SJME_CONFIG_NAL_EXEC_PATH == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
+#if (SJME_CONFIG_NAL_ENCODING == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
+	(SJME_CONFIG_NAL_EXEC_PATH == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
 	(SJME_CONFIG_NAL_GETENV == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
+	(SJME_CONFIG_NAL_LINE_ENDING == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
+	(SJME_CONFIG_NAL_LOCALE == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
 	(SJME_CONFIG_NAL_NANOTIME == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
 	(SJME_CONFIG_NAL_PATH_STYLE == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
+	(SJME_CONFIG_NAL_OS_VERSION == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
 	(SJME_CONFIG_NAL_PIPE == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
 	(SJME_CONFIG_NAL_SEEKABLE == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \
 	(SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_WIN32) || \

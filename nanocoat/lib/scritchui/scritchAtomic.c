@@ -13,5 +13,5 @@
 #include "lib/scritchui/scritchuiTypesSub.h"
 
 #define sjme_atomic_type sjme_scritchui_pencil
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */
 

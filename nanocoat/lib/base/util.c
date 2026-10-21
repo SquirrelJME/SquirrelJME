@@ -62,6 +62,23 @@ sjme_jint sjme_compare_null(
 	return 1;
 }
 
+sjme_lpcwstr sjme_lpwcschr(sjme_lpcwstr within, sjme_jchar what)
+{
+	if (within == NULL)
+		return NULL;
+
+	/* Look through every character. */
+	do
+	{
+		/* Did we find our character? */
+		if ((*within) == what)
+			return within;
+	} while ((*(within++)) != '\0');
+
+	/* Not found. */
+	return NULL;
+}
+
 sjme_jint sjme_lpwcscmp(sjme_lpcwstr a, sjme_lpcwstr b)
 {
 	/* Compare null. */
@@ -91,6 +108,44 @@ sjme_jint sjme_lpwcscasecmp(sjme_lpcwstr a, sjme_lpcwstr b)
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
 }
+
+sjme_lpcwstr sjme_lpwcsncat(sjme_lpwstr dest,
+	sjme_lpcwstr src,
+	sjme_jint limit)
+{
+	sjme_jint srcLen, destLen, catLimit;
+
+	if (dest == NULL || src == NULL)
+		return NULL;
+
+	/* Cannot actually copy anything? */
+	if (limit <= 0)
+		return dest;
+
+	/* How long are these strings? */
+	/* Note that we can only ever copy up to limit, hence the use of limit. */
+	destLen = sjme_lpwcsnlen(dest, limit);
+
+	/* We can only concat this many characters at most. */
+	catLimit = sjme_max(0, limit - destLen);
+	srcLen = sjme_lpwcsnlen(src, catLimit);
+
+	/* The source string is completely blank, or copying it will end up */
+	/* completely overflowing dest? */
+	if (catLimit <= 0 || srcLen <= 0)
+		return dest;
+
+	/* Since we know where everything is now, we can just copy everything. */
+	/* Either we copy as much as we can, or only as large as src. */
+	memmove(&dest[destLen], &src[0],
+		sizeof(sjme_jchar) * sjme_min(srcLen, catLimit));
+
+	/* Always end in NUL. */
+	dest[limit - 1] = '\0';
+
+	/* Always returns dest. */
+	return dest;
+}
 	
 sjme_jint sjme_lpwcsncasecmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n)
 {
@@ -106,18 +161,106 @@ sjme_jint sjme_lpwcslen(sjme_lpcwstr s)
 {
 	if (s == NULL)
 		return -1;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* Forward to the other handler. */
+	return sjme_lpwcsnlen(s, INT32_MAX);
 }
 	
 sjme_jint sjme_lpwcsnlen(sjme_lpcwstr s, sjme_jint n)
 {
+	sjme_jint i;
+
 	if (s == NULL || n < 0)
 		return -1;
-	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+
+	/* A bit pointless to even bother doing anything else. */
+	if (n == 0)
+		return 0;
+
+	/* Find the NUL terminator. */
+	for (i = 0; i < n; i++)
+		if (s[i] == '\0')
+			return i;
+
+	/* Was the end of the string. */
+	return sjme_min(i, n);
+}
+
+sjme_intMax sjme_lpwcstoimax(sjme_attrInNotNull sjme_lpcwstr str,
+	sjme_attrOutNullable sjme_lpcwstr* endP,
+	sjme_attrInRange(2, 36) sjme_jint base)
+{
+	sjme_intMax result, add, mul, div;
+	sjme_jchar c;
+	sjme_jboolean negate;
+
+	/* Invalid inputs? */
+	if (str == NULL || base < 2 || base > 36)
+		return INTMAX_MIN;
+
+	/* Should this be negated? */
+	if ((*str) != '-')
+		negate = SJME_JNI_FALSE;
+	else
+	{
+		str++;
+		negate = SJME_JNI_TRUE;
+	}
+
+	/* Set base result. */
+	result = 0;
+
+	/* Parse values until an invalid character is hit. */
+	for (;;)
+	{
+		/* Determine the base add value. */
+		c = (*str);
+		if (c >= '0' && c <= '9')
+			add = c - '0';
+		else if (c >= 'a' && c <= 'z')
+			add = (c - 'a') + 10;
+		else if (c >= 'A' && c <= 'Z')
+			add = (c - 'A') + 10;
+
+		/* If none were met, this is an invalid base. */
+		else
+			break;
+
+		/* Is the base out of range? */
+		if (add < 0 || add >= base)
+			break;
+
+		/* Multiply by the base, then divide again to check for overflow. */
+		mul = result * base;
+		div = mul / base;
+
+		/* If these two values are different, we did overflow. */
+		if (result != div)
+			return INTMAX_MIN;
+
+		/* Add in the decoded digit. */
+		mul += add;
+
+		/* Divide again to check if we overflowed. */
+		div = mul / base;
+		if (result != div)
+			return INTMAX_MIN;
+
+		/* Did not overflow, so use the new value. */
+		result = mul;
+
+		/* Move to the next character. */
+		str++;
+	}
+
+	/* If the end was desired, return it. */
+	if (endP != NULL)
+		*endP = str;
+
+	/* Negate the final value? */
+	if (negate)
+		return -result;
+	return result;
 }
 
 sjme_errorCode sjme_random_init(
@@ -311,7 +454,7 @@ sjme_jint sjme_string_compareWAN(
 			if (bString[i] == '\0' && bLen > i)
 				bLen = i;
 
-			/* A comparison no longer needs to happen becuase an end of */
+			/* A comparison no longer needs to happen because an end of */
 			/* string was reached. */
 			break;
 		}
@@ -363,7 +506,7 @@ sjme_jint sjme_string_compareIWAN(
 			if (bString[i] == '\0' && bLen > i)
 				bLen = i;
 
-			/* A comparison no longer needs to happen becuase an end of */
+			/* A comparison no longer needs to happen because an end of */
 			/* string was reached. */
 			break;
 		}
@@ -472,27 +615,9 @@ sjme_jint sjme_string_hash(sjme_lpcstr string)
 	
 	if (string == NULL)
 		return 0;
-	
-	/* Initial result. */
-	result = 0;
-	
-	/* Read until end of string. */
-	for (p = string; *p != 0;)
-	{
-		/* Decode character. */
-		c = sjme_string_decodeChar(p, &p);
 
-		/* Not valid. */
-		if (c < 0)
-			return -1;
-		
-		/* Calculate the hashCode(), the JavaDoc gives the following formula:
-		 * == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes! */
-		result = ((result << 5) - result) + (sjme_jint)c;
-	}
-	
-	/* Return calculated result. */
-	return result;
+	/* Forward to the other variant, as these would otherwise be the same. */
+	return sjme_string_hashN(string, (sjme_jint)strlen(string));
 }
 
 sjme_jint sjme_string_hashN(sjme_lpcstr string, sjme_jint limit)
@@ -703,6 +828,14 @@ sjme_intPointer sjme_util_alignTo(sjme_intPointer addr,
 	return addr + (align - mod);
 }
 
+sjme_jint sjme_util_byteToInt(
+	sjme_attrInValue sjme_jint v)
+{
+	if ((v & INT32_C(0x80)) != 0)
+		return v | INT32_C(0xFFFFFF80);
+	return v & INT32_C(0x7F);
+}
+
 sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v)
 {
@@ -856,6 +989,10 @@ sjme_juint sjme_util_intOverShiftU(
 	sjme_attrInValue sjme_juint v,
 	sjme_attrInRange(-32, 32) sjme_jint sh)
 {
+	/* result.v.i = INT32_C(0x7FFFFFFF) >> (b.v.i & 0x1F); */
+	/* result.v.i = INT32_C(1) << (31 - (b.v.i & 0x1F)); */
+	/* result.v.i &= a.v.i >> (b.v.i & 0x1F); */
+
 	/* Shifting more than this always results in zero. */
 	if (sh <= -32 || sh >= 32)
 		return 0;
@@ -912,7 +1049,7 @@ sjme_errorCode sjme_util_intToBinary(
 		bitCount = 32;
 	
 	/* 0b([01]*32). */
-	if (destLen <= (3 + bitCount))
+	if (destLen <= (sjme_jint)(3 + bitCount))
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Start with the prefix. */
@@ -1076,10 +1213,29 @@ sjme_jint* sjme_util_memUnaligned32W(void* addr, sjme_jint v)
 
 #endif
 
+sjme_jint sjme_util_shortToInt(
+	sjme_attrInValue sjme_jint v)
+{
+	if ((v & INT32_C(0x8000)) != 0)
+		return v | INT32_C(0xFFFF8000);
+	return v & INT32_C(0x7FFF);
+}
+
 #if !defined(SJME_CONFIG_SIZEOF_SIZE_T) || SJME_CONFIG_SIZEOF_SIZE_T != 4
 
 sjme_jint sjme_util_sizeToInt(size_t in)
 {
+#if defined(SJME_CONFIG_HAS_SDCC)
+	sjme_jint result;
+
+	/* If casting to and then back results in a different value, then */
+	/* there was an overflow. */
+	result = (sjme_jint)in;
+	if (in != (size_t)result)
+		return INT32_MAX;
+
+	return result;
+#else
 	/* size_t is an unsigned value that generally is larger than int. */
 	/* However, this may not always be the case as a compiler could say */
 	/* support only 16-bit size_t with a 32-bit sjme_jint which is long. */
@@ -1087,6 +1243,7 @@ sjme_jint sjme_util_sizeToInt(size_t in)
 	if (sjme_noLint(sizeof(size_t) < sizeof(sjme_jint)) || in < INT32_MAX)
 		return (sjme_jint)in;
 	return INT32_MAX;
+#endif
 }
 
 #endif

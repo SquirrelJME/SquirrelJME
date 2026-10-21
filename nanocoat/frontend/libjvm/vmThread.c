@@ -22,6 +22,7 @@ void JNICALL JVM_StopThread(JNIEnv* env, jobject thread, jobject exception)
 jboolean JNICALL JVM_IsThreadAlive(JNIEnv* env, jobject thread)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 void JNICALL JVM_SuspendThread(JNIEnv* env, jobject thread)
@@ -52,11 +53,13 @@ void JNICALL JVM_Sleep(JNIEnv* env, jclass threadClass, jlong millis)
 jobject JNICALL JVM_CurrentThread(JNIEnv* env, jclass threadClass)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jint JNICALL JVM_CountStackFrames(JNIEnv* env, jobject thread)
 {
 	sjme_todo("Impl?");
+	return 0;
 }
 
 void JNICALL JVM_Interrupt(JNIEnv* env, jobject thread)
@@ -69,11 +72,13 @@ jboolean JNICALL JVM_IsInterrupted(JNIEnv* env,
 	jboolean clearInterrupted)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 jboolean JNICALL JVM_HoldsLock(JNIEnv* env, jclass threadClass, jobject obj)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }
 
 void JNICALL JVM_DumpAllStacks(JNIEnv* env, jclass unused)
@@ -84,6 +89,7 @@ void JNICALL JVM_DumpAllStacks(JNIEnv* env, jclass unused)
 jobjectArray JNICALL JVM_GetAllThreads(JNIEnv* env, jclass dummy)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 void JNICALL JVM_SetNativeThreadName(JNIEnv* env,
@@ -98,11 +104,13 @@ jobjectArray JNICALL JVM_DumpThreads(JNIEnv* env,
 	jobjectArray threads)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jintArray JNICALL JVM_GetThreadStateValues(JNIEnv* env, jint javaThreadState)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }
 
 jobjectArray JNICALL JVM_GetThreadStateNames(JNIEnv* env,
@@ -110,4 +118,5 @@ jobjectArray JNICALL JVM_GetThreadStateNames(JNIEnv* env,
 	jintArray values)
 {
 	sjme_todo("Impl?");
+	return NULL;
 }

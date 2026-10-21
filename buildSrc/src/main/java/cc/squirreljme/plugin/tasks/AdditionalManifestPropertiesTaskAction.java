@@ -433,8 +433,10 @@ public class AdditionalManifestPropertiesTaskAction
 		else
 		{
 			// Configuration specified?
+			// Optional can never set MicroEdition-Configuration
 			if (subConfig.definedConfigurations != null &&
-				!subConfig.definedConfigurations.isEmpty())
+				!subConfig.definedConfigurations.isEmpty() &&
+				!__isOptional)
 				try
 				{
 					if (!config.noEmitConfiguration)
@@ -451,8 +453,10 @@ public class AdditionalManifestPropertiesTaskAction
 				}
 			
 			// Profile specified?
+			// Optional can never set MicroEdition-Profile
 			if (subConfig.definedProfiles != null &&
-				!subConfig.definedProfiles.isEmpty())
+				!subConfig.definedProfiles.isEmpty() &&
+				!__isOptional)
 				try
 				{
 					AdditionalManifestPropertiesTaskAction.__addProfile(
@@ -467,6 +471,8 @@ public class AdditionalManifestPropertiesTaskAction
 			
 			// Standard specified? Use that reference... but do not use one
 			// if in the event there was a configuration or profile used
+			// Optional can cause this to potentially occur for configurations
+			// and profiles however
 			if (!didDepend && subConfig.definedStandards != null &&
 				!subConfig.definedStandards.isEmpty())
 			{
@@ -504,7 +510,8 @@ public class AdditionalManifestPropertiesTaskAction
 	}
 	
 	/**
-	 * Adds the given profile to the profile list.
+	 * Adds the given profile, replacing the existing one if the new
+	 * version is higher.
 	 * 
 	 * @param __attributes The attributes to add into.
 	 * @param __profile The profile to add.
@@ -519,17 +526,20 @@ public class AdditionalManifestPropertiesTaskAction
 			throw new NullPointerException("NARG");
 		
 		// Load all the existing profiles
-		Set<JavaMEProfile> existing = new LinkedHashSet<>();
+		JavaMEProfile existing = null;
 		String rawExisting =
 			__attributes.getValue("Microedition-Profile");
 		if (rawExisting != null)
-			existing.addAll(JavaMEProfile.parseProfiles(rawExisting));
+			existing = new JavaMEProfile(rawExisting);
 		
-		// Add to profile set
-		existing.add(__profile);
+		// If the existing one does not exist or is older, use the current one
+		if (existing == null || __profile.compareTo(existing) > 0)
+			__attributes.putValue("Microedition-Profile",
+				__profile.toString());
 		
-		// Store all of them
-		__attributes.putValue("Microedition-Profile",
-			JavaMEProfile.toString(existing));
+		// Otherwise, use the existing one
+		else
+			__attributes.putValue("Microedition-Profile",
+				existing.toString());
 	}
 }

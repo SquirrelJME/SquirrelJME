@@ -57,9 +57,10 @@ public class Hello
 		PrintStream out = System.out;
 		
 		// Print input message if used
-		int an;
-		if (__args != null && (an = __args.length) > 0)
+		if (__args != null)
 		{
+			// Print out each message
+			int an = __args.length;
 			for (int i = 0; i < an; i++)
 			{
 				// Add space for nicer formatting
@@ -70,7 +71,8 @@ public class Hello
 			}
 			
 			// Make it nice
-			out.println();
+			if (an > 0)
+				out.println();
 		}
 		
 		// Just a basic message

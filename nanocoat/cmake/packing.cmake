@@ -26,7 +26,7 @@ set(CPACK_DEBIAN_PACKAGE_NAME
 set(CPACK_DEBIAN_PACKAGE_EPOCH
 	"")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER
-	"Stephanie Gawroriski <xerthesquirrel@gmail.com>")
+	"Stephanie Gawroriski <xer@multiphasicapps.net>")
 set(CPACK_DEBIAN_ENABLE_COMPONENT_DEPENDS
 	TRUE)
 set(CPACK_DEBIAN_PACKAGE_SOURCE

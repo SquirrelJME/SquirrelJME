@@ -45,6 +45,9 @@ extern const sjme_nal sjme_nal_test;
  */
 typedef enum sjme_testResult
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_testResult),
+
 	/** The test passed. */
 	SJME_TEST_RESULT_PASS = 0,
 	
@@ -106,17 +109,6 @@ typedef struct sjme_availableTest
  */
 #define SJME_TEST_DECLARE(name) \
 	sjme_attrUnused sjme_testResult name(sjme_attrUnused sjme_test* test)
-
-#if defined(SJME_CONFIG_DEBUG)
-/**
- * Checks for leaks.
- * 
- * @param pool The pool to check.
- * @return Any resultant error, if any.
- * @since 2024/09/28 
- */
-void sjme_test_leakCheck(sjme_alloc_pool pool);
-#endif
 
 /*--------------------------------------------------------------------------*/
 

@@ -27,6 +27,13 @@ MLE_FUNC_PROXY_STATIC(jobject, currentJavaThread)
 	DESC_THREAD)
 MLE_FUNC_PROXY_STATIC(void, javaThreadSetDaemon)
 
+#define MLE_DESC_mainClass DESC_METHOD(DESC_TYPE, )
+MLE_FUNC_PROTO(jobject, mainClass)
+{
+	// Emulator base has no idea what the main class is
+	return NULL;
+}
+
 #define MLE_DESC_setTrace DESC_METHOD(DESC_VOID, \
 	DESC_STRING DESC_ARRAY(DESC_TRACEPOINT))
 MLE_FUNC_PROTO(void, setTrace, jobject string, jobject array)
@@ -41,6 +48,7 @@ MLE_LIST_BEGIN()
 	MLE_LIST_ITEM(aliveThreadCount),
 	MLE_LIST_ITEM(currentJavaThread),
 	MLE_LIST_ITEM(javaThreadSetDaemon),
+	MLE_LIST_ITEM(mainClass),
 	MLE_LIST_ITEM(setTrace),
 	MLE_LIST_ITEM(waitForUpdate),
 MLE_LIST_END()

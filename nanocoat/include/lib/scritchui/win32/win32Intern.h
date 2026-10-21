@@ -89,6 +89,9 @@ typedef INT (WINAPI *sjme_scritchui_win32_intern_GSMFD)(INT nIndex, UINT dpi);
  */
 typedef enum sjme_scritchui_win32_intern_dll
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_scritchui_win32_intern_dll),
+	
 	/** user32.dll. */
 	SJME_SCRITCHUI_WIN32_USER32_DLL,
 	

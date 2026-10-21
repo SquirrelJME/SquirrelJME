@@ -37,6 +37,65 @@
 	#include <stdlib.h>
 #endif
 
+#pragma region(encoding)
+#if (SJME_CONFIG_NAL_ENCODING == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
+
+sjme_nal_encodingType sjme_nal_default_encoding(void)
+{
+	static sjme_atomic(sjme_jint) cached;
+	sjme_nal_encodingType encoding;
+	UINT cp, acp;
+	sjme_jint i;
+
+	/* Cached? */
+	encoding = sjme_atomic_g(sjme_jint, &cached);
+	if (encoding != SJME_NAL_ENCODING_UNSPECIFIED)
+		return encoding;
+	
+	/* Read in the codepage. */
+	acp = GetACP();
+	cp = GetOEMCP();
+
+	/* Windows codepages need to be mapped to SquirrelJME. */
+#define SJME_CP_MAP(win, sjme) case win: encoding = sjme; break
+	for (i = 0; i < 2; i++)
+	{
+		switch ((i == 0 ? acp : cp))
+		{
+			SJME_CP_MAP(37, SJME_NAL_ENCODING_IBM037);
+			SJME_CP_MAP(437, SJME_NAL_ENCODING_ASCII);
+			SJME_CP_MAP(1252, SJME_NAL_ENCODING_ISO_8859_1);
+			SJME_CP_MAP(28591, SJME_NAL_ENCODING_ISO_8859_1);
+			SJME_CP_MAP(28605, SJME_NAL_ENCODING_ISO_8859_15);
+			SJME_CP_MAP(65001, SJME_NAL_ENCODING_UTF8);
+
+			/* Shift-JIS Variants. */
+			SJME_CP_MAP(20932, SJME_NAL_ENCODING_SHIFT_JIS);
+			SJME_CP_MAP(50222, SJME_NAL_ENCODING_SHIFT_JIS);
+
+			/* 7-bit ASCII. */
+			SJME_CP_MAP(20127, SJME_NAL_ENCODING_ASCII);
+		}
+		
+		/* Found codepage, so use that. */
+		if (encoding != SJME_NAL_ENCODING_UNSPECIFIED)
+			break;
+	}
+#undef SJME_CP_MAP
+	
+	/* Fallback to ASCII if unspecified, Windows is pretty broken when it */
+	/* comes to encoding support and it is just horrible in general. */
+	if (encoding == SJME_NAL_ENCODING_UNSPECIFIED)
+		encoding = SJME_NAL_ENCODING_ASCII;
+	sjme_atomic_s(sjme_jint, &cached, encoding);
+
+	/* Return the given encoding. */
+	return encoding;
+}
+
+#endif
+#pragma endregion(encoding)
+
 #pragma region(execPath)
 #if (SJME_CONFIG_NAL_EXEC_PATH == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
 
@@ -80,6 +139,50 @@ sjme_errorCode sjme_nal_default_execPath(
 #endif
 #pragma endregion(execPath)
 
+#pragma region(locale)
+#if (SJME_CONFIG_NAL_LOCALE == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
+
+sjme_nal_localeType sjme_nal_default_locale(void)
+{
+	static sjme_atomic(sjme_jint) cached;
+	sjme_nal_localeType locale;
+	LANGID li;
+
+	/* Cached? */
+	locale = sjme_atomic_g(sjme_jint, &cached);
+	if (locale != SJME_NAL_LOCALE_UNSPECIFIED)
+		return locale;
+	
+	/* Locale is per-thread in Windows. */
+	li = GetUserDefaultLangID();
+
+	/* Windows languages need to be mapped to SquirrelJME. */
+#define SJME_LI_MAP(pri, sub, sjme) \
+	case MAKELANGID(pri, sub): locale = sjme; break
+
+	switch (li)
+	{
+		SJME_LI_MAP(LANG_ENGLISH, SUBLANG_ENGLISH_US,
+			SJME_NAL_LOCALE_US_ENGLISH);
+
+		/* Default English. */
+		SJME_LI_MAP(LANG_ENGLISH, SUBLANG_NEUTRAL,
+			SJME_NAL_LOCALE_US_ENGLISH);
+	}
+#undef SJME_CP_MAP
+	
+	/* Fallback to US English if unspecified. */
+	if (locale == SJME_NAL_LOCALE_UNSPECIFIED)
+		locale = SJME_NAL_LOCALE_US_ENGLISH;
+	sjme_atomic_s(sjme_jint, &cached, locale);
+
+	/* Return the given locale. */
+	return locale;
+}
+
+#endif
+#pragma endregion(locale)
+
 #pragma region(nanotime)
 #if (SJME_CONFIG_NAL_NANOTIME == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
 
@@ -111,6 +214,266 @@ sjme_errorCode sjme_nal_default_nanoTime(
 
 #endif
 #pragma endregion(nanotime)
+
+#pragma region(osVersion)
+#if (SJME_CONFIG_NAL_OS_VERSION == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
+
+typedef LONG (WINAPI *sjme_rtlGetVersionProc)(LPOSVERSIONINFOEXW);
+
+sjme_errorCode sjme_nal_default_osVersion(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	OSVERSIONINFOA version;
+	OSVERSIONINFOEXW exVerW;
+	sjme_lpcstr basicStr, nul;
+	sjme_jint servicePack;
+	HANDLE ntDll;
+	sjme_rtlGetVersionProc rtlGetVersion;
+
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Get the version info from Windows. */
+	/* This is the rather simple part. */
+	memset(&version, 0, sizeof(version));
+	version.dwOSVersionInfoSize = sizeof(version);
+	if (0 == GetVersionExA(&version))
+		return SJME_ERROR_NATIVE_ERROR;
+
+	/* Basic string? */
+	basicStr = NULL;
+
+	/* Is there a service pack? */
+	servicePack = 0;
+	if (0 == strncasecmp(version.szCSDVersion,
+		"Service Pack ", 13))
+		servicePack = (sjme_jint)strtol(
+			&version.szCSDVersion[13], NULL, 10);
+
+	/* Make it always valid. */
+	if (servicePack < 0)
+		servicePack = 0;
+
+	/* Windows NT Family. */
+	if (version.dwPlatformId == VER_PLATFORM_WIN32_NT)
+	{
+		/* Windows 8 and newer. */
+		/* From the SDK, the version returned depends on the manifest */
+		/* version, which we do not actually care about. */
+		/* https://stackoverflow.com/questions/32115255/ */
+		if ((version.dwMajorVersion == 6 && version.dwMinorVersion >= 2) ||
+			version.dwMajorVersion >= 10)
+		{
+			/* Need to get this from the kernel directly. */
+			ntDll = GetModuleHandleA("ntdll");
+			if (ntDll != NULL)
+				rtlGetVersion = (sjme_rtlGetVersionProc)GetProcAddress(ntDll,
+					"RtlGetVersion");
+			else
+				rtlGetVersion = NULL;
+
+			/* Get the extended version info. */
+			if (rtlGetVersion != NULL)
+			{
+				memset(&exVerW, 0, sizeof(exVerW));
+				exVerW.dwOSVersionInfoSize = sizeof(exVerW);
+				rtlGetVersion(&exVerW);
+			}
+
+#define SJME_WIN11_BUILD(what, min) \
+	else if (exVerW.dwBuildNumber >= (min)) { basicStr = "11 " what;}
+#define SJME_WIN10_BUILD(what, min) \
+	else if (exVerW.dwBuildNumber >= (min)) { basicStr = "10 " what;}
+
+			/* Something newer than Windows 11? */
+			if (exVerW.dwBuildNumber > 28000)
+				snprintf(out, outLen - 1, "NT '10' Build %d",
+					(int)exVerW.dwBuildNumber);
+
+			/* Windows 11... and all of its builds. */
+			/* https://stackoverflow.com/questions/74645458/ */
+			/* vvv This is not an error, 26H1 has a newer kernel than */
+			/*     26H2. Why? Only Microsoft truly knows. */
+			SJME_WIN11_BUILD("26H1", 28000)
+			SJME_WIN11_BUILD("26H2", 26300)
+			/* ^^^ */
+			SJME_WIN11_BUILD("25H2", 26200)
+			SJME_WIN11_BUILD("24H2", 26100)
+			SJME_WIN11_BUILD("23H2", 22631)
+			SJME_WIN11_BUILD("22H2", 22621)
+			SJME_WIN11_BUILD("21H2", 22000)
+
+			/* Windows 10... and all of its builds. */
+			SJME_WIN10_BUILD("22H2", 19045)
+			SJME_WIN10_BUILD("21H2", 19044)
+			SJME_WIN10_BUILD("21H1", 19043)
+			SJME_WIN10_BUILD("20H2", 19042)
+			SJME_WIN10_BUILD("2004", 19041)
+			SJME_WIN10_BUILD("1909", 18363)
+			SJME_WIN10_BUILD("1903", 18362)
+			SJME_WIN10_BUILD("1809", 17763)
+			SJME_WIN10_BUILD("1803", 17134)
+			SJME_WIN10_BUILD("1709", 16299)
+			SJME_WIN10_BUILD("1703", 15063)
+			SJME_WIN10_BUILD("1607", 14393)
+			SJME_WIN10_BUILD("1511", 10586)
+
+			/* Another Windows 10. */
+			else if (exVerW.dwMajorVersion == 10 ||
+				exVerW.dwBuildNumber >= 10240)
+				basicStr = "10";
+
+#undef SJME_WIN10_BUILD
+#undef SJME_WIN11_BUILD
+
+			/* Windows 8? */
+			else if (exVerW.dwMinorVersion == 3)
+				basicStr = "8.1";
+			else
+				basicStr = "8";
+		}
+
+		/* Windows 7. */
+		else if (version.dwMajorVersion == 6 && version.dwMinorVersion == 1)
+		{
+			if (servicePack == 1)
+				basicStr = "7 SP1";
+			else
+				basicStr = "7";
+		}
+
+		/* Windows Vista. */
+		else if (version.dwMajorVersion == 6 && version.dwMinorVersion == 0)
+		{
+			if (servicePack == 2)
+				basicStr = "Vista SP2";
+			else if (servicePack == 1)
+				basicStr = "Vista SP1";
+			else
+				basicStr = "Vista";
+		}
+
+		/* Windows Server 2003. */
+		else if (version.dwMajorVersion == 5 && version.dwMinorVersion == 2)
+		{
+			/* ReactOS? This is based on a forum posts: */
+			/* https://reactos.org/forum/viewtopic.php?t=1401 */
+			nul = strchr(version.szCSDVersion, '\0');
+			if (nul != NULL && nul[1] == 'R')
+				basicStr = &nul[1];
+
+			/* Otherwise, just plain Windows 2003. */
+			else
+				basicStr = "Server 2003";
+		}
+
+		/* Windows XP. */
+		else if (version.dwMajorVersion == 5 && version.dwMinorVersion == 1)
+		{
+			if (version.dwBuildNumber >= 2710 &&
+				servicePack == 0)
+				basicStr = "XP Media Center Edition 2005 R2";
+			else if (version.dwBuildNumber >= 2700 &&
+				servicePack == 0)
+				basicStr = "XP Media Center Edition 2005";
+			else if (servicePack == 3)
+				basicStr = "XP SP3";
+			else if (servicePack == 2)
+				basicStr = "XP SP2";
+			else if (servicePack == 1)
+				basicStr = "XP SP1";
+			else
+				basicStr = "XP";
+		}
+
+		/* Windows 2000. */
+		else if (version.dwMajorVersion == 5 && version.dwMinorVersion == 0)
+		{
+			if (servicePack == 4)
+				basicStr = "2000 SP4";
+			else if (servicePack == 3)
+				basicStr = "2000 SP3";
+			else if (servicePack == 2)
+				basicStr = "2000 SP2";
+			else if (servicePack == 1)
+				basicStr = "2000 SP2";
+			else
+				basicStr = "2000";
+		}
+
+		/* Generic Windows NT. */
+		else
+		{
+			snprintf(out, outLen - 1,
+				"NT %d.%d Build %d",
+				(int)version.dwMajorVersion,
+				(int)version.dwMinorVersion,
+				(int)version.dwBuildNumber);
+		}
+	}
+
+	/* Windows 9x Family. */
+	else if (version.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
+	{
+		/* Some other 9x? */
+		if (version.dwMajorVersion != 4)
+			basicStr = "9x";
+
+		/* Windows 95. */
+		else if (version.dwMinorVersion == 0)
+		{
+			if (version.szCSDVersion[1] == 'C' ||
+				version.szCSDVersion[1] == 'B')
+				basicStr = "95 OSR2";
+			else
+				basicStr = "95";
+		}
+
+		/* Windows 98. */
+		else if (version.dwMinorVersion == 10)
+		{
+			if (version.szCSDVersion[1] == 'A' ||
+				version.szCSDVersion[1] == '2')
+				basicStr = "98SE";
+			else
+				basicStr = "98";
+		}
+
+		/* Windows ME. */
+		else if (version.dwMinorVersion == 90)
+			basicStr = "ME";
+
+		/* Some other 9x. */
+		else
+			basicStr = "9x";
+	}
+
+	/* Windows 3.1 with Win32s. */
+	else if (version.dwPlatformId == VER_PLATFORM_WIN32s)
+	{
+		/* Rather simple. */
+		basicStr = "Win32S";
+	}
+
+	/* Unknown. */
+	else
+	{
+		return SJME_ERROR_NATIVE_ERROR;
+	}
+
+	/* Copy out the basic string. */
+	if (basicStr != NULL)
+		strncpy(out, basicStr,
+			outLen - 1);
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(osVersion)
 
 #pragma region(pathStyle)
 #if (SJME_CONFIG_NAL_PATH_STYLE == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
@@ -608,7 +971,7 @@ sjme_errorCode sjme_nal_default_userName(
 		return SJME_ERROR_NO_USER_LOGIN;
 
 	/* Give the resultant path. */
-	strncpy(out, env, sjme_min(strlen(env), outLen));
+	strncpy(out, env, sjme_min((sjme_jint)strlen(env), outLen));
 	return SJME_ERROR_NONE;
 #undef BUF_SIZE
 }

@@ -16,6 +16,20 @@
 	#include <time.h>
 #endif
 
+#if (SJME_CONFIG_NAL_OS_VERSION == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+	#include <sys/utsname.h>
+#endif
+
+#if (SJME_CONFIG_NAL_ENCODING == SJME_CONFIG_NAL_IMPLEMENT_POSIX) || \
+	(SJME_CONFIG_NAL_LOCALE == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+	#include <locale.h>
+
+	/* Android does not have langinfo. */
+	#if !defined(SJME_CONFIG_HAS_OS_ANDROID)
+		#include <langinfo.h>
+	#endif
+#endif
+
 #if (SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_POSIX) || \
 	(SJME_CONFIG_NAL_TCP_UDP == SJME_CONFIG_NAL_IMPLEMENT_POSIX_OLD)
 	#include <sys/socket.h>
@@ -42,6 +56,106 @@
 	#endif
 #endif
 
+#pragma region(encoding)
+#if (SJME_CONFIG_NAL_ENCODING == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+
+sjme_nal_encodingType sjme_nal_default_encoding(void)
+{
+	static sjme_atomic(sjme_jint) cached;
+	sjme_nal_encodingType encoding;
+	const char* codeType;
+	sjme_lpcstr set;
+
+	/* Cached? */
+	encoding = (sjme_nal_encodingType)sjme_atomic_g(sjme_jint, &cached);
+	if (encoding != SJME_NAL_ENCODING_UNSPECIFIED)
+		return encoding;
+
+	/* Reset codetype based string. */
+	codeType = NULL;
+	
+	/* Get the base global locale. */
+	set = setlocale(LC_ALL, "");
+	if (set != NULL)
+		codeType = nl_langinfo(CODESET);
+
+	/* Base on the code type string? */
+	if (codeType != NULL)
+	{
+		if (strcasecmp(codeType, "UTF-8") == 0)
+			encoding = SJME_NAL_ENCODING_UTF8;
+		else if (strcasecmp(codeType, "ASCII") == 0 ||
+			strcasecmp(codeType, "ANSI_X3.4-1968") == 0)
+			encoding = SJME_NAL_ENCODING_ASCII;
+		else if (strcasecmp(codeType, "IBM037") == 0 ||
+			strcasecmp(codeType, "EBCDIC-US") == 0)
+			encoding = SJME_NAL_ENCODING_IBM037;
+		else if (strcasecmp(codeType, "ISO-8859-1") == 0)
+			encoding = SJME_NAL_ENCODING_ISO_8859_1;
+		else if (strcasecmp(codeType, "ISO-8859-15") == 0)
+			encoding = SJME_NAL_ENCODING_ISO_8859_15;
+		else if (strcasecmp(codeType, "SHIFT_JIS") == 0 ||
+			strcasecmp(codeType, "SHIFT_JISX0213") == 0)
+			encoding = SJME_NAL_ENCODING_SHIFT_JIS;
+		else if (strcasecmp(codeType, "IBM437") == 0)
+			encoding = SJME_NAL_ENCODING_IBM437;
+	}
+	
+	/* Fallback to UTF-8 if unspecified. */
+	if (encoding == SJME_NAL_ENCODING_UNSPECIFIED)
+		encoding = SJME_NAL_ENCODING_UTF8;
+	sjme_atomic_s(sjme_jint, &cached, encoding);
+
+	/* Return the given encoding. */
+	return encoding;
+}
+
+#endif
+#pragma endregion(encoding)
+
+#pragma region(locale)
+#if (SJME_CONFIG_NAL_LOCALE == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+
+sjme_nal_localeType sjme_nal_default_locale(void)
+{
+	static sjme_atomic(sjme_jint) cached;
+	sjme_nal_localeType locale;
+	sjme_lpcstr set;
+
+	/* Cached? */
+	locale = (sjme_nal_localeType)sjme_atomic_g(sjme_jint, &cached);
+	if (locale != SJME_NAL_LOCALE_UNSPECIFIED)
+		return locale;
+	
+	/* Get the base regional locale. */
+	set = setlocale(LC_ALL, "");
+	if (set != NULL)
+	{
+		/* US English. */
+		if (0 == strncasecmp(set, "en_US", 5))
+			locale = SJME_NAL_LOCALE_US_ENGLISH;
+	}
+	
+	/* Fallback to global locale if a specific region is missing. */
+	if (locale == SJME_NAL_LOCALE_UNSPECIFIED && set != NULL)
+	{
+		/* Default English (US). */
+		if (0 == strncasecmp(set, "en", 2))
+			locale = SJME_NAL_LOCALE_US_ENGLISH;
+	}
+	
+	/* Fallback to US English if unspecified. */
+	if (locale == SJME_NAL_LOCALE_UNSPECIFIED)
+		locale = SJME_NAL_LOCALE_US_ENGLISH;
+	sjme_atomic_s(sjme_jint, &cached, locale);
+
+	/* Return the given locale. */
+	return locale;
+}
+
+#endif
+#pragma endregion(locale)
+
 #pragma region(nanotime)
 #if (SJME_CONFIG_NAL_NANOTIME == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
 
@@ -59,13 +173,49 @@ sjme_errorCode sjme_nal_default_nanoTime(
 		return SJME_ERROR_NATIVE_SYSTEM_CLOCK_FAILURE;
 	
 	/* Translate time. */
-	result->full = spec.tv_nsec + ((sjme_julongNative)spec.tv_sec *
-		UINT64_C(1000000000));
+	result->full = (sjme_jlongNative)spec.tv_nsec +
+		((sjme_jlongNative)spec.tv_sec * UINT64_C(1000000000));
 	return SJME_ERROR_NONE;
 }
 
 #endif
 #pragma endregion(nanotime)
+
+#pragma region(osVersion)
+#if (SJME_CONFIG_NAL_OS_VERSION == SJME_CONFIG_NAL_IMPLEMENT_POSIX)
+
+sjme_errorCode sjme_nal_default_osVersion(
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	struct utsname result;
+
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen <= 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+
+	/* Get this from uname. */
+	memset(&result, 0, sizeof(result));
+	if (uname(&result) < 0)
+		sjme_nal_errno(errno);
+
+	/* Directly copy the release/version over. */
+	if (result.release[0] != '\0')
+		strncpy(out, result.release,
+			sjme_min((sjme_jint)sizeof(result.release), outLen - 1));
+	else
+		strncpy(out, result.version,
+			sjme_min((sjme_jint)sizeof(result.version), outLen - 1));
+	out[outLen - 1] = '\0';
+
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
+#endif
+#pragma endregion(osVersion)
 
 #pragma region(pathStyle)
 #if (SJME_CONFIG_NAL_PATH_STYLE == SJME_CONFIG_NAL_IMPLEMENT_POSIX)

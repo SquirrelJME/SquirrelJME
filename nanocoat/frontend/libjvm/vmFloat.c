@@ -12,4 +12,5 @@
 jboolean JNICALL JVM_IsNaN(jdouble d)
 {
 	sjme_todo("Impl?");
+	return JNI_FALSE;
 }

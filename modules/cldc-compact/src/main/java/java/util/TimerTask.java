@@ -20,32 +20,6 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 public abstract class TimerTask
 	implements Runnable
 {
-	/** Indicates the task has been cancelled. */
-	volatile boolean _cancel;
-	
-	/** The scheduled time for the task, undefined at first. */
-	volatile long _schedtime =
-		Long.MIN_VALUE;
-	
-	/** The last run time. */
-	volatile long _lastrun =
-		Long.MIN_VALUE;
-	
-	/** Is this being run? */
-	volatile boolean _inrun;
-	
-	/** Was this scheduled? */
-	volatile boolean _scheduled;
-	
-	/** Is this a repeated execution? */
-	volatile boolean _repeated;
-	
-	/** Fixed repeat? */
-	volatile boolean _fixed;
-	
-	/** The period. */
-	volatile long _period;
-	
 	/**
 	 * Initializes the base timer task.
 	 *
@@ -65,12 +39,7 @@ public abstract class TimerTask
 	@Api
 	public boolean cancel()
 	{
-		// Was already canceled
-		if (this._cancel)
-			return false;
-		
-		this._cancel = true;
-		return this._repeated || this._scheduled;
+		return __PeriodicTimers__.__instance().__cancel(this);
 	}
 	
 	/**
@@ -84,9 +53,8 @@ public abstract class TimerTask
 	@Api
 	public long scheduledExecutionTime()
 	{
-		if (this._inrun)
-			return this._lastrun;
-		return this._schedtime;
+		return __PeriodicTimers__.__instance()
+			.__scheduledExecutionTime(this);
 	}
 }
 

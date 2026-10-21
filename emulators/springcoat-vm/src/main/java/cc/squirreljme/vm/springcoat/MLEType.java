@@ -11,6 +11,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
+import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.vm.springcoat.brackets.JarPackageObject;
 import cc.squirreljme.vm.springcoat.exceptions.SpringClassNotFoundException;
 import cc.squirreljme.vm.springcoat.exceptions.SpringMLECallError;
@@ -189,6 +190,26 @@ public enum MLEType
 				return new JarPackageObject(__thread.machine,
 					baseType.inJar());
 			return SpringNullObject.NULL;
+		}
+	},
+	
+	/** {@link TypeShelf#initClass(Class)}. */
+	INIT_CLASS(MLEDispatcher.methodKey("initClass", void.class,
+		Class.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2020/06/18
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			SpringClass type = MLEObjects.type(__args[0]);
+			
+			// Load the class
+			__thread.loadClass(type);
+			
+			return null;
 		}
 	},
 	

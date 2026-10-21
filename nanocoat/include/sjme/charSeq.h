@@ -90,6 +90,9 @@ typedef struct sjme_charSeq_functions
  */
 typedef enum sjme_charSeq_type
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_charSeq_type),
+	
 	/** Null character sequence. */
 	SJME_CHAR_SEQ_TYPE_NULL,
 	

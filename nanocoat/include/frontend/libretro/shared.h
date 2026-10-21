@@ -41,6 +41,9 @@ extern "C" {
 /** Extra button IDs. */
 typedef enum sjme_libretro_extra_id
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_libretro_extra_id),
+	
 	/** Soft 3 (Middle Command). */
 	SJME_LIBRETRO_EXTRA_ID_SOFT_THREE,
 
@@ -93,6 +96,9 @@ typedef struct sjme_libretro_globalStruct
 
 	/** The global VM state. */
 	sjme_nvm inState;
+
+	/** Are we in TAS mode? */
+	sjme_jboolean tasMode;
 
 	/** Modeless stars. */
 	sjme_modelessStarState modelessStars;

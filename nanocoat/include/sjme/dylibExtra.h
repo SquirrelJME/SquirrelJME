@@ -40,6 +40,9 @@ extern "C"
  */
 typedef enum sjme_dylib_extraFamily
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_dylib_extraFamily),
+
 	/** Unknown. */
 	SJME_DYLIB_EXTRA_FAMILY_UNKNOWN = 0,
 
@@ -54,14 +57,33 @@ typedef enum sjme_dylib_extraFamily
 } sjme_dylib_extraFamily;
 
 /**
+ * Returns the preferred extra library for the given family.
+ *
+ * @param nal The optional native abstraction layer to use, if this is not
+ * specified then the default is used.
+ * @param family The family to locate a preference for.
+ * @param outSubComponent The resultant preference, will
+ * be @code NULL @endcode if there is no preference.
+ * @return On any resultant error, if any.
+ * @since 2026/10/08
+ */
+sjme_errorCode sjme_dylib_preferredExtra(
+	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrInRange(0, SJME_DYLIB_NUM_EXTRA_FAMILY)
+		sjme_dylib_extraFamily family,
+	sjme_attrOutNotNull sjme_lpcstr* outSubComponent);
+
+/**
  * Searches for an opens an extra library using a standard search interface.
  * 
  * @param nal The optional native abstraction layer to use, if this is not
- * specified than the default is used.
+ * specified then the default is used.
  * @param family The family of libraries to attempt opening from.
  * @param subComponent The subcomponent to open, this may not be applicable
  * to all families.
  * @param outLib The resultant library.
+ * @param outFoundComponent The actual found component that was loaded as
+ * successful.
  * @return Any resultant error, if any.
  * @since 2025/12/07
  */
@@ -70,7 +92,8 @@ sjme_errorCode sjme_dylib_openExtra(
 	sjme_attrInRange(0, SJME_DYLIB_NUM_EXTRA_FAMILY)
 		sjme_dylib_extraFamily family,
 	sjme_attrInNullable sjme_lpcstr subComponent,
-	sjme_attrOutNotNull sjme_dylib* outLib);
+	sjme_attrOutNotNull sjme_dylib* outLib,
+	sjme_attrOutNullable sjme_lpcstr* outFoundComponent);
 	
 /*--------------------------------------------------------------------------*/
 

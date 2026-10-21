@@ -62,7 +62,7 @@ sjme_errorCode sjme_dylib_close(
 sjme_errorCode sjme_dylib_lookup(
 	sjme_attrInNotNull sjme_dylib inLib,
 	sjme_attrInNotNull sjme_lpcstr inSymbol,
-	sjme_pointer* outPtr);
+	sjme_attrOutNotNull sjme_pointer* outPtr);
 
 /**
  * Calculates the name of the given library for the current system.

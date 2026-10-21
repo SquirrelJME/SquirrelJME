@@ -1,8 +1,9 @@
 # SquirrelJME GenAI Coding Guidelines and Agents Policy
 
 ***NOTE:*** This is a tertiary document that adds to the existing contributing
-guidelines that have been in place since 2017 and updated accordingly. For
-those using GenAI to replace their ability, or lack thereof, to comprehend the
+guidelines that have been in place since 2017 and updated accordingly. This
+specific document is written by a human with emotions, with much passion.
+Those using GenAI to replace their ability, or lack thereof, to comprehend the
 contributing guidelines and/or the nuances of this GenAI Policy; the link to
 the full contributing guidelines is as below:
 
@@ -18,6 +19,19 @@ of what SquirrelJME is and what it is for.
 GenAI is counter to the project's goal and desire to be autonomous and to act
 with self-determination. Programming is art, and SquirrelJME is made by humans
 for humans.
+
+Have you enjoyed making something? SquirrelJME is that enjoyment. Every line
+of code, graphic, test, input, and output that it happens brings me excitement
+and joy. One could just use OpenJDK or KVM to get effectively what SquirrelJME
+is, but that is not the point. Just getting code to run on your own virtual
+machine is extremely fascinating with lots of science stuff involved. This is
+something that I can nerd out about for _many_ hours. Much of the world today
+is effectively just producing products out of an assembly line as quickly as
+possible and without any regards to quality. Think of yourself and what you
+enjoy, if that turned into an assembly line that pumps out content non-stop;
+think if you accepted forgetting what you love to do only to stand at said
+assembly line and tighten the same bolt when it comes up every five seconds.
+Would you enjoy that? I think not.
 
 For those who feel that GenAI allows them to do something that they would never
 otherwise do, this is something that we call _Imposter Syndrome_. You can do

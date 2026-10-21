@@ -10,6 +10,7 @@
 /**
  * Descriptors and their interpreters.
  * 
+ * @file
  * @since 2024/02/04
  */
 
