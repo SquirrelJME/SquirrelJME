@@ -40,6 +40,9 @@ extern "C"
  */
 typedef enum sjme_bitStream_order
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_bitStream_order),
+	
 	/** Least significant bit. */
 	SJME_BITSTREAM_LSB,
 	

@@ -160,7 +160,7 @@ static sjme_errorCode sjme_nvm_rom_zipSuiteDefaultLaunch(
 			return sjme_error_default(error);
 		
 		/* Give it. */
-		outTarget->mainArgs = strings;
+		outTarget->mainArgs = (sjme_list(sjme_lpcstr)*)strings;
 		
 		/* Close. */
 		if (sjme_error_is(error = sjme_closeable_close(

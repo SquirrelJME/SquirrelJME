@@ -133,6 +133,9 @@ typedef struct sjme_scritchui_fb_widgetState
  */
 typedef enum sjme_scritchui_fb_displayListType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_scritchui_fb_displayListType),
+	
 	/** Nothing. */
 	SJME_SCRITCHUI_FB_DL_TYPE_NOTHING,
 	
@@ -156,6 +159,9 @@ typedef enum sjme_scritchui_fb_displayListType
  */
 typedef enum sjme_scritchui_fb_displayListMod
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_scritchui_fb_displayListMod),
+	
 	/** No modifiers. */
 	SJME_SCRITCHUI_FB_DL_TYPE_MOD_NONE = 0,
 	

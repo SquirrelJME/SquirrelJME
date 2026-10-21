@@ -29,14 +29,6 @@
 #include "sjme/alloc.h"
 #include "sjme/dylib.h"
 
-#if defined(SJME_CONFIG_HAS_LOW_MEMORY)
-	/** Debug buffer size for messages. */
-	#define DEBUG_BUF 64
-#else
-	/** Debug buffer size for messages. */
-	#define DEBUG_BUF 512
-#endif
-
 /** The crash function to call. */
 sjme_threadLocal(sjme_thread_mainFunc, sjme_debug_crashFunc);
 

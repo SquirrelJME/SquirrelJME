@@ -40,6 +40,9 @@ extern "C"
  */
 typedef enum sjme_traverse_createMode
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_traverse_createMode),
+
 	/** Normal creation. */
 	SJME_TRAVERSE_NORMAL,
 	

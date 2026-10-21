@@ -11,6 +11,23 @@
 #include "sjme/intern/nal.h"
 #include "sjme/path.h"
 
+#pragma region(encoding)
+#if (SJME_CONFIG_NAL_ENCODING == SJME_CONFIG_NAL_IMPLEMENT_NONE)
+
+sjme_nal_encodingType sjme_nal_default_encoding(void)
+{
+#if defined(SJME_CONFIG_HAS_OS_ANDROID)
+	/* Android assumes UTF-8 always. */
+	return SJME_NAL_ENCODING_UTF8;
+#else
+	/* Unknown system encoding, assume ASCII. */
+	return SJME_NAL_ENCODING_ASCII;
+#endif
+}
+
+#endif
+#pragma endregion(encoding)
+
 #pragma region(execPath)
 #if (SJME_CONFIG_NAL_EXEC_PATH == SJME_CONFIG_NAL_IMPLEMENT_NONE)
 
@@ -50,6 +67,39 @@ sjme_errorCode sjme_nal_default_getEnv(
 
 #endif
 #pragma endregion(getenv)
+
+#pragma region(lineEnding)
+#if (SJME_CONFIG_NAL_LINE_ENDING == SJME_CONFIG_NAL_IMPLEMENT_NONE)
+
+sjme_nal_lineEndingType sjme_nal_default_lineEnding(void)
+{
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_16) || \
+	defined(SJME_CONFIG_HAS_OS_WINDOWS_32) || \
+	defined(SJME_CONFIG_HAS_OS_PALMOS) || \
+	defined(SJME_CONFIG_HAS_OS_PC_DOS)
+	return SJME_NAL_LINE_ENDING_CRLF;
+#elif defined(SJME_CONFIG_HAS_OS_MACOS_CLASSIC)
+	return SJME_NAL_LINE_ENDING_CR;
+#else
+	return SJME_NAL_LINE_ENDING_LF;
+#endif
+}
+
+#endif
+#pragma endregion(lineEnding)
+
+#pragma region(locale)
+#if (SJME_CONFIG_NAL_LOCALE == SJME_CONFIG_NAL_IMPLEMENT_NONE)
+
+sjme_nal_localeType sjme_nal_default_locale(void)
+{
+	/* Unknown system locale, assume US English. */
+	return SJME_NAL_LOCALE_US_ENGLISH;
+}
+
+#endif
+#pragma endregion(locale)
 
 #pragma region(nanotime)
 #if (SJME_CONFIG_NAL_NANOTIME == SJME_CONFIG_NAL_IMPLEMENT_NONE)

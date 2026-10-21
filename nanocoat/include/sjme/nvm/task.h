@@ -43,6 +43,9 @@ extern "C" {
  */
 typedef enum sjme_nvm_task_pipeRedirectType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_task_pipeRedirectType),
+	
 	/** Discard everything. */
 	SJME_NVM_TASK_PIPE_REDIRECT_TYPE_DISCARD = 0,
 
@@ -63,6 +66,9 @@ typedef enum sjme_nvm_task_pipeRedirectType
  */
 typedef enum sjme_nvm_task_statusType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_task_statusType),
+	
 	/** Task has exited. */
 	SJME_NVM_TASK_STATUS_EXITED = 0,
 	
@@ -80,6 +86,9 @@ typedef enum sjme_nvm_task_statusType
  */
 typedef enum sjme_nvm_thread_startType
 {
+	/** This is an enum based int. */
+	sjme_enumInt(sjme_nvm_thread_startType),
+	
 	/** Thread was never started. */
 	SJME_NVM_THREAD_START_NEVER = 0,
 
@@ -101,7 +110,7 @@ typedef enum sjme_nvm_thread_startType
 
 /** Atomic sjme_nvm_thread_startType . */
 #define sjme_atomic_type sjme_nvm_thread_startType
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 	
 /**
  * The type of thread status this is.
@@ -110,6 +119,9 @@ typedef enum sjme_nvm_thread_startType
  */
 typedef enum sjme_nvm_thread_statusType
 {
+	/** This is an enum based int. */
+	sjme_enumInt(sjme_nvm_thread_statusType),
+	
 	/** Running. */
 	SJME_NVM_THREAD_STATUS_RUNNING = 0,
 	
@@ -124,7 +136,7 @@ typedef enum sjme_nvm_thread_statusType
 } sjme_nvm_thread_statusType;
 
 #define sjme_atomic_type sjme_nvm_thread_statusType
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 	
 /**
  * Interned task strings.
@@ -139,29 +151,6 @@ typedef struct sjme_nvm_taskStringsBase sjme_nvm_taskStringsBase;
  * @since 2025/01/25
  */
 typedef sjme_nvm_taskStringsBase* sjme_nvm_taskStrings;
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-/**
- * Contains information on all the thread stack frames.
- *
- * @since 2025/02/10
- */
-typedef struct sjme_frame_threadStacks sjme_frame_threadStacks;
-	
-/**
- * Contains information on the stack framing information.
- *
- * @since 2025/01/27
- */
-typedef struct sjme_frame_frameStack sjme_frame_frameStack;
-	
-/**
- * Contains information on all the frame stack information. 
- *
- * @since 2025/02/10
- */
-typedef struct sjme_frame_frameStacks sjme_frame_frameStacks;
-#endif
 
 /**
  * This is called when a frame is waiting for a condition to be met.
@@ -180,68 +169,6 @@ typedef sjme_errorCode (*sjme_nvm_frame_conditionFunc)(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInValue sjme_intPointer condition,
 	sjme_attrOutNotNull sjme_jvalueTyped* stackPush);
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-struct sjme_frame_threadStacks
-{
-	/** The storage for the stack. */
-	sjme_pointer storage;
-
-	/** The number of bytes used for storage. */
-	sjme_jint storageLen;
-
-	/** The address top of the stack top. */
-	sjme_jint storageTop;
-};
-	
-struct sjme_frame_frameStack
-{
-	/** The top of the stack frame. */
-	sjme_jint top;
-
-	/** The front of the stack, anything before are local variables. */
-	sjme_jint front;
-	
-	/** The length of this set. */
-	sjme_jint length;
-
-	/** The number of bytes claimed for this frame. */
-	sjme_jint storageClaim;
-	
-	/** The value set. */
-	sjme_nvm_valueSet* set;
-};
-
-/** Final stack indicator. */
-#define SJME_NVM_STACK_FINAL_ID SJME_NUM_JAVA_TYPE_IDS
-
-struct sjme_frame_frameStacks
-{
-	/** The storage base of this stack. */
-	sjme_pointer storageBase;
-
-	/** The number of bytes claimed for this frame. */
-	sjme_jint storageClaim;
-	
-	/** Stack framing information. */
-	sjme_frame_frameStack stack[SJME_NVM_STACK_FINAL_ID];
-
-	/** The order of the stack. */
-	sjme_javaTypeId* order;
-
-	/**
-	 * The front of the stack, anything before the "front" are local
-	 * variables.
-	 */
-	sjme_jint orderFront;
-
-	/** The top of the order stack. */
-	sjme_jint orderTop;
-
-	/** The maximum size of the order. */
-	sjme_jint orderLength;
-};
-#endif
 
 /** The number of items to store in a current GC commit. */
 #define SJME_NVM_FRAME_NUM_GC_COMMIT 4
@@ -275,6 +202,9 @@ struct sjme_nvm_frame_gcCommit
  */
 typedef enum sjme_nvm_frame_considerGc
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_frame_considerGc),
+	
 	/** Do not garbage collect. */
 	SJME_NVM_FRAME_CONSIDER_GC_NONE,
 
@@ -292,6 +222,9 @@ typedef enum sjme_nvm_frame_considerGc
  */
 typedef enum sjme_nvm_frame_stateFlags
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_frame_stateFlags),
+	
 	/** Is this a static initializer? */
 	SJME_NVM_FRAME_STATE_INIT_STATIC = SJME_NVM_CLASS_INIT_STATIC,
 
@@ -350,11 +283,6 @@ struct sjme_nvm_frameBase
 
 	/** The code this is executing within. */
 	sjme_nvm_class_codeInfo inCode;
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/** Stack information for the frame. */
-	sjme_frame_frameStacks stack;
-#endif
 
 	/** The instance object or class. */
 	sjme_jobject instance;
@@ -440,6 +368,9 @@ struct sjme_nvm_taskStringsBase
  */
 typedef enum sjme_nvm_task_commonClassId
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_nvm_task_commonClassId),
+	
 	/** Null class. */
 	SJME_NVM_COMMON_NULL,
 
@@ -502,7 +433,6 @@ typedef enum sjme_nvm_task_commonClassId
 	/** @code cc.squirreljme.jvm.mle.brackets.TracePointBracket @endcode . */
 	SJME_NVM_COMMON_TRACE_POINT,
 
-#pragma region(scritchUiTypeIds)
 	/** ScritchUI Base. */
 	SJME_NVM_COMMON_SCRITCH_UI_TYPE_BASE,
 
@@ -586,9 +516,7 @@ typedef enum sjme_nvm_task_commonClassId
 
 	/** ScritchUI Window. */
 	SJME_NVM_COMMON_SCRITCH_UI_TYPE_WINDOW,
-#pragma endregion(scritchUiTypeIds)
 
-#pragma region(veryImportantCommonIds)
 	/** The start of very important classes. */
 	SJME_NVM_COMMON_VERY_IMPORTANT,
 
@@ -612,7 +540,6 @@ typedef enum sjme_nvm_task_commonClassId
 
 	/** @code cc.squirreljme.jvm.mle.brackets.VMThreadBracket @endcode . */
 	SJME_NVM_COMMON_VM_THREAD,
-#pragma endregion(veryImportantCommonIds)
 
 	/** The number of common classes. */
 	SJME_NVM_TASK_NUM_COMMON_CLASS
@@ -625,6 +552,9 @@ typedef enum sjme_nvm_task_commonClassId
  */
 typedef enum sjme_nvm_task_singleton
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_task_singleton),
+	
 	/** Null singleton. */
 	SJME_NVM_TASK_SINGLETON_NULL,
 
@@ -690,6 +620,9 @@ typedef struct sjme_nvm_task_globals
 
 typedef enum sjme_nvm_task_threadCountType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_task_threadCountType),
+	
 	/** All. */
 	SJME_NVM_THREAD_COUNT_ALL = 0,
 	
@@ -825,11 +758,6 @@ struct sjme_nvm_threadBase
 	
 	/** The stack frames. */
 	sjme_list(sjme_nvm_frame)* frames;
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/** The stack information for the entire thread. */
-	sjme_frame_threadStacks stack;
-#endif
 
 	/** The @link sjme_nvm_threadScheduleMode @endlink of this thread? */
 	sjme_atomic(sjme_nvm_threadScheduleMode) scheduleMode;

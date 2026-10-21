@@ -146,6 +146,9 @@ SJME_NVM_BYTECODE_SLOW(Swap);
  */
 typedef enum sjme_nvm_byteCode_mathBinaryFunc
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_byteCode_mathBinaryFunc),
+	
 	/** Shift left. */
 	SJME_NVM_BYTECODE_MATH_SHL,
 
@@ -175,6 +178,9 @@ typedef enum sjme_nvm_byteCode_mathBinaryFunc
  */
 typedef enum sjme_nvm_byteCode_mathFunc
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_byteCode_mathFunc),
+	
 	/** Add. */
 	SJME_NVM_BYTECODE_MATH_ADD,
 

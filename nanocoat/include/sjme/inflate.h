@@ -76,6 +76,9 @@ extern "C"
  */
 typedef enum sjme_inflate_step
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_inflate_step),
+	
 	/** Parse BTYPE and determine how to continue. */
 	SJME_INFLATE_STEP_CHECK_BTYPE,
 	

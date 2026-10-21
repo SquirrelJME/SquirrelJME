@@ -20,7 +20,7 @@
 /* Include the atomic template header to grab all the defines for */
 /* implementations. */
 #define sjme_atomic_sourceImpl 1
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 #undef sjme_atomic_sourceImpl
 
 /* ReSharper disable once CppMissingIncludeGuard */

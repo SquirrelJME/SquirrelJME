@@ -37,6 +37,65 @@
 	#include <stdlib.h>
 #endif
 
+#pragma region(encoding)
+#if (SJME_CONFIG_NAL_ENCODING == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
+
+sjme_nal_encodingType sjme_nal_default_encoding(void)
+{
+	static sjme_atomic(sjme_jint) cached;
+	sjme_nal_encodingType encoding;
+	UINT cp, acp;
+	sjme_jint i;
+
+	/* Cached? */
+	encoding = sjme_atomic_g(sjme_jint, &cached);
+	if (encoding != SJME_NAL_ENCODING_UNSPECIFIED)
+		return encoding;
+	
+	/* Read in the codepage. */
+	acp = GetACP();
+	cp = GetOEMCP();
+
+	/* Windows codepages need to be mapped to SquirrelJME. */
+#define SJME_CP_MAP(win, sjme) case win: encoding = sjme; break
+	for (i = 0; i < 2; i++)
+	{
+		switch ((i == 0 ? acp : cp))
+		{
+			SJME_CP_MAP(37, SJME_NAL_ENCODING_IBM037);
+			SJME_CP_MAP(437, SJME_NAL_ENCODING_ASCII);
+			SJME_CP_MAP(1252, SJME_NAL_ENCODING_ISO_8859_1);
+			SJME_CP_MAP(28591, SJME_NAL_ENCODING_ISO_8859_1);
+			SJME_CP_MAP(28605, SJME_NAL_ENCODING_ISO_8859_15);
+			SJME_CP_MAP(65001, SJME_NAL_ENCODING_UTF8);
+
+			/* Shift-JIS Variants. */
+			SJME_CP_MAP(20932, SJME_NAL_ENCODING_SHIFT_JIS);
+			SJME_CP_MAP(50222, SJME_NAL_ENCODING_SHIFT_JIS);
+
+			/* 7-bit ASCII. */
+			SJME_CP_MAP(20127, SJME_NAL_ENCODING_ASCII);
+		}
+		
+		/* Found codepage, so use that. */
+		if (encoding != SJME_NAL_ENCODING_UNSPECIFIED)
+			break;
+	}
+#undef SJME_CP_MAP
+	
+	/* Fallback to ASCII if unspecified, Windows is pretty broken when it */
+	/* comes to encoding support and it is just horrible in general. */
+	if (encoding == SJME_NAL_ENCODING_UNSPECIFIED)
+		encoding = SJME_NAL_ENCODING_ASCII;
+	sjme_atomic_s(sjme_jint, &cached, encoding);
+
+	/* Return the given encoding. */
+	return encoding;
+}
+
+#endif
+#pragma endregion(encoding)
+
 #pragma region(execPath)
 #if (SJME_CONFIG_NAL_EXEC_PATH == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
 
@@ -79,6 +138,50 @@ sjme_errorCode sjme_nal_default_execPath(
 
 #endif
 #pragma endregion(execPath)
+
+#pragma region(locale)
+#if (SJME_CONFIG_NAL_LOCALE == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
+
+sjme_nal_localeType sjme_nal_default_locale(void)
+{
+	static sjme_atomic(sjme_jint) cached;
+	sjme_nal_localeType locale;
+	LANGID li;
+
+	/* Cached? */
+	locale = sjme_atomic_g(sjme_jint, &cached);
+	if (locale != SJME_NAL_LOCALE_UNSPECIFIED)
+		return locale;
+	
+	/* Locale is per-thread in Windows. */
+	li = GetUserDefaultLangID();
+
+	/* Windows languages need to be mapped to SquirrelJME. */
+#define SJME_LI_MAP(pri, sub, sjme) \
+	case MAKELANGID(pri, sub): locale = sjme; break
+
+	switch (li)
+	{
+		SJME_LI_MAP(LANG_ENGLISH, SUBLANG_ENGLISH_US,
+			SJME_NAL_LOCALE_US_ENGLISH);
+
+		/* Default English. */
+		SJME_LI_MAP(LANG_ENGLISH, SUBLANG_NEUTRAL,
+			SJME_NAL_LOCALE_US_ENGLISH);
+	}
+#undef SJME_CP_MAP
+	
+	/* Fallback to US English if unspecified. */
+	if (locale == SJME_NAL_LOCALE_UNSPECIFIED)
+		locale = SJME_NAL_LOCALE_US_ENGLISH;
+	sjme_atomic_s(sjme_jint, &cached, locale);
+
+	/* Return the given locale. */
+	return locale;
+}
+
+#endif
+#pragma endregion(locale)
 
 #pragma region(nanotime)
 #if (SJME_CONFIG_NAL_NANOTIME == SJME_CONFIG_NAL_IMPLEMENT_WIN32)
@@ -187,14 +290,17 @@ sjme_errorCode sjme_nal_default_osVersion(
 	else if (exVerW.dwBuildNumber >= (min)) { basicStr = "10 " what;}
 
 			/* Something newer than Windows 11? */
-			if (exVerW.dwBuildNumber > 26300)
-				snprintf(out, outLen - 1, "NT 10 Build %d",
+			if (exVerW.dwBuildNumber > 28000)
+				snprintf(out, outLen - 1, "NT '10' Build %d",
 					(int)exVerW.dwBuildNumber);
 
 			/* Windows 11... and all of its builds. */
 			/* https://stackoverflow.com/questions/74645458/ */
-			SJME_WIN11_BUILD("26H2", 26300)
+			/* vvv This is not an error, 26H1 has a newer kernel than */
+			/*     26H2. Why? Only Microsoft truly knows. */
 			SJME_WIN11_BUILD("26H1", 28000)
+			SJME_WIN11_BUILD("26H2", 26300)
+			/* ^^^ */
 			SJME_WIN11_BUILD("25H2", 26200)
 			SJME_WIN11_BUILD("24H2", 26100)
 			SJME_WIN11_BUILD("23H2", 22631)
@@ -303,8 +409,10 @@ sjme_errorCode sjme_nal_default_osVersion(
 		else
 		{
 			snprintf(out, outLen - 1,
-				"NT %d.%d",
-				(int)version.dwMajorVersion, (int)version.dwMinorVersion);
+				"NT %d.%d Build %d",
+				(int)version.dwMajorVersion,
+				(int)version.dwMinorVersion,
+				(int)version.dwBuildNumber);
 		}
 	}
 

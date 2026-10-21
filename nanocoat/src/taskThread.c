@@ -17,14 +17,6 @@
 #include "sjme/nvm/cleanup.h"
 #include "sjme/nvm/taskStore.h"
 
-#if defined(SJME_CONFIG_HAS_LOW_MEMORY)
-	/** The size of the thread stack. */
-	#define SJME_NVM_THREAD_STACK_SIZE 8192
-#else
-	/** The size of the thread stack. */
-	#define SJME_NVM_THREAD_STACK_SIZE 65536
-#endif
-
 static sjme_errorCode sjme_nvm_task_stackReframe(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
@@ -49,111 +41,6 @@ static sjme_errorCode sjme_nvm_task_stackReframe(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
-
-#if defined(SJME_REMOVE_OLD_CODE)
-	sjme_errorCode error;
-	sjme_nvm_class_codeInfo code;
-	sjme_frame_threadStacks* store;
-	sjme_frame_frameStacks* stack;
-	sjme_nvm_class_codePerType* perType;
-	sjme_frame_frameStack* typeStack;
-	sjme_jint i, setSize;
-	sjme_intPointer typeOff[SJME_NVM_STACK_FINAL_ID + 1];
-	sjme_pointer storageBase;
-	sjme_jint storageClaim;
-	
-	if (inState == NULL || inThread == NULL || inFrame == NULL ||
-		targetInfo == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Get source and target framing information. */
-	store = &inThread->stack;
-	stack = &inFrame->stack;
-
-	/* Make sure it is cleared beforehand as everything needs to be */
-	/* reinitialized correctly. */
-	memset(stack, 0, sizeof(*stack));
-
-	/* The ordering information can be taken directly from the code info. */
-	/* Allocate extra space for object check values. */
-	code = targetInfo->code;
-	stack->orderFront = code->perType[SJME_NVM_CODE_INFO_ALL_TYPES].locals;
-	stack->orderTop = stack->orderFront;
-	stack->orderLength = stack->orderFront +
-		code->perType[SJME_NVM_CODE_INFO_ALL_TYPES].stack;
-
-	/* Determine initial offset to store ordering information. */
-	memset(typeOff, 0, sizeof(typeOff));
-	typeOff[0] = sjme_util_alignTo(
-		sizeof(*stack->order) * stack->orderLength,
-		sizeof(sjme_pointer));
-
-	/* Determine the totals for each type. */
-	for (i = 0; i < SJME_NVM_STACK_FINAL_ID; i++)
-	{
-		/* What is the per-type info? */
-		perType = &code->perType[i];
-
-		/* Obtain this stack. */
-		typeStack = &stack->stack[i];
-
-		/* Determine totals for per types. */
-		typeStack->front = perType->locals;
-		typeStack->top = typeStack->front;
-		typeStack->length = typeStack->front + perType->stack;
-		
-		/* Determine the size of this set. */
-		setSize = -1;
-		if (sjme_error_is(error = sjme_nvm_vmField_sizeValueSet(&setSize,
-			i, typeStack->length)) || setSize < 0)
-			return sjme_error_default(error);
-
-		/* The offset for the next type is the total storage for this type. */
-		typeStack->storageClaim = (sjme_jint)sjme_util_alignTo(
-			sjme_util_alignTo(setSize, sizeof(sjme_pointer)),
-				sjme_nvm_typeMul[i]);
-		typeOff[i + 1] = typeOff[i] + typeStack->storageClaim;
-	}
-
-	/* Is there enough memory to even allocate this big of a stack? */
-	storageClaim = (sjme_jint)typeOff[SJME_NVM_STACK_FINAL_ID];
-	if (store->storageTop + storageClaim > store->storageLen ||
-		storageClaim < 0)
-		return sjme_error_vmError(inThread, SJME_ERROR_STACK_OVERFLOW);
-
-	/* Grab a chunk of the stack. */
-	storageBase = SJME_POINTER_OFFSET(store->storage, store->storageTop);
-	store->storageTop += storageClaim;
-
-#if defined(SJME_CONFIG_DEBUG_ENTRY)
-	/* Debug. */
-	sjme_emitB("STACK RF %p: %p[%d] (rel %d + %d = %d)",
-		stack, storageBase, storageClaim,
-		(sjme_jint)((sjme_intPointer)storageBase -
-			(sjme_intPointer)store->storage),
-		storageClaim, store->storageTop);
-#endif
-
-	/* Clear any data which used to be here, since it could be garbage. */
-	stack->storageBase = storageBase;
-	stack->storageClaim = storageClaim;
-	memset(storageBase, 0, storageClaim);
-
-	/* Setup pointers. */
-	stack->order = SJME_POINTER_OFFSET(storageBase, 0);
-	for (i = 0; i < SJME_NVM_STACK_FINAL_ID; i++)
-	{
-		/* Determine base pointer. */
-		stack->stack[i].set = SJME_POINTER_OFFSET(storageBase, typeOff[i]);
-		
-		/* Set the set details. */
-		stack->stack[i].set->type = i;
-		stack->stack[i].set->length = stack->stack[i].length;
-	}
-
-	/* Success! */
-	return SJME_ERROR_NONE;
-#endif
 }
 
 sjme_errorCode sjme_nvm_task_threadEmit(
@@ -342,9 +229,6 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_nvm_frame result;
 	sjme_jboolean isStatic;
 	sjme_jvalueTyped* argVParam;
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	sjme_nvm_frame_gcCommit commit;
-#endif
 #if defined(SJME_CONFIG_DEBUG)
 #define ARG_BUF_SIZE 128
 	sjme_jint argBufLen;
@@ -448,11 +332,6 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	else
 		sjme_atomic_s(sjme_nvm_frame, &result->parent,
 			inThread->frames->elements[inThread->numFrames - 1]);
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/* Setup commit. */
-	memset(&commit, 0, sizeof(commit));
-#endif
 	
 	/* Setup initial locals, which are copied in from arguments. */
 	if (argV != NULL)
@@ -460,11 +339,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		{
 			/* Set local value. */
 			if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-				result, &commit, dx, &argV[i])))
-#else
 				result, NULL, dx, &argV[i])))
-#endif
 				return sjme_error_vmError(inThread, error);
 			
 			/* Move wide values up twice. */
@@ -472,12 +347,6 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 				argV[i].t == SJME_JAVA_TYPE_ID_DOUBLE)
 				dx++;
 		}
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/* Commit GC. */
-	if (sjme_error_is(error = sjme_nvm_task_frameCommit(result, &commit)))
-		return sjme_error_vmError(result, error);
-#endif
 	
 	/* Set frame as active. */
 	inThread->numFrames++;
@@ -748,10 +617,6 @@ sjme_errorCode sjme_nvm_task_threadInit(
 	sjme_atomic_s(sjme_nvm_task, &inThread->inTask, inTask);
 	inThread->threadId = 1 + sjme_atomic_ga(sjme_jint,
 		&inState->nextThreadId, 1);
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	inThread->stack.storage = storage;
-	inThread->stack.storageLen = SJME_NVM_THREAD_STACK_SIZE;
-#endif
 
 	/* Only calculate the identity hash if it has not already been */
 	/* calculated for this object. This can happen if this is a sub-class */

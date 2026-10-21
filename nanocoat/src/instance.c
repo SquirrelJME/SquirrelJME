@@ -238,7 +238,7 @@ sjme_nvm_value* sjme_nvm_instance_fieldAccessor(
 		goto fail_voidless;
 
 	/* Static field? */
-	if (SJME_NVM_ACC_IS(field->flags, STATIC) != 0)
+	if (SJME_NVM_ACC_IS(field->flags, STATIC))
 	{
 		/* Cannot read/write to non-classes. */
 		if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_CLASS_INSTANCE))

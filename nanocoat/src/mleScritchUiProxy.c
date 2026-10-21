@@ -75,7 +75,7 @@ static sjme_thread_result sjme_attrThreadCall
 
 	runnable = (sjme_jobject)anything;
 	if (runnable == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 
 	/* Recover phantom state and task. */
 	nvmState = sjme_atomic_g(sjme_nvm, &runnable->common.phantomState);
@@ -131,7 +131,7 @@ static sjme_thread_result sjme_attrThreadCall
 		sjme_nvm_instance_countDown(runnable);
 
 	/* Success! */
-	return SJME_ERROR_NONE;
+	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 
 fail_loopThread:
 fail_enterFrame:
@@ -141,7 +141,7 @@ fail_recover:
 	if (runnable != NULL)
 		sjme_nvm_instance_countDown(runnable);
 
-	return sjme_error_default(error);
+	return SJME_THREAD_RESULT(sjme_error_default(error));
 }
 
 static sjme_errorCode sjme_nvm_mle_scritchUiNew(

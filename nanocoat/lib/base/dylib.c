@@ -203,9 +203,11 @@ sjme_errorCode sjme_dylib_open(
 	handle = dlopen(libPath, RTLD_NOW | RTLD_LOCAL);
 	if (handle == NULL)
 	{
+#if defined(SJME_CONFIG_DEBUG_VERBOSE)
 		/* Debug. */
 		sjme_message("sjme_dylib_open(%s): %s",
 			libPath, dlerror());
+#endif
 		
 		return SJME_ERROR_COULD_NOT_LOAD_LIBRARY;
 	}

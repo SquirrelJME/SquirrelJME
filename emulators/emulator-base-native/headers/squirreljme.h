@@ -12,6 +12,7 @@
 
 #include <jni.h>
 
+#include "sjme/stdGone.h"
 #include "lib/scritchui/scritchui.h"
 #include "sjme/debug.h"
 #include "sjme/charSeq.h"

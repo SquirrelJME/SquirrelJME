@@ -12,7 +12,7 @@
 #include "sjme/alloc.h"
 
 #define sjme_atomic_type sjme_alloc_weak
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */
 
 #define sjme_atomic_type sjme_alloc_link
-#include "sjme/atomicTemplateC.h"
+#include "sjme/atomicTemplateC.h" /* NOLINT */

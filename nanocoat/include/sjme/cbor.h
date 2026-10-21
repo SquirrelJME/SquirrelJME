@@ -56,6 +56,9 @@ typedef sjme_cborBase* sjme_cbor;
  */
 typedef enum sjme_cbor_tokenType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_cbor_tokenType),
+	
 	/** Start of file. */
 	SJME_CBOR_FILE_START,
 

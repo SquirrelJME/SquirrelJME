@@ -2082,6 +2082,8 @@ lit corpses strewn about haphazardly in multiple dumpster fires. Java ME truly
 is niche, and nobody gets famous _or_ rich in emulator development, nor should
 it be expected.
 
+Working on getting `wip-running` merged in now! Yay!
+
 #### November
 
 ... IN THE FUTURE AS OF OCTOBER 2026 ...

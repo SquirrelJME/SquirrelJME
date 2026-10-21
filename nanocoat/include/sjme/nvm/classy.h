@@ -649,6 +649,9 @@ typedef struct sjme_nvm_class_fieldConstVal
  */
 typedef enum sjme_nvm_class_annotationTag
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_class_annotationTag),
+	
 	/** Byte tag. */
 	SJME_NVM_CLASS_ANNOTATION_TAG_BYTE = 'B',
 	

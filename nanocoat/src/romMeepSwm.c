@@ -996,6 +996,8 @@ sjme_jint sjme_nvm_rom_compareProfile(
 	sjme_attrInNullable const sjme_nvm_swmVersion* bV)
 {
 	sjme_jint rv;
+	sjme_jboolean aMeep, aMidp;
+	sjme_jboolean bMeep, bMidp;
 
 	/* Compare nulls first. */
 	rv = sjme_compare_null(a, b);
@@ -1007,15 +1009,28 @@ sjme_jint sjme_nvm_rom_compareProfile(
 		aV = &sjme_nvm_rom_zeroVersion;
 	if (bV == NULL)
 		bV = &sjme_nvm_rom_zeroVersion;
+	
+	/* Are any of these MEEP or MIDP? */
+	aMeep = sjme_string_compareIWAN(a, -1, "MEEP", -1);
+	aMidp = sjme_string_compareIWAN(a, -1, "MIDP", -1);
+	
+	/* And for B... */
+	bMeep = sjme_string_compareIWAN(b, -1, "MEEP", -1);
+	bMidp = sjme_string_compareIWAN(b, -1, "MIDP", -1);
+	
+	/* MIDP and MEEP after everything else. */
+	/* This is so VSCL does not take priority. */
+	if ((aMeep || aMidp) && (!bMeep && !bMidp))
+		return 1;
+	else if ((!aMeep && !aMidp) && (bMeep || bMidp))
+		return -1;
 
 	/* MIDP before MEEP. */
-	if (sjme_string_compareIWAN(a, -1, "MIDP", -1) &&
-		sjme_string_compareIWAN(b, -1, "MEEP", -1))
+	else if (aMidp && bMeep)
 		return -1;
 
 	/* MEEP after MIDP. */
-	if (sjme_string_compareIWAN(a, -1, "MEEP", -1) &&
-		sjme_string_compareIWAN(b, -1, "MIDP", -1))
+	else if (aMeep && bMidp)
 		return 1;
 
 	/* Otherwise compare based on string. */

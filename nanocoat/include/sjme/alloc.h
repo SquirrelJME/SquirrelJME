@@ -70,6 +70,9 @@ typedef volatile sjme_alloc_linkBase* sjme_alloc_link;
  */
 typedef enum sjme_alloc_poolSpace
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_alloc_poolSpace),
+	
 	/** Invalid space. */
 	SJME_ALLOC_POOL_SPACE_INVALID,
 	
@@ -90,6 +93,9 @@ typedef enum sjme_alloc_poolSpace
  */
 typedef enum sjme_alloc_linkFlag
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_alloc_linkFlag),
+	
 	/** Nested allocation pool. */
 	SJME_ALLOC_LINK_FLAG_NESTED_POOL = 1,
 
@@ -111,7 +117,7 @@ typedef struct sjme_alloc_weakBase* sjme_alloc_weak;
 #define SJME_TYPEOF_IS_POINTER_sjme_alloc_weak 1
 
 #define sjme_atomic_type sjme_alloc_weak
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 /**
  * This is called when a weak reference has been freed or is about to be
@@ -140,7 +146,7 @@ typedef sjme_errorCode (*sjme_alloc_weakEnqueueFunc)(
 #define SJME_TYPEOF_IS_POINTER_sjme_alloc_link 1
 
 #define sjme_atomic_type sjme_alloc_link
-#include "sjme/atomicTemplate.h"
+#include "sjme/atomicTemplate.h" /* NOLINT */
 
 struct sjme_alloc_weakBase
 {

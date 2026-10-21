@@ -40,6 +40,9 @@ extern "C"
  */
 typedef enum sjme_circleBuffer_mode
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_circleBuffer_mode),
+	
 	/** The buffer acts as a queue. */
 	SJME_CIRCLE_BUFFER_QUEUE,
 	
@@ -57,6 +60,9 @@ typedef enum sjme_circleBuffer_mode
  */
 typedef enum sjme_circleBuffer_seekEnd
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_circleBuffer_seekEnd),
+	
 	/** The front/head of the buffer. */
 	SJME_CIRCLE_BUFFER_HEAD,
 	

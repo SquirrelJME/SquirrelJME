@@ -77,9 +77,65 @@ typedef enum sjme_nal_lineEndingType
 	/** CRLF. */
 	SJME_NAL_LINE_ENDING_CRLF = 3,
 
+	/** LFCR. */
+	SJME_NAL_LINE_ENDING_LFCR = 4,
+
+	/** RS. */
+	SJME_NAL_LINE_ENDING_RS = 5,
+
 	/** Number of line ending types. */
-	SJME_NAL_NUM_LINE_ENDINGS = 4,
+	SJME_NAL_NUM_LINE_ENDINGS = 6,
 } sjme_nal_lineEndingType;
+	
+typedef enum sjme_nal_encodingType
+{
+	/** This is an enum based int. */
+	sjme_enumInt(sjme_nal_encodingType),
+	
+	/** Unspecified, use defined property or assume UTF-8. */
+	SJME_NAL_ENCODING_UNSPECIFIED = 0,
+	
+	/** UTF-8. */
+	SJME_NAL_ENCODING_UTF8 = 1,
+	
+	/** ASCII. */
+	SJME_NAL_ENCODING_ASCII = 2,
+	
+	/** IBM037 (EBCDIC). */
+	SJME_NAL_ENCODING_IBM037 = 3,
+	
+	/** ISO-8859-1. */
+	SJME_NAL_ENCODING_ISO_8859_1 = 4,
+	
+	/** ISO-8859-15. */
+	SJME_NAL_ENCODING_ISO_8859_15 = 5,
+	
+	/** Shift-JIS. */
+	SJME_NAL_ENCODING_SHIFT_JIS = 6,
+	
+	/** IBM437. */
+	SJME_NAL_ENCODING_IBM437 = 7,
+	
+	/** The number of built-in encodings. */
+	SJME_NAL_ENCODING_NUM_TYPES = 8,
+} sjme_nal_encodingType;
+	
+/**
+ * The built-in locales which are supported.
+ *
+ * @since 2025/06/22
+ */
+typedef enum sjme_nal_localeType
+{
+	/** This is an enum based int. */
+	sjme_enumInt(sjme_nal_localeType),
+	
+	/** Unspecified. */
+	SJME_NAL_LOCALE_UNSPECIFIED = 0,
+
+	/** English, US. */
+	SJME_NAL_LOCALE_US_ENGLISH = 1,
+} sjme_nal_localeType;
 	
 /**
  * Represents a specific style of paths which are compatible with each other
@@ -99,6 +155,14 @@ typedef struct sjme_path_style sjme_path_style;
  */
 typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
 	sjme_attrOutNotNull sjme_jlong* result);
+
+/**
+ * Returns the current encoding.
+ *
+ * @return The current encoding type.
+ * @since 2026/10/20
+ */
+typedef sjme_nal_encodingType (*sjme_nal_encodingFunc)(void);
 
 /**
  * Returns the path to the executable.
@@ -152,6 +216,14 @@ typedef sjme_errorCode (*sjme_nal_getEnvFunc)(
  */
 typedef sjme_nal_lineEndingType (*sjme_nal_lineEndingFunc)(void);
 
+/**
+ * Returns the current locale.
+ *
+ * @return The current locale type.
+ * @since 2026/10/20
+ */
+typedef sjme_nal_localeType (*sjme_nal_localeFunc)(void);
+	
 /**
  * Returns the current nanosecond monotonic class as per the Java
  * method @c System::nanoTime() . Note that the resultant time should never
@@ -265,6 +337,9 @@ typedef struct sjme_nal
 {
 	/** Current time in milliseconds. */
 	sjme_nal_currentTimeMillisFunc currentTimeMillis;
+	
+	/** Returns the current encoding. */
+	sjme_nal_encodingFunc encoding;
 
 	/** Returns the path to the current executable. */
 	sjme_nal_execPathFunc execPath;
@@ -277,6 +352,9 @@ typedef struct sjme_nal
 
 	/** The line ending that the system uses. */
 	sjme_nal_lineEndingFunc lineEnding;
+	
+	/** Returns the current locale. */
+	sjme_nal_localeFunc locale;
 	
 	/** Get the current monotonic nanosecond time. */
 	sjme_nal_nanoTimeFunc nanoTime;

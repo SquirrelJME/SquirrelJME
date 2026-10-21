@@ -690,6 +690,12 @@ sjme_errorCode sjme_nvm_task_frameStackPush(
 		/* Set as wide. */
 		info.chain.next->type = SJME_NVM_STORE_SLOT_MARKER_WIDE;
 	}
+	
+	/* Wipe any pre-existing value here in the event it was not cleared. */
+	/* This is a stack push, which completely destroys anything that was */
+	/* here regardless. */
+	if (info.rawP != NULL && info.rawLen > 0)
+		memset(info.rawP, 0, info.rawLen);
 
 	/* Write the value. */
 	if (sjme_error_is(error = sjme_nvm_vmField_cisSet(info.storage,

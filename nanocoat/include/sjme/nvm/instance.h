@@ -188,6 +188,9 @@ struct sjme_nvm_isClassesBase
  */
 typedef enum sjme_nvm_instance_classInit
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_instance_classInit),
+	
 	/** Initialize/load not happening. */
 	SJME_VM_CLASS_INIT_LOAD_NEVER = 0,
 

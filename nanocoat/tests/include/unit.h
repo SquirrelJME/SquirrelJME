@@ -38,6 +38,9 @@ extern "C" {
  */
 typedef enum sjme_unit_operator
 {
+	/** This is an integer enum. */
+	sjme_enumInt(sjme_unit_operator),
+
 	/** Equality, @c ==. */
 	SJME_UNIT_OPERATOR_EQUAL,
 	

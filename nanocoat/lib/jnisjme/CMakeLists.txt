@@ -8,6 +8,7 @@
 
 # Declare JNI/SquirrelJME Bridge
 squirreljme_multilib_add_library(libJniSJME
+	jsException.c
 	jsInputStream.c)
 
 # Include main headers, and the appropriate JNI as well

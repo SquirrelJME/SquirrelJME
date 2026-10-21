@@ -156,25 +156,20 @@ static sjme_errorCode sjme_dylib_openExtraScritchAny(
 			if (sjme_error_is(error = sjme_dylib_open(tryPath.chars,
 				&result)) || result == NULL)
 			{
-				if (error != SJME_ERROR_COULD_NOT_LOAD_LIBRARY)
+				if (error != SJME_ERROR_COULD_NOT_LOAD_LIBRARY &&
+					error != SJME_ERROR_FILE_NOT_FOUND)
 					return sjme_error_default(error);
 
 				/* Try again. */
 				continue;
 			}
 
-			/* A library was found, so stop. */
-			break;
+			/* A library was found, so return it. */
+			if (outFoundComponent != NULL)
+				*outFoundComponent = actualSubComponent;
+			*outLib = result;
+			return SJME_ERROR_NONE;
 		}
-	}
-
-	/* Was a library found? */
-	if (result != NULL)
-	{
-		if (outFoundComponent != NULL)
-			*outFoundComponent = actualSubComponent;
-		*outLib = result;
-		return SJME_ERROR_NONE;
 	}
 #endif
 
@@ -334,6 +329,7 @@ sjme_errorCode sjme_dylib_openExtra(
 
 	/* Try everything. */
 	/* Note <= because the last tryComponent is NULL. */
+	actualSubComponent = NULL;
 	for (i = 0; i <= tryCount; i++)
 	{
 		/* Which family type to load? */

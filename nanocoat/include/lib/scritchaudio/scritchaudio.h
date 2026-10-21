@@ -785,6 +785,9 @@ struct sjme_scritchaudioBase
  */
 typedef enum sjme_scritchaudio_connectionType
 {
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_scritchaudio_connectionType),
+	
 	/** Invalid connection type. */
 	SJME_SCRITCHAUDIO_CONN_INVALID,
 

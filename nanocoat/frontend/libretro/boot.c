@@ -6,13 +6,10 @@
 // SquirrelJME is under the Mozilla Public License Version 2.0.
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
+
 #include <libretro.h>
 
 #include "sjme/config.h"
-
-#if defined(SJME_CONFIG_DEBUG)
-	#include <signal.h>
-#endif
 
 #include "sjme/nvm/boot.h"
 #include "lib/scritchui/scritchui.h"
