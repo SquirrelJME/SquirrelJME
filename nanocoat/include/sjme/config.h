@@ -880,9 +880,6 @@ extern "C" {
 	#pragma disable_warning 283
 #endif
 
-/** Bitfield count for @link sjme_jboolean @endlink . */
-#define sjme_booleanBit 2
-
 /* Clang is completely broken with FLT_ROUNDS. */ 
 #if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_MSVC)
 	/** Assuming floating point rounds to nearest. */
@@ -955,9 +952,6 @@ extern "C" {
 /** Three structure values. */
 #define sjme_sm3(dot, v1, v2, v3) \
 	sjme_sm(dot, {v1 SJME_TOKEN_COMMA v2 SJME_TOKEN_COMMA v3})
-
-/** Bitfield count for @link sjme_jboolean @endlink . */
-#define sjme_booleanBit 2
 
 /* Clang is completely broken with FLT_ROUNDS. */ 
 #if defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_MSVC)

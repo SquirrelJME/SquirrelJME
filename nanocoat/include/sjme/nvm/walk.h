@@ -513,7 +513,7 @@ struct sjme_nvm_walk_state
 	sjme_nvm_walk_breadthType breadth;
 
 	/** Do not perform any diving. */
-	sjme_jboolean noDive : sjme_booleanBit;
+	sjme_jboolean noDive;
 
 	/** Current parsed string value. */
 	sjme_lpcstr lpstr;
