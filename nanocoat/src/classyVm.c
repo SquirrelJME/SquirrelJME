@@ -1549,20 +1549,6 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
 		error = SJME_ERROR_INVALID_CLASS_TYPE;
 		goto fail_invalidClass;
 	}
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/* Allocate base for is-classes. */
-	isClasses = NULL;
-	if (sjme_error_is(error = sjme_nvm_alloc(
-		sjme_atomic_g(sjme_nvm, &contextThread->inState),
-		sizeof(*isClasses), SJME_NVM_STRUCT_IS_CLASSES,
-		SJME_AS_NVM_COMMONP(&isClasses))) ||
-		isClasses == NULL)
-		goto fail_allocIsClasses;
-
-	/* Setup base is-classes. */
-	inClass->isClasses = isClasses;
-#endif
 	
 	/* Set as done! */
 	sjme_atomic_cs(sjme_jint, &inClass->isLoaded,

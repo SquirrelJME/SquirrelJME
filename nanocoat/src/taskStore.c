@@ -507,21 +507,6 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	workInfo.chain.at->width = (sjme_jubyte)(sizeAlign / 4);
 	workInfo.chain.at->offsetMultiple = (sjme_jushort)(division);
 
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/* This is broken because this means a type is only set when a slot */
-	/* becomes allocated. */
-	/* Always set the new type, this always needs to be a valid type or */
-	/* a marker. If a future mode allows for a type change, then anything */
-	/* that is not a Java type should be special. */
-	if (inType == SJME_STACK_TYPE_WIDE)
-		workInfo.chain.at->type = SJME_NVM_STORE_SLOT_MARKER_WIDE;
-	else if (inType >= 0 && inType < SJME_NUM_JAVA_TYPE_IDS)
-		workInfo.chain.at->type = (sjme_jubyte)inType;
-	else
-		workInfo.chain.at->type = SJME_NVM_STORE_SLOT_MARKER_SPECIAL;
-	workInfo.type = workInfo.chain.at->type;
-#endif
-
 	/* Note that the storage is at the exact location. This can be done */
 	/* because if we are writing a 64-bit value, we refer to the correct */
 	/* portion of it. Otherwise, the same for a 32-bit value. */

@@ -232,12 +232,6 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeNative(
 		/* Is there a return value being pushed to the stack? */
 		if (invoke->mleArgR.t != SJME_JAVA_TYPE_ID_VOID)
 		{
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-			/* MLE is not responsible for counting objects. */
-			if (mleArgR.t == SJME_JAVA_TYPE_ID_OBJECT)
-				mleArgR.v.l = sjme_weakUp(mleArgR.v.l);
-#endif
-
 			/* Push to the stack. */
 			if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 				invoke->inFrame, invoke->commit, &invoke->mleArgR)))

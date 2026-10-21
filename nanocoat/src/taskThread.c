@@ -342,9 +342,6 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	sjme_nvm_frame result;
 	sjme_jboolean isStatic;
 	sjme_jvalueTyped* argVParam;
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	sjme_nvm_frame_gcCommit commit;
-#endif
 #if defined(SJME_CONFIG_DEBUG)
 #define ARG_BUF_SIZE 128
 	sjme_jint argBufLen;
@@ -448,11 +445,6 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 	else
 		sjme_atomic_s(sjme_nvm_frame, &result->parent,
 			inThread->frames->elements[inThread->numFrames - 1]);
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/* Setup commit. */
-	memset(&commit, 0, sizeof(commit));
-#endif
 	
 	/* Setup initial locals, which are copied in from arguments. */
 	if (argV != NULL)
@@ -460,11 +452,7 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 		{
 			/* Set local value. */
 			if (sjme_error_is(error = sjme_nvm_task_frameLocalSetL(
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-				result, &commit, dx, &argV[i])))
-#else
 				result, NULL, dx, &argV[i])))
-#endif
 				return sjme_error_vmError(inThread, error);
 			
 			/* Move wide values up twice. */
@@ -472,12 +460,6 @@ sjme_errorCode sjme_nvm_task_threadEnter(
 				argV[i].t == SJME_JAVA_TYPE_ID_DOUBLE)
 				dx++;
 		}
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/* Commit GC. */
-	if (sjme_error_is(error = sjme_nvm_task_frameCommit(result, &commit)))
-		return sjme_error_vmError(result, error);
-#endif
 	
 	/* Set frame as active. */
 	inThread->numFrames++;
@@ -748,10 +730,6 @@ sjme_errorCode sjme_nvm_task_threadInit(
 	sjme_atomic_s(sjme_nvm_task, &inThread->inTask, inTask);
 	inThread->threadId = 1 + sjme_atomic_ga(sjme_jint,
 		&inState->nextThreadId, 1);
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	inThread->stack.storage = storage;
-	inThread->stack.storageLen = SJME_NVM_THREAD_STACK_SIZE;
-#endif
 
 	/* Only calculate the identity hash if it has not already been */
 	/* calculated for this object. This can happen if this is a sub-class */

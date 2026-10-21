@@ -152,29 +152,6 @@ typedef struct sjme_nvm_taskStringsBase sjme_nvm_taskStringsBase;
  */
 typedef sjme_nvm_taskStringsBase* sjme_nvm_taskStrings;
 
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-/**
- * Contains information on all the thread stack frames.
- *
- * @since 2025/02/10
- */
-typedef struct sjme_frame_threadStacks sjme_frame_threadStacks;
-	
-/**
- * Contains information on the stack framing information.
- *
- * @since 2025/01/27
- */
-typedef struct sjme_frame_frameStack sjme_frame_frameStack;
-	
-/**
- * Contains information on all the frame stack information. 
- *
- * @since 2025/02/10
- */
-typedef struct sjme_frame_frameStacks sjme_frame_frameStacks;
-#endif
-
 /**
  * This is called when a frame is waiting for a condition to be met.
  *
@@ -192,68 +169,6 @@ typedef sjme_errorCode (*sjme_nvm_frame_conditionFunc)(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInValue sjme_intPointer condition,
 	sjme_attrOutNotNull sjme_jvalueTyped* stackPush);
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-struct sjme_frame_threadStacks
-{
-	/** The storage for the stack. */
-	sjme_pointer storage;
-
-	/** The number of bytes used for storage. */
-	sjme_jint storageLen;
-
-	/** The address top of the stack top. */
-	sjme_jint storageTop;
-};
-	
-struct sjme_frame_frameStack
-{
-	/** The top of the stack frame. */
-	sjme_jint top;
-
-	/** The front of the stack, anything before are local variables. */
-	sjme_jint front;
-	
-	/** The length of this set. */
-	sjme_jint length;
-
-	/** The number of bytes claimed for this frame. */
-	sjme_jint storageClaim;
-	
-	/** The value set. */
-	sjme_nvm_valueSet* set;
-};
-
-/** Final stack indicator. */
-#define SJME_NVM_STACK_FINAL_ID SJME_NUM_JAVA_TYPE_IDS
-
-struct sjme_frame_frameStacks
-{
-	/** The storage base of this stack. */
-	sjme_pointer storageBase;
-
-	/** The number of bytes claimed for this frame. */
-	sjme_jint storageClaim;
-	
-	/** Stack framing information. */
-	sjme_frame_frameStack stack[SJME_NVM_STACK_FINAL_ID];
-
-	/** The order of the stack. */
-	sjme_javaTypeId* order;
-
-	/**
-	 * The front of the stack, anything before the "front" are local
-	 * variables.
-	 */
-	sjme_jint orderFront;
-
-	/** The top of the order stack. */
-	sjme_jint orderTop;
-
-	/** The maximum size of the order. */
-	sjme_jint orderLength;
-};
-#endif
 
 /** The number of items to store in a current GC commit. */
 #define SJME_NVM_FRAME_NUM_GC_COMMIT 4
@@ -368,11 +283,6 @@ struct sjme_nvm_frameBase
 
 	/** The code this is executing within. */
 	sjme_nvm_class_codeInfo inCode;
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/** Stack information for the frame. */
-	sjme_frame_frameStacks stack;
-#endif
 
 	/** The instance object or class. */
 	sjme_jobject instance;
@@ -848,11 +758,6 @@ struct sjme_nvm_threadBase
 	
 	/** The stack frames. */
 	sjme_list(sjme_nvm_frame)* frames;
-
-#if defined(SJME_CONFIG_HAS_BROKEN_CODE)
-	/** The stack information for the entire thread. */
-	sjme_frame_threadStacks stack;
-#endif
 
 	/** The @link sjme_nvm_threadScheduleMode @endlink of this thread? */
 	sjme_atomic(sjme_nvm_threadScheduleMode) scheduleMode;
