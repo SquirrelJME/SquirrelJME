@@ -34,8 +34,32 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
+typedef enum sjme_nvm_rom_suiteRunTargetFlags
+{
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_rom_suiteRunTargetFlags),
+	
+	/** Free the main class. */
+	SJME_NVM_ROM_SUITE_RT_FREE_MAIN_CLASS = 1,
+	
+	/** Free the main arguments. */
+	SJME_NVM_ROM_SUITE_RT_FREE_MAIN_ARGS = 2,
+	
+	/** Free the system properties. */
+	SJME_NVM_ROM_SUITE_RT_FREE_SYS_PROPS = 4,
+	
+	/** Free the by ID list. */
+	SJME_NVM_ROM_SUITE_RT_FREE_BY_ID = 4,
+	
+	/** Free the by name list. */
+	SJME_NVM_ROM_SUITE_RT_FREE_BY_NAME = 8,
+} sjme_nvm_rom_suiteRunTargetFlags;
+	
 struct sjme_nvm_rom_suiteRunTarget
 {
+	/** Individual run target flags. */
+	sjme_nvm_rom_suiteRunTargetFlags flags;
+	
 	/** The main class to launch. */
 	sjme_lpcstr mainClass;
 
