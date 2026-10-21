@@ -201,8 +201,13 @@ sjme_errorCode sjme_nal_default_osVersion(
 	if (uname(&result) < 0)
 		sjme_nal_errno(errno);
 
-	/* Directly copy the version over. */
-	strncpy(out, result.version, outLen - 1);
+	/* Directly copy the release/version over. */
+	if (result.release[0] != '\0')
+		strncpy(out, result.release,
+			sjme_min((sjme_jint)sizeof(result.release), outLen - 1));
+	else
+		strncpy(out, result.version,
+			sjme_min((sjme_jint)sizeof(result.version), outLen - 1));
 	out[outLen - 1] = '\0';
 
 	/* Success! */
