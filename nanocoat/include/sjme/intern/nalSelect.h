@@ -119,7 +119,8 @@ extern "C"
 	#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 		/** Use Windows version implementation. */
 		#define SJME_CONFIG_NAL_OS_VERSION SJME_CONFIG_NAL_IMPLEMENT_WIN32
-	#elif defined(SJME_CONFIG_HAS_OS_POSIX)
+	#elif defined(SJME_CONFIG_HAS_OS_POSIX) && \
+		defined(SJME_CONFIG_HAS_SYS_UTSNAME_H)
 		/** Use POSIX version implementation. */
 		#define SJME_CONFIG_NAL_OS_VERSION SJME_CONFIG_NAL_IMPLEMENT_POSIX
 	#endif

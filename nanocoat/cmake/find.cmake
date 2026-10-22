@@ -56,6 +56,11 @@ squirreljme_check_include_file("sys/socket.h"
 	SJME_CONFIG_HAS_SYS_SOCKET_H
 	SJME_CONFIG_HAS_NO_SYS_SOCKET_H)
 
+# sys/utsname.h available?
+squirreljme_check_include_file("sys/utsname.h"
+	SJME_CONFIG_HAS_SYS_UTSNAME_H
+	SJME_CONFIG_HAS_NO_SYS_UTSNAME_H)
+
 # ctype.h available?
 squirreljme_check_include_file("ctype.h"
 	SJME_CONFIG_HAS_CTYPE_H
