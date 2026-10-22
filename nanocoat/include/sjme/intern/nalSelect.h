@@ -62,7 +62,8 @@ extern "C"
 	#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
 		/** Get encoding through Windows APIs. */
 		#define SJME_CONFIG_NAL_ENCODING SJME_CONFIG_NAL_IMPLEMENT_WIN32
-#elif defined(SJME_CONFIG_HAS_OS_POSIX)
+	#elif defined(SJME_CONFIG_HAS_OS_POSIX) && \
+		!defined(SJME_CONFIG_HAS_OS_ANDROID)
 		/** Get encoding through POSIX APIs. */
 		#define SJME_CONFIG_NAL_ENCODING SJME_CONFIG_NAL_IMPLEMENT_POSIX
 	#endif
