@@ -230,7 +230,7 @@ As of 2026/06/28: 206 of 317 (64%)
  * [ ] NanoCoat
    * [ ] Building
      * [X] CMake
-     * [ ] GCC (Done Last)
+     * [X] GCC (Done Last)
      * [X] TAC Support
      * [ ] Visual C 6 (Done Last)
    * [ ] Frontends
@@ -365,6 +365,7 @@ As of 2026/06/28: 206 of 317 (64%)
      * [X] Compatibility Flags
    * [ ] Harmonize all `XXnn` to `__error__(id)`
    * [X] `javap` equivalent
+   * [ ] `javap` equivalent (ABCD)
    * [ ] Linter/Formatter
    * [ ] Modem Stubs
    * [X] Move `debug-jdwp-vm-host` to `emulators/`
