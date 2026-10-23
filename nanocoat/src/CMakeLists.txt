@@ -21,6 +21,9 @@ squirreljme_multilib_add_library(Core
 	bytecodeSlowRef.c
 	bytecodeSlowStack.c
 	classy.c
+	classyAnnotation.c
+	classyMethod.c
+	classyUtil.c
 	classyVm.c
 	classyVmClass.c
 	classyVmFields.c

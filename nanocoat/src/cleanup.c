@@ -279,9 +279,11 @@ static sjme_errorCode sjme_nvm_cleanup_postAnnotation(
 	
 	/* Close various fields. */
 	SJME_SIMPLE_CLOSE(annotation->className);
+#if 0
 	SJME_SIMPLE_CLOSE(annotation->fieldName);
 	SJME_SIMPLE_CLOSE(annotation->refClass);
 	SJME_SIMPLE_CLOSE(annotation->valueString);
+#endif
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

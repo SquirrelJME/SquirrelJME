@@ -787,7 +787,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkLoadStandard(
 		break;
 	}
 	
-	/* No class exists. */
+	/* No class exists, this is likely a virtual class. */
 	if (info == NULL)
 		return SJME_ERROR_NO_CLASS;
 	

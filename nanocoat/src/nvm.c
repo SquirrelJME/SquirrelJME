@@ -82,6 +82,7 @@ static sjme_jboolean sjme_debug_vmTraceErrorIs(sjme_errorCode error)
 		case SJME_ERROR_FILE_NOT_FOUND:
 		case SJME_ERROR_NO_SUITES:
 		case SJME_ERROR_NULL_STACK_POINTER:
+		case SJME_ERROR_NOT_ALLOC_LINK:
 			return SJME_JNI_TRUE;
 
 #if 0

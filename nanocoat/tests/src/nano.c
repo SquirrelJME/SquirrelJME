@@ -7,8 +7,6 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <string.h>
-
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/boot.h"
 #include "sjme/nvm/nvm.h"
@@ -17,6 +15,8 @@
 #include "sjme/nvm/loop.h"
 #include "sjme/nvm/mleShelves.h"
 #include "test.h"
+
+#include "sjme/nvm/cleanup.h"
 
 typedef struct sjme_test_nano_result
 {
@@ -28,6 +28,9 @@ typedef struct sjme_test_nano_result
 	
 	/** The string captured. */
 	sjme_charSeq string;
+	
+	/** The strings captured. */
+	sjme_list(sjme_charSeq)* strings;
 	
 	/** The exception captured. */
 	sjme_charSeq exception;
@@ -162,6 +165,56 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(result, string)
 	return SJME_ERROR_NONE;
 }
 
+SJME_NVM_MLE_FUNCTION_DECL_ALT(result, strings)
+{
+	sjme_errorCode error;
+	sjme_test_nano_result* result;
+	sjme_jarray strings;
+	sjme_jint len;
+	sjme_list(sjme_charSeq)* storage;
+	
+	/* The input array cannot be null. */
+	strings = (sjme_jarray)argV[0].v.l;
+	if (!sjme_nvm_isAR(strings, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
+		strings->e.type != SJME_BASIC_TYPE_ID_OBJECT)
+		return sjme_die("Null string.");
+	
+	/* Recover result. */
+	result = SJME_F_S(inFrame)->hookData;
+	if (result == NULL)
+		return sjme_die("No hookData.");
+	
+	/* Result can only be called once! */
+	if (result->captured)
+		return sjme_die("Result already captured.");
+	
+	/* Set test string result. */
+	result->captured = SJME_JNI_TRUE;
+	result->value.t = SJME_JAVA_TYPE_ID_OBJECT;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+#if 0
+	/* Setup resultant string list. */
+	len = strings->e.length;
+	storage = NULL;
+	if (sjme_error_is(error = ))
+		return sjme_die("Failed to allocate array: %d", error);
+	
+	/* Duplicate array so the object can go through normal GC. */
+	
+	
+	if (sjme_error_is(error = sjme_charSeq_dup(SJME_F_S(inFrame)->allocPool,
+		&result->string,
+		sjme_atomic_g(sjme_charSeq, &string->seq))) ||
+		result->string == NULL)
+		return sjme_die("Failed to dup string: %d", error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+#endif
+}
+
 SJME_NVM_MLE_FUNCTION_DECL_ALT(result, void)
 {
 	sjme_test_nano_result* result;
@@ -186,21 +239,24 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(result, void)
 SJME_NVM_MLE_SHELF_DECLARE(NanoShelf) =
 {
 	SJME_NVM_MLE_DEFINE(makeArrayNull,
-		SJME_MD(SJME_MD_A(SJME_MD_STRING), ),
-		SJME_MP("L", "")),
+		SJME_MD(SJME_MD_A(SJME_MD_STRING), SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_OBJECT, SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_DEFINE(makeArrayString,
 		SJME_MD(SJME_MD_A(SJME_MD_STRING), SJME_MD_I),
-		SJME_MP("L", "I")),
+		SJME_MP(SJME_MP_OBJECT, SJME_MP_I)),
 	
 	SJME_NVM_MLE_DEFINE_ALT(result, integer,
 		SJME_MD(SJME_MD_V, SJME_MD_I),
-		SJME_MP("V", "I")),
+		SJME_MP(SJME_MP_V, SJME_MP_I)),
 	SJME_NVM_MLE_DEFINE_ALT(result, string,
 		SJME_MD(SJME_MD_V, SJME_MD_STRING),
-		SJME_MP("V", "L")),
+		SJME_MP(SJME_MP_V, SJME_MP_OBJECT)),
+	SJME_NVM_MLE_DEFINE_ALT(result, strings,
+		SJME_MD(SJME_MD_V, SJME_MD_A(SJME_MD_STRING)),
+		SJME_MP(SJME_MP_V, SJME_MP_OBJECT)),
 	SJME_NVM_MLE_DEFINE_ALT(result, void,
-		SJME_MD(SJME_MD_V, ),
-		SJME_MP("V", "")),
+		SJME_MD(SJME_MD_V, SJME_MDMP___NO_ARGS__),
+		SJME_MP(SJME_MP_V, SJME_MDMP___NO_ARGS__)),
 	
 	SJME_NVM_MLE_STOP()
 };
@@ -278,6 +334,177 @@ static const sjme_nvm_stateHooks sjme_test_nano_hooks =
 	sjme_sm(.uncaught, sjme_test_nano_uncaught),
 };
 
+static sjme_errorCode sjme_test_checkAnnotation(
+	sjme_attrInNotNull sjme_nvm_class_annotation expected,
+	sjme_attrInNotNull sjme_test_nano_result* result)
+{
+	sjme_jint i, n, matches;
+	sjme_list(sjme_nvm_class_annotationValue)* values;
+	sjme_nvm_class_annotationValue* value;
+	
+	if (expected == NULL || result == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* There are no values? */
+	values = expected->values;
+	if (values == NULL || expected->numValues <= 0 ||
+		values->length <= 0)
+		return SJME_ERROR_NANOTEST_EXPECTED_NO_VALUE;
+	
+	/* Go through and find the matching annotation value. */
+	matches = 0;
+	for (i = 0, n = values->length; i < n; i++)
+	{
+		/* The value this is checking against. */
+		value = &values->elements[i];
+		
+		/* Java type value. */
+		if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
+				"expectedInteger") ||
+			sjme_charSeq_equalsUtfR(value->fieldName->seq,
+				"expectedLong"))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+		
+		/* Exception. */
+		else if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
+			"expectedException"))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+		
+		/* String. */
+		else if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
+				"expectedString"))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+		
+		/* Void, as nothing can directly use void. */
+		else if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
+			"expectedVoid"))
+		{
+			sjme_todo("Impl?");
+			return sjme_error_notImplemented(0);
+		}
+		
+		/* Unknown. */
+		else
+		{
+			sjme_todo("Unknown/unhandled annotation: %s",
+				sjme_charSeq_tempUtf(value->fieldName->seq));
+			return sjme_error_notImplemented(0);
+		}
+	}
+	
+	/* Were matches found? */
+	if (matches > 0)
+	{
+		/* If there are multiple matches, then something is very wrong. */
+		if (matches != 1)
+		{
+			sjme_emitB("Test matched %d expected values!", (int)matches);
+			return SJME_ERROR_NOT_MATCHED;
+		}
+		
+		/* Otherwise, success! */
+		return SJME_ERROR_NONE;
+	}
+	
+	/* None found. */
+	return SJME_ERROR_NOT_MATCHED;
+	
+#if 0
+	/* Exception type. */
+	if ((expectedException != NULL || result.exception != NULL) &&
+		!sjme_charSeq_equalsR(expectedException,
+			result.exception))
+	{
+		/* Debug. */
+		sjme_emitB("Failed test: got exception %s, exception %s",
+			sjme_charSeq_tempUtf(result.exception),
+			sjme_charSeq_tempUtf(expectedException));
+		
+		/* Fail. */
+		error = SJME_ERROR_NOT_MATCHED;
+		goto fail_unexpected;
+	}
+	
+	/* 
+	
+	/* Wrong type? */
+	else if (result.value.t != expectedJava.t &&
+		expectedException == NULL)
+	{
+		/* Debug. */
+		sjme_emitB("Failed test: got type %d, expected %d",
+			result.value.t,
+			expectedJava.t);
+		
+		/* Fail. */
+		error = SJME_ERROR_NOT_MATCHED;
+		goto fail_unexpected;
+	}
+	
+	/* String type. */
+	else if (expectedString != NULL && (result.string == NULL ||
+		!sjme_charSeq_equalsR(expectedString,
+			result.string)))
+	{
+		/* Debug. */
+		sjme_emitB("Failed test: got %d:%s, expected %d:%s",
+			result.value.t,
+				sjme_charSeq_tempUtf(result.string),
+			expectedJava.t,
+				sjme_charSeq_tempUtf(expectedString));
+		
+		/* Fail. */
+		error = SJME_ERROR_NOT_MATCHED;
+		goto fail_unexpected;
+	}
+	
+	/* Java Type. */
+	else if (expectedString == NULL && expectedException == NULL &&
+		0 != memcmp(&result.value, &expectedJava,
+			sizeof(expectedJava)))
+	{
+		/* Debug. */
+		sjme_emitB("Failed test: got %d:%08x.%08x, expected %d:%08x.%08x",
+			result.value.t,
+				result.value.v.j.part.hi,
+				result.value.v.j.part.lo,
+			expectedJava.t,
+				expectedJava.v.j.part.hi,
+				expectedJava.v.j.part.lo);
+		
+		/* Fail. */
+		error = SJME_ERROR_NOT_MATCHED;
+		goto fail_unexpected;
+	}
+	
+	/* If all cases failed, this is a pass! */
+	else
+	{
+		/* Debug. */
+		sjme_emitB("PASS: got %d:%08x.%08x, expected %d:%08x.%08x",
+			result.value.t,
+				result.value.v.j.part.hi,
+				result.value.v.j.part.lo,
+			expectedJava.t,
+				expectedJava.v.j.part.hi,
+				expectedJava.v.j.part.lo);
+	}
+	
+		/* Ignore blank field, this indicates an annotation is starting. */
+		if (annotation->fieldName == NULL)
+			continue;
+#endif
+}
+
 /**
  * NanoTests are meant to be as light as possible, only requiring the
  * target class and anything it relies upon. The purpose of these is to
@@ -311,8 +538,6 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_cchar mainName[BUF_SIZE];
 	sjme_list(sjme_nvm_class_annotation)* annotations;
 	sjme_nvm_class_annotation annotation;
-	sjme_jvalueTyped expectedJava;
-	sjme_charSeq expectedString, expectedException;
 	
 	/* Incorrect number of arguments? */
 	if (argc < 6 || argv[5] == NULL)
@@ -464,11 +689,6 @@ int main(int argc, sjme_lpstr* argv)
 		sjme_atomic_g(sjme_nvm_thread, &mainTask->globals.mainThread),
 		mainName, SJME_JNI_TRUE)) || mainClass == NULL)
 		goto fail_findMain;
-
-	/* Set expected value to something invalid. */
-	memset(&expectedJava, 0, sizeof(expectedJava));
-	expectedJava.t = SJME_NUM_BASIC_TYPE_IDS;
-	expectedString = NULL;
 	
 	/* There needs to be defined annotations. */
 	annotations = mainClass->info->annotations;
@@ -491,58 +711,8 @@ int main(int argc, sjme_lpstr* argv)
 			"Lnano/NanoDetails;"))
 			continue;
 		
-		/* Ignore blank field, this indicates an annotation is starting. */
-		if (annotation->fieldName == NULL)
-			continue;
-		
-		/* Java type value. */
-		if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
-				"expectedInteger") ||
-			sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
-				"expectedLong"))
-			expectedJava = annotation->valueJava;
-		
-		/* Exception. */
-		else if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
-			"expectedException"))
-		{
-			/* Duplicate expected string so it does not interfere with GC. */
-			if (sjme_error_is(error = sjme_charSeq_dup(paramPool,
-				&expectedException, annotation->valueString->seq)))
-				goto fail_dupExpected;
-		}
-		
-		/* String. */
-		else if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
-				"expectedString"))
-		{
-			/* Duplicate expected string so it does not interfere with GC. */
-			if (sjme_error_is(error = sjme_charSeq_dup(paramPool,
-				&expectedString, annotation->valueString->seq)))
-				goto fail_dupExpected;
-			
-			expectedJava.t = SJME_JAVA_TYPE_ID_OBJECT;
-		}
-		
-		/* Void, as nothing can directly use void. */
-		else if (sjme_charSeq_equalsUtfR(annotation->fieldName->seq,
-			"expectedVoid"))
-			expectedJava.t = SJME_BASIC_TYPE_ID_VOID;
-		
-		/* Unknown. */
-		else
-		{
-			sjme_emitB("Unknown/unhandled annotation: %s %s",
-				sjme_charSeq_tempUtf(annotation->fieldName->seq));
-		}
-	}
-	
-	/* No expected value was found? */
-	if (expectedString == NULL && expectedJava.t == SJME_NUM_BASIC_TYPE_IDS &&
-		expectedException == NULL)
-	{
-		error = SJME_ERROR_NANOTEST_EXPECTED_MISSING;
-		goto fail_noExpected;
+		/* We found the annotation we are looking for. */
+		break;
 	}
 
 	/* Iterate the virtual machine loop. */
@@ -587,16 +757,6 @@ int main(int argc, sjme_lpstr* argv)
 				(int)error);
 	}
 	sjme_messageB("========================================================");
-	
-	/* Only destroy the VM if cleaning. */
-	if (!skipClean)
-	{
-		/* Destroy the VM before exit. */
-		exitCode = -1;
-		if (sjme_error_is(error = sjme_nvm_destroy(inState, &exitCode)))
-			sjme_emitB("DESTROY FAILED! (%d)",
-				(int)error);
-	}
 
 	/* Check test result regardless of success. */
 	/* If not captured, then the test fails. */
@@ -608,82 +768,20 @@ int main(int argc, sjme_lpstr* argv)
 		goto fail_notCaptured;
 	}
 	
-	/* Exception type. */
-	if ((expectedException != NULL || result.exception != NULL) &&
-		!sjme_charSeq_equalsR(expectedException,
-			result.exception))
-	{
-		/* Debug. */
-		sjme_emitB("Failed test: got exception %s, exception %s",
-			sjme_charSeq_tempUtf(result.exception),
-			sjme_charSeq_tempUtf(expectedException));
-		
-		/* Fail. */
-		error = SJME_ERROR_NOT_MATCHED;
-		goto fail_unexpected;
-	}
+	/* Check the result annotation. */ 
+	if (sjme_error_is(error = sjme_test_checkAnnotation(
+		annotation, &result)))
+		if (error != SJME_ERROR_NOT_MATCHED)
+			goto fail_unexpected;
 	
-	/* Wrong type? */
-	else if (result.value.t != expectedJava.t &&
-		expectedException == NULL)
+	/* Only destroy the VM if cleaning. */
+	if (!skipClean)
 	{
-		/* Debug. */
-		sjme_emitB("Failed test: got type %d, expected %d",
-			result.value.t,
-			expectedJava.t);
-		
-		/* Fail. */
-		error = SJME_ERROR_NOT_MATCHED;
-		goto fail_unexpected;
-	}
-	
-	/* String type. */
-	else if (expectedString != NULL && (result.string == NULL ||
-		!sjme_charSeq_equalsR(expectedString,
-			result.string)))
-	{
-		/* Debug. */
-		sjme_emitB("Failed test: got %d:%s, expected %d:%s",
-			result.value.t,
-				sjme_charSeq_tempUtf(result.string),
-			expectedJava.t,
-				sjme_charSeq_tempUtf(expectedString));
-		
-		/* Fail. */
-		error = SJME_ERROR_NOT_MATCHED;
-		goto fail_unexpected;
-	}
-	
-	/* Java Type. */
-	else if (expectedString == NULL && expectedException == NULL &&
-		0 != memcmp(&result.value, &expectedJava,
-			sizeof(expectedJava)))
-	{
-		/* Debug. */
-		sjme_emitB("Failed test: got %d:%08x.%08x, expected %d:%08x.%08x",
-			result.value.t,
-				result.value.v.j.part.hi,
-				result.value.v.j.part.lo,
-			expectedJava.t,
-				expectedJava.v.j.part.hi,
-				expectedJava.v.j.part.lo);
-		
-		/* Fail. */
-		error = SJME_ERROR_NOT_MATCHED;
-		goto fail_unexpected;
-	}
-	
-	/* If all cases failed, this is a pass! */
-	else
-	{
-		/* Debug. */
-		sjme_emitB("PASS: got %d:%08x.%08x, expected %d:%08x.%08x",
-			result.value.t,
-				result.value.v.j.part.hi,
-				result.value.v.j.part.lo,
-			expectedJava.t,
-				expectedJava.v.j.part.hi,
-				expectedJava.v.j.part.lo);
+		/* Destroy the VM before exit. */
+		exitCode = -1;
+		if (sjme_error_is(error = sjme_nvm_destroy(inState, &exitCode)))
+			sjme_emitB("DESTROY FAILED! (%d)",
+				(int)error);
 	}
 	
 	/* Skip deleting these if not cleaning. */
@@ -703,22 +801,6 @@ int main(int argc, sjme_lpstr* argv)
 			if (sjme_error_is(error = sjme_charSeq_delete(result.exception)))
 				goto fail_deleteResultString;
 			result.exception = NULL;
-		}
-	
-		/* And the expected string as well. */
-		if (expectedString != NULL)
-		{
-			if (sjme_error_is(error = sjme_charSeq_delete(expectedString)))
-				goto fail_deleteExpectedString;
-			expectedString = NULL;
-		}
-	
-		/* And the expected exception as well. */
-		if (expectedException != NULL)
-		{
-			if (sjme_error_is(error = sjme_charSeq_delete(expectedException)))
-				goto fail_deleteExpectedString;
-			expectedException = NULL;
 		}
 	}
 
@@ -752,18 +834,12 @@ int main(int argc, sjme_lpstr* argv)
 	/* Return with the exit code. */
 	return exitCode;
 
-fail_free:
 fail_unexpected:
-fail_noConstant:
-fail_noExpected:
-fail_dupExpected:
 fail_noAnnotations:
 fail_findMain:
 fail_countBlocks:
-fail_deleteExpectedString:
 fail_deleteResultString:
 fail_notCaptured:
-fail_destroy:
 fail_loop:
 fail_boot:
 fail_initMainArgs:

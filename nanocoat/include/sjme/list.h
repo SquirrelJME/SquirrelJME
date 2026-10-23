@@ -135,6 +135,9 @@ SJME_LIST_DECLARE(sjme_jobject, 0);
 /** List of @link sjme_jstring @endlink . */
 SJME_LIST_DECLARE(sjme_jstring, 0);
 
+/** List of @link sjme_charSeq @endlink . */
+SJME_LIST_DECLARE(sjme_charSeq, 0);
+
 /**
  * List reference.
  *

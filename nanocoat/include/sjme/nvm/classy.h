@@ -691,26 +691,48 @@ typedef enum sjme_nvm_class_annotationTag
 	/** Array tag. */
 	SJME_NVM_CLASS_ANNOTATION_TAG_ARRAY = '[',
 } sjme_nvm_class_annotationTag;
-
-struct sjme_nvm_class_annotationBase
-{
-	/** The class name. */
-	sjme_nvm_stringPool_string className;
 	
+struct sjme_nvm_class_annotationValue
+{
 	/** The field name. */
 	sjme_nvm_stringPool_string fieldName;
 	
 	/** The tag for the value. */
 	sjme_nvm_class_annotationTag tag;
 	
-	/** Referenced class. */
-	sjme_nvm_stringPool_string refClass;
+	/** The value data for the annotation. */
+	union
+	{
+		/** Referenced class. */
+		sjme_nvm_stringPool_string refClass;
 	
-	/** Java value. */
-	sjme_jvalueTyped valueJava;
+		/** Java value. */
+		sjme_jvalueTyped java;
 	
-	/** String Value. */
-	sjme_nvm_stringPool_string valueString;
+		/** String Value. */
+		sjme_nvm_stringPool_string string;
+		
+		/** Annotation sub-value. */
+		sjme_nvm_class_annotation* annotation;
+		
+		/** Array based annotation data (recursive). */
+		struct sjme_list_sjme_nvm_class_annotationValue* array;
+	} value;
+};
+	
+/** A list of @link sjme_nvm_class_annotationValue @endlink . */
+SJME_LIST_DECLARE(sjme_nvm_class_annotationValue, 0);
+
+struct sjme_nvm_class_annotationBase
+{
+	/** The class name. */
+	sjme_nvm_stringPool_string className;
+	
+	/** The number of values in this annotation. */
+	sjme_jint numValues;
+	
+	/** The contained annotation values. */
+	sjme_list(sjme_nvm_class_annotationValue)* values;
 };
 
 struct sjme_nvm_class_fieldInfoBase
