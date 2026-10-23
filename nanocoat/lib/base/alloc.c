@@ -326,10 +326,13 @@ sjme_errorCode sjme_noOptimize sjme_alloc_poolInitMalloc(
 {
 	sjme_pointer result;
 	sjme_jint useSize;
+	
+	if (outPool == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Make sure the size is not wonky. */
 	useSize = SJME_SIZEOF_ALLOC_POOL(size);
-	if (outPool == NULL || size <= (sjme_jint)SJME_ALLOC_MIN_SIZE ||
+	if (size <= (sjme_jint)SJME_ALLOC_MIN_SIZE ||
 		useSize <= 0 || size > useSize)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	

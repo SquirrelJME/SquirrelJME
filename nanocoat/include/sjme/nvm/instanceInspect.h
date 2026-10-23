@@ -43,9 +43,9 @@ extern "C"
  * @param length The number of indexes to copy
  * @param commit The garbage collection commit to use, this is optional.
  * @return Any resultant error, if any.
- * @exception SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the source and/or
+ * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the source and/or
  * destination offsets and length are negative or exceed the array bounds.
- * @exception SJME_ERROR_NULL_STACK_POINTER If the source or destination array
+ * @throws SJME_ERROR_NULL_STACK_POINTER If the source or destination array
  * are @code NULL @endcode.
  * @since 2026/10/23
  */
@@ -64,10 +64,10 @@ sjme_errorCode sjme_nvm_instance_arrayCopyJ(
  * @param index The index within the array.
  * @param outValue The resultant value.
  * @return On any resultant error, if any.
- * @exception SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
+ * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
  * array bounds.
- * @exception SJME_ERROR_CLASS_CAST If this is not an array.
- * @exception SJME_ERROR_NULL_STACK_POINTER If the array
+ * @throws SJME_ERROR_CLASS_CAST If this is not an array.
+ * @throws SJME_ERROR_NULL_STACK_POINTER If the array
  * is @code NULL @endcode.
  * @since 2026/10/23
  */
@@ -84,10 +84,10 @@ sjme_errorCode sjme_nvm_instance_arrayGet(
  * @param outValue The resultant string.
  * @param dup Should the string be duplicated?
  * @return On any resultant error, if any.
- * @exception SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
+ * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
  * array bounds.
- * @exception SJME_ERROR_CLASS_CAST If this is not an array.
- * @exception SJME_ERROR_NULL_STACK_POINTER If the array
+ * @throws SJME_ERROR_CLASS_CAST If this is not an array.
+ * @throws SJME_ERROR_NULL_STACK_POINTER If the array
  * is @code NULL @endcode.
  * @since 2026/10/23
  */
@@ -105,12 +105,12 @@ sjme_errorCode sjme_nvm_instance_arrayGetString(
  * @param commit The garbage collection commit to use, this is optional.
  * @param inValue The input value.
  * @return On any resultant error, if any.
- * @exception SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
+ * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
  * array bounds.
- * @exception SJME_ERROR_CLASS_CAST If this is not an array.
- * @exception SJME_ERROR_NULL_STACK_POINTER If the array
+ * @throws SJME_ERROR_CLASS_CAST If this is not an array.
+ * @throws SJME_ERROR_NULL_STACK_POINTER If the array
  * is @code NULL @endcode.
- * @exception SJME_ERROR_TREAD_INVALID_WRITE If this value cannot be stored
+ * @throws SJME_ERROR_TREAD_INVALID_WRITE If this value cannot be stored
  * in this array.
  * @since 2026/10/23
  */

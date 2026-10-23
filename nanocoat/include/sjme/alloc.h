@@ -331,6 +331,11 @@ struct sjme_alloc_poolBase
  * @param outPool The resultant pool. 
  * @param size The requested pool size.
  * @return Returns an error code.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the size is zero or negative;
+ * or if the size cannot fit an allocation pool.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory for
+ * the allocation.
  * @since 2023/11/18
  */
 sjme_errorCode sjme_alloc_poolInitMalloc(
@@ -344,6 +349,9 @@ sjme_errorCode sjme_alloc_poolInitMalloc(
  * @param baseAddr The base address of the block. 
  * @param size The size of the block.
  * @return Returns an error code.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the size is zero or negative;
+ * or if the size cannot fit an allocation pool.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2023/11/18
  */
 sjme_errorCode sjme_alloc_poolInitStatic(
@@ -356,6 +364,7 @@ sjme_errorCode sjme_alloc_poolInitStatic(
  * 
  * @param allocPool The pool to destroy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/08
  */
 sjme_errorCode sjme_alloc_poolDestroy(
@@ -372,6 +381,7 @@ sjme_errorCode sjme_alloc_poolDestroy(
  * @param outUsable The total usable space within the pool.
  * @param outAllocBlocks The number of allocated blocks within the pool.
  * @return Any error or otherwise success.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2023/12/11
  */
 sjme_errorCode sjme_alloc_poolSpaceTotalSize(
@@ -388,6 +398,13 @@ sjme_errorCode sjme_alloc_poolSpaceTotalSize(
  * @param size The number of bytes to allocate.
  * @param outAddr The output address.
  * @return Returns an error code.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the allocation size is zero or
+ * negative.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_MEMORY_CORRUPTION If memory corruption has been
+ * detected.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory remaining
+ * in the pool.
  * @since 2023/11/19
  */
 sjme_errorCode sjme_allocR(
@@ -409,6 +426,11 @@ sjme_errorCode sjme_allocR(
  * @param outAddr The output address.
  * @param outWeak The resultant weak reference.
  * @return Returns an error code.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If this is used on the incorrect
+ * allocation pool.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
+ * weak reference.
  * @since 2024/07/08
  */
 sjme_errorCode sjme_alloc_weakNewR(
@@ -427,6 +449,9 @@ sjme_errorCode sjme_alloc_weakNewR(
  * @param outAddr The output address.
  * @param inAddr The input address.
  * @return Returns an error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
+ * the copy.
  * @since 2023/12/13
  */
 sjme_errorCode sjme_alloc_copyR(
@@ -447,6 +472,9 @@ sjme_errorCode sjme_alloc_copyR(
  * @param inAddr The input address.
  * @param outWeak The resultant weak reference.
  * @return Returns an error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
+ * the copy.
  * @since 2024/08/09
  */
 sjme_errorCode sjme_alloc_copyWeakR(
@@ -468,6 +496,9 @@ sjme_errorCode sjme_alloc_copyWeakR(
  * @param currentCountP The pointer to the current count.
  * @param newCount The new count to allocate.
  * @return Any resultant errors, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the member or allocation count is
+ * negative.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/01/28
  */
 sjme_errorCode sjme_alloc_grow(
@@ -485,6 +516,10 @@ sjme_errorCode sjme_alloc_grow(
  * @param newSize The new size of the allocation, if @c 0 then the pointer
  * is freed instead.
  * @return Returns an error code.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the new size is negative.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_WEAK_REFERENCE_ATTACHED If this is associated with a
+ * weak reference.
  * @since 2023/11/28
  */
 sjme_errorCode sjme_alloc_reallocR(
@@ -499,6 +534,7 @@ sjme_errorCode sjme_alloc_reallocR(
  * @param outString The output string copy.
  * @param stringToCopy The string to copy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/21
  */
 sjme_errorCode sjme_alloc_strdupR(
@@ -534,6 +570,7 @@ sjme_jint sjme_alloc_weakRefLeftR(
  * @param inOutWeak The weak reference to delete, if the count reaches
  * zero then the pointer will be set to @c NULL .
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/01
  */
 sjme_errorCode sjme_alloc_weakDeleteR(
@@ -545,6 +582,7 @@ sjme_errorCode sjme_alloc_weakDeleteR(
  * 
  * @param addr The address to count down. 
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/14
  */
 sjme_errorCode sjme_alloc_weakUnRefR(
@@ -561,6 +599,9 @@ sjme_errorCode sjme_alloc_weakUnRefR(
  * enqueued. 
  * @param inEnqueueData Optional data to pass to @c inEnqueue .
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_WEAK_REFERENCE If the given pointer is not a weak
+ * reference.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/01
  */
 sjme_errorCode sjme_alloc_weakRefER(
@@ -577,6 +618,13 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @param size The number of bytes to allocate.
  * @param outAddr The output address.
  * @return Returns an error code.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the allocation size is zero or
+ * negative.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_MEMORY_CORRUPTION If memory corruption has been
+ * detected.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory remaining
+ * in the pool.
  * @since 2023/11/19
  */
 #define sjme_alloc(pool, size, outAddr) \
@@ -593,6 +641,11 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @param outAddr The output address.
  * @param outWeak The resultant weak reference.
  * @return Returns an error code.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If this is used on the incorrect
+ * allocation pool.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
+ * weak reference.
  * @since 2024/07/08
  */
 #define sjme_alloc_weakNew(pool, size, inEnqueue, \
@@ -609,6 +662,9 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @param outAddr The output address.
  * @param inAddr The input address.
  * @return Returns an error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
+ * the copy.
  * @since 2023/12/13
  */
 #define sjme_alloc_copy(pool, size, outAddr, inAddr) \
@@ -626,6 +682,9 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @param inAddr The input address.
  * @param outWeak The resultant weak reference.
  * @return Returns an error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
+ * the copy.
  * @since 2024/08/09
  */
 #define sjme_alloc_copyWeak(pool, size, inEnqueue, inEnqueueData, \
@@ -642,6 +701,10 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @param newSize The new size of the allocation, if @c 0 then the pointer
  * is freed instead.
  * @return Returns an error code.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the new size is negative.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_WEAK_REFERENCE_ATTACHED If this is associated with a
+ * weak reference.
  * @since 2023/11/28
  */
 #define sjme_alloc_realloc(inOutAddr, newSize) \
@@ -655,6 +718,7 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @param outString The output string copy.
  * @param stringToCopy The string to copy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/21
  */
 #define sjme_alloc_strdup(allocPool, outString, stringToCopy) \
@@ -668,6 +732,7 @@ sjme_errorCode sjme_alloc_weakRefER(
  * @param inOutWeak The weak reference to delete, if the count reaches
  * zero then the pointer will be set to @c NULL .
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/01
  */
 #define sjme_alloc_weakDelete(inOutWeak) \
@@ -679,6 +744,7 @@ sjme_errorCode sjme_alloc_weakRefER(
  * 
  * @param addr The address to count down. 
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/14
  */
 #define sjme_alloc_weakUnRef(addr) \
@@ -695,6 +761,9 @@ sjme_errorCode sjme_alloc_weakRefER(
  * enqueued.
  * @param inEnqueueData Optional data to pass to @c inEnqueue .
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_WEAK_REFERENCE If the given pointer is not a weak
+ * reference.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/01
  */
 #define sjme_alloc_weakRefE(addr, outWeak, inEnqueue, inEnqueueData) \
@@ -705,7 +774,9 @@ sjme_errorCode sjme_alloc_weakRefER(
  * Frees memory.
  * 
  * @param addr The memory to free. 
- * @return Returns @link SJME_JNI_TRUE @endlink on success.
+ * @return Any resultant error, if any.
+ * @throws SJME_ERROR_MEMORY_CORRUPTION If memory corruption has been detected.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2023/11/19
  */
 sjme_errorCode sjme_alloc_free(
@@ -717,6 +788,8 @@ sjme_errorCode sjme_alloc_free(
  * @param addr The pointer to get the link from.
  * @param outLink The resultant link.
  * @return Returns an error code.
+ * @throws SJME_ERROR_NOT_ALLOC_LINK If this is not an allocation link.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2023/11/19
  */
 sjme_errorCode sjme_alloc_getLink(
@@ -732,6 +805,7 @@ sjme_errorCode sjme_alloc_getLink(
  * @param outPointer The pointer to the referenced memory, if it has been
  * freed then this will return @c NULL .
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/01
  */
 sjme_errorCode sjme_alloc_weakGetPointer(
@@ -745,6 +819,9 @@ sjme_errorCode sjme_alloc_weakGetPointer(
  * @param addr The address to reference.
  * @param outWeak The resultant weak reference for the type.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_WEAK_REFERENCE If the given pointer is not a weak
+ * reference.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/01
  */
 #define sjme_alloc_weakRef(addr, outWeak) \
@@ -777,6 +854,8 @@ sjme_pointer sjme_weakUp(
  * @param addr The address to get the weak pointer of.
  * @param outWeak The resultant weak pointer.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_WEAK_REFERENCE If this is not a weak reference.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/10
  */
 sjme_errorCode sjme_alloc_weakRefGet(
@@ -791,6 +870,7 @@ sjme_errorCode sjme_alloc_weakRefGet(
  * @param allocPool The pool to dump.
  * @param onlyUsed Only print used values?
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/16
  */
 sjme_errorCode sjme_alloc_poolDump(
