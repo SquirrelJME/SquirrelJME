@@ -235,6 +235,12 @@ macro(squirreljme_test_properties tacTestLongName)
 	set_tests_properties("${tacTestLongName}"
 		PROPERTIES SKIP_RETURN_CODE 2)
 
+	# Can run in parallel
+	set_property(TEST "${tacTestLongName}"
+		PROPERTY RUN_SERIAL NO)
+	set_tests_properties("${tacTestLongName}"
+		PROPERTIES RUN_SERIAL NO)
+
 	# Test timeout (to prevent infinite loops)
 	set_property(TEST "${tacTestLongName}"
 		PROPERTY TIMEOUT 180)
