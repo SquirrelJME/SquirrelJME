@@ -539,7 +539,13 @@ static sjme_errorCode sjme_path_defaultStatic(
 		if (nal->execPath != NULL &&
 			sjme_error_is(error = nal->execPath(envPath.chars,
 				SJME_MAX_PATH - 1)))
+		{
+			/* If not implemented, then this cannot be used naturally. */
+			if (error == SJME_ERROR_NOT_IMPLEMENTED)
+				return SJME_ERROR_PATH_NOT_DEFINED;
+			
 			return sjme_error_default(error);
+		}
 
 		/* Nothing here? */
 		if (envPath.chars[0] == '\0')

@@ -39,6 +39,9 @@ public @interface NanoDetails
 	/** Expected string value. */
 	String expectedString() default "";
 	
+	/** Expected string array value. */
+	String[] expectedStrings() default {};
+	
 	/** Expected exception. */
 	String expectedException() default "";
 }

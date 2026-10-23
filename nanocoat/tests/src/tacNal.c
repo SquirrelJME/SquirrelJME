@@ -51,8 +51,7 @@ sjme_errorCode sjme_nal_test_getEnv(
 	if (buf == NULL || env == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 sjme_errorCode sjme_nal_test_nanoTime(
@@ -109,8 +108,13 @@ sjme_errorCode sjme_nal_test_execPath(
 	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
 	sjme_attrInPositiveNonZero sjme_jint outLen)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (outLen < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 sjme_errorCode sjme_nal_test_userHome(sjme_lpstr out,

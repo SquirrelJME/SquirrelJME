@@ -59,9 +59,25 @@ public final class NanoShelf
 	 * The specified value was the given result.
 	 *
 	 * @param __v The result value.
+	 * @since 2026/10/22
+	 */
+	public static native void result(int[] __v);
+	
+	/**
+	 * The specified value was the given result.
+	 *
+	 * @param __v The result value.
 	 * @since 2025/09/24
 	 */
 	public static native void result(float __v);
+	
+	/**
+	 * The specified value was the given result.
+	 *
+	 * @param __v The result value.
+	 * @since 2026/10/22
+	 */
+	public static native void result(float[] __v);
 	
 	/**
 	 * The specified value was the given result.
@@ -75,6 +91,14 @@ public final class NanoShelf
 	 * The specified value was the given result.
 	 *
 	 * @param __v The result value.
+	 * @since 2026/10/22
+	 */
+	public static native void result(long[] __v);
+	
+	/**
+	 * The specified value was the given result.
+	 *
+	 * @param __v The result value.
 	 * @since 2025/09/24
 	 */
 	public static native void result(double __v);
@@ -83,9 +107,25 @@ public final class NanoShelf
 	 * The specified value was the given result.
 	 *
 	 * @param __v The result value.
+	 * @since 2026/10/22
+	 */
+	public static native void result(double[] __v);
+	
+	/**
+	 * The specified value was the given result.
+	 *
+	 * @param __v The result value.
 	 * @since 2025/09/24
 	 */
 	public static native void result(String __v);
+	
+	/**
+	 * The specified value was the given result.
+	 *
+	 * @param __v The result value.
+	 * @since 2026/10/22
+	 */
+	public static native void result(String[] __v);
 	
 	/**
 	 * This test needs to be written.

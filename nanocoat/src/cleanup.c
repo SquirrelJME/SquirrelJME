@@ -207,12 +207,18 @@ static sjme_errorCode sjme_nvm_cleanup_close(
 	sjme_attrInNotNull sjme_closeable closeable)
 {
 	sjme_errorCode error;
+	sjme_nvm inState;
 	sjme_nvm_common common;
 
 	/* Recover common object. */
 	common = SJME_AS_NVM_COMMON(closeable);
 	if (common == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Is this specifically a no-clean VM? (bug testing) */
+	inState = sjme_atomic_g(sjme_nvm, &common->phantomState);
+	if (inState != NULL && inState->bootParamCopy->noCleaning)
+		return SJME_ERROR_NONE;
 
 #if defined(SJME_CONFIG_DEBUG_GC)
 	/* Debug. */
@@ -991,12 +997,14 @@ static sjme_errorCode sjme_nvm_cleanup_postState(
 		SJME_FLAGGED_CLOSE(bootParam->freeLibrarySuite,
 			bootParam->librarySuite);
 		
+#if 0
 		/* Main application. */
 		if (SJME_JNI_TRUE)
 		{
 			sjme_todo("Impl?");
 			return sjme_error_notImplemented(0);
 		}
+#endif
 #if 0
 		SJME_FLAGGED_FREE(bootParam->freeMainClassPathById,
 			bootParam->mainClassPathById);

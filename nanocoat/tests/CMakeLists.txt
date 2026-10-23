@@ -227,6 +227,27 @@ foreach(basicTestSource ${basicTestSources})
 		"{\"${basicTestName}\", ${basicTestName}},\n")
 endforeach()
 
+# Sets test properties
+macro(squirreljme_test_properties tacTestLongName)
+	# Code for skipped tests
+	set_property(TEST "${tacTestLongName}"
+		PROPERTY SKIP_RETURN_CODE 2)
+	set_tests_properties("${tacTestLongName}"
+		PROPERTIES SKIP_RETURN_CODE 2)
+
+	# Test timeout (to prevent infinite loops)
+	set_property(TEST "${tacTestLongName}"
+		PROPERTY TIMEOUT 180)
+	set_tests_properties("${tacTestLongName}"
+		PROPERTIES TIMEOUT 180)
+
+	# Label, name of test, used for filtering
+	set_property(TEST "${tacTestLongName}"
+		PROPERTY LABEL "${tacTestLongName}")
+	set_tests_properties("${tacTestLongName}"
+		PROPERTIES LABEL "${tacTestLongName}")
+endmacro()
+
 # Load in TAC/Nano tests from rom/squirreljme-(slow-)test.(list|nano)
 foreach(testListFile
 	"${CMAKE_SOURCE_DIR}/rom/squirreljme-test.list"
@@ -300,7 +321,22 @@ foreach(testListFile
 			add_test(NAME "${tacTestLongName}"
 				WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
 				COMMAND NanoTest "${testJarFile}"
-					"${tacTestJar}" "${tacTestClassPath}" "${tacTestClass}")
+					"${tacTestJar}" "${tacTestClassPath}" "${tacTestClass}"
+					"-")
+
+			# And no memory check variant
+			add_test(NAME "${tacTestLongName}:nomem"
+				WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+				COMMAND NanoTest "${testJarFile}"
+					"${tacTestJar}" "${tacTestClassPath}" "${tacTestClass}"
+					"M")
+
+			# No cleanup (GC) variant
+			add_test(NAME "${tacTestLongName}:noclean"
+				WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+				COMMAND NanoTest "${testJarFile}"
+					"${tacTestJar}" "${tacTestClassPath}" "${tacTestClass}"
+					"C")
 		else()
 			message(STATUS "TAC Test: ${tacTestLongName}")
 
@@ -311,22 +347,13 @@ foreach(testListFile
 					"${tacTestJar}" "${tacTestClassPath}" "${tacTestClass}")
 		endif()
 
-		# Code for skipped tests
-		set_property(TEST "${tacTestLongName}"
-			PROPERTY SKIP_RETURN_CODE 2)
-		set_tests_properties("${tacTestLongName}"
-			PROPERTIES SKIP_RETURN_CODE 2)
+		# Set properties for test
+		squirreljme_test_properties("${tacTestLongName}")
 
-		# Test timeout (to prevent infinite loops)
-		set_property(TEST "${tacTestLongName}"
-			PROPERTY TIMEOUT 180)
-		set_tests_properties("${tacTestLongName}"
-			PROPERTIES TIMEOUT 180)
-
-		# Label, name of test, used for filtering
-		set_property(TEST "${tacTestLongName}"
-			PROPERTY LABEL "${tacTestLongName}")
-		set_tests_properties("${tacTestLongName}"
-			PROPERTIES LABEL "${tacTestLongName}")
+		# And other NanoCoat equivalents
+		if("${testIsNano}" GREATER_EQUAL "0")
+			squirreljme_test_properties("${tacTestLongName}:nomem")
+			squirreljme_test_properties("${tacTestLongName}:noclean")
+		endif()
 	endforeach()
 endforeach()

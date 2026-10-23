@@ -301,7 +301,7 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_list(sjme_lpstr)* classpath;
 	sjme_list(sjme_lpstr)* mainArgs;
 	sjme_nvm inState;
-	sjme_jboolean terminated;
+	sjme_jboolean terminated, skipMemCheck, skipClean;
 	const sjme_nal* nal;
 	sjme_lpstr classpathSplice;
 	sjme_test_nano_result result;
@@ -315,7 +315,7 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_charSeq expectedString, expectedException;
 	
 	/* Incorrect number of arguments? */
-	if (argc < 5)
+	if (argc < 6 || argv[5] == NULL)
 	{
 		sjme_message("Not enough arguments to NanoTest executable.");
 		return EXIT_FAILURE;
@@ -426,6 +426,22 @@ int main(int argc, sjme_lpstr* argv)
 	bootParam.jdwpPort = 5005;
 	bootParam.jdwpListening = SJME_JNI_FALSE;
 	
+	/* ScritchUI is not used for nano tests. */
+	bootParam.noScritchUi = SJME_JNI_TRUE;
+	
+	/* Skip the memory check? */
+	skipMemCheck = SJME_JNI_FALSE;
+	if (argv[5][0] == 'M' || argv[5][0] == 'C')
+		skipMemCheck = SJME_JNI_TRUE;
+	
+	/* Skip all cleaning? This is for logic sanity. */
+	skipClean = SJME_JNI_FALSE;
+	if (argv[5][0] == 'C')
+	{
+		skipClean = SJME_JNI_TRUE;
+		bootParam.noCleaning = SJME_JNI_TRUE;
+	}
+	
 	/* Boot the virtual machine. */
 	inState = NULL;
 	mainTask = NULL;
@@ -530,14 +546,21 @@ int main(int argc, sjme_lpstr* argv)
 	}
 
 	/* Iterate the virtual machine loop. */
-	sjme_messageB("--------------------------------------------------------");
+	sjme_messageB("++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	for (terminated = SJME_JNI_FALSE; !terminated;)
 	{
 		/* Let other threads run. */
 		sjme_thread_yield();
 		
+		/* Ticker tape. */
+		sjme_emitB("--------------------------------------------------------");
+		
+		/* Emit a backtrace for the current test progress. */
+		sjme_nvm_task_stackTraceThread(
+			sjme_atomic_g(sjme_nvm_thread, &mainTask->globals.mainThread));
+		
 		/* Tick the virtual machine. */
-		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, -1,
+		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, 4096,
 			NULL, &terminated)))
 		{
 			/* Fail unless this was interrupted. */
@@ -551,145 +574,179 @@ int main(int argc, sjme_lpstr* argv)
 			
 			/* Everything else. */
 			else
+			{
+				sjme_emitB("Loop failure: %d", 
+					(int)error);
 				goto fail_loop;
-		}
-	}
-	sjme_messageB("--------------------------------------------------------");
-	
-	/* Destroy the VM before exit. */
-	exitCode = -1;
-	if (sjme_error_is(error = sjme_nvm_destroy(inState, &exitCode)))
-		goto fail_destroy;
-
-	/* If the exit was successful, check test result. */
-	if (exitCode == 0)
-	{
-		/* If not captured, then the test fails. */
-		if (!result.captured)
-		{
-			error = SJME_ERROR_NO_TEST_RESULT;
-			goto fail_notCaptured;
+			}
 		}
 		
-		/* Exception type. */
-		if ((expectedException != NULL || result.exception != NULL) &&
-			!sjme_charSeq_equalsR(expectedException,
-				result.exception))
-		{
-			/* Debug. */
-			sjme_emitB("Failed test: got exception %s, exception %s",
-				sjme_charSeq_tempUtf(result.exception),
-				sjme_charSeq_tempUtf(expectedException));
-			
-			/* Fail. */
-			error = SJME_ERROR_NOT_MATCHED;
-			goto fail_unexpected;
-		}
-		
-		/* Wrong type? */
-		else if (result.value.t != expectedJava.t &&
-			expectedException == NULL)
-		{
-			/* Debug. */
-			sjme_emitB("Failed test: got type %d, expected %d",
-				result.value.t,
-				expectedJava.t);
-			
-			/* Fail. */
-			error = SJME_ERROR_NOT_MATCHED;
-			goto fail_unexpected;
-		}
-		
-		/* String type. */
-		else if (expectedString != NULL && (result.string == NULL ||
-			!sjme_charSeq_equalsR(expectedString,
-				result.string)))
-		{
-			/* Debug. */
-			sjme_emitB("Failed test: got %d:%s, expected %d:%s",
-				result.value.t,
-					sjme_charSeq_tempUtf(result.string),
-				expectedJava.t,
-					sjme_charSeq_tempUtf(expectedString));
-			
-			/* Fail. */
-			error = SJME_ERROR_NOT_MATCHED;
-			goto fail_unexpected;
-		}
-		
-		/* Java Type. */
-		else if (expectedString == NULL && expectedException == NULL &&
-			memcmp(&result.value, &expectedJava,
-				sizeof(expectedJava)) != 0)
-		{
-			/* Debug. */
-			sjme_emitB("Failed test: got %d:%08x.%08x, expected %d:%08x.%08x",
-				result.value.t,
-					result.value.v.j.part.hi,
-					result.value.v.j.part.lo,
-				expectedJava.t,
-					expectedJava.v.j.part.hi,
-					expectedJava.v.j.part.lo);
-			
-			/* Fail. */
-			error = SJME_ERROR_NOT_MATCHED;
-			goto fail_unexpected;
-		}
+		/* Done? */
+		if (terminated)
+			sjme_emitB("Terminated! (%d)",
+				(int)error);
 	}
+	sjme_messageB("========================================================");
 	
-	/* Free result string if it was created. */
-	if (result.string != NULL)
+	/* Only destroy the VM if cleaning. */
+	if (!skipClean)
 	{
-		if (sjme_error_is(error = sjme_charSeq_delete(result.string)))
-			goto fail_deleteResultString;
-		result.string = NULL;
-	}
-	
-	/* Free result exception if it was created. */
-	if (result.exception != NULL)
-	{
-		if (sjme_error_is(error = sjme_charSeq_delete(result.exception)))
-			goto fail_deleteResultString;
-		result.exception = NULL;
-	}
-	
-	/* And the expected string as well. */
-	if (expectedString != NULL)
-	{
-		if (sjme_error_is(error = sjme_charSeq_delete(expectedString)))
-			goto fail_deleteExpectedString;
-		expectedString = NULL;
-	}
-	
-	/* And the expected exception as well. */
-	if (expectedException != NULL)
-	{
-		if (sjme_error_is(error = sjme_charSeq_delete(expectedException)))
-			goto fail_deleteExpectedString;
-		expectedException = NULL;
+		/* Destroy the VM before exit. */
+		exitCode = -1;
+		if (sjme_error_is(error = sjme_nvm_destroy(inState, &exitCode)))
+			sjme_emitB("DESTROY FAILED! (%d)",
+				(int)error);
 	}
 
-	/* There must be no memory blocks allocated, destruction should be */
-	/* in an entirely clean slate with nothing left over. */
-	allocCount = -1;
-	if (sjme_error_is(error = sjme_alloc_poolSpaceTotalSize(runPool,
-		NULL, NULL, NULL,
-		&allocCount)) || allocCount < 0)
-		goto fail_countBlocks;
-
-	/* There must be zero blocks. */
-	if (allocCount != 0)
+	/* Check test result regardless of success. */
+	/* If not captured, then the test fails. */
+	if (!result.captured)
 	{
+		sjme_emitB("NO TEST RESULT CAPTURED!");
+		
+		error = SJME_ERROR_NO_TEST_RESULT;
+		goto fail_notCaptured;
+	}
+	
+	/* Exception type. */
+	if ((expectedException != NULL || result.exception != NULL) &&
+		!sjme_charSeq_equalsR(expectedException,
+			result.exception))
+	{
+		/* Debug. */
+		sjme_emitB("Failed test: got exception %s, exception %s",
+			sjme_charSeq_tempUtf(result.exception),
+			sjme_charSeq_tempUtf(expectedException));
+		
+		/* Fail. */
+		error = SJME_ERROR_NOT_MATCHED;
+		goto fail_unexpected;
+	}
+	
+	/* Wrong type? */
+	else if (result.value.t != expectedJava.t &&
+		expectedException == NULL)
+	{
+		/* Debug. */
+		sjme_emitB("Failed test: got type %d, expected %d",
+			result.value.t,
+			expectedJava.t);
+		
+		/* Fail. */
+		error = SJME_ERROR_NOT_MATCHED;
+		goto fail_unexpected;
+	}
+	
+	/* String type. */
+	else if (expectedString != NULL && (result.string == NULL ||
+		!sjme_charSeq_equalsR(expectedString,
+			result.string)))
+	{
+		/* Debug. */
+		sjme_emitB("Failed test: got %d:%s, expected %d:%s",
+			result.value.t,
+				sjme_charSeq_tempUtf(result.string),
+			expectedJava.t,
+				sjme_charSeq_tempUtf(expectedString));
+		
+		/* Fail. */
+		error = SJME_ERROR_NOT_MATCHED;
+		goto fail_unexpected;
+	}
+	
+	/* Java Type. */
+	else if (expectedString == NULL && expectedException == NULL &&
+		0 != memcmp(&result.value, &expectedJava,
+			sizeof(expectedJava)))
+	{
+		/* Debug. */
+		sjme_emitB("Failed test: got %d:%08x.%08x, expected %d:%08x.%08x",
+			result.value.t,
+				result.value.v.j.part.hi,
+				result.value.v.j.part.lo,
+			expectedJava.t,
+				expectedJava.v.j.part.hi,
+				expectedJava.v.j.part.lo);
+		
+		/* Fail. */
+		error = SJME_ERROR_NOT_MATCHED;
+		goto fail_unexpected;
+	}
+	
+	/* If all cases failed, this is a pass! */
+	else
+	{
+		/* Debug. */
+		sjme_emitB("PASS: got %d:%08x.%08x, expected %d:%08x.%08x",
+			result.value.t,
+				result.value.v.j.part.hi,
+				result.value.v.j.part.lo,
+			expectedJava.t,
+				expectedJava.v.j.part.hi,
+				expectedJava.v.j.part.lo);
+	}
+	
+	/* Skip deleting these if not cleaning. */
+	if (!skipClean)
+	{
+		/* Free result string if it was created. */
+		if (result.string != NULL)
+		{
+			if (sjme_error_is(error = sjme_charSeq_delete(result.string)))
+				goto fail_deleteResultString;
+			result.string = NULL;
+		}
+	
+		/* Free result exception if it was created. */
+		if (result.exception != NULL)
+		{
+			if (sjme_error_is(error = sjme_charSeq_delete(result.exception)))
+				goto fail_deleteResultString;
+			result.exception = NULL;
+		}
+	
+		/* And the expected string as well. */
+		if (expectedString != NULL)
+		{
+			if (sjme_error_is(error = sjme_charSeq_delete(expectedString)))
+				goto fail_deleteExpectedString;
+			expectedString = NULL;
+		}
+	
+		/* And the expected exception as well. */
+		if (expectedException != NULL)
+		{
+			if (sjme_error_is(error = sjme_charSeq_delete(expectedException)))
+				goto fail_deleteExpectedString;
+			expectedException = NULL;
+		}
+	}
+
+	/* Do we specifically care if we are checking memory? */
+	if (!skipMemCheck)
+	{
+		/* There must be no memory blocks allocated, destruction should be */
+		/* in an entirely clean slate with nothing left over. */
+		allocCount = -1;
+		if (sjme_error_is(error = sjme_alloc_poolSpaceTotalSize(runPool,
+			NULL, NULL, NULL,
+			&allocCount)) || allocCount < 0)
+			goto fail_countBlocks;
+
+		/* There must be zero blocks. */
+		if (allocCount != 0)
+		{
 #if defined(SJME_CONFIG_DEBUG)
-		/* Dump memory state. */
-		sjme_alloc_poolDump(runPool, SJME_JNI_TRUE);
+			/* Dump memory state. */
+			sjme_alloc_poolDump(runPool, SJME_JNI_TRUE);
 #endif
 		
 #if !defined(SJME_CONFIG_DEBUG_NO_REAL_GC)
-		/* Fail. */
-		error = SJME_ERROR_MEMORY_EXISTS;
-		goto fail_existingBlocks;
+			/* Fail. */
+			error = SJME_ERROR_MEMORY_EXISTS;
+			goto fail_existingBlocks;
 #endif
+		}
 	}
 	
 	/* Return with the exit code. */

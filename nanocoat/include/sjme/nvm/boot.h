@@ -155,6 +155,9 @@ struct sjme_nvm_bootParam
 	 * will need to be used to determine the executable path if possible.
 	 */
 	sjme_jboolean startAtArgZero;
+	
+	/** Do not clean objects within the virtual machine. */
+	sjme_jboolean noCleaning;
 };
 
 /**
