@@ -34,12 +34,41 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Copies values from the source array to the destination array.
+ * 
+ * @param srcArray The source array.
+ * @param srcOff The source offset into the array.
+ * @param destArray The destination array.
+ * @param destOff The destination offset.
+ * @param length The number of indexes to copy
+ * @param commit The garbage collection commit to use, this is optional.
+ * @return Any resultant error, if any.
+ * @exception SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the source and/or
+ * destination offsets and length are negative or exceed the array bounds.
+ * @exception SJME_ERROR_NULL_STACK_POINTER If the source or destination array
+ * are @code NULL @endcode.
+ * @since 2026/10/23
+ */
+sjme_errorCode sjme_nvm_instance_arrayCopyJ(
+	sjme_attrInNotNull sjme_jarray srcArray,
+	sjme_attrInPositive sjme_jint srcOff,
+	sjme_attrInNotNull sjme_jarray destArray,
+	sjme_attrInPositive sjme_jint destOff,
+	sjme_attrInPositive sjme_jint length,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit);
+	
+/**
  * Obtains a single array value.
  * 
  * @param inArray The array to get a value from.
  * @param index The index within the array.
  * @param outValue The resultant value.
  * @return On any resultant error, if any.
+ * @exception SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
+ * array bounds.
+ * @exception SJME_ERROR_CLASS_CAST If this is not an array.
+ * @exception SJME_ERROR_NULL_STACK_POINTER If the array
+ * is @code NULL @endcode.
  * @since 2026/10/23
  */
 sjme_errorCode sjme_nvm_instance_arrayGet(
@@ -53,13 +82,20 @@ sjme_errorCode sjme_nvm_instance_arrayGet(
  * @param inArray The array to get a string from.
  * @param index The index within the array.
  * @param outValue The resultant string.
+ * @param dup Should the string be duplicated?
  * @return On any resultant error, if any.
+ * @exception SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
+ * array bounds.
+ * @exception SJME_ERROR_CLASS_CAST If this is not an array.
+ * @exception SJME_ERROR_NULL_STACK_POINTER If the array
+ * is @code NULL @endcode.
  * @since 2026/10/23
  */
 sjme_errorCode sjme_nvm_instance_arrayGetString(
 	sjme_attrInNotNull sjme_jarray inArray,
 	sjme_attrInPositive sjme_jint index,
-	sjme_attrOutNotNull sjme_charSeq* outValue);
+	sjme_attrOutNotNull sjme_charSeq* outValue,
+	sjme_attrInValue sjme_jboolean dup);
 	
 /**
  * Writes a single array value.
@@ -69,12 +105,19 @@ sjme_errorCode sjme_nvm_instance_arrayGetString(
  * @param commit The garbage collection commit to use, this is optional.
  * @param inValue The input value.
  * @return On any resultant error, if any.
+ * @exception SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
+ * array bounds.
+ * @exception SJME_ERROR_CLASS_CAST If this is not an array.
+ * @exception SJME_ERROR_NULL_STACK_POINTER If the array
+ * is @code NULL @endcode.
+ * @exception SJME_ERROR_TREAD_INVALID_WRITE If this value cannot be stored
+ * in this array.
  * @since 2026/10/23
  */
 sjme_errorCode sjme_nvm_instance_arraySet(
 	sjme_attrInNotNull sjme_jarray inArray,
 	sjme_attrInPositive sjme_jint index,
-	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrOutNotNull sjme_jvalueTyped* inValue);
 
 /*--------------------------------------------------------------------------*/

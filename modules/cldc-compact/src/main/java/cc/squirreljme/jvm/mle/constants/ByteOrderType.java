@@ -29,4 +29,9 @@ public interface ByteOrderType
 	@SquirrelJMENativeApi(min = "0.4.0")
 	byte LITTLE_ENDIAN =
 		1;
+		
+	/** Undetermined endianess. */
+	@SquirrelJMENativeApi(min = "0.4.0")
+	byte UNDETERMINED =
+		2;
 }
