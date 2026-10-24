@@ -49,6 +49,14 @@ __make_patch() {
 	__lines="$(wc -l < "$___errsFile")"
 	__newLines="$(expr '3' + "$__lines")"
 	
+	# Accumulate lines
+	__was="$(cat -- "$___errsFile.line" 2> /dev/null || echo '0')"
+	__now="$(expr "$__was" '+' "$__lines")"
+	echo "$__now" > "$___errsFile.line"
+	
+	# Determine total accumulation
+	__accum="$(expr "$___guess" + "$__now")"
+	
 	# Print the header if this is the first item
 	if [ "$__context" -eq "100" ]
 	then
@@ -58,7 +66,7 @@ __make_patch() {
 	
 	# Then each individual unified diff set 
 	printf -- '@@ -%d,%d +%d,%d @@\n' \
-		"$___guess" "3" "$___guess" "$__newLines"
+		"$___guess" "3" "$__accum" "$__newLines"
 		
 	# Add in each throw
 	cat "$___errsFile" | while read __err
@@ -85,7 +93,7 @@ __make_patch() {
 # Forget function we are in
 __funcFile="/tmp/$__pid.func" 
 __errsFile="/tmp/$__pid.errs" 
-rm -f -- "$__funcFile" "$__errsFile"
+rm -f -- "$__funcFile" "$__errsFile" "$__errsFile.line"
 
 # The base context to use
 __context="100"
@@ -123,7 +131,7 @@ do
 				# * @since 2025/10/04
 				# */
 				#sjme_errorCode sjme_nvm_vmClass_loaderLoadU(
-				__sinceDate="$(grep -B 2 -- "sjme_errorCode $__forFunc(" < \
+				__sinceDate="$(grep -B 2 -- "^sjme_errorCode $__forFunc($" < \
 					"$__forFile" | grep '@since' |
 					grep -o '20..\/..\/..')"
 			fi 
@@ -133,8 +141,8 @@ do
 			if [ -n "$__forFile" ] && [ -n "$__sinceDate" ]
 			then
 				# Guess the line
-				__guess="$(grep -hn "sjme_errorCode $__forFunc(" < \
-					"$__forFile" 2> /dev/null | tail -n 1 | cut -d ':' -f 1)"
+				__guess="$(grep -hn "^sjme_errorCode $__forFunc($" < \
+					"$__forFile" 2> /dev/null | head -n 1 | cut -d ':' -f 1)"
 				
 				# Generate patch
 				__make_patch "$__context" "$__src" \
@@ -155,4 +163,4 @@ do
 done
 
 # Cleanup
-rm -f -- "$__funcFile" "$__errsFile"
+rm -f -- "$__funcFile" "$__errsFile" "$__errsFile.line"
