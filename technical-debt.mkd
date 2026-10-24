@@ -50,6 +50,34 @@ errors in an orderly fashion:
 (sjme_errorCode sjme_[a-zA-Z0-9_]+\(|SJME_ERROR_[A-Z_0-9]+)
 ```
 
+Taking this output and typing out a patch by hand does make this actually
+work:
+
+```diff
+--- a/include/sjme/nvm/classyVm.h
++++ b/include/sjme/nvm/classyVm.h
+@@ -100,2 +100,5 @@
++ * @throws SJME_ERROR_NULL_ARGUMENTS
++ * @throws SJME_ERROR_INVALID_ARGUMENT
++ * @throws SJME_ERROR_INVALID_FIELD_TYPE
+  */
+ sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
+@@ -200,2 +200,5 @@
++ * @throws SJME_ERROR_NULL_ARGUMENTS
++ * @throws SJME_ERROR_MISSING_MAIN_RUNTIME
++ * @throws SJME_ERROR_NONE
+  */
+ sjme_errorCode sjme_nvm_vmClass_loaderNew(
+```
+
+Therefor with this information, I could write a shell script which goes through
+each file and generates a small patch like this to add these to the headers.
+Naturally for the description I can use a base template, and also remove
+the inclusion of NONE since that is implied. There also is the case
+of `@since`, I would like the throws before `@since` but this can also be
+used to gather some more context to make sure a target function in a header
+is a documented function.
+
 # `@SquirrelJMEVendorApi` and `@KeepWhenCompacting` Cleanup (Done)
 
 With the ProGuard changes there are cases where `@SquirrelJMEVendorApi` was
