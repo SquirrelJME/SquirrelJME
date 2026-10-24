@@ -442,6 +442,11 @@ sjme_errorCode sjme_stream_inputReadFully(
  * @param offset The offset into the destination buffer.
  * @param length The number of bytes to read.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ILLEGAL_STATE If the stream does not support reading or
+ * has no implementation.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the offset and/or length are
+ * negative or exceed the array bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2023/12/31
  */
 sjme_errorCode sjme_stream_inputReadIter(

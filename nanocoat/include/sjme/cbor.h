@@ -114,8 +114,13 @@ struct sjme_cborBase
 /**
  * Puts in an array close.
  * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow an array
+ * open, array value, or map close.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putArrayClose(
@@ -124,8 +129,13 @@ sjme_errorCode sjme_cbor_putArrayClose(
 /**
  * Puts in an array open.
  * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow file start,
+ * array open, array comma, map colon, or an unknown comma.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putArrayOpen(
@@ -134,8 +144,12 @@ sjme_errorCode sjme_cbor_putArrayOpen(
 /**
  * Puts in a colon.
  * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow a map key.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putColon(
@@ -144,19 +158,30 @@ sjme_errorCode sjme_cbor_putColon(
 /**
  * Puts in a comma.
  * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does follow a map value,
+ * array value, array close, or map close.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putComma(
 	sjme_attrInNotNull sjme_cbor cbor);
 
 /**
- * Puts in a key.
+ * Puts in a key. This will place a comma accordingly if this values an array
+ * or map value.
+ * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
  * 
  * @param cbor The CBOR state.
  * @param inKey The map key.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow a map
+ * open, map comma, or unknown comma.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putKey(
@@ -166,8 +191,13 @@ sjme_errorCode sjme_cbor_putKey(
 /**
  * Closes a map.
  * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow a map open,
+ * map value, or array close.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapClose(
@@ -176,9 +206,14 @@ sjme_errorCode sjme_cbor_putMapClose(
 /**
  * Puts in a map value that has an array as its value.
  * 
+ * This sequence is @code [key, colon, arrayOpen] @endcode.
+ * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @param inKey The map key.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapEntryA(
@@ -188,10 +223,15 @@ sjme_errorCode sjme_cbor_putMapEntryA(
 /**
  * Puts in a map value.
  * 
+ * This sequence is @code [key, colon, value] @endcode.
+ * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @param inKey The map key.
  * @param inValue The value to write.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapEntryI(
@@ -202,10 +242,15 @@ sjme_errorCode sjme_cbor_putMapEntryI(
 /**
  * Puts in a map value.
  * 
+ * This sequence is @code [key, colon, value] @endcode.
+ * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @param inKey The map key.
  * @param inValue The value to write.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapEntryJ(
@@ -216,9 +261,14 @@ sjme_errorCode sjme_cbor_putMapEntryJ(
 /**
  * Puts in a map value that has a map as its value.
  * 
+ * This sequence is @code [key, colon, mapOpen] @endcode.
+ * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @param inKey The map key.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapEntryM(
@@ -228,10 +278,15 @@ sjme_errorCode sjme_cbor_putMapEntryM(
 /**
  * Puts in a map value.
  * 
+ * This sequence is @code [key, colon, value] @endcode.
+ * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @param inKey The map key.
  * @param inValue The value to write.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapEntryS(
@@ -242,10 +297,15 @@ sjme_errorCode sjme_cbor_putMapEntryS(
 /**
  * Puts in a map value.
  * 
+ * This sequence is @code [key, colon, value] @endcode.
+ * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @param inKey The map key.
  * @param inValue The value to write.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapEntryZ(
@@ -254,10 +314,16 @@ sjme_errorCode sjme_cbor_putMapEntryZ(
 	sjme_attrInValue sjme_jboolean inValue);
 
 /**
- * Puts in a map open.
+ * Puts in a map open. This will auto-place a comma accordingly if this
+ * follows an array close or map close.
+ * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
  * 
  * @param cbor The CBOR state.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow file start,
+ * array open, array comma, map colon, or unknown comma.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapOpen(
@@ -266,9 +332,14 @@ sjme_errorCode sjme_cbor_putMapOpen(
 /**
  * Puts in a value only.
  * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @param inValue The value to write.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow an array
+ * open, array comma, map comma, or unknown comma.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putValueI(
@@ -278,9 +349,14 @@ sjme_errorCode sjme_cbor_putValueI(
 /**
  * Puts in a value only.
  * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @param inValue The value to write.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow an array
+ * open, array comma, map comma, or unknown comma.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putValueJ(
@@ -290,9 +366,14 @@ sjme_errorCode sjme_cbor_putValueJ(
 /**
  * Puts in a value only.
  * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @param inValue The value to write.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow an array
+ * open, array comma, map comma, or unknown comma.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putValueS(
@@ -302,9 +383,14 @@ sjme_errorCode sjme_cbor_putValueS(
 /**
  * Puts in a value only.
  * 
+ * Include errors from @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param cbor The CBOR state.
  * @param inValue The value to write.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow an array
+ * open, array comma, map comma, or unknown comma.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putValueZ(

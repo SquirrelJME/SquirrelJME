@@ -35,9 +35,12 @@ extern "C" {
 /**
  * Returns the character at the given index.
  * 
+ * Includes errors from @link sjme_charSeq_charAt() @endlink.
+ * 
  * @param inSeq The input character sequence.
  * @param inIndex The index to get from.
  * @return The resultant character.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/27
  */
 typedef sjme_jchar (*sjme_charSeq_charAtFunc)(
@@ -47,8 +50,11 @@ typedef sjme_jchar (*sjme_charSeq_charAtFunc)(
 /**
  * Deletes the given character sequence.
  * 
+ * Includes errors from @link sjme_closeable_close() @endlink.
+ * 
  * @param inSeq The input character sequence.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/10/11
  */
 typedef sjme_errorCode (*sjme_charSeq_deleteFunc)(
@@ -57,9 +63,12 @@ typedef sjme_errorCode (*sjme_charSeq_deleteFunc)(
 /**
  * Returns the length of the character sequence.
  * 
+ * Includes errors from @link sjme_charSeq_length() @endlink.
+ * 
  * @param inSeq The input character sequence.
  * @param outLen The sequence length.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/27
  */
 typedef sjme_errorCode (*sjme_charSeq_lengthFunc)(
@@ -171,9 +180,13 @@ typedef struct sjme_charSeq_it sjme_charSeq_it;
 
 /**
  * Iterates the next character.
+ * 
+ * Includes errors from @link sjme_charSeq_itNew() @endlink
+ * and @link sjme_charSeq_charAt() @endlink.
  *
  * @param it The iterator to iterate.
  * @return The next iterated character.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/03/09
  */
 typedef sjme_jchar (*sjme_charSeq_itFunc)(
@@ -201,6 +214,9 @@ struct sjme_charSeq_it
  * @param inIndex The index to get from.
  * @param outChar The resultant character.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the character index is out of
+ * bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/27
  */
 sjme_errorCode sjme_charSeq_charAt(
@@ -215,6 +231,10 @@ sjme_errorCode sjme_charSeq_charAt(
  * @param inIndex The index to get from.
  * @param wantChar The requested character.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the character index is out of
+ * bounds.
+ * @throws SJME_ERROR_NOT_MATCHED If this is not the given character.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_charAtIs(
@@ -239,8 +259,11 @@ sjme_jchar sjme_charSeq_charAtR(
 /**
  * Deletes the given character sequence.
  * 
+ * Include errors from @link sjme_alloc_free() @endlink.
+ * 
  * @param seq The sequence to delete.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/10/11
  */
 sjme_errorCode sjme_charSeq_delete(
@@ -253,6 +276,9 @@ sjme_errorCode sjme_charSeq_delete(
  * @param destCopy The destination copy.
  * @param sourceFrom The source to copy from.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to duplicate
+ * this character sequence.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_dup(
@@ -270,6 +296,14 @@ sjme_errorCode sjme_charSeq_dup(
  * @param dstLimit The limit of the destination buffer.
  * @param maxChars The number of characters to copy. 
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If any source and/or destination
+ * index access would exceed the bounds of @code dstLimit @endcode or
+ * the source character sequence.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the maximum number of characters to
+ * copy is not in range of @code [-1, INT32_MAX] @endcode.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to duplicate
+ * this character sequence.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/06/19
  */
 sjme_errorCode sjme_charSeq_dupToU(
@@ -286,6 +320,7 @@ sjme_errorCode sjme_charSeq_dupToU(
  * @param inSeq The input character sequence.
  * @param outLen The sequence length.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/27
  */
 sjme_errorCode sjme_charSeq_length(
@@ -299,6 +334,8 @@ sjme_errorCode sjme_charSeq_length(
  * @param bSeq The char sequence to check for equality against.
  * @param outResult The result of the check.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_MATCHED If the character sequences differ.
+ * @throws SJME_ERROR_NULL_ARGUMENTS If @code outResult @endcode is null.
  * @since 2024/08/08 
  */
 sjme_errorCode sjme_charSeq_equals(
@@ -313,7 +350,8 @@ sjme_errorCode sjme_charSeq_equals(
  * @param aSeq The sequence to check.
  * @param bSeq The char sequence to check for equality against.
  * @return Returns whether it matches, note that if there is an error
- * then @link SJME_JNI_FALSE @endlink will be returned and the error will be hidden.
+ * then @link SJME_JNI_FALSE @endlink will be returned and the error will be 
+ * hidden.
  * @since 2024/11/09
  */
 sjme_jboolean sjme_charSeq_equalsR(
@@ -327,6 +365,8 @@ sjme_jboolean sjme_charSeq_equalsR(
  * @param bUtf The UTF sequence to check for equality against.
  * @param outResult The result of the check.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_MATCHED If the character sequences differ.
+ * @throws SJME_ERROR_NULL_ARGUMENTS If @code outResult @endcode is null.
  * @since 2024/08/08 
  */
 sjme_errorCode sjme_charSeq_equalsUtf(
@@ -340,7 +380,8 @@ sjme_errorCode sjme_charSeq_equalsUtf(
  * @param aSeq The sequence to check.
  * @param bUtf The UTF sequence to check for equality against.
  * @return Returns whether it matches, note that if there is an error
- * then @link SJME_JNI_FALSE @endlink will be returned and the error will be hidden.
+ * then @link SJME_JNI_FALSE @endlink will be returned and the error will
+ * be hidden.
  * @since 2024/08/08 
  */
 sjme_jboolean sjme_charSeq_equalsUtfR(
@@ -352,6 +393,7 @@ sjme_jboolean sjme_charSeq_equalsUtfR(
  * 
  * @param seq The sequence to clean up.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/06/13
  */
 sjme_errorCode sjme_charSeq_free(
@@ -364,6 +406,7 @@ sjme_errorCode sjme_charSeq_free(
  * @param inSeq The sequence to hash.
  * @param outHash The resultant hash code.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/01/25
  */
 sjme_errorCode sjme_charSeq_hash(
@@ -373,7 +416,7 @@ sjme_errorCode sjme_charSeq_hash(
 /**
  * Hashes the given string in accordance to
  * Java's @code{.java} String.hashCode() @endcode , note
- * that this will any errors that occur.
+ * that this will hide any errors that occur.
  * 
  * @param inSeq The sequence to hash.
  * @return The resultant hash code, this will be zero if any errors occur
@@ -390,6 +433,7 @@ sjme_errorCode sjme_charSeq_hashR(
  * @param offset The offset into the sequence.
  * @param it The target iterator.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/03/09
  */
 sjme_errorCode sjme_charSeq_itNew(
@@ -404,6 +448,9 @@ sjme_errorCode sjme_charSeq_itNew(
  * @param functions The functions for referring to the characters.
  * @param frontEnd Optional non-bindable front-end data to use.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_IMPLEMENTED If the underlying functions do not have
+ * an implementation.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/03/18
  */
 sjme_errorCode sjme_charSeq_newFunctionStatic(
@@ -420,6 +467,11 @@ sjme_errorCode sjme_charSeq_newFunctionStatic(
  * @param offset The offset into the string sequence.
  * @param limitLen The length limit for the sequence.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the offset and/or length are
+ * negative or exceed @code limitLen @endcode.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
+ * the character sequence.
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_newNarrow(
@@ -439,6 +491,11 @@ sjme_errorCode sjme_charSeq_newNarrow(
  * @param offset The offset into the string sequence.
  * @param limitLen The length limit for the sequence.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the offset and/or length are
+ * negative or exceed @code limitLen @endcode.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
+ * the character sequence.
  * @since 2025/03/08
  */
 sjme_errorCode sjme_charSeq_newNarrowFromWide(
@@ -457,6 +514,11 @@ sjme_errorCode sjme_charSeq_newNarrowFromWide(
  * @param offset The offset into the string sequence.
  * @param limitLen The length limit for the sequence.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the offset and/or length are
+ * negative or exceed @code limitLen @endcode.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
+ * the character sequence.
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_newUtf(
@@ -474,6 +536,9 @@ sjme_errorCode sjme_charSeq_newUtf(
  * @param offset The offset into the string sequence.
  * @param limitLen The length limit for the sequence.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the offset and/or length are
+ * negative or exceed @code limitLen @endcode.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_newUtfStatic(
@@ -491,6 +556,11 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
  * @param offset The offset into the string sequence.
  * @param limitLen The length limit for the sequence.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the offset and/or length are
+ * negative or exceed @code limitLen @endcode.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
+ * the character sequence.
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_newWide(
@@ -508,6 +578,9 @@ sjme_errorCode sjme_charSeq_newWide(
  * @param offset The offset into the string sequence.
  * @param limitLen The length limit for the sequence.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the offset and/or length are
+ * negative or exceed @code limitLen @endcode.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/04/08
  */
 sjme_errorCode sjme_charSeq_newWideStatic(
@@ -524,6 +597,9 @@ sjme_errorCode sjme_charSeq_newWideStatic(
  * @param outResult The result of the check.
  * @param otherSeq The char sequence to check the start for.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_MATCHED If the character sequence does not start with
+ * the given sequence.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/08 
  */
 sjme_errorCode sjme_charSeq_startsWithCharSeq(
@@ -534,10 +610,13 @@ sjme_errorCode sjme_charSeq_startsWithCharSeq(
 /**
  * Checks if the given character sequence starts with the given UTF string.
  * 
+ * This includes errors from @link sjme_charSeq_startsWithCharSeq() @endlink.
+ * 
  * @param inSeq The sequence to check.
  * @param outResult The result of the check.
  * @param startsWithUtf The UTF sequence to check the start for.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/08 
  */
 sjme_errorCode sjme_charSeq_startsWithUtf(
@@ -551,7 +630,8 @@ sjme_errorCode sjme_charSeq_startsWithUtf(
  * @param inSeq The sequence to check.
  * @param startsWithUtf The UTF sequence to check the start for.
  * @return Returns whether it matches, note that if there is an error
- * then @link SJME_JNI_FALSE @endlink will be returned and the error will be hidden.
+ * then @link SJME_JNI_FALSE @endlink will be returned and the error will be
+ * hidden.
  * @since 2024/08/08 
  */
 sjme_jboolean sjme_charSeq_startsWithUtfR(

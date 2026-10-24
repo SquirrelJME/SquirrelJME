@@ -123,12 +123,15 @@ typedef struct sjme_bitStream_outputBase* sjme_bitStream_output;
 /**
  * Reads a single byte from the input.
  * 
+ * Includes errors from as @link sjme_stream_inputRead() @endlink.
+ * 
  * @param inStream The bit stream.
  * @param functionData The optional data passed to this function.
  * @param readCount The resultant read count, negative value means EOF.
  * @param outBuf The buffer of read bytes.
  * @param length The number of bytes to read.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/26
  */
 typedef sjme_errorCode (*sjme_bitStream_inputReadByteFunc)(
@@ -141,11 +144,14 @@ typedef sjme_errorCode (*sjme_bitStream_inputReadByteFunc)(
 /**
  * Writes a single byte to the output.
  * 
+ * Includes errors from as @link sjme_stream_outputWrite() @endlink.
+ * 
  * @param outStream The bit stream.
  * @param functionData The optional data passed to this function.
  * @param writeBuf The bytes to write.
  * @param length The number of bytes to write.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/26
  */
 typedef sjme_errorCode (*sjme_bitStream_outputWriteByteFunc)(
@@ -181,6 +187,7 @@ struct sjme_bitStream_outputBase
  * @param ofStream The stream to get the ready count for. 
  * @param readyBits The number of ready bits.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/31 
  */
 sjme_errorCode sjme_bitStream_bitsReady(
@@ -191,10 +198,15 @@ sjme_errorCode sjme_bitStream_bitsReady(
  * Skips the given number of bits until the input bit stream is aligned with
  * the given alignment, that is the modulo of it is zero.
  * 
+ * Includes errors from as @link sjme_bitStream_inputRead() @endlink.
+ * 
  * @param inStream The input bit stream.
  * @param alignBit The bit to align to.
  * @param outSkipped The number of bits that were skipped, optional.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the alignment is out of range
+ * of @code [2, 32] @endcode.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/31
  */
 sjme_errorCode sjme_bitStream_inputAlign(
@@ -205,12 +217,15 @@ sjme_errorCode sjme_bitStream_inputAlign(
 /**
  * Opens an input bit stream.
  * 
+ * Includes errors from @link sjme_closeable_alloc() @endlink.
+ * 
  * @param allocPool The pool to allocate within.
  * @param resultStream The resultant stream.
  * @param readFunc The read function to use.
  * @param readFuncData The optional data to pass to the function.
  * @param forwardClose The closeable to close, if closed.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/26
  */
 sjme_errorCode sjme_bitStream_inputOpen(
@@ -223,11 +238,14 @@ sjme_errorCode sjme_bitStream_inputOpen(
 /**
  * Opens a bit stream from a memory location.
  * 
+ * Includes errors from @link sjme_bitStream_inputOpen() @endlink.
+ * 
  * @param allocPool The pool to allocate within. 
  * @param resultStream The resultant stream.
  * @param base The base memory address.
  * @param length The length of the memory block.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/27
  */
 sjme_errorCode sjme_bitStream_inputOpenMemory(
@@ -237,13 +255,17 @@ sjme_errorCode sjme_bitStream_inputOpenMemory(
 	sjme_attrInPositive sjme_jint length);
 
 /**
- * Opens a bit stream which reads from the given @link sjme_stream_input @endlink .
+ * Opens a bit stream which reads from the
+ * given @link sjme_stream_input @endlink .
+ * 
+ * Includes errors from @link sjme_bitStream_inputOpen() @endlink.
  * 
  * @param allocPool The pool to allocate within.
  * @param resultStream The resultant stream.
  * @param inputStream The stream to read byte data from.
  * @param forwardClose Should close be forwarded to the given stream?
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/26
  */
 sjme_errorCode sjme_bitStream_inputOpenStream(
@@ -253,13 +275,18 @@ sjme_errorCode sjme_bitStream_inputOpenStream(
 	sjme_attrInValue sjme_jboolean forwardClose);
 
 /**
- * Reads bits from the input source. 
+ * Reads bits from the input source.
+ * 
+ * Includes errors from @link sjme_stream_inputReadIter() @endlink.
  * 
  * @param inStream The stream to read bits from.
  * @param bitOrder The order of the bit read.
  * @param outValue The resultant value.
  * @param bitCount The number of bits to read.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the bit order is not valid; or the
+ * bit count is outside the range of @code [1, 32] @endcode.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/27
  */
 sjme_errorCode sjme_bitStream_inputRead(
@@ -271,12 +298,15 @@ sjme_errorCode sjme_bitStream_inputRead(
 /**
  * Opens an output bit stream.
  * 
+ * Includes errors from @link sjme_closeable_alloc() @endlink.
+ * 
  * @param allocPool The pool to allocate within.
  * @param resultStream The resultant stream.
  * @param writeFunc The write function to use.
  * @param writeFuncData The optional data to pass to the function.
  * @param forwardClose The closeable to close, if closed.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/26
  */
 sjme_errorCode sjme_bitStream_outputOpen(
@@ -289,11 +319,14 @@ sjme_errorCode sjme_bitStream_outputOpen(
 /**
  * Opens an output bit stream which writes to the given output stream.
  * 
+ * Includes errors from @link sjme_bitStream_outputOpen() @endlink.
+ * 
  * @param allocPool The pool to allocate within.
  * @param resultStream The resultant output bit stream.
  * @param outputStream The stream to write.
  * @param forwardClose If this is closed, should @c outputStream be closed?
  * @return Any resultant error, if any.
+ * @throw SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/28
  */
 sjme_errorCode sjme_bitStream_outputOpenStream(
@@ -305,11 +338,16 @@ sjme_errorCode sjme_bitStream_outputOpenStream(
 /**
  * Writes bits to the output destination. 
  * 
+ * Includes errors from @link sjme_stream_outputWriteIter() @endlink.
+ * 
  * @param outStream The stream to write bits to.
  * @param bitOrder The order of the bit write.
- * @param inValue The value to write.
+ * @param outValue The value to write.
  * @param bitCount The number of bits to write.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the bit order is invalid; or if
+ * the bit count is outside the range of @code [1, 32] @endcode.
+ * @throw SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/27
  */
 sjme_errorCode sjme_bitStream_outputWrite(

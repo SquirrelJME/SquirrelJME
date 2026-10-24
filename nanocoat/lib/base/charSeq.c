@@ -330,11 +330,7 @@ sjme_errorCode sjme_charSeq_equals(
 	
 	if (outResult == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-
-	/* Unequal nulls? */
-	if (aSeq == NULL || bSeq == NULL)
-		return aSeq == bSeq;
-
+	
 	/* Same pointer? */
 	if (aSeq == bSeq)
 	{
@@ -342,12 +338,19 @@ sjme_errorCode sjme_charSeq_equals(
 		return SJME_ERROR_NONE;
 	}
 	
+	/* Unequal nulls? */
+	if (aSeq == NULL || bSeq == NULL)
+	{
+		*outResult = SJME_JNI_FALSE;
+		return SJME_ERROR_NOT_MATCHED;
+	}
+	
 	/* Lengths differ? Will never be equal. */
 	n = aSeq->length;
 	if (n != bSeq->length)
 	{
 		*outResult = SJME_JNI_FALSE;
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NOT_MATCHED;
 	}
 
 	/* Calculate hash of both strings. */
@@ -362,7 +365,7 @@ sjme_errorCode sjme_charSeq_equals(
 	if (aHash != bHash)
 	{
 		*outResult = SJME_JNI_FALSE;
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NOT_MATCHED;
 	}
 
 	/* Compare each character. */
@@ -374,7 +377,7 @@ sjme_errorCode sjme_charSeq_equals(
 			if (error == SJME_ERROR_NOT_MATCHED)
 			{
 				*outResult = SJME_JNI_FALSE;
-				return SJME_ERROR_NONE;
+				return SJME_ERROR_NOT_MATCHED;
 			}
 
 			/* Something else is wrong. */
@@ -414,8 +417,17 @@ sjme_errorCode sjme_charSeq_equalsUtf(
 	/* Nulls are involved? */
 	if (aSeq == NULL || bUtf == NULL)
 	{
-		*outResult = ((aSeq == NULL) == (bUtf == NULL));
-		return SJME_ERROR_NONE;
+		if (((aSeq == NULL) == (bUtf == NULL)))
+		{
+			*outResult = SJME_JNI_TRUE;
+			return SJME_ERROR_NONE;
+		}
+		
+		else
+		{
+			*outResult = SJME_JNI_FALSE;
+			return SJME_ERROR_NOT_MATCHED;
+		}
 	}
 
 	/* Setup static sequence. */
@@ -846,7 +858,7 @@ sjme_errorCode sjme_charSeq_startsWithCharSeq(
 	if (otherLen > inLen)
 	{
 		*outResult = SJME_JNI_FALSE;
-		return SJME_ERROR_NONE;
+		return SJME_ERROR_NOT_MATCHED;
 	}
 
 	/* Go through and check each character for mismatches. */
@@ -855,7 +867,7 @@ sjme_errorCode sjme_charSeq_startsWithCharSeq(
 			sjme_charSeq_charAtR(otherSeq, i))
 		{
 			*outResult = SJME_JNI_FALSE;
-			return SJME_ERROR_NONE;
+			return SJME_ERROR_NOT_MATCHED;
 		}
 
 	/* No mismatches, so success! */

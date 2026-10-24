@@ -435,7 +435,7 @@ sjme_errorCode sjme_bitStream_outputOpenStream(
 sjme_errorCode sjme_bitStream_outputWrite(
 	sjme_attrInNotNull sjme_bitStream_output outStream,
 	sjme_attrInValue sjme_bitStream_order bitOrder,
-	sjme_attrInValue sjme_juint outValue,
+	sjme_attrInValue sjme_juint inValue,
 	sjme_attrInPositiveNonZero sjme_jint bitCount)
 {
 #define CHUNK_SIZE 4
@@ -454,12 +454,12 @@ sjme_errorCode sjme_bitStream_outputWrite(
 	
 	/* Reverse? */
 	if (bitOrder == SJME_BITSTREAM_MSB)
-		outValue = sjme_util_intOverShiftU(
-			sjme_util_intReverseU(outValue), -32 + bitCount);
+		inValue = sjme_util_intOverShiftU(
+			sjme_util_intReverseU(inValue), -32 + bitCount);
 	
 	/* Shift in on top of the overflow queue. */
 	mask = sjme_util_intOverShiftU(1, bitCount) - 1;
-	outStream->base.overQueue |= ((outValue & mask) <<
+	outStream->base.overQueue |= ((inValue & mask) <<
 		outStream->base.overCount);
 	outStream->base.overCount += bitCount;
 	
