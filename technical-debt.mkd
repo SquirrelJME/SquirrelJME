@@ -38,6 +38,18 @@ their line determined by the `LineNumberTable` attribute in the code.
 
 ***TODO***
 
+# Document NanoCoat `@throws`
+
+Like the Java code, errors returned by every function should be documented in
+the Doxygen header.
+
+With the given case-sensitive regex, this can extract all the functions and
+errors in an orderly fashion:
+
+```regexp
+(sjme_errorCode sjme_[a-zA-Z0-9_]+\(|SJME_ERROR_[A-Z_0-9]+)
+```
+
 # `@SquirrelJMEVendorApi` and `@KeepWhenCompacting` Cleanup (Done)
 
 With the ProGuard changes there are cases where `@SquirrelJMEVendorApi` was
