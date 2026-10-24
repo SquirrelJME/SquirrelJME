@@ -57,6 +57,9 @@ __make_patch() {
 	# Determine total accumulation
 	__accum="$(expr "$___guess" + "$__now")"
 	
+	# Offset always seems to be off by two
+	__basis="$(expr "$___guess" - 2)"
+	
 	# Print the header if this is the first item
 	if [ "$__context" -eq "100" ]
 	then
@@ -66,7 +69,7 @@ __make_patch() {
 	
 	# Then each individual unified diff set 
 	printf -- '@@ -%d,%d +%d,%d @@\n' \
-		"$___guess" "3" "$__accum" "$__newLines"
+		"$__basis" "3" "$__accum" "$__newLines"
 		
 	# Add in each throw
 	cat "$___errsFile" | while read __err
@@ -100,7 +103,7 @@ __context="100"
 
 # Read in base lines
 grep -o -P \
-	'(sjme_errorCode sjme_[a-zA-Z0-9_]+\(|SJME_ERROR_[A-Z_0-9]+)' < \
+	'(^sjme_errorCode sjme_[a-zA-Z0-9_]+\(|SJME_ERROR_[A-Z_0-9]+)' < \
 	"$__src" | while read __base
 do
 	# Is this an error or something else?
