@@ -58,7 +58,8 @@ __make_patch() {
 	__accum="$(expr "$___guess" + "$__now")"
 	
 	# Offset always seems to be off by two
-	__basis="$(expr "$___guess" - 2)"
+	# But this makes very broken patches, so nevermind
+	#__basis="$(expr "$___guess" - 2)"
 	
 	# Print the header if this is the first item
 	if [ "$__context" -eq "100" ]
@@ -69,7 +70,7 @@ __make_patch() {
 	
 	# Then each individual unified diff set 
 	printf -- '@@ -%d,%d +%d,%d @@\n' \
-		"$__basis" "3" "$__accum" "$__newLines"
+		"$___guess" "3" "$__accum" "$__newLines"
 		
 	# Add in each throw
 	cat "$___errsFile" | while read __err
