@@ -198,6 +198,8 @@ struct sjme_frontEndBindable
  * @param resultData The resultant bound data, which points to the native
  * binding reference.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/04
  */
 sjme_errorCode sjme_frontEnd_bind(
@@ -212,6 +214,7 @@ sjme_errorCode sjme_frontEnd_bind(
  * @param dstSize The destination size.
  * @param src The source front-end.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/13
  */
 sjme_errorCode sjme_frontEnd_copyR(

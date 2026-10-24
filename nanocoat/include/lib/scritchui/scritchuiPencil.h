@@ -99,6 +99,8 @@ sjme_errorCode sjme_scritchpen_initBufferStatic(
  * @param defaultFont The default font to use.
  * @param copyFrontEnd Optional front end data to copy.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/05/04
  */
 sjme_errorCode sjme_scritchpen_initStatic(
@@ -143,6 +145,8 @@ sjme_jboolean sjme_scritchpen_isIndexed(
  * @param defaultFont The default font to use.
  * @param copyFrontEnd Optional front end data to copy.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/05/04
  */
 sjme_errorCode sjme_scritchpen_new(

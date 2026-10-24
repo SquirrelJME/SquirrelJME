@@ -182,6 +182,8 @@ typedef sjme_list(sjme_jint) sjme_list_void;
  * @param elementOffset The offset of elements in the list.
  * @param pointerCheck A check to see if it is a valid pointer.
  * @return Any resultant error code, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/17
  */
 sjme_errorCode sjme_list_allocR(
@@ -242,6 +244,9 @@ sjme_errorCode sjme_list_allocR(
  * @param elementOffset The offset of elements in the list.
  * @param pointerCheck A check to see if it is a valid pointer.
  * @return Any resultant error code, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/04/15
  */
 sjme_errorCode sjme_list_copyR(
@@ -284,6 +289,8 @@ sjme_errorCode sjme_list_copyR(
  * @param elementOffset The offset of elements in the list.
  * @param pointerCheck A check to see if it is a valid pointer.
  * @return Any resultant error code, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/02/21
  */
 sjme_errorCode sjme_list_directInitR(
@@ -512,6 +519,9 @@ sjme_errorCode sjme_list_newVAR(
  * @param argC The argument count.
  * @param argV The arguments.
  * @return Any resultant error.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNKNOWN ...?
  * @since 2023/12/17
  */
 sjme_errorCode sjme_list_flattenArgCV(
@@ -527,6 +537,7 @@ sjme_errorCode sjme_list_flattenArgCV(
  * @param outList The resultant list.
  * @param inNulString The input string.
  * @return Any resultant error.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/02/19
  */
 sjme_errorCode sjme_list_flattenArgNul(
@@ -545,6 +556,7 @@ sjme_errorCode sjme_list_flattenArgNul(
  * @param elementOffset The offset of elements in the list.
  * @param pointerCheck A check to see if it is a valid pointer.
  * @return Any resultant error code, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/01/04
  */
 sjme_errorCode sjme_list_replaceR(
@@ -585,6 +597,7 @@ sjme_errorCode sjme_list_replaceR(
  * @param findWhat The element to search for within the list.
  * @param outIndex The resultant output index or @c -1 if not found.
  * @return Any resultant orr, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/01/03
  */
 sjme_errorCode sjme_list_search(

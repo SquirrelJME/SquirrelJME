@@ -365,6 +365,7 @@ sjme_errorCode sjme_alloc_poolInitStatic(
  * @param allocPool The pool to destroy.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/08
  */
 sjme_errorCode sjme_alloc_poolDestroy(
@@ -382,6 +383,9 @@ sjme_errorCode sjme_alloc_poolDestroy(
  * @param outAllocBlocks The number of allocated blocks within the pool.
  * @return Any error or otherwise success.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_MEMORY_CORRUPTION ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/11
  */
 sjme_errorCode sjme_alloc_poolSpaceTotalSize(
@@ -452,6 +456,7 @@ sjme_errorCode sjme_alloc_weakNewR(
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
  * the copy.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/13
  */
 sjme_errorCode sjme_alloc_copyR(
@@ -475,6 +480,7 @@ sjme_errorCode sjme_alloc_copyR(
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
  * the copy.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/09
  */
 sjme_errorCode sjme_alloc_copyWeakR(
@@ -499,6 +505,9 @@ sjme_errorCode sjme_alloc_copyWeakR(
  * @throws SJME_ERROR_INVALID_ARGUMENT If the member or allocation count is
  * negative.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_MEMORY_CORRUPTION ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/01/28
  */
 sjme_errorCode sjme_alloc_grow(
@@ -520,6 +529,9 @@ sjme_errorCode sjme_alloc_grow(
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @throws SJME_ERROR_WEAK_REFERENCE_ATTACHED If this is associated with a
  * weak reference.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_WEAK_REFERENCE_ATTACHED ...?
  * @since 2023/11/28
  */
 sjme_errorCode sjme_alloc_reallocR(
@@ -535,6 +547,7 @@ sjme_errorCode sjme_alloc_reallocR(
  * @param stringToCopy The string to copy.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/07/21
  */
 sjme_errorCode sjme_alloc_strdupR(
@@ -806,6 +819,9 @@ sjme_errorCode sjme_alloc_getLink(
  * freed then this will return @c NULL .
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_ENQUEUE_ALREADY_SET ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/07/01
  */
 sjme_errorCode sjme_alloc_weakGetPointer(
@@ -856,6 +872,9 @@ sjme_pointer sjme_weakUp(
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NOT_WEAK_REFERENCE If this is not a weak reference.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NOT_ALLOC_LINK ...?
+ * @throws SJME_ERROR_NOT_WEAK_REFERENCE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/10
  */
 sjme_errorCode sjme_alloc_weakRefGet(

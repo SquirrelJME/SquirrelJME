@@ -244,6 +244,7 @@ struct sjme_jdwpBase
  * @param outPacket The resultant packet, will
  * be @c NULL if no packet was read.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/09/07
  */
 sjme_errorCode sjme_jdwp_commReceive(
@@ -258,6 +259,8 @@ sjme_errorCode sjme_jdwp_commReceive(
  * @param length The length of the packet.
  * @param outPacket The resultant packet.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/09/07
  */
 sjme_errorCode sjme_jdwp_packetAlloc(
@@ -326,6 +329,7 @@ sjme_errorCode sjme_jdwp_sessionNewTcpNetwork(
  * 
  * @param session The session to poll.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/09/07
  */
 sjme_errorCode sjme_jdwp_sessionPoll(

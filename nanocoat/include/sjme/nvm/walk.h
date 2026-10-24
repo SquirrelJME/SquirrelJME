@@ -584,6 +584,7 @@ struct sjme_nvm_walk_stepSelect
  * @param typeId The type ID to select for.
  * @param outSelect The handler for the selection.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/10/17
  */
 sjme_errorCode sjme_nvm_select(
@@ -636,6 +637,8 @@ extern const sjme_nvm_walk_functions sjme_nvm_walk_printDumpFunctions;
  * used in @c inState is selected.
  * @param filePath The path to the file to open.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_IMPLEMENTED ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/10
  */
 sjme_errorCode sjme_nvm_walk_coreDumpFile(

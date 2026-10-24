@@ -40,6 +40,9 @@ extern "C"
  * @param fieldId The field identifier.
  * @param checkValue The value to check.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_CLASS_CAST ...?
+ * @throws SJME_ERROR_CLASS_CHANGED ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/09
  */
 sjme_errorCode sjme_nvm_access_checkCompatibleField(
@@ -54,6 +57,8 @@ sjme_errorCode sjme_nvm_access_checkCompatibleField(
  * @param to The destination member.
  * @return Any resultant error, if any. If access is denied
  * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
+ * @throws SJME_ERROR_MEMBER_ACCESS_DENIED ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/10/04
  */
 sjme_errorCode sjme_nvm_access_checkCToE(
@@ -67,6 +72,7 @@ sjme_errorCode sjme_nvm_access_checkCToE(
  * @param to The destination field.
  * @return Any resultant error, if any. If access is denied
  * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/10/04
  */
 sjme_errorCode sjme_nvm_access_checkCToF(
@@ -80,6 +86,7 @@ sjme_errorCode sjme_nvm_access_checkCToF(
  * @param to The destination method.
  * @return Any resultant error, if any. If access is denied
  * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/10/04
  */
 sjme_errorCode sjme_nvm_access_checkCToM(
@@ -94,6 +101,8 @@ sjme_errorCode sjme_nvm_access_checkCToM(
  * @param toFlags The flags of the destination member.
  * @return Any resultant error, if any. If access is denied
  * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
+ * @throws SJME_ERROR_MEMBER_ACCESS_DENIED ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/21
  */
 sjme_errorCode sjme_nvm_access_checkEToE(
@@ -108,6 +117,7 @@ sjme_errorCode sjme_nvm_access_checkEToE(
  * @param to The destination field.
  * @return Any resultant error, if any. If access is denied
  * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/19
  */
 sjme_errorCode sjme_nvm_access_checkFToF(
@@ -121,6 +131,7 @@ sjme_errorCode sjme_nvm_access_checkFToF(
  * @param to The destination method.
  * @return Any resultant error, if any. If access is denied
  * then @link SJME_ERROR_MEMBER_ACCESS_DENIED @endlink is returned.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/19
  */
 sjme_errorCode sjme_nvm_access_checkFToM(

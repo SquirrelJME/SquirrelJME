@@ -43,6 +43,7 @@ typedef struct sjme_scritchui_textBase* sjme_scritchui_text;
  * 
  * @param inOutText The input and output text to destroy. 
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/06/26
  */
 sjme_errorCode sjme_scritchui_textDeleteStatic(

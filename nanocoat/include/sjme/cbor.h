@@ -121,6 +121,8 @@ struct sjme_cborBase
  * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow an array
  * open, array value, or map close.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putArrayClose(
@@ -136,6 +138,8 @@ sjme_errorCode sjme_cbor_putArrayClose(
  * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow file start,
  * array open, array comma, map colon, or an unknown comma.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putArrayOpen(
@@ -150,6 +154,8 @@ sjme_errorCode sjme_cbor_putArrayOpen(
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow a map key.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putColon(
@@ -165,6 +171,8 @@ sjme_errorCode sjme_cbor_putColon(
  * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does follow a map value,
  * array value, array close, or map close.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putComma(
@@ -182,6 +190,8 @@ sjme_errorCode sjme_cbor_putComma(
  * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow a map
  * open, map comma, or unknown comma.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putKey(
@@ -198,6 +208,8 @@ sjme_errorCode sjme_cbor_putKey(
  * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow a map open,
  * map value, or array close.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapClose(
@@ -214,6 +226,7 @@ sjme_errorCode sjme_cbor_putMapClose(
  * @param inKey The map key.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapEntryA(
@@ -232,6 +245,7 @@ sjme_errorCode sjme_cbor_putMapEntryA(
  * @param inValue The value to write.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapEntryI(
@@ -251,6 +265,7 @@ sjme_errorCode sjme_cbor_putMapEntryI(
  * @param inValue The value to write.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapEntryJ(
@@ -269,6 +284,7 @@ sjme_errorCode sjme_cbor_putMapEntryJ(
  * @param inKey The map key.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapEntryM(
@@ -287,6 +303,7 @@ sjme_errorCode sjme_cbor_putMapEntryM(
  * @param inValue The value to write.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapEntryS(
@@ -306,6 +323,7 @@ sjme_errorCode sjme_cbor_putMapEntryS(
  * @param inValue The value to write.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapEntryZ(
@@ -324,6 +342,8 @@ sjme_errorCode sjme_cbor_putMapEntryZ(
  * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow file start,
  * array open, array comma, map colon, or unknown comma.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putMapOpen(
@@ -357,6 +377,7 @@ sjme_errorCode sjme_cbor_putValueI(
  * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow an array
  * open, array comma, map comma, or unknown comma.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putValueJ(
@@ -374,6 +395,8 @@ sjme_errorCode sjme_cbor_putValueJ(
  * @throws SJME_ERROR_CBOR_INVALID_PRECEDE If this does not follow an array
  * open, array comma, map comma, or unknown comma.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_CBOR_INVALID_PRECEDE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/13
  */
 sjme_errorCode sjme_cbor_putValueS(

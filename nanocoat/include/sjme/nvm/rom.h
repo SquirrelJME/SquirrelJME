@@ -337,6 +337,7 @@ sjme_errorCode sjme_nvm_rom_libraryCacheClass(
  * @param prefix Optional prefix when accessing Zip contents.
  * @param zip The Zip to access as a library.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/16
  */
 sjme_errorCode sjme_nvm_rom_libraryFromZip(
@@ -355,6 +356,7 @@ sjme_errorCode sjme_nvm_rom_libraryFromZip(
  * @param nal The Native abstraction layer to use for file access.
  * @param zipPath The path to the Zip/Jar.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/10/14
  */
 sjme_errorCode sjme_nvm_rom_libraryFromZipFile(
@@ -372,6 +374,8 @@ sjme_errorCode sjme_nvm_rom_libraryFromZipFile(
  * @param base The base address where the Zip is.
  * @param length The length of the Zip.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/01/01
  */
 sjme_errorCode sjme_nvm_rom_libraryFromZipMemory(
@@ -404,6 +408,8 @@ sjme_errorCode sjme_nvm_rom_libraryFromZipSeekable(
  * @param library The library to calculate the hash of.
  * @param outHash The output hash.
  * @return On any resultant error.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/27
  */
 sjme_errorCode sjme_nvm_rom_libraryHash(
@@ -420,6 +426,7 @@ sjme_errorCode sjme_nvm_rom_libraryHash(
  * @param inFunctions The functions which define how to access the library.
  * @param copyFrontEnd Input front end initialization, is optional.
  * @return Any error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/29
  */
 sjme_errorCode sjme_nvm_rom_libraryNew(
@@ -458,6 +465,9 @@ sjme_errorCode sjme_nvm_rom_libraryRawRead(
  * @param srcOffset The source offset.
  * @param length The number of bytes to read.
  * @return Any resultant error if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNSUPPORTED_OPERATION ...?
  * @since 2023/12/30
  */
 sjme_errorCode sjme_nvm_rom_libraryRawReadIter(
@@ -474,6 +484,8 @@ sjme_errorCode sjme_nvm_rom_libraryRawReadIter(
  * @param library The library to get the raw size of.
  * @param outSize The resultant size.
  * @return Any resultant error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNSUPPORTED_OPERATION ...?
  * @since 2023/12/30
  */
 sjme_errorCode sjme_nvm_rom_libraryRawSize(
@@ -487,6 +499,8 @@ sjme_errorCode sjme_nvm_rom_libraryRawSize(
  * @param outStream The resultant stream.
  * @param rcName The name of the resource to obtain.
  * @return On any errors, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_RESOURCE_NOT_FOUND ...?
  * @since 2023/12/31
  */
 sjme_errorCode sjme_nvm_rom_libraryResourceAsStream(
@@ -515,6 +529,10 @@ sjme_errorCode sjme_nvm_rom_libraryResourceExists(
  * @param inIds The IDs to obtain.
  * @param outLibs The output libraries.
  * @return Any resultant error state.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_LIBRARY_NOT_FOUND ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/18
  */
 sjme_errorCode sjme_nvm_rom_resolveClassPathById(
@@ -529,6 +547,9 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathById(
  * @param inNames The names to obtain.
  * @param outLibs The output libraries.
  * @return Any resultant error state.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_LIBRARY_NOT_FOUND ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/18
  */
 sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
@@ -543,6 +564,9 @@ sjme_errorCode sjme_nvm_rom_resolveClassPathByName(
  * @param inId The ID of the library.
  * @param outLib The resultant library.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_LIBRARY_NOT_FOUND ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/06/17
  */
 sjme_errorCode sjme_nvm_rom_resolveLibraryById(
@@ -571,6 +595,8 @@ sjme_errorCode sjme_nvm_rom_resolveLibraryByName(
  * @param inSuite The suite to get the launch parameters from.
  * @param outTarget The target classes and libraries to run.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNSUPPORTED_OPERATION ...?
  * @since 2024/08/16
  */
 sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
@@ -586,6 +612,9 @@ sjme_errorCode sjme_nvm_rom_suiteDefaultLaunch(
  * @param inSuites The input suites.
  * @param numInSuites The number of input suites.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNKNOWN ...?
  * @since 2024/08/16
  */
 sjme_errorCode sjme_nvm_rom_suiteFromMerge(
@@ -602,6 +631,8 @@ sjme_errorCode sjme_nvm_rom_suiteFromMerge(
  * @param nal The native abstraction layer to use.
  * @param zipPath The path to the Zip/Jar file.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_FILE_NOT_FOUND ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/10/14
  */
 sjme_errorCode sjme_nvm_rom_suiteFromZipFileSingle(
@@ -618,6 +649,7 @@ sjme_errorCode sjme_nvm_rom_suiteFromZipFileSingle(
  * @param seekable The seekable to access the Zip through.
  * @param clutterLevel The clutter level to use for the ROM by default.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/11
  */
 sjme_errorCode sjme_nvm_rom_suiteFromZipSeekable(
@@ -651,6 +683,9 @@ sjme_errorCode sjme_nvm_rom_suiteFromZipSeekableSingle(
  * @param inSuite The input suite.
  * @param outLibs The resultant libraries.
  * @return Any resultant error state.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_LIBRARY_NOT_FOUND ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/20
  */
 sjme_errorCode sjme_nvm_rom_suiteLibraries(

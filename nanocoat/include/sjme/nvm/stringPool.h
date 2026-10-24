@@ -66,6 +66,9 @@ struct sjme_nvm_stringPool_stringBase
  * @param inSeq The string to locate in the pool.
  * @param offset The offset into the sequence.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_OUT_OF_MEMORY ...?
  * @since 2025/03/08
  */
 sjme_errorCode sjme_nvm_stringPool_locateSeqR(
@@ -97,6 +100,8 @@ sjme_errorCode sjme_nvm_stringPool_locateSeqR(
  * @param inStream The stream to read a UTF encoded string from to locate. 
  * @param outString The resultant pooled string.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_END_OF_FILE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/14
  */
 sjme_errorCode sjme_nvm_stringPool_locateStreamR(
@@ -128,6 +133,8 @@ sjme_errorCode sjme_nvm_stringPool_locateStreamR(
  * @param inUtfLen The length of the string, if @c -1 then this will be
  * the same as @c strlen(inUtf) . 
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/14
  */
 sjme_errorCode sjme_nvm_stringPool_locateUtfR(

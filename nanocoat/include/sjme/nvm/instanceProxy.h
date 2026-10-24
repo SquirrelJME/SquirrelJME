@@ -49,6 +49,10 @@ extern "C"
  * @param inInterfaces The interfaces to be proxied, these must only be
  * interfaces.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_INVALID_CLASS_FLAGS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/09/19
  */
 sjme_errorCode sjme_nvm_instance_proxyClassA(
@@ -70,6 +74,7 @@ sjme_errorCode sjme_nvm_instance_proxyClassA(
  * @param inInterfaces The interfaces to be proxied, these must only be
  * interfaces.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/09/19
  */
 sjme_errorCode sjme_nvm_instance_proxyClassL(

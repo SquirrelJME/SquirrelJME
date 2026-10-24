@@ -400,6 +400,8 @@ sjme_jint sjme_nvm_rom_compareVersion(
  * @param inSuite The suite to set up a manager for.
  * @param outSwmManager The resultant SWM manager.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_MANIFEST_VALUE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/06/16
  */
 sjme_errorCode sjme_nvm_rom_swmLoad(
@@ -418,6 +420,8 @@ sjme_errorCode sjme_nvm_rom_swmLoad(
  * means any entry point is chosen.
  * @param outTarget The target class and libraries to run.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/06/17
  */
 sjme_errorCode sjme_nvm_rom_swmResolve(

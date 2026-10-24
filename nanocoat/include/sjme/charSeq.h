@@ -217,6 +217,8 @@ struct sjme_charSeq_it
  * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the character index is out of
  * bounds.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/06/27
  */
 sjme_errorCode sjme_charSeq_charAt(
@@ -235,6 +237,9 @@ sjme_errorCode sjme_charSeq_charAt(
  * bounds.
  * @throws SJME_ERROR_NOT_MATCHED If this is not the given character.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NOT_MATCHED ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_charAtIs(
@@ -264,6 +269,8 @@ sjme_jchar sjme_charSeq_charAtR(
  * @param seq The sequence to delete.
  * @return On any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/10/11
  */
 sjme_errorCode sjme_charSeq_delete(
@@ -279,6 +286,7 @@ sjme_errorCode sjme_charSeq_delete(
  * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to duplicate
  * this character sequence.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_dup(
@@ -304,6 +312,9 @@ sjme_errorCode sjme_charSeq_dup(
  * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to duplicate
  * this character sequence.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/19
  */
 sjme_errorCode sjme_charSeq_dupToU(
@@ -321,6 +332,7 @@ sjme_errorCode sjme_charSeq_dupToU(
  * @param outLen The sequence length.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/06/27
  */
 sjme_errorCode sjme_charSeq_length(
@@ -394,6 +406,7 @@ sjme_jboolean sjme_charSeq_equalsUtfR(
  * @param seq The sequence to clean up.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/13
  */
 sjme_errorCode sjme_charSeq_free(
@@ -407,6 +420,7 @@ sjme_errorCode sjme_charSeq_free(
  * @param outHash The resultant hash code.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/01/25
  */
 sjme_errorCode sjme_charSeq_hash(
@@ -434,6 +448,7 @@ sjme_errorCode sjme_charSeq_hashR(
  * @param it The target iterator.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/03/09
  */
 sjme_errorCode sjme_charSeq_itNew(
@@ -451,6 +466,7 @@ sjme_errorCode sjme_charSeq_itNew(
  * @throws SJME_ERROR_NOT_IMPLEMENTED If the underlying functions do not have
  * an implementation.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/03/18
  */
 sjme_errorCode sjme_charSeq_newFunctionStatic(
@@ -472,6 +488,8 @@ sjme_errorCode sjme_charSeq_newFunctionStatic(
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
  * the character sequence.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_newNarrow(
@@ -496,6 +514,8 @@ sjme_errorCode sjme_charSeq_newNarrow(
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
  * the character sequence.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/03/08
  */
 sjme_errorCode sjme_charSeq_newNarrowFromWide(
@@ -539,6 +559,9 @@ sjme_errorCode sjme_charSeq_newUtf(
  * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the offset and/or length are
  * negative or exceed @code limitLen @endcode.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_newUtfStatic(
@@ -561,6 +584,8 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @throws SJME_ERROR_OUT_OF_MEMORY If there is not enough memory to allocate
  * the character sequence.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_newWide(
@@ -581,6 +606,9 @@ sjme_errorCode sjme_charSeq_newWide(
  * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the offset and/or length are
  * negative or exceed @code limitLen @endcode.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/04/08
  */
 sjme_errorCode sjme_charSeq_newWideStatic(

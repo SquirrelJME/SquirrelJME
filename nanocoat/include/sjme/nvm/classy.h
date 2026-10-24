@@ -945,6 +945,8 @@ typedef struct sjme_nvm_class_parseAttributeHandler
  * @param outArgT Output argument types.
  * @param outArgR Output return type of method.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_METHOD_TYPE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/02/16
  */
 sjme_errorCode sjme_nvm_class_calcMethodArgs(
@@ -962,6 +964,8 @@ sjme_errorCode sjme_nvm_class_calcMethodArgs(
  * @param atP The pointer to the current character index, will be incremented
  * after a read occurs.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_FIELD_TYPE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/19
  */
 sjme_errorCode sjme_nvm_class_descriptorFieldSlots(
@@ -976,6 +980,8 @@ sjme_errorCode sjme_nvm_class_descriptorFieldSlots(
  * @param outArgSlots The number of argument slots.
  * @param outRvSlots The number of return value slots.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_METHOD_TYPE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/19
  */
 sjme_errorCode sjme_nvm_class_descriptorMethodSlots(
@@ -992,6 +998,8 @@ sjme_errorCode sjme_nvm_class_descriptorMethodSlots(
  * @param outBasicType The resultant basic type.
  * @param outExtendedType The resultant extended type.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_METHOD_TYPE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/28
  */
 sjme_errorCode sjme_nvm_class_descriptorToType(
@@ -1026,6 +1034,7 @@ sjme_errorCode sjme_nvm_class_parse(
  * @param handlers The handler used for attribute parsing.
  * @param context The context to pass to the handler.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/21
  */
 sjme_errorCode sjme_nvm_class_parseAttributes(
@@ -1044,6 +1053,10 @@ sjme_errorCode sjme_nvm_class_parseAttributes(
  * @param inStringPool The string pool for reused strings.
  * @param outPool The resultant read constant pool.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_CLASS_POOL_COUNT ...?
+ * @throws SJME_ERROR_INVALID_CLASS_POOL_INDEX ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_WRONG_CLASS_POOL_INDEX_TYPE ...?
  * @since 2024/09/13
  */
 sjme_errorCode sjme_nvm_class_parseConstantPool(
@@ -1061,6 +1074,7 @@ sjme_errorCode sjme_nvm_class_parseConstantPool(
  * @param inStringPool The string pool used.
  * @param outField The resultant field.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/21
  */
 sjme_errorCode sjme_nvm_class_parseField(

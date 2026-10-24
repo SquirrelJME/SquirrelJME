@@ -1040,6 +1040,9 @@ extern const sjme_lpcstr sjme_nvm_byteCode_names[SJME_NVM_NUM_JAVA_BYTECODES];
  * @param relRawCode The relative raw code at the PC address.
  * @param pcNew New PC address.
  * @return Any resultant error.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_INVALID_INSTRUCTION ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/14
  */
 sjme_errorCode sjme_nvm_byteCode_calcLength(
@@ -1069,6 +1072,8 @@ sjme_jboolean sjme_nvm_byteCode_checkRecycleR(
  * @param relRawCode The relative raw code at the PC address.
  * @param pcNew New PC address.
  * @return Any resultant error.
+ * @throws SJME_ERROR_INVALID_INSTRUCTION ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/01/08
  */
 sjme_errorCode sjme_nvm_byteCode_illegalInstruction(

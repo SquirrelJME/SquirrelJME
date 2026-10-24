@@ -65,6 +65,11 @@ typedef enum sjme_dylib_extraFamily
  * @param outSubComponent The resultant preference, will
  * be @code NULL @endcode if there is no preference.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NOT_IMPLEMENTED ...?
+ * @throws SJME_ERROR_NO_SUCH_ELEMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/10/08
  */
 sjme_errorCode sjme_dylib_preferredExtra(

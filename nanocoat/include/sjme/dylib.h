@@ -45,6 +45,9 @@ typedef sjme_pointer sjme_dylib;
  * 
  * @param inLib The library to close. 
  * @return Any error if it occurs.
+ * @throws SJME_ERROR_COULD_NOT_UNLOAD_LIBRARY ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNSUPPORTED_OPERATION ...?
  * @since 2024/03/27
  */
 sjme_errorCode sjme_dylib_close(
@@ -57,6 +60,8 @@ sjme_errorCode sjme_dylib_close(
  * @param inSymbol The symbol to obtain from the library.
  * @param outPtr The resultant pointer of the symbol.
  * @return Any error if it occurs.
+ * @throws SJME_ERROR_INVALID_LIBRARY_SYMBOL ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/03/27
  */
 sjme_errorCode sjme_dylib_lookup(
@@ -72,6 +77,8 @@ sjme_errorCode sjme_dylib_lookup(
  * @param outName The resultant library name.
  * @param outLen The length of the output buffer.
  * @return Any error code as applicable.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/04/13
  */
 sjme_errorCode sjme_dylib_name(

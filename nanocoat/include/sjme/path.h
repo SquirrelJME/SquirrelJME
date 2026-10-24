@@ -219,6 +219,9 @@ struct sjme_path
  * 
  * @param path The path to check.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_MEMORY_CORRUPTION ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/10
  */
 sjme_errorCode sjme_path_check(
@@ -231,6 +234,8 @@ sjme_errorCode sjme_path_check(
  * @param requireAbsolute Require that the input path be absolute, if it is
  * not an absolute path then this will fail.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_PATH_NOT_ABSOLUTE ...?
  * @since 2025/12/10
  */
 sjme_errorCode sjme_path_checkDenormal(
@@ -246,6 +251,9 @@ sjme_errorCode sjme_path_checkDenormal(
  * @return Any resultant error, if any. Will
  * be @link SJME_ERROR_NO_SUCH_ELEMENT @endlink if there is no directory
  * seperator.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_NO_SUCH_ELEMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/13
  */
 sjme_errorCode sjme_path_checkDirSep(
@@ -264,6 +272,8 @@ sjme_errorCode sjme_path_checkDirSep(
  * @param type The type of path to obtain.
  * @param index The index of the path to use, if @c -1 then only the first
  * valid possible match is used.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/07
  */
 sjme_errorCode sjme_path_default(
@@ -288,6 +298,8 @@ sjme_lpcstr sjme_path_getBaseNameR(
  * @param inPath The input path.
  * @param nameDx The specified name index to obtain.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_getName(
@@ -304,6 +316,8 @@ sjme_errorCode sjme_path_getName(
  * @param inPath The input path.
  * @param nameDx The specified name index to obtain.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_getNameF(
@@ -324,6 +338,8 @@ sjme_errorCode sjme_path_getNameF(
  * @param inPath The input path.
  * @return Any resultant error, if any. If there is no parent element then
  * this will return @link SJME_ERROR_NO_SUCH_ELEMENT @endlink .
+ * @throws SJME_ERROR_NO_SUCH_ELEMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_getParent(
@@ -338,6 +354,8 @@ sjme_errorCode sjme_path_getParent(
  * @param inPath The input path.
  * @return Any resultant error, if any. If there is no root element then
  * this will return @link SJME_ERROR_NO_SUCH_ELEMENT @endlink .
+ * @throws SJME_ERROR_NO_SUCH_ELEMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_getRoot(
@@ -351,6 +369,7 @@ sjme_errorCode sjme_path_getRoot(
  * @param outPath The output path.
  * @param inPath The input path.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_normalize(
@@ -374,6 +393,7 @@ sjme_errorCode sjme_path_normalize(
  * @param outPath The output path.
  * @param strPath The string based path.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_parse(
@@ -388,6 +408,7 @@ sjme_errorCode sjme_path_parse(
  * @param format The format specifier to use for the path.
  * @param ... The format values.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_parseF(
@@ -402,6 +423,8 @@ sjme_errorCode sjme_path_parseF(
  * @param outPath The output path.
  * @param strPath The string based path.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/11
  */
 sjme_errorCode sjme_path_parseY(
@@ -416,6 +439,8 @@ sjme_errorCode sjme_path_parseY(
  * @param outPath The output path.
  * @param strPath The string based path.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNKNOWN ...?
  * @since 2025/12/13
  */
 sjme_errorCode sjme_path_parseYN(
@@ -430,6 +455,10 @@ sjme_errorCode sjme_path_parseYN(
  * @param outPath The output path.
  * @param strPath The string based path.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NO_SUCH_ELEMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_PATH_TOO_LONG ...?
  * @since 2025/12/13
  */
 sjme_errorCode sjme_path_parseYP(
@@ -444,6 +473,10 @@ sjme_errorCode sjme_path_parseYP(
  * @param outPath The output path.
  * @param inPath The input path to resolve against.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NO_SUCH_ELEMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_PATH_TOO_DEEP ...?
+ * @throws SJME_ERROR_PATH_TOO_LONG ...?
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_resolveP(
@@ -460,6 +493,7 @@ sjme_errorCode sjme_path_resolveP(
  * @param inPath The input path.
  * subPath The path to resolve against, must end in @c NULL .
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_resolveS(
@@ -477,6 +511,7 @@ sjme_errorCode sjme_path_resolveS(
  * @param ... The @code const sjme_path* @endcode to resolve against,
  * must end in @c NULL .
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_resolveV(
@@ -490,6 +525,7 @@ sjme_errorCode sjme_path_resolveV(
  * @param outPath The output path.
  * @param inPath The input path.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_resolveSibling(
@@ -504,6 +540,8 @@ sjme_errorCode sjme_path_resolveSibling(
  * @param beginDx The beginning index, inclusive.
  * @param endDx The ending index, exclusive.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/12/09
  */
 sjme_errorCode sjme_path_subPath(

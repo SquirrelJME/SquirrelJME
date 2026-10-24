@@ -693,6 +693,7 @@ sjme_jboolean sjme_error_is(
  *
  * @param error The error code.
  * @return Either @c error or a default error.
+ * @throws SJME_ERROR_UNKNOWN ...?
  * @since 2023/12/29
  */
 sjme_errorCode sjme_error_default(
@@ -704,6 +705,9 @@ sjme_errorCode sjme_error_default(
  * @param error The error code.
  * @param otherwise The other error code rather than @link SJME_ERROR_UNKNOWN.
  * @return Either @c error or @c otherwise if the former is not valid.
+ * @throws SJME_ERROR_UNKNOWN ...?
+ * @throws SJME_ERROR_UNKNOWN_NEGATIVE ...?
+ * @throws SJME_ERROR_UNKNOWN_ONE ...?
  * @since 2023/12/29
  */
 sjme_errorCode sjme_error_defaultOr(

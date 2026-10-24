@@ -238,6 +238,12 @@ sjme_errorCode sjme_inflate_destroy(
  * @param outBuf The resultant buffer to receive the inflated data.
  * @param length The maximum number of bytes to decompress.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_BUFFER_SATURATED ...?
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_TOO_SHORT ...?
+ * @throws SJME_ERROR_UNKNOWN ...?
  * @since 2024/08/30
  */
 sjme_errorCode sjme_inflate_inflate(

@@ -47,6 +47,8 @@ extern "C"
  * destination offsets and length are negative or exceed the array bounds.
  * @throws SJME_ERROR_NULL_STACK_POINTER If the source or destination array
  * are @code NULL @endcode.
+ * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_STACK_POINTER ...?
  * @since 2026/10/23
  */
 sjme_errorCode sjme_nvm_instance_arrayCopyJ(
@@ -69,6 +71,10 @@ sjme_errorCode sjme_nvm_instance_arrayCopyJ(
  * @throws SJME_ERROR_CLASS_CAST If this is not an array.
  * @throws SJME_ERROR_NULL_STACK_POINTER If the array
  * is @code NULL @endcode.
+ * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_CLASS_CAST ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_NULL_STACK_POINTER ...?
  * @since 2026/10/23
  */
 sjme_errorCode sjme_nvm_instance_arrayGet(
@@ -89,6 +95,10 @@ sjme_errorCode sjme_nvm_instance_arrayGet(
  * @throws SJME_ERROR_CLASS_CAST If this is not an array.
  * @throws SJME_ERROR_NULL_STACK_POINTER If the array
  * is @code NULL @endcode.
+ * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_CLASS_CAST ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_NULL_STACK_POINTER ...?
  * @since 2026/10/23
  */
 sjme_errorCode sjme_nvm_instance_arrayGetString(

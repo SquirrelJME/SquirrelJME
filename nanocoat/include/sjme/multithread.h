@@ -221,6 +221,10 @@ typedef sjme_attrVolatileStruct struct sjme_alignPointerL sjme_thread_rwLock
  * 
  * @param outThread The resultant thread.
  * @return On any errors if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/04/16
  */
 sjme_errorCode sjme_thread_current(
@@ -254,6 +258,11 @@ sjme_jboolean sjme_thread_equal(
  * @param inMain The main function for the thread.
  * @param anything Any value to pass to it.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_CANNOT_CREATE ...?
+ * @throws SJME_ERROR_CANNOT_CREATE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_CANNOT_CREATE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/04/16
  */
 sjme_errorCode sjme_thread_new(
@@ -267,6 +276,8 @@ sjme_errorCode sjme_thread_new(
  * 
  * @param inLock The lock to use. 
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/22
  */
 sjme_errorCode sjme_thread_rwLockGrabRead(
@@ -277,6 +288,8 @@ sjme_errorCode sjme_thread_rwLockGrabRead(
  * 
  * @param inLock The lock to use. 
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/22
  */
 sjme_errorCode sjme_thread_rwLockGrabWrite(
@@ -288,6 +301,8 @@ sjme_errorCode sjme_thread_rwLockGrabWrite(
  * @param inLock The lock to release.
  * @param outCount Optional count of the locks remaining.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/22
  */
 sjme_errorCode sjme_thread_rwLockReleaseRead(
@@ -300,6 +315,8 @@ sjme_errorCode sjme_thread_rwLockReleaseRead(
  * @param inLock The lock to release.
  * @param outCount Optional count of the locks remaining.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/22
  */
 sjme_errorCode sjme_thread_rwLockReleaseWrite(

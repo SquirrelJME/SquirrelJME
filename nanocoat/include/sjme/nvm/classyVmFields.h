@@ -211,6 +211,8 @@ typedef enum sjme_nvm_vmField_var
  * @param SJME_VLG_ Pass via @code SJME_VLG_ @endcode macros.
  * @param ... Pass via @code SJME_VLG_ @endcode macros.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/01/14
  */
 sjme_errorCode sjme_nvm_vmField_cisGet(
@@ -229,6 +231,9 @@ sjme_errorCode sjme_nvm_vmField_cisGet(
  * @param SJME_VLG_ Pass via @code SJME_VLG_ @endcode macros.
  * @param ... Pass via @code SJME_VLG_ @endcode macros.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/01/14
  */
 sjme_errorCode sjme_nvm_vmField_cisGetS(
@@ -247,6 +252,8 @@ sjme_errorCode sjme_nvm_vmField_cisGetS(
  * @param SJME_VLS_ Pass via @code SJME_VLS_ @endcode macros.
  * @param ... Pass via @code SJME_VLS_ @endcode macros.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/01/14
  */
 sjme_errorCode sjme_nvm_vmField_cisSet(
@@ -266,6 +273,9 @@ sjme_errorCode sjme_nvm_vmField_cisSet(
  * @param SJME_VLS_ Pass via @code SJME_VLS_ @endcode macros.
  * @param ... Pass via @code SJME_VLS_ @endcode macros.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/01/14
  */
 sjme_errorCode sjme_nvm_vmField_cisSetS(
@@ -404,6 +414,10 @@ sjme_errorCode sjme_nvm_vmField_cisSetS(
  * @param inType The type of the field to resolve.
  * @param outID The resultant field.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NO_FIELD ...?
+ * @throws SJME_ERROR_NO_METHOD ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/19
  */
 sjme_errorCode sjme_nvm_vmField_idByNameType(
@@ -427,6 +441,7 @@ sjme_errorCode sjme_nvm_vmField_idByNameType(
  * @param inType The type of the field to resolve.
  * @param outID The resultant field.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/09/06
  */
 sjme_errorCode sjme_nvm_vmField_idByNameTypeU(
@@ -446,6 +461,9 @@ sjme_errorCode sjme_nvm_vmField_idByNameTypeU(
  * @param type The type the value set stores.
  * @param length The number of elements to store.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_TOO_LARGE ...?
  * @since 2026/02/09
  */
 sjme_errorCode sjme_nvm_vmField_sizeValueSet(

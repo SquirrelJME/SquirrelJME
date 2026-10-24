@@ -100,6 +100,10 @@ struct sjme_jmethodIDBase
  * @param forObject The object this is for.
  * @param forMember The interface this is invoking.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CLASS_CAST ...?
+ * @throws SJME_ERROR_CLASS_CHANGED ...?
+ * @throws SJME_ERROR_NO_METHOD ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/04/01
  */
 sjme_errorCode sjme_nvm_vmMethod_idByInterface(

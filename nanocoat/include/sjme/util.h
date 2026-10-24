@@ -282,6 +282,7 @@ sjme_errorCode sjme_random_init(
  * @param outRandom The random state to initialize. 
  * @param seed The seed value.
  * @return Returns @link SJME_JNI_TRUE @endlink on success.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/02
  */
 sjme_errorCode sjme_random_initL(
@@ -595,6 +596,8 @@ sjme_errorCode sjme_swap_shu8_uint_memmove(
  * @param src The source.
  * @param n The number of bytes to copy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/07/10
  */
 sjme_errorCode sjme_swap_uint_memmove(
@@ -808,6 +811,8 @@ sjme_juint sjme_util_intZeroesTrailingU(
  * @param inVal The value to convert to binary.
  * @param bitCount The number of bits to output, if zero then this is all bits.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/24
  */
 sjme_errorCode sjme_util_intToBinary(

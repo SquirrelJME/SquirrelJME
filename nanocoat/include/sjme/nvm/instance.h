@@ -388,6 +388,8 @@ sjme_jint sjme_nvm_instance_calcIdentityHash(
  * 
  * @param object The object to count down.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_OBJECT ...?
+ * @throws SJME_ERROR_NULL_STACK_POINTER ...?
  * @since 2025/07/19
  */
 sjme_errorCode sjme_nvm_instance_countDownR(
@@ -410,6 +412,8 @@ sjme_errorCode sjme_nvm_instance_countDownR(
  * 
  * @param object The object to count up.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_OBJECT ...?
+ * @throws SJME_ERROR_NULL_STACK_POINTER ...?
  * @since 2025/07/10
  */
 sjme_errorCode sjme_nvm_instance_countUpR(
@@ -469,6 +473,9 @@ sjme_nvm_value* sjme_nvm_instance_fieldAccessor(
  * @param fields The field binds.
  * @param placements The placements being used.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_FIELD_NOT_DIRECT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_STATIC_STRING_INIT ...?
  * @since 2025/06/21
  */
 sjme_errorCode sjme_nvm_instance_initFields(
@@ -484,6 +491,8 @@ sjme_errorCode sjme_nvm_instance_initFields(
  * @param chunk The chunk to initialize.
  * @param placements The placements to use.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/21
  */
 sjme_errorCode sjme_nvm_instance_initFieldsChunk(
@@ -501,6 +510,11 @@ sjme_errorCode sjme_nvm_instance_initFieldsChunk(
  * @param isPut If a put operation, @c fieldId is set to @c stackType ,
  * otherwise @c stackType is written with the field value.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_FIELD_NOT_DIRECT ...?
+ * @throws SJME_ERROR_INVALID_FIELD_TYPE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_NULL_STACK_POINTER ...?
+ * @throws SJME_ERROR_OBJECT_MISMATCHED ...?
  * @since 2025/06/26
  */
 sjme_errorCode sjme_nvm_instance_fieldAccessStack(
@@ -517,6 +531,7 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
  * @param contextThread The context thread.
  * @param instance The object instance.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/22
  */
 sjme_errorCode sjme_nvm_instance_monitorEnter(
@@ -529,6 +544,8 @@ sjme_errorCode sjme_nvm_instance_monitorEnter(
  * @param contextThread The context thread.
  * @param instance The object instance.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_LOCK_OWNER ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/22
  */
 sjme_errorCode sjme_nvm_instance_monitorExit(
@@ -543,6 +560,10 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
  * @param componentType The component type of the array.
  * @param arrayLength The length of the array to allocate.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NEGATIVE_ARRAY_SIZE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_TOO_LARGE ...?
  * @since 2025/03/17
  */
 sjme_errorCode sjme_nvm_instance_objectArrayNewR(
@@ -576,6 +597,9 @@ sjme_errorCode sjme_nvm_instance_objectArrayNewR(
  * @param componentType The component type of the array.
  * @param arrayLength The length of the array to allocate.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NEGATIVE_ARRAY_SIZE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/03/17
  */
 sjme_errorCode sjme_nvm_instance_objectArrayNewTR(
@@ -612,6 +636,8 @@ sjme_errorCode sjme_nvm_instance_objectArrayNewTR(
  * @param outObject The resultant object.
  * @param inClass The class type to use for the object.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/02/23
  */
 sjme_errorCode sjme_nvm_instance_objectNewR(
@@ -650,6 +676,8 @@ sjme_errorCode sjme_nvm_instance_objectNewR(
  * a bracket does not have this distinction, this must be @code -1 @endcode.
  * @param outObject The resultant bracket object.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/06/28
  */
 sjme_errorCode sjme_nvm_instance_objectNewBracketR(
@@ -687,6 +715,8 @@ sjme_errorCode sjme_nvm_instance_objectNewBracketR(
  * @param outObject The resultant object.
  * @param inClass The class type to use for the object.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/02/23
  */
 sjme_errorCode sjme_nvm_instance_objectNewN(

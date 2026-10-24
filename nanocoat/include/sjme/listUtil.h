@@ -59,6 +59,8 @@ typedef sjme_errorCode (*sjme_listUtil_findItemCompareFunc)(
  * @param outList The resultant output list.
  * @param inputStream The stream to read data from.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/29
  */
 sjme_errorCode sjme_listUtil_binListInt(
@@ -73,6 +75,9 @@ sjme_errorCode sjme_listUtil_binListInt(
  * @param outList The resultant output list.
  * @param inputStream The stream to read data from.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_END_OF_FILE ...?
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/29
  */
 sjme_errorCode sjme_listUtil_binListUtf(
@@ -86,6 +91,7 @@ sjme_errorCode sjme_listUtil_binListUtf(
  * @param inList The list to look within. 
  * @param outFreeSlot The resultant free slot, @c -1 if there are none.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/26
  */
 sjme_errorCode sjme_listUtil_findFree(

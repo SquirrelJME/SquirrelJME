@@ -268,6 +268,7 @@ struct sjme_seekableBase
  * @param data Any data to pass to the initialize function.
  * @param copyFrontEnd Front-end data as needed.
  * @return Any resultant error, if any,
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/11
  */
 sjme_errorCode sjme_seekable_open(
@@ -302,6 +303,8 @@ sjme_errorCode sjme_seekable_openMemory(
  * @param base The base address to get.
  * @param length The length of the seekable range.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/01/01
  */
 sjme_errorCode sjme_seekable_openSeekable(
@@ -319,6 +322,8 @@ sjme_errorCode sjme_seekable_openSeekable(
  * @param seekBase The base of the seekable to read from.
  * @param length The number of bytes to read.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/11
  */
 sjme_errorCode sjme_seekable_read(
@@ -338,6 +343,10 @@ sjme_errorCode sjme_seekable_read(
  * @param seekBase The base of the seekable to read from.
  * @param length The number of bytes to read.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNALIGNED_ACCESS ...?
  * @since 2024/08/13
  */
 sjme_errorCode sjme_seekable_readReverse(
@@ -450,6 +459,8 @@ sjme_errorCode sjme_seekable_regionLock(
  * @param action The action to perform on the unlock.
  * @return Any resultant error, if any.
  * @see sjme_seekable_unlockAction
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/01/01
  */
 sjme_errorCode sjme_seekable_regionUnlock(
@@ -463,6 +474,7 @@ sjme_errorCode sjme_seekable_regionUnlock(
  * @param seekable The seekable to get the size of. 
  * @param outSize The size of the seekable.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/11
  */
 sjme_errorCode sjme_seekable_size(

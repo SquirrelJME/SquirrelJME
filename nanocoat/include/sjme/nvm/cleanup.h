@@ -40,6 +40,8 @@ extern "C"
  * @param inType The type of structure this is.
  * @param outCommon The resultant common structure. 
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/28
  */
 sjme_errorCode sjme_nvm_allocR(

@@ -207,6 +207,9 @@ sjme_errorCode sjme_bitStream_bitsReady(
  * @throws SJME_ERROR_INVALID_ARGUMENT If the alignment is out of range
  * of @code [2, 32] @endcode.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/31
  */
 sjme_errorCode sjme_bitStream_inputAlign(
@@ -226,6 +229,7 @@ sjme_errorCode sjme_bitStream_inputAlign(
  * @param forwardClose The closeable to close, if closed.
  * @return On any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/26
  */
 sjme_errorCode sjme_bitStream_inputOpen(
@@ -246,6 +250,8 @@ sjme_errorCode sjme_bitStream_inputOpen(
  * @param length The length of the memory block.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/27
  */
 sjme_errorCode sjme_bitStream_inputOpenMemory(
@@ -266,6 +272,7 @@ sjme_errorCode sjme_bitStream_inputOpenMemory(
  * @param forwardClose Should close be forwarded to the given stream?
  * @return On any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/26
  */
 sjme_errorCode sjme_bitStream_inputOpenStream(
@@ -287,6 +294,10 @@ sjme_errorCode sjme_bitStream_inputOpenStream(
  * @throws SJME_ERROR_INVALID_ARGUMENT If the bit order is not valid; or the
  * bit count is outside the range of @code [1, 32] @endcode.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_END_OF_FILE ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_TOO_SHORT ...?
  * @since 2024/08/27
  */
 sjme_errorCode sjme_bitStream_inputRead(
@@ -307,6 +318,7 @@ sjme_errorCode sjme_bitStream_inputRead(
  * @param forwardClose The closeable to close, if closed.
  * @return On any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/26
  */
 sjme_errorCode sjme_bitStream_outputOpen(
@@ -327,6 +339,7 @@ sjme_errorCode sjme_bitStream_outputOpen(
  * @param forwardClose If this is closed, should @c outputStream be closed?
  * @return Any resultant error, if any.
  * @throw SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/28
  */
 sjme_errorCode sjme_bitStream_outputOpenStream(

@@ -188,6 +188,8 @@ sjme_errorCode sjme_nvm_boot(
  * not then @link SJME_ERROR_NOT_MATCHED @endlink is returned.
  * @param defensive If this should be a defensive copy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_MATCHED ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/06/17
  */
 sjme_errorCode sjme_nvm_copyRunTarget(
@@ -204,6 +206,8 @@ sjme_errorCode sjme_nvm_copyRunTarget(
  * @param nal The native abstraction layer to use.
  * @param outSuite The resultant suite.
  * @return Any resultant error code, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_PATH_NOT_DEFINED ...?
  * @since 2024/08/09
  */
 sjme_errorCode sjme_nvm_defaultBootSuite(
@@ -219,6 +223,10 @@ sjme_errorCode sjme_nvm_defaultBootSuite(
  * @param inDirectory The directory to look within.
  * @param outSuite The resultant suite.
  * @return Any resultant error code, if any.
+ * @throws SJME_ERROR_FILE_NOT_FOUND ...?
+ * @throws SJME_ERROR_NO_SUITES ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNKNOWN ...?
  * @since 2024/08/09
  */
 sjme_errorCode sjme_nvm_defaultBootSuiteInDirectory(
@@ -234,6 +242,7 @@ sjme_errorCode sjme_nvm_defaultBootSuiteInDirectory(
  * @param exitCode The exit code of the virtual machine as a whole, this
  * generally is the exit code of the main task.
  * @return If destruction was successful.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/07/27
  */
 sjme_errorCode sjme_nvm_destroy(

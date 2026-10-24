@@ -319,6 +319,7 @@ struct sjme_stream_outputBase
  * @param stream The stream to read from.
  * @param outAvail The number of bytes which are available.
  * @return On any resultant error or @c NULL .
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/31
  */
 sjme_errorCode sjme_stream_inputAvailable(
@@ -334,6 +335,7 @@ sjme_errorCode sjme_stream_inputAvailable(
  * @param data Any data to pass to the initialization routine.
  * @param copyFrontEnd Any front end data to copy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/11
  */
 sjme_errorCode sjme_stream_inputOpen(
@@ -367,6 +369,8 @@ sjme_errorCode sjme_stream_inputOpenInflate(
  * @param base The buffer to access.
  * @param length The length of the buffer.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/31
  */
 sjme_errorCode sjme_stream_inputOpenMemory(
@@ -387,6 +391,8 @@ sjme_errorCode sjme_stream_inputOpenMemory(
  * @param forwardClose If the input stream is closed, should the seekable
  * also be closed?
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/01/01
  */
 sjme_errorCode sjme_stream_inputOpenSeekable(
@@ -424,6 +430,8 @@ sjme_errorCode sjme_stream_inputRead(
  * @param dest The destination buffer.
  * @param length The number of bytes to read.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/17
  */
 sjme_errorCode sjme_stream_inputReadFully(
@@ -463,6 +471,7 @@ sjme_errorCode sjme_stream_inputReadIter(
  * @param result The resultant byte, @c -1 indicates end of stream while
  * every other value is always positive.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/31
  */
 sjme_errorCode sjme_stream_inputReadSingle(
@@ -475,6 +484,10 @@ sjme_errorCode sjme_stream_inputReadSingle(
  * @param stream The stream to read from.
  * @param outCodePoint The output resultant codepoint.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_END_OF_FILE ...?
+ * @throws SJME_ERROR_INVALID_CODEPOINT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNEXPECTED_EOF ...?
  * @since 2026/06/24
  */
 sjme_errorCode sjme_stream_inputReadUtfChar(
@@ -488,6 +501,9 @@ sjme_errorCode sjme_stream_inputReadUtfChar(
  * @param typeId The type to read.
  * @param outValue The resultant value.
  * @return On any error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNEXPECTED_EOF ...?
  * @since 2024/01/05
  */
 sjme_errorCode sjme_stream_inputReadValueJ(
@@ -502,6 +518,7 @@ sjme_errorCode sjme_stream_inputReadValueJ(
  * @param stream The stream to read from.
  * @param outValue The resultant value.
  * @return On any error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/13
  */
 sjme_errorCode sjme_stream_inputReadValueJB(
@@ -514,6 +531,7 @@ sjme_errorCode sjme_stream_inputReadValueJB(
  * @param stream The stream to read from.
  * @param outValue The resultant value.
  * @return On any error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/07
  */
 sjme_errorCode sjme_stream_inputReadValueJI(
@@ -526,6 +544,7 @@ sjme_errorCode sjme_stream_inputReadValueJI(
  * @param stream The stream to read from.
  * @param outValue The resultant value.
  * @return On any error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/04
  */
 sjme_errorCode sjme_stream_inputReadValueJJ(
@@ -538,6 +557,7 @@ sjme_errorCode sjme_stream_inputReadValueJJ(
  * @param stream The stream to read from.
  * @param outValue The resultant value.
  * @return On any error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/07
  */
 sjme_errorCode sjme_stream_inputReadValueJS(
@@ -670,6 +690,7 @@ typedef sjme_errorCode (*sjme_stream_outputByteArrayFinishFunc)(
  * 
  * @param stream The stream to flush.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/03/03
  */
 sjme_errorCode sjme_stream_outputFlush(
@@ -684,6 +705,7 @@ sjme_errorCode sjme_stream_outputFlush(
  * @param data Any data to pass to the initialization routine.
  * @param copyFrontEnd Any front end data to copy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/11
  */
 sjme_errorCode sjme_stream_outputOpen(
@@ -703,6 +725,8 @@ sjme_errorCode sjme_stream_outputOpen(
  * @param finishData Can be used to pass whatever is needed for the finish
  * processor.
  * @return On any error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/01/09
  */
 sjme_errorCode sjme_stream_outputOpenByteArray(
@@ -832,6 +856,8 @@ sjme_errorCode sjme_stream_outputWriteSingle(
  * @param typeId The type to write.
  * @param value The value to write.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/01/09
  */
 sjme_errorCode sjme_stream_outputWriteValueJP(

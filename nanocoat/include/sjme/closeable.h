@@ -81,6 +81,7 @@ struct sjme_closeableBase
  * @param handler The close handler to use.
  * @param outCloseable The resultant closeable. 
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/28
  */
 sjme_errorCode sjme_closeable_allocR(

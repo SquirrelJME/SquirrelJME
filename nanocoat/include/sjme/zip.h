@@ -130,6 +130,12 @@ typedef struct sjme_zip_entry
  * @param inEntry The entry to read from.
  * @param outStream The resultant stream for reading the data.
  * @return On any error, if any.
+ * @throws SJME_ERROR_CORRUPT_ZIP ...?
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_IS_DIRECTORY ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNSUPPORTED_ZIP_FORMAT ...?
  * @since 2023/12/31
  */
 sjme_errorCode sjme_zip_entryRead(
@@ -143,6 +149,10 @@ sjme_errorCode sjme_zip_entryRead(
  * @param outEntry The resultant entry.
  * @param entryName The entry to look for.
  * @return On any error, if any.
+ * @throws SJME_ERROR_CORRUPT_ZIP ...?
+ * @throws SJME_ERROR_FILE_NOT_FOUND ...?
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/31
  */
 sjme_errorCode sjme_zip_locateEntry(
@@ -158,6 +168,7 @@ sjme_errorCode sjme_zip_locateEntry(
  * @param rawData Raw data to the Zip in memory somewhere.
  * @param rawSize The length of the Zip data.
  * @return Any resultant error code, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2023/12/31
  */
 sjme_errorCode sjme_zip_openMemory(

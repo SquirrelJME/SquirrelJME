@@ -43,6 +43,7 @@ extern "C"
  * @param attrStream The attribute stream.
  * @param outAnnotation The resultant read annotation.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/10/23
  */
 sjme_errorCode sjme_nvm_class_classAnnotation(

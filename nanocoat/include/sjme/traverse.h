@@ -228,6 +228,7 @@ SJME_TRAVERSE_DECLARE(sjme_jint, 0);
  * 
  * @param traverse The tree to empty. 
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/02
  */
 sjme_errorCode sjme_traverse_clear(
@@ -238,6 +239,7 @@ sjme_errorCode sjme_traverse_clear(
  * 
  * @param traverse The tree to destroy. 
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/01
  */
 sjme_errorCode sjme_traverse_destroy(
@@ -249,6 +251,7 @@ sjme_errorCode sjme_traverse_destroy(
  * @param traverse The tree to iterate.
  * @param iterator The resultant iterator state.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/09/01
  */
 sjme_errorCode sjme_traverse_iterate(
@@ -266,6 +269,10 @@ sjme_errorCode sjme_traverse_iterate(
  * @param bits The bit values to traverse with.
  * @param numBits The number of bits in the traversal value.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NO_SUCH_ELEMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_TREE_TOO_DEEP ...?
  * @since 2024/09/01
  */
 sjme_errorCode sjme_traverse_iterateNextR(
@@ -304,6 +311,9 @@ sjme_errorCode sjme_traverse_iterateNextR(
  * @param leafLength The size of the tree elements.
  * @param maxElements The maximum number of elements permitted in the tree.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_OUT_OF_MEMORY ...?
  * @since 2024/09/01
  */
 sjme_errorCode sjme_traverse_newR(
@@ -338,6 +348,9 @@ sjme_errorCode sjme_traverse_newR(
  * @param bits The bit values to get to the leaf.
  * @param numBits The number of bits in the value.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_TREE_COLLISION ...?
  * @since 2024/09/01
  */
 sjme_errorCode sjme_traverse_putMR(

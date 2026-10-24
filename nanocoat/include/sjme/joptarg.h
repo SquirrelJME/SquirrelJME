@@ -152,6 +152,8 @@ struct sjme_joptarg_handler
  * @param argc The argument count.
  * @param argv The arguments.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2026/03/02
  */
 sjme_errorCode sjme_joptarg_parse(

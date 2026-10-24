@@ -65,6 +65,10 @@ struct sjme_nvm_vmClass_loaderBase
  * @param inClass The class to be initialized.
  * @param contextThread The thread this is working under.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CLASS_CHANGED ...?
+ * @throws SJME_ERROR_INVALID_CLASS_LOADER ...?
+ * @throws SJME_ERROR_NO_METHOD ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/24
  */
 sjme_errorCode sjme_nvm_vmClass_checkInit(
@@ -77,6 +81,9 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
  * @param inClass The class to be loaded.
  * @param contextThread The thread this is working under.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_CLASS_LOADER ...?
+ * @throws SJME_ERROR_INVALID_CLASS_TYPE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/24
  */
 sjme_errorCode sjme_nvm_vmClass_checkLoad(
@@ -93,6 +100,8 @@ sjme_errorCode sjme_nvm_vmClass_checkLoad(
  * @param className The class to load.
  * @param doInit Initialize this class?
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_MATCHED ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/19
  */
 sjme_errorCode sjme_nvm_vmClass_loaderLoad(
@@ -116,6 +125,8 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoad(
  * @param fromClass The class to check if this can be assigned to.
  * @return Any resultant error code, if any, will return
  * error @link SJME_ERROR_CLASS_CAST @endlink if this is not assignable.
+ * @throws SJME_ERROR_CLASS_CAST ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/02/16
  */
 sjme_errorCode sjme_nvm_vmClass_isAssignableFrom(
@@ -130,6 +141,8 @@ sjme_errorCode sjme_nvm_vmClass_isAssignableFrom(
  * @param inClass The current class.
  * @param outIsClasses The resultant is-classes.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/04/02
  */
 sjme_errorCode sjme_nvm_vmClass_isClasses(
@@ -159,6 +172,8 @@ sjme_jboolean sjme_nvm_vmClass_isSuperClass(
  * @param componentType The component type of the array.
  * @param dims The number of dimensions of an array for the component type. 
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/19
  */
 sjme_errorCode sjme_nvm_vmClass_loaderLoadArray(
@@ -178,6 +193,8 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadArray(
  * @param componentType The component type of the array.
  * @param dims The number of dimensions of an array for the component type. 
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NEGATIVE_ARRAY_SIZE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/19
  */
 sjme_errorCode sjme_nvm_vmClass_loaderLoadArrayA(
@@ -197,6 +214,9 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadArrayA(
  * @param fieldName The field name to load. 
  * @param doInit Initialize this class?
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NOT_MATCHED ...?
+ * @throws SJME_ERROR_NO_CLASS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/22
  */
 sjme_errorCode sjme_nvm_vmClass_loaderLoadF(
@@ -216,6 +236,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadF(
  * @param fieldName The field name to load. 
  * @param doInit Initialize this class?
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/22
  */
 sjme_errorCode sjme_nvm_vmClass_loaderLoadFU(
@@ -234,6 +255,9 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadFU(
  * needed.
  * @param basicType The type of primitive type to create for.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_INVALID_FIELD_TYPE ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/19
  */
 sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
@@ -252,6 +276,7 @@ sjme_errorCode sjme_nvm_vmClass_loaderLoadPrimitive(
  * @param className The class to load.
  * @param doInit Initialize this class?
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/10/04
  */
 sjme_errorCode sjme_nvm_vmClass_loaderLoadU(

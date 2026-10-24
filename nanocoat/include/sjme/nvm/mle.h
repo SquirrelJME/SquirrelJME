@@ -93,6 +93,9 @@ typedef struct sjme_nvm_mle
  * @param argC The argument count.
  * @param argV The argument values.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_UNKNOWN_MLE_SHELF ...?
  * @since 2025/02/22
  */
 sjme_errorCode sjme_mle_mleCall(
@@ -112,6 +115,9 @@ sjme_errorCode sjme_mle_mleCall(
  * @param argC The argument count.
  * @param argV The argument values.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INCOMPATIBLE_MLE_CALL ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_STACK_INVALID_WRITE ...?
  * @since 2025/02/23
  */
 sjme_errorCode sjme_mle_mleCallFunction(
@@ -132,6 +138,7 @@ sjme_errorCode sjme_mle_mleCallFunction(
  * @param argC The argument count.
  * @param argV The argument values.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/02/23
  */
 sjme_errorCode sjme_mle_mleCallShelf(

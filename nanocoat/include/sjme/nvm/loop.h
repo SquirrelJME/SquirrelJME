@@ -37,6 +37,8 @@ extern "C"
  * @param inState The state to loop.
  * @param exitCode The exit code from the loop.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INTERRUPTED ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/07/15
  */
 sjme_errorCode sjme_nvm_loop_main(
@@ -72,6 +74,10 @@ sjme_errorCode sjme_nvm_loop_tick(
  * @param argRCopy The output argument copy, this is optional as it is only
  * a copy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ILLEGAL_STATE ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_INVALID_EXPLICIT_NEST ...?
+ * @throws SJME_ERROR_MINIMUM_FRAME_LEVEL ...?
  * @since 2026/10/05
  */
 sjme_errorCode sjme_nvm_loop_tickExplicit(

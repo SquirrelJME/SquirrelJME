@@ -118,6 +118,7 @@ typedef struct sjme_circleBuffer
  * @param outAvailable The number of bytes not used in the buffer that
  * are available.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/25
  */
 sjme_errorCode sjme_circleBuffer_available(
@@ -129,6 +130,7 @@ sjme_errorCode sjme_circleBuffer_available(
  * 
  * @param buffer The buffer to free. 
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/25
  */
 sjme_errorCode sjme_circleBuffer_destroy(
@@ -144,6 +146,8 @@ sjme_errorCode sjme_circleBuffer_destroy(
  * @param seekType Seek from the head or tail?
  * @param seekPos The seek position, relative to @c seekType .
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/25
  */
 sjme_errorCode sjme_circleBuffer_get(
@@ -161,6 +165,9 @@ sjme_errorCode sjme_circleBuffer_get(
  * @param inMode The mode that the buffer should be using.
  * @param length The maximum length of the buffer to allocate.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/25
  */
 sjme_errorCode sjme_circleBuffer_new(
@@ -177,6 +184,8 @@ sjme_errorCode sjme_circleBuffer_new(
  * @param length The number of bytes to remove.
  * @param seekType Remove from the head or the tail?
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/25
  */
 sjme_errorCode sjme_circleBuffer_pop(
@@ -193,6 +202,8 @@ sjme_errorCode sjme_circleBuffer_pop(
  * @param length The number of bytes to add.
  * @param seekType Add at the head or the tail?
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/08/25
  */
 sjme_errorCode sjme_circleBuffer_push(

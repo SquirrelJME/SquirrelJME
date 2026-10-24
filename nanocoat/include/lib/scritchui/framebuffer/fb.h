@@ -53,6 +53,7 @@ sjme_errorCode sjme_scritchui_fb_apiInit(
  * @param topLevel The top level component.
  * @param wrapped The bottom level wrapped component.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/07/16
  */
 sjme_errorCode sjme_scritchui_fb_biMap(
