@@ -38,7 +38,7 @@ their line determined by the `LineNumberTable` attribute in the code.
 
 ***TODO***
 
-# Document NanoCoat `@throws`
+# Document NanoCoat `@throws` (Done)
 
 Like the Java code, errors returned by every function should be documented in
 the Doxygen header.
@@ -77,6 +77,18 @@ the inclusion of NONE since that is implied. There also is the case
 of `@since`, I would like the throws before `@since` but this can also be
 used to gather some more context to make sure a target function in a header
 is a documented function.
+
+### Resultant Solution
+
+I wrote both of these scripts:
+
+ * `utils-dev/nanocoat-throws.sh`
+ * `utils-dev/nanocoat-throws-all.sh`
+
+Not the best, but it gets most of it there already except for things like
+function pointers which are a bit more complicated. Naturally those can be
+done more manually as I work on them. This at least just removes the tedious
+work of putting in placeholders everywhere.
 
 # `@SquirrelJMEVendorApi` and `@KeepWhenCompacting` Cleanup (Done)
 
