@@ -85,8 +85,8 @@ sjme_errorCode sjme_scritchui_win32_componentPosition(
 sjme_errorCode sjme_scritchui_win32_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInPositive sjme_jint x,
-	sjme_attrInPositive sjme_jint y,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height)
 {
@@ -102,6 +102,11 @@ sjme_errorCode sjme_scritchui_win32_componentRepaint(
 	rect.right = x + width;
 	rect.top = y;
 	rect.bottom = y + height;
+	
+	if (rect.left < 0)
+		rect.left = 0;
+	if (rect.top < 0)
+		rect.top = 0;
 	
 	/* Invalidate the window rectangle. */
 	SetLastError(0);

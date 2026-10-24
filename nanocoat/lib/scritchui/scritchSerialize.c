@@ -1397,8 +1397,8 @@ sjme_errorCode sjme_scritchui_coreSerial_componentPosition(
 sjme_errorCode sjme_scritchui_coreSerial_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInPositive sjme_jint x,
-	sjme_attrInPositive sjme_jint y,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height)
 {

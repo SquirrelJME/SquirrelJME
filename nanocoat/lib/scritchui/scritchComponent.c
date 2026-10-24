@@ -492,8 +492,8 @@ sjme_errorCode sjme_scritchui_core_componentPosition(
 sjme_errorCode sjme_scritchui_core_componentRepaint(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
-	sjme_attrInPositive sjme_jint x,
-	sjme_attrInPositive sjme_jint y,
+	sjme_attrInValue sjme_jint x,
+	sjme_attrInValue sjme_jint y,
 	sjme_attrInPositiveNonZero sjme_jint width,
 	sjme_attrInPositiveNonZero sjme_jint height)
 {
@@ -505,6 +505,18 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (width < 0 || height < 0)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Repaint everything? */
+	if (width == INT32_MAX || height == INT32_MAX)
+	{
+		x = 0;
+		y = 0;
+		width = INT32_MAX;
+		height = INT32_MAX;
+	}
 		
 	/* Not implemented? */
 	if (inState->impl->componentRepaint == NULL)

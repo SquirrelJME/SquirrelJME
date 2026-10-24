@@ -52,6 +52,7 @@ extern "C"
  * @param inState The input state.
  * @param inComponent The item which was activated.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/16
  */
 typedef sjme_errorCode (*sjme_scritchui_activateListenerFunc)(
@@ -67,6 +68,7 @@ typedef sjme_errorCode (*sjme_scritchui_activateListenerFunc)(
  * is handled
  * specifically in that it will not be treated as an error however normal
  * application exit will not happen.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/13
  */
 typedef sjme_errorCode (*sjme_scritchui_closeListenerFunc)(
@@ -87,6 +89,7 @@ typedef sjme_errorCode (*sjme_scritchui_closeListenerFunc)(
  * @return Any resultant error, if any. This will
  * return @link SJME_ERROR_RESOURCE_NOT_FOUND @endlink if there is no
  * resource for this.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/11/29 
  */
 typedef sjme_errorCode (*sjme_scritchui_externalAssetFunc)(
@@ -102,6 +105,7 @@ typedef sjme_errorCode (*sjme_scritchui_externalAssetFunc)(
  * @param inComponent The component this event is for.
  * @param inEvent The event which occurred.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/29
  */
 typedef sjme_errorCode (*sjme_scritchui_inputListenerFunc)(
@@ -116,6 +120,7 @@ typedef sjme_errorCode (*sjme_scritchui_inputListenerFunc)(
  * @param inWindow The window this is activating under.
  * @param activatedItem The menu item that was activated.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/30
  */
 typedef sjme_errorCode (*sjme_scritchui_menuItemActivateListenerFunc)(
@@ -134,6 +139,7 @@ typedef sjme_errorCode (*sjme_scritchui_menuItemActivateListenerFunc)(
  * @param special Special value for painting, may be @c 0 or any
  * other value if it is meaningful to what is being painted.
  * @return Any error as required.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_paintListenerFunc)(
@@ -152,6 +158,7 @@ typedef sjme_errorCode (*sjme_scritchui_paintListenerFunc)(
  * @param updateType The type of update this is for.
  * @param inScreen The screen that has been updated.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/09
  */
 typedef sjme_errorCode (*sjme_scritchui_screenListenerFunc)(
@@ -167,6 +174,7 @@ typedef sjme_errorCode (*sjme_scritchui_screenListenerFunc)(
  * @param newWidth The new component width.
  * @param newHeight The new component height.
  * @return On any error if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/26
  */
 typedef sjme_errorCode (*sjme_scritchui_sizeListenerFunc)(
@@ -184,6 +192,7 @@ typedef sjme_errorCode (*sjme_scritchui_sizeListenerFunc)(
  * @param subComponent The component that is suggesting a size.
  * @param subDim The size of the sub-component.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/29
  */
 typedef sjme_errorCode (*sjme_scritchui_sizeSuggestListenerFunc)(
@@ -201,6 +210,7 @@ typedef sjme_errorCode (*sjme_scritchui_sizeSuggestListenerFunc)(
  * @param inComponent The component where this event occurred.
  * @param isAfterUpdate Is this after the update has occurred?
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/16
  */
 typedef sjme_errorCode (*sjme_scritchui_valueUpdateListenerFunc)(
@@ -215,6 +225,7 @@ typedef sjme_errorCode (*sjme_scritchui_valueUpdateListenerFunc)(
  * @param inComponent The component that triggered this.
  * @param inViewRect The new view rectangle.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/28
  */
 typedef sjme_errorCode (*sjme_scritchui_viewListenerFunc)(
@@ -230,6 +241,7 @@ typedef sjme_errorCode (*sjme_scritchui_viewListenerFunc)(
  * @param fromVisible The previous visible state.
  * @param toVisible The current visible state.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/28
  */
 typedef sjme_errorCode (*sjme_scritchui_visibleListenerFunc)(
@@ -251,6 +263,9 @@ typedef sjme_errorCode (*sjme_scritchui_voidListenerFunc)(void);
  * the passed argument is always the state.
  * @param initFrontEnd Optional initial front end data.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_HEADLESS_DISPLAY If the display is headless and cannot
+ * output a user interface.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/03/27
  */
 typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
@@ -267,6 +282,7 @@ typedef sjme_errorCode (*sjme_scritchui_apiInitFunc)(
  * @param inComponent The choice to read from.
  * @param outIndex The resultant index.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/28
  */
 typedef sjme_errorCode (*sjme_scritchui_choiceGetSelectedIndexFunc)(
@@ -282,6 +298,9 @@ typedef sjme_errorCode (*sjme_scritchui_choiceGetSelectedIndexFunc)(
  * @param atIndex The index to obtain the template of.
  * @param outItemTemplate A copy of the item template.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the index is not within the
+ * choice bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/17
  */
 typedef sjme_errorCode (*sjme_scritchui_choiceItemGetFunc)(
@@ -295,9 +314,12 @@ typedef sjme_errorCode (*sjme_scritchui_choiceItemGetFunc)(
  * 
  * @param inState The input state.
  * @param inComponent The choice to modify.
- * @param inOutIndex The input index to insert at, then resultant index
+ * @param inOutIndex The input index to insert at, then the resultant index
  * where it was added.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the index is not within the
+ * choice bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/17
  */
 typedef sjme_errorCode (*sjme_scritchui_choiceItemInsertFunc)(
@@ -312,6 +334,7 @@ typedef sjme_errorCode (*sjme_scritchui_choiceItemInsertFunc)(
  * @param inComponent The choice to modify.
  * @param atIndex The index to remove.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/17
  */
 typedef sjme_errorCode (*sjme_scritchui_choiceItemRemoveFunc)(
@@ -325,6 +348,7 @@ typedef sjme_errorCode (*sjme_scritchui_choiceItemRemoveFunc)(
  * @param inState The input state.
  * @param inComponent The choice to modify.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/17
  */
 typedef sjme_errorCode (*sjme_scritchui_choiceItemRemoveAllFunc)(
@@ -340,6 +364,9 @@ typedef sjme_errorCode (*sjme_scritchui_choiceItemRemoveAllFunc)(
  * @param atIndex The index to modify.
  * @param isEnabled If the item should be enabled.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the index is not within the
+ * choice bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/25
  */
 typedef sjme_errorCode (*sjme_scritchui_choiceItemSetEnabledFunc)(
@@ -361,6 +388,9 @@ typedef sjme_errorCode (*sjme_scritchui_choiceItemSetEnabledFunc)(
  * @param width The width of the image.
  * @param height The height of the image.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the index is not within the
+ * choice bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/25
  */
 typedef sjme_errorCode (*sjme_scritchui_choiceItemSetImageFunc)(
@@ -382,6 +412,9 @@ typedef sjme_errorCode (*sjme_scritchui_choiceItemSetImageFunc)(
  * @param atIndex The index to modify.
  * @param isSelected If the item should be selected.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the index is not within the
+ * choice bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/25
  */
 typedef sjme_errorCode (*sjme_scritchui_choiceItemSetSelectedFunc)(
@@ -398,6 +431,9 @@ typedef sjme_errorCode (*sjme_scritchui_choiceItemSetSelectedFunc)(
  * @param atIndex The index to modify.
  * @param inString The string to set, @c NULL will clear it.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the index is not within the
+ * choice bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/25
  */
 typedef sjme_errorCode (*sjme_scritchui_choiceItemSetStringFunc)(
@@ -413,6 +449,7 @@ typedef sjme_errorCode (*sjme_scritchui_choiceItemSetStringFunc)(
  * @param inComponent The choice to get the length of.
  * @param outLength The resultant length.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/17
  */
 typedef sjme_errorCode (*sjme_scritchui_choiceLengthFunc)(
@@ -426,6 +463,7 @@ typedef sjme_errorCode (*sjme_scritchui_choiceLengthFunc)(
  * @param inState The input state.
  * @param inComponent The input component.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/26
  */
 typedef sjme_errorCode (*sjme_scritchui_componentFocusGrabFunc)(
@@ -439,6 +477,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentFocusGrabFunc)(
  * @param inComponent The input component.
  * @param outHasFocus The result of whether the component has focus.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/26
  */
 typedef sjme_errorCode (*sjme_scritchui_componentFocusHasFunc)(
@@ -454,6 +493,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentFocusHasFunc)(
  * @param outParent The resultant parent that contains this, or @c NULL if
  * there is no parent.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/29
  */
 typedef sjme_errorCode (*sjme_scritchui_componentGetParentFunc)(
@@ -469,6 +509,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentGetParentFunc)(
  * @param outX The output X coordinate.
  * @param outY The output Y coordinate.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/06
  */
 typedef sjme_errorCode (*sjme_scritchui_componentPositionFunc)(
@@ -478,15 +519,20 @@ typedef sjme_errorCode (*sjme_scritchui_componentPositionFunc)(
 	sjme_attrOutNullable sjme_jint* outY);
 
 /**
- * Repaints the given component.
+ * Repaints the given component, this will traverse and request that any
+ * subcomponent also be repainted.
  * 
  * @param inState The input state.
  * @param inComponent The input component.
  * @param x The X position.
  * @param y The Y position.
- * @param width The width.
- * @param height The height.
+ * @param width The width, @code INT32_MAX @endcode is an alias for requesting
+ * that the entire window be repainted.
+ * @param height The height, @code INT32_MAX @endcode is an alias for
+ * requesting that the entire window be repainted.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the width and/or height are negative.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/24
  */
 typedef sjme_errorCode (*sjme_scritchui_componentRepaintFunc)(
@@ -503,6 +549,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentRepaintFunc)(
  * @param inState The input state.
  * @param inComponent The component to be revalidated.
  * @return On any error if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/21
  */
 typedef sjme_errorCode (*sjme_scritchui_componentRevalidateFunc)(
@@ -517,6 +564,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentRevalidateFunc)(
  * @param inListener The listener to set.
  * @param copyFrontEnd Any front end data to copy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/17
  */
 typedef sjme_errorCode (*sjme_scritchui_componentSetActivateListenerFunc)(
@@ -533,6 +581,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetActivateListenerFunc)(
  * the existing listener.
  * @param copyFrontEnd The front end data to copy, may be @c NULL .
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/29
  */
 typedef sjme_errorCode (*sjme_scritchui_componentSetInputListenerFunc)(
@@ -549,6 +598,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetInputListenerFunc)(
  * the existing listener.
  * @param copyFrontEnd The front end data to copy, may be @c NULL .
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_componentSetPaintListenerFunc)(
@@ -564,6 +614,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetPaintListenerFunc)(
  * @param inListener The listener to set to or to clear.
  * @param copyFrontEnd Any front end data to be copied.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/26
  */
 typedef sjme_errorCode (*sjme_scritchui_componentSetSizeListenerFunc)(
@@ -579,6 +630,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetSizeListenerFunc)(
  * @param inListener The listener to set.
  * @param copyFrontEnd Any front end data to copy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/17
  */
 typedef sjme_errorCode (*sjme_scritchui_componentSetValueUpdateListenerFunc)(
@@ -594,6 +646,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetValueUpdateListenerFunc)(
  * @param inListener The listener to use.
  * @param copyFrontEnd The front end data to use.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/28
  */
 typedef sjme_errorCode (*sjme_scritchui_componentSetVisibleListenerFunc)(
@@ -609,6 +662,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentSetVisibleListenerFunc)(
  * @param outWidth The output width.
  * @param outHeight The output height.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/12
  */
 typedef sjme_errorCode (*sjme_scritchui_componentSizeFunc)(
@@ -624,6 +678,7 @@ typedef sjme_errorCode (*sjme_scritchui_componentSizeFunc)(
  * @param inContainer The container to place the component within.
  * @param addComponent The component to add to the container.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/20
  */
 typedef sjme_errorCode (*sjme_scritchui_containerAddFunc)(
@@ -643,6 +698,7 @@ typedef sjme_errorCode (*sjme_scritchui_containerAddFunc)(
  * @param contentBound The bounds of the content area within
  * the @a frameBound , this is the actual drawable area for widgets. 
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/12/23
  */
 typedef sjme_errorCode (*sjme_scritchui_containerGetFrameFunc)(
@@ -659,6 +715,7 @@ typedef sjme_errorCode (*sjme_scritchui_containerGetFrameFunc)(
  * @param inContainer The container to remove the component from.
  * @param removeComponent The component to remove from the container.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/15
  */
 typedef sjme_errorCode (*sjme_scritchui_containerRemoveFunc)(
@@ -672,6 +729,7 @@ typedef sjme_errorCode (*sjme_scritchui_containerRemoveFunc)(
  * @param inState The input state.
  * @param inContainer The container to remove everything from.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/15
  */
 typedef sjme_errorCode (*sjme_scritchui_containerRemoveAllFunc)(
@@ -689,6 +747,11 @@ typedef sjme_errorCode (*sjme_scritchui_containerRemoveAllFunc)(
  * @param width The width.
  * @param height The height.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If x and/or y are negative; or if
+ * width and/or height are zero or negative.
+ * @throws SJME_ERROR_NOT_SUB_COMPONENT If the component does not belong to
+ * this container.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/28
  */
 typedef sjme_errorCode (*sjme_scritchui_containerSetBoundsFunc)(
@@ -706,6 +769,7 @@ typedef sjme_errorCode (*sjme_scritchui_containerSetBoundsFunc)(
  * @param inState The input state.
  * @param outFont The resultant font.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/12
  */
 typedef sjme_errorCode (*sjme_scritchui_fontBuiltinFunc)(
@@ -717,6 +781,7 @@ typedef sjme_errorCode (*sjme_scritchui_fontBuiltinFunc)(
  * 
  * @param inState The input state.
  * @param outCount The number of known fonts.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2026/01/18
  */
 typedef sjme_errorCode (*sjme_scritchui_fontCountFunc)(
@@ -732,6 +797,7 @@ typedef sjme_errorCode (*sjme_scritchui_fontCountFunc)(
  * @param inFace The font face to lookup.
  * @param inParams The parameters to lookup.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2026/04/11
  */
 typedef sjme_errorCode (*sjme_scritchui_fontByFaceFunc)(
@@ -748,8 +814,9 @@ typedef sjme_errorCode (*sjme_scritchui_fontByFaceFunc)(
  * @param newFont The new font.
  * @param newParams The new font parameters.
  * @param oldFont The old font.
- * @param deriveParams The font paramters to derive to..
+ * @param deriveParams The font parameters to derive to..
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/14
  */
 typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
@@ -767,6 +834,7 @@ typedef sjme_errorCode (*sjme_scritchui_fontDeriveFunc)(
  * @param outValid The number of valid fonts.
  * @param outCount The maximum number of fonts available, this is optional.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/12/01
  */
 typedef sjme_errorCode (*sjme_scritchui_fontListFunc)(
@@ -778,13 +846,12 @@ typedef sjme_errorCode (*sjme_scritchui_fontListFunc)(
 /**
  * Registers the specified font.
  * 
- * If the font is already registered
- * then @link SJME_ERROR_FONT_ALREADY_REGISTERED @endlink is returned.
- * 
  * @param inState The input state.
  * @param inFont The font to register.
- * @param isPseudo Register this font into the pseudo line of fonts?
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_FONT_ALREADY_REGISTERED If the font is already
+ * registered.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2026/01/18
  */
 typedef sjme_errorCode (*sjme_scritchui_fontRegisterFunc)(
@@ -808,6 +875,12 @@ typedef sjme_errorCode (*sjme_scritchui_fontRegisterFunc)(
  * @param sh Surface height.
  * @param pencilFrontEndCopy Front end data that goes into the pencil.
  * @return An error if the requested graphics are not valid.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If any source and/or destination
+ * draw rectangle is outside the pencil bounding box; The
+ * parameters @code <bw, bh, sx, sy, sw, sh> @endcode cannot be negative;
+ * Additionally @code [sx + sw, sy + sh] @endcode cannot
+ * exceed @code [bw, bh] @endcode.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
@@ -853,6 +926,7 @@ typedef sjme_errorCode (*sjme_scritchui_hardwareGraphicsFunc)(
  * @param numPencils The number of pencils to wrap.
  * @param pencilFrontEndCopy Front end data that goes into the pencil.
  * @return An error if the requested graphics are not valid.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/12/22
  */
 typedef sjme_errorCode (*sjme_scritchui_pseudoGraphicsFunc)(
@@ -870,6 +944,7 @@ typedef sjme_errorCode (*sjme_scritchui_pseudoGraphicsFunc)(
  * @param inCommon The item to set the label for.
  * @param inString The label to set.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/21
  */
 typedef sjme_errorCode (*sjme_scritchui_labelSetStringFunc)(
@@ -890,6 +965,7 @@ typedef sjme_errorCode (*sjme_scritchui_labelSetStringFunc)(
  * @param inOutW Input/output width.
  * @param inOutH Input/output height.
  * @return Any resultant error.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/12/25
  */
 typedef sjme_errorCode (*sjme_scritchui_lafDpiProjectFunc)(
@@ -905,11 +981,12 @@ typedef sjme_errorCode (*sjme_scritchui_lafDpiProjectFunc)(
  * Returns the color for the given element based on the current look and feel.
  * 
  * @param inState The current state.
- * @param inContext Optional context that can be targetted at a widget to get
- * its color themeing.
+ * @param inContext Optional context that can be targeted at a widget to get
+ * its color theming.
  * @param outRGB The resultant RGB color.
  * @param elementColor The color to request.
  * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/27
  */
 typedef sjme_errorCode (*sjme_scritchui_lafElementColorFunc)(
@@ -927,6 +1004,8 @@ typedef sjme_errorCode (*sjme_scritchui_lafElementColorFunc)(
  * @param outValue The resultant value.
  * @param metricType The metric to obtain.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the metric is not valid.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2026/04/18
  */
 typedef sjme_errorCode (*sjme_scritchui_lafMetricFunc)(
@@ -942,6 +1021,7 @@ typedef sjme_errorCode (*sjme_scritchui_lafMetricFunc)(
  * @param outList The resultant list.
  * @param inChoiceType The type of choice this is.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/16
  */
 typedef sjme_errorCode (*sjme_scritchui_listNewFunc)(
@@ -956,6 +1036,7 @@ typedef sjme_errorCode (*sjme_scritchui_listNewFunc)(
  * @param callback The callback to execute.
  * @param anything A value that can be passed to the listener.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/09
  */
 typedef sjme_errorCode (*sjme_scritchui_loopExecuteFunc)(
@@ -969,6 +1050,7 @@ typedef sjme_errorCode (*sjme_scritchui_loopExecuteFunc)(
  * @param inState The input state.
  * @param outInThread The result of whether this is in the event loop.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/09
  */
 typedef sjme_errorCode (*sjme_scritchui_loopIsInThreadFunc)(
@@ -982,6 +1064,7 @@ typedef sjme_errorCode (*sjme_scritchui_loopIsInThreadFunc)(
  * @param blocking If the iteration should block for something to happen.
  * @param outHasTerminated Has the GUI interface terminated?
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/02
  */
 typedef sjme_errorCode (*sjme_scritchui_loopIterateFunc)(
@@ -995,6 +1078,7 @@ typedef sjme_errorCode (*sjme_scritchui_loopIterateFunc)(
  * @param inState The input state.
  * @param outMenuBar The resultant menu bar.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/21
  */
 typedef sjme_errorCode (*sjme_scritchui_menuBarNewFunc)(
@@ -1010,6 +1094,9 @@ typedef sjme_errorCode (*sjme_scritchui_menuBarNewFunc)(
  * then this will be the final index.
  * @param childItem The child menu item to add.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the index is not within the
+ * menu bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/23 
  */
 typedef sjme_errorCode (*sjme_scritchui_menuInsertFunc)(
@@ -1024,6 +1111,7 @@ typedef sjme_errorCode (*sjme_scritchui_menuInsertFunc)(
  * @param inState The input state.
  * @param outMenuItem The resultant menu item.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/21
  */
 typedef sjme_errorCode (*sjme_scritchui_menuItemNewFunc)(
@@ -1036,6 +1124,7 @@ typedef sjme_errorCode (*sjme_scritchui_menuItemNewFunc)(
  * @param inState The input state.
  * @param outMenu The resultant menu.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/21
  */
 typedef sjme_errorCode (*sjme_scritchui_menuNewFunc)(
@@ -1049,6 +1138,9 @@ typedef sjme_errorCode (*sjme_scritchui_menuNewFunc)(
  * @param fromMenu The menu to remove from.
  * @param atIndex The index to remove.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the index is not within the
+ * menu bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/23 
  */
 typedef sjme_errorCode (*sjme_scritchui_menuRemoveFunc)(
@@ -1062,6 +1154,7 @@ typedef sjme_errorCode (*sjme_scritchui_menuRemoveFunc)(
  * @param inState The ScritchUI state.
  * @param fromMenu The menu to remove from.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/23 
  */
 typedef sjme_errorCode (*sjme_scritchui_menuRemoveAllFunc)(
@@ -1074,6 +1167,7 @@ typedef sjme_errorCode (*sjme_scritchui_menuRemoveAllFunc)(
  * @param inState The input state.
  * @param inOutObject The object to delete.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/20
  */
 typedef sjme_errorCode (*sjme_scritchui_objectDeleteFunc)(
@@ -1088,6 +1182,7 @@ typedef sjme_errorCode (*sjme_scritchui_objectDeleteFunc)(
  * @param enableFocus Should focus be enabled?
  * @param defaultFocus Should this panel be set to default focus?
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_panelEnableFocusFunc)(
@@ -1102,6 +1197,7 @@ typedef sjme_errorCode (*sjme_scritchui_panelEnableFocusFunc)(
  * @param inState The input state.
  * @param outPanel The resultant panel.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/02
  */
 typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
@@ -1118,6 +1214,7 @@ typedef sjme_errorCode (*sjme_scritchui_panelNewFunc)(
  * @param pixelBound The resultant screen bound.
  * @param mmBound The resultant screen bound in millimeters.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/12/23
  */
 typedef sjme_errorCode (*sjme_scritchui_screenGetBoundsFunc)(
@@ -1133,6 +1230,7 @@ typedef sjme_errorCode (*sjme_scritchui_screenGetBoundsFunc)(
  * @param inState The input state.
  * @param inListener The callback for screen information and changes.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_screenSetListenerFunc)(
@@ -1146,6 +1244,7 @@ typedef sjme_errorCode (*sjme_scritchui_screenSetListenerFunc)(
  * @param outScreens The resultant screens.
  * @param inOutNumScreens The number of screens for input and output.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/06
  */
 typedef sjme_errorCode (*sjme_scritchui_screensFunc)(
@@ -1160,6 +1259,7 @@ typedef sjme_errorCode (*sjme_scritchui_screensFunc)(
  * @param inState The ScritchUI state.
  * @param outScrollPanel The newly created scroll panel.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/29
  */
 typedef sjme_errorCode (*sjme_scritchui_scrollPanelNewFunc)(
@@ -1173,6 +1273,7 @@ typedef sjme_errorCode (*sjme_scritchui_scrollPanelNewFunc)(
  * @param inComponent The viewport.
  * @param outViewRect The current view rectangle.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/29
  */
 typedef sjme_errorCode (*sjme_scritchui_viewGetViewFunc)(
@@ -1188,6 +1289,7 @@ typedef sjme_errorCode (*sjme_scritchui_viewGetViewFunc)(
  * @param inComponent The viewport.
  * @param inViewArea The view area to set.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/29
  */
 typedef sjme_errorCode (*sjme_scritchui_viewSetAreaFunc)(
@@ -1202,6 +1304,7 @@ typedef sjme_errorCode (*sjme_scritchui_viewSetAreaFunc)(
  * @param inComponent The viewport.
  * @param inViewPos The new view position to set.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/29
  */
 typedef sjme_errorCode (*sjme_scritchui_viewSetViewFunc)(
@@ -1218,6 +1321,7 @@ typedef sjme_errorCode (*sjme_scritchui_viewSetViewFunc)(
  * @param inListener The listener to set.
  * @param copyFrontEnd Any front-end data needed for the listener.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/29
  */
 typedef sjme_errorCode (*sjme_scritchui_viewSetSizeSuggestListenerFunc)(
@@ -1234,6 +1338,7 @@ typedef sjme_errorCode (*sjme_scritchui_viewSetSizeSuggestListenerFunc)(
  * @param inListener The listener to set.
  * @param copyFrontEnd Any front-end data needed for the listener.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/29
  */
 typedef sjme_errorCode (*sjme_scritchui_viewSetViewListenerFunc)(
@@ -1249,6 +1354,7 @@ typedef sjme_errorCode (*sjme_scritchui_viewSetViewListenerFunc)(
  * @param inListener The listener to set.
  * @param copyFrontEnd Any front-end data needed for the listener.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/29
  */
 typedef sjme_errorCode (*sjme_scritchui_voidSetVoidListenerFunc)(
@@ -1265,6 +1371,9 @@ typedef sjme_errorCode (*sjme_scritchui_voidSetVoidListenerFunc)(
  * @param height The height to set.
  * @return Any error code if applicable, such as if the width and/or height
  * are zero or negative.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the width and/or height are zero
+ * or negative.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/21
  */
 typedef sjme_errorCode (*sjme_scritchui_windowContentMinimumSizeFunc)(
@@ -1279,6 +1388,7 @@ typedef sjme_errorCode (*sjme_scritchui_windowContentMinimumSizeFunc)(
  * @param inState The input state.
  * @param outWindow The resultant newly created window.
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/16
  */
 typedef sjme_errorCode (*sjme_scritchui_windowNewFunc)(
@@ -1293,6 +1403,7 @@ typedef sjme_errorCode (*sjme_scritchui_windowNewFunc)(
  * @param inListener The listener to use.
  * @param copyFrontEnd The front end data to use.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/13
  */
 typedef sjme_errorCode (*sjme_scritchui_windowSetCloseListenerFunc)(
@@ -1312,6 +1423,7 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetCloseListenerFunc)(
  * @param setFlags The @link sjme_scritchui_windowFlag @endlink flags to set.
  * @param actualFlags The actual flags that were set, this is optional.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2026/07/05
  */
 typedef sjme_errorCode (*sjme_scritchui_windowSetFlagsFunc)(
@@ -1327,6 +1439,7 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetFlagsFunc)(
  * @param inWindow The window to set the menu bar of.
  * @param inMenuBar The menu bar to set, if @c NULL then it is removed.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/23
  */
 typedef sjme_errorCode (*sjme_scritchui_windowSetMenuBarFunc)(
@@ -1342,6 +1455,7 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetMenuBarFunc)(
  * @param inListener The listener to use.
  * @param copyFrontEnd The front end data to use.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/30
  */
 typedef sjme_errorCode (*sjme_scritchui_windowSetMenuItemActivateListenerFunc)(
@@ -1360,9 +1474,9 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetMenuItemActivateListenerFunc)(
  * @param inWindow The window to set for.
  * @param setState The @link sjme_scritchui_windowState @endlink to set.
  * @param actualState The actual state set, this is optional.
- * @return Any resultant error, will
- * return @link SJME_ERROR_UNSUPPORTED_OPERATION @endlink if the state is
- * not supported.
+ * @return Any resultant error.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_UNSUPPORTED_OPERATION If the state is not supported.
  * @since 2026/07/05
  */
 typedef sjme_errorCode (*sjme_scritchui_windowSetStateFunc)(
@@ -1378,6 +1492,7 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetStateFunc)(
  * @param inWindow The input window.
  * @param isVisible Should the window be visible?
  * @return Any error code if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/04/21
  */
 typedef sjme_errorCode (*sjme_scritchui_windowSetVisibleFunc)(
@@ -1395,8 +1510,9 @@ typedef sjme_errorCode (*sjme_scritchui_windowSetVisibleFunc)(
  * @param aParams The first font parameters.
  * @param b The second font.
  * @param bParams The second font parameters.
- * @return If the two fonts are the same,
- * or @link SJME_ERROR_NOT_MATCHED @endlink if they are not the same.
+ * @return If the two fonts are the same.
+ * @throws SJME_ERROR_NOT_MATCHED If the fonts are not the same.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/17
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontEqualsFunc)(
@@ -1412,6 +1528,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontEqualsFunc)(
  * @param inCodepoint The character.
  * @param outDirection The direction of the character, will be @c -1  or @c 1 .
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/14
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricCharDirectionFunc)(
@@ -1427,6 +1544,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricCharDirectionFunc)(
  * @param inCodepoint The character to check.
  * @param outValid If the character in the font has a glyph and is valid.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/17
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricCharValidFunc)(
@@ -1441,6 +1559,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricCharValidFunc)(
  * @param outFace The font face, any flag
  * from @link sjme_scritchui_pencilFontFace @endlink .
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/17
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontFaceFunc)(
@@ -1453,6 +1572,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontFaceFunc)(
  * @param inFont The font to get the name of.
  * @param outName The font name.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/12
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontNameFunc)(
@@ -1466,6 +1586,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontNameFunc)(
  * @param outStyle The font style, will be flags
  * from @link sjme_scritchui_pencilFontStyle @endlink .
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/17
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontStyleFunc)(
@@ -1480,6 +1601,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricFontStyleFunc)(
  * @param isMax Should the max be obtained.
  * @param outAscent The ascent of the font in pixels.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/14
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelAscentFunc)(
@@ -1495,6 +1617,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelAscentFunc)(
  * @param inParams The font parameters for property adjustment.
  * @param outBaseline The baseline of the font in pixels.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/14
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelBaselineFunc)(
@@ -1509,6 +1632,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelBaselineFunc)(
  * @param inParams The font parameters for property adjustment.
  * @param outHeight The height of the font in pixels.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/27
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelHeightFunc)(
@@ -1524,6 +1648,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelHeightFunc)(
  * @param isMax Should the max be obtained.
  * @param outDescent The descent of the font in pixels.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/14
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelDescentFunc)(
@@ -1539,6 +1664,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelDescentFunc)(
  * @param inParams The font parameters for property adjustment.
  * @param outLeading The leading amount in pixels.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/14
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelLeadingFunc)(
@@ -1555,6 +1681,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelLeadingFunc)(
  * be @code -1 @endcode if this is a general request for the font.
  * @param outSize The pixel size of the font.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/17
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelSizeFunc)(
@@ -1573,6 +1700,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontMetricPixelSizeFunc)(
  * @param inFlatOff The offset into the flat parameters.
  * @param inFlatLen The length of the flat parameters.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2026/03/21
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontParamFromFlatFunc)(
@@ -1592,6 +1720,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontParamFromFlatFunc)(
  * @param outFlatOff The offset into the flat parameters.
  * @param outFlatLen The length of the flat parameters.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2026/03/21
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontParamToFlatFunc)(
@@ -1609,6 +1738,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontParamToFlatFunc)(
  * @param inCodepoint The character.
  * @param outWidth The width of the font in pixels.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/14
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontPixelCharWidthFunc)(
@@ -1631,6 +1761,9 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontPixelCharWidthFunc)(
  * @param outOffX X offset of glyph, for proper rendering.
  * @param outOffY Y offset of glyph, for proper rendering.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the buffer to draw into is
+ * outside of bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/14
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderBitmapFunc)(
@@ -1658,6 +1791,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderBitmapFunc)(
  * @param nextYPos Optional output which contains the next Y
  * coordinate accordingly for continual drawing.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/14
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderCharFunc)(
@@ -1680,6 +1814,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontRenderCharFunc)(
  * @param l The length of the sequence.
  * @param outWidth The resultant pixel width.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/27
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFontStringWidthFunc)(
@@ -1707,6 +1842,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFontStringWidthFunc)(
  * @param outX The resultant X coordinate.
  * @param outY The resultant Y coordinate.
  * @return Any error, if applicable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/12
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilApplyAnchorFunc)(
@@ -1730,6 +1866,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyAnchorFunc)(
  * @param h The source region height.
  * @param dataWidth The width of the entire data/image.
  * @param dataHeight The height of the entire data/image.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/12/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilApplyCoordinateAdjFunc)(
@@ -1751,6 +1888,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyCoordinateAdjFunc)(
  * @param wDest The destination width.
  * @param hDest The destination height.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/12
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilApplyRotateScaleFunc)(
@@ -1768,6 +1906,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyRotateScaleFunc)(
  * @param x The X coordinate to translate.
  * @param y The Y coordinate to translate.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/12
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilApplyTranslateFunc)(
@@ -1782,6 +1921,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilApplyTranslateFunc)(
  * @param x The X coordinate.
  * @param y The Y coordinate.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/27
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilBitLineFunc)(
@@ -1801,6 +1941,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilBitLineFunc)(
  * @param src The source buffer.
  * @param numPixels The number of pixels to blend.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ILLEGAL_STATE If the current blending mode is not valid.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/11
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilBlendRGBIntoFunc)(
@@ -1818,6 +1960,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilBlendRGBIntoFunc)(
  * 
  * @param g The pencil to close.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/02/05
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilCloseFunc)(
@@ -1845,6 +1988,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilCloseFunc)(
  * @param anchor The anchor point of the destination.
  * @return An error if the call is not valid or the native graphics
  * does not support this operation.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilCopyAreaFunc)(
@@ -1868,6 +2012,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilCopyAreaFunc)(
  * @param startAngle The starting angle of the arc
  * @param arcAngle The arc angle to be drawn
  * @return An error on @c NULL arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/11/25
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawArcFunc)(
@@ -1890,6 +2035,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawArcFunc)(
  * @param outCw The output codepoint width, this is optional.
  * @return An error if the graphics is not valid, does not support
  * the given operation, or if the anchor point is not valid.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/06/27
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawCharFunc)(
@@ -1913,6 +2059,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawCharFunc)(
  * @return An error if the graphics is not valid, does not support
  * the given operation, if the anchor point is not valid, or if the
  * offset and/or length are out of bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawCharsFunc)(
@@ -1932,6 +2079,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawCharsFunc)(
  * @param y The starting Y coordinate.
  * @param w The width of the line.
  * @return An error on null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/17
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawHorizFunc)(
@@ -1949,6 +2097,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawHorizFunc)(
  * @param x2 The ending X coordinate.
  * @param y2 The ending Y coordinate.
  * @return An error on null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawLineFunc)(
@@ -1965,6 +2114,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawLineFunc)(
  * @param x The starting X coordinate.
  * @param y The starting Y coordinate.
  * @return An error on null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/17
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawPixelFunc)(
@@ -1984,6 +2134,9 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawPixelFunc)(
  * @param yOffset The offset from which yPoints will begin being read from
  * @param nPoints How many points should be used to construct the polygon.
  * @return An error on @c NULL arguments.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the polygon index reference is
+ * outside of bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/11/30
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawPolylineFunc)(
@@ -2008,6 +2161,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawPolylineFunc)(
  * @param h The height.
  * @return An error if the graphics is not valid or does not support
  * the given operation.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawRectFunc)(
@@ -2041,6 +2195,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawRectFunc)(
  * @param origImgWidth Original image width.
  * @param origImgHeight Original image height.
  * @return Any resultant error, if any
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/12/07
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawRegionFunc)(
@@ -2075,6 +2230,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawRegionFunc)(
  * @param arcWidth The width of the border rounding
  * @param arcHeight The height of the border rounding
  * @return An error on @c NULL arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/11/25
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawRoundRectFunc)(
@@ -2096,9 +2252,10 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawRoundRectFunc)(
  * @param x The X coordinate.
  * @param y The Y coordinate.
  * @param anchor The anchor point.
- * @return An error if the graphics is not valid, this operation is
- * not supported, or on null arguments, or if the offset and/or length are
+ * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS if the offset and/or length are
  * negative or exceed the string bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawSubstringFunc)(
@@ -2120,8 +2277,8 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawSubstringFunc)(
  * @param y2 Second Y coordinate.
  * @param x3 Third X coordinate.
  * @param y3 Third Y coordinate.
- * @return An error if no graphics were specified or the graphics does
- * not actually support the given operation.
+ * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/17
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawTriangleFunc)(
@@ -2156,6 +2313,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawTriangleFunc)(
  * @param origImgWidth Original image width.
  * @param origImgHeight Original image height.
  * @return An error on null arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilDrawXRGB32RegionFunc)(
@@ -2189,6 +2347,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilDrawXRGB32RegionFunc)(
  * @param startAngle The starting angle of the arc
  * @param arcAngle The arc angle to be drawn
  * @return An error on @c NULL arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/11/25
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFillArcFunc)(
@@ -2211,8 +2370,10 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillArcFunc)(
  * @param inYPoints An array containing all available Y vertex coordinates
  * @param yOffset The offset from which yPoints will begin being read from
  * @param nPoints How many points should be used to construct the polygon.
- * @return If any argument is @c NULL or if the offset and/or number of
- * points is not valid.
+ * @return On any error, if any.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the polygon index reference is
+ * outside of bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/11/25
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonFunc)(
@@ -2240,6 +2401,9 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonFunc)(
  * input coordinates cannot be modified.
  * @return If any argument is @c NULL or if the offset and/or number of
  * points is not valid.
+ * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the polygon index reference is
+ * outside of bounds.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/12/04
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonPrimFunc)(
@@ -2260,6 +2424,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonPrimFunc)(
  * @param w The width.
  * @param h The height.
  * @return An error on @c NULL arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFillRectFunc)(
@@ -2280,6 +2445,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillRectFunc)(
  * @param arcWidth The width of the border rounding
  * @param arcHeight The height of the border rounding
  * @return An error on @c NULL arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/11/25
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFillRoundRectFunc)(
@@ -2304,6 +2470,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillRoundRectFunc)(
  * @param y3 Third Y coordinate.
  * @return An error if no graphics were specified or the graphics does
  * not actually support the given operation.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilFillTriangleFunc)(
@@ -2339,6 +2506,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillTriangleFunc)(
  * @param hSrc The height of the source region.
  * @param anchor The anchor point.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/12/04
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilGetRegionFunc)(
@@ -2362,6 +2530,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilGetRegionFunc)(
  * @return Any resultant error, if any. Return the specific
  * error code @link SJME_ERROR_RESOURCE_NOT_FOUND @endlink if the resource
  * backing the pencil is no longer available.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/08
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilLockFunc)(
@@ -2386,6 +2555,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilLockReleaseFunc)(
  * @param inRgbOrRaw The input value to map.
  * @param outColor The resultant full color set.
  * @return Any resultant error.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/09
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilMapColorFunc)(
@@ -2405,6 +2575,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilMapColorFunc)(
  * @param inDataLen Length of the data buffer.
  * @param inNumPixels The number of pixels to read.
  * @return Any resultant error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/11/28
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilPfScanGetFunc)(
@@ -2430,6 +2601,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilPfScanGetFunc)(
  * the current alpha value? That is the buffer has significant alpha values.
  * @param mulAlphaValue The value to multiply with.
  * @return Any resultant error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/11/27
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilPfScanPutFunc)(
@@ -2454,6 +2626,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilPfScanPutFunc)(
  * @param outLimit Optional output value for the smaller of @c outBytes
  * and @c inBytes .
  * @return Any resultant error.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/11/28
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilPfScanBitsFunc)(
@@ -2476,6 +2649,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilPfScanBitsFunc)(
  * @param outLimit Optional output value for the smaller of @c outBytes
  * and @c inBytes .
  * @return Any resultant error.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/09
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilPfScanBytesFunc)(
@@ -2504,6 +2678,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilPfScanBytesFunc)(
  * @param src The source buffer.
  * @param inNumPixels The number of pixels to copy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/11/27
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilPfScanToPfFunc)(
@@ -2534,6 +2709,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilPfScanToPfFunc)(
  * @param src The source buffer.
  * @param inNumPixels The number of pixels to copy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/11/28
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilPfScanToRgbFunc)(
@@ -2557,6 +2733,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilPfScanToRgbFunc)(
  * @param rawPixel The raw pixel to fill with.
  * @param inNumPixels The number of pixels to fill.
  * @return Any resultant error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/10
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRawScanFillFunc)(
@@ -2577,6 +2754,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanFillFunc)(
  * @param inDataLen Length of the data buffer.
  * @param inNumPixels The number of pixels to read.
  * @return Any resultant error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/09
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRawScanGetFunc)(
@@ -2598,6 +2776,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanGetFunc)(
  * @param srcRawLen Length of the data buffer.
  * @param srcNumPixels The number of source pixels.
  * @return Any resultant error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/09
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRawScanPutPureFunc)(
@@ -2619,6 +2798,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanPutPureFunc)(
  * @param inRawOff Offset into the raw scan buffer.
  * @param inRawLen Length of the raw scan buffer.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/09
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRawScanToRgbFunc)(
@@ -2639,6 +2819,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRawScanToRgbFunc)(
  * @param inNumPixels The number of pixels to fill.
  * @param inValue The raw pixel to fill with.
  * @return Any resultant error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/10
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanFillFunc)(
@@ -2657,6 +2838,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanFillFunc)(
  * @param destRgb The RGB data that has come from the image.
  * @param inNumPixels The number of pixels to read.
  * @return Any resultant error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/09
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanGetFunc)(
@@ -2679,6 +2861,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanGetFunc)(
  * the current alpha value? That is the buffer has significant alpha values.
  * @param mulAlphaValue The value to multiply with.
  * @return Any resultant error code.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/12
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanPutFunc)(
@@ -2707,6 +2890,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanPutFunc)(
  * this is @code -1 @endcode then this is determined by @a inNumPixels .
  * @param inNumPixels The number of pixels to copy.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/11/28
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanToPfFunc)(
@@ -2731,6 +2915,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanToPfFunc)(
  * @param inRgbOff The offset into the RGB buffer.
  * @param inRgbLen The length of the RGB buffer.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/09
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanToRawFunc)(
@@ -2748,6 +2933,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilRgbScanToRawFunc)(
  * @param g The hardware graphics to draw with.
  * @param argb The color to set.
  * @return An error on @c NULL arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetAlphaColorFunc)(
@@ -2776,6 +2962,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetBlendingModeFunc)(
  * @param w The width.
  * @param h The height.
  * @return An error on @c NULL arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetClipFunc)(
@@ -2802,6 +2989,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetDefaultFontFunc)(
  * @param g The graphics used.
  * @return An error if the graphics is not valid or does not support
  * this operation.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/08/13
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetDefaultsFunc)(
@@ -2816,6 +3004,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetDefaultsFunc)(
  * is derived from the font.
  * @return An error if the graphics is not valid or does not support
  * this operation.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetFontFunc)(
@@ -2829,6 +3018,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetFontFunc)(
  * @param g The graphics used.
  * @param from The pencil to copy the parameters from.
  * @return An error if the graphics is not valid.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/07/26
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetParametersFromFunc)(
@@ -2841,6 +3031,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetParametersFromFunc)(
  * @param g The hardware graphics to draw with.
  * @param style The stroke type to set.
  * @return An error on @c NULL arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilSetStrokeStyleFunc)(
@@ -2878,6 +3069,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilSetStrokeStyleFunc)(
  * @param hDest The destination height.
  * @param mode The region transfer mode.
  * @return Any resultant error, if any
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/12/22
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilTransferRegionFunc)(
@@ -2903,6 +3095,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilTransferRegionFunc)(
  * @param x The X translation.
  * @param y The Y translation.
  * @return An error on @c NULL arguments.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2024/05/01
  */
 typedef sjme_errorCode (*sjme_scritchui_pencilTranslateFunc)(

@@ -45,7 +45,7 @@ sjme_errorCode sjme_scritchui_core_windowContentMinimumSize(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (width <= 0 || height <= 0)
-		return SJME_ERROR_INVALID_RECT;
+		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Not implemented? */
 	if (inState->impl->windowContentMinimumSize == NULL)
