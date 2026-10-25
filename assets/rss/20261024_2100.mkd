@@ -73,6 +73,24 @@ following quote and my interpretation of it:
    Although I am not doing this with the intention of making money there is
    always the possibility of a non-MPL licensed SquirrelJME being purchased
    by an enterprise corporation.
+ * _Google v. Oracle_, _Sega v. Accolade_, and _Sony v. Connectix_ are relevant
+   to my own personal opinion as these specifically are in relation to
+   interoperability with existing systems (i.e. emulation).
+ * With implementing SquirrelJME over the past decade, and considering the
+   existence of other projects such as the _GNU Classpath for Java_ and
+   _Apache Harmony_. It would be impossible to argue that copying source code
+   from other projects in this manner is fair use. I have reasonably
+   demonstrated by documentation alone that you do not need to look at nor
+   reference any source code. This is ignoring `Random` and others such as
+   `String.hashCode()` which must strictly follow the algorithm, thus its
+   very few lined source code is printed in the documentation. That there only
+   exists as _Sun Microsystems_ wanted interoperability.
+ * The court opinion does consider _Generative AI_ vs _Non-Generative AI_;
+   however what makes an AI generative is not something that has been
+   determined in courts yet (it is a marketing term). Additionally, source-code
+   specific AIs such as _Copilot_ and _Claude_ could very well end up being
+   considered _Non-Generative_. Ignorance is not defendable in court, and it is
+   a very well known fact that current AIs can regurgitate copyrighted code.
 
 Therefor because of this, any use of AI is an existential threat to SquirrelJME
 and the project as a whole, thusly any and all usage is permanently banned
