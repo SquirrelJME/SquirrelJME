@@ -1,104 +1,68 @@
 # SquirrelJME GenAI Coding Guidelines and Agents Policy
 
-***NOTE:*** This is a tertiary document that adds to the existing contributing
-guidelines that have been in place since 2017 and updated accordingly. This
-specific document is written by a human with emotions, with much passion.
-Those using GenAI to replace their ability, or lack thereof, to comprehend the
-contributing guidelines and/or the nuances of this GenAI Policy; the link to
-the full contributing guidelines is as below:
+***IMPORTANT NOTICE FOLLOWING THE UNITED STATES COURT OF APPEALS, THIRD***
+***CIRCUIT opinion (September 29, 2026, No. 25-2153)***
 
- * [Contributing to SquirrelJME](contributing.mkd)
- * [Code of Conduct](code-of-conduct.mkd)
+ * For reference <https://www2.ca3.uscourts.gov/opinarch/252153p.pdf>
 
-GenAI is not permitted for this project due to legal concerns.
-SquirrelJME is not a general 95% project it is an extremely
-specialized project with specialized needs, GenAI as it exists now is not in
-any way useful for SquirrelJME. GenAI cannot currently understand the context
-of what SquirrelJME is and what it is for.
+I will preface this that I am not a lawyer and thus only have my own personal
+non-legal opinion, however courts will take personal opinion and actions into
+consideration.
 
-GenAI is counter to the project's goal and desire to be autonomous and to act
-with self-determination. Programming is art, and SquirrelJME is made by humans
-for humans.
+Considering in this opinion that usage of AI that has been deemed to not be
+in the fair use and that its use is not transformative, I am considering the
+following quote and my interpretation of it:
 
-Have you enjoyed making something? SquirrelJME is that enjoyment. Every line
-of code, graphic, test, input, and output that it happens brings me excitement
-and joy. One could just use OpenJDK or KVM to get effectively what SquirrelJME
-is, but that is not the point. Just getting code to run on your own virtual
-machine is extremely fascinating with lots of science stuff involved. This is
-something that I can nerd out about for _many_ hours. Much of the world today
-is effectively just producing products out of an assembly line as quickly as
-possible and without any regards to quality. Think of yourself and what you
-enjoy, if that turned into an assembly line that pumps out content non-stop;
-think if you accepted forgetting what you love to do only to stand at said
-assembly line and tighten the same bolt when it comes up every five seconds.
-Would you enjoy that? I think not.
+> Second, ROSS argues that three ?intermediate copying?
+> cases, one from the Supreme Court and two from the Ninth
+> Circuit, dictate a different conclusion. Opening Br. 44. In a
+> recent case, the Supreme Court held that Google could copy a
+> portion of Oracle?s Java computer programming language to
+> enable users to create applications using Java code on Android
+> phones. Google LLC v. Oracle Am., Inc., 593 U.S. 1, 6?7
+> (2021). The Ninth Circuit concluded similarly in earlier cases.
+> It held that a video game developer could copy Sega?s com-
+> puter program code to create video games that could be played
+> on Sega?s gaming system. Sega Enters. Ltd. v. Accolade, Inc.,
+> 977 F.2d 1510, 1514 (9th Cir. 1992). Another panel similarly
+> held that Connectix could copy Sony?s computer program code
+> to create a product that made Sony video games playable on
+> personal computers. Sony Comput. Ent., Inc. v. Connectix
+> Corp., 203 F.3d 596, 599, 606?08 (9th Cir. 2000).
 
-For those who feel that GenAI allows them to do something that they would never
-otherwise do, this is something that we call _Imposter Syndrome_. You can do
-things, it takes time to learn however the learning process, although it can
-at times be frustrating it can be very fulfilling. It is understood that such
-tools could be used to assist with the learning process, however these
-generally replace the process by giving answers in-place of deduction. Do not
-give up.
+> In conclusion, the second factor weighs slightly in favor of
+> fair use, but the first, third, and fourth factors weigh against it.
+> Evaluating these factors together, and in light of copyright?s
+> purposes, we hold that ROSS?s use was not fair. See UpCodes,
 
-This policy only applies to Large Language Models (LLMs) and "Chatbots" which
-take human language and/or expression as input to generate an output that
-is not used for the purposes of accessibility.
+ * Google v. Oracle directly affects SquirrelJME as it is a Java ME 8
+   Virtual Machine and Runtime Library which is a clean-room reverse
+   engineered project solely based on documentation and observed behaviors of
+   existing software.
+ * Considering that PhoneME, KVM, OpenJDK, and Android exist it would be
+   impossible to determine if an AI has been trained on these projects or not.
+ * SquirrelJME is not a non-profit and has a _Patreon_ along with sponsorships,
+   although I am not doing this with the intention of making money there is
+   always the possibility of a non-MPL licensed SquirrelJME being purchased
+   by an enterprise corporation.
 
-Bug reports, crashes, code analysis, profiling, or otherwise that have used
-GenAI in any part of their determination are automatically considered as
-invalid.
-
-Potential contributors making determinations and arguments based on the output
-of GenAI will be considered _Non compos mentis_. This project and its
-developers have no desire to be testing surfaces for such technology.
-
-This policy does not apply to "Traditional" AI such as neural networks,
-video game "computer" players, and similar technologies. This policy does not
-apply to single line code completion, search suggestions, or other basic
-"smart" IDE features such as Search Anywhere, Run Anything, Tab Completion, and
-IntelliSense.
-
-This policy does not apply to dependencies, this is solely for SquirrelJME, it
-is not possible to affect the policy of dependencies in any way. This policy
-does not apply to operating systems, these are considered the same as
-dependencies.
-
-This policy does not violate the _Open Source Definition_ (OSD) as set out by
-the _Open Source Initiative_ (OSI), the license does not apply to the
-acceptance of contributions. There is no open-door policy.
-
-## Contributing to SquirrelJME
-
-Note that SquirrelJME does not accept any contributions from which GenAI has
-been used in any fashion. It is not possible to determine the original
-licensing and copyright of the generated source code, nor with information
-it has assisted with due to patents. GenAI models have been trained upon
-various projects with different code guidelines and licenses.
-As such, the output of the GenAI cannot ultimately be currently verified.
+Therefor because of this, any use of AI is an existential threat to SquirrelJME
+and the project as a whole, thusly any and all usage is permanently banned
+until the appropriate time when this may be re-evaluated.
 
 ## Future Policy Reservation
 
-Note that at this current time, use for or against GenAI is being discussed
-heavily by individuals and organizations. This policy has zero intention to
-make any kind of statement in the manner, nor to judge users for evaluating
-a tool for their own needs. Additionally, it is not possible in any way for
-the project to prevent usage of GenAI proliferation. It is not possible to
-prevent the project from being used by GenAI tools short of closing the source.
-The project itself has no desire to close the source code to prevent its use
-in GenAI tools. This project will not take any efforts to sabotage and/or
-poison itself to make any kind of statement as this causes harm and erodes 
-trust. This will project will additionally not offer any suggestions, 
-encouragement, opportunity, or pledges to promote sabotage and/or poisoning. 
-Specific vocabulary and wording has been intentionally avoided in this 
-reservation. This reservation neither condones nor disregards future use of 
-GenAI.
+Due to court rulings and/or opinions, considering the time, cost, and lack
+of any existence of such AI technologies, this reservation is not being
+considered at this time.
 
 Permitted use of GenAI with SquirrelJME with only authorized tools may be 
-accepted in the future, if all the following conditions are met:
+accepted in the future, if all the following conditions are met along with
+the main points of the [contributing.mkd](contributing.mkd) agreement:
 
  * The GenAI models are solely trained on SquirrelJME's source code, notes,
-   history, and documentation.
+   history, and documentation. They must not be trained on any other data
+   which is not in the public domain.
  * No generic models or additional models are applied, this includes additional
    models which provide support for human languages.
  * It must not train from any other source that is not SquirrelJME.

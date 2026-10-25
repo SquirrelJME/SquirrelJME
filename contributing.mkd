@@ -208,10 +208,14 @@ have been trained from unknown and/or unverified sources.
 	 10. Have not used LLMs and/or GenAIs that do not strictly adhere to the
 	     project policy; at this time no such software is available, as such
 	     this is an effective ban on any and all LLM and/or GenAI use.
-	     a. This includes but is not limited to: Aider, ChatGPT, Claude,
+	     a. Court rulings and/or opinions in the US have deemed that
+	        non-transformative use of existing sources used to train models
+	        does not constitute fair use; thusly LLM and/or GenAI use is an
+	        existential threat to SquirrelJME.
+	     b. This includes but is not limited to: Aider, ChatGPT, Claude,
 	        Codex, Copilot, Cursor, DeepSeek, Gemini, Junie, OpenClaw,
 	        OpenCode, and Windsurf.
-	     b. Models and Models as a Service (MaaS) of which:
+	     c. Models and Models as a Service (MaaS) of which:
 	        i.    You are a subscriber, sub-leaser, renter, trial member,
 	              member, patron, and/or shareholder.
 	        ii.   Have been trained on copyrighted, trademarked, and/or
