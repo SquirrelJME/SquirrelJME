@@ -165,17 +165,31 @@ have been trained from unknown and/or unverified sources.
 **ALL CONTRIBUTORS MUST ACCEPT THE FOLLOWING AGREEMENT BEFORE THEIR CODE WILL**
 **BE CONSIDERED FOR THE PROJECT. IF THE DEVELOPER IS EMPLOYED AND DEVELOPS**
 **THE CODE "ON THE CLOCK" OR UNDER CONTRACT, THEN THAT DEVELOPER MUST SEEK**
-**THE PERMISSION OF THE EMPLOYER. THIS IS A LEGALLY BINDING CONTRACT.**
+**THE PERMISSION OF THE EMPLOYER. THIS IS A LEGALLY BINDING CONTRACT AS**
+**YOU ARE PERFORMING A COPYRIGHT ASSIGNMENT OF A COPY OF YOUR WORK.**
 
 	You grant Stephanie Gawroriski an irrevocable license that:
 	
 	 1.  That you own the contributing work.
-	 2.  Grants a patent license, as per the Mozilla Public License 2.0.
-	 3.  Granting Stephanie Gawroriski permission to redistribute, sell, lease,
-	     modify, transform, translate, and relicense the specified works. This
-	     is to simplify the licensing of the project and permit it to be
-	     consistent. Your contribution may be commercially licensed to other
-	     parties supporting the project through this means.
+	 2.  Granting Stephanie Gawroriski permission to redistribute, sell, lease,
+	     modify, transform, translate, and relicense the specified works under
+	     a single copyright. This is to simplify the licensing of the project
+	     and permit it to be consistent. Your contribution may be commercially
+	     licensed to other parties supporting the project through this means.
+	     a. You are assigning your copyright of a copy of your work to
+	        Stephanie Gawroriski and that copy will be under a new copyright.
+	     b. You do not lose the ability to use your original work in your own
+	        manner as you see fit, this ability loss only applies to the copy.
+	     c. Mutually for the copied and re-assigned work, it is agreed that
+	        all warranty, indenmity, legal, litigation, and patent obligations
+	        do not apply and will not be considered in any fashion. This is so
+	        that neither the copied work in SquirrelJME does not infringe on
+	        the original work which has been copied via contribution and vice
+	        versa, to not burden both parties.
+	 3.  Grants a patent license, as per the Mozilla Public License 2.0.
+	     a. If the MPLv2 is not applicable or appropriate, then it may be
+	        placed under the Creative Commons CC-BY-SA 4.0 or SIL Open Font 
+	        License Version 1.1.
 	 4.  If employed by a company, you have a right by that company to provide
 	     contributions to this project.
 	     a. You are not a contractor and/or third-party performing contracted
@@ -193,7 +207,11 @@ have been trained from unknown and/or unverified sources.
 	        which you do not have full copyright and patent ownership of.
 	 5.  Have pledged to follow the Code of Conduct.
 	 6.  Have read and understand the Contributor Ettiquite.
-	 7.  Understand that the code will be placed under the MPLv2.
+	     a. This is with regards to code style and other requirements.
+	 7.  Understand that the work will be placed under the MPLv2.
+	     a. If the MPLv2 is not applicable or appropriate, then it may be
+	        placed under the Creative Commons CC-BY-SA 4.0 or SIL Open Font 
+	        License Version 1.1.
 	 8.  Your contribution is not attached to any additional terms, terms of
 	     service, change of jurisdiction, regulatory requirements,
 	     and/or legal requirements.
@@ -208,14 +226,16 @@ have been trained from unknown and/or unverified sources.
 	 10. Have not used LLMs and/or GenAIs that do not strictly adhere to the
 	     project policy; at this time no such software is available, as such
 	     this is an effective ban on any and all LLM and/or GenAI use.
-	     a. Court rulings and/or opinions in the US have deemed that
+	     a. Court rulings and/or opinions in the USA have deemed that
 	        non-transformative use of existing sources used to train models
 	        does not constitute fair use; thusly LLM and/or GenAI use is an
-	        existential threat to SquirrelJME.
+	        existential legal risk to SquirrelJME.
 	     b. This includes but is not limited to: Aider, ChatGPT, Claude,
 	        Codex, Copilot, Cursor, DeepSeek, Gemini, Junie, OpenClaw,
 	        OpenCode, and Windsurf.
-	     c. Models and Models as a Service (MaaS) of which:
+	     c. Models and Models as a Service (MaaS) of which; without any regard
+	        to the commercial viability, cost, effort, short-term
+	        practicality, or otherwise:
 	        i.    You are a subscriber, sub-leaser, renter, trial member,
 	              member, patron, and/or shareholder.
 	        ii.   Have been trained on copyrighted, trademarked, and/or
@@ -251,7 +271,8 @@ have been trained from unknown and/or unverified sources.
 	              an output/response within a reasonable time, or requires
 	              hardware that is unreasonable to obtain. (Baseline hardware
 	              requirement is a Core i7-1370P, a mobile CPU with an Iris
-	              Xe Graphics GPU.)
+	              Xe Graphics GPU. This baseline consideres portability as
+	              development is exclusively done on portable machines.)
 	        xiii. Does not have safeguards in place to prevent use outside of
 	              strict tool usage such as taking on a human persona or
 	              other fictional character.
