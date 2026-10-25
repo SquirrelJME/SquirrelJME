@@ -1,0 +1,77 @@
+# Important Notice Following The US CoA 3rd Circuit Opinion No 25-2153
+
+A copy of this policy is at the following locations:
+
+ * <https://squirreljme.cc/doc/trunk/ai-policy.mkd>
+ * [AI Policy](../../ai-policy.mkd)
+
+***IMPORTANT NOTICE FOLLOWING THE UNITED STATES COURT OF APPEALS, THIRD***
+***CIRCUIT opinion (September 29, 2026, No. 25-2153)***
+
+ * For reference <https://www2.ca3.uscourts.gov/opinarch/252153p.pdf>
+
+I will preface this that I am not a lawyer and thus only have my own personal
+non-legal opinion, however courts will take personal opinion and actions into
+consideration.
+
+Considering in this opinion that usage of AI that has been deemed to not be
+in the fair use and that its use is not transformative, I am considering the
+following quote and my interpretation of it:
+
+    Second, ROSS argues that three "intermediate copying"
+    cases, one from the Supreme Court and two from the Ninth
+    Circuit, dictate a different conclusion. Opening Br. 44. In a
+    recent case, the Supreme Court held that Google could copy a
+    portion of Oracle's Java computer programming language to
+    enable users to create applications using Java code on Android
+    phones. Google LLC v. Oracle Am., Inc., 593 U.S. 1, 6-7
+    (2021). The Ninth Circuit concluded similarly in earlier cases.
+    It held that a video game developer could copy Sega's com-
+    puter program code to create video games that could be played
+    on Sega's gaming system. Sega Enters. Ltd. v. Accolade, Inc.,
+    977 F.2d 1510, 1514 (9th Cir. 1992). Another panel similarly
+    held that Connectix could copy Sony's computer program code
+    to create a product that made Sony video games playable on
+    personal computers. Sony Comput. Ent., Inc. v. Connectix
+    Corp., 203 F.3d 596, 599, 606-08 (9th Cir. 2000).
+    .
+    In each of these cases, computer code was copied to enable
+    users to make their software operable with an existing com-
+    puter system. These uses were transformative because, in each
+    case, copying was necessary to access the unprotected func-
+    tional aspects of computer code. See Oracle, 593 U.S. at 30-
+    31 (stating that Google copied Oracle API "only insofar as
+    needed" and explaining that "shared interfaces are necessary
+    for different programs to speak to each other"); Sega, 977 F.2d
+    at 1514 (noting that "no other means of access to the unpro-
+    tected elements exists"); Connectix, 203 F.3d at 599 (holding
+    that copying was "necessary to permit Connectix to make its
+    non-infringing Virtual Game Station function with PlayStation
+    games").8 Here, ROSS does not need to copy Thomson Reu-
+    ters's headnotes to access the underlying unprotected infor-
+    mation. ROSS had access to the underlying judicial opinions
+    and could freely copy them to make the memos needed to train
+    its AI. It chose not to do so because copying the headnotes
+    offered an "easy" way to create its training memos. App.
+    8545-46. Unlike necessity, ease is not a justification for cop-
+    ying. In sum, the first factor weighs against fair use.9
+    .
+    In conclusion, the second factor weighs slightly in favor of
+    fair use, but the first, third, and fourth factors weigh against it.
+    Evaluating these factors together, and in light of copyright's
+    purposes, we hold that ROSS's use was not fair. See UpCodes,
+
+ * Google v. Oracle directly affects SquirrelJME as it is a Java ME 8
+   Virtual Machine and Runtime Library which is a clean-room reverse
+   engineered project solely based on documentation and observed behaviors of
+   existing software.
+ * Considering that PhoneME, KVM, OpenJDK, and Android exist it would be
+   impossible to determine if an AI has been trained on these projects or not.
+ * SquirrelJME is not a non-profit and has a _Patreon_ along with sponsorships.
+   Although I am not doing this with the intention of making money there is
+   always the possibility of a non-MPL licensed SquirrelJME being purchased
+   by an enterprise corporation.
+
+Therefor because of this, any use of AI is an existential threat to SquirrelJME
+and the project as a whole, thusly any and all usage is permanently banned
+until the appropriate time when this may be re-evaluated.
