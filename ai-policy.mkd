@@ -1,7 +1,7 @@
 # SquirrelJME GenAI Coding Guidelines and Agents Policy
 
 ***IMPORTANT NOTICE FOLLOWING THE UNITED STATES COURT OF APPEALS, THIRD***
-***CIRCUIT opinion (September 29, 2026, No. 25-2153)***
+***CIRCUIT OPINION (September 29, 2026, No. 25-2153)***
 
  * For reference <https://www2.ca3.uscourts.gov/opinarch/252153p.pdf>
  * Thomson Reuters Enterprise Centre GmbH v. Ross Intelligence Inc, 25-2153, 
@@ -101,6 +101,46 @@ the main points of the [contributing.mkd](contributing.mkd) agreement:
    assigned to SquirrelJME in terms of full ownership with no restrictions.
    That is, it is donated to the project with no restrictions placed.
  * The tool has been vetted and approved by the administrators of SquirrelJME.
+
+## Personal Thoughts
+
+Personally disregarding legality of copyright and otherwise, working on
+SquirrelJME brings me much joy. One thing to consider is that GenAI is counter
+to the project's goal and desire to be autonomous and to act with
+self-determination. Programming is art, and SquirrelJME is made by humans for
+humans. Our passion and enjoyment is important.
+
+Have you enjoyed making something? SquirrelJME is that enjoyment. Every line of 
+code, graphic, test, input, and output that it happens brings me excitement and
+joy. One could just use OpenJDK or KVM to get effectively what SquirrelJME is,
+but that is not the point. Just getting code to run on your own virtual machine
+is extremely fascinating with lots of science stuff involved. This is something
+that I can nerd out about for many hours. Much of the world today is 
+effectively just producing products out of an assembly line as quickly as
+possible and without any regards to quality. Think of yourself and what you
+enjoy, if that turned into an assembly line that pumps out content non-stop;
+think if you accepted forgetting what you love to do only to stand at said
+assembly line and tighten the same bolt when it comes up every five seconds.
+Would you enjoy that? I think that you would not.
+
+Considering that courts are heavily involved now and the legal implications
+of these decisions and opinions, it would be foolish to destroy what
+SquirrelJME has for the convenience of not doing things yourself. It is
+now existential for the project, that is this technology cannot be adopted for
+the project to continue to exist. This by itself does not even consider
+the ethical issues of AI proliferation, which has repeatedly been shown to
+be damaging to the environment and the sheer disregard for the protection of
+creativity. In the current field of reverse engineering and emulation, AI has
+most popularly only been used for piracy and other black-hat projects. These
+projects have been a net-loss to preservation as a whole as they give courts
+and corporations more reason to squash these efforts by diluting projects
+that would legally stand on their own with copyright-stripped code from
+dubious sources. Current AI companies and users of AI are very aware of this
+and have adopted a no-care, ship it broken, and fix it in production mentality
+that only carries extreme risk. That is not something that I can do for this
+project which will soon reach 11 years of being in active development.
+
+Risk has never been, nor ever will be acceptable for SquirrelJME.
 
 ## Developing for SquirrelJME
 
