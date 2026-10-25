@@ -29,6 +29,27 @@ following quote and my interpretation of it:
 > to create a product that made Sony video games playable on
 > personal computers. Sony Comput. Ent., Inc. v. Connectix
 > Corp., 203 F.3d 596, 599, 606?08 (9th Cir. 2000).
+> 
+> In each of these cases, computer code was copied to enable
+> users to make their software operable with an existing com-
+> puter system. These uses were transformative because, in each
+> case, copying was necessary to access the unprotected func-
+> tional aspects of computer code. See Oracle, 593 U.S. at 30?
+> 31 (stating that Google copied Oracle API ?only insofar as
+> needed? and explaining that ?shared interfaces are necessary
+> for different programs to speak to each other?); Sega, 977 F.2d
+> at 1514 (noting that ?no other means of access to the unpro-
+> tected elements exists?); Connectix, 203 F.3d at 599 (holding
+> that copying was ?necessary to permit Connectix to make its
+> non-infringing Virtual Game Station function with PlayStation
+> games?).8 Here, ROSS does not need to copy Thomson Reu-
+> ters?s headnotes to access the underlying unprotected infor-
+> mation. ROSS had access to the underlying judicial opinions
+> and could freely copy them to make the memos needed to train
+> its AI. It chose not to do so because copying the headnotes
+> offered an ?easy? way to create its training memos. App.
+> 8545?46. Unlike necessity, ease is not a justification for cop-
+> ying. In sum, the first factor weighs against fair use.9
 
 > In conclusion, the second factor weighs slightly in favor of
 > fair use, but the first, third, and fourth factors weigh against it.
