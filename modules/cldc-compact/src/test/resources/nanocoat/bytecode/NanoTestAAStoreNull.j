@@ -17,7 +17,15 @@
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
-.limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+.limit stack 4
+; Grab an array
+	invokestatic nano/NanoShelf/makeArrayNull()[Ljava/lang/String;
+	
+; Write a string to the first index
+	iconst_0
+	ldc "array0"
+	aastore
+
+; Done
 	return
 .end method

@@ -47,8 +47,8 @@ extern "C"
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index or span of
  * indexes exceeds the array bounds.
- * @throws SJME_ERROR_CLASS_CAST If this is not an array, or it is of the
- * wrong type.
+ * @throws SJME_ERROR_ARRAY_STORE If this array is of the incorrect type.
+ * @throws SJME_ERROR_CLASS_CAST If this is not an array.
  * @throws SJME_ERROR_INVALID_ARGUMENT If the required type is not valid.
  * @throws SJME_ERROR_NULL_STACK_POINTER If the array is null.
  * @since 2026/10/25
@@ -71,6 +71,8 @@ sjme_errorCode sjme_nvm_instance_arrayCheck(
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the source and/or
  * destination offsets and length are negative or exceed the array bounds.
+ * @throws SJME_ERROR_ARRAY_STORE If this array is of the incorrect type.
+ * @throws SJME_ERROR_CLASS_CAST If this is not an array.
  * @throws SJME_ERROR_NULL_STACK_POINTER If the source or destination array
  * are @code NULL @endcode.
  * @since 2026/10/23
@@ -95,6 +97,7 @@ sjme_errorCode sjme_nvm_instance_arrayCopyJ(
  * @return On any resultant error, if any.
  * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
  * array bounds.
+ * @throws SJME_ERROR_ARRAY_STORE If this array cannot read this value.
  * @throws SJME_ERROR_CLASS_CAST If this is not an array.
  * @throws SJME_ERROR_INVALID_ARGUMENT If the required type is not valid.
  * @throws SJME_ERROR_NULL_ARGUMENTS If the output value is null.
@@ -118,6 +121,7 @@ sjme_errorCode sjme_nvm_instance_arrayGet(
  * @return On any resultant error, if any.
  * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
  * array bounds.
+ * @throws SJME_ERROR_ARRAY_STORE If this array cannot read this value.
  * @throws SJME_ERROR_CLASS_CAST If this is not an array.
  * @throws SJME_ERROR_NULL_ARGUMENTS If the output value is null.
  * @throws SJME_ERROR_NULL_STACK_POINTER If the array
@@ -133,6 +137,7 @@ sjme_errorCode sjme_nvm_instance_arrayGetString(
 /**
  * Writes a single array value.
  * 
+ * @param contextThread The thread this is operating under.
  * @param inArray The array to modify.
  * @param requireType The required basic type of the array, if this is not
  * important this may be @code SJME_NUM_BASIC_TYPE_IDS @endcode
@@ -143,9 +148,13 @@ sjme_errorCode sjme_nvm_instance_arrayGetString(
  * @return On any resultant error, if any.
  * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
  * array bounds.
+ * @throws SJME_ERROR_ARRAY_STORE If this array cannot store this value.
  * @throws SJME_ERROR_CLASS_CAST If this is not an array.
+ * @throws SJME_ERROR_ILLEGAL_STATE If the object being stored has no class
+ * type.
  * @throws SJME_ERROR_INVALID_ARGUMENT If the required type is not valid.
- * @throws SJME_ERROR_NULL_ARGUMENTS If the input value is null.
+ * @throws SJME_ERROR_NULL_ARGUMENTS If the input value is null or there is
+ * no context thread.
  * @throws SJME_ERROR_NULL_STACK_POINTER If the array
  * is @code NULL @endcode.
  * @throws SJME_ERROR_TREAD_INVALID_WRITE If this value cannot be stored
@@ -153,6 +162,7 @@ sjme_errorCode sjme_nvm_instance_arrayGetString(
  * @since 2026/10/23
  */
 sjme_errorCode sjme_nvm_instance_arraySet(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jarray inArray,
 	sjme_attrInValue sjme_basicTypeId requireType,
 	sjme_attrInPositive sjme_jint index,

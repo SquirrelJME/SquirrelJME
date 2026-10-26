@@ -1773,7 +1773,7 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	
 	/* Write to the array. */
 	if (sjme_error_is(error = sjme_nvm_instance_arraySet(
-		SJME_AS_JARRAY(arrayValue.v.l),
+		SJME_F_T(inFrame), SJME_AS_JARRAY(arrayValue.v.l),
 		arrayType, indexValue.v.i, &commit, &popValue)))
 	{
 		/* Is this an applicable error? */

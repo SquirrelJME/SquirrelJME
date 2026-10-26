@@ -68,12 +68,12 @@ sjme_errorCode sjme_nvm_instance_arrayCheck(
 		componentType = sjme_atomic_g(sjme_jclass,
 			&isClass->componentType);
 		if (componentType == NULL)
-			return SJME_ERROR_CLASS_CAST;
+			return SJME_ERROR_ARRAY_STORE;
 		
 		/* The component type is incorrect? */
 		if (!sjme_nvm_instance_arrayCheckAlias(componentType,
 			requireType))
-			return SJME_ERROR_CLASS_CAST;
+			return SJME_ERROR_ARRAY_STORE;
 	}
 	
 	/* Actual index is out of bounds. */
@@ -153,6 +153,7 @@ sjme_errorCode sjme_nvm_instance_arrayGetString(
 }
 
 sjme_errorCode sjme_nvm_instance_arraySet(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jarray inArray,
 	sjme_attrInValue sjme_basicTypeId requireType,
 	sjme_attrInPositive sjme_jint index,
@@ -160,11 +161,41 @@ sjme_errorCode sjme_nvm_instance_arraySet(
 	sjme_attrOutNotNull sjme_jvalueTyped* inValue)
 {
 	sjme_errorCode error;
+	sjme_jclass isClass, componentType, valueClass;
+	
+	if (contextThread == NULL)
+		return SJME_ERROR_NULL_STACK_POINTER;
 	
 	/* Check for valid access. */
 	if (sjme_error_is(error = sjme_nvm_instance_arrayCheck(inArray,
 		requireType, index, 1)))
 		return sjme_error_default(error);
+	
+	/* If an object is being stored here, it needs to be checked. */
+	isClass = sjme_atomic_g(sjme_jclass, &inArray->object.isClass);
+	componentType = sjme_atomic_g(sjme_jclass,
+		&isClass->componentType);
+	if ((inValue->t == SJME_JAVA_TYPE_ID_OBJECT ||
+			componentType->typeId == SJME_JAVA_TYPE_ID_OBJECT) &&
+		inValue->v.l != NULL)
+	{
+		/* Get the value class. */
+		valueClass = sjme_atomic_g(sjme_jclass, &inValue->v.l->isClass);
+		if (valueClass == NULL)
+			return SJME_ERROR_ILLEGAL_STATE;
+		
+		/* The value must be able to be stored here. */
+		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+			contextThread, valueClass, componentType)))
+		{
+			/* It cannot, so map to an array store error. */
+			if (error == SJME_ERROR_CLASS_CAST)
+				return SJME_ERROR_ARRAY_STORE;
+			
+			/* Otherwise, not good. */
+			return sjme_error_default(error);
+		}
+	}
 	
 	/* Store the actual value. */
 	if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
