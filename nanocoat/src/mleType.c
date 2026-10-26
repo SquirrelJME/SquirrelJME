@@ -126,7 +126,11 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 			SJME_F_CL(inFrame), &foundClass,
 			SJME_F_T(inFrame), seq, SJME_JNI_TRUE)) ||
 			foundClass == NULL)
-			return sjme_error_vmError(inFrame, error);
+		{
+			/* Another error other than class not found? */
+			if (error != SJME_ERROR_NO_CLASS)
+				return sjme_error_vmError(inFrame, error);
+		}
 	}
 
 	/* Normal class otherwise. */
@@ -138,7 +142,7 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 			SJME_F_T(inFrame), seq, SJME_JNI_TRUE)) ||
 			foundClass == NULL)
 		{
-			/* Another error other than not found? */
+			/* Another error other than class not found? */
 			if (error != SJME_ERROR_NO_CLASS)
 				return sjme_error_vmError(inFrame, error);
 		}

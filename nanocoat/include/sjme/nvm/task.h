@@ -380,11 +380,17 @@ typedef enum sjme_nvm_task_commonClassId
 	/** @code java.lang.ArrayIndexOutOfBoundsException @endcode. */
 	SJME_NVM_COMMON_EXCEPTION_ARRAY_IOOB,
 
-	/** @code java.lang.ClassCastException@endcode . */
+	/** @code java.lang.ClassCastException @endcode . */
 	SJME_NVM_COMMON_EXCEPTION_CLASS_CAST,
+	
+	/** @code java.lang.ClassNotFoundException @endcode . */
+	SJME_NVM_COMMON_EXCEPTION_CLASS_NOT_FOUND,
 
 	/** @code java.lang.LinkageError @endcode . */
 	SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR,
+	
+	/** @code cc.squirreljme.jvm.mle.exceptions.MLECallError @endcode . */
+	SJME_NVM_COMMON_EXCEPTION_MLE_CALL,
 	
 	/** @code java.lang.NullPointerException @endcode . */
 	SJME_NVM_COMMON_EXCEPTION_NULL_POINTER,

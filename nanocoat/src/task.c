@@ -248,9 +248,17 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		case SJME_NVM_COMMON_EXCEPTION_CLASS_CAST:
 			commonName = "Ljava/lang/ClassCastException;";
 			break;
+			
+		case SJME_NVM_COMMON_EXCEPTION_CLASS_NOT_FOUND:
+			commonName = "Ljava/lang/ClassNotFoundException;";
+			break;
 
 		case SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR:
 			commonName = "Ljava/lang/LinkageError;";
+			break;
+			
+		case SJME_NVM_COMMON_EXCEPTION_MLE_CALL:
+			commonName = "Lcc/squirreljme/jvm/mle/exceptions/MLECallError;";
 			break;
 
 		case SJME_NVM_COMMON_EXCEPTION_NULL_POINTER:

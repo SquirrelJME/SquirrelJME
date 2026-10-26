@@ -126,6 +126,14 @@ sjme_errorCode sjme_nvm_task_threadEmitEV(
 		case SJME_ERROR_CLASS_CAST:
 			mapped = SJME_NVM_COMMON_EXCEPTION_CLASS_CAST;
 			break;
+			
+		case SJME_ERROR_MLE_CALL:
+			mapped = SJME_NVM_COMMON_EXCEPTION_MLE_CALL;
+			break;
+			
+		case SJME_ERROR_NO_CLASS:
+			mapped = SJME_NVM_COMMON_EXCEPTION_CLASS_NOT_FOUND;
+			break;
 		
 		case SJME_ERROR_NULL_STACK_POINTER:
 			mapped = SJME_NVM_COMMON_EXCEPTION_NULL_POINTER;
