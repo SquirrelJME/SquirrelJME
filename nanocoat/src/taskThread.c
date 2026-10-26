@@ -116,11 +116,11 @@ sjme_errorCode sjme_nvm_task_threadEmitEV(
 	switch (errorCode)
 	{
 		case SJME_ERROR_ARRAY_STORE:
-			mapped = SJME_NVM_COMMA_EXCEPTION_ARRAY_STORE;
+			mapped = SJME_NVM_COMMON_EXCEPTION_ARRAY_STORE;
 			break;
 		
 		case SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS:
-			mapped = SJME_NVM_COMMA_EXCEPTION_ARRAY_IOOB;
+			mapped = SJME_NVM_COMMON_EXCEPTION_ARRAY_IOOB;
 			break;
 		
 		case SJME_ERROR_CLASS_CAST:
@@ -177,6 +177,8 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 	/* This common class is not a throwable? */
 	switch (commonClass)
 	{
+		case SJME_NVM_COMMON_EXCEPTION_ARRAY_IOOB:
+		case SJME_NVM_COMMON_EXCEPTION_ARRAY_STORE:
 		case SJME_NVM_COMMON_EXCEPTION_CLASS_CAST:
 		case SJME_NVM_COMMON_EXCEPTION_NULL_POINTER:
 		case SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR:

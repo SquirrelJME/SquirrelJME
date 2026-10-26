@@ -375,10 +375,10 @@ typedef enum sjme_nvm_task_commonClassId
 	SJME_NVM_COMMON_NULL,
 	
 	/** @code java.lang.ArrayStoreException @endcode. */
-	SJME_NVM_COMMA_EXCEPTION_ARRAY_STORE,
+	SJME_NVM_COMMON_EXCEPTION_ARRAY_STORE,
 	
 	/** @code java.lang.ArrayIndexOutOfBoundsException @endcode. */
-	SJME_NVM_COMMA_EXCEPTION_ARRAY_IOOB,
+	SJME_NVM_COMMON_EXCEPTION_ARRAY_IOOB,
 
 	/** @code java.lang.ClassCastException@endcode . */
 	SJME_NVM_COMMON_EXCEPTION_CLASS_CAST,
