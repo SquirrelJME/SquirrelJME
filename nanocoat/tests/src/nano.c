@@ -338,7 +338,7 @@ static sjme_errorCode sjme_test_checkAnnotation(
 	sjme_attrInNotNull sjme_nvm_class_annotation expected,
 	sjme_attrInNotNull sjme_test_nano_result* result)
 {
-	sjme_jint i, n, matches;
+	sjme_jint i, n, matched;
 	sjme_list(sjme_nvm_class_annotationValue)* values;
 	sjme_nvm_class_annotationValue* value;
 	
@@ -352,7 +352,7 @@ static sjme_errorCode sjme_test_checkAnnotation(
 		return SJME_ERROR_NANOTEST_EXPECTED_NO_VALUE;
 	
 	/* Go through and find the matching annotation value. */
-	matches = 0;
+	matched = 0;
 	for (i = 0, n = values->length; i < n; i++)
 	{
 		/* The value this is checking against. */
@@ -372,8 +372,10 @@ static sjme_errorCode sjme_test_checkAnnotation(
 		else if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
 			"expectedException"))
 		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			/* Is this the same one? */
+			if (sjme_charSeq_equalsR(value->value.string->seq,
+				result->exception))
+				matched = SJME_JNI_TRUE;
 		}
 		
 		/* String. */
@@ -388,8 +390,9 @@ static sjme_errorCode sjme_test_checkAnnotation(
 		else if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
 			"expectedVoid"))
 		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			if (result->captured &&
+				result->value.t == SJME_JAVA_TYPE_ID_VOID)
+				matched = SJME_JNI_TRUE;
 		}
 		
 		/* Unknown. */
@@ -402,12 +405,12 @@ static sjme_errorCode sjme_test_checkAnnotation(
 	}
 	
 	/* Were matches found? */
-	if (matches > 0)
+	if (matched > 0)
 	{
 		/* If there are multiple matches, then something is very wrong. */
-		if (matches != 1)
+		if (matched != 1)
 		{
-			sjme_emitB("Test matched %d expected values!", (int)matches);
+			sjme_emitB("Test matched %d expected values!", (int)matched);
 			return SJME_ERROR_NOT_MATCHED;
 		}
 		
@@ -760,6 +763,7 @@ int main(int argc, sjme_lpstr* argv)
 
 	/* Check test result regardless of success. */
 	/* If not captured, then the test fails. */
+	exitCode = -1;
 	if (!result.captured)
 	{
 		sjme_emitB("NO TEST RESULT CAPTURED!");
@@ -768,20 +772,33 @@ int main(int argc, sjme_lpstr* argv)
 		goto fail_notCaptured;
 	}
 	
-	/* Check the result annotation. */ 
+	/* Check the result annotation. */
 	if (sjme_error_is(error = sjme_test_checkAnnotation(
 		annotation, &result)))
+	{
 		if (error != SJME_ERROR_NOT_MATCHED)
 			goto fail_unexpected;
+			
+		/* Failed because of this. */
+		exitCode = SJME_TEST_RESULT_FAIL;
+	}
+	
+	/* This is considered a pass. */
+	else
+		exitCode = SJME_TEST_RESULT_PASS;
 	
 	/* Only destroy the VM if cleaning. */
 	if (!skipClean)
 	{
 		/* Destroy the VM before exit. */
-		exitCode = -1;
 		if (sjme_error_is(error = sjme_nvm_destroy(inState, &exitCode)))
+		{
 			sjme_emitB("DESTROY FAILED! (%d)",
 				(int)error);
+			
+			/* Failed because of this. */
+			exitCode = SJME_TEST_RESULT_FAIL;
+		}
 	}
 	
 	/* Skip deleting these if not cleaning. */
@@ -818,6 +835,9 @@ int main(int argc, sjme_lpstr* argv)
 		/* There must be zero blocks. */
 		if (allocCount != 0)
 		{
+			/* Failed because of this. */
+			exitCode = SJME_TEST_RESULT_FAIL;
+			
 #if defined(SJME_CONFIG_DEBUG)
 			/* Dump memory state. */
 			sjme_alloc_poolDump(runPool, SJME_JNI_TRUE);

@@ -241,6 +241,9 @@ sjme_errorCode sjme_nvm_class_classAnnotation(
 			poolName->utf.utf); 
 	}
 	
+	/* The values are fully valid now. */
+	result->values = values;
+	
 	/* Success! Or the annotation has no values */
 skip_noValues:
 	*outAnnotation = result;
