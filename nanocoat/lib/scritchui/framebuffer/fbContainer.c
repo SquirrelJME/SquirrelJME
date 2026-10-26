@@ -35,7 +35,7 @@ sjme_errorCode sjme_scritchui_fb_containerAdd(
 		wrappedAddComponent == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* Forward call. */
+	/* Forward add. */
 	return wrappedState->apiInThread->containerAdd(wrappedState,
 		wrappedInContainer, wrappedAddComponent);
 }
@@ -64,7 +64,7 @@ sjme_errorCode sjme_scritchui_fb_containerRemove(
 		wrappedRemoveComponent == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* Forward repaint. */
+	/* Forward remove. */
 	return wrappedState->apiInThread->containerRemove(wrappedState,
 		wrappedInContainer,
 		wrappedRemoveComponent);
