@@ -12,11 +12,19 @@
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
+		.elem .int_kind "expectedInteger" -1234567
 	.end .annotation
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+; Load in a value
+	ldc 1234567
+	
+; Negate it
+	ineg
+
+; Give the result
+	invokestatic nano/NanoShelf/result(I)V
 	return
 .end method

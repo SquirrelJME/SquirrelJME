@@ -18,7 +18,10 @@
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
+; Literally do nothing
 	nop
+	
+; This should still be called however
 	invokestatic nano/NanoShelf/result()V
 	return
 .end method

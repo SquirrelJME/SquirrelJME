@@ -12,7 +12,7 @@
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
-		.elem .str_kind "expectedException" "Ljava/lang/ArrayStoreException;"
+		.elem .str_kind "thrown" "Ljava/lang/ArrayStoreException;"
 	.end .annotation
 .end .annotation_attr
 

@@ -12,7 +12,7 @@
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
-		.elem .str_kind "expectedException" "Ljava/lang/NullPointerException;"
+		.elem .str_kind "thrown" "Ljava/lang/NullPointerException;"
 	.end .annotation
 .end .annotation_attr
 

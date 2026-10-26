@@ -12,11 +12,16 @@
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
+		.elem .int_kind "expectedInteger" 0
 	.end .annotation
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+; Grab the constant
+	iconst_0
+	
+; Hopefully it is correct
+	invokestatic nano/NanoShelf/result(I)V
 	return
 .end method

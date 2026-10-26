@@ -12,11 +12,16 @@
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
+		.elem .int_kind "expectedInteger" 237
 	.end .annotation
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+; Put in some random value that is guaranteed to be random
+	sipush 237
+
+; Give the result
+	invokestatic nano/NanoShelf/result(I)V
 	return
 .end method

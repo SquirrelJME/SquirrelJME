@@ -360,17 +360,54 @@ static sjme_errorCode sjme_test_checkAnnotation(
 		
 		/* Java type value. */
 		if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
-				"expectedInteger") ||
-			sjme_charSeq_equalsUtfR(value->fieldName->seq,
-				"expectedLong"))
+			"expectedInteger") &&
+			value->value.java.v.i != INT32_MIN)
 		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			if (result->captured &&
+				result->value.t == SJME_JAVA_TYPE_ID_INTEGER &&
+				0 == memcmp(&value->value.java.v.i,
+					&result->value.v.i,
+					sizeof(result->value.v.i)))
+				matched = SJME_JNI_TRUE;
+		}
+		else if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
+			"expectedLong") &&
+			value->value.java.v.j.full != INT64_MIN)
+		{
+			if (result->captured &&
+				result->value.t == SJME_JAVA_TYPE_ID_LONG &&
+				0 == memcmp(&value->value.java.v.j,
+					&result->value.v.j,
+					sizeof(result->value.v.j)))
+				matched = SJME_JNI_TRUE;
+		}
+		else if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
+			"expectedFloat") &&
+			value->value.java.v.f.bits != INT32_C(2143289344))
+		{
+			if (result->captured &&
+				result->value.t == SJME_JAVA_TYPE_ID_FLOAT &&
+				0 == memcmp(&value->value.java.v.f,
+					&result->value.v.f,
+					sizeof(result->value.v.f)))
+				matched = SJME_JNI_TRUE;
+		}
+		else if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
+			"expectedDouble") &&
+			value->value.java.v.d.longBits != INT64_C(9221120237041090560))
+		{
+			if (result->captured &&
+				result->value.t == SJME_JAVA_TYPE_ID_DOUBLE &&
+				0 == memcmp(&value->value.java.v.d,
+					&result->value.v.d,
+					sizeof(result->value.v.d)))
+				matched = SJME_JNI_TRUE;
 		}
 		
 		/* Exception. */
 		else if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
-			"expectedException"))
+			"thrown") &&
+			value->value.string != NULL)
 		{
 			/* Is this the same one? */
 			if (sjme_charSeq_equalsR(value->value.string->seq,
@@ -380,15 +417,20 @@ static sjme_errorCode sjme_test_checkAnnotation(
 		
 		/* String. */
 		else if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
-				"expectedString"))
+			"expectedString") &&
+			value->value.string != NULL)
 		{
-			sjme_todo("Impl?");
-			return sjme_error_notImplemented(0);
+			/* Is this the same string? */
+			if (result->string != NULL &&
+				sjme_charSeq_equalsR(value->value.string->seq,
+				result->string))
+				matched = SJME_JNI_TRUE;
 		}
 		
 		/* Void, as nothing can directly use void. */
 		else if (sjme_charSeq_equalsUtfR(value->fieldName->seq,
-			"expectedVoid"))
+			"expectedVoid") &&
+			value->value.java.v.i != 0)
 		{
 			if (result->captured &&
 				result->value.t == SJME_JAVA_TYPE_ID_VOID)
@@ -420,92 +462,6 @@ static sjme_errorCode sjme_test_checkAnnotation(
 	
 	/* None found. */
 	return SJME_ERROR_NOT_MATCHED;
-	
-#if 0
-	/* Exception type. */
-	if ((expectedException != NULL || result.exception != NULL) &&
-		!sjme_charSeq_equalsR(expectedException,
-			result.exception))
-	{
-		/* Debug. */
-		sjme_emitB("Failed test: got exception %s, exception %s",
-			sjme_charSeq_tempUtf(result.exception),
-			sjme_charSeq_tempUtf(expectedException));
-		
-		/* Fail. */
-		error = SJME_ERROR_NOT_MATCHED;
-		goto fail_unexpected;
-	}
-	
-	/* 
-	
-	/* Wrong type? */
-	else if (result.value.t != expectedJava.t &&
-		expectedException == NULL)
-	{
-		/* Debug. */
-		sjme_emitB("Failed test: got type %d, expected %d",
-			result.value.t,
-			expectedJava.t);
-		
-		/* Fail. */
-		error = SJME_ERROR_NOT_MATCHED;
-		goto fail_unexpected;
-	}
-	
-	/* String type. */
-	else if (expectedString != NULL && (result.string == NULL ||
-		!sjme_charSeq_equalsR(expectedString,
-			result.string)))
-	{
-		/* Debug. */
-		sjme_emitB("Failed test: got %d:%s, expected %d:%s",
-			result.value.t,
-				sjme_charSeq_tempUtf(result.string),
-			expectedJava.t,
-				sjme_charSeq_tempUtf(expectedString));
-		
-		/* Fail. */
-		error = SJME_ERROR_NOT_MATCHED;
-		goto fail_unexpected;
-	}
-	
-	/* Java Type. */
-	else if (expectedString == NULL && expectedException == NULL &&
-		0 != memcmp(&result.value, &expectedJava,
-			sizeof(expectedJava)))
-	{
-		/* Debug. */
-		sjme_emitB("Failed test: got %d:%08x.%08x, expected %d:%08x.%08x",
-			result.value.t,
-				result.value.v.j.part.hi,
-				result.value.v.j.part.lo,
-			expectedJava.t,
-				expectedJava.v.j.part.hi,
-				expectedJava.v.j.part.lo);
-		
-		/* Fail. */
-		error = SJME_ERROR_NOT_MATCHED;
-		goto fail_unexpected;
-	}
-	
-	/* If all cases failed, this is a pass! */
-	else
-	{
-		/* Debug. */
-		sjme_emitB("PASS: got %d:%08x.%08x, expected %d:%08x.%08x",
-			result.value.t,
-				result.value.v.j.part.hi,
-				result.value.v.j.part.lo,
-			expectedJava.t,
-				expectedJava.v.j.part.hi,
-				expectedJava.v.j.part.lo);
-	}
-	
-		/* Ignore blank field, this indicates an annotation is starting. */
-		if (annotation->fieldName == NULL)
-			continue;
-#endif
 }
 
 /**
