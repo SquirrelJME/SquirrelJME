@@ -373,6 +373,12 @@ typedef enum sjme_nvm_task_commonClassId
 	
 	/** Null class. */
 	SJME_NVM_COMMON_NULL,
+	
+	/** @code java.lang.ArrayStoreException @endcode. */
+	SJME_NVM_COMMA_EXCEPTION_ARRAY_STORE,
+	
+	/** @code java.lang.ArrayIndexOutOfBoundsException @endcode. */
+	SJME_NVM_COMMA_EXCEPTION_ARRAY_IOOB,
 
 	/** @code java.lang.ClassCastException@endcode . */
 	SJME_NVM_COMMON_EXCEPTION_CLASS_CAST,
@@ -883,7 +889,6 @@ sjme_errorCode sjme_nvm_task_frameCommitPush(
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jobject pushObject);
 
-
 /**
  * Emits an exception with the given message.
  * 
@@ -893,12 +898,34 @@ sjme_errorCode sjme_nvm_task_frameCommitPush(
  * @param message The message to use for the message.
  * @param ... Any formatted parameters to the message.
  * @return Any resultant error, if any.
- * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the common class is invalid.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments, except for cause.
  * @since 2026/01/11
  */
 sjme_errorCode sjme_nvm_task_frameEmit(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	...) sjme_attrFormatOuter(3, 4);
+
+/**
+ * Emits an exception with the given message.
+ * 
+ * @param inFrame The frame to emit within.
+ * @param errorCode The error code to emit.
+ * @param cause The cause of this exception, this is optional.
+ * @param message The message to use for the message.
+ * @param ... Any formatted parameters to the message.
+ * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the error does not map to a common
+ * class.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments, except for cause.
+ * @since 2026/10/25
+ */
+sjme_errorCode sjme_nvm_task_frameEmitE(
+	sjme_attrInNotNull sjme_nvm_frame inFrame,
+	sjme_attrInValue sjme_errorCode errorCode,
 	sjme_attrInNullable sjme_jthrowable cause,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
 	...) sjme_attrFormatOuter(3, 4);
@@ -1310,7 +1337,8 @@ sjme_errorCode sjme_nvm_task_taskScheduleYes(
  * @param message The message to use for the message.
  * @param ... Any formatted parameters to the message.
  * @return Any resultant error, if any.
- * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the common class is not a throwable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/09/06
  */
 sjme_errorCode sjme_nvm_task_threadEmit(
@@ -1319,6 +1347,47 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 	sjme_attrInNullable sjme_jthrowable cause,
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
 	...) sjme_attrFormatOuter(3, 4);
+	
+/**
+ * Emits an exception with the given message.
+ * 
+ * @param inThread The thread to emit within.
+ * @param errorCode The error code to emit.
+ * @param cause The cause of this exception, this is optional.
+ * @param message The message to use for the message.
+ * @param ... Any formatted parameters to the message.
+ * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the common class is not a throwable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @since 2025/09/06
+ */
+sjme_errorCode sjme_nvm_task_threadEmitE(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_errorCode errorCode,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	...) sjme_attrFormatOuter(3, 4);
+	
+/**
+ * Emits an exception with the given message.
+ * 
+ * @param inThread The thread to emit within.
+ * @param errorCode The error code to emit.
+ * @param cause The cause of this exception, this is optional.
+ * @param message The message to use for the message.
+ * @param args Any formatted parameters to the message.
+ * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the error does not map to a common
+ * class.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @since 2026/10/25
+ */
+sjme_errorCode sjme_nvm_task_threadEmitEV(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_errorCode errorCode,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	va_list args);
 
 /**
  * Emits an exception with the given message.
@@ -1329,7 +1398,8 @@ sjme_errorCode sjme_nvm_task_threadEmit(
  * @param message The message to use for the message.
  * @param args Any formatted parameters to the message.
  * @return Any resultant error, if any.
- * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the common class is not a throwable.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2026/01/11
  */
 sjme_errorCode sjme_nvm_task_threadEmitV(

@@ -215,7 +215,7 @@ void sjme_genericMessage(sjme_lpcstr file, int line,
 {
 #if !defined(SJME_CONFIG_HAS_NO_STDIO)
 	va_list copy;
-	sjme_cchar fullBuf[DEBUG_BUF];
+	sjme_cchar fullBuf[SJME_DEBUG_BUF_SIZE];
 	sjme_jint hasPrefix, fullBufAt, left;
 	sjme_jboolean handled;
 	const sjme_nal_stdIo* stdErr;
@@ -225,20 +225,20 @@ void sjme_genericMessage(sjme_lpcstr file, int line,
 	hasPrefix = (prefix != NULL && strlen(prefix) > 0);
 	memset(fullBuf, 0, sizeof(fullBuf));
 	if (file != NULL || line > 0 || func != NULL)
-		snprintf(fullBuf, DEBUG_BUF - 1,
+		snprintf(fullBuf, SJME_DEBUG_BUF_SIZE - 1,
 			"%s%s(%s:%d in %s()): ",
 			prefix, (hasPrefix ? " " : ""),
 			sjme_debug_shortenFile(file), line, func);
 	else
-		snprintf(fullBuf, DEBUG_BUF - 1,
+		snprintf(fullBuf, SJME_DEBUG_BUF_SIZE - 1,
 			"%s%s",
 			prefix, (hasPrefix ? " " : ""));
-	fullBuf[DEBUG_BUF - 1] = '\0';
+	fullBuf[SJME_DEBUG_BUF_SIZE - 1] = '\0';
 
 	/* How much was written to the buffer? */
 	/* And how much can we write? */
 	fullBufAt = (sjme_jint)strlen(fullBuf);
-	left = (DEBUG_BUF - 1) - fullBufAt;
+	left = (SJME_DEBUG_BUF_SIZE - 1) - fullBufAt;
 	if (left < 0)
 		left = 0;
 
@@ -256,7 +256,7 @@ void sjme_genericMessage(sjme_lpcstr file, int line,
 			vsnprintf(&fullBuf[fullBufAt], left,
 				format, copy);
 		}
-		fullBuf[DEBUG_BUF - 1] = '\0';
+		fullBuf[SJME_DEBUG_BUF_SIZE - 1] = '\0';
 	}
 
 	/* Cleanup the copy. */
@@ -364,7 +364,7 @@ void sjme_message_hexDump(
 {
 #define SJME_HEX_LINE 12
 	sjme_jint at, sub, i, c;
-	sjme_cchar buf[DEBUG_BUF];
+	sjme_cchar buf[SJME_DEBUG_BUF_SIZE];
 	sjme_lpstr w, end;
 	
 	if (inData == NULL || inLen <= 0)
@@ -376,7 +376,7 @@ void sjme_message_hexDump(
 		/* Clear buffer. */
 		memset(buf, 0, sizeof(buf));
 		w = buf;
-		end = &buf[DEBUG_BUF - 1];
+		end = &buf[SJME_DEBUG_BUF_SIZE - 1];
 		
 		/* Print hex first. */
 		for (sub = at, i = 0; sub < inLen && i < SJME_HEX_LINE; sub++, i++)

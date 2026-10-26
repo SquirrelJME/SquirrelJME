@@ -641,8 +641,11 @@ typedef enum sjme_errorCode
 	/** Main class is not initialized. */
 	SJME_ERROR_CLASS_NOT_INITIALIZED = -197,
 	
+	/** Value cannot be stored in this array. */
+	SJME_ERROR_ARRAY_STORE = -198,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -198,
+	SJME_NUM_ERROR_CODES = -199,
 } sjme_errorCode;
 
 /**
@@ -687,6 +690,18 @@ sjme_errorCode sjme_error_alsoVEnd(void);
  */
 sjme_jboolean sjme_error_is(
 	sjme_errorCode error);
+	
+/**
+ * Checks if this error is one of the given errors.
+ * 
+ * @param error The error to check.
+ * @param ... Is this error one of these? Zero terminates the list.
+ * @return If this error matches any of the given errors.
+ * @since 2026/10/25
+ */
+sjme_jboolean sjme_error_isOneOf(
+	sjme_errorCode error,
+	...);
 
 /**
  * Determines the default error code to use.

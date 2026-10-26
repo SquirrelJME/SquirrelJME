@@ -34,6 +34,32 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Checks that a given array is a valid array of a given type and that
+ * accessing the given elements are within the array bounds. 
+ * 
+ * @param inArray The array to check.
+ * @param requireType The required basic type of the array, if this is not
+ * important this may be @code SJME_NUM_BASIC_TYPE_IDS @endcode
+ * or @code SJME_NUM_JAVA_TYPE_IDS @endcode.
+ * @param requireIndex The index of array to access.
+ * @param requireSpan The number of elements to be accessed, this must always
+ * be at least one.
+ * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index or span of
+ * indexes exceeds the array bounds.
+ * @throws SJME_ERROR_CLASS_CAST If this is not an array, or it is of the
+ * wrong type.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the required type is not valid.
+ * @throws SJME_ERROR_NULL_STACK_POINTER If the array is null.
+ * @since 2026/10/25
+ */
+sjme_errorCode sjme_nvm_instance_arrayCheck(
+	sjme_attrInNotNull sjme_jarray inArray,
+	sjme_attrInValue sjme_basicTypeId requireType,
+	sjme_attrInPositive sjme_jint requireIndex,
+	sjme_attrInPositiveNonZero sjme_jint requireSpan);
+	
+/**
  * Copies values from the source array to the destination array.
  * 
  * @param srcArray The source array.
@@ -61,12 +87,16 @@ sjme_errorCode sjme_nvm_instance_arrayCopyJ(
  * Obtains a single array value.
  * 
  * @param inArray The array to get a value from.
+ * @param requireType The required basic type of the array, if this is not
+ * important this may be @code SJME_NUM_BASIC_TYPE_IDS @endcode
+ * or @code SJME_NUM_JAVA_TYPE_IDS @endcode.
  * @param index The index within the array.
  * @param outValue The resultant value.
  * @return On any resultant error, if any.
  * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
  * array bounds.
  * @throws SJME_ERROR_CLASS_CAST If this is not an array.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the required type is not valid.
  * @throws SJME_ERROR_NULL_ARGUMENTS If the output value is null.
  * @throws SJME_ERROR_NULL_STACK_POINTER If the array
  * is @code NULL @endcode.
@@ -74,6 +104,7 @@ sjme_errorCode sjme_nvm_instance_arrayCopyJ(
  */
 sjme_errorCode sjme_nvm_instance_arrayGet(
 	sjme_attrInNotNull sjme_jarray inArray,
+	sjme_attrInValue sjme_basicTypeId requireType,
 	sjme_attrInPositive sjme_jint index,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue);
 	
@@ -103,6 +134,9 @@ sjme_errorCode sjme_nvm_instance_arrayGetString(
  * Writes a single array value.
  * 
  * @param inArray The array to modify.
+ * @param requireType The required basic type of the array, if this is not
+ * important this may be @code SJME_NUM_BASIC_TYPE_IDS @endcode
+ * or @code SJME_NUM_JAVA_TYPE_IDS @endcode.
  * @param index The index within the array.
  * @param commit The garbage collection commit to use, this is optional.
  * @param inValue The input value.
@@ -110,6 +144,7 @@ sjme_errorCode sjme_nvm_instance_arrayGetString(
  * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index exceeds the
  * array bounds.
  * @throws SJME_ERROR_CLASS_CAST If this is not an array.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the required type is not valid.
  * @throws SJME_ERROR_NULL_ARGUMENTS If the input value is null.
  * @throws SJME_ERROR_NULL_STACK_POINTER If the array
  * is @code NULL @endcode.
@@ -119,6 +154,7 @@ sjme_errorCode sjme_nvm_instance_arrayGetString(
  */
 sjme_errorCode sjme_nvm_instance_arraySet(
 	sjme_attrInNotNull sjme_jarray inArray,
+	sjme_attrInValue sjme_basicTypeId requireType,
 	sjme_attrInPositive sjme_jint index,
 	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrOutNotNull sjme_jvalueTyped* inValue);

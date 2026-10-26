@@ -70,6 +70,89 @@ sjme_errorCode sjme_nvm_task_threadEmit(
 	return error;
 }
 
+sjme_errorCode sjme_nvm_task_threadEmitE(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_errorCode errorCode,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	...)
+{
+	sjme_errorCode error;
+	va_list args;
+	
+	if (inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Start arguments. */
+	va_start(args, message);
+	
+	/* Forward. */
+	error = sjme_nvm_task_threadEmitEV(inThread, errorCode, cause,
+		message, args);
+	
+	/* End. */
+	va_end(args);
+	
+	/* Return the result of the forward. */
+	return error;
+}
+
+sjme_errorCode sjme_nvm_task_threadEmitEV(
+	sjme_attrInNotNull sjme_nvm_thread inThread,
+	sjme_attrInValue sjme_errorCode errorCode,
+	sjme_attrInNullable sjme_jthrowable cause,
+	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
+	va_list args)
+{
+	sjme_errorCode error;
+	sjme_nvm_task_commonClassId mapped;
+	va_list argsCopy;
+	
+	if (inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Map this error to a common class. */
+	mapped = SJME_NVM_TASK_NUM_COMMON_CLASS;
+	switch (errorCode)
+	{
+		case SJME_ERROR_ARRAY_STORE:
+			mapped = SJME_NVM_COMMA_EXCEPTION_ARRAY_STORE;
+			break;
+		
+		case SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS:
+			mapped = SJME_NVM_COMMA_EXCEPTION_ARRAY_IOOB;
+			break;
+		
+		case SJME_ERROR_CLASS_CAST:
+			mapped = SJME_NVM_COMMON_EXCEPTION_CLASS_CAST;
+			break;
+		
+		case SJME_ERROR_NULL_STACK_POINTER:
+			mapped = SJME_NVM_COMMON_EXCEPTION_NULL_POINTER;
+			break;
+			
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
+	
+	/* Was not mapped still? */
+	if (mapped == SJME_NVM_TASK_NUM_COMMON_CLASS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Start arguments. */
+	va_copy(argsCopy, args);
+	
+	/* Forward. */
+	error = sjme_nvm_task_threadEmitV(inThread, mapped, cause,
+		message, argsCopy);
+	
+	/* End. */
+	va_end(argsCopy);
+	
+	/* Return the result of the forward. */
+	return error;
+}
+
 sjme_errorCode sjme_nvm_task_threadEmitV(
 	sjme_attrInNotNull sjme_nvm_thread inThread,
 	sjme_attrInValue sjme_nvm_task_commonClassId commonClass,
@@ -77,25 +160,37 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 	sjme_attrInNullable sjme_attrFormatArg sjme_lpcstr message,
 	sjme_attrInValue va_list args)
 {
-#define BUF_SIZE 256
 	sjme_errorCode error;
 	sjme_jclass tossClass, throwableClass;
 	sjme_jthrowable toss, oldTossed;
 	sjme_jfieldID initCauseID, causeID;
 	sjme_nvm_value* accessor;
 	sjme_jvalueTyped argV[1];
-	sjme_cchar buf[BUF_SIZE];
+	sjme_cchar buf[SJME_DEBUG_BUF_SIZE];
 	va_list copy;
 
 	/* TODO FIXME: Optimize/shrink for SDCC. */
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* This common class is not a throwable? */
+	switch (commonClass)
+	{
+		case SJME_NVM_COMMON_EXCEPTION_CLASS_CAST:
+		case SJME_NVM_COMMON_EXCEPTION_NULL_POINTER:
+		case SJME_NVM_COMMON_EXCEPTION_LINKAGE_ERROR:
+			break;
+			
+		default:
+			return SJME_ERROR_INVALID_ARGUMENT;
+	}
 
 	/* Locate the class to toss. */
 	tossClass = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_commonClass(inThread,
-		commonClass, &tossClass, SJME_JNI_TRUE)) || tossClass == NULL)
+		commonClass, &tossClass, SJME_JNI_TRUE)) ||
+		tossClass == NULL)
 		return sjme_error_default(error);
 
 	/* Allocate new instance of object. */
@@ -144,8 +239,8 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 	va_copy(copy, args);
 
 	memset(buf, 0, sizeof(buf));
-	vsnprintf(buf, BUF_SIZE - 1, message, copy);
-	buf[BUF_SIZE - 1] = '\0';
+	vsnprintf(buf, SJME_DEBUG_BUF_SIZE - 1, message, copy);
+	buf[SJME_DEBUG_BUF_SIZE - 1] = '\0';
 	
 	va_end(copy);
 
@@ -211,7 +306,6 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
-#undef BUF_SIZE
 }
 
 sjme_errorCode sjme_nvm_task_threadEnter(

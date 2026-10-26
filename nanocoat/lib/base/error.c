@@ -64,6 +64,45 @@ sjme_jboolean sjme_error_is(
 	return error < SJME_ERROR_NONE;
 }
 
+sjme_jboolean sjme_error_isOneOf(
+	sjme_errorCode error,
+	...)
+{
+	sjme_errorCode check;
+	va_list args;
+	sjme_jboolean matched;
+	
+	/* Any error above zero is not valid for this. */
+	if (error >= 0)
+		return SJME_JNI_FALSE;
+	
+	/* Start. */
+	va_start(args, error);
+	
+	/* Check accordingly. */
+	matched = SJME_JNI_FALSE;
+	for (;;)
+	{
+		/* Stop checking errors? */
+		check = va_arg(args, sjme_errorCode);
+		if (check >= 0)
+			break;
+		
+		/* This is the error? */
+		if (check == error)
+		{
+			matched = SJME_JNI_TRUE;
+			break;
+		}
+	}
+	
+	/* End. */
+	va_end(args);
+	
+	/* Only if it was matched. */
+	return matched;
+}
+
 sjme_errorCode sjme_error_default(
 	sjme_errorCode error)
 {

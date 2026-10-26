@@ -16,6 +16,7 @@
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/access.h"
+#include "sjme/nvm/instanceInspect.h"
 
 #define SJME_NVM_NUM_XARRAY 8
 
@@ -479,18 +480,6 @@ static sjme_errorCode sjme_nvm_byteCode_slowNewArrayMultiSub(
 	result->t = SJME_JAVA_TYPE_ID_OBJECT;
 	result->v.l = SJME_AS_JOBJECT(baseArray);
 	return SJME_ERROR_NONE;
-}
-
-static sjme_jboolean sjme_nvm_checkArray(sjme_jclass componentType,
-	sjme_basicTypeId arrayType)
-{
-	/* Boolean and byte are considered the same. */
-	if (arrayType == SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE)
-		if (componentType->arrayTypeId == SJME_BASIC_TYPE_ID_BOOLEAN ||
-			componentType->arrayTypeId == SJME_BASIC_TYPE_ID_BYTE)
-			return SJME_JNI_TRUE;
-
-	return componentType->arrayTypeId == arrayType;
 }
 
 #pragma region(ArrayLength)
@@ -1685,64 +1674,55 @@ SJME_NVM_BYTECODE_SLOW(XALoad)
 	sjme_jvalueTyped arrayValue;
 	sjme_jvalueTyped indexValue;
 	sjme_jvalueTyped pushValue;
-	sjme_jarray array;
-	sjme_jint index;
 	sjme_basicTypeId arrayType;
-	sjme_jclass componentType;
 	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Reset the commit. */
+	memset(&commit, 0, sizeof(commit));
+	
+	/* Which array type must this be? */
+	arrayType = sjme_nvm_byteCode_xArrayType[
+		abs(id - 46) % SJME_NVM_NUM_XARRAY];
 
 	/* Read in index and array. */
-	memset(&commit, 0, sizeof(commit));
 	memset(&indexValue, 0, sizeof(indexValue));
+	memset(&arrayValue, 0, sizeof(arrayValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		SJME_JAVA_TYPE_ID_INTEGER, &commit, &indexValue)))
 		return sjme_error_vmError(inFrame, error);
-	memset(&arrayValue, 0, sizeof(arrayValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		SJME_JAVA_TYPE_ID_OBJECT, &commit, &arrayValue)))
 		return sjme_error_vmError(inFrame, error);
 
-	/* Must not be null. */
-	array = SJME_AS_JARRAY(arrayValue.v.l);
-	if (array == NULL)
-	{
-		/* Emit exception. */
-		if (sjme_error_is(error = sjme_nvm_task_frameEmit(inFrame,
-			SJME_NVM_COMMON_EXCEPTION_NULL_POINTER, NULL,
-			"NULL")))
-			return sjme_error_vmError(inFrame, error);
-		
-		/* Leave early. */
-		goto skip_tossed;
-	}
-
-	/* Make sure the array is actually valid. */
-	arrayType = sjme_nvm_byteCode_xArrayType[
-		abs(id - 46) % SJME_NVM_NUM_XARRAY];
-	componentType = sjme_atomic_g(sjme_jclass, 
-		&sjme_atomic_g(sjme_jclass,
-			&array->object.isClass)->componentType);
-	if (array == NULL || componentType == NULL ||
-		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		!sjme_atomic_g(sjme_jclass,
-			&array->object.isClass)->info->isArray ||
-		!sjme_nvm_checkArray(componentType, arrayType) ||
-		componentType == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
-	
-	/* Check bounds. */
-	index = indexValue.v.i;
-	if (index < 0 || index >= array->e.length)
-		return sjme_error_vmError(inFrame,
-			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
-
-	/* Load value to be pushed. */
+	/* Read from the array. */
 	memset(&pushValue, 0, sizeof(pushValue));
-	if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
-		&array->e, index, SJME_VLG_JVALUE_TYPED_P(&pushValue))))
-		return sjme_error_vmError(inFrame, error);
-
+	if (sjme_error_is(error = sjme_nvm_instance_arrayGet(
+		SJME_AS_JARRAY(arrayValue.v.l),
+		arrayType, indexValue.v.i, &pushValue)))
+	{
+		/* Is this an applicable error? */
+		if (sjme_error_isOneOf(error,
+			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS,
+			SJME_ERROR_NULL_STACK_POINTER,
+			0))
+		{
+			/* Emit exception. */
+			if (sjme_error_is(error = sjme_nvm_task_frameEmitE(inFrame,
+				error, NULL, "%s %" PRId32 "",
+				(SJME_AS_JARRAY(arrayValue.v.l) == NULL ?
+					"null" : "not-null"),
+				indexValue.v.i)))
+				return sjme_error_vmError(inFrame, error);
+		
+			/* Leave early. */
+			goto skip_tossed;
+		}
+		
+		/* This is not good. */
+		return sjme_error_default(error);
+	}
+	
 	/* Push. */
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(
 		inFrame, &commit, &pushValue)))
@@ -1764,11 +1744,8 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	sjme_jvalueTyped popValue;
 	sjme_jvalueTyped arrayValue;
 	sjme_jvalueTyped indexValue;
-	sjme_jarray array;
-	sjme_jint index;
 	sjme_basicTypeId arrayType;
 	sjme_javaTypeId promoteType;
-	sjme_jclass componentType;
 	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
 
@@ -1776,12 +1753,14 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	arrayType = sjme_nvm_byteCode_xArrayType[
 		abs(id - 79) % SJME_NVM_NUM_XARRAY];
 	promoteType = sjme_nvm_typePromote[arrayType];
+	
+	/* Clear the commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Read in value, index, and array. */
 	memset(&popValue, 0, sizeof(popValue));
 	memset(&indexValue, 0, sizeof(indexValue));
 	memset(&arrayValue, 0, sizeof(arrayValue));
-	memset(&commit, 0, sizeof(commit));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		promoteType, &commit, &popValue)))
 		return sjme_error_vmError(inFrame, error);
@@ -1791,34 +1770,36 @@ SJME_NVM_BYTECODE_SLOW(XAStore)
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		SJME_JAVA_TYPE_ID_OBJECT, &commit, &arrayValue)))
 		return sjme_error_vmError(inFrame, error);
-
-	/* Must not be null. */
-	array = SJME_AS_JARRAY(arrayValue.v.l);
-	if (array == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
-
-	/* Make sure the array is actually valid. */
-	componentType = sjme_atomic_g(sjme_jclass, 
-		&SJME_AO_C(array)->componentType);
-	if (!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		!SJME_AO_C(array)->info->isArray ||
-		componentType == NULL ||
-		!sjme_nvm_checkArray(componentType, arrayType) ||
-		popValue.t != componentType->typeId)
-		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
-
-	/* Check bounds. */
-	index = indexValue.v.i;
-	if (index < 0 || index >= array->e.length)
-		return sjme_error_vmError(inFrame,
-			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS);
-
-	/* Store value into the array. */
-	if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
-		&array->e, index, &commit,
-		SJME_VLS_JVALUE_TYPED_P(&popValue))))
-		return sjme_error_vmError(inFrame, error);
-
+	
+	/* Write to the array. */
+	if (sjme_error_is(error = sjme_nvm_instance_arraySet(
+		SJME_AS_JARRAY(arrayValue.v.l),
+		arrayType, indexValue.v.i, &commit, &popValue)))
+	{
+		/* Is this an applicable error? */
+		if (sjme_error_isOneOf(error,
+			SJME_ERROR_ARRAY_STORE,
+			SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS,
+			SJME_ERROR_NULL_STACK_POINTER,
+			0))
+		{
+			/* Emit exception. */
+			if (sjme_error_is(error = sjme_nvm_task_frameEmitE(inFrame,
+				error, NULL, "%s %" PRId32 "",
+				(SJME_AS_JARRAY(arrayValue.v.l) == NULL ?
+					"null" : "not-null"),
+				indexValue.v.i)))
+				return sjme_error_vmError(inFrame, error);
+		
+			/* Leave early. */
+			goto skip_tossed;
+		}
+		
+		/* This is not good. */
+		return sjme_error_default(error);
+	}
+	
+skip_tossed:
 	/* Commit GC. */
 	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);

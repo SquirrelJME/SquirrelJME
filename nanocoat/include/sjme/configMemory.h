@@ -41,10 +41,10 @@ extern "C"
 
 #if defined(SJME_CONFIG_HAS_LOW_MEMORY)
 	/** Debug buffer size for messages. */
-	#define DEBUG_BUF 64
+	#define SJME_DEBUG_BUF_SIZE 64
 #else
 	/** Debug buffer size for messages. */
-	#define DEBUG_BUF 512
+	#define SJME_DEBUG_BUF_SIZE 512
 #endif
 
 /* Note that SDCC runs on microcontrollers and is not that likely to use */

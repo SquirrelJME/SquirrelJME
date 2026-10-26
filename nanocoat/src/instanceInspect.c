@@ -11,6 +11,80 @@
 #include "sjme/nvm/instanceInspect.h"
 #include "sjme/nvm/cleanup.h"
 
+static sjme_jboolean sjme_nvm_instance_arrayCheckAlias(
+	sjme_attrInNotNull sjme_jclass componentType,
+	sjme_attrInValue sjme_basicTypeId arrayType)
+{
+	if (componentType == NULL)
+		return SJME_JNI_FALSE;
+	
+	/* Boolean and byte are considered the same. */
+	if (arrayType == SJME_JAVA_TYPE_ID_BOOLEAN_OR_BYTE)
+		if (componentType->arrayTypeId == SJME_BASIC_TYPE_ID_BOOLEAN ||
+			componentType->arrayTypeId == SJME_BASIC_TYPE_ID_BYTE)
+			return SJME_JNI_TRUE;
+
+	return componentType->arrayTypeId == arrayType;
+}
+
+sjme_errorCode sjme_nvm_instance_arrayCheck(
+	sjme_attrInNotNull sjme_jarray inArray,
+	sjme_attrInValue sjme_basicTypeId requireType,
+	sjme_attrInPositive sjme_jint requireIndex,
+	sjme_attrInPositiveNonZero sjme_jint requireSpan)
+{
+	sjme_jclass isClass, componentType;
+	
+	/* Requested type is not valid? */
+	if (requireType < 0 ||
+		requireType == SJME_STACK_TYPE_NARROW ||
+		requireType == SJME_STACK_TYPE_WIDE ||
+		requireType > SJME_NUM_BASIC_TYPE_IDS)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (inArray == NULL)
+		return SJME_ERROR_NULL_STACK_POINTER;
+	
+	/* Index overflow/underflow? */
+	if (requireIndex < 0 || requireSpan <= 0 ||
+		(requireIndex + requireSpan) < 0)
+		return SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS;
+	
+	/* Is this even an array structure? */
+	if (!sjme_nvm_isAR(inArray, SJME_NVM_STRUCT_ARRAY_INSTANCE))
+		return SJME_ERROR_CLASS_CAST;
+	
+	/* The type information says that this is not an array? */
+	isClass = sjme_atomic_g(sjme_jclass, &inArray->object.isClass);
+	if (isClass == NULL || isClass->info == NULL ||
+		!isClass->info->isArray)
+		return SJME_ERROR_CLASS_CAST;
+	
+	/* Is the component type wrong? */
+	if (requireType == SJME_NUM_BASIC_TYPE_IDS ||
+		requireType == SJME_NUM_JAVA_TYPE_IDS)
+	{
+		/* Get the component type. */
+		componentType = sjme_atomic_g(sjme_jclass,
+			&isClass->componentType);
+		if (componentType == NULL)
+			return SJME_ERROR_CLASS_CAST;
+		
+		/* The component type is incorrect? */
+		if (!sjme_nvm_instance_arrayCheckAlias(componentType,
+			requireType))
+			return SJME_ERROR_CLASS_CAST;
+	}
+	
+	/* Actual index is out of bounds. */
+	if (requireIndex >= inArray->e.length ||
+		(requireIndex + requireSpan) > inArray->e.length)
+		return SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS;
+	
+	/* Array access is entirely valid. */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_instance_arrayCopyJ(
 	sjme_attrInNotNull sjme_jarray srcArray,
 	sjme_attrInPositive sjme_jint srcOff,
@@ -33,23 +107,27 @@ sjme_errorCode sjme_nvm_instance_arrayCopyJ(
 
 sjme_errorCode sjme_nvm_instance_arrayGet(
 	sjme_attrInNotNull sjme_jarray inArray,
+	sjme_attrInValue sjme_basicTypeId requireType,
 	sjme_attrInPositive sjme_jint index,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue)
 {
-	if (inArray == NULL)
-		return SJME_ERROR_NULL_STACK_POINTER;
+	sjme_errorCode error;
+	sjme_jvalueTyped result;
 	
-	if (outValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
+	/* Check for valid access. */
+	if (sjme_error_is(error = sjme_nvm_instance_arrayCheck(inArray,
+		requireType, index, 1)))
+		return sjme_error_default(error);
 	
-	if (!sjme_nvm_isAR(inArray, SJME_NVM_STRUCT_ARRAY_INSTANCE))
-		return SJME_ERROR_CLASS_CAST;
+	/* Read in the value. */
+	memset(&result, 0, sizeof(result));
+	if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
+		&inArray->e, index, SJME_VLG_JVALUE_TYPED_P(&result))))
+		return sjme_error_default(error);
 	
-	if (index < 0 || index >= inArray->e.length)
-		return SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS;
-	
-	sjme_todo("Impl");
-	return sjme_error_notImplemented(0);
+	/* Return it. */
+	memmove(outValue, &result, sizeof(*outValue));
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_instance_arrayGetString(
@@ -76,22 +154,24 @@ sjme_errorCode sjme_nvm_instance_arrayGetString(
 
 sjme_errorCode sjme_nvm_instance_arraySet(
 	sjme_attrInNotNull sjme_jarray inArray,
+	sjme_attrInValue sjme_basicTypeId requireType,
 	sjme_attrInPositive sjme_jint index,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrOutNotNull sjme_jvalueTyped* inValue)
 {
-	if (inArray == NULL)
-		return SJME_ERROR_NULL_STACK_POINTER;
+	sjme_errorCode error;
 	
-	if (inValue == NULL)
-		return SJME_ERROR_NULL_ARGUMENTS;
+	/* Check for valid access. */
+	if (sjme_error_is(error = sjme_nvm_instance_arrayCheck(inArray,
+		requireType, index, 1)))
+		return sjme_error_default(error);
 	
-	if (!sjme_nvm_isAR(inArray, SJME_NVM_STRUCT_ARRAY_INSTANCE))
-		return SJME_ERROR_CLASS_CAST;
+	/* Store the actual value. */
+	if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+		&inArray->e, index, commit,
+		SJME_VLS_JVALUE_TYPED_P(inValue))))
+		return sjme_error_default(error);
 	
-	if (index < 0 || index >= inArray->e.length)
-		return SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS;
-	
-	sjme_todo("Impl");
-	return sjme_error_notImplemented(0);
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

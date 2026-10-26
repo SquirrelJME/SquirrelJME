@@ -237,6 +237,14 @@ sjme_errorCode sjme_nvm_task_commonClass(
 			commonName = "Ljava/lang/Class;";
 			break;
 
+		case SJME_NVM_COMMA_EXCEPTION_ARRAY_STORE:
+			commonName = "Ljava/lang/ArrayStoreException;";
+			break;
+
+		case SJME_NVM_COMMA_EXCEPTION_ARRAY_IOOB:
+			commonName = "Ljava/lang/ArrayIndexOutOfBoundsException;";
+			break;
+
 		case SJME_NVM_COMMON_EXCEPTION_CLASS_CAST:
 			commonName = "Ljava/lang/ClassCastException;";
 			break;
