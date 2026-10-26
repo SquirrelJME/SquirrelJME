@@ -24,7 +24,7 @@
 
 /** Determines the function to use based on the opcode. */
 #define SJME_NVM_BYTECODE_MATH_TO_FUNC(x) \
-	((sjme_nvm_byteCode_mathFunc)(((x) - 96) >> 2))
+	((sjme_nvm_byteCode_mathFunc)((((x) & 0xFF) - 96) >> 2))
 
 /** Double NaN mask. */
 #define SJME_NVM_NAN_DOUBLE INT64_C(0x7FF8000000000000)
@@ -439,9 +439,11 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 	sjme_jvalueTyped a, b, result;
 	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Clear the commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Read in both values. */
-	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
@@ -452,6 +454,7 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Perform the math. */
+	memset(&result, 0, sizeof(result));
 	switch (SJME_NVM_BYTECODE_BINARY_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_SHL:
@@ -505,9 +508,11 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 	sjme_jvalueTyped a, b, result;
 	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Clear the commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Read in both values. */
-	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
@@ -518,6 +523,7 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Perform the math. */
+	memset(&result, 0, sizeof(result));
 	switch (SJME_NVM_BYTECODE_BINARY_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_SHL:
@@ -573,9 +579,11 @@ SJME_NVM_BYTECODE_SLOW(MathDouble)
 	sjme_jvalueTyped a, b, result;
 	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Clear the commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Read in both values. */
-	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
@@ -586,6 +594,7 @@ SJME_NVM_BYTECODE_SLOW(MathDouble)
 		return sjme_error_vmError(inFrame, error);
 
 #if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	memset(&result, 0, sizeof(result));
 	switch (SJME_NVM_BYTECODE_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_ADD:
@@ -637,9 +646,11 @@ SJME_NVM_BYTECODE_SLOW(MathFloat)
 	sjme_jvalueTyped a, b, result;
 	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Clear the commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Read in both values. */
-	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
@@ -650,6 +661,7 @@ SJME_NVM_BYTECODE_SLOW(MathFloat)
 		return sjme_error_vmError(inFrame, error);
 
 #if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	memset(&result, 0, sizeof(result));
 	switch (SJME_NVM_BYTECODE_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_ADD:
@@ -701,9 +713,11 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 	sjme_jvalueTyped a, b, result;
 	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Clear the commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Read in both values. */
-	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
@@ -714,6 +728,7 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Perform the math. */
+	memset(&result, 0, sizeof(result));
 	switch (SJME_NVM_BYTECODE_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_ADD:
@@ -761,9 +776,11 @@ SJME_NVM_BYTECODE_SLOW(MathLong)
 	sjme_jvalueTyped a, b, result;
 	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Clear the commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Read in both values. */
-	memset(&commit, 0, sizeof(commit));
 	memset(&b, 0, sizeof(b));
 	memset(&a, 0, sizeof(a));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
@@ -774,6 +791,7 @@ SJME_NVM_BYTECODE_SLOW(MathLong)
 		return sjme_error_vmError(inFrame, error);
 
 	/* Perform the math. */
+	memset(&result, 0, sizeof(result));
 	switch (SJME_NVM_BYTECODE_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_ADD:

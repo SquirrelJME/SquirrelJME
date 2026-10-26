@@ -1006,25 +1006,39 @@ public final class StringBuilder
 	{
 		// Get buffer properties
 		char[] buffer = this._buffer;
-		int limit = buffer.length;
 		int at = this._at;
+		
+		// The limit of the buffer is its length
+		int limit = 0;
+		if (buffer != null)
+			limit = buffer.length;
 		
 		// Need to resize the buffer to fit this?
 		int nextAt = at + __l;
-		if (nextAt > limit)
+		if (buffer == null || nextAt > limit)
 		{
-			int newCapacity = nextAt + StringBuilder._DEFAULT_CAPACITY;
+			// Setup copy with the new capacity
+			int newCapacity = Math.max(StringBuilder._DEFAULT_CAPACITY,
+				nextAt + StringBuilder._DEFAULT_CAPACITY);
+			char[] replacement = new char[newCapacity];
 			
-			// Copy characters over
-			char[] extra = Arrays.copyOf(buffer, newCapacity);
+			// Grab all the characters from the old buffer
+			if (buffer != null)
+			{
+				// Copy over
+				ObjectShelf.arrayCopy(buffer, 0,
+					replacement, 0, limit);
+				
+				// Erase the old buffer (security?)
+				ObjectShelf.arrayFill(buffer, 0, buffer.length, '\0');
+			}
 			
-			// Erase the old buffer (security?)
-			ObjectShelf.arrayFill(buffer, 0, buffer.length, '\0');
-			
-			// Store the new buffer
-			this._buffer = (buffer = extra);
+			// From now on only use the replacement buffer
+			this._buffer = replacement;
+			return replacement;
 		}
 		
+		// Use the old buffer
 		return buffer;
 	}
 }

@@ -182,19 +182,19 @@ typedef enum sjme_nvm_byteCode_mathFunc
 	sjme_enumInt(sjme_nvm_byteCode_mathFunc),
 	
 	/** Add. */
-	SJME_NVM_BYTECODE_MATH_ADD,
+	SJME_NVM_BYTECODE_MATH_ADD = 0,
 
 	/** Subtract. */
-	SJME_NVM_BYTECODE_MATH_SUB,
+	SJME_NVM_BYTECODE_MATH_SUB = 1,
 
 	/** Multiply. */
-	SJME_NVM_BYTECODE_MATH_MUL,
+	SJME_NVM_BYTECODE_MATH_MUL = 2,
 
 	/** Divide. */
-	SJME_NVM_BYTECODE_MATH_DIV,
+	SJME_NVM_BYTECODE_MATH_DIV = 3,
 
 	/** Remainder. */
-	SJME_NVM_BYTECODE_MATH_REM,
+	SJME_NVM_BYTECODE_MATH_REM = 4,
 
 	/** The number of math functions. */
 	SJME_NVM_BYTECODE_NUM_MATH_FUNC,

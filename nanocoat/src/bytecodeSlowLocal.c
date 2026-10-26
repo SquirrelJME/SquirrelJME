@@ -92,6 +92,9 @@ SJME_NVM_BYTECODE_SLOW(XLoad)
 	sjme_javaTypeId type;
 	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Clear the commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Depends on the wideness. */
 	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
@@ -106,11 +109,12 @@ SJME_NVM_BYTECODE_SLOW(XLoad)
 		pcNew->adjust = 2;
 		index = relRawCode[1] & 0xFF;
 	}
-
-	/* Push copy of the local to the stack. */
+	
+	/* Which type is being copied? */
 	type = sjme_nvm_byteCode_xLoadType[
 		abs(id - 21) % SJME_NUM_JAVA_TYPE_IDS];
-	memset(&commit, 0, sizeof(commit));
+
+	/* Push copy of the local to the stack. */
 	if (sjme_error_is(error = sjme_nvm_task_frameLocalPush(
 		inFrame, &commit, type, index)))
 		return sjme_error_vmError(inFrame, error);
@@ -158,6 +162,9 @@ SJME_NVM_BYTECODE_SLOW(XStore)
 	sjme_javaTypeId type;
 	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Clear the commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Depends on the wideness. */
 	pcNew->type = SJME_NVM_BYTECODE_PC_RELATIVE;
@@ -172,12 +179,13 @@ SJME_NVM_BYTECODE_SLOW(XStore)
 		pcNew->adjust = 2;
 		index = relRawCode[1] & 0xFF;
 	}
+	
+	/* Which type is being moved? */
+	type = sjme_nvm_byteCode_xLoadType[
+		abs(id - 54) % SJME_NUM_JAVA_TYPE_IDS];
 
 	/* Pop object from the stack. */
 	memset(&popped, 0, sizeof(popped));
-	memset(&commit, 0, sizeof(commit));
-	type = sjme_nvm_byteCode_xLoadType[
-		abs(id - 54) % SJME_NUM_JAVA_TYPE_IDS];
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		type, &commit, &popped)))
 		return sjme_error_vmError(inFrame, error);

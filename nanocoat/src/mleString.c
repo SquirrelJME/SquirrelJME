@@ -9,6 +9,7 @@
 
 #include "sjme/config.h"
 #include "sjme/nvm/cleanup.h"
+#include "sjme/nvm/instanceInspect.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
@@ -202,7 +203,8 @@ SJME_NVM_MLE_FUNCTION_DECL(stringLength)
 
 	/* Obtain the string length. */
 	result = -1;
-	if (sjme_error_is(error = sjme_charSeq_length(seq, &result)) || result < 0)
+	if (sjme_error_is(error = sjme_charSeq_length(seq, &result)) ||
+		result < 0)
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 	
 	/* This is a simple value copy operation. */
@@ -213,11 +215,12 @@ SJME_NVM_MLE_FUNCTION_DECL(stringLength)
 
 SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 {
+	sjme_errorCode error;
 	sjme_jstring source;
 	sjme_jint sourceOff;
 	sjme_jarray dest;
 	sjme_jint destOff;
-	sjme_jint len;
+	sjme_jint len, seqLen;
 	sjme_jint i, s, d;
 	sjme_charSeq seq;
 
@@ -228,23 +231,32 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 	destOff = argV[3].v.i;
 	len = argV[4].v.i;
 
-	/* Check types. */
-	if (source == NULL || dest == NULL ||
-		!sjme_nvm_isAR(source, SJME_NVM_STRUCT_STRING_INSTANCE) ||
-		!sjme_nvm_isAR(dest, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		dest->e.type != SJME_BASIC_TYPE_ID_CHARACTER)
+	/* The source must be a string. */
+	if (source == NULL ||
+		!sjme_nvm_isAR(source, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
+	
+	/* The destination array must be a char array and be in bounds. */
+	if (sjme_error_is(error = sjme_nvm_instance_arrayCheckI(dest, 
+		SJME_BASIC_TYPE_ID_CHARACTER, destOff, len)))
+		return sjme_error_mleCall(inFrame, error);
 
 	/* Has the sequence ever been initialized? */
 	seq = sjme_atomic_g(sjme_charSeq, &source->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
+	
+	/* The sequence length needs to be calculated possibly. */
+	seqLen = -1;
+	if (sjme_error_is(error = sjme_charSeq_length(seq, &seqLen)) ||
+		seqLen < 0)
+		return sjme_error_mleCall(inFrame, error);
 
 	/* Check bounds. */
-	if (sourceOff < 0 || destOff < 0 || len < 0 ||
+	if (sourceOff < 0 || destOff < 0 || len < 0 || seqLen < 0 ||
 		(sourceOff + len) < 0 ||
 		(destOff + len) < 0 ||
-		(sourceOff + len) > seq->length ||
+		(sourceOff + len) > seqLen ||
 		(destOff + len) > dest->e.length)
 		return SJME_ERROR_MLE_CALL;
 	

@@ -34,6 +34,24 @@ extern "C"
 /*--------------------------------------------------------------------------*/
 
 /**
+ * Checks that a given array is a valid array of a given type. 
+ * 
+ * @param inArray The array to check.
+ * @param requireType The required basic type of the array, if this is not
+ * important this may be @code SJME_NUM_BASIC_TYPE_IDS @endcode
+ * or @code SJME_NUM_JAVA_TYPE_IDS @endcode.
+ * @return Any resultant error, if any.
+ * @throws SJME_ERROR_ARRAY_STORE If this array is of the incorrect type.
+ * @throws SJME_ERROR_CLASS_CAST If this is not an array.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the required type is not valid.
+ * @throws SJME_ERROR_NULL_STACK_POINTER If the array is null.
+ * @since 2026/10/25
+ */
+sjme_errorCode sjme_nvm_instance_arrayCheck(
+	sjme_attrInNotNull sjme_jarray inArray,
+	sjme_attrInValue sjme_basicTypeId requireType);
+	
+/**
  * Checks that a given array is a valid array of a given type and that
  * accessing the given elements are within the array bounds. 
  * 
@@ -53,7 +71,7 @@ extern "C"
  * @throws SJME_ERROR_NULL_STACK_POINTER If the array is null.
  * @since 2026/10/25
  */
-sjme_errorCode sjme_nvm_instance_arrayCheck(
+sjme_errorCode sjme_nvm_instance_arrayCheckI(
 	sjme_attrInNotNull sjme_jarray inArray,
 	sjme_attrInValue sjme_basicTypeId requireType,
 	sjme_attrInPositive sjme_jint requireIndex,

@@ -56,13 +56,11 @@ sjme_errorCode sjme_charSeq_charAt(
 	sjme_attrInPositive sjme_jint inIndex,
 	sjme_attrOutNotNull sjme_jchar* outChar)
 {
-	sjme_jint result;
-	
 	if (inSeq == NULL || outChar == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (inIndex < 0 || inIndex >= inSeq->length)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		return SJME_ERROR_STRING_INDEX_OUT_OF_BOUNDS;
 	
 	/* Read in character. */
 	*outChar = sjme_charSeq_charAtR(inSeq, inIndex);
@@ -74,9 +72,6 @@ sjme_errorCode sjme_charSeq_charAtIs(
 	sjme_attrInPositive sjme_jint inIndex,
 	sjme_attrOutNotNull sjme_jchar wantChar)
 {
-	sjme_errorCode error;
-	sjme_jchar actual;
-	
 	if (inSeq == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 

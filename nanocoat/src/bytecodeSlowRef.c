@@ -485,36 +485,52 @@ static sjme_errorCode sjme_nvm_byteCode_slowNewArrayMultiSub(
 #pragma region(ArrayLength)
 SJME_NVM_BYTECODE_SLOW(ArrayLength)
 {
-	sjme_jarray array;
-	sjme_jvalueTyped value, result;
+	sjme_jvalueTyped arrayValue, result;
 	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Clear the commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Pop single object value. */
-	memset(&value, 0, sizeof(value));
-	memset(&commit, 0, sizeof(commit));
+	memset(&arrayValue, 0, sizeof(arrayValue));
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, &commit, &value)))
+		SJME_JAVA_TYPE_ID_OBJECT, &commit, &arrayValue)))
 		return sjme_error_vmError(inFrame, error);
 
-	/* Cannot be null. */
-	if (value.v.l == NULL)
-		return sjme_error_vmError(inFrame, SJME_ERROR_NULL_STACK_POINTER);
-
-	/* Must be an array type. */
-	array = SJME_AS_JARRAY(value.v.l);
-	if (array == NULL ||
-		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
-		return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
-
+	/* Must be an array. */
+	if (sjme_error_is(error = sjme_nvm_instance_arrayCheck(
+		SJME_AS_JARRAY(arrayValue.v.l),
+		SJME_NUM_JAVA_TYPE_IDS)))
+	{
+		/* NPE? */
+		if (sjme_error_isOneOf(error,
+			SJME_ERROR_NULL_STACK_POINTER,
+			0))
+		{
+			/* Emit exception. */
+			if (sjme_error_is(error = sjme_nvm_task_frameEmitE(inFrame,
+				error, NULL, "%s",
+				(arrayValue.v.l == NULL ? "null" : "not-null"))))
+				return sjme_error_vmError(inFrame, error);
+		
+			/* Leave early. */
+			goto skip_tossed;
+		}
+		
+		/* Failed otherwise. */
+		return sjme_error_vmError(inFrame, error);
+	}
+	
 	/* Push length onto the stack. */
 	memset(&result, 0, sizeof(result));
 	result.t = SJME_JAVA_TYPE_ID_INTEGER;
-	result.v.i = array->e.length;
+	result.v.i = SJME_AS_JARRAY(arrayValue.v.l)->e.length;
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
 		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
 
+skip_tossed:
 	/* Commit GC. */
 	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);

@@ -644,8 +644,11 @@ typedef enum sjme_errorCode
 	/** Value cannot be stored in this array. */
 	SJME_ERROR_ARRAY_STORE = -198,
 	
+	/** The string index is out of bounds. */
+	SJME_ERROR_STRING_INDEX_OUT_OF_BOUNDS = -199,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -199,
+	SJME_NUM_ERROR_CODES = -200,
 } sjme_errorCode;
 
 /**

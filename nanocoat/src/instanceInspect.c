@@ -29,9 +29,7 @@ static sjme_jboolean sjme_nvm_instance_arrayCheckAlias(
 
 sjme_errorCode sjme_nvm_instance_arrayCheck(
 	sjme_attrInNotNull sjme_jarray inArray,
-	sjme_attrInValue sjme_basicTypeId requireType,
-	sjme_attrInPositive sjme_jint requireIndex,
-	sjme_attrInPositiveNonZero sjme_jint requireSpan)
+	sjme_attrInValue sjme_basicTypeId requireType)
 {
 	sjme_jclass isClass, componentType;
 	
@@ -45,11 +43,6 @@ sjme_errorCode sjme_nvm_instance_arrayCheck(
 	if (inArray == NULL)
 		return SJME_ERROR_NULL_STACK_POINTER;
 	
-	/* Index overflow/underflow? */
-	if (requireIndex < 0 || requireSpan <= 0 ||
-		(requireIndex + requireSpan) < 0)
-		return SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS;
-	
 	/* Is this even an array structure? */
 	if (!sjme_nvm_isAR(inArray, SJME_NVM_STRUCT_ARRAY_INSTANCE))
 		return SJME_ERROR_CLASS_CAST;
@@ -60,9 +53,9 @@ sjme_errorCode sjme_nvm_instance_arrayCheck(
 		!isClass->info->isArray)
 		return SJME_ERROR_CLASS_CAST;
 	
-	/* Is the component type wrong? */
-	if (requireType == SJME_NUM_BASIC_TYPE_IDS ||
-		requireType == SJME_NUM_JAVA_TYPE_IDS)
+	/* Is the component type wrong? If we care that is... */
+	if (requireType != SJME_NUM_BASIC_TYPE_IDS &&
+		requireType != SJME_NUM_JAVA_TYPE_IDS)
 	{
 		/* Get the component type. */
 		componentType = sjme_atomic_g(sjme_jclass,
@@ -75,6 +68,28 @@ sjme_errorCode sjme_nvm_instance_arrayCheck(
 			requireType))
 			return SJME_ERROR_ARRAY_STORE;
 	}
+	
+	/* Array access is entirely valid. */
+	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_arrayCheckI(
+	sjme_attrInNotNull sjme_jarray inArray,
+	sjme_attrInValue sjme_basicTypeId requireType,
+	sjme_attrInPositive sjme_jint requireIndex,
+	sjme_attrInPositiveNonZero sjme_jint requireSpan)
+{
+	sjme_errorCode error;
+	
+	/* Check the array type first. */
+	if (sjme_error_is(error = sjme_nvm_instance_arrayCheck(inArray,
+		requireType)))
+		return sjme_error_default(error);
+	
+	/* Index overflow/underflow? */
+	if (requireIndex < 0 || requireSpan <= 0 ||
+		(requireIndex + requireSpan) < 0)
+		return SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS;
 	
 	/* Actual index is out of bounds. */
 	if (requireIndex >= inArray->e.length ||
@@ -115,7 +130,7 @@ sjme_errorCode sjme_nvm_instance_arrayGet(
 	sjme_jvalueTyped result;
 	
 	/* Check for valid access. */
-	if (sjme_error_is(error = sjme_nvm_instance_arrayCheck(inArray,
+	if (sjme_error_is(error = sjme_nvm_instance_arrayCheckI(inArray,
 		requireType, index, 1)))
 		return sjme_error_default(error);
 	
@@ -167,7 +182,7 @@ sjme_errorCode sjme_nvm_instance_arraySet(
 		return SJME_ERROR_NULL_STACK_POINTER;
 	
 	/* Check for valid access. */
-	if (sjme_error_is(error = sjme_nvm_instance_arrayCheck(inArray,
+	if (sjme_error_is(error = sjme_nvm_instance_arrayCheckI(inArray,
 		requireType, index, 1)))
 		return sjme_error_default(error);
 	

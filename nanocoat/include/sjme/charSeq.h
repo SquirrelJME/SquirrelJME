@@ -214,11 +214,9 @@ struct sjme_charSeq_it
  * @param inIndex The index to get from.
  * @param outChar The resultant character.
  * @return Any resultant error, if any.
- * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the character index is out of
- * bounds.
+ * @throws SJME_ERROR_STRING_INDEX_OUT_OF_BOUNDS If the character index is out
+ * of bounds.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
- * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
- * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/06/27
  */
 sjme_errorCode sjme_charSeq_charAt(

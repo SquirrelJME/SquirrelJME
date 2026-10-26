@@ -118,8 +118,8 @@ SJME_NVM_MLE_FUNCTION_DECL(findType)
 	/* the target class as it will immediately be fully available. */
 	/* Specifically an array type? */
 	foundClass = NULL;
-	if (sjme_charSeq_charAtIs(seq, 0, '[') ==
-		SJME_ERROR_NONE)
+	if (sjme_charSeq_charAtIs(seq, 0, 
+		'[') == SJME_ERROR_NONE)
 	{
 		/* Can just use the field type loader here. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoadF(
