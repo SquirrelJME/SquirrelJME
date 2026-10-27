@@ -193,6 +193,59 @@ static const sjme_seekable_functions sjme_libretro_vfsFunctions =
 	sjme_sm(.size, sjme_libretro_vfsSize),
 };
 
+static sjme_errorCode sjme_libretro_consoleOut(
+	sjme_attrInNotNullBuf(len) sjme_cpointer buf,
+	sjme_attrInPositive sjme_jint off,
+	sjme_attrInPositiveNonZero sjme_jint len)
+{
+	static sjme_cchar tempLine[SJME_DEBUG_BUF_SIZE];
+	static sjme_jint tempAt;
+	sjme_lpcstr bufStr;
+	sjme_jint i;
+	sjme_cchar c;
+	
+	if (buf == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (off < 0 || len < 0 || (off + len) < 0)
+		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	
+	/* Copy characters to the line buffer. */
+	bufStr = SJME_POINTER_OFFSET(buf, off);
+	for (i = 0; i < len; i++)
+	{
+		/* Is this end of line? */
+		/* Or the buffer is full. */
+		c = bufStr[i];
+		if (c == '\r' || c == '\n' || tempAt >= (SJME_DEBUG_BUF_SIZE - 1))
+		{
+			/* Pump to the output message handler, if there is a message. */
+			if (tempLine[0] != '\0')
+			{
+				tempLine[tempAt] = '\0';
+				tempLine[SJME_DEBUG_BUF_SIZE - 1] = '\0';
+				sjme_libretro_debugMessageHandler(tempLine,
+					tempLine);
+			}
+		
+			/* Wipe for the next run. */
+			tempAt = 0;
+			memset(tempLine, 0, sizeof(tempLine));
+		}
+		
+		/* Directly copy. */
+		else if (c >= ' ' && c < 0x7F)
+			tempLine[tempAt++] = c;
+		
+		/* Mask out, to remove any garbage. */
+		else
+			tempLine[tempAt++] = '?';
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_jint sjme_libretro_cpuCount(void)
 {
 	/* Always one. */
@@ -519,13 +572,13 @@ const sjme_nal sjme_libretro_nal =
 		{
 			sjme_sm(.close, NULL),
 			sjme_sm(.in, NULL),
-			sjme_sm(.out, NULL),
+			sjme_sm(.out, sjme_libretro_consoleOut),
 			sjme_sm(.flush, NULL),
 		},
 		{
 			sjme_sm(.close, NULL),
 			sjme_sm(.in, NULL),
-			sjme_sm(.out, NULL),
+			sjme_sm(.out, sjme_libretro_consoleOut),
 			sjme_sm(.flush, NULL),
 		},
 	},

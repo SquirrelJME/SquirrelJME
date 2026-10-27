@@ -45,7 +45,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_pureFunctions =
 	sjme_sm(.loopExecute, NULL),
 	sjme_sm(.loopExecuteLater, NULL),
 	sjme_sm(.loopExecuteWait, NULL),
-	sjme_sm(.loopIterate, NULL),
+	sjme_sm(.loopIterate, sjme_scritchui_pure_loopIterate),
 	sjme_sm(.menuBarNew, NULL),
 	sjme_sm(.menuInsert, NULL),
 	sjme_sm(.menuItemNew, NULL),
@@ -101,6 +101,12 @@ sjme_errorCode sjme_scritchui_pure_apiInit(
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* One frame per screen. */
+	inState->wmType = SJME_SCRITCHUI_WM_TYPE_ONE_FRAME_PER_SCREEN;
+	
+	/* This is manually polled. */
+	inState->bugs.manualEventPoll = SJME_JNI_TRUE;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

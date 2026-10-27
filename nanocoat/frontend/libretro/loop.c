@@ -119,7 +119,11 @@ sjme_attrUnused RETRO_API void retro_run(void)
 	sjme_nvm inState;
 	uint32_t buf[240*320];
 	sjme_jint ticRate;
-
+	
+	/* Poll input first. */
+	if (sjme_libretro_globals.inputPoll != NULL)
+		sjme_libretro_globals.inputPoll();
+	
 	/* Recover the VM state, is there an actually running VM? */
 	inState = sjme_libretro_globals.inState;
 	

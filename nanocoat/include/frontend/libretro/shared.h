@@ -112,6 +112,9 @@ typedef struct sjme_libretro_globalStruct
 	
 	/** The tick rate. */
 	sjme_jint ticRate;
+	
+	/** The input poller. */
+	retro_input_poll_t inputPoll;
 } sjme_libretro_globalStruct;
 
 /** RetroArch native abstraction layer. */
@@ -136,7 +139,10 @@ const struct retro_get_proc_address_interface* sjme_libretro_extInterface(
 #define SJME_LIBRETRO_CONFIG_UNIT_TESTS "sjme_unit_tests"
 	
 /** The default tick rate. */
-#define SJME_LIBRETRO_DEFAULT_TIC_RATE 16384
+#define SJME_LIBRETRO_DEFAULT_TIC_RATE 4096
+	
+sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
+	sjme_lpcstr partMessage);
 
 /*--------------------------------------------------------------------------*/
 

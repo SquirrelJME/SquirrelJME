@@ -36,6 +36,15 @@ endif()
 # Link against base libraries, statically!!
 squirreljme_link_libraries_required(squirreljme_libretro PRIVATE
 	CoreStatic
+	ScritchUiCoreStatic
+	ScritchUiFBStatic
+	ScritchUiPureStatic
+	ScritchAudioCoreStatic)
+
+# Really make sure these are built
+add_dependencies(squirreljme_libretro
+	CoreStatic
+	ScritchUiCoreStatic
 	ScritchUiFBStatic
 	ScritchUiPureStatic
 	ScritchAudioCoreStatic)

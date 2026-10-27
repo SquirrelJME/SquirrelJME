@@ -208,11 +208,15 @@ static void sjme_libretro_inputSetExtPad(void)
 }
 #endif
 
-sjme_attrUnused RETRO_API void retro_set_input_poll(retro_input_poll_t poll)
+sjme_attrUnused RETRO_API void retro_set_input_poll(
+	retro_input_poll_t poll)
 {
-	static sjme_jint trigger;
-	if (!(trigger++))
-		sjme_message("Impl. %s?", __func__);
+	/* Store the poll somewhere. */
+	if (poll != NULL)
+		sjme_libretro_globals.inputPoll = poll;
+	
+	/* Debug. */
+	sjme_message("Input poll is %p", (void*)poll);
 }
 
 sjme_attrUnused RETRO_API void retro_set_input_state(

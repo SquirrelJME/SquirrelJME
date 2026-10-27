@@ -40,7 +40,7 @@ sjme_libretro_globalStruct sjme_libretro_globals =
 	sjme_sm(.ticRate, 0),
 };
 
-static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
+sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage)
 {
 	struct retro_message retroMessage;
@@ -48,7 +48,7 @@ static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 	if (sjme_libretro_globals.envCallback != NULL)
 	{
 		/* Setup details. */
-		retroMessage.frames = 240;
+		retroMessage.frames = 60;
 		retroMessage.msg = partMessage;
 	
 		/* Emit message. */
@@ -253,6 +253,13 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 		argV[argC++] = jarInfo->path;
 	}
 	
+	/* For now the hello demo. */
+	else
+	{
+		argV[argC++] = "-jar";
+		argV[argC++] = "system-app-demo-hello.jar";
+	}
+	
 	/* Setup base boot parameters. */
 	memset(&bootParam, 0, sizeof(bootParam));
 	bootParam.nal = &sjme_libretro_nal;
@@ -290,17 +297,25 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 			goto fail_bootSuiteBackup;
 	}
 	
-	/* Debug. */
-	sjme_message("Initializing ScritchUI...");
+	/* Disable ScritchUI? */
+	if (SJME_JNI_TRUE)
+		bootParam.noScritchUi = SJME_JNI_TRUE;
 	
 	/* Initializes ScritchUI framebuffer interface. */
 	bootParam.scritchUiPre = NULL;
-	if (sjme_error_is(error = sjme_scritchui_pure_init(
-		sjme_libretro_globals.allocPool,
-		&bootParam.scritchUiPre,
-		&sjme_libretro_pure)) ||
-		bootParam.scritchUiPre == NULL)
-		goto fail_boot;
+	if (!bootParam.noScritchUi && bootParam.scritchUiPre == NULL)
+	{
+		/* Debug. */
+		sjme_message("Initializing ScritchUI...");
+		
+		/* Now initialize it. */
+		if (sjme_error_is(error = sjme_scritchui_pure_init(
+			sjme_libretro_globals.allocPool,
+			&bootParam.scritchUiPre,
+			&sjme_libretro_pure)) ||
+			bootParam.scritchUiPre == NULL)
+			goto fail_boot;
+	}
 
 	/* Debug. */
 	sjme_message("Booting the virtual machine...");
@@ -322,6 +337,7 @@ fail_bootSuiteBackup:
 fail_parseCommandLine:
 fail_getSystemDir:
 fail_allocArgV:
+	sjme_message("Boot failure: %d", (int)error);
 	return sjme_error_fatal(error) & 0;
 #undef MAX_ARGC
 }
