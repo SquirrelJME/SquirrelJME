@@ -9,10 +9,15 @@
 
 #include <libretro.h>
 
-#include "sjme/nvm/nvm.h"
-#include "sjme/debug.h"
 #include "frontend/libretro/shared.h"
+#include "sjme/debug.h"
 #include "sjme/nvm/modelessStars.h"
+#include "sjme/nvm/nvm.h"
+
+const sjme_scritchui_pure_functions sjme_libretro_pure =
+{
+	sjme_sm(.driverName, "libretro"),
+};
 
 sjme_attrUnused RETRO_API void retro_get_system_av_info(
 	struct retro_system_av_info* info)
@@ -40,3 +45,4 @@ sjme_attrUnused RETRO_API void retro_set_video_refresh(
 {
 	sjme_libretro_globals.videoRefreshCallback = refresh;
 }
+

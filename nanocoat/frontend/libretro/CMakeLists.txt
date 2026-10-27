@@ -36,9 +36,9 @@ endif()
 # Link against base libraries, statically!!
 squirreljme_link_libraries_required(squirreljme_libretro PRIVATE
 	CoreStatic
-	ScritchAudioCoreStatic
-	ScritchUiCoreStatic
-	ScritchUiPureStatic)
+	ScritchUiFBStatic
+	ScritchUiPureStatic
+	ScritchAudioCoreStatic)
 
 # Name must be specifically set for RetroArch for it to work properly
 if(SQUIRRELJME_IS_ANDROID)

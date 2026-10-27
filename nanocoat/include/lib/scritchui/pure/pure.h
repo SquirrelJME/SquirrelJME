@@ -30,12 +30,34 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-sjme_errorCode sjme_attrExport SJME_SCRITCHUI_DYLIB_SYMBOL(pure)(
+/**
+ * Functions used to provide the pure framebuffer interface.
+ * 
+ * @since 2026/10/27
+ */
+typedef struct sjme_scritchui_pure_functions
+{
+	/** The driver name. */
+	sjme_lpcstr driverName;
+} sjme_scritchui_pure_functions;
+	
+/**
+ * Initializes the pure framebuffer interface.
+ * 
+ * @param inPool The allocation pool to use.
+ * @param outState The resultant state.
+ * @param pureFunctions The pure function interface, which provides access to
+ * the framebuffer.
+ * @return Any resultant error, if any.
+ * @since 2026/10/27
+ */
+sjme_errorCode sjme_attrExport sjme_scritchui_pure_init(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
-	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
-	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd);
+	sjme_attrInNotNull const sjme_scritchui_pure_functions* pureFunctions);
+	
+sjme_errorCode sjme_scritchui_pure_apiInit(
+	sjme_attrInNotNull sjme_scritchui inState);
 
 /*--------------------------------------------------------------------------*/
 

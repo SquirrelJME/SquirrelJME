@@ -20,6 +20,7 @@
 #include "3rdparty/libretro/libretro.h"
 #include "sjme/native.h"
 #include "sjme/nvm/nvm.h"
+#include "lib/scritchui/pure/pure.h"
 
 /* Anti-C++. */
 #ifdef __cplusplus
@@ -115,6 +116,9 @@ typedef struct sjme_libretro_globalStruct
 
 /** RetroArch native abstraction layer. */
 extern const sjme_nal sjme_libretro_nal;
+	
+/** Pure framebuffer functions. */
+extern const sjme_scritchui_pure_functions sjme_libretro_pure;
 
 /** RetroArch globals. */
 extern sjme_libretro_globalStruct sjme_libretro_globals;

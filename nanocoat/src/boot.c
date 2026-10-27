@@ -724,6 +724,15 @@ sjme_errorCode sjme_nvm_boot(
 	/* Initialize ScritchUI? Or is this headless by default? */
 	if (result->bootParamCopy->noScritchUi)
 		sjme_atomic_s(sjme_jint, &result->globals.headlessDisplay, 1);
+	
+	/* Already pre-initialized? */
+	else if (result->bootParamCopy->scritchUiPre != NULL)
+	{
+		/* Specifically use this one. */
+		scritchUi = result->bootParamCopy->scritchUiPre;
+	}
+	
+	/* Initialize elsewhere. */
 	else
 	{
 		/* Try initializing ScritchUI. */

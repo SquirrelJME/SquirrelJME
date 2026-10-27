@@ -14,7 +14,7 @@
 static const sjme_scritchui_implFunctions sjme_scritchui_pureFunctions =
 {
 	sjme_sm(.driverName, "pure"),
-	sjme_sm(.apiInit, NULL),
+	sjme_sm(.apiInit, sjme_scritchui_pure_apiInit),
 	sjme_sm(.choiceItemInsert, NULL),
 	sjme_sm(.choiceItemRemove, NULL),
 	sjme_sm(.choiceItemSetEnabled, NULL),
@@ -70,12 +70,10 @@ static const sjme_scritchui_implFunctions sjme_scritchui_pureFunctions =
 	sjme_sm(.windowSetVisible, NULL),
 };
 
-sjme_errorCode sjme_attrExport SJME_SCRITCHUI_DYLIB_SYMBOL(pure)(
+sjme_errorCode sjme_attrExport sjme_scritchui_pure_init(
 	sjme_attrInNotNull sjme_alloc_pool inPool,
 	sjme_attrInOutNotNull sjme_scritchui* outState,
-	sjme_attrInNullable sjme_thread_mainFunc loopExecute,
-	sjme_attrInNullable const sjme_scritchui_externalFunctions* externals,
-	sjme_attrInNullable sjme_frontEndBindable* initFrontEnd)
+	sjme_attrInNotNull const sjme_scritchui_pure_functions* pureFunctions)
 {
 	sjme_errorCode error;
 	sjme_scritchui state;
@@ -87,11 +85,22 @@ sjme_errorCode sjme_attrExport SJME_SCRITCHUI_DYLIB_SYMBOL(pure)(
 	state = NULL;
 	if (sjme_error_is(error = sjme_scritchui_core_apiInit(inPool,
 		&state,
-		&sjme_scritchui_pureFunctions, loopExecute, externals,
-		initFrontEnd)) || state == NULL)
+		&sjme_scritchui_pureFunctions, 
+		NULL, NULL, NULL)) || 
+		state == NULL)
 		return sjme_error_default(error);
 	
 	/* Success! */
 	*outState = state;
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_scritchui_pure_apiInit(
+	sjme_attrInNotNull sjme_scritchui inState)
+{
+	if (inState == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }

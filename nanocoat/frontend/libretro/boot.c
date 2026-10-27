@@ -289,6 +289,18 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 			bootParam.bootSuite == NULL)
 			goto fail_bootSuiteBackup;
 	}
+	
+	/* Debug. */
+	sjme_message("Initializing ScritchUI...");
+	
+	/* Initializes ScritchUI framebuffer interface. */
+	bootParam.scritchUiPre = NULL;
+	if (sjme_error_is(error = sjme_scritchui_pure_init(
+		sjme_libretro_globals.allocPool,
+		&bootParam.scritchUiPre,
+		&sjme_libretro_pure)) ||
+		bootParam.scritchUiPre == NULL)
+		goto fail_boot;
 
 	/* Debug. */
 	sjme_message("Booting the virtual machine...");

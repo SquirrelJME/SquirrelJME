@@ -146,6 +146,9 @@ struct sjme_nvm_bootParam
 
 	/** Prefer this ScritchUI interface. */
 	sjme_lpcstr preferScritchUi;
+	
+	/** Pre-initialized ScritchUI. */
+	sjme_scritchui scritchUiPre;
 
 	/**
 	 * Start argument zero, for platforms that do not use it to store the

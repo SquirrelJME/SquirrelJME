@@ -33,21 +33,3 @@ squirreljme_target_binary_name(ScritchUiPure
 
 # Set C language if not set
 squirreljme_multilib_static_linker_language(ScritchUiPure C)
-
-# In Development
-if(NOT SQUIRRELJME_IS_LIBRETRO)
-	# Allegro 4
-	add_subdirectory(allegro4)
-
-	# Allegro 5
-	add_subdirectory(allegro5)
-
-	# GLU1
-	add_subdirectory(glu1)
-
-	# SDL1
-	add_subdirectory(sdl1)
-
-	# SDL2
-	add_subdirectory(sdl2)
-endif()
