@@ -51,7 +51,7 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-#define sjme_jni_JvmDestroyJavaVMImpl sjme_jni_JvmTodoImpl
+#define sjme_jni_JvmDestroyJavaVMImpl sjme_jni_JvmDestroyJavaVM
 #define sjme_jni_JvmAttachCurrentThreadImpl sjme_jni_JvmTodoImpl
 #define sjme_jni_JvmDetachCurrentThreadImpl sjme_jni_JvmTodoImpl
 #define sjme_jni_JvmGetEnvImpl sjme_jni_JvmTodoImpl

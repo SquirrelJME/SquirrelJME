@@ -48,6 +48,9 @@ extern "C"
 
 /** Accesses the NanoCoat VM Task in the reserved space. */
 #define SJME_JNI_ENV_TASK(env) ((env)->reserved2)
+	
+jint sjme_jni_JvmDestroyJavaVM(
+	sjme_attrInNotNull JavaVM* jvm);
 
 /*--------------------------------------------------------------------------*/
 

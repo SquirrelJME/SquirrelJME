@@ -205,8 +205,17 @@ typedef struct JavaVMAttachArgs
 #pragma region(jvmFunctions)
 	
 typedef sjme_undefinedExportFunction sjme_jni_TodoFunc;
-
-typedef sjme_jni_TodoFunc sjme_jni_jniJvmDestroyJavaVMFunc;
+	
+/**
+ * Destroys the specified virtual machine.
+ * 
+ * @param jvm The virtual machine to destroy.
+ * @return Any JNI error.
+ * @since 2026/10/26
+ */
+typedef jint (JNICALL *sjme_jni_jniJvmDestroyJavaVMFunc)(
+	sjme_attrInNotNull JavaVM* jvm);
+	
 typedef sjme_jni_TodoFunc sjme_jni_jniJvmAttachCurrentThreadFunc;
 typedef sjme_jni_TodoFunc sjme_jni_jniJvmDetachCurrentThreadFunc;
 typedef sjme_jni_TodoFunc sjme_jni_jniJvmGetEnvFunc;

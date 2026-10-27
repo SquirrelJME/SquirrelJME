@@ -22,6 +22,30 @@
 /** The global NVM state for the JNI wrapper. */
 static sjme_atomic(sjme_nvm) sjme_jni_nvm_state;
 
+jint sjme_jni_JvmDestroyJavaVM(
+	sjme_attrInNotNull JavaVM* jvm)
+{
+	sjme_nvm_task task;
+	
+	/* Needs to actually exist. */
+	if (jvm == NULL || (*jvm) == NULL)
+		return JNI_ERR;
+	
+	/* Recover the task. */
+	task = SJME_JNI_JVM_TASK((*jvm));
+	if (task == NULL)
+		return JNI_ERR;
+	
+	sjme_message("TODO: Destroy");
+#if 0
+	nvmState->common.frontEnd.wrapper = resultJvm;
+	nvmState->common.frontEnd.data = resultEnv;
+#endif
+	
+	/* Success! */
+	return JNI_OK;
+}
+
 jint JNICALL JNI_CreateJavaVM(
 	sjme_attrOutNotNull JavaVM** pvm,
 	sjme_attrOutNotNull void** penv,
@@ -435,8 +459,8 @@ jint JNICALL JNI_CreateJavaVM(
 	}
 	
 	/* Then link back to both. */
-	SJME_JNI_JVM_TASK(resultJvm) = initTask;
-	SJME_JNI_ENV_TASK(resultEnv) = initTask;
+	SJME_JNI_JVM_TASK(resultJvm) = sjme_weakUp(initTask);
+	SJME_JNI_ENV_TASK(resultEnv) = sjme_weakUp(initTask);
 	nvmState->common.frontEnd.wrapper = resultJvm;
 	nvmState->common.frontEnd.data = resultEnv;
 	
