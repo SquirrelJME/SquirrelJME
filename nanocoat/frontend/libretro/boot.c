@@ -31,6 +31,8 @@ sjme_libretro_globalStruct sjme_libretro_globals =
 	sjme_sm(.envCallback, NULL),
 	sjme_sm(.videoRefreshCallback, NULL),
 	sjme_sm(.vfs, {0}),
+	sjme_sm(.log, {0}),
+	sjme_sm(.checkedLog, SJME_JNI_FALSE),
 	sjme_sm(.allocPool, NULL),
 	sjme_sm(.inState, NULL),
 	sjme_sm(.tasMode, SJME_JNI_FALSE),
@@ -41,7 +43,6 @@ static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage)
 {
 	struct retro_message retroMessage;
-	struct retro_log_callback retroLogCallback;
 	
 	if (sjme_libretro_globals.envCallback != NULL)
 	{
@@ -53,14 +54,25 @@ static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 		sjme_libretro_globals.envCallback(RETRO_ENVIRONMENT_SET_MESSAGE,
 			&retroMessage);
 		
-		/* Is logging also available? */
-		memset(&retroLogCallback, 0, sizeof(retroLogCallback));
-		if (true == sjme_libretro_globals.envCallback(
+		/* Load logging interface? */
+		if (!sjme_libretro_globals.checkedLog)
+		{
+			/* Do not check again. */
+			sjme_libretro_globals.checkedLog = SJME_JNI_TRUE;
+			
+			/* Grab the logging interface. */
+			memset(&sjme_libretro_globals.log, 0, 
+				sizeof(sjme_libretro_globals.log));
+			if (!sjme_libretro_globals.envCallback(
 			RETRO_ENVIRONMENT_GET_LOG_INTERFACE,
-				&retroLogCallback) &&
-			retroLogCallback.log != NULL)
-			retroLogCallback.log(RETRO_LOG_INFO, "%s\n",
-			fullMessage);
+				&sjme_libretro_globals.log))
+				sjme_libretro_globals.log.log = NULL;
+		}
+		
+		/* Is logging also available? */
+		if (sjme_libretro_globals.log.log != NULL)
+			sjme_libretro_globals.log.log(RETRO_LOG_INFO, "%s\n",
+				fullMessage);
 		
 		/* We handled it here, so SquirrelJME does not have to print it. */
 		return SJME_JNI_TRUE;

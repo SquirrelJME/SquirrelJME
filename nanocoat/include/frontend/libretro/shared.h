@@ -90,6 +90,12 @@ typedef struct sjme_libretro_globalStruct
 
 	/** VFS interface. */
 	struct retro_vfs_interface_info vfs;
+	
+	/** Log state. */
+	struct retro_log_callback log;
+	
+	/** Did we check that logging is available? */
+	sjme_jboolean checkedLog;
 
 	/** The allocation pool. */
 	sjme_alloc_pool allocPool;

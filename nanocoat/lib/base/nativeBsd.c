@@ -29,7 +29,7 @@ sjme_errorCode sjme_nal_default_execPath(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (outLen <= 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Setup buffer that is slightly larger, to detect small buffers. */
 	tempLen = outLen + 16;

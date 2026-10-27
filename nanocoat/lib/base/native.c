@@ -15,6 +15,7 @@ const sjme_nal sjme_nal_default =
 {
 	sjme_sm(.cpuCount, sjme_nal_default_cpuCount),
 	sjme_sm(.currentTimeMillis, sjme_nal_default_currentTimeMillis),
+	sjme_sm(.defaultPath, sjme_nal_default_defaultPath),
 	sjme_sm(.encoding, sjme_nal_default_encoding),
 	sjme_sm(.execPath, sjme_nal_default_execPath),
 	sjme_sm(.fileOpen, sjme_nal_default_fileOpen),

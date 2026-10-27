@@ -27,7 +27,7 @@ sjme_errorCode sjme_nal_default_execPath(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (outLen <= 0)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* The output path is only written when the buffer is large enough. */
 	bufLen = outLen;

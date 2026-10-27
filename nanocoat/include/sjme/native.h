@@ -163,6 +163,23 @@ typedef sjme_jint (*sjme_nal_cpuCountFunc)(void);
  */
 typedef sjme_errorCode (*sjme_nal_currentTimeMillisFunc)(
 	sjme_attrOutNotNull sjme_jlong* result);
+	
+/**
+ * Provides a default path that may be provided by the NAL if needed.
+ * 
+ * @param defaultDir The default directory to lookup.
+ * @param out The output buffer.
+ * @param outLen The length of the output buffer.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the output length is negative or if
+ * the default path is not valid.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_PATH_NOT_DEFINED If the path is not defined.
+ * @since 2026/10/26
+ */
+typedef sjme_errorCode (*sjme_nal_defaultPathFunc)(
+	sjme_attrInValue sjme_nvm_defaultDirectoryType defaultDir,
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen);
 
 /**
  * Returns the current encoding.
@@ -348,6 +365,9 @@ typedef struct sjme_nal
 	
 	/** Current time in milliseconds. */
 	sjme_nal_currentTimeMillisFunc currentTimeMillis;
+	
+	/** Returns a default path, if available. */
+	sjme_nal_defaultPathFunc defaultPath;
 	
 	/** Returns the current encoding. */
 	sjme_nal_encodingFunc encoding;

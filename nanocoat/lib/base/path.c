@@ -505,6 +505,54 @@ static sjme_errorCode sjme_path_defaultLookup(
 	return SJME_ERROR_PATH_NOT_DEFINED;
 }
 
+static sjme_errorCode sjme_path_defaultByNal(
+	sjme_attrInNullable const sjme_nal* nal,
+	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
+	sjme_attrInValue sjme_nvm_defaultDirectoryType type)
+{
+	sjme_errorCode error;
+	sjme_cchar buf[SJME_MAX_PATH];
+	sjme_path result;
+	
+	if (outPath == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	if (type <= SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN ||
+		type >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Use a default NAL? */
+	if (nal == NULL)
+		nal = &sjme_nal_default;
+	
+	/* Missing? */
+	if (nal->defaultPath == NULL)
+		return SJME_ERROR_NOT_IMPLEMENTED;
+	
+	/* Load the path. */
+	memset(&buf, 0, sizeof(buf));
+	if (sjme_error_is(error = nal->defaultPath(type,
+		buf, SJME_MAX_PATH - 1)) ||
+		buf[0] == '\0')
+		return sjme_error_default(error);
+	
+	/* Always end in NUL. */
+	buf[SJME_MAX_PATH - 1] = '\0';
+	
+	/* Is this path even valid? */
+	if (buf[0] == '\0')
+		return SJME_ERROR_PATH_NOT_DEFINED;
+	
+	/* Resolve the path. */
+	memset(&result, 0, sizeof(result));
+	if (sjme_error_is(error = sjme_path_resolveS(&result, buf)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	memmove(outPath, &result, sizeof(*outPath));
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_path_defaultStatic(
 	sjme_attrInNullable const sjme_nal* nal,
 	sjme_attrOutNotNull sjme_attrOutOverwrite sjme_path* outPath,
@@ -823,6 +871,19 @@ sjme_errorCode sjme_path_default(
 		type == SJME_NVM_DEFAULT_DIRECTORY_LIBRARIES ||
 		type == SJME_NVM_DEFAULT_DIRECTORY_BUCKET_DATA)
 		return sjme_path_defaultStatic(nal, outPath, type, -1);
+	
+	/* NAL provided path? */
+	if (nal->defaultPath != NULL)
+	{
+		/* Lookup path. */
+		if (!sjme_error_is(error = sjme_path_defaultByNal(nal, outPath, type)))
+			return SJME_ERROR_NONE;
+		
+		/* Some other error is rather bad. */
+		if (error != SJME_ERROR_PATH_NOT_DEFINED &&
+			error != SJME_ERROR_NOT_IMPLEMENTED)
+			return sjme_error_default(error);
+	}
 
 	/* Use default lookup and resolution for paths. */
 	if (sjme_error_is(error = sjme_path_defaultLookup(nal, outPath, type,

@@ -40,6 +40,11 @@ sjme_jint sjme_nal_default_cpuCount(void);
 sjme_errorCode sjme_nal_default_currentTimeMillis(
 	sjme_attrOutNotNull sjme_jlong* result);
 	
+sjme_errorCode sjme_nal_default_defaultPath(
+	sjme_attrInValue sjme_nvm_defaultDirectoryType defaultDir,
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen);
+	
 sjme_nal_encodingType sjme_nal_default_encoding(void);
 	
 sjme_errorCode sjme_nal_default_execPath(

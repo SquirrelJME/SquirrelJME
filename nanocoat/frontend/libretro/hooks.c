@@ -14,12 +14,6 @@
 #include "sjme/path.h"
 #include "sjme/intern/nal.h"
 
-static sjme_jint sjme_libretro_cpuCount(void)
-{
-	/* Always one. */
-	return 1;
-}
-
 static sjme_errorCode sjme_libretro_vfsClose(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState)
@@ -88,7 +82,7 @@ static sjme_errorCode sjme_libretro_vfsRead(
 	/* Perform the read. */
 	if (iface->read(handle, outBuf, length) != length)
 		return SJME_ERROR_IO_EXCEPTION;
-
+	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
@@ -109,9 +103,16 @@ static sjme_errorCode sjme_libretro_vfsSize(
 	/* Recover VFS handle. */
 	handle = inSeekable->implState.handle;
 	iface = inImplState->handleTwo;
+	
+	/* Was the size already calculated/known? */
+	if (inImplState->length != 0)
+	{
+		*outSize = inImplState->length;
+		return SJME_ERROR_NONE;
+	}
 
 	/* Get size from the handle. */
-	/* If zero/negative  then the size of the file is unknown, */
+	/* If zero/negative then the size of the file is unknown, */
 	/* need to do manual seek. */
 	/* This is the case when RETRO_VFS_FILE_ACCESS_HINT_FREQUENT_ACCESS is */
 	/* set and valid for the platform. */
@@ -175,6 +176,9 @@ static sjme_errorCode sjme_libretro_vfsSize(
 		if (result <= 0)
 			return SJME_ERROR_IO_EXCEPTION;
 	}
+	
+	/* Cache the discovered size. */
+	inImplState->length = result;
 
 	/* Success! */
 	*outSize = result;
@@ -188,6 +192,12 @@ static const sjme_seekable_functions sjme_libretro_vfsFunctions =
 	sjme_sm(.read, sjme_libretro_vfsRead),
 	sjme_sm(.size, sjme_libretro_vfsSize),
 };
+
+static sjme_jint sjme_libretro_cpuCount(void)
+{
+	/* Always one. */
+	return 1;
+}
 
 static sjme_errorCode sjme_libretro_currentTimeMillis(
 	sjme_attrOutNotNull sjme_jlong* result)
@@ -206,6 +216,85 @@ static sjme_errorCode sjme_libretro_currentTimeMillis(
 	if (sjme_nal_default.currentTimeMillis != NULL)
 		return sjme_nal_default.currentTimeMillis(result);
 	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+sjme_errorCode sjme_libretro_defaultPath(
+	sjme_attrInValue sjme_nvm_defaultDirectoryType defaultDir,
+	sjme_attrOutNotNullBuf(outLen) sjme_attrOutModify sjme_lpstr out,
+	sjme_attrInPositiveNonZero sjme_jint outLen)
+{
+	const sjme_cchar* envDir;
+	sjme_lpcstr subName;
+	
+	if (out == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (outLen <= 0 || defaultDir <= SJME_NVM_DEFAULT_DIRECTORY_UNKNOWN ||
+		defaultDir >= SJME_NVM_NUM_DEFAULT_DIRECTORY_TYPES)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Clear output. */
+	out[0] = '\0';
+	
+	/* Environment not available yet? */
+	if (sjme_libretro_globals.envCallback == NULL)
+		return SJME_ERROR_PATH_NOT_DEFINED;
+	
+	/* This is the directory where files exist. */
+	if (defaultDir == SJME_NVM_DEFAULT_DIRECTORY_RUNTIME)
+	{
+		/* Lookup the system dir, which is where BIOS files are located. */
+		envDir = NULL;
+		if (!sjme_libretro_globals.envCallback(
+			RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &envDir) ||
+			envDir == NULL)
+			return SJME_ERROR_PATH_NOT_DEFINED;
+		
+		/* Copy it over. */
+		strncpy(out, envDir, outLen - 1);
+		out[outLen - 1] = '\0';
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Various locations where saves and otherwise are stored. */
+	else if (defaultDir == SJME_NVM_DEFAULT_DIRECTORY_CACHE ||
+		defaultDir == SJME_NVM_DEFAULT_DIRECTORY_CONFIG ||
+		defaultDir == SJME_NVM_DEFAULT_DIRECTORY_DATA ||
+		defaultDir == SJME_NVM_DEFAULT_DIRECTORY_STATE)
+	{
+		/* Everything exists purely off the save directory. */
+		envDir = NULL;
+		if (!sjme_libretro_globals.envCallback(
+			RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &envDir) ||
+			envDir == NULL)
+			return SJME_ERROR_PATH_NOT_DEFINED;
+		
+		/* Which subdirectory name is used? */
+		subName = "other";
+		if (defaultDir == SJME_NVM_DEFAULT_DIRECTORY_CACHE)
+			subName = "cache";
+		else if (defaultDir == SJME_NVM_DEFAULT_DIRECTORY_CONFIG)
+			subName = "config";
+		else if (defaultDir == SJME_NVM_DEFAULT_DIRECTORY_DATA)
+			subName = "data";
+		else if (defaultDir == SJME_NVM_DEFAULT_DIRECTORY_STATE)
+			subName = "state";
+		
+		/* Build a proper path as multiple roots are needed. */
+		/* [INFO] [Overrides]: Redirecting save file to */
+		/* "/home/stephanie/.config/retroarch/saves/SquirrelJME/... */
+		snprintf(out, outLen - 1, "%s/SquirrelJME/%s",
+			envDir, subName);
+		out[outLen - 1] = '\0';
+		
+		/* Success! */
+		return SJME_ERROR_NONE;
+	}
+	
+	/* Path is not defined, this is some other path. */
+	return SJME_ERROR_PATH_NOT_DEFINED;
 }
 
 static sjme_nal_encodingType sjme_libretro_encoding(void)
@@ -241,7 +330,8 @@ static sjme_errorCode sjme_libretro_fileOpen(
 	if (allocPool == NULL || inPath == NULL || outSeekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (openMode < SJME_NAL_OPEN_READ || openMode > SJME_NAL_OPEN_WRITE_TRUNCATE)
+	if (openMode < SJME_NAL_OPEN_READ || 
+		openMode > SJME_NAL_OPEN_WRITE_TRUNCATE)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* VFS is not supported? */
@@ -382,11 +472,9 @@ static sjme_errorCode sjme_libretro_userHome(
 
 	if (outLen <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
-
-	/* The home directory is always just /home, this should be somewhere */
-	/* on the VFS. */
-	strncpy(out, "/home", outLen);
-	return SJME_ERROR_NONE;
+	
+	/* Unsupported. */
+	return SJME_ERROR_NOT_IMPLEMENTED;
 }
 
 static sjme_errorCode sjme_libretro_userName(
@@ -408,6 +496,7 @@ const sjme_nal sjme_libretro_nal =
 {
 	sjme_sm(.cpuCount, sjme_libretro_cpuCount),
 	sjme_sm(.currentTimeMillis, sjme_libretro_currentTimeMillis),
+	sjme_sm(.defaultPath, sjme_libretro_defaultPath),
 	sjme_sm(.encoding, sjme_libretro_encoding),
 	sjme_sm(.execPath, sjme_libretro_execPath),
 	sjme_sm(.fileOpen, sjme_libretro_fileOpen),

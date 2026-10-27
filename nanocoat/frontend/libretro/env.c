@@ -57,11 +57,13 @@ sjme_attrUnused RETRO_API void retro_get_system_info(
 	info->library_name = "SquirrelJME";
 	info->library_version = SQUIRRELJME_VERSION;
 	
-	/* These are all of the Java related extensions. */
-	info->valid_extensions = "zip|jam|jar|jad|adf|sec|sto|kjx";
+	/* These are all the Java related extensions. */
+	info->valid_extensions = "jar|sqc|jam|jad|kjx|adf|sec|sto|sp|"
+		"sp0|sp1|sp2|sp3|sp4|sp5|sp6|sp7|sp8|sp9";
 	
-	/* We need the full path for executables. */
-	info->need_fullpath = true;
+	/* Everything is handled by the VFS wrapper, so we do not need */
+	/* native OS support here. */
+	info->need_fullpath = false;
 
 	/* RetroArch is not permitted to unzip entries for us. */
 	info->block_extract = true;

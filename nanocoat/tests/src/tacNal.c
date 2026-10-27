@@ -135,6 +135,7 @@ const sjme_nal sjme_nal_test =
 {
 	sjme_sm(.cpuCount, sjme_nal_default_cpuCount),
 	sjme_sm(.currentTimeMillis, sjme_nal_test_currentTimeMillis),
+	sjme_sm(.defaultPath, sjme_nal_default_defaultPath),
 	sjme_sm(.encoding, sjme_nal_default_encoding),
 	sjme_sm(.execPath, sjme_nal_test_execPath),
 	sjme_sm(.fileOpen, sjme_nal_test_fileOpen),
