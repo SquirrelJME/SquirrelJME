@@ -43,7 +43,7 @@ static const sjme_scritchui_implFunctions sjme_scritchui_pureFunctions =
 	sjme_sm(.lafMetric, NULL),
 	sjme_sm(.listNew, NULL),
 	sjme_sm(.loopExecute, NULL),
-	sjme_sm(.loopExecuteLater, NULL),
+	sjme_sm(.loopExecuteLater, sjme_scritchui_pure_loopExecuteLater),
 	sjme_sm(.loopExecuteWait, NULL),
 	sjme_sm(.loopIterate, sjme_scritchui_pure_loopIterate),
 	sjme_sm(.menuBarNew, NULL),

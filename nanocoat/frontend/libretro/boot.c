@@ -297,9 +297,11 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 			goto fail_bootSuiteBackup;
 	}
 	
+#if 0
 	/* Disable ScritchUI? */
 	if (SJME_JNI_TRUE)
 		bootParam.noScritchUi = SJME_JNI_TRUE;
+#endif
 	
 	/* Initializes ScritchUI framebuffer interface. */
 	bootParam.scritchUiPre = NULL;

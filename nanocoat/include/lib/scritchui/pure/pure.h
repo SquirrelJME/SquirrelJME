@@ -59,6 +59,11 @@ sjme_errorCode sjme_attrExport sjme_scritchui_pure_init(
 sjme_errorCode sjme_scritchui_pure_apiInit(
 	sjme_attrInNotNull sjme_scritchui inState);
 	
+sjme_errorCode sjme_scritchui_pure_loopExecuteLater(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_thread_mainFunc callback,
+	sjme_attrInNullable sjme_thread_parameter anything);
+	
 sjme_errorCode sjme_scritchui_pure_loopIterate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_jboolean blocking,
