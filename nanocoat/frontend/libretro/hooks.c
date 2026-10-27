@@ -14,6 +14,12 @@
 #include "sjme/path.h"
 #include "sjme/intern/nal.h"
 
+static sjme_jint sjme_libretro_cpuCount(void)
+{
+	/* Always one. */
+	return 1;
+}
+
 static sjme_errorCode sjme_libretro_vfsClose(
 	sjme_attrInNotNull sjme_seekable inSeekable,
 	sjme_attrInNotNull sjme_seekable_implState* inImplState)
