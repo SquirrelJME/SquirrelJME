@@ -36,7 +36,8 @@ sjme_libretro_globalStruct sjme_libretro_globals =
 	sjme_sm(.allocPool, NULL),
 	sjme_sm(.inState, NULL),
 	sjme_sm(.tasMode, SJME_JNI_FALSE),
-	sjme_sm(.modelessStars, {0})
+	sjme_sm(.modelessStars, {0}),
+	sjme_sm(.ticRate, 0),
 };
 
 static sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
@@ -270,6 +271,9 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 		sjme_libretro_globals.allocPool,
 		bootParam.nal, &bootParam, argC, argV)))
 		goto fail_parseCommandLine;
+	
+	/* Allow falling back to the launcher if nothing is found. */
+	bootParam.launcherFallback = SJME_JNI_TRUE;
 	
 	/* If there was no boot suite specified, load a default one. */
 	if (bootParam.bootSuite == NULL)

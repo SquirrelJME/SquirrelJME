@@ -108,6 +108,9 @@ typedef struct sjme_libretro_globalStruct
 
 	/** Modeless stars. */
 	sjme_modelessStarState modelessStars;
+	
+	/** The tick rate. */
+	sjme_jint ticRate;
 } sjme_libretro_globalStruct;
 
 /** RetroArch native abstraction layer. */
@@ -127,6 +130,9 @@ const struct retro_get_proc_address_interface* sjme_libretro_extInterface(
 
 /** Run unit tests? */
 #define SJME_LIBRETRO_CONFIG_UNIT_TESTS "sjme_unit_tests"
+	
+/** The default tick rate. */
+#define SJME_LIBRETRO_DEFAULT_TIC_RATE 16384
 
 /*--------------------------------------------------------------------------*/
 

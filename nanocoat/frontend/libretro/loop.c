@@ -118,9 +118,15 @@ sjme_attrUnused RETRO_API void retro_run(void)
 	sjme_jboolean terminated;
 	sjme_nvm inState;
 	uint32_t buf[240*320];
+	sjme_jint ticRate;
 
 	/* Recover the VM state, is there an actually running VM? */
 	inState = sjme_libretro_globals.inState;
+	
+	/* Which tick rate to use? */
+	ticRate = sjme_libretro_globals.ticRate;
+	if (ticRate <= 0)
+		ticRate = SJME_LIBRETRO_DEFAULT_TIC_RATE;
 	
 	/* Performing things within the actual machine. */
 	terminated = SJME_JNI_FALSE;
@@ -128,8 +134,8 @@ sjme_attrUnused RETRO_API void retro_run(void)
 		sjme_atomic_g(sjme_jint, &inState->numRunningTasks) > 0)
 	{
 		/* Tick. */
-		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, -1,
-			NULL, &terminated)))
+		if (sjme_error_is(error = sjme_nvm_loop_tick(inState,
+			ticRate, NULL, &terminated)))
 		{
 			/* Fail unless this was interrupted. */
 			if (error != SJME_ERROR_INTERRUPTED)
