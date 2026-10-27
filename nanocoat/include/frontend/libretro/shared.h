@@ -75,7 +75,55 @@ typedef enum sjme_libretro_extra_id
 	/** The number of extra IDs. */
 	SJME_NUM_LIBRETRO_EXTRA_ID
 } sjme_libretro_extra_id;
+	
+/**
+ * Libretro core options.
+ * 
+ * @since 2026/10/27
+ */
+typedef enum sjme_libretro_coreOption
+{
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_libretro_coreOption),
+	
+	/** Undefined. */
+	SJME_LIBRETRO_CORE_OPTION_UNDEFINED,
+	
+	/** Run unit tests? */
+	SJME_LIBRETRO_CORE_OPTION_UNIT_TESTS,
+	
+	/** Dump variables? */
+	SJME_LIBRETRO_CORE_OPTION_DUMP_VARS,
+	
+	/** Tic rate. */
+	SJME_LIBRETRO_CORE_OPTION_TIC_RATE,
+	
+	/** The number of core options. */
+	SJME_LIBRETRO_NUM_CORE_OPTIONS,
+} sjme_libretro_coreOption;
 
+#pragma region(coreOptionNames)
+	
+#define SJME_LIBRETRO_CORE_OPTION_UNIT_TESTS_NAME "sjme_unit_tests"
+#define SJME_LIBRETRO_CORE_OPTION_DUMP_VARS_NAME "sjme_dump_vars"
+#define SJME_LIBRETRO_CORE_OPTION_TIC_RATE_NAME "sjme_tic_rate"
+	
+#pragma endregion(coreOptionNames)
+
+/**
+ * Core options and their values.
+ * 
+ * @since 2026/10/27
+ */
+typedef struct sjme_libretro_coreOptionValue
+{
+	/** The string value. */
+	sjme_lpcstr string;
+	
+	/** The integer value. */
+	sjme_jint number;
+} sjme_libretro_coreOptionValue;
+	
 /**
  * Globals for RetroArch.
  *
@@ -115,6 +163,9 @@ typedef struct sjme_libretro_globalStruct
 	
 	/** The input poller. */
 	retro_input_poll_t inputPoll;
+	
+	/** The current options. */
+	sjme_libretro_coreOptionValue options[SJME_LIBRETRO_NUM_CORE_OPTIONS];
 } sjme_libretro_globalStruct;
 
 /** RetroArch native abstraction layer. */
@@ -122,6 +173,9 @@ extern const sjme_nal sjme_libretro_nal;
 	
 /** Pure framebuffer functions. */
 extern const sjme_scritchui_pure_functions sjme_libretro_pure;
+	
+/** Core option names. */
+extern sjme_lpcstr sjme_libretro_optNames[SJME_LIBRETRO_NUM_CORE_OPTIONS];
 
 /** RetroArch globals. */
 extern sjme_libretro_globalStruct sjme_libretro_globals;
@@ -134,15 +188,19 @@ extern sjme_libretro_globalStruct sjme_libretro_globals;
  */
 const struct retro_get_proc_address_interface* sjme_libretro_extInterface(
 	void);
-
-/** Run unit tests? */
-#define SJME_LIBRETRO_CONFIG_UNIT_TESTS "sjme_unit_tests"
 	
 /** The default tick rate. */
 #define SJME_LIBRETRO_DEFAULT_TIC_RATE 4096
 	
 sjme_jboolean sjme_libretro_debugMessageHandler(sjme_lpcstr fullMessage,
 	sjme_lpcstr partMessage);
+	
+/**
+ * Refreshes core options.
+ * 
+ * @since 2026/10/27
+ */
+void sjme_libretro_refreshCoreOptions(void);
 
 /*--------------------------------------------------------------------------*/
 

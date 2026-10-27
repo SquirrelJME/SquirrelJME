@@ -150,6 +150,28 @@ sjme_jint sjme_compare_null(
 	sjme_attrInNullable sjme_cpointer b);
 
 /**
+ * Converts a narrow string to an integral value.
+ *
+ * The return value of @code INTMAX_MIN @endcode does differ from the
+ * traditional @code 0 @endcode, however it is more likely that zero will
+ * be more of a valid value than the smallest possible value. Additionally,
+ * there is no @code errno @endcode available. If there must be no doubt that
+ * such smallest possible value is not parsed then @code endP @endcode can be
+ * used as this implementation will never set it if parsing fails.
+ *
+ * @param str The string to convert.
+ * @param endP The resultant end pointer which points to the end of
+ * the actually parsed value, this is optional.
+ * @param base The number base to parse.
+ * @return The resultant value, or @code INTMAX_MIN @endcode if it could
+ * not be parsed.
+ * @since 2026/10/14
+ */
+sjme_intMax sjme_lpcstoimax(sjme_attrInNotNull sjme_lpcstr str,
+	sjme_attrOutNullable sjme_lpcstr* endP,
+	sjme_attrInRange(2, 36) sjme_jint base);
+
+/**
  * Searches for the given wide character in the given wide string.
  *
  * @param within The string to search within.

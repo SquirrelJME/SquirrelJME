@@ -185,6 +185,15 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 	sjme_lpcstr* argV;
 	sjme_nvm_bootParam bootParam;
 	const struct retro_game_info* jarInfo;
+	
+	/* Refresh options. */
+	sjme_libretro_refreshCoreOptions();
+	
+	/* Which tic rate to use? */
+	sjme_libretro_globals.ticRate = sjme_libretro_globals.options[
+		SJME_LIBRETRO_CORE_OPTION_TIC_RATE].number / 60;
+	if (sjme_libretro_globals.ticRate <= 0)
+		sjme_libretro_globals.ticRate = SJME_LIBRETRO_DEFAULT_TIC_RATE;
 
 	/* Allocate arguments to pass in. */
 	argC = 0;
@@ -254,7 +263,8 @@ sjme_attrUnused RETRO_API bool retro_load_game_special(unsigned game_type,
 	}
 	
 	/* For now the hello demo. */
-	else
+	else if (sjme_libretro_globals.options[
+		SJME_LIBRETRO_CORE_OPTION_DUMP_VARS].number != 0)
 	{
 		argV[argC++] = "-jar";
 		argV[argC++] = "system-app-demo-hello.jar";
