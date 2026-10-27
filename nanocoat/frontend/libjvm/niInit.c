@@ -125,77 +125,14 @@ jint JNICALL JNI_CreateJavaVM(
 			(void**)&resultEnv)) ||
 		resultEnv == NULL)
 		goto fail_allocResultEnv;
-
-	/* Creating a fresh virtual machine? */
-	if (nvmState == NULL)
-	{
-		/* Boot the virtual machine. */
-		initTask = NULL;
-		if (sjme_error_is(error = sjme_nvm_boot(pool,
-			&bootParam, &nvmState, &initTask)) ||
-			nvmState == NULL || initTask == NULL)
-			goto fail_nvmBoot;
-
-		/* Store global state. */
-		sjme_atomic_cs(sjme_nvm, &sjme_jni_nvm_state,
-			NULL, nvmState);
-	}
-
-	/* Adding a task to an existing one. */
-	else
-	{
-		/* The boot parameters need to be translated to tasks. */
-		memset(&taskConfig, 0, sizeof(taskConfig));
-		
-		/* Search the classpath for the libraries specified. */
-		classPath = NULL;
-		if (sjme_error_is(error = sjme_nvm_rom_resolveClassPathByName(
-			nvmState->suite,
-			bootParam.runTarget.byName, &classPath)))
-			goto fail_searchClasspath;
-		
-		/* Setup class loader for the task. */
-		taskConfig.classLoader = NULL;
-		if (sjme_error_is(error = sjme_nvm_vmClass_loaderNew(nvmState,
-			&taskConfig.classLoader, classPath)) ||
-			taskConfig.classLoader == NULL)
-			goto fail_initClassLoader;
-
-		/* General. */
-		taskConfig.noOptimize = bootParam.noOptimize;
-
-		/* Belay from. */
-		taskConfig.belay = bootParam.belay;
-
-		/* Arguments. */
-		taskConfig.mainClass = bootParam.runTarget.mainClass;
-		taskConfig.mainArgs = bootParam.runTarget.mainArgs;
-		taskConfig.sysProps = bootParam.runTarget.sysProps;
-
-		/* Terminal configuration. */
-		taskConfig.stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
-		taskConfig.stdErr = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
-		
-		/* Start the task. */
-		initTask = NULL;
-		if (sjme_error_is(error = sjme_nvm_task_taskNew(nvmState,
-			&taskConfig, &initTask)) || initTask == NULL)
-			goto fail_initTask;
-	}
 	
 	/* Store the environment and VM state into both structures the same. */
 	/* Note that the first pointer always points to self so that double */
 	/* dereference still works without going sane! */
 	SJME_JNI_JVM_JVM(resultJvm) = resultJvm;
 	SJME_JNI_JVM_ENV(resultJvm) = resultEnv;
-	SJME_JNI_JVM_TASK(resultJvm) = initTask;
 	SJME_JNI_ENV_JVM(resultEnv) = resultJvm;
 	SJME_JNI_ENV_ENV(resultEnv) = resultEnv;
-	SJME_JNI_ENV_TASK(resultEnv) = initTask;
-
-	/* Then link back to both. */
-	nvmState->common.frontEnd.wrapper = resultJvm;
-	nvmState->common.frontEnd.data = resultEnv;
 
 	/* Bind function pointers. */
 #define sjme_jniSetImpl(group, x) \
@@ -440,6 +377,69 @@ jint JNICALL JNI_CreateJavaVM(
 
 #undef sjme_jniSetImpl
 
+	/* Creating a fresh virtual machine? */
+	if (nvmState == NULL)
+	{
+		/* Boot the virtual machine. */
+		initTask = NULL;
+		if (sjme_error_is(error = sjme_nvm_boot(pool,
+			&bootParam, &nvmState, &initTask)) ||
+			nvmState == NULL || initTask == NULL)
+			goto fail_nvmBoot;
+
+		/* Store global state. */
+		sjme_atomic_cs(sjme_nvm, &sjme_jni_nvm_state,
+			NULL, nvmState);
+	}
+
+	/* Adding a task to an existing one. */
+	else
+	{
+		/* The boot parameters need to be translated to tasks. */
+		memset(&taskConfig, 0, sizeof(taskConfig));
+		
+		/* Search the classpath for the libraries specified. */
+		classPath = NULL;
+		if (sjme_error_is(error = sjme_nvm_rom_resolveClassPathByName(
+			nvmState->suite,
+			bootParam.runTarget.byName, &classPath)))
+			goto fail_searchClasspath;
+		
+		/* Setup class loader for the task. */
+		taskConfig.classLoader = NULL;
+		if (sjme_error_is(error = sjme_nvm_vmClass_loaderNew(nvmState,
+			&taskConfig.classLoader, classPath)) ||
+			taskConfig.classLoader == NULL)
+			goto fail_initClassLoader;
+
+		/* General. */
+		taskConfig.noOptimize = bootParam.noOptimize;
+
+		/* Belay from. */
+		taskConfig.belay = bootParam.belay;
+
+		/* Arguments. */
+		taskConfig.mainClass = bootParam.runTarget.mainClass;
+		taskConfig.mainArgs = bootParam.runTarget.mainArgs;
+		taskConfig.sysProps = bootParam.runTarget.sysProps;
+
+		/* Terminal configuration. */
+		taskConfig.stdOut = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+		taskConfig.stdErr = SJME_NVM_TASK_PIPE_REDIRECT_TYPE_TERMINAL;
+		
+		/* Start the task. */
+		initTask = NULL;
+		if (sjme_error_is(error = sjme_nvm_task_taskNew(nvmState,
+			&taskConfig, &initTask)) || initTask == NULL)
+			goto fail_initTask;
+	}
+	
+	/* Then link back to both. */
+	SJME_JNI_JVM_TASK(resultJvm) = initTask;
+	SJME_JNI_ENV_TASK(resultEnv) = initTask;
+	nvmState->common.frontEnd.wrapper = resultJvm;
+	nvmState->common.frontEnd.data = resultEnv;
+	
 	/* Success! */
 	*pvm = (JavaVM*)resultJvm;
 	*penv = resultEnv;

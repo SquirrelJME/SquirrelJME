@@ -711,7 +711,8 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	/* Setup main thread, all threads start in java.lang.__Start__! */
 	mainThread = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadNew(inTask,
-		&mainThread, "main", SJME_JNI_TRUE)) ||
+		&mainThread, "main", SJME_JNI_TRUE,
+		SJME_JNI_FALSE)) ||
 		mainThread == NULL)
 		goto fail_taskNewThread;
 
@@ -723,16 +724,9 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 		/* Create new thread specifically for ScritchUI. */
 		if (sjme_error_is(error = sjme_nvm_task_threadNew(inTask,
 			&scritchUiThread, "scritchUiThread",
-			SJME_JNI_FALSE)) ||
+			SJME_JNI_FALSE, SJME_JNI_TRUE)) ||
 			scritchUiThread == NULL)
 			goto fail_taskNewThread;
-
-		/* This is always a daemon thread. */
-		scritchUiThread->flags |= SJME_NVM_THREAD_IS_DAEMON;
-
-		/* This is a callback type thread, it never gets deleted. */
-		sjme_atomic_s(sjme_nvm_thread_startType, &scritchUiThread->start,
-			SJME_NVM_THREAD_START_CALLBACK);
 
 		/* If ScritchUI uses an event thread that is independent, then it */
 		/* uses explicit handling which is called from the callback. */

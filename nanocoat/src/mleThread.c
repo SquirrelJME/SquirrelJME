@@ -435,6 +435,7 @@ SJME_NVM_MLE_FUNCTION_DECL(waitForUpdate)
 				return sjme_error_default(error);
 
 			/* This was actually interrupted. */
+			argR->t = SJME_JAVA_TYPE_ID_INTEGER;
 			argR->v.i = 1;
 			return SJME_ERROR_NONE;
 		}
@@ -456,7 +457,16 @@ SJME_NVM_MLE_FUNCTION_DECL(waitForUpdate)
 			sjme_nvm_mleFunc_waitForUpdateCheck, ms,
 			sjme_atomic_g(sjme_jint,
 				&SJME_F_K(inFrame)->numThreads[SJME_NVM_THREAD_COUNT_ALL]))))
-			return sjme_error_default(error);
+		{
+			/* Some other errors? */
+			if (error != SJME_ERROR_NOT_MATCHED)
+				return sjme_error_default(error);
+			
+			/* No change. */
+			argR->t = SJME_JAVA_TYPE_ID_INTEGER;
+			argR->v.i = 0;
+			return SJME_ERROR_NONE;
+		}
 
 		/* We must not push the value to the stack, it is done in the */
 		/* condition. */
@@ -464,6 +474,7 @@ SJME_NVM_MLE_FUNCTION_DECL(waitForUpdate)
 	}
 	
 	/* Not interrupted, and finished. */
+	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
 	argR->v.i = 0;
 	return SJME_ERROR_NONE;
 }

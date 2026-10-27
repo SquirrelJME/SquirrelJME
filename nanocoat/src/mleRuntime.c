@@ -346,8 +346,70 @@ SJME_NVM_MLE_FUNCTION_DECL(vmDescription)
 
 SJME_NVM_MLE_FUNCTION_DECL(vmStatistic)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_nvm_vmStatisticType type;
+	sjme_nvm inState;
+	sjme_nvm_thread inThread;
+	sjme_nvm_task inTask;
+	sjme_jlong value;
+	sjme_jint memTotal, memUsed;
+	
+	/* Invalid? */
+	type = (sjme_nvm_vmStatisticType)argV[0].v.i;
+	if (type < 0 || type >= SJME_NVM_VM_STAT_NUM_STATISTICS)
+		return sjme_error_mleCall(inFrame, SJME_ERROR_INVALID_ARGUMENT);
+	
+	/* Needed to get some statistics. */
+	inState = SJME_F_S(inFrame);
+	inThread = SJME_F_T(inFrame);
+	inTask = SJME_F_K(inFrame);
+	
+	/* Which one is requested? */
+	memset(&value, 0, sizeof(value));
+	switch (type) /* NOLINT */
+	{
+		case SJME_NVM_VM_STAT_MEM_FREE:
+		case SJME_NVM_VM_STAT_MEM_MAX:
+		case SJME_NVM_VM_STAT_MEM_USED:
+			if (sjme_error_is(error = sjme_alloc_poolSpaceTotalSize(
+				inState->allocPool, 
+				&memTotal, NULL, 
+				&memUsed, NULL)))
+				return sjme_error_default(error);
+			
+			switch (type) /* NOLINT */
+			{
+				case SJME_NVM_VM_STAT_MEM_FREE:
+					value.full = memTotal - memUsed;
+					break;
+					
+				case SJME_NVM_VM_STAT_MEM_MAX:
+					value.full = memTotal;
+					break;
+					
+				case SJME_NVM_VM_STAT_MEM_USED:
+					value.full = memUsed;
+					break;
+			}
+			break;
+			
+		case SJME_NVM_VM_STAT_ROOT_INSTANCE_ID:
+			value.full = inState->globals.instanceId;
+			break;
+			
+		case SJME_NVM_VM_STAT_CPU_THREAD_COUNT:
+			if (inState->threadModel == SJME_NVM_MLE_THREAD_SINGLE_COOP ||
+				inState->threadModel == SJME_NVM_MLE_THREAD_SINGLE_PREEMPT)
+				value.full = 1;
+			else if (inState->nal->cpuCount != NULL)
+				value.full = inState->nal->cpuCount();
+			break;
+	}
+	
+	/* Return whatever was determined. */
+	argR->t = SJME_JAVA_TYPE_ID_LONG;
+	argR->v.j = value;
+	return SJME_ERROR_NONE;
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(vmType)

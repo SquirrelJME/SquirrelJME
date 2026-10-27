@@ -452,6 +452,8 @@ sjme_errorCode sjme_nvm_boot(
 	result->nal = param->nal;
 	result->hooks = param->hooks;
 	result->hookData = param->hookData;
+	result->globals.instanceId =
+		sjme_nvm_instance_calcIdentityHash(NULL, result);
 
 	/* TODO FIXME: vvvvvv HANDLE MERGE IN ANOTHER FUNCTION. */
 	

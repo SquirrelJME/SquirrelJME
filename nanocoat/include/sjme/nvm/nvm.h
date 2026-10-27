@@ -469,6 +469,9 @@ typedef struct sjme_nvm_stateGlobals
 	 * to @link sjme_nvm_loop_tick @endlink will use this.
 	 */
 	sjme_jint ticLimit;
+	
+	/** The instance identifier for this state. */
+	sjme_jint instanceId;
 } sjme_nvm_stateGlobals;
 	
 struct sjme_nvm_stateBase

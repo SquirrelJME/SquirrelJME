@@ -859,12 +859,45 @@ sjme_errorCode sjme_nvm_task_frameWaitFor(
 	sjme_attrInNegativeOnePositive sjme_jint timeout,
 	sjme_attrInValue sjme_intPointer value)
 {
+	sjme_errorCode error;
+	sjme_nvm inState;
+	sjme_jvalueTyped push;
+	
 	if (inFrame == NULL || conditionFunc == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (timeout < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
-
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	
+	/* Clear the push target. */
+	memset(&push, 0, sizeof(push));
+	push.t = SJME_JAVA_TYPE_ID_VOID;
+	
+	/* If we are cooperative threaded, call the condition immediately. */
+	inState = SJME_F_S(inFrame);
+	if (inState->threadModel == SJME_NVM_MLE_THREAD_SINGLE_COOP ||
+		inState->threadModel == SJME_NVM_MLE_THREAD_SINGLE_PREEMPT)
+	{
+		/* Call the handler. */
+		if (sjme_error_is(error = conditionFunc(inFrame, value, &push)))
+			return sjme_error_default(error);
+	}
+	
+	/* Otherwise, a bit more complicated. */
+	else
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
+	
+	/* Push the value to the stack, if not NULL. */
+	if (push.t != SJME_JAVA_TYPE_ID_VOID)
+	{
+		if (sjme_error_is(error = sjme_nvm_task_frameStackPush(inFrame,
+			NULL, &push)))
+			return sjme_error_default(error);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
 }

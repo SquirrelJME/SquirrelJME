@@ -18,13 +18,13 @@
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 6
-; Check against zero
+; Passing check
 	ldc 0
 	
 	ifeq pass1
 	goto fail1
 	
-; Check against not zero
+; Failing check
 pass1:
 	ldc 1234
 	

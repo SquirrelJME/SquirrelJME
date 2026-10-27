@@ -766,9 +766,13 @@ sjme_errorCode sjme_nvm_task_threadInit(
 	/* an add because a thread gets daemon being set later. */
 	sjme_atomic_ga(sjme_jint,
 		&inTask->numThreads[SJME_NVM_THREAD_COUNT_ALL], 1);
-	sjme_atomic_ga(sjme_jint,
-		&inTask->numThreads[SJME_NVM_THREAD_COUNT_NORMAL], 1);
-
+	
+	/* Unless said thread is a callback thread. */
+	if (sjme_atomic_g(sjme_nvm_thread_startType, &inThread->start) !=
+		SJME_NVM_THREAD_START_CALLBACK)
+		sjme_atomic_ga(sjme_jint,
+			&inTask->numThreads[SJME_NVM_THREAD_COUNT_NORMAL], 1);
+	
 	/* The main thread gets flagged as the main thread. */
 	if (inThread->isMain)
 	{
@@ -1032,7 +1036,8 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	sjme_attrInNotNull sjme_nvm_task inTask,
 	sjme_attrOutNotNull sjme_nvm_thread* outThread,
 	sjme_attrInNotNull sjme_lpcstr threadName,
-	sjme_attrInValue sjme_jboolean isMain)
+	sjme_attrInValue sjme_jboolean isMain,
+	sjme_attrInValue sjme_jboolean isCallback)
 {
 	sjme_errorCode error;
 	sjme_nvm_thread result;
@@ -1055,6 +1060,17 @@ sjme_errorCode sjme_nvm_task_threadNew(
 
 	/* Set main thread. */
 	result->isMain = isMain;
+	
+	/* Callback thread? */
+	if (isCallback)
+	{
+		/* This is always a daemon thread. */
+		result->flags |= SJME_NVM_THREAD_IS_DAEMON;
+
+		/* This is a callback type thread, it never gets deleted. */
+		sjme_atomic_s(sjme_nvm_thread_startType, &result->start,
+			SJME_NVM_THREAD_START_CALLBACK);
+	}
 
 	/* Call the thread initializer. */
 	if (sjme_error_is(error = sjme_nvm_task_threadInit(inTask,

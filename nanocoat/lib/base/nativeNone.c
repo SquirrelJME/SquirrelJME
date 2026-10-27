@@ -11,6 +11,34 @@
 #include "sjme/intern/nal.h"
 #include "sjme/path.h"
 
+#pragma region(cpuCount)
+#if (SJME_CONFIG_NAL_CPU_COUNT == SJME_CONFIG_NAL_IMPLEMENT_NONE)
+
+sjme_jint sjme_nal_default_cpuCount(void)
+{
+	/* Always zero. */
+	return 0;
+}
+
+#endif
+#pragma endregion(cpuCount)
+
+#pragma region(currentTime)
+#if (SJME_CONFIG_NAL_CURRENT_TIME == SJME_CONFIG_NAL_IMPLEMENT_NONE)
+
+sjme_errorCode sjme_nal_default_currentTimeMillis(
+	sjme_attrOutNotNull sjme_jlong* result)
+{
+	if (result == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Not available here. */
+	return SJME_ERROR_NOT_IMPLEMENTED;
+}
+
+#endif
+#pragma endregion(currentTime)
+
 #pragma region(encoding)
 #if (SJME_CONFIG_NAL_ENCODING == SJME_CONFIG_NAL_IMPLEMENT_NONE)
 

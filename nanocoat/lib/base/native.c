@@ -13,7 +13,8 @@
 
 const sjme_nal sjme_nal_default =
 {
-	sjme_sm(.currentTimeMillis, NULL),
+	sjme_sm(.cpuCount, sjme_nal_default_cpuCount),
+	sjme_sm(.currentTimeMillis, sjme_nal_default_currentTimeMillis),
 	sjme_sm(.encoding, sjme_nal_default_encoding),
 	sjme_sm(.execPath, sjme_nal_default_execPath),
 	sjme_sm(.fileOpen, sjme_nal_default_fileOpen),
@@ -47,7 +48,7 @@ const sjme_nal sjme_nal_default =
 		},
 	},
 	sjme_sm(.userHome, sjme_nal_default_userHome),
-	sjme_sm(.userName, NULL),
+	sjme_sm(.userName, sjme_nal_default_userName),
 };
 
 const sjme_lpcstr sjme_nal_lineEndings[SJME_NAL_NUM_LINE_ENDINGS] =

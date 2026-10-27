@@ -1198,6 +1198,8 @@ sjme_errorCode sjme_nvm_task_frameStackTop(
  * is @c -1 then this will wait forever.
  * @param value The condition parameter, this may be anything. 
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the timeout is negative.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/10/02
  */
 sjme_errorCode sjme_nvm_task_frameWaitFor(
@@ -1578,6 +1580,7 @@ sjme_errorCode sjme_nvm_task_threadLeave(
  * @param threadName The name of the new thread.
  * @param isMain Is this the main thread? If a main thread already exists
  * then this parameter will have no effect.
+ * @param isCallback Is this a callback thread?
  * @return On any errors, if any.
  * @throws SJME_ERROR_INVALID_THREAD_STATE ...?
  * @throws SJME_ERROR_NULL_ARGUMENTS ...?
@@ -1587,7 +1590,8 @@ sjme_errorCode sjme_nvm_task_threadNew(
 	sjme_attrInNotNull sjme_nvm_task inTask,
 	sjme_attrOutNotNull sjme_nvm_thread* outThread,
 	sjme_attrInNotNull sjme_lpcstr threadName,
-	sjme_attrInValue sjme_jboolean isMain);
+	sjme_attrInValue sjme_jboolean isMain,
+	sjme_attrInValue sjme_jboolean isCallback);
 
 /**
  * Starts the specified thread.

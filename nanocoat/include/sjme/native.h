@@ -146,6 +146,14 @@ typedef enum sjme_nal_localeType
 typedef struct sjme_path_style sjme_path_style;
 	
 /**
+ * Returns the CPU count.
+ * 
+ * @return The CPU count.
+ * @since 2026/10/26
+ */
+typedef sjme_jint (*sjme_nal_cpuCountFunc)(void);
+	
+/**
  * Returns the current time in milliseconds as per the Java
  * method @c System::currentTimeMillis() .
  * 
@@ -335,6 +343,9 @@ typedef sjme_errorCode (*sjme_nal_userNameFunc)(
  */
 typedef struct sjme_nal
 {
+	/** The current CPU count. */
+	sjme_nal_cpuCountFunc cpuCount;
+	
 	/** Current time in milliseconds. */
 	sjme_nal_currentTimeMillisFunc currentTimeMillis;
 	

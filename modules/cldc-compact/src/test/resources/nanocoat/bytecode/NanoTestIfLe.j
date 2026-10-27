@@ -12,11 +12,26 @@
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
+		.elem .bool_kind "expectedVoid" 1
 	.end .annotation
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
-.limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+.limit stack 6
+; Passing check
+	ldc 0
+	
+	ifle pass1
+	goto fail1
+	
+; Failing check
+pass1:
+	ldc 4
+	
+	ifle fail2
+	invokestatic nano/NanoShelf/result()V
+	
+fail1:
+fail2:
 	return
 .end method

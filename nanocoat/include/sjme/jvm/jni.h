@@ -476,9 +476,6 @@ struct JVMNativeInterface
 
 	/** Reserved for the JVM (2). */
 	void* reserved2;
-
-	/** Reserved for the JVM (3). */
-	void* reserved3;
 	
 	/** @code DestroyJavaVM @endcode . */
 	SJME_JNI_FUNC__(Jvm, DestroyJavaVM);

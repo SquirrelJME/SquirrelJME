@@ -647,8 +647,11 @@ typedef enum sjme_errorCode
 	/** The string index is out of bounds. */
 	SJME_ERROR_STRING_INDEX_OUT_OF_BOUNDS = -199,
 	
+	/** Need to recycle. */
+	SJME_ERROR_RECYCLE = -200,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -200,
+	SJME_NUM_ERROR_CODES = -201,
 } sjme_errorCode;
 
 /**

@@ -400,6 +400,7 @@ static sjme_errorCode sjme_libretro_userName(
 
 const sjme_nal sjme_libretro_nal =
 {
+	sjme_sm(.cpuCount, sjme_libretro_cpuCount),
 	sjme_sm(.currentTimeMillis, sjme_libretro_currentTimeMillis),
 	sjme_sm(.encoding, sjme_libretro_encoding),
 	sjme_sm(.execPath, sjme_libretro_execPath),

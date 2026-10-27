@@ -133,6 +133,7 @@ sjme_errorCode sjme_nal_test_userName(sjme_lpstr out,
 
 const sjme_nal sjme_nal_test =
 {
+	sjme_sm(.cpuCount, sjme_nal_default_cpuCount),
 	sjme_sm(.currentTimeMillis, sjme_nal_test_currentTimeMillis),
 	sjme_sm(.encoding, sjme_nal_default_encoding),
 	sjme_sm(.execPath, sjme_nal_test_execPath),
