@@ -891,6 +891,16 @@ static sjme_errorCode sjme_nvm_vmClass_isClassesSub(
 	if (contextThread == NULL || rootClass == NULL || pivotClass == NULL ||
 		inOutClasses == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Ensure the root class is fully loaded. */
+	if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(rootClass,
+		contextThread)))
+		return sjme_error_default(error);
+	
+	/* And the pivot class as well. */
+	if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(pivotClass,
+		contextThread)))
+		return sjme_error_default(error);
 
 	/* If this class was already added to the target, then do not process. */
 	if (*inOutClasses != NULL)
@@ -1681,7 +1691,7 @@ sjme_errorCode sjme_nvm_vmClass_isAssignableFrom(
 	fromClasses = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmClass_isClasses(
 		contextThread, fromClass, &fromClasses)) || fromClasses == NULL)
-		return sjme_error_defaultOr(error, SJME_ERROR_CLASS_CAST);
+		return sjme_error_default(error);
 
 	/* Can any of these classes be assigned to this? */
 	for (i = 0, n = fromClasses->length; i < n; i++)
@@ -1689,6 +1699,7 @@ sjme_errorCode sjme_nvm_vmClass_isAssignableFrom(
 			&fromClasses->elements[i]))
 			return SJME_ERROR_NONE;
 
+#if 0
 	/* If the target is an interface, we need to check further as a direct */
 	/* class match failed. */
 	if (SJME_NVM_ACC_IS(canAssignTo->info->flags, INTERFACE))
@@ -1696,6 +1707,7 @@ sjme_errorCode sjme_nvm_vmClass_isAssignableFrom(
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
 	}
+#endif
 
 	/* Failed to find a match. */
 	return SJME_ERROR_CLASS_CAST;

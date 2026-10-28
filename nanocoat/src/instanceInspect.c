@@ -201,7 +201,7 @@ sjme_errorCode sjme_nvm_instance_arraySet(
 		
 		/* The value must be able to be stored here. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
-			contextThread, valueClass, componentType)))
+			contextThread, componentType, valueClass)))
 		{
 			/* It cannot, so map to an array store error. */
 			if (error == SJME_ERROR_CLASS_CAST)

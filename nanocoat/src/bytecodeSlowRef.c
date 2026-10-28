@@ -547,7 +547,11 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	sjme_nvm_class_poolEntry* entry;
 	sjme_jclass desireClass;
 	sjme_jvalueTyped value;
+	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Clear the commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Read in pool reference. */
 	poolIndex = sjme_big_ushort(*sjme_util_memUnaligned16(&relRawCode[1]));
@@ -579,38 +583,25 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPeek(inFrame,
 		SJME_JAVA_TYPE_ID_OBJECT, &value)))
 		return sjme_error_vmError(inFrame, error);
-
-	/* Debug. */
-#if defined(SJME_CONFIG_DEBUG_VERBOSE)
-	sjme_message("Is %s a %s?",
-		(value.v.l == NULL ? "NULL" :
-			sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->fieldName)),
-		(desireClass == NULL ? "NULL" :
-			sjme_charSeq_tempUtf(desireClass->fieldName)));
-#endif
+	
+	/* If nothing is here, this always succeeds. */
+	if (value.v.l == NULL)
+		goto skip_isNull;
 
 	/* Not a match? */
 	/* b.getClass().isAssignableFrom(a.getClass()) == (a instanceof b) */
-	error = SJME_ERROR_NONE;
-	if (value.v.l != NULL &&
-		!(SJME_O_C(value.v.l) == desireClass ||
-		sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
-			SJME_F_T(inFrame),
-			desireClass, SJME_O_C(value.v.l)))))
+	if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+			SJME_F_T(inFrame), desireClass, 
+			SJME_O_C(value.v.l))))
 	{
-		/* Not an actual class cast error but something else? */
-		if (sjme_error_is(error) && error != SJME_ERROR_CLASS_CAST)
+		/* Exception is something else? */
+		if (!sjme_error_isOneOf(error,
+			SJME_ERROR_CLASS_CAST, 0))
 			return sjme_error_default(error);
 		
 		/* Emit exception. */
-		if (sjme_error_is(error = sjme_nvm_task_threadEmit(SJME_F_T(inFrame),
-			SJME_NVM_COMMON_EXCEPTION_CLASS_CAST,
-			NULL,
-			"CAST %s %s",
-			(value.v.l == NULL ? "NULL" :
-				sjme_charSeq_tempUtf(SJME_O_C(value.v.l)->fieldName)),
-					(desireClass == NULL ? "NULL" :
-				sjme_charSeq_tempUtf(desireClass->fieldName)))))
+		if (sjme_error_is(error = sjme_nvm_task_frameEmitE(inFrame,
+			error, NULL, "%s %s", "?", "?")))
 			return sjme_error_vmError(inFrame, error);
 		
 		/* Check for recycle, class load and/or static constructor. */
@@ -620,6 +611,11 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 			return SJME_ERROR_NONE;
 		}
 	}
+	
+skip_isNull:
+	/* Commit GC. */
+	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
+		return sjme_error_vmError(inFrame, error);
 	
 	/* Success? */
 	SJME_NVM_BYTECODE_EXIT;
@@ -638,6 +634,9 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 	sjme_jboolean isPut;
 	sjme_nvm_frame_gcCommit commit;
 	SJME_NVM_BYTECODE_ENTRY;
+	
+	/* Clear the commit. */
+	memset(&commit, 0, sizeof(commit));
 
 	/* Is this a get or a put? */
 	isPut = (id == 181);
@@ -694,7 +693,6 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 
 	/* Read in value to put. */
 	memset(&result, 0, sizeof(result));
-	memset(&commit, 0, sizeof(commit));
 	if (isPut)
 	{
 		/* Cannot be final unless we are in a static initializer. */
