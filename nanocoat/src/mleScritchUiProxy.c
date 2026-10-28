@@ -80,8 +80,7 @@ static sjme_thread_result sjme_attrThreadCall
 	/* Recover phantom state and task. */
 	nvmState = sjme_atomic_g(sjme_nvm, &runnable->common.phantomState);
 	nvmTask = sjme_atomic_g(sjme_nvm_task, &runnable->phantomTask);
-	if (nvmState == NULL || nvmTask == NULL ||
-		!sjme_nvm_isAR(nvmState, SJME_NVM_STRUCT_STATE) ||
+	if (!sjme_nvm_isAR(nvmState, SJME_NVM_STRUCT_STATE) ||
 		!sjme_nvm_isAR(nvmTask, SJME_NVM_STRUCT_TASK))
 	{
 		error = SJME_ERROR_ILLEGAL_STATE;
@@ -91,8 +90,7 @@ static sjme_thread_result sjme_attrThreadCall
 	/* Recover the callback thread. */
 	uiThread = sjme_atomic_g(sjme_nvm_thread,
 		&nvmTask->globals.scritchUiThread);
-	if (uiThread == NULL ||
-		!sjme_nvm_isAR(nvmState, SJME_NVM_STRUCT_THREAD_INSTANCE))
+	if (!sjme_nvm_isAR(uiThread, SJME_NVM_STRUCT_THREAD_INSTANCE))
 	{
 		error = SJME_ERROR_ILLEGAL_STATE;
 		goto fail_recover;
