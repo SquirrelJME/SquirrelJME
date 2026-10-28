@@ -9,41 +9,34 @@
 
 import gdb
 import gdb.printing
-from prettycore import *
-from typing import Any, List
 
-class GDBMaker(PrettyMaker):
-	def __init__(self):
-		super().__init__()
+import sys
+import os
+import abc
+from collections.abc import Callable
+from typing import Any, List, final, Union, List
 
-	def make_type(self, type_name: str) -> PrettyType | None:
-		raise Exception("TODO")
-
-class GDBRegister(PrettyRegister):
-	def __init__(self):
-		super().__init__()
-
-	def register_list(self, debug_type: PrettyType,
-			func: Callable[[PrettyMaker, PrettyValue], PrettyList]) -> None:
-		raise Exception("TODO")
-
-	def register_string(self, debug_type: PrettyType,
-			func: Callable[[PrettyValue], str]) -> None:
-		raise Exception("TODO")
+# This is needed due to the GDB data directory generally being set in /usr
+# so while this script can be read
+sys.path.append(os.getcwd())
+from assets.prettyprint.prettycore import *
 
 class GDBType(PrettyType):
-	def __init__(self, debug_type: Any, optimal_name: str | None):
+	def __init__(self, debug_type: Any, optimal_name: Union[str, None]):
 		super().__init__(debug_type, optimal_name)
 
 	def is_pointer(self) -> bool:
 		raise Exception("TODO")
 
-	def names(self) -> list[str]:
+	def names(self) -> List[str]:
 		raise Exception("TODO")
 
 class GDBValue(PrettyValue):
-	def __init__(self, debug_value: Any):
+	def __init__(self, debug_type: Any, debug_value: Any):
 		super().__init__(debug_value)
+
+		# Remember the type
+		self.debug_type = debug_type
 
 	def address(self) -> int:
 		raise Exception("TODO")
@@ -57,16 +50,16 @@ class GDBValue(PrettyValue):
 	def cast_to(self, other: PrettyType) -> List['PrettyValue']:
 		raise Exception("TODO")
 
-	def index(self, index: int) -> List['PrettyValue'] | None:
+	def index(self, index: int) -> Union[List['PrettyValue'], None]:
 		raise Exception("TODO")
 
-	def index_unsafe(self, index: int) -> List['PrettyValue'] | None:
+	def index_unsafe(self, index: int) -> Union[List['PrettyValue'], None]:
 		raise Exception("TODO")
 
 	def int_value(self) -> int:
 		raise Exception("TODO")
 
-	def member(self, member_name: str) -> List['PrettyValue'] | None:
+	def member(self, member_name: str) -> Union[List['PrettyValue'], None]:
 		raise Exception("TODO")
 
 	def pretty_type(self) -> PrettyType:
@@ -77,6 +70,67 @@ class GDBValue(PrettyValue):
 
 	def str_wide_value(self) -> str:
 		raise Exception("TODO")
+
+# Type mapping for GDB to pretty types
+gdb_type_map = dict()
+
+class GDBMaker(PrettyMaker):
+	def __init__(self):
+		super().__init__()
+
+	def make_type(self, type_name: str) -> Union['PrettyType', None]:
+		# Is this already in the dict?
+		if type_name in gdb_type_map:
+			return gdb_type_map[type_name]
+
+		# If type lookup fails, then an exception is thrown, ignore it
+		found = None
+		try:
+			found = gdb.lookup_type(type_name)
+		except:
+			pass
+
+		# Put none into the map
+		if found is None:
+			gdb_type_map[type_name] = None
+			return None
+
+		# Store it in
+		result = GDBValue(found)
+		gdb_type_map[type_name] = result
+		return result
+
+class GDBTypeCheck:
+	def __init__(self, debug_type: PrettyType, func: Callable) -> None:
+		self.debug_type = debug_type
+		self.func = func
+
+	def invoke_or_none(self, gdb_value) -> Union[str, None]:
+		# Which type is this? Note this could be a type we do not care
+		# about at all...
+		wrapped_type = gdb_type_map.get(gdb_value.type.name, None)
+		print(f"{gdb_value.type.name} = {wrapped_type}\n")
+		if wrapped_type is not None:
+			return self.func(GDBValue(wrapped_type, gdb_value))
+		return None
+
+class GDBRegister(PrettyRegister):
+	def __init__(self):
+		super().__init__()
+
+	def register_list(self, debug_type: PrettyType,
+			func: Callable) -> None:
+		#raise Exception("TODO")
+		pass
+
+	def register_string(self, debug_type: PrettyType,
+			func: Callable, maker: PrettyMaker) -> None:
+		# The type has to actually exist
+		maker.make_type(debug_type.optimal_name)
+
+		# Append in
+		gdb.pretty_printers.append(
+			GDBTypeCheck(debug_type, func).invoke_or_none)
 
 # ---------------------------------------------------------------------------
 

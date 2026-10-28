@@ -9,11 +9,10 @@
 
 import abc
 from collections.abc import Callable
-from typing import Any, List, final
-
+from typing import Any, List, final, Union, List
 
 class PrettyType(abc.ABC):
-	def __init__(self, debug_type: Any, optimal_name: str | None):
+	def __init__(self, debug_type: Any, optimal_name: Union[str, None]):
 		self.debug_type = debug_type
 		self.optimal_name = optimal_name
 
@@ -25,7 +24,7 @@ class PrettyType(abc.ABC):
 		pass
 
 	@abc.abstractmethod
-	def names(self) -> list[str]:
+	def names(self) -> List[str]:
 		"""
 		Returns all the known names for this type and any aliases such
 		as typedefs.
@@ -118,7 +117,7 @@ class PrettyValue(abc.ABC):
 		pass
 
 	@abc.abstractmethod
-	def index(self, index: int) -> List['PrettyValue'] | None:
+	def index(self, index: int) -> Union[List['PrettyValue'], None]:
 		"""
 		Returns the index of a sub-member.
 
@@ -127,7 +126,7 @@ class PrettyValue(abc.ABC):
 		pass
 
 	@abc.abstractmethod
-	def index_unsafe(self, index: int) -> List['PrettyValue'] | None:
+	def index_unsafe(self, index: int) -> Union[List['PrettyValue'], None]:
 		"""
 		Returns the index of a sub-member, using an unsafe method.
 
@@ -143,7 +142,7 @@ class PrettyValue(abc.ABC):
 		pass
 
 	@abc.abstractmethod
-	def member(self, member_name: str) -> List['PrettyValue'] | None:
+	def member(self, member_name: str) -> Union[List['PrettyValue'], None]:
 		"""
 		Returns the specified member of this value, or None.
 
@@ -185,7 +184,7 @@ class PrettyList(abc.ABC):
 		pass
 
 	@abc.abstractmethod
-	def list_index(self, index: int) -> PrettyValue | None:
+	def list_index(self, index: int) -> Union[PrettyValue, None]:
 		"""
 		Returns the value of a given index.
 
@@ -195,7 +194,7 @@ class PrettyList(abc.ABC):
 
 class PrettyMaker(abc.ABC):
 	@abc.abstractmethod
-	def make_type(self, type_name: str) -> PrettyType | None:
+	def make_type(self, type_name: str) -> Union[PrettyType, None]:
 		"""
 		Makes the given type and returns it.
 
@@ -206,7 +205,8 @@ class PrettyMaker(abc.ABC):
 class PrettyRegister(abc.ABC):
 	@abc.abstractmethod
 	def register_list(self, debug_type: PrettyType,
-		func: Callable[[PrettyMaker, PrettyValue], PrettyList]) -> None:
+		# func: Callable[[PrettyMaker, PrettyValue], PrettyList]) -> None:
+		func: Callable) -> None:
 		"""
 		Registers a type which returns a list to represent its value.
 
@@ -217,12 +217,14 @@ class PrettyRegister(abc.ABC):
 
 	@abc.abstractmethod
 	def register_string(self, debug_type: PrettyType,
-			func: Callable[[PrettyMaker, PrettyValue], str]) -> None:
+			# func: Callable[[PrettyMaker, PrettyValue], str]) -> None:
+			func: Callable, maker: PrettyMaker) -> None:
 		"""
 		Registers a type which returns a string to represent its value.
 
 		:param debug_type: The type to register.
 		:param func: The function to be called.
+		:param maker: The maker used to make objects.
 		"""
 		pass
 
@@ -240,53 +242,54 @@ def pretty_sjme_char_seq(maker: PrettyMaker, value: PrettyValue) -> str:
 		return "<A???>"
 
 	# And how this is interpreted is based on the type
-	match type_member.int_value():
-		# Null, which is always a blank string
-		case 0:
-			return ""
+	# Note that this cannot be match because that is 3.10 while gdb is 3.8
+	string_type: int = type_member.int_value()
+	# Null, which is always a blank string
+	if string_type == 0:
+		return ""
 
-		# Function
-		case 1:
-			return "<FUNCTION>"
+	# Function
+	elif string_type == 1:
+		return "<FUNCTION>"
 
-		# Function Static
-		case 2:
-			return "<STATIC FUNCTION>"
+	# Function Static
+	elif string_type == 2:
+		return "<STATIC FUNCTION>"
 
-		# Narrow
-		case 3:
-			value = data_member.member("bytes")
-			if value is None:
-				return "<3???>"
-			return value.str_value()
+	# Narrow
+	elif string_type == 3:
+		value = data_member.member("bytes")
+		if value is None:
+			return "<3???>"
+		return value.str_value()
 
-		# Wide
-		case 4:
-			value = data_member.member("chars")
-			if value is None:
-				return "<4???>"
-			return value.str_wide_value()
+	# Wide
+	elif string_type == 4:
+		value = data_member.member("chars")
+		if value is None:
+			return "<4???>"
+		return value.str_wide_value()
 
-		# UTF
-		case 5:
-			value = data_member.member("bytes")
-			if value is None:
-				return "<5???>"
-			return value.str_value()
+	# UTF
+	elif string_type == 5:
+		value = data_member.member("bytes")
+		if value is None:
+			return "<5???>"
+		return value.str_value()
 
-		# Static UTF
-		case 6:
-			value = data_member.member("staticUtf")
-			if value is None:
-				return "<6???>"
-			return value.str_value()
+	# Static UTF
+	elif string_type == 6:
+		value = data_member.member("staticUtf")
+		if value is None:
+			return "<6???>"
+		return value.str_value()
 
-		# Static Wide
-		case 7:
-			value = data_member.member("staticWide")
-			if value is None:
-				return "<7???>"
-			return value.str_wide_value()
+	# Static Wide
+	elif string_type == 7:
+		value = data_member.member("staticWide")
+		if value is None:
+			return "<7???>"
+		return value.str_wide_value()
 
 	# Some other type?
 	return "<Z???>"
@@ -336,7 +339,7 @@ class AdapterList(PrettyList):
 			return 0
 		return len.int_value()
 
-	def list_index(self, index: int) -> PrettyValue | None:
+	def list_index(self, index: int) -> Union['PrettyValue', None]:
 		elements: PrettyValue = self.value.member("elements")
 		if elements is None:
 			return None
@@ -357,21 +360,21 @@ def register_all_types(maker: PrettyMaker,
 	:param register: The debug registration system.
 	"""
 	# sjme_jchar* and sjme_lpcwstr
-	for object_type in list[str](["sjme_jchar*",
+	for object_type in list(["sjme_jchar*",
 		"sjme_jchar[]",
 		"sjme_jchar[*]",
 		"sjme_lpcwstr"]):
 		register.register_string(maker.make_type(object_type),
-			pretty_sjme_lpcwstr)
+			pretty_sjme_lpcwstr, maker)
 
 	# sjme_charSeq and variants
-	for object_type in list[str](["sjme_charSeq",
+	for object_type in list(["sjme_charSeq",
 		"sjme_charSeqStatic"]):
 		register.register_string(maker.make_type(object_type),
-			pretty_sjme_char_seq)
+			pretty_sjme_char_seq, maker)
 
 	# Objects and all of their variants
-	for object_type in list[str](["sjme_jobject",
+	for object_type in list(["sjme_jobject",
 		"sjme_jclass",
 		"sjme_jstring",
 		"sjme_jthrowable",
@@ -380,18 +383,18 @@ def register_all_types(maker: PrettyMaker,
 		"sjme_nvm_thread"]):
 		# The base type
 		register.register_string(maker.make_type(object_type + "Base"),
-			pretty_sjme_any_object)
+			pretty_sjme_any_object, maker)
 
 		# The aliased pointer type
 		register.register_string(maker.make_type(object_type),
-			pretty_sjme_any_object)
+			pretty_sjme_any_object, maker)
 
 	# Every list type, and what is currently known
 	register.register_list(maker.make_type("sjme_list"),
 		pretty_sjme_any_sjme_list)
 	register.register_list(maker.make_type("sjme_list_*"),
 		pretty_sjme_any_sjme_list)
-	for object_type in list[str](["sjme_intPointer",
+	for object_type in list(["sjme_intPointer",
 		"sjme_jbracketJarPackage",
 		"sjme_jclass",
 		"sjme_jfieldID",

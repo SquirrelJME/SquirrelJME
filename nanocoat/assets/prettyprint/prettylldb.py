@@ -8,9 +8,14 @@
 # DESCRIPTION: Pretty printing specifically for LLDB
 
 import lldb
+
 import sys
+import os
+import abc
+from collections.abc import Callable
+from typing import Any, List, final, Union, List
+
 from assets.prettyprint.prettycore import *
-from typing import Any, List
 
 class LLDBMaker(PrettyMaker):
 	def __init__(self):
@@ -36,7 +41,7 @@ class LLDBRegister(PrettyRegister):
 		pass
 
 	def register_string(self, debug_type: PrettyType,
-			func: Callable[[PrettyValue], str]) -> None:
+			func: Callable[[PrettyValue], str], maker: PrettyMaker) -> None:
 		# lldb uses commands to do this as follows:
 		# type summary add --python-function CharSeqSummary sjme_charSeq
 		# So we effectively need to duplicate this

@@ -106,7 +106,7 @@ indent_style = space
 max_line_length = 115
 
 [{*.py,*.pyw}]
-indent_style = space
+indent_style = tab
 
 [{*.yaml,*.yml,.clang-format,.clang-tidy,_clang-format}]
 indent_size = 2
