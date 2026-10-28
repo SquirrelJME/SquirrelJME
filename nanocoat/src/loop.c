@@ -132,6 +132,10 @@ sjme_errorCode sjme_nvm_loop_tickExplicit(
 			/* Always capture the return value at the end, if desired. */
 			goto skip_captureReturn;
 		}
+		
+		/* This cannot be done for this thread. */
+		else
+			return SJME_ERROR_INVALID_ARGUMENT;
 	}
 
 	/* Run the thread explicitly. */
@@ -149,7 +153,7 @@ sjme_errorCode sjme_nvm_loop_tickExplicit(
 			/* Minimum frame level means we must stop, as this could */
 			/* actually be a nested loop execution, in which case things */
 			/* will go very wrong if we start executing a higher level. */
-			goto skip_captureReturn;
+			break;
 		}
 
 		/* Yield to let other threads run. */
@@ -255,12 +259,13 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	const sjme_nvm_byteCode_func (*lut)[SJME_NVM_NUM_JAVA_BYTECODES];
 	sjme_nvm_byteCode_func lutFunc;
 	sjme_jobject tossed;
-	sjme_jboolean handled;
+	sjme_jboolean handled, isCallback;
 	sjme_jvalueTyped push;
 	sjme_nvm_task inTask;
 	sjme_nvm inState;
 	sjme_jdwp jdwp;
 	sjme_nvm_frame_gcCommit commit;
+	sjme_nvm_thread_statusType status;
 	
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -285,6 +290,10 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	tossed = NULL;
 	tossedLevel = -1;
 	
+	/* Is this a callback thread? */
+	isCallback = ((sjme_atomic_g(sjme_nvm_thread_startType,
+		&inThread->start) == SJME_NVM_THREAD_START_CALLBACK));
+	
 	/* Continuous code execution. */
 	inTask = SJME_T_K(inThread);
 	inState = SJME_T_S(inThread);
@@ -294,7 +303,8 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	while sjme_noLint(remaining == -1 || remaining > 0)
 	{
 		/* Is there a debugger attached? If so we should poll it. */
-		if (jdwp != NULL)
+		/* Never for callback threads because those will just deadlock. */
+		if (jdwp != NULL && !isCallback)
 			if (sjme_error_is(error = sjme_jdwp_sessionPoll(jdwp)))
 				return sjme_error_default(error);
 			
@@ -336,9 +346,14 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		}
 		
 		/* Thread has entered a sleeping state? */
-		if (sjme_atomic_g(sjme_nvm_thread_statusType,
-			&inThread->status) != SJME_NVM_THREAD_STATUS_RUNNING)
-			break;
+		/* This is ignored for callback threads unless they are waiting on */
+		/* a monitor, which would break if it is allowed to run. */
+		/* Explicitly run threads in this case are never truly sleeping. */
+		status = sjme_atomic_g(sjme_nvm_thread_statusType,
+			&inThread->status);
+		if (status != SJME_NVM_THREAD_STATUS_RUNNING)
+			if (!isCallback || status == SJME_NVM_THREAD_STATUS_MONITOR_WAIT)
+				break;
 		
 		/* Tick down. */
 		if (remaining > 0)
@@ -350,7 +365,18 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 			/* Are there any actual frames left? */
 			frameIndex = (inThread->numFrames - 1);
 			if (frameIndex < 0)
+			{
+				/* If we are expecting a minimum frame, once all the frames */
+				/* are gone then the frame level is gone. */
+				if (minFrameLevel >= 0)
+				{
+					success = SJME_ERROR_MINIMUM_FRAME_LEVEL;
+					goto skip_done;
+				}
+				
+				/* Otherwise, do a normal exit. */
 				break;
+			}
 			
 			currentFrame = inThread->frames->elements[frameIndex];
 			currentCode = currentFrame->inCode;

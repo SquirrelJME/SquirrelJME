@@ -743,15 +743,16 @@ sjme_errorCode sjme_nvm_task_threadInit(
 	sjme_atomic_s(sjme_jclass, &inThread->object.isClass,
 		sjme_weakUp(threadType));
 
-	/* All threads have an initial frame within java.lang.__Start__. */
+	/* Only main threads have an initial frame within java.lang.__Start__. */
 	firstFrame = NULL;
-	if (sjme_error_is(error = sjme_nvm_task_threadEnterA(
-		inThread, &firstFrame,
-		"java/lang/__Start__",
-		SJME_NVM_CLASS_MEMBER_STATIC,
-		"__main", "()V",
-		0, NULL)))
-		goto fail_enterFrame;
+	if (inThread->isMain)
+		if (sjme_error_is(error = sjme_nvm_task_threadEnterA(
+			inThread, &firstFrame,
+			"java/lang/__Start__",
+			SJME_NVM_CLASS_MEMBER_STATIC,
+			"__main", "()V",
+			0, NULL)) || firstFrame == NULL)
+			goto fail_enterFrame;
 
 	/* Count up. */
 	if (sjme_error_is(error = sjme_nvm_instance_countUp(
