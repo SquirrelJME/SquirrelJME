@@ -132,12 +132,6 @@
     <inspection_tool class="ArgNamesErrorsInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="ArgNamesWarningsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AroundAdviceStyleInspection" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="ArrayCanBeReplacedWithEnumValues" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ArrayCreationWithoutNewKeyword" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="ArrayEquality" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -158,17 +152,11 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="AssertEqualsBetweenInconvertibleTypes" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="AssertMessageNotString" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="AssertStatement" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="AssertWithSideEffects" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="AssertionCanBeIf" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
     </inspection_tool>
     <inspection_tool class="AssignedValueIsNeverRead" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AssignmentOrReturnOfFieldWithMutableType" enabled="true" level="WARNING" enabled_by_default="false">
@@ -282,14 +270,8 @@
     <inspection_tool class="BigDecimalMethodWithoutRoundingCalled" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="BlockMarkerComments" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="BooleanConstructor" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="BooleanExpressionMayBeConditional" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
     </inspection_tool>
     <inspection_tool class="BooleanLiteralArgument" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="BooleanMethodIsAlwaysInverted" enabled="true" level="WARNING" enabled_by_default="false">
@@ -301,16 +283,7 @@
     <inspection_tool class="BooleanVariableAlwaysNegated" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="BoundedWildcard" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="BoxingBoxedValue" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="BreakStatement" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="BreakStatementWithLabel" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="BulkFileAttributesRead" enabled="true" level="WARNING" enabled_by_default="false">
@@ -321,9 +294,6 @@
     </inspection_tool>
     <inspection_tool class="BvConfigDomInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="BvConstraintMappingsInspection" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="CStyleArrayDeclaration" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="CachedNumberConstructorCall" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -345,9 +315,6 @@
       </scope>
       <option name="ignoreSetterCallsOnOtherObjects" value="false" />
       <option name="onlyReportPrivateSetter" value="false" />
-    </inspection_tool>
-    <inspection_tool class="CallToStringConcatCanBeReplacedByOperator" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="CallToSuspiciousStringMethod" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
@@ -394,17 +361,6 @@
     <inspection_tool class="CaughtExceptionImmediatelyRethrown" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="ChainedEquality" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ChainedMethodCall" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_ignoreFieldInitializations" value="true" />
-        <option name="m_ignoreThisSuperCalls" value="true" />
-      </scope>
-      <option name="m_ignoreFieldInitializations" value="true" />
-      <option name="m_ignoreThisSuperCalls" value="true" />
-    </inspection_tool>
     <inspection_tool class="ChannelResource" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
         <option name="insideTryAllowed" value="false" />
@@ -417,9 +373,7 @@
     <inspection_tool class="CharacterComparison" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="CharsetObjectCanBeUsed" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
+    <inspection_tool class="CharsetObjectCanBeUsed" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CheckForOutOfMemoryOnLargeArrayAllocation" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
         <option name="m_limit" value="64" />
@@ -503,12 +457,6 @@
     <inspection_tool class="ClassReferencesSubclass" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="ClassWithMultipleLoggers" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="loggerNamesString" value="java.util.logging.Logger,org.slf4j.Logger,org.apache.commons.logging.Log,org.apache.log4j.Logger,org.apache.logging.log4j.Logger" />
-      </scope>
-      <option name="loggerNamesString" value="java.util.logging.Logger,org.slf4j.Logger,org.apache.commons.logging.Log,org.apache.log4j.Logger,org.apache.logging.log4j.Logger" />
-    </inspection_tool>
     <inspection_tool class="ClassWithOnlyPrivateConstructors" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -535,14 +483,6 @@
         <option name="limit" value="35" />
       </scope>
       <option name="limit" value="35" />
-    </inspection_tool>
-    <inspection_tool class="ClassWithoutLogger" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="loggerNamesString" value="java.util.logging.Logger,org.slf4j.Logger,org.apache.commons.logging.Log,org.apache.log4j.Logger,org.apache.logging.log4j.Logger" />
-        <option name="ignoreSuperLoggers" value="false" />
-      </scope>
-      <option name="loggerNamesString" value="java.util.logging.Logger,org.slf4j.Logger,org.apache.commons.logging.Log,org.apache.log4j.Logger,org.apache.logging.log4j.Logger" />
-      <option name="ignoreSuperLoggers" value="false" />
     </inspection_tool>
     <inspection_tool class="CloneCallsConstructors" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
@@ -599,35 +539,11 @@
     <inspection_tool class="ConditionSignal" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="ConditionalBreakInInfiniteLoop" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ConditionalCanBeOptional" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ConditionalCanBePushedInsideExpression" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ConditionalExpression" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ConditionalExpressionWithIdenticalBranches" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="ConfigurationProperties" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="ConfusingElse" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES">
-        <option name="reportWhenNoStatementFollow" value="true" />
-      </scope>
-      <option name="reportWhenNoStatementFollow" value="true" />
-    </inspection_tool>
     <inspection_tool class="ConfusingFloatingPointLiteral" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ConfusingMainMethod" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ConfusingOctalEscape" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ConnectionResource" enabled="true" level="WARNING" enabled_by_default="false">
@@ -638,22 +554,13 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ConstantConditionIf" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="ConstantConditionalExpression" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="ConstantDeclaredInAbstractClass" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ConstantDeclaredInInterface" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="ConstantExpression" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="ConstantMathCall" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ConstantOnWrongSideOfComparison" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ConstantValue" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="false" editorAttributes="CONSIDERATION_ATTRIBUTES">
@@ -676,17 +583,8 @@
     <inspection_tool class="ContinueOrBreakFromFinallyBlock" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="ContinueStatement" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ContinueStatementWithLabel" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="Contract" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ControlFlowStatementWithoutBraces" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ControlFlowWithEmptyBody" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ConvertArgumentToSet" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
@@ -766,12 +664,6 @@
     <inspection_tool class="CyclicPackageDependency" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="CyclomaticComplexity" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_limit" value="10" />
-      </scope>
-      <option name="m_limit" value="10" />
-    </inspection_tool>
     <inspection_tool class="DataClassPrivateConstructor" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DataFlowIssue" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
@@ -800,9 +692,6 @@
     <inspection_tool class="DefaultAnnotationParam" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
     </inspection_tool>
-    <inspection_tool class="DefaultNotLastCaseInSwitch" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="DeferredResultUnused" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DelegationToVarProperty" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DeprecatedGradleDependency" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -824,9 +713,6 @@
     <inspection_tool class="DialogTitleCapitalization" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="DiamondCanBeReplacedWithExplicitTypeArguments" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="DifferentKotlinGradleVersion" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DifferentKotlinMavenVersion" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DifferentMavenStdlibVersion" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -846,19 +732,10 @@
     <inspection_tool class="DoubleLiteralMayBeFloatLiteral" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="DoubleNegation" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="DriverManagerGetConnection" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="DuplicateChangesetId" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="DuplicateCondition" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="ignoreSideEffectConditions" value="true" />
-      </scope>
-      <option name="ignoreSideEffectConditions" value="true" />
-    </inspection_tool>
     <inspection_tool class="DuplicateStringLiteralInspection" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
         <option name="MIN_STRING_LENGTH" value="5" />
@@ -928,12 +805,6 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="EnumEntryName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="EnumSwitchStatementWhichMissesCases" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true">
-        <option name="ignoreSwitchStatementsWithDefault" value="true" />
-      </scope>
-      <option name="ignoreSwitchStatementsWithDefault" value="true" />
-    </inspection_tool>
     <inspection_tool class="EnumValuesSoftDeprecate" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="EnumValuesSoftDeprecateInJava" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="EnumerationCanBeIteration" enabled="true" level="WARNING" enabled_by_default="false">
@@ -943,9 +814,6 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="EqualsBetweenInconvertibleTypes" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="EqualsCalledOnEnumConstant" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="EqualsOnSuspiciousObject" enabled="true" level="WARNING" enabled_by_default="true">
@@ -962,9 +830,6 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ErrorRethrown" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="EscapedSpace" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ExceptionFromCatchWhichDoesntWrap" enabled="true" level="WARNING" enabled_by_default="false">
@@ -985,16 +850,10 @@
     <inspection_tool class="ExpressionComparedToItself" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="ExpressionMayBeFactorized" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="ExtendsAnnotation" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ExtendsConcreteCollection" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ExtendsObject" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ExtendsThread" enabled="true" level="WARNING" enabled_by_default="false">
@@ -1008,9 +867,6 @@
     </inspection_tool>
     <inspection_tool class="ExternalizableWithoutPublicNoArgConstructor" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ExtractMethodRecommender" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="FallthruInSwitchStatement" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="FeatureEnvy" enabled="true" level="WARNING" enabled_by_default="false">
@@ -1046,22 +902,16 @@
     <inspection_tool class="FieldHidesSuperclassField" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_ignoreInvisibleFields" value="true" />
     </inspection_tool>
-    <inspection_tool class="FieldMayBeFinal" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="FieldMayBeStatic" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="FieldNotUsedInToString" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="FillPermitsList" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="FilterIsInstanceCallWithClassLiteralArgument" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="FilterIsInstanceResultIsAlwaysEmpty" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="FinalClass" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
+      <scope name="SquirrelJME" level="WARNING" enabled="false" />
     </inspection_tool>
     <inspection_tool class="FinalMethod" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
@@ -1089,18 +939,6 @@
     <inspection_tool class="FoldInitializerAndIfToElvis" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="ForEachJoinOnCollectionOfJob" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ForEachParameterNotUsed" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="ForLoopReplaceableByWhile" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_ignoreLoopsWithoutConditions" value="true" />
-      </scope>
-      <option name="m_ignoreLoopsWithoutConditions" value="true" />
-    </inspection_tool>
-    <inspection_tool class="ForLoopWithMissingComponent" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="ignoreCollectionLoops" value="false" />
-      </scope>
-      <option name="ignoreCollectionLoops" value="false" />
-    </inspection_tool>
     <inspection_tool class="ForeachStatement" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -1122,9 +960,6 @@
     <inspection_tool class="FunctionName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="FunctionWithLambdaExpressionBody" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="FunctionalExpressionCanBeFolded" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="FuseStreamOperations" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="GrpcSchemes" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
@@ -1185,12 +1020,6 @@
     <inspection_tool class="IOStreamConstructor" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="IdempotentLoopBody" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="IfCanBeAssertion" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="IfCanBeSwitch" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
         <option name="minimumBranches" value="3" />
@@ -1203,15 +1032,6 @@
     </inspection_tool>
     <inspection_tool class="IfStatementMissingBreakInLoop" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="IfStatementWithIdenticalBranches" enabled="true" level="WEAK WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WEAK WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="IfStatementWithTooManyBranches" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_limit" value="3" />
-      </scope>
-      <option name="m_limit" value="3" />
     </inspection_tool>
     <inspection_tool class="IfThenToElvis" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="IfThenToSafeAccess" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
@@ -1226,12 +1046,6 @@
     <inspection_tool class="ImmutableCollectionLikePropertyInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ImplicitArrayToString" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ImplicitCallToSuper" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_ignoreForObjectSubclasses" value="false" />
-      </scope>
-      <option name="m_ignoreForObjectSubclasses" value="false" />
     </inspection_tool>
     <inspection_tool class="ImplicitDefaultCharsetUsage" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
@@ -1270,9 +1084,6 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="IncrementDecrementUsedAsExpression" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="InfiniteLoopStatement" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="InfiniteRecursion" enabled="true" level="WARNING" enabled_by_default="true">
@@ -1486,9 +1297,6 @@
     <inspection_tool class="JavaeeApplicationDomInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="JdkProxiedBeanTypeInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="JoinDeclarationAndAssignment" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="JoinDeclarationAndAssignmentJava" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="JpaAttributeMemberSignatureInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="JpaAttributeTypeInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="JpaConfigDomFacetInspection" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -1549,19 +1357,7 @@
     <inspection_tool class="KubernetesUnknownKeys" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="KubernetesUnknownResourcesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="KubernetesUnknownValues" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="LabeledStatement" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="LambdaBodyCanBeCodeBlock" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="LambdaCanBeReplacedWithAnonymous" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="LambdaParameterHidingMemberVariable" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="LambdaParameterTypeCanBeSpecified" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="LateinitVarOverridesLateinitVar" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="LawOfDemeter" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
@@ -1583,9 +1379,6 @@
       <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
     </inspection_tool>
     <inspection_tool class="LiquibaseXmlUnresolvedProperty" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="ListIndexOfReplaceableByContains" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="ListRemoveInLoop" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -1595,29 +1388,15 @@
       </scope>
       <option name="checkForEmptyMethods" value="true" />
     </inspection_tool>
-    <inspection_tool class="LiteralAsArgToStringEquals" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="LoadLibraryWithNonConstantString" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="LocalCanBeFinal" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="REPORT_VARIABLES" value="true" />
-        <option name="REPORT_PARAMETERS" value="true" />
-      </scope>
-      <option name="REPORT_VARIABLES" value="true" />
-      <option name="REPORT_PARAMETERS" value="true" />
     </inspection_tool>
     <inspection_tool class="LocalVariableHidingMemberVariable" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_ignoreInvisibleFields" value="true" />
       <option name="m_ignoreStaticMethods" value="true" />
     </inspection_tool>
     <inspection_tool class="LocalVariableName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="LoggerInitializedWithForeignClass" enabled="true" level="WEAK WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WEAK WARNING" enabled="true">
-        <option name="loggerFactoryMethodName" value="getLogger,getLogger,getLog,getLogger" />
-      </scope>
+    <inspection_tool class="LoggerInitializedWithForeignClass" enabled="false" level="WEAK WARNING" enabled_by_default="false">
       <option name="loggerFactoryMethodName" value="getLogger,getLogger,getLog,getLogger" />
     </inspection_tool>
     <inspection_tool class="Lombok" enabled="true" level="WARNING" enabled_by_default="true">
@@ -1630,18 +1409,6 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="LongLiteralsEndingWithLowercaseL" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="LoopConditionNotUpdatedInsideLoop" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="ignoreIterators" value="false" />
-      </scope>
-      <option name="ignoreIterators" value="false" />
-    </inspection_tool>
-    <inspection_tool class="LoopStatementsThatDontLoop" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="LoopWithImplicitTerminationCondition" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="LossyConversionCompoundAssignment" enabled="true" level="WARNING" enabled_by_default="true">
@@ -1725,16 +1492,6 @@
       <option name="ignoreGettersAndSetters" value="false" />
       <option name="ignoreOverridingMethods" value="false" />
     </inspection_tool>
-    <inspection_tool class="MethodCoupling" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_includeJavaClasses" value="false" />
-        <option name="m_includeLibraryClasses" value="false" />
-        <option name="m_limit" value="10" />
-      </scope>
-      <option name="m_includeJavaClasses" value="false" />
-      <option name="m_includeLibraryClasses" value="false" />
-      <option name="m_limit" value="10" />
-    </inspection_tool>
     <inspection_tool class="MethodMayBeStatic" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
         <option name="m_onlyPrivateOrFinal" value="false" />
@@ -1759,13 +1516,7 @@
     <inspection_tool class="MethodOverloadsParentMethod" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MethodOverridesInaccessibleMethodOfSuper" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MethodOverridesStaticMethod" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="MethodRefCanBeReplacedWithLambda" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="MethodReturnAlwaysConstant" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="MethodWithMultipleLoops" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="MigrateDiagnosticSuppression" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -1853,40 +1604,15 @@
       <option name="ignoreAnonymousClassMethods" value="false" />
     </inspection_tool>
     <inspection_tool class="MissingSerialAnnotation" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="MissortedModifiers" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true">
-        <option name="m_requireAnnotationsFirst" value="true" />
-      </scope>
-      <option name="m_requireAnnotationsFirst" value="true" />
-    </inspection_tool>
     <inspection_tool class="MisspelledEquals" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="MoreThanOneIdInspection" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="MoveFieldAssignmentToInitializer" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="MoveLambdaOutsideParentheses" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="MoveVariableDeclarationIntoWhen" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="MultiCatchCanBeSplit" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="MultipleMethodDesignatorsInspection" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="MultipleReturnPointsPerMethod" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="ignoreGuardClauses" value="false" />
-        <option name="ignoreEqualsMethod" value="false" />
-        <option name="m_limit" value="1" />
-      </scope>
-      <option name="ignoreGuardClauses" value="false" />
-      <option name="ignoreEqualsMethod" value="false" />
-      <option name="m_limit" value="1" />
-    </inspection_tool>
     <inspection_tool class="MultipleTopLevelClassesInFile" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="MultipleVariablesInDeclaration" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
     </inspection_tool>
     <inspection_tool class="MultiplyOrDivideByPowerOfTwo" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
@@ -1900,26 +1626,6 @@
     <inspection_tool class="NativeMethods" enabled="false" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="false" />
     </inspection_tool>
-    <inspection_tool class="NegatedConditional" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_ignoreNegatedNullComparison" value="true" />
-      </scope>
-      <option name="m_ignoreNegatedNullComparison" value="true" />
-    </inspection_tool>
-    <inspection_tool class="NegatedConditionalExpression" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="NegatedEqualityExpression" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="NegatedIfElse" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_ignoreNegatedNullComparison" value="true" />
-        <option name="m_ignoreNegatedZeroComparison" value="false" />
-      </scope>
-      <option name="m_ignoreNegatedNullComparison" value="true" />
-      <option name="m_ignoreNegatedZeroComparison" value="false" />
-    </inspection_tool>
     <inspection_tool class="NegativeIntConstantInLongContext" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -1929,30 +1635,12 @@
     <inspection_tool class="NestedAssignment" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="NestedConditionalExpression" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="NestedLambdaShadowedImplicitParameter" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="NestedMethodCall" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_ignoreFieldInitializations" value="true" />
-      </scope>
-      <option name="m_ignoreFieldInitializations" value="true" />
-    </inspection_tool>
-    <inspection_tool class="NestedSwitchStatement" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="NestedSynchronizedStatement" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="NestedTryStatement" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="NestingDepth" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_limit" value="5" />
-      </scope>
-      <option name="m_limit" value="5" />
     </inspection_tool>
     <inspection_tool class="NewCrateVersionAvailable" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="NewExceptionWithoutArguments" enabled="true" level="WARNING" enabled_by_default="false">
@@ -1967,12 +1655,6 @@
     <inspection_tool class="NoExplicitFinalizeCalls" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
     <inspection_tool class="NonAtomicOperationOnVolatileField" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="NonCommentSourceStatements" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_limit" value="30" />
-      </scope>
-      <option name="m_limit" value="30" />
     </inspection_tool>
     <inspection_tool class="NonExternalClassifierExtendingStateOrProps" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="NonFinalClone" enabled="true" level="WARNING" enabled_by_default="false">
@@ -2011,12 +1693,6 @@
     <inspection_tool class="NonSerializableWithSerialVersionUIDField" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="NonShortCircuitBoolean" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="NonStaticFinalLogger" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="loggerClassName" value="java.util.logging.Logger,org.slf4j.Logger,org.apache.commons.logging.Log,org.apache.log4j.Logger,org.apache.logging.log4j.Logger" />
-      </scope>
-      <option name="loggerClassName" value="java.util.logging.Logger,org.slf4j.Logger,org.apache.commons.logging.Log,org.apache.log4j.Logger,org.apache.logging.log4j.Logger" />
     </inspection_tool>
     <inspection_tool class="NonStrictComparisonCanBeEquality" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="NonSynchronizedMethodOverridesSynchronizedMethod" enabled="true" level="WARNING" enabled_by_default="false">
@@ -2103,9 +1779,6 @@
     <inspection_tool class="ObjectToString" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="ObjectsEqualsCanBeSimplified" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="ObsoleteCollection" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
         <option name="ignoreRequiredObsoleteCollectionTypes" value="true" />
@@ -2122,20 +1795,11 @@
     <inspection_tool class="OptionalAssignedToNull" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="OptionalContainsCollection" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="OptionalGetWithoutIsPresent" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="OptionalIsPresent" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="OptionalOfNullableMisuse" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="OptionalToIf" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
     </inspection_tool>
     <inspection_tool class="OptionalUsedAsFieldOrParameterType" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
@@ -2152,22 +1816,11 @@
       </scope>
       <option name="m_limit" value="6" />
     </inspection_tool>
-    <inspection_tool class="OverlyComplexBooleanExpression" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_limit" value="3" />
-        <option name="m_ignorePureConjunctionsDisjunctions" value="true" />
-      </scope>
-      <option name="m_limit" value="3" />
-      <option name="m_ignorePureConjunctionsDisjunctions" value="true" />
-    </inspection_tool>
     <inspection_tool class="OverlyLargePrimitiveArrayInitializer" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
         <option name="m_limit" value="64" />
       </scope>
       <option name="m_limit" value="64" />
-    </inspection_tool>
-    <inspection_tool class="OverlyLongLambda" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="OverlyStrongTypeCast" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
@@ -2210,22 +1863,10 @@
     <inspection_tool class="ParameterTypePreventsOverriding" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="ParametersPerConstructor" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ParametersPerMethod" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_limit" value="5" />
-      </scope>
-      <option name="m_limit" value="5" />
-    </inspection_tool>
     <inspection_tool class="PathAnnotation" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PathVariableKotlinRouterDsl" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PatternVariableCanBeUsed" enabled="false" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="false" />
-    </inspection_tool>
-    <inspection_tool class="PatternVariablesCanBeReplacedWithCast" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
     </inspection_tool>
     <inspection_tool class="PgSelectFromProcedureInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PointcutMethodStyleInspection" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -2240,18 +1881,6 @@
         <option name="m_ignoreExpressionsContainingConstants" value="true" />
       </scope>
       <option name="m_ignoreExpressionsContainingConstants" value="true" />
-    </inspection_tool>
-    <inspection_tool class="PointlessBooleanExpression" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_ignoreExpressionsContainingConstants" value="true" />
-      </scope>
-      <option name="m_ignoreExpressionsContainingConstants" value="true" />
-    </inspection_tool>
-    <inspection_tool class="PointlessIndexOfComparison" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="PointlessNullCheck" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="PostCssCustomMedia" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="PostCssCustomSelector" enabled="false" level="ERROR" enabled_by_default="false" />
@@ -2326,12 +1955,6 @@
       </option>
       <option name="onlyWarnIfContainingClassImplementsAnInterface" value="false" />
     </inspection_tool>
-    <inspection_tool class="PublicMethodWithoutLogging" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="loggerClassName" value="java.util.logging.Logger,org.slf4j.Logger,org.apache.commons.logging.Log,org.apache.log4j.Logger,org.apache.logging.log4j.Logger" />
-      </scope>
-      <option name="loggerClassName" value="java.util.logging.Logger,org.slf4j.Logger,org.apache.commons.logging.Log,org.apache.log4j.Logger,org.apache.logging.log4j.Logger" />
-    </inspection_tool>
     <inspection_tool class="PublicStaticArrayField" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -2346,12 +1969,6 @@
     </inspection_tool>
     <inspection_tool class="ReadWriteStringCanBeUsed" enabled="false" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="false" />
-    </inspection_tool>
-    <inspection_tool class="ReassignedVariable" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true">
-      <scope name="SquirrelJME" level="TEXT ATTRIBUTES" enabled="true" editorAttributes="REASSIGNED_LOCAL_VARIABLE_ATTRIBUTES" />
-    </inspection_tool>
-    <inspection_tool class="RecordCanBeClass" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
     </inspection_tool>
     <inspection_tool class="RecordStoreResource" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
@@ -2372,9 +1989,6 @@
     <inspection_tool class="RedundantExplicitVariableType" enabled="false" level="INFORMATION" enabled_by_default="false">
       <scope name="SquirrelJME" level="INFORMATION" enabled="false" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
     </inspection_tool>
-    <inspection_tool class="RedundantFieldInitialization" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
     <inspection_tool class="RedundantGetter" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="RedundantIf" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="RedundantImplements" enabled="true" level="WARNING" enabled_by_default="false">
@@ -2389,9 +2003,6 @@
     <inspection_tool class="RedundantInterpolationPrefix" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="RedundantLabel" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="RedundantLabeledReturnOnLastExpressionInLambda" enabled="false" level="INFORMATION" enabled_by_default="false" />
-    <inspection_tool class="RedundantLabeledSwitchRuleCodeBlock" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
     <inspection_tool class="RedundantLambdaArrow" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="RedundantLambdaOrAnonymousFunction" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="RedundantLambdaParameterType" enabled="true" level="INFORMATION" enabled_by_default="true">
@@ -2549,12 +2160,6 @@
       <option name="m_ignorePrivateMethods" value="false" />
     </inspection_tool>
     <inspection_tool class="ReturnOfInnerClass" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ReturnSeparatedFromComputation" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ReturnThis" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ReuseOfLocalVariable" enabled="true" level="INFORMATION" enabled_by_default="true">
@@ -2841,24 +2446,9 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="SimpleRedundantLet" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="SimplifiableAnnotation" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
     <inspection_tool class="SimplifiableAssertion" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="SimplifiableBooleanExpression" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="SimplifiableCall" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="SimplifiableCallChain" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="SimplifiableConditionalExpression" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="SimplifiableEqualsExpression" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="SimplifiableIfStatement" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="SimplifiableJUnitAssertion" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SimplifyAssertNotNull" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="SimplifyBooleanWithConstants" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
@@ -2867,18 +2457,10 @@
     <inspection_tool class="SingleCharacterStartsWith" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="SingleElementAnnotation" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="SingleStatementInBlock" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="Singleton" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="SizeReplaceableByIsEmpty" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
+    <inspection_tool class="SizeReplaceableByIsEmpty" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SleepWhileHoldingLock" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -3029,9 +2611,6 @@
       </scope>
       <option name="m_ignorePrimitives" value="false" />
     </inspection_tool>
-    <inspection_tool class="StreamToLoop" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="StringBufferField" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -3056,9 +2635,7 @@
       <option name="ignoreInTestCode" value="false" />
       <option name="ignoreInToString" value="false" />
     </inspection_tool>
-    <inspection_tool class="StringConcatenationArgumentToLogCall" enabled="true" level="WEAK WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WEAK WARNING" enabled="true" />
-    </inspection_tool>
+    <inspection_tool class="StringConcatenationArgumentToLogCall" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="StringConcatenationInFormatCall" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -3174,42 +2751,6 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="SuspiciousVarProperty" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="SwitchExpressionCanBePushedDown" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="SwitchLabeledRuleCanBeCodeBlock" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="SwitchStatement" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="SwitchStatementDensity" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_limit" value="20" />
-      </scope>
-      <option name="m_limit" value="20" />
-    </inspection_tool>
-    <inspection_tool class="SwitchStatementWithConfusingDeclaration" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="SwitchStatementWithTooFewBranches" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_limit" value="2" />
-      </scope>
-      <option name="m_limit" value="2" />
-    </inspection_tool>
-    <inspection_tool class="SwitchStatementWithTooManyBranches" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_limit" value="10" />
-      </scope>
-      <option name="m_limit" value="10" />
-    </inspection_tool>
-    <inspection_tool class="SwitchStatementsWithoutDefault" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true">
-        <option name="m_ignoreFullyCoveredEnums" value="true" />
-      </scope>
-      <option name="m_ignoreFullyCoveredEnums" value="true" />
-    </inspection_tool>
     <inspection_tool class="SynchronizationOnGetClass" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -3314,14 +2855,6 @@
     <inspection_tool class="ThreadYield" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="ThreeNegationsPerMethod" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_ignoreInEquals" value="true" />
-        <option name="ignoreInAssert" value="false" />
-      </scope>
-      <option name="m_ignoreInEquals" value="true" />
-      <option name="ignoreInAssert" value="false" />
-    </inspection_tool>
     <inspection_tool class="ThrowCaughtLocally" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
         <option name="ignoreRethrownExceptions" value="false" />
@@ -3342,12 +2875,6 @@
     </inspection_tool>
     <inspection_tool class="ThrowableSupplierOnlyThrowException" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ThrownExceptionsPerMethod" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_limit" value="3" />
-      </scope>
-      <option name="m_limit" value="3" />
     </inspection_tool>
     <inspection_tool class="ThrowsRuntimeException" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
@@ -3383,17 +2910,8 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="TrailingComma" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="TrailingWhitespacesInTextBlock" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="TrivialFunctionalExpressionUsage" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
-    <inspection_tool class="TrivialIf" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="TryStatementWithMultipleResources" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
     </inspection_tool>
     <inspection_tool class="TypeMayBeWeakened" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
@@ -3410,9 +2928,6 @@
     <inspection_tool class="TypeParameterExtendsFinalClass" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="TypeParameterExtendsObject" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="UNCHECKED_WARNING" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -3421,9 +2936,6 @@
     </inspection_tool>
     <inspection_tool class="UncheckedExceptionClass" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="UnclearBinaryExpression" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" />
     </inspection_tool>
     <inspection_tool class="UnclearPrecedenceOfBinaryExpression" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnconditionalWait" enabled="true" level="WARNING" enabled_by_default="false">
@@ -3436,56 +2948,11 @@
     </inspection_tool>
     <inspection_tool class="UnknownLanguage" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES" />
     <inspection_tool class="UnlabeledReturnInsideLambda" enabled="false" level="INFORMATION" enabled_by_default="false" />
-    <inspection_tool class="UnnecessarilyQualifiedInnerClassAccess" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES">
-        <option name="ignoreReferencesNeedingImport" value="false" />
-      </scope>
-      <option name="ignoreReferencesNeedingImport" value="false" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessarilyQualifiedStaticUsage" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES">
-        <option name="m_ignoreStaticFieldAccesses" value="false" />
-        <option name="m_ignoreStaticMethodCalls" value="false" />
-        <option name="m_ignoreStaticAccessFromStaticContext" value="false" />
-      </scope>
-      <option name="m_ignoreStaticFieldAccesses" value="false" />
-      <option name="m_ignoreStaticMethodCalls" value="false" />
-      <option name="m_ignoreStaticAccessFromStaticContext" value="false" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessarilyQualifiedStaticallyImportedElement" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessaryBlockStatement" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true">
-        <option name="ignoreSwitchBranches" value="false" />
-      </scope>
-      <option name="ignoreSwitchBranches" value="false" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessaryCallToStringValueOf" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessaryConstantArrayCreationExpression" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessaryConstructor" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
     <inspection_tool class="UnnecessaryEmptyArrayUsage" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="UnnecessaryExplicitNumericCast" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessaryFinalOnLocalVariableOrParameter" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessaryFullyQualifiedName" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES">
-        <option name="m_ignoreJavadoc" value="false" />
-        <option name="ignoreInModuleStatements" value="true" />
-      </scope>
-      <option name="m_ignoreJavadoc" value="false" />
-      <option name="ignoreInModuleStatements" value="true" />
     </inspection_tool>
     <inspection_tool class="UnnecessaryInitCause" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
@@ -3498,45 +2965,14 @@
       <option name="m_ignoreImmediatelyReturnedVariables" value="false" />
       <option name="m_ignoreAnnotatedVariables" value="false" />
     </inspection_tool>
-    <inspection_tool class="UnnecessaryModifier" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
     <inspection_tool class="UnnecessaryModuleDependencyInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessaryParentheses" enabled="true" level="INFORMATION" enabled_by_default="true">
-      <scope name="SquirrelJME" level="INFORMATION" enabled="true">
-        <option name="ignoreClarifyingParentheses" value="false" />
-        <option name="ignoreParenthesesOnConditionals" value="false" />
-        <option name="ignoreParenthesesOnLambdaParameter" value="false" />
-      </scope>
-      <option name="ignoreClarifyingParentheses" value="false" />
-      <option name="ignoreParenthesesOnConditionals" value="false" />
-      <option name="ignoreParenthesesOnLambdaParameter" value="false" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessaryQualifierForThis" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessarySemicolon" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessarySuperConstructor" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessarySuperQualifier" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
     </inspection_tool>
     <inspection_tool class="UnnecessaryTemporaryOnConversionFromString" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="UnnecessaryTemporaryOnConversionToString" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessaryThis" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
-    </inspection_tool>
-    <inspection_tool class="UnnecessaryToStringCall" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
     </inspection_tool>
     <inspection_tool class="UnnecessaryUnaryMinus" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
@@ -3554,24 +2990,12 @@
       <option name="ignoreReferences" value="true" />
       <option name="ignoreComplexLiterals" value="false" />
     </inspection_tool>
-    <inspection_tool class="UnqualifiedFieldAccess" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
+    <inspection_tool class="UnqualifiedFieldAccess" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnqualifiedInnerClassAccess" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="ignoreReferencesToLocalInnerClasses" value="true" />
-      </scope>
       <option name="ignoreReferencesToLocalInnerClasses" value="true" />
     </inspection_tool>
-    <inspection_tool class="UnqualifiedMethodAccess" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
+    <inspection_tool class="UnqualifiedMethodAccess" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnqualifiedStaticUsage" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_ignoreStaticFieldAccesses" value="false" />
-        <option name="m_ignoreStaticMethodCalls" value="false" />
-        <option name="m_ignoreStaticAccessFromStaticContext" value="false" />
-      </scope>
       <option name="m_ignoreStaticFieldAccesses" value="false" />
       <option name="m_ignoreStaticMethodCalls" value="false" />
       <option name="m_ignoreStaticAccessFromStaticContext" value="false" />
@@ -3649,7 +3073,7 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="UseOfConcreteClass" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
+      <scope name="SquirrelJME" level="WARNING" enabled="false" />
     </inspection_tool>
     <inspection_tool class="UseOfJDBCDriverClass" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
@@ -3672,7 +3096,7 @@
     <inspection_tool class="UselessCallOnNotNull" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UtilSchemaInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="UtilityClass" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
+      <scope name="SquirrelJME" level="WARNING" enabled="false">
         <option name="ignorableAnnotations">
           <value />
         </option>
@@ -3682,7 +3106,7 @@
       </option>
     </inspection_tool>
     <inspection_tool class="UtilityClassCanBeEnum" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
+      <scope name="SquirrelJME" level="WARNING" enabled="false" />
     </inspection_tool>
     <inspection_tool class="UtilityClassWithPublicConstructor" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
@@ -3752,9 +3176,6 @@
     </inspection_tool>
     <inspection_tool class="WebProperties" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="WebWarnings" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="WhileCanBeDoWhile" enabled="true" level="WEAK WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WEAK WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="WhileLoopSpinsOnField" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
         <option name="ignoreNonEmtpyLoops" value="true" />
