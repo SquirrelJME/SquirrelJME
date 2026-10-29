@@ -16,7 +16,6 @@
 	#include <memcheck.h>
 #endif
 
-#include "sjme/binary.h"
 #include "sjme/alloc.h"
 #include "sjme/debug.h"
 #include "sjme/atomic.h"

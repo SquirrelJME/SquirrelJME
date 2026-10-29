@@ -105,10 +105,12 @@ int sjme_test_main(int argc, sjme_lpstr* argv, sjme_lpcstr* nextTest)
 
 	/* Set next found test accordingly. */
 	if (nextTest != NULL)
+	{
 		if (nextFound != NULL)
 			*nextTest = nextFound->name;
 		else
 			*nextTest = NULL;
+	}
 	
 	/* Found nothing? */
 	if (found == NULL)
@@ -132,6 +134,7 @@ int sjme_test_main(int argc, sjme_lpstr* argv, sjme_lpcstr* nextTest)
 		sjme_debug_handlers = &sjme_test_debugHandlers;
 
 	/* Setup base allocation pool. */
+	chunk = NULL;
 	for (chunkLen = 1048576; chunkLen >= 1024; chunkLen /= 2)
 	{
 		/* Try to alloca everything at once. */

@@ -12,12 +12,13 @@
 #include "sjme/nvm/bytecodeSlow.h"
 #include "sjme/util.h"
 
+#pragma region(AConstNull)
 static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew,
 	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull const sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_class_poolEntry* entry)
 {
 	sjme_errorCode error;
@@ -59,9 +60,9 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 			value.t = SJME_JAVA_TYPE_ID_OBJECT;
 			value.v.l = NULL;
 			if (sjme_error_is(error = sjme_nvm_vmClass_loaderLoad(
-				SJME_F_CL(inFrame), SJME_AS_JCLASSP(&value.v.l),
-				SJME_F_T(inFrame),
-				SJME_P_C_N(entry)->seq, SJME_JNI_TRUE)) ||
+					SJME_F_CL(inFrame), SJME_AS_JCLASSP(&value.v.l),
+					SJME_F_T(inFrame),
+					SJME_P_C_N(entry)->seq, SJME_JNI_TRUE)) ||
 				value.v.l == NULL)
 				return sjme_error_default(error);
 
@@ -87,7 +88,6 @@ static sjme_errorCode sjme_nvm_byteCode_slowLdcAny(
 	}
 }
 
-#pragma region(AConstNull)
 SJME_NVM_BYTECODE_SLOW(AConstNull)
 {
 	sjme_jvalueTyped value;

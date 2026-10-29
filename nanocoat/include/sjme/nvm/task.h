@@ -1068,8 +1068,8 @@ sjme_errorCode sjme_nvm_task_frameStackClear(
  * Peeks a single value from the top of the stack.
  * 
  * @param inFrame The frame to pop from.
- * @param typeId The type ID to pop, if this is @link SJME_NUM_JAVA_TYPE_IDS
- * then this will disregard the type.
+ * @param typeId The type ID to pop, if this
+ * is @link SJME_NUM_JAVA_TYPE_IDS @endlink then this will disregard the type.
  * @param outValue The resultant value.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_STACK_INVALID_READ ...?
@@ -1550,9 +1550,9 @@ sjme_errorCode sjme_nvm_task_threadInterrupt(
  * @param inThread The thread to check if interrupted.
  * @param clear If the interrupt signal should be cleared.
  * @return Any resultant error, if any, interrupted threads
- * will be @link SJME_ERROR_INTERRUPTED.
- * @throws SJME_ERROR_INTERRUPTED ...?
- * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * will be @link SJME_ERROR_INTERRUPTED @endlink.
+ * @throws SJME_ERROR_INTERRUPTED If this thread was interrupted.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @since 2025/10/02
  */
 sjme_errorCode sjme_nvm_task_threadInterruptCheck(

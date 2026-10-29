@@ -12,6 +12,8 @@
 /* ReSharper disable CppNonInlineFunctionDefinitionInHeaderFile */
 /* ReSharper disable CppRedundantCastExpression */
 
+#include "atomicLintC.h"
+
 /** Memory order used for GCC. */
 #define SJME_ATOMIC_GCC_MEMORY_ORDER __ATOMIC_SEQ_CST
 

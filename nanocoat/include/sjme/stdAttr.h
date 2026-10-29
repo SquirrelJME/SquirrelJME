@@ -126,7 +126,7 @@ extern "C"
 
 	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
 		/** Disable optimization. */
-		#define sjme_noOptimize __attribute__((optimize("O0")))
+		#define sjme_noOptimize __attribute__((optimize("O0"))) /* NOLINT */
 	#endif
 
 	/**
@@ -463,7 +463,7 @@ extern "C"
 
 #if SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
 	/** Optimize this specific function. */
-	#define sjme_attrOptimize __attribute__((optimize("-Os")))
+	#define sjme_attrOptimize __attribute__((optimize("-Os"))) /* NOLINT */
 #elif defined(SJME_CONFIG_HAS_MSVC)
 	/** Optimize this specific function. */
 	#define sjme_attrOptimize __pragma(optimize("t", on))

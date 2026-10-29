@@ -12,6 +12,8 @@
 /* ReSharper disable CppNonInlineFunctionDefinitionInHeaderFile */
 /* ReSharper disable CppRedundantCastExpression */
 
+#include "atomicLintC.h"
+
 #if sjme_atomic_typeWidth == 8
 	/** The underlying atomic type. */
 	#define SJME_ATOMIC_WIN32_TYPE LONG64

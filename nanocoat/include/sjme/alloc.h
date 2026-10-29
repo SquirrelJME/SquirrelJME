@@ -213,7 +213,9 @@ struct sjme_alloc_linkBase
 	/** The weak reference this is attached to. */
 	sjme_atomic(sjme_alloc_weak) weak;
 	
-	/** The allocation size of the link, @code{allocSize <= blockSize}. */
+	/**
+	 * The allocation size of the link, @code allocSize <= blockSize @endcode.
+	 */
 	sjme_jint allocSize;
 	
 	/** The size of the data area of this block. */

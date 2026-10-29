@@ -969,7 +969,7 @@ struct sjme_nvm_byteCode_pcNew
 typedef sjme_errorCode (*sjme_nvm_byteCode_func)(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull const sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);
 
 /**
@@ -1048,7 +1048,7 @@ extern const sjme_lpcstr sjme_nvm_byteCode_names[SJME_NVM_NUM_JAVA_BYTECODES];
 sjme_errorCode sjme_nvm_byteCode_calcLength(
 	sjme_attrInNullable sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull const sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);
 
 /**
@@ -1079,7 +1079,7 @@ sjme_jboolean sjme_nvm_byteCode_checkRecycleR(
 sjme_errorCode sjme_nvm_byteCode_illegalInstruction(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull const sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);
 
 /**
@@ -1105,7 +1105,7 @@ const sjme_nvm_byteCode_lutTableType* sjme_nvm_byteCodeLutTable(
 sjme_errorCode sjme_nvm_byteCode_notImplemented(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull const sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew);
 	
 /**
@@ -1129,7 +1129,7 @@ sjme_errorCode sjme_nvm_byteCode_notImplemented(
 	sjme_errorCode SJME_NVM_BYTECODE_NAME(category, which) ( \
 		sjme_attrInNotNull sjme_nvm_frame inFrame, \
 		sjme_attrInRange(0, 256) sjme_byteCode id, \
-		sjme_attrInNotNull sjme_byteCode* relRawCode, \
+		sjme_attrInNotNull const sjme_byteCode* relRawCode, \
 		sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew)
 
 /** Common entry for byte code. */

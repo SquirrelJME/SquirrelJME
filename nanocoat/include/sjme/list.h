@@ -90,22 +90,22 @@ extern "C" {
 		SJME_LIST_ELEMENTS_OFFSET(type, numPointerStars)) + \
 	(sizeof(SJME_TOKEN_TYPE(type, numPointerStars)) * (size_t)(count)))
 
-/** List of @link sjme_jbyte. */
+/** List of @link sjme_jbyte @endlink. */
 SJME_LIST_DECLARE(sjme_jbyte, 0);
 
-/** List of @link sjme_jubyte. */
+/** List of @link sjme_jubyte @endlink. */
 SJME_LIST_DECLARE(sjme_jubyte, 0);
 
-/** List of @link sjme_jshort. */
+/** List of @link sjme_jshort @endlink. */
 SJME_LIST_DECLARE(sjme_jshort, 0);
 
-/** List of @link sjme_jchar. */
+/** List of @link sjme_jchar @endlink. */
 SJME_LIST_DECLARE(sjme_jchar, 0);
 
-/** List of @link sjme_jint. */
+/** List of @link sjme_jint @endlink. */
 SJME_LIST_DECLARE(sjme_jint, 0);
 
-/** List of @link sjme_jint* . */
+/** List of @link sjme_jint* @endlink . */
 SJME_LIST_DECLARE(sjme_jint, 1);
 
 /** List of @link sjme_juint @endlink . */
@@ -613,7 +613,7 @@ sjme_errorCode sjme_list_search(
  * @param comparator The comparison to use for entries.
  * @param findWhat The element to search for within the list.
  * @param outIndex The resultant index if found, or
- * will be @begincode (-(insertion point) - 1) @endcode if it was not found
+ * will be @code (-(insertion point) - 1) @endcode if it was not found
  * in the list.
  * @return Any resultant error, if any.
  * @see sjme_list_searchInsertionPoint

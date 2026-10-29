@@ -124,7 +124,7 @@ typedef sjme_errorCode (*sjme_scritchui_win32_intern_dllProcFunc)(
  *
  * @param inState The input state.
  * @param hWnd The window to get the DPI for.
- * @return The DPI value or {@code 0} if it could not be determined.
+ * @return The DPI value or @c 0 if it could not be determined.
  * @since 2025/12/24
  */
 typedef sjme_jint (*sjme_scritchui_win32_dpiWin10Func)(

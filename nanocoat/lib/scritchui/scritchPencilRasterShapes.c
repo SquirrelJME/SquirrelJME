@@ -26,6 +26,8 @@ static sjme_errorCode sjme_scritchpen_core_clipPolygon(
 		clipLine == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
+	/* TODO FIXME: Actually implement this */
+	
 	return SJME_ERROR_NONE;
 }
 
@@ -358,6 +360,9 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 	/* Not drawing a polygon? */
 	if (nPoints == 0)
 		return SJME_ERROR_NONE;
+	
+	xPoints = NULL;
+	yPoints = NULL;
 
 	/* Allocate intersections. */
 	allocBytes = sizeof(sjme_jint) * (nPoints + 1);

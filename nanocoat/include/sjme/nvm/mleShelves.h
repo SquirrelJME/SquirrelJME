@@ -207,7 +207,7 @@ extern "C"
 
 /** MLE Function definition. */
 #define SJME_NVM_MLE_FUNCTION_DECL(name) \
-	SJME_NVM_MLE_FUNCTION_DECL_ALT(name, none)
+	SJME_NVM_MLE_FUNCTION_DECL_ALT(name, none) /* NOLINT */
 
 /** Defines an MLE function. */
 #define SJME_NVM_MLE_DEFINE_ALT(name, alt, type, mpType) \

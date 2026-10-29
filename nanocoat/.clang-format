@@ -17,17 +17,19 @@ AllowShortLambdasOnASingleLine: None
 AlwaysBreakAfterDefinitionReturnType: false
 AlwaysBreakTemplateDeclarations: No
 AttributeMacros:
+  - JNICALL
+  - JNIEXPORT
+  - JNIIMPORT
   - sjme_align
   - sjme_align32
   - sjme_align64
   - sjme_alignPointer
-  - sjme_packed
-  - sjme_inline
-  - sjme_noOptimize
   - sjme_attrArtificial
   - sjme_attrCallback
   - sjme_attrCheckReturn
   - sjme_attrDeprecated
+  - sjme_attrExport
+  - sjme_attrExportCall
   - sjme_attrFormatArg
   - sjme_attrFormatOuter
   - sjme_attrInNegativeOnePositive
@@ -38,6 +40,7 @@ AttributeMacros:
   - sjme_attrInPositiveNonZero
   - sjme_attrInRange
   - sjme_attrInValue
+  - sjme_attrOptimize
   - sjme_attrOutNegativeOnePositive
   - sjme_attrOutNotNull
   - sjme_attrOutNotNullBuf
@@ -46,15 +49,13 @@ AttributeMacros:
   - sjme_attrOutPositiveNonZero
   - sjme_attrOutRange
   - sjme_attrReturnNullable
+  - sjme_attrThreadCall
   - sjme_attrUnused
   - sjme_attrUnusedEnum
-  - sjme_attrExport
   - SJME_DYLIB_IMPORT
-  - sjme_attrThreadCall
-  - sjme_attrExportCall
-  - JNIEXPORT
-  - JNIIMPORT
-  - JNICALL
+  - sjme_inline
+  - sjme_noOptimize
+  - sjme_packed
 BinPackParameters: false
 BraceWrapping:
   AfterCaseLabel: true

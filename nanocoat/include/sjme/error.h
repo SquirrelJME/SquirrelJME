@@ -681,7 +681,7 @@ sjme_errorCode sjme_error_alsoV(
 	sjme_errorCode error, ...);
 
 /**
- * The end expression for @link sjme_error_alsoV() .
+ * The end expression for @link sjme_error_alsoV() @endlink .
  * 
  * @return The ending sequence for error codes.
  * @since 2024/01/18 
@@ -724,7 +724,8 @@ sjme_errorCode sjme_error_default(
  * Determines the default error code to use.
  *
  * @param error The error code.
- * @param otherwise The other error code rather than @link SJME_ERROR_UNKNOWN.
+ * @param otherwise The other error code rather
+ * than @link SJME_ERROR_UNKNOWN @endlink.
  * @return Either @c error or @c otherwise if the former is not valid.
  * @throws SJME_ERROR_UNKNOWN ...?
  * @throws SJME_ERROR_UNKNOWN_NEGATIVE ...?

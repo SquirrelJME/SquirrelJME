@@ -214,9 +214,9 @@ sjme_jint sjme_lpwcsncmp(sjme_lpcwstr a, sjme_lpcwstr b, sjme_jint n);
 sjme_jint sjme_lpwcscasecmp(sjme_lpcwstr a, sjme_lpcwstr b);
 
 /**
- * Concatenates @code src @endcode onto @code dest @code with the destination
- * limited to @code limit @code characters, a trailing @code NUL @endcode is
- * always added.
+ * Concatenates @code src @endcode onto @code dest @endcode with the
+ * destination limited to @code limit @endcode characters, a
+ * trailing @code NUL @endcode is always added.
  *
  * Neither string should overlap, however this implementation
  * uses @code memmove() @endcode so technically it can overlap and the

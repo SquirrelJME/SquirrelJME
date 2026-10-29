@@ -84,7 +84,7 @@ typedef enum sjme_nvm_walk_pseudoType
 	/** @link sjme_closeable_closeHandlerFunc @endlink . */
 	SJME_NVM_WALK_PSEUDO_CLOSE_HANDLER = -14,
 
-	/** @link sjme_list_... . */
+	/** @link sjme_list_... @endlink. */
 	SJME_NVM_WALK_PSEUDO_LIST = -15,
 
 	/** @link sjme_frontEndWrapper @endlink . */

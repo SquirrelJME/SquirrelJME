@@ -64,9 +64,9 @@ typedef struct sjme_nvm_rom_swmKeyMapHandler
 /** Zero version number. */
 static const sjme_nvm_swmVersion sjme_nvm_rom_zeroVersion =
 {
-	0,
-	0,
-	0,
+	0U,
+	0U,
+	0U,
 	SJME_JNI_FALSE,
 };
 

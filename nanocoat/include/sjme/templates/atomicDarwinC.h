@@ -12,6 +12,8 @@
 /* ReSharper disable CppNonInlineFunctionDefinitionInHeaderFile */
 /* ReSharper disable CppRedundantCastExpression */
 
+#include "atomicLintC.h"
+
 sjme_jboolean SJME_TOKEN_PASTE3_PP(
 		sjme_atomic_, sjme_atomic_subName, _compareSet)(
 	sjme_atomic_typeName* atomic,

@@ -47,7 +47,7 @@ extern "C"
  * @since 2025/01/08
  */
 #define SJME_NVM_BYTECODE_SLOW(which) \
-	SJME_NVM_BYTECODE(slow, which)
+	SJME_NVM_BYTECODE(slow, which) /* NOLINT */
 
 /* clang-format off */ /* @formatter:off */
 /*--------------------------------------------------------------------------*/

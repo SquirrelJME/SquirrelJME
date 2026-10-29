@@ -1,18 +1,754 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
-    <inspection_tool class="ClangTidy" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="CppDFAConstantConditions" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
-    <inspection_tool class="CppDFAConstantFunctionResult" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
-    <inspection_tool class="CppDFAUnreachableCode" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
-    <inspection_tool class="CppJoinDeclarationAndAssignment" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="CppParameterMayBeConst" enabled="false" level="HINT" enabled_by_default="false" />
-    <inspection_tool class="CppParameterMayBeConstPtrOrRef" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="CppParameterNeverUsed" enabled="false" level="HINT" enabled_by_default="false" />
-    <inspection_tool class="CppRedundantElseKeywordInsideCompoundStatement" enabled="false" level="HINT" enabled_by_default="false" />
-    <inspection_tool class="CppRedundantParentheses" enabled="false" level="HINT" enabled_by_default="false" />
-    <inspection_tool class="CppReplaceMemsetWithZeroInitialization" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="CppTooWideScope" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <option name="scopesOrder">
+      <list>
+        <option value="3rdParty" />
+        <option value="BaseLib" />
+        <option value="BuildUtils" />
+        <option value="CMake Generated" />
+        <option value="JNISquirrelJME" />
+        <option value="Kernel" />
+        <option value="NanoCoatCore" />
+        <option value="Not3rdParty" />
+        <option value="Open Files" />
+        <option value="Project Files" />
+        <option value="ROM" />
+        <option value="Scratches and Consoles" />
+        <option value="ScritchAudio" />
+        <option value="ScritchUI" />
+        <option value="SquirrelJNI" />
+        <option value="Tests" />
+        <option value="emulator" />
+        <option value="libretro" />
+      </list>
+    </option>
+    <inspection_tool class="ArgumentSelectionDefects" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CDeclarationWithImplicitIntType" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ClangTidy" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="Clazy" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ConstevalIfIsAlwaysConstant" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppAbstractClassWithoutSpecifier" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppAbstractFinalClass" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppAbstractVirtualFunctionCallInCtor" enabled="true" level="ERROR" enabled_by_default="false">
+      <scope name="Project Files" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppAccessSpecifierWithNoDeclarations" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppAwaiterTypeIsNotClass" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppBooleanIncrementExpression" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppBoostFormatBadCode" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppBoostFormatLegacyCode" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppBoostFormatMixedArgs" enabled="true" level="ERROR" enabled_by_default="false">
+      <scope name="Project Files" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppBoostFormatTooFewArgs" enabled="true" level="ERROR" enabled_by_default="false">
+      <scope name="Project Files" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppBoostFormatTooManyArgs" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppCStyleCast" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppCVQualifierCanNotBeAppliedToReference" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppClassCanBeFinal" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppClassIsIncomplete" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppClassNeedsConstructorBecauseOfUninitializedMember" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppClassNeverUsed" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppCompileTimeConstantCanBeReplacedWithBooleanConstant" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppConceptNeverUsed" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppConditionalExpressionCanBeSimplified" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppConstParameterInDeclaration" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppConstValueFunctionReturnType" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppCoroutineCallResolveError" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFAArrayIndexOutOfBounds" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFAConstantConditions" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="false" editorAttributes="CONSIDERATION_ATTRIBUTES">
+      <scope name="Project Files" level="TEXT ATTRIBUTES" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFAConstantFunctionResult" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="false" editorAttributes="CONSIDERATION_ATTRIBUTES">
+      <scope name="Project Files" level="TEXT ATTRIBUTES" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFAConstantParameter" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFADeletedPointer" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFAEndlessLoop" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFAInfiniteRecursion" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFAInvalidatedMemory" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFALocalValueEscapesFunction" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFALocalValueEscapesScope" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFALoopConditionNotUpdated" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFAMemoryLeak" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFANotInitializedField" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFANullDereference" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFATimeOver" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFAUnreachableCode" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="false" editorAttributes="CONSIDERATION_ATTRIBUTES">
+      <scope name="Project Files" level="TEXT ATTRIBUTES" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFAUnreachableFunctionCall" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFAUnreadVariable" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDFAUnusedValue" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDeclarationHidesLocal" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDeclarationHidesUncapturedLocal" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDeclarationSpecifierWithoutDeclarators" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDeclaratorDisambiguatedAsFunction" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDeclaratorNeverUsed" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDeclaratorUsedBeforeInitialization" enabled="true" level="ERROR" enabled_by_default="false">
+      <scope name="Project Files" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDefaultCaseNotHandledInSwitchStatement" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDefaultInitializationWithNoUserConstructor" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDefaultIsUsedAsIdentifier" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDefaultedSpecialMemberFunctionIsImplicitlyDeleted" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDefinitionsOrder" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDeletingVoidPointer" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDependentTemplateWithoutTemplateKeyword" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDependentTypeWithoutTypenameKeyword" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDeprecatedEntity" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDeprecatedOverridenMethod" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDeprecatedRegisterStorageClassSpecifier" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDereferenceOperatorLimitExceeded" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDiscardedPostfixOperatorResult" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDoxygenSyntaxError" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDoxygenUndocumentedParameter" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppDoxygenUnresolvedReference" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEmptyDeclaration" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEnforceCVQualifiersOrder" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEnforceCVQualifiersPlacement" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEnforceDoStatementBraces" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEnforceForStatementBraces" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEnforceFunctionDeclarationStyle" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEnforceIfStatementBraces" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEnforceNestedNamespacesStyle" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEnforceOverridingDestructorStyle" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEnforceOverridingFunctionStyle" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEnforceTypeAliasCodeStyle" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEnforceWhileStatementBraces" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEntityAssignedButNoRead" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEntityUsedOnlyInUnevaluatedContext" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEnumeratorNeverUsed" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEqualOperandsInBinaryExpression" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppEvaluationFailure" enabled="true" level="ERROR" enabled_by_default="false">
+      <scope name="Project Files" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppExplicitSpecializationInNonNamespaceScope" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppExpressionWithoutSideEffects" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppFinalFunctionInFinalClass" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppFinalNonOverridingVirtualFunction" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppForLoopCanBeReplacedWithWhile" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppForwardEnumDeclarationWithoutUnderlyingType" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppFunctionDoesntReturnValue" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppFunctionIsNotImplemented" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppFunctionResultShouldBeUsed" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppFunctionalStyleCast" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppHeaderHasBeenAlreadyIncluded" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppHiddenFunction" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppHidingFunction" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppIdenticalOperandsInBinaryExpression" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppIfCanBeReplacedByConstexprIf" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppImplicitDefaultConstructorNotAvailable" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppIncompatiblePointerConversion" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppIncompleteSwitchStatement" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppInconsistentNaming" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppIntegralToPointerConversion" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppInvalidLineContinuation" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppJoinDeclarationAndAssignment" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppLambdaCaptureNeverUsed" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppLocalVariableMayBeConst" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppLocalVariableMightNotBeInitialized" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppLocalVariableWithNonTrivialDtorIsNeverUsed" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppLongFloat" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMemberFunctionMayBeConst" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMemberFunctionMayBeStatic" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMemberInitializersOrder" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMismatchedClassTags" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMissingIncludeGuard" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMissingKeywordThrow" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppModulePartitionWithSeveralPartitionUnits" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMsExtAddressOfClassRValue" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMsExtBindingRValueToLvalueReference" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMsExtCopyElisionInCopyInitDeclarator" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMsExtDoubleUserConversionInCopyInit" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMsExtNotInitializedStaticConstLocalVar" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMsExtReinterpretCastFromNullptr" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMultiCharacterLiteral" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMultiCharacterWideLiteral" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMustBePublicVirtualToImplementInterface" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppMutableSpecifierOnReferenceMember" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppNoDiscardExpression" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppNodiscardFunctionWithoutReturnValue" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppNonExceptionSafeResourceAcquisition" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppNonExplicitConversionOperator" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppNonExplicitConvertingConstructor" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppNonInlineFunctionDefinitionInHeaderFile" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppNonInlineVariableDefinitionInHeaderFile" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppNotAllPathsReturnValue" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppObjectMemberMightNotBeInitialized" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppOutParameterMustBeWritten" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppParameterMayBeConst" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppParameterMayBeConstPtrOrRef" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppParameterNamesMismatch" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppParameterNeverUsed" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPassValueParameterByConstReference" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPointerConversionDropsQualifiers" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPointerToIntegralConversion" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPolymorphicClassWithNonVirtualPublicDestructor" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPossiblyErroneousEmptyStatements" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPossiblyUninitializedMember" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPossiblyUnintendedObjectSlicing" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPrecompiledHeaderIsNotIncluded" enabled="true" level="ERROR" enabled_by_default="false">
+      <scope name="Project Files" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPrecompiledHeaderNotFound" enabled="true" level="ERROR" enabled_by_default="false">
+      <scope name="Project Files" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPrintfBadFormat" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPrintfExtraArg" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPrintfMissedArg" enabled="true" level="ERROR" enabled_by_default="false">
+      <scope name="Project Files" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPrintfRiskyFormat" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppPrivateSpecialMemberFunctionIsNotImplemented" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRangeBasedForIncompatibleReference" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedefinitionOfDefaultArgumentInOverrideFunction" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantAccessSpecifier" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantBaseClassAccessSpecifier" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantBaseClassInitializer" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantBooleanExpressionArgument" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantCastExpression" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantComplexityInComparison" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantConditionalExpression" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantConstSpecifier" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantControlFlowJump" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantDereferencingAndTakingAddress" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantElaboratedTypeSpecifier" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantElseKeyword" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantElseKeywordInsideCompoundStatement" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantEmptyDeclaration" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantEmptyStatement" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantExportKeyword" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantFwdClassOrEnumSpecifier" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantInlineSpecifier" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantLambdaParameterList" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantMemberInitializer" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantNamespaceDefinition" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantParentheses" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantQualifier" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantQualifierADL" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantStaticSpecifierOnMemberAllocationFunction" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantStaticSpecifierOnThreadLocalLocalVariable" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantTemplateArguments" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantTemplateKeyword" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantTypenameKeyword" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantVoidArgumentList" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRedundantZeroInitializerInAggregateInitialization" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppReinterpretCastFromVoidPtr" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppRemoveRedundantBraces" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppReplaceMemsetWithZeroInitialization" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppReplaceTieWithStructuredBinding" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppReturnNoValueInNonVoidFunction" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppSmartPointerVsMakeFunction" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppSomeObjectMembersMightNotBeInitialized" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppSpecialFunctionWithoutNoexceptSpecification" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppStaticAssertFailure" enabled="true" level="ERROR" enabled_by_default="false">
+      <scope name="Project Files" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppStaticDataMemberInUnnamedStruct" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppStaticSpecifierOnAnonymousNamespaceMember" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppStringLiteralToCharPointerConversion" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppTabsAreDisallowed" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppTemplateArgumentsCanBeDeduced" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppTemplateParameterNeverUsed" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppTemplateParameterShadowing" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppThrowExpressionCanBeReplacedWithRethrow" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppTooWideScope" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppTooWideScopeInitStatement" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppTypeAliasNeverUsed" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUninitializedDependentBaseClass" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUninitializedNonStaticDataMember" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUnionMemberOfReferenceType" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUnmatchedPragmaEndRegionDirective" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUnmatchedPragmaRegionDirective" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUnnamedNamespaceInHeaderFile" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUnnecessaryWhitespace" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUnsignedZeroComparison" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUnusedIncludeDirective" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUseAlgorithmWithCount" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUseAssociativeContains" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUseAuto" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUseAutoForNumeric" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUseElementsView" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUseEraseAlgorithm" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUseFamiliarTemplateSyntaxForGenericLambdas" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUseRangeAlgorithm" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUseStdSize" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUseStructuredBinding" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUseTypeTraitAlias" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUserDefinedLiteralSuffixDoesNotStartWithUnderscore" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppUsingResultOfAssignmentAsCondition" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppVariableCanBeMadeConstexpr" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppVirtualFunctionCallInsideCtor" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppVirtualFunctionInFinalClass" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppVolatileParameterInDeclaration" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppWarningDirective" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppWrongIncludesOrder" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppWrongSlashesInIncludeDirective" enabled="true" level="HINT" enabled_by_default="false">
+      <scope name="Project Files" level="HINT" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppZeroConstantCanBeReplacedWithNullptr" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CppZeroValuedExpressionUsedAsNullPointer" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
     <inspection_tool class="CustomRegExpInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myConfigurations">
         <list>
@@ -54,10 +790,26 @@
     </inspection_tool>
     <inspection_tool class="Deprecations" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="EditorConfigEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="GrazieInspection" enabled="true" level="GRAMMAR_ERROR" enabled_by_default="false">
+      <scope name="Project Files" level="GRAMMAR_ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="GrazieStyle" enabled="true" level="STYLE_SUGGESTION" enabled_by_default="false">
+      <scope name="Project Files" level="STYLE_SUGGESTION" enabled="true" />
+    </inspection_tool>
     <inspection_tool class="HashLoopInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="IdentifierInspection" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="LanguageDetectionInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="IfStdIsConstantEvaluatedCanBeReplaced" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="LanguageDetectionInspection" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
     <inspection_tool class="LoopControlInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="Misra" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true">
+        <option name="myMisraC2012Checks" value="clion-misra-c2012-*,-clion-misra-c2012-10-2,-clion-misra-c2012-12-3,-clion-misra-c2012-10-1,-clion-misra-c2012-14-4,-clion-misra-c2012-16-3,-clion-misra-c2012-7-4,-clion-misra-c2012-7-1,-clion-misra-c2012-21-8,-clion-misra-c2012-17-7,-clion-misra-c2012-17-8,-clion-misra-c2012-11-1,-clion-misra-c2012-11-3,-clion-misra-c2012-11-9,-clion-misra-c2012-15-5,-clion-misra-c2012-15-6,-clion-misra-c2012-15-7,-clion-misra-c2012-11-5,-clion-misra-c2012-13-3,-clion-misra-c2012-15-1" />
+      </scope>
+    </inspection_tool>
     <inspection_tool class="MooseAttributeAccessors" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="NamespaceClashes" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="NamespaceMultipleDefinitions" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -66,12 +818,31 @@
     <inspection_tool class="PackageFileMissing" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PerlSwitch" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="PerlSyntax" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="PreprocessorComment" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
     <inspection_tool class="PyUnreachableCodeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RadGlobal" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
     <inspection_tool class="RedundantNamespace" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="RsUnreachableCode" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="RsUnreachablePatterns" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="RsWhileTrueLoop" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="SpellCheckingInspection" enabled="true" level="TYPO" enabled_by_default="false">
+      <scope name="Project Files" level="TYPO" enabled="true">
+        <option name="processCode" value="true" />
+        <option name="processLiterals" value="true" />
+        <option name="processComments" value="true" />
+      </scope>
+      <option name="processCode" value="true" />
+      <option name="processLiterals" value="true" />
+      <option name="processComments" value="true" />
+    </inspection_tool>
     <inspection_tool class="SqlUnreachableCodeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="StdIsConstantEvaluatedWillAlwaysEvaluateToConstant" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Project Files" level="WARNING" enabled="true" />
+    </inspection_tool>
     <inspection_tool class="SubMultipleDeclarations" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SubMultipleDefinitions" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SubUnresolvable" enabled="false" level="WARNING" enabled_by_default="false" />

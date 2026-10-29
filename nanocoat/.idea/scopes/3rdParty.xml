@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="3rdParty" pattern="file:include/3rdparty//*||file:lib/3rdparty//*" />
-</component>

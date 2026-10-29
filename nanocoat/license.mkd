@@ -22,8 +22,8 @@ SquirrelJME has three types of files which fall under different licenses:
  * Fonts:
    * **SIL Open Font License Version 1.1**
 
-Contributors must agree to the [contributor license](contributing.mkd) before
-their code may be accepted.
+Contributors must agree to the [contributor license](../contributing.mkd) 
+before their code may be accepted.
 
 If SquirrelJME is distributed within a distribution then it is **highly**
 recommended that the source code is distributed alongside the binary. If this

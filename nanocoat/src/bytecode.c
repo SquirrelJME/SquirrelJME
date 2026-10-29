@@ -555,8 +555,8 @@ const sjme_nvm_byteCode_lutTableType* sjme_nvm_byteCodeLutTable(
 
 sjme_errorCode sjme_nvm_byteCode_calcLength(
 	sjme_attrInNullable sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* ev,
+	sjme_attrInRange(0, 256) sjme_attrUnused sjme_byteCode id,
+	sjme_attrInNotNull const sjme_byteCode* ev,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew)
 {
 	sjme_jint hi, lo, count, padding;
@@ -665,7 +665,7 @@ sjme_jboolean sjme_nvm_byteCode_checkRecycleR(
 sjme_errorCode sjme_nvm_byteCode_illegalInstruction(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
 	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInNotNull const sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew)
 {
 	if (inFrame == NULL || relRawCode == NULL || pcNew == NULL)
@@ -681,8 +681,8 @@ sjme_errorCode sjme_nvm_byteCode_illegalInstruction(
 
 sjme_errorCode sjme_nvm_byteCode_notImplemented(
 	sjme_attrInNotNull sjme_nvm_frame inFrame,
-	sjme_attrInRange(0, 256) sjme_byteCode id,
-	sjme_attrInNotNull sjme_byteCode* relRawCode,
+	sjme_attrInRange(0, 256) sjme_attrUnused sjme_byteCode id,
+	sjme_attrInNotNull const sjme_byteCode* relRawCode,
 	sjme_attrInNotNull sjme_nvm_byteCode_pcNew* pcNew)
 {
 	if (inFrame == NULL || relRawCode == NULL || pcNew == NULL)

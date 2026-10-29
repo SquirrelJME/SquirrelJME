@@ -270,7 +270,8 @@ static sjme_errorCode sjme_scritchui_fb_intern_makeSelBuf(
 	if (sg == NULL)
 	{
 		/* Setup buffer drawing. */
-		if (sjme_error_is(inState->apiInThread->hardwareGraphics(inState,
+		if (sjme_error_is(error = inState->apiInThread->hardwareGraphics(
+			inState,
 			&sg, NULL,
 			SJME_GFX_PIXEL_FORMAT_INT_RGB888,
 			cW, cH,
