@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Java API" pattern="java..*||javax..*||com.jblend..*||com.j_phone..*||com.nokia..*||com.nttdocomo..*||com.docomostar..*||com.oracle..*||com.samsung..*||com.mexa..*||com.sprintpcs..*||com.vodafone..*" />
+</component>

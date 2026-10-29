@@ -23,6 +23,38 @@
         <option value="libretro" />
       </list>
     </option>
+    <inspection_tool class="AngularAmbiguousComponentTag" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularBindingTypeMismatch" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularCliAddDependency" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="AngularDeferBlockOnTrigger" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularForBlockNonIterableVar" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularIllegalForLoopTrackAccess" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularInaccessibleSymbol" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularIncorrectBlockUsage" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularIncorrectLetUsage" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularIncorrectTemplateDefinition" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularInsecureBindingToEvent" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="AngularInvalidAnimationTriggerAssignment" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularInvalidEntryComponent" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularInvalidI18nAttribute" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="AngularInvalidImportedOrDeclaredSymbol" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularInvalidSelector" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularInvalidTemplateReferenceVariable" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularMissingEventHandler" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularMissingOrInvalidDeclarationInModule" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularMissingRequiredDirectiveInputBinding" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularMultipleStructuralDirectives" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularNgOptimizedImage" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="AngularNonEmptyNgContent" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularNonStandaloneComponentImports" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularRecursiveModuleImportExport" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularUncalledSignalLengthPropertyAccess" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="AngularUndefinedBinding" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularUndefinedModuleExport" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularUndefinedTag" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularUnresolvedPipe" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularUnsupportedSyntax" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="AngularUnusedComponentImport" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="ArgumentSelectionDefects" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="BaseLib" level="WARNING" enabled="true" />
       <scope name="BuildUtils" level="WARNING" enabled="true" />
@@ -35,6 +67,7 @@
       <scope name="emulator" level="WARNING" enabled="true" />
       <scope name="libretro" level="WARNING" enabled="true" />
     </inspection_tool>
+    <inspection_tool class="BadExpressionStatementJS" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CDeclarationWithImplicitIntType" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="BaseLib" level="WARNING" enabled="true" />
       <scope name="BuildUtils" level="WARNING" enabled="true" />
@@ -47,6 +80,10 @@
       <scope name="emulator" level="WARNING" enabled="true" />
       <scope name="libretro" level="WARNING" enabled="true" />
     </inspection_tool>
+    <inspection_tool class="CallerJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="CargoTomlCyclicFeature" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="CargoUnnecessaryPackageKey" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="CargoUnusedDependency" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ClangTidy" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="BaseLib" level="WARNING" enabled="true" />
       <scope name="BuildUtils" level="WARNING" enabled="true" />
@@ -71,6 +108,8 @@
       <scope name="emulator" level="WARNING" enabled="true" />
       <scope name="libretro" level="WARNING" enabled="true" />
     </inspection_tool>
+    <inspection_tool class="CommaExpressionJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ConstantConditionalExpressionJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ConstevalIfIsAlwaysConstant" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="BaseLib" level="WARNING" enabled="true" />
       <scope name="BuildUtils" level="WARNING" enabled="true" />
@@ -83,6 +122,7 @@
       <scope name="emulator" level="WARNING" enabled="true" />
       <scope name="libretro" level="WARNING" enabled="true" />
     </inspection_tool>
+    <inspection_tool class="ContinueOrBreakFromFinallyBlockJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppAbstractClassWithoutSpecifier" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="BaseLib" level="WARNING" enabled="true" />
       <scope name="BuildUtils" level="WARNING" enabled="true" />
@@ -2687,29 +2727,29 @@
       <scope name="emulator" level="WEAK WARNING" enabled="true" />
       <scope name="libretro" level="WEAK WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="CppUseAuto" enabled="true" level="HINT" enabled_by_default="false">
-      <scope name="BaseLib" level="HINT" enabled="true" />
-      <scope name="BuildUtils" level="HINT" enabled="true" />
-      <scope name="JNISquirrelJME" level="HINT" enabled="true" />
-      <scope name="Kernel" level="HINT" enabled="true" />
-      <scope name="NanoCoatCore" level="HINT" enabled="true" />
-      <scope name="ScritchAudio" level="HINT" enabled="true" />
-      <scope name="ScritchUI" level="HINT" enabled="true" />
-      <scope name="SquirrelJNI" level="HINT" enabled="true" />
-      <scope name="emulator" level="HINT" enabled="true" />
-      <scope name="libretro" level="HINT" enabled="true" />
+    <inspection_tool class="CppUseAuto" enabled="false" level="HINT" enabled_by_default="false">
+      <scope name="BaseLib" level="HINT" enabled="false" />
+      <scope name="BuildUtils" level="HINT" enabled="false" />
+      <scope name="JNISquirrelJME" level="HINT" enabled="false" />
+      <scope name="Kernel" level="HINT" enabled="false" />
+      <scope name="NanoCoatCore" level="HINT" enabled="false" />
+      <scope name="ScritchAudio" level="HINT" enabled="false" />
+      <scope name="ScritchUI" level="HINT" enabled="false" />
+      <scope name="SquirrelJNI" level="HINT" enabled="false" />
+      <scope name="emulator" level="HINT" enabled="false" />
+      <scope name="libretro" level="HINT" enabled="false" />
     </inspection_tool>
-    <inspection_tool class="CppUseAutoForNumeric" enabled="true" level="HINT" enabled_by_default="false">
-      <scope name="BaseLib" level="HINT" enabled="true" />
-      <scope name="BuildUtils" level="HINT" enabled="true" />
-      <scope name="JNISquirrelJME" level="HINT" enabled="true" />
-      <scope name="Kernel" level="HINT" enabled="true" />
-      <scope name="NanoCoatCore" level="HINT" enabled="true" />
-      <scope name="ScritchAudio" level="HINT" enabled="true" />
-      <scope name="ScritchUI" level="HINT" enabled="true" />
-      <scope name="SquirrelJNI" level="HINT" enabled="true" />
-      <scope name="emulator" level="HINT" enabled="true" />
-      <scope name="libretro" level="HINT" enabled="true" />
+    <inspection_tool class="CppUseAutoForNumeric" enabled="false" level="HINT" enabled_by_default="false">
+      <scope name="BaseLib" level="HINT" enabled="false" />
+      <scope name="BuildUtils" level="HINT" enabled="false" />
+      <scope name="JNISquirrelJME" level="HINT" enabled="false" />
+      <scope name="Kernel" level="HINT" enabled="false" />
+      <scope name="NanoCoatCore" level="HINT" enabled="false" />
+      <scope name="ScritchAudio" level="HINT" enabled="false" />
+      <scope name="ScritchUI" level="HINT" enabled="false" />
+      <scope name="SquirrelJNI" level="HINT" enabled="false" />
+      <scope name="emulator" level="HINT" enabled="false" />
+      <scope name="libretro" level="HINT" enabled="false" />
     </inspection_tool>
     <inspection_tool class="CppUseElementsView" enabled="true" level="WEAK WARNING" enabled_by_default="false">
       <scope name="BaseLib" level="WEAK WARNING" enabled="true" />
@@ -2927,6 +2967,8 @@
       <scope name="emulator" level="WARNING" enabled="true" />
       <scope name="libretro" level="WARNING" enabled="true" />
     </inspection_tool>
+    <inspection_tool class="CrateNotFound" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="CrateVersionInvalid" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CustomRegExpInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myConfigurations">
         <list>
@@ -2967,7 +3009,29 @@
       </option>
     </inspection_tool>
     <inspection_tool class="Deprecations" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6BindWithArrowFunction" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6ClassMemberInitializationOrder" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6ConvertIndexedForToForOf" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="ES6ConvertLetToConst" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="ES6ConvertModuleExportToExport" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="ES6ConvertRequireIntoImport" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="ES6ConvertToForOf" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="ES6ConvertVarToLetConst" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6DestructuringVariablesMerge" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6MissingAwait" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6PossiblyAsyncFunction" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6PreferShortImport" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6RedundantAwait" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6RedundantNestingInTemplateLiteral" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6ShorthandObjectProperty" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="ES6UnusedImports" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="EditorConfigEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="EmptyStatementBodyJS" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="m_reportEmptyBlocks" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ExceptionCaughtLocallyJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="FallThroughInSwitchStatementJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="FlowJSConfig" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="GrazieInspection" enabled="true" level="GRAMMAR_ERROR" enabled_by_default="false">
       <scope name="Project Files" level="GRAMMAR_ERROR" enabled="true" />
     </inspection_tool>
@@ -2988,10 +3052,85 @@
       <scope name="emulator" level="WEAK WARNING" enabled="true" />
       <scope name="libretro" level="WEAK WARNING" enabled="true" />
     </inspection_tool>
+    <inspection_tool class="IncompatibleMaskJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="InfiniteLoopJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="InfiniteRecursionJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSAccessibilityCheck" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSAnnotator" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="JSArrowFunctionBracesCanBeRemoved" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSAssignmentUsedAsCondition" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSBitwiseOperatorUsage" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSCheckFunctionSignatures" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSClosureCompilerSyntax" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSCommentMatchesSignature" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSComparisonWithNaN" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSConsecutiveCommasInArrayLiteral" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSConstantReassignment" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="JSDeprecatedSymbols" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSDuplicateCaseLabel" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSDuplicatedDeclaration" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSEqualityComparisonWithCoercion" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSFileReferences" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSFunctionExpressionToArrowFunction" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSIgnoredPromiseFromCall" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSIncompatibleTypesComparison" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSJQueryEfficiency" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSJoinVariableDeclarationAndAssignment" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSLastCommaInArrayLiteral" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSLastCommaInObjectLiteral" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSMethodCanBeStatic" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSMismatchedCollectionQueryUpdate" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="queries" value="trace,write,forEach,length,size" />
+      <option name="updates" value="pop,push,shift,splice,unshift,add,insert,remove,reverse,copyWithin,fill,sort" />
+    </inspection_tool>
+    <inspection_tool class="JSMissingSwitchBranches" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSMissingSwitchDefault" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSNonASCIINames" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSObjectNullOrUndefined" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSOctalInteger" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="JSPotentiallyInvalidConstructorUsage" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="myConsiderUppercaseFunctionsToBeConstructors" value="true" />
+    </inspection_tool>
+    <inspection_tool class="JSPotentiallyInvalidTargetOfIndexedPropertyAccess" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSPotentiallyInvalidUsageOfClassThis" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSPotentiallyInvalidUsageOfThis" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSPrimitiveTypeWrapperUsage" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSRedundantSwitchStatement" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSReferencingMutableVariableFromClosure" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSRemoveUnnecessaryParentheses" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSStringConcatenationToES6Template" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSSuspiciousEqPlus" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSSuspiciousNameCombination" enabled="false" level="WARNING" enabled_by_default="false">
+      <group names="x,width,left,right" />
+      <group names="y,height,top,bottom" />
+      <exclude classes="Math" />
+    </inspection_tool>
+    <inspection_tool class="JSSwitchVariableDeclarationIssue" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSTestFailedLine" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSTypeOfValues" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUndeclaredVariable" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUndefinedPropertyAssignment" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnnecessarySemicolon" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnreachableSwitchBranches" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnresolvedExtXType" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnresolvedLibraryURL" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnresolvedReference" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnusedAssignment" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnusedGlobalSymbols" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnusedLocalSymbols" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUrlImportUsage" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSValidateJSDoc" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSValidateTypes" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSVoidFunctionReturnValueUsed" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSXDomNesting" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSXNamespaceValidation" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JSXUnresolvedComponent" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="KarmaConfigFile" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="LanguageDetectionInspection" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="Project Files" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="LoopControlInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="LoopStatementThatDoesntLoopJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="Misra" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="BaseLib" level="WARNING" enabled="true">
         <option name="myMisraC2012Checks" value="clion-misra-c2012-*,-clion-misra-c2012-10-2,-clion-misra-c2012-12-3,-clion-misra-c2012-10-1,-clion-misra-c2012-14-4,-clion-misra-c2012-16-3,-clion-misra-c2012-7-4,-clion-misra-c2012-7-1,-clion-misra-c2012-21-8,-clion-misra-c2012-17-7,-clion-misra-c2012-17-8,-clion-misra-c2012-11-1,-clion-misra-c2012-11-3,-clion-misra-c2012-11-9,-clion-misra-c2012-15-5,-clion-misra-c2012-15-6,-clion-misra-c2012-15-7,-clion-misra-c2012-11-5,-clion-misra-c2012-13-3,-clion-misra-c2012-15-1" />
@@ -3025,14 +3164,40 @@
       </scope>
       <option name="myMisraC2012Checks" value="clion-misra-c2012-*,-clion-misra-c2012-10-2,-clion-misra-c2012-12-3,-clion-misra-c2012-10-1,-clion-misra-c2012-14-4,-clion-misra-c2012-16-3,-clion-misra-c2012-7-4,-clion-misra-c2012-7-1,-clion-misra-c2012-21-8,-clion-misra-c2012-17-7,-clion-misra-c2012-17-8,-clion-misra-c2012-11-1,-clion-misra-c2012-11-3,-clion-misra-c2012-11-9,-clion-misra-c2012-15-5,-clion-misra-c2012-15-6,-clion-misra-c2012-15-7,-clion-misra-c2012-11-5,-clion-misra-c2012-13-3,-clion-misra-c2012-15-1" />
     </inspection_tool>
+    <inspection_tool class="MissingFeatures" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="MongoJSDeprecationInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="MongoJSExtDeprecationInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="MongoJSExtResolveInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="MongoJSExtSideEffectsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="MongoJSResolveInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="MongoJSSideEffectsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MooseAttributeAccessors" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="MsBuiltinInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="MsOrderByInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="MysqlLoadDataPathInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="MysqlParsingInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="MysqlSpaceAfterFunctionNameInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="NamespaceClashes" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="NamespaceMultipleDefinitions" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="NamespaceRecursiveInheritance" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="NamespaceUndefined" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="NewCrateVersionAvailable" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="NodeCoreCodingAssistance" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="NpmUsedModulesInstalled" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="OraMissingBodyInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="OraOverloadInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="OraUnmatchedForwardDeclarationInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="PackageFileMissing" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PackageJsonMismatchedDependency" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PerlSwitch" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="PerlSyntax" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="PgSelectFromProcedureInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PointlessArithmeticExpressionJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PointlessBooleanExpressionJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PostCssCustomMedia" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="PostCssCustomSelector" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="PostCssMediaRange" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="PostCssUnresolvedModuleValueReference" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="PreprocessorComment" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="BaseLib" level="WARNING" enabled="true" />
       <scope name="BuildUtils" level="WARNING" enabled="true" />
@@ -3045,6 +3210,8 @@
       <scope name="emulator" level="WARNING" enabled="true" />
       <scope name="libretro" level="WARNING" enabled="true" />
     </inspection_tool>
+    <inspection_tool class="PyPandasSeriesToListInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyPandasTruthValueIsAmbiguousInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyUnreachableCodeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="RadGlobal" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="BaseLib" level="WARNING" enabled="true" />
@@ -3059,9 +3226,222 @@
       <scope name="libretro" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="RedundantNamespace" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ReservedWordUsedAsNameJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ReturnFromFinallyBlockJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsAbiLiteralMustBeString" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsApproxConstant" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsArgumentNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsArrayOutOfBounds" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsAssertEqual" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsAssignToImmutable" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsAssocTypeNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsAsyncMainFunction" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsAsyncNonMoveClosureWithParameters" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsAtLeastOneTraitForObjectType" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsAttrError" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsAttrWithoutParentheses" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsBareTraitObjects" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsBorrowChecker" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsCStringPointer" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsCallExpr" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsCannotImplForDynAutoTrait" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsChainedComparisonOperatorRequiresParentheses" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsCircularMods" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsCommaSeparatedTraitBounds" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsCompileErrorMacro" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsCompilerFeatureIsUnavailable" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsConstNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsConstSyntax" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsConstantConditionIf" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsConstantMissingType" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsControlFlowExprInWhileConditionWithoutLoop" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsCopyAndDropImpl" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsCrateName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsCratesInPath" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsDanglingElse" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsDbgUsage" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="RsDefaultKeywordIsNotAllowed" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsDefaultTypeParametersSyntax" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsDefaultValue" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsDefaultsConstGenericNotAllowed" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsDeprecation" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsDerivableTraitMembers" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsDeriveOnUnsupportedItem" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsDetachedFile" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsDotDotDotMustBeLastInArgumentList" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsDotDotDotSyntaxIsDeprecated" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsDoubleMustUse" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsDoubleNeg" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsDropCopyType" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsDropRef" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsDuplicateDefinitionError" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsDuplicateEnumDiscriminant" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsDuplicateHashKey" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsDuplicateMacroPattern" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsDuplicatedTraitMethodBinding" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsDynOrImplInTraitBounds" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsEdition2018Keywords" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsEdition2024Keywords" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsEnumNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsEnumReprIntIsRequired" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsEnumVariantNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsExplicitDropCall" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsExternCrateSelfWithoutAsName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsExternalLinter" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsFieldInitShorthand" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsFieldNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsFieldWithoutType" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsForbiddenSizedImpl" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsFormatMacroErrors" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsFormatMacroWithoutFormatArguments" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsFunctionCannotBeVariadic" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsFunctionCannotHaveAnonymousParameters" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsFunctionCannotHaveSelf" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsFunctionNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsFunctionParametersAreSized" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsFunctionSyntax" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsGenericArgumentsBeforeConstraints" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsGenericDefaultParamCannotUseForward" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsImplCopyForWrongType" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsImplDropForNonAdt" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsImplForNonAdtError" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsImplToString" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsImplTraitNotAllowed" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInclusiveRangeWithNoEnd" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsIncorrectFunctionArgumentCount" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsIncorrectVisibilityRestriction" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsIncorrectlyPlacedInlineAttr" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInherentImplDifferentCrate" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInvalidBreakContinue" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInvalidCharLiteralLength" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInvalidConstGenericArgument" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInvalidFieldsInStructLiteral" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInvalidLabelName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInvalidLetExpression" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInvalidLifetimeName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInvalidLiteralSuffix" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInvalidMacroCall" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInvalidMacroDefinition" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInvalidMacroVariableType" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsInvalidReexport" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsItemCannotBeUnsafe" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsItemStructure" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsLifetimeBoundsInParentheses" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsLifetimeNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsLifetimeParametersBeforeTypeParameters" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsLift" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsLiteralOutOfRange" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsLiveness" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsLoopOnlyKeywordOutsideOfLoop" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsMacroNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsMainFunctionNotFound" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsMainWithGenerics" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsManualImplOfFnTrait" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsMethodNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsMissingElse" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsModuleInsideBlockWithoutPath" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsModuleNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsModuleNotFound" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsModuleNotInModRs" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsMultipleRelaxedBounds" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsNeedlessLifetimes" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsNestedImplTraitNotAllowed" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsNestedQualificationOfLifetimeBounds" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsNoIncDecOperator" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsNonExhaustiveMatch" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsNonExistentFieldAccess" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsNonShorthandFieldPatterns" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsNonStructuralMatchTypeAsConstGenericParameter" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsOnlyAutoTraitsInTraitObject" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsPatStructInvalidFields" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsPathStatements" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsPatternsAreNotAllowed" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsPlaceExpression" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsProcMacroAttrInNonProcMacroCrate" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsPublicItemsInProcMacroCrate" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsQuestionMarkOperator" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsReassignImmutable" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsRecursionInAsyncFunction" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsRedundantColonColon" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsRedundantElse" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsRedundantSemicolons" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsReferenceIsNotPublic" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsRepeatedIdentifierInPattern" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsReplaceCastWithSuffix" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsReplaceMatchExpr" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsReservedIdentifier" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsReservedLifetimeName" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsReturnMustHaveValue" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsSelfConvention" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsSelfImport" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsSelfInStaticMethod" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsSelfNotAtTheBeginning" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsSelfValueIsNotAvailable" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsSimplifyBooleanExpression" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsSimplifyPrint" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsSleepInsideAsyncFunction" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsSortImplTraitMembers" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsStaticConstNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsStructInheritance" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsStructNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsStructRestWithoutBaseExpression" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsSuperTraitIsNotImplemented" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsSuspiciousAssignment" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsTestFailedLine" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsThreadLocalStableMethodCanBeUsed" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsThreadRngGen" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsTooManyLifetimeBoundsOnTraitObject" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsTraitExpected" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsTraitImplOrphanRules" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsTraitImplementation" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsTraitNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsTraitObligations" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsTryMacro" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsTupleLikeUnion" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsTypeAliasNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsTypeAliasSyntax" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsTypeCannotBeIndexedBy" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsTypeCheck" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsTypeParameterNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsTypePlaceholderIsForbidden" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUnclosedTextLiteral" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUndeclaredLabel" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUndeclaredLifetime" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUndeclaredTypeOrModule" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUnderscoreInExpression" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUnionExprFieldsCount" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUnknownCrateTypes" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUnlabeledControlFlowExpr" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUnnecessaryCast" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsUnnecessaryParentheses" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsUnnecessaryQualifications" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsUnnecessaryReturn" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsUnnecessaryVisibilityQualifier" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="RsUnreachableCode" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsUnreachableLabel" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="RsUnreachablePatterns" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsUnresolvedMethod" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUnresolvedPath" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUnsafeError" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUnsafeImpl" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUnsafeInherentImpl" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUnstableItemUsage" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsUnusedImport" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsUnusedLabels" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsUnusedMustUse" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsUnusedMut" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsUnwrap" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsVariableCaptureFromOuterFunction" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsVariableNaming" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsVariadicParametersUsedOnNonCABI" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="RsWhileTrueLoop" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="RsWrongAssocTypeArguments" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsWrongGenericArgumentsNumber" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsWrongGenericArgumentsOrder" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsWrongGenericParametersNumber" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="RsWrongLifetimeParametersNumber" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="ShiftOutOfRangeJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SillyAssignmentJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SpellCheckingInspection" enabled="true" level="TYPO" enabled_by_default="false">
       <scope name="Project Files" level="TYPO" enabled="true">
         <option name="processCode" value="true" />
@@ -3072,7 +3452,54 @@
       <option name="processLiterals" value="true" />
       <option name="processComments" value="true" />
     </inspection_tool>
+    <inspection_tool class="SqlAddNotNullColumnInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlAggregatesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlAmbiguousColumnInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlAutoIncrementDuplicateInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlCallNotationInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="SqlCaseVsCoalesceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlCaseVsIfInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlCheckUsingColumnsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlConstantExpressionInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlCurrentSchemaInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlDeprecateTypeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlDerivedTableAliasInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlDialectInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlDropIndexedColumnInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlDtInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlDuplicateColumnInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlIdentifierInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlIllegalCursorStateInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlInsertIntoGeneratedColumnInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlInsertNullIntoNotNullInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlInsertValuesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlJoinWithoutOnInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlMisleadingReferenceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlMissingReturnInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="SqlMultipleLimitClausesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlNoDataSourceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlRedundantAliasInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlRedundantCodeInCoalesceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlRedundantElseNullInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlRedundantLimitInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlRedundantOrderingDirectionInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlResolveInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="SqlShadowingAliasInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlShouldBeInGroupByInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlSideEffectsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlSignatureInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlSingleSessionModeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlStorageInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlStringLengthExceededInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlTransactionStatementInTriggerInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlTriggerTransitionInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlTypeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlUnicodeStringLiteralInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SqlUnreachableCodeInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlUnusedCteInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlUnusedSubqueryItemInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlUnusedVariableInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlWithoutWhereInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="StdIsConstantEvaluatedWillAlwaysEvaluateToConstant" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="BaseLib" level="WARNING" enabled="true" />
       <scope name="BuildUtils" level="WARNING" enabled="true" />
@@ -3088,22 +3515,67 @@
     <inspection_tool class="SubMultipleDeclarations" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SubMultipleDefinitions" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="SubUnresolvable" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SuspiciousTypeOfGuard" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ThisExpressionReferencesGlobalObjectJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ThrowFromFinallyBlockJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="TomlDuplicatedKey" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="TomlJsonSchemaBased" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="TomlUnclosedLiteral" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="TomlUnresolvedReference" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="TrivialConditionalJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="TrivialIfJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="TruthinessInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptAbstractClassConstructorCanBeMadeProtected" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptCheckImport" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptConfig" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptDuplicateUnionOrIntersectionType" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptExplicitMemberType" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptFieldCanBeMadeReadonly" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptJSXUnresolvedComponent" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptLibrary" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptMissingAugmentationImport" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptMissingConfigOption" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptRedundantGenericType" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptSmartCast" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptSuspiciousConstructorParameterAssignment" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptUMDGlobal" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptUnresolvedReference" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptValidateGenericTypes" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptValidateTypes" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="UnnecessaryContinueJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnnecessaryLabelJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnnecessaryLabelOnBreakStatementJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnnecessaryLabelOnContinueStatementJS" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnnecessaryLocalVariableJS" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="m_ignoreImmediatelyReturnedVariables" value="false" />
+      <option name="m_ignoreAnnotatedVariables" value="false" />
+    </inspection_tool>
+    <inspection_tool class="UnnecessaryReturnJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnqualifiedFieldAccess" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnqualifiedMethodAccess" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnreachableCallsOfFunction" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnreachableCode" enabled="false" level="ERROR" enabled_by_default="false" editorAttributes="NOT_USED_ELEMENT_ATTRIBUTES" />
     <inspection_tool class="UnreachableCodeJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnresolvedLabels" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnresolvedReference" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="UnusedGlobalVariable" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnusedLabels" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnusedLexicalVariable" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UnusedTypeGlob" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UpdateDependencyToLatestVersion" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="UseStrict" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UseVars" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UseWarnings" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="VariableLexicalBuiltIn" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="VariableShadows" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="VariableUnresolvable" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="VueDataFunction" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="VueDeprecatedSymbol" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="VueDuplicateTag" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="VueMissingComponentImportInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="VueUnrecognizedDirective" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="VueUnrecognizedSlot" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="WebpackConfigHighlighting" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="WithStatementJS" enabled="false" level="WARNING" enabled_by_default="false" />
   </profile>
 </component>
