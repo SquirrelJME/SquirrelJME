@@ -48,6 +48,12 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/blank.in.h"
 configure_file("${CMAKE_SOURCE_DIR}/cmake/blank.in.h"
 	"${outTestStructH}")
 
+# All of these are generated
+set_property(SOURCE "${outTestProtosH}"
+	PROPERTY GENERATED YES)
+set_property(SOURCE "${outTestStructH}"
+	PROPERTY GENERATED YES)
+
 # Include test header in the prototypes file
 file(APPEND "${outTestProtosH}"
 	"#include \"test.h\"\n")

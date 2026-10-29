@@ -372,6 +372,10 @@ function(squirreljme_decode_dir inputDir outputDir)
 		get_filename_component(outFileAbsPath
 			"${outputDir}/${baseName}" ABSOLUTE)
 
+		# This is a generated file
+		set_property(SOURCE "${outFileAbsPath}"
+			PROPERTY GENERATED YES)
+
 		# Check if file is up to date
 		squirreljme_check_file_checksum(upToDate
 			"${inFileAbs}" "${outFileAbsPath}")
@@ -455,6 +459,12 @@ function(squirreljme_sourceize_dir inputDir outputDir)
 			squirreljme_check_file_checksum(upToDate
 				"${inFileAbs}" "${outFileAbsPath}.h")
 		endif()
+
+		# This is a generated file
+		set_property(SOURCE "${outFileAbsPath}.c"
+			PROPERTY GENERATED YES)
+		set_property(SOURCE "${outFileAbsPath}.h"
+			PROPERTY GENERATED YES)
 
 		# Does decoding need to be rerun?
 		if(NOT upToDate)

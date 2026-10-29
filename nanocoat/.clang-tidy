@@ -44,6 +44,8 @@ Checks: >
   -*-else-after-return,
   -*-easily-swappable-parameters,
   -*-redundant-preprocessor,
+  -*-cpp,
+  -*-no-recursion,
   -misc-include-cleaner,
   -performance-no-int-to-ptr,
 CheckOptions:
@@ -93,6 +95,8 @@ CheckOptions:
     0xC0;
     0xE0;
     0xF0;
+    65535;
+    65536;
     0xFFFF;
     0xFF000000;
     0xFFFFFF;
@@ -106,3 +110,31 @@ CheckOptions:
     x3;y3;z3;
     x4;y4;z4;
     nPoints;
+  bugprone-signed-char-misuse.CharTypdefsToIgnore: >
+    sjme_cchar;
+    sjme_jchar;
+  bugprone-unused-return-value.AllowCastToVoid: true
+  bugprone-suspicious-string-compare.StringCompareLikeFunctions: >
+    sjme_string_compareWN;
+    sjme_string_compareN;
+    sjme_lpwcsncmp;
+    sjme_lpwcscmp;
+    sjme_string_compareIN;
+    sjme_lpwcscasecmp;
+    sjme_lpwcsncasecmp;
+    sjme_string_compareWAN;
+    sjme_string_compareIWN;
+    sjme_string_compareIWAN;
+  bugprone-string-constructor.StringNames: >
+    sjme_lpcstr;
+    sjme_lpcwstr;
+    sjme_lpstr;
+    sjme_lpwstr;
+    sjme_charSeq;
+    sjme_charSeq_static;
+  bugprone-unused-return-value.CheckedFunctions: >
+    sjme_error_is;
+    sjme_error_isOneOf;
+  bugprone-assert-side-effect.AssertMacros: >
+    sjme_message;
+    sjme_messageB;
