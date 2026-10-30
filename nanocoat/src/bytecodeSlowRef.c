@@ -571,18 +571,18 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
+	/* Pop object from the stack. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_nvm_task_frameStackPeek(inFrame,
+		SJME_JAVA_TYPE_ID_OBJECT, &value)))
+		return sjme_error_vmError(inFrame, error);
+	
 	/* Check for recycle, that is a class load happened. */
 	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
 	{
 		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
 		return SJME_ERROR_NONE;
 	}
-
-	/* Pop object from the stack. */
-	memset(&value, 0, sizeof(value));
-	if (sjme_error_is(error = sjme_nvm_task_frameStackPeek(inFrame,
-		SJME_JAVA_TYPE_ID_OBJECT, &value)))
-		return sjme_error_vmError(inFrame, error);
 	
 	/* If nothing is here, this always succeeds. */
 	if (value.v.l == NULL)
@@ -603,13 +603,6 @@ SJME_NVM_BYTECODE_SLOW(CheckCast)
 		if (sjme_error_is(error = sjme_nvm_task_frameEmitE(inFrame,
 			error, NULL, "%s %s", "?", "?")))
 			return sjme_error_vmError(inFrame, error);
-		
-		/* Check for recycle, class load and/or static constructor. */
-		if (sjme_nvm_byteCode_checkRecycleR(inFrame))
-		{
-			pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
-			return SJME_ERROR_NONE;
-		}
 	}
 	
 skip_isNull:

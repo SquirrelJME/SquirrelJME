@@ -427,6 +427,30 @@ typedef enum sjme_nvm_task_commonClassId
 	
 	/** @code void @endcode . */
 	SJME_NVM_COMMON_PRIMITIVE_VOID,
+	
+	/** @code java.lang.Boolean @endcode . */
+	SJME_NVM_COMMON_BOXED_BOOLEAN,
+	
+	/** @code java.lang.Byte @endcode . */
+	SJME_NVM_COMMON_BOXED_BYTE,
+	
+	/** @code java.lang.Character @endcode . */
+	SJME_NVM_COMMON_BOXED_CHARACTER,
+	
+	/** @code java.lang.Double @endcode . */
+	SJME_NVM_COMMON_BOXED_DOUBLE,
+	
+	/** @code java.lang.Float @endcode . */
+	SJME_NVM_COMMON_BOXED_FLOAT,
+	
+	/** @code java.lang.Integer @endcode . */
+	SJME_NVM_COMMON_BOXED_INTEGER,
+	
+	/** @code java.lang.Long @endcode . */
+	SJME_NVM_COMMON_BOXED_LONG,
+	
+	/** @code java.lang.Short @endcode . */
+	SJME_NVM_COMMON_BOXED_SHORT,
 
 	/** @code java.lang.ref.PhantomReference @endcode . */
 	SJME_NVM_COMMON_REFERENCE_PHANTOM,
@@ -528,6 +552,9 @@ typedef enum sjme_nvm_task_commonClassId
 
 	/** ScritchUI Window. */
 	SJME_NVM_COMMON_SCRITCH_UI_TYPE_WINDOW,
+	
+	/** Last ScritchUI type. */
+	SJME_NVM_COMMON_SCRITCH_UI_TYPE_LAST,
 
 	/** The start of very important classes. */
 	SJME_NVM_COMMON_VERY_IMPORTANT,

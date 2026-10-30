@@ -222,9 +222,6 @@
     <inspection_tool class="BooleanMethodIsAlwaysInverted" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="BooleanParameter" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="BooleanVariableAlwaysNegated" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -617,9 +614,6 @@
     <inspection_tool class="Deprecation" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="DesignForExtension" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="Destructure" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="DestructuringWrongName" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DifferentKotlinGradleVersion" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -893,16 +887,6 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ImplicitNullableNothingType" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="ImplicitNumericConversion" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="ignoreWideningConversions" value="false" />
-        <option name="ignoreCharConversions" value="false" />
-        <option name="ignoreConstantConversions" value="false" />
-      </scope>
-      <option name="ignoreWideningConversions" value="false" />
-      <option name="ignoreCharConversions" value="false" />
-      <option name="ignoreConstantConversions" value="false" />
-    </inspection_tool>
     <inspection_tool class="ImplicitSubclassInspection" enabled="true" level="ERROR" enabled_by_default="false">
       <scope name="SquirrelJME" level="ERROR" enabled="true" />
     </inspection_tool>
@@ -1526,9 +1510,7 @@
     <inspection_tool class="NoopMethodInAbstractClass" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="NotNullFieldNotInitialized" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
+    <inspection_tool class="NotNullFieldNotInitialized" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="NotifyCalledOnCondition" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -1542,17 +1524,7 @@
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="NullableBooleanElvis" enabled="false" level="INFORMATION" enabled_by_default="false" />
-    <inspection_tool class="NullableProblems" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="REPORT_NULLABLE_METHOD_OVERRIDES_NOTNULL" value="true" />
-        <option name="REPORT_NOT_ANNOTATED_METHOD_OVERRIDES_NOTNULL" value="true" />
-        <option name="REPORT_NOTNULL_PARAMETER_OVERRIDES_NULLABLE" value="true" />
-        <option name="REPORT_NOT_ANNOTATED_PARAMETER_OVERRIDES_NOTNULL" value="true" />
-        <option name="REPORT_NOT_ANNOTATED_GETTER" value="true" />
-        <option name="REPORT_NOT_ANNOTATED_SETTER_PARAMETER" value="true" />
-        <option name="REPORT_ANNOTATION_NOT_PROPAGATED_TO_OVERRIDERS" value="true" />
-        <option name="REPORT_NULLS_PASSED_TO_NON_ANNOTATED_METHOD" value="true" />
-      </scope>
+    <inspection_tool class="NullableProblems" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="REPORT_NULLABLE_METHOD_OVERRIDES_NOTNULL" value="true" />
       <option name="REPORT_NOT_ANNOTATED_METHOD_OVERRIDES_NOTNULL" value="true" />
       <option name="REPORT_NOTNULL_PARAMETER_OVERRIDES_NULLABLE" value="true" />
@@ -1935,18 +1907,6 @@
     </inspection_tool>
     <inspection_tool class="ReturnFromFinallyBlock" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="ReturnNull" enabled="false" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="false">
-        <option name="m_reportObjectMethods" value="true" />
-        <option name="m_reportArrayMethods" value="true" />
-        <option name="m_reportCollectionMethods" value="true" />
-        <option name="m_ignorePrivateMethods" value="false" />
-      </scope>
-      <option name="m_reportObjectMethods" value="true" />
-      <option name="m_reportArrayMethods" value="true" />
-      <option name="m_reportCollectionMethods" value="true" />
-      <option name="m_ignorePrivateMethods" value="false" />
     </inspection_tool>
     <inspection_tool class="ReturnOfInnerClass" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />

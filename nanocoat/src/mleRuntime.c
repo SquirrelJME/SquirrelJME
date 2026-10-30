@@ -380,7 +380,8 @@ SJME_NVM_MLE_FUNCTION_DECL(vmStatistic)
 			switch (type) /* NOLINT */
 			{
 				case SJME_NVM_VM_STAT_MEM_FREE:
-					value.full = memTotal - memUsed;
+					value.full = sjme_max(INT64_C(0),
+						memTotal - memUsed);
 					break;
 					
 				case SJME_NVM_VM_STAT_MEM_MAX:

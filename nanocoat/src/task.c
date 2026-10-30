@@ -29,6 +29,46 @@
 /** The number of threads to grow by. */
 #define SJME_NVM_THREAD_GROW 8
 
+static sjme_errorCode sjme_nvm_task_preload(
+	sjme_attrInNotNull sjme_nvm_task inTask,
+	sjme_attrInNotNull sjme_nvm_thread inThread)
+{
+	sjme_errorCode error;
+	sjme_nvm_task_commonClassId ccId; 
+	sjme_jint i;
+	sjme_jclass classy;
+	
+	if (inTask == NULL || inThread == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Load all common classes, in reverse order! Perform a load of */
+	/* everything first, then initialize during a second stage. */
+	for (i = 0; i < 2; i++)
+		for (ccId = SJME_NVM_TASK_NUM_COMMON_CLASS - 1;
+			ccId > SJME_NVM_COMMON_NULL; ccId--)
+		{
+			/* Skip these specific classes. */
+			/* Mostly ScritchUI related classes are skipped because they might */
+			/* not actually exist and they will work if loaded later. */
+			if (ccId == SJME_NVM_COMMON_SCRITCH_UI_PROXY ||
+				(ccId >= SJME_NVM_COMMON_SCRITCH_UI_TYPE_BASE &&
+					ccId <= SJME_NVM_COMMON_SCRITCH_UI_TYPE_LAST) ||
+				ccId == SJME_NVM_COMMON_VERY_IMPORTANT ||
+				ccId == SJME_NVM_COMMON_NULL)
+				continue;
+			
+			/* Load the common class, only initialize on the second run. */
+			classy = NULL;
+			if (sjme_error_is(error = sjme_nvm_task_commonClass(inThread,
+				ccId, &classy, (i != 0))) ||
+				classy == NULL)
+				return sjme_error_default(error);
+		}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNotNull sjme_nvm_thread inThread,
@@ -217,6 +257,13 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		->globals.commonClasses[commonId]);
 	if (result != NULL)
 	{
+		/* Make sure it is initialized if we are wanting that. */
+		if (doInit)
+			if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(result,
+				contextThread)))
+				return sjme_error_default(error);
+		
+		/* Return the class. */
 		*outClass = result;
 		return SJME_ERROR_NONE;
 	}
@@ -311,6 +358,38 @@ sjme_errorCode sjme_nvm_task_commonClass(
 	
 		case SJME_NVM_COMMON_PRIMITIVE_VOID:
 			commonName = "F";
+			break;
+			
+		case SJME_NVM_COMMON_BOXED_BOOLEAN:
+			commonName = "Ljava/lang/Boolean;";
+			break;
+			
+		case SJME_NVM_COMMON_BOXED_BYTE:
+			commonName = "Ljava/lang/Byte;";
+			break;
+			
+		case SJME_NVM_COMMON_BOXED_CHARACTER:
+			commonName = "Ljava/lang/Character;";
+			break;
+			
+		case SJME_NVM_COMMON_BOXED_DOUBLE:
+			commonName = "Ljava/lang/Double;";
+			break;
+			
+		case SJME_NVM_COMMON_BOXED_FLOAT:
+			commonName = "Ljava/lang/Float;";
+			break;
+			
+		case SJME_NVM_COMMON_BOXED_INTEGER:
+			commonName = "Ljava/lang/Integer;";
+			break;
+			
+		case SJME_NVM_COMMON_BOXED_LONG:
+			commonName = "Ljava/lang/Long;";
+			break;
+			
+		case SJME_NVM_COMMON_BOXED_SHORT:
+			commonName = "Ljava/lang/Short;";
 			break;
 
 		case SJME_NVM_COMMON_REFERENCE_PHANTOM:
@@ -800,6 +879,10 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	/* Set argument strings. */
 	inTask->globals.mainArgs = argStrings;
 	
+	/* Take this opportunity to do some preloading initialization. */
+	if (sjme_error_is(error = sjme_nvm_task_preload(inTask, mainThread)))
+		goto fail_preload;
+	
 	/* The main thread of any task is always implicitly started. */
 	if (sjme_error_is(error = sjme_nvm_task_threadStart(mainThread)))
 		goto fail_startMain;
@@ -815,6 +898,7 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 	return SJME_ERROR_NONE;
 
 fail_startMain:
+fail_preload:
 fail_countMainArgString:
 fail_mainArgsString:
 fail_mainArgsStrings:

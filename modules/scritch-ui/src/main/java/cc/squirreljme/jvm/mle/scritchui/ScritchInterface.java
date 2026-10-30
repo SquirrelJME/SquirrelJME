@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Range;
  *
  * @since 2024/02/29
  */
+@SuppressWarnings("OverlyCoupledClass")
 @SquirrelJMENativeApi(min = "0.4.0")
 public interface ScritchInterface
 	extends ScritchApiInterface
