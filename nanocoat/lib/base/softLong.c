@@ -14,9 +14,18 @@
 
 static const sjme_jlong sjme_softLong_zero;
 
+#define sjme_shl(a, b) \
+	sjme_util_intOverShift((a), (b) & INT32_C(0x1F))
+
+#define sjme_shr(a, b) \
+	sjme_util_intOverShift((a), -((b) & INT32_C(0x1F)))
+
+#define sjme_ushr(a, b) \
+	((sjme_jint)sjme_util_intOverShiftU((a), -((b) & INT32_C(0x1F))))
+
 static void sjme_softLong_pack(
 	sjme_attrOutNotNull sjme_jlong* r,
-	sjme_attrInValue sjme_juint vL,
+	sjme_attrInValue sjme_jint vL,
 	sjme_attrInValue sjme_jint vH)
 {
 	if (r == NULL)
@@ -28,7 +37,7 @@ static void sjme_softLong_pack(
 
 static void sjme_softLong_negImpl(
 	sjme_attrOutNotNull sjme_jlong* r,
-	sjme_attrInValue sjme_juint aL,
+	sjme_attrInValue sjme_jint aL,
 	sjme_attrInValue sjme_jint aH)
 {
 	if (r == NULL)
@@ -36,8 +45,8 @@ static void sjme_softLong_negImpl(
 	
 	/* Negate and check for overflow */
 	aH = (~aH);
-	aL = (~aL + 1U);
-	if (aL == 0U)
+	aL = ((~aL) + 1);
+	if (aL == 0)
 		aH++;
 	
 	/* Return result */
@@ -47,9 +56,9 @@ static void sjme_softLong_negImpl(
 static void sjme_softLong_divImpl(
 	sjme_attrOutNotNull sjme_jlong* r,
 	sjme_jboolean doRem,
-	sjme_attrInValue sjme_juint nL,
+	sjme_attrInValue sjme_jint nL,
 	sjme_attrInValue sjme_jint nH,
-	sjme_attrInValue sjme_juint dL,
+	sjme_attrInValue sjme_jint dL,
 	sjme_attrInValue sjme_jint dH)
 {
 	/* Wikipedia (http://en.wikipedia.org/wiki/Division_%28digital%29) */
@@ -200,13 +209,13 @@ static void sjme_softLong_divImpl(
 
 static void sjme_softLong_mulImpl(
 	sjme_attrOutNotNull sjme_jlong* r,
-	sjme_attrInValue sjme_juint aL,
-	sjme_attrInValue sjme_juint aH,
-	sjme_attrInValue sjme_juint bL,
-	sjme_attrInValue sjme_juint bH)
+	sjme_attrInValue sjme_jint aL,
+	sjme_attrInValue sjme_jint aH,
+	sjme_attrInValue sjme_jint bL,
+	sjme_attrInValue sjme_jint bH)
 {
-	uint32_t over;
-	uint32_t m, p, o, n, a, b, c, d, w, x, y, z;
+	sjme_jint over;
+	sjme_jint m, p, o, n, a, b, c, d, w, x, y, z;
 	
 	if (r == NULL)
 		return;
@@ -216,16 +225,16 @@ static void sjme_softLong_mulImpl(
 	/* negative. */
 	
 	/* First value */
-	a = (aH >> 16);
-	b = (aH & UINT32_C(0xFFFF));
-	c = (aL >> 16);
-	d = (aL & UINT32_C(0xFFFF));
+	a = sjme_ushr(aH, 16);
+	b = (aH & INT32_C(0xFFFF));
+	c = sjme_ushr(aL, 16);
+	d = (aL & INT32_C(0xFFFF));
 
 	/* Second value */
-	w = (bH >> 16);
-	x = (bH & UINT32_C(0xFFFF));
-	y = (bL >> 16);
-	z = (bL & UINT32_C(0xFFFF));
+	w = sjme_ushr(bH, 16);
+	x = (bH & INT32_C(0xFFFF));
+	y = sjme_ushr(bL, 16);
+	z = (bL & INT32_C(0xFFFF));
 
 	/* Effectively this is long multiplication */
 	/* Multiplication in two's complement form is the same in both */
@@ -248,21 +257,21 @@ static void sjme_softLong_mulImpl(
 	/* Multiply and add all the parts together */
 	/* int p = (d * z); */
 	p = (d * z);
-	over = (p >> 16);
+	over = sjme_ushr(p, 16);
 	
 	/* int o = (d * y) + (c * z) + (p >> 16); */
 	o = over + (d * y);
-	over = (o >> 16);
-	o = (o & UINT32_C(0xFFFF)) + (c * z);
-	over += (o >> 16);
+	over = sjme_ushr(o, 16);
+	o = (o & INT32_C(0xFFFF)) + (c * z);
+	over += sjme_ushr(o, 16);
 	
 	/* int n = (d * x) + (c * y) + (b * z) + (o >> 16); */
 	n = over + (d * x);
-	over = (n >> 16);
-	n = (n & UINT32_C(0xFFFF)) + (c * y);
-	over += (n >> 16);
-	n = (n & UINT32_C(0xFFFF)) + (b * z);
-	over += (n >> 16);
+	over = sjme_ushr(n, 16);
+	n = (n & INT32_C(0xFFFF)) + (c * y);
+	over += sjme_ushr(n, 16);
+	n = (n & INT32_C(0xFFFF)) + (b * z);
+	over += sjme_ushr(n, 16);
 	
 	/* int m = (d * w) + (c * x) + (b * y) + (a * z) + (n >> 16); */
 	/* We need not care about overflow here, because it will all be */
@@ -271,19 +280,19 @@ static void sjme_softLong_mulImpl(
 
 	/* Combine the resultant parts */
 	sjme_softLong_pack(r,
-		(o << 16) | (p & UINT32_C(0xFFFF)),
-		(m << 16) | (n & UINT32_C(0xFFFF)));
+		sjme_shl(o, 16) | (p & INT32_C(0xFFFF)),
+		sjme_shl(m, 16) | (n & INT32_C(0xFFFF)));
 }
 
 static void sjme_softLong_addImpl(
 	sjme_attrOutNotNull sjme_jlong* r,
-	sjme_attrInValue sjme_juint aL,
+	sjme_attrInValue sjme_jint aL,
 	sjme_attrInValue sjme_jint aH,
-	sjme_attrInValue sjme_juint bL,
+	sjme_attrInValue sjme_jint bL,
 	sjme_attrInValue sjme_jint bH)
 {
-	uint32_t cl;
-	int32_t ch;
+	sjme_jint cl;
+	sjme_jint ch;
 	
 	if (r == NULL)
 		return;
@@ -294,7 +303,8 @@ static void sjme_softLong_addImpl(
 
 	/* If the low addition carried a bit over, then set that bit in the */
 	/* high part */
-	if ((cl + UINT32_C(0x80000000)) < (aL + UINT32_C(0x80000000)))
+	if ((sjme_jint)(cl + INT32_C(0x80000000)) < 
+		(sjme_jint)(aL + INT32_C(0x80000000)))
 		ch++;
 	
 	/* Return result */
@@ -302,10 +312,10 @@ static void sjme_softLong_addImpl(
 }
 
 static sjme_jboolean sjme_softLong_cmpImpl(
-	sjme_attrInValue sjme_juint aL,
-	sjme_attrInValue sjme_juint aH,
-	sjme_attrInValue sjme_juint bL,
-	sjme_attrInValue sjme_juint bH)
+	sjme_attrInValue sjme_jint aL,
+	sjme_attrInValue sjme_jint aH,
+	sjme_attrInValue sjme_jint bL,
+	sjme_attrInValue sjme_jint bH)
 {
 	/* Compare high values firsts */
 	if (aH < bH)
@@ -325,49 +335,49 @@ static sjme_jboolean sjme_softLong_cmpImpl(
 
 static void sjme_softLong_mulImplSub(
 	sjme_attrOutNotNull sjme_jlong* r,
-	sjme_attrInValue sjme_juint aL,
+	sjme_attrInValue sjme_jint aL,
 	sjme_attrInValue sjme_jint aH,
-	sjme_attrInValue sjme_juint bL,
+	sjme_attrInValue sjme_jint bL,
 	sjme_attrInValue sjme_jint bH)
 {
 	if (r == NULL)
 		return;
 	
 	/* Are both sides negative? */
-	if (((aH & bH) & UINT32_C(0x80000000)) != 0U)
+	if (((aH & bH) & INT32_C(0x80000000)) != 0U)
 	{
 		/* Negate and check for overflow */
 		aH = (~aH);
-		aL = (~aL + 1U);
+		aL = ((~aL) + 1);
 		if (aL == 0U)
 			aH++;
 			
 		/* Negate and check for overflow */
 		bH = (~bH);
-		bL = (~bL + 1U);
+		bL = ((~bL) + 1);
 		if (bL == 0U)
 			bH++;
 		
 		/* Return result */
-		sjme_softLong_mulImplSub(r, aL, aH, bL, bH);
+		sjme_softLong_mulImpl(r, aL, aH, bL, bH);
 		return;
 	}
 	
 	/* Perform the calculation */
-	sjme_softLong_mulImplSub(r, aL, aH, bL, bH);
+	sjme_softLong_mulImpl(r, aL, aH, bL, bH);
 }
 
 static void sjme_softLong_shlImpl(
 	sjme_attrOutNotNull sjme_jlong* r,
-	sjme_attrInValue sjme_juint aL,
-	sjme_attrInValue sjme_juint aH,
+	sjme_attrInValue sjme_jint aL,
+	sjme_attrInValue sjme_jint aH,
 	sjme_attrInNotNull sjme_jint s)
 {
 	if (r == NULL)
 		return;
 	
 	/* Mask the shift amount */
-	s &= UINT32_C(0x3F);
+	s &= INT32_C(0x3F);
 	
 	/* Doing nothing? */
 	if (s == 0)
@@ -375,18 +385,18 @@ static void sjme_softLong_shlImpl(
 	
 	/* Shifting all the low bits to the high bits */
 	else if (s >= 32)
-		sjme_softLong_pack(r, 0U, aL << (s - 32));
+		sjme_softLong_pack(r, 0U, sjme_shl(aL, (s - 32)));
 	
 	/* Merge of bits (shift in range of 1-31) */
 	else
-		sjme_softLong_pack(r, (aL << s),
-			(aH << s) | (aL >> (32 - s)));
+		sjme_softLong_pack(r, sjme_shl(aL, s),
+			sjme_shl(aH, s) | sjme_ushr(aL, (32 - s)));
 }
 
 static void sjme_softLong_shrImpl(
 	sjme_attrOutNotNull sjme_jlong* r,
-	sjme_attrInValue sjme_juint aL,
-	sjme_attrInValue sjme_juint aH,
+	sjme_attrInValue sjme_jint aL,
+	sjme_attrInValue sjme_jint aH,
 	sjme_attrInNotNull sjme_jint s)
 {
 	if (r == NULL)
@@ -401,21 +411,22 @@ static void sjme_softLong_shrImpl(
 	
 	/* Shifting all the high bits low */
 	else if (s >= 32)
-		sjme_softLong_pack(r, aH >> (s - 32),
-			(aH & UINT32_C(0x80000000)) >> 31);
+		sjme_softLong_pack(r, 
+			sjme_shr(aH, (s - 32)),
+			sjme_shr((aH & INT32_C(0x80000000)), 31));
 	
 	/* Merge of bits (shift in range of 1-31) */
 	else
-		sjme_softLong_pack(r, (aH << (32 - s)) | (aL >> s),
-			(aH >> s));
+		sjme_softLong_pack(r, sjme_shl(aH, (32 - s)) | sjme_ushr(aL, s),
+			sjme_shr(aH, s));
 }
 
 static void sjme_softLong_subImpl(
 	sjme_attrOutNotNull sjme_jlong* r,
-	sjme_attrInValue sjme_juint aL,
-	sjme_attrInValue sjme_juint aH,
-	sjme_attrInValue sjme_juint bL,
-	sjme_attrInValue sjme_juint bH)
+	sjme_attrInValue sjme_jint aL,
+	sjme_attrInValue sjme_jint aH,
+	sjme_attrInValue sjme_jint bL,
+	sjme_attrInValue sjme_jint bH)
 {
 	uint32_t ch;
 	uint32_t cl;
@@ -436,7 +447,8 @@ static void sjme_softLong_subImpl(
 
 	/* If the low addition carried a bit over, then set that bit in the */
 	/* high part */
-	if ((cl + UINT32_C(0x80000000)) < (aL + UINT32_C(0x80000000)))
+	if ((sjme_jint)(cl + INT32_C(0x80000000)) < 
+		(sjme_jint)(aL + INT32_C(0x80000000)))
 		ch++;
 	
 	/* Return result */
@@ -445,28 +457,28 @@ static void sjme_softLong_subImpl(
 
 static void sjme_softLong_ushrImpl(
 	sjme_attrOutNotNull sjme_jlong* r,
-	sjme_attrInValue sjme_juint aL,
-	sjme_attrInValue sjme_juint aH,
-	sjme_attrInNotNull sjme_juint s)
+	sjme_attrInValue sjme_jint aL,
+	sjme_attrInValue sjme_jint aH,
+	sjme_attrInNotNull sjme_jint s)
 {
 	if (r == NULL)
 		return;
 	
 	/* Mask the shift amount */
-	s &= 0x3FU;
+	s &= 0x3F;
 	
 	/* Doing nothing? */
-	if (s == 0U)
+	if (s == 0)
 		sjme_softLong_pack(r, aL, aH);
 	
 	/* Shifting all the high bits low */
 	else if (s >= 32U)
-		sjme_softLong_pack(r, aH >> (s - 32U), 0U);
+		sjme_softLong_pack(r, sjme_ushr(aH, (s - 32U)), 0U);
 	
 	/* Merge of bits (shift in range of 1-31) */
 	else
-		sjme_softLong_pack(r, (aH << (32U - s)) | (aL >> s),
-			(aH >> s));
+		sjme_softLong_pack(r, sjme_shl(aH, (32U - s)) | sjme_ushr(aL, s),
+			sjme_ushr(aH, s));
 }
 
 sjme_jlong sjme_softLong_add(
@@ -482,8 +494,8 @@ sjme_jlong sjme_softLong_add(
 		b = &sjme_softLong_zero;
 	
 	memset(&v, 0, sizeof(v));
-	sjme_softLong_addImpl(&v, a->part.lo, a->part.hi,
-		b->part.lo, b->part.hi);
+	sjme_softLong_addImpl(&v, (sjme_jint)a->part.lo, a->part.hi,
+		(sjme_jint)b->part.lo, b->part.hi);
 	
 	if (r != NULL)
 		memmove(r, &v, sizeof(*r));
@@ -503,7 +515,7 @@ sjme_jlong sjme_softLong_and(
 		b = &sjme_softLong_zero;
 	
 	memset(&v, 0, sizeof(v));
-	sjme_softLong_pack(&v, a->part.lo & b->part.lo,
+	sjme_softLong_pack(&v, (sjme_jint)(a->part.lo & b->part.lo),
 		a->part.hi & b->part.hi);
 	
 	if (r != NULL)
@@ -520,8 +532,8 @@ sjme_jboolean sjme_softLong_cmp(
 	if (b == NULL)
 		b = &sjme_softLong_zero;
 	
-	return sjme_softLong_cmpImpl(a->part.lo, a->part.hi,
-		b->part.lo, b->part.hi);
+	return sjme_softLong_cmpImpl((sjme_jint)a->part.lo, a->part.hi,
+		(sjme_jint)b->part.lo, b->part.hi);
 }
 	
 sjme_jlong sjme_softLong_div(
@@ -538,8 +550,8 @@ sjme_jlong sjme_softLong_div(
 	
 	memset(&v, 0, sizeof(v));
 	sjme_softLong_divImpl(&v, SJME_JNI_FALSE,
-		a->part.lo, a->part.hi,
-		b->part.lo, b->part.hi);
+		(sjme_jint)a->part.lo, a->part.hi,
+		(sjme_jint)b->part.lo, b->part.hi);
 	
 	if (r != NULL)
 		memmove(r, &v, sizeof(*r));
@@ -559,8 +571,8 @@ sjme_jlong sjme_softLong_mul(
 		b = &sjme_softLong_zero;
 	
 	memset(&v, 0, sizeof(v));
-	sjme_softLong_mulImpl(&v, a->part.lo, a->part.hi,
-		b->part.lo, b->part.hi);
+	sjme_softLong_mulImpl(&v, (sjme_jint)a->part.lo, a->part.hi,
+		(sjme_jint)b->part.lo, b->part.hi);
 	
 	if (r != NULL)
 		memmove(r, &v, sizeof(*r));
@@ -577,7 +589,7 @@ sjme_jlong sjme_softLong_neg(
 		a = &sjme_softLong_zero;
 	
 	memset(&v, 0, sizeof(v));
-	sjme_softLong_negImpl(&v, a->part.lo, a->part.hi);
+	sjme_softLong_negImpl(&v, (sjme_jint)a->part.lo, a->part.hi);
 	
 	if (r != NULL)
 		memmove(r, &v, sizeof(*r));
@@ -597,7 +609,7 @@ sjme_jlong sjme_softLong_or(
 		b = &sjme_softLong_zero;
 	
 	memset(&v, 0, sizeof(v));
-	sjme_softLong_pack(&v, a->part.lo | b->part.lo,
+	sjme_softLong_pack(&v, (sjme_jint)a->part.lo | b->part.lo,
 		a->part.hi | b->part.hi);
 	
 	if (r != NULL)
@@ -619,8 +631,8 @@ sjme_jlong sjme_softLong_rem(
 	
 	memset(&v, 0, sizeof(v));
 	sjme_softLong_divImpl(&v, SJME_JNI_TRUE,
-		a->part.lo, a->part.hi,
-		b->part.lo, b->part.hi);
+		(sjme_jint)a->part.lo, a->part.hi,
+		(sjme_jint)b->part.lo, b->part.hi);
 	
 	if (r != NULL)
 		memmove(r, &v, sizeof(*r));
@@ -638,7 +650,7 @@ sjme_jlong sjme_softLong_shl(
 		a = &sjme_softLong_zero;
 	
 	memset(&v, 0, sizeof(v));
-	sjme_softLong_shlImpl(&v, a->part.lo, a->part.hi,
+	sjme_softLong_shlImpl(&v, (sjme_jint)a->part.lo, a->part.hi,
 		s);
 	
 	if (r != NULL)
@@ -657,7 +669,7 @@ sjme_jlong sjme_softLong_shr(
 		a = &sjme_softLong_zero;
 	
 	memset(&v, 0, sizeof(v));
-	sjme_softLong_shrImpl(&v, a->part.lo, a->part.hi,
+	sjme_softLong_shrImpl(&v, (sjme_jint)a->part.lo, a->part.hi,
 		s);
 	
 	if (r != NULL)
@@ -678,8 +690,8 @@ sjme_jlong sjme_softLong_sub(
 		b = &sjme_softLong_zero;
 	
 	memset(&v, 0, sizeof(v));
-	sjme_softLong_subImpl(&v, a->part.lo, a->part.hi,
-		b->part.lo, b->part.hi);
+	sjme_softLong_subImpl(&v, (sjme_jint)a->part.lo, a->part.hi,
+		(sjme_jint)b->part.lo, b->part.hi);
 	
 	if (r != NULL)
 		memmove(r, &v, sizeof(*r));
@@ -735,7 +747,7 @@ sjme_jlong sjme_softLong_ushr(
 		a = &sjme_softLong_zero;
 	
 	memset(&v, 0, sizeof(v));
-	sjme_softLong_ushrImpl(&v, a->part.lo, a->part.hi,
+	sjme_softLong_ushrImpl(&v, (sjme_jint)a->part.lo, a->part.hi,
 		s);
 	
 	if (r != NULL)
@@ -756,7 +768,7 @@ sjme_jlong sjme_softLong_xor(
 		b = &sjme_softLong_zero;
 	
 	memset(&v, 0, sizeof(v));
-	sjme_softLong_pack(&v, a->part.lo ^ b->part.lo,
+	sjme_softLong_pack(&v, (sjme_jint)(a->part.lo ^ b->part.lo),
 		a->part.hi ^ b->part.hi);
 	
 	if (r != NULL)

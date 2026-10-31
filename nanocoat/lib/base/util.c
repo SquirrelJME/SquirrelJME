@@ -1052,8 +1052,8 @@ sjme_jint sjme_util_intOverShift(
 {
 	/* Shifting to the right all the way, smears the highest bit. */
 	if (sh <= -32)
-		return ((v & INT32_C(0x80000000)) ?
-			INT32_C(0xFFFFFFFF) : INT32_C(0));
+		return (((v & UINT32_C(0x80000000)) != 0U) ?
+			INT32_C(-1) : INT32_C(0));
 
 	/* Shifting all the way to the left results in zero. */
 	if (sh >= 32)
@@ -1075,7 +1075,7 @@ sjme_juint sjme_util_intOverShiftU(
 
 	/* Shifting more than this always results in zero. */
 	if (sh <= -32 || sh >= 32)
-		return 0;
+		return 0U;
 	
 	/* Shift by zero does nothing. */
 	else if (sh == 0)

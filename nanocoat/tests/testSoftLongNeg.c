@@ -39,8 +39,8 @@ SJME_TEST_DECLARE(testSoftLongNeg)
 		a.part.hi = sjme_test_longs_in[i].hi;
 		
 		/* Fill in expected. */
-		x.part.lo = sjme_test_longs_rem[i].lo;
-		x.part.hi = sjme_test_longs_rem[i].hi;
+		x.part.lo = sjme_test_longs_neg[i].lo;
+		x.part.hi = sjme_test_longs_neg[i].hi;
 		
 		/* Calculate. */
 		rA = sjme_softLong_neg(&rB, &a);

@@ -67,6 +67,7 @@ extern const sjme_test_jlongPart sjme_test_longs_sub[SJME_TEST_NUM_LONGS];
 extern const sjme_test_jlongPart sjme_test_longs_mul[SJME_TEST_NUM_LONGS];
 extern const sjme_test_jlongPart sjme_test_longs_div[SJME_TEST_NUM_LONGS];
 extern const sjme_test_jlongPart sjme_test_longs_rem[SJME_TEST_NUM_LONGS];
+extern const sjme_test_jlongPart sjme_test_longs_neg[SJME_TEST_NUM_LONGS];
 extern const sjme_test_jlongPart sjme_test_longs_and[SJME_TEST_NUM_LONGS];
 extern const sjme_test_jlongPart sjme_test_longs_or[SJME_TEST_NUM_LONGS];
 extern const sjme_test_jlongPart sjme_test_longs_xor[SJME_TEST_NUM_LONGS];

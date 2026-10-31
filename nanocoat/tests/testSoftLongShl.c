@@ -54,8 +54,8 @@ SJME_TEST_DECLARE(testSoftLongShl)
 		/* Failed! */
 		else
 		{
-			sjme_emitB("> %08x_%08x << %08x = ",
-				a.part.hi, a.part.lo, b);
+			sjme_emitB("> %08x_%08x << %d (%08x) = ",
+				a.part.hi, a.part.lo, b & 0x3F, b);
 			sjme_emitB("  %08x_%08x != [%08x_%08x, %08x_%08x]",
 				x.part.hi, x.part.lo,
 				rA.part.hi, rA.part.lo, rB.part.hi, rB.part.lo);
