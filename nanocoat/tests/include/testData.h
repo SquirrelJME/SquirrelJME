@@ -61,6 +61,7 @@ typedef struct sjme_test_jdoublePart
 /** The number of test longs. */
 #define SJME_TEST_NUM_LONGS 1024
 
+extern const sjme_test_jlongPart sjme_test_longs_in[SJME_TEST_NUM_LONGS];
 extern const sjme_test_jlongPart sjme_test_longs_add[SJME_TEST_NUM_LONGS];
 extern const sjme_test_jlongPart sjme_test_longs_sub[SJME_TEST_NUM_LONGS];
 extern const sjme_test_jlongPart sjme_test_longs_mul[SJME_TEST_NUM_LONGS];
@@ -69,6 +70,9 @@ extern const sjme_test_jlongPart sjme_test_longs_rem[SJME_TEST_NUM_LONGS];
 extern const sjme_test_jlongPart sjme_test_longs_and[SJME_TEST_NUM_LONGS];
 extern const sjme_test_jlongPart sjme_test_longs_or[SJME_TEST_NUM_LONGS];
 extern const sjme_test_jlongPart sjme_test_longs_xor[SJME_TEST_NUM_LONGS];
+extern const sjme_test_jlongPart sjme_test_longs_shl[SJME_TEST_NUM_LONGS];
+extern const sjme_test_jlongPart sjme_test_longs_shr[SJME_TEST_NUM_LONGS];
+extern const sjme_test_jlongPart sjme_test_longs_ushr[SJME_TEST_NUM_LONGS];
 extern const sjme_jint sjme_test_longs_cmp[SJME_TEST_NUM_LONGS];
 extern const sjme_jint sjme_test_longs_int[SJME_TEST_NUM_LONGS];
 extern const sjme_juint sjme_test_longs_float[SJME_TEST_NUM_LONGS];
