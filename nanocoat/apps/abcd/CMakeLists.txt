@@ -47,12 +47,23 @@ target_include_directories(AncientBuildContraptionDevice PUBLIC
 	"${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 # Link against the base libraries
-squirreljme_link_libraries_required(AncientBuildContraptionDevice PUBLIC
-	BaseStatic)
+squirreljme_link_libraries(AncientBuildContraptionDevice PUBLIC
+	BaseStatic
+	CoreStatic)
 
 # Setup base executable for actually launching
 add_executable(AppAncientBuildContraptionDevice
 	dispatchMain.c)
+
+# Include main headers
+target_include_directories(AppAncientBuildContraptionDevice PUBLIC
+	"${CMAKE_SOURCE_DIR}/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+# Link against the base libraries
+squirreljme_link_libraries_required(AppAncientBuildContraptionDevice PUBLIC
+	BaseStatic
+	CoreStatic)
 
 # Name it something easier to use
 squirreljme_target_binary_name(AppAncientBuildContraptionDevice

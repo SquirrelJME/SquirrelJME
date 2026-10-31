@@ -62,6 +62,23 @@ file(APPEND "${outTestProtosH}"
 add_library(BasicTestLib OBJECT
 	src/basic.c
 	src/blobs.c
+	src/longsAdd.c
+	src/longsAnd.c
+	src/longsCmp.c
+	src/longsDiv.c
+	src/longsDouble.c
+	src/longsFloat.c
+	src/longsIn.c
+	src/longsInt.c
+	src/longsMul.c
+	src/longsNeg.c
+	src/longsOr.c
+	src/longsRem.c
+	src/longsShl.c
+	src/longsShr.c
+	src/longsSub.c
+	src/longsUshr.c
+	src/longsXor.c
 	src/mock.c
 	src/unit.c
 	${basicTestSources}
@@ -71,6 +88,23 @@ add_library(BasicTestLib OBJECT
 add_library(BasicTestLibPIC OBJECT
 	src/basic.c
 	src/blobs.c
+	src/longsAdd.c
+	src/longsAnd.c
+	src/longsCmp.c
+	src/longsDiv.c
+	src/longsDouble.c
+	src/longsFloat.c
+	src/longsIn.c
+	src/longsInt.c
+	src/longsMul.c
+	src/longsNeg.c
+	src/longsOr.c
+	src/longsRem.c
+	src/longsShl.c
+	src/longsShr.c
+	src/longsSub.c
+	src/longsUshr.c
+	src/longsXor.c
 	src/mock.c
 	src/unit.c
 	${basicTestSources}
