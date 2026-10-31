@@ -1195,6 +1195,11 @@ extern "C" {
 	#include <windows.h>
 #endif
 	
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD) || \
+	defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	#include <math.h>
+#endif
+	
 /* Missing standard C functions, always include these. */
 #include "sjme/stdGone.h"
 
@@ -1224,11 +1229,13 @@ extern "C" {
 	#define sjme_asm(x) __asm { __VA_ARGS__ }
 #endif
 	
-#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
-	/** No long math is supported. */
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL) || \
+	defined(SJME_CONFIG_HAS_NO_JLONG_NATIVE) || \
+	defined(SJME_CONFIG_HAS_NO_JULONG_NATIVE)
+	/** No signed long math is supported. */
 	#define SJME_CONFIG_HAS_NO_JLONG_MATH
 	
-	/** No long math is supported. */
+	/** No unsigned long math is supported. */
 	#define SJME_CONFIG_HAS_NO_JULONG_MATH
 #endif
 

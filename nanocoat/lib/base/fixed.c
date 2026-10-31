@@ -9,6 +9,7 @@
 
 #include "sjme/fixed.h"
 #include "sjme/debug.h"
+#include "sjme/softLong.h"
 
 sjme_fixed sjme_fixed_abs(
 	sjme_attrInValue sjme_jint v)
@@ -45,12 +46,31 @@ sjme_fixed sjme_fixed_div(
 	sjme_attrInValue sjme_fixed num,
 	sjme_attrInValue sjme_fixed den)
 {
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+	sjme_jlong vr, va, vb;
+#endif
+	
 	if (den == 0)
 		return 0;
 	
-#if defined(SJME_CONFIG_HAS_NO_JULONG_MATH)
-#elif !defined(SJME_CONFIG_HAS_NO_JULONG_NATIVE)
-	return (sjme_fixed)((((int64_t)num) << SJME_FIXED_SHIFT) / den);
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+	/* Clear. */
+	memset(&vr, 0, sizeof(vr));
+	memset(&va, 0, sizeof(va));
+	memset(&vb, 0, sizeof(vb));
+	
+	/* Fill in values. */
+	va.part.lo = num;
+	vb.part.lo = den;
+	
+	/* Calculate. */
+	sjme_softLong_shl(&va, &va, SJME_FIXED_SHIFT);
+	sjme_softLong_div(&vr, &va, &vb);
+	
+	/* Return the lower result. */
+	return (sjme_fixed)vr.part.lo;
+#elif !defined(SJME_CONFIG_HAS_NO_JLONG_NATIVE)
+	return (sjme_fixed)((((sjme_jintNative)num) << SJME_FIXED_SHIFT) / den);
 #else
 	sjme_todo("Impl?");
 	return 0;
@@ -161,8 +181,29 @@ sjme_fixed sjme_fixed_mul(
 	sjme_attrInValue sjme_fixed a,
 	sjme_attrInValue sjme_fixed b)
 {
-#if !defined(SJME_CONFIG_HAS_NO_JULONG_NATIVE)
-	return (sjme_fixed)(((int64_t)a) * ((int64_t)b) >> SJME_FIXED_SHIFT);
+#if defined(SJME_CONFIG_HAS_NO_JULONG_MATH)
+	sjme_jlong vr, va, vb;
+#endif
+	
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+	/* Clear. */
+	memset(&vr, 0, sizeof(vr));
+	memset(&va, 0, sizeof(va));
+	memset(&vb, 0, sizeof(vb));
+	
+	/* Fill in values. */
+	va.part.lo = a;
+	vb.part.lo = b;
+	
+	/* Calculate. */
+	sjme_softLong_mul(&vr, &va, &vb);
+	sjme_softLong_shr(&vr, &vr, SJME_FIXED_SHIFT);
+	
+	/* Return the lower result. */
+	return (sjme_fixed)vr.part.lo;
+#elif !defined(SJME_CONFIG_HAS_NO_JLONG_NATIVE)
+	return (sjme_fixed)(((sjme_jintNative)a) * ((sjme_jintNative)b) >>
+		SJME_FIXED_SHIFT);
 #else
 	sjme_todo("Impl?");
 	return 0;

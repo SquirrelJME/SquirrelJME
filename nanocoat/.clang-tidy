@@ -20,6 +20,7 @@ Checks: >
   -clion-misra-c2012-7-4,
   -clion-misra-c2012-10-1,
   -clion-misra-c2012-10-2,
+  -clion-misra-c2012-10-5,
   -clion-misra-c2012-11-1,
   -clion-misra-c2012-11-3,
   -clion-misra-c2012-11-5,

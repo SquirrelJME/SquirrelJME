@@ -7,15 +7,9 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
-#include <sjme/softLong.h>
-
 #include "sjme/config.h"
-
-#if defined(SJME_CONFIG_HAS_FLOAT_HARD) || \
-	defined(SJME_CONFIG_HAS_DOUBLE_HARD)
-	#include <math.h>
-#endif
-
+#include "sjme/softLong.h"
+#include "sjme/softInteger.h"
 #include "sjme/nvm/task.h"
 #include "sjme/nvm/bytecode.h"
 #include "sjme/nvm/bytecodeSlow.h"
@@ -460,17 +454,17 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryInt)
 	switch (SJME_NVM_BYTECODE_BINARY_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_SHL:
-			result.v.i = sjme_util_intOverShift(a.v.i, b.v.i & 0x1F);
+			result.v.i = sjme_shl(a.v.i, b.v.i & 0x1F);
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_SHR:
-			result.v.i = sjme_util_intOverShift(a.v.i, -(b.v.i & 0x1F));
+			result.v.i = sjme_shr(a.v.i, (b.v.i & 0x1F));
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_USHR:
 			/* Reverse masking so that the entire operation happens */
 			/* purely with signed values. */
-			result.v.i = sjme_util_intOverShiftU(a.v.i, b.v.i & 0x1F);
+			result.v.i = sjme_ushr(a.v.i, b.v.i & 0x1F);
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_AND:
@@ -744,6 +738,7 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 {
 	sjme_jvalueTyped a, b, result;
 	sjme_nvm_frame_gcCommit commit;
+	sjme_nvm_byteCode_mathFunc func;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Clear the commit. */
@@ -758,10 +753,20 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		SJME_JAVA_TYPE_ID_INTEGER, &commit, &a)))
 		return sjme_error_vmError(inFrame, error);
+	
+	/* Divide by zero? */
+	func = SJME_NVM_BYTECODE_MATH_TO_FUNC(id);
+	if ((func == SJME_NVM_BYTECODE_MATH_DIV ||
+		func == SJME_NVM_BYTECODE_MATH_REM) &&
+		b.v.i == 0)
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
 
 	/* Perform the math. */
 	memset(&result, 0, sizeof(result));
-	switch (SJME_NVM_BYTECODE_MATH_TO_FUNC(id))
+	switch (func)
 	{
 		case SJME_NVM_BYTECODE_MATH_ADD:
 			result.v.i = a.v.i + b.v.i;
@@ -807,6 +812,7 @@ SJME_NVM_BYTECODE_SLOW(MathLong)
 {
 	sjme_jvalueTyped a, b, result;
 	sjme_nvm_frame_gcCommit commit;
+	sjme_nvm_byteCode_mathFunc func;
 	SJME_NVM_BYTECODE_ENTRY;
 	
 	/* Clear the commit. */
@@ -821,10 +827,20 @@ SJME_NVM_BYTECODE_SLOW(MathLong)
 	if (sjme_error_is(error = sjme_nvm_task_frameStackPop(inFrame,
 		SJME_JAVA_TYPE_ID_LONG, &commit, &a)))
 		return sjme_error_vmError(inFrame, error);
+	
+	/* Divide by zero? */
+	func = SJME_NVM_BYTECODE_MATH_TO_FUNC(id);
+	if ((func == SJME_NVM_BYTECODE_MATH_DIV ||
+		func == SJME_NVM_BYTECODE_MATH_REM) &&
+		(b.v.j.part.lo == 0U && b.v.j.part.hi == 0))
+	{
+		sjme_todo("Impl?");
+		return sjme_error_notImplemented(0);
+	}
 
 	/* Perform the math. */
 	memset(&result, 0, sizeof(result));
-	switch (SJME_NVM_BYTECODE_MATH_TO_FUNC(id))
+	switch (func)
 	{
 		case SJME_NVM_BYTECODE_MATH_ADD:
 #if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)

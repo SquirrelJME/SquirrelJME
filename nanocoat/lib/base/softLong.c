@@ -10,18 +10,10 @@
 #include "sjme/config.h"
 #include "sjme/debug.h"
 #include "sjme/softLong.h"
+#include "sjme/softInteger.h"
 #include "sjme/util.h"
 
 static const sjme_jlong sjme_softLong_zero;
-
-#define sjme_shl(a, b) \
-	sjme_util_intOverShift((a), (b) & INT32_C(0x1F))
-
-#define sjme_shr(a, b) \
-	sjme_util_intOverShift((a), -((b) & INT32_C(0x1F)))
-
-#define sjme_ushr(a, b) \
-	((sjme_jint)sjme_util_intOverShiftU((a), -((b) & INT32_C(0x1F))))
 
 static void sjme_softLong_pack(
 	sjme_attrOutNotNull sjme_jlong* r,
@@ -61,6 +53,17 @@ static void sjme_softLong_divImpl(
 	sjme_attrInValue sjme_jint dL,
 	sjme_attrInValue sjme_jint dH)
 {
+	sjme_jint ql, qh, rl, rh, dlUnsigned, dhUnsigned;
+	sjme_jint i, hMask, lMask, cmp;
+	sjme_jboolean negNum, negDem, isNeg;
+	
+	/* Divide by zero? */
+	if ((dL == 0 && dH == 0) || dL == 0)
+	{
+		sjme_softLong_pack(r, 0, 0);
+		return;
+	}
+	
 	/* Wikipedia (http://en.wikipedia.org/wiki/Division_%28digital%29) */
 	/* if D == 0 then throw DivisionByZeroException end */
 	/* Q := 0 # initialize quotient and remainder to zero */
@@ -75,136 +78,121 @@ static void sjme_softLong_divImpl(
 	/*   end */
 	/* end */
 	/* long qx = 0, rx = 0; */
-	sjme_todo("Impl?");
 	
-#if 0
-	/* {@squirreljme.error ZZ4z Divide by zero.} */
-	if (__dl == 0 && __dh == 0)
-		throw new ArithmeticException("ZZ4z");
+	/* High and low resultant values */
+	ql = 0;
+	qh = 0;
+	rl = 0;
+	rh = 0;
 	
-	// Wikipedia (http://en.wikipedia.org/wiki/Division_%28digital%29)
-	// if D == 0 then throw DivisionByZeroException end
-	// Q := 0 # initialize quotient and remainder to zero
-	// R := 0
-	// for i = n-1...0 do  # " where n is no of bits "
-	//   R := R << 1       # left-shift R by 1 bit
-	//   R(0) := N(i)      # set the least-significant bit
-	//              # of R equal to bit i of the numerator
-	//   if R >= D then
-	//     R = R - D
-	//     Q(i) := 1
-	//   end
-	// end
-	// long qx = 0, rx = 0;
+	/* Results in a negative? Only results in such if either side is */
+	/* a negative value */
+	negNum = ((nH & (sjme_jint)INT32_C(0x80000000)) != 0);
+	negDem = ((dH & (sjme_jint)INT32_C(0x80000000)) != 0);
+	isNeg = (negNum != negDem);
 	
-	// High and low resultant values
-	int ql = 0;
-	int qh = 0;
-	int rl = 0;
-	int rh = 0;
-	
-	// Disallow division by zero
-	if (__dl == 0)
-		return 0;
-	
-	// Results in a negative? Only results in such if either side is
-	// a negative value
-	boolean negNum = ((__nh & 0x8000_0000) != 0);
-	boolean negDem = ((__dh & 0x8000_0000) != 0);
-	boolean isNeg = (negNum != negDem);
-	
-	// Make the numerator positive, if negative
+	/* Make the numerator positive, if negative */
 	if (negNum)
 	{
-		// Negate and check for overflow
-		__nh = (~__nh);
-		__nl = (~__nl + 1);
-		if (__nl == 0)
-			__nh++;
+		/* Negate and check for overflow */
+		nH = (~nH);
+		nL = ((~nL) + 1);
+		if (nL == 0)
+			nH++;
 	}
 	
-	// Make the denominator positive, if negative
+	/* Make the denominator positive, if negative */
 	if (negDem)
 	{
-		// Negate and check for overflow
-		__dh = (~__dh);
-		__dl = (~__dl + 1);
-		if (__dl == 0)
-			__dh++;
+		/* Negate and check for overflow */
+		dH = (~dH);
+		dL = ((~dL) + 1);
+		if (dL == 0)
+			dH++;
 	}
 	
-	// __dl and __dh for unsigned compare
-	int dlUnsigned = __dl + Integer.MIN_VALUE;
-	int dhUnsigned = __dh + Integer.MIN_VALUE;
+	/* dL and dH for unsigned compare */
+	dlUnsigned = dL + (sjme_jint)INT32_MIN;
+	dhUnsigned = dH + (sjme_jint)INT32_MIN;
 	
-	// Perform Math
-	for (int i = 63, hMask = 0xFFFF_FFFF, lMask = 0;
+	/* Perform Math */
+	for (i = 63, hMask = (sjme_jint)INT32_C(0xFFFFFFFF), lMask = 0;
 		i >= 0;
-		i--, hMask >>>= 1, lMask = ((lMask >> 1) | 0x8000_0000))
+		i--, hMask = sjme_ushr(hMask, 1),
+		lMask = (sjme_shr(lMask, 1) | (sjme_jint)INT32_C(0x80000000)))
 	{
-		// rx <<= 1;
-		// rx &= 0xFFFFFFFFFFFFFFFEL;
-		rh <<= 1;
-		rh |= (rl >>> 31);
-		rl <<= 1;
+		/* rx <<= 1; */
+		/* rx &= 0xFFFFFFFFFFFFFFFEL; */
+		rh = sjme_shl(rh, 1);
+		rh |= sjme_ushr(rl, 31);
+		rl = sjme_shl(rl, 1);
 		
-		// rx |= ((__nx >>> i) & 1L); ... only take the lowest bit!
-		// branching:
-		// ! if (i >= 32)
-		// !     rl |= ((__nh >>> (i - 32)) & 0x1);
-		// ! else
-		// !     rl |= ((__nl >>> i) & 0x1);
-		// faster using masking:
-		// ! rl |= (((__nh & hMask) >>> i) & 0x1);
-		// ! rl |= (((__nl & lMask) >>> i) & 0x1);
-		rl |= ((((__nh & hMask) | (__nl & lMask)) >>> i) & 0x1);
+		/* rx |= ((__nx >>> i) & 1L); ... only take the lowest bit! */
+		/* branching: */
+		/* ! if (i >= 32) */
+		/* !     rl |= ((nH >>> (i - 32)) & 0x1); */
+		/* ! else */
+		/* !     rl |= ((nL >>> i) & 0x1); */
+		/* faster using masking: */
+		/* ! rl |= (((nH & hMask) >>> i) & 0x1); */
+		/* ! rl |= (((nL & lMask) >>> i) & 0x1); */
+		rl |= (sjme_ushr(((nH & hMask) | (nL & lMask)), i) & 0x1);
 		
-		// Unsigned comparison (shift by 0x8000_0000__0000_0000L)
-		// if ((rx + Long.MIN_VALUE) >= (__dx + Long.MIN_VALUE))
-		/*if (SoftLong.cmp(rl, rh + Integer.MIN_VALUE,
-			__dl, __dh + Integer.MIN_VALUE) >= 0)*/
-		int cmp = (rh + Integer.MIN_VALUE) - dhUnsigned;
+		/* Unsigned comparison (shift by 0x8000_0000__0000_0000L) */
+		/* if ((rx + Long.MIN_VALUE) >= (__dx + Long.MIN_VALUE)) */
+		cmp = (rh + (sjme_jint)INT32_MIN) - dhUnsigned;
 		if (cmp >= 0 &&
-			(cmp > 0 ||	// Is just a bigger number overall? 
-			rl + Integer.MIN_VALUE >= dlUnsigned))
+			(cmp > 0 ||	/* Is just a bigger number overall?  */
+			rl + (sjme_jint)INT32_MIN >= dlUnsigned))
 		{
-			// rx -= __dx;
-			// The same as add, but the second operand is negated
-			// Negate and check for overflow
-			int bh = (~__dh);
-			int bl = (~__dl + 1);
+			/* rx -= __dx; */
+			/* The same as add, but the second operand is negated */
+			/* Negate and check for overflow */
+			int bh = (~dH);
+			int bl = ((~dL) + 1);
 			if (bl == 0)
 				bh++;
 			
-			// Add the higher/lower parts
+			/* Add the higher/lower parts */
 			rh = rh + bh;
 			int cl = rl + bl;
 			
-			// If the low addition carried a bit over, then set that bit in
-			// the high part
-			if ((cl + 0x80000000) < (rl + 0x80000000))
+			/* If the low addition carried a bit over, then set that bit in */
+			/* the high part */
+			if ((cl + (sjme_jint)INT32_C(0x80000000)) < 
+				(sjme_jint)(rl + INT32_C(0x80000000)))
 				rh++;
 			
-			// Use result
+			/* Use result */
 			rl = cl;
 			
-			// qx |= (1L << i);
+			/* qx |= (1L << i); */
 			if (i >= 32)
-				qh |= (1 << (i - 32));
+				qh |= sjme_shl(1, (i - 32));
 			else
-				ql |= (1 << i);
+				ql |= sjme_shl(1, i);
 		}
 	}
 	
-	// Return the remainder if needed, note the remainder is negative only
-	// if the numerator is negative
-	if (__doRem)
-		return (negNum ? SoftLong.neg(rl, rh) :
-			MathShelf.longPack(rl, rh));
+	/* Return the remainder if needed, note the remainder is negative only */
+	/* if the numerator is negative */
+	if (doRem)
+	{
+		if (negNum)
+			sjme_softLong_negImpl(r, rl, rh);
+		else
+			sjme_softLong_pack(r, rl, rh);
+		
+	}
 	
-	// Return, normalize negative if needed
-	return (isNeg ? SoftLong.neg(ql, qh) : MathShelf.longPack(ql, qh));
-#endif
+	/* Return, normalize negative if needed */
+	else
+	{
+		if (isNeg)
+			sjme_softLong_negImpl(r, ql, qh);
+		else
+			sjme_softLong_pack(r, ql, qh);
+	}
 }
 
 static void sjme_softLong_mulImpl(
