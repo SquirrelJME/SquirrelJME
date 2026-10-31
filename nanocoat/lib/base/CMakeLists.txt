@@ -46,6 +46,7 @@ squirreljme_multilib_add_library(Base
 	pathStyles.c
 	seekable.c
 	seekableMemory.c
+	softLong.c
 	stdGone.c
 	stream.c
 	streamByte.c

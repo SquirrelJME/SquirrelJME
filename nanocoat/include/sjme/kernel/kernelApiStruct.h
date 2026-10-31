@@ -31,6 +31,15 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/**
+ * API function implementation for direct bare metal kernel access.
+ * 
+ * @since 2026/10/30
+ */
+typedef struct sjme_kernel_apiFunctions
+{
+} sjme_kernel_apiFunctions;
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

@@ -7,6 +7,8 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <sjme/softLong.h>
+
 #include "sjme/config.h"
 
 #if defined(SJME_CONFIG_HAS_FLOAT_HARD) || \
@@ -527,31 +529,61 @@ SJME_NVM_BYTECODE_SLOW(MathBinaryLong)
 	switch (SJME_NVM_BYTECODE_BINARY_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_SHL:
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+			sjme_softLong_shl(&result.v.j,
+				&a.v.j, (sjme_jint)(b.v.j.part.lo & INT32_C(0x3FL)));
+#else
 			result.v.j.full = a.v.j.full << (b.v.j.full & 0x3FL);
+#endif
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_SHR:
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+			sjme_softLong_shr(&result.v.j,
+				&a.v.j, (sjme_jint)(b.v.j.part.lo & INT32_C(0x3FL)));
+#else
 			result.v.j.full = a.v.j.full >> (b.v.j.full & 0x3FL);
+#endif
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_USHR:
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+			sjme_softLong_ushr(&result.v.j,
+				&a.v.j, (sjme_jint)(b.v.j.part.lo & INT32_C(0x3FL)));
+#else
 			/* Reverse masking so that the entire operation happens */
 			/* purely with signed values. */
 			result.v.j.full = INT64_C(0x7FFFFFFF) >> (b.v.j.full & 0x3FL);
 			result.v.j.full = INT64_C(1) << (63 - (b.v.j.full & 0x3FL));
 			result.v.j.full &= a.v.j.full >> (b.v.j.full & 0x3FL);
+#endif
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_AND:
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+			sjme_softLong_and(&result.v.j,
+				&a.v.j, &b.v.j);
+#else
 			result.v.j.full = a.v.j.full & b.v.j.full;
+#endif
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_OR:
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+			sjme_softLong_or(&result.v.j,
+				&a.v.j, &b.v.j);
+#else
 			result.v.j.full = a.v.j.full | b.v.j.full;
+#endif
 			break;
 
 		case SJME_NVM_BYTECODE_MATH_XOR:
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+			sjme_softLong_xor(&result.v.j,
+				&a.v.j, &b.v.j);
+#else
 			result.v.j.full = a.v.j.full ^ b.v.j.full;
+#endif
 			break;
 		
 		default:
@@ -795,23 +827,48 @@ SJME_NVM_BYTECODE_SLOW(MathLong)
 	switch (SJME_NVM_BYTECODE_MATH_TO_FUNC(id))
 	{
 		case SJME_NVM_BYTECODE_MATH_ADD:
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+			sjme_softLong_add(&result.v.j,
+				&a.v.j, &b.v.j);
+#else
 			result.v.j.full = a.v.j.full + b.v.j.full;
+#endif
 			break;
 			
 		case SJME_NVM_BYTECODE_MATH_SUB:
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+			sjme_softLong_sub(&result.v.j,
+				&a.v.j, &b.v.j);
+#else
 			result.v.j.full = a.v.j.full - b.v.j.full;
+#endif
 			break;
 		
 		case SJME_NVM_BYTECODE_MATH_MUL:
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+			sjme_softLong_mul(&result.v.j,
+				&a.v.j, &b.v.j);
+#else
 			result.v.j.full = a.v.j.full * b.v.j.full;
+#endif
 			break;
 		
 		case SJME_NVM_BYTECODE_MATH_DIV:
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+			sjme_softLong_div(&result.v.j,
+				&a.v.j, &b.v.j);
+#else
 			result.v.j.full = a.v.j.full / b.v.j.full;
+#endif
 			break;
 		
 		case SJME_NVM_BYTECODE_MATH_REM:
+#if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+			sjme_softLong_rem(&result.v.j,
+				&a.v.j, &b.v.j);
+#else
 			result.v.j.full = a.v.j.full % b.v.j.full;
+#endif
 			break;
 
 		default:

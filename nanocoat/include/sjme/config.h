@@ -361,7 +361,8 @@ extern "C" {
 #define SJME_CONFIG_POSIX_VERSION_2008 200809L
 
 #if defined(_POSIX_C_SOURCE)
-	#if !defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
+	#if !defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE) && \
+		!defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 		/** POSIX is available. */
 		#define SJME_CONFIG_HAS_OS_POSIX
 	#endif
@@ -906,6 +907,7 @@ extern "C" {
 	
 /* 32-bit floating point matches Java? */
 #if defined(SJME_CONFIG_HAS_FLOAT_H) && \
+	!defined(SJME_CONFIG_HAS_OS_BAREMETAL) && \
 	(defined(SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST) || \
 		defined(SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST)) && \
 	defined(FLT_EVAL_METHOD) && (FLT_EVAL_METHOD == 0) && \
@@ -976,9 +978,10 @@ extern "C" {
 		#define SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST
 	#endif
 #endif
-	
+
 /* 32-bit floating point matches Java? */
 #if defined(SJME_CONFIG_HAS_FLOAT_H) && \
+	!defined(SJME_CONFIG_HAS_OS_BAREMETAL) && \
 	(defined(SJME_CONFIG_ASSUME_FLOAT_ROUND_NEAREST) || \
 		defined(SJME_CONFIG_HAS_FLOAT_ROUND_NEAREST)) && \
 	defined(FLT_EVAL_METHOD) && (FLT_EVAL_METHOD == 0) && \
@@ -1219,6 +1222,14 @@ extern "C" {
 	
 	/** Inline assembly statement. */
 	#define sjme_asm(x) __asm { __VA_ARGS__ }
+#endif
+	
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
+	/** No long math is supported. */
+	#define SJME_CONFIG_HAS_NO_JLONG_MATH
+	
+	/** No long math is supported. */
+	#define SJME_CONFIG_HAS_NO_JULONG_MATH
 #endif
 
 /*--------------------------------------------------------------------------*/

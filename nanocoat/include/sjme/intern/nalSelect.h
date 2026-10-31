@@ -89,7 +89,10 @@ extern "C"
 #endif
 
 #if !defined(SJME_CONFIG_NAL_GETENV)
-	#if defined(SJME_CONFIG_HAS_C89) && defined(SJME_CONFIG_HAS_GETENV)
+	#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
+		/** getenv() is not available. */
+		#define SJME_CONFIG_NAL_GETENV SJME_CONFIG_NAL_IMPLEMENT_NONE
+	#elif defined(SJME_CONFIG_HAS_C89) && defined(SJME_CONFIG_HAS_GETENV)
 		/** Use Standard C getenv implementation. */
 		#define SJME_CONFIG_NAL_GETENV SJME_CONFIG_NAL_IMPLEMENT_STDC
 	#endif
@@ -152,7 +155,10 @@ extern "C"
 #endif
 
 #if !defined(SJME_CONFIG_NAL_TCP_UDP)
-	#if defined(SJME_CONFIG_HAS_OS_PC_DOS)
+	#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
+		/** Baremetal Networking. */
+		#define SJME_CONFIG_NAL_TCP_UDP SJME_CONFIG_NAL_IMPLEMENT_NONE
+	#elif defined(SJME_CONFIG_HAS_OS_PC_DOS)
 		/** DOS Networking. */
 		#define SJME_CONFIG_NAL_TCP_UDP SJME_CONFIG_NAL_IMPLEMENT_NONE
 	#elif defined(SJME_CONFIG_HAS_OS_WINDOWS) || \

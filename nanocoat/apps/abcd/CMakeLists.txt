@@ -13,8 +13,7 @@
 # https://www.oracle.com/technical-resources/articles/javame/midp-programming-packaging.html
 # https://www.dribin.org/dave/j2me_ant/users_guide.html
 
-# Setup base executable
-add_executable(AppAncientBuildContraptionDevice
+squirreljme_multilib_add_static_library(AncientBuildContraptionDevice
 	ant.c
 	cat.c
 	device-address.c
@@ -43,13 +42,17 @@ add_executable(AppAncientBuildContraptionDevice
 	zip.c)
 
 # Include main headers
-target_include_directories(AppAncientBuildContraptionDevice PUBLIC
+target_include_directories(AncientBuildContraptionDevice PUBLIC
 	"${CMAKE_SOURCE_DIR}/include"
 	"${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 # Link against the base libraries
-squirreljme_link_libraries_required(AppAncientBuildContraptionDevice PUBLIC
+squirreljme_link_libraries_required(AncientBuildContraptionDevice PUBLIC
 	BaseStatic)
+
+# Setup base executable for actually launching
+add_executable(AppAncientBuildContraptionDevice
+	dispatchMain.c)
 
 # Name it something easier to use
 squirreljme_target_binary_name(AppAncientBuildContraptionDevice

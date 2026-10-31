@@ -1,0 +1,9 @@
+<CHRP-BOOT>
+<OS-NAME>SquirrelJME</OS-NAME>
+<DESCRIPTION>SquirrelJME</DESCRIPTION>
+<COMPATIBLE>MacRISC MacRISC3 MacRISC4 pseries qemu,pseries</COMPATIBLE>
+<BOOT-SCRIPT>
+\ This should boot on all IEEE1275 compatible systems.
+boot &device;:&partition;,\squirreljme.elf
+</BOOT-SCRIPT>
+</CHRP-BOOT>

@@ -235,3 +235,45 @@ size_t strnlen(const char* s, size_t limit)
 	return limit;
 }
 #endif
+
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
+	
+void* memmove(void* d, const void* s, size_t n)
+{
+	size_t i;
+	
+	if (d == NULL || s == NULL)
+		return NULL;
+	
+	/* src is higher, copy low to high. */
+	if ((uintptr_t)d < (uintptr_t)s)
+	{
+		for (i = 0U; i < n; i++)
+			((uint8_t*)d)[i] = ((const uint8_t*)s)[i];
+	}
+
+	/* dest is higher, copy high to low. */
+	else
+	{
+		for (i = n; i > 0U; i--)
+			((uint8_t*)d)[i - 1U] = ((const uint8_t*)s)[i - 1U];
+	}
+	
+	return d;
+}
+	
+void* memset(void* s, int c, size_t n)
+{
+	size_t i;
+	
+	if (s == NULL)
+		return s;
+	
+	for (i = 0U; i < n; i++)
+		((uint8_t*)s)[i] = (uint8_t)c;
+	
+	return s;
+}
+	
+#endif
+	

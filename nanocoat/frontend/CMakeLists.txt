@@ -27,3 +27,8 @@ endif()
 if(SQUIRRELJME_ENABLE_FRONTEND_LIBRETRO)
 	add_subdirectory(libretro)
 endif()
+
+# SquirrelJME Kernel
+if(SQUIRRELJME_IS_BARE_METAL)
+	add_subdirectory(kernel)
+endif()

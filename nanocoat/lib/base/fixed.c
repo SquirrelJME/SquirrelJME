@@ -48,7 +48,8 @@ sjme_fixed sjme_fixed_div(
 	if (den == 0)
 		return 0;
 	
-#if !defined(SJME_CONFIG_HAS_NO_JULONG_NATIVE)
+#if defined(SJME_CONFIG_HAS_NO_JULONG_MATH)
+#elif !defined(SJME_CONFIG_HAS_NO_JULONG_NATIVE)
 	return (sjme_fixed)((((int64_t)num) << SJME_FIXED_SHIFT) / den);
 #else
 	sjme_todo("Impl?");

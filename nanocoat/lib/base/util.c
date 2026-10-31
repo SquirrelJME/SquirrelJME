@@ -806,7 +806,8 @@ sjme_jlong sjme_swap_long(
 sjme_juint sjme_swap_uint(
 	sjme_attrInValue sjme_juint in)
 {
-#if SJME_CONFIG_HAS_GCC_BUILTIN(bswap32)
+#if SJME_CONFIG_HAS_GCC_BUILTIN(bswap32) && \
+	!defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	return __builtin_bswap32(in);
 #else
 	// 0xAABBCCDD -> 0xBBAADDCC
@@ -820,7 +821,8 @@ sjme_juint sjme_swap_uint(
 sjme_jchar sjme_swap_ushort(
 	sjme_attrInValue sjme_jchar in)
 {
-#if SJME_CONFIG_HAS_GCC_BUILTIN(bswap16)
+#if SJME_CONFIG_HAS_GCC_BUILTIN(bswap16) && \
+	!defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	return __builtin_bswap16(in);
 #else
 	return ((in >> 8) | (in << 8));
@@ -916,7 +918,8 @@ sjme_jint sjme_util_byteToInt(
 sjme_juint sjme_util_intBitCountU(
 	sjme_attrInValue sjme_juint v)
 {
-#if SJME_CONFIG_HAS_GCC_BUILTIN(popcount)
+#if SJME_CONFIG_HAS_GCC_BUILTIN(popcount) && \
+	!defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	return __builtin_popcount(v);
 #else
 	/* Henry S. Warren, Jr. (2013). Hacker's Delight (2nd Edition). */
@@ -1091,7 +1094,8 @@ sjme_jint sjme_util_intReverse(sjme_jint v)
 
 sjme_juint sjme_util_intReverseU(sjme_juint v)
 {
-#if SJME_CONFIG_HAS_GCC_BUILTIN(bitreverse32)
+#if SJME_CONFIG_HAS_GCC_BUILTIN(bitreverse32) && \
+	!defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	return __builtin_bitreverse32(v);
 #else
 	/* Henry S. Warren, Jr. (2013). Hacker's Delight (2nd Edition). */
@@ -1146,7 +1150,8 @@ sjme_errorCode sjme_util_intToBinary(
 sjme_juint sjme_util_intZeroesLeadingU(
 	sjme_attrInValue sjme_juint v)
 {
-#if SJME_CONFIG_HAS_GCC_BUILTIN(clz)
+#if SJME_CONFIG_HAS_GCC_BUILTIN(clz) && \
+	!defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	if (v == 0)
 		return 32;
 	return __builtin_clz(v);
@@ -1166,7 +1171,8 @@ sjme_juint sjme_util_intZeroesLeadingU(
 sjme_juint sjme_util_intZeroesTrailingU(
 	sjme_attrInValue sjme_juint v)
 {
-#if SJME_CONFIG_HAS_GCC_BUILTIN(ctz)
+#if SJME_CONFIG_HAS_GCC_BUILTIN(ctz) && \
+	!defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	if (v == 0)
 		return 32;
 	return __builtin_ctz(v);

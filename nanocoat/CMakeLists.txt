@@ -76,6 +76,9 @@ if(SQUIRRELJME_IS_GCC)
 	set(CMAKE_ASM_COMPILER "${CMAKE_C_COMPILER}" CACHE STRING "" FORCE)
 	set(CMAKE_ASM_COMPILER "${CMAKE_C_COMPILER}")
 
+	# Always enable asm support
+	enable_language(ASM)
+
 # Otherwise look for one
 else()
 	check_language(ASM)

@@ -21,14 +21,24 @@ if(EXISTS "${kernelBase}/CMakeLists.txt" AND
 	# Indicate that this is being used
 	message(STATUS "Building system/arch specific kernel...")
 
-	# Architecture specific information is first, as it likely may use
-	# functions/macros for CMake functionality that is used in the base for
-	# building a generic image or otherwise
+	# What are the final images called?
+	set(kernelIso "squirreljme-${SQUIRRELJME_SYSTEM}-${SQUIRRELJME_ARCH}.iso")
+	set(kernelImg "squirreljme-${SQUIRRELJME_SYSTEM}-${SQUIRRELJME_ARCH}.img")
+
+	# Base kernel support, which generally has architecture and machine
+	# independent information
+	add_subdirectory("${kernelBase}")
+
+	# Architecture specific information is last, as booting and otherwise is
+	# likely to be architecture and machine dependent
 	add_subdirectory("${kernelRoot}")
 
-	# Now include the base kernel support, this should be the generic kernel
-	# build instructions and otherwise
-	add_subdirectory("${kernelBase}")
+	# There needs to be an image or ISO of the kernel that gets booted
+	if(NOT TARGET KernelIso AND
+		NOT TARGET KernelImg AND
+		NOT TARGET KernelRoot)
+		message(FATAL_ERROR "No bootable image for the kernel!")
+	endif()
 
 # Indicate why a kernel might be missing
 else()

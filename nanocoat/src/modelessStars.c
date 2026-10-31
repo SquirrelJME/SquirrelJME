@@ -7,9 +7,24 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <sjme/util.h>
+
 #include "sjme/nvm/modelessStars.h"
 
 #if !defined(SJME_CONFIG_DISABLE_MODELESS_STARS)
+
+static sjme_jint sjme_modelessStars_fakeRand(void)
+{
+	static sjme_random random;
+	
+	/* Initialize? */
+	if (random.seed.part.hi == 0 && random.seed.part.lo == 0)
+		sjme_random_init(&random, INT32_C(12345678),
+			INT32_C(87654321));
+	
+	/* Return the next random number. */
+	return (sjme_random_nextIntR(&random) & INT32_C(0x7FFFFFFF));
+}
 
 sjme_errorCode sjme_modelessStars(
 	sjme_attrInOutNotNull sjme_modelessStarState* state,
@@ -152,14 +167,15 @@ sjme_errorCode sjme_modelessStars(
 			if (state->latchedFirstGo)
 				modelessStar->x = width - 1;
 			else
-				modelessStar->x = rand() % width;
-			modelessStar->y = rand() % height;
+				modelessStar->x = sjme_modelessStars_fakeRand() % width;
+			modelessStar->y = sjme_modelessStars_fakeRand() % height;
 			
 			/* Set a random speed for the star. */
-			modelessStar->speed = (rand() % 4) + 1;
+			modelessStar->speed = (sjme_modelessStars_fakeRand() % 4) + 1;
 			
 			/* Do not initialize another star just yet. */
-			state->lockStarCreation = (tick % 25) + (rand() % 50);
+			state->lockStarCreation = (tick % 25) + 
+				(sjme_modelessStars_fakeRand() % 50);
 			state->lockStarCreationLast = state->lockStarCreation;
 		}
 

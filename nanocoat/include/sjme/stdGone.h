@@ -679,6 +679,17 @@ wint_t towupper(wint_t c);
 #endif
 
 #pragma endregion(exitFailure)
+#pragma region(mem)
+	
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
+	
+void* memmove(void* d, const void* s, size_t n);
+	
+void* memset(void* s, int c, size_t n);
+	
+#endif
+	
+#pragma endregion(mem)
 	
 /*--------------------------------------------------------------------------*/
 
