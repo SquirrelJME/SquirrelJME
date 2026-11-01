@@ -371,6 +371,8 @@ SJME_NVM_MLE_FUNCTION_DECL(vmStatistic)
 		case SJME_NVM_VM_STAT_MEM_FREE:
 		case SJME_NVM_VM_STAT_MEM_MAX:
 		case SJME_NVM_VM_STAT_MEM_USED:
+			memTotal = 0;
+			memUsed = 0;
 			if (sjme_error_is(error = sjme_alloc_poolSpaceTotalSize(
 				inState->allocPool, 
 				&memTotal, NULL, 

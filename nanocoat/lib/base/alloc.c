@@ -942,7 +942,7 @@ static sjme_errorCode sjme_alloc_mergeFree(sjme_alloc_link link)
 	
 	/* Is the block on the right a candidate for merge? */
 	right = sjme_atomic_g(sjme_alloc_link, &link->next);
-	if (right->space != SJME_ALLOC_POOL_SPACE_FREE)
+	if (right == NULL || right->space != SJME_ALLOC_POOL_SPACE_FREE)
 		return SJME_ERROR_NONE;
 	
 	/* We need the block after to relink. */
@@ -962,8 +962,9 @@ static sjme_errorCode sjme_alloc_mergeFree(sjme_alloc_link link)
 	addedSize = right->blockSize + SJME_SIZEOF_ALLOC_LINK(0);
 	link->blockSize += addedSize;
 	
-	/* Update pool sizes. */
-	pool->space[SJME_ALLOC_POOL_SPACE_FREE].usable += addedSize;
+	/* Update pool sizes, there is no longer a link in the middle. */
+	pool->space[SJME_ALLOC_POOL_SPACE_FREE].usable +=
+		SJME_SIZEOF_ALLOC_LINK(0);
 	pool->space[SJME_ALLOC_POOL_SPACE_FREE].reserved -=
 		SJME_SIZEOF_ALLOC_LINK(0);
 	
