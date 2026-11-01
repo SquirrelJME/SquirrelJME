@@ -375,7 +375,7 @@ sjme_errorCode sjme_nvm_rom_libraryRawSize(
 	sjme_attrInNotNull sjme_nvm_rom_library library,
 	sjme_attrOutNotNull sjme_jint* outSize)
 {
-	sjme_jint result;
+	sjme_jint result, rawSize;
 	sjme_errorCode error;
 
 	if (library == NULL || outSize == NULL)
@@ -387,8 +387,9 @@ sjme_errorCode sjme_nvm_rom_libraryRawSize(
 		return SJME_ERROR_UNSUPPORTED_OPERATION;
 
 	/* Size was already determined? */
-	if (library->rawSize > 0)
-		return library->rawSize;
+	rawSize = sjme_atomic_g(sjme_jint, &library->rawSize);
+	if (rawSize > 0)
+		return rawSize;
 
 	/* Native handler must be valid! */
 	if (library->functions->rawSize == NULL)
@@ -403,6 +404,9 @@ sjme_errorCode sjme_nvm_rom_libraryRawSize(
 			goto fail_unsupported;
 		return sjme_error_default(error);
 	}
+	
+	/* Cache if zero. */
+	sjme_atomic_cs(sjme_jint, &library->rawSize, 0, result);
 
 	/* Return result. */
 	*outSize = result;

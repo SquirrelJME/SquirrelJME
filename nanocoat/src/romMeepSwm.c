@@ -498,6 +498,46 @@ SJME_MEEP_SWM_FUNC(mainClass)
 	return SJME_ERROR_NONE;
 }
 
+SJME_MEEP_SWM_FUNC(prefixCode)
+{
+	sjme_jint i, digit;
+	sjme_jchar c;
+	sjme_jint prefixCode;
+	
+	/* Calculate the base36 prefix code value. */
+	prefixCode = 0;
+	for (i = 0; step->map.value[i] != '\0'; i++)
+	{
+		c = step->map.value[i];
+		
+		/* Only consider valid characters. */
+		digit = -1;
+		if (c >= 'A' && c <= 'Z')
+			digit = 10 + (c - 'A');
+		else if (c >= 'a' && c <= 'z')
+			digit = 10 + (c - 'a');
+		else if (c >= '0' && c <= '9')
+			digit = c - '0';
+		
+		/* Put the digit in? */
+		if (digit >= 0)
+		{
+			prefixCode *= 36;
+			prefixCode += digit;
+		}
+	}
+	
+	/* Copy it over. */
+	tempEntry->prefixCode.prefixCode = prefixCode;
+	
+	/* Set details. */
+	tempEntry->tag.type = SJME_NVM_SWM_DEPENDENCY_PREFIX_CODE;
+	tempEntry->tag.use = SJME_NVM_SWM_USE_INFORMATIONAL;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 static const sjme_nvm_rom_swmKeyMapHandler sjme_nvm_rom_swmKeyMapHandlers[] =
 {
 	SJME_MEEP_SWM_SHORT("X-SquirrelJME-DefinedConfigurations", -1,
@@ -522,6 +562,8 @@ static const sjme_nvm_rom_swmKeyMapHandler sjme_nvm_rom_swmKeyMapHandlers[] =
 		midxletOpgl),
 	SJME_MEEP_SWM_SHORT("Main-Class", -1,
 		mainClass),
+	SJME_MEEP_SWM_SHORT("X-SquirrelJME-PrefixCode", -1,
+		prefixCode),
 
 	/* End. */
 	{NULL, 0, NULL},
@@ -1160,6 +1202,36 @@ fail_allocResult:
 	if (result != NULL)
 		sjme_closeable_close(SJME_AS_CLOSEABLE(result));
 	return sjme_error_default(error);
+}
+
+sjme_errorCode sjme_nvm_rom_swmLookup(
+	sjme_attrInNotNull sjme_nvm_rom_swmManager swmManager,
+	sjme_attrInNullable sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_nvm_rom_swmLibrary** outInfo)
+{
+	sjme_errorCode error;
+	sjme_list_sjme_nvm_rom_swmLibrary* swmLibraries;
+	sjme_nvm_rom_swmLibrary* swmInfo;
+	sjme_jint i, n;
+	
+	if (swmManager == NULL || inLibrary == NULL || outInfo == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Look through every library. */
+	swmLibraries = swmManager->libraries;
+	for (i = 0, n = swmLibraries->length; i < n; i++)
+	{
+		/* Find our specific library. */
+		swmInfo = &swmLibraries->elements[i];
+		if (swmInfo->library == inLibrary)
+		{
+			*outInfo = swmInfo;
+			return SJME_ERROR_NONE;
+		}
+	}
+	
+	/* No library found. */
+	return SJME_ERROR_LIBRARY_NOT_FOUND;
 }
 
 sjme_errorCode sjme_nvm_rom_swmResolve(

@@ -478,6 +478,12 @@ typedef struct sjme_nvm_stateGlobals
 	
 	/** The instance identifier for this state. */
 	sjme_jint instanceId;
+	
+	/**
+	 * An SWM manager, used for bootstrap dependency lookup and other library
+	 * related details.
+	 */
+	sjme_atomic(sjme_nvm_rom_swmManager) swmManager;
 } sjme_nvm_stateGlobals;
 	
 struct sjme_nvm_stateBase
@@ -538,12 +544,6 @@ struct sjme_nvm_stateBase
 
 	/** Main task reference. */
 	sjme_phantom(sjme_nvm_task) phantomMainTask;
-
-	/**
-	 * An SWM manager that may or may not exist, used for bootstrap
-	 * dependency lookup.
-	 */
-	sjme_nvm_rom_swmManager swmManager;
 
 	/** NVM Globals. */
 	sjme_nvm_stateGlobals globals;

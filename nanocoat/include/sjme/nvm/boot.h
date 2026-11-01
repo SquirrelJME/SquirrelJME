@@ -272,6 +272,19 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_attrInOutNotNull sjme_nvm_bootParam* outParam,
 	sjme_attrInPositiveNonZero sjme_jint argc,
 	sjme_attrInNotNull sjme_lpcstr* argv);
+	
+/**
+ * Loads the SWM manager.
+ * 
+ * @param inState The input state.
+ * @param outSwmManager The resultant SWM manager.
+ * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @since 2026/11/01
+ */
+sjme_errorCode sjme_nvm_swmManager(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNotNull sjme_nvm_rom_swmManager* outSwmManager);
 
 /*--------------------------------------------------------------------------*/
 

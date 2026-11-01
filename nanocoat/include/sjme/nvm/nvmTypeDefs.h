@@ -602,6 +602,9 @@ SJME_LIST_DECLARE(sjme_nvm_class_methodInfo, 0);
 #define sjme_atomic_type sjme_nvm_stringPool_string
 #include "sjme/atomicTemplate.h" /* NOLINT */
 
+#define sjme_atomic_type sjme_nvm_rom_swmManager
+#include "sjme/atomicTemplate.h" /* NOLINT */
+
 #define sjme_atomic_type sjme_nvm_class_poolEntryClass
 #define sjme_atomic_refs 1
 #include "sjme/atomicTemplate.h" /* NOLINT */

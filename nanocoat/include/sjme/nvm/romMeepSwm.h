@@ -71,6 +71,9 @@ typedef enum sjme_nvm_rom_swmDependencyType
 
 	/** A @link sjme_nvm_swmInfoNameOnly @endlink. */
 	SJME_NVM_SWM_DEPENDENCY_MAIN_CLASS,
+	
+	/** A @link sjme_nvm_swmInfoPrefixCode @endlink. */
+	SJME_NVM_SWM_DEPENDENCY_PREFIX_CODE,
 
 	/** The number of dependency types. */
 	SJME_NVM_SWM_NUM_DEPENDENCY_TYPES,
@@ -101,6 +104,9 @@ typedef enum sjme_nvm_rom_swmEntryUse
 
 	/** An entry point for an application. */
 	SJME_NVM_SWM_USE_ENTRY_POINT,
+	
+	/** Purely informational. */
+	SJME_NVM_SWM_USE_INFORMATIONAL,
 
 	/** The number of uses for a dependency. */
 	SJME_NVM_SWM_NUM_USE,
@@ -264,6 +270,17 @@ typedef struct sjme_nvm_swmInfoTypedAll
 	/** The suite type. */
 	sjme_nvm_swmSuiteType suiteType;
 } sjme_nvm_swmInfoTypedAll;
+	
+/**
+ * Stores @code X-SquirrelJME-PrefixCode @endcode.
+ * 
+ * @since 2026/11/01
+ */
+typedef struct sjme_nvm_swmInfoPrefixCode
+{
+	/** The stored prefix code. */
+	sjme_jint prefixCode;
+} sjme_nvm_swmInfoPrefixCode;
 
 /**
  * Combined SWM dependency information.
@@ -309,6 +326,9 @@ typedef union sjme_nvm_rom_swmEntryBase
 
 	/** Main class entry point. */
 	sjme_nvm_swmInfoMainClass mainClass;
+	
+	/** The stored prefix code. */
+	sjme_nvm_swmInfoPrefixCode prefixCode;
 } sjme_nvm_rom_swmEntryBase;
 
 /** A list of @link sjme_nvm_rom_swmEntry @endlink. */
@@ -408,6 +428,23 @@ sjme_errorCode sjme_nvm_rom_swmLoad(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_nvm_rom_suite inSuite,
 	sjme_attrOutNotNull sjme_nvm_rom_swmManager* outSwmManager);
+	
+/**
+ * Looks up information for a given library.
+ * 
+ * @param swmManager The input SWM manager.
+ * @param inLibrary The library to locate.
+ * @param outInfo The output library info.
+ * @return On any resultant error, if any.
+ * @throws SJME_ERROR_LIBRARY_NOT_FOUND If the library is unknown to this
+ * suite.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @since 2026/11/01
+ */
+sjme_errorCode sjme_nvm_rom_swmLookup(
+	sjme_attrInNotNull sjme_nvm_rom_swmManager swmManager,
+	sjme_attrInNullable sjme_nvm_rom_library inLibrary,
+	sjme_attrOutNotNull sjme_nvm_rom_swmLibrary** outInfo);
 
 /**
  * Looks up the library and all of its dependencies

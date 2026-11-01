@@ -410,6 +410,7 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_scritchui scritchUi;
 	sjme_jboolean cancelScritchUi;
 	sjme_nvm_rom_suiteRunTarget runTarget;
+	sjme_nvm_rom_swmManager swmManager;
 	
 	if (allocPool == NULL || param == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -574,10 +575,9 @@ sjme_errorCode sjme_nvm_boot(
 		/* We have to load the MEEP SWM dependency information for our */
 		/* entire suite of libraries so that dependency resolution works */
 		/* properly. We only need this for -jar usage. */
-		result->swmManager = NULL;
-		if (sjme_error_is(error = sjme_nvm_rom_swmLoad(allocPool,
-			result->suite, &result->swmManager)) ||
-			result->swmManager == NULL)
+		swmManager = NULL;
+		if (sjme_error_is(error = sjme_nvm_swmManager(result,
+			&swmManager)) || swmManager == NULL)
 			goto fail_loadMeepSwm;
 
 		/* Now that we have, hopefully, loaded all the MEEP SWM */
@@ -586,7 +586,7 @@ sjme_errorCode sjme_nvm_boot(
 		memset(&runTarget, 0, sizeof(runTarget));
 		if (sjme_error_is(error = sjme_nvm_rom_swmResolve(
 			allocPool,
-			result->swmManager,
+			swmManager,
 			jarLibrary,
 			bootParamCopy->runArgs,
 			bootParamCopy->runEntryId,
@@ -826,8 +826,6 @@ fail_badClassPath:
 fail_defaultLaunch:
 fail_resolveJarClasspath:
 fail_loadMeepSwm:
-	if (result != NULL && result->swmManager != NULL)
-		sjme_closeable_close(SJME_AS_CLOSEABLE(result->swmManager));
 fail_resolveJar:
 fail_suiteMerge:
 fail_noSuites:
@@ -1334,4 +1332,50 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_swmManager(
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrOutNotNull sjme_nvm_rom_swmManager* outSwmManager)
+{
+	sjme_errorCode error;
+	sjme_nvm_rom_swmManager result;
+	
+	if (inState == NULL || outSwmManager == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Lock the state. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(&inState->common.lock)))
+		return sjme_error_default(error);
+	
+	/* Does the SWM state need to be initialized? */
+	result = sjme_atomic_g(sjme_nvm_rom_swmManager,
+		&inState->globals.swmManager);
+	if (result == NULL)
+	{
+		/* Load in suite info. */
+		result = NULL;
+		if (sjme_error_is(error = sjme_nvm_rom_swmLoad(inState->allocPool,
+			inState->suite, &result)) || result == NULL)
+			goto fail_loadMeepSwm;
+		
+		/* Cache it for later. */
+		sjme_atomic_cs(sjme_nvm_rom_swmManager,
+			&inState->globals.swmManager, NULL, result);
+	}
+	
+	/* Unlock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&inState->common.lock, NULL)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	*outSwmManager = result;
+	return SJME_ERROR_NONE;
+	
+fail_loadMeepSwm:
+	/* Release before fail. */
+	sjme_thread_spinLockRelease(&inState->common.lock, NULL);
+	
+	return sjme_error_default(error);
 }

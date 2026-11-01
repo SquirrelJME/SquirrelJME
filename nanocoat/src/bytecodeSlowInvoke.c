@@ -165,8 +165,9 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeNative(
 
 	/* Recover and check MLE error. */
 	/* Ignore cancelled calls. */
+	error = invoke->mleError;
 	if (error != SJME_ERROR_CANCEL_MLE_CALL &&
-		sjme_error_is(error = invoke->mleError))
+		sjme_error_is(error))
 	{
 		/* MLECallError is a valid response. */
 		if (error == SJME_ERROR_MLE_CALL)

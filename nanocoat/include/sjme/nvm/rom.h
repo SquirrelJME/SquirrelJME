@@ -77,7 +77,7 @@ struct sjme_nvm_rom_libraryBase
 	sjme_jint nameHash;
 
 	/** Cached raw size of the library. */
-	sjme_jint rawSize;
+	sjme_atomic(sjme_jint) rawSize;
 
 	/** Is raw access checked? */
 	sjme_jboolean checkedRawAccess;

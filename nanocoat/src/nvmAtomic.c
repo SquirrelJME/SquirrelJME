@@ -61,3 +61,6 @@
 
 #define sjme_atomic_type sjme_nvm_stringPool_string
 #include "sjme/atomicTemplateC.h" /* NOLINT */
+
+#define sjme_atomic_type sjme_nvm_rom_swmManager
+#include "sjme/atomicTemplateC.h" /* NOLINT */
