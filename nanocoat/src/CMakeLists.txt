@@ -16,6 +16,7 @@ squirreljme_multilib_add_library(Core
 	bytecodeSlow.c
 	bytecodeSlowConst.c
 	bytecodeSlowFlow.c
+	bytecodeSlowInvoke.c
 	bytecodeSlowLocal.c
 	bytecodeSlowMath.c
 	bytecodeSlowRef.c
@@ -76,9 +77,11 @@ squirreljme_multilib_add_library(Core
 	stringPool.c
 	task.c
 	taskFrame.c
+	taskFrameExcept.c
 	taskSchedule.c
 	taskStore.c
 	taskThread.c
+	taskThreadExcept.c
 	tread.c
 	vmConfig.c
 	walk.c
