@@ -650,7 +650,7 @@ int main(int argc, sjme_lpstr* argv)
 		goto fail_findMain;
 	
 	/* There needs to be defined annotations. */
-	annotations = mainClass->info->annotations;
+	annotations = SJME_CL_I(mainClass)->annotations;
 	if (annotations == NULL || annotations->length <= 0)
 	{
 		error = SJME_ERROR_NANOTEST_NO_ANNOTATIONS;
