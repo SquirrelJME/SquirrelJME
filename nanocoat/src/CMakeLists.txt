@@ -25,6 +25,7 @@ squirreljme_multilib_add_library(Core
 	classyMethod.c
 	classyUtil.c
 	classyVm.c
+	classyVmAssign.c
 	classyVmClass.c
 	classyVmFields.c
 	classyVmMethods.c
@@ -32,7 +33,9 @@ squirreljme_multilib_add_library(Core
 	descriptor.c
 	gfx.c
 	instance.c
+	instanceFieldAccess.c
 	instanceInspect.c
+	instanceOther.c
 	instanceProxy.c
 	jdwp.c
 	jdwpComm.c
@@ -73,6 +76,7 @@ squirreljme_multilib_add_library(Core
 	stringPool.c
 	task.c
 	taskFrame.c
+	taskSchedule.c
 	taskStore.c
 	taskThread.c
 	tread.c

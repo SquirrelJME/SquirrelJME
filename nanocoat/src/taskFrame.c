@@ -16,7 +16,6 @@
 #include "sjme/debug.h"
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/cleanup.h"
-#include "sjme/stdGone.h"
 #include "sjme/nvm/taskStore.h"
 
 sjme_errorCode sjme_nvm_task_frameCommit(
