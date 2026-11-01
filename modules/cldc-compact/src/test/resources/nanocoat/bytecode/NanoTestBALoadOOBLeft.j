@@ -18,6 +18,14 @@
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+; Grab an array
+	iconst_5
+	invokestatic nano/NanoShelf/makeArrayByte(I)[B
+	
+; Read the negative value from it
+	iconst_m1
+	baload
+
+; Done
 	return
 .end method

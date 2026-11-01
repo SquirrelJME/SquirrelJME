@@ -18,6 +18,14 @@
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+; Grab an array
+	iconst_5
+	invokestatic nano/NanoShelf/makeArrayInt(I)[I
+	
+; Read too far right
+	bipush 5
+	iaload
+
+; Done
 	return
 .end method

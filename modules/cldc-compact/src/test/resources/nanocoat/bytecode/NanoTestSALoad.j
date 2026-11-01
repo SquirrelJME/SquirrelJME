@@ -17,6 +17,13 @@
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+; Grab an array
+	aconst_null
+	
+; Read the first value from it
+	iconst_0
+	saload
+
+; Done
 	return
 .end method

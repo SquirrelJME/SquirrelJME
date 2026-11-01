@@ -19,7 +19,7 @@
 .method public static main([Ljava/lang/String;)V
 .limit stack 4
 ; Grab an array
-	invokestatic nano/NanoShelf/makeArrayNull()[Ljava/lang/String;
+	aconst_null
 	
 ; Write a string to the first index
 	iconst_0

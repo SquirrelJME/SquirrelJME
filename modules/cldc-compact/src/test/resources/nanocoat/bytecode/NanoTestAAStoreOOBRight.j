@@ -18,6 +18,15 @@
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+; Grab an array
+	iconst_5
+	invokestatic nano/NanoShelf/makeArrayString(I)[Ljava/lang/String;
+	
+; Store over index
+	iconst_5
+	ldc "squeak"
+	aastore
+
+; Done
 	return
 .end method

@@ -83,7 +83,7 @@ public final class NanoShelf
 	 * @since 2026/10/25
 	 */
 	@SquirrelJMENativeApi(min = "0.4.0")
-	public static native int[] makeArrayInteger(int __n);
+	public static native int[] makeArrayInt(int __n);
 	
 	/**
 	 * Creates a long array.

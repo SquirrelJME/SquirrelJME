@@ -17,7 +17,15 @@
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
-.limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+.limit stack 3
+; Grab an array
+	aconst_null
+	
+; Write something to the first index
+	iconst_0
+	lconst_1
+	lastore
+
+; Done
 	return
 .end method

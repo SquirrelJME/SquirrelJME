@@ -12,11 +12,20 @@
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
+		.elem .str_kind "thrown" "Ljava/lang/ArrayIndexOutOfBoundsException;"
 	.end .annotation
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+; Grab an array
+	iconst_5
+	invokestatic nano/NanoShelf/makeArrayFloat(I)[F
+	
+; Read too far right
+	bipush 5
+	faload
+
+; Done
 	return
 .end method

@@ -19,7 +19,7 @@
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
 ; Grab an array
-	invokestatic nano/NanoShelf/makeArrayNull()[Ljava/lang/String;
+	aconst_null
 	
 ; Read the first value from it
 	iconst_0

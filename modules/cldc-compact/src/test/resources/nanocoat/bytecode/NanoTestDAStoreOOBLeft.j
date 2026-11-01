@@ -17,7 +17,16 @@
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
-.limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+.limit stack 3
+; Grab an array
+	iconst_5
+	invokestatic nano/NanoShelf/makeArrayDouble(I)[D
+	
+; Store negative index
+	iconst_m1
+	dconst_1
+	dastore
+
+; Done
 	return
 .end method
