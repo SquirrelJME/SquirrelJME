@@ -248,6 +248,7 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeNormal(
 	sjme_nvm_byteCode_invokeState* invoke)
 {
 	sjme_errorCode error;
+	sjme_jclass isClass;
 
 	if (invoke == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -256,11 +257,15 @@ static sjme_errorCode sjme_nvm_byteCode_slowInvokeNormal(
 	if (SJME_NVM_ACC_IS(invoke->target->flags, NATIVE))
 		return sjme_error_vmError(invoke->inFrame,
 			SJME_ERROR_PURE_VIRTUAL_CALL);
+	
+	/* Recover the class. */
+	isClass = NULL;
+	if (invoke->instance != NULL)
+		isClass = sjme_atomic_g(sjme_jclass, &invoke->instance->isClass);
 
 	/* Calling a proxy class method? */
 	if (invoke->instance != NULL &&
-		SJME_NVM_ACC_IS(sjme_atomic_g(sjme_jclass,
-			&invoke->instance->isClass)->info->flags, SPECIAL_PROXY) &&
+		SJME_NVM_ACC_IS(SJME_CL_I(isClass)->flags, SPECIAL_PROXY) &&
 		SJME_NVM_ACC_IS(invoke->target->flags, ABSTRACT))
 	{
 		sjme_todo("Impl?");

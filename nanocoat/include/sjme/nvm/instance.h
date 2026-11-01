@@ -265,7 +265,7 @@ struct sjme_jclassBase
 	sjme_atomic(sjme_jint) isInitialized;
 	
 	/** The parsed class file information. */
-	sjme_nvm_class_info info;
+	sjme_atomic(sjme_nvm_class_info) info;
 	
 	/** The super class of this class. */
 	sjme_atomic(sjme_jclass) superClass;

@@ -10,6 +10,7 @@
 #include "sjme/nvm/classyVmClass.h"
 #include "sjme/util.h"
 #include "sjme/nvm/instance.h"
+#include "sjme/nvm/task.h"
 
 sjme_errorCode sjme_nvm_vmClass_poolNamesLFromClassesA(
 	sjme_attrInNotNull sjme_nvm inState,
@@ -52,15 +53,15 @@ sjme_errorCode sjme_nvm_vmClass_poolNamesLFromClassesA(
 			continue;
 
 		/* No actual name to set? */
-		if (classy->info->name == NULL)
+		if (SJME_CL_I(classy)->name == NULL)
 			return SJME_ERROR_ILLEGAL_STATE;
 
 		/* There may be a usage where we want to count, or not to count. */
 		/* This depends on if this is used for debugging or not. */
 		if (countUp)
-			result->elements[i] = sjme_weakUp(classy->info->name);
+			result->elements[i] = sjme_weakUp(SJME_CL_I(classy)->name);
 		else
-			result->elements[i] = classy->info->name;
+			result->elements[i] = SJME_CL_I(classy)->name;
 	}
 
 	/* Success! */

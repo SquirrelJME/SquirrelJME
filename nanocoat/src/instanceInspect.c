@@ -10,6 +10,7 @@
 #include "sjme/nvm/instance.h"
 #include "sjme/nvm/instanceInspect.h"
 #include "sjme/nvm/cleanup.h"
+#include "sjme/nvm/task.h"
 
 static sjme_jboolean sjme_nvm_instance_arrayCheckAlias(
 	sjme_attrInNotNull sjme_jclass componentType,
@@ -49,8 +50,8 @@ sjme_errorCode sjme_nvm_instance_arrayCheck(
 	
 	/* The type information says that this is not an array? */
 	isClass = sjme_atomic_g(sjme_jclass, &inArray->object.isClass);
-	if (isClass == NULL || isClass->info == NULL ||
-		!isClass->info->isArray)
+	if (isClass == NULL || SJME_CL_I(isClass) == NULL ||
+		!SJME_CL_I(isClass)->isArray)
 		return SJME_ERROR_CLASS_CAST;
 	
 	/* Is the component type wrong? If we care that is... */

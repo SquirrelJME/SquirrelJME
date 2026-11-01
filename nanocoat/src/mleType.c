@@ -30,7 +30,7 @@ SJME_NVM_MLE_FUNCTION_DECL(binaryName)
 	argR->v.l = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
 		SJME_F_T(inFrame), SJME_AS_JSTRINGP(&argR->v.l),
-		inType->info->name)) || argR->v.l == NULL)
+		SJME_CL_I(inType)->name)) || argR->v.l == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Return the given string. */
@@ -52,7 +52,7 @@ SJME_NVM_MLE_FUNCTION_DECL(binaryPackageName)
 	argR->v.l = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
 		SJME_F_T(inFrame), SJME_AS_JSTRINGP(&argR->v.l),
-		inType->info->inPackage)) || argR->v.l == NULL)
+		SJME_CL_I(inType)->inPackage)) || argR->v.l == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
 	/* Return the given string. */
@@ -186,7 +186,7 @@ SJME_NVM_MLE_FUNCTION_DECL(inJar)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Is there no actual library here? */
-	library = sjme_atomic_g(sjme_nvm_rom_library, &inType->info->library);
+	library = sjme_atomic_g(sjme_nvm_rom_library, &SJME_CL_I(inType)->library);
 	if (library == NULL)
 	{
 		argR->t = SJME_JAVA_TYPE_ID_OBJECT;
@@ -288,8 +288,8 @@ SJME_NVM_MLE_FUNCTION_DECL(runtimeName)
 	argR->v.l = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfP(
 		SJME_F_T(inFrame), SJME_AS_JSTRINGP(&argR->v.l),
-		(inType->info->runtimeName != NULL ?
-			inType->info->runtimeName : inType->info->name))) ||
+		(SJME_CL_I(inType)->runtimeName != NULL ?
+			SJME_CL_I(inType)->runtimeName : SJME_CL_I(inType)->name))) ||
 		argR->v.l == NULL)
 		return sjme_error_vmError(inFrame, error);
 	

@@ -738,7 +738,7 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 		if (object->common.type != SJME_NVM_STRUCT_CLASS_INSTANCE &&
 			object->common.type != SJME_NVM_STRUCT_STRING_INSTANCE &&
 			object->common.type != SJME_NVM_STRUCT_THREAD_INSTANCE)
-			if (atClass->fieldName == NULL || atClass->info == NULL)
+			if (atClass->fieldName == NULL || SJME_CL_I(atClass) == NULL)
 				return sjme_error_vmError(NULL, SJME_ERROR_OBJECT_GONE);
 		
 		/* We need to clean up all the instance fields for this object, */

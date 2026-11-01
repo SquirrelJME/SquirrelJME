@@ -1714,6 +1714,10 @@ sjme_errorCode sjme_nvm_task_threadStringValueOfUtf(
 #define SJME_T_CL(thread) \
 	(sjme_atomic_g(sjme_nvm_task, &(thread)->inTask)->classLoader)
 	
+/** Class info. */
+#define SJME_CL_I(classy) \
+	(sjme_atomic_g(sjme_nvm_class_info, &(classy)->info))
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

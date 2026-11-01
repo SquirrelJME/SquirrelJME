@@ -145,7 +145,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 	isStatic = (instanceType == SJME_NVM_CLASS_MEMBER_STATIC);
 
 	/* Determine the actual field count. */
-	fields = inClass->info->fields;
+	fields = SJME_CL_I(inClass)->fields;
 	count = 0;
 	for (i = at = 0, n = fields->length; i < n; i++)
 	{		
@@ -399,7 +399,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitMethodBind(
 		
 		/* Instance initializers never get copied. */
 		if (wantStatic && SJME_NVM_CLASS_INIT_IS(thisInfo->bits, STATIC) &&
-			!sjme_charSeq_equalsR(thisClass->info->name->seq,
+			!sjme_charSeq_equalsR(SJME_CL_I(thisClass)->name->seq,
 				found->name->seq))
 			continue;
 		
@@ -550,7 +550,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Superclass info is required. */
-	superInfo = inSuperClass->info;
+	superInfo = SJME_CL_I(inSuperClass);
 	if (superInfo == NULL)
 		return sjme_error_vmError(NULL, SJME_ERROR_SUPER_CLASS_INVALID);
 	
@@ -567,7 +567,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 			
 			/* However, we add the info to get our current field count. */
 			inClass->fields[index].count[i] = inClass->fields[index].base[i] +
-				inClass->info->fieldCount[index][i];
+				SJME_CL_I(inClass)->fieldCount[index][i];
 			
 			/* Overflowed? */
 			if (inClass->fields[index].base[i] < 0 ||
@@ -580,7 +580,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 		/* from any of their type information. */
 		inClass->methods[index].base = inSuperClass->methods[index].count;
 		inClass->methods[index].count = inClass->methods[index].base +
-			inClass->info->methodCount[index];
+			SJME_CL_I(inClass)->methodCount[index];
 		
 		/* Overflowed? */
 		if (inClass->methods[index].base < 0 ||
@@ -649,7 +649,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkLoadArray(
 	inClass->special = SJME_NVM_ACC_SPECIAL_VM_SYNTHETIC;
 
 	/* Set synthetic class info. */
-	inClass->info = sjme_weakUpR(sjme_nvm_class_info, info);
+	sjme_atomic_s(sjme_nvm_class_info, &inClass->info,
+		sjme_weakUpR(sjme_nvm_class_info, info));
 
 	/* Determine component type class name. */
 	memset(componentTypeName, 0, sizeof(componentTypeName));
@@ -727,7 +728,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkLoadPrimitive(
 		SJME_NVM_ACC_SPECIAL_PRIMITIVE;
 
 	/* Set synthetic class info. */
-	inClass->info = sjme_weakUpR(sjme_nvm_class_info, info);
+	sjme_atomic_s(sjme_nvm_class_info, &inClass->info,
+		sjme_weakUpR(sjme_nvm_class_info, info));
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -792,7 +794,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkLoadStandard(
 		return SJME_ERROR_NO_CLASS;
 	
 	/* Set class info. */
-	inClass->info = info;
+	sjme_atomic_s(sjme_nvm_class_info, &inClass->info,
+		info);
 
 	/* Set special class flags? */
 	if (libIndex == 0)
@@ -1183,7 +1186,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 #endif
 	
 	/* The class info should now be valid. */
-	info = inClass->info;
+	info = SJME_CL_I(inClass);
 	loader = SJME_F_CL(contextThread);
 	if (info == NULL || loader == NULL)
 	{
@@ -1254,8 +1257,8 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 
 		/* The super class must not be final. */
 		/* It also cannot be a proxy. */
-		if (SJME_NVM_ACC_IS(superClass->info->flags, FINAL) ||
-			SJME_NVM_ACC_IS(superClass->info->flags, SPECIAL_PROXY))
+		if (SJME_NVM_ACC_IS(SJME_CL_I(superClass)->flags, FINAL) ||
+			SJME_NVM_ACC_IS(SJME_CL_I(superClass)->flags, SPECIAL_PROXY))
 		{
 			error = SJME_ERROR_CLASS_CHANGED;
 			goto fail_superFlags;
@@ -1274,9 +1277,9 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 
 			/* Interfaces must be marked as interfaces and not final, */
 			/* It also cannot be a proxy. */
-			if (!SJME_NVM_ACC_IS(interface->info->flags, INTERFACE) ||
-				SJME_NVM_ACC_IS(interface->info->flags, FINAL) ||
-				SJME_NVM_ACC_IS(interface->info->flags, SPECIAL_PROXY))
+			if (!SJME_NVM_ACC_IS(SJME_CL_I(interface)->flags, INTERFACE) ||
+				SJME_NVM_ACC_IS(SJME_CL_I(interface)->flags, FINAL) ||
+				SJME_NVM_ACC_IS(SJME_CL_I(interface)->flags, SPECIAL_PROXY))
 			{
 				error = SJME_ERROR_CLASS_CHANGED;
 				goto fail_interfaceFlags;
@@ -1347,7 +1350,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 		{
 			/* There are no fields here, so we do not want to claim any */
 			/* space to store nothing. */
-			if (inClass->info->fieldCount[i][extendedType] == 0)
+			if (SJME_CL_I(inClass)->fieldCount[i][extendedType] == 0)
 			{
 				/* Invalidate. */
 				singleFields->offset[extendedType] = INT32_MIN;
@@ -1366,7 +1369,7 @@ sjme_errorCode sjme_nvm_vmClass_checkInit(
 			/* Grow the allocation size by what is needed to store */
 			/* the fields. */
 			allocSize += sjme_nvm_fieldValueSize(extendedType,
-				inClass->info->fieldCount[i][extendedType]);
+				SJME_CL_I(inClass)->fieldCount[i][extendedType]);
 		}
 
 		/* Store rounded up allocation size, always to the pointer. */
@@ -1702,7 +1705,7 @@ sjme_errorCode sjme_nvm_vmClass_isAssignableFrom(
 #if 0
 	/* If the target is an interface, we need to check further as a direct */
 	/* class match failed. */
-	if (SJME_NVM_ACC_IS(canAssignTo->info->flags, INTERFACE))
+	if (SJME_NVM_ACC_IS(SJME_CL_I(canAssignTo)->flags, INTERFACE))
 	{
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
@@ -1772,7 +1775,7 @@ sjme_errorCode sjme_nvm_vmClass_isClasses(
 				break;
 
 			/* Is this an interface? */
-			if (SJME_NVM_ACC_IS(checkClass->info->flags, INTERFACE))
+			if (SJME_NVM_ACC_IS(SJME_CL_I(checkClass)->flags, INTERFACE))
 				numInterfaces++;
 		}
 
@@ -1802,7 +1805,7 @@ sjme_errorCode sjme_nvm_vmClass_isClasses(
 				/* Not an interface? */
 				checkClass = sjme_atomic_g(sjme_jclass, &result->elements[i]);
 				if (checkClass == NULL ||
-					!SJME_NVM_ACC_IS(checkClass->info->flags, INTERFACE))
+					!SJME_NVM_ACC_IS(SJME_CL_I(checkClass)->flags, INTERFACE))
 					continue;
 
 				/* Allocate interface bind. */
@@ -1818,7 +1821,7 @@ sjme_errorCode sjme_nvm_vmClass_isClasses(
 				/* Initialize data for it. */
 				interfaceBind->isInterface = checkClass;
 				interfaceBind->descriptorHash =
-					sjme_charSeq_hashR(checkClass->info->name->seq);
+					sjme_charSeq_hashR(SJME_CL_I(checkClass)->name->seq);
 				
 				/* Store at the next interface position. */
 				interfaceBinds->elements[at++] = interfaceBind;

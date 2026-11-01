@@ -78,7 +78,7 @@ sjme_errorCode sjme_nvm_access_checkCToE(
 	/* Class is public? It is always accessible and all members are */
 	/* visible at the public level provided the individual members are */
 	/* visible themselves. */
-	if (SJME_NVM_ACC_IS(toClass->info->flags, PUBLIC))
+	if (SJME_NVM_ACC_IS(SJME_CL_I(toClass)->flags, PUBLIC))
 		return SJME_ERROR_NONE;
 
 	/* Otherwise, the class is package private, even if the members are */
@@ -86,8 +86,8 @@ sjme_errorCode sjme_nvm_access_checkCToE(
 	/* be in the same package. */
 	/* This is so that you cannot access public static methods in a class */
 	/* which is package private. */
-	if (sjme_charSeq_equalsR(fromClass->info->inPackage->seq,
-		toClass->info->inPackage->seq))
+	if (sjme_charSeq_equalsR(SJME_CL_I(fromClass)->inPackage->seq,
+		SJME_CL_I(toClass)->inPackage->seq))
 		return SJME_ERROR_NONE;
 
 	/* Otherwise, access is denied. */
@@ -173,8 +173,8 @@ sjme_errorCode sjme_nvm_access_checkEToE(
 			return SJME_ERROR_MEMBER_ACCESS_DENIED;
 		
 		/* Must be in the same package. */
-		if (sjme_charSeq_equalsR(fromClass->info->inPackage->seq,
-			toClass->info->inPackage->seq))
+		if (sjme_charSeq_equalsR(SJME_CL_I(fromClass)->inPackage->seq,
+			SJME_CL_I(toClass)->inPackage->seq))
 			return SJME_ERROR_NONE;
 	}
 

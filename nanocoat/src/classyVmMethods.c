@@ -291,7 +291,7 @@ sjme_errorCode sjme_nvm_vmMethod_sourceByIndex(
 
 	/* Find the associated method. */
 	base = atClass->methods[instanceType].base;
-	methods = atClass->info->methods;
+	methods = SJME_CL_I(atClass)->methods;
 	for (i = methods->length - 1; i >= 0; i--)
 	{
 		/* Get the method here. */

@@ -737,7 +737,7 @@ sjme_errorCode sjme_nvm_vmField_sourceByIndex(
 
 	/* Find the associated field. */
 	base = atClass->fields[instanceType].base[extendedType];
-	fields = atClass->info->fields;
+	fields = SJME_CL_I(atClass)->fields;
 	for (i = 0, n = fields->length; i < n; i++)
 	{
 		/* Get the method here. */
