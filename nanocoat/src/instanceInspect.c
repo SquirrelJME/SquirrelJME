@@ -109,6 +109,10 @@ sjme_errorCode sjme_nvm_instance_arrayCopyJ(
 	sjme_attrInPositive sjme_jint length,
 	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit)
 {
+	sjme_errorCode error;
+	sjme_jint i;
+	sjme_jobject copyRef;
+	
 	if (srcArray == NULL || destArray == NULL)
 		return SJME_ERROR_NULL_STACK_POINTER;
 	
@@ -117,42 +121,44 @@ sjme_errorCode sjme_nvm_instance_arrayCopyJ(
 		destOff < 0 || (destOff + length) < 0)
 		return SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS;
 	
-	sjme_todo("Impl");
-	return sjme_error_notImplemented(0);
+	/* Array access must be valid. */
+	/* Check the opposite array's type. */
+	if (sjme_error_is(error = sjme_nvm_instance_arrayCheckI(
+		srcArray, destArray->e.type, srcOff, length)))
+		return sjme_error_default(error);
+	if (sjme_error_is(error = sjme_nvm_instance_arrayCheckI(
+		destArray, srcArray->e.type, destOff, length)))
+		return sjme_error_default(error);
 	
-#if 0
-	
-	/* Lock the array. */
-	if (sjme_error_is(error = sjme_thread_spinLockGrab(
-		&array->object.common.lock)))
-		return sjme_error_vmError(inFrame, error);
-	
-		/* If this is an object array, copy over all values one by one. */
-	if (array->e.type == SJME_JAVA_TYPE_ID_OBJECT)
+	/* If this is an object array, copy over all values one by one. */
+	if (srcArray->e.type == SJME_JAVA_TYPE_ID_OBJECT)
+	{
 		for (i = 0; i < length; i++)
 		{
 			/* Read the reference. */
 			copyRef = NULL;
 			if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
-				&clone->e, i, SJME_VLG_JOBJECT_P(&copyRef))))
-				goto fail_readRef;
+				&srcArray->e, i, 
+				SJME_VLG_JOBJECT_P(&copyRef))))
+				return sjme_error_default(error);
 			
 			/* Set the reference. */
 			if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
-				&clone->e, i, NULL, SJME_VLS_JOBJECT(copyRef))))
-				goto fail_writeRef;
+				&destArray->e, i, commit, 
+				SJME_VLS_JOBJECT(copyRef))))
+				return sjme_error_default(error);
 		}
+	}
 	
 	/* Copy all values over. */
 	else
-		memmove(&clone->e, &array->e,
-			sjme_nvm_typeMul[array->e.type] * length);
+	{
+		memmove(&destArray->e, &srcArray->e,
+			(size_t)(sjme_nvm_typeMul[srcArray->e.type] * length));
+	}
 	
-	/* Release lock. */
-	if (sjme_error_is(error = sjme_thread_spinLockRelease(
-		&array->object.common.lock, NULL)))
-		return sjme_error_vmError(inFrame, error);
-#endif
+	/* Success! */
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_instance_arrayGet(
