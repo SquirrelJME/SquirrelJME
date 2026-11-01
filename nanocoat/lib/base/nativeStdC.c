@@ -64,7 +64,7 @@ sjme_errorCode sjme_nal_default_stdErr(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	error = SJME_ERROR_NONE;
-	if (fwrite(SJME_POINTER_OFFSET(buf, off), len, 1,
+	if (fwrite(sjme_po(buf, off), len, 1,
 		stderr) <= 0)
 		error = SJME_ERROR_IO_EXCEPTION;
 	if (EOF == fflush(stderr))
@@ -102,7 +102,7 @@ sjme_errorCode sjme_nal_default_stdOut(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	error = SJME_ERROR_NONE;
-	if (fwrite(SJME_POINTER_OFFSET(buf, off), len,
+	if (fwrite(sjme_po(buf, off), len,
 		1, stdout) <= 0)
 		error = SJME_ERROR_IO_EXCEPTION;
 	
@@ -181,7 +181,7 @@ static sjme_errorCode sjme_nal_default_cFileRead(
 	while (left > 0)
 	{
 		/* Read chunk. */
-		rc = sjme_util_sizeToInt(fread(SJME_POINTER_OFFSET(outBuf, destAt),
+		rc = sjme_util_sizeToInt(fread(sjme_po(outBuf, destAt),
 			1, left, file));
 		
 		/* These should never happen. */

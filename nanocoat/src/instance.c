@@ -225,66 +225,284 @@ sjme_errorCode sjme_nvm_instance_defaultInit(
 	return SJME_ERROR_NONE;
 }
 
-sjme_nvm_value* sjme_nvm_instance_fieldAccessor(
+static sjme_nvm_value* sjme_nvm_instance_fieldAccessorZZ(
 	sjme_attrInNotNull sjme_jobject instance,
-	sjme_attrInNotNull sjme_jfieldID field)
+	sjme_attrInNotNull sjme_jfieldID field,
+	sjme_attrInOutNotNull sjme_nvm_valueVolatile* volatileStore)
 {
 #define NUM_VOIDLESS 4
 	sjme_threadLocal(sjme_nvm_value, voidless[NUM_VOIDLESS]);
 	sjme_threadLocal(sjme_jint, voidlessNext);
-
-	/* If neither are valid, treat this as a bad memory read/write. */
-	if (instance == NULL || field == NULL)
-		goto fail_voidless;
-
-	/* Static field? */
-	if (SJME_NVM_ACC_IS(field->flags, STATIC))
-	{
-		/* Cannot read/write to non-classes. */
-		if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_CLASS_INSTANCE))
-			goto fail_voidless;
-
-		/* Wrong class? */
-		if (instance !=
-			(sjme_jobject)sjme_atomic_g(sjme_jclass, &field->member.inClass))
-			goto fail_voidless;
-
-#if defined(SJME_CONFIG_DEBUG_FIELD)
-		/* Debug. */
-		sjme_message("STATIC %p->%p + %d",
-			instance, ((sjme_jclass)instance)->staticChunk,
-			field->pointerOffset);
-#endif
-
-		/* Values is based on the static chunk. */
-		return SJME_POINTER_OFFSET(((sjme_jclass)instance)->staticChunk,
-			field->pointerOffset);
-	}
-
-	/* Instance field? */
-	else
-	{
-		/* Can only read/write plain objects. */
-		if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_OBJECT_INSTANCE))
-			goto fail_voidless;
-		
-#if defined(SJME_CONFIG_DEBUG_FIELD)
-		/* Debug. */
-		sjme_message("INSTANCE %p + %d",
-			instance, field->pointerOffset);
-#endif
-		
-		/* Value is based on the object itself, from the basis of */
-		/* its allocation size. */
-		return SJME_POINTER_OFFSET((sjme_pointer)instance,
-			field->pointerOffset);
-	}
+	sjme_nvm_value* result;
 	
 	/* Fallback to read/write some kind of valid memory. */
-fail_voidless:
-	memset(&voidless, 0, sizeof(voidless));
-	return &voidless[(voidlessNext++) & (NUM_VOIDLESS - 1)];
+	result = &voidless[(voidlessNext++) & (NUM_VOIDLESS - 1)];
+	memset(result, 0, sizeof(*result));
+	
+	/* Return it. */
+	return result;
 #undef NUM_VOIDLESS
+}
+
+sjme_nvm_value* sjme_nvm_instance_fieldAccessorNI(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field,
+	sjme_attrInOutNotNull sjme_nvm_valueVolatile* volatileStore)
+{
+	sjme_errorCode error;
+	
+	if (instance == NULL || field == NULL || volatileStore == NULL)
+		goto fail_voidless;
+	
+	/* Can only read/write plain objects. */
+	if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_OBJECT_INSTANCE))
+		goto fail_voidless;
+	
+#if defined(SJME_CONFIG_DEBUG_FIELD)
+	/* Debug. */
+	sjme_message("INSTANCE %p + %d",
+		instance, field->pointerOffset);
+#endif
+	
+	/* Value is based on the object itself, from the basis of */
+	/* its allocation size. */
+	return sjme_po((sjme_pointer)instance,
+		field->pointerOffset);
+	
+fail_voidless:
+	return sjme_nvm_instance_fieldAccessorZZ(NULL, NULL, NULL);
+}
+	
+sjme_nvm_value* sjme_nvm_instance_fieldAccessorNS(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field,
+	sjme_attrInOutNotNull sjme_nvm_valueVolatile* volatileStore)
+{
+	sjme_errorCode error;
+	
+	if (instance == NULL || field == NULL || volatileStore == NULL)
+		goto fail_voidless;
+	
+	/* Cannot read/write to non-classes. */
+	if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		goto fail_voidless;
+
+	/* Wrong class? */
+	if (instance != (sjme_jobject)sjme_atomic_g(sjme_jclass,
+		&field->member.inClass))
+		goto fail_voidless;
+
+#if defined(SJME_CONFIG_DEBUG_FIELD)
+	/* Debug. */
+	sjme_message("STATIC %p->%p + %d",
+		instance, ((sjme_jclass)instance)->staticChunk,
+		field->pointerOffset);
+#endif
+
+	/* Values is based on the static chunk. */
+	return sjme_po(((sjme_jclass)instance)->staticChunk,
+		field->pointerOffset);
+	
+fail_voidless:
+	return sjme_nvm_instance_fieldAccessorZZ(NULL, NULL, NULL);
+}
+
+static sjme_nvm_value* sjme_nvm_instance_fieldAccessorVV(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field,
+	sjme_attrInOutNotNull sjme_nvm_valueVolatile* volatileStore,
+	sjme_attrInNotNull sjme_pointer rawP)
+{
+	sjme_errorCode error;
+	
+	if (instance == NULL || field == NULL || volatileStore == NULL)
+		goto fail_voidless;
+	
+	/* Atomic read long. */
+	if (field->javaType == SJME_JAVA_TYPE_ID_LONG ||
+		field->javaType == SJME_JAVA_TYPE_ID_DOUBLE)
+	{
+#if !defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+		volatileStore->value.v.j.full = sjme_atomic_g(sjme_jlongNative, rawP);
+#else
+#if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
+		volatileStore->value.v.j.part.hi =
+			sjme_atomic_g(sjme_jint, rawP);
+		volatileStore->value.v.j.part.lo =
+			sjme_atomic_g(sjme_jint, sjme_po(rawP, 4));
+#else
+		volatileStore->value.v.j.part.hi =
+			sjme_atomic_g(sjme_jint, sjme_po(rawP, 4));
+		volatileStore->value.v.j.part.lo =
+			sjme_atomic_g(sjme_jint, rawP);
+#endif
+#endif
+	}
+	
+	/* Atomic read pointer. */
+	else if (field->javaType == SJME_JAVA_TYPE_ID_OBJECT)
+	{
+		volatileStore->value.l.check = sjme_atomic_g(sjme_jint, 
+			(sjme_pointer)sjme_po(rawP, 
+				offsetof(sjme_nvm_valueObject, check)));
+		volatileStore->value.l.p = sjme_atomic_g(sjme_pointer,
+			(sjme_pointer)sjme_po(rawP, 
+				offsetof(sjme_nvm_valueObject, p)));
+	}
+		
+	/* Atomic read integer. */
+	else
+		volatileStore->value.v.i = sjme_atomic_g(sjme_jint, rawP);
+		
+	/* Always use the volatile storage. */
+	return &volatileStore->value;
+	
+fail_voidless:
+	return sjme_nvm_instance_fieldAccessorZZ(NULL, NULL, NULL);
+}
+static sjme_nvm_value* sjme_nvm_instance_fieldAccessorVC(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field,
+	sjme_attrInOutNotNull sjme_nvm_valueVolatile* volatileStore,
+	sjme_attrInNotNull sjme_pointer rawP)
+{
+	sjme_errorCode error;
+	
+	if (instance == NULL || field == NULL || volatileStore == NULL)
+		return NULL;
+	
+	/* Atomic write long. */
+	if (field->javaType == SJME_JAVA_TYPE_ID_LONG ||
+		field->javaType == SJME_JAVA_TYPE_ID_DOUBLE)
+	{
+#if !defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+		sjme_atomic_s(sjme_jlongNative, rawP,
+			volatileStore->value.v.j.full);
+#else
+#if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
+		sjme_atomic_s(sjme_jint, rawP, 
+			volatileStore->value.v.j.part.hi);
+		sjme_atomic_s(sjme_jint, sjme_po(rawP, 4),
+			volatileStore->value.v.j.part.lo);
+#else
+		sjme_atomic_s(sjme_jint, sjme_po(rawP, 4), 
+			volatileStore->value.v.j.part.hi);
+		sjme_atomic_s(sjme_jint, rawP,
+			volatileStore->value.v.j.part.lo);
+#endif
+#endif
+	}
+	
+	/* Atomic write pointer. */
+	else if (field->javaType == SJME_JAVA_TYPE_ID_OBJECT)
+	{
+		sjme_atomic_s(sjme_jint, 
+			(sjme_pointer)sjme_po(rawP, 
+				offsetof(sjme_nvm_valueObject, check)),
+			volatileStore->value.l.check);
+		sjme_atomic_s(sjme_pointer,
+			(sjme_pointer)sjme_po(rawP, 
+				offsetof(sjme_nvm_valueObject, p)),
+			volatileStore->value.l.p);
+	}
+		
+	/* Atomic write integer. */
+	else
+		sjme_atomic_s(sjme_jint, rawP, volatileStore->value.v.i);
+		
+	/* Always null */
+	return NULL;
+}
+	
+sjme_nvm_value* sjme_nvm_instance_fieldAccessorVI(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field,
+	sjme_attrInOutNotNull sjme_nvm_valueVolatile* volatileStore)
+{
+	sjme_errorCode error;
+	sjme_pointer rawP;
+	
+	if (instance == NULL || field == NULL || volatileStore == NULL)
+		goto fail_voidless;
+	
+	/* Raw pointer to the data. */
+	rawP = sjme_po((sjme_pointer)instance,
+		field->pointerOffset);
+	
+	/* Commit the value to memory. */
+	if (volatileStore->commit)
+	{
+		/* Direct commit. */
+		sjme_nvm_instance_fieldAccessorVC(instance, field,
+			volatileStore, rawP);
+		
+		/* Always null. */
+		return NULL;
+	}
+	
+	/* Prime the value. */
+	else
+	{
+		/* Clear the volatile storage. */
+		memset(volatileStore, 0, sizeof(*volatileStore));
+		
+		/* Read the value. */
+		return sjme_nvm_instance_fieldAccessorVV(instance, field,
+			volatileStore, rawP);
+	}
+	
+fail_voidless:
+	return sjme_nvm_instance_fieldAccessorZZ(NULL, NULL, NULL);
+}
+	
+sjme_nvm_value* sjme_nvm_instance_fieldAccessorVS(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field,
+	sjme_attrInOutNotNull sjme_nvm_valueVolatile* volatileStore)
+{
+	sjme_errorCode error;
+	sjme_pointer rawP;
+	
+	if (instance == NULL || field == NULL || volatileStore == NULL)
+		goto fail_voidless;
+	
+	/* Cannot read/write to non-classes. */
+	if (!sjme_nvm_isAR(instance, SJME_NVM_STRUCT_CLASS_INSTANCE))
+		goto fail_voidless;
+
+	/* Wrong class? */
+	if (instance != (sjme_jobject)sjme_atomic_g(sjme_jclass,
+		&field->member.inClass))
+		goto fail_voidless;
+	
+	/* Raw pointer to the data. */
+	rawP = sjme_po(((sjme_jclass)instance)->staticChunk,
+		field->pointerOffset);
+	
+	/* Commit the value to memory. */
+	if (volatileStore->commit)
+	{
+		/* Direct commit. */
+		sjme_nvm_instance_fieldAccessorVC(instance, field,
+			volatileStore, rawP);
+		
+		/* Always null. */
+		return NULL;
+	}
+	
+	/* Prime the value. */
+	else
+	{
+		/* Clear the volatile storage. */
+		memset(volatileStore, 0, sizeof(*volatileStore));
+		
+		/* Read the value. */
+		return sjme_nvm_instance_fieldAccessorVV(instance, field,
+			volatileStore, rawP);
+	}
+	
+fail_voidless:
+	return sjme_nvm_instance_fieldAccessorZZ(NULL, NULL, NULL);
 }
 
 sjme_errorCode sjme_nvm_instance_initFields(
@@ -299,6 +517,7 @@ sjme_errorCode sjme_nvm_instance_initFields(
 	sjme_jfieldID field;
 	sjme_nvm_jfieldAccessFunc accessor;
 	sjme_nvm_value* direct;
+	sjme_nvm_valueVolatile volatileStorage;
 	sjme_nvm_class_fieldConstVal* constVal;
 	sjme_jstring constString;
 
@@ -306,8 +525,10 @@ sjme_errorCode sjme_nvm_instance_initFields(
 		fields == NULL || placements == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Always use the default accessor to write initial field values. */
-	accessor = SJME_T_K(contextThread)->globals.accessor;
+	/* Always use the default accessor to write initial field values, */
+	/* however always initialize as volatile. */
+	accessor = SJME_T_K(contextThread)->
+		globals.accessor[SJME_NVM_FIELD_ACCESS_VOLATILE_INSTANCE];
 
 	/* Since we have bound all static fields, we can just use that. */
 	for (i = 0, n = fields->length; i < n; i++)
@@ -321,7 +542,7 @@ sjme_errorCode sjme_nvm_instance_initFields(
 			continue;
 		
 		/* Get direct pointer to the data. */
-		direct = accessor(instance, field);
+		direct = accessor(instance, field, &volatileStorage);
 		if (direct == NULL)
 			return SJME_ERROR_FIELD_NOT_DIRECT;
 
@@ -340,15 +561,19 @@ sjme_errorCode sjme_nvm_instance_initFields(
 			
 			/* Set field. */
 			if (sjme_error_is(error = sjme_nvm_vmField_cisSet(
-			direct, field->info->basicType,
+				direct, field->info->basicType,
 				NULL, SJME_VLS_JOBJECT(constString))))
 				return sjme_error_vmError(contextThread, error);
 		}
 
-		/* Copy value directly is primitive. */
+		/* Copy value directly if primitive. */
 		else if (field->info->javaType != SJME_JAVA_TYPE_ID_OBJECT)
 			memmove(direct, &constVal->value.java,
 				sjme_nvm_typeMul[field->info->javaType]);
+		
+		/* Commit. */
+		volatileStorage.commit = SJME_JNI_TRUE;
+		accessor(instance, field, &volatileStorage);
 	}
 
 	/* Success! */
@@ -377,7 +602,7 @@ sjme_errorCode sjme_nvm_instance_initFieldsChunk(
 			return SJME_ERROR_ILLEGAL_STATE;
 		
 		/* Determine the base offset to write at. */
-		into = SJME_POINTER_OFFSET(chunk, placements->offset[type]);
+		into = sjme_po(chunk, placements->offset[type]);
 
 		/* Set details for the partition. */
 		into->type = type;
@@ -398,6 +623,7 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 {
 	sjme_errorCode error;
 	sjme_nvm_value* direct;
+	sjme_nvm_valueVolatile volatileStore;
 	sjme_nvm_jfieldAccessFunc accessor;
 
 	if (contextThread == NULL || commit == NULL || fieldId == NULL ||
@@ -410,15 +636,34 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	/* Obtain accessor for this field. */
 	if (fieldId->accessor != NULL)
 		accessor = fieldId->accessor;
+	
+	/* Otherwise, default to a global accessor. */
+	else if (SJME_NVM_ACC_IS(fieldId->flags, STATIC))
+	{
+		if (SJME_NVM_ACC_IS(fieldId->flags, VOLATILE))
+			accessor = SJME_T_K(contextThread)->globals
+				.accessor[SJME_NVM_FIELD_ACCESS_VOLATILE_STATIC];
+		else
+			accessor = SJME_T_K(contextThread)->globals
+				.accessor[SJME_NVM_FIELD_ACCESS_NORMAL_STATIC];
+	}
 	else
-		accessor = SJME_T_K(contextThread)->globals.accessor;
+	{
+		if (SJME_NVM_ACC_IS(fieldId->flags, VOLATILE))
+			accessor = SJME_T_K(contextThread)->globals
+				.accessor[SJME_NVM_FIELD_ACCESS_VOLATILE_INSTANCE];
+		else
+			accessor = SJME_T_K(contextThread)->globals
+				.accessor[SJME_NVM_FIELD_ACCESS_NORMAL_INSTANCE];
+	}
 
 	/* There must be an accessor. */
 	if (accessor == NULL)
 		return SJME_ERROR_FIELD_NOT_DIRECT;
 
 	/* Direct access. */
-	direct = accessor(instance, fieldId);
+	memset(&volatileStore, 0, sizeof(volatileStore));
+	direct = accessor(instance, fieldId, &volatileStore);
 	if (direct == NULL)
 		return SJME_ERROR_FIELD_NOT_DIRECT;
 
@@ -510,6 +755,13 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 				return SJME_ERROR_INVALID_FIELD_TYPE;
 		}
 	}
+	
+	/* Commit value for volatile? */
+	if (isPut && SJME_NVM_ACC_IS(fieldId->flags, VOLATILE))
+	{
+		volatileStore.commit = SJME_JNI_TRUE;
+		accessor(instance, fieldId, &volatileStore);
+	}
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -523,6 +775,9 @@ sjme_errorCode sjme_nvm_instance_monitorEnter(
 	
 	if (contextThread == NULL || instance == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Memory barrier! */
+	sjme_atomic_barrier();
 
 	/* Grab the lock on the object. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
@@ -531,6 +786,9 @@ sjme_errorCode sjme_nvm_instance_monitorEnter(
 
 	/* Count up the monitor since we do have the lock. */
 	sjme_atomic_ga(sjme_jint, &instance->monitorCount, 1);
+	
+	/* Memory barrier! */
+	sjme_atomic_barrier();
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -544,6 +802,9 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
 	
 	if (contextThread == NULL || instance == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Memory barrier! */
+	sjme_atomic_barrier();
 
 	/* There are no monitor locks on this instance? */
 	if (sjme_atomic_g(sjme_jint, &instance->monitorCount) < 0)
@@ -556,6 +817,9 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
 
 	/* We did a successful release, so count the locks down. */
 	sjme_atomic_ga(sjme_jint, &instance->monitorCount, -1);
+	
+	/* Memory barrier! */
+	sjme_atomic_barrier();
 
 	/* Success! */
 	return SJME_ERROR_NONE;

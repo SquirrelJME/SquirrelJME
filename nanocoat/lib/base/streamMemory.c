@@ -99,7 +99,7 @@ static sjme_errorCode sjme_stream_inputMemoryRead(
 		limit = length;
 
 	/* Do a direct memory copy. */
-	memmove(dest, SJME_POINTER_OFFSET(inImplState->buffer,
+	memmove(dest, sjme_po(inImplState->buffer,
 		stream->totalRead), limit);
 
 	/* Indicate read count and consider success! */

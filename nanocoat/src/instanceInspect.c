@@ -119,6 +119,40 @@ sjme_errorCode sjme_nvm_instance_arrayCopyJ(
 	
 	sjme_todo("Impl");
 	return sjme_error_notImplemented(0);
+	
+#if 0
+	
+	/* Lock the array. */
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&array->object.common.lock)))
+		return sjme_error_vmError(inFrame, error);
+	
+		/* If this is an object array, copy over all values one by one. */
+	if (array->e.type == SJME_JAVA_TYPE_ID_OBJECT)
+		for (i = 0; i < length; i++)
+		{
+			/* Read the reference. */
+			copyRef = NULL;
+			if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
+				&clone->e, i, SJME_VLG_JOBJECT_P(&copyRef))))
+				goto fail_readRef;
+			
+			/* Set the reference. */
+			if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
+				&clone->e, i, NULL, SJME_VLS_JOBJECT(copyRef))))
+				goto fail_writeRef;
+		}
+	
+	/* Copy all values over. */
+	else
+		memmove(&clone->e, &array->e,
+			sjme_nvm_typeMul[array->e.type] * length);
+	
+	/* Release lock. */
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&array->object.common.lock, NULL)))
+		return sjme_error_vmError(inFrame, error);
+#endif
 }
 
 sjme_errorCode sjme_nvm_instance_arrayGet(
@@ -144,6 +178,15 @@ sjme_errorCode sjme_nvm_instance_arrayGet(
 	/* Return it. */
 	memmove(outValue, &result, sizeof(*outValue));
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_arrayGetO(
+	sjme_attrInNotNull sjme_jarray inArray,
+	sjme_attrInPositive sjme_jint index,
+	sjme_attrOutNotNull sjme_jobject* outValue)
+{
+	sjme_todo("Impl");
+	return sjme_error_notImplemented(0);
 }
 
 sjme_errorCode sjme_nvm_instance_arrayGetString(
@@ -221,4 +264,119 @@ sjme_errorCode sjme_nvm_instance_arraySet(
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+sjme_errorCode sjme_nvm_instance_arraySetO(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
+	sjme_attrInNotNull sjme_jarray inArray,
+	sjme_attrInValue sjme_basicTypeId requireType,
+	sjme_attrInPositive sjme_jint index,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
+	sjme_attrOutNotNull sjme_jobject inValue)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_instance_fieldGet(
+	sjme_attrInNotNull sjme_jobject inObject,
+	sjme_attrInNotNull sjme_jfieldID inField,
+	sjme_attrOutNotNull sjme_jvalueTyped* outValue)
+{
+	if (inField == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inObject == NULL)
+		return SJME_ERROR_NULL_STACK_POINTER;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_instance_fieldGetO(
+	sjme_attrInNotNull sjme_jobject inObject,
+	sjme_attrInNotNull sjme_jfieldID inField,
+	sjme_attrInValue sjme_nvm_structType inStructType,
+	sjme_attrOutNotNull sjme_pointer* outValue)
+{
+	if (inField == NULL || outValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inObject == NULL)
+		return SJME_ERROR_NULL_STACK_POINTER;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_instance_fieldSet(
+	sjme_attrInNotNull sjme_jobject inObject,
+	sjme_attrInNotNull sjme_jfieldID inField,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNotNull sjme_jvalueTyped* inValue)
+{
+	if (inField == NULL || inValue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inObject == NULL)
+		return SJME_ERROR_NULL_STACK_POINTER;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+	
+#if 0
+		/* TODO FIXME: USE INSPECT FOR THIS! */
+
+		/* Flag cause as initialized. */
+		memset(&volatileStorage, 0, sizeof(volatileStorage));
+		accessor = sjme_nvm_instance_fieldAccessorVI(
+			SJME_AS_JOBJECT(toss), initCauseID, &volatileStorage);
+		accessor->v.z = SJME_JNI_TRUE;
+
+		/* Set actual cause now, and its check value directly. */
+		accessor = sjme_nvm_instance_fieldAccessorVI(
+			SJME_AS_JOBJECT(toss), causeID, &volatileStorage);
+		if (sjme_error_is(error = sjme_nvm_vmField_cisSet(
+			accessor, causeID->info->basicType,
+			NULL, SJME_VLS_JOBJECT(toss))))
+			return sjme_error_vmError(inThread, error);
+		
+		/* Commit. */
+		volatileStorage.commit = SJME_JNI_TRUE;
+		sjme_nvm_instance_fieldAccessorVI(SJME_AS_JOBJECT(toss), 
+			initCauseID, &volatileStorage);
+		
+		/* TODO FIXME: USE INSPECT FOR THIS! */
+#endif
+}
+
+sjme_errorCode sjme_nvm_instance_fieldSetI(
+	sjme_attrInNotNull sjme_jobject inObject,
+	sjme_attrInNotNull sjme_jfieldID inField,
+	sjme_attrInNotNull sjme_jint inValue)
+{
+	if (inField == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inObject == NULL)
+		return SJME_ERROR_NULL_STACK_POINTER;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
+}
+
+sjme_errorCode sjme_nvm_instance_fieldSetO(
+	sjme_attrInNotNull sjme_jobject inObject,
+	sjme_attrInNotNull sjme_jfieldID inField,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNotNull sjme_jobject inValue)
+{
+	if (inField == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inObject == NULL)
+		return SJME_ERROR_NULL_STACK_POINTER;
+	
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }

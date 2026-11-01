@@ -138,7 +138,7 @@ sjme_errorCode sjme_nvm_store_initFile(
 
 	/* Calculate the actual usable length, this goes from the end of the */
 	/* buffer to the actual data start. */
-	result->totalLength = ((sjme_intPointer)SJME_POINTER_OFFSET(buf, len) -
+	result->totalLength = ((sjme_intPointer)sjme_po(buf, len) -
 		(sjme_intPointer)&result->data[0]);
 	result->freeData = result->totalLength;
 

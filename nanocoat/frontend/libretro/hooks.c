@@ -211,7 +211,7 @@ static sjme_errorCode sjme_libretro_consoleOut(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Copy characters to the line buffer. */
-	bufStr = SJME_POINTER_OFFSET(buf, off);
+	bufStr = sjme_po(buf, off);
 	for (i = 0; i < len; i++)
 	{
 		/* Is this end of line? */

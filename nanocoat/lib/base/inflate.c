@@ -308,7 +308,7 @@ static sjme_errorCode sjme_inflate_drain(
 	/* Pop off the head. */
 	if (sjme_error_is(error = sjme_circleBuffer_pop(
 		inState->outputBuffer,
-		SJME_POINTER_OFFSET(outBuf, (*drainOff)),
+		sjme_po(outBuf, (*drainOff)),
 		limit, SJME_CIRCLE_BUFFER_HEAD)))
 		return sjme_error_default(error);
 	

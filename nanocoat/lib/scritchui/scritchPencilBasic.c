@@ -56,7 +56,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanGet(
 		return SJME_ERROR_NONE;
 	
 	/* Direct memory copy over. */
-	targetP = SJME_POINTER_OFFSET(g->lockState.base,
+	targetP = sjme_po(g->lockState.base,
 		(y * g->scanLenBytes) + ((x * g->bitsPerPixel) / 8));
 	memmove(outData, targetP, limit);
 	
@@ -104,7 +104,7 @@ static sjme_errorCode sjme_scritchui_basicRawScanPutPure(
 	}
 	
 	/* Copy over the buffer directly. */
-	targetP = SJME_POINTER_OFFSET(g->lockState.base, targetI);
+	targetP = sjme_po(g->lockState.base, targetI);
 	memmove(targetP, srcRaw, srcRawLen);
 	
 	/* Success! */

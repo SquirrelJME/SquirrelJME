@@ -17,6 +17,7 @@
 #include "sjme/nvm/nvm.h"
 #include "sjme/nvm/cleanup.h"
 #include "sjme/stdGone.h"
+#include "sjme/nvm/instanceInspect.h"
 #include "sjme/nvm/instanceProxy.h"
 #include "sjme/nvm/mleProxies.h"
 
@@ -626,9 +627,9 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	sjme_jint i;
 	sjme_jfieldID messageId, causeId;
 	sjme_jstring message;
-	sjme_nvm_value* accessor;
 	sjme_charSeq messageSeq;
 	sjme_jboolean printedMessage;
+	sjme_jobject cause;
 	
 	if (inThrowable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -661,27 +662,28 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	printedMessage = SJME_JNI_FALSE;
 	if (messageId != NULL)
 	{
-		/* Can we get the accessor for the field? */
-		accessor = sjme_nvm_instance_fieldAccessor(
-			SJME_AS_JOBJECT(inThrowable), messageId);
-		if (accessor != NULL && accessor->l.p != NULL)
+		/* Read the message. */
+		message = NULL;
+		if (sjme_error_is(error = sjme_nvm_instance_fieldGetO(
+			SJME_AS_JOBJECT(inThrowable), messageId,
+			SJME_NVM_STRUCT_STRING_INSTANCE,
+			(sjme_pointer*)&message)))
+			return sjme_error_default(error);
+		
+		/* Is this a valid string? */
+		messageSeq = NULL;
+		if (message != NULL)
+			messageSeq = sjme_atomic_g(sjme_charSeq, &message->seq);
+		
+		/* If the sequence is valid, print it. */
+		if (messageSeq != NULL)
 		{
-			/* Is this a valid string? */
-			message = SJME_AS_JSTRING(accessor->l.p);
-			if (sjme_nvm_isAR(message, SJME_NVM_STRUCT_STRING_INSTANCE))
-			{
-				/* If the sequence is valid, print it. */
-				messageSeq = sjme_atomic_g(sjme_charSeq, &message->seq);
-				if (messageSeq != NULL)
-				{
-					sjme_emitB("EXCEPTION %s: %s",
-						sjme_charSeq_tempUtf(
-							sjme_atomic_g(sjme_jclass,
-								&inThrowable->object.isClass)->fieldName),
-						sjme_charSeq_tempUtf(messageSeq));
-					printedMessage = SJME_JNI_TRUE;
-				}
-			}
+			sjme_emitB("EXCEPTION %s: %s",
+				sjme_charSeq_tempUtf(
+					sjme_atomic_g(sjme_jclass,
+						&inThrowable->object.isClass)->fieldName),
+				sjme_charSeq_tempUtf(messageSeq));
+			printedMessage = SJME_JNI_TRUE;
 		}
 	}
 
@@ -707,8 +709,8 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 		{
 			/* Read in. */
 			point = NULL;
-			if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
-				&pointArray->e, i, SJME_VLG_JOBJECT_P(&point))))
+			if (sjme_error_is(error = sjme_nvm_instance_arrayGetO(
+				pointArray, i, (sjme_jobject*)&point)))
 				return sjme_error_default(error);
 			
 			/* Ignore NULLs. */
@@ -736,16 +738,26 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 	/* Recurse into cause? */
 	if (causeId != NULL)
 	{
-		/* Actually try to access it. */
-		accessor = sjme_nvm_instance_fieldAccessor(
-			SJME_AS_JOBJECT(inThrowable), causeId);
-
-		/* Recurse. */
-		if (accessor != NULL && accessor->l.p != NULL)
+		/* Read the message. */
+		cause = NULL;
+		if (sjme_error_is(error = sjme_nvm_instance_fieldGetO(
+			SJME_AS_JOBJECT(inThrowable), causeId,
+			SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE,
+			(sjme_pointer*)&cause)))
+			return sjme_error_default(error);
+		
+		/* Only if there is an actual cause. */
+		if (cause != NULL)
 		{
+			/* Not a throwable? */
+			if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(
+				contextThread, throwableClass,
+				sjme_atomic_g(sjme_jclass, &cause->isClass))))
+				return sjme_error_default(error);
+		
 			sjme_emitB("CAUSED BY:");
 			return sjme_nvm_task_stackTraceThrowable(contextThread,
-				SJME_AS_JTHROWABLE(accessor->l.p));
+				SJME_AS_JTHROWABLE(cause));
 		}
 	}
 
@@ -1057,7 +1069,14 @@ sjme_errorCode sjme_nvm_task_taskNew(
 		goto fail_initIdHash;
 
 	/* Use the default field accessor for this task by default. */
-	result->globals.accessor = sjme_nvm_instance_fieldAccessor;
+	result->globals.accessor[SJME_NVM_FIELD_ACCESS_NORMAL_STATIC] = 
+		sjme_nvm_instance_fieldAccessorNS;
+	result->globals.accessor[SJME_NVM_FIELD_ACCESS_VOLATILE_STATIC] = 
+		sjme_nvm_instance_fieldAccessorVS;
+	result->globals.accessor[SJME_NVM_FIELD_ACCESS_NORMAL_INSTANCE] = 
+		sjme_nvm_instance_fieldAccessorNI;
+	result->globals.accessor[SJME_NVM_FIELD_ACCESS_VOLATILE_INSTANCE] = 
+		sjme_nvm_instance_fieldAccessorVI;
 
 	/* Do not perform optimizations? */
 	result->globals.noOptimize = initConfigCopy->noOptimize;

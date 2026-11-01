@@ -633,7 +633,7 @@ typedef struct sjme_nvm_task_globals
 	sjme_atomic(sjme_jobject) singletons[SJME_NVM_TASK_NUM_SINGLETONS];
 
 	/** The default accessor for fields. */
-	sjme_nvm_jfieldAccessFunc accessor;
+	sjme_nvm_jfieldAccessFunc accessor[SJME_NVM_NUM_FIELD_ACCESS_TYPE];
 
 	/** Cached @link sjme_jbracketJarPackage @endlink for libraries. */
 	sjme_list(sjme_jbracketJarPackage)* jarBrackets;

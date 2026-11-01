@@ -453,16 +453,60 @@ sjme_errorCode sjme_nvm_instance_defaultInit(
 	sjme_attrInNullable sjme_jvalueTyped* argV);
 	
 /**
- * The default accessor for fields.
+ * The default accessor for normal instance fields.
  * 
  * @param instance The instance to access.
  * @param field The field to access.
+ * @param volatileStore Volatile storage, used for scratch space.
  * @return The pointer to the field data directly.
- * @since 2025/06/21
+ * @since 2026/10/31
  */
-sjme_nvm_value* sjme_nvm_instance_fieldAccessor(
+sjme_nvm_value* sjme_nvm_instance_fieldAccessorNI(
 	sjme_attrInNotNull sjme_jobject instance,
-	sjme_attrInNotNull sjme_jfieldID field);
+	sjme_attrInNotNull sjme_jfieldID field,
+	sjme_attrInOutNotNull sjme_nvm_valueVolatile* volatileStore);
+	
+/**
+ * The default accessor for normal static fields.
+ * 
+ * @param instance The instance to access.
+ * @param field The field to access.
+ * @param volatileStore Volatile storage, used for scratch space.
+ * @return The pointer to the field data directly.
+ * @since 2026/10/31
+ */
+sjme_nvm_value* sjme_nvm_instance_fieldAccessorNS(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field,
+	sjme_attrInOutNotNull sjme_nvm_valueVolatile* volatileStore);
+	
+/**
+ * The default accessor for volatile instance fields.
+ * 
+ * @param instance The instance to access.
+ * @param field The field to access.
+ * @param volatileStore Volatile storage, used for scratch space.
+ * @return The pointer to the field data directly.
+ * @since 2026/10/31
+ */
+sjme_nvm_value* sjme_nvm_instance_fieldAccessorVI(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field,
+	sjme_attrInOutNotNull sjme_nvm_valueVolatile* volatileStore);
+	
+/**
+ * The default accessor for volatile static fields.
+ * 
+ * @param instance The instance to access.
+ * @param field The field to access.
+ * @param volatileStore Volatile storage, used for scratch space.
+ * @return The pointer to the field data directly.
+ * @since 2026/10/31
+ */
+sjme_nvm_value* sjme_nvm_instance_fieldAccessorVS(
+	sjme_attrInNotNull sjme_jobject instance,
+	sjme_attrInNotNull sjme_jfieldID field,
+	sjme_attrInOutNotNull sjme_nvm_valueVolatile* volatileStore);
 
 /**
  * Initializes the field chunk.

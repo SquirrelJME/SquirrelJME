@@ -655,7 +655,7 @@ static sjme_errorCode sjme_nvm_vmClass_checkLoadArray(
 	/* Determine component type class name. */
 	memset(componentTypeName, 0, sizeof(componentTypeName));
 	snprintf(componentTypeName, SJME_NVM_CLASS_NAME_LIMIT - 1,
-		"%s", (sjme_lpcstr)SJME_POINTER_OFFSET(
+		"%s", (sjme_lpcstr)sjme_po(
 			sjme_charSeq_tempUtf(inClass->fieldName), sizeof(sjme_cchar)));
 
 	/* Locate component type of the array. */

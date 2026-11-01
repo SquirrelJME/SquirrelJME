@@ -172,7 +172,7 @@ sjme_errorCode sjme_stream_inputReadFully(
 		/* Read as big as a chunk as possible. */
 		subRead = -2;
 		if (sjme_error_is(error = sjme_stream_inputRead(stream,
-			&subRead, SJME_POINTER_OFFSET(dest, at),
+			&subRead, sjme_po(dest, at),
 			left)) || subRead < -1)
 			return sjme_error_default(error);
 		

@@ -9,6 +9,7 @@
 
 #include "sjme/nvm/cleanup.h"
 #include "sjme/config.h"
+#include "sjme/nvm/instanceInspect.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 
@@ -46,28 +47,13 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
 				&array->object.isClass)->componentType), length)) ||
 				clone == NULL)
 		goto fail_alloc;
-
-	/* If this is an object array, copy over all values one by one. */
-	if (array->e.type == SJME_JAVA_TYPE_ID_OBJECT)
-		for (i = 0; i < length; i++)
-		{
-			/* Read the reference. */
-			copyRef = NULL;
-			if (sjme_error_is(error = sjme_nvm_vmField_cisGetS(
-				&clone->e, i, SJME_VLG_JOBJECT_P(&copyRef))))
-				goto fail_readRef;
-			
-			/* Set the reference. */
-			if (sjme_error_is(error = sjme_nvm_vmField_cisSetS(
-				&clone->e, i, NULL, SJME_VLS_JOBJECT(copyRef))))
-				goto fail_writeRef;
-		}
 	
-	/* Copy all values over. */
-	else
-		memmove(&clone->e, &array->e,
-			sjme_nvm_typeMul[array->e.type] * length);
-
+	/* Copy the array values. */
+	if (sjme_error_is(error = sjme_nvm_instance_arrayCopyJ(
+		array, 0,
+		clone, 0, length, NULL)))
+		goto fail_copy;
+	
 	/* Release lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&array->object.common.lock, NULL)))
@@ -78,8 +64,7 @@ SJME_NVM_MLE_FUNCTION_DECL(arrayClone)
 	argR->v.l = SJME_AS_JOBJECT(clone);
 	return SJME_ERROR_NONE;
 
-fail_writeRef:
-fail_readRef:
+fail_copy:
 fail_alloc:
 	sjme_thread_spinLockRelease(&array->object.common.lock, NULL);
 	return sjme_error_vmError(inFrame, error);
@@ -116,8 +101,8 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(arrayCopy, generic)
 
 	/* This is just a memmove, based on the actual type size. */
 	mul = sjme_nvm_typeMul[src->e.type];
-	memmove(SJME_POINTER_OFFSET(&dst->e, dstOff * mul),
-		SJME_POINTER_OFFSET(&src->e, srcOff * mul),
+	memmove(sjme_po(&dst->e, dstOff * mul),
+		sjme_po(&src->e, srcOff * mul),
 		mul * len);
 
 	/* Success! */
@@ -158,12 +143,12 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(arrayFill, generic)
 	/* is smaller. */
 	dup = MAX_BYTES / mul;
 	for (i = 1, at = &raw[mul]; i < dup;
-		i++, at = SJME_POINTER_OFFSET(at, mul))
+		i++, at = sjme_po(at, mul))
 		memmove(at, &raw[0], mul);
 
 	/* Write the buffer into the target. */
-	for (at = SJME_POINTER_OFFSET(&into->e, off * mul);
-		len > 0; len -= dup, at = SJME_POINTER_OFFSET(at, MAX_BYTES))
+	for (at = sjme_po(&into->e, off * mul);
+		len > 0; len -= dup, at = sjme_po(at, MAX_BYTES))
 		memmove(at, &raw[0],
 			(len * mul < MAX_BYTES ? len * mul : MAX_BYTES));
 

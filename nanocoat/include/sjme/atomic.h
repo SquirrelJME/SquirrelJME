@@ -49,6 +49,11 @@ extern "C" {
 
 #define sjme_atomic_type sjme_jint
 #include "sjme/atomicTemplate.h" /* NOLINT */
+	
+#if !defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+#define sjme_atomic_type sjme_jlongNative
+#include "sjme/atomicTemplate.h" /* NOLINT */
+#endif
 
 #define sjme_atomic_type sjme_juint
 #include "sjme/atomicTemplate.h" /* NOLINT */

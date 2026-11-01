@@ -752,7 +752,7 @@ static sjme_errorCode sjme_nvm_cleanup_postObject(
 			continue;
 		
 		/* Recover the raw field structure. */
-		valueSet = SJME_POINTER_OFFSET(object,
+		valueSet = sjme_po(object,
 			fields->offset[SJME_JAVA_TYPE_ID_OBJECT]);
 		
 		/* Sanity check. */

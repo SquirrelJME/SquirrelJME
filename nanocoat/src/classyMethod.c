@@ -107,7 +107,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCodeOpLenVerify(
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Calculate the end code address. */
-	endCode = SJME_POINTER_OFFSET(rawCode, codeLen);
+	endCode = sjme_po(rawCode, codeLen);
 
 	/* Setup fake frame for length calculation. */
 	memset(&fakeFrame, 0, sizeof(fakeFrame));
@@ -141,7 +141,7 @@ static sjme_errorCode sjme_nvm_class_methodAttrCodeOpLenVerify(
 		}
 
 		/* Would exceed code bounds? */
-		ev = SJME_POINTER_OFFSET(ev, pcNew.adjust);
+		ev = sjme_po(ev, pcNew.adjust);
 		if (ev > endCode || ev <= oldEv)
 			return SJME_ERROR_CLASS_VERIFY_BAD_INSTRUCTION_LENGTH;
 

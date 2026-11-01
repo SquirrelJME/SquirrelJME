@@ -46,7 +46,7 @@ static sjme_errorCode sjme_traverse_next(
 	memset(result, 0, traverse->structSize);
 	
 	/* Then shift forward to the next node. */
-	traverse->next = SJME_POINTER_OFFSET(result, traverse->structSize);
+	traverse->next = sjme_po(result, traverse->structSize);
 	
 	/* Count up. */
 	traverse->usedElements += 1;
@@ -352,7 +352,7 @@ sjme_errorCode sjme_traverse_newR(
 	result->maxElements = maxElements;
 	result->usedElements = 0;
 	result->start = (sjme_traverse_node*)&result->storage[0];
-	result->end = (sjme_traverse_node*)SJME_POINTER_OFFSET(result->start,
+	result->end = (sjme_traverse_node*)sjme_po(result->start,
 		storageSize - structSize);
 	result->next = result->start;
 	

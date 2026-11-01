@@ -61,6 +61,20 @@ typedef union sjme_nvm_value
 	/** Object reference values. */
 	sjme_nvm_valueObject l;
 } sjme_nvm_value;
+	
+/**
+ * Volatile value storage.
+ * 
+ * @since 2026/10/31
+ */
+typedef struct sjme_nvm_valueVolatile
+{
+	/** Should this value be committed? */
+	sjme_jboolean commit;
+	
+	/** The actual value. */
+	sjme_nvm_value value;
+} sjme_nvm_valueVolatile;
 
 /**
  * Raw set of values.
@@ -107,15 +121,43 @@ struct sjme_nvm_valueSet
 };
 	
 /**
+ * The number of access types for a field.
+ * 
+ * @since 2026/10/31
+ */
+typedef enum sjme_nvm_jfieldAccessType
+{
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nvm_jfieldAccessType),
+	
+	/** Static non-volatile. */
+	SJME_NVM_FIELD_ACCESS_NORMAL_STATIC,
+	
+	/** Static volatile. */
+	SJME_NVM_FIELD_ACCESS_VOLATILE_STATIC,
+	
+	/** Instance non-volatile. */
+	SJME_NVM_FIELD_ACCESS_NORMAL_INSTANCE,
+	
+	/** Instance volatile. */
+	SJME_NVM_FIELD_ACCESS_VOLATILE_INSTANCE,
+	
+	/** The number of access types. */
+	SJME_NVM_NUM_FIELD_ACCESS_TYPE,
+} sjme_nvm_jfieldAccessType;
+	
+/**
  * Returns the direct pointer to the field data pointer.
  *
  * @param instance The object to access with.
  * @param field The field to access for.
+ * @param volatileStore Volatile storage, used for scratch space.
  * @since 2025/06/21
  */
 typedef sjme_nvm_value* (*sjme_nvm_jfieldAccessFunc)(
 	sjme_attrInNotNull sjme_jobject instance,
-	sjme_attrInNotNull sjme_jfieldID field);
+	sjme_attrInNotNull sjme_jfieldID field,
+	sjme_attrInOutNotNull sjme_nvm_valueVolatile* volatileStore);
 
 struct sjme_jfieldIDBase
 {

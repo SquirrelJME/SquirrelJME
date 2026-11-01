@@ -19,7 +19,7 @@
 /** Calculates the base and length. */
 #define sjme_charSeq_calcBaseLen(raw) \
 	do { /* Calculate actual base. */ \
-	base = SJME_POINTER_OFFSET((raw), offset * sizeof(*(raw))); \
+	base = sjme_po((raw), offset * sizeof(*(raw))); \
 	 \
 	/* Determine actual length. */ \
 	if (limitLen >= 0) \
@@ -723,7 +723,7 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 
 	/* Calculate the actual base. */
-	base = SJME_POINTER_OFFSET(utfString, offset);
+	base = sjme_po(utfString, offset);
 
 	/* Calculate details. */
 	if (limitLen < 0)

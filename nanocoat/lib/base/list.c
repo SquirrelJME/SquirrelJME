@@ -401,7 +401,7 @@ skip_grow:
 
 	/* Store here. */
 skip_store:
-	memmove(SJME_POINTER_OFFSET((*inOutList),
+	memmove(sjme_po((*inOutList),
 		elementOffset + (elementSize * freeSlot)),
 		injectValuePtr, elementSize);
 	
@@ -604,9 +604,9 @@ sjme_errorCode sjme_list_search(
 	list = (sjme_list_void*)inList;
 
 	/* Go through the entire list. */
-	base = SJME_POINTER_OFFSET(list, list->elementOffset);
+	base = sjme_po(list, list->elementOffset);
 	for (i = 0, n = list->length; i < n;
-		i++, base = SJME_POINTER_OFFSET(base, list->elementSize))
+		i++, base = sjme_po(base, list->elementSize))
 		if (0 == comparator(base, findWhat, list->elementSize))
 		{
 			*outIndex = i;

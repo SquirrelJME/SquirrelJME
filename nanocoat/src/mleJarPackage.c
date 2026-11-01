@@ -9,6 +9,7 @@
 
 #include "sjme/config.h"
 #include "sjme/nvm/cleanup.h"
+#include "sjme/nvm/instanceInspect.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleShelves.h"
 

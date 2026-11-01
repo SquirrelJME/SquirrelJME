@@ -391,12 +391,12 @@ static sjme_errorCode sjme_circleBuffer_operate(
 		/* External to internal. */
 		if (src->externalBuf != NULL && dest->externalBuf == NULL)
 			memmove(&buffer->buffer[dest->base],
-				SJME_POINTER_OFFSET(src->externalBuf, src->base),
+				sjme_po(src->externalBuf, src->base),
 				src->len);
 		
 		/* Internal to external. */
 		else if (src->externalBuf == NULL && dest->externalBuf != NULL)
-			memmove(SJME_POINTER_OFFSET(dest->externalBuf, dest->base),
+			memmove(sjme_po(dest->externalBuf, dest->base),
 				&buffer->buffer[src->base],
 				src->len);
 		

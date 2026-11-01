@@ -72,7 +72,7 @@ static sjme_errorCode sjme_seekable_memoryRead(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Direct memory copy. */
-	memmove(outBuf, SJME_POINTER_OFFSET(inImplState->handle, base),
+	memmove(outBuf, sjme_po(inImplState->handle, base),
 		length);
 	
 	/* Success! */

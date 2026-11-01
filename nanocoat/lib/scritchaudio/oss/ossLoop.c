@@ -72,7 +72,7 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	for (i = 0, n = renderInfo->bufSize; i < n;)
 	{
 		/* Send as much as possible to the sound card. */
-		wc = write(fd, SJME_POINTER_OFFSET(play->buffer, i),
+		wc = write(fd, sjme_po(play->buffer, i),
 			renderInfo->bufSize - i);
 		if (wc < 0)
 			break;
@@ -95,7 +95,7 @@ sjme_errorCode sjme_scritchaudio_oss_loopIterate(
 	while (i < n)
 	{
 		/* Send as much as possible to the sound card. */
-		wc = write(fd, SJME_POINTER_OFFSET(play->buffer, i),
+		wc = write(fd, sjme_po(play->buffer, i),
 			renderInfo->bufSize - i);
 		if (wc < 0)
 			break;

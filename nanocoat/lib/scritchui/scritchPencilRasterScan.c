@@ -89,7 +89,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanFillInt(
 		limit = outRawLen;
 	
 	/* Fill in. */
-	p = SJME_POINTER_OFFSET(outRaw, outRawOff);
+	p = sjme_po(outRaw, outRawOff);
 	for (i = 0; i < limit; i += 4)
 		*(p++) = rawPixel;
 	
@@ -125,7 +125,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanFillShort(
 		limit = outRawLen;
 	
 	/* Fill in. */
-	p = SJME_POINTER_OFFSET(outRaw, outRawOff);
+	p = sjme_po(outRaw, outRawOff);
 	for (i = 0; i < limit; i += 2)
 		*(p++) = rawPixel;
 	
@@ -161,7 +161,7 @@ sjme_errorCode sjme_scritchpen_corePrim_rawScanFillByte(
 		limit = outRawLen;
 	
 	/* Fill in. */
-	p = SJME_POINTER_OFFSET(outRaw, outRawOff);
+	p = sjme_po(outRaw, outRawOff);
 	for (i = 0; i < limit; i += 1)
 		*(p++) = rawPixel;
 	
@@ -691,8 +691,8 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 	if (destPf == srcPf)
 	{
 		/* Direct move over. */
-		memmove(SJME_POINTER_OFFSET(dest, destRawOff),
-			SJME_POINTER_OFFSET(src, srcRawOff),
+		memmove(sjme_po(dest, destRawOff),
+			sjme_po(src, srcRawOff),
 			limitBytes);
 		
 		/* Success! */
@@ -734,8 +734,8 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 	sm = sjme_util_intOverShift(1, spp) - 1;
 
 	/* Setup base of scan, from the offset accordingly. */
-	dx = SJME_POINTER_OFFSET(dest, destRawOff);
-	sx = SJME_POINTER_OFFSET(src, srcRawOff);
+	dx = sjme_po(dest, destRawOff);
+	sx = sjme_po(src, srcRawOff);
 	
 	/* Run through the scan, counting up bits accordingly. */
 	memset(&vv, 0, sizeof(vv));
@@ -748,7 +748,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_pfScanToPf(
 #define SJME_PF_CONSUME(zx, zl, bits, bytes) \
 		if (zl >= bits) \
 		{ \
-			zx = SJME_POINTER_OFFSET(zx, bytes); \
+			zx = sjme_po(zx, bytes); \
 			zl -= bits; \
 		}
 
