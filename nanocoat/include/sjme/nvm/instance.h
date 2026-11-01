@@ -554,16 +554,17 @@ sjme_errorCode sjme_nvm_instance_initFieldsChunk(
  * @param isPut If a put operation, @c fieldId is set to @c stackType ,
  * otherwise @c stackType is written with the field value.
  * @return Any resultant error, if any.
- * @throws SJME_ERROR_FIELD_NOT_DIRECT ...?
- * @throws SJME_ERROR_INVALID_FIELD_TYPE ...?
- * @throws SJME_ERROR_NULL_ARGUMENTS ...?
- * @throws SJME_ERROR_NULL_STACK_POINTER ...?
- * @throws SJME_ERROR_OBJECT_MISMATCHED ...?
+ * @throws SJME_ERROR_FIELD_NOT_DIRECT If the field is not directly accessible.
+ * @throws SJME_ERROR_INVALID_FIELD_TYPE If the field type is not valid.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @throws SJME_ERROR_NULL_STACK_POINTER If the instance is null.
+ * @throws SJME_ERROR_OBJECT_MISMATCHED If memory corruption occurred or the
+ * object has been garbage collected.
  * @since 2025/06/26
  */
 sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jfieldID fieldId,
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jvalueTyped* stackType,

@@ -295,7 +295,7 @@ fail_voidless:
 
 sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
-	sjme_attrInNotNull sjme_nvm_frame_gcCommit* commit,
+	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jfieldID fieldId,
 	sjme_attrInNotNull sjme_jobject instance,
 	sjme_attrInNotNull sjme_jvalueTyped* stackType,
@@ -306,7 +306,7 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	sjme_nvm_valueVolatile volatileStore;
 	sjme_nvm_jfieldAccessFunc accessor;
 
-	if (contextThread == NULL || commit == NULL || fieldId == NULL ||
+	if (contextThread == NULL || fieldId == NULL ||
 		stackType == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 

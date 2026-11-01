@@ -185,8 +185,18 @@ sjme_errorCode sjme_nvm_instance_arrayGetO(
 	sjme_attrInPositive sjme_jint index,
 	sjme_attrOutNotNull sjme_jobject* outValue)
 {
-	sjme_todo("Impl");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jvalueTyped value;
+
+	/* Grab from the other call. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_nvm_instance_arrayGet(
+		inArray, SJME_JAVA_TYPE_ID_OBJECT, index, &value)))
+		return sjme_error_default(error);
+	
+	/* Copy over. */
+	*outValue = value.v.l;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_instance_arrayGetString(
@@ -269,53 +279,98 @@ sjme_errorCode sjme_nvm_instance_arraySet(
 sjme_errorCode sjme_nvm_instance_arraySetO(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jarray inArray,
-	sjme_attrInValue sjme_basicTypeId requireType,
 	sjme_attrInPositive sjme_jint index,
 	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrOutNotNull sjme_jobject inValue)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	sjme_errorCode error;
+	sjme_jvalueTyped value;
+	
+	/* Set value. */
+	memset(&value, 0, sizeof(value));
+	value.t = SJME_JAVA_TYPE_ID_OBJECT;
+	value.v.l = inValue;
+	
+	/* Forward call. */
+	return sjme_nvm_instance_arraySet(contextThread,
+		inArray, SJME_JAVA_TYPE_ID_OBJECT, index,
+		commit, &value);
 }
 
 sjme_errorCode sjme_nvm_instance_fieldGet(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject inObject,
 	sjme_attrInNotNull sjme_jfieldID inField,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue)
 {
-	if (inField == NULL || outValue == NULL)
+	sjme_errorCode error;
+	sjme_jvalueTyped value;
+	
+	if (contextThread == NULL || inField == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inObject == NULL)
 		return SJME_ERROR_NULL_STACK_POINTER;
+
+	/* Read/write promotion is performed through this call. */
+	/* Note that the class referred to by the field is used directly as */
+	/* static fields can be "inherited" by subclasses. So we want to use */
+	/* the class this field truly exists in. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_nvm_instance_fieldAccessStack(
+		contextThread, NULL, inField, inObject, &value,
+		SJME_JNI_FALSE)))
+		return sjme_error_vmError(contextThread, error);
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	/* Copy over. */
+	memmove(outValue, &value, sizeof(*outValue));
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_instance_fieldGetO(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject inObject,
 	sjme_attrInNotNull sjme_jfieldID inField,
 	sjme_attrInValue sjme_nvm_structType inStructType,
 	sjme_attrOutNotNull sjme_pointer* outValue)
 {
-	if (inField == NULL || outValue == NULL)
+	sjme_errorCode error;
+	sjme_jvalueTyped value;
+	
+	if (contextThread == NULL || inField == NULL || outValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inObject == NULL)
 		return SJME_ERROR_NULL_STACK_POINTER;
 	
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	if (inStructType != SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE &&
+		!sjme_nvm_isObjectId(inStructType))
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	/* Read in the value. */
+	memset(&value, 0, sizeof(value));
+	if (sjme_error_is(error = sjme_nvm_instance_fieldGet(contextThread,
+		inObject, inField, &value)))
+		return sjme_error_default(error);
+	
+	/* If not null, check the type. */
+	if (value.v.l != NULL)
+		if (!sjme_nvm_isAR(value.v.l, inStructType))
+			return SJME_ERROR_CLASS_CAST;
+			
+	/* Copy value over. */
+	*outValue = value.v.l;
+	return SJME_ERROR_NONE;
 }
 
 sjme_errorCode sjme_nvm_instance_fieldSet(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject inObject,
 	sjme_attrInNotNull sjme_jfieldID inField,
 	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jvalueTyped* inValue)
 {
-	if (inField == NULL || inValue == NULL)
+	if (contextThread == NULL || inField == NULL || inValue == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inObject == NULL)
@@ -351,11 +406,12 @@ sjme_errorCode sjme_nvm_instance_fieldSet(
 }
 
 sjme_errorCode sjme_nvm_instance_fieldSetI(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject inObject,
 	sjme_attrInNotNull sjme_jfieldID inField,
 	sjme_attrInNotNull sjme_jint inValue)
 {
-	if (inField == NULL)
+	if (contextThread == NULL || inField == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inObject == NULL)
@@ -366,12 +422,13 @@ sjme_errorCode sjme_nvm_instance_fieldSetI(
 }
 
 sjme_errorCode sjme_nvm_instance_fieldSetO(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject inObject,
 	sjme_attrInNotNull sjme_jfieldID inField,
 	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrInNotNull sjme_jobject inValue)
 {
-	if (inField == NULL)
+	if (contextThread == NULL || inField == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	if (inObject == NULL)

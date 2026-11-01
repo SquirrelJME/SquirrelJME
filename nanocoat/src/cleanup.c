@@ -1313,30 +1313,6 @@ static sjme_errorCode sjme_nvm_cleanup_postVmClassLoader(
 	return SJME_ERROR_NONE;
 }
 
-static sjme_jboolean sjme_nvm_cleanup_typeIsObject(
-	sjme_attrInValue sjme_nvm_structType inType)
-{
-	switch (inType)
-	{
-			/* Yes. */
-		case SJME_NVM_STRUCT_ARRAY_INSTANCE:
-		case SJME_NVM_STRUCT_BRACKET_JAR_PACKAGE_INSTANCE:
-		case SJME_NVM_STRUCT_BRACKET_PIPE_INSTANCE:
-		case SJME_NVM_STRUCT_BRACKET_SCRITCH_UI:
-		case SJME_NVM_STRUCT_BRACKET_TRACE_INSTANCE:
-		case SJME_NVM_STRUCT_THREAD_INSTANCE:
-		case SJME_NVM_STRUCT_CLASS_INSTANCE:
-		case SJME_NVM_STRUCT_OBJECT_INSTANCE:
-		case SJME_NVM_STRUCT_STRING_INSTANCE:
-		case SJME_NVM_STRUCT_WEAK_INSTANCE:
-			return SJME_JNI_TRUE;
-
-			/* No. */
-		default:
-			return SJME_JNI_FALSE;
-	}
-}
-
 sjme_errorCode sjme_nvm_allocR(
 	sjme_attrInNotNull sjme_pointer inStateOrAllocPool,
 	sjme_attrInPositiveNonZero sjme_jint allocSize,
@@ -1445,7 +1421,7 @@ sjme_errorCode sjme_nvm_allocR(
 		
 			/* Use object cleanup or nothing at all? */
 		default:
-			if (sjme_nvm_cleanup_typeIsObject(inType))
+			if (sjme_nvm_isObjectId(inType))
 				postClose = sjme_nvm_cleanup_postObject;
 			break;
 	}
@@ -1517,7 +1493,7 @@ sjme_errorCode sjme_nvm_isA(
 		*outResult = SJME_JNI_FALSE;
 	else if (common->type == inType ||
 		(inType == SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE &&
-			sjme_nvm_cleanup_typeIsObject(common->type)))
+			sjme_nvm_isObjectId(common->type)))
 		*outResult = SJME_JNI_TRUE;
 	else
 		*outResult = SJME_JNI_FALSE;
@@ -1538,6 +1514,31 @@ sjme_jboolean sjme_nvm_isAR(
 
 	/* Was this the type? */
 	return result;
+}
+
+sjme_jboolean sjme_nvm_isObjectId(
+	sjme_attrInValue sjme_nvm_structType inType)
+{
+	/* Brackets. */
+	if (inType > SJME_NVM_STRUCT_BRACKET_START &&
+		inType < SJME_NVM_STRUCT_BRACKET_END)
+		return SJME_JNI_TRUE;
+	
+	switch (inType)
+	{
+			/* Yes. */
+		case SJME_NVM_STRUCT_ARRAY_INSTANCE:
+		case SJME_NVM_STRUCT_CLASS_INSTANCE:
+		case SJME_NVM_STRUCT_OBJECT_INSTANCE:
+		case SJME_NVM_STRUCT_STRING_INSTANCE:
+		case SJME_NVM_STRUCT_THREAD_INSTANCE:
+		case SJME_NVM_STRUCT_WEAK_INSTANCE:
+			return SJME_JNI_TRUE;
+
+			/* No. */
+		default:
+			return SJME_JNI_FALSE;
+	}
 }
 
 sjme_nvm_structType sjme_nvm_typeOf(

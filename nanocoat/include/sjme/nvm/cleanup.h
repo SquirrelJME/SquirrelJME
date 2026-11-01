@@ -92,6 +92,16 @@ sjme_jboolean sjme_nvm_isAR(
 	sjme_attrInRange(0, SJME_NVM_NUM_STRUCT) sjme_nvm_structType inType);
 
 /**
+ * Is this an object identifier type.
+ * 
+ * @param inType The structure type.
+ * @return If this is an object identifier type.
+ * @since 2026/11/01
+ */
+sjme_jboolean sjme_nvm_isObjectId(
+	sjme_attrInValue sjme_nvm_structType inType);
+	
+/**
  * Returns the type of the given pointer.
  * 
  * @param inWhat What to get the type of.

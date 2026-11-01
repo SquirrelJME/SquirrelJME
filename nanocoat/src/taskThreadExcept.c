@@ -276,12 +276,14 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 		
 		/* Flag cause as initialized. */
 		if (sjme_error_is(error = sjme_nvm_instance_fieldSetI(
+			inThread,
 			SJME_AS_JOBJECT(toss), initCauseID, 
 			SJME_JNI_TRUE)))
 			return sjme_error_default(error);
 		
 		/* Set actual cause now, and its check value directly. */
 		if (sjme_error_is(error = sjme_nvm_instance_fieldSetO(
+			inThread,
 			SJME_AS_JOBJECT(toss), causeID, NULL,
 			SJME_AS_JOBJECT(cause))))
 			return sjme_error_default(error);

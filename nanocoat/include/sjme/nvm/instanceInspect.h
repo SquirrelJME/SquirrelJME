@@ -242,7 +242,6 @@ sjme_errorCode sjme_nvm_instance_arraySet(
 sjme_errorCode sjme_nvm_instance_arraySetO(
 	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jarray inArray,
-	sjme_attrInValue sjme_basicTypeId requireType,
 	sjme_attrInPositive sjme_jint index,
 	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
 	sjme_attrOutNotNull sjme_jobject inValue);
@@ -250,6 +249,7 @@ sjme_errorCode sjme_nvm_instance_arraySetO(
 /**
  * Gets the value of a given field in an object.
  * 
+ * @param contextThread The thread this is operating under.
  * @param inObject The object to get the value of.
  * @param inField The field to get.
  * @param outValue The resultant value.
@@ -259,6 +259,7 @@ sjme_errorCode sjme_nvm_instance_arraySetO(
  * @since 2026/10/31
  */
 sjme_errorCode sjme_nvm_instance_fieldGet(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject inObject,
 	sjme_attrInNotNull sjme_jfieldID inField,
 	sjme_attrOutNotNull sjme_jvalueTyped* outValue);
@@ -266,16 +267,22 @@ sjme_errorCode sjme_nvm_instance_fieldGet(
 /**
  * Gets the value of a given field in an object.
  * 
+ * @param contextThread The thread this is operating under.
  * @param inObject The object to get the value of.
  * @param inField The field to get.
  * @param inStructType The input structure type, which must be matched.
  * @param outValue The resultant value.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_CLASS_CAST If the object value does not match the
+ * given structure type.
+ * @throws SJME_ERROR_INVALID_ARGUMENT If the structure type does not refer
+ * to an object type.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
  * @throws SJME_ERROR_NULL_STACK_POINTER If the input object is null.
  * @since 2026/10/31
  */
 sjme_errorCode sjme_nvm_instance_fieldGetO(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject inObject,
 	sjme_attrInNotNull sjme_jfieldID inField,
 	sjme_attrInValue sjme_nvm_structType inStructType,
@@ -284,6 +291,7 @@ sjme_errorCode sjme_nvm_instance_fieldGetO(
 /**
  * Sets the field in the object to the given value.
  * 
+ * @param contextThread The thread this is operating under.
  * @param inObject The object to set the value of.
  * @param inField The field to set.
  * @param commit The GC commit, this is optional.
@@ -294,6 +302,7 @@ sjme_errorCode sjme_nvm_instance_fieldGetO(
  * @since 2026/10/31
  */
 sjme_errorCode sjme_nvm_instance_fieldSet(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject inObject,
 	sjme_attrInNotNull sjme_jfieldID inField,
 	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,
@@ -302,6 +311,7 @@ sjme_errorCode sjme_nvm_instance_fieldSet(
 /**
  * Sets the field in the object to the given value.
  * 
+ * @param contextThread The thread this is operating under.
  * @param inObject The object to set the value of.
  * @param inField The field to set.
  * @param inValue The value to set.
@@ -311,6 +321,7 @@ sjme_errorCode sjme_nvm_instance_fieldSet(
  * @since 2026/10/31
  */
 sjme_errorCode sjme_nvm_instance_fieldSetI(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject inObject,
 	sjme_attrInNotNull sjme_jfieldID inField,
 	sjme_attrInNotNull sjme_jint inValue);
@@ -318,6 +329,7 @@ sjme_errorCode sjme_nvm_instance_fieldSetI(
 /**
  * Sets the field in the object to the given value.
  * 
+ * @param contextThread The thread this is operating under.
  * @param inObject The object to set the value of.
  * @param inField The field to set.
  * @param commit The GC commit, this is optional.
@@ -328,6 +340,7 @@ sjme_errorCode sjme_nvm_instance_fieldSetI(
  * @since 2026/10/31
  */
 sjme_errorCode sjme_nvm_instance_fieldSetO(
+	sjme_attrInNotNull sjme_nvm_thread contextThread,
 	sjme_attrInNotNull sjme_jobject inObject,
 	sjme_attrInNotNull sjme_jfieldID inField,
 	sjme_attrInNullable sjme_nvm_frame_gcCommit* commit,

@@ -575,6 +575,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 		/* Read the message. */
 		message = NULL;
 		if (sjme_error_is(error = sjme_nvm_instance_fieldGetO(
+			contextThread,
 			SJME_AS_JOBJECT(inThrowable), messageId,
 			SJME_NVM_STRUCT_STRING_INSTANCE,
 			(sjme_pointer*)&message)))
@@ -651,6 +652,7 @@ sjme_errorCode sjme_nvm_task_stackTraceThrowable(
 		/* Read the message. */
 		cause = NULL;
 		if (sjme_error_is(error = sjme_nvm_instance_fieldGetO(
+			contextThread,
 			SJME_AS_JOBJECT(inThrowable), causeId,
 			SJME_NVM_STRUCT_ANY_OBJECT_INSTANCE,
 			(sjme_pointer*)&cause)))
