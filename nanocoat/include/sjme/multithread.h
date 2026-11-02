@@ -280,7 +280,7 @@ sjme_errorCode sjme_thread_new(
  * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/22
  */
-sjme_errorCode sjme_thread_rwLockGrabRead(
+sjme_errorCode sjme_keepOrder sjme_thread_rwLockGrabRead(
 	sjme_attrInNotNull sjme_thread_rwLock* inLock);
 
 /**
@@ -292,7 +292,7 @@ sjme_errorCode sjme_thread_rwLockGrabRead(
  * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/22
  */
-sjme_errorCode sjme_thread_rwLockGrabWrite(
+sjme_errorCode sjme_keepOrder sjme_thread_rwLockGrabWrite(
 	sjme_attrInNotNull sjme_thread_rwLock* inLock);
 
 /**
@@ -305,7 +305,7 @@ sjme_errorCode sjme_thread_rwLockGrabWrite(
  * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/22
  */
-sjme_errorCode sjme_thread_rwLockReleaseRead(
+sjme_errorCode sjme_keepOrder sjme_thread_rwLockReleaseRead(
 	sjme_attrInNotNull sjme_thread_rwLock* inLock,
 	sjme_attrOutNullable sjme_jint* outCount);
 
@@ -319,7 +319,7 @@ sjme_errorCode sjme_thread_rwLockReleaseRead(
  * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2024/10/22
  */
-sjme_errorCode sjme_thread_rwLockReleaseWrite(
+sjme_errorCode sjme_keepOrder sjme_thread_rwLockReleaseWrite(
 	sjme_attrInNotNull sjme_thread_rwLock* inLock,
 	sjme_attrOutNullable sjme_jint* outCount);
 
@@ -330,7 +330,8 @@ sjme_errorCode sjme_thread_rwLockReleaseWrite(
  * @return Any resultant error, if any.
  * @since 2024/07/19
  */
-sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock);
+sjme_errorCode sjme_keepOrder sjme_thread_spinLockGrab(
+	sjme_thread_spinLock* inLock);
 
 /**
  * Releases a spin lock.
@@ -340,7 +341,7 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock);
  * @return Any resultant error, if any.
  * @since 2024/07/19
  */
-sjme_errorCode sjme_thread_spinLockRelease(
+sjme_errorCode sjme_keepOrder sjme_thread_spinLockRelease(
 	sjme_attrInNotNull sjme_thread_spinLock* inLock,
 	sjme_attrOutNullable sjme_jint* outCount);
 

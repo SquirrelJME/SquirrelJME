@@ -30,7 +30,7 @@ sjme_thread sjme_thread_currentR(void)
 	return result;
 }
 
-sjme_errorCode sjme_thread_rwLockGrabRead(
+sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_rwLockGrabRead(
 	sjme_attrInNotNull sjme_thread_rwLock* inLock)
 {
 	sjme_errorCode error;
@@ -77,12 +77,15 @@ sjme_errorCode sjme_thread_rwLockGrabRead(
 		/* Otherwise stop. */
 		break;
 	}
+		
+	/* Do this just for good measure for the wierd CPUs. */
+	sjme_atomic_barrier();
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_thread_rwLockGrabWrite(
+sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_rwLockGrabWrite(
 	sjme_attrInNotNull sjme_thread_rwLock* inLock)
 {
 	sjme_errorCode error;
@@ -112,12 +115,15 @@ sjme_errorCode sjme_thread_rwLockGrabWrite(
 			&inLock->write)))
 			return sjme_error_default(error);
 	}
+		
+	/* Do this just for good measure for the wierd CPUs. */
+	sjme_atomic_barrier();
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_thread_rwLockReleaseRead(
+sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_rwLockReleaseRead(
 	sjme_attrInNotNull sjme_thread_rwLock* inLock,
 	sjme_attrOutNullable sjme_jint* outCount)
 {
@@ -131,6 +137,9 @@ sjme_errorCode sjme_thread_rwLockReleaseRead(
 	readLock = inLock->read;
 	if (readLock == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
+		
+	/* Do this just for good measure for the wierd CPUs. */
+	sjme_atomic_barrier();
 	
 	/* This is a no-op because we only access the read lock by locking and */
 	/* checking the write lock. */
@@ -139,7 +148,7 @@ sjme_errorCode sjme_thread_rwLockReleaseRead(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_thread_rwLockReleaseWrite(
+sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_rwLockReleaseWrite(
 	sjme_attrInNotNull sjme_thread_rwLock* inLock,
 	sjme_attrOutNullable sjme_jint* outCount)
 {
@@ -170,6 +179,9 @@ sjme_errorCode sjme_thread_rwLockReleaseWrite(
 		if (sjme_error_is(error = sjme_thread_spinLockRelease(
 			readLock, NULL)))
 			return sjme_error_default(error);
+		
+	/* Do this just for good measure for the wierd CPUs. */
+	sjme_atomic_barrier();
 	
 	/* Success! */
 	if (outCount != NULL)
@@ -177,7 +189,8 @@ sjme_errorCode sjme_thread_rwLockReleaseWrite(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
+sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_spinLockGrab(
+	sjme_thread_spinLock* inLock)
 {
 	sjme_errorCode error;
 	sjme_thread current;
@@ -192,6 +205,9 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
 		&current)) || current == SJME_THREAD_NULL)
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_THREAD_STATE);
+	
+	/* Do this just for good measure for the wierd CPUs. */
+	sjme_atomic_barrier();
 	
 	/* This is done in a loop until we own the lock. */
 	for (keepSpinning = SJME_JNI_TRUE; keepSpinning;)
@@ -228,7 +244,7 @@ sjme_errorCode sjme_thread_spinLockGrab(sjme_thread_spinLock* inLock)
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_thread_spinLockRelease(
+sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_spinLockRelease(
 	sjme_attrInNotNull sjme_thread_spinLock* inLock,
 	sjme_attrOutNullable sjme_jint* outCount)
 {
@@ -246,6 +262,9 @@ sjme_errorCode sjme_thread_spinLockRelease(
 		&current)) || current == SJME_THREAD_NULL)
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_THREAD_STATE);
+		
+	/* Do this just for good measure for the wierd CPUs. */
+	sjme_atomic_barrier();
 	
 	/* Grab the peek lock. */
 	while (SJME_JNI_FALSE == sjme_atomic_cs(sjme_thread, 

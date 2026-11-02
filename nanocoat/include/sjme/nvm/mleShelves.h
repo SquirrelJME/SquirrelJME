@@ -200,10 +200,10 @@ extern "C"
 /** MLE Function definition. */
 #define SJME_NVM_MLE_FUNCTION_DECL_ALT(name, alt) \
 	sjme_errorCode SJME_NVM_MLE_FUNCTION_NAME(name, alt)( \
-		sjme_attrInNotNull sjme_nvm_frame inFrame, \
-		sjme_attrInNotNull sjme_jvalueTyped* argR, \
-		sjme_attrInPositive sjme_jint argC, \
-		sjme_attrInNullable sjme_jvalueTyped* argV)
+		sjme_attrInNotNull sjme_nvm_frame inFrame,  /* NOLINT */ \
+		sjme_attrInNotNull sjme_jvalueTyped* argR, /* NOLINT */ \
+		sjme_attrInPositive sjme_jint argC, /* NOLINT */ \
+		sjme_attrInNullable sjme_jvalueTyped* argV /* NOLINT */)
 
 /** MLE Function definition. */
 #define SJME_NVM_MLE_FUNCTION_DECL(name) \

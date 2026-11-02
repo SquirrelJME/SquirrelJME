@@ -292,8 +292,23 @@ extern "C"
 #pragma region(compilerAttrs)
 	
 #if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
+	/** Do not reorder calls. */
+	#define sjme_keepOrder \
+		__attribute__((no_reorder)) __attribute__((noinline)) /* NOLINT */
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Do not reorder calls. */
+	#define sjme_keepOrder __declspec(noinline)
+#else
+	/** Do not reorder calls. */
+	#define sjme_keepOrder
+#endif
+	
+#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
 	/** Disable optimization. */
 	#define sjme_noOptimize __attribute__((optimize("O0"))) /* NOLINT */
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Optimize this specific function. */
+	#define sjme_noOptimize __pragma(optimize("t", off))
 #else
 	/** Disable optimization. */
 	#define sjme_noOptimize
@@ -424,10 +439,26 @@ extern "C"
 	#define sjme_attrSelectAnyOrWeak
 #endif
 	
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS_16)
+	/** Calling this function requires more complicated branch logic. */
+	#define sjme_attrFarCall FAR
+#elif defined(SJME_CONFIG_HAS_GCC_CLONE) && \
+	defined(SJME_CONFIG_HAS_ARCH_POWERPC)
+	/** Calling this function requires more complicated branch logic. */
+	#define sjme_attrFarCall __attribute__((longcall))
+#elif defined(SJME_CONFIG_HAS_GCC_CLONE) && \
+	defined(SJME_CONFIG_HAS_ARCH_MIPS)
+	/** Calling this function requires more complicated branch logic. */
+	#define sjme_attrFarCall __attribute__((long_call))
+#else
+	/** Calling this function requires more complicated branch logic. */
+	#define sjme_attrFarCall
+#endif
+	
 /* If building with libwine, we have to match the system calling convention. */
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS_16)
 	/** SquirrelJME exported calling convention. */
-	#define sjme_attrExportCall FAR PASCAL
+	#define sjme_attrExportCall sjme_attrFarCall PASCAL
 #elif defined(SJME_CONFIG_HAS_OS_WINDOWS) || \
 	defined(SJME_CONFIG_HAS_OS_WINDOWS_32)
 	/** SquirrelJME exported calling convention. */

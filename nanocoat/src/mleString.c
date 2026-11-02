@@ -24,11 +24,12 @@ SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
 	sjme_jint index;
 	sjme_jchar result;
 	sjme_charSeq seq;
+	
+	string = (sjme_jstring)argV[0].v.l;
+	index = argV[1].v.i;
 
 	/* Must be an actual string. */
-	string = (sjme_jstring)argV[0].v.l;
-	if (string == NULL ||
-		!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has the sequence ever been initialized? */
@@ -37,12 +38,11 @@ SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Which index is desired? */
-	index = argV[1].v.i;
 	if (index < 0 || index >= seq->length)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Read in character. */
-	result = 0;
+	result = 0U;
 	if (sjme_error_is(error = sjme_charSeq_charAt(seq, index, &result)))
 		return sjme_error_vmError(inFrame, error);
 
@@ -300,7 +300,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 	/* Wrap a wide sequence. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(error = sjme_charSeq_newWideStatic(&seq,
-		(sjme_jchar*)&array->e.values.c[0], off, 
+		&array->e.values.c[0], off, 
 		array->e.length)))
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
