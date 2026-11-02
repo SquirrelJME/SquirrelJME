@@ -59,7 +59,7 @@ sjme_errorCode sjme_charSeq_charAt(
 	if (inSeq == NULL || outChar == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (inIndex < 0 || inIndex >= inSeq->length)
+	if (inIndex < 0 || inIndex >= sjme_atomic_g(sjme_jint, &inSeq->length))
 		return SJME_ERROR_STRING_INDEX_OUT_OF_BOUNDS;
 	
 	/* Read in character. */
@@ -75,8 +75,8 @@ sjme_errorCode sjme_charSeq_charAtIs(
 	if (inSeq == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (inIndex < 0 || inIndex >= inSeq->length)
-		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
+	if (inIndex < 0 || inIndex >= sjme_atomic_g(sjme_jint, &inSeq->length))
+		return SJME_ERROR_STRING_INDEX_OUT_OF_BOUNDS;
 	
 	/* Does the character actually match? */
 	if (sjme_charSeq_charAtR(inSeq, inIndex) != wantChar)
@@ -91,7 +91,7 @@ sjme_jchar sjme_charSeq_charAtR(
 	if (inSeq == NULL)
 		return 0;
 
-	if (inIndex < 0 || inIndex >= inSeq->length)
+	if (inIndex < 0 || inIndex >= sjme_atomic_g(sjme_jint, &inSeq->length))
 		return 0;
 
 	/* Depends on the sequence type. */
@@ -171,34 +171,34 @@ sjme_errorCode sjme_charSeq_dup(
 	sjme_attrInNotNull sjme_charSeq sourceFrom)
 {
 	sjme_errorCode error;
-	sjme_jint i, n;
+	sjme_jint i, n, srcLen;
 	sjme_jchar* chars;
 	
 	if (allocPool == NULL || destCopy == NULL || sourceFrom == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Can we copy based on a pre-known type? */
+	srcLen = sjme_atomic_g(sjme_jint, &sourceFrom->length);
 	switch (sourceFrom->type)
 	{
 		case SJME_CHAR_SEQ_TYPE_NARROW:
 			return sjme_charSeq_newNarrow(allocPool, destCopy,
-				sourceFrom->data.bytes, 0, sourceFrom->length);
+				sourceFrom->data.bytes, 0, srcLen);
 		
 		case SJME_CHAR_SEQ_TYPE_WIDE:
 			return sjme_charSeq_newWide(allocPool, destCopy,
-				sourceFrom->data.chars, 0, sourceFrom->length);
+				sourceFrom->data.chars, 0, srcLen);
 		
 		case SJME_CHAR_SEQ_TYPE_WIDE_STATIC:
 			return sjme_charSeq_newWide(allocPool, destCopy,
-				sourceFrom->data.staticWide, 0,
-				sourceFrom->length);
+				sourceFrom->data.staticWide, 0, srcLen);
 
 		default:
 			break;
 	}
 
 	/* Need to allocate the character data first. */
-	n = sourceFrom->length;
+	n = srcLen;
 	chars = sjme_alloca(sizeof(*chars) * (n + 1));
 	if (chars == NULL)
 		return sjme_error_outOfMemory(NULL, n * 2);
@@ -236,7 +236,7 @@ sjme_errorCode sjme_charSeq_dupToU(
 	sjme_attrInPositive sjme_jint dstLimit,
 	sjme_attrInNegativeOnePositive sjme_jint maxChars)
 {
-	sjme_jint s, i;
+	sjme_jint s, i, srcLen;
 	sjme_cchar* d;
 	sjme_jchar u;
 	
@@ -250,11 +250,12 @@ sjme_errorCode sjme_charSeq_dupToU(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Use the source sequence length instead? */
+	srcLen = sjme_atomic_g(sjme_jint, &src->length);
 	if (maxChars == -1)
-		maxChars = src->length;
+		maxChars = srcLen;
 	
 	if ((srcOff + maxChars) < 0 || (dstOff + maxChars) < 0 ||
-		(srcOff + maxChars) > src->length ||
+		(srcOff + maxChars) > srcLen ||
 		(dstOff + maxChars) > dstLimit)
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
@@ -282,7 +283,7 @@ sjme_errorCode sjme_charSeq_dupToU(
 
 				/* Narrow byte sequence. */
 				if (u != 0 && u <= 127)
-					*(d++) = u;
+					*(d++) = (sjme_jbyte)u;
 
 				/* UTF character sequence? */
 				else
@@ -302,16 +303,20 @@ sjme_errorCode sjme_charSeq_length(
 	sjme_attrInNotNull sjme_charSeq inSeq,
 	sjme_attrOutNotNull sjme_jint* outLen)
 {
+	sjme_jint length;
+	
 	if (inSeq == NULL || outLen == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* The length is always precalculated. */
+	length = sjme_atomic_g(sjme_jint, &inSeq->length);
 
 	/* Null sequences always have zero length. */
 	if (inSeq->type == SJME_CHAR_SEQ_TYPE_NULL)
-		if (inSeq->length != 0)
-			inSeq->length = 0;
+		length = 0;
 
 	/* The length is always precalculated. */
-	*outLen = inSeq->length;
+	*outLen = length;
 	return SJME_ERROR_NONE;
 }
 
@@ -341,8 +346,8 @@ sjme_errorCode sjme_charSeq_equals(
 	}
 	
 	/* Lengths differ? Will never be equal. */
-	n = aSeq->length;
-	if (n != bSeq->length)
+	n = sjme_atomic_g(sjme_jint, &aSeq->length);
+	if (n != sjme_atomic_g(sjme_jint, &bSeq->length))
 	{
 		*outResult = SJME_JNI_FALSE;
 		return SJME_ERROR_NOT_MATCHED;
@@ -511,7 +516,8 @@ sjme_errorCode sjme_charSeq_hash(
 	{
 		/* Calculate the hashCode(), the JavaDoc gives the following formula:
 		 * == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes! */
-		for (i = 0, n = inSeq->length; i < n; i++)
+		n = sjme_atomic_g(sjme_jint, &inSeq->length);
+		for (i = 0; i < n; i++)
 		{
 			/* Read in character. */
 			c = 0;
@@ -531,7 +537,7 @@ sjme_errorCode sjme_charSeq_hash(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_charSeq_hashR(
+sjme_jint sjme_charSeq_hashR(
 	sjme_attrInNotNull sjme_charSeq inSeq)
 {
 	sjme_jint result;
@@ -556,7 +562,7 @@ sjme_errorCode sjme_charSeq_itNew(
 	if (inSeq == NULL || it == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (offset < 0 || offset >= inSeq->length)
+	if (offset < 0 || offset >= sjme_atomic_g(sjme_jint, &inSeq->length))
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Setup iterator. */
@@ -576,6 +582,7 @@ sjme_errorCode sjme_charSeq_newFunctionStatic(
 	sjme_attrInNullable sjme_frontEndBindable* frontEnd)
 {
 	sjme_errorCode error;
+	sjme_jint length;
 	
 	if (outSeq == NULL || functions == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -592,9 +599,9 @@ sjme_errorCode sjme_charSeq_newFunctionStatic(
 		sjme_frontEnd_copy(&outSeq->data.function.frontEnd, frontEnd);
 	
 	/* Read in length. */
-	outSeq->length = -1;
-	if (sjme_error_is(error = functions->length(outSeq, &outSeq->length)) ||
-		outSeq->length < 0)
+	length = -1;
+	if (sjme_error_is(error = functions->length(outSeq, &length)) ||
+		length < 0)
 	{
 		/* Undo validity. */
 		memset(outSeq, 0, sizeof(*outSeq));
@@ -602,6 +609,9 @@ sjme_errorCode sjme_charSeq_newFunctionStatic(
 		/* Fail. */
 		return sjme_error_default(error);
 	}
+	
+	/* Set length. */
+	sjme_atomic_s(sjme_jint, &outSeq->length, length);
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -640,7 +650,7 @@ sjme_errorCode sjme_charSeq_newNarrow(
 
 	/* Fill in. */
 	result->type = SJME_CHAR_SEQ_TYPE_NARROW;
-	result->length = n;
+	sjme_atomic_s(sjme_jint, &result->length, n);
 	out = &result->data.bytes[0];
 	for (i = 0; i < n; i++)
 		out[i] = base[i];
@@ -683,7 +693,7 @@ sjme_errorCode sjme_charSeq_newNarrowFromWide(
 
 	/* Fill in. */
 	result->type = SJME_CHAR_SEQ_TYPE_NARROW;
-	result->length = n;
+	sjme_atomic_s(sjme_jint, &result->length, n);
 	out = &result->data.bytes[0];
 	for (i = 0; i < n; i++)
 		out[i] = (sjme_jbyte)(base[i] & 0xFF);
@@ -738,7 +748,7 @@ sjme_errorCode sjme_charSeq_newUtfStatic(
 	/* Setup target sequence. */
 	memset(outSeq, 0, sizeof(*outSeq));
 	outSeq->type = SJME_CHAR_SEQ_TYPE_UTF_STATIC;
-	outSeq->length = length;
+	sjme_atomic_s(sjme_jint, &outSeq->length, length);
 	outSeq->data.staticUtf = base;
 
 	/* Success! */
@@ -814,7 +824,7 @@ sjme_errorCode sjme_charSeq_newWideStatic(
 	/* Setup target sequence. */
 	memset(inOutSeq, 0, sizeof(*inOutSeq));
 	inOutSeq->type = SJME_CHAR_SEQ_TYPE_WIDE_STATIC;
-	inOutSeq->length = n;
+	sjme_atomic_s(sjme_jint, &inOutSeq->length, n);
 	inOutSeq->data.staticWide = base;
 
 	/* Success! */
@@ -928,7 +938,7 @@ sjme_lpcstr sjme_charSeq_tempUtf(
 		return inSeq->data.staticUtf;
 
 	/* Can we fit this sequence into the target buffer at the tempBase? */
-	n = inSeq->length;
+	n = sjme_atomic_g(sjme_jint, &inSeq->length);
 	baseAt = tempAt;
 	if (sjme_error_is(sjme_charSeq_dupToU(
 		inSeq, 0,

@@ -940,6 +940,15 @@ sjme_jint sjme_util_shortToInt(
 #if defined(SJME_CONFIG_SIZEOF_SIZE_T) && SJME_CONFIG_SIZEOF_SIZE_T == 4
 
 /**
+ * Clamps a @code sjme_jint @endcode to @code size_t @endcode .
+ *
+ * @param in The input value.
+ * @return The resultant clamped value.
+ * @since 2026/11/02
+ */
+#define sjme_util_intToSize(in) ((size_t)(in))
+	
+/**
  * Clamps a @code size_t @endcode to @code sjme_jint @endcode .
  *
  * @param in The input value.
@@ -949,6 +958,15 @@ sjme_jint sjme_util_shortToInt(
 #define sjme_util_sizeToInt(in) ((sjme_jint)(in))
 
 #else
+	
+/**
+ * Clamps a @code sjme_jint @endcode to @code size_t @endcode .
+ *
+ * @param in The input value.
+ * @return The resultant clamped value.
+ * @since 2026/11/02
+ */
+size_t sjme_util_intToSize(sjme_jint in);
 
 /**
  * Clamps a @code size_t @endcode to @code sjme_jint @endcode .

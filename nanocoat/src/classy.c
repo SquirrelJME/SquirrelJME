@@ -330,7 +330,7 @@ sjme_errorCode sjme_nvm_class_parse(
 		SJME_P_C_N(thisName));
 		
 	/* Locate the last slash character in the binary name. */
-	lastSlash = result->name->seq->length - 1;
+	lastSlash = sjme_atomic_g(sjme_jint, &result->name->seq->length) - 1;
 	while (lastSlash > 0)
 	{
 		if ('/' == sjme_charSeq_charAtR(result->name->seq, lastSlash))
@@ -1099,7 +1099,8 @@ sjme_errorCode sjme_nvm_class_validBinaryName(
 	if (binaryName == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	for (i = 0, n = binaryName->length; i < n; i++)
+	n = sjme_atomic_g(sjme_jint, &binaryName->length);
+	for (i = 0; i < n; i++)
 	{
 		c = sjme_charSeq_charAtR(binaryName, i);
 

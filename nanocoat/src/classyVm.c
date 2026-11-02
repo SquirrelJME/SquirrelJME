@@ -198,9 +198,11 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 
 		/* Objects get a wider type multiplier for their check value. */
 		extendedType = field->extendedType;
-		typeMul = sjme_nvm_typeMul[extendedType];
-		if (extendedType == SJME_JAVA_TYPE_ID_OBJECT)
+		if (extendedType == SJME_JAVA_TYPE_ID_OBJECT ||
+			field->javaType == SJME_JAVA_TYPE_ID_OBJECT)
 			typeMul = sizeof(sjme_nvm_valueObject);
+		else
+			typeMul = sjme_nvm_typeMul[extendedType];
 		
 		/* This field is not valid. */
 		if (placements->offset[extendedType] < 0)
@@ -208,8 +210,8 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitFieldBinds(
 		
 		/* Determine the pointer offset for this field into the object */
 		id->pointerOffset = placements->offset[extendedType] +
-			offsetof(sjme_nvm_valueSet, values) +
-			((typeMul) * (typedOffset[extendedType]++));
+			sjme_util_sizeToInt(offsetof(sjme_nvm_valueSet, values)) +
+			(typeMul * (typedOffset[extendedType]++));
 
 		/* Lookup class this stores if an object, but do not initialize. */
 		if (id->javaType == SJME_JAVA_TYPE_ID_OBJECT)
@@ -871,7 +873,7 @@ static sjme_errorCode sjme_nvm_vmClass_loaderLoadFSubAlloc(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Cannot be blank. */
-	if (binaryName->length <= 0)
+	if (sjme_atomic_g(sjme_jint, &binaryName->length) <= 0)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* We allocate within this pool. */

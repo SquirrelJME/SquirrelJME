@@ -1306,6 +1306,19 @@ sjme_jint sjme_util_shortToInt(
 
 #if !defined(SJME_CONFIG_SIZEOF_SIZE_T) || SJME_CONFIG_SIZEOF_SIZE_T != 4
 
+size_t sjme_util_intToSize(sjme_jint in)
+{
+#if defined(SJME_CONFIG_SIZEOF_SIZE_T) && 4 <= SJME_CONFIG_SIZEOF_SIZE_T
+	if (in < 0)
+		return 0;
+	return (size_t)in;
+#else
+	if (sjme_noLint(sizeof(sjme_jint) < sizeof(size_t)) || in < SIZE_MAX)
+		return (size_t)in;
+	return SIZE_MAX;
+#endif
+}
+
 sjme_jint sjme_util_sizeToInt(size_t in)
 {
 #if defined(SJME_CONFIG_HAS_SDCC)
@@ -1330,4 +1343,3 @@ sjme_jint sjme_util_sizeToInt(size_t in)
 }
 
 #endif
-

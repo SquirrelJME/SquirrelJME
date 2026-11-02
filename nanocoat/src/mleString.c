@@ -36,19 +36,21 @@ SJME_NVM_MLE_FUNCTION_DECL(stringCharAt)
 	seq = sjme_atomic_g(sjme_charSeq, &string->seq);
 	if (seq == NULL)
 		return SJME_ERROR_MLE_CALL;
-
-	/* Which index is desired? */
-	if (index < 0 || index >= seq->length)
-		return SJME_ERROR_MLE_CALL;
-
+	
 	/* Read in character. */
 	result = 0U;
 	if (sjme_error_is(error = sjme_charSeq_charAt(seq, index, &result)))
-		return sjme_error_vmError(inFrame, error);
+	{
+		/* Some other error? */
+		if (error != SJME_ERROR_STRING_INDEX_OUT_OF_BOUNDS)
+			return sjme_error_vmError(inFrame, error);
+		
+		return sjme_error_mleCall(inFrame, error);
+	}
 
 	/* Give the result. */
 	argR->t = SJME_JAVA_TYPE_ID_INTEGER;
-	argR->v.i = result & 0xFFFF;
+	argR->v.i = ((sjme_jint)result) & INT32_C(0xFFFF);
 	return SJME_ERROR_NONE;
 }
 
@@ -60,8 +62,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringEquals)
 	/* Must be an actual strings. */
 	a = (sjme_jstring)argV[0].v.l;
 	b = (sjme_jstring)argV[1].v.l;
-	if (a == NULL || b == NULL ||
-		!sjme_nvm_isAR(a, SJME_NVM_STRUCT_STRING_INSTANCE) ||
+	if (!sjme_nvm_isAR(a, SJME_NVM_STRUCT_STRING_INSTANCE) ||
 		!sjme_nvm_isAR(b, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 	
@@ -84,8 +85,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringHash)
 
 	/* Must be an actual string. */
 	string = (sjme_jstring)argV[0].v.l;
-	if (string == NULL ||
-		!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Has the sequence ever been initialized? */
@@ -114,13 +114,15 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, chars)
 	len = argV[3].v.i;
 
 	/* Check arguments. */
-	if (string == NULL || array == NULL ||
-		!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE) ||
+	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE) ||
 		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE) ||
-		array->e.type != SJME_BASIC_TYPE_ID_CHARACTER ||
-		off < 0 || len < 0 || (off + len) < 0 ||
-		(off + len) > array->e.length)
+		off < 0 || len < 0 || (off + len) < 0)
 		return SJME_ERROR_MLE_CALL;
+	
+	/* The array must be valid. */
+	if (sjme_error_is(error = sjme_nvm_instance_arrayCheckI(array,
+		SJME_BASIC_TYPE_ID_CHARACTER, off, len)))
+		return sjme_error_mleCall(inFrame, error);
 
 	/* Lock the string. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
@@ -135,13 +137,13 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringInit, chars)
 	/* Setup new sequence. */
 	seq = NULL;
 	if (sjme_error_is(error = sjme_charSeq_newWide(
-		SJME_F_S(inFrame)->allocPool, &seq, &array->e.values.c[off],
-		0, len)) || seq == NULL)
+		SJME_F_S(inFrame)->allocPool, &seq,
+		&array->e.values.c[off], 0, len)) || 
+		seq == NULL)
 		goto fail_initSeq;
 
 	/* Set sequence. */
-	if (!sjme_atomic_cs(sjme_charSeq, &string->seq,
-		NULL, seq))
+	if (!sjme_atomic_cs(sjme_charSeq, &string->seq, NULL, seq))
 	{
 		error = SJME_ERROR_ILLEGAL_STATE;
 		goto fail_collided;
@@ -192,8 +194,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringLength)
 
 	/* Must be an actual string. */
 	string = (sjme_jstring)argV[0].v.l;
-	if (string == NULL ||
-		!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 
 	/* Has the sequence ever been initialized? */
@@ -232,8 +233,7 @@ SJME_NVM_MLE_FUNCTION_DECL(stringToChar)
 	len = argV[4].v.i;
 
 	/* The source must be a string. */
-	if (source == NULL ||
-		!sjme_nvm_isAR(source, SJME_NVM_STRUCT_STRING_INSTANCE))
+	if (!sjme_nvm_isAR(source, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 	
 	/* The destination array must be a char array and be in bounds. */
@@ -275,45 +275,35 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, chars)
 	sjme_jarray array;
 	sjme_jint off, len;
 	sjme_charSeqStatic seq;
+	sjme_jstring result;
 
 	/* Intern the string? */
 	intern = !!argV[0].v.i;
-
-	/* Must be an actual array. */
 	array = (sjme_jarray)argV[1].v.l;
-	if (array == NULL ||
-		!sjme_nvm_isAR(array, SJME_NVM_STRUCT_ARRAY_INSTANCE))
-		return SJME_ERROR_MLE_CALL;
-
-	/* Must be a char array. */
-	if (array->e.type != SJME_BASIC_TYPE_ID_CHARACTER)
-		return SJME_ERROR_MLE_CALL;
-
-	/* Read offset and length. */
 	off = argV[2].v.i;
 	len = argV[3].v.i;
 
-	/* Check bounds. */
-	if (off < 0 || len < 0 || (off + len) < 0)
-		return SJME_ERROR_MLE_CALL;
-
+	/* Must be an actual array. */
+	if (sjme_error_is(error = sjme_nvm_instance_arrayCheckI(
+		array, SJME_BASIC_TYPE_ID_CHARACTER, off, len)))
+		return sjme_error_mleCall(inFrame, error);
+	
 	/* Wrap a wide sequence. */
 	memset(&seq, 0, sizeof(seq));
 	if (sjme_error_is(error = sjme_charSeq_newWideStatic(&seq,
-		&array->e.values.c[0], off, 
-		array->e.length)))
+		&array->e.values.c[off], 0, len)))
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
 	/* Obtain string value from the sequence. */
-	argR->v.l = NULL;
+	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
-		SJME_F_T(inFrame),
-		SJME_AS_JSTRINGP(&argR->v.l), intern, NULL, &seq)) ||
-		argR->v.l == NULL)
+		SJME_F_T(inFrame), &result, intern, NULL, &seq)) ||
+		result == NULL)
 		return sjme_error_mask(error, SJME_ERROR_MLE_CALL);
 
 	/* Success! */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)result;
 	return SJME_ERROR_NONE;
 }
 
@@ -323,14 +313,14 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 	sjme_jboolean intern;
 	sjme_jstring string;
 	sjme_charSeq seq;
+	sjme_jstring result;
 
 	/* Intern the string? */
 	intern = !!argV[0].v.i;
+	string = (sjme_jstring)argV[1].v.l;
 
 	/* Must be an actual string. */
-	string = (sjme_jstring)argV[1].v.l;
-	if (string == NULL ||
-		!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
+	if (!sjme_nvm_isAR(string, SJME_NVM_STRUCT_STRING_INSTANCE))
 		return SJME_ERROR_MLE_CALL;
 	
 	/* Has the sequence ever been initialized? */
@@ -339,15 +329,15 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(stringValueOf, string)
 		return SJME_ERROR_MLE_CALL;
 
 	/* Obtain string value from the sequence. */
-	argR->v.l = NULL;
+	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfCS(
-		SJME_F_T(inFrame),
-		SJME_AS_JSTRINGP(&argR->v.l), intern, NULL, seq)) ||
-		argR->v.l == NULL)
+		SJME_F_T(inFrame), &result, intern, NULL, seq)) ||
+		result == NULL)
 		return sjme_error_default(error);
 
 	/* Success! */
 	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)result;
 	return SJME_ERROR_NONE;
 }
 

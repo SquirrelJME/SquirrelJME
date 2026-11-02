@@ -454,7 +454,8 @@ sjme_errorCode sjme_nvm_class_descriptorToType(
 	}
 	else if (sjme_charSeq_charAtIs(desc, 0, '[') ||
 		(sjme_charSeq_charAtIs(desc, 0, 'L') &&
-			sjme_charSeq_charAtIs(desc, desc->length - 1,
+			sjme_charSeq_charAtIs(desc,
+				sjme_atomic_g(sjme_jint, &desc->length - 1),
 				';')))
 	{
 		javaType = SJME_JAVA_TYPE_ID_OBJECT;

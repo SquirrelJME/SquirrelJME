@@ -671,7 +671,7 @@ sjme_errorCode sjme_nvm_vmField_sizeValueSet(
 	sjme_attrInValue sjme_basicTypeId type,
 	sjme_attrInPositive sjme_jint length)
 {
-	sjme_jint result;
+	sjme_jint result, baseMul;
 	
 	if (outSize == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -679,10 +679,18 @@ sjme_errorCode sjme_nvm_vmField_sizeValueSet(
 	if (length < 0 || type < 0 || type >= SJME_NUM_BASIC_TYPE_IDS)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
-	/* Calculate the size of all values, make sure there is no overflow. */
-	result = (sjme_nvm_typeMul[type] * length);
+	/* Note that objects use a different storage size. */
+	if (type == SJME_JAVA_TYPE_ID_OBJECT)
+		baseMul = sjme_util_sizeToInt(sizeof(sjme_nvm_valueObject));
+	else
+		baseMul = sjme_nvm_typeMul[type];
+	
+	/* Calculate the size of all values. */
+	/* Ensure that there is no overflow. */
+	result = baseMul * length;
 	if (length != 0)
-		if (result <= 0 || (result / sjme_nvm_typeMul[type]) != length)
+		if (result <= 0 || (result / baseMul) != length ||
+			(result % baseMul) != 0)
 			return SJME_ERROR_TOO_LARGE;
 	
 	/* Offset up the base size. */

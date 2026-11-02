@@ -356,6 +356,7 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 			return sjme_error_vmError(contextThread,
 				SJME_ERROR_OBJECT_MISMATCHED);
 		
+		/* Write value. */
 		if (isPut)
 		{
 			/* Set the field value. */
@@ -373,7 +374,8 @@ sjme_errorCode sjme_nvm_instance_fieldAccessStack(
 	}
 	
 	/* No promotion/demotion needed. */
-	else if (fieldId->extendedType < SJME_NUM_JAVA_TYPE_IDS)
+	else if (fieldId->extendedType < SJME_NUM_JAVA_TYPE_IDS &&
+		fieldId->extendedType != SJME_JAVA_TYPE_ID_OBJECT)
 	{
 		if (isPut)
 			memmove(&direct->v, &stackType->v,

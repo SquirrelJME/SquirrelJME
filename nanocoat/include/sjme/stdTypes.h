@@ -104,13 +104,13 @@ typedef enum sjme_basicTypeId
 
 	/** Number of basic type IDs. */
 	SJME_NUM_BASIC_TYPE_IDS = 12,
-
-	/** Narrow type. */
-	SJME_STACK_TYPE_NARROW = 24,
-
-	/** Wide type. */
-	SJME_STACK_TYPE_WIDE = 48,
 } sjme_basicTypeId;
+	
+/** Narrow type. */
+#define SJME_STACK_TYPE_NARROW ((sjme_basicTypeId)24)
+	
+/** Wide type. */
+#define SJME_STACK_TYPE_WIDE ((sjme_basicTypeId)48)
 
 /**
  * Boolean type.

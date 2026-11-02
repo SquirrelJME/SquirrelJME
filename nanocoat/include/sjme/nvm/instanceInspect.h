@@ -60,8 +60,9 @@ sjme_errorCode sjme_nvm_instance_arrayCheck(
  * important this may be @code SJME_NUM_BASIC_TYPE_IDS @endcode
  * or @code SJME_NUM_JAVA_TYPE_IDS @endcode.
  * @param requireIndex The index of array to access.
- * @param requireSpan The number of elements to be accessed, this must always
- * be at least one.
+ * @param requireSpan The number of elements to be accessed, this should
+ * only be zero if this is being used to check initialization based on an
+ * array.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS If the index or span of
  * indexes exceeds the array bounds.
@@ -75,7 +76,7 @@ sjme_errorCode sjme_nvm_instance_arrayCheckI(
 	sjme_attrInNotNull sjme_jarray inArray,
 	sjme_attrInValue sjme_basicTypeId requireType,
 	sjme_attrInPositive sjme_jint requireIndex,
-	sjme_attrInPositiveNonZero sjme_jint requireSpan);
+	sjme_attrInPositive sjme_jint requireSpan);
 	
 /**
  * Copies values from the source array to the destination array.

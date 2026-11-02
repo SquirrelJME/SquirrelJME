@@ -69,7 +69,7 @@ SJME_TEST_DECLARE(testStringPoolStream)
 		return sjme_unit_fail(test, "Could not close stream.");
 
 	/* Check to make sure it is valid. */
-	sjme_unit_equalI(test, 10, string->seq->length,
+	sjme_unit_equalI(test, 10, sjme_atomic_g(sjme_jint, &string->seq->length),
 		"Length incorrect?");
 	sjme_unit_notEqualI(test,
 		0, strcmp("Squirrels!", sjme_charSeq_tempUtf(string->seq)),

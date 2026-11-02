@@ -136,7 +136,7 @@ struct sjme_charSeqStatic
 	sjme_charSeq_type type;
 
 	/** The length of this sequence. */
-	sjme_jint length;
+	sjme_atomic(sjme_jint) length;
 
 	/** The hashcode for this string. */
 	sjme_atomic(sjme_jint) hash;
@@ -231,13 +231,10 @@ sjme_errorCode sjme_charSeq_charAt(
  * @param inIndex The index to get from.
  * @param wantChar The requested character.
  * @return Any resultant error, if any.
- * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the character index is out of
- * bounds.
  * @throws SJME_ERROR_NOT_MATCHED If this is not the given character.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
- * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS ...?
- * @throws SJME_ERROR_NOT_MATCHED ...?
- * @throws SJME_ERROR_NULL_ARGUMENTS ...?
+ * @throws SJME_ERROR_STRING_INDEX_OUT_OF_BOUNDS If the character index is out
+ * of bounds.
  * @since 2025/03/07
  */
 sjme_errorCode sjme_charSeq_charAtIs(
@@ -435,7 +432,7 @@ sjme_errorCode sjme_charSeq_hash(
  * which may still be considered a valid hash.
  * @since 2025/03/26
  */
-sjme_errorCode sjme_charSeq_hashR(
+sjme_jint sjme_charSeq_hashR(
 	sjme_attrInNotNull sjme_charSeq inSeq);
 
 /**
@@ -446,7 +443,6 @@ sjme_errorCode sjme_charSeq_hashR(
  * @param it The target iterator.
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
- * @throws SJME_ERROR_NULL_ARGUMENTS ...?
  * @since 2025/03/09
  */
 sjme_errorCode sjme_charSeq_itNew(

@@ -78,7 +78,7 @@ sjme_errorCode sjme_nvm_instance_arrayCheckI(
 	sjme_attrInNotNull sjme_jarray inArray,
 	sjme_attrInValue sjme_basicTypeId requireType,
 	sjme_attrInPositive sjme_jint requireIndex,
-	sjme_attrInPositiveNonZero sjme_jint requireSpan)
+	sjme_attrInPositive sjme_jint requireSpan)
 {
 	sjme_errorCode error;
 	
@@ -88,7 +88,7 @@ sjme_errorCode sjme_nvm_instance_arrayCheckI(
 		return sjme_error_default(error);
 	
 	/* Index overflow/underflow? */
-	if (requireIndex < 0 || requireSpan <= 0 ||
+	if (requireIndex < 0 || requireSpan < 0 ||
 		(requireIndex + requireSpan) < 0)
 		return SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS;
 	
@@ -112,6 +112,7 @@ sjme_errorCode sjme_nvm_instance_arrayCopyJ(
 	sjme_errorCode error;
 	sjme_jint i;
 	sjme_jobject copyRef;
+	size_t copyLen;
 	
 	if (srcArray == NULL || destArray == NULL)
 		return SJME_ERROR_NULL_STACK_POINTER;
@@ -153,8 +154,9 @@ sjme_errorCode sjme_nvm_instance_arrayCopyJ(
 	/* Copy all values over. */
 	else
 	{
-		memmove(&destArray->e, &srcArray->e,
-			(size_t)(sjme_nvm_typeMul[srcArray->e.type] * length));
+		copyLen = sjme_util_intToSize(sjme_nvm_typeMul[
+			sjme_max(0, srcArray->e.type) % SJME_NUM_BASIC_TYPE_IDS] * length);
+		memmove(&destArray->e, &srcArray->e, copyLen);
 	}
 	
 	/* Success! */
