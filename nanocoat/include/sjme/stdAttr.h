@@ -30,105 +30,68 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
-/* Visual C SAL 2.0 Annotations. */
-#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
+#pragma region(sal)
+	
+#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_6)
 	#include <sal.h>
 
+	#if SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
+		/** Has Visual C SAL 2.0 Annotations. */
+		#define SJME_CONFIG_HAS_MSVC_SAL 2
+	#else
+		/** Has Visual C SAL 1.0 Annotations. */
+		#define SJME_CONFIG_HAS_MSVC_SAL 1
+	#endif
+	
+	/** Is the MSVC SAL version the specified version? */
+	#define SJME_CONFIG_MSVC_SAL_LEAST(against) \
+		(SJME_CONFIG_HAS_MSVC_SAL >= against)
+#else
+	/** Is the MSVC SAL version the specified version? */
+	#define SJME_CONFIG_MSVC_SAL_LEAST(against) 0
+#endif
+	
+#pragma endregion(sal)
+#pragma region(linting)
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
 	/** Return value must be checked. */
 	#define sjme_attrCheckReturn _Must_inspect_result_
-
-	/** Deprecated. */
-	#define sjme_attrDeprecated __declspec(deprecated)
-
-	/** Formatted string argument. */
-	#define sjme_attrFormatArg _Printf_format_string_
-
-	/** Input cannot be null. */
-	#define sjme_attrInNotNull _In_
-
-	/** Input can be null. */
-	#define sjme_attrInNullable _In_opt_
-
-	/** Takes input and produces output. */
-	#define sjme_attrInOutNotNull _In_ _Out_
-
-	/** Input value range. */
-	#define sjme_attrInRange(lo, hi) _In_range_((lo), (hi))
-
-	/** Method takes input. */
-	#define sjme_attrInValue _In_
-
-	/** Returns nullable value. */
-	#define sjme_attrReturnNullable _Outptr_result_maybenull_z_
-
-	/** Method gives output. */
-	#define sjme_attrOutNotNull _Out_
-
-	/** Method output can be null. */
-	#define sjme_attrOutNullable _Out_opt_
-
-	/** Output to buffer. */
-	#define sjme_attrOutNotNullBuf(lenArg) _Out_writes_(lenArg)
-
-	/** Output value range. */
-	#define sjme_attrOutRange(lo, hi) _Out_range_((lo), (hi))
-
-/* Older Visual C++. */
-#elif SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_6)
-	#include <sal.h>
-
+#elif SJME_CONFIG_MSVC_SAL_LEAST(1)
 	/** Return value must be checked. */
 	#define sjme_attrCheckReturn __checkReturn
-
-	/** Formatted string argument. */
-	#define sjme_attrFormatArg __format_string
-
-	/** Input cannot be null. */
-	#define sjme_attrInNotNull __in
-
-	/** Input can be null. */
-	#define sjme_attrInNullable __in_opt
-
-	/** Takes input and produces output. */
-	#define sjme_attrInOutNotNull __in __out
-
-	/** Method takes input. */
-	#define sjme_attrInValue __in
-
-	/** Returns nullable value. */
-	#define sjme_attrReturnNullable __maybenull
-
-	/** Method gives output. */
-	#define sjme_attrOutNotNull __out
-
-	/** Method output can be null. */
-	#define sjme_attrOutNullable __out_opt
-
-#elif defined(SJME_CONFIG_HAS_CLANG) || defined(SJME_CONFIG_HAS_GCC)
-	/* Clang has special analyzer stuff, but also same as GCC otherwise. */
-	#if defined(SJME_CONFIG_HAS_CLANG)
-		/** Returns nullable value. */
-		#define sjme_attrReturnNullable _Nullable_result
-	#endif
-
-	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
-		/** Artificial function. */
-		#define sjme_attrArtificial __attribute__((artificial))
-	#endif
-
+#elif defined(SJME_CONFIG_HAS_GCC_CLONE)
 	/** Check return value. */
 	#define sjme_attrCheckReturn __attribute__((warn_unused_result))
-
-	#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
-		/** Deprecated. */
-		#define sjme_attrDeprecated __attribute__((deprecated))
-	#endif
-
-	#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
-		/** Disable optimization. */
-		#define sjme_noOptimize __attribute__((optimize("O0"))) /* NOLINT */
-	#endif
-
+#else
+	/** Check return value. */
+	#define sjme_attrCheckReturn
+#endif
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
+	/** Deprecated. */
+	#define sjme_attrDeprecated __declspec(deprecated)
+#elif SJME_CONFIG_GCC_VERSION_LEAST(3, 0) || \
+	defined(SJME_CONFIG_HAS_CLANG)
+	/** Deprecated. */
+	#define sjme_attrDeprecated __attribute__((deprecated))
+#else
+	/** Deprecated. */
+	#define sjme_attrDeprecated
+#endif
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
+	/** Formatted string argument. */
+	#define sjme_attrFormatArg _Printf_format_string_
+#elif SJME_CONFIG_MSVC_SAL_LEAST(1)
+	/** Formatted string argument. */
+	#define sjme_attrFormatArg __format_string
+#else
+	/** Formatted string argument. */
+	#define sjme_attrFormatArg
+#endif
+	
+#if defined(SJME_CONFIG_HAS_GCC_CLONE)
 	/**
 	 * Formatted string.
 	 *
@@ -138,40 +101,7 @@ extern "C"
 	 */
 	#define sjme_attrFormatOuter(formatIndex, vaIndex) \
 		__attribute__((__format__(__printf__, formatIndex + 1, vaIndex + 1)))
-
-	/** Indicates a callback. */
-	#define sjme_attrCallback __attribute__((callback))
-
-	#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
-		/** Not used. */
-		#define sjme_attrUnused __attribute__((unused))
-	#endif
-
-	/** Not used enum constant. */
-	#define sjme_attrUnusedEnum(x) x sjme_attrUnused
-#endif
-
-#if !defined(sjme_attrCallback)
-	/** Indicates a callback. */
-	#define sjme_attrCallback
-#endif
-
-#if !defined(sjme_attrCheckReturn)
-	/** Return value must be checked. */
-	#define sjme_attrCheckReturn
-#endif
-
-#if !defined(sjme_attrDeprecated)
-	/** Deprecated. */
-	#define sjme_attrDeprecated
-#endif
-
-#if !defined(sjme_attrFormatArg)
-	/** Formatted string argument. */
-	#define sjme_attrFormatArg
-#endif
-
-#if !defined(sjme_attrFormatOuter)
+#else
 	/**
 	 * Formatted string.
 	 *
@@ -181,78 +111,208 @@ extern "C"
 	 */
 	#define sjme_attrFormatOuter(formatIndex, vaIndex)
 #endif
-
-#if !defined(sjme_attrInValue)
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
+	/** Method takes input. */
+	#define sjme_attrInValue _In_
+#elif SJME_CONFIG_MSVC_SAL_LEAST(1)
+	/** Method takes input. */
+	#define sjme_attrInValue __in
+#else
 	/** Method takes input. */
 	#define sjme_attrInValue
 #endif
-
-#if !defined(sjme_attrInRange)
-	/** Input value range. */
-	#define sjme_attrInRange(lo, hi)
-#endif
-
-#if !defined(sjme_attrReturnNullable)
-	/** Returns a nullable value. */
-	#define sjme_attrReturnNullable
-#endif
-
-#if !defined(sjme_attrInValue)
-	/** Takes input value. */
-	#define sjme_attrInValue
-#endif
-
-#if !defined(sjme_attrInNotNull)
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
+	/** Input cannot be null. */
+	#define sjme_attrInNotNull _In_
+#elif SJME_CONFIG_MSVC_SAL_LEAST(1)
+	/** Input cannot be null. */
+	#define sjme_attrInNotNull __in
+#else
 	/** Cannot be null. */
 	#define sjme_attrInNotNull sjme_attrInValue
 #endif
-
-#if !defined(sjme_attrInNullable)
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
+	/** Input can be null. */
+	#define sjme_attrInNullable _In_opt_
+#elif SJME_CONFIG_MSVC_SAL_LEAST(1)
+	/** Input can be null. */
+	#define sjme_attrInNullable __in_opt
+#else
 	/** Nullable. */
 	#define sjme_attrInNullable sjme_attrInValue
 #endif
-
-#if !defined(sjme_attrOutNotNull)
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
 	/** Method gives output. */
-	#define sjme_attrOutNotNull sjme_attrInNotNull
+	#define sjme_attrOutNotNull _Out_
+#elif SJME_CONFIG_MSVC_SAL_LEAST(1)
+	/** Method gives output. */
+	#define sjme_attrOutNotNull __out
+#else
+	/** Method gives output. */
+	#define sjme_attrOutNotNull
 #endif
-
-#if !defined(sjme_attrOutNullable)
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
 	/** Method output can be null. */
-	#define sjme_attrOutNullable sjme_attrInNullable
+	#define sjme_attrOutNullable _Out_opt_
+#elif SJME_CONFIG_MSVC_SAL_LEAST(1)
+	/** Method output can be null. */
+	#define sjme_attrOutNullable __out_opt
+#else
+	/** Method output can be null. */
+	#define sjme_attrOutNullable
 #endif
-
-#if !defined(sjme_attrInOutNotNull)
+	
+#if 0
+#else
+	/** Modifies the output. */
+	#define sjme_attrOutModify
+#endif
+	
+#if 0
+#else
+	/** Overwrites the output. */
+	#define sjme_attrOutOverwrite
+#endif
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
+	/** Takes input and produces output. */
+	#define sjme_attrInOutNotNull _In_ _Out_
+#elif SJME_CONFIG_MSVC_SAL_LEAST(1)
+	/** Takes input and produces output. */
+	#define sjme_attrInOutNotNull __in __out
+#else
 	/** Takes input and produces output. */
 	#define sjme_attrInOutNotNull sjme_attrInNotNull sjme_attrOutNotNull
 #endif
-
-#if !defined(sjme_attrInOutNullable)
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
+	/** Takes input and produces output. */
+	#define sjme_attrInOutNullable _In_opt_ _Out_opt_
+#elif SJME_CONFIG_MSVC_SAL_LEAST(1)
+	/** Takes input and produces output. */
+	#define sjme_attrInOutNullable __in_opt __out_opt
+#else
 	/** Takes input and produces output. */
 	#define sjme_attrInOutNullable sjme_attrInNullable sjme_attrOutNullable
 #endif
-
-#if !defined(sjme_attrInNotNullBuf)
-	/** Input to buffer. */
-	#define sjme_attrInNotNullBuf(lenArg) sjme_attrInNotNull
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
+	/** Input value range. */
+	#define sjme_attrInRange(lo, hi) _In_range_((lo), (hi))
+#else
+	/** Input value range. */
+	#define sjme_attrInRange(lo, hi)
 #endif
-
-#if !defined(sjme_attrOutNotNullBuf)
-	/** Output to buffer. */
-	#define sjme_attrOutNotNullBuf(lenArg) sjme_attrOutNotNull
-#endif
-
-#if !defined(sjme_attrInOutNotNullBuf)
-	/** Input/output to/from buffer. */
-	#define sjme_attrInOutNotNullBuf(lenArg) \
-		sjme_attrInNotNullBuf(lenArg) sjme_attrOutNotNullBuf(lenArg)
-#endif
-
-#if !defined(sjme_attrOutRange)
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
+	/** Output value range. */
+	#define sjme_attrOutRange(lo, hi) _Out_range_((lo), (hi))
+#else
 	/** Output value range. */
 	#define sjme_attrOutRange(lo, hi)
 #endif
 
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
+	/** Returns nullable value. */
+	#define sjme_attrReturnNullable _Outptr_result_maybenull_z_
+#elif SJME_CONFIG_MSVC_SAL_LEAST(1)
+	/** Returns nullable value. */
+	#define sjme_attrReturnNullable __maybenull
+#elif defined(SJME_CONFIG_HAS_CLANG)
+	/** Returns nullable value. */
+	#define sjme_attrReturnNullable _Nullable_result
+#else
+	/** Returns a nullable value. */
+	#define sjme_attrReturnNullable
+#endif
+	
+#if SJME_CONFIG_MSVC_SAL_LEAST(2)
+	/** Output to buffer. */
+	#define sjme_attrOutNotNullBuf(lenArg) _Out_writes_(lenArg)
+#else
+	/** Output to buffer. */
+	#define sjme_attrOutNotNullBuf(lenArg) \
+		sjme_attrOutNotNull sjme_attrOutModify
+#endif
+	
+#if 0
+#else
+	/** Input to buffer. */
+	#define sjme_attrInNotNullBuf(lenArg) sjme_attrInNotNull
+#endif
+	
+#if 0
+#else
+	/** Input/output to/from buffer. */
+	#define sjme_attrInOutNotNullBuf(lenArg) \
+		sjme_attrInNotNullBuf(lenArg) sjme_attrOutNotNullBuf(lenArg)
+#endif
+	
+#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
+	/** Artificial function. */
+	#define sjme_attrArtificial __attribute__((artificial))
+#else
+	/** Artificial function. */
+	#define sjme_attrArtificial
+#endif
+	
+#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
+	/** Not used. */
+	#define sjme_attrUnused __attribute__((unused))
+#else
+	/** Unused value. */
+	#define sjme_attrUnused
+#endif
+	
+#if defined(SJME_CONFIG_HAS_GCC_CLONE)
+	/** Indicates a callback. */
+	#define sjme_attrCallback __attribute__((callback))
+#else
+	/** Indicates a callback. */
+	#define sjme_attrCallback
+#endif
+
+#if SJME_CONFIG_GCC_VERSION_LEAST(17, 0) || \
+	SJME_CONFIG_CLANG_VERSION_LEAST(21, 1)
+	/** Function pointer implementation. */
+	#define sjme_fp(funcPtr) \
+		__attribute__((cfi_salt(#funcPtr)))
+#else
+	/** Function pointer implementation. */
+	#define sjme_fp(funcPtr)
+#endif
+	
+#pragma endregion(linting)
+#pragma region(compilerAttrs)
+	
+#if SJME_CONFIG_GCC_VERSION_LEAST(4, 4)
+	/** Disable optimization. */
+	#define sjme_noOptimize __attribute__((optimize("O0"))) /* NOLINT */
+#else
+	/** Disable optimization. */
+	#define sjme_noOptimize
+#endif
+	
+#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
+	/** Optimize this specific function. */
+	#define sjme_attrOptimize __attribute__((optimize("-Os"))) /* NOLINT */
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Optimize this specific function. */
+	#define sjme_attrOptimize __pragma(optimize("t", on))
+#else
+	/** Optimize this specific function. */
+	#define sjme_attrOptimize
+#endif
+	
+#pragma endregion(compilerAttrs)
+#pragma region(pseudoAttrs)
+	
 /** Positive value. */
 #define sjme_attrInPositive sjme_attrInRange(0, INT32_MAX)
 
@@ -270,58 +330,100 @@ extern "C"
 
 /** Negative one to positive. */
 #define sjme_attrOutNegativeOnePositive sjme_attrOutRange(-1, INT32_MAX)
-
-#if !defined(sjme_flexibleArrayCount)
-	/** Flexible array count, zero by default. */
-	#define sjme_flexibleArrayCount 0
+	
+/** Not used enum constant. */
+#define sjme_attrUnusedEnum(x) x sjme_attrUnused
+	
+#pragma endregion(pseudoAttrs)
+#pragma region(visibilityLinkage)
+	
+#if defined(SJME_CONFIG_HAS_GCC_CLONE) || \
+	SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
+	/** Inline function. */
+	#define sjme_inline inline
+#elif defined(SJME_CONFIG_HAS_MSVC)
+	/** Inline function. */
+	#define sjme_inline __inline
+#else
+	/** Inline function. */
+	#define sjme_inline
 #endif
 
-#if !defined(sjme_flexibleArrayCountUnion)
-	/** Flexible array count but for unions. */
-	#define sjme_flexibleArrayCountUnion 1
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) && \
+	!defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
+	/** Symbol is exported through a library. */
+	#define sjme_attrExport __declspec(dllexport)
+#elif SJME_CONFIG_GCC_VERSION_LEAST(3, 0) || \
+	defined(SJME_CONFIG_HAS_CLANG)
+	/** Symbol is exported through a library. */
+	#define sjme_attrExport __attribute__((visibility("default")))
+#else
+	/** Symbol is exported through a library. */
+	#define sjme_attrExport
 #endif
 
-#if !defined(sjme_attrUnused)
-	/** Unused value. */
-	#define sjme_attrUnused
+#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0) || \
+	defined(SJME_CONFIG_HAS_CLANG)
+	/** Symbol is hidden in a library. */
+	#define sjme_attrHidden __attribute__((visibility("hidden")))
+#else
+	/** Symbol is hidden in a library. */
+	#define sjme_attrHidden
 #endif
 
-#if !defined(sjme_attrUnusedEnum)
-	/** Unused enumeration element. */
-	#define sjme_attrUnusedEnum(x) x
-#endif
-
-#if !defined(sjme_attrArtificial)
-	/** Artificial function. */
-	#define sjme_attrArtificial
-#endif
-
-#if !defined(sjme_attrOutModify)
-	/** Modifies the output. */
-	#define sjme_attrOutModify
-#endif
-
-#if !defined(sjme_attrOutOverwrite)
-	/** Overwrites the output. */
-	#define sjme_attrOutOverwrite
-#endif
-
-#if !defined(sjme_inline)
-	#if !defined(SJME_CONFIG_HAS_MSVC) || \
-		SJME_CONFIG_MSVC_VERSION_LEAST(SJME_CONFIG_MSVC_VERSION_2010)
-		/** Inline function. */
-		#define sjme_inline inline
+/* Weak does not work on Windows, select_any is an "equivalent". */
+#if defined(SJME_CONFIG_HAS_ATTR_SELECT_ANY)
+	/** Select any symbol weakly, if possible. */
+	#define sjme_attrWeak
+#else
+	#if defined(SJME_CONFIG_HAS_GCC) || \
+		defined(SJME_CONFIG_HAS_CLANG)
+		/** Select any symbol weakly, if possible. */
+		#define sjme_attrWeak __attribute__((weak))
 	#else
-		/** Inline function. */
-		#define sjme_inline __inline
+		/** Select any symbol weakly, if possible. */
+		#define sjme_attrWeak
 	#endif
 #endif
-
-#if !defined(sjme_noOptimize)
-	/** Disable optimization. */
-	#define sjme_noOptimize
+	
+/* Weak does not work on Windows, select_any is an "equivalent". */
+#if defined(SJME_CONFIG_HAS_ATTR_SELECT_ANY)
+	#if defined(SJME_CONFIG_HAS_MSVC)
+		/** Select any symbol that exists, if possible. */
+		#define sjme_attrSelectAny __declspec(selectany)
+	#elif defined(SJME_CONFIG_HAS_GCC) || \
+		defined(SJME_CONFIG_HAS_CLANG)
+		/** Select any symbol that exists, if possible. */
+		#define sjme_attrSelectAny __attribute__((selectany))
+	#else
+		/** Select any symbol that exists, if possible. */
+		#define sjme_attrSelectAny
+	#endif
+#else
+	/** Select any symbol that exists, if possible. */
+	#define sjme_attrSelectAny
 #endif
-
+	
+#if defined(SJME_CONFIG_HAS_ATTR_SELECT_ANY)
+	/**
+	 * Uses @link sjme_attrSelectAny @endlink or @link sjme_attrWeak @endlink
+	 * based on current the platform.
+	 */
+	#define sjme_attrSelectAnyOrWeak sjme_attrSelectAny
+#elif defined(SJME_CONFIG_HAS_ATTR_WEAK)
+	/**
+	 * Uses @link sjme_attrSelectAny @endlink or @link sjme_attrWeak @endlink
+	 * based on current the platform.
+	 */
+	#define sjme_attrSelectAnyOrWeak sjme_attrWeak
+#else
+	/**
+	 * Uses @link sjme_attrSelectAny @endlink or @link sjme_attrWeak @endlink
+	 * based on current the platform.
+	 */
+	#define sjme_attrSelectAnyOrWeak
+#endif
+	
 /* If building with libwine, we have to match the system calling convention. */
 #if defined(SJME_CONFIG_HAS_OS_WINDOWS_16)
 	/** SquirrelJME exported calling convention. */
@@ -334,6 +436,17 @@ extern "C"
 	/** SquirrelJME exported calling convention. */
 	#define sjme_attrExportCall
 #endif
+	
+#if defined(SJME_CONFIG_HAS_ARCH_IA16)
+	/** Full address range pointer. */
+	#define sjme_attrHugeP huge
+#else
+	/** Full address range pointer. */
+	#define sjme_attrHugeP
+#endif
+	
+#pragma endregion(visibilityLinkage)
+#pragma region(alignPack)
 
 #if defined(SJME_CONFIG_HAS_GCC) || defined(SJME_CONFIG_HAS_CLANG)
 	/** Packed enumeration. */
@@ -350,7 +463,7 @@ extern "C"
 	/** Packed structure. */
 	#define sjme_packed
 #endif
-
+	
 #if defined(SJME_CONFIG_HAS_MSVC)
 	/** Align to 32-bit. */
 	#define sjme_align32 __declspec(align(4))
@@ -452,41 +565,9 @@ extern "C"
 /** Packed structure (wrapped). */
 #define sjme_packedW(var) \
 	sjme_packedL var sjme_packedR
-
-#if defined(SJME_CONFIG_HAS_ARCH_IA16)
-	/** Full address range pointer. */
-	#define sjme_attrHugeP huge
-#else
-	/** Full address range pointer. */
-	#define sjme_attrHugeP
-#endif
-
-#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0)
-	/** Optimize this specific function. */
-	#define sjme_attrOptimize __attribute__((optimize("-Os"))) /* NOLINT */
-#elif defined(SJME_CONFIG_HAS_MSVC)
-	/** Optimize this specific function. */
-	#define sjme_attrOptimize __pragma(optimize("t", on))
-#else
-	/** Optimize this specific function. */
-	#define sjme_attrOptimize
-#endif
-
-#if SJME_CONFIG_GCC_VERSION_LEAST(17, 0) || \
-	SJME_CONFIG_CLANG_VERSION_LEAST(21, 1)
-	/** Function pointer implementation. */
-	#define sjme_fp(funcPtr) \
-		__attribute__((cfi_salt(#funcPtr)))
-#else
-	/** Function pointer implementation. */
-	#define sjme_fp(funcPtr)
-#endif
-
-/** Force specific size for an enum, must be int sized. */
-#define sjme_enumInt(type) \
-	SJME__enum_##type##_MINV = INT_MIN, \
-	SJME__enum_##type##_MAXV = INT_MAX, \
-	SJME__enum_##type##_INIT = -1
+	
+#pragma endregion(alignPack)
+#pragma region(other)
 
 #if SJME_CONFIG_GCC_VERSION_LEAST(9, 0)
 	/** Generic pointer which should really be the given type. */
@@ -528,82 +609,6 @@ extern "C"
 	#define sjme_attrOrder(primary, attr) primary attr
 #endif
 	
-	
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS) && \
-	!defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
-	/** Symbol is exported through a library. */
-	#define sjme_attrExport __declspec(dllexport)
-#elif SJME_CONFIG_GCC_VERSION_LEAST(3, 0) || \
-	defined(SJME_CONFIG_HAS_CLANG)
-	/** Symbol is exported through a library. */
-	#define sjme_attrExport __attribute__((visibility("default")))
-#else
-	/** Symbol is exported through a library. */
-	#define sjme_attrExport
-#endif
-
-#if SJME_CONFIG_GCC_VERSION_LEAST(3, 0) || \
-	defined(SJME_CONFIG_HAS_CLANG)
-	/** Symbol is hidden in a library. */
-	#define sjme_attrHidden __attribute__((visibility("hidden")))
-#else
-	/** Symbol is hidden in a library. */
-	#define sjme_attrHidden
-#endif
-
-/* Weak does not work on Windows, select_any is an "equivalent". */
-#if defined(SJME_CONFIG_HAS_ATTR_SELECT_ANY)
-	/** Select any symbol weakly, if possible. */
-	#define sjme_attrWeak
-#else
-	#if defined(SJME_CONFIG_HAS_GCC) || \
-		defined(SJME_CONFIG_HAS_CLANG)
-		/** Select any symbol weakly, if possible. */
-		#define sjme_attrWeak __attribute__((weak))
-	#else
-		/** Select any symbol weakly, if possible. */
-		#define sjme_attrWeak
-	#endif
-#endif
-	
-/* Weak does not work on Windows, select_any is an "equivalent". */
-#if defined(SJME_CONFIG_HAS_ATTR_SELECT_ANY)
-	#if defined(SJME_CONFIG_HAS_MSVC)
-		/** Select any symbol that exists, if possible. */
-		#define sjme_attrSelectAny __declspec(selectany)
-	#elif defined(SJME_CONFIG_HAS_GCC) || \
-		defined(SJME_CONFIG_HAS_CLANG)
-		/** Select any symbol that exists, if possible. */
-		#define sjme_attrSelectAny __attribute__((selectany))
-	#else
-		/** Select any symbol that exists, if possible. */
-		#define sjme_attrSelectAny
-	#endif
-#else
-	/** Select any symbol that exists, if possible. */
-	#define sjme_attrSelectAny
-#endif
-	
-#if defined(SJME_CONFIG_HAS_ATTR_SELECT_ANY)
-	/**
-	 * Uses @link sjme_attrSelectAny @endlink or @link sjme_attrWeak @endlink
-	 * based on current the platform.
-	 */
-	#define sjme_attrSelectAnyOrWeak sjme_attrSelectAny
-#elif defined(SJME_CONFIG_HAS_ATTR_WEAK)
-	/**
-	 * Uses @link sjme_attrSelectAny @endlink or @link sjme_attrWeak @endlink
-	 * based on current the platform.
-	 */
-	#define sjme_attrSelectAnyOrWeak sjme_attrWeak
-#else
-	/**
-	 * Uses @link sjme_attrSelectAny @endlink or @link sjme_attrWeak @endlink
-	 * based on current the platform.
-	 */
-	#define sjme_attrSelectAnyOrWeak
-#endif
-	
 /* Some compilers support typedef volatile struct, others do not. */
 #if SJME_CONFIG_GCC_VERSION_LEAST(3, 0) || \
 	defined(SJME_CONFIG_HAS_CLANG) || \
@@ -614,6 +619,8 @@ extern "C"
 	/** Volatile struct type. */
 	#define sjme_attrVolatileStruct
 #endif
+	
+#pragma endregion(other)
 
 /*--------------------------------------------------------------------------*/
 

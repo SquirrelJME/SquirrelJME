@@ -383,6 +383,10 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 	if (sjme_error_is(error = sjme_nvm_store_windowSlotInfo(inWindow,
 		&workInfo, inSlot, inSlotType)))
 		return sjme_error_default(error);
+	
+	/* If the work storage is valid, there needs to be an at chain. */
+	if (workInfo.storage != NULL && workInfo.chain.at == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
 
 	/* The window base is the actual window. */
 	windowBase = (sjme_intPointer)inWindow;

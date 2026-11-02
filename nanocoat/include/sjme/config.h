@@ -699,6 +699,17 @@ extern "C" {
 	#define sjme_flexibleArrayCount 1
 #endif
 	
+#if !defined(sjme_flexibleArrayCountUnion)
+	/** Flexible array count but for unions. */
+	#define sjme_flexibleArrayCountUnion 1
+#endif
+	
+/** Force specific size for an enum, must be int sized. */
+#define sjme_enumInt(type) \
+	SJME__enum_##type##_MINV = INT_MIN, \
+	SJME__enum_##type##_MAXV = INT_MAX, \
+	SJME__enum_##type##_INIT = -1
+	
 /* SDCC does not have normal alloca. */
 #if !defined(sjme_alloca) && defined(SJME_CONFIG_HAS_SDCC)
 	/** Allocate on the heap. */
