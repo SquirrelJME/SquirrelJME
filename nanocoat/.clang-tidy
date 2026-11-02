@@ -141,3 +141,26 @@ CheckOptions:
   bugprone-assert-side-effect.AssertMacros: >
     sjme_message;
     sjme_messageB;
+    sjme_emit;
+    sjme_emitB;
+  bugprone-misplaced-widening-cast.CheckImplicitCasts: true
+  bugprone-assert-side-effect.CheckFunctionCalls: true
+  cppcoreguidelines-narrowing-conversions.PedanticMode: true
+  bugprone-sizeof-expression.WarnOnSizeOfIntegerExpression: true
+  cert-arr39-c.WarnOnSizeOfConstant: true
+  cert-arr39-c.WarnOnSizeOfIntegerExpression: true
+  bugprone-string-constructor.LargeLengthThreshold: 1024
+  bugprone-suspicious-enum-usage.StrictMode: 0
+  cert-oop57-cpp.MemCmpNames: >
+    memcmp;
+  cert-oop57-cpp.MemCpyNames: >
+    memcpy;
+  cert-oop57-cpp.MemSetNames: >
+    memset;
+  cppcoreguidelines-avoid-magic-numbers.IgnorePowersOf2IntegerValues: true
+  misc-include-cleaner.IgnoreHeaders: >
+    sjme/config.h;
+    sjme/stdGone.h;
+  misc-header-include-cycle.IgnoredFilesList: >
+    sjme/config.h;
+    sjme/stdGone.h;

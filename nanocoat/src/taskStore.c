@@ -428,8 +428,9 @@ sjme_errorCode sjme_nvm_store_windowSlot(
 			break;
 
 		case SJME_NVM_STORE_WRITE_PROMOTE:
-			/* Always allocate if the slot length is different. */
-			if (inTypeLen != atStorageLen)
+			/* Always allocate if the slot length is too small. */
+			if (atStorageLen == 0 || workInfo.storage == NULL ||
+				inTypeLen > atStorageLen)
 				allocNew = SJME_JNI_TRUE;
 			break;
 
@@ -621,7 +622,7 @@ sjme_errorCode sjme_nvm_store_windowSlotInfo(
 
 		/* The raw pointer is in the same location. */
 		outInfo->rawP = outInfo->storage;
-		outInfo->rawLen = 4 * at->width;
+		outInfo->rawLen = 4 * (sjme_jint)at->width;
 	}
 
 	/* The base type of the slot. */

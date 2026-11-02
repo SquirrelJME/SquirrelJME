@@ -227,11 +227,7 @@ typedef enum sjme_nvm_store_nativeSlot
  *
  * @since 2026/08/14
  */
-typedef enum sjme_nvm_store_javaSlot
-{
-	/** Integral enum. */
-	sjme_enumInt(sjme_nvm_store_javaSlot),
-} sjme_nvm_store_javaSlot;
+typedef sjme_jint sjme_nvm_store_javaSlot;
 
 struct sjme_nvm_store_file
 {
