@@ -689,7 +689,8 @@ int main(int argc, sjme_lpstr* argv)
 			sjme_atomic_g(sjme_nvm_thread, &mainTask->globals.mainThread));
 		
 		/* Tick the virtual machine. */
-		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, 4096,
+		if (sjme_error_is(error = sjme_nvm_loop_tick(inState,
+			SJME_TEST_TICK_RATE,
 			NULL, &terminated)))
 		{
 			/* Fail unless this was interrupted. */
@@ -704,6 +705,15 @@ int main(int argc, sjme_lpstr* argv)
 			/* Everything else. */
 			else
 			{
+				/* Fail tape. */
+				sjme_emitB(
+					"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				
+				/* Emit a backtrace for the current test progress. */
+				sjme_nvm_task_stackTraceThread(
+					sjme_atomic_g(sjme_nvm_thread,
+					&mainTask->globals.mainThread));
+				
 				sjme_emitB("Loop failure: %d", 
 					(int)error);
 				goto fail_loop;

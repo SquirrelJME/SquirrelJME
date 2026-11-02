@@ -109,6 +109,9 @@ typedef struct sjme_availableTest
  */
 #define SJME_TEST_DECLARE(name) \
 	sjme_attrUnused sjme_testResult name(sjme_attrUnused sjme_test* test)
+	
+/** Default tick rate for tests. */
+#define SJME_TEST_TICK_RATE 8192
 
 /*--------------------------------------------------------------------------*/
 

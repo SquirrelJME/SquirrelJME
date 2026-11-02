@@ -562,8 +562,12 @@ static sjme_errorCode sjme_nvm_vmClass_checkInitSuper(
 		for (i = 0; i < SJME_NUM_EXTENDED_JAVA_TYPE_IDS; i++)
 		{
 			/* This is just a copy of the field count. */
-			inClass->fields[index].base[i] =
-				inSuperClass->fields[index].count[i];
+			/* Static fields from super classes do not count however. */
+			if (index == SJME_NVM_CLASS_MEMBER_STATIC)
+				inClass->fields[index].base[i] = 0;
+			else
+				inClass->fields[index].base[i] =
+					inSuperClass->fields[index].count[i];
 			
 			/* However, we add the info to get our current field count. */
 			inClass->fields[index].count[i] = inClass->fields[index].base[i] +

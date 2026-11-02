@@ -14,6 +14,8 @@
 #include "sjme/nvm/loop.h"
 #include "test.h"
 
+#include "sjme/nvm/task.h"
+
 /**
  * Main entry for TAC tests, these are higher level and are more complex
  * requiring a fully working Java environment.
@@ -37,6 +39,7 @@ int main(int argc, sjme_lpstr* argv)
 	sjme_jboolean terminated;
 	const sjme_nal* nal;
 	sjme_lpstr classpathSplice;
+	sjme_nvm_task mainTask;
 	
 	/* Incorrect number of arguments? */
 	if (argc < 5)
@@ -121,8 +124,10 @@ int main(int argc, sjme_lpstr* argv)
 	
 	/* Boot the virtual machine. */
 	inState = NULL;
+	mainTask = NULL;
 	if (sjme_error_is(error = sjme_nvm_boot(pool,
-		&bootParam, &inState, NULL)))
+		&bootParam, &inState, &mainTask)) ||
+		mainTask == NULL)
 		goto fail_boot;
 	
 	/* Iterate the virtual machine loop. */
@@ -132,14 +137,31 @@ int main(int argc, sjme_lpstr* argv)
 		/* Let other threads run. */
 		sjme_thread_yield();
 		
+		/* Ticker tape. */
+		sjme_emitB("--------------------------------------------------------");
+		
+		/* Emit a backtrace for the current test progress. */
+		sjme_nvm_task_stackTraceThread(
+			sjme_atomic_g(sjme_nvm_thread, &mainTask->globals.mainThread));
+		
 		/* Tick the virtual machine. */
-		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, -1,
+		if (sjme_error_is(error = sjme_nvm_loop_tick(inState,
+			SJME_TEST_TICK_RATE,
 			NULL, &terminated)))
 		{
 			/* Fail unless this was interrupted. */
 			if (error == SJME_ERROR_INTERRUPTED)
 				continue;
 			
+			/* Fail tape. */
+			sjme_emitB("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			
+			/* Emit a backtrace for the current test progress. */
+			sjme_nvm_task_stackTraceThread(
+				sjme_atomic_g(sjme_nvm_thread, &mainTask->globals.mainThread));
+			
+			sjme_emitB("Loop failure: %d", 
+				(int)error);
 			goto fail_loop;
 		}
 	}
