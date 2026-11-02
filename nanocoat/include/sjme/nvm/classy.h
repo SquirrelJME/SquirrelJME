@@ -597,16 +597,16 @@ struct sjme_nvm_class_infoBase
 
 	/** The interfaces this class implements. */
 	sjme_list(sjme_nvm_stringPool_string)* interfaceNames;
+	
+	/** The field count per type. */
+	sjme_jushort fieldCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
+		[SJME_NUM_EXTENDED_JAVA_TYPE_IDS];
 
 	/** Fields within the method. */
 	sjme_list(sjme_nvm_class_fieldInfo)* fields;
 	
-	/** The field count per type. */
-	sjme_jshort fieldCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE]
-		[SJME_NUM_EXTENDED_JAVA_TYPE_IDS];
-	
 	/** The method count per type. */
-	sjme_jshort methodCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
+	sjme_jushort methodCount[SJME_NVM_CLASS_NUM_INSTANCE_TYPE];
 
 	/** Methods within the class. */
 	sjme_list(sjme_nvm_class_methodInfo)* methods;

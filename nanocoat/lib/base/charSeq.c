@@ -624,6 +624,7 @@ sjme_errorCode sjme_charSeq_newNarrow(
 	sjme_attrInPositive sjme_jint offset,
 	sjme_attrInNegativeOnePositive sjme_jint limitLen)
 {
+	sjme_errorCode error;
 	sjme_jint i, n;
 	sjme_charSeq result;
 	const sjme_jbyte* base;
@@ -643,10 +644,14 @@ sjme_errorCode sjme_charSeq_newNarrow(
 
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(sjme_alloc(allocPool,
+	if (sjme_error_is(error = sjme_alloc(allocPool,
 		sjme_charSeq_calcSize(sjme_jbyte, n),
 		(sjme_pointer*)&result)) || result == NULL)
-		return sjme_error_outOfMemory(allocPool, n);
+	{
+		if (error == SJME_ERROR_OUT_OF_MEMORY)
+			return sjme_error_outOfMemory(allocPool, n);
+		return sjme_error_default(error);
+	}
 
 	/* Fill in. */
 	result->type = SJME_CHAR_SEQ_TYPE_NARROW;
@@ -671,6 +676,7 @@ sjme_errorCode sjme_charSeq_newNarrowFromWide(
 	sjme_charSeq result;
 	const sjme_jchar* base;
 	sjme_jbyte* out;
+	sjme_errorCode error;
 	
 	if (allocPool == NULL || outSeq == NULL || wide == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -686,10 +692,14 @@ sjme_errorCode sjme_charSeq_newNarrowFromWide(
 
 	/* Allocate result. */
 	result = NULL;
-	if (sjme_error_is(sjme_alloc(allocPool,
+	if (sjme_error_is(error = sjme_alloc(allocPool,
 		sjme_charSeq_calcSize(sjme_jbyte, n),
 		(sjme_pointer*)&result)) || result == NULL)
-		return sjme_error_outOfMemory(allocPool, n);
+	{
+		if (error == SJME_ERROR_OUT_OF_MEMORY)
+			return sjme_error_outOfMemory(allocPool, n);
+		return sjme_error_default(error);
+	}
 
 	/* Fill in. */
 	result->type = SJME_CHAR_SEQ_TYPE_NARROW;

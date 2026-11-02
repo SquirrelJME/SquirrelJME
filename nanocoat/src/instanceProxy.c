@@ -142,7 +142,8 @@ sjme_errorCode sjme_nvm_instance_proxyClassA(
 		sizeof(*info), SJME_NVM_STRUCT_CLASS_INFO,
 		SJME_AS_NVM_COMMONP(&info))) || info == NULL)
 	{
-		error = sjme_error_outOfMemory(inState->allocPool, sizeof(*info));
+		if (error == SJME_ERROR_OUT_OF_MEMORY)
+			error = sjme_error_outOfMemory(inState->allocPool, sizeof(*info));
 		goto fail_allocInfo;
 	}
 

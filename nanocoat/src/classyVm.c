@@ -627,7 +627,11 @@ static sjme_errorCode sjme_nvm_vmClass_checkLoadArray(
 	if (sjme_error_is(error = sjme_nvm_alloc(inState,
 		sizeof(*info), SJME_NVM_STRUCT_CLASS_INFO,
 		SJME_AS_NVM_COMMONP(&info))) || info == NULL)
-		return sjme_error_outOfMemory(allocPool, sizeof(*info));
+	{
+		if (error == SJME_ERROR_OUT_OF_MEMORY)
+			return sjme_error_outOfMemory(allocPool, sizeof(*info));
+		return sjme_error_default(error);
+	}
 
 	/* Lookup self name. */
 	thisName = NULL;
@@ -710,7 +714,11 @@ static sjme_errorCode sjme_nvm_vmClass_checkLoadPrimitive(
 	if (sjme_error_is(error = sjme_nvm_alloc(inState,
 		sizeof(*info), SJME_NVM_STRUCT_CLASS_INFO,
 		SJME_AS_NVM_COMMONP(&info))) || info == NULL)
-		return sjme_error_outOfMemory(allocPool, sizeof(*info));
+	{
+		if (error == SJME_ERROR_OUT_OF_MEMORY)
+			return sjme_error_outOfMemory(allocPool, sizeof(*info));
+		return sjme_error_default(error);
+	}
 
 	/* Lookup self name. */
 	thisName = NULL;

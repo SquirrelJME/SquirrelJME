@@ -235,10 +235,10 @@ typedef struct sjme_nvm_jclass_fields
 typedef struct sjme_nvm_jclass_methods
 {
 	/** Base index for methods. */
-	sjme_jshort base;
+	sjme_jushort base;
 	
 	/** The number of methods. */
-	sjme_jshort count;
+	sjme_jushort count;
 	
 	/** Method bindings for this class. */
 	sjme_list(sjme_jmethodID)* binds;
