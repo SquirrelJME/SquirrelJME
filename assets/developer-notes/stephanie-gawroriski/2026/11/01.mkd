@@ -1,0 +1,7 @@
+# 2026/11/01
+
+## 00:50
+
+It is always a good feeling when you refactor something and it fixes a bug.
+That at least is often times better than actually debugging if something is
+needing a refactor.
