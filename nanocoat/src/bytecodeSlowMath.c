@@ -760,8 +760,12 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 		func == SJME_NVM_BYTECODE_MATH_REM) &&
 		b.v.i == 0)
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Except exception. */
+		if (sjme_error_is(error = sjme_nvm_task_frameEmitE(inFrame,
+			SJME_ERROR_ARITHMETIC, NULL, NULL)))
+			return sjme_error_vmError(inFrame, error);
+		
+		goto skip_except;
 	}
 
 	/* Perform the math. */
@@ -799,6 +803,7 @@ SJME_NVM_BYTECODE_SLOW(MathInt)
 		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
 
+skip_except:
 	/* Commit GC. */
 	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);
@@ -834,8 +839,12 @@ SJME_NVM_BYTECODE_SLOW(MathLong)
 		func == SJME_NVM_BYTECODE_MATH_REM) &&
 		(b.v.j.part.lo == 0U && b.v.j.part.hi == 0))
 	{
-		sjme_todo("Impl?");
-		return sjme_error_notImplemented(0);
+		/* Except exception. */
+		if (sjme_error_is(error = sjme_nvm_task_frameEmitE(inFrame,
+			SJME_ERROR_ARITHMETIC, NULL, NULL)))
+			return sjme_error_vmError(inFrame, error);
+		
+		goto skip_except;
 	}
 
 	/* Perform the math. */
@@ -898,6 +907,7 @@ SJME_NVM_BYTECODE_SLOW(MathLong)
 		&commit, &result)))
 		return sjme_error_vmError(inFrame, error);
 
+skip_except:
 	/* Commit GC. */
 	if (sjme_error_is(error = sjme_nvm_task_frameCommit(inFrame, &commit)))
 		return sjme_error_vmError(inFrame, error);

@@ -97,6 +97,11 @@ sjme_errorCode sjme_nvm_task_threadEmitEV(
 		case SJME_ERROR_ARRAY_INDEX_OUT_OF_BOUNDS:
 			mapped = SJME_NVM_COMMON_EXCEPTION_ARRAY_IOOB;
 			break;
+			
+		case SJME_ERROR_ARITHMETIC:
+		case SJME_ERROR_DIVIDE_BY_ZERO:
+			mapped = SJME_NVM_COMMON_EXCEPTION_ARITHMETIC;
+			break;
 		
 		case SJME_ERROR_CLASS_CAST:
 			mapped = SJME_NVM_COMMON_EXCEPTION_CLASS_CAST;
@@ -159,6 +164,7 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 	/* This common class is not a throwable? */
 	switch (commonClass)
 	{
+		case SJME_NVM_COMMON_EXCEPTION_ARITHMETIC:
 		case SJME_NVM_COMMON_EXCEPTION_ARRAY_IOOB:
 		case SJME_NVM_COMMON_EXCEPTION_ARRAY_STORE:
 		case SJME_NVM_COMMON_EXCEPTION_CLASS_CAST:
@@ -223,17 +229,25 @@ sjme_errorCode sjme_nvm_task_threadEmitV(
 	va_copy(copy, args);
 
 	memset(buf, 0, sizeof(buf));
-	vsnprintf(buf, SJME_DEBUG_BUF_SIZE - 1, message, copy);
-	buf[SJME_DEBUG_BUF_SIZE - 1] = '\0';
+	if (message != NULL)
+	{
+		vsnprintf(buf, SJME_DEBUG_BUF_SIZE - 1, message, copy);
+		buf[SJME_DEBUG_BUF_SIZE - 1] = '\0';
+	}
 	
 	va_end(copy);
 
 	/* Setup string argument. */
 	memset(&argV, 0, sizeof(argV));
 	argV[0].t = SJME_JAVA_TYPE_ID_OBJECT;
-	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
-		inThread, SJME_AS_JSTRINGP(&argV[0].v.l), SJME_JNI_FALSE, buf)))
-		return sjme_error_default(error);
+	argV[0].v.l = NULL;
+	if (message != NULL)
+	{
+		if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
+			inThread, SJME_AS_JSTRINGP(&argV[0].v.l), 
+			SJME_JNI_FALSE, buf)))
+			return sjme_error_default(error);
+	}
 
 	/* Initialize exception. */
 	if (sjme_error_is(error = sjme_nvm_instance_defaultInit(inThread,

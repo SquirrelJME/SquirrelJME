@@ -374,6 +374,9 @@ typedef enum sjme_nvm_task_commonClassId
 	/** Null class. */
 	SJME_NVM_COMMON_NULL,
 	
+	/** @code java.lang.ArithmeticException @endcode. */
+	SJME_NVM_COMMON_EXCEPTION_ARITHMETIC,
+	
 	/** @code java.lang.ArrayStoreException @endcode. */
 	SJME_NVM_COMMON_EXCEPTION_ARRAY_STORE,
 	

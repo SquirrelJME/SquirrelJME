@@ -650,8 +650,14 @@ typedef enum sjme_errorCode
 	/** Need to recycle. */
 	SJME_ERROR_RECYCLE = -200,
 	
+	/** Arithmetic error. */
+	SJME_ERROR_ARITHMETIC = -201,
+	
+	/** Divide by zero. */
+	SJME_ERROR_DIVIDE_BY_ZERO = -202,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -201,
+	SJME_NUM_ERROR_CODES = -203,
 } sjme_errorCode;
 
 /**

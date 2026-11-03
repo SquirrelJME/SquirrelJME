@@ -194,6 +194,10 @@ sjme_errorCode sjme_nvm_task_commonClass(
 		case SJME_NVM_COMMON_CLASS:
 			commonName = "Ljava/lang/Class;";
 			break;
+			
+		case SJME_NVM_COMMON_EXCEPTION_ARITHMETIC:
+			commonName = "Ljava/lang/ArithmeticException;";
+			break;
 
 		case SJME_NVM_COMMON_EXCEPTION_ARRAY_STORE:
 			commonName = "Ljava/lang/ArrayStoreException;";
