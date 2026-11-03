@@ -1,0 +1,11 @@
+# 2026/11/03
+
+## 00:35
+
+82 out of 362 tests pass, which is 22.7% of the tests... of course the 
+majority of these are failure conditions. Considering that 1/4 of what are
+effectively duplicates are done with. Naturally, these ones are very easy to
+implement and it gets more difficult and more thought is needed to get the
+rest. It is good to see though. I do however want to take a slight pivot and
+get NanoCoat launching in Standalone, which at this point is just making sure
+that all the command line options are parsed correctly.
