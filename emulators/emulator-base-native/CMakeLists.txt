@@ -388,7 +388,8 @@ add_library(libEmulatorBase SHARED
 # especially for plain makefiles
 add_dependencies(libEmulatorBase
 	SquirrelJME-BaseStatic
-	SquirrelJME-libJvmDyLib)
+	SquirrelJME-libJvmDyLib
+	SquirrelJME-SquirrelJME)
 
 # Always make this position independent
 squirreljme_always_fpic(libEmulatorBase)
