@@ -69,6 +69,9 @@ sjme_intMax sjme_lpcstoimax(sjme_attrInNotNull sjme_lpcstr str,
 	sjme_intMax result, add, mul, div;
 	sjme_cchar c;
 	sjme_jboolean negate;
+	
+	/* TODO FIXME: Refactor and commonize sjme_lpcstoimax/sjme_lpcwstoimax */
+	/* TODO FIXME: and include sjme_charSeq! */
 
 	/* Invalid inputs? */
 	if (str == NULL || base < 2 || base > 36)
@@ -270,6 +273,9 @@ sjme_intMax sjme_lpwcstoimax(sjme_attrInNotNull sjme_lpcwstr str,
 	sjme_intMax result, add, mul, div;
 	sjme_jchar c;
 	sjme_jboolean negate;
+	
+	/* TODO FIXME: Refactor and commonize sjme_lpcstoimax/sjme_lpcwstoimax */
+	/* TODO FIXME: and include sjme_charSeq! */
 
 	/* Invalid inputs? */
 	if (str == NULL || base < 2 || base > 36)

@@ -58,7 +58,7 @@ static const sjme_joptarg_helpParam sjme_joptarg_helpParams[] =
 		"Write a VisualVM snapshot (.nps) to the given path."},
 	{"-XstartOnFirstThread",
 		"Ignored."},
-	{"-Xthread:<single|coop|shared|multi|smt>",
+	{"-Xthread:<single|coop|shared|multi|smt|noht>",
 		"The threading model to use."},
 	{"-Xtrace:<flag|...>",
 		"Trace flags to permanently set on by default."},
@@ -994,13 +994,14 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	sjme_attrInNotNull sjme_lpcstr* argv)
 {
 	sjme_errorCode error;
-	sjme_jint argAt;
+	sjme_jint argAt, parseEntryId;
 	sjme_charSeqStatic argSeq;
 	sjme_jboolean jarSpecified, runViaMain;
 	sjme_nal_stdOFunc helpOut;
 	sjme_nal_stdIoFlush helpFlush;
 	sjme_lpcstr bootRom, helpOpt, versionOpt, tempUtf, tempTwo, runJar;
 	sjme_path path;
+	sjme_nvm_mle_threadModel threadModel;
 	
 	if (allocPool == NULL || nal == NULL || outParam == NULL || argv == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -1023,8 +1024,15 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 	/* Reset the entry ID to be anything. */
 	outParam->runEntryId = -1;
 	
+	/* Default thread model to use. */
+#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	threadModel = SJME_NVM_MLE_THREAD_SINGLE_PREEMPT;
+#else
+	threadModel = SJME_NVM_MLE_THREAD_MULTI;
+#endif
+	
 	/* Command line format is: */
-	/* Note that this can possible start at argument zero. */
+	/* Note that this can possibly start at argument zero. */
 	jarSpecified = SJME_JNI_FALSE;
 	for (argAt = (outParam->startAtArgZero ? 0 : 1);
 		argAt < argc && !jarSpecified; argAt++)
@@ -1103,7 +1111,14 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xentry:"))
 		{
-			sjme_todo("Impl? %s", argv[argAt]);
+			/* Parse the entry ID. */
+			parseEntryId = (sjme_jint)sjme_lpcstoimax(&argv[argAt][8],
+				NULL, 10);
+			
+			/* Is this even a valid number? */
+			if (argv[argAt][8] >= '0' && argv[argAt][8] <= '9' &&
+				parseEntryId >= 0)
+				outParam->runEntryId = parseEntryId;
 		}
 		
 		/* -Xjdwp:[hostname]:port */
@@ -1119,7 +1134,8 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			{
 				outParam->jdwpListening = SJME_JNI_TRUE;
 				outParam->jdwpAddress = NULL;
-				outParam->jdwpPort = atoi(&tempUtf[strlen("-Xjdwp:")]);
+				outParam->jdwpPort = (sjme_jint)sjme_lpcstoimax(
+					&tempUtf[strlen("-Xjdwp:")], NULL, 10);
 			}
 
 			/* Otherwise we are connecting to an address. */
@@ -1138,7 +1154,8 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				/* Fill in. */
 				outParam->jdwpListening = SJME_JNI_FALSE;
 				outParam->jdwpAddress[tempTwo - tempUtf] = '\0';
-				outParam->jdwpPort = atoi(&tempTwo[1]);
+				outParam->jdwpPort = (sjme_jint)sjme_lpcstoimax(&tempTwo[1],
+					NULL, 10);
 			}
 		}
 		
@@ -1179,11 +1196,19 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			sjme_todo("Impl? %s", argv[argAt]);
 		}
 		
-		/* -Xthread:(single|coop|multi|smt) */
+		/* -Xthread:(single|coop|shared|multi|smt|noht) */
 		else if (sjme_charSeq_startsWithUtfR(&argSeq,
 			"-Xthread:"))
 		{
-			sjme_todo("Impl? %s", argv[argAt]);
+			if (0 == strcasecmp("single", &argv[argAt][9]) ||
+				0 == strcasecmp("coop", &argv[argAt][9]))
+				threadModel = SJME_NVM_MLE_THREAD_SINGLE_COOP;
+			else if (0 == strcasecmp("shared", &argv[argAt][9]))
+				threadModel = SJME_NVM_MLE_THREAD_SINGLE_PREEMPT;
+			else if (0 == strcasecmp("multi", &argv[argAt][9]) ||
+				0 == strcasecmp("smt", &argv[argAt][9]) ||
+				0 == strcasecmp("noht", &argv[argAt][9]))
+				threadModel = SJME_NVM_MLE_THREAD_MULTI;
 		}
 		
 		/* -Xtrace:(flag|...) */
@@ -1229,7 +1254,7 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			if ((argAt + 1) >= argc)
 			{
 				/* Should hopefully help the user. */
-				sjme_message("A jar must follow -jar. (%s %s %d %d)",
+				sjme_emitB("A jar must follow -jar. (%s %s %d %d)",
 					argv[argAt], argv[argAt + 1], argAt, argc);
 
 				/* Fail. */
@@ -1253,6 +1278,20 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 			return SJME_ERROR_INVALID_ARGUMENT;
 		}
 	}
+	
+#if defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
+	/* Multithreaded mode not supported on this platform? */
+	/* Drop to the second best, a pre-emptive model. */
+	if (threadModel == SJME_NVM_MLE_THREAD_MULTI)
+	{
+		/* Inform the user this happened. */
+		sjme_emitB("This version of SquirrelJME was compiled without "
+			"support for multi-threading, -Xthread:shared has been implied.");
+		
+		/* Downgrade to second best. */
+		threadModel = SJME_NVM_MLE_THREAD_SINGLE_PREEMPT;
+	}
+#endif
 
 	/* Main-class, if not -jar and there are arguments to pass */
 	runViaMain = SJME_JNI_FALSE;

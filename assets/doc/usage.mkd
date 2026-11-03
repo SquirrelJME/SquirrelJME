@@ -15,9 +15,9 @@ any option within parenthesis `()` are required. The usage of SquirrelJME is
 in the following format:
 
  * `squirreljme [options]`
-   * Start into the launcher. 
+   * Start into the launcher.
  * `squirreljme [options] -jar a.jar`
-   * Directly launch the given Jar, bypassing the launcher. 
+   * Directly launch the given Jar, bypassing the launcher.
  * `squirreljme [options] mainClass [mainArgs|...]`
    * Standard launch into the specific classpath and main arguments.
    * For this option, `-classpath (class:path:...)` may be used
@@ -41,7 +41,7 @@ The available options are:
    * Optionally, `fork` or `nofork` can be specified to where the
      internal debugger to launched as a separate process or not.
  * `-XdebuggerOnly`
-   * Launches the built-in SquirrelJME Debugger, if available. 
+   * Launches the built-in SquirrelJME Debugger, if available.
  * `-Xemulator:(vm)`
    * Specifies the backend emulator to use, the supported options are:
      * `hosted` -- Uses the host JVM to run all the software.
@@ -83,11 +83,13 @@ The available options are:
      given VisualVM snapshot file.
  * `-XstartOnFirstThread`
    * Ignored.
- * `-Xthread:(single|coop|shared|multi|smt)`
+ * `-Xthread:(single|coop|shared|multi|smt|noht)`
    * Sets the threading mode of the virtual machine.
    * `single`/`coop` -- Single threaded using cooperative multitasking.
-   * `shared` -- Single threaded using preemptive multitasking.
+   * `shared` -- Single threaded using virtualized preemptive multitasking.
    * `multi`/`smt` -- Multi threaded using asynchronous multitasking.
+   * `noht` -- Same as `smt` with hyper-threading disabled or affinity
+     adjusted, if supported by the target system and CPU.
  * `-Xtrace:option[,option[,...]]` -- Trace options
    * `all` -- Enable all.
    * `allocation` -- Allocations such as `new`.
@@ -108,7 +110,7 @@ The available options are:
    * `threadNew` -- New thread is created.
    * `vmException` -- Virtual machine exceptions.
  * `-Dsysprop=value`
-   * Defines the given system property. 
+   * Defines the given system property.
  * `-classpath (class:path:...)`
    * Specifies the class path to use for the current application, the entries
      must be visible from the library path.
@@ -417,11 +419,11 @@ States are as followed:
    * The media is in the closed state.
  * `Unrealized (100)`
    * No data has yet been loaded.
- * `Realized (200)` 
+ * `Realized (200)`
    * Data for the media has been loaded.
- * `Prefetched (300)` 
-   * The media and all resources are ready for playback. 
- * `Started (400)` 
+ * `Prefetched (300)`
+   * The media and all resources are ready for playback.
+ * `Started (400)`
    * The media is currently playing.
  * `Undefined (999)`
    * Not defined, the indicated number will be between any of the values

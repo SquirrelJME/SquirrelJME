@@ -215,7 +215,7 @@ public abstract class VMFactory
 		// -Xentry:id
 		// -Xlibraries:(class:path:...)
 		// -Xjdwp:[hostname]:port
-		// -Xthread:(single|coop|multi|smt)
+		// -Xthread:(single|coop|shared|multi|smt|noht)
 		// -Dsysprop=value
 		// -classpath (class:path:...)
 		// -Xclutter:(release|debug)

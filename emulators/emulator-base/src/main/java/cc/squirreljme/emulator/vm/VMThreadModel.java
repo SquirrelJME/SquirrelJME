@@ -71,6 +71,7 @@ public enum VMThreadModel
 			
 			case "multi":
 			case "smt":
+			case "noht":
 				return VMThreadModel.MULTI_THREAD;
 			
 			default:
