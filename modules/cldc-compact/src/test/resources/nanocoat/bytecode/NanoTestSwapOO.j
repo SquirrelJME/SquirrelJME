@@ -12,11 +12,23 @@
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
+		.elem .arr_kind "expectedStrings"
+			.elem .str_kind "" "string2"
+			.elem .str_kind "" "string1"
+		.end .arr_elem
 	.end .annotation
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+; Two strings to swap
+	ldc "string1"
+	ldc "string2"
+	
+; Swap them
+	swap
+	
+; Put them into an array
+	invokestatic nano/NanoShelf/result(Ljava/lang/String;Ljava/lang/String;)V
 	return
 .end method

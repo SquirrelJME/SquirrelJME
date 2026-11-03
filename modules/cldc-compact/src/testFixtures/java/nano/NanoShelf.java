@@ -222,6 +222,16 @@ public final class NanoShelf
 	public static native void result(String[] __v);
 	
 	/**
+	 * The specified value was the given result.
+	 *
+	 * @param __v The first value.
+	 * @param __w The second value.
+	 * @since 2026/11/02
+	 */
+	@SquirrelJMENativeApi(min = "0.4.0")
+	public static native void result(String __v, String __w);
+	
+	/**
 	 * This test needs to be written.
 	 *
 	 * @since 2025/11/26

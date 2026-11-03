@@ -12,11 +12,18 @@
 
 .runtime_visible_annotation
 	.annotation "Lnano/NanoDetails;"
+		.elem .int_kind "expectedInteger" 4
 	.end .annotation
 .end .annotation_attr
 
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
-	invokestatic nano/NanoShelf/todo()V
+; 2 * 2
+	iconst_2
+	dup
+	
+; Hopefully this is correct
+	imul
+	invokestatic nano/NanoShelf/result(I)V
 	return
 .end method
