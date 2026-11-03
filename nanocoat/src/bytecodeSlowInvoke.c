@@ -44,7 +44,7 @@ typedef struct sjme_nvm_byteCode_invokeState
 	/** The MLE error state. */
 	sjme_errorCode mleError;
 	
-	/** New frame which was craeted. */
+	/** New frame which was created. */
 	sjme_nvm_frame newFrame;
 	
 	/** Argument count. */

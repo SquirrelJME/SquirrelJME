@@ -36,6 +36,82 @@ typedef struct sjme_test_nano_result
 	sjme_charSeq exception;
 } sjme_test_nano_result;
 
+static sjme_errorCode sjme_test_makeArrayPrimitive(
+	sjme_nvm_frame inFrame,
+	sjme_basicTypeId javaType,
+	sjme_jvalueTyped* argR,
+	sjme_jint argC,
+	sjme_jvalueTyped* argV)
+{
+	sjme_errorCode error;
+	sjme_jarray array;
+	sjme_jint i, len;
+	
+	if (inFrame == NULL || argR == NULL || argV == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+
+	/* Create the array. */
+	array = NULL;
+	len = argV[0].v.i;
+	if (sjme_error_is(error = sjme_nvm_instance_objectArrayNewT(
+		SJME_F_T(inFrame), &array, javaType, len)) ||
+		array == NULL)
+		return sjme_error_default(error);
+	
+	/* Return it. */
+	argR->t = SJME_JAVA_TYPE_ID_OBJECT;
+	argR->v.l = (sjme_jobject)array;
+	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(makeArrayByte)
+{
+	return sjme_test_makeArrayPrimitive(inFrame,
+		SJME_BASIC_TYPE_ID_BOOLEAN, argR, argC, argV);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(makeArrayChar)
+{
+	return sjme_test_makeArrayPrimitive(inFrame,
+		SJME_BASIC_TYPE_ID_CHARACTER, argR, argC, argV);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(makeArrayDouble)
+{
+	return sjme_test_makeArrayPrimitive(inFrame,
+		SJME_BASIC_TYPE_ID_DOUBLE, argR, argC, argV);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(makeArrayFloat)
+{
+	return sjme_test_makeArrayPrimitive(inFrame,
+		SJME_BASIC_TYPE_ID_FLOAT, argR, argC, argV);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(makeArrayInt)
+{
+	return sjme_test_makeArrayPrimitive(inFrame,
+		SJME_BASIC_TYPE_ID_INTEGER, argR, argC, argV);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(makeArrayLong)
+{
+	return sjme_test_makeArrayPrimitive(inFrame,
+		SJME_BASIC_TYPE_ID_LONG, argR, argC, argV);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(makeArrayShort)
+{
+	return sjme_test_makeArrayPrimitive(inFrame,
+		SJME_BASIC_TYPE_ID_SHORT, argR, argC, argV);
+}
+
+SJME_NVM_MLE_FUNCTION_DECL(makeArrayBoolean)
+{
+	return sjme_test_makeArrayPrimitive(inFrame,
+		SJME_BASIC_TYPE_ID_BOOLEAN, argR, argC, argV);
+}
+
 SJME_NVM_MLE_FUNCTION_DECL(makeArrayNull)
 {
 	/* Just return null. */
@@ -108,7 +184,7 @@ fail_allocArray:
 #undef BUF_SIZE
 }
 
-SJME_NVM_MLE_FUNCTION_DECL_ALT(result, integer)
+SJME_NVM_MLE_FUNCTION_DECL_ALT(result, primitive)
 {
 	sjme_test_nano_result* result;
 	
@@ -123,7 +199,7 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(result, integer)
 	
 	/* Set test string result. */
 	result->captured = SJME_JNI_TRUE;
-	result->value.t = SJME_JAVA_TYPE_ID_INTEGER;
+	result->value.t = argV[0].t;
 	result->value.v.i = argV[0].v.i;
 	
 	/* Success! */
@@ -163,6 +239,12 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(result, string)
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
+}
+
+SJME_NVM_MLE_FUNCTION_DECL_ALT(result, primitives)
+{
+	sjme_todo("Impl?");
+	return sjme_error_notImplemented(0);
 }
 
 SJME_NVM_MLE_FUNCTION_DECL_ALT(result, strings)
@@ -238,6 +320,31 @@ SJME_NVM_MLE_FUNCTION_DECL_ALT(result, void)
 
 SJME_NVM_MLE_SHELF_DECLARE(NanoShelf) =
 {
+	SJME_NVM_MLE_DEFINE(makeArrayByte,
+		SJME_MD(SJME_MD_A(SJME_MD_B), SJME_MD_I),
+		SJME_MP(SJME_MP_OBJECT, SJME_MP_I)),
+	SJME_NVM_MLE_DEFINE(makeArrayChar,
+		SJME_MD(SJME_MD_A(SJME_MD_C), SJME_MD_I),
+		SJME_MP(SJME_MP_OBJECT, SJME_MP_I)),
+	SJME_NVM_MLE_DEFINE(makeArrayDouble,
+		SJME_MD(SJME_MD_A(SJME_MD_D), SJME_MD_I),
+		SJME_MP(SJME_MP_OBJECT, SJME_MP_I)),
+	SJME_NVM_MLE_DEFINE(makeArrayFloat,
+		SJME_MD(SJME_MD_A(SJME_MD_F), SJME_MD_I),
+		SJME_MP(SJME_MP_OBJECT, SJME_MP_I)),
+	SJME_NVM_MLE_DEFINE(makeArrayInt,
+		SJME_MD(SJME_MD_A(SJME_MD_I), SJME_MD_I),
+		SJME_MP(SJME_MP_OBJECT, SJME_MP_I)),
+	SJME_NVM_MLE_DEFINE(makeArrayLong,
+		SJME_MD(SJME_MD_A(SJME_MD_J), SJME_MD_I),
+		SJME_MP(SJME_MP_OBJECT, SJME_MP_I)),
+	SJME_NVM_MLE_DEFINE(makeArrayShort,
+		SJME_MD(SJME_MD_A(SJME_MD_S), SJME_MD_I),
+		SJME_MP(SJME_MP_OBJECT, SJME_MP_I)),
+	SJME_NVM_MLE_DEFINE(makeArrayBoolean,
+		SJME_MD(SJME_MD_A(SJME_MD_Z), SJME_MD_I),
+		SJME_MP(SJME_MP_OBJECT, SJME_MP_I)),
+	
 	SJME_NVM_MLE_DEFINE(makeArrayNull,
 		SJME_MD(SJME_MD_A(SJME_MD_STRING), SJME_MDMP___NO_ARGS__),
 		SJME_MP(SJME_MP_OBJECT, SJME_MDMP___NO_ARGS__)),
@@ -245,15 +352,52 @@ SJME_NVM_MLE_SHELF_DECLARE(NanoShelf) =
 		SJME_MD(SJME_MD_A(SJME_MD_STRING), SJME_MD_I),
 		SJME_MP(SJME_MP_OBJECT, SJME_MP_I)),
 	
-	SJME_NVM_MLE_DEFINE_ALT(result, integer,
+	SJME_NVM_MLE_DEFINE_ALT(result, primitive,
+		SJME_MD(SJME_MD_V, SJME_MD_D),
+		SJME_MP(SJME_MP_V, SJME_MP_D)),
+	SJME_NVM_MLE_DEFINE_ALT(result, primitive,
+		SJME_MD(SJME_MD_V, SJME_MD_F),
+		SJME_MP(SJME_MP_V, SJME_MP_F)),
+	SJME_NVM_MLE_DEFINE_ALT(result, primitive,
 		SJME_MD(SJME_MD_V, SJME_MD_I),
 		SJME_MP(SJME_MP_V, SJME_MP_I)),
+	SJME_NVM_MLE_DEFINE_ALT(result, primitive,
+		SJME_MD(SJME_MD_V, SJME_MD_J),
+		SJME_MP(SJME_MP_V, SJME_MP_J)),
+	
 	SJME_NVM_MLE_DEFINE_ALT(result, string,
 		SJME_MD(SJME_MD_V, SJME_MD_STRING),
 		SJME_MP(SJME_MP_V, SJME_MP_OBJECT)),
+	
+	SJME_NVM_MLE_DEFINE_ALT(result, primitives,
+		SJME_MD(SJME_MD_V, SJME_MD_A(SJME_MD_B)),
+		SJME_MP(SJME_MP_V, SJME_MP_OBJECT)),
+	SJME_NVM_MLE_DEFINE_ALT(result, primitives,
+		SJME_MD(SJME_MD_V, SJME_MD_A(SJME_MD_C)),
+		SJME_MP(SJME_MP_V, SJME_MP_OBJECT)),
+	SJME_NVM_MLE_DEFINE_ALT(result, primitives,
+		SJME_MD(SJME_MD_V, SJME_MD_A(SJME_MD_D)),
+		SJME_MP(SJME_MP_V, SJME_MP_OBJECT)),
+	SJME_NVM_MLE_DEFINE_ALT(result, primitives,
+		SJME_MD(SJME_MD_V, SJME_MD_A(SJME_MD_F)),
+		SJME_MP(SJME_MP_V, SJME_MP_OBJECT)),
+	SJME_NVM_MLE_DEFINE_ALT(result, primitives,
+		SJME_MD(SJME_MD_V, SJME_MD_A(SJME_MD_I)),
+		SJME_MP(SJME_MP_V, SJME_MP_OBJECT)),
+	SJME_NVM_MLE_DEFINE_ALT(result, primitives,
+		SJME_MD(SJME_MD_V, SJME_MD_A(SJME_MD_J)),
+		SJME_MP(SJME_MP_V, SJME_MP_OBJECT)),
+	SJME_NVM_MLE_DEFINE_ALT(result, primitives,
+		SJME_MD(SJME_MD_V, SJME_MD_A(SJME_MD_S)),
+		SJME_MP(SJME_MP_V, SJME_MP_OBJECT)),
+	SJME_NVM_MLE_DEFINE_ALT(result, primitives,
+		SJME_MD(SJME_MD_V, SJME_MD_A(SJME_MD_Z)),
+		SJME_MP(SJME_MP_V, SJME_MP_OBJECT)),
+	
 	SJME_NVM_MLE_DEFINE_ALT(result, strings,
 		SJME_MD(SJME_MD_V, SJME_MD_A(SJME_MD_STRING)),
 		SJME_MP(SJME_MP_V, SJME_MP_OBJECT)),
+	
 	SJME_NVM_MLE_DEFINE_ALT(result, void,
 		SJME_MD(SJME_MD_V, SJME_MDMP___NO_ARGS__),
 		SJME_MP(SJME_MP_V, SJME_MDMP___NO_ARGS__)),
