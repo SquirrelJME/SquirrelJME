@@ -9,13 +9,6 @@ to make the implementation easier.
 The interface `Flushable` does not exist in Java ME and as such it does not
 exist in SquirrelJME.
 
-# LCDUI Display Input
-
-Only the first display (index zero) supports input events such as keyboard,
-buttons, mice, and touchscreen. Any secondary displays which are attached
-will not have events handled for them at all. This is to make it easier to
-implement.
-
 # Limited Network Interface Support
 
 The Generic Connection Framework (GCF) has API to provide access to various
@@ -23,12 +16,14 @@ system interfaces, WiFi devices, 3GPP/CDMA (Mobile data), and dial-up
 connections. Since supporting all of these are complicated, support for these
 across systems will be limited to an as needed basis.
 
-# `Reader`'s `lock` Is `null`
+# `Reader`'s `lock` Is Unspecified
 
 Since SquirrelJME uses a reference counted garbage collector the `Reader`'s
-`lock` object in the default constructor is set to `null` instead of `this`.
-This is so that readers do not remain in memory unable to be freed because
-objects still refer to them and such.
+`lock` object in the default constructor is set to a `WeakReference` pointing
+to `this`. This is so that readers do not remain in memory unable to be freed
+because objects still refer to them and such. As the actual instance is
+unspecified as to what it could be, code which relies on specific behavior
+is undefined.
 
 # `SUPER` Is Always Set
 
