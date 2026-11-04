@@ -47,8 +47,11 @@ be ignored and assumed to be set.
 Only the following character encodings are supported:
 
  * _ASCII_
- * _IBM037_
+ * _IBM037_ (_EBCDIC_)
+ * _IBM437_
  * _ISO-8859-1_
+ * _ISO-8859-15_
+ * _Shift-JIS_
  * _UTF-8_
 
 Note that UTF codepoints above U+FFFF are not fully supported and are not
@@ -98,10 +101,10 @@ software to change behavior.
    MEEP 8 however, recycles old IDs as records no longer need to be accessed
    purely by IDs, as there are named aliases and tags.
 
-## DoJa Version Differences 
+## DoJa Version Differences
 
  * _>= 5.0_: Adds support for looped MLDs and emits `AUDIO_LOOPED`, otherwise
-   they will not be emitted at all. The `END_EVENT` is considered to be the 
+   they will not be emitted at all. The `END_EVENT` is considered to be the
    looping point. Otherwise, if there is no end event and the media reaches
    the end, or DoJa is not new enough, `AUDIO_COMPLETE` will be emitted.
    If `EVENT_LOOP` is hit, the MLD will jump to position zero.
@@ -125,7 +128,7 @@ software to change behavior.
    will always return with the uppermost bits set to zero. This must be
    considered as fully-opaque as normally a value of zero means
    fully-transparent. Otherwise, the values returned will have their
-   uppermost bits set to one. 
+   uppermost bits set to one.
  * _>= 2.0_: Disposing of graphics is supported, which frees associated
    resources accordingly.
  * _< 3.0_: Application suspension is not supported, thus the
