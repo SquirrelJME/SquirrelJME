@@ -1,0 +1,22 @@
+import cc.squirreljme.plugin.swm.JavaMEMidletType
+
+plugins
+{
+	id "java"
+}
+
+version = "1.8.$squirreljmeVMVersion"
+description = "CDC Personal Basis Profile Beans."
+
+squirreljme
+{
+	javaDocErrorCode = "ZK"
+	swmType = JavaMEMidletType.API
+	swmName = "Connected Device Configuration (Beans)"
+	swmVendor = "Stephanie Gawroriski"
+}
+
+dependencies
+{
+	api project(":modules:cdc-pbp")
+}

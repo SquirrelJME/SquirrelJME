@@ -19,4 +19,5 @@ squirreljme
 dependencies
 {
 	api project(":modules:cdc-pbp")
+	api project(":modules:cdc-pbp-awt")
 }
