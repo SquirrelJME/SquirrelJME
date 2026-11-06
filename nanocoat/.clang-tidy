@@ -16,6 +16,7 @@ Checks: >
   performance-*,
   portability-*,
   readability-*,
+  -clion-misra-c2012-4-3,
   -clion-misra-c2012-7-1,
   -clion-misra-c2012-7-4,
   -clion-misra-c2012-10-1,

@@ -32,19 +32,50 @@ extern "C" {
 
 /*--------------------------------------------------------------------------*/
 
-#if defined(SJME_CONFIG_HAS_ATOMIC_DARWIN)
-	/** Emits a memory barrier. */
-	#define sjme_atomic_barrier() OSMemoryBarrier()
-#elif defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
+#if defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
 	defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY)
-	/** Emits a memory barrier. */
-	#define sjme_atomic_barrier() __sync_synchronize()
+	#if defined(SJME_CONFIG_HAS_ARCH_POWERPC)
+		/** Emit light (read) memory barrier. */
+		#define sjme_atomic_light() \
+			__asm__ __volatile__("lwsync":::"memory")
+	#elif defined(SJME_CONFIG_HAS_ARCH_IA32) || \
+		defined(SJME_CONFIG_HAS_ARCH_AMD64)
+		/** Emit light (read) memory barrier. */
+		#define sjme_atomic_light() \
+			__asm__ __volatile__("lfence":::"memory")
+	#else
+		/** Emit light (read) memory barrier. */
+		#define sjme_atomic_light() \
+			__asm__ __volatile__("":::"memory")
+	#endif
 #elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
-	/** Emits a memory barrier. */
-	#define sjme_atomic_barrier() MemoryBarrier()
+	/** Emit light (read) memory barrier. */
+	#define sjme_atomic_light() _ReadBarrier()
 #else
-	/** Emits a memory barrier. */
-	#define sjme_atomic_barrier() do {} while(0)
+	/** Emit light (read) memory barrier. */
+	#define sjme_atomic_light() do {} while(0)
+#endif
+	
+#if defined(SJME_CONFIG_HAS_ATOMIC_GCC) || \
+	defined(SJME_CONFIG_HAS_ATOMIC_GCC_LEGACY)
+	#if defined(SJME_CONFIG_HAS_ARCH_IA32) || \
+		defined(SJME_CONFIG_HAS_ARCH_AMD64)
+		/** Emits a heavy (write) memory barrier. */
+		#define sjme_atomic_heavy() \
+			__asm__ __volatile__("sfence":::"memory")
+	#else
+		/** Emits a heavy (write) memory barrier. */
+		#define sjme_atomic_heavy() __sync_synchronize()
+	#endif
+#elif defined(SJME_CONFIG_HAS_ATOMIC_DARWIN)
+	/** Emits a heavy (write) memory barrier. */
+	#define sjme_atomic_heavy() OSMemoryBarrier()
+#elif defined(SJME_CONFIG_HAS_ATOMIC_WIN32)
+		/** Emits a heavy (write) memory barrier. */
+	#define sjme_atomic_heavy() MemoryBarrier()
+#else
+		/** Emits a heavy (write) memory barrier. */
+	#define sjme_atomic_heavy() sjme_atomic_light()
 #endif
 
 #define sjme_atomic_type sjme_jint

@@ -27,6 +27,23 @@ static sjme_inline void sjme_nvm_loopYield(
 		sjme_thread_sleep(1, 0);
 }
 
+static sjme_inline void sjme_nvm_loopTryYield(
+	sjme_attrInNotNull sjme_nvm inState)
+{
+	if (inState == NULL || inState->schedule == NULL)
+		return;
+	
+	/* Yield instead of a longer sleep delay? */
+	if (++inState->schedule->yieldTimer < 
+		inState->schedule->yieldMax)
+		sjme_nvm_loopYield(inState);
+
+	/* Sleep instead of yield. */
+	else
+		sjme_thread_sleep(inState->schedule->nothingMillis,
+			inState->schedule->nothingNanos);
+}
+
 static sjme_thread_result sjme_attrThreadCall sjme_nvm_loop_tickCrash(
 	sjme_thread_parameter rawThread)
 {
@@ -60,7 +77,7 @@ sjme_errorCode sjme_nvm_loop_main(
 		/* Tick the virtual machine. */
 		/* Always uses the default tick rate. */
 		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, 
-			INT32_MIN, NULL, &terminated)))
+			INT32_MIN, NULL, &terminated, SJME_JNI_FALSE)))
 		{
 			/* Fail unless this was interrupted. */
 			if (error == SJME_ERROR_INTERRUPTED)
@@ -68,8 +85,8 @@ sjme_errorCode sjme_nvm_loop_main(
 			goto fail_loop;
 		}
 		
-		/* Let other threads run. */
-		sjme_nvm_loopYield(inState);
+		/* Try performing the loop yield? */
+		sjme_nvm_loopTryYield(inState);
 	}
 
 	/* Success! */
@@ -142,7 +159,7 @@ sjme_errorCode sjme_nvm_loop_tickExplicit(
 			while (inThread->numFrames >= minFrameLevel && !vmDead)
 			{
 				if (sjme_error_is(error = sjme_nvm_loop_tick(inState,
-						ticLimit, NULL, &vmDead)))
+						ticLimit, NULL, &vmDead, SJME_JNI_FALSE)))
 					return sjme_error_default(error);
 
 				/* Yield to let other threads run. */
@@ -196,7 +213,8 @@ sjme_errorCode sjme_nvm_loop_tick(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInValue sjme_attrInNegativeOnePositive sjme_jint maxTics,
 	sjme_attrOutNullable sjme_jint* ticRemainder,
-	sjme_attrOutNullable sjme_jboolean* isTerminated)
+	sjme_attrOutNullable sjme_jboolean* isTerminated,
+	sjme_attrInValue sjme_jboolean doYield)
 {
 	sjme_errorCode error;
 	sjme_jint remaining;
@@ -234,21 +252,15 @@ sjme_errorCode sjme_nvm_loop_tick(
 		/* Nothing to run? Give up CPU slice and re-run. */
 		if (runThread == NULL)
 		{
-			/* Yield instead of a longer sleep delay? */
-			if (++inState->schedule->yieldTimer < 
-				inState->schedule->yieldMax)
-				sjme_nvm_loopYield(inState);
-			
-			/* Sleep instead of yield. */
-			else
-				sjme_thread_sleep(inState->schedule->nothingMillis,
-					inState->schedule->nothingNanos);
+			/* Try performing the loop yield? */
+			if (doYield)
+				sjme_nvm_loopTryYield(inState);
 			
 			/* Run again. */
 			continue;
 		}
 		
-		/* Reset the yield timer. */
+		/* Reset the yield timer, since we did run something. */
 		inState->schedule->yieldTimer = 0;
 
 		/* Otherwise execute the single thread. */

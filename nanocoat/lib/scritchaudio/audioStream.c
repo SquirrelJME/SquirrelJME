@@ -242,12 +242,12 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 		/* the thread dynamically on each stream. */
 		if (!inState->bugs.outputBlocks)
 		{
-			sjme_atomic_barrier();
+			sjme_atomic_heavy();
 			while (sjme_atomic_g(sjme_jint, &result->loopThreadReady) != 0)
 			{
-				sjme_atomic_barrier();
+				sjme_atomic_light();
 				sjme_thread_yield();
-				sjme_atomic_barrier();
+				sjme_atomic_heavy();
 			}
 		}
 		
@@ -264,12 +264,12 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 		}
 		
 		/* Await loop ready. */
-		sjme_atomic_barrier();
+		sjme_atomic_heavy();
 		while (sjme_atomic_g(sjme_jint, &result->loopThreadReady) == 0)
 		{
-			sjme_atomic_barrier();
+			sjme_atomic_light();
 			sjme_thread_yield();
-			sjme_atomic_barrier();
+			sjme_atomic_heavy();
 		}
 		
 #if defined(SJME_CONFIG_DEBUG)

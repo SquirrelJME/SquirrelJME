@@ -25,7 +25,7 @@
 
 /** Invoke serial call and wait for result. */
 #define SJME_SDX_WAIT \
-	do { sjme_atomic_barrier(); \
+	do { sjme_atomic_light(); \
 		if (inState->api == NULL || inState->api->loopExecuteWait == NULL) \
 			return sjme_error_fatal(SJME_ERROR_ILLEGAL_STATE); \
 		if (sjme_error_is(error = inState->api->loopExecuteWait(inState, \
@@ -271,7 +271,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 		
 	/* Emit barrier so we can access this. */
 	sdData = (sjme_scritchui_serialData*)anything;
-	sjme_atomic_barrier();
+	sjme_atomic_light();
 	
 	/* Restore info. */
 	state = sdData->state;

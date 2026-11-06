@@ -27,7 +27,7 @@ static sjme_errorCode sjme_random_generate(
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Emit barrier. */
-	sjme_atomic_barrier();
+	sjme_atomic_light();
 	
 	/* Update the seed */
 	seed.full = (random->seed.full * INT64_C(0x5DEECE66D) + INT64_C(0xB)) &
@@ -39,7 +39,7 @@ static sjme_errorCode sjme_random_generate(
 		(UINT64_C(48) - bits));
 	
 	/* Emit barrier. */
-	sjme_atomic_barrier();
+	sjme_atomic_heavy();
 
 	/* Success! */
 	*outValue = result;
@@ -367,14 +367,14 @@ sjme_errorCode sjme_random_initL(
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	/* Emit barrier. */
-	sjme_atomic_barrier();
+	sjme_atomic_light();
 
 	/* Set seed value. */
 	outRandom->seed.full = (seed.full ^ INT64_C(0x5DEECE66D)) &
 		((INT64_C(1) << INT64_C(48)) - INT64_C(1));
 	
 	/* Emit barrier. */
-	sjme_atomic_barrier();
+	sjme_atomic_heavy();
 
 	/* Success! */
 	return SJME_ERROR_NONE;

@@ -61,9 +61,9 @@ sjme_errorCode sjme_thread_new(
 	threadId = 0;
 
 	/* Emit barrier. */
-	sjme_atomic_barrier();
+	sjme_atomic_light();
 	sjme_thread_yield();
-	sjme_atomic_barrier();
+	sjme_atomic_heavy();
 
 	/* Setup new thread. */
 	result = SJME_THREAD_NULL;

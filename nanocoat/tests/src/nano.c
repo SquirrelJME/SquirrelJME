@@ -835,7 +835,7 @@ int main(int argc, sjme_lpstr* argv)
 		/* Tick the virtual machine. */
 		if (sjme_error_is(error = sjme_nvm_loop_tick(inState,
 			SJME_TEST_TICK_RATE,
-			NULL, &terminated)))
+			NULL, &terminated, SJME_JNI_FALSE)))
 		{
 			/* Fail unless this was interrupted. */
 			if (error == SJME_ERROR_INTERRUPTED)

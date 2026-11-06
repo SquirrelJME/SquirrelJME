@@ -260,6 +260,9 @@ static sjme_errorCode sjme_alloc_getLinkOptional(
 
 	if (addr == NULL || outLink == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Emit light barrier as we are getting block details. */
+	sjme_atomic_light();
 
 	/* A block could have meta-data or not. */
 	/* Check to see if this is a valid link with no-metadata. */
@@ -543,6 +546,7 @@ sjme_errorCode sjme_noOptimize sjme_allocR(
 	sjme_jboolean splitBlock, isTiny;
 	sjme_alloc_pool nextPool;
 	sjme_alloc_link nextFree;
+	sjme_pointer result;
 #if defined(SJME_CONFIG_DEBUG)
 	sjme_alloc_linkMeta meta;
 #endif
@@ -592,9 +596,6 @@ sjme_errorCode sjme_noOptimize sjme_allocR(
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
 		&pool->spinLock)))
 		return sjme_error_default(error);
-	
-	/* Emit barrier. */
-	sjme_atomic_barrier();
 	
 	/* Find the first free link that this fits in. */
 	scanLink = NULL;
@@ -806,9 +807,9 @@ sjme_errorCode sjme_noOptimize sjme_allocR(
 		goto fail_corrupt;
 	}
 	
-	/* Emit barrier. */
-	sjme_atomic_barrier();
-	
+	/* Grab the output address before we release the lock. */
+	result = (sjme_pointer)&scanLink->block[offsetBase];
+
 	/* Release ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&pool->spinLock, NULL)))
@@ -816,7 +817,7 @@ sjme_errorCode sjme_noOptimize sjme_allocR(
 	
 	/* Use the given link at the offset base, since this may include meta */
 	/* info for debugging. */
-	*outAddr = (sjme_pointer)&scanLink->block[offsetBase];
+	*outAddr = result;
 	return SJME_ERROR_NONE;
 
 fail_corrupt:
@@ -1003,7 +1004,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Emit barrier. */
-	sjme_atomic_barrier();
+	sjme_atomic_light();
 
 	/* Get the link. */
 	link = NULL;
@@ -1085,9 +1086,6 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 		goto fail_merge;
 	
 any_cancelFree:
-	/* Emit barrier. */
-	sjme_atomic_barrier();
-	
 	/* Release ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&pool->spinLock, NULL)))
@@ -1133,7 +1131,7 @@ sjme_errorCode sjme_alloc_reallocR(
 		return SJME_ERROR_INDEX_OUT_OF_BOUNDS;
 	
 	/* Emit barrier. */
-	sjme_atomic_barrier();
+	sjme_atomic_light();
 
 	/* Alias for free. */
 	source = *inOutAddr;
@@ -1169,9 +1167,6 @@ sjme_errorCode sjme_alloc_reallocR(
 	{
 		/* Just set the new allocation size. */
 		link->allocSize = newSize;
-		
-		/* Emit barrier. */
-		sjme_atomic_barrier();
 
 		/* Success! */
 		return SJME_ERROR_NONE;
@@ -1205,9 +1200,6 @@ sjme_errorCode sjme_alloc_reallocR(
 		/* Free the old block. */
 		if (sjme_error_is(error = sjme_alloc_free(source)))
 			return sjme_error_default(error);
-		
-		/* Emit barrier. */
-		sjme_atomic_barrier();
 
 		/* Success! */
 		*inOutAddr = result;
@@ -1261,7 +1253,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_weakDeleteR(
 		return SJME_ERROR_NONE;
 	
 	/* Emit barrier. */
-	sjme_atomic_barrier();
+	sjme_atomic_light();
 	
 	/* Get the current count, and the next count. */
 	count = sjme_atomic_g(sjme_jint, &weak->count);
@@ -1328,10 +1320,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_weakDeleteR(
 				goto fail_indicateCountDown;
 	}
 	
-	/* Emit barrier. */
 any_cancelFree:
-	sjme_atomic_barrier();
-	
 	/* Success! */
 	return SJME_ERROR_NONE;
 	
@@ -1348,16 +1337,13 @@ sjme_errorCode sjme_alloc_weakGetPointer(
 		return SJME_ERROR_NULL_ARGUMENTS;
 		
 	/* Emit barrier. */
-	sjme_atomic_barrier();
+	sjme_atomic_light();
 	
 	if (sjme_atomic_pg(&inWeak->link) == NULL ||
 		sjme_atomic_pg(&inWeak->pointer) == NULL)
 		*outPointer = NULL;
 	else
 		*outPointer = sjme_atomic_pg(&inWeak->pointer);
-	
-	/* Emit barrier. */
-	sjme_atomic_barrier();
 	
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -1376,9 +1362,6 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 	
 	if (addr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
-	/* Emit barrier. */
-	sjme_atomic_barrier();
 		
 	/* Recover the link. */
 	link = NULL;
@@ -1407,9 +1390,6 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 		was =
 #endif
 			sjme_atomic_ga(sjme_jint, &result->count, 1);
-		
-		/* Emit barrier. */
-		sjme_atomic_barrier();
 		
 		/* Debug. */
 #if defined(SJME_CONFIG_DEBUG_ALLOC)
@@ -1452,9 +1432,6 @@ static sjme_errorCode sjme_noOptimize sjme_alloc_weakRefInternal(
 		result->pointer, result);
 #endif
 	
-	/* Emit barrier. */
-	sjme_atomic_barrier();
-	
 	/* Success! */
 	if (outWeak != NULL)
 		*outWeak = result;
@@ -1488,9 +1465,6 @@ sjme_errorCode sjme_noOptimize sjme_alloc_weakNewR(
 		&allocPool->spinLock)))
 		return sjme_error_default(error);
 	
-	/* Emit barrier. */
-	sjme_atomic_barrier();
-	
 	/* Attempt block allocation first. */
 	resultPtr = NULL;
 	if (sjme_error_is(error = sjme_allocR(allocPool, size,
@@ -1508,7 +1482,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_weakNewR(
 		goto fail_allocWeak;
 	
 	/* Emit barrier. */
-	sjme_atomic_barrier();
+	sjme_atomic_heavy();
 	
 	/* Release ownership of lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
@@ -1549,9 +1523,6 @@ sjme_errorCode sjme_alloc_weakRefER(
 		(inEnqueue == NULL && inEnqueueData != NULL))
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Emit barrier. */
-	sjme_atomic_barrier();
-		
 	/* Recover the link. */
 	link = NULL;
 	if (sjme_error_is(error = sjme_alloc_getLink(addr,
@@ -1614,9 +1585,6 @@ sjme_errorCode sjme_alloc_weakRefGet(
 	if (addr == NULL || outWeak == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Emit barrier. */
-	sjme_atomic_barrier();
-		
 	/* Recover the link. */
 	link = NULL;
 	if (sjme_error_is(error = sjme_alloc_getLinkOptional(addr,

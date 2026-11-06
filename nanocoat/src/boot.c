@@ -21,6 +21,12 @@
 #include "sjme/nvm/romMeepSwm.h"
 #include "sjme/nvm/jdwp.h"
 
+/** The slice in nanoseconds. */
+#define SJME_SLICE_NS INT64_C(100000000)
+
+/** The slice in milliseconds. */
+#define SJME_SLICE_MS 100
+
 #if defined(SJME_PATH_SHORT)
 	/** The name of the SquirrelJME Jar. */
 	#define SJME_JAR_NAME "sjme.jar"
@@ -393,6 +399,89 @@ fail_open:
 #undef BUF_SIZE
 }
 
+static sjme_errorCode sjme_nvm_scheduleTimer(
+	sjme_attrInNotNull sjme_alloc_pool allocPool,
+	sjme_attrInNotNull sjme_nvm inState,
+	sjme_attrInOutNotNull sjme_nvm_threadSchedule* schedule)
+{
+	sjme_errorCode error;
+	sjme_jlong yieldIn, yieldOut;
+	sjme_jlong lightIn, lightOut;
+	sjme_jint yieldCount, yieldOrig;
+	sjme_jint lightCount, lightOrig;
+	
+	if (allocPool == NULL || inState == NULL || schedule == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	if (inState->nal == NULL || inState->nal->nanoTime == NULL)
+		return SJME_ERROR_ILLEGAL_STATE;
+	
+	/* Determine the number of light barriers that occur. */
+	memset(&lightIn, 0, sizeof(lightIn));
+	memset(&lightOut, 0, sizeof(lightOut));
+	inState->nal->nanoTime(&lightIn);
+	for (lightCount = 0; lightCount >= 0; lightCount++)
+	{
+		/* Read barrier. */
+		sjme_atomic_light();
+		
+		/* How much time has passed? */
+		inState->nal->nanoTime(&lightOut);
+		if ((lightOut.full - lightIn.full) >= SJME_SLICE_NS)
+			break;
+	}
+	
+	/* Determine the number of yields that occur for a very small slice */
+	/* of time. */
+	memset(&yieldIn, 0, sizeof(yieldIn));
+	memset(&yieldOut, 0, sizeof(yieldOut));
+	inState->nal->nanoTime(&yieldIn);
+	for (yieldCount = 0; yieldCount >= 0; yieldCount++)
+	{
+		/* Yield. */
+		sjme_thread_yield();
+		
+		/* How much time has passed? */
+		inState->nal->nanoTime(&yieldOut);
+		if ((yieldOut.full - yieldIn.full) >= SJME_SLICE_NS)
+			break;
+	}
+	
+	/* Because of flux with system scheduling, we should instead */
+	/* normalize the max value here so that it is more aligned between */
+	/* different VM runs. */
+	yieldOrig = yieldCount;
+	yieldCount = (sjme_util_intOneBitHighestU(yieldCount) +
+		sjme_util_intOneBitHighestU(yieldCount << 1)) >> 1;
+	if (yieldCount <= 1)
+		yieldCount = 1;
+	
+	/* Normalize read barrier time as well. */
+	lightOrig = lightCount;
+	lightCount = (sjme_util_intOneBitHighestU(lightCount) +
+		sjme_util_intOneBitHighestU(lightCount << 1)) >> 1;
+	if (lightCount <= 1)
+		lightCount = 1;
+	
+	/* We want to light read up to this point. */
+	inState->schedule->lightTimer = 0;
+	inState->schedule->lightMax = lightCount;
+	
+	/* We want to yield up to this point. */
+	inState->schedule->yieldTimer = 0;
+	inState->schedule->yieldMax = yieldCount;
+	
+	/* Then transition to actual sleeps. */
+	/* Since the clocked time was 100ms, the sleep rate needs to be */
+	/* adjusted from the actual yield rate. */
+	inState->schedule->nothingMillis =
+		(SJME_SLICE_MS * yieldCount) / yieldOrig;
+	inState->schedule->nothingNanos = 0;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_errorCode sjme_nvm_boot(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull const sjme_nvm_bootParam* param,
@@ -408,7 +497,6 @@ sjme_errorCode sjme_nvm_boot(
 	sjme_nvm_bootParam* bootParamCopy;
 	sjme_nvm_task initTask;
 	sjme_list(sjme_nvm_rom_library)* classPath;
-	sjme_jlong yieldIn, yieldOut;
 	sjme_nvm_rom_suite jarSuite;
 	sjme_nvm_rom_library jarLibrary;
 	sjme_path runJarPath;
@@ -693,40 +781,10 @@ sjme_errorCode sjme_nvm_boot(
 			result->schedule == NULL)
 			goto fail_allocSchedule;
 		
-		/* Determine the number of yields that occur for a very small slice */
-		/* of time. */
-		memset(&yieldIn, 0, sizeof(yieldIn));
-		memset(&yieldOut, 0, sizeof(yieldOut));
-		result->nal->nanoTime(&yieldIn);
-		for (i = 0; i >= 0; i++)
-		{
-			/* Yield. */
-			sjme_thread_yield();
-			
-			/* How much time has passed? */
-			result->nal->nanoTime(&yieldOut);
-			if ((yieldOut.full - yieldIn.full) >= INT64_C(100000000))
-				break;
-		}
-		
-		/* Because of flux with system scheduling, we should instead */
-		/* normalize the max value here so that it is more aligned between */
-		/* different VM runs. */
-		n = i;
-		i = (sjme_util_intOneBitHighestU(i) +
-			sjme_util_intOneBitHighestU(i << 1)) >> 1;
-		if (i <= 1)
-			i = 1;
-		
-		/* We want to yield up to this point. */
-		result->schedule->yieldTimer = 0;
-		result->schedule->yieldMax = i;
-		
-		/* Then transition to actual sleeps. */
-		/* Since the clocked time was 100ms, the sleep rate needs to be */
-		/* adjusted from the actual yield rate. */
-		result->schedule->nothingMillis = (100 * i) / n;
-		result->schedule->nothingNanos = 0;
+		/* Setup timer. */
+		if (sjme_error_is(error = sjme_nvm_scheduleTimer(
+			allocPool, result, result->schedule)))
+			goto fail_calcTimers;
 	}
 
 	/* TODO FIXME: vvvvvv SPLIT OFF INITIAL TASK SETUP. */
@@ -843,6 +901,7 @@ sjme_errorCode sjme_nvm_boot(
 fail_initTask:
 fail_scritchUiDeInit:
 fail_scritchUiInit:
+fail_calcTimers:
 fail_allocSchedule:
 fail_badClassPath:
 fail_defaultLaunch:

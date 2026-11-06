@@ -2,8 +2,6 @@
   <profile version="1.0">
     <option name="myName" value="Project Default" />
     <inspection_tool class="120e4cd2-a98e-38df-b005-641e475e2612" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
-    <inspection_tool class="5a01dec2-b8ca-3af3-83ac-d01e28fc0986" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="7f9390c3-b01e-31ef-a7b6-9bc4dde37222" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AngularAmbiguousComponentTag" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="AngularBindingTypeMismatch" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="AngularCliAddDependency" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -233,7 +231,7 @@
     <inspection_tool class="LoopControlInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="LoopStatementThatDoesntLoopJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="Misra" enabled="true" level="WARNING" enabled_by_default="true" editorAttributes="WARNING_ATTRIBUTES">
-      <option name="myMisraC2012Checks" value="clion-misra-c2012-*,-clion-misra-c2012-10-2,-clion-misra-c2012-12-3,-clion-misra-c2012-10-1,-clion-misra-c2012-14-4,-clion-misra-c2012-16-3,-clion-misra-c2012-7-4,-clion-misra-c2012-7-1,-clion-misra-c2012-21-8,-clion-misra-c2012-17-7,-clion-misra-c2012-17-8,-clion-misra-c2012-11-1,-clion-misra-c2012-11-3,-clion-misra-c2012-11-9,-clion-misra-c2012-15-5,-clion-misra-c2012-15-6,-clion-misra-c2012-15-7,-clion-misra-c2012-11-5,-clion-misra-c2012-13-3,-clion-misra-c2012-15-1" />
+      <option name="myMisraC2012Checks" value="clion-misra-c2012-*,-clion-misra-c2012-4-3,-clion-misra-c2012-10-2,-clion-misra-c2012-12-3,-clion-misra-c2012-10-1,-clion-misra-c2012-14-4,-clion-misra-c2012-16-3,-clion-misra-c2012-7-4,-clion-misra-c2012-7-1,-clion-misra-c2012-21-8,-clion-misra-c2012-17-7,-clion-misra-c2012-17-8,-clion-misra-c2012-11-1,-clion-misra-c2012-11-3,-clion-misra-c2012-11-9,-clion-misra-c2012-15-5,-clion-misra-c2012-15-6,-clion-misra-c2012-15-7,-clion-misra-c2012-11-5,-clion-misra-c2012-13-3,-clion-misra-c2012-15-1" />
     </inspection_tool>
     <inspection_tool class="MongoJSDeprecationInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MongoJSExtDeprecationInspection" enabled="false" level="WARNING" enabled_by_default="false" />

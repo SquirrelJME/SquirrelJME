@@ -139,7 +139,7 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	sjme_atomic_s(sjme_jint, &state->loopThreadReady, 1);
 	
 	/* Emit barrier for the event thread. */
-	sjme_atomic_barrier();
+	sjme_atomic_heavy();
 	
 	/* Run main loop. */
 	gtk_main();

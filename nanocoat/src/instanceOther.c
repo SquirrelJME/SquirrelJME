@@ -153,7 +153,7 @@ sjme_errorCode sjme_nvm_instance_monitorEnter(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Memory barrier! */
-	sjme_atomic_barrier();
+	sjme_atomic_light();
 
 	/* Grab the lock on the object. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
@@ -164,7 +164,7 @@ sjme_errorCode sjme_nvm_instance_monitorEnter(
 	sjme_atomic_ga(sjme_jint, &instance->monitorCount, 1);
 	
 	/* Memory barrier! */
-	sjme_atomic_barrier();
+	sjme_atomic_heavy();
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -180,7 +180,7 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
 	/* Memory barrier! */
-	sjme_atomic_barrier();
+	sjme_atomic_light();
 
 	/* There are no monitor locks on this instance? */
 	if (sjme_atomic_g(sjme_jint, &instance->monitorCount) < 0)
@@ -195,7 +195,7 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
 	sjme_atomic_ga(sjme_jint, &instance->monitorCount, -1);
 	
 	/* Memory barrier! */
-	sjme_atomic_barrier();
+	sjme_atomic_heavy();
 
 	/* Success! */
 	return SJME_ERROR_NONE;

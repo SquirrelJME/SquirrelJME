@@ -86,7 +86,7 @@ static sjme_errorCode sjme_scritchaudio_core_innerEvent(
 		while ((nowEvent = sjme_atomic_g(sjme_jint,
 			&inStream->data.eventCounter)) == lastEvent)
 		{
-			sjme_atomic_barrier();
+			sjme_atomic_heavy();
 		}
 
 		/* Loop cycle. */
@@ -236,9 +236,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_core_poll(
 	sjme_atomic_s(sjme_jint, &inStream->loopThreadReady, 0);
 
 	/* Barrier before leaving. */
-	sjme_atomic_barrier();
+	sjme_atomic_light();
 	sjme_thread_yield();
-	sjme_atomic_barrier();
+	sjme_atomic_heavy();
 
 #if defined(SJME_CONFIG_DEBUG)
 	/* Debug. */

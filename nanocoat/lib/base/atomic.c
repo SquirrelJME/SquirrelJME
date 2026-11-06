@@ -60,11 +60,11 @@ void sjme_atomic_interruptsDisable(void)
 		sjme_asm(cli);
 	#else
 		/* Just force a memory barrier. */
-		sjme_atomic_barrier();
+		sjme_atomic_heavy();
 	#endif
 #else
 	/* Just force a memory barrier. */
-	sjme_atomic_barrier();
+	sjme_atomic_heavy();
 #endif
 }
 
@@ -77,11 +77,11 @@ void sjme_atomic_interruptsEnable(void)
 		sjme_asm(sti);
 	#else
 		/* Just force a memory barrier. */
-		sjme_atomic_barrier();
+		sjme_atomic_heavy();
 	#endif
 #else
 	/* Just force a memory barrier. */
-	sjme_atomic_barrier();
+	sjme_atomic_heavy();
 #endif
 }
 #endif
