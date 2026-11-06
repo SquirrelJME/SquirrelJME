@@ -67,7 +67,8 @@ public class NanoCoatFactory
 	protected VirtualMachine createVM(ProfilerSnapshot __profiler,
 		JDWPHostFactory __jdwp, VMThreadModel __threadModel,
 		VMSuiteManager __suiteManager, VMClassLibrary[] __classpath,
-		String __mainClass, Map<String, String> __sysProps, String[] __args)
+		String __mainClass, Map<String, String> __sysProps, int __ticLimit,
+		boolean __lowPower, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		// Is this Windows?
@@ -105,6 +106,15 @@ public class NanoCoatFactory
 			execArgs.add(String.format("-Xjdwp:localhost:%d",
 				jdwp.port));
 		}
+		
+		// Tic limit?
+		if (__ticLimit > 0)
+			execArgs.add(String.format("-Xclock:%d",
+				__ticLimit));
+		
+		// Low power mode?
+		if (__lowPower)
+			execArgs.add("-Xlp");
 		
 		// Thread model?
 		if (__threadModel != null)

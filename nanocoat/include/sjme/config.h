@@ -1219,6 +1219,19 @@ extern "C" {
 	#define SJME_CONFIG_NESTED_THREAD_TIC_LIMIT INT32_C(8192)
 #endif
 	
+/* The high tic limit cannot be lower than the low tic limit. */
+#if defined(SJME_CONFIG_NESTED_THREAD_TIC_LIMIT_HIGH)
+	#if (SJME_CONFIG_NESTED_THREAD_TIC_LIMIT_HIGH < \
+		SJME_CONFIG_NESTED_THREAD_TIC_LIMIT)
+		#undef SJME_CONFIG_NESTED_THREAD_TIC_LIMIT
+	#endif
+#endif
+
+#if !defined(SJME_CONFIG_NESTED_THREAD_TIC_LIMIT_HIGH)
+	/** Nested thread tic limit, when the tic limit is infinite. */
+	#define SJME_CONFIG_NESTED_THREAD_TIC_LIMIT_HIGH INT32_C(262144)
+#endif
+	
 /* Memory limits. */
 #include "sjme/configMemory.h"
 	

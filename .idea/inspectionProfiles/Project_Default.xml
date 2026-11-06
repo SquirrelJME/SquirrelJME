@@ -186,17 +186,17 @@
     <inspection_tool class="AtomicFieldUpdaterNotStaticFinal" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="AutoBoxing" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="ignoreAddedToCollection" value="false" />
+    <inspection_tool class="AutoBoxing" enabled="true" level="STYLE_SUGGESTION" enabled_by_default="true" editorAttributes="TEXT_STYLE_SUGGESTION">
+      <scope name="SquirrelJME" level="STYLE_SUGGESTION" enabled="true" editorAttributes="TEXT_STYLE_SUGGESTION">
+        <option name="ignoreAddedToCollection" value="true" />
       </scope>
-      <option name="ignoreAddedToCollection" value="false" />
+      <option name="ignoreAddedToCollection" value="true" />
     </inspection_tool>
     <inspection_tool class="AutoCloseableResource" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="AutoUnboxing" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
+    <inspection_tool class="AutoUnboxing" enabled="true" level="STYLE_SUGGESTION" enabled_by_default="true" editorAttributes="TEXT_STYLE_SUGGESTION">
+      <scope name="SquirrelJME" level="STYLE_SUGGESTION" enabled="true" editorAttributes="TEXT_STYLE_SUGGESTION" />
     </inspection_tool>
     <inspection_tool class="AwaitNotInLoop" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
@@ -473,8 +473,8 @@
     <inspection_tool class="ConstantDeclaredInAbstractClass" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="ConstantDeclaredInInterface" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
+    <inspection_tool class="ConstantDeclaredInInterface" enabled="false" level="WARNING" enabled_by_default="false">
+      <scope name="SquirrelJME" level="WARNING" enabled="false" />
     </inspection_tool>
     <inspection_tool class="ConstantMathCall" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
@@ -992,6 +992,11 @@
     <inspection_tool class="InterfaceNeverImplemented" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
         <option name="ignoreInterfacesThatOnlyDeclareConstants" value="false" />
+        <option name="ignorableAnnotations">
+          <value>
+            <item value="cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi" />
+          </value>
+        </option>
       </scope>
       <option name="ignoreInterfacesThatOnlyDeclareConstants" value="false" />
     </inspection_tool>
@@ -2334,8 +2339,8 @@
     <inspection_tool class="StaticMethodImportLombok" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="StaticMethodOnlyUsedInOneClass" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
+    <inspection_tool class="StaticMethodOnlyUsedInOneClass" enabled="false" level="WARNING" enabled_by_default="false">
+      <scope name="SquirrelJME" level="WARNING" enabled="false" />
     </inspection_tool>
     <inspection_tool class="StaticSuite" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="StaticVariableInitialization" enabled="true" level="WARNING" enabled_by_default="false">

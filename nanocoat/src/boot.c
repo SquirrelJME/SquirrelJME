@@ -17,6 +17,7 @@
 #include "sjme/path.h"
 #include "sjme/joptarg.h"
 #include "sjme/externalWeak.h"
+#include "sjme/fixed.h"
 #include "sjme/nvm/romMeepSwm.h"
 #include "sjme/nvm/jdwp.h"
 
@@ -36,6 +37,8 @@
 
 static const sjme_joptarg_helpParam sjme_joptarg_helpParams[] =
 {
+	{"-Xclock:(infinite|0|1-2147483647)",
+		"The number of instruction cycles to run per tic."},
 	{"-Xclutter:<release|debug>",
 		"If available, selects the given clutter level."},
 	{"-Xdebug", 
@@ -48,10 +51,12 @@ static const sjme_joptarg_helpParam sjme_joptarg_helpParams[] =
 		"Force pure interpreter, do not perform optimizations (slow)."},
 	{"-Xjdwp:[hostname]:port",
 		"Listens or connects to a JDWP debugger."},
-	{"-Xrom:<path>",
-		"The ROM to use."},
 	{"-Xlibraries:<class:path:...>",
 		"Libraries to include in the library path, not the classpath."},
+	{"-Xlp",
+		"Low power mode, sleep instead of yield."},
+	{"-Xrom:<path>",
+		"The ROM to use."},
 	{"-Xscritchui:<ui>",
 		"Default interface to choose for ScritchUI."},
 	{"-Xsnapshot:<path-to-nps>",
@@ -455,6 +460,12 @@ sjme_errorCode sjme_nvm_boot(
 	result->hookData = param->hookData;
 	result->globals.instanceId =
 		sjme_nvm_instance_calcIdentityHash(NULL, result);
+	
+	/* Determine the default tic rate. */
+	if (param->ticLimit <= 0)
+		result->globals.ticLimit = 0;
+	else
+		result->globals.ticLimit = param->ticLimit;
 
 	/* TODO FIXME: vvvvvv HANDLE MERGE IN ANOTHER FUNCTION. */
 	
@@ -698,12 +709,23 @@ sjme_errorCode sjme_nvm_boot(
 				break;
 		}
 		
+		/* Because of flux with system scheduling, we should instead */
+		/* normalize the max value here so that it is more aligned between */
+		/* different VM runs. */
+		n = i;
+		i = (sjme_util_intOneBitHighestU(i) +
+			sjme_util_intOneBitHighestU(i << 1)) >> 1;
+		if (i <= 1)
+			i = 1;
+		
 		/* We want to yield up to this point. */
 		result->schedule->yieldTimer = 0;
 		result->schedule->yieldMax = i;
 		
 		/* Then transition to actual sleeps. */
-		result->schedule->nothingMillis = 100;
+		/* Since the clocked time was 100ms, the sleep rate needs to be */
+		/* adjusted from the actual yield rate. */
+		result->schedule->nothingMillis = (100 * i) / n;
 		result->schedule->nothingNanos = 0;
 	}
 
@@ -1072,6 +1094,27 @@ sjme_errorCode sjme_nvm_parseCommandLine(
 				"--help"))
 		{
 			helpOpt = argv[argAt];
+		}
+		
+		/* -Xlp */
+		else if (sjme_charSeq_equalsUtfR(&argSeq,
+			"-Xlp"))
+		{
+			outParam->lowPower = SJME_JNI_TRUE;
+		}
+		
+		/* -Xclock:(infinite|0|1-2147483647) */
+		else if (sjme_charSeq_startsWithUtfR(&argSeq,
+			"-Xclock:"))
+		{
+			/* Simpler to use as UTF. */
+			tempUtf = sjme_charSeq_tempUtf(&argSeq);
+			
+			/* Parse value. */
+			outParam->ticLimit = (sjme_jint)sjme_lpcstoimax(
+					&tempUtf[strlen("-Xclock:")], NULL, 10);
+			if (outParam->ticLimit < 0)
+				outParam->ticLimit = 0;
 		}
 		
 		/* -Xclutter:(release|debug) */

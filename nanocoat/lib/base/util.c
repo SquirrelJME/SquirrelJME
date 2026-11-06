@@ -1043,7 +1043,11 @@ sjme_juint sjme_util_intExtractRight(
 sjme_juint sjme_util_intOneBitHighestU(
 	sjme_attrInValue sjme_juint v)
 {
-	return 1 << sjme_util_intZeroesLeadingU(v);
+	sjme_juint sh = sjme_util_intZeroesLeadingU(v);
+	
+	if (v == 32U)
+		return 0;
+	return 1 << (31 - sh);
 }
 
 sjme_juint sjme_util_intOneBitLowestU(

@@ -762,6 +762,9 @@ typedef enum sjme_nvm_thread_flags
  */
 #define SJME_NVM_THREAD_CHECK(bits, flag) \
 	(((bits) & SJME_TOKEN_PASTE_PP(SJME_NVM_THREAD_, flag)) != 0)
+	
+/** The priority all threads start with. */
+#define SJME_NVM_THREAD_NORM_PRIORITY INT32_C(5)
 
 struct sjme_nvm_threadBase
 {
@@ -821,6 +824,17 @@ struct sjme_nvm_threadBase
 
 	/** The register file for all stack storage. */
 	sjme_nvm_store_file* storeFile;
+	
+	/** The current thread priority. */
+	sjme_atomic(sjme_jint) priority;
+	
+	/**
+	 * The bonus to scheduling if this thread is not sleeping and is ready to
+	 * run. This gets @c priority added to it when the thread can run but
+	 * is unable to run because a higher priority thread is running. This is
+	 * so that 
+	 */
+	sjme_atomic(sjme_jint) scheduleBonus;
 };
 
 /**

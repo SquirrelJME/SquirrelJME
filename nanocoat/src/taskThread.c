@@ -441,6 +441,11 @@ sjme_errorCode sjme_nvm_task_threadInit(
 		sjme_todo("Impl?");
 		return sjme_error_notImplemented(0);
 	}
+	
+	/* Default priority is always the normal priority. */
+	/* If it was not somehow previously set. */
+	sjme_atomic_cs(sjme_jint, &inThread->priority,
+		0, SJME_NVM_THREAD_NORM_PRIORITY);
 
 	/* Fill out basic details. */
 	sjme_atomic_s(sjme_nvm, &inThread->inState, inState);

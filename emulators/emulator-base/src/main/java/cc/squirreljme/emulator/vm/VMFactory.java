@@ -146,6 +146,8 @@ public abstract class VMFactory
 	 * @param __classpath The classpath to initialize with.
 	 * @param __mainClass The main class to start executing.
 	 * @param __sysProps System properties for the running program.
+	 * @param __ticLimit The tic limit to use.
+	 * @param __lowPower Is this in low power mode?
 	 * @param __args Arguments for the running program.
 	 * @return An instance of the virtual machine.
 	 * @throws IllegalArgumentException If an input argument is not valid.
@@ -156,7 +158,8 @@ public abstract class VMFactory
 	protected abstract VirtualMachine createVM(ProfilerSnapshot __profiler,
 		JDWPHostFactory __jdwp, VMThreadModel __threadModel,
 		VMSuiteManager __suiteManager, VMClassLibrary[] __classpath,
-		String __mainClass, Map<String, String> __sysProps, String[] __args)
+		String __mainClass, Map<String, String> __sysProps, int __ticLimit,
+		boolean __lowPower, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException;
 	
 	/**
@@ -209,7 +212,12 @@ public abstract class VMFactory
 		// Load in standard paths
 		VMFactory.__standardPaths(libraries);
 		
+		// Default to infinite tic limit and not in low power mode
+		int ticLimit = 0;
+		boolean lowPower = false;
+		
 		// Command line format is:
+		// -Xlp
 		// -Xemulator:(vm)
 		// -Xsnapshot:(path-to-nps)
 		// -Xentry:id
@@ -241,8 +249,28 @@ public abstract class VMFactory
 			// Eat it up
 			queue.removeFirst();
 			
+			// Low power mode
+			if (item.equals("-Xlp"))
+			{
+				lowPower = true;
+			}
+			
+			// Tic limit
+			else if (item.startsWith("-Xclock:"))
+			{
+				try
+				{
+					ticLimit = Integer.parseInt(
+						item.substring("-Xclock:".length()), 10);
+				}
+				catch (NumberFormatException __e)
+				{
+					ticLimit = 0;
+				}
+			}
+			
 			// Thread model
-			if (item.startsWith("-Xthread:"))
+			else if (item.startsWith("-Xthread:"))
 				threadModel = VMThreadModel.of(
 					item.substring("-Xthread:".length()));
 			
@@ -703,6 +731,8 @@ public abstract class VMFactory
 				classpath.<String>toArray(new String[classpath.size()]),
 				mainClass,
 				systemProperties,
+				ticLimit,
+				lowPower,
 				mainArgs.<String>toArray(new String[mainArgs.size()]));
 			
 			// Set global trace bits for the VM
@@ -766,6 +796,8 @@ public abstract class VMFactory
 	 * @param __bootcl The booting class, if {@code null} then {@code __bootid}
 	 * is used instead.
 	 * @param __sprops System properties to pass to the target VM.
+	 * @param __ticLimit The tic limit to use.
+	 * @param __lowPower In low power mode?
 	 * @param __args Arguments to the program which is running.
 	 * @return The created virtual machine.
 	 * @throws IllegalArgumentException If neither a boot class or boot ID
@@ -777,7 +809,9 @@ public abstract class VMFactory
 	public static VirtualMachine mainVm(String __vm, ProfilerSnapshot __ps,
 		JDWPHostFactory __jdwp, VMThreadModel __threadModel,
 		VMSuiteManager __sm, String[] __cp,
-		String __bootcl, Map<String, String> __sprops, String... __args)
+		String __bootcl, Map<String, String> __sprops,
+		int __ticLimit, boolean __lowPower,
+		String... __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		if (__bootcl == null || __sm == null || __cp == null)
@@ -842,7 +876,7 @@ public abstract class VMFactory
 		
 		// Create the virtual machine now that everything is available
 		return factory.createVM(__ps, __jdwp, __threadModel, __sm, classpath,
-			__bootcl, __sprops, __args);
+			__bootcl, __sprops, __ticLimit, __lowPower, __args);
 	}
 	
 	/**

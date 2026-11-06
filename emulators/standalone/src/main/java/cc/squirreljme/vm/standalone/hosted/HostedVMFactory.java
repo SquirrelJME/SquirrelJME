@@ -45,7 +45,8 @@ public class HostedVMFactory
 	protected VirtualMachine createVM(ProfilerSnapshot __ps,
 		JDWPHostFactory __jdwp, VMThreadModel __threadModel,
 		VMSuiteManager __suiteManager, VMClassLibrary[] __classPath,
-		String __mainClass, Map<String, String> __sysProps, String[] __args)
+		String __mainClass, Map<String, String> __sysProps, int __ticLimit,
+		boolean __lowPower, String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		// This is just an opaque wrapper interface

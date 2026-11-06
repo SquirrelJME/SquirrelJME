@@ -13,6 +13,19 @@
 #include "sjme/nvm/loop.h"
 #include "sjme/nvm/jdwp.h"
 #include "sjme/debug.h"
+#include "sjme/nvm/boot.h"
+
+static sjme_inline void sjme_nvm_loopYield(
+	sjme_attrInNotNull sjme_nvm inState)
+{
+	/* If not in low power mode, just yield. */
+	if (inState == NULL || !inState->bootParamCopy->lowPower)
+		sjme_thread_yield();
+	
+	/* Otherwise, explicitly sleep. */
+	else
+		sjme_thread_sleep(1, 0);
+}
 
 static sjme_thread_result sjme_attrThreadCall sjme_nvm_loop_tickCrash(
 	sjme_thread_parameter rawThread)
@@ -44,18 +57,19 @@ sjme_errorCode sjme_nvm_loop_main(
 	/* Iterate the virtual machine loop. */
 	for (terminated = SJME_JNI_FALSE; !terminated;)
 	{
-		/* Let other threads run. */
-		sjme_thread_yield();
-		
 		/* Tick the virtual machine. */
-		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, -1,
-			NULL, &terminated)))
+		/* Always uses the default tick rate. */
+		if (sjme_error_is(error = sjme_nvm_loop_tick(inState, 
+			INT32_MIN, NULL, &terminated)))
 		{
 			/* Fail unless this was interrupted. */
 			if (error == SJME_ERROR_INTERRUPTED)
 				continue;
 			goto fail_loop;
 		}
+		
+		/* Let other threads run. */
+		sjme_nvm_loopYield(inState);
 	}
 
 	/* Success! */
@@ -114,10 +128,13 @@ sjme_errorCode sjme_nvm_loop_tickExplicit(
 			/* We cannot just keep running forever, otherwise this will just */
 			/* never exit until some unspecified condition just happens. */
 			/* Thus, there needs to be a tic limit. */
+			/* If the configured tic limit is too low, clamp it to a minimum */
+			/* as callback threads will heavily stall the virtual machine. */
 			if (inState->globals.ticLimit > 0)
-				ticLimit = inState->globals.ticLimit;
+				ticLimit = sjme_max(SJME_CONFIG_NESTED_THREAD_TIC_LIMIT,
+					inState->globals.ticLimit);
 			else
-				ticLimit = SJME_CONFIG_NESTED_THREAD_TIC_LIMIT;
+				ticLimit = SJME_CONFIG_NESTED_THREAD_TIC_LIMIT_HIGH;
 
 			/* We just keep running every thread and scheduling until the */
 			/* thread we actually care about falls below the frame level. */
@@ -127,6 +144,9 @@ sjme_errorCode sjme_nvm_loop_tickExplicit(
 				if (sjme_error_is(error = sjme_nvm_loop_tick(inState,
 						ticLimit, NULL, &vmDead)))
 					return sjme_error_default(error);
+
+				/* Yield to let other threads run. */
+				sjme_nvm_loopYield(inState);
 			}
 
 			/* Always capture the return value at the end, if desired. */
@@ -144,7 +164,7 @@ sjme_errorCode sjme_nvm_loop_tickExplicit(
 	{
 		/* Tick this thread as much as possible. */
 		if (sjme_error_is(error = sjme_nvm_loop_tickThread(inThread,
-			-1, minFrameLevel, NULL, &vmDead)))
+			INT32_MIN, minFrameLevel, NULL, &vmDead)))
 		{
 			/* Any other error. */
 			if (error != SJME_ERROR_MINIMUM_FRAME_LEVEL)
@@ -157,7 +177,7 @@ sjme_errorCode sjme_nvm_loop_tickExplicit(
 		}
 
 		/* Yield to let other threads run. */
-		sjme_thread_yield();
+		sjme_nvm_loopYield(inState);
 	}
 
 skip_captureReturn:
@@ -186,11 +206,12 @@ sjme_errorCode sjme_nvm_loop_tick(
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (maxTics < -1)
+	if (maxTics < -1 && maxTics != INT32_MIN)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Use the default tic limit? That is, do not run forever? */
-	if (maxTics == -1 && inState->globals.ticLimit > 0)
+	if ((maxTics == -1 || maxTics == INT32_MIN) &&
+		inState->globals.ticLimit > 0)
 		maxTics = inState->globals.ticLimit;
 
 	/* Calculate initial remaining tics. */
@@ -216,7 +237,7 @@ sjme_errorCode sjme_nvm_loop_tick(
 			/* Yield instead of a longer sleep delay? */
 			if (++inState->schedule->yieldTimer < 
 				inState->schedule->yieldMax)
-				sjme_thread_yield();
+				sjme_nvm_loopYield(inState);
 			
 			/* Sleep instead of yield. */
 			else
@@ -270,7 +291,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	if (inThread == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
-	if (maxTics < -1 || minFrameLevel < -1)
+	if ((maxTics < -1 && maxTics != INT32_MIN) || minFrameLevel < -1)
 		return SJME_ERROR_INVALID_ARGUMENT;
 
 	/* Set crash context thread. */

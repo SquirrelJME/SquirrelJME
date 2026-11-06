@@ -9,19 +9,16 @@
 
 #include "sjme/nvm/bytecode.h"
 #include "sjme/util.h"
-#include "sjme/nvm/instance.h"
 #include "sjme/stdGone.h"
 #include "sjme/nvm/task.h"
-#include "sjme/nvm/loop.h"
 #include "sjme/debug.h"
 #include "sjme/nvm/nvm.h"
-#include "sjme/nvm/cleanup.h"
-#include "sjme/nvm/instanceInspect.h"
-#include "sjme/nvm/instanceProxy.h"
-#include "sjme/nvm/mleProxies.h"
 
 /** The number of threads to grow by. */
-#define SJME_NVM_THREAD_GROW 8
+#define SJME_NVM_SCHEDULE_GROW 8
+
+/** The number of threads to clump together when scheduling. */
+#define SJME_MAX_THREAD_CLUMP 16
 
 static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 	sjme_attrInNotNull sjme_nvm inState,
@@ -95,7 +92,7 @@ static sjme_errorCode sjme_nvm_task_taskScheduleMove(
 
 	/* Place into free slot, growing the list if needed. */
 	if (sjme_error_is(error = sjme_list_injectGrow(inState->allocPool,
-		SJME_NVM_THREAD_GROW, &toOrder, &inThread, sjme_nvm_thread, 0)) ||
+		SJME_NVM_SCHEDULE_GROW, &toOrder, &inThread, sjme_nvm_thread, 0)) ||
 		toOrder == NULL)
 		return sjme_error_default(error);
 
@@ -223,11 +220,11 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 	sjme_errorCode error;
 	sjme_nvm_threadSchedule* schedule;
 	sjme_list(sjme_nvm_thread)* order;
-	sjme_nvm_thread nextThread, checkThread;
+	sjme_nvm_thread nextThread, checkThread, clumpThread;
 	sjme_jboolean terminated, isRunning;
-	sjme_jint i, n, mode;
-	sjme_list(sjme_nvm_task)* tasks;
-	sjme_nvm_task checkTask;
+	sjme_jint i, n, mode, j, checkBonus;
+	sjme_nvm_thread clump[SJME_MAX_THREAD_CLUMP];
+	sjme_jint clumpAt;
 	
 	if (inState == NULL || runThread == NULL || isTerminated == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -235,6 +232,10 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 	/* Default state. */
 	nextThread = NULL;
 	terminated = sjme_atomic_g(sjme_jint, &inState->terminating);
+	
+	/* Clear the clump. */
+	memset(&clump, 0, sizeof(clump));
+	clumpAt = 0;
 
 	/* Terminating already? Or no-effect when multithreaded. */
 	if (terminated || inState->threadModel == SJME_NVM_MLE_THREAD_MULTI)
@@ -265,54 +266,150 @@ sjme_errorCode sjme_nvm_task_taskScheduleNext(
 		mode > SJME_NVM_THREAD_UNDEFINED_SCHEDULE &&
 		mode < SJME_NVM_THREAD_NUM_SCHEDULE_MODE; mode++)
 	{
-		/* Scan through the running or waiting set. */
+		/* Are there even any threads in this schedule set? */
 		order = schedule->mode[mode].order;
-		if (order != NULL && order->length > 0)
-			for (i = 0, n = order->length; i < n; i++)
+		if (order == NULL || order->length <= 0)
+			continue;
+		
+		/* Scan through the running or waiting set. */
+		for (i = 0, n = order->length; i < n; i++)
+		{
+			/* There must be a thread here to check. */
+			checkThread = order->elements[i];
+			if (checkThread == NULL)
+				continue;
+
+			/* Can this thread even be run (not sleeping)? */
+			isRunning = SJME_JNI_FALSE;
+			if (sjme_error_is(error = sjme_nvm_task_taskScheduleYes(
+				inState, checkThread, &isRunning)))
+				goto fail_checkRunning;
+
+			/* Thread is not actually running. */
+			if (!isRunning)
 			{
-				/* There must be a thread here to check. */
-				checkThread = order->elements[i];
-				if (checkThread == NULL)
-					continue;
-
-				/* Can this thread even be run (not sleeping)? */
-				isRunning = SJME_JNI_FALSE;
-				if (sjme_error_is(error = sjme_nvm_task_taskScheduleYes(
-					inState, checkThread, &isRunning)))
-					goto fail_checkRunning;
-
-				/* Thread is not actually running. */
-				if (!isRunning)
-				{
-					/* If this thread is scheduled, move it into */
-					/* unscheduled. */
-					if (mode == SJME_NVM_THREAD_SCHEDULED)
-						if (sjme_error_is(error =
-							sjme_nvm_task_taskScheduleMove(inState,
+				/* If this thread is scheduled, move it into */
+				/* unscheduled. */
+				/* The thread should already be doing this, however */
+				/* if this condition is met then we grabbed the lock before */
+				/* that thread could move itself. */
+				if (mode == SJME_NVM_THREAD_SCHEDULED)
+					if (sjme_error_is(error =
+						sjme_nvm_task_taskScheduleMove(inState,
 							checkThread,
 							SJME_NVM_THREAD_SCHEDULED,
 							SJME_NVM_THREAD_UNSCHEDULED,
 							SJME_JNI_FALSE)))
-							goto fail_move;
+						goto fail_move;
 
-					/* Try another thread. */
-					continue;
-				}
-
-				/* Accept this thread! */
-				nextThread = checkThread;
-				break;
+				/* Try another thread. */
+				continue;
 			}
+				
+			/* This thread is being accepted, so clump it in. */
+			if (clumpAt < SJME_MAX_THREAD_CLUMP)
+				clump[clumpAt++] = checkThread;
+				
+			/* There are many threads running right now, so try to */
+			/* evict one that has a lower schedule bonus. */
+			else
+			{
+				/* We will be checking our own bonus much. */
+				checkBonus = sjme_atomic_g(sjme_jint,
+					&checkThread->scheduleBonus);
+					
+				/* Go through every clumped thread. */
+				for (j = 0; j < SJME_MAX_THREAD_CLUMP; j++)
+				{
+					/* Skip blank slots, which should never happen. */
+					clumpThread = clump[j];
+					if (clumpThread == NULL)
+						continue;
+						
+					/* Let a thread that has been waiting longer run */
+					/* first. */
+					if (checkBonus <= sjme_atomic_g(sjme_jint,
+						&clumpThread->scheduleBonus))
+						continue;
+					
+					/* The thread in the future clump run will never */
+					/* get its schedule bonus bumped, so it has to */
+					/* be done now otherwise a very unlucky low */
+					/* priority thread will never run. */
+					sjme_atomic_ga(sjme_jint,
+						&clumpThread->scheduleBonus,
+						sjme_atomic_g(sjme_jint,
+							&clumpThread->priority));
+							
+					/* Replace it. */
+					clump[j] = checkThread;
+					break;
+				}
+			}
+		}
+	}
+	
+	/* Go through the clump again to find the best thread to run. */
+	/* All the threads are in the run state, so we choose a thread with */
+	/* the highest bonus. */
+	nextThread = NULL;
+	for (j = 0; j < clumpAt; j++)
+	{
+		/* Skip empty slots, should not happen but just in case. */
+		clumpThread = clump[j];
+		if (clumpThread == NULL)
+			continue;
+		
+		/* Accept running this thread if there is no current thread */
+		/* to run. Or if there is a higher bonus, which means */
+		/* multiple threads can be run, they are lower priority. */
+		if (nextThread == NULL || (nextThread != NULL &&
+			sjme_atomic_g(sjme_jint,
+				&clumpThread->scheduleBonus) > 
+			sjme_atomic_g(sjme_jint,
+				&nextThread->scheduleBonus)))
+			nextThread = clumpThread;
 	}
 
-	/* If we selected a thread, then move it to be scheduled. */
+	/* A thread was selected to be run. */
 	if (nextThread != NULL)
+	{
+		/* If we selected a thread, then move it to be scheduled. */
+		/* Unless of course it is already scheduled. */
 		if (sjme_error_is(error = sjme_nvm_task_taskScheduleMove(inState,
 			nextThread,
 			SJME_NVM_THREAD_UNSCHEDULED,
 			SJME_NVM_THREAD_SCHEDULED,
 			SJME_JNI_TRUE)))
 			goto fail_move;
+		
+		/* Since this thread is about to run, it loses its entire bonus. */
+		/* It also gets a penalty to its bonus so that scheduling is a */
+		/* bit more fair as lower priority threads get their bonus */
+		/* accumulated slower versus a higher priority thread which can */
+		/* easily get back in. */
+		sjme_atomic_s(sjme_jint, &nextThread->scheduleBonus,
+			-sjme_atomic_g(sjme_jint, &nextThread->priority));
+		
+		/* Then every thread that could have run, which is not this thread */
+		/* gets a schedule bonus so it gets a higher chance to run next */
+		/* time. */
+		for (j = 0; j < clumpAt; j++)
+		{
+			/* Skip empty slots, should not happen but just in case. */
+			/* Naturally skip the thread we are about to run since it */
+			/* just got its bonus wiped. */
+			clumpThread = clump[j];
+			if (clumpThread == NULL || clumpThread == nextThread)
+				continue;
+			
+			/* This thread gets its priority as a bonus. */
+			sjme_atomic_ga(sjme_jint,
+				&clumpThread->scheduleBonus,
+				sjme_atomic_g(sjme_jint,
+					&clumpThread->priority));
+		}
+	}
 	
 	/* Release the schedule lock. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(

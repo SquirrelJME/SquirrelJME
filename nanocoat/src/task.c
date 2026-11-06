@@ -734,13 +734,23 @@ sjme_errorCode sjme_nvm_task_taskEnterMain(
 			SJME_JNI_FALSE, SJME_JNI_TRUE)) ||
 			scritchUiThread == NULL)
 			goto fail_taskNewThread;
-
-		/* If ScritchUI uses an event thread that is independent, then it */
-		/* uses explicit handling which is called from the callback. */
-		/* This will never be scheduled cooperatively. */
+		
+		/* How the event thread works depends on if there is an independent */
+		/* event thread or not. */
 		if (!sjme_thread_equal(scritchUi->loopThread,
 			SJME_THREAD_NULL))
+		{
+			/* If ScritchUI uses an event thread that is independent, then */
+			/* it uses explicit handling which is called from the callback. */
+			/* This will never be scheduled cooperatively. */
 			scritchUiThread->flags |= SJME_NVM_THREAD_IS_EXPLICIT;
+			
+			/* Set the ScritchUI event thread to the lowest priority so */
+			/* that the UI does not consume all of our execution time. */
+			/* This lets the main thread run with more performance. */
+			sjme_atomic_s(sjme_jint, &scritchUiThread->priority,
+				1);
+		}
 
 		/* ScritchUI is in our thread, so we need to inline it accordingly. */
 		/* It effectively needs to own the VM execution and run everything */

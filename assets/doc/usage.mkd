@@ -27,6 +27,18 @@ in the following format:
 
 The available options are:
 
+ * `-Xclock:(infinite|0|1-2147483647)`
+   * Sets the number of Java instructions that can run per single clock cycle.
+   * This only applies to NanoCoat.
+   * The default is `infinite`, or `0`, which means as many as possible.
+   * Otherwise, only up to the given number of Java instructions will run per
+     thread loop on a given thread until `Thread.sleep()`, `Thread.yield()`,
+     `Object.wait()`, or other blocking action.
+   * If used with `-Xthread:coop` and `-Xthread:shared`, this will affect
+     how many threads together can run in a single cycle.
+   * Optimizations will affect how many instructions can run per second,
+     unless `-Xint` is set.
+   * If used with `-Xlp`, this will significantly reduce power usage.
  * `-Xclutter:(release|debug)`
    * Use the given core libraries with the given clutter level.
    * `release` includes obfuscation and no debugging and thus runs faster.
@@ -70,6 +82,11 @@ The available options are:
      * `/path/to/directory/**`
      * `/path/to/directory/*.*`
      * `wildcard=/path/to/directory`
+ * `-Xlp`
+   * Low power mode, rather than yielding the thread this will instead
+     sleep for a short duration.
+   * This only applies to NanoCoat.
+   * This has significant performance considerations.
  * `-Xrom:(path)`
    * Specifies the SpringCoat ROM that should be used by the virtual
      machine.
@@ -78,6 +95,7 @@ The available options are:
    * This may also be set by using `cc.squirreljme.scritchui`.
    * Alternatively, the environment variable `SQUIRRELJME_SCRITCHUI_INTERFACE`
      may be used.
+   * `none` disables ScritchUI.
  * `-Xsnapshot:(path-to-nps)`
    * Profile the virtual machine and store the profile results into the
      given VisualVM snapshot file.
@@ -85,6 +103,7 @@ The available options are:
    * Ignored.
  * `-Xthread:(single|coop|shared|multi|smt|noht)`
    * Sets the threading mode of the virtual machine.
+   * This only applies to NanoCoat.
    * `single`/`coop` -- Single threaded using cooperative multitasking.
    * `shared` -- Single threaded using virtualized preemptive multitasking.
    * `multi`/`smt` -- Multi threaded using asynchronous multitasking.

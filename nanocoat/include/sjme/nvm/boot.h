@@ -161,6 +161,12 @@ struct sjme_nvm_bootParam
 	
 	/** Do not clean objects within the virtual machine. */
 	sjme_jboolean noCleaning;
+	
+	/** The tick limit, zero is infinite. */
+	sjme_jint ticLimit;
+	
+	/** In low power mode? */
+	sjme_jboolean lowPower;
 };
 
 /**
