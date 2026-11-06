@@ -139,7 +139,7 @@ sjme_attrUnused RETRO_API void retro_run(void)
 	{
 		/* Tick. */
 		if (sjme_error_is(error = sjme_nvm_loop_tick(inState,
-			ticRate, NULL, &terminated)))
+			ticRate, NULL, &terminated, SJME_JNI_FALSE)))
 		{
 			/* Fail unless this was interrupted. */
 			if (error != SJME_ERROR_INTERRUPTED)

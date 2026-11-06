@@ -186,10 +186,14 @@ squirreljme_include("environment-options.cmake")
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
-# Optimization for size, since embedded, if not debugging
+# Optimization for size (if embedded), if not debugging
 if(SQUIRRELJME_IS_RELEASE)
 	if(SQUIRRELJME_IS_GCC)
-		add_compile_options("-Os")
+		if(SQUIRRELJME_IS_BARE_METAL)
+			add_compile_options("-Os")
+		else()
+			add_compile_options("-O2")
+		endif()
 	elseif(MSVC OR
 		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
 		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

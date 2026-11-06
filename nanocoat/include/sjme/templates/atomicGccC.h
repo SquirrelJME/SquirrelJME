@@ -14,8 +14,12 @@
 
 #include "atomicLintC.h"
 
-/** Memory order used for GCC. */
-#define SJME_ATOMIC_GCC_MEMORY_ORDER __ATOMIC_SEQ_CST
+/**
+ * Memory order used for GCC.
+ * 
+ * @c __ATOMIC_RELEASE cannot be used with @c __atomic_compare_exchange_n .
+ */
+#define SJME_ATOMIC_GCC_MEMORY_ORDER __ATOMIC_ACQUIRE /* __ATOMIC_SEQ_CST */
 
 sjme_jboolean SJME_TOKEN_PASTE3_PP(
 		sjme_atomic_, sjme_atomic_subName, _compareSet)(
@@ -26,7 +30,7 @@ sjme_jboolean SJME_TOKEN_PASTE3_PP(
 	if (__atomic_compare_exchange_n(
 			(volatile sjme_atomic_storageType*)&atomic->value,
 			(sjme_atomic_storageType*)&expected,
-			(sjme_atomic_storageType)set, 
+			(sjme_atomic_storageType)set,
 			0, 
 			SJME_ATOMIC_GCC_MEMORY_ORDER,
 				SJME_ATOMIC_GCC_MEMORY_ORDER))

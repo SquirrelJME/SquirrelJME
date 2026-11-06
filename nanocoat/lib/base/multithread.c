@@ -24,7 +24,7 @@
 	#define SJME_THREAD_YIELD_LIMIT 0
 #else
 	/** The number of loops to wait for until heavier yield occurs. */
-	#define SJME_THREAD_YIELD_LIMIT 512
+	#define SJME_THREAD_YIELD_LIMIT 32768
 #endif
 
 sjme_thread sjme_thread_currentR(void)
@@ -56,6 +56,9 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_rwLockGrabRead(
 	if (readLock == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
+	/* Light barrier before running. */
+	sjme_atomic_light();
+	
 	/* Attempt locking constantly. */
 	cycle = 0;
 	for (lockStep = SJME_JNI_FALSE;; lockStep = !lockStep)
@@ -75,15 +78,9 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_rwLockGrabRead(
 		/* The write lock has been grabbed. */
 		if (writeCount != 0)
 		{
-			/* Read barrier. */
-			sjme_atomic_light();
-			
 			/* Let other threads run, every other cycle. */
 			if ((++cycle) > SJME_THREAD_YIELD_LIMIT && lockStep)
-			{
 				sjme_thread_yield();
-				sjme_atomic_heavy();
-			}
 			
 			/* Try again... */
 			continue;
@@ -239,7 +236,7 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_spinLockGrab(
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_THREAD_STATE);
 	
-	/* Do this just for good measure for the wierd CPUs. */
+	/* Light lock before entering the spin loop. */
 	sjme_atomic_light();
 	
 	/* This is done in a loop until we own the lock. */
@@ -251,15 +248,9 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_spinLockGrab(
 		while (SJME_JNI_FALSE == sjme_atomic_cs(sjme_thread, 
 			&inLock->poke, SJME_THREAD_NULL, current))
 		{
-			/* Read barrier. */
-			sjme_atomic_light();
-			
 			/* Every other time, let other threads run. */
 			if ((++cycle) > SJME_THREAD_YIELD_LIMIT && lockStep)
-			{
 				sjme_thread_yield();
-				sjme_atomic_heavy();
-			}
 		}
 		
 		/* We own the lock already, or we just owned it, so count up. */
@@ -317,15 +308,9 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_spinLockRelease(
 	while (SJME_JNI_FALSE == sjme_atomic_cs(sjme_thread, 
 		&inLock->poke, SJME_THREAD_NULL, current))
 	{
-		/* Read barrier. */
-		sjme_atomic_light();
-		
 		/* Let other threads run every other step. */
 		if ((++cycle) > SJME_THREAD_YIELD_LIMIT && lockStep)
-		{
 			sjme_thread_yield();
-			sjme_atomic_heavy();
-		}
 		
 		/* Flip lock step. */
 		lockStep = !lockStep;
