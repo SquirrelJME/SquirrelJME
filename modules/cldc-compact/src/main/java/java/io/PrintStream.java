@@ -690,23 +690,23 @@ public class PrintStream
 		OutputStream out = this._out;
 		boolean oopsie = false;
 		byte[] buf = this._buf;
+		
+		// Write everything out
 		int bop = 0;
-		for (; bop < bat; bop++)
-			try
-			{
-				out.write(buf[bop]);
-			}
-			catch (InterruptedIOException e)
-			{
-				// Just stop handling here and interrupt the thread
-				Thread.currentThread().interrupt();
-				break;
-			}
-			catch (IOException e)
-			{
-				oopsie = true;
-				break;
-			}
+		try
+		{
+			out.write(buf, 0, bat);
+			bop += bat;
+		}
+		catch (InterruptedIOException e)
+		{
+			// Just stop handling here and interrupt the thread
+			Thread.currentThread().interrupt();
+		}
+		catch (IOException e)
+		{
+			oopsie = true;
+		}
 		
 		// Could not flush to the output
 		if (oopsie)

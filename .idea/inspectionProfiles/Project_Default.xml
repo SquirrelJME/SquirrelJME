@@ -1145,10 +1145,12 @@
     <inspection_tool class="Junit4Converter" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="Junit4RunWithInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JvmDfaAnalysis.Global" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
+      <scope name="SquirrelJME" level="STYLE_SUGGESTION" enabled="true" editorAttributes="TEXT_STYLE_SUGGESTION" />
     </inspection_tool>
     <inspection_tool class="JvmDfaAnalysis.Local" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
+      <scope name="SquirrelJME" level="STYLE_SUGGESTION" enabled="true" editorAttributes="TEXT_STYLE_SUGGESTION">
+        <option name="localAnalysisDepth" value="HIGH" />
+      </scope>
     </inspection_tool>
     <inspection_tool class="JvmNullDereferenceAnalysis.Local" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
