@@ -88,13 +88,12 @@ sjme_errorCode sjme_scritchui_gtk2_loopExecuteLater(
 	
 	/* Add to the event loop. */
 	/* We want to make sure it gets executed as soon as possible! */
-#if 1 && GTK_CHECK_VERSION(2, 2, 28)
-	g_main_context_invoke_full(NULL, G_PRIORITY_HIGH,
-		sjme_scritchui_gtk2_onceExecute, data, NULL);
-#else
+	/* GTK docs say for g_main_context_invoke_full(). */
+	/* > The notify function should not assume that it is called from any */
+	/* > particular thread or with any particular context acquired. */
+	/* Thus that cannot be used, we must always add to the idle loop. */
 	g_idle_add_full(G_PRIORITY_HIGH_IDLE,
 		sjme_scritchui_gtk2_onceExecute, data, NULL);
-#endif
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

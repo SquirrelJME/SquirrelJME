@@ -267,14 +267,18 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	topState = NULL;
 	while (topState == NULL)
 	{
-		/* Barrier for other thread to run. */
-		sjme_atomic_barrier();
+		/* Let other threads run. */
 		sjme_thread_yield();
+		
+		/* Barrier for other thread to run. */
 		sjme_atomic_barrier();
 		
 		/* Read it in. */
 		topState = sjme_atomic_g(sjme_pointer, 
 			&wrappedState->topState);
+		
+		/* Post barrier after write. */
+		sjme_atomic_barrier();
 	}
 	
 	/* Debug. */
@@ -289,6 +293,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 	
 	/* Mark as ready so initialization continues and gets finished. */
 	sjme_atomic_s(sjme_jint, &topState->loopThreadReady, 1);
+	
+	/* Barrier is needed here so other thread knows memory changed. */
+	sjme_atomic_barrier();
 	
 	/* Success! */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
@@ -416,8 +423,15 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	/* Wait for the ready signal, but only if required. */
 	if (state->loopThread == SJME_THREAD_NULL ||
 		(currentThread != SJME_THREAD_NULL &&
-			state->loopThread == currentThread))
+		sjme_thread_equal(state->loopThread,
+			currentThread)))
+	{
+		/* Set atomic. */
 		sjme_atomic_s(sjme_jint, &state->loopThreadReady, 1);
+		
+		/* Barrier is needed here to signal the other thread. */
+		sjme_atomic_barrier();
+	}
 	else
 	{
 		while (0 == sjme_atomic_g(sjme_jint, &state->loopThreadReady))

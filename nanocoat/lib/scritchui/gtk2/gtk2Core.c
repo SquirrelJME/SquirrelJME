@@ -113,6 +113,13 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	/* Initialize, we do not care for the arguments. */
 	gtk_init(&argc, &argv);
 	
+#if GTK_CHECK_VERSION(2, 2, 0)
+	/* The main context needs to be acquired, otherwise events will run */
+	/* in another thread which is something we do not want. */
+	/* This seems to be available since glib 2.0? */
+	g_main_context_acquire(g_main_context_default());
+#endif
+	
 	/* Accelerator group, needed for menus. */
 	accelGroup = gtk_accel_group_new();
 	state->common.handle[SJME_SUI_GTK2_H_ACCELG] = accelGroup;
@@ -130,6 +137,9 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	
 	/* Before we go into the main loop, signal it is ready. */
 	sjme_atomic_s(sjme_jint, &state->loopThreadReady, 1);
+	
+	/* Emit barrier for the event thread. */
+	sjme_atomic_barrier();
 	
 	/* Run main loop. */
 	gtk_main();
