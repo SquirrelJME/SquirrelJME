@@ -10,6 +10,7 @@
 #include "sjme/config.h"
 #include "sjme/intern/nal.h"
 #include "sjme/nvm/cleanup.h"
+#include "sjme/nvm/misc.h"
 #include "sjme/nvm/mle.h"
 #include "sjme/nvm/mleConst.h"
 #include "sjme/nvm/mleShelves.h"
@@ -125,12 +126,6 @@ SJME_NVM_MLE_FUNCTION_DECL(memoryProfile)
 }
 
 SJME_NVM_MLE_FUNCTION_DECL(nanoTime)
-{
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
-}
-
-SJME_NVM_MLE_FUNCTION_DECL(phoneModel)
 {
 	sjme_todo("Impl?");
 	return sjme_error_notImplemented(0);
@@ -286,6 +281,15 @@ SJME_NVM_MLE_FUNCTION_DECL(vmDescription)
 					str = pathStyle->pathSep.str;
 			}
 			break;
+			
+			
+			/* UUID in format of f81d4fae-7dec-11d0-a765-00a0c91e6bf6 */
+		case SJME_NVM_VM_DESC_DEVICE_ID_UUID:
+			str = NULL;
+			if (sjme_error_is(error = sjme_nvm_misc_deviceId(
+				SJME_F_S(inFrame), &str)) || str == NULL)
+				return sjme_error_default(error);
+			break;
 
 		case SJME_NVM_VM_DESC_VM_SECURITY_POLICY:
 			str = "";
@@ -332,6 +336,7 @@ SJME_NVM_MLE_FUNCTION_DECL(vmDescription)
 	}
 
 	/* Make a string from it. */
+	/* This is always intern as properties are static. */
 	result = NULL;
 	if (sjme_error_is(error = sjme_nvm_task_threadStringValueOfUtf(
 		SJME_F_T(inFrame), &result, SJME_JNI_TRUE, str)) ||
@@ -456,9 +461,6 @@ SJME_NVM_MLE_SHELF_DECLARE(RuntimeShelf) =
 		SJME_MD(SJME_MD_I, SJME_MDMP___NO_ARGS__),
 		SJME_MP(SJME_MP_I, SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_DEFINE(nanoTime,
-		SJME_MD(SJME_MD_J, SJME_MDMP___NO_ARGS__),
-		SJME_MP(SJME_MP_J, SJME_MDMP___NO_ARGS__)),
-	SJME_NVM_MLE_DEFINE(phoneModel,
 		SJME_MD(SJME_MD_J, SJME_MDMP___NO_ARGS__),
 		SJME_MP(SJME_MP_J, SJME_MDMP___NO_ARGS__)),
 	SJME_NVM_MLE_DEFINE(systemEnv,

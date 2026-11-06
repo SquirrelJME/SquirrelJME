@@ -11,7 +11,7 @@ package cc.squirreljme.jvm.launch;
 
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.mle.constants.PhoneModelType;
+import cc.squirreljme.runtime.cldc.PhoneModelType;
 import cc.squirreljme.jvm.suite.APIName;
 import cc.squirreljme.jvm.suite.Configuration;
 import cc.squirreljme.jvm.suite.DependencyInfo;
@@ -335,9 +335,10 @@ public class IModeApplication
 		if (spSize != null && !spSize.isEmpty())
 			rv.put(IModeProperty.SCRATCH_PAD_PROPERTY, spSize);
 		
-		// If a specific phone model is used, set the platform property
+		// If no specific phone model is used, set the platform property
 		// explicitly
-		if (RuntimeShelf.phoneModel() == PhoneModelType.GENERIC)
+		String platform = adfProps.get("microedition.platform");
+		if (platform == null || platform.isEmpty())
 			rv.put("microedition.platform",
 				SquirrelJME.platform(PhoneModelType.NTT_DOCOMO_D503I));
 		

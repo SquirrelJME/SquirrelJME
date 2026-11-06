@@ -43,6 +43,7 @@ squirreljme_multilib_add_library(Core
 	jdwpLoop.c
 	jdwpTcp.c
 	loop.c
+	misc.c
 	mle.c
 	mleAtomic.c
 	mleDebug.c

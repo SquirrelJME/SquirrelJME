@@ -130,13 +130,6 @@ MLE_FUNC_PROTO(jint, memoryProfile)
 	return 0;
 }
 
-#define MLE_DESC_phoneModel DESC_METHOD(DESC_INTEGER, )
-MLE_FUNC_PROTO(jint, phoneModel)
-{
-	// Just be a generic device here
-	return 0;
-}
-
 #define MLE_DESC_systemEnv DESC_METHOD(DESC_STRING, \
 	DESC_STRING)
 MLE_FUNC_PROXY_STATIC(jobject, systemEnv)
@@ -154,7 +147,6 @@ MLE_LIST_BEGIN()
 	MLE_LIST_ITEM(garbageCollect),
 	MLE_LIST_ITEM(lineEnding),
 	MLE_LIST_ITEM(memoryProfile),
-	MLE_LIST_ITEM(phoneModel),
 	MLE_LIST_ITEM(systemEnv),
 	MLE_LIST_ITEM(vmDescription),
 	MLE_LIST_ITEM(vmStatistic),

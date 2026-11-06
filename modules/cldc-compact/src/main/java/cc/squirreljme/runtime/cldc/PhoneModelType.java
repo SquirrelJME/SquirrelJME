@@ -7,40 +7,32 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jvm.mle.constants;
-
-import cc.squirreljme.runtime.cldc.annotation.SquirrelJMENativeApi;
+package cc.squirreljme.runtime.cldc;
 
 /**
  * This represents potential simulated phone models.
  *
  * @since 2022/02/14
  */
-@SquirrelJMENativeApi(min = "0.4.0")
 public interface PhoneModelType
 {
 	/** Generic SquirrelJME. */
-	@SquirrelJMENativeApi(min = "0.4.0")
 	byte GENERIC =
 		0;
 	
 	/** NTT Docomo D503i. */
-	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NTT_DOCOMO_D503I =
 		1;
 	
 	/** NTT Docomo F503i. */
-	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NTT_DOCOMO_F503I =
 		2;
 	
 	/** NTT Docomo So503i. */
-	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NTT_DOCOMO_SO503I =
 		3;
 	
 	/** NTT Docomo P503i. */
-	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NTT_DOCOMO_P503I =
 		4;
 }

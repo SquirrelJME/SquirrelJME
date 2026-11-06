@@ -15,7 +15,7 @@ import cc.squirreljme.jvm.mle.constants.ByteOrderType;
 import cc.squirreljme.jvm.mle.constants.CompatibilityId;
 import cc.squirreljme.jvm.mle.constants.LineEndingType;
 import cc.squirreljme.jvm.mle.constants.MemoryProfileType;
-import cc.squirreljme.jvm.mle.constants.PhoneModelType;
+import cc.squirreljme.runtime.cldc.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.jvm.mle.constants.VMStatisticType;
 import cc.squirreljme.jvm.mle.constants.VMType;
@@ -158,16 +158,6 @@ public final class RuntimeShelf
 	 */
 	@SquirrelJMENativeApi(min = "0.4.0")
 	public static native long nanoTime();
-	
-	/**
-	 * Returns the phone model that SquirrelJME is simulating itself as.
-	 * 
-	 * @return The {@link PhoneModelType}.
-	 * @since 2022/02/14
-	 */
-	@MagicConstant(valuesFromClass = PhoneModelType.class)
-	@SquirrelJMENativeApi(min = "0.4.0")
-	public static native int phoneModel();
 	
 	/**
 	 * Returns the value of a system environment variable.

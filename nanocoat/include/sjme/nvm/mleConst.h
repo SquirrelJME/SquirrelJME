@@ -300,8 +300,11 @@ typedef enum sjme_nvm_vmDescriptionType
 	/** SquirrelJME Native API Version. */
 	SJME_NVM_VM_DESC_SQUIRRELJME_API_VERSION = 37,
 	
+	/** The unique device identifier. */
+	SJME_NVM_VM_DESC_DEVICE_ID_UUID = 38,
+	
 	/** The current number of properties. */
-	SJME_NVM_VM_DESC_NUM_TYPES = 38,
+	SJME_NVM_VM_DESC_NUM_TYPES = 39,
 } sjme_nvm_vmDescriptionType;
 
 /**

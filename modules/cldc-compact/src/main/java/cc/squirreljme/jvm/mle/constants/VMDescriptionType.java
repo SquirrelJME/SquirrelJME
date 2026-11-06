@@ -213,8 +213,13 @@ public interface VMDescriptionType
 	byte SQUIRRELJME_API_VERSION =
 		37;
 	
+	/** The unique device identifier. */
+	@SquirrelJMENativeApi(min = "0.4.0")
+	byte DEVICE_ID_UUID =
+		38;
+	
 	/** The current number of properties. */
 	@SquirrelJMENativeApi(min = "0.4.0")
 	byte NUM_TYPES =
-		38;
+		39;
 }

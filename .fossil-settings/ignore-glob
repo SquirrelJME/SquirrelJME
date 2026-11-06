@@ -79,6 +79,8 @@ patches/
 *.png
 *.sqc
 *.xcf
+*.gif
+*.ttyrec
 
 # Crash logs
 *.log

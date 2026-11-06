@@ -16,8 +16,24 @@ import java.io.PrintStream;
  *
  * @since 2018/09/22
  */
+@SuppressWarnings("DuplicateStringLiteralInspection")
 public class Hello
 {
+	/** Redacted properties. */
+	private static final String[] _REDACTED =
+		new String[]
+		{
+			"microedition.hostname",
+			"microedition.deviceid",
+			"microedition.deviceid.uuid",
+			"microedition.deviceid.imei",
+			"microedition.deviceid.meid",
+			"microedition.deviceid.esn",
+			"microedition.deviceid.pesn",
+			"microedition.deviceid.isunique",
+			"microedition.devicevendor.isunique",
+		};
+	
 	/** Properties to print. */
 	private static final String[] _PROPERTIES =
 		new String[]
@@ -36,14 +52,29 @@ public class Hello
 			"os.name",
 			"os.arch",
 			"os.version",
+			"user.dir",
 			"microedition.encoding",
 			"microedition.configuration",
+			"microedition.devicevendor",
 			"microedition.locale",
 			"microedition.profiles",
+			"microedition.platform",
 			"cc.squirreljme.vm.execpath",
 			"cc.squirreljme.vm.freemem",
 			"cc.squirreljme.vm.totalmem",
 			"cc.squirreljme.vm.maxmem",
+			"microedition.commports",
+			"microedition.lui",
+			"microedition.key",
+			"microedition.rms",
+			"microedition.media.audio",
+			"microedition.io",
+			"microedition.io.gcf",
+			"microedition.swm",
+			"microedition.cellular",
+			"microedition.event",
+			"microedition.power",
+			"file.separator",
 		};
 	
 	/**
@@ -82,13 +113,26 @@ public class Hello
 		// Print some information about the virtual machine itself
 		for (String p : Hello._PROPERTIES)
 		{
+			out.print(p);
+			out.print(": ");
+			
 			String v = System.getProperty(p);
 			if (v != null)
-			{
-				out.print(p);
-				out.print(": ");
 				out.println(v);
-			}
+			else
+				out.println("<NOT SET>");
+		}
+		
+		// Then redacted properties
+		for (String p : Hello._REDACTED)
+		{
+			out.print(p);
+			out.print(": ");
+			
+			if (System.getProperty(p) != null)
+				out.println("[REDACTED]");
+			else
+				out.println("<NOT SET>");
 		}
 	}
 }

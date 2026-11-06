@@ -15,8 +15,7 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.RuntimeShelf;
 import cc.squirreljme.jvm.mle.TypeShelf;
 import cc.squirreljme.jvm.mle.brackets.JarPackageBracket;
-import cc.squirreljme.jvm.mle.constants.PhoneModelType;
-import cc.squirreljme.jvm.mle.constants.StandardPipeType;
+import cc.squirreljme.runtime.cldc.PhoneModelType;
 import cc.squirreljme.jvm.mle.constants.VMDescriptionType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.cldc.annotation.Api;
@@ -278,6 +277,8 @@ public final class System
 	 * are available to it. The values will either be {@code "CLDC-1.8"} for
 	 * the complete set of APIs and {@code "CLDC-1.8-Compact"} for the compact
 	 * set of APIs.}
+	 * {@squirreljme.property microedition.deviceid One of the unique
+	 * identifiers for this device.}
 	 * {@squirreljme.property microedition.deviceid.uuid This is the unique
 	 * identifier to the current device that regardless of the number of
 	 * reboots and reinitializations that occur, this should return the same
@@ -453,6 +454,12 @@ public final class System
 			case "microedition.locale":
 				return System.__locale();
 				
+				// Unique Device Identifier
+			case "microedition.deviceid":
+			case "microedition.deviceid.uuid":
+				return RuntimeShelf.vmDescription(
+					VMDescriptionType.DEVICE_ID_UUID);
+				
 				// The current platform
 			case "microedition.platform":
 				// Allow this to be overridden by the user
@@ -460,10 +467,7 @@ public final class System
 				if (platformOverride != null)
 					return platformOverride;
 			
-				// Try to use a specific platform
-				int phoneModel = RuntimeShelf.phoneModel();
-				if (phoneModel != PhoneModelType.GENERIC)
-					return SquirrelJME.platform(phoneModel);
+				// Use generic platform here
 				return SquirrelJME.MICROEDITION_PLATFORM;
 				
 				// The operating system architecture
