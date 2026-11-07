@@ -170,6 +170,7 @@ static sjme_errorCode sjme_nal_default_cFileRead(
 {
 	FILE* file;
 	sjme_jint left, destAt, rc;
+	sjme_jint wasSeek, wasTell;
 	
 	if (inSeekable == NULL || inImplState == NULL || outBuf == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -177,13 +178,30 @@ static sjme_errorCode sjme_nal_default_cFileRead(
 	/* Recover file handle. */
 	file = inSeekable->implState.handle;
 	
-	/* Seek to read position. */
-	if (fseek(file, base, SEEK_SET))
-		return sjme_nal_errno(errno);
+	/* Seek to read position, if we are not there. */
+	wasSeek = sjme_atomic_g(sjme_jint, &inSeekable->cachedSeek);
+	if (wasSeek != base)
+		if (fseek(file, base, SEEK_SET))
+			return sjme_nal_errno(errno);
+	
+	/* Wait, where are we? */
+	wasTell = (sjme_jint)ftell(file); 
+	if (wasTell >= 0 && wasTell != base)
+	{
+		/* Seek to the new position. */
+		if (fseek(file, base, SEEK_SET))
+			return sjme_nal_errno(errno);
+		
+		/* Need to check again. */
+		wasTell = (sjme_jint)ftell(file); 
+	}
 	
 	/* Make sure it is a valid position. */
-	if (ftell(file) < 0)
+	if (wasTell < 0)
 		return sjme_nal_errno(errno);
+	
+	/* This is our valid seek position. */
+	wasSeek = wasTell;
 	
 	/* fread() can result in short reads, so read everything fully. */
 	destAt = 0;
@@ -202,6 +220,10 @@ static sjme_errorCode sjme_nal_default_cFileRead(
 		destAt += rc;
 		left -= rc;
 	}
+	
+	/* Move cached seeker up. */
+	sjme_atomic_s(sjme_jint, &inSeekable->cachedSeek,
+		wasSeek + destAt);
 	
 	/* Success! */
 	return SJME_ERROR_NONE;

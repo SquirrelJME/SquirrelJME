@@ -257,6 +257,9 @@ struct sjme_seekableBase
 
 	/** The cached seekable size. */
 	sjme_atomic(sjme_jint) cachedSize;
+	
+	/** The cached seek offset, where we think we are. */
+	sjme_atomic(sjme_jint) cachedSeek;
 };
 
 /**
