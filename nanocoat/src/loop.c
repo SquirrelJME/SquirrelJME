@@ -64,9 +64,16 @@ static sjme_thread_result sjme_attrThreadCall sjme_nvm_loop_tickCrash(
 	inThread = SJME_THREAD_PARAM_POINTER(rawThread);
 	if (inThread == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+	
+	/* Crash occurred! */
+	sjme_emitB("**********************************************************");
+	sjme_emitB("SquirrelJME VM Crash: %p", rawThread);
 
 	/* Print stack trace. */
 	sjme_nvm_task_stackTraceThread(inThread);
+	
+	/* Trailer. */
+	sjme_emitB("**********************************************************");
 	
 	/* No error generally. */
 	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
@@ -322,7 +329,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	sjme_debug_crashContext(sjme_nvm_loop_tickCrash, inThread);
 
 	/* The remaining execution count is always at the max tic count. */
-	remaining = maxTics;
+	remaining = (maxTics == INT32_MIN ? -1 : maxTics);
 
 	/* The error to emit on success, in the event there is another condition */
 	/* such as the frame level being hit. */
@@ -345,7 +352,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 	frameIndex = -2;
 	jdwp = inState->jdwp;
 	memset(&pcNew, 0, sizeof(pcNew));
-	while sjme_noLint(remaining == -1 || remaining > 0)
+	while (remaining == -1 || remaining > 0)
 	{
 		/* Is there a debugger attached? If so we should poll it. */
 		/* Never for callback threads because those will just deadlock. */
@@ -391,14 +398,21 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		}
 		
 		/* Thread has entered a sleeping state? */
-		/* This is ignored for callback threads unless they are waiting on */
-		/* a monitor, which would break if it is allowed to run. */
-		/* Explicitly run threads in this case are never truly sleeping. */
 		status = sjme_atomic_g(sjme_nvm_thread_statusType,
 			&inThread->status);
 		if (status != SJME_NVM_THREAD_STATUS_RUNNING)
+		{
+			/* This is ignored for callback threads unless they are waiting */
+			/* on a monitor, which would break if it is allowed to run. */
+			/* Explicitly run threads in this case are never truly sleeping. */
 			if (!isCallback || status == SJME_NVM_THREAD_STATUS_MONITOR_WAIT)
 				break;
+			
+			/* Force to be in the running state. */
+			sjme_atomic_cs(sjme_nvm_thread_statusType, &inThread->status,
+				SJME_NVM_THREAD_STATUS_SLEEPING,
+				SJME_NVM_THREAD_STATUS_RUNNING);
+		}
 		
 		/* Tick down. */
 		if (remaining > 0)
@@ -409,7 +423,7 @@ sjme_errorCode sjme_nvm_loop_tickThread(
 		{
 			/* Are there any actual frames left? */
 			frameIndex = (inThread->numFrames - 1);
-			if (frameIndex < 0)
+			if (frameIndex < 0 && minFrameLevel >= 0)
 			{
 				/* If we are expecting a minimum frame, once all the frames */
 				/* are gone then the frame level is gone. */

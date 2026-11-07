@@ -178,6 +178,12 @@ squirreljme_try_compile("vsnprintf() in varargs.h"
 	SJME_CONFIG_HAS_VSNPRINTFV
 	SJME_CONFIG_HAS_NO_VSNPRINTFV)
 
+# Atomic 64-bit support?
+squirreljme_try_compile("64-bit atomics"
+	"tryAtomic64"
+	SJME_CONFIG_HAS_JLONG_ATOMIC
+	SJME_CONFIG_HAS_NO_JLONG_ATOMIC)
+
 # Can use thread local?
 # If the system is unknown, we cannot rely on this to properly exist
 # This can be ignored on single threaded systems as there will always ever be

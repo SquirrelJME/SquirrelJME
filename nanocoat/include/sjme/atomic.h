@@ -81,7 +81,7 @@ extern "C" {
 #define sjme_atomic_type sjme_jint
 #include "sjme/atomicTemplate.h" /* NOLINT */
 	
-#if !defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+#if !defined(SJME_CONFIG_HAS_NO_JLONG_ATOMIC)
 #define sjme_atomic_type sjme_jlongNative
 #include "sjme/atomicTemplate.h" /* NOLINT */
 #endif
@@ -329,7 +329,7 @@ extern "C" {
 	SJME_TOKEN_PASTE4_PP(sjme_atomic_, type, \
 	SJME_TOKEN_SINGLE(SJME_TOKEN_STARS_C##numPointerStars), _set)((ref), (set))
 
-#if defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 
 /**
  * Disable interrupts.

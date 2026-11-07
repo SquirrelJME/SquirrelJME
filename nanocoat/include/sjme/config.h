@@ -704,12 +704,6 @@ extern "C" {
 	#define sjme_flexibleArrayCountUnion 1
 #endif
 	
-/** Force specific size for an enum, must be int sized. */
-#define sjme_enumInt(type) \
-	SJME__enum_##type##_MINV = INT_MIN, \
-	SJME__enum_##type##_MAXV = INT_MAX, \
-	SJME__enum_##type##_INIT = -1
-	
 /* SDCC does not have normal alloca. */
 #if !defined(sjme_alloca) && defined(SJME_CONFIG_HAS_SDCC)
 	/** Allocate on the heap. */
@@ -1198,21 +1192,6 @@ extern "C" {
 	/** Enable use of @link sjme_attrWeak @endlink. */
 	#define SJME_CONFIG_HAS_ATTR_WEAK
 #endif
-	
-/* Windows header needs to be included everywhere effectively. */
-#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
-	#define WIN32_LEAN_AND_MEAN 1
-	
-	#include <windows.h>
-#endif
-	
-#if defined(SJME_CONFIG_HAS_FLOAT_HARD) || \
-	defined(SJME_CONFIG_HAS_DOUBLE_HARD)
-	#include <math.h>
-#endif
-	
-/* Missing standard C functions, always include these. */
-#include "sjme/stdGone.h"
 
 #if !defined(SJME_CONFIG_NESTED_THREAD_TIC_LIMIT)
 	/** Nested thread tic limit, to prevent nested threads from blocking. */
@@ -1231,9 +1210,6 @@ extern "C" {
 	/** Nested thread tic limit, when the tic limit is infinite. */
 	#define SJME_CONFIG_NESTED_THREAD_TIC_LIMIT_HIGH INT32_C(262144)
 #endif
-	
-/* Memory limits. */
-#include "sjme/configMemory.h"
 	
 #if defined(SJME_CONFIG_HAS_GCC) || \
 	defined(SJME_CONFIG_HAS_CLANG)
@@ -1261,7 +1237,41 @@ extern "C" {
 	
 	/** No unsigned long math is supported. */
 	#define SJME_CONFIG_HAS_NO_JULONG_MATH
+	
+	#if !defined(SJME_CONFIG_HAS_NO_JLONG_ATOMIC)
+		/** Atomic 64-bit is not supported. */
+		#define SJME_CONFIG_HAS_NO_JLONG_ATOMIC
+	#endif
 #endif
+	
+/* Normalize atomic define. */
+#if !defined(SJME_CONFIG_HAS_NO_JLONG_ATOMIC) && \
+	!defined(SJME_CONFIG_HAS_JLONG_ATOMIC)
+	/** Atomic 64-bit is supported. */
+	#define SJME_CONFIG_HAS_JLONG_ATOMIC
+#endif
+	
+#pragma region(finalHeaders)
+	
+/* Memory limits. */
+#include "sjme/configMemory.h"
+	
+/* Windows header needs to be included everywhere effectively. */
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS)
+	#define WIN32_LEAN_AND_MEAN 1
+	
+	#include <windows.h>
+#endif
+	
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD) || \
+	defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	#include <math.h>
+#endif
+	
+/* Missing standard C functions, always include these. */
+#include "sjme/stdGone.h"
+	
+#pragma endregion(finalHeaders)
 
 /*--------------------------------------------------------------------------*/
 

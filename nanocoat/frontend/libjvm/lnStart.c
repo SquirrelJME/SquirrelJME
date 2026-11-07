@@ -175,7 +175,11 @@ int main(int argc, sjme_lpcstr* argv)
 		if (sjme_error_is(error = sjme_nvm_loop_main(
 			sjme_atomic_g(sjme_nvm, &inTask->inState),
 			&exitCode)))
-			goto fail_mainLoop;
+		{
+			/* Not a controlled exit? */
+			if (error != SJME_ERROR_EXIT)
+				goto fail_mainLoop;
+		}
 	}
 
 	/* Perform normal main launch. */
@@ -237,7 +241,9 @@ int main(int argc, sjme_lpcstr* argv)
 
 fail_mainLoop:
 fail_enterMain:
-	sjme_message("SquirrelJME VM Error: %d", error);
+	sjme_emitB("**********************************************************");
+	sjme_emitB("SquirrelJME VM Error: %d", error);
+	sjme_emitB("**********************************************************");
 
 fail_initArg:
 fail_initArgsArray:

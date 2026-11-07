@@ -31,10 +31,15 @@ sjme_errorCode sjme_nvm_access_checkCompatibleField(
 		if (checkValue->v.l == NULL)
 			return SJME_ERROR_NONE;
 		
+		/* Get both target class types. */
 		objectType = sjme_atomic_g(sjme_jclass, &fieldId->objectType);
 		checkClass = sjme_atomic_g(sjme_jclass, &checkValue->v.l->isClass);
 		if (objectType == NULL || checkClass == NULL)
 			return sjme_error_vmError(contextThread, SJME_ERROR_OBJECT_GONE);
+		
+		/* Trivially point to the same class. */
+		if (objectType == checkClass)
+			return SJME_ERROR_NONE;
 		
 		/* If this is not assignable, then something is wrong. */
 		if (sjme_error_is(error = sjme_nvm_vmClass_isAssignableFrom(

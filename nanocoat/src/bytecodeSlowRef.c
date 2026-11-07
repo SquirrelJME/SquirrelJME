@@ -239,7 +239,7 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
-	sjme_jclass desireClass;
+	sjme_jclass desireClass, fieldClass;
 	sjme_jfieldID fieldId;
 	sjme_jvalueTyped result;
 	sjme_jvalueTyped instance;
@@ -268,13 +268,6 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 		SJME_P_M_C(entry)->seq, SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
-	/* Check for recycle, that is a class load happened. */
-	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
-	{
-		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
-		return SJME_ERROR_NONE;
-	}
-	
 	/* Lookup field in the class. */
 	fieldId = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmField_idByNameType(
@@ -285,6 +278,27 @@ SJME_NVM_BYTECODE_SLOW(InstanceAccess)
 		SJME_P_M_T(entry)->seq,
 		&fieldId)) || fieldId == NULL)
 		return sjme_error_vmError(inFrame, error);
+	
+	/* If this is an object field, its class needs to be initialized. */
+	if (fieldId->javaType == SJME_JAVA_TYPE_ID_OBJECT)
+	{
+		/* This should always be a valid class. */
+		fieldClass = sjme_atomic_g(sjme_jclass, &fieldId->objectType);
+		if (fieldClass == NULL)
+			return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+		
+		/* Initialize it. */
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
+			fieldClass, SJME_F_T(inFrame))))
+			return sjme_error_vmError(inFrame, error);
+	}
+	
+	/* Check for recycle, that is a class load happened. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
 	
 	/* Not an instance field? */
 	if (SJME_NVM_ACC_IS(fieldId->flags, STATIC))
@@ -787,7 +801,7 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 {
 	sjme_jint poolIndex;
 	sjme_nvm_class_poolEntry* entry;
-	sjme_jclass desireClass;
+	sjme_jclass desireClass, fieldClass;
 	sjme_jfieldID fieldId;
 	sjme_jvalueTyped value;
 	sjme_jboolean isPut;
@@ -815,13 +829,6 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 		SJME_JNI_TRUE)) || desireClass == NULL)
 		return sjme_error_vmError(inFrame, error);
 	
-	/* Check for recycle, class load and/or static constructor. */
-	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
-	{
-		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
-		return SJME_ERROR_NONE;
-	}
-	
 	/* Lookup field in the class. */
 	fieldId = NULL;
 	if (sjme_error_is(error = sjme_nvm_vmField_idByNameType(
@@ -832,6 +839,27 @@ SJME_NVM_BYTECODE_SLOW(StaticAccess)
 		SJME_P_M_T(entry)->seq,
 		&fieldId)) || fieldId == NULL)
 		return sjme_error_vmError(inFrame, error);
+	
+	/* If this is an object field, its class needs to be initialized. */
+	if (fieldId->javaType == SJME_JAVA_TYPE_ID_OBJECT)
+	{
+		/* This should always be a valid class. */
+		fieldClass = sjme_atomic_g(sjme_jclass, &fieldId->objectType);
+		if (fieldClass == NULL)
+			return sjme_error_vmError(inFrame, SJME_ERROR_CLASS_CHANGED);
+		
+		/* Initialize it. */
+		if (sjme_error_is(error = sjme_nvm_vmClass_checkInit(
+			fieldClass, SJME_F_T(inFrame))))
+			return sjme_error_vmError(inFrame, error);
+	}
+	
+	/* Check for recycle, class load and/or static constructor. */
+	if (sjme_nvm_byteCode_checkRecycleR(inFrame))
+	{
+		pcNew->type = SJME_NVM_BYTECODE_PC_RECYCLE;
+		return SJME_ERROR_NONE;
+	}
 	
 	/* Not a static field? */
 	if (!SJME_NVM_ACC_IS(fieldId->flags, STATIC))

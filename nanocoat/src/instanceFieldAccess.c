@@ -110,7 +110,7 @@ static sjme_nvm_value* sjme_nvm_instance_fieldAccessorVV(
 	if (field->javaType == SJME_JAVA_TYPE_ID_LONG ||
 		field->javaType == SJME_JAVA_TYPE_ID_DOUBLE)
 	{
-#if !defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+#if defined(SJME_CONFIG_HAS_JLONG_ATOMIC)
 		volatileStore->value.v.j.full = sjme_atomic_g(sjme_jlongNative, rawP);
 #else
 #if defined(SJME_CONFIG_HAS_BIG_ENDIAN)
@@ -163,7 +163,7 @@ static sjme_nvm_value* sjme_nvm_instance_fieldAccessorVC(
 	if (field->javaType == SJME_JAVA_TYPE_ID_LONG ||
 		field->javaType == SJME_JAVA_TYPE_ID_DOUBLE)
 	{
-#if !defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+#if defined(SJME_CONFIG_HAS_JLONG_ATOMIC)
 		sjme_atomic_s(sjme_jlongNative, rawP,
 			volatileStore->value.v.j.full);
 #else

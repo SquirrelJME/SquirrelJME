@@ -21,13 +21,17 @@ sjme_jboolean SJME_TOKEN_PASTE3_PP(
 {
 	sjme_jboolean result;
 	
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	sjme_atomic_interruptsDisable();
+#endif
 	
 	result = (atomic->value == expected);
 	if (result)
 		atomic->value = set;
 	
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	sjme_atomic_interruptsEnable();
+#endif
 	
 	return result;
 }
@@ -39,13 +43,17 @@ sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
 {
 	sjme_atomic_valueName result;
 	
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	sjme_atomic_interruptsDisable();
+#endif
 	
 	result = atomic->value;
 	atomic->value = (sjme_atomic_valueName)
 		(((intptr_t)result) + (intptr_t)add);
 	
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	sjme_atomic_interruptsEnable();
+#endif
 	
 	return result;
 }
@@ -56,11 +64,15 @@ sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
 {
 	sjme_atomic_valueName result;
 	
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	sjme_atomic_interruptsDisable();
+#endif
 	
 	result = atomic->value;
 	
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	sjme_atomic_interruptsEnable();
+#endif
 	
 	return result;
 }
@@ -80,12 +92,16 @@ sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
 {
 	sjme_atomic_valueName result;
 	
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	sjme_atomic_interruptsDisable();
+#endif
 	
 	result = atomic->value;
 	atomic->value = value;
 	
+#if defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 	sjme_atomic_interruptsEnable();
+#endif
 	
 	return result;
 }

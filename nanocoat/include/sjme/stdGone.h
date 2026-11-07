@@ -690,6 +690,23 @@ void* memset(void* s, int c, size_t n);
 #endif
 	
 #pragma endregion(mem)
+#pragma region(hereDueToLimits)
+	
+#if defined(SJME_CONFIG_HAS_LIMITS_H)
+	/** Force specific size for an enum, must be int sized. */
+	#define sjme_enumInt(type) \
+		SJME__enum_##type##_MINV = INT_MIN, \
+		SJME__enum_##type##_MAXV = INT_MAX, \
+		SJME__enum_##type##_INIT = -1
+#else
+	/** Force specific size for an enum, must be int sized. */
+	#define sjme_enumInt(type) \
+		SJME__enum_##type##_MINV = INT32_MIN, \
+		SJME__enum_##type##_MAXV = INT32_MAX, \
+		SJME__enum_##type##_INIT = -1
+#endif
+	
+#pragma endregion(hereDueToLimits)
 	
 /*--------------------------------------------------------------------------*/
 
