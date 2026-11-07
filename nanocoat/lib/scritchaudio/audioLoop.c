@@ -231,13 +231,8 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_core_poll(
 
 	/* Enter main polling method. */
 	error = innerFunc(inState, inStream);
-
-	/* Invalidate before leaving. */
-	sjme_atomic_s(sjme_jint, &inStream->loopThreadReady, 0);
-
+	
 	/* Barrier before leaving. */
-	sjme_atomic_light();
-	sjme_thread_yield();
 	sjme_atomic_heavy();
 
 #if defined(SJME_CONFIG_DEBUG)
@@ -246,7 +241,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchaudio_core_poll(
 #endif
 
 	/* Finished. */
-	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
+	return SJME_THREAD_RESULT(error);
 }
 
 sjme_errorCode sjme_scritchaudio_core_allocBuffers(

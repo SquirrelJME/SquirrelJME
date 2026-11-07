@@ -161,16 +161,16 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 	/* Wait for termination. */
 	for (lockStep = SJME_JNI_FALSE;; lockStep = !lockStep)
 	{
-		/* Yield to let other threads run. */
-		sjme_thread_yield();
+		/* Done? */
+		if (0 != sjme_atomic_gl(sjme_jint, &waitData.signal))
+			break;
 		
 		/* Lightweight lock every other step until the signal happens. */
+		/* Yield otherwise. */
 		if (!lockStep)
+			sjme_thread_yield();
+		else
 			sjme_atomic_light();
-		
-		/* Done? */
-		if (0 != sjme_atomic_g(sjme_jint, &waitData.signal))
-			break;
 	}
 	
 	/* Return the result of the call. */

@@ -134,7 +134,7 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 #define GROW_SIZE 8
 	sjme_errorCode error;
 	sjme_scritchaudio_stream result;
-	sjme_jboolean hasTop, hasWrapped;
+	sjme_jboolean hasTop, hasWrapped, lockStep;
 	
 	if (inState == NULL || outStream == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -242,12 +242,18 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 		/* the thread dynamically on each stream. */
 		if (!inState->bugs.outputBlocks)
 		{
-			sjme_atomic_heavy();
-			while (sjme_atomic_g(sjme_jint, &result->loopThreadReady) != 0)
+			/* Light barrier for atomic. */
+			lockStep = SJME_JNI_FALSE;
+			while (sjme_atomic_gl(sjme_jint, &result->loopThreadReady) != 0)
 			{
-				sjme_atomic_light();
-				sjme_thread_yield();
-				sjme_atomic_heavy();
+				/* Either yield or barrier. */
+				if (!lockStep)
+					sjme_thread_yield();
+				else
+					sjme_atomic_light();
+				
+				/* Invert. */
+				lockStep = !lockStep;
 			}
 		}
 		
@@ -264,12 +270,17 @@ sjme_errorCode sjme_scritchaudio_core_streamCreate(
 		}
 		
 		/* Await loop ready. */
-		sjme_atomic_heavy();
-		while (sjme_atomic_g(sjme_jint, &result->loopThreadReady) == 0)
+		lockStep = SJME_JNI_FALSE;
+		while (sjme_atomic_gl(sjme_jint, &result->loopThreadReady) == 0)
 		{
-			sjme_atomic_light();
-			sjme_thread_yield();
-			sjme_atomic_heavy();
+			/* Either yield or light barrier. */
+			if (!lockStep)
+				sjme_thread_yield();
+			else
+				sjme_atomic_light();
+			
+			/* Invert step. */
+			lockStep = !lockStep;
 		}
 		
 #if defined(SJME_CONFIG_DEBUG)

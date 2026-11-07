@@ -67,8 +67,6 @@ sjme_errorCode sjme_thread_new(
 	threadId = 0;
 
 	/* Emit barrier. */
-	sjme_atomic_light();
-	sjme_thread_yield();
 	sjme_atomic_heavy();
 
 	/* If the signal handler was not yet setup, then set it up. */
@@ -86,6 +84,9 @@ sjme_errorCode sjme_thread_new(
 		inMain, anything))
 		return SJME_ERROR_CANNOT_CREATE;
 	threadId = (sjme_thread_id)result;
+
+	/* Emit barrier. */
+	sjme_atomic_heavy();
 	
 	/* Success! */
 	*outThread = result;

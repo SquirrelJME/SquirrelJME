@@ -253,6 +253,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 {
 	sjme_scritchui topState;
 	sjme_scritchui wrappedState;
+	sjme_jboolean lockStep;
 	
 	if (anything == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
@@ -265,19 +266,22 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_fbBelay(
 
 	/* Recover wrapped state. */
 	topState = NULL;
+	lockStep = SJME_JNI_FALSE;
 	while (topState == NULL)
 	{
-		/* Let other threads run. */
-		sjme_atomic_light();
-		sjme_thread_yield();
-		sjme_atomic_heavy();
-		
 		/* Read it in. */
-		topState = sjme_atomic_g(sjme_pointer, 
+		topState = sjme_atomic_gl(sjme_pointer, 
 			&wrappedState->topState);
 		
-		/* Post barrier after write. */
-		sjme_atomic_heavy();
+		/* Early exit. */
+		if (topState != NULL)
+			break;
+		
+		/* Let other threads run, or light barrier. */
+		if (!lockStep)
+			sjme_thread_yield();
+		else
+			sjme_atomic_light();
 	}
 	
 	/* Debug. */
@@ -327,6 +331,7 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	sjme_errorCode error;
 	sjme_scritchui state;
 	sjme_thread currentThread;
+	sjme_jboolean lockStep;
 	
 	if (allocPool == NULL || inImplFunc == NULL || outState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -404,8 +409,6 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 			state);
 		
 		/* Barrier here for wrapped init. */
-		sjme_atomic_light();
-		sjme_thread_yield();
 		sjme_atomic_heavy();
 	}
 
@@ -433,11 +436,18 @@ static sjme_errorCode sjme_scritchui_core_apiInitActual(
 	}
 	else
 	{
-		while (0 == sjme_atomic_g(sjme_jint, &state->loopThreadReady))
+		/* Wait until thread is ready. */
+		lockStep = SJME_JNI_FALSE;
+		while (0 == sjme_atomic_gl(sjme_jint, &state->loopThreadReady))
 		{
-			sjme_atomic_light();
-			sjme_thread_yield();
-			sjme_atomic_heavy();
+			/* Either yield or barrier. */
+			if (!lockStep)
+				sjme_thread_yield();
+			else
+				sjme_atomic_light();
+			
+			/* Flip the check. */
+			lockStep = !lockStep;
 		}
 	}
 
