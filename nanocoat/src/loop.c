@@ -150,47 +150,46 @@ sjme_errorCode sjme_nvm_loop_tickExplicit(
 	/* that have additional threads that are outside the VM thread logic. */
 	if ((inThread->flags & SJME_NVM_THREAD_IS_EXPLICIT) == 0)
 	{
-		/* The current thread model is cooperate or pre-emptive. */
-		if (inState->threadModel == SJME_NVM_MLE_THREAD_SINGLE_COOP ||
-			inState->threadModel == SJME_NVM_MLE_THREAD_SINGLE_PREEMPT)
-		{
-			/* If this is not the current thread, then we are in some other */
-			/* thread... only bad stuff will happen here. */
-			if (!sjme_thread_equal(sjme_thread_currentR(),
-				sjme_atomic_g(sjme_thread, &inThread->nativeThread)))
-				return SJME_ERROR_INVALID_EXPLICIT_NEST;
-
-			/* We cannot just keep running forever, otherwise this will just */
-			/* never exit until some unspecified condition just happens. */
-			/* Thus, there needs to be a tic limit. */
-			/* If the configured tic limit is too low, clamp it to a minimum */
-			/* as callback threads will heavily stall the virtual machine. */
-			if (inState->globals.ticLimit > 0)
-				ticLimit = sjme_max(SJME_CONFIG_NESTED_THREAD_TIC_LIMIT,
-					inState->globals.ticLimit);
-			else
-				ticLimit = SJME_CONFIG_NESTED_THREAD_TIC_LIMIT_HIGH;
-
-			/* We just keep running every thread and scheduling until the */
-			/* thread we actually care about falls below the frame level. */
-			vmDead = SJME_JNI_FALSE;
-			while (inThread->numFrames >= minFrameLevel && !vmDead)
-			{
-				if (sjme_error_is(error = sjme_nvm_loop_tick(inState,
-						ticLimit, NULL, &vmDead, SJME_JNI_FALSE)))
-					return sjme_error_default(error);
-
-				/* Yield to let other threads run. */
-				sjme_nvm_loopYield(inState);
-			}
-
-			/* Always capture the return value at the end, if desired. */
-			goto skip_captureReturn;
-		}
-		
-		/* This cannot be done for this thread. */
-		else
+		/* The current thread model must be cooperative or pre-emptive. */
+		/* Otherwise, this cannot be done for this thread. */
+		if (inState->threadModel != SJME_NVM_MLE_THREAD_SINGLE_COOP &&
+			inState->threadModel != SJME_NVM_MLE_THREAD_SINGLE_PREEMPT)
 			return SJME_ERROR_INVALID_ARGUMENT;
+
+		/* If this is not the current thread, then we are in some other */
+		/* thread... only bad stuff will happen here. */
+		if (!sjme_thread_equal(sjme_thread_currentR(),
+			sjme_atomic_g(sjme_thread, &inThread->nativeThread)))
+			return SJME_ERROR_INVALID_EXPLICIT_NEST;
+
+		/* We cannot just keep running forever, otherwise this will just */
+		/* never exit until some unspecified condition just happens. */
+		/* Thus, there needs to be a tic limit. */
+		/* If the configured tic limit is too low, clamp it to a minimum */
+		/* as callback threads will heavily stall the virtual machine. */
+		if (inState->globals.ticLimit > 0)
+			ticLimit = sjme_max(SJME_CONFIG_NESTED_THREAD_TIC_LIMIT,
+				inState->globals.ticLimit);
+		else
+			ticLimit = SJME_CONFIG_NESTED_THREAD_TIC_LIMIT_HIGH;
+
+		/* We just keep running every thread and scheduling until the */
+		/* thread we actually care about falls below the frame level. */
+		vmDead = SJME_JNI_FALSE;
+		while (inThread->numFrames >= minFrameLevel && !vmDead)
+		{
+			/* Run tics. */
+			if (sjme_error_is(error = sjme_nvm_loop_tick(inState,
+				ticLimit, NULL, &vmDead, 
+				SJME_JNI_FALSE)))
+				return sjme_error_default(error);
+
+			/* Yield to let other threads run. */
+			sjme_nvm_loopYield(inState);
+		}
+
+		/* Always capture the return value at the end, if desired. */
+		goto skip_captureReturn;
 	}
 
 	/* Run the thread explicitly. */
@@ -204,7 +203,7 @@ sjme_errorCode sjme_nvm_loop_tickExplicit(
 			/* Any other error. */
 			if (error != SJME_ERROR_MINIMUM_FRAME_LEVEL)
 				return sjme_error_default(error);
-
+			
 			/* Minimum frame level means we must stop, as this could */
 			/* actually be a nested loop execution, in which case things */
 			/* will go very wrong if we start executing a higher level. */
@@ -216,6 +215,11 @@ sjme_errorCode sjme_nvm_loop_tickExplicit(
 	}
 
 skip_captureReturn:
+	/* Force thread to be in the sleeping state. */
+	sjme_atomic_cs(sjme_nvm_thread_statusType, &inThread->status,
+		SJME_NVM_THREAD_STATUS_RUNNING,
+		SJME_NVM_THREAD_STATUS_SLEEPING);
+	
 	/* Capture the return value? */
 	if (argRCopy != NULL)
 	{
