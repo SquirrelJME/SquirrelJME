@@ -7,6 +7,16 @@
 // See license.mkd for licensing and copyright information.
 // -------------------------------------------------------------------------*/
 
+#include <fcntl.h>
+
+#include "sjme/config.h"
+
+/* Can use mode advisory. */
+#if defined(SJME_CONFIG_HAS_FCNTL_H) && \
+	defined(SJME_CONFIG_HAS_POSIX_FADVISE)
+	#include <fcntl.h>
+#endif
+
 #include "sjme/util.h"
 #include "sjme/intern/nal.h"
 
@@ -274,18 +284,27 @@ sjme_errorCode sjme_nal_default_fileOpen(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
-	sjme_attrInValue sjme_nal_openMode openMode)
+	sjme_attrInValue sjme_nal_openMode openMode,
+	sjme_attrInValue sjme_nal_adviseMode adviseMode)
 {
 	sjme_errorCode error;
 	FILE* cFile;
 	sjme_seekable result;
 	sjme_lpcstr mode;
+#if defined(SJME_CONFIG_HAS_FCNTL_H) && \
+	defined(SJME_CONFIG_HAS_POSIX_FADVISE)
+	int fileNo;
+#endif
 	
 	if (allocPool == NULL || inPath == NULL || outSeekable == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 
 	if (openMode < SJME_NAL_OPEN_READ ||
 		openMode > SJME_NAL_OPEN_WRITE_TRUNCATE)
+		return SJME_ERROR_INVALID_ARGUMENT;
+	
+	if (adviseMode < SJME_NAL_ADVISE_DONT_CARE ||
+		adviseMode >= SJME_NAL_NUM_ADVISE_MODES)
 		return SJME_ERROR_INVALID_ARGUMENT;
 	
 	/* Which mode? */
@@ -303,6 +322,34 @@ sjme_errorCode sjme_nal_default_fileOpen(
 
 	/* Always seek to the start. */
 	fseek(cFile, 0, SEEK_SET);
+	
+#if defined(SJME_CONFIG_HAS_FCNTL_H) && \
+	defined(SJME_CONFIG_HAS_POSIX_FADVISE)
+	/* Although StdC is common everywhere else, this is really the only */
+	/* sensible place to put this. If we can do this, we should set the */
+	/* advise mode of the file so the OS can optimize it. */
+	if (adviseMode > SJME_NAL_ADVISE_DONT_CARE)
+	{
+		/* We need the fileno to even call POSIX functions. */
+		fileNo = fileno(cFile);
+		if (fileNo >= 0)
+		{
+			/* Set that this file will be needed. */
+			/* It is unspecified in POSIX what this does or if it can even */
+			/* be combined with the other calls ahead. */
+			posix_fadvise(fileNo, 0, 0,
+				POSIX_FADV_WILLNEED);
+		
+			/* Set other mode. */
+			if (adviseMode == SJME_NAL_ADVISE_SEQUENTIAL)
+				posix_fadvise(fileNo, 0, 0, 
+					POSIX_FADV_SEQUENTIAL);
+			else if (adviseMode == SJME_NAL_ADVISE_WHOLE_RANDOM)
+				posix_fadvise(fileNo, 0, 0, 
+					POSIX_FADV_RANDOM);
+		}
+	}
+#endif
 	
 	/* Setup stream. */
 	result = NULL;

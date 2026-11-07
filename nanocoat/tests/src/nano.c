@@ -678,7 +678,8 @@ int main(int argc, sjme_lpstr* argv)
 	/* Open seekable to the boot Jar. */
 	bootSeek = NULL;
 	if (sjme_error_is(error = nal->fileOpen(paramPool, argv[1],
-		&bootSeek, SJME_NAL_OPEN_READ)) || bootSeek == NULL)
+		&bootSeek, SJME_NAL_OPEN_READ,
+		SJME_NAL_ADVISE_WHOLE_RANDOM)) || bootSeek == NULL)
 		goto fail_openBootJar;
 	
 	/* Load boot suite. */

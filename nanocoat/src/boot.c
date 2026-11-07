@@ -151,8 +151,11 @@ static sjme_errorCode sjme_nvm_defaultBootSuiteAttempt(
 	
 	/* Open main ROM file. */
 	rom = NULL;
-	if (sjme_error_is(error = nal->fileOpen(allocPool, checkPath.chars,
-		&rom, SJME_NAL_OPEN_READ)) || rom == NULL)
+	if (sjme_error_is(error = nal->fileOpen(
+		allocPool, checkPath.chars,
+		&rom, SJME_NAL_OPEN_READ, 
+		SJME_NAL_ADVISE_WHOLE_RANDOM)) ||
+		rom == NULL)
 		return sjme_error_default(error);
 	
 	/* Load suite from the ZIP. */

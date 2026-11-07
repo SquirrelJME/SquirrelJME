@@ -54,6 +54,29 @@ typedef enum sjme_nal_openMode
 	/** Write and truncate file. */
 	SJME_NAL_OPEN_WRITE_TRUNCATE = 3,
 } sjme_nal_openMode;
+	
+/**
+ * The advise mode for file access.
+ * 
+ * @since 2026/11/06
+ */
+typedef enum sjme_nal_adviseMode
+{
+	/** This is an int based enum. */
+	sjme_enumInt(sjme_nal_adviseMode),
+	
+	/** Do not care. */
+	SJME_NAL_ADVISE_DONT_CARE = 0,
+	
+	/** Sequential access. */
+	SJME_NAL_ADVISE_SEQUENTIAL = 1,
+	
+	/** Random access to the whole file. */
+	SJME_NAL_ADVISE_WHOLE_RANDOM = 2,
+	
+	/** The number of advise modes. */
+	SJME_NAL_NUM_ADVISE_MODES = 3,
+} sjme_nal_adviseMode;
 
 /**
  * The type of line ending the system uses.
@@ -208,6 +231,8 @@ typedef sjme_errorCode (*sjme_nal_execPathFunc)(
  * @param inPath The path to open.
  * @param outSeekable The seekable to open within.
  * @param openMode The open mode for the file.
+ * @param adviseMode The advise mode for the file, this is used for file
+ * access optimization and may be completely ignored if not supported.
  * @return Any resultant error, if any.
  * @since 2024/08/11
  */
@@ -215,7 +240,8 @@ typedef sjme_errorCode (*sjme_nal_fileOpenFunc)(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
-	sjme_attrInValue sjme_nal_openMode openMode);
+	sjme_attrInValue sjme_nal_openMode openMode,
+	sjme_attrInValue sjme_nal_adviseMode adviseMode);
 
 /**
  * Reads from the system environment a variable.

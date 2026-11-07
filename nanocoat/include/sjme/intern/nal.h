@@ -55,7 +55,8 @@ sjme_errorCode sjme_nal_default_fileOpen(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
 	sjme_attrInNotNull sjme_lpcstr inPath,
 	sjme_attrOutNotNull sjme_seekable* outSeekable,
-	sjme_attrInValue sjme_nal_openMode openMode);
+	sjme_attrInValue sjme_nal_openMode openMode,
+	sjme_attrInValue sjme_nal_adviseMode adviseMode);
 
 sjme_errorCode sjme_nal_default_getEnv(
 	sjme_attrInNotNull sjme_attrOutNotNullBuf(len) sjme_lpstr buf,

@@ -525,7 +525,8 @@ sjme_errorCode sjme_nvm_rom_suiteFromZipFileSingle(
 	/* Open the file. */
 	seekable = NULL;
 	if (sjme_error_is(error = nal->fileOpen(pool,
-		&zipPath->chars[0], &seekable, SJME_NAL_OPEN_READ)) ||
+		&zipPath->chars[0], &seekable, SJME_NAL_OPEN_READ,
+		SJME_NAL_ADVISE_WHOLE_RANDOM)) ||
 		seekable == NULL)
 		goto fail_open;
 

@@ -51,6 +51,21 @@ squirreljme_check_include_file("wchar.h"
 	SJME_CONFIG_HAS_WCHAR_H
 	SJME_CONFIG_HAS_NO_WCHAR_H)
 
+# fcntl.h available?
+squirreljme_check_include_file("fcntl.h"
+	SJME_CONFIG_HAS_FCNTL_H
+	SJME_CONFIG_HAS_NO_FCNTL_H)
+
+if(SJME_CONFIG_HAS_FCNTL_H)
+	# Has posix_fadvise()?
+	squirreljme_check_symbol_exists("posix_fadvise" "fcntl.h"
+		SJME_CONFIG_HAS_POSIX_FADVISE
+		SJME_CONFIG_HAS_NO_POSIX_FADVISE)
+else()
+	squirreljme_try_compile_no("fdatasync()"
+		SJME_CONFIG_HAS_NO_POSIX_FADVISE)
+endif()
+
 # sys/socket.h available?
 squirreljme_check_include_file("sys/socket.h"
 	SJME_CONFIG_HAS_SYS_SOCKET_H

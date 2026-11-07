@@ -538,7 +538,8 @@ sjme_errorCode sjme_nvm_walk_coreDumpFile(
 	/* Open native file. */
 	seekable = NULL;
 	if (sjme_error_is(error = nal->fileOpen(miniPool, filePath,
-		&seekable, SJME_NAL_OPEN_WRITE_TRUNCATE)) || seekable == NULL)
+		&seekable, SJME_NAL_OPEN_WRITE_TRUNCATE,
+		SJME_NAL_ADVISE_SEQUENTIAL)) || seekable == NULL)
 		return sjme_error_default(error);
 
 	/* Open output stream over the seekable. */
