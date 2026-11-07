@@ -152,19 +152,14 @@ sjme_errorCode sjme_nvm_instance_monitorEnter(
 	if (contextThread == NULL || instance == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Memory barrier! */
-	sjme_atomic_light();
-
 	/* Grab the lock on the object. */
+	/* Spinlock performs light/heavy locking. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
 		&instance->common.lock)))
 		return sjme_error_vmError(contextThread, error);
 
 	/* Count up the monitor since we do have the lock. */
 	sjme_atomic_ga(sjme_jint, &instance->monitorCount, 1);
-	
-	/* Memory barrier! */
-	sjme_atomic_heavy();
 
 	/* Success! */
 	return SJME_ERROR_NONE;
@@ -179,23 +174,18 @@ sjme_errorCode sjme_nvm_instance_monitorExit(
 	if (contextThread == NULL || instance == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Memory barrier! */
-	sjme_atomic_light();
-
 	/* There are no monitor locks on this instance? */
 	if (sjme_atomic_g(sjme_jint, &instance->monitorCount) < 0)
 		return SJME_ERROR_NOT_LOCK_OWNER;
 	
 	/* Release the lock on the object. */
+	/* Spinlock performs light/heavy locking. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&instance->common.lock, NULL)))
 		return sjme_error_vmError(contextThread, error);
 
 	/* We did a successful release, so count the locks down. */
 	sjme_atomic_ga(sjme_jint, &instance->monitorCount, -1);
-	
-	/* Memory barrier! */
-	sjme_atomic_heavy();
 
 	/* Success! */
 	return SJME_ERROR_NONE;

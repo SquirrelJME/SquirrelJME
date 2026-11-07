@@ -57,6 +57,10 @@ static sjme_errorCode sjme_nvm_task_preload(
 				ccId == SJME_NVM_COMMON_NULL)
 				continue;
 			
+			/* Allow non-very important classes to be initialized later. */
+			if (i > 0 && ccId < SJME_NVM_COMMON_VERY_IMPORTANT)
+				continue;
+			
 			/* Load the common class, only initialize on the second run. */
 			classy = NULL;
 			if (sjme_error_is(error = sjme_nvm_task_commonClass(inThread,

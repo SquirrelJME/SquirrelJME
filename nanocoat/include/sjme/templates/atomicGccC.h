@@ -59,6 +59,15 @@ sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
 }
 
 sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
+		sjme_atomic_, sjme_atomic_subName, _getLazy)(
+	sjme_atomic_typeName* atomic)
+{
+	return (sjme_atomic_valueName)__atomic_load_n(
+		(volatile sjme_atomic_storageType*)&atomic->value,
+		__ATOMIC_RELAXED);
+}
+
+sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
 		sjme_atomic_, sjme_atomic_subName, _set)(
 	sjme_atomic_typeName* atomic,
 	sjme_atomic_valueName value)

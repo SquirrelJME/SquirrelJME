@@ -30,18 +30,29 @@ static sjme_inline void sjme_nvm_loopYield(
 static sjme_inline void sjme_nvm_loopTryYield(
 	sjme_attrInNotNull sjme_nvm inState)
 {
+	sjme_jint busyTime, yieldTime;
+	sjme_nvm_threadSchedule* schedule;
+	
 	if (inState == NULL || inState->schedule == NULL)
 		return;
 	
+	/* Having the schedule is nice. */
+	schedule = inState->schedule;
+
+	/* Busy loop? Just return and re-run? */
+	busyTime = ++schedule->busyTimer;
+	if (busyTime < schedule->busyMax)
+		return;
+	
 	/* Yield instead of a longer sleep delay? */
-	if (++inState->schedule->yieldTimer < 
-		inState->schedule->yieldMax)
+	yieldTime = ++schedule->yieldTimer; 
+	if (yieldTime < schedule->yieldMax)
 		sjme_nvm_loopYield(inState);
 
 	/* Sleep instead of yield. */
 	else
-		sjme_thread_sleep(inState->schedule->nothingMillis,
-			inState->schedule->nothingNanos);
+		sjme_thread_sleep(schedule->nothingMillis,
+			schedule->nothingNanos);
 }
 
 static sjme_thread_result sjme_attrThreadCall sjme_nvm_loop_tickCrash(
@@ -260,7 +271,8 @@ sjme_errorCode sjme_nvm_loop_tick(
 			continue;
 		}
 		
-		/* Reset the yield timer, since we did run something. */
+		/* Reset the timers, since we did run something. */
+		inState->schedule->busyTimer = 0;
 		inState->schedule->yieldTimer = 0;
 
 		/* Otherwise execute the single thread. */

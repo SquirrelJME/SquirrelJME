@@ -387,6 +387,12 @@ typedef struct sjme_nvm_threadSchedule
 	/** The maximum amount of time to light barrier for. */
 	sjme_jint lightMax;
 	
+	/** The timer used for busy loops. */
+	sjme_jint busyTimer;
+	
+	/** The maximum amount of time to busy loop for. */
+	sjme_jint busyMax;
+	
 	/** The timer used for yields. */
 	sjme_jint yieldTimer;
 	

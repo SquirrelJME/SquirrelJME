@@ -274,6 +274,8 @@ sjme_errorCode sjme_thread_new(
 /**
  * Grabs the read lock.
  * 
+ * This generally emits a memory barrier.
+ * 
  * @param inLock The lock to use. 
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_ILLEGAL_STATE ...?
@@ -286,6 +288,8 @@ sjme_errorCode sjme_keepOrder sjme_thread_rwLockGrabRead(
 /**
  * Grabs the write lock.
  * 
+ * This generally emits a memory barrier.
+ * 
  * @param inLock The lock to use. 
  * @return Any resultant error, if any.
  * @throws SJME_ERROR_ILLEGAL_STATE ...?
@@ -297,6 +301,8 @@ sjme_errorCode sjme_keepOrder sjme_thread_rwLockGrabWrite(
 
 /**
  * Releases the read lock.
+ * 
+ * This generally emits a memory barrier.
  * 
  * @param inLock The lock to release.
  * @param outCount Optional count of the locks remaining.
@@ -312,6 +318,8 @@ sjme_errorCode sjme_keepOrder sjme_thread_rwLockReleaseRead(
 /**
  * Releases the write lock.
  * 
+ * This generally emits a memory barrier.
+ * 
  * @param inLock The lock to release.
  * @param outCount Optional count of the locks remaining.
  * @return Any resultant error, if any.
@@ -326,6 +334,8 @@ sjme_errorCode sjme_keepOrder sjme_thread_rwLockReleaseWrite(
 /**
  * Grabs a spin lock.
  * 
+ * This emits a memory barrier when the lock is grabbed by this thread.
+ * 
  * @param inLock The lock to grab. 
  * @return Any resultant error, if any.
  * @since 2024/07/19
@@ -336,9 +346,13 @@ sjme_errorCode sjme_keepOrder sjme_thread_spinLockGrab(
 /**
  * Releases a spin lock.
  * 
+ * This emits a memory barrier when the lock is released by this thread.
+ * 
  * @param inLock The lock to release. 
  * @param outCount Optional count after lock.
  * @return Any resultant error, if any.
+ * @throws SJME_ERROR_INVALID_THREAD_STATE If this thread does not own
+ * the lock.
  * @since 2024/07/19
  */
 sjme_errorCode sjme_keepOrder sjme_thread_spinLockRelease(

@@ -228,6 +228,17 @@ extern "C" {
  */
 #define sjme_atomic_g(type, ref) \
 	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _get)((ref))
+	
+/**
+ * Gets the atomic value, lazilly.
+ * 
+ * @param type The atomic type.
+ * @param ref The atomic reference.
+ * @return The current value of the atomic.
+ * @since 2026/11/06
+ */
+#define sjme_atomic_gl(type, ref) \
+	SJME_TOKEN_PASTE3_PP(sjme_atomic_, type, _getLazy)((ref))
 
 /**
  * Gets the atomic value.

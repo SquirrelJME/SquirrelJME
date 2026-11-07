@@ -56,9 +56,6 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_rwLockGrabRead(
 	if (readLock == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* Light barrier before running. */
-	sjme_atomic_light();
-	
 	/* Attempt locking constantly. */
 	cycle = 0;
 	for (lockStep = SJME_JNI_FALSE;; lockStep = !lockStep)
@@ -90,9 +87,6 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_rwLockGrabRead(
 		break;
 	}
 		
-	/* Do this just for good measure for the wierd CPUs. */
-	sjme_atomic_heavy();
-	
 	/* LCOV_EXCL_END */
 	
 	/* Success! */
@@ -131,9 +125,6 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_rwLockGrabWrite(
 			&inLock->write)))
 			return sjme_error_default(error);
 	}
-		
-	/* Do this just for good measure for the wierd CPUs. */
-	sjme_atomic_heavy();
 	
 	/* LCOV_EXCL_END */
 	
@@ -157,9 +148,6 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_rwLockReleaseRead(
 	readLock = inLock->read;
 	if (readLock == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
-		
-	/* Do this just for good measure for the wierd CPUs. */
-	sjme_atomic_heavy();
 	
 	/* LCOV_EXCL_END */
 	
@@ -203,9 +191,6 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_rwLockReleaseWrite(
 		if (sjme_error_is(error = sjme_thread_spinLockRelease(
 			readLock, NULL)))
 			return sjme_error_default(error);
-		
-	/* Do this just for good measure for the wierd CPUs. */
-	sjme_atomic_heavy();
 	
 	/* LCOV_EXCL_END */
 	
@@ -219,10 +204,9 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_spinLockGrab(
 	sjme_thread_spinLock* inLock)
 {
 	sjme_errorCode error;
-	sjme_thread current;
-	sjme_jboolean keepSpinning;
-	sjme_jboolean lockStep;
-	sjme_jint cycle;
+	sjme_thread current, lockOwner;
+	sjme_jboolean lockStep, ownSelf, ownNone, ownOther, gotPeek;
+	sjme_jint cycle, prevCount;
 	
 	/* LCOV_EXCL_START */
 	
@@ -236,41 +220,73 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_spinLockGrab(
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_THREAD_STATE);
 	
-	/* Light lock before entering the spin loop. */
-	sjme_atomic_light();
+	/* Initialize. */
+	ownSelf = SJME_JNI_FALSE;
+	ownNone = SJME_JNI_FALSE;
+	ownOther = SJME_JNI_FALSE;
 	
 	/* This is done in a loop until we own the lock. */
 	cycle = 0;
-	for (keepSpinning = SJME_JNI_TRUE, lockStep = SJME_JNI_FALSE;
-		keepSpinning; lockStep = !lockStep)
+	prevCount = INT32_MIN;
+	for (lockStep = SJME_JNI_FALSE;; lockStep = !lockStep)
 	{
-		/* Grab the peek lock. */
-		while (SJME_JNI_FALSE == sjme_atomic_cs(sjme_thread, 
-			&inLock->poke, SJME_THREAD_NULL, current))
+		/* Get the current lock owner, lazily. */
+		lockOwner = sjme_atomic_gl(sjme_thread, &inLock->owner);
+		
+		/* What is the lock ownership state? */
+		ownNone = sjme_thread_equal(lockOwner,
+			SJME_THREAD_NULL);
+		ownSelf = sjme_thread_equal(lockOwner, current);
+		ownOther = (!ownNone && !ownSelf);
+		
+		/* Grab the peek lock if we feel like we could own this lock. */
+		gotPeek = SJME_JNI_FALSE;
+		if (!ownOther && (ownNone || ownSelf))
+			gotPeek = sjme_atomic_cs(sjme_thread, 
+				&inLock->poke, SJME_THREAD_NULL, current);
+		
+		/* If we did not get the peek, we need to retry. */
+		if (!gotPeek)
 		{
-			/* Every other time, let other threads run. */
+			/* Lightweight lock every other step. */
+			if (lockStep)
+				sjme_atomic_light();
+			
+			/* Every other time, let other threads run after a limit. */
 			if ((++cycle) > SJME_THREAD_YIELD_LIMIT && lockStep)
 				sjme_thread_yield();
+			
+			/* Try again. */
+			continue;
 		}
 		
-		/* We own the lock already, or we just owned it, so count up. */
-		if (sjme_atomic_cs(sjme_thread, &inLock->owner,
-			current, current) ||
-			sjme_atomic_cs(sjme_thread, &inLock->owner,
-				SJME_THREAD_NULL, current))
-		{
-			sjme_atomic_ga(sjme_jint, &inLock->count, 1);
-			
-			keepSpinning = SJME_JNI_FALSE;
-		}
+		/* Try to set owner from none. */
+		if (ownNone)
+			ownNone = sjme_atomic_cs(sjme_thread, &inLock->owner,
+				SJME_THREAD_NULL, current);
+		
+		/* Try to set owner from self. */
+		if (ownNone || ownSelf)
+			ownSelf = sjme_atomic_cs(sjme_thread, &inLock->owner,
+				current, current);
+		
+		/* We actually own the lock, so count up. */
+		prevCount = INT32_MIN;
+		if (ownSelf)
+			prevCount = sjme_atomic_ga(sjme_jint, &inLock->count, 1);
 		
 		/* Clear the peek lock. */
 		sjme_atomic_cs(sjme_thread, &inLock->poke,
 			current, SJME_THREAD_NULL);
+		
+		/* If the previous count changed, then we know we grabbed this. */
+		if (prevCount != INT32_MIN)
+			break;
 	}
 		
-	/* Do this just for good measure for the wierd CPUs. */
-	sjme_atomic_heavy();
+	/* Heavy memory barrier if this is the first time locking this lock. */
+	if (ownSelf && prevCount == 0)
+		sjme_atomic_heavy();
 	
 	/* LCOV_EXCL_END */
 	
@@ -283,8 +299,8 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_spinLockRelease(
 	sjme_attrOutNullable sjme_jint* outCount)
 {
 	sjme_errorCode error;
-	sjme_thread current;
-	sjme_jboolean owned, lockStep;
+	sjme_thread current, lockOwner;
+	sjme_jboolean ownSelf, lockStep, oneCount;
 	sjme_jint count, cycle;
 	
 	/* LCOV_EXCL_START */
@@ -298,53 +314,49 @@ sjme_errorCode sjme_noOptimize sjme_keepOrder sjme_thread_spinLockRelease(
 		&current)) || current == SJME_THREAD_NULL)
 		return sjme_error_defaultOr(error,
 			SJME_ERROR_INVALID_THREAD_STATE);
-		
-	/* Do this just for good measure for the wierd CPUs. */
-	sjme_atomic_light();
 	
-	/* Grab the peek lock. */
-	cycle = 0;
-	lockStep = SJME_JNI_FALSE;
-	while (SJME_JNI_FALSE == sjme_atomic_cs(sjme_thread, 
-		&inLock->poke, SJME_THREAD_NULL, current))
-	{
-		/* Let other threads run every other step. */
-		if ((++cycle) > SJME_THREAD_YIELD_LIMIT && lockStep)
-			sjme_thread_yield();
-		
-		/* Flip lock step. */
-		lockStep = !lockStep;
-	}
+	/* Get the current lock owner, lazily. */
+	lockOwner = sjme_atomic_gl(sjme_thread, &inLock->owner);
 	
-	/* We own the lock hopefully, so count down. */
-	count = -1;
-	if ((owned = sjme_atomic_cs(sjme_thread, &inLock->owner,
-		current, current)))
+	/* Someone else owns this thread, or something is very wrong */
+	/* with the system memory. */
+	ownSelf = sjme_thread_equal(lockOwner, current);
+	if (!ownSelf)
+		return SJME_ERROR_INVALID_THREAD_STATE;
+	
+	/* Determine if we really do own the lock. */
+	ownSelf = sjme_atomic_cs(sjme_thread, &inLock->owner,
+	current, current);
+	if (!ownSelf)
+		return SJME_ERROR_INVALID_THREAD_STATE;
+	
+	/* If we do own the lock, count down. */
+	count = INT32_MIN;
+	if (ownSelf)
 	{
+		/* Does this lock have a count of one already? */
+		oneCount = sjme_atomic_cs(sjme_jint, &inLock->count,
+			1, 1);
+		
+		/* Otherwise we can count down. */
+		if (!oneCount)
+			count = sjme_atomic_ga(sjme_jint, &inLock->count, -1);
+		
 		/* If we count down to zero, then we no longer own the lock. */
-		if ((count = sjme_atomic_ga(sjme_jint, &inLock->count,
-			-1)) <= 1)
+		else
 		{
-			sjme_atomic_s(sjme_thread, &inLock->owner,
-				SJME_THREAD_NULL);
-			sjme_atomic_s(sjme_jint, &inLock->count,
-				(count = 0));
+			/* Clear count. */
+			count = sjme_atomic_s(sjme_jint, &inLock->count, 0);
+			
+			/* Clear owner. */
+			sjme_atomic_cs(sjme_thread, &inLock->owner,
+				current, SJME_THREAD_NULL);
 		}
 	}
 	
-	/* Clear the peek lock. */
-	sjme_atomic_cs(sjme_thread, &inLock->poke,
-		current, SJME_THREAD_NULL);
-		
-	/* Do this just for good measure for the wierd CPUs. */
-	sjme_atomic_heavy();
-
-#if defined(SJME_CONFIG_DEBUG)
-	/* Do we not own the lock? */
-	if (!owned)
-		sjme_message("Lock %p owner %p is not %p",
-			inLock, sjme_atomic_g(sjme_thread, &inLock->owner), current);
-#endif
+	/* If we are releasing our last lock, do a heavy barrier */
+	if (ownSelf && count != INT32_MIN && count <= 1)
+		sjme_atomic_heavy();
 	
 	/* Give the lock count that is left. */
 	if (outCount != NULL)

@@ -42,8 +42,9 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_waitAdapter(
 	waitData->result = SJME_THREAD_RESULT_AS_ERROR(result);
 	
 	/* Signal that wait is complete. */
-	sjme_atomic_light();
 	sjme_atomic_s(sjme_jint, &waitData->signal, 1);
+	
+	/* Heavy barrier for signaling. */
 	sjme_atomic_heavy();
 	
 	/* Use result from callback. */
@@ -119,7 +120,7 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 {
 	sjme_errorCode error;
 	sjme_scritchui_core_waitData waitData;
-	sjme_jboolean inThread;
+	sjme_jboolean inThread, lockStep;
 	
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -158,12 +159,14 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 		return sjme_error_default(error);
 	
 	/* Wait for termination. */
-	for (;;)
+	for (lockStep = SJME_JNI_FALSE;; lockStep = !lockStep)
 	{
 		/* Yield to let other threads run. */
-		sjme_atomic_light();
 		sjme_thread_yield();
-		sjme_atomic_heavy();
+		
+		/* Lightweight lock every other step until the signal happens. */
+		if (!lockStep)
+			sjme_atomic_light();
 		
 		/* Done? */
 		if (0 != sjme_atomic_g(sjme_jint, &waitData.signal))

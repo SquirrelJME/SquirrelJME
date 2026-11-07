@@ -1003,10 +1003,8 @@ sjme_errorCode sjme_noOptimize sjme_alloc_free(
 	if (addr == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
-	/* Emit barrier. */
-	sjme_atomic_light();
-
 	/* Get the link. */
+	/* Link emits a light barrier. */
 	link = NULL;
 	if (sjme_error_is(error = sjme_alloc_getLink(addr, &link)))
 		return sjme_error_default(error);
@@ -1461,6 +1459,7 @@ sjme_errorCode sjme_noOptimize sjme_alloc_weakNewR(
 	}
 		
 	/* Take ownership of lock. */
+	/* This emits a barrier. */
 	if (sjme_error_is(error = sjme_thread_spinLockGrab(
 		&allocPool->spinLock)))
 		return sjme_error_default(error);
@@ -1481,10 +1480,8 @@ sjme_errorCode sjme_noOptimize sjme_alloc_weakNewR(
 		resultWeak == NULL)
 		goto fail_allocWeak;
 	
-	/* Emit barrier. */
-	sjme_atomic_heavy();
-	
 	/* Release ownership of lock. */
+	/* This emits a barrier. */
 	if (sjme_error_is(error = sjme_thread_spinLockRelease(
 		&allocPool->spinLock, NULL)))
 		return sjme_error_default(error);

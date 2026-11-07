@@ -22,10 +22,10 @@
 #include "sjme/nvm/jdwp.h"
 
 /** The slice in nanoseconds. */
-#define SJME_SLICE_NS INT64_C(100000000)
+#define SJME_SLICE_NS INT64_C(25000000)
 
 /** The slice in milliseconds. */
-#define SJME_SLICE_MS 100
+#define SJME_SLICE_MS 25
 
 #if defined(SJME_PATH_SHORT)
 	/** The name of the SquirrelJME Jar. */
@@ -407,8 +407,10 @@ static sjme_errorCode sjme_nvm_scheduleTimer(
 	sjme_errorCode error;
 	sjme_jlong yieldIn, yieldOut;
 	sjme_jlong lightIn, lightOut;
+	sjme_jlong busyIn, busyOut;
 	sjme_jint yieldCount, yieldOrig;
 	sjme_jint lightCount, lightOrig;
+	sjme_jint busyCount, busyOrig;
 	
 	if (allocPool == NULL || inState == NULL || schedule == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -416,18 +418,16 @@ static sjme_errorCode sjme_nvm_scheduleTimer(
 	if (inState->nal == NULL || inState->nal->nanoTime == NULL)
 		return SJME_ERROR_ILLEGAL_STATE;
 	
-	/* Determine the number of light barriers that occur. */
-	memset(&lightIn, 0, sizeof(lightIn));
-	memset(&lightOut, 0, sizeof(lightOut));
-	inState->nal->nanoTime(&lightIn);
-	for (lightCount = 0; lightCount >= 0; lightCount++)
+	/* Determine the number of busy loops that occur for a very small slice */
+	/* of time. */
+	memset(&busyIn, 0, sizeof(busyIn));
+	memset(&busyOut, 0, sizeof(busyOut));
+	inState->nal->nanoTime(&busyIn);
+	for (busyCount = 0; busyCount >= 0; busyCount++)
 	{
-		/* Read barrier. */
-		sjme_atomic_light();
-		
 		/* How much time has passed? */
-		inState->nal->nanoTime(&lightOut);
-		if ((lightOut.full - lightIn.full) >= SJME_SLICE_NS)
+		inState->nal->nanoTime(&busyOut);
+		if ((busyOut.full - busyIn.full) >= SJME_SLICE_NS)
 			break;
 	}
 	
@@ -447,6 +447,21 @@ static sjme_errorCode sjme_nvm_scheduleTimer(
 			break;
 	}
 	
+	/* Determine the number of light barriers that occur. */
+	memset(&lightIn, 0, sizeof(lightIn));
+	memset(&lightOut, 0, sizeof(lightOut));
+	inState->nal->nanoTime(&lightIn);
+	for (lightCount = 0; lightCount >= 0; lightCount++)
+	{
+		/* Read barrier. */
+		sjme_atomic_light();
+		
+		/* How much time has passed? */
+		inState->nal->nanoTime(&lightOut);
+		if ((lightOut.full - lightIn.full) >= SJME_SLICE_NS)
+			break;
+	}
+	
 	/* Because of flux with system scheduling, we should instead */
 	/* normalize the max value here so that it is more aligned between */
 	/* different VM runs. */
@@ -462,6 +477,17 @@ static sjme_errorCode sjme_nvm_scheduleTimer(
 		sjme_util_intOneBitHighestU(lightCount << 1)) >> 1;
 	if (lightCount <= 1)
 		lightCount = 1;
+	
+	/* And the busy count. */
+	busyOrig = busyCount;
+	busyCount = (sjme_util_intOneBitHighestU(busyCount) +
+		sjme_util_intOneBitHighestU(busyCount << 1)) >> 1;
+	if (busyCount <= 1)
+		busyCount = 1;
+	
+	/* We want to busy loop up to this point. */
+	inState->schedule->busyTimer = 0;
+	inState->schedule->busyMax = busyCount;
 	
 	/* We want to light read up to this point. */
 	inState->schedule->lightTimer = 0;

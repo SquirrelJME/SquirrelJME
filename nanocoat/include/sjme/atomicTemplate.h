@@ -177,6 +177,17 @@ sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
 		sjme_atomic_, sjme_atomic_subName, _get)(
 	sjme_atomic_typeName* atomic);
 
+/**
+ * Atomically and lazily reads the value.
+ * 
+ * @param atomic The atomic reference.
+ * @return The value.
+ * @since 2026/10/06
+ */
+sjme_atomic_valueName SJME_TOKEN_PASTE3_PP(
+		sjme_atomic_, sjme_atomic_subName, _getLazy)(
+	sjme_atomic_typeName* atomic);
+
 #endif
 
 /* ReSharper disable once CppMissingIncludeGuard */
