@@ -226,8 +226,10 @@ sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	/* We set the minimum size in the expose event of the window. */
 	inState->bugs.noContentSizeWhenVisible = SJME_JNI_TRUE;
 	
+#if 0
 	/* loopExecuteLater in the event loop is now. */
 	inState->bugs.executeLaterIsNow = SJME_JNI_TRUE;
+#endif
 	
 	/* Internal functions to use specifically for GTK. */
 	inState->implIntern = &sjme_scritchui_gtk2InternFunctions;
