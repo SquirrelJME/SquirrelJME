@@ -30,6 +30,7 @@ import javax.microedition.lcdui.ScalableImage;
  *
  * @since 2020/09/26
  */
+@SuppressWarnings("AutoUnboxing")
 public enum MLEPencil
 	implements MLEFunction
 {
@@ -1035,7 +1036,65 @@ public enum MLEPencil
 				return new SpringMLECallError(__e, __e.distinction);
 			}
 		}
-	}, 
+	},
+	
+	/**
+	 * {@link PencilShelf#hardwareTransferRegion(PencilBracket, PencilBracket, 
+	 * boolean, int, int, int, int, int, int, int, int, int, int, int)}
+	 */
+	HARDWARE_TRANSFER_REGION(MLEDispatcher.methodKey(
+		"hardwareTransferRegion",
+		void.class, PencilBracket.class, PencilBracket.class,
+		boolean.class, int.class, int.class, int.class, int.class, 
+		int.class, int.class, int.class, int.class, int.class, 
+		int.class, int.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2026/11/08
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				PencilShelf.hardwareTransferRegion(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[1]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]) != 0,
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[5]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[6]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[7]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[8]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[9]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[10]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[11]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[12]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[13]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
+		}
+	},
 	
 	/** {@link PencilShelf#hardwareTranslate(PencilBracket, int, int)}. */
 	HARDWARE_TRANSLATE("hardwareTranslate:" +
