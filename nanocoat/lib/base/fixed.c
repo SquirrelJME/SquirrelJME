@@ -70,7 +70,7 @@ sjme_fixed sjme_fixed_div(
 	/* Return the lower result. */
 	return (sjme_fixed)vr.part.lo;
 #elif !defined(SJME_CONFIG_HAS_NO_JLONG_NATIVE)
-	return (sjme_fixed)((((sjme_jintNative)num) << SJME_FIXED_SHIFT) / den);
+	return (sjme_fixed)((((sjme_jlongNative)num) << SJME_FIXED_SHIFT) / den);
 #else
 	sjme_todo("Impl?");
 	return 0;
@@ -181,11 +181,9 @@ sjme_fixed sjme_fixed_mul(
 	sjme_attrInValue sjme_fixed a,
 	sjme_attrInValue sjme_fixed b)
 {
-#if defined(SJME_CONFIG_HAS_NO_JULONG_MATH)
-	sjme_jlong vr, va, vb;
-#endif
-	
 #if defined(SJME_CONFIG_HAS_NO_JLONG_MATH)
+	sjme_jlong vr, va, vb;
+	
 	/* Clear. */
 	memset(&vr, 0, sizeof(vr));
 	memset(&va, 0, sizeof(va));
@@ -202,7 +200,7 @@ sjme_fixed sjme_fixed_mul(
 	/* Return the lower result. */
 	return (sjme_fixed)vr.part.lo;
 #elif !defined(SJME_CONFIG_HAS_NO_JLONG_NATIVE)
-	return (sjme_fixed)(((sjme_jintNative)a) * ((sjme_jintNative)b) >>
+	return (sjme_fixed)(((sjme_jlongNative)a) * ((sjme_jlongNative)b) >>
 		SJME_FIXED_SHIFT);
 #else
 	sjme_todo("Impl?");
