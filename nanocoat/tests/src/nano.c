@@ -662,7 +662,7 @@ int main(int argc, sjme_lpstr* argv)
 	/* Allocate main pool. */
 	runPool = NULL;
 	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&runPool,
-		1048576 * 8)) || runPool == NULL)
+		SJME_JVM_INIT_MEMORY)) || runPool == NULL)
 		goto fail_poolInit;
 	
 	/* Allocate parameter pool. */
@@ -671,7 +671,7 @@ int main(int argc, sjme_lpstr* argv)
 #else
 	paramPool = NULL;
 	if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&paramPool,
-		1048576 * 4)) || paramPool == NULL)
+		SJME_JVM_INIT_MEMORY_AUX_TINY)) || paramPool == NULL)
 		goto fail_poolInit;
 #endif
 	

@@ -31,6 +31,29 @@ extern "C"
 
 /*--------------------------------------------------------------------------*/
 
+/** A sufficient number of bytes to store a dylib symbol. */
+#define SJME_BUF_SIZE_SYMBOL 48
+	
+/** A sufficient number of bytes to store a class name. */
+#define SJME_BUF_SIZE_CLASS_NAME 64
+	
+/* Sufficient for: -18446744073709551616 */
+#define SJME_BUF_SIZE_NUMBER 24
+
+#if defined(SJME_CONFIG_HAS_LOW_MEMORY)
+	/** Default amount of tiny auxiliary memory (1MiB). */
+	#define SJME_JVM_INIT_MEMORY_AUX_TINY INT32_C(1048576)
+	
+	/** Default amount of memory (4MiB). */
+	#define SJME_JVM_INIT_MEMORY INT32_C(4194304)
+#else
+	/** Default amount of tiny auxiliary memory (4MiB). */
+	#define SJME_JVM_INIT_MEMORY_AUX_TINY INT32_C(4194304)
+	
+	/** Default amount of memory (64MiB). */
+	#define SJME_JVM_INIT_MEMORY INT32_C(67108864)
+#endif
+	
 #if defined(SJME_CONFIG_HAS_LOW_MEMORY)
 	/** The size of the thread stack. */
 	#define SJME_NVM_THREAD_STACK_SIZE 8192

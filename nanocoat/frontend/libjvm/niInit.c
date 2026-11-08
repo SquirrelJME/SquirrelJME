@@ -16,9 +16,6 @@
 #include "sjme/debug.h"
 #include "sjme/nvm/task.h"
 
-/** Default amount of memory. */
-#define SJME_JVM_INIT_MEMORY (64 * 1048576)
-
 /** The global NVM state for the JNI wrapper. */
 static sjme_atomic(sjme_nvm) sjme_jni_nvm_state;
 

@@ -43,7 +43,6 @@ static sjme_jboolean sjme_hasSecondArg(sjme_lpcstr arg)
  */
 int main(int argc, sjme_lpcstr* argv)
 {
-#define BUF_SIZE 128
 	sjme_errorCode error;
 	JavaVM* jvm;
 	JNIEnv* env;
@@ -55,7 +54,7 @@ int main(int argc, sjme_lpcstr* argv)
 	jmethodID mainMethod;
 	sjme_jboolean isSquirrelJME, isJarLaunch;
 	sjme_nvm_task inTask;
-	sjme_cchar mainBuf[BUF_SIZE];
+	sjme_cchar mainBuf[SJME_BUF_SIZE_CLASS_NAME];
 	jarray invokeArgs;
 	jstring invokeArg;
 	sjme_jint exitCode;
@@ -187,8 +186,9 @@ int main(int argc, sjme_lpcstr* argv)
 	{
 		/* Map main to slashes. */
 		memset(mainBuf, 0, sizeof(mainBuf));
-		snprintf(mainBuf, BUF_SIZE - 1, "%s",
+		snprintf(mainBuf, SJME_BUF_SIZE_CLASS_NAME - 1, "%s",
 			mainArgV[0]);
+		mainBuf[SJME_BUF_SIZE_CLASS_NAME - 1] = '\0';
 		for (i = 0, n = sjme_util_sizeToInt(strlen(mainBuf)); i < n; i++)
 			if (mainBuf[i] == '.')
 				mainBuf[i] = '/';
@@ -256,5 +256,4 @@ fail_findStringClass:
 
 	/* Failed. */
 	return EXIT_FAILURE;
-#undef BUF_SIZE
 }

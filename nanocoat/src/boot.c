@@ -301,12 +301,11 @@ static sjme_errorCode sjme_nvm_initScritchUi(
 	sjme_attrInNotNull sjme_nvm inState,
 	sjme_attrInNullable sjme_lpcstr prefer)
 {
-#define BUF_SIZE 64
 	sjme_errorCode error;
 	sjme_scritchui result;
 #if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
 	sjme_dylib handle;
-	sjme_cchar buf[BUF_SIZE];
+	sjme_cchar buf[SJME_BUF_SIZE_SYMBOL];
 	sjme_scritchui_dylibApiFunc apiInit;
 	sjme_lpcstr actualSubComponent;
 #endif
@@ -351,9 +350,10 @@ static sjme_errorCode sjme_nvm_initScritchUi(
 
 	/* What is the API function entrypoint called? */
 	memset(&buf, 0, sizeof(buf));
-	snprintf(buf, BUF_SIZE - 1,
+	snprintf(buf, SJME_BUF_SIZE_SYMBOL - 1,
 	SJME_TOKEN_STRING_PP(SJME_SCRITCHUI_DYLIB_SYMBOL_PREFIX) "%s",
 		(actualSubComponent != NULL ? actualSubComponent : ""));
+	buf[SJME_BUF_SIZE_SYMBOL - 1] = '\0';
 
 	/* Lookup the function pointer for the call. */
 	apiInit = NULL;
@@ -398,8 +398,6 @@ fail_open:
 	/* No dynamic library support. */
 	return SJME_ERROR_HEADLESS_DISPLAY;
 #endif
-
-#undef BUF_SIZE
 }
 
 static sjme_errorCode sjme_nvm_scheduleTimer(

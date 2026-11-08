@@ -15,3 +15,7 @@
 #define sjme_atomic_type sjme_scritchui_pencil
 #include "sjme/atomicTemplateC.h" /* NOLINT */
 
+#define sjme_atomic_type sjme_scritchui_loopQueueItem
+#define sjme_atomic_refs 1
+#include "sjme/atomicTemplateC.h" /* NOLINT */
+

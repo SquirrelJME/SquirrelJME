@@ -164,9 +164,19 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	
 	/* Register periodic timer for later event. */
 	if (inState->bugs.executeLaterIsNow)
-		g_timeout_add_full(G_PRIORITY_LOW, 100,
-			sjme_scritchui_gtk2_periodicTimer, inState,
-			NULL);
+	{
+		/* Add periodic timer to execute. */
+		if (g_timeout_add_full(G_PRIORITY_LOW, 250,
+			sjme_scritchui_gtk2_periodicTimer, (gpointer)inState,
+			NULL) <= 0)
+		{
+			/* Fallback to idle otherwise */
+			if (g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
+				sjme_scritchui_gtk2_periodicTimer, (gpointer)inState,
+				NULL) <= 0)
+				sjme_message("Failed to inject idle.");
+		}
+	}
 	
 	/* Emit barrier for the event thread. */
 	sjme_atomic_heavy();

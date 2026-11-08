@@ -478,10 +478,8 @@ sjme_errorCode sjme_cbor_putValueI(
 	sjme_attrInNotNull sjme_cbor cbor,
 	sjme_attrInValue sjme_intMax inValue)
 {
-	/* -18446744073709551616 */
-#define BUF_SIZE 24
 	sjme_errorCode error;
-	sjme_cchar buf[BUF_SIZE];
+	sjme_cchar buf[SJME_BUF_SIZE_NUMBER];
 	
 	if (cbor == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -498,8 +496,9 @@ sjme_errorCode sjme_cbor_putValueI(
 	{
 		/* Compose integer value. */
 		memset(buf, 0, sizeof(buf));
-		snprintf(buf, BUF_SIZE - 1, "%" PRId64,
+		snprintf(buf, SJME_BUF_SIZE_NUMBER - 1, "%" PRId64,
 			inValue);
+		buf[SJME_BUF_SIZE_NUMBER - 1] = '\0';
 		
 		/* Write token. */
 		if (sjme_error_is(error = sjme_stream_outputWrite(cbor->out,
@@ -523,7 +522,6 @@ sjme_errorCode sjme_cbor_putValueI(
 
 	/* Success! */
 	return SJME_ERROR_NONE;
-#undef BUF_SIZE
 }
 
 sjme_errorCode sjme_cbor_putValueS(

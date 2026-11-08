@@ -548,8 +548,11 @@ typedef struct sjme_scritchui_loopQueue
 	/** The first chunk. */
 	sjme_scritchui_loopQueueChunk* firstChunk;
 	
-	/** The next item in the queue. */
-	sjme_scritchui_loopQueueItem* next;
+	/** The last chunk. */
+	sjme_scritchui_loopQueueChunk* lastChunk;
+	
+	/** The first item in the queue. */
+	sjme_scritchui_loopQueueItem* first;
 	
 	/** The last item in the queue. */
 	sjme_scritchui_loopQueueItem* last;
@@ -568,6 +571,9 @@ struct sjme_scritchui_loopQueueItem
 	
 	/** The next item in the queue. */
 	sjme_scritchui_loopQueueItem* next;
+	
+	/** The previous item in the queue. */
+	sjme_scritchui_loopQueueItem* prev;
 };
 
 struct sjme_scritchui_loopQueueChunk
@@ -577,6 +583,9 @@ struct sjme_scritchui_loopQueueChunk
 	
 	/** The next chunk, if this is full. */
 	sjme_scritchui_loopQueueChunk* nextChunk;
+	
+	/** The previous chunk. */
+	sjme_scritchui_loopQueueChunk* prevChunk;
 };
 
 #pragma endregion(scritchui_loopQueue)

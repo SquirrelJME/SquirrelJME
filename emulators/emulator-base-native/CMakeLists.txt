@@ -362,13 +362,19 @@ squirreljme_external_step(SquirrelJME)
 ExternalProject_Add_StepDependencies(SquirrelJME BaseStatic
 	SquirrelJME-RunConfigureStep)
 ExternalProject_Add_StepDependencies(SquirrelJME ScritchAudio
-	SquirrelJME-BaseStatic)
+	SquirrelJME-BaseStatic
+	SquirrelJME-RunConfigureStep)
 ExternalProject_Add_StepDependencies(SquirrelJME ScritchUi
-	SquirrelJME-BaseStatic)
+	SquirrelJME-BaseStatic
+	SquirrelJME-RunConfigureStep)
 ExternalProject_Add_StepDependencies(SquirrelJME libJvmDyLib
-	SquirrelJME-BaseStatic SquirrelJME-ScritchAudio SquirrelJME-ScritchUi)
+	SquirrelJME-BaseStatic
+	SquirrelJME-ScritchAudio
+	SquirrelJME-ScritchUi
+	SquirrelJME-RunConfigureStep)
 ExternalProject_Add_StepDependencies(SquirrelJME SquirrelJME
-	SquirrelJME-libJvmDyLib)
+	SquirrelJME-libJvmDyLib
+	SquirrelJME-RunConfigureStep)
 
 # Support bases
 squirreljme_include_nanocoat("cmake-patch.cmake")
@@ -481,11 +487,16 @@ add_custom_target(bundleNatives
 			# Copy files
 			"$<TARGET_FILE:libEmulatorBase>"
 			"${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin/${exeName}"
-	DEPENDS libEmulatorBase
 	WORKING_DIRECTORY "${nativesDir}"
 	BYPRODUCTS "${nativesZip}" "${nativesZipSimple}"
 	COMMENT "Bundling natives..."
 	COMMAND_EXPAND_LISTS)
+
+# Add dependencies that need to be built first
+add_dependencies(bundleNatives
+	libEmulatorBase
+	SquirrelJME-ScritchAudio
+	SquirrelJME-ScritchUi)
 
 # This is good to have in all
 set_target_properties(bundleNatives PROPERTIES

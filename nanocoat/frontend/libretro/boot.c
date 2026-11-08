@@ -23,9 +23,6 @@
 /** A single MiB. */
 #define SJME_LIBRETRO_ONE_MIB INT32_C(1048576)
 
-/** The default pool size on RetroArch. */
-#define SJME_LIBRETRO_DEFAULT_POOL_SIZE (SJME_LIBRETRO_ONE_MIB * 64)
-
 sjme_libretro_globalStruct sjme_libretro_globals =
 {
 	sjme_sm(.envCallback, NULL),
@@ -137,14 +134,14 @@ sjme_attrUnused RETRO_API void retro_init(void)
 	/* Allocate memory. */
 	allocPool = NULL;
 	sjme_message("Allocating memory...");
-	for (tryAlloc = SJME_LIBRETRO_DEFAULT_POOL_SIZE;
+	for (tryAlloc = SJME_JVM_INIT_MEMORY;
 		tryAlloc >= SJME_LIBRETRO_ONE_MIB;
 		tryAlloc -= SJME_LIBRETRO_ONE_MIB)
 	{
 		/* Attempt allocation. */
 		allocPool = NULL;
 		if (sjme_error_is(error = sjme_alloc_poolInitMalloc(&allocPool,
-			SJME_LIBRETRO_DEFAULT_POOL_SIZE)) || allocPool == NULL)
+			tryAlloc)) || allocPool == NULL)
 			continue;
 
 		/* Was successful, so do not try again. */

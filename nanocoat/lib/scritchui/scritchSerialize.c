@@ -266,15 +266,15 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_serialDispatch(
 	volatile sjme_scritchui_serialData* sdData;
 	sjme_scritchui_serialDataUnion* as;
 	sjme_scritchui state;
-	
-	if (anything == NULL)
-		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 		
 	/* Emit barrier so we can access this. */
 	sjme_atomic_light();
 	
 	/* Restore info. */
 	sdData = (sjme_scritchui_serialData*)anything;
+	if (sdData == NULL)
+		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
+	
 	state = sdData->state;
 	as = (void*)&sdData->data;
 	

@@ -55,6 +55,10 @@ extern "C"
 #define sjme_atomic_type sjme_scritchui_pencil
 #include "sjme/atomicTemplate.h" /* NOLINT */
 	
+#define sjme_atomic_type sjme_scritchui_loopQueueItem
+#define sjme_atomic_refs 1
+#include "sjme/atomicTemplate.h" /* NOLINT */
+	
 /** List of component. */
 SJME_LIST_DECLARE(sjme_scritchui_uiComponent, 0);
 

@@ -18,6 +18,10 @@ target_include_directories(AppDemoScritchUi PUBLIC
 squirreljme_link_libraries_required(AppDemoScritchUi PUBLIC
 	libJvmStatic)
 
+# Depends on everything ScritchUI
+add_dependencies(AppDemoScritchUi
+	ScritchUi)
+
 # Output to the base directory
 squirreljme_target_binary_output(AppDemoScritchUi
 	"${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
