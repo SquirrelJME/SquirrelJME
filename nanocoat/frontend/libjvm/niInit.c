@@ -22,7 +22,7 @@
 /** The global NVM state for the JNI wrapper. */
 static sjme_atomic(sjme_nvm) sjme_jni_nvm_state;
 
-jint sjme_jni_JvmDestroyJavaVM(
+jint JNICALL sjme_jni_JvmDestroyJavaVM(
 	sjme_attrInNotNull JavaVM* jvm)
 {
 	sjme_nvm_task task;

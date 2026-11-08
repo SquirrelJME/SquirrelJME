@@ -210,7 +210,7 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_win32_loopMain(
 		if (!sjme_scritchui_win32_dpiWin8(state))
 			if (!sjme_scritchui_win32_dpiWinVista(state))
 				sjme_message("ScritchUI: Not DPI Aware");
-	
+
 	/* Windows specific bugs. */
 	state->bugs.noContentSizeWhenVisible = SJME_JNI_TRUE;
 	
@@ -307,9 +307,11 @@ sjme_errorCode sjme_scritchui_win32_apiInit(
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
-	
+
+#if 0
 	/* loopExecuteLater in the event loop is now. */
 	inState->bugs.executeLaterIsNow = SJME_JNI_TRUE;
+#endif
 	
 	/* Internal functions to use specifically for Win32. */
 	inState->implIntern = &sjme_scritchui_win32InternFunctions;
