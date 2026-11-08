@@ -501,7 +501,7 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 	sjme_scritchui_uiPaintable paint;
 	sjme_scritchui_uiContainer container;
 	sjme_scritchui_uiComponent* subComponents;
-	sjme_jint i, n;
+	sjme_jint i, n, limitW, limitH;
 	
 	if (inState == NULL || inComponent == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -521,12 +521,6 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 	/* Not implemented? */
 	if (inState->impl->componentRepaint == NULL)
 		return sjme_error_notImplemented(0);
-	
-	/* Only certain types are paintable, ignore if requested. */
-	paint = NULL;
-	if (sjme_error_is(error = inState->intern->getPaintable(inState,
-		inComponent, &paint)) || paint == NULL)
-		return sjme_error_default(error);
 
 	/* If this is a container, repaint all children. */
 	container = NULL;
@@ -539,6 +533,7 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 	}
 	
 	/* Draw subcomponents of a container, assuming it has components. */
+	subComponents = NULL;
 	if (container != NULL && container->components != NULL &&
 		container->components->length > 0)
 	{
@@ -572,14 +567,17 @@ sjme_errorCode sjme_scritchui_core_componentRepaint(
 
 		/* Cleanup. */
 		sjme_alloca_free(subComponents);
-		
-		/* Success! */
+		subComponents = NULL;
+	}
+	
+	/* Only certain types are paintable, ignore if requested. */
+	paint = NULL;
+	if (sjme_error_is(error = inState->intern->getPaintable(inState,
+		inComponent, &paint)) || paint == NULL)
+	{
+		if (error != SJME_ERROR_NOT_PAINTABLE)
+			return sjme_error_default(error);
 		return SJME_ERROR_NONE;
-		
-fail_subRepaint:
-		if (subComponents != NULL)
-			sjme_alloca_free(subComponents);
-		return sjme_error_default(error);
 	}
 	
 	/* Rather than failing, just normalize. */
@@ -591,6 +589,19 @@ fail_subRepaint:
 		width = INT32_MAX;
 	if (height <= 0)
 		height = INT32_MAX;
+	
+	/* How big is this component? */
+	limitW = -1;
+	limitH = -1;
+	if (sjme_error_is(error = inState->apiInThread->componentSize(
+		inState, inComponent, &limitW, &limitH)))
+		return sjme_error_default(error);
+	
+	/* If the size is valid, clamp. */
+	if (limitW > 0 && limitW < INT32_MAX && width > limitW)
+		width = limitW;
+	if (limitH > 0 && limitH < INT32_MAX && height > limitH)
+		height = limitH;
 	
 	/* If we are in a paint, we need to delay painting by a single frame */
 	/* otherwise the native UI might get stuck not repainting or end up */
@@ -615,7 +626,7 @@ fail_subRepaint:
 				&inState->periodicQueue,
 				sjme_scritchui_core_componentRepaintBelay,
 				inComponent)))
-				return sjme_error_default(error);
+				goto fail_subSchedule;
 		}
 		
 		/* Otherwise, it is fine to schedule it for later. */
@@ -626,7 +637,7 @@ fail_subRepaint:
 				inState,
 				sjme_scritchui_core_componentRepaintBelay,
 				inComponent)))
-				return sjme_error_default(error);
+				goto fail_subSchedule;
 		}
 		
 		/* Scheduling was a success, so do nothing. */
@@ -637,6 +648,12 @@ fail_subRepaint:
 	/* else in the loop. */
 	return inState->impl->componentRepaint(inState, inComponent,
 		x, y, width, height);
+	
+fail_subSchedule:
+fail_subRepaint:
+	if (subComponents != NULL)
+		sjme_alloca_free(subComponents);
+	return sjme_error_default(error);
 }
 
 sjme_errorCode sjme_scritchui_core_componentRevalidate(
