@@ -645,7 +645,7 @@ static sjme_errorCode sjme_scritchui_win32_windowProc_PAINT(
 	if (sjme_error_is(error = inState->intern->getPaintable(inState,
 		inComponent, &paintable)) || paintable == NULL)
 	{
-		if (error == SJME_ERROR_INVALID_ARGUMENT)
+		if (error == SJME_ERROR_NOT_PAINTABLE)
 			goto fail_fallback;
 		goto fail_badPaint;
 	}
